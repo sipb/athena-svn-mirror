@@ -1019,7 +1019,7 @@ Optional Packages:
   --with-c14n             Add the Canonicalization support (on)
   --with-xinclude         Add the XInclude support (on)
   --with-iconv=DIR      Add ICONV support (on)
-  --with-schemas              Add experimental Schemas support (off)
+  --with-schemas              Add experimental Schemas/RelaxNG support (on)
   --with-regexps              Add Regular Expressions support (on)
   --with-debug            Add the debugging module (on)
   --with-mem-debug        Add the memory debugging module (off)
@@ -1468,7 +1468,7 @@ host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 
 LIBXML_MAJOR_VERSION=2
 LIBXML_MINOR_VERSION=5
-LIBXML_MICRO_VERSION=1
+LIBXML_MICRO_VERSION=4
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
 
@@ -12580,14 +12580,12 @@ if test "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XML" ; then
     if test "${with_docbook}" = "" ; then
         with_docbook="yes"
     fi
-    if test "${with_xptr}" = "" ; then
-        with_xptr="yes"
-    fi
-    if test "${with_schemas}" = "" ; then
-        with_schemas="yes"
-    fi
     CFLAGS="-g -O -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls "
+    STATIC_BINARIES="-static"
+else
+    STATIC_BINARIES=
 fi
+
 
 
 if test "${NEED_TRIO}" = "1" ; then
@@ -13635,14 +13633,15 @@ if test "${with_schemas+set}" = set; then
   withval="$with_schemas"
 
 fi;
-if test "$with_schemas" = "yes" ; then
-    echo Enabling Schemas support
-    WITH_SCHEMAS=1
-    TEST_SCHEMAS="Schemastests"
-    with_regexps=yes
-else
+if test "$with_schemas" = "no" ; then
+    echo "Disabled Schemas/Relax-NG support"
     WITH_SCHEMAS=0
     TEST_SCHEMAS=
+else
+    echo "Enabled Schemas/Relax-NG support"
+    WITH_SCHEMAS=1
+    TEST_SCHEMAS="Schemastests Relaxtests"
+    with_regexps=yes
 fi
 
 
@@ -13716,7 +13715,7 @@ fi
 RELDATE=`date +'%a %b %e %Y'`
 
 
-rm -f rm COPYING.LIB COPYING
+rm -f COPYING.LIB COPYING
 ln -s Copyright COPYING
 
 ac_config_files="$ac_config_files libxml.spec Makefile include/Makefile include/libxml/Makefile doc/Makefile example/Makefile python/Makefile python/tests/Makefile include/libxml/xmlversion.h xml2-config libxml-2.0.pc xml2Conf.sh python/setup.py"
@@ -14353,6 +14352,7 @@ s,@PYTHON@,$PYTHON,;t t
 s,@WITH_PYTHON_TRUE@,$WITH_PYTHON_TRUE,;t t
 s,@WITH_PYTHON_FALSE@,$WITH_PYTHON_FALSE,;t t
 s,@PYTHON_SUBDIR@,$PYTHON_SUBDIR,;t t
+s,@STATIC_BINARIES@,$STATIC_BINARIES,;t t
 s,@WITH_TRIO_SOURCES_TRUE@,$WITH_TRIO_SOURCES_TRUE,;t t
 s,@WITH_TRIO_SOURCES_FALSE@,$WITH_TRIO_SOURCES_FALSE,;t t
 s,@WITH_TRIO@,$WITH_TRIO,;t t

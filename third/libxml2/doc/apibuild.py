@@ -7,7 +7,7 @@
 #
 # daniel@veillard.com
 #
-import sys
+import os, sys
 import string
 import glob
 
@@ -1216,7 +1216,7 @@ class CParser:
 			 self.index.add(self.name, self.filename, static,
 			                "function", d)
 			 token = self.token()
-		     if token[0] == "sep" and token[1] == "{":
+		     elif token[0] == "sep" and token[1] == "{":
 		         d = self.mergeFunctionComment(self.name,
 				 ((type, None), self.signature), static)
 			 self.index.add(self.name, self.filename, static,
@@ -1307,7 +1307,7 @@ class docBuilder:
 	 self.scanModules()
          
      def modulename_file(self, file):
-         module = string.split(file, '/')[-1]
+         module = os.path.basename(file)
 	 if module[-2:] == '.h':
 	     module = module[:-2]
 	 return module

@@ -544,6 +544,8 @@ xmlValidBuildAContentModel(xmlElementContentPtr content,
 		case XML_ELEMENT_CONTENT_MULT:
 		    xmlAutomataNewTransition(ctxt->am, ctxt->state,
 			                     ctxt->state, fname, NULL);
+		    ctxt->state = xmlAutomataNewEpsilon(ctxt->am, ctxt->state,
+			                     NULL);
 		    break;
 	    }
 	    if (QName != NULL)
@@ -559,6 +561,10 @@ xmlValidBuildAContentModel(xmlElementContentPtr content,
 	     */
 	    oldstate = ctxt->state;
 	    ocur = content->ocur;
+	    if (ocur != XML_ELEMENT_CONTENT_ONCE) {
+		ctxt->state = xmlAutomataNewEpsilon(ctxt->am, oldstate, NULL);
+		oldstate = ctxt->state;
+	    }
 	    do {
 		xmlValidBuildAContentModel(content->c1, ctxt, name);
 		content = content->c2;
@@ -655,8 +661,13 @@ xmlValidBuildContentModel(xmlValidCtxtPtr ctxt, xmlElementPtr elem) {
     if (elem->etype != XML_ELEMENT_TYPE_ELEMENT)
 	return(1);
     /* TODO: should we rebuild in this case ? */
-    if (elem->contModel != NULL)
+    if (elem->contModel != NULL) {
+	if (!xmlRegexpIsDeterminist(elem->contModel)) {
+	    ctxt->valid = 0;
+	    return(0);
+	}
 	return(1);
+    }
 
     ctxt->am = xmlNewAutomata();
     if (ctxt->am == NULL) {
@@ -678,6 +689,10 @@ xmlValidBuildContentModel(xmlValidCtxtPtr ctxt, xmlElementPtr elem) {
         xmlRegexpPrint(stderr, elem->contModel);
 #endif
         ctxt->valid = 0;
+	ctxt->state = NULL;
+	xmlFreeAutomata(ctxt->am);
+	ctxt->am = NULL;
+	return(0);
     }
     ctxt->state = NULL;
     xmlFreeAutomata(ctxt->am);
@@ -4715,6 +4730,9 @@ xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
     } else {
 	xmlRegExecCtxtPtr exec;
 
+	if (!xmlRegexpIsDeterminist(elemDecl->contModel)) {
+	    return(-1);
+	}
 	ctxt->nodeMax = 0;
 	ctxt->nodeNr = 0;
 	ctxt->nodeTab = NULL;
@@ -5131,6 +5149,7 @@ xmlValidGetElemDecl(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     return(elemDecl);
 }
 
+#ifdef LIBXML_REGEXP_ENABLED
 /**
  * xmlValidatePushElement:
  * @ctxt:  the validation context
@@ -5340,6 +5359,7 @@ xmlValidatePopElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc ATTRIBUTE_UNUSED,
     }
     return(ret);
 }
+#endif /* LIBXML_REGEXP_ENABLED */
 
 /**
  * xmlValidateOneElement:

@@ -323,6 +323,7 @@ libxml_xmlParserCtxtPtrWrap(xmlParserCtxtPtr ctxt)
         Py_INCREF(Py_None);
         return (Py_None);
     }
+
     ret =
         PyCObject_FromVoidPtrAndDesc((void *) ctxt,
                                      (char *) "xmlParserCtxtPtr", NULL);
@@ -530,6 +531,7 @@ libxml_xmlParserInputBufferPtrWrap(xmlParserInputBufferPtr buffer)
     return (ret);
 }
 
+#ifdef LIBXML_REGEXP_ENABLED
 PyObject *
 libxml_xmlRegexpPtrWrap(xmlRegexpPtr regexp)
 {
@@ -547,6 +549,7 @@ libxml_xmlRegexpPtrWrap(xmlRegexpPtr regexp)
                                      (char *) "xmlRegexpPtr", NULL);
     return (ret);
 }
+#endif /* LIBXML_REGEXP_ENABLED */
 
 PyObject *
 libxml_xmlTextReaderPtrWrap(xmlTextReaderPtr reader)
@@ -565,3 +568,76 @@ libxml_xmlTextReaderPtrWrap(xmlTextReaderPtr reader)
                                      (char *) "xmlTextReaderPtr", NULL);
     return (ret);
 }
+
+PyObject *
+libxml_xmlTextReaderLocatorPtrWrap(xmlTextReaderLocatorPtr locator)
+{
+    PyObject *ret;
+
+#ifdef DEBUG
+    printf("libxml_xmlTextReaderLocatorPtrWrap: locator = %p\n", locator);
+#endif
+    if (locator == NULL) {
+        Py_INCREF(Py_None);
+        return (Py_None);
+    }
+    ret =
+        PyCObject_FromVoidPtrAndDesc((void *) locator,
+                                     (char *) "xmlTextReaderLocatorPtr", NULL);
+    return (ret);
+}
+
+#ifdef LIBXML_SCHEMAS_ENABLED
+PyObject *
+libxml_xmlRelaxNGPtrWrap(xmlRelaxNGPtr ctxt)
+{
+    PyObject *ret;
+
+#ifdef DEBUG
+    printf("libxml_xmlRelaxNGPtrWrap: ctxt = %p\n", ctxt);
+#endif
+    if (ctxt == NULL) {
+        Py_INCREF(Py_None);
+        return (Py_None);
+    }
+    ret =
+        PyCObject_FromVoidPtrAndDesc((void *) ctxt,
+                                     (char *) "xmlRelaxNGPtr", NULL);
+    return (ret);
+}
+
+PyObject *
+libxml_xmlRelaxNGParserCtxtPtrWrap(xmlRelaxNGParserCtxtPtr ctxt)
+{
+    PyObject *ret;
+
+#ifdef DEBUG
+    printf("libxml_xmlRelaxNGParserCtxtPtrWrap: ctxt = %p\n", ctxt);
+#endif
+    if (ctxt == NULL) {
+        Py_INCREF(Py_None);
+        return (Py_None);
+    }
+    ret =
+        PyCObject_FromVoidPtrAndDesc((void *) ctxt,
+                                     (char *) "xmlRelaxNGParserCtxtPtr", NULL);
+    return (ret);
+}
+PyObject *
+libxml_xmlRelaxNGValidCtxtPtrWrap(xmlRelaxNGValidCtxtPtr valid)
+{
+    PyObject *ret;
+
+#ifdef DEBUG
+    printf("libxml_xmlRelaxNGValidCtxtPtrWrap: valid = %p\n", valid);
+#endif
+    if (valid == NULL) {
+        Py_INCREF(Py_None);
+        return (Py_None);
+    }
+    ret =
+        PyCObject_FromVoidPtrAndDesc((void *) valid,
+                                     (char *) "xmlRelaxNGValidCtxtPtr", NULL);
+    return (ret);
+}
+#endif /* LIBXML_SCHEMAS_ENABLED */

@@ -917,14 +917,24 @@
      <exports symbol='xmlValidityWarningFunc'/>
     </file>
     <file name='HTMLparser'>
+     <exports symbol='HTML_DEPRECATED'/>
+     <exports symbol='HTML_INVALID'/>
+     <exports symbol='HTML_NA'/>
+     <exports symbol='HTML_REQUIRED'/>
+     <exports symbol='HTML_VALID'/>
      <exports symbol='UTF8ToHtml'/>
      <exports symbol='_htmlElemDesc'/>
      <exports symbol='_htmlEntityDesc'/>
+     <exports symbol='htmlAttrAllowed'/>
      <exports symbol='htmlAutoCloseTag'/>
      <exports symbol='htmlCreatePushParserCtxt'/>
+     <exports symbol='htmlDefaultSubelement'/>
      <exports symbol='htmlDocPtr'/>
      <exports symbol='htmlElemDesc'/>
      <exports symbol='htmlElemDescPtr'/>
+     <exports symbol='htmlElementAllowedHere'/>
+     <exports symbol='htmlElementAllowedHereDesc'/>
+     <exports symbol='htmlElementStatusHere'/>
      <exports symbol='htmlEncodeEntities'/>
      <exports symbol='htmlEntityDesc'/>
      <exports symbol='htmlEntityDescPtr'/>
@@ -935,6 +945,7 @@
      <exports symbol='htmlIsAutoClosed'/>
      <exports symbol='htmlIsScriptAttribute'/>
      <exports symbol='htmlNodePtr'/>
+     <exports symbol='htmlNodeStatus'/>
      <exports symbol='htmlParseCharRef'/>
      <exports symbol='htmlParseChunk'/>
      <exports symbol='htmlParseDoc'/>
@@ -947,10 +958,12 @@
      <exports symbol='htmlParserInput'/>
      <exports symbol='htmlParserInputPtr'/>
      <exports symbol='htmlParserNodeInfo'/>
+     <exports symbol='htmlRequiredAttrs'/>
      <exports symbol='htmlSAXHandler'/>
      <exports symbol='htmlSAXHandlerPtr'/>
      <exports symbol='htmlSAXParseDoc'/>
      <exports symbol='htmlSAXParseFile'/>
+     <exports symbol='htmlStatus'/>
      <exports symbol='htmlTagLookup'/>
     </file>
     <file name='parser'>
@@ -1092,12 +1105,17 @@
     <file name='xmlreader'>
      <exports symbol='XML_PARSER_DEFAULTATTRS'/>
      <exports symbol='XML_PARSER_LOADDTD'/>
+     <exports symbol='XML_PARSER_SEVERITY_ERROR'/>
+     <exports symbol='XML_PARSER_SEVERITY_VALIDITY_ERROR'/>
+     <exports symbol='XML_PARSER_SEVERITY_VALIDITY_WARNING'/>
+     <exports symbol='XML_PARSER_SEVERITY_WARNING'/>
      <exports symbol='XML_PARSER_SUBST_ENTITIES'/>
      <exports symbol='XML_PARSER_VALIDATE'/>
      <exports symbol='xmlFreeTextReader'/>
      <exports symbol='xmlNewTextReader'/>
      <exports symbol='xmlNewTextReaderFilename'/>
      <exports symbol='xmlParserProperties'/>
+     <exports symbol='xmlParserSeverities'/>
      <exports symbol='xmlTextReader'/>
      <exports symbol='xmlTextReaderAttributeCount'/>
      <exports symbol='xmlTextReaderBaseUri'/>
@@ -1105,9 +1123,11 @@
      <exports symbol='xmlTextReaderCurrentDoc'/>
      <exports symbol='xmlTextReaderCurrentNode'/>
      <exports symbol='xmlTextReaderDepth'/>
+     <exports symbol='xmlTextReaderErrorFunc'/>
      <exports symbol='xmlTextReaderGetAttribute'/>
      <exports symbol='xmlTextReaderGetAttributeNo'/>
      <exports symbol='xmlTextReaderGetAttributeNs'/>
+     <exports symbol='xmlTextReaderGetErrorHandler'/>
      <exports symbol='xmlTextReaderGetParserProp'/>
      <exports symbol='xmlTextReaderGetRemainder'/>
      <exports symbol='xmlTextReaderHasAttributes'/>
@@ -1115,6 +1135,9 @@
      <exports symbol='xmlTextReaderIsDefault'/>
      <exports symbol='xmlTextReaderIsEmptyElement'/>
      <exports symbol='xmlTextReaderLocalName'/>
+     <exports symbol='xmlTextReaderLocatorBaseURI'/>
+     <exports symbol='xmlTextReaderLocatorLineNumber'/>
+     <exports symbol='xmlTextReaderLocatorPtr'/>
      <exports symbol='xmlTextReaderLookupNamespace'/>
      <exports symbol='xmlTextReaderMoveToAttribute'/>
      <exports symbol='xmlTextReaderMoveToAttributeNo'/>
@@ -1135,9 +1158,34 @@
      <exports symbol='xmlTextReaderReadOuterXml'/>
      <exports symbol='xmlTextReaderReadState'/>
      <exports symbol='xmlTextReaderReadString'/>
+     <exports symbol='xmlTextReaderSetErrorHandler'/>
      <exports symbol='xmlTextReaderSetParserProp'/>
      <exports symbol='xmlTextReaderValue'/>
      <exports symbol='xmlTextReaderXmlLang'/>
+    </file>
+    <file name='relaxng'>
+     <exports symbol='xmlRelaxNG'/>
+     <exports symbol='xmlRelaxNGCleanupTypes'/>
+     <exports symbol='xmlRelaxNGDump'/>
+     <exports symbol='xmlRelaxNGDumpTree'/>
+     <exports symbol='xmlRelaxNGFree'/>
+     <exports symbol='xmlRelaxNGFreeParserCtxt'/>
+     <exports symbol='xmlRelaxNGFreeValidCtxt'/>
+     <exports symbol='xmlRelaxNGNewMemParserCtxt'/>
+     <exports symbol='xmlRelaxNGNewParserCtxt'/>
+     <exports symbol='xmlRelaxNGNewValidCtxt'/>
+     <exports symbol='xmlRelaxNGParse'/>
+     <exports symbol='xmlRelaxNGParserCtxt'/>
+     <exports symbol='xmlRelaxNGParserCtxtPtr'/>
+     <exports symbol='xmlRelaxNGPtr'/>
+     <exports symbol='xmlRelaxNGSetParserErrors'/>
+     <exports symbol='xmlRelaxNGSetValidErrors'/>
+     <exports symbol='xmlRelaxNGValidCtxt'/>
+     <exports symbol='xmlRelaxNGValidCtxtPtr'/>
+     <exports symbol='xmlRelaxNGValidateDoc'/>
+     <exports symbol='xmlRelaxNGValidateStream'/>
+     <exports symbol='xmlRelaxNGValidityErrorFunc'/>
+     <exports symbol='xmlRelaxNGValidityWarningFunc'/>
     </file>
     <file name='globals'>
      <exports symbol='_xmlGlobalState'/>
@@ -1515,6 +1563,7 @@
      <exports symbol='xmlGetIntSubset'/>
      <exports symbol='xmlGetLastChild'/>
      <exports symbol='xmlGetLineNo'/>
+     <exports symbol='xmlGetNoNsProp'/>
      <exports symbol='xmlGetNodePath'/>
      <exports symbol='xmlGetNsList'/>
      <exports symbol='xmlGetNsProp'/>
@@ -1618,6 +1667,10 @@
      <exports symbol='xmlUnlinkNode'/>
      <exports symbol='xmlUnsetNsProp'/>
      <exports symbol='xmlUnsetProp'/>
+     <exports symbol='xmlValidateNCName'/>
+     <exports symbol='xmlValidateNMToken'/>
+     <exports symbol='xmlValidateName'/>
+     <exports symbol='xmlValidateQName'/>
     </file>
     <file name='xmlregexp'>
      <exports symbol='xmlRegExecCallbacks'/>
@@ -1788,6 +1841,7 @@
     <file name='uri'>
      <exports symbol='_xmlURI'/>
      <exports symbol='xmlBuildURI'/>
+     <exports symbol='xmlCanonicPath'/>
      <exports symbol='xmlCreateURI'/>
      <exports symbol='xmlFreeURI'/>
      <exports symbol='xmlNormalizeURIPath'/>
@@ -2086,6 +2140,12 @@
     </macro>
     <macro name='_DEBUG_MEMORY_ALLOC_' file='xmlmemory'>
     </macro>
+    <macro name='htmlDefaultSubelement' file='HTMLparser'>
+    </macro>
+    <macro name='htmlElementAllowedHereDesc' file='HTMLparser'>
+    </macro>
+    <macro name='htmlRequiredAttrs' file='HTMLparser'>
+    </macro>
     <macro name='xmlChildrenNode' file='tree'>
       <info>Macro for compatibility naming layer with libxml1.</info>
     </macro>
@@ -2187,6 +2247,11 @@
       <info>Check if the current value on the XPath stack is a node set or an XSLT value tree.  Returns true if the current object on the stack is a node-set.</info>
       <arg name='ctxt' info='an XPath parser context'/>
     </macro>
+    <enum name='HTML_DEPRECATED' file='HTMLparser' value='0x2' type='htmlStatus'/>
+    <enum name='HTML_INVALID' file='HTMLparser' value='0x1' type='htmlStatus'/>
+    <enum name='HTML_NA' file='HTMLparser' value='0' type='htmlStatus' info='something we don&apos;t check at all'/>
+    <enum name='HTML_REQUIRED' file='HTMLparser' value='0xc' type='htmlStatus' info=' VALID bit set so ( &amp; HTML_VALID ) is TRUE'/>
+    <enum name='HTML_VALID' file='HTMLparser' value='0x4' type='htmlStatus'/>
     <enum name='XLINK_ACTUATE_AUTO' file='xlink' value='1' type='xlinkActuate'/>
     <enum name='XLINK_ACTUATE_NONE' file='xlink' value='0' type='xlinkActuate'/>
     <enum name='XLINK_ACTUATE_ONREQUEST' file='xlink' value='2' type='xlinkActuate'/>
@@ -2391,6 +2456,10 @@
     <enum name='XML_PARSER_PI' file='parser' value='2' type='xmlParserInputState' info='Within a processing instruction'/>
     <enum name='XML_PARSER_PROLOG' file='parser' value='4' type='xmlParserInputState' info='Misc* after internal subset'/>
     <enum name='XML_PARSER_PUBLIC_LITERAL' file='parser' value='16' type='xmlParserInputState' info=' within a PUBLIC value'/>
+    <enum name='XML_PARSER_SEVERITY_ERROR' file='xmlreader' value='4' type='xmlParserSeverities'/>
+    <enum name='XML_PARSER_SEVERITY_VALIDITY_ERROR' file='xmlreader' value='2' type='xmlParserSeverities'/>
+    <enum name='XML_PARSER_SEVERITY_VALIDITY_WARNING' file='xmlreader' value='1' type='xmlParserSeverities'/>
+    <enum name='XML_PARSER_SEVERITY_WARNING' file='xmlreader' value='3' type='xmlParserSeverities'/>
     <enum name='XML_PARSER_START' file='parser' value='0' type='xmlParserInputState' info='nothing has been parsed'/>
     <enum name='XML_PARSER_START_TAG' file='parser' value='6' type='xmlParserInputState' info='within a start tag'/>
     <enum name='XML_PARSER_SUBST_ENTITIES' file='xmlreader' value='4' type='xmlParserProperties'/>
@@ -2453,7 +2522,22 @@
       <field name='depr' type='char' info=' Is this a deprecated element ?'/>
       <field name='dtd' type='char' info=' 1: only in Loose DTD, 2: only Frameset one'/>
       <field name='isinline' type='char' info=' is this a block 0 or inline 1 element'/>
-      <field name='desc' type='const char *' info=' the description'/>
+      <field name='desc' type='const char *' info=' the description NRK Jan.2003
+* New fields encapsulating HTML structure
+*
+* Bugs:
+*	This is a very limited representation.  It fails to tell us when
+*	an element *requires* subelements (we only have whether they&apos;re
+*	allowed or not), and it doesn&apos;t tell us where CDATA and PCDATA
+*	are allowed.  Some element relationships are not fully represented:
+*	these are flagged with the word MODIFIER
+*'/>
+      <field name='subelts' type='const char **' info=' allowed sub-elements of this element'/>
+      <field name='defaultsubelt' type='const char *' info=' subelement for suggested auto-repair
+if necessary or NULL'/>
+      <field name='attrs_opt' type='const char **' info=' Optional Attributes'/>
+      <field name='attrs_depr' type='const char **' info=' Additional deprecated attributes'/>
+      <field name='attrs_req' type='const char **' info=' Required attributes'/>
     </struct>
     <typedef name='htmlElemDescPtr' file='HTMLparser' type='htmlElemDesc *'/>
     <struct name='htmlEntityDesc' file='HTMLparser' type='struct _htmlEntityDesc'>
@@ -2470,6 +2554,7 @@
     <typedef name='htmlParserNodeInfo' file='HTMLparser' type='xmlParserNodeInfo'/>
     <typedef name='htmlSAXHandler' file='HTMLparser' type='xmlSAXHandler'/>
     <typedef name='htmlSAXHandlerPtr' file='HTMLparser' type='xmlSAXHandlerPtr'/>
+    <typedef name='htmlStatus' file='HTMLparser' type='enum'/>
     <typedef name='xlinkActuate' file='xlink' type='enum'/>
     <typedef name='xlinkHRef' file='xlink' type='xmlChar *'/>
     <struct name='xlinkHandler' file='xlink' type='struct _xlinkHandler'>
@@ -2857,6 +2942,7 @@ actually an xmlCharEncoding'/>
     </struct>
     <typedef name='xmlParserNodeInfoSeqPtr' file='parser' type='xmlParserNodeInfoSeq *'/>
     <typedef name='xmlParserProperties' file='xmlreader' type='enum'/>
+    <typedef name='xmlParserSeverities' file='xmlreader' type='enum'/>
     <struct name='xmlRMutex' file='threads' type='struct _xmlRMutex'/>
     <typedef name='xmlRMutexPtr' file='threads' type='xmlRMutex *'/>
     <struct name='xmlRef' file='tree' type='struct _xmlRef'>
@@ -2873,6 +2959,12 @@ actually an xmlCharEncoding'/>
     <typedef name='xmlRegExecCtxtPtr' file='xmlregexp' type='xmlRegExecCtxt *'/>
     <struct name='xmlRegexp' file='xmlregexp' type='struct _xmlRegexp'/>
     <typedef name='xmlRegexpPtr' file='xmlregexp' type='xmlRegexp *'/>
+    <struct name='xmlRelaxNG' file='relaxng' type='struct _xmlRelaxNG'/>
+    <struct name='xmlRelaxNGParserCtxt' file='relaxng' type='struct _xmlRelaxNGParserCtxt'/>
+    <typedef name='xmlRelaxNGParserCtxtPtr' file='relaxng' type='xmlRelaxNGParserCtxt *'/>
+    <typedef name='xmlRelaxNGPtr' file='relaxng' type='xmlRelaxNG *'/>
+    <struct name='xmlRelaxNGValidCtxt' file='relaxng' type='struct _xmlRelaxNGValidCtxt'/>
+    <typedef name='xmlRelaxNGValidCtxtPtr' file='relaxng' type='xmlRelaxNGValidCtxt *'/>
     <struct name='xmlSAXHandler' file='tree' type='struct _xmlSAXHandler'>
       <field name='internalSubset' type='internalSubsetSAXFunc' info=''/>
       <field name='isStandalone' type='isStandaloneSAXFunc' info=''/>
@@ -2922,6 +3014,7 @@ actually an xmlCharEncoding'/>
     </struct>
     <typedef name='xmlShellCtxtPtr' file='debugXML' type='xmlShellCtxt *'/>
     <struct name='xmlTextReader' file='xmlreader' type='struct _xmlTextReader'/>
+    <typedef name='xmlTextReaderLocatorPtr' file='xmlreader' type='void *'/>
     <typedef name='xmlTextReaderPtr' file='xmlreader' type='xmlTextReader *'/>
     <struct name='xmlURI' file='uri' type='struct _xmlURI'>
       <field name='scheme' type='char *' info=' the URI scheme'/>
@@ -3437,6 +3530,13 @@ actually an xmlCharEncoding'/>
       <return type='int' info='1 if true'/>
       <arg name='ctx' type='void *' info='the user data (XML parser context)'/>
     </functype>
+    <function name='htmlAttrAllowed' file='HTMLparser'>
+      <info>Checks whether an attribute is valid for an element Has full knowledge of Required and Deprecated attributes</info>
+      <return type='htmlStatus' info='one of HTML_REQUIRED, HTML_VALID, HTML_DEPRECATED, HTML_INVALID'/>
+      <arg name='elt' type='const htmlElemDesc *' info='HTML element'/>
+      <arg name='attr' type='const xmlChar *' info='HTML attribute'/>
+      <arg name='legacy' type='int' info='whether to allow deprecated attributes'/>
+    </function>
     <function name='htmlAutoCloseTag' file='HTMLparser'>
       <info>The HTML DTD allows a tag to implicitly close other tags. The list is kept in htmlStartClose array. This function checks if the element or one of it&apos;s children would autoclose the given tag.</info>
       <return type='int' info='1 if autoclose, 0 otherwise'/>
@@ -3451,7 +3551,7 @@ actually an xmlCharEncoding'/>
       <arg name='encoding' type='const char *' info='a free form C string describing the HTML document encoding, or NULL'/>
     </function>
     <function name='htmlCreatePushParserCtxt' file='HTMLparser'>
-      <info>Create a parser context for using the HTML parser in push mode To allow content encoding detection, @size should be &gt;= 4 The value of @filename is used for fetching external entities and error/warning reports.</info>
+      <info>Create a parser context for using the HTML parser in push mode The value of @filename is used for fetching external entities and error/warning reports.</info>
       <return type='htmlParserCtxtPtr' info='the new parser context or NULL'/>
       <arg name='sax' type='htmlSAXHandlerPtr' info='a SAX handler'/>
       <arg name='user_data' type='void *' info='The user data returned on SAX callbacks'/>
@@ -3491,6 +3591,18 @@ actually an xmlCharEncoding'/>
       <arg name='cur' type='xmlDocPtr' info='the document'/>
       <arg name='mem' type='xmlChar **' info='OUT: the memory pointer'/>
       <arg name='size' type='int *' info='OUT: the memory length'/>
+    </function>
+    <function name='htmlElementAllowedHere' file='HTMLparser'>
+      <info>Checks whether an HTML element may be a direct child of a parent element. Note - doesn&apos;t check for deprecated elements</info>
+      <return type='int' info='1 if allowed; 0 otherwise.'/>
+      <arg name='parent' type='const htmlElemDesc *' info='HTML parent element'/>
+      <arg name='elt' type='const xmlChar *' info='HTML element'/>
+    </function>
+    <function name='htmlElementStatusHere' file='HTMLparser'>
+      <info>Checks whether an HTML element may be a direct child of a parent element. and if so whether it is valid or deprecated.</info>
+      <return type='htmlStatus' info='one of HTML_VALID, HTML_DEPRECATED, HTML_INVALID'/>
+      <arg name='parent' type='const htmlElemDesc *' info='HTML parent element'/>
+      <arg name='elt' type='const htmlElemDesc *' info='HTML element'/>
     </function>
     <function name='htmlEncodeEntities' file='HTMLparser'>
       <info>Take a block of UTF-8 chars in and try to convert it to an ASCII plus HTML entities block of chars out.</info>
@@ -3598,6 +3710,12 @@ actually an xmlCharEncoding'/>
       <arg name='cur' type='xmlNodePtr' info='the current node'/>
       <arg name='encoding' type='const char *' info='the encoding string'/>
     </function>
+    <function name='htmlNodeStatus' file='HTMLparser'>
+      <info>Checks whether the tree node is valid.  Experimental (the author only uses the HTML enhancements in a SAX parser)</info>
+      <return type='htmlStatus' info='for Element nodes, a return from htmlElementAllowedHere (if legacy allowed) or htmlElementStatusHere (otherwise). for Attribute nodes, a return from htmlAttrAllowed for other nodes, HTML_NA (no checks performed)'/>
+      <arg name='node' type='const htmlNodePtr' info='an htmlNodePtr in a tree'/>
+      <arg name='legacy' type='int' info='whether to allow deprecated elements (YES is faster here for Element nodes)'/>
+    </function>
     <function name='htmlParseCharRef' file='HTMLparser'>
       <info>parse Reference declarations  [66] CharRef ::= &apos;&amp;#&apos; [0-9]+ &apos;;&apos; | &apos;&amp;#x&apos; [0-9a-fA-F]+ &apos;;&apos;</info>
       <return type='int' info='the value parsed (as an int)'/>
@@ -3702,7 +3820,7 @@ actually an xmlCharEncoding'/>
       <arg name='len' type='int' info='the number of xmlChar'/>
     </functype>
     <function name='initGenericErrorDefaultFunc' file='xmlerror'>
-      <info>Set or reset (if NULL) the default handler for generic errors</info>
+      <info>Set or reset (if NULL) the default handler for generic errors to the builtin error function.</info>
       <return type='void'/>
       <arg name='handler' type='xmlGenericErrorFunc *' info='the handler'/>
     </function>
@@ -4057,7 +4175,7 @@ actually an xmlCharEncoding'/>
       <arg name='tree' type='xmlEnumerationPtr' info='if it&apos;s an enumeration, the associated list'/>
     </function>
     <function name='xmlAddChild' file='tree'>
-      <info>Add a new node to @parent, at the end of the child (or property) list merging adjacent TEXT nodes (in which case @cur is freed) If the new node was already inserted in a document it is first unlinked from its existing context. If the new node is ATTRIBUTE, it is added into properties instead of children. If there is an attribute with equal name, it is first destroyed.</info>
+      <info>Add a new node to @parent, at the end of the child (or property) list merging adjacent TEXT nodes (in which case @cur is freed) If the new node is ATTRIBUTE, it is added into properties instead of children. If there is an attribute with equal name, it is first destroyed.</info>
       <return type='xmlNodePtr' info='the child or NULL in case of error.'/>
       <arg name='parent' type='xmlNodePtr' info='the parent node'/>
       <arg name='cur' type='xmlNodePtr' info='the child node'/>
@@ -4414,6 +4532,11 @@ actually an xmlCharEncoding'/>
       <arg name='node' type='xmlNodePtr' info=''/>
       <arg name='parent' type='xmlNodePtr' info=''/>
     </functype>
+    <function name='xmlCanonicPath' file='uri'>
+      <info>Constructs a canonic path from the specified path.</info>
+      <return type='xmlChar *' info='a new canonic path, or a duplicate of the path parameter if the construction fails. The caller is responsible for freeing the memory occupied by the returned string. If there is insufficient memory available, or the argument is NULL, the function returns NULL.'/>
+      <arg name='path' type='const xmlChar *' info='the resource locator in a filesystem notation'/>
+    </function>
     <function name='xmlCatalogAdd' file='catalog'>
       <info>Add an entry in the catalog, it may overwrite existing but different entries. If called before any other catalog routine, allows to override the default shared catalog put in place by xmlInitializeCatalog();</info>
       <return type='int' info='0 if successful, -1 otherwise'/>
@@ -4608,7 +4731,7 @@ actually an xmlCharEncoding'/>
       <return type='void'/>
     </function>
     <function name='xmlCleanupParser' file='parser'>
-      <info>Cleanup function for the XML parser. It tries to reclaim all parsing related global memory allocated for the parser processing. It doesn&apos;t deallocate any document related memory. Calling this function should not prevent reusing the parser.</info>
+      <info>Cleanup function for the XML parser. It tries to reclaim all parsing related global memory allocated for the parser processing. It doesn&apos;t deallocate any document related memory. Calling this function should not prevent reusing the parser. One should call xmlCleanupParser() only when the process has finished using the library or XML document built with it.</info>
       <return type='void'/>
     </function>
     <function name='xmlCleanupPredefinedEntities' file='entities'>
@@ -4875,7 +4998,7 @@ actually an xmlCharEncoding'/>
       <arg name='alias' type='const char *' info='the alias name as parsed, in UTF-8 format (ASCII actually)'/>
     </function>
     <function name='xmlDeregisterNodeDefault' file='globals'>
-      <info></info>
+      <info>Registers a callback for node destruction</info>
       <return type='xmlDeregisterNodeFunc' info='the previous value of the deregistration function'/>
       <arg name='func' type='xmlDeregisterNodeFunc' info='function pointer to the new DeregisterNodeFunc'/>
     </function>
@@ -4904,7 +5027,7 @@ actually an xmlCharEncoding'/>
       <arg name='cur' type='xmlDocPtr' info='the document'/>
     </function>
     <function name='xmlDocDumpFormatMemory' file='tree'>
-      <info>Dump an XML document in memory and return the #xmlChar * and it&apos;s size. It&apos;s up to the caller to free the memory with xmlFree(). Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
+      <info>Dump an XML document in memory and return the #xmlChar * and it&apos;s size. It&apos;s up to the caller to free the memory with xmlFree(). Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
       <return type='void'/>
       <arg name='cur' type='xmlDocPtr' info='the document'/>
       <arg name='mem' type='xmlChar **' info='OUT: the memory pointer'/>
@@ -4912,7 +5035,7 @@ actually an xmlCharEncoding'/>
       <arg name='format' type='int' info='should formatting spaces been added'/>
     </function>
     <function name='xmlDocDumpFormatMemoryEnc' file='tree'>
-      <info>Dump the current DOM tree into memory using the character encoding specified by the caller.  Note it is up to the caller of this function to free the allocated memory with xmlFree(). Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
+      <info>Dump the current DOM tree into memory using the character encoding specified by the caller.  Note it is up to the caller of this function to free the allocated memory with xmlFree(). Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
       <return type='void'/>
       <arg name='out_doc' type='xmlDocPtr' info='Document to generate XML text from'/>
       <arg name='doc_txt_ptr' type='xmlChar **' info='Memory pointer for allocated XML text'/>
@@ -4937,7 +5060,7 @@ actually an xmlCharEncoding'/>
     </function>
     <function name='xmlDocFormatDump' file='tree'>
       <info>Dump an XML document to an open FILE.</info>
-      <return type='int' info='the number of bytes written or -1 in case of failure.'/>
+      <return type='int' info='the number of bytes written or -1 in case of failure. Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called'/>
       <arg name='f' type='FILE *' info='the FILE*'/>
       <arg name='cur' type='xmlDocPtr' info='the document'/>
       <arg name='format' type='int' info='should formatting spaces been added'/>
@@ -5051,8 +5174,8 @@ actually an xmlCharEncoding'/>
       <arg name='filename' type='const char *' info='the URI for matching'/>
     </function>
     <function name='xmlFileOpen' file='xmlIO'>
-      <info>input from FILE *, supports compressed input if @filename is &quot; &quot; then the standard input is used</info>
-      <return type='void *' info='an I/O context or NULL in case of error'/>
+      <info>Wrapper around xmlFileOpen_real that try it with an unescaped version of @filename, if this fails fallback to @filename</info>
+      <return type='void *' info='a handler or NULL in case or failure'/>
       <arg name='filename' type='const char *' info='the URI for matching'/>
     </function>
     <function name='xmlFileRead' file='xmlIO'>
@@ -5320,6 +5443,12 @@ actually an xmlCharEncoding'/>
       <return type='long' info='the line number if successful, -1 otherwise'/>
       <arg name='node' type='xmlNodePtr' info='valid node'/>
     </function>
+    <function name='xmlGetNoNsProp' file='tree'>
+      <info>Search and get the value of an attribute associated to a node This does the entity substitution. This function looks in DTD attribute declaration for #FIXED or default declaration values unless DTD use has been turned off. This function is similar to xmlGetProp except it will accept only an attribute in no namespace.</info>
+      <return type='xmlChar *' info='the attribute value or NULL if not found. It&apos;s up to the caller to free the memory with xmlFree().'/>
+      <arg name='node' type='xmlNodePtr' info='the node'/>
+      <arg name='name' type='const xmlChar *' info='the attribute name'/>
+    </function>
     <function name='xmlGetNodePath' file='tree'>
       <info>Build a structure based Path for the given node</info>
       <return type='xmlChar *' info='the new path or NULL in case of error. The caller must free the returned string'/>
@@ -5350,7 +5479,7 @@ actually an xmlCharEncoding'/>
       <arg name='name' type='const xmlChar *' info='the entity name'/>
     </function>
     <function name='xmlGetProp' file='tree'>
-      <info>Search and get the value of an attribute associated to a node This does the entity substitution. This function looks in DTD attribute declaration for #FIXED or default declaration values unless DTD use has been turned off.</info>
+      <info>Search and get the value of an attribute associated to a node This does the entity substitution. This function looks in DTD attribute declaration for #FIXED or default declaration values unless DTD use has been turned off. NOTE: this function acts independently of namespaces associated to the attribute. Use xmlGetNsProp() or xmlGetNoNsProp() for namespace aware processing.</info>
       <return type='xmlChar *' info='the attribute value or NULL if not found. It&apos;s up to the caller to free the memory with xmlFree().'/>
       <arg name='node' type='xmlNodePtr' info='the node'/>
       <arg name='name' type='const xmlChar *' info='the attribute name'/>
@@ -6560,7 +6689,7 @@ actually an xmlCharEncoding'/>
       <arg name='len' type='int' info='the size of @content'/>
     </function>
     <function name='xmlNodeDump' file='tree'>
-      <info>Dump an XML node, recursive behaviour,children are printed too. Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
+      <info>Dump an XML node, recursive behaviour,children are printed too. Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
       <return type='int' info='the number of bytes written to the buffer or -1 in case of error'/>
       <arg name='buf' type='xmlBufferPtr' info='the XML buffer output'/>
       <arg name='doc' type='xmlDocPtr' info='the document'/>
@@ -6569,7 +6698,7 @@ actually an xmlCharEncoding'/>
       <arg name='format' type='int' info='is formatting allowed'/>
     </function>
     <function name='xmlNodeDumpOutput' file='tree'>
-      <info>Dump an XML node, recursive behaviour, children are printed too. Note that format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
+      <info>Dump an XML node, recursive behaviour, children are printed too. Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
       <return type='void'/>
       <arg name='buf' type='xmlOutputBufferPtr' info='the XML buffer output'/>
       <arg name='doc' type='xmlDocPtr' info='the document'/>
@@ -6661,9 +6790,9 @@ actually an xmlCharEncoding'/>
       <arg name='path' type='char *' info='pointer to the path string'/>
     </function>
     <function name='xmlNormalizeWindowsPath' file='xmlIO'>
-      <info>Normalize a Windows path to make an URL from it</info>
-      <return type='xmlChar *' info='a new URI which must be freed by the caller or NULL in case of error'/>
-      <arg name='path' type='const xmlChar *' info='a windows path like &quot;C:/foo/bar&quot;'/>
+      <info>This function is obsolete. Please see xmlURIFromPath in uri.c for a better solution.</info>
+      <return type='xmlChar *' info=''/>
+      <arg name='path' type='const xmlChar *' info=''/>
     </function>
     <function name='xmlOutputBufferClose' file='xmlIO'>
       <info>flushes and close the output I/O channel and free up all the associated resources</info>
@@ -7380,8 +7509,8 @@ actually an xmlCharEncoding'/>
       <arg name='closeFunc' type='xmlInputCloseCallback' info='the xmlInputCloseCallback'/>
     </function>
     <function name='xmlRegisterNodeDefault' file='globals'>
-      <info></info>
-      <return type='xmlRegisterNodeFunc' info='the previous value of the registration function'/>
+      <info>Registers a callback for node creation</info>
+      <return type='xmlRegisterNodeFunc' info='the old value of the registration function'/>
       <arg name='func' type='xmlRegisterNodeFunc' info='function pointer to the new RegisterNodeFunc'/>
     </function>
     <functype name='xmlRegisterNodeFunc' file='globals'>
@@ -7397,6 +7526,103 @@ actually an xmlCharEncoding'/>
       <arg name='writeFunc' type='xmlOutputWriteCallback' info='the xmlOutputWriteCallback'/>
       <arg name='closeFunc' type='xmlOutputCloseCallback' info='the xmlOutputCloseCallback'/>
     </function>
+    <function name='xmlRelaxNGCleanupTypes' file='relaxng'>
+      <info>Cleanup the default Schemas type library associated to RelaxNG</info>
+      <return type='void'/>
+    </function>
+    <function name='xmlRelaxNGDump' file='relaxng'>
+      <info>Dump a RelaxNG structure back</info>
+      <return type='void'/>
+      <arg name='output' type='FILE *' info='the file output'/>
+      <arg name='schema' type='xmlRelaxNGPtr' info='a schema structure'/>
+    </function>
+    <function name='xmlRelaxNGDumpTree' file='relaxng'>
+      <info>Dump the transformed RelaxNG tree.</info>
+      <return type='void'/>
+      <arg name='output' type='FILE *' info='the file output'/>
+      <arg name='schema' type='xmlRelaxNGPtr' info='a schema structure'/>
+    </function>
+    <function name='xmlRelaxNGFree' file='relaxng'>
+      <info>Deallocate a RelaxNG structure.</info>
+      <return type='void'/>
+      <arg name='schema' type='xmlRelaxNGPtr' info='a schema structure'/>
+    </function>
+    <function name='xmlRelaxNGFreeParserCtxt' file='relaxng'>
+      <info>Free the resources associated to the schema parser context</info>
+      <return type='void'/>
+      <arg name='ctxt' type='xmlRelaxNGParserCtxtPtr' info='the schema parser context'/>
+    </function>
+    <function name='xmlRelaxNGFreeValidCtxt' file='relaxng'>
+      <info>Free the resources associated to the schema validation context</info>
+      <return type='void'/>
+      <arg name='ctxt' type='xmlRelaxNGValidCtxtPtr' info='the schema validation context'/>
+    </function>
+    <function name='xmlRelaxNGNewMemParserCtxt' file='relaxng'>
+      <info>Create an XML RelaxNGs parse context for that memory buffer expected to contain an XML RelaxNGs file.</info>
+      <return type='xmlRelaxNGParserCtxtPtr' info='the parser context or NULL in case of error'/>
+      <arg name='buffer' type='const char *' info='a pointer to a char array containing the schemas'/>
+      <arg name='size' type='int' info='the size of the array'/>
+    </function>
+    <function name='xmlRelaxNGNewParserCtxt' file='relaxng'>
+      <info>Create an XML RelaxNGs parse context for that file/resource expected to contain an XML RelaxNGs file.</info>
+      <return type='xmlRelaxNGParserCtxtPtr' info='the parser context or NULL in case of error'/>
+      <arg name='URL' type='const char *' info='the location of the schema'/>
+    </function>
+    <function name='xmlRelaxNGNewValidCtxt' file='relaxng'>
+      <info>Create an XML RelaxNGs validation context based on the given schema</info>
+      <return type='xmlRelaxNGValidCtxtPtr' info='the validation context or NULL in case of error'/>
+      <arg name='schema' type='xmlRelaxNGPtr' info='a precompiled XML RelaxNGs'/>
+    </function>
+    <function name='xmlRelaxNGParse' file='relaxng'>
+      <info>parse a schema definition resource and build an internal XML Shema struture which can be used to validate instances. *WARNING* this interface is highly subject to change</info>
+      <return type='xmlRelaxNGPtr' info='the internal XML RelaxNG structure built from the resource or NULL in case of error'/>
+      <arg name='ctxt' type='xmlRelaxNGParserCtxtPtr' info='a Relax-NG parser context'/>
+    </function>
+    <function name='xmlRelaxNGSetParserErrors' file='relaxng'>
+      <info>Set the callback functions used to handle errors for a validation context</info>
+      <return type='void'/>
+      <arg name='ctxt' type='xmlRelaxNGParserCtxtPtr' info='a Relax-NG validation context'/>
+      <arg name='err' type='xmlRelaxNGValidityErrorFunc' info='the error callback'/>
+      <arg name='warn' type='xmlRelaxNGValidityWarningFunc' info='the warning callback'/>
+      <arg name='ctx' type='void *' info='contextual data for the callbacks'/>
+    </function>
+    <function name='xmlRelaxNGSetValidErrors' file='relaxng'>
+      <info>Set the error and warning callback informations</info>
+      <return type='void'/>
+      <arg name='ctxt' type='xmlRelaxNGValidCtxtPtr' info='a Relax-NG validation context'/>
+      <arg name='err' type='xmlRelaxNGValidityErrorFunc' info='the error function'/>
+      <arg name='warn' type='xmlRelaxNGValidityWarningFunc' info='the warning function'/>
+      <arg name='ctx' type='void *' info='the functions context'/>
+    </function>
+    <function name='xmlRelaxNGValidateDoc' file='relaxng'>
+      <info>Validate a document tree in memory.</info>
+      <return type='int' info='0 if the document is valid, a positive error code number otherwise and -1 in case of internal or API error.'/>
+      <arg name='ctxt' type='xmlRelaxNGValidCtxtPtr' info='a Relax-NG validation context'/>
+      <arg name='doc' type='xmlDocPtr' info='a parsed document tree'/>
+    </function>
+    <function name='xmlRelaxNGValidateStream' file='relaxng'>
+      <info></info>
+      <return type='int' info=''/>
+      <arg name='ctxt' type='xmlRelaxNGValidCtxtPtr' info=''/>
+      <arg name='input' type='xmlParserInputBufferPtr' info=''/>
+      <arg name='enc' type='xmlCharEncoding' info=''/>
+      <arg name='sax' type='xmlSAXHandlerPtr' info=''/>
+      <arg name='user_data' type='void *' info=''/>
+    </function>
+    <functype name='xmlRelaxNGValidityErrorFunc' file='relaxng'>
+      <info></info>
+      <return type='void'/>
+      <arg name='ctx' type='void *' info=''/>
+      <arg name='msg' type='const char *' info=''/>
+      <arg name='...' type='...' info=''/>
+    </functype>
+    <functype name='xmlRelaxNGValidityWarningFunc' file='relaxng'>
+      <info></info>
+      <return type='void'/>
+      <arg name='ctx' type='void *' info=''/>
+      <arg name='msg' type='const char *' info=''/>
+      <arg name='...' type='...' info=''/>
+    </functype>
     <function name='xmlRemoveID' file='valid'>
       <info>Remove the given attribute from the ID table maintained internally.</info>
       <return type='int' info='-1 if the lookup failed and 0 otherwise'/>
@@ -7508,7 +7734,7 @@ actually an xmlCharEncoding'/>
       <arg name='encoding' type='const char *' info='the encoding if any assuming the I/O layer handles the trancoding'/>
     </function>
     <function name='xmlSaveFormatFile' file='tree'>
-      <info>Dump an XML document to a file. Will use compression if compiled in and enabled. If @filename is &quot;-&quot; the stdout file is used. If @format is set then the document will be indented on output.</info>
+      <info>Dump an XML document to a file. Will use compression if compiled in and enabled. If @filename is &quot;-&quot; the stdout file is used. If @format is set then the document will be indented on output. Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called</info>
       <return type='int' info='the number of bytes written or -1 in case of failure.'/>
       <arg name='filename' type='const char *' info='the filename (or URL)'/>
       <arg name='cur' type='xmlDocPtr' info='the document'/>
@@ -7516,7 +7742,7 @@ actually an xmlCharEncoding'/>
     </function>
     <function name='xmlSaveFormatFileEnc' file='tree'>
       <info>Dump an XML document to a file or an URL.</info>
-      <return type='int' info='the number of bytes written or -1 in case of error.'/>
+      <return type='int' info='the number of bytes written or -1 in case of error. Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called'/>
       <arg name='filename' type='const char *' info='the filename or URL to output'/>
       <arg name='cur' type='xmlDocPtr' info='the document being saved'/>
       <arg name='encoding' type='const char *' info='the name of the encoding to use or NULL.'/>
@@ -7524,7 +7750,7 @@ actually an xmlCharEncoding'/>
     </function>
     <function name='xmlSaveFormatFileTo' file='tree'>
       <info>Dump an XML document to an I/O buffer.</info>
-      <return type='int' info='the number of bytes written or -1 in case of failure.'/>
+      <return type='int' info='the number of bytes written or -1 in case of failure. Note that @format = 1 provide node indenting only if xmlIndentTreeOutput = 1 or xmlKeepBlanksDefault(0) was called'/>
       <arg name='buf' type='xmlOutputBufferPtr' info='an output I/O buffer'/>
       <arg name='cur' type='xmlDocPtr' info='the document'/>
       <arg name='encoding' type='const char *' info='the encoding if any assuming the I/O layer handles the trancoding'/>
@@ -7969,6 +8195,14 @@ actually an xmlCharEncoding'/>
       <return type='int' info='the depth or -1 in case of error'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
     </function>
+    <functype name='xmlTextReaderErrorFunc' file='xmlreader'>
+      <info></info>
+      <return type='void'/>
+      <arg name='arg' type='void *' info=''/>
+      <arg name='msg' type='const char *' info=''/>
+      <arg name='severity' type='xmlParserSeverities' info=''/>
+      <arg name='locator' type='xmlTextReaderLocatorPtr' info=''/>
+    </functype>
     <function name='xmlTextReaderGetAttribute' file='xmlreader'>
       <info>Provides the value of the attribute with the specified qualified name.</info>
       <return type='xmlChar *' info='a string containing the value of the specified attribute, or NULL in case of error. The string must be deallocated by the caller.'/>
@@ -7987,6 +8221,13 @@ actually an xmlCharEncoding'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
       <arg name='localName' type='const xmlChar *' info='the local name of the attribute.'/>
       <arg name='namespaceURI' type='const xmlChar *' info='the namespace URI of the attribute.'/>
+    </function>
+    <function name='xmlTextReaderGetErrorHandler' file='xmlreader'>
+      <info>Retrieve the error callback function and user argument.</info>
+      <return type='void'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='f' type='xmlTextReaderErrorFunc *' info='the callback function or NULL is no callback has been registered'/>
+      <arg name='arg' type='void **' info='a user argument'/>
     </function>
     <function name='xmlTextReaderGetParserProp' file='xmlreader'>
       <info>Read the parser internal property.</info>
@@ -8023,6 +8264,16 @@ actually an xmlCharEncoding'/>
       <info>The local name of the node.</info>
       <return type='xmlChar *' info='the local name or NULL if not available'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderLocatorBaseURI' file='xmlreader'>
+      <info>Obtain the base URI for the given locator.</info>
+      <return type='xmlChar *' info='the base URI or NULL in case of error.'/>
+      <arg name='locator' type='xmlTextReaderLocatorPtr' info='the xmlTextReaderLocatorPtr used'/>
+    </function>
+    <function name='xmlTextReaderLocatorLineNumber' file='xmlreader'>
+      <info>Obtain the line number for the given locator.</info>
+      <return type='int' info='the line number or -1 in case of error.'/>
+      <arg name='locator' type='xmlTextReaderLocatorPtr' info='the xmlTextReaderLocatorPtr used'/>
     </function>
     <function name='xmlTextReaderLookupNamespace' file='xmlreader'>
       <info>Resolves a namespace prefix in the scope of the current element.</info>
@@ -8123,6 +8374,13 @@ actually an xmlCharEncoding'/>
       <info>Reads the contents of an element or a text node as a string.</info>
       <return type='xmlChar *' info='a string containing the contents of the Element or Text node, or NULL if the reader is positioned on any other type of node. The string must be deallocated by the caller.'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderSetErrorHandler' file='xmlreader'>
+      <info>Register a callback function that will be called on error and warnings.  If @f is NULL, the default error and warning handlers are restored.</info>
+      <return type='void'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='f' type='xmlTextReaderErrorFunc' info='the callback function to call on error and warnings'/>
+      <arg name='arg' type='void *' info='a user argument to pass to the callback function'/>
     </function>
     <function name='xmlTextReaderSetParserProp' file='xmlreader'>
       <info>Change the parser processing behaviour by changing some of its internal properties. Note that some properties can only be changed before any read has been done.</info>
@@ -8980,6 +9238,24 @@ actually an xmlCharEncoding'/>
       <arg name='doc' type='xmlDocPtr' info='a document instance'/>
       <arg name='elem' type='xmlElementPtr' info='an element definition'/>
     </function>
+    <function name='xmlValidateNCName' file='tree'>
+      <info>Check that a value conforms to the lexical space of NCName</info>
+      <return type='int' info='0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.'/>
+      <arg name='value' type='const xmlChar *' info='the value to check'/>
+      <arg name='space' type='int' info='allow spaces in front and end of the string'/>
+    </function>
+    <function name='xmlValidateNMToken' file='tree'>
+      <info>Check that a value conforms to the lexical space of NMToken</info>
+      <return type='int' info='0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.'/>
+      <arg name='value' type='const xmlChar *' info='the value to check'/>
+      <arg name='space' type='int' info='allow spaces in front and end of the string'/>
+    </function>
+    <function name='xmlValidateName' file='tree'>
+      <info>Check that a value conforms to the lexical space of Name</info>
+      <return type='int' info='0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.'/>
+      <arg name='value' type='const xmlChar *' info='the value to check'/>
+      <arg name='space' type='int' info='allow spaces in front and end of the string'/>
+    </function>
     <function name='xmlValidateNameValue' file='valid'>
       <info>Validate that the given value match Name production</info>
       <return type='int' info='1 if valid or 0 otherwise'/>
@@ -9062,6 +9338,12 @@ actually an xmlCharEncoding'/>
       <arg name='doc' type='xmlDocPtr' info='a document instance'/>
       <arg name='elem' type='xmlNodePtr' info='an element instance'/>
       <arg name='qname' type='const xmlChar *' info='the qualified name as appearing in the serialization'/>
+    </function>
+    <function name='xmlValidateQName' file='tree'>
+      <info>Check that a value conforms to the lexical space of QName</info>
+      <return type='int' info='0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.'/>
+      <arg name='value' type='const xmlChar *' info='the value to check'/>
+      <arg name='space' type='int' info='allow spaces in front and end of the string'/>
     </function>
     <function name='xmlValidateRoot' file='valid'>
       <info>Try to validate a the root element basically it does the following check as described by the XML-1.0 recommendation: - [ VC: Root Element Type ] it doesn&apos;t try to recurse or apply other check to the element</info>
@@ -9196,7 +9478,7 @@ actually an xmlCharEncoding'/>
     </function>
     <function name='xmlXPathCompile' file='xpath'>
       <info>Compile an XPath expression</info>
-      <return type='xmlXPathCompExprPtr' info='the xmlXPathObjectPtr resulting from the evaluation or NULL. the caller has to free the object.'/>
+      <return type='xmlXPathCompExprPtr' info='the xmlXPathCompExprPtr resulting from the compilation or NULL. the caller has to free the object.'/>
       <arg name='str' type='const xmlChar *' info='the XPath expression'/>
     </function>
     <function name='xmlXPathCompiledEval' file='xpath'>

@@ -18,6 +18,7 @@
 #include <libxml/xmlregexp.h>
 #include <libxml/xmlautomata.h>
 #include <libxml/xmlreader.h>
+#include <libxml/relaxng.h>
 
 /**
  * ATTRIBUTE_UNUSED:
@@ -77,6 +78,7 @@ typedef struct {
     xmlCatalogPtr obj;
 } Pycatalog_Object;
 
+#ifdef LIBXML_REGEXP_ENABLED
 #define PyxmlReg_Get(v) (((v) == Py_None) ? NULL : \
         (((PyxmlReg_Object *)(v))->obj))
 
@@ -84,6 +86,7 @@ typedef struct {
     PyObject_HEAD
     xmlRegexpPtr obj;
 } PyxmlReg_Object;
+#endif /* LIBXML_REGEXP_ENABLED */
 
 #define PyxmlTextReader_Get(v) (((v) == Py_None) ? NULL : \
         (((PyxmlTextReader_Object *)(v))->obj))
@@ -92,6 +95,14 @@ typedef struct {
     PyObject_HEAD
     xmlTextReaderPtr obj;
 } PyxmlTextReader_Object;
+
+#define PyxmlTextReaderLocator_Get(v) (((v) == Py_None) ? NULL : \
+        (((PyxmlTextReaderLocator_Object *)(v))->obj))
+
+typedef struct {
+    PyObject_HEAD
+    xmlTextReaderLocatorPtr obj;
+} PyxmlTextReaderLocator_Object;
 
 #define PyURI_Get(v) (((v) == Py_None) ? NULL : \
 	(((PyURI_Object *)(v))->obj))
@@ -121,6 +132,32 @@ typedef struct {
 #define PyFile_Get(v) (((v) == Py_None) ? NULL : \
 	(PyFile_Check(v) ? (PyFile_AsFile(v)) : stdout))
 
+#ifdef LIBXML_SCHEMAS_ENABLED
+typedef struct {
+    PyObject_HEAD
+    xmlRelaxNGPtr obj;
+} PyrelaxNgSchema_Object;
+
+#define PyrelaxNgSchema_Get(v) (((v) == Py_None) ? NULL : \
+	(((PyrelaxNgSchema_Object *)(v))->obj))
+
+typedef struct {
+    PyObject_HEAD
+    xmlRelaxNGParserCtxtPtr obj;
+} PyrelaxNgParserCtxt_Object;
+
+#define PyrelaxNgParserCtxt_Get(v) (((v) == Py_None) ? NULL : \
+	(((PyrelaxNgParserCtxt_Object *)(v))->obj))
+
+typedef struct {
+    PyObject_HEAD
+    xmlRelaxNGValidCtxtPtr obj;
+} PyrelaxNgValidCtxt_Object;
+
+#define PyrelaxNgValidCtxt_Get(v) (((v) == Py_None) ? NULL : \
+	(((PyrelaxNgValidCtxt_Object *)(v))->obj))
+
+#endif /* LIBXML_SCHEMAS_ENABLED */
 
 PyObject * libxml_intWrap(int val);
 PyObject * libxml_longWrap(long val);
@@ -145,7 +182,15 @@ PyObject * libxml_xmlCatalogPtrWrap(xmlCatalogPtr obj);
 PyObject * libxml_xmlURIPtrWrap(xmlURIPtr uri);
 PyObject * libxml_xmlOutputBufferPtrWrap(xmlOutputBufferPtr buffer);
 PyObject * libxml_xmlParserInputBufferPtrWrap(xmlParserInputBufferPtr buffer);
+#ifdef LIBXML_REGEXP_ENABLED
 PyObject * libxml_xmlRegexpPtrWrap(xmlRegexpPtr regexp);
+#endif /* LIBXML_REGEXP_ENABLED */
 PyObject * libxml_xmlTextReaderPtrWrap(xmlTextReaderPtr reader);
+PyObject * libxml_xmlTextReaderLocatorPtrWrap(xmlTextReaderLocatorPtr locator);
 
 xmlXPathObjectPtr libxml_xmlXPathObjectPtrConvert(PyObject * obj);
+#ifdef LIBXML_SCHEMAS_ENABLED
+PyObject * libxml_xmlRelaxNGPtrWrap(xmlRelaxNGPtr ctxt);
+PyObject * libxml_xmlRelaxNGParserCtxtPtrWrap(xmlRelaxNGParserCtxtPtr ctxt);
+PyObject * libxml_xmlRelaxNGValidCtxtPtrWrap(xmlRelaxNGValidCtxtPtr valid);
+#endif /* LIBXML_SCHEMAS_ENABLED */

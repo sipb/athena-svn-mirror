@@ -101,6 +101,7 @@ RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
 RELDATE = @RELDATE@
 RM = @RM@
+STATIC_BINARIES = @STATIC_BINARIES@
 STRIP = @STRIP@
 TAR = @TAR@
 TEST_REGEXPS = @TEST_REGEXPS@
@@ -160,7 +161,10 @@ PYTESTS = \
     regexp.py	\
     reader.py	\
     reader2.py	\
-    reader3.py
+    reader3.py	\
+    ctxterror.py\
+    readererr.py\
+    relaxng.py
 
 
 XMLS = \

@@ -221,7 +221,7 @@ else:
 setup (name = "libxml2-python",
        # On *nix, the version number is created from setup.py.in
        # On windows, it is set by configure.js
-       version = "2.5.1",
+       version = "2.5.4",
        description = descr,
        author = "Daniel Veillard",
        author_email = "veillard@redhat.com",
