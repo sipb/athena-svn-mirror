@@ -1,6 +1,10 @@
 /******************************************************************************
  * [ maze ] ...
  *
+ * modified:  [ 1-04-00 ]  Johannes Keukelaar <johannes@nada.kth.se>
+ *              Added -ignorant option (not the default) to remove knowlege
+ *              of the direction in which the exit lies.
+ *
  * modified:  [ 6-28-98 ]  Zack Weinberg <zack@rabi.phys.columbia.edu>
  *
  *              Made the maze-solver somewhat more intelligent.  There are
@@ -80,7 +84,7 @@
 #include "screenhack.h"
 #include "erase.h"
 
-#define XROGER
+#define XSCREENSAVER_LOGO
 
 static int solve_delay, pre_solve_delay, post_solve_delay;
 
@@ -129,9 +133,9 @@ static int solve_delay, pre_solve_delay, post_solve_delay;
 
 static int logo_x, logo_y;
 
-#ifdef XROGER
-# define logo_width  128
-# define logo_height 128
+#ifdef XSCREENSAVER_LOGO
+# define logo_width  50
+# define logo_height 50
 #else
 # include  <X11/bitmaps/xlogo64>
 # define logo_width xlogo64_width
@@ -159,7 +163,7 @@ static GC	gc, cgc, tgc, sgc, ugc, logo_gc, erase_gc;
 static Pixmap	logo_map;
 
 static int	x = 0, y = 0, restart = 0, stop = 1, state = 1, max_length;
-static int      sync_p, bridge_p;
+static int      sync_p, bridge_p, ignorant_p;
 
 static int
 check_events (void)                        /* X event handler [ rhess ] */
@@ -1124,11 +1128,23 @@ draw_maze_border (void)                         /* draw the maze outline */
       Window r;
       int x, y;
       unsigned int w, h, bw, d;
+
+      /* round up to grid size */
+      int ww = ((logo_width  / grid_width) + 1)  * grid_width;
+      int hh = ((logo_height / grid_height) + 1) * grid_height;
+
       XGetGeometry (dpy, logo_map, &r, &x, &y, &w, &h, &bw, &d);
-      XCopyPlane (dpy, logo_map, win, logo_gc,
-		  0, 0, w, h,
-		  border_x + 3 + grid_width * logo_x,
-		  border_y + 3 + grid_height * logo_y, 1);
+      if (d == 1)
+        XCopyPlane (dpy, logo_map, win, logo_gc,
+                    0, 0, w, h,
+                    border_x + 3 + grid_width  * logo_x + ((ww - w) / 2),
+                    border_y + 3 + grid_height * logo_y + ((hh - h) / 2),
+                    1);
+      else
+        XCopyArea (dpy, logo_map, win, logo_gc,
+                   0, 0, w, h,
+                   border_x + 3 + grid_width  * logo_x + ((ww - w) / 2),
+                   border_y + 3 + grid_height * logo_y + ((hh - h) / 2));
     }
   draw_solid_square (start_x, start_y, WALL_TOP >> start_dir, tgc);
   draw_solid_square (end_x, end_y, WALL_TOP >> end_dir, tgc);
@@ -1434,44 +1450,60 @@ solve_maze (void)                     /* solve it with graphical feedback */
 	
 	if(!ways)
 	    goto backtrack;
-      
-	x = path[i].x - start_x;
-	y = path[i].y - start_y;
-	/* choice one */
-	if(abs(y) <= abs(x))
-	    dir = (x > 0) ? WALL_LEFT : WALL_RIGHT;
-	else
-	    dir = (y > 0) ? WALL_TOP : WALL_BOTTOM;
-	
-	if(dir & ways)
-	    goto found;
-	
-	/* choice two */
-	switch(dir)
-	{
-	case WALL_LEFT:
-	case WALL_RIGHT:
-	    dir = (y > 0) ? WALL_TOP : WALL_BOTTOM; break;
-	case WALL_TOP:
-	case WALL_BOTTOM:
-	    dir = (x > 0) ? WALL_LEFT : WALL_RIGHT;
-	}
-	
-	if(dir & ways)
-	    goto found;
-	
-	/* choice three */
-	
-	dir = (dir << 2 & WALL_ANY) | (dir >> 2 & WALL_ANY);
-	if(dir & ways)
-	    goto found;
-	
-	/* choice four */
-	dir = ways;
-	if(!dir)
-	    goto backtrack;
 
-    found:
+	if (!ignorant_p)
+	  {
+	    x = path[i].x - start_x;
+	    y = path[i].y - start_y;
+	    /* choice one */
+	    if(abs(y) <= abs(x))
+	      dir = (x > 0) ? WALL_LEFT : WALL_RIGHT;
+	    else
+	      dir = (y > 0) ? WALL_TOP : WALL_BOTTOM;
+	    
+	    if(dir & ways)
+	      goto found;
+	    
+	    /* choice two */
+	    switch(dir)
+	      {
+	      case WALL_LEFT:
+	      case WALL_RIGHT:
+		dir = (y > 0) ? WALL_TOP : WALL_BOTTOM; break;
+	      case WALL_TOP:
+	      case WALL_BOTTOM:
+		dir = (x > 0) ? WALL_LEFT : WALL_RIGHT;
+	      }
+	    
+	    if(dir & ways)
+	      goto found;
+	    
+	    /* choice three */
+	    
+	    dir = (dir << 2 & WALL_ANY) | (dir >> 2 & WALL_ANY);
+	    if(dir & ways)
+	      goto found;
+	    
+	    /* choice four */
+	    dir = ways;
+	    if(!dir)
+	      goto backtrack;
+	    
+	  found: ;
+	  }
+	else
+	  {
+	    if(ways&WALL_TOP)
+	      dir = WALL_TOP;
+	    else if(ways&WALL_LEFT)
+	      dir = WALL_LEFT;
+	    else if(ways&WALL_BOTTOM)
+	      dir = WALL_BOTTOM;
+	    else if(ways&WALL_RIGHT)
+	      dir = WALL_RIGHT;
+	    else
+	      goto backtrack;
+	  }
 	bt = 0;
 	ways &= ~dir;  /* tried this one */
 	
@@ -1498,7 +1530,7 @@ solve_maze (void)                     /* solve it with graphical feedback */
 	    return;
 	}
 
-	if(!bt)
+	if(!bt && !ignorant_p)
 	    find_dead_regions();
 	bt = 1;
 	from = path[i-1].dir;
@@ -1558,13 +1590,12 @@ char *defaults[] = {
   "*maxLength:  5",
   "*syncDraw:   False",
   "*bridge:     False",
-#ifdef XROGER
-  "*logoColor:	red3",
-#endif
   0
 };
 
 XrmOptionDescRec options[] = {
+  { "-ignorant",        ".ignorant",    XrmoptionNoArg, "True" },
+  { "-no-ignorant",     ".ignorant",    XrmoptionNoArg, "False" },
   { "-grid-size",	".gridSize",	XrmoptionSepArg, 0 },
   { "-solve-delay",	".solveDelay",	XrmoptionSepArg, 0 },
   { "-pre-delay",	".preDelay",	XrmoptionSepArg, 0 },
@@ -1580,17 +1611,13 @@ XrmOptionDescRec options[] = {
   { 0, 0, 0, 0 }
 };
 
-#ifdef XROGER
-extern void skull (Display *, Window, GC, GC, int, int, int, int);
-#endif
-
 void
 screenhack(Display *display, Window window)
 {
   Pixmap gray;
   int size, root, generator, this_gen;
   XWindowAttributes xgwa;
-  unsigned long bg, fg, pfg, pbg, lfg, sfg, ufg;
+  unsigned long bg, fg, pfg, pbg, sfg, ufg;
 
   size = get_integer_resource ("gridSize", "Dimension");
   root = get_boolean_resource("root", "Boolean");
@@ -1600,6 +1627,7 @@ screenhack(Display *display, Window window)
   generator = get_integer_resource("generator", "Integer");
   max_length = get_integer_resource("maxLength", "Integer");
   bridge_p = get_boolean_resource("bridge", "Boolean");
+  ignorant_p = get_boolean_resource("ignorant", "Boolean");
 
   if (size < 2) size = 7 + (random () % 30);
   grid_width = grid_height = size;
@@ -1635,17 +1663,10 @@ screenhack(Display *display, Window window)
 
   bg  = get_pixel_resource ("background","Background", dpy, xgwa.colormap);
   fg  = get_pixel_resource ("foreground","Foreground", dpy, xgwa.colormap);
-  lfg = get_pixel_resource ("logoColor", "Foreground", dpy, xgwa.colormap);
   pfg = get_pixel_resource ("liveColor", "Foreground", dpy, xgwa.colormap);
   pbg = get_pixel_resource ("deadColor", "Foreground", dpy, xgwa.colormap);
   sfg = get_pixel_resource ("skipColor", "Foreground", dpy, xgwa.colormap);
   ufg = get_pixel_resource ("surroundColor", "Foreground", dpy, xgwa.colormap);
-  if (mono_p) lfg = pfg = fg;
-
-  if (lfg == bg)
-    lfg = ((bg == WhitePixel (dpy, DefaultScreen (dpy)))
-	   ? BlackPixel (dpy, DefaultScreen (dpy))
-	   : WhitePixel (dpy, DefaultScreen (dpy)));
 
   XSetForeground (dpy, gc, fg);
   XSetBackground (dpy, gc, bg);
@@ -1657,7 +1678,7 @@ screenhack(Display *display, Window window)
   XSetBackground (dpy, sgc, bg);
   XSetForeground (dpy, ugc, ufg);
   XSetBackground (dpy, ugc, bg);
-  XSetForeground (dpy, logo_gc, lfg);
+  XSetForeground (dpy, logo_gc, fg);
   XSetBackground (dpy, logo_gc, bg);
   XSetForeground (dpy, erase_gc, bg);
   XSetBackground (dpy, erase_gc, bg);
@@ -1669,23 +1690,13 @@ screenhack(Display *display, Window window)
   XSetStipple (dpy, ugc, gray);
   XSetFillStyle (dpy, ugc, FillOpaqueStippled);
   
-#ifdef XROGER
+#ifdef XSCREENSAVER_LOGO
   {
-    int w, h;
-    XGCValues gcv;
-    GC draw_gc, erase_gc;
-    /* round up to grid size */
-    w = ((logo_width  / grid_width) + 1)  * grid_width;
-    h = ((logo_height / grid_height) + 1) * grid_height;
-    logo_map = XCreatePixmap (dpy, win, w, h, 1);
-    gcv.foreground = 1L;
-    draw_gc = XCreateGC (dpy, logo_map, GCForeground, &gcv);
-    gcv.foreground = 0L;
-    erase_gc= XCreateGC (dpy, logo_map, GCForeground, &gcv);
-    XFillRectangle (dpy, logo_map, erase_gc, 0, 0, w, h);
-    skull (dpy, logo_map, draw_gc, erase_gc, 5, 0, w-10, h-10);
-    XFreeGC (dpy, draw_gc);
-    XFreeGC (dpy, erase_gc);
+    unsigned long *pixels; /* ignored - unfreed */
+    int npixels;
+    logo_map = xscreensaver_logo (dpy, win, xgwa.colormap, bg,
+                                  &pixels, &npixels,
+                                  logo_width > 150);
   }
 #else
   if  (!(logo_map = XCreateBitmapFromData (dpy, win, logo_bits,

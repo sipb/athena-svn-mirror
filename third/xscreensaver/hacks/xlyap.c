@@ -599,13 +599,13 @@ main_event(void)
 static int
 complyap(void)
 {
-  register i, bindex;
+  int i, bindex;
   double total, prod, x, dx, r;
 
   if (!run)
     return TRUE;
   a += a_inc;
-  if (a >= max_a)
+  if (a >= max_a) {
     if (sendpoint(lyapunov) == TRUE)
       return FALSE;
     else {
@@ -614,6 +614,7 @@ complyap(void)
 	save_to_file();
       return TRUE;
     }
+  }
   if (b >= max_b) {
     FlushBuffer();
     if (savefile)

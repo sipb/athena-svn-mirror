@@ -59,7 +59,8 @@ int timewait=40000;
 
 #define frac(argument) argument-floor(argument)
 
-#define abs(x) ((x)<0.0 ? -(x) : (x))
+#undef ABS
+#define ABS(x) ((x)<0.0 ? -(x) : (x))
 
 static Colormap cmap;
 /* static XColor gray1; */
@@ -209,7 +210,7 @@ initColor (double r, double g, double b)
 {
   int n,n1;
   unsigned long pixels[12];
-  long dummy;
+  unsigned long dummy;
   
   cmap = xgwa.colormap;
   
@@ -293,7 +294,7 @@ initialize (void)
     if (s && *s)
       {
         double hh, ss, vv;
-        if (3 == sscanf (s, "%lf %lf %lf", &hh, &ss, &vv, &dummy)) {
+        if (3 == sscanf (s, "%lf %lf %lf %c", &hh, &ss, &vv, &dummy)) {
           hue = hh, sat = ss, val = vv;
           hsv2rgb(hue,sat,val,&r,&g,&b);
         }
@@ -512,7 +513,7 @@ fill_kugel(int i, Pixmap buf, int setcol)
 {
   double ra;
   int m,col,inc=1,inr=3,d;
-  d=(int)((abs(kugeln[i].r1)*2));
+  d=(int)((ABS(kugeln[i].r1)*2));
   if (d==0) d=1;
   
 #ifdef FASTDRAW
@@ -533,7 +534,7 @@ fill_kugel(int i, Pixmap buf, int setcol)
   else
 #endif
     {
-      if(abs(kugeln[i].r1)<6.0) inr=9;
+      if(ABS(kugeln[i].r1)<6.0) inr=9;
       
       for (m=0;m<=28;m+=inr)
 	{
@@ -816,7 +817,8 @@ screenhack (Display *d, Window w)
 {
   Window junk_win,in_win;
   
-  int px,py,junk,kb/*,wai*/;
+  int px,py,junk/*,wai*/;
+  unsigned int kb;
 /*  int act,act1,tc;*/
   double vnorm;
   /* double var=0.0; */

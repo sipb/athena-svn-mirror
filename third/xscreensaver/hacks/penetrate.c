@@ -19,11 +19,16 @@
  * high score is in the bottom left. Start with -smart to have the computer
  * player skip the learning process.
 
+ Version: 0.2
+ -- fixed an AI bug that was keeping the computer player a tad weak
+ Version: 0.1
+ -- first release
+
  */
 
 #include "screenhack.h"
 
-#define kSleepTime 10000
+#define kSleepTime 10000 
 
 #define font_height(font)	  	(font->ascent + font->descent)
 #define FONT_NAME			"-*-times-*-*-*-*-80-*-*-*-*-*-*-*"
@@ -87,6 +92,7 @@ typedef struct {
   int startx, starty;
   int endx, endy;
   int oldx, oldy;
+  int oldx2, oldy2;
   float velx, vely, fposx, fposy;
   float lenMul;
   XColor color;
@@ -191,6 +197,9 @@ static void launch (int xlim, int ylim,
   }
 }
 
+#define kExpHelp 0.2
+#define kSpeedDiff 3.5
+#define kMaxToGround 0.75
 static int fire(int xlim, int ylim,
 	Display *dpy, Window window, Colormap cmap)
 {
@@ -246,6 +255,9 @@ static int fire(int xlim, int ylim,
 		continue;
 	 if (choosy && (city[mis->dcity].alive == 0))
 		continue;
+	 ey = mis->starty + ((float) (mis->endy - mis->starty)) * (mis->pos + kExpHelp + (1.0 - mis->pos) / kSpeedDiff);
+	 if (ey > ylim * kMaxToGround)
+		continue;  /* too far down */
 	 cnt++;
 	 suitor[j] = 1;
   }
@@ -300,20 +312,20 @@ static int fire(int xlim, int ylim,
 		}
   m->startx = city[dcity].x;
   m->starty = ylim;
-#define kExpHelp 0.2
-#define kSpeedDiff 3.5
   ex = mis->startx + ((float) (mis->endx - mis->startx)) * (mis->pos + kExpHelp + (1.0 - mis->pos) / kSpeedDiff);
   ey = mis->starty + ((float) (mis->endy - mis->starty)) * (mis->pos + kExpHelp + (1.0 - mis->pos) / kSpeedDiff);
   m->endx = ex + random() % 16 - 8 + (random() % aim) - aim / 2;
   m->endy = ey + random() % 16 - 8 + (random() % aim) - aim / 2;
-  if (ey > ylim * 0.75)
+  if (ey > ylim * kMaxToGround)
 	 return 0;  /* too far down */
   mis->enemies++;
   m->target = misnum;
   m->x = m->startx;
   m->y = m->starty;
-  m->oldx = m->x;
-  m->oldy = m->y;
+  m->oldx = -1;
+  m->oldy = -1;
+  m->oldx2 = -1;
+  m->oldy2 = -1;
   m->fposx = m->x;
   m->fposy = m->y;
   dx = (m->endx - m->x);
@@ -533,11 +545,25 @@ static void LoopMissiles(Display *dpy, Window window, Colormap cmap, int xlim, i
 	 }
 
 	 if (m->alive == 0) {
+		int old_x, old_y;
+		float my_pos;
 		/* we just died */
 		Explode(m->x, m->y, kBoomRad + max, m->color, 0);
-		XSetLineAttributes(dpy, erase_gc, 5, 0,0,0);
-		XDrawLine(dpy, window, erase_gc,
-					 m->startx, m->starty, m->x, m->y);		
+		XSetLineAttributes(dpy, erase_gc, 4, 0,0,0);
+		/* In a perfect world, we could simply erase a line from
+		   (m->startx, m->starty) to (m->x, m->y). This is not a
+		   perfect world. */
+		old_x = m->startx;
+		old_y = m->starty;
+		my_pos = kMissileSpeed;
+		while (my_pos <= m->pos) {
+			m->x = m->startx + ((float) (m->endx - m->startx)) * my_pos;
+			m->y = m->starty + ((float) (m->endy - m->starty)) * my_pos;
+			XDrawLine(dpy, window, erase_gc, old_x, old_y, m->x, m->y);
+			old_x = m->x;
+			old_y = m->y;
+			my_pos += kMissileSpeed;
+		}
 	 }
   }
 }
@@ -550,6 +576,13 @@ static void LoopLasers(Display *dpy, Window window, Colormap cmap, int xlim, int
 	 Laser *m = &laser[i];
 	 if (!m->alive)
 		continue;
+
+	 if (m->oldx != -1) {
+		 XSetLineAttributes(dpy, erase_gc, 2, 0,0,0);
+		 XDrawLine(dpy, window, erase_gc,
+				  m->oldx2, m->oldy2, m->oldx, m->oldy);
+	 }
+
 	 m->fposx += m->velx;
 	 m->fposy += m->vely;
 	 m->x = m->fposx;
@@ -558,9 +591,6 @@ static void LoopLasers(Display *dpy, Window window, Colormap cmap, int xlim, int
 	 x = m->fposx + (-m->velx * m->lenMul);
 	 y = m->fposy + (-m->vely * m->lenMul);
 
-	 XSetLineAttributes(dpy, erase_gc, 4, 0,0,0);
-	 XDrawLine(dpy, window, erase_gc,
-				  x, y, m->oldx, m->oldy);		
 	 m->oldx = x;
 	 m->oldy = y;
 
@@ -568,6 +598,11 @@ static void LoopLasers(Display *dpy, Window window, Colormap cmap, int xlim, int
     XSetForeground (dpy, draw_gc, m->color.pixel);
 	 XDrawLine(dpy, window, draw_gc,
 				  m->x, m->y, x, y);
+
+	 m->oldx2 = m->x;
+	 m->oldy2 = m->y;
+	 m->oldx = x;
+	 m->oldy = y;
 	 
 	 if (m->y < m->endy) {
 		m->alive = 0;
@@ -612,7 +647,7 @@ static void LoopBooms(Display *dpy, Window window, Colormap cmap, int xlim, int 
 	 if (!m->alive)
 		continue;
 	 
-	 if (loop & 1)
+	 if (loop & 1) {
 		if (m->outgoing) {
 		  m->rad++;
 		  if (m->rad >= m->max)
@@ -628,6 +663,7 @@ static void LoopBooms(Display *dpy, Window window, Colormap cmap, int xlim, int 
 		  if (m->rad <= 0)
 			 m->alive = 0;
 		}
+	 }
   }
 }
 
@@ -708,7 +744,8 @@ static void NewLevel(Display *dpy, Window window, Colormap cmap, int xlim, int y
 	 width = XTextWidth(font, buf, strlen(buf));
 	 XDrawString(dpy, window, level_gc, xlim / 2 - width / 2, ylim / 2 - font_height(font) / 2,
 					 buf, strlen(buf));
-	 XSync(dpy, True);
+	 XSync(dpy, False);
+         screenhack_handle_events(dpy);
 	 sleep(1);
   }
 
@@ -733,14 +770,17 @@ static void NewLevel(Display *dpy, Window window, Colormap cmap, int xlim, int y
 			 city[i].alive = 1;
 			 AddScore(dpy, window, cmap, xlim, ylim, 100 * level);
 			 DrawCities(dpy, window, cmap, xlim, ylim);
-			 XSync(dpy, True);
+			 XSync(dpy, False);
+                         screenhack_handle_events(dpy);
 			 usleep(kCityPause);
 		  }
 		}
 	 }
 	 else {
 		/* we're dead */
+                screenhack_handle_events(dpy);
 		sleep(3);
+                screenhack_handle_events(dpy);
 		/* start new */
 		gamez++;
 		Improve();
@@ -766,7 +806,8 @@ static void NewLevel(Display *dpy, Window window, Colormap cmap, int xlim, int y
 	 width = XTextWidth(font, buf, strlen(buf));
 	 XDrawString(dpy, window, level_gc, xlim / 2 - width / 2, ylim / 4, buf, strlen(buf));
 	 DrawCities(dpy, window, cmap, xlim, ylim);
-	 XSync(dpy, True);
+	 XSync(dpy, False);
+         screenhack_handle_events(dpy);
 	 sleep(1);
   }
 
@@ -794,7 +835,8 @@ static void NewLevel(Display *dpy, Window window, Colormap cmap, int xlim, int y
 		sprintf(buf, "Bonus Round");
 		width = XTextWidth(font, buf, strlen(buf));
 		XDrawString(dpy, window, level_gc, xlim / 2 - width / 2, ylim / 2 - font_height(font) / 2, buf, strlen(buf));
-		XSync(dpy, True);
+		XSync(dpy, False);
+                screenhack_handle_events(dpy);
 		sleep(1);
 		XFillRectangle(dpy, window, erase_gc,
 							0, 0, xlim, ylim - 100);
@@ -851,6 +893,7 @@ static void penetrate(Display *dpy, Window window, Colormap cmap)
 		if (laser[i].alive)
 		  goto END_CHECK;
 	 /* okay, nothing's alive, start end of level countdown */
+         screenhack_handle_events(dpy);
 	 sleep(kLevelPause);
 	 NewLevel(dpy, window, cmap, xlim, ylim);
 	 return;
@@ -866,7 +909,8 @@ static void penetrate(Display *dpy, Window window, Colormap cmap)
 		lastLaser = loop;
   }
 
-  XSync(dpy, True);
+  XSync(dpy, False);
+  screenhack_handle_events(dpy);
   if (kSleepTime)
 	 usleep(kSleepTime);
 

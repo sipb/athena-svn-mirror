@@ -1,39 +1,95 @@
 #!/bin/sh
 #
-# vidwhacker, for xscreensaver.  Copyright (c) 1998 Jamie Zawinski.
+# vidwhacker, for xscreensaver.  Copyright (c) 1998, 1999 Jamie Zawinski.
+#
+# Permission to use, copy, modify, distribute, and sell this software and its
+# documentation for any purpose is hereby granted without fee, provided that
+# the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  No representations are made about the suitability of this
+# software for any purpose.  It is provided "as is" without express or 
+# implied warranty.
+#
 #
 # This script grabs a frame of video, then uses various pbm filters to
-# munge the image in random nefarious ways, then uses xv to put it on
-# the root window.  This works out really nicely if you just feed some
-# random TV station into it...
+# munge the image in random nefarious ways, then uses xloadimage, xli, or xv
+# to put it on the root window.  This works out really nicely if you just
+# feed some random TV station into it...
 #
 # The video grabbing part is SGI-specific -- if you want to use this on
 # another system, add a new clause to the grab() procedure.
 
 
-# Process command-line args...
+# need perl to generate random numbers -- I don't know another way to do
+# that from a shell script.
+perl=perl
+
 
 onroot=false
 verbose=false
 delay=3
 use_stdin=false
+use_stdout=false
 
 pid=""
-tmp=/tmp/vd$$
+tmp=${TMPDIR:-/tmp}/vidwhacker.$$
 tmp_rgb=$tmp-00000.rgb
 tmp_ppm0=$tmp-0.ppm
 tmp_ppm1=$tmp-1.ppm
 tmp_ppm2=$tmp-2.ppm
 tmp_ppm3=$tmp-3.ppm
 tmp_ppm4=$tmp-4.ppm
+tmp_ppmS=$tmp-S.ppm
 
 
+# Figure out whether to use xloadimage, xli, or xv.
+pick_displayer() {
+  displayer=
+  for prog in xloadimage xli xv ; do
+    IFS=:
+    for p in $PATH; do
+      IFS=
+      if [ "$p" = "" ]; then p=. ; fi
+      if [ -x $p/$prog ]; then
+        displayer=$prog
+        break 2
+      fi
+    done
+  done
+
+  if [ "$displayer" = "xloadimage" ]; then
+    displayer_args="-quiet"
+    displayer_win_args=""
+    displayer_root_args="-onroot"
+  elif [ "$displayer" = "xli" ]; then
+    displayer_args="-quiet"
+    displayer_win_args=""
+    displayer_root_args="-onroot -center -border black"
+  elif [ "$displayer" = "xv" ]; then
+    displayer_args="-quick24"
+    displayer_win_args="-geom +0+0"
+    displayer_root_args="-root -rmode 5 -noresetroot -rfg black -rbg black -viewonly"
+  else
+    echo "$0: neither xli nor xv found on \$PATH"
+    exit -1
+  fi
+}
+
+# Process command-line args
 getargs() {
 
   while [ $# != 0 ]; do
     case "$1" in
+    -display | -disp | -dis | -dpy | -d )
+      shift
+      DISPLAY="$1"
+      export DISPLAY
+      ;;
     -root )
       onroot=true
+      ;;
+    -window )
+      onroot=false
       ;;
     -verbose )
       verbose=true
@@ -41,23 +97,42 @@ getargs() {
     -stdin )
       use_stdin=true
       ;;
+    -stdout )
+      use_stdout=true
+      ;;
+    -delay)
+      shift
+      delay="$1"
+      ;;
     * )
-      echo "usage: $0 [ -root | -verbose | -stdin ]" >&2
+      echo "VidWhacker, Copyright (c) 1999 Jamie Zawinski <jwz@jwz.org>" >&2
+      echo "            http://www.jwz.org/xscreensaver/" >&2
+      echo "" >&2
+      echo "usage: $0 [-display dpy] [-verbose] [-root | -window]" >&2
+      echo "                  [-stdin] [-stdout] [-delay secs]" >&2
       exit 1
       ;;
     esac
     shift
   done
 
-  xvargs="-quick24"
+  pick_displayer
 
   if [ "$onroot" = true ]; then
-    xvargs="$xvargs -root -rmode 5 -noresetroot -rfg black -rbg black -viewonly"
+    displayer_args="$displayer_args $displayer_root_args"
   else
-    xvargs="$xvargs -geom +0+0"
+    displayer_args="$displayer_args $displayer_win_args"
   fi
 
-  screen_width=`xdpyinfo | sed -n 's/.* dimensions: *\([0-9]*\).*/\1/p'`
+
+  screen_width=''
+  if [ "$use_stdout" = false ]; then
+    screen_width=`xdpyinfo 2>/dev/null | 
+        sed -n 's/.* dimensions: *\([0-9]*\).*/\1/p'`
+    if [ "$screen_width" = "" ]; then
+      screen_width=800
+    fi
+  fi
 }
 
 
@@ -67,11 +142,11 @@ clean() {
 
 clean2() {
   clean
-  rm -f $tmp_ppm0
+  rm -f $tmp_ppm0 $tmp_ppmS
 }
 
 
-# Grab a frame of video.
+# Grab a frame of video.  leaves it in $tmp_ppm1.
 #
 grab() {
   uname=`uname`
@@ -95,6 +170,17 @@ grab() {
 
     qcam > $tmp_ppm1
 
+    # Friedrich Delgado Friedrichs says the following works if you have
+    # XawTV installed:
+    #
+    #   streamer -o $tmp_ppm1
+    #
+
+    # James Isaacs says this works for the ATI video capture card:
+    #
+    #   atitv snap $tmp_ppm1
+    #
+
   else
     echo "$0: don't know how to grab video on this OS." >&2
     clean2
@@ -106,15 +192,21 @@ grab() {
 # Use perl to pick a random foreground/background color in pbm's syntax.
 #
 randcolor() {
-  perl -e 'srand; 
-	   printf("#%02x%02x%02x-#%02x%02x%02x",
-		  int(rand()*60),
-		  int(rand()*60),
-		  int(rand()*60),
-		  120+int(rand()*135),
-		  120+int(rand()*135),
-		  120+int(rand()*135))'
+  $perl -e 'srand(time ^ $$);
+            printf("#%02x%02x%02x-#%02x%02x%02x",
+                   int(rand()*60),
+                   int(rand()*60),
+                   int(rand()*60),
+                   120+int(rand()*135),
+                   120+int(rand()*135),
+                   120+int(rand()*135))'
 }
+
+rand() {
+  $perl -e "srand(time ^ $$); print int(rand() * $1)"
+}
+
+
 
 # Frobnicate the image in some random way.
 #
@@ -124,7 +216,7 @@ frob() {
   width=`echo $w_h | awk '{print $1}'`
   height=`echo $w_h | awk '{print $2}'`
 
-  N=`perl -e 'srand; print int(rand() * 17)'`
+  N=`rand 17`
 
   if [ "$verbose" = true ]; then
     echo "mode $N..." >&2
@@ -156,7 +248,7 @@ frob() {
     pnmarith -multiply $tmp_ppm1 $tmp_ppm2
 
   elif [ $N = 6 ]; then
-    N2=`perl -e 'srand; print int(rand() * 3)'`
+    N2=`rand 3`
     if [ $N2 = 0 ]; then
       pnmflip -lr $tmp_ppm1 > $tmp_ppm2
     elif [ $N2 = 1 ]; then
@@ -229,17 +321,24 @@ whack() {
     if [ "$use_stdin" != true ]; then
       grab
     else
+      cp $tmp_ppmS $tmp_ppm0
       cp $tmp_ppm0 $tmp_ppm1
     fi
   done
 
   rm -f $tmp_rgb
-  frob | pnmscale -width $screen_width > $tmp_ppm3
+
+  if [ "$screen_width" != "" ]; then
+    frob | pnmscale -width $screen_width > $tmp_ppm3
+  else
+    frob > $tmp_ppm3
+  fi
+
   rm -f $tmp_ppm1 $tmp_ppm2
 }
 
 
-# Kill off the xv subprocess, if it's running
+# Kill off the xli or xv subprocess, if it's running
 #
 kill_pid() {
   if [ "$pid" != "" ]; then
@@ -253,7 +352,7 @@ kill_pid() {
 #    ( sh -c "kill $pid" ) >/dev/null 2>/dev/null </dev/null
 
     # wtf?  that doesn't work either.  Is it writing to /dev/tty??
-    kill $pid >&- >&-
+    kill $pid >/dev/null 2>&1
 
     pid=""
   fi
@@ -274,51 +373,60 @@ main() {
 
   getargs $@
 
-  trap my_trap 0 1 2 3 6 9 13 15
+  trap my_trap 1 2 3 6 9 13 15
 
   if [ "$use_stdin" = true ]; then
-   cat > $tmp_ppm0
+   cat > $tmp_ppmS
   fi
 
   while true; do
 
     # Loop grabbing and frobbing images.
     #
-    # If we're running on the root, run xv in the foreground (with -exit)
-    # and then wait.
+    # If we're running on the root, run xv or xli in the foreground
+    # (with -exit, if xv) and then wait.
     #
-    # If we're running in a window, spawn xv in the background; then when
-    # it's time to put up the new image, kill off the currently-running xv.
+    # If we're running in a window, spawn xv or xli in the background; then
+    # when it's time to put up the new image, kill off the currently-running
+    # xv or xli.
 
     if [ "$verbose" = true ]; then
       whack
     else
-      whack >&- 2>&-
+      whack >/dev/null 2>&1
     fi
 
     kill_pid
 
     if [ ! -s $tmp_ppm3 ]; then
       echo "$0: no image grabbed" >&2
+
+    elif [ "$use_stdout" = true ]; then
+
+      cat $tmp_ppm3
+      clean2
+      exit 0
+
     else
 
-      pnmtosgi < $tmp_ppm3 > $tmp_ppm2
-      rm -f $tmp_ppm3
+#      pnmtosgi < $tmp_ppm3 > $tmp_ppm2
+#      rm -f $tmp_ppm3
+       mv $tmp_ppm3 $tmp_ppm2
 
       if [ -s $tmp_ppm2 ]; then
         if [ "$verbose" = true ]; then
-          echo "launching xv $xvargs $tmp_ppm2" >&2
+          echo "launching $displayer $displayer_args $tmp_ppm2" >&2
 	  ls -lF $tmp_ppm2
         fi
 
 	mv $tmp_ppm2 $tmp_ppm0
-        xv $xvargs $tmp_ppm0 &
+        eval "$displayer $displayer_args $tmp_ppm0 &"
 
 # this doesn't work -- leaves xv processes around, instead of stray xset
 # data.  Sigh.
 #
 #	# cat the file so that we can nuke it without racing against xv.
-#        cat $tmp_ppm2 | xv $xvargs - &
+#        cat $tmp_ppm2 | $displayer $displayer_args - &
 
         pid=$!
       fi

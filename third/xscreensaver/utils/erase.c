@@ -348,7 +348,8 @@ fizzle (Display *dpy, Window window, GC gc,
         for( ix = 0, cx = 0; ix < width; ix += BX, cx++ ) {
           int xx = ix + (SKEWX(cx, cy) + x*((cx%(BX-1))+1))%BX;
           int yy = iy + (SKEWY(cx, cy) + y*((cy%(BY-1))+1))%BY;
-          XDrawPoint(dpy, window, gc, xx, yy);
+          if (xx < width && yy < height)
+            XDrawPoint(dpy, window, gc, xx, yy);
         }
       }
     }
@@ -369,6 +370,68 @@ fizzle (Display *dpy, Window window, GC gc,
 # undef BX
 # undef BY
 # undef SIZE
+}
+
+
+/* from Rick Campbell <rick@campbellcentral.org> */
+static void
+spiral (Display *display, Window window, GC context,
+        int width, int height, int delay, int granularity)
+{
+# define SPIRAL_ERASE_PI_2 (M_PI + M_PI)
+# define SPIRAL_ERASE_LOOP_COUNT (10)
+# define SPIRAL_ERASE_ARC_COUNT (360.0)
+# define SPIRAL_ERASE_ANGLE_INCREMENT (SPIRAL_ERASE_PI_2 /     \
+SPIRAL_ERASE_ARC_COUNT)
+# define SPIRAL_ERASE_DELAY (0)
+
+  double angle;
+  int arc_limit;
+  int arc_max_limit;
+  int length_step;
+  XPoint points [3];
+
+  angle = 0.0;
+  arc_limit = 1;
+  arc_max_limit = (int) (ceil (sqrt ((width * width) + (height * height)))
+                         / 2.0);
+  length_step = ((arc_max_limit + SPIRAL_ERASE_LOOP_COUNT - 1) /
+                 SPIRAL_ERASE_LOOP_COUNT);
+  arc_max_limit += length_step;
+  points [0].x = width / 2;
+  points [0].y = height / 2;
+  points [1].x = points [0].x + length_step;
+  points [1].y = points [0].y;
+  points [2].x = points [1].x;
+  points [2].y = points [1].y;
+
+  for (arc_limit = length_step;
+       arc_limit < arc_max_limit;
+       arc_limit += length_step)
+    {
+      int arc_length = length_step;
+      int length_base = arc_limit;
+      for (angle = 0.0; angle < SPIRAL_ERASE_PI_2;
+           angle += SPIRAL_ERASE_ANGLE_INCREMENT)
+        {
+          arc_length = length_base + ((length_step * angle) /
+                                      SPIRAL_ERASE_PI_2);
+          points [1].x = points [2].x;
+          points [1].y = points [2].y;
+          points [2].x = points [0].x + (int)(cos (angle) * arc_length);
+          points [2].y = points [0].y + (int)(sin (angle) * arc_length);
+          XFillPolygon (display, window, context, points, 3, Convex,
+                        CoordModeOrigin);
+# if (SPIRAL_ERASE_DELAY != 0)
+          usleep (SPIRAL_ERASE_DELAY);
+# endif /* (SPIRAL_ERASE_DELAY != 0) */
+        }
+    }
+# undef SPIRAL_ERASE_DELAY
+# undef SPIRAL_ERASE_ANGLE_INCREMENT
+# undef SPIRAL_ERASE_ARC_COUNT
+# undef SPIRAL_ERASE_LOOP_COUNT
+# undef SPIRAL_ERASE_PI_2
 }
 
 
@@ -414,6 +477,54 @@ random_squares(Display * dpy, Window window, GC gc,
   free(squares);
 }
 
+/* I first saw something like this, albeit in reverse, in an early Tetris
+   implementation for the Mac.
+    -- Torbjörn Andersson <torbjorn@dev.eurotime.se>
+ */
+
+static void
+slide_lines (Display * dpy, Window window, GC gc, int width, int height,
+             int delay, int granularity)
+{
+  int slide_old_x, slide_new_x, clear_x;
+  int x, y, dx, dy;
+
+  /* This might need some tuning. The idea is to get sensible values no
+     matter what the size of the window.
+
+     Everything moves at constant speed. Should it accelerate instead? */
+
+  granularity *= 2;
+
+  dy = MAX (1, height / granularity);
+  dx = MAX (1, width / 100);
+
+  for (x = 0; x < width; x += dx)
+    {
+      for (y = 0; y < height; y += dy)
+	{
+	  if ((y / dy) & 1)
+	    {
+	      slide_old_x = x;
+	      slide_new_x = x + dx;
+	      clear_x = x;
+	    }
+	  else
+	    {
+	      slide_old_x = dx;
+	      slide_new_x = 0;
+	      clear_x = width - x - dx;
+	    }
+
+	  XCopyArea (dpy, window, window, gc, slide_old_x, y, width - x - dx,
+		     dy, slide_new_x, y);
+	  XClearArea (dpy, window, clear_x, y, dx, dy, False);
+	}
+
+      XSync(dpy, False);
+      usleep(delay * 3);
+    }
+}
 
 static Eraser erasers[] = {
   random_lines,
@@ -425,6 +536,8 @@ static Eraser erasers[] = {
   squaretate,
   fizzle,
   random_squares,
+  spiral,
+  slide_lines,
 };
 
 

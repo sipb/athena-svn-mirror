@@ -128,13 +128,14 @@ prepare_screen(ModeInfo * mi, slipstruct * s)
 
 	for (i = 0; i < n; i++) {
 	  int ww = ((w/2) + halfrandom(w));
-		if (not_solid)
+		if (not_solid) {
 			if (MI_NPIXELS(mi) > 2)
 				XSetForeground(display, gc, MI_PIXEL(mi, halfrandom(MI_NPIXELS(mi))));
 			else if (halfrandom(2))
 				XSetForeground(display, gc, MI_WIN_WHITE_PIXEL(mi));
 			else
 				XSetForeground(display, gc, MI_WIN_BLACK_PIXEL(mi));
+		}
 		XFillRectangle(display, MI_WINDOW(mi), gc,
 			       halfrandom(s->width - ww),
 			       halfrandom(s->height - ww),
@@ -196,7 +197,7 @@ draw_slip(ModeInfo * mi)
 		double      x, y, dx = 0, dy = 0, t, s1, s2;
 
 		if (0 == s->nblits_remaining--) {
-			static      lut[] =
+			static int lut[] =
 			{0, 0, 0, 1, 1, 1, 2};
 
 			prepare_screen(mi, s);

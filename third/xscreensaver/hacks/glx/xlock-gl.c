@@ -1,5 +1,5 @@
-/* xlock-gc.c --- xscreensaver compatibility layer for xlockmore GL modules.
- * xscreensaver, Copyright (c) 1997, 1998 Jamie Zawinski <jwz@jwz.org>
+/* xlock-gl.c --- xscreensaver compatibility layer for xlockmore GL modules.
+ * xscreensaver, Copyright (c) 1997, 1998, 1999 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -19,6 +19,7 @@
 #include "xlockmoreI.h"
 
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glx.h>
 
 /* Gag -- we use this to turn X errors from glXCreateContext() into
@@ -99,82 +100,199 @@ init_GL(ModeInfo * mi)
 }
 
 
-Visual *
-get_gl_visual (Screen *screen, char *name, char *class)
+
+
+/* clear away any lingering error codes */
+void
+clear_gl_error (void)
 {
-  char *string = get_string_resource (name, class);
-  XVisualInfo *vi = 0;
-  Bool done_once = False;
+  while (glGetError() != GL_NO_ERROR)
+    ;
+}
 
- AGAIN:
-  if (!string || !*string ||
-      !strcmp (string, "best") ||
-      !strcmp (string, "color") ||
-      !strcmp (string, "default"))
+/* report a GL error. */
+void
+check_gl_error (const char *type)
+{
+  char buf[100];
+  GLenum i;
+  const char *e;
+  switch ((i = glGetError())) {
+  case GL_NO_ERROR: return;
+  case GL_INVALID_ENUM:          e = "invalid enum";      break;
+  case GL_INVALID_VALUE:         e = "invalid value";     break;
+  case GL_INVALID_OPERATION:     e = "invalid operation"; break;
+  case GL_STACK_OVERFLOW:        e = "stack overflow";    break;
+  case GL_STACK_UNDERFLOW:       e = "stack underflow";   break;
+  case GL_OUT_OF_MEMORY:         e = "out of memory";     break;
+#ifdef GL_TABLE_TOO_LARGE_EXT
+  case GL_TABLE_TOO_LARGE_EXT:   e = "table too large";   break;
+#endif
+#ifdef GL_TEXTURE_TOO_LARGE_EXT
+  case GL_TEXTURE_TOO_LARGE_EXT: e = "texture too large"; break;
+#endif
+  default:
+    e = buf; sprintf (buf, "unknown error %d", (int) i); break;
+  }
+  fprintf (stderr, "%s: %s error: %s\n", progname, type, e);
+  exit (1);
+}
+
+
+
+
+/* Frames-per-second statistics */
+
+static int fps_text_x = 10;
+static int fps_text_y = 10;
+static int fps_sample_frames = 10;
+static GLuint font_dlist;
+
+static void
+fps_init (ModeInfo *mi)
+{
+  const char *font = get_string_resource ("fpsFont", "Font");
+  XFontStruct *f;
+  Font id;
+  int first, last;
+
+  if (!font) font = "-*-courier-bold-r-normal-*-180-*";
+  f = XLoadQueryFont(mi->dpy, font);
+  if (!f) f = XLoadQueryFont(mi->dpy, "fixed");
+
+  id = f->fid;
+  first = f->min_char_or_byte2;
+  last = f->max_char_or_byte2;
+  
+  clear_gl_error ();
+  font_dlist = glGenLists ((GLuint) last+1);
+  check_gl_error ("glGenLists");
+
+  if (get_boolean_resource ("fpsTop", "FPSTop"))
+    fps_text_y = - (f->ascent + 10);
+
+  glXUseXFont(id, first, last-first+1, font_dlist + first);
+  check_gl_error ("glXUseXFont");
+}
+
+
+static void
+fps_print_string (ModeInfo *mi, GLfloat x, GLfloat y, const char *string)
+{
+  int i;
+  /* save the current state */
+  /* note: could be expensive! */
+
+  if (y < 0)
+    y = mi->xgwa.height + y;
+
+  clear_gl_error ();
+  glPushAttrib(GL_ALL_ATTRIB_BITS);
+  {
+    check_gl_error ("glPushAttrib");
+
+    /* disable lighting and texturing when drawing bitmaps!
+       (glPopAttrib() restores these, I believe.)
+     */
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
+    /* glPopAttrib() does not restore matrix changes, so we must
+       push/pop the matrix stacks to be non-intrusive there.
+     */
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
     {
-      Display *dpy = DisplayOfScreen (screen);
-      int screen_num = screen_number (screen);
-      int attrs[20];
-      int i = 0;
-      Bool dbuf_p = !get_boolean_resource ("noBuffer", "NoBuffer");
+      check_gl_error ("glPushMatrix");
+      glLoadIdentity();
 
-      done_once = True;
+      /* Each matrix mode has its own stack, so we need to push/pop
+         them separately. */
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+      {
+        check_gl_error ("glPushMatrix");
+        glLoadIdentity();
 
-      attrs[i++] = GLX_RGBA;
-      attrs[i++] = GLX_RED_SIZE;   attrs[i++] = 1;
-      attrs[i++] = GLX_GREEN_SIZE; attrs[i++] = 1;
-      attrs[i++] = GLX_BLUE_SIZE;  attrs[i++] = 1;
-      attrs[i++] = GLX_DEPTH_SIZE; attrs[i++] = 1;
-      if (dbuf_p)
-	attrs[i++] = GLX_DOUBLEBUFFER;
-      attrs[i++] = 0;
+        gluOrtho2D(0, mi->xgwa.width, 0, mi->xgwa.height);
+        check_gl_error ("gluOrtho2D");
 
-      vi = glXChooseVisual (dpy, screen_num, attrs);
-      if (vi) goto DONE;
+        /* draw the text */
+        glColor3f (1, 1, 1);
+        glRasterPos2f (x, y);
+        for (i = 0; i < strlen(string); i++)
+          glCallList (font_dlist + (int)string[i]);
 
-      /* Try without double-buffering. */
-      attrs[i - 1] = 0;
-      vi = glXChooseVisual (dpy, screen_num, attrs);
-      if (vi) goto DONE;
+        check_gl_error ("fps_print_string");
+      }
+      glPopMatrix();
+    }
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
 
-      /* Try mono. */
-      i = 0;
-      if (dbuf_p)
-	attrs[i++] = GLX_DOUBLEBUFFER;
-      attrs[i++] = 0;
-      vi = glXChooseVisual (dpy, screen_num, attrs);
-      if (vi) goto DONE;
+  }
+  /* clean up after our state changes */
+  glPopAttrib();
+  check_gl_error ("glPopAttrib");
+}
 
-      /* Try mono without double-buffering. */
-      attrs[0] = 0;
-      vi = glXChooseVisual (dpy, screen_num, attrs);
+
+void
+do_fps (ModeInfo *mi)
+{
+  /* every N frames, get the time and use it to get the frames per second */
+  static int frame_counter = -1;
+  static double oldtime = 0; /* time in usecs, as a double */
+  static double newtime = 0;
+
+  static char msg [1024] = { 0, };
+
+  if (frame_counter == -1)
+    {
+      fps_init (mi);
+      frame_counter = fps_sample_frames;
     }
 
- DONE:
-  {
-    Visual *v;
-    if (vi)
-      {
-	v = vi->visual;
-	XFree (vi);
-      }
-    else
-      {
-	v = get_visual (screen, string, False, True);
-	if (!v)
-	  {
-	    if (done_once)
-	      v = DefaultVisualOfScreen (screen);
-	    else
-	      {
-		free (string);
-		string = 0;
-		goto AGAIN;
-	      }
-	  }
-      }
+  if (frame_counter++ == fps_sample_frames)
+    {
+      double fps;
+      struct timeval now;
+# ifdef GETTIMEOFDAY_TWO_ARGS
+      struct timezone tzp;
+      gettimeofday(&now, &tzp);
+# else
+      gettimeofday(&now);
+# endif
 
-    free (string);
-    return v;
-  }
+      oldtime = newtime;
+      newtime = now.tv_sec + ((double) now.tv_usec * 0.000001);
+
+      fps = fps_sample_frames / (newtime - oldtime);
+
+      if (fps < 0.0001)
+        {
+          strcpy(msg, "FPS: (accumulating...)");
+        }
+      else
+        {
+          sprintf(msg, "FPS: %.02f", fps);
+
+          if (mi->pause != 0)
+            {
+              char buf[40];
+              sprintf(buf, "%f", mi->pause / 1000000.0); /* FTSO C */
+              while(*buf && buf[strlen(buf)-1] == '0')
+                buf[strlen(buf)-1] = 0;
+              if (buf[strlen(buf)-1] == '.')
+                buf[strlen(buf)-1] = 0;
+              sprintf(msg + strlen(msg), " (including %s sec/frame delay)",
+                      buf);
+            }
+        }
+
+      frame_counter = 0;
+    }
+
+  fps_print_string (mi, fps_text_x, fps_text_y, msg);
 }

@@ -54,6 +54,7 @@ static const char sccsid[] = "@(#)pipes.c	4.07 97/11/24 xlockmore";
 # define PROGCLASS					"Pipes"
 # define HACK_INIT					init_pipes
 # define HACK_DRAW					draw_pipes
+# define HACK_RESHAPE				reshape_pipes
 # define pipes_opts					xlockmore_opts
 # define DEFAULTS	"*delay:		100     \n"			\
 					"*count:		2       \n"			\
@@ -61,8 +62,7 @@ static const char sccsid[] = "@(#)pipes.c	4.07 97/11/24 xlockmore";
 					"*size:			500     \n"			\
 					"*fisheye:		True    \n"			\
 					"*tightturns:	False   \n"			\
-					"*rotatepipes:	True    \n"			\
-					"*noBuffer:		True	\n"
+					"*rotatepipes:	True    \n"
 # include "xlockmore.h"				/* from the xscreensaver distribution */
 #else  /* !STANDALONE */
 # include "xlock.h"					/* from the xlockmore distribution */
@@ -491,8 +491,8 @@ MakeShape(ModeInfo * mi, int newdir)
 	}
 }
 
-static void
-reshape(ModeInfo * mi, int width, int height)
+void
+reshape_pipes(ModeInfo * mi, int width, int height)
 {
 	pipesstruct *pp = &pipes[MI_SCREEN(mi)];
 
@@ -636,7 +636,7 @@ init_pipes(ModeInfo * mi)
 	pp->window = MI_WINDOW(mi);
 	if ((pp->glx_context = init_GL(mi)) != NULL) {
 
-		reshape(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
+		reshape_pipes(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
 		if (rotatepipes)
 		  pp->initial_rotation = NRAND(180); /* jwz */
 		else

@@ -1,4 +1,4 @@
-# utils/Makefile.in --- xscreensaver, Copyright (c) 1997 Jamie Zawinski.
+# utils/Makefile.in --- xscreensaver, Copyright (c) 1997-2000 Jamie Zawinski.
 # the `../configure' script generates `utils/Makefile' from this file.
 
 
@@ -101,21 +101,24 @@ X_CFLAGS	= @X_CFLAGS@
 INCLUDES	= -I$(srcdir) -I.. @INCLUDES@
 
 SRCS		= alpha.c colors.c fade.c grabscreen.c hsv.c overlay.c \
-		  resources.c spline.c usleep.c visual.c xmu.c xroger.c \
-		  yarandom.c erase.c sgivideo.c xshm.c
+		  resources.c spline.c usleep.c visual.c visual-gl.c xmu.c \
+		  logo.c yarandom.c erase.c sgivideo.c xshm.c xdbe.c
 OBJS		= alpha.o colors.o fade.o grabscreen.o hsv.o overlay.o \
-		  resources.o spline.o usleep.o visual.o xmu.o xroger.o \
-		  yarandom.o erase.o sgivideo.o xshm.o
+		  resources.o spline.o usleep.o visual.o visual-gl.o xmu.o \
+		  logo.o yarandom.o erase.o sgivideo.o xshm.o xdbe.o
 HDRS		= alpha.h colors.h fade.h grabscreen.h hsv.h resources.h \
 		  spline.h usleep.h utils.h version.h visual.h vroot.h xmu.h \
-		  yarandom.h erase.h sgivideo.h xshm.h
+		  yarandom.h erase.h sgivideo.h xshm.h xdbe.h
+LOGOS		= logo-180.gif logo-180.xpm logo-50.gif logo-50.xpm \
+		  logo-big.gif logo.eps
 EXTRAS		= README Makefile.in ad2c
 VMSFILES	= compile_axp.com compile_decc.com vms-gtod.c vms-gtod.h \
 		  vms-strdup.c
 
-TARFILES	= $(EXTRAS) $(VMSFILES) $(SRCS) $(HDRS)
+TARFILES	= $(EXTRAS) $(VMSFILES) $(SRCS) $(HDRS) $(LOGOS)
 
 
+default: all
 all: $(OBJS)
 
 install:   install-program   install-man
@@ -207,6 +210,7 @@ distdepend:: compile_axp.com compile_decc.com
 alpha.o: $(srcdir)/utils.h
 alpha.o: ../config.h
 alpha.o: $(srcdir)/alpha.h
+alpha.o: $(srcdir)/visual.h
 alpha.o: $(srcdir)/hsv.h
 alpha.o: $(srcdir)/yarandom.h
 alpha.o: $(srcdir)/resources.h
@@ -248,10 +252,15 @@ visual.o: $(srcdir)/utils.h
 visual.o: ../config.h
 visual.o: $(srcdir)/resources.h
 visual.o: $(srcdir)/visual.h
+visual-gl.o: $(srcdir)/utils.h
+visual-gl.o: ../config.h
+visual-gl.o: $(srcdir)/visual.h
 xmu.o: ../config.h
-xroger.o: $(srcdir)/utils.h
-xroger.o: ../config.h
-xroger.o: $(srcdir)/spline.h
+logo.o: $(srcdir)/utils.h
+logo.o: ../config.h
+logo.o: $(srcdir)/resources.h
+logo.o: $(srcdir)/logo-50.xpm
+logo.o: $(srcdir)/logo-180.xpm
 yarandom.o: ../config.h
 yarandom.o: $(srcdir)/yarandom.h
 erase.o: $(srcdir)/utils.h
@@ -268,4 +277,8 @@ xshm.o: $(srcdir)/utils.h
 xshm.o: ../config.h
 xshm.o: $(srcdir)/xshm.h
 xshm.o: $(srcdir)/resources.h
+xdbe.o: $(srcdir)/utils.h
+xdbe.o: ../config.h
+xdbe.o: $(srcdir)/xdbe.h
+xdbe.o: $(srcdir)/resources.h
 
