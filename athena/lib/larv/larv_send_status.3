@@ -1,4 +1,4 @@
-.\" $Id: larv_send_status.3,v 1.1 1998-08-25 03:26:52 ghudson Exp $
+.\" $Id: larv_send_status.3,v 1.2 1998-09-30 17:44:31 ghudson Exp $
 .\"
 .\" Copyright 1998 by the Massachusetts Institute of Technology.
 .\"
@@ -17,12 +17,18 @@
 .SH NAME
 larv_send_status \- Sends a status packet on a datagram socket
 .SH SYNOPSIS
-.B int larv_send_status(int \fIfd\fP)
+.nf
+.B int larv_send_status(int \fIfd\fP, struct sockaddr *\fIaddr\fP,
+.B	int \fIsize\fP)
+.fi
 .SH DESCRIPTION
 The
 .B larv_send_status
-function writes a workstation status packet to a datagram socket given
-by
+function writes a workstation status packet to the address given by
+.I addr
+and
+.IR size ,
+using the datagram socket given by
 .IR fd .
 The packet contains the workstation status (busy or free), the
 workstation name, and the workstation architecture according to
