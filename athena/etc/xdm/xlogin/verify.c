@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.13 1991-03-07 18:03:44 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.14 1991-03-27 15:44:12 mar Exp $
  */
 
 #include <stdio.h>
@@ -45,7 +45,7 @@
 #define QUOTA "/usr/ucb/quota"
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 
-#define DEFAULTPATH "/srvd/patch:/usr/athena:/bin/athena:/usr/bin/X:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:."
+char *defaultpath = "/srvd/patch:/usr/athena:/bin/athena:/usr/bin/X:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 
 #define file_exists(f) (access((f), F_OK) == 0)
 
@@ -249,7 +249,7 @@ char *display;
     i = 0;
     sprintf(errbuf, "HOME=%s", pwd->pw_dir);
     environment[i++] = strsave(errbuf);
-    sprintf(errbuf, "PATH=%s", DEFAULTPATH);
+    sprintf(errbuf, "PATH=%s", defaultpath);
     environment[i++] = strsave(errbuf);
     sprintf(errbuf, "USER=%s", pwd->pw_name);
     environment[i++] = strsave(errbuf);
@@ -266,6 +266,9 @@ char *display;
     mktemp(wgfile);
     sprintf(errbuf, "WGFILE=%s", wgfile);
     environment[i++] = strsave(errbuf);
+#if defined(_AIX) && defined(i386)
+    environment[i++] = "hosttype=ps2";
+#endif
     environment[i++] = NULL;
 
     add_utmp(user, tty, display);
