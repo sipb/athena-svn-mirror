@@ -1,19 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v $
- *	$Author: probe $
+ *	$Id: mount.c,v 1.7 1991-07-01 11:04:08 probe Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-/*
- * NOTE!  A good deal of this file was stolen from BSD 4.3's mount.c.  It
- * is probably still protected under standard Berkeley copyright agreements.
- *
- * (This may not be true anymore --- [tytso:19890720.2145EDT])
- */
-
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.6 1991-07-01 09:47:25 probe Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.7 1991-07-01 11:04:08 probe Exp $";
 
 #include "attach.h"
 
