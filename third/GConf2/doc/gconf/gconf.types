@@ -1,3 +1,0 @@
-#include <gconf/gconf-client.h>
-
-gconf_client_get_type
