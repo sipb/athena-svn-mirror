@@ -26,6 +26,10 @@ cp lpd.conf.athena $RPM_BUILD_ROOT/etc/lpd.conf
 cp lpd.perms $RPM_BUILD_ROOT/etc/lpd.perms
 cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
+mkdir -p $RPM_BULID_ROOT/usr/bin
+ln -s ../athena/bin/lpr $RPM_BUILD_ROOT/usr/bin/lpr
+ln -s ../athena/bin/lpq $RPM_BUILD_ROOT/usr/bin/lpq
+ln -s ../athena/bin/lprm $RPM_BUILD_ROOT/usr/bin/lprm
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
