@@ -1,5 +1,5 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.8 1992-01-10 13:22:58 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.9 1992-02-17 14:31:39 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
 /* $Author: epeisach $ */
 
@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.8 1992-01-10 13:22:58 epeisach Exp $";
+static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.9 1992-02-17 14:31:39 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -65,7 +65,7 @@ logger_periodic()
 		    jhead.quota_pos = 0;
 		    if(logger_journal_put_header(&jhead)) {
 			    syslog(LOG_INFO, "Unable to init header - fatal");
-			    nexit(1);
+			    exit(1);
 		    }
 	    }
 	}
