@@ -15,11 +15,13 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_c[] = "$Id: class.c,v 1.12 1989-12-13 10:41:11 jtkohl Exp $";
+static char rcsid_class_c[] = "$Id: class.c,v 1.13 1989-12-14 08:42:10 jtkohl Exp $";
 #endif SABER
 #endif lint
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
+
+#include <ctype.h>			/* for isupper, tolower */
 
 /*
  * Class manager subsystem.
