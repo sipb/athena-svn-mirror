@@ -1,12 +1,13 @@
 /*
  * AFS quota routines
  *
- * $Id: afs.c,v 1.11 1992-06-03 20:03:48 epeisach Exp $
+ * $Id: afs.c,v 1.12 1993-02-05 19:09:28 probe Exp $
  */
 
 #include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <netinet/in.h>
 
 #include <afs/param.h>
 #include <afs/venus.h>
