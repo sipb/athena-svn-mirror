@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #include <olc/lang.h>
@@ -53,7 +53,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.19 1990-02-20 05:48:41 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.20 1990-02-20 13:48:26 vanharen Exp $";
 
 /* Global variables. */
 
@@ -442,7 +442,7 @@ restart:
 	    else
 		abort();
 	}
-#if 1
+#if 0
 	{
 	    struct sockaddr addr[20];
 	    int len = sizeof (addr);
