@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.15 1992-01-07 19:53:55 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.16 1992-03-16 15:26:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -73,6 +73,7 @@ main(argc, argv)
 {  
   Arg args[10];
   int n = 0;
+  char buf[BUFSIZ];
 
   program = rindex(*argv,'/');
   if(program == (char *) NULL)
@@ -121,11 +122,21 @@ main(argc, argv)
        * this is a kludge, but the other interface is already
        * there
        */
+#ifdef PUTENV
+      sprintf(buf,"OLCD_HOST=%s",argv[1]);
+      putenv(buf);
+#else
       (void) setenv ("OLCD_HOST", argv[1], 1);
+#endif
       ++argv, --argc;
     }
     else if (!strcmp (argv[0], "-port")) {
+#ifdef PUTENV
+      sprintf(buf,"OLCD_PORT=%s", argv[1], 1);
+      putenv(buf);
+#else
       (void) setenv ("OLCD_PORT", argv[1], 1);
+#endif
       ++argv, --argc;
     }
     else {
