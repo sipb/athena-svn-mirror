@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.72 1996-07-09 19:31:16 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.73 1996-08-06 02:35:14 cfields Exp $
  */
 
 #include <stdio.h>
@@ -428,7 +428,6 @@ char *display;
 	}
     }
 
-#ifndef sgi /* BUG: need to do this */
     if (!nocreate) {
 	glist = hes_resolve(user, "grplist");
 	if (glist && glist[0]) {
@@ -441,7 +440,6 @@ char *display;
 	    strcpy(glist[0], errbuf);
 	}
     }
-#endif
 
     /*
      * Set up the user's environment.
