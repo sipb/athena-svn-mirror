@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_consult.c,v 1.9 1999-06-28 22:52:07 ghudson Exp $
+ *	$Id: p_consult.c,v 1.10 1999-07-08 22:56:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_consult.c,v 1.9 1999-06-28 22:52:07 ghudson Exp $";
+static char rcsid[] ="$Id: p_consult.c,v 1.10 1999-07-08 22:56:52 ghudson Exp $";
 #endif
 #endif
 
@@ -53,37 +53,57 @@ do_olc_on(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
-   for (arguments++; *arguments != (char *) NULL; arguments++) 
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  while(*arguments != NULL)
     {
       if (is_flag(*arguments, "-first",2))
-	set_option(Request.options,ON_FIRST);
-      else if (is_flag(*arguments, "-duty",2))
-	set_option(Request.options,ON_DUTY);
-      else if (is_flag(*arguments, "-second",2))
-	set_option(Request.options,ON_SECOND);
-      else if (is_flag(*arguments, "-urgent",2))
-	set_option(Request.options,ON_URGENT);
-      else 
 	{
-	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status != SUCCESS)
-	    return(ERROR);
-	  if(arguments == (char **) NULL)   /* error */
-	    {
-	      fprintf(stderr,"Usage is: \ton [-first] [-duty] [-second] ");
-	      fprintf(stderr,"[-urgent]\n");
-              return(ERROR);
-	    }
-	  if(*arguments == (char *) NULL)   /* end of list */
-	    break;
+	  set_option(Request.options,ON_FIRST);
+	  arguments++;
+	  continue;
 	}
+
+      if (is_flag(*arguments, "-duty",2))
+	{
+	  set_option(Request.options,ON_DUTY);
+	  arguments++;
+	  continue;
+	}
+
+      if (is_flag(*arguments, "-second",2))
+	{
+	  set_option(Request.options,ON_SECOND);
+	  arguments++;
+	  continue;
+	}
+
+      if (is_flag(*arguments, "-urgent",2))
+	{
+	  set_option(Request.options,ON_URGENT);
+	  arguments++;
+	  continue;
+	}
+
+      status = handle_common_arguments(&arguments, &Request);
+      if(status != SUCCESS)
+	break;
     }
 
+  if(status != SUCCESS)   /* error */
+    {
+      fprintf(stderr,"Usage is: \ton [-first] [-duty] [-second] "
+	      "[-urgent]\n");
+      return ERROR;
+    }
+  
   status = t_sign_on(&Request,0,0);
   return(status);
 }
@@ -105,31 +125,35 @@ do_olc_off(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
-  for (arguments++; *arguments != (char *) NULL; arguments++)
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  while(*arguments != NULL)
     {
       if (is_flag(*arguments, "-force",2))
-        set_option(Request.options,OFF_FORCE);
-      else
-        {
-          arguments=handle_argument(arguments, &Request,&status);
-	  if(status != SUCCESS)
-	    return(ERROR);
-          if(arguments == (char **) NULL)   /* error */
-	    {
-	      fprintf(stderr,"Usage is: \toff [-force]\n");
-	      return(ERROR);
-	    }
-          if(*arguments == (char *) NULL)   /* end of list */
-            break;
-        }
-    }
+	{
+	  set_option(Request.options,OFF_FORCE);
+	  arguments++;
+	  continue;
+	}
 
+      status = handle_common_arguments(&arguments, &Request);
+      if(status != SUCCESS)
+	break;
+    }
+  
+  if(status != SUCCESS)   /* error */
+    {
+      fprintf(stderr,"Usage is: \toff [-force]\n");
+      return ERROR;
+    }
+  
   status = t_olc_off(&Request);
   return(status);
 }
-

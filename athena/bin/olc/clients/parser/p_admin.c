@@ -8,12 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_admin.c,v 1.5 1999-06-28 22:52:06 ghudson Exp $
+ *	$Id: p_admin.c,v 1.6 1999-07-08 22:56:51 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_admin.c,v 1.5 1999-06-28 22:52:06 ghudson Exp $";
+static char rcsid[] ="$Id: p_admin.c,v 1.6 1999-07-08 22:56:51 ghudson Exp $";
 #endif
 #endif
 
@@ -31,7 +31,7 @@ do_olc_zephyr(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
   int how_long = -1;
   int what = -1;
 
@@ -39,31 +39,50 @@ do_olc_zephyr(arguments)
     return(ERROR);
   
   Request.request_type = OLC_TOGGLE_ZEPHYR;
+
+  if(arguments == NULL)
+    return ERROR;
   arguments++;
+
   while (*arguments != NULL)
     {
-      if (string_eq(*arguments, "-punt") && (what < 0))
+      if (is_flag(*arguments, "-punt", 2))
 	{
-	  what = 1;
-	  ++arguments;
-	  if (*arguments != NULL) /* override default */
+	  if(what < 0)
 	    {
-	      how_long = atoi(*arguments);
+	      what = 1;
 	      ++arguments;
+	      if (*arguments != NULL) /* override default */
+		{
+		  how_long = atoi(*arguments);
+		  ++arguments;
+		}
+	      continue;
 	    }
-	  continue;
+	  else /* They already told us what to do?! */
+	    {
+	      what = -1; /* Do nothing. */
+	      break;
+	    }
 	}
-      if (string_eq(*arguments,"-unpunt") && (what < 0))
+      if(is_flag(*arguments,"-unpunt",2))
 	{
-	  what = 0;
-	  ++arguments;
-	  continue;
+	  if(what < 0)
+	    {
+	      what = 0;
+	      ++arguments;
+	      continue;
+	    }
+	  else /* They already told us what to do?! */
+	    {
+	      what = -1; /* Do nothing. */
+	      break;
+	    }
 	}
-      
-      arguments = handle_argument(arguments, &Request, &status);
+      status = handle_common_arguments(&arguments, &Request);
       if (status != SUCCESS)
 	{
-	  what = -1;
+	  what = -1; /* Do nothing, even if we were already asked to. */
 	  break;
 	}
     }

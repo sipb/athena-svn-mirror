@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc_stock.c,v 1.25 1999-06-28 22:52:02 ghudson Exp $
+ *	$Id: olc_stock.c,v 1.26 1999-07-08 22:56:49 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc_stock.c,v 1.25 1999-06-28 22:52:02 ghudson Exp $";
+static char rcsid[] ="$Id: olc_stock.c,v 1.26 1999-07-08 22:56:49 ghudson Exp $";
 #endif
 #endif
 
@@ -59,26 +59,25 @@ do_olc_stock(arguments)
   struct stat statbuf;		/* Ptr. to file status buffer. */
   char *topic;			/* Topic from daemon. */
   char dtopic[TOPIC_SIZE];	/* default topic */
-  ERRCODE status;		/* Status returned by whatnow */
-  int find_topic=0;
+  ERRCODE status = SUCCESS;
+  int find_topic = FALSE;
   char **cmd;
-  struct sigaction ign_act;     /*for ignoring signals*/
-  struct sigaction int_act;     /*remember the sigint action*/
-  struct termios term;          /*current state of the terminal*/
-  struct termios testterm;      /*for testing the state of the terminal*/
+  struct sigaction ign_act;     /* For ignoring signals. */
+  struct sigaction int_act;     /* Save the sigint action. */
+  struct termios term;          /* Saved state of the terminal. */
   
   sigemptyset(&ign_act.sa_mask);
   ign_act.sa_flags = 0;
   ign_act.sa_handler = SIG_IGN;
-  sigaction(SIGINT, &ign_act, &int_act);       /*ignore sigint*/
+  sigaction(SIGINT, &ign_act, &int_act);       /* Ignore sigint. */
   
-  tcgetattr(STDIN_FILENO, &term); /*save terminal state*/
+  tcgetattr(STDIN_FILENO, &term); /* Save terminal state. */
 
-  dtopic[0] = '\0';
+  dtopic[0] = '\0'; /* No default topic. */
 
   if (stat(client_SA_magic_file(), &statbuf) < 0) 
     {
-      /* Run all commands in the list from client_SA_attach_commands() */
+      /* Run all commands in the list from client_SA_attach_commands(). */
       for (cmd = client_SA_attach_commands() ; cmd && *cmd ; cmd++)
 	system(*cmd);
 
@@ -88,60 +87,73 @@ do_olc_stock(arguments)
 	  return(ERROR);
 	}
     }
- 
-  OFillRequest(&Request);
 
-  for (++arguments; *arguments != (char *) NULL; ++arguments) 
+  if(fill_request(&Request) != SUCCESS)
+     return ERROR;
+
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  while(*arguments != NULL)
     {
       if (is_flag(*arguments,"-t",2))
 	{
-          ++arguments;
-	  if(*arguments==(char *) NULL)
+	  arguments++;
+	  if(*arguments == NULL)
             {
-	      find_topic=1;
-              break;   
+	      find_topic = TRUE;
+	      continue;   
             }
 	  else
 	    {
+	      /* find_topic is already false. */
 	      strcpy(dtopic,*arguments);
 	      arguments++;
 	    }
 	  continue;
 	}
 
-      if (**arguments != '-') {
-	strcpy(dtopic, *arguments);
-	arguments++;
-      }
+      if ((*arguments)[1] != '-')
+	{
+	  /* Assume its a topic. */
+	  strcpy(dtopic, *arguments);
+	  arguments++;
+	  continue;
+	}
 
-      arguments = handle_argument(arguments, &Request, &status);
-
-      if(arguments == (char **) NULL) {  /* error */
-	printf("Usage is: \tstock [-t topic]\n");
-	return(ERROR);
-      }
-      if (*arguments == (char *) NULL)
+      status = handle_common_arguments(&arguments, &Request);
+      if(status != SUCCESS)
 	break;
+      else
+	continue;
     }
 
-  topic = &dtopic[0];
+  if(status != SUCCESS) /* error */
+    {
+      fprintf(stderr, "Usage is: \tstock [-t topic]\n");
+      return ERROR;
+    }
 
-  if(find_topic)
+  topic = dtopic;
+
+  if(find_topic == TRUE)
     {
       status = OGetTopic(&Request,topic);
       if(status != SUCCESS)
 	{
 	  fprintf(stderr,"Error occurred while trying to get topic.\n");
-	  printf("Proceeding with default ... \n");
+	  printf("Proceeding with default topic... \n");
 	  topic = dtopic;
 	}
     }
 
   strcpy(bfile, "/.");
-  if (topic[0] != '\0')  {
-    strcat(bfile, "/");
-    strcat(bfile, topic);
-  }
+  if (topic[0] != '\0')
+    {
+      strcat(bfile, "/");
+      strcat(bfile, topic);
+    }
 
   make_temp_name(file);
 

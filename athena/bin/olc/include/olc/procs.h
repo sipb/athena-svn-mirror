@@ -18,7 +18,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: procs.h,v 1.22 1999-06-28 22:52:34 ghudson Exp $
+ *	$Id: procs.h,v 1.23 1999-07-08 22:56:55 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -149,7 +149,6 @@ ERRCODE OVerifyTopic (REQUEST *Request , char *topic );
 ERRCODE OHelpTopic (REQUEST *Request , char *topic , char *buf );
 
 /* utils.c */
-ERRCODE OFillRequest (REQUEST *req );
 ERRCODE fill_request (REQUEST *req );
 ERRCODE open_connection_to_mailhost (void );
 ERRCODE query_mailhost (int s , char *name );

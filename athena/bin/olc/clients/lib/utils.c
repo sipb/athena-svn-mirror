@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: utils.c,v 1.29 1999-06-28 22:51:52 ghudson Exp $
+ *	$Id: utils.c,v 1.30 1999-07-08 22:56:44 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: utils.c,v 1.29 1999-06-28 22:51:52 ghudson Exp $";
+static char rcsid[] ="$Id: utils.c,v 1.30 1999-07-08 22:56:44 ghudson Exp $";
 #endif
 #endif
 
@@ -41,13 +41,6 @@ static char rcsid[] ="$Id: utils.c,v 1.29 1999-06-28 22:51:52 ghudson Exp $";
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
-
-ERRCODE
-OFillRequest(req)
-     REQUEST *req;
-{
-  return(fill_request(req));
-}
 
 ERRCODE
 fill_request(req)

@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_acl.c,v 1.9 1999-06-28 22:52:05 ghudson Exp $
+ *	$Id: p_acl.c,v 1.10 1999-07-08 22:56:50 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_acl.c,v 1.9 1999-06-28 22:52:05 ghudson Exp $";
+static char rcsid[] ="$Id: p_acl.c,v 1.10 1999-07-08 22:56:50 ghudson Exp $";
 #endif
 #endif
 
@@ -44,87 +44,100 @@ do_olc_acl(arguments)
   int list_flag = 0;
   int acl_flag  = 0;
   int change_flag = 0;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
 
   *acl = '\0';
   make_temp_name(file);
 
   if(fill_request(&Request) != SUCCESS)
-    return(ERROR);
+    return ERROR;
 
-  for (arguments++; *arguments != (char *) NULL; arguments++) 
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  while(*arguments != NULL)
     {
       if(is_flag(*arguments,"-add",2))
-	  {
-	    ++arguments;
-	    acl_flag = TRUE;
-	    change_flag = TRUE;	    
+	{
+	  arguments++;
+	  acl_flag = TRUE;
+	  change_flag = TRUE;	    
 
-	    if(*arguments != (char *) NULL)
+	  if(*arguments != NULL)
+	    {
 	      strncpy(acl,*arguments,NAME_SIZE);
-	    continue;
-	  }
+	      arguments++;
+	    }
+	  continue;
+	}
 
-       if(is_flag(*arguments,"-delete",2))
-	  {
-	    ++arguments;
-	    acl_flag = 0;
-	    change_flag = TRUE;
+      if(is_flag(*arguments,"-delete",2))
+	{
+	  arguments++;
+	  acl_flag = 0;
+	  change_flag = TRUE;
 	    
-	    if(*arguments != (char *) NULL)
+	  if(*arguments != NULL)
+	    {
 	      strncpy(acl,*arguments,NAME_SIZE);
-	    continue;
-	  }
+	      arguments++;
+	    }
+	  continue;
+	}
 
       if(is_flag(*arguments,"-list",2))
 	{
 	  list_flag = TRUE;
-	  ++arguments;
-	  if(*arguments != (char *) NULL)
-	    strncpy(acl,*arguments,NAME_SIZE);
-	    
+	  arguments++;
+	  if(*arguments != NULL)
+	    {
+	      arguments++;
+	      strncpy(acl,*arguments,NAME_SIZE);
+	    }
 	  continue;
 	}
-
-       if(!strcmp(*arguments, ">") || is_flag(*arguments,"-file",2))
-        {
-          ++arguments;
-          unlink(file);
-          if (*arguments == (char *)NULL)
+      
+      if(!strcmp(*arguments, ">") || is_flag(*arguments,"-file",2))
+	{
+	  arguments++;
+	  unlink(file);
+          if (*arguments != NULL)
             {
+	      strcpy(file, *arguments);
+	      arguments++;
+            }
+          else
+	    {
               file[0] = '\0';
               get_prompted_input("Enter a file name: ",file, NAME_SIZE,0);
               if(file[0] == '\0')
-                return(ERROR);
-            }
-          else
-            strcpy(file, *arguments);
-
+                return ERROR;
+	    }
+	  
           save_file = TRUE;
           continue;
         }
 
-      arguments = handle_argument(arguments, &Request, &status);
+      status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
-	return(ERROR);
-      else
-	list_flag = TRUE;
-    
-      if(arguments == (char **) NULL)   /* error */
-	{
-	  printf("Usage is: \tacl [-add <list>] [-del <list>] [<username>] ");
-	  printf(" [-list <list>]\n\t\t[-list <username>] [-file <filename>]\n");
-	  return(ERROR);
-	}
-      if(*arguments == (char *) NULL)   /* end of list */
 	break;
+      else
+	continue;
     }
-
+  if(status != SUCCESS)   /* error */
+    {
+      fprintf(stderr,
+	      "Usage is: \tacl [-add <list>] [-del <list>] [<username>] "
+	      " [-list <list>]\n\t\t[-list <username>] [-file <filename>]\n");
+      return ERROR;
+    }
+    
   if((*acl == '\0') && !list_flag)
     {
       get_prompted_input("Enter access control list: ",acl, NAME_SIZE,0);
       if(acl[0] == '\0')
-	return(ERROR);
+	return ERROR;
     }
     
   if(list_flag && !change_flag)

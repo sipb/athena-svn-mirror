@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_ask.c,v 1.16 1999-06-28 22:52:06 ghudson Exp $
+ *	$Id: p_ask.c,v 1.17 1999-07-08 22:56:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_ask.c,v 1.16 1999-06-28 22:52:06 ghudson Exp $";
+static char rcsid[] ="$Id: p_ask.c,v 1.17 1999-07-08 22:56:52 ghudson Exp $";
 #endif
 #endif
 
@@ -42,67 +42,76 @@ do_olc_ask(arguments)
   ERRCODE status = SUCCESS;
   char topic[TOPIC_SIZE];
   char file[MAXPATHLEN];
-
-  if(fill_request(&Request) != SUCCESS)
-    return(ERROR);
+  int i;
 
   topic[0]= '\0';
   file[0] = '\0';
 
-  if(arguments != (char **) NULL)
+  if(fill_request(&Request) != SUCCESS)
+    return(ERROR);
+
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  while(*arguments != NULL)
     {
-      for (arguments++; *arguments != (char *) NULL; arguments++)
-        {
-          if(is_flag(*arguments, "-topic", 2))
-            {
-	      ++arguments;
-              if(*arguments != (char *) NULL)
-                {
-                  strcpy(topic,*arguments);
-		  continue;
-                }
-	      else
-		break;
-            }
-
-	  if(is_flag(*arguments, "-file",2))
+      if(is_flag(*arguments, "-topic", 2))
+	{
+	  arguments++;
+	  if(*arguments != NULL)
 	    {
+	      strcpy(topic,*arguments);
 	      arguments++;
-	      if(*arguments != (char *) NULL)
-		{
-		  strcpy(file, *arguments);
-		  continue;
-		} 
-	      else
-		break;
+	      continue;
 	    }
-
-	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status != SUCCESS)
-	    return(ERROR);
-	  if(arguments == (char **) NULL) 
+	  else
 	    {
-	      if(client_is_user_client())
-		printf("Usage is: \task [-topic <topic>]\n");
-	      else
-		{
-		  printf("Usage is: \task [-topic <topic>] ");
-		  printf("[<username> <instance id>]\n");
-		  printf("\t\t[-instance <instance id]>\n");
-		  printf("\t\t[-file <filename>]\n");
-		}
-	      
-	      return(ERROR);
+	      status = ERROR;
+	      break;
 	    }
-	  if(*arguments == (char *) NULL)   /* end of list */
-	    break;
-        }
+	}
+      if(is_flag(*arguments, "-file",2))
+	{
+	  arguments++;
+	  if(*arguments != NULL)
+	    {
+	      strcpy(file, *arguments);
+	      arguments++;
+	      continue;
+	    } 
+	  else
+	    {
+	      status = ERROR;
+	      break;
+	    }
+	}
+      status = handle_common_arguments(&arguments, &Request);
+      if(status == SUCCESS)
+	continue; 
+      else
+	break;
+    }
+
+  if(status != SUCCESS)
+    {
+      if(client_is_user_client())
+	fprintf(stderr, "Usage is: \task [-topic <topic>]\n");
+      else
+	{
+	  fprintf(stderr, "Usage is: \task [-topic <topic>] "
+		  "[<username> <instance id>]\n"
+		  "\t\t[-instance <instance id]>\n"
+		  "\t\t[-file <filename>]\n");
+	}
+      return ERROR;
     }
 
   if(topic[0] == '\0')
     t_input_topic(&Request,topic,TRUE);
 
   status = t_ask(&Request,topic,file);
+
   if(client_is_user_client())
     {
       printf("\nSome other useful %s commands are: \n\n", client_service_name());
@@ -115,5 +124,5 @@ do_olc_ask(arguments)
 	printf("\thours - Find hours %s is staffed\n", client_service_name());
       printf("\t?     - see entire listing of commands\n");
     }
-  return(status);
+  return status;
 }

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_describe.c,v 1.12 1999-06-28 22:52:07 ghudson Exp $
+ *	$Id: p_describe.c,v 1.13 1999-07-08 22:56:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_describe.c,v 1.12 1999-06-28 22:52:07 ghudson Exp $";
+static char rcsid[] ="$Id: p_describe.c,v 1.13 1999-07-08 22:56:52 ghudson Exp $";
 #endif
 #endif
 
@@ -40,70 +40,76 @@ do_olc_describe(arguments)
   REQUEST Request;
   char file[NAME_SIZE];
   char note[NOTE_SIZE];
-  char *noteP = (char *) NULL;
-  ERRCODE status;
-  int save_file = 0;
-  int cherries=0;
-  int oranges=0;
+  char *noteP = NULL;
+  ERRCODE status = SUCCESS;
+  int save_file = FALSE;
+  int dochnote = FALSE;
+  int dochcomment = FALSE;
  
+  make_temp_name(file);
+  note[0] = '\0';
   
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
   
-  make_temp_name(file);
-  note[0] = '\0';
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
 
-  for (arguments++; *arguments != (char *) NULL; arguments++) 
+  while(*arguments != NULL)
     {
-      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
+      if(is_flag(*arguments,"-file", 2) ||
+	 is_flag(*arguments,">", 1))
 	{
-          ++arguments;
+	  arguments++;
 	  if(*arguments == NULL)
             {
 	      file[0] = '\0';
               get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
-		return(ERROR);
+		return ERROR;
             }
 	  else
-	    strcpy(file,*arguments);
-
+	    {
+	      strcpy(file,*arguments);
+	      arguments++;
+	    }
 	  save_file = TRUE;
+	  continue;
 	}
-      else
-	if(is_flag(*arguments,"-note", 2))
-	  {
-	    if(*(arguments +1) != (char *) NULL)
-	      if(*(arguments + 1)[0] != '-')
-		{
-		  ++arguments;
-		  strncpy(note,*arguments,NOTE_SIZE-1);
-		  noteP = &note[0];
-		}
-	    cherries = TRUE;
-	  }
-       else
-	if(is_flag(*arguments,"-comment",2))
-	  oranges = TRUE;
-      else
+      if(is_flag(*arguments,"-note", 2))
 	{
-	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status != SUCCESS)
-	    return(ERROR);
+	  arguments++;
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
+	      {
+		strncpy(note,*arguments,NOTE_SIZE-1);
+		noteP = &note[0];
+		arguments++;
+	      }
+	  dochnote = TRUE;
+	  continue;
 	}
-
-      if(arguments == (char **) NULL)   /* error */
-	{
-	  printf("Usage is: \tdescribe  [user <instance id>] [-file <filename>] [-note <note>]\n\t\t[-comment] ");
-	  printf("[-instance <instance id>]\n");
-	  return(ERROR);
+      if(is_flag(*arguments,"-comment",2))
+	{	
+	  dochcomment = TRUE;
+	  arguments++;
+	  continue;
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
+      
+      status = handle_common_arguments(&arguments, &Request);
+      if(status != SUCCESS)
 	break;
     }
 
-  status = t_describe(&Request,file,noteP,cherries,oranges);
+  if(status != SUCCESS)   /* error */
+    {
+      fprintf(stderr,
+	      "Usage is: \tdescribe  [user <instance id>] [-file <filename>] "
+	      "[-note <note>]\n\t\t[-comment] [-instance <instance id>]\n");
+      return ERROR;
+    }
 
+  status = t_describe(&Request, file, noteP, dochnote, dochcomment);
   if (status == OK)
     status = SUCCESS;
 

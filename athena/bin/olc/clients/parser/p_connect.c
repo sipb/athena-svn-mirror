@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_connect.c,v 1.14 1999-06-28 22:52:07 ghudson Exp $
+ *	$Id: p_connect.c,v 1.15 1999-07-08 22:56:52 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_connect.c,v 1.14 1999-06-28 22:52:07 ghudson Exp $";
+static char rcsid[] ="$Id: p_connect.c,v 1.15 1999-07-08 22:56:52 ghudson Exp $";
 #endif
 #endif
 
@@ -32,8 +32,6 @@ static char rcsid[] ="$Id: p_connect.c,v 1.14 1999-06-28 22:52:07 ghudson Exp $"
 
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
-
-extern int num_of_args;
 
 /*
  * Function:    do_olc_grab() grabs a pending question.
@@ -47,15 +45,18 @@ do_olc_grab(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
   int flag = 0;
   int hold = 0;
 
   if(fill_request(&Request) != SUCCESS)
      return(ERROR);
 
+  if(arguments == NULL)
+    return ERROR;
   arguments++;
-  while(*arguments != (char *) NULL)
+
+  while(*arguments != NULL)
     {
       if(is_flag(*arguments,"-create_new_instance", 2))
 	{
@@ -71,23 +72,24 @@ do_olc_grab(arguments)
           continue;
 	}
 
-      arguments = handle_argument(arguments, &Request, &status);
+      status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
-	return(ERROR);
-
-      arguments += num_of_args;		/* HACKHACKHACK */
-      
-      if(arguments == (char **) NULL)   
 	{
-	  printf("Usage is: \tgrab  [<username> <instance id>] ");
-	  printf("[-create_new_instance]\n");
-	  printf("\t\t[-do_not_change_instance] [-instance <instance id>]\n");
-	  return(ERROR);
+	  break;
 	}
+      
+    }
+
+  if(status != SUCCESS)
+    {
+      fprintf(stderr,"Usage is: \tgrab  [<username> <instance id>] "
+	      "[-create_new_instance]\n"
+	      "\t\t[-do_not_change_instance] [-instance <instance id>]\n");
+      return ERROR;
     }
 
   status = t_grab(&Request,flag,hold);
-  return(status);
+  return status;
 }
 
 /*
@@ -110,13 +112,16 @@ do_olc_forward(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 	
+  if(arguments = NULL)
+    return ERROR;
   arguments++;
-  while(*arguments != (char *)NULL)
+
+  while(*arguments != NULL)
     {
       if (is_flag(*arguments, "-off", 2))
 	{
@@ -136,26 +141,25 @@ do_olc_forward(arguments)
 	{
 	  arguments++;
 	  status = t_input_status(&Request, *arguments);
+	  if(*arguments != NULL)
+	    arguments++; /* Argument eaten by t_input_status(). */
 	  if(status != SUCCESS)
-	    return(status);
-	  if(*arguments != (char *) NULL)
-	    arguments++;
+	    break;
 	  continue;
 	}
 
-      arguments = handle_argument(arguments, &Request, &status);
+      status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
-	return(ERROR);
+	break;
+    }
 
-      arguments += num_of_args;		/* HACKHACKHACK */
-
-      if(arguments == (char **) NULL)   /* error */
-	{
-	  printf("Usage is: \tforward  [<username> <instance id>] ");
-	  printf("[-status <status>]\n\t\t[-off] [-unanswered] ");
-	  printf("[-instance <instance id>]\n");
-	  return(ERROR);
-	}
+  if(status != SUCCESS)   /* error */
+    {
+      fprintf(stderr,
+	      "Usage is: \tforward  [<username> <instance id>] "
+	      "[-status <status>]\n\t\t[-off] [-unanswered] "
+	      "[-instance <instance id>]\n");
+      return ERROR;
     }
 
   status = t_forward(&Request);

@@ -16,7 +16,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc_parser.h,v 1.15 1999-06-28 22:52:33 ghudson Exp $
+ *	$Id: olc_parser.h,v 1.16 1999-07-08 22:56:54 ghudson Exp $
  */
 
 
@@ -112,6 +112,7 @@ ERRCODE do_olc_version (char **arguments );
 ERRCODE do_olc_topic (char **arguments );
 
 /* p_utils.c */
+ERRCODE handle_common_arguments(char ***args, REQUEST *req);
 char **handle_argument (char **args , REQUEST *req , ERRCODE *status );
 
 /* p_zephyr.c */
