@@ -41,11 +41,6 @@
 
 #define CAMEL_LOCAL_SUMMARY_VERSION (0x200)
 
-struct _CamelLocalSummaryPrivate {
-};
-
-#define _PRIVATE(o) (((CamelLocalSummary *)(o))->priv)
-
 static CamelMessageInfo * message_info_new (CamelFolderSummary *, struct _header_raw *);
 
 static int local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelMessageInfo *mi);
@@ -100,10 +95,7 @@ camel_local_summary_class_init(CamelLocalSummaryClass *klass)
 static void
 camel_local_summary_init(CamelLocalSummary *obj)
 {
-	struct _CamelLocalSummaryPrivate *p;
 	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	p = _PRIVATE(obj) = g_malloc0(sizeof(*p));
 
 	/* subclasses need to set the right instance data sizes */
 	s->message_info_size = sizeof(CamelMessageInfo);
@@ -118,16 +110,20 @@ camel_local_summary_finalise(CamelObject *obj)
 {
 	CamelLocalSummary *mbs = CAMEL_LOCAL_SUMMARY(obj);
 
+	if (mbs->index)
+		camel_object_unref((CamelObject *)mbs->index);
 	g_free(mbs->folder_path);
 }
 
 void
-camel_local_summary_construct(CamelLocalSummary *new, const char *filename, const char *local_name, ibex *index)
+camel_local_summary_construct(CamelLocalSummary *new, const char *filename, const char *local_name, CamelIndex *index)
 {
 	camel_folder_summary_set_build_content(CAMEL_FOLDER_SUMMARY(new), FALSE);
 	camel_folder_summary_set_filename(CAMEL_FOLDER_SUMMARY(new), filename);
 	new->folder_path = g_strdup(local_name);
 	new->index = index;
+	if (index)
+		camel_object_ref((CamelObject *)index);
 }
 
 static int
@@ -154,6 +150,11 @@ camel_local_summary_load(CamelLocalSummary *cls, int forceindex, CamelException 
 	}
 
 	return 0;
+}
+
+void camel_local_summary_check_force(CamelLocalSummary *cls)
+{
+	cls->check_force = 1;
 }
 
 char *
@@ -296,15 +297,18 @@ camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const Cam
  * @fd: 
  * @header: 
  * @xevline: 
+ * @status:
+ * @xstatus:
  * 
  * Write a bunch of headers to the file @fd.  IF xevline is non NULL, then
  * an X-Evolution header line is created at the end of all of the headers.
+ * If @status is non NULL, then a Status header line is also written.
  * The headers written are termianted with a blank line.
  * 
  * Return value: -1 on error, otherwise the number of bytes written.
  **/
 int
-camel_local_summary_write_headers(int fd, struct _header_raw *header, char *xevline)
+camel_local_summary_write_headers(int fd, struct _header_raw *header, const char *xevline, const char *status, const char *xstatus)
 {
 	int outlen = 0, len;
 	int newfd;
@@ -323,7 +327,9 @@ camel_local_summary_write_headers(int fd, struct _header_raw *header, char *xevl
 	}
 
 	while (header) {
-		if (strcmp(header->name, "X-Evolution")) {
+		if (strcmp(header->name, "X-Evolution") != 0
+		    && (status == NULL || strcmp(header->name, "Status") != 0)
+		    && (xstatus == NULL || strcmp(header->name, "X-Status") != 0)) {
 			len = fprintf(out, "%s:%s\n", header->name, header->value);
 			if (len == -1) {
 				fclose(out);
@@ -334,14 +340,39 @@ camel_local_summary_write_headers(int fd, struct _header_raw *header, char *xevl
 		header = header->next;
 	}
 
-	if (xevline) {
-		len = fprintf(out, "X-Evolution: %s\n\n", xevline);
+	if (status) {
+		len = fprintf(out, "Status: %s\n", status);
 		if (len == -1) {
 			fclose(out);
 			return -1;
 		}
 		outlen += len;
 	}
+
+	if (xstatus) {
+		len = fprintf(out, "X-Status: %s\n", xstatus);
+		if (len == -1) {
+			fclose(out);
+			return -1;
+		}
+		outlen += len;
+	}
+
+	if (xevline) {
+		len = fprintf(out, "X-Evolution: %s\n", xevline);
+		if (len == -1) {
+			fclose(out);
+			return -1;
+		}
+		outlen += len;
+	}
+
+	len = fprintf(out, "\n");
+	if (len == -1) {
+		fclose(out);
+		return -1;
+	}
+	outlen += len;
 
 	if (fclose(out) == -1)
 		return -1;
@@ -368,7 +399,7 @@ local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 		g_warning("Could not save summary for %s: %s", cls->folder_path, strerror(errno));
 	}
 
-	if (cls->index && ibex_save(cls->index) == -1)
+	if (cls->index && camel_index_sync(cls->index) == -1)
 		g_warning("Could not sync index for %s: %s", cls->folder_path, strerror(errno));
 
 	return ret;
@@ -566,7 +597,7 @@ message_info_new(CamelFolderSummary *s, struct _header_raw *h)
 		if (cls->index
 		    && (doindex
 			|| cls->index_force
-			|| !ibex_contains_name(cls->index, (char *)camel_message_info_uid(mi)))) {
+			|| !camel_index_has_name(cls->index, camel_message_info_uid(mi)))) {
 			d(printf("Am indexing message %s\n", camel_message_info_uid(mi)));
 			camel_folder_summary_set_index(s, cls->index);
 		} else {

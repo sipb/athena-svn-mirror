@@ -21,6 +21,11 @@
 #ifndef _CAMEL_CHARSET_MAP_H
 #define _CAMEL_CHARSET_MAP_H
 
+#ifdef __cplusplus
+extern "C" {
+#pragma }
+#endif /* __cplusplus */
+
 #include <iconv.h>
 
 typedef struct _CamelCharset CamelCharset;
@@ -36,5 +41,11 @@ const char *camel_charset_best_name(CamelCharset *);
 
 /* helper function */
 const char *camel_charset_best(const char *in, int len);
+
+const char *camel_charset_iso_to_windows (const char *isocharset);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* ! _CAMEL_CHARSET_MAP_H */

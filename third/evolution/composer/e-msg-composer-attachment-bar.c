@@ -1,25 +1,26 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* e-msg-composer-attachment-bar.c
+/*
+ *  Authors: Ettore Perazzoli <ettore@ximian.com>
+ *           Jeffrey Stedfast <fejj@ximian.com>
  *
- * Copyright (C) 1999  Ximian, Inc.
+ *  Copyright 1999-2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public
- * published by the Free Software Foundation; either version 2 of the
- * License as published by the Free Software Foundation.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  *
- * Author: Ettore Perazzoli
  */
+
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -97,26 +98,19 @@ size_to_string (gulong size)
 	   I am not sure this will be OK for all the languages.  */
 	
 	if (size < 1e3L) {
-		if (size == 1)
-			size_string = g_strdup (_("1 byte"));
-		else
-			size_string = g_strdup_printf (_("%u bytes"),
-						       (guint) size);
+		size_string = NULL;
 	} else {
 		gdouble displayed_size;
 		
 		if (size < 1e6L) {
 			displayed_size = (gdouble) size / 1.0e3;
-			size_string = g_strdup_printf (_("%.1fK"),
-						       displayed_size);
+			size_string = g_strdup_printf (_("%.0fK"), displayed_size);
 		} else if (size < 1e9L) {
 			displayed_size = (gdouble) size / 1.0e6;
-			size_string = g_strdup_printf (_("%.1fM"),
-						       displayed_size);
+			size_string = g_strdup_printf (_("%.0fM"), displayed_size);
 		} else {
 			displayed_size = (gdouble) size / 1.0e9;
-			size_string = g_strdup_printf (_("%.1fG"),
-						       displayed_size);
+			size_string = g_strdup_printf (_("%.0fG"), displayed_size);
 		}
 	}
 	
@@ -220,7 +214,23 @@ pixbuf_for_mime_type (const char *mime_type)
 	const char *icon_name;
 	char *filename = NULL;
 	GdkPixbuf *pixbuf;
-	
+
+	/* Special-case these two since GNOME VFS doesn't know about them and
+	   they are used every time the user forwards one or more messages
+	   inline.  (See #9786.)  */
+	if (strcmp (mime_type, "message/digest") == 0
+	    || strcmp (mime_type, "multipart/digest") == 0
+	    || strcmp (mime_type, "message/rfc822") == 0) {
+		char *name;
+
+		name = g_concat_dir_and_file (EVOLUTION_ICONSDIR, "mail.png");
+		pixbuf = gdk_pixbuf_new_from_file (name);
+		g_free (name);
+
+		if (pixbuf != NULL)
+			return pixbuf;
+	}
+
 	icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
 	if (icon_name) {
 		if (*icon_name == '/') {
@@ -362,8 +372,12 @@ update (EMsgComposerAttachmentBar *bar)
 		
 		if (attachment->size) {
 			size_string = size_to_string (attachment->size);
-			label = g_strdup_printf ("%s (%s)", desc, size_string);
-			g_free (size_string);
+			if (size_string == NULL) {
+				label = g_strdup (desc);
+			} else {
+				label = g_strdup_printf ("%s (%s)", desc, size_string);
+				g_free (size_string);
+			}
 		} else
 			label = g_strdup (desc);
 		
@@ -444,18 +458,22 @@ static void
 add_from_user (EMsgComposerAttachmentBar *bar)
 {
 	EMsgComposer *composer;
-	char *file_name;
+	GPtrArray *file_list;
 	gboolean is_inline = FALSE;
+	int i;
 	
 	composer = E_MSG_COMPOSER (gtk_widget_get_toplevel (GTK_WIDGET (bar)));
 	
-	file_name = e_msg_composer_select_file_attachment (composer, &is_inline);
-	if (!file_name)
+	file_list = e_msg_composer_select_file_attachments (composer, &is_inline);
+	if (!file_list)
 		return;
 	
-	add_from_file (bar, file_name, is_inline ? "inline" : "attachment");
+	for (i = 0; i < file_list->len; i++) {
+		add_from_file (bar, file_list->pdata[i], is_inline ? "inline" : "attachment");
+		g_free (file_list->pdata[i]);
+	}
 	
-	g_free (file_name);
+	g_ptr_array_free (file_list, TRUE);
 }
 
 
@@ -569,6 +587,8 @@ destroy (GtkObject *object)
 	bar = E_MSG_COMPOSER_ATTACHMENT_BAR (object);
 	
 	free_attachment_list (bar);
+	
+	g_free (bar->priv);
 	
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -723,16 +743,28 @@ attach_to_multipart (CamelMultipart *multipart,
 		     const char *default_charset)
 {
 	CamelContentType *content_type;
+	CamelDataWrapper *content;
 	
 	content_type = camel_mime_part_get_content_type (attachment->body);
+	content = camel_medium_get_content_object (CAMEL_MEDIUM (attachment->body));
 	
-	if (!header_content_type_is (content_type, "multipart", "*")) {
+	if (!CAMEL_IS_MULTIPART (content)) {
 		if (header_content_type_is (content_type, "text", "*")) {
 			CamelMimePartEncodingType encoding;
 			CamelStreamFilter *filtered_stream;
 			CamelMimeFilterBestenc *bestenc;
 			CamelStream *stream;
+			const char *charset;
 			char *type;
+			
+			/* assume that if a charset is set, that the content is in UTF-8
+			 * or else already has rawtext set to TRUE */
+			if (!(charset = header_content_type_param (content_type, "charset"))) {
+				/* Let camel know that this text part was read in raw and thus is not in
+				 * UTF-8 format so that when it writes this part out, it doesn't try to
+				 * convert it from UTF-8 into the @default_charset charset. */
+				content->rawtext = TRUE;
+			}
 			
 			stream = camel_stream_null_new ();
 			filtered_stream = camel_stream_filter_new_with_stream (stream);
@@ -740,21 +772,35 @@ attach_to_multipart (CamelMultipart *multipart,
 			camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (bestenc));
 			camel_object_unref (CAMEL_OBJECT (stream));
 			
-			camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (attachment->body),
-							    CAMEL_STREAM (filtered_stream));
+			camel_data_wrapper_write_to_stream (content, CAMEL_STREAM (filtered_stream));
+			camel_object_unref (CAMEL_OBJECT (filtered_stream));
 			
 			encoding = camel_mime_filter_bestenc_get_best_encoding (bestenc, CAMEL_BESTENC_8BIT);
 			camel_mime_part_set_encoding (attachment->body, encoding);
 			
-			/* looks kinda nasty, but this is how ya have to do it */
-			header_content_type_set_param (content_type, "charset", default_charset);
-			type = header_content_type_format (content_type);
-			camel_mime_part_set_content_type (attachment->body, type);
-			g_free (type);
+			if (encoding == CAMEL_MIME_PART_ENCODING_7BIT) {
+				/* the text fits within us-ascii so this is safe */
+				/* FIXME: check that this isn't iso-2022-jp? */
+				default_charset = "us-ascii";
+			} else if (!charset) {
+				if (!default_charset)
+					default_charset = mail_config_get_default_charset ();
+				
+				/* FIXME: We should really check that this fits within the
+                                   default_charset and if not find one that does and/or
+				   allow the user to specify? */
+			}
+			
+			if (!charset) {
+				/* looks kinda nasty, but this is how ya have to do it */
+				header_content_type_set_param (content_type, "charset", default_charset);
+				type = header_content_type_format (content_type);
+				camel_mime_part_set_content_type (attachment->body, type);
+				g_free (type);
+			}
 			
 			camel_object_unref (CAMEL_OBJECT (bestenc));
-			camel_object_unref (CAMEL_OBJECT (filtered_stream));
-		} else if (!header_content_type_is (content_type, "message", "*")) {
+		} else if (!CAMEL_IS_MIME_MESSAGE (content)) {
 			camel_mime_part_set_encoding (attachment->body,
 						      CAMEL_MIME_PART_ENCODING_BASE64);
 		}
@@ -771,9 +817,7 @@ e_msg_composer_attachment_bar_to_multipart (EMsgComposerAttachmentBar *bar,
 	EMsgComposerAttachmentBarPrivate *priv;
 	GList *p;
 	
-	g_return_if_fail (bar != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER_ATTACHMENT_BAR (bar));
-	g_return_if_fail (multipart != NULL);
 	g_return_if_fail (CAMEL_IS_MULTIPART (multipart));
 	
 	priv = bar->priv;

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-stream-fs.c : file system based stream */
 
 /*
@@ -109,10 +109,11 @@ camel_stream_fs_get_type (void)
  * camel_stream_fs_new_with_fd:
  * @fd: a file descriptor
  *
- * Returns a stream associated with the given file descriptor.
- * When the stream is destroyed, the file descriptor will be closed.
+ * Creates a new fs stream using the given file descriptor @fd as the
+ * backing store. When the stream is destroyed, the file descriptor
+ * will be closed.
  *
- * Return value: the stream
+ * Returns a new fs stream.
  **/
 CamelStream *
 camel_stream_fs_new_with_fd (int fd)
@@ -242,16 +243,20 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 			FD_SET (cancel_fd, &rdset);
 			fdmax = MAX (stream_fs->fd, cancel_fd) + 1;
 			
-			select (fdmax, &rdset, 0, 0, NULL);
-			if (FD_ISSET (cancel_fd, &rdset)) {
-				fcntl (stream_fs->fd, F_SETFL, flags);
-				errno = EINTR;
-				return -1;
+			nread = -1;
+			if (select (fdmax, &rdset, 0, 0, NULL) != -1) {
+				if (FD_ISSET (cancel_fd, &rdset)) {
+					fcntl (stream_fs->fd, F_SETFL, flags);
+					errno = EINTR;
+					return -1;
+				}
+				
+				do {
+					nread = read (stream_fs->fd, buffer, n);
+				} while (nread == -1 && errno == EAGAIN);
+			} else if (errno == EINTR) {
+				errno = EAGAIN;
 			}
-			
-			do {
-				nread = read (stream_fs->fd, buffer, n);
-			} while (nread == -1 && errno == EAGAIN);
 		} while (nread == -1 && errno == EAGAIN);
 		
 		error = errno;
@@ -307,31 +312,37 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 			FD_SET (stream_fs->fd, &wrset);
 			FD_SET (cancel_fd, &rdset);
 			
-			select (fdmax, &rdset, &wrset, 0, NULL);
-			if (FD_ISSET (cancel_fd, &rdset)) {
-				fcntl (stream_fs->fd, F_SETFL, flags);
-				errno = EINTR;
-				return -1;
-			}
-			
-			do {
-				w = write (stream_fs->fd, buffer + written, n - written);
-			} while (w == -1 && errno == EINTR);
-			
-			if (w == -1) {
-				if (errno == EAGAIN) {
-					w = 0;
-				} else {
-					error = errno;
+			w = -1;
+			if (select (fdmax, &rdset, &wrset, 0, NULL) != -1) {
+				if (FD_ISSET (cancel_fd, &rdset)) {
 					fcntl (stream_fs->fd, F_SETFL, flags);
-					errno = error;
+					errno = EINTR;
 					return -1;
 				}
-			} else
-				written += w;
+				
+				do {
+					w = write (stream_fs->fd, buffer + written, n - written);
+				} while (w == -1 && errno == EINTR);
+				
+				if (w == -1) {
+					if (errno == EAGAIN) {
+						w = 0;
+					} else {
+						error = errno;
+						fcntl (stream_fs->fd, F_SETFL, flags);
+						errno = error;
+						return -1;
+					}
+				} else
+					written += w;
+			} else if (errno == EINTR) {
+				w = 0;
+			}
 		} while (w != -1 && written < n);
 		
+		error = errno;
 		fcntl (stream_fs->fd, F_SETFL, flags);
+		errno = error;
 	}
 	
 	if (written > 0)

@@ -1,6 +1,5 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
-/* 
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
  * Authors:
  *   Michael Zucchi <notzed@ximian.com>
  *   Dan Winship <danw@ximian.com>
@@ -23,9 +22,25 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "camel-file-utils.h"
+#include "camel-url.h"
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <string.h>
 
 #include <netinet/in.h>
+
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 
 /**
  * camel_file_util_encode_uint32:
@@ -158,7 +173,8 @@ int
 camel_file_util_decode_time_t (FILE *in, time_t *dest)
 {
 	time_t save = 0;
-	int v, i = sizeof (time_t) - 1;
+	int i = sizeof (time_t) - 1;
+	int v = EOF;
 
         while (i >= 0 && (v = fgetc (in)) != EOF) {
 		save |= ((time_t)v) << (i * 8);
@@ -204,7 +220,8 @@ int
 camel_file_util_decode_off_t (FILE *in, off_t *dest)
 {
 	off_t save = 0;
-	int v, i = sizeof(off_t) - 1;
+	int i = sizeof(off_t) - 1;
+	int v = EOF;
 
         while (i >= 0 && (v = fgetc (in)) != EOF) {
 		save |= ((off_t)v) << (i * 8);
@@ -231,7 +248,7 @@ camel_file_util_encode_string (FILE *out, const char *str)
 	register int len;
 
 	if (str == NULL)
-		return camel_file_util_encode_uint32 (out, 0);
+		return camel_file_util_encode_uint32 (out, 1);
 
 	len = strlen (str);
 	if (camel_file_util_encode_uint32 (out, len+1) == -1)
@@ -279,4 +296,37 @@ camel_file_util_decode_string (FILE *in, char **str)
 	return 0;
 }
 
+/* Make a directory heirarchy.
+   Always use full paths */
+int
+camel_file_util_mkdir(const char *path, mode_t mode)
+{
+	char *copy, *p;
 
+	g_assert(path && path[0] == '/');
+
+	p = copy = alloca(strlen(path)+1);
+	strcpy(copy, path);
+	do {
+		p = strchr(p + 1, '/');
+		if (p)
+			*p = '\0';
+		if (access(copy, F_OK) == -1) {
+			if (mkdir(copy, mode) == -1)
+				return -1;
+		}
+		if (p)
+			*p = '/';
+	} while (p);
+
+	return 0;
+}
+
+char *
+camel_file_util_safe_filename(const char *name)
+{
+	if (name == NULL)
+		return NULL;
+	
+	return camel_url_encode(name, TRUE, "/?()'*");
+}

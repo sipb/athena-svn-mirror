@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* e-folder.c
  *
- * Copyright (C) 2000  Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -26,6 +26,8 @@
 
 #include "e-folder.h"
 
+#include "e-util/e-corba-utils.h"
+
 #include <glib.h>
 #include <gtk/gtksignal.h>
 
@@ -44,8 +46,20 @@ struct _EFolderPrivate {
 	int child_highlight;
 	int unread_count;
 
-	int self_highlight : 1;
-	int is_stock : 1;
+	/* Folders have a default sorting priority of zero; when deciding the
+	   sort order in the Evolution folder tree, folders with the same
+	   priority value are compared by name, while folders with a higher
+	   priority number always come after the folders with a lower priority
+	   number.  */
+	 int sorting_priority;
+
+	unsigned int self_highlight : 1;
+	unsigned int is_stock : 1;
+	unsigned int can_sync_offline : 1;
+
+	/* Custom icon for this folder; if NULL the folder will just use the
+	   icon for its type.  */
+	char *custom_icon_name;
 };
 
 #define EF_CLASS(obj) \
@@ -54,6 +68,7 @@ struct _EFolderPrivate {
 
 enum {
 	CHANGED,
+	NAME_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -109,6 +124,8 @@ destroy (GtkObject *object)
 	g_free (priv->description);
 	g_free (priv->physical_uri);
 
+	g_free (priv->custom_icon_name);
+
 	g_free (priv);
 
 	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -132,6 +149,13 @@ class_init (EFolderClass *klass)
 					   gtk_marshal_NONE__NONE,
 					   GTK_TYPE_NONE, 0);
 
+	signals[NAME_CHANGED] = gtk_signal_new ("name_changed",
+						GTK_RUN_FIRST,
+						object_class->type,
+						GTK_SIGNAL_OFFSET (EFolderClass, name_changed),
+						gtk_marshal_NONE__NONE,
+						GTK_TYPE_NONE, 0);
+
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	klass->save_info 	= save_info;
@@ -146,14 +170,17 @@ init (EFolder *folder)
 	EFolderPrivate *priv;
 
 	priv = g_new (EFolderPrivate, 1);
-	priv->type            = NULL;
-	priv->name            = NULL;
-	priv->description     = NULL;
-	priv->physical_uri    = NULL;
-	priv->child_highlight = 0;
-	priv->unread_count    = 0;
-	priv->self_highlight  = FALSE;
-	priv->is_stock        = FALSE;
+	priv->type             = NULL;
+	priv->name             = NULL;
+	priv->description      = NULL;
+	priv->physical_uri     = NULL;
+	priv->child_highlight  = 0;
+	priv->unread_count     = 0;
+	priv->sorting_priority = 0;
+	priv->self_highlight   = FALSE;
+	priv->is_stock         = FALSE;
+	priv->can_sync_offline = FALSE;
+	priv->custom_icon_name = NULL;
 
 	folder->priv = priv;
 }
@@ -263,6 +290,45 @@ e_folder_get_is_stock (EFolder *folder)
 	return folder->priv->is_stock;
 }
 
+gboolean
+e_folder_get_can_sync_offline (EFolder *folder)
+{
+	g_return_val_if_fail (E_IS_FOLDER (folder), FALSE);
+
+	return folder->priv->can_sync_offline;
+}
+
+/**
+ * e_folder_get_custom_icon:
+ * @folder: An EFolder
+ * 
+ * Get the name of the custom icon for @folder, or NULL if no custom icon is
+ * associated with it.
+ **/
+const char *
+e_folder_get_custom_icon_name (EFolder *folder)
+{
+	g_return_val_if_fail (E_IS_FOLDER (folder), NULL);
+
+	return folder->priv->custom_icon_name;
+}
+
+/**
+ * e_folder_get_sorting_priority:
+ * @folder: An EFolder
+ * 
+ * Get the sorting priority for @folder.
+ * 
+ * Return value: Sorting priority value for @folder.
+ **/
+int
+e_folder_get_sorting_priority (EFolder *folder)
+{
+	g_return_val_if_fail (E_IS_FOLDER (folder), 0);
+
+	return folder->priv->sorting_priority;
+}
+
 
 void
 e_folder_set_name (EFolder *folder,
@@ -272,9 +338,13 @@ e_folder_set_name (EFolder *folder,
 	g_return_if_fail (E_IS_FOLDER (folder));
 	g_return_if_fail (name != NULL);
 
+	if (folder->priv->name == name)
+		return;
+
 	g_free (folder->priv->name);
 	folder->priv->name = g_strdup (name);
 
+	gtk_signal_emit (GTK_OBJECT (folder), signals[NAME_CHANGED]);
 	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
 }
 
@@ -313,6 +383,9 @@ e_folder_set_physical_uri (EFolder *folder,
 	g_return_if_fail (folder != NULL);
 	g_return_if_fail (E_IS_FOLDER (folder));
 	g_return_if_fail (physical_uri != NULL);
+
+	if (folder->priv->physical_uri == physical_uri)
+		return;
 
 	g_free (folder->priv->physical_uri);
 	folder->priv->physical_uri = g_strdup (physical_uri);
@@ -357,6 +430,100 @@ e_folder_set_is_stock (EFolder *folder,
 	folder->priv->is_stock = !! is_stock;
 
 	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+}
+
+void
+e_folder_set_can_sync_offline (EFolder *folder,
+			       gboolean can_sync_offline)
+{
+	g_return_if_fail (E_IS_FOLDER (folder));
+
+	folder->priv->can_sync_offline = !! can_sync_offline;
+
+	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+}
+
+/**
+ * e_folder_set_custom_icon_name:
+ * @folder: An EFolder
+ * @icon_name: Name of the icon to be set (to be found in the standard
+ * Evolution icon dir)
+ * 
+ * Set a custom icon for @folder (thus overriding the default icon, which is
+ * the one associated to the type of the folder).
+ **/
+void
+e_folder_set_custom_icon (EFolder *folder,
+			  const char *icon_name)
+{
+	g_return_if_fail (E_IS_FOLDER (folder));
+
+	if (icon_name == folder->priv->custom_icon_name)
+		return;
+
+	if (folder->priv->custom_icon_name == NULL
+	    || (icon_name != NULL && strcmp (icon_name, folder->priv->custom_icon_name) != 0)) {
+		g_free (folder->priv->custom_icon_name);
+		folder->priv->custom_icon_name = g_strdup (icon_name);
+
+		gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	}
+}
+
+/**
+ * e_folder_set_sorting_priority:
+ * @folder: An EFolder
+ * @sorting_priority: A sorting priority number
+ * 
+ * Set the sorting priority for @folder.  Folders have a default sorting
+ * priority of zero; when deciding the sort order in the Evolution folder tree,
+ * folders with the same priority value are compared by name, while folders
+ * with a higher priority number always come after the folders with a lower
+ * priority number.
+ **/
+void
+e_folder_set_sorting_priority (EFolder *folder,
+			       int sorting_priority)
+{
+	g_return_if_fail (E_IS_FOLDER (folder));
+
+	if (folder->priv->sorting_priority == sorting_priority)
+		return;
+
+	folder->priv->sorting_priority = sorting_priority;
+
+	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+}
+
+
+/* Gotta love CORBA.  */
+
+static CORBA_char *
+safe_corba_string_dup (const char *s)
+{
+	if (s == NULL)
+		return CORBA_string_dup ("");
+
+	return CORBA_string_dup (s);
+}
+
+void
+e_folder_to_corba (EFolder *folder,
+		   const char *evolution_uri,
+		   GNOME_Evolution_Folder *folder_return)
+{
+	g_return_if_fail (E_IS_FOLDER (folder));
+	g_return_if_fail (folder_return != NULL);
+
+	folder_return->type            = safe_corba_string_dup (e_folder_get_type_string (folder));
+	folder_return->description     = safe_corba_string_dup (e_folder_get_description (folder));
+	folder_return->displayName     = safe_corba_string_dup (e_folder_get_name (folder));
+	folder_return->physicalUri     = safe_corba_string_dup (e_folder_get_physical_uri (folder));
+	folder_return->evolutionUri    = safe_corba_string_dup (evolution_uri);
+	folder_return->customIconName  = safe_corba_string_dup (e_folder_get_custom_icon_name (folder));
+	folder_return->unreadCount     = e_folder_get_unread_count (folder);
+	folder_return->canSyncOffline  = e_folder_get_can_sync_offline (folder);
+	folder_return->sortingPriority = e_folder_get_sorting_priority (folder);
 }
 
 

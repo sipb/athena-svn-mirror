@@ -28,6 +28,8 @@ extern "C" {
 
 typedef struct _CamelAddress CamelAddress;
 typedef struct _header_content_type CamelContentType;
+typedef struct _CamelDigestFolder CamelDigestFolder;
+typedef struct _CamelDigestStore CamelDigestStore;
 typedef struct _CamelDiscoDiary CamelDiscoDiary;
 typedef struct _CamelDiscoFolder CamelDiscoFolder;
 typedef struct _CamelDiscoStore CamelDiscoStore;
@@ -45,6 +47,7 @@ typedef struct _CamelMimeFilter CamelMimeFilter;
 typedef struct _CamelMimeFilterBasic CamelMimeFilterBasic;
 typedef struct _CamelMimeFilterBestenc CamelMimeFilterBestenc;
 typedef struct _CamelMimeFilterCharset CamelMimeFilterCharset;
+typedef struct _CamelMimeFilterChomp CamelMimeFilterChomp;
 typedef struct _CamelMimeFilterIndex CamelMimeFilterIndex;
 typedef struct _CamelMimeFilterLinewrap CamelMimeFilterLinewrap;
 typedef struct _CamelMimeFilterSave CamelMimeFilterSave;
@@ -71,6 +74,7 @@ typedef struct _CamelTcpStream CamelTcpStream;
 typedef struct _CamelTcpStreamRaw CamelTcpStreamRaw;
 typedef struct _CamelTcpStreamSSL CamelTcpStreamSSL;
 typedef struct _CamelTcpStreamOpenSSL CamelTcpStreamOpenSSL;
+typedef struct _CamelHttpStream CamelHttpStream;
 typedef struct _CamelTransport CamelTransport;
 
 #ifdef __cplusplus

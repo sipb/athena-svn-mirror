@@ -222,17 +222,18 @@ struct _header_scan_state {
 
 	int atleast;
 
-	int seek;		/* current offset to start of buffer */
+	off_t seek;		/* current offset to start of buffer */
 	int unstep;		/* how many states to 'unstep' (repeat the current state) */
 
 	unsigned int midline:1;		/* are we mid-line interrupted? */
 	unsigned int scan_from:1;	/* do we care about From lines? */
 	unsigned int scan_pre_from:1;	/* do we return pre-from data? */
+	unsigned int eof:1;		/* reached eof? */
 
-	int start_of_from;	/* where from started */
-	int start_of_headers;	/* where headers started from the last scan */
+	off_t start_of_from;	/* where from started */
+	off_t start_of_headers;	/* where headers started from the last scan */
 
-	int header_start;	/* start of last header, or -1 */
+	off_t header_start;	/* start of last header, or -1 */
 
 	/* filters to apply to all content before output */
 	int filterid;		/* id of next filter */
@@ -572,9 +573,6 @@ camel_mime_parser_from_line(CamelMimeParser *m)
  * will be relative to the current file position of the file
  * descriptor.  As a result, seekable descritors should
  * be seeked using the parser seek functions.
- * 
- * An initial buffer will be read from the file descriptor
- * immediately, although no parsing will occur.
  *
  * Return value: Returns -1 on error.
  **/
@@ -595,9 +593,6 @@ camel_mime_parser_init_with_fd(CamelMimeParser *m, int fd)
  * offsets will be relative to the current file position of
  * the stream.  As a result, seekable streams should only
  * be seeked using the parser seek function.
- *
- * An initial buffer will be read from the stream
- * immediately, although no parsing will occur.
  * 
  * Return value: -1 on error.
  **/
@@ -965,7 +960,7 @@ folder_read(struct _header_scan_state *s)
 	int len;
 	int inoffset;
 
-	if (s->inptr<s->inend-s->atleast)
+	if (s->inptr<s->inend-s->atleast || s->eof)
 		return s->inend-s->inptr;
 #ifdef PURIFY
 	purify_watch_remove(inend_id);
@@ -987,6 +982,7 @@ folder_read(struct _header_scan_state *s)
 		s->seek += s->inptr - s->inbuf;
 		s->inptr = s->inbuf;
 		s->inend = s->inbuf+len+inoffset;
+		s->eof = (len == 0);
 		r(printf("content = %d '%.*s'\n",s->inend - s->inptr,  s->inend - s->inptr, s->inptr));
 	} else {
 		s->ioerrno = errno?errno:EIO;
@@ -1018,7 +1014,6 @@ static off_t
 folder_seek(struct _header_scan_state *s, off_t offset, int whence)
 {
 	off_t newoffset;
-	int len;
 
 	if (s->stream) {
 		if (CAMEL_IS_SEEKABLE_STREAM(s->stream)) {
@@ -1040,17 +1035,7 @@ folder_seek(struct _header_scan_state *s, off_t offset, int whence)
 		s->seek = newoffset;
 		s->inptr = s->inbuf;
 		s->inend = s->inbuf;
-		if (s->stream)
-			len = camel_stream_read(s->stream, s->inbuf, SCAN_BUF);
-		else
-			len = read(s->fd, s->inbuf, SCAN_BUF);
-		if (len>=0) {
-			s->inend = s->inbuf+len;
-			s->inend[0] = '\n';
-		} else {
-			newoffset = -1;
-			s->ioerrno = errno?errno:EIO;
-		}
+		s->eof = FALSE;
 	} else {
 		s->ioerrno = errno?errno:EIO;
 	}
@@ -1109,14 +1094,18 @@ folder_scan_skip_line(struct _header_scan_state *s, GByteArray *save)
 
 	s->atleast = 1;
 
+	d(printf("skipping line\n"));
+
 	while ( (len = folder_read(s)) > 0 && len > s->atleast) { /* ensure we have at least enough room here */
 		inptr = s->inptr;
 		inend = s->inend-1;
 
 		c = -1;
 		while (inptr<inend
-		       && (c = *inptr++)!='\n')
+		       && (c = *inptr++)!='\n') {
+			d(printf("(%2x,%c)", c, isprint(c)?c:'.'));
 			;
+		}
 
 		if (save)
 			g_byte_array_append(save, s->inptr, inptr-s->inptr);
@@ -1323,7 +1312,7 @@ folder_scan_header(struct _header_scan_state *s, int *lastone)
 						/* otherwise, complete header, add it */
 						s->outptr[0] = 0;
 				
-						h(printf("header '%.20s' at %d\n", s->outbuf, s->header_start));
+						h(printf("header '%.20s' at %d\n", s->outbuf, (int)s->header_start));
 						
 						header_raw_append_parse(&h->headers, s->outbuf, s->header_start);
 						s->outptr = s->outbuf;
@@ -1388,7 +1377,7 @@ folder_scan_content(struct _header_scan_state *s, int *lastone, char **data, int
 		newatleast = 1;
 	*lastone = FALSE;
 
-	c(printf("atleast = %d\n", s->atleast));
+	c(printf("atleast = %d\n", newatleast));
 
 	do {
 		s->atleast = newatleast;
@@ -1428,7 +1417,7 @@ folder_scan_content(struct _header_scan_state *s, int *lastone, char **data, int
 			}
 
 			c(printf("ran out of input, dumping what i have (%d) bytes midline = %s\n",
-				 inptr-start, s->midline?"TRUE":"FALSE"));
+				inptr-start, s->midline?"TRUE":"FALSE"));
 			goto content;
 		}
 		newatleast = 1;
@@ -1447,7 +1436,13 @@ folder_scan_content(struct _header_scan_state *s, int *lastone, char **data, int
 	return NULL;
 
 content:
-	part = s->parts;
+	/* treat eof as the last boundary in From mode */
+	if (s->scan_from && s->eof && s->atleast <= 1) {
+		onboundary = TRUE;
+		part = NULL;
+	} else {
+		part = s->parts;
+	}
 normal_exit:
 	s->atleast = atleast;
 	s->inptr = inptr;
@@ -1513,6 +1508,7 @@ folder_scan_init(void)
 	s->midline = FALSE;
 	s->scan_from = FALSE;
 	s->scan_pre_from = FALSE;
+	s->eof = FALSE;
 
 	s->filters = NULL;
 	s->filterid = 1;
@@ -1523,55 +1519,52 @@ folder_scan_init(void)
 	return s;
 }
 
+static void
+drop_states(struct _header_scan_state *s)
+{
+	while (s->parts) {
+		folder_scan_drop_step(s);
+	}
+	s->unstep = 0;
+	s->state = HSCAN_INITIAL;
+}
+
+static void
+folder_scan_reset(struct _header_scan_state *s)
+{
+	drop_states(s);
+	s->inend = s->inbuf;
+	s->inptr = s->inbuf;
+	s->inend[0] = '\n';
+	if (s->fd != -1) {
+		close(s->fd);
+		s->fd = -1;
+	}
+	if (s->stream) {
+		camel_object_unref((CamelObject *)s->stream);
+		s->stream = NULL;
+	}
+	s->ioerrno = 0;
+	s->eof = FALSE;
+}
+
 static int
 folder_scan_init_with_fd(struct _header_scan_state *s, int fd)
 {
-	int len;
+	folder_scan_reset(s);
+	s->fd = fd;
 
-	len = read(fd, s->inbuf, SCAN_BUF);
-	if (len>=0) {
-		s->inend = s->inbuf+len;
-		s->inptr = s->inbuf;
-		s->inend[0] = '\n';
-		if (s->fd != -1)
-			close(s->fd);
-		s->fd = fd;
-		if (s->stream) {
-			camel_object_unref((CamelObject *)s->stream);
-			s->stream = NULL;
-		}
-		s->ioerrno = 0;
-		return 0;
-	} else {
-		s->ioerrno = errno?errno:EIO;
-		return -1;
-	}
+	return 0;
 }
 
 static int
 folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream)
 {
-	int len;
+	folder_scan_reset(s);
+	s->stream = stream;
+	camel_object_ref((CamelObject *)stream);
 
-	len = camel_stream_read(stream, s->inbuf, SCAN_BUF);
-	if (len >= 0) {
-		s->inend = s->inbuf+len;
-		s->inptr = s->inbuf;
-		s->inend[0] = '\n';
-		if (s->stream)
-			camel_object_unref((CamelObject *)s->stream);
-		s->stream = stream;
-		camel_object_ref((CamelObject *)stream);
-		if (s->fd != -1) {
-			close(s->fd);
-			s->fd = -1;
-		}
-		s->ioerrno = 0;
-		return 0;
-	} else {
-		s->ioerrno = errno?errno:EIO;
-		return -1;
-	}
+	return 0;
 }
 
 #define USE_FROM
@@ -1669,8 +1662,8 @@ tail_recurse:
 		if ( (content = header_raw_find(&h->headers, "Content-Type", NULL))
 		     && (ct = header_content_type_decode(content))) {
 			if (!strcasecmp(ct->type, "multipart")) {
-				bound = header_content_type_param(ct, "boundary");
-				if (bound) {
+				if (!header_content_type_is(ct, "multipart", "signed")
+				    && (bound = header_content_type_param(ct, "boundary"))) {
 					d(printf("multipart, boundary = %s\n", bound));
 					h->boundarylen = strlen(bound)+2;
 					h->boundarylenfinal = h->boundarylen+2;
@@ -1678,11 +1671,11 @@ tail_recurse:
 					sprintf(h->boundary, "--%s--", bound);
 					type = HSCAN_MULTIPART;
 				} else {
-					header_content_type_unref(ct);
-					ct = header_content_type_decode("text/plain");
+					/*header_content_type_unref(ct);
+					  ct = header_content_type_decode("text/plain");*/
 /* We can't quite do this, as it will mess up all the offsets ... */
 /*					header_raw_replace(&h->headers, "Content-Type", "text/plain", offset);*/
-					g_warning("Multipart with no boundary, treating as text/plain");
+					/*g_warning("Multipart with no boundary, treating as text/plain");*/
 				}
 			} else if (!strcasecmp(ct->type, "message")) {
 				if (!strcasecmp(ct->subtype, "rfc822")
@@ -1727,8 +1720,7 @@ tail_recurse:
 				while (f) {
 					camel_mime_filter_filter(f->filter, *databuffer, *datalength, presize,
 								 databuffer, datalength, &presize);
-					d(printf ("Filtered content (%s): '",
-						  camel_type_to_name(((CamelObject *)f->filter)->s.type)));
+					d(printf("Filtered content (%s): '", ((CamelObject *)f->filter)->klass->name));
 					d(fwrite(*databuffer, sizeof(char), *datalength, stdout));
 					d(printf("'\n"));
 					f = f->next;
@@ -1821,8 +1813,9 @@ static void
 folder_scan_drop_step(struct _header_scan_state *s)
 {
 	switch (s->state) {
-	case HSCAN_INITIAL:
 	case HSCAN_EOF:
+		s->state = HSCAN_INITIAL;
+	case HSCAN_INITIAL:
 		return;
 
 	case HSCAN_FROM:
@@ -1848,6 +1841,7 @@ folder_scan_drop_step(struct _header_scan_state *s)
 		return;
 	default:
 		/* FIXME: not sure if this is entirely right */
+		break;
 	}
 }
 

@@ -91,10 +91,15 @@ static void cal_backend_file_init (CalBackendFile *cbfile);
 static void cal_backend_file_destroy (GtkObject *object);
 
 static const char *cal_backend_file_get_uri (CalBackend *backend);
+static gboolean cal_backend_file_is_read_only (CalBackend *backend);
+static const char *cal_backend_file_get_email_address (CalBackend *backend);
 static CalBackendOpenStatus cal_backend_file_open (CalBackend *backend,
 						   const char *uristr,
 						   gboolean only_if_exists);
 static gboolean cal_backend_file_is_loaded (CalBackend *backend);
+static Query *cal_backend_file_get_query (CalBackend *backend,
+					  GNOME_Evolution_Calendar_QueryListener ql,
+					  const char *sexp);
 
 static CalMode cal_backend_file_get_mode (CalBackend *backend);
 static void cal_backend_file_set_mode (CalBackend *backend, CalMode mode);
@@ -117,8 +122,14 @@ static GNOME_Evolution_Calendar_CalComponentAlarms *cal_backend_file_get_alarms_
 	CalBackend *backend, const char *uid,
 	time_t start, time_t end, gboolean *object_found);
 
-static gboolean cal_backend_file_update_objects (CalBackend *backend, const char *calobj);
-static gboolean cal_backend_file_remove_object (CalBackend *backend, const char *uid);
+static CalBackendResult cal_backend_file_update_objects (CalBackend *backend,
+							 const char *calobj);
+static CalBackendResult cal_backend_file_remove_object (CalBackend *backend, const char *uid);
+
+static CalBackendSendResult cal_backend_file_send_object (CalBackend *backend, 
+							  const char *calobj, gchar **new_calobj,
+							  GNOME_Evolution_Calendar_UserList **user_list,
+							  char error_msg[256]);
 
 static icaltimezone* cal_backend_file_get_timezone (CalBackend *backend, const char *tzid);
 static icaltimezone* cal_backend_file_get_default_timezone (CalBackend *backend);
@@ -178,8 +189,11 @@ cal_backend_file_class_init (CalBackendFileClass *class)
 	object_class->destroy = cal_backend_file_destroy;
 
 	backend_class->get_uri = cal_backend_file_get_uri;
+	backend_class->is_read_only = cal_backend_file_is_read_only;
+	backend_class->get_email_address = cal_backend_file_get_email_address;
 	backend_class->open = cal_backend_file_open;
 	backend_class->is_loaded = cal_backend_file_is_loaded;
+	backend_class->get_query = cal_backend_file_get_query;
 	backend_class->get_mode = cal_backend_file_get_mode;
 	backend_class->set_mode = cal_backend_file_set_mode;	
 	backend_class->get_n_objects = cal_backend_file_get_n_objects;
@@ -194,6 +208,7 @@ cal_backend_file_class_init (CalBackendFileClass *class)
 	backend_class->get_alarms_for_object = cal_backend_file_get_alarms_for_object;
 	backend_class->update_objects = cal_backend_file_update_objects;
 	backend_class->remove_object = cal_backend_file_remove_object;
+	backend_class->send_object = cal_backend_file_send_object;
 
 	backend_class->get_timezone = cal_backend_file_get_timezone;
 	backend_class->get_default_timezone = cal_backend_file_get_default_timezone;
@@ -267,11 +282,11 @@ static void
 save (CalBackendFile *cbfile)
 {
 	CalBackendFilePrivate *priv;
-	GnomeVFSURI *uri;
+	GnomeVFSURI *uri, *backup_uri;
 	GnomeVFSHandle *handle = NULL;
 	GnomeVFSResult result;
 	GnomeVFSFileSize out;
-	gchar *tmp;
+	gchar *tmp, *backup_uristr;
 	char *buf;
 	
 	priv = cbfile->priv;
@@ -279,44 +294,57 @@ save (CalBackendFile *cbfile)
 	g_assert (priv->icalcomp != NULL);
 
 	uri = gnome_vfs_uri_new (priv->uri);
+	if (!uri)
+		goto error;
 
-	/* Make a backup copy of the file if it exists */
+	/* save calendar to backup file */
 	tmp = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-	if (tmp) {
-		GnomeVFSURI *backup_uri;
-		gchar *backup_uristr;
+	if (!tmp) {
+		gnome_vfs_uri_unref (uri);
+		goto error;
+	}
 		
-		backup_uristr = g_strconcat (tmp, "~", NULL);
-		backup_uri = gnome_vfs_uri_new (backup_uristr);
-		
-		result = gnome_vfs_move_uri (uri, backup_uri, TRUE);
-		gnome_vfs_uri_unref (backup_uri);
-		
-		g_free (tmp);
-		g_free (backup_uristr);
+	backup_uristr = g_strconcat (tmp, "~", NULL);
+	backup_uri = gnome_vfs_uri_new (backup_uristr);
+
+	g_free (tmp);
+	g_free (backup_uristr);
+
+	if (!backup_uri) {
+		gnome_vfs_uri_unref (uri);
+		goto error;
 	}
 	
-	/* Now write the new file out */
-	result = gnome_vfs_create_uri (&handle, uri, 
-				       GNOME_VFS_OPEN_WRITE,
-				       FALSE, 0666);
-	
-	if (result != GNOME_VFS_OK)
+	result = gnome_vfs_create_uri (&handle, backup_uri,
+                                       GNOME_VFS_OPEN_WRITE,
+                                       FALSE, 0666);
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_uri_unref (uri);
+		gnome_vfs_uri_unref (backup_uri);
 		goto error;
-	
+	}
+
 	buf = icalcomponent_as_ical_string (priv->icalcomp);
 	result = gnome_vfs_write (handle, buf, strlen (buf) * sizeof (char), &out);
+	gnome_vfs_close (handle);
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_uri_unref (uri);
+		gnome_vfs_uri_unref (backup_uri);
+		goto error;
+	}
 
+	/* now copy the temporary file to the real file */
+	result = gnome_vfs_move_uri (backup_uri, uri, TRUE);
+
+	gnome_vfs_uri_unref (uri);
+	gnome_vfs_uri_unref (backup_uri);
 	if (result != GNOME_VFS_OK)
 		goto error;
-
-	gnome_vfs_close (handle);
-	gnome_vfs_uri_unref (uri);
 
 	return;
 	
  error:
-	g_warning ("Error writing calendar file.");
+	notify_error (cbfile, gnome_vfs_result_to_string (result));
 	return;
 }
 
@@ -434,6 +462,24 @@ cal_backend_file_get_uri (CalBackend *backend)
 	g_assert (priv->uri != NULL);
 
 	return (const char *) priv->uri;
+}
+
+/* Is_read_only handler for the file backend */
+static gboolean
+cal_backend_file_is_read_only (CalBackend *backend)
+{
+	/* we just return FALSE, since all calendars are read-write */
+	return FALSE;
+}
+
+/* Get_email_address handler for the file backend */
+static const char *
+cal_backend_file_get_email_address (CalBackend *backend)
+{
+	/* A file backend has no particular email address associated
+	 * with it (although that would be a useful feature some day).
+	 */
+	return NULL;
 }
 
 /* Used from g_hash_table_foreach(), adds a category name to the sequence */
@@ -878,6 +924,11 @@ cal_backend_file_open (CalBackend *backend, const char *uristr, gboolean only_if
 					    | GNOME_VFS_URI_HIDE_HOST_NAME
 					    | GNOME_VFS_URI_HIDE_HOST_PORT
 					    | GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD));
+	if (!str_uri || !strlen (str_uri)) {
+		g_free (str_uri);
+		gnome_vfs_uri_unref (uri);
+		return CAL_BACKEND_OPEN_ERROR;
+	}
 
 	/* Load! */
 	file = fopen (str_uri, "r");
@@ -908,6 +959,19 @@ cal_backend_file_is_loaded (CalBackend *backend)
 	priv = cbfile->priv;
 
 	return (priv->icalcomp != NULL);
+}
+
+/* get_query handler for the file backend */
+static Query *
+cal_backend_file_get_query (CalBackend *backend,
+			    GNOME_Evolution_Calendar_QueryListener ql,
+			    const char *sexp)
+{
+	CalBackendFile *cbfile;
+
+	cbfile = CAL_BACKEND_FILE (backend);
+
+	return query_new (backend, ql, sexp);
 }
 
 /* is_remote handler for the file backend */
@@ -1039,8 +1103,11 @@ cal_backend_file_get_timezone_object (CalBackend *backend, const char *tzid)
 	g_assert (priv->comp_uid_hash != NULL);
 
 	zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
-	if (!zone)
-		return NULL;
+	if (!zone) {
+		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		if (!zone)
+			return NULL;
+	}
 
 	icalcomp = icaltimezone_get_component (zone);
 	if (!icalcomp)
@@ -1049,9 +1116,9 @@ cal_backend_file_get_timezone_object (CalBackend *backend, const char *tzid)
 	ical_string = icalcomponent_as_ical_string (icalcomp);
 	/* We dup the string; libical owns that memory. */
 	if (ical_string)
-	  return g_strdup (ical_string);
+		return g_strdup (ical_string);
 	else
-	  return NULL;
+		return NULL;
 }
 
 /* Builds a list of UIDs from a list of CalComponent objects */
@@ -1657,6 +1724,23 @@ notify_remove (CalBackendFile *cbfile, const char *uid)
 	}
 }
 
+/* Notifies a backend's clients that an error has occurred */
+static void
+notify_error (CalBackendFile *cbfile, const char *message)
+{
+	CalBackendFilePrivate *priv;
+	GList *l;
+
+	priv = cbfile->priv;
+
+	for (l = CAL_BACKEND (cbfile)->clients; l; l = l->next) {
+		Cal *cal;
+
+		cal = CAL (l->data);
+		cal_notify_error (cal, message);
+	}
+}
+
 /* Used from g_hash_table_foreach_remove(); removes and frees a category */
 static gboolean
 remove_category_cb (gpointer key, gpointer value, gpointer data)
@@ -1695,6 +1779,7 @@ cal_backend_file_update_object (CalBackendFile *cbfile,
 	CalComponent *old_comp;
 	CalComponent *comp;
 	const char *comp_uid;
+	struct icaltimetype last_modified;
 
 	/* Create a CalComponent wrapper for the icalcomponent. */
 	comp = cal_component_new ();
@@ -1710,6 +1795,10 @@ cal_backend_file_update_object (CalBackendFile *cbfile,
 		return NULL;
 	}
 
+	/* Set the LAST-MODIFIED time on the component */
+	last_modified = icaltime_from_timet (time (NULL), 0);
+	cal_component_set_last_modified (comp, &last_modified);
+	
 	/* Remove any old version of the component. */
 	old_comp = lookup_component (cbfile, comp_uid);
 	if (old_comp)
@@ -1723,34 +1812,59 @@ cal_backend_file_update_object (CalBackendFile *cbfile,
 	return comp_uid;
 }
 
+static const char*
+cal_backend_file_cancel_object (CalBackendFile *cbfile,
+				icalcomponent *icalcomp)
+{
+	CalComponent *old_comp;
+	icalproperty *uid;
+	const char *comp_uid;
 
+	/* Get the UID, and check it isn't empty. */
+	uid = icalcomponent_get_first_property (icalcomp, ICAL_UID_PROPERTY);
+	if (!uid)
+		return NULL;
+	comp_uid = icalproperty_get_uid (uid);
+	if (!comp_uid || !comp_uid[0])
+		return NULL;
+
+	/* Find the old version of the component. */
+	old_comp = lookup_component (cbfile, comp_uid);
+	if (!old_comp)
+		return NULL;
+
+	/* And remove it */
+	remove_component (cbfile, old_comp);
+	return comp_uid;
+}
 
 /* Update_objects handler for the file backend. */
-static gboolean
+static CalBackendResult
 cal_backend_file_update_objects (CalBackend *backend, const char *calobj)
 {
 	CalBackendFile *cbfile;
 	CalBackendFilePrivate *priv;
 	icalcomponent *toplevel_comp, *icalcomp = NULL;
 	icalcomponent_kind kind;
+	icalproperty_method method;
 	int old_n_categories, new_n_categories;
 	icalcomponent *subcomp;
-	gboolean retval = TRUE;
-	GList *comp_uid_list = NULL, *elem;
+	CalBackendResult retval = CAL_BACKEND_RESULT_SUCCESS;
+	GList *updated_uids = NULL, *removed_uids = NULL, *elem;
 
 	cbfile = CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, FALSE);
+	g_return_val_if_fail (priv->icalcomp != NULL, CAL_BACKEND_RESULT_INVALID_OBJECT);
 
-	g_return_val_if_fail (calobj != NULL, FALSE);
+	g_return_val_if_fail (calobj != NULL, CAL_BACKEND_RESULT_INVALID_OBJECT);
 
 	/* Pull the component from the string and ensure that it is sane */
 
 	toplevel_comp = icalparser_parse_string ((char *) calobj);
 
 	if (!toplevel_comp)
-		return FALSE;
+		return CAL_BACKEND_RESULT_INVALID_OBJECT;
 
 	kind = icalcomponent_isa (toplevel_comp);
 
@@ -1765,8 +1879,10 @@ cal_backend_file_update_objects (CalBackend *backend, const char *calobj)
 	} else if (kind != ICAL_VCALENDAR_COMPONENT) {
 		/* We don't support this type of component */
 		icalcomponent_free (toplevel_comp);
-		return FALSE;
+		return CAL_BACKEND_RESULT_INVALID_OBJECT;
 	}
+
+	method = icalcomponent_get_method (toplevel_comp);
 
 	/* The list of removed categories must be empty because we are about to
 	 * start a new scanning process.
@@ -1788,18 +1904,20 @@ cal_backend_file_update_objects (CalBackend *backend, const char *calobj)
 		    || child_kind == ICAL_VJOURNAL_COMPONENT) {
 			const char *comp_uid;
 
-			comp_uid = cal_backend_file_update_object (cbfile,
-								   subcomp);
-			if (comp_uid) {
-				/* We add a copy of the UID to a list, so we
-				   can emit notification signals later. We do
-				   a g_strdup() in case any of the components
-				   get removed while we are emitting
-				   notification signals. */
-				comp_uid_list = g_list_prepend (comp_uid_list,
-								g_strdup (comp_uid));
+			if (method == ICAL_METHOD_CANCEL) {
+				comp_uid = cal_backend_file_cancel_object (cbfile, subcomp);
+				if (comp_uid) {
+					removed_uids = g_list_prepend (removed_uids,
+								       g_strdup (comp_uid));
+				} else
+					retval = CAL_BACKEND_RESULT_NOT_FOUND;
 			} else {
-				retval = FALSE;
+				comp_uid = cal_backend_file_update_object (cbfile, subcomp);
+				if (comp_uid) {
+					updated_uids = g_list_prepend (updated_uids,
+								       g_strdup (comp_uid));
+				} else
+					retval = CAL_BACKEND_RESULT_INVALID_OBJECT;
 			}
 		}
 		subcomp = icalcomponent_get_next_component (toplevel_comp,
@@ -1817,12 +1935,19 @@ cal_backend_file_update_objects (CalBackend *backend, const char *calobj)
 	/* Now emit notification signals for all of the added components.
 	   We do this after adding them all to make sure the calendar is in a
 	   stable state before emitting signals. */
-	for (elem = comp_uid_list; elem; elem = elem->next) {
+	for (elem = updated_uids; elem; elem = elem->next) {
 		char *comp_uid = elem->data;
 		notify_update (cbfile, comp_uid);
 		g_free (comp_uid);
 	}
-	g_list_free (comp_uid_list);
+	g_list_free (updated_uids);
+
+	for (elem = removed_uids; elem; elem = elem->next) {
+		char *comp_uid = elem->data;
+		notify_remove (cbfile, comp_uid);
+		g_free (comp_uid);
+	}
+	g_list_free (removed_uids);
 
 	if (old_n_categories != new_n_categories ||
 	    g_hash_table_size (priv->removed_categories) != 0) {
@@ -1835,7 +1960,7 @@ cal_backend_file_update_objects (CalBackend *backend, const char *calobj)
 
 
 /* Remove_object handler for the file backend */
-static gboolean
+static CalBackendResult
 cal_backend_file_remove_object (CalBackend *backend, const char *uid)
 {
 	CalBackendFile *cbfile;
@@ -1845,13 +1970,13 @@ cal_backend_file_remove_object (CalBackend *backend, const char *uid)
 	cbfile = CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, FALSE);
+	g_return_val_if_fail (priv->icalcomp != NULL, CAL_BACKEND_RESULT_INVALID_OBJECT);
 
-	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (uid != NULL, CAL_BACKEND_RESULT_NOT_FOUND);
 
 	comp = lookup_component (cbfile, uid);
 	if (!comp)
-		return FALSE;
+		return CAL_BACKEND_RESULT_NOT_FOUND;
 
 	/* The list of removed categories must be empty because we are about to
 	 * start a new scanning process.
@@ -1869,15 +1994,27 @@ cal_backend_file_remove_object (CalBackend *backend, const char *uid)
 		notify_categories_changed (cbfile);
 	}
 
-	return TRUE;
+	return CAL_BACKEND_RESULT_SUCCESS;
 }
 
+static CalBackendSendResult
+cal_backend_file_send_object (CalBackend *backend, const char *calobj, char **new_calobj,
+			      GNOME_Evolution_Calendar_UserList **user_list, char error_msg[256])
+{
+	*new_calobj = g_strdup (calobj);
+	
+	*user_list = GNOME_Evolution_Calendar_UserList__alloc ();
+	(*user_list)->_length = 0;
+
+	return CAL_BACKEND_SEND_SUCCESS;
+}
 
 static icaltimezone*
 cal_backend_file_get_timezone (CalBackend *backend, const char *tzid)
 {
 	CalBackendFile *cbfile;
 	CalBackendFilePrivate *priv;
+	icaltimezone *zone;
 
 	cbfile = CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -1885,9 +2022,14 @@ cal_backend_file_get_timezone (CalBackend *backend, const char *tzid)
 	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
 
 	if (!strcmp (tzid, "UTC"))
-		return icaltimezone_get_utc_timezone ();
-	else
-		return icalcomponent_get_timezone (priv->icalcomp, tzid);
+	        zone = icaltimezone_get_utc_timezone ();
+	else {
+		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
+		if (!zone)
+			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	}
+
+	return zone;
 }
 
 

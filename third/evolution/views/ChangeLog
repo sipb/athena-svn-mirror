@@ -1,3 +1,39 @@
+2002-07-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* tasks/galview.xml: Add accelerators.  [#10069]
+
+2002-07-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* calendar/galview.xml: Add accelerators.  [#10067]
+
+2002-07-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* addressbook/galview.xml: Add accelerators.  [#10068]
+
+2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail/galview.xml: Offer the new By Follow Up Flag view.
+
+	* mail/By_Follow_Up_Flag.galview: New galview for Follow Up Flag.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* addressbook/Makefile.am (defaultaddressbook_DATA): Added
+	Address_Cards.galview.
+
+	* addressbook/Address_Cards.galview: New galview file for the
+	minicard view since they save data now.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* addressbook/galview.xml, calendar/galview.xml, mail/galview.xml,
+	tasks/galview.xml: Added default-view parameters.
+
+	* mail/As_Sent_Folder.galview: New galview.
+
+	* mail/Makefile.am, mail/galview.xml: Added As_Sent_Folder
+	galview.
+
 2001-10-21  Christopher James Lahey  <clahey@ximian.com>
 
 	* addressbook/By_Company.galview: Group by the correct column.

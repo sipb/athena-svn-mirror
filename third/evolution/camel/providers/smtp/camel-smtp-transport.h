@@ -30,16 +30,11 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
-
-#include <sys/param.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 #include "camel-transport.h"
+#include "camel-tcp-stream.h"
 
 #define CAMEL_SMTP_TRANSPORT_TYPE     (camel_smtp_transport_get_type ())
 #define CAMEL_SMTP_TRANSPORT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SMTP_TRANSPORT_TYPE, CamelSmtpTransport))
@@ -47,15 +42,29 @@ extern "C" {
 #define CAMEL_IS_SMTP_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SMTP_TRANSPORT_TYPE))
 
 
+#define CAMEL_SMTP_TRANSPORT_IS_ESMTP               (1 << 0)
+#define CAMEL_SMTP_TRANSPORT_8BITMIME               (1 << 1)
+#define CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES    (1 << 2)
+#define CAMEL_SMTP_TRANSPORT_STARTTLS               (1 << 3)
+
+#define CAMEL_SMTP_TRANSPORT_USE_SSL_ALWAYS         (1 << 4)
+#define CAMEL_SMTP_TRANSPORT_USE_SSL_WHEN_POSSIBLE  (1 << 5)
+
+#define CAMEL_SMTP_TRANSPORT_USE_SSL                (CAMEL_SMTP_TRANSPORT_USE_SSL_ALWAYS | \
+						     CAMEL_SMTP_TRANSPORT_USE_SSL_WHEN_POSSIBLE)
+
+#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 6)  /* set if we are using authtypes from a broken AUTH= */
+
 typedef struct {
 	CamelTransport parent_object;
-
+	
 	CamelStream *istream, *ostream;
-
-	gboolean use_ssl, is_esmtp;
-
-	struct sockaddr_in localaddr;
-
+	
+	guint32 flags;
+	
+	gboolean connected;
+	CamelTcpAddress *localaddr;
+	
 	GHashTable *authtypes;
 	
 } CamelSmtpTransport;

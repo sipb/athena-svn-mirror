@@ -153,10 +153,37 @@ filter_part_validate (FilterPart *fp)
 }
 
 int
+filter_part_eq(FilterPart *fp, FilterPart *fc)
+{
+	int truth;
+	GList *al, *bl;
+
+	truth = ((fp->name && fc->name && strcmp(fp->name, fc->name) == 0)
+		 || (fp->name == NULL && fc->name == NULL))
+		&& ((fp->title && fc->title && strcmp(fp->title, fc->title) == 0)
+		    || (fp->title == NULL && fc->title == NULL))
+		&& ((fp->code && fc->code && strcmp(fp->code, fc->code) == 0)
+		    || (fp->code == NULL && fc->code == NULL));
+
+	al = fp->elements;
+	bl = fc->elements;
+	while (truth && al && bl) {
+		FilterElement *a = al->data, *b = bl->data;
+
+		truth = filter_element_eq(a, b);
+
+		al = al->next;
+		bl = bl->next;
+	}
+
+	return truth && al == NULL && bl == NULL;
+}
+
+int
 filter_part_xml_create (FilterPart *ff, xmlNodePtr node)
 {
 	xmlNodePtr n;
-	char *type, *str, *decstr;
+	char *type, *str;
 	FilterElement *el;
 	
 	str = xmlGetProp(node, "name");
@@ -273,6 +300,36 @@ filter_part_clone (FilterPart *fp)
 	return new;
 }
 
+/* only copies values of matching parts in the right order */
+void
+filter_part_copy_values (FilterPart *dst, FilterPart *src)
+{
+	GList *dstl, *srcl, *dstt;
+	FilterElement *de, *se;
+
+	/* NOTE: we go backwards, it just works better that way */
+
+	/* for each source type, search the dest type for
+	   a matching type in the same order */
+	srcl = g_list_last(src->elements);
+	dstl = g_list_last(dst->elements);
+	while (srcl && dstl) {
+		se = srcl->data;
+		dstt = dstl;
+		while (dstt) {
+			de = dstt->data;
+			if (((GtkObject *)de)->klass == ((GtkObject *)se)->klass) {
+				filter_element_copy_value(de, se);
+				dstl = dstt->prev;
+				break;
+			}
+			dstt = dstt->prev;
+		}
+
+		srcl = srcl->prev;
+	}
+}
+
 FilterElement *
 filter_part_find_element (FilterPart *ff, const char *name)
 {
@@ -337,7 +394,7 @@ filter_part_build_code (FilterPart *ff, GString *out)
 		fe = l->data;
 		filter_element_build_code (fe, out, ff);
 		l = g_list_next (l);
-	}	
+	}
 }
 
 /**

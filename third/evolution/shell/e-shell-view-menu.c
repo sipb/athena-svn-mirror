@@ -24,7 +24,24 @@
 
 /* FIXME: This file is a bit of a mess.  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#include "e-shell-view-menu.h"
+
+#include "e-shell-shared-folder-picker-dialog.h"
+#include "e-shell-folder-creation-dialog.h"
+#include "e-shell-folder-selection-dialog.h"
+
+#include "e-shell-constants.h"
+
+#include "e-shell-importer.h"
+#include "e-shell-about-box.h"
+
+#include "e-shell-folder-commands.h"
+
+#include "evolution-shell-component-utils.h"
 
 #include <glib.h>
 
@@ -46,19 +63,6 @@
 
 #include <gal/widgets/e-gui-utils.h>
 
-#include "e-shell-folder-creation-dialog.h"
-#include "e-shell-folder-selection-dialog.h"
-
-#include "e-shell-constants.h"
-
-#include "e-shell-view-menu.h"
-#include "e-shell-importer.h"
-#include "e-shell-about-box.h"
-
-#include "e-shell-folder-commands.h"
-
-#include "evolution-shell-component-utils.h"
-
 
 /* Utility functions.  */
 
@@ -72,6 +76,30 @@ get_path_for_folder_op (EShellView *shell_view)
 		return path;
 
 	return e_shell_view_get_current_path (shell_view);
+}
+
+static void
+launch_pilot_settings (const char *extra_arg)
+{
+        char *args[] = {
+                "gpilotd-control-applet",
+		(char *) extra_arg,
+		NULL
+        };
+        int pid;
+
+        args[0] = gnome_is_program_in_path ("gpilotd-control-applet");
+        if (!args[0]) {
+		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+			  _("The GNOME Pilot tools do not appear to be installed on this system."));
+		return;
+        }
+
+        pid = gnome_execute_async (NULL, extra_arg ? 2 : 1, args);
+        g_free (args[0]);
+
+        if (pid == -1)
+                e_notice (NULL, GNOME_MESSAGE_BOX_ERROR, _("Error executing %s."), args[0]);
 }
 
 
@@ -129,7 +157,8 @@ command_close (BonoboUIComponent *uih,
 
 	shell_view = E_SHELL_VIEW (data);
 
-	gtk_object_destroy (GTK_OBJECT (shell_view));
+	if (e_shell_request_close_view (e_shell_view_get_shell (shell_view), shell_view))
+		gtk_widget_destroy (GTK_WIDGET (shell_view));
 }
 
 static void
@@ -143,7 +172,9 @@ command_quit (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 
 	shell = e_shell_view_get_shell (shell_view);
-	e_shell_destroy_all_views (shell);
+
+	if (e_shell_prepare_for_quit (shell))
+		e_shell_destroy_all_views (shell);
 }
 
 static void
@@ -206,6 +237,8 @@ command_about_box (BonoboUIComponent *uih,
 
 	about_box_window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_window_set_policy (GTK_WINDOW (about_box_window), FALSE, FALSE, FALSE);
+	gtk_signal_connect (GTK_OBJECT (about_box_window), "key_press_event",
+			    GTK_SIGNAL_FUNC (about_box_event_callback), &about_box_window);
 	gtk_signal_connect (GTK_OBJECT (about_box_window), "button_press_event",
 			    GTK_SIGNAL_FUNC (about_box_event_callback), &about_box_window);
 	gtk_signal_connect (GTK_OBJECT (about_box_window), "delete_event",
@@ -266,6 +299,20 @@ command_toggle_shortcut_bar (BonoboUIComponent           *component,
 
 
 static void
+command_send_receive (BonoboUIComponent *ui_component,
+		      void *data,
+		      const char *path)
+{
+	EShellView *shell_view;
+	EShell *shell;
+
+	shell_view = E_SHELL_VIEW (data);
+	shell = e_shell_view_get_shell (shell_view);
+
+	e_shell_send_receive (shell);
+}
+
+static void
 command_new_folder (BonoboUIComponent *uih,
 		    void *data,
 		    const char *path)
@@ -294,7 +341,7 @@ command_activate_view (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 
 	uri = g_strconcat (E_SHELL_URI_PREFIX, get_path_for_folder_op (shell_view), NULL);
-	e_shell_view_display_uri (shell_view, uri);
+	e_shell_view_display_uri (shell_view, uri, TRUE);
 	g_free (uri);
 }
 
@@ -382,6 +429,35 @@ command_add_folder_to_shortcut_bar (BonoboUIComponent *uih,
 }
 
 
+/* Opening and removing other users' folders.  */
+
+static void
+command_open_other_users_folder (BonoboUIComponent *uih,
+				 void *data,
+				 const char *path)
+{
+	EShellView *shell_view;
+	EShell *shell;
+
+	shell_view = E_SHELL_VIEW (data);
+	shell = e_shell_view_get_shell (shell_view);
+
+	e_shell_show_shared_folder_picker_dialog (shell, shell_view);
+}
+
+static void
+command_remove_other_users_folder (BonoboUIComponent *uih,
+				   void *data,
+				   const char *path)
+{
+	EShellView *shell_view;
+
+	shell_view = E_SHELL_VIEW (data);
+	e_shell_command_remove_shared_folder (e_shell_view_get_shell (shell_view), shell_view,
+					      get_path_for_folder_op (shell_view));
+}
+
+
 /* Going to a folder.  */
 
 static void
@@ -403,7 +479,7 @@ goto_folder_dialog_folder_selected_cb (EShellFolderSelectionDialog *folder_selec
 		shell_view = E_SHELL_VIEW (data);
 
 		uri = g_strconcat (E_SHELL_URI_PREFIX, path, NULL);
-		e_shell_view_display_uri (shell_view, uri);
+		e_shell_view_display_uri (shell_view, uri, TRUE);
 		g_free (uri);
 	}
 }
@@ -427,7 +503,7 @@ command_goto_folder (BonoboUIComponent *uih,
 								       _("Go to folder..."),
 								       _("Select the folder that you want to open"),
 								       current_uri,
-								       NULL, NULL);
+								       NULL);
 
 	gtk_window_set_transient_for (GTK_WINDOW (folder_selection_dialog), GTK_WINDOW (shell_view));
 
@@ -472,7 +548,6 @@ command_work_offline (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 	shell = e_shell_view_get_shell (shell_view);
 
-	g_message ("Putting the shell offline");
 	e_shell_go_offline (shell, shell_view);
 }
 
@@ -487,7 +562,6 @@ command_work_online (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 	shell = e_shell_view_get_shell (shell_view);
 
-	g_message ("Putting the shell online");
 	e_shell_go_online (shell, shell_view);
 }
 
@@ -527,7 +601,10 @@ new_shortcut_dialog_folder_selected_cb (EShellFolderSelectionDialog *folder_sele
 	evolution_uri = g_strconcat (E_SHELL_URI_PREFIX, path, NULL);
 
 	/* FIXME: I shouldn't have to set the type here.  Maybe.  */
-	e_shortcuts_add_shortcut (shortcuts, group_num, -1, evolution_uri, NULL, e_folder_get_unread_count (folder), e_folder_get_type_string (folder));
+	e_shortcuts_add_shortcut (shortcuts, group_num, -1, evolution_uri, NULL,
+				  e_folder_get_unread_count (folder),
+				  e_folder_get_type_string (folder),
+				  e_folder_get_custom_icon_name (folder));
 
 	g_free (evolution_uri);
 
@@ -545,10 +622,10 @@ command_new_shortcut (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 
 	folder_selection_dialog = e_shell_folder_selection_dialog_new (e_shell_view_get_shell (shell_view),
-								       _("Create a new shortcut"),
+								       _("Create New Shortcut"),
 								       _("Select the folder you want the shortcut to point to:"),
 								       e_shell_view_get_current_uri (shell_view),
-								       NULL, NULL);
+								       NULL);
 	e_shell_folder_selection_dialog_set_allow_creation (E_SHELL_FOLDER_SELECTION_DIALOG (folder_selection_dialog),
 							    FALSE);
 
@@ -564,40 +641,45 @@ command_new_shortcut (BonoboUIComponent *uih,
 /* Tools menu.  */
 
 static void
+command_settings (BonoboUIComponent *uih,
+		  void *data,
+		  const char *path)
+{
+	EShellView *shell_view;
+	
+	shell_view = E_SHELL_VIEW (data);
+
+	e_shell_view_show_settings (shell_view);
+}
+
+static void
 command_pilot_settings (BonoboUIComponent *uih,
 			void *data,
 			const char *path)
 {
-        char *args[] = {
-                "gpilotd-control-applet",
-                NULL
-        };
-        int pid;
+	launch_pilot_settings (NULL);
+}
 
-        args[0] = gnome_is_program_in_path ("gpilotd-control-applet");
-        if (!args[0]) {
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("The GNOME Pilot tools do not appear to be installed on this system."));
-		return;
-        }
-
-        pid = gnome_execute_async (NULL, 4, args);
-        g_free (args[0]);
-
-        if (pid == -1)
-                e_notice (NULL, GNOME_MESSAGE_BOX_ERROR, _("Error executing %s."), args[0]);
+static void
+command_pilot_conduit_settings (BonoboUIComponent *uih,
+				void *data,
+				const char *path)
+{
+	launch_pilot_settings ("--cap-id=1");
 }
 
 
-BonoboUIVerb new_verbs [] = {
+static BonoboUIVerb new_verbs [] = {
 	BONOBO_UI_VERB ("NewFolder", command_new_folder),
 	BONOBO_UI_VERB ("NewShortcut", command_new_shortcut),
 		  
 	BONOBO_UI_VERB_END
 };
 
-BonoboUIVerb file_verbs [] = {
+static BonoboUIVerb file_verbs [] = {
 	BONOBO_UI_VERB ("FileImporter", (BonoboUIVerbFn) show_import_wizard),
+	BONOBO_UI_VERB ("FileOpenOtherUsersFolder", command_open_other_users_folder),
+	BONOBO_UI_VERB ("FileRemoveOtherUsersFolder", command_remove_other_users_folder),
 	BONOBO_UI_VERB ("FileGoToFolder", command_goto_folder),
 	BONOBO_UI_VERB ("FileCreateFolder", command_create_folder),
 	BONOBO_UI_VERB ("FileClose", command_close),
@@ -609,7 +691,7 @@ BonoboUIVerb file_verbs [] = {
 	BONOBO_UI_VERB_END
 };
 
-BonoboUIVerb folder_verbs [] = {
+static BonoboUIVerb folder_verbs [] = {
 	BONOBO_UI_VERB ("ActivateView", command_activate_view),
 	BONOBO_UI_VERB ("OpenFolderInNewWindow", command_open_folder_in_new_window),
 	BONOBO_UI_VERB ("MoveFolder", command_move_folder),
@@ -623,23 +705,38 @@ BonoboUIVerb folder_verbs [] = {
 	BONOBO_UI_VERB_END
 };
 
-BonoboUIVerb tools_verbs[] = {
+static BonoboUIVerb actions_verbs[] = {
+	BONOBO_UI_VERB ("SendReceive", command_send_receive),
+
+	BONOBO_UI_VERB_END
+};
+
+static BonoboUIVerb tools_verbs[] = {
+	BONOBO_UI_VERB ("Settings", command_settings),
+
+	BONOBO_UI_VERB ("PilotConduitSettings", command_pilot_conduit_settings),
 	BONOBO_UI_VERB ("PilotSettings", command_pilot_settings),
 
 	BONOBO_UI_VERB_END
 };
 
-BonoboUIVerb help_verbs [] = {
+static BonoboUIVerb help_verbs [] = {
 	BONOBO_UI_VERB_DATA ("HelpFAQ", command_help_faq, NULL),
 
 	BONOBO_UI_VERB_END
 };
 
 static EPixmap pixmaps [] = {
+	E_PIXMAP ("/commands/SendReceive",      "send-receive.xpm"),
+
 	E_PIXMAP ("/menu/File/New/Folder",	"folder.xpm"),
 	E_PIXMAP ("/menu/File/Folder/Folder",	"folder.xpm"),
 	E_PIXMAP ("/menu/File/FileImporter",	"import.xpm"),
 	E_PIXMAP ("/menu/File/ToggleOffline",	"work_offline.xpm"),
+
+	E_PIXMAP ("/menu/Tools/Settings",         "settings-16.png"), 
+
+	E_PIXMAP ("/Toolbar/SendReceive",       "buttons/send-24-receive.png"),
 
 	E_PIXMAP_END
 };
@@ -761,6 +858,7 @@ e_shell_view_menu_setup (EShellView *shell_view)
 	bonobo_ui_component_add_verb_list_with_data (uic, folder_verbs, shell_view);
 	bonobo_ui_component_add_verb_list_with_data (uic, new_verbs, shell_view);
 
+	bonobo_ui_component_add_verb_list_with_data (uic, actions_verbs, shell_view);
 	bonobo_ui_component_add_verb_list_with_data (uic, tools_verbs, shell_view);
 
 	bonobo_ui_component_add_verb_list (uic, help_verbs);

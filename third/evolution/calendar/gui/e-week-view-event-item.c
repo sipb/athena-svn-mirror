@@ -589,7 +589,15 @@ e_week_view_event_item_draw_icons (EWeekViewEventItem *wveitem,
 	}
 
 	cal_component_get_categories_list (comp, &categories_list);
-	num_icons += g_slist_length (categories_list);
+	for (elem = categories_list; elem; elem = elem->next) {
+		char *category;
+		GdkPixmap *pixmap = NULL;
+		GdkBitmap *mask = NULL;
+
+		category = (char *) elem->data;
+		if (e_categories_config_get_icon_for (category, &pixmap, &mask))
+			num_icons++;
+	}
 
 	icon_x_inc = E_WEEK_VIEW_ICON_WIDTH + E_WEEK_VIEW_ICON_X_PAD;
 
@@ -636,8 +644,7 @@ e_week_view_event_item_draw_icons (EWeekViewEventItem *wveitem,
 		GdkBitmap *mask = NULL;
 
 		category = (char *) elem->data;
-		e_categories_config_get_icon_for (category, &pixmap, &mask);
-		if (pixmap == NULL)
+		if (!e_categories_config_get_icon_for (category, &pixmap, &mask))
 			continue;
 
 		if (icon_x + E_WEEK_VIEW_ICON_WIDTH <= x2) {
@@ -790,6 +797,9 @@ e_week_view_event_item_button_press (EWeekViewEventItem *wveitem,
 	} else if (bevent->button.button == 3) {
 		if (!GTK_WIDGET_HAS_FOCUS (week_view))
 			gtk_widget_grab_focus (GTK_WIDGET (week_view));
+
+		e_week_view_set_selected_time_range_visible (week_view, event->start, event->end);
+
 		e_week_view_show_popup_menu (week_view,
 					     (GdkEventButton*) bevent,
 					     wveitem->event_num);
@@ -855,7 +865,7 @@ e_week_view_event_item_double_click (EWeekViewEventItem *wveitem,
 	e_week_view_stop_editing_event (week_view);
 
 	if (week_view->calendar)
-		gnome_calendar_edit_object (week_view->calendar, event->comp);
+		gnome_calendar_edit_object (week_view->calendar, event->comp, FALSE);
 	else
 		g_warning ("Calendar not set");
 

@@ -1,5 +1,7 @@
 /* threaded folder testing */
 
+#include <string.h>
+
 #include "camel-test.h"
 #include "folders.h"
 #include "messages.h"
@@ -45,16 +47,16 @@ test_add_message(CamelFolder *folder, int j)
 
 	push("creating message %d\n", j);
 	msg = test_message_create_simple();
-	content = g_strdup_printf("Test message %d contents\n\n", j);
+	content = g_strdup_printf("Test message %08x contents\n\n", j);
 	test_message_set_content_simple((CamelMimePart *)msg, 0, "text/plain",
 							content, strlen(content));
 	test_free(content);
-	subject = g_strdup_printf("Test message %d subject", j);
+	subject = g_strdup_printf("Test message %08x subject", j);
 	camel_mime_message_set_subject(msg, subject);
 	pull();
 
 	push("appending simple message %d", j);
-	camel_folder_append_message(folder, msg, NULL, &ex);
+	camel_folder_append_message(folder, msg, NULL, NULL, &ex);
 	check_msg(!camel_exception_is_set(&ex), "%s", camel_exception_get_description(&ex));
 	pull();
 
@@ -82,7 +84,7 @@ worker(void *d)
 		d(printf("Thread %ld message %i\n", pthread_self(), i));
 		test_add_message(info->folder, id+i);
 
-		sub = g_strdup_printf("(match-all (header-contains \"subject\" \"message %d subject\"))", id+i);
+		sub = g_strdup_printf("(match-all (header-contains \"subject\" \"message %08x subject\"))", id+i);
 
 		push("searching for message %d\n\tusing: %s", id+i, sub);
 		res = camel_folder_search_by_expression(info->folder, sub, ex);
@@ -95,8 +97,8 @@ worker(void *d)
 		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 		pull();
 
-		push("comparing content");
-		content = g_strdup_printf("Test message %d contents\n\n", id+i);
+		content = g_strdup_printf("Test message %08x contents\n\n", id+i);
+		push("comparing content '%s': '%s'", res->pdata[0], content);
 		test_message_compare_content(camel_medium_get_content_object((CamelMedium *)msg), content, strlen(content));
 		test_free(content);
 		pull();

@@ -25,6 +25,7 @@
 #endif
 
 #include "e-select-names-bonobo.h"
+#include "e-simple-card-bonobo.h"
 
 #include <bonobo/bonobo-property-bag.h>
 #include <bonobo/bonobo-control.h>
@@ -48,13 +49,13 @@ static BonoboObjectClass *parent_class = NULL;
 struct _ESelectNamesBonoboPrivate {
 	ESelectNamesManager *manager;
 	BonoboEventSource *event_source;
-	guint manager_changed_tag;
-	guint manager_ok_tag;
 };
 
 enum _EntryPropertyID {
 	ENTRY_PROPERTY_ID_TEXT,
+	ENTRY_PROPERTY_ID_ADDRESSES,
 	ENTRY_PROPERTY_ID_DESTINATIONS,
+	ENTRY_PROPERTY_ID_SIMPLE_CARD_LIST,
 	ENTRY_PROPERTY_ID_ALLOW_CONTACT_LISTS,
 	ENTRY_PROPERTY_ID_ENTRY_CHANGED
 };
@@ -77,13 +78,27 @@ entry_get_property_fn (BonoboPropertyBag *bag,
 	switch (arg_id) {
 	case ENTRY_PROPERTY_ID_TEXT:
 		{
-			ESelectNamesModel *model;
-			model = E_SELECT_NAMES_MODEL (gtk_object_get_data (GTK_OBJECT (w), "select_names_model"));
-			g_assert (model != NULL);
+			ETextModel *text_model;
+			text_model = E_TEXT_MODEL (gtk_object_get_data (GTK_OBJECT (w), "select_names_text_model"));
+			g_assert (text_model != NULL);
 			
-			BONOBO_ARG_SET_STRING (arg, e_select_names_model_get_textification (model));
+			BONOBO_ARG_SET_STRING (arg, e_text_model_get_text (text_model));
 		break;
 		}
+
+	case ENTRY_PROPERTY_ID_ADDRESSES:
+		{
+			ESelectNamesModel *model;
+			char *text;
+
+			model = E_SELECT_NAMES_MODEL (gtk_object_get_data (GTK_OBJECT (w), "select_names_model"));
+			g_assert (model != NULL);
+
+			text = e_select_names_model_get_address_text (model, ", ");
+			BONOBO_ARG_SET_STRING (arg, text);
+			g_free (text);
+		}
+		break;
 
 	case ENTRY_PROPERTY_ID_DESTINATIONS:
 		{
@@ -96,6 +111,38 @@ entry_get_property_fn (BonoboPropertyBag *bag,
 			text = e_select_names_model_export_destinationv (model);
 			BONOBO_ARG_SET_STRING (arg, text);
 			g_free (text);
+		}
+		break;
+
+	case ENTRY_PROPERTY_ID_SIMPLE_CARD_LIST:
+		{
+			ESelectNamesModel *model;
+			int count;
+			int i;
+			GNOME_Evolution_Addressbook_SimpleCardList *card_list;
+
+			model = E_SELECT_NAMES_MODEL (gtk_object_get_data (GTK_OBJECT (w), "select_names_model"));
+			g_assert (model != NULL);
+
+			count = e_select_names_model_count (model);
+
+			card_list = GNOME_Evolution_Addressbook_SimpleCardList__alloc ();
+			card_list->_buffer = CORBA_sequence_GNOME_Evolution_Addressbook_SimpleCard_allocbuf (count);
+			card_list->_maximum = count;
+			card_list->_length = count;
+
+			for (i = 0; i < count; i++) {
+				const EDestination *destination = e_select_names_model_get_destination (model, i);
+				const ECard *card = e_destination_get_card (destination);
+				ECardSimple *simple = e_card_simple_new ((ECard *) card);
+				ESimpleCardBonobo *simple_card = e_simple_card_bonobo_new (simple);
+				gtk_object_unref (GTK_OBJECT (simple));
+
+				card_list->_buffer[i] = bonobo_object_corba_objref (BONOBO_OBJECT (simple_card));
+			}
+
+			CORBA_free (*(GNOME_Evolution_Addressbook_SimpleCardList **)arg->_value);
+			BONOBO_ARG_SET_GENERAL (arg, card_list, TC_GNOME_Evolution_Addressbook_SimpleCardList, GNOME_Evolution_Addressbook_SimpleCardList *, NULL);
 		}
 		break;
 
@@ -133,6 +180,7 @@ entry_set_property_fn (BonoboPropertyBag *bag,
 	switch (arg_id) {
 
 	case ENTRY_PROPERTY_ID_TEXT:
+	case ENTRY_PROPERTY_ID_ADDRESSES:
 		{
 			ESelectNamesModel *model;
 			model = E_SELECT_NAMES_MODEL (gtk_object_get_data (GTK_OBJECT (w), "select_names_model"));
@@ -314,9 +362,15 @@ impl_SelectNames_get_entry_for_section (PortableServer_Servant servant,
 	bonobo_property_bag_add (property_bag, "text", ENTRY_PROPERTY_ID_TEXT,
 				 BONOBO_ARG_STRING, NULL, NULL,
 				 BONOBO_PROPERTY_READABLE | BONOBO_PROPERTY_WRITEABLE);
+	bonobo_property_bag_add (property_bag, "addresses", ENTRY_PROPERTY_ID_ADDRESSES,
+				 BONOBO_ARG_STRING, NULL, NULL,
+				 BONOBO_PROPERTY_READABLE | BONOBO_PROPERTY_WRITEABLE);
 	bonobo_property_bag_add (property_bag, "destinations", ENTRY_PROPERTY_ID_DESTINATIONS,
 				 BONOBO_ARG_STRING, NULL, NULL,
 				 BONOBO_PROPERTY_READABLE | BONOBO_PROPERTY_WRITEABLE);
+	bonobo_property_bag_add (property_bag, "simple_card_list", ENTRY_PROPERTY_ID_SIMPLE_CARD_LIST,
+				 TC_GNOME_Evolution_Addressbook_SimpleCardList, NULL, NULL,
+				 BONOBO_PROPERTY_READABLE);
 	bonobo_property_bag_add (property_bag, "allow_contact_lists", ENTRY_PROPERTY_ID_ALLOW_CONTACT_LISTS,
 				 BONOBO_ARG_BOOLEAN, NULL, NULL,
 				 BONOBO_PROPERTY_READABLE | BONOBO_PROPERTY_WRITEABLE);
@@ -350,41 +404,21 @@ impl_SelectNames_activate_dialog (PortableServer_Servant servant,
 
 /* GtkObject methods.  */
 
-/* ACK! */
-typedef struct {
-	char *id;
-	EEntry *entry;
-} ESelectNamesManagerEntry;
-
 static void
 impl_destroy (GtkObject *object)
 {
 	ESelectNamesBonobo *select_names;
 	ESelectNamesBonoboPrivate *priv;
-	EIterator *iterator;
 
 	select_names = E_SELECT_NAMES_BONOBO (object);
 	priv = select_names->priv;
-
-	gtk_signal_disconnect (GTK_OBJECT (priv->manager), priv->manager_changed_tag);
-	gtk_signal_disconnect (GTK_OBJECT (priv->manager), priv->manager_ok_tag);
 
 	if (priv->manager->names) {
 		gtk_widget_destroy (GTK_WIDGET (priv->manager->names));
 		priv->manager->names = NULL;
 	}
 
-	/* More suckage */
-	iterator = e_list_get_iterator (priv->manager->entries);
-	for (e_iterator_reset (iterator); e_iterator_is_valid (iterator); e_iterator_next (iterator)) {
-		ESelectNamesManagerEntry *entry = (ESelectNamesManagerEntry *)e_iterator_get (iterator);
-		if (entry && entry->entry)
-			gtk_widget_destroy (GTK_WIDGET (entry->entry));
-	}
-	gtk_object_unref (GTK_OBJECT (iterator));
-	
-	/* FIXME: We leak on purpose.  This sucks. */
-	/* gtk_object_unref (GTK_OBJECT (priv->manager)); */
+	gtk_object_unref (GTK_OBJECT (priv->manager));
 
 	g_free (priv);
 }
@@ -436,17 +470,15 @@ init (ESelectNamesBonobo *select_names)
 	priv->manager = e_select_names_manager_new ();
 	priv->event_source = NULL;
 
-	priv->manager_changed_tag =
-		gtk_signal_connect (GTK_OBJECT (priv->manager),
-				    "changed",
-				    GTK_SIGNAL_FUNC (manager_changed_cb),
-				    select_names);
+	gtk_signal_connect (GTK_OBJECT (priv->manager),
+			    "changed",
+			    GTK_SIGNAL_FUNC (manager_changed_cb),
+			    select_names);
 
-	priv->manager_ok_tag =
-		gtk_signal_connect (GTK_OBJECT (priv->manager),
-				    "ok",
-				    GTK_SIGNAL_FUNC (manager_ok_cb),
-				    select_names);
+	gtk_signal_connect (GTK_OBJECT (priv->manager),
+			    "ok",
+			    GTK_SIGNAL_FUNC (manager_ok_cb),
+			    select_names);
 
 	select_names->priv = priv;
 }

@@ -14,6 +14,7 @@
 #include <signal.h>
 
 #include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-sound.h>
 #include <libgnomeui/gnome-init.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object-directory.h>
@@ -21,15 +22,14 @@
 #include <liboaf/liboaf.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-#ifdef GTKHTML_HAVE_GCONF
 #include <gconf/gconf.h>
-#endif
 
 #include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-cursors.h>
 #include <gal/widgets/e-unicode.h>
 
 #include "e-util/e-passwords.h"
+#include "e-util/e-proxy.h"
 
 #include "component-factory.h"
 #include "composer/evolution-composer.h"
@@ -87,15 +87,12 @@ main (int argc, char *argv [])
 	CORBA_ORB orb;
 	struct sigaction sa, osa;
 
-#ifdef DO_MCHECK
-	/* used to make elfence work */
-#if 0
-	free (malloc (10));
-#else
-	/*mtrace();*/
-	mcheck(blowup);
-#endif
-#endif
+        /* used to make elfence work */                                         
+	free(malloc (10));
+#ifdef DO_MCHECK                                                                
+        /*mtrace();*/                                                           
+        mcheck(blowup);                                                         
+#endif                                                                          
 	bindtextdomain (PACKAGE, EVOLUTION_LOCALEDIR);
 	textdomain (PACKAGE);
 
@@ -103,7 +100,7 @@ main (int argc, char *argv [])
 
 	gnome_init_with_popt_table ("evolution-mail-component", VERSION,
 				    argc, argv, oaf_popt_options, 0, NULL);
-
+	
 	sigaction (SIGSEGV, NULL, &osa);
 	if (osa.sa_handler != SIG_DFL) {
 		sa.sa_flags = 0;
@@ -112,12 +109,15 @@ main (int argc, char *argv [])
 		sigaction (SIGSEGV, &sa, NULL);
 		sigaction (SIGBUS, &sa, NULL);
 		sigaction (SIGFPE, &sa, NULL);
+		
+		sa.sa_handler = SIG_IGN;
+		sigaction (SIGXFSZ, &sa, NULL);
 		gnome_segv_handler = osa.sa_handler;
 		g_static_mutex_lock (&segv_mutex);
 	}
-
+	
 	orb = oaf_init (argc, argv);
-
+	
 	if (bonobo_init (orb, CORBA_OBJECT_NIL,
 			 CORBA_OBJECT_NIL) == FALSE) {
 		g_error ("Mail component could not initialize Bonobo.\n"
@@ -125,44 +125,49 @@ main (int argc, char *argv [])
 			 "RootPOA, it probably means\nyou compiled "
 			 "Bonobo against GOAD instead of OAF.");
 	}
-
+	
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-
-#ifdef GTKHTML_HAVE_GCONF
+	
 	gconf_init (argc, argv, NULL);
-#endif
-
+	
 	glade_gnome_init ();
-
+	
 	gnome_vfs_init ();
 	
 	e_cursors_init ();
-
+	
+	e_proxy_init ();
+	
 	e_passwords_init ("Mail");
-
+	
 	mail_config_init ();
 	mail_msg_init ();
 	
+	gnome_sound_init ("localhost");
+	
 	component_factory_init ();
-	evolution_composer_factory_init (composer_send_cb,
-					 composer_postpone_cb);
-
+	evolution_composer_factory_init (composer_send_cb, composer_save_draft_cb);
+	
 	if (gdk_threads_mutex) {
 		g_mutex_free (gdk_threads_mutex);
 		gdk_threads_mutex = NULL;
 	}
-
+	
+	g_print ("Evolution Mail ready and running.\n");
+	
 	GDK_THREADS_ENTER ();
 	bonobo_main ();
-
+	
 	mail_msg_cleanup();
-
+	
 	GDK_THREADS_LEAVE ();
 	
 	mail_config_write_on_exit ();
-
+	
 	e_passwords_shutdown ();
-
+	
+	gnome_sound_shutdown ();
+	
 	return 0;
 }

@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 #include <glib.h>
 #include <camel/camel-object.h>
@@ -41,6 +41,30 @@ extern "C" {
 #define CAMEL_IS_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_FOLDER_TYPE))
 
 typedef struct _CamelFolderChangeInfo CamelFolderChangeInfo;
+
+enum {
+	CAMEL_FOLDER_ARG_FIRST = CAMEL_ARG_FIRST + 0x1000,
+	CAMEL_FOLDER_ARG_NAME = CAMEL_FOLDER_ARG_FIRST,
+	CAMEL_FOLDER_ARG_FULL_NAME,
+	CAMEL_FOLDER_ARG_STORE,
+	CAMEL_FOLDER_ARG_PERMANENTFLAGS,
+	CAMEL_FOLDER_ARG_TOTAL,
+	CAMEL_FOLDER_ARG_UNREAD,
+	CAMEL_FOLDER_ARG_UID_ARRAY,
+	CAMEL_FOLDER_ARG_INFO_ARRAY,
+};
+
+enum {
+	CAMEL_FOLDER_NAME = CAMEL_FOLDER_ARG_NAME | CAMEL_ARG_STR,
+	CAMEL_FOLDER_FULL_NAME = CAMEL_FOLDER_ARG_FULL_NAME | CAMEL_ARG_STR,
+	CAMEL_FOLDER_STORE = CAMEL_FOLDER_ARG_STORE | CAMEL_ARG_OBJ,
+	CAMEL_FOLDER_PERMANENTFLAGS = CAMEL_FOLDER_ARG_PERMANENTFLAGS | CAMEL_ARG_INT,
+	CAMEL_FOLDER_TOTAL = CAMEL_FOLDER_ARG_TOTAL | CAMEL_ARG_INT,
+	CAMEL_FOLDER_UNREAD = CAMEL_FOLDER_ARG_UNREAD | CAMEL_ARG_INT,
+	/* should we only get static data?  not stuff that needs to be free'd? */
+	CAMEL_FOLDER_UID_ARRAY = CAMEL_FOLDER_ARG_UID_ARRAY | CAMEL_ARG_PTR,
+	CAMEL_FOLDER_INFO_ARRAY = CAMEL_FOLDER_ARG_INFO_ARRAY | CAMEL_ARG_PTR,
+};
 
 struct _CamelFolderChangeInfo {
 	GPtrArray *uid_added;
@@ -57,8 +81,11 @@ struct _CamelFolder
 
 	struct _CamelFolderPrivate *priv;
 
+	/* get these via the :get() method, they might not be set otherwise */
 	char *name;
 	char *full_name;
+	char *description;
+
 	CamelStore *parent_store;
 	CamelFolderSummary *summary;
 
@@ -96,6 +123,7 @@ typedef struct {
 	void (*append_message)  (CamelFolder *folder, 
 				 CamelMimeMessage *message,
 				 const CamelMessageInfo *info,
+				 char **appended_uid,
 				 CamelException *ex);
 	
 	guint32 (*get_permanent_flags) (CamelFolder *folder);
@@ -144,15 +172,12 @@ typedef struct {
 	void (*ref_message_info) (CamelFolder *, CamelMessageInfo *);
 	void (*free_message_info) (CamelFolder *, CamelMessageInfo *);
 
-	void (*copy_messages_to) (CamelFolder *source,
-				  GPtrArray *uids,
-				  CamelFolder *destination,
-				  CamelException *ex);
-	
-	void (*move_messages_to) (CamelFolder *source,
-				  GPtrArray *uids,
-				  CamelFolder *destination,
-				  CamelException *ex);
+	void (*transfer_messages_to) (CamelFolder *source,
+				      GPtrArray *uids,
+				      CamelFolder *destination,
+				      GPtrArray **transferred_uids,
+				      gboolean delete_originals,
+				      CamelException *ex);
 	
 	void (*delete)           (CamelFolder *folder);
 	void (*rename)           (CamelFolder *folder, const char *newname);
@@ -225,6 +250,7 @@ void		   camel_folder_set_message_user_tag  (CamelFolder *folder,
 void               camel_folder_append_message         (CamelFolder *folder, 
 							CamelMimeMessage *message,
 							const CamelMessageInfo *info,
+							char **appended_uid,
 							CamelException *ex);
 
 
@@ -262,14 +288,11 @@ CamelMessageInfo *camel_folder_get_message_info		(CamelFolder *folder, const cha
 void		  camel_folder_free_message_info	(CamelFolder *folder, CamelMessageInfo *info);
 void		  camel_folder_ref_message_info		(CamelFolder *folder, CamelMessageInfo *info);
 
-void               camel_folder_copy_messages_to       (CamelFolder *source,
+void               camel_folder_transfer_messages_to   (CamelFolder *source,
 							GPtrArray *uids,
 							CamelFolder *dest,
-							CamelException *ex);
-
-void               camel_folder_move_messages_to       (CamelFolder *source,
-							GPtrArray *uids,
-							CamelFolder *dest,
+							GPtrArray **transferred_uids,
+							gboolean delete_originals,
 							CamelException *ex);
 
 void               camel_folder_delete                 (CamelFolder *folder);

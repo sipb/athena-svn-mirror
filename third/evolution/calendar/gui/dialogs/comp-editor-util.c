@@ -32,7 +32,7 @@
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-widget.h>
 #include <gal/unicode/gunicode.h>
-#include <e-destination.h>
+#include <ebook/e-destination.h>
 #include <e-util/e-time-utils.h>
 #include <cal-util/timeutil.h>
 #include "../calendar-config.h"
@@ -478,6 +478,8 @@ comp_editor_contacts_to_component (GtkWidget *contacts_entry,
 #endif
 
 	contact_destv = e_destination_importv (contacts_string);
+	g_free (contacts_string);
+
 	if (contact_destv) {
 		for (i = 0; contact_destv[i] != NULL; i++) {
 			name = e_destination_get_name (contact_destv[i]);

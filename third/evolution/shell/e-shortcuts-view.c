@@ -24,6 +24,14 @@
 #include <config.h>
 #endif
 
+#include "e-shortcuts-view.h"
+
+#include "e-folder-dnd-bridge.h"
+#include "e-shell-constants.h"
+#include "e-shortcuts-view-model.h"
+
+#include "e-util/e-request.h"
+
 #include <glib.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkentry.h>
@@ -39,14 +47,6 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-unicode.h>
-
-#include "e-util/e-request.h"
-
-#include "e-shell-constants.h"
-
-#include "e-shortcuts-view-model.h"
-
-#include "e-shortcuts-view.h"
 
 
 #define PARENT_TYPE E_TYPE_SHORTCUT_BAR
@@ -65,6 +65,8 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 
+/* Utility functions.  */
+
 static void
 show_new_group_dialog (EShortcutsView *view)
 {
@@ -106,9 +108,7 @@ toggle_large_icons_cb (GtkWidget *widget,
 	if (! GTK_CHECK_MENU_ITEM (widget)->active)
 		return;
 
-	e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (menu_data->shortcuts_view),
-				      menu_data->group_num,
-				      E_ICON_BAR_LARGE_ICONS);
+	e_shortcuts_set_group_uses_small_icons (menu_data->shortcuts_view->priv->shortcuts, menu_data->group_num, FALSE);
 }
 
 static void
@@ -124,9 +124,7 @@ toggle_small_icons_cb (GtkWidget *widget,
 	if (! GTK_CHECK_MENU_ITEM (widget)->active)
 		return;
 
-	e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (menu_data->shortcuts_view),
-				      menu_data->group_num,
-				      E_ICON_BAR_SMALL_ICONS);
+	e_shortcuts_set_group_uses_small_icons (menu_data->shortcuts_view->priv->shortcuts, menu_data->group_num, TRUE);
 }
 
 static void
@@ -195,6 +193,7 @@ rename_group_cb (GtkWidget *widget,
 	RightClickMenuData *menu_data;
 	EShortcuts *shortcuts;
 	EShortcutsView *shortcuts_view;
+	EIconBarViewType original_view_type;
 	const char *old_name;
 	char *new_name;
 	int group;
@@ -213,11 +212,29 @@ rename_group_cb (GtkWidget *widget,
 	if (new_name == NULL)
 		return;
 
-	/* Remember the group and flip back to it */
-	group = e_group_bar_get_current_group_num (E_GROUP_BAR (E_SHORTCUT_BAR (shortcuts_view)));
+	/* Remember the group and flip back to it.  FIXME: This is a workaround
+	   to an actual ShortcutBar bug.  */
+
+	group = e_group_bar_get_current_group_num (E_GROUP_BAR (shortcuts_view));
+	original_view_type = e_shortcut_bar_get_view_type (E_SHORTCUT_BAR (menu_data->shortcuts_view), group);
 	e_shortcuts_rename_group (shortcuts, menu_data->group_num, new_name);
+
 	g_free (new_name);
-	e_group_bar_set_current_group_num (E_GROUP_BAR (E_SHORTCUT_BAR (shortcuts_view)), group, FALSE);
+	e_group_bar_set_current_group_num (E_GROUP_BAR (shortcuts_view), group, FALSE);
+	e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (menu_data->shortcuts_view), group, original_view_type);
+}
+
+static void
+create_default_shortcuts_cb (GtkWidget *widget,
+			     void *data)
+{
+	RightClickMenuData *menu_data;
+	EShortcutsView *shortcuts_view;
+
+	menu_data = (RightClickMenuData *) data;
+	shortcuts_view = menu_data->shortcuts_view;
+	e_shortcuts_add_default_shortcuts (shortcuts_view->priv->shortcuts,
+					   e_group_bar_get_current_group_num (E_GROUP_BAR (shortcuts_view)));
 }
 
 static GnomeUIInfo icon_size_radio_group_uiinfo[] = {
@@ -250,6 +267,12 @@ static GnomeUIInfo right_click_menu_uiinfo[] = {
 
 	{ GNOME_APP_UI_ITEM, N_("_Hide the Shortcut Bar"), 
 	  N_("Hide the shortcut bar"), hide_shortcut_bar_cb, NULL,
+	  NULL, 0, 0, 0, 0 },
+
+	GNOMEUIINFO_SEPARATOR,
+
+	{ GNOME_APP_UI_ITEM, N_("Create _Default Shortcuts"), 
+	  N_("Create Default Shortcuts"), create_default_shortcuts_cb, NULL,
 	  NULL, 0, 0, 0, 0 },
 
 	GNOMEUIINFO_END
@@ -376,7 +399,8 @@ rename_shortcut_cb (GtkWidget *widget,
 		return;
 
 	e_shortcuts_update_shortcut (shortcuts, menu_data->group_num, menu_data->item_num,
-				     shortcut_item->uri, new_name, shortcut_item->unread_count, shortcut_item->type);
+				     shortcut_item->uri, new_name, shortcut_item->unread_count,
+				     shortcut_item->type, shortcut_item->custom_icon_name);
 	g_free (new_name);
 }
 
@@ -413,6 +437,26 @@ pop_up_right_click_menu_for_shortcut (EShortcutsView *shortcuts_view,
 
 	g_free (menu_data);
 	gtk_widget_destroy (popup_menu);
+}
+
+
+/* View callbacks.  This part exists mostly because of breakage in the
+   EShortcutBar design.  */
+
+static void
+group_change_icon_size_callback (EShortcuts *shortucts,
+				 int group_num,
+				 gboolean use_small_icons,
+				 void *data)
+{
+	EShortcutsView *view;
+
+	view = E_SHORTCUTS_VIEW (data);
+
+	if (use_small_icons)
+		e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (view), group_num, E_ICON_BAR_SMALL_ICONS);
+	else
+		e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (view), group_num, E_ICON_BAR_LARGE_ICONS);
 }
 
 
@@ -476,43 +520,42 @@ item_selected (EShortcutBar *shortcut_bar,
 
 static void
 get_shortcut_info (EShortcutsView *shortcuts_view,
-		   const char *item_url,
+		   const char *item_uri,
 		   int *unread_count_return,
-		   const char **type_return)
+		   const char **type_return,
+		   const char **custom_icon_name_return)
 {
 	EShortcutsViewPrivate *priv;
 	EStorageSet *storage_set;
-	EStorage *storage;
 	EFolder *folder;
-	const char *path;
+	EShell *shell;
+	char *path;
 
 	priv = shortcuts_view->priv;
 
-	if (strncmp (item_url, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) != 0) {
+	shell = e_shortcuts_get_shell (priv->shortcuts);
+
+	if (! e_shell_parse_uri (shell, item_uri, &path, NULL)) {
 		*unread_count_return = 0;
 		*type_return = NULL;
+		*custom_icon_name_return = NULL;
 		return;
 	}
 
-	path = strchr (item_url, G_DIR_SEPARATOR);
-	storage_set = e_shortcuts_get_storage_set (priv->shortcuts);
+	storage_set = e_shell_get_storage_set (shell);
 
 	folder = e_storage_set_get_folder (storage_set, path);
 	if (folder != NULL) {
-		*unread_count_return = e_folder_get_unread_count (folder);
-		*type_return = e_folder_get_type_string (folder);
-		return;
+		*unread_count_return     = e_folder_get_unread_count (folder);
+		*type_return             = e_folder_get_type_string (folder);
+		*custom_icon_name_return = e_folder_get_custom_icon_name (folder);
+	} else {
+		*unread_count_return     = 0;
+		*type_return             = NULL;
+		*custom_icon_name_return = NULL;
 	}
 
-	storage = e_storage_set_get_storage (storage_set, path + 1);
-	if (storage != NULL) {
-		*unread_count_return = 0;
-		*type_return = e_storage_get_toplevel_node_type (storage);
-		return;
-	}
-
-	*unread_count_return = 0;
-	*type_return = NULL;
+	g_free (path);
 }
 
 static void
@@ -526,6 +569,7 @@ impl_shortcut_dropped (EShortcutBar *shortcut_bar,
 	EShortcutsViewPrivate *priv;
 	int unread_count;
 	const char *type;
+	const char *custom_icon_name;
 	char *tmp;
 	char *tp;
 	char *name_without_unread;
@@ -533,7 +577,7 @@ impl_shortcut_dropped (EShortcutBar *shortcut_bar,
 	shortcuts_view = E_SHORTCUTS_VIEW (shortcut_bar);
 	priv = shortcuts_view->priv;
 
-	get_shortcut_info (shortcuts_view, item_url, &unread_count, &type);
+	get_shortcut_info (shortcuts_view, item_url, &unread_count, &type, &custom_icon_name);
 
 	/* Looks funny, but keeps it from adding the unread count
            repeatedly when dragging folders around */
@@ -545,7 +589,11 @@ impl_shortcut_dropped (EShortcutBar *shortcut_bar,
 
 	e_shortcuts_add_shortcut (priv->shortcuts,
 				  group_num, position,
-				  item_url, name_without_unread, unread_count, type);
+				  item_url,
+				  name_without_unread,
+				  unread_count,
+				  type,
+				  custom_icon_name);
 
 	g_free (tmp);
 	g_free (name_without_unread);
@@ -565,6 +613,63 @@ impl_shortcut_dragged (EShortcutBar *shortcut_bar,
 	e_shortcuts_remove_shortcut (priv->shortcuts, group_num, item_num);
 }
 
+static gboolean
+impl_shortcut_drag_motion (EShortcutBar *shortcut_bar,
+			   GtkWidget *widget,
+			   GdkDragContext *context,
+			   guint time,
+			   gint group_num,
+			   gint item_num)
+{
+	EShortcutsView *view;
+	EShortcutsViewPrivate *priv;
+	const EShortcutItem *shortcut;
+
+	view = E_SHORTCUTS_VIEW (shortcut_bar);
+	priv = view->priv;
+
+	shortcut = e_shortcuts_get_shortcut (priv->shortcuts, group_num, item_num);
+	if (shortcut == NULL)
+		return FALSE;
+	if (strncmp (shortcut->uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) != 0)
+		return FALSE;
+
+	if (! e_folder_dnd_bridge_motion (widget, context, time,
+					  e_shell_get_storage_set (e_shortcuts_get_shell (priv->shortcuts)),
+					  shortcut->uri + E_SHELL_URI_PREFIX_LEN))
+		gdk_drag_status (context, 0, time);
+
+	return TRUE;
+}
+
+static gboolean
+impl_shortcut_drag_data_received (EShortcutBar *shortcut_bar,
+				  GtkWidget *widget,
+				  GdkDragContext *context,
+				  GtkSelectionData *selection_data,
+				  guint time,
+				  gint group_num,
+				  gint item_num)
+{
+	EShortcutsView *view;
+	EShortcutsViewPrivate *priv;
+	const EShortcutItem *shortcut;
+
+	view = E_SHORTCUTS_VIEW (shortcut_bar);
+	priv = view->priv;
+
+	shortcut = e_shortcuts_get_shortcut (priv->shortcuts, group_num, item_num);
+	if (shortcut == NULL)
+		return FALSE;
+	if (strncmp (shortcut->uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) != 0)
+		return FALSE;
+
+	e_folder_dnd_bridge_data_received (widget, context, selection_data, time,
+					   e_shell_get_storage_set (e_shortcuts_get_shell (priv->shortcuts)),
+					   shortcut->uri + E_SHELL_URI_PREFIX_LEN);
+	return TRUE;
+}
+
 
 static void
 class_init (EShortcutsViewClass *klass)
@@ -576,9 +681,11 @@ class_init (EShortcutsViewClass *klass)
 	object_class->destroy = destroy;
 
 	shortcut_bar_class = E_SHORTCUT_BAR_CLASS (klass);
-	shortcut_bar_class->item_selected    = item_selected;
-	shortcut_bar_class->shortcut_dropped = impl_shortcut_dropped;
-	shortcut_bar_class->shortcut_dragged = impl_shortcut_dragged;
+	shortcut_bar_class->item_selected               = item_selected;
+	shortcut_bar_class->shortcut_dropped            = impl_shortcut_dropped;
+	shortcut_bar_class->shortcut_dragged            = impl_shortcut_dragged;
+	shortcut_bar_class->shortcut_drag_motion        = impl_shortcut_drag_motion;
+	shortcut_bar_class->shortcut_drag_data_received = impl_shortcut_drag_data_received;
 
 	parent_class = gtk_type_class (e_shortcut_bar_get_type ());
 
@@ -622,6 +729,7 @@ e_shortcuts_view_construct (EShortcutsView *shortcuts_view,
 			    EShortcuts *shortcuts)
 {
 	EShortcutsViewPrivate *priv;
+	int i, num_groups;
 
 	g_return_if_fail (shortcuts != NULL);
 	g_return_if_fail (E_IS_SHORTCUTS (shortcuts));
@@ -633,6 +741,18 @@ e_shortcuts_view_construct (EShortcutsView *shortcuts_view,
 
 	e_shortcut_bar_set_model (E_SHORTCUT_BAR (shortcuts_view),
 				  E_SHORTCUT_MODEL (e_shortcuts_view_model_new (shortcuts)));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (shortcuts), "group_change_icon_size",
+					GTK_SIGNAL_FUNC (group_change_icon_size_callback),
+					shortcuts_view, GTK_OBJECT (shortcuts_view));
+
+	num_groups = e_shortcuts_get_num_groups (shortcuts);
+	for (i = 0; i < num_groups; i ++) {
+		if (e_shortcuts_get_group_uses_small_icons (shortcuts, i))
+			e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (shortcuts_view), i, E_ICON_BAR_SMALL_ICONS);
+		else
+			e_shortcut_bar_set_view_type (E_SHORTCUT_BAR (shortcuts_view), i, E_ICON_BAR_LARGE_ICONS);
+	}
 }
 
 GtkWidget *

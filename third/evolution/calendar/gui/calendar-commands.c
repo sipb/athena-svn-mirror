@@ -45,6 +45,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-exception.h>
 #include <cal-util/timeutil.h>
 #include "shell/Evolution.h"
 #include "calendar-commands.h"
@@ -59,9 +60,6 @@
 /* A list of all of the calendars started */
 static GList *all_calendars = NULL;
 
-/* We have one global preferences dialog. */
-static CalPrefsDialog *preferences_dialog = NULL;
-
 /* Focusing information for the calendar view.  We have to keep track of this
  * ourselves because with Bonobo controls, we may get unpaired focus_out events.
  */
@@ -69,36 +67,6 @@ typedef struct {
 	guint calendar_focused : 1;
 	guint taskpad_focused : 1;
 } FocusData;
-
-/* Callback for the new appointment command */
-static void
-new_appointment_cb (BonoboUIComponent *uic, gpointer data, const char *path)
-{
-	GnomeCalendar *gcal;
-
-	gcal = GNOME_CALENDAR (data);
-	gnome_calendar_new_appointment (gcal);
-}
-
-static void
-new_event_cb (BonoboUIComponent *uic, gpointer data, const char *path)
-{
-	GnomeCalendar *gcal;
-	time_t dtstart, dtend;
-
-	gcal = GNOME_CALENDAR (data);
-	gnome_calendar_get_current_time_range (gcal, &dtstart, &dtend);
-	gnome_calendar_new_appointment_for (gcal, dtstart, dtend, TRUE);
-}
-
-static void
-new_task_cb (BonoboUIComponent *uic, gpointer data, const char *path)
-{
-	GnomeCalendar *gcal;
-
-	gcal = GNOME_CALENDAR (data);
-	gnome_calendar_new_task (gcal);
-}
 
 /* Prints the calendar at its current view and time range */
 static void
@@ -279,15 +247,6 @@ show_month_view_clicked (BonoboUIComponent *uic, gpointer data, const char *path
 
 
 static void
-settings_cmd (BonoboUIComponent *uic, gpointer data, const char *path)
-{
-	if (!preferences_dialog)
-		preferences_dialog = cal_prefs_dialog_new (CAL_PREFS_DIALOG_PAGE_CALENDAR);
-	else
-		cal_prefs_dialog_show (preferences_dialog, CAL_PREFS_DIALOG_PAGE_CALENDAR);
-}
-
-static void
 cut_cmd (BonoboUIComponent *uic, gpointer data, const gchar *path)
 {
 	GnomeCalendar *gcal;
@@ -381,7 +340,7 @@ get_shell_view_interface (BonoboControl *control)
 	shell_view = Bonobo_Unknown_queryInterface (control_frame,
 						    "IDL:GNOME/Evolution/ShellView:1.0",
 						    &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
+	if (BONOBO_EX (&ev)) {
 		g_message ("get_shell_view_interface(): "
 			   "Could not queryInterface() on the control frame");
 		shell_view = CORBA_OBJECT_NIL;
@@ -506,8 +465,33 @@ control_util_set_folder_bar_label (BonoboControl *control, char *label)
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_ShellView_setFolderBarLabel (shell_view, label, &ev);
 
-	if (ev._major != CORBA_NO_EXCEPTION)
+	if (BONOBO_EX (&ev))
 		g_message ("control_util_set_folder_bar_label(): Could not set the folder bar label");
+
+	CORBA_exception_free (&ev);
+}
+
+void
+control_util_show_settings (GnomeCalendar *gcal)
+{
+	BonoboControl *control;
+	GNOME_Evolution_ShellView shell_view;
+	CORBA_Environment ev;
+
+	control = gtk_object_get_data (GTK_OBJECT (gcal), "control");
+	if (control == NULL)
+		return;
+
+	shell_view = get_shell_view_interface (control);
+	if (shell_view == CORBA_OBJECT_NIL)
+		return;
+
+	CORBA_exception_init (&ev);
+	
+	GNOME_Evolution_ShellView_showSettings (shell_view, &ev);
+	
+	if (BONOBO_EX (&ev))
+		g_message ("control_util_show_settings(): Could not show settings");
 
 	CORBA_exception_free (&ev);
 }
@@ -522,23 +506,25 @@ sensitize_calendar_commands (GnomeCalendar *gcal, BonoboControl *control, gboole
 {
 	BonoboUIComponent *uic;
 	int n_selected;
+	gboolean read_only;
 	
 	uic = bonobo_control_get_ui_component (control);
 	g_assert (uic != NULL);
 
 	n_selected = enable ? gnome_calendar_get_num_events_selected (gcal) : 0;
+	read_only = cal_client_is_read_only (gnome_calendar_get_cal_client (gcal));
 
 	bonobo_ui_component_set_prop (uic, "/commands/Cut", "sensitive",
-				      n_selected == 0 ? "0" : "1",
+				      n_selected == 0 || read_only ? "0" : "1",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Copy", "sensitive",
 				      n_selected == 0 ? "0" : "1",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Paste", "sensitive",
-				      enable ? "1" : "0",
+				      enable && !read_only ? "1" : "0",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Delete", "sensitive",
-				      n_selected == 0 ? "0" : "1",
+				      n_selected == 0 || read_only ? "0" : "1",
 				      NULL);
 }
 
@@ -551,23 +537,25 @@ sensitize_taskpad_commands (GnomeCalendar *gcal, BonoboControl *control, gboolea
 {
 	BonoboUIComponent *uic;
 	int n_selected;
+	gboolean read_only;
 	
 	uic = bonobo_control_get_ui_component (control);
 	g_assert (uic != NULL);
 
 	n_selected = enable ? gnome_calendar_get_num_tasks_selected (gcal) : 0;
+	read_only = cal_client_is_read_only (gnome_calendar_get_task_pad_cal_client (gcal));
 
 	bonobo_ui_component_set_prop (uic, "/commands/Cut", "sensitive",
-				      n_selected == 0 ? "0" : "1",
+				      n_selected == 0 || read_only ? "0" : "1",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Copy", "sensitive",
 				      n_selected == 0 ? "0" : "1",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Paste", "sensitive",
-				      enable ? "1" : "0",
+				      enable && !read_only ? "1" : "0",
 				      NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/Delete", "sensitive",
-				      n_selected == 0 ? "0" : "1",
+				      n_selected == 0 || read_only ? "0" : "1",
 				      NULL);
 }
 
@@ -668,12 +656,6 @@ static BonoboUIVerb verbs [] = {
 	BONOBO_UI_VERB ("CalendarPrint", file_print_cb),
 	BONOBO_UI_VERB ("CalendarPrintPreview", file_print_preview_cb),
 
-	BONOBO_UI_VERB ("CalendarNewAppointment", new_appointment_cb),
-	BONOBO_UI_VERB ("CalendarNewEvent", new_event_cb),
-	BONOBO_UI_VERB ("CalendarNewTask", new_task_cb),
-
-	BONOBO_UI_VERB ("CalendarSettings", settings_cmd),
-
 	BONOBO_UI_VERB ("Cut", cut_cmd),
 	BONOBO_UI_VERB ("Copy", copy_cmd),
 	BONOBO_UI_VERB ("Paste", paste_cmd),
@@ -696,22 +678,14 @@ static BonoboUIVerb verbs [] = {
 
 static EPixmap pixmaps [] =
 {
-	E_PIXMAP ("/menu/File/New/NewFirstItem/NewAppointment",	              "new_appointment.xpm"),
-	E_PIXMAP ("/menu/File/New/NewFirstItem/NewTask",	              "new_task-16.png"),
 	E_PIXMAP ("/menu/EditPlaceholder/Edit/Cut",			      "16_cut.png"),
 	E_PIXMAP ("/menu/EditPlaceholder/Edit/Copy",			      "16_copy.png"),
 	E_PIXMAP ("/menu/EditPlaceholder/Edit/Paste",			      "16_paste.png"),
 	E_PIXMAP ("/menu/EditPlaceholder/Edit/Delete",			      "evolution-trash-mini.png"),
 	E_PIXMAP ("/menu/File/Print/Print",				      "print.xpm"),
 	E_PIXMAP ("/menu/File/Print/PrintPreview",			      "print-preview.xpm"),
-	E_PIXMAP ("/menu/ComponentActionsPlaceholder/Actions/NewAppointment", "new_appointment.xpm"),
-	E_PIXMAP ("/menu/ComponentActionsPlaceholder/Actions/NewEvent",       "new_appointment.xpm"),
-	E_PIXMAP ("/menu/ComponentActionsPlaceholder/Actions/NewTask",        "new_task-16.png"),
-	E_PIXMAP ("/menu/Tools/ComponentPlaceholder/CalendarSettings",        "configure_16_calendar.xpm"),
 	E_PIXMAP ("/menu/View/ViewBegin/Goto",				      "goto-16.png"),
 
-	E_PIXMAP ("/Toolbar/New",					      "buttons/new_appointment.png"),
-	E_PIXMAP ("/Toolbar/NewTask",					      "buttons/new_task.png"),
 	E_PIXMAP ("/Toolbar/Print",					      "buttons/print.png"),
 	E_PIXMAP ("/Toolbar/Delete",					      "buttons/delete-message.png"),
 	E_PIXMAP ("/Toolbar/Prev",					      "buttons/arrow-left-24.png"),
@@ -739,6 +713,8 @@ calendar_control_activate (BonoboControl *control,
 	remote_uih = bonobo_control_get_remote_ui_container (control);
 	bonobo_ui_component_set_container (uic, remote_uih);
 	bonobo_object_release_unref (remote_uih, NULL);
+
+	gnome_calendar_set_ui_component (gcal, uic);
 
 	bonobo_ui_component_add_verb_list_with_data (uic, verbs, gcal);
 
@@ -785,9 +761,12 @@ void
 calendar_control_deactivate (BonoboControl *control, GnomeCalendar *gcal)
 {
 	FocusData *focus;
+	BonoboUIComponent *uic;
 
-	BonoboUIComponent *uic = bonobo_control_get_ui_component (control);
+	uic = bonobo_control_get_ui_component (control);
 	g_assert (uic != NULL);
+
+	gnome_calendar_set_ui_component (gcal, uic);
 
 	focus = gtk_object_get_data (GTK_OBJECT (control), "focus_data");
 	g_assert (focus != NULL);

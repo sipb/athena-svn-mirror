@@ -201,6 +201,7 @@ mail_tool_remove_xevolution_headers (CamelMimeMessage *message)
 	xev->account = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Account"));
 	xev->fcc = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Fcc"));
 	xev->format = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Format"));
+	xev->postto = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-PostTo"));
 	
 	/* rip off the X-Evolution* headers */
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "X-Evolution");
@@ -209,6 +210,7 @@ mail_tool_remove_xevolution_headers (CamelMimeMessage *message)
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "X-Evolution-Account");
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "X-Evolution-Fcc");
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "X-Evolution-Format");
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "X-Evolution-PostTo");
 	
 	return xev;
 }
@@ -228,6 +230,8 @@ mail_tool_restore_xevolution_headers (CamelMimeMessage *message, XEvolution *xev
 		camel_medium_set_header (CAMEL_MEDIUM (message), "X-Evolution-Fcc", xev->fcc);
 	if (xev->format)
 		camel_medium_set_header (CAMEL_MEDIUM (message), "X-Evolution-Format", xev->format);
+	if (xev->postto)
+		camel_medium_set_header (CAMEL_MEDIUM (message), "X-Evolution-PostTo", xev->postto);
 }
 
 void
@@ -237,7 +241,9 @@ mail_tool_destroy_xevolution (XEvolution *xev)
 	g_free (xev->source);
 	g_free (xev->transport);
 	g_free (xev->account);
+	g_free (xev->format);
 	g_free (xev->fcc);
+	g_free (xev->postto);
 	g_free (xev);
 }
 
@@ -263,6 +269,10 @@ mail_tool_make_message_attachment (CamelMimeMessage *message)
 	/* rip off the X-Evolution headers */
 	xev = mail_tool_remove_xevolution_headers (message);
 	mail_tool_destroy_xevolution (xev);
+	
+	/* remove Bcc headers */
+	while (camel_medium_get_header (CAMEL_MEDIUM (message), "Bcc"))
+		camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
 	
 	part = camel_mime_part_new ();
 	camel_mime_part_set_disposition (part, "inline");
@@ -339,16 +349,28 @@ mail_tool_quote_message (CamelMimeMessage *message, const char *fmt, ...)
 	gboolean want_plain;
 	gchar *text;
 	
-	want_plain = !mail_config_get_send_html ();
 	contents = camel_medium_get_content_object (CAMEL_MEDIUM (message));
 	/* We pass "want_plain" for "cite", since if it's HTML, we'll
 	 * do the citing ourself below.
 	 */
+	/* FIXME the citing logic has changed and we basically never want_plain
+	 * to be true now, but I don't want to remove all that logic until I
+	 * am sure --Larry
+	 */
+	want_plain = FALSE;
 	text = mail_get_message_body (contents, want_plain, want_plain);
 	
 	/* Set the quoted reply text. */
 	if (text) {
-		gchar *ret_text, *credits = NULL;
+		char *sig, *p, *ret_text, *credits = NULL;
+		
+		/* look for the signature and strip it off */
+		sig = text;
+	        while ((p = strstr (sig, "\n-- \n")))
+			sig = p + 1;
+		
+		if (sig != text)
+			*sig = '\0';
 		
 		/* create credits */
 		if (fmt) {
@@ -364,7 +386,7 @@ mail_tool_quote_message (CamelMimeMessage *message, const char *fmt, ...)
 					    "<!--+GtkHTML:<DATA class=\"ClueFlow\" clear=\"orig\">-->",
 					    credits ? credits : "",
 					    mail_config_get_citation_color (),
-					    want_plain ? "" : "<blockquote><i>",
+					    want_plain ? "" : "<blockquote type=cite><i>",
 					    text,
 					    want_plain ? "" : "</i></blockquote>");
 		g_free (text);
@@ -386,7 +408,7 @@ mail_tool_quote_message (CamelMimeMessage *message, const char *fmt, ...)
 gchar *
 mail_tool_forward_message (CamelMimeMessage *message, gboolean quoted)
 {
-	gchar *title, *body, *ret;
+	char *title, *body, *ret;
 	
 	body = mail_get_message_body (CAMEL_DATA_WRAPPER (message),
 				      !mail_config_get_send_html (),
@@ -438,4 +460,27 @@ mail_tools_x_evolution_message_parse (char *in, unsigned int inlen, GPtrArray **
 	}
 	
 	return folder;
+}
+
+
+char *
+mail_tools_folder_to_url (CamelFolder *folder)
+{
+	char *service_url, *url;
+	const char *full_name;
+	CamelService *service;
+	
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	
+	full_name = folder->full_name;
+	while (*full_name == '/')
+		full_name++;
+	
+	service = (CamelService *) folder->parent_store;
+	service_url = camel_url_to_string (service->url, CAMEL_URL_HIDE_ALL);
+	url = g_strdup_printf ("%s%s%s", service_url, service_url[strlen (service_url)-1] != '/' ? "/" : "",
+			       full_name);
+	g_free (service_url);
+	
+	return url;
 }

@@ -43,6 +43,9 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg);
 EMsg *e_msgport_wait(EMsgPort *mp);
 EMsg *e_msgport_get(EMsgPort *mp);
 void e_msgport_reply(EMsg *msg);
+#ifdef HAVE_NSS
+struct PRFileDesc *e_msgport_prfd(EMsgPort *mp);
+#endif
 
 /* e threads, a server thread with a message based request-response, and flexible queuing */
 typedef struct _EThread EThread;
@@ -64,6 +67,7 @@ void e_thread_set_msg_destroy(EThread *e, EThreadFunc destroy, void *data);
 void e_thread_set_reply_port(EThread *e, EMsgPort *reply_port);
 void e_thread_set_msg_received(EThread *e, EThreadFunc received, void *data);
 void e_thread_put(EThread *e, EMsg *msg);
+int e_thread_busy(EThread *e);
 
 /* sigh, another mutex interface, this one allows different mutex types, portably */
 typedef struct _EMutex EMutex;

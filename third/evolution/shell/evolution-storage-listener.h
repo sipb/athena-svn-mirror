@@ -34,8 +34,8 @@ extern "C" {
 #define EVOLUTION_TYPE_STORAGE_LISTENER			(evolution_storage_listener_get_type ())
 #define EVOLUTION_STORAGE_LISTENER(obj)			(GTK_CHECK_CAST ((obj), EVOLUTION_TYPE_STORAGE_LISTENER, EvolutionStorageListener))
 #define EVOLUTION_STORAGE_LISTENER_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_STORAGE_LISTENER, EvolutionStorageListenerClass))
-#define EVOLUTION_IS_STORAGE_LISTENER(obj)			(GTK_CHECK_TYPE ((obj), EVOLUTION_TYPE_STORAGE_LISTENER))
-#define EVOLUTION_IS_STORAGE_LISTENER_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_STORAGE_LISTENER))
+#define EVOLUTION_IS_STORAGE_LISTENER(obj)		(GTK_CHECK_TYPE ((obj), EVOLUTION_TYPE_STORAGE_LISTENER))
+#define EVOLUTION_IS_STORAGE_LISTENER_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_STORAGE_LISTENER))
 
 
 typedef struct _EvolutionStorageListener        EvolutionStorageListener;
@@ -61,6 +61,15 @@ struct _EvolutionStorageListenerClass {
 				  int unread_count);
 	void (* removed_folder)  (EvolutionStorageListener *storage_listener,
 				  const char *path);
+	void (* has_subfolders)  (EvolutionStorageListener *storage_listener,
+				  const char *path,
+				  const char *message);
+
+	void (* shared_folder_discovery_result) (EvolutionStorageListener *storage_listener,
+						 const char *user,
+						 const char *folder_name,
+						 const char *storage_path,
+						 const char *physical_uri);
 };
 
 

@@ -23,9 +23,10 @@
 #ifndef __E_SUMMARY_MAIL_H__
 #define __E_SUMMARY_MAIL_H__
 
-#include "e-summary-type.h"
 #include <Evolution.h>
-#include <gtk/gtkclist.h>
+
+#include "e-summary-type.h"
+#include "e-summary-table.h"
 
 typedef enum _ESummaryMailMode ESummaryMailMode;
 enum _ESummaryMailMode {
@@ -42,12 +43,12 @@ struct _ESummaryMailRowData {
 };
 
 const char *e_summary_mail_get_html (ESummary *summary);
-void e_summary_mail_init (ESummary *summary,
-			  GNOME_Evolution_Shell corba_shell);
-void e_summary_mail_reconfigure (ESummary *summary);
+void e_summary_mail_init (ESummary *summary);
+void e_summary_mail_reconfigure (void);
 void e_summary_mail_free (ESummary *summary);
-void e_summary_mail_fill_list (GtkCList *clist, 
-			       ESummary *summary);
-const char *e_summary_mail_uri_to_name (ESummary *summary,
-					const char *uri);
+const char *e_summary_mail_uri_to_name (const char *uri);
+void e_summary_mail_fill_list (ESummaryTable *est);
+
+/* Folder stuff */
+gboolean e_summary_folder_init_folder_store (GNOME_Evolution_Shell shell);
 #endif

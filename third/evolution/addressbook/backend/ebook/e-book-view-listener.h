@@ -14,7 +14,8 @@
 
 #include <libgnome/gnome-defs.h>
 #include <bonobo/bonobo-object.h>
-#include <addressbook/backend/ebook/addressbook.h>
+#include <ebook/e-book-types.h>
+#include <ebook/addressbook.h>
 
 BEGIN_GNOME_DECLS
 
@@ -47,6 +48,9 @@ typedef enum {
 
 typedef struct {
 	EBookViewListenerOperation  op;
+
+	/* For SequenceComplete */
+	EBookViewStatus             status;
 
 	/* For CardRemovedEvent */
 	char                   *id;

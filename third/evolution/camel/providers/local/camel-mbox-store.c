@@ -23,7 +23,9 @@
 #include <config.h>
 #endif
 
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
@@ -79,8 +81,7 @@ get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelExcep
 	char *name;
 	struct stat st;
 
-	(void) ((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex);
-	if (camel_exception_is_set(ex))
+	if (!((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex))
 		return NULL;
 
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);

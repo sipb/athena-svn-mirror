@@ -187,7 +187,7 @@
 	      </keycombo>
 	      or choose
 	      <menuchoice>
-		<guimenu>Actions</guimenu>
+		<guimenu>Edit</guimenu>
 		<guimenuitem>Undelete</guimenuitem>
 	      </menuchoice>
 
@@ -564,19 +564,6 @@
            To learn more about how you can specify message queue and
            filter behavior, see <xref linkend="config-prefs-mail">.
         </para>
-	  <note>
-            <title>Working Offline</title>
-            <para>
-	      Select
-	      <menuchoice><guimenu>File</guimenu><guimenuitem>Work
-	      Offline</guimenuitem></menuchoice> to have
-	      <application>Ximian Evolution</application> disconnect
-	      from the Internet while you work. When you want to
-	      reconnect, choose
-	      <menuchoice><guimenu>File</guimenu><guimenuitem>Work
-	      Online</guimenuitem></menuchoice>.  Alternativly, you can click the connection button at the bottom left side of the window.
-            </para>
-         </note>
 
       <para>
 	You can also choose to save messages as drafts or as text
@@ -609,6 +596,52 @@
       </para>
     </sect2>
 
+  <sect2 id="usage-mail-getnsend-offline">
+            <title>Working Offline</title>
+            <para>
+              Offline mode is a tool designed for use with a dialup
+              connection or for laptop users who do not have a network
+              connection at all times. It allows you to cache messages
+              for reference while you are not connected to the
+              network, and to compose messages and leave them in your
+              Outbox to be sent the next time you connect to the network.
+             </para>
+            <para>
+	      Select
+	      <menuchoice><guimenu>File</guimenu><guimenuitem>Work
+	      Offline</guimenuitem></menuchoice> to have
+	      <application>Ximian Evolution</application> disconnect
+	      from the Internet while you work. When you want to
+	      reconnect, choose
+	      <menuchoice><guimenu>File</guimenu><guimenuitem>Work
+	      Online</guimenuitem></menuchoice>.  Alternativly, you
+	      can click the connection button at the bottom left side
+	      of the window.
+            </para>
+            <para>
+               If you use POP mail, all your messages will be
+               available to you, because they are stored locally. If
+               you use IMAP or Exchange mail, messages are stored
+               remotely, so availability is a little different.
+            </para>
+            <para>
+               Messages that you have read are cached and stored
+               locally; all read messages will be available to you
+               even if you are offline. Unread messages will be
+               downloaded and saved for offline use if they are in a
+               folder that you have marked as an Offline Folder. To
+               mark a folder for offline use, select
+               <menuchoice><guimenu>Settings</guimenu>
+               <guimenuitem>Preferences</guimenuitem></menuchoice> and
+               then click the <guilabel>Folders</guilabel> icon. In
+               the <guilabel>Offline Folders</guilabel> tab, click the
+               check-box next to the folders that you would like to
+               use while you are offline. Then, when you select
+               <guimenuitem>Go Offline</guimenuitem>, Evolution will
+               fetch their contents and store them for later
+               reference.
+          </para>
+       </sect2>
     <sect2 id="usage-mail-getnsend-send-compose">
       <title>More About Mail Composition</title>
       <para>
@@ -949,7 +982,7 @@
 	  <para>
             To send all your mail as HTML by default, set your mail
             format preferences in the mail configuration dialog.  See
-            <xref linkend="config-prefs-mail-other"> for more
+            <xref linkend="config-prefs-mail-composer"> for more
             information.
       </para>
       <para>
@@ -1876,7 +1909,11 @@
         message that is encrypted, you must encrypt it using your
         intended recipient's public key.  To <emphasis>get</emphasis>
         an encrypted message, you must make sure that the sender has
-        your public key in advance.
+        your public key in advance. For signing messages, it's
+        reversed: you encrypt the signature with your private key, so
+        only your public key can unlock it. When you send it, the
+        recipient gets your public key and unlocks the signature,
+        verifying your identity.
       </para>
 
       <para>
@@ -1887,8 +1924,9 @@
           </member>
           <member>
             Attach an encrypted signature to a plain text message, so
-            that the recipient can read the message without decrypting it, and 
-            only needs decryption to verify the sender's identity.
+            that the recipient can read the message without decrypting
+            it, and only needs decryption to verify the sender's
+            identity. 
            </member>
          </simplelist>
       </para>
@@ -1930,6 +1968,8 @@
 	</para>
       </tip>
     </sect2>
+
+
 
     <sect2 id="encryption-keygen">
       <title>Making Encryption Keys</title>
@@ -2053,6 +2093,12 @@ wwwkeys.pgp.net 32j38dk2</command>.  Substitute your key ID for
 	    and then let people download them from the keyserver when
 	    they want.
 	  </para>
+          <para>
+             If you don't have a key you need to unlock or encrypt a
+             message, you can have your encryption tool set to look it
+             up automatically. If it can't find the key, then you'll
+             get an error message.
+          </para>
 	</note>
 
       </para>
@@ -2090,11 +2136,12 @@ wwwkeys.pgp.net 32j38dk2</command>.  Substitute your key ID for
 	You'll need to open
 	<menuchoice>
 	  <guimenu>Tools</guimenu>
-	  <guimenuitem>Mail Settings</guimenuitem>
+	  <guimenuitem>Settings</guimenuitem>
 	</menuchoice>
-	Once there, select the account with which you'd like to send
-	and receive encrypted mail, and click the
-	<guibutton>Edit</guibutton> button.  In the
+	and select the <guilabel>Mail Accounts</guilabel> button, then
+	select the account you want to use securely, and click the
+	<guibutton>Edit</guibutton> button. Then, select the
+	<guilabel>Security</guilabel> tab in the account dialog.   In the
 	<guilabel>Security</guilabel> tab is a section labeled
 	<guilabel>Pretty Good Privacy</guilabel>.  Enter your key ID
 	and click <guibutton>OK</guibutton>.  Your key is now

@@ -39,6 +39,10 @@ extern "C" {
 #define E_IS_STORAGE_SET_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), E_TYPE_STORAGE_SET_VIEW))
 
 
+typedef gboolean (* EStorageSetViewHasCheckBoxFunc)  (EStorageSet *storage_set,
+						      const char  *path,
+						      void        *data);
+
 typedef struct _EStorageSetView        EStorageSetView;
 typedef struct _EStorageSetViewPrivate EStorageSetViewPrivate;
 typedef struct _EStorageSetViewClass   EStorageSetViewClass;
@@ -56,8 +60,8 @@ struct _EStorageSetViewClass {
 
 	void (* folder_selected)  (EStorageSetView *storage_set_view,
 				   const char *path);
-	void (* storage_selected) (EStorageSetView *storage_set_view,
-				   const char *name);
+	void (* folder_opened)    (EStorageSetView *storage_set_view,
+				   const char *path);
 
 	void (* dnd_action) (EStorageSetView *storage_set_view,
 			     GdkDragContext *context,
@@ -68,16 +72,20 @@ struct _EStorageSetViewClass {
 	void (* folder_context_menu_popping_up)  (EStorageSetView *storage_set_view,
 						  const char *path);
 	void (* folder_context_menu_popped_down) (EStorageSetView *storage_set_view);
+	void (* checkboxes_changed) (EStorageSetView *storage_set_view);
 };
 
 
 GtkType    e_storage_set_view_get_type          (void);
 
-GtkWidget *e_storage_set_view_new               (EStorageSet       *storage_set,
-						 BonoboUIContainer *container);
-void       e_storage_set_view_construct         (EStorageSetView   *storage_set_view,
-						 EStorageSet       *storage_set,
-						 BonoboUIContainer *container);
+/* DON'T USE THIS. Use e_storage_set_new_view() instead. */
+GtkWidget *e_storage_set_view_new        (EStorageSet       *storage_set,
+					  BonoboUIContainer *ui_container);
+void       e_storage_set_view_construct  (EStorageSetView   *storage_set_view,
+					  EStorageSet       *storage_set,
+					  BonoboUIContainer *ui_container);
+
+EStorageSet *e_storage_set_view_get_storage_set  (EStorageSetView *storage_set_view);
 
 void        e_storage_set_view_set_current_folder  (EStorageSetView *storage_set_view,
 						    const char      *path);
@@ -87,11 +95,24 @@ void        e_storage_set_view_set_show_folders    (EStorageSetView *storage_set
 						    gboolean         show);
 gboolean    e_storage_set_view_get_show_folders    (EStorageSetView *storage_set_view);
 
-void        e_storage_set_view_set_allow_dnd       (EStorageSetView *storage_set_view,
-						    gboolean         allow_dnd);
-gboolean    e_storage_set_view_get_allow_dnd       (EStorageSetView *storage_set_view);
+void      e_storage_set_view_set_show_checkboxes  (EStorageSetView                *storage_set_view,
+						   gboolean                        show,
+						   EStorageSetViewHasCheckBoxFunc  has_checkbox_func,
+						   void                           *func_data);
+gboolean  e_storage_set_view_get_show_checkboxes  (EStorageSetView                *storage_set_view);
+
+void      e_storage_set_view_enable_search	  (EStorageSetView *storage_set_view,
+						   gboolean         enable);
+
+void      e_storage_set_view_set_checkboxes_list  (EStorageSetView                  *storage_set_view,
+						   GList                            *checkboxes);
+GList    *e_storage_set_view_get_checkboxes_list  (EStorageSetView                  *storage_set_view);
+
+void      e_storage_set_view_set_allow_dnd  (EStorageSetView *storage_set_view,
+					     gboolean         allow_dnd);
+gboolean  e_storage_set_view_get_allow_dnd  (EStorageSetView *storage_set_view);
 						    
-const char *e_storage_set_view_get_right_click_path (EStorageSetView *storage_set_view);
+const char *e_storage_set_view_get_right_click_path  (EStorageSetView *storage_set_view);
 
 #ifdef __cplusplus
 }

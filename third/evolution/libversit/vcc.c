@@ -139,9 +139,6 @@ DFARS 252.227-7013 or 48 CFR 52.227-19, as applicable.
 #endif
 
 #include <string.h>
-#ifndef __MWERKS__
-#include <malloc.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -210,8 +207,29 @@ static void enterValues(const char *value);
 static void mime_error_(char *s);
  static void appendValue(const char *value);
 
+static int
+ascii_tolower(const char i) {
+	if ('A' <= i && i <= 'Z')
+		return i - ('A' - 'a');
+	return i;
+}
 
-#line 187 "vcc.y"
+static int
+ascii_stricmp(const char* s1, const char* s2) {
+	const char *p = s1, *q = s2;
+	while (*p || *q) {
+		char c1 = ascii_tolower(*p++);
+		char c2 = ascii_tolower(*q++);
+		if (c1 < c2)
+			return -1;
+		if (c1 > c2)
+			return 1;
+	}
+	return 0;
+}
+
+
+#line 205 "vcc.y"
 #ifndef YYSTYPE
 typedef union {
     char *str;
@@ -297,11 +315,11 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,   215,   218,   218,   221,   225,   226,   229,   229,   240,
-     240,   252,   253,   256,   256,   266,   269,   269,   274,   280,
-     281,   284,   287,   291,   298,   301,   301,   302,   306,   307,
-     310,   310,   316,   316,   322,   323,   326,   328,   329,   332,
-     332,   344,   344,   356,   356,   368,   368
+       0,   233,   236,   236,   239,   243,   244,   247,   247,   258,
+     258,   270,   271,   274,   274,   284,   287,   287,   292,   298,
+     299,   302,   305,   309,   316,   319,   319,   320,   324,   325,
+     328,   328,   334,   334,   340,   341,   344,   346,   347,   350,
+     350,   362,   362,   374,   374,   386,   386
 };
 #endif
 
@@ -1111,49 +1129,49 @@ yyreduce:
   switch (yyn) {
 
 case 2:
-#line 219 "vcc.y"
+#line 237 "vcc.y"
 { addList(&vObjList, yyvsp[0].vobj); curObj = 0; }
     break;
 case 4:
-#line 222 "vcc.y"
+#line 240 "vcc.y"
 { addList(&vObjList, yyvsp[0].vobj); curObj = 0; }
     break;
 case 7:
-#line 231 "vcc.y"
+#line 249 "vcc.y"
 {
 	lexPushMode(L_VCARD);
 	if (!pushVObject(VCCardProp)) YYERROR;
 	}
     break;
 case 8:
-#line 236 "vcc.y"
+#line 254 "vcc.y"
 {
 	lexPopMode(0);
 	yyval.vobj = popVObject();
 	}
     break;
 case 9:
-#line 241 "vcc.y"
+#line 259 "vcc.y"
 {
 	lexPushMode(L_VCARD);
 	if (!pushVObject(VCCardProp)) YYERROR;
 	}
     break;
 case 10:
-#line 246 "vcc.y"
+#line 264 "vcc.y"
 {
 	lexPopMode(0);
 	yyval.vobj = popVObject();
 	}
     break;
 case 13:
-#line 257 "vcc.y"
+#line 275 "vcc.y"
 {
 	lexPushMode(L_VALUES);
 	}
     break;
 case 14:
-#line 261 "vcc.y"
+#line 279 "vcc.y"
 {
 	if (lexWithinMode(L_BASE64) || lexWithinMode(L_QUOTED_PRINTABLE))
 	   lexPopMode(0);
@@ -1161,109 +1179,109 @@ case 14:
 	}
     break;
 case 16:
-#line 270 "vcc.y"
+#line 288 "vcc.y"
 {
 	enterProps(yyvsp[0].str);
 	}
     break;
 case 18:
-#line 275 "vcc.y"
+#line 293 "vcc.y"
 {
 	enterProps(yyvsp[0].str);
 	}
     break;
 case 22:
-#line 288 "vcc.y"
+#line 306 "vcc.y"
 {
 	enterAttr(yyvsp[0].str,0);
 	}
     break;
 case 23:
-#line 292 "vcc.y"
+#line 310 "vcc.y"
 {
 	enterAttr(yyvsp[-2].str,yyvsp[0].str);
 
 	}
     break;
 case 25:
-#line 301 "vcc.y"
+#line 319 "vcc.y"
 { appendValue(yyvsp[-1].str); }
     break;
 case 27:
-#line 303 "vcc.y"
+#line 321 "vcc.y"
 { appendValue(yyvsp[0].str); }
     break;
 case 29:
-#line 307 "vcc.y"
+#line 325 "vcc.y"
 { yyval.str = 0; }
     break;
 case 30:
-#line 312 "vcc.y"
+#line 330 "vcc.y"
 { if (!pushVObject(VCCalProp)) YYERROR; }
     break;
 case 31:
-#line 315 "vcc.y"
+#line 333 "vcc.y"
 { yyval.vobj = popVObject(); }
     break;
 case 32:
-#line 317 "vcc.y"
+#line 335 "vcc.y"
 { if (!pushVObject(VCCalProp)) YYERROR; }
     break;
 case 33:
-#line 319 "vcc.y"
+#line 337 "vcc.y"
 { yyval.vobj = popVObject(); }
     break;
 case 39:
-#line 334 "vcc.y"
+#line 352 "vcc.y"
 {
 	lexPushMode(L_VEVENT);
 	if (!pushVObject(VCEventProp)) YYERROR;
 	}
     break;
 case 40:
-#line 340 "vcc.y"
+#line 358 "vcc.y"
 {
 	lexPopMode(0);
 	popVObject();
 	}
     break;
 case 41:
-#line 345 "vcc.y"
+#line 363 "vcc.y"
 {
 	lexPushMode(L_VEVENT);
 	if (!pushVObject(VCEventProp)) YYERROR;
 	}
     break;
 case 42:
-#line 350 "vcc.y"
+#line 368 "vcc.y"
 {
 	lexPopMode(0);
 	popVObject();
 	}
     break;
 case 43:
-#line 358 "vcc.y"
+#line 376 "vcc.y"
 {
 	lexPushMode(L_VTODO);
 	if (!pushVObject(VCTodoProp)) YYERROR;
 	}
     break;
 case 44:
-#line 364 "vcc.y"
+#line 382 "vcc.y"
 {
 	lexPopMode(0);
 	popVObject();
 	}
     break;
 case 45:
-#line 369 "vcc.y"
+#line 387 "vcc.y"
 {
 	lexPushMode(L_VTODO);
 	if (!pushVObject(VCTodoProp)) YYERROR;
 	}
     break;
 case 46:
-#line 374 "vcc.y"
+#line 392 "vcc.y"
 {
 	lexPopMode(0);
 	popVObject();
@@ -1502,7 +1520,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 380 "vcc.y"
+#line 398 "vcc.y"
 
 /* ///////////////////////////////////////////////////////////////////////// */
 static int pushVObject(const char *prop)
@@ -1612,10 +1630,10 @@ static void enterAttr(const char *s1, const char *s2)
 	}
     else
 	addProp(curProp,p1);
-    if (stricmp(p1,VCBase64Prop) == 0 || (s2 && stricmp(p2,VCBase64Prop)==0))
+    if (ascii_stricmp(p1,VCBase64Prop) == 0 || (s2 && ascii_stricmp(p2,VCBase64Prop)==0))
 	lexPushMode(L_BASE64);
-    else if (stricmp(p1,VCQuotedPrintableProp) == 0
-	    || (s2 && stricmp(p2,VCQuotedPrintableProp)==0))
+    else if (ascii_stricmp(p1,VCQuotedPrintableProp) == 0
+	    || (s2 && ascii_stricmp(p2,VCQuotedPrintableProp)==0))
 	lexPushMode(L_QUOTED_PRINTABLE);
     deleteStr(s1); deleteStr(s2);
     }
@@ -1946,10 +1964,10 @@ static int match_begin_name(int end) {
     char *n = lexLookaheadWord();
     int token = ID;
     if (n) {
-	if (!stricmp(n,"vcard")) token = end?END_VCARD:BEGIN_VCARD;
-	else if (!stricmp(n,"vcalendar")) token = end?END_VCAL:BEGIN_VCAL;
-	else if (!stricmp(n,"vevent")) token = end?END_VEVENT:BEGIN_VEVENT;
-	else if (!stricmp(n,"vtodo")) token = end?END_VTODO:BEGIN_VTODO;
+	if (!ascii_stricmp(n,"vcard")) token = end?END_VCARD:BEGIN_VCARD;
+	else if (!ascii_stricmp(n,"vcalendar")) token = end?END_VCAL:BEGIN_VCAL;
+	else if (!ascii_stricmp(n,"vevent")) token = end?END_VEVENT:BEGIN_VEVENT;
+	else if (!ascii_stricmp(n,"vtodo")) token = end?END_VTODO:BEGIN_VTODO;
 	deleteStr(n);
 	return token;
 	}
@@ -2260,10 +2278,10 @@ static int yylex() {
 		    if (isalpha(c)) {
 			char *t = lexGetWord();
 			yylval.str = t;
-			if (!stricmp(t, "begin")) {
+			if (!ascii_stricmp(t, "begin")) {
 			    return match_begin_end_name(0);
 			    }
-			else if (!stricmp(t,"end")) {
+			else if (!ascii_stricmp(t,"end")) {
 			    return match_begin_end_name(1);
 			    }
 		        else {

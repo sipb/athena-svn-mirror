@@ -141,8 +141,11 @@ cal_backend_class_init (CalBackendClass *class)
 	class->obj_removed = NULL;
 
 	class->get_uri = NULL;
+	class->get_email_address = NULL;
 	class->open = NULL;
 	class->is_loaded = NULL;
+	class->is_read_only = NULL;
+	class->get_query = NULL;
 	class->get_mode = NULL;
 	class->set_mode = NULL;	
 	class->get_n_objects = NULL;
@@ -157,6 +160,7 @@ cal_backend_class_init (CalBackendClass *class)
 	class->get_alarms_for_object = NULL;
 	class->update_objects = NULL;
 	class->remove_object = NULL;
+	class->send_object = NULL;
 }
 
 
@@ -178,6 +182,25 @@ cal_backend_get_uri (CalBackend *backend)
 
 	g_assert (CLASS (backend)->get_uri != NULL);
 	return (* CLASS (backend)->get_uri) (backend);
+}
+
+/**
+ * cal_backend_get_email_address:
+ * @backend: A calendar backend.
+ *
+ * Queries the email address associated with a calendar backend, which
+ * must already have an open calendar.
+ *
+ * Return value: The email address associated with the calendar.
+ **/
+const char *
+cal_backend_get_email_address (CalBackend *backend)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
+
+	g_assert (CLASS (backend)->get_email_address != NULL);
+	return (* CLASS (backend)->get_email_address) (backend);
 }
 
 /* Callback used when a Cal is destroyed */
@@ -292,6 +315,54 @@ cal_backend_is_loaded (CalBackend *backend)
 
 	g_assert (CLASS (backend)->is_loaded != NULL);
 	result = (* CLASS (backend)->is_loaded) (backend);
+
+	return result;
+}
+
+/**
+ * cal_backend_is_read_only
+ * @backend: A calendar backend.
+ *
+ * Queries whether a calendar backend is read only or not.
+ *
+ * Return value: TRUE if the calendar is read only, FALSE otherwise.
+ */
+gboolean
+cal_backend_is_read_only (CalBackend *backend)
+{
+	gboolean result;
+
+	g_return_val_if_fail (backend != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), FALSE);
+
+	g_assert (CLASS (backend)->is_read_only != NULL);
+	result = (* CLASS (backend)->is_read_only) (backend);
+
+	return result;	
+}
+
+/**
+ * cal_backend_get_query:
+ * @backend: A calendar backend.
+ * @ql: The query listener.
+ * @sexp: Search expression.
+ *
+ * Create a query object for this backend.
+ */
+Query *
+cal_backend_get_query (CalBackend *backend,
+		       GNOME_Evolution_Calendar_QueryListener ql,
+		       const char *sexp)
+{
+	Query *result;
+
+	g_return_val_if_fail (backend != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), FALSE);
+
+	if (CLASS (backend)->get_query != NULL)
+		result = (* CLASS (backend)->get_query) (backend, ql, sexp);
+	else
+		result = query_new (backend, ql, sexp);
 
 	return result;
 }
@@ -646,10 +717,10 @@ cal_backend_get_alarms_for_object (CalBackend *backend, const char *uid,
  * object that has the same UID as the specified one.  The backend will in
  * turn notify all of its clients about the change.
  * 
- * Return value: TRUE on success, FALSE on being passed an invalid object or one
- * with an unsupported type.
+ * Return value: a #CalBackendResult value, which indicates the
+ * result of the operation.
  **/
-gboolean
+CalBackendResult
 cal_backend_update_objects (CalBackend *backend, const char *calobj)
 {
 	g_return_val_if_fail (backend != NULL, FALSE);
@@ -668,10 +739,10 @@ cal_backend_update_objects (CalBackend *backend, const char *calobj)
  * Removes an object in a calendar backend.  The backend will notify all of its
  * clients about the change.
  * 
- * Return value: TRUE on success, FALSE on being passed an UID for an object
- * that does not exist in the backend.
+ * Return value: a #CalBackendResult value, which indicates the
+ * result of the operation.
  **/
-gboolean
+CalBackendResult
 cal_backend_remove_object (CalBackend *backend, const char *uid)
 {
 	g_return_val_if_fail (backend != NULL, FALSE);
@@ -680,6 +751,18 @@ cal_backend_remove_object (CalBackend *backend, const char *uid)
 
 	g_assert (CLASS (backend)->remove_object != NULL);
 	return (* CLASS (backend)->remove_object) (backend, uid);
+}
+
+CalBackendSendResult
+cal_backend_send_object (CalBackend *backend, const char *calobj, char **new_calobj,
+			 GNOME_Evolution_Calendar_UserList **user_list, char error_msg[256])
+{
+	g_return_val_if_fail (backend != NULL, CAL_BACKEND_SEND_INVALID_OBJECT);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), CAL_BACKEND_SEND_INVALID_OBJECT);
+	g_return_val_if_fail (calobj != NULL, CAL_BACKEND_SEND_INVALID_OBJECT);
+
+	g_assert (CLASS (backend)->send_object != NULL);
+	return (* CLASS (backend)->send_object) (backend, calobj, new_calobj, user_list, error_msg);
 }
 
 /**

@@ -3,7 +3,7 @@
   FILE: icalderivedparameters.{c,h}
   CREATOR: eric 09 May 1999
   
-  $Id: icalparameter.c,v 1.1.1.1 2001-11-02 18:41:46 ghudson Exp $
+  $Id: icalparameter.c,v 1.1.1.2 2002-12-19 15:25:41 ghudson Exp $
   $Locker:  $
     
 
@@ -248,7 +248,7 @@ icalparameter_as_ical_string (icalparameter* parameter)
         int qm = 0;
 
 	/* Encapsulate the property in quotes if necessary */
-	if (strchr (impl->string, ';') != 0 || strchr (impl->string, ':') != 0) {
+	if (strpbrk(impl->string, ";:,") != 0) {
 		icalmemory_append_char (&buf, &buf_ptr, &buf_size, '"');
 		qm = 1;
 	}

@@ -1,7 +1,523 @@
-2002-04-12  Not Zed  <NotZed@Ximian.com>
+2002-12-05  Ettore Perazzoli  <ettore@ximian.com>
 
-	* e-msg-composer-hdrs.c (set_recipients_from_destv): Change
-	address_unformat to address_decode.  fixes #16158
+	[Patch from Chris Lahey <clahey@ximian.com>.]
+
+	* evolution-composer.c (factory_fn): Do not return a composer if
+	the mailer isn't ready.
+
+2002-12-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_new_with_message): Make sure to
+	save References and In-Reply-To headers. Fixes bug #32932.
+
+2002-11-19  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_get_sig_file_content): use
+	CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT flag
+
+2002-10-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment-bar.c (attach_to_multipart): Don't set
+	the charset param on text parts nor tha rawtext bit on the content
+	if a charset for the part is already specified.
+
+2002-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-msg-composer-attachment-bar.c (size_to_string): Return NULL
+	instead of the empty string if the size is less than one K.
+	(update): Only put the size if size_to_string() doesn't return
+	NULL.  [#32751]
+
+2002-10-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-hdrs.c (create_from_optionmenu): Only add the
+	account address to the list of addresses if it is non-NULL. Fixes
+	bug #32446 although it shouldn't ever happen anyway (an account
+	address is not allowed to be NULL).
+
+2002-10-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment.c (e_msg_composer_attachment_new): We
+	need to treat message/rfc822 streams differently. Fixes bug
+	#32378.
+
+2002-10-16  Not Zed  <NotZed@Ximian.com>
+
+	* e-msg-composer-select-file.c (select_file_internal): Mark the
+	file selector modal.  Quick fix for bug #32256.
+
+2002-10-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment-bar.c (attach_to_multipart): Set
+	content->rawtext to TRUE for text parts because the content is in
+	its raw form (since we didn't know the charset when we created
+	it). Also only write out the content-object to discover the best
+	encoding, we don't want to include the headers of the MIME
+	part. Second half of the fix for bug #31655.
+
+2002-10-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (get_file_content): Don't create a new file if
+	the file doesn't exist.
+
+2002-10-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): If the user hits cancel when
+	signing/encrypting, don't continue constructing the message,
+	instead abort (and just don't pop up a dialog).
+
+2002-10-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): When signing/encrypting a
+	part, if a USER_CANCEL occurs, re-use the part otherwise unref it
+	and replace it with the new part.
+
+2002-09-30  Aaron Weber  <aaron@ximian.com>
+
+	* evolution-composer.c (evolution_composer_factory_init): adjust
+	string on line 391
+
+	* e-msg-composer.c (create_composer): adjust string on 2872
+
+2002-09-27  Dan Winship  <danw@ximian.com>
+
+	* Evolution-Composer.idl (setHeaders): let the caller set the
+	"From" account too (by name or address).
+
+	* evolution-composer.c (impl_Composer_set_headers): Update for
+	that.
+
+2002-09-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): Don't reuse the part that
+	we've signed and/or encrypted, create a new part container
+	instead. Fixes bug #31379.
+
+2002-09-25  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer-hdrs.c (create_headers): Use "mail/*" for the
+	allowed_types for the posting folder selector.
+
+2002-09-24  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer-hdrs.c (create_from_optionmenu): Only append the
+	account name to the end of the From menu item if the email address
+	is not unique. (That was added for people who have multiple
+	accounts with the same email address but different transports. The
+	rest of us don't need to be reminded of the account name, and
+	having it there can make the window very wide.)
+
+2002-09-24  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* e-msg-composer-attachment-bar.c (size_to_string):
+	Don't mark empty string with _().
+
+2002-09-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-icon-list.c (icon_new_from_pixbuf): Removed a #warning.
+
+	* e-msg-composer-attachment-bar.c (size_to_string): Don't use dots
+	here so we don't get funny wrapping from GnomeIconList.  [#236]
+
+2002-09-22  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer.c (save): Fix non-ANSI switch statement
+
+2002-09-19  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (signature_cb): allow to select last 2 menu
+	items
+
+2002-09-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (add_attachments_from_multipart): Handle
+	multipart/signed and multipart/encrypted parts in a more expected
+	way. Fixes bug #28453.
+
+2002-09-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* e-msg-composer.c: Mark a string for translation.
+
+2002-09-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-msg-composer.c (composer_key_pressed): Don't chain the event
+	handler here -- that's just wrong!  Also stop emission of the
+	signal when we catch Escape.
+
+2002-09-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (create_composer): Make it so that the composer
+	will close when the user hits Escape.
+
+2002-08-27  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (signature_cb): removed "Set as default" menu item
+
+2002-08-26  Peter Williams  <peterw@ximian.com>
+
+	* e-msg-composer.c (handle_multipart): Oops, we were overwriting
+	'multipart' with our child multipart. Fixes 29399.
+	(handle_multipart_alternative): Here too.
+
+2002-08-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Fixes bug #29016
+
+	* e-msg-composer.c (e_msg_composer_new_with_message): If the
+	X-Evolution-PostTo header exists, then treat this message composer
+	as a PostTo composer rather than a mail composer.
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_to_message_internal):
+	Set the X-Evolution-PostTo header if that is the mdoe we are in.
+
+2002-08-16  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer-hdrs.c (create_headers): Use an
+	EvolutionFolderSelectorButton instead of a label to indicate the
+	posting destination. #27920.
+	(e_msg_composer_hdrs_set_post_to): Use
+	evolution_folder_button_set_uri.
+	(e_msg_composer_hdrs_get_post_to): Use
+	evolution_folder_button_get_folder.
+
+2002-08-14  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer.c (from_changed_cb): Don't turn on pgp signing if
+	this is an iMIP message and pgp_no_imip_sign is set.
+	(e_msg_composer_set_body): If setting a text/calendar body and
+	pgp_no_imip_sign is true, turn off signing.
+
+2002-08-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (do_exit): Make the warning dialog display the
+	message subject so that it is more clear which composer the dialog
+	is referring to. Fixes bug #25467.
+
+2002-08-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-select-file.c (create_file_selection): Set the
+	file-selection window icon. Fixes the mailer part of bug #7368.
+
+	* e-msg-composer-attachment.c (e_msg_composer_attachment_new):
+	Don't call new_from_mime_part() since that function now does some
+	copying of the mime part rather than simply reffing it.
+	(e_msg_composer_attachment_new_from_mime_part): Make a copy of the
+	MIME part so that if the message that this part belongs to gets
+	deleted from the the remote store, the composer will still have a
+	copy of it. Fixes bug #20308.
+
+2002-07-31  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_new_with_message): Parse the
+	auto-cc/bcc recipients and then later when parsing the cc/bcc
+	recipients into EDestination objects, if the address is an
+	auto-*cc address, then set auto_recipient to TRUE on that
+	EDestination. This fixes bug #28339.
+
+2002-07-29  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (encode_signature_name): new helper function
+	(decode_signature_name): new helper function
+	(get_signature_html): use encode_signature_name
+	(set_signature_gui): use decode_signature_name
+
+2002-07-26  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (do_exit): don't assert on default, when ESC is
+	pressed, the dialog is closed as well and we get button number -1
+	(set_signature_gui): new helper method to set signature from draft
+	message
+	(e_msg_composer_new_with_message): use set_signature_gui
+
+2002-07-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-msg-composer-attachment-bar.c (pixbuf_for_mime_type):
+	Special-case message/digest, multipart/digest and message/rfc822
+	and give them a nice icon.  [#9786]
+
+	* Makefile.am (INCLUDES): Add -D for EVOLUTION_ICONSDIR.
+
+2002-07-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-hdrs.c (create_headers): Create the Post-To
+	header.
+	(headers_set_visibility): Possibly show the Post-To header.
+	(attach_headers): Attach the Post-To header.
+	(e_msg_composer_hdrs_set_post_to): Set the text for the Post-To
+	header.
+	(e_msg_composer_hdrs_get_post_to_label): Return the label widget
+	for this header pair.
+	(e_msg_composer_hdrs_set_visible_mask): New function to set the
+	visible mask (so we can disallow certain headers to be shown).
+	(e_msg_composer_hdrs_new): Save the visible mask argument.
+	(setup_headers): To: does not always have to be visible anymore.
+	(e_msg_composer_hdrs_get_post_to): New function to get the url for
+	the Post-To folder.
+
+	* e-msg-composer.c (e_msg_composer_get_visible_flags): Set the
+	Post-To bit when it is supposed to be visible.
+	(e_msg_composer_new_post): Set the visible_mask to only allow the
+	headers needed for Posting.
+
+2002-07-25  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_set_body): Fix spelling.
+
+2002-07-23  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (autosave_run): restart automanager to avoid
+	multiple dialog apearing
+
+2002-07-23  Not Zed  <NotZed@Ximian.com>
+
+	* Applied patch below.
+
+2002-07-19  Christian Kreibich <christian@whoop.org>
+
+	* e.msg-composer.c (get_signature_html): Test for the signature
+	delimiter not only at the beginning of a signature file, but also
+	inside the signature.
+
+2002-07-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_set_view_bcc): Reverted some
+	code that got committed by accident.
+	(e_msg_composer_set_view_cc): Same.
+	(e_msg_composer_set_view_replyto): Here too.
+	(e_msg_composer_set_view_from): And here.
+
+2002-07-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c: Removed a lot of extra g_return_if_fail's that
+	we don't need (if we are going to check if the pointer is a a
+	composer widget using the gtk type-check macros, then there is no
+	need to first check that it isn't NULL).
+	(get_file_content): Signatures are now supposed to be in UTF-8 and
+	not the user's locale charset, so we must first read in the
+	content, then check that it is valid UTF-8. If it isn't, then we
+	need to try to convert it to UTF-8.
+
+2002-07-22  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c: removed Insert File menu item
+
+2002-07-19  Not Zed  <NotZed@Ximian.com>
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_to_message_internal):
+	This should use address_encode, since its an rfc822 address, not
+	address_format which is for display.
+
+2002-07-17  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (save): use "saved" gtkhtml command
+	(e_msg_composer_is_dirty): use "is-saved" gtkhtml command
+
+2002-07-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_set_headers): Set the
+	from-account last so that auto-cc/bcc recipients don't get
+	overwritten when setting the cc/bcc recipient fields.
+
+2002-07-16  Peter Williams  <peterw@ximian.com>
+
+	* e-msg-composer.c (create_composer): Instead of doing this with a
+	weakref, do it by connecting to the destroy signal. The weakref was
+	not getting notified in certain conditions that I could never really
+	pin down, and this caused problems at exit.
+
+	* e-msg-composer-hdrs.c (create_headers): Reorder to create reply_to
+	before from, because create_from_optionmenu causes from_changed to
+	be called, which expects reply_to.entry to exist.
+
+2002-07-15  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (build_message): added save_html_object_data
+	parameter, use gtkhtml command to save object data when wanted
+
+2002-07-08  Peter Williams  <peterw@ximian.com>
+
+	* Makefile.am (INCLUDES): Fix cflags for ebook header namespacing.
+
+2002-07-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-composer.c (init): Don't connect to the postpone
+	signal, but do connect to the save-draft signal.
+	(evolution_composer_factory_init): No longer takes a postpone_cb
+	argument, but does now take a save_draft_cb argument.
+
+	* e-msg-composer.c (menu_file_send_later_cb): Removed.
+	(class_init): Removed the POSTPONE signal.
+	(setup_ui): Don't need to swap the Send/SendLater tooltips and
+	accels anymore, since SendLater no longer exists.
+
+2002-06-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): Use the new
+	CamelMultipartEncrypted class to do our encryption work for us. We
+	also need to always get the user's userid before encrypting since
+	pgp/gpg need that.
+	(e_msg_composer_new_with_message): Handle multipart/signed and
+	multipart/encrypted parts by adding the (decrypted) content and
+	setting the composer to pgp sign/encrypt the message when the user
+	re-sends it.
+
+2002-06-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): Use
+	mail_crypto_get_pgp_cipher_context() so that the PGP/GPG decision
+	is done for us.
+
+2002-06-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): Use the new gpg cipher context
+	rather than the old pgp context.
+
+2002-06-19  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (get_signature_html): don't convert text to
+	html twice
+
+2002-06-10  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (signature_cb): added "Set as default" menu
+	item
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_get_from_omenu): new
+	method
+	(e_msg_composer_hdrs_set_from_account): use
+	e_msg_composer_hdrs_get_from_omenu
+
+2002-06-07  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (get_signature_html): use new script signature
+	interface
+
+2002-06-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_set_from_account):
+	Agh, priv->from.entry is no longer a GtkOptionMenu - it is an hbox
+	containing the GtkOptionMenu.
+
+	* e-msg-composer.c (setup_ui): Remove the customize toolbar thingy
+	since Michael said that this would fix bug #17952.
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_set_from_account):
+	Clean up the logic in this. For one, we don't need to do strstr
+	using the account address (wtf??).
+
+2002-06-05  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer-hdrs.c (create_from_optionmenu): put option menu
+	to hbox to make space for signatures menu
+	(e_msg_composer_hdrs_get_from_hbox): new helper function
+
+	* e-msg-composer.c: moved signatures from menu to option menu next
+	to From:
+
+2002-06-03  Not Zed  <NotZed@Ximian.com>
+
+	* e-msg-composer.c (build_message): Properly handle user
+	cancellation for signing/encrypting, just dont sign but create
+	anyway.
+	(e_msg_composer_get_subject): Wrapper function to get the subject
+	from the header object.
+	(e_msg_composer_get_to):
+	(e_msg_composer_get_cc):
+	(e_msg_composer_get_bcc): Same for the destination types.
+
+2002-06-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_guess_mime_type): Allocate a
+	new FileInfo struct here rather than using and unref it when we're
+	finished with it.
+
+2002-05-30  Not Zed  <NotZed@Ximian.com>
+
+	* e-msg-composer.c (build_message): Changes for multipart/signed
+	api changes.
+
+2002-05-16  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-msg-composer.c: New local `all_composers'; keeps a list of all
+	the composer windows created.  Changed type of `parent_class' to
+	BonoboWindowClass *.
+	(do_exit): Cleaned up a bit.  Raise the composer window before
+	showing the message box dialog.
+	(exit_dialog_cb): Removed.
+	(e_msg_composer_request_close_all): New.
+	(create_composer): Add the composer to the all_composers list and
+	weakref it.
+	(msg_composer_destroy_notify): GtkDestroyNotify function for the
+	composer's weakref; remove the composer from the all_composers
+	list.
+
+2002-05-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment.c (e_msg_composer_attachment_new):
+	Just use g_basename.
+
+2002-04-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): Check for empty-string pgp-key
+	ids and don't use them.
+
+2002-04-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-hdrs.c (destroy): Unref the priv->tooltips object
+	here.
+
+	* e-msg-composer-attachment-bar.c (destroy): Free the priv struct.
+
+	* e-msg-composer.c (set_editor_signature): We don't need a 'name'?
+	So don't strdup it.
+
+2002-04-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-hdrs.c (from_changed): Change the Reply-To header
+	contents.
+	(e_msg_composer_hdrs_set_reply_to): The Reply-To entry was an
+	EEntry, not a bonobo control so fix this to set the text using
+	e_entry_set_text.
+	(e_msg_composer_hdrs_get_reply_to): Use e_entry_get_text here for
+	the same reason.
+
+2002-04-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (set_editor_text): No need to query for the
+	persist-stream interface here, just re-use
+	composer->persist_stream_interface - this might improve the speed
+	at which a reply action brings up the composer.
+
+2002-04-09  Not Zed  <NotZed@Ximian.com>
+
+	* e-msg-composer-hdrs.c (set_recipients_from_destv): Use decode
+	rather than unformat - the e_destination was changed (long time
+	ago) to rfc2047 encode the addresses, so we should decode
+	likewise.  Should fix #16158.
+
+	* e-msg-composer.c (next_word): g_utf8_next_char never returns
+	NULL, it just skips to the next character.  So like normal string
+	code, we just check for a nul explicitly.  Fixes a bug found while
+	checking #16158.
+
+2002-04-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Fixes bug #3980.
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_set_cc): If a Cc list
+	is set to something non-empty, make sure to show the Cc widgets.
+	(e_msg_composer_hdrs_set_bcc): Same but for Bcc.
+	(e_msg_composer_hdrs_set_reply_to): And here.
+
+2002-03-28  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-msg-composer-select-file.c: Switch to using EFileSelection
+	here instead of GtkFileSelection.
+
+2002-03-27  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am: fix for the changes to GTKHTML_DATADIR that include
+	the release number.
 
 2002-03-18  Dan Winship  <danw@ximian.com>
 
@@ -16,7 +532,22 @@
 	(disable_editor): Common editor-disabling code - makes the editor
 	and attachment bar insensitive and disables any menu items that
 	could be used to modify them.
+	(e_msg_composer_new_redirect): Use disable_editor here now.
 	
+2002-03-15  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c: use gtkhtml editor API version 1.1
+
+2002-03-11  Dan Winship  <danw@ximian.com>
+
+	* listener.c (impl_event): Remove the extremely verbose printf
+	here.
+
+2002-03-07  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (destroy): ops, unregister and not register new
+	one sig_event_client
+
 2002-03-04  Dan Winship  <danw@ximian.com>
 
 	* e-msg-composer.c (build_message): Fix a dumb bug in previous
@@ -44,17 +575,118 @@
 	the body and MIME type supplied to it rather than the contents of
 	the HTML editor.
 
+2002-02-14  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (delete_old_signature): don't insert paragraph
+	here, also delete paragraph where signature was
+	(e_msg_composer_show_sig_file): test if we are in empty document
+	and if so, insert new paragraph for signature
+
+2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_flush_pending_body): Use
+	set_editor_text()
+	(e_msg_composer_new_from_url): Same.
+	(e_msg_composer_set_body_text): Re-Show the signature.
+
+2002-02-12  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_is_dirty): reflect gtkhtml API
+	change
+
+2002-02-11  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_drop_editor_undo): new method,
+	drops undo in editor and resets dirty flag in editor
+	(do_exit): remove TRUE from condition as dirty flag in editor
+	should work now
+	(e_msg_composer_is_dirty): use new editor API for dirty flag
+
+2002-02-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (update_auto_recipients): Update the
+	auto-cc/bcc recipients in the composer header fields to match the
+	ones chosen in the account configuration.
+
+2002-01-31  Radek Doulik  <rodo@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_ignore): new method, tells
+	composer to ignore all word in str string
+	(next_word): helper function to get next word from s, saves rest
+	of s to sr
+
+2002-01-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (build_message): If we are in redirect mode,
+	use the original message and set the resent-* headers using
+	e_msg_composer_hdrs_to_redirect() and then return.
+	(destroy): Unref the redirected message if it exists.
+
+	* e-msg-composer-hdrs.c (e_msg_composer_hdrs_to_redirect): New
+	function for a composer in redirect mode.
+
+2002-01-27  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am: Use GNOME_FULL_CFLAGS.
+
+2002-01-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (get_file_content): Rewrote to use CamelStreams
+	and also convert the file contents to UTF-8 (assums the file
+	charset is the same charset that the composer is set to).
+	(menu_file_insert_file_cb): Pass the composer into
+	get_file_content().
+	(e_msg_composer_get_sig_file_content): Pass NULL as the composer
+	argument.
+
+2002-01-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (class_init): Fixed the setup of the
+	"save-draft" signal so that it would actually work.
+
+2002-01-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (is_special_header): Greatly simplified. No
+	need to have a list of headers to not accept - we can just refuse
+	all headers that are not X-* headers (other than X-Evolution
+	headers).
+
 2002-01-07  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* e-msg-composer.c (e_msg_composer_get_message_draft): Set the
 	X-Evolution-Format header to text/plain if that is the editing
 	mode we are really in. This fixes bug #11499.
 
+2002-01-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (e_msg_composer_new_from_url): A few minor
+	fixes to make it more compliant with rfc2368. Should now be fully
+	rfc compliant as far as I can tell.
+
 2002-01-03  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* e-msg-composer-attachment.c (e_msg_composer_attachment_edit):
 	Only connect to the parent's destroy/hide signals while the
 	attachment editor dialog is "alive".
+
+2001-12-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-select-file.c (composer_hide_cb): Only cancel the
+	selection dialog if it is currently in use, otherwise we'll get an
+	extra gtk_main_quit and the mailer will exit :-(
+
+2001-12-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (read_file_content): Don't block forever if we
+	are reading a fifo with no data.
+
+2001-12-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (class_init): Setup the SAVE_DRAFT signal.
+	(menu_file_save_draft_cb): Emit the SAVE_DRAFT signal.
+	(exit_dialog_cb): Same here.
+	(save_draft): Removed. This code is now a signal that
+	mail-callbacks will connect to.
 
 2001-12-11  Jeffrey Stedfast  <fejj@ximian.com>
 
@@ -66,6 +698,60 @@
 
 	* e-msg-composer.c (init): Default composer->enable_autosave to
 	TRUE.
+
+2001-12-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-select-file.c (confirm): If multiple-selection is
+	enabled but nothing is slected, fall back to using the filename in
+	the entry box as the "selected" file.
+	(create_file_selection): If the composer gets hidden (ie it's
+	being "sent") then cancel the file selection dialog.
+
+2001-12-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-select-file.c
+	(file_selection_info_destroy_notify): If the widget is non-NULL,
+	then gtk_widget_destroy that bad boy...
+
+2001-12-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer-attachment-bar.c (add_from_user):
+	select_file_attachments now returns a GPtrArray so handle that and
+	loop until we've added all the attachment files.
+
+	* e-msg-composer-select-file.c (confirm): Add an evil kludge to
+	get a list of filenames from the GtkFileSelection widget based on
+	the label in the history option menu item and the base filenames
+	of the selected items in the filename clist.
+	(create_file_selection): Setup the clist to allow multiple
+	selection.
+	(file_selection_info_destroy_notify): Destroy the GPtrArray
+	containing the list of xselected files.
+	(select_file_internal): Return a GPtrArray of files instead of a
+	char *.
+
+2001-12-10  Jon Trowbridge  <trow@ximian.com>
+
+	* e-msg-composer.c (get_file_content): Only execute an executable
+	sig file if a magic environment variable is set.
+
+2001-12-06  Jon Trowbridge  <trow@ximian.com>
+
+	* e-msg-composer.c (executed_file_output): Added.  Executes the
+	given file and returns its output as a string.
+	(get_file_content): Stats the file to see if it is executable.
+	If it is, execute it and return the string.  If not, just read
+	the file and return the contents.
+
+2001-11-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (setup_ui): Change the FileSend tooltip the be
+	the same as the FileSendLater tooltip if we are in offline mode.
+
+2001-11-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-msg-composer.c (drag_data_received): Allow drag & drop for
+	vcards.
 
 2001-11-30  Jeffrey Stedfast  <fejj@ximian.com>
 

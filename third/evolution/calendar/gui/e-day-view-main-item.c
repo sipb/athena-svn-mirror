@@ -187,7 +187,6 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 	GdkFont *font;
 	gint row, row_y, grid_x1, grid_x2;
 	gint day, grid_y1, grid_y2;
-	gint work_day_start_row, work_day_end_row;
 	gint work_day_start_y, work_day_end_y;
 	gint day_x, day_w, work_day;
 	gint start_row, end_row, rect_x, rect_y, rect_width, rect_height;
@@ -207,10 +206,8 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 
 	/* Paint the background colors. */
 	gc = day_view->main_gc;
-	work_day_start_row = e_day_view_convert_time_to_row (day_view, day_view->work_day_start_hour, day_view->work_day_start_minute);
-	work_day_start_y = work_day_start_row * day_view->row_height - y;
-	work_day_end_row = e_day_view_convert_time_to_row (day_view, day_view->work_day_end_hour, day_view->work_day_end_minute);
-	work_day_end_y = work_day_end_row * day_view->row_height - y;
+	work_day_start_y = e_day_view_convert_time_to_position (day_view, day_view->work_day_start_hour, day_view->work_day_start_minute) - y;
+	work_day_end_y = e_day_view_convert_time_to_position (day_view, day_view->work_day_end_hour, day_view->work_day_end_minute) - y;
 
 	for (day = 0; day < day_view->days_shown; day++) {
 		day_start_tt = icaltime_from_timet_with_zone (day_view->day_starts[day], FALSE, day_view->zone);
@@ -478,7 +475,7 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	CalComponent *comp;
 	gint num_icons, icon_x, icon_y, icon_x_inc, icon_y_inc;
 	gint max_icon_w, max_icon_h;
-	gboolean draw_reminder_icon, draw_recurrence_icon, draw_timezone_icon;
+	gboolean draw_reminder_icon, draw_recurrence_icon, draw_timezone_icon, draw_meeting_icon;
 	GSList *categories_list, *elem;
 	CalComponentTransparency transparency;
 
@@ -580,6 +577,7 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 	draw_reminder_icon = FALSE;
 	draw_recurrence_icon = FALSE;
 	draw_timezone_icon = FALSE;
+	draw_meeting_icon = FALSE;
 	icon_x = item_x + E_DAY_VIEW_BAR_WIDTH + E_DAY_VIEW_ICON_X_PAD;
 	icon_y = item_y + E_DAY_VIEW_EVENT_BORDER_HEIGHT
 		+ E_DAY_VIEW_ICON_Y_PAD;
@@ -602,9 +600,21 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 		num_icons++;
 	}
 
+	if (cal_component_has_organizer (comp)) {
+		draw_meeting_icon = TRUE;
+		num_icons++;
+	}
 
 	cal_component_get_categories_list (comp, &categories_list);
-	num_icons += g_slist_length (categories_list);
+	for (elem = categories_list; elem; elem = elem->next) {
+		char *category;
+		GdkPixmap *pixmap = NULL;
+		GdkBitmap *mask = NULL;
+
+		category = (char *) elem->data;
+		if (e_categories_config_get_icon_for (category, &pixmap, &mask))
+			num_icons++;
+	}
 
 	if (num_icons != 0) {
 		if (item_h >= (E_DAY_VIEW_ICON_HEIGHT + E_DAY_VIEW_ICON_Y_PAD)
@@ -676,6 +686,26 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 			icon_y += icon_y_inc;
 		}
 
+
+		if (draw_meeting_icon) {
+			max_icon_w = item_x + item_w - icon_x
+				- E_DAY_VIEW_EVENT_BORDER_WIDTH;
+			max_icon_h = item_y + item_h - icon_y
+				- E_DAY_VIEW_EVENT_BORDER_HEIGHT;
+
+			gdk_gc_set_clip_origin (gc, icon_x, icon_y);
+			gdk_gc_set_clip_mask (gc, day_view->meeting_mask);
+			gdk_draw_pixmap (drawable, gc,
+					 day_view->meeting_icon,
+					 0, 0, icon_x, icon_y,
+					 MIN (E_DAY_VIEW_ICON_WIDTH,
+					      max_icon_w),
+					 MIN (E_DAY_VIEW_ICON_HEIGHT,
+					      max_icon_h));
+			icon_x += icon_x_inc;
+			icon_y += icon_y_inc;
+		}
+
 		/* draw categories icons */
 		for (elem = categories_list; elem; elem = elem->next) {
 			char *category;
@@ -683,8 +713,7 @@ e_day_view_main_item_draw_day_event (EDayViewMainItem *dvmitem,
 			GdkBitmap *mask = NULL;
 
 			category = (char *) elem->data;
-			e_categories_config_get_icon_for (category, &pixmap, &mask);
-			if (pixmap == NULL)
+			if (!e_categories_config_get_icon_for (category, &pixmap, &mask))
 				continue;
 
 			max_icon_w = item_x + item_w - icon_x

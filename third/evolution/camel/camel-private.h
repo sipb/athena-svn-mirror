@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
@@ -43,7 +43,6 @@ struct _CamelFolderPrivate {
 	EMutex *lock;
 	EMutex *change_lock;
 #endif
-
 	/* must require the 'change_lock' to access this */
 	int frozen;
 	struct _CamelFolderChangeInfo *changed_frozen; /* queues changed events */
@@ -61,6 +60,8 @@ struct _CamelStorePrivate {
 #ifdef ENABLE_THREADS
 	EMutex *folder_lock;	/* for locking folder operations */
 	EMutex *cache_lock;	/* for locking access to the cache */
+#else
+	int dummy;
 #endif
 };
 
@@ -75,6 +76,8 @@ struct _CamelStorePrivate {
 struct _CamelTransportPrivate {
 #ifdef ENABLE_THREADS
 	GMutex *send_lock;   /* for locking send operations */
+#else
+	int dummy;
 #endif
 };
 
@@ -90,15 +93,19 @@ struct _CamelServicePrivate {
 #ifdef ENABLE_THREADS
 	EMutex *connect_lock;	/* for locking connection operations */
 	EMutex *connect_op_lock;/* for locking the connection_op */
+#else
+	int dummy;
 #endif
 };
 
 #ifdef ENABLE_THREADS
 #define CAMEL_SERVICE_LOCK(f, l) (e_mutex_lock(((CamelService *)f)->priv->l))
 #define CAMEL_SERVICE_UNLOCK(f, l) (e_mutex_unlock(((CamelService *)f)->priv->l))
+#define CAMEL_SERVICE_ASSERT_LOCKED(f, l) (e_mutex_assert_locked (((CamelService *)f)->priv->l))
 #else
 #define CAMEL_SERVICE_LOCK(f, l)
 #define CAMEL_SERVICE_UNLOCK(f, l)
+#define CAMEL_SERVICE_ASSERT_LOCKED(f, l)
 #endif
 
 struct _CamelSessionPrivate {
@@ -109,6 +116,8 @@ struct _CamelSessionPrivate {
 	int thread_id;
 	GHashTable *thread_active;
 	EThread *thread_queue;
+#else
+	int dummy;
 #endif
 };
 
@@ -121,20 +130,6 @@ struct _CamelSessionPrivate {
 #endif
 
 
-struct _CamelRemoteStorePrivate {
-#ifdef ENABLE_THREADS
-	EMutex *stream_lock;	/* for locking stream operations */
-#endif
-};
-
-#ifdef ENABLE_THREADS
-#define CAMEL_REMOTE_STORE_LOCK(f, l) (e_mutex_lock(((CamelRemoteStore *)f)->priv->l))
-#define CAMEL_REMOTE_STORE_UNLOCK(f, l) (e_mutex_unlock(((CamelRemoteStore *)f)->priv->l))
-#else
-#define CAMEL_REMOTE_STORE_LOCK(f, l)
-#define CAMEL_REMOTE_STORE_UNLOCK(f, l)
-#endif
-
 /* most of this stuff really is private, but the lock can be used by subordinate classes */
 struct _CamelFolderSummaryPrivate {
 	GHashTable *filter_charset;	/* CamelMimeFilterCharset's indexed by source charset */
@@ -142,10 +137,13 @@ struct _CamelFolderSummaryPrivate {
 	struct _CamelMimeFilterIndex *filter_index;
 	struct _CamelMimeFilterBasic *filter_64;
 	struct _CamelMimeFilterBasic *filter_qp;
+	struct _CamelMimeFilterBasic *filter_uu;
 	struct _CamelMimeFilterSave *filter_save;
 	struct _CamelMimeFilterHTML *filter_html;
 
-	struct ibex *index;
+	struct _CamelStreamFilter *filter_stream;
+
+	struct _CamelIndex *index;
 
 #ifdef ENABLE_THREADS
 	GMutex *summary_lock;	/* for the summary hashtable/array */
@@ -164,10 +162,30 @@ struct _CamelFolderSummaryPrivate {
 #define CAMEL_SUMMARY_UNLOCK(f, l)
 #endif
 
+struct _CamelStoreSummaryPrivate {
+#ifdef ENABLE_THREADS
+	GMutex *summary_lock;	/* for the summary hashtable/array */
+	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
+	GMutex *alloc_lock;	/* for setting up and using allocators */
+	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
+#else
+	int dummy;
+#endif
+};
+
+#ifdef ENABLE_THREADS
+#define CAMEL_STORE_SUMMARY_LOCK(f, l) (g_mutex_lock(((CamelStoreSummary *)f)->priv->l))
+#define CAMEL_STORE_SUMMARY_UNLOCK(f, l) (g_mutex_unlock(((CamelStoreSummary *)f)->priv->l))
+#else
+#define CAMEL_STORE_SUMMARY_LOCK(f, l)
+#define CAMEL_STORE_SUMMARY_UNLOCK(f, l)
+#endif
+
 struct _CamelVeeFolderPrivate {
 	GList *folders;			/* lock using subfolder_lock before changing/accessing */
 	GList *folders_changed;		/* for list of folders that have changed between updates */
-
+	int freeze_count;
+	
 #ifdef ENABLE_THREADS
 	GMutex *summary_lock;		/* for locking vfolder summary */
 	GMutex *subfolder_lock;		/* for locking the subfolder list */
@@ -187,7 +205,7 @@ struct _CamelDataWrapperPrivate {
 #ifdef ENABLE_THREADS
 	pthread_mutex_t stream_lock;
 #else
-	gpointer dummy;
+	int dummy;
 #endif
 };
 
@@ -197,6 +215,26 @@ struct _CamelDataWrapperPrivate {
 #else
 #define CAMEL_DATA_WRAPPER_LOCK(dw, l)
 #define CAMEL_DATA_WRAPPER_UNLOCK(dw, l)
+#endif
+
+/* most of this stuff really is private, but the lock can be used by subordinate classes */
+struct _CamelCertDBPrivate {
+#ifdef ENABLE_THREADS
+	GMutex *db_lock;	/* for the db hashtable/array */
+	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
+	GMutex *alloc_lock;	/* for setting up and using allocators */
+	GMutex *ref_lock;	/* for reffing/unreffing certs */
+#else
+	int dummy;
+#endif
+};
+
+#ifdef ENABLE_THREADS
+#define CAMEL_CERTDB_LOCK(db, l) (g_mutex_lock (((CamelCertDB *) db)->priv->l))
+#define CAMEL_CERTDB_UNLOCK(db, l) (g_mutex_unlock (((CamelCertDB *) db)->priv->l))
+#else
+#define CAMEL_CERTDB_LOCK(db, l)
+#define CAMEL_CERTDB_UNLOCK(db, l)
 #endif
 
 #ifdef __cplusplus

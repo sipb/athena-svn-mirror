@@ -31,6 +31,8 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkoptionmenu.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <glade/glade.h>
 #include <gal/widgets/e-unicode.h>
 #include <gal/widgets/e-categories.h>
@@ -206,7 +208,7 @@ task_page_destroy (GtkObject *object)
 		CORBA_Environment ev;
 
 		CORBA_exception_init (&ev);
-		CORBA_Object_release (priv->corba_select_names, &ev);
+		bonobo_object_release_unref (priv->corba_select_names, &ev);
 		CORBA_exception_free (&ev);
 	}
 
@@ -533,6 +535,12 @@ task_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	date.tzid = NULL;
 
 	/* Due Date. */
+	if (!e_date_edit_date_is_valid (E_DATE_EDIT (priv->due_date)) ||
+	    !e_date_edit_time_is_valid (E_DATE_EDIT (priv->due_date))) {
+		comp_editor_page_display_validation_error (page, _("Due date is wrong"), priv->due_date);
+		return FALSE;
+	}
+
 	date_set = e_date_edit_get_date (E_DATE_EDIT (priv->due_date),
 					 &icaltime.year,
 					 &icaltime.month,
@@ -554,6 +562,12 @@ task_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	}
 
 	/* Start Date. */
+	if (!e_date_edit_date_is_valid (E_DATE_EDIT (priv->start_date)) ||
+	    !e_date_edit_time_is_valid (E_DATE_EDIT (priv->start_date))) {
+		comp_editor_page_display_validation_error (page, _("Start date is wrong"), priv->start_date);
+		return FALSE;
+	}
+
 	icaltime = icaltime_null_time ();
 	date_set = e_date_edit_get_date (E_DATE_EDIT (priv->start_date),
 					 &icaltime.year,

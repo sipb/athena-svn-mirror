@@ -16,7 +16,7 @@ REL="PREVIOUS"
 TITLE="Installing the Connector"
 HREF="install.html"><LINK
 REL="NEXT"
-TITLE="Accessing the Exchange Server"
+TITLE="Accessing the ExchangeServer"
 HREF="access.html"></HEAD
 ><BODY
 CLASS="SECT1"
@@ -73,34 +73,11 @@ NAME="CONFIGURE"
       for your <SPAN
 CLASS="APPLICATION"
 >Exchange</SPAN
-> account on both the
+>account on both the
       <SPAN
 CLASS="APPLICATION"
 >Exchange</SPAN
-> server and within
-      Evolution. If you are not sure of the information you need to
-      set up your Exchange account, ask your system administrator, or
-      use the Ximian Connector Tester utility, which is installed
-      alongside the Ximian Connector.  To start it, select
-      <SPAN
-CLASS="GUIMENU"
->         Programs
-       </SPAN
->-&gt;<SPAN
-CLASS="GUISUBMENU"
->         Internet
-      </SPAN
->-&gt;<SPAN
-CLASS="GUIMENUITEM"
->         Ximian Connector Tester</SPAN
-> or run the command <B
-CLASS="COMMAND"
->connect-test</B
-> in a
-terminal window. The utility will help you determine if your Exchange
-server is compatible with the Ximian Connector, and locate your Active
-Directory server. Armed with that information, you'll be ready to set
-up a new account on your Exchange server and get to work.
+>server and within Evolution.
     </P
 ><DIV
 CLASS="SECT2"
@@ -117,11 +94,11 @@ NAME="CONFIG-SERVER"
 ><UL
 ><LI
 ><P
-> You have a valid account on the
-	      <SPAN
+> 
+	      You have a valid account on the <SPAN
 CLASS="APPLICATION"
 >Exchange</SPAN
-> server.
+>server.
 	    </P
 ></LI
 ><LI
@@ -131,7 +108,7 @@ CLASS="APPLICATION"
 	      <SPAN
 CLASS="APPLICATION"
 >Exchange</SPAN
-> server, so unless
+>server, so unless
 	      your system administrator has specifically turned it
 	      off, no changes should be necessary.
 	    </P
@@ -149,7 +126,7 @@ TARGET="_top"
 	your <SPAN
 CLASS="APPLICATION"
 >Exchange</SPAN
-> server will accept
+>server will accept
 	connections from Ximian Evolution.
       </P
 ></DIV
@@ -159,8 +136,10 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-CLIENT"
->Evolution Settings for Connecting to an
-      Exchange Server</A
+>Evolution Settings for Connecting to an <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+>Server</A
 ></H2
 ><P
 >	
@@ -296,6 +275,15 @@ TYPE="1"
 ></LI
 ><LI
 ><P
+>                      Override Outlook Web Access Path: In most cases,
+                      the URL for web access is
+                      "http://server.company.com/exchange." If your
+                      system has a path that is not "exchange," check
+                      the box and enter the custom path here.
+                     </P
+></LI
+><LI
+><P
 >                     Active Directory: If you would like to use the
     			   Global Address List (GAL), check the box
     			   labelled <SPAN
@@ -359,7 +347,7 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN3102"
+NAME="AEN3260"
 ></A
 ><P
 ><B
@@ -377,7 +365,7 @@ SRC="figures/exchange-identity.png"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN3109"
+NAME="AEN3267"
 ></A
 ><P
 ><B
@@ -395,7 +383,7 @@ SRC="figures/exchange-receive.png"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN3116"
+NAME="AEN3274"
 ></A
 ><P
 ><B
@@ -487,7 +475,7 @@ CLASS="VARIABLELIST"
 			 </P
 ></DD
 ><DT
->Exchange Server</DT
+>Mailbox Name and Web Access Path</DT
 ><DD
 ><P
 >			   If your Exchange server requires you to use a
@@ -495,6 +483,12 @@ CLASS="VARIABLELIST"
 			   log in, select the second check-box and enter
 			   the mailbox name.  Check with your system
 			   administrator to be sure.
+			 </P
+><P
+>			   In most cases, the URL for web access is
+			  "http://server.company.com/exchange." If your
+			  system has a path that is not "exchange," check
+			  the box and enter the custom path here.
 			 </P
 ></DD
 ><DT
@@ -618,7 +612,10 @@ HREF="usage-exchange.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Accessing the Exchange Server</TD
+>Accessing the <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+>Server</TD
 ></TR
 ></TABLE
 ></DIV

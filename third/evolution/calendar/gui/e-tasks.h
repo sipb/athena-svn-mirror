@@ -56,17 +56,22 @@ struct _ETasksClass {
 
 
 GtkType    e_tasks_get_type        (void);
-GtkWidget *e_tasks_construct       (ETasks            *tasks);
+GtkWidget *e_tasks_construct       (ETasks *tasks);
 
 GtkWidget *e_tasks_new             (void);
+
+void  e_tasks_set_ui_component  (ETasks            *tasks,
+				 BonoboUIComponent *ui_component);
 
 gboolean   e_tasks_open            (ETasks            *tasks,
 				    char              *file);
 
 CalClient *e_tasks_get_cal_client  (ETasks            *tasks);
 
-void       e_tasks_new_task        (ETasks            *tasks);
-void       e_tasks_delete_selected (ETasks            *tasks);
+void       e_tasks_new_task          (ETasks            *tasks);
+void       e_tasks_complete_selected (ETasks            *tasks);
+void       e_tasks_delete_selected   (ETasks            *tasks);
+void       e_tasks_delete_completed  (ETasks            *tasks);
 
 
 void e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic);

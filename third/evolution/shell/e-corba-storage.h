@@ -54,19 +54,33 @@ struct _ECorbaStorageClass {
 };
 
 
+struct _ECorbaStoragePropertyItem {
+	char *label;
+	char *tooltip;
+	GdkPixbuf *icon;
+};
+typedef struct _ECorbaStoragePropertyItem ECorbaStoragePropertyItem;
+
+
 GtkType   e_corba_storage_get_type   (void);
 void      e_corba_storage_construct  (ECorbaStorage                 *corba_storage,
-				      const char                    *toplevel_node_uri,
-				      const char                    *toplevel_node_type,
 				      const GNOME_Evolution_Storage  storage_interface,
 				      const char                    *name);
-EStorage *e_corba_storage_new        (const char                    *toplevel_node_uri,
-				      const char                    *toplevel_node_type,
-				      const GNOME_Evolution_Storage  storage_interface,
+EStorage *e_corba_storage_new        (const GNOME_Evolution_Storage  storage_interface,
 				      const char                    *name);
 
-/* FIXME: I don't like this call.  */
+GNOME_Evolution_Storage e_corba_storage_get_corba_objref (ECorbaStorage *corba_storage);
+
 const GNOME_Evolution_StorageListener  e_corba_storage_get_StorageListener  (ECorbaStorage *corba_storage);
+
+GSList *e_corba_storage_get_folder_property_items  (ECorbaStorage *corba_storage);
+void    e_corba_storage_free_property_items_list   (GSList        *list);
+
+void e_corba_storage_show_folder_properties (ECorbaStorage *corba_storage,
+					     const char *path,
+					     int property_item_id,
+					     GdkWindow *parent_window);
+EStorageResult e_corba_storage_corba_result_to_storage_result (GNOME_Evolution_Storage_Result corba_result);
 
 #ifdef __cplusplus
 }

@@ -3,7 +3,7 @@
   FILE: icalperiod.c
   CREATOR: eric 02 June 2000
   
-  $Id: icalperiod.c,v 1.1.1.1 2001-11-02 18:29:08 ghudson Exp $
+  $Id: icalperiod.c,v 1.1.1.2 2002-12-19 15:32:19 ghudson Exp $
   $Locker:  $
     
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -137,8 +137,9 @@ const char* icalperiodtype_as_ical_string(struct icalperiodtype p)
 
     icalmemory_append_string(&buf, &buf_ptr, &buf_size, end); 
     
-
-    return buf;
+    buf_ptr = icalmemory_tmp_copy (buf);
+    icalmemory_free_buffer (buf);
+    return buf_ptr;
 }
 
 

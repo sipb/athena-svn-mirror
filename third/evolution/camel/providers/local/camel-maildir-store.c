@@ -23,6 +23,7 @@
 #include <config.h>
 #endif
 
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <string.h>
@@ -84,14 +85,14 @@ CamelType camel_maildir_store_get_type(void)
 	return camel_maildir_store_type;
 }
 
-static CamelFolder *get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex)
+static CamelFolder *
+get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex)
 {
 	char *name, *tmp, *cur, *new;
 	struct stat st;
 	CamelFolder *folder = NULL;
 
-	(void) ((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex);
-	if (camel_exception_is_set(ex))
+	if (!((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex))
 		return NULL;
 
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
@@ -225,7 +226,7 @@ static CamelFolderInfo *camel_folder_info_new(const char *url, const char *full,
 	fi->unread_message_count = unread;
 	camel_folder_info_build_path(fi, '/');
 
-	d(printf("Adding maildir info: '%s' '%s' '%s'\n", fi->path, fi->name, fi->full_name));
+	d(printf("Adding maildir info: '%s' '%s' '%s' '%s'\n", fi->path, fi->name, fi->full_name, fi->url));
 
 	return fi;
 }
@@ -275,8 +276,11 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 
 	CAMEL_STORE_LOCK(store, cache_lock);
 	folder = g_hash_table_lookup(store->folders, path);
-	if (folder)
+	if (folder) {
+		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
+			camel_folder_refresh_info(folder, NULL);
 		unread = camel_folder_get_unread_message_count(folder);
+	}
 	CAMEL_STORE_UNLOCK(store, cache_lock);
 
 	/* if we dont have a folder, then scan the directory and get the unread

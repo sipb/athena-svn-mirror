@@ -47,6 +47,7 @@ typedef enum {
 	CAL_CLIENT_OPEN_SUCCESS,
 	CAL_CLIENT_OPEN_ERROR,
 	CAL_CLIENT_OPEN_NOT_FOUND,
+	CAL_CLIENT_OPEN_PERMISSION_DENIED,
 	CAL_CLIENT_OPEN_METHOD_NOT_SUPPORTED
 } CalClientOpenStatus;
 
@@ -63,6 +64,23 @@ typedef enum {
 	CAL_CLIENT_GET_NOT_FOUND,
 	CAL_CLIENT_GET_SYNTAX_ERROR
 } CalClientGetStatus;
+
+/* Status for update_object(s) and remove_object */
+typedef enum {
+	CAL_CLIENT_RESULT_SUCCESS,
+	CAL_CLIENT_RESULT_CORBA_ERROR,
+	CAL_CLIENT_RESULT_INVALID_OBJECT,
+	CAL_CLIENT_RESULT_NOT_FOUND,
+	CAL_CLIENT_RESULT_PERMISSION_DENIED
+} CalClientResult;
+
+typedef enum {
+	CAL_CLIENT_SEND_SUCCESS,
+	CAL_CLIENT_SEND_CORBA_ERROR,
+	CAL_CLIENT_SEND_INVALID_OBJECT,
+	CAL_CLIENT_SEND_BUSY,
+	CAL_CLIENT_SEND_PERMISSION_DENIED
+} CalClientSendResult;
 
 /* Whether the client is not loaded, is being loaded, or is already loaded */
 typedef enum {
@@ -89,9 +107,13 @@ struct _CalClientClass {
 	void (* obj_updated) (CalClient *client, const char *uid);
 	void (* obj_removed) (CalClient *client, const char *uid);
 
+	void (* backend_error) (CalClient *client, const char *message);
+
 	void (* categories_changed) (CalClient *client, GPtrArray *categories);
 
 	void (* forget_password) (CalClient *client, const char *key);
+
+	void (* backend_died) (CalClient *client);
 };
 
 typedef gchar * (* CalClientAuthFunc) (CalClient *client,
@@ -122,6 +144,10 @@ GList *cal_client_uri_list (CalClient *client, CalMode mode);
 CalClientLoadState cal_client_get_load_state (CalClient *client);
 
 const char *cal_client_get_uri (CalClient *client);
+
+gboolean cal_client_is_read_only (CalClient *client);
+
+const char *cal_client_get_email_address (CalClient *client);
 
 gboolean cal_client_set_mode (CalClient *client, CalMode mode);
 
@@ -158,12 +184,16 @@ gboolean cal_client_get_alarms_for_object (CalClient *client, const char *uid,
 
 /* Add or update a single object. When adding an object only builtin timezones
    are allowed. To use external VTIMEZONE data call update_objects() instead.*/
-gboolean cal_client_update_object (CalClient *client, CalComponent *comp);
+CalClientResult cal_client_update_object (CalClient *client, CalComponent *comp);
 
 /* Add or update multiple objects, possibly including VTIMEZONE data. */
-gboolean cal_client_update_objects (CalClient *client, icalcomponent *icalcomp);
+CalClientResult cal_client_update_objects (CalClient *client, icalcomponent *icalcomp);
 
-gboolean cal_client_remove_object (CalClient *client, const char *uid);
+CalClientResult cal_client_remove_object (CalClient *client, const char *uid);
+
+CalClientSendResult cal_client_send_object (CalClient *client, icalcomponent *icalcomp, 
+					    icalcomponent **new_icalcomp, GList **users,
+					    char error_msg[256]);
 
 CalQuery *cal_client_get_query (CalClient *client, const char *sexp);
 

@@ -19,7 +19,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtkframe.h>
@@ -41,6 +45,7 @@
 #define d(x)
 
 static int validate(FilterRule *);
+static int rule_eq(FilterRule *fr, FilterRule *cm);
 static xmlNodePtr xml_encode (FilterRule *);
 static int xml_decode (FilterRule *, xmlNodePtr, RuleContext *);
 static void build_code (FilterRule *, GString * out);
@@ -100,6 +105,7 @@ filter_rule_class_init (FilterRuleClass * class)
 	
 	/* override methods */
 	class->validate = validate;
+	class->eq = rule_eq;
 	class->xml_encode = xml_encode;
 	class->xml_decode = xml_decode;
 	class->build_code = build_code;
@@ -229,6 +235,43 @@ validate (FilterRule *fr)
 	}
 	
 	return valid;
+}
+
+int
+filter_rule_eq(FilterRule *fr, FilterRule *cm)
+{
+	g_assert(IS_FILTER_RULE(fr));
+	g_assert(IS_FILTER_RULE(cm));
+
+	return ((GtkObject *)fr)->klass == ((GtkObject *)cm)->klass
+		&& ((FilterRuleClass *) ((GtkObject *) fr)->klass)->eq(fr, cm);
+}
+
+static int
+list_eq(GList *al, GList *bl)
+{
+	int truth = TRUE;
+
+	while (truth && al && bl) {
+		FilterPart *a = al->data, *b = bl->data;
+
+		truth = filter_part_eq(a, b);
+		al = al->next;
+		bl = bl->next;
+	}
+
+	return truth && al == NULL && bl == NULL;
+}
+
+static int
+rule_eq(FilterRule *fr, FilterRule *cm)
+{
+	return fr->grouping == cm->grouping
+		&& ( (fr->name && cm->name && strcmp(fr->name, cm->name) == 0)
+		     || (fr->name == NULL && cm->name == NULL))
+		&& ( (fr->source && cm->source && strcmp(fr->source, cm->source) == 0)
+		     || (fr->source == NULL && cm->source == NULL) )
+		&& list_eq(fr->parts, cm->parts);
 }
 
 xmlNodePtr
@@ -533,6 +576,7 @@ option_activate (GtkMenuItem *item, struct _part_data *data)
 		gtk_container_remove (GTK_CONTAINER (data->container), data->partwidget);
 	
 	newpart = filter_part_clone (part);
+	filter_part_copy_values(newpart, data->part);
 	filter_rule_replace_part (data->fr, data->part, newpart);
 	gtk_object_unref (GTK_OBJECT (data->part));
 	data->part = newpart;
@@ -726,7 +770,7 @@ get_widget (FilterRule *fr, struct _RuleContext *f)
 		/* FIXME: do we want the following code in the future? */
 		/*gtk_editable_select_region (GTK_EDITABLE (name), 0, -1);*/
 	} else {
-		e_utf8_gtk_entry_set_text (GTK_ENTRY (name), fr->name);
+		e_utf8_gtk_entry_set_text (GTK_ENTRY (name), _(fr->name));
 	}
 	
 	/* evil kludgy hack because gtk sucks */

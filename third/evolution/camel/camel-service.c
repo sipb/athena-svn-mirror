@@ -60,16 +60,25 @@ static gboolean service_connect(CamelService *service, CamelException *ex);
 static gboolean service_disconnect(CamelService *service, gboolean clean,
 				   CamelException *ex);
 static void cancel_connect (CamelService *service);
-static GList *  query_auth_types (CamelService *service, CamelException *ex);
-static char *   get_name (CamelService *service, gboolean brief);
-static char *   get_path (CamelService *service);
+static GList *query_auth_types (CamelService *service, CamelException *ex);
+static char *get_name (CamelService *service, gboolean brief);
+static char *get_path (CamelService *service);
+
+static int service_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static int service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 
 static void
 camel_service_class_init (CamelServiceClass *camel_service_class)
 {
+	CamelObjectClass *object_class = CAMEL_OBJECT_CLASS (camel_service_class);
+	
 	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
-
+	
+	/* virtual method overloading */
+	object_class->setv = service_setv;
+	object_class->getv = service_getv;
+	
 	/* virtual method definition */
 	camel_service_class->construct = construct;
 	camel_service_class->connect = service_connect;
@@ -143,6 +152,122 @@ camel_service_get_type (void)
 	return type;
 }
 
+
+static int
+service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
+{
+	CamelService *service = (CamelService *) object;
+	CamelURL *url = service->url;
+	gboolean reconnect = FALSE;
+	guint32 tag;
+	int i;
+	
+	for (i = 0; i < args->argc; i++) {
+		tag = args->argv[i].tag;
+		
+		/* make sure this arg wasn't already handled */
+		if (tag & CAMEL_ARG_IGNORE)
+			continue;
+		
+		/* make sure this is an arg we're supposed to handle */
+		if ((tag & CAMEL_ARG_TAG) <= CAMEL_SERVICE_ARG_FIRST ||
+		    (tag & CAMEL_ARG_TAG) >= CAMEL_SERVICE_ARG_FIRST + 100)
+			continue;
+		
+		if (tag == CAMEL_SERVICE_USERNAME) {
+			/* set the username */
+			if (strcmp (url->user, args->argv[i].ca_str) != 0) {
+				camel_url_set_user (url, args->argv[i].ca_str);
+				reconnect = TRUE;
+			}
+		} else if (tag == CAMEL_SERVICE_AUTH) {
+			/* set the auth mechanism */
+			if (strcmp (url->authmech, args->argv[i].ca_str) != 0) {
+				camel_url_set_authmech (url, args->argv[i].ca_str);
+				reconnect = TRUE;
+			}
+		} else if (tag == CAMEL_SERVICE_HOSTNAME) {
+			/* set the hostname */
+			if (strcmp (url->host, args->argv[i].ca_str) != 0) {
+				camel_url_set_host (url, args->argv[i].ca_str);
+				reconnect = TRUE;
+			}
+		} else if (tag == CAMEL_SERVICE_PORT) {
+			/* set the port */
+			if (url->port != args->argv[i].ca_int) {
+				camel_url_set_port (url, args->argv[i].ca_int);
+				reconnect = TRUE;
+			}
+		} else if (tag == CAMEL_SERVICE_PATH) {
+			/* set the path */
+			if (strcmp (url->path, args->argv[i].ca_str) != 0) {
+				camel_url_set_host (url, args->argv[i].ca_str);
+				reconnect = TRUE;
+			}
+		} else {
+			/* error? */
+			continue;
+		}
+		
+		/* let our parent know that we've handled this arg */
+		camel_argv_ignore (args, i);
+	}
+	
+	/* FIXME: what if we are in the process of connecting? */
+	if (reconnect && service->status == CAMEL_SERVICE_CONNECTED) {
+		/* reconnect the service using the new URL */
+		if (camel_service_disconnect (service, TRUE, ex))
+			camel_service_connect (service, ex);
+	}
+	
+	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
+}
+
+static int
+service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
+{
+	CamelService *service = (CamelService *) object;
+	CamelURL *url = service->url;
+	guint32 tag;
+	int i;
+	
+	for (i = 0; i < args->argc; i++) {
+		tag = args->argv[i].tag;
+		
+		/* make sure this is an arg we're supposed to handle */
+		if ((tag & CAMEL_ARG_TAG) <= CAMEL_SERVICE_ARG_FIRST ||
+		    (tag & CAMEL_ARG_TAG) >= CAMEL_SERVICE_ARG_FIRST + 100)
+			continue;
+		
+		switch (tag) {
+		case CAMEL_SERVICE_USERNAME:
+			/* get the username */
+			*args->argv[i].ca_str = url->user;
+			break;
+		case CAMEL_SERVICE_AUTH:
+			/* get the auth mechanism */
+			*args->argv[i].ca_str = url->authmech;
+			break;
+		case CAMEL_SERVICE_HOSTNAME:
+			/* get the hostname */
+			*args->argv[i].ca_str = url->host;
+			break;
+		case CAMEL_SERVICE_PORT:
+			/* get the port */
+			*args->argv[i].ca_int = url->port;
+			break;
+		case CAMEL_SERVICE_PATH:
+			/* get the path */
+			*args->argv[i].ca_str = url->path;
+			break;
+		default:
+			/* error? */
+			break;
+		}
+	}
+	
+	return CAMEL_OBJECT_CLASS (parent_class)->getv (object, ex, args);
+}
 
 static void
 construct (CamelService *service, CamelSession *session,
@@ -260,10 +385,10 @@ camel_service_connect (CamelService *service, CamelException *ex)
 	service->status = ret ? CAMEL_SERVICE_CONNECTED : CAMEL_SERVICE_DISCONNECTED;
 
 	CAMEL_SERVICE_LOCK (service, connect_op_lock);
-	/* its impossible this is null from this code, but we check anyway */
 	if (service->connect_op) {
 		if (unreg)
 			camel_operation_unregister (service->connect_op);
+		
 		camel_operation_unref (service->connect_op);
 		service->connect_op = NULL;
 	}
@@ -307,7 +432,8 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 
 	CAMEL_SERVICE_LOCK (service, connect_lock);
 	
-	if (service->status == CAMEL_SERVICE_CONNECTED) {
+	if (service->status != CAMEL_SERVICE_DISCONNECTED
+	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
 		CAMEL_SERVICE_LOCK (service, connect_op_lock);
 		service->connect_op = camel_operation_registered ();
 		if (!service->connect_op) {
@@ -554,7 +680,7 @@ camel_service_gethost (CamelService *service, CamelException *ex)
 	else
 		hostname = "localhost";
 	
-	return camel_get_host_byname(hostname, ex);
+	return camel_gethostbyname (hostname, ex);
 }
 
 #ifdef offsetof
@@ -568,6 +694,8 @@ struct _lookup_msg {
 	EMsg msg;
 #endif
 	const char *name;
+	int len;
+	int type;
 	int result;
 	int herr;
 	struct hostent hostbuf;
@@ -576,7 +704,7 @@ struct _lookup_msg {
 };
 
 static void *
-get_host(void *data)
+get_hostbyname(void *data)
 {
 	struct _lookup_msg *info = data;
 
@@ -597,10 +725,11 @@ get_host(void *data)
 	return NULL;
 }
 
-struct hostent *camel_get_host_byname(const char *name, CamelException *ex)
+struct hostent *
+camel_gethostbyname (const char *name, CamelException *ex)
 {
 #ifdef ENABLE_THREADS
-	int fdmax, fd, cancel_fd;
+	int fdmax, status, fd, cancel_fd;
 #endif
 	struct _lookup_msg *msg;
 
@@ -622,7 +751,7 @@ struct hostent *camel_get_host_byname(const char *name, CamelException *ex)
 	cancel_fd = camel_operation_cancel_fd(NULL);
 	if (cancel_fd == -1) {
 #endif
-		get_host(msg);
+		get_hostbyname(msg);
 #ifdef ENABLE_THREADS
 	} else {
 		EMsgPort *reply_port;
@@ -631,13 +760,17 @@ struct hostent *camel_get_host_byname(const char *name, CamelException *ex)
 
 		reply_port = msg->msg.reply_port = e_msgport_new();
 		fd = e_msgport_fd(msg->msg.reply_port);
-		if (pthread_create(&id, NULL, get_host, msg) == 0) {
-			FD_ZERO(&rdset);
-			FD_SET(cancel_fd, &rdset);
-			FD_SET(fd, &rdset);
-			fdmax = MAX(fd, cancel_fd) + 1;
+		if (pthread_create(&id, NULL, get_hostbyname, msg) == 0) {
 			d(printf("waiting for name return/cancellation in main process\n"));
-			if (select(fdmax, &rdset, NULL, 0, NULL) == -1) {
+			do {
+				FD_ZERO(&rdset);
+				FD_SET(cancel_fd, &rdset);
+				FD_SET(fd, &rdset);
+				fdmax = MAX(fd, cancel_fd) + 1;
+				status = select (fdmax, &rdset, NULL, 0, NULL);
+			} while (status == -1 && errno == EINTR);
+			
+			if (status == -1) {
 				camel_exception_setv(ex, 1, _("Failure in name lookup: %s"), strerror(errno));
 				d(printf("Cancelling lookup thread\n"));
 				pthread_cancel(id);
@@ -669,6 +802,122 @@ struct hostent *camel_get_host_byname(const char *name, CamelException *ex)
 		}
 		g_free(msg->hostbufmem);
 		g_free(msg);
+		return NULL;
+	} else {
+		return &msg->hostbuf;
+	}
+}
+
+
+static void *
+get_hostbyaddr (void *data)
+{
+	struct _lookup_msg *info = data;
+
+	while ((info->result = e_gethostbyaddr_r (info->name, info->len, info->type, &info->hostbuf,
+						  info->hostbufmem, info->hostbuflen, &info->herr)) == ERANGE) {
+		d(printf ("gethostbyaddr fialed?\n"));
+#ifdef ENABLE_THREADS
+		pthread_testcancel ();
+#endif
+                info->hostbuflen *= 2;
+                info->hostbufmem = g_realloc (info->hostbufmem, info->hostbuflen);
+	}
+	
+	d(printf ("gethostbyaddr ok?\n"));
+	
+#ifdef ENABLE_THREADS
+	e_msgport_reply ((EMsg *) info);
+#endif
+	return NULL;
+}
+
+
+struct hostent *
+camel_gethostbyaddr (const char *addr, int len, int type, CamelException *ex)
+{
+#ifdef ENABLE_THREADS
+	int fdmax, status, fd, cancel_fd;
+#endif
+	struct _lookup_msg *msg;
+	
+	g_return_val_if_fail (addr != NULL, NULL);
+	
+	if (camel_operation_cancel_check (NULL)) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled"));
+		return NULL;
+	}
+	
+	camel_operation_start_transient (NULL, _("Resolving address"));
+	
+	msg = g_malloc0 (sizeof (struct _lookup_msg));
+	msg->hostbuflen = 1024;
+	msg->hostbufmem = g_malloc (msg->hostbuflen);
+	msg->name = addr;
+	msg->len = len;
+	msg->type = type;
+	
+#ifdef ENABLE_THREADS
+	cancel_fd = camel_operation_cancel_fd (NULL);
+	if (cancel_fd == -1) {
+#endif
+		get_hostbyaddr (msg);
+#ifdef ENABLE_THREADS
+	} else {
+		EMsgPort *reply_port;
+		pthread_t id;
+		fd_set rdset;
+		
+		reply_port = msg->msg.reply_port = e_msgport_new ();
+		fd = e_msgport_fd (msg->msg.reply_port);
+		if (pthread_create (&id, NULL, get_hostbyaddr, msg) == 0) {
+			d(printf("waiting for name return/cancellation in main process\n"));
+			do {
+				FD_ZERO(&rdset);
+				FD_SET(cancel_fd, &rdset);
+				FD_SET(fd, &rdset);
+				fdmax = MAX(fd, cancel_fd) + 1;
+				status = select (fdmax, &rdset, NULL, 0, NULL);
+			} while (status == -1 && errno == EINTR);
+			
+			if (status == -1) {
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+						      _("Failure in name lookup: %s"), g_strerror (errno));
+				d(printf ("Cancelling lookup thread\n"));
+				pthread_cancel (id);
+			} else if (FD_ISSET(cancel_fd, &rdset)) {
+				d(printf ("Cancelling lookup thread\n"));
+				camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled"));
+				pthread_cancel (id);
+			} else {
+				struct _lookup_msg *reply = (struct _lookup_msg *) e_msgport_get (reply_port);
+				
+				g_assert (reply == msg);
+			}
+			
+			d(printf ("waiting for child to exit\n"));
+			pthread_join (id, NULL);
+			d(printf ("child done\n"));
+		}
+		
+		e_msgport_destroy (reply_port);
+	}
+#endif
+	
+	camel_operation_end (NULL);
+	
+	if (msg->herr) {
+ 		if (!camel_exception_is_set (ex)) {
+			if (msg->herr == HOST_NOT_FOUND || msg->herr == NO_DATA)
+				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+						     _("Host lookup failed: host not found"));
+			else
+				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+						     _("Host lookup failed: unknown reason"));
+		}
+		
+		g_free (msg->hostbufmem);
+		g_free (msg);
 		return NULL;
 	} else {
 		return &msg->hostbuf;

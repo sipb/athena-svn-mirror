@@ -61,11 +61,16 @@ typedef void (* EvolutionShellComponentClientCallback) (EvolutionShellComponentC
 
 
 /* Construction.  */
-GtkType                        evolution_shell_component_client_get_type        (void);
-void                           evolution_shell_component_client_construct       (EvolutionShellComponentClient        *shell_component_client,
-										 CORBA_Object                          corba_object);
-EvolutionShellComponentClient *evolution_shell_component_client_new             (const char                           *id);
-EvolutionShellComponentClient *evolution_shell_component_client_new_for_objref  (const GNOME_Evolution_ShellComponent  objref);
+GtkType                        evolution_shell_component_client_get_type   (void);
+void                           evolution_shell_component_client_construct  (EvolutionShellComponentClient *shell_component_client,
+									    const char                    *id,
+									    CORBA_Object                   corba_object);
+EvolutionShellComponentClient *evolution_shell_component_client_new        (const char                    *id,
+									    CORBA_Environment             *optional_ev);
+
+/* Properties.  */
+
+const char *evolution_shell_component_client_get_id  (EvolutionShellComponentClient *shell_component_client);
 
 /* Querying DnD interfaces.  */
 
@@ -89,6 +94,7 @@ EvolutionShellComponentResult  evolution_shell_component_client_create_view  (Ev
 									      BonoboUIComponent                *uih,
 									      const char                     *physical_uri,
 									      const char                     *type_string,
+									      const char                     *view_info,
 									      BonoboControl                 **control_return);
 
 EvolutionShellComponentResult  evolution_shell_component_client_handle_external_uri  (EvolutionShellComponentClient *shell_component_client,
@@ -113,10 +119,18 @@ void  evolution_shell_component_client_async_xfer_folder    (EvolutionShellCompo
 							     EvolutionShellComponentClientCallback  callback,
 							     void                                  *data);
 
-void  evolution_shell_component_client_populate_folder_context_menu  (EvolutionShellComponentClient *shell_component_client,
-								      BonoboUIContainer             *container,
-								      const char                    *physical_uri,
-								      const char                    *type);
+void  evolution_shell_component_client_populate_folder_context_menu    (EvolutionShellComponentClient *shell_component_client,
+								        BonoboUIContainer             *container,
+								        const char                    *physical_uri,
+								        const char                    *type);
+void  evolution_shell_component_client_unpopulate_folder_context_menu  (EvolutionShellComponentClient *shell_component_client,
+									BonoboUIContainer             *container,
+									const char                    *physical_uri,
+									const char                    *type);
+
+void  evolution_shell_component_client_request_quit  (EvolutionShellComponentClient         *shell_component_client,
+						      EvolutionShellComponentClientCallback  callback,
+						      void                                  *data);
 
 #ifdef cplusplus
 }

@@ -23,10 +23,6 @@
 #ifndef _E_SHELL_OFFLINE_HANDLER_H_
 #define _E_SHELL_OFFLINE_HANDLER_H_
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <gtk/gtkobject.h>
 
 #include "e-component-registry.h"
@@ -72,8 +68,8 @@ struct _EShellOfflineHandlerClass {
 
 GtkType               e_shell_offline_handler_get_type   (void);
 void                  e_shell_offline_handler_construct  (EShellOfflineHandler *offline_handler,
-							  EComponentRegistry   *component_registry);
-EShellOfflineHandler *e_shell_offline_handler_new        (EComponentRegistry   *component_registry);
+							  EShell               *shell);
+EShellOfflineHandler *e_shell_offline_handler_new        (EShell               *shell);
 
 void  e_shell_offline_handler_put_components_offline  (EShellOfflineHandler *offline_handler,
 						       EShellView           *parent_shell_view);

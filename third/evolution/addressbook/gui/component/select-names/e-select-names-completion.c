@@ -43,6 +43,8 @@
 #include <addressbook/backend/ebook/e-card-simple.h>
 #include <addressbook/backend/ebook/e-card-compare.h>
 
+#define MINIMUM_QUERY_LENGTH 3
+
 typedef struct {
 	EBook *book;
 	guint book_view_tag;
@@ -55,7 +57,7 @@ typedef struct {
 
 struct _ESelectNamesCompletionPrivate {
 
-	ESelectNamesModel *model;
+	ESelectNamesTextModel *text_model;
 
 	GList *book_data;
 	gint books_not_ready;
@@ -81,7 +83,7 @@ static void e_select_names_completion_destroy (GtkObject *object);
 
 static void e_select_names_completion_got_book_view_cb (EBook *book, EBookStatus status, EBookView *view, gpointer user_data);
 static void e_select_names_completion_card_added_cb    (EBookView *, const GList *cards, gpointer user_data);
-static void e_select_names_completion_seq_complete_cb  (EBookView *, gpointer user_data);
+static void e_select_names_completion_seq_complete_cb  (EBookView *, EBookViewStatus status, gpointer user_data);
 
 static void e_select_names_completion_do_query (ESelectNamesCompletion *, const gchar *query_text, gint pos, gint limit);
 
@@ -248,7 +250,7 @@ name_style_query (ESelectNamesCompletion *comp, const gchar *field)
 			++count;
 			g_strstrip (strv[i]);
 			old = strv[i];
-			strv[i] = g_strdup_printf ("(contains \"%s\" \"%s\")", field, old);
+			strv[i] = g_strdup_printf ("(beginswith \"%s\" \"%s\")", field, old);
 			g_free (old);
 		}
 
@@ -734,13 +736,9 @@ e_select_names_completion_init (ESelectNamesCompletion *comp)
 }
 
 static void
-e_select_names_completion_destroy (GtkObject *object)
+e_select_names_completion_clear_book_data (ESelectNamesCompletion *comp)
 {
-	ESelectNamesCompletion *comp = E_SELECT_NAMES_COMPLETION (object);
 	GList *l;
-
-	if (comp->priv->model)
-		gtk_object_unref (GTK_OBJECT (comp->priv->model));
 
 	for (l = comp->priv->book_data; l; l = l->next) {
 		ESelectNamesCompletionBookData *book_data = l->data;
@@ -757,12 +755,26 @@ e_select_names_completion_destroy (GtkObject *object)
 
 		gtk_object_unref (GTK_OBJECT (book_data->book));
 
-		if (book_data->book_view)
+		if (book_data->book_view) {
+			e_book_view_stop (book_data->book_view);
 			gtk_object_unref (GTK_OBJECT (book_data->book_view));
+		}
 
 		g_free (book_data);
 	}
 	g_list_free (comp->priv->book_data);
+	comp->priv->book_data = NULL;
+}
+
+static void
+e_select_names_completion_destroy (GtkObject *object)
+{
+	ESelectNamesCompletion *comp = E_SELECT_NAMES_COMPLETION (object);
+
+	if (comp->priv->text_model)
+		gtk_object_unref (GTK_OBJECT (comp->priv->text_model));
+
+	e_select_names_completion_clear_book_data (comp);
 
 	g_free (comp->priv->waiting_query);
 	g_free (comp->priv->query_text);
@@ -839,8 +851,10 @@ e_select_names_completion_got_book_view_cb (EBook *book, EBookStatus status, EBo
 	}
 
 	gtk_object_ref (GTK_OBJECT (view));
-	if (book_data->book_view)
+	if (book_data->book_view) {
+		e_book_view_stop (book_data->book_view);
 		gtk_object_unref (GTK_OBJECT (book_data->book_view));
+	}
 	book_data->book_view = view;
 
 	book_data->card_added_tag = 
@@ -877,7 +891,7 @@ e_select_names_completion_card_added_cb (EBookView *book_view, const GList *card
 }
 
 static void
-e_select_names_completion_seq_complete_cb (EBookView *book_view, gpointer user_data)
+e_select_names_completion_seq_complete_cb (EBookView *book_view, EBookViewStatus status, gpointer user_data)
 {
 	ESelectNamesCompletionBookData *book_data = user_data;
 	ESelectNamesCompletion *comp = E_SELECT_NAMES_COMPLETION(book_data->comp);
@@ -963,6 +977,8 @@ e_select_names_completion_stop_query (ESelectNamesCompletion *comp)
 	
 			if (out)
 				fprintf (out, "unrefed book view\n");
+
+			e_book_view_stop (book_data->book_view);
 			gtk_object_unref (GTK_OBJECT (book_data->book_view));
 			book_data->book_view = NULL;
 		}
@@ -984,6 +1000,10 @@ e_select_names_completion_start_query (ESelectNamesCompletion *comp, const gchar
 	if (comp->priv->books_not_ready == 0) {
 		gchar *sexp;
 	
+		if (strlen (query_text) < MINIMUM_QUERY_LENGTH)
+			return;
+
+
 		g_free (comp->priv->query_text);
 		comp->priv->query_text = g_strdup (query_text);
 
@@ -1000,10 +1020,11 @@ e_select_names_completion_start_query (ESelectNamesCompletion *comp, const gchar
 
 			for (l = comp->priv->book_data; l; l = l->next) {
 				ESelectNamesCompletionBookData *book_data = l->data;
-				book_data->book_view_tag = e_book_get_book_view (book_data->book, sexp, 
-										 e_select_names_completion_got_book_view_cb, book_data);
+				book_data->book_view_tag = e_book_get_completion_view (book_data->book,
+										       sexp, 
+										       e_select_names_completion_got_book_view_cb, book_data);
 				if (! book_data->book_view_tag)
-					g_warning ("Exception calling e_book_get_book_view");
+					g_warning ("Exception calling e_book_get_completion_view");
 			}
 
 		} else {
@@ -1142,8 +1163,10 @@ e_select_names_completion_handle_request (ECompletion *comp, const gchar *text, 
 		fprintf (out, "text=\"%s\" pos=%d limit=%d\n", text, pos, limit);
 	}
 
-	e_select_names_model_text_pos (selcomp->priv->model, pos, &index, NULL, NULL);
-	str = index >= 0 ? e_select_names_model_get_string (selcomp->priv->model, index) : NULL;
+	e_select_names_model_text_pos (selcomp->priv->text_model->source,
+				       selcomp->priv->text_model->seplen,
+				       pos, &index, NULL, NULL);
+	str = index >= 0 ? e_select_names_model_get_string (selcomp->priv->text_model->source, index) : NULL;
 
 	if (out)
 		fprintf (out, "index=%d str=\"%s\"\n", index, str);
@@ -1196,6 +1219,7 @@ check_capabilities (ESelectNamesCompletion *comp, EBook *book)
 	g_free (cap);
 }
 
+#if 0
 static void
 e_select_names_completion_book_ready (EBook *book, EBookStatus status, ESelectNamesCompletion *comp)
 {
@@ -1216,6 +1240,7 @@ e_select_names_completion_book_ready (EBook *book, EBookStatus status, ESelectNa
 
 	gtk_object_unref (GTK_OBJECT (comp)); /* post-async unref */
 }
+#endif
 
 
 /*
@@ -1225,36 +1250,16 @@ e_select_names_completion_book_ready (EBook *book, EBookStatus status, ESelectNa
  */
 
 ECompletion *
-e_select_names_completion_new (EBook *book, ESelectNamesModel *model)
+e_select_names_completion_new (ESelectNamesTextModel *text_model)
 {
 	ESelectNamesCompletion *comp;
 
-	g_return_val_if_fail (book == NULL || E_IS_BOOK (book), NULL);
-	g_return_val_if_fail (model, NULL);
-	g_return_val_if_fail (E_IS_SELECT_NAMES_MODEL (model), NULL);
+	g_return_val_if_fail (E_IS_SELECT_NAMES_TEXT_MODEL (text_model), NULL);
 
 	comp = (ESelectNamesCompletion *) gtk_type_new (e_select_names_completion_get_type ());
 
-	if (book == NULL) {
-		ESelectNamesCompletionBookData *book_data = g_new0 (ESelectNamesCompletionBookData, 1);
-
-		book_data->book = e_book_new ();
-		book_data->comp = comp;
-		gtk_object_ref (GTK_OBJECT (book_data->book));
-		gtk_object_sink (GTK_OBJECT (book_data->book));
-
-		comp->priv->book_data = g_list_append (comp->priv->book_data, book_data);
-		comp->priv->books_not_ready++;
-
-		gtk_object_ref (GTK_OBJECT (comp)); /* ref ourself before our async call */
-		e_book_load_local_address_book (book_data->book, (EBookCallback) e_select_names_completion_book_ready, comp);
-
-	} else {
-		e_select_names_completion_add_book (comp, book);
-	}
-		
-	comp->priv->model = model;
-	gtk_object_ref (GTK_OBJECT (model));
+	comp->priv->text_model = text_model;
+	gtk_object_ref (GTK_OBJECT (text_model));
 
 	return E_COMPLETION (comp);
 }
@@ -1272,6 +1277,22 @@ e_select_names_completion_add_book (ESelectNamesCompletion *comp, EBook *book)
 	check_capabilities (comp, book);
 	gtk_object_ref (GTK_OBJECT (book_data->book));
 	comp->priv->book_data = g_list_append (comp->priv->book_data, book_data);
+
+	/* if the user is typing as we're adding books, restart the
+	   query after the new book has been added */
+	if (comp->priv->query_text && *comp->priv->query_text) {
+		char *query_text = g_strdup (comp->priv->query_text);
+		e_select_names_completion_stop_query (comp);
+		e_select_names_completion_start_query (comp, query_text);
+		g_free (query_text);
+	}
+}
+
+void
+e_select_names_completion_clear_books (ESelectNamesCompletion *comp)
+{
+	e_select_names_completion_stop_query (comp);
+	e_select_names_completion_clear_book_data (comp);
 }
 
 gboolean

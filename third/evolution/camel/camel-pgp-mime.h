@@ -2,7 +2,7 @@
 /*
  *  Authors: Jeffrey Stedfast <fejj@ximian.com>
  *
- *  Copyright 2001 Ximain, Inc. (www.ximian.com)
+ *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -21,13 +21,12 @@
  */
 
 
-#ifndef CAMEL_PGP_MIME_H
-#define CAMEL_PGP_MIME_H
+#ifndef __CAMEL_PGP_MIME_H__
+#define __CAMEL_PGP_MIME_H__
 
 #include <glib.h>
 #include <camel/camel-multipart.h>
 #include <camel/camel-mime-part.h>
-#include <camel/camel-pgp-context.h>
 #include <camel/camel-exception.h>
 
 #ifdef __cplusplus
@@ -38,27 +37,8 @@ extern "C" {
 gboolean camel_pgp_mime_is_rfc2015_signed (CamelMimePart *part);
 gboolean camel_pgp_mime_is_rfc2015_encrypted (CamelMimePart *part);
 
-void camel_pgp_mime_part_sign (CamelPgpContext *context,
-			       CamelMimePart **mime_part,
-			       const char *userid,
-			       CamelCipherHash hash,
-			       CamelException *ex);
-
-CamelCipherValidity *camel_pgp_mime_part_verify (CamelPgpContext *context,
-						 CamelMimePart *mime_part,
-						 CamelException *ex);
-
-void camel_pgp_mime_part_encrypt (CamelPgpContext *context,
-				  CamelMimePart **mime_part,
-				  GPtrArray *recipients,
-				  CamelException *ex);
-
-CamelMimePart *camel_pgp_mime_part_decrypt (CamelPgpContext *context,
-					    CamelMimePart *mime_part,
-					    CamelException *ex);
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* ! CAMEL_PGP_MIME_H */
+#endif /* __CAMEL_PGP_MIME_H__ */

@@ -2,121 +2,106 @@
 /*
  *  Authors: Jeffrey Stedfast <fejj@ximian.com>
  *
- *  Copyright 2001 Ximian, Inc. (www.ximian.com)
+ *  Copyright 2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public
- * License as published by the Free Software Foundation.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  *
  */
 
-#ifndef MAIL_ACCOUNTS_H
-#define MAIL_ACCOUNTS_H
+
+#ifndef __MAIL_ACCOUNTS_TAB_H__
+#define __MAIL_ACCOUNTS_TAB_H__
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus */
+#endif
 
+#include <gtk/gtkvbox.h>
+#include <gtk/gtkbutton.h>
 #include <gtk/gtkclist.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkspinbutton.h>
-#include <libgnomeui/gnome-color-picker.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade.h>
+
+#include <gal/e-table/e-table.h>
+
+#include "evolution-config-control.h"
+
 #include <shell/Evolution.h>
 
-#define MAIL_ACCOUNTS_DIALOG_TYPE        (mail_accounts_dialog_get_type ())
-#define MAIL_ACCOUNTS_DIALOG(o)          (GTK_CHECK_CAST ((o), MAIL_ACCOUNTS_DIALOG_TYPE, MailAccountsDialog))
-#define MAIL_ACCOUNTS_DIALOG_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_ACCOUNTS_DIALOG_TYPE, MailAccountsDialogClass))
-#define IS_MAIL_ACCOUNTS_DIALOG(o)       (GTK_CHECK_TYPE ((o), MAIL_ACCOUNTS_DIALOG_TYPE))
-#define IS_MAIL_ACCOUNTS_DIALOG_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_ACCOUNTS_DIALOG_TYPE))
 
-struct _MailAccountsDialog {
-	GnomeDialog parent;
+#define MAIL_ACCOUNTS_TAB_TYPE        (mail_accounts_tab_get_type ())
+#define MAIL_ACCOUNTS_TAB(o)          (GTK_CHECK_CAST ((o), MAIL_ACCOUNTS_TAB_TYPE, MailAccountsTab))
+#define MAIL_ACCOUNTS_TAB_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_ACCOUNTS_TAB_TYPE, MailAccountsTabClass))
+#define IS_MAIL_ACCOUNTS_TAB(o)       (GTK_CHECK_TYPE ((o), MAIL_ACCOUNTS_TAB_TYPE))
+#define IS_MAIL_ACCOUNTS_TAB_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_ACCOUNTS_TAB_TYPE))
+
+typedef struct _MailAccountsTab MailAccountsTab;
+typedef struct _MailAccountsTabClass MailAccountsTabClass;
+
+struct _MailAccountsTab {
+	GtkVBox parent_object;
 	
 	GNOME_Evolution_Shell shell;
 	
 	GladeXML *gui;
 	
-	const GSList *accounts;
-	gint accounts_row;
+	GtkWidget *druid;
+	GtkWidget *editor;
 	
-	/* Accounts page */
-	GtkCList *mail_accounts;
+	GdkPixmap *mark_pixmap;
+	GdkBitmap *mark_bitmap;
+	
+	GtkCList *table;
+#if 0
+	ETable *table;
+	ETableModel *model;
+#endif
+	
 	GtkButton *mail_add;
 	GtkButton *mail_edit;
 	GtkButton *mail_delete;
 	GtkButton *mail_default;
 	GtkButton *mail_able;
 	
-	const GSList *news;
-	gint news_row;
-	
-	/* News page */
-	GtkCList *news_accounts;
+	GtkCList *news;
+	int news_row;
 	GtkButton *news_add;
 	GtkButton *news_edit;
 	GtkButton *news_delete;
-	
-	/* Display page */
-	GtkToggleButton *citation_highlight;
-	GnomeColorPicker *citation_color;
-	GtkToggleButton *timeout_toggle;
-	GtkSpinButton *timeout;
-	GtkToggleButton *images_always, *images_sometimes, *images_never;
-	/*GtkToggleButton *thread_list;*/
-	/*GtkToggleButton *show_preview;*/
-	
-	/* Composer page */
-	GtkToggleButton *send_html;
-	GtkOptionMenu *forward_style;
-	GtkOptionMenu *charset;
-	GtkToggleButton *prompt_empty_subject;
-	GtkToggleButton *prompt_bcc_only;
-	GtkToggleButton *prompt_unwanted_html;
-	
-	/* Other page */
-	GtkToggleButton *empty_trash;
-	GtkToggleButton *filter_log;
-	GnomeFileEntry *filter_log_path;
-	GtkToggleButton *confirm_expunge;
-	
-	/* PGP page */
-	GnomeFileEntry *pgp_path;
-
-	/* Pixmaps for the clist */
-	GdkPixmap *mark_pixmap;
-	GdkBitmap *mark_bitmap;
+	GtkWidget *news_editor;
 };
 
-typedef struct _MailAccountsDialog MailAccountsDialog;
-
-typedef struct {
-	GnomeDialogClass parent_class;
+struct _MailAccountsTabClass {
+	GtkVBoxClass parent_class;
 	
 	/* signals */
 	
-} MailAccountsDialogClass;
+};
 
-GtkType mail_accounts_dialog_get_type (void);
 
-MailAccountsDialog *mail_accounts_dialog_new (GNOME_Evolution_Shell shell);
+GtkType mail_accounts_tab_get_type (void);
+
+GtkWidget *mail_accounts_tab_new (GNOME_Evolution_Shell shell);
+
+void mail_accounts_tab_apply (MailAccountsTab *accounts);
+
+/* needed by global config */
+#define MAIL_ACCOUNTS_CONTROL_ID "OAFIID:GNOME_Evolution_Mail_Accounts_ConfigControl"
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 
-#endif /* MAIL_ACCOUNTS_H */
+#endif /* __MAIL_ACCOUNTS_TAB_H__ */

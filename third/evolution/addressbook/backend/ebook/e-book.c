@@ -18,6 +18,7 @@
 #include "e-card-cursor.h"
 #include "e-book-listener.h"
 #include "e-book.h"
+#include "e-util/e-component-listener.h"
 
 GtkObjectClass *e_book_parent_class;
 
@@ -34,6 +35,7 @@ struct _EBookPrivate {
 	GList *iter;
 
 	EBookListener	      *listener;
+	EComponentListener    *comp_listener;
 
 	GNOME_Evolution_Addressbook_Book         corba_book;
 
@@ -55,6 +57,7 @@ enum {
 	OPEN_PROGRESS,
 	WRITABLE_STATUS,
 	LINK_STATUS,
+	BACKEND_DIED,
 	LAST_SIGNAL
 };
 
@@ -397,6 +400,15 @@ e_book_do_response_get_changes (EBook                 *book,
 }
 
 static void
+backend_died_cb (EComponentListener *cl, gpointer user_data)
+{
+	EBook *book = user_data;
+
+	book->priv->load_state = URINotLoaded;
+        gtk_signal_emit (GTK_OBJECT (book), e_book_signals [BACKEND_DIED]);
+}
+
+static void
 e_book_do_response_open (EBook                 *book,
 			 EBookListenerResponse *resp)
 {
@@ -405,6 +417,10 @@ e_book_do_response_open (EBook                 *book,
 	if (resp->status == E_BOOK_STATUS_SUCCESS) {
 		book->priv->corba_book  = resp->book;
 		book->priv->load_state  = URILoaded;
+
+		book->priv->comp_listener = e_component_listener_new (book->priv->corba_book, 0);
+                gtk_signal_connect (GTK_OBJECT (book->priv->comp_listener), "component_died",
+                                    GTK_SIGNAL_FUNC (backend_died_cb), book);
 	}
 
 	op = e_book_pop_op (book);
@@ -466,6 +482,8 @@ e_book_do_response_get_supported_fields (EBook                 *book,
 		else
 			((EBookFieldsCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
 	}
+
+	gtk_object_unref(GTK_OBJECT(resp->fields));
 
 	e_book_op_free (op);
 }
@@ -547,7 +565,7 @@ e_book_load_uri_step (EBook *book, EBookStatus status, EBookLoadURIData *data)
 {
 	/* iterate to the next possible CardFactory, or fail
 	   if it's the last one */
-	book->priv->iter = book->priv->book_factories->next;
+	book->priv->iter = book->priv->iter->next;
 	if (book->priv->iter) {
 		GNOME_Evolution_Addressbook_BookFactory factory = book->priv->iter->data;
 		e_book_load_uri_from_factory (book, factory, data);
@@ -626,9 +644,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 
 	protocol = g_strndup (uri, colon-uri);
 	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/BookFactory:1.0')"
-#if 0
 				 " AND addressbook:supported_protocols.has ('%s')", protocol
-#endif
 				 );
 
 	CORBA_exception_init (&ev);
@@ -766,7 +782,6 @@ e_book_unload_uri (EBook *book)
 	CORBA_exception_init (&ev);
 
 	bonobo_object_release_unref  (book->priv->corba_book, &ev);
-
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_book_unload_uri: Exception releasing "
 			   "remote book interface!\n");
@@ -809,7 +824,7 @@ e_book_get_static_capabilities (EBook *book)
 		g_warning ("e_book_get_static_capabilities: Exception "
 			   "during get_static_capabilities!\n");
 		CORBA_exception_free (&ev);
-		return NULL;
+		return g_strdup("");
 	}
 
 	ret_val = g_strdup(temp);
@@ -1307,6 +1322,47 @@ e_book_get_book_view       (EBook                 *book,
 }
 
 guint
+e_book_get_completion_view      (EBook                 *book,
+				 const gchar           *query,
+				 EBookBookViewCallback  cb,
+				 gpointer               closure)
+{
+	CORBA_Environment ev;
+	EBookViewListener *listener;
+	guint tag;
+  
+	g_return_val_if_fail (book != NULL,     0);
+	g_return_val_if_fail (E_IS_BOOK (book), 0);
+
+	if (book->priv->load_state != URILoaded) {
+		g_warning ("e_book_get_completion_view: No URI loaded!\n");
+		return 0;
+	}
+
+	listener = e_book_view_listener_new();
+	
+	CORBA_exception_init (&ev);
+
+	tag = e_book_queue_op (book, cb, closure, listener);
+	
+	GNOME_Evolution_Addressbook_Book_getCompletionView (book->priv->corba_book,
+							    bonobo_object_corba_objref(BONOBO_OBJECT(listener)),
+							    query, &ev);
+
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("e_book_get_completion_view: Exception "
+			   "getting completion_view!\n");
+		CORBA_exception_free (&ev);
+		e_book_unqueue_op (book);
+		return 0;
+	}
+	
+	CORBA_exception_free (&ev);
+
+	return tag;
+}
+
+guint
 e_book_get_changes         (EBook                 *book,
 			    gchar                 *changeid,
 			    EBookBookViewCallback  cb,
@@ -1436,6 +1492,12 @@ e_book_destroy (GtkObject *object)
 		}
 	}
 
+        if (book->priv->comp_listener) {
+                gtk_signal_disconnect_by_data (GTK_OBJECT (book->priv->comp_listener), book);
+                gtk_object_unref (GTK_OBJECT (book->priv->comp_listener));
+                book->priv->comp_listener = NULL;
+        }
+
 	g_free (book->priv->uri);
 
 	g_free (book->priv);
@@ -1467,6 +1529,14 @@ e_book_class_init (EBookClass *klass)
 				gtk_marshal_NONE__BOOL,
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_BOOL);
+
+	e_book_signals [BACKEND_DIED] =
+		gtk_signal_new ("backend_died",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EBookClass, backend_died),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, e_book_signals,
 				      LAST_SIGNAL);

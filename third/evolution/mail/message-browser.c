@@ -67,6 +67,7 @@ message_browser_destroy (GtkObject *object)
 	
 	message_browser = MESSAGE_BROWSER (object);
 	
+	gtk_signal_disconnect_by_data((GtkObject *)message_browser->fb, message_browser);
 	gtk_object_unref (GTK_OBJECT (message_browser->fb));
 	
 	if (GTK_OBJECT_CLASS (message_browser_parent_class)->destroy)
@@ -101,10 +102,10 @@ transfer_msg_done (gboolean ok, void *data)
                    are hidden, select the previous */
 		if ((row + 1 == e_tree_row_count (mb->fb->message_list->tree))
 		    && mail_config_get_hide_deleted ())
-			message_list_select (mb->fb->message_list, row, MESSAGE_LIST_SELECT_PREVIOUS,
+			message_list_select (mb->fb->message_list, MESSAGE_LIST_SELECT_PREVIOUS,
 					     0, CAMEL_MESSAGE_DELETED, FALSE);
 		else
-			message_list_select (mb->fb->message_list, row, MESSAGE_LIST_SELECT_NEXT,
+			message_list_select (mb->fb->message_list, MESSAGE_LIST_SELECT_NEXT,
 					     0, 0, FALSE);
 	}
 	
@@ -114,38 +115,34 @@ transfer_msg_done (gboolean ok, void *data)
 static void
 transfer_msg (MessageBrowser *mb, int del)
 {
-	const char *allowed_types[] = { "mail", "vtrash", NULL };
+	const char *allowed_types[] = { "mail/*", "vtrash", NULL };
 	extern EvolutionShellClient *global_shell_client;
-	char *uri, *physical, *path, *desc;
-	static char *last = NULL;
+	GNOME_Evolution_Folder *folder;
+	static char *last_uri = NULL;
 	GPtrArray *uids;
+	char *desc;
 	
 	if (GTK_OBJECT_DESTROYED(mb))
 		return;
 	
-	if (last == NULL)
-		last = g_strdup ("");
+	if (last_uri == NULL)
+		last_uri = g_strdup ("");
 	
 	if (del)
 		desc = _("Move message(s) to");
 	else
 		desc = _("Copy message(s) to");
 	
-	uri = NULL;
-	physical = NULL;
 	evolution_shell_client_user_select_folder (global_shell_client,
 						   GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (mb))),
-						   desc, last,
-						   allowed_types, &uri, &physical);
-	if (!uri)
+						   desc, last_uri, allowed_types, &folder);
+	if (!folder)
 		return;
 	
-	path = strchr (uri, '/');
-	if (path && strcmp (last, path) != 0) {
-		g_free (last);
-		last = g_strdup_printf ("evolution:%s", path);
+	if (strcmp (last_uri, folder->evolutionUri) != 0) {
+		g_free (last_uri);
+		last_uri = g_strdup (folder->evolutionUri);
 	}
-	g_free (uri);
 	
 	uids = g_ptr_array_new ();
 	message_list_foreach (mb->fb->message_list, enumerate_msg, uids);
@@ -153,12 +150,13 @@ transfer_msg (MessageBrowser *mb, int del)
 	if (del) {
 		gtk_object_ref (GTK_OBJECT (mb));
 		mail_transfer_messages (mb->fb->folder, uids, del,
-					physical, 0, transfer_msg_done, mb);
+					folder->physicalUri, 0, transfer_msg_done, mb);
 	} else {
 		mail_transfer_messages (mb->fb->folder, uids, del,
-					physical, 0, NULL, NULL);
+					folder->physicalUri, 0, NULL, NULL);
 	}
-	g_free(physical);
+	
+	CORBA_free (folder);
 }
 
 
@@ -198,7 +196,7 @@ message_browser_message_loaded (FolderBrowser *fb, const char *uid, MessageBrows
 	CamelMimeMessage *message;
 	char *subject = NULL;
 	char *title;
-
+	
 	folder_browser_ui_message_loaded(fb);
 	
 	message = fb->mail_display->current_message;
@@ -241,7 +239,6 @@ message_browser_size_allocate_cb (GtkWidget *widget,
 				  GtkAllocation *allocation)
 {
 	last_allocation = *allocation;
-
 }
 
 /* Construction */
@@ -283,10 +280,11 @@ set_bonobo_ui (GtkWidget *widget, FolderBrowser *fb)
 	/* We just opened the message! We don't need to open it again. */
 
 	CORBA_exception_init (&ev);
+	/* remove the broken menus and toolbar items */
 	bonobo_ui_component_rm (uic, "/menu/File/FileOps/MessageOpen", &ev);
-	if (BONOBO_EX (&ev))
-		g_warning ("Couldn't remove message open item. Weird. Error: %s",
-			   bonobo_exception_get_text (&ev));
+	bonobo_ui_component_rm (uic, "/menu/Actions/ComponentActionsPlaceholder/MailMessageActions/GoTo", &ev);
+	bonobo_ui_component_rm (uic, "/menu/Tools", &ev);
+	bonobo_ui_component_rm (uic, "/Toolbar/MailNextButtons", &ev);
 	CORBA_exception_free (&ev);
 
 	/* Hack around the move/copy commands api's */
@@ -300,7 +298,6 @@ set_bonobo_ui (GtkWidget *widget, FolderBrowser *fb)
 	/* Done */
 
 	/*bonobo_ui_component_thaw (uic, NULL);*/
-
 }
 
 GtkWidget *

@@ -8,32 +8,30 @@ camel_provider_DATA = libcamelnntp.urls
 INCLUDES = -I../..				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/intl			\
-	-I$(top_srcdir)/libibex			\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
 	-I$(includedir)				\
-	$(EXTRA_GNOME_CFLAGS)			\
+	$(CAMEL_CFLAGS)				\
+	$(GNOME_INCLUDEDIR)			\
+	$(GTK_INCLUDEDIR)			\
 	-DG_LOG_DOMAIN=\"camel-nntp-provider\"
 
 libcamelnntp_la_SOURCES = 			\
-	camel-nntp-auth.c			\
-	camel-nntp-folder.c			\
-	camel-nntp-grouplist.c			\
-	camel-nntp-newsrc.c			\
 	camel-nntp-provider.c			\
 	camel-nntp-store.c			\
-	camel-nntp-utils.c
+	camel-nntp-folder.c			\
+	camel-nntp-stream.c			\
+	camel-nntp-summary.c
 
 libcamelnntpinclude_HEADERS =			\
-	camel-nntp-auth.h			\
-	camel-nntp-folder.h			\
-	camel-nntp-grouplist.h			\
-	camel-nntp-newsrc.h			\
-	camel-nntp-resp-codes.h			\
 	camel-nntp-store.h			\
-	camel-nntp-types.h			\
-	camel-nntp-utils.h
+	camel-nntp-folder.h			\
+	camel-nntp-stream.h			\
+	camel-nntp-summary.h
 
-libcamelnntp_la_LDFLAGS = -version-info 0:0:0
+noinst_HEADERS =				\
+	camel-nntp-private.h
+
+libcamelnntp_la_LDFLAGS = -avoid-version -module
 
 EXTRA_DIST = libcamelnntp.urls

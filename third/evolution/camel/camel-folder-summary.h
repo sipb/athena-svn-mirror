@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -21,11 +22,16 @@
 #ifndef _CAMEL_FOLDER_SUMMARY_H
 #define _CAMEL_FOLDER_SUMMARY_H
 
+#ifdef __cplusplus
+extern "C" {
+#pragma }
+#endif /* __cplusplus */
+
 #include <stdio.h>
 #include <time.h>
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
-#include <libibex/ibex.h>
+#include <camel/camel-index.h>
 
 #define CAMEL_FOLDER_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_folder_summary_get_type (), CamelFolderSummary)
 #define CAMEL_FOLDER_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_summary_get_type (), CamelFolderSummaryClass)
@@ -38,14 +44,14 @@ typedef struct _CamelFolderSummaryClass CamelFolderSummaryClass;
    describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
 	struct _CamelMessageContentInfo *next;
-
+	
 	struct _CamelMessageContentInfo *childs;
 	struct _CamelMessageContentInfo *parent;
-
+	
 	struct _header_content_type *type;
 	char *id;
 	char *description;
-	char *encoding;
+	char *encoding;		/* this should be an enum?? */
 	guint32 size;
 };
 
@@ -57,6 +63,7 @@ enum _CamelMessageFlags {
 	CAMEL_MESSAGE_FLAGGED = 1<<3,
 	CAMEL_MESSAGE_SEEN = 1<<4,
 	CAMEL_MESSAGE_ATTACHMENTS = 1<<5,
+	CAMEL_MESSAGE_ANSWERED_ALL = 1<<6,
 
 	/* following flags are for the folder, and are not really permanent flags */
 	CAMEL_MESSAGE_FOLDER_FLAGGED = 1<<16, /* for use by the folder implementation */
@@ -203,11 +210,11 @@ struct _CamelFolderSummaryClass {
 	char *(*next_uid_string)(CamelFolderSummary *);
 };
 
-guint			 camel_folder_summary_get_type	(void);
+CamelType			 camel_folder_summary_get_type	(void);
 CamelFolderSummary      *camel_folder_summary_new	(void);
 
 void camel_folder_summary_set_filename(CamelFolderSummary *, const char *);
-void camel_folder_summary_set_index(CamelFolderSummary *, ibex *);
+void camel_folder_summary_set_index(CamelFolderSummary *, CamelIndex *);
 void camel_folder_summary_set_build_content(CamelFolderSummary *, gboolean state);
 
 guint32  camel_folder_summary_next_uid        (CamelFolderSummary *s);
@@ -326,5 +333,16 @@ void camel_message_info_set_string(CamelMessageInfo *mi, int type, char *str);
 #define camel_message_info_set_uid(x, s) (g_free(((CamelMessageInfo *)(x))->uid),((CamelMessageInfo *)(x))->uid = (s))
 #define camel_message_info_set_mlist(x, s) (g_free(((CamelMessageInfo *)(x))->mlist),((CamelMessageInfo *)(x))->mlist = (s))
 #endif
+
+
+/* debugging functions */
+
+void camel_content_info_dump (CamelMessageContentInfo *ci, int depth);
+
+void camel_message_info_dump (CamelMessageInfo *mi);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* ! _CAMEL_FOLDER_SUMMARY_H */

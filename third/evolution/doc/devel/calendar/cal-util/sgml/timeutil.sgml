@@ -1,0 +1,168 @@
+<refentry id="evolution-cal-util-timeutil">
+<refmeta>
+<refentrytitle>timeutil</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>EVOLUTION-CAL-UTIL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>timeutil</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+char*       <link linkend="isodate-from-time-t">isodate_from_time_t</link>             (<link linkend="time-t">time_t</link> t);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-day">time_add_day</link>                    (<link linkend="time-t">time_t</link> time,
+                                             int days);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-week">time_add_week</link>                   (<link linkend="time-t">time_t</link> time,
+                                             int weeks);
+int         <link linkend="time-days-in-month">time_days_in_month</link>              (int year,
+                                             int month);
+<link linkend="time-t">time_t</link>      <link linkend="time-day-begin">time_day_begin</link>                  (<link linkend="time-t">time_t</link> t);
+<link linkend="time-t">time_t</link>      <link linkend="time-day-end">time_day_end</link>                    (<link linkend="time-t">time_t</link> t);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="isodate-from-time-t">isodate_from_time_t ()</title>
+<programlisting>char*       isodate_from_time_t             (<link linkend="time-t">time_t</link> t);</programlisting>
+<para>
+Creates an ISO 8601 UTC representation from a time value.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> A time value.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> String with the ISO 8601 representation of the UTC time.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="time-add-day">time_add_day ()</title>
+<programlisting><link linkend="time-t">time_t</link>      time_add_day                    (<link linkend="time-t">time_t</link> time,
+                                             int days);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>time</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>days</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="time-add-week">time_add_week ()</title>
+<programlisting><link linkend="time-t">time_t</link>      time_add_week                   (<link linkend="time-t">time_t</link> time,
+                                             int weeks);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>time</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>weeks</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="time-days-in-month">time_days_in_month ()</title>
+<programlisting>int         time_days_in_month              (int year,
+                                             int month);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>year</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>month</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="time-day-begin">time_day_begin ()</title>
+<programlisting><link linkend="time-t">time_t</link>      time_day_begin                  (<link linkend="time-t">time_t</link> t);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="time-day-end">time_day_end ()</title>
+<programlisting><link linkend="time-t">time_t</link>      time_day_end                    (<link linkend="time-t">time_t</link> t);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,23 +1,23 @@
-importersdir = $(pkglibdir)/evolution-mail-importers/$(VERSION)
+importersdir = $(privlibdir)/evolution-mail-importers
 
 importers_LTLIBRARIES = liboutlook.la libmbox.la
 
-INCLUDES = -I.. \
-	-I$(srcdir)/..				\
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/shell			\
-	-I$(top_builddir)/shell			\
-	-I$(includedir)				\
-	$(EXTRA_GNOME_CFLAGS)			\
-	$(BONOBO_GNOME_CFLAGS)			\
-	-DG_LOG_DOMAIN=\"evolution-mail-importer\"
+INCLUDES = -I.. 					\
+	-I$(srcdir)/..					\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/shell				\
+	-I$(top_builddir)/shell				\
+	-I$(includedir)					\
+	-DG_LOG_DOMAIN=\"evolution-mail-importer\"	\
+	$(IMPORTERS_CFLAGS)
 
 liboutlook_la_SOURCES =				\
 	evolution-outlook-importer.c
-liboutlook_la_LDFLAGS = -version-info 0:0:0
+liboutlook_la_LDFLAGS = -avoid-version -module
 
-libmbox_la_SOURCES = evolution-mbox-importer.c
-libmbox_la_LDFLAGS = -version-info 0:0:0
+libmbox_la_SOURCES = evolution-mbox-importer.c \
+		     mozilla-status-headers.h
+libmbox_la_LDFLAGS = -avoid-version -module
 
 oafdir = $(datadir)/oaf
 oaf_in_files = GNOME_Evolution_Mail_Mbox_Importer.oaf.in	\

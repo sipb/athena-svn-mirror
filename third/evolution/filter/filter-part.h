@@ -54,6 +54,7 @@ FilterPart	*filter_part_new	(void);
 
 /* methods */
 gboolean        filter_part_validate    (FilterPart *fp);
+int		filter_part_eq		(FilterPart *fp, FilterPart *fc);
 
 int		filter_part_xml_create	(FilterPart *ff, xmlNodePtr node);
 
@@ -61,6 +62,7 @@ xmlNodePtr	filter_part_xml_encode	(FilterPart *fe);
 int		filter_part_xml_decode	(FilterPart *fe, xmlNodePtr node);
 
 FilterPart	*filter_part_clone	(FilterPart *fp);
+void		filter_part_copy_values (FilterPart *dfp, FilterPart *sfp);
 
 FilterElement	*filter_part_find_element(FilterPart *ff, const char *name);
 

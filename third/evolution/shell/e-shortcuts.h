@@ -55,6 +55,10 @@ struct _EShortcutItem {
 	   folder, this is NULL.  */
 	char *type;
 
+	/* Custom icon for the shortcut.  If this is NULL, then the shortcut
+	   should just use the icon for the type.  */
+	char *custom_icon_name;
+
 	/* Number of unread items in the folder.  Zero if not a folder.  */
 	int unread_count;
 };
@@ -71,24 +75,26 @@ struct _EShortcutsClass {
 
 	/* Signals.  */
 
-	void  (* new_group)        (EShortcuts *shortcuts, int group_num);
-	void  (* remove_group)     (EShortcuts *shortcuts, int group_num);
-	void  (* rename_group)     (EShortcuts *shortcuts, int group_num, const char *new_title);
+	void  (* new_group)               (EShortcuts *shortcuts, int group_num);
+	void  (* remove_group)     	  (EShortcuts *shortcuts, int group_num);
+	void  (* rename_group)     	  (EShortcuts *shortcuts, int group_num, const char *new_title);
 
-	void  (* new_shortcut)     (EShortcuts *shortcuts, int group_num, int item_num);
-	void  (* remove_shortcut)  (EShortcuts *shortcuts, int group_num, int item_num);
-	void  (* update_shortcut)  (EShortcuts *shortcuts, int group_num, int item_num);
+	void  (* group_change_icon_size)  (EShortcuts *shortcuts, int group_num, gboolean use_small_icons);
+
+	void  (* new_shortcut)     	  (EShortcuts *shortcuts, int group_num, int item_num);
+	void  (* remove_shortcut)  	  (EShortcuts *shortcuts, int group_num, int item_num);
+	void  (* update_shortcut)  	  (EShortcuts *shortcuts, int group_num, int item_num);
 };
 
+
+#include "e-shell.h"
 
 
-GtkType      e_shortcuts_get_type                (void);
-void         e_shortcuts_construct               (EShortcuts          *shortcuts,
-						  EStorageSet         *storage_set,
-						  EFolderTypeRegistry *folder_type_registry);
-EShortcuts  *e_shortcuts_new                     (EStorageSet         *storage_set,
-						  EFolderTypeRegistry *folder_type_registry,
-						  const char          *file_name);
+GtkType     e_shortcuts_get_type       (void);
+void        e_shortcuts_construct      (EShortcuts *shortcuts,
+					EShell     *shell);
+EShortcuts *e_shortcuts_new_from_file  (EShell     *shell,
+					const char *file_name);
 
 int           e_shortcuts_get_num_groups          (EShortcuts *shortcuts);
 
@@ -102,15 +108,18 @@ const EShortcutItem *e_shortcuts_get_shortcut  (EShortcuts *shortcuts,
 						int         group_num,
 						int         num);
 
-EStorageSet  *e_shortcuts_get_storage_set          (EShortcuts *shortcuts);
-GtkWidget    *e_shortcuts_new_view                 (EShortcuts *shortcuts);
+EShell *e_shortcuts_get_shell  (EShortcuts *shortcuts);
+
+GtkWidget *e_shortcuts_new_view  (EShortcuts *shortcuts);
 
 gboolean     e_shortcuts_load                    (EShortcuts          *shortcuts,
 						  const char          *path);
 gboolean     e_shortcuts_save                    (EShortcuts          *shortcuts,
 						  const char          *path);
 
-void  e_shortcuts_add_default_group  (EShortcuts *shortcuts);
+void  e_shortcuts_add_default_shortcuts  (EShortcuts *shortcuts,
+					  int         group_num);
+void  e_shortcuts_add_default_group      (EShortcuts *shortcuts);
 
 void  e_shortcuts_remove_shortcut    (EShortcuts *shortcuts,
 				      int         group_num,
@@ -121,14 +130,16 @@ void  e_shortcuts_add_shortcut       (EShortcuts *shortcuts,
 				      const char *uri,
 				      const char *name,
 				      int unread_count,
-				      const char *type);
+				      const char *type,
+				      const char *custom_icon_name);
 void  e_shortcuts_update_shortcut    (EShortcuts *shortcuts,
 				      int         group_num,
 				      int         num,
 				      const char *uri,
 				      const char *name,
 				      int unread_count,
-				      const char *type);
+				      const char *type,
+				      const char *custom_icon_name);
 
 void  e_shortcuts_remove_group  (EShortcuts *shortcuts,
 				 int         group_num);
@@ -136,8 +147,18 @@ void  e_shortcuts_add_group     (EShortcuts *shortcuts,
 				 int         group_num,
 				 const char *group_title);
 void  e_shortcuts_rename_group  (EShortcuts *shortcuts,
-				 int         group_name,
+				 int         group_num,
 				 const char *new_title);
+
+void      e_shortcuts_set_group_uses_small_icons  (EShortcuts *shortcuts,
+						   int         group_num,
+						   gboolean    use_small_icons);
+gboolean  e_shortcuts_get_group_uses_small_icons  (EShortcuts *shortcuts,
+						   int         group_num);
+
+void  e_shortcuts_update_shortcuts_for_changed_uri  (EShortcuts *shortcuts,
+						     const char *old_uri_,
+						     const char *new_uri);
 
 #ifdef __cplusplus
 }

@@ -216,7 +216,7 @@ CLASS="NOTE"
 CLASS="NOTE"
 ><P
 ><B
->Multiple Simultanious Appointments: </B
+>Multiple Simultaneous Appointments: </B
 >           If you create calendar appointments that overlap,
            <SPAN
 CLASS="APPLICATION"
@@ -283,9 +283,27 @@ CLASS="GUIBUTTON"
 ></DD
 ></DL
 ></DIV
->
-	    
+>	    
       </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><A
+NAME="REMINDERS-WHEN-NOT-RUNNING-EVO"
+></A
+><P
+><B
+>Reminders Without Evolution: </B
+>            If you have stored reminders in a local calendar, they
+          will work from the moment you log in. However, for reminders
+          stored on an Exchange server, you must run Evolution at
+          least once after logging in. No matter where the reminders
+          are stored, you can quit Evolution and still be reminded of
+          an upcoming appointment.
+         </P
+></BLOCKQUOTE
+></DIV
 ><P
 >         <SPAN
 CLASS="GUILABEL"
@@ -311,10 +329,13 @@ CLASS="GUILABEL"
 >	<SPAN
 CLASS="APPLICATION"
 >Evolution</SPAN
-> can handle not only time
-	that you're busy, but free time. This can be useful if you're
-	on a network sharing calendar files.  You can easily compare
-	schedules with other people, allowing easy setup of a RSVP.
+> can handle free/busy
+	scheduling Using the Ximian Connector on a Microsoft Exchange
+	2000 server. For more information about Ximian Connector, see
+	<A
+HREF="usage-exchange.html"
+>Chapter 7</A
+>.
       </P
 ><P
 >	To set your appointment to be free or busy, simply click the
@@ -510,7 +531,7 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->	      Click the space labelled <SPAN
+>	      Click the space labeled <SPAN
 CLASS="GUILABEL"
 >Click here to add an
 	      attendee</SPAN
@@ -546,7 +567,7 @@ NAME="REPLYING-TO-RSVP"
 	respond to one, click on the attachment icon and view it
 	inline in the mail window.  All the details are shown about
 	the event including time and dates.  Then you can choose how
-	to reply to the RSVP.  Your choices are:
+	to reply to the invitation.  Your choices are:
 	<P
 ></P
 ><UL
@@ -574,6 +595,39 @@ CLASS="GUIBUTTON"
 	the organizer with your answer.  The event will also be added
 	to your calendar if you accept.
       </P
+><P
+>        Note, however, that if you add a meeting to your calendar,
+        there are some limitations: only the organizer of a meeting
+        can add participants in a meeting. Your only options, as a
+        participant, are to accept the meeting, or decline it. 
+      </P
+><P
+>        Once you have added the meeting to your calendar, you can make
+        changes to your copy-- change the description, mark yourself
+        the organizer, invite more people, and so forth-- but be aware
+        that if the original organizer sends out another update, your
+        changes may be overwritten.
+      </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><A
+NAME="ORGANIZER-ONLY-ONE"
+></A
+><P
+><B
+>There Can Be Only One: </B
+>         A meeting can have only one organizer. You can designate
+         yourself the organizer of the meeting, but unless you
+         coordinate that action with the organizer you are replacing,
+         you could create confusion in the scheduling process. If you
+         want to invite additional people to a meeting without
+         changing the organizer, it's best to forward the first
+         organizer's message to the additional participants.
+      </P
+></BLOCKQUOTE
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -603,22 +657,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USAGE-CALENDAR-FREEBUSY"
->The Free/Busy View</A
+>Scheduling Meetings and The Free/Busy View</A
 ></H2
 ><P
->	<SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> has a Free/Busy window so
-	that you can view people's schedules together to help you
-	schedule appointments. Read <A
-HREF="full-advantage.html"
->the section called <I
->Taking Full Advantage of the Exchange Server When Scheduling Appointments</I
-> in Chapter 7</A
-> to
-	learn about how to use this feature with the Ximian Connector
-	for Microsoft Exchange.
+>        In addition to the standard meeting scheduling tools, you can
+	 use the Free/Busy view to check whether people are available
+	 in advance. At this time, the Free/Busy feature only works
+	 with Microsoft Exchange servers. However, you can still use
+	 iCal event invitations to coordinate schedules with other
+	 people no matter what server you're using.
       </P
 ><P
 >	To access the free/busy view:
@@ -661,7 +708,7 @@ CLASS="GUILABEL"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN2794"
+NAME="AEN2938"
 ></A
 ><P
 ><B
@@ -783,6 +830,16 @@ CLASS="GUIBUTTON"
           automatically; others will receive email notification of any
           change in plans.
         </P
+><P
+>         Read <A
+HREF="full-advantage.html"
+>the section called <I
+>Taking Full Advantage of the Exchange Server When Scheduling Appointments</I
+> in Chapter 7</A
+> to learn about how to
+	 use this feature with the Ximian Connector for Microsoft
+	 Exchange.
+       </P
 ></DIV
 ></DIV
 ></DIV

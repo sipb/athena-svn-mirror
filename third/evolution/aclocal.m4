@@ -1,6 +1,6 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4-p4
+dnl aclocal.m4 generated automatically by aclocal 1.4-p6
 
-dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+dnl Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -10,9 +10,192 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
+# evolution/acinclude.m4
+# shared configure.in hacks between Evolution and Connector
+
+# EVO_CHECK_LIB(dispname, pkgname, minvers[, maxvers])
+# Checks if the package with human-readable name @dispname, known
+# to gnome-config as @pkgname exists and has an appropriate version.
+# The version must be >= @minvers. If @maxvers is equal to @minvers,
+# it must be exactly that version. Otherwise, if @maxvers is set,
+# the version must be LESS THAN @maxvers (not less than or equal).
+AC_DEFUN(EVO_CHECK_LIB, [
+	dispname="$1"
+	pkgname="$2"
+	minvers="$3"
+	maxvers="$4"
+
+	AC_MSG_CHECKING(for $dispname)
+
+	if gnome-config --libs $pkgname > /dev/null 2>&1; then
+		pkgvers=`gnome-config --modversion $pkgname | sed -e 's/^[[^0-9]]*//'`
+	else
+		pkgvers=not
+	fi
+	AC_MSG_RESULT($pkgvers found)
+
+	pkgvers=`echo $pkgvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
+	cmpminvers=`echo $minvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
+	cmpmaxvers=`echo $maxvers | awk -F. '{ print $[]1 * 1000000 + $[]2 * 10000 + $[]3 * 100 + $[]4;}'`
+	ok=yes
+	if test "$pkgvers" -lt $cmpminvers; then
+		ok=no
+	elif test -n "$maxvers"; then
+		if test "$pkgvers" -gt $cmpmaxvers; then
+			ok=no
+		elif test "$maxvers" != "$minvers" -a "$cmpmaxvers" -eq "$pkgvers"; then
+			ok=no
+		fi
+	fi
+	if test $ok = no; then
+		case $maxvers in
+		"")
+			dispvers="$minvers or higher"
+			;;
+		$minvers)
+			dispvers="$minvers (exactly)"
+			;;
+		*)
+			dispvers="$minvers or higher, but less than $maxvers,"
+			;;
+		esac
+
+		AC_MSG_ERROR([
+""
+"You need $dispname $dispvers to build $PACKAGE"
+"If you think you already have this installed, consult the README."])
+	fi
+])
+
+
+# EVO_PURIFY_SUPPORT
+# Add --enable-purify. If the user turns it on, subst PURIFY and set
+# the automake conditional ENABLE_PURIFY
+AC_DEFUN(EVO_PURIFY_SUPPORT, [
+	AC_ARG_ENABLE(purify, 
+	[  --enable-purify=[no/yes]      Enable support for building executables with Purify.],,enable_purify=no)
+	AC_PATH_PROG(PURIFY, purify, impure)
+	AC_ARG_WITH(purify-options, [  --with-purify-options=OPTIONS      Options passed to the purify command line (defaults to PURIFYOPTIONS variable).])
+	if test "x$with_purify_options" = "xno"; then
+		with_purify_options="-always-use-cache-dir=yes -cache-dir=/gnome/lib/purify"
+	fi
+	if test "x$PURIFYOPTIONS" = "x"; then
+		PURIFYOPTIONS=$with_purify_options
+	fi
+	AC_SUBST(PURIFY)
+	AM_CONDITIONAL(ENABLE_PURIFY, test "x$enable_purify" = "xyes" -a "x$PURIFY" != "ximpure")
+	PURIFY="$PURIFY $PURIFYOPTIONS"
+])
+
+
+# EVO_LDAP_CHECK(default)
+# Add --with-openldap and --with-static-ldap options. --with-openldap
+# defaults to the given value if not specified. If LDAP support is
+# configured, HAVE_LDAP will be defined and the automake conditional
+# ENABLE_LDAP will be set. LDAP_CFLAGS and LDAP_LIBS will be set
+# appropriately.
+AC_DEFUN(EVO_LDAP_CHECK, [
+	default="$1"
+
+	AC_ARG_WITH(openldap,     [  --with-openldap=[no/yes/PREFIX]      Enable LDAP support in evolution])
+	AC_ARG_WITH(static-ldap,  [  --with-static-ldap=[no/yes]          Link LDAP support statically into evolution ])
+	AC_CACHE_CHECK([for OpenLDAP], ac_cv_with_openldap, ac_cv_with_openldap="${with_openldap:=$default}")
+	case $ac_cv_with_openldap in
+	no|"")
+		with_openldap=no
+		;;
+	yes)
+		with_openldap=/usr
+		;;
+	*)
+		with_openldap=$ac_cv_with_openldap
+		LDAP_CFLAGS="-I$ac_cv_with_openldap/include"
+		LDAP_LDFLAGS="-L$ac_cv_with_openldap/lib"
+		;;
+	esac
+
+	if test "$with_openldap" != no; then
+		AC_DEFINE(HAVE_LDAP)
+
+		case $with_static_ldap in
+		no|"")
+			if test -f $with_openldap/lib/libldap.la; then
+				with_static_ldap=yes
+			else
+				with_static_ldap=no
+			fi
+			;;
+		*)
+			with_static_ldap=yes
+			;;
+		esac
+
+		AC_CACHE_CHECK(if OpenLDAP is version 2.x, ac_cv_openldap_version2, [
+			CPPFLAGS_save="$CPPFLAGS"
+			CPPFLAGS="$CPPFLAGS $LDAP_CFLAGS"
+			AC_EGREP_CPP(yes, [
+				#include "ldap.h"
+				#if LDAP_VENDOR_VERSION > 20000
+				yes
+				#endif
+			], ac_cv_openldap_version2=yes, ac_cv_openldap_version2=no)
+			CPPFLAGS="$CPPFLAGS_save"
+		])
+		if test "$ac_cv_openldap_version2" = no; then
+			AC_MSG_ERROR(evolution requires OpenLDAP version >= 2)
+		fi
+
+		AC_CHECK_LIB(resolv, res_query, LDAP_LIBS="-lresolv")
+		AC_CHECK_LIB(socket, bind, LDAP_LIBS="$LDAP_LIBS -lsocket")
+		AC_CHECK_LIB(nsl, gethostbyaddr, LDAP_LIBS="$LDAP_LIBS -lnsl")
+		AC_CHECK_LIB(lber, ber_get_tag, [
+			if test "$with_static_ldap" = "yes"; then
+				LDAP_LIBS="$with_openldap/lib/liblber.a $LDAP_LIBS"
+
+				# libldap might depend on OpenSSL... We need to pull
+				# in the dependency libs explicitly here since we're
+				# not using libtool for the configure test.
+				if test -f $with_openldap/lib/libldap.la; then
+					LDAP_LIBS="`. $with_openldap/lib/libldap.la; echo $dependency_libs` $LDAP_LIBS"
+				fi
+			else
+				LDAP_LIBS="-llber $LDAP_LIBS"
+			fi
+			AC_CHECK_LIB(ldap, ldap_open, [
+					if test $with_static_ldap = "yes"; then
+						LDAP_LIBS="$with_openldap/lib/libldap.a $LDAP_LIBS"
+					else
+						LDAP_LIBS="-lldap $LDAP_LIBS"
+					fi],
+				LDAP_LIBS="", $LDAP_LDFLAGS $LDAP_LIBS)
+			LDAP_LIBS="$LDAP_LDFLAGS $LDAP_LIBS"
+		], LDAP_LIBS="", $LDAP_LDFLAGS $LDAP_LIBS)
+
+		if test -z "$LDAP_LIBS"; then
+			AC_MSG_ERROR(could not find OpenLDAP libraries)
+		fi
+
+		AC_SUBST(LDAP_CFLAGS)
+		AC_SUBST(LDAP_LIBS)
+	fi
+	AM_CONDITIONAL(ENABLE_LDAP, test $with_openldap != no)
+])
+# Define a conditional.
+
+AC_DEFUN([AM_CONDITIONAL],
+[AC_SUBST($1_TRUE)
+AC_SUBST($1_FALSE)
+if $2; then
+  $1_TRUE=
+  $1_FALSE='#'
+else
+  $1_TRUE='#'
+  $1_FALSE=
+fi])
+
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
-AC_DEFUN(AM_CONFIG_HEADER,
+AC_DEFUN([AM_CONFIG_HEADER],
 [AC_PREREQ([2.12])
 AC_CONFIG_HEADER([$1])
 dnl When config.status generates a header, we must update the stamp-h file.
@@ -42,8 +225,9 @@ changequote([,]))])
 dnl Usage:
 dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
-AC_DEFUN(AM_INIT_AUTOMAKE,
-[AC_REQUIRE([AC_PROG_INSTALL])
+AC_DEFUN([AM_INIT_AUTOMAKE],
+[AC_REQUIRE([AM_SET_CURRENT_AUTOMAKE_VERSION])dnl
+AC_REQUIRE([AC_PROG_INSTALL])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
 VERSION=[$2]
@@ -59,18 +243,47 @@ AC_REQUIRE([AM_SANITY_CHECK])
 AC_REQUIRE([AC_ARG_PROGRAM])
 dnl FIXME This is truly gross.
 missing_dir=`cd $ac_aux_dir && pwd`
-AM_MISSING_PROG(ACLOCAL, aclocal, $missing_dir)
+AM_MISSING_PROG(ACLOCAL, aclocal-${am__api_version}, $missing_dir)
 AM_MISSING_PROG(AUTOCONF, autoconf, $missing_dir)
-AM_MISSING_PROG(AUTOMAKE, automake, $missing_dir)
+AM_MISSING_PROG(AUTOMAKE, automake-${am__api_version}, $missing_dir)
 AM_MISSING_PROG(AUTOHEADER, autoheader, $missing_dir)
 AM_MISSING_PROG(MAKEINFO, makeinfo, $missing_dir)
 AC_REQUIRE([AC_PROG_MAKE_SET])])
+
+# Copyright 2002  Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+
+# AM_AUTOMAKE_VERSION(VERSION)
+# ----------------------------
+# Automake X.Y traces this macro to ensure aclocal.m4 has been
+# generated from the m4 files accompanying Automake X.Y.
+AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.4"])
+
+# AM_SET_CURRENT_AUTOMAKE_VERSION
+# -------------------------------
+# Call AM_AUTOMAKE_VERSION so it can be traced.
+# This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
+AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
+	 [AM_AUTOMAKE_VERSION([1.4-p6])])
 
 #
 # Check to make sure that the build environment is sane.
 #
 
-AC_DEFUN(AM_SANITY_CHECK,
+AC_DEFUN([AM_SANITY_CHECK],
 [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
@@ -111,7 +324,7 @@ AC_MSG_RESULT(yes)])
 
 dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
 dnl The program must properly implement --version.
-AC_DEFUN(AM_MISSING_PROG,
+AC_DEFUN([AM_MISSING_PROG],
 [AC_MSG_CHECKING(for working $2)
 # Run test in a subshell; some versions of sh will print an error if
 # an executable is not found, even if stderr is redirected.
@@ -125,25 +338,12 @@ else
 fi
 AC_SUBST($1)])
 
-# Define a conditional.
-
-AC_DEFUN(AM_CONDITIONAL,
-[AC_SUBST($1_TRUE)
-AC_SUBST($1_FALSE)
-if $2; then
-  $1_TRUE=
-  $1_FALSE='#'
-else
-  $1_TRUE='#'
-  $1_FALSE=
-fi])
-
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
 
 # serial 1
 
-AC_DEFUN(AM_MAINTAINER_MODE,
+AC_DEFUN([AM_MAINTAINER_MODE],
 [AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
   dnl maintainer-mode is disabled by default
   AC_ARG_ENABLE(maintainer-mode,
@@ -179,7 +379,7 @@ AC_DEFUN([AC_ISC_POSIX],
 
 dnl AM_PROG_LEX
 dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
-AC_DEFUN(AM_PROG_LEX,
+AC_DEFUN([AM_PROG_LEX],
 [missing_dir=ifelse([$1],,`cd $ac_aux_dir && pwd`,$1)
 AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
 AC_PROG_LEX
@@ -495,7 +695,7 @@ hpux*) # Its linker distinguishes data from code symbols
   lt_cv_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern char \1();/p' -e 's/^$symcode* .* \(.*\)$/extern char \1;/p'"
   lt_cv_global_symbol_to_c_name_address="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\\", (lt_ptr) 0},/p' -e 's/^$symcode* \([[^ ]]*\) \([[^ ]]*\)$/  {\"\2\", (lt_ptr) \&\2},/p'"
   ;;
-irix* | nonstopux*)
+irix*)
   symcode='[[BCDEGRST]]'
   ;;
 solaris* | sysv5*)
@@ -1138,7 +1338,7 @@ AC_CACHE_VAL(lt_cv_prog_cc_pic,
       # like `-m68040'.
       lt_cv_prog_cc_pic='-m68020 -resident32 -malways-restore-a4'
       ;;
-    beos* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
+    beos* | irix5* | irix6* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
       ;;
     darwin* | rhapsody*)
@@ -1181,7 +1381,7 @@ AC_CACHE_VAL(lt_cv_prog_cc_pic,
       lt_cv_prog_cc_pic='+Z'
       ;;
 
-    irix5* | irix6* | nonstopux*)
+    irix5* | irix6*)
       lt_cv_prog_cc_wl='-Wl,'
       lt_cv_prog_cc_static='-non_shared'
       # PIC (with -KPIC) is the default.
@@ -1832,9 +2032,8 @@ else
     esac
     # FIXME: Relying on posixy $() will cause problems for
     #        cross-compilation, but unfortunately the echo tests do not
-    #        yet detect zsh echo's removal of \ escapes.  Also zsh mangles
-    #	     `"' quotes if we put them in here... so don't!
-    archive_cmds='$nonopt $(test .$module = .yes && echo -bundle || echo -dynamiclib) $allow_undefined_flag -o $lib $libobjs $deplibs$linker_flags -install_name $rpath/$soname $verstring'
+    #        yet detect zsh echo's removal of \ escapes.
+    archive_cmds='$nonopt $(test "x$module" = xyes && echo -bundle || echo -dynamiclib) $allow_undefined_flag -o $lib $libobjs $deplibs$linker_flags -install_name $rpath/$soname $verstring'
     # We need to add '_' to the symbols in $export_symbols first
     #archive_expsym_cmds="$archive_cmds"' && strip -s $export_symbols'
     hardcode_direct=yes
@@ -1886,7 +2085,7 @@ else
     export_dynamic_flag_spec='${wl}-E'
     ;;
 
-  irix5* | irix6* | nonstopux*)
+  irix5* | irix6*)
     if test "$GCC" = yes; then
       archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${output_objdir}/so_locations -o $lib'
     else
@@ -2357,17 +2556,14 @@ hpux9* | hpux10* | hpux11*)
   postinstall_cmds='chmod 555 $lib'
   ;;
 
-irix5* | irix6* | nonstopux*)
-  case $host_os in
-    nonstopux*) version_type=nonstopux ;;
-    *)          version_type=irix ;;
-  esac
+irix5* | irix6*)
+  version_type=irix
   need_lib_prefix=no
   need_version=no
   soname_spec='${libname}${release}.so$major'
   library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major ${libname}${release}.so $libname.so'
   case $host_os in
-  irix5* | nonstopux*)
+  irix5*)
     libsuff= shlibsuff=
     ;;
   *)
@@ -2471,7 +2667,6 @@ os2*)
 osf3* | osf4* | osf5*)
   version_type=osf
   need_version=no
-  need_lib_prefix=no
   soname_spec='${libname}${release}.so'
   library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so $libname.so'
   shlibpath_var=LD_LIBRARY_PATH
@@ -3572,9 +3767,9 @@ hpux10.20*|hpux11*)
   lt_cv_file_magic_test_file=/usr/lib/libc.sl
   ;;
 
-irix5* | irix6* | nonstopux*)
+irix5* | irix6*)
   case $host_os in
-  irix5* | nonstopux*)
+  irix5*)
     # this will be overridden with pass_all, but let us keep it just in case
     lt_cv_deplibs_check_method="file_magic ELF 32-bit MSB dynamic lib MIPS - version 1"
     ;;
@@ -3595,7 +3790,13 @@ irix5* | irix6* | nonstopux*)
 
 # This must be Linux ELF.
 linux-gnu*)
-  lt_cv_deplibs_check_method=pass_all
+  case $host_cpu in
+  alpha* | hppa* | i*86 | powerpc* | sparc* | ia64* | s390* )
+    lt_cv_deplibs_check_method=pass_all ;;
+  *)
+    # glibc up to 2.1.1 does not perform some relocations on ARM
+    lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB (shared object|dynamic lib )' ;;
+  esac
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
   ;;
 
@@ -3726,12 +3927,12 @@ esac
 ])
 
 # AC_LIBLTDL_CONVENIENCE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl convenience library and LTDLINCL to the include flags for
+# the libltdl convenience library and INCLTDL to the include flags for
 # the libltdl header and adds --enable-ltdl-convenience to the
-# configure arguments.  Note that LIBLTDL and LTDLINCL are not
+# configure arguments.  Note that LIBLTDL and INCLTDL are not
 # AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If DIR is not
 # provided, it is assumed to be `libltdl'.  LIBLTDL will be prefixed
-# with '${top_builddir}/' and LTDLINCL will be prefixed with
+# with '${top_builddir}/' and INCLTDL will be prefixed with
 # '${top_srcdir}/' (note the single quotes!).  If your package is not
 # flat and you're not using automake, define top_builddir and
 # top_srcdir appropriately in the Makefiles.
@@ -3743,18 +3944,16 @@ AC_DEFUN([AC_LIBLTDL_CONVENIENCE],
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
   LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdlc.la
-  LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
-  # For backwards non-gettext consistent compatibility...
-  INCLTDL="$LTDLINCL"
+  INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl installable library and LTDLINCL to the include flags for
+# the libltdl installable library and INCLTDL to the include flags for
 # the libltdl header and adds --enable-ltdl-install to the configure
-# arguments.  Note that LIBLTDL and LTDLINCL are not AC_SUBSTed, nor is
+# arguments.  Note that LIBLTDL and INCLTDL are not AC_SUBSTed, nor is
 # AC_CONFIG_SUBDIRS called.  If DIR is not provided and an installed
 # libltdl is not found, it is assumed to be `libltdl'.  LIBLTDL will
-# be prefixed with '${top_builddir}/' and LTDLINCL will be prefixed
+# be prefixed with '${top_builddir}/' and INCLTDL will be prefixed
 # with '${top_srcdir}/' (note the single quotes!).  If your package is
 # not flat and you're not using automake, define top_builddir and
 # top_srcdir appropriately in the Makefiles.
@@ -3772,14 +3971,12 @@ AC_DEFUN([AC_LIBLTDL_INSTALLABLE],
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
     LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdl.la
-    LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+    INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
-    LTDLINCL=
+    INCLTDL=
   fi
-  # For backwards non-gettext consistent compatibility...
-  INCLTDL="$LTDLINCL"
 ])
 
 # old names
@@ -4833,6 +5030,161 @@ AC_DEFUN([AM_LC_MESSAGES],
     fi
   fi])
 
+
+dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
+dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
+dnl also defines GSTUFF_PKG_ERRORS on error
+AC_DEFUN(PKG_CHECK_MODULES, [
+  succeeded=no
+
+  if test -z "$PKG_CONFIG"; then
+    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+  fi
+
+  if test "$PKG_CONFIG" = "no" ; then
+     echo "*** The pkg-config script could not be found. Make sure it is"
+     echo "*** in your path, or set the PKG_CONFIG environment variable"
+     echo "*** to the full path to pkg-config."
+     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+  else
+     PKG_CONFIG_MIN_VERSION=0.9.0
+     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+        AC_MSG_CHECKING(for $2)
+
+        if $PKG_CONFIG --exists "$2" ; then
+            AC_MSG_RESULT(yes)
+            succeeded=yes
+
+            AC_MSG_CHECKING($1_CFLAGS)
+            $1_CFLAGS=`$PKG_CONFIG --cflags "$2"`
+            AC_MSG_RESULT($$1_CFLAGS)
+
+            AC_MSG_CHECKING($1_LIBS)
+            $1_LIBS=`$PKG_CONFIG --libs "$2"`
+            AC_MSG_RESULT($$1_LIBS)
+        else
+            $1_CFLAGS=""
+            $1_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but 
+            ## do set a variable so people can do so.
+            $1_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
+            ifelse([$4], ,echo $$1_PKG_ERRORS,)
+        fi
+
+        AC_SUBST($1_CFLAGS)
+        AC_SUBST($1_LIBS)
+     else
+        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
+        echo "*** See http://www.freedesktop.org/software/pkgconfig"
+     fi
+  fi
+
+  if test $succeeded = yes; then
+     ifelse([$3], , :, [$3])
+  else
+     ifelse([$4], , AC_MSG_ERROR([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
+  fi
+])
+
+
+
+dnl AM_PATH_GCONF([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+dnl Test for GCONF, and define GCONF_CFLAGS and GCONF_LIBS
+dnl
+AC_DEFUN(AM_PATH_GCONF,
+[dnl 
+dnl Get the cflags and libraries from the gconf-config script
+dnl
+AC_ARG_WITH(gconf-prefix,[  --with-gconf-prefix=PFX   Prefix where GCONF is installed (optional)],
+            gconf_config_prefix="$withval", gconf_config_prefix="")
+AC_ARG_WITH(gconf-exec-prefix,[  --with-gconf-exec-prefix=PFX Exec prefix where GCONF is installed (optional)],
+            gconf_config_exec_prefix="$withval", gconf_config_exec_prefix="")
+AC_ARG_ENABLE(gconftest, [  --disable-gconftest       Do not try to compile and run a test GCONF program],
+		    , enable_gconftest=yes)
+
+  gconf_config_args="$gconf_config_args"
+
+  if test x$gconf_config_exec_prefix != x ; then
+     gconf_config_args="$gconf_config_args --exec-prefix=$gconf_config_exec_prefix"
+     if test x${GCONF_CONFIG+set} != xset ; then
+        GCONF_CONFIG=$gconf_config_exec_prefix/bin/gconf-config
+     fi
+  fi
+  if test x$gconf_config_prefix != x ; then
+     gconf_config_args="$gconf_config_args --prefix=$gconf_config_prefix"
+     if test x${GCONF_CONFIG+set} != xset ; then
+        GCONF_CONFIG=$gconf_config_prefix/bin/gconf-config
+     fi
+  fi
+
+  AC_PATH_PROG(GCONF_CONFIG, gconf-config, no)
+  min_gconf_version=ifelse([$1], , 0.5, $1)
+  AC_MSG_CHECKING(for GCONF - version >= $min_gconf_version)
+  no_gconf=""
+  if test "$GCONF_CONFIG" = "no" ; then
+    no_gconf=yes
+  else
+    GCONF_CFLAGS="`$GCONF_CONFIG  $gconf_config_args --cflags $4`"
+    GCONF_LIBS="`$GCONF_CONFIG  $gconf_config_args --libs $4`"
+    gconf_config_major_version=`$GCONF_CONFIG $gconf_config_args --version | \
+	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+    gconf_config_minor_version=`$GCONF_CONFIG $gconf_config_args --version | \
+	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+    gconf_config_micro_version=`$GCONF_CONFIG $gconf_config_args --version | \
+	   sed -e 's,^[[^0-9\.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+  fi
+  if test "x$no_gconf" = x ; then
+     AC_MSG_RESULT(yes)
+     ifelse([$2], , :, [$2])     
+  else
+     AC_MSG_RESULT(no)
+     if test "$GCONF_CONFIG" = "no" ; then
+       echo "*** The gconf-config script installed by GCONF could not be found"
+       echo "*** If GCONF was installed in PREFIX, make sure PREFIX/bin is in"
+       echo "*** your path, or set the GCONF_CONFIG environment variable to the"
+       echo "*** full path to gconf-config."
+     else
+	:
+     fi
+     GCONF_CFLAGS=""
+     GCONF_LIBS=""
+     ifelse([$3], , :, [$3])
+  fi
+  AC_SUBST(GCONF_CFLAGS)
+  AC_SUBST(GCONF_LIBS)
+  rm -f conf.gconftest
+])
+
+dnl AM_GCONF_SOURCE
+dnl Define GCONF_SCHEMA_CONFIG_SOURCE
+dnl
+AC_DEFUN(AM_GCONF_SOURCE,
+[
+  if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
+    GCONF_SCHEMA_CONFIG_SOURCE=`gconftool --get-default-source`
+  else
+    GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
+  fi
+
+  AC_ARG_WITH(gconf-source, 
+  [  --with-gconf-source=sourceaddress      Config database for installing schema files.],GCONF_SCHEMA_CONFIG_SOURCE="$withval",)
+
+  AC_SUBST(GCONF_SCHEMA_CONFIG_SOURCE)
+  AC_MSG_RESULT("Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation")
+
+  if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
+    GCONF_SCHEMA_FILE_DIR=$sysconfdir/gconf/schemas/
+  else
+    GCONF_SCHEMA_FILE_DIR=$GCONF_SCHEMA_FILE_DIR
+  fi
+
+  AC_ARG_WITH(gconf-schema-file-dir, 
+  [  --with-gconf-schema-file-dir=dir        Directory for installing schema files.],GCONF_SCHEMA_FILE_DIR="$withval",)
+
+  AC_SUBST(GCONF_SCHEMA_FILE_DIR)
+  AC_MSG_RESULT("Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files")
+])
+
 dnl
 dnl GNOME_PILOT_HOOK(script if found, fail)
 dnl if fail = "failure", abort if gnome-pilot not found
@@ -4860,12 +5212,12 @@ AC_DEFUN([PILOT_LINK_HOOK],[
 	else
 	    PISOCK_CFLAGS="-I$withval/include"
 	    incdir="$withval/include"
-	    PISOCK_LIBS="-L$withval/lib -lpisock"
+	    PISOCK_LIBS="-L$withval/lib -lpisock -lpisync"
 	    AC_MSG_CHECKING("for existance of $withval/lib/libpisock.so")
 	    if test -r $withval/lib/libpisock.so; then
-		AC_MSG_RESULT("yes")
+		AC_MSG_RESULT(yes)
 	    else
-		AC_MSG_ERROR("Unable to find libpisock. Try ftp://ryeham.ee.ryerson.ca/pub/PalmOS/.")
+		AC_MSG_ERROR([Unable to find libpisock. Try  http://www.pilot-link.org.])
 	    fi
 	fi
 	])
@@ -4874,22 +5226,22 @@ AC_DEFUN([PILOT_LINK_HOOK],[
 	    AC_CHECK_HEADER(pi-version.h, [incdir="/usr/include"], [
 	    AC_CHECK_HEADER(libpisock/pi-version.h, [PISOCK_CFLAGS="-I/usr/include/libpisock"
 	                                             piversion_include="libpisock/pi-version.h"
-						     incdir="/usr/inlude/libpisock"
+						     incdir="/usr/include/libpisock"
                                                     ], [
 	    AC_CHECK_HEADER($prefix/include/pi-version.h, [PISOCK_CFLAGS="-I$prefix/include/libpisock"
 	                                                   piversion_include="$prefix/include/pi-version.h"
 						           if test x$PISOCK_LIBDIR = x; then
 							      incdir="$prefix/include"
-							      PISOCK_LIBS="-L$prefix/lib -lpisock"
+							      PISOCK_LIBS="-L$prefix/lib -lpisock -lpisync"
                                                            fi							  ],
-	    AC_MSG_ERROR("Unable to find pi-version.h")) 
+	    AC_MSG_ERROR([Unable to find pi-version.h])) 
 	    ])
 	    ])
 	fi
 		
 	if test "x$PISOCK_LIBS" = "x"; then
-		AC_CHECK_LIB(pisock, pi_accept, [ PISOCK_LIBS=-lpisock ], 
-			[ AC_MSG_ERROR("Unable to find libpisock. Try ftp://ryeham.ee.ryerson.ca/pub/PalmOS/.") ])
+		AC_CHECK_LIB(pisock, pi_accept, [ PISOCK_LIBS=-lpisock -lpisync], 
+			[ AC_MSG_ERROR([Unable to find libpisock. Try http://www.pilot-link.org.]) ])
 	fi
 	
 	AC_ARG_ENABLE(pilotlinktest,
@@ -4910,7 +5262,7 @@ AC_DEFUN([PILOT_LINK_HOOK],[
 	PILOT_LINK_VERSION="$pi_version.$pi_major.$pi_minor$pi_patch"
 
 	if test x$testplversion = xyes; then
-		AC_MSG_CHECKING(for pilot-link version >= $1)
+		AC_MSG_CHECKING([for pilot-link version >= $1])
 		pl_ve=`echo $1|sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
 		pl_ma=`echo $1|sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
 		pl_mi=`echo $1|sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
@@ -4934,9 +5286,9 @@ AC_DEFUN([PILOT_LINK_HOOK],[
 				return 1;
 			}
 			],
-			[AC_MSG_RESULT(yes (found $PILOT_LINK_VERSION))],
-			[AC_MSG_ERROR("pilot-link >= $1 required")],
-			[AC_MSG_WARN("No action taken for crosscompile")]
+			[AC_MSG_RESULT([yes (found $PILOT_LINK_VERSION)])],
+			[AC_MSG_ERROR([pilot-link >= $1 required])],
+			[AC_MSG_WARN([No action taken for crosscompile])]
 		)
 		CFLAGS="$CFLAGS_save"
 	fi
@@ -5033,7 +5385,7 @@ AC_DEFUN([GNOME_PILOT_CHECK],[
 		gpv=$1
 	fi
 	if test x$2 = x; then
-		plv=0.9.5
+		plv=0.11.4
 	else
 		plv=$2
 	fi

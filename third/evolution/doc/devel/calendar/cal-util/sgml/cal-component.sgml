@@ -1,0 +1,2274 @@
+<refentry id="CalComponent">
+<refmeta>
+<refentrytitle>CalComponent</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>EVOLUTION-CAL-UTIL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>CalComponent</refname><refpurpose>RFC 2445 iCalendar component object.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="CAL-COMPONENT-CAPS">CAL_COMPONENT</link>                   (obj)
+enum        <link linkend="CalComponentVType">CalComponentVType</link>;
+enum        <link linkend="CalComponentField">CalComponentField</link>;
+enum        <link linkend="CalComponentClassification">CalComponentClassification</link>;
+typedef     <link linkend="CalComponentDateTime">CalComponentDateTime</link>;
+enum        <link linkend="CalComponentPeriodType">CalComponentPeriodType</link>;
+typedef     <link linkend="CalComponentPeriod">CalComponentPeriod</link>;
+typedef     <link linkend="CalComponentText">CalComponentText</link>;
+enum        <link linkend="CalComponentTransparency">CalComponentTransparency</link>;
+char*       <link linkend="cal-component-gen-uid">cal_component_gen_uid</link>           (void);
+<link linkend="CalComponent">CalComponent</link>* <link linkend="cal-component-new">cal_component_new</link>             (void);
+<link linkend="CalComponent">CalComponent</link>* <link linkend="cal-component-clone">cal_component_clone</link>           (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-set-new-vtype">cal_component_set_new_vtype</link>     (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentVType">CalComponentVType</link> type);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-set-icalcomponent">cal_component_set_icalcomponent</link> (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="icalcomponent">icalcomponent</link> *icalcomp);
+<link linkend="icalcomponent">icalcomponent</link>* <link linkend="cal-component-get-icalcomponent">cal_component_get_icalcomponent</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp);
+<link linkend="CalComponentVType">CalComponentVType</link> <link linkend="cal-component-get-vtype">cal_component_get_vtype</link>   (<link linkend="CalComponent">CalComponent</link> *comp);
+char*       <link linkend="cal-component-get-as-string">cal_component_get_as_string</link>     (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-commit-sequence">cal_component_commit_sequence</link>   (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-get-uid">cal_component_get_uid</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char **uid);
+void        <link linkend="cal-component-set-uid">cal_component_set_uid</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *uid);
+void        <link linkend="cal-component-get-categories">cal_component_get_categories</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char **categories);
+void        <link linkend="cal-component-set-categories">cal_component_set_categories</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *categories);
+void        <link linkend="cal-component-get-categories-list">cal_component_get_categories_list</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **categ_list);
+void        <link linkend="cal-component-set-categories-list">cal_component_set_categories_list</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *categ_list);
+void        <link linkend="cal-component-get-classification">cal_component_get_classification</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentClassification">CalComponentClassification</link> *classif);
+void        <link linkend="cal-component-set-classification">cal_component_set_classification</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentClassification">CalComponentClassification</link> classif);
+void        <link linkend="cal-component-get-comment-list">cal_component_get_comment_list</link>  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **text_list);
+void        <link linkend="cal-component-set-comment-list">cal_component_set_comment_list</link>  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *text_list);
+void        <link linkend="cal-component-get-completed">cal_component_get_completed</link>     (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> **t);
+void        <link linkend="cal-component-set-completed">cal_component_set_completed</link>     (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);
+void        <link linkend="cal-component-get-created">cal_component_get_created</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> **t);
+void        <link linkend="cal-component-set-created">cal_component_set_created</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);
+void        <link linkend="cal-component-get-description-list">cal_component_get_description_list</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **text_list);
+void        <link linkend="cal-component-set-description-list">cal_component_set_description_list</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *text_list);
+void        <link linkend="cal-component-get-dtend">cal_component_get_dtend</link>         (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-set-dtend">cal_component_set_dtend</link>         (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-get-dtstamp">cal_component_get_dtstamp</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);
+void        <link linkend="cal-component-set-dtstamp">cal_component_set_dtstamp</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);
+void        <link linkend="cal-component-get-dtstart">cal_component_get_dtstart</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-set-dtstart">cal_component_set_dtstart</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-get-due">cal_component_get_due</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-set-due">cal_component_set_due</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-get-exdate-list">cal_component_get_exdate_list</link>   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **exdate_list);
+void        <link linkend="cal-component-set-exdate-list">cal_component_set_exdate_list</link>   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *exdate_list);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-exdates">cal_component_has_exdates</link>       (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-get-exrule-list">cal_component_get_exrule_list</link>   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);
+void        <link linkend="cal-component-get-exrule-property-list">cal_component_get_exrule_property_list</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);
+void        <link linkend="cal-component-set-exrule-list">cal_component_set_exrule_list</link>   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *recur_list);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-exrules">cal_component_has_exrules</link>       (<link linkend="CalComponent">CalComponent</link> *comp);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-exceptions">cal_component_has_exceptions</link>    (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-get-geo">cal_component_get_geo</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icalgeotype">icalgeotype</link> **geo);
+void        <link linkend="cal-component-set-geo">cal_component_set_geo</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icalgeotype">icalgeotype</link> *geo);
+void        <link linkend="cal-component-get-last-modified">cal_component_get_last_modified</link> (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> **t);
+void        <link linkend="cal-component-set-last-modified">cal_component_set_last_modified</link> (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);
+void        <link linkend="cal-component-get-percent">cal_component_get_percent</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int **percent);
+void        <link linkend="cal-component-set-percent">cal_component_set_percent</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int *percent);
+void        <link linkend="cal-component-get-priority">cal_component_get_priority</link>      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int **priority);
+void        <link linkend="cal-component-set-priority">cal_component_set_priority</link>      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int *priority);
+void        <link linkend="cal-component-get-rdate-list">cal_component_get_rdate_list</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **period_list);
+void        <link linkend="cal-component-set-rdate-list">cal_component_set_rdate_list</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *period_list);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-rdates">cal_component_has_rdates</link>        (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-get-rrule-list">cal_component_get_rrule_list</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);
+void        <link linkend="cal-component-get-rrule-property-list">cal_component_get_rrule_property_list</link>
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);
+void        <link linkend="cal-component-set-rrule-list">cal_component_set_rrule_list</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *recur_list);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-rrules">cal_component_has_rrules</link>        (<link linkend="CalComponent">CalComponent</link> *comp);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-recurrences">cal_component_has_recurrences</link>   (<link linkend="CalComponent">CalComponent</link> *comp);
+void        <link linkend="cal-component-get-sequence">cal_component_get_sequence</link>      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int **sequence);
+void        <link linkend="cal-component-set-sequence">cal_component_set_sequence</link>      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int *sequence);
+void        <link linkend="cal-component-get-status">cal_component_get_status</link>        (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="icalproperty-status">icalproperty_status</link> *status);
+void        <link linkend="cal-component-set-status">cal_component_set_status</link>        (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="icalproperty-status">icalproperty_status</link> status);
+void        <link linkend="cal-component-get-summary">cal_component_get_summary</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentText">CalComponentText</link> *summary);
+void        <link linkend="cal-component-set-summary">cal_component_set_summary</link>       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentText">CalComponentText</link> *summary);
+void        <link linkend="cal-component-get-transparency">cal_component_get_transparency</link>  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentTransparency">CalComponentTransparency</link> *transp);
+void        <link linkend="cal-component-set-transparency">cal_component_set_transparency</link>  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentTransparency">CalComponentTransparency</link> transp);
+void        <link linkend="cal-component-get-url">cal_component_get_url</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char **url);
+void        <link linkend="cal-component-set-url">cal_component_set_url</link>           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *url);
+
+void        <link linkend="cal-component-free-categories-list">cal_component_free_categories_list</link>
+                                            (<link linkend="GSList">GSList</link> *categ_list);
+void        <link linkend="cal-component-free-datetime">cal_component_free_datetime</link>     (<link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);
+void        <link linkend="cal-component-free-exdate-list">cal_component_free_exdate_list</link>  (<link linkend="GSList">GSList</link> *exdate_list);
+void        <link linkend="cal-component-free-geo">cal_component_free_geo</link>          (struct <link linkend="icalgeotype">icalgeotype</link> *geo);
+void        <link linkend="cal-component-free-icaltimetype">cal_component_free_icaltimetype</link> (struct <link linkend="icaltimetype">icaltimetype</link> *t);
+void        <link linkend="cal-component-free-percent">cal_component_free_percent</link>      (int *percent);
+void        <link linkend="cal-component-free-priority">cal_component_free_priority</link>     (int *priority);
+void        <link linkend="cal-component-free-period-list">cal_component_free_period_list</link>  (<link linkend="GSList">GSList</link> *period_list);
+void        <link linkend="cal-component-free-recur-list">cal_component_free_recur_list</link>   (<link linkend="GSList">GSList</link> *recur_list);
+void        <link linkend="cal-component-free-sequence">cal_component_free_sequence</link>     (int *sequence);
+void        <link linkend="cal-component-free-text-list">cal_component_free_text_list</link>    (<link linkend="GSList">GSList</link> *text_list);
+
+struct      <link linkend="CalComponentAlarm">CalComponentAlarm</link>;
+typedef     <link linkend="CalAlarmInstance">CalAlarmInstance</link>;
+typedef     <link linkend="CalComponentAlarms">CalComponentAlarms</link>;
+enum        <link linkend="CalAlarmAction">CalAlarmAction</link>;
+enum        <link linkend="CalAlarmTriggerType">CalAlarmTriggerType</link>;
+typedef     <link linkend="CalAlarmTrigger">CalAlarmTrigger</link>;
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-component-has-alarms">cal_component_has_alarms</link>        (<link linkend="CalComponent">CalComponent</link> *comp);
+<link linkend="GList">GList</link>*      <link linkend="cal-component-get-alarm-uids">cal_component_get_alarm_uids</link>    (<link linkend="CalComponent">CalComponent</link> *comp);
+<link linkend="CalComponentAlarm">CalComponentAlarm</link>* <link linkend="cal-component-get-alarm">cal_component_get_alarm</link>  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *auid);
+void        <link linkend="cal-component-alarm-free">cal_component_alarm_free</link>        (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm);
+void        <link linkend="cal-component-alarms-free">cal_component_alarms_free</link>       (<link linkend="CalComponentAlarms">CalComponentAlarms</link> *alarms);
+const char* <link linkend="cal-component-alarm-get-uid">cal_component_alarm_get_uid</link>     (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm);
+void        <link linkend="cal-component-alarm-get-action">cal_component_alarm_get_action</link>  (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmAction">CalAlarmAction</link> *action);
+void        <link linkend="cal-component-alarm-set-action">cal_component_alarm_set_action</link>  (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmAction">CalAlarmAction</link> action);
+void        <link linkend="cal-component-alarm-get-trigger">cal_component_alarm_get_trigger</link> (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmTrigger">CalAlarmTrigger</link> *trigger);
+void        <link linkend="cal-component-alarm-set-trigger">cal_component_alarm_set_trigger</link> (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmTrigger">CalAlarmTrigger</link> trigger);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----CalComponent
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+  <para>
+    The <link linkend="CalComponent">CalComponent</link> object provides a wrapper over the &libical;
+    functions for manipulating calendar components.  <link linkend="CalComponent">CalComponent</link>
+    presents a GTK+-like interface to calendar components according to
+    RFC 2445.
+  </para>
+
+  <para>
+    While &libical; supports almost all of the features of the
+    iCalendar RFCs, applications are normally not interested in all
+    the mindless gunk that is there.  Still, applications should do
+    their best not to drop extension fields from calendar components
+    or any other extra information they do not support (including
+    standard fields they are not interested in).  The <link linkend="CalComponent">CalComponent</link>
+    object provides a wrapper over
+    <structname>icalcomponent</structname> structures from &libical;
+    so that no information in them will be lost even if the
+    application is not designed to handle it.  Also, <link linkend="CalComponent">CalComponent</link>
+    provides a higher-level API to many of the &libical; operations so
+    as to make it less painful to deal with iCalendar components.
+  </para>
+
+  <para>
+    A <link linkend="CalComponent">CalComponent</link> object starts out empty.  It must be initialized
+    from an existing <structname>icalcomponent</structname> structure
+    by using the <link linkend="cal-component-set-icalcomponent">cal_component_set_icalcomponent</link>() function, or from a
+    completely new data by specifying the desired component type to
+    the <link linkend="cal-component-set-new-vtype">cal_component_set_new_vtype</link>() function.
+  </para>
+
+  <para>
+    <link linkend="CalComponent">CalComponent</link> will create an internal map of the properties in the
+    <structname>icalcomponent</structname> structure and then allow
+    random access to them via the <link linkend="CalComponent">CalComponent</link> API functions;
+    normally the &libical; API would have to be used by creating many
+    iterators and other unpleasant constructs.  <link linkend="CalComponent">CalComponent</link> keeps
+    handles to the properties it scanned from the
+    <structname>icalcomponent</structname> and will let the parent
+    application modify them at any time without having to do any
+    iteration.
+  </para>
+
+  <para>
+    Eventually a <link linkend="CalComponent">CalComponent</link> may be turned into the RFC 2445 string
+    representation of an iCalendar component by using the
+    <link linkend="cal-component-get-as-string">cal_component_get_as_string</link>() function.  Applications can then
+    transfer this interoperable
+    <footnote>
+      <para>
+	&ldquo;Interoperable.&rdquo;  Heavens, I love that word.
+      </para>
+    </footnote>
+    string to other programs that deal with iCalendar.
+  </para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="CAL-COMPONENT-CAPS">CAL_COMPONENT()</title>
+<programlisting>#define CAL_COMPONENT(obj)            (GTK_CHECK_CAST ((obj), CAL_COMPONENT_TYPE, CalComponent))
+</programlisting>
+  <para>
+    Casts a <link linkend="GtkObject">GtkObject</link> to a <link linkend="CalComponent">CalComponent</link>.
+  </para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>A GTK+ object.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="CalComponentVType">enum CalComponentVType</title>
+<programlisting>typedef enum {
+	CAL_COMPONENT_NO_TYPE,
+	CAL_COMPONENT_EVENT,
+	CAL_COMPONENT_TODO,
+	CAL_COMPONENT_JOURNAL,
+	CAL_COMPONENT_FREEBUSY,
+	CAL_COMPONENT_TIMEZONE
+} CalComponentVType;
+</programlisting>
+  <para>
+    Calendar component types as defined by RFC 2445.  These values can
+    be used to create a new calendar component by passing them to the
+    <link linkend="cal-component-set-new-vtype">cal_component_set_new_vtype</link>() function.  They are also the return
+    value of the <link linkend="cal-component-get-vtype">cal_component_get_vtype</link>() function.  The only time
+    the <parameter>CAL_COMPONENT_NO_TYPE</parameter> value is used is when querying the
+    vtype of an uninitialized <link linkend="CalComponent">CalComponent</link>.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentField">enum CalComponentField</title>
+<programlisting>typedef enum {
+	CAL_COMPONENT_FIELD_CATEGORIES,		/* concatenation of the categories list */
+	CAL_COMPONENT_FIELD_CLASSIFICATION,
+	CAL_COMPONENT_FIELD_COMPLETED,
+	CAL_COMPONENT_FIELD_DTEND,
+	CAL_COMPONENT_FIELD_DTSTART,
+	CAL_COMPONENT_FIELD_DUE,
+	CAL_COMPONENT_FIELD_GEO,
+	CAL_COMPONENT_FIELD_PERCENT,
+	CAL_COMPONENT_FIELD_PRIORITY,
+	CAL_COMPONENT_FIELD_SUMMARY,
+	CAL_COMPONENT_FIELD_TRANSPARENCY,
+	CAL_COMPONENT_FIELD_URL,
+	CAL_COMPONENT_FIELD_HAS_ALARMS,		/* not a real field */
+	CAL_COMPONENT_FIELD_ICON,		/* not a real field */
+	CAL_COMPONENT_FIELD_COMPLETE,		/* not a real field */
+	CAL_COMPONENT_FIELD_RECURRING,		/* not a real field */
+	CAL_COMPONENT_FIELD_OVERDUE,		/* not a real field */
+	CAL_COMPONENT_FIELD_COLOR,		/* not a real field */
+	CAL_COMPONENT_FIELD_STATUS,
+	CAL_COMPONENT_FIELD_COMPONENT,		/* not a real field */
+#if 0
+	CAL_COMPONENT_FIELD_LOCATION,
+#endif
+	CAL_COMPONENT_FIELD_NUM_FIELDS
+} CalComponentField;
+</programlisting>
+  <para>
+    These values are used as identifiers for <link linkend="ETable">ETable</link> columns.  These
+    are used by the calendar GUI code in &Evolution;.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentClassification">enum CalComponentClassification</title>
+<programlisting>typedef enum {
+	CAL_COMPONENT_CLASS_NONE,
+	CAL_COMPONENT_CLASS_PUBLIC,
+	CAL_COMPONENT_CLASS_PRIVATE,
+	CAL_COMPONENT_CLASS_CONFIDENTIAL,
+	CAL_COMPONENT_CLASS_UNKNOWN
+} CalComponentClassification;
+</programlisting>
+  <para>
+    Values for the access classification property of a calendar
+    component.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentDateTime">CalComponentDateTime</title>
+<programlisting>typedef struct {
+	/* Actual date/time value */
+	struct icaltimetype *value;
+
+	/* Timezone ID */
+	const char *tzid;
+} CalComponentDateTime;
+</programlisting>
+  <para>
+    This structure defines a date and time value.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentPeriodType">enum CalComponentPeriodType</title>
+<programlisting>typedef enum {
+	CAL_COMPONENT_PERIOD_DATETIME,
+	CAL_COMPONENT_PERIOD_DURATION
+} CalComponentPeriodType;
+</programlisting>
+  <para>
+    Defines how a period of time is specified.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentPeriod">CalComponentPeriod</title>
+<programlisting>typedef struct {
+	CalComponentPeriodType type;
+
+	struct icaltimetype start;
+
+	union {
+		struct icaltimetype end;
+		struct icaldurationtype duration;
+	} u;
+} CalComponentPeriod;
+</programlisting>
+  <para>
+    This structure defines a period of time.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentText">CalComponentText</title>
+<programlisting>typedef struct {
+	/* Description string */
+	const char *value;
+
+	/* Alternate representation URI */
+	const char *altrep;
+} CalComponentText;
+</programlisting>
+  <para>
+    This structure defines the value of a text property that may have
+    an alternate representation parameter.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentTransparency">enum CalComponentTransparency</title>
+<programlisting>typedef enum {
+	CAL_COMPONENT_TRANSP_NONE,
+	CAL_COMPONENT_TRANSP_TRANSPARENT,
+	CAL_COMPONENT_TRANSP_OPAQUE,
+	CAL_COMPONENT_TRANSP_UNKNOWN
+} CalComponentTransparency;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="cal-component-gen-uid">cal_component_gen_uid ()</title>
+<programlisting>char*       cal_component_gen_uid           (void);</programlisting>
+<para>
+Generates a unique identifier suitable for calendar components.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A unique identifier string.  Every time this function is called
+a different string is returned.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-new">cal_component_new ()</title>
+<programlisting><link linkend="CalComponent">CalComponent</link>* cal_component_new             (void);</programlisting>
+<para>
+Creates a new empty calendar component object.  You should set it from an
+<link linkend="icalcomponent">icalcomponent</link> structure by using <link linkend="cal-component-set-icalcomponent">cal_component_set_icalcomponent</link>() or with a
+new empty component type by using <link linkend="cal-component-set-new-vtype">cal_component_set_new_vtype</link>().</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created calendar component object.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-clone">cal_component_clone ()</title>
+<programlisting><link linkend="CalComponent">CalComponent</link>* cal_component_clone           (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Creates a new calendar component object by copying the information from
+another one.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created calendar component with the same values as the
+original one.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-new-vtype">cal_component_set_new_vtype ()</title>
+<programlisting>void        cal_component_set_new_vtype     (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentVType">CalComponentVType</link> type);</programlisting>
+<para>
+Clears any existing component data from a calendar component object and
+creates a new <link linkend="icalcomponent">icalcomponent</link> of the specified type for it.  The only property
+that will be set in the new component will be its unique identifier.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> Type of calendar component to create.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-icalcomponent">cal_component_set_icalcomponent ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_set_icalcomponent (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="icalcomponent">icalcomponent</link> *icalcomp);</programlisting>
+<para>
+Sets the contents of a calendar component object from an <link linkend="icalcomponent">icalcomponent</link>
+structure.  If the <parameter>comp</parameter> already had an <link linkend="icalcomponent">icalcomponent</link> set into it, it will
+will be freed automatically if the <link linkend="icalcomponent">icalcomponent</link> does not have a parent
+component itself.
+</para>
+<para>
+Supported component types are VEVENT, VTODO, VJOURNAL, VFREEBUSY, and VTIMEZONE.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>icalcomp</parameter>&nbsp;:</entry>
+<entry> An <link linkend="icalcomponent">icalcomponent</link>.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE if <parameter>icalcomp</parameter> is an unsupported component
+type.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-icalcomponent">cal_component_get_icalcomponent ()</title>
+<programlisting><link linkend="icalcomponent">icalcomponent</link>* cal_component_get_icalcomponent
+                                            (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries the <link linkend="icalcomponent">icalcomponent</link> structure that a calendar component object is
+wrapping.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An <link linkend="icalcomponent">icalcomponent</link> structure, or NULL if the <parameter>comp</parameter> has no
+<link linkend="icalcomponent">icalcomponent</link> set to it.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-vtype">cal_component_get_vtype ()</title>
+<programlisting><link linkend="CalComponentVType">CalComponentVType</link> cal_component_get_vtype   (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries the type of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The type of the component, as defined by RFC 2445.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-as-string">cal_component_get_as_string ()</title>
+<programlisting>char*       cal_component_get_as_string     (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Gets the iCalendar string representation of a calendar component.  You should
+call <link linkend="cal-component-commit-sequence">cal_component_commit_sequence</link>() before this function to ensure that the
+component's sequence number is consistent with the state of the object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> String representation of the calendar component according to
+RFC 2445.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-commit-sequence">cal_component_commit_sequence ()</title>
+<programlisting>void        cal_component_commit_sequence   (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Increments the sequence number property in a calendar component object if it
+needs it.  This needs to be done when any of a number of properties listed in
+RFC 2445 change values, such as the start and end dates of a component.
+</para>
+<para>
+This function must be called before calling <link linkend="cal-component-get-as-string">cal_component_get_as_string</link>() to
+ensure that the component is fully consistent.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-uid">cal_component_get_uid ()</title>
+<programlisting>void        cal_component_get_uid           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char **uid);</programlisting>
+<para>
+Queries the unique identifier of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>uid</parameter>&nbsp;:</entry>
+<entry> Return value for the UID string.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-uid">cal_component_set_uid ()</title>
+<programlisting>void        cal_component_set_uid           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *uid);</programlisting>
+<para>
+Sets the unique identifier string of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>uid</parameter>&nbsp;:</entry>
+<entry> Unique identifier.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-categories">cal_component_get_categories ()</title>
+<programlisting>void        cal_component_get_categories    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char **categories);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>categories</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-categories">cal_component_set_categories ()</title>
+<programlisting>void        cal_component_set_categories    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *categories);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>categories</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-categories-list">cal_component_get_categories_list ()</title>
+<programlisting>void        cal_component_get_categories_list
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **categ_list);</programlisting>
+<para>
+Queries the list of categories of a calendar component object.  Each element
+in the returned categ_list is a string with the corresponding category.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>categ_list</parameter>&nbsp;:</entry>
+<entry> Return value for the list of strings, where each string is a
+category.  This should be freed using <link linkend="cal-component-free-categories-list">cal_component_free_categories_list</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-categories-list">cal_component_set_categories_list ()</title>
+<programlisting>void        cal_component_set_categories_list
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *categ_list);</programlisting>
+<para>
+Sets the list of categories of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>categ_list</parameter>&nbsp;:</entry>
+<entry> List of strings, one for each category.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-classification">cal_component_get_classification ()</title>
+<programlisting>void        cal_component_get_classification
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentClassification">CalComponentClassification</link> *classif);</programlisting>
+<para>
+Queries the classification of a calendar component object.  If the
+classification property is not set on this component, this function returns
+<link linkend="CAL-COMPONENT-CLASS-NONE-CAPS">CAL_COMPONENT_CLASS_NONE</link>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>classif</parameter>&nbsp;:</entry>
+<entry> Return value for the classification.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-classification">cal_component_set_classification ()</title>
+<programlisting>void        cal_component_set_classification
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentClassification">CalComponentClassification</link> classif);</programlisting>
+<para>
+Sets the classification property of a calendar component object.  To unset
+the property, specify CAL_COMPONENT_CLASS_NONE for <parameter>classif</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>classif</parameter>&nbsp;:</entry>
+<entry> Classification to use.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-comment-list">cal_component_get_comment_list ()</title>
+<programlisting>void        cal_component_get_comment_list  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **text_list);</programlisting>
+<para>
+Queries the comment of a calendar component object.  The comment property can
+appear several times inside a calendar component, and so a list of
+<link linkend="CalComponentText">CalComponentText</link> is returned.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>text_list</parameter>&nbsp;:</entry>
+<entry> Return value for the comment properties and their parameters, as
+a list of <link linkend="CalComponentText">CalComponentText</link> structures.  This should be freed using the
+<link linkend="cal-component-free-text-list">cal_component_free_text_list</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-comment-list">cal_component_set_comment_list ()</title>
+<programlisting>void        cal_component_set_comment_list  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *text_list);</programlisting>
+<para>
+Sets the comment of a calendar component object.  The comment property can
+appear several times inside a calendar component, and so a list of
+<link linkend="CalComponentText">CalComponentText</link> structures is used.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>text_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentText">CalComponentText</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-completed">cal_component_get_completed ()</title>
+<programlisting>void        cal_component_get_completed     (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> **t);</programlisting>
+<para>
+Queries the date at which a calendar compoment object was completed.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Return value for the completion date.  This should be freed using the
+<link linkend="cal-component-free-icaltimetype">cal_component_free_icaltimetype</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-completed">cal_component_set_completed ()</title>
+<programlisting>void        cal_component_set_completed     (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);</programlisting>
+<para>
+Sets the date at which a calendar component object was completed.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Value for the completion date.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-created">cal_component_get_created ()</title>
+<programlisting>void        cal_component_get_created       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> **t);</programlisting>
+<para>
+Queries the date in which a calendar component object was created in the
+calendar store.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Return value for the creation date.  This should be freed using the
+<link linkend="cal-component-free-icaltimetype">cal_component_free_icaltimetype</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-created">cal_component_set_created ()</title>
+<programlisting>void        cal_component_set_created       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);</programlisting>
+<para>
+Sets the date in which a calendar component object is created in the calendar
+store.  This should only be used inside a calendar store application, i.e.
+not by calendar user agents.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Value for the creation date.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-description-list">cal_component_get_description_list ()</title>
+<programlisting>void        cal_component_get_description_list
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **text_list);</programlisting>
+<para>
+Queries the description of a calendar component object.  Journal components
+may have more than one description, and as such this function returns a list
+of <link linkend="CalComponentText">CalComponentText</link> structures.  All other types of components can have at
+most one description.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>text_list</parameter>&nbsp;:</entry>
+<entry> Return value for the description properties and their parameters,
+as a list of <link linkend="CalComponentText">CalComponentText</link> structures.  This should be freed using the
+<link linkend="cal-component-free-text-list">cal_component_free_text_list</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-description-list">cal_component_set_description_list ()</title>
+<programlisting>void        cal_component_set_description_list
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *text_list);</programlisting>
+<para>
+Sets the description of a calendar component object.  Journal components may
+have more than one description, and as such this function takes in a list of
+<link linkend="CalComponentDescription">CalComponentDescription</link> structures.  All other types of components can have
+at most one description.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>text_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentSummary">CalComponentSummary</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-dtend">cal_component_get_dtend ()</title>
+<programlisting>void        cal_component_get_dtend         (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Queries the date/time end of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> Return value for the date/time end.  This should be freed with the
+<link linkend="cal-component-free-datetime">cal_component_free_datetime</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-dtend">cal_component_set_dtend ()</title>
+<programlisting>void        cal_component_set_dtend         (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Sets the date/time end property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> End date/time.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-dtstamp">cal_component_get_dtstamp ()</title>
+<programlisting>void        cal_component_get_dtstamp       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);</programlisting>
+<para>
+Queries the date/timestamp property of a calendar component object, which is
+the last time at which the object was modified by a calendar user agent.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> A value for the date/timestamp.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-dtstamp">cal_component_set_dtstamp ()</title>
+<programlisting>void        cal_component_set_dtstamp       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);</programlisting>
+<para>
+Sets the date/timestamp of a calendar component object.  This should be
+called whenever a calendar user agent makes a change to a component's
+properties.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Date/timestamp value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-dtstart">cal_component_get_dtstart ()</title>
+<programlisting>void        cal_component_get_dtstart       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Queries the date/time start of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> Return value for the date/time start.  This should be freed with the
+<link linkend="cal-component-free-datetime">cal_component_free_datetime</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-dtstart">cal_component_set_dtstart ()</title>
+<programlisting>void        cal_component_set_dtstart       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Sets the date/time start property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> Start date/time.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-due">cal_component_get_due ()</title>
+<programlisting>void        cal_component_get_due           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Queries the due date/time of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> Return value for the due date/time.  This should be freed with the
+<link linkend="cal-component-free-datetime">cal_component_free_datetime</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-due">cal_component_set_due ()</title>
+<programlisting>void        cal_component_set_due           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Sets the due date/time property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> End date/time.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-exdate-list">cal_component_get_exdate_list ()</title>
+<programlisting>void        cal_component_get_exdate_list   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **exdate_list);</programlisting>
+<para>
+Queries the list of exception date properties in a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>exdate_list</parameter>&nbsp;:</entry>
+<entry> Return value for the list of exception dates, as a list of
+<link linkend="CalComponentDateTime">CalComponentDateTime</link> structures.  This should be freed using the
+<link linkend="cal-component-free-exdate-list">cal_component_free_exdate_list</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-exdate-list">cal_component_set_exdate_list ()</title>
+<programlisting>void        cal_component_set_exdate_list   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *exdate_list);</programlisting>
+<para>
+Sets the list of exception dates in a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>exdate_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentDateTime">CalComponentDateTime</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-exdates">cal_component_has_exdates ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_exdates       (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries whether a calendar component object has any exception dates defined
+for it.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has exception dates, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-exrule-list">cal_component_get_exrule_list ()</title>
+<programlisting>void        cal_component_get_exrule_list   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);</programlisting>
+<para>
+Queries the list of exception rule properties of a calendar component
+object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> List of exception rules as struct <link linkend="icalrecurrencetype">icalrecurrencetype</link>
+structures.  This should be freed using the <link linkend="cal-component-free-recur-list">cal_component_free_recur_list</link>()
+function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-exrule-property-list">cal_component_get_exrule_property_list ()</title>
+<programlisting>void        cal_component_get_exrule_property_list
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);</programlisting>
+<para>
+Queries the list of exception rule properties of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> Returns a list of exception rule properties.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-exrule-list">cal_component_set_exrule_list ()</title>
+<programlisting>void        cal_component_set_exrule_list   (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *recur_list);</programlisting>
+<para>
+Sets the list of exception rules in a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> List of struct <link linkend="icalrecurrencetype">icalrecurrencetype</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-exrules">cal_component_has_exrules ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_exrules       (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries whether a calendar component object has any exception rules defined
+for it.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has exception rules, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-exceptions">cal_component_has_exceptions ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_exceptions    (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries whether a calendar component object has any exception dates
+or exception rules.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has exceptions, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-geo">cal_component_get_geo ()</title>
+<programlisting>void        cal_component_get_geo           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icalgeotype">icalgeotype</link> **geo);</programlisting>
+<para>
+Sets the geographic position property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>geo</parameter>&nbsp;:</entry>
+<entry> Return value for the geographic position property.  This should be
+freed using the <link linkend="cal-component-free-geo">cal_component_free_geo</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-geo">cal_component_set_geo ()</title>
+<programlisting>void        cal_component_set_geo           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icalgeotype">icalgeotype</link> *geo);</programlisting>
+<para>
+Sets the geographic position property on a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>geo</parameter>&nbsp;:</entry>
+<entry> Value for the geographic position property.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-last-modified">cal_component_get_last_modified ()</title>
+<programlisting>void        cal_component_get_last_modified (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> **t);</programlisting>
+<para>
+Queries the time at which a calendar component object was last modified in
+the calendar store.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Return value for the last modified time value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-last-modified">cal_component_set_last_modified ()</title>
+<programlisting>void        cal_component_set_last_modified (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             struct <link linkend="icaltimetype">icaltimetype</link> *t);</programlisting>
+<para>
+Sets the time at which a calendar component object was last stored in the
+calendar store.  This should not be called by plain calendar user agents.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> Value for the last time modified.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-percent">cal_component_get_percent ()</title>
+<programlisting>void        cal_component_get_percent       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int **percent);</programlisting>
+<para>
+Queries the percent-complete property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>percent</parameter>&nbsp;:</entry>
+<entry> Return value for the percent-complete property.  This should be
+freed using the <link linkend="cal-component-free-percent">cal_component_free_percent</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-percent">cal_component_set_percent ()</title>
+<programlisting>void        cal_component_set_percent       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int *percent);</programlisting>
+<para>
+Sets the percent-complete property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>percent</parameter>&nbsp;:</entry>
+<entry> Value for the percent-complete property.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-priority">cal_component_get_priority ()</title>
+<programlisting>void        cal_component_get_priority      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int **priority);</programlisting>
+<para>
+Queries the priority property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>priority</parameter>&nbsp;:</entry>
+<entry> Return value for the priority property.  This should be freed using
+the <link linkend="cal-component-free-priority">cal_component_free_priority</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-priority">cal_component_set_priority ()</title>
+<programlisting>void        cal_component_set_priority      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int *priority);</programlisting>
+<para>
+Sets the priority property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>priority</parameter>&nbsp;:</entry>
+<entry> Value for the priority property.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-rdate-list">cal_component_get_rdate_list ()</title>
+<programlisting>void        cal_component_get_rdate_list    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **period_list);</programlisting>
+<para>
+Queries the list of recurrence date properties in a calendar component
+object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>period_list</parameter>&nbsp;:</entry>
+<entry> Return value for the list of recurrence dates, as a list of
+<link linkend="CalComponentPeriod">CalComponentPeriod</link> structures.  This should be freed using the
+<link linkend="cal-component-free-period-list">cal_component_free_period_list</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-rdate-list">cal_component_set_rdate_list ()</title>
+<programlisting>void        cal_component_set_rdate_list    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *period_list);</programlisting>
+<para>
+Sets the list of recurrence dates in a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>period_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentPeriod">CalComponentPeriod</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-rdates">cal_component_has_rdates ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_rdates        (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries whether a calendar component object has any recurrence dates defined
+for it.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has recurrence dates, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-rrule-list">cal_component_get_rrule_list ()</title>
+<programlisting>void        cal_component_get_rrule_list    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);</programlisting>
+<para>
+Queries the list of recurrence rule properties of a calendar component
+object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> List of recurrence rules as struct <link linkend="icalrecurrencetype">icalrecurrencetype</link>
+structures.  This should be freed using the <link linkend="cal-component-free-recur-list">cal_component_free_recur_list</link>()
+function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-rrule-property-list">cal_component_get_rrule_property_list ()</title>
+<programlisting>void        cal_component_get_rrule_property_list
+                                            (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> **recur_list);</programlisting>
+<para>
+Queries a list of recurrence rule properties of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> Returns a list of recurrence rule properties.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-rrule-list">cal_component_set_rrule_list ()</title>
+<programlisting>void        cal_component_set_rrule_list    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="GSList">GSList</link> *recur_list);</programlisting>
+<para>
+Sets the list of recurrence rules in a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> List of struct <link linkend="icalrecurrencetype">icalrecurrencetype</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-rrules">cal_component_has_rrules ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_rrules        (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries whether a calendar component object has any recurrence rules defined
+for it.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has recurrence rules, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-recurrences">cal_component_has_recurrences ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_recurrences   (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Queries whether a calendar component object has any recurrence dates or
+recurrence rules.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has recurrences, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-sequence">cal_component_get_sequence ()</title>
+<programlisting>void        cal_component_get_sequence      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int **sequence);</programlisting>
+<para>
+Queries the sequence number of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>sequence</parameter>&nbsp;:</entry>
+<entry> Return value for the sequence number.  This should be freed using
+<link linkend="cal-component-free-sequence">cal_component_free_sequence</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-sequence">cal_component_set_sequence ()</title>
+<programlisting>void        cal_component_set_sequence      (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             int *sequence);</programlisting>
+<para>
+Sets the sequence number of a calendar component object.  Normally this
+function should not be called, since the sequence number is incremented
+automatically at the proper times.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>sequence</parameter>&nbsp;:</entry>
+<entry> Sequence number value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-status">cal_component_get_status ()</title>
+<programlisting>void        cal_component_get_status        (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="icalproperty-status">icalproperty_status</link> *status);</programlisting>
+<para>
+Queries the status property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>status</parameter>&nbsp;:</entry>
+<entry> Return value for the status value.  It is set to <link linkend="ICAL-STATUS-NONE-CAPS">ICAL_STATUS_NONE</link>
+if the component has no status property.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-status">cal_component_set_status ()</title>
+<programlisting>void        cal_component_set_status        (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="icalproperty-status">icalproperty_status</link> status);</programlisting>
+<para>
+Sets the status property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>status</parameter>&nbsp;:</entry>
+<entry> Status value.  You should use <link linkend="ICAL-STATUS-NONE-CAPS">ICAL_STATUS_NONE</link> if you want to unset
+this property.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-summary">cal_component_get_summary ()</title>
+<programlisting>void        cal_component_get_summary       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentText">CalComponentText</link> *summary);</programlisting>
+<para>
+Queries the summary of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>summary</parameter>&nbsp;:</entry>
+<entry> Return value for the summary property and its parameters.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-summary">cal_component_set_summary ()</title>
+<programlisting>void        cal_component_set_summary       (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentText">CalComponentText</link> *summary);</programlisting>
+<para>
+Sets the summary of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>summary</parameter>&nbsp;:</entry>
+<entry> Summary property and its parameters.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-transparency">cal_component_get_transparency ()</title>
+<programlisting>void        cal_component_get_transparency  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentTransparency">CalComponentTransparency</link> *transp);</programlisting>
+<para>
+Queries the time transparency of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>transp</parameter>&nbsp;:</entry>
+<entry> Return value for the time transparency.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-transparency">cal_component_set_transparency ()</title>
+<programlisting>void        cal_component_set_transparency  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="CalComponentTransparency">CalComponentTransparency</link> transp);</programlisting>
+<para>
+Sets the time transparency of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>transp</parameter>&nbsp;:</entry>
+<entry> Time transparency value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-url">cal_component_get_url ()</title>
+<programlisting>void        cal_component_get_url           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char **url);</programlisting>
+<para>
+Queries the uniform resource locator property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>url</parameter>&nbsp;:</entry>
+<entry> Return value for the URL.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-set-url">cal_component_set_url ()</title>
+<programlisting>void        cal_component_set_url           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *url);</programlisting>
+<para>
+Sets the uniform resource locator property of a calendar component object.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><parameter>url</parameter>&nbsp;:</entry>
+<entry> URL value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-categories-list">cal_component_free_categories_list ()</title>
+<programlisting>void        cal_component_free_categories_list
+                                            (<link linkend="GSList">GSList</link> *categ_list);</programlisting>
+<para>
+Frees a list of category strings.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>categ_list</parameter>&nbsp;:</entry>
+<entry> List of category strings.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-datetime">cal_component_free_datetime ()</title>
+<programlisting>void        cal_component_free_datetime     (<link linkend="CalComponentDateTime">CalComponentDateTime</link> *dt);</programlisting>
+<para>
+Frees a date/time structure.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>dt</parameter>&nbsp;:</entry>
+<entry> A date/time structure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-exdate-list">cal_component_free_exdate_list ()</title>
+<programlisting>void        cal_component_free_exdate_list  (<link linkend="GSList">GSList</link> *exdate_list);</programlisting>
+<para>
+Frees a list of <link linkend="CalComponentDateTime">CalComponentDateTime</link> structures as returned by the
+<link linkend="cal-component-get-exdate-list">cal_component_get_exdate_list</link>() function.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>exdate_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentDateTime">CalComponentDateTime</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-geo">cal_component_free_geo ()</title>
+<programlisting>void        cal_component_free_geo          (struct <link linkend="icalgeotype">icalgeotype</link> *geo);</programlisting>
+<para>
+Frees a struct <link linkend="icalgeotype">icalgeotype</link> structure as returned by the calendar component
+functions.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>geo</parameter>&nbsp;:</entry>
+<entry> An <link linkend="icalgeotype">icalgeotype</link> structure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-icaltimetype">cal_component_free_icaltimetype ()</title>
+<programlisting>void        cal_component_free_icaltimetype (struct <link linkend="icaltimetype">icaltimetype</link> *t);</programlisting>
+<para>
+Frees a struct <link linkend="icaltimetype">icaltimetype</link> value as returned by the calendar component
+functions.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> An <link linkend="icaltimetype">icaltimetype</link> structure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-percent">cal_component_free_percent ()</title>
+<programlisting>void        cal_component_free_percent      (int *percent);</programlisting>
+<para>
+Frees a percent value as returned by the <link linkend="cal-component-get-percent">cal_component_get_percent</link>()
+function.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>percent</parameter>&nbsp;:</entry>
+<entry> Percent value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-priority">cal_component_free_priority ()</title>
+<programlisting>void        cal_component_free_priority     (int *priority);</programlisting>
+<para>
+Frees a priority value as returned by the <link linkend="cal-component-get-priority">cal_component_get_priority</link>()
+function.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>priority</parameter>&nbsp;:</entry>
+<entry> Priority value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-period-list">cal_component_free_period_list ()</title>
+<programlisting>void        cal_component_free_period_list  (<link linkend="GSList">GSList</link> *period_list);</programlisting>
+<para>
+Frees a list of <link linkend="CalComponentPeriod">CalComponentPeriod</link> structures.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>period_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentPeriod">CalComponentPeriod</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-recur-list">cal_component_free_recur_list ()</title>
+<programlisting>void        cal_component_free_recur_list   (<link linkend="GSList">GSList</link> *recur_list);</programlisting>
+<para>
+Frees a list of struct <link linkend="icalrecurrencetype">icalrecurrencetype</link> structures.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>recur_list</parameter>&nbsp;:</entry>
+<entry> List of struct <link linkend="icalrecurrencetype">icalrecurrencetype</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-sequence">cal_component_free_sequence ()</title>
+<programlisting>void        cal_component_free_sequence     (int *sequence);</programlisting>
+<para>
+Frees a sequence number value.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>sequence</parameter>&nbsp;:</entry>
+<entry> Sequence number value.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-free-text-list">cal_component_free_text_list ()</title>
+<programlisting>void        cal_component_free_text_list    (<link linkend="GSList">GSList</link> *text_list);</programlisting>
+<para>
+Frees a list of <link linkend="CalComponentText">CalComponentText</link> structures.  This function should only be
+used to free lists of text values as returned by the other getter functions
+of <link linkend="CalComponent">CalComponent</link>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>text_list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalComponentText">CalComponentText</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="CalComponentAlarm">struct CalComponentAlarm</title>
+<programlisting>struct CalComponentAlarm;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalAlarmInstance">CalAlarmInstance</title>
+<programlisting>typedef struct {
+	/* UID of the alarm that triggered */
+	const char *auid;
+
+	/* Trigger time, i.e. "5 minutes before the appointment" */
+	time_t trigger;
+
+	/* Actual event occurrence to which this trigger corresponds */
+	time_t occur_start;
+	time_t occur_end;
+} CalAlarmInstance;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalComponentAlarms">CalComponentAlarms</title>
+<programlisting>typedef struct {
+	/* The actual component */
+	CalComponent *comp;
+
+	/* List of CalAlarmInstance structures */
+	GSList *alarms;
+} CalComponentAlarms;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalAlarmAction">enum CalAlarmAction</title>
+<programlisting>typedef enum {
+	CAL_ALARM_NONE,
+	CAL_ALARM_AUDIO,
+	CAL_ALARM_DISPLAY,
+	CAL_ALARM_EMAIL,
+	CAL_ALARM_PROCEDURE,
+	CAL_ALARM_UNKNOWN
+} CalAlarmAction;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalAlarmTriggerType">enum CalAlarmTriggerType</title>
+<programlisting>typedef enum {
+	CAL_ALARM_TRIGGER_NONE,
+	CAL_ALARM_TRIGGER_RELATIVE_START,
+	CAL_ALARM_TRIGGER_RELATIVE_END,
+	CAL_ALARM_TRIGGER_ABSOLUTE
+} CalAlarmTriggerType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalAlarmTrigger">CalAlarmTrigger</title>
+<programlisting>typedef struct {
+	CalAlarmTriggerType type;
+
+	union {
+		struct icaldurationtype rel_duration;
+		struct icaltimetype abs_time;
+	} u;
+} CalAlarmTrigger;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="cal-component-has-alarms">cal_component_has_alarms ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_component_has_alarms        (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Checks whether the component has any alarms.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the component has any alarms.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-alarm-uids">cal_component_get_alarm_uids ()</title>
+<programlisting><link linkend="GList">GList</link>*      cal_component_get_alarm_uids    (<link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Builds a list of the unique identifiers of the alarm subcomponents inside a
+calendar component.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> List of unique identifiers for alarms.  This should be freed
+using <link linkend="cal-obj-uid-list-free">cal_obj_uid_list_free</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-get-alarm">cal_component_get_alarm ()</title>
+<programlisting><link linkend="CalComponentAlarm">CalComponentAlarm</link>* cal_component_get_alarm  (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             const char *auid);</programlisting>
+<para>
+Queries a particular alarm subcomponent of a calendar component.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component.
+</entry></row>
+<row><entry align="right"><parameter>auid</parameter>&nbsp;:</entry>
+<entry> Unique identifier for the sought alarm subcomponent.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The alarm subcomponent that corresponds to the specified <parameter>auid</parameter>,
+or <link linkend="NULL-CAPS">NULL</link> if no alarm exists with that UID.  This should be freed using
+<link linkend="cal-component-alarm-free">cal_component_alarm_free</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarm-free">cal_component_alarm_free ()</title>
+<programlisting>void        cal_component_alarm_free        (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm);</programlisting>
+<para>
+Frees an alarm structure.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarm</parameter>&nbsp;:</entry>
+<entry> A calendar alarm.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarms-free">cal_component_alarms_free ()</title>
+<programlisting>void        cal_component_alarms_free       (<link linkend="CalComponentAlarms">CalComponentAlarms</link> *alarms);</programlisting>
+<para>
+Frees a <link linkend="CalComponentAlarms">CalComponentAlarms</link> structure.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarms</parameter>&nbsp;:</entry>
+<entry> Component alarms structure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarm-get-uid">cal_component_alarm_get_uid ()</title>
+<programlisting>const char* cal_component_alarm_get_uid     (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm);</programlisting>
+<para>
+Queries the unique identifier of an alarm subcomponent.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarm</parameter>&nbsp;:</entry>
+<entry> An alarm subcomponent.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> UID of the alarm.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarm-get-action">cal_component_alarm_get_action ()</title>
+<programlisting>void        cal_component_alarm_get_action  (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmAction">CalAlarmAction</link> *action);</programlisting>
+<para>
+Queries the action type of an alarm.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarm</parameter>&nbsp;:</entry>
+<entry> An alarm.
+</entry></row>
+<row><entry align="right"><parameter>action</parameter>&nbsp;:</entry>
+<entry> Return value for the alarm's action type.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarm-set-action">cal_component_alarm_set_action ()</title>
+<programlisting>void        cal_component_alarm_set_action  (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmAction">CalAlarmAction</link> action);</programlisting>
+<para>
+Sets the action type for an alarm.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarm</parameter>&nbsp;:</entry>
+<entry> An alarm.
+</entry></row>
+<row><entry align="right"><parameter>action</parameter>&nbsp;:</entry>
+<entry> Action type.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarm-get-trigger">cal_component_alarm_get_trigger ()</title>
+<programlisting>void        cal_component_alarm_get_trigger (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmTrigger">CalAlarmTrigger</link> *trigger);</programlisting>
+<para>
+Queries the trigger time for an alarm.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarm</parameter>&nbsp;:</entry>
+<entry> An alarm.
+</entry></row>
+<row><entry align="right"><parameter>trigger</parameter>&nbsp;:</entry>
+<entry> Return value for the trigger time.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-component-alarm-set-trigger">cal_component_alarm_set_trigger ()</title>
+<programlisting>void        cal_component_alarm_set_trigger (<link linkend="CalComponentAlarm">CalComponentAlarm</link> *alarm,
+                                             <link linkend="CalAlarmTrigger">CalAlarmTrigger</link> trigger);</programlisting>
+<para>
+Sets the trigger time of an alarm.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>alarm</parameter>&nbsp;:</entry>
+<entry> An alarm.
+</entry></row>
+<row><entry align="right"><parameter>trigger</parameter>&nbsp;:</entry>
+<entry> Trigger time structure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -85,6 +85,7 @@
 	    <can_focus>True</can_focus>
 	    <items>Not Started
 In Progress
+Needs Action
 Completed
 Cancelled
 </items>
@@ -281,13 +282,12 @@ Undefined
       </widget>
 
       <widget>
-	<class>GtkEntry</class>
-	<name>url</name>
-	<can_focus>True</can_focus>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>0</text_max_length>
-	<text></text>
+	<class>Custom</class>
+	<name>url_entry</name>
+	<creation_function>e_url_entry_new</creation_function>
+	<int1>0</int1>
+	<int2>0</int2>
+	<last_modification_time>Fri, 08 Feb 2002 21:02:37 GMT</last_modification_time>
 	<child>
 	  <left_attach>1</left_attach>
 	  <right_attach>2</right_attach>
@@ -300,7 +300,7 @@ Undefined
 	  <xshrink>False</xshrink>
 	  <yshrink>False</yshrink>
 	  <xfill>True</xfill>
-	  <yfill>False</yfill>
+	  <yfill>True</yfill>
 	</child>
       </widget>
     </widget>

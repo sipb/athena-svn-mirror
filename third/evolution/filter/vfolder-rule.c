@@ -39,6 +39,7 @@
 #define d(x) x
 
 static gint validate(FilterRule *);
+static int vfolder_eq(FilterRule *fr, FilterRule *cm);
 static xmlNodePtr xml_encode(FilterRule *);
 static int xml_decode(FilterRule *, xmlNodePtr, struct _RuleContext *f);
 static void rule_copy (FilterRule *dest, FilterRule *src);
@@ -93,6 +94,7 @@ vfolder_rule_class_init (VfolderRuleClass *class)
 
 	/* override methods */
 	filter_rule->validate   = validate;
+	filter_rule->eq = vfolder_eq;
 	filter_rule->xml_encode = xml_encode;
 	filter_rule->xml_decode = xml_decode;
 	filter_rule->copy = rule_copy;
@@ -220,6 +222,29 @@ validate (FilterRule *fr)
 		return FILTER_RULE_CLASS (parent_class)->validate (fr);
 	
 	return 1;
+}
+
+static int
+list_eq(GList *al, GList *bl)
+{
+	int truth = TRUE;
+
+	while (truth && al && bl) {
+		char *a = al->data, *b = bl->data;
+
+		truth = strcmp(a, b) == 0;
+		al = al->next;
+		bl = bl->next;
+	}
+
+	return truth && al == NULL && bl == NULL;
+}
+
+static int
+vfolder_eq(FilterRule *fr, FilterRule *cm)
+{
+        return ((FilterRuleClass *)(parent_class))->eq(fr, cm)
+		&& list_eq(((VfolderRule *)fr)->sources, ((VfolderRule *)cm)->sources);
 }
 
 static xmlNodePtr
@@ -352,7 +377,8 @@ select_source_with(GtkWidget *w, struct _source_data *data)
 static void
 source_add(GtkWidget *widget, struct _source_data *data)
 {
-	const char *allowed_types[] = { "mail", NULL };
+	static const char *allowed_types[] = { "mail/*", NULL };
+	GNOME_Evolution_Folder *folder;
 	char *def, *uri;
 	GtkListItem *item;
 	GList *l;
@@ -363,16 +389,18 @@ source_add(GtkWidget *widget, struct _source_data *data)
 	evolution_shell_client_user_select_folder (global_shell_client,
 						   GTK_WINDOW (gtk_widget_get_toplevel (widget)),
 						   _("Select Folder"),
-						   def, allowed_types, NULL, &uri);
+						   def, allowed_types, &folder);
 
 	if (GTK_OBJECT_DESTROYED(widget)) {
-		g_free(uri);
+		if (folder)
+			CORBA_free (folder);
 		return;
 	}
 
 	gtk_widget_set_sensitive(widget, TRUE);
 
-	if (uri != NULL && uri[0] != '\0') {
+	if (folder) {
+		uri = g_strdup (folder->physicalUri);
 		data->vr->sources = g_list_append(data->vr->sources, uri);
 
 		l = NULL;
@@ -385,9 +413,8 @@ source_add(GtkWidget *widget, struct _source_data *data)
 		gtk_list_append_items(data->list, l);
 		gtk_list_select_child(data->list, (GtkWidget *)item);
 		data->current = uri;
-	} else {
-		g_free(uri);
 	}
+	CORBA_free (folder);
 	set_sensitive(data);
 }
 

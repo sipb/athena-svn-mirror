@@ -2149,7 +2149,7 @@ e_calendar_item_set_first_month(ECalendarItem	*calitem,
 			calitem->month = new_month;
 		} else {
 			old_days_in_selection = e_calendar_item_get_inclusive_days (calitem, calitem->selection_start_month_offset, calitem->selection_start_day, calitem->selection_end_month_offset, calitem->selection_end_day);
-
+			
 			/* Make sure the selection will be displayed. */
 			if (calitem->selection_start_month_offset < 0
 			    || calitem->selection_start_month_offset >= num_months) {
@@ -2412,6 +2412,14 @@ e_calendar_item_mark_days	(ECalendarItem	*calitem,
 		if (month_offset == end_month_offset && day > end_day)
 			break;
 
+		if (month_offset < -1 || month_offset > calitem->rows * calitem->cols)
+			g_warning ("Bad month offset: %i\n", month_offset);
+		if (day < 1 || day > 31)
+			g_warning ("Bad day: %i\n", day);
+
+#if 0
+		g_print ("Marking Month:%i Day:%i\n", month_offset, day);
+#endif
 		calitem->styles[(month_offset + 1) * 32 + day] = day_style;
 
 		day++;
@@ -2697,9 +2705,27 @@ e_calendar_item_ensure_days_visible	(ECalendarItem	*calitem,
 	if (end_year > current_end_year
 	    || (end_year == current_end_year
 		&& end_month > current_end_month)) {
-		need_update = TRUE;
+		
+		/* First we see if the end of the selection will fit in the
+		   leftover days of the month after the last one shown. */
 		calitem->year = end_year;
-		calitem->month = end_month - months_shown + 1;
+		calitem->month += (months_shown - 1);
+		e_calendar_item_normalize_date (calitem, &calitem->year,
+						&calitem->month);
+		
+		e_calendar_item_get_month_info (calitem, 0, 0,
+						&first_day_offset,
+						&days_in_month,
+						&days_in_prev_month);
+		
+		if (end_day >= E_CALENDAR_ROWS_PER_MONTH * E_CALENDAR_COLS_PER_MONTH - 
+		    first_day_offset - days_in_month) {
+			need_update = TRUE;
+
+			calitem->year = end_year;
+			calitem->month = end_month - months_shown + 1;
+		}
+		
 		e_calendar_item_normalize_date (calitem, &calitem->year,
 						&calitem->month);
 	}
@@ -2891,7 +2917,7 @@ e_calendar_item_signal_emission_idle_cb	(gpointer data)
 
 	/* We ref the calitem & check in case it gets destroyed, since we
 	   were getting a free memory write here. */
-	gtk_object_ref (calitem);
+	gtk_object_ref (GTK_OBJECT (calitem));
 
 	if (calitem->date_range_changed) {
 		calitem->date_range_changed = FALSE;
@@ -2907,7 +2933,7 @@ e_calendar_item_signal_emission_idle_cb	(gpointer data)
 				 e_calendar_item_signals[SELECTION_CHANGED]);
 	}
 
-	gtk_object_unref (calitem);
+	gtk_object_unref (GTK_OBJECT (calitem));
 
 	GDK_THREADS_LEAVE ();
 	return FALSE;

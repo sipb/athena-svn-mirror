@@ -10,13 +10,17 @@
 
 #include <config.h>
 
-/* We need this for strptime. */
-#define _XOPEN_SOURCE 500
-#define __USE_XOPEN
+#ifdef __linux__
+/* We need this to get a prototype for strptime. */
+#define _GNU_SOURCE
+#endif /* __linux__ */
+
 #include <time.h>
 #include <sys/time.h>
-#undef _XOPEN_SOURCE
-#undef __USE_XOPEN
+
+#ifdef __linux__
+#undef _GNU_SOURCE
+#endif /* __linux__ */
 
 #include <string.h>
 #include <ctype.h>
@@ -268,6 +272,9 @@ ETimeParseStatus
 e_time_parse_date (const char *value, struct tm *result)
 {
 	const char *format[2];
+	struct tm *today_tm;
+	time_t t;
+	ETimeParseStatus status;
 
 	g_return_val_if_fail (value != NULL, E_TIME_PARSE_INVALID);
 	g_return_val_if_fail (result != NULL, E_TIME_PARSE_INVALID);
@@ -278,7 +285,23 @@ e_time_parse_date (const char *value, struct tm *result)
 	/* This is the preferred date format for the locale. */
 	format[1] = _("%m/%d/%Y");
 
-	return parse_with_strptime (value, result, format, sizeof (format) / sizeof (format[0]));
+	status = parse_with_strptime (value, result, format, sizeof (format) / sizeof (format[0]));
+	if (status == E_TIME_PARSE_OK) {
+		/* If a 2-digit year was used we use the current century. */
+		if (result->tm_year < 0) {
+			t = time (NULL);
+			today_tm = localtime (&t);
+			
+			/* This should convert it into a value from 0 to 99. */
+			result->tm_year += 1900;
+			
+			/* Now add on the century. */
+			result->tm_year += today_tm->tm_year
+				- (today_tm->tm_year % 100);
+		}
+	}
+	
+	return status;
 }
 
 
@@ -406,4 +429,51 @@ e_time_format_time			(struct tm	*date_tm,
 	   undefined, so we set it to the empty string in that case. */
 	if (strftime (buffer, buffer_size, format, date_tm) == 0)
 		buffer[0] = '\0';
+}
+
+
+/* Like mktime(3), but assumes UTC instead of local timezone. */
+time_t
+e_mktime_utc (struct tm *tm)
+{
+	time_t tt;
+
+	tm->tm_isdst = -1;
+	tt = mktime (tm);
+
+#if defined (HAVE_TM_GMTOFF)
+	tt += tm->tm_gmtoff;
+#elif defined (HAVE_TIMEZONE)
+	if (tm->tm_isdst > 0) {
+  #if defined (HAVE_ALTZONE)
+		tt -= altzone;
+  #else /* !defined (HAVE_ALTZONE) */
+		tt -= (timezone - 3600);
+  #endif
+	} else
+		tt -= timezone;
+#endif
+
+	return tt;
+}
+
+/* Like localtime_r(3), but also returns an offset in minutes after UTC.
+   (Calling gmtime with tt + offset would generate the same tm) */
+void
+e_localtime_with_offset (time_t tt, struct tm *tm, int *offset)
+{
+	localtime_r (&tt, tm);
+
+#if defined (HAVE_TM_GMTOFF)
+	*offset = tm->tm_gmtoff;
+#elif defined (HAVE_TIMEZONE)
+	if (tm->tm_isdst > 0) {
+  #if defined (HAVE_ALTZONE)
+		*offset = -altzone;
+  #else /* !defined (HAVE_ALTZONE) */
+		*offset = -(timezone - 3600);
+  #endif
+	} else
+		*offset = -timezone;
+#endif
 }

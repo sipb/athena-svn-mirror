@@ -66,44 +66,14 @@ typedef struct {
 	BonoboPropertyBag *properties;
 	char *uri;
 	char *passwd;
+	gboolean ignore_search_changes;
 } AddressbookView;
 
 static void addressbook_view_ref (AddressbookView *);
 static void addressbook_view_unref (AddressbookView *);
 
-static void
-new_contact_cb (BonoboUIComponent *uih, void *user_data, const char *path)
-{
-	EBook *book;
-	AddressbookView *view = (AddressbookView *) user_data;
-
-	if (view->view) {
-		gtk_object_get(GTK_OBJECT(view->view),
-			       "book", &book,
-			       NULL);
-
-		g_assert (E_IS_BOOK (book));
-
-		e_addressbook_show_contact_editor (book, e_card_new(""), TRUE, e_addressbook_view_can_create(view->view));
-	}
-}
-
-static void
-new_contact_list_cb (BonoboUIComponent *uih, void *user_data, const char *path)
-{
-	EBook *book;
-	AddressbookView *view = (AddressbookView *) user_data;
-
-	if (view->view) {
-		gtk_object_get(GTK_OBJECT(view->view),
-			       "book", &book,
-			       NULL);
-
-		g_assert (E_IS_BOOK (book));
-
-		e_addressbook_show_contact_list_editor (book, e_card_new(""), TRUE, e_addressbook_view_can_create(view->view));
-	}
-}
+static void addressbook_authenticate (EBook *book, gboolean previous_failure,
+				      AddressbookSource *source, EBookCallback cb, gpointer closure);
 
 static void
 save_contact_cb (BonoboUIComponent *uih, void *user_data, const char *path)
@@ -114,9 +84,11 @@ save_contact_cb (BonoboUIComponent *uih, void *user_data, const char *path)
 }
 
 static void
-config_cb (BonoboUIComponent *uih, void *user_data, const char *path)
+view_contact_cb (BonoboUIComponent *uih, void *user_data, const char *path)
 {
-	addressbook_config (NULL /* XXX */);
+	AddressbookView *view = (AddressbookView *) user_data;
+	if (view->view)
+		e_addressbook_view_view(view->view);
 }
 
 static void
@@ -132,8 +104,10 @@ static void
 delete_contact_cb (BonoboUIComponent *uih, void *user_data, const char *path)
 {
 	AddressbookView *view = (AddressbookView *) user_data;
-	if (view->view)
-		e_addressbook_view_delete_selection(view->view);
+	if (view->view) {
+		if (e_contact_editor_confirm_delete (GTK_WINDOW (view->view)))
+			e_addressbook_view_delete_selection(view->view);
+	}
 }
 
 static void
@@ -209,6 +183,22 @@ send_contact_to_cb (BonoboUIComponent *uih, void *user_data, const char *path)
 }
 
 static void
+copy_contact_to_cb (BonoboUIComponent *uih, void *user_data, const char *path)
+{
+	AddressbookView *view = (AddressbookView *) user_data;
+	if (view->view)
+		e_addressbook_view_copy_to_folder (view->view);
+}
+
+static void
+move_contact_to_cb (BonoboUIComponent *uih, void *user_data, const char *path)
+{
+	AddressbookView *view = (AddressbookView *) user_data;
+	if (view->view)
+		e_addressbook_view_move_to_folder (view->view);
+}
+
+static void
 forget_passwords_cb (BonoboUIComponent *uih, void *user_data, const char *path)
 {
 	e_passwords_forget_passwords();
@@ -225,42 +215,35 @@ update_command_state (EAddressbookView *eav, AddressbookView *view)
 	addressbook_view_ref (view);
 
 	uic = bonobo_control_get_ui_component (view->control);
-	
-	if (bonobo_ui_component_get_container (uic) != CORBA_OBJECT_NIL) {
 
-		/* New Contact */
-		bonobo_ui_component_set_prop (uic,
-					      "/commands/ContactNew",
-					      "sensitive",
-					      e_addressbook_view_can_create (view->view) ? "1" : "0", NULL);
-		bonobo_ui_component_set_prop (uic,
-					      "/commands/ContactNewList",
-					      "sensitive",
-					      e_addressbook_view_can_create (view->view) ? "1" : "0", NULL);
-		
+	if (bonobo_ui_component_get_container (uic) != CORBA_OBJECT_NIL) {
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactsSaveAsVCard",
 					      "sensitive",
 					      e_addressbook_view_can_save_as (view->view) ? "1" : "0", NULL);
-		
+		bonobo_ui_component_set_prop (uic,
+					      "/commands/ContactsView",
+					      "sensitive",
+					      e_addressbook_view_can_view (view->view) ? "1" : "0", NULL);
+
 		/* Print Contact */
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactsPrint",
 					      "sensitive",
 					      e_addressbook_view_can_print (view->view) ? "1" : "0", NULL);
-		
+
 		/* Print Contact */
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactsPrintPreview",
 					      "sensitive",
 					      e_addressbook_view_can_print (view->view) ? "1" : "0", NULL);
-		
+
 		/* Delete Contact */
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactDelete",
 					      "sensitive",
 					      e_addressbook_view_can_delete (view->view) ? "1" : "0", NULL);
-		
+
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactsCut",
 					      "sensitive",
@@ -277,24 +260,31 @@ update_command_state (EAddressbookView *eav, AddressbookView *view)
 					      "/commands/ContactsSelectAll",
 					      "sensitive",
 					      e_addressbook_view_can_select_all (view->view) ? "1" : "0", NULL);
-		
+
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactsSendContactToOther",
 					      "sensitive",
 					      e_addressbook_view_can_send (view->view) ? "1" : "0", NULL);
-		
+
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactsSendMessageToContact",
 					      "sensitive",
 					      e_addressbook_view_can_send_to (view->view) ? "1" : "0", NULL);
-		
-		
+
+		bonobo_ui_component_set_prop (uic,
+					      "/commands/ContactsMoveToFolder",
+					      "sensitive",
+					      e_addressbook_view_can_move_to_folder (view->view) ? "1" : "0", NULL);
+		bonobo_ui_component_set_prop (uic,
+					      "/commands/ContactsCopyToFolder",
+					      "sensitive",
+					      e_addressbook_view_can_copy_to_folder (view->view) ? "1" : "0", NULL);
+
 		/* Stop */
 		bonobo_ui_component_set_prop (uic,
 					      "/commands/ContactStop",
 					      "sensitive",
 					      e_addressbook_view_can_stop (view->view) ? "1" : "0", NULL);
-		
 	}
 
 	addressbook_view_unref (view);
@@ -310,12 +300,9 @@ static BonoboUIVerb verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("ContactsPrint", print_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactsPrintPreview", print_preview_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactsSaveAsVCard", save_contact_cb),
+	BONOBO_UI_UNSAFE_VERB ("ContactsView", view_contact_cb),
 	BONOBO_UI_UNSAFE_VERB ("ToolSearch", search_cb),
 
-	BONOBO_UI_UNSAFE_VERB ("AddressbookConfig", config_cb),
-
-	BONOBO_UI_UNSAFE_VERB ("ContactNew", new_contact_cb),
-	BONOBO_UI_UNSAFE_VERB ("ContactNewList", new_contact_list_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactDelete", delete_contact_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactStop", stop_loading_cb),
 
@@ -326,13 +313,14 @@ static BonoboUIVerb verbs [] = {
 
 	BONOBO_UI_UNSAFE_VERB ("ContactsSendContactToOther", send_contact_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactsSendMessageToContact", send_contact_to_cb),
+	BONOBO_UI_UNSAFE_VERB ("ContactsMoveToFolder", move_contact_to_cb),
+	BONOBO_UI_UNSAFE_VERB ("ContactsCopyToFolder", copy_contact_to_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactsForgetPasswords", forget_passwords_cb),
 
 	BONOBO_UI_VERB_END
 };
 
 static EPixmap pixmaps [] = {
-	E_PIXMAP ("/menu/File/New/NewFirstItem/ContactNew", "evolution-contacts-mini.png"),
 	E_PIXMAP ("/menu/File/FileOps/ContactsSaveAsVCard", "save-as-16.png"),
 	E_PIXMAP ("/menu/File/Print/ContactsPrint", "print.xpm"),
 	E_PIXMAP ("/menu/File/Print/ContactsPrintPreview", "print-preview.xpm"),
@@ -343,10 +331,7 @@ static EPixmap pixmaps [] = {
 	E_PIXMAP ("/menu/EditPlaceholder/Edit/ContactDelete", "evolution-trash-mini.png"),
 
 	E_PIXMAP ("/menu/Tools/ComponentPlaceholder/ToolSearch", "search-16.png"),
-	E_PIXMAP ("/menu/Tools/ComponentPlaceholder/AddressbookConfig", "configure_16_addressbook.xpm"),
 
-	E_PIXMAP ("/Toolbar/ContactNew", "new_contact.xpm"),
-	E_PIXMAP ("/Toolbar/ContactNewList", "all_contacts.xpm"),
 	E_PIXMAP ("/Toolbar/ContactsPrint", "buttons/print.png"),
 	E_PIXMAP ("/Toolbar/ContactDelete", "buttons/delete-message.png"),
 
@@ -363,6 +348,8 @@ control_activate (BonoboControl     *control,
 	remote_ui_container = bonobo_control_get_remote_ui_container (control);
 	bonobo_ui_component_set_container (uic, remote_ui_container);
 	bonobo_object_release_unref (remote_ui_container, NULL);
+
+	e_search_bar_set_ui_component (view->search, uic);
 
 	bonobo_ui_component_add_verb_list_with_data (
 		uic, verbs, view);
@@ -416,8 +403,9 @@ addressbook_view_unref (AddressbookView *view)
 {
 	g_assert (view->refs > 0);
 	--view->refs;
-	if (view->refs == 0)
+	if (view->refs == 0) {
 		g_free (view);
+	}
 }
 
 static ECategoriesMasterList *
@@ -477,35 +465,46 @@ book_open_cb (EBook *book, EBookStatus status, gpointer closure)
 		gtk_object_set(GTK_OBJECT(view->view),
 			       "book", book,
 			       NULL);
-	} else {
-		AddressbookSource *source;
+	}
+	else {
 		GtkWidget *warning_dialog, *label;
+		AddressbookSource *source = NULL;
 
         	warning_dialog = gnome_dialog_new (
         		_("Unable to open addressbook"),
 			GNOME_STOCK_BUTTON_CLOSE,
         		NULL);
 
-		source = addressbook_storage_get_source_by_uri (view->uri);
-
-		if (source && source->type == ADDRESSBOOK_SOURCE_LDAP) {
-#if HAVE_LDAP
-			label = gtk_label_new (
-					       _("We were unable to open this addressbook.  This either\n"
-						 "means you have entered an incorrect URI, or the LDAP server\n"
-						 "is down"));
-#else
-			label = gtk_label_new (
-					       _("This version of Evolution does not have LDAP support\n"
-						 "compiled in to it.  If you want to use LDAP in Evolution\n"
-						 "you must compile the program from the CVS sources after\n"
-						 "retrieving OpenLDAP from the link below.\n"));
-#endif
-		}
-		else {
+		if (!strncmp (view->uri, "file:", 5)) {
 			label = gtk_label_new (
 					       _("We were unable to open this addressbook.  Please check that the\n"
 						 "path exists and that you have permission to access it."));
+		}
+		else {
+			source = addressbook_storage_get_source_by_uri (view->uri);
+
+			if (source) {
+				/* special case for ldap: contact folders so we can tell the user about openldap */
+#if HAVE_LDAP
+				label = gtk_label_new (
+						       _("We were unable to open this addressbook.  This either\n"
+							 "means you have entered an incorrect URI, or the LDAP server\n"
+							 "is unreachable."));
+#else
+				label = gtk_label_new (
+						       _("This version of Evolution does not have LDAP support\n"
+							 "compiled in to it.  If you want to use LDAP in Evolution\n"
+							 "you must compile the program from the CVS sources after\n"
+							 "retrieving OpenLDAP from the link below.\n"));
+#endif
+			}
+			else {
+				/* other network folders */
+				label = gtk_label_new (
+						       _("We were unable to open this addressbook.  This either\n"
+							 "means you have entered an incorrect URI, or the server\n"
+							 "is unreachable."));
+			}
 		}
 
 		gtk_misc_set_alignment(GTK_MISC(label),
@@ -518,7 +517,7 @@ book_open_cb (EBook *book, EBookStatus status, gpointer closure)
 		gtk_widget_show (label);
 
 #ifndef HAVE_LDAP
-		if (source && source->type == ADDRESSBOOK_SOURCE_LDAP) {
+		if (source) {
 			GtkWidget *href;
 			href = gnome_href_new ("http://www.openldap.org/", "OpenLDAP at http://www.openldap.org/");
 			gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (warning_dialog)->vbox), 
@@ -565,35 +564,10 @@ get_prop (BonoboPropertyBag *bag,
 	}
 }
 
-char *
-addressbook_expand_uri (const char *uri)
-{
-	char *new_uri;
-
-	if (!strncmp (uri, "file:", 5)) {
-		if (strlen (uri + 7) > 3
-		    && !strcmp (uri + strlen(uri) - 3, ".db")) {
-			/* it's a .db file */
-			new_uri = g_strdup (uri);
-		}
-		else {
-			char *file_name;
-			/* we assume it's a dir and glom addressbook.db onto the end. */
-			file_name = g_concat_dir_and_file(uri + 7, "addressbook.db");
-			new_uri = g_strdup_printf("file://%s", file_name);
-			g_free(file_name);
-		}
-	}
-	else {
-		new_uri = g_strdup (uri);
-	}
-
-	return new_uri;
-}
-
 typedef struct {
-	char *uri;
 	EBookCallback cb;
+	char *clean_uri;
+	AddressbookSource *source;
 	gpointer closure;
 } LoadUriData;
 
@@ -603,78 +577,118 @@ load_uri_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 	LoadUriData *data = closure;
 
 	if (status != E_BOOK_STATUS_SUCCESS) {
-		/* pop up a nice dialog, or redo the authentication
-                   bit some number of times. */
+		if (status == E_BOOK_STATUS_CANCELLED) {
+			/* the user clicked cancel in the password dialog */
+			gnome_warning_dialog (_("Accessing LDAP Server anonymously"));
+			data->cb (book, E_BOOK_STATUS_SUCCESS, data->closure);
+			g_free (data->clean_uri);
+			g_free (data);
+			return;
+		}
+		else {
+			e_passwords_forget_password (data->clean_uri);
+			addressbook_authenticate (book, TRUE, data->source, load_uri_auth_cb, closure);
+			return;
+		}
 	}
 
 	data->cb (book, status, data->closure);
 
-	g_free (data->uri);
+	g_free (data->clean_uri);
 	g_free (data);
 }
 
+static void
+addressbook_authenticate (EBook *book, gboolean previous_failure, AddressbookSource *source,
+			  EBookCallback cb, gpointer closure)
+{
+	LoadUriData *load_uri_data = closure;
+	const char *password;
+	char *pass_dup = NULL;
+	char *semicolon;
+
+	load_uri_data->clean_uri = g_strdup (e_book_get_uri (book));
+
+	semicolon = strchr (load_uri_data->clean_uri, ';');
+
+	if (semicolon)
+		*semicolon = '\0';
+
+	password = e_passwords_get_password (load_uri_data->clean_uri);
+
+	if (!password) {
+		char *prompt;
+		gboolean remember;
+		char *failed_auth;
+
+		if (previous_failure) {
+			failed_auth = _("Failed to authenticate.\n");
+		}
+		else {
+			failed_auth = "";
+		}
+
+
+		if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
+			prompt = g_strdup_printf (_("%sEnter password for %s (user %s)"),
+						  failed_auth, source->name, source->binddn);
+		else
+			prompt = g_strdup_printf (_("%sEnter password for %s (user %s)"),
+						  failed_auth, source->name, source->email_addr);
+		remember = source->remember_passwd;
+		pass_dup = e_passwords_ask_password (prompt, load_uri_data->clean_uri, prompt, TRUE,
+						     E_PASSWORDS_REMEMBER_FOREVER, &remember,
+						     NULL);
+		if (remember != source->remember_passwd) {
+			source->remember_passwd = remember;
+			addressbook_storage_write_sources ();
+		}
+		g_free (prompt);
+	}
+
+	if (password || pass_dup) {
+		char *user;
+
+		if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
+			user = source->binddn;
+		else
+			user = source->email_addr;
+		if (!user)
+			user = "";
+		e_book_authenticate_user (book, user, password ? password : pass_dup,
+					  addressbook_storage_auth_type_to_string (source->auth),
+					  cb, closure);
+		g_free (pass_dup);
+		return;
+	}
+	else {
+		/* they hit cancel */
+		cb (book, E_BOOK_STATUS_CANCELLED, closure);
+	}
+}
 
 static void
 load_uri_cb (EBook *book, EBookStatus status, gpointer closure)
 {
-	AddressbookSource *source;
 	LoadUriData *load_uri_data = closure;
 
-	source = addressbook_storage_get_source_by_uri (load_uri_data->uri);
+	if (status == E_BOOK_STATUS_SUCCESS && book != NULL) {
 
-	if (status == E_BOOK_STATUS_SUCCESS) {
 		/* check if the addressbook needs authentication */
 
-		if (source &&
-		    source->type == ADDRESSBOOK_SOURCE_LDAP &&
-		    source->auth != ADDRESSBOOK_LDAP_AUTH_NONE) {
-			const char *password;
-			char *pass_dup = NULL;
+		load_uri_data->source = addressbook_storage_get_source_by_uri (e_book_get_uri (book));
 
-			password = e_passwords_get_password(load_uri_data->uri);
+		if (load_uri_data->source &&
+		    load_uri_data->source->auth != ADDRESSBOOK_LDAP_AUTH_NONE) {
 
-			if (!password) {
-				char *prompt;
-				gboolean remember;
+			addressbook_authenticate (book, FALSE, load_uri_data->source,
+						  load_uri_auth_cb, closure);
 
-				if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
-					prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
-								  source->name, source->binddn);
-				else
-					prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
-								  source->name, source->email_addr);
-				remember = source->remember_passwd;
-				pass_dup = e_passwords_ask_password (
-								     prompt, load_uri_data->uri, prompt, TRUE,
-								     E_PASSWORDS_REMEMBER_FOREVER, &remember,
-								     NULL);
-				if (remember != source->remember_passwd) {
-					source->remember_passwd = remember;
-					addressbook_storage_write_sources ();
-				}
-				g_free (prompt);
-			}
-
-			if (password || pass_dup) {
-				char *user;
-
-				if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
-					user = source->binddn;
-				else
-					user = source->email_addr;
-				if (!user)
-					user = "";
-				e_book_authenticate_user (book, user, password ? password : pass_dup,
-							  addressbook_storage_auth_type_to_string (source->auth),
-							  load_uri_auth_cb, closure);
-				g_free (pass_dup);
-				return;
-			}
+			return;
 		}
 	}
-
+	
 	load_uri_data->cb (book, status, load_uri_data->closure);
-	g_free (load_uri_data->uri);
 	g_free (load_uri_data);
 }
 
@@ -682,82 +696,33 @@ gboolean
 addressbook_load_uri (EBook *book, const char *uri,
 		      EBookCallback cb, gpointer closure)
 {
-	LoadUriData *load_uri_data = g_new (LoadUriData, 1);
+	LoadUriData *load_uri_data = g_new0 (LoadUriData, 1);
 	gboolean rv;
 
-	load_uri_data->uri = g_strdup (uri);
 	load_uri_data->cb = cb;
 	load_uri_data->closure = closure;
 
 	rv = e_book_load_uri (book, uri, load_uri_cb, load_uri_data);
 
-	if (!rv) {
-		g_free (load_uri_data->uri);
+	if (!rv)
 		g_free (load_uri_data);
-	}
 
 	return rv;
 }
 
-typedef struct {
-	gpointer closure;
-	EBookCallback open_response;
-} DefaultBookClosure;
-
-static void
-addressbook_default_book_open (EBook *book, EBookStatus status, gpointer closure)
-{
-	DefaultBookClosure *default_book_closure = closure;
-	gpointer user_closure = default_book_closure->closure;
-	EBookCallback user_response = default_book_closure->open_response;
-
-	g_free (default_book_closure);
-
-	/* special case the protocol not supported error, since we
-	   really only want to failover to the local book in the case
-	   where there's no installed backend for that protocol.  all
-	   other errors (failure to connect, etc.) should get reported
-	   to the caller as normal. */
-	if (status == E_BOOK_STATUS_PROTOCOL_NOT_SUPPORTED) {
-		e_book_load_local_address_book (book, user_response, user_closure);
-	}
-	else {
-		user_response (book, status, user_closure);
-	}
-}
-
 gboolean
-addressbook_load_default_book (EBook *book, EBookCallback open_response, gpointer closure)
+addressbook_load_default_book (EBook *book, EBookCallback cb, gpointer closure)
 {
-	char *val;
+	LoadUriData *load_uri_data = g_new (LoadUriData, 1);
 	gboolean rv;
-	CORBA_Environment ev;
-	Bonobo_ConfigDatabase config_db;
 
-	g_return_val_if_fail (book != NULL,          FALSE);
-	g_return_val_if_fail (E_IS_BOOK (book),      FALSE);
-	g_return_val_if_fail (open_response != NULL, FALSE);
+	load_uri_data->cb = cb;
+	load_uri_data->closure = closure;
 
-	CORBA_exception_init (&ev);
-	config_db = addressbook_config_database (&ev);
-	val = bonobo_config_get_string (config_db, "/Addressbook/default_book_uri", &ev);
-	CORBA_exception_free (&ev);
+	rv = e_book_load_default_book (book, load_uri_cb, load_uri_data);
 
-	if (val) {
-		DefaultBookClosure *default_book_closure = g_new (DefaultBookClosure, 1);
-		default_book_closure->closure = closure;
-		default_book_closure->open_response = open_response;
-		rv = addressbook_load_uri (book, val,
-					   addressbook_default_book_open, default_book_closure);
-		g_free (val);
-	}
-	else {
-		rv = e_book_load_local_address_book (book, open_response, closure);
-	}
-
-	if (!rv) {
-		g_warning ("Couldn't load default addressbook");
-	}
+	if (!rv)
+		g_free (load_uri_data);
 
 	return rv;
 }
@@ -790,7 +755,7 @@ set_prop (BonoboPropertyBag *bag,
 
 		view->uri = g_strdup(BONOBO_ARG_GET_STRING (arg));
 		
-		uri_data = addressbook_expand_uri (view->uri);
+		uri_data = e_book_expand_uri (view->uri);
 
 		if (! addressbook_load_uri (book, uri_data, book_open_cb, view))
 			printf ("error calling load_uri!\n");
@@ -805,11 +770,6 @@ set_prop (BonoboPropertyBag *bag,
 	}
 }
 
-static ESearchBarItem addressbook_search_menu_items[] = {
-	E_FILTERBAR_RESET,
-	{ NULL, -1, NULL },
-};
-
 enum {
 	ESB_FULL_NAME,
 	ESB_EMAIL,
@@ -820,7 +780,7 @@ enum {
 
 static ESearchBarItem addressbook_search_option_items[] = {
 	{ N_("Name begins with"), ESB_FULL_NAME, NULL },
-	{ N_("Email is"), ESB_EMAIL, NULL },
+	{ N_("Email begins with"), ESB_EMAIL, NULL },
 	{ N_("Category is"), ESB_CATEGORY, NULL }, /* We attach subitems below */
 	{ N_("Any field contains"), ESB_ANY, NULL },
 	{ N_("Advanced..."), ESB_ADVANCED, NULL },
@@ -828,25 +788,16 @@ static ESearchBarItem addressbook_search_option_items[] = {
 };
 
 static void
-addressbook_menu_activated (ESearchBar *esb, int id, AddressbookView *view)
+alphabet_state_changed (EAddressbookView *eav, gunichar letter, AddressbookView *view)
 {
-	switch (id) {
-	case E_FILTERBAR_RESET_ID:
-		/* e_addressbook_view_show_all(view->view); */
-
-		/* Fix option menu if we are using "Category is" */
-		if (e_search_bar_get_item_id (esb) == ESB_CATEGORY) {
-
-			e_search_bar_set_subitem_id (esb, G_MAXINT);
-
-		} else {
-
-			e_search_bar_set_text (esb, "");
-
-		}
-
-		break;
+	view->ignore_search_changes = TRUE;
+	if (letter == 0) {
+		e_search_bar_set_item_id (view->search, ESB_FULL_NAME);
+		e_search_bar_set_text (view->search, "");
+	} else {
+		e_search_bar_set_item_id (view->search, ESB_FULL_NAME);
 	}
+	view->ignore_search_changes = FALSE;
 }
 
 static void
@@ -856,6 +807,10 @@ addressbook_search_activated (ESearchBar *esb, AddressbookView *view)
 	char *search_word, *search_query;
 	const char *category_name;
 	int search_type, subid;
+
+	if (view->ignore_search_changes) {
+		return;
+	}
 
 	gtk_object_get(GTK_OBJECT(esb),
 		       "text", &search_word,
@@ -879,7 +834,7 @@ addressbook_search_activated (ESearchBar *esb, AddressbookView *view)
 								s->str);
 				break;
 			case ESB_EMAIL:
-				search_query = g_strdup_printf ("(is \"email\" %s)",
+				search_query = g_strdup_printf ("(beginswith \"email\" %s)",
 								s->str);
 				break;
 			case ESB_CATEGORY:
@@ -891,7 +846,7 @@ addressbook_search_activated (ESearchBar *esb, AddressbookView *view)
 				} else {
 					master_list = get_master_list ();
 					category_name = e_categories_master_list_nth (master_list, subid);
-					search_query = g_strdup_printf ("(contains \"category\" \"%s\")", category_name);
+					search_query = g_strdup_printf ("(is \"category\" \"%s\")", category_name);
 				}
 				break;
 			default:
@@ -987,6 +942,42 @@ set_status_message (EAddressbookView *eav, const char *message, AddressbookView 
 		evolution_activity_client_update (view->activity, message, -1.0);
 	}
 
+}
+
+static void
+search_result (EAddressbookView *eav, EBookViewStatus status, AddressbookView *view)
+{
+	char *str = NULL;
+
+	switch (status) {
+	case E_BOOK_VIEW_STATUS_SUCCESS:
+		return;
+	case E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED:
+		str = _("More cards matched this query than either the server is \n"
+			"configured to return or Evolution is configured to display.\n"
+			"Please make your search more specific or raise the result limit in\n"
+			"the directory server preferences for this addressbook.");
+		break;
+	case E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED:
+		str = _("The time to execute this query exceeded the server limit or the limit\n"
+			"you have configured for this addressbook.  Please make your search\n"
+			"more specific or raise the time limit in the directory server\n"
+			"preferences for this addressbook.");
+		break;
+	case E_BOOK_VIEW_STATUS_INVALID_QUERY:
+		str = _("The backend for this addressbook was unable to parse this query.");
+		break;
+	case E_BOOK_VIEW_STATUS_QUERY_REFUSED:
+		str = _("The backend for this addressbook refused to perform this query.");
+		break;
+	case E_BOOK_VIEW_STATUS_OTHER_ERROR:
+	case E_BOOK_VIEW_STATUS_UNKNOWN:
+		str = _("This query did not complete successfully.");
+		break;
+	}
+
+	if (str)
+		gnome_warning_dialog (str);
 }
 
 static void
@@ -1099,6 +1090,7 @@ addressbook_factory_new_control (void)
 
 	view = g_new0 (AddressbookView, 1);
 	view->refs = 1;
+	view->ignore_search_changes = FALSE;
 
 	view->vbox = gtk_vbox_new (FALSE, 0);
 
@@ -1109,8 +1101,7 @@ addressbook_factory_new_control (void)
 	/* Create the control. */
 	view->control = bonobo_control_new (view->vbox);
 
-	view->search = E_SEARCH_BAR(e_search_bar_new(addressbook_search_menu_items,
-						     addressbook_search_option_items));
+	view->search = E_SEARCH_BAR (e_search_bar_new (NULL, addressbook_search_option_items));
 	make_suboptions (view);
 	connect_master_list_changed (view);
 
@@ -1120,8 +1111,6 @@ addressbook_factory_new_control (void)
 			    GTK_SIGNAL_FUNC (addressbook_query_changed), view);
 	gtk_signal_connect (GTK_OBJECT (view->search), "search_activated",
 			    GTK_SIGNAL_FUNC (addressbook_search_activated), view);
-	gtk_signal_connect (GTK_OBJECT (view->search), "menu_activated",
-			    GTK_SIGNAL_FUNC (addressbook_menu_activated), view);
 
 	view->view = E_ADDRESSBOOK_VIEW(e_addressbook_view_new());
 	gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (view->view));
@@ -1151,6 +1140,11 @@ addressbook_factory_new_control (void)
 			    view);
 
 	gtk_signal_connect (GTK_OBJECT (view->view),
+			    "search_result",
+			    GTK_SIGNAL_FUNC(search_result),
+			    view);
+
+	gtk_signal_connect (GTK_OBJECT (view->view),
 			    "folder_bar_message",
 			    GTK_SIGNAL_FUNC(set_folder_bar_label),
 			    view);
@@ -1158,6 +1152,11 @@ addressbook_factory_new_control (void)
 	gtk_signal_connect (GTK_OBJECT (view->view),
 			    "command_state_change",
 			    GTK_SIGNAL_FUNC(update_command_state),
+			    view);
+	
+	gtk_signal_connect (GTK_OBJECT (view->view),
+			    "alphabet_state_change",
+			    GTK_SIGNAL_FUNC(alphabet_state_changed),
 			    view);
 	
 	view->uri = NULL;

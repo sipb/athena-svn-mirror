@@ -23,7 +23,6 @@
 
 #include <config.h>
 
-#include <liboaf/liboaf.h>
 #include <bonobo.h>
 #include <bonobo-conf/bonobo-config-database.h>
 #include <cal-client/cal-client-types.h>
@@ -31,22 +30,16 @@
 #include <cal-util/timeutil.h>
 #include <pi-source.h>
 #include <pi-socket.h>
-#include <pi-file.h>
 #include <pi-dlp.h>
-#include <libical/src/libical/icaltypes.h>
+#include <pi-datebook.h>
+#include <gpilotd/gnome-pilot-conduit.h>
+#include <gpilotd/gnome-pilot-conduit-sync-abs.h>
+#include <libgpilotdCM/gnome-pilot-conduit-management.h>
+#include <libgpilotdCM/gnome-pilot-conduit-config.h>
+#include <e-pilot-map.h>
+#include <e-pilot-settings.h>
 #include <e-pilot-util.h>
 
-#define CAL_CONFIG_LOAD 1
-#define CAL_CONFIG_SAVE 1
-#define CAL_CONFIG_DESTROY 1
-#include <calendar-conduit-config.h>
-#undef CAL_CONFIG_LOAD
-#undef CAL_CONFIG_SAVE
-#undef CAL_CONFIG_DESTROY
-
-#include <calendar-conduit.h>
-
-static void free_local (ECalLocalRecord *local);
 GnomePilotConduit * conduit_get_gpilot_conduit (guint32);
 void conduit_destroy_gpilot_conduit (GnomePilotConduit*);
 
@@ -69,6 +62,271 @@ void conduit_destroy_gpilot_conduit (GnomePilotConduit*);
 #define INFO(e...) g_log (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE, e)
 
 #define PILOT_MAX_ADVANCE 99
+
+typedef struct _ECalLocalRecord ECalLocalRecord;
+typedef struct _ECalConduitCfg ECalConduitCfg;
+typedef struct _ECalConduitGui ECalConduitGui;
+typedef struct _ECalConduitContext ECalConduitContext;
+
+/* Local Record */
+struct _ECalLocalRecord {
+	/* The stuff from gnome-pilot-conduit-standard-abs.h
+	   Must be first in the structure, or instances of this
+	   structure cannot be used by gnome-pilot-conduit-standard-abs.
+	*/
+	GnomePilotDesktopRecord local;
+
+	/* The corresponding Comp object */
+	CalComponent *comp;
+
+        /* pilot-link appointment structure */
+	struct Appointment *appt;
+};
+
+static void
+calconduit_destroy_record (ECalLocalRecord *local)
+{
+	gtk_object_unref (GTK_OBJECT (local->comp));
+	free_Appointment (local->appt);
+	g_free (local->appt);	
+	g_free (local);
+}
+
+/* Configuration */
+struct _ECalConduitCfg {
+	guint32 pilot_id;
+	GnomePilotConduitSyncType  sync_type;
+
+	gboolean secret;
+	gboolean multi_day_split;
+	
+	gchar *last_uri;
+};
+
+static ECalConduitCfg *
+calconduit_load_configuration (guint32 pilot_id) 
+{
+	ECalConduitCfg *c;
+	GnomePilotConduitManagement *management;
+	GnomePilotConduitConfig *config;
+ 	gchar prefix[256];
+	
+	c = g_new0 (ECalConduitCfg, 1);
+	g_assert (c != NULL);
+
+	/* Pilot ID */
+	c->pilot_id = pilot_id;
+
+	/* Sync Type */
+	management = gnome_pilot_conduit_management_new ("e_calendar_conduit", GNOME_PILOT_CONDUIT_MGMT_ID);
+	config = gnome_pilot_conduit_config_new (management, pilot_id);
+	if (!gnome_pilot_conduit_config_is_enabled (config, &c->sync_type))
+		c->sync_type = GnomePilotConduitSyncTypeNotSet;
+	gtk_object_unref (GTK_OBJECT (config));
+	gtk_object_unref (GTK_OBJECT (management));
+
+	/* Custom settings */
+	g_snprintf (prefix, 255, "/gnome-pilot.d/e-calendar-conduit/Pilot_%u/", pilot_id);
+	gnome_config_push_prefix (prefix);
+
+	c->secret = gnome_config_get_bool ("secret=FALSE");
+	c->multi_day_split = gnome_config_get_bool ("multi_day_split=TRUE");
+	c->last_uri = gnome_config_get_string ("last_uri");
+
+	gnome_config_pop_prefix (); 
+
+	return c;
+}
+
+static void
+calconduit_save_configuration (ECalConduitCfg *c) 
+{
+	gchar prefix[256];
+
+	g_snprintf (prefix, 255, "/gnome-pilot.d/e-calendar-conduit/Pilot_%u/", c->pilot_id);
+	gnome_config_push_prefix (prefix);
+
+	gnome_config_set_bool ("secret", c->secret);
+	gnome_config_set_bool ("multi_day_split", c->multi_day_split);
+	gnome_config_set_string ("last_uri", c->last_uri);
+
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+	gnome_config_drop_all ();
+}
+
+static ECalConduitCfg*
+calconduit_dupe_configuration (ECalConduitCfg *c) 
+{
+	ECalConduitCfg *retval;
+
+	g_return_val_if_fail (c != NULL, NULL);
+
+	retval = g_new0 (ECalConduitCfg, 1);
+	retval->pilot_id = c->pilot_id;
+	retval->sync_type = c->sync_type;
+	retval->secret = c->secret;
+	retval->multi_day_split = c->multi_day_split;
+	retval->last_uri = g_strdup (c->last_uri);
+	
+	return retval;
+}
+
+static void 
+calconduit_destroy_configuration (ECalConduitCfg *c) 
+{
+	g_return_if_fail (c != NULL);
+
+	g_free (c->last_uri);
+	g_free (c);
+}
+
+/* Gui */
+struct _ECalConduitGui {
+	GtkWidget *multi_day_split;
+};
+
+static ECalConduitGui *
+e_cal_gui_new (EPilotSettings *ps) 
+{
+	ECalConduitGui *gui;
+	GtkWidget *lbl;
+	gint rows;
+	
+	g_return_val_if_fail (ps != NULL, NULL);
+	g_return_val_if_fail (E_IS_PILOT_SETTINGS (ps), NULL);
+
+	gtk_table_resize (GTK_TABLE (ps), E_PILOT_SETTINGS_TABLE_ROWS + 1, E_PILOT_SETTINGS_TABLE_COLS);
+
+	gui = g_new0 (ECalConduitGui, 1);
+
+	rows = E_PILOT_SETTINGS_TABLE_ROWS;
+	lbl = gtk_label_new (_("Split Multi-Day Events:"));
+	gui->multi_day_split = gtk_check_button_new ();
+	gtk_table_attach_defaults (GTK_TABLE (ps), lbl, 0, 1, rows, rows + 1);
+	gtk_table_attach_defaults (GTK_TABLE (ps), gui->multi_day_split, 1, 2, rows, rows + 1);
+	gtk_widget_show (lbl);
+	gtk_widget_show (gui->multi_day_split);
+	
+	return gui;
+}
+
+static void
+e_cal_gui_fill_widgets (ECalConduitGui *gui, ECalConduitCfg *cfg) 
+{
+	g_return_if_fail (gui != NULL);
+	g_return_if_fail (cfg != NULL);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->multi_day_split),
+				      cfg->multi_day_split);
+}
+
+static void
+e_cal_gui_fill_config (ECalConduitGui *gui, ECalConduitCfg *cfg) 
+{
+	g_return_if_fail (gui != NULL);
+	g_return_if_fail (cfg != NULL);
+
+	cfg->multi_day_split = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (gui->multi_day_split));
+}
+
+static void
+e_cal_gui_destroy (ECalConduitGui *gui) 
+{
+	g_free (gui);
+}
+
+/* Context */
+struct _ECalConduitContext {
+	GnomePilotDBInfo *dbi;
+
+	ECalConduitCfg *cfg;
+	ECalConduitCfg *new_cfg;
+	ECalConduitGui *gui;
+	GtkWidget *ps;
+	
+	struct AppointmentAppInfo ai;
+
+	CalClient *client;
+
+	icaltimezone *timezone;
+	GList *uids;
+	GList *changed;
+	GHashTable *changed_hash;
+	GList *locals;
+	
+	EPilotMap *map;
+};
+
+static ECalConduitContext *
+e_calendar_context_new (guint32 pilot_id) 
+{
+	ECalConduitContext *ctxt;
+
+	ctxt = g_new0 (ECalConduitContext, 1);
+	g_assert (ctxt != NULL);
+	
+	ctxt->cfg = calconduit_load_configuration (pilot_id);
+	ctxt->new_cfg = calconduit_dupe_configuration (ctxt->cfg);
+	ctxt->ps = NULL;
+	ctxt->dbi = NULL;
+	ctxt->client = NULL;
+	ctxt->timezone = NULL;
+	ctxt->uids = NULL;
+	ctxt->changed = NULL;
+	ctxt->changed_hash = NULL;
+	ctxt->locals = NULL;
+	ctxt->map = NULL;
+	
+	return ctxt;
+}
+
+static gboolean
+e_calendar_context_foreach_change (gpointer key, gpointer value, gpointer data) 
+{
+	g_free (key);
+
+	return TRUE;
+}
+
+static void
+e_calendar_context_destroy (ECalConduitContext *ctxt)
+{
+	GList *l;
+	
+	g_return_if_fail (ctxt != NULL);
+
+	if (ctxt->cfg != NULL)
+		calconduit_destroy_configuration (ctxt->cfg);
+	if (ctxt->new_cfg != NULL)
+		calconduit_destroy_configuration (ctxt->new_cfg);
+	if (ctxt->gui != NULL)
+		e_cal_gui_destroy (ctxt->gui);
+
+	if (ctxt->client != NULL)
+		gtk_object_unref (GTK_OBJECT (ctxt->client));
+	
+	if (ctxt->uids != NULL)
+		cal_obj_uid_list_free (ctxt->uids);
+	
+	if (ctxt->changed != NULL)
+		cal_client_change_list_free (ctxt->changed);
+	
+	if (ctxt->changed_hash != NULL) {
+		g_hash_table_foreach_remove (ctxt->changed_hash, e_calendar_context_foreach_change, NULL);
+		g_hash_table_destroy (ctxt->changed_hash);
+	}
+	
+	if (ctxt->locals != NULL) {
+		for (l = ctxt->locals; l != NULL; l = l->next)
+			calconduit_destroy_record (l->data);
+		g_list_free (ctxt->locals);
+	}
+	
+	if (ctxt->map != NULL)
+		e_pilot_map_destroy (ctxt->map);
+}
 
 /* Debug routines */
 static char *
@@ -119,68 +377,6 @@ static char *print_remote (GnomePilotRecord *remote)
 	free_Appointment (&appt);
 
 	return buff;
-}
-
-/* Context Routines */
-static ECalConduitContext *
-e_calendar_context_new (guint32 pilot_id) 
-{
-	ECalConduitContext *ctxt = g_new0 (ECalConduitContext, 1);
-
-	calconduit_load_configuration (&ctxt->cfg, pilot_id);
-
-	ctxt->client = NULL;
-	ctxt->uids = NULL;
-	ctxt->changed_hash = NULL;
-	ctxt->changed = NULL;
-	ctxt->locals = NULL;
-	ctxt->map = NULL;
-	
-	return ctxt;
-}
-
-static gboolean
-e_calendar_context_foreach_change (gpointer key, gpointer value, gpointer data) 
-{
-	g_free (key);
-
-	return TRUE;
-}
-
-static void
-e_calendar_context_destroy (ECalConduitContext *ctxt)
-{
-	GList *l;
-	
-	g_return_if_fail (ctxt != NULL);
-
-	if (ctxt->cfg != NULL)
-		calconduit_destroy_configuration (&ctxt->cfg);
-
-	if (ctxt->client != NULL)
-		gtk_object_unref (GTK_OBJECT (ctxt->client));
-
-	if (ctxt->uids != NULL)
-		cal_obj_uid_list_free (ctxt->uids);
-
-	if (ctxt->changed_hash != NULL) {
-		g_hash_table_foreach_remove (ctxt->changed_hash, e_calendar_context_foreach_change, NULL);
-		g_hash_table_destroy (ctxt->changed_hash);
-	}
-	
-	if (ctxt->locals != NULL) {
-		for (l = ctxt->locals; l != NULL; l = l->next)
-			free_local (l->data);
-		g_list_free (ctxt->locals);
-	}
-
-	if (ctxt->changed != NULL)
-		cal_client_change_list_free (ctxt->changed);
-	
-	if (ctxt->map != NULL)
-		e_pilot_map_destroy (ctxt->map);
-
-	g_free (ctxt);
 }
 
 /* Calendar Server routines */
@@ -367,6 +563,7 @@ process_multi_day (ECalConduitContext *ctxt, CalClientChange *ccc, GList **multi
 	time_t event_start, event_end, day_end;
 	struct icaltimetype *old_start_value, *old_end_value;
 	const char *uid;
+	gboolean is_date = FALSE;
 	gboolean last = FALSE;
 	gboolean ret = TRUE;
 
@@ -395,11 +592,14 @@ process_multi_day (ECalConduitContext *ctxt, CalClientChange *ccc, GList **multi
 	if (day_end >= event_end) {
 		ret = FALSE;
 		goto cleanup;
-	} else if (cal_component_has_recurrences (ccc->comp)) {
+	} else if (cal_component_has_recurrences (ccc->comp) || !ctxt->cfg->multi_day_split) {
 		ret = TRUE;
 		goto cleanup;
 	}
 
+	if (dt_start.value->is_date && dt_end.value->is_date)
+		is_date = TRUE;
+	
 	old_start_value = dt_start.value;
  	old_end_value = dt_end.value;
 	while (!last) {
@@ -415,11 +615,11 @@ process_multi_day (ECalConduitContext *ctxt, CalClientChange *ccc, GList **multi
 
 		cal_component_set_uid (clone, new_uid);
 
-		start_value = icaltime_from_timet_with_zone (event_start, FALSE, tz_start);
+		start_value = icaltime_from_timet_with_zone (event_start, is_date, tz_start);
 		dt_start.value = &start_value;
 		cal_component_set_dtstart (clone, &dt_start);
 		
-		end_value = icaltime_from_timet_with_zone (day_end, FALSE, tz_end);
+		end_value = icaltime_from_timet_with_zone (day_end, is_date, tz_end);
 		dt_end.value = &end_value;
 		cal_component_set_dtend (clone, &dt_end);
 
@@ -503,15 +703,6 @@ compute_status (ECalConduitContext *ctxt, ECalLocalRecord *local, const char *ui
 		local->local.attr = GnomePilotRecordDeleted;
 		break;
 	}
-}
-
-static void
-free_local (ECalLocalRecord *local) 
-{
-	gtk_object_unref (GTK_OBJECT (local->comp));
-	free_Appointment (local->appt);
-	g_free (local->appt);	
-	g_free (local);
 }
 
 static GnomePilotRecord
@@ -813,7 +1004,7 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 	struct icaltimetype now = icaltime_from_timet_with_zone (time (NULL), FALSE, timezone), it;
 	struct icalrecurrencetype recur;
 	CalComponentText summary = {NULL, NULL};
-	CalComponentDateTime dt = {NULL, icaltimezone_get_tzid (timezone)};
+	CalComponentDateTime dt = {NULL, NULL};
 	GSList *edl = NULL;	
 	char *txt;
 	int pos, i;
@@ -853,21 +1044,26 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 		free (txt);
 	} 
 
-	if (!is_empty_time (appt.begin)) {
-		it = tm_to_icaltimetype (&appt.begin, FALSE);
+	if (appt.event && !is_empty_time (appt.begin)) {
+		it = tm_to_icaltimetype (&appt.begin, TRUE);
 		dt.value = &it;
+		dt.tzid = NULL;
 		cal_component_set_dtstart (comp, &dt);
-	}
+		cal_component_set_dtend (comp, &dt);
+	} else {
+		dt.tzid = icaltimezone_get_tzid (timezone);
 
-	if (appt.event) {
-		it = tm_to_icaltimetype (&appt.begin, FALSE);
-		icaltime_adjust (&it, 1, 0, 0, 0);
-		dt.value = &it;
-		cal_component_set_dtend (comp, &dt);
-	} else if (!is_empty_time (appt.end)) {
-		it = tm_to_icaltimetype (&appt.end, FALSE);
-		dt.value = &it;
-		cal_component_set_dtend (comp, &dt);
+		if (!is_empty_time (appt.begin)) {
+			it = tm_to_icaltimetype (&appt.begin, FALSE);
+			dt.value = &it;
+			cal_component_set_dtstart (comp, &dt);
+		}
+
+		if (!is_empty_time (appt.end)) {		
+			it = tm_to_icaltimetype (&appt.end, FALSE);
+			dt.value = &it;
+			cal_component_set_dtend (comp, &dt);
+		}
 	}
 
 	/* Recurrence information */
@@ -1018,14 +1214,14 @@ static void
 update_comp (GnomePilotConduitSyncAbs *conduit, CalComponent *comp,
 	     ECalConduitContext *ctxt) 
 {
-	gboolean success;
+	CalClientResult success;
 
 	g_return_if_fail (conduit != NULL);
 	g_return_if_fail (comp != NULL);
 
 	success = cal_client_update_object (ctxt->client, comp);
 
-	if (!success)
+	if (success != CAL_CLIENT_RESULT_SUCCESS)
 		WARN (_("Error while communicating with calendar server"));
 }
 
@@ -1505,7 +1701,7 @@ free_match (GnomePilotConduitSyncAbs *conduit,
 
 	g_return_val_if_fail (local != NULL, -1);
 
-	free_local (local);
+	calconduit_destroy_record (local);
 
 	return 0;
 }
@@ -1521,6 +1717,63 @@ prepare (GnomePilotConduitSyncAbs *conduit,
 	*remote = local_record_to_pilot_record (local, ctxt);
 
 	return 0;
+}
+
+/* Pilot Settings Callbacks */
+static void
+fill_widgets (ECalConduitContext *ctxt)
+{
+	e_pilot_settings_set_secret (E_PILOT_SETTINGS (ctxt->ps),
+				     ctxt->cfg->secret);
+
+	e_cal_gui_fill_widgets (ctxt->gui, ctxt->cfg);
+}
+
+static gint
+create_settings_window (GnomePilotConduit *conduit,
+			GtkWidget *parent,
+			ECalConduitContext *ctxt)
+{
+	LOG ("create_settings_window");
+
+	ctxt->ps = e_pilot_settings_new ();
+	ctxt->gui = e_cal_gui_new (E_PILOT_SETTINGS (ctxt->ps));
+
+	gtk_container_add (GTK_CONTAINER (parent), ctxt->ps);
+	gtk_widget_show (ctxt->ps);
+
+	fill_widgets (ctxt);
+	
+	return 0;
+}
+static void
+display_settings (GnomePilotConduit *conduit, ECalConduitContext *ctxt)
+{
+	LOG ("display_settings");
+	
+	fill_widgets (ctxt);
+}
+
+static void
+save_settings    (GnomePilotConduit *conduit, ECalConduitContext *ctxt)
+{
+	LOG ("save_settings");
+
+	ctxt->new_cfg->secret =
+		e_pilot_settings_get_secret (E_PILOT_SETTINGS (ctxt->ps));
+	e_cal_gui_fill_config (ctxt->gui, ctxt->new_cfg);
+
+	calconduit_save_configuration (ctxt->new_cfg);
+}
+
+static void
+revert_settings  (GnomePilotConduit *conduit, ECalConduitContext *ctxt)
+{
+	LOG ("revert_settings");
+
+	calconduit_save_configuration (ctxt->cfg);
+	calconduit_destroy_configuration (ctxt->new_cfg);
+	ctxt->new_cfg = calconduit_dupe_configuration (ctxt->cfg);
 }
 
 static ORBit_MessageValidationResult
@@ -1562,6 +1815,7 @@ conduit_get_gpilot_conduit (guint32 pilot_id)
 	ctxt = e_calendar_context_new (pilot_id);
 	gtk_object_set_data (GTK_OBJECT (retval), "calconduit_context", ctxt);
 
+	/* Sync signals */
 	gtk_signal_connect (retval, "pre_sync", (GtkSignalFunc) pre_sync, ctxt);
 	gtk_signal_connect (retval, "post_sync", (GtkSignalFunc) post_sync, ctxt);
 
@@ -1581,6 +1835,12 @@ conduit_get_gpilot_conduit (guint32 pilot_id)
   	gtk_signal_connect (retval, "free_match", (GtkSignalFunc) free_match, ctxt);
 
   	gtk_signal_connect (retval, "prepare", (GtkSignalFunc) prepare, ctxt);
+
+	/* Gui Settings */
+	gtk_signal_connect (retval, "create_settings_window", (GtkSignalFunc) create_settings_window, ctxt);
+	gtk_signal_connect (retval, "display_settings", (GtkSignalFunc) display_settings, ctxt);
+	gtk_signal_connect (retval, "save_settings", (GtkSignalFunc) save_settings, ctxt);
+	gtk_signal_connect (retval, "revert_settings", (GtkSignalFunc) revert_settings, ctxt);
 
 	return GNOME_PILOT_CONDUIT (retval);
 }

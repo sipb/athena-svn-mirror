@@ -1523,6 +1523,91 @@ extern "C"
 #define GNOME_Evolution_Calendar_Cal_CouldNotCreate__alloc() NULL
    extern gpointer GNOME_Evolution_Calendar_Cal_CouldNotCreate__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
+#define ex_GNOME_Evolution_Calendar_Cal_PermissionDenied "IDL:GNOME/Evolution/Calendar/Cal/PermissionDenied:1.0"
+   void
+      _ORBIT_GNOME_Evolution_Calendar_Cal_PermissionDenied_demarshal
+      (GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev);
+   void
+      _ORBIT_GNOME_Evolution_Calendar_Cal_PermissionDenied_marshal
+      (GIOPSendBuffer * _ORBIT_send_buffer, CORBA_Environment * ev);
+#if !defined(_GNOME_Evolution_Calendar_Cal_PermissionDenied_defined)
+#define _GNOME_Evolution_Calendar_Cal_PermissionDenied_defined 1
+   typedef struct
+   {
+      int dummy;
+   }
+   GNOME_Evolution_Calendar_Cal_PermissionDenied;
+
+#if !defined(TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_0)
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_0 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_1 'v'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_2 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_3 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_4 'u'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_5 't'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_6 'i'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_7 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_8 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_9 '_'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_10 'c'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_11 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_12 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_13 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_14 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_15 'd'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_16 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_17 'r'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_struct;
+#define TC_GNOME_Evolution_Calendar_Cal_PermissionDenied ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_struct)
+#endif
+#define GNOME_Evolution_Calendar_Cal_PermissionDenied__alloc() NULL
+   extern gpointer GNOME_Evolution_Calendar_Cal_PermissionDenied__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#define ex_GNOME_Evolution_Calendar_Cal_Busy "IDL:GNOME/Evolution/Calendar/Cal/Busy:1.0"
+   void _ORBIT_GNOME_Evolution_Calendar_Cal_Busy_demarshal(GIOPRecvBuffer *
+							   _ORBIT_recv_buffer,
+							   CORBA_Environment *
+							   ev);
+   void _ORBIT_GNOME_Evolution_Calendar_Cal_Busy_marshal(GIOPSendBuffer *
+							 _ORBIT_send_buffer,
+							 CORBA_Environment *
+							 ev);
+#if !defined(_GNOME_Evolution_Calendar_Cal_Busy_defined)
+#define _GNOME_Evolution_Calendar_Cal_Busy_defined 1
+   typedef struct
+   {
+      CORBA_char *errorMsg;
+   }
+   GNOME_Evolution_Calendar_Cal_Busy;
+
+#if !defined(TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_0)
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_0 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_1 'v'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_2 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_3 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_4 'u'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_5 't'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_6 'i'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_7 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_8 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_9 '_'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_10 'c'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_11 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_12 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_13 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_14 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_15 'd'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_16 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_17 'r'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Evolution_Calendar_Cal_Busy_struct;
+#define TC_GNOME_Evolution_Calendar_Cal_Busy ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_Cal_Busy_struct)
+#endif
+   extern GNOME_Evolution_Calendar_Cal_Busy
+      *GNOME_Evolution_Calendar_Cal_Busy__alloc(void);
+   extern gpointer GNOME_Evolution_Calendar_Cal_Busy__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_Calendar_Listener) && !defined(_GNOME_Evolution_Calendar_Listener_defined)
 #define ORBIT_DECL_GNOME_Evolution_Calendar_Listener 1
 #define _GNOME_Evolution_Calendar_Listener_defined 1
@@ -1560,7 +1645,8 @@ extern "C"
       GNOME_Evolution_Calendar_Listener_SUCCESS,
       GNOME_Evolution_Calendar_Listener_ERROR,
       GNOME_Evolution_Calendar_Listener_NOT_FOUND,
-      GNOME_Evolution_Calendar_Listener_METHOD_NOT_SUPPORTED
+      GNOME_Evolution_Calendar_Listener_METHOD_NOT_SUPPORTED,
+      GNOME_Evolution_Calendar_Listener_PERMISSION_DENIED
    }
    GNOME_Evolution_Calendar_Listener_OpenStatus;
 #if !defined(TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_OpenStatus_0)
@@ -1864,6 +1950,47 @@ extern "C"
 #endif
 #define GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod__alloc() NULL
    extern gpointer GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#define ex_GNOME_Evolution_Calendar_CalFactory_PermissionDenied "IDL:GNOME/Evolution/Calendar/CalFactory/PermissionDenied:1.0"
+   void
+      _ORBIT_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_demarshal
+      (GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev);
+   void
+      _ORBIT_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_marshal
+      (GIOPSendBuffer * _ORBIT_send_buffer, CORBA_Environment * ev);
+#if !defined(_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_defined)
+#define _GNOME_Evolution_Calendar_CalFactory_PermissionDenied_defined 1
+   typedef struct
+   {
+      int dummy;
+   }
+   GNOME_Evolution_Calendar_CalFactory_PermissionDenied;
+
+#if !defined(TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_0)
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_0 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_1 'v'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_2 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_3 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_4 'u'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_5 't'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_6 'i'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_7 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_8 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_9 '_'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_10 'c'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_11 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_12 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_13 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_14 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_15 'd'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_16 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_17 'r'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_struct;
+#define TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_struct)
+#endif
+#define GNOME_Evolution_Calendar_CalFactory_PermissionDenied__alloc() NULL
+   extern gpointer GNOME_Evolution_Calendar_CalFactory_PermissionDenied__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_Calendar_AlarmNotify) && !defined(_GNOME_Evolution_Calendar_AlarmNotify_defined)
 #define ORBIT_DECL_GNOME_Evolution_Calendar_AlarmNotify 1
@@ -2172,6 +2299,49 @@ extern "C"
 #define GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType__alloc() NULL
    extern gpointer GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
+#if !defined(_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_defined)
+#define _GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_defined 1
+   typedef CORBA_long
+      GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode;
+#if !defined(TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_0)
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_0 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_1 'v'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_2 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_3 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_4 'u'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_5 't'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_6 'i'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_7 'o'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_8 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_9 '_'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_10 'c'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_11 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_12 'l'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_13 'e'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_14 'n'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_15 'd'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_16 'a'
+#define TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_17 'r'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_struct;
+#define TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode ((CORBA_TypeCode)&TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_struct)
+#endif
+#endif
+#ifndef GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_EVENT
+#define GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_EVENT 1
+#endif				/* !GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_EVENT */
+
+#ifndef GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_ALLDAY_EVENT
+#define GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_ALLDAY_EVENT 2
+#endif				/* !GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_ALLDAY_EVENT */
+
+#ifndef GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING
+#define GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING 4
+#endif				/* !GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING */
+
+#ifndef GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO
+#define GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO 8
+#endif				/* !GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO */
 
 /** POA structures **/
    typedef struct
@@ -2179,6 +2349,10 @@ extern "C"
       void *_private;
       CORBA_char *(*_get_uri) (PortableServer_Servant _servant,
 			       CORBA_Environment * ev);
+       CORBA_boolean(*isReadOnly) (PortableServer_Servant _servant,
+				   CORBA_Environment * ev);
+      CORBA_char *(*getEmailAddress) (PortableServer_Servant _servant,
+				      CORBA_Environment * ev);
       void (*setMode) (PortableServer_Servant _servant,
 		       const GNOME_Evolution_Calendar_CalMode mode,
 		       CORBA_Environment * ev);
@@ -2238,6 +2412,14 @@ extern "C"
       void (*removeObject) (PortableServer_Servant _servant,
 			    const GNOME_Evolution_Calendar_CalObjUID uid,
 			    CORBA_Environment * ev);
+       GNOME_Evolution_Calendar_CalObj(*sendObject) (PortableServer_Servant
+						     _servant,
+						     const
+						     GNOME_Evolution_Calendar_CalObj
+						     calobj,
+						     GNOME_Evolution_Calendar_UserList
+						     ** users,
+						     CORBA_Environment * ev);
        GNOME_Evolution_Calendar_Query(*getQuery) (PortableServer_Servant
 						  _servant,
 						  const CORBA_char * sexp,
@@ -2289,6 +2471,9 @@ extern "C"
 				       const
 				       GNOME_Evolution_Calendar_StringSeq *
 				       categories, CORBA_Environment * ev);
+      void (*notifyErrorOccurred) (PortableServer_Servant _servant,
+				   const CORBA_char * message,
+				   CORBA_Environment * ev);
    }
    POA_GNOME_Evolution_Calendar_Listener__epv;
    typedef struct
@@ -2344,8 +2529,8 @@ extern "C"
    {
       void *_private;
       void (*notifyObjUpdated) (PortableServer_Servant _servant,
-				const GNOME_Evolution_Calendar_CalObjUID uid,
-				const CORBA_boolean query_in_progress,
+				const GNOME_Evolution_Calendar_CalObjUIDSeq *
+				uids, const CORBA_boolean query_in_progress,
 				const CORBA_long n_scanned,
 				const CORBA_long total,
 				CORBA_Environment * ev);
@@ -2463,8 +2648,9 @@ extern "C"
 			    CORBA_Environment * ev);
       void (*editNew) (PortableServer_Servant _servant,
 		       const CORBA_char * uri,
-		       const GNOME_Evolution_Calendar_CalObjType type,
-		       CORBA_Environment * ev);
+		       const
+		       GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode
+		       mode, CORBA_Environment * ev);
    }
    POA_GNOME_Evolution_Calendar_CompEditorFactory__epv;
    typedef struct
@@ -2495,6 +2681,12 @@ extern "C"
    CORBA_char
       *GNOME_Evolution_Calendar_Cal__get_uri(GNOME_Evolution_Calendar_Cal
 					     _obj, CORBA_Environment * ev);
+   CORBA_boolean
+      GNOME_Evolution_Calendar_Cal_isReadOnly(GNOME_Evolution_Calendar_Cal
+					      _obj, CORBA_Environment * ev);
+   CORBA_char
+      *GNOME_Evolution_Calendar_Cal_getEmailAddress
+      (GNOME_Evolution_Calendar_Cal _obj, CORBA_Environment * ev);
    void GNOME_Evolution_Calendar_Cal_setMode(GNOME_Evolution_Calendar_Cal
 					     _obj,
 					     const
@@ -2577,6 +2769,15 @@ extern "C"
 						  GNOME_Evolution_Calendar_CalObjUID
 						  uid,
 						  CORBA_Environment * ev);
+   GNOME_Evolution_Calendar_CalObj
+      GNOME_Evolution_Calendar_Cal_sendObject(GNOME_Evolution_Calendar_Cal
+					      _obj,
+					      const
+					      GNOME_Evolution_Calendar_CalObj
+					      calobj,
+					      GNOME_Evolution_Calendar_UserList
+					      ** users,
+					      CORBA_Environment * ev);
    GNOME_Evolution_Calendar_Query
       GNOME_Evolution_Calendar_Cal_getQuery(GNOME_Evolution_Calendar_Cal _obj,
 					    const CORBA_char * sexp,
@@ -2609,6 +2810,10 @@ extern "C"
       (GNOME_Evolution_Calendar_Listener _obj,
        const GNOME_Evolution_Calendar_StringSeq * categories,
        CORBA_Environment * ev);
+   void
+      GNOME_Evolution_Calendar_Listener_notifyErrorOccurred
+      (GNOME_Evolution_Calendar_Listener _obj, const CORBA_char * message,
+       CORBA_Environment * ev);
 #define GNOME_Evolution_Calendar_Query_ref Bonobo_Unknown_ref
 #define GNOME_Evolution_Calendar_Query_unref Bonobo_Unknown_unref
 #define GNOME_Evolution_Calendar_Query_queryInterface Bonobo_Unknown_queryInterface
@@ -2618,7 +2823,7 @@ extern "C"
    void
       GNOME_Evolution_Calendar_QueryListener_notifyObjUpdated
       (GNOME_Evolution_Calendar_QueryListener _obj,
-       const GNOME_Evolution_Calendar_CalObjUID uid,
+       const GNOME_Evolution_Calendar_CalObjUIDSeq * uids,
        const CORBA_boolean query_in_progress, const CORBA_long n_scanned,
        const CORBA_long total, CORBA_Environment * ev);
    void
@@ -2669,7 +2874,8 @@ extern "C"
    void
       GNOME_Evolution_Calendar_CompEditorFactory_editNew
       (GNOME_Evolution_Calendar_CompEditorFactory _obj,
-       const CORBA_char * uri, const GNOME_Evolution_Calendar_CalObjType type,
+       const CORBA_char * uri,
+       const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode mode,
        CORBA_Environment * ev);
 
    void
@@ -2678,6 +2884,18 @@ extern "C"
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        CORBA_char * (*_impl__get_uri) (PortableServer_Servant _servant,
 				       CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_isReadOnly
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_boolean(*_impl_isReadOnly) (PortableServer_Servant _servant,
+					 CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getEmailAddress
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_char * (*_impl_getEmailAddress) (PortableServer_Servant _servant,
+					      CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_setMode
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
@@ -2792,6 +3010,14 @@ extern "C"
 				   const GNOME_Evolution_Calendar_CalObjUID
 				   uid, CORBA_Environment * ev));
    void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Cal_sendObject
+      (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       GNOME_Evolution_Calendar_CalObj(*_impl_sendObject)
+       (PortableServer_Servant _servant,
+	const GNOME_Evolution_Calendar_CalObj calobj,
+	GNOME_Evolution_Calendar_UserList ** users, CORBA_Environment * ev));
+   void
       _ORBIT_skel_GNOME_Evolution_Calendar_Cal_getQuery
       (POA_GNOME_Evolution_Calendar_Cal * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
@@ -2850,12 +3076,20 @@ extern "C"
 					      * categories,
 					      CORBA_Environment * ev));
    void
+      _ORBIT_skel_GNOME_Evolution_Calendar_Listener_notifyErrorOccurred
+      (POA_GNOME_Evolution_Calendar_Listener * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_notifyErrorOccurred) (PortableServer_Servant _servant,
+					  const CORBA_char * message,
+					  CORBA_Environment * ev));
+   void
       _ORBIT_skel_GNOME_Evolution_Calendar_QueryListener_notifyObjUpdated
       (POA_GNOME_Evolution_Calendar_QueryListener * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_notifyObjUpdated) (PortableServer_Servant _servant,
 				       const
-				       GNOME_Evolution_Calendar_CalObjUID uid,
+				       GNOME_Evolution_Calendar_CalObjUIDSeq *
+				       uids,
 				       const CORBA_boolean query_in_progress,
 				       const CORBA_long n_scanned,
 				       const CORBA_long total,
@@ -2929,8 +3163,9 @@ extern "C"
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_editNew) (PortableServer_Servant _servant,
 			      const CORBA_char * uri,
-			      const GNOME_Evolution_Calendar_CalObjType type,
-			      CORBA_Environment * ev));
+			      const
+			      GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode
+			      mode, CORBA_Environment * ev));
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

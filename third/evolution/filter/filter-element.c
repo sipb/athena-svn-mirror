@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -23,6 +24,7 @@
 #endif
 
 #include <string.h>
+#include <stdlib.h>
 #include <gtk/gtktypeutils.h>
 
 #include "filter-element.h"
@@ -31,23 +33,21 @@
 #include "filter-code.h"
 #include "filter-colour.h"
 #include "filter-datespec.h"
-#include "filter-score.h"
 #include "filter-int.h"
 #include "filter-folder.h"
 #include "filter-source.h"
+#include "filter-file.h"
+#include "filter-label.h"
 
 
 static gboolean validate (FilterElement *fe);
+static int element_eq(FilterElement *fe, FilterElement *cm);
 static void xml_create(FilterElement *fe, xmlNodePtr node);
 static FilterElement *clone(FilterElement *fe);
 
 static void filter_element_class_init	(FilterElementClass *class);
 static void filter_element_init	(FilterElement *gspaper);
 static void filter_element_finalise	(GtkObject *obj);
-
-#define _PRIVATE(x) (((FilterElement *)(x))->priv)
-struct _FilterElementPrivate {
-};
 
 static GtkObjectClass *parent_class;
 
@@ -57,10 +57,10 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-guint
+GtkType
 filter_element_get_type (void)
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	
 	if (!type) {
 		GtkTypeInfo type_info = {
@@ -91,6 +91,7 @@ filter_element_class_init (FilterElementClass *class)
 
 	/* override methods */
 	class->validate = validate;
+	class->eq = element_eq;
 	class->xml_create = xml_create;
 	class->clone = clone;
 
@@ -102,7 +103,7 @@ filter_element_class_init (FilterElementClass *class)
 static void
 filter_element_init (FilterElement *o)
 {
-	o->priv = g_malloc0 (sizeof (*o->priv));
+	;
 }
 
 static void
@@ -133,6 +134,13 @@ gboolean
 filter_element_validate (FilterElement *fe)
 {
 	return ((FilterElementClass *)((GtkObject *)fe)->klass)->validate (fe);
+}
+
+int
+filter_element_eq(FilterElement *fe, FilterElement *cm)
+{
+	return ((GtkObject *)fe)->klass == ((GtkObject *)cm)->klass
+		&& ((FilterElementClass *)((GtkObject *)fe)->klass)->eq(fe, cm);
 }
 
 /**
@@ -265,13 +273,19 @@ filter_element_new_type_name (const char *type)
 	} else if (!strcmp (type, "datespec")) {
 		return (FilterElement *)filter_datespec_new ();
 	} else if (!strcmp (type, "score")) {
-		return (FilterElement *)filter_score_new ();
+		return (FilterElement *)filter_int_new_type("score", -3, 3);
 	} else if (!strcmp (type, "integer")) {
 		return (FilterElement *)filter_int_new ();
 	} else if (!strcmp (type, "regex")) {
 		return (FilterElement *)filter_input_new_type_name (type);
 	} else if (!strcmp (type, "source")) {
     	        return (FilterElement *)filter_source_new ();
+	} else if (!strcmp (type, "command")) {
+		return (FilterElement *) filter_file_new_type_name (type);
+	} else if (!strcmp (type, "file")) {
+		return (FilterElement *) filter_file_new_type_name (type);
+	} else if (!strcmp (type, "label")) {
+		return (FilterElement *) filter_label_new ();
 	} else {
 		g_warning("Unknown filter type '%s'", type);
 		return 0;
@@ -289,6 +303,13 @@ static gboolean
 validate (FilterElement *fe)
 {
 	return TRUE;
+}
+
+static int
+element_eq(FilterElement *fe, FilterElement *cm)
+{
+	return ((fe->name && cm->name && strcmp(fe->name, cm->name) == 0)
+		|| (fe->name == NULL && cm->name == NULL));
 }
 
 static void
@@ -310,3 +331,61 @@ clone (FilterElement *fe)
 	
 	return new;
 }
+
+/* only copies the value, not the name/type */
+void
+filter_element_copy_value(FilterElement *de, FilterElement *se)
+{
+	/* bit of a hack, but saves having to do the same in each type ? */
+
+	if (IS_FILTER_INPUT(se)) {
+		if (IS_FILTER_INPUT(de)) {
+			if (((FilterInput *)se)->values)
+				filter_input_set_value((FilterInput*)de, ((FilterInput *)se)->values->data);
+		} else if (IS_FILTER_INT(de)) {
+			((FilterInt *)de)->val = atoi((char *) ((FilterInput *)se)->values->data);
+		}
+	} else if (IS_FILTER_FOLDER(se)) {
+		if (IS_FILTER_FOLDER(de)) {
+			filter_folder_set_value((FilterFolder *)de, ((FilterFolder *)se)->uri);
+		}
+	} else if (IS_FILTER_COLOUR(se)) {
+		if (IS_FILTER_COLOUR(de)) {
+			FilterColour *s = (FilterColour *)se, *d = (FilterColour *)de;
+
+			d->r = s->r;
+			d->g = s->g;
+			d->b = s->b;
+			d->a = s->a;
+		}
+	} else if (IS_FILTER_DATESPEC(se)) {
+		if (IS_FILTER_DATESPEC(de)) {
+			FilterDatespec *s = (FilterDatespec *)se, *d = (FilterDatespec *)de;
+
+			d->type = s->type;
+			d->value = s->value;
+		}
+	} else if (IS_FILTER_INT(se)) {
+		if (IS_FILTER_INT(de)) {
+			FilterInt *s = (FilterInt *)se, *d = (FilterInt *)de;
+
+			d->val = s->val;
+		} else if (IS_FILTER_INPUT(de)) {
+			FilterInt *s = (FilterInt *)se;
+			FilterInput *d = (FilterInput *)de;
+			char *v;
+
+			v = g_strdup_printf("%d", s->val);
+			filter_input_set_value(d, v);
+			g_free(v);
+		}
+	} else if (IS_FILTER_OPTION(se)) {
+		if (IS_FILTER_OPTION(de)) {
+			FilterOption *s = (FilterOption *)se, *d = (FilterOption *)de;
+
+			if (s->current)
+				filter_option_set_current(d, s->current->value);
+		}
+	}
+}
+

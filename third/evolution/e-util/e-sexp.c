@@ -51,6 +51,12 @@
   time_t = (- time_t*)
 	Subtract time_t values from the first.
 
+  int = (cast-int string|int|bool)
+        Cast to an integer value.
+
+  string = (cast-string string|int|bool)
+        Cast to an string value.
+
   Comparison operators:
 
   bool = (< int int)
@@ -553,6 +559,62 @@ term_eval_sub(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 	return r;
 }
 
+/* cast to int */
+static ESExpResult *
+term_eval_castint(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	struct _ESExpResult *r;
+
+	if (argc != 1)
+		e_sexp_fatal_error(f, "Incorrect argument count to (int )");
+
+	r = e_sexp_result_new(f, ESEXP_RES_INT);
+	switch (argv[0]->type) {
+	case ESEXP_RES_INT:
+		r->value.number = argv[0]->value.number;
+		break;
+	case ESEXP_RES_BOOL:
+		r->value.number = argv[0]->value.bool != 0;
+		break;
+	case ESEXP_RES_STRING:
+		r->value.number = strtoul(argv[0]->value.string, 0, 10);
+		break;
+	default:
+		e_sexp_result_free(f, r);
+		e_sexp_fatal_error(f, "Invalid type in (cast-int )");
+	}
+
+	return r;
+}
+
+/* cast to string */
+static ESExpResult *
+term_eval_caststring(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	struct _ESExpResult *r;
+
+	if (argc != 1)
+		e_sexp_fatal_error(f, "Incorrect argument count to (cast-string )");
+
+	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	switch (argv[0]->type) {
+	case ESEXP_RES_INT:
+		r->value.string = g_strdup_printf("%d", argv[0]->value.number);
+		break;
+	case ESEXP_RES_BOOL:
+		r->value.string = g_strdup_printf("%d", argv[0]->value.bool != 0);
+		break;
+	case ESEXP_RES_STRING:
+		r->value.string = g_strdup(argv[0]->value.string);
+		break;
+	default:
+		e_sexp_result_free(f, r);
+		e_sexp_fatal_error(f, "Invalid type in (int )");
+	}
+
+	return r;
+}
+
 /* implements 'if' function */
 static ESExpResult *
 term_eval_if(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
@@ -822,13 +884,13 @@ parse_values(ESExp *f, int *len)
 static struct _ESExpTerm *
 parse_value(ESExp *f)
 {
-	int token;
+	int token, negative = FALSE;
 	struct _ESExpTerm *t = NULL;
 	GScanner *gs = f->scanner;
 	struct _ESExpSymbol *s;
-
+	
 	p(printf("parsing value\n"));
-
+	
 	token = g_scanner_get_next_token(gs);
 	switch(token) {
 	case G_TOKEN_LEFT_PAREN:
@@ -839,29 +901,41 @@ parse_value(ESExp *f)
 		t = parse_term_new(f, ESEXP_TERM_STRING);
 		t->value.string = g_strdup(g_scanner_cur_value(gs).v_string);
 		break;
+	case '-':
+		p(printf ("got negative int?\n"));
+		token = g_scanner_get_next_token (gs);
+		if (token != G_TOKEN_INT) {
+			e_sexp_fatal_error (f, "Invalid format for a integer value");
+			return NULL;
+		}
+		
+		negative = TRUE;
+		/* fall through... */
 	case G_TOKEN_INT:
 		t = parse_term_new(f, ESEXP_TERM_INT);
 		t->value.number = g_scanner_cur_value(gs).v_int;
+		if (negative)
+			t->value.number = -t->value.number;
 		p(printf("got int\n"));
 		break;
 	case '#': {
 		char *str;
-
+		
 		p(printf("got bool?\n"));
 		token = g_scanner_get_next_token(gs);
 		if (token != G_TOKEN_IDENTIFIER) {
 			e_sexp_fatal_error (f, "Invalid format for a boolean value");
 			return NULL;
 		}
-
+		
 		str = g_scanner_cur_value (gs).v_identifier;
-
+		
 		g_assert (str != NULL);
 		if (!(strlen (str) == 1 && (str[0] == 't' || str[0] == 'f'))) {
 			e_sexp_fatal_error (f, "Invalid format for a boolean value");
 			return NULL;
 		}
-
+		
 		t = parse_term_new(f, ESEXP_TERM_BOOL);
 		t->value.bool = (str[0] == 't');
 		break; }
@@ -979,6 +1053,8 @@ static struct {
 	{ "=", (ESExpFunc *)term_eval_eq, 1 },
 	{ "+", (ESExpFunc *)term_eval_plus, 0 },
 	{ "-", (ESExpFunc *)term_eval_sub, 0 },
+	{ "cast-int", (ESExpFunc *)term_eval_castint, 0 },
+	{ "cast-string", (ESExpFunc *)term_eval_caststring, 0 },
 	{ "if", (ESExpFunc *)term_eval_if, 1 },
 	{ "begin", (ESExpFunc *)term_eval_begin, 1 },
 };

@@ -36,6 +36,8 @@ extern "C" {
 
 #include <camel/camel-types.h>
 #include <camel/camel-object.h>
+#include <camel/camel-exception.h>
+#include <camel/camel-url.h>
 
 #define CAMEL_PROVIDER(obj) ((CamelProvider *)(obj))
 
@@ -103,6 +105,8 @@ extern char *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_URL_PATH_IS_ABSOLUTE (1 << 12)
 
 
+#define CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT(prov) (prov->object_types[CAMEL_PROVIDER_STORE] && prov->object_types[CAMEL_PROVIDER_TRANSPORT])
+
 /* Generic extra config stuff */
 typedef enum {
 	CAMEL_PROVIDER_CONF_END,
@@ -111,6 +115,7 @@ typedef enum {
 	CAMEL_PROVIDER_CONF_CHECKBOX,
 	CAMEL_PROVIDER_CONF_CHECKSPIN,
 	CAMEL_PROVIDER_CONF_ENTRY,
+	CAMEL_PROVIDER_CONF_LABEL,
 } CamelProviderConfType;
 
 typedef struct {
@@ -120,14 +125,20 @@ typedef struct {
 } CamelProviderConfEntry;
 
 
+/* Some defaults */
+#define CAMEL_PROVIDER_CONF_DEFAULT_USERNAME  { CAMEL_PROVIDER_CONF_LABEL, "username", NULL, N_("User_name:"), NULL }
+#define CAMEL_PROVIDER_CONF_DEFAULT_HOSTNAME  { CAMEL_PROVIDER_CONF_LABEL, "hostname", NULL, N_("_Host:"), NULL }
+#define CAMEL_PROVIDER_CONF_DEFAULT_PATH      { CAMEL_PROVIDER_CONF_ENTRY, "path", NULL, N_("_Path:"), "" }
+
+typedef int (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, CamelException *ex);
 
 typedef struct {
 	/* Provider name used in CamelURLs. */
 	char *protocol;
-
+	
 	/* Provider name as used by people. (May be the same as protocol) */
 	char *name;
-
+	
 	/* Description of the provider. A novice user should be able
 	 * to read this description, and the information provided by
 	 * an ISP, IS department, etc, and determine whether or not
@@ -135,26 +146,34 @@ typedef struct {
 	 * information goes with it.
 	 */
 	char *description;
-
+	
 	/* The category of message that this provider works with.
 	 * (evolution-mail will only list a provider in the store/transport
 	 * config dialogs if its domain is "mail".)
 	 */
 	char *domain;
-
+	
 	/* Flags describing the provider, flags describing its URLs */
 	int flags, url_flags;
-
+	
 	/* Extra configuration information */
 	CamelProviderConfEntry *extra_conf;
-
-	CamelType object_types [CAMEL_NUM_PROVIDER_TYPES];
-
+	
+	/* auto-detection function */
+	CamelProviderAutoDetectFunc auto_detect;
+	
+	/* CamelType(s) of its store and/or transport. If both are
+	 * set, then they are assumed to be linked together and the
+	 * transport type can only be used in an account that also
+	 * uses the store type (eg, Exchange or NNTP).
+	 */
+	CamelType object_types[CAMEL_NUM_PROVIDER_TYPES];
+	
 	/* GList of CamelServiceAuthTypes the provider supports */
 	GList *authtypes;
-
-	GHashTable *service_cache;
-
+	
+	GHashTable *service_cache[CAMEL_NUM_PROVIDER_TYPES];
+	
 	GHashFunc url_hash;
 	GCompareFunc url_equal;
 } CamelProvider;
@@ -164,6 +183,10 @@ void camel_provider_load (CamelSession *session, const char *path, CamelExceptio
 
 /* This is defined by each module, not by camel-provider.c. */
 void camel_provider_module_init (CamelSession *session);
+
+
+int camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
+				GHashTable **auto_detected, CamelException *ex);
 
 #ifdef __cplusplus
 }

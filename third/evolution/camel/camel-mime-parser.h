@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -18,8 +19,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
 #ifndef _CAMEL_MIME_PARSER_H
 #define _CAMEL_MIME_PARSER_H
+
+#ifdef __cplusplus
+extern "C" {
+#pragma }
+#endif /* __cplusplus */
 
 #include <camel/camel-object.h>
 
@@ -73,7 +80,7 @@ struct _CamelMimeParserClass {
 	void (*content)(CamelMimeParser *);
 };
 
-guint		camel_mime_parser_get_type	(void);
+CamelType		camel_mime_parser_get_type	(void);
 CamelMimeParser      *camel_mime_parser_new	(void);
 
 /* quick-fix for parser not erroring, we can find out if it had an error afterwards */
@@ -132,5 +139,9 @@ off_t camel_mime_parser_seek(CamelMimeParser *, off_t, int);
 
 off_t camel_mime_parser_tell_start_headers(CamelMimeParser *);
 off_t camel_mime_parser_tell_start_from(CamelMimeParser *);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* ! _CAMEL_MIME_PARSER_H */

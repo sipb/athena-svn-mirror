@@ -1,0 +1,123 @@
+<refentry id="evolution-cal-util-cal-recur">
+<refmeta>
+<refentrytitle>cal-recur</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>EVOLUTION-CAL-UTIL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>cal-recur</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    (<link linkend="CalRecurInstanceFn">*CalRecurInstanceFn</link>)           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> instance_start,
+                                             <link linkend="time-t">time_t</link> instance_end,
+                                             <link linkend="gpointer">gpointer</link> data);
+void        <link linkend="cal-recur-generate-instances">cal_recur_generate_instances</link>    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="CalRecurInstanceFn">CalRecurInstanceFn</link> cb,
+                                             <link linkend="gpointer">gpointer</link> cb_data,
+                                             <link linkend="CalRecurResolveTimezoneFn">CalRecurResolveTimezoneFn</link> tz_cb,
+                                             <link linkend="gpointer">gpointer</link> tz_cb_data,
+                                             <link linkend="icaltimezone">icaltimezone</link> *default_timezone);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="CalRecurInstanceFn">CalRecurInstanceFn ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    (*CalRecurInstanceFn)           (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> instance_start,
+                                             <link linkend="time-t">time_t</link> instance_end,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>instance_start</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>instance_end</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-recur-generate-instances">cal_recur_generate_instances ()</title>
+<programlisting>void        cal_recur_generate_instances    (<link linkend="CalComponent">CalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="CalRecurInstanceFn">CalRecurInstanceFn</link> cb,
+                                             <link linkend="gpointer">gpointer</link> cb_data,
+                                             <link linkend="CalRecurResolveTimezoneFn">CalRecurResolveTimezoneFn</link> tz_cb,
+                                             <link linkend="gpointer">gpointer</link> tz_cb_data,
+                                             <link linkend="icaltimezone">icaltimezone</link> *default_timezone);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>tz_cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>tz_cb_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>default_timezone</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

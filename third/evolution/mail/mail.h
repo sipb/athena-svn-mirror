@@ -40,18 +40,19 @@ GByteArray *mail_format_get_data_wrapper_text (CamelDataWrapper *data,
 					       MailDisplay *mail_display);
 
 void mail_format_mime_message (CamelMimeMessage *mime_message,
-			       MailDisplay *md);
+			       MailDisplay *md, GtkHTML *html, GtkHTMLStream *stream);
 void mail_format_raw_message (CamelMimeMessage *mime_message,
-			      MailDisplay *md);
+			      MailDisplay *md, GtkHTML *html, GtkHTMLStream *stream);
 gboolean mail_content_loaded (CamelDataWrapper *wrapper,
 			      MailDisplay *display,
 			      gboolean redisplay,
 			      const gchar *url,
+			      GtkHTML *html,
 			      GtkHTMLStream *handle);
 
 typedef gboolean (*MailMimeHandlerFn) (CamelMimePart *part,
 				       const char *mime_type,
-				       MailDisplay *md);
+				       MailDisplay *md, GtkHTML *html, GtkHTMLStream *stream);
 typedef struct {
 	gboolean generic;
 	OAF_ServerInfo *component;
@@ -70,9 +71,10 @@ char *mail_get_message_body (CamelDataWrapper *data, gboolean want_plain, gboole
 char *mail_identify_mime_part (CamelMimePart *part, MailDisplay *md);
 
 /* component factory for lack of a better place */
+void mail_add_storage (CamelStore *store, const char *name, const char *uri);
 void mail_load_storage_by_uri (GNOME_Evolution_Shell shell, const char *uri, const char *name);
 /*takes a GSList of MailConfigServices */
-void mail_load_storages (GNOME_Evolution_Shell shell, const GSList *sources, gboolean is_account_data);
+void mail_load_storages (GNOME_Evolution_Shell shell, const GSList *sources);
 
 void mail_hash_storage (CamelService *store, EvolutionStorage *storage);
 EvolutionStorage *mail_lookup_storage (CamelStore *store);

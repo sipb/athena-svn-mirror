@@ -13,10 +13,10 @@
 
 #include <libgnome/gnome-defs.h>
 
-#include <addressbook/backend/ebook/e-card.h>
-#include <addressbook/backend/ebook/e-card-cursor.h>
-#include <addressbook/backend/ebook/e-book-view.h>
-#include <addressbook/backend/ebook/e-book-types.h>
+#include <ebook/e-card.h>
+#include <ebook/e-card-cursor.h>
+#include <ebook/e-book-view.h>
+#include <ebook/e-book-types.h>
 
 BEGIN_GNOME_DECLS
 
@@ -38,6 +38,7 @@ struct _EBookClass {
 	void (* open_progress)   (EBook *book, const char *msg, short percent);
 	void (* link_status)     (EBook *book, gboolean connected);
 	void (* writable_status) (EBook *book, gboolean writable);
+	void (* backend_died)    (EBook *book);
 };
 
 /* Callbacks for asynchronous functions. */
@@ -122,6 +123,11 @@ guint     e_book_get_cursor               (EBook                 *book,
 					   gpointer               closure);
 
 guint     e_book_get_book_view            (EBook                 *book,
+					   const gchar           *query,
+					   EBookBookViewCallback  cb,
+					   gpointer               closure);
+
+guint     e_book_get_completion_view      (EBook                 *book,
 					   const gchar           *query,
 					   EBookBookViewCallback  cb,
 					   gpointer               closure);

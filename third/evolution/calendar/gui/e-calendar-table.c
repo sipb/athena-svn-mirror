@@ -39,12 +39,15 @@
 #include <gal/e-table/e-cell-combo.h>
 #include <gal/util/e-unicode-i18n.h>
 #include <gal/widgets/e-popup-menu.h>
+#include <e-util/e-dialog-utils.h>
 #include <widgets/misc/e-cell-date-edit.h>
 #include <widgets/misc/e-cell-percent.h>
+#include "e-comp-editor-registry.h"
 #include "e-calendar-table.h"
 #include "e-cell-date-edit-text.h"
 #include "calendar-config.h"
 #include "calendar-model.h"
+#include "print.h"
 #include "dialogs/delete-comp.h"
 #include "dialogs/task-editor.h"
 
@@ -56,6 +59,7 @@
 
 #include "art/check-filled.xpm"
 
+extern ECompEditorRegistry *comp_editor_registry;
 
 static void e_calendar_table_class_init		(ECalendarTableClass *class);
 static void e_calendar_table_init		(ECalendarTable	*cal_table);
@@ -73,11 +77,19 @@ static gint e_calendar_table_on_right_click	(ETable		*table,
 						 ECalendarTable *cal_table);
 static void e_calendar_table_on_open_task	(GtkWidget	*menuitem,
 						 gpointer	 data);
+static void e_calendar_table_on_save_as	        (GtkWidget	*menuitem,
+						 gpointer	 data);
+static void e_calendar_table_on_print_task      (GtkWidget	*menuitem,
+						 gpointer	 data);
 static void e_calendar_table_on_cut             (GtkWidget      *menuitem,
 						 gpointer        data);
 static void e_calendar_table_on_copy            (GtkWidget      *menuitem,
 						 gpointer        data);
 static void e_calendar_table_on_paste           (GtkWidget      *menuitem,
+						 gpointer        data);
+static void e_calendar_table_on_assign          (GtkWidget      *menuitem,
+						 gpointer        data);
+static void e_calendar_table_on_forward         (GtkWidget      *menuitem,
 						 gpointer        data);
 static gint e_calendar_table_on_key_press	(ETable		*table,
 						 gint		 row,
@@ -101,6 +113,7 @@ static void invisible_destroyed                 (GtkWidget *invisible,
 						 ECalendarTable *cal_table);
 static struct tm e_calendar_table_get_current_time (ECellDateEdit *ecde,
 						    gpointer data);
+static void mark_row_complete_cb (int model_row, gpointer data);
 
 
 /* The icons to represent the task. */
@@ -637,6 +650,24 @@ e_calendar_table_get_table (ECalendarTable *cal_table)
 	return e_table_scrolled_get_table (E_TABLE_SCROLLED (cal_table->etable));
 }
 
+/**
+ * e_calendar_table_complete_selected:
+ * @cal_table: A calendar table
+ * 
+ * Marks the selected items as completed
+ **/
+void
+e_calendar_table_complete_selected (ECalendarTable *cal_table)
+{
+	ETable *etable;
+
+	g_return_if_fail (cal_table != NULL);
+	g_return_if_fail (E_IS_CALENDAR_TABLE (cal_table));
+
+	etable = e_table_scrolled_get_table (E_TABLE_SCROLLED (cal_table->etable));
+	e_table_selected_row_foreach (etable, mark_row_complete_cb, cal_table);
+}
+
 /* Used from e_table_selected_row_foreach(); puts the selected row number in an
  * int pointed to by the closure data.
  */
@@ -803,6 +834,9 @@ copy_row_cb (int model_row, gpointer data)
 	if (!comp)
 		return;
 
+	/* add timezones to the VCALENDAR component */
+	cal_util_add_timezones_from_component (cal_table->tmp_vcal, comp);
+
 	/* add the new component to the VCALENDAR component */
 	comp_str = cal_component_get_as_string (comp);
 	child = icalparser_parse_string (comp_str);
@@ -867,14 +901,25 @@ e_calendar_table_paste_clipboard (ECalendarTable *cal_table)
 
 /* Opens a task in the task editor */
 static void
-open_task (ECalendarTable *cal_table, CalComponent *comp)
+open_task (ECalendarTable *cal_table, CalComponent *comp, gboolean assign)
 {
-	TaskEditor *tedit;
+	CompEditor *tedit;
+	const char *uid;
+	
+	cal_component_get_uid (comp, &uid);
 
-	tedit = task_editor_new ();
-	comp_editor_set_cal_client (COMP_EDITOR (tedit), calendar_model_get_cal_client (cal_table->model));
-	comp_editor_edit_comp (COMP_EDITOR (tedit), comp);
-	comp_editor_focus (COMP_EDITOR (tedit));
+	tedit = e_comp_editor_registry_find (comp_editor_registry, uid);
+	if (tedit == NULL) {
+		tedit = COMP_EDITOR (task_editor_new (calendar_model_get_cal_client (cal_table->model)));
+
+		comp_editor_edit_comp (tedit, comp);
+		if (assign)
+			task_editor_show_assignment (TASK_EDITOR (tedit));
+		
+		e_comp_editor_registry_add (comp_editor_registry, tedit, FALSE);
+	}
+	
+	comp_editor_focus (tedit);
 }
 
 /* Opens the task in the specified row */
@@ -884,7 +929,7 @@ open_task_by_row (ECalendarTable *cal_table, int row)
 	CalComponent *comp;
 
 	comp = calendar_model_get_component (cal_table->model, row);
-	open_task (cal_table, comp);
+	open_task (cal_table, comp, FALSE);
 }
 
 static void
@@ -934,34 +979,34 @@ delete_cb (GtkWidget *menuitem, gpointer data)
 enum {
 	MASK_SINGLE	= 1 << 0,	/* For commands that work on 1 task. */
 	MASK_MULTIPLE	= 1 << 1,	/* For commands for multiple tasks. */
+	MASK_EDITABLE   = 1 << 2        /* For commands disabled in read-only folders */
 };
 
 
 static EPopupMenu tasks_popup_menu [] = {
-	{ N_("_Open"), NULL,
-	  e_calendar_table_on_open_task, NULL, MASK_SINGLE },
-	{ "", NULL, NULL, NULL, MASK_SINGLE },
+	E_POPUP_ITEM (N_("_Open"), e_calendar_table_on_open_task, MASK_SINGLE),
+	E_POPUP_ITEM (N_("_Save as..."), e_calendar_table_on_save_as, MASK_SINGLE),
+	E_POPUP_ITEM (N_("_Print..."), e_calendar_table_on_print_task, MASK_SINGLE),
 
-	{ N_("C_ut"), NULL,
-	  e_calendar_table_on_cut, NULL, 0 },
-	{ N_("_Copy"), NULL,
-	  e_calendar_table_on_copy, NULL, 0 },
-	{ N_("_Paste"), NULL,
-	  e_calendar_table_on_paste, NULL, 0 },
+	E_POPUP_SEPARATOR,
+	
+	E_POPUP_ITEM (N_("C_ut"), e_calendar_table_on_cut, MASK_EDITABLE),
+	E_POPUP_ITEM (N_("_Copy"), e_calendar_table_on_copy, 0),
+	E_POPUP_ITEM (N_("_Paste"), e_calendar_table_on_paste, MASK_EDITABLE),
 
-	{ "", NULL, NULL, NULL, 0 },
+	E_POPUP_SEPARATOR,
 
-	{ N_("_Mark as Complete"), NULL,
-	  mark_as_complete_cb, NULL, MASK_SINGLE },
-	{ N_("_Delete this Task"), NULL,
-	  delete_cb, NULL, MASK_SINGLE },
+	E_POPUP_ITEM (N_("_Assign Task"), e_calendar_table_on_assign, MASK_SINGLE | MASK_EDITABLE),
+	E_POPUP_ITEM (N_("_Forward as iCalendar"), e_calendar_table_on_forward, MASK_SINGLE),
+	E_POPUP_ITEM (N_("_Mark as Complete"), mark_as_complete_cb, MASK_SINGLE | MASK_EDITABLE),
+	E_POPUP_ITEM (N_("_Mark Selected Tasks as Complete"), mark_as_complete_cb, MASK_MULTIPLE | MASK_EDITABLE),
+	
+	E_POPUP_SEPARATOR,
 
-	{ N_("_Mark Tasks as Complete"), NULL,
-	  mark_as_complete_cb, NULL, MASK_MULTIPLE },
-	{ N_("_Delete Selected Tasks"), NULL,
-	  delete_cb, NULL, MASK_MULTIPLE },
+	E_POPUP_ITEM (N_("_Delete"), delete_cb, MASK_SINGLE | MASK_EDITABLE),
+	E_POPUP_ITEM (N_("_Delete Selected Tasks"), delete_cb, MASK_MULTIPLE | MASK_EDITABLE),
 
-	{ NULL, NULL, NULL, NULL, 0 }
+	E_POPUP_TERMINATOR
 };
 
 static gint
@@ -984,6 +1029,9 @@ e_calendar_table_on_right_click (ETable *table,
 	else
 		hide_mask = MASK_SINGLE;
 
+	if (cal_client_is_read_only (calendar_model_get_cal_client (e_calendar_table_get_model (cal_table))))
+		disable_mask |= MASK_EDITABLE;
+
 	e_popup_menu_run (tasks_popup_menu, (GdkEvent *) event,
 			  disable_mask, hide_mask, cal_table);
 
@@ -1002,7 +1050,62 @@ e_calendar_table_on_open_task (GtkWidget *menuitem,
 
 	comp = get_selected_comp (cal_table);
 	if (comp)
-		open_task (cal_table, comp);
+		open_task (cal_table, comp, FALSE);
+}
+
+static void
+e_calendar_table_on_save_as (GtkWidget *widget, gpointer data)
+{
+	ECalendarTable *cal_table;
+	CalClient *client;
+	CalComponent *comp;
+	char *filename;
+	char *ical_string;
+	FILE *file;
+
+	cal_table = E_CALENDAR_TABLE (data);
+
+	client = calendar_model_get_cal_client (cal_table->model);
+	comp = get_selected_comp (cal_table);
+	if (comp == NULL)
+		return;
+	
+	filename = e_file_dialog_save (_("Save as..."));
+	if (filename == NULL)
+		return;
+	
+	ical_string = cal_client_get_component_as_string (client, comp);
+	if (ical_string == NULL) {
+		g_warning ("Couldn't convert item to a string");
+		return;
+	}
+	
+	file = fopen (filename, "w");
+	if (file == NULL) {
+		g_warning ("Couldn't save item");
+		return;
+	}
+	
+	fprintf (file, ical_string);
+	g_free (ical_string);
+	fclose (file);
+}
+
+static void
+e_calendar_table_on_print_task (GtkWidget *widget, gpointer data)
+{
+	ECalendarTable *cal_table;
+	CalClient *client;
+	CalComponent *comp;
+
+	cal_table = E_CALENDAR_TABLE (data);
+
+	client = calendar_model_get_cal_client (cal_table->model);
+	comp = get_selected_comp (cal_table);
+	if (comp == NULL)
+		return;
+	
+	print_comp (comp, client, FALSE);
 }
 
 static void
@@ -1030,6 +1133,35 @@ e_calendar_table_on_paste (GtkWidget *menuitem, gpointer data)
 
 	cal_table = E_CALENDAR_TABLE (data);
 	e_calendar_table_paste_clipboard (cal_table);
+}
+
+static void
+e_calendar_table_on_assign (GtkWidget *widget, gpointer data)
+{
+	ECalendarTable *cal_table;
+	CalComponent *comp;
+
+	cal_table = E_CALENDAR_TABLE (data);
+
+	comp = get_selected_comp (cal_table);
+	if (comp)
+		open_task (cal_table, comp, TRUE);
+}
+
+static void
+e_calendar_table_on_forward (GtkWidget *widget, gpointer data)
+{
+	ECalendarTable *cal_table;
+	CalClient *client;
+	CalComponent *comp;
+
+	cal_table = E_CALENDAR_TABLE (data);
+
+	client = calendar_model_get_cal_client (cal_table->model);
+	comp = get_selected_comp (cal_table);
+	if (comp)
+		itip_send_comp (CAL_COMPONENT_METHOD_PUBLISH, comp,
+				client, NULL);
 }
 
 static gint
@@ -1078,6 +1210,7 @@ e_calendar_table_save_state (ECalendarTable	*cal_table,
 static void
 invisible_destroyed (GtkWidget *invisible, ECalendarTable *cal_table)
 {
+	gtk_object_unref (GTK_OBJECT (cal_table->invisible));
 	cal_table->invisible = NULL;
 }
 

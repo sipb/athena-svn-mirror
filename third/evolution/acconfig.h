@@ -11,11 +11,13 @@
 #undef SYSTEM_MAIL_DIR
 #undef HAVE_LDAP
 #undef HAVE_TIMEZONE
+#undef HAVE_ALTZONE
 #undef HAVE_TM_GMTOFF
 #undef HAVE_KRB4
 #undef NEED_KRB_SENDAUTH_PROTO
 #undef HAVE_KRB5
 #undef HAVE_NSS
+#undef HAVE_OPENSSL
 #undef HAVE_SSL
 #undef USE_DOT
 #undef USE_FCNTL
@@ -33,7 +35,7 @@
 /* Sub-version identification string.  */
 #undef SUB_VERSION
 
-/* Prewview-release string */
+/* Preview-release string */
 #undef VERSION_COMMENT
 
 /* Define if ctime_r takes three arguments */
@@ -41,3 +43,13 @@
 
 /* Define if gethostbyname_r takes five arguments */
 #undef GETHOSTBYNAME_R_FIVE_ARGS
+
+/* Define if gethostbyaddr_r takes seven arguments */
+#undef GETHOSTBYADDR_R_SEVEN_ARGS
+
+/* Define to `int' if your system doesn't have `socklen_t'. */
+#undef socklen_t
+
+/* Define to the path to a program to kill processes given the name
+   (eg. "killall" or "killp").  */
+#undef KILL_PROCESS_CMD

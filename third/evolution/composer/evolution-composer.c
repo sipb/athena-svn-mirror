@@ -33,13 +33,14 @@
 #include <camel/camel.h>
 #include "evolution-composer.h"
 #include "mail/mail-config.h"
+#include "mail/mail-session.h"
 #include "e-util/e-html-utils.h"
 
 #define PARENT_TYPE BONOBO_OBJECT_TYPE
 static BonoboObjectClass *parent_class = NULL;
 
 static void (*send_cb) (EMsgComposer *, gpointer);
-static void (*postpone_cb) (EMsgComposer *, gpointer);
+static void (*save_draft_cb) (EMsgComposer *, int, gpointer);
 
 /* CORBA interface implementation.  */
 
@@ -74,6 +75,7 @@ corba_recipientlist_to_destv (const GNOME_Evolution_Composer_RecipientList *cl)
 
 static void
 impl_Composer_set_headers (PortableServer_Servant servant,
+			   const CORBA_char *from,
 			   const GNOME_Evolution_Composer_RecipientList *to,
 			   const GNOME_Evolution_Composer_RecipientList *cc,
 			   const GNOME_Evolution_Composer_RecipientList *bcc,
@@ -83,15 +85,31 @@ impl_Composer_set_headers (PortableServer_Servant servant,
 	BonoboObject *bonobo_object;
 	EvolutionComposer *composer;
 	EDestination **tov, **ccv, **bccv;
+	const MailConfigAccount *account;
+	const GSList *accounts;
 
 	bonobo_object = bonobo_object_from_servant (servant);
 	composer = EVOLUTION_COMPOSER (bonobo_object);
+
+	account = mail_config_get_account_by_name (from);
+	if (!account) {
+		accounts = mail_config_get_accounts ();
+		while (accounts) {
+			account = accounts->data;
+			if (!g_strcasecmp (account->id->address, from))
+				break;
+			accounts = accounts->next;
+		}
+		if (!accounts)
+			account = mail_config_get_default_account ();
+	}
 
 	tov  = corba_recipientlist_to_destv (to);
 	ccv  = corba_recipientlist_to_destv (cc);
 	bccv = corba_recipientlist_to_destv (bcc);
 	
-	e_msg_composer_set_headers (composer->composer, NULL, tov, ccv, bccv, subject);
+	e_msg_composer_set_headers (composer->composer, account->name,
+				    tov, ccv, bccv, subject);
 
 	e_destination_freev (tov);
 	e_destination_freev (ccv);
@@ -280,8 +298,8 @@ init (EvolutionComposer *composer)
 
 	gtk_signal_connect (GTK_OBJECT (composer->composer), "send",
 			    GTK_SIGNAL_FUNC (send_cb), NULL);
-	gtk_signal_connect (GTK_OBJECT (composer->composer), "postpone",
-			    GTK_SIGNAL_FUNC (postpone_cb), NULL);
+	gtk_signal_connect (GTK_OBJECT (composer->composer), "save-draft",
+			    GTK_SIGNAL_FUNC (save_draft_cb), NULL);
 }
 
 #if 0
@@ -378,20 +396,24 @@ factory_fn (BonoboGenericFactory *factory, void *closure)
 			    "mail component."));
 		return NULL;
 	}
+	if (! (session && mail_session_get_interactive ())) {
+		/* Don't return a composer if mailer isn't ready. */
+		return NULL;
+	}
 	return BONOBO_OBJECT (evolution_composer_new ());
 }
 
 void
 evolution_composer_factory_init (void (*send) (EMsgComposer *, gpointer),
-				 void (*postpone) (EMsgComposer *, gpointer))
+				 void (*save_draft) (EMsgComposer *, int, gpointer))
 {
 	if (bonobo_generic_factory_new (GNOME_EVOLUTION_MAIL_COMPOSER_FACTORY_ID,
 					factory_fn, NULL) == NULL) {
 		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("Cannot initialize Evolution's composer."));
+			  _("Cannot initialize the Evolution composer."));
 		exit (1);
 	}
-
+	
 	send_cb = send;
-	postpone_cb = postpone;
+	save_draft_cb = save_draft;
 }

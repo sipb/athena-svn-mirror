@@ -2,7 +2,7 @@
 /*
  *  Authors: Jeffrey Stedfast <fejj@ximian.com>
  *
- *  Copyright 2001 Ximain, Inc. (www.ximian.com)
+ *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -94,6 +94,5 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 	
 	gtk_html_write (stream_gtkhtml->html, stream_gtkhtml->html_stream,
 			buffer, n);
-	
 	return n;
 }

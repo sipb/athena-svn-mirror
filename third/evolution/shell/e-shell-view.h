@@ -26,6 +26,8 @@
 #include "e-task-bar.h"
 
 #include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-ui-component.h>
+#include <bonobo/bonobo-ui-container.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,8 +59,17 @@ struct _EShellViewClass {
 	BonoboWindowClass parent_class;
 
 	/* Signals.  */
-	void (* shortcut_bar_visibility_changed) (EShellView *shell_view, gboolean visible);
-	void (* folder_bar_visibility_changed)   (EShellView *shell_view, gboolean visible);
+
+	void (* shortcut_bar_visibility_changed) (EShellView *shell_view,
+						  gboolean visible);
+	void (* folder_bar_visibility_changed)   (EShellView *shell_view,
+						  gboolean visible);
+
+	void (* view_changed) (EShellView *shell_view,
+			       const char *evolution_path,
+			       const char *physical_uri,
+			       const char *folder_type,
+			       const char *component_id);
 };
 
 
@@ -76,7 +87,8 @@ EShellView *e_shell_view_new        (EShell     *shell);
 const GNOME_Evolution_ShellView  e_shell_view_get_corba_interface  (EShellView *view);
 
 gboolean  e_shell_view_display_uri  (EShellView *shell_view,
-				     const char *uri);
+				     const char *uri,
+				     gboolean queue);
 
 void      e_shell_view_show_shortcut_bar   (EShellView *shell_view,
 					    gboolean    show);
@@ -84,6 +96,8 @@ gboolean  e_shell_view_shortcut_bar_shown  (EShellView *shell_view);
 void      e_shell_view_show_folder_bar     (EShellView *shell_view,
 					    gboolean    show);
 gboolean  e_shell_view_folder_bar_shown    (EShellView *shell_view);
+
+void e_shell_view_show_settings (EShellView *shell_view);
 
 ETaskBar          *e_shell_view_get_task_bar               (EShellView *shell_view);
 EShell            *e_shell_view_get_shell                  (EShellView *shell_view);
@@ -93,14 +107,13 @@ GtkWidget         *e_shell_view_get_appbar                 (EShellView *shell_vi
 const char        *e_shell_view_get_current_uri            (EShellView *shell_view);
 const char        *e_shell_view_get_current_physical_uri   (EShellView *shell_view);
 const char        *e_shell_view_get_current_folder_type    (EShellView *shell_view);
+const char        *e_shell_view_get_current_component_id   (EShellView *shell_view);
 const char        *e_shell_view_get_current_path           (EShellView *shell_view);
 
 gboolean  e_shell_view_save_settings  (EShellView *shell_view,
 				       int view_num);
 gboolean  e_shell_view_load_settings  (EShellView *shell_view,
 				       int view_num);
-
-gboolean e_shell_view_remove_control_for_uri (EShellView *shell_view, const char *uri);
 
 int   e_shell_view_get_current_shortcuts_group_num  (EShellView *shell_view);
 void  e_shell_view_set_current_shortcuts_group_num  (EShellView *shell_view,

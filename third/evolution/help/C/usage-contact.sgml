@@ -1,6 +1,7 @@
 <!--
 <!DOCTYPE Chapter PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN">
 -->
+
 <chapter id="usage-contact">
   <title>Working with Your Contacts</title>
       <para>
@@ -266,35 +267,6 @@
       </orderedlist>
     </para>
     <para>
-      You can refine searches by doing several in
-      succession, or start over by pressing the <guibutton>Show
-	All</guibutton> button.
-    </para>
-    <para>
-      If there are no matches, the card display will be
-      blank. When you'd like to see all the cards again, press
-      <guilabel>Show All</guilabel>.
-    </para>
-    <example id="contact-quicksearch-ex">
-      <title>Refining a Quick Search</title>
-      <para>
-	Tom comes back from lunch and finds a note on his
-	keyboard: "Curtis in sales called for you, but he didn't
-	leave a number, and I forgot to write down the name of the
-	company he works for. He said it was important, though."
-	Tom is not at all annoyed.
-      </para>
-      <para>
-	He opens his contacts folder, and runs a quick search for
-	"Curtis." There are eighteen different people with that name
-	in the file. He then enters "Sales," and
-	<application>Evolution</application> narrows it down to the
-	right Curtis. He only becomes annoyed when he discovers that
-	the call was not actually important.
-      </para>
-    </example>
-    
-    <para>
       To perform a complex search through your contacts:
       <orderedlist numeration="arabic">
 	<listitem>
@@ -493,47 +465,27 @@
            right-click on the list's address card in the Addressbook
            and select <guimenuitem>Send Message to List</guimenuitem>.
         </para>
+        <para>
+           Ximian Evolution cannot store contact lists on Exchange
+           servers.
+        </para>
+
       </sect3>
-
-
     </sect2>
   </sect1>
   
-<!-- we need a LDAP server up for me to test this -->
   <sect1 id="usage-contact-sharing">
-    <title>Sharing your Cards</title>
+    <title>LDAP: Shared Addressbooks on a Network</title>
+
     <para>
       The <glossterm linkend="ldap">LDAP</glossterm> protocol was
-      created to let users share contact information over a network.
-      LDAP allows for users to browse other people's addressbooks, or
-      maintain a shared set of contact information for a company or
-      department.  This feature comes in handy if you are in a group
-      where there are lots of people using the same contacts.  Such an
-      example would be the sales department of a company with their
-      client list.
+      created to let users share contact information over a network by
+      sharing access to a central address book.  LDAP allows a company
+      to maintain a shared set of contact information for a company or
+      department.  Many companies keep a common LDAP address book for
+      all their employees or for client contacts.
     </para>
 
-     <example id="usage-contact-sharing-ex">
-	<title>Sharing Address Cards and Calendar Data</title>
-	  <para>
-	    Rich wants to schedule a meeting with Company X, so he
-	    checks the network for the Company X address card so he
-	    knows whom to call there.  Since his company also shares
-	    calendars, he then learns that his co-worker Deanna has
-	    already scheduled a meeting with Company X next Thursday.
-	    He can either go to the meeting himself or ask Deanna to
-	    discuss his concerns for him.  Either way, he avoids
-	    scheduling an extra meeting with Company X. 
-	 </para>
-      </example>
-
-    <para>
-       Of course, you don't want to share all of your cards&mdash; why
-       overload the network with a list of babysitters or tell
-       everyone in the office you're talking to new job prospects?  If
-       you keep cards on your own computer, you can decide which items
-       you want to make accessible to others.
-    </para>
     <para>
        To learn how to add a remote directory to your available
        contact folders, see <xref linkend="config-prefs-contact">.
@@ -567,8 +519,9 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-              Your ability to view, change, add, and delete contacts
-              depends on the settings of the LDAP server. 
+              You cannot add, delete, or alter cards on the LDAP
+              server. If you need to change information there, you
+              will need to speak to your system administrator
 	    </para>
 	  </listitem>
 	</itemizedlist>
@@ -613,5 +566,6 @@
   </para>
   -->
 </chapter> 
+
 
 

@@ -31,6 +31,7 @@
 	   <rootdn></rootdn>
 	   <authmethod>simple</authmethod>
 	   <emailaddr>toshok@blubag.com</emailaddr>
+	   <limit>100</limit>
 	   <rememberpass/>
      </contactserver>
    </addressbooks>
@@ -43,7 +44,7 @@
 #include "addressbook-storage.h"
 
 #include <sys/types.h>
-#include <sys/fcntl.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
 
@@ -141,7 +142,7 @@ create_ldap_folder (EvolutionStorage *storage, const Bonobo_Listener listener,
 		    const CORBA_char *description, const CORBA_char *parent_physical_uri,
 		    gpointer data)
 {
-	if (strcmp (type, "ldap-contacts")) {
+	if (strcmp (type, "contacts")) {
 		notify_listener (listener, GNOME_Evolution_Storage_UNSUPPORTED_TYPE);
 		return;
 	}
@@ -150,7 +151,7 @@ create_ldap_folder (EvolutionStorage *storage, const Bonobo_Listener listener,
 		notify_listener (listener, GNOME_Evolution_Storage_INVALID_URI);
 		return;
 	}
-	addressbook_create_new_source (path + 1, NULL);
+	addressbook_config_create_new_source (path + 1, NULL);
 
 	notify_listener (listener, GNOME_Evolution_Storage_OK);
 }
@@ -164,7 +165,7 @@ addressbook_get_other_contact_storage (void)
 	EvolutionStorageResult result;
 
 	if (storage == NULL) {
-		storage = evolution_storage_new (U_("Other Contacts"), NULL, NULL);
+		storage = evolution_storage_new (U_("Other Contacts"), FALSE);
 		gtk_signal_connect (GTK_OBJECT (storage),
 				    "remove_folder",
 				    GTK_SIGNAL_FUNC(remove_ldap_folder), NULL);
@@ -227,6 +228,30 @@ get_string_value (xmlNode *node,
 
 	xml_string = xmlNodeListGetString (node->doc, p, 1);
 	retval = g_strdup ((char *) xml_string);
+	xmlFree (xml_string);
+
+	return retval;
+}
+
+static int
+get_integer_value (xmlNode *node,
+		   const char *name,
+		   int defval)
+{
+	xmlNode *p;
+	xmlChar *xml_string;
+	int retval;
+
+	p = e_xml_get_child_by_name (node, (xmlChar *) name);
+	if (p == NULL)
+		return defval;
+
+	p = e_xml_get_child_by_name (p, (xmlChar *) "text");
+	if (p == NULL) /* there's no text between the tags, return the default */
+		return defval;
+
+	xml_string = xmlNodeListGetString (node->doc, p, 1);
+	retval = atoi (xml_string);
 	xmlFree (xml_string);
 
 	return retval;
@@ -297,6 +322,38 @@ ldap_parse_scope (const char *scope)
 }
 #endif
 
+static char *
+ldap_unparse_ssl (AddressbookLDAPSSLType ssl_type)
+{
+	switch (ssl_type) {
+	case ADDRESSBOOK_LDAP_SSL_NEVER:
+		return "never";
+	case ADDRESSBOOK_LDAP_SSL_WHENEVER_POSSIBLE:
+		return "whenever_possible";
+	case ADDRESSBOOK_LDAP_SSL_ALWAYS:
+		return "always";
+	default:
+		g_assert(0);
+		return "";
+	}
+}
+
+#ifdef HAVE_LDAP
+static AddressbookLDAPSSLType
+ldap_parse_ssl (const char *ssl)
+{
+	if (!ssl)
+		return ADDRESSBOOK_LDAP_SSL_WHENEVER_POSSIBLE; /* XXX good default? */
+
+	if (!strcmp (ssl, "always"))
+		return ADDRESSBOOK_LDAP_SSL_ALWAYS;
+	else if (!strcmp (ssl, "never"))
+		return ADDRESSBOOK_LDAP_SSL_NEVER;
+	else
+		return ADDRESSBOOK_LDAP_SSL_WHENEVER_POSSIBLE;
+}
+#endif
+
 const char*
 addressbook_storage_auth_type_to_string (AddressbookLDAPAuthType auth_type)
 {
@@ -306,12 +363,27 @@ addressbook_storage_auth_type_to_string (AddressbookLDAPAuthType auth_type)
 void
 addressbook_storage_init_source_uri (AddressbookSource *source)
 {
+	GString *str;
+
 	if (source->uri)
 		g_free (source->uri);
 
-	source->uri = g_strdup_printf  ("ldap://%s:%s/%s??%s",
-					source->host, source->port,
-					source->rootdn, ldap_unparse_scope(source->scope));
+	str = g_string_new ("ldap://");
+
+	g_string_sprintfa (str, "%s:%s/%s?"/*trigraph prevention*/"?%s",
+			   source->host, source->port, source->rootdn, ldap_unparse_scope (source->scope));
+
+	g_string_sprintfa (str, ";limit=%d", source->limit);
+
+	g_string_sprintfa (str, ";ssl=%s", ldap_unparse_ssl (source->ssl));
+
+#if 0
+	g_string_sprintfa (str, ";timeout=%d", source->timeout);
+#endif
+
+	source->uri = str->str;
+
+	g_string_free (str, FALSE);
 }
 
 #ifdef HAVE_LDAP
@@ -340,7 +412,7 @@ load_source_data (const char *file_path)
 
 			if (rv < 0) {
 				g_error ("Failed to rename %s: %s\n",
-					 ADDRESSBOOK_SOURCES_XML,
+					 file_path,
 					 strerror(errno));
 				return FALSE;
 			} else
@@ -364,14 +436,15 @@ load_source_data (const char *file_path)
 		source = g_new0 (AddressbookSource, 1);
 
 		if (!strcmp (child->name, "contactserver")) {
-			source->type        = ADDRESSBOOK_SOURCE_LDAP;
 			source->port   = get_string_value (child, "port");
 			source->host   = get_string_value (child, "host");
 			source->rootdn = get_string_value (child, "rootdn");
 			source->scope  = ldap_parse_scope (get_string_value (child, "scope"));
 			source->auth   = ldap_parse_auth (get_string_value (child, "authmethod"));
+			source->ssl    = ldap_parse_ssl (get_string_value (child, "ssl"));
 			source->email_addr = get_string_value (child, "emailaddr");
 			source->binddn = get_string_value (child, "binddn");
+			source->limit  = get_integer_value (child, "limit", 100);
 		}
 		else {
 			g_warning ("unknown node '%s' in %s", child->name, file_path);
@@ -386,8 +459,8 @@ load_source_data (const char *file_path)
 
 		path = g_strdup_printf ("/%s", source->name);
 		evolution_storage_new_folder (storage, path, source->name,
-					      "ldap-contacts", source->uri,
-					      source->description, 0);
+					      "contacts/ldap", source->uri,
+					      source->description, NULL, 0, FALSE, 0);
 
 		sources = g_list_append (sources, source);
 
@@ -425,6 +498,16 @@ ldap_source_foreach(AddressbookSource *source, xmlNode *root)
 		     (xmlChar *) ldap_unparse_scope(source->scope));
 	xmlNewChild (source_root, NULL, (xmlChar *) "authmethod",
 		     (xmlChar *) ldap_unparse_auth(source->auth));
+	xmlNewChild (source_root, NULL, (xmlChar *) "ssl",
+		     (xmlChar *) ldap_unparse_ssl(source->ssl));
+
+	if (source->limit != 100) {
+		char *string;
+		string = g_strdup_printf ("%d", source->limit);
+		xmlNewChild (source_root, NULL, (xmlChar *) "limit",
+			     (xmlChar *) string);
+		g_free (string);
+	}
 
 	if (source->auth != ADDRESSBOOK_LDAP_AUTH_NONE) {
 		if (source->auth == ADDRESSBOOK_LDAP_AUTH_SIMPLE_BINDDN)
@@ -462,7 +545,7 @@ save_source_data (const char *file_path)
 	xmlDocDumpMemory (doc, &buf, &buf_size);
 
 	if (buf == NULL) {
-		g_error ("Failed to write %s: xmlBufferCreate() == NULL", ADDRESSBOOK_SOURCES_XML);
+		g_error ("Failed to write %s: xmlBufferCreate() == NULL", file_path);
 		return FALSE;
 	}
 
@@ -471,13 +554,13 @@ save_source_data (const char *file_path)
 	close (fd);
 
 	if (0 > rv) {
-		g_error ("Failed to write new %s: %s\n", ADDRESSBOOK_SOURCES_XML, strerror(errno));
+		g_error ("Failed to write new %s: %s\n", file_path, strerror(errno));
 		unlink (new_path);
 		return FALSE;
 	}
 	else {
 		if (0 > rename (new_path, file_path)) {
-			g_error ("Failed to rename %s: %s\n", ADDRESSBOOK_SOURCES_XML, strerror(errno));
+			g_error ("Failed to rename %s: %s\n", file_path, strerror(errno));
 			unlink (new_path);
 			return FALSE;
 		}
@@ -495,8 +578,8 @@ addressbook_storage_add_source (AddressbookSource *source)
 	/* And then to the ui */
 	addressbook_get_other_contact_storage();
 	path = g_strdup_printf ("/%s", source->name);
-	evolution_storage_new_folder (storage, path, source->name, "ldap-contacts",
-				      source->uri, source->description, 0);
+	evolution_storage_new_folder (storage, path, source->name, "contacts/ldap",
+				      source->uri, source->description, NULL, 0, FALSE, 0);
 
 	g_free (path);
 }
@@ -605,7 +688,6 @@ addressbook_source_copy (const AddressbookSource *source)
 	copy = g_new0 (AddressbookSource, 1);
 	copy->name = g_strdup (source->name);
 	copy->description = g_strdup (source->description);
-	copy->type = source->type;
 	copy->uri = g_strdup (source->uri);
 
 	copy->host = g_strdup (source->host);
@@ -613,9 +695,11 @@ addressbook_source_copy (const AddressbookSource *source)
 	copy->rootdn = g_strdup (source->rootdn);
 	copy->scope = source->scope;
 	copy->auth = source->auth;
+	copy->ssl = source->ssl;
 	copy->email_addr = g_strdup (source->email_addr);
 	copy->binddn = g_strdup (source->binddn);
 	copy->remember_passwd = source->remember_passwd;
+	copy->limit = source->limit;
 
 	return copy;
 }

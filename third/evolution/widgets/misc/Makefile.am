@@ -1,52 +1,71 @@
 # FIXME we use the EClippedLabel widget from EShortcutBar.  Probably
 # it should be moved somewhere else.
 
-INCLUDES =					\
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/widgets/shortcut-bar	\
-	$(EXTRA_GNOME_CFLAGS)			\
-	$(BONOBO_GNOME_CFLAGS)			\
+INCLUDES =						\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/widgets/shortcut-bar		\
 	-DMAP_DIR=\""$(datadir)/images/evolution"\"	\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
-	-DG_LOG_DOMAIN=__FILE__
+	-DG_LOG_DOMAIN=__FILE__				\
+	$(GNOME_FULL_CFLAGS)
 
-noinst_LIBRARIES =	\
+privlib_LIBRARIES =	\
 	libemiscwidgets.a
 
-libemiscwidgets_a_SOURCES = 	\
-	e-bonobo-widget.c	\
-	e-bonobo-widget.h	\
-	e-calendar.c		\
-	e-calendar.h		\
-	e-calendar-item.c	\
-	e-calendar-item.h	\
-	e-cell-date-edit.c	\
-	e-cell-date-edit.h	\
-	e-cell-percent.c	\
-	e-cell-percent.h	\
-	e-charset-picker.c	\
-	e-charset-picker.h	\
-	e-clipped-label.c	\
-	e-clipped-label.h	\
-	e-dateedit.c		\
-	e-dateedit.h		\
-	e-dropdown-button.c	\
-	e-dropdown-button.h	\
-	e-filter-bar.c		\
-	e-filter-bar.h		\
-	e-map.c			\
-	e-map.h			\
-	e-messagebox.c		\
-	e-messagebox.h		\
-	e-search-bar.c		\
-	e-search-bar.h		\
-	e-title-bar.c		\
-	e-title-bar.h
+widgetsincludedir = $(includedir)/evolution/widgets
 
-noinst_PROGRAMS = 		\
-	test-calendar		\
-	test-dateedit		\
-	test-dropdown-button	\
+widgetsinclude_HEADERS = 	\
+	e-bonobo-widget.h	\
+	e-calendar.h		\
+	e-calendar-item.h	\
+	e-cell-date-edit.h	\
+	e-cell-percent.h	\
+	e-charset-picker.h	\
+	e-clipped-label.h	\
+	e-config-page.h		\
+	e-combo-button.h	\
+	e-dateedit.h		\
+	e-dropdown-button.h	\
+	e-map.h			\
+	e-messagebox.h		\
+	e-multi-config-dialog.h \
+	e-search-bar.h		\
+	e-title-bar.h		\
+	e-url-entry.h
+
+libemiscwidgets_a_SOURCES = 	\
+	$(widgetsinclude_HEADERS) \
+	e-bonobo-widget.c	\
+	e-calendar.c		\
+	e-calendar-item.c	\
+	e-cell-date-edit.c	\
+	e-cell-percent.c	\
+	e-charset-picker.c	\
+	e-clipped-label.c	\
+	e-config-page.c		\
+	e-combo-button.c	\
+	e-dateedit.c		\
+	e-dropdown-button.c	\
+	e-map.c			\
+	e-messagebox.c		\
+	e-multi-config-dialog.c \
+	e-search-bar.c		\
+	e-title-bar.c		\
+	e-url-entry.c
+
+libemiscwidgets_a_LIBADD = $(top_builddir)/e-util/libeutil.la
+
+noinst_LIBRARIES = libefilterbar.a
+
+libefilterbar_a_SOURCES =	\
+	e-filter-bar.c		\
+	e-filter-bar.h
+
+noinst_PROGRAMS = 			\
+	test-calendar			\
+	test-dateedit			\
+	test-dropdown-button		\
+	test-multi-config-dialog 	\
 	test-title-bar
 
 # test-calendar
@@ -57,17 +76,17 @@ test_calendar_SOURCES = 	\
 test_calendar_LDADD = 						\
 	./libemiscwidgets.a					\
 	../../e-util/libeutil.la				\
-	$(EXTRA_GNOME_LIBS)
+	$(GNOME_FULL_LIBS)
 
 # test-dateedit
 
 test_dateedit_SOURCES = 	\
 	test-dateedit.c
 
-test_dateedit_LDADD = 						\
-	./libemiscwidgets.a					\
-	../../e-util/libeutil.la				\
-	$(EXTRA_GNOME_LIBS)
+test_dateedit_LDADD = 			\
+	./libemiscwidgets.a		\
+	../../e-util/libeutil.la	\
+	$(GNOME_FULL_LIBS)
 
 # test-dropdown-button
 
@@ -76,14 +95,24 @@ test_dropdown_button_SOURCES = 	\
 
 test_dropdown_button_LDADD =	\
 	./libemiscwidgets.a	\
-	$(EXTRA_GNOME_LIBS)
+	$(GNOME_FULL_LIBS)
+
+# test-multi-config-dialog
+
+test_multi_config_dialog_SOURCES = 	\
+	test-multi-config-dialog.c
+
+test_multi_config_dialog_LDADD = 	\
+	./libemiscwidgets.a		\
+	$(GNOME_FULL_LIBS)
 
 # test-title-bar
 
 test_title_bar_SOURCES = 	\
 	test-title-bar.c
 
-test_title_bar_LDADD = 						\
-	./libemiscwidgets.a					\
-	$(EXTRA_GNOME_LIBS)
+test_title_bar_LDADD = 		\
+	./libemiscwidgets.a	\
+	$(GNOME_FULL_LIBS)
+
 

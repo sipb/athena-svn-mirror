@@ -58,6 +58,7 @@ ebook_create (VCardImporter *gci)
 		return;
 	}
 
+#if 0
 	path = g_concat_dir_and_file (g_get_home_dir (), "evolution/local");
 	uri = g_strdup_printf ("file://%s", path);
 	g_free (path);
@@ -71,6 +72,11 @@ ebook_create (VCardImporter *gci)
 		printf ("error calling load_uri!\n");
 	}
 	g_free(uri);
+#endif
+
+	if (! e_book_load_default_book (gci->book, book_open_cb, gci)) {
+		g_warning ("Error calling load_default_book");
+	}
 }
 
 /* EvolutionImporter methods */
@@ -144,7 +150,7 @@ check_file_is_vcard (const char *filename)
 		return FALSE;
 	}
 
-	if (strncmp (line, "BEGIN:VCARD", 11) == 0) {
+	if (g_strncasecmp (line, "BEGIN:VCARD", 11) == 0) {
 		result = TRUE;
 	} else {
 		result = FALSE;
@@ -167,7 +173,7 @@ support_format_fn (EvolutionImporter *importer,
 		return check_file_is_vcard (filename);
 	}
 	for (i = 0; supported_extensions[i] != NULL; i++) {
-		if (strcmp (supported_extensions[i], ext) == 0)
+		if (g_strcasecmp (supported_extensions[i], ext) == 0)
 			return check_file_is_vcard (filename);
 	}
 

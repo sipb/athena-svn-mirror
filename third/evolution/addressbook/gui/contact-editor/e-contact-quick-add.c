@@ -94,18 +94,21 @@ quick_add_unref (QuickAdd *qa)
 static void
 quick_add_set_name (QuickAdd *qa, const gchar *name)
 {
-	ECardSimple *simple;
+	ECardName *card_name;
 
 	if (name == qa->name)
 		return;
 
 	g_free (qa->name);
-	qa->name = g_strdup (name);
 
-	simple = e_card_simple_new (qa->card);
-	e_card_simple_set (simple, E_CARD_SIMPLE_FIELD_FULL_NAME, name);
-	e_card_simple_sync_card (simple);
-	gtk_object_unref (GTK_OBJECT (simple));
+	card_name = e_card_name_from_string (name);
+	qa->name = e_card_name_to_string (card_name);
+
+	gtk_object_set (GTK_OBJECT (qa->card),
+			"full_name", qa->name,
+			NULL);
+
+	e_card_name_unref (card_name);
 }
 
 static void
@@ -183,11 +186,11 @@ editor_closed_cb (GtkWidget *w, gpointer closure)
 {
 	QuickAdd *qa = (QuickAdd *) gtk_object_get_data (GTK_OBJECT (w), "quick_add");
 
-	if (qa) {
+	if (qa)
 		/* We don't need to unref qa because we set_data_full below */
 		gtk_object_set_data (GTK_OBJECT (w), "quick_add", NULL);
-		gtk_object_unref (GTK_OBJECT (w));
-	}
+
+	gtk_object_unref (GTK_OBJECT (w));
 }
 
 static void

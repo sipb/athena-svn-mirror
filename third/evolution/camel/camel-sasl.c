@@ -35,6 +35,7 @@
 #include "camel-sasl-login.h"
 #include "camel-sasl-plain.h"
 #include "camel-sasl-popb4smtp.h"
+#include "camel-sasl-ntlm.h"
 
 #define w(x)
 
@@ -58,6 +59,7 @@ static void
 camel_sasl_finalize (CamelSasl *sasl)
 {
 	g_free (sasl->service_name);
+	g_free(sasl->mech);
 	camel_object_unref (CAMEL_OBJECT (sasl->service));
 }
 
@@ -201,9 +203,12 @@ camel_sasl_new (const char *service_name, const char *mechanism, CamelService *s
 		sasl = (CamelSasl *)camel_object_new (CAMEL_SASL_LOGIN_TYPE);
 	else if (!strcmp (mechanism, "POPB4SMTP"))
 		sasl = (CamelSasl *)camel_object_new (CAMEL_SASL_POPB4SMTP_TYPE);
+	else if (!strcmp (mechanism, "NTLM"))
+		sasl = (CamelSasl *)camel_object_new (CAMEL_SASL_NTLM_TYPE);
 	else
 		return NULL;
-	
+
+	sasl->mech = g_strdup(mechanism);
 	sasl->service_name = g_strdup (service_name);
 	sasl->service = service;
 	camel_object_ref (CAMEL_OBJECT (service));
@@ -228,6 +233,7 @@ camel_sasl_authtype_list (gboolean include_plain)
 #ifdef HAVE_KRB4
 	types = g_list_prepend (types, &camel_sasl_kerberos4_authtype);
 #endif
+	types = g_list_prepend (types, &camel_sasl_ntlm_authtype);
 	if (include_plain)
 		types = g_list_prepend (types, &camel_sasl_plain_authtype);
 	
@@ -258,6 +264,8 @@ camel_sasl_authtype (const char *mechanism)
 		return &camel_sasl_login_authtype;
 	else if (!strcmp(mechanism, "POPB4SMTP"))
 		return &camel_sasl_popb4smtp_authtype;
+	else if (!strcmp (mechanism, "NTLM"))
+		return &camel_sasl_ntlm_authtype;
 	else
 		return NULL;
 }

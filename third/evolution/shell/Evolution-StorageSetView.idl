@@ -5,16 +5,16 @@
  * Authors:
  *   Ettore Perazzoli <ettore@ximian.com>
  *
- * Copyright (C) 2000, 2001 Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002 Ximian, Inc.
  */
 
-#include <Bonoob.idl>
+#include <Bonobo.idl>
 
 module GNOME {
 module Evolution {
 	interface StorageSetViewListener {
-		void notifyFolderSelected  (in string uri);
-		void notifyStorageSelected (in string name);
+		void notifyFolderSelected (in string uri);
+		void notifyFolderToggled (); 
 	};
 
 	/* FIXME: Maybe we should have a generic Bonobo::Listener interface.  */
@@ -23,8 +23,11 @@ module Evolution {
 		exception NotFound {};
 
 		attribute boolean showFolders;
+		attribute boolean showCheckboxes;
 
-		void addListener    (in StorageSetViewListener listener)
+		attribute FolderList checkedFolders;
+
+		void addListener (in StorageSetViewListener listener)
 			raises (AlreadyListening);
 
 		void removeListener (in StorageSetViewListener listener)

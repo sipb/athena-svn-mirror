@@ -44,6 +44,8 @@ char *evolution_debug_log;
 static BonoboObjectClass *parent_class = NULL;
 
 struct _EvolutionShellComponentClientPrivate {
+	char *id;
+
 	EvolutionShellComponentClientCallback callback;
 	void *callback_data;
 
@@ -157,6 +159,8 @@ result_from_async_corba_result (GNOME_Evolution_ShellComponentListener_Result as
 	switch (async_corba_result) {
 	case GNOME_Evolution_ShellComponentListener_OK:
 		return EVOLUTION_SHELL_COMPONENT_OK;
+	case GNOME_Evolution_ShellComponentListener_CANCEL:
+		return EVOLUTION_SHELL_COMPONENT_CANCEL;
 	case GNOME_Evolution_ShellComponentListener_UNSUPPORTED_OPERATION:
 		return EVOLUTION_SHELL_COMPONENT_UNSUPPORTEDOPERATION;
 	case GNOME_Evolution_ShellComponentListener_EXISTS:
@@ -298,6 +302,8 @@ impl_destroy (GtkObject *object)
 	shell_component_client = EVOLUTION_SHELL_COMPONENT_CLIENT (object);
 	priv = shell_component_client->priv;
 
+	g_free (priv->id);
+
 	if (priv->callback != NULL)
 		dispatch_callback (shell_component_client, EVOLUTION_SHELL_COMPONENT_INTERRUPTED);
 
@@ -347,6 +353,8 @@ init (EvolutionShellComponentClient *shell_component_client)
 
 	priv = g_new (EvolutionShellComponentClientPrivate, 1);
 
+	priv->id                               = NULL;
+
 	priv->listener_interface               = CORBA_OBJECT_NIL;
 	priv->listener_servant                 = NULL;
 
@@ -365,61 +373,68 @@ init (EvolutionShellComponentClient *shell_component_client)
 
 void
 evolution_shell_component_client_construct (EvolutionShellComponentClient *shell_component_client,
+					    const char *id,
 					    CORBA_Object corba_object)
 {
+	EvolutionShellComponentClientPrivate *priv;
+
 	g_return_if_fail (shell_component_client != NULL);
 	g_return_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (shell_component_client));
 	g_return_if_fail (corba_object != CORBA_OBJECT_NIL);
+
+	priv = shell_component_client->priv;
+	priv->id = g_strdup (id);
 
 	bonobo_object_client_construct (BONOBO_OBJECT_CLIENT (shell_component_client),
 					corba_object);
 }
 
 EvolutionShellComponentClient *
-evolution_shell_component_client_new (const char *id)
+evolution_shell_component_client_new (const char *id,
+				      CORBA_Environment *ev)
 {
-	CORBA_Environment ev;
+	EvolutionShellComponentClient *new;
 	CORBA_Object corba_object;
+	CORBA_Environment *local_ev;
+	CORBA_Environment static_ev;
 
 	g_return_val_if_fail (id != NULL, NULL);
 
-	CORBA_exception_init (&ev);
+	CORBA_exception_init (&static_ev);
 
-	corba_object = oaf_activate_from_id ((char *) id, 0, NULL, &ev); /* Yuck.  */
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		CORBA_exception_free (&ev);
-		g_warning ("Could not start up component for %s.", id);
+	if (ev == NULL)
+		local_ev = &static_ev;
+	else
+		local_ev = ev;
+
+	corba_object = oaf_activate_from_id ((char *) id, 0, NULL, ev);
+	if (ev->_major != CORBA_NO_EXCEPTION || corba_object == NULL) {
+		CORBA_exception_free (&static_ev);
 		return NULL;
 	}
 
-#if 0
-	ior = CORBA_ORB_object_to_string (bonobo_orb (), corba_object, &ev);
-	g_print ("--- %s %s\n", id, ior);
-	CORBA_free (ior);
-#endif
-
-	CORBA_exception_free (&ev);
-
-	if (corba_object == CORBA_OBJECT_NIL) {
-		g_warning ("Could not activate component %s. "
-			   "(Maybe you need to set OAF_INFO_PATH?)", id);
-		return NULL;
-	}
-
-	return evolution_shell_component_client_new_for_objref (corba_object);
-}
-
-EvolutionShellComponentClient *
-evolution_shell_component_client_new_for_objref (const GNOME_Evolution_ShellComponent objref)
-{
-	EvolutionShellComponentClient *new;
-
-	g_return_val_if_fail (objref != CORBA_OBJECT_NIL, NULL);
+	CORBA_exception_free (&static_ev);
 
 	new = gtk_type_new (evolution_shell_component_client_get_type ());
-	evolution_shell_component_client_construct (new, objref);
+	evolution_shell_component_client_construct (new, id, corba_object);
 
 	return new;
+}
+
+
+/* Properties.  */
+
+const char *
+evolution_shell_component_client_get_id (EvolutionShellComponentClient *shell_component_client)
+{
+	EvolutionShellComponentClientPrivate *priv;
+
+	g_return_val_if_fail (shell_component_client != NULL, NULL);
+	g_return_val_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (shell_component_client), NULL);
+
+	priv = shell_component_client->priv;
+
+	return priv->id;
 }
 
 
@@ -575,6 +590,7 @@ evolution_shell_component_client_create_view (EvolutionShellComponentClient *she
 					      BonoboUIComponent *uih,
 					      const char *physical_uri,
 					      const char *type_string,
+					      const char *view_info,
 					      BonoboControl **control_return)
 {
 	EvolutionShellComponentResult result;
@@ -588,12 +604,13 @@ evolution_shell_component_client_create_view (EvolutionShellComponentClient *she
 	RETURN_ERROR_IF_FAIL (BONOBO_IS_UI_COMPONENT (uih));
 	RETURN_ERROR_IF_FAIL (physical_uri != NULL);
 	RETURN_ERROR_IF_FAIL (type_string != NULL);
+	RETURN_ERROR_IF_FAIL (view_info != NULL);
 	RETURN_ERROR_IF_FAIL (control_return != NULL);
 
 	CORBA_exception_init (&ev);
 
 	corba_component = bonobo_object_corba_objref (BONOBO_OBJECT (shell_component_client));
-	corba_control = GNOME_Evolution_ShellComponent_createView (corba_component, physical_uri, type_string, &ev);
+	corba_control = GNOME_Evolution_ShellComponent_createView (corba_component, physical_uri, type_string, view_info, &ev);
 
 	result = corba_exception_to_result (&ev);
 
@@ -819,6 +836,80 @@ evolution_shell_component_client_populate_folder_context_menu (EvolutionShellCom
 								  physical_uri,
 								  type,
 								  &ev);
+
+	CORBA_exception_free (&ev);
+}
+
+void
+evolution_shell_component_client_unpopulate_folder_context_menu (EvolutionShellComponentClient *shell_component_client,
+								 BonoboUIContainer *container,
+								 const char *physical_uri,
+								 const char *type)
+{
+	Bonobo_UIContainer corba_container;
+	EvolutionShellComponentClientPrivate *priv;
+	GNOME_Evolution_ShellComponent corba_shell_component;
+	CORBA_Environment ev;
+
+	g_return_if_fail (shell_component_client != NULL);
+	g_return_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (shell_component_client));
+	g_return_if_fail (physical_uri != NULL);
+	g_return_if_fail (type != NULL);
+
+	priv = shell_component_client->priv;
+
+	CORBA_exception_init (&ev);
+
+	corba_shell_component = bonobo_object_corba_objref (BONOBO_OBJECT (shell_component_client));
+	corba_container = bonobo_object_corba_objref (BONOBO_OBJECT (container));
+
+	GNOME_Evolution_ShellComponent_unpopulateFolderContextMenu (corba_shell_component,
+								  corba_container,
+								  physical_uri,
+								  type,
+								  &ev);
+
+	CORBA_exception_free (&ev);
+}
+
+
+void
+evolution_shell_component_client_request_quit (EvolutionShellComponentClient *shell_component_client,
+					       EvolutionShellComponentClientCallback callback,
+					       void *data)
+{
+	EvolutionShellComponentClientPrivate *priv;
+	GNOME_Evolution_ShellComponent corba_shell_component;
+	CORBA_Environment ev;
+
+	g_return_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (shell_component_client));
+	g_return_if_fail (callback != NULL);
+
+	priv = shell_component_client->priv;
+
+	if (priv->callback != NULL) {
+		(* callback) (shell_component_client, EVOLUTION_SHELL_COMPONENT_BUSY, data);
+		return;
+	}
+
+	create_listener_interface (shell_component_client);
+
+	CORBA_exception_init (&ev);
+
+	corba_shell_component = BONOBO_OBJREF (shell_component_client);
+
+	priv->callback = callback;
+	priv->callback_data = data;
+
+	GNOME_Evolution_ShellComponent_requestQuit (corba_shell_component, priv->listener_interface, &ev);
+
+	if (ev._major != CORBA_NO_EXCEPTION && priv->callback != NULL) {
+		(* callback) (shell_component_client,
+			      shell_component_result_from_corba_exception (&ev),
+			      data);
+		priv->callback = NULL;
+		priv->callback_data = NULL;
+	}
 
 	CORBA_exception_free (&ev);
 }

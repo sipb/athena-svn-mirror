@@ -15,8 +15,8 @@
 #include <time.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include <addressbook/backend/ebook/e-card.h>
-#include <addressbook/backend/ebook/e-card-types.h>
+#include <ebook/e-card.h>
+#include <ebook/e-card-types.h>
 #include <e-util/e-list.h>
 
 #define E_TYPE_CARD_SIMPLE            (e_card_simple_get_type ())
@@ -50,7 +50,7 @@ enum _ECardSimplePhoneId {
 	E_CARD_SIMPLE_PHONE_ID_PRIMARY,
 	E_CARD_SIMPLE_PHONE_ID_RADIO,
 	E_CARD_SIMPLE_PHONE_ID_TELEX,
-	E_CARD_SIMPLE_PHONE_ID_TTYTTD,
+	E_CARD_SIMPLE_PHONE_ID_TTYTDD,
 	E_CARD_SIMPLE_PHONE_ID_LAST
 };
 
@@ -101,7 +101,7 @@ enum _ECardSimpleField {
         E_CARD_SIMPLE_FIELD_PHONE_PAGER,
         E_CARD_SIMPLE_FIELD_PHONE_RADIO,
         E_CARD_SIMPLE_FIELD_PHONE_TELEX,
-        E_CARD_SIMPLE_FIELD_PHONE_TTYTTD,
+        E_CARD_SIMPLE_FIELD_PHONE_TTYTDD,
         E_CARD_SIMPLE_FIELD_ADDRESS_OTHER,
         E_CARD_SIMPLE_FIELD_EMAIL_2,
         E_CARD_SIMPLE_FIELD_EMAIL_3,

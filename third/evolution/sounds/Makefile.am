@@ -1,0 +1,7 @@
+
+soundsdir = $(datadir)/evolution/sounds
+
+sounds_DATA = \
+	default_alarm.wav
+
+EXTRA_DIST = $(sounds_DATA)

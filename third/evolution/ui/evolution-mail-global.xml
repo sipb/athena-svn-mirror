@@ -12,8 +12,8 @@
      _tip="Open a window for composing a mail message"
      pixtype="pixbuf"/>
 
-    <cmd name="MailGetSend"
-     _tip="Send queued mail and retrieve new mail"
+    <cmd name="MailPost"
+     _tip="Post a message to a Public folder"
      pixtype="pixbuf"/>
 
     <cmd name="MailStop"
@@ -23,10 +23,6 @@
     <cmd name="ToolsFilters"
      _tip="Create or edit rules for filtering new mail"/>
 
-    <cmd name="ToolsSettings"
-     _tip="Create or edit mail accounts and other preferences"
-     pixtype="pixbuf"/>
-
     <cmd name="ToolsSubscriptions"
      _tip="Subscribe or unsubscribe to folders on remote servers"/>
 
@@ -35,27 +31,19 @@
 
     <cmd name="ViewPreview"
      _tip="Show message preview window"
-     accel="q"
-     type="toggle"  />
+     accel="grave"
+     type="toggle"/>
 
   </commands>
 
   <keybindings>
+    <accel name="*Shift*grave" verb="ViewPreview"/>
+    <accel name="asciitilde" verb="ViewPreview"/>
+    <accel name="*Shift*asciitilde" verb="ViewPreview"/>
 
   </keybindings>
 
   <menu>
-
-    <submenu name="File">
-      <submenu name="New">
-        <placeholder name="NewFirstItem">
-          <menuitem name="MessageNew" verb="MailCompose"
-           accel="*Control*n" _label="_Mail Message"/>
-
-          <separator f="" name="emailglobal"/>
-        </placeholder>
-      </submenu>
-    </submenu>
 
     <submenu name="View">
       <menuitem name="ViewPreview" verb="" _label="_Preview Pane"/>
@@ -72,10 +60,11 @@
       </submenu>
     </submenu>
 
-    <placeholder name="ComponentActionsPlaceholder">
-      <submenu name="Actions" _label="_Actions">
-        <menuitem name="MailGetSend" verb="" _label="_Send / Receive" accel="F9"/>
+    <submenu name="Actions" _label="_Actions">
+      <placeholder name="ComponentActionsPlaceholder">
         <menuitem name="ActionCompose" verb="MailCompose" _label="Compose _New Message"/>
+        <menuitem name="ActionPost" verb="MailPost" _label="Post New Message"/>
+	<menuitem name="ActionStop" verb="MailStop" _label="Cancel"/>
 
 	<separator f="" name="emailglobal"/>
 
@@ -86,16 +75,12 @@
         <placeholder name="MailListActions"/>
 
         <menuitem name="EmptyTrash" verb="" _label="Empty _Trash"/>
-      </submenu>
-    </placeholder>
+      </placeholder>
+    </submenu>
 
     <submenu name="Tools">
 
       <placeholder name="ComponentPlaceholder">
-
-        <menuitem name="ToolsSettings" verb="" _label="_Mail Settings..."/>
-
-	<separator f="" name="emailglobal1"/>
 
         <placeholder name="MailFilterTools">
           <menuitem name="ToolsFilters" verb="" _label="_Filters..."/>
@@ -109,7 +94,7 @@
 
 	<separator f="" name="emailglobal3"/>
 
-        <menuitem name="ToolsSubscriptions" verb="" _label="_Subscribe to Folders..."/>
+        <menuitem name="ToolsSubscriptions" verb="" _label="S_ubscribe to Folders..."/>
 
 	<separator f="" name="emailglobal4"/>
 
@@ -119,14 +104,6 @@
   </menu>
 
   <dockitem name="Toolbar">
-
-     <toolitem name="MailCompose" verb=""
-     _label="New Message" priority="1"
-     pixtype="pixbuf"/>
-
-    <toolitem name="MailGetSend" verb=""
-     _label="Send / Receive" priority="1"
-     pixtype="pixbuf"/>
 
     <separator f="" name="emailglobal1"/>
 

@@ -48,7 +48,7 @@ GtkType
 mail_account_editor_get_type ()
 {
 	static GtkType type = 0;
-
+	
 	if (!type) {
 		GtkTypeInfo type_info = {
 			"MailAccountEditor",
@@ -59,10 +59,10 @@ mail_account_editor_get_type ()
 			(GtkArgSetFunc) NULL,
 			(GtkArgGetFunc) NULL
 		};
-
+		
 		type = gtk_type_unique (gnome_dialog_get_type (), &type_info);
 	}
-
+	
 	return type;
 }
 
@@ -89,7 +89,6 @@ mail_account_editor_finalize (GtkObject *obj)
 static gboolean
 apply_changes (MailAccountEditor *editor)
 {
-	MailConfigAccount *account;
 	GtkWidget *incomplete;
 	int page = -1;
 	
@@ -132,7 +131,7 @@ static void
 ok_clicked (GtkWidget *widget, gpointer data)
 {
 	MailAccountEditor *editor = data;
-
+	
 	if (apply_changes (editor))
 		gtk_widget_destroy (GTK_WIDGET (editor));
 }
@@ -141,16 +140,16 @@ static void
 cancel_clicked (GtkWidget *widget, gpointer data)
 {
 	MailAccountEditor *editor = data;
-
+	
 	gtk_widget_destroy (GTK_WIDGET (editor));
 }
 
 static void
-construct (MailAccountEditor *editor, MailConfigAccount *account)
+construct (MailAccountEditor *editor, MailConfigAccount *account, MailAccountsTab *dialog)
 {
 	MailConfigService *source = account->source;
 	
-	editor->gui = mail_account_gui_new (account);
+	editor->gui = mail_account_gui_new (account, dialog);
 	
 	/* get our toplevel widget and reparent it */
 	editor->notebook = GTK_NOTEBOOK (glade_xml_get_widget (editor->gui->xml, "account_editor_notebook"));
@@ -179,15 +178,18 @@ construct (MailAccountEditor *editor, MailConfigAccount *account)
 	mail_account_gui_setup (editor->gui, GTK_WIDGET (editor));
 	
 	mail_account_gui_build_extra_conf (editor->gui, source->url);
+	
+	gtk_widget_grab_focus (GTK_WIDGET (editor->gui->account_name));
 }
 
 MailAccountEditor *
-mail_account_editor_new (MailConfigAccount *account)
+mail_account_editor_new (MailConfigAccount *account, GtkWindow *parent, MailAccountsTab *dialog)
 {
 	MailAccountEditor *new;
 	
 	new = (MailAccountEditor *) gtk_type_new (mail_account_editor_get_type ());
-	construct (new, account);
+	gnome_dialog_set_parent (GNOME_DIALOG (new), parent);
+	construct (new, account, dialog);
 	
 	return new;
 }

@@ -86,6 +86,7 @@ struct _EContactEditor
 	ECardSimpleEmailId email_choice;
 	ECardSimplePhoneId phone_choice[4];
 	ECardSimpleAddressId address_choice;
+	ECardSimpleAddressId address_mailing;
 	
 	GList *arbitrary_fields;
 
@@ -97,6 +98,12 @@ struct _EContactEditor
 
 	/* Whether the contact editor will accept modifications */
 	guint editable : 1;
+
+	/* Whether the fullname will accept modifications */
+	guint fullname_editable : 1;
+
+	/* Whether each of the addresses are editable */
+	gboolean address_editable[E_CARD_SIMPLE_ADDRESS_ID_LAST];
 
 	/* Whether an async wombat call is in progress */
 	guint in_async_call : 1;
@@ -116,17 +123,19 @@ struct _EContactEditorClass
 	void (* editor_closed) (EContactEditor *ce);
 };
 
-EContactEditor *e_contact_editor_new             (EBook *book,
-						  ECard *card,
-						  gboolean is_new_card,
-						  gboolean editable);
-GtkType         e_contact_editor_get_type        (void);
-void            e_contact_editor_show            (EContactEditor *editor);
-void            e_contact_editor_close           (EContactEditor *editor);
-void            e_contact_editor_raise           (EContactEditor *editor);
+EContactEditor *e_contact_editor_new                (EBook          *book,
+						     ECard          *card,
+						     gboolean        is_new_card,
+						     gboolean        editable);
+GtkType         e_contact_editor_get_type           (void);
 
+void            e_contact_editor_show               (EContactEditor *editor);
+void            e_contact_editor_close              (EContactEditor *editor);
+void            e_contact_editor_raise              (EContactEditor *editor);
 
-gboolean        e_contact_editor_confirm_delete  (GtkWindow      *parent);
+gboolean        e_contact_editor_confirm_delete     (GtkWindow      *parent);
+
+gboolean        e_contact_editor_request_close_all  (void);
 
 #ifdef __cplusplus
 }

@@ -1,7 +1,10 @@
 bin_PROGRAMS = evolution-calendar-importer
 
+sounddir = $(datadir)/evolution/sounds
+
 INCLUDES = 						\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DEVOLUTION_SOUNDDIR=\""$(sounddir)"\"		\
 	-DG_LOG_DOMAIN=\"Evolution-Importer\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)/shell				\
@@ -12,8 +15,8 @@ INCLUDES = 						\
 	-I$(top_builddir)/calendar			\
 	-I$(top_srcdir)/libical/src/libical		\
 	-I$(top_builddir)/libical/src/libical		\
-	$(BONOBO_GNOME_CFLAGS)				\
-	$(GNOME_INCLUDEDIR)
+	-I$(top_srcdir)/libical/src/libicalvcal		\
+	$(EVOLUTION_CALENDAR_CFLAGS)
 
 evolution_calendar_importer_SOURCES = 	\
 	evolution-calendar-importer.h	\
@@ -21,12 +24,14 @@ evolution_calendar_importer_SOURCES = 	\
 	main.c
 
 evolution_calendar_importer_LDADD =				\
+	$(top_builddir)/shell/libeshell.la			\
 	$(top_builddir)/shell/importer/libevolution-importer.la \
 	$(top_builddir)/calendar/cal-util/libcal-util.la	\
 	$(top_builddir)/calendar/cal-client/libcal-client.la	\
 	$(top_builddir)/libwombat/libwombat.la			\
 	$(top_builddir)/libical/src/libical/libical-evolution.la	\
-	$(EXTRA_GNOME_LIBS)
+	$(top_builddir)/libical/src/libicalvcal/libicalvcal-evolution.la \
+	$(EVOLUTION_CALENDAR_LIBS)
 
 oafdir = $(datadir)/oaf
 oaf_in_files = GNOME_Evolution_Calendar_Importer.oaf.in

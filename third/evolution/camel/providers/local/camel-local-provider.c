@@ -37,27 +37,42 @@
 
 #define d(x)
 
+static CamelProviderConfEntry mh_conf_entries[] = {
+	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "dotfolders", NULL,
+	  N_("Use the `.folders' folder summary file (exmh)"), "0" },
+	{ CAMEL_PROVIDER_CONF_END }
+};
+
 static CamelProvider mh_provider = {
 	"mh",
 	N_("MH-format mail directories"),
 	N_("For storing local mail in MH-like mail directories."),
 	"mail",
-	CAMEL_PROVIDER_IS_LOCAL,
+	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
+	mh_conf_entries,
 	/* ... */
+};
+
+static CamelProviderConfEntry mbox_conf_entries[] = {
+	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
+	{ CAMEL_PROVIDER_CONF_END }
 };
 
 static CamelProvider mbox_provider = {
 	"mbox",
 	N_("Local delivery"),
-	N_("For retrieving local mail from standard mbox formated spools."),
+	N_("For retrieving (moving) local mail from standard mbox formated spools into folders managed by Evolution."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_LOCAL,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
+	mbox_conf_entries,
 	/* ... */
 };
 
-static CamelProviderConfEntry local_conf_entries[] = {
+static CamelProviderConfEntry maildir_conf_entries[] = {
+	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
 	  N_("Apply filters to new messages in INBOX"), "0" },
 	{ CAMEL_PROVIDER_CONF_END }
@@ -68,21 +83,27 @@ static CamelProvider maildir_provider = {
 	N_("Maildir-format mail directories"),
 	N_("For storing local mail in maildir directories."),
 	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE |
-	CAMEL_PROVIDER_IS_LOCAL,
+	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
-	local_conf_entries,
+	maildir_conf_entries,
 	/* ... */
+};
+
+static CamelProviderConfEntry spool_conf_entries[] = {
+	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL, N_("Apply filters to new messages in INBOX"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "xstatus", NULL, N_("Store status headers in Elm/Pine/Mutt format"), "0" },
+	{ CAMEL_PROVIDER_CONF_END }
 };
 
 static CamelProvider spool_provider = {
 	"spool",
-	N_("Standard Unix mbox spools"),
-	N_("For reading and storing local mail in standard mbox spool files."),
+	N_("Standard Unix mbox spool or directory"),
+	N_("For reading and storing local mail in external standard mbox spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt style folders."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
-	local_conf_entries,
+	spool_conf_entries,
 	/* ... */
 };
 
@@ -170,27 +191,32 @@ local_url_equal(const void *v, const void *v2)
 
 void camel_provider_module_init(CamelSession * session)
 {
-	mh_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mh_store_get_type();
-	mh_provider.service_cache = g_hash_table_new(local_url_hash, local_url_equal);
+	char *path;
+	
+	mh_conf_entries[0].value = "";  /* default path */
+	mh_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mh_store_get_type ();
 	mh_provider.url_hash = local_url_hash;
 	mh_provider.url_equal = local_url_equal;
 	camel_session_register_provider(session, &mh_provider);
-
-	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mbox_store_get_type();
-	mbox_provider.service_cache = g_hash_table_new(local_url_hash, local_url_equal);
+	
+	if (!(path = getenv ("MAIL")))
+		path = g_strdup_printf (SYSTEM_MAIL_DIR "/%s", g_get_user_name ());
+	mbox_conf_entries[0].value = path;  /* default path */
+	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mbox_store_get_type ();
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
 	camel_session_register_provider(session, &mbox_provider);
-
-	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type();
-	maildir_provider.service_cache = g_hash_table_new(local_url_hash, local_url_equal);
-	maildir_provider.url_hash = local_url_hash;
-	maildir_provider.url_equal = local_url_equal;
-	camel_session_register_provider(session, &maildir_provider);
-
-	spool_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type();
-	spool_provider.service_cache = g_hash_table_new(local_url_hash, local_url_equal);
+	
+	spool_conf_entries[0].value = path;  /* default path - same as mbox */
+	spool_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
 	spool_provider.url_hash = local_url_hash;
 	spool_provider.url_equal = local_url_equal;
 	camel_session_register_provider(session, &spool_provider);
+	
+	path = getenv ("MAILDIR");
+	maildir_conf_entries[0].value = path ? path : "";  /* default path */
+	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type ();
+	maildir_provider.url_hash = local_url_hash;
+	maildir_provider.url_equal = local_url_equal;
+	camel_session_register_provider(session, &maildir_provider);
 }

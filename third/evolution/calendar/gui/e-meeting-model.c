@@ -38,12 +38,12 @@
 #include <gal/e-table/e-cell-popup.h>
 #include <gal/e-table/e-cell-combo.h>
 #include <gal/util/e-unicode-i18n.h>
-#include <e-book.h>
-#include <e-card-types.h>
-#include <e-card-cursor.h>
-#include <e-card.h>
-#include <e-card-simple.h>
-#include <e-destination.h>
+#include <ebook/e-book.h>
+#include <ebook/e-card-types.h>
+#include <ebook/e-card-cursor.h>
+#include <ebook/e-card.h>
+#include <ebook/e-card-simple.h>
+#include <ebook/e-destination.h>
 #include <cal-util/cal-component.h>
 #include <cal-util/cal-util.h>
 #include <cal-util/timeutil.h>
@@ -59,7 +59,10 @@
 struct _EMeetingModelPrivate 
 {
 	GPtrArray *attendees;
+	GList *edit_rows;
+
 	ETableWithout *without;
+	GList *tables;
 	
 	CalClient *client;
 	icaltimezone *zone;
@@ -81,7 +84,7 @@ struct _EMeetingModelPrivate
 static char *sections[] = {N_("Chair Persons"), 
 			   N_("Required Participants"), 
 			   N_("Optional Participants"), 
-			   N_("Non-Participants"),
+			   N_("Resources"),
 			   NULL};
 static icalparameter_role roles[] = {ICAL_ROLE_CHAIR,
 				     ICAL_ROLE_REQPARTICIPANT,
@@ -127,7 +130,8 @@ static void select_names_ok_cb (BonoboListener    *listener,
 				CORBA_Environment *ev,
 				gpointer           data);
 
-static void table_destroy_cb (ETableScrolled *etable, gpointer data);
+static void table_destroy_state_cb (ETableScrolled *etable, gpointer data);
+static void table_destroy_list_cb (ETableScrolled *etable, gpointer data);
 
 static ETableModelClass *parent_class = NULL;
 
@@ -405,6 +409,7 @@ append_row (ETableModel *etm, ETableModel *source, int row)
 	e_meeting_attendee_set_language (ia, g_strdup (e_table_model_value_at (source, E_MEETING_MODEL_LANGUAGE_COL, row)));
 
 	e_meeting_model_add_attendee (E_MEETING_MODEL (etm), ia);
+	gtk_object_unref (GTK_OBJECT (ia));
 }
 
 static void *
@@ -451,7 +456,8 @@ set_value_at (ETableModel *etm, int col, int row, const void *val)
 	EMeetingModel *im;
 	EMeetingModelPrivate *priv;
 	EMeetingAttendee *ia;
-
+	icalparameter_cutype type;
+	
 	im = E_MEETING_MODEL (etm);	
 	priv = im->priv;
 
@@ -461,13 +467,19 @@ set_value_at (ETableModel *etm, int col, int row, const void *val)
 	
 	switch (col) {
 	case E_MEETING_MODEL_ADDRESS_COL:
-		e_meeting_attendee_set_address (ia, g_strdup_printf ("MAILTO:%s", (char *) val));
+		if (val != NULL && *((char *)val))
+			e_meeting_attendee_set_address (ia, g_strdup_printf ("MAILTO:%s", (char *) val));
 		break;
 	case E_MEETING_MODEL_MEMBER_COL:
 		e_meeting_attendee_set_member (ia, g_strdup (val));
 		break;
 	case E_MEETING_MODEL_TYPE_COL:
+		type = text_to_type (val);
 		e_meeting_attendee_set_cutype (ia, text_to_type (val));
+		if (type == ICAL_CUTYPE_RESOURCE) {
+			e_meeting_attendee_set_role (ia, ICAL_ROLE_NONPARTICIPANT);
+			e_table_model_cell_changed (etm, E_MEETING_MODEL_ROLE_COL, row);
+		}		
 		break;
 	case E_MEETING_MODEL_ROLE_COL:
 		e_meeting_attendee_set_role (ia, text_to_role (val));
@@ -498,12 +510,32 @@ set_value_at (ETableModel *etm, int col, int row, const void *val)
 static gboolean
 is_cell_editable (ETableModel *etm, int col, int row)
 {
+	EMeetingModel *im;
+	EMeetingModelPrivate *priv;
+	GList *l;
+	
+	im = E_MEETING_MODEL (etm);	
+	priv = im->priv;
+	
+	if (priv->edit_rows != NULL) {
+		if (col != E_MEETING_MODEL_STATUS_COL)
+			return FALSE;
+		
+		for (l = priv->edit_rows; l != NULL; l = l->next) {
+			if (GPOINTER_TO_INT (l->data) == row)
+				return TRUE;
+		}
+
+		return FALSE;
+	}
+	
 	switch (col) {
 	case E_MEETING_MODEL_DELTO_COL:
 	case E_MEETING_MODEL_DELFROM_COL:
 		return FALSE;
 
 	default:
+		break;
 	}
 
 	return TRUE;
@@ -565,6 +597,7 @@ value_is_empty (ETableModel *etm, int col, const void *val)
 		else
 			return FALSE;
 	default:
+		;
 	}
 	
 	return TRUE;
@@ -648,6 +681,7 @@ init (EMeetingModel *im)
 	im->priv = priv;
 
 	priv->attendees = g_ptr_array_new ();
+	priv->edit_rows = NULL;
 	
 	priv->without = E_TABLE_WITHOUT (e_table_without_new (E_TABLE_MODEL (im),
 							      g_str_hash,
@@ -658,7 +692,8 @@ init (EMeetingModel *im)
 							      free_duplicated_key,
 							      NULL));
 	e_table_without_hide (priv->without, g_strdup ("delegator"));
-	
+	priv->tables = NULL;
+
 	priv->client = NULL;
 	priv->zone = icaltimezone_get_builtin_timezone (calendar_config_get_timezone ());
 	
@@ -670,6 +705,8 @@ init (EMeetingModel *im)
 	priv->refresh_data = g_hash_table_new (g_direct_hash, g_direct_equal);
 	priv->refresh_idle_id = -1;
 	
+	priv->corba_select_names = CORBA_OBJECT_NIL;
+	
 	start_addressbook_server (im);
 }
 
@@ -678,6 +715,7 @@ destroy (GtkObject *obj)
 {
 	EMeetingModel *im = E_MEETING_MODEL (obj);
 	EMeetingModelPrivate *priv;
+	GList *l;
 	int i;
 	
 	priv = im->priv;
@@ -685,28 +723,32 @@ destroy (GtkObject *obj)
 	for (i = 0; i < priv->attendees->len; i++)
 		gtk_object_unref (GTK_OBJECT (g_ptr_array_index (priv->attendees, i)));
 	g_ptr_array_free (priv->attendees, TRUE); 
+
+	for (l = priv->tables; l != NULL; l = l->next)
+		gtk_signal_disconnect_by_data (GTK_OBJECT (l->data), im);
+	g_list_free (priv->tables);
 	
 	if (priv->client != NULL)
 		gtk_object_unref (GTK_OBJECT (priv->client));
 
 	if (priv->ebook != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->ebook));        
+		gtk_object_unref (GTK_OBJECT (priv->ebook));
 
 	if (priv->corba_select_names != CORBA_OBJECT_NIL) {
-                CORBA_Environment ev;
+		CORBA_Environment ev;
 		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (priv->corba_select_names, &ev);
 		CORBA_exception_free (&ev);
-        }
+	}
 
-	while (priv->refresh_queue->len > 0)
-		refresh_queue_remove (im, g_ptr_array_index (priv->refresh_queue, 0));
-	g_ptr_array_free (priv->refresh_queue, TRUE);
-	g_hash_table_destroy (priv->refresh_data);
-	
-	if (priv->refresh_idle_id)
-		g_source_remove (priv->refresh_idle_id);
-	
+ 	while (priv->refresh_queue->len > 0)
+ 		refresh_queue_remove (im, g_ptr_array_index (priv->refresh_queue, 0));
+ 	g_ptr_array_free (priv->refresh_queue, TRUE);
+ 	g_hash_table_destroy (priv->refresh_data);
+ 	
+ 	if (priv->refresh_idle_id)
+ 		g_source_remove (priv->refresh_idle_id);
+ 		
 	g_free (priv);
 }
 
@@ -851,7 +893,7 @@ build_etable (ETableModel *model, const gchar *spec_file, const gchar *state_fil
 #endif
 
 	gtk_signal_connect (GTK_OBJECT (etable), "destroy", 
-			    GTK_SIGNAL_FUNC (table_destroy_cb), g_strdup (state_file));
+			    GTK_SIGNAL_FUNC (table_destroy_state_cb), g_strdup (state_file));
 
 	gtk_object_unref (GTK_OBJECT (extras));
 	
@@ -1020,6 +1062,47 @@ e_meeting_model_get_attendees (EMeetingModel *im)
 	priv = im->priv;
 	
 	return priv->attendees;
+}
+
+void
+e_meeting_model_restricted_add (EMeetingModel *im, int row)
+{
+	EMeetingModelPrivate *priv;
+
+	g_return_if_fail (im != NULL);
+	g_return_if_fail (E_IS_MEETING_MODEL (im));
+	
+	priv = im->priv;
+
+	priv->edit_rows = g_list_append (priv->edit_rows, GINT_TO_POINTER (row));
+}
+
+void
+e_meeting_model_restricted_remove (EMeetingModel *im, int row)
+{
+	EMeetingModelPrivate *priv;
+	
+	g_return_if_fail (im != NULL);
+	g_return_if_fail (E_IS_MEETING_MODEL (im));
+	
+	priv = im->priv;
+
+	priv->edit_rows = g_list_remove (priv->edit_rows, GINT_TO_POINTER (row));
+}
+
+void
+e_meeting_model_restricted_clear (EMeetingModel *im)
+{
+	EMeetingModelPrivate *priv;
+
+	g_return_if_fail (im != NULL);
+	g_return_if_fail (E_IS_MEETING_MODEL (im));
+	
+	priv = im->priv;
+	
+	if (priv->edit_rows)
+		g_list_free (priv->edit_rows);
+	priv->edit_rows = NULL;
 }
 
 static icaltimezone *
@@ -1224,6 +1307,7 @@ process_free_busy_comp (EMeetingAttendee *ia,
 			break;
 
 		default:
+			break;
 		}
 			
 		if (busy_type != E_MEETING_FREE_BUSY_LAST) {
@@ -1252,22 +1336,20 @@ process_free_busy_comp (EMeetingAttendee *ia,
 static void
 process_free_busy (EMeetingModelQueueData *qdata, char *text)
 {
-	EMeetingModel *im = qdata->im;
-	EMeetingModelPrivate *priv;
-	EMeetingAttendee *ia = qdata->ia;
+ 	EMeetingModel *im = qdata->im;
+ 	EMeetingModelPrivate *priv;
+ 	EMeetingAttendee *ia = qdata->ia;
 	icalcomponent *main_comp;
 	icalcomponent_kind kind = ICAL_NO_COMPONENT;
 
 	priv = im->priv;
 
 	main_comp = icalparser_parse_string (text);
-	if (main_comp == NULL) {
-		process_callbacks (qdata);
-		return;
-	}
-	
-	e_meeting_attendee_set_has_calendar_info (ia, TRUE);
-	
+ 	if (main_comp == NULL) {
+ 		process_callbacks (qdata);
+  		return;
+ 	}
+
 	kind = icalcomponent_isa (main_comp);
 	if (kind == ICAL_VCALENDAR_COMPONENT) {	
 		icalcompiter iter;
@@ -1520,13 +1602,43 @@ ETableScrolled *
 e_meeting_model_etable_from_model (EMeetingModel *im, const gchar *spec_file, const gchar *state_file)
 {
 	EMeetingModelPrivate *priv;
+	ETableScrolled *ets;
 	
 	g_return_val_if_fail (im != NULL, NULL);
 	g_return_val_if_fail (E_IS_MEETING_MODEL (im), NULL);
 
 	priv = im->priv;
 	
-	return build_etable (E_TABLE_MODEL (priv->without), spec_file, state_file);
+	ets = build_etable (E_TABLE_MODEL (priv->without), spec_file, state_file);
+
+	priv->tables = g_list_prepend (priv->tables, ets);
+
+	gtk_signal_connect (GTK_OBJECT (ets), "destroy", 
+			    GTK_SIGNAL_FUNC (table_destroy_list_cb), im);
+	
+	return ets;
+}
+
+void
+e_meeting_model_etable_click_to_add (EMeetingModel *im, gboolean click_to_add)
+{
+	EMeetingModelPrivate *priv;
+	GList *l;
+	
+	g_return_if_fail (im != NULL);
+	g_return_if_fail (E_IS_MEETING_MODEL (im));
+
+	priv = im->priv;
+
+	for (l = priv->tables; l != NULL; l = l->next) {
+		ETableScrolled *ets;
+		ETable *real_table;
+		
+		ets = l->data;
+		real_table = e_table_scrolled_get_table (ets);
+
+		gtk_object_set (GTK_OBJECT (real_table), "use_click_to_add", click_to_add, NULL);
+	}
 }
 
 int
@@ -1674,6 +1786,8 @@ process_section (EMeetingModel *im, EDestination **destv, icalparameter_role rol
 
 			e_meeting_attendee_set_address (ia, g_strdup_printf ("MAILTO:%s", address));
 			e_meeting_attendee_set_role (ia, role);
+			if (role == ICAL_ROLE_NONPARTICIPANT)
+				e_meeting_attendee_set_cutype (ia, ICAL_CUTYPE_RESOURCE);
 			e_meeting_attendee_set_cn (ia, g_strdup (name));
 		}
 	}
@@ -1708,6 +1822,8 @@ select_names_ok_cb (BonoboListener    *listener,
 			process_section (im, destv, roles[i]);
 			e_destination_freev (destv);
 		}		
+
+		g_free (string);
 	}
 }
 
@@ -1737,7 +1853,7 @@ attendee_changed_cb (EMeetingAttendee *ia, gpointer data)
 }
 
 static void
-table_destroy_cb (ETableScrolled *etable, gpointer data)
+table_destroy_state_cb (ETableScrolled *etable, gpointer data)
 {
 	ETable *real_table;
 	char *filename = data;
@@ -1746,5 +1862,16 @@ table_destroy_cb (ETableScrolled *etable, gpointer data)
 	e_table_save_state (real_table, filename);
 
 	g_free (data);
+}
+
+static void
+table_destroy_list_cb (ETableScrolled *etable, gpointer data)
+{
+	EMeetingModel *im = E_MEETING_MODEL (data);
+	EMeetingModelPrivate *priv;
+
+	priv = im->priv;
+	
+	priv->tables = g_list_remove (priv->tables, etable);
 }
 

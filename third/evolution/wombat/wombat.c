@@ -128,7 +128,6 @@ setup_pas (int argc, char **argv)
 static void
 last_calendar_gone_cb (CalFactory *factory, gpointer data)
 {
-	fprintf (stderr, "last_calendar_gone_cb() called!  Queueing termination...\n");
 	queue_termination ();
 }
 
@@ -289,6 +288,8 @@ main (int argc, char **argv)
 
 		exit (EXIT_FAILURE);
 	}
+
+	g_print ("Wombat up and running\n");
 
 	bonobo_main ();
 

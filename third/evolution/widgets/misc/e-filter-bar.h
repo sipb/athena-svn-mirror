@@ -81,34 +81,33 @@ struct _EFilterBarClass
 /* "preset" items */
 enum {
 	/* preset menu options */
-	E_FILTERBAR_RESET_ID = -2,
 	E_FILTERBAR_SAVE_ID = -3,
 	E_FILTERBAR_EDIT_ID = -4,
 
 	/* preset option options */
 	E_FILTERBAR_ADVANCED_ID = -5,
-
-	E_FILTERBAR_LAST_ID = -6,
 };
 
-#define E_FILTERBAR_SAVE { N_("Add to Saved Searches"), E_FILTERBAR_SAVE_ID, NULL }
-#define E_FILTERBAR_RESET { N_("Clear"), E_FILTERBAR_RESET_ID, NULL }
-#define E_FILTERBAR_EDIT { N_("Edit..."), E_FILTERBAR_EDIT_ID, NULL }
-#define E_FILTERBAR_ADVANCED { N_("Advanced..."), E_FILTERBAR_ADVANCED_ID, NULL }
+#define E_FILTERBAR_SAVE      { N_("_Save Search..."), E_FILTERBAR_SAVE_ID, NULL }
+#define E_FILTERBAR_EDIT      { N_("_Edit Saved Searches..."), E_FILTERBAR_EDIT_ID, NULL }
+#define E_FILTERBAR_ADVANCED  { N_("_Advanced..."), E_FILTERBAR_ADVANCED_ID, NULL }
+#define E_FILTERBAR_SEPARATOR { NULL, 0, NULL }
 
 #ifdef JUST_FOR_TRANSLATORS
 const char * strings[] = {
-	N_("Save As..."),
-	N_("Show All"),
-	N_("Edit..."),
-	N_("Advanced...")
+	N_("_Save Search..."),
+	N_("_Edit Saved Searches..."),
+	N_("_Advanced...")
 };
 #endif
 
 
 GtkType     e_filter_bar_get_type (void);
-EFilterBar *e_filter_bar_new      (RuleContext *context, const char *systemrules, const char *userrules,
-				   EFilterBarConfigRule config, void *data);
+EFilterBar *e_filter_bar_new      (RuleContext *context,
+				   const char *systemrules,
+				   const char *userrules,
+				   EFilterBarConfigRule config,
+				   void *data);
 
 #ifdef __cplusplus
 }

@@ -20,6 +20,7 @@
  *
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -32,6 +33,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
+
 #include "camel-tcp-stream-raw.h"
 #include "camel-operation.h"
 
@@ -48,7 +50,8 @@ static int stream_close  (CamelStream *stream);
 static int stream_connect (CamelTcpStream *stream, struct hostent *host, int port);
 static int stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
 static int stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
-static gpointer stream_get_socket (CamelTcpStream *stream);
+static CamelTcpAddress *stream_get_local_address (CamelTcpStream *stream);
+static CamelTcpAddress *stream_get_remote_address (CamelTcpStream *stream);
 
 static void
 camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *camel_tcp_stream_raw_class)
@@ -68,8 +71,9 @@ camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *camel_tcp_stream_raw_cl
 	
 	camel_tcp_stream_class->connect = stream_connect;
 	camel_tcp_stream_class->getsockopt = stream_getsockopt;
-	camel_tcp_stream_class->setsockopt = stream_setsockopt;
-	camel_tcp_stream_class->get_socket = stream_get_socket;
+	camel_tcp_stream_class->setsockopt  = stream_setsockopt;
+	camel_tcp_stream_class->get_local_address  = stream_get_local_address;
+	camel_tcp_stream_class->get_remote_address = stream_get_remote_address;
 }
 
 static void
@@ -257,16 +261,20 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 			FD_SET (cancel_fd, &rdset);
 			fdmax = MAX (tcp_stream_raw->sockfd, cancel_fd) + 1;
 			
-			select (fdmax, &rdset, 0, 0, NULL);
-			if (FD_ISSET (cancel_fd, &rdset)) {
-				fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
-				errno = EINTR;
-				return -1;
+			nread = -1;
+			if (select (fdmax, &rdset, 0, 0, NULL) != -1) {
+				if (FD_ISSET (cancel_fd, &rdset)) {
+					fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
+					errno = EINTR;
+					return -1;
+				}
+				
+				do {
+					nread = read (tcp_stream_raw->sockfd, buffer, n);
+				} while (nread == -1 && errno == EINTR);
+			} else if (errno == EINTR) {
+				errno = EAGAIN;
 			}
-			
-			do {
-				nread = read (tcp_stream_raw->sockfd, buffer, n);
-			} while (nread == -1 && errno == EINTR);
 		} while (nread == -1 && (errno == EAGAIN || errno == EWOULDBLOCK));
 		
 		error = errno;
@@ -313,32 +321,41 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 			FD_SET (tcp_stream_raw->sockfd, &wrset);
 			FD_SET (cancel_fd, &rdset);
 			
-			select (fdmax, &rdset, &wrset, 0, NULL);
-			if (FD_ISSET (cancel_fd, &rdset)) {
-				fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
-				errno = EINTR;
-				return -1;
-			}
-			
-			do {
-				w = write (tcp_stream_raw->sockfd, buffer + written, n - written);
-			} while (w == -1 && errno == EINTR);
-			
-			if (w == -1) {
-				if (errno == EAGAIN || errno == EWOULDBLOCK) {
-					w = 0;
-				} else {
-					error = errno;
+			w = -1;
+			if (select (fdmax, &rdset, &wrset, 0, NULL) != -1) {
+				if (FD_ISSET (cancel_fd, &rdset)) {
 					fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
-					errno = error;
+					errno = EINTR;
 					return -1;
 				}
-			} else
-				written += w;
+				
+				do {
+					w = write (tcp_stream_raw->sockfd, buffer + written, n - written);
+				} while (w == -1 && errno == EINTR);
+				
+				if (w == -1) {
+					if (errno == EAGAIN || errno == EWOULDBLOCK) {
+						w = 0;
+					} else {
+						error = errno;
+						fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
+						errno = error;
+						return -1;
+					}
+				} else
+					written += w;
+			} else if (errno == EINTR) {
+				w = 0;
+			}
 		} while (w != -1 && written < n);
 		
+		error = errno;
 		fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
+		errno = error;
 	}
+	
+	if (w == -1)
+		return -1;
 	
 	return written;
 }
@@ -364,12 +381,15 @@ stream_close (CamelStream *stream)
 static int
 socket_connect (struct hostent *h, int port)
 {
+#ifdef ENABLE_IPv6
+	struct sockaddr_in6 sin6;
+#endif
 	struct sockaddr_in sin;
-	int fd;
-	int ret;
-	socklen_t len;
+	struct sockaddr *saddr;
 	struct timeval tv;
+	socklen_t len;
 	int cancel_fd;
+	int ret, fd;
 	
 	/* see if we're cancelled yet */
 	if (camel_operation_cancel_check (NULL)) {
@@ -378,15 +398,29 @@ socket_connect (struct hostent *h, int port)
 	}
 	
 	/* setup connect, we do it using a nonblocking socket so we can poll it */
-	sin.sin_port = htons (port);
-	sin.sin_family = h->h_addrtype;
-	memcpy (&sin.sin_addr, h->h_addr, sizeof (sin.sin_addr));
+#ifdef ENABLE_IPv6
+	if (h->h_addrtype == AF_INET6) {
+		sin6.sin6_port = htons (port);
+		sin6.sin6_family = h->h_addrtype;
+		memcpy (&sin6.sin6_addr, h->h_addr, sizeof (sin6.sin6_addr));
+		saddr = (struct sockaddr *) &sin6;
+		len = sizeof (sin6);
+	} else {
+#endif
+		sin.sin_port = htons (port);
+		sin.sin_family = h->h_addrtype;
+		memcpy (&sin.sin_addr, h->h_addr, sizeof (sin.sin_addr));
+		saddr = (struct sockaddr *) &sin;
+		len = sizeof (sin);
+#ifdef ENABLE_IPv6
+	}
+#endif
 	
 	fd = socket (h->h_addrtype, SOCK_STREAM, 0);
 	
 	cancel_fd = camel_operation_cancel_fd (NULL);
 	if (cancel_fd == -1) {
-		ret = connect (fd, (struct sockaddr *)&sin, sizeof (sin));
+		ret = connect (fd, saddr, len);
 		if (ret == -1) {
 			close (fd);
 			return -1;
@@ -394,13 +428,13 @@ socket_connect (struct hostent *h, int port)
 		
 		return fd;
 	} else {
+		int flags, fdmax, status;
 		fd_set rdset, wrset;
-		int flags, fdmax;
 		
 		flags = fcntl (fd, F_GETFL);
 		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
 		
-		ret = connect (fd, (struct sockaddr *)&sin, sizeof (sin));
+		ret = connect (fd, saddr, len);
 		if (ret == 0) {
 			fcntl (fd, F_SETFL, flags);
 			return fd;
@@ -411,15 +445,19 @@ socket_connect (struct hostent *h, int port)
 			return -1;
 		}
 		
-		FD_ZERO (&rdset);
-		FD_ZERO (&wrset);
-		FD_SET (fd, &wrset);
-		FD_SET (cancel_fd, &rdset);
-		fdmax = MAX (fd, cancel_fd) + 1;
-		tv.tv_usec = 0;
-		tv.tv_sec = 60 * 4;
+		do {
+			FD_ZERO (&rdset);
+			FD_ZERO (&wrset);
+			FD_SET (fd, &wrset);
+			FD_SET (cancel_fd, &rdset);
+			fdmax = MAX (fd, cancel_fd) + 1;
+			tv.tv_sec = 60 * 4;
+			tv.tv_usec = 0;
+			
+			status = select (fdmax, &rdset, &wrset, 0, &tv);
+		} while (status == -1 && errno == EINTR);
 		
-		if (select (fdmax, &rdset, &wrset, 0, &tv) <= 0) {
+		if (status <= 0) {
 			close (fd);
 			errno = ETIMEDOUT;
 			return -1;
@@ -522,7 +560,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 		if (flags == -1)
 			return -1;
 		
-		data->value.non_blocking = flags & O_NONBLOCK;
+		data->value.non_blocking = flags & O_NONBLOCK ? TRUE : FALSE;
 		
 		return 0;
 	}
@@ -549,8 +587,8 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 		if (flags == -1)
 			return -1;
 		
-		set = data->value.non_blocking ? 1 : 0;
-		flags = (flags & ~O_NONBLOCK) | (set & O_NONBLOCK);
+		set = data->value.non_blocking ? O_NONBLOCK : 0;
+		flags = (flags & ~O_NONBLOCK) | set;
 		
 		if (fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_SETFL, flags) == -1)
 			return -1;
@@ -565,8 +603,72 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 			   sizeof (data->value));
 }
 
-static gpointer
-stream_get_socket (CamelTcpStream *stream)
+#ifdef ENABLE_IPv6
+#define MIN_SOCKADDR_BUFLEN  (sizeof (struct sockaddr_in6))
+#else
+#define MIN_SOCKADDR_BUFLEN  (sizeof (struct sockaddr_in))
+#endif
+
+static CamelTcpAddress *
+stream_get_local_address (CamelTcpStream *stream)
 {
-	return GINT_TO_POINTER (CAMEL_TCP_STREAM_RAW (stream)->sockfd);
+	unsigned char buf[MIN_SOCKADDR_BUFLEN];
+#ifdef ENABLE_IPv6
+	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) buf;
+#endif
+	struct sockaddr_in *sin = (struct sockaddr_in *) buf;
+	struct sockaddr *saddr = (struct sockaddr *) buf;
+	gpointer address;
+	socklen_t len;
+	int family;
+	
+	len = MIN_SOCKADDR_BUFLEN;
+	
+	if (getsockname (CAMEL_TCP_STREAM_RAW (stream)->sockfd, saddr, &len) == -1)
+		return NULL;
+	
+	if (saddr->sa_family == AF_INET) {
+		family = CAMEL_TCP_ADDRESS_IPv4;
+		address = &sin->sin_addr;
+#ifdef ENABLE_IPv6
+	} else if (saddr->sa_family == AF_INET6) {
+		family = CAMEL_TCP_ADDRESS_IPv6;
+		address = &sin6->sin6_addr;
+#endif
+	} else
+		return NULL;
+	
+	return camel_tcp_address_new (family, sin->sin_port, len, address);
+}
+
+static CamelTcpAddress *
+stream_get_remote_address (CamelTcpStream *stream)
+{
+	unsigned char buf[MIN_SOCKADDR_BUFLEN];
+#ifdef ENABLE_IPv6
+	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) buf;
+#endif
+	struct sockaddr_in *sin = (struct sockaddr_in *) buf;
+	struct sockaddr *saddr = (struct sockaddr *) buf;
+	gpointer address;
+	socklen_t len;
+	int family;
+	
+	len = MIN_SOCKADDR_BUFLEN;
+	
+	if (getpeername (CAMEL_TCP_STREAM_RAW (stream)->sockfd, saddr, &len) == -1)
+		return NULL;
+	
+	if (saddr->sa_family == AF_INET) {
+		family = CAMEL_TCP_ADDRESS_IPv4;
+		address = &sin->sin_addr;
+#ifdef ENABLE_IPv6
+	} else if (saddr->sa_family == AF_INET6) {
+		family = CAMEL_TCP_ADDRESS_IPv6;
+		address = &sin6->sin6_addr;
+#endif
+	} else
+		return NULL;
+	
+	return camel_tcp_address_new (family, sin->sin_port, len, address);
 }

@@ -1,66 +1,73 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_Summary_ShellComponent"
-	type="exe"
-	location="evolution-executive-summary">
+  <oaf_server iid="OAFIID:GNOME_Evolution_Summary_ShellComponent"
+	      type="factory"
+	      location="OAFIID:GNOME_Evolution_Summary_ShellComponentFactory">
 
-	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/ShellComponent:1.0"/>
-	</oaf_attribute>
+    <oaf_attribute name="repo_ids" type="stringv">
+      <item value="IDL:GNOME/Evolution/ShellComponent:1.0"/>
+    </oaf_attribute>
 
-	<oaf_attribute name="description" type="string"
-		value="Evolution component for the executive summary."/>
-	<oaf_attribute name="description-az" type="string"
-		value="&#196;&#176;crac&#196;&#177; m&#195;&#188;nd&#201;&#153;ricat &#195;&#188;&#195;&#167;&#195;&#188;n &#39;Evolution&#39; par&#195;&#167;as&#196;&#177;."/>
-	<oaf_attribute name="description-da" type="string"
-		value="Evolution-komponent for sammendrag."/>
-	<oaf_attribute name="description-de" type="string"
-		value="Evolution-Komponente f&#252;r die Chefsesselansicht"/>
-	<oaf_attribute name="description-el" type="string"
-		value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#244;&#239;&#245; Evolution &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#234;&#244;&#229;&#235;&#229;&#243;&#244;&#233;&#234;&#222; &#243;&#253;&#237;&#239;&#248;&#231;."/>
-	<oaf_attribute name="description-es" type="string"
-		value="Componente Evolution para el resumen de trabajo."/>
-	<oaf_attribute name="description-fr" type="string"
-		value="Composant pour le r&#233;sum&#233;"/>
-	<oaf_attribute name="description-gl" type="string"
-		value="Compo&#241;ente de Evolution para o resumo executivo"/>
-	<oaf_attribute name="description-hu" type="string"
-		value="Vezet&#245;i &#246;sszefoglal&#243; Evolution komponens."/>
-	<oaf_attribute name="description-it" type="string"
-		value="Componente di Evolution per il sommario esecutivo."/>
-	<oaf_attribute name="description-ja" type="string"
-		value="&#188;&#194;&#185;&#212;&#165;&#181;&#165;&#222;&#165;&#234;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206; Evolution &#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
-	<oaf_attribute name="description-nl" type="string"
-		value="Evolution-component voor de samenvatting."/>
-	<oaf_attribute name="description-nn" type="string"
-		value="Evolutionkomponent for Mitt samandrag"/>
-	<oaf_attribute name="description-no" type="string"
-		value="Evolution-komponent for sammendrag."/>
-	<oaf_attribute name="description-pl" type="string"
-		value="Komponent Evolution obs&#179;uguj&#177;cy zestawienie wykonawcze."/>
-	<oaf_attribute name="description-pt_BR" type="string"
-		value="O componente do Evolution para o resumo executivo."/>
-	<oaf_attribute name="description-ro" type="string"
-		value="Componenta Evolution pentru sumarul activit&#227;&#254;ilor."/>
-	<oaf_attribute name="description-ru" type="string"
-		value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolution &#196;&#204;&#209; Executive Summary."/>
-	<oaf_attribute name="description-sk" type="string"
-		value="Komponent Evolution pre S&#195;&#186;hrn."/>
-	<oaf_attribute name="description-sl" type="string"
-		value="Evolucijina komponenta za povzetke."/>
-	<oaf_attribute name="description-sv" type="string"
-		value="Evolutionkomponent f&#246;r sammanfattningen."/>
-	<oaf_attribute name="description-tr" type="string"
-		value="&#214;zet i&#231;in Evolution bile&#254;eni"/>
-	<oaf_attribute name="description-uk" type="string"
-		value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolution &#196;&#204;&#209; &#215;&#201;&#203;&#207;&#206;&#193;&#215;&#222;&#207;&#199;&#207; &#218;&#215;&#197;&#196;&#197;&#206;&#206;&#209;."/>
-	<oaf_attribute name="description-zh_CN" type="string"
-		value="&#232;&#191;&#155;&#232;&#161;&#140;&#230;&#166;&#130;&#230;&#139;&#172;&#231;&#154;&#132; Evolution &#231;&#187;&#132;&#228;&#187;&#182;&#227;&#128;&#130;"/>
-	<oaf_attribute name="description-zh_TW" type="string"
-		value="&#231;&#148;&#168;&#228;&#189;&#156;&#232;&#153;&#149;&#231;&#144;&#134;&#230;&#145;&#152;&#232;&#166;&#129;&#231;&#154;&#132; Evolution &#229;&#133;&#131;&#228;&#187;&#182;&#227;&#128;&#130;"/>
+    <oaf_attribute name="description" type="string"
+		   value="Evolution Summary component."/>
 
-	<oaf_attribute name="evolution:shell-component-icon" type="string"
-		       value="evolution-today.png"/>
-</oaf_server>
+    <oaf_attribute name="evolution:shell_component_icon" type="string"
+		   value="evolution-today.png"/>
+    <oaf_attribute name="evolution:shell_component_launch_order" type="number"
+		   value="4"/>
+  </oaf_server>
+
+  <oaf_server iid="OAFIID:GNOME_Evolution_Summary_ShellComponentFactory"
+	      type="exe"
+	      location="evolution-executive-summary">
+
+    <oaf_attribute name="repo_ids" type="stringv">
+      <item value="IDL:GNOME/GenericFactory:1.0"/>
+    </oaf_attribute>
+
+    <oaf_attribute name="description" type="string"
+		   value="Factory for the Evolution Summary component."/>
+
+  </oaf_server>
+
+  <oaf_server iid="OAFIID:GNOME_Evolution_Summary_ConfigControlFactory"
+	      type="exe"
+	      location="evolution-executive-summary">
+
+    <oaf_attribute name="repo_ids" type="stringv">
+      <item value="IDL:GNOME/GenericFactory:1.0"/>
+    </oaf_attribute>
+
+    <oaf_attribute name="description" type="string"
+		   value="Factory for Evolution Summary's configuration control."/>
+  </oaf_server>
+
+  <oaf_server iid="OAFIID:GNOME_Evolution_Summary_ConfigControl"
+	      type="factory"
+	      location="OAFIID:GNOME_Evolution_Summary_ConfigControlFactory">
+
+    <oaf_attribute name="repo_ids" type="stringv">
+      <item value="IDL:GNOME/Evolution/ConfigControl:1.0"/>
+    </oaf_attribute>
+
+    <oaf_attribute name="evolution:config_item:title" type="string"
+		   value="Summary Preferences"/>
+
+    <oaf_attribute name="evolution:config_item:description" type="string"
+		   value="Configure the appearance of the Evolution Summary here"/>
+
+    <oaf_attribute name="evolution:config_item:icon_name" type="string"
+		   value="evolution-today.png"/>
+
+    <oaf_attribute name="evolution:config_item:type" type="stringv">
+	<item value="summary"/>
+    </oaf_attribute>
+
+    <oaf_attribute name="evolution:config_item:priority" type="string" value="-5"/>
+    
+    <oaf_attribute name="description" type="string"
+		   value="Configuration control for the Evolution Summary."/>
+
+  </oaf_server>
 
 </oaf_info>

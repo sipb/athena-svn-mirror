@@ -29,7 +29,7 @@
 
 ## Release information
 my $PROGRAM = "intltool-update";
-my $VERSION = "0.17";
+my $VERSION = "0.22";
 my $PACKAGE = "intltool";
 
 ## Loaded modules
@@ -64,6 +64,7 @@ my $xml_extension =
 "oaf(\.in)+|".
 "etspec|".
 "sheet(\.in)+|".
+"schemas(\.in)+|".
 "pong(\.in)+";
 
 my $ini_extension =
@@ -185,13 +186,16 @@ sub determine_type ($)
    # FIXME: Use $xml_extentions, and maybe do all this even nicer
    my $xml_regex = 
        "(?:xml(\.in)*|ui|oaf(?:\.in)+|server(?:\.in)+|sheet(?:\.in)+|".
-       "pong(?:\.in)+|etspec)";
+       "pong(?:\.in)+|etspec|schemas(?:\.in)+)";
    my $ini_regex =
        "(?:desktop(?:\.in)+|caves(?:\.in)+|directory(?:\.in)+|".
        "soundlist(?:\.in)+)";
 
    if ($type =~ /\[type: gettext\/([^\]].*)]/) {
         $gettext_type=$1;
+   }
+   elsif ($type =~ /schemas(\.in)+$/) {
+        $gettext_type="schemas";
    }
    elsif ($type =~ /$xml_regex$/) {
         $gettext_type="xml";
@@ -217,6 +221,7 @@ sub find_leftout_files
 {
     my (@buf_i18n_plain,
 	@buf_i18n_xml,
+	@buf_i18n_xml_unmarked,
 	@buf_i18n_ini,
 	@buf_potfiles,
 	@buf_potfiles_ignore,
@@ -235,8 +240,12 @@ sub find_leftout_files
     find sub {
 	push @buf_i18n_ini, "$File::Find::name" if /\.($ini_extension)$/ 
 	}, "..";
+    find sub {
+        push @buf_i18n_xml_unmarked, "$File::Find::name" if /\.(schemas(\.in)+)$/
+        }, "..";
 
-    open POTFILES, "POTFILES.in" || die "$PROGRAM:  there's no POTFILES.in!\n";
+
+    open POTFILES, "POTFILES.in" or die "$PROGRAM:  there's no POTFILES.in!\n";
 
     @buf_potfiles = grep /^[^#]/, <POTFILES>;
 			    
@@ -326,7 +335,7 @@ sub find_leftout_files
     foreach my $file (@buf_i18n_xml) {
         open FILE, "<$file";
         while (<FILE>) {
-            if (/\s_(.*)=\"/){
+            if (/\s_(.*)=\"/ || /translatable=\"yes\"/){
                 push @buf_allfiles, unpack("x3 A*", $file) . "\n";
                 last;
             }
@@ -342,6 +351,11 @@ sub find_leftout_files
             }
         }
     }
+
+    foreach my $file (@buf_i18n_xml_unmarked){
+        push @buf_allfiles, unpack("x3 A*", $file) . "\n";
+    }
+
 
     @buf_allfiles_sorted = sort (@buf_allfiles);
     @buf_potfiles_sorted = sort (@buf_potfiles);
@@ -453,12 +467,6 @@ sub generate_po_template
 			"--keyword\=U\_",
 	   		"--files-from\=\.\/POTFILES\.in");
 
-    -e "$MODULE.po" || die "$PROGRAM: $MODULE.po does not exist.\n";
-    system ("rm", "-f", "$MODULE.pot");
-    move ("$MODULE.po", "$MODULE.pot") || die "$PROGRAM: couldn't move $MODULE.po to $MODULE.pot.\n";
-
-    print "Wrote $MODULE.pot\n" if $VERBOSE;
-
     move ("POTFILES.in.old", "POTFILES.in");
 
     print "Removing generated header (.h) files..." if $VERBOSE;
@@ -473,6 +481,17 @@ sub generate_po_template
 
     close FILE;
     print "done\n" if $VERBOSE;
+
+    if (!-e "$MODULE.po") {
+        print "WARNING: It seems that none of the files in POTFILES.in ".
+              "contain marked strings\n";
+        exit (1);
+    }
+
+    system ("rm", "-f", "$MODULE.pot");
+    move ("$MODULE.po", "$MODULE.pot") or die "$PROGRAM: couldn't move $MODULE.po to $MODULE.pot.\n";
+
+    print "Wrote $MODULE.pot\n" if $VERBOSE;
 }
 
 sub update_po_file
@@ -555,6 +574,8 @@ sub find_package_name
     if ($base_dirname =~ /^po(-.+)?$/) {
         if (-f "../configure.in") {
             $conf_in = "../configure.in";
+	} elsif (-f "../configure.ac") {
+	    $conf_in = "../configure.ac";
         } else {
 	    my $makefile_source;
 	    local (*IN);
@@ -575,19 +596,35 @@ sub find_package_name
 	    $conf_in || die "Cannot find top_srcdir in Makefile."
         }
 
+	my %varhash = ();
         my $conf_source; {
            local (*IN);
-           local $/; # slurp mode
            open (IN, "<$conf_in") || die "can't open $conf_in: $!";
+           while (<IN>) {
+              if (/^(\w+)=(\S+)/) { $varhash{$1} = $2 };
+           }
+           seek (IN, 0, 0);
+           local $/; # slurp mode
            $conf_source = <IN>;
         }
 
 	my $name = "";
-	$name = $1 if $conf_source =~ /^AM_INIT_AUTOMAKE\(([^,\)]+)/m;
-	$name = $1 if $conf_source =~ /^GETTEXT_PACKAGE=(\S+)/m;
-	if ($name =~ /^[\$](\S+)/) {
-            return $1 if $conf_source =~ /^\s*$1=(\S*)/m;
-        }
+	$name = $1 if $conf_source =~ /^AM_INIT_AUTOMAKE\([\s\[]*([^,\)\s\]]+)/m;
+	if ($conf_source =~ /^AC_INIT\([\s\[]*([^,\)\s\]]+)\]?\s*,/m) {
+	    $name = $1;
+	    $varhash{"AC_PACKAGE_NAME"} = $1;
+	}
+	$name = $1 if $conf_source =~ /^GETTEXT_PACKAGE=\[?([^\s\]]+)/m;
+
+	$name = "\$AC_PACKAGE_NAME" if "$name" eq "AC_PACKAGE_NAME";
+
+	my $oldname = "";
+	while (($name =~ /[\$](\S+)/) && ("$oldname" ne "$name")) {
+	    $oldname = $name;
+	    if (exists $varhash{$1}) {
+		$name =~ s/[\$](\S+)/$varhash{$1}/;
+	    }
+	}
 	return $name if $name;
     }
 

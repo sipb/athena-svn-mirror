@@ -40,6 +40,9 @@ extern "C" {
 #define CAMEL_RECIPIENT_TYPE_CC "Cc"
 #define CAMEL_RECIPIENT_TYPE_BCC "Bcc"
 
+#define CAMEL_RECIPIENT_TYPE_RESENT_TO "Resent-To"
+#define CAMEL_RECIPIENT_TYPE_RESENT_CC "Resent-Cc"
+#define CAMEL_RECIPIENT_TYPE_RESENT_BCC "Resent-Bcc"
 
 #define CAMEL_MIME_MESSAGE_TYPE     (camel_mime_message_get_type ())
 #define CAMEL_MIME_MESSAGE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessage))
@@ -126,7 +129,7 @@ void                        camel_mime_message_set_best_encoding  (CamelMimeMess
 								   CamelBestencEncoding        enctype);
 void                        camel_mime_message_encode_8bit_parts  (CamelMimeMessage           *mime_message);
 
-CamelMimePart              *camel_mime_part_get_part_by_content_id (CamelMimeMessage *message, const char *content_id);
+CamelMimePart              *camel_mime_message_get_part_by_content_id (CamelMimeMessage *message, const char *content_id);
 
 #ifdef __cplusplus
 }
