@@ -23,7 +23,8 @@ SETENVOBJS = fakeenv.o
 FLOCK=
 #define LD_X_BROKEN
 #define _got_globals
-BSDLIB=-lsocket -lnsl
+BSDLIB=-lresolv -lsocket -lnsl
+AFSBSDLIB=-L/usr/athena/lib -lbsd
 RANLIB=true
 #define NEED_REGEX3
 REGEX3SRC=regex.c
