@@ -1,0 +1,8 @@
+Name: athena-gal2
+Summary: The G App library, for Athena
+License: LGPL
+Group: System Environment/Libraries
+
+%description
+gal contains some library functions used by some larger GNOME
+applications such as Evolution and Gnumeric.
