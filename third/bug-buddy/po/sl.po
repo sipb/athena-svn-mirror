@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2002-06-07 21:46+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -255,7 +255,6 @@ msgid "<span size=\"xx-large\">Bug Buddy</span>"
 msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
 #: src/bug-buddy.glade.h:3
-#, fuzzy
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
@@ -267,7 +266,7 @@ msgstr ""
 "\n"
 "Podatki o hroščih, shranjeni na vašem sistemu so zastareli. Izbira "
 "'Posodobi' jih bo posodobila. Izbira 'Don't update' bo prisilila pri "
-"poročanju o hroščih uporabo starih podatkov.'"
+"poročanju o hroščih uporabo starih podatkov.'\n"
 
 #: src/bug-buddy.glade.h:7
 msgid "Advanced"
@@ -803,7 +802,7 @@ msgstr ""
 "\n"
 "Hvala!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -811,15 +810,15 @@ msgstr ""
 "Ker Bug Buddy ne ve za kateri izdelek želite poslati poročilo o hrošču, "
 "boste morali tega hrošča opisati ročno."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Prosim, izberite izdelek v katerem ste naleteli na hrošča."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Prosim, izberite program v katerem ste naleteli na hrošča."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -837,15 +836,15 @@ msgstr ""
 "Morda ga lahko najdete znotraj programa v škatli \"O programu\" (\"About\")"
 "ali v dokumentaciji programa."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "V poročilu o hrošču mora biti nujno navedena komponenta."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "V poročilu o hrošču mora biti nujno navedena različica."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

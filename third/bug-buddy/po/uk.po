@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 0.6\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
-"PO-Revision-Date: 2002-11-26 04:21--500\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
+"PO-Revision-Date: 2003-01-27 04:14--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -231,10 +231,12 @@ msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Не вдалося поновити інформацію про помилки.\n"
+"Буде використано стару."
 
 #: src/bug-buddy.c:763
 msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
+msgstr "Інформацію про помилки успішно поновлено."
 
 #: src/bug-buddy.desktop.in.h:1
 msgid "Bug Report Tool"
@@ -249,9 +251,8 @@ msgid "*"
 msgstr "*"
 
 #: src/bug-buddy.glade.h:2
-#, fuzzy
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
-msgstr "&lt;span size=\"xx-large\"&gt;Bug Buddy&lt;/span&gt;"
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
 #: src/bug-buddy.glade.h:3
 msgid ""
@@ -261,6 +262,11 @@ msgid ""
 "'Update' will update it. Choosing 'Don't update' will force the bug "
 "reporting to use old data.'\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Поновлення Bug Buddy update</span>\n"
+"\n"
+"Інформація про помилки, що зберігається у вашій системі застаріла. Вибір "
+"\"Поновити\" поновить її. Вибір \"Не поновлювати\" спричинить звітування про "
+"помилку з використанням старих даних.\n"
 
 #: src/bug-buddy.glade.h:7
 msgid "Advanced"
@@ -279,15 +285,13 @@ msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
 #: src/bug-buddy.glade.h:11
-#, fuzzy
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
-"Програма Bug Buddy може відіслати у вашому сповіщенні про помилку "
-"налагоджувальну інформацію.\n"
-"Допустимі параметри мають бути вибрані для вас автоматично.\n"
-"Для додаткової інформації натисніть, будь ласка, кнопку \"Довідка\"."
+"Програма Bug Buddy може відіслати у сповіщенні про помилку налагоджувальну "
+"інформацію.\n"
+"Допустимі параметри мають бути вибрані для вас автоматично."
 
 #: src/bug-buddy.glade.h:13
 msgid ""
@@ -317,9 +321,8 @@ msgid "Description"
 msgstr "Опис"
 
 #: src/bug-buddy.glade.h:19
-#, fuzzy
 msgid "Downloading files"
-msgstr "Поступ звантаження"
+msgstr "Звантаження файлів"
 
 #: src/bug-buddy.glade.h:20
 msgid "Email"
@@ -391,9 +394,8 @@ msgid "Save the report to..."
 msgstr "Зберегти звіт у файлі..."
 
 #: src/bug-buddy.glade.h:36
-#, fuzzy
 msgid "Saving: "
-msgstr "Збереження:"
+msgstr "Збереження: "
 
 #: src/bug-buddy.glade.h:37
 msgid "Sendmail Settings"
@@ -449,11 +451,11 @@ msgstr "Версія"
 
 #: src/bug-buddy.glade.h:51
 msgid "_Don't update"
-msgstr ""
+msgstr "_Не поновлювати"
 
 #: src/bug-buddy.glade.h:52
 msgid "_Update"
-msgstr ""
+msgstr "_Поновити"
 
 #: src/bug-buddy.glade.h:53
 msgid "component"
@@ -490,7 +492,7 @@ msgstr "продукт"
 #: src/bugzilla.c:257
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d з %d"
 
 #: src/bugzilla.c:687
 msgid "ID"
@@ -801,7 +803,7 @@ msgstr ""
 "\n"
 "Дякужмо!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -809,16 +811,15 @@ msgstr ""
 "Через те, що програма Bug Buddy нічого не знає про програму, до якої ви "
 "хочете відіслати сповіщення про помилку, вам необхідно вручну вказати адресу."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Будь ласка, виберіть продукт для вашого звіту."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Будь ласка, виберіть додаток для вашого звіту."
 
-#: src/united-states-of-bug-buddy.c:802
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -828,48 +829,26 @@ msgid ""
 "You may be able to find one in an \"About\" box in the application, or in "
 "the application's documentation."
 msgstr ""
-"Цей додаток не має інформації про процес сповіщення про помилки.\n"
+"Цей додаток не містить інформації про процес сповіщення про помилки.\n"
 "\n"
-"Якщо ви знаєте адресу, на яку необхідно відсилати сповіщення, вкажіть її "
-"нижче.\n"
+"Якщо ви знаєте адресу, на яку необхідно відсилати сповіщення, ви матимете "
+"змогу вказати її пізніше.\n"
 "\n"
 "Ви можете пошукати її у вікні \"Про програму\" в додатку чи в документації "
 "до дотатка."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Необхідно вказати компонент для звіту."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Необхідно вказати версію для звіту."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"
 msgstr ""
 "Ви впевнені, що хочете відмінити\n"
 "цей звіт про помилку?"
-
-#~ msgid ""
-#~ "There was an error showing the proxy settings:\n"
-#~ "\n"
-#~ "%s.\n"
-#~ "\n"
-#~ "Please make sure the GNOME Control Center is properly installed."
-#~ msgstr ""
-#~ "Виникла помилка на відображенні параметрів проксі:\n"
-#~ "\n"
-#~ "%s.\n"
-#~ "\n"
-#~ "Переконайтесь, що Центр керування GNOME встановлено належним чином"
-
-#~ msgid "Proxy Settings..."
-#~ msgstr "Параметри проксі..."
-
-#~ msgid "To:"
-#~ msgstr "До:"
-
-#~ msgid "Updating products list:"
-#~ msgstr "Поновлення списку програм:"

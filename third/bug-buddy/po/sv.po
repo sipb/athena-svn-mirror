@@ -5,13 +5,13 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000, 2001.
 #
-# $Id: sv.po,v 1.1.1.2 2003-01-29 20:43:32 ghudson Exp $
+# $Id: sv.po,v 1.1.1.3 2003-02-12 06:55:11 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
-"PO-Revision-Date: 2003-01-03 12:34+0100\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
+"PO-Revision-Date: 2003-01-20 01:01+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -352,7 +352,7 @@ msgstr "Välj en komponent, version och allvarlighetsgrad."
 
 #: src/bug-buddy.glade.h:26
 msgid "Please make any final corrections to the bug report."
-msgstr "Gör slutgiltiga rättelser i felrapporten."
+msgstr "Gör slutgiltiga justeringar i felrapporten."
 
 #: src/bug-buddy.glade.h:27
 msgid "Please make your bug report in English, if possible."
@@ -527,7 +527,7 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy kunde inte hitta någon information om var felrapporter ska "
+"Bug Buddy kunde inte hitta någon information om vart felrapporter ska "
 "skickas.\n"
 "\n"
 "Försäkra dig om att Bug Buddy installerats korrekt.\n"
@@ -575,7 +575,7 @@ msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"GDB kunde inte bestämma vilken körbar fil som\n"
+"GDB kunde inte avgöra vilken körbar fil som\n"
 "skapade \"%s\""
 
 #: src/gdb-buddy.c:238
@@ -612,7 +612,7 @@ msgstr ""
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr "Kunde inte läsa symbolisk länkinformation för %s"
+msgstr "Kunde inte läsa information om symbolisk länk för %s"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
@@ -664,7 +664,7 @@ msgstr "Välj en komponent"
 
 #: src/united-states-of-bug-buddy.c:57
 msgid "Frequently Reported Bugs"
-msgstr "Oftast rapporterade fel"
+msgstr "Ofta rapporterade fel"
 
 #: src/united-states-of-bug-buddy.c:58
 msgid "Bug Description"
@@ -803,7 +803,7 @@ msgstr ""
 "\n"
 "Tack!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -811,15 +811,15 @@ msgstr ""
 "Eftersom Bug Buddy inte känner till den produkt om du vill skicka en "
 "felrapport om kommer du att behöva adressera felrapporten manuellt."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Välj en produkt för din felrapport."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Välj ett program för din felrapport."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -838,15 +838,15 @@ msgstr ""
 "Du kanske kan hitta en i en \"Om\"-ruta i programmet, eller i programmets "
 "dokumentation."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Du måste ange en komponent för din felrapport."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Du måste ange ett versionsnummer för din buggrapport."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

@@ -1,15 +1,15 @@
 # German bug-buddy translation
-# Matthias Warkus  <mawa@iname.com>, 2000.
-# Christian Meyer <chrisime@gnome.org>, 2000.
 # Karl Eichwalder <ke@suse.de>, 2000, 2001.
 # Benjamin Greiner <benjamin.greiner@gmx.net>, 2002.
-# Christian Neumair <chris@gnome-de.org>, 2002.
+# Christian Meyer <chrisime@gnome.org>, 2000.
+# Christian Neumair <chris@gnome-de.org>, 2002, 2003.
+# Matthias Warkus  <mawa@iname.com>, 2000.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.2.x\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
-"PO-Revision-Date: 2003-01-19 22:37+0100\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
+"PO-Revision-Date: 2003-01-25 12:03+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -166,7 +166,7 @@ msgstr "Fehlerdiagnoseoptionen verbergen"
 
 #: src/bug-buddy.c:401
 msgid "Show Debugging Options"
-msgstr "Fehlerdiagnoseoptionen zeigen"
+msgstr "Fehlerdiagnoseoptionen anzeigen"
 
 #: src/bug-buddy.c:503
 msgid ""
@@ -241,12 +241,12 @@ msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
-"Die Bug Buddy-Fehlerinformationen konnten nicht aktualisiert werden.\n"
+"Die Bug-Buddy-Fehlerinformationen konnten nicht aktualisiert werden.\n"
 "Die Alten werden verwendet."
 
 #: src/bug-buddy.c:763
 msgid "Bug Buddy updated its bug information correctly."
-msgstr "Die Bug Buddy-Fehlerinformationen wurden erfolgreich aktualisiert."
+msgstr "Die Bug-Buddy-Fehlerinformationen wurden erfolgreich aktualisiert."
 
 #: src/bug-buddy.desktop.in.h:1
 msgid "Bug Report Tool"
@@ -272,11 +272,11 @@ msgid ""
 "'Update' will update it. Choosing 'Don't update' will force the bug "
 "reporting to use old data.'\n"
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Bug Buddy-Aktualisierung</span>\n"
+"<span weight=\"bold\" size=\"larger\">Bug-Buddy-Aktualisierung</span>\n"
 "\n"
 "Die Fehler-Informationen auf Ihrem System sind nicht mehr aktuell. Sie "
-"können diese aktualisieren, indem Sie den Knopf „Aktualisieren” anklicken. "
-"Falls Sie „Nicht aktualisieren” drücken, werden die alten Fehler-"
+"können diese aktualisieren, indem Sie den Knopf »Aktualisieren« anklicken. "
+"Falls Sie »Nicht aktualisieren« drücken, werden die alten Fehler-"
 "Informationen verwendet .\n"
 
 #: src/bug-buddy.glade.h:7
@@ -530,7 +530,7 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy konnte „%s” nicht öffnen.\n"
+"Bug Buddy konnte »%s« nicht öffnen.\n"
 "Bitte stellen Sie sicher, dass Bug Buddy korrekt installiert ist.\n"
 "\n"
 "Bug Buddy wird nun beendet."
@@ -582,7 +582,7 @@ msgid ""
 "'%s'"
 msgstr ""
 "Die Core-Datei konnte nicht mit gdb verarbeitet werden:\n"
-"„%s”"
+"»%s«"
 
 #: src/gdb-buddy.c:206
 #, c-format
@@ -590,7 +590,7 @@ msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"Der Debugger konnte nicht feststellen, welches Programm „%s” erstellt hat."
+"Der Debugger konnte nicht feststellen, welches Programm »%s« erstellt hat."
 
 #: src/gdb-buddy.c:238
 msgid "Error on read... aborting"
@@ -642,7 +642,7 @@ msgstr "Die Hauptschleife läuft nicht!"
 #: src/save-buddy.c:284
 #, c-format
 msgid "Error setting up sigchld handler: %s"
-msgstr "Fehler bei der Einrichtung des „SIGCHLD”-Handlers: %s"
+msgstr "Fehler bei der Einrichtung des »SIGCHLD«-Handlers: %s"
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
@@ -655,7 +655,7 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
-"Es existiert bereits eine Datei mit dem Namen „%s”.\n"
+"Es existiert bereits eine Datei mit dem Namen »%s«.\n"
 "\n"
 "Möchten Sie sie überschreiben?"
 
@@ -705,7 +705,7 @@ msgstr "Das graphische Werkzeug zur Fehlermeldung für GNOME."
 
 #: src/united-states-of-bug-buddy.c:118
 msgid "The lame Bug Buddy web page"
-msgstr "Die armselige Bug Buddy-Webseite "
+msgstr "Die armselige Bug-Buddy-Webseite "
 
 #: src/united-states-of-bug-buddy.c:308
 msgid "Please enter your name."
@@ -722,7 +722,7 @@ msgid ""
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
-"„%s” scheint nicht zu existieren.\n"
+"»%s« scheint nicht zu existieren.\n"
 "\n"
 "Bitte überprüfen Sie den Pfad zu sendmail erneut."
 
@@ -746,7 +746,7 @@ msgid ""
 "\n"
 "Bug Buddy can only submit plaintext (text/*) files."
 msgstr ""
-"„%s” ist eine Datei vom Typ %s.\n"
+"»%s« ist eine Datei vom Typ %s.\n"
 "\n"
 "Bug Buddy kann ausschließlich Dateien im Klartext (MIME-Typ text/*) "
 "verschicken."
@@ -780,7 +780,7 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
-"Der Fehlerbericht wurde nicht in „%s” gespeichert:\n"
+"Der Fehlerbericht wurde nicht in »%s« gespeichert:\n"
 "\n"
 "%s\n"
 "\n"
@@ -789,7 +789,7 @@ msgstr ""
 #: src/united-states-of-bug-buddy.c:576
 #, c-format
 msgid "Your bug report was saved in %s"
-msgstr "Ihr Fehlerbericht wurde in „%s” gespeichert."
+msgstr "Ihr Fehlerbericht wurde in »%s« gespeichert."
 
 #: src/united-states-of-bug-buddy.c:584
 msgid "Please wait while Bug Buddy submits your bug report..."
@@ -821,7 +821,7 @@ msgstr ""
 "\n"
 "verschickt.  Vielen Dank!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -830,15 +830,15 @@ msgstr ""
 "einsenden wollen, zur Verfügung stehen, müssen Sie den Fehlerbericht von "
 "Hand adressieren."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "Bitte wählen Sie ein Produkt für Ihren Fehlerbericht."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "Bitte wählen Sie eine Anwendung für Ihren Fehlerbericht."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -854,18 +854,18 @@ msgstr ""
 "Falls Sie eine E-Mail-Adresse kennen, die die Fehlerberichte annimmt, wird "
 "Ihnen später die Möglichkeit gegeben, diese anzugeben.\n"
 "\n"
-"Möglicherweise enthält der „Info”-Dialog oder das Handbuch der betreffenden "
+"Möglicherweise enthält der »Info«-Dialog oder das Handbuch der betreffenden "
 "Anwendung eine geeignete Adresse."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "Sie müssen eine Komponente bei Ihrem Fehlerbericht angeben."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "Sie müssen eine Version bei Ihrem Fehlerbericht angeben."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"

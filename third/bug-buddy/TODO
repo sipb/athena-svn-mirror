@@ -20,3 +20,14 @@ Things to do:
    differents kinds
 
  * Add keywords and set severity based on kind of bug.
+
+ * Get info about distribution (/etc/redhat-release and so...)
+
+ * Submit bug via plugins and specifically for gnome, directly in xml via
+   http post
+
+ * (Check if the email is a valid bugziila account?)
+
+ * Is the user saved a bug report... prompt for submiting it on the next time
+
+

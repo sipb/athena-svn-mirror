@@ -14,6 +14,14 @@
       </bug>
     </component>
   </product>
+  <product name="gnome-media">
+    <component name="Gnome-Sound-Recorder">
+      <bug bugid="103279">
+        <desc>gnome-sound-recorder does not record any sounds</desc>
+        <url>http://bugzilla.gnome.org/show_bug.cgi?id=103279</url>
+      </bug>
+    </component>
+  </product>
   <product name="gnome-panel">
     <component name="Notification Area Applet">
       <bug bugid="94625">

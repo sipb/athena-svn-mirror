@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.2.100\n"
-"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"POT-Creation-Date: 2003-02-03 03:35+0000\n"
 "PO-Revision-Date: 2003-01-15 21:34+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
@@ -351,7 +351,7 @@ msgstr "마지막으로 버그 보고서에서 고칠 점이 있으면 고쳐 �
 
 #: src/bug-buddy.glade.h:27
 msgid "Please make your bug report in English, if possible."
-msgstr "한글이 아닌 영어로 보고서를 꼭 작성하십시오."
+msgstr "꼭 영어로 보고서를 작성하세요."
 
 #: src/bug-buddy.glade.h:28
 msgid ""
@@ -797,7 +797,7 @@ msgstr ""
 "\n"
 "고맙습니다!"
 
-#: src/united-states-of-bug-buddy.c:745
+#: src/united-states-of-bug-buddy.c:747
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
@@ -805,15 +805,15 @@ msgstr ""
 "버그를 보고하려는 제품을 버그버디에서 모르기 때문에, 직접 손으로 버그 레포트"
 "를 써야 할 것입니다."
 
-#: src/united-states-of-bug-buddy.c:769
+#: src/united-states-of-bug-buddy.c:771
 msgid "Please choose a product for your bug report."
 msgstr "버그 보고에는 제품이름을 기입하셔야 합니다."
 
-#: src/united-states-of-bug-buddy.c:783
+#: src/united-states-of-bug-buddy.c:785
 msgid "Please choose an application for your bug report."
 msgstr "버그 보고를 할 프로그램을 고르십시오."
 
-#: src/united-states-of-bug-buddy.c:802
+#: src/united-states-of-bug-buddy.c:804
 msgid ""
 "This application has not included information about how to submit bugs.\n"
 "\n"
@@ -830,15 +830,15 @@ msgstr ""
 "프로그램의 \"정보\" 대화상자나 프로그램의 문서에서 메일 주소를 찾을 수 있습니"
 "다."
 
-#: src/united-states-of-bug-buddy.c:843
+#: src/united-states-of-bug-buddy.c:845
 msgid "You must specify a component for your bug report."
 msgstr "버그 보고에는 컴포넌트 이름을 기입하셔야 합니다."
 
-#: src/united-states-of-bug-buddy.c:857
+#: src/united-states-of-bug-buddy.c:859
 msgid "You must specify a version for your bug report."
 msgstr "버그 보고에는 버전을 기입하셔야 합니다."
 
-#: src/united-states-of-bug-buddy.c:909
+#: src/united-states-of-bug-buddy.c:911
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"
