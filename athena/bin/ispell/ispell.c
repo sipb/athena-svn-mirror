@@ -21,6 +21,9 @@
  *	   passes over \ till next whitespace.
  *	   does not recognize % (comment)
  */
+#ifdef SYSV
+#define USG
+#endif
 
 #include <stdio.h>
 #include <ctype.h>
