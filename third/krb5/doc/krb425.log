@@ -1,0 +1,110 @@
+This is TeX, Version 3.1415 (C version 6.1) (format=plain 97.5.26)  6 FEB 1998 22:53
+**krb425.texinfo
+(krb425.texinfo (texinfo.tex Loading texinfo package [Version 1.3]: Basics,
+\bindingoffset=\dimen16
+\normaloffset=\dimen17
+\pagewidth=\dimen18
+\pageheight=\dimen19
+\cornerlong=\dimen20
+\cornerthick=\dimen21
+\topandbottommargin=\dimen22
+\outerhsize=\dimen23
+\outervsize=\dimen24
+\EMsimple=\toks12
+\singlespaceskip=\skip18
+\groupinvalidhelp=\toks13
+\mil=\dimen25
+\exdentamount=\skip19
+
+fonts,
+\sffam=\fam8
+\fontdepth=\count26
+ page headings,
+\titlepagetopglue=\skip20
+\titlepagebottomglue=\skip21
+\evenheadline=\toks14
+\oddheadline=\toks15
+\evenfootline=\toks16
+\oddfootline=\toks17
+ tables,
+\tableindent=\dimen26
+\itemindent=\dimen27
+\itemmargin=\dimen28
+\itemmax=\dimen29
+\itemno=\count27
+\intableparskip=\dimen30
+\intableparindent=\dimen31
+\spacebetweencols=\dimen32
+\spacebetweenlines=\dimen33
+\colcount=\count28
+ indexing,
+\initialskipamount=\skip22
+\secondaryindent=\skip23
+\partialpage=\box16
+\doublecolumnhsize=\dimen34
+ sectioning,
+\chapno=\count29
+\secno=\count30
+\subsecno=\count31
+\subsubsecno=\count32
+\appendixno=\count33
+\contentsfile=\write0
+\absseclevel=\count34
+\secbase=\count35
+\chapheadingskip=\skip24
+\subsecheadingskip=\skip25
+\secheadingskip=\skip26
+ toc printing,
+\contentsrightmargin=\skip27
+\shortappendixwidth=\dimen35
+\tocindent=\dimen36
+
+environments,
+\dblarrowbox=\box17
+\longdblarrowbox=\box18
+\pushcharbox=\box19
+\bullbox=\box20
+\equivbox=\box21
+\errorbox=\box22
+\lispnarrowing=\skip28
+\envskipamount=\skip29
+\circthick=\dimen37
+\cartouter=\dimen38
+\cartinner=\dimen39
+\normbskip=\skip30
+\normpskip=\skip31
+\normlskip=\skip32
+\lskip=\skip33
+\rskip=\skip34
+ defuns,
+\defbodyindent=\skip35
+\defargsindent=\skip36
+\deftypemargin=\skip37
+\deflastargmargin=\skip38
+\parencount=\count36
+ cross reference,
+\auxfile=\write1
+\footnoteno=\count37
+ and turning on texinfo input format.
+\defaultparindent=\dimen40
+)
+(krb425.aux)
+@cpindfile=@write2
+@fnindfile=@write3
+@vrindfile=@write4
+@tpindfile=@write5
+@kyindfile=@write6
+@pgindfile=@write7
+ (definitions.texinfo) [1] (copyright.texinfo [2] [3] [4])
+Chapter 1 Chapter 2 [1] [2] [3] Chapter 3 [4] Chapter 4 [5] [6] Chapter 5
+[7] [8] Chapter 6 [9] [10] [11] [12] (krb425.toc) [-1] [-2] ) 
+Here is how much of TeX's memory you used:
+ 966 strings out of 13037
+ 10167 string characters out of 96214
+ 28675 words of memory out of 262141
+ 1839 multiletter control sequences out of 9500
+ 26608 words of font info for 90 fonts, out of 100000 for 255
+ 18 hyphenation exceptions out of 607
+ 13i,6n,10p,210b,224s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on krb425.dvi (18 pages, 21364 bytes).

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/get_admhst.c,v $
- * $Author: ghudson $
+ * $Author: danw $
  *
  * Copyright 1985, 1986, 1987, 1988 by the Massachusetts Institute
  * of Technology.
@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/get_admhst.c,v 1.1.1.2 1997-01-21 09:25:53 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/get_admhst.c,v 1.1.1.3 1999-02-09 21:00:12 danw Exp $";
 #endif /* lint */
 
 #include <stdio.h>

@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.2 1997-01-21 09:26:18 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.3 1999-02-09 21:00:20 danw Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.2 1997-01-21 09:26:18 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.3 1999-02-09 21:00:20 danw Exp $";
 #endif
 
 #include	<sys/types.h>
@@ -964,9 +964,14 @@ static kadm5_ret_t add_to_history(krb5_context context,
 
      /* resize the adb->old_keys array if necessary */
      if (adb->old_key_len < pol->pw_history_num-1) {
-	  adb->old_keys = (osa_pw_hist_ent *)
-	       realloc(adb->old_keys,
-		       (adb->old_key_len+1)*sizeof(osa_pw_hist_ent));
+	  if (adb->old_keys == NULL) {
+	       adb->old_keys = (osa_pw_hist_ent *)
+		    malloc((adb->old_key_len + 1) * sizeof (osa_pw_hist_ent));
+	  } else {
+	       adb->old_keys = (osa_pw_hist_ent *)
+		    realloc(adb->old_keys,
+			    (adb->old_key_len + 1) * sizeof (osa_pw_hist_ent));
+	  }
 	  if (adb->old_keys == NULL)
 	       return(ENOMEM);
 	  

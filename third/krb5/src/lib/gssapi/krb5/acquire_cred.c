@@ -28,7 +28,7 @@
 #endif
 
 /*
- * $Id: acquire_cred.c,v 1.1.1.2 1997-01-21 09:24:53 ghudson Exp $
+ * $Id: acquire_cred.c,v 1.1.1.3 1999-02-09 20:59:40 danw Exp $
  */
 
 /* get credentials corresponding to a key in the krb5 keytab.
@@ -118,6 +118,15 @@ acquire_accept_cred(context, minor_status, desired_name, output_princ, cred)
    /* hooray.  we made it */
 
    cred->keytab = kt;
+
+   /* Open the replay cache for this principal. */
+   if ((code = krb5_get_server_rcache(context,
+				      krb5_princ_component(context, princ, 0),
+				      &cred->rcache))) {
+       *minor_status = code;
+       return(GSS_S_FAILURE);
+   }
+
    return(GSS_S_COMPLETE);
 }
 

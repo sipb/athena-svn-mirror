@@ -1,6 +1,6 @@
 \documentstyle[times,fullpage,rcsid]{article}
 
-\rcs$Header: /afs/dev.mit.edu/source/repository/third/krb5/doc/kadm5/api-unit-test.tex,v 1.1.1.1 1996-09-12 04:41:55 ghudson Exp $
+\rcs$Header: /afs/dev.mit.edu/source/repository/third/krb5/doc/kadm5/api-unit-test.tex,v 1.1.1.2 1999-02-09 20:56:13 danw Exp $
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make _ actually generate an _, and allow line-breaking after it.
@@ -561,6 +561,15 @@ succeedes, and both clients maintain their correct privileges.}
 \Status{Implemented}
 }
 
+\numtest{117}{
+\Version{KADM5_API_VERSION_2}
+\Reason{The max_life field defaults to value specified in the API
+Functional Specification when kdc.conf is unreadable.}
+\Priority{Bug fix, krb5-admin/18}
+\Conditions{local}
+\Status{Implemented}
+}
+
 \numtest{150}{
 \Version{KADM5_API_VERSION_2}
 \Reason{init_with_creds works when given an open ccache with a valid
@@ -589,6 +598,14 @@ ccache with no credentials.}
 \Version{KADM5_API_VERSION_2}
 \Reason{init_with_creds fails with KADM5_GSS_ERROR when given an open
 ccache without credentials for ADMIN_SERVICE or CHANGEPW_SERVICE.}
+\Conditions{RPC}
+\Status{Implemented}
+}
+
+\numtest{154}{
+\Version{KADM5_API_VERSION_2}
+\Reason{If the KRB5_KDC_PROFILE environment variable is set to a filename
+that does not exist, init fails with ENOENT.}
 \Conditions{RPC}
 \Status{Implemented}
 }
@@ -841,8 +858,7 @@ ccache without credentials for ADMIN_SERVICE or CHANGEPW_SERVICE.}
 
 \numtest{32}{
 \Reason{Accepts 0 (never) for pw_expiration when there's a policy with
-	non-zero pw_max_life, but actually sets pw_expiration to now +
-	pw_max_life.}
+	non-zero pw_max_life, and sets pw_expiration to zero.
 \Status{Implemented}	
 }
 
@@ -864,9 +880,7 @@ ccache without credentials for ADMIN_SERVICE or CHANGEPW_SERVICE.}
 }
 
 \numtest{36}{
-\Reason{Accepts non-zero pw_expiration and limits it to now +
-	pw_max_life when it's later than now + non-zero pw_max_life in
-	policy.}
+\Reason{Accepts and sets non-zero pw_expiration greater than now_pw_max_life.}
 \Status{Implemented}	
 }
 
@@ -1182,22 +1196,22 @@ ccache without credentials for ADMIN_SERVICE or CHANGEPW_SERVICE.}
 
 \numtest{29}{
 \Priority{High}
-\Reason{Sets pw_expiration to 0 (never) if there's no policy and no
-	specified pw_expiration.}
+\Reason{Sets pw_expiration to 0 (never) when a policy is cleared and
+no pw_expiration is specified.}
 \Status{Implemented}	
 }
 
 \numtest{30}{
 \Priority{High}
 \Reason{Sets pw_expiration to 0 (never) if it isn't specified and the
-	policy has a 0 (never) pw_max_life.}
+	new policy has a 0 (never) pw_max_life.}
 \Status{Implemented}	
 }
 
 \numtest{31}{
 \Priority{High}
 \Reason{Sets pw_expiration to now + pw_max_life if it isn't specified
-	and the policy has a non-zero pw_max_life.}
+	and the new policy has a non-zero pw_max_life.}
 \Status{Implemented}	
 }
 
@@ -1296,6 +1310,49 @@ ccache without credentials for ADMIN_SERVICE or CHANGEPW_SERVICE.}
 \Conditions{RPC}
 }
 
+\numtest{100}{
+\Version{KADM5_API_VERSION_2}
+\Priority{bug-fix}
+\Reason{Accepts max_rlife change.}
+\Status{Implemented}
+}
+
+\numtest{101}{
+\Version{KADM5_API_VERSION_2}
+\Reason{Rejects last_success change.}
+\Status{Implemented}
+}
+
+\numtest{102}{
+\Version{KADM5_API_VERSION_2}
+\Reason{Rejects last_failed change.}
+\Status{Implemented}
+}
+
+\numtest{103}{
+\Version{KADM5_API_VERSION_2}
+\Reason{Rejects fail_auth_count change.}
+\Status{Implemented}
+}
+
+\numtest{103.5}{
+\Version{KADM5_API_VERSION_2}
+\Reason{Rejects key_data change.}
+\Status{Implemented}
+}
+
+\numtest{104}{
+\Version{KADM5_API_VERSION_2}
+\Reason{Accepts tl_data change when all types are greater than 256.}
+\Status{Implemented}
+}
+
+\numtest{105}{
+\Version{KADM5_API_VERSION_2}
+\Reason{Returns KADM5_BAD_TL_TYPE when given tl_data with a type less
+than 256.} 
+\Status{Implemented}
+}
 
 \section{ovsec_kadm_rename_principal}
 
@@ -1983,7 +2040,8 @@ data and the contents are all non-NULL.}
 
 \numtest{103}{
 \Version{KADM5_API_VERSION_2}
-\Reason{If KADM5_TL_DATA is specified, the tl_data fields contain data.}
+\Reason{If KADM5_TL_DATA is specified, the tl_data field contains the
+correct tl_data and no entries whose type is less than 256.}
 \Status{Implemented}
 }
 

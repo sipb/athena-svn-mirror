@@ -1,12 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: server_init.c,v 1.1.1.2 1997-01-21 09:26:12 ghudson Exp $
+ * $Id: server_init.c,v 1.1.1.3 1999-02-09 21:00:17 danw Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_init.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_init.c,v 1.1.1.2 1997-01-21 09:26:12 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_init.c,v 1.1.1.3 1999-02-09 21:00:17 danw Exp $";
 #endif
 
 #include <stdio.h>

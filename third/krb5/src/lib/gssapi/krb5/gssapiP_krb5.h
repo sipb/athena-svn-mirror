@@ -24,7 +24,7 @@
 #define _GSSAPIP_KRB5_H_
 
 /*
- * $Id: gssapiP_krb5.h,v 1.1.1.2 1997-01-21 09:24:58 ghudson Exp $
+ * $Id: gssapiP_krb5.h,v 1.1.1.3 1999-02-09 20:59:37 danw Exp $
  */
 
 #if (defined(_MSDOS) || defined(_WIN32) || defined(_MACINTOSH))
@@ -91,6 +91,7 @@ typedef struct _krb5_gss_cred_id_rec {
    /* ccache (init) data */
    krb5_ccache ccache;
    krb5_timestamp tgt_expire;
+   krb5_rcache rcache;
 } krb5_gss_cred_id_rec, *krb5_gss_cred_id_t; 
 
 typedef struct _krb5_gss_enc_desc {
