@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7.2.2 1999-06-28 19:32:01 ghudson Exp $
+# $Id: cshrc,v 1.7.2.3 1999-09-15 20:57:06 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -157,6 +157,11 @@ if (! $?ENV_SET) then
 		set path=(`athdir $HOME` $athena_path .)
 	endif
 
+	# On IRIX, limits are reset on exec of a setuid program, e.g.
+	# xterm. So record now what the user wanted coredumpsize to
+	# be so we can fix it later.
+	setenv COREDUMPSIZE_LIMIT `limit coredumpsize | awk '{print $2;}'`
+
 	# Make sure applications can properly find their appdefs, etc.
 
 	if ($?skip_sgi || $?NOCALLS) then
@@ -193,6 +198,8 @@ if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
     set nostat = (/afs/)	#   Don't stat when completing in /afs
 endif
 
+# Fix coredumpsize limit in case it was reset
+limit coredumpsize $COREDUMPSIZE_LIMIT
 
 # Set up standard C shell aliases
 
