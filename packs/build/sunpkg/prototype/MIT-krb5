@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Change some files to class config.
+# Add the Athena sessions directory.
+sed -e 's|^f none \(etc/athena/krb\.conf\) |e config \1 |' \
+    -e 's|^f none \(etc/athena/krb\.realms\) |e config \1 |' \
+    -e 's|^f none \(etc/ftpusers\) |e config \1 |' \
+    -e '$a\
+d none var/athena/sessions 0700 root ?'

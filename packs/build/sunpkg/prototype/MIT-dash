@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change /usr/athena/lib/Dash.fallback to class config.
+sed -e 's|^f none \(usr/athena/lib/Dash\.fallback\) |e config \1 |'

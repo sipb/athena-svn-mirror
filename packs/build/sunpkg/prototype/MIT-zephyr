@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change /etc/athena/zephyr.vars to class config.
+sed -e 's|^f none \(etc/athena/zephyr\.vars\) |e config \1 |'

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Change some files to class config.
+sed -e 's|^f none \(etc/ssh_config\) |e config \1 |' \
+    -e 's|^f none \(etc/sshd_config\) |e config \1 |'

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Change /etc/athena/attach.conf to class config.
+# Add the attachtab directories.
+sed -e 's|^f none \(etc/athena/attach\.conf\) |e config \1 |' \
+    -e '$a\
+d none var/athena/attachtab/directory ? ? ?\
+d none var/athena/attachtab/locker ? ? ?\
+d none var/athena/attachtab/mountpoint ? ? ?'

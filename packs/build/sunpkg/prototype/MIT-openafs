@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Change some files to class config.
+sed -e 's|^f none \(usr/vice/etc/CellAlias\) |e config \1 |' \
+    -e 's|^f none \(usr/vice/etc/CellServDB\) |e config \1 |' \
+    -e 's|^f none \(usr/vice/etc/ThisCell\) |e config \1 |' \
+    -e 's|^f none \(usr/vice/etc/cacheinfo\) |e config \1 |'

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Change /etc/ntp.conf to class config.
+# Add the /var/athena directory.
+sed -e 's|^f none \(etc/ntp\.conf\) |e config \1 |' \
+    -e '$a\
+d none var/athena ? ? ?'

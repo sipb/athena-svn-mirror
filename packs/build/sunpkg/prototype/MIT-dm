@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Change /etc/athena/login/config to class config.
+# Add the Athena sessions directory.
+sed -e 's|^f none \(etc/athena/login/config\) |e config \1 |' \
+    -e '$a\
+d none var/athena/sessions 0700 root ?'

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Change the aliases and sendmail.cf files to class config.
+# Add the mail queue directory.
+sed -e 's|^f none \(etc/mail/aliases\) |e config \1 |' \
+    -e 's|^f none \(etc/mail/sendmail\.cf\) |e config \1 |' \
+    -e '$a\
+d none var/spool/mqueue ? ? ?'

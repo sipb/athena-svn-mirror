@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change /etc/athena/rc.conf to class preserve.
+sed -e 's|^f none \(etc/athena/rc\.conf\) |e preserve \1 |'
