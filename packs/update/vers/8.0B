@@ -16,7 +16,7 @@ SUN*)
 
 	# Copy in new /var/sadm, since we applied patches.  We should
 	# have a better way of dealing with this.
-	rm -f /var/sadm
+	rm -rf /var/sadm
 	mkdir /var/sadm
 	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
 
