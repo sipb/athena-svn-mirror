@@ -1,4 +1,4 @@
-.TH XSCREENSAVER-BUTTON 1 "23-Feb-99 (1.00)" "X Version 11"
+.TH XSCREENSAVER-BUTTON 1 "02-Aug-01 (1.7)" "X Version 11"
 .SH NAME
 xss-button \- display a button to run xss
 .SH SYNOPSIS
@@ -15,12 +15,6 @@ xss-button \- display a button to run xss
 ] [
 .B \-prefs
 .I command
-] [
-.B \-logo-width
-.I width
-] [
-.B \-logo-height
-.I height
 ] [
 .B \-redirect
 |
@@ -55,7 +49,8 @@ the additional options listed below:
 Runs
 .I command
 as the screen saver driver.  Defaults to running the installed
-.BR xss (1) with the -no-splash option.
+.BR xss (1)
+with the -no-splash option.
 .TP 8
 \fB\-check\fP \fIcommand\fP
 Runs
@@ -84,22 +79,6 @@ Runs
 as the command to change screen saver preferences.  Defaults to
 running the installed
 .BR xss-demo (1).
-.TP 8
-\fB\-logo-width\fP \fIwidth\fP
-Sets the width of the
-.RB skull-and- xlogo (1)
-icon.  This also indirectly sets the width of the button window, and
-is probably more useful than using the canonical
-.B \-width
-switch.  Defaults to 48.
-.TP 8
-\fB\-logo-height\fP \fIheight\fP
-Sets the height of the
-.RB skull-and- xlogo (1)
-icon.  This also indirectly sets the height of the button window, and
-is probably more useful than using the canonical
-.B \-height
-switch.  Defaults to 48.
 .TP 8
 .B\-redirect
 Causes standard output and standard error of all child processes to be 
@@ -141,18 +120,6 @@ as the
 .B \-prefs
 option.
 .TP 8
-.B xrogerWidth (\fPclass\fB Width)
-Specifies the width of the xss logo.  Same as the
-.B \-logo-width
-option.  The width of the window is the width of this logo plus the
-border width of the Label widget.
-.TP 8
-.B xrogerHeight (\fPclass\fB Height)
-Specifies the height of the xss logo.  Same as the
-.B \-logo-height
-option.  The height of the window is the height of this logo plus the
-border width of the Label widget.
-.TP 8
 .B redirect (\fPclass\fB Redirect)
 A boolean value specifying whether standard output and standard error
 of child processes should be redirected.  Same as the
@@ -172,8 +139,6 @@ option.  Defaults to an unqualified ".xss-log".
 .BR xss-command (1),
 .BR xss-demo (1)
 .SH BUGS
-The logo should be resized when the window resizes.
-.PP
 The button should perhaps react more intelligently if there is already 
 a screensaver running.  Right now it just dies.
 .PP

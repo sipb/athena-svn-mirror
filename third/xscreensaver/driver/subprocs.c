@@ -660,7 +660,7 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
       /* Treat exit code as a signed 8-bit quantity. */
       if (exit_status & 0x80) exit_status |= ~0xFF;
 
-      if (exit_status == NONEXISTENT_SCREENHACK)
+      if (!si->demoing_p && exit_status == NONEXISTENT_SCREENHACK)
 	{
 	  sleep(1); /* Don't eat the cpu if none of the screenhacks exist. */
 	  spawn_screenhack(si, False); /* Try another one right away. */
@@ -677,7 +677,7 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
 	fprintf (stderr,
 		 "%s: child pid %lu (%s) exited abnormally (code %d).\n",
 		 blurb(), (unsigned long) kid, name, exit_status);
-      else if (p->verbose_p)
+      else if (p->verbose_p || si->demoing_p)
         {
 	  if (exit_status == NONEXISTENT_SCREENHACK)
 	    fprintf (stderr, "%s: child pid %lu (%s) was a nonexistent hack.\n",
