@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.7 2002-09-29 06:18:09 ghudson Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.8 2003-01-03 20:06:23 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -33,6 +33,8 @@ static void sessionbust(char **argv);
 static void start_child(char **argv);
 static int xhandler(Display *dpy);
 static void child_handler(int signo);
+static void sig_handler(int signo);
+static void kill_and_exit(int status);
 static int find_signal(const char *signame);
 static int tty_accessible(void);
 static void usage(void);
@@ -45,6 +47,7 @@ static int session_leader = 0;
 int main(int argc, char **argv)
 {
   const char *signame;
+  struct sigaction sa;
 
   progname = strrchr(argv[0], '/');
   progname = (progname != NULL) ? progname + 1 : argv[0];
@@ -85,6 +88,18 @@ int main(int argc, char **argv)
     }
   if (*argv == NULL)
     usage();
+
+  /* Set up a handler for common terminating signals to make sure
+   * we kill the child before dying.  In particular, this is needed
+   * to handle a SIGHUP at logout when we are invoked by a foreground
+   * process, as our child will always be in a separate process group.
+   */
+  sa.sa_handler = sig_handler;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sigaction(SIGHUP, &sa, NULL);
+  sigaction(SIGINT, &sa, NULL);
+  sigaction(SIGTERM, &sa, NULL);
 
   /* We conditionalize on XSESSION (set by the Athena default xsession
    * script) instead of DISPLAY, so that we won't hold open the
@@ -143,10 +158,7 @@ static void ttybust(char **argv)
     {
       fd = open("/dev/tty", O_RDWR, 0);
       if (fd == -1)
-	{
-	  killpg(child_pid, sig);
-	  exit(0);
-	}
+	kill_and_exit(0);
       close(fd);
       sleep(5);
     }
@@ -167,6 +179,7 @@ static void sessionbust(char **argv)
     {
       fprintf(stderr, "%s: error: login session pid %lu not running\n",
 	      progname, (unsigned long) pid);
+      exit(1);
     }
 
   start_child(argv);
@@ -177,10 +190,7 @@ static void sessionbust(char **argv)
   while (1)
     {
       if (kill(pid, 0) == -1)
-	{
-	  killpg(child_pid, sig);
-	  exit(0);
-	}
+	kill_and_exit(0);
       sleep(5);
     }
 }
@@ -199,9 +209,14 @@ static void start_child(char **argv)
   sa.sa_flags = SA_NOCLDSTOP;
   sigaction(SIGCHLD, &sa, NULL);
 
-  /* Create the subprocess, blocking SIGCHLD until child_pid is assigned. */
+  /* Create the subprocess, blocking SIGCHLD and terminating signals
+   * until child_pid is assigned.
+   */
   sigemptyset(&set);
   sigaddset(&set, SIGCHLD);
+  sigaddset(&set, SIGHUP);
+  sigaddset(&set, SIGINT);
+  sigaddset(&set, SIGTERM);
   sigprocmask(SIG_BLOCK, &set, &oset);
   child_pid = fork();
   sigprocmask(SIG_SETMASK, &oset, NULL);
@@ -229,12 +244,11 @@ static void start_child(char **argv)
 }
 
 /* Xlib calls this when a fatal I/O error happens (such as the display
- * closing.  Send a SIGHUP to the child pid and exit.
+ * closing).  Send a signal to the child's process group and exit.
  */
 static int xhandler(Display *dpy)
 {
-  killpg(child_pid, sig);
-  exit(0);
+  kill_and_exit(0);
 }
 
 static void child_handler(int signo)
@@ -244,6 +258,36 @@ static void child_handler(int signo)
   /* If our child died, we're done. */
   if (waitpid(child_pid, &status, WNOHANG) == child_pid)
     exit(WIFEXITED(status) ? WEXITSTATUS(status) : 1);
+}
+
+/* Here when we receive a terminating signal.  Send a signal to the
+ * child's process group and exit.
+ */
+static void sig_handler(int signo)
+{
+  kill_and_exit(0);
+}
+
+/* Here to kill the child's process group and exit.  We use kill() as
+ * well as killpg() in case the child has not yet set its process group.
+ */
+static void kill_and_exit(int status)
+{
+  sigset_t set, oset;
+
+  if (child_pid > 0)
+    {
+      /* Block SIGCHLD until we have signaled both the process and the
+       * process group.
+       */
+      sigemptyset(&set);
+      sigaddset(&set, SIGCHLD);
+      sigprocmask(SIG_BLOCK, &set, &oset);
+      kill(child_pid, sig);
+      killpg(child_pid, sig);
+      sigprocmask(SIG_SETMASK, &oset, NULL);
+    }
+  exit(status);
 }
 
 static int find_signal(const char *signame)
