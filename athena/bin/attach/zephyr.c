@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.6 1991-07-04 22:53:13 probe Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.7 1991-08-13 21:07:05 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -97,7 +97,7 @@ void zephyr_addsub(class)
 	return;
     
     if (debug_flag)
-	    printf("Subscribing to zepyr instance %s.\n", class);
+	    printf("Subscribing to zephyr instance %s.\n", class);
     subs[num_subs].zsub_recipient = "*";
     subs[num_subs].zsub_classinst = strdup(class);
     subs[num_subs].zsub_class = ZEPHYR_CLASS;
