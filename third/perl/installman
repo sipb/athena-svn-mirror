@@ -46,13 +46,13 @@ $notify = $opt_notify || $opt_n;
 
 -x  "./perl$Config{exe_ext}" 
   or warn "./perl$Config{exe_ext} not found!  Have you run make?\n";
--d  $Config{'installprivlib'}
+-d  $ENV{"DESTDIR"} . $Config{'installprivlib'}
 	|| warn "Perl library directory $Config{'installprivlib'} not found.
 		Have you run make install?.  (Installing anyway.)\n";
 -x "t/perl$Config{exe_ext}"		|| warn "WARNING: You've never run 'make test'!!!",
 	"  (Installing anyway.)\n";
 
-$packlist = ExtUtils::Packlist->new("$Config{installarchlib}/.packlist");
+$packlist = ExtUtils::Packlist->new($ENV{"DESTDIR"} . "$Config{installarchlib}/.packlist");
 
 # Install the main pod pages.
 runpod2man('pod', $man1dir, $man1ext);
