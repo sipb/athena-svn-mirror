@@ -29,10 +29,10 @@
 #ifndef EEL_VFS_EXTENSIONS_H
 #define EEL_VFS_EXTENSIONS_H
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define	EEL_TRASH_URI "trash:"
 
@@ -51,9 +51,11 @@ GnomeVFSResult     eel_read_entire_file                  (const char           *
 							  int                  *file_size,
 							  char                **file_contents);
 EelReadFileHandle *eel_read_entire_file_async            (const char           *uri,
+							  int                   priority,
 							  EelReadFileCallback   callback,
 							  gpointer              callback_data);
 EelReadFileHandle *eel_read_file_async                   (const char           *uri,
+							  int                   priority,
 							  EelReadFileCallback   callback,
 							  EelReadMoreCallback   read_more_callback,
 							  gpointer              callback_data);
@@ -65,10 +67,12 @@ gboolean           eel_uri_is_in_trash                   (const char           *
 
 char *             eel_format_uri_for_display            (const char           *uri);
 char *             eel_make_uri_from_input               (const char           *location);
+char *             eel_make_uri_from_input_with_trailing_ws (const char        *location);
 char *             eel_make_uri_from_shell_arg           (const char           *location);
 char *             eel_make_uri_canonical                (const char           *uri);
 char *             eel_make_uri_canonical_strip_fragment (const char           *uri);
 char *             eel_make_uri_from_half_baked_uri      (const char           *half_baked_uri);
+char *             eel_make_valid_utf8                   (const char           *name);
 gboolean           eel_uris_match                        (const char           *uri_1,
 							  const char           *uri_2);
 gboolean           eel_uris_match_ignore_fragments       (const char           *uri_1,
@@ -87,8 +91,20 @@ GnomeVFSResult     eel_make_directory_and_parents        (GnomeVFSURI          *
 							  guint                 permissions);
 
 /* Convenience routine to test if a string is a remote URI. */
+gboolean           eel_is_valid_uri                      (const char           *uri);
+
 gboolean           eel_is_remote_uri                     (const char           *uri);
 
-END_GNOME_DECLS
+typedef enum {
+	EEL_VFS_CAPABILITY_SAFE_TO_EXECUTE,	/* File is safe to execute */
+	EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW  /* We prefer to link, rather than copy */
+} EelVfsCapability;
+
+gboolean           eel_vfs_has_capability                (const char           *text_uri,
+						          EelVfsCapability      capability);
+gboolean           eel_vfs_has_capability_uri            (GnomeVFSURI          *uri,
+						          EelVfsCapability      capability);
+
+G_END_DECLS
 
 #endif /* EEL_VFS_EXTENSIONS_H */

@@ -1,9 +1,8 @@
 # Greek translation of Nautilus.
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Simos Xenitellis <simos@hellug.gr>, 2001.
+# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
+# Simos Xenitellis <simos@hellug.gr>, 2001, 2002.
 # Initialized from Translation Memory, 2001.
-# Clean messages should be ok. 
-# TODO: There should be a full review and report here.
+# Clean messages should be ok.
 #
 # simos: 652 messages, 19Feb2001, more messages remaining.
 # simos: 713 messages, 20Feb2001, more messages remaining.
@@ -15,201 +14,248 @@
 # simos: 1870 messages, 27Feb2001, 79 messages remaining.
 # simos: 1926 messages, 01Mar2001, 86 messages remaining.
 # simos: 2009 messages, 02Mar2001, full translation.
-# simos: 38 message, 04Jun2001, drawn from nautilus.
+# simos: 38 messages,04Jun2001, drawn from nautilus.
+# simos: 17 messages,19Aug2002, full translation and UTF-8 conversion.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eel 1.0.0.1\n"
-"POT-Creation-Date: 2001-10-05 11:18-0700\n"
-"PO-Revision-Date: 2001-06-04 16:31:08+0900\n"
-"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
+"Project-Id-Version: eel 2.0.4\n"
+"POT-Creation-Date: 2002-12-09 13:16+0100\n"
+"PO-Revision-Date: 2002-12-03 10:02+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-7\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
-#: eel/eel-dnd.c:494
-msgid "_Move here"
-msgstr "_Μετακίνηση εδώ"
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr "X"
 
-#: eel/eel-dnd.c:495
-msgid "_Copy here"
-msgstr "_Αντιγραφή εδώ"
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr "Y"
 
-#: eel/eel-dnd.c:496
-msgid "_Link here"
-msgstr "_Σύνδεση εδώ"
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr "ΞΞµΞ―ΞΌΞµΞ½ΞΏ"
 
-#: eel/eel-dnd.c:498
-msgid "Cancel"
-msgstr "Ακύρωση"
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr "Ξ¤ΞΏ ΞΊΞµΞ―ΞΌΞµΞ½ΞΏ Ο„Ξ·Ο‚ ΞµΟ„ΞΉΞΊΞ­Ο„Ξ±Ο‚"
 
-#: eel/eel-font-picker.c:80
-msgid "Normal"
-msgstr "Κανονικό"
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr "Ξ£Ο„ΞΏΞ―Ο‡ΞΉΟƒΞ·"
 
-#
-#: eel/eel-font-picker.c:81
-msgid "Unknown"
-msgstr "¶γνωστο"
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Ξ— ΟƒΟ„ΞΏΞ―Ο‡ΞΉΟƒΞ· Ο„Ο‰Ξ½ Ξ³ΟΞ±ΞΌΞΌΟΞ½ ΟƒΟ„ΞΏ ΞΊΞµΞ―ΞΌΞµΞ½ΞΏ Ο„Ξ·Ο‚ ΞµΟ„ΞΉΞΊΞ­Ο„Ξ±Ο‚ ΞΌΞµΟ„Ξ±ΞΎΟ Ο„ΞΏΟ…Ο‚. Ξ‘Ο…Ο„Ο Ξ”Ξ•Ξ "
+"ΞµΟ€Ξ·ΟΞµΞ¬Ξ¶ΞµΞΉ Ο„Ξ·Ξ½ ΟƒΟ„ΞΏΞ―Ο‡ΞΉΟƒΞ· Ο„Ξ·Ο‚ ΞµΟ„ΞΉΞΊΞ­Ο„Ξ±Ο‚ ΟƒΟ„ΞΏΞ½ Ο‡ΟΟΞΏ Ο„Ξ·Ο‚. Ξ’Ξ»Ξ­Ο€Ξµ Ξ³ΞΉΞ± Ξ±Ο…Ο„Ο GtkMisc::"
+"xalign. "
 
-#: eel/eel-font-picker.c:87
-msgid "Bold"
-msgstr "Σκούρο"
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr "Ξ‘Ξ½Ξ±Ξ΄Ξ―Ο€Ξ»Ο‰ΟƒΞ· Ξ³ΟΞ±ΞΌΞΌΞ®Ο‚"
 
-#: eel/eel-font-picker.c:88
-msgid "Book"
-msgstr "Βιβλίο"
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Ξ‘Ξ½ ΞΏΟΞΉΟƒΞΈΞµΞ―, ΞΈΞ± Ξ±Ξ½Ξ±Ξ΄ΞΉΟ€Ξ»ΟΞ½ΞΏΞ½Ο„Ξ±ΞΉ Ξ³ΟΞ±ΞΌΞΌΞ­Ο‚ Ξ±Ξ½ Ο„ΞΏ ΞΊΞµΞ―ΞΌΞµΞ½ΞΏ Ξ³Ξ―Ξ½ΞµΞΉ Ο€ΞΏΞ»Ο Ο€Ξ»Ξ±Ο„Ο."
 
-#: eel/eel-font-picker.c:89
-msgid "Black"
-msgstr "Μαύρο"
+#: eel/eel-editable-label.c:384
+msgid "Cursor Position"
+msgstr "ΞΞ­ΟƒΞ· Ξ΄ΟΞΏΞΌΞ­Ξ±"
 
-#: eel/eel-font-picker.c:90
-msgid "Demibold"
-msgstr "Ημισκούρο"
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr "Ξ— Ο„ΟΞ­Ο‡ΞΏΟ…ΟƒΞ± ΞΈΞ­ΟƒΞ· Ο„ΞΏΟ… Ξ΄ΟΞΏΞΌΞ­Ξ± ΞµΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®Ο‚."
 
-#: eel/eel-font-picker.c:91
-msgid "Light"
-msgstr "Φωτεινό"
+#: eel/eel-editable-label.c:394
+msgid "Selection Bound"
+msgstr "ΞΟΞΉΞΏ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚"
 
-#: eel/eel-font-picker.c:97
-msgid "Italic"
-msgstr "Πλάγια"
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Ξ— ΞΈΞ­ΟƒΞ· Ο„ΞΏΟ… Ξ±Ξ½Ο„Ξ―ΞΈΞµΟ„ΞΏΟ… Ξ¬ΞΊΟΞΏΟ… Ο„Ξ·Ο‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚ Ξ±Ο€Ο Ο„ΞΏΞ½ Ξ΄ΟΞΏΞΌΞ­Ξ± ΟƒΞµ Ο‡Ξ±ΟΞ±ΞΊΟ„Ξ®ΟΞµΟ‚."
 
-#
-#: eel/eel-font-picker.c:98
-msgid "Oblique"
-msgstr "Λοξά"
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΟΞ»Ο‰Ξ½"
 
-#
-#: eel/eel-font-picker.c:99
-msgid "Reverse Italic"
-msgstr "Ανάποδα Πλάγια"
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr "ΞΞ­ΞΈΞΏΞ΄ΞΏΞΉ ΞµΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®Ο‚"
 
-#: eel/eel-font-picker.c:100
-msgid "Reverse Oblique"
-msgstr "Ανάποδα Λοξά"
-
-#
-#: eel/eel-font-picker.c:101
-msgid "Other"
-msgstr "¶λλα"
-
-#: eel/eel-font-picker.c:107
-msgid "Condensed"
-msgstr "Συμπιεσμένα"
-
-#: eel/eel-font-picker.c:108
-msgid "Semicondensed"
-msgstr "Ήμισυμπιεσμένα"
-
-#
-#: eel/eel-font-picker.c:428
-msgid "More..."
-msgstr "Περισσότερα..."
-
-#: eel/eel-gconf-extensions.c:82
+#: eel/eel-gconf-extensions.c:83
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"Σφάλμα GConf:\n"
+"Ξ£Ο†Ξ¬Ξ»ΞΌΞ± GConf:\n"
 "  %s"
 
-#: eel/eel-gconf-extensions.c:86
+#: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"Σφάλμα GConf:\n"
+"Ξ£Ο†Ξ¬Ξ»ΞΌΞ± GConf:\n"
 "  %s\n"
-"Τα παραιτέρω σφάλμα θα εμφανιστούν μόνο στο τερματικό."
+"Ξ¤Ξ± Ο€Ξ±ΟΞ±ΞΉΟ„Ξ­ΟΟ‰ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„Ξ± ΞΈΞ± ΞµΞΌΟ†Ξ±Ξ½ΞΉΟƒΟ„ΞΏΟΞ½ ΞΌΟΞ½ΞΏ ΟƒΟ„ΞΏ Ο„ΞµΟΞΌΞ±Ο„ΞΉΞΊΟ"
 
 #
-#: eel/eel-gconf-extensions.c:90
+#: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "Σφάλμα GConf"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± GConf"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
-#. * yields -- usually just omitting the AM part is all that's
-#. * needed.
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1475
+#: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
-msgstr "01/01/00, 01:00 πμ"
+msgstr "01/01/00, 01:00 Ο€ΞΌ"
 
-#: eel/eel-glib-extensions.c:1476
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
-msgstr "1/1/00, 1:00 πμ"
+msgstr "1/1/00, 1:00 Ο€ΞΌ"
 
-#: eel/eel-glib-extensions.c:1477
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
-msgstr " 1/ 1/00,  1:00 πμ"
+msgstr " 1/ 1/00,  1:00 Ο€ΞΌ"
 
-#: eel/eel-gnome-extensions.c:711
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"Δεν επιλέχθηκε εικόνα. Πρέπει να κάντε κλικ στην εικόνα για να την επιλέξτε."
+"Ξ”ΞµΞ½ ΞµΟ€ΞΉΞ»Ξ­Ο‡ΞΈΞ·ΞΊΞµ ΞµΞΉΞΊΟΞ½Ξ±. Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΞΊΞ¬Ξ½Ο„Ξµ ΞΊΞ»ΞΉΞΊ ΟƒΟ„Ξ·Ξ½ ΞµΞΉΞΊΟΞ½Ξ± Ξ³ΞΉΞ± Ξ½Ξ± Ο„Ξ·Ξ½ ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ."
 
-#: eel/eel-gnome-extensions.c:712
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
-msgstr "Δεν έγινε επιλογή"
+msgstr "Ξ”ΞµΞ½ Ξ­Ξ³ΞΉΞ½Ξµ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®"
 
-#. This magic string is copied from GtkLabel.  It lives there unlocalized as well.
-#: eel/eel-label.c:46 eel/eel-smooth-text-layout.c:46
-msgid " -_,;.?/&"
-msgstr ""
-
-#: eel/eel-password-dialog.c:267
-msgid "Username:"
-msgstr "Όνομα χρήστη:"
+#: eel/eel-password-dialog.c:203
+msgid "_Username:"
+msgstr "ΞΞ½ΞΏΞΌΞ± _Ο‡ΟΞ®ΟƒΟ„Ξ·:"
 
 #
-#: eel/eel-password-dialog.c:274
-msgid "Password:"
-msgstr "Κωδικός:"
+#: eel/eel-password-dialog.c:210
+msgid "_Password:"
+msgstr "ΞΟ‰Ξ΄ΞΉ_ΞΊΟΟ‚:"
 
-#: eel/eel-password-dialog.c:304
+#: eel/eel-password-dialog.c:237
 msgid "Remember this password"
-msgstr "Απομνημόνευση αυτού του κωδικού"
+msgstr "Ξ‘Ο€ΞΏΞΌΞ½Ξ·ΞΌΟΞ½ΞµΟ…ΟƒΞ· Ξ±Ο…Ο„ΞΏΟ Ο„ΞΏΟ… ΞΊΟ‰Ξ΄ΞΉΞΊΞΏΟ"
 
-#: eel/eel-preferences.c:91
-msgid "Beginner"
-msgstr "Αρχάριος"
+#: eel/eel-preferences-box.c:365
+msgid "Cat_egories:"
+msgstr "ΞΞ±Ο„Ξ·Ξ³ΞΏΟΞ―Ξµ_Ο‚:"
 
-#: eel/eel-preferences.c:92
-msgid "Intermediate"
-msgstr "Μέσου επιπέδου"
-
-#: eel/eel-preferences.c:93
-msgid "Advanced"
-msgstr "Προχωρημένος"
-
-#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:552
+#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
-msgstr "Πληροφορίες"
+msgstr "Ξ Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚"
 
-#: eel/eel-stock-dialogs.c:554 eel/eel-stock-dialogs.c:607
+#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "Λεπτομέρειες"
+msgstr "Ξ›ΞµΟ€Ο„ΞΏΞΌΞ­ΟΞµΞΉΞµΟ‚"
 
-#: eel/eel-stock-dialogs.c:572
+#: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "Προειδοποίηση"
+msgstr "Ξ ΟΞΏΞµΞΉΞ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·"
 
 #
-#: eel/eel-stock-dialogs.c:583 eel/eel-stock-dialogs.c:605
+#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
-msgstr "Σφάλμα"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ±"
 
-#: eel/eel-stock-dialogs.c:638 eel/eel-stock-dialogs.c:666
+#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "Ερώτηση"
+msgstr "Ξ•ΟΟΟ„Ξ·ΟƒΞ·"
+
+#: eel/eel-vfs-extensions.c:687
+msgid " (invalid Unicode)"
+msgstr " (Ξ±ΞΊΞ±Ο„Ξ¬Ξ»Ξ»Ξ·Ξ»ΞΏ Unicode)"
+
+#~ msgid "_Move here"
+#~ msgstr "_ΞΞµΟ„Ξ±ΞΊΞ―Ξ½Ξ·ΟƒΞ· ΞµΞ΄Ο"
+
+#~ msgid "_Copy here"
+#~ msgstr "_Ξ‘Ξ½Ο„ΞΉΞ³ΟΞ±Ο†Ξ® ΞµΞ΄Ο"
+
+#~ msgid "_Link here"
+#~ msgstr "_Ξ£ΟΞ½Ξ΄ΞµΟƒΞ· ΞµΞ΄Ο"
+
+#~ msgid "Cancel"
+#~ msgstr "Ξ‘ΞΊΟΟΟ‰ΟƒΞ·"
+
+#~ msgid "Normal"
+#~ msgstr "ΞΞ±Ξ½ΞΏΞ½ΞΉΞΊΟ"
+
+#
+#~ msgid "Unknown"
+#~ msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ"
+
+#~ msgid "Bold"
+#~ msgstr "Ξ£ΞΊΞΏΟΟΞΏ"
+
+#~ msgid "Book"
+#~ msgstr "Ξ’ΞΉΞ²Ξ»Ξ―ΞΏ"
+
+#~ msgid "Black"
+#~ msgstr "ΞΞ±ΟΟΞΏ"
+
+#~ msgid "Demibold"
+#~ msgstr "Ξ—ΞΌΞΉΟƒΞΊΞΏΟΟΞΏ"
+
+#~ msgid "Light"
+#~ msgstr "Ξ¦Ο‰Ο„ΞµΞΉΞ½Ο"
+
+#~ msgid "Italic"
+#~ msgstr "Ξ Ξ»Ξ¬Ξ³ΞΉΞ±"
+
+#
+#~ msgid "Oblique"
+#~ msgstr "Ξ›ΞΏΞΎΞ¬"
+
+#
+#~ msgid "Reverse Italic"
+#~ msgstr "Ξ‘Ξ½Ξ¬Ο€ΞΏΞ΄Ξ± Ξ Ξ»Ξ¬Ξ³ΞΉΞ±"
+
+#~ msgid "Reverse Oblique"
+#~ msgstr "Ξ‘Ξ½Ξ¬Ο€ΞΏΞ΄Ξ± Ξ›ΞΏΞΎΞ¬"
+
+#
+#~ msgid "Other"
+#~ msgstr "Ξ†Ξ»Ξ»Ξ±"
+
+#~ msgid "Condensed"
+#~ msgstr "Ξ£Ο…ΞΌΟ€ΞΉΞµΟƒΞΌΞ­Ξ½Ξ±"
+
+#~ msgid "Semicondensed"
+#~ msgstr "Ξ‰ΞΌΞΉΟƒΟ…ΞΌΟ€ΞΉΞµΟƒΞΌΞ­Ξ½Ξ±"
+
+#
+#~ msgid "More..."
+#~ msgstr "Ξ ΞµΟΞΉΟƒΟƒΟΟ„ΞµΟΞ±..."
+
+#~ msgid "Beginner"
+#~ msgstr "Ξ‘ΟΟ‡Ξ¬ΟΞΉΞΏΟ‚"
+
+#~ msgid "Intermediate"
+#~ msgstr "ΞΞ­ΟƒΞΏΟ… ΞµΟ€ΞΉΟ€Ξ­Ξ΄ΞΏΟ…"
+
+#~ msgid "Advanced"
+#~ msgstr "Ξ ΟΞΏΟ‡Ο‰ΟΞ·ΞΌΞ­Ξ½ΞΏΟ‚"
 
 #~ msgid "fixed"
 #~ msgstr "grfixed"

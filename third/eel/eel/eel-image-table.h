@@ -26,10 +26,8 @@
 #define EEL_IMAGE_TABLE_H
 
 #include <eel/eel-wrap-table.h>
-#include <eel/eel-labeled-image.h>
-#include <eel/eel-smooth-widget.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_IMAGE_TABLE            (eel_image_table_get_type ())
 #define EEL_IMAGE_TABLE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_IMAGE_TABLE, EelImageTable))
@@ -40,6 +38,15 @@ BEGIN_GNOME_DECLS
 typedef struct EelImageTable		EelImageTable;
 typedef struct EelImageTableClass	EelImageTableClass;
 typedef struct EelImageTableDetails	EelImageTableDetails;
+
+typedef struct
+{
+	int x;
+	int y;
+	int button;
+	guint state;
+	GdkEvent *event;
+} EelImageTableEvent;
 
 struct EelImageTable
 {
@@ -53,28 +60,30 @@ struct EelImageTable
 struct EelImageTableClass
 {
 	EelWrapTableClass parent_class;
-	EelSmoothWidgetSetIsSmooth set_is_smooth;
+
+	/* Signals */
+	void (* child_enter) (EelImageTable *image_table,
+			      GtkWidget *child,
+			      const EelImageTableEvent *event);
+	void (* child_leave) (EelImageTable *image_table,
+			      GtkWidget *child,
+			      const EelImageTableEvent *event);
+	void (* child_pressed) (EelImageTable *image_table,
+				GtkWidget *child,
+				const EelImageTableEvent *event);
+	void (* child_released) (EelImageTable *image_table,
+				 GtkWidget *child,
+				 const EelImageTableEvent *event);
+	void (* child_clicked) (EelImageTable *image_table,
+				GtkWidget *child,
+				const EelImageTableEvent *event);
 };
 
-typedef struct
-{
-	int x;
-	int y;
-	int button;
-	guint state;
-} EelImageTableEvent;
-
 /* Public GtkImageTable methods */
-GtkType    eel_image_table_get_type                    (void);
-GtkWidget *eel_image_table_new                         (gboolean       homogeneous);
-void       eel_image_table_set_smooth_background_color (EelImageTable *image_table,
-							guint32        smooth_background_color);
-void       eel_image_table_set_is_smooth               (EelImageTable *image_table,
-							gboolean       is_smooth);
-GtkWidget *eel_image_table_add_empty_image             (EelImageTable *image_table);
+GtkType    eel_image_table_get_type         (void);
+GtkWidget *eel_image_table_new              (gboolean       homogeneous);
+GtkWidget *eel_image_table_add_empty_image  (EelImageTable *image_table);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_IMAGE_TABLE_H */
-
-

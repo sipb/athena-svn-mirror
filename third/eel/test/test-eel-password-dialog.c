@@ -2,7 +2,11 @@
 #include <config.h>
 
 #include <eel/eel-password-dialog.h>
-#include <gnome.h>
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkvbox.h>
+#include <libgnomeui/gnome-ui-init.h>
 
 static GtkWidget *password_dialog = NULL;
 
@@ -66,7 +70,9 @@ main (int argc, char * argv[])
 	GtkWidget *authenticate_button;
 	GtkWidget *exit_button;
 
-	gnome_init ("foo", "bar", argc, argv);
+	gnome_program_init ("test-eel-password-dialog", VERSION,
+			    libgnomeui_module_info_get (), argc, argv,
+			    NULL);
 	
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 4);
@@ -77,15 +83,15 @@ main (int argc, char * argv[])
 	authenticate_button = gtk_button_new_with_label ("Boink me to authenticate");
 	exit_button = gtk_button_new_with_label ("Exit");
 
-	gtk_signal_connect (GTK_OBJECT (authenticate_button),
+	g_signal_connect (authenticate_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (authenticate_boink_callback),
-			    (gpointer) NULL);
+			    G_CALLBACK (authenticate_boink_callback),
+			    NULL);
 
-	gtk_signal_connect (GTK_OBJECT (exit_button),
+	g_signal_connect (exit_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (exit_callback),
-			    (gpointer) NULL);
+			    G_CALLBACK (exit_callback),
+			    NULL);
 
 	gtk_box_pack_start (GTK_BOX (vbox), authenticate_button, TRUE, TRUE, 4);
 	gtk_box_pack_end (GTK_BOX (vbox), exit_button, TRUE, TRUE, 0);

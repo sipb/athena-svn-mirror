@@ -5,16 +5,16 @@
    Copyright (C) 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -26,6 +26,7 @@
 #include "eel-debug-drawing.h"
 
 #include "eel-art-gtk-extensions.h"
+#include "eel-debug.h"
 #include "eel-gdk-extensions.h"
 #include "eel-gdk-extensions.h"
 #include "eel-gdk-pixbuf-extensions.h"
@@ -56,9 +57,9 @@
 typedef struct DebugPixbufViewer DebugPixbufViewer;
 typedef struct DebugPixbufViewerClass DebugPixbufViewerClass;
 
-GtkType     debug_pixbuf_viewer_get_type   (void);
-static void debug_pixbuf_viewer_set_pixbuf (DebugPixbufViewer *viewer,
-					    GdkPixbuf         *pixbuf);
+static GtkType debug_pixbuf_viewer_get_type   (void);
+static void    debug_pixbuf_viewer_set_pixbuf (DebugPixbufViewer *viewer,
+					       GdkPixbuf         *pixbuf);
 
 struct DebugPixbufViewer
 {
@@ -72,9 +73,9 @@ struct DebugPixbufViewerClass
 };
 
 /* GtkObjectClass methods */
-static void debug_pixbuf_viewer_initialize_class (DebugPixbufViewerClass *pixbuf_viewer_class);
-static void debug_pixbuf_viewer_initialize       (DebugPixbufViewer      *pixbuf_viewer);
-static void debug_pixbuf_viewer_destroy          (GtkObject              *object);
+static void debug_pixbuf_viewer_class_init (DebugPixbufViewerClass *pixbuf_viewer_class);
+static void debug_pixbuf_viewer_init       (DebugPixbufViewer      *pixbuf_viewer);
+static void debug_pixbuf_viewer_finalize         (GObject                *object);
 
 /* GtkWidgetClass methods */
 static void debug_pixbuf_viewer_size_request     (GtkWidget              *widget,
@@ -82,38 +83,36 @@ static void debug_pixbuf_viewer_size_request     (GtkWidget              *widget
 static int  debug_pixbuf_viewer_expose_event     (GtkWidget              *widget,
 						  GdkEventExpose         *event);
 
-EEL_DEFINE_CLASS_BOILERPLATE (DebugPixbufViewer, debug_pixbuf_viewer, GTK_TYPE_WIDGET)
+EEL_CLASS_BOILERPLATE (DebugPixbufViewer, debug_pixbuf_viewer, GTK_TYPE_WIDGET)
 
 static void
-debug_pixbuf_viewer_initialize_class (DebugPixbufViewerClass *pixbuf_viewer_class)
+debug_pixbuf_viewer_class_init (DebugPixbufViewerClass *pixbuf_viewer_class)
 {
-	GtkObjectClass *object_class = GTK_OBJECT_CLASS (pixbuf_viewer_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (pixbuf_viewer_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (pixbuf_viewer_class);
 
-	object_class->destroy = debug_pixbuf_viewer_destroy;
+	object_class->finalize = debug_pixbuf_viewer_finalize;
 	widget_class->size_request = debug_pixbuf_viewer_size_request;
 	widget_class->expose_event = debug_pixbuf_viewer_expose_event;
 }
 
 static void
-debug_pixbuf_viewer_initialize (DebugPixbufViewer *viewer)
+debug_pixbuf_viewer_init (DebugPixbufViewer *viewer)
 {
 	GTK_WIDGET_UNSET_FLAGS (viewer, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS (viewer, GTK_NO_WINDOW);
 }
 
 static void
-debug_pixbuf_viewer_destroy (GtkObject *object)
+debug_pixbuf_viewer_finalize (GObject *object)
 {
  	DebugPixbufViewer *viewer;
-
-	g_return_if_fail (DEBUG_IS_PIXBUF_VIEWER (object));
 
 	viewer = DEBUG_PIXBUF_VIEWER (object);
 	eel_gdk_pixbuf_unref_if_not_null (viewer->pixbuf);
 	viewer->pixbuf = NULL;
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -127,9 +126,11 @@ debug_pixbuf_viewer_size_request (GtkWidget *widget, GtkRequisition *requisition
 	
 	viewer = DEBUG_PIXBUF_VIEWER (widget);
 
-	dimensions = (viewer->pixbuf != NULL) ?
-		eel_gdk_pixbuf_get_dimensions (viewer->pixbuf) :
-		eel_dimensions_empty;
+	if (viewer->pixbuf != NULL) {
+		dimensions = eel_gdk_pixbuf_get_dimensions (viewer->pixbuf);
+	} else {
+		dimensions = eel_dimensions_empty;
+	}
 	
    	requisition->width = MAX (2, dimensions.width);
    	requisition->height = MAX (2, dimensions.height);
@@ -219,6 +220,7 @@ eel_debug_draw_rectangle_and_cross (GdkDrawable *drawable,
 				    gboolean draw_cross)
 {
 	GdkGC *gc;
+	GdkColor color_gdk = { 0 };
 
 	int width;
 	int height;
@@ -231,7 +233,14 @@ eel_debug_draw_rectangle_and_cross (GdkDrawable *drawable,
 
  	gc = gdk_gc_new (drawable);
  	gdk_gc_set_function (gc, GDK_COPY);
-	gdk_rgb_gc_set_foreground (gc, color);
+	
+	color_gdk.red   = ((color >> 16) & 0xff) << 8;
+	color_gdk.green = ((color >>  8) & 0xff) << 8;
+	color_gdk.blue  = ((color      ) & 0xff) << 8;
+	gdk_colormap_alloc_color (
+		gdk_drawable_get_colormap (drawable),
+		&color_gdk, FALSE, FALSE);
+	gdk_gc_set_rgb_fg_color (gc, &color_gdk);
 	
 	gdk_draw_rectangle (drawable,
 			    gc,
@@ -257,7 +266,7 @@ eel_debug_draw_rectangle_and_cross (GdkDrawable *drawable,
 			       rectangle.y0 + height - 1);
 	}
 
-	gdk_gc_unref (gc);
+	g_object_unref (gc);
 }
 
 /**
@@ -338,9 +347,9 @@ eel_debug_show_pixbuf (const GdkPixbuf *pixbuf)
 		vbox = gtk_vbox_new (FALSE, 0);
 		gtk_container_add (GTK_CONTAINER (debug_window), vbox);
 		gtk_window_set_title (GTK_WINDOW (debug_window), "Pixbuf debugging");
-		gtk_window_set_policy (GTK_WINDOW (debug_window), TRUE, TRUE, FALSE);
+		gtk_window_set_resizable (GTK_WINDOW (debug_window), TRUE);
 		gtk_container_set_border_width (GTK_CONTAINER (debug_window), 10);
-		gtk_signal_connect (GTK_OBJECT (debug_window), "delete_event", GTK_SIGNAL_FUNC (debug_delete_event), NULL);
+		g_signal_connect (debug_window, "delete_event", G_CALLBACK (debug_delete_event), NULL);
 		
 		debug_image = gtk_widget_new (debug_pixbuf_viewer_get_type (), NULL);
 		
@@ -348,7 +357,7 @@ eel_debug_show_pixbuf (const GdkPixbuf *pixbuf)
 
 		eel_gtk_widget_set_background_color (debug_window, "white");
 
-		g_atexit (destroy_debug_window);
+		eel_debug_call_at_shutdown (destroy_debug_window);
 		
 		gtk_widget_show (debug_image);
 		gtk_widget_show (vbox);

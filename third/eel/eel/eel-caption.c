@@ -26,10 +26,12 @@
 
 #include "eel-caption.h"
 
+#include "eel-accessibility.h"
 #include "eel-gtk-macros.h"
 #include "eel-glib-extensions.h"
 #include "eel-art-gtk-extensions.h"
 
+#include <atk/atkrelationset.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
 
@@ -43,37 +45,37 @@ struct EelCaptionDetail
 };
 
 /* EelCaptionClass methods */
-static void eel_caption_initialize_class (EelCaptionClass *klass);
-static void eel_caption_initialize       (EelCaption      *caption);
+static void eel_caption_class_init (EelCaptionClass *klass);
+static void eel_caption_init       (EelCaption      *caption);
 
 /* GtkObjectClass methods */
-static void eel_caption_destroy          (GtkObject       *object);
-static void caption_show_all     (GtkWidget       *widget);
+static void eel_caption_finalize         (GObject         *object);
+static void caption_show_all             (GtkWidget       *widget);
 static void update_title                 (EelCaption      *caption);
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelCaption, eel_caption, GTK_TYPE_HBOX)
+EEL_CLASS_BOILERPLATE (EelCaption, eel_caption, GTK_TYPE_HBOX)
 
 /*
  * EelCaptionClass methods
  */
 static void
-eel_caption_initialize_class (EelCaptionClass *caption_class)
+eel_caption_class_init (EelCaptionClass *caption_class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	
-	object_class = GTK_OBJECT_CLASS (caption_class);
+	object_class = G_OBJECT_CLASS (caption_class);
 	widget_class = GTK_WIDGET_CLASS (caption_class);
 
-	/* GtkObjectClass */
-	object_class->destroy = eel_caption_destroy;
+	/* GObjectClass */
+	object_class->finalize = eel_caption_finalize;
 
 	/* GtkWidgetClass */
 	widget_class->show_all = caption_show_all;
 }
 
 static void
-eel_caption_initialize (EelCaption *caption)
+eel_caption_init (EelCaption *caption)
 {
 	caption->detail = g_new0 (EelCaptionDetail, 1);
 
@@ -97,18 +99,15 @@ eel_caption_initialize (EelCaption *caption)
  * GtkObjectClass methods
  */
 static void
-eel_caption_destroy (GtkObject *object)
+eel_caption_finalize (GObject *object)
 {
-	EelCaption * caption;
-	
-	g_return_if_fail (EEL_IS_CAPTION (object));
+	EelCaption *caption;
 	
 	caption = EEL_CAPTION (object);
 
 	g_free (caption->detail);
 
-	/* Chain */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* GtkObjectClass methods */
@@ -153,12 +152,12 @@ eel_caption_new (void)
  */
 void
 eel_caption_set_title_label (EelCaption		*caption,
-				  const char			*title_label)
+			     const char			*title_label)
 {
 	g_return_if_fail (EEL_IS_CAPTION (caption));
 	g_return_if_fail (title_label != NULL);
 
-	gtk_label_set_text (GTK_LABEL (caption->detail->title_label), title_label);
+	gtk_label_set_text_with_mnemonic (GTK_LABEL (caption->detail->title_label), title_label);
 }
 
 /**
@@ -191,17 +190,9 @@ eel_caption_set_show_title (EelCaption *caption,
 char *
 eel_caption_get_title_label (const EelCaption *caption)
 {
-	gchar *str;
-
 	g_return_val_if_fail (EEL_IS_CAPTION (caption), NULL);
 
-	/* DANGER! DANGER!
-	 * 
-	 * gtk_label_get () does not strdup the result.
-	 */
-	gtk_label_get (GTK_LABEL (caption->detail->title_label), &str);
-
-	return str ? g_strdup (str) : NULL;
+	return g_strdup (gtk_label_get_text (GTK_LABEL (caption->detail->title_label)));
 }
 
 /**
@@ -233,15 +224,17 @@ eel_caption_get_title_label_width (const EelCaption *caption)
  */
 void
 eel_caption_set_child (EelCaption *caption,
-			    GtkWidget *child,
-			    gboolean expand,
-			    gboolean fill)
+		       GtkWidget *child,
+		       gboolean expand,
+		       gboolean fill)
 {
 	g_return_if_fail (EEL_IS_CAPTION (caption));
 	g_return_if_fail (GTK_IS_WIDGET (child));
 	g_return_if_fail (caption->detail->child == NULL);
 
 	caption->detail->child = child;
+	gtk_label_set_mnemonic_widget (GTK_LABEL (caption->detail->title_label), child);
+	eel_accessibility_set_up_label_widget_relation (caption->detail->title_label, child);
 	
 	gtk_box_pack_start (GTK_BOX (caption),
 			    caption->detail->child,
@@ -263,7 +256,7 @@ eel_caption_set_child (EelCaption *caption,
  */
 void
 eel_caption_set_extra_spacing (EelCaption *caption,
-			      	    int extra_spacing)
+			       int extra_spacing)
 {
 	g_return_if_fail (EEL_IS_CAPTION (caption));
 	g_return_if_fail (extra_spacing >= 0);

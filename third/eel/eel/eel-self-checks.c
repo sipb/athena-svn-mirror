@@ -5,16 +5,16 @@
    Copyright (C) 1999 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -210,41 +210,27 @@ eel_check_string_result (char *result, const char *expected)
 void
 eel_check_string_list_result (EelStringList *result,
 			      const char *expected_value,
-			      const char *expected_value_delimeter)
+			      const char *expected_value_delimiter)
 {
-	
-	gboolean match;
+	int i;
 	char *result_as_string;
-	EelStringList *expected_value_as_list;
 
-	g_return_if_fail (expected_value_delimeter != NULL);
+	g_return_if_fail (expected_value_delimiter != NULL);
 
-	if (expected_value == NULL) {
-		match = result == NULL;
-	} else {
-		if (result != NULL) {
-			expected_value_as_list = eel_string_list_new_from_tokens (
-				expected_value,
-				expected_value_delimeter,
-				eel_string_list_is_case_sensitive (result));
-
-			match = eel_string_list_equals (result, expected_value_as_list);
-			eel_string_list_free (expected_value_as_list);
-		} else {
-			match = FALSE;
+	while (1) {
+		i = eel_string_list_get_index_for_string (result, "");
+		if (i == EEL_STRING_LIST_NOT_FOUND) {
+			break;
 		}
+		eel_string_list_modify_nth (result, i, "<empty string>");
 	}
 
-	if (!match) {
-		result_as_string = eel_string_list_as_string (result,
-							      expected_value_delimeter,
-							      EEL_STRING_LIST_ALL_STRINGS);
-		eel_report_check_failure (result_as_string, g_strdup (expected_value));
-		g_free (result_as_string);
-	} else {
-		eel_string_list_free (result);
-	}
-	eel_after_check ();
+	result_as_string = eel_string_list_as_string (result,
+						      expected_value_delimiter,
+						      EEL_STRING_LIST_ALL_STRINGS);
+	eel_string_list_free (result);
+
+	eel_check_string_result (result_as_string, expected_value);
 }
 
 void

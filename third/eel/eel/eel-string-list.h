@@ -5,16 +5,16 @@
    Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -66,7 +66,7 @@ EelStringList *eel_string_list_new_from_string_array     (const char * const    
 void           eel_string_list_assign_from_string_array  (EelStringList                *string_list,
 							  const char * const            string_array[]);
 
-/* Construct a string list from tokens delimited by the given string and delimeter */
+/* Construct a string list from tokens delimited by the given string and delimiter */
 EelStringList *eel_string_list_new_from_tokens           (const char                   *string,
 							  const char                   *delimiter,
 							  gboolean                      case_sensitive);
@@ -93,6 +93,10 @@ void           eel_string_list_append_string_list        (EelStringList         
 							  const EelStringList          *append_string_list);
 /* Clear the collection. */
 void           eel_string_list_clear                     (EelStringList                *string_list);
+
+/* Access the nth string in the collection.  */
+G_CONST_RETURN char *eel_string_list_peek_nth            (const EelStringList          *string_list,
+							  guint                         n);
 
 /* Access the nth string in the collection.  Returns an strduped string. */
 char *         eel_string_list_nth                       (const EelStringList          *string_list,
@@ -127,7 +131,7 @@ gboolean       eel_string_list_equals                    (const EelStringList   
 /* Return the string list in a GList.  Must deep free the result with eel_g_list_free_deep() */
 GSList *       eel_string_list_as_g_slist                (const EelStringList          *string_list);
 
-/* Return the string list as a concatenation of all the items delimeted by delimeter. */
+/* Return the string list as a concatenation of all the items delimited by delimiter. */
 char *         eel_string_list_as_string                 (const EelStringList          *string_list,
 							  const char                   *delimiter,
 							  int                           num_strings);

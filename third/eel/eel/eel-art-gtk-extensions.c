@@ -80,7 +80,7 @@ eel_screen_get_dimensions (void)
  *
  */
 ArtIRect
-eel_gdk_window_get_bounds (const GdkWindow *gdk_window)
+eel_gdk_window_get_bounds (GdkWindow *gdk_window)
 {
 	ArtIRect bounds;
 	int width;
@@ -88,8 +88,8 @@ eel_gdk_window_get_bounds (const GdkWindow *gdk_window)
 
 	g_return_val_if_fail (gdk_window != NULL, eel_art_irect_empty);
 
-	gdk_window_get_position ((GdkWindow *) gdk_window, &bounds.x0, &bounds.y0);
-	gdk_window_get_size ((GdkWindow *) gdk_window, &width, &height);
+	gdk_window_get_position (gdk_window, &bounds.x0, &bounds.y0);
+	gdk_drawable_get_size (gdk_window, &width, &height);
 
 	bounds.x1 = bounds.x0 + width;
 	bounds.y1 = bounds.y0 + height;
@@ -106,7 +106,7 @@ eel_gdk_window_get_bounds (const GdkWindow *gdk_window)
  *
  */
 ArtIRect
-eel_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_window)
+eel_gdk_window_get_screen_relative_bounds (GdkWindow *gdk_window)
 {
 	ArtIRect screen_bounds;
 	int width;
@@ -114,13 +114,13 @@ eel_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_window)
 	
 	g_return_val_if_fail (gdk_window != NULL, eel_art_irect_empty);
 
-	if (!gdk_window_get_origin ((GdkWindow *) gdk_window,
+	if (!gdk_window_get_origin (gdk_window,
 				    &screen_bounds.x0,
 				    &screen_bounds.y0)) {
 		return eel_art_irect_empty;
 	}
 	
-	gdk_window_get_size ((GdkWindow *) gdk_window, &width, &height);
+	gdk_drawable_get_size (gdk_window, &width, &height);
 	
 	screen_bounds.x1 = screen_bounds.x0 + width;
 	screen_bounds.y1 = screen_bounds.y0 + height;
@@ -137,7 +137,7 @@ eel_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_window)
  *
  */
 ArtIRect
-eel_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
+eel_gtk_widget_get_bounds (GtkWidget *gtk_widget)
 {
 	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), eel_art_irect_empty);
 	
@@ -155,7 +155,7 @@ eel_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
  *               after the widget's geometry has been "allocated" by its container.
  */
 EelDimensions
-eel_gtk_widget_get_dimensions (const GtkWidget *gtk_widget)
+eel_gtk_widget_get_dimensions (GtkWidget *gtk_widget)
 {
 	EelDimensions dimensions;
 	
@@ -176,14 +176,14 @@ eel_gtk_widget_get_dimensions (const GtkWidget *gtk_widget)
  *               could potentially be expensive for complicated widgets.
  */
 EelDimensions
-eel_gtk_widget_get_preferred_dimensions (const GtkWidget *gtk_widget)
+eel_gtk_widget_get_preferred_dimensions (GtkWidget *gtk_widget)
 {
 	GtkRequisition requisition;
 	EelDimensions preferred_dimensions;
 
 	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), eel_dimensions_empty);
 
-	gtk_widget_size_request (GTK_WIDGET (gtk_widget), &requisition);
+	gtk_widget_size_request (gtk_widget, &requisition);
 
 	preferred_dimensions.width = (int) requisition.width;
 	preferred_dimensions.height = (int) requisition.height;
@@ -202,7 +202,7 @@ eel_gtk_widget_get_preferred_dimensions (const GtkWidget *gtk_widget)
  * It also ensures that any drawing that the widget does is actually onscreen.
  */
 ArtIRect
-eel_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window,
+eel_gdk_window_clip_dirty_area_to_screen (GdkWindow *gdk_window,
 					  ArtIRect dirty_area)
 {
 	ArtIRect clipped;
@@ -289,13 +289,13 @@ eel_art_irect_to_gdk_rectangle (ArtIRect rectangle)
 }
 
 EelDimensions
-eel_gdk_window_get_dimensions (const GdkWindow *gdk_window)
+eel_gdk_window_get_dimensions (GdkWindow *gdk_window)
 {
 	EelDimensions dimensions;
 	
 	g_return_val_if_fail (gdk_window != NULL, eel_dimensions_empty);
 
-	gdk_window_get_size ((GdkWindow *) gdk_window, &dimensions.width, &dimensions.height);
+	gdk_drawable_get_size (gdk_window, &dimensions.width, &dimensions.height);
 
 	return dimensions;
 }
@@ -306,7 +306,7 @@ eel_gdk_get_pointer_position (void)
 
 	EelArtIPoint position;
 
-	gdk_window_get_pointer (GDK_ROOT_PARENT (),
+	gdk_window_get_pointer (gdk_get_default_root_window (),
 				&position.x,
 				&position.y,
 				NULL);

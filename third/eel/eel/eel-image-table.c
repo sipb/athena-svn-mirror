@@ -23,17 +23,17 @@
 */
 
 #include <config.h>
-
 #include "eel-image-table.h"
 
-#include "eel-gtk-macros.h"
-#include "eel-gtk-extensions.h"
 #include "eel-art-extensions.h"
 #include "eel-art-gtk-extensions.h"
-#include "eel-region.h"
 #include "eel-debug-drawing.h"
-
+#include "eel-gtk-extensions.h"
+#include "eel-gtk-macros.h"
+#include "eel-labeled-image.h"
+#include "eel-marshal.h"
 #include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 
 /* Arguments */
 enum
@@ -47,9 +47,7 @@ struct EelImageTableDetails
 {
 	GtkWidget *child_under_pointer;
 	GtkWidget *child_being_pressed;
-	GdkGC *clear_gc;
-	guint32 smooth_background_color;
-	gboolean is_smooth;
+	GdkGC     *clear_gc;
 };
 
 /* Signals */
@@ -60,21 +58,19 @@ typedef enum
 	CHILD_PRESSED,
 	CHILD_RELEASED,
 	CHILD_CLICKED,
-	SET_IS_SMOOTH,
 	LAST_SIGNAL
 } ImageTableSignals;
 
 /* Signals */
 static guint image_table_signals[LAST_SIGNAL] = { 0 };
 
-/* GtkObjectClass methods */
-static void    eel_image_table_initialize_class     (EelImageTableClass *image_table_class);
-static void    eel_image_table_initialize           (EelImageTable      *image);
-static void    eel_image_table_destroy              (GtkObject          *object);
+static void    eel_image_table_class_init     (EelImageTableClass *image_table_class);
+static void    eel_image_table_init           (EelImageTable      *image);
+
+/* GObjectClass methods */
+static void    eel_image_table_finalize             (GObject            *object);
 
 /* GtkWidgetClass methods */
-static int     eel_image_table_expose_event         (GtkWidget          *widget,
-						     GdkEventExpose     *event);
 static void    eel_image_table_realize              (GtkWidget          *widget);
 static void    eel_image_table_unrealize            (GtkWidget          *widget);
 
@@ -84,15 +80,14 @@ static void    eel_image_table_remove               (GtkContainer       *contain
 static GtkType eel_image_table_child_type           (GtkContainer       *container);
 
 /* Private EelImageTable methods */
-static void    image_table_clear_dirty_areas        (EelImageTable      *image_table);
-static GdkGC * image_table_peek_clear_gc            (EelImageTable      *image_table);
 static void    image_table_emit_signal              (EelImageTable      *image_table,
 						     GtkWidget          *child,
 						     guint               signal_index,
 						     int                 x,
 						     int                 y,
 						     int                 button,
-						     guint               state);
+						     guint               state,
+						     GdkEvent           *event);
 
 /* Ancestor callbacks */
 static int     ancestor_enter_notify_event          (GtkWidget          *widget,
@@ -111,25 +106,19 @@ static int     ancestor_button_release_event        (GtkWidget          *widget,
 						     GdkEventButton     *event,
 						     gpointer            event_data);
 
-/* EelImageTable signals */
-static void    eel_image_table_set_is_smooth_signal (GtkWidget          *widget,
-						     gboolean            is_smooth);
+EEL_CLASS_BOILERPLATE (EelImageTable, eel_image_table, EEL_TYPE_WRAP_TABLE)
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelImageTable, eel_image_table, EEL_TYPE_WRAP_TABLE)
-
-/* Class init methods */
-	static void
-eel_image_table_initialize_class (EelImageTableClass *image_table_class)
+static void
+eel_image_table_class_init (EelImageTableClass *image_table_class)
 {
-	GtkObjectClass *object_class = GTK_OBJECT_CLASS (image_table_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (image_table_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (image_table_class);
 	GtkContainerClass *container_class = GTK_CONTAINER_CLASS (image_table_class);
 
-	/* GtkObjectClass */
-	object_class->destroy = eel_image_table_destroy;
+	/* GObjectClass */
+	object_class->finalize = eel_image_table_finalize;
 	
  	/* GtkWidgetClass */
- 	widget_class->expose_event = eel_image_table_expose_event;
  	widget_class->realize = eel_image_table_realize;
  	widget_class->unrealize = eel_image_table_unrealize;
 
@@ -137,120 +126,78 @@ eel_image_table_initialize_class (EelImageTableClass *image_table_class)
 	container_class->remove = eel_image_table_remove;
 	container_class->child_type = eel_image_table_child_type;
 
-	/* EelImageTableClass */
-	image_table_class->set_is_smooth = eel_image_table_set_is_smooth_signal;
-	
 	/* Signals */
-	image_table_signals[CHILD_ENTER] = gtk_signal_new ("child_enter",
-							   GTK_RUN_LAST,
-							   object_class->type,
-							   0,
-							   gtk_marshal_NONE__POINTER_POINTER,
-							   GTK_TYPE_NONE,
+	image_table_signals[CHILD_ENTER] = g_signal_new ("child_enter",
+							 G_TYPE_FROM_CLASS (object_class),
+							 G_SIGNAL_RUN_LAST,
+							 G_STRUCT_OFFSET (EelImageTableClass, child_enter),
+							 NULL, NULL,
+							 eel_marshal_VOID__OBJECT_POINTER,
+							 G_TYPE_NONE,
+							 2,
+							 GTK_TYPE_WIDGET,
+							 G_TYPE_POINTER);
+	image_table_signals[CHILD_LEAVE] = g_signal_new ("child_leave",
+							 G_TYPE_FROM_CLASS (object_class),
+							 G_SIGNAL_RUN_LAST,
+							 G_STRUCT_OFFSET (EelImageTableClass, child_leave),
+							 NULL, NULL,
+							 eel_marshal_VOID__OBJECT_POINTER,
+							 G_TYPE_NONE,
+							 2,
+							 GTK_TYPE_WIDGET,
+							 G_TYPE_POINTER);
+	image_table_signals[CHILD_PRESSED] = g_signal_new ("child_pressed",
+							   G_TYPE_FROM_CLASS (object_class),
+							   G_SIGNAL_RUN_LAST,
+							   G_STRUCT_OFFSET (EelImageTableClass, child_pressed),
+							   NULL, NULL,
+							   eel_marshal_VOID__OBJECT_POINTER,
+							   G_TYPE_NONE,
 							   2,
-							   GTK_TYPE_POINTER,
-							   GTK_TYPE_POINTER);
-	image_table_signals[CHILD_LEAVE] = gtk_signal_new ("child_leave",
-							   GTK_RUN_LAST,
-							   object_class->type,
-							   0,
-							   gtk_marshal_NONE__POINTER_POINTER,
-							   GTK_TYPE_NONE,
+							   GTK_TYPE_WIDGET,
+							   G_TYPE_POINTER);
+	image_table_signals[CHILD_RELEASED] = g_signal_new ("child_released",
+							    G_TYPE_FROM_CLASS (object_class),
+							    G_SIGNAL_RUN_LAST,
+							    G_STRUCT_OFFSET (EelImageTableClass, child_released),
+							    NULL, NULL,
+							    eel_marshal_VOID__OBJECT_POINTER,
+							    G_TYPE_NONE,
+							    2,
+							    GTK_TYPE_WIDGET,
+							    G_TYPE_POINTER);
+	image_table_signals[CHILD_CLICKED] = g_signal_new ("child_clicked",
+							   G_TYPE_FROM_CLASS (object_class),
+							   G_SIGNAL_RUN_LAST,
+							   G_STRUCT_OFFSET (EelImageTableClass, child_clicked),
+							   NULL, NULL,
+							   eel_marshal_VOID__OBJECT_POINTER,
+							   G_TYPE_NONE,
 							   2,
-							   GTK_TYPE_POINTER,
-							   GTK_TYPE_POINTER);
-	image_table_signals[CHILD_PRESSED] = gtk_signal_new ("child_pressed",
-							     GTK_RUN_LAST,
-							     object_class->type,
-							     0,
-							     gtk_marshal_NONE__POINTER_POINTER,
-							     GTK_TYPE_NONE,
-							     2,
-							     GTK_TYPE_POINTER,
-							     GTK_TYPE_POINTER);
-	image_table_signals[CHILD_RELEASED] = gtk_signal_new ("child_released",
-							      GTK_RUN_LAST,
-							      object_class->type,
-							      0,
-							      gtk_marshal_NONE__POINTER_POINTER,
-							      GTK_TYPE_NONE,
-							      2,
-							      GTK_TYPE_POINTER,
-							      GTK_TYPE_POINTER);
-	image_table_signals[CHILD_CLICKED] = gtk_signal_new ("child_clicked",
-							     GTK_RUN_LAST,
-							     object_class->type,
-							     0,
-							     gtk_marshal_NONE__POINTER_POINTER,
-							     GTK_TYPE_NONE,
-							     2,
-							     GTK_TYPE_POINTER,
-							     GTK_TYPE_POINTER);
-	
-	image_table_signals[SET_IS_SMOOTH] = gtk_signal_new ("set_is_smooth",
-							     GTK_RUN_LAST,
-							     object_class->type,
-							     GTK_SIGNAL_OFFSET (EelImageTableClass, set_is_smooth),
-							     gtk_marshal_NONE__BOOL,
-							     GTK_TYPE_NONE, 
-							     1,
-							     GTK_TYPE_BOOL);
-
-	gtk_object_class_add_signals (object_class, image_table_signals, LAST_SIGNAL);
-
-	/* Let the smooth widget machinery know that our class can be smooth */
-	eel_smooth_widget_register_type (EEL_TYPE_IMAGE_TABLE);
+							   GTK_TYPE_WIDGET,
+							   G_TYPE_POINTER);
 }
 
 void
-eel_image_table_initialize (EelImageTable *image_table)
+eel_image_table_init (EelImageTable *image_table)
 {
 	GTK_WIDGET_SET_FLAGS (image_table, GTK_NO_WINDOW);
 
 	image_table->details = g_new0 (EelImageTableDetails, 1);
-	image_table->details->smooth_background_color = EEL_RGB_COLOR_WHITE;
-
-	eel_smooth_widget_register (GTK_WIDGET (image_table));
 }
 
-/* GtkObjectClass methods */
+/* GObjectClass methods */
 static void
-eel_image_table_destroy (GtkObject *object)
+eel_image_table_finalize (GObject *object)
 {
  	EelImageTable *image_table;
 	
-	g_return_if_fail (EEL_IS_IMAGE_TABLE (object));
-
 	image_table = EEL_IMAGE_TABLE (object);
 
 	g_free (image_table->details);
 
-	/* Chain destroy */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-/* GtkWidgetClass methods */
-static int
-eel_image_table_expose_event (GtkWidget *widget,
-			      GdkEventExpose *event)
-{
-	EelImageTable *image_table;
-
-	g_return_val_if_fail (EEL_IS_WRAP_TABLE (widget), TRUE);
-	g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), TRUE);
-	g_return_val_if_fail (event != NULL, TRUE);
-
-	image_table = EEL_IMAGE_TABLE (widget);
-
-	/* In smooth mode we clear dirty areas, since our background wont be
-	 * force clear and thus avoid flicker.
-	 */
-	if (image_table->details->is_smooth) {
-		image_table_clear_dirty_areas (image_table);
-	}
-	
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, expose_event, (widget, event));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -279,31 +226,31 @@ eel_image_table_realize (GtkWidget *widget)
 
 	eel_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
 					       "enter_notify_event",
-					       GTK_SIGNAL_FUNC (ancestor_enter_notify_event),
+					       G_CALLBACK (ancestor_enter_notify_event),
 					       widget,
 					       widget);
 	
 	eel_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
 					       "leave_notify_event",
-					       GTK_SIGNAL_FUNC (ancestor_leave_notify_event),
+					       G_CALLBACK (ancestor_leave_notify_event),
 					       widget,
 					       widget);
 	
 	eel_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
 					       "motion_notify_event",
-					       GTK_SIGNAL_FUNC (ancestor_motion_notify_event),
+					       G_CALLBACK (ancestor_motion_notify_event),
 					       widget,
 					       widget);
 	
 	eel_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
 					       "button_press_event",
-					       GTK_SIGNAL_FUNC (ancestor_button_press_event),
+					       G_CALLBACK (ancestor_button_press_event),
 					       widget,
 					       widget);
 	
 	eel_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
 					       "button_release_event",
-					       GTK_SIGNAL_FUNC (ancestor_button_release_event),
+					       G_CALLBACK (ancestor_button_release_event),
 					       widget,
 					       widget);
 }
@@ -318,7 +265,7 @@ eel_image_table_unrealize (GtkWidget *widget)
 	image_table = EEL_IMAGE_TABLE (widget);
 
 	if (image_table->details->clear_gc != NULL) {
-		gdk_gc_unref (image_table->details->clear_gc);
+		g_object_unref (image_table->details->clear_gc);
 		image_table->details->clear_gc = NULL;
 	}
 
@@ -355,99 +302,7 @@ eel_image_table_child_type (GtkContainer *container)
 	return EEL_TYPE_LABELED_IMAGE;
 }
 
-/* EelImageTable signals */
-static void
-eel_image_table_set_is_smooth_signal (GtkWidget *widget,
-				      gboolean is_smooth)
-{
-	g_return_if_fail (EEL_IS_IMAGE_TABLE (widget));
-	
-	eel_image_table_set_is_smooth (EEL_IMAGE_TABLE (widget), is_smooth);
-}
-
 /* Private EelImageTable methods */
-
-/* For each of the image table children, subtract their content from a region */
-static void
-image_table_foreach_child_subtract_content (GtkWidget *child,
-					    gpointer callback_data)
-{
-	EelRegion *region;
-	ArtIRect label_bounds;
-	ArtIRect image_bounds;
-
-	g_return_if_fail (EEL_IS_LABELED_IMAGE (child));
-	g_return_if_fail (callback_data != NULL);
-
-	if (!GTK_WIDGET_VISIBLE (child)) {
-		return;
-	}
-
-	region = callback_data;
-
-	image_bounds = eel_labeled_image_get_image_bounds (EEL_LABELED_IMAGE (child));
-	if (!art_irect_empty (&image_bounds)) {
-		eel_region_subtract_rectangle (region, image_bounds);
-	}
-	
-	label_bounds = eel_labeled_image_get_label_bounds (EEL_LABELED_IMAGE (child));
-	if (!art_irect_empty (&label_bounds)) {
-		eel_region_subtract_rectangle (region, label_bounds);
-	}
-}
-
-/* Clear the dirty areas around the children's content */
-static void
-image_table_clear_dirty_areas (EelImageTable *image_table)
-{
-	GtkWidget *widget;
-	EelRegion *region;
-	EelDimensions dimensions;
-	ArtIRect whole_region;
-	GdkGC *gc;
-	
-	g_return_if_fail (EEL_IS_WRAP_TABLE (image_table));
-	g_return_if_fail (GTK_WIDGET_REALIZED (image_table));
-
-	widget = GTK_WIDGET (image_table);
-	
-	dimensions = eel_gtk_widget_get_dimensions (widget->parent);
-	whole_region = eel_art_irect_assign_dimensions (0, 0, dimensions);
-	region = eel_region_new ();
-	
-	eel_region_add_rectangle (region, whole_region);
-
-	gc = image_table_peek_clear_gc (image_table);
-	
-	gtk_container_foreach (GTK_CONTAINER (image_table), image_table_foreach_child_subtract_content, region);
-	
-	eel_region_set_gc_clip_region (region, gc);
-	
-	gdk_draw_rectangle (widget->window,
-			    gc,
-			    TRUE,
-			    0,
-			    0,
-			    dimensions.width,
-			    dimensions.height);
-	
-	eel_region_free (region);
-}
-
-static GdkGC *
-image_table_peek_clear_gc (EelImageTable *image_table)
-{
-	g_return_val_if_fail (EEL_IS_IMAGE_TABLE (image_table), NULL);
-
-	if (image_table->details->clear_gc == NULL) {
-		image_table->details->clear_gc = gdk_gc_new (GTK_WIDGET (image_table)->window);
-		gdk_gc_set_function (image_table->details->clear_gc, GDK_COPY);
-	}
-
-	gdk_rgb_gc_set_foreground (image_table->details->clear_gc, image_table->details->smooth_background_color);
-
-	return image_table->details->clear_gc;
-}
 
 static void
 image_table_emit_signal (EelImageTable *image_table,
@@ -456,7 +311,8 @@ image_table_emit_signal (EelImageTable *image_table,
 			 int x,
 			 int y,
 			 int button,
-			 guint state)
+			 guint state,
+			 GdkEvent *gdk_event)
 {
 	EelImageTableEvent event;
 
@@ -469,11 +325,13 @@ image_table_emit_signal (EelImageTable *image_table,
 	event.y = y;
 	event.button = button;
 	event.state = state;
+	event.event = gdk_event;
 	
-	gtk_signal_emit (GTK_OBJECT (image_table), 
-			 image_table_signals[signal_index],
-			 child,
-			 &event);
+	g_signal_emit (image_table, 
+		       image_table_signals[signal_index],
+		       0,
+		       child,
+		       &event);
 }
 
 static void
@@ -520,7 +378,8 @@ image_table_handle_motion (EelImageTable *image_table,
 					 x,
 					 y,
 					 0,
-					 0);
+					 0,
+					 (GdkEvent *)event);
 	}
 
 	if (enter_emit_child != NULL) {
@@ -530,7 +389,8 @@ image_table_handle_motion (EelImageTable *image_table,
 					 x,
 					 y,
 					 0,
-					 0);
+					 0,
+					 (GdkEvent *)event);
 	}
 }
 
@@ -616,7 +476,8 @@ ancestor_button_press_event (GtkWidget *widget,
 						 event->x,
 						 event->y,
 						 event->button,
-						 event->state);
+						 event->state,
+						 (GdkEvent *)event);
 		}
 	}
 
@@ -664,7 +525,8 @@ ancestor_button_release_event (GtkWidget *widget,
 					 event->x,
 					 event->y,
 					 event->button,
-					 event->state);
+					 event->state,
+					 (GdkEvent *)event);
 	}
 	
 	if (clicked_emit_child != NULL) {
@@ -675,7 +537,8 @@ ancestor_button_release_event (GtkWidget *widget,
 					 event->x,
 					 event->y,
 					 event->button,
-					 event->state);
+					 event->state,
+					 (GdkEvent *)event);
 	}
 	
 	return FALSE;
@@ -694,44 +557,6 @@ eel_image_table_new (gboolean homogeneous)
 	eel_wrap_table_set_homogeneous (EEL_WRAP_TABLE (image_table), homogeneous);
 	
 	return GTK_WIDGET (image_table);
-}
-
-/**
- * eel_image_table_set_is_smooth:
- * @image_table: A EelImageTable.
- * @is_smooth: Boolean value indicating whether the image table is smooth.
- *
- */
-void
-eel_image_table_set_is_smooth (EelImageTable *image_table,
-			       gboolean is_smooth)
-{
-	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
-	
-	if (image_table->details->is_smooth == is_smooth) {
-		return;
-	}
-	
-	image_table->details->is_smooth = is_smooth;
-}
-
-/**
- * eel_image_table_set_smooth_background_color:
- * @image_table: A EelImageTable.
- * @smooth_background_color: The color to use for background in smooth mode.
- *
- */
-void
-eel_image_table_set_smooth_background_color (EelImageTable *image_table,
-					     guint32 smooth_background_color)
-{
-	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
-	
-	if (image_table->details->smooth_background_color == smooth_background_color) {
-		return;
-	}
-	
-	image_table->details->smooth_background_color = smooth_background_color;
 }
 
 /**

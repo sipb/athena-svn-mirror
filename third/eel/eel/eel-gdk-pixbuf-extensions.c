@@ -26,24 +26,27 @@
 #include <config.h>
 #include "eel-gdk-pixbuf-extensions.h"
 
+#include "eel-art-gtk-extensions.h"
+#include "eel-debug-drawing.h"
+#include "eel-debug.h"
 #include "eel-gdk-extensions.h"
 #include "eel-glib-extensions.h"
-#include "eel-string.h"
-#include "eel-art-gtk-extensions.h"
 #include "eel-lib-self-check-functions.h"
-#include "eel-debug-drawing.h"
+#include "eel-string.h"
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
-#include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>
+#include <gdk/gdkx.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <math.h>
-#include <png.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <pango/pangoft2.h>
 
 #define LOAD_BUFFER_SIZE 65536
 
-const ArtIRect eel_gdk_pixbuf_whole_pixbuf = { -1, -1, -1, -1 };
+const ArtIRect eel_gdk_pixbuf_whole_pixbuf = { G_MININT, G_MININT, G_MAXINT, G_MAXINT };
 
 struct EelPixbufLoadHandle {
 	GnomeVFSAsyncHandle *vfs_handle;
@@ -78,7 +81,7 @@ static void load_done            (EelPixbufLoadHandle *handle,
 void
 eel_gdk_pixbuf_list_ref (GList *pixbuf_list)
 {
-	g_list_foreach (pixbuf_list, (GFunc) gdk_pixbuf_ref, NULL);
+	g_list_foreach (pixbuf_list, (GFunc) g_object_ref, NULL);
 }
 
 /**
@@ -90,7 +93,7 @@ eel_gdk_pixbuf_list_ref (GList *pixbuf_list)
 void
 eel_gdk_pixbuf_list_free (GList *pixbuf_list)
 {
-	eel_g_list_free_deep_custom (pixbuf_list, (GFunc) gdk_pixbuf_unref, NULL);
+	eel_g_list_free_deep_custom (pixbuf_list, (GFunc) g_object_unref, NULL);
 }
 
 GdkPixbuf *
@@ -126,32 +129,35 @@ eel_gdk_pixbuf_load (const char *uri)
 		}
 		if (!gdk_pixbuf_loader_write (loader,
 					      buffer,
-					      bytes_read)) {
+					      bytes_read,
+					      NULL)) {
 			result = GNOME_VFS_ERROR_WRONG_FORMAT;
 			break;
 		}
 	}
 
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-		gtk_object_unref (GTK_OBJECT (loader));
+		gdk_pixbuf_loader_close (loader, NULL);
+		g_object_unref (loader);
 		gnome_vfs_close (handle);
 		return NULL;
 	}
 
 	gnome_vfs_close (handle);
-	gdk_pixbuf_loader_close (loader);
+	gdk_pixbuf_loader_close (loader, NULL);
 
 	pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
 	if (pixbuf != NULL) {
-		gdk_pixbuf_ref (pixbuf);
+		g_object_ref (pixbuf);
 	}
-	gtk_object_unref (GTK_OBJECT (loader));
+	g_object_unref (loader);
 
 	return pixbuf;
 }
 
 EelPixbufLoadHandle *
 eel_gdk_pixbuf_load_async (const char *uri,
+			   int priority,
 			   EelPixbufLoadCallback callback,
 			   gpointer callback_data)
 {
@@ -164,6 +170,7 @@ eel_gdk_pixbuf_load_async (const char *uri,
 	gnome_vfs_async_open (&handle->vfs_handle,
 			      uri,
 			      GNOME_VFS_OPEN_READ,
+			      priority,
 			      file_opened_callback,
 			      handle);
 
@@ -212,15 +219,17 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 	if (result == GNOME_VFS_OK && bytes_read != 0) {
 		if (!gdk_pixbuf_loader_write (handle->loader,
 					      buffer,
-					      bytes_read)) {
+					      bytes_read,
+					      NULL)) {
 			result = GNOME_VFS_ERROR_WRONG_FORMAT;
+		} else {
+			gnome_vfs_async_read (handle->vfs_handle,
+					      handle->buffer,
+					      sizeof (handle->buffer),
+					      file_read_callback,
+					      handle);
+			return;
 		}
-		gnome_vfs_async_read (handle->vfs_handle,
-				      handle->buffer,
-				      sizeof (handle->buffer),
-				      file_read_callback,
-				      handle);
-		return;
 	}
 
 	load_done (handle, result, result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF);
@@ -238,7 +247,7 @@ static void
 free_pixbuf_load_handle (EelPixbufLoadHandle *handle)
 {
 	if (handle->loader != NULL) {
-		gtk_object_unref (GTK_OBJECT (handle->loader));
+		g_object_unref (handle->loader);
 	}
 	g_free (handle);
 }
@@ -249,7 +258,7 @@ load_done (EelPixbufLoadHandle *handle, GnomeVFSResult result, gboolean get_pixb
 	GdkPixbuf *pixbuf;
 
 	if (handle->loader != NULL) {
-		gdk_pixbuf_loader_close (handle->loader);
+		gdk_pixbuf_loader_close (handle->loader, NULL);
 	}
 
 	pixbuf = get_pixbuf ? gdk_pixbuf_loader_get_pixbuf (handle->loader) : NULL;
@@ -269,6 +278,9 @@ eel_cancel_gdk_pixbuf_load (EelPixbufLoadHandle *handle)
 	if (handle == NULL) {
 		return;
 	}
+	if (handle->loader != NULL) {
+		gdk_pixbuf_loader_close (handle->loader, NULL);
+	}
 	if (handle->vfs_handle != NULL) {
 		gnome_vfs_async_cancel (handle->vfs_handle);
 	}
@@ -277,61 +289,65 @@ eel_cancel_gdk_pixbuf_load (EelPixbufLoadHandle *handle)
 
 /* return the average value of each component */
 guint32
-eel_gdk_pixbuf_average_value_argb (GdkPixbuf *pixbuf)
+eel_gdk_pixbuf_average_value (GdkPixbuf *pixbuf)
 {
 	guint64 a_total, r_total, g_total, b_total;
-	int row, column;
-	gboolean has_alpha;
-	int width, height;
+	guint row, column;
 	int row_stride;
 	const guchar *pixels, *p;
 	int r, g, b, a;
-	int dividend;
+	guint dividend;
+	guint width, height;
 
-	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	row_stride = gdk_pixbuf_get_rowstride (pixbuf);
 	pixels = gdk_pixbuf_get_pixels (pixbuf);
-	
+
 	/* iterate through the pixbuf, counting up each component */
 	a_total = 0;
 	r_total = 0;
 	g_total = 0;
 	b_total = 0;
-	for (row = 0; row < height; row++) {
-		p = pixels + (row * row_stride);
-		for (column = 0; column < width; column++) {
-			r = *p++;
-			g = *p++;
-			b = *p++;
-			a = has_alpha ? *p++ : 0xFF;
 
-			a_total += a;
-			r_total += r * a;
-			g_total += g * a;
-			b_total += b * a;
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
+		for (row = 0; row < height; row++) {
+			p = pixels + (row * row_stride);
+			for (column = 0; column < width; column++) {
+				r = *p++;
+				g = *p++;
+				b = *p++;
+				a = *p++;
+				
+				a_total += a;
+				r_total += r * a;
+				g_total += g * a;
+				b_total += b * a;
+			}
 		}
+		dividend = height * width * 0xFF;
+		a_total *= 0xFF;
+	} else {
+		for (row = 0; row < height; row++) {
+			p = pixels + (row * row_stride);
+			for (column = 0; column < width; column++) {
+				r = *p++;
+				g = *p++;
+				b = *p++;
+				
+				r_total += r;
+				g_total += g;
+				b_total += b;
+			}
+		}
+		dividend = height * width;
+		a_total = dividend * 0xFF;
 	}
 
-	a_total *= 0xFF;
-	dividend = height * width * 0xFF;
 	return ((a_total + dividend / 2) / dividend) << 24
 		| ((r_total + dividend / 2) / dividend) << 16
 		| ((g_total + dividend / 2) / dividend) << 8
 		| ((b_total + dividend / 2) / dividend);
-}
-
-void
-eel_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *average_color)
-{
-	guint32 argb;
-
-	argb = eel_gdk_pixbuf_average_value_argb (pixbuf);
-	average_color->pixel = 0;
-	average_color->red = ((argb >> 16) & 0xFF) * 0x101;
-	average_color->green = ((argb >> 8) & 0xFF) * 0x101;
-	average_color->blue = (argb & 0xFF) * 0x101;
 }
 
 double
@@ -384,7 +400,7 @@ eel_gdk_pixbuf_scale_down_to_fit (GdkPixbuf *pixbuf, int max_width, int max_heig
 	if (scale_factor >= 1.0) {
 		return gdk_pixbuf_copy (pixbuf);
 	} else {				
-		return gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
+		return eel_gdk_pixbuf_scale_down (pixbuf, scaled_width, scaled_height);	
 	}
 }
 
@@ -432,14 +448,12 @@ eel_gdk_pixbuf_get_dimensions (const GdkPixbuf *pixbuf)
 }
 
 /**
- * eel_gdk_pixbuf_fill_rectangle:
+ * eel_gdk_pixbuf_fill_rectangle_with_color:
  * @pixbuf: Target pixbuf to fill into.
  * @area: Rectangle to fill.
  * @color: The color to use.
  *
  * Fill the rectangle with the the given color.
- * Use the given rectangle if not NULL.
- * If rectangle is NULL, fill the whole pixbuf.
  */
 void
 eel_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf *pixbuf,
@@ -495,121 +509,19 @@ eel_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf *pixbuf,
 	}
 }
 
-/* utility routine for saving a pixbuf to a png file.
- * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
- * should be in a utility library, possibly in gdk-pixbuf itself.
- */
 gboolean
 eel_gdk_pixbuf_save_to_file (const GdkPixbuf *pixbuf,
 			     const char *file_name)
 {
-	FILE *handle;
-  	char *buffer;
-	gboolean has_alpha;
-	int width, height, depth, rowstride;
-  	guchar *pixels;
-  	png_structp png_ptr;
-  	png_infop info_ptr;
-  	png_text text[2];
-  	int i;
-
-	g_return_val_if_fail (pixbuf != NULL, FALSE);
-	g_return_val_if_fail (file_name != NULL, FALSE);
-	g_return_val_if_fail (file_name[0] != '\0', FALSE);
-
-        handle = fopen (file_name, "wb");
-        if (handle == NULL) {
-        	return FALSE;
-	}
-
-	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (png_ptr == NULL) {
-		fclose (handle);
-		return FALSE;
-	}
-
-	info_ptr = png_create_info_struct (png_ptr);
-	if (info_ptr == NULL) {
-		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
-		fclose (handle);
-	    	return FALSE;
-	}
-
-	if (setjmp (png_ptr->jmpbuf)) {
-		png_destroy_write_struct (&png_ptr, &info_ptr);
-		fclose (handle);
-		return FALSE;
-	}
-
-	png_init_io (png_ptr, handle);
-
-        has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-	depth = gdk_pixbuf_get_bits_per_sample (pixbuf);
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-
-	png_set_IHDR (png_ptr, info_ptr, width, height,
-		      depth, PNG_COLOR_TYPE_RGB_ALPHA,
-		      PNG_INTERLACE_NONE,
-		      PNG_COMPRESSION_TYPE_DEFAULT,
-		      PNG_FILTER_TYPE_DEFAULT);
-
-	/* Some text to go with the png image */
-	text[0].key = "Title";
-	text[0].text = (char *) file_name;
-	text[0].compression = PNG_TEXT_COMPRESSION_NONE;
-	text[1].key = "Software";
-	text[1].text = "Eel Thumbnail";
-	text[1].compression = PNG_TEXT_COMPRESSION_NONE;
-	png_set_text (png_ptr, info_ptr, text, 2);
-
-	/* Write header data */
-	png_write_info (png_ptr, info_ptr);
-
-	/* if there is no alpha in the data, allocate buffer to expand into */
-	if (has_alpha) {
-		buffer = NULL;
-	} else {
-		buffer = g_malloc(4 * width);
-	}
-	
-	/* pump the raster data into libpng, one scan line at a time */	
-	for (i = 0; i < height; i++) {
-		if (has_alpha) {
-			png_bytep row_pointer = pixels;
-			png_write_row (png_ptr, row_pointer);
-		} else {
-			/* expand RGB to RGBA using an opaque alpha value */
-			int x;
-			char *buffer_ptr = buffer;
-			char *source_ptr = pixels;
-			for (x = 0; x < width; x++) {
-				*buffer_ptr++ = *source_ptr++;
-				*buffer_ptr++ = *source_ptr++;
-				*buffer_ptr++ = *source_ptr++;
-				*buffer_ptr++ = 255;
-			}
-			png_write_row (png_ptr, (png_bytep) buffer);		
-		}
-		pixels += rowstride;
-	}
-	
-	png_write_end (png_ptr, info_ptr);
-	png_destroy_write_struct (&png_ptr, &info_ptr);
-	
-	g_free (buffer);
-		
-	fclose (handle);
-	return TRUE;
+	return gdk_pixbuf_save ((GdkPixbuf *) pixbuf,
+				file_name, "png", NULL, NULL);
 }
 
 void
 eel_gdk_pixbuf_ref_if_not_null (GdkPixbuf *pixbuf_or_null)
 {
 	if (pixbuf_or_null != NULL) {
-		gdk_pixbuf_ref (pixbuf_or_null);
+		g_object_ref (pixbuf_or_null);
 	}
 }
 
@@ -617,7 +529,7 @@ void
 eel_gdk_pixbuf_unref_if_not_null (GdkPixbuf *pixbuf_or_null)
 {
 	if (pixbuf_or_null != NULL) {
-		gdk_pixbuf_unref (pixbuf_or_null);
+		g_object_unref (pixbuf_or_null);
 	}
 }
 
@@ -888,7 +800,7 @@ eel_gdk_pixbuf_draw_to_pixbuf_alpha (const GdkPixbuf *pixbuf,
 		
 		pixbuf = eel_gdk_pixbuf_new_from_pixbuf_sub_area ((GdkPixbuf *) pixbuf, area);
 	} else {
-		gdk_pixbuf_ref ((GdkPixbuf *) pixbuf);
+		g_object_ref (G_OBJECT (pixbuf));
 	}
 	
 	gdk_pixbuf_composite (pixbuf,
@@ -904,17 +816,17 @@ eel_gdk_pixbuf_draw_to_pixbuf_alpha (const GdkPixbuf *pixbuf,
 			      interpolation_mode,
 			      opacity);
 
-	gdk_pixbuf_unref ((GdkPixbuf *) pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 }
 
 static void
-pixbuf_destroy_callback (guchar *pixels,
+pixbuf_destroy_callback (guchar  *pixels,
 			 gpointer callback_data)
 {
 	g_return_if_fail (pixels != NULL);
 	g_return_if_fail (callback_data != NULL);
 
-	gdk_pixbuf_unref ((GdkPixbuf *) callback_data);
+	g_object_unref (callback_data);
 }
 
 /**
@@ -951,7 +863,7 @@ eel_gdk_pixbuf_new_from_pixbuf_sub_area (GdkPixbuf *pixbuf,
 
 	/* Since we are going to be sharing the given pixbuf's data, we need 
 	 * to ref it.  It will be unreffed in the destroy function above */
-	gdk_pixbuf_ref (pixbuf);
+	g_object_ref (pixbuf);
 
 	/* Compute the offset into the pixel data */
 	pixels = 
@@ -1306,177 +1218,13 @@ eel_gdk_pixbuf_draw_to_drawable_tiled (const GdkPixbuf *pixbuf,
 }
 
 /**
- * eel_gdk_pixbuf_get_global_buffer:
- * @minimum_width: The minimum width for the requested buffer.
- * @minimum_height: The minimum height for the requested buffer.
- *
- * Return value: A GdkPixbuf that is at least as big as the passed in 
- *               dimensions.
- *
- * Access a global buffer for temporary GdkPixbuf operations.  
- * The returned buffer will be at least as big as the passed in 
- * dimensions.  The contents are not guaranteed to be anything at
- * anytime.  Also, it is not thread safe at all. */
-
-static GdkPixbuf *global_buffer = NULL;
-
-static void
-destroy_global_buffer (void)
-{
-	if (global_buffer != NULL) {
-		gdk_pixbuf_unref (global_buffer);
-		global_buffer = NULL;
-	}
-}
-
-GdkPixbuf *
-eel_gdk_pixbuf_get_global_buffer (int minimum_width,
-				  int minimum_height)
-{
-	static gboolean at_exit_deallocator_installed = FALSE;
-
-	g_return_val_if_fail (minimum_width > 0, NULL);
-	g_return_val_if_fail (minimum_height > 0, NULL);
-
-	if (global_buffer != NULL) {
-		if (gdk_pixbuf_get_width (global_buffer) >= minimum_width
-		    && gdk_pixbuf_get_height (global_buffer) >= minimum_height) {
-			return global_buffer;
-		}
-
-		destroy_global_buffer ();		
-	}
-
-	g_assert (global_buffer == NULL);
-
-	global_buffer = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, 
-					minimum_width, minimum_height);
-
-
-	if (at_exit_deallocator_installed == FALSE) {
-		at_exit_deallocator_installed = TRUE;
-		g_atexit (destroy_global_buffer);
-	}
-
-	return global_buffer;
-}
-
-/* Same as gdk_pixbuf_get_from_drawable() except it deals with 
- * race conditions and other evil things that can happen */
-GdkPixbuf *
-eel_gdk_pixbuf_get_from_window_safe (GdkWindow *window,
-				     int x,
-				     int y,
-				     int width,
-				     int height)
-{
-	GdkWindowPrivate *window_private;
-	GdkPixbuf *pixbuf;
-	int error_code;
-	GdkWindowType save_window_type;
-	GdkColormap *colormap;
-
-	g_return_val_if_fail (window != NULL, NULL);
-
-
-	/* Push an error handler so that we can catch
-	 * the very rare (but possible) case where 
-	 * the GetImage() request fails.  See HACK2 below
-	 * for a more complete excuse.
-	 */
-	gdk_error_trap_push ();
-
-	/* Save the window type and colormap.  Otherwise
-	 * GdkPixbuf will try to fetch them from a hacked
-	 * window.  See HACK1 below for reason why we
-	 * hack the private window contents.
-	 */
-	save_window_type = gdk_window_get_type (window);
-	colormap = gdk_window_get_colormap (window);
-
-	/* HACK1:
-	 *
-	 * This horrible thing we do here is needed to
-	 * prevent GdkPixbuf from doing geometry sanity
-	 * checks on the window.  By pretending it
-	 * is a Pixmap, we fool GdkPixbuf into not doing
-	 * these checks.  
-	 *
-	 * Why ? The sanity checks that GdkPixbuf does
-	 * are good most of the time, but not 100% of 
-	 * the time.  This is because there is no guarantee
-	 * that when the x server gets the GetImage request,
-	 * the geometry of that window is what GdkPixbuf
-	 * thought it was.
-	 *
-	 * For example, the window manager could have triggered
-	 * a sequence of events causing the window to resize.
-	 */
-	window_private = (GdkWindowPrivate*) window;
-	window_private->window_type = GDK_WINDOW_PIXMAP;
-
-	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
-					       window,
-					       colormap,
-					       x,
-					       y,
-					       0,
-					       0,
-					       width,
-					       height);
-
-	/* Restore the window's guts */
-	window_private->window_type = save_window_type;
-		
-	/* HACK2:
-	 *
-	 * Now we pop the error handler and see whether an error
-	 * occured.
-	 * 
-	 * It is very rare that an error might occur.  The conditions
-	 * under which it might are:
-	 *
-	 * 1) Race condition as described above in HACK1
-	 *
-	 * 2) Bogus coordinates and/or dimensions given to
-	 *    the GetImage() request - which GdkPixbuf cant
-	 *    safely sanity check against.
-	 *
-	 * So, if we get an error, we simply drop this request on
-	 * the floor and return NULL.  The caller needs to deal with
-	 * the fact that their request couldnt be executed.  Most of
-	 * the time, all that is needed is to simply ignore it.
-	 */
-	error_code = gdk_error_trap_pop ();
-	
-	if (error_code != 0) {
-		/* HACK3:
-		 *
-		 * The magical number "8" is the minor x error request
-		 * code.  That is the only error we are expecting.
-		 *
-		 * Otherwise we still return NULL, but the caller
-		 * gets a critical.
-		 */
-		g_return_val_if_fail (error_code == 8, NULL);
-
-		return NULL;
-	}
-
-	return pixbuf;
-}
-
-/**
  * eel_gdk_pixbuf_intersect:
  * @pixbuf: A GdkPixbuf.
  * @pixbuf_x: X coordinate of pixbuf.
  * @pixbuf_y: Y coordinate of pixbuf.
- * @rectangle: An ArtIRect or eel_gdk_pixbuf_whole_pixbuf.
+ * @rectangle: An ArtIRect.
  *
  * Return value: The intersection of the pixbuf and the given rectangle.
- *
- * If &rectangle is eel_gdk_pixbuf_whole_pixbuf, then the resulting
- * rectangle is a rectangle at the given orign with the pixbuf's dimensions.
  *
  */
 ArtIRect
@@ -1494,10 +1242,6 @@ eel_gdk_pixbuf_intersect (const GdkPixbuf *pixbuf,
 	dimensions = eel_gdk_pixbuf_get_dimensions (pixbuf);
 	bounds = eel_art_irect_assign_dimensions (pixbuf_x, pixbuf_y, dimensions);
 
-	if (eel_art_irect_equal (rectangle, eel_gdk_pixbuf_whole_pixbuf)) {
-		return bounds;
-	}
-
 	art_irect_intersect (&intersection, &rectangle, &bounds);
 
 	/* In theory, this is not needed because a rectangle is empty
@@ -1511,6 +1255,261 @@ eel_gdk_pixbuf_intersect (const GdkPixbuf *pixbuf,
 
 	return intersection;
 }
+
+/**
+ * eel_gdk_pixbuf_draw_layout_clipped:
+ * @pixbuf: the pixbuf to render to
+ * @region: text crop region
+ * @color: the color to render the text
+ * @layout: the text
+ * 
+ * This method renders the text in @layout into the
+ * @pixbuf with @color cropping it to @region.
+ **/
+void
+eel_gdk_pixbuf_draw_layout_clipped (GdkPixbuf   *pixbuf,
+				    ArtIRect     region,
+				    guint32      color,
+				    PangoLayout *layout)
+{
+	PangoRectangle ink_rect;
+	FT_Bitmap ink_bitmap;
+	GdkPixbuf *ink_pixbuf;
+	int bx, by;
+	int pixbuf_width, pixbuf_height;
+	const guint8 *ps;
+	guint8 *pd;
+	guint8 r, g, b;
+
+	if (region.x1 <= region.x0 || region.y1 <= region.y0) {
+		return;
+	}
+	
+	pango_layout_get_pixel_extents (layout, &ink_rect, NULL);
+
+	ink_rect.x += region.x0;
+	ink_rect.y += region.y0;
+
+	/* Do an intersect operation the long way.
+	 * Sad to write this all out like this.
+	 */
+
+	if (ink_rect.x < 0) {
+		ink_rect.width += ink_rect.x;
+		ink_rect.x = 0;
+	}
+
+	if (ink_rect.y < 0) {
+		ink_rect.height += ink_rect.y;
+		ink_rect.y = 0;
+	}
+
+	pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+	if (ink_rect.x + ink_rect.width > pixbuf_width) {
+		ink_rect.width = pixbuf_width - ink_rect.x;
+		if (ink_rect.width <= 0) {
+			return;
+		}
+	}
+
+	pixbuf_height = gdk_pixbuf_get_height (pixbuf);
+	if (ink_rect.y + ink_rect.height > pixbuf_height) {
+		ink_rect.height = pixbuf_height - ink_rect.y;
+		if (ink_rect.height <= 0) {
+			return;
+		}
+	}
+
+	ink_bitmap.rows = ink_rect.height;
+	ink_bitmap.width = ink_rect.width;
+	ink_bitmap.pitch = (ink_bitmap.width + 3) & ~3;
+	ink_bitmap.buffer = g_malloc0 (ink_bitmap.rows * ink_bitmap.pitch);
+	ink_bitmap.num_grays = 0x100;
+	ink_bitmap.pixel_mode = ft_pixel_mode_grays;
+
+	pango_ft2_render_layout (&ink_bitmap, layout,
+				 region.x0 - ink_rect.x,
+				 region.y0 - ink_rect.y);
+
+	ink_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
+				     ink_bitmap.width, ink_bitmap.rows);
+
+	r = EEL_RGBA_COLOR_GET_R (color);
+	g = EEL_RGBA_COLOR_GET_G (color);
+	b = EEL_RGBA_COLOR_GET_B (color);
+	
+	for (by = 0; by < ink_bitmap.rows; by++) {
+	        pd = gdk_pixbuf_get_pixels (ink_pixbuf)
+			+ by * gdk_pixbuf_get_rowstride (ink_pixbuf);
+		ps = ink_bitmap.buffer + by * ink_bitmap.pitch;
+		for (bx = 0; bx < ink_bitmap.width; bx++) {
+			*pd++ = r;
+		        *pd++ = g;
+			*pd++ = b;
+			*pd++ = *ps++;
+		}
+	}
+
+	g_free (ink_bitmap.buffer);
+
+	gdk_pixbuf_composite (ink_pixbuf, pixbuf,
+			      ink_rect.x, ink_rect.y,
+			      MIN (region.x1 - region.x0, ink_bitmap.width),
+			      MIN (region.y1 - region.y0, ink_bitmap.rows),
+			      ink_rect.x, ink_rect.y,
+			      1.0, 1.0, GDK_INTERP_BILINEAR, 0xFF);
+
+	g_object_unref (ink_pixbuf);
+}
+
+/**
+ * eel_gdk_pixbuf_draw_layout
+ * @pixbuf:    the pixbuf on which to draw the layout
+ * @x:         the X position of the left of the layout (in pixels)
+ * @y:         the Y position of the top of the layout (in pixels)
+ * @color:     the color to use to draw the text, in "eel RGB" format
+ * @layout:    a #PangoLayout
+ *
+ * Render a #PangoLayout onto a #GdkPixbuf.
+ */
+void
+eel_gdk_pixbuf_draw_layout (GdkPixbuf *pixbuf,
+			    int x, int y,
+			    guint32 color,
+			    PangoLayout *layout)
+{
+	ArtIRect region;
+
+	region.x0 = x;
+	region.y0 = y;
+	region.x1 = region.y1 = G_MAXINT;
+
+	eel_gdk_pixbuf_draw_layout_clipped (pixbuf, region, color, layout);
+}
+
+GdkPixbuf *
+eel_gdk_pixbuf_scale_down (GdkPixbuf *pixbuf,
+			   int dest_width,
+			   int dest_height)
+{
+	int source_width, source_height;
+	int s_x1, s_y1, s_x2, s_y2;
+	int s_xfrac, s_yfrac;
+	int dx, dx_frac, dy, dy_frac;
+	div_t ddx, ddy;
+	int x, y;
+	int r, g, b, a;
+	int n_pixels;
+	gboolean has_alpha;
+	guchar *dest, *src, *xsrc, *src_pixels;
+	GdkPixbuf *dest_pixbuf;
+	int pixel_stride;
+	int source_rowstride, dest_rowstride;
+
+	if (dest_width == 0 || dest_height == 0) {
+		return NULL;
+	}
+	
+	source_width = gdk_pixbuf_get_width (pixbuf);
+	source_height = gdk_pixbuf_get_height (pixbuf);
+
+	g_assert (source_width >= dest_width);
+	g_assert (source_height >= dest_height);
+
+	ddx = div (source_width, dest_width);
+	dx = ddx.quot;
+	dx_frac = ddx.rem;
+	
+	ddy = div (source_height, dest_height);
+	dy = ddy.quot;
+	dy_frac = ddy.rem;
+
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	source_rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	src_pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+	dest_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, has_alpha, 8,
+				      dest_width, dest_height);
+	dest = gdk_pixbuf_get_pixels (dest_pixbuf);
+	dest_rowstride = gdk_pixbuf_get_rowstride (dest_pixbuf);
+
+	pixel_stride = (has_alpha)?4:3;
+	
+	s_y1 = 0;
+	s_yfrac = -dest_height/2;
+	while (s_y1 < source_height) {
+		s_y2 = s_y1 + dy;
+		s_yfrac += dy_frac;
+		if (s_yfrac > 0) {
+			s_y2++;
+			s_yfrac -= dest_height;
+		}
+
+		s_x1 = 0;
+		s_xfrac = -dest_width/2;
+		while (s_x1 < source_width) {
+			s_x2 = s_x1 + dx;
+			s_xfrac += dx_frac;
+			if (s_xfrac > 0) {
+				s_x2++;
+				s_xfrac -= dest_width;
+			}
+
+			/* Average block of [x1,x2[ x [y1,y2[ and store in dest */
+			r = g = b = a = 0;
+			n_pixels = 0;
+
+			src = src_pixels + s_y1 * source_rowstride + s_x1 * pixel_stride;
+			for (y = s_y1; y < s_y2; y++) {
+				xsrc = src;
+				if (has_alpha) {
+					for (x = 0; x < s_x2-s_x1; x++) {
+						n_pixels++;
+						
+						r += xsrc[3] * xsrc[0];
+						g += xsrc[3] * xsrc[1];
+						b += xsrc[3] * xsrc[2];
+						a += xsrc[3];
+						xsrc += 4;
+					}
+				} else {
+					for (x = 0; x < s_x2-s_x1; x++) {
+						n_pixels++;
+						r += *xsrc++;
+						g += *xsrc++;
+						b += *xsrc++;
+					}
+				}
+				src += source_rowstride;
+			}
+			
+			if (has_alpha) {
+				if (a != 0) {
+					*dest++ = r / a;
+					*dest++ = g / a;
+					*dest++ = b / a;
+					*dest++ = a / n_pixels;
+				} else {
+					*dest++ = 0;
+					*dest++ = 0;
+					*dest++ = 0;
+					*dest++ = 0;
+				}
+			} else {
+				*dest++ = r / n_pixels;
+				*dest++ = g / n_pixels;
+				*dest++ = b / n_pixels;
+			}
+			
+			s_x1 = s_x2;
+		}
+		s_y1 = s_y2;
+		dest += dest_rowstride - dest_width * pixel_stride;
+	}
+	
+	return dest_pixbuf;
+}
+
 
 #if !defined (EEL_OMIT_SELF_CHECK)
 
@@ -1573,8 +1572,8 @@ check_average_value (int width, int height, const char* fill)
 		pixels [2] += gray_tweak;
 	}
 
-	average = eel_gdk_pixbuf_average_value_argb (pixbuf);
-	gdk_pixbuf_unref (pixbuf);
+	average = eel_gdk_pixbuf_average_value (pixbuf);
+	g_object_unref (pixbuf);
 
 	return g_strdup_printf ("%02X,%02X,%02X,%02X",
 				(average >> 16) & 0xFF,
@@ -1634,7 +1633,7 @@ eel_self_check_gdk_pixbuf_extensions (void)
 	clip_area = eel_art_irect_assign (80, 0, 100, 100);
 	EEL_CHECK_RECTANGLE_RESULT (eel_gdk_pixbuf_intersect (pixbuf, 0, 0, clip_area), 80, 0, 100, 100);
 
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (pixbuf);
 
 	/* No checks for empty pixbufs because GdkPixbuf doesn't seem to allow them. */
 	EEL_CHECK_STRING_RESULT (check_average_value (1, 1, "00,00,00"), "00,00,00,FF");
@@ -1659,3 +1658,4 @@ eel_self_check_gdk_pixbuf_extensions (void)
 }
 
 #endif /* !EEL_OMIT_SELF_CHECK */
+

@@ -39,32 +39,32 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-art-extensions.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 /* Convert between GdkRectangle and ArtIRect and back */
-GdkRectangle  eel_art_irect_to_gdk_rectangle            (ArtIRect         rectangle);
-ArtIRect      eel_gdk_rectangle_to_art_irect            (GdkRectangle     gdk_rectangle);
+GdkRectangle  eel_art_irect_to_gdk_rectangle            (ArtIRect      rectangle);
+ArtIRect      eel_gdk_rectangle_to_art_irect            (GdkRectangle  gdk_rectangle);
 EelDimensions eel_screen_get_dimensions                 (void);
 
 /* GdkWindow parent-relative bounds */
-ArtIRect      eel_gdk_window_get_bounds                 (const GdkWindow *gdk_window);
+ArtIRect      eel_gdk_window_get_bounds                 (GdkWindow    *window);
 
 /* GdkWindow dimensions */
-EelDimensions eel_gdk_window_get_dimensions             (const GdkWindow *gdk_window);
+EelDimensions eel_gdk_window_get_dimensions             (GdkWindow    *window);
 
 /* GdkWindow screen parent-relative bounds */
-ArtIRect      eel_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_window);
+ArtIRect      eel_gdk_window_get_screen_relative_bounds (GdkWindow    *window);
 
 /* Clip a dirty area (from exposures) to the on screen parts of a GdkWindow */
-ArtIRect      eel_gdk_window_clip_dirty_area_to_screen  (const GdkWindow *gdk_window,
-							 ArtIRect         dirty_area);
+ArtIRect      eel_gdk_window_clip_dirty_area_to_screen  (GdkWindow    *window,
+							 ArtIRect      dirty_area);
 
 /* GtkWidget bounds and dimensions */
-ArtIRect      eel_gtk_widget_get_bounds                 (const GtkWidget *gtk_widget);
-EelDimensions eel_gtk_widget_get_dimensions             (const GtkWidget *gtk_widget);
-EelDimensions eel_gtk_widget_get_preferred_dimensions   (const GtkWidget *gtk_widget);
+ArtIRect      eel_gtk_widget_get_bounds                 (GtkWidget    *widget);
+EelDimensions eel_gtk_widget_get_dimensions             (GtkWidget    *widget);
+EelDimensions eel_gtk_widget_get_preferred_dimensions   (GtkWidget    *widget);
 EelArtIPoint  eel_gdk_get_pointer_position              (void);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_ART_GTK_EXTENSIONS_H */

@@ -1,32 +1,3100 @@
+2002-12-16  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.1.5
+
+2002-12-13  Alex Duggan   <aldug@gnome.org>
+ 	
+   * configure.in:
+   * eel-2.0.pc.in:
+   * eel.spec.in:
+   remove libgnomecanvas deps
+   
+=== eel 2.1.4 ===
+	
+2002-12-09  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in: 
+	* NEWS:
+	Bump to 2.1.4
+
+2002-12-05  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-gnome-extensions.c: (list_icon_selected_callback): Free
+	the return value of gnome_icon_selection_get_icon().  Patch from
+	Jörgen Viksell <jorgen.viksell@telia.com>
+
+Wed Dec  4 12:50:35 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* eel/eel-editable-label.c (eel_editable_label_ensure_layout):
+	Fix bugzilla.gnome.org #95429 - set input method text to pango layout.
+
+=== eel 2.1.3 ===
+	
+2002-11-25  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-vfs-extensions.c:
+	Fix checks so we distcheck.
+	
+2002-11-25  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in: 
+	* NEWS:
+	Bump to 2.1.3.
+
+2002-11-21  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-background.[ch]:
+	(eel_background_set_up_widget):
+	Set the background pixmap/color on the right window for canvas widgets.
+	(eel_background_get_suggested_pixmap_size):
+	New function.
+
+	Based on patch from Brian.Cameron@sun.com
+	
+2002-11-19  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.[ch]:
+	Don't use private gtk functions.
+
+2002-11-05  Dave Camp  <dave@ximian.com>
+
+	* test/Makefile.am:
+	* test/test-eel-widgets.c: (main),
+	(string_picker_changed_callback):
+	* test/test.c:
+	* test/test.h: Took out the tests of removed code. 
+
+2002-11-05  Diego Gonzalez  <diego@pemas.net>
+
+	* po/POTFILES.in: remove eel/eel-preferencs-box.c
+	* eel/Makefile.am: remove eel-font-picker.[c-h],
+	eel-preferences-box.[c-h], eel-preferences-group.[c-h],
+	eel-preferences-item.[c-h], eel-preferences-pane.[c-h],
+	eel-text-caption.[c-h] from the build, these files aren't
+	used anymore
+
+	* eel/eel.h: remove those headers from here.
+
+2002-11-04  Diego González  <diego@pemas.net>
+
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gnome-extensions.c: (get_set_value_imethod),
+	(do_nothing_cb), (eel_bonobo_pbclient_set_value_async):
+	remove these functions since they are now in libbonobo
+
+2002-11-04  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c: (file_read_callback):
+	Fix bug with failed reads.
+
+	* eel/eel-wrap-table.c: (eel_wrap_table_class_init),
+	(eel_wrap_table_init), (eel_wrap_table_realize),
+	(wrap_table_get_num_fitting), (wrap_table_layout),
+	(wrap_table_get_max_child_dimensions):
+	Correct size request.
+	Patch from Jan Arne Petersen <jpetersen@gnome-de.org>
+
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+=== eel 2.1.2 ===
+	
+2002-10-31  Dave Camp  <dave@ximian.com>
+
+	* MAINTAINERS: Updated.
+
+	* configure.in:
+	* NEWS: 2.1.2
+
+2002-10-31  Dave Camp  <dave@ximian.com>
+	
+	* eel/eel-background.c: (eel_background_class_init),
+	(eel_background_set_image_placement), (eel_background_set_color),
+	(eel_background_set_image_uri_helper),
+	(set_image_and_color_image_loading_done_callback),
+	(eel_background_set_image_uri_and_color),
+	(eel_background_receive_dropped_background_image),
+	(eel_background_receive_dropped_color): * eel/eel-background.h:
+	Take a GdkDragAction argument to the receive_dropped_* functions,
+	and pass it on in the changed signal.
+
+2002-10-31  Dave Camp  <dave@ximian.com>
+
+	* eel/Makefile.am:
+	* eel/eel-preferences-glade.c:
+	* eel/eel-preferences-glade.h: New files to connect glade widgets to
+	preferences.  Patch from Jan Arne Petersen <jpetersen@uni-bonn.de>.
+
+2002-10-25  Dave Camp  <dave@ximian.com>
+
+	* eel/Makefile.am: Oops.  Removed extra \ at the end of a
+	commented out line.
+
+2002-10-19  Dave Camp  <dave@ximian.com>
+
+	* eel/Makefile.am: Take out -DBONOBO_DISABLE_DEPRECATED while the
+	make_registration_id() api is being worked out.
+
+=== eel 2.1.1 ===
+
+2002-10-14  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Added news items
+
+	* configure.in:
+	Bump version to 2.1.1
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* acconfig.h: define HAVE_GTK_MULTIHEAD
+	for egg-screen-exec.c.
+
+	* configure.in: require gtk 2.1.0 and remove
+	HAVE_GTK_MULTIHEAD define.
+
+	* eel/eel-gnome-extensions.c,
+	  eel/eel-gtk-extensions.c,
+	  eel/eel-gdk-extensions.c: don't conditionally
+	build multihead support, gtk HEAD is required.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* eel/eel-gdk-extensions.c:
+	(eel_stipple_bitmap_for_screen): use gdk_screen_get_display
+	instead of assuming the default display.
+
+	* eel/eel-gnome-extensions.c:
+	(eel_gnome_shell_execute_on_screen): use the default screen
+	if screen == NULL.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* eel/eel-gnome-extensions.[ch]:
+	(eel_gnome_shell_execute_on_screen): rename from
+	eel_gnome_screen_shell_execute.
+	(eel_gnome_shell_execute): update.
+	(eel_gnome_open_terminal_on_screen): rename from
+	eel_gnome_screen_open_terminal.
+	(eel_gnome_open_terminal): update.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* eel/eel-gtk-extensions.c: (eel_gtk_window_set_initial_geometry):
+	fix build without HAVE_GTK_MULTIHEAD.
+
+	* eel/egg-screen-exec.c: sync with libegg.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add check for gtk with multihead support.
+
+	* eel/Makefile.am: add egg-screen-exec.[ch] to the build.
+
+	* eel/eel-gdk-extensions.[ch]:
+	(eel_stipple_bitmap_for_screen): implement per screen stipple
+	bitmaps.
+	(eel_stipple_bitmap): use eel_stipple_bitmap_for_screen.
+
+	* eel/eel-gnome-extensions.[ch]:
+	(eel_gnome_screen_shell_execute): implement.
+	(eel_gnome_screen_open_terminal): implement.
+	(eel_gnome_open_terminal):
+
+	* eel/eel-gtk-extensions.c:
+	(eel_gtk_window_set_initial_geometry):
+	use gdk_screen_get_(width|height).
+
+2002-10-01  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.[ch]:
+	Added eel_editable_label_set_line_wrap_mode.
+
+2002-09-30  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.c:
+	Implement GtkEditable
+	
+2002-09-30  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.c:
+	Finish cut/paste and other stuff.
+
+=== eel 2.1.0 ===
+
+2002-09-27  Dave Camp  <dave@ximian.com>
+
+	* NEWS: Updated.
+
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Bump version to 2.1.0.
+
+2002-09-26  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.c:
+	Remove leftover debug spew.
+
+2002-09-26  Alexander Larsson  <alexl@redhat.com>
+
+	* test/Makefile.am:
+	* test/test-eel-canvas-items.c:
+	Remove canvas item test.
+
+2002-09-26  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/Makefile.am:
+	Add new files, remove old files.
+	
+	* eel/README.canvas:
+	* eel/eel-canvas.[ch]:
+	* eel/eel-canvas-util.[ch]:
+	* eel/eel-canvas-rect-ellipse.[ch]:
+	Import gtk+ only canvas from foocanvas.
+
+	* eel/eel-canvas-rect.[ch]:
+	Remove old rect object not longer needed.
+	
+	* eel/eel-gnome-extensions.[ch]:
+	Remove old canvas extensions no longer needed.
+	
+	* eel/eel-background.[ch]:
+	Update to the new canvas.
+	
+	* eel/eel-editable-label.[ch]:
+	New editable label for rename mode.
+	
+	* eel/eel-lib-self-check-functions.h:
+	Remove old tests.
+	
+	* eel/eelmarshal.list:
+	New marshallers.
+	
+	* test/Makefile.am:
+	* test/test-eel-editable-label.c:
+	Small test for EelEditableLabel
+
+2002-09-15  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-preferences-item.h:
+	* eel/eel-preferences-item.c:
+	(eel_preferences_item_set_description),
+	(eel_preferences_item_set_accessible_description),
+	(eel_preferences_item_set_accessible_description_array): Allow users
+	to set accessible descriptions of preferences items.
+	* eel/eel-preferences-box.c: (preferences_box_populate_pane):
+	* eel/eel-preferences-box.h: Allow the user to specify accessible
+	descriptions for the controls.
+	* eel/eel-radio-button-group.c:
+	(eel_radio_button_group_set_entry_accessible_description),
+	* eel/eel-radio-button-group.h: Allow the user to specify
+	accessible descriptions for the radio buttons.
+
+2002-09-10  jacob berkman  <jacob@ximian.com>
+
+	* eel/eel-types.c: define EEL_COMPILATION
+
+	* eel/Makefile.am (INCLUDES): don't define EEL_COMPILATION
+
+	this fixes actual build problems on OS X, but wasn't correct
+	anywhere.
+
+2002-09-10  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-background.c: (eel_background_ensure_realized),
+	(eel_background_set_color_no_emit), (eel_background_set_use_base): 
+	If requested, use base as the fallback color instead of bg.
+	
+2002-09-04  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "he" to ALL_LINGUAS.
+
+2002-09-03  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-background.c
+	(eel_background_load_image_callback): disable,
+	until the nautilus side is re-thunk.
+
+2002-09-03  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-background.c
+	(set_image_and_color_image_loading_done_callback): 
+	don't double emit apperance_changed occasionaly.
+	(eel_background_class_init): add determine_image_placement.
+	(eel_background_load_image_callback): call signal.
+	[ based on Thomas Meeks' prototype ]
+
+	* eel/eelmarshal.list: add enum:int,int
+
+2002-08-30  Alexander Larsson  <alexl@redhat.com>
+
+	branched of gnome 2.0.x development to gnome-2-0 branch.
+
+=== eel 2.0.6 ===
+	
+2002-08-28  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	* configure.in:
+	Bumped to 2.0.6.
+
+=== eel 2.0.5 ===
+
+2002-08-23  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Version bumped to 2.0.5.
+
+=== eel 2.0.4 ===
+
+2002-08-14  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Version bumped to 2.0.4
+
+2002-08-12  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-string-picker.c: (eel_string_picker_set_string_list):
+	Use eel_string_list_peek_nth() instead of eel_string_list_nth().
+	Fixes a small leak.
+	
+=== eel 2.0.3 ===
+
+2002-08-05  Dave Camp  <dave@ximian.com>
+
+	* NEWS: Updated.
+	* configure.in: 2.0.3.
+
+2002-07-28  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2002-07-27  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-background.c: (widget_realize_cb),
+	(eel_get_widget_background): Set up the widget background on
+	realize.
+
+2002-07-27  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-background.c: (widget_style_set_cb),
+	(eel_get_widget_background): Put back the style_set handler.
+
+=== eel 2.0.2 ===
+
+2002-07-25  Dave Camp  <dave@ximian.com>
+
+	* NEWS: Add a list of changes.
+	* configure.in: Bump version to 2.0.2.
+
+2002-07-25  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Bosnian (bs) to ALL_LINGUAS
+
+2002-07-24  Dave Camp  <dave@ximian.com>
+
+	* eel/Makefile.am: Build eel-background-box.[ch], don't build
+	eel-background-style.[ch].
+	* eel/eel-background-style.[ch]: Removed.
+	* eel/eel-background-box.[ch]: New widget that handles background
+	drawing itself.
+	* eel/eel-background.c: (eel_background_init),
+	(eel_get_widget_background): Removed the style setting and font
+	updating code.  This is now the responsibility of the widget using
+	the EelBackground.
+	(eel_background_expose): Helper function for widgets using
+	EelBackground.
+	(eel_background_set_up_widget): New function.
+	(eel_widget_background_changed): Call
+	eel_background_set_up_widget().
+
+=== eel 2.0.1 ===
+	
+2002-07-22  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 2.0.01.
+	Add list of changes.
+
+2002-07-18  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes the eel part of #46238; see Nautilus for the rest of the fix.
+
+	* eel/eel-background.c (eel_background_ensure_realized): If we
+	fail to parse the color spec, don't default to white.  Instead use
+	the background color from the widget's style.
+	(widget_style_set_cb): New callback for the widget's "style_set"
+	signal.  We regenerate the background and its style when the theme
+	changes.
+	(eel_background_set_widget_style): We need a little hack here to
+	unset the GTK_USER_STYLE flag because otherwise we will not be
+	notified of theme changes through the "style_set" signal.  The
+	real solution is not to use a style of our own, but rather paint
+	the widget by hand when needed.
+	(eel_background_init): Start with is_solid_color = TRUE.
+
+2002-07-17  Frank Worsley  <fworsley@shaw.ca>
+
+	* eel/eel-gtk-extensions.c:
+	* eel/eel-gtk-extensions.h:
+	(eel_gtk_window_set_initial_geometry_from_string):
+	add an ignore_position parameter
+	
+2002-07-12  Damon Chaplin  <damon@ximian.com>
+
+	* eel/eel-gtk-extensions.c (eel_gtk_button_new_with_stock_icon): new
+	function to create a button with a mnemonic label and a stock icon.
+	GTK+ doesn't make this easy. Needed for bug #85666.
+
+2002-07-10  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-gtk-extensions.c: (tree_view_button_press_callback),
+	(eel_gtk_tree_view_set_activate_on_single_click): New functions 
+	to make a GtkTreeView activate a row on a single click.
+	* eel/eel-gtk-extensions.h: Prototype for
+	eel_gtk_tree_view_set_activate_on_single_click.
+	* eel/eel-image-chooser.c: (eel_image_chooser_row_activated),
+	(eel_image_chooser_finalize), (eel_image_chooser_instance_init),
+	(eel_image_chooser_get_selected_path),
+	(eel_image_chooser_set_selected_row): Only send a changed event
+	when the user activates the row.
+
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c
+	(eel_gdk_pixbuf_average_value): unsigned
+	dividend, width, height.
+	split out loop invariant and simplify,
+	killing umpteen multiplies for non-alpha case.
+
+2002-07-09  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c (destroy_global_buffer),
+	(eel_gdk_pixbuf_get_global_buffer): move these into the only
+	place that uses them, and hide.
+
+	* test/test-eel-pixbuf-tile.c: here
+	(pixbuf_drawing_area_expose_event): upd.
+
+2002-07-09  Damon Chaplin  <damon@ximian.com>
+
+	* eel/eel-preferences-box.c (eel_preferences_box_new): added a
+	'Cat_egories' label and mnemonic accel above the list. Fixes part
+	of bug #85673.
+
+	* eel/eel-preferences-group.c (eel_preferences_group_new): set the
+	border width of the second column of prefs to match the first.
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-labeled-image.c
+	(eel_labeled_image_get_accessible): cope better
+	with the no a11y scenario.
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-labeled-image.c
+	(eel_labeled_image_radio_button_get_type): impl.
+	(eel_labeled_image_radio_button_new_from_file_name),
+	(eel_labeled_image_radio_button_new): impl.
+
+2002-07-02  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: use libglade.
+
+	* eel-2.0.pc.in (Requires): upd.
+
+	* eel/eel-labeled-image.c (eel_labeled_image_set_text):
+	set text with mnemonic.
+	(eel_labled_set_mnemonic_widget): impl.
+	(eel_labeled_*_button_new): set the mnemonic widget.
+
+	* eel/eel-gnome-extensions.c (eel_glade_get_file): impl.
+
+2002-06-28  Marco Pesenti Gritti  <marco@it.gnome.org>
+
+	* eel/eel-gtk-extensions.c (eel_popup_menu_position_func):
+	Remove context menus custom positioning code to be consistent
+	with other gnome applications.
+
+2002-06-27  Frank Worsley  <fworsley@shaw.ca>
+
+	* eel/eel-vfs-extensions.c: (eel_vfs_has_capability_uri):
+	* eel/eel-vfs-extensions.h:
+	implemented EEL_VFS_CAPABILITY_SAFE_TO_EXECUTE
+
+2002-06-25  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-vfs-extensions.c (eel_vfs_has_capability_uri): Moved
+	here from eel_vfs_test_capabilities().
+	(eel_vfs_has_capability): New function, takes a string uri.
+	* eel/eel-vfs-extensions.h: Changed EelVfsTest to EelVfsCapability,
+ 	and EEL_VFS_TEST_* to EEL_VFS_CAPABILITY_*.
+
+2002-06-25  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* acconfig.h:
+	* configure.in:
+	* eel/Makefile.am:
+	* eel/check-program.c: (main):
+	* eel/eel-enumeration.c:
+	* eel/eel-gconf-extensions.c:
+	* eel/eel-glib-extensions.c:
+	* eel/eel-gnome-extensions.c:
+	* eel/eel-i18n.c: (_eel_gettext):
+	* eel/eel-i18n.h:
+	* eel/eel-password-dialog.c:
+	* eel/eel-preferences-box.c:
+	* eel/eel-stock-dialogs.c:
+	* eel/eel-vfs-extensions.c:
+	* eel/eel-xml-extensions.c:
+	Use our own _() macro to ensure bind_textdomain_codeset is set
+       	(when available)
+
+
+2002-06-14  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	* eel/eel-preferences-box.c : Added a call to get the active pane
+	  for eel preference dialog box. (Applied by Damon Chaplin.)
+
+2002-06-13  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-stock-dialogs.c: (eel_run_simple_dialog): Don't try to
+	connect to the delete_event signal of the dialog, and handle
+	gtk_dialog_run() returning GTK_RESPONSE_DELETE_EVENT.  Fixes 
+	#78948.
+
+2002-06-12  Damon Chaplin  <damon@ximian.com>
+
+	* eel/eel-gnome-extensions.c (icon_selected): hide the dialog at the
+	start of the function and set the dismissed flag to indicate we're
+	acting on it, so if we do get called again we just return.
+	Fixes bug #84134.
+
+2002-06-10  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-preferences-box.c: change treeview shadow type
+	to GTK_SHADOW_IN and add some spacing for consistency with
+	the rest of gnome.
+
+	Patch from Jorn Baayen  <jorn@nl.linux.org>
+
+2002-06-10  Alexander Larsson  <alla@lysator.liu.se>
+
+	* NEWS:
+	Update version nr.
+
+	* configure.in:
+	Update requirements to latest versions of everything.
+
+2002-06-10  Naba Kumar <kh_naba@users.sourceforge.net>
+
+	* configure.in: Added hi in ALL_LINGUAS.
+
+2002-06-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* eel/eel-glib-extension.c: Clarify the comment about
+	strftime check.
+
+2002-06-07  Damon Chaplin  <damon@ximian.com>
+
+	* test/Makefile.am (INCLUDES): 
+	* eel/Makefile.am (INCLUDES): use $(prefix)/${DATADIRNAME}/locale
+	instead of $(datadir)/locale so it works on Solaris.
+
+2002-06-06  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-vfs-extensions.c
+	(eel_vfs_test_capabilities): impl.
+
+2002-06-06  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.0.0
+
+2002-06-06  Jacob Berkman  <jacob@ximian.com>
+
+	* eel/eel-gdk-extensions.c: pangoxft.h is not present on all
+	systems, i think it's safe to just include pango/pango.h
+
+2002-06-04  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+=== eel 1.1.17 ===
+
+2002-06-03  Alex Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Add some actual changes.
+
+2002-06-03  Alexander Larsson  <alla@lysator.liu.se>
+
+	* NEWS:
+	* configure.in:
+	Bump version to 1.1.17
+	
+2002-05-31  Alex Larsson  <alexl@redhat.com>
+
+	* eel/eel-gdk-extensions.[ch] (eel_gdk_draw_layout_with_drop_shadow):
+	Add new function.
+
+2002-05-28  Havoc Pennington  <hp@redhat.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c: remove bogus #include <png.h>,
+	we no longer use libpng
+
+2002-05-27  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-vfs-extensions.c
+	(eel_make_valid_utf8): copy from nautilus
+	(eel_format_uri_for_display_internal): use it
+	for awkward (invalid) cases, that we still need to
+	display in an error dialog.
+
+=== eel 1.1.16 ===
+	
+2002-05-27  Alexander Larsson  <alla@lysator.liu.se>
+
+	* NEWS:
+	* configure.in:
+	Bump version to 1.1.16
+
+2002-05-23  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-vfs-extensions.c
+	(eel_format_uri_for_display_internal): move the utf8
+	validation assert down to after we've handled 'locale_encoded
+	filenames' as best we can.
+
+2002-05-22  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-vfs-extensions.c (eel_is_valid_uri): impl.
+
+2002-05-21  Damon Chaplin  <damon@ximian.com>
+
+	* eel/eel-gnome-extensions.c (eel_gnome_icon_selector_new): store
+	the dialog pointer before calling eel_remove_weak_pointer(), as that
+	will set it to NULL. We want to return it.
+
+	* eel/eel-gdk-pixbuf-extensions.c (eel_gdk_pixbuf_load): close the
+	pixbuf loader if we get a vfs error. It complains if we unref it
+	without closing it.
+
+=== eel 1.1.15 ===
+	
+2002-05-20  Alex Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	* configure.in:
+	Bump version to 1.15.
+
+2002-05-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "mk" to ALL_LINGUAS.
+	
+2002-05-16  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-background-style.c (eel_background_style_draw_flat_box):
+	unref the pixmap instead of leaking it if not changes_with_size.
+
+2002-05-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* eel/eel-pango-extensions.c: (measure_string_width),
+	(compute_character_widths), (eel_string_ellipsize_start),
+	(eel_string_ellipsize_end), (eel_string_ellipsize_middle),
+	(eel_self_check_ellipsize): don't create redundant layouts
+	when doing calculations. Just use the one we've already
+	created.
+
+2002-05-14  Federico Mena Quintero  <federico@ximian.com>
+
+	* eel/eel-text-caption.c (entry_key_press_callback): Event
+	handlers should return a gboolean!  Fixes #75229.
+
+=== eel 1.1.14 ===
+	
+2002-05-13  Alex Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Update to 1.1.14
+
+2002-05-12  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-pango-extensions.c 
+	(eel_pango_layout_fit_to_dimensions): Fix this utterly broken
+	function by rewriting parts of it. Fixes #81183, reported
+	by Owen Taylor.
+
+2002-05-11  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-background.c: (eel_background_start_loading_image),
+	(eel_background_set_style_font_from_default),
+	(eel_background_set_widget_style), (eel_widget_font_changed),
+	(eel_get_widget_background):
+	Hacks to update the style when the default font changes.
+
+2002-05-08  Damon Chaplin  <damon@ximian.com>
+
+	* eel/eel-gnome-extensions.c (eel_gnome_icon_selector_new): connect
+	the dialog signals up before calling gnome_icon_selection_show_icons()
+	and also add a weak pointer to the dialog. We need to do this as
+	GnomeIconSelection reenters the main loop while loading icons, so
+	it can be closed or a button can be clicked before returning.
+	Fixes bug #75387.
+
+=== eel 1.1.13 ===
+	
+2002-05-04  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	This is needed to fix bug 46582.
+
+	* configure.in:
+	* NEWS: Bump version to 1.1.13.
+
+	* eel/eel-vfs-extensions.c:
+	* eel/eel-vfs-extensions.h:
+	(eel_make_uri_from_input_internal): Optionally strip trailing
+	whitespace since it could be part of a valid uri.
+	(eel_make_uri_from_input): Update.
+	(eel_make_uri_from_input_with_trailing_ws): New.
+
+2002-04-30  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-preferences-item.c
+	(enumeration_menu_changed_callback),
+	(enumeration_list_changed_callback):
+	Don't use the translated string when looking up the enumeration position.
+	Fixes #64696
+	
+2002-04-29  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Vietnamese (vi) to ALL_LINGUAS
+	* configure.in: Added Walloon (wa) to ALL_LINGUAS
+	* configure.in: Added Basque (eu) to ALL_LINGUAS
+
+=== eel 1.1.12 ===
+	
+2002-04-28  Alexander Larsson  <alla@lysator.liu.se>
+
+	* configure.in:
+	* NEWS:
+	Bump version to 1.1.12.
+
+2002-04-28  Alexander Larsson  <alla@lysator.liu.se>
+
+	* configure.in:
+	Removed -Wcast-align. This broke the build for Alpha on RH 7.1,
+	even in header files! And it's not that usefull.
+	See bug #79860.
+
+2002-04-27  Murray Cumming  <murrayc@usa.net>
+
+	*  eel/eel-stock-dialogs.c (eel_show_yes_no_dialog):
+	Bug #80072:
+	Use eel_create_question_dialog instead() of show_message_dialog()
+	so that the custom button titles can be used.
+
+2002-04-26  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* eel/eel-ellipsizing-label.c (real_finalize): chain call to
+	parent class' finalize.
+
+2002-04-22  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-image-chooser.c: (eel_scrolled_image_chooser_new):
+	Set shadow type to GTK_SHADOW_IN. Fixes #73389.
+	
+=== eel 1.1.11 ===
+	
+2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
+
+	* configure.in:
+	* NEWS:
+	Bump version to 1.1.11.
+
+2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-background.c (eel_background_ensure_image_scaled):
+	Work around the fact that scaling large pixbufs to 1x1 crashes
+	while allocating several gigs of memory.
+
+2002-04-21  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-gtk-extensions.c: (eel_gtk_label_set_scale),
+	(get_layout_location), (eel_gtk_label_expose_event),
+	(eel_gtk_label_size_request), (set_up_label),
+	(eel_gtk_label_set_drop_shadow_color),
+	(eel_gtk_label_set_drop_shadow_offset):
+	* eel/eel-gtk-extensions.h:
+	Add eel_gtk_label_set_drop_shadow_color and
+	eel_gtk_label_set_drop_shadow_offset functions.
+	
+2002-04-18  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gnome-extensions.c
+	(do_nothing_cb, get_set_value_imethod),
+	(eel_bonobo_pbclient_set_value_async): impl.
+	async property setter to cut throbber
+	latency.
+
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-background.c: (eel_background_start_loading_image):
+	If we load the pixbuf sync, unref it so that we won't leak it.
+	
+	* eel/eel-image-chooser.c: (eel_image_chooser_cell_data_func):
+	Free strings.
+	
+	* eel/eel-labeled-image.c: (eel_labeled_image_class_init),
+	(eel_labeled_image_destroy), (eel_labeled_image_forall):
+	Add a ::destroy handler that destroys the image and label.
+	
+	* eel/eel-preferences-box.c:
+	(preferences_box_category_list_recreate):
+	Free the GtkTreeIter.
+	
+	* eel/eel-preferences-item.c:
+	(preferences_item_update_editable_integer):
+	Free the caption.
+	
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-background.c (eel_background_finalize): 
+	Free details after using it, not before.
+
+	* eel/eel-preferences.c: (eel_preferences_get_enum):
+	Free enums.
+	
+	* eel/eel-string-list.c: (eel_string_list_peek_nth):
+	* eel/eel-string-list.h:
+	Add eel_string_list_peek_nth which does not strdup the
+	string returned.
+
+=== eel 1.1.10 ===
+	
+2002-04-14  Alexander Larsson  <alla@lysator.liu.se>
+
+	* NEWS:
+	* configure.in:
+	Bump version to 1.1.10
+
+2002-04-14  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-gnome-extensions.c (eel_gnome_canvas_set_scroll_region):
+	Don't request_update all item unless the top left corner of
+	the scroll region changed.
+
+2002-04-13  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-gnome-extensions.c (eel_gnome_shell_execute):
+	Print a warning on failure. For debugging purposes.
+
+2002-04-12  Jody Goldberg <jody@gnome.org>
+
+	* eel/eel-gnome-extensions.c (eel_gnome_shell_execute) : no one uses
+	  the return type anyway, remove it and make this a wrapper around
+	  g_spawn_command_line_async.  Fixes lots of problems.
+
+2002-04-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Update required GAIL version to 0.13
+
+	* eel/eel-accessibility.h:
+	gailtextutil.h has moved from util directory to libgail-util
+
+	* eel/eel-accessibility.c:
+	Update calls to gail_text_util_get_substring as start_pos and end_pos
+	arguments have been changed from gint* to gint
+
+2002-04-07  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-preferences-item.[ch]:
+	Add EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER type that
+	stores the integer value of the enum. This is needed for
+	the Nautilus thumbnail size limit.
+
+2002-04-04  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-preferences-item.c
+	(eel_preferences_item_set_description): set
+	text with mnemonics.
+
+	* eel/eel-labeled-image.c
+	(eel_labeled_image_set_selected),
+	(eel_labeled_image_get_selected): impl.
+
+	* eel/eel-gtk-extensions.c
+	(eel_pop_up_context_menu): tolerate a NULL event.
+
+2002-04-04  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-accessibility.c
+	(eel_accessibility_set_description),
+	(eel_accessibility_set_name): impl.
+
+2002-04-03  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-accessibility.c (get_quark_gobject),
+	(get_quark_accessible): share quark id's with
+	gobject-accessible.
+	(eel_accessibility_set_atk_object_return): only
+	hook up weak refs etc. for non GObjectAccessible
+	derived types - otherwise we double unref the
+	accessible.
+
+2002-04-02  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-accessibility.c
+	(eel_accessible_text_get_type): impl.
+	(eel_accessibility_for_object): impl.
+
+	* eel-2.0.pc.in (Requires): add gail.
+
+2002-04-01  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-accessibility.c
+	(eel_accessibility_add_simple_text): impl.
+	(eel_accessibility_set_text_util): impl.
+	(get_simple_text): 
+
+	* configure.in: require gail >= 0.11 for accessibility.
+
+2002-03-30  Alexander Larsson  <alla@lysator.liu.se>
+
+	* test/test-eel-pixbuf-scale.c:
+	Don't double define DEST_WIDTH and DEST_HEIGHT.
+
+2002-03-29  Havoc Pennington  <hp@pobox.com>
+
+	* eel/eel-gconf-extensions.c (eel_gconf_value_is_equal): don't use
+	private gconf fields, and fix a bug in comparison of equality 
+	of list values (if (a != NULL || b != NULL) return FALSE)
+
+2002-03-28  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-labeled-image.c
+	(eel_labeled_image_toggle_button_new_from_file_name),
+	(eel_labeled_image_check_button_new_from_file_name),
+	(eel_labeled_image_button_new_from_file_name),
+	(eel_labeled_image_toggle_button_new),
+	(eel_labeled_image_check_button_new),
+	(eel_labeled_image_button_new): use the new button types
+	so we can update accessibility support there.
+	(eel_labeled_image_button_class_init): use to
+	override all button's get_accessibles.
+	(eel_labeled_image_toggle_button_get_type), 
+	(eel_labeled_image_check_button_get_type),
+	(eel_labeled_image_button_get_type): impl.
+	(eel_labeled_image_get_accessible): handle all
+	button and plain label accessibility setup.
+	(get_image): impl.
+	(eel_labeled_image_accessible_image_get_size): impl.
+	(eel_labeled_image_accessible_get_name): impl.
+	(eel_labeled_image_accessible_image_interface_init),
+	(eel_labeled_image_accessible_class_init),
+	(eel_labeled_image_button_class_init),
+	(eel_labeled_image_get_accessible): impl. etc.
+
+2002-03-28  Alex Larsson  <alexl@redhat.com>
+
+	* eel/eel-gdk-pixbuf-extensions.[ch]:
+	Added new function eel_gdk_pixbuf_scale_down() that does
+	fast downscaling. Speeds up thumbnailing.
+	Use it in eel_gdk_pixbuf_scale_down_to_fit().
+
+	* test/Makefile.am:
+	* test/test-eel-pixbuf-scale.c:
+	Tests for pixmap scaling.
+
+2002-03-28  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gtk-extensions.c
+	(eel_gtk_button_set_padding): many buttons (eg.
+	stock ones) do not have a GTK_MISC as a child,
+	don't do daft things to them.
+
+	* test/test-eel-labeled-image.c
+	(labeled_image_button_window_new): add a plain
+	labeled image.
+
+2002-03-28  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-labeled-image.c
+	(eel_labeled_image_set_can_focus): impl.
+	(eel_labeled_image_class_init): add activate
+	signal & bindings.
+	(eel_labeled_image_expose_event): render
+	selection and focus.
+
+2002-03-28  Michael Meeks  <michael@ximian.com>
+	
+	* test/test-eel-widgets.c
+	(create_pixbuf): use DATADIR instead of a hard
+	coded path.
+	(test_ok_dialog): impl.
+	(main): upd.
+	Add window titles to elucidate function.
+
+	* TODO: clean & add a11y bits.
+
+	* test/test-eel-image-chooser.c: ditto.
+
+	* eel/eel-caption-table.c
+	(eel_caption_table_set_row_info): set role on
+	invisible entries' accessibles to 'password'.
+
+2002-03-27  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-accessibility.h
+	(EEL_ACCESSIBLE_FACTORY): don't auto-generate the
+	type name.
+
+	* eel/eel-accessibility.c
+	(eel_accessibility_weak_unref): notify defunct.
+
+2002-03-26  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-accessibility.c
+	[ cut & paste helpers from bonobo until gail is stable ]:
+	(eel_accessibility_set_atk_object_return),
+	(eel_accessibility_get_atk_object): impl.
+	(eel_a11_weak_unref, get_quark_accessible): impl.
+	(eel_accessibility_create_derived_type): impl.
+	(eel_accessibility_get_atk_object): impl.
+
+	* eel/eel-accessibility.h
+	(EEL_ACCESSIBLE_FACTORY, EEL_WIDGET_SET_FACTORY):
+	copy from gail - we need them.
+
+=== eel 1.1.9 ===
+		
+2002-03-24  Alexander Larsson  <alla@lysator.liu.se>
+
+	* configure.in: Bump version to 1.1.9
+
+	* NEWS: bump version.
+
+2002-03-22  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-gtk-extensions.c: (eel_gtk_viewport_get_visible_rect),
+	(eel_gtk_viewport_scroll_to_rect): New functions.
+	* eel/eel-gtk-extensions.h: Prototypes for the eel_gtk_viewport
+	functions.
+	* eel/eel-wrap-table.c: (eel_scrolled_wrap_table_new): New
+	function to create a wrap table inside of a scrolled window.
+	(eel_wrap_table_add), (eel_wrap_table_remove): If the wrap table
+	is scrolled, connect to focus_in_event.
+	(wrap_table_child_focus_in): New function, scrolls to the focused
+	item in the viewport.
+	* eel/eel-wrap-table.h: Prototype for eel_scrolled_wrap_table_new.
+
+2002-03-18  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-string.c: 
+	Only include eel-lib-self-check-functions.h if 
+	EEL_OMIT_SELF_CHECK isn't defined.
+
+	* eel/eel-pango-extensions.c: 
+	Only include eel-lib-self-check-functions.h if 
+	EEL_OMIT_SELF_CHECK isn't defined.
+
+	* eel/Makefile.am:
+	* eel/eel-accessibility.c:
+	(eel_accessibility_set_up_label_widget_relation):
+	* eel/eel-accessibility.h:
+	* eel/eel-caption-table.c: (eel_caption_table_resize):
+	* eel/eel-caption.c: (eel_caption_set_child):
+	Add new accessibility utility functions and have our
+	label-widget composite widgets use them.
+	
+	* test/test-eel-widgets.c: (create_pixbuf):
+	Update path due to e-h changes.
+	
+2002-03-17  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Bump required versions.
+
+=== eel 1.1.8 ===
+		
+2002-03-17  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in: Bump version to 1.1.8
+	
+	* NEWS: Bump version.
+	
+	* eel/eel-vfs-extensions.c: (eel_format_uri_for_display_internal),
+	(eel_escape_high_chars), (eel_make_uri_from_input_internal),
+	(eel_format_uri_for_display), (eel_make_uri_from_input),
+	(eel_self_check_vfs_extensions):
+	Handle utf8 and G_BORKEN_FILENAMES better.
+
+2002-03-13  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* eel.spec.in:  New one, from Chris Chabot
+
+2002-03-11  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gnome-extensions.c
+	(eel_bonobo_make_registration_id): impl.
+
+2002-03-11  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-gdk-extensions.c:
+	* eel/eel-gdk-extensions.h:
+	Remove the now unneeded eel_set_mini_icon function.
+	
+=== eel 1.1.7 ===
+
+2002-03-10  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Bump version.
+
+2002-03-09  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-image-table.c: (image_table_emit_signal),
+	(image_table_handle_motion), (ancestor_button_press_event),
+	(ancestor_button_release_event):
+	* eel/eel-image-table.h (EelImageTableEvent):
+	Add the original GdkEvent to the EelImageTableEvent. You
+	may need e.g. the time from the event. (Needed to fix
+	stuck grab in nautilus.)
+
+2002-03-08  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-preferences.c:
+	(eel_preferences_set_emergency_fallback_string_list): Add a
+	g_slist_reverse so that emergency fallback string lists are
+	in the proper order.
+
+	* eel/eel-background.c: Tweak formatting.
+
+2002-03-07  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Bump version to 1.1.7
+
+	* eel/eel-preferences-item.c:
+	(preferences_item_update_editable_string),
+	(preferences_item_create_editable_string),
+	(eel_preferences_item_new),
+	(preferences_item_update_displayed_value),
+	(eel_preferences_item_set_description):
+	* eel/eel-preferences-item.h:
+	Add EEL_PREFERENCES_ITEM_EDITABLE_PASSWORD_STRING type.
+	
+	* eel/eel-text-caption.c: (eel_text_caption_set_expand_tilde),
+	(eel_text_caption_set_visibility):
+	* eel/eel-text-caption.h:
+	Add eel_text_caption_set_visibility which controls the visibility
+	of the GtkEntry.
+	
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-preferences-box.c: (eel_preferences_dialog_new): Make the
+	button say "Close" instead of "OK".
+
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-cell-renderer-pixbuf-list.c:
+	(eel_cell_renderer_pixbuf_list_class_init):
+	* eel/eel-labeled-image.c: (eel_labeled_image_class_init):
+	Remove strings we really don't need; lets not waste time translating
+	these since no one ever sees them.
+
+	* eel/eel-password-dialog.c: (eel_password_dialog_new): Tweak comment.
+
+	* eel/eel-preferences-box.c: Add gnome-i18n.h include. Not sure why
+	this wasn't needed before.
+
+	* eel/eel-preferences.c: Remove unneeded gnome-i18n.h include.
+
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-preferences-box.c: (eel_preferences_box_new):
+	* eel/eel-wrap-table.c: (eel_wrap_table_class_init):
+	Take out some strings that we don't really need to translate.
+
+2002-03-06  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-preferences-item.c
+	(preferences_item_update_enumeration_radio),
+	(preferences_item_update_enumeration_menu),
+	(enumeration_radio_changed_callback),
+	(enumeration_menu_changed_callback): upd. for enums
+
+	* eel/eel-preferences.c
+	(eel_preferences_add_auto_enum): impl.
+	(preferences_entry_update_auto_storage): upd. for enums.
+
+2002-03-05  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-preferences.c
+	(eel_preferences_get_enum, eel_preferences_set_enum): impl.
+
+	* eel/eel-enumeration.c (eel_enumeration_get_sub_name),
+	(eel_enumeration_get_sub_value): impl.
+
+=== eel 1.1.6 ===
+
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-stock-dialogs.c: (show_message_dialog): Put additional button to
+	the left of the other buttons. Doing it this way is pretty nasty, but I
+	don't know any better way to match what the HI folks want.
+
+2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
+
+	* NEWS:
+	* configure.in:
+	Bump version.
+	
+	* eel/eel-background.h:
+	Add eel_background_set_is_constant_size() and
+	eel_background_get_pixmap_and_color()
+	Remove eel_background_is_too_complex_for_gtk_style().
+	
+	* eel/eel-background.c: (eel_background_init),
+	(eel_background_finalize), (get_pixmap_size), (eel_background_unrealize),
+	(eel_background_ensure_realized), (eel_background_get_pixmap_and_color),
+	(draw_background_callback), (eel_widget_background_changed):
+	Add bitmap generation and caching capability.
+	(eel_background_set_is_constant_size): set if windows don't change size,
+	used by the nautilus desktop window.
+	(eel_background_is_too_complex_for_gtk_style); Remve. Not used anymore.
+	(eel_background_receive_dropped_background_image): Remove old reset.png hack.
+
+	* eel/eel-background-style.c:
+	(eel_background_style_finalize): unref background
+	(eel_background_style_draw_flat_box), (eel_background_style_set_background):
+	Use cached pixmaps from EelBackground. 
+	(eel_background_style_new): Set the background. No need to mess
+	with the base style.
+	(eel_background_style_clone): Need to clone the background too.
+	(eel_background_style_class_init): add clone and set_background virtual
+	methods
+	
+2002-03-03  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-preferences-item.c:
+	(preferences_item_create_enumeration_list),
+	(preferences_item_create_enumeration_menu):
+	* eel/eel-string-picker.c: (eel_string_picker_set_string_list),
+	(eel_string_picker_insert_separator):
+	* eel/eel-string-picker.h:
+	Create the string list first and then insert it into the
+	string picker, instead of rebuilding the option menu 
+	on every insert.
+	
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-glib-extensions.h:
+	* eel/eel-glib-extensions.c: (eel_g_object_list_ref),
+	(eel_g_object_list_unref), (eel_g_object_list_free),
+	(eel_g_object_list_copy), (eel_add_weak_pointer),
+	(eel_remove_weak_pointer): New names for old functions
+	from eel-gtk-extensions.c.
+	
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-extensions.c: Remove old functions.
+
+2002-02-28  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-image-chooser.c: (eel_image_chooser_set_selected_row):
+	Handle -1 by deselecting all rows.
+
+2002-02-28  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gnome-extensions.c: (icon_selected): Since this is no longer
+	a callback, get rid of the widget parameter.
+	(icon_cancel_pressed): Get rid of the widget parameter.
+	(entry_activated_callback): Check result of stat.
+	(eel_gnome_icon_selector_new): Store a pointer to the dialog that we
+	can use later to close it.
+
+2002-02-27  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-password-dialog.c: (dialog_show_callback),
+	(eel_password_dialog_set_readonly_username):
+	If the username is readonly, focus the password entry. Otherwise
+	focus the username entry. Fixes #72801.
+	
+2002-02-27  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-extensions.h:
+	* eel/eel-gdk-extensions.c: (eel_gdk_rectangle_contains_rectangle): New.
+
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-extensions.c:
+	(eel_gtk_tree_view_cell_is_completely_visible): New.
+
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_cancel_gdk_pixbuf_load):
+	We need to close the loader even if we are just dropping it on the floor.
+	Not sure that's good design, but I want to make gdk-pixbuf happy.
+
+	* eel/eel-image-chooser.c: (eel_scrolled_image_chooser_show_selected_row):
+	Only scroll if row isn't already completely visible.
+
+=== eel 1.1.5 ===
+
+2002-02-25  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-pango-extensions.c:
+	(eel_pango_font_description_get_largest_fitting_font_size):
+	* eel/eel-pango-extensions.h:
+	Implement eel_pango_font_description_get_largest_fitting_font_size.
+	
+2002-02-22  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel.h:
+	* eel/eel-generous-bin.c: Re-add.
+	* eel/eel-generous-bin.h: Re-add.
+
+2002-02-21  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-pango-extensions.c
+	(eel_pango_layout_fit_to_dimensions): impl.
+
+	* eel/eel-gdk-pixbuf-extensions.c
+	(eel_gdk_pixbuf_draw_layout_clipped): document.
+
+2002-02-22  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel.h:
+	* eel/eel-generous-bin.c: Remove.
+	* eel/eel-generous-bin.h: Remove.
+	* eel/eel-region.c: Remove.
+	* eel/eel-region.h: Remove.
+
+	* eel/eel-image-table.c: Remove include "eel-region.h".
+
+2002-02-22  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-glib-extensions.h:
+	* eel/eel-glib-extensions.c:
+	Remove unused eel_g_ptr_array_* functions.
+	
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gnome-extensions.c:
+	Remove unused eel_gnome_canvas_world_to_window_rectangle.
+	(eel_gnome_canvas_world_to_widget_rectangle),
+	(eel_gnome_canvas_widget_to_world),
+	(eel_gnome_canvas_world_to_widget):
+	Rename to reflect a clearer conception of these. They map to the
+	widget coordinate system. Clearer than trying to talk about
+	widget->window vs.  layout->bin_window .
+	
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-extensions.c:
+	Remove unused eel_gtk_style_shade,
+	eel_get_window_list_ordered_front_to_back,
+	eel_gtk_widget_standard_realize,
+	eel_gtk_bin_standard_size_allocate,
+	eel_gtk_bin_standard_size_request.
+	(eel_gtk_widget_get_button_event_location): New.
+	(eel_gtk_widget_get_motion_event_location): New.
+
+	* test/Makefile.am:
+	* test/dumb-box.c: Remove.
+	* test/dumb-box.h: Remove.
+	* test/test-eel-gtk-style.c:
+	Just keep this compiling. Not clear if it still is useful.
+
+	* RENAMING: at_exit -> at_shutdown
+	
+2002-02-21  Darin Adler  <darin@bentspoon.com>
+
+	* AUTHORS:
+	* MAINTAINERS:
+	Add some people.
+
+	* eel/eel-gdk-pixbuf-extensions.c:
+	(eel_gdk_pixbuf_draw_layout_clipped):
+	Draw nothing if the rectangle is empty or "less than empty"
+	rather than asserting.
+
+2002-02-20  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	eel/eel-preferences-box.c:
+	(eel_preferences_box_init): Remove connect.
+	(user_level_changed_callback): Removed.
+
+2002-02-20  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c
+	(eel_gdk_pixbuf_draw_layout): split out into
+	(eel_gdk_pixbuf_draw_layout_clipped): here, new method.
+
+2002-02-20  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-wrap-table.c (eel_wrap_table_class_init): 
+	do an eel_type_init.
+
+	* eel/eel-types.c (eel_type_init): protect vs.
+	double init.
+
+2002-02-19  jacob berkman  <jacob@ximian.com>
+
+	* eel/eel-gnome-extensions.c (get_terminal_command_prefix):
+	gnome-terminal 2 does not accept --login or --start-factory-server
+
+	* eel/eel-gtk-extensions.[ch] (eel_gtk_selection_data_*_deep):
+	remove as these are fixed in GTK 2.0 (fixes a double free crash)
+
+2002-02-19  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-preferences-box.c
+	(category_list_row_activated_callback): rename to
+	(category_list_selection_changed): this & use the selection's
+	changed signal instead.
+	(eel_preferences_box_new): upd.
+	(preferences_box_category_list_recreate): upd.
+
+2002-02-18  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in: remove GNOME_COMMON_INIT, GNOME_PLATFORM_GNOME_2
+
+2002-02-16  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-gdk-pixbuf-extensions.c (eel_gdk_pixbuf_draw_to_pixbuf_alpha):
+	Add G_OBJECT() casts for g_object_ref/unref so we don't give warnings
+	due to pixbuf being const.
+
+2002-02-16  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* NEWS: Bump version.
+	* configure.in: Bump version.
+
+	* eel/eel-gdk-extensions.h:
+	* eel/eel-gdk-extensions.c:
+	(eel_gdk_color_parse): New.
+	(eel_gdk_color_parse_with_white_default): call eel_gdk_color_parse ().
+	
+2002-02-15  Michael Meeks  <michael@ximian.com>
+
+	* eel/Makefile.am: add deprecated flags
+	permanantly.
+
+	* eel/eel-gdk-extensions.c
+	(eel_gdk_choose_foreground_color),
+	(eel_gdk_gc_choose_foreground_color): prune,
+	unused, and funky color handling.
+
+	* test/test-eel-pixbuf-tile.c:
+	update image paths to include the prefix.
+
+	* eel/eel-debug-drawing.c
+	(eel_debug_draw_rectangle_and_cross): make sure
+	we allocate the color.
+
+2002-02-13  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-image-table.c
+	(image_table_peek_clear_gc): upd. color handling.
+	(eel_image_table_set_smooth_background_color),
+	(eel_image_table_set_is_smooth): kill, unused.
+	(eel_image_table_expose_event): kill.
+	(image_table_foreach_child_subtract_content),
+	(image_table_peek_clear_gc): remove
+
+	* eel/eel-gdk-pixbuf-extensions.c
+	(pixbuf_destroy_callback),
+	(eel_gdk_pixbuf_list_ref, eel_gdk_pixbuf_list_free):
+	use g_object_ref/unref instead of gdk_pixbuf_~
+
+	* eel/eel-gdk-extensions.c
+	(eel_fill_rectangle_with_color): remove, color
+	handling not pleasant, and not used.
+	(eel_gdk_gc_choose_foreground_color): upd.
+
+
+	* eel/eel-debug-drawing.c
+	(eel_debug_draw_rectangle_and_cross): upd. color
+	handling.
+
+2002-02-12  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-stock-dialogs.h (eel_create_info_dialog): 
+	fix header comment.
+
+2002-02-12  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-wrap-table.c: (eel_wrap_table_class_init):
+	Register enums in here. This gets rid of the last place
+	we had GNOME2_CONVERSION_COMPLETE.
+
+	* eel/maketypes.awk: Fix to make EEL_TYPE_X instead of
+	EEL_TYPE_EEL_X.
+
+2002-02-12  Tõivo Leedjärv  <leedjarv@interest.ee>
+
+	* configure.in: Added et to ALL_LINGUAS.
+
+2002-02-12  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-preferences-box.c
+	(eel_preferences_box_new): create a tree view &
+	list model
+	(category_list_select_row_callback): rename to 
+	(category_list_row_activated_callback): this & re-write..
+	(preferences_box_find_row): re-write.
+	(preferences_model_foreach_find): impl.
+	(eel_preferences_box_rename_pane): re-write.
+	(eel_preferences_box_finalize): unref the category model.
+	(eel_preferences_dialog_new): show after
+	populating with panes, so we don't get re-sizing jerkiness
+	on the list.
+	(preferences_box_select_pane): tolerate setting the name
+	with the existing string.
+
+	* eel/eel-text-caption.c: remove unused TEXT_CAPTION_INVALID
+
+	* eel/eel-password-dialog.c: remove unused DIALOG_OK_BUTTON
+
+2002-02-12  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-canvas-rect.c (eel_canvas_rect_realize): Surround
+	variable declarations with HAVE_RENDER.
+
+2002-02-10  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Require newer libxml where location of xml memory
+	calls has moved.
+	* eel/eel-xml-extensions.c: Remove unneeded include of xmlmemory.h.
+
+==== eel 1.1.4 ====
+
+2002-02-09  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Bump version.
+	* configure.in: Bump version.
+
+	* eel/eel-debug.c:
+	(eel_make_warnings_and_criticals_stop_in_debugger):
+	Add gnome-vfs-modules to list of domains.
+
+2002-02-08  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-canvas-rect.c: (eel_canvas_rect_realize),
+	(eel_canvas_rect_unrealize):
+	Chain to parent implementations.
+	
+2002-02-06  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am: Turn on GNOME_DISABLE_DEPRECATED and
+	EEL_COMPILATION. Get rid of eel-gobject-extensions.[ch].
+
+	* eel/eel-art-gtk-extensions.h:
+	* eel/eel-art-gtk-extensions.c: (eel_gdk_window_get_bounds),
+	(eel_gdk_window_get_screen_relative_bounds),
+	(eel_gtk_widget_get_bounds), (eel_gtk_widget_get_dimensions),
+	(eel_gtk_widget_get_preferred_dimensions),
+	(eel_gdk_window_clip_dirty_area_to_screen),
+	(eel_gdk_window_get_dimensions), (eel_gdk_get_pointer_position):
+	Eliminate misguided use of const. Fix a few deprecated things.
+
+	* eel/eel-background-style.c: (eel_gdk_window_update_sizes):
+	Use gdk_drawable_get_size instead of gdk_window_get_size.
+
+	* eel/eel-background.c: (draw_background_callback): Use g_object_unref
+	instead of gdk_gc_unref.
+	(eel_get_widget_background): Use g_signal_connect_object instead
+	of eel_signal_connect_object_while_alive.
+
+	* eel/eel-debug-drawing.c: (eel_debug_draw_rectangle_and_cross):
+	Use g_object_unref instead of gdk_gc_unref.
+
+	* eel/eel-debug.c: Turn this back on.
+
+	* eel/eel-gnome-extensions.c: (eel_gnome_icon_selector_new): Get
+	rid of a misguided use of eel_signal_connect_while_alive -- plain
+	old g_signal_connect works fine.
+
+	* eel/eel-gobject-extensions.c: Remove.
+	* eel/eel-gobject-extensions.h: Remove.
+
+	* eel/eel-image-table.c: (eel_image_table_unrealize): Use g_object_unref
+	instead of gdk_gc_unref.
+
+	* eel/eel-labeled-image.c: (eel_labeled_image_check_button_new): Get
+	rid of some misguided use of eel_signal_connect_while alive -- plain
+	old g_signal_connect works fine.
+
+	* eel/eel-password-dialog.c: (eel_password_dialog_new): Get
+        rid of some misguided use of eel_signal_connect_while alive -- plain
+        old g_signal_connect works fine.
+
+	* eel/maketypes.awk: Grab a new copy from gtk+. Is there a way to do
+	this without copied and pasted code?
+	* eel/eel-types.c: (eel_type_init): Change name to EEL_TYPE_N_BUILTINS.
+
+	* test/Makefile.am: Turn on G_DISABLE_DEPRECATED, GDK_DISABLE_DEPRECATED,
+	GTK_DISABLE_DEPRECATED, GNOME_DISABLE_DEPRECATED.
+
+	* test/test-eel-background.c: (main): Turn of GtkCTree code that was
+	already half-disabled.
+
+	* test/test-eel-canvas-items.c: (item_event), (setup_item),
+	(create_canvas_items), (create_canvas): gtk_signal_connect -> g_signal_connect.
+	Remove some colormap stuff. gtk_widget_set_usize -> gtk_widget_set_size_request.
+	gtk_window_set_policy -> gtk_window_set_resizable.
+	* test/test-eel-gtk-style.c: (color_box_expose_event): gdk_gc_unref -> g_object_unref.
+	(pixmap_box_expose_event): gdk_window_get_size -> gdk_drawable_get_size.
+	* test/test.c: (test_window_new): gtk_window_set_policy -> gtk_window_set_resizable
+
+2002-02-06  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-wrap-table.c
+	(eel_wrap_table_class_init),
+	(eel_wrap_table_set_property),
+	(eel_wrap_table_get_property): ditto
+
+	* eel/makeenums.pl (parse_entries): output
+	GEnumValue not GtkEnumValue - this should use
+	glib-mkenums though.
+
+	* eel/eel-gtk-extensions.c
+	(eel_gtk_signal_connect_full_while_alive),
+	(eel_gtk_signal_connect_free_data_custom):
+	port deprecated bits.
+	(eel_gtk_class_name_make_like_existing_type):
+	remove - unused & not portable.
+
+	* eel/eel-gnome-extensions.c
+	(eel_gnome_icon_selector_new): remove all
+	deprecated bits.
+
+	* eel/eel-dateedit-extensions.c
+	(eel_gnome_date_edit_get_date_as_string): ditto.
+
+	* eel/eel-labeled-image.c
+	(eel_labeled_image_class_init),
+	(eel_labeled_image_set_property),
+	(eel_labeled_image_get_property),
+	(eel_labeled_image_check_button_new): ditto.
+
+	* eel/eel-preferences-item.c
+	(preferences_item_update_displayed_value),
+	(preferences_item_update_displayed_value): ditto.
+
+	* eel/eel-stock-dialogs.c
+	(timed_wait_callback): ditto.
+
+2002-02-05  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-dateedit-extensions.c
+	(eel_gnome_date_edit_get_date_as_string): add
+	deprecated comment.
+
+	* eel/eel-background.c
+	(eel_background_reset),
+	(eel_background_set_color),
+	(eel_get_widget_background),
+	(eel_background_set_image_placement),
+	(eel_background_load_image_callback),
+	(eel_background_cancel_loading_image),
+	(eel_background_set_image_uri_helper), 
+	(set_image_and_color_image_loading_done_callback),
+	(eel_background_class_init): build with deprecated
+	things disabled.
+
+	* eel/eel-radio-button-group.c
+	(eel_radio_button_group_class_init): ditto.
+
+	* eel/eel-preferences-item.c
+	(preferences_item_update_custom),
+	(eel_preferences_item_set_description): ditto.
+
+	* eel/eel-caption-table.c
+	(eel_caption_table_class_init, entry_activate),
+	(eel_caption_table_resize): ditto.
+
+	* eel/eel-password-dialog.c
+	(eel_password_dialog_new): ditto.
+
+	* eel/eel-gtk-extensions.c
+	(handle_standard_close_accelerator),
+	(eel_gtk_menu_set_item_visibility),
+	(alive_disconnecter),
+	(eel_gtk_signal_connect_while_realized): ditto.
+
+	* eel/eel-gnome-extensions.c
+	(try_terminal_command),
+	(eel_gnome_icon_selector_new): ditto.
+
+	* eel/eel-ellipsizing-label.c
+	(eel_ellipsizing_label_new): ditto.
+
+	* eel/eel-text-caption.c
+	(eel_text_caption_class_init),
+	(eel_text_caption_set_editable),
+	(eel_text_caption_init, eel_text_caption_init): ditto.
+
+	* eel/eel-string-picker.c
+	(eel_string_picker_class_init): ditto.
+
+	* eel/eel-stock-dialogs.c
+	(timed_wait_delayed_close_timeout_callback),
+	(eel_show_info_dialog_with_details),
+	(delete_event_callback): ditto.
+
+2002-02-05  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-clist.c: Remove.
+	* eel/eel-clist.h: Remove.
+	* eel/eel-ctree.c: Remove.
+	* eel/eel-ctree.h: Remove.
+	* eel/eel-dnd.c: Move back into Nautilus.
+	* eel/eel-dnd.h: Move back into Nautilus.
+	* eel/eel-list-column-title.c: Remove.
+	* eel/eel-list-column-title.h: Remove.
+	* eel/eel-list.c: Remove.
+	* eel/eel-list.h: Remove.
+	* eel/eel.h: Housekeeping.
+	* eel/Makefile.am: Housekeeping.
+
+==== eel 1.1.3 ====
+
+2002-02-04  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Update for 1.1.3.
+	* .cvsignore: Don't ignore the tarballs.
+
+	* eel/eel-pango-extensions.c: (eel_string_ellipsize_middle):
+	* eel/eel-wrap-table.c: (wrap_table_layout): Fixes to make things
+	compile with gcc 3.0.2, based on a patch contributed by Anush
+	<nothin2chance@yahoo.com>.
+
+2002-02-04  Laszlo Peter  <laca@ireland.sun.com>
+
+	* COPYING: change to LGPL
+
+	* eel/eel-background-style.c eel/eel-background-style.h
+	  eel/eel-background.c eel/eel-background.h
+	  eel/eel-dateedit-extensions.c eel/eel-dateedit-extensions.h
+	  eel/eel-debug-drawing.c eel/eel-debug-drawing.h eel/eel-debug.c
+	  eel/eel-debug.h eel/eel-enumeration.c eel/eel-enumeration.h
+	  eel/eel-graphic-effects.h eel/eel-gtk-macros.h
+	  eel/eel-lib-self-check-functions.c
+	  eel/eel-lib-self-check-functions.h eel/eel-list-column-title.c
+	  eel/eel-list-column-title.h eel/eel-region.c eel/eel-region.h
+	  eel/eel-self-checks.c eel/eel-self-checks.h
+	  eel/eel-string-list.c eel/eel-string-list.h: correct licensing
+	  information in the headers by permission of the Copyright holders.
+
+Mon Feb  4 11:24:21 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* eel/eel-gnome-extensions.c (dialog_response_callback): 
+	Labels need a statement after them. (Fixes -Werror problem
+	with recent GCC.)
+
+2002-01-30  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-preferences-item.h:
+	* eel/eel-preferences-item.c: 
+	(preferences_item_update_font),
+	(font_changed_callback), (preferences_item_create_font),
+	(eel_preferences_item_new),
+	(preferences_item_update_displayed_value),
+	(eel_preferences_item_set_description):
+	Make EEL_PREFERENCE_ITEM_FONT use the Eel font picker, and get
+	rid of all support for EEL_PREFERENCE_ITEM_SMOOTH_FONT.
+
+2002-01-30  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Bump to 1.1.3 since we have an API change.
+
+	* eel/eel-dnd.h: start_x and start_y are in window coordinates,
+	not world coordinates.
+	
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gnome-extensions.c:
+	(eel_gnome_canvas_world_to_canvas_window_rectangle): New.
+	(eel_gnome_canvas_canvas_window_to_world): New.
+	(eel_gnome_canvas_world_to_canvas_window): New.
+
+==== eel 1.1.2 ====
+
+2002-01-29  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-pango-extensions.c: (eel_self_check_ellipsize),
+	(eel_self_check_pango_extensions): Turn off ellipsizing self-checks
+	because they are failing for me.
+
+2002-01-29  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Update for 1.1.2 release.
+
+2002-01-28  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* eel/eel-glib-extensions.c, eel/eel-glib-extensions.h:
+	(eel_g_list_copy): remove, it was moved into glib.
+	* eel/eel-gtk-extensions.c, eel/eel-gtk-extensions.h:
+	(eel_gtk_window_present): remove, it was moved into gtk+.
+
+2002-01-28  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am: Use LC_ALL instead of LC_COLLATE.
+	* eel/eel-gnome-extensions.c: (eel_gnome_canvas_item_send_behind):
+	Oops, it was sending things in front.
+
+2002-01-27  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-stock-dialogs.c (eel_run_simple_dialog): Start with 
+	a response id that is 0.
+
+2002-01-27  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gnome-extensions.c: (eel_gnome_canvas_item_send_behind): New.
+
+2002-01-27  Alexander Larsson  <alla@lysator.liu.se>
+
+	* acconfig.h:
+	Add HAVE_RENDER
+
+	* configure.in:
+	Add checks for Xrender
+
+	* eel/Makefile.am:
+	Add RENDER_LIBS and eel-canvas-rect.[ch]
+
+	* eel/eel-canvas-rect.[ch]:
+	New type EelCanvasRect. Implemented for the Nautilus
+	selection rectangle.
+	
+	* eel/eel-lib-self-check-functions.h:
+	Add eel_self_check_canvas_rect to list of tests
+
+	* test/test-eel-canvas-items.c:
+	Add a test of the eel canvas items.
+	
+	* test/Makefile.am:
+	Build test-eel-canvas-items
+
+2002-01-24  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-pango-extensions.h:
+	* eel/eel-pango-extensions.c: (eel_pango_ft2_get_context): New.
+
+	* eel/eel-gtk-extensions.c: (create_pango_ft2_context): Use
+	the new eel_pango_ft2_get_context.
+
+2002-01-23  Peteris Krisjanis <peteris.krisjanis@ttc.lv>
+
+	* eel/configure.in: added lv to ALL_LINGUAS
+
+2002-01-22  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-font-picker.c: (font_picker_get_index_for_font):
+	Handle NULL family_name.
+
+2002-01-21  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-font-picker.h:
+	* eel/eel-font-picker.c:
+	* test/test-eel-font-picker.c:
+	Rewrite to use Pango -- first cut, not done yet.
+
+	* eel/eel-preferences-item.c:
+	(preferences_item_create_smooth_font): Pass NULL for the PangoContext.
+
+2002-01-19  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* eel/eel-glib-extensions.c: (eel_strdup_strftime):
+	Convert format string into locale encoding at start, and convert back
+	into utf-8 the result. 
+
+2002-01-19  Darin Adler  <darin@bentspoon.com>
+
+	* test/test-eel-gtk-style.c: (style_get_color), (style_get_gc):
+	Fix mistake in that last change that didn't compile.
+
+2002-01-19  Darin Adler  <darin@bentspoon.com>
+
+	* test/test-eel-gtk-style.c: (style_get_color), (style_get_gc):
+	Tweak code so gcc 3.x doesn't give warnings.
+
+2002-01-18  Darin Adler  <darin@bentspoon.com>
+
+	* TODO: Remove some already-done items.
+	
+	* eel/check-program.c: (main): Use the new eel_debug_shut_down.
+	
+	* eel/eel-debug.h:
+	* eel/eel-debug.c: (eel_debug_shut_down),
+	(eel_debug_call_at_shutdown),
+	(eel_debug_call_at_shutdown_with_data): New.
+	
+	* eel/eel-debug-drawing.c: (eel_debug_show_pixbuf):
+	* eel/eel-enumeration.c: (enumeration_table_get):
+	* eel/eel-font-picker.c: (global_font_list_get):
+	* eel/eel-gconf-extensions.c: (eel_gconf_client_get_global):
+	* eel/eel-gdk-pixbuf-extensions.c:
+	(eel_gdk_pixbuf_get_global_buffer):
+	* eel/eel-glib-extensions.c: (eel_g_hash_table_new_free_at_exit):
+	* eel/eel-preferences.c: (preferences_global_table_get_global):
+	Switch from g_atexit to eel_debug_call_at_shutdown.
+	
+	* eel/eel-image-table.h:
+	* eel/eel-image-table.c: (eel_image_table_class_init),
+	(eel_image_table_init), (eel_image_table_new): Get rid of
+	set_is_smooth signal, eel_image_table_set_is_smooth, and use of
+	eel_smooth_widget calls.
+	
+	* eel/eel-image-with-background.c: Remove.
+	* eel/eel-image-with-background.h: Remove.
+	* eel/eel-image.c: Remove.
+	* eel/eel-image.h: Remove.
+	* eel/eel-smooth-widget.c: Remove.
+	* eel/eel-smooth-widget.h: Remove.
+	* eel/eel-viewport.c: Remove.
+	* eel/eel-viewport.h: Remove.
+	
+	* eel/Makefile.am: Kill eel-image-with-background.[ch],
+	eel-image.[ch], eel-smooth-widget.[ch], eel-viewport.[ch].
+	* eel/eel.h: Ditto.
+	
+	* eel/eel-labeled-image.c: (eel_labeled_image_get_arg),
+	(eel_labeled_image_add), (eel_labeled_image_remove),
+	(labeled_image_ensure_image), (eel_labeled_image_set_pixbuf),
+	(eel_labeled_image_set_pixbuf_from_file_name): Port from EelImage
+	to GtkImage.
+	
+	* eel/eel-radio-button-group.c:
+	(eel_radio_button_group_set_entry_pixbuf): Port from EelImage to
+	GtkImage.
+	
+	* test/test-eel-image-table.c: (image_table_new_scrolled): Port
+	from EelViewport to GtkViewport.
+	
+	* THANKS: Fix typo.
+	* eel/eel-wrap-table.c: Fix comment format.
+	
+	* test/test-eel-image-background.c: Remove.
+	* test/test-eel-image-simple.c: Remove.
+	* test/test-eel-viewport-constraint.c: Remove.
+
+	* test/.cvsignore: Remove obsolete tests.
+	* test/Makefile.am: Remove obsolete tests.
+
+	* test/test-eel-image-chooser.c: (main): Remove eel_smooth_widget
+	call.
+	
+	* test/test.c: Remove EelImage code.
+
+2002-01-17  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-pango-extensions.c:
+	(eel_pango_layout_set_text_ellipsized): Soften an assert to
+	a g_return.
+
+2002-01-17  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am: Fix parallel builds by getting rid of an
+	ill-advised use of a full path to the library.
+
+	* eel/eel-pango-extensions.c: (eel_string_ellipsize_start),
+	(eel_string_ellipsize_end): These were reversed.
+
+	* test/.cvsignore: test-eel-ellipsizing
+
+2002-01-17  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-cell-renderer-pixbuf-list.h: Fix warning.
+
+	* eel/Makefile.am:
+	Add eel-cell-renderer-pixbuf-list.[ch]
+	
+	* eel/eel-background-style.c: (eel_background_style_draw_flat_box):
+	Special case GtkTreeView.
+	
+	* eel/eel-cell-renderer-pixbuf-list.c:
+	* eel/eel-cell-renderer-pixbuf-list.h:
+	Add these.
+	
+	* eel/eel-stock-dialogs.c: (show_ok_dialog):
+	Set default response to GTK_RESPONSE_OK.
+	
+2002-01-16  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Bump version to 1.1.2.
+
+2002-01-16  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_draw_layout):
+	Fix case where clipped height or width turns out to be 0.
+	* eel/eel-gtk-macros.h: Remove some unused macros, deprecate
+	others.
+	* eel/eel-pango-extensions.c: Remove extra include.
+	* eel/eel-preferences-box.c: (eel_preferences_dialog_new):
+	Don't try to eel_gtk_window_set_up_close_accelerator, since it's
+	a dialog that already has a close accelerator.
+
+2002-01-11  Havoc Pennington  <hp@redhat.com>
+
+	* eel/eel.h: add eel-pango-extensions.h
+
+	* eel/eel-pango-extensions.c
+	(eel_pango_layout_set_text_ellipsized): put ellipsize code back in
+	here and port to Pango
+	
+	* eel/eel-ellipsizing-label.c: re-enable ellipsization in the
+	widget, change bad hack implementation to different bad hack
+	implementation to avoid queueing a resize in size_allocate
+	(real_style_set): remove style_set handler because it results in a
+	queue_resize anyway
+	(real_size_allocate): auto-select ellipsize mode based on label
+	alignment
+
+==== eel 1.1.1 ====
+
+2002-01-15  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Get ready for eel 1.1.1 release.
+	* eel/Makefile.am: Fix makeenums.pl stuff so it works when
+	srcdir != destdir.
+
+2002-01-15  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-extensions.c: (create_pango_ft2_context):
+	Tiny tweak to the code -- makes it more readable, I think.
+
+2002-01-09  Alexander Larsson  <alla@lysator.liu.se>
+
+	* eel/eel-gtk-extensions.c (create_pango_ft2_context):
+	Copy the font description from the base_context.
+
+Thu Jan 10 10:53:52 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* eel/eel-gnome-extensions.c
+	(eel_gnome_canvas_world_to_window_rectangle): Remove
+	unused variable so things compile.
+
+2002-01-09  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gnome-extensions.c:
+	Remove gnome_win_hints_*.
+
+	* eel/eel-list.c: (eel_list_destroy): Something I missed in the
+	last change -- forgot to NULL out details.
+
+2002-01-09  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-list.c: (eel_list_destroy),
+	(unschedule_keyboard_row_reveal):
+	Protect against double destroys, but do it in an inelegant way,
+	which shouldn't matter, since we plan to remove this class.
+
+2002-01-09  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-font-extensions.c: Remove.
+	* eel/eel-gdk-font-extensions.h: Remove.
+
+2002-01-08  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel-ctree.c:
+	* eel/eel-ellipsizing-label.c:
+	* eel/eel-lib-self-check-functions.h:
+	* eel/eel-list.c:
+	* eel/eel.h:
+	Remove eel-gdk-font-extensions.[ch]
+	
+	* eel/eel-clist.h: Fix some overzealous global replace.
+	
+	* eel/eel-gobject-extensions.c:
+	(eel_signal_connect_object_while_alive),
+	(eel_signal_connect_while_alive):
+	Add some more g_return_if_fail.
+	
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-extensions.c: (eel_gtk_label_set_scale): New.
+	(eel_gtk_widget_set_foreground_color): Set text color too.
+	
+	* eel/eel-image-table.c:
+	* eel/eel-image.c:
+	* eel/eel-labeled-image.c:
+	Add includes needed now that eel-gtk-extensions doesn't include
+	gtkclist.h or gtkpixmap.h any more.
+	
+	* eel/eel-pango-extensions.h:
+	* eel/eel-pango-extensions.c: (eel_pango_attr_list_copy_or_create),
+	(eel_pango_attr_list_apply_global_attribute): New helper functions
+	used by the eel_gtk_label_set_scale and the other code in here.
+	(apply_global_attribute): New name for an old function.
+	(eel_pango_layout_set_weight): New.
+	
+	* eel/eel-wrap-table.c: (eel_wrap_table_class_init):
+	Don't add the enums, since we just get lots of complaints and we
+	don't really use them right now.
+
+2002-01-05  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ms" to ALL_LINGUAS.
+
+2002-01-04  Havoc Pennington  <hp@pobox.com>
+
+	* eel/eel-gconf-extensions.c (eel_gconf_monitor_add): don't do the
+	recursive preload here, too much stuff in /apps/nautilus it seems
+	like. Rely on explicit preloads in other code.
+
+	* eel/eel-font-picker.c (font_picker_get_selected_style_entry):
+	add FIXME and GNOME2_CONVERSION_COMPLETE for similar
+	option_menu->menu_item issue
+
+	* eel/eel-string-picker.c (eel_string_picker_get_selected_string):
+	use gtk_option_menu_get_history() instead of setting item index 
+	as object data - option_menu->menu_item is no longer non-NULL
+	apparently, when we want it to be.
+
+	* eel/eel-gconf-extensions.c
+	(eel_gconf_value_get_eel_string_list): add a function to get an
+	EelStringList
+
+	* eel/eel-preferences-item.c
+	(preferences_item_create_enumeration_list): use emergency fallback
+	instead of default for deciding on number of string pickers
+
+	* eel/eel-graphic-effects.c: don't include art_config.h, it 
+	ended up being included twice and has no include guards
+
+	* eel/eel-preferences.c: remove user levels, remove concept of
+	installing defaults here, never "fix" invalid values in gconf
+	database (as we did when a list of enum values was invalid), don't
+	bother to cache values since GConfClient does already, remove
+	callbacks_blocked which incorrectly relied on
+	synchronicity/non-reentrancy of gconf, don't store the default
+	value, remove all suggest_sync
+	(eel_preferences_set_emergency_fallback): new function to replace
+	setting defaults
+	(eel_preferences_get_emergency_fallback): getter
+
+	* eel/eel-gconf-extensions.c (eel_gconf_preload_cache): New
+	function to allow us to get a bunch of GConf data in a single
+	round trip
+	(eel_gconf_get_default_value): new function to get the default
+	from the schema
+	
+2002-01-04  Darin Adler  <darin@bentspoon.com>
+
+	* HACKING: Update.
+	* NEWS: Update.
+	* README: Update.
+	* TODO: Update.
+	* MAINTAINERS: Update.
+	* Makefile.shared: Remove.
+
+	* configure.in: Clean up. Update requirements.
+	* eel-2.0.pc.in: Remove bogus bonobo-activation dependency.
+	* eel.spec.in: Remove bogus oaf dependency.
+	* eel/Makefile.am: Do CFLAGS and LIBS a new better way.
+	* test/Makefile.am: Change name of CFLAGS.
+
+	* eel/eel-graphic-effects.c: Get rid of extra include.
+
+2002-01-04  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-gdk-extensions.c (eel_gdk_rgb_to_color): Fix up
+	color conversion routines, as suggested by Darin.
+	(eel_self_check_gdk_rgb_to_color): Add debug function.
+	(eel_gdk_color_as_hex_string): Print all 48 bits of the
+	color.
+	(eel_self_check_gdk_extensions): Add some tests for
+	eel_gdk_rgb_to_color.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
+	* test/Makefile.am:
+	* test/test-eel-font-picker.c: (main):
+	Loose ends from removing EelFontManager.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gnome-extensions.c: (get_terminal_command_prefix):
+	Port to use libgnome to get terminal choice from GConf.
+
+	* eel/Makefile.am:
+	* eel/eel-font-manager.c: Remove.
+	* eel/eel-font-manager.h: Remove.
+	* eel/eel-font-picker.c:
+	* eel/eel-lib-self-check-functions.h:
+	* eel/eel.h:
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-eel-font-manager.c: Remove.
+	* test/test-eel-font-picker.c: (main):
+	Remove EelFontManager.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
+	* RENAMING: Lets take those "-extensions" off the names of all
+	the header files, since "eel" already contains the concept that
+	it's "extensions". I'll probably do this soon since I have the
+	access to do the CVS magic now.
+
+	* eel/eel-gnome-extensions.c:
+	(eel_gnome_stock_set_icon_or_register): Remove.
+
+	* eel/eel-gtk-extensions.c:
+	(eel_gtk_window_is_on_current_workspace_and_area) Remove.
+
+	* eel/eel-gdk-font-extensions.c: (xlfd_string_get_nth_as_int):
+	* eel/eel-preferences-item.c: (update_integer_settings_at_idle):
+	* eel/eel-string.c: (eel_eat_str_to_int) (eel_self_check_string):
+	* eel/eel-string.h:
+	* test/test.c: (test_text_caption_get_text_as_int):
+	Death to eel_eat_str_to_int. I basically can't face Owen in
+	public when I know that I have an interface like that in code
+	that I wrote.
+
+2002-01-03  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-pango-extensions.c
+	* eel/eel-pango-extensions.h 
+	(eel_pango_layout_set_font_desc): Remove this function since
+	pango_layout_set_font_description does the same thing and
+	better.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel-canvas-rect.c: Removed.
+	* eel/eel-canvas-rect.h: Removed.
+	* eel/eel-lib-self-check-functions.h:
+	Bye for now to EelCanvasRect. If we do this optimization, it
+	should be in libgnomecanvas itself.
+	
+	* eel/eel-font-picker.c: (font_picker_populate),
+	(global_font_list_free), (global_font_list_get),
+	(font_picker_find_entries_for_font):
+	Hack to get rid of asserts about empty font list. This is
+	a short term solution. Long term we have to decide what
+	we are going to offer for choosing fonts.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-graphic-effects.c:
+	Fix the include. It's not legal to include art_config.h
+	directly. I added an art_misc.h include so that things
+	will work with older libart and people won't get confused.
+
+	* data/.cvsignore:
+	* data/fonts/.cvsignore:
+	* data/fonts/urw/.cvsignore:
+	Re-remove these. Michael added them back in rather than
+	deleting the obsolete files.
+
+	* test/.cvsignore:
+	Re-remove the obsolete entries in here. Again, Michael
+	added these back in rather than deleting the obsolete
+	files in his directory.
+
+2002-01-03  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c
+	(eel_gdk_pixbuf_save_to_file): use gdk-pixbuf's save code.
+
+	* eel/eel-graphic-effects.c: add art_config.h include.
+
+	* eel/eel-font-manager.c: use DATADIR not EEL_DATADIR.
+
+2002-01-03  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-pango-extensions.h:
+	* eel/eel-pango-extensions.c: Use the API Darin suggested instead
+	since that makes more sense.
+
+2002-01-02  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Remove unused libpng code.
+	* eel.spec.in: Remove libpng, fonts, and librsvg.
+
+2002-01-02  Darin Adler  <darin@bentspoon.com>
+
+	* Makefile.am:
+	* configure.in:
+	* data/: Remove all of the data, since it was fonts that are not
+	needed any more.
+
+	* configure.in:
+	* eel-2.0.pc.in:
+	Remove dependency on librsvg.
+
+	* eel/Makefile.am:
+	* eel/eel-font-picker.h:
+	* eel/eel-glyph.c: Removed.
+	* eel/eel-glyph.h: Removed.
+	* eel/eel-label.c: Removed.
+	* eel/eel-label.h: Removed.
+	* eel/eel-lib-self-check-functions.h:
+	* eel/eel-scalable-font-private.h: Removed.
+	* eel/eel-scalable-font.c: Removed.
+	* eel/eel-scalable-font.h: Removed.
+	* eel/eel-smooth-text-layout.c: Removed.
+	* eel/eel-smooth-text-layout.h: Removed.
+	* eel/eel.h:
+	* test/test-eel-font-manager.c:
+	* test/test-eel-font-picker.c: (update_font),
+	(font_changed_update_label_callback), (use_defalt_font_callback),
+	(use_defalt_bold_font_callback), (main):
+	* test/test-eel-gtk-style.c:
+	* test/test-eel-image-scrolled.c: (toggle_smooth_callback),
+	(label_window_new), (label_window_new_scrolled):
+	Remove eel-glyph, eel-label, eel-scalable-font, eel-smooth-text-layout.
+
+	* eel/eel-graphic-effects.c:
+	Remove incorrect art_config.h include.
+
+	* eel/eel-labeled-image.c: (eel_labeled_image_add),
+	(eel_labeled_image_remove), (labeled_image_ensure_label),
+	(eel_labeled_image_set_text), (eel_labeled_image_get_text):
+	* test/test-eel-viewport-constraint.c:
+	(summary_view_item_label_new):
+	Port to GtkLabel from EelLabel.
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-eel-font-simple.c: Remove.
+	* test/test-eel-font.c: Remove.
+	* test/test-eel-glyph-simple.c: Remove.
+	* test/test-eel-glyph.c: Remove.
+	* test/test-eel-label-flavorful.c: Remove.
+	* test/test-eel-label-offset.c: Remove.
+	* test/test-eel-label-scrolled.c: Remove.
+	* test/test-eel-label-simple.c: Remove.
+	* test/test-eel-label-wrapped.c: Remove.
+	* test/test-eel-label.c: Remove.
+	* test/test-eel-smooth-text-layout.c: Remove.
+	Remove test-eel-font*, test-eel-glyph*, test-eel-label*.
+
+	* test/test.h:
+	* test/test-eel-pixbuf-tile.c:
+	Change test includes around a tiny bit.
+
+2002-01-02  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel-clickable-image.c:
+	* eel/eel-clickable-image.h:
+	* eel/eel-label-with-background.c:
+	* eel/eel-label-with-background.h:
+	* eel/eel-lib-self-check-functions.h:
+	* eel/eel-smooth-text-layout-cache.c:
+	* eel/eel-smooth-text-layout-cache.h:
+	* eel/eel.h:
+	* test/test-eel-clickable-image.c:
+	* test/test-eel-label-background.c:
+	* test/Makefile.am:
+	* test/test.c:
+	Delete some unused classes and files. More to come.
+	
+	* eel/eel-ellipsizing-label.c: (real_finalize),
+	(eel_ellipsizing_label_class_init):
+	Use finalize instead of destroy.
+	
+	* eel/eel-labeled-image.c:
+	* eel/eel-labeled-image.h:
+	* test/test-eel-image-table.c: (labeled_image_new):
+	Remove some unused functions that are hard to implement with
+	GtkLabel (instead of EelLabel).
+
+2002-01-02  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_draw_layout):
+	Clip the ink_rect to what will fit in the buffer. This prevents
+	problems with gdk_pixbuf_composite, which doesn't help us with
+	clipping at all.
+
+2002-01-02  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gnome-extensions.c: (eel_gnome_canvas_get_pango_context):
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-extensions.c: (create_pango_ft2_context),
+	(eel_gtk_widget_get_pango_ft2_context):
+	Add new function to get a freetype2 context for drawing on the
+	client side. Code moved from the canvas-specific function that
+	was in here before.
+
+2002-01-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* eel/eel-background.c: (eel_background_ensure_image_scaled),
+	(eel_background_start_loading_image),
+	(eel_background_set_image_uri_helper),
+	(eel_background_set_image_uri),
+	(eel_background_set_image_uri_sync),
+	(eel_background_set_image_uri_and_color):
+	* eel/eel-background.h:
+	Add support for synchronous loading of image (needed to fix
+	flash when starting Nautilus desktop)
+
+2002-01-02  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-image-chooser.c: Use gtk_tree_model_get instead
+	of gtk_tree_model_get_value; this simplifies a lot since we 
+	don't need to fool around with GValues.
+
+2002-01-01  Anders Carlsson  <andersca@gnu.org>
+
+	* test/test-eel-image-chooser.c: Update picture paths.
+
+	* eel/eel-pango-extensions.h: New file.
+
+	* eel/eel-pango-extensions.c: New file.
+
+	* eel/eel-vfs-extensions.c (eel_read_file_async): Fix the argument
+	order.
+
+	* eel/eel-text-caption.c (eel_text_caption_init):
+	Call gtk_entry_set_activates_default.
+
+	* eel/eel-radio-button-group.c (eel_radio_button_group_insert): Enable
+	mnemonic support.
+
+	* eel/eel-image-chooser.c: Rewrite to use GtkTreeView.
+	
+	* eel/eel-image-chooser.h: Inherit from GtkTreeView and remove
+	an unused and unneeded API call.
+
+	* eel/eel-caption.c (eel_caption_set_title_label): Use
+	gtk_label_set_text_with_mnemonic instead.
+	(eel_caption_set_child): Use gtk_label_set_mnemonic_widget.
+
+2001-12-20  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_draw_layout):
+	Use ink_rect now that the pango bug that was plaguing me is fixed.
+
+	* eel/eel-gnome-extensions.c: (create_pango_context_for_aa_canvas):
+	Remove some unneeded casts.
+
+2001-12-21  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added new pt translation to ALL_LINGUAS
+
+2001-12-18  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gconf-extensions.c (eel_gconf_monitor_add):
+	recursively cache the GConf keys to reduce CORBA traffic.
+
+2001-12-17  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_draw_layout):
+	Use the logical_rect to determine the left side.
+
+	* eel/eel-debug.c:
+	(eel_make_warnings_and_criticals_stop_in_debugger):
+	Add GdkPixbuf.
+
+2001-12-17  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-pixbuf-extensions.h:
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_draw_layout):
+	Simplified parameters.
+
+	* eel/eel-debug.c:
+	(eel_make_warnings_and_criticals_stop_in_debugger): Turn this back on.
+	Michael turned it off by accident.
+
+2001-12-13  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-pixbuf-extensions.h:
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_draw_layout_to_pixbuf):
+	New function for drawing with Pango. Seems to be agonizingly slow
+	due to lack of cache, but I'm not sure if that's the problem.
+	
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gnome-extensions.c: (create_pango_context_for_aa_canvas),
+	(eel_gnome_canvas_get_pango_context): Helper function for getting
+	the appropriate context when drawing to an anti-aliased GnomeCanvas.
+
+	* eel/eel-gtk-extensions.c: Add an include that's needed now that
+	I removed excess includes from eel-gnome-extensions.h.
+
+2001-12-12  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-list-column-title.c (eel_list_column_title_paint):
+	remove erroneous style unref.
+
+2001-12-11  Laszlo Peter  <laca@ireland.sun.com>
+
+	* eel/Makefile.am: add dependencies to fix building with make -j
+
+2001-12-09  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-caption-table.c: (eel_caption_table_resize),
+	(eel_caption_table_set_row_info): Use gtk+ mnemonics.
+	
+	* eel/eel-gnome-extensions.c: (icon_selected_callback),
+	(icon_cancel_pressed), (dialog_response_callback),
+	(entry_activated), (eel_gnome_icon_selector_new):
+	* eel/eel-gnome-extensions.h:
+	Bring back the eel icon selector and remove the 
+	eel_dialog_get_button_by_index function.
+	
+	* eel/eel-password-dialog.c: 
+	(caption_table_activate_callback):
+	Use gtk_window_activate_default instead of calling
+	gtk_button_clicked on the ok button.
+	(eel_password_dialog_new):
+	Use mnemonics in the Username and Password
+	labels.
+	
+2001-12-08  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-list.c: populate from stable & port
+
+	* eel/eel-list-column-title.c: build it
+
+	* eel/eel-clist.[ch]: cross port changes to Gtk+2.0's
+	version of GtkCList.
+
+	* eel/eel-ctree.[ch]: cross port changes to Gtk+2.0's
+	version of GtkCTree.
+
+	* eel/eelmarshal.list: add lots of marshallers.
+
+2001-12-07  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-art-extensions.c: (eel_art_irect_union): Add missing return.
+
+2001-12-07  Laszlo Peter  <laca@ireland.sun.com>
+
+	* eel/eel-art-extensions.c, eel/eel-debug-drawing.c: replace illegal
+	uses of the ternary operator with if-else.
+
+	* test/test-eel-clickable-image.c, test/test-eel-image-table.c:
+	s/__FUNCTION__/G_GNUC_FUNCTION/
+
+2001-12-06  Darin Adler  <darin@bentspoon.com>
+
+	* lots of files
+	Get rid of unneeded casts in calls to g_object_ref/unref.
+
+2001-12-06  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-debug.c: (log_handler): Remove the code that adds the
+	program name and pid to each message. glib now has that built
+	in if you set the G_MESSAGES_PREFIXED environment variable.
+
+	* eel/eel-debug.h:
+	* eel/eel-debug.c:
+	(eel_make_warnings_and_criticals_stop_in_debugger),
+	New strategy for the call that makes warnings and criticals
+	stop in the debugger. We just use a hard-coded list of domains
+	here in Eel, rather than asking the caller to pass in the list
+	of domains. Forward looking to the day when we can do this
+	without explicitly doing it for each domain.
+
+	* eel/check-program.c: (main):
+	* test/test.c: (test_init):
+	Fix callers that no longer need to list the domains.
+
+2001-11-30  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel-background-style.c:
+	* eel/eel-background-style.h:
+	Create EelBackgroundStyle subclass for GtkStyle that implements
+	gradients. This is a better version of a hack we used for Gtk 1.X.
+	
+	* eel/eel-background.c: (eel_background_set_widget_style): Use
+	EelBackgroundStyle.
+	(eel_self_check_background): Fix an unref/sink thing.
+	
+	* eel/eel-background.c:
+	(eel_background_receive_dropped_color):
+	* test/test-eel-image-background.c:
+	(window_new_with_eel_background_gradient),
+	(window_new_with_gtk_background_hacked):
+	* test/test-eel-label-background.c:
+	(window_new_with_eel_background_gradient),
+	(window_new_with_gtk_background_hacked):
+	* test/test-eel-label.c:
+	(red_background_color_value_changed_callback),
+	(green_background_color_value_changed_callback),
+	(blue_background_color_value_changed_callback),
+	(create_background_frame):
+	* test/test-eel-viewport-constraint.c: (create_row):
+	Change all rgb:RRRR/GGGG/BBBB to use #RRGGBB format instead.
+	
+	* eel/eel-gdk-extensions.h: Fix typo in name of unimplemented
+	function. I should probably just delete it.
+	
+	* eel/eel-gdk-extensions.c:
+	(eel_gdk_color_parse_with_white_default): Add placeholder for rgb:
+	code, in case we need it.
+	(eel_parse_rgb_with_white_default): Call
+	eel_gdk_color_parse_with_white_default so we share code.
+	(eel_gdk_rgb_to_color_spec): Create #RRGGBB format.
+	(eel_gdk_color_as_hex_string): Create #RRGGBB format.
+	(eel_self_check_gdk_extensions): Use #RRGGBB format.
+
+Tue Nov 20 20:26:25 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Add [quoting] around AC_CHECK_HEADER
+	needed by some autoconf versions.
+
+Mon Nov 19 17:34:16 2001  Jonathan Blandford  <jrb@webwynk.net>
+
+	* eel/eel-stock-dialogs.c (eel_run_simple_dialog): remove uneeded
+	GTK_OBJECT_DESTROYED check.
+
+	Patch from Gediminas Paulauskas <menesis@delfi.lt>
+
+	* eel/check-program.c, eel/eel-debug.c, test/test.c: replace
+	g_log_domain_glib with "Glib"
+	* eel/eel-gobject-extensions.h: replace #include <gobject/gobject.h>
+	with glib-object.h
+
+2001-11-09  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-stock-dialogs.c: (show_ok_dialog),
+	(eel_create_info_dialog), (eel_show_info_dialog),
+	(details_dialog_response_callback): Destroy dialogs when the
+	button is pushed. We still need to refine this further.
+
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
+	* Tons of files.
+	Removed many unneeded G_OBJECT casts.
+
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-stock-dialogs.h:
+	* eel/eel-stock-dialogs.c:
+	A cut at porting this all to GtkDialog.
+
+2001-11-08  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: call ourselves eel rather than eel2, and use
+	eel-2.0 for the gettext package name
+
+	* acconfig.h: add GETTEXT_PACKAGE
+
+2001-11-06  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	* eel/eel-gobject-extensions.h:
+	* eel/eel-gobject-extensions.c:
+	(eel_signal_connect_object_while_alive),
+	(eel_signal_connect_while_alive):
+	Add new eel-gobject-extensions.[ch].
+
+	* Many of files.
+	More Gtk->G changes.
+
+2001-11-06  Darin Adler  <darin@bentspoon.com>
+
+	* Lots of files.
+	More GtkObject -> GObject.
+
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c
+	(free_pixbuf_load_handle): do a g_object_unref not an
+	unref.
+
+2001-11-03  Darin Adler  <darin@bentspoon.com>
+
+	* Tons of files:
+	A bit more GtkObject -> GObject conversion.
+
+2001-11-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-macros.h: Ref the parent class instead of just
+	peeking at it.
+
+2001-11-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-preferences.c: (preferences_while_alive_disconnector),
+	(eel_preferences_add_callback_while_alive):
+	* eel/eel-preferences.h:
+	Change eel_preferences_add_callback_while_alive to work with
+	any GObject, not just a GtkObject.
+
+	* eel/eel-preferences-box.c: (eel_preferences_box_init):
+	* eel/eel-preferences-item.c: (preferences_item_set_main_child):
+	* eel/eel-preferences-pane.c: (eel_preferences_pane_init),
+	(eel_preferences_pane_add_control_preference):
+	Update callers.
+
+2001-11-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-macros.h:
+	Another update to the boilerplate macros. I also decided to
+	do a name change to take out the word "DEFINE".
+
+	* Many files.
+	Update for name change.
+
+2001-11-01  Havoc Pennington  <hp@pobox.com>
+
+	* eel/eel-gtk-extensions.c (eel_gtk_window_get_geometry_string):
+	new function to replace gnome_geometry_string
+
+2001-11-01  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-macros.h: When I fixed the comma in my copy, I
+	made some formatting changes.
+
+2001-11-01  Havoc Pennington  <hp@pobox.com>
+
+	* eel/eel-gtk-macros.h (EEL_DEFINE_BONOBO_BOILERPLATE): add
+	missing comma
+
+	* test/test-eel-label-simple.c (use_system_font_callback): adapt 
+	to not use eel_widget_set_font(), and add note about how the use
+	of eel_gtk_get_system_font() here is broken and is only for
+	testing purposes and no one should copy it.
+
+	* eel/eel-gtk-extensions.c (eel_gtk_window_present): that one was
+	easy
+	(eel_gtk_widget_set_font_by_name): port to GTK 2
+	(eel_gtk_label_make_bold): port to GTK 2
+	(eel_gtk_label_make_larger): port and note in docs that it's
+	broken
+	(eel_gtk_label_make_smaller): port and note in docs that it's
+	broken
+	(eel_gtk_widget_set_background_color): do this properly
+	(eel_gtk_widget_set_foreground_color): ditto
+	(eel_get_current_event_time): remove, just use
+	gtk_get_current_event_time()
+	(eel_drag_set_icon_pixbuf): remove, just use
+	gtk_drag_set_icon_pixbuf()
+	(eel_gtk_widget_standard_draw): delete, there is no draw method
+	anymore
+	(eel_gtk_pixmap_new_empty): make this less lame
+	(eel_nullify_when_destroyed): work on GObject, use
+	g_object_add_weak_pointer()
+	(eel_nullify_cancel): corresponding change
+	(eel_gtk_widget_set_font): remove, just use
+	gtk_widget_modify_font()
+	(eel_gtk_style_set_font): delete, this was totally broken; I don't
+	know what it's for but we have to do it a different way
+	(eel_gtk_menu_insert_separator): use GtkSeparatorMenuItem!
+	woo-hoo! also, remove setting it insensitive, this will be fixed
+	before 2.0 so it isn't required
+	(EEL_STANDARD_BUTTON_PADDING): remove, should fix in GTK if we are
+	going to fix it
+	(eel_gtk_button_auto_click): remove, use gtk_widget_activate()
+	(eel_gtk_button_set_standard_padding): remove, should not be used
+	(activate_button_on_double_click): use gtk_widget_activate()
+	instead of eel_gtk_button_auto_click()
+	(eel_gtk_window_set_initial_geometry): use gtk_window_move()
+	instead of gtk_widget_set_uposition()
+	(eel_gtk_window_set_up_close_accelerator): make it whine if you
+	use it on GtkDialog, since that breaks the standard GtkDialog
+	close accelerators
+	(eel_popup_menu_position_func): remove obsolete FIXME about
+	GdkPoint using gint16
+
+	* eel/eel-gdk-extensions.c (eel_gdk_window_set_invisible_cursor):
+	port to GTK 2 (not sure why it used Xlib before)
+
+	* eel/eel-dnd.c (eel_drag_drop_action_ask): port to GTK 2
+
+2001-11-01  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-macros.h: Oops, need to pass init and fini functions
+	in to bonobo_type_unique.
+
+2001-11-01  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Remove some unused stuff.
+	* eel/eel-gtk-macros.h: Fix boilerplate to work with GObject, not
+	just GtkObject. Share code with the BonoboObject case too.
+
+2001-10-29  Darin Adler  <darin@bentspoon.com>
+
+	* eel-2.0.pc.in: Add some Requires.
+
+2001-10-29  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am: Fix typo.
+
+2001-10-28  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Fix comment, remove unnecessary direct pkgconfig
+	macro since GNOME_PLATFORM_GNOME_2 takes care of htat.
+
+	* many files:
+	Since everyone else calls them class_init and init, renamed our
+	initialize_class and initialize to match existing practice.
+
+	* eel/eel-gtk-macros.h:
+	Added EEL_DEFINE_BONOBO_BOILERPLATE.
+
+	* eel/eel-xml-extensions.h:
+	* eel/eel-xml-extensions.c: (eel_xml_remove_node): Remove this
+	since xmlUnlinkNode is now implemented.
+
+2001-10-27  jacob berkman  <jacob@ximian.com>
+
+	* eel/eel-background.c (eel_background_start_loading_image):
+	update to new vfs priority macro name
+
+2001-10-22  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-extensions.c: (eel_gdk_window_set_wm_protocols):
+	* eel/eel-gdk-font-extensions.c: (eel_gdk_font_get_name):
+	Fix for GdkAtom/XAtom change in gtk.
+
+2001-10-20  Anders Carlsson  <andersca@gnu.org>
+
+	* eel/eel-background.c: (eel_background_start_loading_image):
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_load_async):
+	* eel/eel-gdk-pixbuf-extensions.h:
+	* eel/eel-vfs-extensions.c: (eel_read_file_async),
+	(eel_read_entire_file_async):
+	* eel/eel-vfs-extensions.h: Update async eel functions using gnome-vfs
+	to take a priority argument because of the recent priority changes in
+	gnome-vfs.
+
+2001-10-11  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* eel/eel-clickable-image.c: (eel_clickable_image_new_solid):
+	* eel/eel-image-chooser.c: (eel_image_chooser_insert_row):
+	* eel/eel-image.c: (eel_image_initialize_class),
+	(eel_image_initialize), (eel_image_finalize), (eel_image_set_arg),
+	(eel_image_get_arg), (eel_image_size_request),
+	(eel_image_expose_event), (eel_image_new_solid):
+	* eel/eel-image.h:
+	* eel/eel-label.c: (eel_label_initialize_class),
+	(eel_label_initialize), (eel_label_finalize), (eel_label_set_arg),
+	(eel_label_get_arg), (eel_label_size_request), (label_paint),
+	(paint_label_smooth), (paint_label_smooth_cached),
+	(eel_label_expose_event), (label_can_cache_contents),
+	(eel_label_new_solid):
+	* eel/eel-label.h:
+	* eel/eel-labeled-image.c: (eel_labeled_image_make_smaller):
+	* eel/eel-labeled-image.h:
+	* eel/eel-smooth-widget.c: (eel_smooth_widget_paint),
+	(eel_smooth_widget_get_preferred_dimensions):
+	* eel/eel-smooth-widget.h:
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-eel-image-background.c:
+	(window_new_with_eel_background_image),
+	(window_new_with_eel_background_gradient),
+	(window_new_with_gtk_background),
+	(window_new_with_gtk_background_hacked),
+	(window_new_with_solid_background):
+	* test/test-eel-image-simple.c: (image_window_new), (main):
+	* test/test-eel-image-tile.c:
+	* test/test-eel-image.c:
+	* test/test-eel-label-background.c:
+	(window_new_with_eel_background_image),
+	(window_new_with_eel_background_gradient),
+	(window_new_with_gtk_background),
+	(window_new_with_gtk_background_hacked),
+	(window_new_with_solid_background):
+	* test/test-eel-label-scrolled.c: (label_window_new),
+	(label_window_new_scrolled), (label_window_new_table):
+	* test/test-eel-labeled-image.c: (main):
+	* test/test-eel-viewport-constraint.c: (create_eel_label):
+	* test/test.c: (test_image_new), (test_label_new):
+	* test/test.h:
+	Lose the "tile" feature of EelImage and EelLabel.  The short story
+	is that this code is unnecessary.  Losing it makes the widgets
+	simpler and should make the transition to using GtkImage from Gtk+
+	2.0 a little easier.  Blame 70% Arlo 30% Ramiro for this "feature."
+	
+2001-10-10  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-debug-drawing.c:
+	* eel/eel-label.c:
+	* eel/eel-smooth-text-layout.c:
+	Mark functions static for proper namespace hygiene.
+
 2001-10-02  Darin Adler  <darin@bentspoon.com>
 
-	* eel/eel-background.c: (eel_background_is_dark): Remove an
-	extra factor of 2 that was making all backgrounds seem dark.
+	* eel/eel-canvas-rect.c: (test_diff_rects): Change call to
+	g_string_printfa to use g_string_append_printf.
+
+2001-10-02  Darin Adler  <darin@bentspoon.com>
+
+	* .cvsignore:
+	* Makefile.am:
+	* configure.in:
+	Remove use of xml-i18n-tools, since we don't have anything that
+	we use it to localize.
+
+2001-10-02  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-background.c: (eel_background_is_dark): Remove extra
+	factor of two that was making every background seem dark.
 
 2001-10-01  Darin Adler  <darin@bentspoon.com>
 
-	Now that we are setting the translation domain properly to make
-	_() use eel translations, we must use explicit gettext calls
-	when we want application translations.
+      	Now that we are setting the translation domain properly to make
+        _() use eel translations, we must use explicit gettext calls
+        when we want application translations.
 
-	* eel/eel-dnd.c: (eel_drag_drop_action_ask): Switch into the
-	eel domain when calling gnome_popup_menu_new so we get the
-	eel translations of the menu items.
+        * eel/eel-dnd.c: (eel_drag_drop_action_ask): Switch into the
+        eel domain when calling gnome_popup_menu_new so we get the
+        eel translations of the menu items.
 
-	* eel/eel-enumeration.c:
-	(eel_enumeration_get_nth_description_translated):
-	* eel/eel-preferences-box.c: (preferences_box_populate_pane),
-	(eel_preferences_box_populate):
-	* eel/eel-xml-extensions.c: (eel_xml_get_property_translated):
-	Use gettext, not _(), to translate strings passed from elsewhere.
+        * eel/eel-enumeration.c:
+        (eel_enumeration_get_nth_description_translated):
+        * eel/eel-preferences-box.c: (preferences_box_populate_pane),
+        (eel_preferences_box_populate):
+        * eel/eel-xml-extensions.c: (eel_xml_get_property_translated):
+        Use gettext, not _(), to translate strings passed from elsewhere.
 
-	* eel/eel-preferences.c:
-	(eel_preferences_get_user_level_name_for_display):
-	Use _(), not gettext, to translate strings in this code.
+        * eel/eel-preferences.c:
+        (eel_preferences_get_user_level_name_for_display):
+        Use _(), not gettext, to translate strings in this code.
 
-	* eel/eel-gdk-font-extensions.c:
+        * eel/eel-gdk-font-extensions.c:
+        Remove gnome-i18n.h include where it's not used.
+
+	* configure.in: Remove unused @REBUILD@ stuff.
+	* eel/eel-glib-extensions.c: Whitespace tweaks.
+	
+2001-09-28  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-font-manager.c: (eel_self_check_font_manager):
+	Cleaned up tests a bit.
+
+	* eel/eel-string-list.c: (eel_self_check_string_list):
+	Changed test results back now that g_strsplit behavior has been
+	changed in glib.
+
+	* configure.in: Bump required glib version to 1.3.9.
+
+2001-09-28  Darin Adler  <darin@bentspoon.com>
+
+	Port from destroy to finalize.
+
+	* eel/eel-background.c: (eel_background_initialize_class),
+	(eel_background_finalize):
+	* eel/eel-canvas-rect.c: (rect_finalize),
+	(eel_canvas_rect_initialize_class):
+	* eel/eel-caption-table.c: (eel_caption_table_initialize_class),
+	(caption_table_finalize):
+	* eel/eel-caption.c: (eel_caption_initialize_class),
+	(eel_caption_finalize):
+	* eel/eel-clickable-image.c:
+	(eel_clickable_image_initialize_class),
+	(eel_clickable_image_finalize):
+	* eel/eel-debug-drawing.c: (debug_pixbuf_viewer_initialize_class),
+	(debug_pixbuf_viewer_finalize):
+	* eel/eel-font-picker.c: (eel_font_picker_initialize_class),
+	(eel_font_picker_finalize):
+	* eel/eel-gtk-extensions.c: (eel_gtk_style_set_font),
+	(eel_gtk_widget_set_font), (eel_gtk_get_system_font):
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-image-chooser.c: (eel_image_chooser_initialize_class),
+	(eel_image_chooser_finalize), (eel_image_chooser_destroy):
+	* eel/eel-image-table.c: (eel_image_table_initialize_class),
+	(eel_image_table_finalize):
+	* eel/eel-image.c: (eel_image_initialize_class),
+	(eel_image_finalize):
+	* eel/eel-label.c: (eel_label_initialize_class),
+	(eel_label_finalize):
+	* eel/eel-labeled-image.c: (eel_labeled_image_initialize_class),
+	(eel_labeled_image_finalize):
+	* eel/eel-list-column-title.c:
+	(eel_list_column_title_initialize_class),
+	(eel_list_column_title_finalize):
+	* eel/eel-password-dialog.c:
+	(eel_password_dialog_initialize_class),
+	(eel_password_dialog_initialize), (eel_password_dialog_finalize),
+	(eel_password_dialog_new):
+	* eel/eel-preferences-box.c:
+	(eel_preferences_box_initialize_class),
+	(eel_preferences_box_finalize):
 	* eel/eel-preferences-group.c:
-	Remove gnome-i18n.h include where it's not used.
+	(eel_preferences_group_initialize_class),
+	(eel_preferences_group_finalize):
+	* eel/eel-preferences-item.c:
+	(eel_preferences_item_initialize_class),
+	(preferences_item_finalize):
+	* eel/eel-preferences-pane.c:
+	(eel_preferences_pane_initialize_class),
+	(eel_preferences_pane_finalize):
+	* eel/eel-radio-button-group.c:
+	(eel_radio_button_group_initialize_class),
+	(eel_radio_button_group_finalize):
+	* eel/eel-scalable-font.c: (eel_scalable_font_initialize_class),
+	(eel_scalable_font_finalize):
+	* eel/eel-smooth-text-layout-cache.c:
+	(eel_smooth_text_layout_cache_initialize_class),
+	(eel_smooth_text_layout_cache_finalize):
+	* eel/eel-smooth-text-layout.c:
+	(eel_smooth_text_layout_initialize_class),
+	(eel_smooth_text_layout_finalize):
+	* eel/eel-string-picker.c: (eel_string_picker_initialize_class),
+	(eel_string_picker_finalize):
+	* eel/eel-text-caption.c: (eel_text_caption_initialize_class),
+	(eel_text_caption_finalize):
+	* eel/eel-viewport.c: (eel_viewport_initialize_class),
+	(eel_viewport_finalize):
+	* eel/eel-wrap-table.c: (eel_wrap_table_initialize_class),
+	(eel_wrap_table_finalize):
+	Replace destroy default handlers with finalize ones in most cases.
+	In a few cases, divide an existing destroy handler into two pieces.
+
+	* test/test-eel-label-flavorful.c: (decreasing_label_window_new):
+	* test/test-eel-label-simple.c: (use_system_font_callback):
+	Re-enable some test code.
+
+2001-09-27  Darin Adler  <darin@bentspoon.com>
+
+	* test/test-eel-label-flavorful.c: (label_set_label_to_font_name):
+	Oops. One more thing to fix in here. Use pango call.
+
+2001-09-26  Darin Adler  <darin@bentspoon.com>
+
+	* eel/Makefile.am:
+	Another pass. The last one was too simplistic.
+
+2001-09-26  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in:
+	Get the path of glib-genmarshal.
+
+	* eel/.cvsignore:
+	* eel/Makefile.am:
+	Fix up generated file build to be simpler. Most importantly, add
+	the feature where it won't recompile everything every time any
+	header changes.
+
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-extensions.c: (eel_gtk_get_system_font):
+	Wrote Pango version of this function.
+
+	* test/test-eel-label-flavorful.c: (label_set_label_to_font_name):
+	Reenabled some ifdef'd out code.
+
+2001-09-19  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* configure.in: Added ro (Romanian) to ALL_LINGUAS
+	
+2001-09-18  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-ellipsizing-label.c: (recompute_ellipsized_text):
+	* eel/eel-gdk-pixbuf-extensions.c: (check_average_value):
+	* eel/eel-gtk-extensions.c: (eel_gtk_widget_set_font_by_name),
+	(eel_gtk_label_make_bold), (eel_gtk_label_make_larger),
+	(eel_gtk_label_make_smaller):
+	* test/test-eel-label-flavorful.c: (label_set_label_to_font_name):
+	* test/test-eel-label-simple.c: (use_system_font_callback):
+
+	Turned off a lot of GdkFont stuff so we can still compile.
+	This highlights more of the gnome 2 conversion work that will
+	be needed.
 
 2001-09-17  Darin Adler  <darin@bentspoon.com>
 
@@ -36,43 +3104,85 @@
 	Nautilus theme's text color.
 	
 	* eel/eel-gdk-pixbuf-extensions.h:
-	* eel/eel-gdk-pixbuf-extensions.c:
-	(eel_gdk_pixbuf_average_value_argb): Change algorithm so
-	that it handles the alpha channel too. Also made it use 64-bit
-	arithmetic for simplicity -- hope that doesn't make it too slow.
-	Also changed it to use an argb value instead of a GdkColor.
-	(eel_gdk_pixbuf_average_value): Cover for compatibility with old
-	Nautilus.
-	(check_average_value): Fixed bugs in the code to test alpha.
-	(eel_self_check_gdk_pixbuf_extensions): Changed test to include
-	alpha checks -- still doesn't do tests of all the interesting
-	alpha channel cases.
-	
-2001-09-17  Darin Adler  <darin@bentspoon.com>
-
-	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_average_value):
-	Oops, G_MAXULONG is from glib 2, not glib 1. Back to the C
-	standard ULONG_MAX (wondering why glib needs its own anyway).
-
-2001-09-16  Darin Adler  <darin@bentspoon.com>
-
-	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_average_value):
-	Use glib constants to make it a tiny bit more portable.
-
-2001-09-16  Darin Adler  <darin@bentspoon.com>
-
 	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_average_value):
 	Fix bug that caused incorrect average values in pixbufs with more
 	than about 66000 pixels. Alex Larsson found the problem and
-	provided a fix similar to this one.
+	provided a fix that I used as a starting point. Also change
+	algorithm so that it handles the alpha channel. Also made it use
+	64-bit arithmetic for simplicity -- hope that doesn't make it too
+	slow. Also changed it to use an argb value instead of a GdkColor.
+	(eel_gdk_pixbuf_intersect): Get rid of special case for
+	eel_gdk_pixbuf_whole_pixbuf by making just using a wide-open
+	rectangle instead.
 	(check_average_value), (eel_self_check_gdk_pixbuf_extensions):
-	Added a few tests for the edge cases for this function.
+	Added some test cases for eel_gdk_pixbuf_average_value.
 
-2001-09-09  Abel Cheung  <maddog@linux.org.hk>
+2001-09-08  Wang Jian  <lark@linux.net.cn>
 
-	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+	* configure.in(ALL_LINGUAS): Added zh_CN for Simplified Chinese.
+
+2001-09-07  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gdk-font-extensions.h:
+	* eel/eel-gdk-font-extensions.c: (eel_gdk_font_get_italic),
+	(eel_gdk_font_get_bold), (eel_gdk_font_get_larger),
+	(eel_gdk_font_get_largest_fitting), (font_get_bold),
+	(font_get_size_in_pixels): Call the new eel_gdk_font_get_name.
+	(eel_gdk_font_get_name): Public version of font_get_name. Code
+	stolen from gal used to get name from X.
+
+	* test/test-eel-label-flavorful.c: (label_set_label_to_font_name):
+	Call eel_gdk_font_get_name, remove font_get_name.
+
+2001-09-07  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Got rid of dependency on libgnomesupport.
+
+	* eel/eel-gdk-font-extensions.c: (font_get_name):
+	* test/test-eel-label-flavorful.c: (font_get_name):
+	Disabled these until we can figure out what to do about them.
+
+2001-09-03  Darin Adler  <darin@bentspoon.com>
+
+	* eel/check-program.c: (main):
+	* test/test-eel-password-dialog.c: (main):
+	* test/test-eel-widgets.c: (main):
+	* test/test.c: (test_init):
+	Use libgnomeui_module_info_get () instead of
+	libgnomeui_module_info.
+
+2001-09-01  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-extensions.c: Remove include.
+
+2001-09-01  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-dnd.c:
+	(is_path_that_gnome_uri_list_extract_filenames_can_parse):
+	* eel/eel-font-manager.c: (font_description_table_add),
+	(next_token):
+	* eel/eel-glib-extensions.c: (eel_strdup_strftime):
+	* eel/eel-string.c: (eel_istr_has_prefix), (eel_istr_has_suffix),
+	(eel_str_to_int), (eel_str_capitalize):
+	Oops! How did I miss all of these places that needed to use
+	the new g_ascii_* calls?
 
 2001-08-31  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-background.c:
+	* eel/eel-dnd.c:
+	* eel/eel-font-manager.c:
+	* eel/eel-glib-extensions.c:
+	* eel/eel-list.c:
+	* eel/eel-string.c:
+	* eel/eel-vfs-extensions.c: (is_valid_scheme_character),
+	(eel_make_uri_canonical):
+	Get rid of all includes of <ctype.h> and use non-locale-specific
+	g_ascii_* calls from glib instead.
+
+2001-08-31  Darin Adler  <darin@bentspoon.com>
+
+	Rolled change from stable eel-1-0 branch:
 
 	* eel/eel-gtk-extensions.c:
 	(eel_gtk_class_name_make_like_existing_type),
@@ -80,28 +3190,51 @@
 	gtk_object_sink to get rid of temporary widgets that are never
 	parented instead of using gtk_object_destroy.
 
-2001-08-27  Alex Larsson  <alexl@redhat.com>
+2001-08-31  Darin Adler  <darin@bentspoon.com>
 
+	* eel/eel-gtk-extensions.c: (eel_gtk_window_present):
+	Get things compiling again by getting rid of code that uses
+	gnome_win_hints (for now).
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-27  Darin Adler  <darin@bentspoon.com>
+
+	Rolled change from stable eel-1-0 branch:
+	
+	2001-08-27  Alex Larsson  <alexl@redhat.com>
+	
 	* eel/eel-list-column-title.c (truncate_string):
 	Fix elipsis truncation on multibyte locales.
 
-2001-08-23  Anders Carlsson  <andersca@gnu.org>
+2001-08-27  Anders Carlsson  <andersca@gnu.org>
 
-	* eel/eel-canvas-rect.c (rect_update): Free our fill_svp
-	if it exists.
+	* eel/eel-font-manager.c (eel_self_check_font_manager): Remove
+	unused original_current_dir variable.
 
-	* eel/eel-smooth-text-layout.c (eel_text_layout_new): Free
-	the wc_separators string.
+ 	* eel/eel-canvas-rect.c (rect_update): Free our fill_svp
+ 	if it exists.
+ 
+ 	* eel/eel-gdk-font-extensions.c (xlfd_string_get_nth_as_int): 
+ 	Free strings returned by xlfd_string_get_nth.
 
-	* eel/eel-gdk-font-extensions.c (xlfd_string_get_nth_as_int): 
-	Free strings returned by xlfd_string_get_nth.
+2001-08-24  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Require librsvg 1.1, not 1.1.0.
+	* eel/eel-glyph.c: Use header from libart, not librsvg.
 
 2001-08-22  Ramiro Estrugo  <ramiro@fateware.com>
+
+	Change from the stable eel-1-0 branch.
 
 	* eel/eel-gconf-extensions.c: (eel_gconf_value_set_string_list):
 	Fix leaks introduced in last checkin.
-	
+
 2001-08-22  Ramiro Estrugo  <ramiro@fateware.com>
+
+	Change from the stable eel-1-0 branch.
 
 	* eel/eel-gconf-extensions.h:
 	* eel/eel-gconf-extensions.c: (eel_gconf_is_default): Use value
@@ -157,26 +3290,48 @@
 	to create the right keys is now gone.  Add some covers for getting
 	values out of GConfValue safely and with some extra checking the
 	the types are right.
+
+2001-08-21  Maciej Stachowiak  <mjs@anarchy.noisehavoc.org>
+
+	Merge from stable branch:
 	
-2001-08-20  Maciej Stachowiak  <mjs@noisehavoc.org>
+	2001-08-20  Maciej Stachowiak  <mjs@noisehavoc.org>
+ 
+ 	* eel/eel-clist.c: (eel_clist_set_column_justification,
+ 	size_allocate_title_buttons): Try to remove some sources of
+ 	crashing when EelList is used as a drop-in replacement for
+ 	GtkCList. (Using EelCList directly still crashes).
+ 	* eel/eel-list-column-title.c: (eel_list_column_title_paint): More
+ 	potential crash reduction.
+ 
+ 	* test/Makefile.am: Speed up the build a bit by removing some
+ 	redundant libraries.
+ 	* eel/Makefile.am: Likewise.
 
-	* configure.in: Change the way we generate libtool's dependency
-	info so the major .so version is once again 0, restoring binary
-	compatibility.
+2001-08-21  Maciej Stachowiak  <mjs@noisehavoc.org>
 
-	* eel/eel-clist.c: (eel_clist_set_column_justification,
-	size_allocate_title_buttons): Try to remove some sources of
-	crashing when EelList is used as a drop-in replacement for
-	GtkCList. (Using EelCList directly still crashes).
-	* eel/eel-list-column-title.c: (eel_list_column_title_paint): More
-	potential crash reduction.
+	* eel/eel-font-manager.c (collect_fonts_from_directory): Adjust to
+	recent removal of filtering from gnome-vfs.
 
-	* test/Makefile.am: Speed up the build a bit by removing some
-	redundant libraries.
-	* eel/Makefile.am: Likewise.
+2001-08-21  Maciej Stachowiak  <mjs@eazel.com>
+
+	Merge from eel-1-0 branch:
+
+	2001-07-20  Maciej Stachowiak  <mjs@eazel.com>
+ 
+        * eel/eel-ctree.c: (draw_row): Fix bugzilla.eazel.com bug 8387
+ 	(Dragging elements to a folder entry should make it hilighted) by
+	making the text of the drop target row bold in addition to making
+	the icon darker. I think this looks a lot better.
+ 
+2001-08-17  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-gtk-extensions.c: Remove include of obsolete header.
 
 2001-08-17  Ramiro Estrugo  <ramiro@fateware.com>
 
+	Change from the stable eel-1-0 branch.
+	
 	Make these widgets more useful outside Nautilus by providing
 	functions to change ui elements (such as titles and descriptions)
 	as well iterators.
@@ -217,6 +3372,7 @@
 
 	* eel/eel-preferences-item.h:
 	* eel/eel-preferences-item.c:
+	* eel/eelmarshal.list:
 	(eel_preferences_item_initialize_class),
 	(preferences_item_update_custom),
 	(preferences_item_set_main_child),
@@ -242,6 +3398,55 @@
 	that public.  Use more consistent parameter names.  Add signal for
 	notifying custom items about description changes.
 
+2001-08-15  Darin Adler  <darin@bentspoon.com>
+
+	Remove some glib extensions that are obviated by additions to
+	glib 2.0.
+
+	* eel/eel-glib-extensions.h: Remove EEL_N_ELEMENTS (G_N_ELEMENTS),
+	eel_g_list_safe_for_each (g_list_foreach), eel_g_list_sort_custom
+	(g_list_sort_with_data), eel_g_string_append_len (g_string_append_len),
+	eel_g_hash_table_remove_deep_custom, eel_g_hash_table_remove_deep,
+	eel_g_hash_table_destroy_deep_custom, eel_g_hash_table_destroy_deep
+	(use g_hash_table_new_full instead), eel_g_ptr_array_sort
+	(g_ptr_array_sort_with_data), eel_shell_quote (g_shell_quote).
+.
+	* eel/eel-glib-extensions.c: (eel_strdup_strftime):
+	Use g_string_append_len instead of eel_g_string_append_len.
+	(eel_dumb_down_for_multi_byte_locale_hack): Use G_N_ELEMENTS
+	instead of EEL_N_ELEMENTS.
+	(eel_self_check_glib_extensions): Test g_shell_quote instead
+	of eel_shell_quote.
+
+	* eel/eel-gnome-extensions.c: (try_terminal_command),
+	(try_terminal_command_argv), (get_terminal_command_prefix),
+	(eel_gnome_make_terminal_command):
+	Use g_shell_quote instead of eel_shell_quote.
+
+	* eel/eel-gtk-extensions.c: (eel_gtk_object_list_unref):
+	Use g_list_foreach instead of eel_g_list_safe_for_each.
+
+	* eel/eel-scalable-font.c: (free_global_font_handle_table),
+	(initialize_global_stuff_if_needed):
+	Use g_hash_table_new_full instead of eel_g_hash_table_destroy_deep_custom.
+
+	* eel/eel-debug.c:
+	(eel_make_warnings_and_criticals_stop_in_debugger):
+	* eel/eel-font-manager.c: (font_directory_is_ignored),
+	(font_foundry_is_ignored), (font_family_is_ignored),
+	(eel_font_manager_get_default_font),
+	(eel_font_manager_get_default_bold_font):
+	* eel/eel-font-picker.c: (font_make_style_name):
+	* eel/eel-list.c: (eel_list_initialize_dnd),
+	(get_data_on_first_target_we_support):
+	* test/test-eel-gtk-style.c:
+	* test/test-eel-image-chooser.c: (populate_image_chooser_callback),
+	(populate_button_group_callback):
+	* test/test-eel-image-table.c: (labeled_image_new),
+	(image_table_new_scrolled):
+	* test/test-eel-image.c: (main):
+	Use G_N_ELEMENTS instead of EEL_N_ELEMENTS.
+
 Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* eel/eel-dnd.c (eel_drag_default_drop_action_for_icons): make the
@@ -254,19 +3459,11 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 
 2001-08-14  Darin Adler  <darin@bentspoon.com>
 
-	* eel/eel-background-canvas-group.c:
-	(eel_background_canvas_group_initialize_class),
-	(eel_background_canvas_group_draw),
-	(eel_background_canvas_group_render):
-	Remove the use of "update" as a time to prepare the background.
-	There's nothing that will cause an update at the right time, so
-	we shouldn't bother to try using it that way.
-
 	* eel/eel-font-manager.c: (eel_font_manager_get_bold):
-        Remove another ill-advised call to
-        eel_font_manager_file_is_scalable_font. Even if we do want
-        to test the file's type, we definitely don't want to do it
-        inside g_return_if_fail.
+	Remove another ill-advised call to
+	eel_font_manager_file_is_scalable_font. Even if we do want
+	to test the file's type, we definitely don't want to do it
+	inside g_return_if_fail.
 
 2001-08-14  Alex Larsson  <alexl@redhat.com>
 
@@ -278,59 +3475,121 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 	Don't keep recreating new EelScalableFonts for the
 	default font.
 
+2001-08-13  Darin Adler  <darin@bentspoon.com>
+	
+	* eel/eel-background.c: (eel_background_load_image_callback),
+	(draw_background_callback), (render_background_callback),
+	(eel_background_set_up_canvas):
+	Replace the old EelBackgroundCanvasGroup hack with code that uses
+	the new draw_background and render_background signals in
+	GnomeCanvas.
+
+	* eel/Makefile.am:
+	* eel/eel-background-canvas-group.c:
+	* eel/eel-background-canvas-group.h:
+	Remove the old EelBackgroundCanvasGroup class.
+
 2001-08-09  Ramiro Estrugo  <ramiro@fateware.com>
 
+	Change from the eel-1-0 branch.
+	
 	* eel/eel-art-extensions.h:
 	* eel/eel-art-extensions.c: (eel_art_point_assign),
 	(eel_art_point_clamp), (eel_art_point_offset_by):
 	Add ArtPoint version of some functions.
+
+2001-08-08  Darin Adler  <darin@bentspoon.com>
+
+	* autogen.sh: No need for hack-macros any more.
+	* configure.in: No need to check for freetype, since
+	we don't depend on it directly. We use it via librsvg.
+	* eel.spec.in: No need to check for freetype.
+
+2001-08-06  Darin Adler  <darin@bentspoon.com>
+
+	* autogen.sh: No need to gettextize, xml-i18n-toolize, and
+	libtoolize twice.
+	* configure.in: Switch from lots of GNOME_PKGCONFIG_CHECK_MODULES
+	calls to a lot fewer PKG_CHECK_MODULES calls. More oaf ->
+	bonobo-activation renaming. No need to build intl directory.
+	* Makefile.am: No need to build intl directory.
+
+	* test/Makefile.am: No need to use -I to include this directory.
 	
-	* eel/eel-gtk-container.c: (eel_gtk_container_child_draw):
-	Remove superfluous child not NULL test.  Make sure the widget is
-	visible before drawing it.
+	* eel/check-program.c:
+	* test/test-eel-password-dialog.c:
+	* test/test-eel-widgets.c:
+	<libgnomeui/gnome-init.h> -> <libgnomeui/gnome-ui-init.h>.
 	
-2001-08-01  Darin Adler  <darin@bentspoon.com>
+2001-07-26  Darin Adler  <darin@bentspoon.com>
 
-	* configure.in: Roll compiler option fix from HEAD. The old
-	code was setting VFS_CFLAGS.
-
-2001-08-01  Darin Adler  <darin@bentspoon.com>
-
-	Patch from James Su <suzhe@gnuchina.org> to fix problems in
-	multibyte locales.
-
-	* eel/eel-gdk-font-extensions.c: (eel_string_ellipsize_start),
-	(eel_string_ellipsize_end), (eel_string_ellipsize_middle): Convert
-	to wide characters before ellipsizing, then back afterward.
+	* configure.in: Fix option checking code. Before it was setting
+	VFS_CFLAGS, which was wrong.
 	
-	* eel/eel-smooth-text-layout.c: (wcs_scalable_font_text_width):
-	Helper function.
-	(eel_text_layout_new): Use wide characters.
-
-2001-07-27  Ramiro Estrugo  <ramiro@fateware.com>
-
-	* eel/eel-gtk-container.h:
-	* eel/eel-gtk-container.c: (eel_gtk_container_child_draw):
-	Add function to conveniently forward draw events to children.
+	* eel/Makefile.am: Add -DG_DISABLE_DEPRECATED.
 	
-	* eel/eel-labeled-image.c: (eel_labeled_image_initialize_class),
-	(eel_labeled_image_expose_event), (eel_labeled_image_draw):
-	Make sure we properly forward draw events to children.
-	
+	* eel/eel-background.c: (eel_widget_background_changed):
+	Use gtk_widget_queue_draw instead of gtk_widget_queue_clear.
+	* eel/eel-canvas-rect.c: (test_diff_rects): Use g_string_printfa
+	instead of g_string_sprintfa.
+	* eel/eel-caption.c: (eel_caption_get_title_label): Use
+	gtk_label_get_text instead of gtk_label_get.
+	* eel/eel-clickable-image.c:
+	(eel_clickable_image_initialize_class): Use g_signal_new instead
+	of gtk_signal_new.
+	(label_enter), (label_leave), (label_handle_button_release): Use
+	g_signal_emit instead of gtk_signal_emit.
+	* eel/eel-debug-drawing.c: (eel_debug_show_pixbuf): Use
+	gtk_window_set_resizable instead of gtk_window_set_policy.
+	* eel/eel-font-picker.c: (font_picker_populate): Use
+	gtk_radio_menu_item_get_group instead of gtk_radio_menu_item_group.
+	* eel/eel-gdk-extensions.c: (eel_fill_rectangle_with_color),
+	(eel_gdk_gc_choose_foreground_color): Get rid of unneeded calls to
+	gdk_rgb_init.
+	* eel/eel-glib-extensions.c: (eel_test_predicate): Use
+	g_ascii_strcasecmp instead of g_strcasecmp.
+	* eel/eel-gtk-extensions.h: Add ifdefs so we can compile this
+	header with GTK_DISABLE_DEPRECATED on -- helps us notice what we
+	should get rid of.
+	* eel/eel-image-chooser.c: (eel_image_chooser_initialize_class):
+	Use G_STRUCT_OFFSET instead of GTK_SIGNAL_OFFSET.
+	(eel_image_chooser_set_selected_row): Use g_signal_emit instead of
+	gtk_signal_emit.
+	* eel/eel-image-table.c: (eel_image_table_initialize_class),
+	(image_table_emit_signal): Use g_signal_emit instead of
+	gtk_signal_emit.
+	* eel/eel-image.c: (eel_image_initialize_class): Use
+	G_STRUCT_OFFSET instead of GTK_SIGNAL_OFFSET.
+	* eel/eel-label.c: (eel_label_initialize_class): Use
+	G_STRUCT_OFFSET instead of GTK_SIGNAL_OFFSET.
+	* eel/eel-preferences-box.c: (eel_preferences_dialog_new): Use
+	gtk_window_set_resizable instead of gtk_window_set_policy.
+	* eel/eel-preferences-item.c:
+	(preferences_item_create_editable_string): Use g_ascii_strcasecmp
+	instead of g_strcasecmp.
+	* eel/eel-radio-button-group.c: (eel_radio_button_group_insert):
+	Use gtk_radio_button_get_group instead of gtk_radio_button_group.
+	* eel/eel-stock-dialogs.c: (find_message_label): Use
+	gtk_label_get_text instead of gtk_label_get.
+	* eel/eel-string.c: (eel_strcasecmp): Use g_ascii_strcasecmp
+	instead of g_strcasecmp.
+
+	* eel/eel-gdk-font-extensions.h: Fix typo in comment.
+
 2001-07-26  Ramiro Estrugo  <ramiro@fateware.com>
-
-	* eel/eel-features.c:
-	* eel/eel-features.h.in:
-	Added to eel-1-0 branch from HEAD.
 
 	* configure.in:
 	* eel/.cvsignore:
 	* eel/Makefile.am:
+	* eel/eel-features.c:
+	* eel/eel-features.h.in:
 	* eel/eel.h:
 	Add eel-features.[ch] so that the version of the library can be
 	checked at runtime.
 	
 2001-07-26  Ramiro Estrugo  <ramiro@fateware.com>
+
+	Change from the the eel-1-0 branch:
 
 	* eel/eel-image.h:
 	* eel/eel-image.c: (eel_image_initialize_class),
@@ -340,24 +3599,17 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 	(eel_image_get_pixbuf_insensitive_opacity):
 	Add support for rendering the image pixbuf at a lower opacity when
 	the widget state is insensitive.
-	
+
 2001-07-25  Ramiro Estrugo  <ramiro@fateware.com>
 
-	* eel.spec.in:
-	Add missing translations.
-	Cleanup some.
-	
-2001-07-25  Ramiro Estrugo  <ramiro@fateware.com>
-
-	* data/fonts/urw/Makefile.am:
-	* eel.spec.in:
 	* eel/Makefile.am:
-	Ok, I goofed.  The data dir change cannot happen for the stable
-	branch cause it could break existing users of Nautilus - for
-	example - if they have a font preference that references one of
-	the fallback fonts.  Nautilus in theory will deal with the missing
-	font, but its lame to break the stable branch anyway so im
-	reverting the change.
+	Add missing eelmarshal.list to EXTRA_DIST and use a sophisticated
+	alphabetized order on the list.
+	
+2001-07-25  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* eel-2.0.pc.in:
+	Change link flags to '-leel-2' instead of '-leel'
 	
 2001-07-25  Ramiro Estrugo  <ramiro@fateware.com>
 
@@ -365,24 +3617,100 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 	Add defines for Eel library major, minor and micro version numbers
 	so that we can use these to properly set the shared library
 	version info.
-	Make the includedir be eel-1/eel' instead of 'eel' so that we can
+	Make the includedir be eel-2/eel' instead of 'eel' so that we can
 	have GNOME1 and GNOME2 installations of Eel cohabiting in the
 	same $prefix.
 
+	Change the PACKAGE name to eel2.
+
 	* data/fonts/urw/Makefile.am:
-	Data dir is now 'share/eel-1/eel' instead of 'share/eel'
+	Data dir is now 'share/eel-2/eel' instead of 'share/eel'
+
+	* eel-2.0.pc.in:
+	Include dir is now include/eel-2/eel' instead of 'include/eel'
 
 	* eel.spec.in:
 	Update for includedir and datadir changes.
+	Add missing .mo file rule.
+	Cleanup some.
 	
 	* eel/Makefile.am:
 	Set the shared library version info.
-	Install headers in the new 'eel-1/eel' includedir.
-	Update EEL_DATADIR for new 'eel-1/eel' data location so that
+	Change libary name to libeel-2 so that we can install it in the
+	same prefix as libeel (GNOME1 and GNOME2 cohabitation)
+	Install headers in the new 'eel-2/eel' includedir.
+	Update EEL_DATADIR for new 'eel-2/eel' data location so that
 	fallback fonts can be found in the right place.
+
+	* test/Makefile.am:
+	Update for includedir and datadir changes.
+
+	* test/dumb-box.c: (eel_dumb_box_expose):
+	More sythetic exposure fixes.
 	
 2001-07-24  Ramiro Estrugo  <ramiro@fateware.com>
 
+	* eel/eel-image-chooser.c: (image_chooser_expose_event):
+	* eel/eel-viewport.c: (eel_viewport_expose_event):
+	* eel/eel-wrap-table.c: (eel_wrap_table_expose_event):
+	More sythetic expose event fixes.
+	
+2001-07-24  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* eel/eel-gtk-container.c: (eel_gtk_container_child_expose_event):
+	Fix the way that expose events are synthesized for children of
+	containers.  In Gtk+ 2.0 there is a standard and convenient way of
+	doing this, so we use that instead of doing it "by hand".
+	
+2001-07-24  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* eel/eel-clickable-image.c:
+	(eel_clickable_image_initialize_class):
+	* eel/eel-clickable-image.h:
+	* eel/eel-font-picker.c: (eel_font_picker_initialize_class):
+	* eel/eel-font-picker.h:
+	* eel/eel-image-chooser.c: (eel_image_chooser_initialize_class):
+	* eel/eel-image-chooser.h:
+	* eel/eel-image-table.c: (eel_image_table_initialize_class):
+	* eel/eel-image-table.h:
+	* eel/eel-image.c: (eel_image_initialize_class):
+	* eel/eel-label.c: (eel_label_initialize_class):
+	* eel/eel-preferences-item.c:
+	(eel_preferences_item_initialize_class):
+	* eel/eel-preferences-item.h:
+	* eel/eel-radio-button-group.c:
+	(eel_radio_button_group_initialize_class):
+	* eel/eel-radio-button-group.h:
+	* eel/eel-string-picker.c: (eel_string_picker_initialize_class):
+	* eel/eel-string-picker.h:
+	* eel/eel-text-caption.c: (eel_text_caption_initialize_class):
+	* eel/eel-text-caption.h:
+	Changes to make the GTK+ 2.0 signal system happier.  Make sure
+	that all signals are declared in the class structure and that the
+	offset argument to gtk_signal_new () points to a valid method
+	offset.
+	
+2001-07-24  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* eel/eel-gdk-pixbuf-extensions.c:
+	* eel/eel-gdk-pixbuf-extensions.h:
+	* eel/eel-smooth-widget.c: (smooth_widget_get_gtk_background):
+	Remove the use of a "safe" (and very hacky) drawable to pixbuf
+	function, since the problems we were working around have been
+	fixed in GTK+ 2.0.
+	With this change, "smooth" widgets work again.
+	
+	* test/test.c: (test_init):
+	Comment out the gnome_program_init() thing for now.
+	Currently the gnome_program_init() function makes the test
+	programs hang for me.  Using just the gtk_init () works for
+	most tests, so I am using just that until the gnome_program_init ()
+	function is fixed or we learn how to use it properly.
+
+2001-07-24  Ramiro Estrugo  <ramiro@fateware.com>
+
+	Change from the the eel-1-0 branch:
+	
 	* eel/eel-string-list.h:
 	* eel/eel-string-list.c: (eel_string_list_prepend): New function
 	to prepend a string to the collection.
@@ -390,21 +3718,7 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 	eel_string_list_append () which was a confusing name.
 	This API change doesnt affect Nautilus or Eel since neither used
 	this function.
-	
-2001-07-20  Maciej Stachowiak  <mjs@eazel.com>
 
-	* eel/eel-ctree.c: (draw_row): Fix bugzilla.eazel.com bug 8387
-	(Dragging elements to a folder entry should make it hilighted) by
-	making the text of the drop target row bold in addition to making
-	the icon darker. I think this looks a lot better.
-
-2001-07-20  Andy Hertzfeld  <andy@differnet.com>
-
-	* eel/eel-background.c:
-	(eel_background_receive_dropped_background_image):
-	remove the hack of using the "reset.png" filename to reset the
-	background; it's now done with a special drop type.
-	
 2001-07-18  Darin Adler  <darin@bentspoon.com>
 
 	* acconfig.h: Also need to add GNOME_EXPLICIT_TRANSLATION_DOMAIN
@@ -413,18 +3727,272 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 2001-07-17  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Add GNOME_EXPLICIT_TRANSLATION_DOMAIN so messages
-	within eel get translated properly.
+	withing eel get translated properly.
 
-2001-07-17  jacob berkman  <jacob@ximian.com>
+2001-07-17  Darin Adler  <darin@bentspoon.com>
 
-	* eel/eel-font-manager.c (collect_fonts_from_directory): fix an
-	obvious tyop
+	* eel/eel-gdk-font-extensions.c:
+	(eel_gdk_font_get_largest_fitting): Add FIXME about incorrect
+	assumption that the longest string is the widest.
+	(xlfd_string_get_nth): Check for extra characters before the "-",
+	and don't allow n == 0.
+	(xlfd_string_replace_nth), Check for extra characters before the
+	"-", don't allow n == 0, and use return_if_fail to check for bad
+	values of n rather than just returning NULL.
+	(xlfd_string_get_nth_as_int): Use return_if_fail to check for bad
+	values of n rather than just returning XFLD_INVALID_VALUE. Remove
+	extra check for NULL.
+	(eel_self_check_gdk_font_extensions): Add lots of new self-checks
+	and change rule so that we don't allow an extra trailing "-"
+	character.
+
+	* eel/check-program.c: (main): Use gnome_program_init correctly.
+	* test/test-eel-password-dialog.c: (main): Use gnome_program_init
+	correctly.
+	* test/test-eel-widgets.c: (main): Use gnome_program_init
+	correctly.
+
+2001-07-16  Darin Adler  <darin@bentspoon.com>
+
+	* eel/eel-self-checks.c: (eel_check_string_list_result):
+	Fix place where I called the wrong function.
+
+2001-07-15  Darin Adler  <darin@bentspoon.com>
+
+	* eel/check-program.c: (main): Fix up init calls. I am still quite
+	confused about how to use gnome_program_init properly.
+
+	* eel/eel-preferences-item.h:
+	* eel/eel-preferences-item.c:
+	* eel/eel-self-checks.h:
+	* eel/eel-string-list.h:
+	* eel/eel-string.h:
+	Corrected spelling error: "delimeter" -> "delimiter".
+
+	* eel/eel-self-checks.c: (eel_check_string_list_result):
+	Changed string list check to be simpler and distinguish lists
+	with empty strings in them from empty lists.
+
+2001-07-13  Darin Adler  <darin@bentspoon.com>
+
+	* eel/check-program.c:
+	* eel/eel-xml-extensions.c:
+	* eel/eel-xml-extensions.h:
+	Fix gnome-xml includes to use <libxml/*>. Before it was just
+	picking up the wrong headers on my machine, which is why it worked.
+
+2001-07-13  Darin Adler  <darin@bentspoon.com>
+
+	Now things link, and the test programs compile too.
+
+	* configure.in:
+	* eel/check-program.c: (main):
+	* eel/eel-list-column-title.c:
+	* eel/eel-list.c:
+	* eel/eel-smooth-widget.c: (smooth_widget_get_gtk_background):
+	* test/dumb-box.h:
+	* test/test-eel-image-chooser.c: (populate_image_chooser_callback):
+	* test/test-eel-image.c: (pixbuf_new_from_name):
+	* test/test-eel-label-flavorful.c: (font_get_name):
+	* test/test-eel-label-offset.c:
+	* test/test-eel-label.c: (main):
+	* test/test-eel-password-dialog.c: (main):
+	* test/test-eel-pixbuf-tile.c: (pixbuf_drawing_area_expose_event),
+	(drawable_drawing_area_expose_event):
+	* test/test-eel-viewport-constraint.c: (main):
+	* test/test-eel-widgets.c: (create_pixbuf), (main):
+	* test/test.c: (test_pixbuf_new_named), (eel_pixmap_file):
+	* test/test.h:
+
+2001-07-13  Darin Adler  <darin@bentspoon.com>
+
+	Enough to make everything compile.
+	The eel self-check program doesn't link yet.
+
+	* eel/check-program.c: (main):
+	* eel/eel-password-dialog.c: (caption_table_activate_callback),
+	(eel_password_dialog_new), (eel_password_dialog_run_and_block):
+	* eel/eel-preferences-box.c: (eel_preferences_dialog_new):
+	* eel/eel-stock-dialogs.c: (timed_wait_callback),
+	(eel_run_simple_dialog), (create_message_dialog),
+	(show_message_box), (show_ok_box), (eel_create_info_dialog),
+	(details_dialog_clicked_callback),
+	(eel_show_info_dialog_with_details),
+	(eel_show_error_dialog_with_details), (eel_show_yes_no_dialog),
+	(eel_create_question_dialog):
+	* eel/eel-types.c: (eel_type_init):
+
+2001-07-13  Darin Adler  <darin@bentspoon.com>
+
+	A cut at making things compile with GNOME 2.
+	Some things are inside #ifdef GNOME2_CONVERSION_COMPLETE.
+	90% of the way to compiling everything.
+
+	* eel/.cvsignore:
+	* eel/Makefile.am:
+	* eel/check-program.c: (main):
+	* eel/eel-background-canvas-group.c:
+	(eel_background_canvas_group_supplant_root_class):
+	* eel/eel-background.c: (eel_background_initialize_class),
+	(eel_background_draw), (eel_background_draw_flat_box),
+	(eel_background_set_widget_style), (eel_get_widget_background),
+	(eel_background_receive_dropped_color):
+	* eel/eel-canvas-rect.c: (rect_update):
+	* eel/eel-canvas-rect.h:
+	* eel/eel-caption-table.c: (eel_caption_table_initialize_class),
+	(eel_caption_table_get_entry_text):
+	* eel/eel-clickable-image.c:
+	(eel_clickable_image_initialize_class):
+	* eel/eel-clist.c:
+	* eel/eel-ctree.c: (eel_ctree_class_init):
+	* eel/eel-dnd.c: (eel_drag_drop_action_ask):
+	* eel/eel-enumeration.c:
+	* eel/eel-font-manager.c: (file_as_string),
+	(font_description_table_new), (collect_fonts_from_directory),
+	(directory_contains_file), (try_using_font_server),
+	(ensure_local_font_table), (eel_font_manager_get_default_font),
+	(eel_font_manager_get_default_bold_font),
+	(eel_self_check_font_manager):
+	* eel/eel-font-picker.c: (eel_font_picker_initialize_class),
+	(font_picker_add_item), (font_picker_populate):
+	* eel/eel-gdk-extensions.c: (eel_gdk_window_set_invisible_cursor):
+	* eel/eel-gdk-font-extensions.c: (font_get_name):
+	* eel/eel-gdk-pixbuf-extensions.c: (eel_gdk_pixbuf_load),
+	(file_read_callback), (load_done),
+	(eel_gdk_pixbuf_get_from_window_safe):
+	* eel/eel-gdk-pixbuf-extensions.h:
+	* eel/eel-glib-extensions.c:
+	* eel/eel-gnome-extensions.c: (eel_dialog_get_button_by_index),
+	(get_terminal_command_prefix), (eel_gnome_icon_selector_new),
+	(eel_gnome_stock_set_icon_or_register):
+	* eel/eel-gnome-extensions.h:
+	* eel/eel-gtk-extensions.c: (send_delete_event),
+	(handle_standard_close_accelerator),
+	(eel_popup_menu_position_func), (eel_gtk_menu_insert_separator),
+	(eel_gtk_signal_connect_full_while_alive),
+	(eel_gtk_signal_connect_while_realized),
+	(eel_nullify_when_destroyed), (eel_nullify_cancel),
+	(event_get_time):
+	* eel/eel-gtk-extensions.h:
+	* eel/eel-gtk-macros.h:
+	* eel/eel-image-chooser.c: (eel_image_chooser_initialize_class):
+	* eel/eel-image-table.c: (eel_image_table_initialize_class):
+	* eel/eel-image.c: (eel_image_initialize_class),
+	(eel_image_set_pixbuf_from_file_name),
+	(eel_image_set_tile_pixbuf_from_file_name):
+	* eel/eel-label.c: (eel_label_initialize_class),
+	(eel_label_set_is_smooth),
+	(eel_label_set_tile_pixbuf_from_file_name),
+	(eel_label_set_never_smooth):
+	* eel/eel-list-column-title.c:
+	(eel_list_column_title_initialize_class),
+	(eel_list_column_title_destroy), (eel_list_column_title_finalize),
+	(eel_list_column_title_request), (eel_list_column_title_paint):
+	* eel/eel-list.c: (eel_list_initialize_class),
+	(eel_list_initialize), (eel_list_clear_keyboard_focus),
+	(eel_list_set_keyboard_focus), (eel_list_size_request),
+	(new_column_width), (draw_rows), (eel_list_draw),
+	(eel_list_expose), (eel_list_row_at):
+	* eel/eel-password-dialog.c: (caption_table_activate_callback),
+	(eel_password_dialog_new), (eel_password_dialog_run_and_block):
+	* eel/eel-password-dialog.h:
+	* eel/eel-preferences-box.c: (preferences_box_select_pane),
+	(eel_preferences_dialog_new):
+	* eel/eel-preferences-box.h:
+	* eel/eel-preferences-group.c:
+	(eel_preferences_group_get_title_label):
+	* eel/eel-preferences-item.c:
+	(eel_preferences_item_initialize_class):
+	* eel/eel-preferences-pane.h:
+	* eel/eel-preferences.c:
+	* eel/eel-radio-button-group.c:
+	(eel_radio_button_group_initialize_class):
+	* eel/eel-region.c: (gdk_region_new_from_irect),
+	(eel_region_add_rectangle), (eel_region_subtract_rectangle):
+	* eel/eel-scalable-font.c:
+	* eel/eel-smooth-widget.h:
+	* eel/eel-stock-dialogs.c: (add_label_to_dialog),
+	(timed_wait_delayed_close_timeout_callback), (timed_wait_free),
+	(timed_wait_dialog_destroy_callback), (timed_wait_callback),
+	(delete_event_callback), (eel_run_simple_dialog),
+	(create_message_dialog), (show_message_box), (show_ok_box),
+	(eel_create_info_dialog), (eel_show_info_dialog),
+	(details_dialog_clicked_callback),
+	(eel_show_info_dialog_with_details), (eel_show_warning_dialog),
+	(eel_show_error_dialog), (eel_show_error_dialog_with_details),
+	(eel_show_yes_no_dialog), (eel_create_question_dialog):
+	* eel/eel-stock-dialogs.h:
+	* eel/eel-string-picker.c: (eel_string_picker_initialize_class),
+	(eel_string_picker_set_string_list):
+	* eel/eel-text-caption.c: (eel_text_caption_initialize_class):
+	* eel/eel-types.c: (eel_type_init):
+	* eel/eel-viewport.c: (eel_viewport_initialize_class),
+	(eel_viewport_draw), (eel_viewport_size_allocate):
+	* eel/eel-xml-extensions.c:
 
 2001-07-11  Darin Adler  <darin@bentspoon.com>
 
 	* eel/eel-font-manager.c: (collect_fonts_from_directory):
-	Fix SEGFAULT at startup caused by NULL MIME type.
+	Fix code that can segfault due to unknown MIME type.
 
+	* eel/eel-scalable-font.c: (initialize_global_stuff_if_needed):
+	Tell librsvg our datadir so we don't have to be in the same prefix
+	as librsvg. There's this bad thing where we install fonts that the
+	librsvg library has to find. Lets hope we can obsolete this
+	completely soon.
+
+2001-07-09  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* .cvsignore:
+	* Makefile.am:
+	* autogen.sh:
+	* configure.in:
+	* eel-2.0.pc.in:
+	* eel-config.in:
+	* eel.spec.in:
+	* eel/eel-art-extensions.h:
+	* eel/eel-art-gtk-extensions.h:
+	* eel/eel-background-canvas-group.c:
+	* eel/eel-background-canvas-group.h:
+	* eel/eel-background.h:
+	* eel/eel-canvas-rect.h:
+	* eel/eel-caption-table.h:
+	* eel/eel-caption.h:
+	* eel/eel-clickable-image.h:
+	* eel/eel-font-manager.h:
+	* eel/eel-font-picker.h:
+	* eel/eel-gconf-extensions.h:
+	* eel/eel-glyph.h:
+	* eel/eel-image-chooser.h:
+	* eel/eel-image-table.h:
+	* eel/eel-image-with-background.h:
+	* eel/eel-image.h:
+	* eel/eel-label-with-background.h:
+	* eel/eel-label.h:
+	* eel/eel-labeled-image.h:
+	* eel/eel-list.h:
+	* eel/eel-password-dialog.h:
+	* eel/eel-preferences-box.h:
+	* eel/eel-preferences-group.h:
+	* eel/eel-preferences-item.h:
+	* eel/eel-preferences-pane.h:
+	* eel/eel-preferences.h:
+	* eel/eel-radio-button-group.h:
+	* eel/eel-region.h:
+	* eel/eel-scalable-font-private.h:
+	* eel/eel-scalable-font.h:
+	* eel/eel-smooth-text-layout-cache.h:
+	* eel/eel-smooth-text-layout.h:
+	* eel/eel-smooth-widget.h:
+	* eel/eel-string-picker.h:
+	* eel/eel-text-caption.h:
+	* eel/eel-vfs-extensions.h:
+	* eel/eel-viewport.h:
+	* eel/eel-wrap-table.h:
+	* eelConf.sh.in:
+	Begin port to GNOME2, part 1.  Make configure work in the GNOME2
+	universe and also a few simple s/BEGIN_GNOME_DECLS/G_BEGIN_DECLS/
+	
 2001-07-09  Ramiro Estrugo  <ramiro@fateware.com>
 
 	* eel/eel-art-extensions.h:

@@ -25,8 +25,8 @@
 #ifndef EEL_CAPTION_H
 #define EEL_CAPTION_H
 
+#include <glib.h>
 #include <gtk/gtkhbox.h>
-#include <libgnome/gnome-defs.h>
 
 /*
  * EelCaption is made up of 2 widgets. 
@@ -34,7 +34,7 @@
  * [title label] [something]
  *
  */
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_CAPTION            (eel_caption_get_type ())
 #define EEL_CAPTION(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_CAPTION, EelCaption))
@@ -83,7 +83,7 @@ void       eel_caption_set_extra_spacing     (EelCaption       *caption,
 					      int               extra_spacing);
 int        eel_caption_get_title_label_width (const EelCaption *caption);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_CAPTION_H */
 

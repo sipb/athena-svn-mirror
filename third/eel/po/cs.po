@@ -1,95 +1,82 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # George Lebl <jirka@5z.com>, 2001.
+# Miloslav Trmac <mitr@volny.cz>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Eel\n"
-"POT-Creation-Date: 2001-10-05 11:18-0700\n"
-"PO-Revision-Date: 2001-05-09 15:36-0700\n"
-"Last-Translator: George Lebl <jirka@5z.com>\n"
+"POT-Creation-Date: 2002-12-09 13:16+0100\n"
+"PO-Revision-Date: 2002-12-02 20:52+0100\n"
+"Last-Translator: Miloslav Trmac <jirka@5z.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-dnd.c:494
-msgid "_Move here"
-msgstr "_P¯esunout sem"
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr "X"
 
-#: eel/eel-dnd.c:495
-msgid "_Copy here"
-msgstr "_KopÌrovat sem"
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr "Y"
 
-#: eel/eel-dnd.c:496
-msgid "_Link here"
-msgstr "_Odkaz sem"
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr "Text"
 
-#: eel/eel-dnd.c:498
-msgid "Cancel"
-msgstr "Zruπit"
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr "Text jmenovky"
 
-#: eel/eel-font-picker.c:80
-msgid "Normal"
-msgstr "Norm·lnÌ"
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr "Zarovn√°n√≠"
 
-#: eel/eel-font-picker.c:81
-msgid "Unknown"
-msgstr "Nezn·mÈ"
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Relativn√≠ zarovn√°n√≠ ≈ô√°dk≈Ø textu jmenovky navz√°jem. Toto NEM√Å vliv na "
+"zarovn√°n√≠ jmenovky v jej√≠ alokaci. K tomu pou≈æijte GtkMisc::xalign."
 
-#: eel/eel-font-picker.c:87
-msgid "Bold"
-msgstr "TuËnÈ"
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr "L√°m√°n√≠ ≈ô√°dk≈Ø"
 
-#: eel/eel-font-picker.c:88
-msgid "Book"
-msgstr "Book"
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Je-li nastaveno, zalomovat ≈ô√°dky, je-li text p≈ô√≠li≈° ≈°irok√Ω."
 
-#: eel/eel-font-picker.c:89
-msgid "Black"
-msgstr "»ernÈ"
+#: eel/eel-editable-label.c:384
+msgid "Cursor Position"
+msgstr "Pozice kurzoru"
 
-#: eel/eel-font-picker.c:90
-msgid "Demibold"
-msgstr "PolotuËnÈ"
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr "Aktu√°ln√≠ pozice vkl√°dac√≠ho kurzoru ve znac√≠ch."
 
-#: eel/eel-font-picker.c:91
-msgid "Light"
-msgstr "TenkÈ"
+#: eel/eel-editable-label.c:394
+msgid "Selection Bound"
+msgstr "Hranice v√Ωbƒõru"
 
-#: eel/eel-font-picker.c:97
-msgid "Italic"
-msgstr "KurzÌva"
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Pozice konce v√Ωbƒõru vzd√°lenƒõj≈°√≠ho od kurzoru ve znac√≠ch."
 
-#: eel/eel-font-picker.c:98
-msgid "Oblique"
-msgstr "©ikmÈ"
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr "Vybrat v≈°e"
 
-#: eel/eel-font-picker.c:99
-msgid "Reverse Italic"
-msgstr "OpaËn· kurzÌva"
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr "Vstupn√≠ metody"
 
-#: eel/eel-font-picker.c:100
-msgid "Reverse Oblique"
-msgstr "OpaËnÈ πikmÈ"
-
-#: eel/eel-font-picker.c:101
-msgid "Other"
-msgstr "JinÈ"
-
-#: eel/eel-font-picker.c:107
-msgid "Condensed"
-msgstr "ZkondezovanÈ"
-
-#: eel/eel-font-picker.c:108
-msgid "Semicondensed"
-msgstr "SemikondezovanÈ"
-
-#: eel/eel-font-picker.c:428
-msgid "More..."
-msgstr "VÌce..."
-
-#: eel/eel-gconf-extensions.c:82
+#: eel/eel-gconf-extensions.c:83
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -98,7 +85,7 @@ msgstr ""
 "GConf chyba:\n"
 "  %s"
 
-#: eel/eel-gconf-extensions.c:86
+#: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -107,84 +94,142 @@ msgid ""
 msgstr ""
 "GConf chyba:\n"
 "  %s\n"
-"Vπechny dalπÌ chyby uk·z·ny na termin·lu"
+"V≈°echny dal≈°√≠ chyby uk√°z√°ny na termin√°lu"
 
-#: eel/eel-gconf-extensions.c:90
+#: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
 msgstr "Chyba GConf"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
-#. * yields -- usually just omitting the AM part is all that's
-#. * needed.
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1475
+#: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00 "
 
-#: eel/eel-glib-extensions.c:1476
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00 "
 
-#: eel/eel-glib-extensions.c:1477
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 "
 
-#: eel/eel-gnome-extensions.c:711
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"Æ·dn˝ obr·zek nebyl vybr·n.  Abyste vybrali obr·zek, musÌte na nejak˝ "
+"≈Ω√°dn√Ω obr√°zek nebyl vybr√°n.  Abyste vybrali obr√°zek, mus√≠te na nejak√Ω "
 "kliknout"
 
-#: eel/eel-gnome-extensions.c:712
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
-msgstr "Nic nevybr·no"
+msgstr "Nic nevybr√°no"
 
-#. This magic string is copied from GtkLabel.  It lives there unlocalized as well.
-#: eel/eel-label.c:46 eel/eel-smooth-text-layout.c:46
-msgid " -_,;.?/&"
-msgstr " -_,;.?/&"
+#: eel/eel-password-dialog.c:203
+msgid "_Username:"
+msgstr "_U≈æivatel:"
 
-#: eel/eel-password-dialog.c:267
-msgid "Username:"
-msgstr "Uæivatel:"
+#: eel/eel-password-dialog.c:210
+msgid "_Password:"
+msgstr "_Heslo:"
 
-#: eel/eel-password-dialog.c:274
-msgid "Password:"
-msgstr "Heslo:"
-
-#: eel/eel-password-dialog.c:304
+#: eel/eel-password-dialog.c:237
 msgid "Remember this password"
 msgstr "Zapamatujte si toto heslo"
 
-#: eel/eel-preferences.c:91
-msgid "Beginner"
-msgstr "ZaË·teËnÌk"
+#: eel/eel-preferences-box.c:365
+msgid "Cat_egories:"
+msgstr "Kat_egorie:"
 
-#: eel/eel-preferences.c:92
-msgid "Intermediate"
-msgstr "Pr˘mÏrn˝"
-
-#: eel/eel-preferences.c:93
-msgid "Advanced"
-msgstr "PokroËil˝"
-
-#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:552
+#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
 msgstr "Info"
 
-#: eel/eel-stock-dialogs.c:554 eel/eel-stock-dialogs.c:607
+#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
 msgstr "Detaily"
 
-#: eel/eel-stock-dialogs.c:572
+#: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "Varov·nÌ"
+msgstr "Varov√°n√≠"
 
-#: eel/eel-stock-dialogs.c:583 eel/eel-stock-dialogs.c:605
+#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
 msgstr "Chyba"
 
-#: eel/eel-stock-dialogs.c:638 eel/eel-stock-dialogs.c:666
+#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "Ot·zka"
+msgstr "Ot√°zka"
+
+#: eel/eel-vfs-extensions.c:687
+msgid " (invalid Unicode)"
+msgstr " (neplatn√Ω Unicode)"
+
+#~ msgid "_Move here"
+#~ msgstr "_P≈ôesunout sem"
+
+#~ msgid "_Copy here"
+#~ msgstr "_Kop√≠rovat sem"
+
+#~ msgid "_Link here"
+#~ msgstr "_Odkaz sem"
+
+#~ msgid "Cancel"
+#~ msgstr "Zru≈°it"
+
+#~ msgid "Normal"
+#~ msgstr "Norm√°ln√≠"
+
+#~ msgid "Unknown"
+#~ msgstr "Nezn√°m√©"
+
+#~ msgid "Bold"
+#~ msgstr "Tuƒçn√©"
+
+#~ msgid "Book"
+#~ msgstr "Book"
+
+#~ msgid "Black"
+#~ msgstr "ƒåern√©"
+
+#~ msgid "Demibold"
+#~ msgstr "Polotuƒçn√©"
+
+#~ msgid "Light"
+#~ msgstr "Tenk√©"
+
+#~ msgid "Italic"
+#~ msgstr "Kurz√≠va"
+
+#~ msgid "Oblique"
+#~ msgstr "≈†ikm√©"
+
+#~ msgid "Reverse Italic"
+#~ msgstr "Opaƒçn√° kurz√≠va"
+
+#~ msgid "Reverse Oblique"
+#~ msgstr "Opaƒçn√© ≈°ikm√©"
+
+#~ msgid "Other"
+#~ msgstr "Jin√©"
+
+#~ msgid "Condensed"
+#~ msgstr "Zkondezovan√©"
+
+#~ msgid "Semicondensed"
+#~ msgstr "Semikondezovan√©"
+
+#~ msgid "More..."
+#~ msgstr "V√≠ce..."
+
+#~ msgid "Beginner"
+#~ msgstr "Zaƒç√°teƒçn√≠k"
+
+#~ msgid "Intermediate"
+#~ msgstr "Pr≈Ømƒõrn√Ω"
+
+#~ msgid "Advanced"
+#~ msgstr "Pokroƒçil√Ω"

@@ -8,27 +8,27 @@ typedef struct
 } Item;
 
 static Item items[] = {
-	{ "/gnome/share/pixmaps/nautilus/tahoe/theme_preview.png",
+	{ DATADIR "/pixmaps/nautilus/tahoe/theme_preview.png",
 	  "Tahoe",
 	  "This theme uses photo-realistic folders."
 	},
-	{ "/gnome/share/pixmaps/nautilus/crux_teal/theme_preview.png",
+	{ DATADIR "/pixmaps/nautilus/crux_teal/theme_preview.png",
 	  "Crux-Teal",
 	  "A Teal variation of the Crux theme."
 	},
-	{ "/gnome/share/pixmaps/nautilus/crux_eggplant/theme_preview.png",
+	{ DATADIR "/pixmaps/nautilus/crux_eggplant/theme_preview.png",
 	  "Crux-Eggplant",
 	  "An Eggplant variation of the Crux theme."
 	},
-	{ "/gnome/share/pixmaps/nautilus/gnome/theme_preview.png",
+	{ DATADIR "/pixmaps/nautilus/gnome/theme_preview.png",
 	  "GNOME",
 	  "This theme uses the classic GNOME icons."
 	},
-	{ "/gnome/share/pixmaps/nautilus/sierra/theme_preview.png",
+	{ DATADIR "/pixmaps/nautilus/sierra/theme_preview.png",
 	  "Sierra",
 	  "Uses manila folders and gray-green backgrounds."
 	},
-	{ "/gnome/share/pixmaps/nautilus/theme_preview.png",
+	{ DATADIR "/pixmaps/nautilus/theme_preview.png",
 	  "Default",
 	  "This is the default theme for Nautilus."
 	}
@@ -98,8 +98,8 @@ populate_image_chooser_callback (GtkWidget *button,
 	g_return_if_fail (EEL_IS_IMAGE_CHOOSER (callback_data));
 
 	for (j = 0; j < NUM_POPULATIONS; j++) {
-		for (i = 0; i < EEL_N_ELEMENTS (items); i++) {
-			pixbuf = gdk_pixbuf_new_from_file (items[i].icon);
+		for (i = 0; i < G_N_ELEMENTS (items); i++) {
+			pixbuf = gdk_pixbuf_new_from_file (items[i].icon, NULL);
 			
 			eel_image_chooser_insert_row (EEL_IMAGE_CHOOSER (callback_data),
 						  pixbuf,
@@ -108,7 +108,7 @@ populate_image_chooser_callback (GtkWidget *button,
 						  g_strdup (items[i].title),
 						  g_free);
 			
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (pixbuf);
 		}
 	}
 }
@@ -125,7 +125,7 @@ populate_button_group_callback (GtkWidget *button,
 	g_return_if_fail (EEL_IS_RADIO_BUTTON_GROUP (callback_data));
 	
 	for (j = 0; j < NUM_POPULATIONS; j++) {
-		for (i = 0; i < EEL_N_ELEMENTS (items); i++) {
+		for (i = 0; i < G_N_ELEMENTS (items); i++) {
 			eel_radio_button_group_insert (EEL_RADIO_BUTTON_GROUP (callback_data),
 						       items[i].title);
 		}
@@ -159,8 +159,6 @@ main (int argc, char* argv[])
 	
 	window = test_window_new ("Icon List Test", 0);
 
-	eel_smooth_widget_global_set_is_smooth (1);
-
 	hbox = gtk_hbox_new (FALSE, 10);
 	gtk_container_add (GTK_CONTAINER (window), hbox);
 
@@ -176,26 +174,26 @@ main (int argc, char* argv[])
 	clear_button = gtk_button_new_with_label ("Clear");
 	show_selected_button = gtk_button_new_with_label ("Show Selected");
 
-	gtk_signal_connect (GTK_OBJECT (clear_button),
+	g_signal_connect (clear_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (clear_button_group_callback),
+			    G_CALLBACK (clear_button_group_callback),
 			    button_group);
-	gtk_signal_connect (GTK_OBJECT (populate_button),
+	g_signal_connect (populate_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (populate_button_group_callback),
+			    G_CALLBACK (populate_button_group_callback),
 			    button_group);
 	
-	gtk_signal_connect (GTK_OBJECT (clear_button),
+	g_signal_connect (clear_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (clear_image_chooser_callback),
+			    G_CALLBACK (clear_image_chooser_callback),
 			    image_chooser);
-	gtk_signal_connect (GTK_OBJECT (populate_button),
+	g_signal_connect (populate_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (populate_image_chooser_callback),
+			    G_CALLBACK (populate_image_chooser_callback),
 			    image_chooser);
-	gtk_signal_connect (GTK_OBJECT (show_selected_button),
+	g_signal_connect (show_selected_button,
 			    "clicked",
-			    GTK_SIGNAL_FUNC (show_selected_button_callback),
+			    G_CALLBACK (show_selected_button_callback),
 			    image_chooser);
 
 	gtk_box_pack_start (GTK_BOX (hbox), populate_button, FALSE, FALSE, 4);
@@ -209,14 +207,14 @@ main (int argc, char* argv[])
 						     scrolled_window,
 						     3);
 
-	gtk_signal_connect (GTK_OBJECT (image_chooser),
+	g_signal_connect (image_chooser,
 			    "selection_changed",
-			    GTK_SIGNAL_FUNC (selection_changed_callback),
+			    G_CALLBACK (selection_changed_callback),
 			    button_group);
 	
-	gtk_signal_connect (GTK_OBJECT (button_group),
+	g_signal_connect (button_group,
 			    "changed",
-			    GTK_SIGNAL_FUNC (button_group_changed_callback),
+			    G_CALLBACK (button_group_changed_callback),
 			    image_chooser);
 
 	gtk_widget_show_all (window);

@@ -25,6 +25,7 @@
 #include <config.h>
 #include "eel-preferences.h"
 
+#include "eel-debug.h"
 #include "eel-gconf-extensions.h"
 #include "eel-lib-self-check-functions.h"
 #include "eel-enumeration.h"
@@ -34,13 +35,6 @@
 #include <gconf/gconf-client.h>
 #include <gconf/gconf.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-
-#define DEFAULT_USER_LEVEL	EEL_USER_LEVEL_INTERMEDIATE
-#define USER_LEVEL_KEY		"/apps/nautilus/user_level"
 
 /* An enumeration used for updating auto-storage variables in a type-specific way. 
  * FIXME: there is another enumeration like this in eel-global-preferences.c,
@@ -66,13 +60,10 @@ typedef struct {
 	PreferenceType type;
 	gboolean invisible;
 	GList *callback_list;
-	gboolean callbacks_blocked;
 	GList *auto_storage_list;
 	int gconf_connection_id;
 	char *enumeration_id;
-	GConfValue *cached_value;
-	int visible_user_level;
-	GConfValue *default_values[3];
+	GConfValue *fallback;
 } PreferencesEntry;
 
 /*
@@ -87,47 +78,15 @@ typedef struct {
 	gpointer callback_data;
 } PreferencesCallbackEntry;
 
-static const char *user_level_names_for_display[] = {
-	N_("Beginner"),
-	N_("Intermediate"),
-	N_("Advanced")
-};
-
-static const char *user_level_names_for_storage[] = {
-	"novice",
-	"intermediate",
-	"advanced"
-};
-
-static const char *      preferences_peek_storage_path                   (void);
-static gboolean          preferences_preference_is_gconf_key             (const char               *name);
-static gboolean          preferences_preference_is_user_level            (const char               *name);
-static gboolean          preferences_preference_is_default               (const char               *name);
-static char *            preferences_key_make                            (const char               *name);
-static void              preferences_user_level_changed_notice           (GConfClient              *client,
-									  guint                     connection_id,
-									  GConfEntry               *gconf_entry,
-									  gpointer                  user_data);
-static void              preferences_something_changed_notice            (GConfClient              *client,
-									  guint                     connection_id,
-									  GConfEntry               *gconf_entry,
-									  gpointer                  user_data);
-static void              preferences_global_table_check_changes_function (gpointer                  key,
-									  gpointer                  value,
-									  gpointer                  callback_data);
-static GHashTable  *     preferences_global_table_get_global             (void);
-static void              preferences_callback_entry_free                 (PreferencesCallbackEntry *callback_entry);
-static void              preferences_entry_update_auto_storage           (PreferencesEntry         *entry);
-static void              preferences_global_table_free                   (void);
-static const char *      preferences_peek_user_level_name_for_storage    (int                       user_level);
-static PreferencesEntry *preferences_global_table_lookup_or_insert       (const char               *name);
-static const GConfValue *preferences_find_first_non_null_default_value   (const char               *name,
-									  int                       user_level);
-
-static guint user_level_changed_connection_id = EEL_GCONF_UNDEFINED_CONNECTION;
 static GHashTable *global_table = NULL;
 static char *storage_path = NULL;
 static gboolean initialized = FALSE;
+
+static void              preferences_global_table_free             (void);
+static char *            preferences_key_make                      (const char               *name);
+static void              preferences_callback_entry_free           (PreferencesCallbackEntry *callback_entry);
+static void              preferences_entry_update_auto_storage     (PreferencesEntry         *entry);
+static PreferencesEntry *preferences_global_table_lookup_or_insert (const char               *name);
 
 static int
 preferences_gconf_value_get_int (const GConfValue *value)
@@ -219,35 +178,23 @@ preferences_get_value (const char *name)
 {
 	GConfValue *result;
 	char *key;
-	const GConfValue *default_value;
-
+	PreferencesEntry *entry;
+	
 	g_return_val_if_fail (name != NULL, 0);
 	g_return_val_if_fail (preferences_is_initialized (), 0);
-
-	/* If the preference is default (no value is stored for it) or
-	 * it is not visible in the current user level, return the
-	 * default_value */
-	if (preferences_preference_is_default (name)
-	    || !eel_preferences_visible_in_current_user_level (name)) {
-		default_value = preferences_find_first_non_null_default_value (name, eel_preferences_get_user_level ());
-		return (default_value != NULL)
-			? gconf_value_copy ((GConfValue *) default_value)
-			: NULL;
-	}
 
 	key = preferences_key_make (name);
 	result = eel_gconf_get_value (key);
 	g_free (key);
 
-	return result;
-}
+	if (result == NULL) {		
+		entry = preferences_global_table_lookup_or_insert (name);
 
-static const char *
-preferences_peek_user_level_name_for_storage (int user_level)
-{
-	user_level = eel_preferences_user_level_clamp (user_level);
+		if (entry->fallback)
+			result = gconf_value_copy (entry->fallback);
+	}
 	
-	return user_level_names_for_storage[user_level];
+	return result;
 }
 
 /* If the preference name begind with a "/", we interpret 
@@ -264,15 +211,6 @@ preferences_preference_is_gconf_key (const char *name)
 	return TRUE;
 }
 
-static gboolean
-preferences_preference_is_user_level (const char *name)
-{
-	g_return_val_if_fail (name != NULL, FALSE);
-	
-	return eel_str_is_equal (name, USER_LEVEL_KEY)
-		|| eel_str_is_equal (name, "user_level");
-}
-
 static char *
 preferences_key_make (const char *name)
 {
@@ -283,101 +221,36 @@ preferences_key_make (const char *name)
 	}
 
 	/* Otherwise, we prefix it with the path */
-	return g_strdup_printf ("%s/%s", preferences_peek_storage_path (), name);
+	return g_strconcat (preferences_peek_storage_path (), "/",
+			    name, NULL);
 }
 
-/* Find the first non NULL default_value that is less than or 
- * equal to the given user level */
-static const GConfValue *
-preferences_find_first_non_null_default_value (const char *name,
-					       int user_level)
+/* Get default from schema or emergency fallback */
+static GConfValue *
+preferences_get_default_value (const char *name)
 {
-	const GConfValue *result;
+	GConfValue *result;
 	PreferencesEntry *entry;
-	gboolean done;
+	char *key;
 
 	g_return_val_if_fail (name != NULL, NULL);
 
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	user_level = eel_preferences_user_level_clamp (user_level);
-
-	done = FALSE;
-	while (!done) {
-		result = entry->default_values[user_level];
-		done = (user_level == 0) || (result != NULL);
-		if (!done) {
-			user_level--;
-		}
-	}
-
-	return result;
-}
-
-static gboolean
-preferences_preference_is_default (const char *name)
-{
-	gboolean result;
-	char *key;
-	
-	g_return_val_if_fail (name != NULL, FALSE);
-	
 	key = preferences_key_make (name);
-	result = eel_gconf_is_default (key);
+
+	result = eel_gconf_get_default_value (key);
+
 	g_free (key);
 
-	return result;
-}
-
-static void
-preferences_block_callbacks (const char *name)
-{
-	PreferencesEntry *entry;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	entry->callbacks_blocked = TRUE;
-}
-
-static void
-preferences_unblock_callbacks (const char *name)
-{
-	PreferencesEntry *entry;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	entry->callbacks_blocked = FALSE;
+	if (result == NULL) {
+		entry = preferences_global_table_lookup_or_insert (name);
+		if (entry && entry->fallback)
+			result = gconf_value_copy (entry->fallback);
+	}
+	
+        return result;
 }
 
 /* Public preferences functions */
-int
-eel_preferences_get_visible_user_level (const char *name)
-{
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (preferences_is_initialized (), FALSE);
-
-	return preferences_global_table_lookup_or_insert (name)->visible_user_level;
-}
-
-void
-eel_preferences_set_visible_user_level (const char *name,
-					int visible_user_level)
-{
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-
-	preferences_global_table_lookup_or_insert (name)->visible_user_level =
-		eel_preferences_user_level_clamp (visible_user_level);
-}
 
 gboolean
 eel_preferences_get_is_invisible (const char *name)
@@ -445,7 +318,6 @@ eel_preferences_set_integer (const char *name,
 	
 	if (int_value != old_value) {
 		eel_gconf_set_integer (key, int_value);
-		eel_gconf_suggest_sync ();
 	}
 	g_free (key);
 }
@@ -466,6 +338,85 @@ eel_preferences_get_integer (const char *name)
 	return result;
 }
 
+int
+eel_preferences_get_enum (const char *name)
+{
+	int               ret_val;
+	char             *str_value;
+	GConfValue       *value;
+	EelEnumeration   *enumeration;
+	PreferencesEntry *entry;
+
+	g_return_val_if_fail (name != NULL, 0);
+	g_return_val_if_fail (preferences_is_initialized (), 0);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_return_val_if_fail (entry != NULL, 0);
+
+	enumeration = eel_enumeration_lookup (entry->enumeration_id);
+
+	if (!enumeration) {
+		g_warning ("No enum entry for '%s' (%s)",
+			   name, entry->enumeration_id);
+		return 0;
+	}
+
+	value = preferences_get_value (name);
+	if (value->type == GCONF_VALUE_INT) { /* compatibility path */
+		ret_val = preferences_gconf_value_get_int (value);
+		eel_gconf_value_free (value);
+		eel_enumeration_free (enumeration);
+		return ret_val;
+	}
+
+	str_value = preferences_gconf_value_get_string (value);
+	eel_gconf_value_free (value);
+
+	if (str_value == NULL) {
+		g_warning ("No key for '%s' at %s", str_value, name);
+		return 0;
+	}
+
+	ret_val = eel_enumeration_get_sub_value (enumeration, str_value);
+	eel_enumeration_free (enumeration);
+	
+	g_free (str_value);
+
+	return ret_val;
+}
+
+void
+eel_preferences_set_enum (const char *name,
+			  int         int_value)
+{
+	const char       *str_value;
+	EelEnumeration   *enumeration;
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_return_if_fail (entry != NULL);
+
+	enumeration = eel_enumeration_lookup (entry->enumeration_id);
+
+	if (!enumeration) {
+		g_warning ("No enum entry for '%s' (%s)",
+			   name, entry->enumeration_id);
+		return;
+	}
+
+	str_value = eel_enumeration_get_sub_name (enumeration, int_value);
+
+	if (str_value == NULL) {
+		g_warning ("No enum match for '%d'", int_value);
+		return;
+	}
+
+	eel_preferences_set (name, str_value);
+}
+
 void
 eel_preferences_set (const char *name,
 		     const char *string_value)
@@ -481,8 +432,6 @@ eel_preferences_set (const char *name,
 
 	if (strcmp (string_value, old_value) != 0) {
 		eel_gconf_set_string (key, string_value);
-		
-		eel_gconf_suggest_sync ();
 	}
 	g_free (key);
 }
@@ -519,8 +468,6 @@ eel_preferences_set_string_list (const char *name,
 	g_free (key);
 
 	eel_g_slist_free_deep (slist);
-
-	eel_gconf_suggest_sync ();
 }
 
 static gboolean
@@ -550,7 +497,7 @@ eel_preferences_get_string_list (const char *name)
  	EelStringList *result;
 	GConfValue *value;
 	PreferencesEntry *entry;
-	const GConfValue *default_value;
+	GConfValue *default_value;
 
 	g_return_val_if_fail (name != NULL, 0);
 	g_return_val_if_fail (preferences_is_initialized (), 0);
@@ -575,201 +522,13 @@ eel_preferences_get_string_list (const char *name)
 	/* Forget the bad value and use the default instead */
 	eel_string_list_free (result);
 
-	default_value = preferences_find_first_non_null_default_value (name, eel_preferences_get_user_level ());
-	result = preferences_gconf_value_get_string_list (default_value);
-	
- 	/* Go the extra mile and fix the problem for the user */
-	preferences_block_callbacks (name);
-	eel_preferences_set_string_list (name, result);
-	preferences_unblock_callbacks (name);
+	default_value = preferences_get_default_value (name);
+	if (default_value) {		
+		result = preferences_gconf_value_get_string_list (default_value);
+		gconf_value_free (default_value);
+	}
 
 	return result;
-}
-
-int
-eel_preferences_get_user_level (void)
-{
-	char *user_level;
-	int result;
-
-	g_return_val_if_fail (preferences_is_initialized (), 0);
-
-	user_level = eel_gconf_get_string (USER_LEVEL_KEY);
-
-	if (eel_str_is_equal (user_level, "advanced")) {
-		result = EEL_USER_LEVEL_ADVANCED;
-	} else if (eel_str_is_equal (user_level, "intermediate")) {
-		result = EEL_USER_LEVEL_INTERMEDIATE;
-	} else if (eel_str_is_equal (user_level, "novice")) {
-		result = EEL_USER_LEVEL_NOVICE;
-	} else {
-		result = DEFAULT_USER_LEVEL;
-	}
-	
-	g_free (user_level);
-	return result;
-}
-
-void
-eel_preferences_set_user_level (int user_level)
-{
-	g_return_if_fail (preferences_is_initialized ());
-	g_return_if_fail (eel_preferences_user_level_is_valid (user_level));
-	
-	user_level = eel_preferences_user_level_clamp (user_level);
-
-	eel_gconf_set_string (USER_LEVEL_KEY, user_level_names_for_storage[user_level]);
-
-	eel_gconf_suggest_sync ();
-}
-
-void
-eel_preferences_default_set_integer (const char *name,
-				     int user_level,
-				     int int_value)
-{
-	PreferencesEntry *entry;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-	g_return_if_fail (eel_preferences_user_level_is_valid (user_level));
-
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	if (entry->default_values[user_level] == NULL) {
-		entry->default_values[user_level] = gconf_value_new (GCONF_VALUE_INT);
-	}
-	gconf_value_set_int (entry->default_values[user_level], int_value);
-}
-
-int
-eel_preferences_default_get_integer (const char *name,
-				     int user_level)
-{
-	PreferencesEntry *entry;
-
-	g_return_val_if_fail (name != NULL, 0);
-	g_return_val_if_fail (preferences_is_initialized (), 0);
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), 0);
-	
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	return preferences_gconf_value_get_int (entry->default_values[user_level]);
-}
-
-void
-eel_preferences_default_set_boolean (const char *name,
-				     int user_level,
-				     gboolean boolean_value)
-{
-	PreferencesEntry *entry;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-	g_return_if_fail (eel_preferences_user_level_is_valid (user_level));
-
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	if (entry->default_values[user_level] == NULL) {
-		entry->default_values[user_level] = gconf_value_new (GCONF_VALUE_BOOL);
-	}
-	gconf_value_set_bool (entry->default_values[user_level], boolean_value);
-}
-
-gboolean
-eel_preferences_default_get_boolean (const char *name,
-				     int user_level)
-{
-	PreferencesEntry *entry;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (preferences_is_initialized (), FALSE);
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), FALSE);
-	
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	return preferences_gconf_value_get_bool (entry->default_values[user_level]);
-}
-
-void
-eel_preferences_default_set_string (const char *name,
-				    int user_level,
-				    const char *string_value)
-{
-	PreferencesEntry *entry;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-	g_return_if_fail (eel_preferences_user_level_is_valid (user_level));
-
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	if (entry->default_values[user_level] == NULL) {
-		entry->default_values[user_level] = gconf_value_new (GCONF_VALUE_STRING);
-	}
-	gconf_value_set_string (entry->default_values[user_level], string_value);
-}
-
-char *
-eel_preferences_default_get_string (const char *name,
-				    int user_level)
-{
-	PreferencesEntry *entry;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (preferences_is_initialized (), FALSE);
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), FALSE);
-	
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	return preferences_gconf_value_get_string (entry->default_values[user_level]);
-}
-
-void
-eel_preferences_default_set_string_list (const char *name,
-					 int user_level,
-					 const EelStringList *string_list_value)
-{
-	PreferencesEntry *entry;
-	GSList *slist;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (preferences_is_initialized ());
-	g_return_if_fail (eel_preferences_user_level_is_valid (user_level));
-
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	if (entry->default_values[user_level] == NULL) {
-		entry->default_values[user_level] = gconf_value_new (GCONF_VALUE_LIST);
-		gconf_value_set_list_type (entry->default_values[user_level], GCONF_VALUE_STRING);
-	}
-	
-	slist = eel_string_list_as_g_slist (string_list_value);
-	eel_gconf_value_set_string_list (entry->default_values[user_level], slist);
-	eel_g_slist_free_deep (slist);
-}
-
-EelStringList *
-eel_preferences_default_get_string_list (const char *name,
-					 int user_level)
-{
-	PreferencesEntry *entry;
-
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (preferences_is_initialized (), FALSE);
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), FALSE);
-	
-	entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (entry != NULL);
-
-	return preferences_gconf_value_get_string_list (entry->default_values[user_level]);
 }
 
 /**
@@ -793,23 +552,8 @@ preferences_callback_entry_invoke_function (gpointer data,
  	(* callback_entry->callback) (callback_entry->callback_data);
 }
 
-/**
- * preferences_entry_invoke_callbacks_if_needed
- *
- * @entry: A PreferencesEntry
- *
- * This function checks the cached value in the entry with the current
- * value of the preference.  If the value has changed, then callbacks
- * are invoked and auto storage updated.
- *
- * We need this check because even though the GConf value of a preference
- * could indeed have changed, its representation on the Eel side
- * of things could still be the same.  The best example of this is 
- * user level changes, where the value of the preference on the Eel
- * end of things is determined by visibility.
- **/
 static void
-preferences_entry_invoke_callbacks_if_needed (PreferencesEntry *entry)
+preferences_entry_invoke_callbacks (PreferencesEntry *entry)
 {
 	GConfValue *new_value;
 	
@@ -817,24 +561,9 @@ preferences_entry_invoke_callbacks_if_needed (PreferencesEntry *entry)
 
 	new_value = preferences_get_value (entry->name);
 
-	/* If the values are the same, then we dont need to invoke any callbacks */
-	if (eel_gconf_value_is_equal (entry->cached_value, new_value)) {
-		eel_gconf_value_free (new_value);
-		return;
-	}
-
 	/* Update the auto storage preferences */
 	if (entry->auto_storage_list != NULL) {
 		preferences_entry_update_auto_storage (entry);			
-	}
-
-	/* Store the new cached value */
-	eel_gconf_value_free (entry->cached_value);
-	entry->cached_value = new_value;
-
-	/* Dont invoke callbacks if the entry is blocked */
-	if (entry->callbacks_blocked) {
-		return;
 	}
 	
 	/* Invoke callbacks for this entry if any */
@@ -895,11 +624,18 @@ preferences_entry_update_auto_storage (PreferencesEntry *entry)
 
 	switch (entry->type) {
 	case PREFERENCE_STRING:
-		new_string_value = eel_preferences_get (entry->name);
-		g_list_foreach (entry->auto_storage_list,
-				update_auto_string,
-				new_string_value);
-		g_free (new_string_value);
+		if (entry->enumeration_id != NULL) {
+			new_int_value = eel_preferences_get_enum (entry->name);
+			g_list_foreach (entry->auto_storage_list,
+					update_auto_integer_or_boolean,
+					GINT_TO_POINTER (new_int_value));
+		} else {
+			new_string_value = eel_preferences_get (entry->name);
+			g_list_foreach (entry->auto_storage_list,
+					update_auto_string,
+					new_string_value);
+			g_free (new_string_value);
+		}
 		break;
 	case PREFERENCE_STRING_LIST:
 		new_string_list_value = eel_preferences_get_string_list (entry->name);
@@ -935,54 +671,7 @@ preferences_something_changed_notice (GConfClient *client,
 	g_return_if_fail (entry->key != NULL);
 	g_return_if_fail (notice_data != NULL);
 
-	preferences_entry_invoke_callbacks_if_needed (notice_data);
-}
-
-static void
-preferences_global_table_check_changes_function (gpointer key,
-						 gpointer value,
-						 gpointer user_data)
-{
-	PreferencesEntry *entry;
-
-	g_return_if_fail (key != NULL);
-	g_return_if_fail (value != NULL);
-
-	entry = value;
-
-	g_return_if_fail (entry->name != NULL);
-
-	/* We dont worry about the 'user_level' itself for recursive reasons */
-	if (preferences_preference_is_user_level (entry->name)) {
-		return;
-	}
-
-	preferences_entry_invoke_callbacks_if_needed (entry);
-}
-
-static void
-preferences_entry_update_cached_value (PreferencesEntry *entry)
-{
-	g_return_if_fail (entry != NULL);
-
-	eel_gconf_value_free (entry->cached_value);
-
-	entry->cached_value = preferences_get_value (entry->name);
-}
-
-static void
-preferences_user_level_changed_notice (GConfClient *client, 
-				       guint connection_id, 
-				       GConfEntry *gconf_entry, 
-				       gpointer user_data)
-{
-	g_return_if_fail (gconf_entry != NULL);
-	g_return_if_fail (gconf_entry->key != NULL);
-	g_return_if_fail (eel_str_has_suffix (gconf_entry->key, "user_level"));
-	
-	g_hash_table_foreach (preferences_global_table_get_global (),
-			      preferences_global_table_check_changes_function,
-			      NULL);
+	preferences_entry_invoke_callbacks (notice_data);
 }
 
 static void
@@ -1009,15 +698,6 @@ preferences_entry_ensure_gconf_connection (PreferencesEntry *entry)
 	g_free (key);
 
 	g_return_if_fail (entry->gconf_connection_id != EEL_GCONF_UNDEFINED_CONNECTION);
-
-	/* Update the cached value.
-	 * From now onwards the cached value will be updated 
-	 * each time preferences_something_changed_notice() triggers
-	 * so that it can be later compared with new values to 
-	 * determine if the gconf value is different from the 
-	 * Eel value.
-	 */
-	preferences_entry_update_cached_value (entry);
 }
 
 /**
@@ -1246,10 +926,7 @@ preferences_entry_free (PreferencesEntry *entry)
 	g_free (entry->description);
 	g_free (entry->enumeration_id);
 
-	eel_gconf_value_free (entry->cached_value);
-	eel_gconf_value_free (entry->default_values[0]);
-	eel_gconf_value_free (entry->default_values[1]);
-	eel_gconf_value_free (entry->default_values[2]);
+	eel_gconf_value_free (entry->fallback);
 
 	g_free (entry);
 }
@@ -1298,7 +975,7 @@ preferences_global_table_get_global (void)
 
 		if (!at_exit_handler_added) {
 			at_exit_handler_added = TRUE;
-			g_atexit (preferences_global_table_free);
+			eel_debug_call_at_shutdown (preferences_global_table_free);
 		}
 	}
 	
@@ -1329,18 +1006,6 @@ preferences_global_table_insert (const char *name)
 	g_hash_table_insert (preferences_global_table_get_global (), entry->name, entry);
 
 	g_return_val_if_fail (entry == preferences_global_table_lookup (name), NULL);
-
-	/* Update the cached value for the first time.
-	 * 
-	 * We need to do this because checks for value changes
-	 * happen not only as a result of callbacks triggering, but 
-	 * also as a result of user_level changes.  When a user level
-	 * changes, all the preferences entries are iterated to invoke
-	 * callbacks for those that changed as a result.
-	 *
-	 * See preferences_global_table_check_changes_function().
-	 */
-	preferences_entry_update_cached_value (entry);
 
 	return entry;
 }
@@ -1440,6 +1105,28 @@ eel_preferences_add_auto_integer (const char *name,
 	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_INTEGER);
 
 	value = eel_preferences_get_integer (entry->name);
+	update_auto_integer_or_boolean (storage, GINT_TO_POINTER (value));
+}
+
+
+void
+eel_preferences_add_auto_enum (const char *name,
+			       int *storage)
+{
+	PreferencesEntry *entry;
+	int value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+	g_assert (entry->enumeration_id != NULL);
+
+	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_STRING);
+
+	value = eel_preferences_get_enum (entry->name);
 	update_auto_integer_or_boolean (storage, GINT_TO_POINTER (value));
 }
 
@@ -1547,12 +1234,11 @@ typedef struct
 } WhileAliveData;
 
 static void
-preferences_while_alive_disconnector (GtkObject *object, gpointer callback_data)
+preferences_while_alive_disconnector (gpointer callback_data, GObject *where_object_was)
 {
 	WhileAliveData *data;
 
-	g_return_if_fail (GTK_IS_OBJECT (object));
-	g_return_if_fail (callback_data != NULL);
+	g_assert (callback_data != NULL);
 
 	data = callback_data;
 
@@ -1568,13 +1254,13 @@ void
 eel_preferences_add_callback_while_alive (const char *name,
 					  EelPreferencesCallback callback,
 					  gpointer callback_data,
-					  GtkObject *alive_object)
+					  GObject *alive_object)
 {
 	WhileAliveData *data;
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (callback != NULL);
-	g_return_if_fail (GTK_IS_OBJECT (alive_object));
+	g_return_if_fail (G_IS_OBJECT (alive_object));
 	g_return_if_fail (preferences_is_initialized ());
 
 	data = g_new (WhileAliveData, 1);
@@ -1584,10 +1270,9 @@ eel_preferences_add_callback_while_alive (const char *name,
 
 	eel_preferences_add_callback (name, callback, callback_data);
 
-	gtk_signal_connect (alive_object,
-			    "destroy",
-			    GTK_SIGNAL_FUNC (preferences_while_alive_disconnector),
-			    data);
+	g_object_weak_ref (alive_object,
+			   preferences_while_alive_disconnector,
+			   data);
 }
 
 void
@@ -1668,41 +1353,116 @@ eel_preferences_get_enumeration_id (const char *name)
 
 	entry = preferences_global_table_lookup_or_insert (name);
 
-	return entry->enumeration_id ? g_strdup (entry->enumeration_id) : NULL;
+	return g_strdup (entry->enumeration_id);
 }
 
-char *
-eel_preferences_get_user_level_name_for_display (int user_level)
+static void
+preferences_set_emergency_fallback_stealing_value (const char *name,
+						   GConfValue *value)
 {
-	g_return_val_if_fail (preferences_is_initialized (), NULL);
+	PreferencesEntry *entry;
 
-	user_level = eel_preferences_user_level_clamp (user_level);
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	if (entry->fallback)
+		gconf_value_free (entry->fallback);
+	entry->fallback = value; /* steal ownership of value */
+}
+
+void
+eel_preferences_set_emergency_fallback_string (const char *name,
+					       const char *value)
+{
+	GConfValue *gconf_value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (value != NULL);
 	
-	return g_strdup (_(user_level_names_for_display[user_level]));
+	gconf_value = gconf_value_new (GCONF_VALUE_STRING);
+
+	gconf_value_set_string (gconf_value, value);
+
+	preferences_set_emergency_fallback_stealing_value (name, gconf_value);
 }
 
-char *
-eel_preferences_get_user_level_name_for_storage (int user_level)
+void
+eel_preferences_set_emergency_fallback_integer (const char *name,
+						int         value)
 {
+	GConfValue *gconf_value;
+
+	g_return_if_fail (name != NULL);
+	
+	gconf_value = gconf_value_new (GCONF_VALUE_INT);
+
+	gconf_value_set_int (gconf_value, value);
+
+	preferences_set_emergency_fallback_stealing_value (name, gconf_value);
+}
+
+void
+eel_preferences_set_emergency_fallback_boolean (const char *name,
+						gboolean    value)
+{
+	GConfValue *gconf_value;
+
+	g_return_if_fail (name != NULL);
+	
+	gconf_value = gconf_value_new (GCONF_VALUE_BOOL);
+
+	gconf_value_set_bool (gconf_value, value);
+
+	preferences_set_emergency_fallback_stealing_value (name, gconf_value);
+}
+
+static void
+listify_strings_foreach (const char *string,
+			 gpointer callback_data)
+{
+	GSList **listp = callback_data;
+	GConfValue *value;
+
+	value = gconf_value_new (GCONF_VALUE_STRING);
+	gconf_value_set_string (value, string);
+	
+	*listp = g_slist_prepend (*listp, value);
+}
+
+void
+eel_preferences_set_emergency_fallback_string_list (const char    *name,
+						    EelStringList *value)
+{
+	GConfValue *gconf_value;
+	GSList *list;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (value != NULL);
+	
+	gconf_value = gconf_value_new (GCONF_VALUE_LIST);
+
+	gconf_value_set_list_type (gconf_value, GCONF_VALUE_STRING);
+	list = NULL;
+	eel_string_list_for_each (value, listify_strings_foreach, &list);
+	gconf_value_set_list_nocopy (gconf_value, g_slist_reverse (list));
+
+	preferences_set_emergency_fallback_stealing_value (name, gconf_value);
+}
+
+GConfValue*
+eel_preferences_get_emergency_fallback (const char *name)
+{
+	PreferencesEntry *entry;
+
+	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (preferences_is_initialized (), NULL);
 
-	return g_strdup (preferences_peek_user_level_name_for_storage (user_level));
-}
-
-int
-eel_preferences_user_level_clamp (int user_level)
-{
-	g_return_val_if_fail (preferences_is_initialized (), 0);
-
-	return CLAMP (user_level, EEL_USER_LEVEL_NOVICE, EEL_USER_LEVEL_ADVANCED);
-}
-
-gboolean
-eel_preferences_user_level_is_valid (int user_level)
-{
-	g_return_val_if_fail (preferences_is_initialized (), FALSE);
-
-	return user_level == eel_preferences_user_level_clamp (user_level);
+	entry = preferences_global_table_lookup_or_insert (name);
+	
+	return entry->fallback ? gconf_value_copy (entry->fallback) : NULL;
 }
 
 gboolean
@@ -1714,37 +1474,16 @@ eel_preferences_monitor_directory (const char *directory)
 }
 
 gboolean
-eel_preferences_visible_in_current_user_level (const char *name)
-{
-	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (preferences_is_initialized (), FALSE);
-
-	return eel_preferences_get_visible_user_level (name)
-		<= eel_preferences_get_user_level ();
-}
-
-gboolean
 eel_preferences_is_visible (const char *name)
 {
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (preferences_is_initialized (), FALSE);
 
-	if (!eel_preferences_visible_in_current_user_level (name)) {
-		return FALSE;
-	}
-
 	return !preferences_global_table_lookup_or_insert (name)->invisible;
 }
 
-static void
-preferences_remove_user_level_notice (void)
-{
-	eel_gconf_notification_remove (user_level_changed_connection_id);
-	user_level_changed_connection_id = EEL_GCONF_UNDEFINED_CONNECTION;
-}
-
 void
-eel_preferences_initialize (const char *path)
+eel_preferences_init (const char *path)
 {
 	g_return_if_fail (eel_strlen (path) > 0);
 	
@@ -1753,12 +1492,6 @@ eel_preferences_initialize (const char *path)
 	}
 
 	initialized = TRUE;
-
-	user_level_changed_connection_id = eel_gconf_notification_add (USER_LEVEL_KEY,
-								       preferences_user_level_changed_notice,
-								       NULL);
-
-	g_atexit (preferences_remove_user_level_notice);
 
 	preferences_set_storage_path (path);
 }

@@ -25,41 +25,49 @@
 #include <config.h>
 #include <gtk/gtktypeutils.h>
 
+#define EEL_COMPILATION 1
 #include <eel/eel.h>
 
 #include "eel-type-builtins-vars.c"
 #include "eel-type-builtins-evals.c"
 
 void
-eel_type_init() {
+eel_type_init (void)
+{
 	int i;
+	GtkType type_id;
+	static gboolean initialized = FALSE;
 	
 	static struct {
-		const gchar * type_name;
+		const gchar *type_name;
 		GtkType *type_id;
 		GtkType parent;
-		const GtkEnumValue *values;
-	} builtin_info[EEL_TYPE_NUM_BUILTINS + 1] = {
-		
+		gconstpointer pointer1;
+		gpointer pointer2;
+	} builtin_info[EEL_TYPE_N_BUILTINS] = {
 #include "eel-type-builtins-ids.c"
-		
-		{ NULL }
 	};
-	
-	for (i = 0; i < EEL_TYPE_NUM_BUILTINS; i++) {
-		GtkType type_id = GTK_TYPE_INVALID;
-		g_assert (builtin_info[i].type_name != NULL);
 
-		if (builtin_info[i].parent == GTK_TYPE_ENUM) {
-			type_id = gtk_type_register_enum (builtin_info[i].type_name, 
-							  (GtkEnumValue *)builtin_info[i].values);
-		} else if (builtin_info[i].parent == GTK_TYPE_FLAGS) {
-			type_id = gtk_type_register_flags (builtin_info[i].type_name, 
-							   (GtkFlagValue *)builtin_info[i].values);
+	if (initialized) {
+		return;
+	}
+	initialized = TRUE;
+	
+	for (i = 0; i < EEL_TYPE_N_BUILTINS; i++) {
+		type_id = G_TYPE_INVALID;
+
+		if (builtin_info[i].parent == G_TYPE_ENUM) {
+			type_id = g_enum_register_static (builtin_info[i].type_name, 
+							  builtin_info[i].pointer1);
+		} else if (builtin_info[i].parent == G_TYPE_FLAGS) {
+			type_id = g_flags_register_static (builtin_info[i].type_name, 
+							   builtin_info[i].pointer1);
+		} else {
+			g_assert_not_reached ();
 		}
 
-		g_assert (type_id != GTK_TYPE_INVALID);
-		(*builtin_info[i].type_id) = type_id;
+		g_assert (type_id != G_TYPE_INVALID);
+		*builtin_info[i].type_id = type_id;
 	}
 }
 

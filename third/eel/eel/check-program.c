@@ -24,60 +24,30 @@
 
 #include <config.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs-init.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-lib-self-check-functions.h>
 #include <eel/eel-self-checks.h>
+#include <gdk/gdkrgb.h>
+#include <gtk/gtkmain.h>
+#include <libgnomeui/gnome-ui-init.h>
+#include <libgnomevfs/gnome-vfs-init.h>
+#include <libxml/parser.h>
+#include <stdlib.h>
 
 int
 main (int argc, char *argv[])
 {
-#ifndef EEL_OMIT_SELF_CHECK
-	/* Make criticals and warnings stop in the debugger if
-	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
-	 * explicitly for each domain.
-	 */
-	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib,
-			 "Bonobo",
-			 "Gdk",
-			 "GnomeUI",
-			 "GnomeVFS",
-			 "GnomeVFS-CORBA",
-			 "GnomeVFS-pthread",
-			 "Gtk",
-			 "Eel",
-			 "Eel-Authenticate",
-			 "Eel-Tree",
-			 "ORBit",
-			 NULL);
-	}
+	eel_make_warnings_and_criticals_stop_in_debugger ();
 	
-	/* Initialize gettext support */
-	/* Sadly, we need this ifdef because otherwise the following
-	 * lines cause empty statement warnings.
-	 */
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
 
-#endif
-        gnome_init ("eel", VERSION, argc, argv);
-
-	gdk_rgb_init ();
-
-	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
-	g_atexit (xmlCleanupParser);
-	g_thread_init (NULL);
-
-	gnome_vfs_init ();
+        gnome_program_init ("eel-test", VERSION,
+			    libgnomeui_module_info_get (), argc, argv,
+			    NULL);
 
 	/* Run the checks for eel twice. */
+
 	eel_run_lib_self_checks ();
 	eel_exit_if_self_checks_failed ();
 
@@ -85,7 +55,7 @@ main (int argc, char *argv[])
 	eel_exit_if_self_checks_failed ();
 
 	gnome_vfs_shutdown ();
-#endif
+	eel_debug_shut_down ();
 
 	return EXIT_SUCCESS;
 }

@@ -26,12 +26,10 @@
    and selection hilighting */
 
 #include <config.h>
+#include "eel-graphic-effects.h"
 
-#include <libart_lgpl/art_config.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_rgb.h>
-
-#include "eel-graphic-effects.h"
 
 /* shared utility to create a new pixbuf from the passed-in one */
 

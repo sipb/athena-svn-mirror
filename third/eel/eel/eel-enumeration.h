@@ -5,16 +5,16 @@
    Copyright (C) 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -75,6 +75,10 @@ int             eel_enumeration_get_value_position                (const EelEnum
 								   int                        value);
 gboolean        eel_enumeration_contains_name                     (const EelEnumeration      *enumeration,
 								   const char                *name);
+int             eel_enumeration_get_sub_value                     (const EelEnumeration      *enumeration,
+								   const char                *sub_name);
+const char     *eel_enumeration_get_sub_name                      (const EelEnumeration      *enumeration,
+								   int                        sub_value);
 EelStringList * eel_enumeration_get_names                         (const EelEnumeration      *enumeration);
 void            eel_enumeration_register                          (const EelEnumerationInfo   info_array[]);
 EelEnumeration *eel_enumeration_lookup                            (const char                *id);
@@ -95,6 +99,10 @@ int             eel_enumeration_id_get_value_position             (const char   
 								   int                        value);
 gboolean        eel_enumeration_id_contains_name                  (const char                *id,
 								   const char                *name);
+int             eel_enumeration_id_get_sub_value                  (const char                *id,
+								   const char                *sub_name);
+const char     *eel_enumeration_id_get_sub_name                   (const char                *id,
+								   int                        sub_value);
 
 #endif /* EEL_ENUMERATION_H */
 

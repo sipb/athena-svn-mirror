@@ -1,5 +1,6 @@
 #include "test.h"
-#include "dumb-box.h"
+
+#include <eel/eel-debug-drawing.h>
 
 static const char *state_names[] = {
 	"Normal",
@@ -8,7 +9,7 @@ static const char *state_names[] = {
 	"Selected",
 	"Insensitive"
 };
-#define NUM_STATES EEL_N_ELEMENTS (state_names)
+#define NUM_STATES G_N_ELEMENTS (state_names)
 
 static const char *color_names[] = {
 	"fg",
@@ -19,7 +20,7 @@ static const char *color_names[] = {
 	"text",
 	"base"
 };
-#define NUM_COLORS EEL_N_ELEMENTS (color_names)
+#define NUM_COLORS G_N_ELEMENTS (color_names)
 
 static const char *gc_names[] = {
 	"fg_gc",
@@ -30,12 +31,12 @@ static const char *gc_names[] = {
 	"text_gc",
 	"base_gc"
 };
-#define NUM_GCS EEL_N_ELEMENTS (gc_names)
+#define NUM_GCS G_N_ELEMENTS (gc_names)
 
 static const char *pixmap_names[] = {
 	"bg_pixmaps"
 };
-#define NUM_PIXMAPS EEL_N_ELEMENTS (pixmap_names)
+#define NUM_PIXMAPS G_N_ELEMENTS (pixmap_names)
 
 static GdkColor
 style_get_color (const GtkStyle *style,
@@ -56,16 +57,15 @@ style_get_color (const GtkStyle *style,
 	g_return_val_if_fail (state <= GTK_STATE_INSENSITIVE, empty);
 
 	switch (n) {
-	case 0: return style->fg[state]; break;
-	case 1: return style->bg[state]; break;
-	case 2: return style->light[state]; break;
-	case 3: return style->dark[state]; break;
-	case 4: return style->mid[state]; break;
-	case 5: return style->text[state]; break;
-	case 6: return style->base[state]; break;
-	default:
+	case 0: return style->fg[state];
+	case 1: return style->bg[state];
+	case 2: return style->light[state];
+	case 3: return style->dark[state];
+	case 4: return style->mid[state];
+	case 5: return style->text[state];
+	case 6: return style->base[state];
 	}
-	g_assert_not_reached ();
+	g_return_val_if_reached (empty);
 	return empty;
 }
 
@@ -81,16 +81,15 @@ style_get_gc (const GtkStyle *style,
 	g_return_val_if_fail (state <= GTK_STATE_INSENSITIVE, NULL);
 
 	switch (n) {
-	case 0: return style->fg_gc[state]; break;
-	case 1: return style->bg_gc[state]; break;
-	case 2: return style->light_gc[state]; break;
-	case 3: return style->dark_gc[state]; break;
-	case 4: return style->mid_gc[state]; break;
-	case 5: return style->text_gc[state]; break;
-	case 6: return style->base_gc[state]; break;
-	default:
+	case 0: return style->fg_gc[state];
+	case 1: return style->bg_gc[state];
+	case 2: return style->light_gc[state];
+	case 3: return style->dark_gc[state];
+	case 4: return style->mid_gc[state];
+	case 5: return style->text_gc[state];
+	case 6: return style->base_gc[state];
 	}
-	g_assert_not_reached ();
+	g_return_val_if_reached (NULL);
 	return NULL;
 }
 
@@ -117,11 +116,11 @@ color_box_expose_event (GtkWidget *widget,
 	GdkColor color;
 	GdkGC *gc;
 
- 	g_return_val_if_fail (GTK_IS_DUMB_BOX (widget), FALSE);
+ 	g_return_val_if_fail (GTK_IS_VBOX (widget), FALSE);
  	g_return_val_if_fail (event != NULL, FALSE);
 
-	col = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "col"));
-	row = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "row"));
+	col = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "col"));
+	row = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "row"));
 
 	child = GTK_BIN (widget)->child;
 
@@ -141,7 +140,7 @@ color_box_expose_event (GtkWidget *widget,
 			    eel_art_irect_get_width (dirty_area),
 			    eel_art_irect_get_height (dirty_area));
 
-	gdk_gc_unref (gc);
+	g_object_unref (gc);
 
 	return TRUE;
 }
@@ -157,11 +156,11 @@ gc_box_expose_event (GtkWidget *widget,
 	ArtIRect dirty_area;
 	GdkGC *gc;
 
- 	g_return_val_if_fail (GTK_IS_DUMB_BOX (widget), FALSE);
+ 	g_return_val_if_fail (GTK_IS_VBOX (widget), FALSE);
  	g_return_val_if_fail (event != NULL, FALSE);
 
-	col = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "col"));
-	row = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "row"));
+	col = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "col"));
+	row = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "row"));
 
 	child = GTK_BIN (widget)->child;
 
@@ -194,11 +193,11 @@ pixmap_box_expose_event (GtkWidget *widget,
 	int pixmap_height;
 	GdkGC *gc;
 
- 	g_return_val_if_fail (GTK_IS_DUMB_BOX (widget), FALSE);
+ 	g_return_val_if_fail (GTK_IS_VBOX (widget), FALSE);
  	g_return_val_if_fail (event != NULL, FALSE);
 
-	col = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "col"));
-	row = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "row"));
+	col = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "col"));
+	row = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "row"));
 
 	child = GTK_BIN (widget)->child;
 
@@ -214,14 +213,14 @@ pixmap_box_expose_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	gdk_window_get_size (pixmap, &pixmap_width, &pixmap_height);
+	gdk_drawable_get_size (pixmap, &pixmap_width, &pixmap_height);
 
 	g_return_val_if_fail (pixmap_width > 0, TRUE);
 	g_return_val_if_fail (pixmap_height > 0, TRUE);
 
 	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
 					       pixmap,
-					       gdk_rgb_get_cmap (),
+					       NULL,
 					       0, 0,
 					       0, 0, 
 					       pixmap_width,
@@ -244,8 +243,8 @@ pixmap_box_expose_event (GtkWidget *widget,
 					       GDK_RGB_DITHER_NONE,
 					       GDK_PIXBUF_ALPHA_BILEVEL,
 					       128);
-	gdk_gc_unref (gc);
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (gc);
+	g_object_unref (pixbuf);
 
 	eel_debug_draw_rectangle_and_cross (widget->window,
 					    eel_art_irect_offset_to (eel_gtk_widget_get_bounds (widget), 0, 0),
@@ -335,19 +334,19 @@ main (int argc, char* argv[])
 
 	for (j = 0; j < NUM_COLORS; j++) {
 		for (i = 0; i < NUM_STATES; i++) {
-			colors_boxes[i][j] = eel_dumb_box_new ();
+			colors_boxes[i][j] = gtk_vbox_new (FALSE, 0);
 			gtk_widget_ensure_style (colors_boxes[i][j]);
 
-			gtk_signal_connect (GTK_OBJECT (colors_boxes[i][j]),
+			g_signal_connect (colors_boxes[i][j],
 					    "expose_event",
-					    GTK_SIGNAL_FUNC (color_box_expose_event),
+					    G_CALLBACK (color_box_expose_event),
 					    NULL);
 
-			gtk_object_set_data (GTK_OBJECT (colors_boxes[i][j]),
+			g_object_set_data (G_OBJECT (colors_boxes[i][j]),
 					     "col",
 					     GINT_TO_POINTER (i));
 
-			gtk_object_set_data (GTK_OBJECT (colors_boxes[i][j]),
+			g_object_set_data (G_OBJECT (colors_boxes[i][j]),
 					     "row",
 					     GINT_TO_POINTER (j));
 
@@ -418,19 +417,19 @@ main (int argc, char* argv[])
 
 	for (j = 0; j < NUM_GCS; j++) {
 		for (i = 0; i < NUM_STATES; i++) {
-			gcs_boxes[i][j] = eel_dumb_box_new ();
+			gcs_boxes[i][j] = gtk_vbox_new (FALSE, 0);
 			gtk_widget_ensure_style (gcs_boxes[i][j]);
 			
-			gtk_signal_connect (GTK_OBJECT (gcs_boxes[i][j]),
+			g_signal_connect (gcs_boxes[i][j],
 					    "expose_event",
-					    GTK_SIGNAL_FUNC (gc_box_expose_event),
+					    G_CALLBACK (gc_box_expose_event),
 					    NULL);
 
-			gtk_object_set_data (GTK_OBJECT (gcs_boxes[i][j]),
+			g_object_set_data (G_OBJECT (gcs_boxes[i][j]),
 					     "col",
 					     GINT_TO_POINTER (i));
 
-			gtk_object_set_data (GTK_OBJECT (gcs_boxes[i][j]),
+			g_object_set_data (G_OBJECT (gcs_boxes[i][j]),
 					     "row",
 					     GINT_TO_POINTER (j));
 
@@ -500,19 +499,19 @@ main (int argc, char* argv[])
 
 	for (j = 0; j < NUM_PIXMAPS; j++) {
 		for (i = 0; i < NUM_STATES; i++) {
-			pixmaps_boxes[i][j] = eel_dumb_box_new ();
+			pixmaps_boxes[i][j] = gtk_vbox_new (FALSE, 0);
 			gtk_widget_ensure_style (pixmaps_boxes[i][j]);
 
-			gtk_signal_connect (GTK_OBJECT (pixmaps_boxes[i][j]),
+			g_signal_connect (pixmaps_boxes[i][j],
 					    "expose_event",
-					    GTK_SIGNAL_FUNC (pixmap_box_expose_event),
+					    G_CALLBACK (pixmap_box_expose_event),
 					    NULL);
 
-			gtk_object_set_data (GTK_OBJECT (pixmaps_boxes[i][j]),
+			g_object_set_data (G_OBJECT (pixmaps_boxes[i][j]),
 					     "col",
 					     GINT_TO_POINTER (i));
 
-			gtk_object_set_data (GTK_OBJECT (pixmaps_boxes[i][j]),
+			g_object_set_data (G_OBJECT (pixmaps_boxes[i][j]),
 					     "row",
 					     GINT_TO_POINTER (j));
 

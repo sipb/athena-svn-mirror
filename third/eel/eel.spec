@@ -1,120 +1,177 @@
-# Note that this is NOT a relocatable package
-%define name		eel
-%define ver		1.0.2
-%define RELEASE		0_cvs_0
-%define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define prefix		/usr
-%define sysconfdir	/etc
+%define __spec_install_post /usr/lib/rpm/brp-compress
+Name:             eel2
+Summary:          Eazel Extensions Library.
+Version:          2.1.5
+Release:          1
+License:          GPL
+Group:            System Environment/Libraries
+Source:           eel-%{version}.tar.gz
+Source2:          fixed-ltmain.sh
+URL:              http://nautilus.eazel.com/
+BuildRoot:        %{_tmppath}/%{name}-%{version}-root
+BuildRequires:    pkgconfig >= 0.8
+Requires:         GConf2 >= 1.1.11
+Requires:         gtk2 >= 2.1.0
+Requires:         glib2 >= 2
+Requires:         gnome-vfs2 >= 1.9
+Requires:         libart_lgpl >= 2.3.8
+Requires:         libgnome >= 2.0
+Requires:         libgnomeui >= 2.0
+Requires:         libxml2 >= 2.4.7
+Prereq:           GConf2
+BuildRequires:    GConf2-devel >= 1.1.11
+BuildRequires:    gtk2-devel >= 2.1.0
+BuildRequires:    glib2-devel >= 2
+BuildRequires:    gnome-vfs2-devel >= 1.9
+BuildRequires:    libart_lgpl-devel >= 2.3.8
+BuildRequires:    libgnome-devel >= 2.0
+BuildRequires:    libgnomeui-devel >= 2.0
+BuildRequires:    libxml2-devel >= 2.4.7
 
-Name:		%name
-Vendor:		GNOME
-Distribution:	CVS
-Summary:	Eazel Extensions Library
-Version: 	%ver
-Release: 	%rel
-Copyright: 	GPL
-Group:		System Environment/Libraries
-Source: 	%{name}-%{ver}.tar.gz
-URL: 		http://nautilus.eazel.com/
-BuildRoot:	/var/tmp/%{name}-%{ver}-root
-Docdir: 	%{prefix}/doc
-Requires:	glib >= 1.2.9
-Requires:	gtk+ >= 1.2.9
-Requires:	libxml >= 1.8.10
-Requires:	gnome-libs >= 1.2.11
-Requires:	gnome-vfs >= 1.0
-Requires:	gdk-pixbuf >= 0.10.0
-Requires:	freetype >= 2.0.1
-Requires:	libpng
-Requires:	GConf >= 0.12
-Requires:	oaf >= 0.6.5
-Requires:	librsvg >= 1.0.0
-
-BuildRequires:	glib-devel >= 1.2.9
-BuildRequires:	gtk+-devel >= 1.2.9
-BuildRequires:	libxml-devel >= 1.8.10
-BuildRequires:	gnome-libs-devel >= 1.2.11
-BuildRequires:	GConf-devel >= 0.12
-BuildRequires:	oaf-devel >= 0.6.5
-BuildRequires:	gnome-vfs-devel >= 1.0
-BuildRequires:	gdk-pixbuf-devel >= 0.10.0
-BuildRequires:	libpng-devel
-BuildRequires:	librsvg-devel >= 1.0.0
 
 %description
-Eazel Extensions Library
+Eazel Extensions Library is a collection of widgets and functions for
+use with GNOME.
 
 %package devel
-Summary:	Libraries and include files for developing with Eel.
-Group:		Development/Libraries
-Requires:	%name = %{PACKAGE_VERSION}
+Summary:          Libraries and include files for developing with Eel.
+Group:            Development/Libraries
+Requires:         %{name} = %{version}
+Requires:         pkgconfig >= 0.8
+Requires:         GConf2 >= 1.1.11
+Requires:         GConf2-devel >= 1.1.11
+Requires:         gtk2 >= 2.1.0
+Requires:         gtk2-devel >= 2.1.0
+Requires:         glib2 >= 2
+Requires:         glib2-devel >= 2
+Requires:         gnome-vfs2 >= 1.9
+Requires:         gnome-vfs2-devel >= 1.9
+Requires:         libart_lgpl >= 2.3.8
+Requires:         libart_lgpl-devel >= 2.3.8
+Requires:         libgnome >= 2.0
+Requires:         libgnome-devel >= 2.0
+Requires:         libgnomeui >= 2.0
+Requires:         libgnomeui-devel >= 2.0
+Requires:         libxml2 >= 2.4.7
+Requires:         libxml2-devel >= 2.4.7
+
 
 %description devel
 This package provides the necessary development libraries and include
 files to allow you to develop with Eel.
 
-%changelog
-* Wed Apr 04 2000 Ramiro Estrugo <ramiro@eazel.com>
-- created this thing
-
 %prep
-%setup
+%setup -q -n eel-%{version}
 
 %build
-%ifarch alpha
-	MYARCH_FLAGS="--host=alpha-redhat-linux"
-%endif
+rm ltmain.sh && cp %{SOURCE2} ltmain.sh
+%configure
 
-LC_ALL=""
-LINGUAS=""
-LANG=""
-export LC_ALL LINGUAS LANG
-
-## Warning!  Make sure there are no spaces or tabs after the \ 
-## continuation character, or else the rpm demons will eat you.
-CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
-	--sysconfdir=%{sysconfdir}
-
-make -k
-make check
+make
 
 %install
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-make -k prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
-for FILE in "$RPM_BUILD_ROOT/bin/*"; do
-	file "$FILE" | grep -q not\ stripped && strip $FILE
-done
+rm -rf $RPM_BUILD_ROOT
+%makeinstall
+
+%find_lang eel-2.0
 
 %clean
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
-%post
-if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
-	echo "%{prefix}/lib" >> /etc/ld.so.conf
-fi
-/sbin/ldconfig
+%post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-%files
+%files -f eel-2.0.lang
 
-%defattr(0555, bin, bin)
+%defattr(-,root,root)
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
 %{_libdir}/*.so*
 
-%defattr (0444, bin, bin)
-%{_datadir}/locale/*/LC_MESSAGES/*.mo
-%{_datadir}/eel/fonts/urw/*.dir
-%{_datadir}/eel/fonts/urw/*.pfb
-%{_datadir}/eel/fonts/urw/*.afm
-%{_datadir}/eel/fonts/urw/*.pfm
-
 %files devel
+%defattr(-,root,root)
+%{_libdir}/*.so
+%{_libdir}/*a
+%{_libdir}/pkgconfig
+%{_includedir}/eel-2
 
-%defattr(0555, bin, bin)
-%{_libdir}/*.la
-%{_libdir}/*.sh
-%{_bindir}/eel-config
+%changelog
+* Tue Mar 05 2002 Chris Chabot <chabotc@reviewboard.com>
+- Fixed last small format items
+- Converted to .spec.in
+- Added deps
 
-%defattr(0444, bin, bin)
-%{_includedir}/eel-1/eel/*.h
+* Mon Feb 04 2002 Roy-Magne Mo <rmo@sunnmore.net>
+- Fixed lang
+
+* Sun Jan 20 2002 Chris Chabot <chabotc@reviewboard.com>
+- Various cleanups
+- moved build path from hard coded to _tmppath
+
+* Sat Jan 19 2002 Chris Chabot <chabotc@reviewboard.com>
+- Bumped version to 1.1.2
+
+* Mon Nov 26 2001 Havoc Pennington <hp@redhat.com>
+- Eel version 2 package created
+
+* Tue Oct 23 2001 Havoc Pennington <hp@redhat.com>
+- 1.0.2
+
+* Wed Aug 29 2001 Alex Larsson <alexl@redhat.com>
+- Added new font with cyrrilic glyphs from
+- ftp://ftp.gnome.ru/fonts/urw/
+- This closes #52772
+
+* Mon Aug 27 2001 Alex Larsson <alexl@redhat.com> 1.0.1-18
+- Add patch to fix #52348
+
+* Thu Aug 23 2001 Havoc Pennington <hp@redhat.com>
+- Applied patch from CVS to try fixing #51965
+
+* Wed Aug 22 2001 Havoc Pennington <hp@redhat.com>
+- Applied patch to handle multibyte chars in
+eel_string_ellipsize - hopefully fixes #51710
+
+* Fri Aug 17 2001 Alexander Larsson <alexl@redhat.com> 1.0.1-15
+- Fixed the default font patch. It crashed on 64bit arch.
+
+* Tue Aug 14 2001 Alexander Larsson <alexl@redhat.com> 1.0.1-13
+- Fixed EelScalableFont to not keep reloading fonts
+- all the time.
+
+* Fri Aug  3 2001 Owen Taylor <otaylor@redhat.com>
+- Fix problems with EelImageChooser widget and Japanese
+
+* Fri Jul 27 2001 Alexander Larsson <alexl@redhat.com>
+- Get some fixes from CVS head, one that segfaulted ia64.
+- This also moves the include file into a eel-1 dir, so that
+- it can later coexist with eel 2.0.
+
+* Tue Jul 24 2001 Owen Taylor <otaylor@redhat.com>
+- Fixes for efficiency of background drawing
+
+* Tue Jul 24 2001 Akira TAGOH <tagoh@redhat.com> 1.0.1-7
+- fixed typo in patch. oops.
+
+* Mon Jul 23 2001 Akira TAGOH <tagoh@redhat.com> 1.0.1-6
+- fixed choose the default font with every locale.
+
+* Wed Jul 18 2001 Havoc Pennington <hp@redhat.com>
+- own some directories we didn't before
+
+* Sun Jul 08 2001 Tim Powers <timp@redhat.com>
+- cleaned up files list so that the defattr is doing something
+sensible and not leaving out the docs
+- moved changelog to the end of the specfile
+
+* Fri Jul 06 2001 Alexander Larsson <alla@redhat.com>
+- Removed docdir and cleaned up specfile a bit.
+
+* Fri Jul 06 2001 Alexander Larsson <alla@redhat.com>
+- Updated to 1.0.1
+
+* Wed May 09 2001 Jonathan Blandford <jrb@redhat.com>
+- Add to Red Hat build system
+
+* Wed Apr 04 2000 Ramiro Estrugo <ramiro@eazel.com>
+- created this thing

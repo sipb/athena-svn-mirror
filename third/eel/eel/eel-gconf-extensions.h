@@ -25,11 +25,12 @@
 #ifndef EEL_GCONF_EXTENSIONS_H
 #define EEL_GCONF_EXTENSIONS_H
 
+#include <glib.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
-#include <libgnome/gnome-defs.h>
+#include <eel/eel-string-list.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_GCONF_UNDEFINED_CONNECTION 0
 
@@ -50,8 +51,11 @@ void         eel_gconf_set_string_list       (const char             *key,
 gboolean     eel_gconf_is_default            (const char             *key);
 gboolean     eel_gconf_monitor_add           (const char             *directory);
 gboolean     eel_gconf_monitor_remove        (const char             *directory);
+void         eel_gconf_preload_cache         (const char             *directory,
+					      GConfClientPreloadType  preload_type);
 void         eel_gconf_suggest_sync          (void);
 GConfValue*  eel_gconf_get_value             (const char             *key);
+GConfValue*  eel_gconf_get_default_value     (const char             *key);
 gboolean     eel_gconf_value_is_equal        (const GConfValue       *a,
 					      const GConfValue       *b);
 void         eel_gconf_value_free            (GConfValue             *value);
@@ -62,7 +66,8 @@ void         eel_gconf_notification_remove   (guint                   notificati
 GSList *     eel_gconf_value_get_string_list (const GConfValue       *value);
 void         eel_gconf_value_set_string_list (GConfValue             *value,
 					      const GSList           *string_list);
+EelStringList *eel_gconf_value_get_eel_string_list (const GConfValue *value);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_GCONF_EXTENSIONS_H */

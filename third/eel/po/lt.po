@@ -5,91 +5,77 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel 1.0.1\n"
-"POT-Creation-Date: 2001-10-05 11:18-0700\n"
+"POT-Creation-Date: 2002-12-09 13:16+0100\n"
 "PO-Revision-Date: 2001-05-10 23:51+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-13\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-dnd.c:494
-msgid "_Move here"
-msgstr "_Perkelti Ëia"
-
-#: eel/eel-dnd.c:495
-msgid "_Copy here"
-msgstr "_Kopijuoti Ëia"
-
-#: eel/eel-dnd.c:496
-msgid "_Link here"
-msgstr "_Padaryti nuorod‡ Ëia"
-
-#: eel/eel-dnd.c:498
-msgid "Cancel"
-msgstr "Ataukti"
-
-#: eel/eel-font-picker.c:80
-msgid "Normal"
-msgstr "Paprastas"
-
-#: eel/eel-font-picker.c:81
-msgid "Unknown"
-msgstr "Ne˛inomas"
-
-#: eel/eel-font-picker.c:87
-msgid "Bold"
-msgstr "Pastorintas"
-
-#: eel/eel-font-picker.c:88
-msgid "Book"
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
 msgstr ""
 
-#: eel/eel-font-picker.c:89
-msgid "Black"
-msgstr "Juodas"
-
-#: eel/eel-font-picker.c:90
-msgid "Demibold"
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
 msgstr ""
 
-#: eel/eel-font-picker.c:91
-msgid "Light"
-msgstr "Lengvas"
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr ""
 
-#: eel/eel-font-picker.c:97
-msgid "Italic"
-msgstr "Kursyvinis"
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr ""
 
-#: eel/eel-font-picker.c:98
-msgid "Oblique"
-msgstr "PasvirÊs"
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr ""
 
-#: eel/eel-font-picker.c:99
-msgid "Reverse Italic"
-msgstr "Atbulai kursyvinis"
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
 
-#: eel/eel-font-picker.c:100
-msgid "Reverse Oblique"
-msgstr "Atbulai pasvirÊs"
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr ""
 
-#: eel/eel-font-picker.c:101
-msgid "Other"
-msgstr "Kitoks"
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
 
-#: eel/eel-font-picker.c:107
-msgid "Condensed"
-msgstr "Suspaustas"
+#: eel/eel-editable-label.c:384
+#, fuzzy
+msgid "Cursor Position"
+msgstr "Klausimas"
 
-#: eel/eel-font-picker.c:108
-msgid "Semicondensed"
-msgstr "Pusiau suspaustas"
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr ""
 
-#: eel/eel-font-picker.c:428
-msgid "More..."
-msgstr "Daugiau..."
+#: eel/eel-editable-label.c:394
+#, fuzzy
+msgid "Selection Bound"
+msgstr "Nieko nepasirinkta"
 
-#: eel/eel-gconf-extensions.c:82
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr ""
+
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr ""
+
+#: eel/eel-gconf-extensions.c:83
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -98,7 +84,7 @@ msgstr ""
 "GConf klaida:\n"
 " %s"
 
-#: eel/eel-gconf-extensions.c:86
+#: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -107,87 +93,141 @@ msgid ""
 msgstr ""
 "GConf klaida:\n"
 " %s\n"
-"Tolimesni klaid¯ praneimai bus rodomi tik terminale"
+"Tolimesni klaid≈≥ prane≈°imai bus rodomi tik terminale"
 
-#: eel/eel-gconf-extensions.c:90
+#: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
 msgstr "GConf klaida"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
-#. * yields -- usually just omitting the AM part is all that's
-#. * needed.
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1475
+#: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00"
 
-#: eel/eel-glib-extensions.c:1476
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00"
 
-#: eel/eel-glib-extensions.c:1477
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
-#: eel/eel-gnome-extensions.c:711
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"Nepasirinktas joks paveikslÎlis. Tu turi spragtelÎti ant paveikslÎlio, kad "
-"j· pa˛ymÎtum"
+"Nepasirinktas joks paveikslƒólis. Tu turi spragtelƒóti ant paveikslƒólio, kad "
+"jƒØ pa≈æymƒótum"
 
-#: eel/eel-gnome-extensions.c:712
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
 msgstr "Nieko nepasirinkta"
 
-#. This magic string is copied from GtkLabel.  It lives there unlocalized as well.
-#: eel/eel-label.c:46 eel/eel-smooth-text-layout.c:46
-msgid " -_,;.?/&"
-msgstr ""
-
-#: eel/eel-password-dialog.c:267
-msgid "Username:"
+#: eel/eel-password-dialog.c:203
+#, fuzzy
+msgid "_Username:"
 msgstr "Vartotojo vardas:"
 
-#: eel/eel-password-dialog.c:274
-msgid "Password:"
-msgstr "Slapta˛odis:"
+#: eel/eel-password-dialog.c:210
+#, fuzzy
+msgid "_Password:"
+msgstr "Slapta≈æodis:"
 
-#: eel/eel-password-dialog.c:304
+#: eel/eel-password-dialog.c:237
 msgid "Remember this password"
-msgstr "Prisiminti · slapta˛od·"
+msgstr "Prisiminti ≈°ƒØ slapta≈æodƒØ"
 
-#: eel/eel-preferences.c:91
-msgid "Beginner"
-msgstr "Pradedantysis"
+#: eel/eel-preferences-box.c:365
+msgid "Cat_egories:"
+msgstr ""
 
-#: eel/eel-preferences.c:92
-msgid "Intermediate"
-msgstr "Vidutiniokas"
-
-#: eel/eel-preferences.c:93
-msgid "Advanced"
-msgstr "PatyrÊs"
-
-#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:552
+#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
 msgstr "Info"
 
-#: eel/eel-stock-dialogs.c:554 eel/eel-stock-dialogs.c:607
+#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "DetalÎs"
+msgstr "Detalƒós"
 
-#: eel/eel-stock-dialogs.c:572
+#: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "PerspÎjimas"
+msgstr "Perspƒójimas"
 
-#: eel/eel-stock-dialogs.c:583 eel/eel-stock-dialogs.c:605
+#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
 msgstr "Klaida"
 
-#: eel/eel-stock-dialogs.c:638 eel/eel-stock-dialogs.c:666
+#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
 msgstr "Klausimas"
+
+#: eel/eel-vfs-extensions.c:687
+msgid " (invalid Unicode)"
+msgstr ""
+
+#~ msgid "_Move here"
+#~ msgstr "_Perkelti ƒçia"
+
+#~ msgid "_Copy here"
+#~ msgstr "_Kopijuoti ƒçia"
+
+#~ msgid "_Link here"
+#~ msgstr "_Padaryti nuorodƒÖ ƒçia"
+
+#~ msgid "Cancel"
+#~ msgstr "At≈°aukti"
+
+#~ msgid "Normal"
+#~ msgstr "Paprastas"
+
+#~ msgid "Unknown"
+#~ msgstr "Ne≈æinomas"
+
+#~ msgid "Bold"
+#~ msgstr "Pastorintas"
+
+#~ msgid "Black"
+#~ msgstr "Juodas"
+
+#~ msgid "Light"
+#~ msgstr "Lengvas"
+
+#~ msgid "Italic"
+#~ msgstr "Kursyvinis"
+
+#~ msgid "Oblique"
+#~ msgstr "Pasvirƒôs"
+
+#~ msgid "Reverse Italic"
+#~ msgstr "Atbulai kursyvinis"
+
+#~ msgid "Reverse Oblique"
+#~ msgstr "Atbulai pasvirƒôs"
+
+#~ msgid "Other"
+#~ msgstr "Kitoks"
+
+#~ msgid "Condensed"
+#~ msgstr "Suspaustas"
+
+#~ msgid "Semicondensed"
+#~ msgstr "Pusiau suspaustas"
+
+#~ msgid "More..."
+#~ msgstr "Daugiau..."
+
+#~ msgid "Beginner"
+#~ msgstr "Pradedantysis"
+
+#~ msgid "Intermediate"
+#~ msgstr "Vidutiniokas"
+
+#~ msgid "Advanced"
+#~ msgstr "Patyrƒôs"
 
 #~ msgid "fixed"
 #~ msgstr "fixed"

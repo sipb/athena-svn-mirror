@@ -25,15 +25,15 @@
 #ifndef EEL_PASSWORD_DIALOG_H
 #define EEL_PASSWORD_DIALOG_H
 
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
-#define GTK_TYPE_AUTH_DIALOG            (eel_password_dialog_get_type ())
-#define EEL_PASSWORD_DIALOG(obj)            (GTK_CHECK_CAST ((obj), GTK_TYPE_AUTH_DIALOG, EelPasswordDialog))
-#define EEL_PASSWORD_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GTK_TYPE_AUTH_DIALOG, EelPasswordDialogClass))
-#define EEL_IS_PASSWORD_DIALOG(obj)         (GTK_CHECK_TYPE ((obj), GTK_TYPE_AUTH_DIALOG))
-#define EEL_IS_PASSWORD_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_AUTH_DIALOG))
+#define EEL_TYPE_PASSWORD_DIALOG            (eel_password_dialog_get_type ())
+#define EEL_PASSWORD_DIALOG(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_PASSWORD_DIALOG, EelPasswordDialog))
+#define EEL_PASSWORD_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EEL_TYPE_PASSWORD_DIALOG, EelPasswordDialogClass))
+#define EEL_IS_PASSWORD_DIALOG(obj)         (GTK_CHECK_TYPE ((obj), EEL_TYPE_PASSWORD_DIALOG))
+#define EEL_IS_PASSWORD_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), EEL_TYPE_PASSWORD_DIALOG))
 
 typedef struct EelPasswordDialog        EelPasswordDialog;
 typedef struct EelPasswordDialogClass   EelPasswordDialogClass;
@@ -41,14 +41,14 @@ typedef struct EelPasswordDialogDetails EelPasswordDialogDetails;
 
 struct EelPasswordDialog
 {
-	GnomeDialog gnome_dialog;
+	GtkDialog gtk_dialog;
 
 	EelPasswordDialogDetails *details;
 };
 
 struct EelPasswordDialogClass
 {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 };
 
 GtkType    eel_password_dialog_get_type                (void);
@@ -76,6 +76,6 @@ char *     eel_password_dialog_get_username            (EelPasswordDialog *passw
 char *     eel_password_dialog_get_password            (EelPasswordDialog *password_dialog);
 gboolean   eel_password_dialog_get_remember            (EelPasswordDialog *password_dialog);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_PASSWORD_DIALOG_H */

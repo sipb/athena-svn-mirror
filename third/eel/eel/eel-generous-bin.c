@@ -28,24 +28,24 @@
 
 #include "eel-gtk-macros.h"
 
-static void eel_generous_bin_initialize_class (EelGenerousBinClass *class);
-static void eel_generous_bin_initialize       (EelGenerousBin      *box);
+static void eel_generous_bin_class_init (EelGenerousBinClass *class);
+static void eel_generous_bin_init       (EelGenerousBin      *box);
 static void eel_generous_bin_size_request     (GtkWidget           *widget,
 					       GtkRequisition      *requisition);
 static void eel_generous_bin_size_allocate    (GtkWidget           *widget,
 					       GtkAllocation       *allocation);
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelGenerousBin, eel_generous_bin, GTK_TYPE_BIN)
+EEL_CLASS_BOILERPLATE (EelGenerousBin, eel_generous_bin, GTK_TYPE_BIN)
 
 static void
-eel_generous_bin_initialize_class (EelGenerousBinClass *klass)
+eel_generous_bin_class_init (EelGenerousBinClass *klass)
 {
 	GTK_WIDGET_CLASS (klass)->size_request = eel_generous_bin_size_request;
 	GTK_WIDGET_CLASS (klass)->size_allocate = eel_generous_bin_size_allocate;
 }
 
 static void
-eel_generous_bin_initialize (EelGenerousBin *bin)
+eel_generous_bin_init (EelGenerousBin *bin)
 {
 }
 

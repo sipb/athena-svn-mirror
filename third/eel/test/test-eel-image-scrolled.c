@@ -1,5 +1,4 @@
 #include "test.h"
-#include <eel/eel-label.h>
 
 #if 0
 typedef struct
@@ -26,9 +25,9 @@ toggle_smooth_callback (GtkWidget *widget, gpointer callback_data)
 		return;
 	}
 
-	label = EEL_LABEL (window->label);
+	label = GTK_LABEL (window->label);
 
-	eel_label_set_is_smooth (label, !eel_label_get_is_smooth (label));
+	gtk_label_set_is_smooth (label, !gtk_label_get_is_smooth (label));
 }
 #endif
 
@@ -75,11 +74,11 @@ label_window_new (const char *title,
 	window = window_new (title, border_width);
 
 	window->frame = gtk_frame_new ("Foo");
-	window->label = eel_label_new (file_name);
+	window->label = gtk_label_new (file_name);
 	
 	if (tile_file_name != NULL) {
-		eel_label_set_tile_pixbuf_from_file_name (EEL_LABEL (window->label),
-								tile_file_name);
+		gtk_label_set_tile_pixbuf_from_file_name (GTK_LABEL (window->label),
+							  tile_file_name);
 	}
 
 	gtk_container_add (GTK_CONTAINER (window->frame), window->label);
@@ -119,12 +118,8 @@ label_window_new (void)
 	eel_background_set_color (background, "white");
 
 	/* Label */
-	label = eel_label_new (text);
-	eel_label_set_wrap (EEL_LABEL (label), TRUE);
-	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
-	eel_label_set_background_mode (EEL_LABEL (label), EEL_SMOOTH_BACKGROUND_SOLID_COLOR);
-	eel_label_set_solid_background_color (EEL_LABEL (label), EEL_RGB_COLOR_WHITE);
-	eel_label_set_text_color (EEL_LABEL (label), EEL_RGB_COLOR_RED);
+	label = gtk_label_new (text);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	
 	gtk_container_add (GTK_CONTAINER (window), label);
 
@@ -160,12 +155,8 @@ label_window_new_scrolled (void)
 	eel_background_set_color (background, "white");
 
 	/* Label */
-	label = eel_label_new (text);
-	eel_label_set_wrap (EEL_LABEL (label), TRUE);
-	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
-	eel_label_set_background_mode (EEL_LABEL (label), EEL_SMOOTH_BACKGROUND_SOLID_COLOR);
-	eel_label_set_solid_background_color (EEL_LABEL (label), EEL_RGB_COLOR_WHITE);
-	eel_label_set_text_color (EEL_LABEL (label), EEL_RGB_COLOR_RED);
+	label = gtk_label_new (text);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	
 	gtk_container_add (GTK_CONTAINER (viewport), label);
 

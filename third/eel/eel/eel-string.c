@@ -25,12 +25,13 @@
 #include <config.h>
 #include "eel-string.h"
 
-#include <ctype.h>
 #include <errno.h>
 #include <locale.h>
 #include <stdlib.h>
 
+#if !defined (EEL_OMIT_SELF_CHECK)
 #include "eel-lib-self-check-functions.h"
+#endif
 
 size_t
 eel_strlen (const char *string)
@@ -64,8 +65,8 @@ eel_strcasecmp (const char *string_a, const char *string_b)
 	 * didn't have code that already relies on 'NULL == ""', I
 	 * would change it right now.
 	 */
-	return g_strcasecmp (string_a == NULL ? "" : string_a,
-		             string_b == NULL ? "" : string_b);
+	return g_ascii_strcasecmp (string_a == NULL ? "" : string_a,
+				   string_b == NULL ? "" : string_b);
 }
 
 int
@@ -240,8 +241,8 @@ eel_istr_has_prefix (const char *haystack, const char *needle)
 		}
 		hc = *h++;
 		nc = *n++;
-		hc = tolower ((guchar) hc);
-		nc = tolower ((guchar) nc);
+		hc = g_ascii_tolower (hc);
+		nc = g_ascii_tolower (nc);
 	} while (hc == nc);
 	return FALSE;
 }
@@ -271,8 +272,8 @@ eel_istr_has_suffix (const char *haystack, const char *needle)
 		}
 		hc = *--h;
 		nc = *--n;
-		hc = tolower ((guchar) hc);
-		nc = tolower ((guchar) nc);
+		hc = g_ascii_tolower (hc);
+		nc = g_ascii_tolower (nc);
 	} while (hc == nc);
 	return FALSE;
 }
@@ -377,7 +378,7 @@ eel_str_to_int (const char *string, int *integer)
 
 	/* Check that all the trailing characters are spaces. */
 	while (*parse_end != '\0') {
-		if (!isspace (*parse_end++)) {
+		if (!g_ascii_isspace (*parse_end++)) {
 			return FALSE;
 		}
 	}
@@ -467,16 +468,6 @@ eel_str_strip_trailing_str (const char *source, const char *remove_this)
 	
 }
 
-gboolean
-eel_eat_str_to_int (char *source, int *integer)
-{
-	gboolean result;
-
-	result = eel_str_to_int (source, integer);
-	g_free (source);
-	return result;
-}
-
 char *
 eel_str_double_underscores (const char *string)
 {
@@ -522,7 +513,7 @@ eel_str_capitalize (const char *string)
 
 	capitalized = g_strdup (string);
 
-	capitalized[0] = toupper ((guchar) capitalized[0]);
+	capitalized[0] = g_ascii_toupper (capitalized[0]);
 
 	return capitalized;
 }
@@ -773,16 +764,6 @@ call_str_to_int (const char *string)
 	return integer;
 }
 
-static int
-call_eat_str_to_int (char *string)
-{
-	int integer;
-
-	integer = 9999;
-	eel_eat_str_to_int (string, &integer);
-	return integer;
-}
-
 void
 eel_self_check_string (void)
 {
@@ -937,9 +918,7 @@ eel_self_check_string (void)
 
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		EEL_CHECK_BOOLEAN_RESULT (eel_str_to_int (string, &integer), boolean_result); \
-		EEL_CHECK_INTEGER_RESULT (call_str_to_int (string), integer_result); \
-		EEL_CHECK_BOOLEAN_RESULT (eel_eat_str_to_int (g_strdup (string), &integer), boolean_result); \
-		EEL_CHECK_INTEGER_RESULT (call_eat_str_to_int (g_strdup (string)), integer_result);
+		EEL_CHECK_INTEGER_RESULT (call_str_to_int (string), integer_result);
 
 	TEST_INTEGER_CONVERSION_FUNCTIONS (NULL, FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("", FALSE, 9999)

@@ -2,29 +2,27 @@
 
 #include <libart_lgpl/art_rgb.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <unistd.h>
 
 void
 test_init (int *argc,
 	   char ***argv)
 {
+/* Currently the gnome_program_init() function makes the test
+ * programs hang for me.  Using just the gtk_init () works for
+ * most tests, so I am using just that until the gnome_program_init ()
+ * function is fixed or we learn how to use it properly. -re
+ */
+#if 0
+	gnome_program_init ("test-eel-widgets", VERSION,
+			    libgnomeui_module_info_get (), *argc, *argv,
+			    NULL);
+#else
 	gtk_init (argc, argv);
-	gdk_rgb_init ();
+#endif
 	gnome_vfs_init ();
 
-	eel_make_warnings_and_criticals_stop_in_debugger
-		(G_LOG_DOMAIN, g_log_domain_glib,
-		 "Bonobo",
-		 "Gdk",
-		 "GnomeUI",
-		 "GnomeVFS",
-		 "GnomeVFS-CORBA",
-		 "GnomeVFS-pthread",
-		 "Gtk",
-		 "Eel",
-		 "Eel-Authenticate",
-		 "Eel-Tree",
-		 "ORBit",
-		 NULL);
+	eel_make_warnings_and_criticals_stop_in_debugger ();
 }
 
 int
@@ -58,12 +56,12 @@ test_window_new (const char *title, guint border_width)
 		gtk_window_set_title (GTK_WINDOW (window), title);
 	}
 
-	gtk_signal_connect (GTK_OBJECT (window),
+	g_signal_connect (window,
 			    "delete_event",
-			    GTK_SIGNAL_FUNC (test_delete_event),
+			    G_CALLBACK (test_delete_event),
 			    NULL);
 	
-	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), border_width);
 	
 	return window;
@@ -81,7 +79,7 @@ test_gtk_widget_set_background_image (GtkWidget *widget,
 
 	background = eel_get_widget_background (widget);
 	
-	path = g_strconcat (EEL_DATADIR, image_name, NULL);
+	path = g_strconcat ("EEL_DATADIR", image_name, NULL);
 	uri = gnome_vfs_get_uri_from_local_path (path);
 	g_free (path);
 
@@ -116,10 +114,10 @@ test_pixbuf_new_named (const char *name, float scale)
 	if (name[0] == '/') {
 		path = g_strdup (name);
 	} else {
-		path = g_strdup_printf ("%s/%s", EEL_DATADIR, name);
+		path = g_strdup_printf ("%s/%s", "EEL_DATADIR", name);
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (path);
+	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 
 	g_free (path);
 
@@ -132,7 +130,7 @@ test_pixbuf_new_named (const char *name, float scale)
 
 		scaled = gdk_pixbuf_scale_simple (pixbuf, width, height, GDK_INTERP_BILINEAR);
 
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 
 		g_return_val_if_fail (scaled != NULL, NULL);
 
@@ -140,83 +138,6 @@ test_pixbuf_new_named (const char *name, float scale)
 	}
 
 	return pixbuf;
-}
-
-GtkWidget *
-test_image_new (const char *pixbuf_name,
-		const char *tile_name,
-		float scale,
-		gboolean with_background)
-{
-	GtkWidget *image;
-
-	if (with_background) {
-		image = eel_image_new_with_background (NULL);
-	} else {
-		image = eel_image_new (NULL);
-	}
-
-	if (pixbuf_name != NULL) {
-		GdkPixbuf *pixbuf;
-
-		pixbuf = test_pixbuf_new_named (pixbuf_name, scale);
-
-		if (pixbuf != NULL) {
-			eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
-			gdk_pixbuf_unref (pixbuf);
-		}
-	}
-
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
-		if (tile_pixbuf != NULL) {
-			eel_image_set_tile_pixbuf (EEL_IMAGE (image), tile_pixbuf);
-			gdk_pixbuf_unref (tile_pixbuf);
-		}
-	}
-
-	return image;
-}
-
-GtkWidget *
-test_label_new (const char *text,
-		const char *tile_name,
-		gboolean with_background,
-		int num_sizes_larger)
-{
-	GtkWidget *label;
-
-	if (text == NULL) {
-		text = "Foo";
-	}
-	
-	if (with_background) {
-		label = eel_label_new_with_background (text);
-	} else {
-		label = eel_label_new (text);
-	}
-
-	if (num_sizes_larger < 0) {
-		eel_label_make_smaller (EEL_LABEL (label), ABS (num_sizes_larger));
-	} else if (num_sizes_larger > 0) {
-		eel_label_make_larger (EEL_LABEL (label), num_sizes_larger);
-	}
-
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
-		if (tile_pixbuf != NULL) {
-			eel_label_set_tile_pixbuf (EEL_LABEL (label), tile_pixbuf);
-			gdk_pixbuf_unref (tile_pixbuf);
-		}
-	}
-
-	return label;
 }
 
 // /* Preferences hacks */
@@ -290,6 +211,7 @@ test_label_new (const char *text,
 // 	g_free (text);
 // }
 
+#if 0
 int
 test_text_caption_get_text_as_int (const EelTextCaption *text_caption)
 {
@@ -299,11 +221,12 @@ test_text_caption_get_text_as_int (const EelTextCaption *text_caption)
 	g_return_val_if_fail (EEL_IS_TEXT_CAPTION (text_caption), 0);
 
 	text = eel_text_caption_get_text (text_caption);
-
-	eel_eat_str_to_int (text, &result);
+	eel_str_to_int (text, &result);
+	g_free (text);
 
 	return result;
 }
+#endif
 
 void 
 test_window_set_title_with_pid (GtkWindow *window,
@@ -365,7 +288,7 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 					     opacity,
 					     GDK_INTERP_NEAREST);
 
-	gdk_pixbuf_unref (tile_pixbuf);
+	g_object_unref (tile_pixbuf);
 }
 
 char *
@@ -375,14 +298,14 @@ eel_pixmap_file (const char *partial_path)
 
 	/* Look for a non-GPL Eazel logo version. */
 	path = g_strdup_printf ("%s/%s", DATADIR "/pixmaps/nautilus/eazel-logos", partial_path);
-	if (g_file_exists (path)) {
+	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		return path;
 	}
 	g_free (path);
 
 	/* Look for a GPL version. */
 	path = g_strdup_printf ("%s/%s", DATADIR "/pixmaps/nautilus", partial_path);
-	if (g_file_exists (path)) {
+	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		return path;
 	}
 	g_free (path);

@@ -1,194 +1,322 @@
 # Danish translation of Eel strings.
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000, 01, 02 Free Software Foundation, Inc.
 # Kenneth Christiansen <kenneth@gnu.org>, 2000, 2001.
 # Keld Simonsen <keld@dkuug.dk>, 2000.
-# Ole Laursen <olau@hardworking.dk>, 2001.
+# Ole Laursen <olau@hardworking.dk>, 2001, 02.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-10-05 11:18-0700\n"
-"PO-Revision-Date: 2001-09-11 13:33+02:00\n"
-"Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
+"Project-Id-Version: eel\n"
+"POT-Creation-Date: 2002-12-09 13:16+0100\n"
+"PO-Revision-Date: 2002-11-30 22:45+0100\n"
+"Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-dnd.c:494
-msgid "_Move here"
-msgstr "_Flyt hertil"
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr "x"
 
-#: eel/eel-dnd.c:495
-msgid "_Copy here"
-msgstr "_Kopi�r hertil"
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr "y"
 
-#: eel/eel-dnd.c:496
-msgid "_Link here"
-msgstr "_Sammenk�d hertil"
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr "Tekst"
 
-#: eel/eel-dnd.c:498
-msgid "Cancel"
-msgstr "Annull�r"
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr "Teksten i etiketten"
 
-#: eel/eel-font-picker.c:80
-msgid "Normal"
-msgstr "Normal"
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr "Justering"
 
-#: eel/eel-font-picker.c:81
-msgid "Unknown"
-msgstr "Ukendt"
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"Justeringen af linjerne i teksten i forhold til hinanden. Dette påvirker "
+"IKKE justeringen af etiketten i dens allokering. Se GtkMisc::xalign for det."
 
-#: eel/eel-font-picker.c:87
-msgid "Bold"
-msgstr "Fed"
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr "Linjeombrydning"
 
-#: eel/eel-font-picker.c:88
-msgid "Book"
-msgstr "Bog"
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "Hvis sat, bryd linjerne hvis teksten bliver for bred."
 
-#: eel/eel-font-picker.c:89
-msgid "Black"
-msgstr "Sort"
+#: eel/eel-editable-label.c:384
+msgid "Cursor Position"
+msgstr "Markørposition"
 
-#: eel/eel-font-picker.c:90
-msgid "Demibold"
-msgstr "Mellemfed"
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr "Den aktuelle placering af indsætningsmarkøren i tegn"
 
-#: eel/eel-font-picker.c:91
-msgid "Light"
-msgstr "Let"
+#: eel/eel-editable-label.c:394
+msgid "Selection Bound"
+msgstr "Markeringsgrænse"
 
-#: eel/eel-font-picker.c:97
-msgid "Italic"
-msgstr "Kursiv"
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "Positionen af den modsatte ende af markeringen fra markøren i tegn"
 
-#: eel/eel-font-picker.c:98
-msgid "Oblique"
-msgstr "Sk�v"
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr "Marker alt"
 
-#: eel/eel-font-picker.c:99
-msgid "Reverse Italic"
-msgstr "Omvendt kursiv"
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr "Indtastningsmetoder"
 
-#: eel/eel-font-picker.c:100
-msgid "Reverse Oblique"
-msgstr "Omvendt sk�v"
-
-#: eel/eel-font-picker.c:101
-msgid "Other"
-msgstr "Andet"
-
-#: eel/eel-font-picker.c:107
-msgid "Condensed"
-msgstr "T�t"
-
-#: eel/eel-font-picker.c:108
-msgid "Semicondensed"
-msgstr "Halvt t�t"
-
-#: eel/eel-font-picker.c:428
-msgid "More..."
-msgstr "Mere..."
-
-#: eel/eel-gconf-extensions.c:82
+#: eel/eel-gconf-extensions.c:83
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"GConf fejl:\n"
+"GConf-fejl:\n"
 "  %s"
 
-#: eel/eel-gconf-extensions.c:86
+#: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"GConf fejl:\n"
+"GConf-fejl:\n"
 "  %s\n"
-"Alle yderligere fejl vises kun p� terminal"
+"Alle yderligere fejl vises kun på terminalen"
 
-#: eel/eel-gconf-extensions.c:90
+#: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "GConf fejl"
+msgstr "GConf-fejl"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
-#. * yields -- usually just omitting the AM part is all that's
-#. * needed.
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1475
+#: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01-00 01:00"
 
-#: eel/eel-glib-extensions.c:1476
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1-00, 1:00"
 
-#: eel/eel-glib-extensions.c:1477
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
 msgstr "1/ 1-00,  1:00"
 
-#: eel/eel-gnome-extensions.c:711
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"Intet billede var valgt. Du skal klikke p� et billede for at v�lge det."
+"Intet billede var valgt. Du skal klikke på et billede for at vælge det."
 
-#: eel/eel-gnome-extensions.c:712
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
 msgstr "Intet markeret"
 
-#. This magic string is copied from GtkLabel.  It lives there unlocalized as well.
-#: eel/eel-label.c:46 eel/eel-smooth-text-layout.c:46
-msgid " -_,;.?/&"
-msgstr " -_,;.?/&"
+#: eel/eel-password-dialog.c:203
+msgid "_Username:"
+msgstr "_Brugernavn:"
 
-#: eel/eel-password-dialog.c:267
-msgid "Username:"
-msgstr "Brugernavn:"
+#: eel/eel-password-dialog.c:210
+msgid "_Password:"
+msgstr "_Adgangskode:"
 
-#: eel/eel-password-dialog.c:274
-msgid "Password:"
-msgstr "Adgangskode:"
-
-#: eel/eel-password-dialog.c:304
+#: eel/eel-password-dialog.c:237
 msgid "Remember this password"
 msgstr "Husk denne adgangskode"
 
-#: eel/eel-preferences.c:91
-msgid "Beginner"
-msgstr "Begynder"
+#: eel/eel-preferences-box.c:365
+msgid "Cat_egories:"
+msgstr "_Kategorier:"
 
-#: eel/eel-preferences.c:92
-msgid "Intermediate"
-msgstr "Viderekommen"
-
-#: eel/eel-preferences.c:93
-msgid "Advanced"
-msgstr "Avanceret"
-
-#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:552
+#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
 msgstr "Info"
 
-#: eel/eel-stock-dialogs.c:554 eel/eel-stock-dialogs.c:607
+#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
 msgstr "Detaljer"
 
-#: eel/eel-stock-dialogs.c:572
+#: eel/eel-stock-dialogs.c:515
 msgid "Warning"
 msgstr "Advarsel"
 
-#: eel/eel-stock-dialogs.c:583 eel/eel-stock-dialogs.c:605
+#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
 msgstr "Fejl"
 
-#: eel/eel-stock-dialogs.c:638 eel/eel-stock-dialogs.c:666
+#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "Sp�rgsm�l"
+msgstr "Spørgsmål"
 
-#~ msgid "fixed"
-#~ msgstr "fast"
+#: eel/eel-vfs-extensions.c:687
+msgid " (invalid Unicode)"
+msgstr " (ugyldig Unicode)"
+
+#~ msgid "Pixbuf objects"
+#~ msgstr "Pixbuf-objekter"
+
+#~ msgid "The pixbuf list to render."
+#~ msgstr "Den pixbuf-liste der skal fremvises."
+
+#~ msgid "pixbuf"
+#~ msgstr "pixbuf"
+
+#~ msgid "the image"
+#~ msgstr "billedet"
+
+#~ msgid "label"
+#~ msgstr "etiket"
+
+#~ msgid "the label"
+#~ msgstr "etiketten"
+
+#~ msgid "the label position"
+#~ msgstr "etikkens placering"
+
+#~ msgid "label visible"
+#~ msgstr "etiket synlig"
+
+#~ msgid "image visible"
+#~ msgstr "billede synligt"
+
+#~ msgid "whether to show the image"
+#~ msgstr "om billedet skal vises"
+
+#~ msgid "Spacing"
+#~ msgstr "Mellemrum"
+
+#~ msgid "The amount of space between the items."
+#~ msgstr "Mellemrummet mellem elementerne"
+
+#~ msgid "X padding"
+#~ msgstr "Vandret udfyldning"
+
+#~ msgid "the amount of horizontal padding space."
+#~ msgstr "Mængden af vandret mellemrum"
+
+#~ msgid "Y padding"
+#~ msgstr "Lodret udfyldning"
+
+#~ msgid "the amount of vertical padding space"
+#~ msgstr "Mængden af lodret mellemrum"
+
+#~ msgid "Horizontal alignment"
+#~ msgstr "Vandret justering"
+
+#~ msgid ""
+#~ "Horizontal position of child in available space. 0.0 is left aligned, 1.0 "
+#~ "is right aligned"
+#~ msgstr ""
+#~ "Vandret placering af afkommet på den tilgængelige plads - 0.0 er "
+#~ "venstrejusteret, 1.0 er højrejusteret"
+
+#~ msgid "Vertical alignment"
+#~ msgstr "Lodret justering"
+
+#~ msgid ""
+#~ "Vertical position of child in available space. 0.0 is top aligned, 1.0 is "
+#~ "bottom aligned"
+#~ msgstr ""
+#~ "Vandret placering af afkommet på den tilgængelige plads - 0.0 er øverst, "
+#~ "1.0 er nederst"
+
+#~ msgid "fill"
+#~ msgstr "udfyld"
+
+#~ msgid "expand to fill allocation"
+#~ msgstr "udvid for at udfylde allokeret plads"
+
+#~ msgid "horizontal spacing"
+#~ msgstr "Vandret mellemrum"
+
+#~ msgid "The amount of horizontal spacing."
+#~ msgstr "Mængden af vandret mellemrum"
+
+#~ msgid "vertical spacing"
+#~ msgstr "lodret mellemrum"
+
+#~ msgid "The amount of vertical spacing."
+#~ msgstr "Mængden af lodret mellemrum"
+
+#~ msgid "horizontal justification"
+#~ msgstr "vandret justering"
+
+#~ msgid "Left, right, or center justification"
+#~ msgstr "Venstre, højre eller centreret justering"
+
+#~ msgid "Top, bottom, or middle justification"
+#~ msgstr "Top-, bund- eller mellemjustering"
+
+#~ msgid "homogenous"
+#~ msgstr "homogen"
+
+#~ msgid "homogeneous layout"
+#~ msgstr "homogent layout"
+
+#~ msgid "Cancel"
+#~ msgstr "Annullér"
+
+#~ msgid "Normal"
+#~ msgstr "Normal"
+
+#~ msgid "Unknown"
+#~ msgstr "Ukendt"
+
+#~ msgid "Bold"
+#~ msgstr "Fed"
+
+#~ msgid "Book"
+#~ msgstr "Bog"
+
+#~ msgid "Black"
+#~ msgstr "Sort"
+
+#~ msgid "Demibold"
+#~ msgstr "Mellemfed"
+
+#~ msgid "Light"
+#~ msgstr "Let"
+
+#~ msgid "Italic"
+#~ msgstr "Kursiv"
+
+#~ msgid "Oblique"
+#~ msgstr "Skæv"
+
+#~ msgid "Reverse Italic"
+#~ msgstr "Omvendt kursiv"
+
+#~ msgid "Reverse Oblique"
+#~ msgstr "Omvendt skæv"
+
+#~ msgid "Other"
+#~ msgstr "Andet"
+
+#~ msgid "Condensed"
+#~ msgstr "Tæt"
+
+#~ msgid "Semicondensed"
+#~ msgstr "Halvt tæt"
+
+#~ msgid "More..."
+#~ msgstr "Mere..."
+
+# hm, det er "line wrap separators"
+#~ msgid " -_,;.?/&"
+#~ msgstr " -_,;.?/&"

@@ -4,185 +4,256 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
-"POT-Creation-Date: 2001-10-05 11:18-0700\n"
-"PO-Revision-Date: 2001-04-23 16:19+04:00\n"
-"Last-Translator: Valek Filippov <frob@df.ru>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"POT-Creation-Date: 2002-12-09 13:16+0100\n"
+"PO-Revision-Date: 2002-07-29 14:02+04:00\n"
+"Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
+"Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=koi8-r\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-dnd.c:494
-msgid "_Move here"
-msgstr "����������� ����"
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr ""
 
-#: eel/eel-dnd.c:495
-msgid "_Copy here"
-msgstr "����������� ����"
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr ""
 
-#: eel/eel-dnd.c:496
-msgid "_Link here"
-msgstr "������� ������ �����"
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr ""
 
-#: eel/eel-dnd.c:498
-msgid "Cancel"
-msgstr "������"
+#: eel/eel-editable-label.c:361
+#, fuzzy
+msgid "The text of the label."
+msgstr "будет ли метка отображена"
 
-#: eel/eel-font-picker.c:80
-msgid "Normal"
-msgstr "����������"
+#: eel/eel-editable-label.c:367
+#, fuzzy
+msgid "Justification"
+msgstr "вертикальное выравнивание"
 
-#: eel/eel-font-picker.c:81
-msgid "Unknown"
-msgstr "����������"
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
 
-#: eel/eel-font-picker.c:87
-msgid "Bold"
-msgstr "����������"
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr ""
 
-#: eel/eel-font-picker.c:88
-msgid "Book"
-msgstr "�����"
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
 
-#: eel/eel-font-picker.c:89
-msgid "Black"
-msgstr "������"
+#: eel/eel-editable-label.c:384
+#, fuzzy
+msgid "Cursor Position"
+msgstr "положение"
 
-#: eel/eel-font-picker.c:90
-msgid "Demibold"
-msgstr "����������"
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr ""
 
-#: eel/eel-font-picker.c:91
-msgid "Light"
-msgstr "�������"
+#: eel/eel-editable-label.c:394
+#, fuzzy
+msgid "Selection Bound"
+msgstr "Ничего не выделено"
 
-#: eel/eel-font-picker.c:97
-msgid "Italic"
-msgstr "���������"
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
 
-#: eel/eel-font-picker.c:98
-msgid "Oblique"
-msgstr "���������"
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr ""
 
-#: eel/eel-font-picker.c:99
-msgid "Reverse Italic"
-msgstr "�������� ���������"
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr ""
 
-#: eel/eel-font-picker.c:100
-msgid "Reverse Oblique"
-msgstr "�������� ���������"
-
-#: eel/eel-font-picker.c:101
-msgid "Other"
-msgstr "������"
-
-#: eel/eel-font-picker.c:107
-msgid "Condensed"
-msgstr "������"
-
-#: eel/eel-font-picker.c:108
-msgid "Semicondensed"
-msgstr "����������"
-
-#: eel/eel-font-picker.c:428
-msgid "More..."
-msgstr "�����..."
-
-#: eel/eel-gconf-extensions.c:82
+#: eel/eel-gconf-extensions.c:83
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"������ GConf:\n"
+"Ошибка GConf:\n"
 "  %s"
 
-#: eel/eel-gconf-extensions.c:86
+#: eel/eel-gconf-extensions.c:87
 #, c-format
 msgid ""
 "GConf error:\n"
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"������ GConf:\n"
+"Ошибка GConf:\n"
 "  %s\n"
-"��� ��������� ������ ����� �������� ������ � ���� ���������"
+"Все остальные ошибки будут показаны только в окне терминала"
 
-#: eel/eel-gconf-extensions.c:90
+#: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "������ GConf"
+msgstr "Ошибка GConf"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
-#. * yields -- usually just omitting the AM part is all that's
-#. * needed.
+#. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1475
+#: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
-msgstr "01/01/00, 01:00 ��"
+msgstr "01/01/00, 01:00"
 
-#: eel/eel-glib-extensions.c:1476
+#. The second one is "%-m/%-d/%-y, %-I:%M %p".
+#: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
-msgstr "1/1/00, 1:00 ��"
+msgstr "1/1/00, 1:00"
 
-#: eel/eel-glib-extensions.c:1477
+#. The third one is "%_m/%_d/%_y, %_I:%M %p".
+#: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
-msgstr " 1/ 1/00,  1:00 ��"
+msgstr " 1/ 1/00,  1:00"
 
-#: eel/eel-gnome-extensions.c:711
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"�� ������� �����������. �� ������ �������� �� �����������, ����� ������� ���."
+"Не выбрано изображение. Вы должны щелкнуть на изображении, чтобы выбрать его."
 
-#: eel/eel-gnome-extensions.c:712
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
-msgstr "�� ������� ���������"
+msgstr "Ничего не выделено"
 
-#. This magic string is copied from GtkLabel.  It lives there unlocalized as well.
-#: eel/eel-label.c:46 eel/eel-smooth-text-layout.c:46
-msgid " -_,;.?/&"
+#: eel/eel-password-dialog.c:203
+msgid "_Username:"
+msgstr "И_мя пользователя:"
+
+#: eel/eel-password-dialog.c:210
+msgid "_Password:"
+msgstr "_Пароль:"
+
+#: eel/eel-password-dialog.c:237
+msgid "Remember this password"
+msgstr "Запомнить этот пароль"
+
+#: eel/eel-preferences-box.c:365
+msgid "Cat_egories:"
 msgstr ""
 
-#: eel/eel-password-dialog.c:267
-msgid "Username:"
-msgstr "��� ������������:"
-
-#: eel/eel-password-dialog.c:274
-msgid "Password:"
-msgstr "������:"
-
-#: eel/eel-password-dialog.c:304
-msgid "Remember this password"
-msgstr "��������� ���� ������"
-
-#: eel/eel-preferences.c:91
-msgid "Beginner"
-msgstr "�������"
-
-#: eel/eel-preferences.c:92
-msgid "Intermediate"
-msgstr "�������������"
-
-#: eel/eel-preferences.c:93
-msgid "Advanced"
-msgstr "��������"
-
-#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:552
+#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
-msgstr "����������"
+msgstr "Информация"
 
-#: eel/eel-stock-dialogs.c:554 eel/eel-stock-dialogs.c:607
+#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "�����������"
+msgstr "Подробности"
 
-#: eel/eel-stock-dialogs.c:572
+#: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "��������������"
+msgstr "Предупреждение"
 
-#: eel/eel-stock-dialogs.c:583 eel/eel-stock-dialogs.c:605
+#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
-msgstr "������"
+msgstr "Ошибка"
 
-#: eel/eel-stock-dialogs.c:638 eel/eel-stock-dialogs.c:666
+#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "������"
+msgstr "Вопрос"
+
+#: eel/eel-vfs-extensions.c:687
+msgid " (invalid Unicode)"
+msgstr " (недопустимая последовательность Unicode)"
+
+#~ msgid "Pixbuf objects"
+#~ msgstr "Объекты Pixbuf"
+
+#~ msgid "The pixbuf list to render."
+#~ msgstr "Список pixbuf для визуализации."
+
+#~ msgid "pixbuf"
+#~ msgstr "pixbuf"
+
+#~ msgid "the image"
+#~ msgstr "изображение"
+
+#~ msgid "label"
+#~ msgstr "метка"
+
+#~ msgid "the label"
+#~ msgstr "метка"
+
+#~ msgid "the label position"
+#~ msgstr "положение метки"
+
+#~ msgid "label visible"
+#~ msgstr "метка видима"
+
+#~ msgid "image visible"
+#~ msgstr "изображение видимо"
+
+#~ msgid "whether to show the image"
+#~ msgstr "будет ли изображение отображено"
+
+#~ msgid "Spacing"
+#~ msgstr "Интервал"
+
+#~ msgid "The amount of space between the items."
+#~ msgstr "Пространство между элементами."
+
+#~ msgid "Horizontal alignment"
+#~ msgstr "Горизонтальное выравнивание"
+
+#~ msgid ""
+#~ "Horizontal position of child in available space. 0.0 is left aligned, 1.0 "
+#~ "is right aligned"
+#~ msgstr ""
+#~ "Горизонтальное положение дочернего элемента в доступном пространстве. 0.0 "
+#~ "-- выровнен влево,\n"
+#~ "1.0 -- выровнен вправо"
+
+#~ msgid "Vertical alignment"
+#~ msgstr "Вертикальное выравнивание"
+
+#~ msgid ""
+#~ "Vertical position of child in available space. 0.0 is top aligned, 1.0 is "
+#~ "bottom aligned"
+#~ msgstr ""
+#~ "Вертикальное положение дочернего элемента в доступном пространстве. 0.0 "
+#~ "-- выровнен по верху,\\n\"\n"
+#~ "\"1.0 -- выровнен по низу"
+
+#~ msgid "fill"
+#~ msgstr "заполнение"
+
+#~ msgid "expand to fill allocation"
+#~ msgstr "расширять до заполнения"
+
+#~ msgid "horizontal spacing"
+#~ msgstr "горизонтальный интервал"
+
+#~ msgid "The amount of horizontal spacing."
+#~ msgstr "Горизонтальный интервал."
+
+#~ msgid "vertical spacing"
+#~ msgstr "вертикальный интервал"
+
+#~ msgid "The amount of vertical spacing."
+#~ msgstr "Вертикальный интервал."
+
+#~ msgid "horizontal justification"
+#~ msgstr "горизонтальное выравнивание"
+
+#~ msgid "Left, right, or center justification"
+#~ msgstr "Выравнивание по левому краю, правому краю или центру"
+
+#~ msgid "Top, bottom, or middle justification"
+#~ msgstr "Выравнивание по верху, низу или центру"
+
+#~ msgid "homogenous"
+#~ msgstr "равномерное"
+
+#~ msgid "homogeneous layout"
+#~ msgstr "равномерное размещение"

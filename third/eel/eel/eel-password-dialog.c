@@ -26,13 +26,15 @@
 #include "eel-password-dialog.h"
 
 #include "eel-caption-table.h"
+#include "eel-gnome-extensions.h"
 #include "eel-gtk-macros.h"
+#include "eel-i18n.h"
+#include <gtk/gtkbox.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <gtk/gtkstock.h>
 
 struct EelPasswordDialogDetails
 {
@@ -46,20 +48,9 @@ struct EelPasswordDialogDetails
 	/* Internal widgetry and flags */
 	GtkWidget *table;
 	GtkWidget *remember_button;
-	GtkLabel *message;
 };
 
-static const char * stock_buttons[] =
-{
-	GNOME_STOCK_BUTTON_OK,
-	GNOME_STOCK_BUTTON_CANCEL,
-	NULL
-};
-
-/* Dialog button indeces */
-static const gint  DIALOG_OK_BUTTON = 0;
-
-/* Caption table rows indeces */
+/* Caption table rows indices */
 static const guint CAPTION_TABLE_USERNAME_ROW = 0;
 static const guint CAPTION_TABLE_PASSWORD_ROW = 1;
 
@@ -68,11 +59,11 @@ static const guint DIALOG_BORDER_WIDTH = 0;
 static const guint CAPTION_TABLE_BORDER_WIDTH = 4;
 
 /* EelPasswordDialogClass methods */
-static void eel_password_dialog_initialize_class (EelPasswordDialogClass *password_dialog_class);
-static void eel_password_dialog_initialize       (EelPasswordDialog      *password_dialog);
+static void eel_password_dialog_class_init (EelPasswordDialogClass *password_dialog_class);
+static void eel_password_dialog_init       (EelPasswordDialog      *password_dialog);
 
-/* GtkObjectClass methods */
-static void eel_password_dialog_destroy          (GtkObject              *object);
+/* GObjectClass methods */
+static void eel_password_dialog_finalize         (GObject                *object);
 
 
 /* GtkDialog callbacks */
@@ -86,69 +77,37 @@ static void caption_table_activate_callback      (GtkWidget              *widget
 						  gpointer                callback_data);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (EelPasswordDialog,
+EEL_CLASS_BOILERPLATE (EelPasswordDialog,
 			      eel_password_dialog,
-			      gnome_dialog_get_type ());
+			      gtk_dialog_get_type ());
 
 
 static void
-eel_password_dialog_initialize_class (EelPasswordDialogClass * klass)
+eel_password_dialog_class_init (EelPasswordDialogClass * klass)
 {
-	GtkObjectClass * object_class;
-	GtkWidgetClass * widget_class;
-	
-	object_class = GTK_OBJECT_CLASS(klass);
-	widget_class = GTK_WIDGET_CLASS(klass);
-
-	/* GtkObjectClass */
-	object_class->destroy = eel_password_dialog_destroy;
+	G_OBJECT_CLASS (klass)->finalize = eel_password_dialog_finalize;
 }
 
 static void
-eel_password_dialog_initialize (EelPasswordDialog *password_dialog)
+eel_password_dialog_init (EelPasswordDialog *password_dialog)
 {
-	password_dialog->details = g_new (EelPasswordDialogDetails, 1);
-
-	password_dialog->details->username = NULL;
-	password_dialog->details->password = NULL;
-	password_dialog->details->readonly_username = FALSE;
-
-	password_dialog->details->remember_label_text = NULL;
-	password_dialog->details->remember = FALSE;
-
-	password_dialog->details->table = NULL;
-	password_dialog->details->remember_button = NULL;
-	password_dialog->details->message = NULL;
+	password_dialog->details = g_new0 (EelPasswordDialogDetails, 1);
 }
 
-/* GtkObjectClass methods */
+/* GObjectClass methods */
 static void
-eel_password_dialog_destroy (GtkObject* object)
+eel_password_dialog_finalize (GObject *object)
 {
 	EelPasswordDialog *password_dialog;
 	
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EEL_IS_PASSWORD_DIALOG (object));
-	
 	password_dialog = EEL_PASSWORD_DIALOG (object);
 	
-	if (password_dialog->details->username) {
-		g_free (password_dialog->details->username);
-	}
-
-	if (password_dialog->details->password) {
-		g_free (password_dialog->details->password);
-	}
-
-	if (password_dialog->details->remember_label_text) {
-		g_free (password_dialog->details->remember_label_text);
-	}
-
-	if (password_dialog->details->message) {
-		gtk_widget_destroy (GTK_WIDGET (password_dialog->details->message));
-	}
-
+	g_free (password_dialog->details->username);
+	g_free (password_dialog->details->password);
+	g_free (password_dialog->details->remember_label_text);
 	g_free (password_dialog->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* GtkDialog callbacks */
@@ -157,26 +116,21 @@ dialog_show_callback (GtkWidget *widget, gpointer callback_data)
 {
 	EelPasswordDialog *password_dialog;
 
-	g_return_if_fail (callback_data != NULL);
-	g_return_if_fail (EEL_IS_PASSWORD_DIALOG (callback_data));
-
 	password_dialog = EEL_PASSWORD_DIALOG (callback_data);
 
-	/* Move the focus to the password entry */
-	eel_caption_table_entry_grab_focus (EEL_CAPTION_TABLE (password_dialog->details->table), 
-						 CAPTION_TABLE_PASSWORD_ROW);
+	if (password_dialog->details->readonly_username == FALSE) {
+		eel_caption_table_entry_grab_focus (EEL_CAPTION_TABLE (password_dialog->details->table), 
+						    CAPTION_TABLE_USERNAME_ROW);
+	}
+	else {
+		eel_caption_table_entry_grab_focus (EEL_CAPTION_TABLE (password_dialog->details->table), 
+						    CAPTION_TABLE_PASSWORD_ROW);
+	}
 }
 
 static void
 dialog_close_callback (GtkWidget *widget, gpointer callback_data)
 {
-	EelPasswordDialog *password_dialog;
-
-	g_return_if_fail (callback_data != NULL);
-	g_return_if_fail (EEL_IS_PASSWORD_DIALOG (callback_data));
-
-	password_dialog = EEL_PASSWORD_DIALOG (callback_data);
-
 	gtk_widget_hide (widget);
 }
 
@@ -198,14 +152,7 @@ caption_table_activate_callback (GtkWidget *widget, guint entry, gpointer callba
 	}
 	/* If the password entry was activated, then simulate and OK button press to continue to hide process */
 	else if (entry == CAPTION_TABLE_PASSWORD_ROW) {
-		GtkWidget *button;
-		
-		button = g_list_nth_data (GNOME_DIALOG (password_dialog)->buttons, DIALOG_OK_BUTTON);
-		
-		g_assert (button != NULL);
-		g_assert (GTK_IS_BUTTON (button));
-
-		gtk_button_clicked (GTK_BUTTON (button));
+		gtk_window_activate_default (GTK_WINDOW (password_dialog));
 	}
 }
 
@@ -218,92 +165,78 @@ eel_password_dialog_new (const char	*dialog_title,
 			      gboolean		readonly_username)
 {
 	EelPasswordDialog *password_dialog;
+	GtkLabel *message_label;
 
 	password_dialog = EEL_PASSWORD_DIALOG (gtk_widget_new (eel_password_dialog_get_type (), NULL));
 
-	gnome_dialog_constructv (GNOME_DIALOG (password_dialog), dialog_title, stock_buttons);
+	gtk_window_set_title (GTK_WINDOW (password_dialog), dialog_title);
+	gtk_dialog_add_buttons (GTK_DIALOG (password_dialog),
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_OK, GTK_RESPONSE_OK,
+				NULL);
 
 	/* Setup the dialog */
-	gtk_window_set_policy (GTK_WINDOW (password_dialog), 
-			      FALSE,	/* allow_shrink */
-			      TRUE,	/* allow_grow */
-			      FALSE);	/* auto_shrink */
+	gtk_window_set_resizable (GTK_WINDOW (password_dialog), TRUE);
 
  	gtk_window_set_position (GTK_WINDOW (password_dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (password_dialog), TRUE);
 
  	gtk_container_set_border_width (GTK_CONTAINER (password_dialog), DIALOG_BORDER_WIDTH);
 
-	gnome_dialog_set_default (GNOME_DIALOG (password_dialog), DIALOG_OK_BUTTON);
+	gtk_dialog_set_default_response (GTK_DIALOG (password_dialog), GTK_RESPONSE_OK);
 
-	/* Dont close the dialog on click.  We'll mange the destruction our selves */
-	gnome_dialog_set_close (GNOME_DIALOG (password_dialog), FALSE);
-
-	/* Make the close operation 'just_hide' the dialog - not nuke it */
-	gnome_dialog_close_hides (GNOME_DIALOG (password_dialog), TRUE);
-	
-	gtk_signal_connect_while_alive (GTK_OBJECT (password_dialog),
-					"show",
-					GTK_SIGNAL_FUNC (dialog_show_callback),
-					(gpointer) password_dialog,
-					GTK_OBJECT (password_dialog));
-	
-	gtk_signal_connect_while_alive (GTK_OBJECT (password_dialog),
-					"close",
-					GTK_SIGNAL_FUNC (dialog_close_callback),
-					(gpointer) password_dialog,
-					GTK_OBJECT (password_dialog));
+	g_signal_connect (password_dialog, "show",
+			  G_CALLBACK (dialog_show_callback), password_dialog);
+	g_signal_connect (password_dialog, "close",
+			  G_CALLBACK (dialog_close_callback), password_dialog);
 
 	/* The table that holds the captions */
 	password_dialog->details->table = eel_caption_table_new (2);
 	
-	gtk_signal_connect (GTK_OBJECT (password_dialog->details->table),
+	g_signal_connect (password_dialog->details->table,
 			    "activate",
-			    GTK_SIGNAL_FUNC (caption_table_activate_callback),
+			    G_CALLBACK (caption_table_activate_callback),
 			    password_dialog);
 
 	eel_caption_table_set_row_info (EEL_CAPTION_TABLE (password_dialog->details->table),
 					     CAPTION_TABLE_USERNAME_ROW,
-					     _("Username:"),
+					     _("_Username:"),
 					     "",
 					     TRUE,
 					     TRUE);
 
 	eel_caption_table_set_row_info (EEL_CAPTION_TABLE (password_dialog->details->table),
 					     CAPTION_TABLE_PASSWORD_ROW,
-					     _("Password:"),
+					     _("_Password:"),
 					     "",
 					     FALSE,
 					     FALSE);
 	
-	/* Configure the GNOME_DIALOG's vbox */
- 	g_assert (GNOME_DIALOG (password_dialog)->vbox != NULL);
-
-	gtk_box_set_spacing (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox), 10);
+	/* Configure the GTK_DIALOG's vbox */
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (password_dialog)->vbox), 10);
 	
 	if (message) {
-		password_dialog->details->message =
-			GTK_LABEL (gtk_label_new (message));
-		gtk_label_set_justify (password_dialog->details->message, GTK_JUSTIFY_LEFT);
-		gtk_label_set_line_wrap (password_dialog->details->message, TRUE);
+		message_label = GTK_LABEL (gtk_label_new (message));
+		gtk_label_set_justify (message_label, GTK_JUSTIFY_LEFT);
+		gtk_label_set_line_wrap (message_label, TRUE);
 
-		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
-				    GTK_WIDGET (password_dialog->details->message),
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (password_dialog)->vbox),
+				    GTK_WIDGET (message_label),
 				    TRUE,	/* expand */
 				    TRUE,	/* fill */
 				    0);		/* padding */
 	}
 
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (password_dialog)->vbox),
 			    password_dialog->details->table,
 			    TRUE,	/* expand */
 			    TRUE,	/* fill */
 			    0);		/* padding */
-#if 0 /* FIXME: disabled for PR2 originally, when will we re-enable */
+#if 0 /* FIXME: disabled for PR2 originally, when will we re-enable? */
 	password_dialog->details->remember_button = 
 		gtk_check_button_new_with_label (_("Remember this password"));
 
-	gtk_box_pack_end (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
+	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (password_dialog)->vbox),
 			  password_dialog->details->remember_button,
 			  TRUE,	/* expand */
 			  TRUE,	/* fill */
@@ -314,7 +247,7 @@ eel_password_dialog_new (const char	*dialog_title,
 	/* Configure the table */
  	gtk_container_set_border_width (GTK_CONTAINER(password_dialog->details->table), CAPTION_TABLE_BORDER_WIDTH);
 	
-	gtk_widget_show_all (GNOME_DIALOG (password_dialog)->vbox);
+	gtk_widget_show_all (GTK_DIALOG (password_dialog)->vbox);
 	
 	eel_password_dialog_set_username (password_dialog, username);
 	eel_password_dialog_set_password (password_dialog, password);
@@ -331,9 +264,10 @@ eel_password_dialog_run_and_block (EelPasswordDialog *password_dialog)
 	g_return_val_if_fail (password_dialog != NULL, FALSE);
 	g_return_val_if_fail (EEL_IS_PASSWORD_DIALOG (password_dialog), FALSE);
 	
-	button_clicked = gnome_dialog_run_and_close (GNOME_DIALOG (password_dialog));
+	button_clicked = gtk_dialog_run (GTK_DIALOG (password_dialog));
+	gtk_widget_hide (GTK_WIDGET (password_dialog));
 
-	return (button_clicked == DIALOG_OK_BUTTON);
+	return button_clicked == GTK_RESPONSE_OK;
 }
 
 void
@@ -366,6 +300,8 @@ eel_password_dialog_set_readonly_username (EelPasswordDialog	*password_dialog,
 {
 	g_return_if_fail (password_dialog != NULL);
 	g_return_if_fail (EEL_IS_PASSWORD_DIALOG (password_dialog));
+
+	password_dialog->details->readonly_username = readonly;
 	
 	eel_caption_table_set_entry_readonly (EEL_CAPTION_TABLE (password_dialog->details->table),
 						   CAPTION_TABLE_USERNAME_ROW,

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -59,9 +59,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
 AWK = @AWK@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -69,10 +69,7 @@ CPP = @CPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
-EEL_DEPENDENCY_CFLAGS = @EEL_DEPENDENCY_CFLAGS@
-EEL_DEPENDENCY_LIBS = @EEL_DEPENDENCY_LIBS@
-EEL_INCLUDEDIR = @EEL_INCLUDEDIR@
-EEL_LIBDIR = @EEL_LIBDIR@
+EEL_CFLAGS = @EEL_CFLAGS@
 EEL_LIBS = @EEL_LIBS@
 EEL_MAJOR_VERSION = @EEL_MAJOR_VERSION@
 EEL_MICRO_VERSION = @EEL_MICRO_VERSION@
@@ -81,127 +78,64 @@ EEL_VERSION = @EEL_VERSION@
 EEL_VERSION_INFO = @EEL_VERSION_INFO@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 EXEEXT = @EXEEXT@
-FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
-FREETYPE2_CONFIG = @FREETYPE2_CONFIG@
-FREETYPE2_LIBS = @FREETYPE2_LIBS@
-FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAIL_REQUIRED = @GAIL_REQUIRED@
 GCONF_REQUIRED = @GCONF_REQUIRED@
-GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
-GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
-GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
-GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
-GENCAT = @GENCAT@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_CONFIG = @GLIB_CONFIG@
-GLIB_LIBS = @GLIB_LIBS@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
-GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
-GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_CFLAGS = @GNOME_CFLAGS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
 GTK_REQUIRED = @GTK_REQUIRED@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-INTLTOOL_PERL = @INTLTOOL_PERL@
-LIBART_CFLAGS = @LIBART_CFLAGS@
-LIBART_CONFIG = @LIBART_CONFIG@
-LIBART_LIBS = @LIBART_LIBS@
-LIBPNG = @LIBPNG@
-LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
-LIBRSVG_LIBS = @LIBRSVG_LIBS@
-LIBRSVG_REQUIRED = @LIBRSVG_REQUIRED@
+LIBGLADE_REQUIRED = @LIBGLADE_REQUIRED@
 LIBTOOL = @LIBTOOL@
-LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-OAF_CFLAGS = @OAF_CFLAGS@
-OAF_CONFIG = @OAF_CONFIG@
-OAF_LIBS = @OAF_LIBS@
-OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
+POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
-REBUILD = @REBUILD@
-RSVG_CONFIG = @RSVG_CONFIG@
+RENDER_LIBS = @RENDER_LIBS@
 STRIP = @STRIP@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-VFS_CFLAGS = @VFS_CFLAGS@
-VFS_LIBS = @VFS_LIBS@
-XML_CFLAGS = @XML_CFLAGS@
-XML_CONFIG = @XML_CONFIG@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XML_LIBS = @XML_LIBS@
-ZVT_LIBS = @ZVT_LIBS@
-Z_LIBS = @Z_LIBS@
+XML_REQUIRED = @XML_REQUIRED@
 gnomelocaledir = @gnomelocaledir@
-l = @l@
 
 NULL = 
 
-SUBDIRS =  	data 	intl 	eel 	test 	po 	$(NULL)
+SUBDIRS = eel test po
+
+EXTRA_DIST =  	COPYING.LIB					HACKING						MAINTAINERS					eel.spec.in					$(NULL)
 
 
-EXTRA_DIST =  	COPYING.LIB					HACKING						MAINTAINERS					eel.spec.in				eelConf.sh.in				eel-config.in				xml-i18n-extract.in				xml-i18n-merge.in				xml-i18n-update.in				$(NULL)
-
-
-bin_SCRIPTS = $(top_builddir)/eel-config
-
-confexecdir = $(libdir)
-confexec_DATA =  	eelConf.sh					$(NULL)
-
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = eel-2.0.pc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  eel.spec
-SCRIPTS =  $(bin_SCRIPTS)
+CONFIG_CLEAN_FILES =  eel-2.0.pc eel.spec
+DATA =  $(pkgconfig_DATA)
 
-DATA =  $(confexec_DATA)
-
-DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING COPYING.LIB \
-ChangeLog INSTALL Makefile.am Makefile.in NEWS THANKS TODO acconfig.h \
-aclocal.m4 config.guess config.h.in config.sub configure configure.in \
-eel.spec.in install-sh ltmain.sh missing mkinstalldirs
+DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
+INSTALL Makefile.am Makefile.in NEWS THANKS TODO acconfig.h aclocal.m4 \
+config.guess config.h.in config.sub configure configure.in \
+eel-2.0.pc.in eel.spec.in install-sh ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -220,7 +154,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
 	cd $(srcdir) && $(ACLOCAL)
 
-config.status: $(srcdir)/configure.in $(CONFIG_STATUS_DEPENDENCIES)
+config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
 $(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
@@ -252,45 +186,28 @@ distclean-hdr:
 	-rm -f config.h
 
 maintainer-clean-hdr:
+eel-2.0.pc: $(top_builddir)/config.status eel-2.0.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 eel.spec: $(top_builddir)/config.status eel.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-install-binSCRIPTS: $(bin_SCRIPTS)
+install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_SCRIPTS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else :; fi; fi; \
-	done
-
-uninstall-binSCRIPTS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_SCRIPTS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	done
-
-install-confexecDATA: $(confexec_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(confexecdir)
-	@list='$(confexec_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(confexecdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(confexecdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(confexecdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(confexecdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-confexecDATA:
+uninstall-pkgconfigDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(confexec_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(confexecdir)/$$p; \
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -329,7 +246,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -452,24 +369,24 @@ installcheck: installcheck-recursive
 all-recursive-am: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
-install-exec-am: install-binSCRIPTS install-confexecDATA
+install-exec-am:
 install-exec: install-exec-recursive
 
-install-data-am:
+install-data-am: install-pkgconfigDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-binSCRIPTS uninstall-confexecDATA
+uninstall-am: uninstall-pkgconfigDATA
 uninstall: uninstall-recursive
-all-am: Makefile $(SCRIPTS) $(DATA) config.h
+all-am: Makefile $(DATA) config.h
 all-redirect: all-recursive-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(confexecdir)
+	$(mkinstalldirs)  $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
@@ -504,12 +421,11 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-uninstall-binSCRIPTS install-binSCRIPTS uninstall-confexecDATA \
-install-confexecDATA install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-pkgconfigDATA install-pkgconfigDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
@@ -519,51 +435,8 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-@XML_I18N_MERGE_DESKTOP_RULE@
-
-eelConf.sh: eelConf.sh.in Makefile
-	sed -e 's?\@EEL_LIBDIR\@?$(EEL_LIBDIR)?g' \
-	    -e 's?\@EEL_INCLUDEDIR\@?$(EEL_INCLUDEDIR)?g' \
-	    -e 's?\@VERSION\@?$(VERSION)?g' \
-	    -e 's?\@EEL_LIBS\@?$(EEL_LIBS)?g' \
-	      < $(srcdir)/eelConf.sh.in > eelConf.tmp \
-	  && mv eelConf.tmp eelConf.sh
-
-eel-config: eel-config.in Makefile
-	sed -e 's?\@LIBDIR\@?$(libdir)?g' \
-	    -e 's?\@EEL_LIBDIR\@?$(EEL_LIBDIR)?g' \
-	    -e 's?\@EEL_INCLUDEDIR\@?$(EEL_INCLUDEDIR)?g' \
-	    -e 's?\@VERSION\@?$(VERSION)?g' \
-	    -e 's?\@EEL_LIBS\@?$(EEL_LIBS)?g' \
-	      < $(srcdir)/eel-config.in > eel-config.tmp \
-	  && mv eel-config.tmp eel-config && \
-		chmod 755 eel-config
-
-##################################################################
-#
-# dist-hook
-#
-##################################################################
-
 dist-hook: eel.spec
 	cp eel.spec $(distdir)
-
-# This is ridiculous, but automake apparently won't allow conditionals
-# in EXTRA_DIST.
-
-	mkdir -p $(distdir)/eazel-logos
-	list='$(EAZEL_LOGOS_ICONS)'; \
-	for i in $$list; \
-	do \
-		cp $$i $(distdir)/eazel-logos; \
-	done
-
-	mkdir -p $(distdir)/eazel-logos/throbber
-	list='$(EAZEL_LOGOS_THROBBER)'; \
-	for i in $$list; \
-	do \
-		cp $$i $(distdir)/eazel-logos/throbber; \
-	done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -25,7 +25,7 @@
 #ifndef EEL_XML_EXTENSIONS_H
 #define EEL_XML_EXTENSIONS_H
 
-#include <gnome-xml/tree.h>
+#include <libxml/tree.h>
 #include <glib.h>
 
 xmlNodePtr eel_xml_get_children                        (xmlNodePtr  parent);
@@ -45,6 +45,5 @@ GList     *eel_xml_get_property_for_children           (xmlNodePtr  parent,
 							const char *property_name);
 xmlChar   *eel_xml_get_property_translated             (xmlNodePtr  parent,
 							const char *property_name);
-void       eel_xml_remove_node                         (xmlNodePtr  node);
 
 #endif /* EEL_XML_EXTENSIONS_H */

@@ -26,12 +26,11 @@
 #ifndef EEL_ART_EXTENSIONS_H
 #define EEL_ART_EXTENSIONS_H
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_point.h>
-#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef struct {
 	int x;
@@ -151,6 +150,6 @@ ArtPoint      eel_art_point_offset_by         (ArtPoint      point,
 					       double        x,
 					       double        y);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_ART_EXTENSIONS_H */

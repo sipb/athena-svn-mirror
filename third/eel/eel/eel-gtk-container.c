@@ -45,8 +45,6 @@ eel_gtk_container_child_expose_event (GtkContainer *container,
 				      GtkWidget *child,
 				      GdkEventExpose *event)
 {
-	GdkEventExpose child_expose_event;
-
 	g_return_if_fail (GTK_IS_CONTAINER (container));
 
 	if (child == NULL) {
@@ -55,43 +53,7 @@ eel_gtk_container_child_expose_event (GtkContainer *container,
 
 	g_return_if_fail (GTK_IS_WIDGET (child));
 
-	child_expose_event = *event;
-	
-	if (GTK_WIDGET_DRAWABLE (child) && GTK_WIDGET_NO_WINDOW (child)
-	    && gtk_widget_intersect (child, &event->area, &child_expose_event.area)) {
-		gtk_widget_event (child, (GdkEvent *) &child_expose_event);
-	}
-}
-
-/**
- * eel_gtk_container_child_draw:
- * 
- * @container: A GtkContainer widget.
- * @child: A child of @container or NULL;
- * @area: The area from the draw signal.
- *
- * Forward a draw event to a child if needed.  It is valid to give a NULL @child.
- * In that case this function is a noop.  Proper clipping is done to ensure that the @child
- * does indeed need to be drawn.
- */
-void
-eel_gtk_container_child_draw (GtkContainer *container,
-			      GtkWidget *child,
-			      GdkRectangle *area)
-{
-	GdkRectangle child_area;
-
-	g_return_if_fail (GTK_IS_CONTAINER (container));
-
-	if (child == NULL) {
-		return;
-	}
-
-	g_return_if_fail (GTK_IS_WIDGET (child));
-	
-	if (GTK_WIDGET_VISIBLE (child) && gtk_widget_intersect (child, area, &child_area)) {
-		gtk_widget_draw (child, &child_area);
-	}
+	gtk_container_propagate_expose (container, child, event);
 }
 
 /**

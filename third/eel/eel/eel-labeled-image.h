@@ -35,9 +35,7 @@
  * By default the internal image and label widgets are sized to their natural
  * preferred geometry.  You can use the 'fill' attribute of LabeledImage
  * to have the internal widgets fill as much of the LabeledImage allocation
- * as is available.  This is useful if you install a tile_pixbuf and want it
- * to cover the whole widget, and not just the areas occupied by the internal
- * widgets.
+ * as is available.
  *
  * LabeledImage also has x_padding/y_padding and x_alignment/y_alignment 
  * attributes that behave exaclty as those in the GtkMisc class.
@@ -48,11 +46,11 @@
 #ifndef EEL_LABELED_IMAGE_H
 #define EEL_LABELED_IMAGE_H
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkcontainer.h>
-#include <eel/eel-label.h>
-#include <eel/eel-image.h>
+#include <libart_lgpl/art_rect.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define EEL_TYPE_LABELED_IMAGE            (eel_labeled_image_get_type ())
 #define EEL_LABELED_IMAGE(obj)            (GTK_CHECK_CAST ((obj), EEL_TYPE_LABELED_IMAGE, EelLabeledImage))
@@ -76,6 +74,8 @@ struct EelLabeledImage
 struct EelLabeledImageClass
 {
 	GtkContainerClass parent_class;
+
+	void (*activate) (EelLabeledImage *image);
 };
 
 /* Public GtkLabeledImage methods */
@@ -93,6 +93,8 @@ gboolean        eel_labeled_image_get_show_label                   (const EelLab
 void            eel_labeled_image_set_show_image                   (EelLabeledImage         *labeled_image,
 								    gboolean                 show_image);
 gboolean        eel_labeled_image_get_show_image                   (const EelLabeledImage   *labeled_image);
+void            eel_labeled_image_set_can_focus                    (EelLabeledImage         *labeled_image,
+								    gboolean                 can_focus);
 void            eel_labeled_image_set_spacing                      (EelLabeledImage         *labeled_image,
 								    guint                    spacing);
 guint           eel_labeled_image_get_spacing                      (const EelLabeledImage   *labeled_image);
@@ -113,7 +115,10 @@ void            eel_labeled_image_set_fill                         (EelLabeledIm
 gboolean        eel_labeled_image_get_fill                         (const EelLabeledImage   *labeled_image);
 void            eel_labeled_image_set_fixed_image_height           (EelLabeledImage         *labeled_image,
 								    int                      fixed_image_height);
-									 
+void            eel_labeled_image_set_selected                     (EelLabeledImage         *labeled_image,
+								    gboolean                 selected);
+gboolean        eel_labeled_image_get_selected                     (EelLabeledImage         *labeled_image);
+
 /* Functions for creating stock GtkButtons with a labeled image child */
 GtkWidget *     eel_labeled_image_button_new                       (const char              *text,
 								    GdkPixbuf               *pixbuf);
@@ -127,6 +132,10 @@ GtkWidget *     eel_labeled_image_check_button_new                 (const char  
 								    GdkPixbuf               *pixbuf);
 GtkWidget *     eel_labeled_image_check_button_new_from_file_name  (const char              *text,
 								    const char              *pixbuf_file_name);
+GtkWidget *     eel_labeled_image_radio_button_new                 (const char              *text,
+								    GdkPixbuf               *pixbuf);
+GtkWidget *     eel_labeled_image_radio_button_new_from_file_name  (const char              *text,
+								    const char              *pixbuf_file_name);
 
 /* These are proxies for methods in EelImage and EelLabel */
 void            eel_labeled_image_set_pixbuf                       (EelLabeledImage         *labeled_image,
@@ -137,35 +146,10 @@ GdkPixbuf*      eel_labeled_image_get_pixbuf                       (const EelLab
 void            eel_labeled_image_set_text                         (EelLabeledImage         *labeled_image,
 								    const char              *text);
 char*           eel_labeled_image_get_text                         (const EelLabeledImage   *labeled_image);
-void            eel_labeled_image_set_tile_pixbuf                  (EelLabeledImage         *image,
-								    GdkPixbuf               *pixbuf);
-void            eel_labeled_image_set_tile_pixbuf_from_file_name   (EelLabeledImage         *image,
-								    const char              *tile_file_name);
-void            eel_labeled_image_make_bold                        (EelLabeledImage         *labeled_image);
-void            eel_labeled_image_make_larger                      (EelLabeledImage         *labeled_image,
-								    guint                    num_sizes);
-void            eel_labeled_image_make_smaller                     (EelLabeledImage         *labeled_image,
-								    guint                    num_sizes);
-void            eel_labeled_image_set_tile_width                   (EelLabeledImage         *labeled_image,
-								    int                      tile_width);
-void            eel_labeled_image_set_tile_height                  (EelLabeledImage         *labeled_image,
-								    int                      tile_height);
-void            eel_labeled_image_set_background_mode              (EelLabeledImage         *labeled_image,
-								    EelSmoothBackgroundMode  background_mode);
-void            eel_labeled_image_set_solid_background_color       (EelLabeledImage         *labeled_image,
-								    guint32                  solid_background_color);
-void            eel_labeled_image_set_smooth_drop_shadow_offset    (EelLabeledImage         *labeled_image,
-								    guint                    drop_shadow_offset);
-void            eel_labeled_image_set_smooth_drop_shadow_color     (EelLabeledImage         *labeled_image,
-								    guint32                  drop_shadow_color);
-void            eel_labeled_image_set_text_color                   (EelLabeledImage         *labeled_image,
-								    guint32                  text_color);
-void            eel_labeled_image_set_label_never_smooth           (EelLabeledImage         *labeled_image,
-								    gboolean                 never_smooth);
 ArtIRect        eel_labeled_image_get_image_bounds                 (const EelLabeledImage   *labeled_image);
 ArtIRect        eel_labeled_image_get_label_bounds                 (const EelLabeledImage   *labeled_image);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* EEL_LABELED_IMAGE_H */
 

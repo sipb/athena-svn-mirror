@@ -25,34 +25,18 @@
 #ifndef EEL_PREFERENCES_H
 #define EEL_PREFERENCES_H
 
+#include <glib.h>
 #include <gtk/gtkobject.h>
-#include <libgnome/gnome-defs.h>
 #include <eel/eel-string-list.h>
+#include <eel/eel-gconf-extensions.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 /*
  * A callback which you can register to to be notified when a particular
  * preference changes.
  */
 typedef void (*EelPreferencesCallback) (gpointer callback_data);
-
-/* User level */
-
-/* Note that there's a function to get the number of user levels, but there's
- * a lot of code elsewhere that assumes three levels. Publicizing the numbers
- * of these levels lets that other code be coherent and less error-prone.
- */
-#define EEL_USER_LEVEL_NOVICE		0
-#define EEL_USER_LEVEL_INTERMEDIATE	1
-#define EEL_USER_LEVEL_ADVANCED		2
-
-char *         eel_preferences_get_user_level_name_for_display (int                      user_level);
-char *         eel_preferences_get_user_level_name_for_storage (int                      user_level);
-int            eel_preferences_get_user_level                  (void);
-void           eel_preferences_set_user_level                  (int                      user_level);
-int            eel_preferences_user_level_clamp                (int                      user_level);
-gboolean       eel_preferences_user_level_is_valid             (int                      user_level);
 
 /* Preferences getters and setters */
 gboolean       eel_preferences_get_boolean                     (const char              *name);
@@ -61,6 +45,9 @@ void           eel_preferences_set_boolean                     (const char      
 int            eel_preferences_get_integer                     (const char              *name);
 void           eel_preferences_set_integer                     (const char              *name,
 								int                      int_value);
+int            eel_preferences_get_enum                        (const char              *name);
+void           eel_preferences_set_enum                        (const char              *name,
+								int                      int_value);
 char *         eel_preferences_get                             (const char              *name);
 void           eel_preferences_set                             (const char              *name,
 								const char              *string_value);
@@ -68,27 +55,6 @@ EelStringList *eel_preferences_get_string_list                 (const char      
 void           eel_preferences_set_string_list                 (const char              *name,
 								const EelStringList     *string_list_value);
 
-/* Default values getters and setters */
-gboolean       eel_preferences_default_get_boolean             (const char              *name,
-								int                      user_level);
-void           eel_preferences_default_set_boolean             (const char              *name,
-								int                      user_level,
-								gboolean                 boolean_value);
-int            eel_preferences_default_get_integer             (const char              *name,
-								int                      user_level);
-void           eel_preferences_default_set_integer             (const char              *name,
-								int                      user_level,
-								int                      int_value);
-char *         eel_preferences_default_get_string              (const char              *name,
-								int                      user_level);
-void           eel_preferences_default_set_string              (const char              *name,
-								int                      user_level,
-								const char              *string_value);
-EelStringList *eel_preferences_default_get_string_list         (const char              *name,
-								int                      user_level);
-void           eel_preferences_default_set_string_list         (const char              *name,
-								int                      user_level,
-								const EelStringList     *string_list_value);
 /* Callbacks */
 void           eel_preferences_add_callback                    (const char              *name,
 								EelPreferencesCallback   callback,
@@ -96,7 +62,7 @@ void           eel_preferences_add_callback                    (const char      
 void           eel_preferences_add_callback_while_alive        (const char              *name,
 								EelPreferencesCallback   callback,
 								gpointer                 callback_data,
-								GtkObject               *alive_object);
+								GObject                 *alive_object);
 void           eel_preferences_remove_callback                 (const char              *name,
 								EelPreferencesCallback   callback,
 								gpointer                 callback_data);
@@ -107,6 +73,8 @@ void           eel_preferences_add_auto_string                 (const char      
 void           eel_preferences_add_auto_string_list            (const char              *name,
 								const EelStringList    **storage);
 void           eel_preferences_add_auto_integer                (const char              *name,
+								int                     *storage);
+void           eel_preferences_add_auto_enum                   (const char              *name,
 								int                     *storage);
 void           eel_preferences_add_auto_boolean                (const char              *name,
 								gboolean                *storage);
@@ -120,9 +88,7 @@ void           eel_preferences_remove_auto_boolean             (const char      
 								int                     *storage);
 
 /* Preferences attributes */
-int            eel_preferences_get_visible_user_level          (const char              *name);
-void           eel_preferences_set_visible_user_level          (const char              *name,
-								int                      visible_user_level);
+
 gboolean       eel_preferences_get_is_invisible                (const char              *name);
 void           eel_preferences_set_is_invisible                (const char              *name,
 								gboolean                 invisible);
@@ -132,11 +98,22 @@ void           eel_preferences_set_description                 (const char      
 char *         eel_preferences_get_enumeration_id              (const char              *name);
 void           eel_preferences_set_enumeration_id              (const char              *name,
 								const char              *enumeration_id);
-gboolean       eel_preferences_monitor_directory               (const char              *directory);
-gboolean       eel_preferences_visible_in_current_user_level   (const char              *name);
-gboolean       eel_preferences_is_visible                      (const char              *name);
-void           eel_preferences_initialize                      (const char              *storage_path);
 
-END_GNOME_DECLS
+void        eel_preferences_set_emergency_fallback_string      (const char    *name,
+								const char    *value);
+void        eel_preferences_set_emergency_fallback_integer     (const char    *name,
+								int            value);
+void        eel_preferences_set_emergency_fallback_boolean     (const char    *name,
+								gboolean       value);
+void        eel_preferences_set_emergency_fallback_string_list (const char    *name,
+								EelStringList *list);
+GConfValue *eel_preferences_get_emergency_fallback             (const char    *name);
+
+
+gboolean       eel_preferences_monitor_directory               (const char              *directory);
+gboolean       eel_preferences_is_visible                      (const char              *name);
+void           eel_preferences_init                      (const char              *storage_path);
+
+G_END_DECLS
 
 #endif /* EEL_PREFERENCES_H */

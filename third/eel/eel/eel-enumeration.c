@@ -5,16 +5,16 @@
    Copyright (C) 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License as
+   modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+   Library General Public License for more details.
   
-   You should have received a copy of the GNU General Public
+   You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
@@ -23,15 +23,13 @@
 */
 
 #include <config.h>
-
 #include "eel-enumeration.h"
 
+#include "eel-debug.h"
 #include "eel-glib-extensions.h"
 #include "eel-lib-self-check-functions.h"
 #include "eel-string.h"
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include "eel-i18n.h"
 
 static gboolean suppress_duplicate_registration_warning;
 
@@ -325,6 +323,50 @@ eel_enumeration_contains_name (const EelEnumeration *enumeration,
 	return eel_string_list_contains (enumeration->names, name);
 }
 
+int
+eel_enumeration_get_sub_value (const EelEnumeration *enumeration,
+			       const char           *sub_name)
+{
+	int i;
+
+	g_return_val_if_fail (sub_name != NULL, 0);
+	g_return_val_if_fail (enumeration != NULL, 0);
+
+	i = eel_string_list_get_index_for_string (enumeration->names, sub_name);
+
+	if (i != EEL_STRING_LIST_NOT_FOUND) {
+		return eel_enumeration_get_nth_value (enumeration, i);
+	}
+
+	g_warning ("No sub-name in enumeration %s of name '%s'",
+		   enumeration->id, sub_name);
+
+	return 0;
+}
+
+const char *
+eel_enumeration_get_sub_name (const EelEnumeration *enumeration,
+			      int                   sub_value)
+{
+	int i;
+	GList *l;
+
+	g_return_val_if_fail (enumeration != NULL, NULL);
+
+	i = 0;
+	for (l = enumeration->values; l; i++, l = l->next) {
+		if (GPOINTER_TO_INT (l->data) == sub_value) {
+			return eel_enumeration_get_nth_name (enumeration, i);
+		}
+	}
+
+	g_warning ("No sub-name in enumeration %s to match value %d",
+		   enumeration->id, sub_value);
+
+	return NULL;
+}
+
+
 EelStringList *
 eel_enumeration_get_names (const EelEnumeration *enumeration)
 {
@@ -399,7 +441,7 @@ enumeration_table_get (void)
 
 	enumeration_table = g_hash_table_new (g_str_hash, g_str_equal);
 
-	g_atexit (enumeration_table_free);
+	eel_debug_call_at_shutdown (enumeration_table_free);
 
 	return enumeration_table;
 }
@@ -631,6 +673,40 @@ eel_enumeration_id_contains_name (const char *id,
 	g_return_val_if_fail (entry->enumeration != NULL, -1);
 
 	return eel_enumeration_contains_name (entry->enumeration, name);
+}
+
+int
+eel_enumeration_id_get_sub_value (const char *id,
+				  const char *sub_name)
+{
+	TableEntry *entry;
+
+	g_return_val_if_fail (id != NULL, FALSE);
+	g_return_val_if_fail (id[0] != '\0', FALSE);
+	g_return_val_if_fail (sub_name != NULL, FALSE);
+	g_return_val_if_fail (sub_name[0] != '\0', FALSE);
+
+	entry = enumeration_table_lookup (id);
+	g_return_val_if_fail (entry != NULL, -1);
+	g_return_val_if_fail (entry->enumeration != NULL, -1);
+
+	return eel_enumeration_get_sub_value (entry->enumeration, sub_name);
+}
+
+const char *
+eel_enumeration_id_get_sub_name (const char *id,
+				 int         sub_value)
+{
+	TableEntry *entry;
+
+	g_return_val_if_fail (id != NULL, NULL);
+	g_return_val_if_fail (id[0] != '\0', NULL);
+
+	entry = enumeration_table_lookup (id);
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (entry->enumeration != NULL, NULL);
+
+	return eel_enumeration_get_sub_name (entry->enumeration, sub_value);
 }
 
 #if !defined (EEL_OMIT_SELF_CHECK)

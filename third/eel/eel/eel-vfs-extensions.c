@@ -27,7 +27,7 @@
 */
 
 #include <config.h>
-
+#include "eel-i18n.h"
 #include "eel-vfs-extensions.h"
 #include "eel-lib-self-check-functions.h"
 
@@ -41,8 +41,8 @@
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <pthread.h>
 
-#include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define READ_CHUNK_SIZE 8192
 
@@ -55,6 +55,8 @@ struct EelReadFileHandle {
 	char *buffer;
 	GnomeVFSFileSize bytes_read;
 };
+
+static gboolean has_valid_scheme (const char *uri);
 
 #undef PTHREAD_ASYNC_READ
 
@@ -523,9 +525,10 @@ pthread_eel_read_file_async_cancel (EelReadFileHandle *handle)
 /* Set up the read handle and start reading. */
 EelReadFileHandle *
 eel_read_file_async (const char *uri,
-			  EelReadFileCallback callback,
-			  EelReadMoreCallback read_more_callback,
-			  gpointer callback_data)
+		     int priority,
+		     EelReadFileCallback callback,
+		     EelReadMoreCallback read_more_callback,
+		     gpointer callback_data)
 {
 #ifndef PTHREAD_ASYNC_READ
 	EelReadFileHandle *handle;
@@ -539,6 +542,7 @@ eel_read_file_async (const char *uri,
 	gnome_vfs_async_open (&handle->handle,
 			      uri,
 			      GNOME_VFS_OPEN_READ,
+			      priority,
 			      read_file_open_callback,
 			      handle);
 	return handle;
@@ -551,10 +555,11 @@ eel_read_file_async (const char *uri,
 /* Set up the read handle and start reading. */
 EelReadFileHandle *
 eel_read_entire_file_async (const char *uri,
-				 EelReadFileCallback callback,
-				 gpointer callback_data)
+			    int priority,
+			    EelReadFileCallback callback,
+			    gpointer callback_data)
 {
-	return eel_read_file_async (uri, callback, NULL, callback_data);
+	return eel_read_file_async (uri, priority, callback, NULL, callback_data);
 }
 
 /* Stop the presses! */
@@ -647,12 +652,211 @@ eel_uri_is_in_trash (const char *uri)
 	return result;
 }
 
+char *
+eel_make_valid_utf8 (const char *name)
+{
+	GString *string;
+	const char *remainder, *invalid;
+	int remaining_bytes, valid_bytes;
+
+	string = NULL;
+	remainder = name;
+	remaining_bytes = strlen (name);
+
+	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid)) {
+			break;
+		}
+		valid_bytes = invalid - remainder;
+
+		if (string == NULL) {
+			string = g_string_sized_new (remaining_bytes);
+		}
+		g_string_append_len (string, remainder, valid_bytes);
+		g_string_append_c (string, '?');
+
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
+	}
+
+	if (string == NULL) {
+		return g_strdup (name);
+	}
+
+	g_string_append (string, remainder);
+	g_string_append (string, _(" (invalid Unicode)"));
+	g_assert (g_utf8_validate (string->str, -1, NULL));
+
+	return g_string_free (string, FALSE);
+}
+
+static char *
+eel_format_uri_for_display_internal (const char *uri, gboolean filenames_are_locale_encoded)
+{
+	char *canonical_uri, *path, *utf8_path;
+
+	g_return_val_if_fail (uri != NULL, g_strdup (""));
+
+	canonical_uri = eel_make_uri_canonical (uri);
+
+	/* If there's no fragment and it's a local path. */
+	path = gnome_vfs_get_local_path_from_uri (canonical_uri);
+	
+	if (path != NULL) {
+		if (filenames_are_locale_encoded) {
+			utf8_path = g_locale_to_utf8 (path, -1, NULL, NULL, NULL);
+			if (utf8_path) {
+				g_free (canonical_uri);
+				g_free (path);
+				return utf8_path;
+			} 
+		} else if (g_utf8_validate (path, -1, NULL)) {
+			g_free (canonical_uri);
+			return path;
+		}
+	}
+
+	if (canonical_uri && !g_utf8_validate (canonical_uri, -1, NULL)) {
+		utf8_path = eel_make_valid_utf8 (canonical_uri);
+		g_free (canonical_uri);
+		canonical_uri = utf8_path;
+	}
+
+	g_free (path);
+	return canonical_uri;
+}
+
+static char *
+eel_escape_high_chars (const guchar *string)
+{
+	char *result;
+	const guchar *scanner;
+	guchar *result_scanner;
+	int escape_count;
+	static const gchar hex[16] = "0123456789ABCDEF";
+
+#define ACCEPTABLE(a) ((a)>=32 && (a)<128)
+	
+	escape_count = 0;
+
+	if (string == NULL) {
+		return NULL;
+	}
+
+	for (scanner = string; *scanner != '\0'; scanner++) {
+		if (!ACCEPTABLE(*scanner)) {
+			escape_count++;
+		}
+	}
+	
+	if (escape_count == 0) {
+		return g_strdup (string);
+	}
+
+	/* allocate two extra characters for every character that
+	 * needs escaping and space for a trailing zero
+	 */
+	result = g_malloc (scanner - string + escape_count * 2 + 1);
+	for (scanner = string, result_scanner = result; *scanner != '\0'; scanner++) {
+		if (!ACCEPTABLE(*scanner)) {
+			*result_scanner++ = '%';
+			*result_scanner++ = hex[*scanner >> 4];
+			*result_scanner++ = hex[*scanner & 15];
+			
+		} else {
+			*result_scanner++ = *scanner;
+		}
+	}
+
+	*result_scanner = '\0';
+
+	return result;
+}
+
+
+/* The strip_trailing_whitespace option is intended to make copy/paste of
+ * URIs less error-prone when it is known that trailing whitespace isn't
+ * part of the uri.
+ */
+static char *
+eel_make_uri_from_input_internal (const char *text,
+				  gboolean filenames_are_locale_encoded,
+				  gboolean strip_trailing_whitespace)
+{
+	char *stripped, *path, *uri, *locale_path, *filesystem_path, *escaped;
+
+	g_return_val_if_fail (text != NULL, g_strdup (""));
+
+	/* Strip off leading whitespaces (since they can't be part of a valid
+	   uri).   Only strip off trailing whitespaces when requested since
+	   they might be part of a valid uri.
+	 */
+	if (strip_trailing_whitespace) {
+		stripped = g_strstrip (g_strdup (text));
+	} else {
+		stripped = g_strchug (g_strdup (text));
+	}
+
+	switch (stripped[0]) {
+	case '\0':
+		uri = g_strdup ("");
+		break;
+	case '/':
+		if (filenames_are_locale_encoded) {
+			GError *error = NULL;
+			locale_path = g_locale_from_utf8 (stripped, -1, NULL, NULL, &error);
+			if (locale_path != NULL) {
+				uri = gnome_vfs_get_uri_from_local_path (locale_path);
+				g_free (locale_path);
+			} else {
+				/* We couldn't convert to the locale. */
+				/* FIXME: We should probably give a user-visible error here. */
+				uri = g_strdup("");
+			}
+		} else {
+			uri = gnome_vfs_get_uri_from_local_path (stripped);
+		}
+		break;
+	case '~':
+		if (filenames_are_locale_encoded) {
+			filesystem_path = g_locale_from_utf8 (stripped, -1, NULL, NULL, NULL);
+		} else {
+			filesystem_path = g_strdup (stripped);
+		}
+                /* deliberately falling into default case on fail */
+		if (filesystem_path != NULL) {
+			path = gnome_vfs_expand_initial_tilde (filesystem_path);
+			g_free (filesystem_path);
+			if (*path == '/') {
+				uri = gnome_vfs_get_uri_from_local_path (path);
+				g_free (path);
+				break;
+			}
+			g_free (path);
+		}
+                /* don't insert break here, read above comment */
+	default:
+		if (has_valid_scheme (stripped)) {
+			uri = eel_escape_high_chars (stripped);
+		} else {
+			escaped = eel_escape_high_chars (stripped);
+			uri = g_strconcat ("http://", escaped, NULL);
+			g_free (escaped);
+		}
+	}
+
+	g_free (stripped);
+
+	return uri;
+	
+}
 
 /**
  * eel_format_uri_for_display:
  *
  * Filter, modify, unescape and change URIs to make them appropriate
- * to display to users.
+ * to display to users. The conversion is done such that the roundtrip
+ * to UTf8 is reversible.
  * 
  * Rules:
  * 	file: URI's without fragments should appear as local paths
@@ -661,32 +865,22 @@ eel_uri_is_in_trash (const char *uri)
  *
  * @uri: a URI
  *
- * returns a g_malloc'd string
+ * returns a g_malloc'd UTF8 string
  **/
 char *
 eel_format_uri_for_display (const char *uri) 
 {
-	char *canonical_uri, *path;
+	static gboolean broken_filenames;
+	
+	broken_filenames = g_getenv ("G_BROKEN_FILENAMES") != NULL;
 
-	g_return_val_if_fail (uri != NULL, g_strdup (""));
-
-	canonical_uri = eel_make_uri_canonical (uri);
-
-	/* If there's no fragment and it's a local path. */
-	path = gnome_vfs_get_local_path_from_uri (canonical_uri);
-	if (path != NULL) {
-		g_free (canonical_uri);
-		return path;
-	}
-
-	g_free (path);
-	return canonical_uri;
+	return eel_format_uri_for_display_internal (uri, broken_filenames);
 }
 
 static gboolean
 is_valid_scheme_character (char c)
 {
-	return isalnum ((guchar) c) || c == '+' || c == '-' || c == '.';
+	return g_ascii_isalnum (c) || c == '+' || c == '-' || c == '.';
 }
 
 static gboolean
@@ -713,51 +907,33 @@ has_valid_scheme (const char *uri)
  * Takes a user input path/URI and makes a valid URI
  * out of it
  *
- * @location: a possibly mangled "uri"
+ * @location: a possibly mangled "uri", in UTF8
  *
- * returns a newly allocated uri
+ * returns a newly allocated uri.
+ *
+ * This function is the reverse of eel_format_uri_for_display
+ * but it also handles the fact that the user could have typed
+ * arbitrary UTF8 in the entry showing the string.
  *
  **/
 char *
 eel_make_uri_from_input (const char *location)
 {
-	char *stripped, *path, *uri;
+	static gboolean broken_filenames;
 
-	g_return_val_if_fail (location != NULL, g_strdup (""));
+	broken_filenames = g_getenv ("G_BROKEN_FILENAMES") != NULL;
 
-	/* Strip off leading and trailing spaces.
-	 * This makes copy/paste of URIs less error-prone.
-	 */
-	stripped = g_strstrip (g_strdup (location));
+	return eel_make_uri_from_input_internal (location, broken_filenames, TRUE);
+}
 
-	switch (stripped[0]) {
-	case '\0':
-		uri = g_strdup ("");
-		break;
-	case '/':
-		uri = gnome_vfs_get_uri_from_local_path (stripped);
-		break;
-	case '~':
-		path = gnome_vfs_expand_initial_tilde (stripped);
-                /* deliberately falling into default case on fail */
-		if (*path == '/') {
-			uri = gnome_vfs_get_uri_from_local_path (path);
-			g_free (path);
-			break;
-		}
-                g_free (path);
-                /* don't insert break here, read above comment */
-	default:
-		if (has_valid_scheme (stripped)) {
-			uri = g_strdup (stripped);
-		} else {
-			uri = g_strconcat ("http://", stripped, NULL);
-		}
-	}
+char *
+eel_make_uri_from_input_with_trailing_ws (const char *location)
+{
+	static gboolean broken_filenames;
 
-	g_free (stripped);
+	broken_filenames = g_getenv ("G_BROKEN_FILENAMES") != NULL;
 
-	return uri;
+	return eel_make_uri_from_input_internal (location, broken_filenames, FALSE);
 }
 
 /* Note that NULL's and full paths are also handled by this function.
@@ -1261,9 +1437,7 @@ eel_make_uri_canonical (const char *uri)
 	/* Lower-case the scheme. */
 	for (p = canonical_uri; *p != ':'; p++) {
 		g_assert (*p != '\0');
-		if (isupper (*p)) {
-			*p = tolower (*p);
-		}
+		*p = g_ascii_tolower (*p);
 	}
 
 	if (!relative_uri) {
@@ -1373,6 +1547,36 @@ eel_is_remote_uri (const char *uri)
 	return !is_local;
 }
 
+/**
+ * eel_is_valid_uri:
+ * @uri: something we wish was a uri.
+ * 
+ *    This is not an exhaustive check, obviously, it
+ * exists to simply catch bad looking URIs before they
+ * go and create duplicates in the lower levels of
+ * nautilus.
+ * 
+ * Return value: FALSE if not valid, TRUE if more clean looking.
+ **/
+gboolean
+eel_is_valid_uri (const char *uri)
+{
+	const guchar *p;
+
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	if (!has_valid_scheme (uri)) {
+		return FALSE;
+	}
+
+	/* We expect to have a fully valid set of characters */
+	for (p = uri; *p; p++) {
+		if (*p <= 32 || *p >= 128)
+			return FALSE;
+	}
+
+	return TRUE;
+}
 
 GnomeVFSResult
 eel_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
@@ -1429,11 +1633,60 @@ eel_copy_uri_simple ( const char *source_uri, const char *dest_uri)
 	return  result;
 }
 
+
+gboolean
+eel_vfs_has_capability_uri (GnomeVFSURI     *uri,
+			    EelVfsCapability capability)
+{
+	gboolean ret;
+	const char *scheme;
+
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	scheme = gnome_vfs_uri_get_scheme (uri);
+
+	switch (capability) {
+	case EEL_VFS_CAPABILITY_SAFE_TO_EXECUTE:
+		ret = gnome_vfs_uri_is_local (uri) ||
+			!strcmp (scheme, "file");
+		break;
+	case EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW:
+		ret = !(gnome_vfs_uri_is_local (uri) ||
+			!strcmp (scheme, "file"));
+		break;
+	default:
+		ret = FALSE;
+		g_assert_not_reached ();
+	}
+
+	return ret;
+}
+
+gboolean
+eel_vfs_has_capability (const char       *text_uri,
+			EelVfsCapability  capability)
+{
+	gboolean ret;
+	GnomeVFSURI *uri;
+	
+	g_return_val_if_fail (text_uri != NULL, FALSE);
+
+	uri = gnome_vfs_uri_new (text_uri);
+
+	ret = eel_vfs_has_capability_uri (uri, capability);
+	
+	gnome_vfs_uri_unref (uri);
+
+	return ret;
+}
+
 #if !defined (EEL_OMIT_SELF_CHECK)
 
 void
 eel_self_check_vfs_extensions (void)
 {
+	const char *charset;
+	
 	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input (""), "");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input (" "), "");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input (" / "), "file:///");
@@ -1469,6 +1722,23 @@ eel_self_check_vfs_extensions (void)
 	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input ("http:::::::::"), "http:::::::::");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input ("www.eazel.com"), "http://www.eazel.com");
         EEL_CHECK_STRING_RESULT (eel_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some file");
+
+
+	/* not G_BROKEN_FILENAMES: */
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266", 0, TRUE), "file:///%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("http://www.google.com/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266", 0, TRUE), "http://www.google.com/%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6");
+
+	/* G_BROKEN_FILENAMES: */
+	/* This is somewhat broken, but we can't set the locale */
+	g_get_charset (&charset);
+	if (strcasecmp (charset, "ISO-8859-1") == 0) {
+		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\303\245\303\244\303\266/test", 1, TRUE), "file:///%E5%E4%F6/test");
+		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/test", 1, TRUE), "");
+	}
+	if (strcasecmp (charset, "EUC-JP") == 0) {
+		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\346\227\245\346\234\254\350\252\236/test", 1, TRUE), "file:///%C6%FC%CB%DC%B8%EC/test");
+		EEL_CHECK_STRING_RESULT (eel_make_uri_from_input_internal ("/\303\245\303\244\303\266/test", 1, TRUE), "file:///%8F%AB%A9%8F%AB%A3%8F%AB%D3/test");
+	}
 
 	EEL_CHECK_STRING_RESULT (eel_uri_get_scheme ("file:///var/tmp"), "file");
 	EEL_CHECK_STRING_RESULT (eel_uri_get_scheme (""), NULL);
@@ -1597,9 +1867,9 @@ eel_self_check_vfs_extensions (void)
 	 */
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("file:trash"), "file:trash");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("//trash"), "file:///trash");
-	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("file:"), "file:");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("file:"), "file:///");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("trash"), "file:///trash");
-	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("glorp:"), "glorp:");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("glorp:"), "glorp:///");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("TRASH:XXX"), EEL_TRASH_URI);
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("trash:xxx"), EEL_TRASH_URI);
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("GNOME-TRASH:XXX"), EEL_TRASH_URI);
@@ -1655,7 +1925,7 @@ eel_self_check_vfs_extensions (void)
 #undef TEST_PARTIAL
 
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display (""), "/");
-	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display (":"), ":");
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display (":"), ":///");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///h/user"), "/h/user");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///%68/user/foo%2ehtml"), "/h/user/foo.html");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///h/user/foo.html#fragment"), "file:///h/user/foo.html#fragment");
@@ -1666,6 +1936,20 @@ eel_self_check_vfs_extensions (void)
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///"), "/");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///%20%23"), "/ #");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///%20%23#"), "file:///%20%23#");
+
+	/* not G_BROKEN_FILENAMES: */
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%E6%97%A5%E6%9C%AC%E8%AA%9E/%C3%A5%C3%A4%C3%B6", 0), "/\346\227\245\346\234\254\350\252\236/\303\245\303\244\303\266");
+
+	/* G_BROKEN_FILENAMES: */
+	/* This is somewhat broken, but we can't set the locale */
+	g_get_charset (&charset);
+	if (strcasecmp (charset, "ISO-8859-1") == 0) {
+		EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%E5%E4%F6/test", 1), "/\303\245\303\244\303\266/test");
+	}
+	if (strcasecmp (charset, "EUC-JP") == 0) {
+		EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%C6%FC%CB%DC%B8%EC/test", 1), "/\346\227\245\346\234\254\350\252\236/test");
+		EEL_CHECK_STRING_RESULT (eel_format_uri_for_display_internal ("file:///%8F%AB%A9%8F%AB%A3%8F%AB%D3/test", 1), "/\303\245\303\244\303\266/test");
+	}
 
 	EEL_CHECK_BOOLEAN_RESULT (eel_uris_match ("", ""), TRUE);
 	EEL_CHECK_BOOLEAN_RESULT (eel_uris_match (":", ":"), TRUE);
