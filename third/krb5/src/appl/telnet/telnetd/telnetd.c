@@ -720,6 +720,7 @@ getterminaltype(name)
 
     settimer(baseline);
 #if	defined(AUTHENTICATION)
+    ttsuck();
     /*
      * Handle the Authentication option before we do anything else.
      */

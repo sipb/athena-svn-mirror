@@ -62,6 +62,7 @@ extern int	require_SecurID;
 #endif
 #if	defined(AUTHENTICATION)
 extern int	auth_level;
+extern int	auth_client_non_unix;
 #endif
 extern int auth_negotiated; /* Have we finished all authentication negotiation we plan to finish?*/
 extern slcfun	slctab[NSLC + 1];	/* slc mapping table */
