@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.7 1990-11-14 17:50:40 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.8 1991-03-01 12:07:29 epeisach Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  90/11/14  17:50:40  epeisach
+ * AUX fiexs
+ * 
  * Revision 1.6  90/08/25  16:52:09  epeisach
  * Under _AUX include sys/types.h
  * 
@@ -234,6 +237,12 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #include <zephyr/zephyr.h>
 #endif
 
+#if defined(_IBMR2) && !defined(FREAD)
+#define FOPEN           (-1)
+#define	FREAD		(O_RDONLY-FOPEN)
+#define	FWRITE		(O_WRONLY-FOPEN)
+#endif
+
 /*
  * the following string is sent to the printer when we want it to
  * report its current pagecount (for accounting)
@@ -302,7 +311,11 @@ private int	rpid = 0;	/* page reversal pid */
 private int	cpid = 0;	/* listener pid */
 private int	mpid = 0;	/* current process pid */
 private int     wpid;		/* Temp pid */
+#ifdef _IBMR2
+private int status;	        /* Return value from wait() */
+#else
 private union wait status;	/* Return value from wait() */
+#endif
 
 private char abortbuf[] = "\003";	/* ^C abort */
 private char statusbuf[] = "\024";	/* ^T status */
@@ -1163,16 +1176,30 @@ int notify;
  * to abort.  Otherwise, the routine just returns.
  */
 private VOID listenexit(exitstatus)
+#if defined(_IBMR2) && !defined(_BSD)
+int exitstatus;     /* Status returned by the child */
+#else
 union wait exitstatus;     /* Status returned by the child */
+#endif
 {
     debugp((stderr,"%s: Listener return status: 0x%x\n",prog,exitstatus));
+#ifdef _IBMR2
+    if( WTERMSIG(exitstatus) > 0 ) {   /* Some signal got the child */
+	fprintf(stderr,"%s: Error: Listener process killed using signal=%d\n",
+	    prog,WTERMSIG(exitstatus));
+#else
     if( exitstatus.w_termsig != 0 ) {   /* Some signal got the child */
 	fprintf(stderr,"%s: Error: Listener process killed using signal=%d\n",
 	    prog,exitstatus.w_termsig);
+#endif
 	VOIDC fflush(stderr);
 	croak(TRY_AGAIN);
 	}
+#ifdef _IBMR2
+    else switch( WEXITSTATUS(exitstatus) ) {   /* Depends on child's exit status */
+#else
     else switch( exitstatus.w_retcode ) {   /* Depends on child's exit status */
+#endif
 	case LIS_IDLE:    /* Printer went idle during job. Probably rebooted. */
 	    fprintf(stderr,"%s: ERROR: printer is idle. Giving up!\n",prog);
 	    VOIDC fflush(stderr);
