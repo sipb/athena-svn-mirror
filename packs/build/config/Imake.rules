@@ -38,9 +38,14 @@ $(DESTDIR)dir:								@@\
 #define build_program(prog,objs,ldflags,libs)				@@\
 all::	prog								@@\
 prog::	objs								@@\
-	$(LD) ldflags $(LDFLAGS) -o prog objs libs $(LDLIBS)		@@\
+	$(LD) ldflags $(LDFLAGS) -o prog objs $(LDPATH) libs $(LDLIBS)	@@\
 clean::									@@\
 	$(RM) prog							@@\
+
+#ifndef static_program(prog,objs,ldflags,libs)
+#define static_program(prog,objs,ldflags,libs)				@@\
+build_program(prog,objs,ldflags,libs)
+#endif
 
 #define install_program(prog,instflags,dest)				@@\
 install::								@@\
@@ -169,9 +174,9 @@ Makefile:: $(ICONFIGFILE)						@@\
 name:: FRC								@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
-		(cd $$d; echo "### Making" name "in" `pwd`;	\	@@\
+		(cd $$d; echo "### Making" name "in $(CURDIR)/$$d"; \	@@\
 			make $(MFLAGS) flgs DESTDIR=$(DESTDIR) name; \	@@\
-			echo "### Done with" `pwd`);		\	@@\
+			echo "### Done with $(CURDIR)/$$d"); \		@@\
 	done
 
 #define do_subdirs_flags(subdirs,flgs)					@@\
@@ -180,9 +185,9 @@ name:: FRC								@@\
 	foreach_subdirs_flags(clean, subdirs, flgs)			@@\
 	foreach_subdirs_flags(depend, subdirs, flgs)			@@\
 subdirs:: FRC								@@\
-	@(cd $@; echo "### Making" all "in" `pwd`;	\		@@\
+	@(cd $@; echo "### Making" all "in $(CURDIR)/$@"; \		@@\
 		make $(MFLAGS) flgs DESTDIR=$(DESTDIR) all ; \		@@\
-		echo "### Done with" `pwd`)
+		echo "### Done with $(CURDIR)/$@")
 
 #define foreach_subdirs(name,subdirs)					@@\
 	foreach_subdirs_flags(name,subdirs,)
@@ -193,13 +198,13 @@ subdirs:: FRC								@@\
 	foreach_subdirs(clean, subdirs)					@@\
 	foreach_subdirs(depend, subdirs)				@@\
 subdirs:: FRC								@@\
-	@(cd $@; echo "### Making" all "in" `pwd`;	\		@@\
+	@(cd $@; echo "### Making" all "in $(CURDIR)/$@"; \		@@\
 		make $(MFLAGS) DESTDIR=$(DESTDIR) all ; \		@@\
-		echo "### Done with" `pwd`)
+		echo "### Done with $(CURDIR)/$@")
 
 #define do_subdirs_imakefile(subdirs)					@@\
 Makefiles:: Makefile							@@\
-	@echo "### Making Makefiles in" `pwd`				@@\
+	@echo "### Making Makefiles in $(CURDIR)"			@@\
 	@-for d in subdirs; \						@@\
 	do \								@@\
 		case "$$d" in \						@@\
@@ -213,14 +218,14 @@ Makefiles:: Makefile							@@\
                 *)		newtop=.. ;; \				@@\
                 esac; \							@@\
 		( cd $$d; \						@@\
-		  echo "### Making Makefile in" $(CURDIR)/$$d; \	@@\
+		  echo "### Making Makefile in $(CURDIR)/$$d"; \	@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
 		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
 			CURDIR=$(CURDIR)/$$d Makefile; \		@@\
 		  make $(MFLAGS) Makefiles; \				@@\
-		  echo "### Done with" `pwd` ) ; \			@@\
+		  echo "### Done with $(CURDIR)/$$d" ) ; \		@@\
 	done
 
 #define create_depend(files)						@@\
