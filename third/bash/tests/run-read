@@ -1,2 +1,0 @@
-${THIS_SH} ./read.tests > /tmp/xx
-diff /tmp/xx read.right && rm -f /tmp/xx
