@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.20 2004-03-31 15:37:16 rbasch Exp $
+# $Id: makeroot.sh,v 1.21 2004-04-21 02:09:46 zacheiss Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -100,6 +100,12 @@ EOF
   ln -s ../build/athtools/usr/athena "$root/usr/athena"
   ln -s ../build/athtools/usr/afsws "$root/usr/afsws"
   ln -s ../build/athtools/usr/gcc "$root/usr/gcc"
+
+  # So packages can figure out where sendmail is.  (sendmail normally
+  # comes from MIT-sendmail, which we don't install; this is simpler
+  # than installing either the MIT-sendmail or a native sendmail package.)
+  touch "$root/usr/lib/sendmail"
+  chmod a+x "$root/usr/lib/sendmail"
   ;;
 
 esac
