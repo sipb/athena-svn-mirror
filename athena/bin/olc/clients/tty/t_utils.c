@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.30 1991-08-23 13:35:55 raek Exp $
- *	$Author: raek $
+ *	$Id: t_utils.c,v 1.31 1991-09-10 13:36:18 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.30 1991-08-23 13:35:55 raek Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.31 1991-09-10 13:36:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -39,6 +39,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
+#if defined(_POSIX_SOURCE)
+#include <unistd.h>
+#endif
 #include <sys/time.h>		
 #include <sys/file.h>		
 #include <sys/ioctl.h>
@@ -204,7 +207,7 @@ verify_terminal()
   char *tty;
   struct stat statbuf;
 
-  if ((tty = ttyname(fileno(stdin))) == (char *) NULL)
+  if ((tty = (char *)ttyname(fileno(stdin))) == (char *) NULL)
     return(FAILURE);
 
   if (stat(tty, &statbuf) < 0)
@@ -544,19 +547,19 @@ what_now(file, edit_first, editor)
 
   while (TRUE) 
     {
-      *inbuf = '\0';
-      while (*inbuf == '\0') 
+      inbuf[0] = '\0';
+      while (inbuf[0] == '\0') 
 	{
 	  (void) get_prompted_input("\nWhat now? (type '?' for options): ", 
 				    inbuf);
-	  if (*inbuf == '?' || *inbuf == '\0' || *inbuf == 'h') {
+	  if (inbuf[0] == '?' || inbuf[0] == '\0' || inbuf[0] == 'h') {
 	    printf("Commands are:\n");
 	    printf("\t?\tPrint help information.\n");
 	    printf("\te\tEdit the message.\n");
 	    printf("\tl\tList the message.\n");
 	    printf("\ts\tSend the message.\n");
 	    printf("\tq\tQuit without sending message.\n");
-	    *inbuf = '\0';
+	    inbuf[0] = '\0';
 	  }
 	}
       
@@ -595,7 +598,7 @@ edit_message(file, editor)
     {
       if (editor_name == (char *) NULL) 
 	{
-	  if ((editor_name = getenv("EDITOR")) == (char *)NULL)
+	  if ((editor_name = (char *) getenv("EDITOR")) == (char *)NULL)
 	    editor_name = DEFAULT_EDITOR;
 	}
       editor = editor_name;
