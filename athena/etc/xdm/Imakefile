@@ -1,15 +1,13 @@
 /*
- * $Id: Imakefile,v 1.9 1996-06-27 19:11:28 ghudson Exp $
+ * $Id: Imakefile,v 1.10 1996-09-20 04:13:31 ghudson Exp $
  */
 
-WCL=wcl
 XDM=xdm
 DM=dm
 
 #ifdef sgi
-WCL=
 XDM=xdm-s/**/gi
 DM=misc
 #endif
 
-#define ISUBDIRS ${WCL} ${DM} ${XDM} xlogin console conf 
+#define ISUBDIRS ${DM} ${XDM} xlogin console conf 
