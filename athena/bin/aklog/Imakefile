@@ -1,0 +1,15 @@
+DEFINES=-I$(AFSDIR)/include
+
+#ifdef SOLARIS
+OSLIBS=-lucb
+#endif
+
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lprot -lauth -lrxkad -lubik \
+	$(AFSDIR)/lib/afs/util.a -laudit -lsys -lrx -llwp
+LIBS=-lknet -lkrb -ldes -lhesiod -lcom_err $(OSLIBS)
+
+OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o
+
+build_program(aklog,$(OBJS),,$(AFSLIBS) $(LIBS))
+install_program(aklog,,${ATHRBINDIR})
+
