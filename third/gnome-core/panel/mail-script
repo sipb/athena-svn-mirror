@@ -4,6 +4,11 @@ if [ -f $HOME/.athena-evo-noask ]; then
   mailer=evolution
 elif [ -f $HOME/.athena-xmh-noask ]; then
   mailer=xmh
+elif [ ! -f $HOME/Mail/inbox/.xmhcache ]; then
+  # Doesn't look like the user has run xmh before.  Wire the mail
+  # launcher to Evolution.
+  mailer=evolution
+  touch $HOME/.athena-evo-noask
 else
   mail-dialog
   case $? in
