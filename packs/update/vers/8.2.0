@@ -1,0 +1,129 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	# Dead files missed in the 8.1 release.
+	echo "/usr/lib/libX.so"			>> "$DEADFILES"
+	echo "/usr/lib/libX11.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXaw.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXext.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXi.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXinput.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXmu.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXol.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXt.so"		>> "$DEADFILES"
+	echo "/usr/lib/libXtst.so"		>> "$DEADFILES"
+	echo "/usr/lib/libucb.so"		>> "$DEADFILES"
+	echo "/usr/openwin/lib/X11/system.mwmrc" >> "$DEADFILES"
+	echo "/etc/athena/krb.conf.v5"		>> "$DEADFILES"
+	echo "/etc/athena/console-ttymon"	>> "$DEADFILES"
+	echo "/kernel/strmod/arp"		>> "$DEADFILES"
+	cat "$LIBDIR/solaris251-26"		>> "$DEADFILES"
+
+	# Solaris 2.6 binaries reference a symbol "textdomain" not
+	# present in the Solaris 2.5.1 shared libraries.  Copy aside
+	# binaries used after the OS is tracked.
+	echo "/usr/bin/cp"			>> "$OLDBINS"
+	echo "/usr/bin/rm"			>> "$OLDBINS"
+	echo "/usr/bin/sh"			>> "$OLDBINS"
+	echo "/usr/bin/tar"			>> "$OLDBINS"
+	echo "/usr/bin/dd"			>> "$OLDBINS"
+	echo "/usr/bin/sleep"			>> "$OLDBINS"
+	echo "/usr/bin/date"			>> "$OLDBINS"
+	echo "/usr/sbin/reboot"			>> "$OLDBINS"
+	echo "/usr/sbin/sync"			>> "$OLDBINS"
+
+	# The Solaris 2.6 upgrade is pretty traumatic as far as old
+	# binaries running with new shared libraries on an old kernel.
+	# Copy aside libraries required by commands which run after
+	# the os volume is tracked.
+	echo "/usr/lib/libadm.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libsocket.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libnsl.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libelf.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libdl.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libc.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libintl.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libmp.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libw.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libsec.so.1"		>> "$OLDLIBS"
+	echo "/usr/lib/libbsm.so.1"		>> "$OLDLIBS"
+
+	echo "/etc/athena/newsyslog.conf"	>> "$CONFCHG"
+	echo "/etc/default/sulogin"		>> "$CONFCHG"
+	echo "/etc/inet/services"		>> "$CONFCHG"
+	echo "/etc/minor_perm"			>> "$CONFCHG"
+	echo "/etc/mail/aliases"		>> "$CONFCHG"
+	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
+
+	# Set variables for an OS update.
+	echo "TRACKOS=true"			>> "$CONFVARS"
+	echo "NEWOS=true"			>> "$CONFVARS"
+	echo "NEWUNIX=true"			>> "$CONFVARS"
+	echo "NEWBOOT=true"			>> "$CONFVARS"
+	echo "NEWDEVS=true"			>> "$CONFVARS"
+
+	# DEADFILES doesn't handle directories; just nuke this by
+	# hand.
+	rm -rf /etc/athena/login/fonts
+
+	MACHINE=sun4
+	SYSTEM=Solaris
+	;;
+
+sgi)
+	echo "/etc/aliases"			>> "$CONFCHG"
+	echo "/etc/sendmail.cf"			>> "$CONFCHG"
+
+	case `uname -r` in
+	5.3)
+		echo "/etc/inetd.conf"		>> "$CONFCHG"
+		echo "/etc/services"		>> "$CONFCHG"
+		MACHINE=INDY
+		SYSTEM=IRIX
+		;;
+	6.3)
+		MACHINE=O2
+		SYSTEM=IRIX
+		;;
+	esac
+	;;
+esac
+
+# We're going to fully-qualified hostnames.  If $HOST does not contain
+# a '.', tack on "mit.edu".
+if [ `expr "$HOST" : '\.'` -eq 0 ]; then
+	HOST=$HOST.mit.edu
+fi
+
+# Do a little rc.conf editing to take care of possible updates to HOST,
+# MACHINE, and SYSTEM.
+ed -s /etc/athena/rc.conf << EOS
+/^HOST/s/=[^;]*/=$HOST/
+/^MACHINE/s/=[^;]*/=$MACHINE/
+/^SYSTEM/s/=[^;]*/=$SYSTEM/
+w
+q
+EOS
+
+# On Solaris machines with SYNCCONFIG set, update /etc/nodename so we
+# don't have to reboot an extra time during this update.
+if [ "$HOSTTYPE" = sun4 -a "$SYNCCONFIG" = true ]; then
+	rm -f /etc/nodename.new
+	echo "$HOST" > /etc/nodename.new
+	ln /etc/nodename /etc/nodename.saved
+	mv /etc/nodename.new /etc/nodename
+fi
+
+echo "/.cshrc"					>> "$CONFCHG"
+echo "/.login"					>> "$CONFCHG"
+echo "/.profile"				>> "$CONFCHG"
+echo "/.xsession"				>> "$CONFCHG"
+echo "/etc/athena/inetd.conf"			>> "$CONFCHG"
+echo "/etc/ntp.conf"				>> "$CONFCHG"
+echo "/etc/shells"				>> "$CONFCHG"
+echo "/etc/sshd_config"				>> "$CONFCHG"
+echo "/etc/syslog.conf"				>> "$CONFCHG"
+echo "/var/spool/cron/crontabs/root"		>> "$CONFCHG"
+
+echo "/usr/sipb"				>> "$DEADFILES"
