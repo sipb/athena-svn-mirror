@@ -1,0 +1,21 @@
+#!/bin/sh -
+# Version-specific update script for 7.7I
+
+case ${MACH} in
+DS*)
+        echo "NEWUNIX=true"		>> ${CONFVARS}
+	;;
+RSAIX)
+WORKDIR=/afs/athena.mit.edu/system/@sys/install
+
+if lslpp -h U491123 > /dev/null 2>&1; then
+   test -f /usr/bin/uudecode || cp -p $WORKDIR/3.2.5/uudecode /usr/bin/
+   test -f /usr/bin/uuencode || cp -p $WORKDIR/3.2.5/uuencode /usr/bin/
+   test -f /usr/bin/xlf || installp -acqXN -d $WORKDIR/3.2.5/ptfs xlfrte xlfcmp
+else
+   cp -p $WORKDIR/3.2.3/whois /usr/bin/
+fi
+	;;
+SUN*)
+	;;
+esac
