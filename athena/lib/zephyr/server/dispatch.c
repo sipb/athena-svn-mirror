@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.11 1987-07-22 17:48:50 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.12 1987-07-24 15:13:54 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -74,6 +74,13 @@ int auth;
 struct sockaddr_in *who;
 {
 
+	if ((int) notice->z_kind < (int) UNSAFE ||
+	    (int) notice->z_kind > (int) CLIENTACK) {
+		syslog(LOG_INFO, "bad notice kind 0x%x from %s",
+		       (int) notice->z_kind,
+		       inet_ntoa(who->sin_addr));
+		return;
+	}
 #ifdef DEBUG
 	if (zdebug) {
 		char buf[4096];
