@@ -1,4 +1,4 @@
-# $Id: packages,v 1.225 2003-04-01 00:18:56 ghudson Exp $
+# $Id: packages,v 1.226 2003-04-02 23:15:51 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -152,7 +152,7 @@ third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,soup,openssl
 third/expat			except linux
 third/fcpackage/fontconfig	except linux requires expat,freetype
-third/fcpackage/Xft		requires fontconfig,freetype,Xrender
+third/fcpackage/Xft		except linux requires fontconfig,freetype,Xrender
 third/fcpackage/Xrender		except linux
 third/file-roller		except linux requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,bonobo-activation,libbonobo,libbonoboui,scrollkeeper
 third/findutils			on solaris
