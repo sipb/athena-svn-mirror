@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.1 1994-06-10 12:21:09 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.2 1994-06-30 11:45:48 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.1 1994-06-10 12:21:09 miki Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.2 1994-06-30 11:45:48 miki Exp $";
 #endif lint
 
 /*
@@ -111,7 +111,7 @@ int	options;
 int	timingout;
 struct	servent *sp;
 
-char pidfilename[] = "/etc/inetd.pid";
+char pidfilename[] = "/etc/athena/inetd.pid";
 
 struct	servtab {
 	char	*se_service;		/* name of service */
