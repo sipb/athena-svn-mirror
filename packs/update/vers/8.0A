@@ -4,6 +4,35 @@
 case ${MACH} in
 SUN*)
 	echo "NEWTTYS=true"			>> ${CONFVARS}
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	echo "NEWBOOT=true"                     >> ${CONFVARS}
+	echo "NEWOS=true"                       >> ${CONFVARS}
+	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
+	echo "/etc/shells"			>> ${CONFCHG}
+
+	# Add gettime entry to root crontab.
+	cronentry="45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
+	if [ `grep -ic "gettime" /var/spool/cron/crontabs/root` = 0 ]; then
+		echo "$cronentry" >> /var/spool/cron/crontabs/root
+	fi
+
+	# Fix /etc/hosts if it's broken.
+	if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
+		echo "/etc/hosts was moved to /etc/hosts.old"
+		rm -f /etc/hosts.old
+		mv /etc/hosts /etc/hosts.old
+		sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
+			/etc/hosts.old > /etc/hosts
+	fi
+
+	# This is taken care of in the 8.0 installation, but for a
+	# while Sparc 4s will be installing 7.7 and taking the update,
+	# so deal with it here.
+	if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
+		echo "Setting monitor resolution..."
+		eeprom output-device=screen:r1152x900x94
+		eeprom fcode-debug?=true
+	fi
 
 	# Remove obsolete files.
 	rm -rf /etc/*.sun /etc/TIMEZONE.temp /etc/athena/*old
@@ -40,36 +69,6 @@ SUN*)
 	mkdir /var/audit /var/log /var/sadm
 	touch /var/log/authlog /var/log/syslog
 	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
-
-	echo "NEWUNIX=true"                     >> ${CONFVARS}
-	echo "NEWBOOT=true"                     >> ${CONFVARS}
-	echo "NEWOS=true"                       >> ${CONFVARS}
-	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
-	echo "/etc/shells"			>> ${CONFCHG}
-
-	# Add gettime entry to root crontab.
-	cronentry="45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
-	if [ `grep -ic "gettime" /var/spool/cron/crontabs/root` = 0 ]; then
-		echo "$cronentry" >> /var/spool/cron/crontabs/root
-	fi
-
-	# Fix /etc/hosts if it's broken.
-	if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
-		echo "/etc/hosts was moved to /etc/hosts.old"
-		rm -f /etc/hosts.old
-		mv /etc/hosts /etc/hosts.old
-		sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
-			/etc/hosts.old > /etc/hosts
-	fi
-
-	# This is taken care of in the 8.0 installation, but for a
-	# while Sparc 4s will be installing 7.7 and taking the update,
-	# so deal with it here.
-	if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
-		echo "Setting monitor resolution..."
-		eeprom output-device=screen:r1152x900x94
-		eeprom fcode-debug?=true
-	fi
 
 	;;
 
