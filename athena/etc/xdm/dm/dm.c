@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.38 1994-04-28 13:56:33 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.39 1994-04-29 16:19:19 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -55,7 +55,7 @@ static sigset_t sig_cur;
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.38 1994-04-28 13:56:33 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.39 1994-04-29 16:19:19 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -1010,8 +1010,8 @@ char **argv;
 	dup2(1, 2);
 #endif
 #ifdef SOLARIS
-	setgid(DAEMON, DAEMON);
-	setuid(DAEMON, DAEMON);
+	setgid(DAEMON);
+	setuid(DAEMON);
 #else
 	setregid(DAEMON, DAEMON);
 	setreuid(DAEMON, DAEMON);
