@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.in,v 1.3 2003-02-15 23:01:51 zacheiss Exp $
+# $Id: Makefile.in,v 1.4 2003-02-24 18:04:07 zacheiss Exp $
 #
 # This is the Makefile for the AFS-Kerberos 5 Migration Kit.  See the
 # directions below for the meaning of each flag.
@@ -76,7 +76,7 @@ AKLOG_OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o
 all: $(PROGS)
 
 clean:
-	rm -f $(PROGS) afs2k5db.o asetkey.o $(AKLOG_OBJS) fakeka.o ka-forwarder.o keyfile_dump.o
+	rm -f $(PROGS) afs2k5db.o asetkey.o $(AKLOG_OBJS) $(LIBOBJS) fakeka.o ka-forwarder.o keyfile_dump.o
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile

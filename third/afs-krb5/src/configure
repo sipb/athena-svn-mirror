@@ -1185,7 +1185,7 @@ ac_push_LIBS="$LIBS"
 LIBS=""
 echo $ac_n "checking directories for -lkrb524""... $ac_c" 1>&6
 echo "configure:1188: checking directories for -lkrb524" >&5
-ac_lib_var=`echo krb524'_'krb524_convert_princs | tr './+\055' '__p_'`
+ac_lib_var=`echo krb524'_'krb524_convert_creds_kdc | tr './+\055' '__p_'`
 ac_save_LIBS="$LIBS"
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1204,10 +1204,10 @@ do
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
     builtin and then its argument prototype would still apply.  */
-char krb524_convert_princs();
+char krb524_convert_creds_kdc();
 
 int main() {
-krb524_convert_princs()
+krb524_convert_creds_kdc()
 ; return 0; }
 EOF
 if { (eval echo configure:1214: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
@@ -1465,7 +1465,7 @@ fi
 
 echo $ac_n "checking directories for -lk5crypto""... $ac_c" 1>&6
 echo "configure:1468: checking directories for -lk5crypto" >&5
-ac_lib_var=`echo k5crypto'_'mit_des_cbc_encrypt | tr './+\055' '__p_'`
+ac_lib_var=`echo k5crypto'_'krb5_string_to_key | tr './+\055' '__p_'`
 ac_save_LIBS="$LIBS"
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1484,10 +1484,10 @@ do
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
     builtin and then its argument prototype would still apply.  */
-char mit_des_cbc_encrypt();
+char krb5_string_to_key();
 
 int main() {
-mit_des_cbc_encrypt()
+krb5_string_to_key()
 ; return 0; }
 EOF
 if { (eval echo configure:1494: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then

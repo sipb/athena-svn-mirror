@@ -11,10 +11,9 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Id: krb_util.c,v 1.2 2003-02-14 23:16:06 zacheiss Exp $";
+"$Id: krb_util.c,v 1.3 2003-02-24 18:04:08 zacheiss Exp $";
 #endif /* lint */
 
-#include <kerberosIV/mit-copyright.h>
 #include <krb5.h>
 #include <kerberosIV/krb.h> 
 
@@ -35,7 +34,7 @@ char *afs_realm_of_cell(context, cellconfig)
     krb5_context context;
     struct afsconf_cell *cellconfig;
 {
-    char krbhst[MAX_HSTNM];
+    char krbhst[MAX_K_NAME_SZ];
     static char krbrlm[REALM_SZ+1];
 	char **hrealms = 0;
 	krb5_error_code retval;

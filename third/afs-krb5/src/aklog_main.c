@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog_main.c,v 1.2 2003-02-14 23:16:05 zacheiss Exp $
+ * $Id: aklog_main.c,v 1.3 2003-02-24 18:04:08 zacheiss Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -7,7 +7,7 @@
 
 #if !defined(lint) && !defined(SABER)
 static char *rcsid =
-	"$Id: aklog_main.c,v 1.2 2003-02-14 23:16:05 zacheiss Exp $";
+	"$Id: aklog_main.c,v 1.3 2003-02-24 18:04:08 zacheiss Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -402,7 +402,7 @@ static int auth_to_cell(context, cell, realm)
 {
     int status = AKLOG_SUCCESS;
     char username[BUFSIZ];	/* To hold client username structure */
-    long viceId;		/* AFS uid of user */
+    afs_int32 viceId;		/* AFS uid of user */
 
     char name[ANAME_SZ];	/* Name of afs key */
     char instance[INST_SZ];	/* Instance of afs key */
@@ -1302,7 +1302,9 @@ void aklog(argc, argv, a_params)
 	progname = argv[0];
 
     krb5_init_context(&context);
+#if !defined(TARGET_OS_MAC)
     krb524_init_ets(context);
+#endif
 
     memcpy((char *)&params, (char *)a_params, sizeof(aklog_params));
 
