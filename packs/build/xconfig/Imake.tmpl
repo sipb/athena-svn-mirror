@@ -509,7 +509,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #define NoOpCDebugFlags /* as nothing */
 #endif
 #ifndef DefaultCDebugFlags
-#define DefaultCDebugFlags OptimizedCDebugFlags
+#define DefaultCDebugFlags DebuggableCDebugFlags
 #endif
 #ifndef DefaultCCOptions
 #define DefaultCCOptions /* as nothing: this is for floating point, etc. */
@@ -518,7 +518,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #define NoRConst NO /* YES if const for structs of funcs is bad */
 #endif
 #ifndef InstPgmFlags
-#define InstPgmFlags -s
+#define InstPgmFlags
 #endif
 #ifndef InstBinFlags
 #define InstBinFlags -m 0755
