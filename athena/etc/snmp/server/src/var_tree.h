@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.3 1990-05-26 13:42:31 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.0 1992-04-22 01:46:56 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:42:31  tom
+ * athena release 7.0e
+ * 
  * Revision 1.2  90/04/26  18:38:00  tom
  * *** empty log message ***
  * 
@@ -29,7 +32,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.3 1990-05-26 13:42:31 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.0 1992-04-22 01:46:56 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -346,7 +349,12 @@ struct snmp_tree_info {
 #define N_MACHNDISK       243
 #define N_MACHDISK        244
 #define N_MACHMEMORY      245
+#define N_MACHVERSION     246
+#define N_MACHOS          247
+#define N_MACHOSVERSION   248
+#define N_MACHOSVENDOR    249
 
+#define N_RCFILE          250
 #define N_RCHOST          254
 #define N_RCADDR      	  255
 #define N_RCMACHINE   	  256
@@ -380,235 +388,367 @@ struct snmp_tree_info {
 #define N_RCINETD     	  284
 #define N_RCNOCREATE  	  285
 #define N_RCNOATTACH  	  286
+#define N_RCAFSADJUST     287
+#define N_RCSNMP          288
+#define N_RCAUTOUPDATE    289
+#define N_RCTIMECLIENT    290
+#define N_RCKRBSRV        291
+#define N_RCKADMSRV       292
+#define N_RCNIPSRV        293
 
-#define N_RELVERSION      287
-#define N_RELDATE	  288		     
+#define N_RELVERSSTR      300
+#define N_RELVERSION	  301	
+#define N_RELVERSTYPE     302
+#define N_RELVERSDATE     303
+#define N_SYSPACKNUM      304
+#define N_SYSPACKNAME     305
+#define N_SYSPACKTYPE     306
+#define N_SYSPACKVERS     307
+#define N_SYSPACKDATE     308
+#define N_SNMPVERS        309
+#define N_SNMPBUILD       310
+#define N_SRVNUMBER       309
+#define N_SRVNAME         310  
+#define N_SRVTYPE         311
+#define N_SRVVERSION      312  
+#define N_SRVFILE         313
 #endif ATHENA
 
-#define N_STATTIME    	  289
-#define N_STATLOAD    	  290
-#define N_STATLOGIN       291
+#define N_STATTIME    	  314
+#define N_STATLOAD    	  315
+#define N_STATCPU    	  316
+#define N_STATLOGIN       317
 
-#define N_VMPROCR         292
-#define N_VMPROCB	  293
-#define N_VMPROCW	  294
-#define N_VMMEMAVM	  295
-#define N_VMMEMFRE	  296
-#define N_VMPAGERE	  297
-#define N_VMPAGEAT	  298
-#define N_VMPAGEPN	  299
-#define N_VMPAGEPO	  300
-#define N_VMPAGEFR	  301
-#define N_VMPAGEDE	  302
-#define N_VMPAGESR	  303
-#define N_VMMISCIN	  304
-#define N_VMMISCSY	  305
-#define N_VMMISCCS	  306
-#define N_VMCPUUS	  307
-#define N_VMCPUNI         308
-#define N_VMCPUSY	  309
-#define N_VMCPUID	  310
-#define N_VMSWAPIN        311
-#define N_VMSWAPOUT	  313
-#define N_VMPGSWAPIN	  314
-#define N_VMPGSWAPOUT	  315
-#define N_VMATFAULTS	  316
-#define N_VMPGSEQFREE	  317
-#define N_VMPGREC	  318
-#define N_VMPGFASTREC	  319
-#define N_VMFLRECLAIM	  320
-#define N_VMITBLKPGFAULT  321
-#define N_VMZFPGCREATE	  322
-#define N_VMZFPGFAULT	  323
-#define N_VMEFPGCREATE	  324
-#define N_VMEFPGFAULT     325
-#define N_VMSTPGFRE	  326
-#define N_VMITPGFRE	  327
-#define N_VMFFPGCREATE	  328
-#define N_VMFFPGFAULT	  329
-#define N_VMPGSCAN	  330
-#define N_VMCLKREV	  331
-#define N_VMCLKFREE       332
-#define N_VMCSWITCH	  333
-#define N_VMDINTR	  334
-#define N_VMSINTR	  335
-#define N_VMTRAP	  336
-#define N_VMSYSCALL       337
+#define N_VMPROCR         313
+#define N_VMPROCB	  314
+#define N_VMPROCW	  315
+#define N_VMMEMAVM	  316
+#define N_VMMEMFRE	  317
+#define N_VMPAGERE	  318
+#define N_VMPAGEAT	  319
+#define N_VMPAGEPI	  320
+#define N_VMPAGEPO	  321
+#define N_VMPAGEFR	  322
+#define N_VMPAGEDE	  323
+#define N_VMPAGESR	  324
+#define N_VMMISCIN	  325
+#define N_VMMISCSY	  326
+#define N_VMMISCCS	  327
+#define N_VMCPUUS	  328
+#define N_VMCPUNI         329
+#define N_VMCPUSY	  330
+#define N_VMCPUID	  331
+#define N_VMSWAPIN        332
+#define N_VMSWAPOUT	  333
+#define N_VMPGSWAPIN	  334
+#define N_VMPGSWAPOUT	  335
+#define N_VMATFAULTS	  336
+#define N_VMPGSEQFREE	  337
+#define N_VMPGREC	  338
+#define N_VMPGFASTREC	  339
+#define N_VMFLRECLAIM	  340
+#define N_VMITBLKPGFAULT  341
+#define N_VMZFPGCREATE	  342
+#define N_VMZFPGFAULT	  343
+#define N_VMEFPGCREATE	  344
+#define N_VMEFPGFAULT     345
+#define N_VMSTPGFRE	  346
+#define N_VMITPGFRE	  347
+#define N_VMFFPGCREATE	  348
+#define N_VMFFPGFAULT	  349
+#define N_VMPGSCAN	  350
+#define N_VMCLKREV	  351
+#define N_VMCLKFREE       352
+#define N_VMCSWITCH	  353
+#define N_VMDINTR	  354
+#define N_VMSINTR	  355
+#define N_VMTRAP	  356
+#define N_VMSYSCALL       357
 #if defined(vax)
-#define N_VMPDMAINTR      338
+#define N_VMPDMAINTR      358
 #endif 
-#define N_VMXACALL        339
-#define N_VMXAHIT	  340
-#define N_VMXASTICK	  341
-#define N_VMXAFLUSH	  342
-#define N_VMXAUNUSE	  343
-#define N_VMXFRECALL	  344
-#define N_VMXFREINUSE	  345
-#define N_VMXFRECACHE	  346
-#define N_VMXFRESWP	  347
-#define N_VMFORK	  348
-#define N_VMFKPAGE	  349
-#define N_VMVFORK	  350
-#define N_VMVFKPAGE	  351
-#define N_VMRECTIME	  352
-#define N_VMPGINTIME	  353
+#define N_VMXACALL        359
+#define N_VMXAHIT	  360
+#define N_VMXASTICK	  361
+#define N_VMXAFLUSH	  362
+#define N_VMXAUNUSE	  363
+#define N_VMXFRECALL	  364
+#define N_VMXFREINUSE	  365
+#define N_VMXFRECACHE	  366
+#define N_VMXFRESWP	  367
+#define N_VMFORK	  368
+#define N_VMFKPAGE	  369
+#define N_VMVFORK	  370
+#define N_VMVFKPAGE	  371
+#define N_VMRECTIME	  372
+#define N_VMPGINTIME	  373
 #ifdef VFS		  
-#define N_VMNCSGOOD	  354
-#define N_VMNCSBAD	  355
-#define N_VMNCSFALSE	  356
-#define N_VMNCSMISS	  357
-#define N_VMNCSLONG       358
-#define N_VMNCSTOTAL      359
+#define N_VMNCSGOOD	  374
+#define N_VMNCSBAD	  375
+#define N_VMNCSFALSE	  376
+#define N_VMNCSMISS	  377
+#define N_VMNCSLONG       378
+#define N_VMNCSTOTAL      379
 #else  VFS
-#define N_VMNCHGOOD       354
-#define N_VMNCHBAD        355
-#define N_VMNCHFALSE      356
-#define N_VMNCHMISS       357
-#define N_VMNCHLONG       358
-#define N_VMNCHTOTAL      359
+#define N_VMNCHGOOD       374
+#define N_VMNCHBAD        375
+#define N_VMNCHFALSE      376
+#define N_VMNCHMISS       377
+#define N_VMNCHLONG       378
+#define N_VMNCHTOTAL      379
 #endif VFS
-			  
-#define N_PSTOTAL         360
-#define N_PSUSED          361
-#define N_PSTUSED         362
-#define N_PSFREE          363
-#define N_PSWASTED	  364
-#define N_PSMISSING	  365
-#define N_PFTOTAL	  366
-#define N_PFUSED	  367
-#define N_PITOTAL	  368
-#define N_PIUSED	  369
-#define N_PIFREE          370
-#define N_PPTOTAL	  371
-#define N_PPUSED	  372
-#define N_PTTOTAL	  373
-#define N_PTUSED	  374
-#define N_PTAVAIL         375
-#define N_PTFREE          376
-#define N_PTACTIVE        377
-			  
-#ifdef RPC		  
-#define N_RPCCCALL        378
-#define N_RPCCBADCALL     379
-#define N_RPCCRETRANS     380
-#define N_RPCCBADXID      381
-#define N_RPCCTIMEOUT     382
-#define N_RPCCWAIT        383
-#define N_RPCCNEWCRED     384
+		
+#define N_DKPATH          400
+#define N_DKDNAME         401
+#define N_DKTYPE          402	  
+#define N_PSTOTAL         403
+#define N_PSUSED          404
+#define N_PSTUSED         405
+#define N_PSFREE          406
+#define N_PSWASTED	  407
+#define N_PSMISSING	  408
+#define N_PFTOTAL	  409
+#define N_PFUSED	  410
+#define N_PITOTAL	  411
+#define N_PIUSED	  412
+#define N_PIFREE          413
+#define N_PPTOTAL	  414
+#define N_PPUSED	  415
+#define N_PTTOTAL	  416
+#define N_PTUSED	  417
+#define N_PTAVAIL         418
+#define N_PTFREE          419
+#define N_PTACTIVE        420
 
-#define N_RPCSCALL  	  385
-#define N_RPCSBADCALL     386
-#define N_RPCSNULLRECV    387
-#define N_RPCSBADLEN      388
-#define N_RPCSXDRCALL     389
+#define N_FSSBLKNO        430
+#define N_FSCBLKNO        431
+#define N_FSIBLKNO        432
+#define N_FSDBLKNO        433
+#define N_FSCGOFFSET      434
+#define N_FSCGMASK        435
+#define N_FSTIME          436
+#define N_FSSIZE          437
+#define N_FSNCG           438
+#define N_FSBSIZE         439
+#define N_FSFSIZE         440
+#define N_FSFRAG          441
+#define N_FSMINFREE       442
+#define N_FSROTDELAY      443
+#define N_FSRPS        	  444
+#define N_FSBMASK         445
+#define N_FSFMASK         446
+#define N_FSBSHIFT        447
+#define N_FSFSHIFT        448
+#define N_FSMAXCONTIG     449
+#define N_FSMAXBPG        450
+#define N_FSFRAGSHIFT     451
+#define N_FSFSBTODB       452
+#define N_FSSBSIZE        453
+#define N_FSCSMASK        454
+#define N_FSCSSHIFT       455
+#define N_FSNINDIR        456
+#define N_FSINOPB         457
+#define N_FSNSPF          458
+#define N_FSOPTIM         459
+#define N_FSID1           460
+#define N_FSID2           461
+#define N_FSCSADDR        462
+#define N_FSCSSIZE        463
+#define N_FSCGSIZE        464
+#define N_FSNTRAK         465
+#define N_FSNSECT         466
+#define N_FSSPC           467
+#define N_FSNCYL          468
+#define N_FSCPG           469
+#define N_FSIPG           470
+#define N_FSFPG           471
+#define N_FSFMOD          472
+#define N_FSCLEAN         473
+#define N_FSRONLY         474
+#define N_FSFLAGS         475
+#define N_FSFSMNT         476
+#define N_FSCGROTOR       477
+#define N_FSCPC           478
+#define N_FSMAGIC         479
+#define N_FSROTBL         480
+#define N_FSCSNDIR        481
+#define N_FSCSNBFREE      482
+#define N_FSCSNIFREE      483
+#define N_FSCSNFFREE      484
+#define N_FSCSPNDIR       485
+#define N_FSCSPNBFREE     486
+#define N_FSCSPNIFREE     487
+#define N_FSCSPNFFREE     488
+
+#ifdef RPC		  
+#define N_RPCCCALL        530
+#define N_RPCCBADCALL     531
+#define N_RPCCRETRANS     532
+#define N_RPCCBADXID      533
+#define N_RPCCTIMEOUT     534
+#define N_RPCCWAIT        535
+#define N_RPCCNEWCRED     536
+
+#define N_RPCSCALL  	  537
+#define N_RPCSBADCALL     538
+#define N_RPCSNULLRECV    539
+#define N_RPCSBADLEN      540
+#define N_RPCSXDRCALL     541
+#define N_RPCCRED         542
+#define N_RPCCREDPAG      543
+#define N_RPCCREDDIR      544
+#define N_RPCCREDFILE     545
+
 #endif RPC
 
 #ifdef NFS
-#define N_NFSCCALL        390
-#define N_NFSCBADCALL     391
-#define N_NFSCNULL        392
-#define N_NFSCGETADDR     393
-#define N_NFSCSETADDR     394
-#define N_NFSCROOT        395
-#define N_NFSCLOOKUP      396
-#define N_NFSCREADLINK    397
-#define N_NFSCREAD        398
-#define N_NFSCWRCACHE     399
-#define N_NFSCWRITE       400
-#define N_NFSCCREATE      401
-#define N_NFSCREMOVE      402
-#define N_NFSCRENAME      403
-#define N_NFSCLINK        404
-#define N_NFSCSYMLINK     405
-#define N_NFSCMKDIR       406
-#define N_NFSCRMDIR       407
-#define N_NFSCREADDIR     408
-#define N_NFSCFSSTAT      409
-#define N_NFSCNCLGET      410
-#define N_NFSCNCLSLEEP    411
+#define N_NFSCCALL        550
+#define N_NFSCBADCALL     551
+#define N_NFSCNULL        552
+#define N_NFSCGETADDR     553
+#define N_NFSCSETADDR     554
+#define N_NFSCROOT        555
+#define N_NFSCLOOKUP      556
+#define N_NFSCREADLINK    557
+#define N_NFSCREAD        558
+#define N_NFSCWRCACHE     559
+#define N_NFSCWRITE       560
+#define N_NFSCCREATE      561
+#define N_NFSCREMOVE      562
+#define N_NFSCRENAME      563
+#define N_NFSCLINK        564
+#define N_NFSCSYMLINK     565
+#define N_NFSCMKDIR       566
+#define N_NFSCRMDIR       567
+#define N_NFSCREADDIR     568
+#define N_NFSCFSSTAT      569
+#define N_NFSCNCLGET      570
+#define N_NFSCNCLSLEEP    571
 
-#define N_NFSSCALL        412
-#define N_NFSSBADCALL     413
-#define N_NFSSNULL        414
-#define N_NFSSGETADDR     415
-#define N_NFSSSETADDR     416
-#define N_NFSSROOT        417
-#define N_NFSSLOOKUP      418
-#define N_NFSSREADLINK    419
-#define N_NFSSREAD        420
-#define N_NFSSWRCACHE     421
-#define N_NFSSWRITE       422
-#define N_NFSSCREATE      423
-#define N_NFSSREMOVE      424
-#define N_NFSSRENAME      425
-#define N_NFSSLINK        426
-#define N_NFSSSYMLINK     427
-#define N_NFSSMKDIR       428
-#define N_NFSSRMDIR       429
-#define N_NFSSREADDIR     430
-#define N_NFSSFSSTAT      431
+#define N_NFSSCALL        572
+#define N_NFSSBADCALL     573
+#define N_NFSSNULL        574
+#define N_NFSSGETADDR     575
+#define N_NFSSSETADDR     576
+#define N_NFSSROOT        577
+#define N_NFSSLOOKUP      578
+#define N_NFSSREADLINK    579
+#define N_NFSSREAD        580
+#define N_NFSSWRCACHE     581
+#define N_NFSSWRITE       582
+#define N_NFSSCREATE      583
+#define N_NFSSREMOVE      584
+#define N_NFSSRENAME      585
+#define N_NFSSLINK        586
+#define N_NFSSSYMLINK     587
+#define N_NFSSMKDIR       588
+#define N_NFSSRMDIR       589
+#define N_NFSSREADDIR     590
+#define N_NFSSFSSTAT      591
 #endif NFS
 
 #ifdef RVD
 
-#define N_RVDCBADBLOCK    432
-#define N_RVDCBADCKSUM	  433
-#define N_RVDCBADTYPE	  434
-#define N_RVDCBADSTATE	  435
-#define N_RVDCBADFORMAT	  436
-#define N_RVDCTIMEOUT	  437
-#define N_RVDCBADNONCE	  438
-#define N_RVDCERRORRECV   439
-#define N_RVDCBADDATA	  440
-#define N_RVDCBADVERS 	  441
-#define N_RVDCPKTREJ	  442
-#define N_RVDCPUSH	  443
-#define N_RVDCPKTSENT	  444
-#define N_RVDCPKTRECV	  445
-#define N_RVDCQKRETRANS	  446
-#define N_RVDCLGRETRANS	  447
-#define N_RVDCBLOCKRD	  448
-#define N_RVDCBLOCKWR	  449
+#define N_RVDCBADBLOCK    592
+#define N_RVDCBADCKSUM	  593
+#define N_RVDCBADTYPE	  594
+#define N_RVDCBADSTATE	  595
+#define N_RVDCBADFORMAT	  596
+#define N_RVDCTIMEOUT	  597
+#define N_RVDCBADNONCE	  598
+#define N_RVDCERRORRECV   599
+#define N_RVDCBADDATA	  600
+#define N_RVDCBADVERS 	  601
+#define N_RVDCPKTREJ	  602
+#define N_RVDCPUSH	  603
+#define N_RVDCPKTSENT	  604
+#define N_RVDCPKTRECV	  605
+#define N_RVDCQKRETRANS	  606
+#define N_RVDCLGRETRANS	  607
+#define N_RVDCBLOCKRD	  608
+#define N_RVDCBLOCKWR	  609
 
 #endif RVD		  
 			  
 #ifdef AFS
-#define N_AFSCPRIMCELL    450
-#define N_AFSCCACHESIZE   451
-#define N_AFSCCACHEDIR    452
+#define N_AFSCACHESIZE    610
+#define N_AFSCACHEFILE    611
+#define N_AFSTHISCELL     612
+#define N_AFSCELLFILE     613
+#define N_AFSSUIDCELL     614
+#define N_AFSSUIDFILE     615
+#define N_AFSDBNAME       616
+#define N_AFSDBADDR       617
+#define N_AFSDBCOMMENT    618
+#define N_AFSSRVFILE      619
 #endif AFS
 
 #ifdef KERBEROS
-#define N_KRBCREALM       453
-#define N_KRBCKEY         454
-#define N_KRBCSERVER      455
+#define N_KRBCREALM       620
+#define N_KRBCKEY         621
+#define N_KRBCSERVER      622
 #endif KERBEROS
 
 #ifdef ZEPHYR
-#define N_ZCPVERSION      456
-#define N_ZCSERVER        457
-#define N_ZCQUEUE         458
-#define N_ZCSERVCHANGE    459
-#define N_ZCHEADER        460
-#define N_ZCLOOKING       461
-#define N_ZCUPTIME        462
-#define N_ZCSIZE          463
+#define N_ZCPVERSION      630
+#define N_ZCSERVER        631
+#define N_ZCQUEUE         632
+#define N_ZCSERVCHANGE    633
+#define N_ZCHEADER        634
+#define N_ZCLOOKING       635
+#define N_ZCUPTIME        636
+#define N_ZCSIZE          637
 
-#define N_ZSPVERSION      464
-#define N_ZSHEADER        465
-#define N_ZSHEADER        466
-#define N_ZSPACKET        467
-#define N_ZSUPTIME        468
-#define N_ZSSTATE         469
+#define N_ZSPVERSION      640
+#define N_ZSHEADER        641
+#define N_ZSHEADER        642
+#define N_ZSPACKET        643
+#define N_ZSUPTIME        644
+#define N_ZSSTATE         645
 #endif ZEPHYR
 
-#define N_MAILALIAS       500
-#define N_MAILALIASPAG    501
-#define N_MAILALIASDIR    502
-#define N_RPCCRED         503
-#define N_RPCCREDPAG      504
-#define N_RPCCREDDIR      505
+#define N_MAILALIAS       650
+#define N_MAILALIASPAG    651
+#define N_MAILALIASDIR    652
+#define N_MAILALIASFILE   653
+
+#ifdef DNS
+#define N_DNSSTATFILE     660
+#define N_DNSUPDATETIME   661
+#define N_DNSBOOTTIME     662
+#define N_DNSRESETTIME    663
+#define N_DNSPACKETIN     664
+#define N_DNSPACKETOUT    665
+#define N_DNSQUERY        666
+#define N_DNSIQUERY       667
+#define N_DNSDUPQUERY     668
+#define N_DNSRESPONSE     669
+#define N_DNSDUPRESP      670 
+#define N_DNSOK           671
+#define N_DNSFAIL         672
+#define N_DNSFORMERR      673
+#define N_DNSSYSQUERY     674
+#define N_DNSPRIMECACHE   675
+#define N_DNSCHECKNS      676
+#define N_DNSBADRESP      677
+#define N_DNSMARTIAN      678
+#define N_DNSUNKNOWN      679
+#define N_DNSA            680
+#define N_DNSNS           681
+#define N_DNSCNAME        682
+#define N_DNSSOA          683
+#define N_DNSWKS          684
+#define N_DNSPTR          685
+#define N_DNSHINFO        686
+#define N_DNSMX           687
+#define N_DNSTXT          688
+#define N_DNSUNSPECA      689
+#define N_DNSAXFR         690
+#define N_DNSANY          691
+#endif DNS
+
+#ifdef TIMED
+#define N_TIMEDMASTER     695
+#endif TIMED
 #endif MIT
 
-#define N_DKPATH          510
-#define N_DKDNAME         511
