@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
+ * Copyright 1994-2000 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 
 /*
@@ -130,7 +130,7 @@
  *************************************************/
  
  
- static char *const _id = "plp_snprintf V98.12.21 Copyright Patrick Powell 1988-1998 "
+ static char *const _id = "plp_snprintf V98.12.21 Copyright Patrick Powell 1988-2000 "
  "$Id"
  " LOCAL REVISIONS: <NONE>";
 

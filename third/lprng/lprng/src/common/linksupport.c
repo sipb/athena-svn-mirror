@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linksupport.c,v 1.1.1.2 1999-10-27 20:09:55 mwhitson Exp $";
+"$Id: linksupport.c,v 1.1.1.3 2000-03-31 15:47:53 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -43,7 +43,6 @@
  *    if lf != 0, send LF at end of line
  *    if ack != 0, wait for ack
  *      returns 0 if successful, LINK errorcode if failure
- *      closes socket and sets to LINK errorcode if a failure
  *
  * int Link_copy( char *host, int *socket, int timeout,
  *	char *src, int fd, double count)
@@ -51,7 +50,6 @@
  *    do a timeout on both reading from fd and writing to socket;
  *    if timeout == 0, wait indefinately
  *      returns 0 if successful, LINK errorcode if failure
- *      closes socket and sets to LINK errorcode if a failure
  *
  * int Link_line_read(char *host, int *socket, int timeout,
  *	  char *str, int *count )
@@ -79,7 +77,6 @@
  *    if timeout == 0, wait indefinately
  *    returns 0 *count not read
  *            LINK errorcode otherwise
- *    socket is closed on error.
  *
  * int Link_file_read( char *host, int *socket, int readtimeout,
  *    int writetimeout, int fd, int *count, int *ack )
@@ -798,9 +795,6 @@ int Link_send( char *host, int *sock, int timeout,
 			}
 		}
 	}
-	if( status && status != LINK_ACK_FAIL ){
-		Link_close( sock );
-	}
 	DEBUGF(DNW1)("Link_send: final status %s", Link_err_str(status) );
 	return (status);
 }
@@ -906,16 +900,26 @@ int Link_dest_port_num( char *port )
 {
 	struct servent *sp;
 	int port_num = 0;
+	char *s;
 
 	if( port == 0 ) port = Lpd_port_DYN;
 	if( port == 0 ) port = "printer";
 
-	if ((sp = getservbyname(port, "tcp")) == 0) {
-		DEBUGF(DNW4)("getservbyname(\"%s\",tcp) failed", port);
-		/* try integer value */
-		port_num = htons( atoi( port ) );
-	} else {
-		port_num = sp->s_port;
+	s = 0;
+	/* the htons() implementation yeild bogus results on longs
+	 * so assign it to an integer.  This should (hopefully) work
+	 * around a couple of compiler/inline/library/macro botches
+	 */
+	port_num = strtol(port,&s,0);
+	port_num = htons(port_num);
+	if( s == 0 || *s ){
+		if( (sp = getservbyname(port, "tcp")) == 0) {
+			DEBUGF(DNW4)("getservbyname(\"%s\",tcp) failed", port);
+			/* try integer value */
+			port_num = 0;
+		} else {
+			port_num = sp->s_port;
+		}
 	}
 	DEBUGF(DNW1)("Link_dest_port_num: port %s = %d", port, ntohs( port_num ) );
 	return (port_num);
@@ -936,7 +940,6 @@ int Link_dest_port_num( char *port )
  *    returns 0 if '\n' read at or before *count characters
  *            0 if EOF and no characters read (*count == 0)
  *            LINK errorcode otherwise
- *    socket is closed on error.
  ***************************************************************************/
 
 int Link_line_read(char *host, int *sock, int timeout,
@@ -950,7 +953,7 @@ int Link_line_read(char *host, int *sock, int timeout,
 	max = *count;
 	*count = 0;
 	buf[0] = 0;
-	DEBUGF(DNW4) ("Link_line_read: reading %d from '%s' on %d, timeout %d",
+	DEBUGF(DNW1) ("Link_line_read: reading %d from '%s' on %d, timeout %d",
 		max, host, *sock, timeout );
 	/* check for valid socket */
 	if(*sock < 0) {
@@ -991,14 +994,9 @@ int Link_line_read(char *host, int *sock, int timeout,
 		DEBUGF(DNW4)("Link_line_read: no LF on line from '%s'", host );
 		status = LINK_LONG_LINE_FAIL;
 	}
+	*count = len;
 
-	if( status ){
-		Link_close( sock );
-	} else {
-		*count = len;
-	}
-
-	DEBUGF(DNW4)("Link_line_read: status %d", status );
+	DEBUGF(DNW4)("Link_line_read: status %d, len %d", status, len );
 	errno = err;
 	return( status );
 }
@@ -1015,7 +1013,6 @@ int Link_line_read(char *host, int *sock, int timeout,
  *    if timeout == 0, wait indefinately
  *    returns 0 *count not read
  *        LINK errorcode otherwise
- *    socket is closed on error.
  ***************************************************************************/
 
 int Link_read(char *host, int *sock, int timeout,
@@ -1042,7 +1039,7 @@ int Link_read(char *host, int *sock, int timeout,
 	 */
 	i = Read_fd_len_timeout(timeout, *sock, str, len );
 	err = errno;
-	if( i > 0 ){
+	if( i >= 0 ){
 		*count = i;
 	}
 	DEBUGFC(DNW2){
@@ -1063,10 +1060,6 @@ int Link_read(char *host, int *sock, int timeout,
 		DEBUGF(DNW2)("Link_read: read %d from '%s' failed, returned %d - %s",
 			len, host, i, Errormsg(err) );
 		status = LINK_TRANSFER_FAIL;
-	}
-
-	if( status || len == 0){
-		Link_close( sock );
 	}
 
 	errno = err;
@@ -1183,9 +1176,6 @@ We do not need to check this any more
 		}
 #endif
 	}
-	if( status ){
-		Link_close( sock );
-	}
 
 	DEBUGF(DNW2)("Link_file_read: status %d", status );
 	return( status );
@@ -1200,18 +1190,26 @@ We do not need to check this any more
 #endif
 
 
+/* PAIR(LINK_OPEN_FAIL), */
+/* PAIR(LINK_TRANSFER_FAIL), */
+/* PAIR(LINK_ACK_FAIL), */
+/* PAIR(LINK_FILE_READ_FAIL), */
+/* PAIR(LINK_LONG_LINE_FAIL), */
+/* PAIR(LINK_BIND_FAIL), */
+/* PAIR(LINK_PERM_FAIL), */
+
  static struct link_err {
     char *str;
     int value;
 } link_err[] = {
 { "NO ERROR", 0 },
-PAIR(LINK_OPEN_FAIL),
-PAIR(LINK_TRANSFER_FAIL),
-PAIR(LINK_ACK_FAIL),
-PAIR(LINK_FILE_READ_FAIL),
-PAIR(LINK_LONG_LINE_FAIL),
-PAIR(LINK_BIND_FAIL),
-PAIR(LINK_PERM_FAIL),
+{"ERROR OPENING CONNECTION",LINK_OPEN_FAIL},
+{"ERROR TRANSFERRING DATA",LINK_TRANSFER_FAIL},
+{"NONZERO RFC1179 ERROR CODE FROM SERVER",LINK_ACK_FAIL},
+{"ERROR TRANSFERRING FILE",LINK_FILE_READ_FAIL},
+{"COMMAND TOO LONG FOR RFC1179, POSSIBLE BUFFER OVERRUN ATTEMPT", LINK_LONG_LINE_FAIL},
+{"CANNOT BIND TO PORT - POSSIBLE DENIAL OF SERVICE ATTACK", LINK_BIND_FAIL},
+{"NO PERMISSIONS TO MANANGE SOCKET- MAY NEED SUID INSTALLATION", LINK_BIND_FAIL},
 {0,0}
 };
 
@@ -1221,7 +1219,13 @@ const char *Link_err_str (int n)
     static char buf[40];
 	const char *s = 0;
 
-	for( i = 0; link_err[i].str && link_err[i].value != n; ++i );
+	/* DEBUG1("Link_err_str: %d\n", n ); */
+	for( i = 0; link_err[i].str && link_err[i].value != n; ++i ){
+		/* DEBUG1("Link_err_str: %d = '%s'\n", link_err[i].value,
+			link_err[i].str	); */
+	}
+	/* DEBUG1("Link_err_str: %d = '%s'\n", link_err[i].value,
+		link_err[i].str	); */
 	s = link_err[i].str;
 	if( s == 0 ){
 		s = buf;
@@ -1235,7 +1239,6 @@ const char *Link_err_str (int n)
  PAIR(ACK_STOP_Q),
  PAIR(ACK_RETRY),
  PAIR(ACK_FAIL),
- PAIR(LINK_ACK_FAIL),
  {0,0}
 };
 

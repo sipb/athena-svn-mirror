@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd.c,v 1.1.1.3 1999-10-27 20:09:57 mwhitson Exp $";
+"$Id: lpd.c,v 1.1.1.4 2000-03-31 15:47:55 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -68,10 +68,9 @@ int main(int argc, char *argv[], char *envp[])
 	int pid;			/* pid */
 	fd_set defreadfds, readfds;	/* for select() */
 	struct timeval timeval, *timeout;
-	int timeout_encountered = 0;	/* we have a timeout */
 	int max_socks;		/* maximum number of sockets */
 	int n, m;	/* ACME?  Hmmm... well, ok */
-	int err;
+	int err, newsock;
  	time_t last_time;	/* time that last Start_all was done */
  	time_t this_time;	/* current time */
 	plp_status_t status;
@@ -79,6 +78,7 @@ int main(int argc, char *argv[], char *envp[])
 	int start_fd = 0;
 	int status_pid = 0;
 	int request_pipe[2], status_pipe[2];
+	int fork_failed;
 	struct line_list args;
 	char *s;
 
@@ -101,12 +101,49 @@ int main(int argc, char *argv[], char *envp[])
 	}
 
 	/* set signal handlers */
-	(void) plp_signal (SIGHUP,  (plp_sigfunc_t)Reinit);
-	(void) plp_signal (SIGINT, cleanup_INT);
-	(void) plp_signal (SIGQUIT, cleanup_QUIT);
-	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGUSR1, (plp_sigfunc_t)SIG_IGN);
-	(void) plp_signal (SIGUSR2, (plp_sigfunc_t)SIG_IGN);
+	(void) plp_signal(SIGHUP,  (plp_sigfunc_t)Reinit);
+	(void) plp_signal(SIGINT, cleanup_INT);
+	(void) plp_signal(SIGQUIT, cleanup_QUIT);
+	(void) plp_signal(SIGTERM, cleanup_TERM);
+	(void) plp_signal(SIGUSR1, (plp_sigfunc_t)SIG_IGN);
+	(void) plp_signal(SIGUSR2, (plp_sigfunc_t)SIG_IGN);
+	(void) plp_signal(SIGCHLD, (plp_sigfunc_t)SIG_DFL);
+
+	/*
+	the next bit of insanity is caused by the interaction of signal(2) and execve(2)
+	man signal(2):
+
+	 When a process which has installed signal handlers forks, the child pro-
+	 cess inherits the signals.  All caught signals may be reset to their de-
+	 fault action by a call to the execve(2) function; ignored signals remain
+	 ignored.
+
+
+	man execve(2):
+	 
+	 Signals set to be ignored in the calling process are set to be ignored in
+					   ^^^^^^^
+					   signal(SIGCHLD, SIG_IGN)  <- in the acroread code???
+	 
+	 the new process. Signals which are set to be caught in the calling pro-  
+	 cess image are set to default action in the new process image.  Blocked  
+	 signals remain blocked regardless of changes to the signal action.  The  
+	 signal stack is reset to be undefined (see sigaction(2) for more informa-
+	 tion).
+
+
+	^&*(*&^!!! &*())&*&*!!!  and again, I say, &*()(&*!!!
+
+	This means that if you fork/execve a child,  then you better make sure
+	that you set up its signal/mask stuff correctly.
+
+    So if somebody blocks all signals and then starts up LPD,  it will not work
+	correctly.
+
+	*/
+
+	{ plp_block_mask oblock; plp_unblock_all_signals( &oblock ); }
+
 
 	Get_parms(argc, argv);      /* scan input args */
 
@@ -129,14 +166,6 @@ int main(int argc, char *argv[], char *envp[])
     */
 
 	Setup_log( Logfile_LPD );
-
-#if defined(HAVE_KRB5_H)
-	if(DEBUGL3){
-		char buffer[LINEBUFFER];
-		remote_principal_krb5( Kerberos_service_DYN, 0, buffer, sizeof(buffer) );
-		logDebug("lpd: kerberos principle '%s'", buffer );
-	}
-#endif
 
 	/* chdir to the root directory */
 	if( chdir( "/" ) == -1 ){
@@ -219,17 +248,13 @@ int main(int argc, char *argv[], char *envp[])
 	Lpd_request = request_pipe[1];
 
 	Logger_fd = -1;
+	status_pid = -1;
 	if( Logger_destination_DYN ){
 		if( pipe( status_pipe ) == -1 ){
 			logerr_die( LOG_ERR, _("lpd: pipe call failed") );
 		}
 		Logger_fd = status_pipe[1];
 		DEBUG2( "lpd: fd status_pipe(%d,%d)",status_pipe[0],status_pipe[1]);
-		status_pid = Start_logger( status_pipe[0] );
-		if( status_pid <= 0 ){
-			logerr_die( LOG_ERR, "lpd: cannot fork logger process");
-		}
-		DEBUG1("lpd: status_pid %d", status_pid );
 	}
 
 	/* open a connection to logger */
@@ -255,7 +280,8 @@ int main(int argc, char *argv[], char *envp[])
 	 */
 
 	last_time = time( (void *)0 );
-	start_fd = Start_all();
+	fork_failed = start_fd = Start_all();
+	Fork_error( fork_failed );
 
 
 	do{
@@ -266,7 +292,32 @@ int main(int argc, char *argv[], char *envp[])
 		DEBUG2( "lpd: Poll_time %d, Force_poll %d, start_fd %d, Started_server %d",
 			Poll_time_DYN, Force_poll_DYN, start_fd, Started_server );
 		if(DEBUGL2)Dump_line_list("lpd - Servers_line_list",&Servers_line_list );
-		if( Poll_time_DYN > 0 && start_fd <= 0 && Servers_line_list.count == 0 ){
+
+		/*
+		 * collect zombies 
+		 */
+
+		while( (pid = plp_waitpid( -1, &status, WNOHANG)) > 0 ){
+			DEBUG1( "lpd: process %d, status '%s'",
+				pid, Decode_status(&status));
+			if( pid == status_pid ){
+				status_pid = -1;
+			}
+			fork_failed = 1;
+		}
+		if( fork_failed > 0 && Logger_fd > 0 && status_pid < 0 ){
+			DEBUG1( "lpd: restarting logger process");
+			fork_failed = status_pid = Start_logger( status_pipe[0] );
+			Fork_error( fork_failed );
+			DEBUG1("lpd: status_pid %d", status_pid );
+		}
+		if( fork_failed < 0 ){
+			/* wait for 10 seconds then go in a loop */
+			memset(&timeval, 0, sizeof(timeval));
+			timeval.tv_sec = 10;
+			timeout = &timeval;
+		} else if( Poll_time_DYN > 0
+			&& start_fd <= 0 && Servers_line_list.count == 0 ){
 			memset(&timeval, 0, sizeof(timeval));
 			this_time = time( (void *)0 );
 			m = (this_time - last_time);
@@ -276,10 +327,13 @@ int main(int argc, char *argv[], char *envp[])
 				m, (int)timeval.tv_sec );
 			if( m >= Poll_time_DYN ){
 				if( Started_server || Force_poll_DYN ){
-					start_fd = Start_all();
+					fork_failed = start_fd = Start_all();
+					Fork_error( fork_failed );
 					DEBUG1( "lpd: restarting poll, start_fd %d", start_fd);
-					last_time = this_time;
-					timeval.tv_sec = Poll_time_DYN;
+					if( start_fd > 0 ){
+						last_time = this_time;
+						timeval.tv_sec = Poll_time_DYN;
+					}
 				} else {
 					DEBUG1( "lpd: no poll" );
 					timeout = 0;
@@ -287,48 +341,31 @@ int main(int argc, char *argv[], char *envp[])
 			}
 		}
 
-		/*
-		 * collect zombies 
-		 */
-
-		while( (pid = plp_waitpid( -1, &status, WNOHANG)) > 0 ){
-			DEBUG1( "lpd: process %d, status '%s'",
-				pid, Decode_status(&status));
-			if( status_pid > 0 && pid == status_pid ){
-				DEBUG1( "lpd: restaring logger process");
-				while( (status_pid = Start_logger( status_pipe[0] )) < 0 ){
-					DEBUG1("lpd: could not start process - %s",
-						Errormsg(errno) );
-					status_pid = plp_waitpid( -1, &status, 0);
-					DEBUG1( "lpd: process %d, status '%s'",
-						status_pid, Decode_status(&status));
-				}
-				DEBUG1("lpd: status_pid %d", status_pid );
-			}
-		}
 		n = Countpid();
 		max_servers = Get_max_servers();
 		DEBUG1("lpd: max_servers %d, active %d", max_servers, n );
-		while( Servers_line_list.count > 0 && n < max_servers ){ 
+
+		/* allow a little space for people to send commands */
+		while( fork_failed > 0 && Servers_line_list.count > 0 && n < max_servers-4 ){ 
 			s = Servers_line_list.list[0];
 			DEBUG1("lpd: starting server '%s'", s );
-			Free_line_list( &args );
 			Set_str_value(&args,PRINTER,s);
 			Set_str_value(&args,CALL,QUEUE);
-			pid = Start_worker( &args, 0 );
+			fork_failed = pid = Start_worker( &args, 0 );
+			Fork_error( fork_failed );
 			Free_line_list(&args);
 			if( pid > 0 ){
 				Remove_line_list( &Servers_line_list, 0 );
 				++Started_server;
 				++n;
-			} else {
-				break;
 			}
 		}
 
+		DEBUG1("lpd: fork_failed %d, processes %d active, max %d",
+			fork_failed, n, max_servers );
 		/* do not accept incoming call if no worker available */
 		readfds = defreadfds;
-		if( n >= max_servers ){
+		if( n >= max_servers || fork_failed < 0 ){
 			DEBUG1( "lpd: not accepting requests", sock );
 			FD_CLR( sock, &readfds );
 		}
@@ -384,7 +421,6 @@ int main(int argc, char *argv[], char *envp[])
 			Setup_configuration();
 		}
 		/* mark this as a timeout */
-		timeout_encountered = (m == 0);
 		if( m < 0 ){
 			if( err != EINTR ){
 				errno = err;
@@ -393,28 +429,33 @@ int main(int argc, char *argv[], char *envp[])
 			}
 			continue;
 		} else if( m == 0 ){
-			DEBUG1( "lpd: signal or time out" );
+			DEBUG1( "lpd: signal or time out, fork_failed %d", fork_failed );
+			/* we try to fork now */
+			if( fork_failed < 0 ) fork_failed = 1;
 			continue;
 		}
 		if( FD_ISSET( sock, &readfds ) ){
-			int p[2];
-			char b[32];
-			if( pipe(p) == -1 ){
-				logerr(LOG_INFO, _("lpd: pipe() failed") );
+			struct sockaddr sinaddr;
+			int len;
+			len = sizeof( sinaddr );
+			newsock = accept( sock, &sinaddr, &len );
+			err = errno;
+			DEBUG1("lpd: connection fd %d", newsock );
+			if( newsock > 0 ){
+				Set_str_value(&args,CALL,SERVER);
+				pid = Start_worker( &args, newsock );
+				if( pid < 0 ){
+					logerr(LOG_INFO, _("lpd: fork() failed") );
+					Write_fd_str( newsock, "\002Server load too high\n");
+				} else {
+					DEBUG1( "lpd: listener pid %d running", pid );
+				}
+				close( newsock );
+				Free_line_list(&args);
+			} else {
+				errno = err;
+				logerr(LOG_INFO, _("Service_connection: accept on listening socket failed") );
 			}
-			Free_line_list( &args );
-			Lpd_ack_fd = p[1];
-			Set_str_value(&args,CALL,SERVER);
-			pid = Start_worker( &args, sock );
-			if( pid < 0 ){
-				logerr(LOG_INFO, _("lpd: fork() failed") );
-			}
-			Free_line_list(&args);
-			Lpd_ack_fd = 0;
-			close( p[1] );
-			while( read( p[0], b, sizeof(b) ) > 0 );
-			DEBUG1( "lpd: listener %d running", pid );
-			close( p[0] );
 		}
 		if( FD_ISSET( request_pipe[0], &readfds ) 
 			&& Read_server_status( request_pipe[0] ) == 0 ){
@@ -485,7 +526,7 @@ void Service_connection( struct line_list *args )
 	char buffer[LINEBUFFER];	/* for messages */
 	int len, talk;
 	int status;		/* status of operation */
-	int permission, newsock, err;
+	int permission;
 	int port = 0;
 	struct sockaddr sinaddr;
 
@@ -498,37 +539,17 @@ void Service_connection( struct line_list *args )
 		fatal(LOG_ERR,"Service_connection: no talk fd"); 
 	}
 
-	Free_line_list(args);
-	len = sizeof( sinaddr );
 	DEBUG1("Service_connection: listening fd %d", talk );
-	newsock = accept( talk, &sinaddr, &len );
-	err = errno;
-	DEBUG1("Service_connection: connection fd %d", newsock );
 
-	if( newsock > 0 ){
-		if( dup2( newsock, talk ) == -1 ){
-			logerr_die( LOG_INFO, "Service_connection: dup2() failed!" );
-		}
-		if( newsock != talk ){
-			close( newsock );
-		}
-	} else {
-		errno = err;
-		logerr_die(LOG_INFO, _("Service_connection: accept on listening socket failed") );
-	}
+	Free_line_list(args);
 
-	if( Lpd_ack_fd ){
-		close( Lpd_ack_fd );
-		Lpd_ack_fd = -1;
-	}
-
+	/* make sure you use blocking IO */
 	Set_block_io(talk);
 
-	/* get the remote name and set up the various checks */
-	Perm_check.addr = &sinaddr;
-	Get_remote_hostbyaddr( &RemoteHost_IP, &sinaddr );
-	Perm_check.remotehost  =  &RemoteHost_IP;
-	Perm_check.host = &RemoteHost_IP;
+	len = sizeof( sinaddr );
+	if( getpeername( talk, &sinaddr, &len ) ){
+		logerr_die( LOG_DEBUG, _("Service_connection: getpeername failed") );
+	}
 
 	if( sinaddr.sa_family == AF_INET ){
 		port = ((struct sockaddr_in *)&sinaddr)->sin_port;
@@ -539,9 +560,17 @@ void Service_connection( struct line_list *args )
 	} else {
 		fatal( LOG_INFO, _("Service_connection: bad protocol family '%d'"), sinaddr.sa_family );
 	}
-	Perm_check.port =  ntohs(port);
+
 	DEBUG2("Service_connection: socket %d, ip '%s' port %d", talk,
 		inet_ntop_sockaddr( &sinaddr, buffer, sizeof(buffer) ), ntohs( port ) );
+
+	/* get the remote name and set up the various checks */
+	Perm_check.addr = &sinaddr;
+
+	Get_remote_hostbyaddr( &RemoteHost_IP, &sinaddr );
+	Perm_check.remotehost  =  &RemoteHost_IP;
+	Perm_check.host = &RemoteHost_IP;
+	Perm_check.port =  ntohs(port);
 
 	len = sizeof( input ) - 1;
 	memset(input,0,sizeof(input));
@@ -654,14 +683,22 @@ int Get_lpd_pid(void)
 
 void Set_lpd_pid(void)
 {
-	int lockfd, err;
+	int lockfd;
 	char *path;
 	struct stat statb;
 
 	path = safestrdup3( Lockfile_DYN,".", Lpd_port_DYN, __FILE__, __LINE__ );
-	To_root();
 	lockfd = Checkwrite( path, &statb, O_WRONLY|O_TRUNC, 1, 0 );
-	To_daemon();
+	fchmod( lockfd, (statb.st_mode & ~0777) | 0644 );
+	if( lockfd < 0 ){
+		To_root();
+		lockfd = Checkwrite( path, &statb, O_WRONLY|O_TRUNC, 1, 0 );
+		if( lockfd > 0 ){
+			fchown( lockfd, DaemonUID, DaemonGID );
+			fchmod( lockfd, (statb.st_mode & ~0777) | 0644 );
+		}
+		To_daemon();
+	}
 	if( lockfd < 0 ){
 		logerr_die( LOG_ERR, _("lpd: Cannot open '%s'"), path );
 	} else {
@@ -669,12 +706,6 @@ void Set_lpd_pid(void)
 		Server_pid = getpid();
 		DEBUG1( "lpd: writing lockfile '%s' fd %d with pid '%d'",path,lockfd,Server_pid );
 		Write_pid( lockfd, Server_pid, (char *)0 );
-		To_root();
-		err = fchmod( lockfd, (statb.st_mode | 0644) );
-		To_daemon();
-		if( err == -1 ){
-			logerr_die( LOG_ERR, _("lpd: Cannot change mode '%s'"), path );
-		}
 	}
 	if(path) free(path); path = 0;
 	close( lockfd );
@@ -979,10 +1010,6 @@ void Setup_lpd_call( struct line_list *passfd, struct line_list *args )
 		Set_decimal_value(args,LPD_REQUEST,passfd->count);
 		passfd->list[passfd->count++] = Cast_int_to_voidstar(Lpd_request);
 	}
-	if( Lpd_ack_fd > 0 ){
-		Set_decimal_value(args,LPD_ACK_FD,passfd->count);
-		passfd->list[passfd->count++] = Cast_int_to_voidstar(Lpd_ack_fd);
-	}
 	Set_flag_value(args,DEBUG,Debug);
 	Set_flag_value(args,DEBUGFV,DbgFlag);
 #ifdef DMALLOC
@@ -1114,7 +1141,6 @@ void Do_work( struct line_list *args )
 	Logger_fd = Find_flag_value(args, LOGGER,Value_sep);
 	Status_fd = Find_flag_value(args, STATUS_FD,Value_sep);
 	Mail_fd = Find_flag_value(args, MAIL_FD,Value_sep);
-	Lpd_ack_fd = Find_flag_value(args, LPD_ACK_FD,Value_sep);
 	Lpd_request = Find_flag_value(args, LPD_REQUEST,Value_sep);
 	Debug= Find_flag_value( args, DEBUG, Value_sep);
 	DbgFlag= Find_flag_value( args, DEBUGFV, Value_sep);
@@ -1277,12 +1303,14 @@ void Service_all( struct line_list *args )
 	}
 	for( i = 0; i < All_line_list.count; ++i ){
 		Set_DYN(&Printer_DYN,0);
+		Set_DYN(&Spool_dir_DYN,0);
 		if( path ) free(path); path = 0;
 		pr = All_line_list.list[i];
 		DEBUG1("Service_all: checking '%s'", pr );
 		if( Setup_printer( pr, buffer, sizeof(buffer)) ) continue;
 		/* now check to see if there is a server and unspooler process active */
 		path = Make_pathname( Spool_dir_DYN, Printer_DYN );
+		DEBUG1("Service_all: checking '%s', path '%s'", pr, path );
 		server_pid = 0;
 		if( (fd = Checkread( path, &statb ) ) >= 0 ){
 			server_pid = Read_pid( fd, (char *)0, 0 );
@@ -1421,3 +1449,10 @@ void Setup_waitpid_break (void)
 	(void) plp_signal_break(SIGCHLD, sigchld_handler);
 }
 
+void Fork_error( int fork_failed )
+{
+	DEBUG1("Fork_error: %d", fork_failed );
+	if( fork_failed < 0 ){
+		logmsg(LOG_CRIT,"LPD: fork failed! LPD not accepting any requests");
+	}
+}

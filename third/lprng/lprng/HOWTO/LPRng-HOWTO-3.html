@@ -103,8 +103,8 @@ this connection may fail if the printer is busy printing
 another job or has another network connection open.</LI>
 <LI>Once the connection has been established,
 a print request command is sent to the printer,
-and if printing is allowed,
-and acknowledgment will be received.</LI>
+and if printing is allowed
+an acknowledgment will be received.</LI>
 <LI>The files comprising the print job are sent to the printer.</LI>
 <LI>The connection to the printer is closed.</LI>
 </OL>
@@ -153,7 +153,7 @@ to another host.</LI>
 the job can be sent over the TCP stream.
 When all of the job has been transferred,
 the connection should be <I>shutdown</I> for sending data by the sender,
-but remain open to received error messages or other information.</LI>
+but remain open to receive error messages or other information.</LI>
 <LI>An end or job indication in the data stream will also act to terminate
 the connection.
 This means that if the PostScript CTRL-D (end of job) character is sent in
@@ -245,7 +245,7 @@ that will assist with this:
 #set -v -x              # uncomment for debugging
 PATH=/bin:/usr/bin
 printer=
-for $printer in /dev/lp* ;
+for printer in /dev/lp* ;
 do
     echo PRINTER TEST to $printer 1&gt;&amp;2
     for i in 1 2 3 4 5 6 7 8 9;

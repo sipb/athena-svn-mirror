@@ -445,7 +445,7 @@ This can make it difficult for administrators to determine where the
 configuration files are.
 <P>It is strongly recommended that filters and information
 be placed in commonly accessible directories such as
-<CODE><B>/usr/local/lib/filters</B></CODE>,
+<CODE><B>/usr/local/libexec/filters</B></CODE>,
 and the executables in subdirectories.
 This allows the LPRng administrator to set the privileges on these
 directories such that only the <CODE>lpd</CODE> process can
@@ -496,8 +496,6 @@ and detects the OF Filter Stop sequence when invoked as an OF filter.
 <A HREF="LPRng-HOWTO-1.html#secftp">LPRng Distribution, ifhp-&lt;em>version&lt;/em>.tgz</A><P>This filter supports a wide variety of <I>smart</I> printers,
 or to be more specific,
 printers which support PostScript, PCL or PJL languages.
-<H3>Printer Capabilities</H3>
-
 <P>As explained in
 <A HREF="LPRng-HOWTO-3.html#installref">Setting Up Your Printer</A>,
 you can have a parallel (unidirectional),
@@ -548,15 +546,15 @@ the following is a quick cookbook:
 #   no banners, HP compatible
 lp
   :lp=ipaddr%9100
-  :/usr/local/lib/filters/ifhp
+  :/usr/local/libexec/filters/ifhp
   :sh:sf
 #
 # banner added
 #
 lp
-  :bp=/usr/local/lib/filters/pclbanner
-  :of=/usr/local/lib/filters/ifhp
-  :if=/usr/local/lib/filters/ifhp
+  :bp=/usr/local/libexec/filters/pclbanner
+  :of=/usr/local/libexec/filters/ifhp
+  :if=/usr/local/libexec/filters/ifhp
   :sf
 #
 # for a parallel port printer or when you want VERY fast
@@ -564,7 +562,7 @@ lp
 #
 lp
   :ifhp=status@
-  :/usr/local/lib/filters/ifhp
+  :/usr/local/libexec/filters/ifhp
   :sh:sf
 </PRE>
 </CODE></BLOCKQUOTE>

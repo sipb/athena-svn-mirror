@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: gethostinfo.c,v 1.1.1.3 1999-10-27 20:10:05 mwhitson Exp $";
+"$Id: gethostinfo.c,v 1.1.1.4 2000-03-31 15:48:03 mwhitson Exp $";
 
 /********************************************************************
  * char *get_fqdn (char *shorthost)
@@ -583,7 +583,7 @@ int Match_ipaddr_value( struct line_list *list, struct host_information *host )
 		if( !(str = list->list[i]) ) continue;
 		if( *str == '@' ) {	/* look up host in netgroup */
 #ifdef HAVE_INNETGR
-			result = !innetgr( str+1, host->fqdn, NULL, NULL );
+			result = !innetgr( str+1, host->shorthost, NULL, NULL );
 #else /* HAVE_INNETGR */
 			DEBUGF(DDB3)("match: no innetgr() call, netgroups not permitted");
 #endif /* HAVE_INNETGR */

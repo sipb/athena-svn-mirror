@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: printjob.c,v 1.1.1.4 1999-10-27 20:09:52 mwhitson Exp $";
+"$Id: printjob.c,v 1.1.1.5 2000-03-31 15:47:50 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -95,14 +95,21 @@
 int Wait_for_pid( int of_pid, char *name, int suspend, int timeout,
 	plp_status_t *ps_status)
 {
-	int pid, n = 0, err;
+	int pid, err, n;
 	DEBUG2("Wait_for_pid: name '%s', pid %d, suspend %d, timeout %d",
 		name, of_pid, suspend, timeout );
 	errno = 0;
 	do{
 		memset(ps_status,0,sizeof(ps_status[0]));
 		if( timeout > 0 ){
-			pid = plp_waitpid_timeout(timeout,of_pid,ps_status,WUNTRACED);
+			if( Set_timeout() ){
+				Set_timeout_alarm( timeout  );
+				pid = plp_waitpid(of_pid,ps_status,WUNTRACED );
+			} else {
+				pid = -1;
+				errno = EINTR;
+			}
+			Clear_timeout();
 		} else if( timeout == 0 ){
 			pid = plp_waitpid(of_pid,ps_status,WUNTRACED);
 		} else {
@@ -112,6 +119,7 @@ int Wait_for_pid( int of_pid, char *name, int suspend, int timeout,
 		DEBUG2("Wait_for_pid: pid %d exit status '%s'",
 			pid, Decode_status(ps_status));
 	} while( pid == -1 && err != ECHILD && err != EINTR );
+	n = 0;
 	if( pid > 0 ){
 		if( suspend && WIFSTOPPED(*ps_status) ){
 			n = 0;
@@ -381,10 +389,10 @@ void Print_job( int output, struct job *job, int timeout )
 				Errorcode = JFAIL;
 				cleanup(0);
 			}
+			Init_buf(&Outbuf, &Outmax, &Outlen );
 			if( files_printed++ && !No_FF_separator_DYN && FF_str ){
 				/* FF separator -> of_fd; */
 				setstatus(job,"printing '%s' FF separator ",id);
-				Init_buf(&Outbuf, &Outmax, &Outlen );
 				Put_buf_str( FF_str, &Outbuf, &Outmax, &Outlen );
 				if( of_pid ){
 					Put_buf_str( FILTER_STOP, &Outbuf, &Outmax, &Outlen );
@@ -729,7 +737,14 @@ void Print_banner( char *name, char *pgm, struct job *job )
 			}
 			len = strlen(buffer);
 		}
-		while( (n = plp_waitpid(pid,&status,0)) != pid );
+		while( (n = plp_waitpid(pid,&status,0)) != pid ){
+			int err = errno;
+			DEBUG1("Print_banner: waitpid(%d) returned %d, err '%s'",
+				pid, n, Errormsg(err) );
+			if( err == EINTR ) continue; 
+			Errorcode = JABORT;
+			logerr_die( LOG_ERR, "Print_banner: waitpid(%d) failed", pid);
+		} 
 		DEBUG1("Print_banner: pid %d, exit status '%s'", pid,
 			Decode_status(&status) );
 		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){

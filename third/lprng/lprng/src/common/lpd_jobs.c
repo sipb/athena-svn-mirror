@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_jobs.c,v 1.1.1.3 1999-10-27 20:09:53 mwhitson Exp $";
+"$Id: lpd_jobs.c,v 1.1.1.4 2000-03-31 15:47:51 mwhitson Exp $";
 
 #include "lp.h"
 #include "lpd.h"
@@ -631,7 +631,7 @@ int Do_queue_jobs( char *name, int subserver, int idle_check )
 		Unlink_tempfiles();
 
 		/* check for changes to spool control information */
-		plp_unblock_all_signals( &oblock);
+		plp_unblock_all_signals( &oblock );
 		plp_set_signal_mask( &oblock, 0 );
 
 		DEBUG1( "Do_queue_jobs: Susr1 before scan %d", Susr1 );
@@ -800,17 +800,19 @@ int Do_queue_jobs( char *name, int subserver, int idle_check )
 				 */
 				for( j = master; use_subserver < 0 && j < servers.count; ++j ){
 					sp = (void *)servers.list[j];
+					s = Find_str_value(sp,PRINTER,Value_sep);
+					DEBUG1("Do_queue_jobs: checking '%s'", s );
 					if( Pr_disabled(sp)
 						|| Pr_aborted(sp)
 						|| Sp_disabled(sp)
 						|| Find_flag_value(sp,SERVER,Value_sep)){
 						DEBUG1("Do_queue_jobs: cannot use [%d] '%s'",
-							j, Find_flag_value(sp,PRINTER,Value_sep) );
+							j, s );
 						continue;
 					}
 					if( Get_hold_class(&job.info,sp) ){
 						DEBUG1("Do_queue_jobs: cannot use [%d] '%s' class conflict",
-							j, Find_flag_value(sp,PRINTER,Value_sep) );
+							j, s );
 						/* we found a server that was available */
 						continue;
 					}
@@ -1007,7 +1009,7 @@ int Remote_job( struct job *job, char *id )
 	plp_status_t procstatus;
 
 	DEBUG1("Remote_job: %s", id );
-	setmessage(job,STATE,"SENDING");
+	/* setmessage(job,STATE,"SENDING"); */
 	status = 0;
 	Init_job(&jcopy);
 
@@ -1139,7 +1141,14 @@ int Remote_job( struct job *job, char *id )
 				logerr_die( LOG_INFO,"Remote_job: close(%d) failed",
 					of_error[0]);
 			}
-			while( (n = plp_waitpid(pid,&procstatus,0)) != pid );
+			while( (n = plp_waitpid(pid,&procstatus,0)) != pid ){
+				int err = errno;
+				DEBUG1("Remote_job: waitpid(%d) returned %d, err '%s'",
+					pid, n, Errormsg(err) );
+				if( err == EINTR ) continue; 
+				Errorcode = JABORT;
+				logerr_die( LOG_ERR, "Remote_job: waitpid(%d) failed", pid);
+			} 
 			DEBUG1("Remote_job: pid %d, exit status '%s'", pid,
 				Decode_status(&procstatus) );
 			if( WIFEXITED(procstatus) && (n = WEXITSTATUS(procstatus)) ){
@@ -1186,15 +1195,22 @@ int Remote_job( struct job *job, char *id )
 			Set_double_value(lp,SIZE,job_size);
 		}
 	}
-	if( Fix_control( &jcopy, Control_filter_DYN ) ){
+	if( Fix_control( &jcopy, Control_filter_DYN, Xlate_format_DYN ) ){
 		status = JFAIL;
 		if( !(s = Find_str_value(&jcopy.info,ERROR,Value_sep)) ){
 			plp_snprintf(buffer,sizeof(buffer), _("control filter error") );
 			Set_str_value(&jcopy.info,ERROR,buffer);
 		}
 	} else {
-		if(DEBUGL3)Dump_job("Send_job - after Fix_control", &jcopy );
-		status = Send_job( &jcopy, Connect_timeout_DYN, Connect_interval_DYN,
+ 		char *oldid = Find_str_value(&job->info,IDENTIFIER,Value_sep );
+ 		char *newid = Find_str_value(&jcopy.destination,IDENTIFIER,Value_sep );
+ 		if( newid == 0 ){
+ 			newid = Find_str_value(&jcopy.info,IDENTIFIER,Value_sep );
+ 		}
+ 		setmessage(job,STATE,"SENDING OLDID=%s NEWID=%s DEST=%s@%s",
+ 			oldid, newid, RemotePrinter_DYN, RemoteHost_DYN );
+  		if(DEBUGL3)Dump_job("Send_job - after Fix_control", &jcopy );
+		status = Send_job( &jcopy, job, Connect_timeout_DYN, Connect_interval_DYN,
 			Max_connect_interval_DYN, Send_job_rw_timeout_DYN );
 		DEBUG1("Remote_job: %s, status '%s'", id, Link_err_str(status) );
 	}
@@ -1323,8 +1339,17 @@ int Local_job( struct job *job, char *id )
 		DEBUG1("Local_job: after shutdown fd %d", fd );
 		while( pid > 0 || errorpid > 0 ){
 			setstatus(job,"waiting for printer filter to exit");
-			n = plp_waitpid(-1,&procstatus,0);
-			if( n  == pid ){
+			if( (n = plp_waitpid(-1,&procstatus,0)) == -1 ){
+				int err = errno;
+				DEBUG1("Local_job: waitpid(%d) returned %d, err '%s'",
+					pid, n, Errormsg(err) );
+				if( err == EINTR ) continue; 
+				Errorcode = JABORT;
+				logerr_die( LOG_ERR, "Local_job: waitpid(%d) failed", pid);
+			} 
+			DEBUG1("Local_job: pid %d exited with '%s'", pid,
+				Decode_status(&procstatus));
+			if( n == pid ){
 				pid = 0;
 				if( WIFEXITED(procstatus) ){
 					status = WEXITSTATUS(procstatus);
@@ -1341,6 +1366,8 @@ int Local_job( struct job *job, char *id )
 					status = JABORT;
 				}
 			} else if( n == errorpid ){
+				DEBUG1("Local_job: error handler exited with '%s'",
+					Decode_status(&procstatus));
 				errorpid = 0;
 			}
 		}
@@ -1439,9 +1466,8 @@ void Wait_for_subserver( struct line_list *servers, struct line_list *order )
 	Init_job(&job);
 	sigval = errno = 0;
 
-	/* we need to unblock signals and wait for event */
-	(void) plp_signal(SIGCHLD,  (plp_sigfunc_t)Sigchld);
 	done = 0;
+ again:
 	while( (pid = plp_waitpid( -1, &procstatus, WNOHANG )) > 0 ){
 		++done;
 		DEBUG1("Wait_for_subserver: pid %d, status '%s'", pid,
@@ -1510,9 +1536,11 @@ void Wait_for_subserver( struct line_list *servers, struct line_list *order )
 				Set_str_value(sp,HF_NAME,0);
 				Update_spool_info(sp);
 				if( i == 0 ){
+					/* this is the information for the master spool queue */
 					Get_spool_control(Spool_dir_DYN,Queue_control_file_DYN,
 					Printer_DYN,&Spool_control );
 				}
+				Free_job(&job);
 			}
 		}
 		/* sort server order */
@@ -1525,9 +1553,13 @@ void Wait_for_subserver( struct line_list *servers, struct line_list *order )
 			"Wait_for_subserver: after sorting", servers );
 	}
 	if( !done ){
+		/* we need to unblock signals and wait for event */
+		Chld = 0;
+		(void) plp_signal(SIGCHLD,  (plp_sigfunc_t)Sigchld);
 		plp_sigpause();
+		signal( SIGCHLD, SIG_DFL );
+		if( Chld ) goto again;
 	}
-	signal( SIGCHLD, SIG_DFL );
 
 	Free_job(&job);
 }
@@ -1601,7 +1633,15 @@ int Decode_transfer_failure( int attempt, struct job *job, char *id )
 			}
 			line[len] = 0;
 			close( out[0] );
-			while( (n = plp_waitpid(pid,&status,0)) != pid );
+			while( (n = plp_waitpid(pid,&status,0)) != pid ){
+				int err = errno;
+				DEBUG1("Decode_transfer_failure: waitpid(%d) returned %d, err '%s'",
+					pid, n, Errormsg(err) );
+				if( err == EINTR ) continue; 
+				Errorcode = JABORT;
+				logerr_die( LOG_ERR, "Decode_transfer_failure: waitpid(%d) failed", pid);
+			}
+
 			if( WIFSIGNALED(status) ){
 				n = WTERMSIG(status);
 				DEBUG1("Decode_transfer_failure: signal %d, '%s'",
@@ -1921,8 +1961,8 @@ int Check_print_perms( struct job *job )
 	s = Find_str_value(&job->info,FROMHOST,Value_sep);
 	if( s && Find_fqdn( &PermHost_IP, s ) ){
 		perm.host = &PermHost_IP;
-		perm.remotehost = perm.host;
 	}
+	perm.remotehost = perm.host;
 	permission = Perms_check( &Perm_line_list,&perm, job, 1 );
 	DEBUG3("Check_print_perms: permission '%s'", perm_str(permission) );
 	return( permission );
@@ -2023,7 +2063,15 @@ int Do_check_idle(void)
 		len = strlen(line);
 	}
 	close(error_fd[0]);
-	while( (n = plp_waitpid(pid,&procstatus,0)) != pid );
+	while( (n = plp_waitpid(pid,&procstatus,0)) != pid ){
+		int err = errno;
+		DEBUG1("Do_check_idle: waitpid(%d) returned %d, err '%s'",
+			pid, n, Errormsg(err) );
+		if( err == EINTR ) continue; 
+		Errorcode = JABORT;
+		logerr_die( LOG_ERR, "Do_check_idle: waitpid(%d) failed", pid);
+	} 
+
 	DEBUG1("Do_check_idle: pid %d, status '%s'", pid,
 		Decode_status(&procstatus));
 	if( WIFSIGNALED(procstatus) ){

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: utilities.h,v 1.1.1.3 1999-10-27 20:10:12 mwhitson Exp $
+ * $Id: utilities.h,v 1.1.1.4 2000-03-31 15:48:12 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -68,7 +68,7 @@ void Clear_timeout( void );
 int To_root(void);
 int To_daemon(void);
 int To_user(void);
-int To_ruid_user(void);
+int To_ruid(int uid);
 int To_uid( int uid );
 int setuid_wrapper(int to);
 int Full_daemon_perms(void);

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: accounting.c,v 1.1.1.2 1999-10-27 20:10:05 mwhitson Exp $";
+"$Id: accounting.c,v 1.1.1.3 2000-03-31 15:48:05 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -74,7 +74,14 @@ int Do_accounting( int end, char *command, struct job *job, int timeout )
 		}
 		close( errors[0] ); errors[0] = -1;
 
-		while( (n = plp_waitpid(pid,&status,0)) != pid );
+		while( (n = plp_waitpid(pid,&status,0)) != pid ){
+			int err = errno;
+			DEBUG1("Do_accounting: waitpid(%d) returned %d, err '%s'",
+				pid, n, Errormsg(err) );
+			if( err == EINTR ) continue;
+			Errorcode = JABORT;
+			logerr_die( LOG_ERR, "Do_accounting: waitpid(%d) failed", pid);
+		}
 		if( WIFEXITED(status) && (err = WEXITSTATUS(status)) ){
 			DEBUG1("Do_accounting: process exited with status %d", err);
 			if( err && err < 32 ) err += 31;

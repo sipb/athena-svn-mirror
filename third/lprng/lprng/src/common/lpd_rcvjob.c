@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_rcvjob.c,v 1.1.1.3 1999-10-27 20:10:03 mwhitson Exp $";
+"$Id: lpd_rcvjob.c,v 1.1.1.4 2000-03-31 15:48:02 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -308,7 +308,7 @@ int Receive_job( int *sock, char *input )
 				job.info.count, files.count );
 			if( job.info.count ){
 				/* we receive another control file */
-				if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
+				if( Check_for_missing_files(&job, &files, error, sizeof(error), 0) ){
 					goto error;
 				}
 				Free_line_list(&files);
@@ -328,7 +328,7 @@ int Receive_job( int *sock, char *input )
 				/* we have datafiles, FOLLOWED by a control file,
 					followed (possibly) by another control file */
 				/* we receive another control file */
-				if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
+				if( Check_for_missing_files(&job, &files, error, sizeof(error), 0) ){
 					goto error;
 				}
 				Free_line_list(&files);
@@ -343,7 +343,7 @@ int Receive_job( int *sock, char *input )
 	}
 
 	if( job.info.count ){
-		if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
+		if( Check_for_missing_files(&job, &files, error, sizeof(error), 0) ){
 			goto error;
 		}
 		Free_line_list(&files);
@@ -360,7 +360,7 @@ int Receive_job( int *sock, char *input )
 	if( temp_fd > 0 ) close(temp_fd); temp_fd = -1;
 
 	if( error[0] ){
-		if( ack != 0 ) ack = ACK_FAIL;
+		if( ack == 0 ) ack = ACK_FAIL;
 		buffer[0] = ack;
 		plp_snprintf(buffer+1,sizeof(buffer)-1,"%s\n",error);
 		/* log( LOG_INFO, "Receive_job: error '%s'", error ); */
@@ -525,7 +525,7 @@ int Receive_block_job( int *sock, char *input )
 		goto error;
 	}
 
-	if( Scan_block_file( temp_fd, error, errlen-4 ) ){
+	if( Scan_block_file( temp_fd, error, errlen-4, 0 ) ){
 		ack = ACK_FAIL;
 		goto error;
 	}
@@ -587,7 +587,7 @@ int Receive_block_job( int *sock, char *input )
  *          0 on success
  ***************************************************************************/
 
-int Scan_block_file( int fd, char *error, int errlen )
+int Scan_block_file( int fd, char *error, int errlen, char *auth_id )
 {
 	char line[LINEBUFFER];
 	char buffer[LARGEBUFFER];
@@ -675,8 +675,8 @@ int Scan_block_file( int fd, char *error, int errlen )
 		tempfd = -1;
 
 		if( filetype == CONTROL_FILE ){
-			if( job.datafiles.count ){
-				if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
+			if( files.count ){
+				if( Check_for_missing_files(&job, &files, error, sizeof(error), auth_id) ){
 					goto error;
 				}
 				Free_line_list(&files);
@@ -699,8 +699,8 @@ int Scan_block_file( int fd, char *error, int errlen )
 		}
 	}
 
-	if( job.datafiles.count ){
-		if( Check_for_missing_files(&job, &files, error, sizeof(error)) ){
+	if( files.count ){
+		if( Check_for_missing_files(&job, &files, error, sizeof(error), auth_id) ){
 			goto error;
 		}
 		Free_line_list(&files);
@@ -769,10 +769,11 @@ int Do_perm_check( struct job *job, char *error, int errlen )
 	if( s && Find_fqdn( &PermHost_IP, s ) ){
 		Perm_check.host = &PermHost_IP;
 	}
+	Perm_check.remotehost = &RemoteHost_IP;
 
 	/* check for permission */
 
-	if( (permission = Perms_check( &Perm_line_list, &Perm_check, job, 0 ))
+	if( (permission = Perms_check( &Perm_line_list, &Perm_check, job, 1 ))
 			== P_REJECT ){
 		plp_snprintf( error, errlen,
 			_("%s: no permission to print"), Printer_DYN );
@@ -788,7 +789,7 @@ int Do_perm_check( struct job *job, char *error, int errlen )
  */
 
 int Check_for_missing_files( struct job *job, struct line_list *files,
-	char *error, int errlen )
+	char *error, int errlen, char *auth_id )
 {
 	int count;
 	struct line_list *lp, datafiles;
@@ -814,6 +815,26 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 	DEBUGFC(DRECV1)Dump_line_list("Check_for_missing_files - files", files );
 	jobsize = 0;
 	error[0] = 0;
+	/* RedHat Linux 6.1 - sends a control file with NO data files */
+	if( job->datafiles.count == 0 && files->count > 0 ){
+		Check_max(&job->datafiles,files->count+1);
+		for( count = 0; count < files->count; ++count  ){
+			lp = malloc_or_die(sizeof(lp[0]),__FILE__,__LINE__);
+			memset(lp,0,sizeof(lp[0]));
+			job->datafiles.list[job->datafiles.count++] = (void *)lp;
+			/*
+			 * now we add the information needed
+			 *  the files list has 'transfername=openname'
+			 */
+			transfername = files->list[count];
+			if( (openname = strchr(transfername,'=')) ) *openname++ = 0;
+			Set_str_value(lp,TRANSFERNAME,transfername);
+			Set_str_value(lp,FORMAT,"f");
+			Set_flag_value(lp,COPIES,1);
+			if( openname ) openname[-1] = '=';
+		}
+		DEBUGFC(DRECV1)Dump_job("RedHat Linux fix", job );
+	}
 	for( count = 0; count < job->datafiles.count; ++count ){
 		lp = (void *)job->datafiles.list[count];
 		transfername = Find_str_value(lp,TRANSFERNAME,Value_sep);
@@ -850,7 +871,7 @@ int Check_for_missing_files( struct job *job, struct line_list *files,
 	}
 
 	error[0] = 0;
-	if( Create_control( job, error, errlen ) ){
+	if( Create_control( job, error, errlen, auth_id, Xlate_incoming_format_DYN ) ){
 		DEBUGF(DRECV1)("Check_for_missing_files: Create_control error '%s'", error );
 		goto error;
 	}
@@ -994,13 +1015,29 @@ int Get_route( struct job *job, char *error, int errlen )
 	char *tempfile, *openname, *s, *t, *id;
 	char buffer[SMALLBUFFER];
 	int errorcode = 0;
-	struct line_list l, info, dest, files;
+	struct line_list l, info, dest, files, env, *lp;
 
 	DEBUGF(DRECV1)("Get_route: using %s", Routing_filter_DYN );
 	Init_line_list(&l);
 	Init_line_list(&info);
 	Init_line_list(&dest);
 	Init_line_list(&files);
+	Init_line_list(&env);
+
+	/* build up the list of files and initialize the DATAFILES
+	 * environment variable
+	 */
+
+	for( i = 0; i < job->datafiles.count; ++i ){
+		lp = (void *)job->datafiles.list[i];
+		openname = Find_str_value(lp,OPENNAME,Value_sep);
+		Add_line_list(&l,openname,Value_sep,1,1);
+	}
+	if( (s = Join_line_list_with_sep(&l,",")) ){
+		Set_str_value(&env,"DATAFILES",s);
+		free(s); s = 0;
+	}
+
 	openname = Find_str_value(&job->info,OPENNAME,Value_sep);
 	if( (fd = open(openname,O_RDONLY,0)) < 0 ){
 		plp_snprintf(error,errlen,"Get_route: open '%s' failed '%s'",
@@ -1022,7 +1059,7 @@ int Get_route( struct job *job, char *error, int errlen )
 	files.list[files.count++] = Cast_int_to_voidstar(fd);
 	files.list[files.count++] = Cast_int_to_voidstar(tempfd);
 	files.list[files.count++] = Cast_int_to_voidstar(out[1]);
-	pid = Make_passthrough( Routing_filter_DYN, Filter_options_DYN, &files,job, 0);
+	pid = Make_passthrough( Routing_filter_DYN, Filter_options_DYN, &files,job, &env);
 	files.count = 0;
 	Free_line_list(&files);
 
@@ -1050,7 +1087,14 @@ int Get_route( struct job *job, char *error, int errlen )
 	}
 	close( out[0] );
 	
-	while( (n = plp_waitpid(pid,&status,0)) != pid );
+	while( (n = plp_waitpid(pid,&status,0)) != pid ){
+		int err = errno;
+		DEBUG1("Get_route: waitpid(%d) returned %d, err '%s'",
+			pid, n, Errormsg(err) );
+		if( err == EINTR ) continue; 
+		Errorcode = JABORT;
+		logerr_die( LOG_ERR, "Get_route: waitpid(%d) failed", pid);
+	} 
 	if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 		if( n == JHOLD ){
 			Set_flag_value(&job->info,HOLD_TIME,time((void *)0) );
@@ -1119,5 +1163,8 @@ int Get_route( struct job *job, char *error, int errlen )
  error:
 	Free_line_list(&l);
 	Free_line_list(&info);
+	Free_line_list(&dest);
+	Free_line_list(&files);
+	Free_line_list(&env);
 	return( errorcode );
 }

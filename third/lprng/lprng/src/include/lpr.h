@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpr.h,v 1.1.1.2 1999-10-27 20:10:06 mwhitson Exp $
+ * $Id: lpr.h,v 1.1.1.3 2000-03-31 15:48:05 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -41,6 +41,7 @@ EXTERN int LP_mode;		/* look like LP */
 
 
 EXTERN int Silent;			/* lp -s option */
+EXTERN int Mail_fd;
 
 /* PROTOTYPES */
 int main(int argc, char *argv[], char *envp[]);

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: proctitle.c,v 1.1.1.3 1999-10-27 20:09:58 mwhitson Exp $";
+"$Id: proctitle.c,v 1.1.1.4 2000-03-31 15:47:58 mwhitson Exp $";
 
 #include "lp.h"
 #include "proctitle.h"
@@ -27,7 +27,7 @@
 /*
  * From the Sendmail.8.8.8 Source Distribution
  *
- * Copyright (c) 1983, 1995-1997 Eric P. Allman
+ * Copyright (c) 1983, 1995-2000 Eric P. Allman
  * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
  *

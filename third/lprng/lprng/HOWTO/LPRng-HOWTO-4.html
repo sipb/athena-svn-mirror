@@ -256,7 +256,7 @@ The
 <CODE>--disable-force_localhost</CODE>
 configuration will simply this type of operation by eliminating the need for a
 <CODE>/etc/lpd.conf</CODE> file to override the <CODE>force_localhost</CODE> option.</LI>
-<LI><CODE>--disable-setuid</CODE>
+<LI><CODE>--disable-setuid</CODE><BR>
 This option will install the LPRng executables without SETUID permissions.
 Non-setuid clients and programs are inherently more secure than SETUID programs,
 and system administrators would be well advised to install them without
@@ -264,7 +264,7 @@ SETUID root permissions.
 Please see 
 <A HREF="#setuid">Advanced Security Considerations</A>
 for more details about this option.</LI>
-<LI><CODE>--enable-priv_ports</CODE>
+<LI><CODE>--enable-priv_ports</CODE><BR>
 This option will install a default
 <CODE>lpd.perms</CODE> file which disallows connections from non-privileged ports.
 In effect,
@@ -275,12 +275,12 @@ LPRng will allow connections from any port.
 Please see 
 <A HREF="#setuid">Advanced Security Considerations</A>
 for more details about this option.</LI>
-<LI><CODE>--disable-require_configfiles</CODE>
+<LI><CODE>--disable-require_configfiles</CODE><BR>
 By default, the
 <CODE>lpr</CODE>,
 <CODE>lpq</CODE>,
 <CODE>lpc</CODE>, ...
-clients will required a <CODE>lpd.conf</CODE> file and the <CODE>printcap</CODE>
+clients will require a <CODE>lpd.conf</CODE> file and the <CODE>printcap</CODE>
 to be present.
 The
 <CODE>--disable-require_configfiles</CODE>
@@ -467,8 +467,8 @@ The most serious concern is that of gaining root (user 0) permissions.
 programs without root permission.
 This operation is possible for LPRng
 in contrast to other print spooling software.
-<P>A serious problem running LPRng as a nonprivileged
-user (root) is the fact that the RFC protocol specifies
+<P>A serious concern when LPRng runs as a nonprivileged
+user (daemon) is the fact that the RFC protocol specifies
 that connections are made to port 515
 and
 <CODE>lpd</CODE>
@@ -749,7 +749,7 @@ SUN # nlsadmin -r lp tcp
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>Once you disable this,
-you should try to reconnect to port 515.  If you still cannot,
+you should try to reconnect to port 515.  If connection fails
 then you have a problem  and need to reboot once more.
 <P>You might also want to run
 <CODE>pmadm -l</CODE> and if you see anything other than zsmon stuff (e.g. lp
@@ -907,9 +907,9 @@ commands.
 and accepts the <CODE>lpstat</CODE> command line options and tries to return
 status in an <CODE>lpstat</CODE> format.
 <P>If the <CODE>lpr</CODE> program is invoked with the name <CODE>lp</CODE>,
-it will simulate the <CODE>lp</CODE>options.
+it will simulate the <CODE>lp</CODE> options.
 Finally, if the <CODE>lprm</CODE> program is invoked with the name <CODE>cancel</CODE>,
-it will simulate the <CODE>lp</CODE>options.
+it will simulate the <CODE>lp</CODE> options.
 This can be done by using symbolic links or copying the programs.
 <P>Note that many of the <CODE>vintage</CODE> applications have fully qualified
 paths to the <CODE>lp</CODE> and <CODE>lpstat</CODE> executables,

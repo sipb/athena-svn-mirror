@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linelist.c,v 1.1.1.4 1999-10-28 17:12:25 mwhitson Exp $";
+"$Id: linelist.c,v 1.1.1.5 2000-03-31 15:47:52 mwhitson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -997,6 +997,35 @@ void Set_str_value( struct line_list *l, const char *key, const char *value )
 }
  
 /*
+ * Set_str_value( struct line_list *l, char *key, char *value )
+ *   set a string value in an ordered, sorted list
+ */
+void Set_expanded_str_value( struct line_list *l, const char *key, const char *orig )
+{
+	char *s = 0;
+	char *value = 0;
+	int mid;
+	if( key == 0 ) return;
+	value = Fix_str( (char *)orig );
+	if(DEBUGL6){
+		char buffer[16];
+		plp_snprintf(buffer,sizeof(buffer)-5,"%s",value);
+		buffer[12] = 0;
+		if( value && strlen(value) > 12 ) strcat(buffer,"...");
+		logDebug("Set_str_value: '%s'= 0x%lx '%s'", key,
+			Cast_ptr_to_long(value), buffer);
+	}
+	if( value && *value ){
+		s = safestrdup3(key,"=",value,__FILE__,__LINE__);
+		Add_line_list(l,s,Value_sep,1,1);
+		if(s) free(s); s = 0;
+	} else if( !Find_first_key(l, key, Value_sep, &mid ) ){
+		Remove_line_list(l,mid);
+	}
+	if( value ) free(value); value = 0;
+}
+ 
+/*
  * Set_casekey_str_value( struct line_list *l, char *key, char *value )
  *   set an string value in an ordered, sorted list, with case sensitive keys
  */
@@ -1246,6 +1275,82 @@ const char *Fix_val( const char *s )
 }
 
 /*
+ * Find_tags( struct line_list dest,
+ *  struct line_list *list, char *tag )
+ * 
+ * Scan the list (ordered, of course) for the
+ * set of entries starting with 'tag' and extract them
+ * to list
+ */
+
+void Find_tags( struct line_list *dest, struct line_list *l, char *key )
+{
+	int cmp=-1, cmpl = 0, bot, top, mid, len;
+	char *s;
+
+	if( key == 0 || *key == 0 ) return;
+	mid = bot = 0; top = l->count-1;
+	len = strlen(key);
+	DEBUG5("Find_tags: count %d, key '%s'", l->count, key );
+	while( cmp && bot <= top ){
+		mid = (top+bot)/2;
+		s = l->list[mid];
+		cmp = safestrncasecmp(key,s,len);
+		if( cmp > 0 ){
+			bot = mid+1;
+		} else if( cmp < 0 ){
+			top = mid -1;
+		} else while( mid > 0 ){
+			DEBUG5("Find_tags: existing entry, mid %d, '%s'", mid, l->list[mid] );
+			s = l->list[mid-1];
+			cmpl = safestrncasecmp(s,key,len);
+			if( cmpl ) break;
+			--mid;
+		}
+		DEBUG5("Find_tags: cmp %d, top %d, mid %d, bot %d",
+			cmp, top, mid, bot);
+	}
+	if( cmp == 0 ){
+		s = l->list[mid];
+		do{
+			DEBUG5("Find_tags: adding '%s'", s+len );
+			Add_line_list(dest,s+len,0,1,1);
+			++mid;
+		} while( mid < l->count
+			&& (s = l->list[mid])
+			&& !(cmp = safestrncasecmp(key,s,len)));
+	}
+}
+
+/*
+ * Find_defaulttags( struct line_list dest,
+ *  struct keywords *var_list, char *tag )
+ * 
+ * Scan the variable list for default values
+ * starting with 'tag' and extract them
+ * to list
+ */
+
+void Find_default_tags( struct line_list *dest,
+	struct keywords *var_list, char *tag )
+{
+	int len = strlen(tag);
+	char *key, *value;
+
+	if( var_list ) while( var_list->keyword ){
+		if( !strncmp((key = var_list->keyword), tag, len)
+			&& (value = var_list->default_value) ){
+			if( *value == '=' ) ++value;
+			DEBUG5("Find_default_tags: adding '%s'='%s'", key, value);
+			Set_str_value(dest, key+len, value );
+		}
+		++var_list;
+	}
+}
+
+
+
+/*
  * Read_file_list( struct line_list *model, char *str
  *	char *sep, int sort, char *keysep, int uniq, int trim, int marker )
  *  read the model information from these files
@@ -1334,7 +1439,8 @@ void Read_file_list( int required, struct line_list *model, char *str,
 }
 
 void Read_fd_and_split( struct line_list *list, int fd,
-	const char *linesep, int sort, const char *keysep, int uniq, int trim, int nocomment )
+	const char *linesep, int sort, const char *keysep, int uniq,
+	int trim, int nocomment )
 {
 	int size = 0, count, len;
 	char *sv;
@@ -1359,7 +1465,8 @@ void Read_fd_and_split( struct line_list *list, int fd,
 }
 
 void Read_file_and_split( struct line_list *list, char *file,
-	const char *linesep, int sort, const char *keysep, int uniq, int trim, int nocomment )
+	const char *linesep, int sort, const char *keysep, int uniq,
+	int trim, int nocomment )
 {
 	int fd;
 	struct stat statb;
@@ -1371,7 +1478,8 @@ void Read_file_and_split( struct line_list *list, char *file,
 		"Read_file_and_split: cannot open '%s' - '%s'",
 			file, Errormsg(errno) );
 	}
-	Read_fd_and_split( list, fd, linesep, sort, keysep, uniq, trim, nocomment );
+	Read_fd_and_split( list, fd, linesep, sort, keysep, uniq,
+		trim, nocomment );
 }
 
 
@@ -1944,7 +2052,7 @@ char *Find_default_var_value( void *v )
 
 void Get_config( int required, char *path )
 {
-	DEBUG1("Get_config: required '%d', '%s'", path );
+	DEBUG1("Get_config: required '%d', '%s'", required, path );
 	Read_file_list( required, &Config_line_list, path,
 		Line_ends, 1, Value_sep, 1, 1, 0, 0, 1 ); 
 	Set_var_list( Pc_var_list, &Config_line_list);
@@ -2137,7 +2245,15 @@ void Filterprintcap( struct line_list *raw, struct line_list *filters,
 			in[1]);
 		}
 		Read_fd_and_split( raw,out[0],Line_ends,0,0,0,1,1);
-		while( (n = plp_waitpid(pid,&status,0)) != pid );
+		while( (n = plp_waitpid(pid,&status,0)) != pid ){
+			int err = errno;
+			DEBUG1("Filterprintcap: waitpid(%d) returned %d, err '%s'",
+				pid, n, Errormsg(err) );
+			if( err == EINTR ) continue; 
+			Errorcode = JABORT;
+			logerr_die( LOG_ERR, "Filterprintcap: waitpid(%d) failed", pid);
+		} 
+
 		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 			Errorcode = JFAIL;
 			fatal(LOG_INFO,"Filterprintcap: filter process exited with status %d", n);
@@ -2424,10 +2540,18 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 	noopts = root = 0;
 	Split_cmd_line(&cmd, line);
 	while( cmd.count ){
-		if( !safestrcmp((s = cmd.list[0]),"$-") ){
+		if( !safestrncmp((s = cmd.list[0]),"$-", 2) ){
 			noopts = 1;
-		} else if( !safestrcasecmp((s = cmd.list[0]),"root") ){
+			memmove( cmd.list[0], cmd.list[0]+2, strlen(cmd.list[0]+2)+1);
+			if( cval(cmd.list[0]) ){
+				continue;
+			}
+		} else if( !safestrncasecmp((s = cmd.list[0]),"root", 4) ){
 			root = 1;
+			memmove( cmd.list[0], cmd.list[0]+4, strlen(cmd.list[0]+4)+1);
+			if( cval(cmd.list[0]) ){
+				continue;
+			}
 		} else {
 			break;
 		}
@@ -2614,74 +2738,6 @@ void Dump_parms( char *title, struct keywords *k )
 }
 
 /***************************************************************************
- * void Fix_auth() - get the Use_auth_DYN value for the remote printer
- ***************************************************************************/
-struct sockaddr *Fix_auth( int sending, struct sockaddr *src_sin  )
-{
-	char *s, *t;
-	struct sockaddr *bindto = 0;
-	struct keywords *k;
-
-	if( src_sin ) memset(src_sin,0,sizeof(src_sin[0]));
-	if( sending ){
-		if( Is_server ){
-			Set_DYN(&Auth_DYN, Auth_forward_DYN);
-			Set_DYN(&Auth_filter_DYN, Auth_forward_filter_DYN);
-			Set_DYN(&Auth_id_DYN, Auth_forward_id_DYN);
-			Set_DYN(&Auth_sender_id_DYN, Auth_server_id_DYN );
-			Set_DYN(&Kerberos_dest_id_DYN, Kerberos_forward_principal_DYN);
-		} else {
-			for( k = Pc_var_list; (s = k->keyword); ++k ){
-				if( !safestrncasecmp("auth",s,4) && k->type == STRING_K
-					&& (t = Find_str_value(&PC_entry_line_list,s,Value_sep)) ){
-					DEBUG1("Fix_auth: '%s' = '%s', new value '%s'",
-						s, ((char **)(k->variable))[0], t );
-					Config_value_conversion(k, t);
-				}
-			}
-			if( (t = Find_str_value(&PC_entry_line_list,
-				"kerberos_server_principle", Value_sep )) ){
-				Set_DYN(&Kerberos_dest_id_DYN, t);
-			}
-			Set_DYN(&Auth_filter_DYN, Auth_client_filter_DYN);
-			Set_DYN(&Auth_id_DYN, Auth_server_id_DYN);
-			Set_DYN(&Auth_sender_id_DYN, Logname_DYN);
-			Set_DYN(&Auth_client_id_DYN, Logname_DYN);
-			if( src_sin && (!safestrcasecmp( Auth_DYN, KERBEROS4 )) ){
-				/* we need to bind to the real port of the host */
-				struct sockaddr_in *sinaddr = (struct sockaddr_in *)src_sin;
-				bindto = src_sin;
-				sinaddr->sin_family = Host_IP.h_addrtype;
-				memmove( &sinaddr->sin_addr, Host_IP.h_addr_list.list[0],
-					Host_IP.h_length );
-			}
-		}
-	} else {
-		Set_DYN(&Auth_id_DYN, Auth_server_id_DYN);
-	}
-
-	if( !Auth_DYN ) Set_DYN(&Auth_DYN, NONEP );
-	if( !Auth_id_DYN ) Set_DYN(&Auth_id_DYN, NONEP );
-	if( !Auth_sender_id_DYN ) Set_DYN(&Auth_sender_id_DYN, NONEP );
-	if( !Auth_client_id_DYN ) Set_DYN(&Auth_client_id_DYN, NONEP );
-
-	Set_DYN(&esc_Auth_DYN,          (s = Escape(Auth_DYN,1,1)) ); if( s ) free(s); s = 0;
-	Set_DYN(&esc_Auth_id_DYN,       (s = Escape(Auth_id_DYN,1,1)) ); if( s ) free(s); s = 0;
-	Set_DYN(&esc_Auth_sender_id_DYN,(s = Escape(Auth_sender_id_DYN,1,1)) ); if( s ) free(s); s = 0;
-	Set_DYN(&esc_Auth_client_id_DYN,(s = Escape(Auth_client_id_DYN,1,1)) ); if(s) free(s); s = 0;
-
-
-	DEBUG1("Fix_auth: Auth_DYN '%s', Auth_filter_DYN '%s', Auth_id_DYN '%s', Auth_sender_id '%s'",
-		Auth_DYN, Auth_filter_DYN, Auth_id_DYN, Auth_sender_id_DYN );
-	DEBUG1("Fix_auth: sending %d, Is_server %d, Auth_receive_filter_DYN '%s'",
-		sending, Is_server, Auth_receive_filter_DYN );
-	DEBUG1("Fix_auth: Kerberos_dest_id_DYN '%s'", Kerberos_dest_id_DYN );
-	DEBUG1("Fix_auth: bindto '%s', '%s'", bindto?"yes":"no",
-		src_sin?(inet_ntoa( ((struct sockaddr_in *)src_sin)->sin_addr)):"" );
-	return( bindto );
-}
-
-/***************************************************************************
  *char *Fix_dollars( struct line_list *l )
  *
  * Note: see the code for the keys!
@@ -2788,7 +2844,7 @@ void Fix_dollars( struct line_list *l, struct job *job )
 					break;
 				case 'P': str = Printer_DYN; break;
 				case 'S': str = Comment_tag_DYN; break;
-				case '_': str = esc_Auth_client_id_DYN; break;
+				/* case '_': str = esc_Auth_client_id_DYN; break; */
 				default:
 					if( isupper(c) ){
 						str = Find_first_letter( &job->controlfile,c,0);
@@ -3084,4 +3140,353 @@ int Shutdown_or_close( int fd )
 		fd = -1;
 	}
 	return( fd );
+}
+
+/***************************************************************************
+ * Pgp encode and decode a file
+ ***************************************************************************/
+
+
+int Pgp_get_pgppassfd( struct line_list *info, char *error, int errlen )
+{
+	char *s;
+	int pgppassfd = -1;
+	struct stat statb;
+	char *passphrasefile = Find_str_value(info,"passphrasefile",Value_sep);
+	char *server_passphrasefile = Find_str_value(info,"server_passphrasefile",Value_sep);
+
+	/* get the user authentication */
+	error[0] = 0;
+	if( !Is_server ){
+		if( (s = getenv( "PGPPASS" )) ){
+			DEBUG1("Pgp_get_pgppassfd: PGPPASS '%s'", s );
+		} else if( (s = getenv( "PGPPASSFD" )) ){
+			pgppassfd = atoi(s);
+			if( pgppassfd <= 0 || fstat(pgppassfd, &statb ) ){
+				Errorcode = JABORT;
+				Diemsg("PGPASSFD '%s' not file", s);
+			}
+		} else if( (s = getenv( "PGPPASSFILE" ) ) ){
+			if( (pgppassfd = Checkread( s, &statb )) < 0 ){
+				Errorcode = JABORT;
+				Diemsg("PGP phrasefile '%s' not opened - %s\n",
+					s, Errormsg(errno) );
+			}
+			DEBUG1("Pgp_get_pgppassfd: PGPPASSFD file '%s', size %0.0f, fd %d",
+				s, (double)statb.st_size, pgppassfd );
+		} else if( (s = getenv("HOME")) && passphrasefile ){
+			char *path;
+			s = safestrdup2(s,"/.pgp",__FILE__,__LINE__);
+			path = Make_pathname( s, passphrasefile);
+			if( s ) free(s); s = 0;
+			if( (pgppassfd = Checkread( path, &statb )) < 0 ){
+				Errorcode = JABORT;
+				Diemsg("passphrase file %s not readable - %s",
+					passphrasefile, Errormsg(errno));
+			}
+			DEBUG1("Pgp_get_pgppassfd: PGPPASSFD file '%s', size %0.0f, fd %d",
+				path, (double)statb.st_size, pgppassfd );
+			if( path ) free(path); path = 0;
+		}
+	} else if( (pgppassfd =
+		Checkread(server_passphrasefile,&statb)) < 0 ){
+		plp_snprintf(error,errlen,
+			"Pgp_get_pgppassfd: cannot open '%s' - '%s'",
+			server_passphrasefile, Errormsg(errno) );
+	}
+	return(pgppassfd);
+}
+
+int Pgp_decode(struct line_list *info, char *tempfile, char *pgpfile,
+	struct line_list *pgp_info, char *buffer, int bufflen,
+	char *error, int errlen, char *esc_to_id, struct line_list *from_info,
+	int *pgp_exit_code, int *not_a_ciphertext )
+{
+	struct line_list env, files;
+	plp_status_t procstatus;
+	int pgppassfd = -1, error_fd[2], status, cnt, n, pid, i;
+	char *s, *t;
+	char *path = Find_str_value( info, "path", Value_sep );
+	*pgp_exit_code = *not_a_ciphertext = 0;
+
+	Init_line_list(&env);
+	Init_line_list(&files);
+
+	DEBUG1("Pgp_decode: esc_to_id '%s'", esc_to_id );
+
+	error[0] = 0;
+	status = 0;
+	if( path == 0 ){
+		plp_snprintf( error, errlen,
+		"Pgp_decode: missing pgp_path info"); 
+		status = JFAIL;
+		goto error;
+	}
+
+	status = 0;
+	error_fd[0] = error_fd[1] = -1;
+
+	error[0] = 0;
+	pgppassfd = Pgp_get_pgppassfd( info, error, errlen );
+	if( error[0] ){
+		status = JFAIL;
+		goto error;
+	}
+
+	/* run the PGP decoder */
+	if( pipe(error_fd) == -1 ){
+		Errorcode = JFAIL;
+		logerr_die(LOG_INFO, "Pgp_decode: pipe failed - '%s'" );
+	}
+	Check_max(&files,10);
+	files.list[files.count++] = Cast_int_to_voidstar(0);
+	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
+	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
+	if( pgppassfd >= 0 ){
+		Set_decimal_value(&env,"PGPPASSFD",files.count);
+		files.list[files.count++] = Cast_int_to_voidstar(pgppassfd);
+	}
+
+	/* now we run the PGP code */
+
+	plp_snprintf(buffer,bufflen,
+		"%s +force +batch %s -u $%%%s -o %s",
+		path, pgpfile, esc_to_id, tempfile ); 
+
+	if( (pid = Make_passthrough(buffer, 0, &files, 0, &env )) < 0 ){
+		DEBUG1("Pgp_decode: fork failed - %s", Errormsg(errno));
+		status = JFAIL;
+		goto error;
+	}
+
+	files.count = 0;
+	Free_line_list(&files);
+	Free_line_list(&env);
+	close(error_fd[1]); error_fd[1] = -1;
+	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
+
+	/* now we read authentication info from pgp */
+
+	n = 0;
+	while( n < bufflen-1
+		&& (cnt = read( error_fd[0], buffer+n, bufflen-1-n )) > 0 ){
+		buffer[n+cnt] = 0;
+		while( (s = safestrchr(buffer,'\n')) ){
+			*s++ = 0;
+			DEBUG1("Pgp_decode: pgp output '%s'", buffer );
+			while( cval(buffer) && !isprint(cval(buffer)) ){
+				memmove(buffer,buffer+1,strlen(buffer+1)+1);
+			}
+			/* rip out extra spaces */
+			for( t = buffer; *t ; ){
+				if( isspace(cval(t)) && isspace(cval(t+1)) ){
+					memmove(t,t+1,strlen(t+1)+1);
+				} else {
+					++t;
+				}
+			}
+			if( buffer[0] ){
+				DEBUG1("Pgp_decode: pgp final output '%s'", buffer );
+				Add_line_list( pgp_info, buffer, 0, 0, 0 );
+			}
+			memmove(buffer,s,strlen(s)+1);
+		}
+	}
+	close(error_fd[0]); error_fd[0] = -1;
+
+	/* wait for pgp to exit and check status */
+	while( (n = waitpid(pid,&procstatus,0)) != pid ){
+		int err = errno;
+		DEBUG1("Pgp_decode: waitpid(%d) returned %d, err '%s'",
+			pid, n, Errormsg(err) );
+		if( err == EINTR ) continue; 
+		Errorcode = JABORT;
+		logerr_die( LOG_ERR, "Pgp_decode: waitpid(%d) failed", pid);
+	} 
+	DEBUG1("Pgp_decode: pgp pid %d exit status '%s'",
+		pid, Decode_status(&procstatus) );
+	if( WIFEXITED(procstatus) && (n = WEXITSTATUS(procstatus)) ){
+		plp_snprintf(error,errlen,"Pgp_decode: exit status %d",n);
+		DEBUG1("Pgp_decode: pgp exited with status %d on host %s", n, FQDNHost_FQDN );
+		*pgp_exit_code = n;
+		for( i = 0; (n = strlen(error)) < errlen - 2 && i < pgp_info->count; ++i ){
+			s = pgp_info->list[i];
+			plp_snprintf(error+n, errlen-n,"\n %s",s);
+			if( !*not_a_ciphertext ){
+				*not_a_ciphertext = (strstr(s, "not a ciphertext") != 0);
+			}
+		}
+		status = JFAIL;
+		goto error;
+	} else if( WIFSIGNALED(procstatus) ){
+		n = WTERMSIG(procstatus);
+		DEBUG1( "Pgp_decode: pgp died with signal %d, '%s'",
+			n, Sigstr(n));
+		status = JFAIL;
+		goto error;
+	}
+
+	for( i = 0; i < pgp_info->count; ++i ){
+		s = pgp_info->list[i];
+		if( !safestrncmp("Good",s,4) ){
+			if( (t = safestrchr(s,'"')) ){
+				*t++ = 0;
+				if( (s = safestrrchr(t,'"')) ) *s = 0;
+				DEBUG1( "Pgp_decode: FROM '%s'", t );
+				Set_str_value(from_info,FROM,t);
+			}
+		}
+	}
+
+ error:
+	DEBUG1( "Pgp_decode: error '%s'", error );
+	if( error_fd[0] >= 0 ) close(error_fd[0]); error_fd[0] = -1;
+	if( error_fd[1] >= 0 ) close(error_fd[1]); error_fd[1] = -1;
+	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
+	Free_line_list(&env);
+	files.count = 0;
+	Free_line_list(&files);
+	return( status );
+}
+
+int Pgp_encode(struct line_list *info, char *tempfile, char *pgpfile,
+	struct line_list *pgp_info, char *buffer, int bufflen,
+	char *error, int errlen, char *esc_from_id, char *esc_to_id,
+	int *pgp_exit_code )
+{
+	struct line_list env, files;
+	plp_status_t procstatus;
+	int error_fd[2], status, cnt, n, pid, pgppassfd = -1, i;
+	char *s, *t;
+	char *path = Find_str_value( info, "path", Value_sep );
+
+	Init_line_list(&env);
+	Init_line_list(&files);
+	*pgp_exit_code = 0;
+	status = 0;
+	if( path == 0 ){
+		plp_snprintf( error, errlen,
+		"Pgp_encode: missing pgp_path info"); 
+		status = JFAIL;
+		goto error;
+	}
+	DEBUG1("Pgp_encode: esc_from_id '%s', esc_to_id '%s'",
+		esc_from_id, esc_to_id );
+
+	status = 0;
+	pgppassfd = error_fd[0] = error_fd[1] = -1;
+
+	error[0] = 0;
+	pgppassfd = Pgp_get_pgppassfd( info, error, errlen );
+	if( error[0] ){
+		status = JFAIL;
+		goto error;
+	}
+
+	pgpfile = safestrdup2(tempfile,".pgp",__FILE__,__LINE__);
+	Check_max(&Tempfiles,1);
+	if( !Debug ) Tempfiles.list[Tempfiles.count++] = pgpfile;
+
+	if( pipe(error_fd) == -1 ){
+		Errorcode = JFAIL;
+		logerr_die(LOG_INFO, "Pgp_encode: pipe failed - '%s'" );
+	}
+	Check_max(&files,10);
+	files.count = 0;
+	files.list[files.count++] = Cast_int_to_voidstar(0);
+	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
+	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
+
+	if( pgppassfd > 0 ){
+		Set_decimal_value(&env,"PGPPASSFD",files.count);
+		files.list[files.count++] = Cast_int_to_voidstar(pgppassfd);
+	}
+
+	/* now we run the PGP code */
+
+	plp_snprintf(buffer,bufflen,
+		"$- %s +armorlines=0 +verbose=0 +force +batch -sea %s $%%%s -u $%%%s -o %s",
+		path, tempfile, esc_to_id, esc_from_id, pgpfile );
+
+	if( (pid = Make_passthrough(buffer, 0, &files, 0, &env )) < 0 ){
+		Errorcode = JABORT;
+		logerr_die( LOG_INFO, "Pgp_encode: fork failed");
+	}
+
+	DEBUG1("Pgp_encode: pgp pid %d", pid );
+	files.count = 0;
+	Free_line_list(&files);
+	Free_line_list(&env);
+	close(error_fd[1]); error_fd[1] = -1;
+	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
+
+	/* now we read error info from pgp */
+
+	n = 0;
+	while( n < bufflen-1
+		&& (cnt = read( error_fd[0], buffer+n, bufflen-1-n )) > 0 ){
+		buffer[n+cnt] = 0;
+		while( (s = safestrchr(buffer,'\n')) ){
+			*s++ = 0;
+			DEBUG1("Pgp_encode: pgp output '%s'", buffer );
+			while( cval(buffer) && !isprint(cval(buffer)) ){
+				memmove(buffer,buffer+1,strlen(buffer+1)+1);
+			}
+			/* rip out extra spaces */
+			for( t = buffer; *t ; ){
+				if( isspace(cval(t)) && isspace(cval(t+1)) ){
+					memmove(t,t+1,strlen(t+1)+1);
+				} else {
+					++t;
+				}
+			}
+			if( buffer[0] ){
+				DEBUG1("Pgp_encode: pgp final output '%s'", buffer );
+				Add_line_list( pgp_info, buffer, 0, 0, 0 );
+			}
+			memmove(buffer,s,strlen(s)+1);
+		}
+	}
+	close(error_fd[0]); error_fd[0] = -1;
+
+	/* wait for pgp to exit and check status */
+	while( (n = waitpid(pid,&procstatus,0)) != pid ){
+		int err = errno;
+		DEBUG1("Pgp_encode: waitpid(%d) returned %d, err '%s', status '%s'",
+			pid, n, Errormsg(err), Decode_status(&procstatus));
+		if( err == EINTR ) continue; 
+		Errorcode = JABORT;
+		logerr_die( LOG_ERR, "Pgp_encode: waitpid(%d) failed", pid);
+	} 
+	DEBUG1("Pgp_encode: pgp pid %d exit status '%s'",
+		pid, Decode_status(&procstatus) );
+	if(DEBUGL1)Dump_line_list("Pgp_encode: pgp_info", pgp_info);
+	if( WIFEXITED(procstatus) && (n = WEXITSTATUS(procstatus)) ){
+		plp_snprintf(error,errlen,
+			"Pgp_encode: pgp exited with status %d on host %s", n, FQDNHost_FQDN );
+		*pgp_exit_code = n;
+		for( i = 0; (n = strlen(error)) < errlen - 2 && i < pgp_info->count; ++i ){
+			s = pgp_info->list[i];
+			plp_snprintf(error+n, errlen-n,"\n %s",s);
+		}
+		status = JFAIL;
+		goto error;
+	} else if( WIFSIGNALED(procstatus) ){
+		n = WTERMSIG(procstatus);
+		plp_snprintf(error,errlen,
+		"Pgp_encode: pgp died with signal %d, '%s'",
+			n, Sigstr(n));
+		status = JFAIL;
+		goto error;
+	}
+
+ error:
+	DEBUG1("Pgp_encode: status %d, error '%s'", status, error );
+	if( error_fd[0] >= 0 ) close(error_fd[0]); error_fd[0] = -1;
+	if( error_fd[1] >= 0 ) close(error_fd[1]); error_fd[1] = -1;
+	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
+	Free_line_list(&env);
+	files.count = 0;
+	Free_line_list(&files);
+	return( status );
 }

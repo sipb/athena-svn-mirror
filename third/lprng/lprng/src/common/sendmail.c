@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.1.1.2 1999-10-27 20:10:01 mwhitson Exp $";
+"$Id: sendmail.c,v 1.1.1.3 2000-03-31 15:47:59 mwhitson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -142,7 +142,14 @@ void Sendmail_to_user( int retval, struct job *job )
 		len = strlen(buffer);
 	}
 	close(out[0]);
-	while( (n = plp_waitpid(pid,&status,0)) != pid );
+	while( (n = plp_waitpid(pid,&status,0)) != pid ){
+		int err = errno;
+		DEBUG1("Sendmail_to_user: waitpid(%d) returned %d, err '%s'",
+			pid, n, Errormsg(err) );
+		if( err == EINTR ) continue; 
+		Errorcode = JABORT;
+		logerr_die( LOG_ERR, "Sendmail_to_user: waitpid(%d) failed", pid);
+	} 
 	DEBUG1("Sendmail_to_user: pid %d, exit status '%s'", pid,
 		Decode_status(&status) );
 	if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){

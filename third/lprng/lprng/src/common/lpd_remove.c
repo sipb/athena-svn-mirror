@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_remove.c,v 1.1.1.2 1999-10-27 20:10:02 mwhitson Exp $";
+"$Id: lpd_remove.c,v 1.1.1.3 2000-03-31 15:48:00 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -240,11 +240,14 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 		if( control_perm == 0 ){
 			/* now we get the user name and IP address */
 			Perm_check.user = Find_str_value(&job.info,LOGNAME,Value_sep);
+#if 0
 			Perm_check.host = 0;
 			if( (s = Find_str_value(&job.info,FROMHOST,Value_sep)) 
 				&& Find_fqdn( &PermHost_IP, s ) ){
 				Perm_check.host = &PermHost_IP;
 			}
+#endif
+			Perm_check.host = &RemoteHost_IP;
 			Perm_check.service = 'M';
 			permission = Perms_check( &Perm_line_list, &Perm_check, &job, 1 );
 			if( permission == P_REJECT ){
@@ -338,6 +341,14 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 		DEBUGF(DLPRM2)("Get_queue_status: finished subserver status '%s'", 
 			Bounce_queue_dest_DYN );
 	} else if( RemoteHost_DYN ){
+		/* put user name at start of list */
+		Check_max(tokens,2);
+		for( i = tokens->count; i > 0; --i ){
+			tokens->list[i] = tokens->list[i-1];
+		}
+		tokens->list[0] = user;
+		++tokens->count;
+		tokens->list[tokens->count] = 0;
 		fd = Send_request( 'M', REQ_REMOVE, tokens->list, Connect_timeout_DYN,
 			Send_query_rw_timeout_DYN, *sock );
 		if( fd >= 0 ){
@@ -346,6 +357,10 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 			}
 			close(fd);
 		}
+		for( i = 0; i < tokens->count; ++i ){
+			tokens->list[i] = tokens->list[i+1];
+		}
+		--tokens->count;
 	}
 
 	DEBUGF(DLPRM2)("Get_queue_remove: finished '%s'", Printer_DYN );
@@ -369,7 +384,7 @@ void Get_local_or_remote_remove( char *user, int *sock,
 	struct line_list *tokens, struct line_list *done_list )
 {
 	char msg[LARGEBUFFER];
-	int fd, n;
+	int fd, n, i;
 
 	/* we have to see if the host is on this machine */
 
@@ -385,6 +400,14 @@ void Get_local_or_remote_remove( char *user, int *sock,
 		Get_queue_remove( user, sock, tokens, done_list );
 		return;
 	}
+	/* put user name at start of list */
+	Check_max(tokens,2);
+	for( i = tokens->count; i > 0; --i ){
+		tokens->list[i] = tokens->list[i-1];
+	}
+	tokens->list[0] = user;
+	++tokens->count;
+	tokens->list[tokens->count] = 0;
 	fd = Send_request( 'M', REQ_REMOVE, tokens->list, Connect_timeout_DYN,
 		Send_query_rw_timeout_DYN, *sock );
 	if( fd >= 0 ){
@@ -393,6 +416,10 @@ void Get_local_or_remote_remove( char *user, int *sock,
 		}
 		close(fd);
 	}
+	for( i = 0; i < tokens->count; ++i ){
+		tokens->list[i] = tokens->list[i+1];
+	}
+	--tokens->count;
 }
 
 int Remove_file( char *openname )

@@ -1,20 +1,20 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpstat.c,v 1.1.1.3 1999-10-27 20:09:53 mwhitson Exp $";
+"$Id: lpstat.c,v 1.1.1.4 2000-03-31 15:47:51 mwhitson Exp $";
 
 
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1997, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
@@ -94,6 +94,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
+	(void) plp_signal (SIGCHLD, (plp_sigfunc_t)SIG_DFL);
 
 	/*
 	 * set up the user state
@@ -647,7 +648,7 @@ void usage(void)
 #include "permission.h"
 #include "lpd.h"
 #include "lpd_status.h"
- int Send_request(
+/* int Send_request( */
 	int class,					/* 'Q'= LPQ, 'C'= LPC, M = lprm */
 	int format,					/* X for option */
 	char **options,				/* options to send */
@@ -676,3 +677,4 @@ void usage(void)
 
 #endif
 
+ void Dispatch_input(int *talk, char *input ){}

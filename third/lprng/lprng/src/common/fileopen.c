@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: fileopen.c,v 1.1.1.3 1999-10-27 20:10:03 mwhitson Exp $";
+"$Id: fileopen.c,v 1.1.1.4 2000-03-31 15:48:01 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -42,10 +42,11 @@ int Checkread( const char *file, struct stat *statb )
 	/* open the file */
 	DEBUG3("Checkread: file '%s'", file );
 
-	if( (fd = open( file, O_RDONLY|O_NOCTTY, Spool_file_perms_DYN ) )< 0 ){
+	if( (fd = open( file, O_RDONLY|O_NOCTTY, 0 ) )< 0 ){
 		status = -1;
 		err = errno;
 		DEBUG3( "Checkread: cannot open '%s', %s", file, Errormsg(err) );
+		memset( statb, 0, sizeof(struct stat) );
 	}
 
     if( status >= 0 && fstat( fd, statb ) < 0 ) {
@@ -63,11 +64,12 @@ int Checkread( const char *file, struct stat *statb )
 		status = -1;
 	}
 
-	if( status < 0 ){
+	if( status < 0 && fd >= 0 ){
 		close( fd );
 		fd = -1;
 	}
-	DEBUG3("Checkread: '%s' fd %d", file, fd );
+
+	DEBUG3("Checkread: '%s' fd %d, size %0.0f", file, fd, (double)(statb->st_size) );
 	errno = err;
 	return( fd );
 }

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: utilities.c,v 1.1.1.3 1999-10-27 20:10:01 mwhitson Exp $";
+"$Id: utilities.c,v 1.1.1.4 2000-03-31 15:47:59 mwhitson Exp $";
 
 #include "lp.h"
 
@@ -64,7 +64,7 @@ char *Time_str(int shortform, time_t t)
 
 
 /*
- * Time_str: return "cleaned up" ctime() string...
+ * Pretty_time: return "cleaned up" ctime() string...
  *
  * in YY/MO/DY/hr:mn:sc
  * Thu Aug 4 12:34:17 BST 1994 -> 12:34:17
@@ -352,12 +352,10 @@ int safestrcasecmp (const char *s1, const char *s2)
 	if( (s1 == 0 ) && s2 ) return( -1 );
 	if( s1 && (s2 == 0 ) ) return( 1 );
 	for (;;) {
-		c1 = *s1++;
-		c2 = *s2++;
-		if (isalpha (c1) && isalpha (c2)) {
-			c1 = tolower (c1);
-			c2 = tolower (c2);
-		}
+		c1 = *((unsigned char *)s1)++;
+		c2 = *((unsigned char *)s2)++;
+		if( isupper(c1) ) c1 = tolower(c1);
+		if( isupper(c2) ) c2 = tolower(c2);
 		if( (d = (c1 - c2 )) || c1 == 0 ) return(d);
 	}
 	return( 0 );
@@ -371,12 +369,10 @@ int safestrncasecmp (const char *s1, const char *s2, int len )
 	if( (s1 == 0 ) && s2 ) return( -1 );
 	if( s1 && (s2 == 0 ) ) return( 1 );
 	for (;len>0;--len){
-		c1 = *s1++;
-		c2 = *s2++;
-		if (isalpha (c1) && isalpha (c2)) {
-			c1 = tolower (c1);
-			c2 = tolower (c2);
-		}
+		c1 = *((unsigned char *)s1)++;
+		c2 = *((unsigned char *)s2)++;
+		if( isupper(c1) ) c1 = tolower(c1);
+		if( isupper(c2) ) c2 = tolower(c2);
 		if( (d = (c1 - c2 )) || c1 == 0 ) return(d);
 	}
 	return( 0 );
@@ -780,6 +776,7 @@ int Read_write_timeout(
 {
 	Alarm_timed_out = 1;
 	signal( SIGALRM, SIG_IGN );
+	errno = EINTR;
 #if defined(HAVE_SIGLONGJMP)
 	siglongjmp(Timeout_env,1);
 #else
@@ -801,8 +798,10 @@ int Read_write_timeout(
 void Set_timeout_alarm( int timeout )
 {
 	int err = errno;
+	sigset_t oblock;
 
 	signal(SIGALRM, SIG_IGN);
+	plp_unblock_one_signal( SIGALRM, &oblock );
 	alarm(0);
 	Alarm_timed_out = 0;
 	Timeout_pending = 0;
@@ -843,11 +842,11 @@ void Clear_timeout( void )
  * "daemon" owns data files used by the PLP utilities (spool directories, etc).
  *   and is set by the 'user' entry in the configuration file.
  * 
+ * To_ruid( user );	-- set ruid to user, euid to root
+ * To_euid( user );	-- set euid to user, ruid to root
+ * To_root();	-- set euid to root, ruid to root
+ * To_daemon();	-- set euid to daemon, ruid to root
  * To_user();	-- set euid to user, ruid to root
- * To_ruid_user();	-- set ruid to user, euid to root
- * To_root();	-- set euid to root
- * To_daemon();	-- set euid to daemon
- * To_root();	-- set euid to root
  * Full_daemon_perms() -- set both UID and EUID, one way, no return
  * 
  */
@@ -1075,9 +1074,9 @@ int To_user(void)
 {
 	setup_info(); return( seteuid_wrapper( OriginalRUID )	);
 }
-int To_ruid_user(void)
+int To_ruid(int uid)
 {
-	setup_info(); return( setruid_wrapper( OriginalRUID )	);
+	setup_info(); return( setruid_wrapper( uid )	);
 }
 int To_uid( int uid )
 {
@@ -1312,4 +1311,3 @@ double Space_avail( char *pathname )
 	}
 	return(space);
 }
-

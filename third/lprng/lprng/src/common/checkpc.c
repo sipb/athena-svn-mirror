@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: checkpc.c,v 1.1.1.2 1999-10-27 20:10:05 mwhitson Exp $";
+"$Id: checkpc.c,v 1.1.1.3 2000-03-31 15:48:04 mwhitson Exp $";
 
 
 
@@ -37,6 +37,7 @@
  char *User_specified_printer;
  time_t Current_time;
  int Check_path_list( char *plist, int allow_missing );
+ int Mail_fd;
 
 
 /* pathnames of the spool directory (sd) and control directory (cd) */
@@ -50,6 +51,8 @@ int main( int argc, char *argv[], char *envp[] )
 	char *serial_line = 0;
 	struct line_list values;
 	char *s, *t;
+
+	(void) plp_signal (SIGCHLD, SIG_DFL );
 
 	s = t = printcap = 0;
 	Init_line_list(&values);
@@ -601,25 +604,25 @@ void Make_write_file( char *dirpath, char *name, char *printer )
 }
 
  char *usemsg[] = {
-	"checkpc [-acflsCPV] [-Aage] [-c file] [-p file] [-D debuglevel]",
+	"checkpc [-acflpsCV] [-A age] [-D debuglevel] [-P printer] [-t size]",
 	"   Check printcap for readability.",
 	"   Printcapfile can be colon separated file list.", 
 	"   If no file is specified, checks the printcap_path values",
 	"   from configuration information."
 	" Option:",
-	" -a             do not create accounting info (:af:) file",
+	" -a             do not create accounting info (:af) file",
 	" -c configfile  use this file for configuration information",
 	" -f             toggle fixing file status",
-	" -l             do not create logging info (:lf:) file",
-	" -p printcapfile  use this file for printcap information",
+	" -l             do not create logging info (:lf) file",
+	" -p             toggle verbose printcap information",
 	" -r             remove job files older than -A age seconds",
-	" -s             do not create filter status (:ps:) info file",
-	" -t size[kM]    truncate log files to this size (k=Kbyte, M=Mbytes)",
+	" -s             do not create filter status (:ps) info file",
+	" -t size[kM]    truncate log files (:lf) to size (k=Kbyte, M=Mbytes)",
 	" -A age[DHMS]   remove files of form ?f[A-Z][0-9][0-9][0-9] older than",
 	"                age, D days (default), H hours, M minutes, S seconds",
 	" -C             toggle verbose configuration information",
 	" -D debuglevel  set debug level",
-	" -P             toggle verbose printcap information",
+	" -P printer     check or fix only this printer entry",
 	" -V             toggle verbose information",
 	" -T line        test portability, use serial line device for stty test",
 	0
@@ -669,8 +672,8 @@ int getk( char *age )
 				fprintf( stderr, "Bad format for number '%s'", age );
 				usage();
 			case 0: break;
-			case 'k': case 'K': t *= 1024; break;
-			case 'm': case 'M': t *= (1024*1024); break;
+			case 'k': case 'K': break;
+			case 'm': case 'M': t *= (1024); break;
 		}
 	}
 	return t;
@@ -707,17 +710,17 @@ void Clean_log( int trunc, char  *dpath, char *logfile )
 		len = statb.st_size/1024;
 		k = (trunc >= 0 && len > trunc);
 		sx = (k)?"needs":"no";
-		plp_snprintf(buffer,sizeof(buffer)," to %d K", trunc );
-		if(Verbose)Msg( "  cleaning '%s' file, %0.0f bytes long: %s truncation%s",
+		plp_snprintf(buffer,sizeof(buffer)," to %dK", trunc );
+		if(Verbose)Msg( "  cleaning '%s' file, %0.0fK bytes: %s truncation%s",
 			logfile, len, sx, (trunc>=0)?buffer:"" );
 		if( k == 0 ) break;
 		if( trunc == 0 ){
-			Warnmsg( "   truncating to 0 bytes long" );
+			Warnmsg( "   truncating to 0 bytes" );
 			if( ftruncate( fd, 0 ) < 0 ){
 				logerr_die( LOG_ERR, "Clean_log: ftruncate failed" );
 			}
 		} else {
-			Warnmsg( "   truncating to %d bytes long", trunc );
+			Warnmsg( "   truncating to %dK bytes", trunc );
 			xpath = safestrdup2(path,".x",__FILE__,__LINE__);
 			dfd = Checkwrite( xpath, &statb, 0,1,0);
 			if( lseek(fd,-(trunc *1024),SEEK_END) == -1 ){
@@ -1619,3 +1622,4 @@ int Check_path_list( char *plist, int allow_missing )
 	Free_line_list(&values);
 	return(found_pc);
 }
+ void Dispatch_input(int *talk, char *input ){}

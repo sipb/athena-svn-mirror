@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.1.1.5 1999-10-28 17:12:23 mwhitson Exp $";
+"$Id: vars.c,v 1.1.1.6 2000-03-31 15:47:50 mwhitson Exp $";
 
 
 /* force local definitions */
@@ -95,20 +95,10 @@ struct keywords Pc_var_list[] = {
 { "architecture", STRING_K, &Architecture_DYN,1,0,ARCHITECTURE},
    /*  accounting at start (see also af, la, ar) */
 { "as",  STRING_K,  &Accounting_start_DYN,0,0,"=jobstart $H $n $P $k $b $t"},
-	/* authentication type to use to send to server */
+	/* authentication type for client to server */
 { "auth",  STRING_K, &Auth_DYN,0,0 },
    /*  client to server authentication filter */
-{ "auth_client_filter", STRING_K, &Auth_client_filter_DYN,0,0},
-   /*  authentication for forwarding */
 { "auth_forward", STRING_K, &Auth_forward_DYN,0,0},
-   /*  server to server authentication remote server id */
-{ "auth_forward_id", STRING_K, &Auth_forward_id_DYN,0,0},
-   /*  server to server authentication transfer filter */
-{ "auth_forward_filter", STRING_K, &Auth_forward_filter_DYN,0,0},
-   /*  authentication server send filter */
-{ "auth_receive_filter", STRING_K, &Auth_receive_filter_DYN,0,0},
-   /* authentication server id */
-{ "auth_server_id", STRING_K, &Auth_server_id_DYN,0,0},
    /*  end banner printing program overides bp */
 { "be",  STRING_K,  &Banner_end_DYN,0,0},
    /*  Berkeley LPD: job file strictly RFC-compliant */
@@ -120,7 +110,7 @@ struct keywords Pc_var_list[] = {
    /*  backwards-compatible filters: use simple paramters */
 { "bkf",  FLAG_K,  &Backwards_compatible_filter_DYN,0,0},
    /*  short banner line sent to banner printer */
-{ "bl",  STRING_K,  &Banner_line_DYN,0,0,"=$-C:$-n Job: $-J Date: $-t"},
+{ "bl",  STRING_K,  &Banner_line_DYN,0,0,"=$-C\072$-n Job\072 $-J Date\072 $-t"},
    /*  banner printing program (see bs, be) */
 { "bp",  STRING_K,  &Banner_printer_DYN,0,0},
    /*  use filters on bounce queue files */
@@ -149,7 +139,7 @@ struct keywords Pc_var_list[] = {
 { "connect_grace", INTEGER_K, &Connect_grace_DYN,0,0,"=0"},
    /* connection control for remote printers */
 { "connect_interval", INTEGER_K, &Connect_interval_DYN,0,0,"=10"},
-   /* connection control for remote printers */
+   /* connection timeout for remote printers */
 { "connect_timeout", INTEGER_K, &Connect_timeout_DYN,0,0,"=10"},
    /* control file filter */
 { "control_filter", STRING_K, &Control_filter_DYN,0,0},
@@ -182,11 +172,11 @@ struct keywords Pc_var_list[] = {
    /* default filter */
 { "filter", STRING_K, &Filter_DYN,0,0},
    /* filter LD_LIBRARY_PATH value */
-{ "filter_ld_path", STRING_K, &Filter_ld_path_DYN,0,0,"=/lib:/usr/lib:/usr/5lib:/usr/ucblib"},
+{ "filter_ld_path", STRING_K, &Filter_ld_path_DYN,0,0,"=/lib\072/usr/lib\072/usr/5lib\072/usr/ucblib"},
    /* filter options */
-{ "filter_options", STRING_K, &Filter_options_DYN,0,0,"=$C $A $F $H $J $K $L $P $Q $R $Z $a $c $d $e $f $h $i $j $k $l $n $p $r $s $w $x $y $-a"},
+{ "filter_options", STRING_K, &Filter_options_DYN,0,0,"=$A $B $C $D $E $F $G $H $I $J $K $L $M $N $O $P $Q $R $S $T $U $V $W $X $Y $Z $a $c $d $e $f $h $i $j $k $l $n $p $r $s $w $x $y $-a"},
    /* filter PATH environment variable */
-{ "filter_path", STRING_K, &Filter_path_DYN,0,0,"=/bin:/usr/bin:/usr/local/bin:/usr/ucb:/usr/sbin:/usr/etc:/etc"},
+{ "filter_path", STRING_K, &Filter_path_DYN,0,0,"=/bin\072/usr/bin\072/usr/local/bin\072/usr/ucb\072/usr/sbin\072/usr/etc\072/etc"},
    /* interval at which to check OF filter for error status */
 { "filter_poll_interval", INTEGER_K, &Filter_poll_interval_DYN,0,0,"=30"},
    /*  print a form feed when device is opened */
@@ -313,12 +303,6 @@ struct keywords Pc_var_list[] = {
 { "pass_env",  STRING_K,  &Pass_env_DYN,0,0,"=PGPPASS,PGPPATH,PGPPASSFD"},
    /* lpd.perms files */
 { "perms_path", STRING_K, &Printer_perms_path_DYN,1,0,"=" LPD_PERMS_PATH },
-   /* pathname of PGP program */
-{ "pgp_path", STRING_K, &Pgp_path_DYN,0,0},
-   /* client passphrase file for built in PGP authentication */
-{ "pgp_passphrasefile", STRING_K, &Pgp_passphrasefile_DYN,0,0,"clientkey"},
-   /* server passphrasefile PGP authentication */
-{ "pgp_server_passphrasefile", STRING_K, &Pgp_server_passphrasefile_DYN,0,0},
    /*  page length (in lines) */
 { "pl",  INTEGER_K,  &Page_length_DYN,0,0,"=66"},
    /*  pr program for p format */
@@ -427,8 +411,10 @@ struct keywords Pc_var_list[] = {
 { "syslog_device", STRING_K, &Syslog_device_DYN,0,0,"=/dev/console"},
    /*  trailer string to print when queue empties */
 { "tr",  STRING_K,  &Trailer_on_close_DYN,0,0},
-   /*  translate format from one to another - similar to tr(1) utility */
+   /*  translate outgoing job file formats - similar to tr(1) utility */
 { "translate_format",  STRING_K,  &Xlate_format_DYN,0,0},
+   /*  translate incoming job file formats - similar to tr(1) utility */
+{ "translate_incoming_format",  STRING_K,  &Xlate_incoming_format_DYN,0,0},
    /*  put date in control file */
 { "use_date",  FLAG_K,  &Use_date_DYN,0,0,"1"},
    /*  put identifier in control file */
@@ -457,6 +443,7 @@ struct keywords DYN_var_list[] = {
 { "FQDNRemote_FQDN",  STRING_K, &FQDNRemote_FQDN },
 { "ShortRemote_FQDN",  STRING_K, &ShortRemote_FQDN },
 
+#if 0
 { "Auth_client_id_DYN",  STRING_K, &Auth_client_id_DYN },
 { "Auth_dest_id_DYN",  STRING_K, &Auth_dest_id_DYN },
 { "Auth_filter_DYN",  STRING_K, &Auth_filter_DYN },
@@ -464,13 +451,14 @@ struct keywords DYN_var_list[] = {
 { "Auth_received_id_DYN",  STRING_K, &Auth_received_id_DYN },
 { "Auth_sender_id_DYN",  STRING_K, &Auth_sender_id_DYN },
 
-{ "esc_Auth_DYN",  STRING_K, &esc_Auth_DYN },
 { "esc_Auth_client_id_DYN",  STRING_K, &esc_Auth_client_id_DYN },
+{ "esc_Auth_DYN",  STRING_K, &esc_Auth_DYN },
 { "esc_Auth_dest_id_DYN",  STRING_K, &esc_Auth_dest_id_DYN },
 { "esc_Auth_filter_DYN",  STRING_K, &esc_Auth_filter_DYN },
 { "esc_Auth_id_DYN",  STRING_K, &esc_Auth_id_DYN },
 { "esc_Auth_received_id_DYN",  STRING_K, &esc_Auth_received_id_DYN },
 { "esc_Auth_sender_id_DYN",  STRING_K, &esc_Auth_sender_id_DYN },
+#endif
 
 { "Current_date_DYN",  STRING_K, &Current_date_DYN },
 

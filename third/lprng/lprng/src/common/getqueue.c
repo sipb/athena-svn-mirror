@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getqueue.c,v 1.1.1.4 1999-10-28 17:12:27 mwhitson Exp $";
+"$Id: getqueue.c,v 1.1.1.5 2000-03-31 15:48:00 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -1504,7 +1504,8 @@ int Trim_status_file( char *path, int max, int min )
 
 
 
-char *Fix_datafile_info( struct job *job, char *number, char *suffix )
+char *Fix_datafile_info( struct job *job, char *number, char *suffix,
+	char *xlate_format )
 {
 	int i, c, copies, linecount, count, jobcopies, copy;
 	char *s, *Nline, *transfername, *dataline;
@@ -1561,9 +1562,15 @@ char *Fix_datafile_info( struct job *job, char *number, char *suffix )
 			if( (s = Find_str_value(lp,FORMAT,Value_sep)) ){
 				fmt[0] = *s;
 			}
-			if( (Is_server || Lpr_bounce_DYN) && Xlate_format_DYN
-				&& (s = safestrchr( Xlate_format_DYN, fmt[0] )) && islower(cval(s+1)) ){
-				fmt[0] = cval(s+1);
+			if( (Is_server || Lpr_bounce_DYN) && xlate_format && *xlate_format ){
+				int l = strlen(xlate_format);
+				for( i = 0; i < l; i+= 2 ){
+					if( (xlate_format[i] == fmt[0])
+						|| (xlate_format[i] == '*') ){
+						if( xlate_format[i+1] ) fmt[0] = xlate_format[i+1];
+						break;
+					}
+				}
 			}
 			copies = Find_flag_value(lp,COPIES,Value_sep);
 			if( copies == 0 ) copies = 1;
@@ -1658,7 +1665,7 @@ int LPRng_sort( const void *left, const void *right )
 	{0,0}
 	};
 
-int Fix_control( struct job *job, char *filter )
+int Fix_control( struct job *job, char *filter, char *xlate_format )
 {
 	char *s, *t, *file_hostname, *number, *priority,
 		*datainfo, *order;
@@ -1812,7 +1819,7 @@ int Fix_control( struct job *job, char *filter )
 	}
 
 	if(DEBUGL3) Dump_job( "Fix_control: after sorting", job );
-	datainfo = Fix_datafile_info( job, number, file_hostname );
+	datainfo = Fix_datafile_info( job, number, file_hostname, xlate_format );
 	DEBUG3( "Fix_control: data info '%s'", datainfo );
 	s = Join_line_list(&job->controlfile,"\n");
 	DEBUG3( "Fix_control: control info '%s'", s );
@@ -1875,7 +1882,14 @@ int Fix_control( struct job *job, char *filter )
 		close(error_fd[0]); error_fd[0] = -1;
 
 		
-		while( (n = plp_waitpid(pid,&status,0)) != pid );
+		while( (n = plp_waitpid(pid,&status,0)) != pid ){
+			int err = errno;
+			DEBUG1("Fix_control: waitpid(%d) returned %d, err '%s'",
+				pid, n, Errormsg(err) );
+			if( err == EINTR ) continue;
+			Errorcode = JABORT;
+			logerr_die( LOG_ERR, "Fix_control: waitpid(%d) failed", pid);
+		}
 		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 			error = Errorcode = n;
 			logmsg(LOG_INFO,
@@ -1928,7 +1942,8 @@ int Fix_control( struct job *job, char *filter )
  *
  ************************************************************************/
 
-int Create_control( struct job *job, char *error, int errlen )
+int Create_control( struct job *job, char *error, int errlen, char *auth_id,
+	char *xlate_format )
 {
 	char *s, *t, *file_hostname, *number, *priority, *datainfo, *openname;
 	int status = 0, fd;
@@ -1936,9 +1951,9 @@ int Create_control( struct job *job, char *error, int errlen )
 	if(DEBUGL3) Dump_job( "Create_control: before fixing", job );
 
 	/* deal with authentication */
-	if( Auth_client_id_DYN ){
-		Set_str_value(&job->info,AUTHINFO,Auth_client_id_DYN);
-		Set_letter_str(&job->controlfile,'_',Auth_client_id_DYN);
+	if( auth_id ){
+		Set_str_value(&job->info,AUTHINFO,auth_id);
+		Set_letter_str(&job->controlfile,'_',auth_id);
 	}
 	if( !(s = Find_str_value(&job->info,FROMHOST,Value_sep)) || Clean_name(s) ){
 		Set_str_value(&job->info,FROMHOST,FQDNRemote_FQDN);
@@ -2004,7 +2019,7 @@ int Create_control( struct job *job, char *error, int errlen )
 
 	s = Join_line_list(&job->controlfile,"\n");
 	DEBUG4("Create_control: first part '%s'", s );
-	datainfo = Fix_datafile_info( job, number, file_hostname );
+	datainfo = Fix_datafile_info( job, number, file_hostname, xlate_format );
 	DEBUG4("Create_control: data info '%s'", datainfo );
 	s = safeextend2(s,datainfo,__FILE__,__LINE__);
 	DEBUG4("Create_control: joined '%s'", s );
