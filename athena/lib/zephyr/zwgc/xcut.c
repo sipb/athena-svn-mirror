@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xcut.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xcut_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xcut.c,v 1.2 1989-11-02 01:57:58 marc Exp $";
+static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.3 1989-11-08 14:37:57 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -209,6 +209,9 @@ void xcut(dpy,event,desc_context)
 
       case ButtonRelease:
 	if (w == current_window_in && !((event->xbutton.state)&ShiftMask)) {
+#ifdef REVSTACK
+	   extern int reverse_stack;
+#endif /* REVSTACK */
 	   if (w == selecting_in) selecting_in = 0;
 	   XDeleteContext(dpy, w, desc_context);
 	   XDestroyWindow(dpy, w);
