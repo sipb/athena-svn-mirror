@@ -4,6 +4,6 @@ AC_INIT(athlsync.c)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-ATHENA_AFS("-lsys -lrx -llwp -lsys")
+ATHENA_AFS("-lsys -lrx -llwp -lsys -lafsutil")
 
 AC_OUTPUT(Makefile)

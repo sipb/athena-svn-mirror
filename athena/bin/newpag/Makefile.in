@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-01-11 19:23:25 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2005-03-12 17:30:22 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -20,7 +20,8 @@ ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
 all: newpag
 
 newpag: newpag.o
-	${CC} ${LDFLAGS} -o newpag newpag.o -lsys -lrx -llwp -lsys ${LIBS}
+	${CC} ${LDFLAGS} -o newpag newpag.o -lsys -lrx -llwp -lsys -lafsutil \
+	  ${LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<

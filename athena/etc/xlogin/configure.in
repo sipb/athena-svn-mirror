@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.7 2001-04-20 14:26:09 ghudson Exp $
+# $Id: configure.in,v 1.8 2005-03-12 17:30:23 ghudson Exp $
 AC_INIT(xlogin.c)
 
 test -z "$lsbindir" && lsbindir='${sbindir}'
@@ -26,7 +26,7 @@ AC_SUBST(ATHENA_MINOR_VERSION)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-ATHENA_AFS("-lsys -lrx -llwp")
+ATHENA_AFS("-lsys -lrx -llwp -lafsutil")
 ATHENA_HESIOD
 ATHENA_KRB4
 ATHENA_KRB5
