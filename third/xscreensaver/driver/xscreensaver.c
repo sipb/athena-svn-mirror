@@ -912,6 +912,7 @@ main_loop (saver_info *si)
 	   p->lock_timeout == 0) ||	/* and locking is not timer-deferred */
 	  (p->start_locked_p))		/* OR we're starting locked */
 	si->locked_p = True;		/* then lock right now. */
+	si->locked_due_to_idle_p = False;
 
       /* locked_p might be true already because of the above, or because of
 	 the LOCK ClientMessage.  But if not, and if we're supposed to lock
@@ -1357,6 +1358,7 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 			    ? "activating and locking."
 			    : "locking.");
 	  si->locked_p = True;
+	  si->locked_due_to_idle_p = False;
 	  si->selection_mode = 0;
 	  si->demoing_p = False;
 	  sprintf (buf, "LOCK ClientMessage received; %s", response);
