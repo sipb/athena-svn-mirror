@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.22 1992-08-13 22:25:57 probe Exp $
+ * $Id: aklog_main.c,v 1.23 1992-12-11 13:23:15 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.22 1992-08-13 22:25:57 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.23 1992-12-11 13:23:15 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -64,8 +64,8 @@ typedef struct {
 } cellinfo_t;
 
 
-char *malloc();
-char *calloc();
+struct afsconf_cell cellconfig; /* General information about the cell */
+
 extern int errno;
 extern char *sys_errlist[];
 
@@ -108,7 +108,7 @@ static char *copy_string(string)
 {
     char *new_string;
 
-    if (new_string = calloc(strlen(string) + 1, sizeof(char))) 
+    if (new_string = (char *)calloc(strlen(string) + 1, sizeof(char))) 
 	(void) strcpy(new_string, string);
 
     return (new_string);
@@ -174,9 +174,6 @@ static int auth_to_cell(cell, realm)
 #endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
-
-    struct afsconf_cell cellconfig; /* General information about the cell */
-
     char username[BUFSIZ];	/* To hold client username structure */
     long viceId;		/* AFS uid of user */
 
@@ -194,8 +191,6 @@ static int auth_to_cell(cell, realm)
     struct ktc_principal aclient;
     struct ktc_token atoken, btoken;
     
-    char *calloc();
-
     bzero(name, sizeof(name));
     bzero(instance, sizeof(instance));
     bzero(realm_of_user, sizeof(realm_of_user));
@@ -254,9 +249,24 @@ static int auth_to_cell(cell, realm)
 	
 	if (realm && realm[0])
 	    strcpy(realm_of_cell, realm);
-	else 
-	    strcpy((char *)realm_of_cell, 
-		   (char *)krb_realmofhost(cellconfig.hostName[0]));
+	else {
+	    char krbhst[MAX_HSTNM];
+	    char *krbrlm =
+		(char *)krb_realmofhost(cellconfig.hostName[0]);
+	
+	    if (krb_get_krbhst(krbhst, krbrlm, 1) != KSUCCESS) {
+		char *s = realm_of_cell;
+		char *t = cell_to_use;
+		int c;
+
+		while (c = *t++) {
+		    if (islower(c)) c=toupper(c);
+		    *s++ = c;
+		}
+		*s++ = 0;
+	    } else
+		strcpy(realm_of_cell, krbrlm);
+	}
 	
 	/* We use the afs.<cellname> convention here... */
 	strcpy(name, AFSKEY);
