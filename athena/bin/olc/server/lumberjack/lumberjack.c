@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.14 1991-04-10 22:06:27 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.15 1991-05-06 23:19:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.14 1991-04-10 22:06:27 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.15 1991-05-06 23:19:03 lwvanels Exp $";
 #endif
 #endif
 
@@ -44,7 +44,7 @@ main (argc, argv)
   int fd;			/* file descriptor of control file */
   int retval;			/* Error code returned by system */
   FILE *file;			/* file stream used to read control file */
-#if !defined(_AIX) && !defined(SYSV)
+#if !defined(_i386) && !defined(SYSV)
   union wait status;
 #else
   int status;
