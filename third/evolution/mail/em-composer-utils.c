@@ -466,6 +466,7 @@ em_utils_composer_send_cb (EMsgComposer *composer, gpointer user_data)
 struct _save_draft_info {
 	struct emcs_t *emcs;
 	EMsgComposer *composer;
+	CamelMessageInfo *info;
 	int quit;
 };
 
@@ -479,10 +480,12 @@ save_draft_done (CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *i
 	
 	if (!ok)
 		goto done;
-	
-	CORBA_exception_init (&ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (sdi->composer->editor_engine, "saved", &ev);
-	CORBA_exception_free (&ev);
+
+	if (sdi->composer->editor_engine) {
+		CORBA_exception_init (&ev);
+		GNOME_GtkHTML_Editor_Engine_runCommand (sdi->composer->editor_engine, "saved", &ev);
+		CORBA_exception_free (&ev);
+	}
 	
 	if ((emcs = sdi->emcs) == NULL) {
 		emcs = emcs_new ();
@@ -553,8 +556,22 @@ em_utils_composer_save_draft_cb (EMsgComposer *composer, int quit, gpointer user
 	CamelMimeMessage *msg;
 	CamelMessageInfo *info;
 	EAccount *account;
-	
+
+	/* need to get stuff from the composer here, since it could
+	 * get destroyed while we're in mail_msg_wait() a little lower
+	 * down, waiting for the folder to open */
+
+	g_object_ref(composer);
+	msg = e_msg_composer_get_message_draft (composer);
 	account = e_msg_composer_get_preferred_account (composer);
+
+	sdi = g_malloc(sizeof(struct _save_draft_info));
+	sdi->composer = composer;
+	sdi->emcs = user_data;
+	if (sdi->emcs)
+		emcs_ref(sdi->emcs);
+	sdi->quit = quit;
+
 	if (account && account->drafts_folder_uri &&
 	    strcmp (account->drafts_folder_uri, default_drafts_folder_uri) != 0) {
 		int id;
@@ -563,8 +580,14 @@ em_utils_composer_save_draft_cb (EMsgComposer *composer, int quit, gpointer user
 		mail_msg_wait (id);
 		
 		if (!folder) {
-			if (e_error_run((GtkWindow *)composer, "mail:ask-default-drafts", NULL) != GTK_RESPONSE_YES)
+			if (e_error_run((GtkWindow *)composer, "mail:ask-default-drafts", NULL) != GTK_RESPONSE_YES) {
+				g_object_unref(composer);
+				camel_object_unref(msg);
+				if (sdi->emcs)
+					emcs_unref(sdi->emcs);
+				g_free(sdi);
 				return;
+			}
 			
 			folder = drafts_folder;
 			camel_object_ref (drafts_folder);
@@ -574,19 +597,9 @@ em_utils_composer_save_draft_cb (EMsgComposer *composer, int quit, gpointer user
 		camel_object_ref (folder);
 	}
 	
-	msg = e_msg_composer_get_message_draft (composer);
-	
-	info = g_new0 (CamelMessageInfo, 1);
+	info = g_malloc0(sizeof(*info));
 	info->flags = CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_SEEN;
-	
-	sdi = g_malloc (sizeof (struct _save_draft_info));
-	sdi->composer = composer;
-	g_object_ref (composer);
-	sdi->emcs = user_data;
-	if (sdi->emcs)
-		emcs_ref (sdi->emcs);
-	sdi->quit = quit;
-	
+
 	mail_append_mail (folder, msg, info, save_draft_done, sdi);
 	camel_object_unref (folder);
 	camel_object_unref (msg);
@@ -890,7 +903,10 @@ forward_non_attached (GPtrArray *messages, int style, const char *fromuri)
 		
 		if (text) {
 			composer = create_new_composer (subject, fromuri);
-			
+
+			if (CAMEL_IS_MULTIPART(camel_medium_get_content_object((CamelMedium *)message)))
+				e_msg_composer_add_message_attachments(composer, message, FALSE);
+
 			e_msg_composer_set_body_text (composer, text, len);
 						
 			e_msg_composer_unset_changed (composer);
@@ -1749,7 +1765,7 @@ em_utils_reply_to_message(CamelFolder *folder, const char *uid, CamelMimeMessage
 
 	g_return_if_fail(message != NULL);
 	
-	account = guess_account (message, NULL);
+	account = guess_account (message, folder);
 	flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_SEEN;
 	
 	switch (mode) {

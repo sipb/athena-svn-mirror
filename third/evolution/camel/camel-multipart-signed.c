@@ -181,42 +181,61 @@ camel_multipart_signed_new (void)
 	return multipart;
 }
 
-/* find the next boundary @bound from @start, return the start of the actual data
-   @end points to the end of the data BEFORE the boundary */
-static char *parse_boundary(char *start, const char *bound, char **end)
+static int
+skip_content(CamelMimeParser *cmp)
 {
-	char *data, *begin;
+	char *buf;
+	size_t len;
+	int state;
 
-	begin = strstr(start, bound);
-	if (begin == NULL)
-		return NULL;
+	switch (camel_mime_parser_state(cmp)) {
+	case CAMEL_MIME_PARSER_STATE_HEADER:
+		/* body part */
+		while (camel_mime_parser_step(cmp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
+			/* NOOP */ ;
+		break;
+	case CAMEL_MIME_PARSER_STATE_MESSAGE:
+		/* message body part */
+		(void)camel_mime_parser_step(cmp, &buf, &len);
+		skip_content(cmp);
 
-	data = begin+strlen(bound);
-	if (begin > start && begin[-1] == '\n')
-		begin--;
-	if (begin > start && begin[-1] == '\r')
-		begin--;
-	if (data[0] == '\r')
-		data++;
-	if (data[0] == '\n')
-		data++;
+		/* clean up followon state if any, see camel-mime-message.c */
+		state = camel_mime_parser_step(cmp, &buf, &len);
+		switch (state) {
+		case CAMEL_MIME_PARSER_STATE_EOF:
+		case CAMEL_MIME_PARSER_STATE_FROM_END: /* these doesn't belong to us */
+			camel_mime_parser_unstep(cmp);
+		case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
+			break;
+		default:
+			g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %d", camel_mime_parser_state (cmp));
+			camel_mime_parser_unstep(cmp);
+			return -1;
+		}
+		break;
+	case CAMEL_MIME_PARSER_STATE_MULTIPART:
+		/* embedded multipart */
+		while ((state = camel_mime_parser_step(cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END)
+			skip_content(cmp);
+		break;
+	default:
+		g_warning("Invalid state encountered???: %d", camel_mime_parser_state(cmp));
+	}
 
-	*end = begin;
-	return data;
+	return 0;
 }
 
-/* yeah yuck.
-   Well, we could probably use the normal mime parser, but then it would change our
-   headers.
-   This is good enough ... till its not! */
 static int
 parse_content(CamelMultipartSigned *mps)
 {
+	CamelMimeParser *cmp;
 	CamelMultipart *mp = (CamelMultipart *)mps;
-	char *start, *end, *start2, *end2, *last, *post;
 	CamelStreamMem *mem;
-	char *bound;
 	const char *boundary;
+	char *buf;
+	size_t len;
+	off_t head = -1, tail = -1;
+	int state;
 
 	boundary = camel_multipart_get_boundary(mp);
 	if (boundary == NULL) {
@@ -224,47 +243,59 @@ parse_content(CamelMultipartSigned *mps)
 		return -1;
 	}
 
-	/* turn it into a string, and 'fix' it up */
-	/* this is extremely dodgey but should work! */
 	mem = (CamelStreamMem *)((CamelDataWrapper *)mps)->stream;
 	if (mem == NULL) {
 		g_warning("Trying to parse multipart/signed without constructing first");
 		return -1;
 	}
 
-	camel_stream_write((CamelStream *)mem, "", 1);
-	g_byte_array_set_size(mem->buffer, mem->buffer->len-1);
-	last = mem->buffer->data + mem->buffer->len;
+	/* This is all seriously complex.
+	   This is so we can parse all cases properly, without altering the content.
+	   All we are doing is finding part offsets. */
 
-	bound = alloca(strlen(boundary)+5);
-	sprintf(bound, "--%s", boundary);
+	camel_stream_reset((CamelStream *)mem);
+	cmp = camel_mime_parser_new();
+	camel_mime_parser_init_with_stream(cmp, (CamelStream *)mem);
+	camel_mime_parser_push_state(cmp, CAMEL_MIME_PARSER_STATE_MULTIPART, boundary);
 
-	start = parse_boundary(mem->buffer->data, bound, &end);
-	if (start == NULL || start[0] == 0)
-		return -1;
+	mps->start1 = -1;
+	mps->end1 = -1;
+	mps->start2 = -1;
+	mps->end2 = -1;
 
-	if (end > (char *)mem->buffer->data) {
-		char *tmp = g_strndup(mem->buffer->data, start-(char *)mem->buffer->data-1);
-		camel_multipart_set_preface(mp, tmp);
-		g_free(tmp);
+	while ((state = camel_mime_parser_step(cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
+		if (mps->start1 == -1) {
+			head = camel_mime_parser_tell_start_boundary(cmp);
+			mps->start1 = camel_mime_parser_tell_start_headers(cmp);
+		} else if (mps->start2 == -1) {
+			mps->start2 = camel_mime_parser_tell_start_headers(cmp);
+			mps->end1 = camel_mime_parser_tell_start_boundary(cmp);
+			if (mps->end1 > mps->start1 && mem->buffer->data[mps->end1-1] == '\n')
+				mps->end1--;
+			if (mps->end1 > mps->start1 && mem->buffer->data[mps->end1-1] == '\r')
+				mps->end1--;
+		} else {
+			g_warning("multipart/signed has more than 2 parts, remaining parts ignored");
+			break;
+		}
+
+		if (skip_content(cmp) == -1)
+			break;
 	}
 
-	start2 = parse_boundary(start, bound, &end);
-	if (start2 == NULL || start2[0] == 0)
+	if (state == CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
+		mps->end2 = camel_mime_parser_tell_start_boundary(cmp);
+		tail = camel_mime_parser_tell(cmp);
+
+		camel_multipart_set_preface(mp, camel_mime_parser_preface(cmp));
+		camel_multipart_set_postface(mp, camel_mime_parser_postface(cmp));
+	}
+
+	camel_object_unref(cmp);
+
+	if (mps->end2 == -1 || mps->start2 == -1) {
 		return -1;
-
-	sprintf(bound, "--%s--", boundary);
-	post = parse_boundary(start2, bound, &end2);
-	if (post == NULL)
-		return -1;
-
-	if (post[0])
-		camel_multipart_set_postface(mp, post);
-
-	mps->start1 = start-(char *)mem->buffer->data;
-	mps->end1 = end-(char *)mem->buffer->data;
-	mps->start2 = start2-(char *)mem->buffer->data;
-	mps->end2 = end2-(char *)mem->buffer->data;
+	}
 
 	return 0;
 }

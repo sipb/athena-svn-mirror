@@ -36,6 +36,7 @@
 #include "camel/camel-stream-null.h"
 #include "camel/camel-operation.h"
 #include "camel/camel-data-cache.h"
+#include "camel/camel-debug.h"
 
 #include "camel-nntp-summary.h"
 #include "camel-nntp-folder.h"
@@ -45,8 +46,7 @@
 #define w(x)
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
-extern int camel_verbose_debug;
-#define dd(x) (camel_verbose_debug?(x):0)
+#define dd(x) (camel_debug("nntp")?(x):0)
 
 #define CAMEL_NNTP_SUMMARY_VERSION (1)
 
@@ -217,7 +217,7 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high,
 
 	camel_operation_start(NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
 
-	ret = camel_nntp_raw_command(store, ex, &line, "xover %r", low, high);
+	ret = camel_nntp_raw_command_auth(store, ex, &line, "xover %r", low, high);
 	if (ret != 224) {
 		camel_operation_end(NULL);
 		if (ret != -1)
@@ -318,7 +318,7 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, 
 	for (i=low;i<high+1;i++) {
 		camel_operation_progress(NULL, (count * 100) / total);
 		count++;
-		ret = camel_nntp_raw_command(store, ex, &line, "head %u", i);
+		ret = camel_nntp_raw_command_auth(store, ex, &line, "head %u", i);
 		/* unknown article, ignore */
 		if (ret == 423)
 			continue;

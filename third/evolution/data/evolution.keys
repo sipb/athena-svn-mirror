@@ -16,6 +16,7 @@ text/x-vcard
 	[es]description=tarjeta de dirección
 	[et]description=aadressikaart
 	[eu]description=helbide-txartela
+	[fa]description=کارت نشانی
 	[fi]description=osoitekortti
 	[fr]description=Carte Adresse
 	[ga]description=carta sheoladh
@@ -23,6 +24,7 @@ text/x-vcard
 	[gu]description=સરનામા કાર્ડ
 	[hr]description=kartica adresara
 	[hu]description=címkártya
+	[id]description=kartu alamat
 	[it]description=biglietto da visita
 	[ja]description=アドレス・カード
 	[ko]description=주소 카드
@@ -33,7 +35,7 @@ text/x-vcard
 	[nl]description=adreskaart
 	[nn]description=adressekort
 	[no]description=adressekort
-	[pa]description=ਐਡਰਸ ਕਾਰਡ
+	[pa]description=ਸਿਰਨਾਵਾਂ ਕਾਰਡ
 	[pl]description=karta adresowa
 	[pt]description=cartão de visita
 	[pt_BR]description=cartão de endereço
@@ -73,8 +75,9 @@ text/x-calendar
 	[en_CA]description=calendar information
 	[en_GB]description=calendar information
 	[es]description=información de calendario
-	[et]description=kalendri informatsioon
+	[et]description=kalendri teave
 	[eu]description=egutegi-informazioa
+	[fa]description=اطلاعات تقویم
 	[fi]description=Kalenterin tietoja
 	[fr]description=Informations du calendrier
 	[ga]description=eolas fhéilire
@@ -83,6 +86,7 @@ text/x-calendar
 	[hi]description=कैलेंडर सूचना
 	[hr]description=informacije o kalendaru
 	[hu]description=naptárinformáció
+	[id]description=informasi kalender
 	[it]description=informazioni sul calendario
 	[ja]description=カレンダ情報
 	[ko]description=달력 정보
@@ -90,7 +94,7 @@ text/x-calendar
 	[lv]description=kalendāra informācija
 	[ms]description=maklumat kalendar
 	[nb]description=kalenderinformasjon
-	[nl]description=kalenderinformatie
+	[nl]description=agenda-informatie
 	[nn]description=kalenderinformasjon
 	[no]description=kalenderinformasjon
 	[pa]description=ਕੈਲੰਡਰ ਜਾਣਕਾਰੀ
@@ -133,8 +137,9 @@ text/calendar
 	[en_CA]description=calendar information
 	[en_GB]description=calendar information
 	[es]description=información de calendario
-	[et]description=kalendri informatsioon
+	[et]description=kalendri teave
 	[eu]description=egutegi-informazioa
+	[fa]description=اطلاعات تقویم
 	[fi]description=Kalenterin tietoja
 	[fr]description=Informations du calendrier
 	[ga]description=eolas fhéilire
@@ -143,6 +148,7 @@ text/calendar
 	[hi]description=कैलेंडर सूचना
 	[hr]description=informacije o kalendaru
 	[hu]description=naptárinformáció
+	[id]description=informasi kalender
 	[it]description=informazioni sul calendario
 	[ja]description=カレンダ情報
 	[ko]description=달력 정보
@@ -150,7 +156,7 @@ text/calendar
 	[lv]description=kalendāra informācija
 	[ms]description=maklumat kalendar
 	[nb]description=kalenderinformasjon
-	[nl]description=kalenderinformatie
+	[nl]description=agenda-informatie
 	[nn]description=kalenderinformasjon
 	[no]description=kalenderinformasjon
 	[pa]description=ਕੈਲੰਡਰ ਜਾਣਕਾਰੀ

@@ -191,6 +191,9 @@
 /* Command to kill processes by name */
 #undef KILL_PROCESS_CMD
 
+/* Enable getaddrinfo emulation */
+#undef NEED_ADDRINFO
+
 /* Need krb_sendauth proto */
 #undef NEED_KRB_SENDAUTH_PROTO
 

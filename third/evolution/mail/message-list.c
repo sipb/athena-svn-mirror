@@ -1832,10 +1832,12 @@ message_list_init (GtkObject *object)
 	g_signal_connect (((GtkScrolledWindow *) message_list)->vscrollbar, "value-changed", G_CALLBACK (ml_scrolled), message_list);
 }
 
-static void
+static gboolean
 normalised_free (gpointer key, gpointer value, gpointer user_data)
 {
 	e_poolv_destroy (value);
+	
+	return TRUE;
 }
 
 static void
@@ -1903,7 +1905,7 @@ message_list_finalise (GObject *object)
 	MessageList *message_list = MESSAGE_LIST (object);
 	struct _MessageListPrivate *p = message_list->priv;
 	
-	g_hash_table_foreach (message_list->normalised_hash, normalised_free, NULL);
+	g_hash_table_foreach (message_list->normalised_hash, (GHFunc) normalised_free, NULL);
 	g_hash_table_destroy (message_list->normalised_hash);
 	
 	if (message_list->thread_tree)
@@ -2689,6 +2691,10 @@ main_folder_changed (CamelObject *o, gpointer event_data, gpointer user_data)
 	CamelFolderChangeInfo *changes = (CamelFolderChangeInfo *)event_data;
 	CamelFolder *folder = (CamelFolder *)o;
 	int i;
+
+	/* may be NULL if we're in the process of being destroyed */
+	if (ml->async_event == NULL)
+		return;
 	
 	d(printf("folder changed event, changes = %p\n", changes));
 	if (changes) {
@@ -2775,7 +2781,9 @@ message_list_set_folder (MessageList *message_list, CamelFolder *folder, const c
 		g_source_remove (message_list->idle_id);
 		message_list->idle_id = 0;
 	}
-
+	
+	g_hash_table_foreach_remove (message_list->normalised_hash, normalised_free, NULL);
+	
 	mail_regen_cancel(message_list);
 	
 	if (message_list->folder != NULL) {
@@ -2958,47 +2966,6 @@ on_click (ETree *tree, gint row, ETreePath path, gint col, GdkEvent *event, Mess
 	return TRUE;
 }
 
-struct message_list_foreach_data {
-	MessageList *message_list;
-	MessageListForeachFunc callback;
-	gpointer user_data;
-};
-
-static void
-mlfe_callback (ETreePath path, gpointer user_data)
-{
-	struct message_list_foreach_data *mlfe_data = user_data;
-	const char *uid;
-
-	if (e_tree_model_node_is_root (mlfe_data->message_list->model, path))
-		return;
-	
-	uid = get_message_uid (mlfe_data->message_list,
-			       path);
-	if (uid) {
-		mlfe_data->callback (mlfe_data->message_list, uid,
-				     mlfe_data->user_data);
-	} else {
-		/* FIXME: could this the cause of bug #6637 and friends? */
-		g_warning ("I wonder if this could be the cause of bug #6637 and friends?");
-		g_assert_not_reached ();
-	}
-}
-
-void
-message_list_foreach (MessageList *message_list,
-		      MessageListForeachFunc callback,
-		      gpointer user_data)
-{
-	struct message_list_foreach_data mlfe_data;
-	
-	mlfe_data.message_list = message_list;
-	mlfe_data.callback = callback;
-	mlfe_data.user_data = user_data;
-	e_tree_selected_path_foreach (message_list->tree,
-				      mlfe_callback, &mlfe_data);
-}
-
 struct _ml_selected_data {
 	MessageList *ml;
 	GPtrArray *uids;
@@ -3016,6 +2983,19 @@ ml_getselected_cb(ETreePath path, void *user_data)
 	uid = get_message_uid(data->ml, path);
 	g_assert(uid != NULL);
 	g_ptr_array_add(data->uids, g_strdup(uid));
+}
+
+GPtrArray *
+message_list_get_uids(MessageList *ml)
+{
+	struct _ml_selected_data data = {
+		ml,
+		g_ptr_array_new()
+	};
+
+	e_tree_path_foreach(ml->tree, ml_getselected_cb, &data);
+
+	return data.uids;
 }
 
 GPtrArray *
@@ -3667,8 +3647,13 @@ mail_regen_list (MessageList *ml, const char *search, const char *hideexpr, Came
 	struct _regen_list_msg *m;
 	GConfClient *gconf;
 	
-	if (ml->folder == NULL)
+	if (ml->folder == NULL) {
+		if (ml->search != search) {
+			g_free(ml->search);
+			ml->search = g_strdup(search);
+		}
 		return;
+	}
 
 	mail_regen_cancel(ml);
 

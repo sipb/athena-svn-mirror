@@ -56,6 +56,10 @@ struct _CamelVeeFolder {
 
 	CamelFolderChangeInfo *changes;
 	CamelFolderSearch *search;
+
+	/* only set-up if our parent is a vee-store, used also as a flag to
+	 * say that this folder is part of the unmatched folder */
+	struct _CamelVeeStore *parent_vee_store;
 };
 
 struct _CamelVeeFolderClass {
@@ -66,7 +70,7 @@ struct _CamelVeeFolderClass {
 
 CamelType	      camel_vee_folder_get_type		(void);
 CamelFolder  *camel_vee_folder_new		(CamelStore *parent_store, const char *name, guint32 flags);
-void         camel_vee_folder_construct		(CamelVeeFolder *vf, CamelStore *parent_store, const char *name, guint32 flags);
+void         camel_vee_folder_construct		(CamelVeeFolder *vf, CamelStore *parent_store, const char *full, const char *name, guint32 flags);
 
 CamelFolder *camel_vee_folder_get_location(CamelVeeFolder *vf, const CamelVeeMessageInfo *vinfo, char **realuid);
 

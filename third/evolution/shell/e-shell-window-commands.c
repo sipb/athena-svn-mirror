@@ -145,7 +145,7 @@ static const char *authors[] = {
 	"Alfred Peng",
 	"Almer S. Tigelaar",
 	"Anders Carlsson",
-	"Andre Klapper"
+	"Andre Klapper",
 	"Andreas Hyden",
 	"Andrew T. Veliath",
 	"Andrew Wu",
@@ -203,6 +203,7 @@ static const char *authors[] = {
 	"Duarte Loreto",
 	"Duncan Mak",
 	"ERDI Gergo",
+	"Ed Catmur",
 	"Edd Dumbill",
 	"Edgar Luna Díaz",
 	"Elliot Lee",
@@ -218,9 +219,9 @@ static const char *authors[] = {
 	"Francisco Javier F. Serrador",
 	"Frank Belew",
 	"Frederic Crozat",
-	"Garardo Marin",
 	"Gary Ekker",
 	"Gediminas Paulauskas",
+	"Gerardo Marin",
 	"Gil Osher",
 	"Gilbert Fang",
 	"Grahame Bowland",
@@ -437,7 +438,7 @@ about_box_new (void)
 				     copyright,
 				     _("Groupware Suite"),
 				     authors, documentors,
-				     strcmp (translator_credits, "translator_credits") ? translator_credits : NULL,
+				     strcmp (translator_credits, "translator-credits") ? translator_credits : NULL,
 				     pixbuf);
 	
         if (pixbuf != NULL)

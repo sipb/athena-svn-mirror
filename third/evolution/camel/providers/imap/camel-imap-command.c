@@ -43,7 +43,7 @@
 #include <camel/camel-private.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-session.h>
-
+#include <camel/camel-debug.h>
 
 extern int camel_verbose_debug;
 
@@ -313,10 +313,13 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 		respbuf = imap_read_untagged (store, respbuf, ex);
 		if (!respbuf)
 			type = CAMEL_IMAP_RESPONSE_ERROR;
-		else if (!strncasecmp (respbuf, "* OK [ALERT]", 12)) {
+		else if (!g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12)
+			 || !g_ascii_strncasecmp (respbuf, "* NO [ALERT]", 12)
+			 || !g_ascii_strncasecmp (respbuf, "* BAD [ALERT]", 13)) {
 			char *msg;
 
 			/* for imap ALERT codes, account user@host */
+			/* we might get a ']' from a BAD response since we +12, but who cares? */
 			msg = g_strdup_printf(_("Alert from IMAP server %s@%s:\n%s"),
 					      ((CamelService *)store)->url->user, ((CamelService *)store)->url->host, respbuf+12);
 			camel_session_alert_user(((CamelService *)store)->session, CAMEL_SESSION_ALERT_WARNING, msg, FALSE);
@@ -409,7 +412,7 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 static char *
 imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 {
-	int fulllen, ldigits, nread, i;
+	int fulllen, ldigits, nread, i, sexp = 0;
 	unsigned int length;
 	GPtrArray *data;
 	GString *str;
@@ -431,6 +434,18 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		p = strrchr (str->str, '{');
 		if (!p)
 			break;
+
+		/* HACK ALERT: We scan the non-literal part of the string, looking for possible s expression braces.
+		   This assumes we're getting s-expressions, which we should be.
+		   This is so if we get a blank line after a literal, in an s-expression, we can keep going, since
+		   we do no other parsing at this level.
+		   TODO: handle quoted strings? */
+		for (s=str->str; s<p; s++) {
+			if (*s == '(')
+				sexp++;
+			else if (*s == ')')
+				sexp--;
+		}
 		
 		length = strtoul (p + 1, &end, 10);
 		if (*end != '}' || *(end + 1) || end == p + 1 || length >= UINT_MAX - 2)
@@ -460,6 +475,12 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 			goto lose;
 		}
 		str->str[length + 1] = '\0';
+
+		if (camel_debug("imap")) {
+			printf("Literal: -->");
+			fwrite(str->str+1, 1, length, stdout);
+			printf("<--\n");
+		}
 		
 		/* Fix up the literal, turning CRLFs into LF. Also, if
 		 * we find any embedded NULs, strip them. This is
@@ -499,10 +520,17 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		
 		fulllen += str->len;
 		g_ptr_array_add (data, str);
-		
+
 		/* Read the next line. */
-		if (camel_imap_store_readline (store, &line, ex) < 0)
-			goto lose;
+		do {
+			if (camel_imap_store_readline (store, &line, ex) < 0)
+				goto lose;
+
+			/* MAJOR HACK ALERT, gropuwise sometimes sends an extra blank line after literals, check that here
+			   But only do it if we're inside an sexpression */
+			if (line[0] == 0 && sexp > 0)
+				g_warning("Server sent empty line after a literal, assuming in error");
+		} while (line[0] == 0 && sexp > 0);
 	}
 	
 	/* Now reassemble the data. */
@@ -549,7 +577,7 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 		if (response->folder) {
 			/* Check if it's something we need to handle. */
 			number = strtoul (resp + 2, &p, 10);
-			if (!strcasecmp (p, " EXISTS")) {
+			if (!g_ascii_strcasecmp (p, " EXISTS")) {
 				exists = number;
 			} else if (!strcasecmp (p, " EXPUNGE")) {
 				if (!expunged) {
@@ -782,7 +810,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 				outptr += sprintf (outptr, "%s", string);
 			} else {
 				if (store->capabilities & IMAP_CAPABILITY_LITERALPLUS) {
-					outptr += sprintf (outptr, "{%d+}\r\n%s", strlen (string), string);
+					outptr += sprintf (outptr, "{%d+}\r\n%s", (int)strlen(string), string);
 				} else {
 					char *quoted = imap_quote_string (string);
 					

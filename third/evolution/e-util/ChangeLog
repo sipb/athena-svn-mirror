@@ -1,3 +1,31 @@
+2005-01-21  Not Zed  <NotZed@Ximian.com>
+
+	* e-memory.c: 64 bit fixes.
+
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* e-url.c (e_url_shroud): dont' use '%.*s' for truncating string
+	output.
+
+2004-11-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #68787
+
+	* e-account.c (xml_set_content): check the new val isn't null
+	before dereferencing it.
+	* e-account.c (xml_set_prop): same here.
+
+2004-10-07  Jeffrey Stedfast  <fejj@novell.com>
+
+	* e-passwords.c (ep_ask_password): Use "%s" as the formatter
+	argument and msg->prompt as a printf-style argument rather than
+	using it as the format string. Fixes bug #67622.
+
+2004-08-27  Not Zed  <NotZed@Ximian.com>
+
+	* e-passwords.c (e_passwords_ask_password): return cancelled if
+	we're in an offline state.
+
 2004-08-26  Rodrigo Moya <rodrigo@novell.com>
 
 	* eggtrayicon.[ch]: updated from libegg.
@@ -11,7 +39,8 @@
 
 2004-08-13  Rodrigo Moya <rodrigo@novell.com>
 
-	* e-categories-config.c: include gtkdialog.h rather than gnome-dialog.h.
+	* e-categories-config.c: include gtkdialog.h rather than
+	gnome-dialog.h.
 
 2004-08-12  Carlos Garnacho Parro  <carlosg@gnome.org>
 

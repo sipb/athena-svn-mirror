@@ -141,6 +141,7 @@ static ESExpResult *do_move (struct _ESExp *f, int argc, struct _ESExpResult **a
 static ESExpResult *do_stop (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_colour (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_score (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static ESExpResult *do_adjust_score(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *set_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *unset_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_shell (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
@@ -163,6 +164,7 @@ static struct {
 	{ "stop",              (ESExpFunc *) do_stop,      0 },
 	{ "set-colour",        (ESExpFunc *) do_colour,    0 },
 	{ "set-score",         (ESExpFunc *) do_score,     0 },
+	{ "adjust-score",      (ESExpFunc *) do_adjust_score, 0 },
 	{ "set-system-flag",   (ESExpFunc *) set_flag,     0 },
 	{ "unset-system-flag", (ESExpFunc *) unset_flag,   0 },
 	{ "pipe-message",      (ESExpFunc *) pipe_message, 0 },
@@ -604,6 +606,33 @@ do_score (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDri
 }
 
 static ESExpResult *
+do_adjust_score(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+{
+	struct _CamelFilterDriverPrivate *p = _PRIVATE(driver);
+	
+	d(fprintf (stderr, "adjusting score tag\n"));
+	if (argc > 0 && argv[0]->type == ESEXP_RES_INT) {
+		char *value;
+		int old;
+
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
+			value = (char *)camel_folder_get_message_user_tag (p->source, p->uid, "score");
+		else
+			value = (char *)camel_tag_get(&p->info->user_tags, "score");
+		old = value?atoi(value):0;
+		value = g_strdup_printf ("%d", old+argv[0]->value.number);
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
+			camel_folder_set_message_user_tag (p->source, p->uid, "score", value);
+		else
+			camel_tag_set (&p->info->user_tags, "score", value);
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Adjust score (%d) to %s", argv[0]->value.number, value);
+		g_free (value);
+	}
+
+	return NULL;
+}
+
+static ESExpResult *
 set_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
 {
 	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
@@ -937,7 +966,7 @@ close_folder (void *key, void *value, void *data)
 	g_free (key);
 
 	if (folder != FOLDER_INVALID) {
-		camel_folder_sync (folder, FALSE, p->ex);
+		camel_folder_sync (folder, FALSE, camel_exception_is_set(p->ex)?NULL : p->ex);
 		camel_folder_thaw (folder);
 		camel_object_unref (folder);
 	}
@@ -1422,6 +1451,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver, CamelMimeMessage 
 				goto error;
 			}
 			r = e_sexp_eval (p->eval);
+			if (camel_exception_is_set(p->ex))
+				goto error;
+
 			if (r == NULL) {
 				camel_exception_setv (ex, 1, _("Error executing filter: %s: %s"),
 						      e_sexp_error (p->eval), node->action);

@@ -1,3 +1,19 @@
+2004-09-24  Not Zed  <NotZed@Ximian.com>
+
+	* e-shell-window-commands.c: Added ed catmur to the credits.
+
+2004-09-27  Andre Klapper  <a9016009@gmx.de>
+
+	* e-shell-window-commands.c (about_box_new): fixed two
+	typos in the list of contributors
+
+2004-09-21  JP Rosevear  <jpr@novell.com>
+
+	From Malcolm Tredinnick <malcolm@commsecure.com.au>, Fixes #66261
+	
+	* e-shell-window-commands.c (about_box_new): don't show
+	"translator-credits" if not translated
+
 2004-09-13  JP Rosevear  <jpr@novell.com>
 
 	* main.c: turn off development mode
@@ -17,6 +33,28 @@
 	* e-shell-settings-dialog.c (load_pages): use a better query to
 	get the configuration pages, the old one didn't include version
 	information properly.
+
+2004-09-13  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* e-shell.c (offline_procedure_finished_cb)
+	(e_shell_go_online) : set online status 
+	for e_passwords 
+	see #62856 (work around)
+		
+2004-09-03  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #61285.
+
+	* e-shell-settings-dialog.c (load_pages): use a better query to
+	get the configuration pages, the old one didn't include version
+	information properly.
+
+2004-08-27  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #62856 (workaround only)
+
+	* e-shell.c (impl_Shell_setLineStatus, e_shell_construct): set the
+	online state on e_passwords.
 
 2004-08-26  Rodney Dawes  <dobey@novell.com>
 

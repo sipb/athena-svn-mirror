@@ -317,16 +317,27 @@ fetch_mail_fetch (struct _mail_msg *mm)
 					fm->cache = cache;
 					em_filter_folder_element_filter (mm);
 					
-					/* save the cache of uids that we've just downloaded */
-					camel_uid_cache_save (cache);
-
-					/* if we don't do this, no operations on the folder will work */
+					/* need to uncancel so writes/etc. don't fail */
 					if (mm->ex.id == CAMEL_EXCEPTION_USER_CANCEL)
 						camel_operation_uncancel(NULL);
 
+					/* save the cache of uids that we've just downloaded */
+					camel_uid_cache_save (cache);
+				}
+
+				if (fm->delete && mm->ex.id == CAMEL_EXCEPTION_NONE) {
+					/* not keep on server - just delete all the actual messages on the server */
+					for (i=0;i<folder_uids->len;i++) {
+						d(printf("force delete uid '%s'\n", (char *)folder_uids->pdata[i]));
+						camel_folder_delete_message(folder, folder_uids->pdata[i]);
+					}
+				}
+
+				if (fm->delete || cache_uids) {
 					/* expunge messages (downloaded so far) */
 					camel_folder_sync(folder, fm->delete, NULL);
 				}
+
 				camel_uid_cache_destroy (cache);
 				camel_folder_free_uids (folder, folder_uids);
 			} else {
@@ -2252,4 +2263,81 @@ mail_execute_shell_command (CamelFilterDriver *driver, int argc, char **argv, vo
 		return;
 	
 	gnome_execute_async_fds (NULL, argc, argv, TRUE);
+}
+
+/* Async service-checking/authtype-lookup code. */
+struct _check_msg {
+	struct _mail_msg msg;
+
+	char *url;
+	CamelProviderType type;
+	GList *authtypes;
+
+	void (*done)(const char *url, CamelProviderType type, GList *types, void *data);
+	void *data;
+};
+
+static char *
+check_service_describe(struct _mail_msg *mm, int complete)
+{
+	return g_strdup(_("Checking Service"));
+}
+
+static void
+check_service_check(struct _mail_msg *mm)
+{
+	struct _check_msg *m = (struct _check_msg *)mm;
+	CamelService *service;
+
+	service = camel_session_get_service(session, m->url, m->type, &mm->ex);
+	if (!service) {
+		camel_operation_unregister(mm->cancel);
+		return;
+	}
+
+	m->authtypes = camel_service_query_auth_types(service, &mm->ex);
+	camel_object_unref(service);
+}
+
+static void
+check_service_done(struct _mail_msg *mm)
+{
+	struct _check_msg *m = (struct _check_msg *)mm;
+
+	if (m->done)
+		m->done(m->url, m->type, m->authtypes, m->data);
+}
+
+static void
+check_service_free(struct _mail_msg *mm)
+{
+	struct _check_msg *m = (struct _check_msg *)mm;
+
+	g_free(m->url);
+	g_list_free(m->authtypes);
+}
+
+static struct _mail_msg_op check_service_op = {
+	check_service_describe,
+	check_service_check,
+	check_service_done,
+	check_service_free,
+};
+
+int
+mail_check_service(const char *url, CamelProviderType type, void (*done)(const char *url, CamelProviderType type, GList *authtypes, void *data), void *data)
+{
+	struct _check_msg *m;
+	int id;
+	
+	m = mail_msg_new (&check_service_op, NULL, sizeof(*m));
+	m->url = g_strdup(url);
+	m->type = type;
+	m->done = done;
+	m->data = data;
+	
+	id = m->msg.seq;
+	e_thread_put(mail_thread_new, (EMsg *)m);
+
+	return id;
 }

@@ -68,8 +68,8 @@
 #define d(x) 
 
 /* Specified in RFC 2060 */
-#define IMAP_PORT 143
-#define SIMAP_PORT 993
+#define IMAP_PORT "143"
+#define IMAPS_PORT "993"
 
 static CamelDiscoStoreClass *parent_class = NULL;
 
@@ -485,7 +485,7 @@ imap_get_capability (CamelService *service, CamelException *ex)
 			continue;
 		}
 		for (i = 0; capabilities[i].name; i++) {
-			if (strcasecmp (capa, capabilities[i].name) == 0) {
+			if (g_ascii_strcasecmp (capa, capabilities[i].name) == 0) {
 				store->capabilities |= capabilities[i].flag;
 				break;
 			}
@@ -521,51 +521,71 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls, CamelE
 	CamelStream *tcp_stream;
 	CamelSockOptData sockopt;
 	gboolean force_imap4 = FALSE;
-	struct hostent *h;
 	int clean_quit;
-	int port, ret;
+	int ret;
 	char *buf;
-	
-	if (!(h = camel_service_gethost (service, ex)))
-		return FALSE;
-	
-	port = service->url->port ? service->url->port : 143;
+	struct addrinfo *ai, hints = { 0 };
+	char *serv;
+	const char *port = NULL;
+
+	/* FIXME: this connect stuff is duplicated everywhere */
+
+	if (service->url->port) {
+		serv = g_alloca(16);
+		sprintf(serv, "%d", service->url->port);
+	} else {
+		serv = "imap";
+		port = IMAP_PORT;
+	}
 	
 	if (ssl_mode != USE_SSL_NEVER) {
 #ifdef HAVE_SSL
 		if (try_starttls) {
 			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
 		} else {
-			port = service->url->port ? service->url->port : 993;
+			if (service->url->port == 0) {
+				serv = "imaps";
+				port = IMAPS_PORT;
+			}
 			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
 		}
 #else
-		if (!try_starttls)
-			port = service->url->port ? service->url->port : 993;
+		if (!try_starttls && service->url->port == 0) {
+			serv = "imaps";
+			port = IMAPS_PORT;
+		}
 		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				      _("Could not connect to %s (port %d): %s"),
-				      service->url->host, port,
+				      _("Could not connect to %s (port %s): %s"),
+				      service->url->host, serv,
 				      _("SSL unavailable"));
-		
-		camel_free_host (h);
-		
 		return FALSE;
 #endif /* HAVE_SSL */
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
+
+	hints.ai_socktype = SOCK_STREAM;
+	ai = camel_getaddrinfo(service->url->host, serv, &hints, ex);
+	if (ai == NULL && port != NULL && camel_exception_get_id(ex) != CAMEL_EXCEPTION_USER_CANCEL) {
+		camel_exception_clear(ex);
+		ai = camel_getaddrinfo(service->url->host, port, &hints, ex);
+	}
+	if (ai == NULL) {
+		camel_object_unref(tcp_stream);
+		return FALSE;
+	}
 	
-	ret = camel_tcp_stream_connect (CAMEL_TCP_STREAM (tcp_stream), h, port);
-	camel_free_host (h);
+	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai);
+	camel_freeaddrinfo(ai);
 	if (ret == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 					     _("Connection cancelled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-					      _("Could not connect to %s (port %d): %s"),
-					      service->url->host, port, g_strerror (errno));
+					      _("Could not connect to %s (port %s): %s"),
+					      service->url->host, serv, g_strerror (errno));
 		
 		camel_object_unref (tcp_stream);
 		
@@ -609,7 +629,7 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls, CamelE
 	if (!strncmp(buf, "* PREAUTH", 9))
 		store->preauthed = TRUE;
 	
-	if (strstr (buf, "Courier-IMAP")) {
+	if (strstr (buf, "Courier-IMAP") || getenv("CAMEL_IMAP_BRAINDAMAGED")) {
 		/* Courier-IMAP is braindamaged. So far this flag only
 		 * works around the fact that Courier-IMAP is known to
 		 * give invalid BODY responses seemingly because its
@@ -1474,7 +1494,7 @@ imap_connect_online (CamelService *service, CamelException *ex)
 		for (i = 0; i < folders->len; i++) {
 			CamelFolderInfo *fi = folders->pdata[i];
 			
-			haveinbox = haveinbox || !strcasecmp (fi->full_name, "INBOX");
+			haveinbox = haveinbox || !g_ascii_strcasecmp (fi->full_name, "INBOX");
 			
 			if (fi->flags & (CAMEL_IMAP_FOLDER_MARKED | CAMEL_IMAP_FOLDER_UNMARKED))
 				store->capabilities |= IMAP_CAPABILITY_useful_lsub;
@@ -1494,7 +1514,7 @@ imap_connect_online (CamelService *service, CamelException *ex)
 				CamelFolderInfo *fi = folders->pdata[i];
 				
 				/* this should always be TRUE if folders->len > 0 */
-				if (!strcasecmp (fi->full_name, "INBOX")) {
+				if (!g_ascii_strcasecmp (fi->full_name, "INBOX")) {
 					haveinbox = TRUE;
 					
 					/* if INBOX is marked as \NoSelect then it is probably
@@ -1836,7 +1856,7 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 	if (!camel_imap_store_connected (imap_store, ex))
 		return NULL;
 	
-	if (!strcasecmp (folder_name, "INBOX"))
+	if (!g_ascii_strcasecmp (folder_name, "INBOX"))
 		folder_name = "INBOX";
 
 	/* Lock around the whole lot to check/create atomically */
@@ -2041,7 +2061,7 @@ get_folder_offline (CamelStore *store, const char *folder_name,
 	    !camel_service_connect (CAMEL_SERVICE (store), ex))
 		return NULL;
 	
-	if (!strcasecmp (folder_name, "INBOX"))
+	if (!g_ascii_strcasecmp (folder_name, "INBOX"))
 		folder_name = "INBOX";
 	
 	storage_path = g_strdup_printf("%s/folders", imap_store->storage_path);
@@ -2280,7 +2300,7 @@ create_folder (CamelStore *store, const char *parent_name,
 	}
 	
 	/* FIXME: does not handle unexpected circumstances very well */
-	for (i = 0; i < response->untagged->len; i++) {
+	for (i = 0; i < response->untagged->len && !need_convert; i++) {
 		resp = response->untagged->pdata[i];
 		
 		if (!imap_parse_list_response (imap_store, resp, &flags, NULL, &thisone))
@@ -2289,8 +2309,9 @@ create_folder (CamelStore *store, const char *parent_name,
 		if (strcmp (thisone, parent_name) == 0) {
 			if (flags & CAMEL_FOLDER_NOINFERIORS)
 				need_convert = TRUE;
-			break;
 		}
+
+		g_free(thisone);
 	}
 	
 	camel_imap_response_free (imap_store, response);
@@ -2397,6 +2418,7 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 	/* FIXME: should use imap_build_folder_info, note the differences with param setting tho */
 
 	si = camel_imap_store_summary_add_from_full(imap_store->summary, dir, sep?sep:'/');
+	g_free(dir);
 	if (si == NULL)
 		return NULL;
 
@@ -2480,7 +2502,7 @@ get_subscribed_folders (CamelImapStore *imap_store, const char *top, CamelExcept
 		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED
 		    && imap_is_subfolder(camel_store_info_path(imap_store->summary, si), top)) {
 			g_ptr_array_add(names, (char *)camel_imap_store_info_full_name(imap_store->summary, si));
-			haveinbox = haveinbox || strcasecmp(camel_imap_store_info_full_name(imap_store->summary, si), "INBOX") == 0;
+			haveinbox = haveinbox || g_ascii_strcasecmp(camel_imap_store_info_full_name(imap_store->summary, si), "INBOX") == 0;
 		}
 		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);
 	}
@@ -2747,7 +2769,7 @@ static guint folder_hash(const void *ap)
 {
 	const char *a = ap;
 
-	if (strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp(a, "INBOX") == 0)
 		a = "INBOX";
 
 	return g_str_hash(a);
@@ -2758,9 +2780,9 @@ static int folder_eq(const void *ap, const void *bp)
 	const char *a = ap;
 	const char *b = bp;
 
-	if (strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp(a, "INBOX") == 0)
 		a = "INBOX";
-	if (strcasecmp(b, "INBOX") == 0)
+	if (g_ascii_strcasecmp(b, "INBOX") == 0)
 		b = "INBOX";
 
 	return g_str_equal(a, b);
@@ -2870,7 +2892,7 @@ get_folders(CamelStore *store, const char *top, guint32 flags, CamelException *e
 		goto fail;
 	for (i=0; i<folders->len && !haveinbox; i++) {
 		fi = folders->pdata[i];
-		haveinbox = (strcasecmp(fi->full_name, "INBOX")) == 0;
+		haveinbox = (g_ascii_strcasecmp(fi->full_name, "INBOX")) == 0;
 	}
 
 	if (!haveinbox && top == imap_store->namespace) {

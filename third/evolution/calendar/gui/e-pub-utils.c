@@ -263,7 +263,7 @@ e_pub_publish (gboolean publish) {
 				source_uid = g_strdup (p->data);
 				source =  e_source_list_peek_source_by_uid (source_list, source_uid);
 				if (source)
-					client = auth_new_cal_from_uri (e_source_get_uri (source), E_CAL_SOURCE_TYPE_EVENT);
+					client = auth_new_cal_from_source (source, E_CAL_SOURCE_TYPE_EVENT);
 
 				if (!client) {
 					g_warning (G_STRLOC ": Could not publish Free/Busy: Calendar backend no longer exists");
@@ -301,7 +301,7 @@ e_pub_publish (gboolean publish) {
 				password = e_passwords_ask_password (_("Enter password"), 
 								     "Calendar", (gchar *)uri->location, 
 								     prompt,
-								     E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET,
+								     E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET|E_PASSWORDS_ONLINE,
 								     &remember, NULL);
 
 				g_free (prompt);

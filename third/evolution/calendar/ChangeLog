@@ -1,3 +1,241 @@
+2005-02-15  Rodrigo Moya <rodrigo@novell.com>
+
+	* gui/migration.c (migrate_ical_folder_to_source): check return value
+	from e_cal_new, to display a better warning message.
+
+2005-02-03  Yong Sun <yong.sun@sun.com>
+ 
+         Fix for #56901
+ 
+         * gui/print.c: (bound_text): When the width>maxwidth, the 
+ 	pointer 'p' should also be backwarded, same as 'o'.
+	
+2005-01-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #64682
+	* gui/e-calendar-view.c: (transfer_item_to): Added an X-property
+	so that the backend could identify if the appointment is moved from
+	another calendar.
+
+2004-01-16  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #41624
+ 	
+ 	* conduits/calendar/calendar-conduit.c (local_record_from_comp):
+ 	append the exceptions, don't keep overwriting the first
+	
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* gui/e-day-view.c (e_day_view_finish_resize): set
+	last_Edited_comp_string to NULL, not test it for null.
+
+2004-12-06  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #68077
+
+	* gui/dialogs/event-page.glade:
+	* gui/dialogs/task-page.glade: expand the horizontal box so that it
+	fills all available space.
+
+2004-12-06  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #67403
+
+	* gui/dialogs/event-page.c (sensitize_widgets): don't unsensitize
+	the 'Customize' button, to allow users to look at the alarm list
+	for read only events.
+
+	* gui/dialogs/alarm-list-dialog.c (sensitize_buttons): unsensitize
+	buttons if the event is read only.
+
+2004-12-02  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* gui/e-day-view.c (e_day_view_finish_resize), (e_day_view_reshape_day_event),
+      	(e_day_view_change_event_time): Free the string day_view->last_edited_comp_string
+	before changing assigning it another value.
+	* gui/e-week-view.c (e_week_view_change_event_time): Free the string
+	week_view->last_edited_comp_string for the same reason above.
+
+2004-11-08  Rodney Dawes  <dobey@novell.com>
+
+	* gui/alarm-notify/alarm-notify-dialog.c (write_html_heading):
+	Don't try to convert the results of timet_to_str_with_zone to UTF-8,
+	since the return value is already encoded in UTF-8
+
+	Fixes #47529
+
+2004-11-02  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #68707
+ 	
+ 	* gui/e-week-view-event-item.c (e_week_view_event_item_draw):
+ 	restrict the range to 0-23 (midnight end times became '24')
+	
+2004-11-03  JP Rosevear  <jpr@novell.com>
+ 
+ 	* gui/gnome-cal.c (connect_list_view_focus): listen to the canvas
+ 	for focus events
+ 	(setup_widgets): listen for listen view selection changes
+ 
+ 	* gui/e-cal-list-view.c (setup_e_table): listen for the cursor to
+ 	move
+ 	(e_cal_list_view_cursor_change_cb): indicate the selection changed
+	
+2004-11-02  JP Rosevear  <jpr@novell.com>
+  
+ 	* gui/e-day-view-config.c (set_twentyfour_hour): make sure the day
+ 	view times redraw themselves if we switch 24/12 hour modes
+	
+2004-10-08  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #45951
+
+	* gui/dialogs/event-page.glade:
+	* gui/dialogs/task-page.glade: attach the description field correctly
+	to the table so that it scrolls correctly instead of making the dialog
+	bigger as you write.
+
+	* gui/dialogs/comp-editor.c (setup_widgets): no need to create an extra
+	GtkVBox, just use the GtkDialog's one.
+
+2004-10-06  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #65932
+
+	* common/authentication.c: keep a hash table of all the source lists.
+	(auth_new_cal_from_uri): do a search in the source list for the given
+	URI, and use that ESource if we find it. Also, keep the hash table of
+	source lists up to date.
+
+	* gui/comp-editor-factory.c (cal_opened_cb): don't assert on error
+	cases, just display an error dialog.
+
+2004-10-06  JP Rosevear  <jpr@novell.com>
+
+	* gui/itip-utils.c (comp_server_send): pass the variable in
+	correctly
+
+2004-09-29  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #64683
+
+	* gui/e-meeting-time-sel.c (e_meeting_time_selector_construct): create
+	a scrolled window for the attendees list, and synchronize it with the
+	scrolling in the F/B area.
+
+2004-09-28  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #66736.
+
+	* gui/e-itip-control.c (e_itip_control_set_data): noop if we were
+	destroyed (priv == null).
+
+2004-09-28  JP Rosevear  <jpr@novell.com>
+
+	Fixes #61766
+	
+	* gui/migration.c (create_calendar_contact_source): set a color
+	for the contacts
+	(create_calendar_sources): set a color for the personal source and
+	make in primary and default if nothing else is either
+	(create_task_sources): ditto for tasks personal source
+
+2004-09-24  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #65599
+
+	* gui/itip-utils.c (comp_fb_normalize): don't use NULL properties.
+
+	* gui/e-pub-utils.c (e_pub_publish): use auth_new_cal_from_source()
+	instead of auth_new_cal_from_uri().
+
+2004-09-24  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #66344
+ 
+ 	* gui/e-cal-model-calendar.c (get_dtend): check for existence of
+ 	property and null time instead of sending through bad data
+ 
+ 	* gui/e-cal-model.c (get_dtstart): ditto
+ 
+ 	* gui/e-cal-model-tasks.c (get_completed): ditto
+ 	(get_due): ditto
+
+2004-09-24  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #63513
+	* gui/e-itip-control.c
+	(ok_clicked_cb): Now the myaddress can be set to ecal address
+	since ok will be sentized only when ecal is loaded.
+
+2004-09-22  JP Rosevear  <jpr@novell.com>
+
+	* gui/calendar-component.c (fill_popup_menu_cb): ditto
+
+	* gui/tasks-component.c (fill_popup_menu_cb): don't allow a delete
+	of the system calendar
+
+2004-09-21  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #60904
+ 	
+ 	* gui/gnome-cal.c (set_week_start): update the view
+ 	(get_times_for_views): mimic the work week guessing code exactly
+ 	for calculating the time range needed instead of hardcoding 5 days
+ 	(set_working_days): new routine to update the view
+ 	(working_days_changed_cb): use above when getting config change
+ 	notification
+ 	(setup_config): set working days and add notification
+	
+2004-09-21  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #66158
+ 	
+ 	* gui/e-cal-model-tasks.c (e_cal_model_tasks_mark_task_complete):
+ 	notify of change so completion status updates immediately
+ 
+2004-09-21  JP Rosevear  <jpr@novell.com>
+
+	Fixes #59194
+	
+	* gui/e-cal-model-calendar.c (get_location): return "" instead of
+	NULL
+
+2004-09-21  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #65682
+	* gui/itip-utils.c 
+	(itip_send_comp): check the static capability before
+	booking the deletion.
+
+2004-09-20  JP Rosevear  <jpr@novell.com>
+	
+ 	Fixes #55172
+ 	
+ 	* conduits/calendar/calendar-conduit.c (local_record_from_comp):
+ 	handle -1 (last) for monthly recurrences and check both by_set_pos
+ 	and by_day since either can indicate this type of recurrence
+
+2004-09-20  Tony Tsui <ttsui9@gmail.com>
+
+	Fixes #66174
+
+	* gui/dialogs/meeting-page.c (existing_attendee): fixed memory leak.
+
+2004-09-10  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #62374
+
+	* gui/alarm-notify/alarm-queue.c (load_missed_alarms): removed this
+	function.
+	(cal_opened_cb): no need to call load_missed_alarms,
+	load_alarms_for_today will do everything.
+	(alarm_queue_add_client): ditto.
+	(load_alarms_for_today): take into account the last saved notification
+	time.
+	(load_alarms): unref the previous query, this function should now
+	only be called once per time range.
+
 2004-09-09  JP Rosevear  <jpr@novell.com>
 
 	Fixes #65454
@@ -22,6 +260,61 @@
 
 	* gui/e-cal-model-tasks.c: include missing string.h, to avoid
 	problems in 64 bit builds.
+
+2004-09-09  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #65454
+ 	
+ 	* gui/e-itip-control.c (class_init): only use a destroy function,
+ 	no finalize
+ 	(cleanup_ecal): util function
+ 	(init): use above for hash table and killed destroyed flag
+ 	(weren't using it anywhere)
+ 	(destroy): collapse finalize work into here and guard against
+ 	multiple destroy calls
+	
+2004-09-08  JP Rosevear  <jpr@novell.com>
+
+	Fixes #62728
+	
+	* gui/e-week-view.c (e_week_view_set_week_start_day): trigger a
+	redraw when changing the start day
+
+2004-09-05  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* gui/e-calendar-table.c
+	(e_calendar_table_show_popup_menu): Check the
+	static capability to enable or disable the assign
+	tasks in the popup menu.
+
+	* gui/dialogs/recurrence-page.c
+	(sensitize_buttons): Check for the static capability
+	to convert a existing appointment to recurrence appointment
+	for enabling or diabling the recurrence widgets.
+
+2004-08-31  Rodrigo Moya <rodrigo@novell.com>
+
+	Fixes #62392
+
+	* gui/alarm-notify/alarm-queue.c (display_notification): ref the
+	client's query object so that it doesn't disappear on us.
+	(tray_icon_destroyed_cb): unref the query previously ref'ed.
+
+2004-08-31  Rodrigo Moya <rodrigo@novell.com>
+
+	* gui/e-cal-model-tasks.c: include missing string.h, to avoid
+	problems in 64 bit builds.
+	
+2004-08-27  Not Zed  <NotZed@Ximian.com>
+
+	* common/authentication.c (auth_func_cb): constify the strings to
+	remove a warning.
+
+	** See bug #64856 (workaround).
+
+	* common/authentication.c (auth_func_cb): 
+	* gui/e-pub-utils.c(e_pub_publish): add ONLINE flag to password
+	request.
 
 2004-08-28  JP Rosevear  <jpr@novell.com>
 

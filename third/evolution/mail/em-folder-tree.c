@@ -1697,6 +1697,18 @@ struct _EMFolderTreeGetFolderInfo {
 	CamelFolderInfo *fi;
 };
 
+static char *
+emft_get_folder_info__desc(struct _mail_msg *mm, int done)
+{
+	struct _EMFolderTreeGetFolderInfo *m = (struct _EMFolderTreeGetFolderInfo *)mm;
+	char *ret, *name;
+
+	name = camel_service_get_name((CamelService *)m->store, TRUE);
+	ret = g_strdup_printf(_("Scanning folders in \"%s\""), name);
+	g_free(name);
+	return ret;
+}
+
 static void
 emft_get_folder_info__get (struct _mail_msg *mm)
 {
@@ -1808,7 +1820,7 @@ emft_get_folder_info__free (struct _mail_msg *mm)
 }
 
 static struct _mail_msg_op get_folder_info_op = {
-	NULL,
+	emft_get_folder_info__desc,
 	emft_get_folder_info__get,
 	emft_get_folder_info__got,
 	emft_get_folder_info__free,
@@ -2141,8 +2153,6 @@ emft_popup_copy_folder_selected (const char *uri, void *data)
 	}
 	
 	priv = cfd->emft->priv;
-	
-	d(printf ("%sing folder '%s' to '%s'\n", cfd->delete ? "move" : "copy", priv->selected_path, uri));
 	
 	camel_exception_init (&ex);
 
@@ -2621,7 +2631,15 @@ emft_popup_rename_folder (GtkWidget *item, EMFolderTree *emft)
 	prompt = g_strdup_printf (_("Rename the \"%s\" folder to:"), name);
 	while (!done) {
 		new_name = e_request_string (NULL, _("Rename Folder"), prompt, name);
-		if (new_name == NULL || !strcmp (name, new_name)) {
+		if (strchr(new_name, '/') != NULL) {
+			char *tmp;
+
+			tmp = g_strdup_printf(_("The folder name \"%s\" is invalid because it contains the character \"%c\""), new_name, '/');
+			e_error_run((GtkWindow *)gtk_widget_get_toplevel((GtkWidget *)emft),
+				    "mail:no-rename-folder", name, new_name, tmp, NULL);
+			g_free(tmp);
+			done = TRUE;
+		} else if (new_name == NULL || !strcmp (name, new_name)) {
 			/* old name == new name */
 			done = TRUE;
 		} else {
@@ -2742,6 +2760,8 @@ emft_tree_button_press (GtkTreeView *treeview, GdkEventButton *event, EMFolderTr
 		return FALSE;
 	
 	/* select/focus the row that was right-clicked or double-clicked */
+	selection = gtk_tree_view_get_selection (treeview);
+	gtk_tree_selection_select_path(selection, tree_path);
 	gtk_tree_view_set_cursor (treeview, tree_path, NULL, FALSE);
 	
 	if (event->button == 1 && event->type == GDK_2BUTTON_PRESS) {
@@ -2753,7 +2773,6 @@ emft_tree_button_press (GtkTreeView *treeview, GdkEventButton *event, EMFolderTr
 	gtk_tree_path_free (tree_path);
 	
 	/* FIXME: we really need the folderinfo to build a proper menu */
-	selection = gtk_tree_view_get_selection (treeview);
 	if (!emft_selection_get_selected (selection, &model, &iter))
 		return FALSE;
 	
@@ -2851,9 +2870,10 @@ emft_tree_selection_changed (GtkTreeSelection *selection, EMFolderTree *emft)
 void
 em_folder_tree_set_selected (EMFolderTree *emft, const char *uri)
 {
-	GList *l;
+	GList *l = NULL;
 
-	l = g_list_append(NULL, (void *)uri);
+	if (uri && uri[0])
+		l = g_list_append(l, (void *)uri);
 
 	em_folder_tree_set_selected_list(emft, l);
 	g_list_free(l);

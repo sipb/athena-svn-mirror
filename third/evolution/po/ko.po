@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution 1.5.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 18:11-0400\n"
-"PO-Revision-Date: 2004-08-29 01:11+0900\n"
+"POT-Creation-Date: 2005-02-15 22:08-0500\n"
+"PO-Revision-Date: 2004-10-20 01:11+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -222,13 +222,13 @@ msgstr ""
 msgid "Default Sync Address:"
 msgstr "기본 동기화 주소:"
 
-#: addressbook/conduit/address-conduit.c:1181
-#: addressbook/conduit/address-conduit.c:1182
+#: addressbook/conduit/address-conduit.c:1183
+#: addressbook/conduit/address-conduit.c:1184
 msgid "Could not load addressbook"
 msgstr "주소록을 읽어들일 수 없습니다"
 
-#: addressbook/conduit/address-conduit.c:1250
-#: addressbook/conduit/address-conduit.c:1253
+#: addressbook/conduit/address-conduit.c:1252
+#: addressbook/conduit/address-conduit.c:1255
 msgid "Could not read pilot's Address application block"
 msgstr "파일롯의 Address 프로그램 블록을 읽을 수 없습니다"
 
@@ -250,8 +250,8 @@ msgstr "여기서 자동 완성을 설정합니다"
 
 #. Create the contacts group
 #: addressbook/gui/component/GNOME_Evolution_Addressbook.server.in.in.h:5
-#: addressbook/gui/component/addressbook-view.c:1144
-#: calendar/gui/migration.c:377
+#: addressbook/gui/component/addressbook-view.c:1143
+#: calendar/gui/migration.c:385
 msgid "Contacts"
 msgstr "연락처"
 
@@ -287,64 +287,13 @@ msgstr "Evolution 폴더 설정 컨트롤"
 msgid "Manage your S/MIME certificates here"
 msgstr "여기서 S/MIME 인증서를 관리합니다"
 
-#: addressbook/gui/component/addressbook-component.c:93
-msgid "New Contact"
-msgstr "새 연락처"
-
-#: addressbook/gui/component/addressbook-component.c:94
-msgid "_Contact"
-msgstr "연락처(_C)"
-
-#: addressbook/gui/component/addressbook-component.c:95
-msgid "Create a new contact"
-msgstr "새로운 연락처를 만듭니다"
-
-#: addressbook/gui/component/addressbook-component.c:101
-msgid "New Contact List"
-msgstr "새 연락처 목록"
-
-#: addressbook/gui/component/addressbook-component.c:102
-msgid "Contact _List"
-msgstr "연락처 목록(_L)"
-
-#: addressbook/gui/component/addressbook-component.c:103
-msgid "Create a new contact list"
-msgstr "새 연락처 목록을 만듭니다"
-
-#: addressbook/gui/component/addressbook-component.c:109
-#: addressbook/gui/component/addressbook-view.c:813
-msgid "New Address Book"
-msgstr "새 주소록"
-
-#: addressbook/gui/component/addressbook-component.c:110
-msgid "Address _Book"
-msgstr "주소록(_B)"
-
-#: addressbook/gui/component/addressbook-component.c:111
-msgid "Create a new address book"
-msgstr "새 주소록을 만듭니다"
-
-#: addressbook/gui/component/addressbook-component.c:184
-msgid "Failed upgrading Addressbook settings or folders."
-msgstr "주소록 설정 혹은 폴더를 업그레이드하는 데 실패했습니다."
-
-#: addressbook/gui/component/addressbook-migrate.c:72
-#: calendar/gui/migration.c:141 mail/em-migrate.c:1160
-msgid "Migrating..."
-msgstr "옮기는 중..."
-
-#: addressbook/gui/component/addressbook-migrate.c:124
-#: calendar/gui/migration.c:188 mail/em-migrate.c:1201
-#, c-format
-msgid "Migrating `%s':"
-msgstr "`%s' 옮기는 중:"
-
 #. create the local source group
 #. On This Computer is always first and VFolders is always last
+#: addressbook/gui/component/addressbook-component.c:116
 #: addressbook/gui/component/addressbook-migrate.c:493
-#: calendar/gui/migration.c:450 calendar/gui/migration.c:532
+#: calendar/gui/migration.c:459 calendar/gui/migration.c:552
 #: mail/em-folder-tree-model.c:196 mail/em-folder-tree-model.c:198
-#: mail/mail-component.c:249 mail/mail-vfolder.c:218
+#: mail/mail-component.c:250 mail/mail-vfolder.c:218
 msgid "On This Computer"
 msgstr "이 컴퓨터"
 
@@ -352,18 +301,72 @@ msgstr "이 컴퓨터"
 #. Create the default Person calendar
 #. Create the default Person task list
 #. orange
+#: addressbook/gui/component/addressbook-component.c:124
 #: addressbook/gui/component/addressbook-migrate.c:501
 #: addressbook/gui/contact-editor/contact-editor.glade.h:34
-#: calendar/gui/migration.c:458 calendar/gui/migration.c:540
+#: calendar/gui/migration.c:467 calendar/gui/migration.c:560
 #: filter/filter-label.c:123 mail/em-migrate.c:1013 mail/mail-config.c:78
 #: mail/mail-config.glade.h:109
 msgid "Personal"
 msgstr "개인"
 
 #. Create the LDAP source group
+#: addressbook/gui/component/addressbook-component.c:132
 #: addressbook/gui/component/addressbook-migrate.c:509
 msgid "On LDAP Servers"
 msgstr "LDAP 서버"
+
+#: addressbook/gui/component/addressbook-component.c:178
+msgid "New Contact"
+msgstr "새 연락처"
+
+#: addressbook/gui/component/addressbook-component.c:179
+msgid "_Contact"
+msgstr "연락처(_C)"
+
+#: addressbook/gui/component/addressbook-component.c:180
+msgid "Create a new contact"
+msgstr "새로운 연락처를 만듭니다"
+
+#: addressbook/gui/component/addressbook-component.c:186
+msgid "New Contact List"
+msgstr "새 연락처 목록"
+
+#: addressbook/gui/component/addressbook-component.c:187
+msgid "Contact _List"
+msgstr "연락처 목록(_L)"
+
+#: addressbook/gui/component/addressbook-component.c:188
+msgid "Create a new contact list"
+msgstr "새 연락처 목록을 만듭니다"
+
+#: addressbook/gui/component/addressbook-component.c:194
+#: addressbook/gui/component/addressbook-view.c:812
+msgid "New Address Book"
+msgstr "새 주소록"
+
+#: addressbook/gui/component/addressbook-component.c:195
+msgid "Address _Book"
+msgstr "주소록(_B)"
+
+#: addressbook/gui/component/addressbook-component.c:196
+msgid "Create a new address book"
+msgstr "새 주소록을 만듭니다"
+
+#: addressbook/gui/component/addressbook-component.c:269
+msgid "Failed upgrading Addressbook settings or folders."
+msgstr "주소록 설정 혹은 폴더를 업그레이드하는 데 실패했습니다."
+
+#: addressbook/gui/component/addressbook-migrate.c:72
+#: calendar/gui/migration.c:142 mail/em-migrate.c:1160
+msgid "Migrating..."
+msgstr "옮기는 중..."
+
+#: addressbook/gui/component/addressbook-migrate.c:124
+#: calendar/gui/migration.c:189 mail/em-migrate.c:1201
+#, c-format
+msgid "Migrating `%s':"
+msgstr "`%s' 옮기는 중:"
 
 #: addressbook/gui/component/addressbook-migrate.c:637
 msgid "LDAP Servers"
@@ -414,14 +417,14 @@ msgstr ""
 "\n"
 "폴더를 여기에 맞게 변환하는 동안 잠시 기다리십시오..."
 
-#: addressbook/gui/component/addressbook-view.c:711
+#: addressbook/gui/component/addressbook-view.c:710
 #, c-format
 msgid "Address book '%s' will be removed. Are you sure you want to continue?"
 msgstr "'%s' 주소록을 지우게 됩니다. 정말로 계속 하시겠습니까?"
 
-#: addressbook/gui/component/addressbook-view.c:814
-#: addressbook/gui/widgets/e-addressbook-view.c:1124
-#: calendar/gui/calendar-component.c:430 calendar/gui/tasks-component.c:376
+#: addressbook/gui/component/addressbook-view.c:813
+#: addressbook/gui/widgets/e-addressbook-view.c:1123
+#: calendar/gui/calendar-component.c:436 calendar/gui/tasks-component.c:382
 #: mail/em-filter-i18n.h:11 ui/evolution-addressbook.xml.h:8
 #: ui/evolution-calendar.xml.h:5 ui/evolution-comp-editor.xml.h:4
 #: ui/evolution-contact-editor.xml.h:3
@@ -430,8 +433,8 @@ msgstr "'%s' 주소록을 지우게 됩니다. 정말로 계속 하시겠습니�
 msgid "Delete"
 msgstr "지우기"
 
-#: addressbook/gui/component/addressbook-view.c:815
-#: calendar/gui/calendar-component.c:431 calendar/gui/tasks-component.c:378
+#: addressbook/gui/component/addressbook-view.c:814
+#: calendar/gui/calendar-component.c:437 calendar/gui/tasks-component.c:384
 msgid "Properties..."
 msgstr "등록 정보..."
 
@@ -440,12 +443,12 @@ msgid "Accessing LDAP Server anonymously"
 msgstr "익명으로 LDAP 서버 사용"
 
 #: addressbook/gui/component/addressbook.c:184
-#: camel/providers/groupwise/camel-gw-listener.c:420
+#: camel/providers/groupwise/camel-gw-listener.c:460
 msgid "Failed to authenticate.\n"
 msgstr "인증하는 데 실패했습니다.\n"
 
 #: addressbook/gui/component/addressbook.c:191
-#: camel/providers/groupwise/camel-gw-listener.c:409
+#: camel/providers/groupwise/camel-gw-listener.c:449
 #, c-format
 msgid "%sEnter password for %s (user %s)"
 msgstr "%s%s(사용자 %s)의 열쇠글을 입력하십시오"
@@ -459,12 +462,17 @@ msgid "Position of the vertical pane in main view"
 msgstr "메인 보기에서 세로 창의 위치"
 
 #: addressbook/gui/component/apps_evolution_addressbook.schemas.in.in.h:3
+#: mail/evolution-mail.schemas.in.in.h:71
+msgid "Show the \"Preview\" pane"
+msgstr "\"미리 보기\" 창 보이기"
+
+#: addressbook/gui/component/apps_evolution_addressbook.schemas.in.in.h:4
 msgid ""
 "The number of characters that must be typed before evolution will attempt to "
 "autocomplete"
 msgstr "자동 완성하기 전에 최소한 입력해야 하는 문자 개수"
 
-#: addressbook/gui/component/apps_evolution_addressbook.schemas.in.in.h:4
+#: addressbook/gui/component/apps_evolution_addressbook.schemas.in.in.h:5
 msgid "URI for the folder last used in the select names dialog"
 msgstr "이름 선택 대화 상자에 마지막으로 사용되었던 폴더의 URI"
 
@@ -542,7 +550,7 @@ msgstr "주소록을 더합니다"
 msgid "Address Book Properties"
 msgstr "주소록 등록 정보"
 
-#: addressbook/gui/component/ldap-config.glade.h:15 mail/mail-account-gui.c:79
+#: addressbook/gui/component/ldap-config.glade.h:15 mail/mail-account-gui.c:86
 #: mail/mail-config.glade.h:42
 msgid "Always"
 msgstr "항상"
@@ -587,7 +595,7 @@ msgstr "일반"
 msgid "Lo_gin:"
 msgstr "로그인(_G):"
 
-#: addressbook/gui/component/ldap-config.glade.h:25 mail/mail-account-gui.c:81
+#: addressbook/gui/component/ldap-config.glade.h:25 mail/mail-account-gui.c:88
 #: mail/mail-config.glade.h:102
 msgid "Never"
 msgstr "사용 안 함"
@@ -704,7 +712,7 @@ msgstr "구별되는 이름 (Distinguished Name, DN) 사용해서"
 msgid "Using email address"
 msgstr "전자메일 주소 사용해서"
 
-#: addressbook/gui/component/ldap-config.glade.h:42 mail/mail-account-gui.c:80
+#: addressbook/gui/component/ldap-config.glade.h:42 mail/mail-account-gui.c:87
 #: mail/mail-config.glade.h:156
 msgid "Whenever Possible"
 msgstr "가능하면 언제나"
@@ -949,7 +957,7 @@ msgstr "MSN 메신저"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:27
 msgid "Mailing Address"
-msgstr "메일링 주소"
+msgstr "우편물 주소"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:28
 msgid "Manager:"
@@ -1030,7 +1038,7 @@ msgid "_File under:"
 msgstr "파일 이름(_F):"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:47
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:12
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:13
 msgid "_Where:"
 msgstr "위치(_W):"
 
@@ -2111,9 +2119,9 @@ msgstr "이 연락처에 사용할 그림을 선택하십시오"
 
 #: addressbook/gui/contact-editor/e-contact-editor.c:2551
 msgid "No image"
-msgstr "그림이 없습니다"
+msgstr "그림 없음"
 
-#: addressbook/gui/contact-editor/e-contact-editor.c:2779
+#: addressbook/gui/contact-editor/e-contact-editor.c:2778
 msgid ""
 "The contact data is invalid:\n"
 "\n"
@@ -2121,24 +2129,24 @@ msgstr ""
 "연락처 데이터가 잘못되었습니다:\n"
 "\n"
 
-#: addressbook/gui/contact-editor/e-contact-editor.c:2807
+#: addressbook/gui/contact-editor/e-contact-editor.c:2806
 msgid "Invalid contact."
 msgstr "연락처가 잘못되었습니다."
 
-#: addressbook/gui/contact-editor/e-contact-quick-add.c:280
+#: addressbook/gui/contact-editor/e-contact-quick-add.c:276
 msgid "Contact Quick-Add"
 msgstr "연락처 빨리 더하기"
 
-#: addressbook/gui/contact-editor/e-contact-quick-add.c:283
+#: addressbook/gui/contact-editor/e-contact-quick-add.c:279
 msgid "_Edit Full"
 msgstr "정식 이름 편집(_E)"
 
-#: addressbook/gui/contact-editor/e-contact-quick-add.c:301
+#: addressbook/gui/contact-editor/e-contact-quick-add.c:297
 #: mail/mail-config.glade.h:166
 msgid "_Full Name:"
-msgstr "전체 이름(_F):"
+msgstr "정식 이름(_F):"
 
-#: addressbook/gui/contact-editor/e-contact-quick-add.c:307
+#: addressbook/gui/contact-editor/e-contact-quick-add.c:303
 msgid "E-_mail:"
 msgstr "전자메일(_M):"
 
@@ -2285,38 +2293,38 @@ msgid "Add an email to the List"
 msgstr "전자메일을 목록에 더합니다"
 
 #: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:5
+#: addressbook/gui/contact-list-editor/e-contact-list-editor.c:813
+msgid "Contact List Editor"
+msgstr "연락처 목록 편집기"
+
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:6
 msgid "Insert email adresses from Adress Book"
 msgstr "주소록에서 전자메일 주소를 가져와 넣습니다"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:6
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:7
 #: addressbook/gui/contact-list-editor/e-contact-list-editor.c:714
 msgid "Members"
 msgstr "구성원"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:7
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:8
 msgid "Remove an email address from the List"
 msgstr "목록에서 전자메일 주소를 지웁니다"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:8
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:9
 msgid "Select"
 msgstr "선택"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:9
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:10
 msgid "_Hide addresses when sending mail to this list"
 msgstr "이 목록으로 메일을 보낼 때 주소를 숨깁니다(_H)"
 
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:10
-msgid "_List name:"
-msgstr "목록 이름(_N):"
-
 #: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:11
+msgid "_List name:"
+msgstr "목록 이름(_L):"
+
+#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:12
 msgid "_Type an email address or drag a contact into the list below:"
 msgstr "메일주소를 입력하거나 연락처를 아래의 목록으로 끌어 당기십시오(_T):"
-
-#: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:13
-#: smime/gui/smime-ui.glade.h:48
-msgid "dialog1"
-msgstr "dialog1"
 
 #: addressbook/gui/contact-list-editor/e-contact-list-editor.c:165
 #: addressbook/gui/widgets/e-addressbook-model.c:295
@@ -2336,10 +2344,6 @@ msgstr "새 목록"
 #: calendar/gui/e-meeting-list-view.c:457
 msgid "Required Participants"
 msgstr "필수 참석자"
-
-#: addressbook/gui/contact-list-editor/e-contact-list-editor.c:813
-msgid "Contact List Editor"
-msgstr "연락처 목록 편집기"
 
 #: addressbook/gui/merging/eab-contact-commit-duplicate-detected.glade.h:1
 msgid "Changed Contact:"
@@ -2446,97 +2450,97 @@ msgstr "고급..."
 msgid "Type"
 msgstr "형태"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:544
+#: addressbook/gui/widgets/e-addressbook-view.c:543
 msgid "Address Book"
 msgstr "주소록"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:888
-#: addressbook/gui/widgets/e-addressbook-view.c:1108
-#: addressbook/gui/widgets/e-addressbook-view.c:2098
+#: addressbook/gui/widgets/e-addressbook-view.c:887
+#: addressbook/gui/widgets/e-addressbook-view.c:1107
+#: addressbook/gui/widgets/e-addressbook-view.c:2097
 #: ui/evolution-addressbook.xml.h:19
 msgid "Save as VCard..."
 msgstr "VCard로 저장..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1095
+#: addressbook/gui/widgets/e-addressbook-view.c:1094
 msgid "New Contact..."
 msgstr "새 연락처..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1096
+#: addressbook/gui/widgets/e-addressbook-view.c:1095
 msgid "New Contact List..."
 msgstr "새 연락처 목록..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1099
+#: addressbook/gui/widgets/e-addressbook-view.c:1098
 msgid "Go to Folder..."
 msgstr "폴더로 가기..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1100
+#: addressbook/gui/widgets/e-addressbook-view.c:1099
 msgid "Import..."
 msgstr "가져오기..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1102
+#: addressbook/gui/widgets/e-addressbook-view.c:1101
 msgid "Search for Contacts..."
 msgstr "연락처 찾기..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1103
+#: addressbook/gui/widgets/e-addressbook-view.c:1102
 msgid "Address Book Sources..."
 msgstr "주소록 원본..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1105
+#: addressbook/gui/widgets/e-addressbook-view.c:1104
 msgid "Pilot Settings..."
 msgstr "파일롯 설정..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1109
+#: addressbook/gui/widgets/e-addressbook-view.c:1108
 #: ui/evolution-addressbook.xml.h:10
 msgid "Forward Contact"
 msgstr "주소 전달"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1110
+#: addressbook/gui/widgets/e-addressbook-view.c:1109
 msgid "Send Message to Contact"
 msgstr "연락처로 메세지 보내기"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1111 calendar/gui/print.c:2480
+#: addressbook/gui/widgets/e-addressbook-view.c:1110 calendar/gui/print.c:2480
 #: ui/evolution-addressbook.xml.h:16 ui/evolution-calendar.xml.h:19
 #: ui/evolution-comp-editor.xml.h:8 ui/evolution-contact-editor.xml.h:5
 #: ui/evolution-mail-message.xml.h:80 ui/evolution-tasks.xml.h:14
 msgid "Print"
 msgstr "인쇄"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1113
+#: addressbook/gui/widgets/e-addressbook-view.c:1112
 msgid "Print Envelope"
 msgstr "봉투 인쇄"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1117
+#: addressbook/gui/widgets/e-addressbook-view.c:1116
 msgid "Copy to Address Book..."
 msgstr "주소록으로 복사..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1118
+#: addressbook/gui/widgets/e-addressbook-view.c:1117
 msgid "Move to Address Book..."
 msgstr "주소록으로 이동..."
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1121
+#: addressbook/gui/widgets/e-addressbook-view.c:1120
 #: ui/evolution-addressbook.xml.h:6 ui/evolution-tasks.xml.h:4
 msgid "Cut"
 msgstr "잘라내기"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1122
-#: calendar/gui/calendar-component.c:428 calendar/gui/tasks-component.c:374
+#: addressbook/gui/widgets/e-addressbook-view.c:1121
+#: calendar/gui/calendar-component.c:434 calendar/gui/tasks-component.c:380
 #: ui/evolution-addressbook.xml.h:2 ui/evolution-mail-message.xml.h:9
 #: ui/evolution-tasks.xml.h:2
 msgid "Copy"
 msgstr "복사"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1123
+#: addressbook/gui/widgets/e-addressbook-view.c:1122
 #: ui/evolution-addressbook.xml.h:13 ui/evolution-tasks.xml.h:11
 msgid "Paste"
 msgstr "붙여 넣기"
 
-#: addressbook/gui/widgets/e-addressbook-view.c:1128
-#: calendar/gui/e-calendar-view.c:1418
+#: addressbook/gui/widgets/e-addressbook-view.c:1127
+#: calendar/gui/e-calendar-view.c:1423
 msgid "Current View"
 msgstr "현재 보기"
 
 #. All, unmatched, separator
-#: addressbook/gui/widgets/e-addressbook-view.c:1683
+#: addressbook/gui/widgets/e-addressbook-view.c:1682
 #: calendar/gui/cal-search-bar.c:358
 msgid "Any Category"
 msgstr "모든 분류"
@@ -2895,10 +2899,9 @@ msgstr "프로토콜이 지원되지 않습니다"
 #: calendar/gui/e-cal-component-preview.c:233
 #: calendar/gui/e-cal-model-tasks.c:353 calendar/gui/e-cal-model-tasks.c:656
 #: calendar/gui/e-calendar-table.c:473 calendar/gui/print.c:2349
-#: camel/camel-service.c:724 camel/camel-service.c:762
-#: camel/camel-service.c:846 camel/camel-service.c:886
-#: camel/providers/pop3/camel-pop3-store.c:456
-#: camel/providers/pop3/camel-pop3-store.c:537
+#: camel/camel-service.c:724 camel/camel-service.c:886
+#: camel/camel-service.c:1017 camel/providers/pop3/camel-pop3-store.c:474
+#: camel/providers/pop3/camel-pop3-store.c:555
 msgid "Cancelled"
 msgstr "취소됨"
 
@@ -2909,6 +2912,7 @@ msgstr "취소할 수 없습니다"
 
 #. E_BOOK_ERROR_AUTHENTICATION_FAILED
 #: addressbook/gui/widgets/eab-gui-util.c:63
+#: calendar/gui/comp-editor-factory.c:428
 msgid "Authentication Failed"
 msgstr "인증이 실패했습니다"
 
@@ -3457,7 +3461,7 @@ msgid "In async mode, output must be file."
 msgstr "비동기 모드에서는, 파일로 출력해야 합니다."
 
 #: addressbook/tools/evolution-addressbook-export.c:122
-msgid "In normal mode, there should not need size option."
+msgid "In normal mode, there is no need for the size option."
 msgstr "일반 모드에서는, 크기 옵션이 필요 없습니다."
 
 #: addressbook/tools/evolution-addressbook-export.c:153
@@ -3653,7 +3657,6 @@ msgid "You have made changes to this appointment, but not yet saved them."
 msgstr "약속에 바뀐 사항이 있지만, 아직 저장하지 않았습니다."
 
 #: calendar/calendar-errors.xml.h:73 calendar/calendar-errors.xml.h:81
-#: composer/mail-composer-errors.xml.h:33
 msgid "Discard Changes"
 msgstr "바뀐 내용 버리기"
 
@@ -3756,7 +3759,7 @@ msgstr "Evolution 달력이 예상치 못하게 끝났습니다."
 msgid "Your calendars will not be available until Evolution is restarted."
 msgstr "Evolution을 다시 시작할 때까지는 달력을 사용할 수 없습니다."
 
-#: calendar/common/authentication.c:48 calendar/gui/e-pub-utils.c:301
+#: calendar/common/authentication.c:49 calendar/gui/e-pub-utils.c:301
 #: smime/gui/component.c:48
 msgid "Enter password"
 msgstr "열쇠글을 입력하십시오"
@@ -3766,15 +3769,15 @@ msgstr "열쇠글을 입력하십시오"
 msgid "Split Multi-Day Events:"
 msgstr "여러 날에 걸친 행사 분리:"
 
-#: calendar/conduits/calendar/calendar-conduit.c:1356
-#: calendar/conduits/calendar/calendar-conduit.c:1357
+#: calendar/conduits/calendar/calendar-conduit.c:1359
+#: calendar/conduits/calendar/calendar-conduit.c:1360
 #: calendar/conduits/todo/todo-conduit.c:879
 #: calendar/conduits/todo/todo-conduit.c:880
 msgid "Could not start evolution-data-server"
 msgstr "evolution-data-server를 시작할 수 없습니다"
 
-#: calendar/conduits/calendar/calendar-conduit.c:1465
 #: calendar/conduits/calendar/calendar-conduit.c:1468
+#: calendar/conduits/calendar/calendar-conduit.c:1471
 msgid "Could not read pilot's Calendar application block"
 msgstr "파일롯의 Calendar 프로그램 블록을 읽을 수 없습니다"
 
@@ -3792,7 +3795,7 @@ msgid "Calendar and Tasks"
 msgstr "달력 및 작업"
 
 #: calendar/gui/GNOME_Evolution_Calendar.server.in.in.h:2
-#: calendar/gui/calendar-component.c:1079
+#: calendar/gui/calendar-component.c:1085
 msgid "Calendars"
 msgstr "달력"
 
@@ -3826,10 +3829,10 @@ msgstr "Evolution 작업 컴포넌트"
 
 #: calendar/gui/GNOME_Evolution_Calendar.server.in.in.h:10
 #: calendar/gui/e-tasks.c:1199 calendar/gui/print.c:1819
-#: calendar/gui/tasks-component.c:419 calendar/gui/tasks-component.c:889
+#: calendar/gui/tasks-component.c:425 calendar/gui/tasks-component.c:895
 #: calendar/gui/tasks-control.c:408 calendar/importers/icalendar-importer.c:83
 #: calendar/importers/icalendar-importer.c:709
-#: camel/providers/groupwise/camel-gw-listener.c:332
+#: camel/providers/groupwise/camel-gw-listener.c:372
 msgid "Tasks"
 msgstr "작업"
 
@@ -3856,12 +3859,12 @@ msgid "Ending:"
 msgstr "끝:"
 
 # Alarm -> 알림, Microsoft Office XP 참고
-#: calendar/gui/alarm-notify/alarm-notify-dialog.c:259
+#: calendar/gui/alarm-notify/alarm-notify-dialog.c:253
 msgid "Evolution Alarm"
 msgstr "Evolution 알림"
 
 # Alarm -> 알림, Microsoft Office XP 참고
-#: calendar/gui/alarm-notify/alarm-notify-dialog.c:358
+#: calendar/gui/alarm-notify/alarm-notify-dialog.c:352
 #, c-format
 msgid "Alarm on %s"
 msgstr "%s에 알림"
@@ -3878,25 +3881,25 @@ msgstr "약속 편집(_E)"
 msgid "_Snooze"
 msgstr "연기 모드(_S)"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:904
+#: calendar/gui/alarm-notify/alarm-queue.c:893
 #: ui/evolution-message-composer.xml.h:10
 msgid "Open"
 msgstr "열기"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:906
+#: calendar/gui/alarm-notify/alarm-queue.c:895
 msgid "Dismiss"
 msgstr "없애기"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:908
+#: calendar/gui/alarm-notify/alarm-queue.c:897
 msgid "Dismiss All"
 msgstr "모두 없애기"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:973
+#: calendar/gui/alarm-notify/alarm-queue.c:962
 msgid "No description available."
 msgstr "설명이 없습니다."
 
 # Alarm -> 알림, Microsoft Office XP 참고
-#: calendar/gui/alarm-notify/alarm-queue.c:992
+#: calendar/gui/alarm-notify/alarm-queue.c:981
 #, c-format
 msgid ""
 "Alarm on %s\n"
@@ -3909,13 +3912,13 @@ msgstr ""
 "시작: %s\n"
 "끝: %s"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:1092
-#: calendar/gui/alarm-notify/alarm-queue.c:1116
+#: calendar/gui/alarm-notify/alarm-queue.c:1081
+#: calendar/gui/alarm-notify/alarm-queue.c:1105
 msgid "Warning"
 msgstr "경고"
 
 # Reminder -> 미리 알림, Microsoft Office XP
-#: calendar/gui/alarm-notify/alarm-queue.c:1096
+#: calendar/gui/alarm-notify/alarm-queue.c:1085
 msgid ""
 "Evolution does not support calendar reminders with\n"
 "email notifications yet, but this reminder was\n"
@@ -3928,7 +3931,7 @@ msgstr ""
 "보내는 대신 일반적인 미리 알림 대화 상자를 표시합니다."
 
 # Reminder -> 미리 알림, Microsoft Office XP
-#: calendar/gui/alarm-notify/alarm-queue.c:1122
+#: calendar/gui/alarm-notify/alarm-queue.c:1111
 #, c-format
 msgid ""
 "An Evolution Calendar reminder is about to trigger. This reminder is "
@@ -3945,7 +3948,7 @@ msgstr ""
 "\n"
 "정말로 이 프로그램을 실행하시겠습니까?"
 
-#: calendar/gui/alarm-notify/alarm-queue.c:1136
+#: calendar/gui/alarm-notify/alarm-queue.c:1125
 msgid "Do not ask me about this program again."
 msgstr "이 메세지를 다시 보지 않습니다."
 
@@ -4110,15 +4113,16 @@ msgstr "주석에 포함"
 msgid "Location contains"
 msgstr "위치에 포함"
 
-#: calendar/gui/cal-search-bar.c:362 camel/camel-vee-store.c:327
+#: calendar/gui/cal-search-bar.c:362 camel/camel-vee-store.c:99
+#: camel/camel-vee-store.c:342
 msgid "Unmatched"
 msgstr "맞지 않음"
 
-#: calendar/gui/calendar-commands.c:117 calendar/gui/calendar-component.c:564
+#: calendar/gui/calendar-commands.c:117 calendar/gui/calendar-component.c:570
 #: calendar/gui/dialogs/select-source-dialog.c:112
-#: calendar/gui/gnome-cal.c:1859
-#: camel/providers/groupwise/camel-gw-listener.c:331
-#: camel/providers/groupwise/camel-gw-listener.c:361
+#: calendar/gui/gnome-cal.c:1916
+#: camel/providers/groupwise/camel-gw-listener.c:371
+#: camel/providers/groupwise/camel-gw-listener.c:401
 msgid "Calendar"
 msgstr "달력"
 
@@ -4147,7 +4151,7 @@ msgstr "일"
 
 #: calendar/gui/calendar-commands.c:432
 msgid "%A %d %B %Y"
-msgstr "%Y년 %b %e일 %A"
+msgstr "%Y년 %b %d일 %A"
 
 #. strftime format %a = abbreviated weekday name, %d = day of month,
 #. %b = abbreviated month name. Don't use any other specifiers.
@@ -4155,22 +4159,22 @@ msgstr "%Y년 %b %e일 %A"
 #. %d = day of month, %b = abbreviated month name.
 #. You can change the order but don't change the
 #. specifiers or add anything.
-#: calendar/gui/calendar-commands.c:435 calendar/gui/calendar-component.c:519
+#: calendar/gui/calendar-commands.c:435 calendar/gui/calendar-component.c:525
 #: calendar/gui/e-day-view-top-item.c:714 calendar/gui/e-day-view.c:1588
 #: calendar/gui/e-week-view-main-item.c:329
 msgid "%a %d %b"
-msgstr "%b %e일 (%a)"
+msgstr "%b %d일 (%a)"
 
 #: calendar/gui/calendar-commands.c:437 calendar/gui/calendar-commands.c:442
-#: calendar/gui/calendar-commands.c:444 calendar/gui/calendar-component.c:521
-#: calendar/gui/calendar-component.c:526 calendar/gui/calendar-component.c:528
+#: calendar/gui/calendar-commands.c:444 calendar/gui/calendar-component.c:527
+#: calendar/gui/calendar-component.c:532 calendar/gui/calendar-component.c:534
 msgid "%a %d %b %Y"
-msgstr "%Y년 %b %e일 (%a)"
+msgstr "%Y년 %b %d일 (%a)"
 
 #: calendar/gui/calendar-commands.c:461 calendar/gui/calendar-commands.c:467
 #: calendar/gui/calendar-commands.c:473 calendar/gui/calendar-commands.c:475
 msgid "%d %B %Y"
-msgstr "%Y년 %b %e일"
+msgstr "%Y년 %b %d일"
 
 #. strftime format %d = day of month, %B = full
 #. month name. You can change the order but don't
@@ -4178,97 +4182,97 @@ msgstr "%Y년 %b %e일"
 #: calendar/gui/calendar-commands.c:465
 #: calendar/gui/e-week-view-main-item.c:337 calendar/gui/print.c:1498
 msgid "%d %B"
-msgstr "%b %e일"
+msgstr "%b %d일"
 
 #: calendar/gui/calendar-component.c:370
 #, c-format
 msgid "Calendar '%s' will be removed. Are you sure you want to continue?"
 msgstr "'%s' 달력을 지우게 됩니다. 정말로 계속 하시겠습니까?"
 
-#: calendar/gui/calendar-component.c:426
+#: calendar/gui/calendar-component.c:432
 msgid "New Calendar"
 msgstr "새 달력"
 
-#: calendar/gui/calendar-component.c:516
+#: calendar/gui/calendar-component.c:522
 msgid "%A %d %b %Y"
-msgstr "%Y년 %m %e일 (%A)"
+msgstr "%Y년 %b %d일 (%A)"
 
-#: calendar/gui/calendar-component.c:540 calendar/gui/calendar-component.c:547
-#: calendar/gui/calendar-component.c:553 calendar/gui/calendar-component.c:555
+#: calendar/gui/calendar-component.c:546 calendar/gui/calendar-component.c:553
+#: calendar/gui/calendar-component.c:559 calendar/gui/calendar-component.c:561
 msgid "%d %b %Y"
-msgstr "%Y년 %m %e일"
+msgstr "%Y년 %b %d일"
 
 #. strftime format %d = day of month, %b = abbreviated month name.
 #. Don't use any other specifiers.
 #. strftime format %d = day of month, %b = abbreviated
 #. month name. You can change the order but don't
 #. change the specifiers or add anything.
-#: calendar/gui/calendar-component.c:545
+#: calendar/gui/calendar-component.c:551
 #: calendar/gui/e-day-view-top-item.c:718 calendar/gui/e-day-view.c:1604
 #: calendar/gui/e-week-view-main-item.c:343
 msgid "%d %b"
-msgstr "%m %d"
+msgstr "%b %d"
 
-#: calendar/gui/calendar-component.c:635
+#: calendar/gui/calendar-component.c:641
 msgid "Failed upgrading calendars."
 msgstr "달력을 업그레이드하는 데 실패했습니다."
 
 # event -> 행사, Microsoft Office XP 참고
-#: calendar/gui/calendar-component.c:931
+#: calendar/gui/calendar-component.c:937
 #, c-format
 msgid "Unable to open the calendar '%s' for creating events and meetings"
 msgstr "행사와 회의를 만드는 데 '%s' 달력을 열 수 없습니다"
 
 # event -> 행사, Microsoft Office XP 참고
-#: calendar/gui/calendar-component.c:947
+#: calendar/gui/calendar-component.c:953
 msgid "There is no calendar available for creating events and meetings"
 msgstr "행사와 회의를 만드는 데 쓸 수 있는 달력이 없습니다"
 
-#: calendar/gui/calendar-component.c:1245
+#: calendar/gui/calendar-component.c:1251
 msgid "New appointment"
 msgstr "새 약속"
 
-#: calendar/gui/calendar-component.c:1246
+#: calendar/gui/calendar-component.c:1252
 msgid "_Appointment"
 msgstr "약속(_A)"
 
-#: calendar/gui/calendar-component.c:1247
+#: calendar/gui/calendar-component.c:1253
 msgid "Create a new appointment"
 msgstr "새 약속을 만듭니다"
 
-#: calendar/gui/calendar-component.c:1253
+#: calendar/gui/calendar-component.c:1259
 msgid "New meeting"
 msgstr "새 모임"
 
-#: calendar/gui/calendar-component.c:1254
+#: calendar/gui/calendar-component.c:1260
 msgid "M_eeting"
 msgstr "모임(_E)"
 
-#: calendar/gui/calendar-component.c:1255
+#: calendar/gui/calendar-component.c:1261
 msgid "Create a new meeting request"
 msgstr "새 모임 요청을 만듭니다"
 
-#: calendar/gui/calendar-component.c:1261
+#: calendar/gui/calendar-component.c:1267
 msgid "New all day appointment"
 msgstr "새 하루 종일 약속"
 
-#: calendar/gui/calendar-component.c:1262
+#: calendar/gui/calendar-component.c:1268
 msgid "All Day A_ppointment"
 msgstr "하루 종일 약속(_P)"
 
-#: calendar/gui/calendar-component.c:1263
+#: calendar/gui/calendar-component.c:1269
 msgid "Create a new all-day appointment"
 msgstr "새 하루 종일 약속을 만듭니다"
 
-#: calendar/gui/calendar-component.c:1269
+#: calendar/gui/calendar-component.c:1275
 msgid "New calendar"
 msgstr "새 달력"
 
-#: calendar/gui/calendar-component.c:1270
+#: calendar/gui/calendar-component.c:1276
 msgid "Cale_ndar"
 msgstr "달력(_N)"
 
-#: calendar/gui/calendar-component.c:1271
+#: calendar/gui/calendar-component.c:1277
 msgid "Create a new calendar"
 msgstr "새 달력을 만듭니다"
 
@@ -4298,19 +4302,29 @@ msgstr "주별 보기"
 msgid "Month View"
 msgstr "월별 보기"
 
-#: calendar/gui/comp-editor-factory.c:409
+#: calendar/gui/comp-editor-factory.c:410
 msgid "Error while opening the calendar"
 msgstr "달력을 여는 중에 오류가 발생했습니다"
 
-#: calendar/gui/comp-editor-factory.c:420
+#: calendar/gui/comp-editor-factory.c:416
 msgid "Method not supported when opening the calendar"
 msgstr "달력을 여는 메소드를 지원하지 않습니다"
 
-#: calendar/gui/comp-editor-factory.c:426
+#: calendar/gui/comp-editor-factory.c:422
 msgid "Permission denied to open the calendar"
 msgstr "달력을 열 허가가 거부되었습니다"
 
-#: calendar/gui/comp-editor-factory.c:474
+#: calendar/gui/comp-editor-factory.c:434
+#: camel/providers/imap/camel-imap-command.c:303
+#: camel/providers/imap/camel-imap-command.c:403
+#: camel/providers/imap4/camel-imap4-store.c:260
+#: camel/providers/pop3/camel-pop3-store.c:561
+#: camel/providers/pop3/camel-pop3-store.c:568
+#: camel/providers/pop3/camel-pop3-store.c:574 shell/e-shell.c:1228
+msgid "Unknown error"
+msgstr "알 수 없는 오류가 발생했습니다"
+
+#: calendar/gui/comp-editor-factory.c:478
 #, c-format
 msgid "open_client(): %s"
 msgstr "open_client(): %s"
@@ -4423,7 +4437,7 @@ msgid "start of appointment"
 msgstr "약속 시작"
 
 # Trigger -> 시작 옵션, Microsoft Office XP 참고
-#: calendar/gui/dialogs/alarm-list-dialog.c:192
+#: calendar/gui/dialogs/alarm-list-dialog.c:199
 msgid "Action/Trigger"
 msgstr "동작/시작 옵션"
 
@@ -4439,7 +4453,7 @@ msgstr "알림"
 #. FIXME: This routine should just be a "toggled" event handler on the checkbox cell renderer which
 #. has "activatable" set.
 #: calendar/gui/dialogs/cal-prefs-dialog.c:567 mail/em-account-prefs.c:466
-#: mail/em-composer-prefs.c:677 mail/em-composer-prefs.c:905
+#: mail/em-composer-prefs.c:681 mail/em-composer-prefs.c:909
 msgid "Enabled"
 msgstr "사용"
 
@@ -4455,8 +4469,8 @@ msgstr "지우지 않기"
 #: calendar/gui/dialogs/cal-prefs-dialog.c:811
 #: calendar/gui/dialogs/cal-prefs-dialog.c:844 mail/em-account-prefs.c:288
 #: mail/em-account-prefs.c:329 mail/em-account-prefs.c:372
-#: mail/em-composer-prefs.c:596 mail/em-composer-prefs.c:654
-#: mail/em-composer-prefs.c:684
+#: mail/em-composer-prefs.c:600 mail/em-composer-prefs.c:658
+#: mail/em-composer-prefs.c:688
 msgid "Disable"
 msgstr "사용 않기"
 
@@ -4464,8 +4478,8 @@ msgstr "사용 않기"
 #: calendar/gui/dialogs/cal-prefs-dialog.c:811
 #: calendar/gui/dialogs/cal-prefs-dialog.c:846 mail/em-account-prefs.c:288
 #: mail/em-account-prefs.c:329 mail/em-account-prefs.c:374
-#: mail/em-composer-prefs.c:596 mail/em-composer-prefs.c:654
-#: mail/em-composer-prefs.c:684
+#: mail/em-composer-prefs.c:600 mail/em-composer-prefs.c:658
+#: mail/em-composer-prefs.c:688
 msgid "Enable"
 msgstr "사용"
 
@@ -4544,7 +4558,7 @@ msgid "Free/Busy Publishing"
 msgstr "약속 있음/없음 게시"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:19
-#: calendar/gui/dialogs/recurrence-page.c:1038
+#: calendar/gui/dialogs/recurrence-page.c:1049
 #: calendar/gui/e-itip-control.c:739
 msgid "Friday"
 msgstr "금요일"
@@ -4558,7 +4572,7 @@ msgid "Minutes"
 msgstr "분"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:23
-#: calendar/gui/dialogs/recurrence-page.c:1034
+#: calendar/gui/dialogs/recurrence-page.c:1045
 #: calendar/gui/e-itip-control.c:735
 msgid "Monday"
 msgstr "월요일"
@@ -4568,7 +4582,7 @@ msgid "S_un"
 msgstr "일(_U)"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:25
-#: calendar/gui/dialogs/recurrence-page.c:1039
+#: calendar/gui/dialogs/recurrence-page.c:1050
 #: calendar/gui/e-itip-control.c:740
 msgid "Saturday"
 msgstr "토요일"
@@ -4584,7 +4598,7 @@ msgid "Show week _numbers in date navigator"
 msgstr "날짜 선택할 때 몇 번째 주인지 표시(_N)"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:28
-#: calendar/gui/dialogs/recurrence-page.c:1040
+#: calendar/gui/dialogs/recurrence-page.c:1051
 #: calendar/gui/e-itip-control.c:734
 msgid "Sunday"
 msgstr "일요일"
@@ -4598,7 +4612,7 @@ msgid "T_hu"
 msgstr "목(_H)"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:31
-#: calendar/gui/dialogs/recurrence-page.c:1037
+#: calendar/gui/dialogs/recurrence-page.c:1048
 #: calendar/gui/e-itip-control.c:738
 msgid "Thursday"
 msgstr "목요일"
@@ -4612,7 +4626,7 @@ msgid "Time format:"
 msgstr "시간 형식:"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:34
-#: calendar/gui/dialogs/recurrence-page.c:1035
+#: calendar/gui/dialogs/recurrence-page.c:1046
 #: calendar/gui/e-itip-control.c:736
 msgid "Tuesday"
 msgstr "화요일"
@@ -4622,7 +4636,7 @@ msgid "W_eek starts:"
 msgstr "시작 요일(_E):"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:36
-#: calendar/gui/dialogs/recurrence-page.c:1036
+#: calendar/gui/dialogs/recurrence-page.c:1047
 #: calendar/gui/e-itip-control.c:737
 msgid "Wednesday"
 msgstr "수요일"
@@ -4860,42 +4874,42 @@ msgstr "기한 "
 msgid "Could not update object"
 msgstr "오브젝트를 업데이트할 수 없습니다"
 
-#: calendar/gui/dialogs/comp-editor.c:878
-#: calendar/gui/dialogs/comp-editor.c:915
+#: calendar/gui/dialogs/comp-editor.c:870
+#: calendar/gui/dialogs/comp-editor.c:907
 msgid "Edit Appointment"
 msgstr "약속 편집"
 
-#: calendar/gui/dialogs/comp-editor.c:883
-#: calendar/gui/dialogs/comp-editor.c:920
+#: calendar/gui/dialogs/comp-editor.c:875
+#: calendar/gui/dialogs/comp-editor.c:912
 #, c-format
 msgid "Appointment - %s"
 msgstr "약속 - %s"
 
-#: calendar/gui/dialogs/comp-editor.c:886
-#: calendar/gui/dialogs/comp-editor.c:923
+#: calendar/gui/dialogs/comp-editor.c:878
+#: calendar/gui/dialogs/comp-editor.c:915
 #, c-format
 msgid "Task - %s"
 msgstr "작업 - %s"
 
 # journal -> 일지, Microsoft Office XP 참고
-#: calendar/gui/dialogs/comp-editor.c:889
-#: calendar/gui/dialogs/comp-editor.c:926
+#: calendar/gui/dialogs/comp-editor.c:881
+#: calendar/gui/dialogs/comp-editor.c:918
 #, c-format
 msgid "Journal entry - %s"
 msgstr "일지 항목 - %s"
 
-#: calendar/gui/dialogs/comp-editor.c:900
-#: calendar/gui/dialogs/comp-editor.c:936
+#: calendar/gui/dialogs/comp-editor.c:892
+#: calendar/gui/dialogs/comp-editor.c:928
 msgid "No summary"
 msgstr "요약 없음"
 
-#: calendar/gui/dialogs/comp-editor.c:1302
-#: calendar/gui/dialogs/comp-editor.c:1335
-#: calendar/gui/dialogs/comp-editor.c:1359
+#: calendar/gui/dialogs/comp-editor.c:1294
+#: calendar/gui/dialogs/comp-editor.c:1327
+#: calendar/gui/dialogs/comp-editor.c:1351
 msgid "Changes made to this item may be discarded if an update arrives"
 msgstr "업데이트가 도착하면 이 항목에 대해 바뀐 사항을 버립니다."
 
-#: calendar/gui/dialogs/comp-editor.c:1383
+#: calendar/gui/dialogs/comp-editor.c:1375
 msgid "Unable to use current version!"
 msgstr "현재 버전을 사용할 수 없습니다!"
 
@@ -5099,7 +5113,7 @@ msgid "Classi_fication:"
 msgstr "분류(_F):"
 
 #: calendar/gui/dialogs/event-page.glade.h:12
-#: calendar/gui/dialogs/task-page.glade.h:6 calendar/gui/e-cal-list-view.c:259
+#: calendar/gui/dialogs/task-page.glade.h:6 calendar/gui/e-cal-list-view.c:260
 #: calendar/gui/e-cal-model.c:355 calendar/gui/e-calendar-table.c:377
 msgid "Confidential"
 msgstr "비밀"
@@ -5109,13 +5123,13 @@ msgid "Locat_ion:"
 msgstr "위치(_I):"
 
 #: calendar/gui/dialogs/event-page.glade.h:14
-#: calendar/gui/dialogs/task-page.glade.h:8 calendar/gui/e-cal-list-view.c:258
+#: calendar/gui/dialogs/task-page.glade.h:8 calendar/gui/e-cal-list-view.c:259
 #: calendar/gui/e-cal-model.c:353 calendar/gui/e-calendar-table.c:376
 msgid "Private"
 msgstr "개인"
 
 #: calendar/gui/dialogs/event-page.glade.h:15
-#: calendar/gui/dialogs/task-page.glade.h:9 calendar/gui/e-cal-list-view.c:257
+#: calendar/gui/dialogs/task-page.glade.h:9 calendar/gui/e-cal-list-view.c:258
 #: calendar/gui/e-cal-model.c:344 calendar/gui/e-cal-model.c:351
 #: calendar/gui/e-calendar-table.c:375
 msgid "Public"
@@ -5143,12 +5157,12 @@ msgid "_Description:"
 msgstr "설명(_D):"
 
 #: calendar/gui/dialogs/event-page.glade.h:21
-#: calendar/gui/e-meeting-time-sel.c:613
+#: calendar/gui/e-meeting-time-sel.c:623
 msgid "_End time:"
 msgstr "마침 시각(_E):"
 
 #: calendar/gui/dialogs/event-page.glade.h:22
-#: calendar/gui/e-meeting-time-sel.c:594
+#: calendar/gui/e-meeting-time-sel.c:604
 msgid "_Start time:"
 msgstr "시작 시각(_S):"
 
@@ -5162,8 +5176,8 @@ msgstr "시작 시각(_S):"
 #: calendar/gui/dialogs/meeting-page.glade.h:5
 #: calendar/gui/e-cal-model-tasks.c:648 calendar/gui/e-itip-control.c:1111
 #: composer/e-msg-composer.c:2097 filter/filter-rule.c:877
-#: mail/em-account-prefs.c:427 mail/em-folder-view.c:933
-#: mail/mail-account-gui.c:1571 mail/mail-account-gui.c:1968
+#: mail/em-account-prefs.c:427 mail/em-folder-view.c:965
+#: mail/mail-account-gui.c:1635 mail/mail-account-gui.c:2080
 #: mail/mail-config.glade.h:103
 #: widgets/e-timezone-dialog/e-timezone-dialog.c:193
 #: widgets/misc/e-cell-date-edit.c:257 widgets/misc/e-dateedit.c:443
@@ -5183,11 +5197,11 @@ msgstr "주최자가 필요합니다."
 msgid "At least one attendee is required."
 msgstr "최소한 참석자가 한 사람은 필요합니다."
 
-#: calendar/gui/dialogs/meeting-page.c:793
+#: calendar/gui/dialogs/meeting-page.c:795
 msgid "_Delegate To..."
 msgstr "대리인(_D)..."
 
-#: calendar/gui/dialogs/meeting-page.c:797
+#: calendar/gui/dialogs/meeting-page.c:799
 #: composer/e-msg-composer-attachment-bar.c:453
 msgid "_Remove"
 msgstr "지우기(_R)"
@@ -5252,7 +5266,7 @@ msgid "C_hange Organizer"
 msgstr "주최자 바꾸기(_H)"
 
 #: calendar/gui/dialogs/meeting-page.glade.h:4
-#: calendar/gui/e-meeting-time-sel.c:415
+#: calendar/gui/e-meeting-time-sel.c:425
 msgid "Con_tacts..."
 msgstr "연락처(_T)..."
 
@@ -5336,55 +5350,55 @@ msgstr "모든 경우"
 msgid "This appointment contains recurrences that Evolution cannot edit."
 msgstr "이 약속에는 Evolution에서 편집할 수 있는 되풀이가 들어 있습니다."
 
-#: calendar/gui/dialogs/recurrence-page.c:806
+#: calendar/gui/dialogs/recurrence-page.c:817
 msgid "Recurrence date is invalid"
 msgstr "되풀이되는 날짜가 잘못되었습니다"
 
-#: calendar/gui/dialogs/recurrence-page.c:917
+#: calendar/gui/dialogs/recurrence-page.c:928
 msgid "on"
 msgstr "요일"
 
-#: calendar/gui/dialogs/recurrence-page.c:978
+#: calendar/gui/dialogs/recurrence-page.c:989
 msgid "first"
 msgstr "첫번째"
 
-#: calendar/gui/dialogs/recurrence-page.c:979
+#: calendar/gui/dialogs/recurrence-page.c:990
 msgid "second"
 msgstr "두번째"
 
-#: calendar/gui/dialogs/recurrence-page.c:980
+#: calendar/gui/dialogs/recurrence-page.c:991
 msgid "third"
 msgstr "세번째"
 
-#: calendar/gui/dialogs/recurrence-page.c:981
+#: calendar/gui/dialogs/recurrence-page.c:992
 msgid "fourth"
 msgstr "네번째"
 
-#: calendar/gui/dialogs/recurrence-page.c:982
+#: calendar/gui/dialogs/recurrence-page.c:993
 msgid "last"
 msgstr "마지막"
 
-#: calendar/gui/dialogs/recurrence-page.c:1005
+#: calendar/gui/dialogs/recurrence-page.c:1016
 msgid "Other Date"
 msgstr "기타 날짜"
 
-#: calendar/gui/dialogs/recurrence-page.c:1033
+#: calendar/gui/dialogs/recurrence-page.c:1044
 msgid "day"
 msgstr "일"
 
 # FIXME - hard to translate UI + string based on English grammar
 # "on the <month_menu>"
-#: calendar/gui/dialogs/recurrence-page.c:1170
+#: calendar/gui/dialogs/recurrence-page.c:1181
 msgid "on the"
 msgstr "달:"
 
 # FIXME - hard to translate UI + string based on English grammar
 # "for ... occurrences"
-#: calendar/gui/dialogs/recurrence-page.c:1356
+#: calendar/gui/dialogs/recurrence-page.c:1367
 msgid "occurrences"
 msgstr "번"
 
-#: calendar/gui/dialogs/recurrence-page.c:2309
+#: calendar/gui/dialogs/recurrence-page.c:2320
 msgid "Date/Time"
 msgstr "날짜/시각"
 
@@ -5488,7 +5502,7 @@ msgid "Low"
 msgstr "낮음"
 
 #: calendar/gui/dialogs/task-details-page.glade.h:8
-#: calendar/gui/e-cal-component-preview.c:251 calendar/gui/e-cal-model.c:943
+#: calendar/gui/e-cal-component-preview.c:251 calendar/gui/e-cal-model.c:949
 #: calendar/gui/e-calendar-table.c:398 mail/message-list.c:1011
 msgid "Normal"
 msgstr "보통"
@@ -5685,7 +5699,7 @@ msgstr "%s (%s)"
 msgid "%s for an unknown trigger type"
 msgstr "알 수 없는 시작 옵션에 대한 %s"
 
-#: calendar/gui/e-cal-component-preview.c:71 mail/em-folder-view.c:2385
+#: calendar/gui/e-cal-component-preview.c:71 mail/em-folder-view.c:2418
 #, c-format
 msgid "Click to open %s"
 msgstr "%s URL을 열려면 누르십시오"
@@ -5741,12 +5755,12 @@ msgstr "시작 날짜"
 msgid "Summary"
 msgstr "요약"
 
-#: calendar/gui/e-cal-model-calendar.c:175 calendar/gui/e-calendar-table.c:449
+#: calendar/gui/e-cal-model-calendar.c:181 calendar/gui/e-calendar-table.c:449
 msgid "Free"
 msgstr "약속 없음"
 
-#: calendar/gui/e-cal-model-calendar.c:178 calendar/gui/e-calendar-table.c:450
-#: calendar/gui/e-meeting-time-sel.c:399
+#: calendar/gui/e-cal-model-calendar.c:184 calendar/gui/e-calendar-table.c:450
+#: calendar/gui/e-meeting-time-sel.c:409
 msgid "Busy"
 msgstr "약속 있음"
 
@@ -5776,13 +5790,13 @@ msgstr ""
 "\n"
 "45.436845,125.862501"
 
-#: calendar/gui/e-cal-model-tasks.c:1013 calendar/gui/e-cal-model.c:949
+#: calendar/gui/e-cal-model-tasks.c:1013 calendar/gui/e-cal-model.c:955
 #: calendar/gui/e-meeting-list-view.c:146 calendar/gui/e-meeting-store.c:159
 #: calendar/gui/e-meeting-store.c:169 calendar/gui/e-meeting-store.c:765
 msgid "Yes"
 msgstr "예"
 
-#: calendar/gui/e-cal-model-tasks.c:1013 calendar/gui/e-cal-model.c:949
+#: calendar/gui/e-cal-model-tasks.c:1013 calendar/gui/e-cal-model.c:955
 #: calendar/gui/e-meeting-list-view.c:147 calendar/gui/e-meeting-store.c:171
 msgid "No"
 msgstr "아니오"
@@ -5793,13 +5807,13 @@ msgstr "아니오"
 #: calendar/gui/e-meeting-list-view.c:122
 #: calendar/gui/e-meeting-list-view.c:136 calendar/gui/e-meeting-store.c:115
 #: calendar/gui/e-meeting-store.c:150 calendar/gui/e-meeting-store.c:215
-#: camel/camel-gpg-context.c:1763 camel/camel-gpg-context.c:1814
+#: camel/camel-gpg-context.c:1690 camel/camel-gpg-context.c:1735
 #: camel/camel-tcp-stream-openssl.c:631
 #: camel/providers/imap4/camel-imap4-engine.c:1402
 #: camel/providers/imap4/camel-imap4-engine.c:1432
 #: camel/providers/imap4/camel-imap4-engine.c:1464
 #: camel/providers/imap4/camel-imap4-engine.c:1506
-#: camel/providers/imap4/camel-imap4-store.c:1223
+#: camel/providers/imap4/camel-imap4-store.c:1204
 #: camel/providers/imap4/camel-imap4-utils.c:457
 #: camel/providers/smtp/camel-smtp-transport.c:172
 #: camel/providers/smtp/camel-smtp-transport.c:227 mail/em-utils.c:1155
@@ -5808,11 +5822,11 @@ msgstr "아니오"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: calendar/gui/e-cal-model.c:945
+#: calendar/gui/e-cal-model.c:951
 msgid "Recurring"
 msgstr "반복됨"
 
-#: calendar/gui/e-cal-model.c:947
+#: calendar/gui/e-cal-model.c:953
 msgid "Assigned"
 msgstr "예약됨"
 
@@ -5869,8 +5883,8 @@ msgid "Updating objects"
 msgstr "오브젝트를 업데이트하는 중입니다"
 
 #: calendar/gui/e-calendar-table.c:1043 calendar/gui/e-calendar-table.c:1084
-#: calendar/gui/e-calendar-view.c:1431 calendar/gui/e-calendar-view.c:1512
-#: mail/em-folder-view.c:899 ui/evolution-addressbook.xml.h:37
+#: calendar/gui/e-calendar-view.c:1436 calendar/gui/e-calendar-view.c:1517
+#: mail/em-folder-view.c:931 ui/evolution-addressbook.xml.h:37
 msgid "_Open"
 msgstr "열기(_O)"
 
@@ -5879,15 +5893,15 @@ msgid "Open _Web Page"
 msgstr "웹 페이지 열기(_W)"
 
 #: calendar/gui/e-calendar-table.c:1045 calendar/gui/e-calendar-table.c:1090
-#: calendar/gui/e-calendar-view.c:1432 calendar/gui/e-calendar-view.c:1518
-#: mail/em-folder-view.c:901 mail/em-popup.c:691 mail/em-popup.c:807
+#: calendar/gui/e-calendar-view.c:1437 calendar/gui/e-calendar-view.c:1523
+#: mail/em-folder-view.c:933 mail/em-popup.c:691 mail/em-popup.c:807
 #: ui/evolution-mail-message.xml.h:128
 msgid "_Save As..."
 msgstr "다른 이름으로 저장(_S)..."
 
 #: calendar/gui/e-calendar-table.c:1046 calendar/gui/e-calendar-table.c:1088
-#: calendar/gui/e-calendar-view.c:1410 calendar/gui/e-calendar-view.c:1433
-#: calendar/gui/e-calendar-view.c:1516 ui/evolution-addressbook.xml.h:40
+#: calendar/gui/e-calendar-view.c:1415 calendar/gui/e-calendar-view.c:1438
+#: calendar/gui/e-calendar-view.c:1521 ui/evolution-addressbook.xml.h:40
 #: ui/evolution-calendar.xml.h:44 ui/evolution-comp-editor.xml.h:19
 #: ui/evolution-contact-editor.xml.h:17 ui/evolution-mail-message.xml.h:125
 #: ui/evolution-tasks.xml.h:25
@@ -5895,14 +5909,14 @@ msgid "_Print..."
 msgstr "인쇄(_P)..."
 
 #: calendar/gui/e-calendar-table.c:1050 calendar/gui/e-calendar-table.c:1079
-#: calendar/gui/e-calendar-view.c:1438 calendar/gui/e-calendar-view.c:1482
+#: calendar/gui/e-calendar-view.c:1443 calendar/gui/e-calendar-view.c:1487
 #: ui/evolution-addressbook.xml.h:1 ui/evolution-calendar.xml.h:1
 #: ui/evolution-tasks.xml.h:1
 msgid "C_ut"
 msgstr "잘라내기(_U)"
 
 #: calendar/gui/e-calendar-table.c:1051 calendar/gui/e-calendar-table.c:1077
-#: calendar/gui/e-calendar-view.c:1439 calendar/gui/e-calendar-view.c:1480
+#: calendar/gui/e-calendar-view.c:1444 calendar/gui/e-calendar-view.c:1485
 #: mail/em-folder-tree.c:1013 mail/message-list.c:1702
 #: ui/evolution-addressbook.xml.h:31 ui/evolution-calendar.xml.h:39
 #: ui/evolution-composer-entries.xml.h:7 ui/evolution-mail-message.xml.h:109
@@ -5911,8 +5925,8 @@ msgid "_Copy"
 msgstr "복사(_C)"
 
 #: calendar/gui/e-calendar-table.c:1052 calendar/gui/e-calendar-table.c:1086
-#: calendar/gui/e-calendar-view.c:1414 calendar/gui/e-calendar-view.c:1440
-#: calendar/gui/e-calendar-view.c:1514 ui/evolution-addressbook.xml.h:38
+#: calendar/gui/e-calendar-view.c:1419 calendar/gui/e-calendar-view.c:1445
+#: calendar/gui/e-calendar-view.c:1519 ui/evolution-addressbook.xml.h:38
 #: ui/evolution-calendar.xml.h:43 ui/evolution-composer-entries.xml.h:9
 #: ui/evolution-mail-message.xml.h:123 ui/evolution-tasks.xml.h:24
 msgid "_Paste"
@@ -5936,8 +5950,8 @@ msgstr "선택한 작업을 마친 작업으로 표시(_M)"
 
 #. FIXME: need to disable for undeletable folders
 #: calendar/gui/e-calendar-table.c:1063 calendar/gui/e-calendar-table.c:1081
-#: calendar/gui/e-calendar-view.c:1451 calendar/gui/e-calendar-view.c:1484
-#: mail/em-folder-tree.c:2710 mail/em-folder-view.c:924
+#: calendar/gui/e-calendar-view.c:1456 calendar/gui/e-calendar-view.c:1489
+#: mail/em-folder-tree.c:2728 mail/em-folder-view.c:956
 #: ui/evolution-addressbook.xml.h:33 ui/evolution-calendar.xml.h:40
 #: ui/evolution-comp-editor.xml.h:17 ui/evolution-contact-editor.xml.h:14
 #: ui/evolution-mail-message.xml.h:112 ui/evolution-tasks.xml.h:21
@@ -5948,12 +5962,12 @@ msgstr "지우기(_D)"
 msgid "_Delete Selected Tasks"
 msgstr "선택한 작업 지우기(_D)"
 
-#: calendar/gui/e-calendar-table.c:1196 calendar/gui/e-calendar-view.c:1060
+#: calendar/gui/e-calendar-table.c:1199 calendar/gui/e-calendar-view.c:1060
 #: composer/e-msg-composer.c:1178
 msgid "Save as..."
 msgstr "다른 이름으로 저장..."
 
-#: calendar/gui/e-calendar-table.c:1374
+#: calendar/gui/e-calendar-table.c:1377
 #: calendar/gui/e-calendar-table.etspec.h:4
 msgid "Click to add a task"
 msgstr "작업을 더하려면 누르십시오"
@@ -5963,8 +5977,8 @@ msgstr "작업을 더하려면 누르십시오"
 msgid "% Complete"
 msgstr "% 완료"
 
-#: calendar/gui/e-calendar-table.etspec.h:5 camel/camel-filter-driver.c:1178
-#: camel/camel-filter-driver.c:1270 mail/mail-send-recv.c:615
+#: calendar/gui/e-calendar-table.etspec.h:5 camel/camel-filter-driver.c:1207
+#: camel/camel-filter-driver.c:1299 mail/mail-send-recv.c:615
 msgid "Complete"
 msgstr "완료"
 
@@ -5988,81 +6002,81 @@ msgstr "시작 날짜"
 msgid "Task sort"
 msgstr "작업 정렬"
 
-#: calendar/gui/e-calendar-view.c:1176
+#: calendar/gui/e-calendar-view.c:1181
 msgid "Moving items"
 msgstr "항목을 옮기는 중입니다"
 
-#: calendar/gui/e-calendar-view.c:1178
+#: calendar/gui/e-calendar-view.c:1183
 msgid "Copying items"
 msgstr "항목을 복사하는 중입니다"
 
-#: calendar/gui/e-calendar-view.c:1403 calendar/gui/e-calendar-view.c:1492
+#: calendar/gui/e-calendar-view.c:1408 calendar/gui/e-calendar-view.c:1497
 msgid "New _Appointment..."
 msgstr "새 약속(_A)..."
 
 # event -> 행사, Microsoft Office XP 참고
-#: calendar/gui/e-calendar-view.c:1404 calendar/gui/e-calendar-view.c:1497
+#: calendar/gui/e-calendar-view.c:1409 calendar/gui/e-calendar-view.c:1502
 msgid "New All Day _Event"
 msgstr "새 하루 종일 행사(_E)"
 
-#: calendar/gui/e-calendar-view.c:1405 calendar/gui/e-calendar-view.c:1502
+#: calendar/gui/e-calendar-view.c:1410 calendar/gui/e-calendar-view.c:1507
 msgid "New Meeting"
 msgstr "새 모임"
 
-#: calendar/gui/e-calendar-view.c:1406 calendar/gui/e-calendar-view.c:1507
+#: calendar/gui/e-calendar-view.c:1411 calendar/gui/e-calendar-view.c:1512
 msgid "New Task"
 msgstr "새 작업"
 
-#: calendar/gui/e-calendar-view.c:1420 ui/evolution-calendar.xml.h:26
+#: calendar/gui/e-calendar-view.c:1425 ui/evolution-calendar.xml.h:26
 msgid "Select _Today"
 msgstr "오늘 선택(_T)"
 
-#: calendar/gui/e-calendar-view.c:1421
+#: calendar/gui/e-calendar-view.c:1426
 msgid "_Select Date..."
 msgstr "날짜 선택(_S)..."
 
 # free/busy -> 약속 있음/없음, Microsoft Office XP 참고
-#: calendar/gui/e-calendar-view.c:1425 ui/evolution-calendar.xml.h:45
+#: calendar/gui/e-calendar-view.c:1430 ui/evolution-calendar.xml.h:45
 msgid "_Publish Free/Busy Information"
 msgstr "약속 있음/없음 정보 게시(_P)"
 
-#: calendar/gui/e-calendar-view.c:1444
+#: calendar/gui/e-calendar-view.c:1449
 msgid "Cop_y to Calendar..."
 msgstr "달력으로 복사(_Y)..."
 
-#: calendar/gui/e-calendar-view.c:1445
+#: calendar/gui/e-calendar-view.c:1450
 msgid "Mo_ve to Calendar..."
 msgstr "달력으로 이동(_V)..."
 
-#: calendar/gui/e-calendar-view.c:1446
+#: calendar/gui/e-calendar-view.c:1451
 msgid "_Schedule Meeting..."
 msgstr "모임 일정(_S)..."
 
-#: calendar/gui/e-calendar-view.c:1447
+#: calendar/gui/e-calendar-view.c:1452
 msgid "_Forward as iCalendar..."
 msgstr "iCalendar로 전달(_F)..."
 
-#: calendar/gui/e-calendar-view.c:1452
+#: calendar/gui/e-calendar-view.c:1457
 msgid "Make this Occurrence _Movable"
 msgstr "이 경우를 옮길 수 있게 합니다(_M)"
 
-#: calendar/gui/e-calendar-view.c:1453 calendar/gui/e-calendar-view.c:1485
+#: calendar/gui/e-calendar-view.c:1458 calendar/gui/e-calendar-view.c:1490
 msgid "Delete this _Occurrence"
 msgstr "이 경우를 지웁니다(_O)"
 
-#: calendar/gui/e-calendar-view.c:1454 calendar/gui/e-calendar-view.c:1486
+#: calendar/gui/e-calendar-view.c:1459 calendar/gui/e-calendar-view.c:1491
 msgid "Delete _All Occurrences"
 msgstr "모든 경우를 지웁니다(_A)"
 
-#: calendar/gui/e-calendar-view.c:1488
+#: calendar/gui/e-calendar-view.c:1493
 msgid "Go to _Today"
 msgstr "오늘로 이동(_T)"
 
-#: calendar/gui/e-calendar-view.c:1490
+#: calendar/gui/e-calendar-view.c:1495
 msgid "_Go to Date..."
 msgstr "날짜로 이동(_G)..."
 
-#: calendar/gui/e-calendar-view.c:1520 ui/evolution.xml.h:35
+#: calendar/gui/e-calendar-view.c:1525 ui/evolution.xml.h:35
 msgid "_Settings..."
 msgstr "설정(_S)..."
 
@@ -6111,7 +6125,7 @@ msgstr "%02i분 단위"
 #: calendar/gui/e-day-view-top-item.c:710 calendar/gui/e-day-view.c:1571
 #: calendar/gui/e-week-view-main-item.c:320 calendar/gui/print.c:1514
 msgid "%A %d %B"
-msgstr "%b %e일 %A"
+msgstr "%b %d일 %A"
 
 #. String to use in 12-hour time format for times in the morning.
 #: calendar/gui/e-day-view.c:817 calendar/gui/e-week-view.c:583
@@ -6437,84 +6451,84 @@ msgstr "메세지의 형식이 올바르지 않은 것으로 보입니다"
 msgid "The message contains only unsupported requests."
 msgstr "이 메세지에는 지원하지 않는 요청만 들어 있습니다."
 
-#: calendar/gui/e-itip-control.c:1648
+#: calendar/gui/e-itip-control.c:1650
 msgid "The attachment does not contain a valid calendar message"
 msgstr "첨부에 올바른 달력 메세지가 없습니다"
 
-#: calendar/gui/e-itip-control.c:1680
+#: calendar/gui/e-itip-control.c:1682
 msgid "The attachment has no viewable calendar items"
 msgstr "이 첨부를 볼 수 있는 달력 아이템이 없습니다"
 
-#: calendar/gui/e-itip-control.c:1914
+#: calendar/gui/e-itip-control.c:1916
 msgid "Update complete\n"
 msgstr "업데이트 마침\n"
 
-#: calendar/gui/e-itip-control.c:1942
+#: calendar/gui/e-itip-control.c:1944
 msgid "Object is invalid and cannot be updated\n"
 msgstr "오브젝트가 잘못되었고 업데이트할 수 없습니다\n"
 
-#: calendar/gui/e-itip-control.c:1952
+#: calendar/gui/e-itip-control.c:1954
 msgid "This response is not from a current attendee.  Add as an attendee?"
 msgstr "현재 참석자가 아닌 사람이 이 회신을 했습니다. 참석자로 더하시겠습니까?"
 
-#: calendar/gui/e-itip-control.c:1964
+#: calendar/gui/e-itip-control.c:1966
 msgid "Attendee status could not be updated because of an invalid status!\n"
 msgstr "잘못된 상태때문에 참석자 상태를 업데이트할 수 없습니다!\n"
 
-#: calendar/gui/e-itip-control.c:1981
+#: calendar/gui/e-itip-control.c:1983
 msgid "Attendee status updated\n"
 msgstr "참석자의 상태 업데이트되었습니다\n"
 
-#: calendar/gui/e-itip-control.c:1984
+#: calendar/gui/e-itip-control.c:1986
 msgid "Attendee status can not be updated because the item no longer exists"
 msgstr "이 항목이 더 이상 없기 때문에 참석자 상태를 업데이트할 수 없습니다"
 
-#: calendar/gui/e-itip-control.c:2011
+#: calendar/gui/e-itip-control.c:2013
 msgid "Removal Complete"
 msgstr "지우기를 끝마쳤습니다"
 
-#: calendar/gui/e-itip-control.c:2034 calendar/gui/e-itip-control.c:2082
+#: calendar/gui/e-itip-control.c:2036 calendar/gui/e-itip-control.c:2084
 msgid "Item sent!\n"
 msgstr "항목을 보냈습니다!\n"
 
-#: calendar/gui/e-itip-control.c:2036 calendar/gui/e-itip-control.c:2086
+#: calendar/gui/e-itip-control.c:2038 calendar/gui/e-itip-control.c:2088
 msgid "The item could not be sent!\n"
 msgstr "항목을 보낼 수 없습니다!\n"
 
-#: calendar/gui/e-itip-control.c:2166
+#: calendar/gui/e-itip-control.c:2168
 msgid "Choose an action:"
 msgstr "동작을 고르십시오:"
 
-#: calendar/gui/e-itip-control.c:2237
+#: calendar/gui/e-itip-control.c:2239
 msgid "Update"
 msgstr "업데이트"
 
-#: calendar/gui/e-itip-control.c:2265
+#: calendar/gui/e-itip-control.c:2267
 msgid "Accept"
 msgstr "수락"
 
-#: calendar/gui/e-itip-control.c:2266
+#: calendar/gui/e-itip-control.c:2268
 msgid "Tentatively accept"
 msgstr "잠정적으로 수락"
 
-#: calendar/gui/e-itip-control.c:2267
+#: calendar/gui/e-itip-control.c:2269
 msgid "Decline"
 msgstr "거부"
 
 # free/busy -> 약속 있음/없음, Microsoft Office XP 참고
-#: calendar/gui/e-itip-control.c:2296
+#: calendar/gui/e-itip-control.c:2298
 msgid "Send Free/Busy Information"
 msgstr "약속 있음/없음 정보 보내기"
 
-#: calendar/gui/e-itip-control.c:2324
+#: calendar/gui/e-itip-control.c:2326
 msgid "Update respondent status"
 msgstr "업데이트 응답 상태"
 
-#: calendar/gui/e-itip-control.c:2352
+#: calendar/gui/e-itip-control.c:2354
 msgid "Send Latest Information"
 msgstr "가장 최근 정보 보내기"
 
-#: calendar/gui/e-itip-control.c:2380 calendar/gui/itip-utils.c:442
+#: calendar/gui/e-itip-control.c:2382 calendar/gui/itip-utils.c:442
 #: mail/mail-send-recv.c:410 mail/mail-send-recv.c:464
 #: ui/evolution-mail-global.xml.h:1
 msgid "Cancel"
@@ -6617,7 +6631,7 @@ msgid "Needs Action"
 msgstr "동작 필요"
 
 #: calendar/gui/e-meeting-list-view.c:160 calendar/gui/e-meeting-store.c:183
-#: calendar/gui/e-meeting-store.c:206 calendar/gui/e-meeting-time-sel.c:398
+#: calendar/gui/e-meeting-store.c:206 calendar/gui/e-meeting-time-sel.c:408
 msgid "Tentative"
 msgstr "잠정적"
 
@@ -6633,9 +6647,9 @@ msgstr "진행중"
 #. This is a strftime() format string %A = full weekday name,
 #. %B = full month name, %d = month day, %Y = full year.
 #: calendar/gui/e-meeting-time-sel-item.c:452
-#: calendar/gui/e-meeting-time-sel.c:2069
+#: calendar/gui/e-meeting-time-sel.c:2079
 msgid "%A, %B %d, %Y"
-msgstr "%Y년 %b %e일 %A"
+msgstr "%Y년 %b %d일 %A"
 
 #. This is a strftime() format string %a = abbreviated weekday
 #. name, %m = month number, %d = month day, %Y = full year.
@@ -6644,7 +6658,7 @@ msgstr "%Y년 %b %e일 %A"
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
 #: calendar/gui/e-meeting-time-sel-item.c:456
-#: calendar/gui/e-meeting-time-sel.c:2102 e-util/e-time-utils.c:203
+#: calendar/gui/e-meeting-time-sel.c:2112 e-util/e-time-utils.c:203
 #: e-util/e-time-utils.c:296 e-util/e-time-utils.c:384
 msgid "%a %m/%d/%Y"
 msgstr "%Y/%m/%d (%a)"
@@ -6660,57 +6674,57 @@ msgstr "%Y/%m/%d (%a)"
 msgid "%m/%d/%Y"
 msgstr "%Y/%m/%d"
 
-#: calendar/gui/e-meeting-time-sel.c:400 designs/OOA/ooa.glade.h:11
+#: calendar/gui/e-meeting-time-sel.c:410 designs/OOA/ooa.glade.h:11
 msgid "Out of Office"
 msgstr "부재 중"
 
-#: calendar/gui/e-meeting-time-sel.c:401
+#: calendar/gui/e-meeting-time-sel.c:411
 msgid "No Information"
 msgstr "정보 없음"
 
-#: calendar/gui/e-meeting-time-sel.c:432
+#: calendar/gui/e-meeting-time-sel.c:442
 msgid "O_ptions"
 msgstr "옵션(_P)"
 
-#: calendar/gui/e-meeting-time-sel.c:449
+#: calendar/gui/e-meeting-time-sel.c:459
 msgid "Show _only working hours"
 msgstr "근무 시간만 보기(_O)"
 
-#: calendar/gui/e-meeting-time-sel.c:459
+#: calendar/gui/e-meeting-time-sel.c:469
 msgid "Show _zoomed out"
 msgstr "축소해서 보기(_Z)"
 
 # free/busy -> 약속 있음/없음, Microsoft Office XP 참고
-#: calendar/gui/e-meeting-time-sel.c:474
+#: calendar/gui/e-meeting-time-sel.c:484
 msgid "_Update free/busy"
 msgstr "약속 있음/없음 업데이트(_U)"
 
-#: calendar/gui/e-meeting-time-sel.c:489
+#: calendar/gui/e-meeting-time-sel.c:499
 msgid "_<<"
 msgstr "_<<"
 
 # Autopick -> 빈 시간 찾기, Microsoft Office XP 참고
-#: calendar/gui/e-meeting-time-sel.c:507
+#: calendar/gui/e-meeting-time-sel.c:517
 msgid "_Autopick"
 msgstr "빈 시간 찾기(_A)"
 
-#: calendar/gui/e-meeting-time-sel.c:522
+#: calendar/gui/e-meeting-time-sel.c:532
 msgid ">_>"
 msgstr ">_>"
 
-#: calendar/gui/e-meeting-time-sel.c:539
+#: calendar/gui/e-meeting-time-sel.c:549
 msgid "_All people and resources"
 msgstr "모든 사람과 자원(_A)"
 
-#: calendar/gui/e-meeting-time-sel.c:548
+#: calendar/gui/e-meeting-time-sel.c:558
 msgid "All _people and one resource"
 msgstr "모든 사람과 자원 한 개(_P)"
 
-#: calendar/gui/e-meeting-time-sel.c:557
+#: calendar/gui/e-meeting-time-sel.c:567
 msgid "_Required people"
 msgstr "필요한 사람(_R)"
 
-#: calendar/gui/e-meeting-time-sel.c:566
+#: calendar/gui/e-meeting-time-sel.c:576
 msgid "Required people and _one resource"
 msgstr "필요한 사람과 자원 한 개(_O)"
 
@@ -6719,7 +6733,7 @@ msgstr "필요한 사람과 자원 한 개(_O)"
 msgid "Enter the password for %s"
 msgstr "%s의 열쇠글을 입력하십시오"
 
-#: calendar/gui/e-tasks.c:744 calendar/gui/gnome-cal.c:2262
+#: calendar/gui/e-tasks.c:744 calendar/gui/gnome-cal.c:2319
 #, c-format
 msgid ""
 "Error on %s:\n"
@@ -6749,26 +6763,26 @@ msgstr "선택한 오브젝트를 지웁니다..."
 msgid "Expunging"
 msgstr "지운 메세지 비우는 중"
 
-#: calendar/gui/gnome-cal.c:705
+#: calendar/gui/gnome-cal.c:722
 msgid "Updating query"
 msgstr "질의를 업데이트하는 중입니다"
 
-#: calendar/gui/gnome-cal.c:2039
+#: calendar/gui/gnome-cal.c:2096
 #, c-format
 msgid "Loading appointments at %s"
 msgstr "%s의 약속을 읽어들이는 중입니다"
 
-#: calendar/gui/gnome-cal.c:2058
+#: calendar/gui/gnome-cal.c:2115
 #, c-format
 msgid "Loading tasks at %s"
 msgstr "%s의 작업을 읽어들이는 중입니다"
 
-#: calendar/gui/gnome-cal.c:2151
+#: calendar/gui/gnome-cal.c:2208
 #, c-format
 msgid "Opening %s"
 msgstr "%s 여는 중입니다"
 
-#: calendar/gui/gnome-cal.c:3120
+#: calendar/gui/gnome-cal.c:3177
 msgid "Purging"
 msgstr "비우는 중"
 
@@ -6887,7 +6901,7 @@ msgstr "iCalendar 정보"
 msgid "You must be an attendee of the event."
 msgstr "이 행사의 참석자여야 합니다."
 
-#: calendar/gui/migration.c:150
+#: calendar/gui/migration.c:151
 msgid ""
 "The location and hierarchy of the Evolution task folders has changed since "
 "Evolution 1.x.\n"
@@ -6898,7 +6912,7 @@ msgstr ""
 "\n"
 "폴더를 옮기는 동안 잠시 기다리십시오..."
 
-#: calendar/gui/migration.c:154
+#: calendar/gui/migration.c:155
 msgid ""
 "The location and hierarchy of the Evolution calendar folders has changed "
 "since Evolution 1.x.\n"
@@ -6909,28 +6923,28 @@ msgstr ""
 "\n"
 "폴더를 옮기는 동안 잠시 기다리십시오..."
 
-#: calendar/gui/migration.c:380
+#: calendar/gui/migration.c:388
 msgid "Birthdays & Anniversaries"
 msgstr "생일 및 기념일"
 
 #. Create the Webcal source group
-#: calendar/gui/migration.c:466 calendar/gui/migration.c:548
+#: calendar/gui/migration.c:486 calendar/gui/migration.c:579
 msgid "On The Web"
 msgstr "웹"
 
 #. FIXME: set proper domain/code
-#: calendar/gui/migration.c:712 calendar/gui/migration.c:864
+#: calendar/gui/migration.c:743 calendar/gui/migration.c:895
 msgid "Unable to migrate old settings from evolution/config.xmldb"
 msgstr "evolution/config.xmldb의 과거 설정을 옮겨 올 수 없습니다"
 
 #. FIXME: domain/code
-#: calendar/gui/migration.c:741
+#: calendar/gui/migration.c:772
 #, c-format
 msgid "Unable to migrate calendar `%s'"
 msgstr "`%s' 달력을 옮겨 올 수 없습니다"
 
 #. FIXME: domain/code
-#: calendar/gui/migration.c:893
+#: calendar/gui/migration.c:924
 #, c-format
 msgid "Unable to migrate tasks `%s'"
 msgstr "`%s' 작업을 옮겨 올 수 없습니다"
@@ -7090,20 +7104,20 @@ msgstr "토"
 #. Day
 #: calendar/gui/print.c:1914
 msgid "Selected day (%a %b %d %Y)"
-msgstr "선택된 날(%Y년 %b %e일 (%a))"
+msgstr "선택된 날(%Y년 %b %d일 (%a))"
 
 #: calendar/gui/print.c:1939 calendar/gui/print.c:1943
 msgid "%a %b %d"
-msgstr "%b %e일 (%a)"
+msgstr "%b %d일 (%a)"
 
 #: calendar/gui/print.c:1940
 msgid "%a %d %Y"
-msgstr "%Y년 %e일 (%a)"
+msgstr "%Y년 %d일 (%a)"
 
 #: calendar/gui/print.c:1944 calendar/gui/print.c:1946
 #: calendar/gui/print.c:1947
 msgid "%a %b %d %Y"
-msgstr "%Y년 %b %e일 (%a)"
+msgstr "%Y년 %b %d일 (%a)"
 
 #: calendar/gui/print.c:1951
 #, c-format
@@ -7167,69 +7181,69 @@ msgstr "인쇄 설정"
 msgid "Task List '%s' will be removed. Are you sure you want to continue?"
 msgstr "'%s' 작업 목록을 지웁니다. 정말로 계속하시겠습니까?"
 
-#: calendar/gui/tasks-component.c:372
+#: calendar/gui/tasks-component.c:378
 msgid "New Task List"
 msgstr "새 작업 목록"
 
-#: calendar/gui/tasks-component.c:415
+#: calendar/gui/tasks-component.c:421
 #, c-format
 msgid "%d task"
 msgid_plural "%d tasks"
 msgstr[0] "연락처 %d개"
 
-#: calendar/gui/tasks-component.c:417 mail/mail-component.c:502
+#: calendar/gui/tasks-component.c:423 mail/mail-component.c:503
 #, c-format
 msgid ", %d selected"
 msgid_plural ", %d selected"
 msgstr[0] ", %d개 지움"
 
-#: calendar/gui/tasks-component.c:464
+#: calendar/gui/tasks-component.c:470
 msgid "Failed upgrading tasks."
 msgstr "작업을 업그레이드하는 데 실패했습니다."
 
 # event -> 행사, Microsoft Office XP 참고
-#: calendar/gui/tasks-component.c:758
+#: calendar/gui/tasks-component.c:764
 #, c-format
 msgid "Unable to open the task list '%s' for creating events and meetings"
 msgstr "행사와 회의를 만드는 데 쓸 '%s' 작업 목록을 열 수 없습니다"
 
-#: calendar/gui/tasks-component.c:773
+#: calendar/gui/tasks-component.c:779
 msgid "There is no calendar available for creating tasks"
 msgstr "작업을 만들 때 쓸 수 있는 달력이 없습니다"
 
-#: calendar/gui/tasks-component.c:1047
+#: calendar/gui/tasks-component.c:1053
 msgid "New task"
 msgstr "새 작업"
 
-#: calendar/gui/tasks-component.c:1048
+#: calendar/gui/tasks-component.c:1054
 msgid "_Task"
 msgstr "작업(_T)"
 
-#: calendar/gui/tasks-component.c:1049
+#: calendar/gui/tasks-component.c:1055
 msgid "Create a new task"
 msgstr "새 작업을 만듭니다"
 
-#: calendar/gui/tasks-component.c:1055
+#: calendar/gui/tasks-component.c:1061
 msgid "New assigned task"
 msgstr "새로 할당한 작업"
 
-#: calendar/gui/tasks-component.c:1056
+#: calendar/gui/tasks-component.c:1062
 msgid "Assigne_d Task"
 msgstr "할당한 작업(_D)"
 
-#: calendar/gui/tasks-component.c:1057
+#: calendar/gui/tasks-component.c:1063
 msgid "Create a new assigned task"
 msgstr "새로 할당한 작업을 만듭니다"
 
-#: calendar/gui/tasks-component.c:1063
+#: calendar/gui/tasks-component.c:1069
 msgid "New task list"
 msgstr "새 작업 목록"
 
-#: calendar/gui/tasks-component.c:1064
+#: calendar/gui/tasks-component.c:1070
 msgid "Task l_ist"
 msgstr "작업 목록(_I)"
 
-#: calendar/gui/tasks-component.c:1065
+#: calendar/gui/tasks-component.c:1071
 msgid "Create a new task list"
 msgstr "새 작업 목록을 만듭니다"
 
@@ -8926,68 +8940,68 @@ msgstr "오프라인 모드를 위한 '%s' 폴더를 준비하는 중입니다"
 msgid "You must be working online to complete this operation"
 msgstr "이 작업을 마치려면 온라인으로 실행해야 합니다"
 
-#: camel/camel-filter-driver.c:669 camel/camel-filter-search.c:513
+#: camel/camel-filter-driver.c:698 camel/camel-filter-search.c:513
 #: camel/camel-process.c:48
 #, c-format
 msgid "Failed to create pipe to '%s': %s"
 msgstr "'%s'(으)로 가는 파이프를 만드는 데 실패했습니다: %s"
 
-#: camel/camel-filter-driver.c:713 camel/camel-process.c:90
+#: camel/camel-filter-driver.c:742 camel/camel-process.c:90
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "하위 프로세스 '%s' 프로세스를 만드는 데 실패했습니다: %s"
 
-#: camel/camel-filter-driver.c:756
+#: camel/camel-filter-driver.c:785
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s에서 잘못된 메세지 스트림을 받았습니다: %s"
 
-#: camel/camel-filter-driver.c:945 camel/camel-filter-driver.c:954
+#: camel/camel-filter-driver.c:974 camel/camel-filter-driver.c:983
 msgid "Syncing folders"
 msgstr "폴더 동기중"
 
-#: camel/camel-filter-driver.c:1043 camel/camel-filter-driver.c:1420
+#: camel/camel-filter-driver.c:1072 camel/camel-filter-driver.c:1449
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "거르게 분석 중 오류: %s: %s"
 
-#: camel/camel-filter-driver.c:1052 camel/camel-filter-driver.c:1426
+#: camel/camel-filter-driver.c:1081 camel/camel-filter-driver.c:1458
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "거르게 실행 중 오류: %s: %s"
 
-#: camel/camel-filter-driver.c:1119
+#: camel/camel-filter-driver.c:1148
 msgid "Unable to open spool folder"
 msgstr "스풀 폴더를 열 수 없습니다"
 
-#: camel/camel-filter-driver.c:1128
+#: camel/camel-filter-driver.c:1157
 msgid "Unable to process spool folder"
 msgstr "스풀 폴더를 진행할 수 없습니다"
 
-#: camel/camel-filter-driver.c:1143
+#: camel/camel-filter-driver.c:1172
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "메세지 %d개(%d%%)를 가져오는 중"
 
-#: camel/camel-filter-driver.c:1147
+#: camel/camel-filter-driver.c:1176
 msgid "Cannot open message"
 msgstr "메세지를 열 수 없음"
 
-#: camel/camel-filter-driver.c:1148 camel/camel-filter-driver.c:1160
+#: camel/camel-filter-driver.c:1177 camel/camel-filter-driver.c:1189
 #, c-format
 msgid "Failed on message %d"
 msgstr "메세지 %d개에서 실패"
 
-#: camel/camel-filter-driver.c:1174 camel/camel-filter-driver.c:1265
+#: camel/camel-filter-driver.c:1203 camel/camel-filter-driver.c:1294
 msgid "Syncing folder"
 msgstr "폴더 동기화"
 
-#: camel/camel-filter-driver.c:1235
+#: camel/camel-filter-driver.c:1264
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%2$d개 중에서 메시지 %1$d 가져오는 중"
 
-#: camel/camel-filter-driver.c:1250
+#: camel/camel-filter-driver.c:1279
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%2$d개 중에서 메시지 %1$d에서 실패"
@@ -9093,7 +9107,7 @@ msgstr "정크가 아닌 메일을 학습하는 중입니다"
 msgid "Filtering new message(s)"
 msgstr "새 메세지 거르는 중입니다"
 
-#: camel/camel-gpg-context.c:735
+#: camel/camel-gpg-context.c:736
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -9104,15 +9118,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: camel/camel-gpg-context.c:749
+#: camel/camel-gpg-context.c:750
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid 힌트를 파싱하는 데 실패했습니다."
 
-#: camel/camel-gpg-context.c:773
+#: camel/camel-gpg-context.c:774
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg 암호 요청을 파싱하는 데 실패했습니다."
 
-#: camel/camel-gpg-context.c:787
+#: camel/camel-gpg-context.c:788
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -9121,91 +9135,79 @@ msgstr ""
 "다음 사용자에 대한 키를 열려면 열쇠글이 필요합니다:\n"
 "\"%s\""
 
-#: camel/camel-gpg-context.c:804 camel/camel-gpg-context.c:1314
-#: camel/camel-gpg-context.c:1498 camel/camel-gpg-context.c:1589
-#: camel/camel-gpg-context.c:1697 camel/providers/nntp/camel-nntp-store.c:1231
-#: camel/providers/nntp/camel-nntp-store.c:1329 mail/mail-ops.c:705
+#: camel/camel-gpg-context.c:805 camel/camel-gpg-context.c:1002
+#: camel/providers/nntp/camel-nntp-store.c:1279 mail/mail-ops.c:716
 #: mail/mail-send-recv.c:611
 msgid "Cancelled."
 msgstr "취소됨."
 
-#: camel/camel-gpg-context.c:822
+#: camel/camel-gpg-context.c:823
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "비밀 키를 여는 데 실패했습니다: 열쇠글이 3번 틀렸습니다."
 
-#: camel/camel-gpg-context.c:828
+#: camel/camel-gpg-context.c:829
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG로부터 예상치못한 답변: %s"
 
-#: camel/camel-gpg-context.c:880
+#: camel/camel-gpg-context.c:881
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "암호화하는 데 실패했습니다: 받는 사람이 올바르게 지정되지 않았습니다."
 
-#: camel/camel-gpg-context.c:1157
-#, c-format
-msgid ""
-"Failed to GPG %s: %s\n"
-"\n"
-"%s"
-msgstr ""
-"GPG %s에 실패했습니다: %s\n"
-"\n"
-"%s"
-
-#: camel/camel-gpg-context.c:1162
-#, c-format
-msgid "Failed to GPG %s: %s\n"
-msgstr "GPG %s에 실패했습니다: %s\n"
-
-#: camel/camel-gpg-context.c:1275 camel/camel-smime-context.c:419
-#, c-format
-msgid "Could not generate signing data: %s"
-msgstr "서명 데이터를 만들 수 없습니다: %s"
-
-#: camel/camel-gpg-context.c:1307 camel/camel-gpg-context.c:1762
-#: camel/camel-gpg-context.c:1813
+#. always called on an i/o error
+#: camel/camel-gpg-context.c:1140 camel/camel-gpg-context.c:1264
+#: camel/camel-gpg-context.c:1689 camel/camel-gpg-context.c:1734
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg 실행에 실패했습니다: %s"
 
-#: camel/camel-gpg-context.c:1331 camel/camel-gpg-context.c:1491
-#: camel/camel-gpg-context.c:1582 camel/camel-gpg-context.c:1605
-#: camel/camel-gpg-context.c:1690 camel/camel-gpg-context.c:1714
-#: camel/camel-gpg-context.c:1784 camel/camel-gpg-context.c:1835
+#: camel/camel-gpg-context.c:1232 camel/camel-smime-context.c:388
+#, c-format
+msgid "Could not generate signing data: %s"
+msgstr "서명 데이터를 만들 수 없습니다: %s"
+
+#: camel/camel-gpg-context.c:1279 camel/camel-gpg-context.c:1439
+#: camel/camel-gpg-context.c:1521 camel/camel-gpg-context.c:1536
+#: camel/camel-gpg-context.c:1625 camel/camel-gpg-context.c:1640
+#: camel/camel-gpg-context.c:1705 camel/camel-gpg-context.c:1750
 msgid "Failed to execute gpg."
 msgstr "gpg 실행에 실패했습니다."
 
 # Content-Description:에 들어간다.  번역은 적합하지 않다.
-#: camel/camel-gpg-context.c:1350
+#: camel/camel-gpg-context.c:1298
 msgid "This is a digitally signed message part"
 msgstr "This is a digitally signed message part"
 
-#: camel/camel-gpg-context.c:1431 camel/camel-gpg-context.c:1437
-#: camel/camel-gpg-context.c:1443 camel/camel-smime-context.c:721
-#: camel/camel-smime-context.c:732 camel/camel-smime-context.c:739
+#: camel/camel-gpg-context.c:1379 camel/camel-gpg-context.c:1385
+#: camel/camel-gpg-context.c:1391 camel/camel-smime-context.c:690
+#: camel/camel-smime-context.c:701 camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "메세지 서명을 확인할 수 없습니다; 메세지 형식이 틀렸습니다"
 
-#: camel/camel-gpg-context.c:1477
+#: camel/camel-gpg-context.c:1425
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "메세지 서명을 확인할 수 없습니다; 임시 파일을 만들 수 없습니다: %s"
 
-#: camel/camel-gpg-context.c:1565
+#: camel/camel-gpg-context.c:1504
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "암호화 데이터를 만들 수 없습니다: %s"
 
-#: camel/camel-gpg-context.c:1623
+#: camel/camel-gpg-context.c:1554
 msgid "This is a digitally encrypted message part"
 msgstr "디지탈 암호화된 메세지 부분입니다"
 
-#: camel/camel-gpg-context.c:1721 camel/camel-smime-context.c:995
+#: camel/camel-gpg-context.c:1605 camel/camel-multipart-encrypted.c:229
+#: camel/camel-multipart-encrypted.c:244
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr "MIME 부분을 암호화 해독하는 데 실패했습니다: 프로토콜 오류"
+
+#: camel/camel-gpg-context.c:1647 camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "암호화된 내용"
 
-#: camel/camel-gpg-context.c:1740
+#: camel/camel-gpg-context.c:1666
 msgid "Unable to parse message content"
 msgstr "메세지 내용을 파싱할 수 없습니다"
 
@@ -9251,69 +9253,65 @@ msgstr "fcntl(2)로 파일 잠금을 얻어오는 데 실패했습니다: %s"
 msgid "Failed to get lock using flock(2): %s"
 msgstr "flock(2)으로 파일 잠금을 얻어오는 데 실패했습니다: %s"
 
-#: camel/camel-movemail.c:107
+#: camel/camel-movemail.c:105
 #, c-format
 msgid "Could not check mail file %s: %s"
 msgstr "메일 파일 %s을(를) 검사할 수 없습니다: %s"
 
-#: camel/camel-movemail.c:120
+#: camel/camel-movemail.c:118
 #, c-format
 msgid "Could not open mail file %s: %s"
 msgstr "메일 파일 %s을(를) 열 수 없습니다: %s"
 
-#: camel/camel-movemail.c:128
+#: camel/camel-movemail.c:126
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
 msgstr "임시 메일 파일 %s을(를) 열 수 없습니다: %s"
 
-#: camel/camel-movemail.c:157
+#: camel/camel-movemail.c:155
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
 msgstr "임시 파일 %s에 메일을 저장하는 데 실패했습니다: %s"
 
-#: camel/camel-movemail.c:187
+#: camel/camel-movemail.c:185
 #, c-format
 msgid "Could not create pipe: %s"
 msgstr "파이프를 만들 수 없습니다: %s"
 
-#: camel/camel-movemail.c:199
+#: camel/camel-movemail.c:197
 #, c-format
 msgid "Could not fork: %s"
 msgstr "fork할 수 없습니다: %s"
 
-#: camel/camel-movemail.c:237
+#: camel/camel-movemail.c:235
 #, c-format
 msgid "Movemail program failed: %s"
 msgstr "movemail 프로그램이 실패했습니다: %s"
 
-#: camel/camel-movemail.c:238
+#: camel/camel-movemail.c:236
 msgid "(Unknown error)"
 msgstr "(알 수 없는 오류)"
 
-#: camel/camel-movemail.c:261
+#: camel/camel-movemail.c:259
 #, c-format
 msgid "Error reading mail file: %s"
 msgstr "메일파일을 읽는 중 오류 발생: %s"
 
-#: camel/camel-movemail.c:272
+#: camel/camel-movemail.c:270
 #, c-format
 msgid "Error writing mail temp file: %s"
 msgstr "메일 임시파일을 쓰는 중 오류발생: %s"
 
-#: camel/camel-movemail.c:465 camel/camel-movemail.c:532
+#: camel/camel-movemail.c:463 camel/camel-movemail.c:530
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "메일 임시파일을 복사하는 중 오류발생: %s"
-
-#: camel/camel-multipart-encrypted.c:229 camel/camel-multipart-encrypted.c:244
-msgid "Failed to decrypt MIME part: protocol error"
-msgstr "MIME 부분을 암호화 해독하는 데 실패했습니다: 프로토콜 오류"
 
 #: camel/camel-multipart-encrypted.c:257
 msgid "Failed to decrypt MIME part: invalid structure"
 msgstr "MIME 부분을 암호화 해독하는 데 실패했습니다: 잘못된 구조"
 
-#: camel/camel-multipart-signed.c:673 camel/camel-multipart-signed.c:724
+#: camel/camel-multipart-signed.c:704 camel/camel-multipart-signed.c:755
 msgid "parse error"
 msgstr "파싱 오류"
 
@@ -9422,15 +9420,15 @@ msgstr "서버 챌린지가 잘못되었습니다\n"
 msgid "Server challenge contained invalid \"Quality of Protection\" token\n"
 msgstr "서버 챌린지에 잘못된 \"보호 품질\" 토큰이 들어 있습니다\n"
 
-#: camel/camel-sasl-digest-md5.c:850
+#: camel/camel-sasl-digest-md5.c:858
 msgid "Server response did not contain authorization data\n"
 msgstr "서버 응답에 인증 데이터가 들어 있지 않습니다\n"
 
-#: camel/camel-sasl-digest-md5.c:868
+#: camel/camel-sasl-digest-md5.c:876
 msgid "Server response contained incomplete authorization data\n"
 msgstr "서버 응답에 불완전한 인증 데이터가 들어 있습니다\n"
 
-#: camel/camel-sasl-digest-md5.c:878
+#: camel/camel-sasl-digest-md5.c:886
 msgid "Server response does not match\n"
 msgstr "서버 응답이 일치하지 않습니다\n"
 
@@ -9502,15 +9500,10 @@ msgstr "참조한 증명서가 만료된 증명서입니다."
 
 #: camel/camel-sasl-gssapi.c:193 camel/camel-sasl-gssapi.c:242
 #: camel/camel-sasl-gssapi.c:278 camel/camel-sasl-gssapi.c:293
-#: camel/camel-sasl-kerberos4.c:219
-#: camel/providers/imap/camel-imap-store.c:1236
+#: camel/camel-sasl-kerberos4.c:225
+#: camel/providers/imap/camel-imap-store.c:1256
 msgid "Bad authentication response from server."
 msgstr "서버에서 보낸 인증 응답이 틀렸습니다."
-
-#: camel/camel-sasl-gssapi.c:217
-#, c-format
-msgid "Failed to resolve host `%s': %s"
-msgstr "`%s' 호스트를 찾는 데 실패했습니다: %s"
 
 #: camel/camel-sasl-gssapi.c:303
 msgid "Unsupported security layer."
@@ -9524,7 +9517,7 @@ msgstr "Kerberos 4"
 msgid "This option will connect to the server using Kerberos 4 authentication."
 msgstr "이 옵션을 켜면 Kerberos 4 인증을 사용해 서버에 연결합니다."
 
-#: camel/camel-sasl-kerberos4.c:162
+#: camel/camel-sasl-kerberos4.c:168
 #, c-format
 msgid ""
 "Could not get Kerberos ticket:\n"
@@ -9585,57 +9578,51 @@ msgstr "POP이 아닌 원본을 사용해 SMTP 인증 전에 POP"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "정규식 컴파일이 실패했습니다: %s: %s"
 
-#: camel/camel-service.c:271
+#: camel/camel-service.c:274
 #, c-format
 msgid "URL '%s' needs a username component"
 msgstr "URL '%s'에 사용자이름 부분이 필요합니다"
 
-#: camel/camel-service.c:275
+#: camel/camel-service.c:278
 #, c-format
 msgid "URL '%s' needs a host component"
 msgstr "URL '%s'에 호스트 부분이 필요합니다"
 
-#: camel/camel-service.c:279
+#: camel/camel-service.c:282
 #, c-format
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s'에 경로 부분이 필요합니다"
 
-#: camel/camel-service.c:729
+#: camel/camel-service.c:743
+msgid "cannot create thread"
+msgstr "쓰레드를 만들 수 없습니다"
+
+#: camel/camel-service.c:890
 #, c-format
 msgid "Resolving: %s"
 msgstr "호스트 찾는 중입니다: %s"
 
-#: camel/camel-service.c:760 camel/camel-service.c:884
-#, c-format
-msgid "Failure in name lookup: %s"
-msgstr "호스트 이름을 찾는 데 실패했습니다: %s"
+#: camel/camel-service.c:912
+msgid "Host lookup failed"
+msgstr "호스트 이름 찾기가 실패했습니다"
 
-#: camel/camel-service.c:781 camel/camel-service.c:905
+#: camel/camel-service.c:914
 #, c-format
-msgid "Host lookup failed: cannot create thread: %s"
-msgstr "호스트 이름 찾기가 실패했습니다: 쓰레드를 만들 수 없습니다: %s"
+msgid "Host lookup failed: %s: %s"
+msgstr "호스트 이름 찾기가 실패했습니다: %s: %s"
 
-#: camel/camel-service.c:794
-#, c-format
-msgid "Host lookup failed: %s: host not found"
-msgstr "호스트 이름 찾기가 실패했습니다: %s: 호스트를 찾을 수 없습니다"
-
-#: camel/camel-service.c:797
-#, c-format
-msgid "Host lookup failed: %s: unknown reason"
-msgstr "호스트 이름 찾기가 실패했습니다: %s: 알 수 없는 원인"
-
-#: camel/camel-service.c:851
+#: camel/camel-service.c:1021
 msgid "Resolving address"
 msgstr "주소 찾는 중"
 
-#: camel/camel-service.c:920
-msgid "Host lookup failed: host not found"
-msgstr "호스트 이름 찾기가 실패했습니다: 호스트 이름을 찾을 수 없습니다"
+#: camel/camel-service.c:1041
+msgid "Name lookup failed"
+msgstr "이름 찾기가 실패했습니다"
 
-#: camel/camel-service.c:923
-msgid "Host lookup failed: unknown reason"
-msgstr "호스트 이름 찾기가 실패했습니다: 알 수 없는 원인"
+#: camel/camel-service.c:1044
+#, c-format
+msgid "Name lookup failed: %s"
+msgstr "이름 찾기가 실패했습니다: %s"
 
 #: camel/camel-session.c:282
 #, c-format
@@ -9646,214 +9633,209 @@ msgstr ""
 "%s 디렉토리를 만들 수 없습니다:\n"
 "%s"
 
-#: camel/camel-smime-context.c:104
-#, c-format
-msgid "Enter security pass-phrase for `%s'"
-msgstr "%s의 보안 열쇠글을 입력하십시오"
-
-#: camel/camel-smime-context.c:261
+#: camel/camel-smime-context.c:230
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "'%s'에 대한 인증서를 찾을 수 없습니다"
 
-#: camel/camel-smime-context.c:267
+#: camel/camel-smime-context.c:236
 msgid "Cannot create CMS message"
 msgstr "CMS 메세지를 만들 수 없습니다"
 
-#: camel/camel-smime-context.c:272
+#: camel/camel-smime-context.c:241
 msgid "Cannot create CMS signedData"
 msgstr "CMS signedData를 만들 수 없습니다"
 
-#: camel/camel-smime-context.c:278
+#: camel/camel-smime-context.c:247
 msgid "Cannot attach CMS signedData"
 msgstr "signedData를 첨부할 수  없습니다"
 
-#: camel/camel-smime-context.c:285
+#: camel/camel-smime-context.c:254
 msgid "Cannot attach CMS data"
 msgstr "CMS 데이터를 첨부할 수  없습니다"
 
-#: camel/camel-smime-context.c:291
+#: camel/camel-smime-context.c:260
 msgid "Cannot create CMS SignerInfo"
 msgstr "CMS SignerInfo를 만들 수  없습니다"
 
-#: camel/camel-smime-context.c:297
+#: camel/camel-smime-context.c:266
 msgid "Cannot find cert chain"
 msgstr "인증서 체인을 찾을 수 없습니다"
 
-#: camel/camel-smime-context.c:303
+#: camel/camel-smime-context.c:272
 msgid "Cannot add CMS SigningTime"
 msgstr "CMS SigningTime을 더할 수 없습니다"
 
-#: camel/camel-smime-context.c:325 camel/camel-smime-context.c:337
+#: camel/camel-smime-context.c:294 camel/camel-smime-context.c:306
 #, c-format
 msgid "Encryption cert for '%s' does not exist"
 msgstr "'%s'에 대한 암호화 인증서가 없습니다"
 
-#: camel/camel-smime-context.c:344
+#: camel/camel-smime-context.c:313
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "SMIMEEncKeyPrefs 속성을 더할 수 없습니다"
 
-#: camel/camel-smime-context.c:349
+#: camel/camel-smime-context.c:318
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "MS SMIMEEncKeyPrefs 속성을 더할 수 없습니다"
 
-#: camel/camel-smime-context.c:354
+#: camel/camel-smime-context.c:323
 msgid "Cannot add encryption certificate"
 msgstr "암호화 인증서를 더할 수 없습니다"
 
-#: camel/camel-smime-context.c:360
+#: camel/camel-smime-context.c:329
 msgid "Cannot add CMS SignerInfo"
 msgstr "CMS SignerInfo를 더할 수 없습니다"
 
-#: camel/camel-smime-context.c:430 camel/camel-smime-context.c:877
+#: camel/camel-smime-context.c:399 camel/camel-smime-context.c:846
 msgid "Cannot create encoder context"
 msgstr "인코더 컨텍스트를 만들 수 없습니다"
 
-#: camel/camel-smime-context.c:436
+#: camel/camel-smime-context.c:405
 msgid "Failed to add data to CMS encoder"
 msgstr "CMS 인코더에 데이터를 더하는 데 실패했습니다"
 
-#: camel/camel-smime-context.c:441 camel/camel-smime-context.c:894
+#: camel/camel-smime-context.c:410 camel/camel-smime-context.c:863
 msgid "Failed to encode data"
 msgstr "데이터를 인코딩하는 데 실패했습니다"
 
-#: camel/camel-smime-context.c:514
+#: camel/camel-smime-context.c:483
 msgid "Unverified"
 msgstr "확인 안 됨"
 
-#: camel/camel-smime-context.c:516
+#: camel/camel-smime-context.c:485
 msgid "Good signature"
 msgstr "서명이 맞습니다"
 
-#: camel/camel-smime-context.c:518
+#: camel/camel-smime-context.c:487
 msgid "Bad signature"
 msgstr "서명이 틀립니다"
 
-#: camel/camel-smime-context.c:520
+#: camel/camel-smime-context.c:489
 msgid "Content tampered with or altered in transit"
 msgstr "메일 내용이 전송중에 변조되었습니다"
 
-#: camel/camel-smime-context.c:522
+#: camel/camel-smime-context.c:491
 msgid "Signing certificate not found"
 msgstr "서명 인증서를 찾을 수 없습니다"
 
-#: camel/camel-smime-context.c:524
+#: camel/camel-smime-context.c:493
 msgid "Signing certificate not trusted"
 msgstr "서명 인증서를 신뢰할 수 없습니다"
 
-#: camel/camel-smime-context.c:526
+#: camel/camel-smime-context.c:495
 msgid "Signature algorithm unknown"
 msgstr "서명 알고리즘을 알 수 없습니다"
 
-#: camel/camel-smime-context.c:528
+#: camel/camel-smime-context.c:497
 msgid "Signature algorithm unsupported"
 msgstr "서명 알고리즘을 지원하지 않습니다"
 
-#: camel/camel-smime-context.c:530
+#: camel/camel-smime-context.c:499
 msgid "Malformed signature"
 msgstr "잘못 구성된 서명"
 
-#: camel/camel-smime-context.c:532
+#: camel/camel-smime-context.c:501
 msgid "Processing error"
 msgstr "처리 오류"
 
-#: camel/camel-smime-context.c:569
+#: camel/camel-smime-context.c:538
 msgid "No signedData in signature"
 msgstr "서명에 signedData가 없습니다"
 
-#: camel/camel-smime-context.c:576
+#: camel/camel-smime-context.c:545
 msgid "Digests missing from enveloped data"
 msgstr "싸여진 데이터에 요약문이 없습니다"
 
-#: camel/camel-smime-context.c:589 camel/camel-smime-context.c:599
+#: camel/camel-smime-context.c:558 camel/camel-smime-context.c:568
 msgid "Cannot calculate digests"
 msgstr "요약문을 계산할 수 없습니다"
 
-#: camel/camel-smime-context.c:604
+#: camel/camel-smime-context.c:573
 msgid "Cannot set message digests"
 msgstr "메세지 요약문을 설정할 수 없습니다"
 
-#: camel/camel-smime-context.c:614 camel/camel-smime-context.c:619
+#: camel/camel-smime-context.c:583 camel/camel-smime-context.c:588
 msgid "Certificate import failed"
 msgstr "인증서 가져오기가 실패했습니다"
 
-#: camel/camel-smime-context.c:628
+#: camel/camel-smime-context.c:597
 msgid "Certificate only message, cannot verify certificates"
 msgstr "인증서만 있는 메세지입니다. 인증서를 확인할 수 없습니다"
 
-#: camel/camel-smime-context.c:631
+#: camel/camel-smime-context.c:600
 msgid "Certificate only message, certificates imported and verified"
 msgstr "인증서만 있는 메세지입니다. 인증서를를 가져왔고 확인했습니다"
 
-#: camel/camel-smime-context.c:635
+#: camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
 msgstr "서명 다이제스트를 찾을 수 없습니다"
 
-#: camel/camel-smime-context.c:651
+#: camel/camel-smime-context.c:620
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "서명자: %s <%s>: %s\n"
 
-#: camel/camel-smime-context.c:752
+#: camel/camel-smime-context.c:721
 msgid "Decoder failed"
 msgstr "디코더가 실패했습니다"
 
-#: camel/camel-smime-context.c:804
+#: camel/camel-smime-context.c:773
 #, c-format
 msgid "Cannot find certificate for `%s'"
 msgstr "`%s'에 대한 인증서를 찾을 수 없습니다"
 
-#: camel/camel-smime-context.c:811
+#: camel/camel-smime-context.c:780
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "일반 벌크 암호화 알고리즘을 찾을 수 없습니다"
 
 #. PORT_GetError(); ??
-#: camel/camel-smime-context.c:820
+#: camel/camel-smime-context.c:789
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "암호화 벌크 키에 필요한 슬롯을 할당할 수 없습니다"
 
-#: camel/camel-smime-context.c:831
+#: camel/camel-smime-context.c:800
 msgid "Cannot create CMS Message"
 msgstr "CMS 메세지를 만들 수 없습니다"
 
-#: camel/camel-smime-context.c:837
+#: camel/camel-smime-context.c:806
 msgid "Cannot create CMS EnvelopedData"
 msgstr "CMS EnvelopedData를 만들 수 없습니다"
 
-#: camel/camel-smime-context.c:843
+#: camel/camel-smime-context.c:812
 msgid "Cannot attach CMS EnvelopedData"
 msgstr "CMS EnvelopedData를 첨부할 수 없습니다"
 
-#: camel/camel-smime-context.c:849
+#: camel/camel-smime-context.c:818
 msgid "Cannot attach CMS data object"
 msgstr "CMS 데이터 오브젝트를 첨부할 수 없습니다"
 
-#: camel/camel-smime-context.c:858
+#: camel/camel-smime-context.c:827
 msgid "Cannot create CMS RecipientInfo"
 msgstr "CMS RecipientInfo를 만들 수 없습니다"
 
-#: camel/camel-smime-context.c:863
+#: camel/camel-smime-context.c:832
 msgid "Cannot add CMS RecipientInfo"
 msgstr "CMS RecipientInfo를 더할 수 없습니다"
 
-#: camel/camel-smime-context.c:888
+#: camel/camel-smime-context.c:857
 msgid "Failed to add data to encoder"
 msgstr "데이터를 인코더에 더하는 데 실패했습니다"
 
-#: camel/camel-smime-context.c:975
+#: camel/camel-smime-context.c:944
 #, c-format
 msgid "Decoder failed, error %d"
 msgstr "디코더가 실패했습니다. 오류 코드 %d번"
 
-#: camel/camel-smime-context.c:982
+#: camel/camel-smime-context.c:951
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME 암호화 해제: 암호화한 내용이 없습니다"
 
-#: camel/camel-smime-context.c:1009
+#: camel/camel-smime-context.c:978
 msgid "import keys: unimplemented"
 msgstr "키 가져오기: 구현하지 않았습니다"
 
-#: camel/camel-smime-context.c:1017
+#: camel/camel-smime-context.c:986
 msgid "export keys: unimplemented"
 msgstr "키 내보내기: 구현하지 않았습니다"
 
@@ -9875,23 +9857,25 @@ msgstr "폴더를 만들 수 없습니다: 이 저장고에 잘못된 동작입�
 msgid "Cannot create folder: %s: folder exists"
 msgstr "폴더를 만들 수 없습니다: %s: 폴더가 이미 있습니다"
 
-#: camel/camel-store.c:389 camel/camel-vee-store.c:351
+#: camel/camel-store.c:389 camel/camel-vee-store.c:366
+#: camel/providers/local/camel-maildir-store.c:216
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "폴더를 지울 수 없습니다: %s: 잘못된 동작"
 
-#: camel/camel-store.c:439 camel/camel-vee-store.c:388
-#: camel/providers/local/camel-maildir-store.c:232
+#: camel/camel-store.c:439 camel/camel-vee-store.c:403
+#: camel/providers/local/camel-maildir-store.c:288
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "폴더 이름을 바꿀 수 없습니다: %s: 잘못된 동작"
 
-#: camel/camel-store.c:777
+#: camel/camel-store.c:777 camel/camel-vtrash-folder.c:44
 msgid "Trash"
 msgstr "휴지통"
 
-#: camel/camel-store.c:779 mail/em-filter-i18n.h:35
-#: mail/mail-config.glade.h:95 ui/evolution-mail-message.xml.h:48
+#: camel/camel-store.c:779 camel/camel-vtrash-folder.c:46
+#: mail/em-filter-i18n.h:35 mail/mail-config.glade.h:95
+#: ui/evolution-mail-message.xml.h:48
 msgid "Junk"
 msgstr "정크메일"
 
@@ -10108,35 +10092,35 @@ msgstr ""
 msgid "Could not parse URL `%s'"
 msgstr "`%s' URL을 파싱할 수 없습니다"
 
-#: camel/camel-vee-folder.c:633
+#: camel/camel-vee-folder.c:603
 #, c-format
 msgid "Error storing `%s': %s"
 msgstr "%s을(를) 저장하는 데 오류가 발생했습니다: %s"
 
-#: camel/camel-vee-folder.c:675
+#: camel/camel-vee-folder.c:645
 #, c-format
 msgid "No such message %s in %s"
 msgstr "%2$s에 %1$s(이)라는 메세지는 없습니다"
 
-#: camel/camel-vee-folder.c:841 camel/camel-vee-folder.c:847
+#: camel/camel-vee-folder.c:812 camel/camel-vee-folder.c:818
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "메세지를 가상 폴더에 복사할/옮길 수 없습니다"
 
-#: camel/camel-vee-store.c:374
+#: camel/camel-vee-store.c:389
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "폴더를 지울 수 없습니다: %s: 그런 폴더가 없습니다"
 
-#: camel/camel-vee-store.c:396
+#: camel/camel-vee-store.c:411
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "폴더 이름을 바꿀 수 없습니다: %s: 그런 폴더가 없습니다"
 
-#: camel/camel-vtrash-folder.c:44
+#: camel/camel-vtrash-folder.c:45
 msgid "Cannot copy messages to the Trash folder"
 msgstr "휴지통 폴더로 메세지를 복사할 수 없습니다"
 
-#: camel/camel-vtrash-folder.c:46
+#: camel/camel-vtrash-folder.c:47
 msgid "Cannot copy messages to the Junk folder"
 msgstr "정크메일 폴더로 메세지를 복사할 수 없습니다"
 
@@ -10211,34 +10195,26 @@ msgstr "열쇠글"
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "이 옵션을 켜면 일반 텍스트 열쇠글을 이용해 IMAP 서버에 연결합니다."
 
-#: camel/providers/groupwise/camel-gw-listener.c:362
+#: camel/providers/groupwise/camel-gw-listener.c:402
 msgid "Checklist"
 msgstr "확인목록"
 
 #: camel/providers/imap/camel-imap-command.c:218
 #: camel/providers/imap/camel-imap-command.c:257
-#: camel/providers/imap/camel-imap-command.c:447
-#: camel/providers/imap/camel-imap-store.c:3220
+#: camel/providers/imap/camel-imap-command.c:462
+#: camel/providers/imap/camel-imap-store.c:3242
 msgid "Operation cancelled"
 msgstr "작업이 취소되었습니다"
 
 #: camel/providers/imap/camel-imap-command.c:302
-#: camel/providers/imap/camel-imap-store.c:3223
+#: camel/providers/imap/camel-imap-store.c:3245
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "예기치 않게 서버의 연결이 끊겼습니다: %s"
 
-#: camel/providers/imap/camel-imap-command.c:303
-#: camel/providers/imap/camel-imap-command.c:400
-#: camel/providers/imap4/camel-imap4-store.c:283
-#: camel/providers/pop3/camel-pop3-store.c:543
-#: camel/providers/pop3/camel-pop3-store.c:550
-#: camel/providers/pop3/camel-pop3-store.c:556 shell/e-shell.c:1220
-msgid "Unknown error"
-msgstr "알 수 없는 오류가 발생했습니다"
-
 #. for imap ALERT codes, account user@host
-#: camel/providers/imap/camel-imap-command.c:320
+#. we might get a ']' from a BAD response since we +12, but who cares?
+#: camel/providers/imap/camel-imap-command.c:323
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -10247,26 +10223,26 @@ msgstr ""
 "IMAP server %s@%s에서 경고:\n"
 "%s"
 
-#: camel/providers/imap/camel-imap-command.c:389
+#: camel/providers/imap/camel-imap-command.c:392
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "IMAP server로부터 예상치못한 답변: %s"
 
-#: camel/providers/imap/camel-imap-command.c:399
+#: camel/providers/imap/camel-imap-command.c:402
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "IMAP 명령이 실패했습니다: %s"
 
-#: camel/providers/imap/camel-imap-command.c:457
+#: camel/providers/imap/camel-imap-command.c:472
 msgid "Server response ended too soon."
 msgstr "서버의 답변이 너무 일찍 끝났습니다."
 
-#: camel/providers/imap/camel-imap-command.c:649
+#: camel/providers/imap/camel-imap-command.c:677
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP 서버의 답변에 %s 정보가 담겨있지 않습니다"
 
-#: camel/providers/imap/camel-imap-command.c:685
+#: camel/providers/imap/camel-imap-command.c:713
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP 서버로부터 예견치못한 OK 답변이 옴: %s"
@@ -10290,12 +10266,12 @@ msgstr "폴더가 지워지고 서버에서 다시 만들어졌습니다."
 msgid "Scanning for changed messages"
 msgstr "바뀐 메세지를 검사합니다"
 
-#: camel/providers/imap/camel-imap-folder.c:1938
+#: camel/providers/imap/camel-imap-folder.c:1940
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "메세지를 가져올 수 없습니다: %s"
 
-#: camel/providers/imap/camel-imap-folder.c:1975
+#: camel/providers/imap/camel-imap-folder.c:1980
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -10304,41 +10280,41 @@ msgstr ""
 "메세지를 얻을 수 없습니다: %s\n"
 "  %s"
 
-#: camel/providers/imap/camel-imap-folder.c:1975
+#: camel/providers/imap/camel-imap-folder.c:1980
 #: camel/providers/local/camel-maildir-folder.c:244
-#: camel/providers/local/camel-mbox-folder.c:418
+#: camel/providers/local/camel-mbox-folder.c:415
 #: camel/providers/local/camel-mh-folder.c:202
 msgid "No such message"
 msgstr "그런 메세지 없음"
 
-#: camel/providers/imap/camel-imap-folder.c:2017
-#: camel/providers/imap/camel-imap-folder.c:2620
+#: camel/providers/imap/camel-imap-folder.c:2022
+#: camel/providers/imap/camel-imap-folder.c:2625
 #: camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "이 메시지는 현재 보여줄 수가 없습니다"
 
-#: camel/providers/imap/camel-imap-folder.c:2283
-#: camel/providers/imap/camel-imap-folder.c:2353
+#: camel/providers/imap/camel-imap-folder.c:2288
+#: camel/providers/imap/camel-imap-folder.c:2358
 msgid "Fetching summary information for new messages"
 msgstr "새 메세지의 목록 정보를 가져오는 중입니다"
 
-#: camel/providers/imap/camel-imap-folder.c:2461
+#: camel/providers/imap/camel-imap-folder.c:2466
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "서버 응답이 불완전합니다: %d번 메세지에 대한 정보가 없습니다"
 
-#: camel/providers/imap/camel-imap-folder.c:2469
+#: camel/providers/imap/camel-imap-folder.c:2474
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "서버 응답이 불완전합니다: %d번 메세지에 대한 UID가 없습니다"
 
-#: camel/providers/imap/camel-imap-folder.c:2482
+#: camel/providers/imap/camel-imap-folder.c:2487
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "서버 응답이 갑작스럽습니다: 메세지 %d번 및 %d번의 UID가 같습니다"
 
-#: camel/providers/imap/camel-imap-folder.c:2658
+#: camel/providers/imap/camel-imap-folder.c:2663
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH 응답에서 메세지 본문을 찾을 수 없습니다."
 
@@ -10366,7 +10342,7 @@ msgstr "새 메일을 확인하는 중입니다"
 
 #: camel/providers/imap/camel-imap-provider.c:48
 msgid "Connection to Server"
-msgstr "서버에 연결하는 중입니다"
+msgstr "서버에 연결"
 
 #: camel/providers/imap/camel-imap-provider.c:50
 msgid "Use custom command to connect to server"
@@ -10423,80 +10399,80 @@ msgstr "IMAP 서버 %s"
 msgid "IMAP service for %s on %s"
 msgstr "IMAP 서비스 (사용자: %s, 위치: %s)"
 
-#: camel/providers/imap/camel-imap-store.c:547
-#: camel/providers/imap/camel-imap-store.c:567
-#: camel/providers/imap4/camel-imap4-store.c:214
-#: camel/providers/imap4/camel-imap4-store.c:230
-#: camel/providers/imapp/camel-imapp-store.c:231
-#: camel/providers/nntp/camel-nntp-store.c:209
-#: camel/providers/pop3/camel-pop3-store.c:175
-#: camel/providers/smtp/camel-smtp-transport.c:269
-#: camel/providers/smtp/camel-smtp-transport.c:285
+#: camel/providers/imap/camel-imap-store.c:559
+#: camel/providers/imap/camel-imap-store.c:587
+#: camel/providers/imapp/camel-imapp-store.c:249
+#: camel/providers/nntp/camel-nntp-store.c:228
+#: camel/providers/pop3/camel-pop3-store.c:184
+#: camel/providers/smtp/camel-smtp-transport.c:278
+#: camel/providers/smtp/camel-smtp-transport.c:304
 #, c-format
-msgid "Could not connect to %s (port %d): %s"
-msgstr "%s에 연결할 수 없습니다 (포트 %d): %s"
+msgid "Could not connect to %s (port %s): %s"
+msgstr "%s에 연결할 수 없습니다 (포트 %s): %s"
 
-#: camel/providers/imap/camel-imap-store.c:549
-#: camel/providers/imap4/camel-imap4-store.c:216
-#: camel/providers/pop3/camel-pop3-store.c:177
-#: camel/providers/smtp/camel-smtp-transport.c:271
+#: camel/providers/imap/camel-imap-store.c:561
+#: camel/providers/imap4/camel-imap4-store.c:210
+#: camel/providers/pop3/camel-pop3-store.c:186
+#: camel/providers/smtp/camel-smtp-transport.c:280
 msgid "SSL unavailable"
 msgstr "SSL을 사용할 수 없습니다"
 
-#: camel/providers/imap/camel-imap-store.c:564
-#: camel/providers/imap/camel-imap-store.c:841
-#: camel/providers/imap4/camel-imap4-store.c:227
-#: camel/providers/imapp/camel-imapp-store.c:228
-#: camel/providers/nntp/camel-nntp-store.c:206
-#: camel/providers/nntp/camel-nntp-store.c:224
-#: camel/providers/pop3/camel-pop3-store.c:192
+#: camel/providers/imap/camel-imap-store.c:584
+#: camel/providers/imap/camel-imap-store.c:861
+#: camel/providers/imap4/camel-imap4-store.c:221
+#: camel/providers/imapp/camel-imapp-store.c:246
+#: camel/providers/nntp/camel-nntp-store.c:225
+#: camel/providers/nntp/camel-nntp-store.c:243
+#: camel/providers/pop3/camel-pop3-store.c:210
 msgid "Connection cancelled"
 msgstr "연결이 취소됨"
 
-#: camel/providers/imap/camel-imap-store.c:675
-#: camel/providers/imap/camel-imap-store.c:706
-#: camel/providers/imap4/camel-imap4-store.c:282
+#: camel/providers/imap/camel-imap-store.c:695
+#: camel/providers/imap/camel-imap-store.c:726
+#: camel/providers/imap4/camel-imap4-store.c:246
+#: camel/providers/imap4/camel-imap4-store.c:259
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "보안 모드로 IMAP 서버 %s에 연결하는 데 실패했습니다: %s"
 
-#: camel/providers/imap/camel-imap-store.c:676
-#: camel/providers/pop3/camel-pop3-store.c:233
+#: camel/providers/imap/camel-imap-store.c:696
+#: camel/providers/pop3/camel-pop3-store.c:251
 msgid "SSL/TLS extension not supported."
 msgstr "SSL/TLS 확장 기능을 지원하지 않습니다."
 
-#: camel/providers/imap/camel-imap-store.c:707
-#: camel/providers/pop3/camel-pop3-store.c:274
+#: camel/providers/imap/camel-imap-store.c:727
+#: camel/providers/imap4/camel-imap4-store.c:247
+#: camel/providers/pop3/camel-pop3-store.c:292
 msgid "SSL negotiations failed"
 msgstr "SSL 협상이 실패했습니다"
 
-#: camel/providers/imap/camel-imap-store.c:844
+#: camel/providers/imap/camel-imap-store.c:864
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "\"%s\" 명령으로 연결할 수 없습니다: %s"
 
-#: camel/providers/imap/camel-imap-store.c:1268
+#: camel/providers/imap/camel-imap-store.c:1288
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "%s IMAP 서버는 요청한 %s 인증 방법을 지원하지 않습니다"
 
-#: camel/providers/imap/camel-imap-store.c:1278
-#: camel/providers/smtp/camel-smtp-transport.c:486
+#: camel/providers/imap/camel-imap-store.c:1298
+#: camel/providers/smtp/camel-smtp-transport.c:505
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "%s 인증 방법을 지원하지 않습니다"
 
-#: camel/providers/imap/camel-imap-store.c:1301
-#: camel/providers/imapp/camel-imapp-store.c:344
+#: camel/providers/imap/camel-imap-store.c:1321
+#: camel/providers/imapp/camel-imapp-store.c:362
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%s %s@%s에 대한 IMAP 열쇠글을 입력하십시오"
 
-#: camel/providers/imap/camel-imap-store.c:1315
+#: camel/providers/imap/camel-imap-store.c:1335
 msgid "You didn't enter a password."
 msgstr "열쇠글을 입력하지 않았습니다."
 
-#: camel/providers/imap/camel-imap-store.c:1344
+#: camel/providers/imap/camel-imap-store.c:1364
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -10507,35 +10483,35 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: camel/providers/imap/camel-imap-store.c:1863
-#: camel/providers/imap/camel-imap-store.c:2053
+#: camel/providers/imap/camel-imap-store.c:1883
+#: camel/providers/imap/camel-imap-store.c:2073
 #, c-format
 msgid "No such folder %s"
 msgstr "%s(이)라는 폴더가 없습니다"
 
-#: camel/providers/imap/camel-imap-store.c:1881
-#: camel/providers/imap/camel-imap-store.c:2259
-#: camel/providers/imap4/camel-imap4-store.c:764
+#: camel/providers/imap/camel-imap-store.c:1901
+#: camel/providers/imap/camel-imap-store.c:2279
+#: camel/providers/imap4/camel-imap4-store.c:745 mail/em-folder-tree.c:2637
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "폴더 이름 \"%s\"이(가) 올바르지 않습니다; \"%c\" 문자가 들어 있어 있습니다"
 
-#: camel/providers/imap/camel-imap-store.c:1939
-#: camel/providers/imap/camel-imap-store.c:2320
+#: camel/providers/imap/camel-imap-store.c:1959
+#: camel/providers/imap/camel-imap-store.c:2341
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "해당 상위 폴더에는 하위 폴더를 포함할 수 없습니다"
 
-#: camel/providers/imap/camel-imap-store.c:1994
-#: camel/providers/local/camel-maildir-store.c:139
-#: camel/providers/local/camel-mbox-store.c:212
+#: camel/providers/imap/camel-imap-store.c:2014
+#: camel/providers/local/camel-maildir-store.c:189
+#: camel/providers/local/camel-mbox-store.c:209
 #: camel/providers/local/camel-mh-store.c:236
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
 msgstr "`%s' 폴더를 만들 수 없습니다: 폴더가 이미 있습니다."
 
-#: camel/providers/imap/camel-imap-store.c:2270
+#: camel/providers/imap/camel-imap-store.c:2290
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "상위 폴더를 알 수 없습니다: %s"
@@ -10651,103 +10627,100 @@ msgid ""
 msgstr ""
 "이 옵션을 켜면 일반 텍스트 열쇠글을 이용해 IMAPv4rev1 서버에 연결합니다."
 
-#: camel/providers/imap4/camel-imap4-store.c:257
+#: camel/providers/imap4/camel-imap4-store.c:209
+#: camel/providers/imap4/camel-imap4-store.c:224
 #, c-format
-msgid ""
-"Failed to connect to IMAP server %s in secure mode: Server does not support "
-"STARTTLS"
-msgstr ""
-"보안 모드로 IMAP 서버 %s에 연결하는 데 실패했습니다: 서버가 STARTTLS를 지원하"
-"지 않습니다"
+msgid "Could not connect to %s: %s"
+msgstr "%s에 연결할 수 없습니다: %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:363
+#: camel/providers/imap4/camel-imap4-store.c:344
 #, c-format
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "IMAP 서버 %s에 %s 인증 방식으로 인증할 수 없습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:408
+#: camel/providers/imap4/camel-imap4-store.c:389
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr "%s사용자 %s, 호스트 %s의 IMAP 열쇠글을 입력하십시오"
 
-#: camel/providers/imap4/camel-imap4-store.c:478
+#: camel/providers/imap4/camel-imap4-store.c:459
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "IMAP 서버 %s에 %s 방법을 사용해 인증할 수 없습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:701
+#: camel/providers/imap4/camel-imap4-store.c:682
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "`%s' 폴더를 IMAP 서버 %s에서 얻을 수 없습니다: 알 수 없는 이유"
 
-#: camel/providers/imap4/camel-imap4-store.c:815
+#: camel/providers/imap4/camel-imap4-store.c:796
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "`%s' 폴더를 만들 수 없습니다: 메일함 이름이 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:821
+#: camel/providers/imap4/camel-imap4-store.c:802
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "`%s' 폴더를 만들 수 없습니다: 명령어가 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:852
+#: camel/providers/imap4/camel-imap4-store.c:833
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "`%s' 폴더를 지울 수 없습니다: 일반 폴더가 아닙니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:911
+#: camel/providers/imap4/camel-imap4-store.c:892
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "`%s' 폴더를 지울 수 없습니다: 메일함 이름이 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:916
+#: camel/providers/imap4/camel-imap4-store.c:897
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "`%s' 폴더를 지울 수 없습니다: 명령어가 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:936
+#: camel/providers/imap4/camel-imap4-store.c:917
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "`%s' 폴더의 이름을 '%s'(으)로 바꿀 수 없습니다: 일반 폴더가 아닙니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:968
+#: camel/providers/imap4/camel-imap4-store.c:949
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr ""
 "`%s' 폴더의 이름을 '%s'(으)로 바꿀 수 없습니다: 메일함 이름이 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:973
+#: camel/providers/imap4/camel-imap4-store.c:954
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "`%s' 폴더의 이름을 '%s'(으)로 바꿀 수 없습니다: 명령어가 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:1221
+#: camel/providers/imap4/camel-imap4-store.c:1202
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr ""
 "IMAP 서버 %3$s에서 `%2$s' 패턴에 대한 %1$s 정보를 가져올 수 없습니다: %4$s"
 
-#: camel/providers/imap4/camel-imap4-store.c:1223
+#: camel/providers/imap4/camel-imap4-store.c:1204
 msgid "Bad command"
 msgstr "명령어가 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:1299
+#: camel/providers/imap4/camel-imap4-store.c:1280
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "`%s' 폴더를 구독할 수 없습니다: 메일함 이름이 잘못되었습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:1304
+#: camel/providers/imap4/camel-imap4-store.c:1285
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "`%s' 폴더를 구독할 수 없습니다: 명령어가 틀렸습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:1364
+#: camel/providers/imap4/camel-imap4-store.c:1345
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "`%s' 폴더를 구독 해제할 수 없습니다: 메일함 이름이 잘못되었습니다"
 
-#: camel/providers/imap4/camel-imap4-store.c:1369
+#: camel/providers/imap4/camel-imap4-store.c:1350
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "`%s' 폴더를 구독 해제할 수 없습니다: 명령어가 틀렸습니다"
@@ -10787,7 +10760,7 @@ msgstr ""
 "\n"
 " !!! 실제 전자메일에 사용하지 마십시오  !!!\n"
 
-#: camel/providers/imapp/camel-imapp-store.c:328
+#: camel/providers/imapp/camel-imapp-store.c:346
 #, c-format
 msgid "Could not connect to POP server on %s"
 msgstr "%s의 POP 서버에 연결할 수 없습니다"
@@ -10797,20 +10770,20 @@ msgid "Index message body data"
 msgstr "메세지 본문의 데이터를 인덱스로 만들기"
 
 #. $HOME relative path + protocol string
-#: camel/providers/local/camel-local-folder.c:388
+#: camel/providers/local/camel-local-folder.c:391
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
-#: camel/providers/local/camel-local-folder.c:392
 #: camel/providers/local/camel-local-folder.c:395
+#: camel/providers/local/camel-local-folder.c:398
 #, c-format
 msgid "mailbox:%s (%s)"
 msgstr "메일함:%s (%s)"
 
 #. a full path + protocol
-#: camel/providers/local/camel-local-folder.c:399
+#: camel/providers/local/camel-local-folder.c:402
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -10870,7 +10843,7 @@ msgstr ""
 
 #: camel/providers/local/camel-local-store.c:142
 #: camel/providers/local/camel-local-store.c:253
-#: camel/providers/local/camel-mbox-store.c:355
+#: camel/providers/local/camel-mbox-store.c:352
 #: camel/providers/local/camel-spool-store.c:116
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -10908,19 +10881,19 @@ msgid "Could not rename '%s': %s"
 msgstr "'%s'의 이름을 바꿀 수 없습니다: %s"
 
 #: camel/providers/local/camel-local-store.c:423
-#: camel/providers/local/camel-mbox-store.c:284
+#: camel/providers/local/camel-mbox-store.c:281
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
 msgstr "폴더 요약 파일 `%s'을(를) 지울 수 없습니다: %s"
 
 #: camel/providers/local/camel-local-store.c:433
-#: camel/providers/local/camel-mbox-store.c:296
+#: camel/providers/local/camel-mbox-store.c:293
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
 msgstr "폴더 색인 파일 `%s'을(를) 지울 수 없습니다: %s"
 
 #: camel/providers/local/camel-local-store.c:456
-#: camel/providers/local/camel-mbox-store.c:320
+#: camel/providers/local/camel-mbox-store.c:317
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr "폴더 메타 파일 `%s'을(를) 지울 수 없습니다: %s"
@@ -10934,11 +10907,17 @@ msgstr "요약을 저장할 수 없습니다: %s: %s"
 msgid "Unable to add message to summary: unknown reason"
 msgstr "메세지를 요약에 더할 수 없습니다: 알 수 없는 이유"
 
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
 #. Inbox is always first
+#. translators: standard local mailbox names
 #: camel/providers/local/camel-maildir-folder.c:74
-#: camel/providers/local/camel-maildir-store.c:232
-#: camel/providers/local/camel-maildir-store.c:248
+#: camel/providers/local/camel-maildir-store.c:216
+#: camel/providers/local/camel-maildir-store.c:288
+#: camel/providers/local/camel-maildir-store.c:510
+#: camel/providers/local/camel-maildir-store.c:523
+#: camel/providers/local/camel-spool-store.c:451
 #: mail/em-folder-tree-model.c:212 mail/em-folder-tree-model.c:214
+#: mail/mail-component.c:134
 msgid "Inbox"
 msgstr "받은 편지함"
 
@@ -10954,10 +10933,10 @@ msgstr "메일폴더에 메세지를 덧붙일 수 없습니다: %s: %s"
 #: camel/providers/local/camel-maildir-folder.c:243
 #: camel/providers/local/camel-maildir-folder.c:257
 #: camel/providers/local/camel-maildir-folder.c:266
-#: camel/providers/local/camel-mbox-folder.c:417
-#: camel/providers/local/camel-mbox-folder.c:436
-#: camel/providers/local/camel-mbox-folder.c:467
-#: camel/providers/local/camel-mbox-folder.c:475
+#: camel/providers/local/camel-mbox-folder.c:414
+#: camel/providers/local/camel-mbox-folder.c:433
+#: camel/providers/local/camel-mbox-folder.c:464
+#: camel/providers/local/camel-mbox-folder.c:472
 #: camel/providers/local/camel-mh-folder.c:201
 #: camel/providers/local/camel-mh-folder.c:212
 #: camel/providers/local/camel-mh-folder.c:221
@@ -10973,46 +10952,47 @@ msgstr ""
 msgid "Invalid message contents"
 msgstr "잘못된 메세지 내용"
 
-#: camel/providers/local/camel-maildir-store.c:109
-#: camel/providers/local/camel-mbox-store.c:154
+#: camel/providers/local/camel-maildir-store.c:145
+#: camel/providers/local/camel-maildir-store.c:170
+#: camel/providers/local/camel-mbox-store.c:181
+#: camel/providers/local/camel-mbox-store.c:193
+#, c-format
+msgid "Cannot create folder `%s': %s"
+msgstr "`%s' 폴더를 만들 수 없습니다: %s"
+
+#: camel/providers/local/camel-maildir-store.c:158
+#: camel/providers/local/camel-mbox-store.c:151
 #: camel/providers/local/camel-mh-store.c:204
 #, c-format
 msgid "Cannot get folder `%s': %s"
 msgstr "`%s' 폴더를 얻을 수 없습니다: %s"
 
-#: camel/providers/local/camel-maildir-store.c:113
-#: camel/providers/local/camel-mbox-store.c:162
+#: camel/providers/local/camel-maildir-store.c:162
+#: camel/providers/local/camel-mbox-store.c:159
 #: camel/providers/local/camel-mh-store.c:211
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
 msgstr "`%s' 폴더를 얻을 수 없습니다: 폴더가 없습니다."
 
-#: camel/providers/local/camel-maildir-store.c:121
-#: camel/providers/local/camel-mbox-store.c:184
-#: camel/providers/local/camel-mbox-store.c:196
-#, c-format
-msgid "Cannot create folder `%s': %s"
-msgstr "`%s' 폴더를 만들 수 없습니다: %s"
-
-#: camel/providers/local/camel-maildir-store.c:136
+#: camel/providers/local/camel-maildir-store.c:186
 #, c-format
 msgid "Cannot get folder `%s': not a maildir directory."
 msgstr "`%s' 폴더를 얻을 수 없습니다: 메일 디렉토리가 아닙니다."
 
-#: camel/providers/local/camel-maildir-store.c:175
-#: camel/providers/local/camel-maildir-store.c:213
+#: camel/providers/local/camel-maildir-store.c:231
+#: camel/providers/local/camel-maildir-store.c:269
 #: camel/providers/local/camel-mh-store.c:260
 #, c-format
 msgid "Could not delete folder `%s': %s"
 msgstr "폴더 `%s'을(를) 지울 수 없습니다: %s"
 
-#: camel/providers/local/camel-maildir-store.c:177
+#: camel/providers/local/camel-maildir-store.c:233
 msgid "not a maildir directory"
 msgstr "메일폴더 디렉토리가 아닙니다"
 
-#: camel/providers/local/camel-maildir-store.c:355
-#: camel/providers/local/camel-spool-store.c:284
-#: camel/providers/local/camel-spool-store.c:314
+#: camel/providers/local/camel-maildir-store.c:435
+#: camel/providers/local/camel-spool-store.c:318
+#: camel/providers/local/camel-spool-store.c:332
 #, c-format
 msgid "Could not scan folder `%s': %s"
 msgstr "`%s' 폴더를 검사할 수 없습니다: %s"
@@ -11039,48 +11019,48 @@ msgstr "새 메세지를 확인하는 중입니다"
 msgid "Storing folder"
 msgstr "폴더를 저장하는 중입니다"
 
-#: camel/providers/local/camel-mbox-folder.c:225
-#: camel/providers/local/camel-spool-folder.c:148
+#: camel/providers/local/camel-mbox-folder.c:222
+#: camel/providers/local/camel-spool-folder.c:176
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "%s의 폴더 잠금을 만들 수 없습니다: %s"
 
-#: camel/providers/local/camel-mbox-folder.c:284
+#: camel/providers/local/camel-mbox-folder.c:281
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "메일함을 열 수 없습니다: %s: %s\n"
 
-#: camel/providers/local/camel-mbox-folder.c:344
+#: camel/providers/local/camel-mbox-folder.c:341
 msgid "Mail append cancelled"
 msgstr "메일 덧붙이기가 취소되었습니다"
 
-#: camel/providers/local/camel-mbox-folder.c:347
+#: camel/providers/local/camel-mbox-folder.c:344
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "메일함에 메세지를 덧붙일 수 없습니다: %s: %s"
 
-#: camel/providers/local/camel-mbox-folder.c:468
+#: camel/providers/local/camel-mbox-folder.c:465
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "폴더가 복구 불능 상태로 손상된 것으로 보입니다."
 
-#: camel/providers/local/camel-mbox-folder.c:476
+#: camel/providers/local/camel-mbox-folder.c:473
 #: camel/providers/local/camel-mh-folder.c:222
 msgid "Message construction failed."
 msgstr "메세지 만들기가 실패했습니다."
 
-#: camel/providers/local/camel-mbox-store.c:176
-#: camel/providers/local/camel-mbox-store.c:361
+#: camel/providers/local/camel-mbox-store.c:173
+#: camel/providers/local/camel-mbox-store.c:358
 msgid "Cannot create a folder by this name."
 msgstr "이 이름의 폴더를 만들 수 없습니다."
 
-#: camel/providers/local/camel-mbox-store.c:206
+#: camel/providers/local/camel-mbox-store.c:203
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
 msgstr "%s 폴더를 얻을 수 없습니다: 일반 파일이 아닙니다."
 
-#: camel/providers/local/camel-mbox-store.c:236
-#: camel/providers/local/camel-mbox-store.c:247
-#: camel/providers/local/camel-mbox-store.c:270
+#: camel/providers/local/camel-mbox-store.c:233
+#: camel/providers/local/camel-mbox-store.c:244
+#: camel/providers/local/camel-mbox-store.c:267
 #, c-format
 msgid ""
 "Could not delete folder `%s':\n"
@@ -11089,40 +11069,40 @@ msgstr ""
 "폴더 `%s'을(를) 지울 수 없습니다:\n"
 "%s"
 
-#: camel/providers/local/camel-mbox-store.c:255
+#: camel/providers/local/camel-mbox-store.c:252
 #, c-format
 msgid "`%s' is not a regular file."
 msgstr "`%s'이(가) 일반 파일이 아닙니다."
 
-#: camel/providers/local/camel-mbox-store.c:262
+#: camel/providers/local/camel-mbox-store.c:259
 #, c-format
 msgid "Folder `%s' is not empty. Not deleted."
 msgstr "폴더 `%s'이(가) 비어 있지 않습니다. 지우지 않습니다."
 
-#: camel/providers/local/camel-mbox-store.c:374
+#: camel/providers/local/camel-mbox-store.c:371
 #, c-format
 msgid "Cannot create directory `%s': %s."
 msgstr "'%s' 디렉토리를 만들 수 없습니다: %s."
 
-#: camel/providers/local/camel-mbox-store.c:388
+#: camel/providers/local/camel-mbox-store.c:385
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "폴더를 만들 수 없습니다: %s: %s"
 
-#: camel/providers/local/camel-mbox-store.c:390
+#: camel/providers/local/camel-mbox-store.c:387
 msgid "Folder already exists"
 msgstr "폴더가 이미 있습니다"
 
-#: camel/providers/local/camel-mbox-store.c:472
+#: camel/providers/local/camel-mbox-store.c:469
 msgid "The new folder name is illegal."
 msgstr "새 폴더의 이름이 올바르지 않습니다."
 
-#: camel/providers/local/camel-mbox-store.c:485
+#: camel/providers/local/camel-mbox-store.c:482
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
 msgstr "`%s'의 이름을 바꿀 수 없습니다: `%s': %s"
 
-#: camel/providers/local/camel-mbox-store.c:560
+#: camel/providers/local/camel-mbox-store.c:557
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "'%s'을(를) %s(으)로 이름을 바꿀 수 없습니다: %s"
@@ -11313,7 +11293,7 @@ msgstr ""
 "폴더가 망가졌을 것입니다. `%s'에 사본을 저장합니다"
 
 #: camel/providers/nntp/camel-nntp-auth.c:44
-#: camel/providers/nntp/camel-nntp-store.c:1126
+#: camel/providers/nntp/camel-nntp-store.c:1161
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "%s@%s에 대한 NNTP 열쇠글을 입력하십시오"
@@ -11413,29 +11393,22 @@ msgid ""
 "password."
 msgstr "이 옵션을 켜면 일반 텍스트 열쇠글을 이용해 NNTP 서버에 인증합니다."
 
-#: camel/providers/nntp/camel-nntp-store.c:118
-#: camel/providers/nntp/camel-nntp-store.c:1233
-#: camel/providers/nntp/camel-nntp-store.c:1331
-#, c-format
-msgid "NNTP Command failed: %s"
-msgstr "NNTP 명령이 실패했습니다: %s"
-
-#: camel/providers/nntp/camel-nntp-store.c:227
+#: camel/providers/nntp/camel-nntp-store.c:246
 #, c-format
 msgid "Could not read greeting from %s: %s"
 msgstr "%s에서 초기 메세지를 읽을 수 없습니다: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:239
+#: camel/providers/nntp/camel-nntp-store.c:258
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP 서버 %s에서 오류 코드 %d을(를) 리턴했습니다: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:403
+#: camel/providers/nntp/camel-nntp-store.c:427
 #, c-format
 msgid "USENET News via %s"
 msgstr "%s 서버를 통한 USENET 뉴스"
 
-#: camel/providers/nntp/camel-nntp-store.c:777
+#: camel/providers/nntp/camel-nntp-store.c:816
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -11446,7 +11419,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: camel/providers/nntp/camel-nntp-store.c:872
+#: camel/providers/nntp/camel-nntp-store.c:910
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -11456,7 +11429,7 @@ msgstr ""
 "\n"
 "그런 뉴스그룹이 없습니다. 선택한 항목이 상위 폴더일 것입니다."
 
-#: camel/providers/nntp/camel-nntp-store.c:904
+#: camel/providers/nntp/camel-nntp-store.c:942
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -11466,32 +11439,37 @@ msgstr ""
 "\n"
 "뉴스그룹이 없습니다!"
 
-#: camel/providers/nntp/camel-nntp-store.c:929
+#: camel/providers/nntp/camel-nntp-store.c:967
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "뉴스 저장고에 폴더를 만들 수 없습니다: 대신에 구독하십시오."
 
-#: camel/providers/nntp/camel-nntp-store.c:937
+#: camel/providers/nntp/camel-nntp-store.c:975
 msgid "You cannot rename a folder in a News store."
 msgstr "뉴스 저장고의 폴더의 이름을 바꿀 수 없습니다."
 
-#: camel/providers/nntp/camel-nntp-store.c:945
+#: camel/providers/nntp/camel-nntp-store.c:983
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "뉴스 저장고의 폴더를 지울 수 없습니다: 대신에 구독 해제하십시오."
 
-#: camel/providers/nntp/camel-nntp-store.c:1118
-msgid "Authentication requested but not username provided"
-msgstr "인증을 요청했지만 사용자 이름을 넘기지 않았습니다"
+#: camel/providers/nntp/camel-nntp-store.c:1153
+msgid "Authentication requested but no username provided"
+msgstr "인증을 요청했지만 사용자 이름이 오지 않았습니다"
 
-#: camel/providers/nntp/camel-nntp-store.c:1146
+#: camel/providers/nntp/camel-nntp-store.c:1165
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "서버에 인증하는 데 실패했습니다: %s"
 
-#: camel/providers/nntp/camel-nntp-store.c:1262
+#: camel/providers/nntp/camel-nntp-store.c:1281
+#, c-format
+msgid "NNTP Command failed: %s"
+msgstr "NNTP 명령이 실패했습니다: %s"
+
+#: camel/providers/nntp/camel-nntp-store.c:1337
 msgid "Not connected."
 msgstr "연결되지 않았습니다."
 
-#: camel/providers/nntp/camel-nntp-store.c:1311
+#: camel/providers/nntp/camel-nntp-store.c:1390
 #, c-format
 msgid "No such folder: %s"
 msgstr "그런 폴더가 없습니다: %s"
@@ -11590,30 +11568,30 @@ msgstr ""
 "합니다. 이 옵션을 지원한다고 말하고 있는 서버에서 조차 사용자에 따라 동작하"
 "지 않을 수도 있습니다."
 
-#: camel/providers/pop3/camel-pop3-store.c:195
+#: camel/providers/pop3/camel-pop3-store.c:213
 #, c-format
-msgid "Could not connect to POP server %s (port %d): %s"
-msgstr "POP 서버 %s(포트 %d)에 연결할 수 없습니다: %s"
-
-#: camel/providers/pop3/camel-pop3-store.c:214
-#, c-format
-msgid "Failed to read a valid greeting from POP server %s (port %d)"
-msgstr "POP 서버 %s(포트 %d번)에서 올바른 인사말을 읽는 데 실패했습니다"
+msgid "Could not connect to POP server %s (port %s): %s"
+msgstr "POP 서버 %s(포트 %s)에 연결할 수 없습니다: %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:232
-#: camel/providers/pop3/camel-pop3-store.c:261
-#: camel/providers/pop3/camel-pop3-store.c:273
+#, c-format
+msgid "Failed to read a valid greeting from POP server %s (port %s)"
+msgstr "POP 서버 %s(포트 %s)에서 올바른 인사말을 읽는 데 실패했습니다"
+
+#: camel/providers/pop3/camel-pop3-store.c:250
+#: camel/providers/pop3/camel-pop3-store.c:279
+#: camel/providers/pop3/camel-pop3-store.c:291
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "POP 서버 %s에 보안 모드로 연결하는 데 실패했습니다: %s"
 
-#: camel/providers/pop3/camel-pop3-store.c:371
+#: camel/providers/pop3/camel-pop3-store.c:389
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "POP 서버 %s에 연결할 수 없습니다"
 
-#: camel/providers/pop3/camel-pop3-store.c:412
-#: camel/providers/pop3/camel-pop3-store.c:526
+#: camel/providers/pop3/camel-pop3-store.c:430
+#: camel/providers/pop3/camel-pop3-store.c:544
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -11621,28 +11599,28 @@ msgid ""
 msgstr ""
 "POP 서버 %s에 연결할 수 없습니다: 요청한 인증 방법을 지원하지 않습니다."
 
-#: camel/providers/pop3/camel-pop3-store.c:428
+#: camel/providers/pop3/camel-pop3-store.c:446
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "POP 서버 %2$s에 SASL `%1$s' 로그인이 실패했습니다: %3$s"
 
-#: camel/providers/pop3/camel-pop3-store.c:440
+#: camel/providers/pop3/camel-pop3-store.c:458
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP 서버 %s에 로그인할 수 없습니다: SASL 프로토콜 오류"
 
-#: camel/providers/pop3/camel-pop3-store.c:459
+#: camel/providers/pop3/camel-pop3-store.c:477
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "POP 서버 %s에 인증하는 데 실패했습니다: %s"
 
-#: camel/providers/pop3/camel-pop3-store.c:485
+#: camel/providers/pop3/camel-pop3-store.c:503
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%s사용자이름 %s, 호스트 %s에 대한 POP 열쇠글을 입력하십시오"
 
-#: camel/providers/pop3/camel-pop3-store.c:540
-#: camel/providers/pop3/camel-pop3-store.c:553
+#: camel/providers/pop3/camel-pop3-store.c:558
+#: camel/providers/pop3/camel-pop3-store.c:571
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -11651,7 +11629,7 @@ msgstr ""
 "POP 서버 %s에 연결하는 데 실패했습니다.\n"
 "열쇠글을 보내는 데 오류가 발생했습니다: %s"
 
-#: camel/providers/pop3/camel-pop3-store.c:547
+#: camel/providers/pop3/camel-pop3-store.c:565
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -11660,7 +11638,7 @@ msgstr ""
 "POP 서버 %s에 연결할 수 없습니다.\n"
 "사용자 이름을 보내는 데 오류가 발생했습니다: %s"
 
-#: camel/providers/pop3/camel-pop3-store.c:652
+#: camel/providers/pop3/camel-pop3-store.c:671
 #, c-format
 msgid "No such folder `%s'."
 msgstr "`%s'(이)라는 폴더가 없습니다."
@@ -11826,40 +11804,40 @@ msgstr "인증이 임시로 실패했습니다"
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:308
+#: camel/providers/smtp/camel-smtp-transport.c:327
 msgid "Welcome response error"
 msgstr "Welcome 응답에 오류가 있습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:343
-#: camel/providers/smtp/camel-smtp-transport.c:382
+#: camel/providers/smtp/camel-smtp-transport.c:362
+#: camel/providers/smtp/camel-smtp-transport.c:401
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "SMTP 서버 %s에 보안 모드로 연결하는 데 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:344
+#: camel/providers/smtp/camel-smtp-transport.c:363
 msgid "server does not appear to support SSL"
 msgstr "서버가 SSL을 지원하지 않는 것처럼 보입니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:358
+#: camel/providers/smtp/camel-smtp-transport.c:377
 #, c-format
 msgid "STARTTLS command failed: %s"
 msgstr "STARTTLS 명령이 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:373
+#: camel/providers/smtp/camel-smtp-transport.c:392
 msgid "STARTTLS command failed"
 msgstr "STARTTLS 명령이 실패했습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:476
+#: camel/providers/smtp/camel-smtp-transport.c:495
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "SMTP 서버 %s에서 요청한 인증 타입 %s을(를) 지원하지 않습니다."
 
-#: camel/providers/smtp/camel-smtp-transport.c:514
+#: camel/providers/smtp/camel-smtp-transport.c:533
 #, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
 msgstr "%s사용자이름 %s, 호스트 %s의 SMTP 열쇠글을 입력하십시오"
 
-#: camel/providers/smtp/camel-smtp-transport.c:533
+#: camel/providers/smtp/camel-smtp-transport.c:552
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -11870,93 +11848,93 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: camel/providers/smtp/camel-smtp-transport.c:657
+#: camel/providers/smtp/camel-smtp-transport.c:676
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP 서버 %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:659
+#: camel/providers/smtp/camel-smtp-transport.c:678
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "%s 서버를 통한 SMTP 메일"
 
-#: camel/providers/smtp/camel-smtp-transport.c:677
+#: camel/providers/smtp/camel-smtp-transport.c:696
 msgid "Cannot send message: service not connected."
 msgstr "메세지를 보낼 수 없습니다: 서비스에 연결되지 않았습니다."
 
-#: camel/providers/smtp/camel-smtp-transport.c:683
+#: camel/providers/smtp/camel-smtp-transport.c:702
 msgid "Cannot send message: sender address not valid."
 msgstr "메세지를 보낼 수 없습니다; 보내는 사람 주소가 올바르지 않습니다."
 
-#: camel/providers/smtp/camel-smtp-transport.c:687
+#: camel/providers/smtp/camel-smtp-transport.c:706
 msgid "Sending message"
 msgstr "메세지를 보냄"
 
-#: camel/providers/smtp/camel-smtp-transport.c:702
+#: camel/providers/smtp/camel-smtp-transport.c:721
 msgid "Cannot send message: no recipients defined."
 msgstr "메세지를 보낼 수 없습니다: 받는 사람이 정의되지 않았습니다."
 
-#: camel/providers/smtp/camel-smtp-transport.c:713
+#: camel/providers/smtp/camel-smtp-transport.c:732
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "메세지를 보낼 수 없습니다: 받는 사람 중에 한 명 이상이 잘못되었습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:885
+#: camel/providers/smtp/camel-smtp-transport.c:901
 msgid "SMTP Greeting"
 msgstr "SMTP 인사"
 
-#: camel/providers/smtp/camel-smtp-transport.c:934
+#: camel/providers/smtp/camel-smtp-transport.c:927
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO 명령이 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:951
+#: camel/providers/smtp/camel-smtp-transport.c:944
 msgid "HELO command failed"
 msgstr "HELO 명령이 실패했습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1017
+#: camel/providers/smtp/camel-smtp-transport.c:1010
 msgid "SMTP Authentication"
 msgstr "SMTP 인증"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1023
+#: camel/providers/smtp/camel-smtp-transport.c:1016
 msgid "Error creating SASL authentication object."
 msgstr "SASL 인증 오브젝트를 만드는 데 오류가 발생했습니다."
 
-#: camel/providers/smtp/camel-smtp-transport.c:1040
-#: camel/providers/smtp/camel-smtp-transport.c:1051
+#: camel/providers/smtp/camel-smtp-transport.c:1033
+#: camel/providers/smtp/camel-smtp-transport.c:1044
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH 명령이 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1057
+#: camel/providers/smtp/camel-smtp-transport.c:1050
 msgid "AUTH command failed"
 msgstr "AUTH 명령이 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1119
+#: camel/providers/smtp/camel-smtp-transport.c:1112
 msgid "Bad authentication response from server.\n"
 msgstr "서버에서 인증 응답이 잘못되었습니다.\n"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1144
+#: camel/providers/smtp/camel-smtp-transport.c:1137
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM 요청이 실패했습니다: %s: 메일을 보내지 않았습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1161
+#: camel/providers/smtp/camel-smtp-transport.c:1154
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM 명령이 실패했습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1185
+#: camel/providers/smtp/camel-smtp-transport.c:1178
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO 명령이 실패했습니다: %s: 메일을 보내지 않았습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1204
+#: camel/providers/smtp/camel-smtp-transport.c:1197
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> 실패했습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1243
-#: camel/providers/smtp/camel-smtp-transport.c:1301
-#: camel/providers/smtp/camel-smtp-transport.c:1320
+#: camel/providers/smtp/camel-smtp-transport.c:1236
+#: camel/providers/smtp/camel-smtp-transport.c:1294
+#: camel/providers/smtp/camel-smtp-transport.c:1313
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA 명령이 실패했습니다: %s: 메일을 보내지 않았습니다"
@@ -11964,26 +11942,26 @@ msgstr "DATA 명령이 실패했습니다: %s: 메일을 보내지 않았습니�
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: camel/providers/smtp/camel-smtp-transport.c:1260
-#: camel/providers/smtp/camel-smtp-transport.c:1336
+#: camel/providers/smtp/camel-smtp-transport.c:1253
+#: camel/providers/smtp/camel-smtp-transport.c:1329
 msgid "DATA command failed"
 msgstr "DATA 명령이 실패했습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1359
+#: camel/providers/smtp/camel-smtp-transport.c:1352
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET 명령이 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1375
+#: camel/providers/smtp/camel-smtp-transport.c:1368
 msgid "RSET command failed"
 msgstr "RSET 명령이 실패했습니다"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1398
+#: camel/providers/smtp/camel-smtp-transport.c:1391
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT 명령이 실패했습니다: %s"
 
-#: camel/providers/smtp/camel-smtp-transport.c:1412
+#: camel/providers/smtp/camel-smtp-transport.c:1405
 msgid "QUIT command failed"
 msgstr "QUIT 명령이 실패했습니다"
 
@@ -12160,7 +12138,7 @@ msgstr "제목 없는 메세지"
 msgid "Open file"
 msgstr "파일 열기"
 
-#: composer/e-msg-composer.c:1983 mail/mail-account-gui.c:1491
+#: composer/e-msg-composer.c:1983 mail/mail-account-gui.c:1555
 msgid "Autogenerated"
 msgstr "자동으로 만들기"
 
@@ -12199,7 +12177,7 @@ msgid "Attached message"
 msgid_plural "%d attached messages"
 msgstr[0] "첨부한 메세지 %d개"
 
-#: composer/e-msg-composer.c:4341
+#: composer/e-msg-composer.c:4342
 msgid ""
 "<b>(The composer contains a non-text message body, which cannot be edited.)"
 "<b>"
@@ -12309,6 +12287,10 @@ msgstr ""
 "세지를 임시 보관함 폴더에 저장하도록 해야 합니다. 그래야 나중에 그 메세지를 "
 "계속 작성할 수 있습니다."
 
+#: composer/mail-composer-errors.xml.h:33
+msgid "_Discard Changes"
+msgstr "바뀐 내용 버리기(_D)"
+
 #: composer/mail-composer-errors.xml.h:34
 msgid "Save Message"
 msgstr "메세지 저장"
@@ -12394,7 +12376,7 @@ msgstr "<b>부재 중 메세지:</b>"
 
 #: designs/OOA/ooa.glade.h:5
 msgid "<b>Status:</b>"
-msgstr "<b>상태:<b>"
+msgstr "<b>상태:</b>"
 
 #: designs/OOA/ooa.glade.h:6
 msgid ""
@@ -12500,13 +12482,13 @@ msgstr ""
 msgid "Overwrite file?"
 msgstr "파일을 덮어쓰시겠습니까?"
 
-#: e-util/e-passwords.c:463
+#: e-util/e-passwords.c:464
 msgid "_Remember this password"
 msgstr "이 열쇠글 기억(_R)"
 
-#: e-util/e-passwords.c:464
+#: e-util/e-passwords.c:465
 msgid "_Remember this password for the remainder of this session"
-msgstr "이 세션에서 이 열쇠글을 기억합니다(_R)"
+msgstr "이번 세션에서 이 열쇠글 기억(_R)"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -12528,7 +12510,7 @@ msgstr "%Y/%m/%d (%a) %H:%M"
 #. in 12-hour format, without minutes or seconds.
 #: e-util/e-time-utils.c:195
 msgid "%a %m/%d/%Y %I %p"
-msgstr "%Y/%m/%d (%a) %p %l시"
+msgstr "%Y/%m/%d (%a) %p %I시"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
@@ -12562,7 +12544,7 @@ msgstr "%Y/%m/%d %H:%M"
 #. without minutes or seconds.
 #: e-util/e-time-utils.c:230
 msgid "%m/%d/%Y %I %p"
-msgstr "%Y/%m/%d %p %l시"
+msgstr "%Y/%m/%d %p %I시"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
@@ -12604,7 +12586,7 @@ msgstr "%H:%M"
 #. strptime format for hour and AM/PM, 12-hour format.
 #: e-util/e-time-utils.c:356
 msgid "%I %p"
-msgstr "%p %l시"
+msgstr "%p %I시"
 
 #: filter/filter-datespec.c:73
 #, c-format
@@ -12908,10 +12890,10 @@ msgstr "Evolution 메일 작성기 설정 컨트롤"
 msgid "Evolution Mail preferences control"
 msgstr "Evolution 메일 기본 설정 컨트롤"
 
-#: mail/GNOME_Evolution_Mail.server.in.in.h:11 mail/em-folder-view.c:419
+#: mail/GNOME_Evolution_Mail.server.in.in.h:11 mail/em-folder-view.c:451
 #: mail/importers/elm-importer.c:418 mail/importers/netscape-importer.c:1902
-#: mail/importers/pine-importer.c:474 mail/mail-component.c:510
-#: mail/mail-component.c:561
+#: mail/importers/pine-importer.c:474 mail/mail-component.c:516
+#: mail/mail-component.c:567
 msgid "Mail"
 msgstr "메일"
 
@@ -12940,36 +12922,36 @@ msgstr "계정 이름"
 msgid "Protocol"
 msgstr "프로토콜"
 
-#: mail/em-composer-prefs.c:305 mail/em-composer-prefs.c:424
-#: mail/mail-config.c:1045
+#: mail/em-composer-prefs.c:305 mail/em-composer-prefs.c:428
+#: mail/mail-config.c:935
 msgid "Unnamed"
 msgstr "이름없음"
 
-#: mail/em-composer-prefs.c:909
+#: mail/em-composer-prefs.c:913
 msgid "Language(s)"
 msgstr "언어"
 
-#: mail/em-composer-prefs.c:955
+#: mail/em-composer-prefs.c:959
 msgid "Add signature script"
 msgstr "서명 스크립트 더하기"
 
-#: mail/em-composer-prefs.c:975
+#: mail/em-composer-prefs.c:979
 msgid "Signature(s)"
 msgstr "서명"
 
 # 번역은 적합하지 않다.
-#: mail/em-composer-utils.c:889
+#: mail/em-composer-utils.c:902
 msgid "-------- Forwarded Message --------"
 msgstr "-------- Forwarded Message --------"
 
-#: mail/em-composer-utils.c:1502
+#: mail/em-composer-utils.c:1518
 msgid "an unknown sender"
 msgstr "알 수 없는 보낸 이"
 
 #. Note to translators: this is the attribution string used when quoting messages.
 #. * each ${Variable} gets replaced with a value. To see a full list of available
 #. * variables, see em-composer-utils.c:1514
-#: mail/em-composer-utils.c:1549
+#: mail/em-composer-utils.c:1565
 msgid ""
 "On ${AbbrevWeekdayName}, ${Year}-${Month}-${Day} at ${24Hour}:${Minute} "
 "${TimeZone}, ${Sender} wrote:"
@@ -12982,7 +12964,7 @@ msgid "_Filter Rules"
 msgstr "거르게 규칙(_F)"
 
 #: mail/em-filter-folder-element.c:237 mail/em-vfolder-rule.c:494
-#: mail/mail-account-gui.c:1347
+#: mail/mail-account-gui.c:1411
 msgid "Select Folder"
 msgstr "폴더 선택"
 
@@ -13132,7 +13114,7 @@ msgstr "플래그 지정 아님"
 msgid "Junk Test"
 msgstr "정크메일 테스트"
 
-#: mail/em-filter-i18n.h:37 mail/em-folder-view.c:932
+#: mail/em-filter-i18n.h:37 mail/em-folder-view.c:964
 #: widgets/misc/e-expander.c:189
 msgid "Label"
 msgstr "꼬리표"
@@ -13242,8 +13224,8 @@ msgstr "시작함"
 msgid "Stop Processing"
 msgstr "처리 중지"
 
-#: mail/em-filter-i18n.h:64 mail/em-format-html.c:1550
-#: mail/em-format-quote.c:305 mail/em-format.c:808 mail/em-mailer-prefs.c:87
+#: mail/em-filter-i18n.h:64 mail/em-format-html.c:1552
+#: mail/em-format-quote.c:305 mail/em-format.c:833 mail/em-mailer-prefs.c:87
 #: mail/message-list.etspec.h:13 mail/message-tag-followup.c:329
 #: smime/lib/e-cert.c:1131
 msgid "Subject"
@@ -13258,21 +13240,21 @@ msgstr "상태 설정 없애기"
 msgid "<b>Then</b>"
 msgstr "<b>동작</b> "
 
-#: mail/em-folder-browser.c:129
+#: mail/em-folder-browser.c:130
 msgid "Create _Virtual Folder From Search..."
 msgstr "찾은 것에서 가상 폴더 만들기(_V)..."
 
-#: mail/em-folder-properties.c:122
+#: mail/em-folder-properties.c:124
 msgid "Folder Properties"
 msgstr "폴더 등록 정보"
 
 #. TODO: can this be done in a loop?
-#: mail/em-folder-properties.c:161
+#: mail/em-folder-properties.c:171
 msgid "Total message:"
 msgid_plural "Total messages:"
 msgstr[0] "전체 메세지:"
 
-#: mail/em-folder-properties.c:173
+#: mail/em-folder-properties.c:183
 msgid "Unread message:"
 msgid_plural "Unread messages:"
 msgstr[0] "읽지 않은 메세지:"
@@ -13281,25 +13263,25 @@ msgstr[0] "읽지 않은 메세지:"
 msgid "<click here to select a folder>"
 msgstr "<폴더를 고를려면 여기를 누르십시오>"
 
-#: mail/em-folder-selector.c:166
+#: mail/em-folder-selector.c:138
 msgid "Create New Folder"
 msgstr "새 폴더 만들기"
 
-#: mail/em-folder-selector.c:166 mail/em-folder-tree.c:2430
-#: mail/mail-component.c:711
+#: mail/em-folder-selector.c:138 mail/em-folder-tree.c:2440
+#: mail/mail-component.c:717
 msgid "Specify where to create the folder:"
 msgstr "폴더 만들 곳을 지정하십시오:"
 
-#: mail/em-folder-selector.c:304
+#: mail/em-folder-selector.c:270
 msgid "Create"
 msgstr "만들기"
 
-#: mail/em-folder-selector.c:308
+#: mail/em-folder-selector.c:274
 msgid "Folder _name:"
 msgstr "폴더 이름(_N):"
 
 #: mail/em-folder-tree-model.c:200 mail/em-folder-tree-model.c:202
-#: mail/mail-vfolder.c:872
+#: mail/mail-vfolder.c:883
 msgid "VFolders"
 msgstr "가상 폴더"
 
@@ -13309,7 +13291,7 @@ msgstr "가상 폴더"
 msgid "UNMATCHED"
 msgstr "해당 없음"
 
-#: mail/em-folder-tree-model.c:476 mail/em-folder-tree-model.c:780
+#: mail/em-folder-tree-model.c:491 mail/em-folder-tree-model.c:795
 msgid "Loading..."
 msgstr "읽어들이는 중..."
 
@@ -13345,231 +13327,236 @@ msgstr "폴더로 복사(_C)"
 msgid "_Move to Folder"
 msgstr "폴더로 이동(_M)"
 
-#: mail/em-folder-tree.c:1014 mail/em-folder-tree.c:2216
-#: mail/em-folder-view.c:803 mail/message-list.c:1703
+#: mail/em-folder-tree.c:1014 mail/em-folder-tree.c:2226
+#: mail/em-folder-view.c:835 mail/message-list.c:1703
 msgid "_Move"
-msgstr "이동(_N)"
+msgstr "이동(_M)"
 
 #: mail/em-folder-tree.c:1016 mail/message-list.c:1705
 msgid "Cancel _Drag"
 msgstr "드래그 취소(_D)"
 
-#: mail/em-folder-tree.c:2203 mail/em-folder-tree.c:2216
-#: mail/em-folder-view.c:803 mail/em-folder-view.c:817
+#: mail/em-folder-tree.c:1707 mail/mail-ops.c:1013
+#, c-format
+msgid "Scanning folders in \"%s\""
+msgstr "\"%s\"의 폴더를 찾는 중"
+
+#: mail/em-folder-tree.c:2213 mail/em-folder-tree.c:2226
+#: mail/em-folder-view.c:835 mail/em-folder-view.c:849
 #: mail/importers/evolution-mbox-importer.c:119
 #: mail/importers/evolution-outlook-importer.c:133
 msgid "Select folder"
 msgstr "폴더 선택"
 
-#: mail/em-folder-tree.c:2203 mail/em-folder-view.c:817
+#: mail/em-folder-tree.c:2213 mail/em-folder-view.c:849
 msgid "C_opy"
 msgstr "복사(_O)"
 
-#: mail/em-folder-tree.c:2243
+#: mail/em-folder-tree.c:2253
 #, c-format
 msgid "Creating folder `%s'"
 msgstr "`%s' 폴더를 만드는 중입니다"
 
-#: mail/em-folder-tree.c:2430 mail/mail-component.c:711
+#: mail/em-folder-tree.c:2440 mail/mail-component.c:717
 msgid "Create folder"
 msgstr "폴더를 만듭니다"
 
-#: mail/em-folder-tree.c:2621
+#: mail/em-folder-tree.c:2631
 #, c-format
 msgid "Rename the \"%s\" folder to:"
 msgstr "\"%s\" 폴더 이름 바꾸기:"
 
-#: mail/em-folder-tree.c:2623
+#: mail/em-folder-tree.c:2633
 msgid "Rename Folder"
 msgstr "폴더 이름 바꾸기"
 
-#: mail/em-folder-tree.c:2698 ui/evolution-addressbook.xml.h:44
+#: mail/em-folder-tree.c:2716 ui/evolution-addressbook.xml.h:44
 #: ui/evolution-mail-global.xml.h:18 ui/evolution-mail-messagedisplay.xml.h:8
 #: ui/evolution-message-composer.xml.h:53 ui/evolution.xml.h:37
 msgid "_View"
 msgstr "보기(_V)"
 
-#: mail/em-folder-tree.c:2699
+#: mail/em-folder-tree.c:2717
 msgid "Open in _New Window"
 msgstr "새 창에서 열기(_N)"
 
-#: mail/em-folder-tree.c:2703
+#: mail/em-folder-tree.c:2721
 msgid "_Copy..."
 msgstr "복사(_C)..."
 
-#: mail/em-folder-tree.c:2704
+#: mail/em-folder-tree.c:2722
 msgid "_Move..."
 msgstr "이동(_M)..."
 
 #. FIXME: need to disable for nochildren folders
-#: mail/em-folder-tree.c:2708
+#: mail/em-folder-tree.c:2726
 msgid "_New Folder..."
 msgstr "새 폴더(_N)..."
 
-#: mail/em-folder-tree.c:2711
+#: mail/em-folder-tree.c:2729
 msgid "_Rename..."
 msgstr "이름 바꾸기(_R)..."
 
-#: mail/em-folder-tree.c:2714 ui/evolution-mail-list.xml.h:27
+#: mail/em-folder-tree.c:2732 ui/evolution-mail-list.xml.h:27
 msgid "_Properties"
 msgstr "등록 정보(_P)"
 
 #. { EM_POPUP_ITEM, "00.select.00", N_("_Open"), G_CALLBACK(emp_popup_open), NULL, NULL, 0 },
-#: mail/em-folder-view.c:900 mail/em-popup.c:690
+#: mail/em-folder-view.c:932 mail/em-popup.c:690
 #: ui/evolution-mail-message.xml.h:113
 msgid "_Edit as New Message..."
 msgstr "새 메세지로 고침(_E)..."
 
-#: mail/em-folder-view.c:902
+#: mail/em-folder-view.c:934
 msgid "_Print"
 msgstr "인쇄(_P)"
 
-#: mail/em-folder-view.c:905 ui/evolution-mail-message.xml.h:127
+#: mail/em-folder-view.c:937 ui/evolution-mail-message.xml.h:127
 msgid "_Reply to Sender"
 msgstr "보낸 사람에게 회신(_R)"
 
 # List는 메일링 리스트를 말함.
-#: mail/em-folder-view.c:906 mail/em-popup.c:811
+#: mail/em-folder-view.c:938 mail/em-popup.c:811
 #: ui/evolution-mail-message.xml.h:88
 msgid "Reply to _List"
 msgstr "리스트에 회신(_L)"
 
-#: mail/em-folder-view.c:907 mail/em-popup.c:812
+#: mail/em-folder-view.c:939 mail/em-popup.c:812
 #: ui/evolution-mail-message.xml.h:87
 msgid "Reply to _All"
 msgstr "전체에 회신(_A)"
 
-#: mail/em-folder-view.c:908 mail/em-popup.c:814
+#: mail/em-folder-view.c:940 mail/em-popup.c:814
 #: ui/evolution-mail-message.xml.h:114
 msgid "_Forward"
 msgstr "전달(_F)"
 
-#: mail/em-folder-view.c:911
+#: mail/em-folder-view.c:943
 msgid "Follo_w Up..."
 msgstr "추가 작업(_W)..."
 
-#: mail/em-folder-view.c:912
+#: mail/em-folder-view.c:944
 msgid "Fla_g Completed"
 msgstr "표시 완료(_G)"
 
-#: mail/em-folder-view.c:913
+#: mail/em-folder-view.c:945
 msgid "Cl_ear Flag"
 msgstr "표시 비우기(_E)"
 
-#: mail/em-folder-view.c:916 ui/evolution-mail-message.xml.h:50
+#: mail/em-folder-view.c:948 ui/evolution-mail-message.xml.h:50
 msgid "Mar_k as Read"
 msgstr "읽은 것으로 표시(_K)"
 
-#: mail/em-folder-view.c:917
+#: mail/em-folder-view.c:949
 msgid "Mark as _Unread"
 msgstr "읽지 않은 것으로 표시(_U)"
 
-#: mail/em-folder-view.c:918
+#: mail/em-folder-view.c:950
 msgid "Mark as _Important"
 msgstr "중요한 것으로 표시(_I)"
 
-#: mail/em-folder-view.c:919
+#: mail/em-folder-view.c:951
 msgid "_Mark as Unimportant"
 msgstr "중요하지 않은 것으로 표시(_M)"
 
-#: mail/em-folder-view.c:920 ui/evolution-mail-message.xml.h:54
+#: mail/em-folder-view.c:952 ui/evolution-mail-message.xml.h:54
 msgid "Mark as _Junk"
 msgstr "정크메일로 표시(_J)"
 
-#: mail/em-folder-view.c:921 ui/evolution-mail-message.xml.h:55
+#: mail/em-folder-view.c:953 ui/evolution-mail-message.xml.h:55
 msgid "Mark as _Not Junk"
 msgstr "정크메일이 아닌 것으로 표시(_N)"
 
-#: mail/em-folder-view.c:925
+#: mail/em-folder-view.c:957
 msgid "U_ndelete"
 msgstr "되살리기(_N)"
 
-#: mail/em-folder-view.c:928
+#: mail/em-folder-view.c:960
 msgid "Mo_ve to Folder..."
 msgstr "폴더로 이동(_V)..."
 
-#: mail/em-folder-view.c:929 ui/evolution-addressbook.xml.h:32
+#: mail/em-folder-view.c:961 ui/evolution-addressbook.xml.h:32
 msgid "_Copy to Folder..."
 msgstr "폴더로 복사(_C)..."
 
-#: mail/em-folder-view.c:937
+#: mail/em-folder-view.c:969
 msgid "Add Sender to Address_book"
-msgstr "보낸 사람을 주소록에 더하기"
+msgstr "보낸 사람을 주소록에 더하기(_B)"
 
-#: mail/em-folder-view.c:940
+#: mail/em-folder-view.c:972
 msgid "Appl_y Filters"
 msgstr "거르게 적용(_Y)"
 
-#: mail/em-folder-view.c:941
+#: mail/em-folder-view.c:973
 msgid "F_ilter Junk"
 msgstr "정크메일 거르게(_I)"
 
-#: mail/em-folder-view.c:944
+#: mail/em-folder-view.c:976
 msgid "Crea_te Rule From Message"
 msgstr "메시지로부터 거르게 만들기(_T)"
 
-#: mail/em-folder-view.c:945
+#: mail/em-folder-view.c:977
 msgid "VFolder on _Subject"
 msgstr "제목에따른 가상폴더(_S)"
 
-#: mail/em-folder-view.c:946
+#: mail/em-folder-view.c:978
 msgid "VFolder on Se_nder"
 msgstr "보낸 사람에 따른 가상폴더(_N)"
 
-#: mail/em-folder-view.c:947
+#: mail/em-folder-view.c:979
 msgid "VFolder on _Recipients"
 msgstr "받은 사람에 따른 가상폴더(_R)"
 
-#: mail/em-folder-view.c:948
+#: mail/em-folder-view.c:980
 msgid "VFolder on Mailing _List"
 msgstr "메일링 리스트에 대한 가상폴더(_L)"
 
-#: mail/em-folder-view.c:952
+#: mail/em-folder-view.c:984
 msgid "Filter on Sub_ject"
 msgstr "제목에 대한 거르게(_J)"
 
-#: mail/em-folder-view.c:953
+#: mail/em-folder-view.c:985
 msgid "Filter on Sen_der"
 msgstr "보낸 사람에 대한 거르게(_D)"
 
-#: mail/em-folder-view.c:954
+#: mail/em-folder-view.c:986
 msgid "Filter on Re_cipients"
 msgstr "받은이에 대한 거르게(_C)"
 
-#: mail/em-folder-view.c:955
+#: mail/em-folder-view.c:987
 msgid "Filter on _Mailing List"
 msgstr "메일링 리스트에 대한 거르게(_M)"
 
 #. default charset used in mail view
-#: mail/em-folder-view.c:1711 mail/em-folder-view.c:1751
+#: mail/em-folder-view.c:1743 mail/em-folder-view.c:1783
 #: mail/mail-config.glade.h:68
 msgid "Default"
 msgstr "기본값"
 
-#: mail/em-folder-view.c:1848
+#: mail/em-folder-view.c:1880
 msgid "Print Message"
 msgstr "메세지 인쇄"
 
-#: mail/em-folder-view.c:2115
+#: mail/em-folder-view.c:2147
 msgid "_Copy Link Location"
 msgstr "링크 위치 복사(_C)"
 
-#: mail/em-folder-view.c:2380
+#: mail/em-folder-view.c:2413
 #, c-format
 msgid "Click to mail %s"
 msgstr "메일을 %s 주소로 보내려면 누르십시오"
 
 #. message-search popup match count string
-#: mail/em-format-html-display.c:410
+#: mail/em-format-html-display.c:417
 #, c-format
 msgid "Matches: %d"
 msgstr "일치: %d"
 
-#: mail/em-format-html-display.c:643 mail/em-format-html.c:582
+#: mail/em-format-html-display.c:650 mail/em-format-html.c:581
 msgid "Unsigned"
 msgstr "서명 없음"
 
-#: mail/em-format-html-display.c:643
+#: mail/em-format-html-display.c:650
 msgid ""
 "This message is not signed. There is no guarantee that this message is "
 "authentic."
@@ -13577,11 +13564,11 @@ msgstr ""
 "이 메세지에는 서명이 없습니다.  메세지를 보낸 사람이 확실한 지 보장할 수 없습"
 "니다."
 
-#: mail/em-format-html-display.c:644 mail/em-format-html.c:583
+#: mail/em-format-html-display.c:651 mail/em-format-html.c:582
 msgid "Valid signature"
 msgstr "올바른 서명"
 
-#: mail/em-format-html-display.c:644
+#: mail/em-format-html-display.c:651
 msgid ""
 "This message is signed and is valid meaning that it is very likely that this "
 "message is authentic."
@@ -13589,11 +13576,11 @@ msgstr ""
 "이 메세지는 서명되었고 서명이 올바릅니다.  메세지를 보낸 사람은 그 사람이 거"
 "의 확실합니다."
 
-#: mail/em-format-html-display.c:645 mail/em-format-html.c:584
+#: mail/em-format-html-display.c:652 mail/em-format-html.c:583
 msgid "Invalid signature"
 msgstr "잘못된 서명"
 
-#: mail/em-format-html-display.c:645
+#: mail/em-format-html-display.c:652
 msgid ""
 "The signature of this message cannot be verified, it may have been altered "
 "in transit."
@@ -13601,11 +13588,11 @@ msgstr ""
 "이 메세지의 서명을 확인할 수 없습니다. 메일이 전송중에 변경되었을 수 있습니"
 "다."
 
-#: mail/em-format-html-display.c:646
+#: mail/em-format-html-display.c:653
 msgid "Valid signature, cannot verify sender"
 msgstr "올바른 서명, 보낸 사람을 확인할 수 없음"
 
-#: mail/em-format-html-display.c:646
+#: mail/em-format-html-display.c:653
 msgid ""
 "This message is signed with a valid signature, but the sender of the message "
 "cannot be verified."
@@ -13613,11 +13600,11 @@ msgstr ""
 "이 메세지는 올바른 서명으로 사인되었습니다. 하지만 메세지를 보낸 사람을 확인"
 "할 수 없습니다."
 
-#: mail/em-format-html-display.c:652 mail/em-format-html.c:591
+#: mail/em-format-html-display.c:659 mail/em-format-html.c:590
 msgid "Unencrypted"
 msgstr "암호화 안 됨"
 
-#: mail/em-format-html-display.c:652
+#: mail/em-format-html-display.c:659
 msgid ""
 "This message is not encrypted.  Its content may be viewed in transit across "
 "the Internet."
@@ -13625,11 +13612,11 @@ msgstr ""
 "이 메세지는 암호화하지 않았습니다.  인터넷을 통해 전달되는 동안, 다른 사람이 "
 "이 메세지를 봤을 수 있습니다."
 
-#: mail/em-format-html-display.c:653 mail/em-format-html.c:592
+#: mail/em-format-html-display.c:660 mail/em-format-html.c:591
 msgid "Encrypted, weak"
 msgstr "암호화됨, 약함"
 
-#: mail/em-format-html-display.c:653
+#: mail/em-format-html-display.c:660
 msgid ""
 "This message is encrypted, but with a weak encryption algorithm.  It would "
 "be difficult, but not impossible for an outsider to view the content of this "
@@ -13639,11 +13626,11 @@ msgstr ""
 "사람이 이 메세지의 내용을 알아 내는 게 어렵긴 하지만, 현실적인 시간 내에 불가"
 "능하지는 않습니다."
 
-#: mail/em-format-html-display.c:654 mail/em-format-html.c:593
+#: mail/em-format-html-display.c:661 mail/em-format-html.c:592
 msgid "Encrypted"
 msgstr "암호화됨"
 
-#: mail/em-format-html-display.c:654
+#: mail/em-format-html-display.c:661
 msgid ""
 "This message is encrypted.  It would be difficult for an outsider to view "
 "the content of this message."
@@ -13651,11 +13638,11 @@ msgstr ""
 "메세지가 암호화되어 있습니다.  다른 사람이 이 메세지의 내용을 알아 내기는 어"
 "렵습니다."
 
-#: mail/em-format-html-display.c:655 mail/em-format-html.c:594
+#: mail/em-format-html-display.c:662 mail/em-format-html.c:593
 msgid "Encrypted, strong"
 msgstr "암호화됨, 강력"
 
-#: mail/em-format-html-display.c:655
+#: mail/em-format-html-display.c:662
 msgid ""
 "This message is encrypted, with a strong encryption algorithm.  It would be "
 "very difficult for an outsider to view the content of this message in a "
@@ -13664,32 +13651,32 @@ msgstr ""
 "메세지가 암호화되어 있지만, 약한 암호화 알고리즘으로 암호화되었습니다.  현실"
 "적인 시간 내에 다른 사람이 이 메세지의 내용을 알아 내는 건 매우 어렵습니다."
 
-#: mail/em-format-html-display.c:756 smime/gui/smime-ui.glade.h:47
+#: mail/em-format-html-display.c:763 smime/gui/smime-ui.glade.h:47
 msgid "_View Certificate"
 msgstr "인증서 보기(_V)"
 
-#: mail/em-format-html-display.c:771
+#: mail/em-format-html-display.c:778
 msgid "This certificate is not viewable"
 msgstr "이 인증서는 볼 수 없습니다"
 
-#: mail/em-format-html-display.c:1006
+#: mail/em-format-html-display.c:1013
 msgid "Completed on %B %d, %Y, %l:%M %p"
-msgstr "마침: %Y년 %b %e일, %p %l:%M"
+msgstr "마침: %Y년 %b %d일, %p %l:%M"
 
-#: mail/em-format-html-display.c:1014
+#: mail/em-format-html-display.c:1021
 msgid "Overdue:"
 msgstr "마감 지남:"
 
-#: mail/em-format-html-display.c:1017
+#: mail/em-format-html-display.c:1024
 msgid "by %B %d, %Y, %l:%M %p"
-msgstr "%b %e일, %p %l:%M까지"
+msgstr "%b %d일, %p %l:%M까지"
 
 # FIXME - inline의 나은 번역을 찾아보자
-#: mail/em-format-html-display.c:1056
+#: mail/em-format-html-display.c:1063
 msgid "_View Inline"
-msgstr "인라인으로 보기"
+msgstr "인라인으로 보기(_V)"
 
-#: mail/em-format-html-display.c:1057
+#: mail/em-format-html-display.c:1064
 msgid "_Hide"
 msgstr "숨기기(_H)"
 
@@ -13698,129 +13685,129 @@ msgstr "숨기기(_H)"
 msgid "Page %d of %d"
 msgstr "%2$d페이지 중 %1$d페이지"
 
-#: mail/em-format-html.c:475 mail/em-format-html.c:477
+#: mail/em-format-html.c:474 mail/em-format-html.c:476
 #, c-format
 msgid "Retrieving `%s'"
 msgstr "`%s' 가져오는 중"
 
-#: mail/em-format-html.c:585
+#: mail/em-format-html.c:584
 msgid "Valid signature but cannot verify sender"
 msgstr "올바른 서명이지만 보낸 사람을 확인할 수 없습니다"
 
-#: mail/em-format-html.c:848
+#: mail/em-format-html.c:854
 msgid "Malformed external-body part."
 msgstr "외부 본문 부분의 형식이 잘못되었습니다."
 
-#: mail/em-format-html.c:878
+#: mail/em-format-html.c:884
 #, c-format
 msgid "Pointer to FTP site (%s)"
 msgstr "FTP 사이트(%s)를 가리킵니다"
 
-#: mail/em-format-html.c:889
+#: mail/em-format-html.c:895
 #, c-format
 msgid "Pointer to local file (%s) valid at site \"%s\""
 msgstr "사이트 \"%2$s\"의 로컬 파일(%1$s)을 가리킵니다"
 
-#: mail/em-format-html.c:891
+#: mail/em-format-html.c:897
 #, c-format
 msgid "Pointer to local file (%s)"
 msgstr "로컬 파일(%s)을 가리킵니다"
 
-#: mail/em-format-html.c:912
+#: mail/em-format-html.c:918
 #, c-format
 msgid "Pointer to remote data (%s)"
 msgstr "원격 데이터(%s)을 가리킵니다"
 
-#: mail/em-format-html.c:923
+#: mail/em-format-html.c:929
 #, c-format
 msgid "Pointer to unknown external data (\"%s\" type)"
 msgstr "알 수 없는 외부 데이터(\"%s\" 타입)을 가리킵니다"
 
-#: mail/em-format-html.c:1165
+#: mail/em-format-html.c:1156
 msgid "Formatting message"
 msgstr "메세지를 포맷하는 중입니다"
 
-#: mail/em-format-html.c:1441 mail/em-format-quote.c:192 mail/em-format.c:803
+#: mail/em-format-html.c:1443 mail/em-format-quote.c:192 mail/em-format.c:828
 #: mail/em-mailer-prefs.c:82 mail/message-list.etspec.h:7
 #: mail/message-tag-followup.c:325
 msgid "From"
 msgstr "보낸 사람"
 
-#: mail/em-format-html.c:1441 mail/em-format-quote.c:192 mail/em-format.c:804
+#: mail/em-format-html.c:1443 mail/em-format-quote.c:192 mail/em-format.c:829
 #: mail/em-mailer-prefs.c:83
 msgid "Reply-To"
 msgstr "회신 주소"
 
-#: mail/em-format-html.c:1441 mail/em-format-quote.c:192 mail/em-format.c:805
+#: mail/em-format-html.c:1443 mail/em-format-quote.c:192 mail/em-format.c:830
 #: mail/em-mailer-prefs.c:84 mail/message-list.etspec.h:14
 msgid "To"
 msgstr "받는 사람"
 
-#: mail/em-format-html.c:1441 mail/em-format-quote.c:192 mail/em-format.c:806
+#: mail/em-format-html.c:1443 mail/em-format-quote.c:192 mail/em-format.c:831
 #: mail/em-mailer-prefs.c:85
 msgid "Cc"
 msgstr "참조"
 
-#: mail/em-format-html.c:1441 mail/em-format-quote.c:192 mail/em-format.c:807
+#: mail/em-format-html.c:1443 mail/em-format-quote.c:192 mail/em-format.c:832
 #: mail/em-mailer-prefs.c:86
 msgid "Bcc"
 msgstr "숨은 참조"
 
 #. pseudo-header
-#: mail/em-format-html.c:1554 mail/em-format-quote.c:314
+#: mail/em-format-html.c:1556 mail/em-format-quote.c:314
 #: mail/em-mailer-prefs.c:939
 msgid "Mailer"
 msgstr "메일 프로그램"
 
 #. translators: strftime format for local time equivalent in Date header display, with day
-#: mail/em-format-html.c:1581
+#: mail/em-format-html.c:1583
 msgid "<I> (%a, %R %Z)</I>"
 msgstr "<I> ((%a) %R %Z)</I>"
 
 #. translators: strftime format for local time equivalent in Date header display, without day
-#: mail/em-format-html.c:1584
+#: mail/em-format-html.c:1586
 msgid "<I> (%R %Z)</I>"
 msgstr "<I> (%R %Z)</I>"
 
-#: mail/em-format-html.c:1594 mail/em-format-quote.c:321 mail/em-format.c:809
+#: mail/em-format-html.c:1596 mail/em-format-quote.c:321 mail/em-format.c:834
 #: mail/em-mailer-prefs.c:88 mail/message-list.etspec.h:2
 msgid "Date"
 msgstr "날짜"
 
-#: mail/em-format-html.c:1617 mail/em-format.c:810 mail/em-mailer-prefs.c:89
+#: mail/em-format-html.c:1619 mail/em-format.c:835 mail/em-mailer-prefs.c:89
 msgid "Newsgroups"
 msgstr "뉴스그룹"
 
-#: mail/em-format.c:1059
+#: mail/em-format.c:1084
 #, c-format
 msgid "%s attachment"
 msgstr "%s 첨부"
 
-#: mail/em-format.c:1098 mail/em-format.c:1231
+#: mail/em-format.c:1123 mail/em-format.c:1256
 msgid "Could not parse S/MIME message: Unknown error"
 msgstr "S/MIME 메세지를 분석할 수 없습니다: 알 수 없는 오류가 발생했습니다"
 
-#: mail/em-format.c:1221
+#: mail/em-format.c:1246
 msgid "Unsupported encryption type for multipart/encrypted"
 msgstr "multipart/encrypted에 지원하지 않는 암호화 방식을 사용했습니다"
 
-#: mail/em-format.c:1382
+#: mail/em-format.c:1394
 msgid "Could not parse MIME message. Displaying as source."
 msgstr "MIME 메세지를 분석할 수 없습니다. 소스로 보여줍니다."
 
-#: mail/em-format.c:1401
+#: mail/em-format.c:1413
 msgid "Unsupported signature format"
 msgstr "지원하지 않는 서명 형식입니다"
 
-#: mail/em-format.c:1409
+#: mail/em-format.c:1421
 msgid "Error verifying signature"
 msgstr "서명을 확인하는 중 오류가 발생했습니다"
 
-#: mail/em-format.c:1409
+#: mail/em-format.c:1421
 msgid "Unknown error verifying signature"
 msgstr "서명을 확인하는 중 알 수 없는 오류가 발생했습니다"
 
-#: mail/em-junk-filter.c:86
+#: mail/em-junk-filter.c:89
 msgid "Spamassassin (built-in)"
 msgstr "Spamassassin (내부에 포함)"
 
@@ -13934,25 +13921,25 @@ msgstr "주소록에 더하기(_A)"
 msgid "Open in %s..."
 msgstr "%s에서 열기..."
 
-#: mail/em-subscribe-editor.c:606
+#: mail/em-subscribe-editor.c:612
 msgid "This store does not support subscriptions, or they are not enabled."
 msgstr ""
 "이 저장고는 가입을 지원하지 않거나, 가입할 수 있도록 설정하지 않았습니다."
 
-#: mail/em-subscribe-editor.c:635
+#: mail/em-subscribe-editor.c:641
 msgid "Subscribed"
 msgstr "구독"
 
-#: mail/em-subscribe-editor.c:639
+#: mail/em-subscribe-editor.c:645
 msgid "Folder"
 msgstr "폴더"
 
 #. FIXME: This is just to get the shadow, is there a better way?
-#: mail/em-subscribe-editor.c:852
+#: mail/em-subscribe-editor.c:860
 msgid "Please select a server."
 msgstr "서버를 선택하십시오."
 
-#: mail/em-subscribe-editor.c:873
+#: mail/em-subscribe-editor.c:881
 msgid "No server has been selected"
 msgstr "서버를 선택하지 않았습니다"
 
@@ -14297,10 +14284,6 @@ msgstr "메세지 목록에 지워진 메세지를 표시합니다 (취소선을
 #: mail/evolution-mail.schemas.in.in.h:70
 msgid "Show deleted messages in the message-list"
 msgstr "메세지 목록에 지워진 메세지를 표시합니다"
-
-#: mail/evolution-mail.schemas.in.in.h:71
-msgid "Show the \"Preview\" pane"
-msgstr "\"미리 보기\" 창 보이기"
 
 #: mail/evolution-mail.schemas.in.in.h:72
 msgid "Show the \"Preview\" pane."
@@ -14658,7 +14641,7 @@ msgstr "Pine"
 msgid "Evolution Account Editor"
 msgstr "Evolution 계정 편집기"
 
-#: mail/mail-account-gui.c:246
+#: mail/mail-account-gui.c:253
 #, c-format
 msgid ""
 "\n"
@@ -14670,22 +14653,30 @@ msgstr ""
 "아래에 있는 %s의 사용 약관을 잘 읽어 보시고\n"
 "동의하실 경우 체크 단추에 체크하십시오.\n"
 
-#: mail/mail-account-gui.c:252
+#: mail/mail-account-gui.c:259
 #, c-format
 msgid "%s License Agreement"
 msgstr "%s 사용 약관"
 
-#: mail/mail-account-gui.c:957 mail/mail-config.glade.h:167
+#: mail/mail-account-gui.c:959 mail/mail-account-gui.c:965
+msgid "Connecting to server..."
+msgstr "서버에 연결중..."
+
+#: mail/mail-account-gui.c:1021 mail/mail-config.glade.h:167
 msgid "_Host:"
 msgstr "호스트(_H):"
 
-#: mail/mail-account-gui.c:961 mail/mail-config.glade.h:151
+#: mail/mail-account-gui.c:1025 mail/mail-config.glade.h:151
 msgid "User_name:"
 msgstr "사용자이름(_N):"
 
-#: mail/mail-account-gui.c:965 mail/mail-config.glade.h:173
+#: mail/mail-account-gui.c:1029 mail/mail-config.glade.h:173
 msgid "_Path:"
 msgstr "경로(_P):"
+
+#: mail/mail-account-gui.c:1840 shell/e-shell-importer.c:643
+msgid "Select a file"
+msgstr "파일을 고르십시오"
 
 #: mail/mail-autofilter.c:74
 #, c-format
@@ -14702,82 +14693,94 @@ msgstr "제목이 %s"
 msgid "Mail from %s"
 msgstr "%s에서 온 메일"
 
-#: mail/mail-autofilter.c:271
+#: mail/mail-autofilter.c:273
 #, c-format
 msgid "%s mailing list"
 msgstr "%s 메일링 리스트"
 
-#: mail/mail-autofilter.c:326
+#: mail/mail-autofilter.c:328
 msgid "Add Filter Rule"
 msgstr "거르게 규칙을 더하기"
 
-#: mail/mail-component.c:463
+#: mail/mail-component.c:135
+msgid "Drafts"
+msgstr "임시 보관함"
+
+#: mail/mail-component.c:136
+msgid "Outbox"
+msgstr "보낼 편지함"
+
+#: mail/mail-component.c:137
+msgid "Sent"
+msgstr "보낸 편지함"
+
+#: mail/mail-component.c:464
 #, c-format
 msgid "%d deleted"
 msgid_plural "%d deleted"
 msgstr[0] "%d개 지움"
 
-#: mail/mail-component.c:465
+#: mail/mail-component.c:466
 #, c-format
 msgid "%d junk"
 msgid_plural "%d junk"
 msgstr[0] "%d개 정크"
 
-#: mail/mail-component.c:488
+#: mail/mail-component.c:489
 #, c-format
 msgid "%d draft"
 msgid_plural "%d drafts"
 msgstr[0] "%d개 임시"
 
-#: mail/mail-component.c:490
+#: mail/mail-component.c:491
 #, c-format
 msgid "%d sent"
 msgid_plural "%d sent"
 msgstr[0] "%d개 보냄"
 
-#: mail/mail-component.c:492
+#: mail/mail-component.c:493
 #, c-format
 msgid "%d unsent"
 msgid_plural "%d unsent"
 msgstr[0] "%d개 안 보냄"
 
-#: mail/mail-component.c:496
+#: mail/mail-component.c:497
 #, c-format
 msgid "%d total"
 msgid_plural "%d total"
 msgstr[0] "전체 %d개"
 
-#: mail/mail-component.c:498
+#: mail/mail-component.c:499
 #, c-format
 msgid ", %d unread"
 msgid_plural ", %d unread"
 msgstr[0] ", %d개 안 읽음"
 
-#: mail/mail-component.c:663
+#: mail/mail-component.c:669
 msgid "New Mail Message"
 msgstr "새 메일 메세지"
 
-#: mail/mail-component.c:664
+#: mail/mail-component.c:670
 msgid "_Mail Message"
 msgstr "메일 만들기(_M)"
 
-#: mail/mail-component.c:665
+#: mail/mail-component.c:671
 msgid "Compose a new mail message"
 msgstr "메일 메세지를 새로 작성합니다"
 
-#: mail/mail-component.c:671
+#: mail/mail-component.c:677
 msgid "New Mail Folder"
 msgstr "새 메일 폴더"
 
-#: mail/mail-component.c:672
+#: mail/mail-component.c:678
 msgid "Mail _Folder"
 msgstr "메일 폴더(_F)"
 
-#: mail/mail-component.c:673
+#: mail/mail-component.c:679
 msgid "Create a new mail folder"
 msgstr "새 메일 폴더를 만듭니다"
 
-#: mail/mail-component.c:805
+#: mail/mail-component.c:811
 msgid "Failed upgrading Mail settings or folders."
 msgstr "메일 설정 혹은 폴더를 업그레이드하는 데 실패했습니다."
 
@@ -14839,14 +14842,6 @@ msgstr ""
 "버 및 보내는 메일 전달 방법 세 가지를 하나로 합쳐서 Evolution 메일 계정이 됩"
 "니다. 이 계정의 이름을 아래의 빈 칸에 입력하십시오. 이 이름은 표시할 목적으로"
 "만 사용됩니다."
-
-#: mail/mail-config.c:895
-msgid "Checking Service"
-msgstr "서비스 확인중"
-
-#: mail/mail-config.c:973 mail/mail-config.c:977
-msgid "Connecting to server..."
-msgstr "서버에 연결중..."
 
 #: mail/mail-config.glade.h:1 mail/mail-dialogs.glade.h:5
 msgid "    "
@@ -15051,7 +15046,7 @@ msgstr "지원하는 형식인지 확인(_E) "
 
 #: mail/mail-config.glade.h:55
 msgid "Check _incoming mail for junk"
-msgstr "받는 메일이 정크 메일인지 검사"
+msgstr "받는 메일이 정크 메일인지 검사(_I)"
 
 #: mail/mail-config.glade.h:56
 msgid "Check spelling while I _type"
@@ -15297,7 +15292,7 @@ msgstr "서명 인증서(_G):"
 
 #: mail/mail-config.glade.h:137
 msgid "Signat_ure:"
-msgstr "서명:"
+msgstr "서명(_U):"
 
 #: mail/mail-config.glade.h:138
 msgid "Signatures"
@@ -15373,7 +15368,7 @@ msgstr "항상 인터넷에서 그림 읽어들이기(_A)"
 
 #: mail/mail-config.glade.h:160
 msgid "_Digitally sign outgoing messages (by default)"
-msgstr "보내는 메세지에 (기본값으로) 디지털 서명(_D)"
+msgstr "보내는 메세지에 (기본값으로) 전자 서명(_D)"
 
 #: mail/mail-config.glade.h:161
 msgid "_Do not notify me when new mail arrives"
@@ -15461,7 +15456,7 @@ msgstr "<b>가상 폴더 원본</b>"
 
 #: mail/mail-dialogs.glade.h:8
 msgid "<span weight=\"bold\">Digital Signature</span>"
-msgstr "<span weight=\"bold\">디지털 서명</span>"
+msgstr "<span weight=\"bold\">전자 서명</span>"
 
 #: mail/mail-dialogs.glade.h:9
 msgid "<span weight=\"bold\">Encryption</span>"
@@ -15705,7 +15700,7 @@ msgstr "계속하시면, 이 메세지를 복구할 수 없을 것입니다."
 
 #: mail/mail-errors.xml.h:46
 msgid "_Expunge"
-msgstr "비우기(_X)"
+msgstr "비우기(_E)"
 
 #. mail:ask-empty-trash primary
 #: mail/mail-errors.xml.h:48
@@ -16130,12 +16125,12 @@ msgstr "폴더 거르는 중"
 msgid "Fetching Mail"
 msgstr "메일 가져오는 중"
 
-#: mail/mail-ops.c:542
+#: mail/mail-ops.c:553
 #, c-format
 msgid "Failed to apply outgoing filters: %s"
 msgstr "나가는 거르게를 적용하는 데 실패했습니다: %s"
 
-#: mail/mail-ops.c:567
+#: mail/mail-ops.c:578
 #, c-format
 msgid ""
 "Failed to append to %s: %s\n"
@@ -16144,113 +16139,108 @@ msgstr ""
 "%s에 추가하는 데 실패했습니다: %s\n"
 "대신에 로컬의 `보낸 편지함'에 추가합니다."
 
-#: mail/mail-ops.c:576
+#: mail/mail-ops.c:587
 #, c-format
 msgid "Failed to append to local `Sent' folder: %s"
 msgstr "로컬의 '보낸 편지함' 폴더에 추가하는 데 실패했습니다: %s"
 
-#: mail/mail-ops.c:672
+#: mail/mail-ops.c:683
 #, c-format
 msgid "Sending message %d of %d"
 msgstr "%2$d개 중에서 %1$d번째 메세지를 보내는 중입니다"
 
-#: mail/mail-ops.c:703
+#: mail/mail-ops.c:714
 #, c-format
 msgid "Failed to send %d of %d messages"
 msgstr "%2$d개 메세지 중에서 %1$d번째를 보내는 데 실패했습니다"
 
-#: mail/mail-ops.c:707
+#: mail/mail-ops.c:718
 msgid "Complete."
 msgstr "완료."
 
-#: mail/mail-ops.c:804
+#: mail/mail-ops.c:815
 msgid "Saving message to folder"
 msgstr "메세지를 폴더로 저장하는 중"
 
-#: mail/mail-ops.c:889
+#: mail/mail-ops.c:900
 #, c-format
 msgid "Moving messages to %s"
 msgstr "메시지들을 %s(으)로 옮기는 중"
 
-#: mail/mail-ops.c:889
+#: mail/mail-ops.c:900
 #, c-format
 msgid "Copying messages to %s"
 msgstr "메시지들을 %s(으)로 복사하는 중"
 
-#: mail/mail-ops.c:1002
-#, c-format
-msgid "Scanning folders in \"%s\""
-msgstr "\"%s\"의 폴더를 찾는 중"
-
-#: mail/mail-ops.c:1115
+#: mail/mail-ops.c:1126
 msgid "Forwarded messages"
 msgstr "전달된 메시지"
 
-#: mail/mail-ops.c:1158
+#: mail/mail-ops.c:1169
 #, c-format
 msgid "Opening folder %s"
 msgstr "%s 폴더를 열기"
 
-#: mail/mail-ops.c:1230
+#: mail/mail-ops.c:1241
 #, c-format
 msgid "Opening store %s"
 msgstr "저장고 %s을(를) 여는 중입니다"
 
-#: mail/mail-ops.c:1308
+#: mail/mail-ops.c:1319
 #, c-format
 msgid "Removing folder %s"
 msgstr "%s 폴더를 지우는 중입니다"
 
-#: mail/mail-ops.c:1402
+#: mail/mail-ops.c:1413
 #, c-format
 msgid "Storing folder '%s'"
 msgstr "%s 폴더를 저장하는 중입니다"
 
-#: mail/mail-ops.c:1467
+#: mail/mail-ops.c:1478
 #, c-format
 msgid "Expunging and storing account '%s'"
 msgstr "계정 '%s'의 지운 메세지를 비우고 내용을 저장하는 중입니다"
 
-#: mail/mail-ops.c:1468
+#: mail/mail-ops.c:1479
 #, c-format
 msgid "Storing account '%s'"
 msgstr "%s 계정을 저장하는 중입니다"
 
-#: mail/mail-ops.c:1523
+#: mail/mail-ops.c:1534
 msgid "Refreshing folder"
 msgstr "폴더 다시 읽는 중입니다"
 
-#: mail/mail-ops.c:1559 mail/mail-ops.c:1610
+#: mail/mail-ops.c:1570 mail/mail-ops.c:1621
 msgid "Expunging folder"
 msgstr "지운 메세지를 비우는 중입니다"
 
-#: mail/mail-ops.c:1607
+#: mail/mail-ops.c:1618
 #, c-format
 msgid "Emptying trash in '%s'"
 msgstr "'%s' 안의 휴지통을 비우는 중입니다"
 
-#: mail/mail-ops.c:1608
+#: mail/mail-ops.c:1619
 msgid "Local Folders"
 msgstr "로컬 폴더"
 
-#: mail/mail-ops.c:1691
+#: mail/mail-ops.c:1702
 #, c-format
 msgid "Retrieving message %s"
 msgstr "메세지 %s을(를) 가져오기"
 
-#: mail/mail-ops.c:1763
+#: mail/mail-ops.c:1774
 #, c-format
 msgid "Retrieving %d message"
 msgid_plural "Retrieving %d messages"
 msgstr[0] "메세지 %d개를 가져오는 중입니다"
 
-#: mail/mail-ops.c:1849
+#: mail/mail-ops.c:1860
 #, c-format
 msgid "Saving %d message"
 msgid_plural "Saving %d messsages"
 msgstr[0] "메세지 %d개를 저장하는 중입니다"
 
-#: mail/mail-ops.c:1899
+#: mail/mail-ops.c:1910
 #, c-format
 msgid ""
 "Unable to create output file: %s\n"
@@ -16259,7 +16249,7 @@ msgstr ""
 "출력파일을 만들 수가 없습니다: %s\n"
 " %s"
 
-#: mail/mail-ops.c:1927
+#: mail/mail-ops.c:1938
 #, c-format
 msgid ""
 "Error saving messages to: %s:\n"
@@ -16268,11 +16258,11 @@ msgstr ""
 "%s(으)로 메시지 저장 중 오류 발생:\n"
 " %s"
 
-#: mail/mail-ops.c:1998
+#: mail/mail-ops.c:2009
 msgid "Saving attachment"
 msgstr "첨부 저장"
 
-#: mail/mail-ops.c:2010
+#: mail/mail-ops.c:2021
 #, c-format
 msgid ""
 "Cannot create output file: %s:\n"
@@ -16281,20 +16271,24 @@ msgstr ""
 "출력 파일을 만들 수 없음: %s:\n"
 " %s"
 
-#: mail/mail-ops.c:2020
+#: mail/mail-ops.c:2031
 #, c-format
 msgid "Could not write data: %s"
 msgstr "데이터를 쓸 수가 없습니다: %s"
 
-#: mail/mail-ops.c:2168
+#: mail/mail-ops.c:2179
 #, c-format
 msgid "Disconnecting from %s"
 msgstr "%s에서 연결 끊는 중"
 
-#: mail/mail-ops.c:2168
+#: mail/mail-ops.c:2179
 #, c-format
 msgid "Reconnecting to %s"
 msgstr "%s(으)로 다시 연결중"
+
+#: mail/mail-ops.c:2283
+msgid "Checking Service"
+msgstr "서비스 확인중"
 
 #: mail/mail-send-recv.c:157
 msgid "Cancelling..."
@@ -16395,15 +16389,15 @@ msgstr "'%s:%s'에 대한 가상폴더를 업데이트하는 중입니다"
 msgid "Updating vFolders for '%s'"
 msgstr "'%s에 대한 가상폴더를 업데이트하는 중입니다"
 
-#: mail/mail-vfolder.c:942
+#: mail/mail-vfolder.c:953
 msgid "vFolders"
 msgstr "가상 폴더"
 
-#: mail/mail-vfolder.c:981
+#: mail/mail-vfolder.c:992
 msgid "Edit VFolder"
 msgstr "가상폴더 편집"
 
-#: mail/mail-vfolder.c:1065
+#: mail/mail-vfolder.c:1076
 msgid "New VFolder"
 msgstr "새 가상폴더"
 
@@ -16462,13 +16456,13 @@ msgstr "(%a) %p %l:%M"
 
 #: mail/message-list.c:1373
 msgid "%b %d %l:%M %p"
-msgstr "%b %e일 %p %l:%M"
+msgstr "%b %d일 %p %l:%M"
 
 #: mail/message-list.c:1375
 msgid "%b %d %Y"
-msgstr "%Y년 %b %e일"
+msgstr "%Y년 %b %d일"
 
-#: mail/message-list.c:3380
+#: mail/message-list.c:3360
 msgid "Generating message list"
 msgstr "메세지 목록 작성중"
 
@@ -16743,10 +16737,6 @@ msgstr "자동"
 msgid "F_ilename:"
 msgstr "파일이름(_I):"
 
-#: shell/e-shell-importer.c:643
-msgid "Select a file"
-msgstr "파일을 고르십시오"
-
 #: shell/e-shell-importer.c:655
 msgid "File _type:"
 msgstr "파일 종류(_T):"
@@ -16854,23 +16844,23 @@ msgstr "Bug buddy를 실행할 수 없습니다."
 #. The translator-credits string is for translators to list
 #. * per language credits for translation, displayed in the
 #. * about box
-#: shell/e-shell-window-commands.c:424
+#: shell/e-shell-window-commands.c:425
 msgid "translator-credits"
-msgstr ""
+msgstr "류창우 <cwryu@debian.org>"
 
-#: shell/e-shell-window-commands.c:438
+#: shell/e-shell-window-commands.c:439
 msgid "Groupware Suite"
 msgstr "그룹웨어 모음"
 
-#: shell/e-shell-window-commands.c:678
+#: shell/e-shell-window-commands.c:679
 msgid "_Work Online"
 msgstr "온라인 작업(_W)"
 
-#: shell/e-shell-window-commands.c:691 ui/evolution.xml.h:39
+#: shell/e-shell-window-commands.c:692 ui/evolution.xml.h:39
 msgid "_Work Offline"
 msgstr "오프라인 작업(_W)"
 
-#: shell/e-shell-window-commands.c:704 ui/evolution.xml.h:25
+#: shell/e-shell-window-commands.c:705 ui/evolution.xml.h:25
 msgid "Work Offline"
 msgstr "오프라인에서 작업"
 
@@ -16890,37 +16880,38 @@ msgstr ""
 "Evolution은 오프라인 상태입니다.  온라인 상태로 작업하려면 이 단추를 누르십시"
 "오."
 
+# tooltip
 #: shell/e-shell-window.c:637
 #, c-format
 msgid "Switch to %s"
-msgstr "%s 창으로 바꾸기"
+msgstr "%s 창으로 바꿉니다"
 
-#: shell/e-shell.c:585
+#: shell/e-shell.c:589
 msgid "Uknown system error."
 msgstr "알 수 없는 시스템 오류가 발생했습니다."
 
-#: shell/e-shell.c:789 shell/e-shell.c:790
+#: shell/e-shell.c:795 shell/e-shell.c:796
 #, c-format
 msgid "%ld KB"
 msgstr "%ld KB"
 
-#: shell/e-shell.c:1210 widgets/misc/e-cell-date-edit.c:265
+#: shell/e-shell.c:1218 widgets/misc/e-cell-date-edit.c:265
 msgid "OK"
 msgstr "확인"
 
-#: shell/e-shell.c:1212
+#: shell/e-shell.c:1220
 msgid "Invalid arguments"
 msgstr "인자가 잘못되었습니다"
 
-#: shell/e-shell.c:1214
+#: shell/e-shell.c:1222
 msgid "Cannot register on OAF"
 msgstr "OAF에 등록할 수 없습니다"
 
-#: shell/e-shell.c:1216
+#: shell/e-shell.c:1224
 msgid "Configuration Database not found"
 msgstr "설정 데이터베이스를 찾을 수 없습니다"
 
-#: shell/e-shell.c:1218
+#: shell/e-shell.c:1226
 msgid "Generic error"
 msgstr "일반 오류"
 
@@ -17534,6 +17525,10 @@ msgstr "내 인증서"
 msgid "_Edit CA Trust"
 msgstr "인증 기관 신뢰수준 편집(_E)"
 
+#: smime/gui/smime-ui.glade.h:48
+msgid "dialog1"
+msgstr "dialog1"
+
 #. XXX we shouldn't be popping up dialogs in this code.
 #: smime/lib/e-cert-db.c:612
 msgid "Certificate already exists"
@@ -17885,7 +17880,7 @@ msgstr "실행(_A)"
 
 #: ui/evolution-addressbook.xml.h:35 ui/evolution-contact-editor.xml.h:16
 msgid "_Forward Contact..."
-msgstr "연락처 전달(_C)..."
+msgstr "연락처 전달(_F)..."
 
 #: ui/evolution-addressbook.xml.h:36
 msgid "_Move to Folder..."
@@ -18153,11 +18148,11 @@ msgstr "목록을 저장한후 대화상자를 닫습니다"
 
 #: ui/evolution-contact-list-editor.xml.h:9
 msgid "Se_nd list to other..."
-msgstr "다른 사람에게 목록 보냄..."
+msgstr "다른 사람에게 목록 보내기(_N)..."
 
 #: ui/evolution-contact-list-editor.xml.h:10
 msgid "Send _message to list..."
-msgstr "목록으로 메세지 보냄(_M)..."
+msgstr "목록으로 메세지 보내기(_M)..."
 
 #: ui/evolution-contact-list-editor.xml.h:12
 msgid "_Delete..."
@@ -18244,7 +18239,7 @@ msgstr "메세지를 공용 폴더에 게시합니다"
 
 #: ui/evolution-mail-global.xml.h:11
 msgid "S_ubscribe to Folders..."
-msgstr "폴더 구독(_S)..."
+msgstr "폴더 구독(_U)..."
 
 #: ui/evolution-mail-global.xml.h:12
 msgid "Show message preview window"
@@ -18280,7 +18275,7 @@ msgstr "지운 메세지 비우기(_X)"
 
 #: ui/evolution-mail-list.xml.h:5
 msgid "Hide S_elected Messages"
-msgstr "선택한 메세지 숨기기(_S)"
+msgstr "선택한 메세지 숨기기(_E)"
 
 #: ui/evolution-mail-list.xml.h:6
 msgid "Hide _Deleted Messages"
@@ -18325,7 +18320,7 @@ msgstr "선택한 메세지와 같은 글타래의 모든 메세지를 선택합
 
 #: ui/evolution-mail-list.xml.h:17
 msgid "Select all visible messages"
-msgstr "모든 보이는 메세지 선택"
+msgstr "보이는 모든 메세지를 선택합니다"
 
 #: ui/evolution-mail-list.xml.h:18
 msgid "Sh_ow Hidden Messages"
@@ -18620,7 +18615,7 @@ msgstr "공용 폴더의 메세지에 대해 회신을 게시합니다"
 
 #: ui/evolution-mail-message.xml.h:77
 msgid "Pr_evious Important Message"
-msgstr "이전의 중요한 메세지"
+msgstr "이전의 중요한 메세지(_E)"
 
 #: ui/evolution-mail-message.xml.h:78
 msgid "Preview the message to be printed"
@@ -19290,7 +19285,7 @@ msgstr "%Y년 %b"
 msgid "Now"
 msgstr "현재"
 
-#: widgets/misc/e-cell-date-edit.c:805
+#: widgets/misc/e-cell-date-edit.c:810
 #, c-format
 msgid "The time must be in the format: %s"
 msgstr "시간은 다음과 같은 형식이어야 합니다: %s"
@@ -19565,3 +19560,18 @@ msgstr "%s (...)"
 #, c-format
 msgid "%s (%d%% complete)"
 msgstr "%s (%d%% 완료)"
+
+#~ msgid ""
+#~ "Failed to GPG %s: %s\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "GPG %s에 실패했습니다: %s\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Failed to GPG %s: %s\n"
+#~ msgstr "GPG %s에 실패했습니다: %s\n"
+
+#~ msgid "Enter security pass-phrase for `%s'"
+#~ msgstr "%s의 보안 열쇠글을 입력하십시오"
