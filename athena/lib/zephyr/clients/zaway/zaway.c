@@ -19,7 +19,7 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.4 1988-06-23 11:04:26 jtkohl Exp $";
+static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.5 1988-06-28 16:21:41 jtkohl Exp $";
 #endif lint
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -98,14 +98,14 @@ main(argc,argv)
 		else {
 			ptr = malloc(sizeof(DEFAULT_MSG)+1);
 			if (!ptr) {
-				com_err(argv[0],errno,"while getting default message");
+				com_err(argv[0],ENOMEM,"while getting default message");
 				exit(1);
 			}
 			(void) strcpy(ptr,DEFAULT_MSG);
 		}
 		notice.z_recipient = notice.z_sender;
 		notice.z_sender = 0;
-		notice.z_default_format = 0;
+		notice.z_default_format = "";
 		     
 		msg[0] = "Automated reply:";
 		msg[1] = ptr;
