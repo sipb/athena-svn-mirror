@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -7,11 +8,21 @@
 #include <errno.h>
 #include "pc.h"
 #include "cons.h"
+#include <AL/AL.h>
+
+#define SOCK_SECURE 1
+#define SOCK_INSECURE 2
 
 char *name;
 int consolePreference = CONS_DOWN;
+int socketSec = SOCK_SECURE;
 
 #define NANNYPORT "/tmp/nanny"
+
+/* Want to be "Nanny," but SGI has a fine enhancement to "last"
+   which would cause us to show up if we did this. I don't know
+   quite what they were thinking. */
+#define NANNYNAME "LOGIN"
 
 #define DOLINK
 static char *athconsole="/etc/athena/consdev";
@@ -47,9 +58,65 @@ char *stopConsole(pc_state *ps, cons_state *cs)
     }
 }
 
+ALut ut;
+ALsessionStruct sess;
+
+void init_utmp(char *tty)
+{
+  ut.user = NANNYNAME;
+  ut.host = ":0.0";
+  ut.line = tty + 5;
+  ut.type = ALutLOGIN_PROC;
+  ut.id = "NY00";
+  ALsetUtmpInfo(&sess, ALutUSER | ALutHOST | ALutLINE
+		| ALutID | ALutTYPE, &ut);
+  ALputUtmp(&sess);
+}
+
+void clear_utmp()
+{
+  ut.user = NANNYNAME;
+  ut.type = ALutDEAD_PROC;
+  ALsetUtmpInfo(&sess, ALutUSER | ALutTYPE, &ut);
+  ALputUtmp(&sess);  
+}
+
+char *do_login(pc_message *input, pc_state *ps, cons_state *cs)
+{
+  char *uname;
+
+  if (socketSec == SOCK_INSECURE)
+    return "A user is currently logged in.";
+
+  uname = strchr(input->data, ' ');
+  if (uname == NULL)
+    return "No username specified.";
+
+  uname++;
+
+  ut.user = uname;
+  ut.type = ALutUSER_PROC;
+  ALsetUtmpInfo(&sess, ALutUSER | ALutTYPE, &ut);
+  ALputUtmp(&sess);
+
+  socketSec = SOCK_INSECURE;
+  return "logged in";
+}
+
+char *do_logout(pc_state *ps)
+{
+  ut.user = NANNYNAME;
+  ut.type = ALutLOGIN_PROC;
+  ALsetUtmpInfo(&sess, ALutUSER | ALutTYPE, &ut);
+  ALputUtmp(&sess);
+
+  socketSec = SOCK_SECURE;
+  return "logged out";
+}
+
 int process(pc_message *input, pc_state *ps, cons_state *cs)
 {
-  char *reply;
+  char *reply = NULL;
   int ret = 0;
   pc_message output;
 
@@ -60,17 +127,20 @@ int process(pc_message *input, pc_state *ps, cons_state *cs)
       consolePreference = CONS_UP;
       reply = startConsole(ps, cs);
     }
-  else
-    if (!strcmp(input->data, "-xdown"))
-      {
-	consolePreference = CONS_DOWN;
-	reply = stopConsole(ps, cs);
-      }
-    else
-      if (!strcmp(input->data, "-die"))
+
+  if (!strcmp(input->data, "-xdown"))
+    {
+      consolePreference = CONS_DOWN;
+      reply = stopConsole(ps, cs);
+    }
+
+  if (!strcmp(input->data, "-die"))
+    {
+      if (socketSec == SOCK_SECURE)
 	{
 	  ret = 1;
 	  reply = "nanny shutting down";
+	  clear_utmp();
 	  stopConsole(ps, cs);
 #ifdef DOLINK
 	  unlink(athconsole);
@@ -78,7 +148,21 @@ int process(pc_message *input, pc_state *ps, cons_state *cs)
 	  cons_close(cs);
 	}
       else
-	reply = "unknown command";
+	reply = "can't shut down with user logged in";
+    }
+
+  if (!strncmp(input->data, "login", 5))
+    {
+      reply = do_login(input, ps, cs);
+    }
+
+  if (!strncmp(input->data, "logout", 5))
+    {
+      reply = do_logout(ps);
+    }
+
+  if (reply == NULL)
+    reply = "unknown command";
 
   if (input->source)
     {
@@ -117,6 +201,8 @@ void children(int sig, int code, struct sigcontext *sc)
     }
 }
 
+#define ALERROR() { com_err(argv[0], code, ALcontext(&sess)); }
+
 int main(int argc, char **argv)
 {
   struct sigaction sigact;
@@ -127,6 +213,7 @@ int main(int argc, char **argv)
   cons_state *cs;
   char *option;
   int ret = 0;
+  long code;
 
   fclose(stdout);
   fclose(stderr);
@@ -178,6 +265,16 @@ int main(int argc, char **argv)
 
   fprintf(stderr, "no nanny contacted; running\n");
 
+  /* Initialize needed Athena Login library code. */
+  code = ALinit();
+  if (code) ALERROR();
+
+  code = ALinitSession(&sess);
+  if (code) ALERROR();
+
+  code = ALinitUtmp(&sess);
+  if (code) ALERROR();
+
   /* Initialize our port for new connections. */
   inport = pc_makeport(NANNYPORT, PC_GRAB|PC_CHMOD, 0, 0, 0700);
   if (inport == NULL)
@@ -195,6 +292,8 @@ int main(int argc, char **argv)
   unlink(athconsole);
   symlink(cons_name(cs), athconsole);
 #endif
+
+  init_utmp(cons_name(cs));
 
   /* Signal handlers. */
   sigact.sa_flags = SA_NOCLDSTOP;
