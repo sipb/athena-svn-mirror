@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.15 1998-02-17 06:18:45 jweiss Exp $
+# $Id: config_afs.sh,v 1.16 1999-10-01 13:46:16 rbasch Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -17,18 +17,20 @@ cp /afs/athena.mit.edu/service/CellServDB ${VICEDIR}/Ctmp &&
 	[ -s ${VICEDIR}/Ctmp ] &&
 	mv -f ${VICEDIR}/Ctmp ${CELLDB}.public &&
 	cat ${CELLDB}.public ${CELLDB}.local >${VICEDIR}/Ctmp 2>/dev/null
-[ -s ${VICEDIR}/Ctmp ] &&
-	rm -f ${CELLDB}.last &&
-	ln ${CELLDB} ${CELLDB}.last &&
-	mv -f ${VICEDIR}/Ctmp ${CELLDB} &&
-	chmod 644 ${CELLDB} && {
-		cmp -s ${CELLDB}.last ${CELLDB} ||
+[ -s ${VICEDIR}/Ctmp ] && {
+	cmp -s ${VICEDIR}/Ctmp ${CELLDB} || {
+		rm -f ${CELLDB}.last &&
+		ln ${CELLDB} ${CELLDB}.last &&
+		mv -f ${VICEDIR}/Ctmp ${CELLDB} &&
+		chmod 644 ${CELLDB} &&
+		sync &&
 		awk '
 			/^>/ {printf("\nfs newcell %s", \
 				substr($1,2,length($1)-1))};
 			/^[0-9]/ {printf(" %s",$1)};
 			END {printf("\n")}' ${CELLDB} | sh
 	}
+}
 
 echo "Updating setuid cell information"
 rm -f ${VICEDIR}/Ctmp
