@@ -3,7 +3,7 @@
 static char SccsId[] =	"@(#)syslog.c	4.1 (Berkeley) 5/27/83";
 #endif
 #ifndef	lint
-static char ident[] = "@(#)$Id: syslog.c,v 1.1.1.1 1996-10-07 07:14:09 ghudson Exp $";
+static char ident[] = "@(#)$Id: syslog.c,v 1.2 1997-12-14 00:32:59 ghudson Exp $";
 #endif	/* lint */
 
 /*
@@ -24,6 +24,7 @@ static char ident[] = "@(#)$Id: syslog.c,v 1.1.1.1 1996-10-07 07:14:09 ghudson E
 
 #include "syslog.h"
 #include <netdb.h>
+#include <errno.h>
 
 #define	MAXLINE	1024		/* max message size */
 #define BUFSLOP	20		/* space to allow for "extra stuff" */
@@ -46,11 +47,6 @@ int	LogMask = LOG_DEBUG;	/* lowest priority to be logged */
 struct sockaddr_in SyslogAddr;
 static char *SyslogHost = LOG_HOST;
 
-extern	int errno;
-#ifndef	BSD44
-extern	int	sys_nerr;
-extern	char *sys_errlist[];
-#endif
 
 syslog(pri, fmt, p0, p1, p2, p3, p4)
 	int pri;
@@ -93,10 +89,7 @@ syslog(pri, fmt, p0, p1, p2, p3, p4)
 #endif
 				continue;
 			}
-			if ((unsigned)errno > sys_nerr)
-				sprintf(b, "error %d", errno);
-			else
-				strcat(b, sys_errlist[errno]);
+			strcat(b, strerror (errno));
 			b += strlen(b);
 		}
 		if (c == '\0')

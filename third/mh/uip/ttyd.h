@@ -1,6 +1,6 @@
 /* ttyd.h - definitions for ttyd */
 #ifndef	lint
-static char Id[] = "@(#)$Id: ttyd.h,v 1.1.1.1 1996-10-07 07:14:25 ghudson Exp $";
+static char Id[] = "@(#)$Id: ttyd.h,v 1.2 1997-12-14 00:33:08 ghudson Exp $";
 #endif
 
 /* The Regents of the University of California wish to make it known that:
@@ -32,12 +32,4 @@ static char Id[] = "@(#)$Id: ttyd.h,v 1.1.1.1 1996-10-07 07:14:25 ghudson Exp $"
 #define	TRUE	1
 #define	FALSE	0
 
-#define	serror	\
-	(errno > 0 && errno < sys_nerr ? sys_errlist[errno] : "Unknown error")
 
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-extern char *sys_siglist[];
-#endif

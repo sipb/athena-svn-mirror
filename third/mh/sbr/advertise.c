@@ -1,10 +1,11 @@
 /* advertise.c - the heart of adios */
 #ifndef	lint
-static char ident[] = "@(#)$Id: advertise.c,v 1.1.1.1 1996-10-07 07:13:49 ghudson Exp $";
+static char ident[] = "@(#)$Id: advertise.c,v 1.2 1997-12-14 00:32:57 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
 #include <stdio.h>
+#include <errno.h>
 #ifdef	BSD42
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -15,11 +16,6 @@ static char ident[] = "@(#)$Id: advertise.c,v 1.1.1.1 1996-10-07 07:13:49 ghudso
    output...  More importantly though, it's a sexy syscall()...
  */
 
-extern int  errno;
-#ifndef	BSD44	/* in <stdio.h> */
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 /*  */
 
@@ -53,10 +49,7 @@ char   *what,
     if (what) {
 	if (*what)
 	    fprintf (stderr, " %s: ", what);
-	if (eindex > 0 && eindex < sys_nerr)
-	    fprintf (stderr, "%s", sys_errlist[eindex]);
-	else
-	    fprintf (stderr, "Error %d", eindex);
+	fprintf (stderr, "%s", strerror (eindex));
     }
     if (tail)
 	fprintf (stderr, ", %s", tail);
@@ -83,12 +76,7 @@ char   *what,
 	    iov -> iov_len = strlen (iov -> iov_base = ": ");
 	    iov++;
 	}
-	if (eindex > 0 && eindex < sys_nerr)
-	    iov -> iov_len = strlen (iov -> iov_base = sys_errlist[eindex]);
-	else {
-	    (void) sprintf (err, "Error %d", eindex);
-	    iov -> iov_len = strlen (iov -> iov_base = err);
-	}
+	iov -> iov_len = strlen (iov -> iov_base = strerror (eindex));
 	iov++;
     }
     if (tail && *tail) {

@@ -1,6 +1,6 @@
 /* smail.c - MH interface to SendMail/SMTP */
 #ifndef	lint
-static char ident[] = "@(#)$Id: smail.c,v 1.1.1.1 1996-10-07 07:13:21 ghudson Exp $";
+static char ident[] = "@(#)$Id: smail.c,v 1.2 1997-12-14 00:32:53 ghudson Exp $";
 #endif
 
 /* LINTLIBRARY */
@@ -46,6 +46,7 @@ static char ident[] = "@(#)$Id: smail.c,v 1.1.1.1 1996-10-07 07:13:21 ghudson Ex
 
 #include "../h/strings.h"
 #include <stdio.h>
+#include <errno.h>
 #include "smail.h"
 #include "../zotnet/mts.h"
 #include <ctype.h>
@@ -112,12 +113,6 @@ char   *r1bindex ();
 static int	rclient(), sm_ierror(), smtalk(), sm_wrecord(), sm_wstream();
 static int	sm_werror(), smhear(), sm_rrecord(), sm_rerror();
 
-#ifdef	MPOP
-extern	int	errno;
-#ifndef	BSD44
-extern	int	sys_nerr;
-extern	char   *sys_errlist[];
-#endif
 extern	char  **brkstring (), **copyip (), *getcpy ();
 #endif
 
@@ -710,10 +705,7 @@ char   *file;
     if ((fp = fopen (file, "r")) == NULL) {
 	(void) sprintf (bp = sm_reply.text, "unable to read %s: ", file);
 	bp += strlen (bp);
-	if (errno > 0 && errno < sys_nerr)
-	    (void) sprintf (bp, "%s", sys_errlist[errno]);
-	else
-	    (void) sprintf (bp, "Error %d", errno);
+	(void) sprintf (bp, "%s", strerror (errno));
 	sm_reply.length = strlen (sm_reply.text);
 	sm_reply.code = NOTOK;
 	return RP_BHST;
@@ -778,10 +770,7 @@ losing2: ;
 losing3: ;
 	    (void) strcpy (bp = sm_reply.text, "error writing to server: ");
 	    bp += strlen (bp);
-	    if (errno > 0 && errno < sys_nerr)
-		(void) sprintf (bp, "%s", sys_errlist[errno]);
-	    else
-		(void) sprintf (bp, "Error %d", errno);
+	    (void) sprintf (bp, "%s", strerror (errno));
 	    sm_reply.length = strlen (sm_reply.text);
 	    goto losing2;
 	}
@@ -930,10 +919,7 @@ bad_data: ;
 		    (void) sprintf (bp = sm_reply.text,
 				    "error reading %s: ", file);
 		    bp += strlen (bp);
-		    if (errno > 0 && errno < sys_nerr)
-			(void) sprintf (bp, "%s", sys_errlist[errno]);
-		    else
-			(void) sprintf (bp, "Error %d", errno);
+		    (void) sprintf (bp, "%s", strerror (errno));
 		    sm_reply.length = strlen (sm_reply.text);
 		    goto losing2;
 		}
@@ -1085,10 +1071,7 @@ register char   *fmt;
 				    "error renaming %s to %s: ",
 				    sm_tmpfil, file);
 		    bp += strlen (bp);
-		    if (errno > 0 && errno < sys_nerr)
-			(void) sprintf (bp, "%s", sys_errlist[errno]);
-		    else
-			(void) sprintf (bp, "Error %d", errno);
+		    (void) sprintf (bp, "%s", strerror (errno));
 		    sm_reply.length = strlen (sm_reply.text);
 		    sm_reply.code = NOTOK;
 		    return RP_BHST;

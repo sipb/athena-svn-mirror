@@ -1,6 +1,6 @@
 /* vmhsbr.c - routines to help vmh along */
 #ifndef	lint
-static char ident[] = "@(#)$Id: vmhsbr.c,v 1.1.1.1 1996-10-07 07:14:25 ghudson Exp $";
+static char ident[] = "@(#)$Id: vmhsbr.c,v 1.2 1997-12-14 00:33:09 ghudson Exp $";
 #endif	/* lint */
 
 /* TODO (for vrsn 2):
@@ -10,6 +10,7 @@ static char ident[] = "@(#)$Id: vmhsbr.c,v 1.1.1.1 1996-10-07 07:14:25 ghudson E
 #include "../h/mh.h"
 #include "../h/vmhsbr.h"
 #include <stdio.h>
+#include <errno.h>
 
 /*  */
 
@@ -25,11 +26,6 @@ static	int PEERrfd = NOTOK;
 static	int PEERwfd = NOTOK;
 
 
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 static int	rclose();
 /*  */
@@ -206,10 +202,7 @@ char   *what,
 	    (void) sprintf (bp, " %s: ", what);
 	    bp += strlen (bp);
 	}
-	if (eindex > 0 && eindex < sys_nerr)
-	    (void) strcpy (bp, sys_errlist[eindex]);
-	else
-	    (void) sprintf (bp, "Error %d", eindex);
+	strcpy (bp, strerror (eindex));
 	bp += strlen (bp);
     }
 

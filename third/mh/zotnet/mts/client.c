@@ -1,6 +1,6 @@
 /* client.c - connect to a server */
 #ifndef	lint
-static char ident[] = "@(#)$Id: client.c,v 1.1.1.1 1996-10-07 07:14:31 ghudson Exp $";
+static char ident[] = "@(#)$Id: client.c,v 1.2 1997-12-14 00:33:14 ghudson Exp $";
 #endif	/* lint */
 
 #if	defined(SYS5) && defined(AUX)
@@ -52,11 +52,6 @@ static Key_schedule schedule;
 
 /*  */
 
-extern int errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 
 struct addrent {
@@ -307,8 +302,7 @@ register char *response;
 
     if ((sd = socket (AF_INET, SOCK_STREAM, 0)) == NOTOK) {
 	(void) sprintf (response, "unable to create socket: %s",
-		errno > 0 && errno < sys_nerr ? sys_errlist[errno]
-		: "unknown error");
+		strerror (errno));
 	return NOTOK;
     }
 #ifdef KPOP
@@ -336,8 +330,7 @@ register char *response;
 
 	    default: 
 		(void) sprintf (response, "unable to bind socket: %s",
-			errno > 0 && errno < sys_nerr ? sys_errlist[errno]
-			: "unknown error");
+			strerror (errno));
 		return NOTOK;
 	}
     }

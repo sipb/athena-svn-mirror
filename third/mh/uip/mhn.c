@@ -1,6 +1,6 @@
 /* mhn.c - multi-media MH */
 #ifndef	lint
-static char ident[] = "@(#)$Id: mhn.c,v 1.2 1996-10-13 18:45:40 ghudson Exp $";
+static char ident[] = "@(#)$Id: mhn.c,v 1.3 1997-12-14 00:33:06 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
@@ -197,11 +197,6 @@ static	char   *errs = NULL;
 static	char   *tmp;
 
 
-extern	int	errno;
-#ifndef	BSD44
-extern	int	sys_nerr;
-extern	char   *sys_errlist[];
-#endif
 
 off_t	lseek ();
 time_t	time ();
@@ -1821,11 +1816,7 @@ register CT	ct;
 	    (void) sprintf (bp, " %s: ", what);
 	    bp += strlen (bp);
 	}
-
-	if (errno > 0 && errno < sys_nerr)
-	    (void) sprintf (bp, "%s", sys_errlist[errno]);
-	else
-	    (void) sprintf (bp, "Error %d", errno);
+	(void) sprintf (bp, "%s", strerror (errno));
 	bp += strlen (bp);
     }
 

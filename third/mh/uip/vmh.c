@@ -1,6 +1,6 @@
 /* vmh.c - visual front-end to mh */
 #ifndef	lint
-static char ident[] = "@(#)$Id: vmh.c,v 1.1.1.1 1996-10-07 07:14:25 ghudson Exp $";
+static char ident[] = "@(#)$Id: vmh.c,v 1.2 1997-12-14 00:33:08 ghudson Exp $";
 #endif	/* lint */
 #if defined(SYS5) && !defined(TERMINFO)
 /*
@@ -188,11 +188,6 @@ static TYPESIG	TSTPser ();
 
 
 					/* MISCELLANY */
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 static void	adorn ();
 
@@ -1515,12 +1510,7 @@ char   *what,
 	    iov -> iov_len = strlen (iov -> iov_base = ": ");
 	    iov++;
 	}
-	if (eindex > 0 && eindex < sys_nerr)
-	    iov -> iov_len = strlen (iov -> iov_base = sys_errlist[eindex]);
-	else {
-	    (void) sprintf (err, "Error %d", eindex);
-	    iov -> iov_len = strlen (iov -> iov_base = err);
-	}
+	iov -> iov_len = strlen (iov -> iov_base = strerror(eindex);
 	iov++;
     }
     if (tail && *tail) {
