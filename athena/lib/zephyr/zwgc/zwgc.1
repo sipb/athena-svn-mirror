@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.1,v $
 .\"	$Author: jtkohl $
-.\"	$Id: zwgc.1,v 1.10 1989-12-06 14:33:16 jtkohl Exp $
+.\"	$Id: zwgc.1,v 1.4 1989-11-28 16:59:32 jtkohl Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -27,7 +27,7 @@
 .it 1 }N
 .di ]B
 ..
-.TH ZWGC 1 "November 30, 1989" "MIT Project Athena"
+.TH ZWGC 1 "November 27, 1989" "MIT Project Athena"
 .SH NAME
 zwgc \- Zephyr Windowgram Client program
 .SH SYNOPSIS
@@ -77,7 +77,7 @@ man page for details.
 .I Zwgc
 formats its output messages according to the commands in its
 description file.  The user's description file 
-.RI ( $HOME/.zwgc.desc
+.RB ( $HOME/.zwgc.desc
 by default, or whatever is specified by -f) is read, or the system file
 is read if the user's does not exist.
 .PP
@@ -131,15 +131,7 @@ of expressions separated by whitespace (e.g. $var1 "lit1" $var2).
 .PP
 The following variables are always available:
 .TP 5
-.B 1, ...
-Numeric variables are assigned values corresponding to that field in the
-notice (the body of each notice is conceptually an array of fields, each
-terminated with a null character).  If the number is greater than the
-number of fields actually in the notice, the value is "".  For example,
-the standard zwrite messages have two fields: $1 is the signature, and
-$2 is the text of the message.
-.TP 5
-.B auth
+auth
 An indication of the authenticity of the notice.  ``yes'' means the
 notice is authentic, ``no'' means it is not, and ``forged'' means that
 the message claimed to be authentic but the verification of the claim
@@ -149,74 +141,74 @@ changed his Kerberos tickets with
 but has not run ``zctl sub'' to
 register this change with the Zephyr servers.
 .TP
-.B class
+class
 The class of the current notice.
 .TP
-.B date
+date
 The date on which the notice was sent.
 .TP
-.B default
+default
 The default output format for the current notice
 .TP
-.B error
+error
 An error message from the port read/write commands.
 .TP
-.B fromhost
+fromhost
 The full name of the host from which the notice appears to have been
 sent.  
 .I This is not fully reliable,
 as the information used to determine this hostname is not guaranteed to
 be correct (even for authentic messages).
 .TP
-.B fullsender
+fullsender
 The notice sender's name, including the zephyr realm name.
 .TP
-.B instance
+instance
 The instance of the current notice.
 .TP
-.B kind
+kind
 The kind of notice.
 .TP
-.B message
+message
 The full text of the message, with nulls converted to newlines.
 .TP
-.B number_of_fields
+number_of_fields
 The number of fields in the message (a string representation of a
 decimal number).
 .TP
-.B opcode
+opcode
 The opcode of the current notice.
 .TP
-.B output_driver
+output_driver
 The name of the output driver in use.
 .TP
-.B port
+port
 The port from which the notice was sent.
 .TP
-.B realm
+realm
 The local zephyr realm.
 .TP
-.B recipient
+recipient
 The recipient for the current notice.  If the notice is a multicast
 (sent to several people), the recipient is set to ``*''.
 .TP
-.B sender
+sender
 Usually a shortened version of fullsender.  If the realm of the sender
 is equal to the realm of the recipient,
 .I sender
 omits the realm name.
 .TP
-.B time
+time
 The time of day at which the notice was sent.
 .TP
-.B user
-The full zephyr name of the user (e.g. marc@ATHENA.MIT.EDU).
+user
+The full zephyr name of the user (e.g. pegray@ATHENA.MIT.EDU).
 .TP
-.B version
+version
 The current version of 
 .IR zwgc .
 .TP
-.B zephyr_version
+zephyr_version
 The protocol version of the notice.
 .PP
 All of these variables (except for error, output_driver, and version)
@@ -229,9 +221,6 @@ file.
 .TP 5
 .BI buffer ()
 The contents of the current output buffer.
-.TP
-.BI downcase (expr)
-Returns the value of \fIexpr\fR, converted to lower case.
 .TP
 .BI get (expr)
 Returns a line from the port named \fIexpr\fR.  If there is no text
@@ -252,8 +241,7 @@ from the beginning
 or end 
 .RB ( rany )
 of
-.I expr1
-(e.g. lany("1234567890","foo") would return "123").
+.I expr1.
 If
 .I expr1
 is a variable reference, the variable
@@ -288,6 +276,9 @@ in
 is returned (and 
 .I expr1
 is set to "", if a variable).
+.TP
+.BI lowercase (expr)
+Returns the value of \fIexpr\fR, converted to lower case.
 .TP
 .BI lspan "(expr1, expr2), " lspan "(expr1, expr2)"
 These functions are the negation of the 
@@ -353,7 +344,7 @@ True if either of
 .IR expr1 " or " expr2
 are true.
 .TP
-\fB! \fIexpr1\fR, \fBnot \fIexpr1\fR
+.BI "! " expr1
 The logical negation of
 .I expr1.
 
@@ -362,15 +353,15 @@ The logical negation of
 Following is a list of the commands usable in the description
 language:
 .TP 5
-.BI appendport " expr1 expr2"
+appendport expr1 expr2
 Creates a port called \fIexpr1\fR.  All output to the port will be
 appended to the file \fIexpr2\fR.  There is no input.  If the file is
 created, its mode is set to read-write, owner only (no access for others).
 .TP
-.B break
+break
 Exits the innermost if, case, or while block.
 .TP
-\fBcase \fIexpr1\fR [ ((\fBmatch \fIexpr\fR [,\fIexpr ...\fR]) | \fBdefault\fR)\fI commands \fR] ... \fBendcase\fR
+case expr1 [ ((match expr [,expr ...]) | default) commands ] ... endcase
 Evaluates \fIexpr1\fR.  Then, each of the match expressions is
 evaluated in order.  The first time an expression matches \fIexpr1\fR,
 then the body of commands under it is executed, and the rest of the case
@@ -378,67 +369,64 @@ statement is skipped.  default always
 matches, so it should always appear as the last set of commands.  See
 the default description file for an example of use.
 .TP
-.B clearbuf
+clearbuf
 Clears the output buffer (see below for details on buffering).
 .TP
-.BI closeinput " expr"
+closeinput expr
 Closes the file associated with \fIexpr\fR.
 .TP
-.BI closeoutput " expr"
+closeoutput expr
 Sends an EOF (end-of-file) to the process if \fIexpr\fR was a port created by
 execport, or closes the file if it was created by outputport or
 appendport.
 .TP
-.BI closeport " expr"
+closeport expr
 Closes both input and output of \fIexpr\fR as defined above.
 .TP
-.BI fields " variable1 ..."
+fields variable1 ...
 sets the list of variables to be equal to the fields in the
 notice.  If there are more variables than fields, the extra
 variables are left empty.
 .TP
-.BI exec " exprlist"
-Executes a program without any input or output.  A command named by
-\fIexprlist\fR is executed.  Each expression is used as an argument to
-the program; the first expression names the program (it may be either an
-absolute pathname, or a program name; the user's PATH is searched to
-find simple program names).
+exec exprlist
+Executes a program without any input or output.
 .TP
-.BI execport " expr1 exprlist"
+execport expr1 exprlist
 Creates a port called \fIexpr1\fR.  A command named by \fIexprlist\fR
-is executed, as described above for \fBexec\fR.
+is executed (each expression is used as an argument to the program; the
+first expression names the program).
 All output to the port is sent to the standard input
 of the process.  Reading from the port will return the standard output
 of the process.
 .TP
-.B exit
+exit
 Completes processing of the current notice.  The remainder of the
 description file is ignored after execution of this command.
 .\" hack because the following line otherwise breaks because it is too long.
 .if n .ll +2in
 .TP
-\fBif \fIexpr1 \fBthen \fIcommands1\fR [\fBelseif \fIexpr2 \fBthen \fIcommands2\fR] ... [\fBelse \fIcommandsn\fR] \fBendif\fR
-If \fIexpr1\fR evaluates to true, execute \fIcommands1\fI, etc. [A conditional
+if expr1 then commands\fB1\fR [elseif expr2 then commands\fB2\fR] ... [else commands\fBn\fR] endif
+If expr1 evaluates to true, execute commands1, etc. [A conditional
 construct, similar to the constructs in the C shell (csh).]
 .TP
-.BI inputport " expr1 expr2"
+inputport expr1 expr2 
 Creates a port called \fIexpr1\fR.  All input from the port comes from
 the file \fIexpr2\fR.  There is no output.
 .TP
-.B noop
+noop
 does nothing
 .TP
-.BI outputport " expr1 expr2"
+outputport expr1 expr2
 Creates a port called \fIexpr1\fR.  The file \fIexpr2\fR will be
 truncated, or created if it does not exist.  All output to the port
 will be appended to the file \fIexpr2\fR.  There is no input.  If the file is
 created, its mode is set to read-write, owner only (no access for others).
 .TP
-.BI print " expr1 ..."
+print expr1 ...
 adds the values of the expressions to the current output buffer.  The
 values of the expressions are separated by spaces in the output.
 .TP
-.B put \fR[\fIexpr \fR[\fIexprlist\fR]]
+put [expr [exprlist]]
 Sends data to a port.  If \fIexpr\fR is provided, then it is used as the
 port, otherwise the port used is the
 port corresponding to the default output device.
@@ -446,7 +434,7 @@ If \fIexprlist\fR is provided, the expressions in the list are sent to
 the port, separated by spaces.  If it is omitted, then the contents
 of the output buffer are sent as the data.
 .TP
-.BI set " variable " = " expr"
+set variable = expr
 sets
 .I variable
 equal to
@@ -455,7 +443,7 @@ Variable can later be
 referenced by 
 .IR $variable .
 .TP
-.BI show " text " endshow
+show text endshow
 Appends text to the output buffer.  This command is special, because
 the string does not need to be quoted.  Whitespace at the beginning or
 end of the lines of text is ignored.  The \fIendshow\fR must appear as
@@ -469,7 +457,7 @@ show
 endshow
 .fi
 .TP
-.BI while " expr " do " statements " endwhile
+while expr do statements endwhile
 Executes \fIstatements\fR until \fIexpr\fR is false.
 
 .SH PORTS
@@ -527,14 +515,14 @@ Supported @ commands are:
 .\" @em
 .\" Emphasis.  Use underline if available, else reverse video.
 .TQ 15
-@roman
-Roman (plain) letters (turns off all special modes).
-.TQ
-@b or @bold
+@bold
 Bold letters.  If not available, reverse video, else underline.
 .TQ
-@i or @italic
+@italic
 Italic letters (underlining, if available).
+.TQ
+@roman
+Roman (plain) letters (no special modes).
 .TQ
 @beep
 "bl" termcap entry, else "^G" (beep the terminal)
@@ -575,15 +563,6 @@ turns on boldface
 @i or @italic
 turns on italics
 .TQ
-@l or @left
-left aligned
-.TQ
-@c or @center
-center aligned
-.TQ
-@r or @right
-right aligned
-.TQ
 @large
 large type size
 .TQ
@@ -618,10 +597,8 @@ environments, evaluated in the context of the current style and
 substyle.
 .IP
 The style is specific to each window.  Its name has three dot
-(``.'') separated fields, which are by default the values of the class,
-instance, and recipient variables, with all dots changed to underscores
-(``_'') and all letters converted to lowercase.  The style can be
-altered by setting the
+(``.'') separated fields, which are by default the class, instance, and
+recipient of the message.  The style can be altered setting the
 .I style
 variable.  Note that it \fBmust always\fR have exactly two ``.''
 characters in it.
@@ -688,24 +665,10 @@ Entries like
 zwgc*option: value
 Zwgc*option: value
 zwgc.option: value
-*option: value
-.option: value
 .in -5
 .fi
 .sp
 will work.
-.PP
-An entry labeled with zwgc*option in any of the sources takes precedence
-over Zwgc*option, which takes precedence over *option entries.
-The following sources are searched in order:
-.nf
-.in +5
-command-line arguments (-xrm)
-contents of file named by XENVIRONMENT environment variable
-X server resource database (see \fIxrdb\fR(1))
-application resources file
-.in -5
-.fi
 .PP
 Logical values can be ( Yes On True T ) or ( No Off False nil ).
 .TP 15
@@ -822,26 +785,6 @@ Synchronous
 Secondary X synchronous mode specifier.  [default is `off']
 .PP
 The window class is always "Zwgc".
-.SH X BUTTONS
-.PP
-Clicking and releasing any button without the shift key depressed while
-the pointer remains inside a WindowGram window will cause it to
-disappear. If the pointer leaves the window
-while the button is depressed, the window does not disappear; this
-provides a way to avoid accidentally losing messages.
-.PP
-Portions of the text of a message may be selected for "pasting" into other X
-applications by using the shift key in cooperation with the pointer
-buttons.
-Holding the Shift key while depressing Button1 (usually the left button)
-will set a marker at the
-text under the pointer.  Dragging the pointer with Shift-Button1 still
-depressed extends the selection from the start point, until the button
-is released.  The end of the selection may also be
-indicated by releasing Button1, holding down the Shift key, and pressing
-Button3 (usually the right button) at the desired endpoint of the selection.
-The selection will appear with the text and background colors reversed.
-
 .SH COMMAND LINE
 .I zwgc
 is normally invoked from 
@@ -934,11 +877,6 @@ For an example of a description file, see
 For an example of X resources, see
 .IR /usr/athena/lib/zephyr/zwgc_resources .
 
-.SH BUGS
-The X selection code can highlight the wrong portions of messages
-containing formatted text placed with the @center() or @right()
-directives.
-
 .SH FILES
 .TQ 15
 $HOME/.zwgc.desc
@@ -948,7 +886,7 @@ Default location of user's description file
 System-wide description file
 .TQ
 /usr/athena/lib/zephyr/zwgc_resources
-Default X application resources.
+System-wide default X resources.
 .TQ
 $HOME/.zephyr.vars
 File containing variable definitions
@@ -962,15 +900,15 @@ Standard X resources file
 $WGFILE or /tmp/wg.\fIuid\fR
 File used to store WindowGram port number for other clients
 .SH SEE ALSO
-csh(1), kinit(1), xrdb(1), zctl(1), zephyr(1), znol(1), X(1), getenv(3),
-system(3), termcap(5), zephyrd(8), zhm(8)
+csh(1), kinit(1), zctl(1), zephyr(1), znol(1), X(1), getenv(3), system(3), 
+termcap(5), zephyrd(8), zhm(8)
 .br
 Project Athena Technical Plan Section E.4.1, `Zephyr Notification Service'
 .SH AUTHORS
 .nf
 John Carr (MIT/Project Athena) <jfc@athena.mit.edu>
 Marc Horowitz (MIT/Project Athena) <marc@athena.mit.edu>
-Mark Lillibridge (MIT/Project Athena) <mdl@CS.CMU.EDU>
+Mark Lillibridge (MIT/Project Athena)
 .fi
 .SH RESTRICTIONS
 Copyright (c) 1989 by the Massachusetts Institute of Technology.

@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.31 1989-11-30 17:16:26 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.30 1989-11-10 09:56:19 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -497,9 +497,7 @@ ZClient_t *client;
 		return;
 	}
 	if ((retval = ZSendPacket(noticepack, packlen, 0)) != ZERR_NONE) {
-		syslog(LOG_WARNING, "xmit xmit: (%s/%d) %s",
-		       inet_ntoa(dest->sin_addr), ntohs(dest->sin_port),
-		       error_message(retval));
+		syslog(LOG_WARNING, "xmit xmit: %s", error_message(retval));
 		xfree(noticepack);
 		return;
 	}

@@ -1,9 +1,0 @@
-Athena does not support the traditional ``mail'' command.
-Please refer to the documentation ``Essential Messages'',
-available in hardcopy in Building 11, or on line.  To use
-the on line version, type
-
-	attach athenadoc
-	more /mit/athenadoc/README
-
-and follow the instructions given there.
