@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.2 1997-11-12 21:16:08 danw Exp $
+ * $Id: auth-kerberos.c,v 1.3 1997-11-15 00:04:12 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1997/11/12 21:16:08  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
  * Revision 1.1.1.1  1997/10/17 22:26:14  danw
  * Import of ssh 1.2.21
  *
@@ -40,6 +43,7 @@
 extern  krb5_context ssh_context;
 extern  krb5_auth_context auth_context;
 extern  int havecred;
+void	krb_cleanup(void);
 
 int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 {
@@ -281,6 +285,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   packet_send();
   packet_write_wait();
   havecred = 1;
+  atexit(krb_cleanup);
   return 1;
   
 errout3:

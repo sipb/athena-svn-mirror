@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.2 1997-11-12 21:16:09 danw Exp $
+ * $Id: auth-passwd.c,v 1.3 1997-11-15 00:04:13 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1997/11/12 21:16:09  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
  * Revision 1.1.1.1  1997/10/17 22:26:01  danw
  * Import of ssh 1.2.21
  *
@@ -263,6 +266,7 @@ static int securid_initialized = 0;
 extern  krb5_context ssh_context;
 extern  krb5_auth_context auth_context;
 extern  int havecred;
+void	krb_cleanup(void);
 #else
 #include <krb.h>
 #endif /* KRB5 */
@@ -593,6 +597,7 @@ int auth_password(const char *server_user, const char *password)
 	      chown(krbtkfile+10, pw->pw_uid, pw->pw_gid);
 
 	      havecred = 1;
+	      atexit(krb_cleanup);
 	      return 1;
 	    }
 	  if (problem == KRB5_KT_NOTFOUND)

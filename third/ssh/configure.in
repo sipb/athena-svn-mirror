@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.2 1997-11-12 21:16:15 danw Exp $
+# $Id: configure.in,v 1.3 1997-11-15 00:04:17 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.2  1997/11/12 21:16:15  danw
+# Athena-login changes (including some krb4 stuff)
+#
 # Revision 1.1.1.1  1997/10/17 22:25:52  danw
 # Import of ssh 1.2.21
 #
@@ -1540,7 +1543,7 @@ if test $with_afs != no; then
 	ATHENA_LIBS="$ATHENA_LIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
 	AC_CHECK_FUNC(sigvec, :,
 		      [AC_CHECK_LIB(ucb, sigvec,
-				    [ATHENA_LIBS="$ATHENA_LIBS -lucb"])])
+				    [ATHENA_LIBS="$ATHENA_LIBS -lc -lucb"])])
 	AC_CHECK_FUNC(insque, :,
 		      [AC_CHECK_LIB(compat, insque,
 				    [ATHENA_LIBS="$ATHENA_LIBS -lcompat"])])

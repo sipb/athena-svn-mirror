@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.2 1997-11-12 21:16:18 danw Exp $
+ * $Id: sshd.c,v 1.3 1997-11-15 00:04:20 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1997/11/12 21:16:18  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
  * Revision 1.1.1.1  1997/10/17 22:26:00  danw
  * Import of ssh 1.2.21
  *
@@ -448,7 +451,9 @@ char *ticket = "none\0";
 #include <al.h>
 extern int setpag(), ktc_ForgetAllTokens();
 void try_afscall(int (*func)(void));
+void al_cleanup(void);
 int *al_warnings = NULL;
+char *al_user;
 
 /* Server configuration options. */
 ServerOptions options;
@@ -1421,19 +1426,6 @@ void do_connection(int privileged_port)
 
   /* Do the authentication. */
   do_authentication(user, privileged_port, cipher_type);
-
-#ifdef KERBEROS
-  /* Destroy tickets */
-  if (ticket && strcmp(ticket, "none")) {
-      krb5_ccache ccache;
-      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
-	  krb5_cc_destroy(ssh_context, ccache);
-      dest_tkt();
-      try_afscall(ktc_ForgetAllTokens);
-  }
-#endif
-  
-  al_acct_revert(user, getpid());
 }
 
 /* Returns true if logging in as the specified user is permitted.  Returns
@@ -1786,13 +1778,14 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
       /* not reached */
     }
   al_acct_create(user, NULL, getpid(), 0, 0, &al_warnings);
+  al_user = xstrdup(user);
+  atexit(al_cleanup);
   if (al_warnings)
     {
       free(al_warnings);
       al_warnings = NULL;
     }
   pw = getpwnam(user);
-  al_acct_revert(user, getpid());
 
   if (!pw || user[0] == '-' || user[0] == '+' || user[0] == '@' ||
       !login_permitted(user, pw))
@@ -3403,7 +3396,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   if (ticket)
     {
       child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
-      child_set_env(&env, &envsize, "KRBTKFILE", tkt_string());
+      child_set_env(&env, &envsize, "KRBTKFILE", (char *)tkt_string());
     }
 #endif /* KRB5 */
 #endif /* KERBEROS */
@@ -3711,12 +3704,29 @@ char *username;
 
 void try_afscall(int (*func)(void))
 {
-    struct sigaction sa, osa;
+  struct sigaction sa, osa;
 
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = SIG_IGN;
-    sigaction(SIGSYS, &sa, &osa);
-    func();
-    sigaction(SIGSYS, &osa, NULL);
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = SIG_IGN;
+  sigaction(SIGSYS, &sa, &osa);
+  func();
+  sigaction(SIGSYS, &osa, NULL);
+}
+
+void al_cleanup(void)
+{
+  al_acct_revert(al_user, getpid());
+}
+
+void krb_cleanup(void)
+{
+  if (ticket && strcmp(ticket, "none"))
+    {
+      krb5_ccache ccache;
+      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+	  krb5_cc_destroy(ssh_context, ccache);
+      dest_tkt();
+      try_afscall(ktc_ForgetAllTokens);
+    }
 }
