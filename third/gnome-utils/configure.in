@@ -106,7 +106,7 @@ fi
 GLADE_LIBS=`gnome-config --libs libglade`
 GLADE_CFLAGS=`gnome-config --cflags libglade`
 AC_SUBST(GLADE_LIBS)
-AC_SUBST(GLADE_FGLAGS)
+AC_SUBST(GLADE_CFLAGS)
 
 dnl ******************** 
 dnl gfloppy
