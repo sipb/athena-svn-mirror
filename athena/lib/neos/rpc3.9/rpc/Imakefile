@@ -5,6 +5,11 @@
  * Copyright (c) 1987 by Sun Microsystems, Inc.
  *
  */ 
+#if defined(sun
+CHOWN=chown
+#else
+CHOWN=/etc/chown
+#endif
 
 #if defined(_IBMR2) || defined(sun)
 
@@ -48,7 +53,7 @@ build_library(fxrpc,${OBJS})
 all:: $(HDRS) libfxrpc.a
 	@echo "Creating RPC header directory"
 	-mkdir ../usr/include/rpc && \
-		/etc/chown bin ../usr/include/rpc && \
+		$(CHOWN) bin ../usr/include/rpc && \
 		chmod 755 ../usr/include/rpc
 #ifdef BUILD_RPC
 	@echo "Installing RPC header files"
