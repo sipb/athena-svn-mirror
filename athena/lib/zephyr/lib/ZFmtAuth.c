@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.11 1989-03-24 14:17:52 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.12 1991-06-18 13:44:32 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.11 1989-03-24 14:17:52 jtkohl Exp $";
-#endif lint
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.12 1991-06-18 13:44:32 jfc Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,8 +23,8 @@ static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source
 #ifdef KERBEROS
 Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     ZNotice_t *notice;
-    char *buffer;
-    int buffer_len;
+    register char *buffer;
+    register int buffer_len;
     int *len;
     C_Block session;
 {
@@ -36,7 +36,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     newnotice.z_auth = 1;
     newnotice.z_authent_len = 0;
     newnotice.z_ascii_authent = "";
-	
+
     if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
 				    &hdrlen, &ptr)) != ZERR_NONE)
 	return (retval);
