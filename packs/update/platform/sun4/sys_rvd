@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.4 1993-05-25 15:07:31 root Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.5 1993-06-09 13:17:07 miki Exp $
 	.:::
 		*4c
 		ufsboot
@@ -25,6 +25,7 @@ GLOBAL : *.CKP *.local *.pid :
 		tmp
 		usr
 		var
+		SUNW*
 		-> kadb
 		-> update_ws
 		:
