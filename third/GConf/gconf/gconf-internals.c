@@ -752,7 +752,8 @@ get_variable(const gchar* varname)
   */
   if (strcmp(varname, "HOME") == 0)
     {
-      return g_get_home_dir();
+      /* Athena mod: If NOCALLS is set, don't use the real home directory. */
+      return (getenv("NOCALLS") ? gconf_get_tmp_dir() : g_get_home_dir());
     }
   else if (strcmp(varname, "USER") == 0)
     {
@@ -2959,11 +2960,25 @@ gconf_orb_get (void)
 char*
 gconf_get_daemon_dir (void)
 {
-  /* Athena local mod: create the daemon directory under /tmp,
-   * instead of the home directory, so we can run a separate
-   * daemon on each machine.
+  /* Athena local mod: create the daemon directory in a special
+   * per-session directory in /tmp, instead of the home directory,
+   * so we can run a separate daemon for each session.
    */
-  return g_strconcat ("/tmp/gconfd-", g_get_user_name (), NULL);
+  char *session_tmpdir;
+  char *session_id;
+
+  session_tmpdir = getenv("ATHENA_SESSION_TMPDIR");
+  if (session_tmpdir != NULL)
+    return g_strconcat (session_tmpdir, "/gconfd", NULL);
+
+  session_id = getenv("ATHENA_LOGIN_SESSION");
+  if (session_id == NULL)
+    session_id = getenv("XSESSION");
+  if (session_id == NULL)
+    session_id = "";
+
+  return g_strconcat ("/tmp/gconfd-", g_get_user_name (), "-",
+                      session_id, NULL);
 }
 
 char*
@@ -2979,6 +2994,20 @@ gconf_get_lock_dir (void)
   return lock_dir;
 }
 
+/* Athena mod:  Get the temporary directory to use for the session
+ * (needed for "NOCALLS").
+ * For now, just uses the daemon directory, which is assumed to be
+ * temporary for this session.
+ */
+gchar *
+gconf_get_tmp_dir(void)
+{
+  static gchar *tmpdir = NULL;
+
+  if (tmpdir == NULL)
+    tmpdir = gconf_get_daemon_dir();
+  return tmpdir;
+}
 
 static void set_cloexec (gint fd);
 
@@ -3074,6 +3103,7 @@ gconf_activate_server (gboolean  start_if_not_found,
         {
           g_free (argv[1]);
           g_free (argv[2]);
+          close (p[1]);
           g_set_error (error,
                        GCONF_ERROR,
                        GCONF_ERROR_NO_SERVER,
@@ -3086,6 +3116,12 @@ gconf_activate_server (gboolean  start_if_not_found,
       g_free (argv[1]);
       g_free (argv[2]);
   
+      /* Close the write side of the pipe, so that we do not hang on the
+       * read() below, in case the server does not get as far as writing
+       * back to the pipe.
+       */
+      close (p[1]);
+  
       /* Block until server starts up */
       read (p[0], buf, 1);
 
@@ -3096,13 +3132,16 @@ gconf_activate_server (gboolean  start_if_not_found,
       /* Make sure we can ping the new server, since it may have failed
        * to acquire the lock, and exited.
        */
-      CORBA_exception_init (&ev);
-      ConfigServer_ping (server, &ev);
-      if (ev._major != CORBA_NO_EXCEPTION)
-        server = CORBA_OBJECT_NIL;
-      CORBA_exception_free (&ev);  
+      if (server != CORBA_OBJECT_NIL)
+        {
+          CORBA_exception_init (&ev);
+          ConfigServer_ping (server, &ev);
+          if (ev._major != CORBA_NO_EXCEPTION)
+            server = CORBA_OBJECT_NIL;
+          CORBA_exception_free (&ev);
+        }
     }
-  
+
  out:
   if (server == CORBA_OBJECT_NIL &&
       error &&
@@ -3113,7 +3152,6 @@ gconf_activate_server (gboolean  start_if_not_found,
                  _("Failed to contact configuration server (a likely cause of this is that you have an existing configuration server (gconfd) running, but it isn't reachable from here - if you're logged in from two machines at once, you may need to enable TCP networking for ORBit)\n"));
 
   close (p[0]);
-  close (p[1]);
   
   return server;
 }
