@@ -12,4 +12,4 @@ of:0:wait:/sbin/uadmin 2 0		>/dev/console 2>&1 </dev/console
 fw:5:wait:/sbin/uadmin 2 2		>/dev/console 2>&1 </dev/console
 RB:6:wait:/sbin/sh -c 'echo "\nThe system is being restarted."' >/dev/console 2>&1
 rb:6:wait:/sbin/uadmin 2 1		>/dev/console 2>&1 </dev/console
-co:234:respawn:/etc/athena/dm /etc/athena/login/config ttyp0 console 
+co:234:respawn:/etc/athena/dmstart >/dev/console 2>&1 </dev/console 
