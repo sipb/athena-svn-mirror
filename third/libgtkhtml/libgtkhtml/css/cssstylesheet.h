@@ -36,12 +36,6 @@ typedef struct _CssSimpleSelector CssSimpleSelector;
 typedef struct _CssSelector CssSelector;
 typedef struct _CssStatement CssStatement;
 
-typedef enum _CssTailType CssTailType;
-typedef enum _CssAttrMatch CssAttrMatch;
-typedef enum _CssAttrValType CssAttrValType;
-typedef enum _CssStatementType CssStatementType;
-typedef enum _CssCombinator CssCombinator;
-
 enum _CssStatementType {
 	CSS_RULESET,
 	CSS_IMPORT_RULE,
@@ -51,6 +45,7 @@ enum _CssStatementType {
 	CSS_FONT_FACE_RULE,
 	CSS_UNKNOWN_RULE
 };
+typedef enum _CssStatementType CssStatementType;
 
 enum _CssCombinator {
 	CSS_COMBINATOR_PLUS,
@@ -58,11 +53,13 @@ enum _CssCombinator {
 	CSS_COMBINATOR_TILDE,
 	CSS_COMBINATOR_EMPTY
 };
+typedef enum _CssCombinator CssCombinator;
 
 enum _CssAttrValType {
 	CSS_ATTR_VAL_IDENT,
 	CSS_ATTR_VAL_STRING
 };
+typedef enum _CssAttrValType CssAttrValType;
 
 struct _CssAttrVal {
 	CssAttrValType type;
@@ -149,6 +146,7 @@ enum _CssTailType {
 	CSS_TAIL_CLASS_SEL,
 	CSS_TAIL_PSEUDO_SEL
 };
+typedef enum _CssTailType CssTailType;
 
 enum _CssAttrMatch {
 	CSS_MATCH_EMPTY,
@@ -159,6 +157,7 @@ enum _CssAttrMatch {
 	CSS_MATCH_INCLUDES,
 	CSS_MATCH_DASHMATCH
 };
+typedef enum _CssAttrMatch CssAttrMatch;
 
 struct _CssTail {
 	CssTailType type;
@@ -192,6 +191,8 @@ void css_tail_destroy (CssTail *tail);
 
 void css_stylesheet_destroy (CssStylesheet *stylesheet);
 void css_selector_calc_specificity (CssSelector *sel);
+
+void css_ruleset_destroy (CssRuleset *set);
 
 G_END_DECLS
 

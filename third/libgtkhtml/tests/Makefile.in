@@ -60,14 +60,21 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 A11Y = @A11Y@
+AR = @AR@
 AS = @AS@
 CC = @CC@
 CFLAGS = @CFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
 GAILUTIL_CFLAGS = @GAILUTIL_CFLAGS@
 GAILUTIL_LIBS = @GAILUTIL_LIBS@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GTKHTML2_CFLAGS = @GTKHTML2_CFLAGS@
@@ -82,6 +89,7 @@ OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -271,16 +279,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
-
-
-
-
-
-
-
-
-
 
 info-am:
 info: info-am

@@ -98,6 +98,7 @@ CssValue *css_value_ident_new (HtmlAtom atom);
 CssValue *css_value_string_new (gchar *str);
 gint css_value_list_get_length (CssValue *list);
 void css_value_unref (CssValue *val);
+CssValue *css_value_ref (CssValue *val);
 gchar *css_value_to_string (CssValue *value);
 
 G_END_DECLS

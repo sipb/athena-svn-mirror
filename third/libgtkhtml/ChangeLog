@@ -1,3 +1,1122 @@
+2004-06-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.6.2
+
+        * NEWS: Updated for 2.6.2
+
+2004-06-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c (get_text_near_offset):
+	Add implementation for boundary_type ATK_TEXT_BOUNDARY_LINE_START and
+	ATK_TEXT_BOUNDARY_LINE_END. Part of fix for bug #138091.
+
+	* libgtkhtml/view/htmlview.c (move_cursor):  Unset focus element if
+	cursor is moved out of link.
+	(html_view_move_focus_element): Call set_adjustment_clamped() only if
+	cursor is visible. Fix for bug #143502.
+	
+2004-05-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c
+	( html_box_block_text_accessible_get_default_attributes): Initialize
+	variable len before using it.
+
+	* libgtkhtml/a11y/htmlboxblockaccessible.c
+	( html_box_text_accessible_get_default_attributes): Initialize
+	variable len before using it.
+
+	* libgtkhtml/css/cssparser.c (css_parser_parse_value): Initialize
+	variable term before using it.
+
+	* libgtkhtml/layout/htmlboxtext.c (html_box_text_get_len): Use
+	g_return_val_if_fail instead of g_return_if_fail.
+
+	Fix for bug #141962 from Bart Martens.
+
+2004-04-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c 
+	(html_document_node_inserted_traverser): Remove call to 
+	html_stream_close. (bug #140522)
+
+2004-04-22  Morten Welinder  <terra@gnome.org>
+
+	* libgtkhtml/css/cssmatcher.c (free_decl_entry): Unref
+	entry->decl->expr.
+	(css_matcher_get_style): Ref entry->decl->expr.  Fixes #140747.
+
+2004-04-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhml/a11y/htmlboxtextaccessible.c
+	(html_box_text_accessible_get_character_at_offset): Fix warnings.
+	Bug #140738.
+
+2004-04-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssparser.c (css_parser_parse_declaration): Avoid
+	leaking CssValue. Fixes bug #140727.
+	(css_parser_parse_ruleset): Avoid leaking CssRuleset. Fixes bug #140730.
+	
+2004-04-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssmatcher.c (css_matcher_apply_stylesheet): 
+	Increment reference count on CssValue
+	(css_matcher_get_style): Call css_rulesset_destroy to free all
+	memory for CssRuleset.
+
+	* libgtkhtml/css/cssparser.c (css_parser_parse_style_attr): Initialize
+	all field of CssRuleset.
+
+	* libgtkhtml/css/cssstylesheet.c (css_ruleset_destroy): Make it 
+	non-static.
+
+	* libgtkhtml/css/cssvalue.[ch]: Add new function css_value_ref.
+
+	Fixes bug #140596.
+
+	* libgtkhtml/layout/htmlboxtablecaption.c 
+	(html_box_table_caption_finalize): Chain up to call parent class
+	finalize function.
+
+	Fixes bug #140664.
+
+2004-04-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_finalize): Ensure that
+	jump_to_anchor is not leaked. Bug #140628.
+
+2004-04-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * configure.in: bumped to 2.6.2
+
+	* libgtkhtml/css/cssmatcher.c (css_matcher_apply_stylesheet): Copy
+	CssDeclaration instead of assigning it.
+	(css_matcher_get_style): Copy CssDeclaration instead of assigning it.
+	Free declaration list.
+
+	Fixes bug #140520.
+
+	* libgtkhtml/document/htmldocument.c 
+	(html_document_node_inserted_traverser): Add call to html_stream_close.
+
+	* libgtkhtml/util/htmlstreambuffer.c (html_stream_buffer_close):
+	Add call to g_free (user_data);
+
+	Fixes bug #140522.
+
+2004-04-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.6.1
+
+        * configure.in: bumped to 2.6.1
+
+        * NEWS: Updated for 2.6.1
+
+2004-04-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c: (html_document_open_stream):
+	Add call to html_document_clear.
+
+	* libgkthtml/document/htmlparser.c (html_startDocument): Add warning
+	message if HtmlDocument's DomDocument is set.
+
+	* libgtkhtml/view/htmlview.c (html_view_insert_node): Add warning
+	message if focus element is set when root node is added.
+
+	Fixes bug #135489.
+
+2004-03-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_style_updated): Use focus_width
+	instead of 2 * focus_width.
+	(html_view_update_box_style_style): Use focus_width instead of
+	2 * focus_width. 
+
+	Fix for bug #125290 from Balamurali Vishwanathan.
+
+2004-03-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c (find_anchor_helper): Look for 
+	"id" attribute of anchor element as XHTML 1.0 deprecates "name"
+	attribute and replaces it with "id" attribute. Fixes bug #137854.
+	Patch from Sven Neumann.
+
+2004-03-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.6.0
+
+        * configure.in: bumped to 2.6.0
+
+        * NEWS: Updated for 2.6.0
+
+2004-03-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.6
+
+        * configure.in: bumped to 2.5.6
+
+        * NEWS: Updated for 2.5.6
+
+2004-03-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_pend_cursor_blink):
+	Add call to html_view_set_cursor-visible() so that cursor is redrawn 
+	promptly when it is moved. Fixes bug #135484.
+	(html_view_focus_element): Fix compiler warning.
+
+	* NEWS: Fix typo in release version.
+
+2004-02-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.5
+
+        * configure.in: bumped to 2.5.5
+
+        * NEWS: Updated for 2.5.5
+
+2004-02-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssstylesheet.h:
+	libgtkhtml/document/htmlparser.h:
+	libgtkhtml/layout/htmlstyle.h:
+	tests/dom-test-tree-model.h: IBM C compiler does not like forward
+	definition of enums.
+
+	* libgtkhtml/css/cssparser.c:
+	libgtkhtml/dom/html/dom-htmlanchorelement.c:
+	libgtkhtml/layout/html/htmlboximage.c:
+	tests/simple.c:
+	tests/dom-test-window.c: Remove C++ style comments
+
+	* libgtkhtml/document/htmlparser.c:  Remove unneeded 
+	"document/htmlparser.h"
+
+	* libgtkhtml/dom/html/dom-htmlinputelement.h:
+	libgtkhtml/layout/htmlstyle.h:
+	libgtkhtml/layout/htmlboxtext.h:
+	libgtkhtml/graphics/htmlfontspecification.h: IBM C compiler wants
+	bit types to be of signed or unsigned int.
+
+	* libgtkhtml/dom/dom-types.h:
+	libgtkhtml/layout/htmlstyle.h:
+	libgtkhtml/layout/htmlboxtext.h:
+	libgtkhtml/graphics/htmlfontspecification.h:
+	libgtkhtml/graphics/htmlview.h:
+	tests/dom-test-tree-model.h: IBM C compiler does not like trailing
+	comma on last enum constant
+
+	* libgtkhtml/view/htmnlview.c: Include "document/htmldocument.h"
+	instead of "document/htmlparser.h"
+
+	Fix for bug #134860 from bugzilla-gnome@thewrittenword.com.
+		
+2004-02-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.4
+
+        * configure.in: bumped to 2.5.4
+
+        * NEWS: Updated for 2.5.4
+
+2004-02-07  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	 * libgtkhtml/util/Makefile.am: cleanups for paralel build
+	   (make -j<N>).
+
+2004-02-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssparser.c (css_parser_prepare_stylesheet):
+	Avoid writing to unallocated memory.
+
+	* libgtkhtml/layout/htmlboxtext.c (html_box_text_destroy_slaves):
+	Avoid referring to deleted object.
+
+	Fixes bug #133518.
+
+2004-02-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.3
+
+        * configure.in: bumped to 2.5.3
+
+        * NEWS: Updated for 2.5.3
+
+2004-02-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* data/gtkhtml2.xcf: Remove file as it is not used. Fixes bug #132891.
+
+2004-01-30  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c:
+	* libgtkhtml/a11y/htmlboxtableaccessible.c:
+	* libgtkhtml/a11y/htmlboxtextaccessible.c:
+	* libgtkhtml/a11y/htmlviewaccessible.c: Fix return types in checks.
+	Fixes bug #132980.
+
+2004-01-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlviewaccessible.c 
+	(html_view_accessible_get_focus_object): Set link index correctly for
+	HtmlBoxTextAccessible. Fixes bug #131912.
+
+	* libgtkhtml/view/htmlview.c (html_view_focus_element): Update cursor
+	position when element is focused. Fixes bug #131908.
+
+2004-01-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxaccessible.c: 
+	* libgtkhtml/a11y/htmlboxembeddedaccessible.c: 
+	* libgtkhtml/a11y/htmlboxtableaccessible.c: 
+	Change call to atk_object_set_parent to an assignment to avoid 
+	notification of change of accessible parent.
+
+	* htmlboxblocktextaccessible.c: Add implementation of 
+	atk_object_ref_relation_set to add FLOWS_FROM and FLOWS_TO relations.
+
+	* htmlboxtextaccessible.c: Add implementation of 
+	atk_object_ref_relation_set to add FLOWS_FROM and FLOWS_TO relations.
+	(html_box_text_accessible_get_n_children): return 0 as number of 
+	children.
+	(html_box_text_accessible_ref_child): return NULL as child.
+
+	This fixes bug #131462.
+
+2004-01-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c (append_text): Remove
+	reference to HtmlBoxTable.
+	(html_box_block_text_accessible_get_n_children): Return number of 
+	children as 0.
+	(html_box_block_text_accessible_ref_child): Return NULL as child.
+	(find_offset): New function which finds the offset in a HtmlBox
+	of an offset in a contained HtmlBoxText.
+	(html_box_block_text_accessible_get_caret_offset): Implement using
+	_html_view_get_cursor_box_text.
+
+	* libgtkhtml/view/htmlview.c: 
+	(html_view_get_cursor_position): Add emission of text-caret-moved 
+	signal if accessibility is enabled.
+	(html_view_get_cursor_location): Rework to use new function
+	_html_view_get_cursor_box_text.
+	(html_view_init): Remove unnecessary call to 
+	html_view_set_cursor_position.
+
+	Fixes bug #131465.
+	
+2004-01-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/Makefile.am: Add htmlboxtextaccessible.c,
+	htmlboxtextaccessible.h, htmlboxtextlinkaccessible.c and 
+	htmlboxtextlinkaccessible.h.
+
+	* libgtkhtml/a11y/htmlboxaccessible.c (html_box_accessible_new):
+	Create a HtmlBoxTextAccessible if a HtmlBoxText is not inside a 
+	HtmlBoxBlock corresponding to a paragraph.
+
+	* libgtkhtml/a11y/htmlboxblockaccessible.c (contains_link): Fix
+	compiler warning. Correct to find link inside a HtmlBoxInLine.
+	(contains_text): Add check that HtmlBoxBlock corresponds to a 
+	paragraph.
+
+	* libgtkhtml/a11y/htmlboxblocklinkaccessible.c (is_link): Fix
+	compiler warnings.
+	(html_box_block_link_accessible_get_link): Remove unused variable.
+
+	* libgtkhtml/a11y/htmlboxblockaccessible.h:
+	* libgtkhtml/a11y/htmlboxblocklinkaccessible.h:
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.h: Correct typos
+	in defines.
+
+	* libgtkhtml/a11y/htmlboxtextaccessible.c:
+	* libgtkhtml/a11y/htmlboxtextaccessible.h:
+	* libgtkhtml/a11y/htmlboxtextlinkaccessible.c:
+	* libgtkhtml/a11y/htmlboxtextlinkaccessible.h: New files.
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c:
+	(html_box_block_text_accessible_text_info): Remove duplicate get_text.
+	(html_box_block_get_caret_offset):
+	(html_box_block_set_caret_offset): Remove incorrect implementation.
+
+	* libgtkhtml/a11y/htmlviewaccessible.c (debug_dump_boxes): Add
+	more debug information.
+	(html_view_accessible_get_focus_object): Find correct focus object, 
+	i.e. check whether HtmlBoxInLine is inside a paragraph. 
+	
+	Fixes bug #131553.
+
+2004-01-15  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml.htmlview.c:
+	(is_box_in_paragraph): New function,
+	(is_offset_in_paragraph): New function.
+	(is_at_line_boundary): Made function static. 
+	(html_view_move_visually): Check whether in paragraph when moving
+	forward and at end of box or moving backward and at beginning of box.
+	Do not allow cursor to be placed at the end of the text inside a
+	paragraph.
+	(set_offset_for_box_text): Take into account whether the box in inside
+	a paragraph when line is shorter than virtual cursor x position.
+
+	This fixes bug #131550.
+
+2004-01-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxaccessible.c:
+	(html_box_accessible_new): Check that HtmlBoxText contains some
+	text before returning its parent's accessible object.
+	Set role to ATK_ROLE_PANEL instead of ATK_ROLER_UNKNOWN.
+
+	This fixes bug #131453.
+
+2004-01-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	Add support for virtual cursor when moving cursor. Also some tidy up.
+
+	* libgtkhtml.view/htmlview.c:
+	(html_view_get_box_text_for_offset): Change boolean third argument
+	to be TRUE when at eend of line.
+	(html_view_get_virtual_cursor_x):
+	(html_view_set_virtual_cursor_y):
+	(html_view_get_virtual_cursor_x):
+	(html_view_set_virtual_cursor_y): New functions to get or set x or y
+	position of virtual cursor.x.
+	(html_view_get_cursor_end_of_line):
+	(html_view_set_cursor_end_of_line): New function which get or set 
+	whether cursor should appear at end of line or beginning of next line.
+	(html_view_get_cursor_position): Convert index used for selection
+	to offset.
+	(html_view_set_cursor_position): Set virtual cursor x and y values 
+	to -1.
+	(html_view_get_selection_bound): Convert index used for selection
+	to offset.
+	(html_view_get_location): New function which returns the HtmlBox at
+	(html_view_get_cursor_location): New function which returns the 
+	HtmlBox and its position at the cursor.
+	(html_view_draw_cursor): Refactor to use html_view_get_cursor_location.
+	(is_at_line_boundary): New function which determines wheter an offset
+	is at a line boundary.
+	(html_view_move_visually): Allow cursor to move to end of line before
+	moving to start of next line.
+	(html_view_move_backward_word): Update for change to 
+	html_view_get_box_text_for_offset. Add call to 
+	html_view_set_cursor_end_of_line.
+	(html_view_move_forward_word): Update for change to 
+	html_view_get_box_text_for_offset. Add call to 
+	html_view_set_cursor_end_of_line.
+	(html_view_get_virtual_cursor_pos):
+	(html_view_set_virtual_cursor_pos): New functions which get or set the 
+	virtual cursor position.
+	(find_box_text_for_x_pos): New function which finds the HtmlBoxText
+	on the same line as the specified htmlBoxText and at the specified x
+	position.
+	(set_offset_for_box_text): New function which sets the offset for
+	a HtmlBoxText at a specified x position.
+	(move_cursor): New function which contains code previously in
+	html_view_real_move_cursor to update cursor position, update selection
+	if required and update focus element is required.
+	(html_move_cursor_by_line): Update function to deal with virtual cursor
+	position. Reorganized code.
+	(get_end_text_offset): Update for change to
+	html_view_get_box_text_for_offset.
+	(htjml_view_move_cursor_to_start): Update for change to
+	html_view_get_box_text_for_offset.
+	(htmnl_view_scroll_pages): Rename from html_view_move_cursor_by_page.
+	Update to use move_cursor and virtual cursor position.
+	(html_view_real_move_cursor): Rename new_pos to new_offset to
+	clarify that it is a character offset. Refactored code to remove
+	move_cursor functionality. Add support for virtual cursor.
+
+	Fixes bug #131216.
+	
+2004-01-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlselection.c:
+	(html_selection_get_text): Correct as sel_start_index, sel_end_index
+	and  length are byte index not character offset.
+	(set_traversal: Pass byte index not character offset to
+	html_box_text_set_selection. Fixes bug #131425.
+
+2004-01-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.2
+
+        * configure.in: bumped to 2.5.2
+
+        * NEWS: Updated for 2.5.2
+
+2004-01-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	Add support  for movement to start, end, next line, previous line,
+	next page, previous page when cursor is showing. Also some tidy up.
+
+	* libgtkhtml/view/htmlview.c:
+	(find_last_child): New function which finds last HtmlBox for a 
+	HtmlView.
+	(find_previous_box): New function which finds the HtmlBox immediately
+	previous to a specified HtmlBox.
+	(find_previous_box_text): New function which finds the first 
+	HtmlBoxText previous to a specified HtmlBox.
+	(find_next_box): New function which finds the HtmlBox immediately
+	after a specified HtmlBox.
+	(find_next_box_text): New function which finds the first HtmlBoxText
+	after a specified HtmlBox.
+	(find_box): This function is removed.
+	(html_view_get_box_text_for_offset): Update function to use
+	find_next_box_text instead of find_box.
+	(html_view_draw_cursor): Remove variable at_end. If cursor is at the
+	end html_view_get_box_text_for_offset will return the correct position.
+	(html_view_move_cursor_by_line): New function which move the cursor
+	to the next or previous line when cursor is showing..
+	(get_end_text_offset): Return the last HtmlBox which is a HtmlBoxText
+	and contains text.
+	(html_view_move_cursor_to_end): New function which moves cursor to
+	end when cursor is showing.
+	(html_view_move_cursor_to_start): New function which moves cursor to
+	start when cursor is showing.
+	(html_view_move_cursor_by_page): New function which move the cursor
+	to the next or previous page when cursor is showing.
+	(html_view_real_move_cursor): Add support for moving cursor, by line,
+	by page and to start and end when cursor is showing.
+
+2004-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_real_move_cursor): Separate
+	codes for cursor showing and cursor not showing.
+
+2004-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (add_text): Correct getting of text
+	from HtmlBoxText.
+	(html_view_draw_cursor): Correct cursor position for HtmlBoxText with
+	box's coordinates are set. Fixes bug #130883.
+
+2004-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_draw_cursor): Draw cursor
+	in correct position. Fixes bug #130881.
+
+2004-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlboxtext.c (html_box_text_finalize): 
+	Delete call to remove weak pointer for dom_node as it is now done
+	in html_box_finalize. Fixes bug #130867.
+
+2004-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlbox.c (html_box_finalize): Remove weak pointer
+	for dom_node. Fixes bug #130789.
+
+2004-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	This is part of the fix for bug #123008. It uses F7 to toggle whether
+	cursor should be visible. It adds support for Left, Right, Ctrl+Left
+	and Ctrl+Right keybindings to navigate or select the text in a 
+	HtmlView when cursor is vissible; the text is selected by also using 
+	the Shift key. If cursor is moved to a focusable object that object 
+	receives focus.
+
+	* libgtkhtml/view/htmlselection.[ch]:
+	(html_selection_get_text): Add casts to fix compiler warnings.
+	(set_traversal): Add casts to fix compiler warnings.
+	Update *len variable after setting selection for 
+	HTML_BOX_TEXT_SELECTION_START.
+	(html_selection_extend): New function to extend the current selection.
+
+	* libgtkhtml/view/htmlview.c:
+	Add include for htmlselection.h for html_selection_extend.
+	(html_view_get_box_text_for_offset): New function which returns
+	the HtmlBoxText which contains the specified character offset.
+	(html_view_get_offset_for_box_text): New function which returns
+	the offset for the start of a specified HtmlBoxText.
+	(html_view_get_cursor_position): New function which returns the 
+	cursor position. If text is selected it uses the end of the selection.
+	(html_view_set_cursor_position): New function which sets the cursor
+	position.
+	(html_view_get_selection_bound): New function which returns the 
+	selection bound. If text is selected it used the start of the 
+	selection.
+	(html_view_set_selection_bound): New function which sets the selection
+	bound.
+	(html_view_get_cursor_visible): New function which returns whether the 
+	cursor should be visible when blinking.
+	(html_view_set_cursor_visible): New function which sets whether the
+	cursor should be visible when blinking.
+	(html_view_get_blink_timeout): New function which gets the blink 
+	timeout handler id.
+	(html_view_set_blink_timeout): New function which sets the blink 
+	timeout handler id.
+	(html_view_get_button): New function which gets the mouse button 
+	which is pressed.
+	(html_view_set_button): New function which sets the mouse button 
+	which is pressed.
+	(html_view_get_layout): New function which gets the PangoLayout for
+	the HtmlView which is used to navigate the text.
+	(html_view_get_layout_text): New function which gets the txet in the
+	PangoLayout for the HtmlView.
+	(html_view_set_layout): New function which sets the PangoLayout for
+	the HtmlView.
+	(html_view_setup_layout): New function which sets the text in the
+	PangoLayout for the HtmlView.
+	(html_view_toggle_cursor): New function used to toggle whether the
+	cursor should be shown.
+	(html_view_draw_insertion_cursor): New function to draw the cursor.
+	It is based on _gtk_draw_insertion_cursor() from gtkstyle.c.
+	(html_view_draw_cursor): New function whether determines whether the
+	cursor should be drawn. If so, it determines it should be drawn and
+	calls html_view_draw_insertion_cursor.
+	(html_view_check_cursor_blink): New function which checks whether
+	a cursor should be drawn and calls a timeout handler to blink the
+	cursor or remove a timeout handler if one exists.
+	(html_view_pend_cursor_blink): New function which determines whether
+	cursor should blink and calls a timeout handler to blink the cursor.
+	(html_view_move_visually): New function which moves a character
+	offset visually.
+	(html_view_move_backward_word): New function which moves a character 
+	offset to the start of a word.
+	(html_view_move_forward_word): New function which moves a character 
+	offset to the end of a word.
+	(html_view_paint): Add code to draw the cursor if it should be drawn.
+	(html_view_insert_node): Remove PangoLayout if root node is being set.
+	Set cursor position and selection bound to 0.
+	(html_view_text_updated): Fix compiler warning.
+	(html_view_disconnect_document): Fix compiler warnings.
+	(html_view_motion_notify): Check that correct mouse button is pressed.
+	All call to html_view_check_cursor_blink
+	(html_view_button_press): Store the mouse button which is pressed.
+	(html_view_button_release): Check that correct mouse button is pressed.
+	Unset the stored mouse button.
+	(html_view_focus_in): Add call to html_view_check_cursor_blink.
+	(html_view_focus_out): Add call to html_view_check_cursor_blink.
+	(html_view_key_press): New function which calls 
+	html_view_pend_cursor_blink abd chains up.
+	(html_view_finalize): Destroy the PangoLayout.
+	(html_real_move_cursor): Add code to support GtkMovementTypes
+	GTK_MOVEMENT_VISUAL_POSITIONS and GTK_MOVEMENT_WORDS when moving the
+	cursor. Add support for selection using the keyboard.
+	Update focus element if cursor is moved to a focusable object.
+	(html_view_add_move_key_binding): Add support for selection extension.
+	(html_view_class_init): Add signal "toggle-cursor" which no
+	default signal handler.
+	Add keybindings for Ctrl+Left and Ctrl+Right for word movement.
+	Bind toggle-cursor to F7.
+	(html_view_init): Add signal handler for toggle-cursor.
+
+2004-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlboxblock.c: (html_box_block_handle_float):
+	Do not crash if float:center is specified.
+
+	* libgtkhtml/layout/htmlboxroot.c: (html_box_root_add_float):
+	Do not crash if float:center is specified.
+
+	This fixes bug #129486.
+
+2003-12-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxaccessible.c (html_box_text_accessible_new):
+	If object is a HtmlBoxText return accessible for its containing 
+	HtmlBoxBlockAccessible. The function may be called when a HtmlBoxText's
+	selection has changed and we want to report the selection as changed 
+	on the accessible object we expose.
+	(html_box_accessible_initialize): Remove g_assert call.
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c 
+	(html_box_block_text_get_selection): Correct for 
+	HTML_BOX_TEXT_SELECTION_FULL.
+
+	* libgtkhtml/layout/htmlboxtext.c: (html_box_text_get_accessible):
+	New function to get the accessible object corresponding to HtmlBoxText.
+	(html_box_text_set_selection): If selection changes emit AtkText signal
+	text-selection-changed on accessible object.
+
+	This fixes bug #125309.
+	
+2003-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.1
+
+        * configure.in: bumped to 2.5.1
+
+        * NEWS: Updated for 2.5.1
+
+2003-11-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c (html_view_disconnect_document): Only
+	disconnect the signal handlers for the current HtmlView.
+	(html_view_destroy): Call html_view_disconnect_document() for view's
+	document. Destroy view's node table. Fixes bug #127946.
+
+2003-11-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.5.0
+
+        * configure.in: bumped to 2.5.0
+
+        * NEWS: Updated for 2.5.0
+
+2003-11-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c:
+	Add new functions set_moving_out and is_moving_out.
+	(html_view_real_move_focus_out): Correct implementation.
+	Fixes bug #90281.
+
+2003-11-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxaccessible.c 
+	(html_box_accessible_get_view_widget): If box does not have view data 
+	set, look on box's parent. Fixes bug #126294.
+
+2003-10-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/html.css.h: Set 2px for focus.
+
+	* libgtkhtml/view/htmlview.c
+	(html_style_updated):
+	(html_style_set):
+	(html_view_update_box_style_size): Set HtmlStyle's outline width to 
+	2 * focus-width
+	Call html_box_set_unrelayouted_up to ensure that boxes are relaid
+	out when font size changes.
+
+	This fixes bugs #125290 and #125301.
+
+2003-10-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlboxtext.c (html_box_text_recalc_items): Get
+	language from locale instead of hardcoding it. Patch from 
+	phill.zhang@sun.com. Fix for bug #124650.
+
+2003-10-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlviewaccessible.c:
+	Remove html_view_size_allocate as "size-allocate" signal does not
+	reliably indicate when html document has changed.
+	(html_view_accessible_ref_accessible_child): Emit children_changed::add
+	signal if root node has changed.
+
+	* libgtkhtml/view/htmlview.c (html_view_relayout): Add code to 
+	ensure that accessibility code is aware of when a new root node has 
+	been added.
+
+	This fixes bug #124199.
+
+2003-10-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.4.1
+
+        * configure.in: bumped to 2.4.1
+
+        * NEWS: Updated for 2.4.1
+
+2003-10-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* tests/dom-test-tree-model.c: 
+	Add function dom_test_tree_model_get_column_type
+	(dom_test_tree_model_get_value): Add test that iter->user_data 
+	is non NULL before referencing it.
+	(dom_test_tree_model_iter_nth_child): Add test that parent->user_data
+	is non NULL before referencing it.
+	(dom_test_tree_model_iter_next): Add test that iter->user_data 
+	is non NULL before referencing it.
+
+	* tests/dom-test-window.c: Use text and pixbuf cell renderer in column
+	instead of trying to test attribute text on pixbug cell renderer.
+
+	This fixes bug #121300.
+
+2003-10-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxaccessible.[ch]:
+	Add index field to HtmlBoxAccessible data structure.
+	(html_box_accessible_initialize): Initialize index field to -1.
+	(html_box_accessible_get_index_in_parent):  Return index value if 
+	is not -1.
+
+	* libgtkhtml/a11y/htmlboxblockaccessible.[ch]: Remove references
+	to index field. It is now implemented in HtmlBoxAccessible.
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.c:
+	(append_text): Stop appending text if HtmlBoxTable is encountered.
+	(html_box_block_text_accessible): Report accessibles for HtmlBoxTable
+	as children.
+	(html_box_block_text_accessible): Count accessibles for HtmlBoxTable
+	as children.
+
+	* libgtkhtml/a11y/htmlboxtableaccesible.c:
+	(html_box_table_accessible_ref_child): Check that accessible created 
+	for empty cell is a HtmlBoxAccessible instead of a
+	HtmlBoxBlockAccessible.
+
+	* libgtkhtml/a11y/htmlboxtableaccessible.h: Derive 
+	HtmlBoxTableAccessible from HtmlBoxAccessible instead of 
+	AtkGObjectAccessible.
+
+2003-10-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml2/css/cssparser.c (css_parser_parse_string): Correct
+	start_pos value in call to css_parser_parse_escape.
+	Add support for UTF-8 characters.
+
+	This fixes bug #123721.
+
+	* libgtkhtml/dom/core/dom-node.c (dom_Node_invokeListener):
+	Use g_get_current_time instead of gettimeofday. (bug #123704)
+
+2003-09-29  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblockaccessible.[ch]:
+	Add index field to HtmlBoxBlockAccessible data structure.
+	(html_box_block_accessible_new): Initialize index field to -1;
+	(html_box_block_get_index_in_parent): new function returns index
+	value if not -1.
+	* libgtkhtml/a11y/htmlboxtableaccessible.c
+	(html_box_table_accessible_ref_child): Set index value in 
+	HtmlBoxBlockAccessible data structure when creating child for
+	cell which is not displayed.
+
+	This fixes bug #123450.
+
+	* libgtkhml/a11y/htmlviewaccessible.c: Add define of DUMP_BOXES to make
+	it easier to compile code which dump debug info about boxes.
+
+	* libgtkhtml/graphisc/htmlimagefactory.c (html_image_factory_get_image):
+	Add weak pointer for stream's user_data.
+
+	* libgtkhtml/util/htmlstream.c (Html_stream_new): Remove adding of
+	weak pointer for user_data as user_data may not always be a Gobject.
+
+	This addresses remaining issue for bug #82962.
+
+2003-09-19  Sven Neumann  <sven@gimp.org>
+
+	* libgtkhtml/document/htmlparser.c (html_parser_stream_write)
+	(html_parser_stream_close)
+	* libgtkhtml/graphics/htmlimagefactory.c (write_pixbuf): check if
+	the user_data pointer in HtmlStream callbacks is not NULL before
+	dereferencing it. It is created as a weak pointer in
+	html_stream_new() and might have been nullified (see bug #82962).
+
+2003-09-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssmatcher.c (css_matcher_apply_rule): Do not
+	dump core for text-align: bottom.
+
+	* libgtkhtml/css/cssparser.c (css_parser_parse_term): Allow text 
+	inside brackets to be just a string.
+
+	This fixes bug #121434.
+
+	* libgtkhtml/view/htmlview.c (html_view_style_updated): Add check 
+	that DomNode is not NULL.
+
+	This fixes bug #121301.
+	
+2003-09-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.4.0
+
+        * configure.in: bumped to 2.4.0
+
+        * NEWS: Updated for 2.4.0
+
+2003-08-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.3.6
+
+        * configure.in: bumped to 2.3.6
+
+        * NEWS: Updated for 2.3.6
+
+2003-08-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c (htmL_document_clear): Fix 
+	typo in previous fix. (bug #119767)
+
+2003-08-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c (htmL_document_clear): Check
+	when document ref count is greater than zero, i.e. html_document_clear 
+	is not being called from html_document_finalize before emitting
+	node-removed signals.
+
+	This fixes bug #119496.
+
+2003-07-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.3.5
+
+        * configure.in: bumped to 2.3.5
+
+        * NEWS: Updated for 2.3.5
+
+2003-07-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * Release 2.3.4
+
+        * configure.in: bumped to 2.3.4
+
+        * NEWS: Updated for 2.3.4
+
+2003-07-01  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgthtml/a11y/htmlboxblocklinkaccessible.c 
+	(html_box_block_link_accessible_get_link): Store HtmlView on box_link.
+	This fixes bug #116105.
+
+	* libgtkhtml/layout/htmlboxlistitem.c: Add include of strings.h to
+	silence compiler warnings.
+
+	The attempt to commit on June 27th did not work.
+
+2003-06-30  Richard Hult  <richard@imendio.com>
+
+	* libgtkhtml/css/cssmatcher.c (css_parse_color): Copy refcount.
+
+	* libgtkhtml/graphics/htmlcolor.c (html_color_new_from_name):
+	Initialize refcount to 1.
+
+	Fixes bug #116177.
+	
+2003-06-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgthtml/a11y/htmlboxblocklinkaccessible.c 
+	(html_box_block_link_accessible_get_link): Store HtmlView on box_link.
+	This fixes bug #116105.
+
+	* libgtkhtml/layout/htmlboxlistitem.c: Add include of strings.h to
+	silence compiler warnings.
+
+2003-06-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/html.css.h: Use special color of linkblue to
+	allow the color of links to be changed when theme changes.
+
+	* libgtkhtml/graphics/htmlcolor.c:
+	Add definition  of color linkblue.
+	(html_color_dup): Return reference to standard linkblue color if
+	called for that color.
+	(html_color_new_from_name): Add support for linkblue.
+
+	* libgtkhtml/graphics/htmlcolor.[ch]:
+	(html_color_set_linkblue): New function to update linkblue color
+	if theme changes.
+
+	* libgtkhtml/layout/htmlstyle.c (html_style_get_gtk_text_color):
+	Update linkblue color when theme changes.
+
+	This completes fix for bug #95190.
+
+2003-06-11  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/graphics/htmlimage.c (html_image_finalize): Disconnect
+	signal handler. This fixes bug #114341.
+
+2003-06-10  Rodney Dawes  <dobey@free.fr>
+
+	* libgtkhtml/layout/html/htmlboxembeddedselect.c:
+	(create_treeview_widget): Set the shadow type for the treeview's
+	scrolled window to GTK_SHADOW_IN (bug #114705)
+	* libgtkhtml/layout/html/htmlboxembeddedtextarea.c:
+	(html_box_embedded_textarea_new): Set embedded->widget to be a
+	GtkScrolledWindow of GTK_SHADOW_IN
+	(html_box_embedded_textarea_handle_html_properties):
+	Create the textview here and put it in the GtkScrolledWindow, fix
+	the code to use this new widget instead of embedded->widget
+	This fixes bug #114713
+	
+2003-06-09  Rodney Dawes  <dobey@free.fr>
+
+	* libgtkhtml/layout/html/htmlboxembeddedselect.c:
+	Set the default values in lists for html forms (bug #114703)
+	
+2003-05-30  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.3.3
+
+	* configure.in: bumped to 2.3.3
+
+	* NEWS: Updated for 2.3.3
+
+2003-05-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/util/htmlatomlist.c (html_atom_list_get_atom): Correct
+	error exposed on 64 bit. (Fix provided by marcus@freebsd.org)
+
+2003-05-15  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.3.2
+
+	* configure.in: bumped to 2.3.2
+
+	* NEWS: Updated for 2.3.2
+
+2003-05-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c (html_document_clear): Emit
+	node-removed signal for nodes being deleted. This causes the layout
+	structure to be deleted and fixes crasher bug when mouse is moved 
+	while getting new html page. This fixes bug #112302.
+
+	* libgtkhtml/view/htmlview.c (html_view-relayout): Add check for 
+	view->document->dom_document being NULL to avoid warning messages.
+
+2003-05-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlbox.c (html_box_containing_block): Remove
+	#if 1. This fixes bug #112351. Problem reported by Ali Akcaagac.
+
+2003-05-01  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.3.1
+
+	* configure.in: bumped to 2.3.1
+
+	* NEWS: Updated for 2.3.1
+
+2003-04-17  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlboxtext.c (html_box_text_finalize):
+	Remove weak pointer for box->dom_node for slave HtmlBoxText if
+	DomNode has not been destroyed. Fixes bug #110012.
+	
+2003-04-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlboxtext.c (html_box_text_relayout):
+	Add weak pointer so that box->node becomes NULL when DomNode is 
+	destroyed.
+
+	* libgtkhtml/view/htmlselection.c (repaint_sel): Check whether
+	box's node is non NULL before repainting.
+
+	Fixes bug #110710.
+
+2003-04-11  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/html.css.h: Add entry for NOBR. This causes <nobr>
+	tag to be handled correctly. Fixes bug #110265.
+
+	Patch supplied by yuedong.du@sun.com
+
+2003-04-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblocklinkaccessible.c
+	(html_box_block_link_accessible_finalize): Free data structure
+	allocated in html_box_block_link_accessible_real_initialize.
+
+	* libgtkhtml/a11y/htmlboxtableaccessible.[ch]:
+	Add pointer to HtmlBoxTableAccessiblePrivate to HtmlBoxTableAccessible
+	data structure.
+	Use this data structure to store accessible objects for empty cells
+	(html_box_table_accessible_real_initialize): Allocate 
+	HtmlBoxTableAccessiblePrivate data structure.
+	(html_box_table_accessible_finalize): Free HtmlBoxTableAccessiblePrivate
+	data structure and its contents.
+	(html_box_table_accessible_ref_child): Return accessible object even
+	if the corresponding cell in HtmlBoxTable is empty.
+	(find_cell): New function which returns the accessible object for
+	an empty index.
+
+	Fixes bug #110247.
+
+	* libgtkhtml/a11y/htmlviewaccessible.c:
+	(debug_dump_boxes); Print indent value.
+	(html_view_accessible_initialize): Call set_root_object() for 
+	HtmlViewAccessible. Connect to "size-allocate" signal where we can check
+	whether root node of HtmlView has changed.
+	(root_node_destroyed): New function which is called when root node
+	is destroyed. It emits children_chnaged::remove signal on 
+	HtmlViewAccessible.
+	(set_root_object): Store root node of HtmlView in HtmlViewAccessible.
+	Specify that root_object_destroyed() should be called when root node
+	is destroyed.
+	(html_view_accessible_size_allocate): Check whether new root node has
+	been added to HtmlView. Emit children_changed::add signal if so.
+
+	Fixes bug #110267.
+
+
+2003-04-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/a11y/htmlboxblocklinkaccessible.c: Ensure that number
+	of links is counted correctly. This fixes bug #109946.
+
+	* libgtkhtml/view/htmlselection.[ch]: Make html_selection_get_text
+	public. This fixes bug #98381.
+
+2003-03-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.3.0
+
+	* configure.in: bumped to 2.3.0
+
+	* NEWS: Updated for 2.3.0
+
+2003-03-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssparser.c (css_parser_parse_string): Use g_warning()
+	instead of g_error() when unexpected character is encountered.
+
+	This fixes crash reported in bug #107910.
+
+2003-02-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c libgtlhtml/a11y/htmllinkaccessible.c
+	tests/browser-window.c tests/simple.c: Replace use of gtk_timeout_* 
+	and gtk_idle_* by their non-deprecated GLib counterparts.
+
+2003-02-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/view/htmlview.c: Remove reference to 
+	htmlboxtextaccessible.h
+
+2003-02-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	These changes rework how accessible text is presented. See bug #98324.
+	
+	* libgtkhtml/a11y/Makefile.am: 
+	Add files htmlboxblocktextaccessible.[ch] 
+	htmlboxblocklinkaccessible.[ch].
+	Remove files htmlboxtextaccessible.[ch].
+
+	* libgtkhtml/a11y/htmlboxblockaccessible.c
+	(html_box_block_accessible_new): Create HtmlBoxBlockTextAccessible
+	if HtmlBlock contains  text, i.e. a HtmlBoxText or HtmlBoxInLine which 
+	contains a HtmlBoxText. 
+	Create a HtmlBoxBlockLinkAccessible if HtmlBoxBlock contains text and
+	links.
+
+	* libgtkhtml/a11y/htmlboxblocktextaccessible.[ch]: New file which
+	implements HtmlBoxBlockTextAccessible, the accessible object for a
+	HtmlBoxBlock which contains text.
+
+	* libgtkhtml/a11y/htmlboxblocklinkaccessible.[ch]: New file which
+	implements HtmlBoxBlockLinkAccessible, the accessible object for a
+	HtmlBoxBlock which contains text and links.
+
+	* libgtkhtml/a11y/htmllinkaccessible.[ch]:
+	Add box to store HtmlBoxInLine containing link and index to store
+	index of text for link in HtmlBoxBlockTextAccessible.
+	Update implement to take account of this.
+
+	* libgtkhtml/a11y/htmlviewaccessible.c:
+	(debug_dump_boxes): Debug function to print out layout structure
+	(html_view_accessible_get_focus_object): Add extra paraemter which 
+	returns the link index of the focus element in the focus object.
+
+	* libgtkhtml/view/htmlview.c (html_view_get_accessible):
+	Remove reference to HtmlBoxTextAccessible.
+
+2003-02-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/htmlstyle.c (html_style_get_gtk_style): Add reference
+	to style so it can be safely unreffed later. Problem and patch
+	supplied by Richard Hult (bug #104946)
+
+2003-01-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Change GTK dependency to 2.0.0
+
 2003-01-20  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* Release 2.2.0

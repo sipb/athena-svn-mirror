@@ -33,6 +33,8 @@ void html_selection_end    (HtmlView *view, GdkEventButton *event);
 void html_selection_update (HtmlView *view, GdkEventMotion *event);
 void html_selection_clear  (HtmlView *view);
 void html_selection_set    (HtmlView *view, DomNode *start, int offset, int len);
+void html_selection_extend (HtmlView *view, HtmlBox *start, int start_offset, int len);
+gchar *html_selection_get_text (HtmlView *view);
 
 G_END_DECLS
 

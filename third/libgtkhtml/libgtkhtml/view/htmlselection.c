@@ -25,7 +25,7 @@
 #include "layout/htmlboxtext.h"
 #include "dom/core/dom-text.h"
 
-static gchar *
+gchar *
 html_selection_get_text (HtmlView *view)
 {
 	GSList *list = view->sel_list;
@@ -44,23 +44,24 @@ html_selection_get_text (HtmlView *view)
 		 */
 		if (text->canon_text == NULL)
 			continue;
+		ptr = (gchar *)text->canon_text;
 		switch (text->selection) {
 		case HTML_BOX_TEXT_SELECTION_NONE:
 			g_assert_not_reached ();
 			break;
 		case HTML_BOX_TEXT_SELECTION_END:
-			g_string_append_len (str, text->canon_text, g_utf8_offset_to_pointer (text->canon_text, text->sel_end_index) - (gchar *)text->canon_text);
+			g_string_append_len (str, ptr, text->sel_end_index);
 			break;
 		case HTML_BOX_TEXT_SELECTION_START:
-			g_string_append_len (str, g_utf8_offset_to_pointer (text->canon_text, text->sel_start_index),
-					 g_utf8_offset_to_pointer (text->canon_text, text->length) - g_utf8_offset_to_pointer (text->canon_text, text->sel_start_index));
+			g_string_append_len (str, ptr + text->sel_start_index,
+					     text->length - text->sel_start_index);
 			break;
 		case HTML_BOX_TEXT_SELECTION_FULL:
-			g_string_append_len (str, text->canon_text, g_utf8_offset_to_pointer (text->canon_text, text->length) - (gchar *)text->canon_text);
+			g_string_append_len (str, ptr, text->length);
 			break;
 		case HTML_BOX_TEXT_SELECTION_BOTH:
-			g_string_append_len (str, g_utf8_offset_to_pointer (text->canon_text, MIN (text->sel_start_index, text->sel_end_index)),
-					 g_utf8_offset_to_pointer (text->canon_text, MAX (text->sel_end_index, text->sel_start_index)) - g_utf8_offset_to_pointer (text->canon_text, MIN (text->sel_start_index, text->sel_end_index)));
+			g_string_append_len (str, ptr + MIN (text->sel_start_index, text->sel_end_index),
+					 MAX (text->sel_end_index, text->sel_start_index) - MIN (text->sel_start_index, text->sel_end_index));
 			break;
 		}
 	}
@@ -128,6 +129,13 @@ repaint_sel (gpointer data, gpointer user_data)
 	HtmlBox  *box  = HTML_BOX (data);
 	gint x, y;
 
+	if (!box->dom_node)
+	/*
+	 * We may be destroying the node. In any case the underlying node
+	 * has been deleted.
+	 */
+		return;
+	
 	x = html_box_get_absolute_x (box);
 	y = html_box_get_absolute_y (box);
 
@@ -428,23 +436,28 @@ set_traversal (HtmlView *view, HtmlBox *root, HtmlBox *start, int *offset, int *
 		if (HTML_IS_BOX_TEXT (root)) {
 			HtmlBoxText *text = HTML_BOX_TEXT (root);
 			int text_len;
+			gchar *char_text;
 				
 			view->sel_list = g_slist_prepend (view->sel_list, text);
-			text_len = g_utf8_pointer_to_offset (text->canon_text,
-							     text->canon_text + text->length);
+			char_text = (gchar *)text->canon_text;
+			text_len = g_utf8_pointer_to_offset (char_text,
+							     char_text + text->length);
 				
 			if (*offset > 0) {
 				if (*offset < text_len) {
 					if (text_len >= *offset + *len) {
 						html_box_text_set_selection (text, 
 									     HTML_BOX_TEXT_SELECTION_BOTH, 
-									     *offset, *offset + *len);
+									     g_utf8_offset_to_pointer (char_text, *offset) - char_text,
+									     g_utf8_offset_to_pointer (char_text, *offset + *len) - char_text);
 						*len = 0;
 					}
-					else
+					else {
 						html_box_text_set_selection (text, 
 									     HTML_BOX_TEXT_SELECTION_START, 
-									     *offset, -1);
+									     g_utf8_offset_to_pointer (char_text, *offset + *len) - char_text, -1);
+						*len = *len - text_len + *offset;
+					}
 				}
 				*offset = MAX (0, *offset - text_len);
 			}
@@ -457,7 +470,8 @@ set_traversal (HtmlView *view, HtmlBox *root, HtmlBox *start, int *offset, int *
 				else {
 					html_box_text_set_selection (text, 
 								     HTML_BOX_TEXT_SELECTION_END, 
-								     -1, *len);
+								     -1,
+								     g_utf8_offset_to_pointer (char_text, *len) - char_text);
 				}
 				*len = MAX (0, *len - text_len);
 			}
@@ -504,6 +518,45 @@ html_selection_set (HtmlView *view,
 	html_selection_clear (view);
 
 	set_traversal (view, root, start_box, &offset, &len, &found_start);
+
+	view->sel_list = g_slist_reverse (view->sel_list);
+	g_slist_foreach (view->sel_list, repaint_sel, view);
+	html_selection_update_primary_selection (view);
+}
+
+/**
+ * html_selection_extend:
+ * @view:   the view in which to extend the selection.
+ * @start:  the HtmlBoxText the @offset is relative of.
+ * @offset: offset in characters from @start box to the selection start.
+ * @len:    selection length in characters.
+ * 
+ * This function extends the current selection from the @start box + @offset 
+ * @len characters forward.
+ **/
+void
+html_selection_extend (HtmlView *view, 
+		       HtmlBox *start, int start_offset, 
+		       int len)
+{
+	HtmlBox *root;
+	int found_start = FALSE;
+
+	g_return_if_fail (HTML_IS_VIEW (view));
+	g_return_if_fail (HTML_IS_BOX (start));
+
+	if (!view->sel_list) {
+		view->sel_start = NULL;
+		view->sel_end = NULL;
+		html_selection_update_primary_selection (view);
+		html_selection_clear (view);
+		view->sel_flag = TRUE;
+	}
+	root      = view->root;
+
+	html_selection_clear (view);
+
+	set_traversal (view, root, start, &start_offset, &len, &found_start);
 
 	view->sel_list = g_slist_reverse (view->sel_list);
 	g_slist_foreach (view->sel_list, repaint_sel, view);

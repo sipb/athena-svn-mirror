@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <ctype.h>
+#include <locale.h>
 
 /* FIXME: Don't include htmlgdkpainter.h */
 #include "graphics/htmlgdkpainter.h"
@@ -47,7 +48,7 @@ struct _HtmlBoxTextMaster {
 	guint must_relayout : 1;
 	guint preserved_leading_space : 1;
 	HtmlFontSpecification *font_spec;
-	HtmlWhiteSpaceType white_space:2;
+	guint white_space:2;
 };
 
 struct _HtmlBoxTextItemData {
@@ -88,10 +89,10 @@ html_box_text_destroy_slaves (HtmlBox *self)
 		if (html_box_text_is_master (HTML_BOX_TEXT (box)))
 			break;
 
-		box = box->next;
-
+		box = box->prev;
 		/* Now remove the box link */
 		html_box_remove (tmp_box);
+		box = box->next;
 		/* Free the memory */
 		g_object_unref (G_OBJECT (tmp_box));
 	}
@@ -141,6 +142,7 @@ html_box_text_finalize (GObject *self)
 {
 	HtmlBoxText *text = HTML_BOX_TEXT (self);
 	HtmlBoxTextMaster *master;
+	HtmlBox *box;
 
 	master = text->master;
 	if (master) {
@@ -343,6 +345,7 @@ html_box_text_recalc_items (HtmlBoxText *text,
 	guchar *canon_text, *canon_end;
 	PangoGlyphString *glyphs;
 	int orig_len;
+	char *ctype;
 
 	master = text->master;
 
@@ -358,8 +361,25 @@ html_box_text_recalc_items (HtmlBoxText *text,
 	/* FIXME: The context should be stored somewhere in the view tree */
 	if (context == NULL) {
 		context = gdk_pango_context_get ();
+
 		/* FIXME: This should be set from the document */
-		pango_context_set_language (context, pango_language_from_string ("fr")); 
+
+		/* modified by phill.zhang@sun.com, borrow form fontconfig */
+                ctype = setlocale (LC_CTYPE, NULL);
+                if (!ctype || !strcmp (ctype, "C"))
+                {
+                    ctype = getenv ("LC_ALL");
+                    if (!ctype)
+                    {
+                        ctype = getenv ("LC_CTYPE");
+                        if (!ctype)
+                            ctype = getenv ("LANG");
+                    }
+                }
+                if (!ctype || !strcmp(ctype, "C") || !strcmp(ctype, "POSIX"))
+		    pango_context_set_language (context, pango_language_from_string ("en")); 
+                else
+		    pango_context_set_language (context, pango_language_from_string (ctype)); 
 	}
 	
 	if (white_space == HTML_WHITE_SPACE_PRE) {
@@ -500,6 +520,7 @@ html_box_text_relayout (HtmlBox *self, HtmlRelayout *relayout)
 				child_text = HTML_BOX_TEXT (box_child);
 				if (self->dom_node) {
 					box_child->dom_node = self->dom_node;
+					g_object_add_weak_pointer (G_OBJECT (self->dom_node), (gpointer *) &(box_child->dom_node));
 				}
 				else {
 					html_box_set_style (box_child, HTML_BOX_GET_STYLE (self));
@@ -662,6 +683,7 @@ html_box_text_relayout (HtmlBox *self, HtmlRelayout *relayout)
 		if (self->dom_node) {
 
 			box_child->dom_node = self->dom_node;
+			g_object_add_weak_pointer (G_OBJECT (self->dom_node), (gpointer *) &(box_child->dom_node));
 		}
 		else {
 			html_box_set_style (box_child, HTML_BOX_GET_STYLE (self));
@@ -714,7 +736,7 @@ html_box_text_get_len (HtmlBoxText *box)
 gchar *
 html_box_text_get_text (HtmlBoxText *box, int *text_len)
 {
-	g_return_if_fail (box != NULL);
+	g_return_val_if_fail (box != NULL, NULL);
 
 	if (text_len)
 		*text_len = box->length;
@@ -996,15 +1018,41 @@ html_box_text_should_paint (HtmlBox *box, GdkRectangle *area, gint tx, gint ty)
 	return TRUE;
 }
 
+static AtkObject*
+html_box_text_get_accessible (HtmlBoxText *text)
+{
+	AtkObject *obj;
+
+	if (html_box_text_get_len (text) == 0)
+		return NULL;
+
+	obj = atk_gobject_accessible_for_object (G_OBJECT (text));
+	/* Accessibility is not enabled */
+	if (ATK_IS_NO_OP_OBJECT (obj))
+		return NULL;
+	return obj;
+}
+
 void 
 html_box_text_set_selection (HtmlBoxText *text, HtmlBoxTextSelection mode, gint start_index, gint end_index)
 {
+	AtkObject *obj;
+
+	if (text->selection == mode &&
+	    text->sel_start_index == start_index &&
+            text->sel_end_index == end_index)
+		return;
+ 
 	text->selection = mode;
 
 	if (start_index >= 0)
 		text->sel_start_index = start_index;
 	if (end_index >= 0)
 		text->sel_end_index = end_index;
+
+	obj = html_box_text_get_accessible (text);
+	if (obj)
+		g_signal_emit_by_name (obj, "text-selection-changed");
 }
 
 static void

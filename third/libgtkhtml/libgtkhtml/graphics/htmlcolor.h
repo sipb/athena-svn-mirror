@@ -48,6 +48,7 @@ gboolean html_color_equal (HtmlColor *color1, HtmlColor *color2);
 HtmlColor *html_color_transform (HtmlColor *color, gfloat ratio);
 HtmlColor *html_color_dup (HtmlColor *color);
 HtmlColor *html_color_transparent_new (void);
+void html_color_set_linkblue (gushort red, gushort green);
 
 G_END_DECLS
 

@@ -230,7 +230,7 @@ css_parser_parse_string (const gchar *str, gint start_pos, gint end_pos, gchar *
 		else if (c == '\\') {
 			gunichar unicode;
 	  
-			pos = css_parser_parse_escape (str, pos, end_pos, &unicode);
+			pos = css_parser_parse_escape (str, pos -1, end_pos, &unicode);
 			if (pos < 0)
 				return -1;
 		
@@ -246,7 +246,11 @@ css_parser_parse_string (const gchar *str, gint start_pos, gint end_pos, gchar *
 			}
 		}
 		else if (c > 0x80) {
-			g_error ("support unicode!\n");
+			if (!has_escape) {
+				if (buffer_size == buffer_size_max)
+					buffer = g_realloc (buffer, (buffer_size_max <<= 1));
+				buffer[buffer_size++] = c;
+			}
 		}
 		else {
 			g_free (buffer);
@@ -470,21 +474,32 @@ css_parser_parse_term (const gchar *buffer, gint start_pos, gint end_pos, CssVal
 		/* Check if we have a function */
 		if (buffer[pos] == '(') {
 			gint func_end = css_parser_parse_to_char (buffer, ')', pos + 1, end_pos);
+			gint save_pos = pos;
 			CssValue *val;
 
 			if (func_end == end_pos) {
 				return -1;
 			}
 			
-			pos = css_parser_parse_value (buffer, pos + 1, func_end, &val);
+			pos = css_parser_parse_value (buffer, save_pos + 1, func_end, &val);
 
+			if (pos == -1) {
+				/*
+				 * If it is not a value just store as string
+				 */
+				gchar *str;
+
+				str = g_strndup (buffer + save_pos + 1, func_end - save_pos - 1);
+				val = css_value_string_new (str);
+				g_free (str);
+				pos = func_end;
+			}
 			if (pos != -1) {
 				if (ret_val) 
 					*ret_val = css_value_function_new (atom, val);
 				else
 					css_value_unref (val);
 			}
-
 
 			/* This is due to the ) */
 			pos++; 
@@ -529,7 +544,7 @@ css_parser_parse_term (const gchar *buffer, gint start_pos, gint end_pos, CssVal
 			}
 		}
 
-//		g_error ("t1");
+/*		g_error ("t1"); */
 		return -1;
 	}
 
@@ -556,6 +571,7 @@ css_parser_parse_value (const gchar *buffer, gint start_pos, gint end_pos, CssVa
 	gint pos = start_pos;
 	gint n = 0;
 	CssValue *list = NULL;
+	CssValue *term = NULL;
 
 	pos = css_parser_parse_whitespace (buffer, pos, end_pos);
 
@@ -563,7 +579,6 @@ css_parser_parse_value (const gchar *buffer, gint start_pos, gint end_pos, CssVa
 		return -1;
 	
 	while (pos < end_pos) {
-		CssValue *term;
 		static gchar list_sep;
 
 		/* If it's the second time we get here, we need to create a value list */
@@ -692,7 +707,7 @@ css_parser_parse_attr_selector (const gchar *buffer, gint start_pos, gint end_po
 			}
 		}
 		
-//	g_print ("Attr selector: %s\n", g_strndup (buffer + start_pos, end_pos - start_pos));
+/*	g_print ("Attr selector: %s\n", g_strndup (buffer + start_pos, end_pos - start_pos)); */
 		
 	}
 
@@ -778,7 +793,7 @@ css_parser_parse_simple_selector (const gchar *buffer, gint start_pos, gint end_
 			tail [n_tail].t.class_sel.class = id;
 			n_tail++;
 
-//			g_print ("class sel!\n");
+/*			g_print ("class sel!\n"); */
 		}
 		else if (c == '[') {
 			gint tmp_pos;
@@ -845,7 +860,7 @@ css_parser_parse_simple_selector (const gchar *buffer, gint start_pos, gint end_
 		css_simple_selector_destroy (result);
 	
 	return pos;
-//	g_print ("pos == %d\n", pos);
+/*	g_print ("pos == %d\n", pos); */
 	
 }
 
@@ -860,7 +875,7 @@ css_parser_parse_selector (const gchar *buffer, gint start_pos, gint end_pos)
 	CssCombinator *comb;
 	CssSimpleSelector *ss;
 	
-//	g_print ("parsing single selector: \"%s\"\n", g_strndup (buffer + start_pos, end_pos - start_pos));
+/*	g_print ("parsing single selector: \"%s\"\n", g_strndup (buffer + start_pos, end_pos - start_pos)); */
 
 	n_simple_max = 1;
 	simple = g_new (CssSimpleSelector *, n_simple_max);
@@ -946,7 +961,7 @@ css_parser_parse_selectors (const gchar *buffer, gint start_pos, gint end_pos, g
 	sel = g_new (CssSelector *, n_sel_max);
 
 	
-//	g_print ("Parsing selectors, \"%s\"\n", g_strndup (buffer + start_pos, end_pos - start_pos));
+/*	g_print ("Parsing selectors, \"%s\"\n", g_strndup (buffer + start_pos, end_pos - start_pos)); */
 
 	while (pos < end_pos) {
 		pos = css_parser_parse_to_char (buffer, ',', pos, end_pos);
@@ -992,7 +1007,7 @@ css_parser_parse_declaration (const gchar *buffer, gint start_pos, gint end_pos,
 		*ret_val = NULL;
 	
 	if (css_parser_parse_ident (buffer, start_pos, pos, &prop) == -1) {
-//		return -1;
+/*		return -1; */
 		return end_pos;
 	}
 	
@@ -1029,7 +1044,10 @@ css_parser_parse_declaration (const gchar *buffer, gint start_pos, gint end_pos,
 		result->expr = value;
 
 		*ret_val = result;
-	}	
+	} else {
+		css_value_unref (value);
+	}
+
 	return end_pos;
 }
 
@@ -1042,7 +1060,7 @@ css_parser_parse_declarations (const gchar *buffer, gint start_pos, gint end_pos
 	gint n_decl = 0;
 	gint n_decl_max = 4;
 	
-//	g_print ("Parsing declarations, \"%s\"\n", g_strndup (buffer + start_pos, end_pos - start_pos));
+/*	g_print ("Parsing declarations, \"%s\"\n", g_strndup (buffer + start_pos, end_pos - start_pos)); */
 	
 	decl = g_new (CssDeclaration *, n_decl_max);
 	while (pos < end_pos) {
@@ -1092,7 +1110,7 @@ css_parser_parse_ruleset (const gchar *buffer, gint start_pos, gint end_pos, Css
 	if (pos == end_pos)
 		return -1;
 
-//	g_print ("ok, looks like we have some sort of validity here! :)\n");
+/*	g_print ("ok, looks like we have some sort of validity here! :)\n"); */
 
 	start_pos = css_parser_parse_whitespace (buffer, start_pos, pos);
 	sel = css_parser_parse_selectors (buffer, start_pos, pos, &n_sel);
@@ -1124,10 +1142,13 @@ css_parser_parse_ruleset (const gchar *buffer, gint start_pos, gint end_pos, Css
 	ruleset->n_sel = n_sel;
 	ruleset->sel = sel;
 
-//	g_print ("Setting n_sel to %d\n", n_sel);
+/*	g_print ("Setting n_sel to %d\n", n_sel); */
 	
-	if (ret_val)
+	if (ret_val) {
 		*ret_val = ruleset;
+	} else {
+		css_ruleset_destroy (ruleset);
+	}
 
 	return pos;
 }
@@ -1159,14 +1180,13 @@ css_parser_prepare_stylesheet (const gchar *str, gint len)
 			       str[pos] != '\n')
 				pos++;
 		}
-		if (buffer_size == buffer_size_max)
+		if (buffer_size == buffer_size_max - 1)
 			result = g_realloc (result, (buffer_size_max <<= 1));
 		
 		result[buffer_size++] = str[pos++];
 		
 	}
 
-	/* FIXME: This may not be secure */
 	result[buffer_size] = '\0';
 
 	return result;
@@ -1228,7 +1248,7 @@ css_parser_parse_atkeyword (const gchar *buffer, gint start_pos, gint end_pos, C
 		
 		rs = g_new (CssRuleset *, n_rs_max);
 
-//		g_print ("wheee: \"%s\"\n", g_strndup (buffer + cur_pos, tmp_pos - cur_pos ));
+/*		g_print ("wheee: \"%s\"\n", g_strndup (buffer + cur_pos, tmp_pos - cur_pos )); */
 		pos = cur_pos;
 		while (pos < tmp_pos) {
 			CssRuleset *ruleset;
@@ -1242,7 +1262,7 @@ css_parser_parse_atkeyword (const gchar *buffer, gint start_pos, gint end_pos, C
 			     
 		}
 
-//		g_print ("Here is rs: %p\n", rs);
+/*		g_print ("Here is rs: %p\n", rs); */
 		
 		pos = css_parser_parse_whitespace (buffer, tmp_pos + 1, end_pos);
 		
@@ -1252,12 +1272,12 @@ css_parser_parse_atkeyword (const gchar *buffer, gint start_pos, gint end_pos, C
 		result->s.media_rule.n_rs = n_rs;
 		result->s.media_rule.media_list = val_list;
 
-//		g_print ("VALUE LIST!!: %d\n", css_value_list_get_length (val_list));
+/*		g_print ("VALUE LIST!!: %d\n", css_value_list_get_length (val_list)); */
 		
 		if (ret_val)
 			*ret_val = result;
 
-//		g_print ("Going to return: %d\n", pos);
+/*		g_print ("Going to return: %d\n", pos); */
 		
 		return pos + 1;
 		
@@ -1274,7 +1294,7 @@ css_parser_parse_atkeyword (const gchar *buffer, gint start_pos, gint end_pos, C
 			/* First, look for an ident */
 			if (css_parser_parse_ident (buffer, tmp_pos, cur_pos, NULL) != -1) {
 				tmp_pos = css_parser_parse_ident (buffer, tmp_pos, cur_pos, &name);
-//				g_print ("yes, we found the ident\n");
+/*				g_print ("yes, we found the ident\n"); */
 			}
 			else if (buffer[tmp_pos] == ':') {
 				if ((tmp_pos = css_parser_parse_ident (buffer, tmp_pos + 1, cur_pos, &pseudo)) == -1)
@@ -1359,6 +1379,8 @@ css_parser_parse_style_attr (const gchar *buffer, gint len)
 	result = g_new (CssRuleset, 1);
 	result->n_decl = n_decl;
 	result->decl = decl;
+	result->n_sel = 0;
+	result->sel = NULL;
 	
 	return result;
 }

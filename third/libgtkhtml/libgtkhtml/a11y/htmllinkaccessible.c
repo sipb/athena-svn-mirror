@@ -1,5 +1,5 @@
 /*
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,11 +17,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
+#include <libgtkhtml/gtkhtml.h>
 #include "a11y/htmllinkaccessible.h"
 #include "a11y/htmlboxaccessible.h"
 #include "layout/htmlboxinline.h"
 #include "layout/htmlboxtext.h"
-#include "view/htmlview.h"
 
 static void         html_link_accessible_class_init              (HtmlLinkAccessibleClass  *klass);
 
@@ -36,8 +37,7 @@ static gint         html_link_accessible_get_start_index         (AtkHyperlink  
 static gboolean     html_link_accessible_is_valid                (AtkHyperlink      *link);
 static gint         html_link_accessible_get_n_anchors           (AtkHyperlink      *link);
 
-static HtmlBoxText* get_box_text_from_accessible                 (AtkObject         *obj);
-static gchar*       get_uri_from_text                            (HtmlBoxText       *text);
+static gchar*       get_uri_from_box                             (HtmlBox           *box);
 
 static void         html_link_accessible_action_interface_init   (AtkActionIface    *iface);
 static gboolean     html_link_accessible_do_action               (AtkAction         *action,
@@ -116,7 +116,7 @@ html_link_accessible_finalize (GObject *object)
 					      (gpointer *)&link->obj);
 	g_free (link->click_description);
 	if (link->action_idle_handler) {
-		gtk_idle_remove (link->action_idle_handler);
+		g_source_remove (link->action_idle_handler);
 		link->action_idle_handler = 0;
 	}
 
@@ -145,16 +145,14 @@ html_link_accessible_get_uri (AtkHyperlink *link,
                               gint         i)
 {
 	HtmlLinkAccessible *html_link;
-	HtmlBoxText *text;
 
-	if (i)
+	 if (i)
 		return NULL;
 	html_link = HTML_LINK_ACCESSIBLE (link);
-	if (!html_link->obj)
+	if (!html_link->box)
 		return NULL;
 
-	text = get_box_text_from_accessible (html_link->obj);
-	return get_uri_from_text (text);
+	return get_uri_from_box (html_link->box);
 }
 
 static AtkObject*
@@ -173,20 +171,42 @@ static gint
 html_link_accessible_get_end_index (AtkHyperlink *link)
 {
 	HtmlLinkAccessible *html_link;
-	HtmlBoxText *text;
+	HtmlBoxText *box_text;
+	HtmlBox *box;
+	gint len;
+	gint text_len;
+	gchar *text_chars;
 
 	html_link = HTML_LINK_ACCESSIBLE (link);
-	if (!html_link->obj)
-		return NULL;
+	if (!html_link->box)
+		return 0;
 
-	text = get_box_text_from_accessible (html_link->obj);
-	return html_box_text_get_len (text);
+	box = html_link->box;
+	len = 0;
+	if (HTML_BOX_INLINE (box)) {
+		box = box->children;
+
+		while (box) {
+			if (HTML_IS_BOX_TEXT (box)) {
+				box_text = HTML_BOX_TEXT (box);
+				text_chars = html_box_text_get_text (box_text, &text_len);
+				len += g_utf8_strlen (text_chars, text_len);
+			}
+			box = box->next;
+		}
+	}
+	return len + html_link->index;
 }
 
 static gint
 html_link_accessible_get_start_index (AtkHyperlink *link)
 {
-	return 0;
+	HtmlLinkAccessible *html_link;
+
+	html_link = HTML_LINK_ACCESSIBLE (link);
+	if (!html_link->box)
+		return 0;
+	return html_link->index;
 }
 
 static gboolean
@@ -201,37 +221,21 @@ html_link_accessible_get_n_anchors (AtkHyperlink *link)
 	return 1;
 }
 
-static HtmlBoxText*
-get_box_text_from_accessible (AtkObject *obj)
-{
-	AtkGObjectAccessible *atk_gobj;
-	GObject *g_obj;
-
-	g_return_val_if_fail (ATK_IS_GOBJECT_ACCESSIBLE (obj), NULL);
-	atk_gobj  = ATK_GOBJECT_ACCESSIBLE (obj);
-	g_obj = atk_gobject_accessible_get_object (atk_gobj);
-	g_return_val_if_fail (HTML_IS_BOX_TEXT (g_obj), NULL);
-	return HTML_BOX_TEXT (g_obj);
-}
-
 static gchar*
-get_uri_from_text (HtmlBoxText *text)
+get_uri_from_box (HtmlBox *box)
 {
 	gchar *uri = NULL;
-	HtmlBox *box;
 
-	box = HTML_BOX (text);
-
-	if (HTML_BOX_INLINE (box->parent)) {
+	if (HTML_BOX_INLINE (box)) {
 		DomNode *node;
 		xmlChar *href_prop;
 
-		node = box->parent->dom_node;
+		node = box->dom_node;
 
 		if (node->xmlnode->name) {
 			if (strcasecmp (node->xmlnode->name, "a") == 0) {
 			   href_prop = xmlGetProp (node->xmlnode, "href");
-			   uri = (gchar *)href_prop;
+			   uri = g_strdup ((gchar *)href_prop);
 			}
 		}
 	}
@@ -261,7 +265,7 @@ html_link_accessible_do_action (AtkAction *action,
 		if (link->action_idle_handler)
 			return FALSE;
 		else {
-			link->action_idle_handler = gtk_idle_add (idle_do_action, link);
+			link->action_idle_handler = g_idle_add (idle_do_action, link);
 			return TRUE;
 		}
 	} else {
@@ -274,15 +278,17 @@ idle_do_action (gpointer data)
 {
 	HtmlLinkAccessible *link;
 
-	HtmlBoxText *text;
+	HtmlBox *box;
 	GtkWidget *view;
 	gchar *uri;
 
 	link = HTML_LINK_ACCESSIBLE (data);
+	
+	if (!link->box)
+		return FALSE;
 	link->action_idle_handler = 0;
-	text = get_box_text_from_accessible (link->obj);
-	view = html_box_accessible_get_view_widget (HTML_BOX (text));
-	uri = get_uri_from_text (text);
+	view = html_box_accessible_get_view_widget (link->box);
+	uri = get_uri_from_box (link->box);
 	g_signal_emit_by_name (HTML_VIEW (view)->document,
 			       "link_clicked",
 			       uri);
@@ -322,9 +328,9 @@ html_link_accessible_get_name (AtkAction *action,
 }
 
 static gboolean
- html_link_accessible_set_description (AtkAction   *action,
-                                       gint        i,
-                                       const gchar *desc)
+html_link_accessible_set_description (AtkAction   *action,
+                                      gint        i,
+                                      const gchar *desc)
 {
 	if (i == 0) {
 		HtmlLinkAccessible *link;

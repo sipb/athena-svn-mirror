@@ -21,6 +21,7 @@
 #define __HTML_BOX_TABLE_ACCESSIBLE_H__
 
 #include <atk/atk.h>
+#include "htmlboxaccessible.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,15 +36,18 @@ extern "C" {
 
 typedef struct _HtmlBoxTableAccessible      HtmlBoxTableAccessible;
 typedef struct _HtmlBoxTableAccessibleClass HtmlBoxTableAccessibleClass;
+typedef struct _HtmlBoxTableAccessiblePrivate HtmlBoxTableAccessiblePrivate;
 
 struct _HtmlBoxTableAccessible
 {
-	AtkGObjectAccessible parent;
+	HtmlBoxAccessible parent;
+
+	HtmlBoxTableAccessiblePrivate *priv;
 };
 
 struct _HtmlBoxTableAccessibleClass
 {
-	AtkGObjectAccessibleClass parent_class;
+	HtmlBoxAccessibleClass parent_class;
 };
 
 GType html_box_table_accessible_get_type (void);

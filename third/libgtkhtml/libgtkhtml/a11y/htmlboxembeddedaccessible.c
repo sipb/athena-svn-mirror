@@ -120,6 +120,6 @@ html_box_embedded_accessible_ref_child (AtkObject *obj, gint i)
 
 	atk_child = gtk_widget_get_accessible (box_embedded->widget);
 	g_object_ref (atk_child);
-	atk_object_set_parent (atk_child, obj);
+	atk_child->accessible_parent = g_object_ref (obj);
 	return atk_child;
 }

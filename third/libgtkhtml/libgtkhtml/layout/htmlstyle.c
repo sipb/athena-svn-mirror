@@ -45,9 +45,12 @@ html_style_get_gtk_style (void)
                                                    "GtkHtml",
                                                    "HtmlView",
                                                    GTK_TYPE_TEXT_VIEW);
-		if (!style) {
-			style = gtk_style_new ();
-                }
+	}
+
+	if (!style) {
+		style = gtk_style_new ();
+	} else {
+		g_object_ref (style);
         }
 
         return style;
@@ -63,7 +66,27 @@ static HtmlColor*
 html_style_get_gtk_text_color (GtkStyle *style)
 {
 	GdkColor  text_color;
+	GdkColor  base_color;
+	gushort linkred;
+	gushort linkgreen;
+	guint red_green;
 
+
+	base_color = style->base[GTK_STATE_NORMAL];
+
+	/*
+	 * Heuristic to pick more visible link color
+	 */
+	red_green = base_color.red + base_color.green;
+	if (red_green < 65535) {
+		linkred = 153;
+		linkgreen = 204;
+	} else {
+		linkred = 0;
+		linkgreen = 0;
+	}
+
+	html_color_set_linkblue (linkred, linkgreen);
 	text_color = style->text[GTK_STATE_NORMAL];
 
 	return html_color_new_from_rgb (text_color.red,

@@ -24,6 +24,8 @@
 #include "htmlboxtablecaption.h"
 #include "htmlrelayout.h"
 
+static HtmlBoxBlockClass *parent_class = NULL;
+
 void
 html_box_table_caption_relayout_width (HtmlBoxTableCaption *caption, HtmlRelayout *relayout, gint width)
 {
@@ -63,6 +65,8 @@ html_box_table_caption_finalize (GObject *object)
 
 	table = HTML_BOX_TABLE (HTML_BOX (caption)->parent);
 	html_box_table_remove_caption (table, caption);
+
+        G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -73,6 +77,8 @@ html_box_table_caption_class_init (HtmlBoxTableCaptionClass *klass)
 
 	object_class->finalize = html_box_table_caption_finalize;
 	block_class->get_boundaries = html_box_table_caption_get_boundaries;
+
+        parent_class = g_type_class_peek_parent (klass);
 }
 
 static void

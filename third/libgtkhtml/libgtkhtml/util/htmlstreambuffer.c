@@ -54,6 +54,7 @@ html_stream_buffer_close (HtmlStream *stream, gpointer user_data)
 	}
 	else
 		stream_buffer->close_func (NULL, -1, stream_buffer->user_data);
+	g_free (user_data);
 }
 
 HtmlStream *

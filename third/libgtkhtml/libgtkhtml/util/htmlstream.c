@@ -173,8 +173,6 @@ html_stream_new (HtmlStreamWriteFunc write_func, HtmlStreamCloseFunc close_func,
 	stream->close_func = close_func;
 	stream->cancel_func = NULL;
 	stream->user_data = user_data;
-	if (G_IS_OBJECT (user_data))
-		g_object_add_weak_pointer (user_data, (gpointer *) &(stream->user_data));
 	
 	return stream;
 }

@@ -23,12 +23,6 @@
 #ifndef __HTMLPARSER_H__
 #define __HTMLPARSER_H__
 
-typedef struct _HtmlParser HtmlParser;
-typedef struct _HtmlParserClass HtmlParserClass;
-
-typedef enum _HtmlParserType HtmlParserType;
-typedef enum _HtmlParserState HtmlParserState;
-
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
 #include <libxml/HTMLparser.h>
@@ -51,6 +45,7 @@ enum _HtmlParserType {
 	HTML_PARSER_TYPE_HTML,
 	HTML_PARSER_TYPE_XML
 };
+typedef enum _HtmlParserType HtmlParserType;
 
 struct _HtmlParser {
 	GObject parent;
@@ -68,6 +63,7 @@ struct _HtmlParser {
 	gboolean blocking;
 	DomNode *blocking_node;
 };
+typedef struct _HtmlParser HtmlParser;
 
 struct _HtmlParserClass {
 	GtkObjectClass parent;
@@ -76,6 +72,7 @@ struct _HtmlParserClass {
 	void (* new_node) (HtmlParser *parser, DomNode *node);
 	void (* parsed_document_node) (HtmlParser *parser, DomDocument *document);
 };
+typedef struct _HtmlParserClass HtmlParserClass;
 
 GType html_parser_get_type (void);
 HtmlParser *html_parser_new (HtmlDocument *document, HtmlParserType parser_type);

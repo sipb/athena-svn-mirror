@@ -261,6 +261,7 @@ html_box_root_add_float (HtmlBoxRoot *root, HtmlBox *box)
 
 	switch (HTML_BOX_GET_STYLE (box)->Float) {
 	case HTML_FLOAT_LEFT:
+	case HTML_FLOAT_CENTER:
 		/* If it is already in the list don't add it again */
 		if (g_slist_find (root->float_left_list, box))
 			return;

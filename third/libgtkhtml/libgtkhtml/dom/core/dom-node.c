@@ -22,7 +22,6 @@
 
 #include <string.h>
 #include <libxml/tree.h>
-#include <sys/time.h>
 
 #include "dom-node.h"
 #include "dom-attr.h"
@@ -656,9 +655,9 @@ dom_Node_invokeListener (DomEventTarget *target, const DomString *type, DomEvent
 	listener_list = g_object_get_data (G_OBJECT (target), "listener_list");
 	
 	if (event->timeStamp == 0) {
-		struct timeval tv;
+		GTimeVal tv;
 
-		gettimeofday (&tv, NULL);
+		g_get_current_time (&tv);
 		event->timeStamp = (tv.tv_sec * (guint64)1000) + tv.tv_usec / 1000;
 	}
 

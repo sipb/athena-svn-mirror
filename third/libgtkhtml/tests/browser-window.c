@@ -195,7 +195,7 @@ on_submit (HtmlDocument *document, const gchar *action, const gchar *method,
 	 * start loading a new one, we can't call it directly, because
 	 * gtkhtml2 will crash if the document becomes deleted before
 	 * this signal handler finish */
-	gtk_idle_add (on_submit_idle, ctx);
+	g_idle_add (on_submit_idle, ctx);
 }
 
 static void

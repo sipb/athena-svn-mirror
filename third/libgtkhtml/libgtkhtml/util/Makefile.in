@@ -60,14 +60,21 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 A11Y = @A11Y@
+AR = @AR@
 AS = @AS@
 CC = @CC@
 CFLAGS = @CFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
 GAILUTIL_CFLAGS = @GAILUTIL_CFLAGS@
 GAILUTIL_LIBS = @GAILUTIL_LIBS@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
 GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GTKHTML2_CFLAGS = @GTKHTML2_CFLAGS@
@@ -82,6 +89,7 @@ OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -114,7 +122,7 @@ noinst_PROGRAMS = test-atoms
 test_atoms_SOURCES =  	test-atoms.c
 
 
-test_atoms_LDADD = $(top_builddir)/libgtkhtml/util/libhtmlutil.la $(GTKHTML2_LIBS)
+test_atoms_LDADD = libhtmlutil.la $(GTKHTML2_LIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -132,8 +140,7 @@ noinst_PROGRAMS =  test-atoms$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 test_atoms_OBJECTS =  test-atoms.$(OBJEXT)
-test_atoms_DEPENDENCIES =  \
-$(top_builddir)/libgtkhtml/util/libhtmlutil.la
+test_atoms_DEPENDENCIES =  libhtmlutil.la
 test_atoms_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -379,14 +386,14 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-$(srcdir)/htmlmarshal.h: htmlmarshal.list
+htmlmarshal.h: htmlmarshal.list
 	echo "#ifndef __HTML_MARSHAL_H__" > xgen-gmh \
 	&& echo "#define __HTML_MARSHAL_H__" >> xgen-gmh \
 	&& glib-genmarshal --nostdinc --prefix=html_marshal $(srcdir)/htmlmarshal.list --header >> xgen-gmh \
 	&& echo "#endif /* __HTML_MARSHAL_H__ */" >> xgen-gmh \
 	&& (cmp -s xgen-gmh $(srcdir)/htmlmarshal.h || cp xgen-gmh $(srcdir)/htmlmarshal.h) \
 	&& rm -f xgen-gmh xgen-gmh~
-$(srcdir)/htmlmarshal.c: htmlmarshal.h
+htmlmarshal.c: htmlmarshal.h
 	echo "#include <glib.h>" > xgen-gmc \
 	&& echo "#include <glib-object.h>" >> xgen-gmc \
 	&& echo "#include \"htmlmarshal.h\"" >> xgen-gmc \

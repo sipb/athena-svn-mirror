@@ -664,6 +664,7 @@ html_document_open_stream (HtmlDocument *document, const gchar *mime_type)
 	g_return_val_if_fail (HTML_IS_DOCUMENT (document), FALSE);
 	g_return_val_if_fail (mime_type != NULL, FALSE);
 
+	html_document_clear (document);
 	if (strcasecmp (mime_type, "text/html") == 0) {
 		if (document->parser)
 			g_object_unref (document->parser);
@@ -764,6 +765,9 @@ html_document_clear (HtmlDocument *document)
 		
 		top_node =  node->xmlnode;
 		node = dom_Node__get_nextSibling (node);
+		if (G_OBJECT (document)->ref_count != 0)
+			/* Not called from html_document_finalize */
+			g_signal_emit (G_OBJECT (document), document_signals [NODE_REMOVED], 0, tmp_node);
 		dom_Node_removeChild (DOM_NODE (document->dom_document), tmp_node, NULL);
 		g_object_unref (tmp_node);
 	}
@@ -946,17 +950,24 @@ find_anchor_helper (DomNode *node, const gchar *anchor)
 {
 	DomNode *child;
 
-	if (DOM_IS_HTML_ANCHOR_ELEMENT (node) && 
-	    dom_Element_hasAttribute (DOM_ELEMENT (node), "name")) {
-		
-		gchar *name = dom_Element_getAttribute (DOM_ELEMENT (node), "name");
+	if (DOM_IS_HTML_ANCHOR_ELEMENT (node)) {
+	    gchar *name;
 
+	    if (dom_Element_hasAttribute (DOM_ELEMENT (node), "id"))
+		name = dom_Element_getAttribute (DOM_ELEMENT (node), "id");
+	    else if (dom_Element_hasAttribute (DOM_ELEMENT (node), "name"))
+		name = dom_Element_getAttribute (DOM_ELEMENT (node), "name");
+	    else
+		name = NULL;
+
+	    if (name) {
 		if (strcasecmp (name, anchor) == 0) {
 
 			xmlFree (name);
 			return node;
 		}
 		xmlFree (name);
+	    }
 	}
 	child = dom_Node__get_firstChild (node);
 

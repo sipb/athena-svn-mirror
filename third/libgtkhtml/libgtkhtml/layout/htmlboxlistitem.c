@@ -20,6 +20,8 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <strings.h>
+
 #include "htmlboxtext.h"
 #include "htmlboxlistitem.h"
 

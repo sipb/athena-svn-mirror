@@ -31,14 +31,14 @@ BUILT_SOURCES = htmlmarshal.h htmlmarshal.c
 gen_sources = xgen-gmh xgen-gmc
 CLEANFILES = $(gen_sources)
 
-$(srcdir)/htmlmarshal.h: htmlmarshal.list
+htmlmarshal.h: htmlmarshal.list
 	echo "#ifndef __HTML_MARSHAL_H__" > xgen-gmh \
 	&& echo "#define __HTML_MARSHAL_H__" >> xgen-gmh \
 	&& glib-genmarshal --nostdinc --prefix=html_marshal $(srcdir)/htmlmarshal.list --header >> xgen-gmh \
 	&& echo "#endif /* __HTML_MARSHAL_H__ */" >> xgen-gmh \
 	&& (cmp -s xgen-gmh $(srcdir)/htmlmarshal.h || cp xgen-gmh $(srcdir)/htmlmarshal.h) \
 	&& rm -f xgen-gmh xgen-gmh~
-$(srcdir)/htmlmarshal.c: htmlmarshal.h
+htmlmarshal.c: htmlmarshal.h
 	echo "#include <glib.h>" > xgen-gmc \
 	&& echo "#include <glib-object.h>" >> xgen-gmc \
 	&& echo "#include \"htmlmarshal.h\"" >> xgen-gmc \
@@ -53,4 +53,4 @@ noinst_PROGRAMS = test-atoms
 test_atoms_SOURCES = \
 	test-atoms.c
 
-test_atoms_LDADD = $(top_builddir)/libgtkhtml/util/libhtmlutil.la $(GTKHTML2_LIBS)
+test_atoms_LDADD = libhtmlutil.la $(GTKHTML2_LIBS)
