@@ -23,6 +23,7 @@
 # This makefile is used to build and invoke a "real" makefile from "pmakefile",
 # which contains C pre-processor directives.
 #
+CC=cc
 
 all: rmakefile rall
 
@@ -38,5 +39,5 @@ idl.tar: rmakefile
 rmakefile: pmakefile
 	rm -f rmakefile foo.c
 	cp pmakefile foo.c
-	(cc -E foo.c ${DEFS} | sed -e 's/^#.*//' -e 's/^[ \f	]$$//' -e 's/^ /	/' > rmakefile)
+	(${CC} -E foo.c ${DEFS} | sed -e 's/^#.*//' -e 's/^[ \f	]$$//' -e 's/^ /	/' > rmakefile)
 	rm -f foo.c
