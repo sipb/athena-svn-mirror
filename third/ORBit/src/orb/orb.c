@@ -1035,8 +1035,9 @@ CORBA_Object CORBA_ORB_resolve_initial_references(CORBA_ORB orb, CORBA_ORB_Objec
 	else if(!strcmp(identifier, "RootPOA")) {
 		if(CORBA_Object_is_nil(orb->root_poa, ev)) {
 			CORBA_Policy policybuf[1];
-			CORBA_PolicyList policies  = {1,1,policybuf,CORBA_FALSE};
+			CORBA_PolicyList policies  = {1,1,NULL,CORBA_FALSE};
 			PortableServer_POAManager poa_mgr;
+			policies._buffer = policybuf;
 			/* The only non-default policy used by the RootPOA is IMPLICIT ACTIVATION */ 
 			policies._buffer[0]=
 				PortableServer_POA_create_implicit_activation_policy(NULL,
