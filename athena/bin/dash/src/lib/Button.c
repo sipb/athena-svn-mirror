@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Button.c,v 1.2 1991-09-04 10:11:18 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Button.c,v 1.3 1991-12-17 10:25:09 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -107,34 +107,34 @@ static void realize(me)
   valuemask = ( GCForeground | GCBackground | GCLineWidth
 	       | GCFunction | GCGraphicsExposures );
 
-  me->button.foreground_gc = XCreateGC(me->core.display,
-				       me->core.window,
-				       valuemask,
-				       &values);
+  me->button.foreground_gc = XjCreateGC(me->core.display,
+					me->core.window,
+					valuemask,
+					&values);
 
   values.foreground = me->button.background;
 
-  me->button.background_gc = XCreateGC(me->core.display,
-				       me->core.window,
-				       valuemask,
-				       &values);
+  me->button.background_gc = XjCreateGC(me->core.display,
+					me->core.window,
+					valuemask,
+					&values);
 
   values.foreground = me->button.foreground;
   values.line_width = me->button.borderWidth;
 
-  me->button.gc = XCreateGC(me->core.display,
-			    me->core.window,
-			    valuemask,
-			    &values);
+  me->button.gc = XjCreateGC(me->core.display,
+			     me->core.window,
+			     valuemask,
+			     &values);
 
   values.function = GXxor;
   values.foreground = (me->button.foreground ^
 		       me->button.background);
 
-  me->button.invert_gc = XCreateGC(me->core.display,
-				   me->core.window,
-				   valuemask,
-				   &values);
+  me->button.invert_gc = XjCreateGC(me->core.display,
+				    me->core.window,
+				    valuemask,
+				    &values);
 
   /*
    * Usurp events for this window
@@ -152,10 +152,10 @@ static void realize(me)
 static void destroy(me)
      ButtonJet me;
 {
-  XFreeGC(me->core.display, me->button.gc);
-  XFreeGC(me->core.display, me->button.invert_gc);
-  XFreeGC(me->core.display, me->button.foreground_gc);
-  XFreeGC(me->core.display, me->button.background_gc);
+  XjFreeGC(me->core.display, me->button.gc);
+  XjFreeGC(me->core.display, me->button.invert_gc);
+  XjFreeGC(me->core.display, me->button.foreground_gc);
+  XjFreeGC(me->core.display, me->button.background_gc);
 
   XjUnregisterWindow(me->core.window, (Jet) me);
 }
@@ -408,13 +408,18 @@ static Boolean event_handler(me, event)
 	    {
 	      me->button.state = !(me->button.state);
 	      if (me->button.state)
-		XjCallCallbacks((caddr_t) me, me->button.activateProc, event);
+		XjCallCallbacks((caddr_t) me,
+				me->button.activateProc,
+				(caddr_t) event);
 	      else
-		XjCallCallbacks((caddr_t) me, me->button.deactivateProc,
-				event);
+		XjCallCallbacks((caddr_t) me,
+				me->button.deactivateProc,
+				(caddr_t) event);
 	    }
 	  else
-	    XjCallCallbacks((caddr_t) me, me->button.activateProc, event);
+	    XjCallCallbacks((caddr_t) me,
+			    me->button.activateProc,
+			    (caddr_t) event);
 	}
 
       me->button.pressed = (event->type == ButtonPress);
