@@ -1,0 +1,49 @@
+dnl $Header: /afs/dev.mit.edu/source/repository/third/transcript/configure.in,v 1.1 1996-10-14 04:30:10 ghudson Exp $
+dnl
+dnl This is the global Autoconf template for TranScript on Athena.
+dnl It was mostly designed to make life easier than with the Adobe mess.
+
+AC_REVISION([$Revision: 1.1 $
+[#] RCS-$Header: /afs/dev.mit.edu/source/repository/third/transcript/configure.in,v 1.1 1996-10-14 04:30:10 ghudson Exp $
+[#]])dnl
+AC_INIT(src/enscript.c)dnl
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+### Set the default C flags.
+dnl They should include '-DBSD', and possibly also '-DXPG3'.
+dnl (BSD, and not SYSV, should be defined for TranScript, even on SYSV systems)
+: ${CFLAGS="-O -I/usr/athena/include"}
+CPPFLAGS="${CPPFLAGS} -DBSD -DXPG3"
+
+AC_PROG_CPP
+
+dnl
+dnl Check if the following header files exist.
+dnl
+AC_CHECK_HEADERS(fcntl.h termios.h)
+dnl
+dnl See if <sys/wait.h> is POSIX.1 compliant.
+dnl If not, assume it is BSD-like (i.e., that it declares "union wait")
+dnl
+AC_HEADER_SYS_WAIT
+dnl
+dnl Check if we need libnsl for gethostname.
+dnl
+AC_CHECK_FUNC(gethostname, :, AC_CHECK_LIB(nsl, gethostname))
+dnl
+dnl Check if time_t is available.
+dnl If not, use long.
+dnl
+AC_CHECK_TYPE(time_t,long)
+dnl
+dnl Find makedev.  (ditroff uses /usr/lib, vendors use God knows what.)
+dnl
+mdevPATH=/usr/lib:/usr/bin
+AC_PATH_PROG(MAKEDEV,makedev,,$mdevPATH)
+test -n "${MAKEDEV}" || AC_MSG_ERROR(cannot find makedev in ${mdevPATH})
+
+### Generate output...
+AC_CONFIG_HEADER(src/config-defs.h)
+AC_OUTPUT(Makefile troff.font/Makefile ditroff.font/Makefile)

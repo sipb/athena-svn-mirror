@@ -1,0 +1,207 @@
+# $Header: /afs/dev.mit.edu/source/repository/third/transcript/Makefile.in,v 1.1 1996-10-14 04:30:07 ghudson Exp $
+#
+# This is the global Makefile template for TranScript on Athena.
+# It does, roughly, the same things as the original build scripts, but
+# in a slightly more structured fashion.
+#
+# PostScript is a registered trademark of Adobe Systems Incorporated
+# TranScript is a registered trademark of Adobe Systems Incorporated
+
+ENVCC=@CC@
+ENVCFLAGS=@CFLAGS@ @CPPFLAGS@ -DBINDIR='\"${bindir}\"'\
+	-DDATADIR='\"${datadir}\"'
+LDFLAGS=@LDFLAGS@ @LIBS@
+
+# SYSV make is a censored piece of censored...
+SHELL = /bin/sh
+VPATH = @srcdir@
+
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+datadir=@datadir@
+PSLIBDIR=${datadir}/ps
+TROFFDIR=${PSLIBDIR}/troff.font
+DITDIR=${PSLIBDIR}/ditroff.font
+PPDDIR=${PSLIBDIR}/ppd
+AFMDIR=${PSLIBDIR}/afm
+PSTEMPDIR=/var/tmp
+
+# default PostScript Printer Description
+
+DEFAULTPPD=hp3si523
+
+# configuration options that are unlikely to ever change
+REVERSE=
+BANNERFIRST=1
+BANNERLAST=0
+VERBOSELOG=1
+
+# programs
+SED=sed
+PERL=perl
+RM=rm -f
+LN=ln -s
+INSTALL=@INSTALL@
+INSTALL_EXEC=$(INSTALL) -m 755
+INSTALL_DATA=$(INSTALL) -m 644
+
+# manpages to install.
+MAN1=transcript.1 enscript.1 ps4014.1 ps630.1 pscat.1 psdit.1 psdraft.1 \
+	psfax.1 psfonts.1 pslpr.1 psnup.1 psplot.1 psrev.1 psroff.1 \
+	pssymbols.1
+# no:	ppanel.1 ptroff.1
+MAN7=afm.7 postscript.7
+MAN8=pscatmap.8 psdman.8 psint.8
+# no:	pscomm.8 psinterface.8 ascomm.8 capcomm.8 fpcomm.8 lpcomm.8 qmscomm.8
+
+# lib/ files to install
+# NOTE: bogusmsg.ps and banner.pro (from Transcript2.1) are built and installed
+#       from /source/athena/ucb/lpr/transcript-v2.1, so we don't do them here.
+LIBFILES=enscript.pro ps4014.pro ps630.pro pscat.pro psdit.pro psdraft.pro \
+	psnup.pro psplot.pro pstext.pro ehandler.ps Notice
+LIBEXECS=psint.sh psbad.sh
+
+# NOTE: curntely, we're building DITROFF fonts, but not old TROFF fonts.
+#       It's unclear TROFF fonts are useful.
+#       If you have good reason to think we do need them, uncomment this:
+#CLEANTROFF=cleantroff
+#BUILDTROFF=buildtroff
+#INSTLTROFF=instltroff
+
+.PHONY: all build buildprogs buildmisc buildtroff builddit install instlprogs \
+   instlmisc instltroff instldit clean cleanprogs cleanmisc cleantroff cleandit
+all: build
+clean:   cleanprogs cleanmisc $(CLEANTROFF) cleandit cleanman
+build:   buildprogs buildmisc $(BUILDTROFF) builddit buildman
+install: instlprogs instlmisc $(INSTLTROFF) instldit instlman
+
+### The targets are primarily named after the analogous build scripts.
+
+sh/psroff: sh/psroff.bsd Makefile
+	$(RM) sh/psroff
+	echo "Guessing if troff will complain when given -t option."
+	-troff -Tpsc -t /dev/null > /dev/null 2>/tmp/troff-errs
+	case "`cat /tmp/troff-errs`" in					\
+	    *" -t"|*" -t "*)						\
+		$(SED) -e s,DITDIR,${DITDIR},g -e s,DITFLAGS,,g		\
+			sh/psroff.bsd > sh/psroff ;;			\
+	    *)								\
+		$(SED) -e s,DITDIR,${DITDIR},g -e s,DITFLAGS,-t,g	\
+			sh/psroff.bsd > sh/psroff ;;			\
+	esac
+
+buildprogs: sh/psroff
+	cd src; ${MAKE} ${MFLAGS} CC="${ENVCC}" CFLAGS="${ENVCFLAGS}" \
+			LDFLAGS="${LDFLAGS}" programs
+
+instlprogs:
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${bindir}
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${PSLIBDIR}
+	cd src; ${MAKE} ${MFLAGS} DBINDIR=${DESTDIR}${bindir} \
+			DLIBDIR=${DESTDIR}${PSLIBDIR} install
+	$(INSTALL_EXEC) sh/psroff ${DESTDIR}${BINDIR}
+	$(INSTALL_EXEC) sh/psrev  ${DESTDIR}${BINDIR}
+cleanprogs:
+	cd src; ${MAKE} ${MFLAGS} clean
+
+
+
+lib/psint.sh: lib/psint.bsd Makefile
+	$(RM) lib/psint.sh
+	$(SED) -e s,XPSLIBDIRX,${PSLIBDIR},g \
+		-e s,XPSTEMPDIRX,${PSTEMPDIR},g \
+		-e s,XBANNERFIRSTX,${BANNERFIRST},g \
+		-e s,XBANNERLASTX,${BANNERLAST},g \
+		-e s,XREVERSEX,${REVERSE},g \
+		-e s,XVERBOSELOGX,${VERBOSELOG},g \
+		-e s,XBINDIRX,${BINDIR},g \
+		lib/psint.bsd > lib/psint.sh
+lib/afmfiles.upr.out lib/afminstall.sh: lib/afmfiles.upr.in Makefile
+	$(RM) lib/afmfiles.upr.out lib/afminstall.sh
+	INSTALL_DATA="$(INSTALL_DATA)" AFMDIR="$(AFMDIR)"\
+		$(PERL) -n lib/afmgen.pl lib/afmfiles.upr.in \
+		>lib/afmfiles.upr.out 2>lib/afminstall.sh
+
+buildmisc: lib/psint.sh lib/afmfiles.upr.out
+
+instlmisc: lib/afminstall.sh
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${PSLIBDIR}
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${AFMDIR}
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${PPDDIR}
+	$(RM) afmfiles.upr; $(LN) lib/afmfiles.upr.out afmfiles.upr; \
+		$(INSTALL_DATA) afmfiles.upr $(DESTDIR)$(PSLIBDIR); \
+		$(RM) afmfiles.upr
+	DESTDIR="${DESTDIR}" /bin/sh lib/afminstall.sh
+	$(INSTALL_DATA) lib/*.ppd $(DESTDIR)$(PPDDIR)
+	$(RM) $(DESTDIR)$(PPDDIR)/default.ppd
+	$(LN) ${DEFAULTPPD}.ppd $(DESTDIR)$(PPDDIR)/default.ppd
+	for i in $(LIBFILES); do \
+		$(INSTALL_DATA) lib/$$i $(DESTDIR)$(PSLIBDIR); done
+	for i in $(LIBEXECS); do \
+		$(INSTALL_EXEC) lib/$$i $(DESTDIR)$(PSLIBDIR); done
+
+cleanmisc:
+	$(RM) lib/psint.sh lib/afmfiles.upr.out afmfiles.upr
+
+
+
+buildtroff:
+	-$(RM) lib/afmfiles.upr
+	$(LN) build-tree.upr lib/afmfiles.upr
+	cd troff.font; ${MAKE} ${MFLAGS} buildtroff
+	$(RM) lib/afmfiles.upr
+
+instltroff:
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${TROFFDIR}
+	cd troff.font; ${MAKE} ${MFLAGS} install
+
+cleantroff:
+	-$(RM) lib/afmfiles.upr
+	cd troff.font; ${MAKE} ${MFLAGS} clean
+
+
+
+src/map src/afmdit: buildprogs
+	: this line is here to prevent gmake from getting confused.
+
+builddit: src/map src/afmdit
+	-$(RM) lib/afmfiles.upr
+	$(LN) build-tree.upr lib/afmfiles.upr
+	cd ditroff.font; ${MAKE} ${MFLAGS} builddit
+	$(RM) lib/afmfiles.upr
+
+instldit:
+	cd ditroff.font; ${MAKE} ${MFLAGS} install
+
+cleandit:
+	-$(RM) lib/afmfiles.upr
+	cd ditroff.font; ${MAKE} ${MFLAGS} clean
+
+
+
+buildman:
+	for page in ${MAN1} ${MAN7} ${MAN8}; do		\
+	    ${SED} -e s,XPSLIBDIRX,${PSLIBDIR},g	\
+		-e s,XTROFFFONTDIRX,${TROFFDIR},g	\
+		-e s,XPSTEMPDIRX,${PSTEMPDIR},g		\
+		-e s,XDITDIRX,${DITDIR},g		\
+		man/$${page}p > man/$$page;		\
+	done
+
+instlman:
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${MANDIR}/man1
+	for i in ${MAN1}; do \
+		$(INSTALL_DATA) man/$$i ${DESTDIR}${MANDIR}/man1; done
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${MANDIR}/man7
+	for i in ${MAN7}; do \
+		$(INSTALL_DATA) man/$$i ${DESTDIR}${MANDIR}/man7; done
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${MANDIR}/man8
+	for i in ${MAN8}; do \
+		$(INSTALL_DATA) man/$$i ${DESTDIR}${MANDIR}/man8; done
+
+cleanman:
+	cd man; $(RM) ${MAN1} ${MAN7} ${MAN8}
