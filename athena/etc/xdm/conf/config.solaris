@@ -1,4 +1,5 @@
-X	/usr/openwin/bin/xnews  :0 -nobanner 
+X	/usr/openwin/bin/xnews  -fp /etc/athena/login/fonts/75dpi,/usr/openwin/lib/fonts :0 -nobanner 
+#X	/usr/openwin/bin/xnews  -fp /etc/athena/login/fonts/100dpi,/usr/openwin/lib/fonts :0 -nobanner 
 console /etc/athena/console -f /etc/athena/login/Console -display :0.0
 
-login   /etc/athena/xlogin -config /etc/athena/login -display :0.0  -fp /etc/athena/login/fonts/75dpi/,/usr/openwin/lib/fonts/,/usr/openwin/lib/fonts/afm/,/usr/openwin/lib/fonts/map/,/usr/openwin/lib/fonts/misc/
+login   /etc/athena/xlogin -config /etc/athena/login -display :0.0  -fp /usr/openwin/lib/fonts/,/usr/openwin/lib/fonts/afm/,/usr/openwin/lib/fonts/map/,/usr/openwin/lib/fonts/misc/,/usr/andrew/Xnewsfonts/,/usr/andrew/X11fonts.75/
