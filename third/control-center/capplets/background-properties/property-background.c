@@ -819,21 +819,9 @@ background_apply (BGState *state)
 static void
 background_help(GtkWidget *widget, BGState *state)
 {
-	gchar *tmp;
-
-	tmp = gnome_help_file_find_file ("control-center", "desktop-intro.html#GCCBACK");
-	if (tmp) {
-		gnome_help_goto(0, tmp);
-		g_free(tmp);
-	} else {
-		GtkWidget *mbox;
-
-		mbox = gnome_message_box_new(_("No help is available/installed for these settings. Please make sure you\nhave the GNOME User's Guide installed on your system."),
-					     GNOME_MESSAGE_BOX_ERROR,
-					     _("Close"), NULL);
-
-		gtk_widget_show(mbox);
-	}
+    GnomeHelpMenuEntry help_entry= {"control-center",
+    "desktop-intro.html#GCCBACK"};
+    gnome_help_display (NULL, &help_entry);
 }
 
 static void

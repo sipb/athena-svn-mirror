@@ -1,12 +1,17 @@
 [Desktop Entry]
 Name=Slidescreen
 Name[ca]=Puzzle lliscant
-Name[da]=Lysbilledeskærm
+Name[da]=Skærmbrikker
 Name[fi]=Palapeli
 Name[fr]=Écran glissant
+Name[hu]=Slidescreen
 Name[ja]=¥¹¥é¥¤¥É¥¹¥¯¥ê¡¼¥ó
+Name[no]=Glideskjerm
+Name[ru]=òÁÓĞÁÄ ÜËÒÁÎÁ
 Name[sk]=Obrazovkovı puzzle
+Name[sl]=Drsilnik
 Name[sv]=Diaskärm
+Name[uk]=òÏÚĞÁÄ ÅËÒÁÎÕ
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=slidescreen

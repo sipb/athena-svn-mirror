@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.2.3\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
-"PO-Revision-Date: 2001-03-14 20:36-05:00\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"PO-Revision-Date: 2001-03-27 22:46-05:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -77,9 +77,9 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "Kan ikke finne en hboks, bruker normalt filvalg"
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -95,9 +95,9 @@ msgstr " Bla gjennom... "
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "ingen"
 
@@ -121,90 +121,56 @@ msgstr "Sentrert"
 msgid "Tiled"
 msgstr "Side-ved-side"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-"Ingen hjelp er tilgjengelig/installert for disse innstillingene. Vennligst\n"
-"sjekk om GNOME brukerhåndboken er installert på ditt system."
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Lukk"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
 msgid "Use GNOME to set background"
 msgstr "Bruk GNOME til å sette bakgrunnen"
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
 msgstr "Sett parametere fra lagret tilstand og avslutt"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
 msgstr "BILDE"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
 msgstr "Setter bakgrunnen til spesifiser verdi"
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "FARGE"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 msgid "Specifies the background color"
 msgstr "Spesifiserer bakgrunnsfargen"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
 msgstr "Spesifiserer bakgrunnsfargen for gradienten"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "ORIENT"
 msgstr "ORIENT"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Orientering for gradient: vertikal eller horisontal"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
 msgid "Use a solid fill for the background"
 msgstr "Bruk helfylt bakgrunn"
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a gradient fill for the background"
 msgstr "Bruk gradvis fyll for bakgrunnen"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "MODE"
 msgstr "MODUS"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Vis bakgrunn: side-ved-side, sentrert, skalert eller rate"
 
@@ -324,7 +290,7 @@ msgid "File Extensions "
 msgstr "Filtyper "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
 msgstr "Legg til..."
 
@@ -418,53 +384,53 @@ msgstr "Kan ikk åpne flere filer"
 msgid "Can open from URI"
 msgstr "Kan ikke åpne fra URI"
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 msgid "MIME Type"
 msgstr "MIME-type"
 
-#: capplets/file-types/file-types-capplet.c:742
+#: capplets/file-types/file-types-capplet.c:752
 msgid "Change Icon"
 msgstr "Endre ikon"
 
-#: capplets/file-types/file-types-capplet.c:749
+#: capplets/file-types/file-types-capplet.c:759
 msgid "Change File Extensions"
 msgstr "Endre filtyper"
 
-#: capplets/file-types/file-types-capplet.c:757
+#: capplets/file-types/file-types-capplet.c:767
 msgid "Default Action:"
 msgstr "Standard handling:"
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
 msgstr "Bruk visningsprogram"
 
-#: capplets/file-types/file-types-capplet.c:775
+#: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
 msgstr "Åpne med applikasjon"
 
-#: capplets/file-types/file-types-capplet.c:786
+#: capplets/file-types/file-types-capplet.c:796
 msgid "Edit List"
 msgstr "Rediger liste"
 
-#: capplets/file-types/file-types-capplet.c:811
+#: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
 msgstr "Legg til ny MIME-type..."
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
 msgstr "Slett denne MIME-typen"
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
 msgstr "Gå tilbake til standardinnstillingene"
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 msgid "None"
 msgstr "Ingen"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
@@ -474,22 +440,22 @@ msgstr ""
 "å gå tilbake til system innstillingene.\n"
 "Gå tilbake likevel?"
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
 msgstr "Vis som %s"
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr "Filtype"
 
-#: capplets/file-types/file-types-capplet.c:1879
+#: capplets/file-types/file-types-capplet.c:1892
 msgid "Default Action"
 msgstr "Standard handling"
 
@@ -505,11 +471,11 @@ msgstr "Spesifiser hvilke programmer som brukes til å åpne hver enkelt filtype"
 msgid "Select an icon"
 msgstr "Velg et ikon"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
 msgstr "Gnome editor"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
 msgstr "Kjør i terminal"
 
@@ -521,59 +487,73 @@ msgstr "Velg redigerer som skal startes av gnome-edit"
 msgid "Default Editor"
 msgstr "Standard redigeringsprogram"
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
 msgid "Keyboard bell"
 msgstr "Tastaturbjelle"
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
 msgstr "Volum"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
 msgstr "Tonehøyde (Hz)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
 msgstr "Varighet (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
 msgstr "Test"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
 msgid "Keyboard repeat rate"
 msgstr "Repeteringsintervall for tastatur"
 
-#: capplets/keyboard-properties/keyboard-properties.c:316
+#: capplets/keyboard-properties/keyboard-properties.c:304
 msgid "Enable auto-repeat"
 msgstr "Slå på auto-repetering"
 
-#: capplets/keyboard-properties/keyboard-properties.c:325
+#: capplets/keyboard-properties/keyboard-properties.c:313
 msgid "Repeat rate"
 msgstr "Repeteringsintervall"
 
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
 msgstr "Ventetid før repetering"
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
 msgstr "Tastaturklikk"
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
 msgstr "Klikk ved tastetrykk"
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
 msgstr "Klikkvolum"
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
 msgid "Test settings"
 msgstr "Testinnstillinger"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"Ingen hjelp er tilgjengelig/installert for disse innstillingene. Vennligst\n"
+"sjekk om GNOME brukerhåndboken er installert på ditt system."
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Lukk"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
@@ -590,61 +570,61 @@ msgstr "Tastatur"
 msgid "Keyboard Properties"
 msgstr "Egenskaper for tastatur"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
 msgstr "Musknapper"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
 msgstr "Venstrehendt"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
 msgstr "Høyrehendt"
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
 msgstr "Musbevegelse"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
 msgstr "Aksellerasjon"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Rask"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
 msgstr "Treg"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
 msgstr "Terskel"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
 msgstr "Stor"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
 msgstr "Liten"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -835,7 +815,7 @@ msgstr "David Bagely"
 msgid ""
 "Determines whether or not the ant leaves a truchet in the path it leaves "
 "behind."
-msgstr ""
+msgstr "Bestemmer om mauren etterlater seg et \"truchet\" i sitt spor."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:10
 msgid "Little Ants walk around, leaving colored trails."
@@ -1717,7 +1697,7 @@ msgstr "Bestemmer om panelene skal tegnes i farger, eller sort-hvitt."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:6
 msgid "Draw tacky 70s basement wall panelling."
-msgstr ""
+msgstr "Tegn smakløse 70-talls veggpaneler."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:7
 msgid ""
@@ -1770,6 +1750,8 @@ msgid ""
 "A cellular automata that starts with a random field, and organizes it into "
 "stripes and spirals."
 msgstr ""
+"En celle-automata som starter med et tilfeldig felt som organiseres til "
+"striper og spiraler."
 
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:2
 msgid "Demon"
@@ -1864,6 +1846,8 @@ msgstr "Bruk lissajous figurer til å hente punkter."
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:5
 msgid "Draws a point moving around a circle which moves around a circle."
 msgstr ""
+"Tegner et punkt som beveger seg rundt en sirkel som beveger seg rundt en "
+"sirkel."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:6
 msgid "Epicycle"
@@ -1879,7 +1863,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:9
 msgid "Holdtime"
-msgstr ""
+msgstr "Ventetid"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:10
 msgid "James Youngman <jay@gnu.org>"
@@ -1897,7 +1881,7 @@ msgstr "Produket av tiden før ferdigstilling vises."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:16
 msgid "When the figure is complete, epicycle pauses this number of seconds."
-msgstr ""
+msgstr "Antall sekunder epiycle venter når figuren er komplett."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:1
 msgid "A waving ribbon"
@@ -1938,7 +1922,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:16
 msgid "Fadeplot"
-msgstr ""
+msgstr "Fadeplot"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:20
 msgid "Number"
@@ -2047,7 +2031,7 @@ msgstr "Gir"
 
 #: capplets/screensaver-properties/screensaver-desktops/Gears.desktop.in.h:2
 msgid "The 3d mesa demo, of gears"
-msgstr ""
+msgstr "3D mesa demo, av gears"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:1
 msgid "Additive"
@@ -2055,7 +2039,7 @@ msgstr "Additiv"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:2
 msgid "Causes the colors to mix when overlapped."
-msgstr ""
+msgstr "Får fargene til å blandes når de overlapper."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:11
 msgid "Goop"
@@ -2090,7 +2074,7 @@ msgstr "Bruk additiv fargemodell."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:21
 msgid "squishy transparent oil and bubbles"
-msgstr ""
+msgstr "utflytende gjennomsiktig olje og bobler"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:2
 msgid "Change the number of planets to use."
@@ -2098,11 +2082,11 @@ msgstr "Endre antall planeter som skal brukes."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:4
 msgid "Change whether objects should leave a trail."
-msgstr ""
+msgstr "Endre om objekter skal etterlate seg et spor."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:5
 msgid "Change whether orbit should decay."
-msgstr ""
+msgstr "Endre om banen skal avta."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:10
 msgid "Decay"
@@ -2110,7 +2094,7 @@ msgstr "Avtakning"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:12
 msgid "Draws a simple orbital simulation."
-msgstr ""
+msgstr "Tegner en enkel simulering av en bane."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:13
 msgid "Grav"
@@ -2174,7 +2158,7 @@ msgstr "Endre til animerte sirkler."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:8
 msgid "Change to cycle through colormap."
-msgstr ""
+msgstr "Endre til å bla gjennom fargekartet."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
@@ -2211,7 +2195,7 @@ msgstr "Bruk en fargegradient mellom sirklene."
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:5
 msgid "Draws helical string-art patterns"
-msgstr ""
+msgstr "Tegner heliske mønstre av strenger"
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:7
 msgid "Helix"
@@ -2231,11 +2215,11 @@ msgstr "Tid mellom opptegning."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:3
 msgid "Change the number of pixels before a color change."
-msgstr ""
+msgstr "Endre antall piksler før endring av farger."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:10
 msgid "Draws real plane fractals"
-msgstr ""
+msgstr "Tegner realplan-fraktaler"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:12
 msgid "Hopalong"
@@ -2255,11 +2239,11 @@ msgstr "Patrick J. Naughton <naughton@eng.sun.com>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:1
 msgid "2D projection of a hypercube"
-msgstr ""
+msgstr "2D-projeksjon av en hyperkube"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:3
 msgid "Change the distance from center of cube"
-msgstr ""
+msgstr "Endre avstanden fra senter av kuben"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:8
 msgid "Distance"
@@ -2279,7 +2263,7 @@ msgstr "Hyperkube viser en \"wireframe\"-projeksjon av en hyperkube."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:6
 msgid "Draws spinning, colliding, iterated-function-system images."
-msgstr ""
+msgstr "Tegner spinnende, kolliderende, \"iterated-function-system\"-bilder."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:7
 msgid "Ifs"
@@ -2288,7 +2272,7 @@ msgstr "Ifs"
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:8
 msgid "Ifs draws spinning, colliding, iterated-function-system images."
 msgstr ""
-"Ifs tegner snurrende, kolliderende, \"iterated-function-system\" bilder."
+"Ifs tegner snurrende, kolliderende, \"iterated-function-system\"-bilder."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ifs.desktop.in.h:9
 msgid "Massimino Pascal <Pascal.Massimon@ens.fr>"
@@ -2304,7 +2288,7 @@ msgstr "Forstyrrelser"
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:5
 msgid "Jigsaw"
-msgstr ""
+msgstr "Puslespill"
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:6
 msgid ""
@@ -2316,11 +2300,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:7
 msgid "Permutes the screen image like a jigsaw puzzle."
-msgstr ""
+msgstr "Muterer skjermbildet til et puslespill."
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:11
 msgid "Draws spinning, animating, julia-set fractals."
-msgstr ""
+msgstr "Tegner spinnende, animerte, julia-set-fraktaler."
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:13
 msgid "Julia"
@@ -2332,7 +2316,7 @@ msgstr "Julia tegner snurrende, animerte, julia-sett fraktaler."
 
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:18
 msgid "Sean McCullough <bankshot@mailhost.nmt.edu>"
-msgstr ""
+msgstr "Sean McCullough <bankshot@mailhost.nmt.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:1
 msgid "Change number of segments."
@@ -2381,11 +2365,11 @@ msgstr "Kumppa"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:1
 msgid "A 3d cube floats around"
-msgstr ""
+msgstr "En 3D-kube som flyter rundt"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:2
 msgid "Lament"
-msgstr ""
+msgstr "Lament"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:4
 msgid ""
@@ -2397,7 +2381,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:5
 msgid "Draws vaguely laser-like moving lines."
-msgstr ""
+msgstr "Tegner vagt laserlignende bevegende linjer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:9
@@ -2413,6 +2397,8 @@ msgid ""
 "Duration of the laser burst.  After the burst has finished, It will move to "
 "a new location on the screen."
 msgstr ""
+"Varighet på laserstrålen. Etter strålen er ferdig flytter den seg til en "
+"annen plass på skjermen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:9
 msgid "Laser"
@@ -2450,7 +2436,7 @@ msgstr "Størrelse på utbrudd."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:6
 msgid "Draws fractal lightning bolts."
-msgstr ""
+msgstr "Tegner fraktal-lyn."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:7
 msgid "Keith Romberg <kromberg@saxe.com>"
@@ -2474,7 +2460,7 @@ msgstr "Endre størrelse på objektet."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:13
 msgid "Draws animated full-loop lisajous figures"
-msgstr ""
+msgstr "Tegner animerte full-runde lisajous-figurer"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:16
 msgid "Lisa"
@@ -2494,19 +2480,19 @@ msgstr "Lissie"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:1
 msgid "Change from closed to open figures."
-msgstr ""
+msgstr "Endre fra lukkede til åpne figurer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:2
 msgid "Change number of interpolation steps."
-msgstr ""
+msgstr "Ednre antall steg i interpolasjonen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:9
 msgid "Figtype"
-msgstr ""
+msgstr "Figurtype"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:11
 msgid "Lmorph"
-msgstr ""
+msgstr "Lmorph"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:12
 msgid "Lmorph morphs between simple linedrawings using bilinear interpolation."
@@ -2515,7 +2501,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:15
 msgid "Morphing lines."
-msgstr ""
+msgstr "Morphelinjer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:16
 msgid "Number of interpolation steps."
@@ -2554,7 +2540,7 @@ msgstr "Løkke"
 #: capplets/screensaver-properties/screensaver-desktops/Loop.desktop.in.h:2
 msgid ""
 "This one produces loop-shaped colonies that spawn, age, and eventually die."
-msgstr ""
+msgstr "Lager løkkeformede kolonier som formerer seg, blir eldre og dør."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:1
 msgid "Bridge"
@@ -2562,7 +2548,7 @@ msgstr "Bro"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:2
 msgid "Color for filling completely closed off areas."
-msgstr ""
+msgstr "Farge for å fylle helt avlukkede områder."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:3
 msgid "Color of a skipped path"
@@ -2582,11 +2568,11 @@ msgstr "Farge på området rundt"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:7
 msgid "Controls whether or not a 'bridge' will appear over the logo."
-msgstr ""
+msgstr "Kontrollerer om en 'bro' skal komme til syne over logoen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:8
 msgid "Copyright (C) 1988 by Sun Microsystems, Inc."
-msgstr ""
+msgstr "Copyright © 1988, Sun Microsystems, Inc."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:9
 msgid "Dead Color"
@@ -2606,7 +2592,7 @@ msgstr "Pause mellom løsing av labyrinten og start av en ny."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
 msgid "If the solver can "
-msgstr ""
+msgstr "Om problemløseren kan "
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
 msgid " the end of a corridor it will color it this color."
@@ -2630,11 +2616,11 @@ msgstr "Lengre pause"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:18
 msgid "Post-Solving Delay"
-msgstr ""
+msgstr "Pause etter løsning"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:19
 msgid "Pre-Solving Delay"
-msgstr ""
+msgstr "Pause før løsning"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:20
 msgid "Put a bridge over the logo?"
@@ -2642,7 +2628,7 @@ msgstr "Sett inn en bro over logoen?"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:21
 msgid "Repeatedly create and solve a maze"
-msgstr ""
+msgstr "Lag og løs en labyrint gjentatte ganger"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:22
 msgid "Skip Color"
@@ -2659,7 +2645,7 @@ msgstr "Omring farge"
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:26
 #, no-c-format
 msgid "The color of a failed path (stippled with a 50% pattern)"
-msgstr ""
+msgstr "Fargen på en feilet sti (stiplet med et 50% mønster)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:27
 msgid "The color of the path."
@@ -2670,16 +2656,18 @@ msgid ""
 "The delay (in microseconds) after solving a maze and before generating a new "
 "one."
 msgstr ""
+"Pausen (i mikrosekunder) før en ny labyrint genereres etter at den forrige "
+"løses."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:29
 msgid "The delay (in microseconds) between each step of the solution path."
-msgstr ""
+msgstr "Pausen (i mikrosekunder) mellom hvert steg i løsningsstien."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:30
 msgid ""
 "The delay (in microseconds) between generating a maze and starting to solve "
 "it."
-msgstr ""
+msgstr "Pausen (i mikrosekunder) før løsning av labyrinten starter."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:31
 msgid ""
@@ -2690,7 +2678,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:1
 msgid "M.C. Escher inspired ants.. in 3d"
-msgstr ""
+msgstr "M.C Escher inspirerte maur.. i 3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:2
 msgid "Moebius"
@@ -2698,7 +2686,7 @@ msgstr "Moebius"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:8
 msgid "Draw circular interference patterns"
-msgstr ""
+msgstr "Tegn sirkulære forstyrrelsesmønstre"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:10
 msgid "Jamie  Zawinski <jwz@jwz.org>"
@@ -2726,11 +2714,11 @@ msgstr "Moire2"
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:1
 msgid "A 3d flower morphs into a sphear"
-msgstr ""
+msgstr "En 3D-blomst morfes til en sfære"
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:2
 msgid "Morph3d"
-msgstr ""
+msgstr "Morph3D"
 
 #: capplets/screensaver-properties/screensaver-desktops/Mountain.desktop.in.h:1
 msgid "Mountain"
@@ -2738,11 +2726,11 @@ msgstr "Fjell"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:3
 msgid "Change to draw square at weird starting points."
-msgstr ""
+msgstr "Endre til å tegne en firkant med rare startpunkter."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:4
 msgid "Change to use XOR drawing function."
-msgstr ""
+msgstr "Endre til å bruke XOR-tegnefunksjonen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:7
 msgid "Draw square at weird starting points."
@@ -2762,7 +2750,7 @@ msgstr "Spisende firkanter."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:13
 msgid "Shift"
-msgstr ""
+msgstr "Skift"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:16
 msgid "Tim  Showalter  <tjs@andrew.cmu.edu>"
@@ -2778,7 +2766,7 @@ msgstr "XOR"
 
 #: capplets/screensaver-properties/screensaver-desktops/Noseguy.desktop.in.h:1
 msgid "Noseguy"
-msgstr ""
+msgstr "Nesefyr"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:1
 msgid "Change maximum number of lines."
@@ -2786,11 +2774,11 @@ msgstr "Endre maksimum antall linjer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:2
 msgid "Change the time each picture is shown."
-msgstr ""
+msgstr "Endre tiden hvert bilde vises."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:3
 msgid "Change time to fade away."
-msgstr ""
+msgstr "Endre tiden før bildet forsvinner."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:5
 msgid "Dale Moore <Dale.Moore@cs.cmu.edu>"
@@ -2798,7 +2786,7 @@ msgstr "Dale Moore <Dale.Moore@cs.cmu.edu>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:8
 msgid "Fadedelay"
-msgstr ""
+msgstr "Pause for fade"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:11
 msgid "Maximum number of lines."
@@ -2818,7 +2806,7 @@ msgstr "Pedal vilse pene geometriske bilder."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:17
 msgid "Pretty geometric picture program."
-msgstr ""
+msgstr "Fint geometrisk bildeprogram."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:19
 msgid "Time to fade away."
@@ -2830,7 +2818,7 @@ msgstr "Visningstid for hvert bilde."
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:1
 msgid "Display an arcade game"
-msgstr ""
+msgstr "Viser et arkadespill"
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:2
 msgid "Penetrate"
@@ -2845,6 +2833,8 @@ msgid ""
 "Draws a simulation of an old terminal, with large pixels and long-sustain "
 "phosphor."
 msgstr ""
+"Tegner en simulering av en gammel terminal, med store piksler og fosfor som "
+"henger igjen lenge."
 
 #: capplets/screensaver-properties/screensaver-desktops/Phosphor.desktop.in.h:3
 msgid "Phosphor"
@@ -2852,7 +2842,7 @@ msgstr "Fosfor"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:1
 msgid "3d pipes flow around the screen"
-msgstr ""
+msgstr "3D-rør flyter rundt på skjermen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:2
 msgid "Pipes"
@@ -2860,7 +2850,7 @@ msgstr "Rør"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:1
 msgid "Changes frequency of missile launch."
-msgstr ""
+msgstr "Endrer frekvensen for rakettutskytingene."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:5
 msgid "Frequency"
@@ -2872,11 +2862,11 @@ msgstr "Frekvens på rakettoppskyting"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:7
 msgid "How many particles should appear when a missile explodes."
-msgstr ""
+msgstr "Hvor mange partikler skal vises når raketten eksploderer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:8
 msgid "How many particles should be allowed on the screen at once."
-msgstr ""
+msgstr "Hvor mange partikler skal tillates vist på skjermen på én gang."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:3
@@ -2909,21 +2899,23 @@ msgstr "simulerer fyrverkeri"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:1
 msgid "Bounce colored lines around a window."
-msgstr ""
+msgstr "Fargede linjer spretter rundt et vindu."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:2
 msgid "Changes the speed at which the Qix moves."
-msgstr ""
+msgstr "Endre hastigheten for bevegelse av Qix."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:5
 msgid ""
 "Determines whether the lines move erraticly, or bounce off the walls "
 "linearly."
 msgstr ""
+"Bestemmer om linjene skal bevege seg tilfeldig, eller om de skal sprette fra "
+"veggene lineært."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:6
 msgid "Determines whether to fill in the gaps between the lines."
-msgstr ""
+msgstr "Bestemmer om mellomrommene mellom linjene skal fylles."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:7
 msgid "Draw solid Qix."
@@ -2959,15 +2951,15 @@ msgstr "Sett vilkårlig bevegelse for Qix."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:18
 msgid "Sets the distance between each line segment."
-msgstr ""
+msgstr "Setter avstanden mellom hvert linjesegment."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:19
 msgid "Sets the number of Qix you have running at once."
-msgstr ""
+msgstr "Setter antall Qix som kjører på én gang."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:20
 msgid "Sets the number of line segments to be drawn."
-msgstr ""
+msgstr "Setter antall linjesegmenter som skal tegnes."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:25
 msgid "Speed:"
@@ -2987,11 +2979,11 @@ msgstr "Rd-bombe"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:2
 msgid "Display oily drops."
-msgstr ""
+msgstr "Vis oljete dråper."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:3
 msgid "Draws rippling interference patterns like splashing water."
-msgstr ""
+msgstr "Tegner bølgende forstyrrelsesmønstre som plaskende vann."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:4
 msgid "Drip onto desktop."
@@ -3007,15 +2999,15 @@ msgstr "Bølger"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:7
 msgid "Stir"
-msgstr ""
+msgstr "Rør"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:8
 msgid "Stir it up."
-msgstr ""
+msgstr "Rør til."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:9
 msgid "Stir."
-msgstr ""
+msgstr "Rør."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:10
 msgid "Tom Hammersley"
@@ -3035,7 +3027,7 @@ msgstr "Rotor"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:1
 msgid "A 3d Rubiks cube floats and twists around"
-msgstr ""
+msgstr "En Rubiks kube i 3D flyter og vrir seg rundt"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:2
 msgid "Rubiks Cube"
@@ -3044,11 +3036,11 @@ msgstr "Rubiks kube"
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:1
 msgid ""
 "Draws smoothly-shaded oscillating oval patterns which resemble vapor trails."
-msgstr ""
+msgstr "Tegner skyggelagte oscillerende ovale mønstre som ligner på duggspor."
 
 #: capplets/screensaver-properties/screensaver-desktops/Shadebobs.desktop.in.h:2
 msgid "Shadebobs"
-msgstr ""
+msgstr "Shadebobs"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:7
 msgid "Desmond  Daignault"
@@ -3060,11 +3052,11 @@ msgstr "Sierpinski"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:15
 msgid "The sierpinski program draws Sierpinski triangle fractals."
-msgstr ""
+msgstr "Sierpinski-programmet tegner Sierpinski triangelfraktaler."
 
 #: capplets/screensaver-properties/screensaver-desktops/Slidescreen.desktop.in.h:1
 msgid "Slidescreen"
-msgstr ""
+msgstr "Glideskjerm"
 
 #: capplets/screensaver-properties/screensaver-desktops/Slip.desktop.in.h:1
 msgid "Slip"
@@ -3092,11 +3084,11 @@ msgstr "Spiral"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:21
 msgid "The spiral program draws moving circular spiral patterns."
-msgstr ""
+msgstr "Spiralprogrammet tegner bevegende sirkulære spiralmønstre."
 
 #: capplets/screensaver-properties/screensaver-desktops/Spotlight.desktop.in.h:1
 msgid "Display the desktop in a spotlight"
-msgstr ""
+msgstr "Viser skrivebordet i et følgelys"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spotlight.desktop.in.h:2
 msgid "Spotlight"
@@ -3112,11 +3104,11 @@ msgstr "Uhm.. *poing*"
 
 #: capplets/screensaver-properties/screensaver-desktops/Squiral.desktop.in.h:1
 msgid "Display squared spirales"
-msgstr ""
+msgstr "Viser firkantede spiraler"
 
 #: capplets/screensaver-properties/screensaver-desktops/Squiral.desktop.in.h:2
 msgid "Squiral"
-msgstr ""
+msgstr "Squiral"
 
 #: capplets/screensaver-properties/screensaver-desktops/Stairs.desktop.in.h:1
 msgid "Stairs"
@@ -3124,31 +3116,31 @@ msgstr "Trapper"
 
 #: capplets/screensaver-properties/screensaver-desktops/Stairs.desktop.in.h:2
 msgid "The famous, M.C. Escher, impossible stairs"
-msgstr ""
+msgstr "Den berømte M.C. Escher, umulige trapper"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:1
 msgid " Random)"
-msgstr ""
+msgstr " Tilfeldig)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:2
 msgid "Blob"
-msgstr ""
+msgstr "Blubbe"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:3
 msgid "Change the animation step delay."
-msgstr ""
+msgstr "Endre pausen i animasjonsstegene."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:4
 msgid "Change the number of colors to use in star."
-msgstr ""
+msgstr "Endre antall farger som skal brukes i stjernen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:5
 msgid "Change the quickness of rotation at each step."
-msgstr ""
+msgstr "Endre hastigheten på rotasjonen for hvert steg."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:6
 msgid "Change the thickness of color bands."
-msgstr ""
+msgstr "Endre tykkhet for fargebåndene."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:10
 msgid "Duration of current shape."
@@ -3156,11 +3148,11 @@ msgstr "Varigheten til nåværende form."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:12
 msgid "How long to run before choosing a new shape."
-msgstr ""
+msgstr "Hvor lenge skal den kjøre før en ny form velges."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:14
 msgid "Make a star like formation using arcs."
-msgstr ""
+msgstr "Lage en stjernelignende formasjon ved bruk av buer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:16
 msgid "Rotation"
@@ -3204,11 +3196,11 @@ msgstr "Merkelig"
 
 #: capplets/screensaver-properties/screensaver-desktops/Superquadrics.desktop.in.h:1
 msgid "Superquadrics"
-msgstr ""
+msgstr "Superkvadrat"
 
 #: capplets/screensaver-properties/screensaver-desktops/Swirl.desktop.in.h:1
 msgid "Swirl"
-msgstr ""
+msgstr "Swirl"
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:6
 msgid ""
@@ -3248,7 +3240,7 @@ msgstr "Lianer"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:11
 msgid "draws pseudo-fractal geometric patterns"
-msgstr ""
+msgstr "tegner pseudo-fraktale geometriske mønstre"
 
 #: capplets/screensaver-properties/screensaver-desktops/Worm.desktop.in.h:1
 msgid "Worm"
@@ -3256,7 +3248,7 @@ msgstr "Orm"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:1
 msgid "Display flames at the bottom of the screen"
-msgstr ""
+msgstr "Vis flammer nederst på skjermen"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:2
 msgid "Xflame"
@@ -3288,7 +3280,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:6
 msgid "The  xroger  program displays a replacement for the X logo."
-msgstr ""
+msgstr "xroger-programmet viser en erstatning for X-logoen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
 msgid "Xroger"
@@ -3300,19 +3292,19 @@ msgstr "Barrer"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 msgid "Cycle modes."
-msgstr ""
+msgstr "Gjennomgangsmodus."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:4
 msgid "Cycle through all the available modes."
-msgstr ""
+msgstr "Gå gjennom alle tilgjengelige modus."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:5
 msgid "Display color bars."
-msgstr ""
+msgstr "Vis fargelinjer."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:6
 msgid "Display static."
-msgstr ""
+msgstr "Vis statisk støy."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:7
 msgid "Greg Knauss"
@@ -3326,7 +3318,7 @@ msgstr "Rull"
 msgid ""
 "Simulates various television problems such as static, loss of vertical hold, "
 "and test patterns."
-msgstr ""
+msgstr "Simulerer forskjellige TV-problemer som statisk støy og testmønstre."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:10
 msgid "Static"
@@ -3468,11 +3460,11 @@ msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr "GNOME kontrollsenter ble kompilert uten støtte for lyd"
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
 msgstr "Lydfilen for denne hendelsen eksisterer ikke."
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3971,9 +3963,9 @@ msgstr ""
 "fot-menyen\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "OK"
 
@@ -4015,52 +4007,52 @@ msgstr ""
 "\n"
 "når du logger ut.\n"
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
 msgstr "Legg til ny vindushåndterer"
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
 msgstr "Navn:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Kommando:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
 msgstr "Konfigurasjonskommando:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
 msgstr "Vindushåndtereren er sesjonsstyrt"
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr "Navnet kan ikke være tomt"
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
 msgstr "Kommandofeltet kan ikke være tomt"
 
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
 msgstr "Redigér vindushåndterer"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr "Du kan ikke slette aktiv vindushåndterer"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
 msgstr "Redigér..."
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Slett"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"

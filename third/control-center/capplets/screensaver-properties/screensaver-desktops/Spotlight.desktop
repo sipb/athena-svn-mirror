@@ -1,16 +1,24 @@
 [Desktop Entry]
 Name=Spotlight
+Name[da]=Kighul
 Name[de]=Scheinwerfer
 Name[fi]=Valokiila
+Name[hu]=Spotlight
 Name[ja]=¥¹¥İ¥Ã¥È¥é¥¤¥È
 Name[no]=Følgelys
+Name[ru]=æÏÎÁÒÉË
 Name[sk]=Baterka
+Name[sl]=Odrska luè
 Name[sv]=Spotlight
 Comment=Display the desktop in a spotlight
+Comment[da]=Vis en del af skrivebordet gennem et kighul
 Comment[de]=Den Desktop im Scheinwerferlicht anzeigen.
 Comment[fi]=Näyttää työpöydän valokiilassa
 Comment[ja]=¥Ç¥¹¥¯¥È¥Ã¥×¤ò¥¹¥İ¥Ã¥È¥é¥¤¥ÈÃæ¤ËÉ½¼¨
+Comment[no]=Viser skrivebordet i et følgelys
+Comment[ru]=ïÓ×ÅİÁÅÔ ÒÁÂÏŞÉÊ ÓÔÏÌ ÆÏÎÁÒÉËÏÍ
 Comment[sk]=Zobrazuje svietenie baterkou na plochu
+Comment[sl]=Ka¾i namizje v odrski luèi
 Comment[sv]=Visar skrivbordet med en spotlight
 Exec=xscreensaver-command -activate
 TryExec=spotlight

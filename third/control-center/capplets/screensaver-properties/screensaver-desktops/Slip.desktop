@@ -1,12 +1,16 @@
 [Desktop Entry]
 Name=Slip
 Name[ca]=Xuclar
-Name[da]=Slip
+Name[da]=ForvrФngning
 Name[fi]=Luisto
+Name[hu]=Slip
 Name[ja]=╔╧╔Й╔ц╔в
 Name[no]=Skli
+Name[ru]=Скольжение
 Name[sk]=Slip
+Name[sl]=Slip
 Name[sv]=Halka
+Name[uk]=Ковзання
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=slip

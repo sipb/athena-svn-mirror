@@ -2,11 +2,16 @@
 Name=Kumppa
 Name[ca]=Kumppa
 Name[da]=Kumppa
+Name[de]=Kumppa
 Name[fi]=Kumppa
 Name[fr]=Kumppa
+Name[hu]=Kumppa
 Name[no]=Kumppa
+Name[ru]=Kumppa
 Name[sk]=Kumppa
+Name[sl]=Kumppa
 Name[sv]=Kumppa
+Name[uk]=Kumppa
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=kumppa

@@ -1,13 +1,17 @@
 [Desktop Entry]
 Name=Rd-bomb
 Name[ca]=Bomba RD
-Name[da]=Rd-bombe
+Name[da]=Reaktions-/diffusionsbombe
 Name[de]=Rd-Bombe
 Name[fi]=Rd-bomb
 Name[fr]=Rd-bombe
+Name[hu]=Rd-bomb
 Name[no]=Rd-bombe
+Name[ru]=Rd-бомба
 Name[sk]=Bomba RD
+Name[sl]=Rd-bomba
 Name[sv]=Rd-bomb
+Name[uk]=Rd-бомба
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=rd-bomb

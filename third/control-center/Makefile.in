@@ -137,14 +137,14 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-always_built_SUBDIRS = control-center capplets idl doc
+always_built_SUBDIRS = control-center capplets idl doc omf-install
 
 SUBDIRS = intl po macros 	 $(always_built_SUBDIRS)
 
 
 #DIST_SUBDIRS = intl po macros $(always_built_SUBDIRS)
 
-EXTRA_DIST =  	control-center.spec.in		xml-i18n-extract.in		xml-i18n-merge.in		xml-i18n-update.in
+EXTRA_DIST =  	sgmldocs.make			control-center.spec.in		xml-i18n-extract.in		xml-i18n-merge.in		xml-i18n-update.in
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

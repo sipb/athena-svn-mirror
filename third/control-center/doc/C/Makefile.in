@@ -11,6 +11,41 @@
 # PARTICULAR PURPOSE.
 
 
+# To use this template:
+#     1) Define: figs, docname, lang, omffile, sgml_ents although figs, 
+#        omffile, and sgml_ents may be empty in your Makefile.am which 
+#        will "include" this one 
+#     2) Figures must go under figures/ and be in PNG format
+#     3) You should only have one document per directory 
+#
+#        Note that this makefile forces the directory name under
+#        $prefix/share/gnome/help/ to be the same as the SGML filename
+#        of the document.  This is required by GNOME. eg:
+#        $prefix/share/gnome/help/fish_applet/C/fish_applet.sgml
+#                                 ^^^^^^^^^^^   ^^^^^^^^^^^
+# Definitions:
+#   figs         A list of screenshots which will be included in EXTRA_DIST
+#                Note that these should reside in figures/ and should be .png
+#                files, or you will have to make modifications below.
+#   docname      This is the name of the SGML file: <docname>.sgml
+#   lang         This is the document locale
+#   omffile      This is the name of the OMF file.  Convention is to name
+#                it <docname>-<locale>.omf.
+#   sgml_ents    This is a list of SGML entities which must be installed 
+#                with the main SGML file and included in EXTRA_DIST. 
+# eg:
+#   figs = \
+#          figures/fig1.png            \
+#          figures/fig2.png
+#   docname = scrollkeeper-manual
+#   lang = C
+#   omffile=scrollkeeper-manual-C.omf
+#   sgml_ents = fdl.sgml
+#   include $(top_srcdir)/help/sgmldocs.make
+#   dist-hook: app-dist-hook
+#
+
+
 SHELL = @SHELL@
 
 srcdir = @srcdir@
@@ -137,21 +172,28 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
+figs =  	figures/gcchints.png		figures/gccsound2.png		figures/screensave-capplet.png 	figures/bg-capplet.png		figures/gccmdi.png		figures/gccstartup.png 	figures/theme-select.png 	figures/gccalf.png  	figures/gccmime.png 	figures/gccurl.png 	figures/wm-add.png 	figures/gccappdef.png 	figures/gccsession-props.png 	figures/glob_pref_anim.png 	figures/wm-main.png 	figures/gccdialog.png 	figures/gccsessopt.png 	figures/keyboard-capplet.png 	figures/gccedit.png 	figures/gccsound1.png 	figures/mouse-capplet.png
+
+docname = control-center
 lang = C
-app = control-center
+omffile = control-center-C.omf
+sgml_ents = 
 
-figs =  	figs/bg-capplet.png			figs/gccappdef.png			figs/gccalf.png   			figs/gccdialog.png			figs/gccedit.png			figs/gcchints.png			figs/gccmdi.png				figs/gccmime.png			figs/gccsession-props.png		figs/gccsessopt.png      		figs/gccsound1.png			figs/gccsound2.png			figs/gccstartup.png			figs/gccurl.png				figs/glob_pref_anim.png			figs/keyboard-capplet.png		figs/mouse-capplet.png			figs/screensave-capplet.png		figs/theme-select.png			figs/wm-main.png
+docdir = $(datadir)/gnome/help/$(docname)/$(lang)
 
+doc_DATA = index.html
 
-EXTRA_DIST = gnomecc.sgml $(help_DATA) $(figs)
+sgml_files = $(sgml_ents) $(docname).sgml
 
-helpdir = $(datadir)/gnome/help/$(app)/$(lang)
-help_DATA =  	index.html		topic.dat
+omf_dir = $(top_srcdir)/omf-install
 
+EXTRA_DIST = $(sgml_files) $(doc_DATA) $(omffile) $(figs)
+
+CLEANFILES = omf_timestamp
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(help_DATA)
+DATA =  $(doc_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -162,7 +204,7 @@ TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/sgmldocs.make
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps doc/C/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
@@ -170,23 +212,23 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-install-helpDATA: $(help_DATA)
+install-docDATA: $(doc_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(helpdir)
-	@list='$(help_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
+	@list='$(doc_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(helpdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(helpdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(docdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(docdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(helpdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(helpdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(docdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(docdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-helpDATA:
+uninstall-docDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(help_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(helpdir)/$$p; \
+	list='$(doc_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(docdir)/$$p; \
 	done
 tags: TAGS
 TAGS:
@@ -197,7 +239,7 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = doc/C
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/figs
+	$(mkinstalldirs) $(distdir)/figures
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -220,25 +262,26 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-helpDATA
+install-data-am: install-docDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-helpDATA
+uninstall-am: uninstall-docDATA uninstall-local
 uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(helpdir)
+	$(mkinstalldirs)  $(DESTDIR)$(docdir)
 
 
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -264,58 +307,99 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-helpDATA install-helpDATA tags distdir info-am info \
+.PHONY: uninstall-docDATA install-docDATA tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
 install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
+uninstall-local uninstall-am uninstall all-redirect all-am all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-all: index.html
+all: index.html omf
 
-index.html: gnomecc/index.html
-	-cp gnomecc/index.html .
+omf: omf_timestamp
 
-# the wierd srcdir trick is because the db2html from the Cygnus RPMs
+omf_timestamp: $(omffile)
+	-for file in $(omffile); do \
+	  scrollkeeper-preinstall $(docdir)/$(docname).sgml $$file $(omf_dir)/$$file; \
+	done
+	touch omf_timestamp
+
+index.html: $(docname)/index.html
+	-cp $(docname)/index.html .
+
+$(docname).sgml: $(sgml_ents)
+        -ourdir=`pwd`;  \
+        cd $(srcdir);   \
+        cp $(sgml_ents) $$ourdir
+
+# The weird srcdir trick is because the db2html from the Cygnus RPMs
 # cannot handle relative filenames
-gnomecc/index.html: $(srcdir)/gnomecc.sgml
+$(docname)/index.html: $(srcdir)/$(docname).sgml
 	-srcdir=`cd $(srcdir) && pwd`; \
-	db2html $$srcdir/gnomecc.sgml
+	db2html $$srcdir/$(docname).sgml
 
-dist-hook: index.html
-	-$(mkinstalldirs) $(distdir)/
-	-$(mkinstalldirs) $(distdir)/gnomecc/stylesheet-images
-	-cp $(srcdir)/gnomecc/*.html $(distdir)/gnomecc
-	-cp $(srcdir)/gnomecc/*.css $(distdir)/gnomecc
-	-cp $(srcdir)/gnomecc/stylesheet-images/*.gif \
-		$(distdir)/gnomecc/stylesheet-images
+app-dist-hook: index.html
+	-$(mkinstalldirs) $(distdir)/$(docname)/stylesheet-images
+	-$(mkinstalldirs) $(distdir)/figures
+	-cp $(srcdir)/$(docname)/*.html $(distdir)/$(docname)
+	-cp $(srcdir)/$(docname)/*.css $(distdir)/$(docname)
+	-cp $(srcdir)/$(docname)/stylesheet-images/*.gif \
+		$(distdir)/$(docname)/stylesheet-images
+	-cp $(srcdir)/figures/*.png \
+		$(distdir)/figures
+	-if [ -e topic.dat ]; then \
+		cp $(srcdir)/topic.dat $(distdir); \
+	 fi
 
-install-data-am: index.html
-	$(mkinstalldirs) $(DESTDIR)$(helpdir)
-	$(mkinstalldirs) $(DESTDIR)$(helpdir)/stylesheet-images
-	$(mkinstalldirs) $(DESTDIR)$(helpdir)/figs
-	-cp $(srcdir)/topic.dat $(DESTDIR)$(helpdir)
-	-for file in $(srcdir)/gnomecc/*.html $(srcdir)/gnomecc/*.css $(srcdir)/*.png; do \
+install-data-am: index.html omf
+	-$(mkinstalldirs) $(DESTDIR)$(docdir)/stylesheet-images
+	-$(mkinstalldirs) $(DESTDIR)$(docdir)/figures
+	-cp $(srcdir)/$(sgml_files) $(DESTDIR)$(docdir)
+	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/$$basefile; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$$basefile; \
 	done
-	-for file in $(srcdir)/figs/*.png; do \
+	-for file in $(srcdir)/figures/*.png; do \
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/figs/$$basefile; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/figures/$$basefile; \
 	done
-	-for file in $(srcdir)/gnomecc/stylesheet-images/*.gif; do \
+	-for file in $(srcdir)/$(docname)/stylesheet-images/*.gif; do \
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/stylesheet-images/$$basefile; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/stylesheet-images/$$basefile; \
 	done
+	-if [ -e $(srcdir)/topic.dat ]; then \
+		$(INSTALL_DATA) $(srcdir)/topic.dat $(DESTDIR)$(docdir); \
+	 fi
 
-$(app).ps: $(srcdir)/gnomecc.sgml
+$(docname).ps: $(srcdir)/$(docname).sgml
 	-srcdir=`cd $(srcdir) && pwd`; \
-	db2ps $$srcdir/gnomecc.sgml
+	db2ps $$srcdir/$(docname).sgml
 
-$(app).rtf: $(srcdir)/gnomecc.sgml
+$(docname).rtf: $(srcdir)/$(docname).sgml
 	-srcdir=`cd $(srcdir) && pwd`; \
-	db2ps $$srcdir/gnomecc.sgml
+	db2ps $$srcdir/$(docname).sgml
+
+uninstall-local:
+	-for file in $(srcdir)/$(docname)/stylesheet-images/*.gif; do \
+	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	  rm -f $(docdir)/stylesheet-images/$$basefile; \
+	done
+	-for file in $(srcdir)/figures/*.png; do \
+	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	  rm -f $(docdir)/figures/$$basefile; \
+	done
+	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
+	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
+	  rm -f $(DESTDIR)$(docdir)/$$basefile; \
+	done
+	-for file in $(sgml_files); do \
+	  rm -f $(DESTDIR)$(docdir)/$$file; \
+	done
+	-rmdir $(DESTDIR)$(docdir)/stylesheet-images
+	-rmdir $(DESTDIR)$(docdir)/figures
+	-rmdir $(DESTDIR)$(docdir)
+dist-hook: app-dist-hook
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,21 +1,21 @@
-# -------------------------------------------------------
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Turkish translations for GNOME control-center messages.
+# Copyright (C) 2001 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: control-center 1.2.0\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
-"PO-Revision-Date: 2000-06-09 09:52+0200\n"
-"Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
-"Language-Team: Turkish <tr@li.org>\n"
+"Project-Id-Version: control-center 1.4.0\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"PO-Revision-Date: 2001-03-17 15:59+0200\n"
+"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Language-Team: Gnome-Turk <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-9\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: capplets/background-properties/app-background.c:15
 msgid "Set background image."
-msgstr "Arkaplaný ayarla"
+msgstr "Arkaplan resmi tanýmlar."
 
 #: capplets/background-properties/app-background.c:15
 msgid "IMAGE-FILE"
@@ -27,16 +27,17 @@ msgid ""
 "'background-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
-"'background-properties-capplet'i baþlatýrken bir hata oluþtu.\n"
+"'background-properties-capplet'\n"
+"baþlatýlýrken bir hata oluþtu.\n"
 "çýkýlýyor...\n"
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
 msgid "Background"
-msgstr "Ardalan"
+msgstr ""
 
 #: capplets/background-properties/background-properties.desktop.in.h:2
 msgid "Configuration of the desktop's background"
-msgstr "Masaüsünün ardalanýný ayarlar"
+msgstr ""
 
 #: capplets/background-properties/property-background.c:116
 msgid "Disabled"
@@ -49,7 +50,7 @@ msgstr "Renk"
 #: capplets/background-properties/property-background.c:330
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
-msgstr "Dolgun"
+msgstr "Dolgu"
 
 #: capplets/background-properties/property-background.c:336
 msgid "Horizontal Gradient"
@@ -61,7 +62,7 @@ msgstr "Dikey Geçiþ"
 
 #: capplets/background-properties/property-background.c:378
 msgid "Primary Color"
-msgstr "Ýlk Renk"
+msgstr "Birinci Renk"
 
 #: capplets/background-properties/property-background.c:380
 msgid "Secondary Color"
@@ -74,12 +75,12 @@ msgstr "Duvar Kaðýdý Seçimi"
 #: capplets/background-properties/property-background.c:573
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "hbox'u bulamadým, normal dosya seçmenini kullanýyorum"
+msgstr "Bir hbox bulunamadý, normal dosya seçimi kullanýlýyor"
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -95,275 +96,238 @@ msgstr " Gözat... "
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "yok"
 
 #: capplets/background-properties/property-background.c:688
 msgid "Embossed Logo"
-msgstr ""
+msgstr "Kabartmalý Logo"
 
 #: capplets/background-properties/property-background.c:699
 msgid "Scaled"
-msgstr "Büyüt"
+msgstr "Kaplý (ekranla orantýlý)"
 
 #: capplets/background-properties/property-background.c:709
 msgid "Scaled (keep aspect)"
-msgstr "Büyüt (oranlarý koru)"
+msgstr "Orantýlý (resimle orantýlý)"
 
 #: capplets/background-properties/property-background.c:721
 msgid "Centered"
-msgstr "Ortala"
+msgstr "Ortalanmýþ"
 
 #: capplets/background-properties/property-background.c:733
 msgid "Tiled"
-msgstr "Döþe"
+msgstr "Döþeli"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr "Bu ayarlar için hiç yardým bulunmuyor."
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Kapat"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
 msgid "Use GNOME to set background"
 msgstr "Arkaplaný ayarlamak için GNOME kullan"
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
-msgstr "Kaydedilmiþ parametreleri al ve çýk"
+msgstr "Parametreleri durum kayýt dosyasýndan ayarla ve çýk"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
-msgstr "RESIM"
+msgstr "RESÝM"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
-msgstr "Belirtilen deðeri duvar kaðýdý yapar"
+msgstr "Duvar kaðýdýný belirtilen deðere ayarlar"
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "RENK"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 msgid "Specifies the background color"
 msgstr "Arkaplan rengini belirler"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
-msgstr "Geçiþ için bitiþ arkaplan rengini belirler"
+msgstr "Renk geçiþinin son arkaplan rengi belirtilir"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "ORIENT"
-msgstr "ORIENT"
+msgstr "YÖN"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "Gradient orientation: vertical or horizontal"
-msgstr "Geçiþ konumu: dikey ya da yatay"
+msgstr "Renk geçiþ yönü: dikey ya da yatay"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
 msgid "Use a solid fill for the background"
-msgstr "Arkaplanda tek renk olsun"
+msgstr "Arkaplanda tek dolgu rengi kullan"
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a gradient fill for the background"
-msgstr "Arkaplan geçiþli olsun"
+msgstr "Arkaplanda geçiþli renkler kullan"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "MODE"
-msgstr "TÜR"
+msgstr "KÝP"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
-msgstr "Arkaplan resmi: merkezlenmiþ, büyütülmüþ ya da oranlý"
+msgstr "Duvar kaðýdý: döþeli, ortalanmýþ, orantýlý ya da kaplý"
 
 #: capplets/desktop-links/Desktop.directory.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:1
 msgid "Desktop"
-msgstr "Masaüstü"
+msgstr ""
 
 #: capplets/desktop-links/Documents.directory.in.h:1
 msgid "Configure how document types are handled"
-msgstr "Doküman tiplerinin yönetme türü"
+msgstr ""
 
 #: capplets/desktop-links/Documents.directory.in.h:2
 msgid "Document Handlers"
-msgstr "Doküman yönetimi"
+msgstr ""
 
 #. create the app
 #: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
 #: control-center/splash.c:247
 msgid "Control Center"
-msgstr "Denetim Merkezi"
+msgstr "Denetim Masasý"
 
 #: capplets/desktop-links/Gnome.directory.in.h:2
+#, fuzzy
 msgid "Control Center Menu"
-msgstr "Ayarlar Merkezi mönüsü"
+msgstr "Denetim Masasý"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:1
 msgid "Configure the settings of your Multimedia devices"
-msgstr "Çoklu ortam ayarlarý"
+msgstr ""
 
 #: capplets/desktop-links/Multimedia.directory.in.h:2
 msgid "Multimedia"
-msgstr "Çoklu ortam"
+msgstr ""
 
 #: capplets/desktop-links/Peripherals.directory.in.h:1
 msgid "Configure your external devices"
-msgstr "Takýrlar ayarlarý"
+msgstr ""
 
 #: capplets/desktop-links/Peripherals.directory.in.h:2
 msgid "Peripherals"
-msgstr "Takýtlar"
+msgstr ""
 
 #: capplets/desktop-links/Session.directory.in.h:1
+#, fuzzy
 msgid "Session"
-msgstr "Oturum"
+msgstr "Uzantý"
 
 #: capplets/desktop-links/Session.directory.in.h:2
+#, fuzzy
 msgid "Session Management Settings"
-msgstr "Oturum ayarlarý"
+msgstr "Ekran Koruyucu Ayarlarý"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:1
 msgid "Configure the global settings of your GNOME applications"
-msgstr "GNOME'un kullanýcý yüzü ayarlarý"
+msgstr ""
 
 #: capplets/desktop-links/UIOptions.directory.in.h:2
+#, fuzzy
 msgid "User Interface"
-msgstr "Kullanýcý yüzü"
+msgstr "Kullanýcý Yazýtipi"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:387
-#, fuzzy
 msgid "Edit Applications List"
-msgstr "Uygulamalar"
+msgstr "Uygulamalar Listesini Düzenle"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:409
 #, c-format
 msgid "Select applications to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "\"%s\" MIME türü için menüde gösterilecek uygulamalarý seçin"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:433
-#, fuzzy
 msgid "Add Application..."
-msgstr "Uygulamalar"
+msgstr "Uygulama Ekle..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:440
-#, fuzzy
 msgid "Edit Application..."
-msgstr "Uygulamalar"
+msgstr "Uygulama Düzenle..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:446
-#, fuzzy
 msgid "Delete Application"
-msgstr "Uygulamalar"
+msgstr "Uygulama Sil"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:480
 msgid "Edit Components List"
-msgstr ""
+msgstr "Bileþenler Listesini Düzenle"
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:500
 #, c-format
 msgid "Select views to appear in menu for MIME type \"%s\""
-msgstr ""
+msgstr "\"%s\" MIME türünün gösterileceði izleme þeklini seçin."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:720
 msgid ""
 "The MIME type entered contained upper case characters. Upper case characters "
 "were changed to lower case for you."
 msgstr ""
+"Girdiðiniz MIME türü büyük harfler içeriyor. Bu karakterler küçük harfe "
+"dönüþtürülecektir."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:723
-#, fuzzy
 msgid "Add New MIME Type"
-msgstr "Mime Türü Ekle"
+msgstr "Yeni Mime Türü Ekle"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:769
-#, fuzzy
 msgid "Add MIME Type"
 msgstr "Mime Türü Ekle"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:773
 msgid "New MIME type (e.g. image/x-thumper):"
-msgstr ""
+msgstr "Yeni MIME türü (örn. image/x-thumper):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:780
 msgid "Description (e.g. Thumper image):"
-msgstr ""
+msgstr "Açýklama (örn: Thumper resmi):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:947
-#, fuzzy
 msgid "File Extensions "
-msgstr "Geniþletmeler"
+msgstr "Dosya Uzantýlarý "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
 msgstr "Ekle..."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:972
-#, fuzzy
 msgid "    Remove    "
-msgstr "Sil"
+msgstr "   Kaldýr     "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1041
-#, fuzzy
 msgid "Add New Extension"
-msgstr "Sonek"
+msgstr "Yeni Uzantý Ekle"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1045
-#, fuzzy
 msgid ""
 "Type in the extensions for this mime-type (without dot).\n"
 "You can enter several extensions seperated by a space,\n"
 "for example: html htm"
 msgstr ""
-"Bu Mime türü için geçerli olan sonekleri girin.\n"
-"Örnek: .html .htm"
+"Bu Mime türü için geçerli uzantýlarý girin.\n"
+"Aralarýnda boþluk kalacak þekilde birden fazla uzantý\n"
+"yazabilirsiniz (örnek. html htm)"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1052
 msgid "Extension:"
-msgstr "Sonek:"
+msgstr "Uzantý:"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1194
-#, fuzzy
 msgid "You must enter a name."
-msgstr "Bir mime tipi vermek zorundasýnýz"
+msgstr "Bir isim girmelisiniz."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1197
-#, fuzzy
 msgid "You must enter a command."
-msgstr "Bir mime tipi vermek zorundasýnýz"
+msgstr "Bir komut girmelisiniz."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1207
 #, c-format
@@ -372,6 +336,10 @@ msgid ""
 "Check your spelling and make sure you have\n"
 "the right permissions to execute this file."
 msgstr ""
+"\"%s\" bulunamadý ya da çalýþtýrýlabilir deðil.\n"
+"Yazdýklarýnýzý yeniden gözden geçirin, ya da \n"
+"verilen uygulamanýn çalýþtýrma izinleri\n"
+"bulunduðuna emin olun."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1213
 #, c-format
@@ -379,134 +347,123 @@ msgid ""
 "The command \"%s\" cannot be found.\n"
 "You must use a command that can work from any command line."
 msgstr ""
+"\"%s\" komutu bulunamadý.\n"
+"Herhangi bir komut satýrýndan çalýþabilrn komutlar kullanmalýsýnýz."
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1225
-#, fuzzy
 msgid "Bad Application Name"
-msgstr "Uygulamalar"
+msgstr "Hatalý Uygulama Adý"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1226
-#, fuzzy
 msgid "Bad Application Command"
-msgstr "Uygulamalar"
+msgstr "Hatalý Uygulama Komutu"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1258
-#, fuzzy
 msgid "Add Application"
-msgstr "Uygulamalar"
+msgstr "Uygulama Ekle"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1259
-#, fuzzy
 msgid "Edit Application"
-msgstr "Uygulamalar"
+msgstr "Uygulama Düzenle"
 
 #. Application Name label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1271
-#, fuzzy
 msgid "Application Name:"
-msgstr "Uygulamalar"
+msgstr "Uygulama Adý:"
 
 #. Application Command label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1282
-#, fuzzy
 msgid "Application Command:"
-msgstr "Yapýlandýrma Komutu:"
+msgstr "Uygulama Komutu:"
 
 #. Open Behavior frame
 #: capplets/file-types/file-types-capplet-dialogs.c:1293
-#, fuzzy
 msgid "Open Behavior"
-msgstr "Diyalok Davranýþlarý"
+msgstr "Davranýþlar Penceresini Aç"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1299
 msgid "Can open multiple files"
-msgstr ""
+msgstr "Birden fazla dosya açýlabilir"
 
 #. FIXME bugzilla.eazel.com 6066: This needs to be three options now: "yes", "no", and "use uris for non-file locations"
 #: capplets/file-types/file-types-capplet-dialogs.c:1307
 msgid "Can open from URI"
-msgstr ""
+msgstr "URI'den açýlabilir"
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 msgid "MIME Type"
-msgstr "Mime tipi"
+msgstr "MIME Türü"
 
-#: capplets/file-types/file-types-capplet.c:742
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:752
 msgid "Change Icon"
-msgstr "Giriþi Ýptal Et"
+msgstr "Simgeyi Deðiþtir"
 
-#: capplets/file-types/file-types-capplet.c:749
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:759
 msgid "Change File Extensions"
-msgstr "Geniþletmeler"
+msgstr "Dosya Uzantýlarý Deðiþtir"
 
-#: capplets/file-types/file-types-capplet.c:757
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:767
 msgid "Default Action:"
-msgstr "GNOME editörü"
+msgstr "Öntanýmlý Eylem:"
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
-msgstr ""
+msgstr "Ýzleyici Kullan"
 
-#: capplets/file-types/file-types-capplet.c:775
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
-msgstr "Uygulamalar"
+msgstr "Uygulama ile Aç"
 
-#: capplets/file-types/file-types-capplet.c:786
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:796
 msgid "Edit List"
-msgstr "Düzenle"
+msgstr "Listeyi Düzenle"
 
-#: capplets/file-types/file-types-capplet.c:811
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
-msgstr "Mime Türü Ekle"
+msgstr "Yeni MIME Türü Ekle..."
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
-msgstr ""
+msgstr "Bu MIME Türünü Sil"
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
-msgstr ""
+msgstr "Sistem Deðerlerine Dön"
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 msgid "None"
-msgstr "yok"
+msgstr "Hiçbiri"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
+"Sistemdeki öntanýmlý ayarlara geri dönmeniz halinde\n"
+"þimdiye kadar yaptýðýnýz tüm deðiþiklikler silinecektir.\n"
+"Devam etmek istiyor musunuz?"
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
-msgstr ""
+msgstr "%s olarak görüntüle"
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
-msgstr ""
+msgstr "Açýklama"
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
-msgstr "Sonek"
+msgstr "Uzantý"
 
-#: capplets/file-types/file-types-capplet.c:1879
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:1892
 msgid "Default Action"
-msgstr "GNOME editörü"
+msgstr "Öntanýmlý Eylem"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 msgid "File Types and Programs"
@@ -517,150 +474,167 @@ msgid "Specify which programs are used to open or view each file type"
 msgstr ""
 
 #: capplets/file-types/file-types-icon-entry.c:381
-#, fuzzy
 msgid "Select an icon"
-msgstr "Bir simge seçin..."
+msgstr "Bir simge seçin"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
 msgstr "Gnome düzenleyici"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
 msgstr "Terminalde Çalýþtýr"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:1
 msgid "Choose the editor that is invoked by gnome-edit"
-msgstr "gnome-edit'in çalýþtýrdýðý uygulamayý seç"
+msgstr ""
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:2
+#, fuzzy
 msgid "Default Editor"
-msgstr "GNOME editörü"
+msgstr "Öntanýmlý Eylem"
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
 msgid "Keyboard bell"
 msgstr "Klavye zili"
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
-msgstr "Ses"
+msgstr "Ses yüksekliði"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
-msgstr "Vurgulama (Hz)"
+msgstr "Frekans (Hz)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
 msgstr "Süre (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
 msgstr "Dene"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
 msgid "Keyboard repeat rate"
 msgstr "Klavye tekrarlama hýzý"
 
-#: capplets/keyboard-properties/keyboard-properties.c:316
+#: capplets/keyboard-properties/keyboard-properties.c:304
 msgid "Enable auto-repeat"
 msgstr "Otomatik tekrarlamayý aç"
 
-#: capplets/keyboard-properties/keyboard-properties.c:325
+#: capplets/keyboard-properties/keyboard-properties.c:313
 msgid "Repeat rate"
 msgstr "Tekrarlama hýzý"
 
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
 msgstr "Tekrarlama Gecikmesi"
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
 msgstr "Klavye týklamasý"
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
-msgstr "Tuþ basýmýnda ses çýkar"
+msgstr "Tuþ seslerini aç"
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
 msgstr "Týklama sesi"
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
 msgid "Test settings"
 msgstr "Ayarlarý dene"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"Bu ayarlar için hiç bir yardým bulunmuyor. Lütfen sisteminize\n"
+"'GNOME Kullanýcýnýn Rehberi'nin yüklenmiþ olduðundan emin olunuz."
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Kapat"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
-"´keyboard-properties-capplet´ baþlatýlýrken bir hata oluþtu.\n"
+"'keyboard-properties-capplet'\n"
+"baþlatýlýrken bir hata oluþtu.\n"
 "çýkýlýyor...\n"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:1
+#, fuzzy
 msgid "Keyboard"
-msgstr "Klavye"
+msgstr "Klavye zili"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:2
+#, fuzzy
 msgid "Keyboard Properties"
-msgstr "Klavye ayarlarý"
+msgstr "Klavye tekrarlama hýzý"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
 msgstr "Fare tuþlarý"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
-msgstr "Sol el"
+msgstr "Sol elle"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
-msgstr "Sað el"
+msgstr "Sað elle"
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
 msgstr "Fare hareketi"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
 msgstr "Hýzlandýrma"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Hýzlý"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
 msgstr "Yavaþ"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
-msgstr "Týklama aralýðý"
+msgstr "Çift týklama aralýðý"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
 msgstr "Büyük"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
 msgstr "Küçük"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -669,16 +643,18 @@ msgstr ""
 "çýkýlýyor...\n"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
+#, fuzzy
 msgid "Mouse"
-msgstr "Fare"
+msgstr "Portakal"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:2
+#, fuzzy
 msgid "Mouse Properties"
-msgstr "Fare özellikleri"
+msgstr "Fare hareketi"
 
 #: capplets/screensaver-properties/callbacks.c:102
 msgid "Require Password"
-msgstr "Parola Ýste"
+msgstr "Parola Gerekli"
 
 #: capplets/screensaver-properties/callbacks.c:154
 msgid "Use power management."
@@ -690,7 +666,7 @@ msgstr "Ekran Koruyucusu Yok"
 
 #: capplets/screensaver-properties/callbacks.c:314
 msgid "Random Screensaver"
-msgstr "Rastgele seç"
+msgstr "Rasgele"
 
 #: capplets/screensaver-properties/callbacks.c:483
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:56
@@ -700,7 +676,7 @@ msgstr "Ayarlar..."
 #. we need to special case random
 #: capplets/screensaver-properties/callbacks.c:491
 msgid "Random Settings"
-msgstr "Rastgele Ayarlar"
+msgstr "Rasgele Ayarlar"
 
 #: capplets/screensaver-properties/callbacks.c:501
 #, c-format
@@ -816,9 +792,8 @@ msgid "Changes the number of ants marching across the screen."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:5
-#, fuzzy
 msgid "Changes the size of the ants."
-msgstr "Ekran koruyucu ayarlarý"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:10
@@ -840,7 +815,7 @@ msgstr "Ekran koruyucu ayarlarý"
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:8
 #, fuzzy
 msgid "Count"
-msgstr "Bilgi"
+msgstr "Hakkýnda"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:7
 msgid "David Bagely"
@@ -870,9 +845,8 @@ msgid "Truchet"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:1
-#, fuzzy
 msgid "Atlantis"
-msgstr "Uygulamalar"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:2
 msgid "Whales, dolphins and sharks swimming around, in 3D"
@@ -1559,18 +1533,18 @@ msgid "Display a spinning compass "
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:2
+#, fuzzy
 msgid "Change the density."
-msgstr ""
+msgstr "Dosya Uzantýlarý Deðiþtir"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:3
-#, fuzzy
 msgid "Change the number of seeds."
-msgstr "Ekran koruyucu ayarlarý"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
 #, fuzzy
 msgid "Coral"
-msgstr "Normal"
+msgstr " Normal"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
 #, fuzzy
@@ -1604,7 +1578,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:16
 #, fuzzy
 msgid "Thinner"
-msgstr "Biber"
+msgstr "Kaplan"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:1
 msgid "Critical"
@@ -1621,12 +1595,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
 #, fuzzy
 msgid "Center image."
-msgstr "Ortala"
+msgstr "Ortalanmýþ"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:3
 #, fuzzy
 msgid "Centre"
-msgstr "Ortala"
+msgstr "Ortalanmýþ"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:6
 msgid "Change the number of polygons to use."
@@ -1894,9 +1868,8 @@ msgid "Draws a point moving around a circle which moves around a circle."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:6
-#, fuzzy
 msgid "Epicycle"
-msgstr "Kapat"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:7
 msgid ""
@@ -1915,9 +1888,8 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:17
-#, fuzzy
 msgid "Seconds"
-msgstr "Ses"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:15
 msgid "Time finished product is shown."
@@ -1938,15 +1910,16 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:3
 #, fuzzy
 msgid "Change the delay in movement."
-msgstr "Taþýnabilir ve hareket ettirilebilir menüler"
+msgstr "Menüler ayrýlabilir ve taþýnabilir"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:5
 msgid "Change the number of cycles."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:7
+#, fuzzy
 msgid "Changes the count."
-msgstr ""
+msgstr "Simgeyi Deðiþtir"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:8
@@ -2045,7 +2018,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:14
 #, fuzzy
 msgid "Forest"
-msgstr "Hýzlý"
+msgstr "Dene"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
 msgid "Fractal draws a fractal forest."
@@ -2170,7 +2143,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:21
 #, fuzzy
 msgid "Trail"
-msgstr "Döþe"
+msgstr "Döþeli"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:5
 msgid "Draws random color rectangles."
@@ -2242,7 +2215,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:29
 #, fuzzy
 msgid "Use a gradient of colors between circles."
-msgstr "Arkaplan geçiþli olsun"
+msgstr "Arkaplanda geçiþli renkler kullan"
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:5
 msgid "Draws helical string-art patterns"
@@ -2334,9 +2307,8 @@ msgid "Imsmap"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Interference.desktop.in.h:1
-#, fuzzy
 msgid "Interference"
-msgstr "Kullanýcý yüzü"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:5
 msgid "Jigsaw"
@@ -2406,9 +2378,8 @@ msgid "Segments"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:20
-#, fuzzy
 msgid "Trails"
-msgstr "Çöp"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kumppa.desktop.in.h:1
 msgid "Kumppa"
@@ -2575,9 +2546,8 @@ msgid "Points:"
 msgstr "Öncelik:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:23
-#, fuzzy
 msgid "Steps"
-msgstr "Stil"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:24
 msgid ""
@@ -2738,7 +2708,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:2
 #, fuzzy
 msgid "Moebius"
-msgstr "Fare"
+msgstr "Fare tuþlarý"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:8
 msgid "Draw circular interference patterns"
@@ -2859,7 +2829,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:15
 #, fuzzy
 msgid "Pedal"
-msgstr "Model"
+msgstr "Denetimi diyalog alýr"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:16
 msgid "Pedal Displays pretty geometric pictures."
@@ -2905,9 +2875,8 @@ msgid "3d pipes flow around the screen"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:2
-#, fuzzy
 msgid "Pipes"
-msgstr "Takýtlar"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:1
 msgid "Changes frequency of missile launch."
@@ -2949,7 +2918,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:15
 #, fuzzy
 msgid "Scatter"
-msgstr "Durum"
+msgstr "Baþlama gecikmesi"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:17
 msgid "The pyro program simulates fireworks."
@@ -3121,16 +3090,15 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Slip.desktop.in.h:1
 #, fuzzy
 msgid "Slip"
-msgstr "Dolgun"
+msgstr "Dolgu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:1
 msgid "Display a Sonar scope."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:2
-#, fuzzy
 msgid "Sonar"
-msgstr "Ses"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Sphere.desktop.in.h:1
 msgid "Sphere"
@@ -3217,23 +3185,21 @@ msgid "Make a star like formation using arcs."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:16
-#, fuzzy
 msgid "Rotation"
-msgstr "Baþlýyor"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:18
 #, fuzzy
 msgid "Slim"
-msgstr "Dolgun"
+msgstr "Dolgu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:20
 msgid "Speed of animation."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:21
-#, fuzzy
 msgid "Starfish"
-msgstr "Baþlýyor"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:22
 msgid ""
@@ -3254,9 +3220,8 @@ msgid "Wide"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Strange.desktop.in.h:1
-#, fuzzy
 msgid "Strange"
-msgstr "Durum"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Superquadrics.desktop.in.h:1
 msgid "Superquadrics"
@@ -3274,7 +3239,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:9
 #, fuzzy
 msgid "Random mountain ranges"
-msgstr "Rastgele Ayarlar"
+msgstr "Rasgele Ayarlar"
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:10
 msgid "Tobias Gloth"
@@ -3283,7 +3248,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:11
 #, fuzzy
 msgid "Triangle"
-msgstr "Döþe"
+msgstr "Döþeli"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:8
 msgid ""
@@ -3297,18 +3262,16 @@ msgid "Tracy Camp"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:10
-#, fuzzy
 msgid "Vines"
-msgstr "Göster"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:11
 msgid "draws pseudo-fractal geometric patterns"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Worm.desktop.in.h:1
-#, fuzzy
 msgid "Worm"
-msgstr "Normal"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:1
 msgid "Display flames at the bottom of the screen"
@@ -3345,9 +3308,8 @@ msgid "The  xroger  program displays a replacement for the X logo."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
-#, fuzzy
 msgid "Xroger"
-msgstr "Uygulama"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
 msgid "Bars"
@@ -3384,14 +3346,12 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:10
-#, fuzzy
 msgid "Static"
-msgstr "Durum"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:11
-#, fuzzy
 msgid "Static."
-msgstr "Durum"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:12
 #, fuzzy
@@ -3420,7 +3380,7 @@ msgstr "Ayarlar"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:38
 msgid "RANDOM SCREENSAVER"
-msgstr "RANDOM SCREENSAVER"
+msgstr "RASGELE EKRAN KORUYUCU"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:49
 msgid "Screen Saver"
@@ -3430,7 +3390,9 @@ msgstr "Ekran Koruyucu"
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
-msgstr "Bu düðmeye basýlýrsa ekran koruyucu ayarlarý yapýlacaktýr."
+msgstr ""
+"Bu düðmeye basýldýðýnda ekran koruyucu ayarlarýný yapabileceðiniz bir "
+"diyalog açýlacaktýr."
 
 #. set up the initial frame, and get a vbox in which to pack things.
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:88
@@ -3439,11 +3401,11 @@ msgstr "Ekran Koruyucu Ayarlarý"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:96
 msgid "Start After "
-msgstr "Baþlama süresi"
+msgstr "Baþlama gecikmesi"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:102
 msgid " Minutes."
-msgstr " dakika"
+msgstr " dakika."
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:117
 msgid "Priority:"
@@ -3463,7 +3425,7 @@ msgstr "Ekran koruyucu baþladýktan"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:139
 msgid " minutes after screen saver has started."
-msgstr " dakika sonra monitörü kapat"
+msgstr " dakika sonra monitör kapatýlýr."
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:152
 msgid "Screen Saver Demo"
@@ -3471,11 +3433,12 @@ msgstr "Ekran Koruyucusu Demosu"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:1
 msgid "Configure the settings of the screensaver"
-msgstr "Ekran koruyucu ayarlarý"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:2
+#, fuzzy
 msgid "Screensaver"
-msgstr "Ekran koruyucularý"
+msgstr "Ekran Koruyucusu Yok"
 
 #: capplets/sound-properties/sound-properties.c:97
 msgid ""
@@ -3484,7 +3447,7 @@ msgstr "'sound-properties-capplet' baþlarken bir hata oluþtu."
 
 #: capplets/sound-properties/sound-properties.c:188
 msgid "Event"
-msgstr "Olay"
+msgstr "Eylem"
 
 #: capplets/sound-properties/sound-properties.c:189
 msgid "File to Play"
@@ -3496,11 +3459,11 @@ msgstr "Etkinleþtir"
 
 #: capplets/sound-properties/sound-properties.c:250
 msgid "Enable sound server startup"
-msgstr "Ses sunucusunu baþlat"
+msgstr "Ses sunucusunu baþlangýçta etkinleþtir"
 
 #: capplets/sound-properties/sound-properties.c:258
 msgid "Sounds for events"
-msgstr "Olay sesleri"
+msgstr "Eylemlerin sesleri"
 
 #: capplets/sound-properties/sound-properties.c:279
 msgid "General"
@@ -3516,34 +3479,35 @@ msgstr "Çal"
 
 #: capplets/sound-properties/sound-properties.c:336
 msgid "Sound Events"
-msgstr "Ses Olayý"
+msgstr "Sesli Eylemler"
 
 #: capplets/sound-properties/sound-properties.c:355
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
-msgstr "Bu Gnome Denetim Merkezi ses desteði kullanýlmadan derlenmiþ."
+msgstr "Bu GNOME Denetim Masasý ses desteði olmadan derlenmiþ."
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
-msgstr "Bu olayýn ses dosyasý bulunmuyor."
+msgstr "Bu eylem için ses dosyasý yok."
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
 "for a set of default sounds."
 msgstr ""
-"Bu olayýn ses dosyasý bulunmuyor.Bazý öntanýmlý ses dosyalarýný sisteme "
-"yerleþtirmek\n"
-"için gnome-audio paketini kurmanýz gerekiyor."
+"Bu eylem için ses dosyasý yok. Bazý öntanýmlý\n"
+"ses dosyalarýný sisteme yerleþtirmek için\n"
+"gnome-audio paketini kurmanýz gerekiyor."
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:1
 msgid "Configure GNOME's use of sound"
-msgstr "GNOME'un ses kullanýmý ayarlarý"
+msgstr ""
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:2
+#, fuzzy
 msgid "Sound"
-msgstr "Ses"
+msgstr "Dolgu"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "One"
@@ -3572,23 +3536,23 @@ msgstr "Portakal"
 
 #: capplets/theme-switcher/demo.c:54
 msgid "Catcha"
-msgstr "Ispanak"
+msgstr "Aslan"
 
 #: capplets/theme-switcher/demo.c:54
 msgid "Tiger"
-msgstr "Biber"
+msgstr "Kaplan"
 
 #: capplets/theme-switcher/demo.c:55
 msgid "By Its"
-msgstr "Dolma"
+msgstr "Fatih"
 
 #: capplets/theme-switcher/demo.c:55
 msgid "Toe"
-msgstr "Mustafa"
+msgstr "Demir"
 
 #: capplets/theme-switcher/demo.c:114
 msgid "Selected themes from above will be tested by previewing here."
-msgstr "Seçilmiþ olan dekorlar burada izlenebilir."
+msgstr "Yukarýda seçilen dekor burada izlenerek denenebilir."
 
 #. column one
 #: capplets/theme-switcher/demo.c:119
@@ -3597,11 +3561,11 @@ msgstr "Örnek Düðme"
 
 #: capplets/theme-switcher/demo.c:123
 msgid "Sample Check Button"
-msgstr "Seçim Düðmesi"
+msgstr "Örnek Seçim Düðmesi"
 
 #: capplets/theme-switcher/demo.c:128
 msgid "Sample Text Entry Field"
-msgstr "Örnek bir boþluk..."
+msgstr "Örnek Metin Girdi Alaný"
 
 #: capplets/theme-switcher/demo.c:139
 msgid "Submenu"
@@ -3609,19 +3573,19 @@ msgstr "Alt menü"
 
 #: capplets/theme-switcher/demo.c:146
 msgid "Item 1"
-msgstr "Birinci madde"
+msgstr "Öðe 1"
 
 #: capplets/theme-switcher/demo.c:149
 msgid "Another item"
-msgstr "Baþka bir madde"
+msgstr "Diðer öðe"
 
 #: capplets/theme-switcher/demo.c:154
 msgid "Radio Button 1"
-msgstr "Birinci düðme"
+msgstr "Seçenek düðmesi 1"
 
 #: capplets/theme-switcher/demo.c:160
 msgid "Radio Button 2"
-msgstr "Ýkinci düðme"
+msgstr "Seçenek düðmesi 2"
 
 #: capplets/theme-switcher/gui.c:89
 #, c-format
@@ -3640,7 +3604,7 @@ msgstr "Kurulacak dekoru seçin"
 
 #: capplets/theme-switcher/gui.c:197
 msgid "Available Themes"
-msgstr "Dekorlar"
+msgstr "Yüklü Dekorlar"
 
 #: capplets/theme-switcher/gui.c:221
 msgid ""
@@ -3648,7 +3612,7 @@ msgid ""
 "Preview"
 msgstr ""
 "Otomatik\n"
-"önizleme"
+"Önizleme"
 
 #: capplets/theme-switcher/gui.c:233
 msgid ""
@@ -3676,7 +3640,7 @@ msgstr "Özel yazýtipi kullan."
 
 #: capplets/theme-switcher/install.c:26
 msgid "Home directory doesn't exist!\n"
-msgstr "Ev dizinin yok!\n"
+msgstr "Ev dizininiz yok!\n"
 
 #: capplets/theme-switcher/install.c:36
 msgid "Theme does not exist"
@@ -3689,59 +3653,62 @@ msgstr "'%s' komutu baþarýsýz oldu"
 
 #: capplets/theme-switcher/install.c:73
 msgid "Unknown file format"
-msgstr "Bilinmeyen dosya türü"
+msgstr "Bilinmeyen dosya biçimi"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:1
+#, fuzzy
 msgid "Select which desktop theme to use"
-msgstr "Kullanýlacak masaüstü görünümünü seç"
+msgstr "Kurulacak dekoru seçin"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:2
 msgid "Theme Selector"
-msgstr "Görünüm seçmeni"
+msgstr ""
 
 #: capplets/ui-properties/application.desktop.in.h:1
+#, fuzzy
 msgid "Applications"
-msgstr "Uygulamalar"
+msgstr "Uygulama Ekle"
 
 #: capplets/ui-properties/application.desktop.in.h:2
 msgid "Sets the default feel of GNOME applications"
-msgstr "GNOME uygulamalarýn önayarlý heybetini belirler"
+msgstr ""
 
 #: capplets/ui-properties/dialogs.desktop.in.h:1
+#, fuzzy
 msgid "Dialogs"
-msgstr "Diyaloklar"
+msgstr "Diyalog ipuçlarý"
 
 #: capplets/ui-properties/mdi.desktop.in.h:1
 msgid "MDI"
-msgstr "ÇDY"
+msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:54
 msgid "Can detach and move toolbars"
-msgstr "Araç çubuðu ayrýlabilir ve hareket ettirilebilir"
+msgstr "Araç çubuklarý ayrýlabilir ve taþýnabilir"
 
 #: capplets/ui-properties/ui-properties.c:59
 msgid "Toolbars have relieved border"
-msgstr "Araç çubuklarýnda görülebilir kenar"
+msgstr "Araç çubuklarýnda belirgin kenar"
 
 #: capplets/ui-properties/ui-properties.c:64
 msgid "Toolbar buttons have relieved border"
-msgstr "Araç çubuklarýndaki düðmelerde görülebilir kenarlar"
+msgstr "Araç çubuklarýndaki düðmelerde belirgin kenar"
 
 #: capplets/ui-properties/ui-properties.c:69
 msgid "Toolbars have line separators"
-msgstr "Araç çubuklarýnda ayýrma çubuklarý"
+msgstr "Araç çubuklarýnda ayýrýcýlar"
 
 #: capplets/ui-properties/ui-properties.c:74
 msgid "Toolbars have text labels"
-msgstr "Araç çubuklarýnda metin etiketler "
+msgstr "Araç çubuklarýnda etiketler"
 
 #: capplets/ui-properties/ui-properties.c:103
 msgid "Can detach and move menus"
-msgstr "Taþýnabilir ve hareket ettirilebilir menüler"
+msgstr "Menüler ayrýlabilir ve taþýnabilir"
 
 #: capplets/ui-properties/ui-properties.c:108
 msgid "Menus have relieved border"
-msgstr "Menülerde geniþ kenarlar"
+msgstr "Menülerde belirgin kenarlar"
 
 #: capplets/ui-properties/ui-properties.c:112
 msgid "Submenus can be torn off"
@@ -3749,7 +3716,7 @@ msgstr "Alt menüler kopartýlabilir"
 
 #: capplets/ui-properties/ui-properties.c:116
 msgid "Menu items have icons"
-msgstr "Menü baþlýklarýnýn simgesi"
+msgstr "Simgeli menü öðeleri"
 
 #: capplets/ui-properties/ui-properties.c:140
 msgid "Statusbar is interactive when possible"
@@ -3777,7 +3744,7 @@ msgstr "Diyalog düðmeleri"
 
 #: capplets/ui-properties/ui-properties.c:171
 msgid "Default value"
-msgstr "Öntanýmlý deðerler"
+msgstr "Öntanýmlý deðer"
 
 #: capplets/ui-properties/ui-properties.c:172
 msgid "Spread buttons out"
@@ -3785,15 +3752,15 @@ msgstr "Düðmeleri daðýt"
 
 #: capplets/ui-properties/ui-properties.c:173
 msgid "Put buttons on edges"
-msgstr "Düðmeleri köþelere yerleþtir"
+msgstr "Düðmeleri kenarlara yerleþtir"
 
 #: capplets/ui-properties/ui-properties.c:174
 msgid "Left-justify buttons"
-msgstr "Düðmeleri sola yasla"
+msgstr "Düðmeleri sola yanaþtýr"
 
 #: capplets/ui-properties/ui-properties.c:175
 msgid "Right-justify buttons"
-msgstr "Düðmeleri sol yasla"
+msgstr "Düðmeleri saða yanaþtýr"
 
 #: capplets/ui-properties/ui-properties.c:180
 msgid "Dialog buttons have icons"
@@ -3829,19 +3796,19 @@ msgstr "Diðer pencereler gibi"
 
 #: capplets/ui-properties/ui-properties.c:217
 msgid "Dialogs are treated specially by window manager"
-msgstr "Özel iþlem"
+msgstr "Pencere yöneticisi tarafýndan özel olarak yönetilsin"
 
 #: capplets/ui-properties/ui-properties.c:222
 msgid "Place dialogs over application window when possible"
-msgstr "Diyaloglarý uygulama penceresinin üzerine yerleþtir"
+msgstr "Diyaloglarý uygulama penceresinin üzerine aç"
 
 #: capplets/ui-properties/ui-properties.c:243
 msgid "Dialog Layout"
-msgstr "Diyalog Konumlarý"
+msgstr "Diyalog Yerleþimi"
 
 #: capplets/ui-properties/ui-properties.c:244
 msgid "Dialog Behavior"
-msgstr "Diyalok Davranýþlarý"
+msgstr "Diyalog Davranýþlarý"
 
 #: capplets/ui-properties/ui-properties.c:250
 msgid "Default MDI Mode"
@@ -3849,19 +3816,19 @@ msgstr "Öntanýmlý MDI Kipi"
 
 #: capplets/ui-properties/ui-properties.c:251
 msgid "Notebook"
-msgstr "Defter"
+msgstr "Not Defteri"
 
 #: capplets/ui-properties/ui-properties.c:252
 msgid "Toplevel"
-msgstr "Tepe"
+msgstr "Tepe düzey"
 
 #: capplets/ui-properties/ui-properties.c:253
 msgid "Modal"
-msgstr "Model"
+msgstr "Denetimi diyalog alýr"
 
 #: capplets/ui-properties/ui-properties.c:258
 msgid "MDI notebook tab position"
-msgstr "MDI defter sekme konumu"
+msgstr "MDI not defteri sekme konumu"
 
 #: capplets/ui-properties/ui-properties.c:259
 msgid "Left"
@@ -3881,19 +3848,19 @@ msgstr "Alt"
 
 #: capplets/ui-properties/ui-properties.c:277
 msgid "GNOME MDI Options"
-msgstr "Gnome MDI Seçenekleri"
+msgstr "GNOME MDI Seçenekleri"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:1
 msgid "Look and Feel"
-msgstr "Görünüþ ve heybet"
+msgstr ""
 
 #: capplets/ui-properties/ui-properties.directory.in.h:2
 msgid "Look and Feel Properties"
-msgstr "Görünüþ ve heybet ayarlarý"
+msgstr ""
 
 #: capplets/url-properties/url-properties.c:51
 msgid "Error initializing the `url-properties' capplet."
-msgstr "'url-properties' programýný baþlatýrken hata oluþtu."
+msgstr "'url-properties' diyaloðunu baþlatýrken hata oluþtu."
 
 #: capplets/url-properties/url-properties.c:76
 msgid "Protocol"
@@ -3926,19 +3893,20 @@ msgstr "Yardým tarayýcýsý (yeni pencerede)"
 
 #: capplets/url-properties/url-properties.c:140
 msgid "Set"
-msgstr "Tanýmla"
+msgstr "Uygula"
 
 #: capplets/url-properties/url-properties.c:148
 msgid "Remove"
-msgstr "Sil"
+msgstr "Kaldýr"
 
 #: capplets/url-properties/url-properties.desktop.in.h:1
 msgid "Configure which programs are used to display URLs"
-msgstr "URL'leri gösterecek uygulamalarý belirtir"
+msgstr ""
 
 #: capplets/url-properties/url-properties.desktop.in.h:2
+#, fuzzy
 msgid "URL Handlers"
-msgstr "URL yöneticileri"
+msgstr "kotarýcý:"
 
 #: capplets/wm-properties/wm-desktops/Enlightenment.desktop.in.h:1
 msgid "Enlightenment"
@@ -3946,19 +3914,20 @@ msgstr ""
 
 #: capplets/wm-properties/wm-desktops/IceWM.desktop.in.h:1
 msgid "Ice WM"
-msgstr "Ice WM"
+msgstr ""
 
 #: capplets/wm-properties/wm-desktops/Scwm.desktop.in.h:1
 msgid "Scwm"
-msgstr "Scwm"
+msgstr ""
 
 #: capplets/wm-properties/wm-desktops/WindowMaker.desktop.in.h:1
+#, fuzzy
 msgid "Window Maker"
-msgstr "Window Maker"
+msgstr "Pencere Yöneticisini Düzenle"
 
 #: capplets/wm-properties/wm-desktops/twm.desktop.in.h:1
 msgid "twm"
-msgstr "twm"
+msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:142
 #, c-format
@@ -3966,7 +3935,7 @@ msgid ""
 "Starting %s\n"
 "(%d seconds left before operation times out)"
 msgstr ""
-"%s baþlatýlýyor...\n"
+"%s baþlatýlýyor\n"
 "(Ýþlemin zaman aþýmýna uðramasýna %d saniye kaldý)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:303
@@ -3977,7 +3946,7 @@ msgstr "%s (Geçerli)"
 #: capplets/wm-properties/wm-properties-capplet.c:306
 #, c-format
 msgid "Run Configuration Tool for %s"
-msgstr "%s Ýçin Yapýlandýrma Aracýný Çalýþtýr"
+msgstr "%s için Yapýlandýrma Aracýný Çalýþtýr"
 
 #: capplets/wm-properties/wm-properties-capplet.c:317
 msgid " (Not found)"
@@ -3989,7 +3958,7 @@ msgid ""
 "\tAnother window manager is already running and could not be killed\n"
 msgstr ""
 "wm-properties-capplet: Pencere yöneticisi baþlatýlamadý.\n"
-"\tBaþka bir pencere yöneticisi zaten çalýþýyor.\n"
+"\tBaþka bir pencere yöneticisi zaten çalýþýyor ve kapatýlamaz\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:360
 #, c-format
@@ -4002,7 +3971,7 @@ msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:413
 msgid "Previous window manager did not die\n"
-msgstr "Önceki pencere yöneticisi ölmedi\n"
+msgstr "Önceki pencere yöneticisi hala etkin\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:446
 #, c-format
@@ -4011,7 +3980,7 @@ msgid ""
 "Falling back to previous window manager '%s'\n"
 msgstr ""
 "'%s' baþlatýlamadý.\n"
-"Önceki pencere yöneticine (%s) geri dönülüyor.\n"
+"Önceki pencere yöneticisine (%s) geri dönülüyor.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:477
 msgid ""
@@ -4022,11 +3991,13 @@ msgid ""
 msgstr ""
 "Önceki pencere yöneticisi baþlatýlamadý.\n"
 "Lütfen elle bir pencere yöneticisi baþlatýn.\n"
+"Bunu Masaüstü menüsündeki \"Çalýþtýr\" ile\n"
+"yapabilirsiniz.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "Tamam"
 
@@ -4040,9 +4011,13 @@ msgid ""
 "in the main menu, or by turning on \"Save Current Setup\" when\n"
 "you log out.\n"
 msgstr ""
-"Geçerli pencere yönetisi deðiþtirildi. Bu deðiþikliðin\n"
-"kaydedilmesi için þu anki oturumunun kaydedilmesi gereklidir.\n"
-"Bu iþlem aþaðýdaki \"Oturumu kaydet\" seçeneðiyle gerçekleþtirilebilir.\n"
+"Geçerli pencere yöneticisi deðiþtirildi. Bu deðiþikliðin\n"
+"kaydedilmesi için þu anki oturumun kaydedilmesi gereklidir.\n"
+"Bu iþlemi aþaðýdaki \"Oturumu kaydet\" seçeneðiyle\n"
+"gerçekleþtirebileceðiniz gibi oturumu sonra da kaydedebilirsiniz.\n"
+"Bu, masaüstü menüsündeki \"Ayarlar\" altýndaki \"Oturumu kaydet\"\n"
+"seçilerek ya da oturumu kapatýrken \"Oturumu Kaydet\" seçeneði\n"
+"iþaretlenerek de yapýlabilir.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:527
 msgid "Save Session Later"
@@ -4062,72 +4037,76 @@ msgid ""
 msgstr ""
 "Geçerli pencere yöneticisini deðiþtirdiniz. Bu deðiþikliðin\n"
 "kaydedilmesi için þu anki oturumunuzu da kaydetmelisiniz.\n"
-"Bu iþlem aþaðýdaki \"Oturumu kaydet\" seçeneðiyle gerçekleþtirilebilir.\n"
+"Bu, masaüstü menüsündeki \"Ayarlar\" altýndaki \"Oturumu kaydet\"\n"
+"seçilerek ya da oturumu kapatýrken \"Oturumu Kaydet\" seçeneði\n"
+"iþaretlenerek de yapýlabilir.\n"
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
 msgstr "Yeni Pencere Yöneticisi Ekle"
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
-msgstr "Ýsim"
+msgstr "Ýsim:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Komut:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
 msgstr "Yapýlandýrma Komutu:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
 msgstr "Pencere yöneticisi oturumla yönetilebilir"
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr "Ýsim boþ olamaz"
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
 msgstr "Komut boþ olamaz"
 
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
 msgstr "Pencere Yöneticisini Düzenle"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr "Mevcut Pencere Yöneticisi silinemez"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
 msgstr "Düzenle..."
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Sil"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
-"wm-properties-capplet baþlatýlýrken bir hata oluþtu ..\n"
+"wm-properties-capplet baþlatýlýrken bir hata oluþtu.\n"
 "çýkýlýyor...\n"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:1
+#, fuzzy
 msgid "Choose a window manager"
-msgstr "Bir pencere yöneticisini seç"
+msgstr "Pencere yöneticisi karar versin"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:2
+#, fuzzy
 msgid "Window Manager"
-msgstr "Pencere yöneticisi"
+msgstr "Pencere Yöneticisini Düzenle"
 
 #: control-center/callbacks.c:102 control-center/gnomecc.desktop.in.h:1
 msgid "GNOME Control Center"
-msgstr "Gnome Denetim Merkezi"
+msgstr "GNOME Denetim Masasý"
 
 #: control-center/callbacks.c:105
 msgid "Desktop Properties manager."
@@ -4139,7 +4118,7 @@ msgstr "Dene"
 
 #: control-center/capplet-manager.c:185
 msgid "Revert"
-msgstr "Geriye al"
+msgstr "Geri al"
 
 #. set the help item
 #: control-center/capplet-manager.c:208
@@ -4149,31 +4128,31 @@ msgstr "'%s' ayarlarýnda yardým et"
 
 #: control-center/capplet-widget-libs.c:46
 msgid "id of the capplet -- assigned by the control-center"
-msgstr "capplet'in ID'si -- denetim merkezi tarafýndan verilmiþtir"
+msgstr "diyalog kimliði -- denetim masasý tarafýndan verilmiþtir"
 
 #: control-center/capplet-widget-libs.c:46
 msgid "ID"
-msgstr "ID"
+msgstr "Kimlik"
 
 #: control-center/capplet-widget-libs.c:47
 msgid "Multi-capplet id."
-msgstr "Çoklu capplet ID'si"
+msgstr "Çoklu diyalog kimliði"
 
 #: control-center/capplet-widget-libs.c:47
 msgid "CAPID"
-msgstr "CAPID"
+msgstr "DÝAKÝML"
 
 #: control-center/capplet-widget-libs.c:48
 msgid "X ID of the socket it's plugged into"
-msgstr "Baðlý olduðu \"socket\"'in X ID'si"
+msgstr "Baðlý olduðu soketin X kimliði"
 
 #: control-center/capplet-widget-libs.c:48
 msgid "XID"
-msgstr "XID"
+msgstr "XKÝMLÝK"
 
 #: control-center/capplet-widget-libs.c:49
 msgid "IOR of the control-center"
-msgstr "Denetim merkezinin IOR deðeri"
+msgstr "Denetim masasýnýn IOR deðeri"
 
 #: control-center/capplet-widget-libs.c:49
 msgid "IOR"
@@ -4181,11 +4160,12 @@ msgstr "IOR"
 
 #: control-center/capplet-widget-libs.c:50
 msgid "Initialize session settings"
-msgstr "Oturum ayarlarýný ilklendir "
+msgstr "Oturum ayarlarýný baþlat"
 
 #: control-center/capplet-widget-libs.c:51
 msgid "Ignore default action.  Used for custom init-session cases"
-msgstr "Öntanýmlý deðerleri gözardý et."
+msgstr ""
+"Öntanýmlý eylemi gözardý et. Özel oturum baþlatma durumlarý için kullanýlýr"
 
 #: control-center/capplet-widget.c:272
 msgid "Sorry, no help is available for these settings."
@@ -4193,35 +4173,35 @@ msgstr "Bu ayarlar için yardým bulunmuyor."
 
 #: control-center/corba-glue.c:77
 msgid "capplet-command to be run."
-msgstr "Çalýþtýrýlacak capplet komutu."
+msgstr "Çalýþtýrýlacak denetim masasý diyaloðu komutu."
 
 #: control-center/corba-glue.c:77
 msgid "CAPPLET"
-msgstr "CAPPLET"
+msgstr "DMDÝALOG"
 
 #: control-center/gnomecc.desktop.in.h:2
 msgid "The GNOME configuration tool"
-msgstr "Gnome'un ayarlar merkezi"
+msgstr ""
 
 #: control-center/main.c:36
 msgid "Help on control-center"
-msgstr "Denetim merkezi yardýmý"
+msgstr "Denetim masasý yardýmý"
 
 #: control-center/main.c:36
 msgid "Help with the GNOME control-center."
-msgstr "Gnome denetim merkezi ile yardým et."
+msgstr "GNOME denetim masasýnda yardým."
 
 #: control-center/main.c:38
 msgid "Help with the current configuration page."
-msgstr "Geçerli ayar sayfasýnda yardým et."
+msgstr "Geçerli yapýlandýrma sayfasýnda yardým."
 
 #: control-center/main.c:41
 msgid "About"
-msgstr "Bilgi"
+msgstr "Hakkýnda"
 
 #: control-center/main.c:41
 msgid "About the GNOME control-center."
-msgstr "Gnome denetim merkezi hakkýnda."
+msgstr "GNOME denetim masasý hakkýnda."
 
 #. we create the widgets
 #: control-center/main.c:69
@@ -4230,7 +4210,7 @@ msgstr "Uyarý:"
 
 #: control-center/main.c:69
 msgid "Discard all changes"
-msgstr "Tüm deðiþiklikleri sil"
+msgstr "Tüm deðiþiklikleri iptal et"
 
 #. ...labels, etc
 #: control-center/main.c:78
@@ -4260,244 +4240,10 @@ msgstr "Kullanýcý Adý:"
 
 #: control-center/splash.c:52
 msgid "Host Name:"
-msgstr "Sunucu Adý:"
+msgstr "Makina Adý:"
 
 #. This is about the only case where we'll put Unknown instead
 #. of simply not showing the info.
 #: control-center/splash.c:178
 msgid "Unknown"
-msgstr "Bilinmiyor"
-
-#~ msgid "Mime Type: "
-#~ msgstr "Mime Tipi: "
-
-#~ msgid "Add"
-#~ msgstr "Ekle"
-
-#~ msgid "First Regular Expression: "
-#~ msgstr "Ýlk Düzgün Deyim: "
-
-#~ msgid "Second Regular Expression: "
-#~ msgstr "Ýkinci Düzgün Deyim: "
-
-#~ msgid "Mime Type Actions"
-#~ msgstr "Mime Türü Ýþlemleri"
-
-#~ msgid "Example: emacs %f"
-#~ msgstr "Örnek: emacs %f"
-
-#~ msgid "Open"
-#~ msgstr "Aç"
-
-#~ msgid "Select a file..."
-#~ msgstr "Bir dosya seç..."
-
-#~ msgid "Set actions for %s"
-#~ msgstr "%s için eylemleri belirle"
-
-#~ msgid ""
-#~ "You must add either a regular-expression or\n"
-#~ "a file-name extension"
-#~ msgstr ""
-#~ "Ya bir düzgün deyim, ya da bir sonek\n"
-#~ "eklemek zorundasýnýz"
-
-#~ msgid ""
-#~ "Please put your mime-type in the format:\n"
-#~ "CATEGORY/TYPE\n"
-#~ "\n"
-#~ "For Example:\n"
-#~ "image/png"
-#~ msgstr ""
-#~ "Lütfen mime tipini aþaðýdaki formatta yazýn:\n"
-#~ "KATEGORÝ/TÜR\n"
-#~ "\n"
-#~ "Örnek: \n"
-#~ "image/png"
-
-#~ msgid "This mime-type already exists"
-#~ msgstr "Bu mime-türü zaten var"
-
-#~ msgid ""
-#~ "We are unable to create the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "~/.gnome/mime-info dizini yaratýlamadý\n"
-#~ "\n"
-#~ "\n"
-#~ "Bu durum kaydedilmeyecektir."
-
-#~ msgid ""
-#~ "We are unable to access the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "~/.gnome/mime-info dizinine ulaþýlamadý.\n"
-#~ "\n"
-#~ "\n"
-#~ "Bu durum kaydedilmeyecektir."
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "~/.gnome/mime-info/user.mime dosyasý\n"
-#~ "yaratýlamadý\n"
-#~ "\n"
-#~ "Bu durum kaydedilmeyecektir."
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.keys\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "~/.gnome/mime-info/user.keys dosyasý\n"
-#~ "yaratýlamadý\n"
-#~ "\n"
-#~ "Bu durum kaydedilmeyecektir."
-
-#, fuzzy
-#~ msgid ""
-#~ "No help is available/installed for these settings. Please make sure you\n"
-#~ "have the Control Center documentation installed on your system."
-#~ msgstr "Bu ayarlar için hiç yardým bulunmuyor."
-
-#~ msgid ""
-#~ "Add a new Mime Type\n"
-#~ "For example:  image/tiff; text/x-scheme"
-#~ msgstr ""
-#~ "Yeni bir Mime Türü ekle\n"
-#~ "Örnek:  image/tiff; text/x-scheme"
-
-#~ msgid "Mime Type:"
-#~ msgstr "Mime Türü:"
-
-#~ msgid "Regular Expressions"
-#~ msgstr "Düzgün Deyimler"
-
-#~ msgid "Session Chooser"
-#~ msgstr "Oturum Seçicisi"
-
-#~ msgid "Start Session"
-#~ msgstr "Oturumu Baþlat"
-
-#~ msgid "Order: "
-#~ msgstr "Sýra: "
-
-#~ msgid "Style: "
-#~ msgstr "Tip: "
-
-#~ msgid "This button sets the start order of the selected programs.\n"
-#~ msgstr "Bu düðme seçilmiþ programlarýn baþlama sýrasýný belirler.\n"
-
-#~ msgid ""
-#~ "This button sets the restart style of the selected programs:\n"
-#~ "Normal programs are unaffected by logouts but can die;\n"
-#~ "Respawn programs are never allowed to die;\n"
-#~ "Trash programs are discarded on logout and can die;\n"
-#~ "Settings programs are always started on every login."
-#~ msgstr "Bu düðme seçilmiþ olan uygulamalarýn baþlama türünü belirler."
-
-#~ msgid "This column gives the command used to start a program."
-#~ msgstr "Bir sütun programý baþlatmak için kullanýlacak komutu verir."
-
-#~ msgid "Order"
-#~ msgstr "Sýralama"
-
-#~ msgid "Inactive"
-#~ msgstr "Etkisiz"
-
-#~ msgid "Waiting to start or already finished."
-#~ msgstr "Baþlamasý bekleniyor ya da iþ çoktan bitti."
-
-#~ msgid "Started but has not yet reported state."
-#~ msgstr "Baþladý, ama þu ana kadar durumundan haber yok."
-
-#~ msgid "Running"
-#~ msgstr "Çalýþýyor"
-
-#~ msgid "A normal member of the session."
-#~ msgstr "Oturumun normal bir üyesi."
-
-#~ msgid "Saving"
-#~ msgstr "Kaydediliyor"
-
-#~ msgid "Saving session details."
-#~ msgstr "Oturum özellikleri kaydediliyor."
-
-#~ msgid "State not reported within timeout."
-#~ msgstr "Zaman aþýmý süresi içinde durum rapor edilmedi."
-
-#~ msgid "Unaffected by logouts but can die."
-#~ msgstr "Çýkýþtan etkilenmez, ama ölebilir."
-
-#~ msgid "Respawn"
-#~ msgstr "Yeniden baþla"
-
-#~ msgid "Never allowed to die."
-#~ msgstr "Hiç bir zaman ölme."
-
-#~ msgid "Discarded on logout and can die."
-#~ msgstr "Çýkýþta unut ve ölmesine izin ver."
-
-#~ msgid "Always started on every login."
-#~ msgstr "Her giriþte baþlatýlýr."
-
-#~ msgid "Remove Program"
-#~ msgstr "Uygulamayý Sil"
-
-#~ msgid "Options"
-#~ msgstr "Seçenekler"
-
-#~ msgid "Show splash screen on login"
-#~ msgstr "Giriþte tanýtým ekranýný göster"
-
-#~ msgid "Prompt on logout"
-#~ msgstr "Oturum kapanýrken onayla"
-
-#~ msgid "Automatically save changes to session"
-#~ msgstr "Deðiþiklikleri otomatik kaydet"
-
-#~ msgid "Non-session-managed Startup Programs"
-#~ msgstr "Oturumlarýný Kaydedemeyen Baþlangýç Uygulamalarý"
-
-#~ msgid "Priority"
-#~ msgstr "Öncelik"
-
-#~ msgid "Browse Currently Running Programs..."
-#~ msgstr "Halen Çalýþan Programlara Gözat..."
-
-#~ msgid "Only display warnings."
-#~ msgstr "Sadece uyarýlarý göster."
-
-#~ msgid "Startup Command"
-#~ msgstr "Baþlama Komutu"
-
-#~ msgid ""
-#~ "Programs with smaller values are started before programs with higher values. "
-#~ "The default value should be OK"
-#~ msgstr ""
-#~ "Küçük deðere sahip uygulamalar, yüksek deðerlilerden daha önce çalýþýr. "
-#~ "Öntanýmlý deðerler normal þartlarda uygundur."
-
-#~ msgid "The startup command cannot be empty"
-#~ msgstr "Baþlangýç komutu boþ olmaz"
-
-#~ msgid "Add Startup Program"
-#~ msgstr "Baþlangýç Programý Ekle"
-
-#~ msgid "Edit Startup Program"
-#~ msgstr "Baþlangýç Uygulamasýný Düzenle"
-
-#~ msgid ""
-#~ "No help is available/installed. Please make sure you\n"
-#~ "have the GNOME User's Guide installed on your system."
-#~ msgstr ""
-#~ "GNOME yardýmý bulunamýyor. Lütfen Gnome kullanýcý\n"
-#~ "kýlavuzunu yüklediðinize emin olun."
+msgstr "Bilinmeyen"

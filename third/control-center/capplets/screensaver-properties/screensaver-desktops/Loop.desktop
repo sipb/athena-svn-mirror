@@ -1,14 +1,19 @@
 [Desktop Entry]
 Name=Loop
 Name[ca]=Volta
-Name[da]=Løkke
+Name[da]=Løkkekolonier
+Name[de]=Schleife
 Name[es]=Bucle
 Name[fi]=Silmukka
 Name[fr]=Boucles
+Name[hu]=Loop
 Name[ja]=¥ë¡¼¥×
 Name[no]=Løkke
+Name[ru]=ãÉËÌ
 Name[sk]=Kruhy
+Name[sl]=Zanka
 Name[sv]=Loop
+Name[uk]=ãÉËÌ
 Comment=This one produces loop-shaped colonies that spawn, age, and eventually die.
 Exec=xscreensaver-command -activate
 TryExec=loop
