@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.19 1988-06-15 22:50:12 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.20 1988-06-15 23:12:35 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -337,6 +337,7 @@ int len, waitforack;
 {
 	char *savebuf;
 	register ZNotAcked_t *nacked;
+	Code_t retval;
 
 	if ((retval = ZSendPacket(buf, len, 0)) != ZERR_NONE) {
 		syslog(LOG_WARNING, "xmit_frag send: %s",
