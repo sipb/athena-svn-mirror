@@ -2,6 +2,7 @@ Name: athena-ws
 Summary: Athena workstation management infrastructure
 Copyright: MIT
 Group: System Environment/Base
+Requires: athena-desync, athena-base, athena-sendmail, athena-gettime
 
 %description
 Various maintenanance and configuration files required for any
@@ -21,12 +22,13 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 #Extra stuff
-mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena}
+mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena,/etc/cron.d}
 cp masks $RPM_BUILD_ROOT/etc/athena/masks
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
+cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 
 # This file actually goes in the athena-afs package.
@@ -59,6 +61,7 @@ done
 /etc/athena/update_ws
 /etc/passwd.fallback
 /etc/rc.d
-/etc/syslog.conf.athena
+/etc/cron.d
+%config /etc/syslog.conf.athena
 /usr
 %config /etc/athena/rc.conf
