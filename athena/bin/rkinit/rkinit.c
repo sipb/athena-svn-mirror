@@ -15,7 +15,7 @@
 
 /* rkinit: a remote kinit client */
 
-static const char rcsid[] = "$Id: rkinit.c,v 1.2 1999-12-09 22:23:58 danw Exp $";
+static const char rcsid[] = "$Id: rkinit.c,v 1.3 2000-02-26 23:10:26 ghudson Exp $";
 
 #include <stdio.h>
 #include <string.h>
@@ -95,37 +95,37 @@ int main(int argc, char *argv[])
 	i = 1;
 
     for (/* i initialized above */; i < argc; i++) {
-	if (strcmp(argv[i], "-h") == NULL) {
+	if (strcmp(argv[i], "-h") == 0) {
 	    if (++i >= argc)
 		usage();
 	    else
 		host = argv[i];
 	}
-	else if (strcmp(argv[i], "-l") == NULL) {
+	else if (strcmp(argv[i], "-l") == 0) {
 	    if (++i >= argc)
 		usage();
 	    else
 		username = argv[i];
 	}
-	else if (strcmp(argv[i], "-k") == NULL) {
+	else if (strcmp(argv[i], "-k") == 0) {
 	    if (++i >= argc)
 		usage();
 	    else
 		strncpy(r_krealm, argv[i], sizeof(r_krealm) - 1);
 	}
-	else if (strcmp(argv[i], "-p") == NULL) {
+	else if (strcmp(argv[i], "-p") == 0) {
 	    if (++i >= argc)
 		usage();
 	    else
 		strncpy(principal, argv[i], sizeof(principal) - 1);
 	}
-	else if (strcmp(argv[i], "-f") == NULL) {
+	else if (strcmp(argv[i], "-f") == 0) {
 	    if (++i >= argc)
 		usage();
 	    else
 		tktfilename = argv[i];
 	}
-	else if (strcmp(argv[i], "-t") == NULL) {
+	else if (strcmp(argv[i], "-t") == 0) {
 	    if (++i >= argc)
 		usage();
 	    else {
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 		    lifetime = 255;
 	    }
 	}
-	else if (strcmp(argv[i], "-notimeout") == NULL)
+	else if (strcmp(argv[i], "-notimeout") == 0)
 	    timeout = FALSE;
 	else
 	    usage();
