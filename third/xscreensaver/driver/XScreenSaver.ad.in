@@ -69,7 +69,7 @@
 
 ! This is how the "Help" button loads URLs (/bin/sh syntax.)
 ! The "helpURL" will be substituted for up to two occurrences of "%s".
-*loadURL: netscape -remote 'openURL(%s)' || netscape '%s'
+*loadURL: htmlview '%s'
 
 ! This is what the "Manual" button in xscreensaver-demo runs (/bin/sh syntax.)
 *manualCommand: xterm +sb -fg black -bg gray75 -T '%s manual' \

@@ -264,8 +264,9 @@ display the web page indicated here in your web browser.
 .TP 8
 .B loadURL\fP (class \fBLoadURL\fP)
 This is the shell command used to load a URL into your web browser.
-The default setting will load it into Netscape if it is already running,
-otherwise, will launch a new Netscape looking at the \fIhelpURL\fP.
+The default setting uses htmlview to load it into a new window of a running
+browser process, if any, or to launch a new browser process looking at the
+\fIhelpURL\fP.
 .TP 8
 .B demoCommand\fP (class \fBDemoCommand\fP)
 This is the shell command run when the \fIDemo\fP button on the splash window

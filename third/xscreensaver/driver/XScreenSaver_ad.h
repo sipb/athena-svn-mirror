@@ -30,7 +30,7 @@
 "*demoCommand: xscreensaver-demo",
 "*prefsCommand: xscreensaver-demo -prefs",
 "*helpURL: http://www.jwz.org/xscreensaver/man.html",
-"*loadURL: netscape -remote 'openURL(%s)' || netscape '%s'",
+"*loadURL: htmlview '%s'",
 "*manualCommand: xterm +sb -fg black -bg gray75 -T '%s manual' \
         -e /bin/sh -c 'man \"%s\" || read foo'",
 "*dateFormat:		%d-%b-%y (%a); %I:%M %p",
