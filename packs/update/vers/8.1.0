@@ -29,11 +29,29 @@ sun4)
 		ln /etc/passwd.local /etc/passwd.local.old
 		mv /etc/passwd.local.new /etc/passwd.local
 	fi
+
+	# Move /usr/lib/aliases to /etc/mail/aliases if it exists.
+	if [ -f /usr/lib/aliases ]; then
+		mv -f /etc/mail/aliases /etc/mail/aliases.old
+		mv -f /usr/lib/aliases /etc/mail/aliases
+		if [ -f /usr/lib/aliases.dir ]; then
+			rm -f /etc/mail/aliases.dir
+			rm -f /etc/mail/aliases.pag
+			mv -f /usr/lib/aliases.dir /etc/mail/aliases.dir
+			mv -f /usr/lib/aliases.pag /etc/mail/aliases.pag
+		fi
+	else
+		# Only put aliases in CONFCHG if the admin hasn't made a
+		# /usr/lib/aliases file, since all we did is remove a bunch
+		# of aliases for local users in /etc/mail/aliases.
+		echo "/etc/mail/aliases"	>> "$CONFCHG"
+	fi
 	;;
 
 sgi)
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
 	echo "/etc/services"			>> "$CONFCHG"
+	echo "/etc/aliases"			>> "$CONFCHG"
 	echo "/usr/etc/resolv.conf"		>> "$DEADFILES"
 	;;
 
