@@ -1,3 +1,40 @@
+2005-02-12  Paolo Maggi  <paolo@gnome-prg>
+
+	* configure.in: release 2.8.3, removed version number from 
+	GETTEXT_PACKAGE (fixes bug #149988: Is gedit potfile versioning needed?)
+
+2005-02-12  Paolo Borelli  <pborelli@katamail.com>
+
+	* README:
+	* NEWS: update.
+
+2004-10-15  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* gedit/dialogs/gedit-encodings-dialog.c: (update_list),
+	(gedit_encodings_dialog_run):
+
+	Fix a trivial compilation warning
+
+2004-10-11  Paolo Borelli  <pborelli@katamail.com>
+
+	* Makefile.am: fix distcheck with latest gnome-common.
+
+2004-10-10  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in:
+	* README:
+	* NEWS: release 2.8.1
+
+2004-09-14  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * configure.in: Added 'or' to ALL_LINGUAS.
+
+2004-09-13  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in:
+	* README:
+	* NEWS: release 2.8.0
+
 2004-08-30  Paolo Borelli  <pborelli@katamail.com>
 
 	* configure.in:

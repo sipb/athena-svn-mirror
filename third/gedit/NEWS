@@ -1,4 +1,72 @@
 ===========
+gedit 2.8.3
+===========
+
+Fixes
+=====
+
+- Bug #149988 (Is gedit potfile versioning needed?) [Paolo Maggi]
+- Bug #144894 (Ortographic corrector doesn't work in commented 
+  lines) [Paolo Maggi]
+- Fixed a crash that happens if you remove automatic spell checker 
+  and the press Shift+F10 [Paolo Maggi]
+- Fixed a crash in the time plugin when the format in gconf is not 
+  valid [Paolo Borelli]
+- Fixed some mem leaks [Paolo Borelli]
+- Backported some speedups from 2.9 [Paolo Borelli]
+- Sync to latest libegg [Paolo Borelli]
+
+New and updated translations
+============================
+- Rhys Jones (cy)
+- Artur Flinta (pl)
+
+===========
+gedit 2.8.2
+===========
+
+Fixes
+=====
+- remove UTF-16, UCS-2 and UCS-4 from the supported encoding list since
+  they are (and always have been) broken (Paolo Maggi)
+- do not leak some tooltips (Paolo Borelli) 
+- fix crash loading some remote files (Paolo Maggi)
+- check if metadata file exists before reading it (Marco Pesenti Gritti)
+
+New and updated translations
+============================
+Nikos Charonitakis (el)
+Martin Willemoes Hansen (da)
+Jordi Mallach (ca)
+Mohammad DAMT (id)
+Christophe Merlet (fr)
+
+
+===========
+gedit 2.8.1
+===========
+
+Fixes
+=====
+- do not try to open non regular files (#153204) (Paolo Borelli) 
+- allow opening file by drag and drop on read only documents (#89881) (James Bowes)
+- open dropped files in the right target gedit window (#150485) (Paolo Maggi)
+- do not change active document when closing an unmodified tab (#149811) (Paolo M.)
+- fix crash when trying to open an invalid sftp uri (Paolo B.)
+- update to the latest egg-recent (Paolo B.)
+
+New and updated translations
+============================
+
+- Changwoo Ryu (ko)
+- Adam Weinberger (en_CA)
+- Žygimantas Beručka (lt)
+- Meelad Zakaria (fa)
+- Jordi Mallach (ca)
+- Gora Mohanty (or)
+
+  
+===========
 gedit 2.8.0
 ===========
 

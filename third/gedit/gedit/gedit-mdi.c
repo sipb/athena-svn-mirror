@@ -36,7 +36,6 @@
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <eel/eel-string.h>
 
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagesmanager.h>
@@ -60,8 +59,6 @@
 #include "recent-files/egg-recent-model.h"
 #include "gedit-languages-manager.h"
 #include "dialogs/gedit-close-confirmation-dialog.h"
-
-#include <eel/eel-alert-dialog.h>
 
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-control.h>
@@ -96,7 +93,17 @@ static void gedit_mdi_app_created_handler	(BonoboMDI *mdi, BonoboWindow *win);
 static void gedit_mdi_drag_data_received_handler (GtkWidget *widget, GdkDragContext *context, 
 		                                  gint x, gint y, 
 						  GtkSelectionData *selection_data, 
-				                  guint info, guint time);
+						  guint info, guint time);
+static gboolean gedit_mdi_drag_motion_handler    (GtkWidget        *widget,
+						  GdkDragContext   *context,
+						  gint              x,
+						  gint              y,
+						  guint             time);
+static gboolean gedit_mdi_drag_drop_handler      (GtkWidget        *widget,
+						  GdkDragContext   *context,
+						  gint              x,
+						  gint              y,
+						  guint             time);
 static void gedit_mdi_set_app_toolbar_style 	(BonoboWindow *win);
 static void gedit_mdi_set_app_statusbar_style 	(BonoboWindow *win);
 
@@ -228,12 +235,34 @@ menu_position_under_widget (GtkMenu *menu, int *x, int *y,
 	*y = CLAMP (*y, 0, MAX (0, screen_height - requisition.height));
 }
 
+static void
+tooltip_func (GtkTooltips   *tooltips,
+	      GtkWidget     *menu,
+	      EggRecentItem *item,
+	      gpointer       user_data)
+{
+	gchar *tip;
+	gchar *uri_for_display;
+
+	uri_for_display = egg_recent_item_get_uri_for_display (item);
+	g_return_if_fail (uri_for_display != NULL);
+
+	/* Translators: %s is a URI */
+	tip = g_strdup_printf (_("Open '%s'"), uri_for_display);
+
+	g_free (uri_for_display);
+
+	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (menu), tip, NULL);
+
+	g_free (tip);
+}
+
 static gboolean
 open_button_pressed_cb (GtkWidget *widget,
-			      GdkEventButton *event,
-			      gpointer *user_data)
+			GdkEventButton *event,
+			gpointer *user_data)
 {
-	GtkWidget *menu;
+	static GtkWidget *menu;
 	GeditMDI *mdi;
 
 	g_return_val_if_fail (GTK_IS_BUTTON (widget), FALSE);
@@ -243,7 +272,25 @@ open_button_pressed_cb (GtkWidget *widget,
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
 
-	menu = g_object_get_data (G_OBJECT (widget), "recent-menu");
+	if (menu == NULL)
+	{
+		EggRecentViewGtk *view;
+		EggRecentModel *model;
+
+		model = gedit_recent_get_model ();
+
+		menu = gtk_menu_new ();
+		gtk_widget_show (menu);
+		view = egg_recent_view_gtk_new (menu, NULL);
+		g_signal_connect (view, "activate",
+				  G_CALLBACK (gedit_file_open_recent), NULL);
+		egg_recent_view_gtk_show_icons (view, TRUE);
+		egg_recent_view_gtk_show_numbers (view, FALSE);
+		egg_recent_view_gtk_set_tooltip_func (view, tooltip_func, NULL);
+
+		egg_recent_view_set_model (EGG_RECENT_VIEW (view), model);
+	}
+
 	gnome_popup_menu_do_popup_modal (menu,
 				menu_position_under_widget, widget,
 				event, widget, widget);
@@ -268,35 +315,10 @@ open_button_key_pressed_cb (GtkWidget *widget,
 	return FALSE;
 }
 
-static void
-tooltip_func (GtkTooltips   *tooltips,
-	      GtkWidget     *menu,
-	      EggRecentItem *item,
-	      gpointer       user_data)
-{
-	gchar *tip;
-	gchar *uri_for_display;
-
-	uri_for_display = egg_recent_item_get_uri_for_display (item);
-	g_return_if_fail (uri_for_display != NULL);
-	
-	/* Translators: %s is a URI */
-	tip = g_strdup_printf (_("Open '%s'"), uri_for_display);
-
-	g_free (uri_for_display);
-
-	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (menu), tip, NULL);
-
-	g_free (tip);
-}
-
 static GtkWidget *
 gedit_mdi_add_open_button (GeditMDI *mdi, BonoboUIComponent *ui_component,
 			 const gchar *path, const gchar *tooltip)
 {
-	GtkWidget *menu;
-	EggRecentViewGtk *view;
-	EggRecentModel *model;
 	GtkWidget *button;
 	
 	static GtkTooltips *button_tooltip = NULL;
@@ -314,20 +336,6 @@ gedit_mdi_add_open_button (GeditMDI *mdi, BonoboUIComponent *ui_component,
 
 	gtk_widget_show_all (GTK_WIDGET (button));
 
-	model = gedit_recent_get_model ();
-
-	menu = gtk_menu_new ();
-	gtk_widget_show (menu);
-	view = egg_recent_view_gtk_new (menu, NULL);
-	g_signal_connect (view, "activate",
-			  G_CALLBACK (gedit_file_open_recent), NULL);
-	egg_recent_view_gtk_show_icons (view, TRUE);
-	egg_recent_view_gtk_show_numbers (view, FALSE);
-	egg_recent_view_gtk_set_tooltip_func (view, tooltip_func, NULL);
-	
-	egg_recent_view_set_model (EGG_RECENT_VIEW (view), model);
-	g_object_set_data (G_OBJECT (button), "recent-menu", menu);
-	
 	g_signal_connect_object (button, "key_press_event",
 				 G_CALLBACK (open_button_key_pressed_cb),
 				 mdi, 0);
@@ -727,19 +735,40 @@ save_prefs:
 }
 
 static void 
-gedit_mdi_drag_data_received_handler (GtkWidget *widget, GdkDragContext *context, 
-		                      gint x, gint y, GtkSelectionData *selection_data, 
-				      guint info, guint time)
+gedit_mdi_drag_data_received_handler (GtkWidget *widget, 
+				      GdkDragContext *context, 
+		                      gint x, 
+				      gint y, 
+				      GtkSelectionData *selection_data, 
+				      guint info, 
+				      guint time)
 {
 	GList *list = NULL;
 	GSList *file_list = NULL;
 	GList *p = NULL;
-	
+	GtkWidget *target_window;
+
 	gedit_debug (DEBUG_MDI, "");
 
 	if (info != TARGET_URI_LIST)
 		return;
-			
+
+	g_return_if_fail (widget != NULL);
+
+	target_window = gtk_widget_get_toplevel (widget);
+	g_return_if_fail (BONOBO_IS_WINDOW (target_window));
+
+	/* Make sure to activate the target window so to load the
+	 * dropped files in the right window */
+	if (target_window != GTK_WIDGET(gedit_get_active_window ()))
+	{
+		GtkWidget *view;
+		view = bonobo_mdi_get_view_from_window (BONOBO_MDI (gedit_mdi),
+							BONOBO_WINDOW (target_window));
+		bonobo_mdi_set_active_view (BONOBO_MDI (gedit_mdi),
+					    view);
+	}
+					
 	list = gnome_vfs_uri_list_parse (selection_data->data);
 	p = list;
 
@@ -763,6 +792,82 @@ gedit_mdi_drag_data_received_handler (GtkWidget *widget, GdkDragContext *context
 	
 	g_slist_foreach (file_list, (GFunc)g_free, NULL);	
 	g_slist_free (file_list);
+}
+
+/*
+ * Override the gtk_text_view_drag_motion and drag_drop 
+ * functions to get URLs
+ *
+ * If the mime type is text/uri-list, then we will accept
+ * the potential drop, or request the data (depending on the
+ * function).
+ *
+ * If the drag context has any other mime type, then pass the
+ * information onto the GtkTextView's standard handlers.
+ * (widget_class->function_name).
+ *
+ * Fixes bug #89881
+ */
+
+static gboolean 
+gedit_mdi_drag_motion_handler (GtkWidget        *widget,
+			       GdkDragContext   *context,
+			       gint              x,
+			       gint              y,
+			       guint             time)
+{
+	GtkTargetList  *tl;
+	GtkWidgetClass *widget_class;
+	gboolean        result;
+
+	tl = gtk_target_list_new (drag_types, n_drag_types);
+
+	/* If this is a URL, deal with it here, or pass to the text view */
+	if (gtk_drag_dest_find_target (widget, context, tl) != GDK_NONE) 
+	{
+		gdk_drag_status (context, context->suggested_action, time);
+		result = TRUE;
+	} else
+	{
+		widget_class = GTK_WIDGET_GET_CLASS (widget);
+		result = (*widget_class->drag_motion) (widget, context, x, y, time);
+	}
+
+	gtk_target_list_unref (tl);
+
+	return result;
+}
+
+static gboolean 
+gedit_mdi_drag_drop_handler (GtkWidget        *widget,
+			     GdkDragContext   *context,
+			     gint              x,
+			     gint              y,
+			     guint             time)
+{
+	GtkTargetList  *tl;
+	GtkWidgetClass *widget_class;
+	gboolean        result;
+	GdkAtom         target;
+
+	tl = gtk_target_list_new (drag_types, n_drag_types);
+
+	/* If this is a URL, just get the drag data */
+	target = gtk_drag_dest_find_target (widget, context, tl);
+	if (target != GDK_NONE)
+	{
+		gtk_drag_get_data (widget, context, target, time);
+		result = TRUE;
+	}
+	else
+	{
+		widget_class = GTK_WIDGET_GET_CLASS (widget);
+		result = (*widget_class->drag_drop) (widget, context, x, y, time);
+	}
+
+	gtk_target_list_unref (tl);
+
+	return result;
 }
 
 static void
@@ -968,6 +1073,18 @@ gedit_mdi_add_view_handler (BonoboMDI *mdi, GtkWidget *view)
 
 	g_signal_connect (G_OBJECT (text_view), "drag_data_received",
 			  G_CALLBACK (gedit_mdi_drag_data_received_handler), 
+			  NULL);
+	/*
+	 * Get signals before the standard text view functions to deal 
+	 * with urls for text files.
+	 */
+
+	g_signal_connect (G_OBJECT (text_view), "drag_motion",
+			  G_CALLBACK (gedit_mdi_drag_motion_handler), 
+			  NULL);
+
+	g_signal_connect (G_OBJECT (text_view), "drag_drop",
+			  G_CALLBACK (gedit_mdi_drag_drop_handler), 
 			  NULL);
 
 	return TRUE;
@@ -1270,7 +1387,7 @@ gedit_mdi_set_active_window_title (BonoboMDI *mdi)
 	g_return_if_fail (uri != NULL);
 
 	/* Truncate the URI so it doesn't get insanely wide. */
-	docname = eel_str_middle_truncate (uri, MAX_URI_IN_TITLE_LENGTH);
+	docname = gedit_utils_str_middle_truncate (uri, MAX_URI_IN_TITLE_LENGTH);
 	g_free (uri);
 
 	if (gedit_document_get_modified (doc))
@@ -2046,33 +2163,33 @@ void gedit_mdi_update_languages_menu (BonoboMDI *mdi)
 static void
 update_ui_according_to_state (GeditMDI *mdi)
 {
+	GList *l;
 	GList *views;
 	GdkCursor *cursor;
 	GList *windows;
 
 	gedit_debug (DEBUG_MDI, "");
-	
+
 	/* Upate menus and toolbars */
 	gedit_mdi_set_active_window_verbs_sensitivity (BONOBO_MDI (gedit_mdi));
 
 	/* Update views editability */
 	views = bonobo_mdi_get_views (BONOBO_MDI (mdi));
-	while (views != NULL)
+
+	l = views;
+	while (l != NULL)
 	{
 		GeditView *view;
 		GeditDocument *doc;
 
-		view = GEDIT_VIEW (views->data);
+		view = GEDIT_VIEW (l->data);
 		doc = gedit_view_get_document (view);
-		
+
 		switch (gedit_mdi_get_state (mdi))
 		{
 			case GEDIT_STATE_NORMAL:
 				if (!gedit_document_is_readonly (doc))
-				{
 					gedit_view_set_editable (view, TRUE);
-				}
-
 				break;
 
 			case GEDIT_STATE_LOADING:
@@ -2083,7 +2200,7 @@ update_ui_according_to_state (GeditMDI *mdi)
 				break;
 		}
 
-		views = g_list_next (views);
+		l = g_list_next (l);
 	}
 
 	g_list_free (views);

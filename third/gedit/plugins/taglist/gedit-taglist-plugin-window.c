@@ -63,6 +63,8 @@ struct _TagListWindow
 	GtkWidget *tag_groups_combo;
 	GtkWidget *tags_list;
 
+	GtkTooltips *tooltips;
+
 	TagGroup *selected_tag_group;
 };
 
@@ -88,6 +90,7 @@ window_destroyed (GtkObject *obj,  void **window_pointer)
 	if (window_pointer != NULL)
 	{
 		GList *top_windows;
+
         	gedit_debug (DEBUG_PLUGINS, "");
 
         	top_windows = gedit_get_top_windows ();
@@ -104,12 +107,16 @@ window_destroyed (GtkObject *obj,  void **window_pointer)
 			top_windows = g_list_next (top_windows);
 		}
 
+		g_object_unref (((TagListWindow *) *window_pointer)->tooltips);
+
 		g_free (*window_pointer);
+
 		*window_pointer = NULL;	
 	}	
 }
 
-void taglist_window_show ()
+void
+taglist_window_show (void)
 {
 	GtkWidget *vbox;
 	GtkWidget *sw;
@@ -137,9 +144,12 @@ void taglist_window_show ()
 				  GDK_WINDOW_TYPE_HINT_UTILITY);
 	gtk_window_set_title (GTK_WINDOW (tag_list_window->window), 
 			      _("Tag list plugin"));
-	
+
+	tag_list_window->tooltips = gtk_tooltips_new ();
+	g_object_ref (G_OBJECT (tag_list_window->tooltips));
+	gtk_object_sink (GTK_OBJECT (tag_list_window->tooltips));
+
 	/* Connect destroy signal */
-	
 	g_signal_connect (G_OBJECT (tag_list_window->window), "destroy",
 			  G_CALLBACK (window_destroyed), &tag_list_window);
 
@@ -152,7 +162,7 @@ void taglist_window_show ()
 
 	tag_list_window->tag_groups_combo = gtk_combo_new ();
 
-	gtk_tooltips_set_tip (gtk_tooltips_new (),
+	gtk_tooltips_set_tip (tag_list_window->tooltips,
 			GTK_COMBO (tag_list_window->tag_groups_combo)->entry,
 			_("Select the group of tags you want to use"),
 			NULL);
@@ -186,7 +196,7 @@ void taglist_window_show ()
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (tag_list_window->tags_list), FALSE);
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tag_list_window->tags_list), FALSE);
 
-	gtk_tooltips_set_tip (gtk_tooltips_new (),
+	gtk_tooltips_set_tip (tag_list_window->tooltips,
 			tag_list_window->tags_list,
 			_("Double-click on a tag to insert it in the current document"),
 			NULL);
@@ -226,11 +236,10 @@ void taglist_window_show ()
 				
 	gtk_widget_show_all (GTK_WIDGET (tag_list_window->window));
 	gtk_widget_grab_focus (tag_list_window->tags_list);
-
 }
 
 void 
-taglist_window_close ()
+taglist_window_close (void)
 {
 	gedit_debug (DEBUG_PLUGINS, "");
 
@@ -436,7 +445,7 @@ tag_list_key_press_event_cb (GtkTreeView *tag_list, GdkEventKey *event)
 static void
 insert_tag (Tag *tag, gboolean focus_to_document)
 {
-	GeditView *view;
+	GtkWidget *view;
 	GeditDocument *doc;
 	gint cursor = 0;
 	gint start;
@@ -451,8 +460,8 @@ insert_tag (Tag *tag, gboolean focus_to_document)
 
 	gtk_window_set_transient_for (tag_list_window->window,
 			GTK_WINDOW (gedit_get_active_window ()));
-			
-	doc = gedit_view_get_document (view);
+
+	doc = gedit_view_get_document (GEDIT_VIEW (view));
 	g_return_if_fail (doc != NULL);
 	
 	sel = gedit_document_get_selection (doc, &start, &end);
@@ -496,7 +505,7 @@ insert_tag (Tag *tag, gboolean focus_to_document)
 	if (focus_to_document)
 	{
 		gtk_window_present (GTK_WINDOW (gedit_get_active_window ()));
-		gtk_widget_grab_focus (GTK_WIDGET (view));
+		gtk_widget_grab_focus (view);
 	}
 }
 
