@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.1 1990-04-16 11:52:53 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.2 1990-04-16 11:55:48 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.1 1990-04-16 11:52:53 epeisach Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.2 1990-04-16 11:55:48 epeisach Exp $";
 #endif lint
 
 /*
@@ -907,9 +907,8 @@ time_t	mtime;
 topq(argc, argv)
 	char *argv[];
 {
-	register int n, i;
+	register int i;
 	struct stat stbuf;
-	register char *cfname;
 	int status, changed;
 
 	if (argc < 3) {
