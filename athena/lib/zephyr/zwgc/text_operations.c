@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/text_operations.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_text_operations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/text_operations.c,v 1.2 1989-11-02 01:57:37 marc Exp $";
+static char rcsid_text_operations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/text_operations.c,v 1.3 1989-11-09 12:26:24 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -41,12 +41,12 @@ string lany(text_ptr, str)
 
 string lbreak(text_ptr, set)
      string *text_ptr;
-     character_class *set;
+     character_class set;
 {
     string result, whats_left;
     char *p = *text_ptr;
 
-    while (*p && !(*set)[*p]) p++;
+    while (*p && !set[*p]) p++;
 
     result = string_CreateFromData(*text_ptr, p - *text_ptr);
     whats_left = string_Copy(p);
@@ -58,12 +58,12 @@ string lbreak(text_ptr, set)
 
 string lspan(text_ptr, set)
      string *text_ptr;
-     character_class *set;
+     character_class set;
 {
     string result, whats_left;
     char *p = *text_ptr;
 
-    while (*p && (*set)[*p]) p++;
+    while (*p && set[*p]) p++;
 
     result = string_CreateFromData(*text_ptr, p - *text_ptr);
     whats_left = string_Copy(p);
@@ -93,13 +93,13 @@ string rany(text_ptr, str)
 
 string rbreak(text_ptr, set)
      string *text_ptr;
-     character_class *set;
+     character_class set;
 {
     string result, whats_left;
     string text = *text_ptr;
     char *p = text + strlen(text);
 
-    while (text<p && !(*set)[p[-1]]) p--;
+    while (text<p && !set[p[-1]]) p--;
 
     result = string_Copy(p);
     whats_left = string_CreateFromData(text, p - text);
@@ -111,13 +111,13 @@ string rbreak(text_ptr, set)
 
 string rspan(text_ptr, set)
      string *text_ptr;
-     character_class *set;
+     character_class set;
 {
     string result, whats_left;
     string text = *text_ptr;
     char *p = text + strlen(text);
 
-    while (text<p && (*set)[p[-1]]) p--;
+    while (text<p && set[p[-1]]) p--;
 
     result = string_Copy(p);
     whats_left = string_CreateFromData(text, p - text);

@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.h,v $
  *      $Author: jtkohl $
- *	$Id: character_class.h,v 1.3 1989-11-08 14:35:34 jtkohl Exp $
+ *	$Id: character_class.h,v 1.4 1989-11-09 12:26:20 jtkohl Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -25,6 +25,6 @@
 
 typedef char character_class[NUMBER_OF_CHARACTERS];
 
-extern character_class *string_to_character_class();
+extern /* character_class */ char * string_to_character_class();
 
 #endif

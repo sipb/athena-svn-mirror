@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,16 +13,22 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_character_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.c,v 1.2 1989-11-02 01:55:18 marc Exp $";
+static char rcsid_character_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.c,v 1.3 1989-11-09 12:26:05 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
 
 #include "character_class.h"
 
+/* 
+ * It may look like we are passing the cache by value, but since it's
+ * really an array we are passing by reference.  C strikes again....
+ */
+
 static character_class cache;
 
-character_class *string_to_character_class(str)
+/* character_class */
+char * string_to_character_class(str)
      string str;
 {
     int i;
@@ -32,5 +38,5 @@ character_class *string_to_character_class(str)
     for (i=0; i<strlen(str); i++)
       cache[str[i]] = 1;
 
-    return(&cache);
+    return(cache);
 }
