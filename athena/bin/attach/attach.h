@@ -251,6 +251,8 @@ struct cache_ent {
 #define ERR_DETACHINUSE 21	/* Filesystem in use by another proc */
 #define ERR_DETACHNOTALLOWED 22	/* User not allowed to do operations */
 
+#define	ERR_ZINITZLOSING	20	/* Random zephyr lossage */
+
 /*
  * Zephyr definitions
  */
@@ -337,7 +339,7 @@ extern void	get_attachtab(void), free_attachtab(void);
 extern int	afs_auth(const char *, const char *, int);
 #endif
 #ifdef ZEPHYR
-extern	void	zephyr_sub(void), zephyr_unsub(void);
+extern	int	zephyr_sub(int), zephyr_unsub(int);
 extern	void	zephyr_addsub(const char *);
 #endif
 #else
