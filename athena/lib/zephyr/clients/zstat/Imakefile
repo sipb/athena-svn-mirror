@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v 1.2 1989-03-23 11:21:05 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v 1.3 1989-03-23 17:06:28 jtkohl Exp $
 /**/#
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
@@ -15,6 +15,8 @@ OBJS = zstat.o
 SRCDIR= ${SRCTOP}/clients/zstat
 CODE= ${SRCS} Imakefile
 
+depend::
+	(cd ../../server; make zserver.h)
 normal_obj_rule()
 
 program(zstat,${OBJS},,${LIBS},${CLIENTDIR})
