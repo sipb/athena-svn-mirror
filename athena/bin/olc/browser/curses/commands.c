@@ -27,7 +27,7 @@
 
 #ifndef lint
 static char *rcsid_commands_c = "$Header: ";
-#endif	lint
+#endif
 
 #include <mit-copyright.h>
 

@@ -23,13 +23,13 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.6 1991-04-14 17:25:59 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.7 1991-09-22 12:53:45 lwvanels Exp $
  */
 
 
 #ifndef lint
 static char *rcsid_display_c = "$Header: ";
-#endif	lint
+#endif
 
 #include <mit-copyright.h>
 
