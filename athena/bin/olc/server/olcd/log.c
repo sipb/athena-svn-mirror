@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.29 1990-12-17 08:30:59 lwvanels Exp $
+ *	$Id: log.c,v 1.30 1991-01-01 13:57:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.29 1990-12-17 08:30:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.30 1991-01-01 13:57:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -354,7 +354,7 @@ init_log(knuckle, question, machinfo)
   fprintf(logfile, "Question:\n");
   write_line_to_log(logfile, question);
   if (machinfo != NULL)
-    fprintf(logfile, "\nMachine info:\t%s\n", trans_m_i(machinfo));
+    fprintf(logfile, "\nMachine info:%s\n", trans_m_i(machinfo));
   write_line_to_log(logfile,"___________________________________________________________\n\n");
   fprintf(logfile, "\n");
   (void) fclose(logfile);
@@ -569,6 +569,7 @@ char *os;
   FILE *trans_file;
   int i,size;
   static char stuff[BUF_SIZE];
+  char tmp_buf[BUF_SIZE];
 
   strcpy(stuff,os);
   if (n_mach == -1) {
@@ -599,29 +600,33 @@ char *os;
     }
   }
 
+  /* This assumes all machines have a processor and memory (not a bad */
+  /* assumption, I hope... */
+
   /* look for processor field */
   p = index(os,',');
   if (p == NULL)
     return(stuff);
   *p = '\0';
   o_mach = os;
+  
+  p = p+1;
+  /* Look backwards for second comma to get memory */
 
-  /* look for display field */
-  o_disp = p+1;
-  p = index(o_disp,',');
-  if (p == NULL)
+  memory = rindex(p,',');
+  if (memory==NULL)
     return(stuff);
-  *p = '\0';
-
-  /* should be done, only one more comma */
-  memory = p +1;
-  p = index(memory,',');
-  if (p == NULL)
-    return(stuff);
-  p = p +1;
-  p = index(p,',');
-  if (p != NULL)
-    return(stuff);
+  *memory = ';';
+  memory = rindex(p,',');
+  if (memory==NULL) {
+    memory = p;
+    o_disp = "none\n";
+  }
+  else {
+    *memory = '\0';
+    memory++;
+    o_disp = p+1;
+  }
 
   /* strip whitespace off of front of machine name */
   while (*o_mach == ' ')
@@ -632,20 +637,31 @@ char *os;
       o_mach = mach[i].trans;
       break;
     }
+  sprintf(stuff,"\nProcessor: %s",o_mach);
   
-  while (*o_disp == ' ')
-    o_disp++;
-  size = strlen(o_disp);
-  for(i=0;i<n_disp;i++)
-    if (strncmp(o_disp,disp[i].orig,size) == 0) {
-      o_disp = disp[i].trans;
-      break;
+  while (o_disp != NULL) {
+    p = index(o_disp,',');
+    if (p != NULL) {
+      *p = '\0';
+      p++;
     }
+    while (*o_disp == ' ')
+      o_disp++;
+    size = strlen(o_disp);
+    for(i=0;i<n_disp;i++)
+      if (strncmp(o_disp,disp[i].orig,size) == 0) {
+	o_disp = disp[i].trans;
+	break;
+      }
+    sprintf(tmp_buf,"Display  : %s",o_disp);
+    strcat(stuff,tmp_buf);
+    o_disp = p;
+  }
 
   while (*memory == ' ')
     memory++;
 
-  sprintf(stuff,"\nProcessor: %sDisplay  : %sMemory   : %s", o_mach, o_disp,
-	  memory);
+  sprintf(tmp_buf,"Memory   : %s",memory);
+  strcat(stuff,tmp_buf);
   return(stuff);
 }
