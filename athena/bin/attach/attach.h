@@ -319,8 +319,27 @@ extern char *abort_msg;
    byte IP addrs */
 #ifdef __HIGHC__
 #define bcopy(src, dest, cnt)	memcpy(dest, src, cnt)
+extern char *memcpy();
 #endif
 #ifdef __STDC__
-extern int nfsid(char *, struct in_addr, int, int, char *, int, int);
-extern AUTH *spoofunix_create_default(char *, int);
+#ifdef NFS
+extern int	nfsid(const char *, struct in_addr, int, int, const char *, int, int);
+extern AUTH	*spoofunix_create_default(char *, int);
+#endif
+extern int	attach(const char *), detach(const char *);
+extern	void	detach_all(void), detach_host(const char *);
+extern int	read_config_file(const char *);
+extern int	parse_username(const char *);
+extern int	trusted_user(int);
+extern void	lock_attachtab(void), unlock_attachtab(void);
+extern void	get_attachtab(void), free_attachtab(void);
+#ifdef AFS
+extern int	afs_auth(const char *, const char *, int);
+#endif
+#ifdef ZEPHYR
+extern	void	zephyr_sub(void), zephyr_unsub(void);
+extern	void	zephyr_addsub(const char *);
+#endif
+#else
+#define	const
 #endif
