@@ -1,12 +1,11 @@
 #!/bin/sh -
-# Version-specific update script for 7.6A
+# Version-specific update script for 7.6B
 
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
 case ${MACH} in
 VS2*)	;;
 DS*)
-	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	;;
 RSAIX)
 	;;
