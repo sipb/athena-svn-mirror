@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.5 1991-03-26 09:13:09 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.6 1991-04-08 21:27:25 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
@@ -98,8 +98,8 @@ void main(argc, argv)
   if (spid != 0) {
     kill(spid,SIGUSR1);
   }
-#ifdef LOG
-  log_startup("xstock");
+#ifdef LOG_USAGE
+  log_startup("xstock",LOGGER_HOST);
 #endif
   XtMainLoop();
 }
