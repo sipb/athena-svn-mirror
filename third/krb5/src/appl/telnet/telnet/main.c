@@ -323,7 +323,8 @@ main(argc, argv)
 	if (autologin == -1) {
 		if (rlogin != _POSIX_VDISABLE)
 			autologin = 1;
-		else {
+		else if (argc - optind == 1) {
+			/* (User specified destination host, but not port) */
 			/* Try encryption, but don't require it */
 			autologin = 1;
 #ifdef	ENCRYPTION
@@ -336,7 +337,8 @@ main(argc, argv)
 			forward_flags |= OPTS_FORWARD_CREDS;
 #endif
 			fputs(STARTUP_MESSAGE_DEFAULT, stderr);
-		}
+		} else
+			autologin = 0;
 	}
 
 	argc -= optind;
