@@ -40,8 +40,8 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #ifdef AfterVendorCF
 
 #undef ProjectRoot
-#define UsrLibDir	/usr/athena/lib
-#define Bindir 		/usr/athena/bin
+#define ProjectRoot	$(DESTDIR)/usr/athena
+
 #ifdef PS2Architecture
 #define ExtraLoadFlags  -T0x400000
 #define	HasSaberC	YES			/* stop jik from flaming */
@@ -109,18 +109,16 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #undef ExtraLoadFlags
 #endif
 
-#define	XAppLoadDir /usr/athena/lib/X11/app-defaults
-#define	ConfigDir /usr/athena/lib/X11/config
-#define	TwmDir /usr/athena/lib/X11/twm
+/* somewhere in EZ
+compiler flags: -G -fpic
+loader flags: -R XSharedFilePath */
+
 #define	XSharedFilePath /usr/athena/lib/X11/lib
 
 /* MIT Athena path for app-defaults, etc. */
 
 #define XFileSearchPathBase /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
 #define XFileSearchPathDefault /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
-#define	ManDirectoryRoot /usr/athena/man
-
-#define	IncRoot /usr/athena/include
 
 #define MotifBC	YES
 
