@@ -5,7 +5,7 @@
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
 #	$Author: probe $
-#	$Id: zwgc.desc,v 1.11 1993-11-19 15:04:46 probe Exp $
+#	$Id: zwgc.desc,v 1.12 1994-04-29 11:59:32 probe Exp $
 #
 #
 # Default WindowGram description file
@@ -118,14 +118,7 @@ match "message"
 		" on "+$date+"\n"+$ftext+" on "+$fromhost+"\nTo: "+
 		$recipient+")\n\n"
 	print $body
-	case $auth
-	match "yes"
-	  put
-	match "no","forged"
-	  set X_geometry="-0-80"
-	  put
-	  set X_geometry=""
-	endcase
+	put
 	exit
 
 match "login"
