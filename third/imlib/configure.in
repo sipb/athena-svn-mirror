@@ -157,8 +157,6 @@ else
   GX_LIBS="$GTK_LIBS"
 fi
 
-CPPFLAGS="$CPPFLAGS -I$includedir -I$prefix/include"
-
 SUPPORT_LIBS=""
 
 dnl Test for shared memory headers and semantics, unless we are
