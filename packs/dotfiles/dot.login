@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.4 1987-08-04 22:54:11 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.5 1987-08-22 18:44:57 rfrench Exp $
 
 # First, source the standard login script.  If it can't be found, notify
 # the user and execute some backup commands.
@@ -61,3 +61,13 @@ endif
 # environment:
 
 set noglob; eval `tset -s -I -Q -m 'switch:?vt100' -m 'network:?vt100'`
+
+# If you want to use the Zephyr notification system, uncomment the indicated
+# lines below, as well as the indicated line in .logout.  Note that Zephyr
+# is EXPERIMENTAL software at this time and is not yet a standard part of
+# the Athena environment.
+#
+# Uncomment the next three lines to use Zephyr
+# /usr/athena/zlogin >& /dev/null
+# /usr/etc/zwgc &
+# (sleep 10; /usr/athena/zinit) &
