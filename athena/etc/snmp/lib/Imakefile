@@ -1,8 +1,0 @@
-#
-# Imakefile to build NYSERNet snmp library
-#
-# Compile src files
-
-#define ISUBDIRS parser builder comm server util obj
-
-
