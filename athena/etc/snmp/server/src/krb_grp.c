@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/krb_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 02:02:40  tom
+ *    release 7.4
+ *    	used make_str to format string
+ *
  * Revision 1.5  90/06/05  16:08:14  tom
  * deleted srvtab code
  * 
@@ -32,7 +36,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/krb_grp.c,v 2.0 1992-04-22 02:02:40 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/krb_grp.c,v 2.1 1997-02-27 06:47:34 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -58,7 +62,7 @@ lu_kerberos(varnode, repl, instptr, reqflg)
 {
   int num;
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
 
   if (varnode->flags & NOT_AVAIL || varnode->offset <= 0)
     return (BUILD_ERR);
@@ -76,7 +80,7 @@ lu_kerberos(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   
   switch(varnode->offset)
     {

@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 01:59:26  tom
+ *    added make_str construct
+ *
  * Revision 1.4  90/05/26  13:41:43  tom
  * athena release 7.0e
  * 
@@ -28,7 +31,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v 2.0 1992-04-22 01:59:26 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v 2.1 1997-02-27 06:48:00 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -54,7 +57,7 @@ stattime(file)
   struct stat statbuf;
   char *c, *t;
 
-  bzero(&statbuf, sizeof(struct stat));
+  memset(&statbuf, 0, sizeof(struct stat));
 
   if(!file)
     return(file);

@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 01:48:49  tom
+ *    release 7.4
+ *    	added table for afs config files
+ *
  * Revision 1.6  90/07/17  14:16:53  tom
  * error in cast
  * 
@@ -31,7 +35,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 2.0 1992-04-22 01:48:49 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 2.1 1997-02-27 06:47:18 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -70,7 +74,7 @@ lu_afs(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   switch(varnode->offset)
@@ -118,8 +122,7 @@ lu_afsdb(varnode, repl, instptr, reqflg)
   if (varnode->flags & NOT_AVAIL || varnode->offset <= 0)
     return(BUILD_ERR);
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name,
-	 sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   
   switch(varnode->offset)
     {
@@ -153,7 +156,7 @@ lu_afsdb(varnode, repl, instptr, reqflg)
 	{
 	  repl->val.type = IPADD;
 	  tmp = inet_addr(str);
-	  bcopy(&tmp, &(repl->val.value.ipadd), sizeof(tmp));
+	  memcpy(&(repl->val.value.ipadd), &tmp, sizeof(tmp));
 	  return(BUILD_SUCCESS);
 	}
       else
@@ -170,7 +173,7 @@ afs_this_cell()
   if((fp = fopen(afs_cell_file, "r")) == (FILE *) NULL)
     return((char *) NULL);
   
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   while(fgets(lbuf, sizeof(lbuf) - 1, fp) != (char *) NULL)
     {
       if((*lbuf == '\0') || (*lbuf == '#'))
@@ -204,7 +207,7 @@ get_afs_suid_cell(num, reqflg, first)
   if((reqflg == REQ) || first);
     oncemore = 0;
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   while(fgets(lbuf, sizeof(lbuf) - 1, fp) != (char *) NULL)
     {
       if((*lbuf == '\0') || (*lbuf == '#'))
@@ -258,7 +261,7 @@ get_afs_db(instptr, reqflg, offset)
     sprintf(addr, "%d.%d.%d.%d", instptr->cmp[0], instptr->cmp[1],
 	    instptr->cmp[2], instptr->cmp[3]);
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   while(fgets(lbuf, sizeof(lbuf) - 1, fp) != (char *) NULL)
     {
       c = lbuf;
@@ -276,7 +279,7 @@ get_afs_db(instptr, reqflg, offset)
 	      more = 1;
 	    }
 	  strncpy(cell, &(lbuf[1]), sizeof(cell));
-	  bzero(comment, sizeof(comment));
+	  memset(comment, 0, sizeof(comment));
 	  if(!more)
 	    continue;
 	    

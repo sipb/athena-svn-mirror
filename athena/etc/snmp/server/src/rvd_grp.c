@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v $
- *    $Author: vrt $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.2  1994/03/07 15:15:06  vrt
+ *    solaris does nothave machineio/vdreg.h
+ *
  * Revision 2.1  93/06/18  14:35:46  root
  * first cut at solaris port
  * 
@@ -32,7 +35,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 2.2 1994-03-07 15:15:06 vrt Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 2.3 1997-02-27 06:47:46 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -98,7 +101,7 @@ lu_rvdcl(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   repl->val.type = CNTR;  /* True of all the replies */

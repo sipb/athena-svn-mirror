@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/traps.c,v 1.2 1990-05-26 13:41:37 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/traps.c,v 1.3 1997-02-27 06:47:57 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1990/05/26 13:41:37  tom
+ * athena release 7.0e
+ *
  * Revision 1.1  90/04/26  18:16:12  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/traps.c,v 1.2 1990-05-26 13:41:37 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/traps.c,v 1.3 1997-02-27 06:47:57 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -57,14 +60,14 @@ send_snmp_trap(strptyp)
 	/*
 	 * clean the slate
 	 */
-	bzero((char *)&trpmsgbuf, sizeof(trpmsgbuf));
-	bzero((char *)&trpdst, sizeof(trpdst));
+	memset(&trpmsgbuf, 0, sizeof(trpmsgbuf));
+	memset(&trpdst, 0, sizeof(trpdst));
 
 	/*
 	 *  construct the trap message.
 	 */
-	bcopy((char *)&local.sin_addr, (char *)&trpmsgbuf.agnt, sizeof(trpmsgbuf.agnt));
-	bcopy((char *)&sys_obj_id, (char *)&trpmsgbuf.ent, sizeof(sys_obj_id));
+	memcpy(&trpmsgbuf.agnt, &local.sin_addr, sizeof(trpmsgbuf.agnt));
+	memcpy(&trpmsgbuf.ent, &sys_obj_id, sizeof(sys_obj_id));
 
 	trpmsgbuf.gtrp = strptyp;
 #ifdef MIT
@@ -97,8 +100,7 @@ send_snmp_trap(strptyp)
 		if (p->flags & TRAP_SESS) {
 			adlist = p->userlst;
 			while (adlist != (struct inaddrlst *)NULL) {
-				bcopy((char *)&adlist->sess_addr,
-				      (char *)&trpdst.sin_addr,
+				memcpy(&trpdst.sin_addr,&adlist->sess_addr,
 				      sizeof(trpdst.sin_addr));
         			trpsendcode = snmpservsend(snmp_socket,
 						TRP,

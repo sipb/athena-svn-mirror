@@ -12,9 +12,14 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v $
- *    $Author: cfields $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.3  1994/08/15 15:03:17  cfields
+ *    Do different dir stuff for SOLARIS as well as POSIX - but isn't
+ *    POSIX supposed to be defined here anyway?
+ *    7.7 checkin; changes by vrt
+ *
  * Revision 2.2  94/03/07  15:16:45  vrt
  * defining posix did not solve the problem of make depend but
  * seting the flag to solaris did.
@@ -40,7 +45,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 2.3 1994-08-15 15:03:17 cfields Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 2.4 1997-02-27 06:47:35 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -85,7 +90,7 @@ lu_mail(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
   repl->val.type = INT;
   if((repl->val.value.intgr = crock_mailq()) != BUILD_SUCCESS)

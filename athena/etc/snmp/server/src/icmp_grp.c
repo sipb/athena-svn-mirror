@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/icmp_grp.c,v 1.2 1990-05-26 13:37:29 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/icmp_grp.c,v 1.3 1997-02-27 06:47:28 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1990/05/26 13:37:29  tom
+ * athena release 7.0e
+ *
  * Revision 1.1  90/04/26  16:32:49  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/icmp_grp.c,v 1.2 1990-05-26 13:37:29 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/icmp_grp.c,v 1.3 1997-02-27 06:47:28 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -82,8 +85,7 @@ lu_icmp(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-                sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	switch (varnode->offset) {

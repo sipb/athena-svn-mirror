@@ -1,9 +1,13 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.2 1994-08-15 15:04:10 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.3 1997-02-27 06:47:22 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1994/08/15 15:04:10  cfields
+ * Define NGROUPS for Solaris.
+ * 7.7 checkin; changes by vrt
+ *
  * Revision 2.1  93/06/18  14:32:32  tom
  * first cut at solaris port
  * 
@@ -40,7 +44,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.2 1994-08-15 15:04:10 cfields Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.3 1997-02-27 06:47:22 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -90,7 +94,7 @@ parse_config(fd)
          * we'll do things a bit differently. 
 	 */
 
-	bzero(gw_version_id, sizeof(gw_version_id));
+	memset(gw_version_id, 0, sizeof(gw_version_id));
 	strcpy(mail_q,            MAIL_Q);
 	strcpy(mail_alias_file,   MAIL_ALIAS_FILE);
 	strcpy(rc_file,           RC_FILE);
@@ -455,7 +459,7 @@ add_sess(nam, saddr, flgs)
 	haddr.s_addr = 0;
 	if(!isdigit(*saddr))
 	  if(hp = gethostbyname(saddr))
-	    bcopy(hp->h_addr, &(haddr.s_addr), hp->h_length);
+	    memcpy(&(haddr.s_addr), hp->h_addr, hp->h_length);
 #endif /* MIT */
 
 	/*

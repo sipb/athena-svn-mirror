@@ -12,13 +12,13 @@
  * 15 April 1992
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vers_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vers_grp.c,v 2.0 1992-04-22 02:04:16 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vers_grp.c,v 2.1 1997-02-27 06:48:01 ghudson Exp $";
 #endif
 
 
@@ -63,7 +63,7 @@ lu_relvers(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
   switch(varnode->offset)
@@ -113,7 +113,7 @@ lu_spnum(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
   switch(varnode->offset)
@@ -165,7 +165,7 @@ lu_spvers(varnode, repl, instptr, reqflg)
   if(num > 1)
     return(BUILD_ERR);
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.cmp[repl->name.ncmp] = num;
   repl->name.ncmp++;			/* include the "0" instance */
 
@@ -216,7 +216,7 @@ lu_snmpvers(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
   switch(varnode->offset)
@@ -255,7 +255,7 @@ get_ws_version(file)
       return((char *) NULL);
     }
 
-  bzero(string, sizeof(string));
+  memset(string, 0, sizeof(string));
   while(fgets(lbuf, sizeof(lbuf) - 1, fp) != NULL)
     if(*lbuf != '\n')
       strncpy(string, lbuf, sizeof(string));

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.2 1990-05-26 13:41:29 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.3 1997-02-27 06:47:55 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1990/05/26 13:41:29  tom
+ * athena release 7.0e
+ *
  * Revision 1.1  90/04/26  18:15:13  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.2 1990-05-26 13:41:29 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/tcp_grp.c,v 1.3 1997-02-27 06:47:55 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -183,20 +186,20 @@ find_tcpconn(connoid, inpcbv, tsock, tcbv, flgs)
 		 */
 		cmpval = oidcmp(connoid, &tmpoid);
 		if ((cmpval == 0) && (flgs & (REQ|GET_LEX_NEXT))) {
-			bcopy((char *)&tcpsock, (char *)tsock, sizeof(tcpsock));
-			bcopy((char *)&tcpb, (char *)tcbv, sizeof(tcpb));
-			bcopy((char *)&inpcb, (char *)inpcbv, sizeof(inpcb));
-			bcopy((char *)&tmpoid, (char *)connoid, sizeof(tmpoid));
+			memcpy(tsock, &tcpsock, sizeof(tcpsock));
+			memcpy(tcbv, &tcpb, sizeof(tcpb));
+			memcpy(inpcbv, &inpcb, sizeof(inpcb));
+			memcpy(connoid, &tmpoid, sizeof(tmpoid));
 			return(BUILD_SUCCESS);
 		}
 		else if (flgs & (NXT|GET_LEX_NEXT)) {
 			if ((cmpval < 0) && (firstone || (oidcmp(&tmpoid, &curroid) < 0))) {
 				firstone = 0;
 				foundone = 1;
-				bcopy((char *)&tcpsock,(char *)tsock,sizeof(tcpsock));
-				bcopy((char *)&tcpb,(char *)tcbv,sizeof(tcpb));
-				bcopy((char *)&inpcb,(char *)inpcbv,sizeof(inpcb));
-				bcopy((char *)&tmpoid,(char *)&curroid,sizeof(tmpoid));
+				memcpy(tsock,&tcpsock,sizeof(tcpsock));
+				memcpy(tcbv,&tcpb,sizeof(tcpb));
+				memcpy(inpcbv,&inpcb,sizeof(inpcb));
+				memcpy(&curroid,&tmpoid,sizeof(tmpoid));
 
 			}
 		}
@@ -205,7 +208,7 @@ find_tcpconn(connoid, inpcbv, tsock, tcbv, flgs)
 	if ((flgs == REQ) || (foundone == 0))
 		return(BUILD_ERR);
 
-	bcopy((char *)&curroid, (char *)connoid, sizeof(curroid));
+	memcpy(connoid, &curroid, sizeof(curroid));
 
 	return(BUILD_SUCCESS);
 }
@@ -229,7 +232,7 @@ lu_tcpconnent(varnode, repl, instptr, reqflg)
 	if (varnode->offset <= 0)
 		return(BUILD_ERR);
 
-	bzero((char *)&tmpident, sizeof(tmpident));
+	memset(&tmpident, 0, sizeof(tmpident));
 
 	/*
 	 */
@@ -249,24 +252,22 @@ lu_tcpconnent(varnode, repl, instptr, reqflg)
 	/*
 	 *  fill in variable name we are sending back a response for.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 
 	/*
 	 *  fill in the object instance and return value!
 	 */
-	bcopy((char *)instptr->cmp,
-		(char *)(repl->name.cmp + repl->name.ncmp),
+	memcpy((repl->name.cmp + repl->name.ncmp), instptr->cmp,
 		sizeof(u_long)*instptr->ncmp);
 	repl->name.ncmp += instptr->ncmp;
 
 	switch (varnode->offset) {
 		case N_LADD:
-			bcopy((char *)&inpcbvar.inp_laddr, (char *)&repl->val.value.ipadd, sizeof(inpcbvar.inp_laddr));
+			memcpy(&repl->val.value.ipadd, &inpcbvar.inp_laddr, sizeof(inpcbvar.inp_laddr));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
 		case N_FADD:
-			bcopy((char *)&inpcbvar.inp_faddr, (char *)&repl->val.value.ipadd, sizeof(inpcbvar.inp_faddr));
+			memcpy(&repl->val.value.ipadd, &inpcbvar.inp_faddr, sizeof(inpcbvar.inp_faddr));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
 		case N_LPRT:
@@ -330,8 +331,7 @@ lu_tcpstat(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-                sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	switch (varnode->offset) {
@@ -431,8 +431,7 @@ lu_tcprtos(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-                sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	switch (varnode->offset) {

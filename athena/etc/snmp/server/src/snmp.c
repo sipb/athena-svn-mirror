@@ -1,9 +1,13 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 2.0 1992-04-22 02:00:11 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 2.1 1997-02-27 06:47:47 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  1992/04/22 02:00:11  tom
+ * release 7.4
+ * 	suppresed community name logging
+ *
  * Revision 1.2  90/05/26  13:40:34  tom
  * athena release 7.0e - silenced some common error conditions
  * 
@@ -34,7 +38,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 2.0 1992-04-22 02:00:11 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 2.1 1997-02-27 06:47:47 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -87,9 +91,9 @@ snmpin(from, size, pkt)
 		syslog(LOG_ERR, "snmpin: malloc: %m");
 		return;
 	}
-	bzero(thesession, (SNMPMXSID + 1));
-	bzero(decmsg, sizeof (pdu_type));
-	bzero(replymsg, sizeof (pdu_type));
+	memset(thesession, 0, (SNMPMXSID + 1));
+	memset(decmsg, 0, sizeof (pdu_type));
+	memset(replymsg, 0, sizeof (pdu_type));
 
 	/*
 	 *  Pass input buffer to ASN.1 parser for parsing.  See what
@@ -261,7 +265,7 @@ snmp_init()
 		trapport = &snmptrap;
 	}
 	else {
-		bcopy((char *)trapport, (char *)&snmptrap, sizeof(snmptrap));
+		memcpy(&snmptrap, trapport, sizeof(snmptrap));
 		trapport = &snmptrap;
 	}
 
@@ -593,10 +597,10 @@ procreq(getmsg, reppkt, flgs)
 	 	 *  appropriate place.  This will be used by the
 		 *  specific lookup routine.
 		 */
-		bzero((char *)&inst_ptr, sizeof(inst_ptr));
+		memset(&inst_ptr, 0, sizeof(inst_ptr));
 		if (treeptr->flags & LEAF_NODE) {
 			inst_ptr.ncmp = getmsg->varlist.elem[cnt].name.ncmp - (lencnt - 1);
-			bcopy((char *)c, (char *)inst_ptr.cmp, sizeof(u_long) * inst_ptr.ncmp);
+			memcpy(inst_ptr.cmp, c, sizeof(u_long) * inst_ptr.ncmp);
 		}
 
 
@@ -653,7 +657,7 @@ trynext:
 			}
 
 			flgs = GET_LEX_NEXT;
-			bzero((char *)&inst_ptr, sizeof(inst_ptr));
+			memset(&inst_ptr, 0, sizeof(inst_ptr));
 		}
 	
 		/*
@@ -686,8 +690,8 @@ trynext:
 				goto done;
 			}
 			else {  /* get the NEXT! */
-				bcopy((char *)treeptr->var_code,
-	 				(char *)&getmsg->varlist.elem[cnt].name,
+				memcpy(&getmsg->varlist.elem[cnt].name,
+					treeptr->var_code,
 	 				sizeof(getmsg->varlist.elem[cnt].name));
 				lencnt = getmsg->varlist.elem[cnt].name.ncmp+1;
 				not_truncated_var = 1;
@@ -974,8 +978,8 @@ procset(setmsg, reppkt, flgs)
 		 */
 		settmp->tptr = treeptr;
 		settmp->ob_inst.ncmp = setmsg->varlist.elem[cnt].name.ncmp-(lencnt-1);
-		bcopy((char *)c,(char *)settmp->ob_inst.cmp,sizeof(u_long)*settmp->ob_inst.ncmp);
-		bcopy((char *)&setmsg->varlist.elem[cnt].val,(char *)&settmp->setv,sizeof(objval));
+		memcpy(settmp->ob_inst.cmp,c,sizeof(u_long)*settmp->ob_inst.ncmp);
+		memcpy(&settmp->setv,&setmsg->varlist.elem[cnt].val,sizeof(objval));
 		settmp->next = (struct set_struct *)NULL;
 		settmp->back = (struct set_struct *)NULL;
 

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.2 1994-08-15 15:05:01 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.3 1997-02-27 06:47:32 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1994/08/15 15:05:01  cfields
+ * include sys/sockio.h for Solaris
+ *
  * Revision 2.1  93/06/18  14:33:05  tom
  * first cut at solaris port
  * 
@@ -37,7 +40,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.2 1994-08-15 15:05:01 cfields Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.3 1997-02-27 06:47:32 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -115,21 +118,18 @@ find_ifnet_byaddr(ipaddr, ifnetvar, ifindex, msgflgs, retaddr)
 			if (ifaddr.ifa.ifa_addr.sa_family == AF_INET) {
 				if ((msgflgs == REQ) &&
 				    (ts->sin_addr.s_addr == ipaddr->s_addr)) {
-					bcopy((char *)ifnetvar, (char *)&tmpif,
-							 sizeof(tmpif));
-					bcopy((char *)&ts->sin_addr,
-						 (char *)retaddr,
+					memcpy(&tmpif, ifnetvar,
+						 sizeof(tmpif));
+					memcpy(retaddr, &ts->sin_addr,
 						 sizeof(struct in_addr));
 					*ifindex = cnt;
 					return(BUILD_SUCCESS);
 				}
 				else if (msgflgs & (NXT|GET_LEX_NEXT)) {
 					if ((ts->sin_addr.s_addr > ipaddr->s_addr) && (ts->sin_addr.s_addr < retaddr->s_addr)) {
-						bcopy((char *)ifnetvar,
-							 (char *)&tmpif,
+						memcpy(&tmpif, ifnetvar,
 							 sizeof(tmpif));
-						bcopy((char *)&ts->sin_addr,
-							 (char *)retaddr,
+						memcpy(retaddr, &ts->sin_addr,
 							 sizeof(struct in_addr));
 						*ifindex = cnt;
 					}
@@ -144,19 +144,17 @@ find_ifnet_byaddr(ipaddr, ifnetvar, ifindex, msgflgs, retaddr)
 		if (ifnetvar->if_addr.sa_family == AF_INET) {
 			if ((msgflgs & REQ) &&
 			    (ts->sin_addr.s_addr == ipaddr->s_addr)) {
-				bcopy((char *)ifnetvar, (char *)&tmpif,
-						 sizeof(tmpif));
-				bcopy((char *)&ts->sin_addr, (char *)retaddr,
+				memcpy(&tmpif, ifnetvar, sizeof(tmpif));
+				memcpy(retaddr, &ts->sin_addr,
 						 sizeof(struct in_addr));
 				*ifindex = cnt;
 				return(BUILD_SUCCESS);
 			}
 			else if (msgflgs & (NXT|GET_LEX_NEXT)) {
 				if ((ts->sin_addr.s_addr > ipaddr->s_addr) && (ts->sin_addr.s_addr < retaddr->s_addr)) {
-					bcopy((char *)ifnetvar, (char *)&tmpif,
+					memcpy(&tmpif, ifnetvar,
 						 sizeof(tmpif));
-					bcopy((char *)&ts->sin_addr,
-						 (char *)retaddr,
+					memcpy(retaddr, &ts->sin_addr,
 						 sizeof(struct in_addr));
 					*ifindex = cnt;
 				}
@@ -168,7 +166,7 @@ find_ifnet_byaddr(ipaddr, ifnetvar, ifindex, msgflgs, retaddr)
 	if ((msgflgs & REQ) || (*ifindex == 0))
 		return(BUILD_ERR);
 
-	bcopy((char *)&tmpif, (char *)ifnetvar, sizeof(tmpif));
+	memcpy(ifnetvar, &tmpif, sizeof(tmpif));
 
 	return(BUILD_SUCCESS);
 }
@@ -203,8 +201,8 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 	if (varnode->offset <= 0)
 		return(BUILD_ERR);
 
-	bzero((char *)&keynet, sizeof(keynet));
-	bzero((char *)&tmp, sizeof(tmp));
+	memset(&keynet, 0, sizeof(keynet));
+	memset(&tmp, 0, sizeof(tmp));
 
 	/*
 	 *  find the correct interface structure and
@@ -238,8 +236,7 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 	/*
 	 *  fill in variable name we are sending back a response for.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 
 	/*
 	 *  fill in the object instance and return value!
@@ -255,7 +252,7 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 
 	switch (varnode->offset) {
 		case N_IPADD:
-			bcopy((char *)&tmp, (char *)&repl->val.value.ipadd, sizeof(tmp));
+			memcpy(&repl->val.value.ipadd, &tmp, sizeof(tmp));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
 		case N_IPIND:
@@ -334,7 +331,7 @@ lu_ipadd(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 			sin = (struct sockaddr_in *)&if_info.ifr_addr;
-			bcopy((char *)&sin->sin_addr, (char *)&repl->val.value.ipadd, sizeof(sin->sin_addr));
+			memcpy(&repl->val.value.ipadd, &sin->sin_addr, sizeof(sin->sin_addr));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
 		default:
@@ -368,7 +365,7 @@ find_a_rt(rtaddr, srte, msgflgs)
 	struct in_addr tmpsa;
 	int doinghost = 1;
 
-	bzero((char *)&mb, sizeof(mb));
+	memset(&mb, 0, sizeof(mb));
 	tmpsa.s_addr = 0xffffffff;
 
 	/*
@@ -458,15 +455,15 @@ dohost:
 
 			if ((msgflgs & (REQ|GET_LEX_NEXT)) &&
 			   (sin->sin_addr.s_addr == rtaddr->sin_addr.s_addr)) {
-				bcopy((char *)rte1, (char *)srte, sizeof(struct rtentry));
+				memcpy(srte, rte1, sizeof(struct rtentry));
 				return(BUILD_SUCCESS);
 			}
 			else if (msgflgs & (NXT|GET_LEX_NEXT)) {
 				if ((sin->sin_addr.s_addr > rtaddr->sin_addr.s_addr) && (sin->sin_addr.s_addr < tmpsa.s_addr)) {
-					bcopy((char *)rte1, (char *)&tmprt,
+					memcpy(&tmprt, rte1,
 						 sizeof(tmprt));
-					bcopy((char *)&sin->sin_addr,
-					      (char *)&tmpsa, sizeof(tmpsa));
+					memcpy(&tmpsa, &sin->sin_addr,
+					      sizeof(tmpsa));
 					foundit = 1;
 				}
 			}
@@ -494,8 +491,8 @@ dohost:
 	/*
 	 *  If we found what we want, send back the route entry.
 	 */
-	bcopy((char *)&tmprt, (char *)srte, sizeof(struct rtentry));
-	bcopy((char *)&tmprt.rt_dst,(char *)rtaddr,sizeof(struct sockaddr_in));
+	memcpy(srte, &tmprt, sizeof(struct rtentry));
+	memcpy(rtaddr,&tmprt.rt_dst,sizeof(struct sockaddr_in));
 	return(BUILD_SUCCESS);
 }
 
@@ -521,7 +518,7 @@ lu_rtent(varnode, repl, instptr, reqflg)
 	if (varnode->offset <= 0)
 		return(BUILD_ERR);
 
-	bzero((char *)&keynet, sizeof(keynet));
+	memset(&keynet, 0, sizeof(keynet));
 
 	/*
 	 *  find the correct interface structure and
@@ -555,8 +552,7 @@ lu_rtent(varnode, repl, instptr, reqflg)
 	/*
 	 *  fill in variable name we are sending back a response for.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 
 	/*
 	 *  fill in the object instance and return value!
@@ -572,15 +568,13 @@ lu_rtent(varnode, repl, instptr, reqflg)
 
 	switch (varnode->offset) {
 		case N_RTDST:  /* Destination for a route */
-			bcopy((char *)&keynet.sin_addr,
-				(char *)&repl->val.value.ipadd,
+			memcpy(&repl->val.value.ipadd, &keynet.sin_addr,
 				sizeof(keynet.sin_addr));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
 		case N_RTGAT:  /* Gateway for a route */
 			sin = (struct sockaddr_in *)&rte.rt_gateway;
-			bcopy((char *)&sin->sin_addr,
-				(char *)&repl->val.value.ipadd,
+			memcpy(&repl->val.value.ipadd, &sin->sin_addr,
 				sizeof(sin->sin_addr));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
@@ -649,8 +643,7 @@ lu_ipstat(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-                sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	switch (varnode->offset) {
@@ -773,8 +766,7 @@ lu_ipforw(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-                sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	if (ipforvar == 1)   /*  we have a gateway(1) as in RFC 1066 */

@@ -1,9 +1,13 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.0 1992-04-22 01:58:58 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.1 1997-02-27 06:47:50 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  1992/04/22 01:58:58  tom
+ * release 7.4
+ * 	altered format of sysdescr string
+ *
  * Revision 1.2  90/05/26  13:41:23  tom
  * athena release 7.0e
  * 
@@ -30,7 +34,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.0 1992-04-22 01:58:58 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.1 1997-02-27 06:47:50 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -81,8 +85,7 @@ lu_vers(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	/*
@@ -91,7 +94,7 @@ lu_vers(varnode, repl, instptr, reqflg)
 	switch (varnode->offset) {
 		case N_VERID:
 #ifdef MIT
-	                bzero(buf, sizeof(buf));
+	                memset(buf, 0, sizeof(buf));
 
 			c = get_machtype();
 			if(c && (*c != '\0'))
@@ -129,8 +132,7 @@ lu_vers(varnode, repl, instptr, reqflg)
 			break;
 #endif MIT
 		case N_VEREV:
-			bcopy((char *)&sys_obj_id,
-					 (char *)&repl->val.value.obj,
+			memcpy(&repl->val.value.obj, &sys_obj_id,
 					 sizeof(sys_obj_id));
 			repl->val.type = OBJ;
 			break;

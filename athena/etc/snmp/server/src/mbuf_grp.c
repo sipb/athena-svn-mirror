@@ -13,13 +13,13 @@
  * 15 April 1992
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mbuf_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mbuf_grp.c,v 1.1 1993-06-18 14:33:11 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mbuf_grp.c,v 1.2 1997-02-27 06:47:36 ghudson Exp $";
 #endif
 
 
@@ -75,7 +75,7 @@ lu_mbuf(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
 
   repl->val.type = CNTR;  /* True of all the replies */
     

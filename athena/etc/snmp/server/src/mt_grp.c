@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 02:04:30  tom
+ *    release 7.4
+ *    	added new machtype variables
+ *
  * Revision 1.5  90/07/17  14:18:57  tom
  * deleted unused variables
  * stripped newline after machtype string
@@ -32,7 +36,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 2.0 1992-04-22 02:04:30 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 2.1 1997-02-27 06:47:38 ghudson Exp $";
 #endif
 
 
@@ -128,8 +132,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(!version)
 	mt_version();
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;			/* include the "0" instance */
       return(make_str(&(repl->val), version));
 
@@ -140,8 +143,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(!machine_type)
 	mt_machtype();
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;			/* include the "0" instance */
       return(make_str(&(repl->val), machine_type));
 
@@ -154,8 +156,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(ndisplays < 0)
 	return(BUILD_ERR);
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;			/* include the "0" instance */
       repl->val.type = INT;
       repl->val.value.intgr = ndisplays;
@@ -179,8 +180,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(num > ndisplays)
 	return(BUILD_ERR);
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.cmp[repl->name.ncmp] = num;
       repl->name.ncmp++;	
       return(make_str(&(repl->val), displays[num-1]));
@@ -194,8 +194,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(ndisks < 0)
 	return(BUILD_ERR);
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;                    /* include the "0" instance */
       repl->val.type = INT;
       repl->val.value.intgr = ndisks;
@@ -226,8 +225,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(num < 1)
 	return(BUILD_ERR);
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.cmp[repl->name.ncmp] = num;
       repl->name.ncmp++;                    /* include the "0" instance */
       return(make_str(&(repl->val), disks[num-1]));
@@ -239,8 +237,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(memory < 0)
 	mt_memory();
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;                    /* include the "0" instance */
       repl->val.type = INT;
       repl->val.value.intgr = memory;
@@ -253,8 +250,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(!os)
 	mt_osversion();
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;                    /* include the "0" instance */
       return(make_str(&(repl->val), os));
 
@@ -265,8 +261,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(!osversion)
 	mt_osversion();
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;                    /* include the "0" instance */
       return(make_str(&(repl->val), osversion));
 
@@ -277,8 +272,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       if(!os)
 	mt_osversion();
 
-      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
-	     sizeof(repl->name));
+      memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
       repl->name.ncmp++;                    /* include the "0" instance */
 
       if(os)
@@ -326,7 +320,7 @@ mt_machtype()
 {
   char *c;
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   call_program(MACH_PROGRAM, MACH_MACHOPT, lbuf, sizeof(lbuf)-1);
   if(*lbuf == '\0')
     return;
@@ -350,7 +344,7 @@ mt_version()
 {
   char *c;
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   call_program(MACH_PROGRAM, MACH_VOPT, lbuf, sizeof(lbuf)-1);
   if(!*lbuf)
     return;
@@ -374,7 +368,7 @@ mt_osversion()
 {
   char *c;
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   call_program(MACH_PROGRAM, MACH_OSOPT, lbuf, sizeof(lbuf)-1);
   if(!*lbuf)
     return;
@@ -409,8 +403,8 @@ mt_display()
   int mptr = 0;
   char *cptr;
 
-  bzero(lbuf, sizeof(lbuf));
-  bzero(displays, sizeof(displays));
+  memset(lbuf, 0, sizeof(lbuf));
+  memset(displays, 0, sizeof(displays));
   ndisplays = 0;
   call_program(MACH_PROGRAM, MACH_DISPOPT, lbuf, sizeof(lbuf)-1);
   if(*lbuf == '\0')
@@ -444,8 +438,8 @@ mt_disks()
   int  copy = 0;
   char *cptr;
 
-  bzero(lbuf, sizeof(lbuf));
-  bzero(disks, sizeof(disks));
+  memset(lbuf, 0, sizeof(lbuf));
+  memset(disks, 0, sizeof(disks));
   call_program(MACH_PROGRAM, MACH_DROPT, lbuf, sizeof(lbuf));
   if(*lbuf == '\0')
     return;
@@ -484,7 +478,7 @@ static void
 mt_memory()
 {
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   call_program(MACH_PROGRAM,MACH_MOPT, lbuf, sizeof(lbuf) - 1);
   if(strncmp(lbuf, "0x", 2) == 0)
     sscanf(&lbuf[2], "%x", &memory);

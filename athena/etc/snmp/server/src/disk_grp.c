@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.1  1993/06/18 14:32:48  tom
+ *    first cut at solaris port
+ *
  * Revision 2.0  92/04/22  01:55:38  tom
  * release 7.4
  * 	no changes
@@ -39,7 +42,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 2.1 1993-06-18 14:32:48 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 2.2 1997-02-27 06:47:26 ghudson Exp $";
 #endif
 
 #ifndef SOLARIS
@@ -138,7 +141,7 @@ lu_ndparts(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;      
   repl->val.type = INT;   
   
@@ -319,7 +322,7 @@ lu_disk(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->val.type = INT; 
 
 

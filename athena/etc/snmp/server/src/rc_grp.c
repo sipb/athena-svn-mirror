@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 02:05:03  tom
+ *    release 7.4
+ *    	new rc variables
+ *
  * Revision 1.5  90/07/17  14:21:28  tom
  * do not return error if variable does not exist... get-next will discontinue
  * this branch if an error occurrs... instead set string to null.
@@ -32,7 +36,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 2.0 1992-04-22 02:05:03 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 2.1 1997-02-27 06:47:44 ghudson Exp $";
 #endif
 
 
@@ -70,7 +74,7 @@ lu_rcvar(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
   repl->val.type = STR;  /* True of all the replies */
@@ -204,7 +208,7 @@ lu_service(varnode, repl, instptr, reqflg)
   if((ch = get_service(s, reqflg)) == (char *) NULL)
     return(BUILD_ERR);
   
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->val.type = STR;
   if((repl->val.value.str.str = malloc(strlen(ch) + 1)) == (char *) NULL)
     {

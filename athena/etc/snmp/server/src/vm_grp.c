@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v $
- *    $Author: root $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.1  1993/06/18 14:36:00  root
+ *    first cut at solaris port
+ *
  * Revision 2.0  92/04/22  01:58:04  tom
  * release 7.4
  * 	added paging variable
@@ -29,7 +32,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v 2.1 1993-06-18 14:36:00 root Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v 2.2 1997-02-27 06:48:02 ghudson Exp $";
 #endif
 
 
@@ -105,7 +108,7 @@ lu_vmstat(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   switch (varnode->offset)

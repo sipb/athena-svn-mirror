@@ -12,14 +12,17 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/time_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 01:59:48  tom
+ *    *** empty log message ***
+ *
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/time_grp.c,v 2.0 1992-04-22 01:59:48 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/time_grp.c,v 2.1 1997-02-27 06:47:56 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -55,7 +58,7 @@ lu_timed(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   switch(varnode->offset)
@@ -110,7 +113,7 @@ timed_req(req)
       syslog(LOG_ERR, "unable to gethostname of %s", hostname);
       return((char *) NULL);
     }
-  bcopy(hp->h_addr, &dest.sin_addr.s_addr, hp->h_length);
+  memcpy(&dest.sin_addr.s_addr, hp->h_addr, hp->h_length);
 
   (void)strcpy(msg.tsp_name, hostname);
   msg.tsp_type = req;
@@ -163,7 +166,7 @@ timed_init_socket()
       return(-1);
     }
 
-  bzero(&sin, sizeof(sin));
+  memset(&sin, 0, sizeof(sin));
   sin.sin_family = AF_INET;
 
   for (port = IPPORT_RESERVED - 1; port > IPPORT_RESERVED / 2; port--) 

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.3 1995-07-12 03:42:22 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.4 1997-02-27 06:47:30 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1995/07/12 03:42:22  cfields
+ * Was this code really built under Solaris before?
+ *
  * Revision 1.2  1990/05/26  13:37:42  tom
  * athena release 7.0e
  *
@@ -30,7 +33,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.3 1995-07-12 03:42:22 cfields Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.4 1997-02-27 06:47:30 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -77,8 +80,7 @@ lu_nnets(varnode, repl, instptr, reqflg)
 	 *  inc the size of the name by one and magically include a
 	 *  zero object Instance.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 	repl->name.ncmp++;			/* include the "0" instance */
 
 	repl->val.value.intgr = num;
@@ -270,8 +272,7 @@ lu_intf(varnode, repl, instptr, reqflg)
 	if (find_ifnet_bynum(intnum, &ifnet) < 0)
 		return(BUILD_ERR);
 
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memset(&repl->name, varnode->var_code, sizeof(repl->name));
 
 	/*
 	 *  fill in the object instance!

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.3 1993-06-18 14:35:28 root Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.4 1997-02-27 06:47:20 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1993/06/18 14:35:28  root
+ * first cut at solaris port
+ *
  * Revision 1.2  90/05/26  13:35:00  tom
  * release 7.0e
  * 
@@ -34,7 +37,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.3 1993-06-18 14:35:28 root Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.4 1997-02-27 06:47:20 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -206,7 +209,7 @@ morearp:
 		 */
 		cmpval = oidcmp(obid, &comparp);
 		if ((cmpval == 0) && (flgs & (REQ|GET_LEX_NEXT))) {
-			bcopy((char *)tmparp,(char *)arpvar,sizeof(struct arptab));
+			memcpy(arpvar,tmparp,sizeof(struct arptab));
 			*arpind = curind;
 			free((char *)arp);
 			return(BUILD_SUCCESS);
@@ -215,9 +218,9 @@ morearp:
 			if ((cmpval < 0) && (firstone || (oidcmp(&comparp, &curroid) < 0))) {
 				firstone = 0;
 				foundone = 1;
-				bcopy((char *)tmparp,(char *)arpvar,sizeof(struct arptab));
+				memcpy(arpvar,tmparp,sizeof(struct arptab));
 				*arpind = curind;
-				bcopy((char *)&comparp,(char *)&curroid,sizeof(comparp));
+				memcpy(&curroid,&comparp,sizeof(comparp));
 			}
 		}
 	}
@@ -239,11 +242,11 @@ morearp:
 
 	if (foundone == 0) {
 		obid->cmp[0]++;
-		bzero((char *)obid->cmp + (2 * sizeof(u_long)), (obid->ncmp - 2) * sizeof(u_long));
+		memset(obid->cmp + (2 * sizeof(u_long)), 0, (obid->ncmp - 2) * sizeof(u_long));
 		goto morearp;
 	}
 
-	bcopy((char *)&curroid, (char *)obid, sizeof(curroid));
+	memcpy(obid, &curroid, sizeof(curroid));
 
 	free((char *)arp);
 	return(BUILD_SUCCESS);
@@ -271,7 +274,7 @@ lu_atent(varnode, repl, instptr, reqflg)
 	if (varnode->offset <= 0)
 		return(BUILD_ERR);
 
-	bzero((char *)&tmpident, sizeof(tmpident));
+	memset(&tmpident, 0, sizeof(tmpident));
 
 	/*
 	 *  If instptr is NULL provide a OID to do the lookup.
@@ -318,20 +321,18 @@ lu_atent(varnode, repl, instptr, reqflg)
 	/*
 	 *  fill in variable name we are sending back a response for.
 	 */
-	bcopy((char *)varnode->var_code, (char *)&repl->name,
-		sizeof(repl->name));
+	memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 
 	/*
 	 *  fill in the object instance and return value!
 	 */
-	bcopy((char *)instptr->cmp,
-		(char *)(repl->name.cmp + repl->name.ncmp),
+	memcpy((repl->name.cmp + repl->name.ncmp), instptr->cmp,
 		sizeof(u_long)*instptr->ncmp);
 	repl->name.ncmp += instptr->ncmp;
 
 	switch (varnode->offset) {
 		case N_ARPA:
-			bcopy((char *)&at.at_iaddr, (char *)&repl->val.value.ipadd, sizeof(at.at_iaddr));
+			memcpy(&repl->val.value.ipadd, &at.at_iaddr, sizeof(at.at_iaddr));
 			repl->val.type = IPADD;
 			return(BUILD_SUCCESS);
 		case N_AETH:
@@ -341,12 +342,12 @@ lu_atent(varnode, repl, instptr, reqflg)
 				return(BUILD_ERR);
 			}
 #if defined(SUN40) || defined (SOLARIS)
-			bcopy((char *)&at.at_enaddr, (char *)repl->val.value.str.str, sizeof(at.at_enaddr));
+			memcpy(repl->val.value.str.str, &at.at_enaddr, sizeof(at.at_enaddr));
 #else
 #      if defined(BSD43) || defined(ULTRIX2_2)
-			bcopy((char *)at.at_enaddr, (char *)repl->val.value.str.str, sizeof(at.at_enaddr));
+			memcpy(repl->val.value.str.str, at.at_enaddr, sizeof(at.at_enaddr));
 #      else
-			bcopy((char *)at.at_enaddr.ether_addr_octet, (char *)repl->val.value.str.str, sizeof(at.at_enaddr));
+			memcpy(repl->val.value.str.str, at.at_enaddr.ether_addr_octet, sizeof(at.at_enaddr));
 #      endif BSD43
 #endif SUN40
 			repl->val.value.str.len = sizeof(at.at_enaddr);

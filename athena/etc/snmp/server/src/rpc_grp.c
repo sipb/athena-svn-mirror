@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rpc_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 01:56:51  tom
+ *    release 7.3
+ *    	no changes
+ *
  * Revision 1.3  90/05/26  13:40:27  tom
  * athena release 7.0e
  * 
@@ -25,7 +29,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rpc_grp.c,v 2.0 1992-04-22 01:56:51 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rpc_grp.c,v 2.1 1997-02-27 06:47:45 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -103,7 +107,7 @@ lu_rpccl(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   repl->val.type = CNTR;  /* True of all the replies */
@@ -179,7 +183,7 @@ lu_rpcsv(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   repl->val.type = CNTR;  /* True of all the replies */

@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/conf_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.0  1992/04/22 02:04:04  tom
+ *    release 7.4
+ *
  * Revision 1.5  90/07/17  14:21:28  tom
  * do not return error if variable does not exist... get-next will discontinue
  * this branch if an error occurrs... instead set string to null.
@@ -32,7 +35,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/conf_grp.c,v 2.0 1992-04-22 02:04:04 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/conf_grp.c,v 2.1 1997-02-27 06:47:21 ghudson Exp $";
 #endif
 
 
@@ -70,7 +73,7 @@ lu_rcvar(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
   repl->val.type = STR;  /* True of all the replies */
@@ -192,7 +195,7 @@ lu_service(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
   switch(varnode->offset)
@@ -252,7 +255,7 @@ lu_servtbl(varnode, repl, instptr, reqflg)
       return(BUILD_ERR);
     }
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   
   /*
    *  fill in object instance name
@@ -309,7 +312,7 @@ get_rc_variable(var, s)
       return(BUILD_ERR);
     }
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
   while(fgets(lbuf, sizeof(lbuf)-1, fp) != (char *) NULL)
     {
       a = var;
@@ -396,7 +399,7 @@ get_service(name, req, vers)
   if((fp = fopen(srv_file, "r")) == (FILE *) NULL)
     return((char *) NULL);
     
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
 
   while(fgets(lbuf, sizeof(lbuf)-1, fp) != (char *) NULL)
     {

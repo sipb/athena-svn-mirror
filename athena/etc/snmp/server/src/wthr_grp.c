@@ -12,14 +12,17 @@
  * 24 January 1992
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/wthr_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 1.1  1993/06/18 14:33:19  tom
+ *    Initial revision
+ *
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/wthr_grp.c,v 1.1 1993-06-18 14:33:19 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/wthr_grp.c,v 1.2 1997-02-27 06:48:04 ghudson Exp $";
 #endif
 
 #ifdef WEATHER
@@ -71,7 +74,7 @@ lu_weather(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   repl->name.ncmp++;                    /* include the "0" instance */
 
   

@@ -12,13 +12,16 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/io_grp.c,v $
- *    $Author: tom $
+ *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 1.1  1993/06/18 14:32:59  tom
+ *    Initial revision
+ *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/io_grp.c,v 1.1 1993-06-18 14:32:59 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/io_grp.c,v 1.2 1997-02-27 06:47:31 ghudson Exp $";
 #endif
 
 #include "include.h"
@@ -90,7 +93,7 @@ lu_kerberos(varnode, repl, instptr, reqflg)
 {
   int num;
 
-  bzero(lbuf, sizeof(lbuf));
+  memset(lbuf, 0, sizeof(lbuf));
 
   if (varnode->flags & NOT_AVAIL || varnode->offset <= 0)
     return (BUILD_ERR);
@@ -108,7 +111,7 @@ lu_kerberos(varnode, repl, instptr, reqflg)
    * Build reply
    */
 
-  bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
+  memcpy (&repl->name, varnode->var_code, sizeof(repl->name));
   
 }
 
