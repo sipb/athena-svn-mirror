@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.27 1988-06-15 22:52:36 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.28 1988-06-15 23:14:06 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -1148,7 +1148,7 @@ int auth;
 		xfree(pack);		/* free allocated storage */
 		return;
 	}
-x	if ((retval = ZSendPacket(pack, packlen, 0)) != ZERR_NONE) {
+	if ((retval = ZSendPacket(pack, packlen, 0)) != ZERR_NONE) {
 		syslog(LOG_WARNING, "snd_msg xmit: %s", error_message(retval));
 		xfree(pack);		/* free allocated storage */
 		return;
