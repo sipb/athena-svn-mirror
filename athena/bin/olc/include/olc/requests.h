@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.16 1991-02-25 16:33:30 lwvanels Exp $
+ *	$Id: requests.h,v 1.17 1991-04-08 21:02:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -36,9 +36,11 @@ typedef struct tREQUEST
   PERSON    requester; 		 /* Who sends the request. */
   PERSON    target;              /* Recipient of action */
 
-#ifdef KERBEROS
+/* Always leave space for ticket data; may just be ignored if not using */
+/* kerberos- allows limited interoperability between auth & unauth */ 
+
   KTEXT_ST  kticket;             /* Kerberos authentication ticket */
-#endif /* KERBEROS */
+
 } REQUEST;
 
 /* IO_REQUEST is the structure to be sent over the net. In the future ther
