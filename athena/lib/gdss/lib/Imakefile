@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/Imakefile,v 1.1 1993-05-25 15:53:39 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/Imakefile,v 1.2 1993-07-06 02:16:31 cfields Exp $ */
 
 #define ISUBDIRS crypto
 
@@ -21,4 +21,4 @@ libgdss.a:: crypto $(OBJS)
 	ar cru libgdss.a $(OBJS) $(COBJS) $(BOBJS) $(AOBJS)
 	$(RANLIB) libgdss.a
 
-install_library(gdss,$(DESTDIR)/$(ATHLIBDIR))
+install_library(gdss,$(ATHLIBDIR))
