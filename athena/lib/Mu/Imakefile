@@ -1,6 +1,6 @@
 HEADERS = Mu.h
 
-INCLUDES = -I. -I$(TOP) -I$(INCLUDESRC)
+INCLUDES = -I.
 
 SRCS = \
 	MuGetBoolean.c \
@@ -36,7 +36,7 @@ NormalLibraryObjectRule()
 NormalLibraryTarget(Mu,$(OBJS))
 
 InstallLibrary(Mu,$(USRLIBDIR))
-MakeDirectories(install,$(USRINCDIR)/Xm)
-InstallMultiple($(HEADERS),$(USRINCDIR)/Xm)
+MakeDirectories(install,$(INCROOT))
+InstallMultiple($(HEADERS),$(INCROOT))
 
 DependTarget()
