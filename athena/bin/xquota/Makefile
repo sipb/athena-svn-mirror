@@ -5,7 +5,7 @@
 #    
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v $
 #       $Author: epeisach $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.4 1989-05-24 14:08:56 epeisach Exp $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.5 1989-05-24 14:31:04 epeisach Exp $
 #       
 #          Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #    
@@ -28,6 +28,7 @@ SRCS=handler.c main.c quota.c widgets.c
 OBJS=handler.o main.o quota.o widgets.o
 INCLUDE= xquota.h
 CFILES=handler.c main.c quota.c widgets.c
+CC=pcc		# hc1.4 can't deal with widget.c
 
 all:		xquota
 xquota:		${OBJS}
