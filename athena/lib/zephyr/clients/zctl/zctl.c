@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zctl.c,v 1.29 1999-06-01 19:00:43 ghudson Exp $
+ *	$Id: zctl.c,v 1.30 1999-06-03 14:52:13 danw Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <pwd.h>
 #include <netdb.h>
 #ifndef lint
-static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.29 1999-06-01 19:00:43 ghudson Exp $";
+static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.30 1999-06-03 14:52:13 danw Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -73,25 +73,30 @@ main(argc,argv)
 	if ((retval = ZInitLocationInfo(NULL, tty)) != ZERR_NONE)
 	    com_err(argv[0], retval, "initializing location information");
 
-	envptr = getenv("HOME");
+	envptr = getenv("ZEPHYR_SUBS");
 	if (envptr)
 		strcpy(subsname,envptr);
 	else {
-		if (!(pwd = getpwuid((int) getuid()))) {
-			fprintf(stderr,"Who are you?\n");
-			exit (1);
-		}
+		envptr = getenv("HOME");
+		if (envptr)
+			strcpy(subsname,envptr);
+		else {
+			if (!(pwd = getpwuid((int) getuid()))) {
+				fprintf(stderr,"Who are you?\n");
+				exit (1);
+			}
 
-		strcpy(subsname,pwd->pw_dir);
-	}
-	strcpy(oldsubsname,subsname);
-	strcat(oldsubsname,OLD_SUBS);
-	strcat(subsname,USERS_SUBS);
-	if (!access(oldsubsname,F_OK) && access(subsname, F_OK)) {
-		/* only if old one exists and new one does not exist */
-		printf("The .subscriptions file in your home directory is now being used as\n.zephyr.subs . I will rename it to .zephyr.subs for you.\n");
-		if (rename(oldsubsname,subsname))
-			com_err(argv[0], errno, "renaming .subscriptions");
+			strcpy(subsname,pwd->pw_dir);
+		}
+		strcpy(oldsubsname,subsname);
+		strcat(oldsubsname,OLD_SUBS);
+		strcat(subsname,USERS_SUBS);
+		if (!access(oldsubsname,F_OK) && access(subsname, F_OK)) {
+			/* only if old one exists and new one does not exist */
+			printf("The .subscriptions file in your home directory is now being used as\n.zephyr.subs . I will rename it to .zephyr.subs for you.\n");
+			if (rename(oldsubsname,subsname))
+				com_err(argv[0], errno, "renaming .subscriptions");
+		}
 	}
 
 #ifdef HAVE_SYS_UTSNAME
@@ -130,7 +135,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.29 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.30 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
