@@ -1,6 +1,6 @@
 /* repdoc.c -- Program to strip doc-strings from C source
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: repdoc.c,v 1.1.1.1 2000-11-12 06:10:42 ghudson Exp $
+   $Id: repdoc.c,v 1.1.1.2 2002-03-20 04:54:37 ghudson Exp $
 
    This file is part of Jade.
 
@@ -22,6 +22,7 @@
 #include <string.h>
 #include <gdbm.h>
 #include <fcntl.h>
+#include <stdlib.h>
 
 #ifndef GDBM_NOLOCK
 # define GDBM_NOLOCK 0

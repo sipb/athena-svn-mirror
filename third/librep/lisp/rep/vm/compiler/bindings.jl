@@ -1,6 +1,6 @@
 #| bindings.jl -- handling variable bindings
 
-   $Id: bindings.jl,v 1.1.1.1 2000-11-12 06:10:50 ghudson Exp $
+   $Id: bindings.jl,v 1.1.1.2 2002-03-20 04:55:00 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -107,7 +107,8 @@
 	    (unless (or (cell-tagged-p 'referenced (car new))
 			(cell-tagged-p 'no-location (car new))
 			(cell-tagged-p 'maybe-unused (car new)))
-	      (compiler-warning 'unused "Unused variable: %s" (caar new))))))))
+	      (compiler-warning
+	       'unused "unused variable `%s'" (caar new))))))))
 
   ;; note that symbol VAR has been bound
   (define (note-binding var #!optional without-location)

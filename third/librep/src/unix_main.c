@@ -1,6 +1,6 @@
 /* unix_main.c -- Miscellaneous functions for Unix
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: unix_main.c,v 1.1.1.1 2000-11-12 06:11:15 ghudson Exp $
+   $Id: unix_main.c,v 1.1.1.2 2002-03-20 04:55:02 ghudson Exp $
 
    This file is part of Jade.
 
@@ -529,9 +529,12 @@ rep_event_loop(void)
 	rep_bool refreshp = rep_FALSE;
 	fd_set copy;
 
-	memcpy(&copy, &input_fdset, sizeof(copy));
-	ready = wait_for_input(&copy, rep_input_timeout_secs * 1000);
-	refreshp = handle_input(&copy, ready);
+	if (rep_throw_value == rep_NULL)
+	{
+	    memcpy(&copy, &input_fdset, sizeof(copy));
+	    ready = wait_for_input(&copy, rep_input_timeout_secs * 1000);
+	    refreshp = handle_input(&copy, ready);
+	}
 
 	/* Check for exceptional conditions. */
 	if(rep_throw_value != rep_NULL)
@@ -792,9 +795,9 @@ fatal_signal_handler(int sig)
 
     /* Try and output the Lisp call stack; this may or may not
        provoke another error, but who cares.. */
-    fprintf(stderr, "\nLisp backtrace:");
+    fprintf(stderr, "\nLisp backtrace:\n");
     Fbacktrace(Fstderr_file());
-    fputs("\n\n", stderr);
+    fputs("\n", stderr);
 
     /* Now reraise the signal, since it's currently blocked
        the default action will occur, i.e. termination */
@@ -840,9 +843,9 @@ usr_signal_handler (int sig)
     switch (sig)
     {
     case SIGUSR1:
-	fprintf(stderr, "\n\nLisp backtrace:");
+	fprintf(stderr, "\n\nLisp backtrace:\n");
 	Fbacktrace(Fstderr_file());
-	fputs("\n\n\n", stderr);
+	fputs("\n\n", stderr);
 	break;
 
     case SIGUSR2:

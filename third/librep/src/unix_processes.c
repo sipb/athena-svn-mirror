@@ -1,6 +1,6 @@
 /* unix_processes.c -- Subprocess handling for Unix
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: unix_processes.c,v 1.1.1.1 2000-11-12 06:11:24 ghudson Exp $
+   $Id: unix_processes.c,v 1.1.1.2 2002-03-20 04:55:10 ghudson Exp $
 
    This file is part of Jade.
 
@@ -393,13 +393,20 @@ write_to_process(repv pr, u_char *buf, int bufLen)
 	}
 	else
 	{
-	    /* This will block */
-	    act = write(VPROC(pr)->pr_Stdin, buf, bufLen);
-	    if(act < 0)
-	    {
-		rep_signal_file_error(pr);
-		act = 0;
-	    }
+	    do {
+		/* This will block */
+		int this = write(VPROC(pr)->pr_Stdin, buf + act, bufLen - act);
+		if (this < 0)
+		{
+		    if (errno != EINTR)
+		    {
+			rep_signal_file_error(pr);
+			break;
+		    }
+		}
+		else
+		    act += this;
+	    } while (act < bufLen);
 	}
     }
     else
@@ -614,45 +621,28 @@ run_process(struct Proc *pr, char **argv, u_char *sync_input)
 	}
 	if(pr->pr_Stdin)
 	{
-	    switch(pr->pr_Pid = fork())
+	    int pty_slave_fd = -1;
+
+	    /* Must set up pty slave before forking, to avoid race
+	       condition if master writes to it first */
+	    if(usepty)
 	    {
-	    case 0:
-		/* Child process */
-
-		child_build_environ ();
-
-		if(usepty)
+		struct termios st;
+		pty_slave_fd = open(slavenam, O_RDWR);
+		if (pty_slave_fd >= 0)
 		{
-		    int slave;
-		    struct termios st;
-		    if(setsid() < 0)
-		    {
-			perror("child: setsid()");
-			exit(255);
-		    }
-		    if((slave = open(slavenam, O_RDWR)) < 0)
-		    {
-			perror("child: open(slave)");
-			exit(255);
-		    }
-		    close(pr->pr_Stdin);
 #ifdef HAVE_DEV_PTMX
 # ifdef I_PUSH
 		    /* Push the necessary modules onto the slave to
 		       get terminal semantics. */
-		    ioctl(slave, I_PUSH, "ptem");
-		    ioctl(slave, I_PUSH, "ldterm");
+		    ioctl(pty_slave_fd, I_PUSH, "ptem");
+		    ioctl(pty_slave_fd, I_PUSH, "ldterm");
 # endif
 #endif
-		    dup2(slave, 0);
-		    dup2(slave, 1);
-		    dup2(slave, 2);
-		    if(slave > 2)
-			close(slave);
 #ifdef TIOCSCTTY
-		    ioctl(slave, TIOCSCTTY, 0);
+		    ioctl(pty_slave_fd, TIOCSCTTY, 0);
 #endif
-		    tcgetattr(0, &st);
+		    tcgetattr(pty_slave_fd, &st);
 		    st.c_iflag &= ~(ISTRIP | IGNCR | INLCR | IXOFF);
 		    st.c_iflag |= (ICRNL | IGNPAR | BRKINT | IXON);
 		    st.c_oflag &= ~OPOST;
@@ -670,7 +660,39 @@ run_process(struct Proc *pr, char **argv, u_char *sync_input)
 		    st.c_cc[VERASE] = '\177';	/* ^? */
 		    st.c_cc[VKILL]  = '\025';	/* ^u */
 		    st.c_cc[VEOF]   = '\004';	/* ^d */
-		    tcsetattr(0, TCSANOW, &st);
+		    tcsetattr(pty_slave_fd, TCSANOW, &st);
+		}
+	    }
+
+	    switch(pr->pr_Pid = fork())
+	    {
+	    case 0:
+		/* Child process */
+
+		child_build_environ ();
+
+		if(usepty)
+		{
+		    if(setsid() < 0)
+		    {
+			perror("child: setsid()");
+			_exit(255);
+		    }
+		    if(pty_slave_fd < 0)
+		    {
+			perror("child: open(slave)");
+			_exit(255);
+		    }
+		    close(pr->pr_Stdin);
+
+		    dup2(pty_slave_fd, 0);
+		    dup2(pty_slave_fd, 1);
+		    dup2(pty_slave_fd, 2);
+		    if(pty_slave_fd > 2)
+		    {
+			close(pty_slave_fd);
+			pty_slave_fd = -1;
+		    }
 		}
 		else if (PR_CONN_SOCKETPAIR_P(pr))
 		{
@@ -678,7 +700,7 @@ run_process(struct Proc *pr, char **argv, u_char *sync_input)
 		    if(setpgid(0, 0) != 0)
 		    {
 			perror("setpgid");
-			exit(255);
+			_exit(255);
 		    }
 		    close (stdin_fds[0]);
 		    dup2 (stdin_fds[1], 0);
@@ -692,7 +714,7 @@ run_process(struct Proc *pr, char **argv, u_char *sync_input)
 		    if(setpgid(0, 0) != 0)
 		    {
 			perror("setpgid");
-			exit(255);
+			_exit(255);
 		    }
 		    dup2(stdin_fds[0], 0);
 		    close(stdin_fds[0]);
@@ -715,10 +737,12 @@ run_process(struct Proc *pr, char **argv, u_char *sync_input)
 
 		execvp(argv[0], argv);
 		perror("child subprocess can't exec");
-		exit(255);
+		_exit(255);
 
 	    case -1:
 		/* Clean up all open files */
+		if (pty_slave_fd != -1)
+		    close (pty_slave_fd);
 		if (PR_CONN_SOCKETPAIR_P(pr))
 		{
 		    close (stdin_fds[0]);
@@ -742,6 +766,8 @@ run_process(struct Proc *pr, char **argv, u_char *sync_input)
 	    default:
 		/* Parent process */
 
+		if (pty_slave_fd != -1)
+		    close (pty_slave_fd);
 		PR_SET_STATUS(pr, PR_RUNNING);
 		if (PR_CONN_SOCKETPAIR_P(pr))
 		{
@@ -1886,12 +1912,14 @@ Note that output includes notification of process termination.
 ::end:: */
 {
     repv result = Qt;
+    rep_DECLARE2_OPT(secs, rep_NUMERICP);
+    rep_DECLARE3_OPT(msecs, rep_NUMERICP);
     /* Only wait for output if nothing already waiting. */
     if(!got_sigchld && !notify_chain)
     {
 	result = (rep_accept_input_for_callbacks
-		  ((rep_INTP(secs) ? rep_INT(secs) * 1000 : 0)
-		   + (rep_INTP(msecs) ? rep_INT(msecs) : 0),
+		  ((rep_get_long_int (secs) * 1000)
+		   + (rep_get_long_int (msecs)),
 		   n_input_handlers, input_handlers));
     }
     if(got_sigchld || notify_chain)
@@ -1917,6 +1945,8 @@ Note that output includes notification of process termination.
 {
     repv result = Qt;
     rep_DECLARE1 (process, PROCESSP);
+    rep_DECLARE2_OPT(secs, rep_NUMERICP);
+    rep_DECLARE3_OPT(msecs, rep_NUMERICP);
 
     /* Only wait for output if nothing already waiting. */
     if (got_sigchld)
@@ -1928,8 +1958,8 @@ Note that output includes notification of process termination.
 	fds[0] = VPROC (process)->pr_Stdout;
 	fds[1] = VPROC (process)->pr_Stderr;
 	result = (rep_accept_input_for_fds
-		  ((rep_INTP(secs) ? rep_INT(secs) * 1000 : 0)
-		   + (rep_INTP(msecs) ? rep_INT(msecs) : 0), 2, fds));
+		  ((rep_get_long_int (secs) * 1000)
+		   + rep_get_long_int (msecs), 2, fds));
     }
 
     if (got_sigchld)
@@ -1967,8 +1997,8 @@ rep_system (char *command)
 	argv[3] = 0;
 	signal (SIGPIPE, SIG_DFL);
 	execve ("/bin/sh", argv, environ);
-	perror ("exec /bin/sh");
-	exit (255);
+	perror ("can't exec /bin/sh");
+	_exit (255);
 
     default:
 	do {

@@ -1,6 +1,6 @@
 #| rep.jl -- inliners for many rep language features
 
-   $Id: rep.jl,v 1.1.1.1 2000-11-12 06:11:22 ghudson Exp $
+   $Id: rep.jl,v 1.1.1.2 2002-03-20 04:55:11 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -98,59 +98,60 @@
 		 (loop (cdr rest)))))))
 
   (defun do-pass-1 (form)
-    (unless (or (memq (car form) top-level-unexpanded)
-		(memq (car form) top-level-compiled))
-      (setq form (compiler-macroexpand
-		  form (lambda (in out)
-			 (or (eq in out)
-			     (memq (car out) top-level-unexpanded)
-			     (memq (car out) top-level-compiled))))))
-    (case (car form)
-      ((defun)
-       (remember-function (nth 1 form) (nth 2 form) (nthcdr 3 form)))
+    (let-fluids ((current-form form))
+      (unless (or (memq (car form) top-level-unexpanded)
+		  (memq (car form) top-level-compiled))
+	(setq form (compiler-macroexpand
+		    form (lambda (in out)
+			   (or (eq in out)
+			       (memq (car out) top-level-unexpanded)
+			       (memq (car out) top-level-compiled))))))
+      (case (car form)
+	((defun)
+	 (remember-function (nth 1 form) (nth 2 form) (nthcdr 3 form)))
 
-      ((defmacro)
-       (remember-function (nth 1 form) (nth 2 form))
-       (note-macro-def (nth 1 form) (cons 'lambda (nthcdr 2 form))))
+	((defmacro)
+	 (remember-function (nth 1 form) (nth 2 form))
+	 (note-macro-def (nth 1 form) (cons 'lambda (nthcdr 2 form))))
 
-      ((defsubst)
-       (fluid-set inline-env (cons (cons (nth 1 form)
-					 (cons 'lambda (nthcdr 2 form)))
-				   (fluid inline-env))))
+	((defsubst)
+	 (fluid-set inline-env (cons (cons (nth 1 form)
+					   (cons 'lambda (nthcdr 2 form)))
+				     (fluid inline-env))))
 
-      ((defvar)
-       (remember-variable (nth 1 form)))
+	((defvar)
+	 (remember-variable (nth 1 form)))
 
-      ((defconst)
-       (remember-variable (nth 1 form))
-       (fluid-set const-env (cons (cons (nth 1 form) (nth 2 form))
-				  (fluid const-env))))
+	((defconst)
+	 (remember-variable (nth 1 form))
+	 (fluid-set const-env (cons (cons (nth 1 form) (nth 2 form))
+				    (fluid const-env))))
 
-      ((%define) (remember-lexical-variable (nth 1 form)))
+	((%define) (remember-lexical-variable (nth 1 form)))
 
-      ((require)
-       (if (compiler-constant-p (cadr form))
-	   (note-require (compiler-constant-value (cadr form)))
-	 ;; hmm..
-	 (eval form)))
+	((require)
+	 (if (compiler-constant-p (cadr form))
+	     (note-require (compiler-constant-value (cadr form)))
+	   ;; hmm..
+	   (eval form)))
 
-      ((declare)
-       (note-declaration (cdr form)))
+	((declare)
+	 (note-declaration (cdr form)))
 
-      ((eval-when-compile)
-       (if (and (eq (car (nth 1 form)) 'require)
-		(compiler-constant-p (cadr (nth 1 form))))
-	   (note-require (compiler-constant-value (cadr (nth 1 form))))
-	 (eval (nth 1 form))))
+	((eval-when-compile)
+	 (if (and (eq (car (nth 1 form)) 'require)
+		  (compiler-constant-p (cadr (nth 1 form))))
+	     (note-require (compiler-constant-value (cadr (nth 1 form))))
+	   (eval (nth 1 form))))
 
-      ((progn)
-       (setq form (cons 'progn (pass-1* (cdr form)))))
+	((progn)
+	 (setq form (cons 'progn (pass-1* (cdr form)))))
 
-      ;; put bare forms into progns so they can be merged in pass-1
-      (t (unless (memq (car form) top-level-unexpanded)
-	   (setq form (list 'progn form)))))
+	;; put bare forms into progns so they can be merged in pass-1
+	(t (unless (memq (car form) top-level-unexpanded)
+	     (setq form (list 'progn form)))))
 
-    form)
+      form))
 
 
 ;;; pass 2 support
@@ -163,80 +164,81 @@
 	(loop (cdr rest) (cons (do-pass-2 (car rest)) out)))))
 
   (defun do-pass-2 (form)
-    (case (car form)
-      ((defun defsubst)
-       (let ((tmp (assq (nth 1 form) (fluid macro-env))))
-	 (let-fluids ((current-fun (nth 1 form)))
-	   ;;(format standard-error "[%s]\n" (fluid current-fun))
-	   (when tmp
-	     (rplaca tmp nil)
-	     (rplacd tmp nil))
-	   (list 'defun (nth 1 form)
-		 (compile-lambda (cons 'lambda (nthcdr 2 form))
-				 (nth 1 form))))))
+    (let-fluids ((current-form form))
+      (case (car form)
+	((defun defsubst)
+	 (let ((tmp (assq (nth 1 form) (fluid macro-env))))
+	   (let-fluids ((current-fun (nth 1 form)))
+	     ;;(format standard-error "[%s]\n" (fluid current-fun))
+	     (when tmp
+	       (rplaca tmp nil)
+	       (rplacd tmp nil))
+	     (list 'defun (nth 1 form)
+		   (compile-lambda (cons 'lambda (nthcdr 2 form))
+				   (nth 1 form))))))
 
-      ((defmacro)
-       (let ((code (compile-lambda (cons 'lambda (nthcdr 2 form))
-				   (nth 1 form)))
-	     (tmp (assq (nth 1 form) (fluid macro-env))))
-	 (let-fluids ((current-fun (nth 1 form)))
-	   (if tmp
-	       (rplacd tmp (make-closure code))
-	     (compiler-error
-	      "Compiled macro wasn't in environment" (nth 1 form)))
-	   (list 'defmacro (nth 1 form) code))))
+	((defmacro)
+	 (let ((code (compile-lambda (cons 'lambda (nthcdr 2 form))
+				     (nth 1 form)))
+	       (tmp (assq (nth 1 form) (fluid macro-env))))
+	   (let-fluids ((current-fun (nth 1 form)))
+	     (if tmp
+		 (rplacd tmp (make-closure code))
+	       (compiler-error
+		"compiled macro `%s' wasn't in environment" (nth 1 form)))
+	     (list 'defmacro (nth 1 form) code))))
 
-      ((defconst)
-       (let ((doc (nth 3 form)))
-	 (when (and *compiler-write-docs* (stringp doc))
-	   (add-documentation (nth 1 form) (fluid current-module) doc)
-	   (setq form (delq doc form)))
-	 (unless (memq (nth 1 form) (fluid defvars))
-	   (remember-variable (nth 1 form)))
-	 (unless (assq (nth 1 form) (fluid const-env))
-	   (compiler-warning
-	    'bindings "Constant wasn't in environment" (nth 1 form))))
-       form)
+	((defconst)
+	 (let ((doc (nth 3 form)))
+	   (when (and *compiler-write-docs* (stringp doc))
+	     (add-documentation (nth 1 form) (fluid current-module) doc)
+	     (setq form (delq doc form)))
+	   (unless (memq (nth 1 form) (fluid defvars))
+	     (remember-variable (nth 1 form)))
+	   (unless (assq (nth 1 form) (fluid const-env))
+	     (compiler-warning
+	      'bindings "unknown constant `%s'" (nth 1 form))))
+	 form)
 
-      ((defvar)
-       (let ((value (nth 2 form))
-	     (doc (nth 3 form)))
-	 (when (and (listp value)
-		    (not (compiler-constant-p value)))
-	   ;; Compile the definition. A good idea?
-	   (rplaca (nthcdr 2 form) (compile-form (nth 2 form))))
-	 (when (and *compiler-write-docs* (stringp doc))
-	   (add-documentation (nth 1 form) nil doc)
-	   (setq form (delq (nth 3 form) form)))
-	 (unless (memq (nth 1 form) (fluid defvars))
-	   (remember-variable (nth 1 form))))
-       form)
+	((defvar)
+	 (let ((value (nth 2 form))
+	       (doc (nth 3 form)))
+	   (when (and (listp value)
+		      (not (compiler-constant-p value)))
+	     ;; Compile the definition. A good idea?
+	     (rplaca (nthcdr 2 form) (compile-form (nth 2 form))))
+	   (when (and *compiler-write-docs* (stringp doc))
+	     (add-documentation (nth 1 form) nil doc)
+	     (setq form (delq (nth 3 form) form)))
+	   (unless (memq (nth 1 form) (fluid defvars))
+	     (remember-variable (nth 1 form))))
+	 form)
 
-      ((%define)
-       (let ((sym (nth 1 form))
-	     (value (nth 2 form))
-	     (doc (nth 3 form)))
-	 (unless (memq sym (fluid defines))
-	   (remember-lexical-variable (compiler-constant-value sym)))
-	 (when (and *compiler-write-docs* (stringp doc))
-	   (add-documentation sym (fluid current-module) doc)
-	   (setq form (delq doc form)))
-	 (when (and (listp value) (not (compiler-constant-p value)))
-	   ;; Compile the definition. A good idea?
-	   (rplaca (nthcdr 2 form) (compile-form (nth 2 form))))
-	 form))
+	((%define)
+	 (let ((sym (nth 1 form))
+	       (value (nth 2 form))
+	       (doc (nth 3 form)))
+	   (unless (memq sym (fluid defines))
+	     (remember-lexical-variable (compiler-constant-value sym)))
+	   (when (and *compiler-write-docs* (stringp doc))
+	     (add-documentation sym (fluid current-module) doc)
+	     (setq form (delq doc form)))
+	   (when (and (listp value) (not (compiler-constant-p value)))
+	     ;; Compile the definition. A good idea?
+	     (rplaca (nthcdr 2 form) (compile-form (nth 2 form))))
+	   form))
 
-      ((define-structure)
-       (compile-top-level-define-structure form))
+	((define-structure)
+	 (compile-top-level-define-structure form))
 
-      ((structure)
-       (compile-top-level-structure form))
+	((structure)
+	 (compile-top-level-structure form))
 
-      ((eval-when-compile) nil)
+	((eval-when-compile) nil)
 
-      (t (if (memq (car form) top-level-compiled)
-	     (compile-form form)
-	   form))))
+	(t (if (memq (car form) top-level-compiled)
+	       (compile-form form)
+	     form)))))
 
 
 ;;; Source code transformations. These are basically macros that are only
@@ -252,7 +254,7 @@
       (setq form (cdr form))
       (while form
 	(unless (consp (cdr form))
-	  (compiler-error "Odd number of args to setq"))
+	  (compiler-error "odd number of args to setq"))
 	(setq lst (cons `(set ',(car form) ,(nth 1 form)) lst))
 	(setq form (nthcdr 2 form)))
       (cons 'progn (nreverse lst))))
@@ -264,9 +266,13 @@
 	 (value (nth 2 form))
 	 (doc (nth 3 form)))
       (remember-variable name)
+      (when (and (compiler-constant-p doc)
+		 (stringp (compiler-constant-value doc))
+		 *compiler-write-docs*)
+	(add-documentation name nil (compiler-constant-value doc))
+	(setq doc nil))
       `(progn
-	 (when ,doc
-	   (put ',name 'variable-documentation ,doc))
+	 ,@(and doc (list `(put ',name 'variable-documentation ,doc)))
 	 (make-variable-special ',name)
 	 (unless (boundp ',name)
 	   (setq ,name ,value)))))
@@ -384,6 +390,8 @@
 	  ;; use setq
 	  (progn
 	    (setq sym (compiler-constant-value sym))
+	    (unless (symbolp sym)
+	      (compiler-error "trying to set value of a non-symbol: %s" sym))
 	    (compile-form-1 val)
 	    (emit-insn '(dup))
 	    (increment-stack)
@@ -475,13 +483,14 @@
 		       (throw 'no t))
 
 		     ;; okay, let's go
-		     (reload-state)
-		     ;; XXX what if this clashes?
-		     (remember-function var (cadr value))
-		     (compile-lambda-inline value (cdr body)
-					    nil return-follows var)
-		     (forget-function var)
-		     nil)))
+		     (let-fluids ((silence-compiler t))
+		       (reload-state)
+		       ;; XXX what if this clashes?
+		       (remember-function var (cadr value))
+		       (compile-lambda-inline value (cdr body)
+					      nil return-follows var)
+		       (forget-function var)
+		       nil))))
 
 	   ;; no, keep on the usual track
 	   (compile-body (nthcdr 2 form) return-follows)
@@ -503,6 +512,7 @@
 	 (emit-insn '(init-bind))
 	 (increment-b-stack)
 	 (mapc (lambda (unused)
+		 (declare (unused unused))
 		 (emit-insn '(fluid-bind))
 		 (decrement-stack 2)) bindings)
 	 (compile-body body)
@@ -551,24 +561,26 @@
 		  (decrement-stack))
 	      (if (eq condition (car subl))
 		  (emit-insn '(push t))
-		(compile-form-1 (car subl) return-follows)
+		(compile-form-1 (car subl) #:return-follows return-follows)
 		(decrement-stack)))
 	    (when (consp (cdr form))
-	      (compiler-warning
-	       'misc "Unreachable conditions after t in cond statement")
+	      ;;(compiler-warning
+	      ;; 'misc "unreachable conditions after t in cond statement")
 	      ;; Ignore the rest of the statement
 	      (setq form nil))
 	    (setq need-trailing-nil nil))
 	   ((eq condition nil)
 	    ;; condition nil -- never taken
 	    (when (cdr subl)
-	      (compiler-warning
-	       'misc "Unreachable forms after nil in cond statement")))
+	      ;;(compiler-warning
+	      ;; 'misc "unreachable forms after nil in cond statement")
+	      ))
 	   (t
 	    ;; non t-or-nil condition
-	    (compile-form-1 (car subl) (and return-follows
-					    (null (cdr subl))
-					    (null (cdr form))))
+	    (compile-form-1 (car subl)
+			    #:return-follows (and return-follows
+						  (null (cdr subl))
+						  (null (cdr form))))
 	    (decrement-stack)
 	    (if (consp (cdr subl))
 		;; Something besides the condition
@@ -608,13 +620,13 @@
 	 (had-default nil))
       (setq form (cdr form))
       (unless form
-	(compiler-error "No key value in case statement"))
+	(compiler-error "no key value in case statement"))
       ;; XXX if key is constant optimise case away..
       (compile-form-1 (car form))
       (setq form (cdr form))
       (while (consp form)
 	(unless (consp form)
-	  (compiler-error "Badly formed clause in case statement"))
+	  (compiler-error "badly formed clause in case statement"))
 	(let
 	    ((cases (caar form))
 	     (forms (cdar form))
@@ -634,7 +646,8 @@
 		 (emit-insn `(jn ,next-label))
 		 (decrement-stack))
 		((eq cases t) (setq had-default t))
-		(t (compiler-error "Badly formed clause in case statement")))
+		(t (compiler-error
+		    "badly formed clause in case statement" #:form cases)))
 	  (compile-body forms return-follows)
 	  (decrement-stack)
 	  (emit-insn `(jmp ,end-label))
@@ -753,7 +766,7 @@
 		 (let ((var (nth 1 form)))
 		   (when (spec-bound-p var)
 		     (compiler-error
-		      "condition-case can only bind lexically: %s" var))
+		      "condition-case can't bind to special variable `%s'" var))
 		   (test-variable-bind var)
 		   (note-binding var)
 		   ;; XXX errorpro instruction always heap binds..
@@ -783,7 +796,9 @@
 		     (compile-body (cdr (car handlers)))
 		     (emit-insn `(jmp ,end-label))
 		     (fix-label next-label))
-		 (compiler-error "Badly formed condition-case handler"))
+		 (compiler-error
+		  "badly formed condition-case handler: `%s'"
+		  (car handlers) #:form handlers))
 	       (setq handlers (cdr handlers)))
 	     ;; The last handler
 	     (if (consp (car handlers))
@@ -802,8 +817,10 @@
 		   (decrement-stack)
 		   (compile-body (cdr (car handlers)))
 		   (emit-insn `(jmp ,end-label)))
-	       (compiler-error "Badly formed condition-case handler"))))
-	(compiler-error "No handlers in condition-case"))
+	       (compiler-error
+		"badly formed condition-case handler: `%s'"
+		(car handlers) #:form (car handlers)))))
+	(compiler-error "no handlers in condition-case"))
       (decrement-stack)
 
       ;; start:
@@ -926,7 +943,8 @@
   (defun compile-make-closure (form)
     (when (nthcdr 3 form)
       (compiler-warning
-       'parameters "More than two parameters to %s; rest ignored" (car form)))
+       'parameters "more than two parameters to `%s'; rest ignored"
+       (car form)))
     (compile-form-1 (nth 1 form))
     (compile-form-1 (nth 2 form))
     (emit-insn '(make-closure))
@@ -934,17 +952,37 @@
     (decrement-stack))
   (put 'make-closure 'rep-compile-fun compile-make-closure)
 
+  (defun compile-log (form)
+    (cond ((nthcdr 3 form)
+	   (compiler-warning
+	    'parameters "more than two parameters to `log'; rest ignored"))
+	  ((nthcdr 2 form)
+	   ;; dual argument form of log. compiles to
+	   (compile-form-1 (nth 1 form))
+	   (emit-insn '(log))
+	   (compile-form-1 (nth 2 form))
+	   (emit-insn '(log))
+	   (emit-insn '(div))
+	   (decrement-stack))
+	  ((nthcdr 1 form)
+	   ;; single argument form
+	   (compile-form-1 (nth 1 form))
+	   (emit-insn '(log)))
+	  (t (compiler-warning 'parameters "too few parameters to `log'"))))
+  (put 'log 'rep-compile-fun compile-log)
+
   (defun get-form-opcode (form)
     (cond ((symbolp form) (get form 'rep-compile-opcode))
 	  ;; must be a structure-ref
 	  ((eq (car form) 'structure-ref)
 	   (get (caddr form) 'rep-compile-opcode))
-	  (t (compiler-error "unknown opcode for form: %s" form))))
+	  (t (compiler-error "don't know opcode for `%s'" form))))
 
   ;; Instruction with no arguments
   (defun compile-0-args (form)
     (when (cdr form)
-      (compiler-warning 'parameters "All parameters to %s ignored" (car form)))
+      (compiler-warning
+       'parameters "all parameters to `%s' ignored" (car form)))
     (emit-insn (list (get-form-opcode (car form))))
     (increment-stack))
 
@@ -952,7 +990,7 @@
   (defun compile-1-args (form)
     (when (nthcdr 2 form)
       (compiler-warning
-       'parameters "More than one parameter to %s; rest ignored" (car form)))
+       'parameters "more than one parameter to `%s'; rest ignored" (car form)))
     (compile-form-1 (nth 1 form))
     (emit-insn (list (get-form-opcode (car form)))))
 
@@ -960,7 +998,8 @@
   (defun compile-2-args (form)
     (when (nthcdr 3 form)
       (compiler-warning
-       'parameters "More than two parameters to %s; rest ignored" (car form)))
+       'parameters "more than two parameters to `%s'; rest ignored"
+       (car form)))
     (compile-form-1 (nth 1 form))
     (compile-form-1 (nth 2 form))
     (emit-insn (list (get-form-opcode (car form))))
@@ -970,7 +1009,7 @@
   (defun compile-3-args (form)
     (when (nthcdr 4 form)
       (compiler-warning
-       'parameters "More than three parameters to %s; rest ignored"
+       'parameters "More than three parameters to `%s'; rest ignored"
        (car form)))
     (compile-form-1 (nth 1 form))
     (compile-form-1 (nth 2 form))
@@ -985,7 +1024,8 @@
 	((opcode (get-form-opcode (car form))))
       (setq form (cdr form))
       (unless (>= (length form) 2)
-	(compiler-error "Too few args to binary operator" form))
+	(compiler-error
+	 "too few arguments to binary operator `%s'" (car form)))
       (compile-form-1 (car form))
       (setq form (cdr form))
       (while (consp form)
@@ -998,7 +1038,7 @@
   (defun compile-transitive-relation (form)
     (cond
      ((<= (length form) 2)
-      (compiler-error "Too few args to relation" form))
+      (compiler-error "too few args to relation `%s'" (car form)))
      ((= (length form) 3)
       (let
 	  ((opcode (get-form-opcode (car form))))
@@ -1199,8 +1239,6 @@
     (put 'round 'rep-compile-opcode 'round)
     (put 'exp 'rep-compile-fun compile-1-args)
     (put 'exp 'rep-compile-opcode 'exp)
-    (put 'log 'rep-compile-fun compile-1-args)
-    (put 'log 'rep-compile-opcode 'log)
     (put 'sin 'rep-compile-fun compile-1-args)
     (put 'sin 'rep-compile-opcode 'sin)
     (put 'cos 'rep-compile-fun compile-1-args)

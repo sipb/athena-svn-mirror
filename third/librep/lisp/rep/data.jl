@@ -1,6 +1,6 @@
 #| rep.data bootstrap
 
-   $Id: data.jl,v 1.1.1.1 2000-11-12 06:11:44 ghudson Exp $
+   $Id: data.jl,v 1.1.1.2 2002-03-20 04:54:49 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -112,6 +112,19 @@ returns false."
 		   cdadr caddr cdddr caaaar cadaar caadar caddar
 		   caaadr cadadr caaddr cadddr cdaaar cddaar cdadar
 		   cdddar cdaadr cddadr cdaddr cddddr))
+
+
+;; vector utils
+
+(defun vector->list (vec)
+  (do ((i 0 (1+ i))
+       (out '() (cons (aref vec i) out)))
+      ((= i (length vec)) (nreverse out))))
+
+(defun list->vector (lst)
+  (apply vector lst))
+
+(export-bindings '(vector->list list->vector))
 
 
 ;; guardian wrapper

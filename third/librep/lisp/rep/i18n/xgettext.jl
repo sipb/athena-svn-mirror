@@ -1,6 +1,6 @@
 #| xgettext.jl -- helper functions for writing xgettext programs
 
-   $Id: xgettext.jl,v 1.1.1.1 2000-11-12 06:11:17 ghudson Exp $
+   $Id: xgettext.jl,v 1.1.1.2 2002-03-20 04:54:34 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -89,7 +89,7 @@
 	   (mapc (lambda (f)
 		   (scan-list f)) (cdr form)))
 
-	  ((lambda) (scan (car form)))
+	  ((lambda) (scan-list (cddr form)))
 
 	  ((defun defmacro defsubst defvar defconst)
 	   (when (includedp (car form))

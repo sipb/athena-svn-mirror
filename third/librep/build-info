@@ -1,6 +1,6 @@
 #!/bin/sh
 # build-info -- Generate header file containing build details
-# $Id: build-info,v 1.1.1.1 2000-11-12 06:11:33 ghudson Exp $
+# $Id: build-info,v 1.1.1.2 2002-03-20 04:53:06 ghudson Exp $
 
 host_type="$1"
 rep_version="$2"
@@ -14,12 +14,7 @@ repcommonexecdir="$7"
     || HOSTNAME=`hostname` \
     || HOSTNAME=unknown
 
-[ -n "$LOCALDOMAIN" ] \
-    || LOCALDOMAIN=`dnsdomainname` \
-    || LOCALDOMAIN=`domainname` \
-    || LOCALDOMAIN=unknown
-
-sys_name="$HOSTNAME.$LOCALDOMAIN"
+sys_name="$HOSTNAME"
 user_name="$LOGNAME"
 
 build_date="`date +'%a %b %e %Y'`"

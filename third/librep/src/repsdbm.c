@@ -1,5 +1,5 @@
 /* repsdbm.c -- rep wrapper to libsdbm
-   $Id: repsdbm.c,v 1.1.1.1 2000-11-12 06:10:59 ghudson Exp $ */
+   $Id: repsdbm.c,v 1.1.1.2 2002-03-20 04:54:48 ghudson Exp $ */
 
 #define _GNU_SOURCE
 
@@ -270,4 +270,15 @@ rep_dl_init (void)
     rep_ADD_SUBR(Ssdbm_error);
     rep_ADD_SUBR(Ssdbmp);
     return rep_pop_structure (tem);
+}
+
+void
+rep_dl_kill (void)
+{
+    rep_dbm *db;
+    for (db = dbm_chain; db != 0; db = db->next)
+    {
+	if (db->dbm != 0)
+	    Fsdbm_close (rep_VAL (db));
+    }
 }

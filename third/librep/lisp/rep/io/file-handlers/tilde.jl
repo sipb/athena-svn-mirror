@@ -1,6 +1,6 @@
 #| tilde.jl -- File handler for tilde expansion
 
-   $Id: tilde.jl,v 1.1.1.1 2000-11-12 06:11:12 ghudson Exp $
+   $Id: tilde.jl,v 1.1.1.2 2002-03-20 04:55:12 ghudson Exp $
 
    Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
 
@@ -51,9 +51,9 @@
       ;; that things like "~/foo/../bar" expand to "~/bar"
       (let
 	  ((file-name (car args)))
-	(if (string-looking-at "~[^/]*/?" file-name)
-	    (concat (substring file-name (match-start) (match-end))
-		    (expand-file-name (substring file-name (match-end)) "."))
+	(if (string-looking-at "(~[^/]*/)." file-name)
+	    (concat (substring file-name (match-start 1) (match-end 1))
+		    (expand-file-name (substring file-name (match-end 1)) "."))
 	  file-name)))
      ((memq op '(file-name-nondirectory file-name-directory
 		file-name-as-directory directory-file-name))
@@ -95,5 +95,6 @@
     (when (string-looking-at (concat (quote-regexp
 				      (canonical-file-name
 				       (user-home-directory)))
-				     "?(.*)$") default-directory)
-      (setq-default default-directory (expand-last-match "~/\\1")))))
+				     "(/(.+))?$")
+			     (canonical-file-name default-directory))
+      (setq-default default-directory (expand-last-match "~/\\2")))))

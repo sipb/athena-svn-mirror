@@ -1,6 +1,6 @@
 /* lispmach.h -- Interpreter for compiled Lisp forms
 
-   $Id: lispmach.h,v 1.1.1.1 2000-11-12 06:11:06 ghudson Exp $
+   $Id: lispmach.h,v 1.1.1.2 2002-03-20 04:55:10 ghudson Exp $
 
    Copyright (C) 1993, 1994, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -23,7 +23,6 @@
 /* free macros:
 
 	ASSERT (expr)
-	BE_PARANOID
 	BYTECODE_PROFILE
 	THREADED_VM
 	CACHE_TOS
@@ -461,9 +460,11 @@ list_ref (repv list, int elt)
 #define SP_REG asm("%r17")
 #define SLOTS_REG asm("%r16")
 #endif
+#if 0					/* this seems to be broken */
 #ifdef __mc68000__
 #define PC_REG asm("a5")
 #define SP_REG asm("a4")
+#endif
 #endif
 #ifdef __arm__
 #define PC_REG asm("r9")
@@ -610,7 +611,6 @@ again: {
 	    tmp = TOP;
 	    lc.fun = tmp;
 	    lc.args = rep_void_value;
-	    lc.args_evalled_p = Qt;
 	    rep_PUSH_CALL (lc);
 	    SYNC_GC;
 
@@ -748,7 +748,6 @@ again: {
 				rep_call_stack = lc.next;
 				rep_call_stack->fun = lc.fun;
 				rep_call_stack->args = lc.args;
-				rep_call_stack->args_evalled_p = lc.args_evalled_p;
 
 				/* since impurity==0 there can only be lexical
 				   bindings; these were unbound when switching
@@ -2058,7 +2057,7 @@ again: {
 	BEGIN_INSN (OP_KEYWORD_ARG)
 	    int i;
 	    POP1 (tmp);
-	    for (i = argptr; i < argc - 1; i += 2)
+	    for (i = argptr; i < argc - 1; i++)
 	    {
 		if (argv[i] == tmp)
 		{

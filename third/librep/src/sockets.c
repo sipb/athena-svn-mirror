@@ -1,6 +1,6 @@
 /* sockets.c -- BSD sockets plugin
 
-   $Id: sockets.c,v 1.1.1.1 2000-11-12 06:11:25 ghudson Exp $
+   $Id: sockets.c,v 1.1.1.2 2002-03-20 04:55:10 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -61,6 +61,7 @@ struct rep_socket_struct {
     int sock;
     int namespace, style;
     repv addr, port;
+    repv p_addr, p_port;
     repv stream, sentinel;
 };
 
@@ -86,7 +87,8 @@ make_socket_ (int sock_fd, int namespace, int style)
     s->sock = sock_fd;
     s->namespace = namespace;
     s->style = style;
-    s->addr = s->port = Qnil;
+    s->addr = rep_NULL;
+    s->p_addr = rep_NULL;
     s->sentinel = s->stream = Qnil;
 
     s->next = socket_list;
@@ -122,6 +124,14 @@ shutdown_socket (rep_socket *s)
 
     s->sock = -1;
     s->car &= ~IS_ACTIVE;
+}
+
+static void
+shutdown_socket_and_call_sentinel (rep_socket *s)
+{
+    shutdown_socket (s);
+    if (s->sentinel != Qnil)
+	rep_call_lisp1 (s->sentinel, rep_VAL (s));
 }
 
 static void
@@ -171,9 +181,7 @@ client_socket_output (int fd)
     {
 	/* assume EOF  */
 
-	shutdown_socket (s);
-	if (s->sentinel != Qnil)
-	    rep_call_lisp1 (s->sentinel, rep_VAL (s));
+	shutdown_socket_and_call_sentinel (s);
     }
 }
 
@@ -327,21 +335,25 @@ make_inet_socket (repv hostname, int port,
     rep_socket *s = 0;
 
     name.sin_family = AF_INET;
-    name.sin_port = port;
-    hostinfo = gethostbyname (rep_STR (hostname));
-    if (hostinfo != 0)
+    name.sin_port = htons (port);
+    if (rep_STRINGP (hostname))
     {
-	name.sin_addr = * (struct in_addr *) hostinfo->h_addr;
-
-	s = maker (PF_INET, SOCK_STREAM, &name, sizeof (name));
+	hostinfo = gethostbyname (rep_STR (hostname));
+	if (hostinfo != 0)
+	    name.sin_addr = * (struct in_addr *) hostinfo->h_addr;
+	else
+	{
+	    errno = ENOENT;
+	    return rep_signal_file_error (hostname);
+	}
     }
     else
-	errno = ENOENT;
+	name.sin_addr.s_addr = INADDR_ANY;
+
+    s = maker (PF_INET, SOCK_STREAM, &name, sizeof (name));
 
     if (s != 0)
     {
-	s->addr = hostname;
-	s->port = rep_MAKE_INT (port);
 	s->sentinel = sentinel;
 	s->stream = stream;
 	return rep_VAL (s);
@@ -373,10 +385,12 @@ single argument.
 DEFUN ("socket-server", Fsocket_server, Ssocket_server,
        (repv host, repv port, repv callback, repv sentinel), rep_Subr4) /*
 ::doc:rep.io.sockets#socket-server::
-socket-server HOSTNAME PORT [CALLBACK] [SENTINEL]
+socket-server [HOSTNAME] [PORT] [CALLBACK] [SENTINEL]
 
 Create and return a socket connected listening for connections on the
-host called HOSTNAME (a string) with port number PORT.
+host called HOSTNAME (a string) with port number PORT. If HOSTNAME is
+false, listen for any incoming addresses. If PORT is undefined a random
+port will be chosen.
 
 When a connection is requested CALLBACK is called with the server
 socket as its sole argument. It must call `socket-accept' to make the
@@ -386,10 +400,10 @@ When the socket is shutdown remotely, SENTINEL is called with the
 socket as its only argument.
 ::end:: */
 {
-    rep_DECLARE (1, host, rep_STRINGP (host));
-    rep_DECLARE (2, port, rep_INTP (port));
+    rep_DECLARE (1, host, rep_NILP (host) || rep_STRINGP (host));
+    rep_DECLARE (2, port, rep_NILP (port) || rep_INTP (port));
 
-    return make_inet_socket (host, rep_INT (port),
+    return make_inet_socket (host, rep_INTP (port) ? rep_INT (port) : 0,
 			     make_server_socket, callback, sentinel);
 }
 
@@ -456,7 +470,6 @@ subsequently call `close-socket' on the created client.
 	rep_register_input_fd (new, client_socket_output);
 	client->stream = stream;
 	client->sentinel = sentinel;
-	client->addr = rep_NULL;
 	return rep_VAL (client);
     }
     else
@@ -472,20 +485,61 @@ fill_in_address (rep_socket *s)
 	{
 	    struct sockaddr_in name;
 	    size_t length = sizeof (name);
-	    if (getpeername (s->sock, (struct sockaddr *) &name, &length) == 0)
+	    if (getsockname (s->sock, (struct sockaddr *) &name, &length) == 0)
 	    {
-		char *addr = inet_ntoa (name.sin_addr);
-		if (addr != 0)
+		if (name.sin_addr.s_addr == INADDR_ANY)
 		{
-		    s->addr = rep_string_dup (addr);
-		    s->port = rep_MAKE_INT (name.sin_port);
+		    /* Try to guess the ip address we're listening on */
+		    char hname[128];
+		    struct hostent *ent;
+		    gethostname (hname, sizeof (hname) - 1);
+		    ent = gethostbyname (hname);
+		    if (ent != 0)
+		    {
+			struct in_addr *addr = ((struct in_addr *)
+						ent->h_addr_list[0]);
+			s->addr = rep_string_dup (inet_ntoa (*addr));
+		    }
+		    else
+			s->addr = rep_string_dup (inet_ntoa (name.sin_addr));
 		}
+		else
+		    s->addr = rep_string_dup (inet_ntoa (name.sin_addr));
+
+		s->port = rep_MAKE_INT (ntohs (name.sin_port));
 	    }
 	}
 	if (s->addr == rep_NULL)
 	{
 	    s->addr = Qnil;
 	    s->port = Qnil;
+	}
+    }
+}
+
+static void
+fill_in_peer_address (rep_socket *s)
+{
+    if (s->p_addr == rep_NULL)
+    {
+	if (s->namespace == PF_INET)
+	{
+	    struct sockaddr_in name;
+	    size_t length = sizeof (name);
+	    if (getpeername (s->sock, (struct sockaddr *) &name, &length) == 0)
+	    {
+		char *addr = inet_ntoa (name.sin_addr);
+		if (addr != 0)
+		{
+		    s->p_addr = rep_string_dup (addr);
+		    s->p_port = rep_MAKE_INT (ntohs (name.sin_port));
+		}
+	    }
+	}
+	if (s->p_addr == rep_NULL)
+	{
+	    s->p_addr = Qnil;
+	    s->p_port = Qnil;
 	}
     }
 }
@@ -513,6 +567,34 @@ Return the port associated with SOCKET, or false if this is unknown.
     rep_DECLARE (1, sock, SOCKETP (sock));
     fill_in_address (SOCKET (sock));
     return SOCKET (sock)->port;
+}
+
+DEFUN ("socket-peer-address", Fsocket_peer_address,
+       Ssocket_peer_address, (repv sock), rep_Subr1) /*
+::doc:rep.io.sockets#socket-peer-address::
+socket-peer-address SOCKET
+
+Return the address of the peer connected to SOCKET, or false if this
+is unknown.
+::end:: */
+{
+    rep_DECLARE (1, sock, SOCKETP (sock));
+    fill_in_peer_address (SOCKET (sock));
+    return SOCKET (sock)->p_addr;
+}
+
+DEFUN ("socket-peer-port", Fsocket_peer_port, Ssocket_peer_port,
+       (repv sock), rep_Subr1) /*
+::doc:rep.io.sockets#socket-peer-port::
+socket-peer-port SOCKET
+
+Return the port of the peer connected to SOCKET, or false if this is
+unknown.
+::end:: */
+{
+    rep_DECLARE (1, sock, SOCKETP (sock));
+    fill_in_peer_address (SOCKET (sock));
+    return SOCKET (sock)->p_port;
 }
 
 DEFUN ("accept-socket-output-1", Faccept_socket_output_1,
@@ -551,50 +633,68 @@ Return true if ARG is an unclosed socket object.
 
 DEFSTRING (inactive_socket, "Inactive socket");
 
+static rep_bool
+poll_for_input (int fd)
+{
+    fd_set inputs;
+    int ready;
+
+    FD_ZERO (&inputs);
+    FD_SET (fd, &inputs);
+    ready = select (FD_SETSIZE, 0, &inputs, 0, 0);
+
+    return ready == 1;
+}
+
+/* Returns the number of bytes actually written. */
+static u_int
+blocking_write (rep_socket *s, u_char *data, u_int bytes)
+{
+    u_int done = 0;
+
+    if (!SOCKET_IS_ACTIVE (s))
+    {
+	Fsignal (Qfile_error, rep_list_2 (rep_VAL (&inactive_socket),
+					  rep_VAL (s)));
+	return -1;
+    }
+
+    do {
+	int actual = write (s->sock, data + done, bytes - done);
+	if (actual < 0)
+	{
+	    if (errno == EAGAIN || errno == EWOULDBLOCK)
+	    {
+		if (!poll_for_input (s->sock))
+		    goto error;
+	    }
+	    else if (errno != EINTR)
+		goto error;
+	}
+	else
+	    done += actual;
+    } while (done < bytes);
+
+    return done;
+
+error:
+    rep_signal_file_error (rep_VAL (s));
+    shutdown_socket_and_call_sentinel (s);
+    return -1;
+}
+
 static int
 socket_putc (repv stream, int c)
 {
     char data = c;
-    int actual;
-
-    if (!SOCKET_IS_ACTIVE (SOCKET (stream)))
-    {
-	Fsignal (Qerror, rep_list_2 (rep_VAL (&inactive_socket), stream));
-	return 0;
-    }
-
-again:
-    actual = write (SOCKET (stream)->sock, &data, 1);
-    if (actual < 0 && errno == EINTR)
-	goto again;
-    return POS (actual);
+    return blocking_write (SOCKET (stream), &data, 1);
 }
 
 static int
 socket_puts (repv stream, void *data, int len, rep_bool is_lisp)
 {
     u_char *buf = is_lisp ? rep_STR(data) : data;
-    int total = 0;
-
-    if (!SOCKET_IS_ACTIVE (SOCKET (stream)))
-    {
-	Fsignal (Qerror, rep_list_2 (rep_VAL (&inactive_socket), stream));
-	return 0;
-    }
-
-    while (total < len)
-    {
-	int actual;
-    again:
-	actual = write (SOCKET (stream)->sock, buf + total, len - total);
-	if (actual < 0 && errno == EINTR)
-	    goto again;
-	if (actual < 0)
-	    break;
-	total += actual;
-    }
-
-    return total;
+    return blocking_write (SOCKET (stream), buf, len);
 }
 
 static void
@@ -663,6 +763,8 @@ rep_dl_init (void)
     rep_ADD_SUBR (Ssocket_accept);
     rep_ADD_SUBR (Ssocket_address);
     rep_ADD_SUBR (Ssocket_port);
+    rep_ADD_SUBR (Ssocket_peer_address);
+    rep_ADD_SUBR (Ssocket_peer_port);
     rep_ADD_SUBR (Saccept_socket_output_1);
     rep_ADD_SUBR (Ssocketp);
 

@@ -1,5 +1,5 @@
 ;; gaol.jl -- iron-boxes for untrusted code
-;; $Id: gaol.jl,v 1.1.1.2 2001-03-13 16:43:32 ghudson Exp $
+;; $Id: gaol.jl,v 1.1.1.3 2002-03-20 04:54:51 ghudson Exp $
 
 ;; This file is part of librep.
 
@@ -59,13 +59,13 @@
       complete-string concat cond condition-case
       call-with-error-handlers cons consp copy-sequence copy-stream
       current-time current-time-string default-boundp default-value
-      defconst %define define define-value defmacro defsubst defun defvar
+      defconst %define define defmacro defsubst defun defvar
       delete delete-if delete-if-not delq digit-char-p do
       elt eq eql equal error eval eval-when-compile
       expand-last-match featurep filter fix-time
       format funcall function functionp garbage-collect gensym get
       get-output-stream-string getenv identity if integerp interactive
-      intern lambda last length let let* letrec list list* logand logior
+      intern lambda last length let let* letrec list list* listp logand logior
       lognot logxor lower-case-p lsh macroexpand macrop
       make-closure make-list make-string make-string-input-stream
       make-string-output-stream make-symbol make-vector

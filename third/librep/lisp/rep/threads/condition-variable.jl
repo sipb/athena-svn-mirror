@@ -1,6 +1,6 @@
 #| condition-variable.jl -- condition variables
 
-   $Id: condition-variable.jl,v 1.1.1.1 2001-03-13 16:43:36 ghudson Exp $
+   $Id: condition-variable.jl,v 1.1.1.2 2002-03-20 04:54:59 ghudson Exp $
 
    Copyright (C) 2000 John Harper <jsh@users.sourceforge.net>
 
@@ -41,20 +41,24 @@
   (define (condition-variable-p arg) (has-type-p arg key))
 
   (define-datum-printer key (lambda (arg stream)
+			      (declare (unused arg))
 			      (write stream "#<condition-variable>")))
 
   (define (cv-ref cv) (datum-ref cv key))
   (define (cv-set cv x) (datum-set cv key x))
 
-  ;; XXX SRFI-18 support would require an optional TIMEOUT parameter
-  (define (condition-variable-wait cv mutex)
-    (let ((thread (current-thread)))
+  (define (condition-variable-wait cv mutex #!optional timeout)
+    (let ((thread (current-thread))
+	  (acquired nil))
       (unless (memq thread (cv-ref cv))
 	(cv-set cv (cons thread (cv-ref cv))))
-      (release-mutex mutex)
-      (thread-suspend thread)
+      (without-interrupts
+       ;; these two operations are atomic to prevent people
+       ;; signalling the condition before we actually suspend
+       (release-mutex mutex)
+       (setq acquired (not (thread-suspend thread timeout))))
       (obtain-mutex mutex)
-      t))
+      acquired))
 
   (define (condition-variable-signal cv)
     (when (cv-ref cv)

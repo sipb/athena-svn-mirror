@@ -1,6 +1,6 @@
 /* files.c -- Extendable file handling
    Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-   $Id: files.c,v 1.1.1.1 2000-11-12 06:10:59 ghudson Exp $
+   $Id: files.c,v 1.1.1.2 2002-03-20 04:52:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -664,7 +664,7 @@ make_file(void)
     if(file == rep_NULL)
 	return rep_mem_error();
     rep_data_after_gc += sizeof (rep_file);
-    rep_FILE(file)->car = rep_file_type;
+    rep_FILE(file)->car = rep_file_type | rep_LFF_BOGUS_LINE_NUMBER;
     rep_FILE(file)->name = Qnil;
     rep_FILE(file)->handler = Qnil;
     rep_FILE(file)->handler_data = Qnil;
@@ -827,6 +827,11 @@ for ACCESS-TYPE requests. ACCESS-TYPE can be one of the symbols:
 		return rep_signal_file_error(file_name);
 	    rep_FILE(file)->handler = Qt;
 	    rep_FILE(file)->handler_data = file_name;
+	    if (access_type != Qwrite)
+	    {
+		rep_FILE (file)->line_number = 1;
+		rep_FILE (file)->car &= ~rep_LFF_BOGUS_LINE_NUMBER;
+	    }
 	}
     }
     else
@@ -942,12 +947,13 @@ current position will also fail.
 ::end:: */
 {
     rep_DECLARE1(file, rep_FILEP);
+    rep_DECLARE2_OPT(offset, rep_INTP);
     if(!rep_FILE(file)->name)
 	return rep_unbound_file_error(file);
     if(rep_LOCAL_FILE_P(file))
     {
-	if(!rep_INTP(offset))
-	    return rep_MAKE_INT(ftell(rep_FILE(file)->file.fh));
+	if(offset == Qnil)
+	    return rep_make_long_int (ftell(rep_FILE(file)->file.fh));
 	else
 	{
 	    int whence = SEEK_CUR;
@@ -955,8 +961,23 @@ current position will also fail.
 		whence = SEEK_SET;
 	    else if(where == Qend)
 		whence = SEEK_END;
-	    if(fseek(rep_FILE(file)->file.fh, rep_INT(offset), whence) != 0)
-		return rep_signal_file_error(rep_LIST_1(file));
+
+	    if (whence == SEEK_SET && offset == rep_MAKE_INT (0))
+	    {
+		rep_FILE (file)->line_number = 1;
+		rep_FILE (file)->car &= ~rep_LFF_BOGUS_LINE_NUMBER;
+	    }
+	    else
+		rep_FILE (file)->car |= rep_LFF_BOGUS_LINE_NUMBER;
+
+	    if(fseek(rep_FILE(file)->file.fh,
+		     rep_get_long_int(offset), whence) != 0)
+	    {
+		if (rep_FILE (file)->car & rep_LFF_SILENT_ERRORS)
+		    return Qnil;
+		else
+		    return rep_signal_file_error(rep_LIST_1(file));
+	    }
 	    else
 		return Qt;
 	}
@@ -964,6 +985,15 @@ current position will also fail.
     else
 	return rep_call_file_handler(rep_FILE(file)->handler, op_seek_file,
 				     Qseek_file, 3, file, offset, where);
+}
+
+DEFUN("set-file-ignore-errors", Fset_file_ignore_errors,
+      Sset_file_ignore_errors, (repv file, repv status), rep_Subr2)
+{
+    rep_DECLARE1 (file, rep_FILEP);
+    rep_FILE (file)->car &= ~rep_LFF_SILENT_ERRORS;
+    rep_FILE (file)->car |= (status == Qnil) ? 0 : rep_LFF_SILENT_ERRORS;
+    return rep_undefined_value;
 }
 
 
@@ -1651,6 +1681,7 @@ rep_files_init(void)
     rep_ADD_SUBR(Sclose_file);
     rep_ADD_SUBR(Sflush_file);
     rep_ADD_SUBR(Sseek_file);
+    rep_ADD_SUBR(Sset_file_ignore_errors);
 
     rep_ADD_SUBR_INT(Sdelete_file);
     rep_ADD_SUBR_INT(Srename_file);

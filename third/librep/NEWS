@@ -1,6 +1,206 @@
 News
 ****
 
+0.15
+====
+
+   * Parser can now associate lexical location (file name and line
+     number) with parsed objects. Added `call-with-lexical-origins' and
+     `lexical-origin' functions. This adds memory overhead but is only
+     enabled in interpreted mode, or other times it could be useful
+     (e.g.  when compiling)
+
+   * The compiler enables line-numbering, and uses the information when
+     it prints errors. It also prints errors in a more standard format
+     (intended to mimic GCC), and distinguishes warnings from errors
+
+   * Debugger is much improved, and supports emacs-style emission of
+     line number tokens. Use the included `rep-debugger.el' elisp code
+     to source-debug rep programs in Emacs!
+
+   * New command line option `--debug'. When given, rep starts up in
+     the debugger
+
+   * Reformatted backtrace output. Also backtraces only ever include
+     evaluated argument lists now. They also include lexical information
+     when possible
+
+   * Syntax errors include error description and line number
+
+   * Now supports weak reference objects. New functions
+     `make-weak-ref', `weak-ref', `weak-ref-set'. A weak reference is a
+     pointer to another object. When that object is garbage collected,
+     the pointer in the weak reference is set to false.
+
+   * New `error helper' module. When an error is handled, this module
+     is called and tries to print a human-understandable message
+     explaining why the error may have occurred
+
+   * REPL commands may now be specified by their shortest unique set of
+     leading characters, e.g. `,o' instead of `,open'
+
+   * Added an `#undefined' value. Returned by `%define' and the macros
+     using it (`defun', `defmacro', etc...)
+
+   * New function `table-size' in module `rep.data.tables'
+
+   * `thread-suspend' returns true iff the timeout was reached (i.e.
+     return false if `thread-wake' was used to unsuspend the thread)
+
+   * Objects defined using the `object' macro now have an implicit
+     `self' binding - the object representing their self (or their most
+     derived self)
+
+   * Added TIMEOUT parameter to `condition-variable-wait' and
+     `obtain-mutex' functions
+
+   * New `rep.threads.message-port' module, implements a simple message
+     queue for threads
+
+   * `log' function now optionally accepts a second argument, the base
+     of the logarithm
+
+   * Use gmp to generate random numbers when possible (if at least
+     version 3 of gmp is found) [disabled in librep 0.15.1 - gmp seems
+     to be buggy?]
+
+   * The `string-replace' function may now be given a function as its
+     TEMPLATE parameter
+
+   * Bug fixes:
+
+        - Signal an error if writes don't write all characters they were
+          asked to. Also, some functions could write fewer characters
+          than they were supposed to even if no errors occurred
+
+        - Remembered that file sizes may not fit in fixnums
+
+        - Don't preserve trailing slashes in results of
+          canonical-file-name (to make the path canonical)
+
+        - Don't signal an error when end of file is encountered
+          immediately after reading `#\X' syntax
+
+        - `current-thread' and `all-threads' will create a thread
+          object for the implicit thread if there isn't one already
+
+        - In C subrs that take optional integer arguments, signal an
+          error if the given value isn't an integer or undefined
+          (false). Also, accept all types of numbers where it makes
+          sense to do so
+
+        - Signal an error if end of file is read while parsing a block
+          comment
+
+        - Don't ever return a null object from `current-time-string'
+
+        - Catch errors signalled during command line option processing,
+          and pass them to the standard error handler
+
+        - Right hand side of `letrec' bindings may now have more than
+          one form
+
+        - The `object' macro now evaluates its BASE-OBJECT parameter
+          exactly once
+
+        - Finally removed `define-value'
+
+        - Ignore null lines (or lines which only have comments) in the
+          repl
+
+        - In the compiler, don't expand macros which have have been
+          shadowed by local bindings
+
+        - Don't print some compiler errors/warnings twice
+
+        - Fixes for `mips-compaq-nonstopux' architecture (Tom Bates)
+
+        - Fixed `,reload' and `,unload' repl commands not to try to
+          remove non-existent structures
+
+
+0.14
+====
+
+   * New module `rep.util.md5', has two functions for generating MD5
+     message digests (of files or strings)
+
+   * Changes to the `rep.io.sockets' function:
+
+     In the `socket-server' function the HOST and/or PORT arguments may
+     be false, meaning to listen on all addresses and to choose a
+     random unused port.
+
+     New functions `socket-peer-address' and `socket-peer-port', these
+     always returns the details of the far end of the connetion.
+     `socket-address' and `socket-port' have been changed to always
+     return the details of the local connection point.
+
+   * New function in `rep.system' module, `crypt'. A wrapper for the
+     system's `crypt' function (if it has one)
+
+   * New function in `rep.threads' mdoule, `make-suspended-thread'
+
+   * New module `rep.net.rpc', provides a text-stream based RPC
+     mechanism for Lisp programs. Similar in some ways to untyped CORBA.
+     (This is still in the experimental stage - its interface may
+     change in forthcoming releases)
+
+   * New functions in `rep.data' module, `list->vector' and
+     `vector->list'
+
+   * New macro `define-special-form'. A combination of `defvar' and
+     `setq' - it always makes the variable special and it always sets
+     it to the given value
+
+   * New module `rep.test.framework' implementing `assert', `check' and
+     `test' macros. This provides a framework for implementing unit
+     tests in Lisp modules (such that running the interpreter with the
+     `--check' option will run all tests that have been set up to be
+     autoloaded
+
+   * Bug fixes:
+
+        - When reading from strings, don't choke on zero bytes
+
+        - When writing into sockets, be aware that the socket is in
+          non-blocking mode
+
+        - SDBM and GDBM modules now close any open databases before the
+          interpreter exits
+
+        - Fixed the `rep_parse_number' function not to require a
+          terminating null character in the string when parsing bignums
+
+        - Only define `Qrep_lang_interpreter' once
+
+        - Don't assign vm registers to physical registers on 68000
+          architectures - it's been reported to crash
+
+        - When running asynchronous subprocesses, open and initialize
+          the pty slave before forking to avoid a race condition with
+          the child process
+
+        - Flush symbols from the module cache at another point
+
+        - Fixes for Unixware
+
+        - When compiling non-top-level `defvar' forms, add any doc
+          string they have to the database
+
+
+0.13.5
+======
+
+   * Tar file handling no longer requires GNU tar
+
+   * The `defvar' special form can now take only a single argument
+
+   * The reader now treats `#\return' characters as white space
+
+   * Other miscellaneous bug fixes...
+
+
 0.13.4
 ======
 

@@ -1,6 +1,6 @@
 # Makefile.in -- input for the src directory's Makefile
 # Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-# $Id: Makefile.in,v 1.1.1.2 2001-03-13 16:43:23 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.3 2002-03-20 04:55:08 ghudson Exp $
 #
 # This file is part of Jade.
 #
@@ -23,8 +23,8 @@ VPATH=@srcdir@:@top_srcdir@
 
 COMMON_SRCS =	continuations.c datums.c debug-buffer.c files.c find.c \
 		fluids.c lisp.c lispcmds.c lispmach.c macros.c main.c \
-		message.c misc.c numbers.c regexp.c regsub.c streams.c \
-		structures.c symbols.c tuples.c values.c
+		message.c misc.c numbers.c origin.c regexp.c regsub.c \
+		streams.c structures.c symbols.c tuples.c values.c weak-refs.c
 UNIX_SRCS =	unix_dl.c unix_files.c unix_main.c unix_processes.c
 
 INSTALL_HDRS = rep.h rep_lisp.h rep_regexp.h rep_subrs.h
@@ -37,14 +37,14 @@ SDBM_OBJS = $(SDBM_SRCS:.c=.o)
 SDBM_LOBJS = $(SDBM_SRCS:.c=.lo)
 
 DL_SRCS = repsdbm.c timers.c gettext.c readline.c tables.c repgdbm.c \
-	  record-profile.c safemach.c sockets.c
+	  record-profile.c safemach.c sockets.c md5.c
 DL_OBJS = sdbm.la timers.la gettext.la readline.la tables.la gdbm.la \
-	  record-profile.la safe-interpreter.la sockets.la
+	  record-profile.la safe-interpreter.la sockets.la md5.la
 DL_DSTS = rep/io/db/sdbm.la rep/io/timers.la rep/i18n/gettext.la \
 	  rep/io/readline.la rep/data/tables.la rep/io/db/gdbm.la \
 	  rep/lang/record-profile.la rep/vm/safe-interpreter.la \
-	  rep/io/sockets.la
-DL_DIRS = rep rep/io rep/io/db rep/i18n rep/data rep/lang rep/vm
+	  rep/io/sockets.la rep/util/md5.la
+DL_DIRS = rep rep/io rep/io/db rep/i18n rep/data rep/lang rep/vm rep/util
 
 REP_SRCS = rep.c
 REP_OBJS = $(REP_SRCS:.c=.o)
@@ -151,6 +151,9 @@ safe-interpreter.la : safemach.lo
 sockets.la : sockets.lo
 	$(rep_DL_LD) $(LDFLAGS) -o $@ $^
 
+md5.la : md5.lo rep-md5.lo
+	$(rep_DL_LD) $(LDFLAGS) -o $@ $^
+
 .libexec : $(DL_OBJS)
 	$(SHELL) $(srcdir)/fake-libexec
 
@@ -163,5 +166,7 @@ distclean : clean
 	rm -rf .libs .libexec
 
 realclean : distclean
+
+check :
 
 -include $(SRCS:%.c=.%.d) $(DL_SRCS:%.c=.%.d) $(REP_SRCS:%.c=.%.d)

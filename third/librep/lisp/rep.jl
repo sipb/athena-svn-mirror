@@ -1,6 +1,6 @@
 #| bootstrap for rep module
 
-   $Id: rep.jl,v 1.1.1.1 2000-11-12 06:11:30 ghudson Exp $
+   $Id: rep.jl,v 1.1.1.2 2002-03-20 04:54:36 ghudson Exp $
 
    Copyright (C) 1993, 1994, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -70,5 +70,6 @@
 (require 'rep.lang.backquote)
 (require 'rep.io.file-handlers.tilde)
 
-(setq debug-entry (make-autoload 'debug-entry "rep/lang/debugger"))
-(setq debug-error-entry (make-autoload 'debug-error-entry "rep/lang/debugger"))
+(defvar debug-entry (make-autoload 'debug-entry "rep/lang/debugger"))
+(defvar debug-exit)
+(defvar debug-error-entry (make-autoload 'debug-error-entry "rep/lang/debugger"))

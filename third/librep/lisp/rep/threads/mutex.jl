@@ -1,7 +1,7 @@
 ;; mutex.jl -- thread mutex devices
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
-;; $Id: mutex.jl,v 1.1.1.1 2000-11-12 06:10:29 ghudson Exp $
+;; $Id: mutex.jl,v 1.1.1.2 2002-03-20 04:54:56 ghudson Exp $
 
 ;; This file is part of librep.
 
@@ -43,14 +43,14 @@
     "Returns true if ARG is a mutex object."
     (eq (car arg) 'mutex))
 
-  (defun obtain-mutex (mtx)
+  (defun obtain-mutex (mtx #!optional timeout)
     "Obtain the mutex MTX for the current thread. Will suspend the current
-thread until the mutex is available."
+thread until the mutex is available. Returns false if the timeout expired."
     (without-interrupts
      (if (null (cdr mtx))
 	 (rplacd mtx (list (current-thread)))
        (rplacd mtx (nconc (cdr mtx) (list (current-thread))))
-       (thread-suspend (current-thread)))))
+       (not (thread-suspend (current-thread) timeout)))))
 
   (defun maybe-obtain-mutex (mtx)
     "Attempt to obtain mutex MTX for the current thread without blocking.

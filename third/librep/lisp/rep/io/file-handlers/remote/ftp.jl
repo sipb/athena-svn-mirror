@@ -1,6 +1,6 @@
 ;;;; remote-ftp.jl -- Remote file access via FTP
 ;;;  Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-;;;  $Id: ftp.jl,v 1.1.1.1 2000-11-12 06:11:46 ghudson Exp $
+;;;  $Id: ftp.jl,v 1.1.1.2 2002-03-20 04:54:58 ghudson Exp $
 
 ;;; This file is part of Jade.
 
@@ -609,6 +609,7 @@ file types.")
 		(lambda (#!rest args)
 		  (apply
 		   (lambda (cache-entry session output point line-end)
+		     (declare (unused session line-end))
 		     (let
 			 ((file-struct (remote-ftp-parse-ls-l output point)))
 		       (when file-struct

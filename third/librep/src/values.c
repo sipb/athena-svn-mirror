@@ -1,6 +1,6 @@
 /* values.c -- Handling of Lisp data (includes garbage collection)
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: values.c,v 1.1.1.1 2000-11-12 06:11:00 ghudson Exp $
+   $Id: values.c,v 1.1.1.2 2002-03-20 04:55:08 ghudson Exp $
 
    This file is part of Jade.
 
@@ -998,6 +998,7 @@ last garbage-collection is greater than `garbage-threshold'.
     }
 
     rep_mark_regexp_data();
+    rep_mark_origins ();
 
 #ifdef HAVE_DYNAMIC_LOADING
     rep_mark_dl_data();
@@ -1009,14 +1010,17 @@ last garbage-collection is greater than `garbage-threshold'.
     {
 	rep_MARKVAL(lc->fun);
 	rep_MARKVAL(lc->args);
+	rep_MARKVAL(lc->current_form);
 	rep_MARKVAL(lc->saved_env);
 	rep_MARKVAL(lc->saved_structure);
-	/* don't bother marking `args_evalled_p' it's always `nil' or `t'  */
 	lc = lc->next;
     }
 
     /* move and mark any guarded objects that became inaccessible */
     run_guardians ();
+
+    /* look for dead weak references */
+    rep_scan_weak_refs ();
 
     /* Finished marking, start sweeping. */
 

@@ -1,6 +1,6 @@
 /* rep_lisp.h -- Data structures/objects for Lisp
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: rep_lisp.h,v 1.1.1.1 2000-11-12 06:10:53 ghudson Exp $
+   $Id: rep_lisp.h,v 1.1.1.2 2002-03-20 04:52:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -527,11 +527,15 @@ typedef struct rep_file_struct {
 	repv stream;
     } file;
 
+    /* For input streams */
+    int line_number;
 } rep_file;
 
 /* When this bit is set in flags, the file handle is never fclose()'d,
    i.e. this file points to something like stdin. */
-#define rep_LFF_DONT_CLOSE	(1 << rep_CELL16_TYPE_BITS)
+#define rep_LFF_DONT_CLOSE	(1 << (rep_CELL16_TYPE_BITS + 0))
+#define rep_LFF_BOGUS_LINE_NUMBER (1 << (rep_CELL16_TYPE_BITS + 1))
+#define rep_LFF_SILENT_ERRORS	(1 << (rep_CELL16_TYPE_BITS + 2))
 
 #define rep_FILE(v)		((rep_file *)rep_PTR(v))
 #define rep_FILEP(v)		rep_CELL16_TYPEP(v, rep_file_type)
@@ -824,6 +828,12 @@ typedef struct rep_gc_n_roots {
 #define rep_DECLARE4(x,t) rep_DECLARE(4,x,t(x))
 #define rep_DECLARE5(x,t) rep_DECLARE(5,x,t(x))
 
+#define rep_DECLARE1_OPT(x,t) rep_DECLARE(1, x, (x) == Qnil || t(x))
+#define rep_DECLARE2_OPT(x,t) rep_DECLARE(2, x, (x) == Qnil || t(x))
+#define rep_DECLARE3_OPT(x,t) rep_DECLARE(3, x, (x) == Qnil || t(x))
+#define rep_DECLARE4_OPT(x,t) rep_DECLARE(4, x, (x) == Qnil || t(x))
+#define rep_DECLARE5_OPT(x,t) rep_DECLARE(5, x, (x) == Qnil || t(x))
+
 
 /* Macros for interrupt handling */
 
@@ -888,7 +898,10 @@ extern repv Qnil;
 # ifdef rep_DEFINE_QNIL
     repv Qnil = rep_VAL (&rep_eol_datum);
 # endif
-# define Qnil rep_VAL(&rep_eol_datum)
+  /* OS X has problems with this */
+# ifndef __APPLE__
+#  define Qnil rep_VAL(&rep_eol_datum)
+# endif
 #endif
 
 

@@ -1,6 +1,6 @@
 /* find.c -- Searching and replacing
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: find.c,v 1.1.1.1 2000-11-12 06:11:42 ghudson Exp $
+   $Id: find.c,v 1.1.1.2 2002-03-20 04:54:55 ghudson Exp $
 
    This file is part of Jade.
 
@@ -279,9 +279,11 @@ still case-significant.
 ::end:: */
 {
     rep_regexp *prog;
-    long xstart = rep_INTP(start) ? rep_INT(start) : 0;
+    long xstart;
     rep_DECLARE1(re, rep_STRINGP);
     rep_DECLARE2(str, rep_STRINGP);
+    rep_DECLARE3_OPT(start, rep_INTP);
+    xstart = rep_INTP(start) ? rep_INT(start) : 0;
     prog = rep_compile_regexp(re);
     if(prog)
     {
@@ -309,9 +311,11 @@ Updates the match data.
 ::end:: */
 {
     rep_regexp *prog;
-    long xstart = rep_INTP(start) ? rep_INT(start) : 0;
+    long xstart;
     rep_DECLARE1(re, rep_STRINGP);
     rep_DECLARE2(string, rep_STRINGP);
+    rep_DECLARE3_OPT(start, rep_INTP);
+    xstart = rep_INTP(start) ? rep_INT(start) : 0;
     prog = rep_compile_regexp(re);
     if(prog != NULL)
     {
@@ -366,6 +370,7 @@ buffer, or an integer if the last match was in a string (i.e. regexp-match).
 ::end:: */
 {
     long i;
+    rep_DECLARE1_OPT(exp, rep_INTP);
     if(rep_INTP(exp))
     {
 	i = rep_INT(exp);
@@ -401,6 +406,7 @@ buffer, or an integer if the last match was in a string (i.e. regexp-match).
 ::end:: */
 {
     long i;
+    rep_DECLARE1_OPT(exp, rep_INTP);
     if(rep_INTP(exp))
     {
 	i = rep_INT(exp);
@@ -507,6 +513,7 @@ Returns (SOFT-LIMIT CURRENT-SIZE CURRENT-ENTRIES HITS MISSES).
     int current_size = 0, current_items = 0;
     struct cached_regexp *x;
 
+    rep_DECLARE1_OPT(limit, rep_INTP);
     if(rep_INTP(limit) && rep_INT(limit) >= 0)
 	regexp_cache_limit = rep_INT(limit);
 

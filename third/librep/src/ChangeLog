@@ -1,3 +1,456 @@
+2001-10-28  John Harper  <jsh@unfactored.org>
+
+	* version 0.15.2
+
+2001-10-20  John Harper  <jsh@unfactored.org>
+
+	* numbers.c (random_new): call mpz_init () on the output value
+	before passing it to mpz_urandomm (). This seems to stop things
+	crashing
+
+	(Frandom): signal an error if LIMIT <= 0
+
+2001-10-19  John Harper  <jsh@unfactored.org>
+
+	* repgdbm.c (Fgdbm_walk): fixed doc string
+
+	* readline.c (match_paren): should return an int, not void
+	(pointed out by Karl M. Hegbloom <karlheg@microsharp.com>)
+
+	* librep.sym: removed Fdebug_frame_environment,
+	Fdebug_inner_frame and Fdebug_outer_frame
+
+	* lisp.c (skip_chars): don't accept, say, `#!keyX' when asked
+	for `#!key'; check that the input character after the end of
+	the asked for characters is a token delimiter
+
+2001-10-03  John Harper  <jsh@unfactored.org>
+
+	* version 0.15.1
+
+	* numbers.c: disabled gmp random numbers, they crash
+
+2001-10-01  John Harper  <jsh@unfactored.org>
+
+	* version 0.15
+
+	* numbers.c: also check for HAVE_GMP_RANDINIT
+
+2001-09-23  John Harper  <jsh@unfactored.org>
+
+	* numbers.c, misc.c (Frandom): moved to numbers.c. When gmp is
+	present, always use gmp random integer functions. They should
+	give `good' results for limits up to at least 128 bits, then
+	they start concatenating multiple random values to get their
+	result
+
+2001-09-15  John Harper  <jsh@unfactored.org>
+
+	* continuations.c: allocate continuation and thread typecodes
+	lazily (when they're first needed)
+
+	* numbers.c (promote_to): don't canonicalize the created
+	rational, since it's denominator is known to be 1 (suggested by
+	Kevin Ryde <user42@zip.com.au>)
+
+2001-09-14  John Harper  <jsh@unfactored.org>
+
+	Integrated patch from Tom Bates <Tom.Bates@compaq.com> to fix
+	some bugs on mips-compaq-nonstopux architecture:
+
+	* unix_files.c, rep-remote.c, realpath.c: if S_ISLINK or
+	S_ISSOCK macros aren't defined, define them in terms of
+	S_IFLNK and S_IFSOCK
+
+	* misc.c (Fcomplete_string): don't assume strcmp () and strncmp
+	() have exactly the same type or are functions
+
+2001-09-11  John Harper  <jsh@pixelslut.com>
+
+	* rep_subrs.h, repint_subrs.h: made rep_undefined_value public
+	* librep.sym: added rep_undefined_value
+
+	* rep_lisp.h (rep_File): new bit, rep_LFF_SILENT_ERRORS. When
+	set file errors aren't signalled for this file. They're just
+	ignored and sensible values are returned
+
+	* files.c (Fset_file_ignore_errors): new function
+
+	* streams.c (rep_stream_puts, rep_stream_putc): don't signal
+	end-of-stream errors if files have been marked to ignore them
+
+2001-09-02  John Harper  <jsh@pixelslut.com>
+
+	* misc.c: a couple of small fixes
+
+	* numbers.c (Flog): now takes an optional BASE parameter - the
+	base of the logarithm to take, instead of defaulting to taking
+	natural logarithms. E.g. (log 4 2) -> 2
+
+2001-08-31  John Harper  <jsh@pixelslut.com>
+
+	* streams.c: signal an error if it's not possible to write as
+	many bytes as asked for. Writing is always assumed to block,
+	and no one actually checks the return values of the various
+	output functions, so this is best..
+
+	* sockets.c (blocking_write): if an error occurs, shutdown the
+	socket and call the sentinel
+
+	* unix_processes.c (write_to_process): loop if write () handles
+	fewer characters than we need
+
+	* weak-refs.c (rep_scan_weak_refs): trivial change
+
+	* lisp.c (lisp_prin): print address of closures, helps
+	debugging
+
+	* lisp.c (apply): don't assert that either an exception or a
+	value is returned from every function, instead just print
+	annoying warning messages when this happens
+
+	* lispmach.h, lisp.c: when searching for keyword arguments,
+	don't check every other argument, check every argument (there's
+	no way of knowing how keywords will be aligned)
+
+2001-08-23  John Harper  <jsh@pixelslut.com>
+
+	* weak-refs.c: new file, provide simple weak-reference cells
+
+	* main.c (rep_init_from_dump): call rep_weak_refs_init ()
+	* values.c (Fgarbage_collect): call rep_scan_weak_refs () after
+	calling run_guardians ()
+
+2001-08-13  John Harper  <jsh@pixelslut.com>
+
+	* continuations.c (Fthread_suspend): reversed test to check if
+	timeout occurred so it matches the documentation
+
+	* misc.c (Fcurrent_time_string): fixed returning rep_NULL in
+	some unusual cases
+
+	* lisp.c (Fbacktrace): print backtrace in top to bottom order,
+	not bottom to top
+
+2001-08-09  John Harper  <jsh@pixelslut.com>
+
+	* lisp.c (Ffuncall): use apply () instead of rep_funcall ()
+
+2001-08-08  John Harper  <jsh@pixelslut.com>
+
+	* main.c (get_main_options): --interp also means record line
+	number information. Removed --line-numbers option
+
+2001-08-07  John Harper  <jsh@pixelslut.com>
+
+	* origin.c: new file. Records and fetches line numbering
+	information for lisp forms (when enabled). Adds non-trivial
+	memory overhead, but is invaluable for debugging (both at
+	compile- and at run-time)
+
+	* lisp.c (read_list): call rep_record_origin () on the produced
+	list, giving the stream and starting line of the read form
+	(where possible)
+
+	(copy_to_vector, bind_lambda_list, bind_lambda_list_1,
+	eval_lambda, apply): removed the eval_args and (kludgey)
+	eval_in_env parameters. Now all function applications going
+	through apply () (ne funcall) must have an _evaluated_ list of
+	arguments. This may cons more in interpreted mode, but
+	simplifies a lot of things and is better for debugging (since
+	only evaluated arguments are put in the stack frame)
+
+	(Fbacktrace): made output more elegant (again)
+
+	(Fstack_frame_ref): return a list representing a given frame on
+	the stack
+
+	(Fdebug_frame_environment, Fdebug_outer_frame,
+	Fdebug_inner_frame): deleted these functions
+
+	* unix_main.c: adapted a couple of functions for new backtrace
+	format
+
+	* values.c, symbols.c, repint.h, macros.c, lispmach.h,
+	lispcmds.c, continuations.c: removed the args_evalled_p field
+	of the rep_Call structure, replaced by a current_form field
+
+	* files.c (Fseek_file): recognize that seeks to the start of
+	the file should reset the line number to one, not munge it
+
+2001-08-02  John Harper  <jsh@pixelslut.com>
+
+	* lisp.c: signal an error if EOF is read while parsing a block
+	comment
+
+	* continuations.c: abuse exit_val field of thread structure
+	while threads are suspended to allow thread-suspend to return
+	true or false depending on whether the timeout was reached or
+	not
+
+	* rep_lisp.h (rep_DECLARE[1-5]_OPT): new macros, test for arg
+	being false or the given type
+
+	* numbers.c (rep_get_long_int): fixed some unsignedness
+	problems
+
+	* unix_processes.c, timers.c, misc.c, lispcmds.c, find.c,
+	files.c, continuations.c: in various places check that optional
+	integer arguments really are integers or false. Also use
+	rep_get_long_int () etc where it makes sense to truncate
+	non-integer values
+
+2001-08-01  John Harper  <jsh@pixelslut.com>
+
+	* tables.c (Ftable_unset): fixed bug of not decrementing
+	total_nodes
+
+	* tables.c (Ftable_size): new function
+
+2001-07-29  John Harper  <jsh@pixelslut.com>
+
+	* continuations.c (Fcurrent_thread, Fall_threads): if operating
+	in the zero'th root, and there is no default thread, create one
+	(instead of returning false)
+
+2001-07-26  John Harper  <jsh@pixelslut.com>
+
+	* lisp.c (readl): parse `#undefined'. Fixed bug when reading
+	`(#\A)' (would signal an eof too soon)
+
+	* lisp.c (signal_reader_error): new function, used to signal
+	parse errors. Reports filename and line number for file
+	streams. Also gives a description of why the error occurred in
+	most cases
+
+	* symbols.c (F_define): return #undefined
+
+	* symbols.c (rep_undefined_value):: new symbol called
+	`#undefined'
+
+	* rep_lisp.h, files.c: files get a new field `line_number', and
+	a new flag rep_LFF_BOGUS_LINE_NUMBER.
+
+	* streams.c (rep_stream_getc, rep_stream_ungetc): update the
+	line_number field of files
+
+	* lisp.c (fast_getc): handle line_number field of files
+
+2001-07-22  John Harper  <jsh@pixelslut.com>
+
+	* lisp.c (readl): don't signal an error when reading EOF
+	immediately after `#\[a-zA-Z]', just return the given character
+
+2001-07-21  John Harper  <jsh@pixelslut.com>
+
+	* lisp.c (Fbacktrace): made backtraces cleaner. Added an option
+	backtrace-verbosely which turns on printing argument lists
+
+2001-07-17  John Harper  <jsh@pixelslut.com>
+
+	* rep-remote.c (do_readdir): output mode in decimal not octal
+	(since the 0nn octal read syntax was deprecated in rep)
+
+	* unix_files.c (rep_canonical_file_name): don't preserve
+	trailing slashes, always remove any trailing slashes. Also if
+	realpath () fails (e.g. the file doesn't exist), delete
+	trailing slashes before returning the input
+
+	* unix_files.c (rep_file_size): use rep_make_long_uint () to
+	create the returned value, instead of always using a fixnum
+
+2001-07-15  John Harper  <jsh@pixelslut.com>
+
+	* rep_lisp.h: only do the `#define Qnil &rep_eol_datum'
+	shortcut if __APPLE__ isn't defined, since it doesn't seem to
+	work with Mac OS X (for at least some versions of the
+	toolchain)
+
+2001-07-02  John Harper  <jsh@pixelslut.com>
+
+	* version 0.14
+
+2001-06-29  John Harper  <jsh@pixelslut.com>
+
+	* streams.c (rep_stream_getc): don't test for end of input by
+	looking for a null byte! Check the actual length of the string!
+
+	* sockets.c (blocking_write): new function, used to write ()
+	into a non-blocking fd, simulating blocking using select ().
+	Used when writing data into sockets
+
+2001-06-26  John Harper  <jsh@pixelslut.com>
+
+	* sockets.c (Fsocket_peer_address, Fsocket_peer_port): new
+	functions
+	(Fsocket_address, Fsocket_port): only ever return the details
+	of the local connection point (not the peer in the case of
+	accepted connections)
+
+	* sockets.c (make_inet_socket): if binding to INADDR_ANY, try
+	to find out the actual address of the server and the actual
+	port number.
+	(Fsocket_server): if PORT is false, use a port of zero, which
+	means `any unused port'
+
+	* sockets.c (Fsocket_server): HOSTNAME arg can now be nil,
+	meaning to use INADDR_ANY when binding to the socket (listen
+	for all addresses)
+
+2001-06-18  John Harper  <jsh@pixelslut.com>
+
+	* repgdbm.c, repsdbm.c (rep_dl_kill): new functions, close all
+	databases before exiting
+
+2001-06-15  John Harper  <jsh@pixelslut.com>
+
+	* rep-md5.c: added some comments and doc strings
+
+2001-06-14  John Harper  <jsh@pixelslut.com>
+
+	* numbers.c (rep_parse_number): don't call mpz_init_set_str ()
+	on BUF since it may not be zero-terminated. Instead copy the
+	string to the stack and terminate it there
+
+	* rep-md5.c: new module, rep.util.md5. Exports two functions
+	currently, md5-string and md5-local-file.
+
+	* fake-libexec, Makefile.in: build rep.util.md5 module
+
+	* md5.c, md5.h: MD5 message digest implementation. Taken from
+	GNU textutils-1.22 (originally written by Ulrich Drepper)
+
+	* misc.c (Fcrypt): new function, wrapper for crypt(3) if it's
+	available
+
+2001-06-12  John Harper  <jsh@pixelslut.com>
+
+	* repint_subrs.h, lisp.c: don't declare Qrep_lang_interpreter
+	in lisp.c as well as in structures.c. Instead add declarations
+	for all values declared in structures.c
+
+2001-06-08  John Harper  <jsh@pixelslut.com>
+
+	* lispmach.h: disable mc68000 register assignments - I've had
+	one report of them causing the vm to crash while building the
+	compiler
+
+	* unix_processes.c (run_process): open and initialize the slave
+	side of the pty connection _before_ forking (instead of in the
+	child process). This avoids a race condition where the master
+	side may try to write into its side of the pty before the slave
+	side has been initialized correctly. Thanks to Paolo Bonzini
+	for pointing out this problem (and the solution)
+
+2001-06-04  John Harper  <jsh@pixelslut.com>
+
+	* continuations.c (Fmake_suspended_thread): new function
+
+	* continuations.c (make_thread): when creating the default
+	thread, save _it's_ environment, don't resave the environment
+	of the other created thread!
+
+2001-04-22  John Harper  <jsh@eazel.com>
+
+	* unix_main.c (rep_event_loop): only wait for input events if
+	no unhandled exception. Now if rep_redisplay_fun calls lisp
+	code, errors will be handled more promptly
+
+2001-04-20  John Harper  <jsh@eazel.com>
+
+	* structures.c (Fexport_bindings): flush the symbol from the
+	cache even if we just set the is_exported bit
+
+2001-04-16  John Harper  <jsh@eazel.com>
+
+	* unix_dl.c: include <sys/dl.h> if HAVE_SYS_DL_H is defined and
+	HAVE_DL_H isn't (for UnixWare)
+
+	* misc.c: include <strings.h> (needed for strncasecmp () on
+	UnixWare)
+
+2001-04-09  John Harper  <jsh@eazel.com>
+
+	* version 0.13.6 (from branch-0-13)
+
+2001-04-05  John Harper  <jsh@eazel.com>
+
+	* numbers.c (INSTALL_LOCALE): fixed a really stupid bug in this
+	macro. It never actually installed the new locale!
+
+2001-03-26  John Harper  <jsh@eazel.com>
+
+	* Makefile.in: added a `check' target
+
+2001-03-22  John Harper  <jsh@eazel.com>
+
+	* version 0.13.5
+
+	* numbers.c (rep_parse_number, rep_print_number_to_string): use
+	a macro to save and install the locale. The old way was broken
+	since I didn't realize that setlocale returns the current
+	locale, not the previous one
+
+2001-03-21  John Harper  <jsh@eazel.com>
+
+	* unix_processes.c (run_process, rep_system): if the child
+	process has to abort for some reason (e.g. exec fails), use
+	_exit () instead of exit (). This avoids calling any atexit
+	handlers (which were inherited from the parent process, and
+	may, for example, close the X connection if GTK+ is loaded)
+
+	This fixes the tar-file-handler-broken-on-solaris problem
+
+2001-03-12  John Harper  <jsh@eazel.com>
+
+	* numbers.c (rep_parse_number): if strto[l]l gives a range
+	error, it's not possible to fall back to the float parsing code
+	(since the radix may not be decimal). Instead, use a special
+	helper function to parse an integer with an arbitrary base to a
+	double, then if this succeeds decide whether to use an inexact
+	or exact representation to store the number
+
+	[ This fixes a bug reported on HP-UX, when using --without-gmp
+	and there is no known strtoll function ]
+
+2001-02-20  John Harper  <jsh@eazel.com>
+
+	* rep_subrs.h (rep_message_fun): declared using extern (patch
+	from albert chin <china@thewrittenword.com>)
+
+2001-02-19  John Harper  <jsh@eazel.com>
+
+	* lispmach.h: fixed comment
+
+	* repdoc.c: include <stdlib.h>
+
+2001-02-10  John Harper  <jsh@eazel.com>
+
+	* sockets.c (make_inet_socket): remember to convert the port
+	number to network byte order before storing it in sin_port
+	(fill_in_address): convert the port number from network to host
+	byte order
+
+2001-01-28  John Harper  <jsh@eazel.com>
+
+	* continuations.c (Fthread_join): as part of the THREAD
+	declaration, check that it's a member of the current dynamic
+	root
+
+2001-01-21  John Harper  <jsh@eazel.com>
+
+	* symbols.c (Fdefvar): the DEFAULT-VALUE parameter is now
+	optional, it defaults to false
+
+2001-01-08  John Harper  <jsh@eazel.com>
+
+	* lisp.c: changed the Lisp reader to treat #\return characters
+	as whitespace. (Fixes sawfish bug 5231)
+
+2001-01-04  John Harper  <jsh@eazel.com>
+
+	* version 0.13.4
+
 2000-12-20  John Harper  <jsh@eazel.com>
 
 	* librep.sym: added rep_file_type and rep_guardian_type (doh!)

@@ -1,7 +1,7 @@
 ;; define.jl -- Scheme define syntax
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
-;; $Id: define.jl,v 1.1.1.2 2001-03-13 16:43:25 ghudson Exp $
+;; $Id: define.jl,v 1.1.1.3 2002-03-20 04:54:58 ghudson Exp $
 
 ;; This file is part of librep.
 
@@ -68,9 +68,9 @@
 	    (car new-body)
 	  (cons 'progn new-body))))))
 
-(defmacro define-scan-body (body)
-  `(mapcar (lambda (f)
-	     (define-scan-form f)) ,body))
+(defun define-scan-body (body)
+  (let ((new (mapcar define-scan-form body)))
+    (if (equal new body) body new)))
 
 (defun define-macroexpand-1 (form)
   (if (memq (car form) (fluid define-bound-vars))

@@ -1,6 +1,6 @@
 ;;;; remote-rep.jl -- Remote file access via the rep-remote program
 ;;;  Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
-;;;  $Id: rep.jl,v 1.1.1.1 2000-11-12 06:11:21 ghudson Exp $
+;;;  $Id: rep.jl,v 1.1.1.2 2002-03-20 04:54:58 ghudson Exp $
 
 ;;; This file is part of librep.
 
@@ -202,7 +202,8 @@
     (error "rep-remote session is dying"))
   (while (remote-rep-status-p session status)
     (when (and (process-running-p (aref session remote-rep-process))
-	       (accept-process-output remote-rep-timeout))
+	       (accept-process-output-1 (aref session remote-rep-process)
+					remote-rep-timeout))
       (aset session remote-rep-status 'timed-out)
       (error "rep-remote process timed out (%s)" (or type "unknown")))))
 
@@ -225,6 +226,7 @@
   (or (eq (aref session remote-rep-status) 'success)
       (signal 'file-error
 	      (list (aref session remote-rep-error)
+		    type
 		    (format nil "%s@%s %s"
 			    (aref session remote-rep-user)
 			    (aref session remote-rep-host) args)))))
@@ -297,8 +299,9 @@
 			 (substring output point))
 		   (setq point (length output)))))
 	      (t
-	       (format standard-error "remote-rep: unhandled output %S\n"
-		       (substring output point))
+;	       (unless (string-looking-at "\\s*$" output point)
+;		 (format standard-error "remote-rep: unhandled output %S\n"
+;			 (substring output point)))
 	       (setq point (length output))))))))
 
 (defun remote-rep-sentinel (process)

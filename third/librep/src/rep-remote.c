@@ -1,6 +1,6 @@
 /* rep-remote.c -- remote filesystem back-end
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
-   $Id: rep-remote.c,v 1.1.1.1 2000-11-12 06:10:02 ghudson Exp $
+   $Id: rep-remote.c,v 1.1.1.2 2002-03-20 04:53:00 ghudson Exp $
 
    This file is part of librep.
 
@@ -60,6 +60,14 @@
 
 #ifndef PATH_MAX
 # define PATH_MAX 256
+#endif
+
+#ifndef S_ISLNK
+#define S_ISLNK(mode)  (((mode) & S_IFMT) == S_IFLNK)
+#endif
+
+#ifndef S_ISSOCK
+#define S_ISSOCK(mode)  (((mode) & S_IFMT) == S_IFSOCK)
 #endif
 
 #define PROTOCOL_VERSION 1
@@ -438,7 +446,7 @@ do_readdir (int argc, char **argv)
 	    {
 		*ptr++ = '[';
 		ptr = quote_string (ptr, de->d_name);
-		ptr += sprintf (ptr, " %ld (%ld . %ld) %s 0%lo \"",
+		ptr += sprintf (ptr, " %ld (%ld . %ld) %s %ld \"",
 				(long)st.st_size,
 				st.st_mtime / 86400, st.st_mtime % 86400,
 				S_ISREG (st.st_mode) ? "file"
