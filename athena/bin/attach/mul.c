@@ -1,19 +1,20 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.8 1997-09-23 18:40:16 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.9 1998-03-17 03:56:03 cfields Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.8 1997-09-23 18:40:16 danw Exp $";
+static char *rcsid_mul_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mul.c,v 1.9 1998-03-17 03:56:03 cfields Exp $";
 
 
 #include "attach.h"
 #include <string.h>
 
-int mul_attach(atp, mopt, errorout)
+int mul_attach(atp, mopt, errorout, mountpoint_list)
 struct _attachtab *atp;
 struct mntopts *mopt;
 int errorout;
+string_list **mountpoint_list;
 {
 	char mul_buf[BUFSIZ], *cp = mul_buf, *mp;
 	int status;
@@ -23,7 +24,7 @@ int errorout;
 		cp = strchr(mp, ',');
 		if (cp)
 			*cp = '\0';
-		status = attach(mp);
+		status = attach(mp, mountpoint_list);
 		if (status == FAILURE)
 			break;
 		if (cp)
