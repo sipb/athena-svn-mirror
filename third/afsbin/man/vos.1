@@ -1,0 +1,223 @@
+.\" This file uses -man macros.
+.\" @(#)printf.3s  6.3 (Berkeley) 6/5/86
+.\" 
+.TH VOS 1 "30 April 1990" " " " "
+.SH NAME
+vos - suite of commands for contacting the AFS Volume Server.
+.SH SYNOPSIS
+.B vos <\fIoption\fR>
+.PP
+Each of the the following operation codes is a valid <\fIoption\fR> and has its own set of associated arguments.  See the "OPTIONS" section below for syntax definitions.
+.PP
+.I addsite         
+- add a replication site
+.br
+.I apropos         
+- search by help text
+.br
+.I backup          
+- make backup of a volume
+.br
+.I backupsys       
+- en masse backups
+.br
+.I create          
+- create a new volume
+.br
+.I delentry        
+- delete VLDB entry for a volume
+.br
+.I dump            
+- dump a volume
+.br
+.I examine         
+- everything about the volume
+.br
+.I help            
+- get help on commands
+.br
+.I listpart        
+- list partitions
+.br
+.I listvldb        
+- list volumes in the VLDB
+.br
+.I listvol         
+- list volumes on server (bypass VLDB)
+.br
+.I lock            
+- lock VLDB entry for a volume
+.br
+.I move            
+- move a volume
+.br
+.I partinfo        
+- list partition information
+.br
+.I release         
+- release a volume
+.br
+.I remove          
+- delete a volume
+.br
+.I remsite         
+- remove a replication site
+.br
+.I rename          
+- rename a volume
+.br
+.I restore         
+- restore a volume
+.br
+.I status          
+- report on volser status
+.br
+.I syncserv        
+- synchronize server with VLDB
+.br
+.I syncvldb        
+- synchronize VLDB with server
+.br
+.I unlock          
+- release lock on VLDB entry for a volume
+.br
+.I unlockvldb      
+- unlock all the locked entries in the VLDB
+.br
+.I zap             
+- delete the volume, don't bother with VLDB
+.br
+.SH DESCRIPTION
+The commands in the \fBvos\fR suite are an interface to the \fIVolume Server\fR, which manipulates volumes as atomic entities, and the \fIVolume Location Server\fR, which maintains information about volumes in the \fIVolume Location Database (VLDB)\fR--most importantly, their location.  There are \fBvos\fR commands that allow system administrators to create, move, delete, replicate and back up volumes.
+.SH OPTIONS
+.I addsite  
+- add a replication site
+.br
+syntax: vos addsite  -server <machine name for new site>  -partition <partition name for new site>  -id <volume name or ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I apropos  
+- search by help text
+.br
+syntax: vos apropos  -topic <help string>  [-help]
+.PP
+.I backup  
+- make backup of a volume
+.br
+syntax: vos backup  -id <volume name or ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I backupsys
+- en masse backups
+.br
+syntax: vos backupsys  [-prefix <common prefix on volume(s)>]  [-server <machine name>]  [-partition <partition name>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I create  
+- create  a new volume 
+.br
+syntax: vos create  -server <machine name>  -partition <partition name>  -name <volume name>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I delentry  
+- delete VLDB entry for a volume
+.br
+syntax: vos delentry   [-id <volume name or ID>]  [-prefix <prefix of the volume whose VLDB entry is to be deleted>]  [-server <machine name>] [-partition <partition name>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I dump  
+- dump a volume
+.br
+syntax: vos dump  -id <volume name or ID>  -time <dump from time>  -file <dump file>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I examine  
+- everything about the volume
+.br
+syntax: vos examine   -id <volume name or ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.br
+alias: \fIvos volinfo\fR
+.PP
+.I help 
+- get help on commands
+.br
+syntax: vos help  [-topic <help string>+]  [-help]
+.PP
+.I listpart  
+- list partitions
+.br
+syntax: vos listpart  -server <machine name>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I listvldb  
+- list volumes in the VLDB
+.br
+syntax: vos listvldb  [-name <volume name or ID>]  [-server <machine name>]  [-partition <partition name>]  [-locked]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I listvol  
+- list volumes on server (bypass VLDB)
+.br
+syntax: vos listvol   -server <machine name>  -partition <partition name>  [-fast]  [-long]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I lock  
+- lock VLDB entry for a volume
+.br
+syntax: vos lock   -id <volume name or ID>  [-cell <cell name>]  [-noauth] [-localauth]  [-verbose]  [-help]
+.PP
+.I move  
+- move a volume
+.br
+syntax: vos move   -id <volume name or ID>  -fromserver <machine name on source>  -frompartition <partition name on source>  -toserver <machine name on destination>  -topartition <machine name on destination>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I partinfo  
+- list partition information
+.br
+syntax: vos partinfo  -server <machine name>  [-partition <partition name>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I release  
+- release a volume
+.br
+syntax: vos release  -id <volume name or ID>  [-f]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I remove  
+- delete a volume
+.br
+syntax: vos remove  -server <machine name>  -partition <partition name>  -id <volume name or ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I remsite  
+- remove a replication site
+.br
+syntax: vos remsite  -server <machine name> -partition <partition name>  -id <volume name or ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I rename  
+- rename a volume
+.br
+syntax: vos rename  -oldname <old volume name> -newname <new volume name>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I restore  
+- restore a volume 
+.br
+syntax: vos restore  -file <dump file>  -server <machine name>  -partition <partition name>  -name <name of volume to be restored>  [-id <volumeID>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I status  
+- report on volser status
+.br
+syntax: vos status  -server <machine name>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I syncserv  
+- synchronize server with VLDB
+.br
+syntax: vos syncserv  -server <machine name> [-partition <partition name>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I syncvldb  
+- synchronize VLDB with server
+.br
+syntax: vos syncvldb  -server <machine name>  [-partition <partition name>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I unlock  
+- release lock on VLDB entry for a volume
+.br
+syntax: vos unlock   -id <volume name or ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I unlockvldb  
+- unlock all the locked entries in the VLDB
+.br
+syntax: vos unlockvldb  [-server <machine name>] [-partition <partition name>]  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]
+.PP
+.I zap  
+- delete the volume, don't bother with VLDB
+.br
+syntax: vos zap   -server <machine name> -partition <partition name>  -id <volume ID>  [-cell <cell name>]  [-noauth]  [-localauth]  [-verbose]  [-help]

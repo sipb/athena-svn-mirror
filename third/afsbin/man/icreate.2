@@ -1,0 +1,53 @@
+.\" This file uses -man macros.
+.\"	@(#)printf.3s	6.3 (Berkeley) 6/5/86
+.\"
+.TH ICREATE 2v "Sept 15, 1987" "PRPQ 5799-CGZ: IBM 4.3/RT, Rel 1 " " "
+.SH NAME
+icreate \- "create" an inode
+.SH SYNOPSIS
+.B "icreate(dev, nearInode, p1, p2, p3, p4)"
+.SH DESCRIPTION
+.I Icreate
+allocates an inode in the mounted file system partition specified by the device number dev.  The allocated inode is tagged with the magic number VICEMAGIC for use by
+.I vfsck,
+et. al.  The parameters
+.I p1, p2, p3,
+and 
+.I p4 
+are stored in the inode.
+
+This call is permitted only to the super user.
+
+.SH "RETURN VALUE"
+The value -1 is returned if an error occurs.  Otherwise, the call returns the non-negative inode number assigned.
+
+.SH ERRORS
+.I Icreate
+can fail for one of the following reasons:
+.PP
+.B [ENXIO]
+	The specified device does not exist or is not mounted.
+.br
+.B [EPERM]
+	The caller is not the super user.
+.br
+.B [ENOENT]
+	No available inode.
+
+Be prepared for other, unspecified errors.
+
+.SH "SEE ALSO"
+iopen(2v), iread(2v), iwrite(2v), iinc(2v), idec(2v), vfsck(8v)
+.SH BUGS
+.I NearInode
+is ignored.
+.PP
+There's no way to get at or alter the contents of
+.I p1
+to
+.I p4
+once the inode has been created, short of deleting the inode with
+.I idec(2v)
+(the parameters are available to off-line programs, such as
+.I vfsck,
+however).

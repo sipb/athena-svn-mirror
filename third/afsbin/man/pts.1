@@ -1,0 +1,141 @@
+.\" This file uses -man macros.
+.\" @(#)printf.3s  6.3 (Berkeley) 6/5/86
+.\" 
+.TH PTS 1 "30 April 1990" " " " "
+.SH NAME
+pts - suite of commands for contacting the AFS Protection Server.
+.SH SYNOPSIS
+.B pts <\fIoption\fR>
+.PP
+Each of the the following operation codes is a valid <\fIoption\fR> and has its own set of associated arguments.  See the "OPTIONS" section below for syntax definitions.
+.PP
+.I adduser         
+- add a user to a group
+.br
+.I apropos         
+- search by help text
+.br
+.I chown           
+- change ownership of a group
+.br
+.I creategroup     
+- create a new group
+.br
+.I createuser      
+- create a new user
+.br
+.I delete          
+- delete a user or group from database
+.br
+.I examine         
+- examine an entry
+.br
+.I help            
+- get help on commands
+.br
+.I listmax         
+- list max id
+.br
+.I listowned       
+- list groups owned by an entry or zero id gets orphaned groups
+.br
+.I membership      
+- list membership of a user or group
+.br
+.I removeuser     
+- remove a user from a group
+.br
+.I rename          
+- rename user or group
+.br
+.I setfields       
+- set fields for an entry
+.br
+.I setmax          
+- set max id
+.SH DESCRIPTION
+The commands in the \fBpts\fR suite are an interface to the \fIProtection Server\fR, an AFS server process that plays a central role in authorization.  It maintains the Protection Database, which maps user name to AFS UID for all users in the cell, and records the membership of system and user-invented groups.  The File Server consults the Protection Server to determine if users are entitled to the type of access they have requested.  There are \fBpts\fR commands that allow system administrators and regular users to create, modify and delete Protection Database entries.
+.SH OPTIONS
+.I adduser  
+- add a user to a group
+.br
+syntax: pts adduser  -user <user name>+  -group <group name>+  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I apropos  
+- search by help text
+.br
+syntax: pts apropos  -topic <help string>  [-help]
+.PP
+.I chown  
+- change ownership of a group
+.br
+syntax: pts chown  -name <group name>  -owner <new owner>  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I creategroup 
+- create a new group
+.br
+syntax: pts creategroup -name <group name>+ [-owner <owner of the group>]  [-id <id (negated) for the group>+]  [-cell <cell name>]  [-noauth]  [-test]  [-help] 
+.br
+alias: \fIpts cg\fR
+.PP
+.I createuser  
+- create a new user
+.br
+syntax: pts createuser  -name <@i{user name}>+ [-id <user id>+]  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+alias: \fIpts cu\fR
+.PP
+.I delete 
+- delete a user or group from database
+.br
+syntax: pts delete [-name <user or group name>+] [-id <user or group id>+]  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I examine  
+- examine an entry
+.br
+syntax: pts examine   [-name <user or group name>+] [-id <user or group id>+]  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.br
+alias: \fIpts check\fR
+.PP
+.I help 
+- get help on commands
+.br
+syntax: pts help  [-topic <help string>+]  [-help]
+.PP
+.I listmax  
+- list max id
+.br
+syntax: pts listmax  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I listowned 
+- list groups owned by an entry or zero id gets orphaned groups
+.br
+syntax: pts listowned  [-name <user or group name>+] [-id <user or group id>+]   [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I membership
+- list membership of a user or group
+.br
+syntax: pts membership  [-name <user or group name>+] [-id <user or group id>+]  [-cell <cell name>]  [-noauth]  [-test]  [-help] 
+.br
+alias: \fIpts groups\fR
+.PP
+.I removeuser 
+- remove a user from a group
+.br
+syntax: pts removeuser -user <user name>+ -group <group name>+  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I rename  
+- rename user or group
+.br
+syntax: pts rename  -oldname <old name>  -newname <new name>  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.PP
+.I setfields  
+- set fields for an entry
+.br
+syntax: pts setfields  [-name <user or group name>+] [-id <user or group id>+]  [-access <set privacy flags>]  [-groupquota <set limit on group creation>]  [-cell <cell name>]  [-noauth]  [-test]  [-help]
+.br
+alias: \fIpts chname\fR
+.PP
+.I setmax  
+- set max id
+.br
+syntax: pts setmax  [-group <group max>]  [-user <user max>]  [-cell <cell name>]   [-noauth]  [-test]  [-help]    

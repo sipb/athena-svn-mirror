@@ -1,0 +1,23 @@
+.\" This file uses -man macros.
+.\"	@(#)printf.3s	6.3 (Berkeley) 6/5/86
+.\"
+.TH SETPAG 2v "Sept 15, 1987" "PRPQ 5799-CGZ: IBM 4.3/RT, Rel 1 " " "
+.SH NAME
+setpag \- set process authentication group
+.SH SYNOPSIS
+.B "setpag()"
+.SH "DESCRIPTION"
+.I Setpag
+sets the
+.I process authentication group
+(pag), for this process and its descendants, to a unique number which is good until the kernel is rebooted.  The pag is transmitted to any remote file system agent which intercepts system calls using the Andrew file system kernel interface hooks.  
+.I Venus,
+the Andrew file system cache management wiz, is the only commonly found example of such an agent.  When Venus receives a message from the kernel indicating that a system call has been intercepted, it authenticates that call on both the current pag and user id for that process; that is, it
+.I "looks up"
+authentication information based upon those values.
+.PP
+The association of authentication information with a pag is accomplished by following setpag with a pioctl(2v) which will be intercepted by Venus.  Venus takes the pag and userid from the intercepted pioctl and associates them with the authentication information provided.  This provides an assurance to the caller that no other unrelated process (that is, with a different pag) with
+.I local
+UNIX authentication for the same user id will be interpreted as having Andrew file system authentication.  Code of this sort has been added to the Andrew versions of programs like su(1v), and login(1v), and rsh(1v) in order to support Andrew file system authentication.
+.SH "SEE ALSO"
+pioctl(2v), venus.vdoc, syslib.vdoc, su(1v), login(1v), rsh(1v)
