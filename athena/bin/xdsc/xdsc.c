@@ -2,10 +2,18 @@
 #include	<X11/IntrinsicP.h>
 #include	<X11/StringDefs.h>
 #include	<X11/CoreP.h>
+
+#include        <Xaw/MenuButton.h>
+#include        <Xaw/SimpleMenu.h>
+#include        <Xaw/Sme.h>
+#include        <Xaw/SmeBSB.h>
+#include        <Xaw/Cardinals.h>
+
 #include	<Xaw/List.h>
+#include        <Xaw/SimpleMenP.h>
+#include        <Xaw/Paned.h>
 #include	<Xaw/Command.h>
 #include	<Xaw/Box.h>
-#include	<Xaw/Paned.h>
 #include	<Xaw/AsciiText.h>
 #include	<Xaw/TextP.h>
 #include	<Xaw/TextSinkP.h>
@@ -14,7 +22,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.6 1990-12-20 15:29:00 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.7 1991-02-05 09:11:27 sao Exp $";
 
 /*
 ** Globals
@@ -23,12 +31,12 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xd
 char		*RunCommand();
 TextWidget	toptextW, bottextW;
 Boolean		debug = False;
-CommandWidget	botbuttons[MAX_BOT_BUTTONS];
 char		filebase[50];
-int		whichTopScreen = MAIN;
+int		topscreen = MAIN;
 Widget		topW, paneW;
 void		RemoveLetterC();
 int		char_width;
+char		axis[10];
 
 /*
 ** External functions
@@ -39,23 +47,26 @@ extern void	SubmitTransaction();
 extern void	WriteTransaction();
 extern char	*strchr();
 extern char	*tempnam();
-extern void	PopDownCB();
+extern void	PopdownCB();
 extern char     *getenv();
+extern void	TriggerAdd(), TriggerNum(), TriggerDelete();
+extern void	TriggerWrite(), TriggerPopdown(), TriggerSend();
+extern void	TriggerFocusMove();
 
 /*
 ** Private functions
 */
 
-static void	TopButton1CB(), TopButton2CB(), TopButton3CB();
-static void	BotButtonCB();
+static void	TopCallback(), BotCallback();
+static void	TopSelect(), BotSelect();
+static void	KeyCallback();
 static void	QuitCB(), HelpCB();
-static void	BuildUserInterface(), SetLabelsAndCallback();
+static void	BuildUserInterface();
 static void	Update(), Stub();
 static void	DoTheRightThing();
 static void	DoTheRightThingInReverse();
-static void	TopFakeKeyPress();
-static void	BotFakeKeyPress();
 static void	DisplayHighlightedTransaction();
+static void	MakeArrows();
 
 /*
 ** Private globals
@@ -68,29 +79,95 @@ static char	*meetinglist;
 static Boolean	reading = False;
 
 static Widget	topboxW, botboxW;
-static Widget	helpButton, quitButton;
 static Widget	label1W;
 static int	prevfirst = 0;
 static Boolean	changedMeetingList = False;
-static XawTextPosition	startOfCurrentLine = -1;
+static XawTextPosition	startOfCurrentMeeting = -1;
+Pixmap          arrow_pixmaps[4];
+Display         *dpy;
+Window          root_window;
 
-static char *botstrings[] = {
-	"next", "prev", 
-	"Next in chain", "Prev in chain",
-	"reply", 
-	"compose", "write", "first", "last", NULL};
-static char *sampletop2 =
-"	You can change the meetings you attend by\n\
-	pressing the \"add meeting\" or \"delete meeting\"\n\
-	buttons and filling in the blanks on the popups.\n\
-\n\
-	If the current transaction contains an announcement\n\
-	of a new meeting, as found in the \"new_meetings\"\n\
-	meeting, default values will be read from it.";
+/*
+** Data for top row of buttons
+*/
 
-static CommandWidget	topbuttons[MAX_TOP_BUTTONS];
+static char * menu_labels0[] = {
+        "--", "--", "update", "configure", "mode",
+        "show", "HELP", "QUIT", NULL};
 
-static XawTextPosition	savedstart = -1;
+static char * menu_names0[] = {
+        "upbutton", "downbutton", "updatebutton", "configurebutton", "modebutton",
+        "showbutton", "HELPbutton", "QUITbutton", NULL};
+
+static char * submenu_labels0[MAX_BUTTONS][4] = {
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { "add meeting", "delete meeting", NULL, NULL },
+        { "transactions", "meetings", NULL, NULL },
+        { "unread", "all", "back ten", NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL }};
+
+static char * submenu_names0[MAX_BUTTONS][4] = {
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { "addbutton", "deletebutton", NULL, NULL },
+        { "transbutton", "meetingbutton", NULL, NULL },
+        { "unreadbutton", "allbutton", "backbutton", NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL }};
+
+/*
+** Data for bottom row of buttons
+*/
+
+static char * menu_labels1[] = {
+        "--", "--", "Next in chain", "Prev in chain",
+        "goto", "enter", "write", NULL };
+
+static char * menu_names1[] = {
+        "nextbutton", "prevbutton", "nchainbutton", "pchainbutton",
+        "gotobutton", "enterbutton", "writebutton", NULL };
+
+static char * submenu_labels1[MAX_BUTTONS][4] = {
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { "number", "first", "last", NULL },
+        { "reply", "new transaction", NULL },
+        { "write to file", "mail to someone", NULL }};
+
+static char * submenu_names1[MAX_BUTTONS][4] = {
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { NULL, NULL, NULL, NULL },
+        { "numberbutton", "firstbutton", "lastbutton", NULL },
+        { "replybutton", "newbutton", NULL },
+        { "writebutton", "mailbutton", NULL }};
+
+
+EntryRec        toplevelbuttons[2][MAX_BUTTONS];
+
+#define arrow_width 10
+#define arrow_height 10
+
+static char arrowdown_bits[] = {
+   0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0xff, 0x03,
+   0xfe, 0x01, 0xfc, 0x00, 0x78, 0x00, 0x30, 0x00};
+static char arrowleft_bits[] = {
+   0x10, 0x00, 0x18, 0x00, 0x1c, 0x00, 0xfe, 0x03, 0xff, 0x03, 0xff, 0x03,
+   0xfe, 0x03, 0x1c, 0x00, 0x18, 0x00, 0x10, 0x00};
+static char arrowright_bits[] = {
+   0x20, 0x00, 0x60, 0x00, 0xe0, 0x00, 0xff, 0x01, 0xff, 0x03, 0xff, 0x03,
+   0xff, 0x01, 0xe0, 0x00, 0x60, 0x00, 0x20, 0x00};
+static char arrowup_bits[] = {
+   0x30, 0x00, 0x78, 0x00, 0xfc, 0x00, 0xfe, 0x01, 0xff, 0x03, 0x78, 0x00,
+   0x78, 0x00, 0x78, 0x00, 0x78, 0x00, 0x78, 0x00};
+
 
 void
 main(argc, argv)
@@ -108,7 +185,7 @@ char *argv[];
 	if (debug)
 		fprintf (stderr, "Debugging is on\n");
 
-	sprintf (filebase,"/tmp/xdsc%d",getpid());
+	sprintf (filebase,"/usr/tmp/xdsc%d",getpid());
 
 	if (debug)
 		fprintf (stderr, "filebase is %s\n", filebase);
@@ -154,7 +231,7 @@ char *argv[];
 
 #endif
 
-	topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
+	topW = XtInitialize("topwidget", "Xdsc-new", NULL, 0, &argc, argv);
 
 	myfree (newpath);
 
@@ -173,10 +250,10 @@ char *argv[];
 
 	XtRealizeWidget(topW);
 
-	SetLabelsAndCallback (MAIN);
+	MakeArrows();
 
 	(void) MoveToMeeting(INITIALIZE);
-	BotButtonCB(NULL, 0, NULL);
+	BotSelect(NULL, 0, NULL);
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 	XtMainLoop();
 }
@@ -233,19 +310,26 @@ SetUpEdsc()
 static void
 BuildUserInterface()
 {
-	CommandWidget	commandW;
 	Arg		args[5];
-	unsigned int	n, i;
+	unsigned int	n;
 
 	static XtActionsRec actions[] = {
-		{"BotFakeKeyPress",	BotFakeKeyPress},
-		{"TopFakeKeyPress",	TopFakeKeyPress},
+		{"TopCallback",		TopCallback},
+		{"BotCallback",		BotCallback},
+		{"KeyCallback",		KeyCallback},
 		{"Update",		Update},
+		{"TriggerAdd",		TriggerAdd},
+		{"TriggerDelete",	TriggerDelete},
+		{"TriggerFocusMove",	TriggerFocusMove},
+		{"TriggerNum",		TriggerNum},
+		{"TriggerPopdown",	TriggerPopdown},
+		{"TriggerSend",		TriggerSend},
+		{"TriggerWrite",	TriggerWrite},
 		{"DoTheRightThing",	DoTheRightThing},
 		{"DoTheRightThingInReverse",	DoTheRightThingInReverse},
 		{"HelpCB",		HelpCB},
 		{"QuitCB",		QuitCB},
-		{"PopDownCB",		PopDownCB},
+		{"PopdownCB",		PopdownCB},
 		{"Stub",		Stub}};
 
 
@@ -265,43 +349,12 @@ BuildUserInterface()
 			args,
 			n);
 
-	for (i = 0; i < MAX_TOP_BUTTONS; i++) {
-		n = 0;
-		XtSetArg(args[n], XtNlabel, "---");		n++;
-		commandW = (CommandWidget) XtCreateManagedWidget(
-			"box",
-			commandWidgetClass,
-			topboxW,
-			NULL,
-			0);
-		topbuttons[i] = commandW;
-	}
+        XtAppAddActions (       XtWidgetToApplicationContext(topboxW),
+                                actions, XtNumber(actions));
 
-	n = 0;
-	XtSetArg(args[n], XtNfromHoriz,	topboxW);		n++;
-	XtSetArg(args[n], XtNright, XawChainRight);		n++;
-	XtSetArg(args[n], XtNresizable, False);			n++;
-	helpButton = XtCreateManagedWidget(
-			"help",
-			commandWidgetClass,
-			topboxW,
-			args,
-			n);
-	XtAddCallback (helpButton, XtNcallback, HelpCB, NULL);
+        XawSimpleMenuAddGlobalActions(XtWidgetToApplicationContext(topboxW));
 
-	n = 0;
-	XtSetArg(args[n], XtNfromHoriz,	topboxW);		n++;
-	XtSetArg(args[n], XtNvertDistance, 4);			n++;
-	XtSetArg(args[n], XtNfromVert,	helpButton);		n++;
-	XtSetArg(args[n], XtNright, XawChainRight);		n++;
-	XtSetArg(args[n], XtNresizable, False);			n++;
-	quitButton = XtCreateManagedWidget(
-			"quit",
-			commandWidgetClass,
-			topboxW,
-			args,
-			n);
-	XtAddCallback (quitButton, XtNcallback, QuitCB, NULL);
+        AddChildren (topboxW, 0);
 
 	n = 0;
 	XtSetArg(args[n], XtNstring, meetinglist);		n++;
@@ -314,12 +367,6 @@ BuildUserInterface()
 			paneW,
 			args,
 			n);
-
-/*
-** This lets us notice that we've changed meetings
-*/
-	XtAppAddActions (	XtWidgetToApplicationContext(toptextW),
-				actions, XtNumber(actions));
 
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
@@ -338,18 +385,7 @@ BuildUserInterface()
 			args,
 			n);
 
-	for (i = 0; i < MAX_BOT_BUTTONS; i++) {
-		n = 0;
-		XtSetArg(args[n], XtNlabel, botstrings[i]);	n++;
-		commandW = (CommandWidget) XtCreateManagedWidget(
-			"command",
-			commandWidgetClass,
-			botboxW,
-			args,
-			n);
-		botbuttons[i] = commandW;
-		XtAddCallback (commandW, XtNcallback, BotButtonCB, i);
-	}
+	AddChildren (botboxW, 1);
 
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
@@ -369,152 +405,80 @@ BuildUserInterface()
 
 }
 
-static void
-SetLabelsAndCallback(mode)
-int mode;
-{
-	Arg		args[5];
-	unsigned int	n, i;
-	static void	(* oldcallback)();
-
-	char		*newTranslations;
-	void		(* callback)();
-	char		**labels;
-
-	static String	mainTranslations =
-		"~Ctrl<Key>d:	TopFakeKeyPress(0) \n\
-		~Ctrl<Key>u:	TopFakeKeyPress(1) \n\
-		~Ctrl<Key>i:	TopFakeKeyPress(2) \n\
-		~Ctrl<Key>e:	TopFakeKeyPress(3) \n\
-		~Ctrl<Key>s:	TopFakeKeyPress(4) \n\
-		~Ctrl<Key>a:	Stub() \n\
-		~Ctrl<Key>m:	Stub() \n\
-		~Ctrl<Key>b:	Stub() \n\
-		Ctrl<Key>r:	search(backward) \n\
-		Ctrl<Key>s:	search(forward) \n\
-		";
-
-	static String	editTranslations =
-		"~Ctrl<Key>d:	TopFakeKeyPress(1) \n\
-		~Ctrl<Key>u:	Stub() \n\
-		~Ctrl<Key>i:	Stub() \n\
-		~Ctrl<Key>e:	Stub() \n\
-		~Ctrl<Key>s:	Stub() \n\
-		~Ctrl<Key>a:	TopFakeKeyPress(0) \n\
-		~Ctrl<Key>m:	TopFakeKeyPress(2) \n\
-		~Ctrl<Key>b:	Stub() \n\
-		Ctrl<Key>r:	search(backward) \n\
-		Ctrl<Key>s:	search(forward) \n\
-		";
-
-	static String	listTranslations =
-		"~Ctrl<Key>d:	Stub() \n\
-		~Ctrl<Key>u:	TopFakeKeyPress(0) \n\
-		~Ctrl<Key>i:	Stub() \n\
-		~Ctrl<Key>e:	Stub() \n\
-		~Ctrl<Key>s:	Stub() \n\
-		~Ctrl<Key>a:	TopFakeKeyPress(1) \n\
-		~Ctrl<Key>m:	TopFakeKeyPress(3) \n\
-		~Ctrl<Key>b:	TopFakeKeyPress(2) \n\
-		Ctrl<Key>r:	search(backward) \n\
-		Ctrl<Key>s:	search(forward) \n\
-		";
-
-
-	static char *topstrings1[] = {
-		"down meeting", "up meeting",
-		"inc", "edit mtgs", "show trns",  NULL};
-
-	static char *topstrings2[] = {
-		"add meeting", "delete meeting",
-		"main screen", NULL};
-	
-	static char *topstrings3[] = {
-		"unread", "all", "back ten",
-		"main screen", NULL};
-
-	switch (mode) {
-		case MAIN:
-			newTranslations = mainTranslations;
-			callback = TopButton1CB;
-			labels = topstrings1;
-			break;
-		case EDITMTGS:
-			newTranslations = editTranslations;
-			callback = TopButton2CB;
-			labels = topstrings2;
-			break;
-		case LISTTRNS:
-			newTranslations = listTranslations;
-			callback = TopButton3CB;
-			labels = topstrings3;
-			break;
-		default:
-			fprintf (stderr, "Bad mode, %d to SetLabelsAndCallback",mode);
-	}
-
-	whichTopScreen = mode;
-
-	XtOverrideTranslations(	toptextW,
-			XtParseTranslationTable(newTranslations));
-	XtOverrideTranslations(	bottextW,
-			XtParseTranslationTable(newTranslations));
-
-	XtUnmapWidget(topboxW);
-	for (i = 0; i < MAX_TOP_BUTTONS; i++) {
-		XtUnmanageChild (topbuttons[i]);
-	}
-
-	for (i = 0; labels[i] && i < MAX_TOP_BUTTONS; i++) {
-		n = 0;
-		XtSetArg(args[n], XtNlabel, labels[i]);	n++;
-		XtSetValues(topbuttons[i], args, n);
-
-		if (XtHasCallbacks(topbuttons[i], XtNcallback) == XtCallbackHasSome) {
-			XtRemoveAllCallbacks (topbuttons[i], XtNcallback);
-		}
-
-		XtAddCallback (	topbuttons[i], XtNcallback, 
-				callback, (XtPointer)i );
-	}
-
-	for (i = 0; labels[i] && i < MAX_TOP_BUTTONS; i++)
-		XtManageChild (topbuttons[i]);
-	XtMapWidget(topboxW);
-
-	oldcallback = callback;
-}
-
 /*
-** Callback for "list meetings" mode
+** TopCallback is called for key hits on menu entries.
+** TopCallback gets two parameters:  First, the number of the menubutton
+** secondly, the index of the entry in the menu.  It
+** packs the two parameters into an int and manually calls TopSelect().
 */
 
 static void
-TopButton1CB(w, client_data, call_data)
+TopCallback(w, event, params, num_params)
+Widget  w;
+XEvent  *event;
+String  *params;
+int     *num_params;
+{
+	int	buttonnum, entrynum;
+
+	buttonnum = atoi(params[0]);
+	entrynum = atoi(params[1]);
+
+/*
+** If a menu item was selected, popdown the menu and relinquish keyboard focus.
+*/
+	if (entrynum != -1)  {
+		TopSelect (w, buttonnum + (entrynum << 4));
+	}
+	XtPopdown(w);
+	XtSetKeyboardFocus(topW, paneW);
+}
+
+/*
+** TopSelect is called either automatically through the select callback
+** on a button, or manually through TopCallback when triggered by a
+** key hit.
+*/
+
+static void
+TopSelect(w, client_data, call_data)
 Widget	w;
 XtPointer	client_data;
 XtPointer	call_data;
 {
-	int		buttonnum = (int) client_data;
+	int buttonnum, entrynum;
 	Arg		args[5];
 	unsigned int	n;
 
-	switch (buttonnum) {
+	entrynum = ((int) client_data) >> 4;
+	buttonnum = ((int) client_data) & 0x0F;
 
+	switch (buttonnum) {
 /*
-** Move to next or previous meeting
+** Move to next or previous meeting if topscreen is showing meetings,
+** to next or previous transaction otherwise
 */
 	case 0:
-		if (MoveToMeeting(NEXTNEWS) == 0) {
-			reading = False;
-			BotButtonCB(NULL, 0, NULL);
+		if (topscreen == MAIN) {
+			if (MoveToMeeting(NEXTNEWS) == 0) {
+				reading = False;
+				BotSelect(NULL, 0, NULL);
+			}
+		}
+		else {
+			BotSelect (NULL, 0, NULL);
 		}
 		break;
 
 	case 1:
-		if (MoveToMeeting(PREVNEWS) == 0) {
-			reading = False;
-			BotButtonCB(NULL, 0, NULL);
+		if (topscreen == MAIN) {
+			if (MoveToMeeting(PREVNEWS) == 0) {
+				reading = False;
+				BotSelect(NULL, 0, NULL);
+			}
+		}
+		else {
+			BotSelect (NULL, 1, NULL);
 		}
 		break;
 /*
@@ -533,123 +497,123 @@ XtPointer	call_data;
 		break;
 
 /*
-** Change modes to editting list of meetings
+** configure
 */
 	case 3:
-		SaveTopTextWidget();
-		n = 0;
-		XtSetArg(args[n], XtNstring, sampletop2);		n++;
-		XtSetValues (toptextW, args, n);
-		SetLabelsAndCallback (EDITMTGS);
+		switch (entrynum) {
+		case 0:
+			AddMeeting();
+			changedMeetingList = True;
+			break;
+		case 1:
+			DeleteMeeting();
+			changedMeetingList = True;
+			break;
+		}
 		break;
 
+/*
+** mode
+*/
+	case 4:
+		switch (entrynum) {
+		case 0:
 /*
 ** Put up list of transactions within the current meeting
 */
-	case 4:
-		SaveTopTextWidget();
-		prevfirst = TransactionNum(CURRENT);
-		PutUpTransactionList(TransactionNum(CURRENT), TransactionNum(LAST));
-		UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			prevfirst = TransactionNum(CURRENT);
+			PutUpTransactionList(	TransactionNum(CURRENT), 
+						TransactionNum(LAST));
+			topscreen = LISTTRNS;
+			UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			break;
+		case 1:
+/*
+** Put up list of meetings
+*/
+			topscreen = MAIN;
+			RestoreTopTextWidget();
+			if (	TransactionNum(HIGHESTSEEN) ==  
+						TransactionNum(LAST))
+				RemoveLetterC();
+			break;
+		}
 		break;
-
-	}
-}
 
 /*
-** Callback for "edit meetings" mode
+** show
 */
-
-static void
-TopButton2CB(w, client_data, call_data)
-Widget	w;
-XtPointer	client_data;
-XtPointer	call_data;
-{
-	int	buttonnum = (int) client_data;
-
-	switch (buttonnum) {
-	case 2:
-/*
-** Change modes to reading transactions
-*/
-		RestoreTopTextWidget();
+	case 5:
+		if (topscreen != LISTTRNS)
+			break;
+		switch (entrynum) {
+		case 0:
+			PutUpTransactionList(
+				TransactionNum(HIGHESTSEEN), TransactionNum(LAST));
+			prevfirst = TransactionNum(HIGHESTSEEN);
+			UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			break;
+		case 1:
+			PutUpTransactionList(
+				TransactionNum(FIRST), TransactionNum(LAST));
+			prevfirst = TransactionNum(FIRST);
+			UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			break;
+		case 2:
+			PutUpTransactionList(	prevfirst <= 10 ? 1 : prevfirst - 10, 
+						TransactionNum(LAST));
+			UpdateHighlightedTransaction(prevfirst - 1);
+	
+			prevfirst -= 10;
+			if (prevfirst <=0) prevfirst = 1;
+			break;
+		}
 		break;
-
-	case 0:
-		AddMeeting();
-		changedMeetingList = True;
-		break;
-	case 1:
-		DeleteMeeting();
-		changedMeetingList = True;
-		break;
-	}
-}
-
-
-/*
-** Callback for "list transactions" mode
-*/
-
-static void
-TopButton3CB(w, client_data, call_data)
-Widget	w;
-XtPointer	client_data;
-XtPointer	call_data;
-{
-	int	buttonnum = (int) client_data;
-
-	switch (buttonnum) {
-	case 0:
-		PutUpTransactionList(
-			TransactionNum(HIGHESTSEEN), TransactionNum(LAST));
-		prevfirst = TransactionNum(HIGHESTSEEN);
-		UpdateHighlightedTransaction(TransactionNum(CURRENT));
-		break;
-	case 1:
-		PutUpTransactionList(
-			TransactionNum(FIRST), TransactionNum(LAST));
-		prevfirst = TransactionNum(FIRST);
-		UpdateHighlightedTransaction(TransactionNum(CURRENT));
-		break;
-	case 2:
-		PutUpTransactionList(	prevfirst <= 10 ? 1 : prevfirst - 10, 
-					TransactionNum(LAST));
-		UpdateHighlightedTransaction(prevfirst - 1);
-
-/*  Since "back ten" is typically used for searching through
-**  a list of headers, I removed the following line because it made
-**  the back tenning go too slowly.
-		GoToTransaction(prevfirst - 1, True);
-*/
-		prevfirst -= 10;
-		if (prevfirst <=0) prevfirst = 1;
-		break;
-	case 3:
-		RestoreTopTextWidget();
-		if (TransactionNum(HIGHESTSEEN) ==  TransactionNum(LAST))
-			RemoveLetterC();
-		break;
-
-	default:
-		fprintf (stderr, "No translations for this button\n");
-	}
-}
-
-static void
-BotButtonCB(w, client_data, call_data)
-Widget	w;
-XtPointer	client_data;
-XtPointer	call_data;
-{
-	int	buttonnum = (int) client_data;
-
-	switch (buttonnum) {
 
 	case 6:
-		WriteTransaction(TransactionNum(CURRENT));
+		PutUpHelp();
 		break;
+	case 7:
+		QuitCB (NULL, NULL, NULL);
+		break;
+	}
+}
+
+static void
+BotCallback(w, event, params, num_params)
+Widget  w;
+XEvent  *event;
+String  *params;
+int     *num_params;
+{
+	int	buttonnum, entrynum;
+
+	buttonnum = atoi(params[0]);
+	entrynum = atoi(params[1]);
+
+/*
+** If a menu item was selected, popdown the menu and relinquish keyboard focus.
+*/
+	if (entrynum != -1)  {
+		BotSelect (w, buttonnum + (entrynum << 4));
+	}
+	XtPopdown(w);
+	XtSetKeyboardFocus(topW, paneW);
+}
+
+
+static void
+BotSelect(w, client_data, call_data)
+Widget	w;
+XtPointer	client_data;
+XtPointer	call_data;
+{
+	int buttonnum, entrynum;
+
+	entrynum = ((int) client_data) >> 4;
+	buttonnum = ((int) client_data) & 0x0F;
+
+	switch (buttonnum) {
 
 	case 0:
 
@@ -687,25 +651,43 @@ XtPointer	call_data;
 	case 3:
 		GoToTransaction(TransactionNum(PREF), True);
 		break;
-	case 7:
-		GoToTransaction(TransactionNum(FIRST), True);
-		break;
-	case 8:
-		GoToTransaction(TransactionNum(LAST), True);
-		break;
 	case 4:
-		SubmitTransaction(TransactionNum(CURRENT));
+		switch (entrynum) {
+		case 0:
+			GetTransactionNum();
+			break;
+		case 1:
+			GoToTransaction(TransactionNum(FIRST), True);
+			break;
+		case 2:
+			GoToTransaction(TransactionNum(LAST), True);
+			break;
+		}
+		break;
+	case 5:
+		switch (entrynum) {
+		case 0:
+			if (axis[0] != ' ')
+				SubmitTransaction(TransactionNum(CURRENT));
+			break;
+		case 1:
+			if (axis[6] != ' ')
+				SubmitTransaction(0);
+			break;
+		}
 /*
 **  This makes the buttons update to reflect the new transaction.
 */
 		GoToTransaction(TransactionNum(CURRENT), False);
 		break;
-	case 5:
-		SubmitTransaction(0);
-/*
-**  Ditto.
-*/
-		GoToTransaction(TransactionNum(CURRENT), False);
+	case 6:
+		switch (entrynum) {
+		case 0:
+			WriteTransaction(TransactionNum(CURRENT));
+			break;
+		case 1:
+			break;
+		}
 		break;
 	default:
 		fprintf (stderr,"Stub function\n");
@@ -864,6 +846,7 @@ Boolean	flag;		/* update current meeting? */
 		CheckButtonSensitivity(BUTTONS_OFF);
 		return (-1);
 	}
+	CheckButtonSensitivity(BUTTONS_ON);
 
 	PutUpArrow(textW, start);
 
@@ -1115,12 +1098,12 @@ char	*ptr;
 static void
 Update()
 {
-	if (whichTopScreen == MAIN) {
+	if (topscreen == MAIN) {
 		if (MoveToMeeting(UPDATE) == 0)
 			reading = False;
-		BotButtonCB(NULL, 0, NULL);
+		BotSelect(NULL, 0, NULL);
 	}
-	else if (whichTopScreen == LISTTRNS) {
+	else if (topscreen == LISTTRNS) {
 		DisplayHighlightedTransaction();
 	}
 }
@@ -1183,13 +1166,14 @@ DoTheRightThing()
 /*
 **  No, read the next transaction
 */
-		BotButtonCB(NULL, 0, NULL);
+		BotSelect(NULL, 0, NULL);
 	}
 	else {
 /*
 **  Yes, go to the next meeting and read its next transaction.
 */
-		TopButton1CB(NULL, (XtPointer)0, NULL);
+		TopSelect(NULL, (XtPointer)0, NULL);
+		
 	}
 }
 
@@ -1207,13 +1191,13 @@ DoTheRightThingInReverse()
 /*
 **  No, read the prev transaction
 */
-		BotButtonCB(NULL, (XtPointer)1, NULL);
+		BotSelect(NULL, (XtPointer)1, NULL);
 	}
 	else {
 /*
 **  Yes, go to the prev meeting and read its next transaction.
 */
-		TopButton1CB(NULL, (XtPointer)1, NULL);
+		TopSelect(NULL, (XtPointer)1, NULL);
 	}
 }
 
@@ -1268,9 +1252,10 @@ int	finish;
 	char		*returndata;
 	static char	oldmeeting[LONGNAMELEN];
 	static int	oldstart=0, oldfinish=0;
+	Arg		args[1];
 
-
-	SetLabelsAndCallback (LISTTRNS);
+	XtSetArg(args[0], XtNsensitive, True);
+	XtSetValues ((toplevelbuttons[0][5]).button, args, 1);
 
 /*
 ** Can we optimize by keeping some of the old data?
@@ -1280,8 +1265,11 @@ int	finish;
 		finish == oldfinish && 
 		start <= oldstart) {
 
-		if (oldstart == start)
+		if (oldstart == start) {
+			sprintf (filename, "%s-list", filebase);
+			FileIntoWidget(filename, toptextW);
 			return;
+		}
 
 		sprintf (	command, 
 				"mv %s-list %s-old", 
@@ -1319,7 +1307,7 @@ int	finish;
 			PutUpWarning("WARNING", command, False);
 		}
 
-		FileIntoWidget(filename, (Widget) toptextW);
+		FileIntoWidget(filename, toptextW);
 
 		myfree (returndata);
 		sprintf (filename, "%s-old", filebase);
@@ -1358,65 +1346,18 @@ int	finish;
 	oldfinish = finish;
 }
 
-
-static void	
-TopFakeKeyPress(w, event, params, num_params)
-Widget	w;
-XEvent	*event;
-String 	*params;
-int	*num_params;
-{
-	switch (whichTopScreen) {
-	case MAIN:
-		TopButton1CB(NULL, (XtPointer)atoi (params[0]), NULL);
-		break;
-	case EDITMTGS:
-		TopButton2CB(NULL, (XtPointer)atoi (params[0]), NULL);
-		break;
-	case LISTTRNS:
-		TopButton3CB(NULL, (XtPointer)atoi (params[0]), NULL);
-		break;
-	}
-}
-
-static void	
-BotFakeKeyPress(w, event, params, num_params)
-Widget	w;
-XEvent	*event;
-String 	*params;
-int	*num_params;
-{
-	BotButtonCB(NULL, (XtPointer) atoi (params[0]), NULL);
-}
-
-SaveTopTextWidget()
-{
-	XawTextPosition	inspoint;
-
-	if (savedstart != -1)
-		return;
-
-	inspoint = XawTextGetInsertionPoint(toptextW);
-/*
-** Find start of current line
-*/
-	for (savedstart = inspoint; savedstart && meetinglist[savedstart-1] != '\n'; savedstart--)
-		;
-}
-
 RestoreTopTextWidget()
 {
 	Arg		args[1];
 	unsigned int	n;
 
-	SetLabelsAndCallback (MAIN);
 	CheckButtonSensitivity(BUTTONS_ON);
 /*
 ** If the meeting list's changed since we saved state, reread it in
 ** and highlight the next meeting with news.
 */
 	if (changedMeetingList) {
-		TopButton1CB (NULL, (XtPointer)2, NULL);
+		TopSelect (NULL, (XtPointer)2, NULL);
 		changedMeetingList = False;
 	}
 /*
@@ -1427,14 +1368,12 @@ RestoreTopTextWidget()
 		n = 0;
 		XtSetArg(args[n], XtNstring, meetinglist);		n++;
 		XtSetValues (toptextW, args, n);
-		PutUpArrow(toptextW, savedstart);
+		PutUpArrow(toptextW, startOfCurrentMeeting);
 	}
-
-	savedstart = -1;
 }
 
 /*
-** This should only be called if whichTopScreen == LISTTRNS.   It moves
+** This should only be called if topscreen == LISTTRNS.   It moves
 ** the highlight of the upper text widget to the line for the
 ** specified transaction.
 */
@@ -1531,15 +1470,18 @@ XawTextPosition	start;
 {
 	XawTextBlock		textblock;
 	static XawTextPosition	oldstart = -1;
-	static int		oldTopScreen = -1;
+	static int		oldtopscreen = -1;
+	int			offset;
+
+	offset = (topscreen == MAIN) ? 7 : 0;
 
 /*
 ** Don't try to erase an arrow on another top screen
 */
-	if (whichTopScreen != oldTopScreen)
+	if (topscreen != oldtopscreen)
 		oldstart = -1;
 
-	oldTopScreen = whichTopScreen;
+	oldtopscreen = topscreen;
 
 	textblock.firstPos = 0;
 	textblock.length = 1;
@@ -1547,17 +1489,19 @@ XawTextPosition	start;
 
 	if (oldstart != -1) {
 		textblock.ptr = " ";
-		XawTextReplace (	textW, oldstart + 7, 
-					oldstart + 8, &textblock);
+		XawTextReplace (	textW, oldstart + offset, 
+					oldstart + offset + 1, &textblock);
 	}
 
 	textblock.ptr = "+";
 
-	XawTextReplace (	textW, start + 7, 
-				start + 8, &textblock);
+	XawTextReplace (	textW, start + offset, 
+				start + offset + 1, &textblock);
 
 	XawTextSetInsertionPoint (textW, start);
-	startOfCurrentLine = start;
+
+	if (topscreen == MAIN)
+		startOfCurrentMeeting = start;
 
 	XFlush(XtDisplay(textW));
 
@@ -1587,7 +1531,7 @@ RemoveLetterC()
 	textblock.format = FMT8BIT;
 	textblock.ptr = " ";
 
-	inspoint = startOfCurrentLine;
+	inspoint = startOfCurrentMeeting;
 /*
 	inspoint = XawTextGetInsertionPoint(toptextW);
 */
@@ -1601,3 +1545,209 @@ RemoveLetterC()
 
 	XFlush(XtDisplay(toptextW));
 }
+
+AddChildren (parent, whichone)
+Widget	parent;
+int	whichone;
+{
+	Widget	command, menu, entry;
+	int	i, j, n;
+	char	*name, *label;
+	Arg	args[5];
+	EntryRec	*toprec, *newrec;
+	void	(*mycallback)();
+
+	char **buttonlabels;
+	char **buttonnames;
+
+	if (whichone == 0) {
+		buttonlabels = menu_labels0;
+		buttonnames = menu_names0;
+		mycallback = TopSelect;
+	}
+	else {
+		buttonlabels = menu_labels1;
+		buttonnames = menu_names1;
+		mycallback = BotSelect;
+	}
+
+	for (i = 0; buttonnames[i]; i++) {
+		n = 0;
+		XtSetArg(args[n], XtNmenuName, buttonlabels[i]);	n++;
+		XtSetArg(args[n], XtNlabel, buttonlabels[i]);	n++;
+
+		if (whichone == 0) {
+			label = submenu_labels0[i][0];
+			name = submenu_names0[i][0];
+		}
+		else {
+			label = submenu_labels1[i][0];
+			name = submenu_names1[i][0];
+		}
+		toprec = &(toplevelbuttons[whichone][i]);
+
+		if (name) {
+			command = XtCreateManagedWidget(
+				buttonnames[i],
+				menuButtonWidgetClass, parent,
+				args, n);
+		}
+		else {
+			command = XtCreateManagedWidget(
+				buttonnames[i],
+				commandWidgetClass, parent,
+				args, n);
+			XtAddCallback(	command, XtNcallback, 
+					mycallback, i);
+		}
+
+		toprec->button = command;
+		toprec->nextrec = NULL;
+
+		XtInstallAccelerators(topW, command);
+
+		if (!name)
+			continue;
+/*
+**	Making the menus children of the menubuttons makes it impossible
+**	for XtNameToWidget to find them later.  Grump.
+*/
+		n = 0;
+		menu = XtCreatePopupShell(
+				buttonlabels[i],
+				simpleMenuWidgetClass, 
+				parent, 
+				args, n);
+
+		j = 0;
+		do {
+			newrec = (EntryRec *) malloc (sizeof (EntryRec));
+			toprec->nextrec = newrec;
+			newrec->nextrec = NULL;
+			n = 0;
+			XtSetArg(args[n], XtNlabel, label);		n++;
+
+			entry = XtCreateManagedWidget(	
+					name, smeBSBObjectClass, menu,
+				      	args, n);
+			XtAddCallback(	entry, XtNcallback,
+					mycallback, i + (j << 4));
+			newrec->button = entry;
+			if (whichone == 0) {
+				label = submenu_labels0[i][j + 1];
+				name = submenu_names0[i][j + 1];
+			}
+			else {
+				label = submenu_labels1[i][j + 1];
+				name = submenu_names1[i][j + 1];
+			}
+			toprec = newrec;
+			j++;
+		} while (name);
+	}
+}
+    
+static void
+MakeArrows()
+{
+	Arg		args[5];
+	Screen		*screen;
+
+	dpy = XtDisplay(topW);
+	screen = XtScreen(topW);
+	root_window = XtWindow(topW);
+
+	arrow_pixmaps[0] = XCreatePixmapFromBitmapData(
+                        dpy,
+                        root_window,
+                        arrowdown_bits, arrow_width, arrow_height,
+			WhitePixelOfScreen(screen), 
+			BlackPixelOfScreen(screen),
+			DefaultDepthOfScreen(screen));
+
+	arrow_pixmaps[1] = XCreatePixmapFromBitmapData(
+                        dpy,
+                        root_window,
+                        arrowup_bits, arrow_width, arrow_height,
+			WhitePixelOfScreen(screen), 
+			BlackPixelOfScreen(screen),
+			DefaultDepthOfScreen(screen));
+
+	arrow_pixmaps[2] = XCreatePixmapFromBitmapData(
+                        dpy,
+                        root_window,
+                        arrowright_bits, arrow_width, arrow_height,
+			WhitePixelOfScreen(screen), 
+			BlackPixelOfScreen(screen),
+			DefaultDepthOfScreen(screen));
+
+	arrow_pixmaps[3] = XCreatePixmapFromBitmapData(
+                        dpy,
+                        root_window,
+                        arrowleft_bits, arrow_width, arrow_height,
+			WhitePixelOfScreen(screen), 
+			BlackPixelOfScreen(screen),
+			DefaultDepthOfScreen(screen));
+
+	XtSetArg(args[1], XtNheight, arrow_height + 12);
+	XtSetArg(args[2], XtNwidth, arrow_height + 12);
+
+	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[0]);
+	XtSetValues ((toplevelbuttons[0][0]).button, args, 3);
+
+	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[1]);
+	XtSetValues ((toplevelbuttons[0][1]).button, args, 3);
+
+	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[2]);
+	XtSetValues ((toplevelbuttons[1][0]).button, args, 3);
+
+	XtSetArg(args[0], XtNbitmap, arrow_pixmaps[3]);
+	XtSetValues ((toplevelbuttons[1][1]).button, args, 3);
+
+}
+
+/*
+** A keyboard equivalent has been hit.  For normal command widgets, send
+** them a button-one-down and button-one-up.  For menu buttons, just send
+** them the button-down, and their child will send the button-up.
+*/
+
+static void	
+KeyCallback(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	Widget		button;
+	XButtonEvent	MyEvent;
+
+	button = (toplevelbuttons[atoi(params[0])][atoi(params[1])]).button;
+
+	MyEvent.type = ButtonPress;
+	MyEvent.display = dpy;
+	MyEvent.window = XtWindow(button);
+	MyEvent.button = 1;
+	MyEvent.x = 1;
+	MyEvent.y = 1;
+	MyEvent.state = ButtonPressMask;
+	XSendEvent(	dpy,
+			XtWindow(button),
+			False,
+			ButtonPressMask,
+			(XEvent *) &MyEvent);
+
+	XSync(dpy, False);
+	if (!(toplevelbuttons[atoi(params[0])][atoi(params[1])]).nextrec) {
+		MyEvent.type = ButtonRelease;
+		MyEvent.state = ButtonReleaseMask;
+		XSendEvent(	dpy,
+				XtWindow(button),
+				False,
+				ButtonReleaseMask,
+				(XEvent *) &MyEvent);
+	}
+
+}
+
+
