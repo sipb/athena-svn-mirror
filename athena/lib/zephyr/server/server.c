@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.35 1988-06-25 16:52:21 jtkohl Exp $";
+static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.36 1988-06-27 10:44:41 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -1579,7 +1579,7 @@ register int from, to;
 {
 	/* XXX release any private queue for this server */
 
-	register ZNotAcked_t *nacked, *nack2;
+	register ZNotAcked_t *nacked;
 
 	/* search the not-yet-acked list for anything destined to 'from', and
 	   change the index to 'to'. */
