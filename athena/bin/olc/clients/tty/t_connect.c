@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *	$Id: t_connect.c,v 1.13 1990-11-14 14:55:47 lwvanels Exp $
+ *	$Id: t_connect.c,v 1.14 1990-12-17 08:38:57 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.13 1990-11-14 14:55:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.14 1990-12-17 08:38:57 lwvanels Exp $";
 #endif
 #endif
 
@@ -122,7 +122,9 @@ t_forward(Request)
   int status;
   int instance;
 
-  t_describe(Request,NULL,NULL,TRUE,FALSE);
+  status = t_describe(Request,NULL,NULL,TRUE,FALSE);
+  if (status != SUCCESS)
+    return(ERROR);
   instance = Request->requester.instance;
   status = OForward(Request);
   
