@@ -44,7 +44,7 @@ static char sccsid[] = "@(#)ftpd.c	5.19 (Berkeley) 11/30/88 + portability hacks 
 #include <stdio.h>
 #include <signal.h>
 #include <pwd.h>
-#ifdef SOLARIS
+#ifdef SYSV
 #include <shadow.h>
 #endif
 #include <setjmp.h>
