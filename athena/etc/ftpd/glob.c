@@ -25,11 +25,7 @@ static char sccsid[] = "@(#)glob.c	5.6 (Berkeley) 11/30/88";
 
 #include <sys/param.h>
 #include <sys/stat.h>
-#ifdef SYSV
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 
 #include <stdio.h>
 #include <errno.h>
@@ -197,14 +193,10 @@ matchdir(pattern)
 	char *pattern;
 {
 	struct stat stb;
-#ifdef SYSV
 	register struct dirent *dp;
-#else
-	register struct direct *dp;
-#endif
 	DIR *dirp;
 
-	dirp = opendir(gpath);
+	dirp = opendir(gpath ? (gpath[0] ? gpath : ".") : ".");
 	if (dirp == NULL) {
 		if (globbed)
 			return;
