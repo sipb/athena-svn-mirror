@@ -1,7 +1,0 @@
-#!/bin/sh
-# $Id: rename2,v 1.1.1.2 2005-03-10 20:32:57 zacheiss Exp $
-touch foo bar || exit 1
-mv foo bar || exit 1
-test -f foo && exit 1
-test -f bar || exit 1
-rm bar || exit 1
