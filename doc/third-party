@@ -38,8 +38,8 @@ This is a partial list at the moment.
 	mh
 	tcsh
 	patch
-	perl
-	rcs
+	perl		prep.ai.mit.edu:pub/gnu
+	rcs		prep.ai.mit.edu:pub/gnu
 	sysinfo
 	tac
 	talk
