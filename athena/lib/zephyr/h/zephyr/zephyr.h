@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
  *	$Author: raeburn $
- *	$Id: zephyr.h,v 1.38 1990-12-20 02:57:33 raeburn Exp $
+ *	$Id: zephyr.h,v 1.39 1990-12-21 17:19:50 raeburn Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -21,7 +21,7 @@
 
 #include <errno.h>
 #include <sys/types.h>
-#if defined(_AIX) && defined(_IBMR2)
+#if (defined(_AIX) && defined(_IBMR2)) || defined (macII)
 #include <time.h>
 #endif
 #include <sys/time.h>
