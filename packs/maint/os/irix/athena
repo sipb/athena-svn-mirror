@@ -1,4 +1,4 @@
-# $Id: athena,v 1.13.2.2 1999-08-21 15:05:30 ghudson Exp $
+# $Id: athena,v 1.13.2.3 2000-01-11 19:07:15 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -57,6 +57,8 @@ if [ -f /etc/group.local ]; then
 	cp -p /etc/group.local /etc/gtmp && mv -f /etc/gtmp /etc/group
 	$ECHO "done."
 fi
+
+sync
 
 # Make sure /var/athena/core.root exists.
 if [ ! -r /var/athena/core.root ]; then
@@ -169,6 +171,7 @@ if [ "$PUBLIC" = true ]; then
 					cp -p /os$i $i
 				fi
 			done
+			sync
 			ps -e | awk '$4 == "inetd" { print $1; }' \
 				| xargs kill -HUP
 		fi
