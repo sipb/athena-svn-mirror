@@ -2,7 +2,7 @@
 
 # tcsh -x is the useful option.
 
-# $Revision: 1.39 $
+# $Revision: 1.40 $
 
 umask 2
 
@@ -76,9 +76,10 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 # Decomissioned 9/95 by fiat
 # athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
+set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
 
 # athena/bin/tar is leftover from vax & rt
+# athena/bin/olh removed, superseded by web browsers
 
 set end="athena/man athena/dotfiles athena/config"
 
@@ -252,7 +253,7 @@ switch ($package)
 	(xmkmf . >>& $outfile) &&\
 	(make clean >>& $outfile) &&\
 	(make >>& $outfile) &&\
-	(make install DESTDIR=$SRVD >>& $outfile)
+	(make install DESTDIR=$SRVD >>& $outfile))
 	if ($status == 1 ) then
 	        echo "We bombed in install" >>& $outfile
 		exit -1
