@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.15 1999-04-01 22:24:46 ghudson Exp $
+# $Id: finish-update.sh,v 1.16 2000-05-31 17:59:40 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -42,7 +42,7 @@ fi
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$CONFIGVERS"
+rm -f "$CONFIGVERS" "$LOCALPACKAGES" "$LINKPACKAGES" "$PATCHES"
 if [ -n "$LOCALPACKAGES" ]; then
 	rm -f "$LOCALPACKAGES".*
 fi
