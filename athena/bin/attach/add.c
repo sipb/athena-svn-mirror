@@ -17,7 +17,7 @@
  * for attach.
  */
 
-static char rcsid[] = "$Id: add.c,v 1.3 1998-05-19 18:50:29 cfields Exp $";
+static char rcsid[] = "$Id: add.c,v 1.4 1998-05-31 15:46:30 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +57,7 @@ char *shell_templates[2][2] =
 
 void usage()
 {
-  fprintf(stderr, "Usage: add [-vdfrpwb] [-P $athena_path] "
+  fprintf(stderr, "Usage: add [-vdfrpwbq] [-P $athena_path] "
 	  "[-M $athena_manpath] [-a attachflags]\n"
 	  "           [lockername] [lockername] ...\n");
   fprintf(stderr, "   or: add [-dfrb] [pathname] [pathname] ...\n");
@@ -194,7 +194,7 @@ int addcmd(int argc, char **argv)
   int c;
   int verbose = 0, debug = 0, add_to_front = 0,
     remove_from_path = 0, print_path = 0, give_warnings = 0,
-    use_athena_paths = 0, bourne_shell = 0, end_args = 0;
+    use_athena_paths = 0, bourne_shell = 0, end_args = 0, quiet = 0;
   string_list *path = NULL, *manpath = NULL;
   string_list *delta_path = NULL, *delta_manpath = NULL;
   string_list *mountpoint_list = NULL;
@@ -213,7 +213,7 @@ int addcmd(int argc, char **argv)
   dup2(STDERR_FILENO, STDOUT_FILENO);
 
   /* Parse the command line... */
-  while (!end_args && (c = getopt(argc, argv, "vdnfrpwbP:M:a")) != EOF)
+  while (!end_args && (c = getopt(argc, argv, "vdnfrpwbqP:M:a")) != EOF)
     switch(c)
       {
       case 'v':
@@ -246,6 +246,10 @@ int addcmd(int argc, char **argv)
 
       case 'b':
 	bourne_shell = 1;
+	break;
+
+      case 'q':
+	quiet = 1;
 	break;
 
       case 'P':
@@ -397,7 +401,7 @@ int addcmd(int argc, char **argv)
 	{
 	  for (ptr = found; *ptr != NULL; ptr++)
 	    {
-	      if (!remove_from_path && !athdir_native(*ptr, NULL))
+	      if (!remove_from_path && !athdir_native(*ptr, NULL) && !quiet)
 		fprintf(stderr, "%s: warning: using compatibility for %s\n",
 			progname, *mountpoint);
 		

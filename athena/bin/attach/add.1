@@ -122,6 +122,11 @@ by the Bourne shell. Note that this option is only intended for use by
 shell aliases or subroutines which call attach directly. Using this option
 explicitly on the command line with the C shell add alias will cause the
 alias to fail.
+.TP 9
+.B \-q
+This option causes \fIadd\fR to suppress warning messages given when a
+platform from \fIATHENA_SYS_COMPAT\fR (see below) is added to the user's
+path.
 .SH VARIABLES
 The shell variable \fIadd_flags\fR may be set to specify default flags
 that \fIadd\fR is intended to use for all commands. For example, if
