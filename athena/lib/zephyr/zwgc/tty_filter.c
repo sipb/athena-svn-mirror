@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.9 1989-11-29 13:34:20 jtkohl Exp $";
+static char rcsid_tty_filter_c[] = "$Id: tty_filter.c,v 1.10 1989-12-01 13:40:05 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -438,7 +438,7 @@ string tty_filter(text, use_fonts)
 	    string item = string_Copy("");
 	    
 	    if (info->bold_p && use_fonts) {
-		if (temp = string_dictionary_Fetch(termcap_dict, "B.rv"))
+		if (temp = string_dictionary_Fetch(termcap_dict, "B.bold"))
 		  item = string_Concat2(item, temp);
 	    } else if (info->italic_p && use_fonts) {
 		if (temp = string_dictionary_Fetch(termcap_dict, "B.u"))
@@ -449,7 +449,7 @@ string tty_filter(text, use_fonts)
 	    free(temp);
 
 	    if (info->bold_p && use_fonts) {
-		if (temp = string_dictionary_Fetch(termcap_dict, "E.rv"))
+		if (temp = string_dictionary_Fetch(termcap_dict, "E.bold"))
 		  item = string_Concat2(item, temp);
 	    } else if (info->italic_p && use_fonts) {
 		if (temp = string_dictionary_Fetch(termcap_dict, "E.u"))
