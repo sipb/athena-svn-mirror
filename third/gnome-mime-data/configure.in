@@ -1,12 +1,12 @@
 AC_INIT(check-mime.pl)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-mime-data, 2.0.1)
+AM_INIT_AUTOMAKE(gnome-mime-data, 2.2.0)
 
 AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL
 
-ALL_LINGUAS="az bg ca da de el es et eu fi fr ga gl hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am az be bg ca da de el es et eu fi fr ga gl he hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_CN zh_TW"
 GETTEXT_PACKAGE=gnome-mime-data
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT

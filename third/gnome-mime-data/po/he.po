@@ -1,0 +1,1337 @@
+# translation of gnome-mime-data.HEAD.he.po to Hebrew
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Gil Osher <dolfin@rpg.org.il>, 2002
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002,2003
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-mime-data.HEAD.he\n"
+"POT-Creation-Date: 2003-02-04 01:07-0800\n"
+"PO-Revision-Date: 2003-01-06 11:07+0200\n"
+"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
+
+#: gnome-vfs.keys.in.h:1
+msgid "3D Studio image"
+msgstr "תמונת 3D Studio"
+
+#: gnome-vfs.keys.in.h:2
+msgid "AIFC audio"
+msgstr "שמע AFIC"
+
+#: gnome-vfs.keys.in.h:3
+msgid "AIFF audio"
+msgstr "שמע AIFF"
+
+#: gnome-vfs.keys.in.h:4
+msgid "ANIM animation"
+msgstr "הנפשת ANIM"
+
+#: gnome-vfs.keys.in.h:5
+msgid "AVI video"
+msgstr "וידאו AVI"
+
+#: gnome-vfs.keys.in.h:6
+msgid "AbiWord document"
+msgstr "מסמך AbiWord"
+
+#: gnome-vfs.keys.in.h:7
+msgid "Adobe FrameMaker font"
+msgstr "גופן Adobe FrameMaker"
+
+#: gnome-vfs.keys.in.h:8
+msgid "Adobe font metrics"
+msgstr "מידות גופן Adobe"
+
+#: gnome-vfs.keys.in.h:9
+msgid "Andrew Toolkit inset"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:10
+msgid "ApplixWare Graphics image"
+msgstr "תמונת ApplixWare Graphics"
+
+#: gnome-vfs.keys.in.h:11
+msgid "Applixware Words document"
+msgstr "מסמך Applixware Words"
+
+#: gnome-vfs.keys.in.h:12
+msgid "Applixware spreadsheet"
+msgstr "גליון נתונים Applixware"
+
+#: gnome-vfs.keys.in.h:13
+msgid "Audio"
+msgstr "שמע"
+
+#: gnome-vfs.keys.in.h:14
+msgid "AutoCAD image"
+msgstr "תמונת AutoCAD"
+
+#: gnome-vfs.keys.in.h:15
+msgid "BCPIO document"
+msgstr "מסמך BCPIO"
+
+#: gnome-vfs.keys.in.h:16
+msgid "BDF font"
+msgstr "גופן BDF"
+
+#: gnome-vfs.keys.in.h:17
+msgid "C shell script"
+msgstr "תסריט מעטפת C"
+
+#: gnome-vfs.keys.in.h:18
+msgid "C source code"
+msgstr "קוד מקור C"
+
+#: gnome-vfs.keys.in.h:19
+msgid "C source code header"
+msgstr "כותר קוד מקור של C"
+
+#: gnome-vfs.keys.in.h:20
+msgid "C++ source code"
+msgstr "קוד מקור C++"
+
+#: gnome-vfs.keys.in.h:21
+msgid "CGI program"
+msgstr "תוכנית CGI"
+
+#: gnome-vfs.keys.in.h:22
+msgid "CGM image"
+msgstr "תמונה CGM"
+
+#: gnome-vfs.keys.in.h:23
+msgid "CMU raster image"
+msgstr "תמונת מלבן סריקה CMU"
+
+#: gnome-vfs.keys.in.h:24
+msgid "CPIO archive"
+msgstr "ארכיון CPIO"
+
+#: gnome-vfs.keys.in.h:25
+msgid "CPIO archive (gzip-compressed)"
+msgstr "ארכיון CPIO (מכווץ ב gzip)"
+
+#: gnome-vfs.keys.in.h:26
+msgid "Commodore 64 Audio"
+msgstr "שמע Commodore 64"
+
+#: gnome-vfs.keys.in.h:27
+msgid "DCL script"
+msgstr "תסריט DCL"
+
+#: gnome-vfs.keys.in.h:28
+msgid "DOS font"
+msgstr "גופן DOS"
+
+#: gnome-vfs.keys.in.h:29
+msgid "DOS/Windows program"
+msgstr "תוכנית DOS/חלונות"
+
+#: gnome-vfs.keys.in.h:30
+msgid "DSSSL document"
+msgstr "מסמך DSSSL"
+
+#: gnome-vfs.keys.in.h:31
+msgid "DXF vector graphic"
+msgstr "גרפיקה וקטורית DXF"
+
+#: gnome-vfs.keys.in.h:32
+msgid "Debian package"
+msgstr "חבילת Debian"
+
+#: gnome-vfs.keys.in.h:33
+msgid "Device Independant Bitmap"
+msgstr "מפת סיביות להתקן עצמאי"
+
+#: gnome-vfs.keys.in.h:34
+msgid "Dia diagram"
+msgstr "תוכנית Dia"
+
+#: gnome-vfs.keys.in.h:35
+msgid "Digital Imaging and Communications in Medicine image"
+msgstr "צילום ותקשורת דיגיטליים בתמונת רפואה"
+
+#: gnome-vfs.keys.in.h:36
+msgid "Digital Moving Picture Exchange"
+msgstr "חילוף תמונה דיגיטלית נעה"
+
+#: gnome-vfs.keys.in.h:37
+msgid "Documents"
+msgstr "מסמכים"
+
+#: gnome-vfs.keys.in.h:38
+msgid "Documents/Diagram"
+msgstr "מסמכים/דיאגרמות"
+
+#: gnome-vfs.keys.in.h:39
+msgid "Documents/Extended Markup Language (XML)"
+msgstr "מסמכים/Extended Markup Language (XML)"
+
+#: gnome-vfs.keys.in.h:40
+msgid "Documents/Numeric"
+msgstr "מסמכים/מספריים"
+
+#: gnome-vfs.keys.in.h:41
+msgid "Documents/Plain Text"
+msgstr "מסמכים/מלל פשוט"
+
+#: gnome-vfs.keys.in.h:42
+msgid "Documents/Presentation"
+msgstr "מסמכים/מצגות"
+
+#: gnome-vfs.keys.in.h:43
+msgid "Documents/Project Management"
+msgstr "מסמכים/ניהול פרוייקטים"
+
+#: gnome-vfs.keys.in.h:44
+msgid "Documents/Published Materials"
+msgstr "מסמכים/חומרים מפורסמים"
+
+#: gnome-vfs.keys.in.h:45
+msgid "Documents/Spreadsheet"
+msgstr "מסמכים/גליונות נתונים"
+
+#: gnome-vfs.keys.in.h:46
+msgid "Documents/TeX"
+msgstr "מסמכים/TeX"
+
+#: gnome-vfs.keys.in.h:47
+msgid "Documents/Text Markup"
+msgstr "מסמכים/ סימון מלל"
+
+#: gnome-vfs.keys.in.h:48
+msgid "Documents/Vector Graphics"
+msgstr "מסמכים/גרפיקת וקטורים"
+
+#: gnome-vfs.keys.in.h:49
+msgid "Documents/Word Processor"
+msgstr "מסמכים/מעבד תמלילים"
+
+#: gnome-vfs.keys.in.h:50
+msgid "Documents/World Wide Web"
+msgstr "מסמכים/רשת האינטרנט"
+
+#: gnome-vfs.keys.in.h:51
+msgid "Dolby Digital audio"
+msgstr "שמע דיגיטלי דולבי"
+
+#: gnome-vfs.keys.in.h:52
+msgid "Dreamcast rom"
+msgstr "Dreamcast rom"
+
+#: gnome-vfs.keys.in.h:53
+msgid "Emacs Lisp source code"
+msgstr "קוד מקור Emacs Lisp"
+
+#: gnome-vfs.keys.in.h:54
+msgid "Enlightenment theme"
+msgstr "ערכת נושא של Enlightenment"
+
+#: gnome-vfs.keys.in.h:55
+msgid "FLAC audio"
+msgstr "שמע FLAC"
+
+#: gnome-vfs.keys.in.h:56
+msgid "FLC animation"
+msgstr "הנפשה FLC"
+
+#: gnome-vfs.keys.in.h:57
+msgid "FLI animation"
+msgstr "הנפשה FLI"
+
+#: gnome-vfs.keys.in.h:58
+msgid "FastTracker II audio"
+msgstr "שמע FastTracker II"
+
+#: gnome-vfs.keys.in.h:59
+msgid "FlashPix Image"
+msgstr "תמונת FlashPix"
+
+#: gnome-vfs.keys.in.h:60
+msgid "Flexible Image Transport System"
+msgstr "מערכת העברת תמונה גמישה"
+
+#: gnome-vfs.keys.in.h:61
+msgid "Fortran source code"
+msgstr "קוד מקור Fortran"
+
+#: gnome-vfs.keys.in.h:62
+msgid "FrameMaker interchange document"
+msgstr "מסמך FrameMaker interchange"
+
+#: gnome-vfs.keys.in.h:63
+msgid "G3 fax image"
+msgstr "תמונת פקס G3"
+
+#: gnome-vfs.keys.in.h:64
+msgid "GIF image"
+msgstr "תמונת GIF"
+
+#: gnome-vfs.keys.in.h:65
+msgid "GIMP document"
+msgstr "מסמך GIMP"
+
+#: gnome-vfs.keys.in.h:66
+msgid "GMC link"
+msgstr "קישור GMC"
+
+#: gnome-vfs.keys.in.h:67
+msgid "GNU Oleo Spreadsheet"
+msgstr "גיליון נתונים GNU Oleo"
+
+#: gnome-vfs.keys.in.h:68
+msgid "GNU mail message"
+msgstr "הודעת דואר GNU"
+
+#: gnome-vfs.keys.in.h:69
+msgid "GTK configuration"
+msgstr "הגדרות GTK"
+
+#: gnome-vfs.keys.in.h:70
+msgid "Game Boy rom"
+msgstr "Game Boy rom"
+
+#: gnome-vfs.keys.in.h:71
+msgid "Genesis rom"
+msgstr "Genesis rom"
+
+#: gnome-vfs.keys.in.h:72
+msgid "Glade project"
+msgstr "פרוייקט Glade"
+
+#: gnome-vfs.keys.in.h:73
+msgid "GnuCash Workbook"
+msgstr "מחברת GnuCash"
+
+#: gnome-vfs.keys.in.h:74
+msgid "Gnumeric spreadsheet"
+msgstr "גיליון נתונים Gnumeric"
+
+#: gnome-vfs.keys.in.h:75
+msgid "Gtktalog Catalogue"
+msgstr "קטלוג Gtktalog"
+
+#: gnome-vfs.keys.in.h:76
+msgid "HDF document"
+msgstr "מסמך HDF"
+
+#: gnome-vfs.keys.in.h:77
+msgid "HTML page"
+msgstr "עמוד HTML"
+
+#: gnome-vfs.keys.in.h:78
+msgid "Haskell source code"
+msgstr "קוד מקור Haskell"
+
+#: gnome-vfs.keys.in.h:79
+msgid "IDL document"
+msgstr "מסמך IDL"
+
+#: gnome-vfs.keys.in.h:80
+msgid "IEF image"
+msgstr "תמונת IEF"
+
+#: gnome-vfs.keys.in.h:81
+msgid "IFF image"
+msgstr "תמונת IFF"
+
+#: gnome-vfs.keys.in.h:82
+msgid "ILBM image"
+msgstr "תמונת ILBM"
+
+#: gnome-vfs.keys.in.h:83
+msgid "ISI video"
+msgstr "וידאו ISI"
+
+#: gnome-vfs.keys.in.h:84
+msgid "ISO image"
+msgstr "העתק ISO"
+
+#: gnome-vfs.keys.in.h:85
+msgid "Images"
+msgstr "תמונות"
+
+#: gnome-vfs.keys.in.h:86
+msgid "Impulse Tracker audio"
+msgstr "שמע Impulse Tracker"
+
+#: gnome-vfs.keys.in.h:87
+msgid "Information"
+msgstr "מידע"
+
+#: gnome-vfs.keys.in.h:88
+msgid "Information/Calendar"
+msgstr "מידע/לוח שנה"
+
+#: gnome-vfs.keys.in.h:89
+msgid "Information/Financial"
+msgstr "מידע/פיננסי"
+
+#: gnome-vfs.keys.in.h:90
+msgid "JBuilder Project"
+msgstr "פרוייקט JBuilder"
+
+#: gnome-vfs.keys.in.h:91
+msgid "JPEG image"
+msgstr "תמונת JPEG"
+
+#: gnome-vfs.keys.in.h:92
+msgid "Java byte code"
+msgstr "קוד Java byte"
+
+#: gnome-vfs.keys.in.h:93
+msgid "Java source code"
+msgstr "קוד מקור Java"
+
+#: gnome-vfs.keys.in.h:94
+msgid "KDE application details"
+msgstr "פירוט יישום KDE"
+
+#: gnome-vfs.keys.in.h:95
+msgid "KIllustrator document"
+msgstr "מסמך KIllustrator"
+
+#: gnome-vfs.keys.in.h:96
+msgid "KPresenter presentation"
+msgstr "מצגת KPresenter"
+
+#: gnome-vfs.keys.in.h:97
+msgid "KSpread spreadsheet"
+msgstr "גיליון נתונים KSpread"
+
+#: gnome-vfs.keys.in.h:98
+msgid "KWord document"
+msgstr "מסמך KWord"
+
+#: gnome-vfs.keys.in.h:99
+msgid "Korn shell script"
+msgstr "תסריט מעטפת Korn"
+
+#: gnome-vfs.keys.in.h:100
+msgid "LHA archive"
+msgstr "ארכיון LHA"
+
+#: gnome-vfs.keys.in.h:101
+msgid "LHARC archive"
+msgstr "ארכיון LHARC"
+
+#: gnome-vfs.keys.in.h:102
+msgid "LIBGRX font"
+msgstr "גופן LIBGRX"
+
+#: gnome-vfs.keys.in.h:103
+msgid "LightWave object"
+msgstr "אובייקט LightWave"
+
+#: gnome-vfs.keys.in.h:104
+msgid "LightWave scene"
+msgstr "סצינת LightWave"
+
+#: gnome-vfs.keys.in.h:105
+msgid "Linux PSF console font"
+msgstr "גופן מסוף לינוקס PSF"
+
+#: gnome-vfs.keys.in.h:106
+msgid "Literate haskell source code"
+msgstr "קוד מקור Literate haskell"
+
+#: gnome-vfs.keys.in.h:107
+msgid "Lotus 1-2-3 spreadsheet"
+msgstr "גיליון נתונים Lotus 1-2-3"
+
+#: gnome-vfs.keys.in.h:108
+msgid "LyX Document"
+msgstr "מסמך LyX"
+
+#: gnome-vfs.keys.in.h:109
+msgid "MIDI audio"
+msgstr "שמע MIDI"
+
+#: gnome-vfs.keys.in.h:110
+msgid "MOD audio"
+msgstr "שמע MOD"
+
+#: gnome-vfs.keys.in.h:111
+msgid "MP3 audio"
+msgstr "שמע MP3"
+
+#: gnome-vfs.keys.in.h:112
+msgid "MP3 audio playlist"
+msgstr "רשימת האזנה MP3"
+
+#: gnome-vfs.keys.in.h:113
+msgid "MPEG audio"
+msgstr "שמע MPEG"
+
+#: gnome-vfs.keys.in.h:114
+msgid "MPEG video"
+msgstr "וידאו MPEG"
+
+#: gnome-vfs.keys.in.h:115
+msgid "MS ASF video"
+msgstr "וידאו MS ASF"
+
+#: gnome-vfs.keys.in.h:116
+msgid "MS video"
+msgstr "וידאו MS"
+
+#: gnome-vfs.keys.in.h:117
+msgid "MSX rom"
+msgstr "MSX rom"
+
+#: gnome-vfs.keys.in.h:118
+msgid "MacBinary file"
+msgstr "קובץ MacBinary"
+
+#: gnome-vfs.keys.in.h:119
+msgid "Macintosh AppleDouble-encoded file"
+msgstr "קובץ Macintosh AppleDouble-encoded"
+
+#: gnome-vfs.keys.in.h:120
+msgid "Macintosh BinHex-encoded file"
+msgstr "קובץ Macintosh BinHex-encoded"
+
+#: gnome-vfs.keys.in.h:121
+msgid "Macintosh StuffIt archive"
+msgstr "ארכיון Macintosh StuffIt"
+
+#: gnome-vfs.keys.in.h:122
+msgid "Macromedia Flash file"
+msgstr "קובץ Macromedia Flash"
+
+#: gnome-vfs.keys.in.h:123
+msgid "Magick image format"
+msgstr "פורמט תמונת Magick"
+
+#: gnome-vfs.keys.in.h:124
+msgid "MathML document"
+msgstr "מסמך MathML"
+
+#: gnome-vfs.keys.in.h:125
+msgid "Message"
+msgstr "הודעה"
+
+#: gnome-vfs.keys.in.h:126
+msgid "Microsoft Excel spreadsheet"
+msgstr "גיליון נתונים Microsoft Excel"
+
+#: gnome-vfs.keys.in.h:127
+msgid "Microsoft PowerPoint document"
+msgstr "מסמך Microsoft PowerPoint"
+
+#: gnome-vfs.keys.in.h:128
+msgid "Microsoft WMV video"
+msgstr "וידאו Microsoft WMV"
+
+#: gnome-vfs.keys.in.h:129
+msgid "Microsoft Word document"
+msgstr "מסמך Microsoft Word"
+
+#: gnome-vfs.keys.in.h:130
+msgid "Microsoft video"
+msgstr "וידאו Microsoft"
+
+#: gnome-vfs.keys.in.h:131
+msgid "NES rom"
+msgstr "NES rom"
+
+#: gnome-vfs.keys.in.h:132
+msgid "Nautilus link"
+msgstr "קישור נאוטילוס"
+
+#: gnome-vfs.keys.in.h:133
+msgid "Nintendo64 rom"
+msgstr "Nintendo64 rom"
+
+#: gnome-vfs.keys.in.h:134
+msgid "ODA document"
+msgstr "מסמך ODA"
+
+#: gnome-vfs.keys.in.h:135
+msgid "OpenOffice.org Impress presentation"
+msgstr "מצגת OpenOffice.org Impress"
+
+#: gnome-vfs.keys.in.h:136
+msgid "OpenOffice.org Impress presentation template"
+msgstr "תבנית מצגת OpenOffice.org Impress"
+
+#: gnome-vfs.keys.in.h:137
+msgid "OpenOffice.org Math document"
+msgstr "מסמך OpenOffice.org Math"
+
+#: gnome-vfs.keys.in.h:138
+msgid "OpenOffice.org Writer document"
+msgstr "מסמך OpenOffice.org Writer"
+
+#: gnome-vfs.keys.in.h:139
+msgid "OpenOffice.org Writer global document"
+msgstr "מסמך עולמי OpenOffice.org Writer"
+
+#: gnome-vfs.keys.in.h:140
+msgid "OpenOffice.org Writer template"
+msgstr "תבנית OpenOffice.org Writer"
+
+#: gnome-vfs.keys.in.h:141
+msgid "OpenOffice.org drawing"
+msgstr "ציור OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:142
+msgid "OpenOffice.org drawing template"
+msgstr "תבנית ציור OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:143
+msgid "OpenOffice.org spreadsheet"
+msgstr "גיליון נתונים OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:144
+msgid "OpenOffice.org spreadsheet template"
+msgstr "תבנית גיליון נתונים OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:145
+msgid "OpenType font"
+msgstr "גופן OpenType"
+
+#: gnome-vfs.keys.in.h:146
+msgid "PBM image"
+msgstr "תמונת PBM"
+
+#: gnome-vfs.keys.in.h:147
+msgid "PC Paintbrush image"
+msgstr "תמונת PC Paintbrush"
+
+#: gnome-vfs.keys.in.h:148
+msgid "PCF font"
+msgstr "גופן PCF"
+
+#: gnome-vfs.keys.in.h:149
+msgid "PDF document"
+msgstr "מסמך PDF"
+
+#: gnome-vfs.keys.in.h:150
+msgid "PEF program"
+msgstr "תוכנית PEF"
+
+#: gnome-vfs.keys.in.h:151
+msgid "PGM image"
+msgstr "תמונת PGM"
+
+#: gnome-vfs.keys.in.h:152
+msgid "PGN chess game"
+msgstr "משחק שח PGN"
+
+#: gnome-vfs.keys.in.h:153
+msgid "PGP keys"
+msgstr "מפתחות PGP"
+
+#: gnome-vfs.keys.in.h:154
+msgid "PGP message"
+msgstr "הודעת PGP"
+
+#: gnome-vfs.keys.in.h:155
+msgid "PGP signature"
+msgstr "חתימת PGP"
+
+#: gnome-vfs.keys.in.h:156
+msgid "PGP-encrypted file"
+msgstr "קובץ מקודד ב PGP"
+
+#: gnome-vfs.keys.in.h:157
+msgid "PHP script"
+msgstr "תסריט PHP"
+
+#: gnome-vfs.keys.in.h:158
+msgid "PICT image"
+msgstr "תמונת PICT"
+
+#: gnome-vfs.keys.in.h:159
+msgid "PNG image"
+msgstr "תמונת PNG"
+
+#: gnome-vfs.keys.in.h:160
+msgid "PNM image"
+msgstr "תמונת PNM"
+
+#: gnome-vfs.keys.in.h:161
+msgid "PPM image"
+msgstr "תמונת PPM"
+
+#: gnome-vfs.keys.in.h:162
+msgid "Packages"
+msgstr "חבילות"
+
+#: gnome-vfs.keys.in.h:163
+msgid "Palm OS database"
+msgstr "מסד נתונים Palm OS"
+
+#: gnome-vfs.keys.in.h:164
+msgid "Palm Pixmap image"
+msgstr "תמונת Palm Pixmap"
+
+#: gnome-vfs.keys.in.h:165
+msgid "Perl script"
+msgstr "תסריט Perl"
+
+#: gnome-vfs.keys.in.h:166
+msgid "Photo CD image"
+msgstr "תמונת Photo CD"
+
+#: gnome-vfs.keys.in.h:167
+msgid "Photoshop document"
+msgstr "מסמך Photoshop"
+
+#: gnome-vfs.keys.in.h:168
+msgid "Playlist"
+msgstr "רשימת השמעה"
+
+#: gnome-vfs.keys.in.h:169
+msgid "PostScript Type 1 font"
+msgstr "גופן PostScript Type 1"
+
+#: gnome-vfs.keys.in.h:170
+msgid "PostScript document"
+msgstr "מסמך PostScript"
+
+#: gnome-vfs.keys.in.h:171
+msgid "Project Plan"
+msgstr "תכנון פרוייקט"
+
+#: gnome-vfs.keys.in.h:172
+msgid "Python source code"
+msgstr "קוד מקור Python"
+
+#: gnome-vfs.keys.in.h:173
+msgid "QuickTime movie"
+msgstr "סרט QuickTime"
+
+#: gnome-vfs.keys.in.h:174
+msgid "Quicken document"
+msgstr "מסמך Quicken"
+
+#: gnome-vfs.keys.in.h:175
+msgid "Quicken for Windows document"
+msgstr "מסמך Quicken for Windows"
+
+#: gnome-vfs.keys.in.h:176
+msgid "RAR archive"
+msgstr "ארכיון RAR"
+
+#: gnome-vfs.keys.in.h:177
+msgid "README document"
+msgstr "מסמך קרא-אותי"
+
+#: gnome-vfs.keys.in.h:178
+msgid "RGB image"
+msgstr "תמונת RGB"
+
+#: gnome-vfs.keys.in.h:179
+msgid "RIFF audio"
+msgstr "שמע RIFF"
+
+#: gnome-vfs.keys.in.h:180
+msgid "RPM package"
+msgstr "חבילת RPM"
+
+#: gnome-vfs.keys.in.h:181
+msgid "Raw Gray Sample"
+msgstr "דוגמת Raw Gray"
+
+#: gnome-vfs.keys.in.h:182
+msgid "RealAudio document"
+msgstr "מסמך RealAudio"
+
+#: gnome-vfs.keys.in.h:183
+msgid "RealAudio/Video document"
+msgstr "מסמך RealAudio/Video"
+
+#: gnome-vfs.keys.in.h:184
+msgid "RealVideo video"
+msgstr "וידאו RealVideo"
+
+#: gnome-vfs.keys.in.h:185
+msgid "S/MIME file"
+msgstr "קובץ S/MIME"
+
+#: gnome-vfs.keys.in.h:186
+msgid "S/MIME signature"
+msgstr "חתימה S/MIME"
+
+#: gnome-vfs.keys.in.h:187
+msgid "SGI video"
+msgstr "וידאו SGI"
+
+#: gnome-vfs.keys.in.h:188
+msgid "SGML document"
+msgstr "מסמך SGML"
+
+#: gnome-vfs.keys.in.h:189
+msgid "SHOUTcast Playlist"
+msgstr "רשימת השמעה SHOUTcast"
+
+#: gnome-vfs.keys.in.h:190
+msgid "SMIL script"
+msgstr "תסריט SMIL"
+
+#: gnome-vfs.keys.in.h:191
+msgid "SMS or Game Gear rom"
+msgstr "SMS או Game Gear rom"
+
+#: gnome-vfs.keys.in.h:192
+msgid "SQL code"
+msgstr "קוד SQL"
+
+#: gnome-vfs.keys.in.h:193
+msgid "SUN Rasterfile"
+msgstr "SUN Rasterfile"
+
+#: gnome-vfs.keys.in.h:194
+msgid "SV4 CPIO archive"
+msgstr "ארכיון SV4 CPIO"
+
+#: gnome-vfs.keys.in.h:195
+msgid "SV4 CPIP archive (with CRC)"
+msgstr "ארכיון SV4 CPIO (עם CRC)"
+
+#: gnome-vfs.keys.in.h:196
+msgid "SVG art"
+msgstr "אומנות SVG"
+
+#: gnome-vfs.keys.in.h:197
+msgid "Scheme source code"
+msgstr "קוד מקור Scheme"
+
+#: gnome-vfs.keys.in.h:198
+msgid "Scream Tracker 3 audio"
+msgstr "שמע Scream Tracker 3"
+
+#: gnome-vfs.keys.in.h:199
+msgid "Scream Tracker audio"
+msgstr "שמע Scream Tracker"
+
+#: gnome-vfs.keys.in.h:200
+msgid "Scream Tracker instrument"
+msgstr "כלי נגינה Scream Tracker"
+
+#: gnome-vfs.keys.in.h:201
+msgid "Security"
+msgstr "אבטחה"
+
+#: gnome-vfs.keys.in.h:202
+msgid "Setext document"
+msgstr "מסמך Setext"
+
+#: gnome-vfs.keys.in.h:203
+msgid "Silicon Graphics Image"
+msgstr "תמונת Silicon Graphics"
+
+#: gnome-vfs.keys.in.h:204
+msgid "Software Development"
+msgstr "פיתוח תוכנה"
+
+#: gnome-vfs.keys.in.h:205
+msgid "Software Development/ROM Images"
+msgstr "פיתוח תוכנה/קבצי ROM"
+
+#: gnome-vfs.keys.in.h:206
+msgid "Software Development/Source Code"
+msgstr "פיתוח תוכנה/קוד מקור"
+
+#: gnome-vfs.keys.in.h:207
+msgid "Speech document"
+msgstr "מסמך דיבור"
+
+#: gnome-vfs.keys.in.h:208
+msgid "Speedo font"
+msgstr "גופן Speedo"
+
+#: gnome-vfs.keys.in.h:209
+msgid "Spreadsheet Interchange document"
+msgstr "מסמך Spreadsheet Interchange"
+
+#: gnome-vfs.keys.in.h:210
+msgid "Stampede package"
+msgstr "חבילת Stampede"
+
+#: gnome-vfs.keys.in.h:211
+msgid "StarCalc spreadsheet"
+msgstr "גיליון נתונים StarCalc"
+
+#: gnome-vfs.keys.in.h:212
+msgid "StarChart chart"
+msgstr "טבלת StarChart"
+
+#: gnome-vfs.keys.in.h:213
+msgid "StarDraw drawing"
+msgstr "ציור StarDraw"
+
+#: gnome-vfs.keys.in.h:214
+msgid "StarImpress presentation"
+msgstr "מצגת StarImpress"
+
+#: gnome-vfs.keys.in.h:215
+msgid "StarMail file"
+msgstr "קובץ StarMail"
+
+#: gnome-vfs.keys.in.h:216
+msgid "StarMath document"
+msgstr "מסמך StarMath"
+
+#: gnome-vfs.keys.in.h:217
+msgid "StarOffice extended metafile image"
+msgstr "תמונת קובץ מטא מורחבת של StarOffice"
+
+#: gnome-vfs.keys.in.h:218
+msgid "StarWriter document"
+msgstr "מסמך StarWriter"
+
+#: gnome-vfs.keys.in.h:219
+msgid "Sun mu-law audio"
+msgstr "שמע Sun mu-law"
+
+#: gnome-vfs.keys.in.h:220
+msgid "SunOS News font"
+msgstr "גופן SunOS News"
+
+#: gnome-vfs.keys.in.h:221
+msgid "System"
+msgstr "מערכת"
+
+#: gnome-vfs.keys.in.h:222
+msgid "TIFF image"
+msgstr "תמונת TIFF"
+
+#: gnome-vfs.keys.in.h:223
+msgid "TarGA image"
+msgstr "תמונת TarGA"
+
+#: gnome-vfs.keys.in.h:224
+msgid "Tcl script"
+msgstr "תסריט Tcl"
+
+#: gnome-vfs.keys.in.h:225
+msgid "TeX document"
+msgstr "מסמך TeX"
+
+#: gnome-vfs.keys.in.h:226
+msgid "TeX dvi document"
+msgstr "מסמך TeX dvi"
+
+#: gnome-vfs.keys.in.h:227
+msgid "TeX font"
+msgstr "גופן TeX"
+
+#: gnome-vfs.keys.in.h:228
+msgid "TeX font metrics"
+msgstr "מידות גופן TeX"
+
+#: gnome-vfs.keys.in.h:229
+msgid "TeXInfo document"
+msgstr "מסמך TeXInfo"
+
+#: gnome-vfs.keys.in.h:230
+msgid "ToutDoux document"
+msgstr "מסמך ToutDoux"
+
+#: gnome-vfs.keys.in.h:231
+msgid "TrueType font"
+msgstr "גופן TrueType"
+
+#: gnome-vfs.keys.in.h:232
+msgid "Truevision Targa image"
+msgstr "תמונת Truevision Targa"
+
+#: gnome-vfs.keys.in.h:233
+msgid "USENET news message"
+msgstr "הודעת חדשות USENET"
+
+#: gnome-vfs.keys.in.h:234
+msgid "Unidata netCDF document"
+msgstr "מסמך Unidata netCDF"
+
+#: gnome-vfs.keys.in.h:235
+msgid "User Interface"
+msgstr "ממשק משתמש"
+
+#: gnome-vfs.keys.in.h:236
+msgid "User Interface/Fonts"
+msgstr "ממשק משתמש/גופנים"
+
+#: gnome-vfs.keys.in.h:237
+msgid "V font"
+msgstr "גופן V"
+
+#: gnome-vfs.keys.in.h:238
+msgid "VOC audio"
+msgstr "שמע VOC"
+
+#: gnome-vfs.keys.in.h:239
+msgid "VRML document"
+msgstr "מסמך VRML"
+
+#: gnome-vfs.keys.in.h:240
+msgid "Video"
+msgstr "וידאו"
+
+#: gnome-vfs.keys.in.h:241
+msgid "Vivo video"
+msgstr "וידאו Vivo"
+
+#: gnome-vfs.keys.in.h:242
+msgid "WAIS source code"
+msgstr "קוד מקור WAIS"
+
+#: gnome-vfs.keys.in.h:243
+msgid "Wavelet video"
+msgstr "וידאו Wavelet"
+
+#: gnome-vfs.keys.in.h:244
+msgid "Windows bitmap image"
+msgstr "תמונת מפת סיביות של חלונות"
+
+#: gnome-vfs.keys.in.h:245
+msgid "Windows icon image"
+msgstr "תמונת סמל של חלונות"
+
+#: gnome-vfs.keys.in.h:246
+msgid "Windows metafile graphics"
+msgstr "גרפיקות קבצי מטא של חלונות"
+
+#: gnome-vfs.keys.in.h:247
+msgid "WordPerfect document"
+msgstr "מסמך WordPerfect"
+
+#: gnome-vfs.keys.in.h:248
+msgid "X bitmap image"
+msgstr "תמונת מפת סיביות של X"
+
+#: gnome-vfs.keys.in.h:249
+msgid "X window image"
+msgstr "תמונת חלון של X"
+
+#: gnome-vfs.keys.in.h:250
+msgid "XML document"
+msgstr "מסמך XML"
+
+#: gnome-vfs.keys.in.h:251
+msgid "XPM image"
+msgstr "תמונת XPM"
+
+#: gnome-vfs.keys.in.h:252
+msgid "Xbase database"
+msgstr "מסד נתונים Xbase"
+
+#: gnome-vfs.keys.in.h:253
+msgid "Z shell script"
+msgstr "תסריט מעטפת Z"
+
+#: gnome-vfs.keys.in.h:254
+msgid "active server page"
+msgstr "עמוד active server"
+
+#: gnome-vfs.keys.in.h:255
+msgid "address card"
+msgstr "כרטיס כתובת"
+
+#: gnome-vfs.keys.in.h:256
+msgid "application launcher"
+msgstr "משגר יישום"
+
+#: gnome-vfs.keys.in.h:257
+msgid "ar archive"
+msgstr "ארכיון ar"
+
+#: gnome-vfs.keys.in.h:258
+msgid "arj archive"
+msgstr "ארכיון arj"
+
+#: gnome-vfs.keys.in.h:259
+msgid "authors list"
+msgstr "רשימת מחברים"
+
+#: gnome-vfs.keys.in.h:260
+msgid "backup file"
+msgstr "קובץ גיבוי"
+
+#: gnome-vfs.keys.in.h:261
+msgid "basic audio"
+msgstr "שמע בסיסי"
+
+#: gnome-vfs.keys.in.h:262
+msgid "bibliography record"
+msgstr "רישום ביבליוגרפי"
+
+#: gnome-vfs.keys.in.h:263
+msgid "binary program"
+msgstr "תוכנית בינארית"
+
+#: gnome-vfs.keys.in.h:264
+msgid "block device"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:265
+msgid "bzip-compressed file"
+msgstr "קובץ מכווץ ב bzip"
+
+#: gnome-vfs.keys.in.h:266
+msgid "calendar file"
+msgstr "קובץ לוח שנה"
+
+#: gnome-vfs.keys.in.h:267
+msgid "calendar or event document"
+msgstr "מסמך לוח שנה או אירוע"
+
+#: gnome-vfs.keys.in.h:268
+msgid "character device"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:269
+msgid "comma-separated text document"
+msgstr "מסמך מלל המופרד בפסיקים"
+
+#: gnome-vfs.keys.in.h:270
+msgid "compound document"
+msgstr "מסמך מורכב"
+
+#: gnome-vfs.keys.in.h:271
+msgid "compress-compressed file"
+msgstr "קובץ המכווץ ב compress"
+
+#: gnome-vfs.keys.in.h:272
+msgid "compressed GIMP document"
+msgstr "מסמך GIMP מכווץ"
+
+#: gnome-vfs.keys.in.h:273
+msgid "directory information file"
+msgstr "קובץ מידע על סיפרייה"
+
+#: gnome-vfs.keys.in.h:274
+msgid "document type definition"
+msgstr "הגדרת סוג מסמך"
+
+#: gnome-vfs.keys.in.h:275
+msgid "email headers"
+msgstr "כותרות דוא\"ל"
+
+#: gnome-vfs.keys.in.h:276
+msgid "email message/mailbox"
+msgstr "הודעת דוא\"ל/תיבת דואר"
+
+#: gnome-vfs.keys.in.h:277
+msgid "encrypted message"
+msgstr "הודעה מוצפנת"
+
+#: gnome-vfs.keys.in.h:278
+msgid "enriched text document"
+msgstr "מסמך מלל מועשר"
+
+#: gnome-vfs.keys.in.h:279
+msgid "folder"
+msgstr "תיקייה"
+
+#: gnome-vfs.keys.in.h:280
+msgid "gtar archive"
+msgstr "ארכיון gtar"
+
+#: gnome-vfs.keys.in.h:281
+msgid "gzip-compressed file"
+msgstr "קובץ מכווץ ב gzip"
+
+#: gnome-vfs.keys.in.h:282
+msgid "help page"
+msgstr "עמוד עזרה"
+
+#: gnome-vfs.keys.in.h:283
+msgid "mail delivery report"
+msgstr "דו\"ח שליחת דואר"
+
+#: gnome-vfs.keys.in.h:284
+msgid "mail disposition report"
+msgstr "דו\"ח פריסת דואר"
+
+#: gnome-vfs.keys.in.h:285
+msgid "mail system report"
+msgstr "דו\"ח מערכת דואר"
+
+#: gnome-vfs.keys.in.h:286
+msgid "makefile"
+msgstr "קובץ בניה"
+
+#: gnome-vfs.keys.in.h:287
+msgid "manual page"
+msgstr "עמוד מדריך"
+
+#: gnome-vfs.keys.in.h:288
+msgid "manual page (compressed)"
+msgstr "עמוד מדריך (מכווץ)"
+
+#: gnome-vfs.keys.in.h:289
+msgid "memory dump"
+msgstr "הטלת זיכרון"
+
+#: gnome-vfs.keys.in.h:290
+msgid "message digest"
+msgstr "חתימת הודעה"
+
+#: gnome-vfs.keys.in.h:291
+msgid "message in several formats"
+msgstr "הודעה במספר פורמטים"
+
+#: gnome-vfs.keys.in.h:292
+msgid "multi-part message"
+msgstr "הודעה עם מספר חלקים"
+
+#: gnome-vfs.keys.in.h:293
+msgid "named pipe"
+msgstr "צינור מכונה"
+
+#: gnome-vfs.keys.in.h:294
+msgid "object code"
+msgstr "קוד אובייקט"
+
+#: gnome-vfs.keys.in.h:295
+msgid "ogg audio"
+msgstr "שמע ogg"
+
+#: gnome-vfs.keys.in.h:296
+msgid "partial email message"
+msgstr "קובץ דוא\"ל חלקי"
+
+#: gnome-vfs.keys.in.h:297
+msgid "plain text document"
+msgstr "מסמך מלל פשוט"
+
+#: gnome-vfs.keys.in.h:298
+msgid "profiler results"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:299
+msgid "python byte code"
+msgstr "קוד בית python"
+
+#: gnome-vfs.keys.in.h:300
+msgid "reference to remote file"
+msgstr "הפניה לקובץ מרוחק"
+
+#: gnome-vfs.keys.in.h:301
+msgid "rejected patch file"
+msgstr "קובץ תלאי דחוי"
+
+#: gnome-vfs.keys.in.h:302
+msgid "rich text document"
+msgstr "מסמך מלל עשיר"
+
+#: gnome-vfs.keys.in.h:303
+msgid "search results"
+msgstr "תוצאות חיפוש"
+
+#: gnome-vfs.keys.in.h:304
+msgid "shared library"
+msgstr "סיפרייה משותפת"
+
+#: gnome-vfs.keys.in.h:305
+msgid "shell archive"
+msgstr "ארכיון מעטפת"
+
+#: gnome-vfs.keys.in.h:306
+msgid "shell script"
+msgstr "תסריט מעטפת"
+
+#: gnome-vfs.keys.in.h:307
+msgid "signed message"
+msgstr "הודעה חתומה"
+
+#: gnome-vfs.keys.in.h:308
+msgid "socket"
+msgstr "שקע"
+
+#: gnome-vfs.keys.in.h:309
+msgid "software author credits"
+msgstr "תודות למחברי תוכנה"
+
+#: gnome-vfs.keys.in.h:310
+msgid "software installation instructions"
+msgstr "הוראות התקנה לתוכנה"
+
+#: gnome-vfs.keys.in.h:311
+msgid "software license terms"
+msgstr "הסכמי רישיון לתוכנה"
+
+#: gnome-vfs.keys.in.h:312
+msgid "source code patch"
+msgstr "עדכון לקוד מקור"
+
+#: gnome-vfs.keys.in.h:313
+msgid "style sheet"
+msgstr "גיליון סגנון"
+
+#: gnome-vfs.keys.in.h:314
+msgid "symbolic link"
+msgstr "קישור"
+
+#: gnome-vfs.keys.in.h:315
+msgid "tab-separated text document"
+msgstr "מסמך מלל מופרד בטאבים"
+
+#: gnome-vfs.keys.in.h:316
+msgid "tar archive"
+msgstr "ארכיון tar"
+
+#: gnome-vfs.keys.in.h:317
+msgid "tar archive (bzip2-compressed)"
+msgstr "ארכיון tar (מכווץ ב bzip2)"
+
+#: gnome-vfs.keys.in.h:318
+msgid "tar archive (gzip-compressed)"
+msgstr "ארכיון tar (מכווץ ב gzip)"
+
+#: gnome-vfs.keys.in.h:319
+msgid "theme"
+msgstr "ערכת נושא"
+
+#: gnome-vfs.keys.in.h:320
+msgid "troff document"
+msgstr "מסמך troff"
+
+#: gnome-vfs.keys.in.h:321
+msgid "troff me input document"
+msgstr "מסמך קלט troff me"
+
+#: gnome-vfs.keys.in.h:322
+msgid "troff mm input document"
+msgstr "מסמך קלט troff mm"
+
+#: gnome-vfs.keys.in.h:323
+msgid "troff ms input document"
+msgstr "מסמך קלט troff ms"
+
+#: gnome-vfs.keys.in.h:324
+msgid "unknown type"
+msgstr "סוג לא ידוע"
+
+#: gnome-vfs.keys.in.h:325
+msgid "ustar archive"
+msgstr "ארכיון ustar"
+
+#: gnome-vfs.keys.in.h:326
+msgid "wave audio"
+msgstr "שמע wave"
+
+#: gnome-vfs.keys.in.h:327
+msgid "web folder"
+msgstr "תיקיית רשת"
+
+#: gnome-vfs.keys.in.h:328
+msgid "xfig vector graphic"
+msgstr "גרפיקה וקטורית xfig"
+
+#: gnome-vfs.keys.in.h:329
+msgid "zip archive"
+msgstr "ארכיון zip"
+
+#: gnome-vfs.keys.in.h:330
+msgid "zoo archive"
+msgstr "ארכיון zoo"

@@ -2,7 +2,7 @@
 
 Name:		gnome-mime-data
 Summary:	The GNOME virtual file-system libraries
-Version:	2.0.1
+Version:	2.2.0
 Release:	1_cvs
 License:	LGPL
 Group:		System Environment/Libraries

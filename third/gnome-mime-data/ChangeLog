@@ -1,3 +1,123 @@
+2003-02-02  Andrew Sobala  <aes@gnome.org>
+
+	* gnome-vfs.keys.in: reverting the string-freeze breaking change
+
+2003-02-02  Andrew Sobala  <aes@gnome.org>
+
+	* gnome-vfs-mime-magic:
+	* gnome-vfs.keys.in:
+          add x-gnome-theme and x-gnome-theme-installed
+
+2003-02-01  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.mime: added iso as a possible extension for ISO images
+
+2003-02-01  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.mime: added svgz as a possible extension for SVG files
+	(reported by Christian Schaller, following additions to librsvg)
+
+2003-02-01  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic: CDXA RIFF data is MPEG video (Closes: #104930)
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-17  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.mime: added pps suffix for PowerPoint files
+
+2003-01-09  Alex Duggan  <aldug@gnome.org>
+
+	* AUTHORS: added Seth Nickell to AUTHORS file,
+	fixes #100790
+
+2002-01-07  Naba Kumar  <naba@gnome.org>
+
+	* configure.in: Added hi (hindi) in ALL_LINGUAS
+	
+2003-01-02  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-vfs.mime:
+
+	Add entry for application/x-palm-database
+
+2002-12-13  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-vfs-mime-magic: added OpenType font detection and 
+	some missing Type1 font magic
+	* gnome-vfs.keys.in: added application/x-font-otf
+
+2002-12-05  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs-mime-magic: added ISO image detection
+	* gnome-vfs.keys.in: added desc for application/x-iso-image
+
+2002-11-10  Alexander Kirillov  <kirillov@math.sunysb.edu>
+
+	* icons/gnome-application-x-dvi.png: new file, copied from
+	Ximian-South theme (fixes bug 94945)
+	* icons/Makefile.am: added   gnome-application-x-dvi.png
+	
+
+2002-11-08  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * gnome-vfs-mime-magic:
+        * gnome-vfs.applications:
+        * gnome-vfs.keys.in:
+        * gnome-vfs.mime: added flac (lossless audio compression)
+
+2002-11-06  Christophe Fergeau <teuf@users.sourceforge.net>
+
+	* gnome-vfs-mime-magic: added gzip 
+
+2002-11-04  Alexander Kirillov <kirillov@math.sunysb.edu>
+
+	* gnome-vfs.keys.in: added an icon for text/x-tex (same one as 
+	  application/x-tex)
+
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-10-31  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * icons/: added flac icon from jimmac
+
+2002-10-25  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.mime: asx isn't asf
+
+2002-10-25  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.keys.in:
+	* gnome-vfs.mime: add Microsoft ASX playlist format's mimetype
+
+2002-10-21  Seth Nickell  <snickell@stanford.edu>
+
+	* icons/gnome-audio-prs.sid.png:
+
+	Icon from Linus Walleij
+	
+2002-10-06  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-vfs.applications:
+	* gnome-vfs.keys.in: fix all the warnings from check-mime.pl
+	* gnome-vfs.mime: added TODO as text/x-readme
+
+2002-09-30  Marco Pesenti Gritti  <marco@it.gnome.org>
+
+	* gnome-vfs.keys.in: Add audio/mpeg entry and rename audio/x-mpeg
+	* gnome-vfs.mime: Add audio/mpeg for mp1 extension
+	* gnome-vfs.applications: Use audio/mpeg
+
+2002-09-04  Alex Graveley  <alex@ximian.com>
+
+	* gnome-vfs.applications: Add -p to gnome-sound-recorder command
+	so sound files are played on startup.  Fixes bug #90959.
+
 2002-08-20  Seth Nickell  <snickell@stanford.edu>
 
 	* gnome-vfs-mime-magic:

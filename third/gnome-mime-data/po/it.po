@@ -1,16 +1,17 @@
-# Italian localisation for gnome-vfs
+# Italian localisation for gnome-mime-data
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Christopher R. Gabriel <cgabriel@pluto.linux.it>	
+# Alessio Frusciante <algol@firenze.linux.it>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs 0.2\n"
-"POT-Creation-Date: 2002-08-28 23:41-0500\n"
-"PO-Revision-Date: 2001-07-02 03:36+02:00\n"
-"Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Project-Id-Version: gnome-mime-data\n"
+"POT-Creation-Date: 2003-02-04 01:07-0800\n"
+"PO-Revision-Date: 2003-01-27 11:20+0100\n"
+"Last-Translator: Alessio Frusciante <algol@firenze.linux.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-vfs.keys.in.h:1
@@ -62,9 +63,8 @@ msgid "Applixware spreadsheet"
 msgstr "Foglio di calcolo Applixware"
 
 #: gnome-vfs.keys.in.h:13
-#, fuzzy
 msgid "Audio"
-msgstr "Audio AIFF"
+msgstr "Audio"
 
 #: gnome-vfs.keys.in.h:14
 msgid "AutoCAD image"
@@ -87,9 +87,8 @@ msgid "C source code"
 msgstr "Codice sorgente C"
 
 #: gnome-vfs.keys.in.h:19
-#, fuzzy
 msgid "C source code header"
-msgstr "Codice sorgente C"
+msgstr "Header codice sorgente C"
 
 #: gnome-vfs.keys.in.h:20
 msgid "C++ source code"
@@ -117,7 +116,7 @@ msgstr "Archivio CPIO (compresso gzip)"
 
 #: gnome-vfs.keys.in.h:26
 msgid "Commodore 64 Audio"
-msgstr ""
+msgstr "Audio Commodore 64"
 
 #: gnome-vfs.keys.in.h:27
 msgid "DCL script"
@@ -145,7 +144,7 @@ msgstr "Pacchetto Debian"
 
 #: gnome-vfs.keys.in.h:33
 msgid "Device Independant Bitmap"
-msgstr ""
+msgstr "device independent bitmap"
 
 #: gnome-vfs.keys.in.h:34
 msgid "Dia diagram"
@@ -153,24 +152,23 @@ msgstr "Diagramma DIA"
 
 #: gnome-vfs.keys.in.h:35
 msgid "Digital Imaging and Communications in Medicine image"
-msgstr ""
+msgstr "Immagine DICOM"
 
 #: gnome-vfs.keys.in.h:36
 msgid "Digital Moving Picture Exchange"
-msgstr ""
+msgstr "Digital Moving Picture Exchange"
 
 #: gnome-vfs.keys.in.h:37
-#, fuzzy
 msgid "Documents"
-msgstr "Documento PDF"
+msgstr "Documenti"
 
 #: gnome-vfs.keys.in.h:38
 msgid "Documents/Diagram"
-msgstr ""
+msgstr "Documenti/Diagramma"
 
 #: gnome-vfs.keys.in.h:39
 msgid "Documents/Extended Markup Language (XML)"
-msgstr ""
+msgstr "Documenti/Extended Markup Language (XML)"
 
 #: gnome-vfs.keys.in.h:40
 msgid "Documents/Numeric"
@@ -178,47 +176,43 @@ msgstr ""
 
 #: gnome-vfs.keys.in.h:41
 msgid "Documents/Plain Text"
-msgstr ""
+msgstr "Documenti/Testo puro"
 
 #: gnome-vfs.keys.in.h:42
-#, fuzzy
 msgid "Documents/Presentation"
-msgstr "Presentazione KPresenter"
+msgstr "Documenti/Presentazione"
 
 #: gnome-vfs.keys.in.h:43
 msgid "Documents/Project Management"
-msgstr ""
+msgstr "Documenti/Gestione progetto"
 
 #: gnome-vfs.keys.in.h:44
 msgid "Documents/Published Materials"
-msgstr ""
+msgstr "Documenti/Materiali pubblicati"
 
 #: gnome-vfs.keys.in.h:45
-#, fuzzy
 msgid "Documents/Spreadsheet"
-msgstr "Foglio di calcolo Gnumeric"
+msgstr "Documenti/Foglio di calcolo"
 
 #: gnome-vfs.keys.in.h:46
-#, fuzzy
 msgid "Documents/TeX"
-msgstr "Documento HDF"
+msgstr "Documenti/TeX"
 
 #: gnome-vfs.keys.in.h:47
 msgid "Documents/Text Markup"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:48
-#, fuzzy
 msgid "Documents/Vector Graphics"
-msgstr "Grafica vettoriale DXF"
+msgstr "Documenti/Grafica vettoriale"
 
 #: gnome-vfs.keys.in.h:49
 msgid "Documents/Word Processor"
-msgstr ""
+msgstr "Documenti/Videoscrittura"
 
 #: gnome-vfs.keys.in.h:50
 msgid "Documents/World Wide Web"
-msgstr ""
+msgstr "Documenti/World Wide Web"
 
 #: gnome-vfs.keys.in.h:51
 msgid "Dolby Digital audio"
@@ -226,7 +220,7 @@ msgstr "Audio Dolby Digital"
 
 #: gnome-vfs.keys.in.h:52
 msgid "Dreamcast rom"
-msgstr ""
+msgstr "ROM Dreamcast"
 
 #: gnome-vfs.keys.in.h:53
 msgid "Emacs Lisp source code"
@@ -237,1128 +231,1106 @@ msgid "Enlightenment theme"
 msgstr "Tema Enlightenment"
 
 #: gnome-vfs.keys.in.h:55
+msgid "FLAC audio"
+msgstr "Audio FLAC"
+
+#: gnome-vfs.keys.in.h:56
 msgid "FLC animation"
 msgstr "Animazione FLC"
 
-#: gnome-vfs.keys.in.h:56
+#: gnome-vfs.keys.in.h:57
 msgid "FLI animation"
 msgstr "Animazione FLI"
 
-#: gnome-vfs.keys.in.h:57
+#: gnome-vfs.keys.in.h:58
 msgid "FastTracker II audio"
 msgstr "Audio FastTracker II"
 
-#: gnome-vfs.keys.in.h:58
-msgid "FlashPix Image"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:59
-msgid "Flexible Image Transport System"
-msgstr ""
+msgid "FlashPix Image"
+msgstr "Immagine FlashPix"
 
 #: gnome-vfs.keys.in.h:60
+msgid "Flexible Image Transport System"
+msgstr "Flexible Image Transport System"
+
+#: gnome-vfs.keys.in.h:61
 msgid "Fortran source code"
 msgstr "Codice sorgente Fortran"
 
-#: gnome-vfs.keys.in.h:61
+#: gnome-vfs.keys.in.h:62
 msgid "FrameMaker interchange document"
 msgstr "Documento FrameMaker interchange"
 
-#: gnome-vfs.keys.in.h:62
+#: gnome-vfs.keys.in.h:63
 msgid "G3 fax image"
 msgstr "Immagine Fax G3"
 
-#: gnome-vfs.keys.in.h:63
+#: gnome-vfs.keys.in.h:64
 msgid "GIF image"
 msgstr "Immagine GIF"
 
-#: gnome-vfs.keys.in.h:64
+#: gnome-vfs.keys.in.h:65
 msgid "GIMP document"
 msgstr "Documento GIMP"
 
-#: gnome-vfs.keys.in.h:65
+#: gnome-vfs.keys.in.h:66
 msgid "GMC link"
 msgstr "Link GMC"
 
-#: gnome-vfs.keys.in.h:66
+#: gnome-vfs.keys.in.h:67
 msgid "GNU Oleo Spreadsheet"
 msgstr "Foglio di calcolo GNU Oleo"
 
-#: gnome-vfs.keys.in.h:67
+#: gnome-vfs.keys.in.h:68
 msgid "GNU mail message"
 msgstr "Messaggio di posta GNU"
 
-#: gnome-vfs.keys.in.h:68
+#: gnome-vfs.keys.in.h:69
 msgid "GTK configuration"
 msgstr "Configurazione GTK"
 
-#: gnome-vfs.keys.in.h:69
-msgid "Game Boy rom"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:70
-#, fuzzy
-msgid "Genesis rom"
-msgstr "Errore generico"
+msgid "Game Boy rom"
+msgstr "ROM Game Boy"
 
 #: gnome-vfs.keys.in.h:71
+msgid "Genesis rom"
+msgstr "ROM Genesis"
+
+#: gnome-vfs.keys.in.h:72
 msgid "Glade project"
 msgstr "Progetto Glade"
 
-#: gnome-vfs.keys.in.h:72
+#: gnome-vfs.keys.in.h:73
 msgid "GnuCash Workbook"
 msgstr "Foglio di lavoro GnuCash"
 
-#: gnome-vfs.keys.in.h:73
+#: gnome-vfs.keys.in.h:74
 msgid "Gnumeric spreadsheet"
 msgstr "Foglio di calcolo Gnumeric"
 
-#: gnome-vfs.keys.in.h:74
-msgid "Gtktalog Catalogue"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:75
+msgid "Gtktalog Catalogue"
+msgstr "Catalogo gtkcatalog"
+
+#: gnome-vfs.keys.in.h:76
 msgid "HDF document"
 msgstr "Documento HDF"
 
-#: gnome-vfs.keys.in.h:76
+#: gnome-vfs.keys.in.h:77
 msgid "HTML page"
 msgstr "Pagina HTML"
 
-#: gnome-vfs.keys.in.h:77
-#, fuzzy
-msgid "Haskell source code"
-msgstr "Codice sorgente C"
-
 #: gnome-vfs.keys.in.h:78
+msgid "Haskell source code"
+msgstr "Codice sorgente haskell"
+
+#: gnome-vfs.keys.in.h:79
 msgid "IDL document"
 msgstr "Documento IDL"
 
-#: gnome-vfs.keys.in.h:79
+#: gnome-vfs.keys.in.h:80
 msgid "IEF image"
 msgstr "Immagine IEF"
 
-#: gnome-vfs.keys.in.h:80
+#: gnome-vfs.keys.in.h:81
 msgid "IFF image"
 msgstr "Immagine IFF"
 
-#: gnome-vfs.keys.in.h:81
+#: gnome-vfs.keys.in.h:82
 msgid "ILBM image"
 msgstr "Immagine ILBM"
 
-#: gnome-vfs.keys.in.h:82
+#: gnome-vfs.keys.in.h:83
 msgid "ISI video"
 msgstr "Video ISI"
 
-#: gnome-vfs.keys.in.h:83
-#, fuzzy
-msgid "Images"
-msgstr "Immagine IFF"
-
 #: gnome-vfs.keys.in.h:84
+msgid "ISO image"
+msgstr "Immagine ISO"
+
+#: gnome-vfs.keys.in.h:85
+msgid "Images"
+msgstr "Immagini"
+
+#: gnome-vfs.keys.in.h:86
 msgid "Impulse Tracker audio"
 msgstr "Audio Impulse Tracker"
 
-#: gnome-vfs.keys.in.h:85
-#, fuzzy
-msgid "Information"
-msgstr "Animazione FLI"
-
-#: gnome-vfs.keys.in.h:86
-msgid "Information/Calendar"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:87
-msgid "Information/Financial"
-msgstr ""
+msgid "Information"
+msgstr "Informazioni"
 
 #: gnome-vfs.keys.in.h:88
+msgid "Information/Calendar"
+msgstr "Informazioni/Calendario"
+
+#: gnome-vfs.keys.in.h:89
+msgid "Information/Financial"
+msgstr "Informazioni/Finanza"
+
+#: gnome-vfs.keys.in.h:90
 msgid "JBuilder Project"
 msgstr "Progetto JBuilder"
 
-#: gnome-vfs.keys.in.h:89
+#: gnome-vfs.keys.in.h:91
 msgid "JPEG image"
 msgstr "Immagine JPEG"
 
-#: gnome-vfs.keys.in.h:90
+#: gnome-vfs.keys.in.h:92
 msgid "Java byte code"
 msgstr "Byte code Java"
 
-#: gnome-vfs.keys.in.h:91
+#: gnome-vfs.keys.in.h:93
 msgid "Java source code"
 msgstr "Codice sorgente Java"
 
-#: gnome-vfs.keys.in.h:92
+#: gnome-vfs.keys.in.h:94
 msgid "KDE application details"
 msgstr "Dettaggli dell'applicazione KDE"
 
-#: gnome-vfs.keys.in.h:93
+#: gnome-vfs.keys.in.h:95
 msgid "KIllustrator document"
 msgstr "Documento KIllustrator"
 
-#: gnome-vfs.keys.in.h:94
+#: gnome-vfs.keys.in.h:96
 msgid "KPresenter presentation"
 msgstr "Presentazione KPresenter"
 
-#: gnome-vfs.keys.in.h:95
+#: gnome-vfs.keys.in.h:97
 msgid "KSpread spreadsheet"
 msgstr "Foglio di calcolo KSpread"
 
-#: gnome-vfs.keys.in.h:96
+#: gnome-vfs.keys.in.h:98
 msgid "KWord document"
 msgstr "Documento KWord"
 
-#: gnome-vfs.keys.in.h:97
+#: gnome-vfs.keys.in.h:99
 msgid "Korn shell script"
 msgstr "Script Korn Shell"
 
-#: gnome-vfs.keys.in.h:98
+#: gnome-vfs.keys.in.h:100
 msgid "LHA archive"
 msgstr "Archivio LHA"
 
-#: gnome-vfs.keys.in.h:99
+#: gnome-vfs.keys.in.h:101
 msgid "LHARC archive"
 msgstr "Archivio LHARC"
 
-#: gnome-vfs.keys.in.h:100
+#: gnome-vfs.keys.in.h:102
 msgid "LIBGRX font"
 msgstr "Font LIBGRX"
 
-#: gnome-vfs.keys.in.h:101
+#: gnome-vfs.keys.in.h:103
 msgid "LightWave object"
 msgstr "Oggetto LightWave"
 
-#: gnome-vfs.keys.in.h:102
+#: gnome-vfs.keys.in.h:104
 msgid "LightWave scene"
 msgstr "Scena LightWave"
 
-#: gnome-vfs.keys.in.h:103
+#: gnome-vfs.keys.in.h:105
 msgid "Linux PSF console font"
 msgstr "Font console Linux PSF"
 
-#: gnome-vfs.keys.in.h:104
-#, fuzzy
+#: gnome-vfs.keys.in.h:106
 msgid "Literate haskell source code"
-msgstr "Codice sorgente Fortran"
+msgstr "Codice sorgente literate haskell"
 
-#: gnome-vfs.keys.in.h:105
+#: gnome-vfs.keys.in.h:107
 msgid "Lotus 1-2-3 spreadsheet"
 msgstr "Foglio di calcolo Lotus 1-2-3"
 
-#: gnome-vfs.keys.in.h:106
-#, fuzzy
+#: gnome-vfs.keys.in.h:108
 msgid "LyX Document"
-msgstr "Documento IDL"
+msgstr "Documento LyX"
 
-#: gnome-vfs.keys.in.h:107
+#: gnome-vfs.keys.in.h:109
 msgid "MIDI audio"
 msgstr "Audio MIDI"
 
-#: gnome-vfs.keys.in.h:108
+#: gnome-vfs.keys.in.h:110
 msgid "MOD audio"
 msgstr "Audio MOD"
 
-#: gnome-vfs.keys.in.h:109
+#: gnome-vfs.keys.in.h:111
 msgid "MP3 audio"
 msgstr "Audio MP3"
 
-#: gnome-vfs.keys.in.h:110
+#: gnome-vfs.keys.in.h:112
 msgid "MP3 audio playlist"
 msgstr "Playlist audio MP3"
 
-#: gnome-vfs.keys.in.h:111
+#: gnome-vfs.keys.in.h:113
+msgid "MPEG audio"
+msgstr "Audio MPEG"
+
+#: gnome-vfs.keys.in.h:114
 msgid "MPEG video"
 msgstr "Video MPEG"
 
-#: gnome-vfs.keys.in.h:112
+#: gnome-vfs.keys.in.h:115
 msgid "MS ASF video"
 msgstr "Video MS ASF"
 
-#: gnome-vfs.keys.in.h:113
+#: gnome-vfs.keys.in.h:116
 msgid "MS video"
 msgstr "Video MS"
 
-#: gnome-vfs.keys.in.h:114
+#: gnome-vfs.keys.in.h:117
 msgid "MSX rom"
-msgstr ""
+msgstr "ROM MSX"
 
-#: gnome-vfs.keys.in.h:115
-#, fuzzy
+#: gnome-vfs.keys.in.h:118
 msgid "MacBinary file"
-msgstr "file calendario"
+msgstr "File MacBinary"
 
-#: gnome-vfs.keys.in.h:116
+#: gnome-vfs.keys.in.h:119
 msgid "Macintosh AppleDouble-encoded file"
 msgstr "File Macintosh codificato AppleDouble"
 
-#: gnome-vfs.keys.in.h:117
+#: gnome-vfs.keys.in.h:120
 msgid "Macintosh BinHex-encoded file"
 msgstr "File Macintosh codificato BinHex"
 
-#: gnome-vfs.keys.in.h:118
+#: gnome-vfs.keys.in.h:121
 msgid "Macintosh StuffIt archive"
 msgstr "Archivio Macintosh Stuffit"
 
-#: gnome-vfs.keys.in.h:119
+#: gnome-vfs.keys.in.h:122
 msgid "Macromedia Flash file"
 msgstr "File Macromedia Flash"
 
-#: gnome-vfs.keys.in.h:120
+#: gnome-vfs.keys.in.h:123
 msgid "Magick image format"
-msgstr ""
+msgstr "Formato immagine Magick"
 
-#: gnome-vfs.keys.in.h:121
+#: gnome-vfs.keys.in.h:124
 msgid "MathML document"
 msgstr "Documento MathML"
 
-#: gnome-vfs.keys.in.h:122
-#, fuzzy
+#: gnome-vfs.keys.in.h:125
 msgid "Message"
-msgstr "Messaggio PGP"
+msgstr "Messaggio"
 
-#: gnome-vfs.keys.in.h:123
+#: gnome-vfs.keys.in.h:126
 msgid "Microsoft Excel spreadsheet"
 msgstr "Foglio di calcolo Microsoft Excel"
 
-#: gnome-vfs.keys.in.h:124
+#: gnome-vfs.keys.in.h:127
 msgid "Microsoft PowerPoint document"
 msgstr "Documento Microsoft PowerPoint"
 
-#: gnome-vfs.keys.in.h:125
-#, fuzzy
+#: gnome-vfs.keys.in.h:128
 msgid "Microsoft WMV video"
-msgstr "Video Microsoft"
+msgstr "Video Microsoft WMV"
 
-#: gnome-vfs.keys.in.h:126
+#: gnome-vfs.keys.in.h:129
 msgid "Microsoft Word document"
 msgstr "Documento Microsoft Word"
 
-#: gnome-vfs.keys.in.h:127
+#: gnome-vfs.keys.in.h:130
 msgid "Microsoft video"
 msgstr "Video Microsoft"
 
-#: gnome-vfs.keys.in.h:128
+#: gnome-vfs.keys.in.h:131
 msgid "NES rom"
-msgstr ""
+msgstr "ROM NES"
 
-#: gnome-vfs.keys.in.h:129
+#: gnome-vfs.keys.in.h:132
 msgid "Nautilus link"
 msgstr "Link Nautilus"
 
-#: gnome-vfs.keys.in.h:130
+#: gnome-vfs.keys.in.h:133
 msgid "Nintendo64 rom"
-msgstr ""
+msgstr "ROM Nintendo64"
 
-#: gnome-vfs.keys.in.h:131
+#: gnome-vfs.keys.in.h:134
 msgid "ODA document"
 msgstr "Documento ODA"
 
-#: gnome-vfs.keys.in.h:132
-#, fuzzy
-msgid "OpenOffice.org Impress presentation"
-msgstr "Presentazione StarOffice"
-
-#: gnome-vfs.keys.in.h:133
-#, fuzzy
-msgid "OpenOffice.org Impress presentation template"
-msgstr "Presentazione StarOffice"
-
-#: gnome-vfs.keys.in.h:134
-#, fuzzy
-msgid "OpenOffice.org Math document"
-msgstr "documento testo enriched"
-
 #: gnome-vfs.keys.in.h:135
-#, fuzzy
-msgid "OpenOffice.org Writer document"
-msgstr "Documento StarOffice Writer"
+msgid "OpenOffice.org Impress presentation"
+msgstr "Presentazione OpenOffice.org Impress"
 
 #: gnome-vfs.keys.in.h:136
-#, fuzzy
-msgid "OpenOffice.org Writer global document"
-msgstr "Documento StarOffice Writer"
+msgid "OpenOffice.org Impress presentation template"
+msgstr "Modello presentazione OpenOffice.org Impress"
 
 #: gnome-vfs.keys.in.h:137
-#, fuzzy
-msgid "OpenOffice.org Writer template"
-msgstr "Documento StarOffice Writer"
+msgid "OpenOffice.org Math document"
+msgstr "Documento OpenOffice.org Math"
 
 #: gnome-vfs.keys.in.h:138
-#, fuzzy
-msgid "OpenOffice.org drawing"
-msgstr "Presentazione StarOffice"
+msgid "OpenOffice.org Writer document"
+msgstr "Documento OpenOffice.org Writer"
 
 #: gnome-vfs.keys.in.h:139
-#, fuzzy
-msgid "OpenOffice.org drawing template"
-msgstr "Documento StarOffice Writer"
+msgid "OpenOffice.org Writer global document"
+msgstr "Documento globale OpenOffice.org Writer"
 
 #: gnome-vfs.keys.in.h:140
-#, fuzzy
-msgid "OpenOffice.org spreadsheet"
-msgstr "Foglio di calcolo StarOffice"
+msgid "OpenOffice.org Writer template"
+msgstr "Modello OpenOffice.org Writer"
 
 #: gnome-vfs.keys.in.h:141
-#, fuzzy
-msgid "OpenOffice.org spreadsheet template"
-msgstr "Foglio di calcolo StarOffice"
+msgid "OpenOffice.org drawing"
+msgstr "Disegno OpenOffice.org"
 
 #: gnome-vfs.keys.in.h:142
+msgid "OpenOffice.org drawing template"
+msgstr "Modello disegno OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:143
+msgid "OpenOffice.org spreadsheet"
+msgstr "Foglio di calcolo OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:144
+msgid "OpenOffice.org spreadsheet template"
+msgstr "Modello foglio di calcolo OpenOffice.org"
+
+#: gnome-vfs.keys.in.h:145
+msgid "OpenType font"
+msgstr "Font OpenType"
+
+#: gnome-vfs.keys.in.h:146
 msgid "PBM image"
 msgstr "Immagine PBM"
 
-#: gnome-vfs.keys.in.h:143
-#, fuzzy
+#: gnome-vfs.keys.in.h:147
 msgid "PC Paintbrush image"
-msgstr "Immagine raster CMU"
+msgstr "Immagine PC Paintbrush"
 
-#: gnome-vfs.keys.in.h:144
+#: gnome-vfs.keys.in.h:148
 msgid "PCF font"
 msgstr "Font PCF"
 
-#: gnome-vfs.keys.in.h:145
+#: gnome-vfs.keys.in.h:149
 msgid "PDF document"
 msgstr "Documento PDF"
 
-#: gnome-vfs.keys.in.h:146
+#: gnome-vfs.keys.in.h:150
 msgid "PEF program"
 msgstr "Programma PEF"
 
-#: gnome-vfs.keys.in.h:147
+#: gnome-vfs.keys.in.h:151
 msgid "PGM image"
 msgstr "Immagine PGM"
 
-#: gnome-vfs.keys.in.h:148
+#: gnome-vfs.keys.in.h:152
 msgid "PGN chess game"
 msgstr "Gioco di scacchi PGN"
 
-#: gnome-vfs.keys.in.h:149
+#: gnome-vfs.keys.in.h:153
 msgid "PGP keys"
 msgstr "Chiavi PGP"
 
-#: gnome-vfs.keys.in.h:150
+#: gnome-vfs.keys.in.h:154
 msgid "PGP message"
 msgstr "Messaggio PGP"
 
-#: gnome-vfs.keys.in.h:151
+#: gnome-vfs.keys.in.h:155
 msgid "PGP signature"
 msgstr "Firma PGP"
 
-#: gnome-vfs.keys.in.h:152
+#: gnome-vfs.keys.in.h:156
 msgid "PGP-encrypted file"
 msgstr "File crittato PGP"
 
-#: gnome-vfs.keys.in.h:153
+#: gnome-vfs.keys.in.h:157
 msgid "PHP script"
 msgstr "Script PHP"
 
-#: gnome-vfs.keys.in.h:154
-#, fuzzy
+#: gnome-vfs.keys.in.h:158
 msgid "PICT image"
-msgstr "Immagine XPM"
+msgstr "Immagine PICT"
 
-#: gnome-vfs.keys.in.h:155
+#: gnome-vfs.keys.in.h:159
 msgid "PNG image"
 msgstr "Immagine PNG"
 
-#: gnome-vfs.keys.in.h:156
+#: gnome-vfs.keys.in.h:160
 msgid "PNM image"
 msgstr "Immagine PNM"
 
-#: gnome-vfs.keys.in.h:157
+#: gnome-vfs.keys.in.h:161
 msgid "PPM image"
 msgstr "Immagine PPM"
 
-#: gnome-vfs.keys.in.h:158
-#, fuzzy
+#: gnome-vfs.keys.in.h:162
 msgid "Packages"
-msgstr "Pacchetto RPM"
+msgstr "Pacchetti"
 
-#: gnome-vfs.keys.in.h:159
+#: gnome-vfs.keys.in.h:163
 msgid "Palm OS database"
 msgstr "Database Palm OS"
 
-#: gnome-vfs.keys.in.h:160
-#, fuzzy
+#: gnome-vfs.keys.in.h:164
 msgid "Palm Pixmap image"
-msgstr "Immagine X bitmap"
+msgstr "Immagine Palm Pixmap"
 
-#: gnome-vfs.keys.in.h:161
+#: gnome-vfs.keys.in.h:165
 msgid "Perl script"
 msgstr "Script Perl"
 
-#: gnome-vfs.keys.in.h:162
-#, fuzzy
+#: gnome-vfs.keys.in.h:166
 msgid "Photo CD image"
-msgstr "Immagine AutoCAD"
+msgstr "Immagine Photo CD"
 
-#: gnome-vfs.keys.in.h:163
+#: gnome-vfs.keys.in.h:167
 msgid "Photoshop document"
 msgstr "Documento Photoshop"
 
-#: gnome-vfs.keys.in.h:164
-#, fuzzy
+#: gnome-vfs.keys.in.h:168
 msgid "Playlist"
-msgstr "Playlist audio MP3"
+msgstr "Playlist"
 
-#: gnome-vfs.keys.in.h:165
+#: gnome-vfs.keys.in.h:169
 msgid "PostScript Type 1 font"
 msgstr "Font PostScript Type 1"
 
-#: gnome-vfs.keys.in.h:166
+#: gnome-vfs.keys.in.h:170
 msgid "PostScript document"
 msgstr "Documento PostScript"
 
-#: gnome-vfs.keys.in.h:167
+#: gnome-vfs.keys.in.h:171
 msgid "Project Plan"
-msgstr ""
+msgstr "Piano di progetto"
 
-#: gnome-vfs.keys.in.h:168
+#: gnome-vfs.keys.in.h:172
 msgid "Python source code"
 msgstr "Codice sorgente Python"
 
-#: gnome-vfs.keys.in.h:169
+#: gnome-vfs.keys.in.h:173
 msgid "QuickTime movie"
 msgstr "Filmato QuickTime"
 
-#: gnome-vfs.keys.in.h:170
+#: gnome-vfs.keys.in.h:174
 msgid "Quicken document"
 msgstr "Documento Quicken"
 
-#: gnome-vfs.keys.in.h:171
+#: gnome-vfs.keys.in.h:175
 msgid "Quicken for Windows document"
 msgstr "Docmento Quicken for Windows"
 
-#: gnome-vfs.keys.in.h:172
+#: gnome-vfs.keys.in.h:176
 msgid "RAR archive"
 msgstr "Archivio RAR"
 
-#: gnome-vfs.keys.in.h:173
+#: gnome-vfs.keys.in.h:177
 msgid "README document"
 msgstr "Documento README"
 
-#: gnome-vfs.keys.in.h:174
+#: gnome-vfs.keys.in.h:178
 msgid "RGB image"
 msgstr "Immagine RGB"
 
-#: gnome-vfs.keys.in.h:175
+#: gnome-vfs.keys.in.h:179
 msgid "RIFF audio"
 msgstr "Audio RIFF"
 
-#: gnome-vfs.keys.in.h:176
+#: gnome-vfs.keys.in.h:180
 msgid "RPM package"
 msgstr "Pacchetto RPM"
 
-#: gnome-vfs.keys.in.h:177
+#: gnome-vfs.keys.in.h:181
 msgid "Raw Gray Sample"
 msgstr ""
 
-#: gnome-vfs.keys.in.h:178
-#, fuzzy
+#: gnome-vfs.keys.in.h:182
 msgid "RealAudio document"
-msgstr "Documento PN RealAudio"
+msgstr "Documento RealAudio"
 
-#: gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:183
 msgid "RealAudio/Video document"
 msgstr "Documento RealAudio/Video"
 
-#: gnome-vfs.keys.in.h:180
+#: gnome-vfs.keys.in.h:184
 msgid "RealVideo video"
 msgstr "Video RealVideo"
 
-#: gnome-vfs.keys.in.h:181
+#: gnome-vfs.keys.in.h:185
 msgid "S/MIME file"
 msgstr "File S/MIME"
 
-#: gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:186
 msgid "S/MIME signature"
 msgstr "Firma S/MIME"
 
-#: gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:187
 msgid "SGI video"
 msgstr "Video SGI"
 
-#: gnome-vfs.keys.in.h:184
+#: gnome-vfs.keys.in.h:188
 msgid "SGML document"
 msgstr "Documento SGML"
 
-#: gnome-vfs.keys.in.h:185
-#, fuzzy
+#: gnome-vfs.keys.in.h:189
 msgid "SHOUTcast Playlist"
-msgstr "Playlist audio MP3"
+msgstr "Playlist SHOUTcast"
 
-#: gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:190
 msgid "SMIL script"
 msgstr "Script SMIL"
 
-#: gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:191
 msgid "SMS or Game Gear rom"
-msgstr ""
+msgstr "ROM SMS o Game Gear"
 
-#: gnome-vfs.keys.in.h:188
+#: gnome-vfs.keys.in.h:192
 msgid "SQL code"
 msgstr "Codice SQL"
 
-#: gnome-vfs.keys.in.h:189
-#, fuzzy
+#: gnome-vfs.keys.in.h:193
 msgid "SUN Rasterfile"
-msgstr "Immagine raster CMU"
+msgstr "Rasterfile SUN"
 
-#: gnome-vfs.keys.in.h:190
+#: gnome-vfs.keys.in.h:194
 msgid "SV4 CPIO archive"
 msgstr "Archivio SV4 CPIO"
 
-#: gnome-vfs.keys.in.h:191
+#: gnome-vfs.keys.in.h:195
 msgid "SV4 CPIP archive (with CRC)"
 msgstr "Archivio SV4 CPIP (con CRC)"
 
-#: gnome-vfs.keys.in.h:192
+#: gnome-vfs.keys.in.h:196
 msgid "SVG art"
 msgstr "Arte SVG"
 
-#: gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:197
 msgid "Scheme source code"
 msgstr "Codice sorgente Scheme"
 
-#: gnome-vfs.keys.in.h:194
+#: gnome-vfs.keys.in.h:198
 msgid "Scream Tracker 3 audio"
 msgstr "Audio Screm Tracker 3"
 
-#: gnome-vfs.keys.in.h:195
+#: gnome-vfs.keys.in.h:199
 msgid "Scream Tracker audio"
 msgstr "Audio Scream Tracker"
 
-#: gnome-vfs.keys.in.h:196
+#: gnome-vfs.keys.in.h:200
 msgid "Scream Tracker instrument"
 msgstr "Strumento Scream Tracker"
 
-#: gnome-vfs.keys.in.h:197
+#: gnome-vfs.keys.in.h:201
 msgid "Security"
-msgstr ""
+msgstr "Sicurezza"
 
-#: gnome-vfs.keys.in.h:198
+#: gnome-vfs.keys.in.h:202
 msgid "Setext document"
 msgstr "Documento Setext"
 
-#: gnome-vfs.keys.in.h:199
-#, fuzzy
-msgid "Silicon Graphics Image"
-msgstr "Immagine ApplixWare Graphics"
-
-#: gnome-vfs.keys.in.h:200
-msgid "Software Development"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:201
-msgid "Software Development/ROM Images"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:202
-msgid "Software Development/Source Code"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:203
+msgid "Silicon Graphics Image"
+msgstr "Immagine Silicon Graphics"
+
+#: gnome-vfs.keys.in.h:204
+msgid "Software Development"
+msgstr "Sviluppo software"
+
+#: gnome-vfs.keys.in.h:205
+msgid "Software Development/ROM Images"
+msgstr "Sviluppo software/Immagini ROM"
+
+#: gnome-vfs.keys.in.h:206
+msgid "Software Development/Source Code"
+msgstr "Sviluppo software/Codice sorgente"
+
+#: gnome-vfs.keys.in.h:207
 msgid "Speech document"
 msgstr "Documento Speech"
 
-#: gnome-vfs.keys.in.h:204
+#: gnome-vfs.keys.in.h:208
 msgid "Speedo font"
 msgstr "Font Speedo"
 
-#: gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:209
 msgid "Spreadsheet Interchange document"
 msgstr "Documento Interchange"
 
-#: gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:210
 msgid "Stampede package"
 msgstr "Pacchetto Stampede"
 
-#: gnome-vfs.keys.in.h:207
-#, fuzzy
-msgid "StarCalc spreadsheet"
-msgstr "Foglio di calcolo StarOffice"
-
-#: gnome-vfs.keys.in.h:208
-msgid "StarChart chart"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:209
-msgid "StarDraw drawing"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:210
-#, fuzzy
-msgid "StarImpress presentation"
-msgstr "Presentazione StarOffice"
-
 #: gnome-vfs.keys.in.h:211
-msgid "StarMail file"
-msgstr ""
+msgid "StarCalc spreadsheet"
+msgstr "Foglio di calcolo StarCalc"
 
 #: gnome-vfs.keys.in.h:212
-#, fuzzy
-msgid "StarMath document"
-msgstr "Documento MathML"
+msgid "StarChart chart"
+msgstr "Grafico StarChart"
 
 #: gnome-vfs.keys.in.h:213
-msgid "StarOffice extended metafile image"
-msgstr ""
+msgid "StarDraw drawing"
+msgstr "Disegno StarDraw"
 
 #: gnome-vfs.keys.in.h:214
-#, fuzzy
-msgid "StarWriter document"
-msgstr "Documento StarOffice Writer"
+msgid "StarImpress presentation"
+msgstr "Presentazione StarImpress"
 
 #: gnome-vfs.keys.in.h:215
-msgid "Sun mu-law audio"
-msgstr "Audio Sun µ-law "
+msgid "StarMail file"
+msgstr "File StarMail"
 
 #: gnome-vfs.keys.in.h:216
+msgid "StarMath document"
+msgstr "Documento StarMath"
+
+#: gnome-vfs.keys.in.h:217
+msgid "StarOffice extended metafile image"
+msgstr "Immagine StarOffice extended metafile"
+
+#: gnome-vfs.keys.in.h:218
+msgid "StarWriter document"
+msgstr "Documento StarWriter"
+
+#: gnome-vfs.keys.in.h:219
+msgid "Sun mu-law audio"
+msgstr "Audio Sun Âµ-law "
+
+#: gnome-vfs.keys.in.h:220
 msgid "SunOS News font"
 msgstr "Font SunOS News"
 
-#: gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:221
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
-#: gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:222
 msgid "TIFF image"
 msgstr "Immagine TIFF"
 
-#: gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:223
 msgid "TarGA image"
 msgstr "Immagine TarGA"
 
-#: gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:224
 msgid "Tcl script"
 msgstr "Script Tcl"
 
-#: gnome-vfs.keys.in.h:221
+#: gnome-vfs.keys.in.h:225
 msgid "TeX document"
 msgstr "Documento TeX"
 
-#: gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:226
 msgid "TeX dvi document"
 msgstr "Documento TeX dvi"
 
-#: gnome-vfs.keys.in.h:223
+#: gnome-vfs.keys.in.h:227
 msgid "TeX font"
 msgstr "Font TeX"
 
-#: gnome-vfs.keys.in.h:224
+#: gnome-vfs.keys.in.h:228
 msgid "TeX font metrics"
 msgstr "Metrica font TeX"
 
-#: gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:229
 msgid "TeXInfo document"
 msgstr "Documento TeXInfo"
 
-#: gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:230
 msgid "ToutDoux document"
 msgstr "Documento ToutDoux"
 
-#: gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:231
 msgid "TrueType font"
 msgstr "Font TrueType"
 
-#: gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:232
 msgid "Truevision Targa image"
-msgstr ""
+msgstr "Immagine Truevision Targa"
 
-#: gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:233
 msgid "USENET news message"
 msgstr "Messaggio USENET"
 
-#: gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:234
 msgid "Unidata netCDF document"
 msgstr "Documento Unidata netCDF"
 
-#: gnome-vfs.keys.in.h:231
+#: gnome-vfs.keys.in.h:235
 msgid "User Interface"
-msgstr ""
+msgstr "Interfaccia utente"
 
-#: gnome-vfs.keys.in.h:232
+#: gnome-vfs.keys.in.h:236
 msgid "User Interface/Fonts"
-msgstr ""
+msgstr "Interfaccia utente/Font"
 
-#: gnome-vfs.keys.in.h:233
+#: gnome-vfs.keys.in.h:237
 msgid "V font"
 msgstr "Font V"
 
-#: gnome-vfs.keys.in.h:234
+#: gnome-vfs.keys.in.h:238
 msgid "VOC audio"
 msgstr "Audio VOC"
 
-#: gnome-vfs.keys.in.h:235
+#: gnome-vfs.keys.in.h:239
 msgid "VRML document"
 msgstr "Documento VRML"
 
-#: gnome-vfs.keys.in.h:236
-#, fuzzy
+#: gnome-vfs.keys.in.h:240
 msgid "Video"
-msgstr "Video AVI"
+msgstr "Video"
 
-#: gnome-vfs.keys.in.h:237
+#: gnome-vfs.keys.in.h:241
 msgid "Vivo video"
 msgstr "Video Vivo"
 
-#: gnome-vfs.keys.in.h:238
+#: gnome-vfs.keys.in.h:242
 msgid "WAIS source code"
 msgstr "Codice sorgente WAIS"
 
-#: gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:243
 msgid "Wavelet video"
 msgstr "Video Wavelet"
 
-#: gnome-vfs.keys.in.h:240
+#: gnome-vfs.keys.in.h:244
 msgid "Windows bitmap image"
 msgstr "Immagine Windows bitmap"
 
-#: gnome-vfs.keys.in.h:241
+#: gnome-vfs.keys.in.h:245
 msgid "Windows icon image"
 msgstr "Immagine Icona Windows"
 
-#: gnome-vfs.keys.in.h:242
+#: gnome-vfs.keys.in.h:246
 msgid "Windows metafile graphics"
 msgstr "Immagine Window Metafile"
 
-#: gnome-vfs.keys.in.h:243
+#: gnome-vfs.keys.in.h:247
 msgid "WordPerfect document"
 msgstr "Documento WordPerfect"
 
-#: gnome-vfs.keys.in.h:244
+#: gnome-vfs.keys.in.h:248
 msgid "X bitmap image"
 msgstr "Immagine X bitmap"
 
-#: gnome-vfs.keys.in.h:245
+#: gnome-vfs.keys.in.h:249
 msgid "X window image"
 msgstr "Immagine X Window"
 
-#: gnome-vfs.keys.in.h:246
+#: gnome-vfs.keys.in.h:250
 msgid "XML document"
 msgstr "Documento XML"
 
-#: gnome-vfs.keys.in.h:247
+#: gnome-vfs.keys.in.h:251
 msgid "XPM image"
 msgstr "Immagine XPM"
 
-#: gnome-vfs.keys.in.h:248
+#: gnome-vfs.keys.in.h:252
 msgid "Xbase database"
 msgstr "Database Xbase"
 
-#: gnome-vfs.keys.in.h:249
-#, fuzzy
+#: gnome-vfs.keys.in.h:253
 msgid "Z shell script"
-msgstr "Script C Shell"
+msgstr "Script Z shell"
 
-#: gnome-vfs.keys.in.h:250
+#: gnome-vfs.keys.in.h:254
 msgid "active server page"
 msgstr "Documento ASP"
 
-#: gnome-vfs.keys.in.h:251
+#: gnome-vfs.keys.in.h:255
 msgid "address card"
 msgstr "biglietto da visita"
 
-#: gnome-vfs.keys.in.h:252
-#, fuzzy
+#: gnome-vfs.keys.in.h:256
 msgid "application launcher"
-msgstr "Dettaggli dell'applicazione KDE"
+msgstr ""
 
-#: gnome-vfs.keys.in.h:253
+#: gnome-vfs.keys.in.h:257
 msgid "ar archive"
 msgstr "Archivio ar"
 
-#: gnome-vfs.keys.in.h:254
+#: gnome-vfs.keys.in.h:258
 msgid "arj archive"
 msgstr "Archivio arj"
 
-#: gnome-vfs.keys.in.h:255
+#: gnome-vfs.keys.in.h:259
 msgid "authors list"
 msgstr "lista autori"
 
-#: gnome-vfs.keys.in.h:256
+#: gnome-vfs.keys.in.h:260
 msgid "backup file"
 msgstr "file backup"
 
-#: gnome-vfs.keys.in.h:257
+#: gnome-vfs.keys.in.h:261
 msgid "basic audio"
 msgstr "audio base"
 
-#: gnome-vfs.keys.in.h:258
+#: gnome-vfs.keys.in.h:262
 msgid "bibliography record"
 msgstr "Archivio bibliografico"
 
-#: gnome-vfs.keys.in.h:259
+#: gnome-vfs.keys.in.h:263
 msgid "binary program"
 msgstr "programma binario"
 
-#: gnome-vfs.keys.in.h:260
+#: gnome-vfs.keys.in.h:264
 msgid "block device"
 msgstr "periferica a blocchi"
 
-#: gnome-vfs.keys.in.h:261
+#: gnome-vfs.keys.in.h:265
 msgid "bzip-compressed file"
 msgstr "file compresso bzip"
 
-#: gnome-vfs.keys.in.h:262
+#: gnome-vfs.keys.in.h:266
 msgid "calendar file"
 msgstr "file calendario"
 
-#: gnome-vfs.keys.in.h:263
+#: gnome-vfs.keys.in.h:267
 msgid "calendar or event document"
 msgstr "documento calenario o eventi"
 
-#: gnome-vfs.keys.in.h:264
+#: gnome-vfs.keys.in.h:268
 msgid "character device"
 msgstr "periferica a caratteri"
 
-#: gnome-vfs.keys.in.h:265
+#: gnome-vfs.keys.in.h:269
 msgid "comma-separated text document"
 msgstr "documento di testo separato da virgole"
 
-#: gnome-vfs.keys.in.h:266
+#: gnome-vfs.keys.in.h:270
 msgid "compound document"
 msgstr "documento compound"
 
-#: gnome-vfs.keys.in.h:267
+#: gnome-vfs.keys.in.h:271
 msgid "compress-compressed file"
 msgstr "file compresso con compress"
 
-#: gnome-vfs.keys.in.h:268
+#: gnome-vfs.keys.in.h:272
 msgid "compressed GIMP document"
 msgstr "Documento GIMP compresso"
 
-#: gnome-vfs.keys.in.h:269
+#: gnome-vfs.keys.in.h:273
 msgid "directory information file"
 msgstr "file per informazione sulla directory"
 
-#: gnome-vfs.keys.in.h:270
+#: gnome-vfs.keys.in.h:274
 msgid "document type definition"
 msgstr "Documento DTD"
 
-#: gnome-vfs.keys.in.h:271
+#: gnome-vfs.keys.in.h:275
 msgid "email headers"
 msgstr "Header di posta"
 
-#: gnome-vfs.keys.in.h:272
-#, fuzzy
+#: gnome-vfs.keys.in.h:276
 msgid "email message/mailbox"
-msgstr "Messaggio Email"
+msgstr "messaggio/casella email"
 
-#: gnome-vfs.keys.in.h:273
+#: gnome-vfs.keys.in.h:277
 msgid "encrypted message"
 msgstr "messaggio criptato"
 
-#: gnome-vfs.keys.in.h:274
+#: gnome-vfs.keys.in.h:278
 msgid "enriched text document"
 msgstr "documento testo enriched"
 
-#: gnome-vfs.keys.in.h:275
+#: gnome-vfs.keys.in.h:279
 msgid "folder"
 msgstr "cartella"
 
-#: gnome-vfs.keys.in.h:276
+#: gnome-vfs.keys.in.h:280
 msgid "gtar archive"
 msgstr "archivio gtar"
 
-#: gnome-vfs.keys.in.h:277
+#: gnome-vfs.keys.in.h:281
 msgid "gzip-compressed file"
 msgstr "file comprezzo gzip"
 
-#: gnome-vfs.keys.in.h:278
+#: gnome-vfs.keys.in.h:282
 msgid "help page"
 msgstr "pagina di aiuto"
 
-#: gnome-vfs.keys.in.h:279
+#: gnome-vfs.keys.in.h:283
 msgid "mail delivery report"
 msgstr "report di consegna posta"
 
-#: gnome-vfs.keys.in.h:280
+#: gnome-vfs.keys.in.h:284
 msgid "mail disposition report"
 msgstr "report per le disposizione di posta"
 
-#: gnome-vfs.keys.in.h:281
+#: gnome-vfs.keys.in.h:285
 msgid "mail system report"
 msgstr "report del sistema di posta"
 
-#: gnome-vfs.keys.in.h:282
+#: gnome-vfs.keys.in.h:286
 msgid "makefile"
 msgstr "makefile"
 
-#: gnome-vfs.keys.in.h:283
+#: gnome-vfs.keys.in.h:287
 msgid "manual page"
 msgstr "pagina di manuale"
 
-#: gnome-vfs.keys.in.h:284
+#: gnome-vfs.keys.in.h:288
 msgid "manual page (compressed)"
 msgstr "pagina di manuale (compressa)"
 
-#: gnome-vfs.keys.in.h:285
+#: gnome-vfs.keys.in.h:289
 msgid "memory dump"
 msgstr "dump di memoria"
 
-#: gnome-vfs.keys.in.h:286
+#: gnome-vfs.keys.in.h:290
 msgid "message digest"
 msgstr "digest di messaggi"
 
-#: gnome-vfs.keys.in.h:287
+#: gnome-vfs.keys.in.h:291
 msgid "message in several formats"
 msgstr "messaggi in svariati formati"
 
-#: gnome-vfs.keys.in.h:288
+#: gnome-vfs.keys.in.h:292
 msgid "multi-part message"
 msgstr "messaggio multi-part"
 
-#: gnome-vfs.keys.in.h:289
+#: gnome-vfs.keys.in.h:293
 msgid "named pipe"
 msgstr "named pipe"
 
-#: gnome-vfs.keys.in.h:290
+#: gnome-vfs.keys.in.h:294
 msgid "object code"
 msgstr "codice oggetto"
 
-#: gnome-vfs.keys.in.h:291
+#: gnome-vfs.keys.in.h:295
 msgid "ogg audio"
 msgstr "Audio ogg"
 
-#: gnome-vfs.keys.in.h:292
+#: gnome-vfs.keys.in.h:296
 msgid "partial email message"
 msgstr "parte di messaggio email"
 
-#: gnome-vfs.keys.in.h:293
+#: gnome-vfs.keys.in.h:297
 msgid "plain text document"
 msgstr "documento testo semplice"
 
-#: gnome-vfs.keys.in.h:294
+#: gnome-vfs.keys.in.h:298
 msgid "profiler results"
 msgstr "risultati profiler"
 
-#: gnome-vfs.keys.in.h:295
-#, fuzzy
+#: gnome-vfs.keys.in.h:299
 msgid "python byte code"
-msgstr "Codice sorgente Python"
+msgstr "byte code python"
 
-#: gnome-vfs.keys.in.h:296
+#: gnome-vfs.keys.in.h:300
 msgid "reference to remote file"
 msgstr "referenze per un file remoto"
 
-#: gnome-vfs.keys.in.h:297
+#: gnome-vfs.keys.in.h:301
 msgid "rejected patch file"
 msgstr "file patch rifiutato"
 
-#: gnome-vfs.keys.in.h:298
+#: gnome-vfs.keys.in.h:302
 msgid "rich text document"
 msgstr "documento rich text"
 
-#: gnome-vfs.keys.in.h:299
+#: gnome-vfs.keys.in.h:303
 msgid "search results"
 msgstr "risultati ricerca"
 
-#: gnome-vfs.keys.in.h:300
+#: gnome-vfs.keys.in.h:304
 msgid "shared library"
 msgstr "libreria condivisa"
 
-#: gnome-vfs.keys.in.h:301
+#: gnome-vfs.keys.in.h:305
 msgid "shell archive"
 msgstr "archivio shell"
 
-#: gnome-vfs.keys.in.h:302
+#: gnome-vfs.keys.in.h:306
 msgid "shell script"
 msgstr "script shell"
 
-#: gnome-vfs.keys.in.h:303
+#: gnome-vfs.keys.in.h:307
 msgid "signed message"
 msgstr "messaggio firmato"
 
-#: gnome-vfs.keys.in.h:304
+#: gnome-vfs.keys.in.h:308
 msgid "socket"
 msgstr "socket"
 
-#: gnome-vfs.keys.in.h:305
+#: gnome-vfs.keys.in.h:309
 msgid "software author credits"
 msgstr "credits per l'autore del software"
 
-#: gnome-vfs.keys.in.h:306
+#: gnome-vfs.keys.in.h:310
 msgid "software installation instructions"
 msgstr "instruzioni di installazione del software"
 
-#: gnome-vfs.keys.in.h:307
+#: gnome-vfs.keys.in.h:311
 msgid "software license terms"
 msgstr "termini della licenza del software"
 
-#: gnome-vfs.keys.in.h:308
+#: gnome-vfs.keys.in.h:312
 msgid "source code patch"
 msgstr "patch a codice sorgente"
 
-#: gnome-vfs.keys.in.h:309
+#: gnome-vfs.keys.in.h:313
 msgid "style sheet"
 msgstr "foglio di stile"
 
-#: gnome-vfs.keys.in.h:310
+#: gnome-vfs.keys.in.h:314
 msgid "symbolic link"
 msgstr "link simbolico"
 
-#: gnome-vfs.keys.in.h:311
+#: gnome-vfs.keys.in.h:315
 msgid "tab-separated text document"
 msgstr "documento testo separato da tab"
 
-#: gnome-vfs.keys.in.h:312
+#: gnome-vfs.keys.in.h:316
 msgid "tar archive"
 msgstr "archivio tar"
 
-#: gnome-vfs.keys.in.h:313
+#: gnome-vfs.keys.in.h:317
 msgid "tar archive (bzip2-compressed)"
 msgstr "archivio tar (compresso bzip2)"
 
-#: gnome-vfs.keys.in.h:314
+#: gnome-vfs.keys.in.h:318
 msgid "tar archive (gzip-compressed)"
 msgstr "archivio tar (compresso gzip)"
 
-#: gnome-vfs.keys.in.h:315
+#: gnome-vfs.keys.in.h:319
 msgid "theme"
 msgstr "tema"
 
-#: gnome-vfs.keys.in.h:316
+#: gnome-vfs.keys.in.h:320
 msgid "troff document"
 msgstr "documento troff"
 
-#: gnome-vfs.keys.in.h:317
+#: gnome-vfs.keys.in.h:321
 msgid "troff me input document"
 msgstr "documento di input troff me"
 
-#: gnome-vfs.keys.in.h:318
+#: gnome-vfs.keys.in.h:322
 msgid "troff mm input document"
 msgstr "documento di input troff mm"
 
-#: gnome-vfs.keys.in.h:319
+#: gnome-vfs.keys.in.h:323
 msgid "troff ms input document"
 msgstr "documento di input troff ms"
 
-#: gnome-vfs.keys.in.h:320
+#: gnome-vfs.keys.in.h:324
 msgid "unknown type"
 msgstr "tipo sconosciuto"
 
-#: gnome-vfs.keys.in.h:321
+#: gnome-vfs.keys.in.h:325
 msgid "ustar archive"
 msgstr "archivio ustar"
 
-#: gnome-vfs.keys.in.h:322
+#: gnome-vfs.keys.in.h:326
 msgid "wave audio"
 msgstr "audio wave"
 
-#: gnome-vfs.keys.in.h:323
+#: gnome-vfs.keys.in.h:327
 msgid "web folder"
 msgstr "cartella web"
 
-#: gnome-vfs.keys.in.h:324
+#: gnome-vfs.keys.in.h:328
 msgid "xfig vector graphic"
 msgstr "grafica vettoriale xfig"
 
-#: gnome-vfs.keys.in.h:325
+#: gnome-vfs.keys.in.h:329
 msgid "zip archive"
 msgstr "archivio zip"
 
-#: gnome-vfs.keys.in.h:326
+#: gnome-vfs.keys.in.h:330
 msgid "zoo archive"
 msgstr "archivio zoo"
 
@@ -1378,7 +1350,7 @@ msgstr "archivio zoo"
 #~ msgstr "%s:%d non contiene il nome del modulo."
 
 #~ msgid "Configuration file `%s' was not found: %s"
-#~ msgstr "Il file di configurazione `%s' non è stato trovato: %s"
+#~ msgstr "Il file di configurazione `%s' non Ã¨ stato trovato: %s"
 
 #~ msgid "Could not parse: %s"
 #~ msgstr "Impossibile analizzare: %s"
@@ -1429,7 +1401,7 @@ msgstr "archivio zoo"
 #~ msgstr "File non aperto"
 
 #~ msgid "Open mode not valid"
-#~ msgstr "Modalità di apertura non valida"
+#~ msgstr "ModalitÃ  di apertura non valida"
 
 #~ msgid "Access denied"
 #~ msgstr "Accesso negato"
@@ -1441,7 +1413,7 @@ msgstr "archivio zoo"
 #~ msgstr "Fine del file"
 
 #~ msgid "Not a directory"
-#~ msgstr "Non è una directory"
+#~ msgstr "Non Ã¨ una directory"
 
 #~ msgid "Operation in progress"
 #~ msgstr "Operazione in corso"
@@ -1459,7 +1431,7 @@ msgstr "archivio zoo"
 #~ msgstr "Operazione non permessa"
 
 #~ msgid "Is a directory"
-#~ msgstr "È una directory"
+#~ msgstr "Ãˆ una directory"
 
 #~ msgid "Not enough memory"
 #~ msgstr "Memoria insufficiente"
@@ -1540,4 +1512,4 @@ msgstr "archivio zoo"
 #~ msgstr "GnomeVFSSeekPosition %d sconociuta."
 
 #~ msgid "GNOME VFS already initialized."
-#~ msgstr "GNOME VFS è già stato inizializzato."
+#~ msgstr "GNOME VFS Ã¨ giÃ  stato inizializzato."
