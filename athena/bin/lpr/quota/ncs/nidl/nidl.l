@@ -60,9 +60,11 @@ int yywrap __PROTOTYPE((void));
 int yyuuid __PROTOTYPE((char *s, uuid_$t *uuid));
 void commenteof __PROTOTYPE((void));
 int screen __PROTOTYPE ((char *token));
+#if !defined(_AIX)
 int yyinput __PROTOTYPE((void));
 int yyoutput __PROTOTYPE ((int c));
 int yyunput __PROTOTYPE ((int c));
+#endif
 int yyback __PROTOTYPE ((int *p, int m));
 
 extern void exit __PROTOTYPE((int));
