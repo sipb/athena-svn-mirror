@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Copy some files and remove some files after the os pkgs were installed
-# $Id: oschanges,v 1.14 2001-08-27 22:21:54 ghudson Exp $
+# $Id: oschanges,v 1.15 2001-09-25 17:55:29 ghudson Exp $
 
 # copied from AFS
 rm -f $UPDATE_ROOT/usr/ucblib/libucb.so.1
@@ -34,6 +34,12 @@ ln -s ../libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so
 
 # Turn off sgid bit due to unfixed security hole.
 chmod g-s $UPDATE_ROOT/usr/sbin/arp
+
+# Make sure /tmp is a symlink.  /var/rtmp is created by the install.
+if [ ! -h $UPDATE_ROOT/tmp ]; then
+  rm -rf $UPDATE_ROOT/tmp
+  ln -s var/rtmp $UPDATE_ROOT/tmp
+fi
 
 # Generate windex files so apropos works
 chroot ${UPDATE_ROOT:-/} /usr/bin/catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man
