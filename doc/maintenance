@@ -278,6 +278,7 @@ following guidelines should help the release go smoothly:
 		- /install is a symlink to the rw of the os volume
 		- /srvd is a symlink to the ro of the packs
 		- /.srvd is a symlink to the rw of the packs
+		- For Solaris, /usr/gcc is a symlink to /.srvd/usr/gcc
 		- The source locker is attached and locked.
 
 	  Doing a full build for release testing is then simple:
