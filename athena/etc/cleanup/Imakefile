@@ -1,9 +1,12 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Imakefile,v 1.1 1991-07-30 17:48:32 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Imakefile,v 1.2 1991-07-30 17:49:19 epeisach Exp $
 #
 
 #ifdef vax
 CC=gcc
 #endif
+#ifdef _IBMR2
+MACHLIBS=-ls
+#endif
 
-SimpleProgram(cleanup, cleanup.o,-lhesiod,/etc/athena/)
+SimpleProgram(cleanup, cleanup.o,-lhesiod ${MACHLIBS},/etc/athena/)
