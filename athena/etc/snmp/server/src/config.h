@@ -1,9 +1,12 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.4 1990-05-26 13:42:02 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.5 1990-07-15 17:55:44 tom Exp $
  *  $Author: tom $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ * Revision 1.4  90/05/26  13:42:02  tom
+ * athena release 7.0e + patch 15
+ * 
  * Revision 1.3  90/04/26  15:45:25  tom
  * defined SYS_DESCR to slinky- I'd rather have it be totally bogus
  * than subtly wrong.
@@ -101,7 +104,7 @@
  *  mib_system_sysObjectID variable
  *  The first number is the length of your object ID.
  */
-#define SYS_OBJ_ID {8, 1, 3, 6, 1, 4, 1, 8, 1 }
+#define SYS_OBJ_ID {8, 1, 3, 6, 1, 4, 1, 20, 1 }
 
 /*
  *  With SunOS 4.0, the BSD43 flag works fine, so make sure it is
