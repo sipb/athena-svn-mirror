@@ -1,6 +1,6 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v $
 #	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.5 1988-01-26 01:31:45 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.6 1988-02-05 15:07:32 jtkohl Exp $
 	et	zsrv
 
 ec ZSRV_BADASSOC,
@@ -27,8 +27,8 @@ ec ZSRV_LEN,
 	"Read/Write length wrong"
 ec ZSRV_UNKNOWNOPCODE,
 	"Unknown opcode"
-ec ZSRV_HOSTLOCKED,
-	"Host record in use"
+ec ZSRV_REQUEUE,
+	"Requeue for later processing"
 ec ZSRV_RCSID,
-	"$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.5 1988-01-26 01:31:45 jtkohl Exp $"
+	"$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.6 1988-02-05 15:07:32 jtkohl Exp $"
 	end
