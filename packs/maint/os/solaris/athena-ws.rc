@@ -1,4 +1,4 @@
-# $Id: athena-ws.rc,v 1.5 2003-04-03 14:41:38 rbasch Exp $
+# $Id: athena-ws.rc,v 1.6 2003-04-04 17:01:49 ghudson Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -6,7 +6,8 @@
 # local disk.
 
 HOME=/; export HOME
-PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:/usr/bin:/usr/sbin:/sbin
+PATH=${PATH}:/usr/athena/etc
 export PATH
 
 umask 022
@@ -267,6 +268,33 @@ start)
     # overlaps with panel-per-panel-config.schemas right now.
     gconftool-2 --makefile-install-rule \
       /etc/athena/gconf/schemas/athena-panel-config.schemas > /dev/null
+    echo "done."
+  else
+    echo "failed."
+  fi
+
+  echo "Setting up pango configuration... \c"
+  if [ -x /usr/athena/bin/pango-querymodules ]; then
+    mkdir -p /etc/athena/pango
+    pango-querymodules > /etc/athena/pango/pango.modules
+    echo "done."
+  else
+    echo "failed."
+  fi
+
+  echo "Setting up gtk2 image configuration... \c"
+  if [ -x /usr/athena/bin/gtk-query-immodules-2.0 ]; then
+    mkdir -p /etc/athena/gtk-2.0
+    gtk-query-immodules-2.0 > /etc/athena/gtk-2.0/gtk.immodules
+    gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loader
+    echo "done."
+  else
+    echo "failed."
+  fi
+
+  echo "Setting up fontconfig cache... \c"
+  if [ -x /usr/athena/bin/fc-cache ]; then
+    fc-cache -f 2>/dev/null
     echo "done."
   else
     echo "failed."
