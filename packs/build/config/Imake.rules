@@ -1,39 +1,134 @@
 /* 
- * The following instances are supported
- *	create_dir(dir)
- *	program(program, objs, ldflags, libs, instflags, dest)
- *	foreach_subdirs(name,subdirs)
- *	do_subdirs_no_imakefile(subdirs)
- *	do_subdirs(subdirs)
+ * The following macros are supported
+ * ----------------------------------
+ * create_dir(dir)			- Create a directory hierarchy
+ * ProfiledObjectRule()			- Build profiled objects/libraries
+ * SpecialObject(obj,depends,options)	- Build a special object
+ *
+ * SimpleProgram(prog,objs,libs,dest)	- Build/install a program    (simple)
+ * build_program(prog,objs,ldflags,libs)- Build a program            (complex)
+ * install_program(prog,instflags,dest)	- Install a program          (complex)
+ *
+ * SimpleLibrary(base,objs,destdir)	- Build/install a library    (simple)
+ * build_library(base,objs)		- Build a library
+ *
+ * SimpleLint(base,srcs)		- Build/install a lint library
+ *
+ * install_man(src,name)		- Install man page
+ * install_man_links(name,links)	- Install man page links
+ *
+ * install_file(src,dest)		- Install file
+ *
+ * foreach_subdirs(name,subdirs)	- Make 'name' in subdirs
+ * do_subdirs_imakefile(subdirs)	- Make Makefile in subdirs 
+ * do_subdirs(subdirs)			- Make common instances in subdirs
  */
 
 #define create_dir(dir)							@@\
-install::								@@\
-	sh $(CONFDIR)/mkdirhier.sh $(DESTDIR)/dir
+install_dirs:: $(DESTDIR)dir						@@\
+$(DESTDIR)dir:								@@\
+	sh CONFDIR/mkdirhier.sh $(DESTDIR)dir
 
-#define program(prog,objs,ldflags,libs,instflags,dest)			@@\
+#define build_program(prog,objs,ldflags,libs)				@@\
 all::	prog								@@\
 prog::	objs								@@\
-	$(LD) ldflags -o prog objs libs					@@\
+	$(LD) $(LDFLAGS) ldflags -o prog objs libs $(LDLIBS)		@@\
 clean::									@@\
-	rm -f prog objs							@@\
+	rm -f prog							@@\
+
+#define install_program(prog,instflags,dest)				@@\
 install::								@@\
-	install instflags prog dest
+	$(INSTALL) InstPgmFlags instflags prog $(DESTDIR)dest
+
+#define install_file(src,dest)						@@\
+install::								@@\
+	$(INSTALL) -m 0444 src $(DESTDIR)dest
+
+#define SimpleProgram(prog,objs,libs,dest)				@@\
+build_program(prog,objs,,libs)						@@\
+install_program(prog,,dest)
+
+#define SpecialObject(obj,depends,options)				@@\
+obj: depends								@@\
+	rm -f $@							@@\
+	$(CC) -c $(CFLAGS) options $*.c
+
+#define install_man(src,name)						@@\
+install::								@@\
+	base=`expr name \: '\(.*\)\.'`; \				@@\
+	ext=`expr name \: '.*\.\(.*\)'`; \				@@\
+	sdir=$(DESTDIR)/usr/man/man`expr name \: '.*\.\(.\)'`; \	@@\
+	$(INSTALL) -m 0444 src $${sdir}/`basename name`
+
+#define install_man_links(name,links)					@@\
+name.so:								@@\
+	rm -f name.so							@@\
+	sdir=man`expr name \: '.*\.\(.\)'`; \				@@\
+	echo ".so $${sdir}/name" > name.so				@@\
+clean::									@@\
+	rm -f name.so							@@\
+install:: name.so							@@\
+	for i in links; do \						@@\
+		sdir=$(DESTDIR)/usr/man/man`expr $$i \: '.*\.\(.\)'`;\	@@\
+		$(INSTALL) -m 0444 name.so $${sdir}/$$i;\		@@\
+	done
+
+#define ProfiledObjectRule()						@@\
+.c.o:									@@\
+	rm -f $@ profiled/$@						@@\
+	$(CC) -pg -c $(CFLAGS) $*.c					@@\
+	mv $*.o profiled/$*.o						@@\
+	$(CC) -c $(CFLAGS) $*.c						@@\
+all:: profiled all_profiled						@@\
+install:: install_profiled						@@\
+profiled:								@@\
+	@if [ ! -d profiled ]; then mkdir profiled; else exit 0; fi	@@\
+all_profiled install_profiled::
+
+#define build_library(base,objs)					@@\
+all::	lib/**/base.a							@@\
+lib/**/base.a::	objs							@@\
+	ar cru lib/**/base.a objs					@@\
+	$(RANLIB) lib/**/base.a						@@\
+all_profiled::	lib/**/base/**/_p.a					@@\
+lib/**/base/**/_p.a:	objs						@@\
+	cd profiled; ar cru ../lib/**/base/**/_p.a objs			@@\
+	$(RANLIB) lib/**/base/**/_p.a
+
+#define SimpleLibrary(base,objs,dir)					@@\
+build_library(base,objs)						@@\
+install::								@@\
+	rm -f $(DESTDIR)dir/lib/**/base.a				@@\
+	$(INSTALL) -m 0644 lib/**/base.a $(DESTDIR)dir			@@\
+	$(RANLIB) $(DESTDIR)dir/lib/**/base.a				@@\
+install_profiled::							@@\
+	rm -f $(DESTDIR)dir/lib/**/base/**/_p.a				@@\
+	$(INSTALL) -m 0644 lib/**/base/**/_p.a $(DESTDIR)dir		@@\
+	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/_p.a
+
+#define SimpleLint(base,srcs)						@@\
+all::	llib-l/**/base.ln						@@\
+llib-l/**/base.ln:: srcs						@@\
+	LintCmd $(LINTCFLAG)base LintFlags $(LINTFLAGS) srcs		@@\
+install::								@@\
+	$(INSTALL) llib-l/**/base.ln $(DESTDIR)/usr/lib/lint/		@@\
+clean::									@@\
+	rm -f llib-l/**/base.ln
 
 #define makefile_target()						@@\
 Makefile:: $(ICONFIGFILE)						@@\
 	-@if [ -f Makefile ]; then \                                    @@\
         	echo "  rm -f Makefile.bak; mv Makefile Makefile.bak"; \ @@\
-		rm -f Makefile.bak; mv Makefile Makefile.bak; \      @@\
+		rm -f Makefile.bak; mv Makefile Makefile.bak; \		@@\
         else exit 0; fi                                                 @@\
-	$(IMAKE) -DTOPDIR=$(TOP) -DCURDIR=$(CURRENT_DIR) 		@@\
+	$(IMAKE) $(IFLAGS) -DNEWTOP=$(TOP)
 
 #define foreach_subdirs(name,subdirs)					@@\
 name:: FRC								@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
 		(cd $$d; echo "### Making" name "in" `pwd`;	\	@@\
-			make $(FLAGS) $(MFLAGS) DESTDIR=$(DESTDIR) name ; \	@@\
+			make $(FLAGS) $(MFLAGS) DESTDIR=$(DESTDIR) name ; \ @@\
 			echo "### Done with" `pwd`);		\	@@\
 	done
 
@@ -55,7 +150,6 @@ Makefiles:: Makefile							@@\
 		(cd $$d; echo "### Making Makefile in" `pwd`; \		@@\
 			make $(MFLAGS) 	\				@@\
 			TOP=../$(TOP)			\		@@\
-			CURRENT_DIR=../$(CURRENT_DIR)/$$d	\	@@\
 			-f ../Makefile			\		@@\
 			Makefile; \					@@\
 			make $(MFLAGS) \				@@\
