@@ -6,7 +6,7 @@
 # description: This is the athena daemon-starting daemon.  It exists
 #		so that Athena workstations can have a single standard
 #		inetd, with some special added features.
-# processname: athena-inetd
+# processname: inetd
 # pidfile: /var/athena/inetd.pid
 # config: /etc/sysconfig/network
 # config: /etc/athena/inetd.conf
@@ -25,7 +25,7 @@ then
 	exit 0
 fi
 
-[ -f /etc/athena/athena-inetd ] || exit 0
+[ -f /etc/athena/inetd ] || exit 0
 
 RETVAL=0
 
@@ -33,7 +33,7 @@ RETVAL=0
 case "$1" in
   start)
 	echo -n "Starting Athena INET services: "
-	daemon athena-inetd $([ "$ACCESSON" = true ] && echo -n - && echo n)
+	daemon inetd $([ "$ACCESSON" = true ] && echo -n - && echo n)
 	RETVAL=$?
 
 	echo
@@ -42,7 +42,7 @@ case "$1" in
 
   stop)
 	echo -n "Stopping Athena INET services: "
-	killproc athena-inetd
+	killproc inetd
 	RETVAL=$?
 
 	echo
@@ -50,7 +50,7 @@ case "$1" in
 	;;
 
   status)
-	status athena-inetd
+	status inetd
 	RETVAL=$?
 	;;
 
@@ -61,7 +61,7 @@ case "$1" in
 	;;
 
   reload)
-	killall -HUP athena-inetd
+	killall -HUP inetd
 	RETVAL=$?
 	;;
 
