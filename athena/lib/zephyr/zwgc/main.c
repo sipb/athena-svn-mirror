@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.28 1994-08-18 20:00:09 probe Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.29 1994-08-19 14:09:11 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -386,8 +386,8 @@ static void setup_signals(dofork)
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGINT, &sa, (struct sigaction *)0);
 	sigaction(SIGTSTP, &sa, (struct sigaction *)0);
-	sigaction(SIGTTOU, &sa, (struct sigaction *)0);
 	sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+	sigaction(SIGTTOU, &sa, (struct sigaction *)0);
     } else {
 	/* clean up on SIGINT; exiting on logout is the user's problem, now. */
 	sa.sa_handler = signal_exit;
@@ -409,7 +409,14 @@ static void setup_signals(dofork)
     sa.sa_handler = signal_child;
 #endif
     sigaction(SIGCHLD, &sa, (struct sigaction *)0);
-#else
+
+#ifdef _AIX
+    sa.sa_flags = SA_FULLDUMP;
+    sa.sa_handler = SIG_DFL;
+    sigaction(SIGSEGV, &sa, (struct sigaction *)0);
+#endif
+
+#else /* !POSIX */
     if (dofork) {
 	/* Ignore keyboard signals if forking.  Bad things will happen. */
 	signal(SIGINT, SIG_IGN);
