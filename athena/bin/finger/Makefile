@@ -3,9 +3,12 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.1 1987-08-20 16:02:51 ambar Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.2 1987-08-20 16:11:21 ambar Exp $
 #	$Author: ambar $
 #	$Log: not supported by cvs2svn $
+# Revision 1.1  87/08/20  16:02:51  ambar
+# Initial revision
+# 
 #
 DESTDIR=
 CFLAGS = -O
@@ -21,7 +24,7 @@ OBJECTS = finger.o hespwnamuid.o
 all:	finger
 
 finger:	${OBJECTS}
-	cc ${CFLAGS} -o finger ${OBJECTS} ${LIBS} \
+	cc ${CFLAGS} -o finger ${OBJECTS} ${LIBS}
 
 finger.o:	finger.c
 	cc -c ${CFLAGS} finger.c
