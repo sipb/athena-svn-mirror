@@ -1,0 +1,16 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  if [ sun4u = "$SUNPLATFORM" ]; then
+    echo "SUNWqlc"				>> "$LOCALPACKAGES"
+    echo "SUNWqlcx"				>> "$LOCALPACKAGES"
+  fi
+  echo "110750-01"				>> "$PATCHES"
+  echo "108576-16"				>> "$PATCHES"
+  ;;
+sgi)
+  ;;
+esac
+
+echo "/etc/sshd_config"				>> "$CONFCHG"
