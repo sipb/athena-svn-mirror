@@ -47,7 +47,7 @@ Changes from release 8.0 to release 8.1:
 	  /usr/athena.
 
 	* The MH mail-reading software has been upgraded to version
-	  6.8.3 version version 6.8.0.
+	  6.8.3 from version 6.8.0.
 
 	* patch, which we provide on Solaris only, has been upgraded
 	  to version 2.1.  On the SGI, we use the vendor-supplied
