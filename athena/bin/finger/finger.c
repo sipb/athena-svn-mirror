@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.20 1994-05-10 09:38:24 miki Exp $
+ * $Id: finger.c,v 1.21 1994-05-10 11:40:21 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.20 1994-05-10 09:38:24 miki Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.21 1994-05-10 11:40:21 cfields Exp $";
 #endif lint
 
 /*
@@ -76,8 +76,8 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <sys/stat.h>
 #ifdef SOLARIS
 #include <utmpx.h>
-#include <strings.h>
 #endif
+#include <strings.h>
 #include <utmp.h>
 #include <sys/signal.h>
 #include <pwd.h>
