@@ -1,4 +1,4 @@
-# $Id: packages,v 1.240 2003-05-03 16:00:32 ghudson Exp $
+# $Id: packages,v 1.241 2003-05-05 17:20:39 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -253,6 +253,7 @@ third/ORBit			requires glib,gettext
 third/ORBit2			requires glib2,linc,libIDL,popt
 third/pango			except linux requires freetype,glib2,Xft
 third/patch			on solaris
+third/pcre			on solaris
 third/perl			requires db,gdbm,libiconv
 third/pine			requires krb5,hesiod,openssl
 third/popt			except linux requires gettext,libiconv
@@ -275,7 +276,7 @@ third/texinfo
 third/tiff			except linux requires jpeg
 third/top			except linux
 third/traceroute		on solaris
-third/vte			except linux requires gettext,glib2,pango,Xft
+third/vte			except linux requires gettext,glib2,pango,Xft,pcre
 third/wcl			requires openmotif
 third/x11-ssh-askpass
 third/x3270
