@@ -1,7 +1,7 @@
 # Prototype global .login file
-# $Author: danw $
+# $Author: rbasch $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.5 1998-04-25 23:40:19 danw Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.6 1998-06-22 20:04:05 rbasch Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -54,9 +54,15 @@ endif
 
 # *******************   DEVICE SETUP   *******************
 
+# On IRIX, the terminal type may not be set yet.
+if (! $?term) then
+    eval `tset -s -Q`
+endif
+
 # Set device type if interactive session (e.g., dialup)
 
-if (("$term" == switch) || ("$term" == network) || ("$term" == dialup)) then
+if (("$term" == switch) || ("$term" == network) || ("$term" == dialup) \
+    || ("$term" == unknown)) then
 
     # The standard terminal emulation is vt100.  To use a different emulation,
     # set the environmental variable DEF_TERM in your ~/.environment file to
