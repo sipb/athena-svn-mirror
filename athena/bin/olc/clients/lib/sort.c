@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.4 1990-02-06 02:22:51 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.5 1990-02-20 02:56:48 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -54,7 +54,7 @@ static int foo (status) int status; {
     }
     return 0x7000000;
 }
-static inline const bar (status) int status; {
+static int bar (status) int status; {
     return (status == ON
 	    || status == FIRST
 	    || status == OFF
