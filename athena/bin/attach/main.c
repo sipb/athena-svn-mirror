@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.11 1990-07-16 07:24:36 jfc Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.12 1990-07-20 14:50:29 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -111,6 +111,7 @@ main(argc, argv)
     attachtab_fn = strdup(ATTACHTAB);
     mtab_fn = strdup(MTAB);
 #ifdef AFS
+    aklog_fn = strdup(AKLOG_FULLNAME);
     afs_mount_dir = strdup(AFS_MOUNT_DIR);
 #endif
     fsck_fn = strdup(FSCK_FULLNAME);

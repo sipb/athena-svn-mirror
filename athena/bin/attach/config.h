@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: jfc $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.3 1990-07-09 02:34:09 jfc Exp $
+ *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.4 1990-07-20 14:50:14 probe Exp $
  */
 
 /*
@@ -47,6 +47,8 @@
 #define MTAB		"/etc/mtab"
 #define FSCK_FULLNAME "/etc/fsck"
 #define FSCK_SHORTNAME "fsck"
+#define AKLOG_FULLNAME "/afs/athena.mit.edu/service/aklog"
+#define AKLOG_SHORTNAME "aklog"
 #define RVDGETM_FULLNAME "/etc/athena/rvdgetm"
 #define RVDGETM_SHORTNAME "rvdgetm"
 #define NOSUID_FILENAME "/etc/nosuid"
