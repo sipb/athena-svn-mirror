@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.5 1993-07-02 09:29:17 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.6 1993-07-02 17:20:59 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -25,6 +25,7 @@ static char *rcsid =
 #include <sys/resource.h>
 #include <sys/param.h>
 #include <fcntl.h>
+#include <X11/Xos.h>
 #include <X11/Xj/Jets.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -47,6 +48,9 @@ static char *rcsid =
 extern int errno;
 extern char *sys_errlist[];
 extern int sys_nerr;
+#endif
+#ifdef SOLARIS
+#define sigmask(n)  ((unsigned int)1 << (((n) - 1) & (32 - 1)))
 #endif
 
 
@@ -761,6 +765,9 @@ static Child *firstChild = NULL;
 #ifndef WTERMSIG
 #define WTERMSIG(x)	(((union wait *)&(x))->w_termsig)
 #endif
+#if defined(SOLARIS)
+#define W_CORE(x) WCOREDUMP(x)
+#endif
 #ifndef W_CORE
 #define W_CORE(x)	(((union wait *)&(x))->w_coredump)
 #endif
@@ -779,10 +786,15 @@ int checkChildren()
   Child *ch, **last;
   int child;
 
-#if defined(MAC_ARCH)
+#if defined(MAC_ARCH) || defined(SOLARIS)
   int status;
 
+#ifdef SOLARIS
+  while ((child = waitpid(-1, &status, WNOHANG)) > 0)
+#else
   while ((child = wait3(&status, WNOHANG, 0)) > 0)
+#endif
+
 #else
   union wait status;
   struct rusage rus;
