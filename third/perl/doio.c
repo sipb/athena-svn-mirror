@@ -33,6 +33,17 @@
 #endif
 #endif
 
+#ifdef _SEM_SEMUN_UNDEFINED
+/* Added by tb@mit.edu 25 Oct 1999 for Athena. */
+union semun
+   {
+     int val;
+     struct semid_ds *buf;
+     unsigned short int *array;
+     struct seminfo *__buf;
+   };
+#endif
+
 #ifdef I_UTIME
 #  ifdef _MSC_VER
 #    include <sys/utime.h>
