@@ -1,10 +1,12 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ultrix.cf,v 1.1 1990-09-18 13:13:28 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ultrix.cf,v 1.2 1990-10-18 06:02:02 lwvanels Exp $ */
 
 #undef ProfiledLibraryObjectRule
 #define ProfiledLibraryObjectRule()	NormalLibraryObjectRule()
 
 #undef ProfiledLibraryTarget
 #define ProfiledLibraryTarget(name,objs)
+
+#define HasSaberC 1
 
 #ifdef MipsArchitecture
 #define ArCmd	ar r
