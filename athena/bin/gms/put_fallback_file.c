@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.2 1988-09-27 00:47:15 eichin Exp $";
+static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.3 1988-10-12 04:11:53 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -45,29 +45,43 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
    * just avoid creating it if it doesn't.
    */
   ftime = atol(&message_data[GMS_VERSION_STRING_LEN+1]);
-  if(ftime == 0) {
+  {
     /* We want to set the time back if the file does exist; if it
      * doesn't, we want to leave it missing.
      */
     errstat = open(message_filename, O_RDONLY, 0);
-    if(errstat == -1) {
+    if((errstat != -1)&&(ftime>0)) {
+      char dummy[1];
+      /* We read one byte so that the =access= time gets set; utimes
+       * doesn't work if you don't own the file.
+       * We can ignore any error return, since if the read fails the
+       * file will later be cleared and it will work anyhow.
+       */
+      read(errstat, dummy, 1);
+      /* we never care about the old contents if we have new contents to
+       * install, so just close this and reopen it later for writing.
+       */
+      close(errstat);
+    } else if((errstat == -1)&&(ftime == 0)) {
       if(errno == ENOENT) {
 	/* it didn't exist, so we want to leave it that way. */
 	return(0);
       } else {
-	/* something went wrong, but we can't do much about it. */
+	/* something went wrong, but we can't do much about it.
+	 * We just have to hope the cron job clears it.
+	 */
 	return(errno);
       }
     }
     /*
-     * we never care about the old contents if we have new contents to
-     * install, so just close this and reopen it later for writing.
-     */
-    close(errstat);
-    /*
-     * If the file was indeed there, we want to put the empty data
-     * into it, so that when someone requests it, they don't get a
-     * stale message; however, we still want to warp the clock.
+     * Don't bother worrying about an open error here, the failure
+     * modes are such that either it will work later (ie. it was just
+     * a missing file, which we are about to create anyway) or the
+     * cron job will clean it up. Neither should be reported, as they
+     * do not affect the user.  If the file was indeed there, we want
+     * to put the empty data into it, so that when someone requests
+     * it, they don't get a stale message; however, we still want to
+     * try to warp the clock.
      */
   }
     
@@ -107,20 +121,16 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
    * so the cron job can nuke it....
    */
   if(ftime>0) {
-    long time();
-    /*
-     * set the file time to the current time; hit both access and
-     * modify (since the call does it). Since writing to the file only
-     * sets the modify time, if we've warped it back once it'll get
-     * deleted that day no matter what. Of course, once it is gone
-     * we're OK, but why lose when we can win? So we set both of them
-     * here.
+    /* the read we did earlier should have set the access time, so we
+     * don't need to do anything else here.
      */
-    tvp[0].tv_sec = tvp[1].tv_sec = time(0);
+    return(0);
   }
   /*
-   * We can reuse errstat, since if the write fails, we still want to
-   * try the utimes in the hope that the file will really go away.
+   * We can reuse errstat (having not checked it), since if the write
+   * fails, we still want to try the utimes in the hope that the
+   * timestamp will get set and the cron job will really delete the
+   * file. 
    */
   errstat = utimes(message_filename, tvp);
   if(errstat == -1) {
