@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mailusage.pl,v 1.1 2003-11-26 00:26:32 rbasch Exp $
+# $Id: mailusage.pl,v 1.1.2.1 2004-01-02 17:24:57 ghudson Exp $
 
 # Get the total size of, and number of messages in, mailboxes on an
 # IMAP server.
