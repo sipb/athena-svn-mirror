@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.83 1997-02-04 10:01:25 ghudson Exp $
+ * $Id: login.c,v 1.84 1997-02-18 06:34:25 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.83 1997-02-04 10:01:25 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.84 1997-02-18 06:34:25 ghudson Exp $";
 #endif
 
 /*
@@ -588,7 +588,6 @@ main(argc, argv)
 	 */
 	if (argc > 1) {
 #ifdef SYSV
-        if (!hflag) 
 	    SCPYN(utmpx.ut_name, argv[1]);
 #else
 	    SCPYN(utmp.ut_name, argv[1]);
