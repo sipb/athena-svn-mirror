@@ -68,7 +68,11 @@ fi
 CACHEINFO=${CACHEINFO:-/usr/vice/etc/cacheinfo}
 CACHE=${CACHEDIR:-/usr/vice/cache}
 AFS=${AFSDIR:-/afs}
-
+# Athena additions
+if [ "${OPTIONS+set}" != set ]; then
+	OPTIONS="-stat 2000 -dcache 800 -daemons 4 -volumes 70 -afsdb -dynroot"
+fi
+AFS_POST_INIT=/etc/athena/config_afs
 athena_afsadjust () {
         . /etc/athena/rc.conf
         if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
