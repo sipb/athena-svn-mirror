@@ -27,7 +27,7 @@ disable or enable a printer's spooling queue,
 rearrange the order of jobs in a spooling queue,
 .IP +
 find the status of printers, and their associated
-spooling queues and printer dameons.
+spooling queues and printer daemons.
 .PP
 Without any arguments,
 .I lpc
@@ -38,8 +38,8 @@ interprets the first argument as a command and the remaining
 arguments as parameters to the command.  The standard input
 may be redirected causing
 .I lpc
-to read commands from file.
-Commands may be abreviated;
+to read commands from a file.
+Commands may be abbreviated;
 the following is the list of recognized commands.
 .TP
 ? [ command ... ]
@@ -72,7 +72,7 @@ down { all | printer } message ...
 .br
 Turn the specified printer queue off, disable printing and put
 .I message
-in the printer status file. The message doesn't need to be quoted, the
+in the printer status file. The message doesn't need to be quoted; the
 remaining arguments are treated like
 .IR echo (1).
 This is normally used to take a printer down and let others know why
@@ -133,9 +133,9 @@ Enable everything and start a new printer daemon. Undoes the effects of
 .SH FILES
 .nf
 .ta \w'/etc/printcap           'u
-/etc/printcap	printer description file
+/etc/printcap	printer capabilities database
 /usr/spool/*	spool directories
-/usr/spool/*/lock	lock file for queue control
+/usr/spool/*/lock	lock files for queue control
 .fi
 .SH "SEE ALSO"
 lpd(8),
@@ -148,7 +148,7 @@ gci(5)
 .SH DIAGNOSTICS
 .nf
 .ta \w'?Ambiguous command      'u
-?Ambiguous command	abreviation matches more than one command
+?Ambiguous command	abbreviation matches more than one command
 ?Invalid command	no match was found
 ?Privileged command	command can be executed by root only
 .fi
