@@ -21,7 +21,7 @@
  * resulting in security problems.
  */
 
-static char rcsid[] = "$Id: saferm.c,v 1.1 1998-04-02 03:27:10 cfields Exp $";
+static char rcsid[] = "$Id: saferm.c,v 1.2 1998-05-29 17:45:26 tb Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -58,6 +58,18 @@ int safe_open(char *filename, struct stat *file_stat)
     {
       fprintf(stderr, "%s: fstat(%s) failed: %s\n",
 	      program_name, filename, strerror(errno));
+      close(file);
+      return -1;
+    }
+
+  /* Make sure it's a regular file. */
+  if (!S_ISREG(file_stat->st_mode))
+    {
+      fprintf(stderr, "%s: %s is %s\n",
+	      program_name, filename,
+	      (S_ISDIR(file_stat->st_mode) 
+	       ? "a directory"
+	       : "not a regular file"));
       close(file);
       return -1;
     }
@@ -144,7 +156,28 @@ int zero(int file, struct stat *file_stat)
       written += status;
     }
 
+  fsync(file);
   return 0;
+}
+
+/* Return non-zero if it is safe to unlink NAME. */
+int safe_to_unlink(char *name)
+{
+  struct stat st;
+  
+  if (stat(name, &st) < 0)
+    {
+      fprintf(stderr, "%s: %s: %s\n", program_name, name, strerror(errno));
+      return 0;
+    }
+  
+  if (S_ISDIR(st.st_mode))
+    {
+      fprintf(stderr, "%s: %s is a directory\n", program_name, name);
+      return 0;
+    }
+
+  return 1;
 }
 
 /* path is the full pathname to a file. We cd into the directory
@@ -248,24 +281,29 @@ int safe_rm(char *path, int zero_file)
   if (name == NULL)
     return -1;
 
+  /* Do the unlink before the actual zeroing so that the appearance
+   * is atomic.
+   */
+
   if (zero_file)
     {
       file = safe_open(name, &file_stat);
-      if (file != -1)
-	{
-	  if (zero(file, &file_stat) == -1)
-	    status = -1;
-	  close(file);
-	}
-      else
+      if (file == -1)
 	status = -1;
     }
 
-  if (unlink(name) == -1)
+  if (safe_to_unlink(name) && unlink(name) == -1)
     {
       fprintf(stderr, "%s: error unlinking %s: %s\n", program_name,
 	      path, strerror(errno));
       status = -1;
+    }
+
+  if (zero_file && file != -1)
+    {
+      if (zero(file, &file_stat) == -1)
+	status = -1;
+      close(file);
     }
 
   return status;
