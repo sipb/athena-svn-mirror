@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.5 1991-08-13 16:02:34 epeisach Exp $
+ * $Id: Imakefile,v 1.6 1992-11-09 00:52:03 probe Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -31,6 +31,7 @@ LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes $(MACHL)
 CXREF=ctags -x
 ROOT=root
 DAEMON=daemon
+
 #if defined(_IBMR2)
 SPGRP=printq
 #else
@@ -47,9 +48,6 @@ BINDIR=/usr/ucb
 USRETCDIR=/usr/etc
 #endif
 
-# OP_GID is the group ID for group operator
-OP_GID = 28
-
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 	printjob.c recvjob.c displayq.c rmjob.c \
 	startdaemon.c common.c printcap.c lpdchar.c tcp_conn.c
@@ -59,22 +57,17 @@ SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 #define ISUBDIRS filters quota transcript-v2.1 man
 
 
-LPRGSimpleProgram(lpd,lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o \
-	lpdchar.o s_common.o printcap.o tcp_conn.o,$(LIBS),$(LIBDIR))
+LPRGSimpleProgram(lpd,lpd.o lpdchar.o printjob.o recvjob.o tcp_conn.o \
+	displayq.o rmjob.o common.o printcap.o, $(LIBS),$(LIBDIR))
+LPRGSimpleProgram(lpc,lpc.o cmds.o cmdtab.o printcap.o common.o startdaemon.o,\
+	$(LIBS),$(USRETCDIR))
 
-
-LPRSimpleProgram(lpr,lpr.o printcap.o netsend.o common.o,$(LIBS),$(BINDIR))
-LPRSimpleProgram(lpq,lpq.o displayq.o common.o printcap.o,\
-		$(LIBS) -ltermcap,$(BINDIR))
-LPRSimpleProgram(lprm,lprm.o rmjob.o common.o printcap.o,$(LIBS),$(BINDIR))
-LPRGSimpleProgram(s_lpr,s_lpr.o startdaemon.o printcap.o ,$(LIBS),$(BINDIR))
-LPRGSimpleProgram(s_lpq,s_lpq.o s_displayq.o s_common.o printcap.o\
-		startdaemon.o,-ltermcap $(LIBS),$(BINDIR))
-LPRGSimpleProgram(s_lprm,s_lprm.o s_rmjob.o startdaemon.o s_common.o \
-	 printcap.o,$(LIBS),$(BINDIR))
-/* note that following is setgid only */
-LPRGSimpleProgram(lpc,lpc.o cmds.o cmdtab.o startdaemon.o s_common.o \
-	 printcap.o,$(LIBS),$(USRETCDIR))
+LPRSimpleProgram(lpr,lpr.o netsend.o printcap.o common.o startdaemon.o,\
+	$(LIBS),$(BINDIR))
+LPRSimpleProgram(lpq,lpq.o displayq.o printcap.o common.o startdaemon.o,\
+	$(LIBS) -ltermcap,$(BINDIR))
+LPRSimpleProgram(lprm,lprm.o rmjob.o printcap.o common.o startdaemon.o,\
+	$(LIBS),$(BINDIR))
 
 saber_lpr:
 	/**/#load lpr.c printcap.c netsend.c common.c $(LIBS)
@@ -96,41 +89,8 @@ install::
 /* Specify that should trust all hosts on 18.xx.xx.xx */
 SpecialObject(lpd.o,lpd.c,-Dws)
 
-make_s_o(rmjob)
-make_s_o(common)
-make_s_o(lpr)
-make_s_o(lpq)
-make_s_o(lprm)
-make_o_o(lprm)
-make_o_o(lpc)
-
-
-#ifndef _IBMR2
-build_program(o_lprm,o_lprm.o s_rmjob.o startdaemon.o s_common.o printcap.o,\
-	,$(LIBS))
-install_program(o_lprm,-o root -g $(OP_GID) -m 6754,$(USRETCDIR))
-build_program(o_lpc,o_lpc.o cmds.o cmdtab.o startdaemon.o \
-	s_common.o printcap.o,,$(LIBS))
-install_program(o_lpc,-o root -g $(OP_GID) -m 6754,$(USRETCDIR))
-#endif
-
-#if 0
-install_file(printcap,/etc/printcap)
-#endif
-
-print:
-	@pr makefile
-	@${CXREF} *.c | pr -h XREF
-	@pr *.h *.c
-
-#if 0
-depend:
-	mkdep ${CFLAGS} ${SRCS}
-#endif
-
 /* Dependencies */
-lpd.o lpr.o lpq.o lprm.o o_lprm.o pac.o: lp.h lp.local.h
-recvjob.o printjob.o displayq.o rmjob.o common.o: lp.h lp.local.h
+lpd.o lpr.o lpq.o lprm.o pac.o: lp.h lp.local.h
+recvjob.o printjob.o displayq.o rmjob.o common.o cmds.o: lp.h lp.local.h
 startdaemon.o: lp.local.h
-lpc.o o_lpc.o cmdtab.o: lpc.h
-cmds.o: lp.h lp.local.h
+lpc.o cmdtab.o: lpc.h
