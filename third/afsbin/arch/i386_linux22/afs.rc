@@ -58,7 +58,7 @@ load_client() {
 		echo AFS module $LIBAFS does not exist. Not starting AFS.
 		exit 1
 	fi
-	/sbin/insmod /usr/vice/etc/modload/$LIBAFS
+	/sbin/insmod -f -m /usr/vice/etc/modload/$LIBAFS > /usr/vice/etc/modload/libafs.map 2>&1
 }
 
 case "$1" in 
