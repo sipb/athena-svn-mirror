@@ -128,7 +128,9 @@
 #include <openssl/evp.h>
 #include <openssl/x509.h>
 #include <openssl/ssl.h>
+#ifndef OPENSSL_NO_ENGINE
 #include <openssl/engine.h>
+#endif
 #include <openssl/err.h>
 #include <openssl/rand.h>
 
@@ -140,7 +142,6 @@
 
 #ifdef OPENSSL_SYS_WINDOWS
 #include <winsock.h>
-#include "../crypto/bio/bss_file.c"
 #else
 #include OPENSSL_UNISTD
 #endif
@@ -289,7 +290,7 @@ static void lock_dbg_cb(int mode, int type, const char *file, int line)
 		goto err;
 		}
 
-	if (type < 0 || type > CRYPTO_NUM_LOCKS)
+	if (type < 0 || type >= CRYPTO_NUM_LOCKS)
 		{
 		errstr = "type out of bounds";
 		goto err;
@@ -760,7 +761,9 @@ end:
 #ifndef OPENSSL_NO_RSA
 	free_tmp_rsa();
 #endif
+#ifndef OPENSSL_NO_ENGINE
 	ENGINE_cleanup();
+#endif
 	CRYPTO_cleanup_all_ex_data();
 	ERR_free_strings();
 	ERR_remove_state(0);

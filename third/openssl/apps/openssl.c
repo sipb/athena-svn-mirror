@@ -122,7 +122,9 @@
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
+#ifndef OPENSSL_NO_ENGINE
 #include <openssl/engine.h>
+#endif
 #define USE_SOCKETS /* needed for the _O_BINARY defs in the MS world */
 #include "progs.h"
 #include "s_apps.h"
@@ -161,7 +163,7 @@ static void lock_dbg_cb(int mode, int type, const char *file, int line)
 		goto err;
 		}
 
-	if (type < 0 || type > CRYPTO_NUM_LOCKS)
+	if (type < 0 || type >= CRYPTO_NUM_LOCKS)
 		{
 		errstr = "type out of bounds";
 		goto err;

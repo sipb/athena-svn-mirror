@@ -156,7 +156,10 @@ sub main'jnz	{ &out1("jnz",@_); }
 sub main'jz	{ &out1("jz",@_); }
 sub main'jge	{ &out1("jge",@_); }
 sub main'jl	{ &out1("jl",@_); }
+sub main'ja	{ &out1("ja",@_); }
+sub main'jae	{ &out1("jae",@_); }
 sub main'jb	{ &out1("jb",@_); }
+sub main'jbe	{ &out1("jbe",@_); }
 sub main'jc	{ &out1("jc",@_); }
 sub main'jnc	{ &out1("jnc",@_); }
 sub main'jno	{ &out1("jno",@_); }
@@ -345,15 +348,15 @@ sub main'function_end
 	popl	%ebx
 	popl	%ebp
 	ret
-.${func}_end:
+.L_${func}_end:
 EOF
 	push(@out,$tmp);
 
 	if ($main'cpp)
-		{ push(@out,"\tSIZE($func,.${func}_end-$func)\n"); }
+		{ push(@out,"\tSIZE($func,.L_${func}_end-$func)\n"); }
 	elsif ($main'gaswin)
                 { $tmp=push(@out,"\t.align 4\n"); }
-	else	{ push(@out,"\t.size\t$func,.${func}_end-$func\n"); }
+	else	{ push(@out,"\t.size\t$func,.L_${func}_end-$func\n"); }
 	push(@out,".ident	\"$func\"\n");
 	$stack=0;
 	%label=();
@@ -426,6 +429,11 @@ sub main'swtmp
 
 sub main'comment
 	{
+	if ($main'elf)	# GNU and SVR4 as'es use different comment delimiters,
+		{	# so we just skip comments...
+		push(@out,"\n");
+		return;
+		}
 	foreach (@_)
 		{
 		if (/^\s*$/)
@@ -546,7 +554,9 @@ sub popvars
 sub main'picmeup
 	{
 	local($dst,$sym)=@_;
-	local($tmp)=<<___;
+	if ($main'cpp)
+		{
+		local($tmp)=<<___;
 #if (defined(ELF) || defined(SOL)) && defined(PIC)
 	.align	8
 	call	1f
@@ -557,7 +567,22 @@ sub main'picmeup
 	leal	$sym,$regs{$dst}
 #endif
 ___
-	push(@out,$tmp);
+		push(@out,$tmp);
+		}
+	elsif ($main'pic && ($main'elf || $main'aout))
+		{
+		push(@out,"\t.align\t8\n");
+		&main'call(&main'label("PIC_me_up"));
+		&main'set_label("PIC_me_up");
+		&main'blindpop($dst);
+		&main'add($dst,"\$$under"."_GLOBAL_OFFSET_TABLE_+[.-".
+				&main'label("PIC_me_up") . "]");
+		&main'mov($dst,&main'DWP($sym."\@GOT",$dst));
+		}
+	else
+		{
+		&main'lea($dst,&main'DWP($sym));
+		}
 	}
 
 sub main'blindpop { &out1("popl",@_); }

@@ -55,6 +55,7 @@
  * Hudson (tjh@cryptsoft.com).
  *
  */
+#ifndef OPENSSL_NO_OCSP
 
 #include <stdio.h>
 #include <string.h>
@@ -135,6 +136,7 @@ int MAIN(int argc, char **argv)
 	int accept_count = -1;
 	int badarg = 0;
 	int i;
+	int ignore_err = 0;
 	STACK *reqnames = NULL;
 	STACK_OF(OCSP_CERTID) *ids = NULL;
 
@@ -194,6 +196,8 @@ int MAIN(int argc, char **argv)
 				}
 			else badarg = 1;
 			}
+		else if (!strcmp(*args, "-ignore_err"))
+			ignore_err = 1;
 		else if (!strcmp(*args, "-noverify"))
 			noverify = 1;
 		else if (!strcmp(*args, "-nonce"))
@@ -523,7 +527,7 @@ int MAIN(int argc, char **argv)
 		BIO_printf (bio_err, "-serial n          serial number to check\n");
 		BIO_printf (bio_err, "-signer file       certificate to sign OCSP request with\n");
 		BIO_printf (bio_err, "-signkey file      private key to sign OCSP request with\n");
-		BIO_printf (bio_err, "-sign_certs file   additional certificates to include in signed request\n");
+		BIO_printf (bio_err, "-sign_other file   additional certificates to include in signed request\n");
 		BIO_printf (bio_err, "-no_certs          don't include any certificates in signed request\n");
 		BIO_printf (bio_err, "-req_text          print text form of request\n");
 		BIO_printf (bio_err, "-resp_text         print text form of response\n");
@@ -543,10 +547,10 @@ int MAIN(int argc, char **argv)
 		BIO_printf (bio_err, "-validity_period n maximum validity discrepancy in seconds\n");
 		BIO_printf (bio_err, "-status_age n      maximum status age in seconds\n");
 		BIO_printf (bio_err, "-noverify          don't verify response at all\n");
-		BIO_printf (bio_err, "-verify_certs file additional certificates to search for signer\n");
+		BIO_printf (bio_err, "-verify_other file additional certificates to search for signer\n");
 		BIO_printf (bio_err, "-trust_other       don't verify additional certificates\n");
 		BIO_printf (bio_err, "-no_intern         don't search certificates contained in response for signer\n");
-		BIO_printf (bio_err, "-no_sig_verify     don't check signature on response\n");
+		BIO_printf (bio_err, "-no_signature_verify don't check signature on response\n");
 		BIO_printf (bio_err, "-no_cert_verify    don't check signing certificate\n");
 		BIO_printf (bio_err, "-no_chain          don't chain verify response\n");
 		BIO_printf (bio_err, "-no_cert_checks    don't do additional checks on signing certificate\n");
@@ -722,7 +726,12 @@ int MAIN(int argc, char **argv)
 		}
 	else if (host)
 		{
+#ifndef OPENSSL_NO_SOCK
 		cbio = BIO_new_connect(host);
+#else
+		BIO_printf(bio_err, "Error creating connect BIO - sockets not supported.\n");
+		goto end;
+#endif
 		if (!cbio)
 			{
 			BIO_printf(bio_err, "Error creating connect BIO\n");
@@ -732,7 +741,16 @@ int MAIN(int argc, char **argv)
 		if (use_ssl == 1)
 			{
 			BIO *sbio;
+#if !defined(OPENSSL_NO_SSL2) && !defined(OPENSSL_NO_SSL3)
 			ctx = SSL_CTX_new(SSLv23_client_method());
+#elif !defined(OPENSSL_NO_SSL3)
+			ctx = SSL_CTX_new(SSLv3_client_method());
+#elif !defined(OPENSSL_NO_SSL2)
+			ctx = SSL_CTX_new(SSLv2_client_method());
+#else
+			BIO_printf(bio_err, "SSL is disabled\n");
+			goto end;
+#endif
 			SSL_CTX_set_mode(ctx, SSL_MODE_AUTO_RETRY);
 			sbio = BIO_new_ssl(ctx, 1);
 			cbio = BIO_push(sbio, cbio);
@@ -794,6 +812,8 @@ int MAIN(int argc, char **argv)
 		{
 		BIO_printf(out, "Responder Error: %s (%ld)\n",
 				OCSP_response_status_str(i), i);
+		if (ignore_err)
+			goto redo_accept;
 		ret = 0;
 		goto end;
 		}
@@ -1139,7 +1159,11 @@ static BIO *init_responder(char *port)
 	bufbio = BIO_new(BIO_f_buffer());
 	if (!bufbio) 
 		goto err;
+#ifndef OPENSSL_NO_SOCK
 	acbio = BIO_new_accept(port);
+#else
+	BIO_printf(bio_err, "Error setting up accept BIO - sockets not supported.\n");
+#endif
 	if (!acbio)
 		goto err;
 	BIO_set_accept_bios(acbio, bufbio);
@@ -1226,3 +1250,4 @@ static int send_ocsp_response(BIO *cbio, OCSP_RESPONSE *resp)
 	return 1;
 	}
 
+#endif
