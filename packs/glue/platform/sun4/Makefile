@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1996-10-04 05:38:25 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-01-30 09:38:24 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -28,6 +28,8 @@ install:
 	ln -s /opt/SUNWmfwm/bin/mwm ${DESTDIR}${ATHBINDIR}/mwm
 	rm -f ${DESTDIR}${LIBX11}/system.mwmrc
 	ln -s /opt/SUNWmfwm/lib/system.mwmrc ${DESTDIR}${LIBX11}/system.mwmrc
+	rm -f ${DESTDIR}${ATHBINDIR}/otalk
+	ln -s /usr/bin/talk ${DESTDIR}${ATHBINDIR}/otalk
 
 clean:
 	rm -f cc f77
