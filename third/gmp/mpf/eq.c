@@ -1,6 +1,6 @@
 /* mpf_eq -- Compare two floats up to a specified bit #.
 
-Copyright (C) 1993, 1995, 1996 Free Software Foundation, Inc.
+Copyright 1993, 1995, 1996, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -23,14 +23,7 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 int
-#if __STDC__
 mpf_eq (mpf_srcptr u, mpf_srcptr v, unsigned long int n_bits)
-#else
-mpf_eq (u, v, n_bits)
-     mpf_srcptr u;
-     mpf_srcptr v;
-     unsigned long int n_bits;
-#endif
 {
   mp_srcptr up, vp;
   mp_size_t usize, vsize, size, i;
@@ -90,13 +83,13 @@ mpf_eq (u, v, n_bits)
 
   if (usize > vsize)
     {
-      if (vsize * BITS_PER_MP_LIMB < n_bits)
+      if (vsize * GMP_NUMB_BITS < n_bits)
 	return 0;		/* surely too different */
       size = vsize;
     }
   else if (vsize > usize)
     {
-      if (usize * BITS_PER_MP_LIMB < n_bits)
+      if (usize * GMP_NUMB_BITS < n_bits)
 	return 0;		/* surely too different */
       size = usize;
     }
@@ -105,8 +98,8 @@ mpf_eq (u, v, n_bits)
       size = usize;
     }
 
-  if (size > (n_bits + BITS_PER_MP_LIMB - 1) / BITS_PER_MP_LIMB)
-    size = (n_bits + BITS_PER_MP_LIMB - 1) / BITS_PER_MP_LIMB;
+  if (size > (n_bits + GMP_NUMB_BITS - 1) / GMP_NUMB_BITS)
+    size = (n_bits + GMP_NUMB_BITS - 1) / GMP_NUMB_BITS;
 
   up += usize - size;
   vp += vsize - size;

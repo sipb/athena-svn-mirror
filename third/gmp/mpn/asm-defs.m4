@@ -9,8 +9,8 @@ dnl  GNU m4 and OpenBSD 2.7 m4 will give filenames and line numbers in error
 dnl  messages.
 
 
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
-dnl 
+dnl  Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+dnl
 dnl  This file is part of the GNU MP Library.
 dnl
 dnl  The GNU MP Library is free software; you can redistribute it and/or
@@ -112,9 +112,18 @@ dnl  eval() <<,>> - SysV m4 doesn't support shift operators in eval() (on
 dnl       SunOS 5.7 /usr/xpg4/m4 has them but /usr/ccs/m4 doesn't).  See
 dnl       m4_lshift() and m4_rshift() below for workarounds.
 dnl
-dnl  m4wrap() - in BSD m4, m4wrap() replaces any previous m4wrap() string,
-dnl       in SysV m4 it appends to it, and in GNU m4 it prepends.  See
-dnl       m4wrap_prepend() below which brings uniformity to this.
+dnl  m4wrap() sequence - in BSD m4, m4wrap() replaces any previous m4wrap()
+dnl       string, in SysV m4 it appends to it, and in GNU m4 it prepends.
+dnl       See m4wrap_prepend() below which brings uniformity to this.
+dnl
+dnl  m4wrap() 0xFF - old versions of BSD m4 store EOF in a C "char" under an
+dnl       m4wrap() and on systems where char is unsigned by default a
+dnl       spurious 0xFF is output.  This has been observed on recent Unicos
+dnl       Alpha and MacOS X systems.  An autoconf test is used to check for
+dnl       this, see the m4wrap handling below.  It might work to end the
+dnl       m4wrap string with a dnl to consume the 0xFF, but that probably
+dnl       induces the offending m4's to read from an already closed "FILE
+dnl       *", which could be bad on a glibc style stdio.
 dnl
 dnl  __file__,__line__ - GNU m4 and OpenBSD 2.7 m4 provide these, and
 dnl       they're used here to make error messages more informative.  GNU m4
@@ -126,9 +135,16 @@ dnl       filename in __file__, so care should be taken that no macro has
 dnl       the same name as a file, or an unwanted expansion will occur when
 dnl       printing an error or warning.
 dnl
-dnl  OpenBSD 2.6 m4 - this m4 rejects decimal constants containing an 8 or 9
-dnl       in eval(), making it pretty much unusable.  This bug is confined
-dnl       to version 2.6 (it's not in 2.5, and has been fixed in 2.7).
+dnl  changecom() - BSD m4 changecom doesn't quite work like the man page
+dnl       suggests, in particular "changecom" or "changecom()" doesn't
+dnl       disable the comment feature, and multi-character comment sequences
+dnl       don't seem to work.  If the default `#' and newline aren't
+dnl       suitable it's necessary to change it to something else,
+dnl       eg. changecom(;).
+dnl
+dnl  OpenBSD 2.6 m4 - in this m4, eval() rejects decimal constants containing
+dnl       an 8 or 9, making it pretty much unusable.  The bug is confined to
+dnl       version 2.6 (it's not in 2.5, and has been fixed in 2.7).
 dnl
 dnl  SunOS /usr/bin/m4 - this m4 lacks a number of desired features,
 dnl       including $# and $@, defn(), m4exit(), m4wrap(), pushdef(),
@@ -211,8 +227,13 @@ define(m4wrap_prepend,
 m4_assert_numargs(1)
 `define(`m4wrap_string',`$1'defn(`m4wrap_string'))')
 
-m4wrap(`m4wrap_string')
 define(m4wrap_string,`')
+
+define(m4wrap_works_p,
+`ifelse(M4WRAP_SPURIOUS,yes,0,1)')
+
+ifelse(m4wrap_works_p,1,
+`m4wrap(`m4wrap_string')')
 
 
 dnl  Usage: m4_file_and_line
@@ -276,7 +297,8 @@ define(m4_warning,
 `m4_errprint_commas(m4_file_and_line`'$@)')
 
 define(m4_error,
-`define(`m4_error_occurred',1)m4_warning($@)')
+`define(`m4_error_occurred',1)m4_warning($@)dnl
+ifelse(m4wrap_works_p,0,`m4exit(1)')')
 
 define(`m4_error_occurred',0)
 
@@ -721,6 +743,39 @@ m4_assert_numargs(2)
 `m4_lshift_internal(m4_div2_towards_zero($1),incr($2))')')')
 
 
+dnl  Usage: m4_popcount(n)
+dnl
+dnl  Expand to the number 1 bits in n.
+
+define(m4_popcount,
+m4_assert_numargs(1)
+`m4_popcount_internal(0,eval(`$1'))')
+
+dnl  Called: m4_popcount_internal(count,rem)
+define(m4_popcount_internal,
+m4_assert_numargs(2)
+`ifelse($2,0,$1,
+`m4_popcount_internal(eval($1+($2%2)),eval($2/2))')')
+
+
+dnl  Usage: m4_count_trailing_zeros(N)
+dnl
+dnl  Determine the number of trailing zero bits on N.  N is eval()ed and so
+dnl  can be an expression.  If N is zero an error is generated.
+
+define(m4_count_trailing_zeros,
+m4_assert_numargs(1)
+`m4_count_trailing_zeros_internal(eval(`$1'),0)')
+
+dnl  Called: m4_count_trailing_zeros_internal(val,count)
+define(m4_count_trailing_zeros_internal,
+m4_assert_numargs(2)
+`ifelse($1,0,
+`m4_error(`m4_count_trailing_zeros() given a zero value')',
+`ifelse(eval(($1)%2),1,`$2',
+`m4_count_trailing_zeros_internal(eval($1/2),incr($2))')')')
+
+
 dnl  Usage: deflit(name,value)
 dnl
 dnl  Like define(), but "name" expands like a literal, rather than taking
@@ -781,6 +836,117 @@ m4_assert_numargs(1)
 ')')')
 
 
+dnl  Usage: m4_repeat(count,text)
+dnl
+dnl  Expand to the given repetitions of the given text.  A zero count is
+dnl  allowed, and expands to nothing.
+
+define(m4_repeat,
+m4_assert_numargs(2)
+`m4_repeat_internal(eval($1),`$2')')
+
+define(m4_repeat_internal,
+m4_assert_numargs(2)
+`ifelse(`$1',0,,
+`forloop(m4_repeat_internal_counter,1,$1,``$2'')')')
+
+
+dnl  Usage: m4_hex_lowmask(bits)
+dnl
+dnl  Generate a hex constant which is a low mask of the given number of
+dnl  bits.  For example m4_hex_lowmask(10) would give 0x3ff.
+
+define(m4_hex_lowmask,
+m4_assert_numargs(1)
+`m4_cpu_hex_constant(m4_hex_lowmask_internal1(eval(`$1')))')
+
+dnl  Called: m4_hex_lowmask_internal1(bits)
+define(m4_hex_lowmask_internal1,
+m4_assert_numargs(1)
+`ifelse($1,0,`0',
+`m4_hex_lowmask_internal2(eval(($1)%4),eval(($1)/4))')')
+
+dnl  Called: m4_hex_lowmask_internal(remainder,digits)
+define(m4_hex_lowmask_internal2,
+m4_assert_numargs(2)
+`ifelse($1,1,`1',
+`ifelse($1,2,`3',
+`ifelse($1,3,`7')')')dnl
+m4_repeat($2,`f')')
+
+
+dnl  --------------------------------------------------------------------------
+dnl  The following m4_list functions take a list as multiple arguments.
+dnl  Arguments are evaluated multiple times, there's no attempt at strict
+dnl  quoting.  Empty list elements are not allowed, since an empty final
+dnl  argument is ignored.  These restrictions don't affect the current uses,
+dnl  and make the implementation easier.
+
+
+dnl  Usage: m4_list_quote(list,...)
+dnl
+dnl  Produce a list with quoted commas, so it can be a single argument
+dnl  string.  For instance m4_list_quote(a,b,c) gives
+dnl
+dnl         a`,'b`,'c`,'
+dnl
+dnl  This can be used to put a list in a define,
+dnl
+dnl         define(foolist, m4_list_quote(a,b,c))
+dnl
+dnl  Which can then be used for instance as
+dnl
+dnl         m4_list_find(target, foolist)
+
+define(m4_list_quote,
+`ifelse(`$1',,,
+`$1`,'m4_list_quote(shift($@))')')
+
+
+dnl  Usage: m4_list_find(key,list,...)
+dnl
+dnl  Evaluate to 1 or 0 according to whether key is in the list elements.
+
+define(m4_list_find,
+m4_assert_numargs_range(1,1000)
+`ifelse(`$2',,0,
+`ifelse(`$1',`$2',1,
+`m4_list_find(`$1',shift(shift($@)))')')')
+
+
+dnl  Usage: m4_list_remove(key,list,...)
+dnl
+dnl  Evaluate to the given list with `key' removed (if present).
+
+define(m4_list_remove,
+m4_assert_numargs_range(1,1000)
+`ifelse(`$2',,,
+`ifelse(`$1',`$2',,`$2,')dnl
+m4_list_remove(`$1',shift(shift($@)))')')
+
+
+dnl  Usage: m4_list_first(list,...)
+dnl
+dnl  Evaluate to the first element of the list (if any).
+
+define(m4_list_first,`$1')
+
+
+dnl  Usage: m4_list_count(list,...)
+dnl
+dnl  Evaluate to the number of elements in the list.  This can't just use $#
+dnl  because the last element might be empty.
+
+define(m4_list_count,
+`m4_list_count_internal(0,$@)')
+
+dnl  Called: m4_list_internal(count,list,...)
+define(m4_list_count_internal,
+m4_assert_numargs_range(1,1000)
+`ifelse(`$2',,$1,
+`m4_list_count_internal(eval($1+1),shift(shift($@)))')')
+
+
 dnl  --------------------------------------------------------------------------
 dnl  Various assembler things, not specific to any particular CPU.
 dnl
@@ -801,17 +967,21 @@ m4_assert_defined(`CONFIG_TOP_SRCDIR')
 
 dnl  Usage: C comment ...
 dnl
-dnl  "C" works like a FORTRAN-style comment character.  This can be used for
+dnl  This works like a FORTRAN-style comment character.  It can be used for
 dnl  comments to the right of assembly instructions, where just dnl would
-dnl  remove the linefeed, and concatenate adjacent lines.
+dnl  remove the newline and concatenate adjacent lines.
 dnl
-dnl  "C" and/or "dnl" are useful when an assembler doesn't support comments,
-dnl  or where different assemblers for a particular CPU have different
-dnl  comment styles.  The intermediate ".s" files will end up with no
-dnl  comments, just code.
+dnl  C and/or dnl are useful when an assembler doesn't support comments, or
+dnl  where different assemblers for a particular CPU need different styles.
+dnl  The intermediate ".s" files will end up with no comments, just code.
 dnl
-dnl  Using "C" is not intended to cause offence to anyone who doesn't like
+dnl  Using C is not intended to cause offence to anyone who doesn't like
 dnl  FORTRAN; but if that happens it's an unexpected bonus.
+dnl
+dnl  During development, if comments are wanted in the .s files to help see
+dnl  what's expanding where, C can be redefined with something like
+dnl
+dnl         define(`C',`#')
 
 define(C, `
 dnl')
@@ -821,12 +991,13 @@ dnl  Various possible defines passed from the Makefile that are to be tested
 dnl  with ifdef() rather than be expanded.
 
 m4_not_for_expansion(`PIC')
+m4_not_for_expansion(`DLL_EXPORT')
 
 dnl  aors_n
 m4_not_for_expansion(`OPERATION_add_n')
 m4_not_for_expansion(`OPERATION_sub_n')
 
-dnl  aorsmul_n
+dnl  aorsmul_1
 m4_not_for_expansion(`OPERATION_addmul_1')
 m4_not_for_expansion(`OPERATION_submul_1')
 
@@ -844,6 +1015,10 @@ dnl  popham
 m4_not_for_expansion(`OPERATION_popcount')
 m4_not_for_expansion(`OPERATION_hamdist')
 
+dnl  lorrshift
+m4_not_for_expansion(`OPERATION_lshift')
+m4_not_for_expansion(`OPERATION_rshift')
+
 
 dnl  Usage: m4_config_gmp_mparam(`symbol')
 dnl
@@ -851,9 +1026,8 @@ dnl  Check that `symbol' is defined.  If it isn't, issue an error and
 dnl  terminate immediately.  The error message explains that the symbol
 dnl  should be in config.m4, copied from gmp-mparam.h.
 dnl
-dnl  Processing is terminated immediately since missing something like
-dnl  KARATSUBA_SQR_THRESHOLD can lead to infinite loops with endless error
-dnl  messages.
+dnl  Termination is immediate since missing say SQR_KARATSUBA_THRESHOLD can
+dnl  lead to infinite loops and endless error messages.
 
 define(m4_config_gmp_mparam,
 m4_assert_numargs(1)
@@ -907,7 +1081,7 @@ m4_assert_numargs(2)
 substr(`$2',0,1)``''substr(`$2',1))')
 
 
-dnl  Usage: m4_instruction_wrapper(num)
+dnl  Usage: m4_instruction_wrapper()
 dnl
 dnl  Put this, unquoted, on a line on its own, at the start of a macro
 dnl  that's a wrapper around an assembler instruction.  It adds code to give
@@ -928,13 +1102,13 @@ dnl  "jmp foo" instead of the intended "jmp( foo)".  "jmp()" with no
 dnl  argument also provokes the error message.
 dnl
 dnl  m4_instruction_wrapper should only be used with wrapped instructions
-dnl  that take arguments, since obviously something meant to be used as
-dnl  plain "ret", say, doesn't want to give an error when used that way.
+dnl  that take arguments, since obviously something meant to be used as say
+dnl  plain "ret" doesn't want to give an error when used that way.
 
 define(m4_instruction_wrapper,
 m4_assert_numargs(0)
 ``m4_instruction_wrapper_internal'(m4_doublequote($`'0),dnl
-m4_doublequote(ifdef(`__file__',__file__,`the m4 sources')),dnl
+ifdef(`__file__',`m4_doublequote(__file__)',``the m4 sources''),dnl
 $`#',m4_doublequote($`'1))`dnl'')
 
 dnl  Called: m4_instruction_wrapper_internal($0,`filename',$#,$1)
@@ -942,6 +1116,16 @@ define(m4_instruction_wrapper_internal,
 `ifelse(eval($3<=1 && m4_length(`$4')==0),1,
 `m4_error(`$1 is a macro replacing that instruction and needs arguments, see $2 for details
 ')')')
+
+
+dnl  Usage: m4_cpu_hex_constant(string)
+dnl
+dnl  Expand to the string prefixed by a suitable `0x' hex marker.  This
+dnl  should be redefined as necessary for CPUs with different conventions.
+
+define(m4_cpu_hex_constant,
+m4_assert_numargs(1)
+`0x`$1'')
 
 
 dnl  Usage: UNROLL_LOG2, UNROLL_MASK, UNROLL_BYTES
@@ -1007,7 +1191,7 @@ deflit(UNROLL_BYTES,
 m4_assert_defined(`UNROLL_COUNT')
 m4_assert_defined(`BYTES_PER_MP_LIMB')
 `eval(UNROLL_COUNT * BYTES_PER_MP_LIMB)')
- 
+
 deflit(CHUNK_LOG2,
 m4_assert_defined(`CHUNK_COUNT')
 `m4_log2(CHUNK_COUNT)')
@@ -1059,6 +1243,9 @@ define_mpn(cmp)
 define_mpn(com_n)
 define_mpn(copyd)
 define_mpn(copyi)
+define_mpn(count_leading_zeros)
+define_mpn(count_trailing_zeros)
+define_mpn(divexact_1)
 define_mpn(divexact_by3c)
 define_mpn(divrem)
 define_mpn(divrem_1)
@@ -1069,6 +1256,7 @@ define_mpn(divrem_newton)
 define_mpn(dump)
 define_mpn(gcd)
 define_mpn(gcd_1)
+define_mpn(gcd_finda)
 define_mpn(gcdext)
 define_mpn(get_str)
 define_mpn(hamdist)
@@ -1081,13 +1269,18 @@ define_mpn(lshift)
 define_mpn(lshiftc)
 define_mpn(mod_1)
 define_mpn(mod_1c)
+define_mpn(mod_34lsub1)
+define_mpn(modexact_1_odd)
+define_mpn(modexact_1c_odd)
 define_mpn(mul)
 define_mpn(mul_1)
 define_mpn(mul_1c)
+define_mpn(mul_2)
 define_mpn(mul_basecase)
 define_mpn(mul_n)
 define_mpn(perfect_square_p)
 define_mpn(popcount)
+define_mpn(preinv_divrem_1)
 define_mpn(preinv_mod_1)
 define_mpn(nand_n)
 define_mpn(nior_n)
@@ -1099,6 +1292,7 @@ define_mpn(scan0)
 define_mpn(scan1)
 define_mpn(set_str)
 define_mpn(sqr_basecase)
+define_mpn(sqr_diagonal)
 define_mpn(sub_n)
 define_mpn(sqrtrem)
 define_mpn(sub)
@@ -1114,49 +1308,172 @@ define_mpn(udiv_qrnnd)
 define_mpn(xnor_n)
 define_mpn(xor_n)
 
-define(`ASM_START',
-	`')
 
-define(`PROLOGUE',
-	`
-	TEXT
-	ALIGN(4)
-	GLOBL	GSYM_PREFIX`$1'
-	TYPE(GSYM_PREFIX`$1',`function')
-GSYM_PREFIX`$1':')
+dnl  Defines for C global arrays and variables, with names matching what's
+dnl  used in the C code.
+dnl
+dnl  Notice that GSYM_PREFIX is included, unlike with the function defines
+dnl  above.  Also, "deflit" is used so that something like __clz_tab(%ebx)
+dnl  comes out as __gmpn_clz_tab(%ebx), for the benefit of CPUs with that
+dnl  style assembler syntax.
 
-define(`EPILOGUE',
-	`
-	SIZE(GSYM_PREFIX`$1',.-GSYM_PREFIX`$1')')
+deflit(__clz_tab,
+m4_assert_defined(`GSYM_PREFIX')
+`GSYM_PREFIX`'MPN(`clz_tab')')
 
+deflit(modlimb_invert_table,
+m4_assert_defined(`GSYM_PREFIX')
+`GSYM_PREFIX`'__gmp_modlimb_invert_table')
+
+
+dnl  Usage: ASM_START()
+dnl
+dnl  Emit any directives needed once at the start of an assembler file, like
+dnl  ".set noreorder" or whatever.  The default for this is nothing, but
+dnl  it's redefined by CPU specific m4 files.
+
+define(ASM_START)
+
+
+dnl  Usage: PROLOGUE(foo[,param])
+dnl         EPILOGUE(foo)
+dnl
+dnl  Emit directives to start or end a function.  GSYM_PREFIX is added by
+dnl  these macros if necessary, so the given "foo" is what the function will
+dnl  be called in C.
+dnl
+dnl  The second parameter to PROLOGUE is used only for some CPUs and should
+dnl  be omitted if not required.
+dnl
+dnl  Nested or overlapping PROLOGUE/EPILOGUE pairs are allowed, if that
+dnl  makes sense for the system.  The name given to EPILOGUE must be a
+dnl  currently open PROLOGUE.
+dnl
+dnl  If only one PROLOGUE is open then the name can be omitted from
+dnl  EPILOGUE.  This is encouraged, since it means the name only has to
+dnl  appear in one place, not two.
+dnl
+dnl  The given name "foo" is not fully quoted here, it will be macro
+dnl  expanded more than once.  This is the way the m4_list macros work, and
+dnl  it also helps the tune/many.pl program do a renaming like
+dnl  -D__gmpn_add_n=mpn_add_n_foo when GSYM_PREFIX is not empty.
+
+define(PROLOGUE,
+m4_assert_numargs_range(1,2)
+`define(`PROLOGUE_list',m4_list_quote($1,PROLOGUE_list))dnl
+ifelse(`$2',,
+`PROLOGUE_cpu(GSYM_PREFIX`'$1)',
+`PROLOGUE_cpu(GSYM_PREFIX`'$1,`$2')')')
+
+define(EPILOGUE,
+m4_assert_numargs_range(0,1)
+`ifelse(`$1',,
+`ifelse(m4_list_count(PROLOGUE_list),0,
+`m4_error(`no open functions for EPILOGUE
+')',
+`ifelse(m4_list_count(PROLOGUE_list),1,
+`EPILOGUE_internal(PROLOGUE_current_function)',
+`m4_error(`more than one open function for EPILOGUE
+')')')',
+`EPILOGUE_internal(`$1')')')
+
+define(EPILOGUE_internal,
+m4_assert_numargs(1)
+m4_assert_defined(`EPILOGUE_cpu')
+`ifelse(m4_list_find($1,PROLOGUE_list),0,
+`m4_error(`EPILOGUE without PROLOGUE: $1
+')')dnl
+define(`PROLOGUE_list',m4_list_quote(m4_list_remove($1,PROLOGUE_list)))dnl
+EPILOGUE_cpu(GSYM_PREFIX`$1')')
+
+dnl  Currently open PROLOGUEs, as a comma-separated list.
+define(PROLOGUE_list)
+
+
+dnl  Called: PROLOGUE_check(list,...)
+dnl  Check there's no remaining open PROLOGUEs at the end of input.
+define(PROLOGUE_check,
+`ifelse($1,,,
+`m4_error(`no EPILOGUE for: $1
+')dnl
+PROLOGUE_check(shift($@))')')
+
+m4wrap_prepend(`PROLOGUE_check(PROLOGUE_list)')
+
+
+dnl  Usage: PROLOGUE_current_function
+dnl
+dnl  This macro expands to the current PROLOGUE/EPILOGUE function, or the
+dnl  most recent PROLOGUE if such pairs are nested or overlapped.
+
+define(PROLOGUE_current_function,
+m4_assert_numargs(-1)
+`m4_list_first(PROLOGUE_list)')
+
+
+dnl  Usage: PROLOGUE_cpu(GSYM_PREFIX`'foo[,param])
+dnl         EPILOGUE_cpu(GSYM_PREFIX`'foo)
+dnl
+dnl  These macros hold the CPU-specific parts of PROLOGUE and EPILOGUE.
+dnl  Both are called with the function name, with GSYM_PREFIX already
+dnl  prepended.
+dnl
+dnl  The definitions here are something typical and sensible, but CPU or
+dnl  system specific m4 files should redefine them as necessary.  The
+dnl  optional extra parameter to PROLOGUE_cpu is not expected and not
+dnl  accepted here.
+
+define(PROLOGUE_cpu,
+m4_assert_numargs(1)
+`	TEXT
+	ALIGN(8)
+	GLOBL	`$1' GLOBL_ATTR
+	TYPE(`$1',`function')
+`$1'LABEL_SUFFIX')
+
+define(EPILOGUE_cpu,
+`	SIZE(`$1',.-`$1')')
+
+
+dnl  Usage: L(name)
+dnl
+dnl  Generate a local label with the given name.  This is simply a
+dnl  convenient way to add LSYM_PREFIX.
+dnl
 dnl  LSYM_PREFIX might be L$, so defn() must be used to quote it or the L
-dnl  will expand as the L macro, an infinite recursion.
-define(`L',`defn(`LSYM_PREFIX')$1')
+dnl  will expand again as the L macro, making an infinite recursion.
+
+define(`L',
+m4_assert_numargs(1)
+`defn(`LSYM_PREFIX')$1')
+
+
+dnl  Usage: INT32(label,value)
+dnl         INT64(label,first,second)
 
 define(`INT32',
-	`
-	ALIGN(4)
-$1:
-	W32	$2
-	')
+m4_assert_defined(`W32')
+`	ALIGN(4)
+`$1'`'LABEL_SUFFIX
+	W32	$2')
 
 define(`INT64',
-	`
-	ALIGN(8)
-$1:
+m4_assert_defined(`W32')
+`	ALIGN(8)
+`$1'`'LABEL_SUFFIX
 	W32	$2
-	W32	$3
-	')
+	W32	$3')
 
 
 dnl  Usage: ALIGN(bytes)
 dnl
 dnl  Emit a ".align" directive.  The alignment is specified in bytes, and
 dnl  will normally need to be a power of 2.  The actual ".align" generated
-dnl  is either bytes or logarithmic according to what ./configure detects.
+dnl  is either bytes or logarithmic according to what ./configure finds the
+dnl  assembler needs.
 dnl
-dnl  ALIGN_FILL_0x90, if defined and equal to "yes", means a ", 0x90" should
-dnl  be appended (this is for x86).
+dnl  If ALIGN_FILL_0x90 is defined and equal to "yes", then ", 0x90" is
+dnl  appended.  This is for x86, see mpn/x86/README.
 
 define(ALIGN,
 m4_assert_numargs(1)
@@ -1176,7 +1493,36 @@ dnl  names separated by spaces.
 
 define(`MULFUNC_PROLOGUE',
 m4_assert_numargs(1)
-`')
+)
+
+
+dnl  Usage: NAILS_SUPPORT(spec spec ...)
+dnl
+dnl  A dummy macro which is grepped for by ./configure to know what nails
+dnl  are supported in an asm file.
+dnl
+dnl  Ranges can be given, or just individual values.  Multiple values or
+dnl  ranges can be given, separated by spaces.  Multiple NAILS_SUPPORT
+dnl  declarations work too.  Some examples,
+dnl
+dnl         NAILS_SUPPORT(1-20)
+dnl         NAILS_SUPPORT(1 6 9-12)
+dnl         NAILS_SUPPORT(1-10 16-20)
+
+define(NAILS_SUPPORT,
+m4_assert_numargs(1)
+)
+
+
+dnl  Usage: GMP_NUMB_MASK
+dnl
+dnl  A bit masks for the number part of a limb.  Eg.  with 6 bit nails in a
+dnl  32 bit limb, GMP_NUMB_MASK would be 0x3ffffff.
+
+define(GMP_NUMB_MASK,
+m4_assert_numargs(-1)
+m4_assert_defined(`GMP_NUMB_BITS')
+`m4_hex_lowmask(GMP_NUMB_BITS)')
 
 
 divert`'dnl

@@ -1,7 +1,7 @@
 /* mpf_inp_str(dest_float, stream, base) -- Input a number in base
    BASE from stdio stream STREAM and store the result in DEST_FLOAT.
 
-Copyright (C) 1996 Free Software Foundation, Inc.
+Copyright 1996, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -26,14 +26,7 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 size_t
-#if __STDC__
 mpf_inp_str (mpf_ptr rop, FILE *stream, int base)
-#else
-mpf_inp_str (rop, stream, base)
-     mpf_ptr rop;
-     FILE *stream;
-     int base;
-#endif
 {
   char *str;
   size_t alloc_size, str_size;
@@ -45,7 +38,7 @@ mpf_inp_str (rop, stream, base)
     stream = stdin;
 
   alloc_size = 100;
-  str = (char *) (*_mp_allocate_func) (alloc_size);
+  str = (char *) (*__gmp_allocate_func) (alloc_size);
   str_size = 0;
   nread = 0;
 
@@ -63,7 +56,7 @@ mpf_inp_str (rop, stream, base)
 	{
 	  size_t old_alloc_size = alloc_size;
 	  alloc_size = alloc_size * 3 / 2;
-	  str = (char *) (*_mp_reallocate_func) (str, old_alloc_size, alloc_size);
+	  str = (char *) (*__gmp_reallocate_func) (str, old_alloc_size, alloc_size);
 	}
       if (c == EOF || isspace (c))
 	break;
@@ -71,19 +64,21 @@ mpf_inp_str (rop, stream, base)
       c = getc (stream);
     }
   ungetc (c, stream);
+  nread--;
 
   if (str_size >= alloc_size)
     {
       size_t old_alloc_size = alloc_size;
       alloc_size = alloc_size * 3 / 2;
-      str = (char *) (*_mp_reallocate_func) (str, old_alloc_size, alloc_size);
+      str = (char *) (*__gmp_reallocate_func) (str, old_alloc_size, alloc_size);
     }
   str[str_size] = 0;
 
   retval = mpf_set_str (rop, str, base);
+  (*__gmp_free_func) (str, alloc_size);
+
   if (retval == -1)
     return 0;			/* error */
 
-  (*_mp_free_func) (str, alloc_size);
   return str_size + nread;
 }

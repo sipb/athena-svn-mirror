@@ -1,7 +1,7 @@
 /* gen.c -- Generate pseudorandom numbers. */
 
 /*
-Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+Copyright 1999, 2000 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -155,7 +155,7 @@ int main (argc, argv)
 #else
 	ul_adder = (unsigned long int) atoi (str_adder);
 #endif
-	
+
 	if (mpz_init_set_str (z_a, str_a, 0))
 	  {
 	    fprintf (stderr, "gen: bad LC scheme parameter `a': %s\n", str_a);

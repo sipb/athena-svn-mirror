@@ -1,11 +1,6 @@
 dnl  Intel Pentium mpn_lshift -- mpn left shift.
-dnl
-dnl          cycles/limb
-dnl  P5,P54:    6.0
-dnl  P55:       5.375
 
-
-dnl  Copyright (C) 1992, 1994, 1995, 1996, 1999, 2000 Free Software
+dnl  Copyright 1992, 1994, 1995, 1996, 1999, 2000, 2002 Free Software
 dnl  Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
@@ -25,8 +20,12 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C         cycles/limb
+C P5,P54:    6.0
+C P55:       5.375
 
 
 C mp_limb_t mpn_lshift (mp_ptr dst, mp_srcptr src, mp_size_t size,
@@ -40,7 +39,7 @@ defframe(PARAM_SIZE, 12)
 defframe(PARAM_SRC,  8)
 defframe(PARAM_DST,  4)
 
-	.text
+	TEXT
 	ALIGN(8)
 PROLOGUE(mpn_lshift)
 

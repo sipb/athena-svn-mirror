@@ -1,8 +1,8 @@
 divert(-1)
 dnl  m4 macros for AIX 64-bit assembly.
 
-dnl  Copyright (C) 2000 Free Software Foundation, Inc.
-dnl 
+dnl  Copyright 2000, 2001, 2002 Free Software Foundation, Inc.
+dnl
 dnl  This file is part of the GNU MP Library.
 dnl
 dnl  The GNU MP Library is free software; you can redistribute it and/or
@@ -23,18 +23,26 @@ dnl  Suite 330, Boston, MA 02111-1307, USA.
 define(`ASM_START',
 	`.machine	"ppc64"
 	.toc')
-	
-define(`PROLOGUE',
+
+dnl  Called: PROLOGUE_cpu(GSYM_PREFIX`'foo)
+dnl          EPILOGUE_cpu(GSYM_PREFIX`'foo)
+dnl
+dnl  Don't want ELF style .size in the epilogue.
+
+define(`PROLOGUE_cpu',
+m4_assert_numargs(1)
 	`
 	.globl	$1
 	.globl	.$1
-	.csect	$1[DS],3
+	.csect	[DS],3
 $1:
 	.llong	.$1, TOC[tc0], 0
-	.csect	.text[PR]
+	.csect	[PR]
 	.align	2
 .$1:')
 
-define(`EPILOGUE', `')
+define(`EPILOGUE_cpu',
+m4_assert_numargs(1)
+`')
 
 divert

@@ -1,9 +1,6 @@
 dnl  AMD K6 mpn_add/sub_n -- mpn addition or subtraction.
-dnl 
-dnl  K6: normal 3.25 cycles/limb, in-place 2.75 cycles/limb.
 
-
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,10 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C K6: normal 3.25 cycles/limb, in-place 2.75 cycles/limb.
 
 
 ifdef(`OPERATION_add_n', `
@@ -69,12 +68,12 @@ deflit(`FRAME',0)
 dnl  minimum 5 because the unrolled code can't handle less
 deflit(UNROLL_THRESHOLD, 5)
 
-	.text
+	TEXT
 	ALIGN(32)
 
 PROLOGUE(M4_function_nc)
 	movl	PARAM_CARRY, %eax
-	jmp	LF(M4_function_n,start)
+	jmp	L(start)
 EPILOGUE()
 
 
@@ -110,7 +109,7 @@ L(simple):
 	C
 	C The store to (%edi) could be done with a stosl; it'd be smaller
 	C code, but there's no speed gain and a cld would have to be added
-	C (per mpn/x86/README.family).
+	C (per mpn/x86/README).
 
 	movl	(%ebx), %eax
 	leal	4(%ebx), %ebx

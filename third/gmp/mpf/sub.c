@@ -1,7 +1,7 @@
 /* mpf_sub -- Subtract two floats.
 
-Copyright (C) 1993, 1994, 1995, 1996, 1999, 2000 Free Software Foundation,
-Inc.
+Copyright 1993, 1994, 1995, 1996, 1999, 2000, 2001, 2002 Free Software
+Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -24,14 +24,7 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 void
-#if __STDC__
 mpf_sub (mpf_ptr r, mpf_srcptr u, mpf_srcptr v)
-#else
-mpf_sub (r, u, v)
-     mpf_ptr r;
-     mpf_srcptr u;
-     mpf_srcptr v;
-#endif
 {
   mp_srcptr up, vp;
   mp_ptr rp, tp;
@@ -53,7 +46,8 @@ mpf_sub (r, u, v)
     }
   if (vsize == 0)
     {
-      mpf_set (r, u);
+      if (r != u)
+        mpf_set (r, u);
       return;
     }
 
@@ -162,7 +156,7 @@ mpf_sub (r, u, v)
 	     1 00000000 ...
 	     0 ffffffff ... */
 
-	  if (up[usize - 1] != 1 || vp[vsize - 1] != ~(mp_limb_t) 0
+	  if (up[usize - 1] != 1 || vp[vsize - 1] != GMP_NUMB_MAX
 	      || (usize >= 2 && up[usize - 2] != 0))
 	    goto general_case;
 
@@ -172,7 +166,7 @@ mpf_sub (r, u, v)
 
       /* Skip sequences of 00000000/ffffffff */
       while (vsize != 0 && usize != 0 && up[usize - 1] == 0
-	     && vp[vsize - 1] == ~(mp_limb_t) 0)
+	     && vp[vsize - 1] == GMP_NUMB_MAX)
 	{
 	  usize--;
 	  vsize--;
@@ -181,7 +175,7 @@ mpf_sub (r, u, v)
 
       if (usize == 0)
 	{
-	  while (vsize != 0 && vp[vsize - 1] == ~(mp_limb_t) 0)
+	  while (vsize != 0 && vp[vsize - 1] == GMP_NUMB_MAX)
 	    {
 	      vsize--;
 	      exp--;
@@ -218,7 +212,7 @@ mpf_sub (r, u, v)
 	    mp_size_t size, i;
 	    size = vsize;
 	    for (i = 0; i < size; i++)
-	      tp[i] = ~vp[i];
+	      tp[i] = ~vp[i] & GMP_NUMB_MASK;
 	    cy_limb = 1 - mpn_add_1 (tp, tp, vsize, (mp_limb_t) 1);
 	    rsize = vsize;
 	    if (cy_limb == 0)
@@ -246,7 +240,7 @@ mpf_sub (r, u, v)
 	    mp_size_t size, i;
 	    size = vsize - usize;
 	    for (i = 0; i < size; i++)
-	      tp[i] = ~vp[i];
+	      tp[i] = ~vp[i] & GMP_NUMB_MASK;
 	    cy_limb = mpn_sub_n (tp + size, up, vp + size, usize);
 	    cy_limb+= mpn_sub_1 (tp + size, tp + size, usize, (mp_limb_t) 1);
 	    cy_limb-= mpn_add_1 (tp, tp, vsize, (mp_limb_t) 1);
@@ -345,9 +339,9 @@ general_case:
 		  /* vvvvvvv  */
 		  mp_size_t size, i;
 		  size = vsize - usize;
-		  tp[0] = -vp[0];
+		  tp[0] = -vp[0] & GMP_NUMB_MASK;
 		  for (i = 1; i < size; i++)
-		    tp[i] = ~vp[i];
+		    tp[i] = ~vp[i] & GMP_NUMB_MASK;
 		  mpn_sub_n (tp + size, up, vp + size, usize);
 		  mpn_sub_1 (tp + size, tp + size, usize, (mp_limb_t) 1);
 		  rsize = vsize;
@@ -371,9 +365,9 @@ general_case:
 		  /*   vvvvv  */
 		  mp_size_t size, i;
 		  size = vsize + ediff - usize;
-		  tp[0] = -vp[0];
+		  tp[0] = -vp[0] & GMP_NUMB_MASK;
 		  for (i = 1; i < size; i++)
-		    tp[i] = ~vp[i];
+		    tp[i] = ~vp[i] & GMP_NUMB_MASK;
 		  mpn_sub (tp + size, up, usize, vp + size, usize - ediff);
 		  mpn_sub_1 (tp + size, tp + size, usize, (mp_limb_t) 1);
 		  rsize = vsize + ediff;
@@ -386,11 +380,11 @@ general_case:
 	  /*      vv  */
 	  mp_size_t size, i;
 	  size = vsize + ediff - usize;
-	  tp[0] = -vp[0];
+	  tp[0] = -vp[0] & GMP_NUMB_MASK;
 	  for (i = 1; i < vsize; i++)
-	    tp[i] = ~vp[i];
+	    tp[i] = ~vp[i] & GMP_NUMB_MASK;
 	  for (i = vsize; i < size; i++)
-	    tp[i] = ~(mp_limb_t) 0;
+	    tp[i] = GMP_NUMB_MAX;
 	  mpn_sub_1 (tp + size, up, usize, (mp_limb_t) 1);
 	  rsize = size + usize;
 	}

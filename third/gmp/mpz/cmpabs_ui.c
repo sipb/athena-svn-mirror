@@ -1,8 +1,8 @@
 /* mpz_cmpabs_ui.c -- Compare a mpz_t a with an mp_limb_t b.  Return positive,
   zero, or negative based on if a > b, a == b, or a < b.
 
-Copyright (C) 1991, 1993, 1994, 1995, 1997, 2000 Free Software Foundation,
-Inc.
+Copyright 1991, 1993, 1994, 1995, 1997, 2000, 2001, 2002 Free Software
+Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -25,32 +25,45 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 int
-#if __STDC__
 mpz_cmpabs_ui (mpz_srcptr u, unsigned long int v_digit)
-#else
-mpz_cmpabs_ui (u, v_digit)
-     mpz_srcptr u;
-     unsigned long int v_digit;
-#endif
 {
-  mp_size_t usize = u->_mp_size;
+  mp_ptr up;
+  mp_size_t un;
+  mp_limb_t ul;
 
-  if (usize == 0)
+  up = PTR(u);
+  un = SIZ(u);
+
+  if (un == 0)
     return -(v_digit != 0);
 
-  usize = ABS (usize);
+  un = ABS (un);
 
-  if (usize == 1)
+  if (un == 1)
     {
-      mp_limb_t u_digit;
-
-      u_digit = u->_mp_d[0];
-      if (u_digit > v_digit)
+      ul = up[0];
+      if (ul > v_digit)
 	return 1;
-      if (u_digit < v_digit)
+      if (ul < v_digit)
 	return -1;
       return 0;
     }
+
+#if GMP_NAIL_BITS != 0
+  if (v_digit > GMP_NUMB_MAX)
+    {
+      if (un == 2)
+	{
+	  ul = up[0] + (up[1] << GMP_NUMB_BITS);
+
+	  if (ul > v_digit)
+	    return 1;
+	  if (ul < v_digit)
+	    return -1;
+	  return 0;
+	}
+    }
+#endif
 
   return 1;
 }

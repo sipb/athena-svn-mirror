@@ -1,7 +1,7 @@
 dnl  SPARC v7 __udiv_qrnnd division support, used from longlong.h.
 dnl  This is for v7 CPUs without a floating-point unit.
 
-dnl  Copyright (C) 1993, 1994, 1996, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1993, 1994, 1996, 2000 Free Software Foundation, Inc.
 
 dnl  This file is part of the GNU MP Library.
 
@@ -22,7 +22,7 @@ dnl  MA 02111-1307, USA.
 
 
 include(`../config.m4')
- 
+
 C INPUT PARAMETERS
 C rem_ptr	o0
 C n1		o1

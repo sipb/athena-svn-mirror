@@ -1,9 +1,6 @@
 dnl  Intel P6 mpn_addmul_1/mpn_submul_1 -- add or subtract mpn multiple.
-dnl 
-dnl  P6: 6.35 cycles/limb (at 16 limbs/loop).
 
-
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,10 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C P6: 6.35 cycles/limb (at 16 limbs/loop).
 
 
 dnl  P6 UNROLL_COUNT cycles/limb
@@ -82,14 +81,14 @@ defframe(PARAM_SIZE,      12)
 defframe(PARAM_SRC,       8)
 defframe(PARAM_DST,       4)
 
-	.text
+	TEXT
 	ALIGN(32)
 
 PROLOGUE(M4_function_1c)
 	pushl	%ebx
 deflit(`FRAME',4)
 	movl	PARAM_CARRY, %ebx
-	jmp	LF(M4_function_1,start_nc)
+	jmp	L(start_nc)
 EPILOGUE()
 
 PROLOGUE(M4_function_1)
@@ -228,7 +227,7 @@ L(pic_calc):
 	shll	$4, %edx
 	negl	%ecx
 
-	C See README.family about old gas bugs
+	C See mpn/x86/README about old gas bugs
 	leal	(%edx,%ecx,1), %edx
 	addl	$L(entry)-L(here), %edx
 

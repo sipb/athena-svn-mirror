@@ -1,6 +1,6 @@
 /* mpf_div_2exp -- Divide a float by 2^n.
 
-Copyright (C) 1993, 1994, 1996, 2000 Free Software Foundation, Inc.
+Copyright 1993, 1994, 1996, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -23,14 +23,7 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 void
-#if __STDC__
 mpf_div_2exp (mpf_ptr r, mpf_srcptr u, unsigned long int exp)
-#else
-mpf_div_2exp (r, u, exp)
-     mpf_ptr r;
-     mpf_srcptr u;
-     unsigned long int exp;
-#endif
 {
   mp_srcptr up;
   mp_ptr rp = r->_mp_d;
@@ -51,7 +44,7 @@ mpf_div_2exp (r, u, exp)
   abs_usize = ABS (usize);
   up = u->_mp_d;
 
-  if (exp % BITS_PER_MP_LIMB == 0)
+  if (exp % GMP_NUMB_BITS == 0)
     {
       prec++;			/* retain more precision here as we don't need
 				   to account for carry-out here */
@@ -62,7 +55,7 @@ mpf_div_2exp (r, u, exp)
 	}
       if (rp != up)
 	MPN_COPY_INCR (rp, up, abs_usize);
-      r->_mp_exp = uexp - exp / BITS_PER_MP_LIMB;
+      r->_mp_exp = uexp - exp / GMP_NUMB_BITS;
     }
   else
     {
@@ -75,19 +68,20 @@ mpf_div_2exp (r, u, exp)
 	  /* Use mpn_rshift since mpn_lshift operates downwards, and we
 	     therefore would clobber part of U before using that part, in case
 	     R is the same variable as U.  */
-	  cy_limb = mpn_rshift (rp + 1, up, abs_usize, exp % BITS_PER_MP_LIMB);
+	  cy_limb = mpn_rshift (rp + 1, up, abs_usize, exp % GMP_NUMB_BITS);
 	  rp[0] = cy_limb;
 	  adj = rp[abs_usize] != 0;
 	}
       else
 	{
-	  cy_limb = mpn_lshift (rp, up, abs_usize, (-exp) % BITS_PER_MP_LIMB);
+	  cy_limb = mpn_lshift (rp, up, abs_usize,
+				GMP_NUMB_BITS - exp % GMP_NUMB_BITS);
 	  rp[abs_usize] = cy_limb;
 	  adj = cy_limb != 0;
 	}
 
       abs_usize += adj;
-      r->_mp_exp = uexp - exp / BITS_PER_MP_LIMB - 1 + adj;
+      r->_mp_exp = uexp - exp / GMP_NUMB_BITS - 1 + adj;
     }
   r->_mp_size = usize >= 0 ? abs_usize : -abs_usize;
 }

@@ -1,9 +1,6 @@
 dnl  AMD K6 mpn_lshift -- mpn left shift.
-dnl 
-dnl  K6: 3.0 cycles/limb
 
-
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1999, 2000, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,10 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C K6: 3.0 cycles/limb
 
 
 C mp_limb_t mpn_lshift (mp_ptr dst, mp_srcptr src, mp_size_t size,
@@ -38,7 +37,7 @@ defframe(PARAM_SIZE, 12)
 defframe(PARAM_SRC,  8)
 defframe(PARAM_DST,  4)
 
-	.text
+	TEXT
 	ALIGN(32)
 
 PROLOGUE(mpn_lshift)

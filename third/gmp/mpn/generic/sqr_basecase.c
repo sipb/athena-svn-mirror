@@ -1,11 +1,11 @@
-/* mpn_sqr_basecase -- Internal routine to square two natural numbers
-   of length m and n.
+/* mpn_sqr_basecase -- Internal routine to square a natural number
+   of length n.
 
    THIS IS AN INTERNAL FUNCTION WITH A MUTABLE INTERFACE.  IT IS ONLY
    SAFE TO REACH THIS FUNCTION THROUGH DOCUMENTED INTERFACES.
 
 
-Copyright (C) 1991, 1992, 1993, 1994, 1996, 1997, 2000 Free Software
+Copyright 1991, 1992, 1993, 1994, 1996, 1997, 2000, 2001, 2002 Free Software
 Foundation, Inc.
 
 This file is part of the GNU MP Library.
@@ -30,34 +30,36 @@ MA 02111-1307, USA. */
 #include "longlong.h"
 
 void
-#if __STDC__
 mpn_sqr_basecase (mp_ptr prodp, mp_srcptr up, mp_size_t n)
-#else
-mpn_sqr_basecase (prodp, up, n)
-     mp_ptr prodp;
-     mp_srcptr up;
-     mp_size_t n;
-#endif
 {
   mp_size_t i;
+
+  ASSERT (n >= 1);
+  ASSERT (! MPN_OVERLAP_P (prodp, 2*n, up, n));
 
   {
     /* N.B.!  We need the superfluous indirection through argh to work around
        a reloader bug in GCC 2.7.*.  */
-    mp_limb_t x;
-    mp_limb_t argh;
-    x = up[0];
-    umul_ppmm (argh, prodp[0], x, x);
+#if GMP_NAIL_BITS == 0
+    mp_limb_t ul, argh;
+    ul = up[0];
+    umul_ppmm (argh, prodp[0], ul, ul);
     prodp[1] = argh;
+#else
+    mp_limb_t ul, lpl;
+    ul = up[0];
+    umul_ppmm (prodp[1], lpl, ul, ul << GMP_NAIL_BITS);
+    prodp[0] = lpl >> GMP_NAIL_BITS;
+#endif
   }
   if (n > 1)
     {
-      mp_limb_t tarr[2 * KARATSUBA_SQR_THRESHOLD];
+      mp_limb_t tarr[2 * SQR_KARATSUBA_THRESHOLD];
       mp_ptr tp = tarr;
       mp_limb_t cy;
 
       /* must fit 2*n limbs in tarr */
-      ASSERT (n <= KARATSUBA_SQR_THRESHOLD);
+      ASSERT (n <= SQR_KARATSUBA_THRESHOLD);
 
       cy = mpn_mul_1 (tp, up + 1, n - 1, up[0]);
       tp[n - 1] = cy;
@@ -67,12 +69,23 @@ mpn_sqr_basecase (prodp, up, n)
 	  cy = mpn_addmul_1 (tp + 2 * i - 2, up + i, n - i, up[i - 1]);
 	  tp[n + i - 2] = cy;
 	}
+#if HAVE_NATIVE_mpn_sqr_diagonal
+      mpn_sqr_diagonal (prodp + 2, up + 1, n - 1);
+#else
       for (i = 1; i < n; i++)
 	{
-	  mp_limb_t x;
-	  x = up[i];
-	  umul_ppmm (prodp[2 * i + 1], prodp[2 * i], x, x);
+#if GMP_NAIL_BITS == 0
+	  mp_limb_t ul;
+	  ul = up[i];
+	  umul_ppmm (prodp[2 * i + 1], prodp[2 * i], ul, ul);
+#else
+	  mp_limb_t ul, lpl;
+	  ul = up[i];
+	  umul_ppmm (prodp[2 * i + 1], lpl, ul, ul << GMP_NAIL_BITS);
+	  prodp[2 * i] = lpl >> GMP_NAIL_BITS;
+#endif
 	}
+#endif
       {
 	mp_limb_t cy;
 	cy = mpn_lshift (tp, tp, 2 * n - 2, 1);

@@ -1,7 +1,6 @@
 dnl  x86 mpn_divexact_by3 -- mpn division by 3, expecting no remainder.
 
-
-dnl  Copyright (C) 2000 Free Software Foundation, Inc.
+dnl  Copyright 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -20,19 +19,16 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
-dnl  The following all have their own optimized versions of this routine,
-dnl  but for reference the code here runs as follows.
-dnl
-dnl       cycles/limb
-dnl  P54     18.0
-dnl  P55     17.0
-dnl  P6      14.5
-dnl  K6      14.0
-dnl  K7      10.0
-
-
 include(`../config.m4')
+
+
+C      cycles/limb
+C P54     18.0
+C P55     17.0
+C P6      14.0
+C K6      14.0
+C K7      10.0
+C P4      24.0
 
 
 C mp_limb_t mpn_divexact_by3c (mp_ptr dst, mp_srcptr src, mp_size_t size,
@@ -50,7 +46,7 @@ dnl  ceil(b/3) and ceil(b*2/3) where b=2^32
 deflit(ONE_THIRD_CEIL,  0x55555556)
 deflit(TWO_THIRDS_CEIL, 0xAAAAAAAB)
 
-	.text
+	TEXT
 	ALIGN(8)
 
 PROLOGUE(mpn_divexact_by3c)

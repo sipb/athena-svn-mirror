@@ -1,8 +1,8 @@
 /* mpz_cmp_si(u,v) -- Compare an integer U with a single-word int V.
    Return positive, zero, or negative based on if U > V, U == V, or U < V.
 
-Copyright (C) 1991, 1993, 1994, 1995, 1996, 2000 Free Software Foundation,
-Inc.
+Copyright 1991, 1993, 1994, 1995, 1996, 2000, 2001, 2002 Free Software
+Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -25,17 +25,21 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 int
-#if __STDC__
 _mpz_cmp_si (mpz_srcptr u, signed long int v_digit)
-#else
-_mpz_cmp_si (u, v_digit)
-     mpz_srcptr u;
-     signed long int v_digit;
-#endif
 {
   mp_size_t usize = u->_mp_size;
   mp_size_t vsize;
   mp_limb_t u_digit;
+
+#if GMP_NAIL_BITS != 0
+  /* FIXME.  This isn't very pretty.  */
+  mpz_t tmp;
+  mp_limb_t tt[2];
+  PTR(tmp) = tt;
+  ALLOC(tmp) = 2;
+  mpz_set_si (tmp, v_digit);
+  return mpz_cmp (u, tmp);
+#endif
 
   vsize = 0;
   if (v_digit > 0)

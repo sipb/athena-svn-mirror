@@ -1,45 +1,51 @@
 /* Test file for mpfr_set_z.
 
-Copyright (C) 1999 PolKA project, Inria Lorraine and Loria
+Copyright 1999, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the MPFR Library.
 
 The MPFR Library is free software; you can redistribute it and/or modify
-it under the terms of the GNU Library General Public License as published by
-the Free Software Foundation; either version 2 of the License, or (at your
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2.1 of the License, or (at your
 option) any later version.
 
 The MPFR Library is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 License for more details.
 
-You should have received a copy of the GNU Library General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with the MPFR Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <time.h>
 #include "gmp.h"
 #include "mpfr.h"
+#include "mpfr-test.h"
 
-/* tset_z z rnd prec */
+void check _PROTO((long, unsigned char)); 
+void check_large _PROTO((void)); 
 
-void check(long i, unsigned char rnd) {
+void
+check(long i, unsigned char rnd)
+{
   mpfr_t f; mpz_t z; 
 
   mpfr_init2(f, 53); mpz_init(z);
   mpz_set_ui(z, i);
   mpfr_set_z(f, z, rnd);
-  if ((long)mpfr_get_d(f) != i) {
+  if ((long)mpfr_get_d1 (f) != i) {
     printf("Error in mpfr_set_z for i=%ld rnd_mode=%d\n",i,rnd);
     exit(1);
   }
   mpfr_clear(f); mpz_clear(z);
 }
 
-void check_large()
+void
+check_large (void)
 {
   mpz_t z; mpfr_t x,y;
 
@@ -53,14 +59,18 @@ void check_large()
   mpz_clear(z); mpfr_clear(x); mpfr_clear(y);
 }
 
-int main(argc,argv) int argc; char *argv[];
+/* tset_z z rnd prec */
+
+int
+main (int argc, char *argv[])
 {
   long j; 
 
   check_large();
-  srand(getpid());
+  SEED_RAND (time(NULL));
+  check(0, 0);
   for (j=0; j<1000000; j++)
-    check(lrand48(), rand()%4);
-  exit (0);
-}
+    check(LONG_RAND(), LONG_RAND()%4);
 
+  return 0;
+}

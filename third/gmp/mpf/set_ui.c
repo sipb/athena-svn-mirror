@@ -1,6 +1,6 @@
 /* mpf_set_ui() -- Assign a float from an unsigned int.
 
-Copyright (C) 1993, 1994, 1995 Free Software Foundation, Inc.
+Copyright 1993, 1994, 1995, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -23,23 +23,20 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 void
-#if __STDC__
-mpf_set_ui (mpf_ptr x, unsigned long int val)
-#else
-mpf_set_ui (x, val)
-     mpf_ptr x;
-     unsigned long int val;
-#endif
+mpf_set_ui (mpf_ptr f, unsigned long val)
 {
-  if (val != 0)
+  mp_size_t size;
+
+  f->_mp_d[0] = val & GMP_NUMB_MASK;
+  size = val != 0;
+
+#if GMP_NAIL_BITS != 0
+  if (val > GMP_NUMB_MAX)
     {
-      x->_mp_d[0] = val;
-      x->_mp_size = 1;
-      x->_mp_exp = 1;
+      f->_mp_d[1] = val >> GMP_NUMB_BITS;
+      size = 2;
     }
-  else
-    {
-      x->_mp_size = 0;
-      x->_mp_exp = 0;
-    }
+#endif
+
+  f->_mp_exp = f->_mp_size = size;
 }

@@ -1,6 +1,7 @@
 /* mpz/gcd.c:   Calculate the greatest common divisor of two integers.
 
-Copyright (C) 1991, 1993, 1994, 1996, 2000 Free Software Foundation, Inc.
+Copyright 1991, 1993, 1994, 1996, 2000, 2001, 2002 Free Software Foundation,
+Inc.
 
 This file is part of the GNU MP Library.
 
@@ -27,28 +28,12 @@ MA 02111-1307, USA. */
 #endif
 
 
+void
 #ifndef BERKELEY_MP
-void
-#if __STDC__
 mpz_gcd (mpz_ptr g, mpz_srcptr u, mpz_srcptr v)
-#else
-mpz_gcd (g, u, v)
-     mpz_ptr g;
-     mpz_srcptr u;
-     mpz_srcptr v;
-#endif
 #else /* BERKELEY_MP */
-void
-#if __STDC__
 gcd (mpz_srcptr u, mpz_srcptr v, mpz_ptr g)
-#else
-gcd (u, v, g)
-     mpz_ptr g;
-     mpz_srcptr u;
-     mpz_srcptr v;
-#endif
 #endif /* BERKELEY_MP */
-
 {
   unsigned long int g_zero_bits, u_zero_bits, v_zero_bits;
   mp_size_t g_zero_limbs, u_zero_limbs, v_zero_limbs;
@@ -157,7 +142,7 @@ gcd (u, v, g)
   if (g_zero_bits != 0)
     {
       mp_limb_t cy_limb;
-      gsize += (vp[vsize - 1] >> (BITS_PER_MP_LIMB - g_zero_bits)) != 0;
+      gsize += (vp[vsize - 1] >> (GMP_NUMB_BITS - g_zero_bits)) != 0;
       if (g->_mp_alloc < gsize)
 	_mpz_realloc (g, gsize);
       MPN_ZERO (g->_mp_d, g_zero_limbs);

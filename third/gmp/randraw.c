@@ -2,7 +2,7 @@
    length NBITS in RP.  RP must have enough space allocated to hold
    NBITS.
 
-Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -82,33 +82,6 @@ which gives
 Since m is prime, the least-significant bits of X are just as random as
 the most-significant bits. */
 
-/* Blum, Blum, and Shub.
-
-   [Bruce Schneier, "Applied Cryptography", Second Edition, John Wiley
-   & Sons, Inc., 1996, pp. 417-418.]
-
-   "Find two large prime numbers, p and q, which are congruent to 3
-   modulo 4.  The product of those numbers, n, is a blum integer.
-   Choose another random integer, x, which is relatively prime to n.
-   Compute
-	x[0] = x^2 mod n
-   That's the seed for the generator."
-
-   To generate a random bit, compute
-	x[i] = x[i-1]^2 mod n
-   The least significant bit of x[i] is the one we want.
-
-   We can use more than one bit from x[i], namely the
-	log2(bitlength of x[i])
-   least significant bits of x[i].
-
-   So, for a 32-bit seed we get 5 bits per computation.
-
-   The non-predictability of this generator is based on the difficulty
-   of factoring n.
- */
-
-/* -------------------------------------------------- */
 
 /* lc (rp, state) -- Generate next number in LC sequence.  Return the
    number of valid bits in the result.  NOTE: If 'm' is a power of 2
@@ -116,126 +89,91 @@ the most-significant bits. */
 
 static
 unsigned long int
-#if __STDC__
 lc (mp_ptr rp, gmp_randstate_t rstate)
-#else
-lc (rp, rstate)
-     mp_ptr rp;
-     gmp_randstate_t rstate;
-#endif
 {
   mp_ptr tp, seedp, ap;
   mp_size_t ta;
   mp_size_t tn, seedn, an;
-  mp_size_t retval;
-  int shiftcount = 0;
   unsigned long int m2exp;
   mp_limb_t c;
   TMP_DECL (mark);
 
-  m2exp = rstate->algdata.lc->m2exp;
-  c = (mp_limb_t) rstate->algdata.lc->c;
+  m2exp = rstate->_mp_algdata._mp_lc->_mp_m2exp;
 
-  seedp = PTR (rstate->seed);
-  seedn = SIZ (rstate->seed);
+  /* The code below assumes the mod part is a power of two.  Make sure
+     that is the case.  */
+  ASSERT_ALWAYS (m2exp != 0);
+
+  c = (mp_limb_t) rstate->_mp_algdata._mp_lc->_mp_c;
+
+  seedp = PTR (rstate->_mp_seed);
+  seedn = SIZ (rstate->_mp_seed);
 
   if (seedn == 0)
     {
-      /* Seed is 0.  Result is C % M.  */
+      /* Seed is 0.  Result is C % M.  Assume table is sensibly stored,
+       with C smaller than M*/
       *rp = c;
 
-      if (m2exp != 0)
-	{
-	  /* M is a power of 2.  */
-	  if (m2exp < BITS_PER_MP_LIMB)
-	    {
-	      /* Only necessary when M may be smaller than C.  */
-	      *rp &= (((mp_limb_t) 1 << m2exp) - 1);
-	    }
-	}
-      else
-	{
-	  /* M is not a power of 2.  */
-	  abort ();		/* FIXME.  */
-	}
-
-      /* Save result as next seed.  */
-      *seedp = *rp;
-      SIZ (rstate->seed) = 1;
-      return BITS_PER_MP_LIMB;
+      *seedp = c;
+      SIZ (rstate->_mp_seed) = 1;
+      return m2exp;
     }
 
-  ap = PTR (rstate->algdata.lc->a);
-  an = SIZ (rstate->algdata.lc->a);
+  ap = PTR (rstate->_mp_algdata._mp_lc->_mp_a);
+  an = SIZ (rstate->_mp_algdata._mp_lc->_mp_a);
 
   /* Allocate temporary storage.  Let there be room for calculation of
      (A * seed + C) % M, or M if bigger than that.  */
 
-  ASSERT_ALWAYS (m2exp != 0);	/* FIXME.  */
-
   TMP_MARK (mark);
   ta = an + seedn + 1;
   tp = (mp_ptr) TMP_ALLOC (ta * BYTES_PER_MP_LIMB);
-  MPN_ZERO (tp, ta);
 
   /* t = a * seed */
   if (seedn >= an)
-    mpn_mul_basecase (tp, seedp, seedn, ap, an);
+    mpn_mul (tp, seedp, seedn, ap, an);
   else
-    mpn_mul_basecase (tp, ap, an, seedp, seedn);
+    mpn_mul (tp, ap, an, seedp, seedn);
   tn = an + seedn;
 
   /* t = t + c */
-  mpn_incr_u (tp, c);
+  tp[tn] = 0;			/* sentinel, stops MPN_INCR_U */
+  MPN_INCR_U (tp, tn, c);
+
+  ASSERT_ALWAYS (m2exp / GMP_NUMB_BITS < ta);
 
   /* t = t % m */
-  if (m2exp != 0)
-    {
-      /* M is a power of 2.  The mod operation is trivial.  */
-
-      tp[m2exp / BITS_PER_MP_LIMB] &= ((mp_limb_t) 1 << m2exp % BITS_PER_MP_LIMB) - 1;
-      tn = (m2exp + BITS_PER_MP_LIMB - 1) / BITS_PER_MP_LIMB;
-    }
-  else
-    {
-      abort ();			/* FIXME.  */
-    }
+  tp[m2exp / GMP_NUMB_BITS] &= ((mp_limb_t) 1 << m2exp % GMP_NUMB_BITS) - 1;
+  tn = (m2exp + GMP_NUMB_BITS - 1) / GMP_NUMB_BITS;
 
   /* Save result as next seed.  */
-  MPN_COPY (PTR (rstate->seed), tp, tn);
-  SIZ (rstate->seed) = tn;
+  MPN_COPY (PTR (rstate->_mp_seed), tp, tn);
+  SIZ (rstate->_mp_seed) = tn;
 
-  if (m2exp != 0)
-    {
-      /* Discard the lower half of the result.  */
-      unsigned long int discardb = m2exp / 2;
-      mp_size_t discardl = discardb / BITS_PER_MP_LIMB;
+  {
+    /* Discard the lower m2exp/2 bits of result.  */
+    unsigned long int bits = m2exp / 2;
+    mp_size_t xn = bits / GMP_NUMB_BITS;
 
-      tn -= discardl;
-      if (tn > 0)
-	{
-	  if (discardb % BITS_PER_MP_LIMB != 0)
-	    {
-	      mpn_rshift (tp, tp + discardl, tn, discardb % BITS_PER_MP_LIMB);
-	      MPN_COPY (rp, tp, (discardb + BITS_PER_MP_LIMB -1) / BITS_PER_MP_LIMB);
-	    }
-	  else			/* Even limb boundary.  */
-	    MPN_COPY_INCR (rp, tp + discardl, tn);
-	}
-    }
-  else
-    {
-      MPN_COPY (rp, tp, tn);
-    }
+    tn -= xn;
+    if (tn > 0)
+      {
+	unsigned int cnt = bits % GMP_NUMB_BITS;
+	if (cnt != 0)
+	  { 
+	    mpn_rshift (tp, tp + xn, tn, cnt);
+	    MPN_COPY_INCR (rp, tp, xn + 1); 
+	  }
+	else			/* Even limb boundary.  */
+	  MPN_COPY_INCR (rp, tp + xn, tn);
+      }
+  }
 
   TMP_FREE (mark);
 
   /* Return number of valid bits in the result.  */
-  if (m2exp != 0)
-    retval = (m2exp + 1) / 2;
-  else
-    retval = SIZ (rstate->algdata.lc->m) * BITS_PER_MP_LIMB - shiftcount;
-  return retval;
+  return (m2exp + 1) / 2;
 }
 
 #ifdef RAWRANDEBUG
@@ -248,8 +186,8 @@ lc_test (mp_ptr rp, gmp_randstate_t s, const int evenbits)
   unsigned long int rn, nbits;
   int f;
 
-  nbits = s->algdata.lc->m2exp / 2;
-  rn = nbits / BITS_PER_MP_LIMB + (nbits % BITS_PER_MP_LIMB != 0);
+  nbits = s->_mp_algdata._mp_lc->_mp_m2exp / 2;
+  rn = nbits / GMP_NUMB_BITS + (nbits % GMP_NUMB_BITS != 0);
   MPN_ZERO (rp, rn);
 
   for (f = 0; f < nbits; f++)
@@ -264,20 +202,13 @@ lc_test (mp_ptr rp, gmp_randstate_t s, const int evenbits)
 #endif /* RAWRANDEBUG */
 
 void
-#if __STDC__
 _gmp_rand (mp_ptr rp, gmp_randstate_t rstate, unsigned long int nbits)
-#else
-_gmp_rand (rp, rstate, nbits)
-     mp_ptr rp;
-     gmp_randstate_t rstate;
-     unsigned long int nbits;
-#endif
 {
   mp_size_t rn;			/* Size of R.  */
 
-  rn = (nbits + BITS_PER_MP_LIMB - 1) / BITS_PER_MP_LIMB;
+  rn = (nbits + GMP_NUMB_BITS - 1) / GMP_NUMB_BITS;
 
-  switch (rstate->alg)
+  switch (rstate->_mp_alg)
     {
     case GMP_RAND_ALG_LC:
       {
@@ -289,27 +220,27 @@ _gmp_rand (rp, rstate, nbits)
 
 	TMP_MARK (lcmark);
 
-	chunk_nbits = rstate->algdata.lc->m2exp / 2;
-	tn = (chunk_nbits + BITS_PER_MP_LIMB - 1) / BITS_PER_MP_LIMB;
+	chunk_nbits = rstate->_mp_algdata._mp_lc->_mp_m2exp / 2;
+	tn = (chunk_nbits + GMP_NUMB_BITS - 1) / GMP_NUMB_BITS;
 
 	tp = (mp_ptr) TMP_ALLOC (tn * BYTES_PER_MP_LIMB);
 
 	rbitpos = 0;
 	while (rbitpos + chunk_nbits <= nbits)
 	  {
-	    mp_ptr r2p = rp + rbitpos / BITS_PER_MP_LIMB;
+	    mp_ptr r2p = rp + rbitpos / GMP_NUMB_BITS;
 
-	    if (rbitpos % BITS_PER_MP_LIMB != 0)
+	    if (rbitpos % GMP_NUMB_BITS != 0)
 	      {
 		mp_limb_t savelimb, rcy;
 		/* Target of of new chunk is not bit aligned.  Use temp space
 		   and align things by shifting it up.  */
 		lc (tp, rstate);
 		savelimb = r2p[0];
-		rcy = mpn_lshift (r2p, tp, tn, rbitpos % BITS_PER_MP_LIMB);
+		rcy = mpn_lshift (r2p, tp, tn, rbitpos % GMP_NUMB_BITS);
 		r2p[0] |= savelimb;
-/* bogus */	if ((chunk_nbits % BITS_PER_MP_LIMB + rbitpos % BITS_PER_MP_LIMB)
-		    > BITS_PER_MP_LIMB)
+/* bogus */	if ((chunk_nbits % GMP_NUMB_BITS + rbitpos % GMP_NUMB_BITS)
+		    > GMP_NUMB_BITS)
 		  r2p[tn] = rcy;
 	      }
 	    else
@@ -324,19 +255,19 @@ _gmp_rand (rp, rstate, nbits)
 	/* Handle last [0..chunk_nbits) bits.  */
 	if (rbitpos != nbits)
 	  {
-	    mp_ptr r2p = rp + rbitpos / BITS_PER_MP_LIMB;
+	    mp_ptr r2p = rp + rbitpos / GMP_NUMB_BITS;
 	    int last_nbits = nbits - rbitpos;
-	    tn = (last_nbits + BITS_PER_MP_LIMB - 1) / BITS_PER_MP_LIMB;
+	    tn = (last_nbits + GMP_NUMB_BITS - 1) / GMP_NUMB_BITS;
 	    lc (tp, rstate);
-	    if (rbitpos % BITS_PER_MP_LIMB != 0)
+	    if (rbitpos % GMP_NUMB_BITS != 0)
 	      {
 		mp_limb_t savelimb, rcy;
 		/* Target of of new chunk is not bit aligned.  Use temp space
 		   and align things by shifting it up.  */
 		savelimb = r2p[0];
-		rcy = mpn_lshift (r2p, tp, tn, rbitpos % BITS_PER_MP_LIMB);
+		rcy = mpn_lshift (r2p, tp, tn, rbitpos % GMP_NUMB_BITS);
 		r2p[0] |= savelimb;
-		if (rbitpos + tn * BITS_PER_MP_LIMB - rbitpos % BITS_PER_MP_LIMB < nbits)
+		if (rbitpos + tn * GMP_NUMB_BITS - rbitpos % GMP_NUMB_BITS < nbits)
 		  r2p[tn] = rcy;
 	      }
 	    else
@@ -344,9 +275,9 @@ _gmp_rand (rp, rstate, nbits)
 		MPN_COPY (r2p, tp, tn);
 	      }
 	    /* Mask off top bits if needed.  */
-	    if (nbits % BITS_PER_MP_LIMB != 0)
-	      rp[nbits / BITS_PER_MP_LIMB]
-		&= ~ ((~(mp_limb_t) 0) << nbits % BITS_PER_MP_LIMB);
+	    if (nbits % GMP_NUMB_BITS != 0)
+	      rp[nbits / GMP_NUMB_BITS]
+		&= ~ ((~(mp_limb_t) 0) << nbits % GMP_NUMB_BITS);
 	  }
 
 	TMP_FREE (lcmark);
@@ -354,7 +285,7 @@ _gmp_rand (rp, rstate, nbits)
       }
 
     default:
-      gmp_errno |= GMP_ERROR_UNSUPPORTED_ARGUMENT;
+      ASSERT (0);
       break;
     }
 }
