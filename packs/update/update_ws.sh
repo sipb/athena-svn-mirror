@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.55 2001-06-20 17:39:26 ghudson Exp $
+# $Id: update_ws.sh,v 1.56 2002-06-14 19:18:41 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -306,6 +306,13 @@ sun4)
       logger -t "$HOST" -p user.notice firmware too old to take update
       failupdate
     fi
+  fi
+
+  # Athena 9.1 does not support sun4m hardware.
+  if [ sun4m = `uname -m` ]; then
+    echo "This machine is no longer supported and is too old for this update."
+    logger -t "$HOST" -p user.notice sun4m hardware unable to take update
+    failupdate
   fi
   ;;
 esac
