@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.1 1990-04-19 11:56:23 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.2 1990-04-19 11:56:31 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -89,7 +89,7 @@ retry:
 	    if (lock_filesystem)
 		    atp->flags |= FLAG_LOCKED;
 	    if (owner_list)
-		    add_an_owner(atp,euid);
+		    add_an_owner(atp,owner_uid);
 	    if (owner_list || lock_filesystem)
 		    put_attachtab();
 	    unlock_attachtab();
@@ -102,7 +102,7 @@ retry:
 		if (!print_path)
 		    printf("...mapping\n");
 		return (nfsid(atp->host, atp->hostaddr,
-			      MOUNTPROC_KUIDMAP, 1, name, 1));
+			      MOUNTPROC_KUIDMAP, 1, name, 1, real_uid));
 	    }
 #endif
 #ifdef AFS
@@ -137,7 +137,7 @@ retry:
     at.mode = 'r';
     at.flags = 0;
     at.nowners = 1;
-    at.owners[0] = euid;
+    at.owners[0] = owner_uid;
     strcpy(at.mntpt, "?");
 
     /*
@@ -230,7 +230,7 @@ try_attach(name, hesline, errorout)
     at.status = STATUS_ATTACHING;
     at.explicit = explicit;
     strcpy(at.hesiodname, name);
-    add_an_owner(&at, euid);
+    add_an_owner(&at, owner_uid);
 
     if (mntpt)
 	strcpy(at.mntpt, mntpt);
