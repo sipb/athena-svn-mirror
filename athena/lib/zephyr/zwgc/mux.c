@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_mux_c[] = "$Id: mux.c,v 1.6 1994-03-15 12:16:07 probe Exp $";
+static char rcsid_mux_c[] = "$Id: mux.c,v 1.7 1994-06-19 10:55:31 probe Exp $";
 #endif
 
 /****************************************************************************/
@@ -159,7 +159,7 @@ void mux_loop()
 	input_sources_copy = input_sources;
 
 	i = select(max_source+1, &input_sources_copy, (fd_set *)0,
-		   (fd_set *)NULL, &tv);
+		   (fd_set *)NULL, have_tty ? &tv : (struct timeval *)0);
 
 	if (i == -1) {
 	    if (errno == EINTR)
