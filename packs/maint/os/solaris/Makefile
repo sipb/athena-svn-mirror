@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.19 2004-04-27 22:34:05 rbasch Exp $
+# $Id: Makefile,v 1.20 2005-03-31 15:48:48 rbasch Exp $
 
 ATHRETCDIR=/etc/athena
 ATHETCDIR=/usr/athena/etc
@@ -8,6 +8,7 @@ RC0=/etc/rc0.d
 RC1=/etc/rc1.d
 RC2=/etc/rc2.d
 RCS=/etc/rcS.d
+SVCMETHOD=/lib/svc/method
 USRLIBDIR=/usr/lib
 
 all:
@@ -23,15 +24,14 @@ install:
 	mkdir -p ${DESTDIR}${RC1}
 	mkdir -p ${DESTDIR}${RC2}
 	mkdir -p ${DESTDIR}${RCS}
+	mkdir -p ${DESTDIR}${SVCMETHOD}
 	mkdir -p ${DESTDIR}${USRLIBDIR}
 	install -c -m 0755 Xreset ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 Xstartup ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 athena-ws.rc ${DESTDIR}${INITD}/athena-ws
+	install -c -m 0755 console-login.sh \
+		${DESTDIR}${SVCMETHOD}/console-login
 	install -c -m 0755 dhcp.rename ${DESTDIR}${INITD}
-	install -c -m 0755 finish-update ${DESTDIR}${INITD}
-	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
-	install -c -m 0755 rpc ${DESTDIR}${INITD}
-	install -c -m 0755 inetsvc ${DESTDIR}${INITD}
 	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0755 syncconf.rc ${DESTDIR}${INITD}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
@@ -48,26 +48,8 @@ install:
 	ln -s ../init.d/savecore ${DESTDIR}${RC2}/S21savecore
 	rm -f ${DESTDIR}${RC2}/S72dhcp.rename
 	ln -s ../init.d/dhcp.rename ${DESTDIR}${RC2}/S72dhcp.rename
-	rm -f ${DESTDIR}${RC2}/S70finish-update
-	ln -s ../init.d/finish-update ${DESTDIR}${RC2}/S70finish-update
 	rm -f ${DESTDIR}${RC2}/S90athena-ws
 	ln -s ../init.d/athena-ws ${DESTDIR}${RC2}/S90athena-ws
-	rm -f ${DESTDIR}${RCS}/K42inetsvc
-	ln -s ../init.d/inetsvc ${DESTDIR}${RCS}/K42inetsvc
-	rm -f ${DESTDIR}${RC0}/K42inetsvc
-	ln -s ../init.d/inetsvc ${DESTDIR}${RC0}/K42inetsvc
-	rm -f ${DESTDIR}${RC1}/K42inetsvc
-	ln -s ../init.d/inetsvc ${DESTDIR}${RC1}/K42inetsvc
-	rm -f ${DESTDIR}${RC2}/S72inetsvc
-	ln -s ../init.d/inetsvc ${DESTDIR}${RC2}/S72inetsvc
-	rm -f ${DESTDIR}${RCS}/K41rpc
-	ln -s ../init.d/rpc ${DESTDIR}${RCS}/K41rpc
-	rm -f ${DESTDIR}${RC0}/K41rpc
-	ln -s ../init.d/rpc ${DESTDIR}${RC0}/K41rpc
-	rm -f ${DESTDIR}${RC1}/K41rpc
-	ln -s ../init.d/rpc ${DESTDIR}${RC1}/K41rpc
-	rm -f ${DESTDIR}${RC2}/S71rpc
-	ln -s ../init.d/rpc ${DESTDIR}${RC2}/S71rpc
 clean:
 
 distclean:
