@@ -1,3 +1,429 @@
+2002-09-23 Iain <iain@prettypeople.org>
+
+	* gnome-sound-recorder.desktop.in: Fix spelling
+
+2002-09-23  Iain <iain@prettypeople.org>
+
+	* src/grec.c: Hook up a dialog to a close function. Patch from He
+	Qiangqiang
+
+2002-09-23  Iain <iain@prettypeople.org>
+
+	* src/grec.c (save_dont_or_cancel): Fix typo.
+
+2002-08-30  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* src/grec.c: Made changes so that gnome-sound-recorder saves the 
+	file and exits when user tries to kill the application when recording
+	is going on. Also fixes the crash in Linux. Bug#91209
+
+2002-08-22  Rashmi Agrawal <rashmi.agrawal@wipro.com>
+
+	* src/grec.c: Changing the tmp file permission to user read only
+
+2002-07-16  Rajkumar Sivasamy <rajkumar.siva@wipro.com>
+
+	* src/gui.c: Added accelerators for menus. Bug id: 88024
+
+2002-07-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-sound-recorder.desktop.in: use X-GNOME-DocPath
+	instead of DocPath.
+
+2002-05-31  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/prog.c: Don't include <config.h> in a header file that doesn't
+	need it.
+	
+2002-05-30  Iain <iain@ximian.com>
+
+	* src/grec.[ch]
+	  src/sound.c: Apply patch from godless@hermes.slipstream.com to allow
+	  files with spaces in their name, and not use system for running 
+	  commands.
+
+2002-05-29  Iain <iain@ximian.com>
+
+	* src/grec.c (record_sound): Check if the samplerate is NULL and if so
+	set it to 22050
+
+2002-05-29  Iain <iain@ximian.com>
+
+	* src/grec.c (check_if_sounddevice_ready): Use the correct esd
+	function to check if it's ok.
+
+	* gui.c: Don't allow the main window to be resized.
+
+2002-05-18  Satyajit Kanungp <satyajit.kanungo@wipro.com>
+
+	* src/gui.c: Added help button in the preference dialog box 
+	 and put a help callback for it.
+
+2002-05-22  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/grec.c: Have Run Mixer option only if we have a audio mixer
+
+2002-05-13  Iain <iain@ximian.com>
+
+	* src/gui.c: Change Mb to MB
+
+2002-04-25  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/grec.c (UpdateStatusbarRecord): Pops up the save dialog
+	box at all times and when recording stops on reaching a 
+	particular size. Bug id #75378
+
+2002-04-15  Iain <iain@ximian.com>
+
+	* grec.c (grecord_set_sensitive_nofile): Set the record button on only
+	if we can record.
+
+2002-04-13  Abel Cheung  <maddog@linux.org.hk>
+
+	* src/grec.c (store_filename): Fix typo.
+	* src/gui.c (create_about): Added translator_credit.
+
+2002-04-10  Jagadeesh B.G. <jagadeesh.bana@wipro.com>
+
+       * src/gui.c (create_grecord_propertybox): Missing accessibility changes
+
+2002-04-10  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/grec.c (UpdateStatusbarRecord): Show the warning the message when
+	recording reaches a particular size and stop at set size
+
+2002-04-07  Iain <iain@ximian.com>
+
+	* src/grec.c (check_for_sox): Check if sox exists and show a warnign
+	if it doesn't.
+	(on_record_activate_cb): Check for sox.
+
+2002-04-07  Iain <iain@ximian.com>
+
+	* src/gui.c (bit8_toggled): Use the toggle buttons
+	(bit16_toggled): Ditto
+	(mono_toggled): Ditto.
+	(stereo_toggled): Ditto.
+	(create_grecord_propertybox): Use radiobuttons instead of combos
+
+2002-04-06  Iain <iain@ximian.com>
+
+	* src/gui.c (playxtimes_changed): ghost or unghost the spinbutton.
+	(create_grecord_propertybox): Use radiobuttons instead of the strange
+	radiobutton/checkbox combo for the repetitions.
+
+2002-04-04  Iain <iain@ximian.com>
+
+	* src/grec.c (on_record_activate_cb): Unghost the save buttons.
+	(on_new_activae_cb): Ghost them.
+	(on_add_echo_activatE_cb): Unghost.
+	(store_filename): ghost.
+	(save_filename): ghost.
+	(save_sound_file): Ghost.
+	(grec_button_new_with_stock_image): Steal code to make a pretty button
+	from Gedit.
+	(grec_dialog_add_button): Make a pretty button and add it to the
+	dialog.
+	(save_dont_or_cancel): Add pretty buttons to the dialog.
+
+	* gui.c (save_set_sensitive): Set the sensitivity on the save menu
+	items.
+	(create_grecord_window): Ghost the save items.
+
+2002-04-02  Iain <iain@ximian.com>
+
+	* src/grec.c (on_runmixer_activate_cb): USe DEFAULT_MIXER instead of
+	hard coding gnome-volume-control
+
+2002-04-02  Iain <iain@ximian.com>
+
+	* src/gui.c (create_grecord_propertybox): Set mnemonics.
+
+2002-04-02  Balamurali Viswanathan <balamurali.viswanathan@Wipro.com>i
+
+	* src/grec.c (UpdateStatusbarRecord) : Stops recording exactly at
+	the recordtimeout
+
+2002-04-01  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/grec.c: Stops the timeout function when record times out
+	  bug id # 76207
+
+2002-04-01  Iain <iain@ximian.com>
+
+	* src/gui.c (create_grecord_propertybox): Change directory to folder.
+
+	* src/grec.c (store_filename): Ditto.
+	(save_filename): Ditto.
+
+2002-04-01  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/main.c (main): Disable the record button when sox is not there 
+	and user closes the preferences dialog with out doing anything to the 
+	sox path field
+
+2002-03-30  Iain <iain@ximian.com>
+
+	* src/gui.c: Moved the menus around a bit. No more preferences menu.
+	(create_grecord_window): Removed the gratuitous use of vboxes.
+	Turned the info labels on always, removed the frame.
+
+	* preferences.c: Removed the UI pane, and made some other minor
+	changes to the wording of things.
+
+	* gnome-sound-recorder.schemas.in: Removed the show info/sound schemas
+
+2002-03-30  Iain <iain@ximian.com>
+
+	* src/grec.c (on_exit_activate_cb): Change text to Cancel.
+
+2002-03-26  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/grec.c (UpdateStatusbarRecord) : Pops up save dialog when 
+	recording timesout and if save when finished is set, bug #75378
+
+2002-03-23  Iain <iain@ximian.com>
+
+	* src/grec.c (record_sound): Apply patch from 
+	wolfgang.ortner@kfunigraz.ac.at to fix mono recording.
+
+2002-03-23  Iain <iain@ximian.com>
+
+	* src/main.c (main): If sox_command is NULL (gconf error) set it to
+	sox.
+
+	* src/grec.c (store_filename): Fix warning.
+
+2002-03-22  Iain <iain@ximian.com>
+
+	* Makefile.am: Add media-volume-16.xpm to the EXTRA_DIST
+
+	* src/gui.c: Use media-volume-16.xpm
+
+2002-03-22  Iain <iain@ximian.com>
+
+	* src/grec.c (check_if_loading_finished): Clear the appbar stack.
+	(on_stop_activate_cb): Clear the appbar stack.
+
+2002-03-22  Iain <iain@ximian.com>
+
+	* src/gui.c (create_grecord_window): Remove the stuff that sets the
+	window size. Window manager function.
+	Set the sensitivity on the record button.
+
+	* src/main.c: Add a global able_to_record.
+	(main): Set the able_to_record var.
+
+	* preferences.c (sox_command_changed): Set the able_to_record var, and
+	the sensitivity on the record button.
+
+2002-03-22  Iain <iain@ximian.com>
+
+	* gnome-sound-recorder.schemas.in: Add schema for
+	show-warning-messages.
+
+	* src/main.c (main): Remove extra vars.
+	Change the official name from grecord to gnome-sound-recorder.
+	Get the config from gconf.
+	Replace the check for sox in path.
+	(on_dontshowagain_dialog_destroy_activate): Use gconf.
+
+	* src/preferences.c (on_propertybox_apply_activate): Remove.
+	
+2002-03-21  Jagadeesh B. G  <jagadeesh.bana@wipro.com>
+
+	* src/gui.c (create_grecord_window): Enable expansion of Info frame
+	to support theme compliance
+
+2002-03-21  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/gui.c:
+	* src/grec.c:
+	* src/main.c:
+	* src/preferences.c:
+	* src/sound.c: Removed some deprecated calls
+
+2002-03-20  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am (EXTRA_DIST): add pixmap and icons to EXTRA_DIST
+
+2002-03-20  Iain <iain@ximian.com>
+
+	* src/gui.c (create_grecord_window): Neaten some text.
+	(create_grecord_propertybox): Connect the sound widgets to their
+	callbacks.
+
+	* src/preferences.c (audio_format_changed): If the file is the default
+	file then change the info label.
+	(samepl_rate_changed): ditto.
+	(channels_changed): ditto.
+
+2002-03-20  Iain <iain@ximian.com>
+
+	* src/grec.c (on_play_activate_cb): Remove the repeat stuff here. I've
+	worked out how it works :)
+	(UpdateStatusbarPlay): Repeat the correct number of times.
+	: Make dialogs go away when Okay is clicked.
+
+2002-03-19  Iain <iain@ximian.com>
+
+	* Makefile.am: Add the new icons.
+
+	* src/grec.c (on_play_activate_cb): Actually repeat the sample.
+
+	* src/gui.c (create_grecord_window): Use the new Tigert icons :)
+
+	* src/preferences.c: Work around some GConf bugs.
+
+2002-03-14  Iain <iain@ximian.com>
+
+	* src/grec-c: Include gconf-client.h
+	(on_runmixer_activate_cb): Use gspawn to get errors and not to suck.
+	(on_show_time_activete): Get GConfClient and set the value correctly.
+	(on_show_soundinfo_activate_cb): Ditto.
+
+	* src/gui.c: Include gconf-client.h
+	(create_grecord_window): Neaten some var names.
+	(response_cb): Callback to destroy the window.
+	(Lots of callbacks): Set the gconf values.
+	(create_grecord_propertybox): Make better variable names.
+	Set some accessibility things (based on a patch from
+	jagadeesh.bana@wipro.com.)
+	Hook everything back up to the gconf callbacks.
+	Add some buttons and neaten the dialog code :)
+	(add_relation): form a relation between widgets (from Jagadeesh)
+	(add_paired_relations): Ditto.
+	
+	* main.c (main): rearrange code so that gui functions don't get called
+	before the gui is created.
+
+	* preferences.c: Include gconf-client.h.
+	(Lots of callbacks): To set values from the gconf values.
+	(load_config_file): Use gconf instead of gnome-config.
+	(save_config_file): Not needed anymore.
+	
+	* Makefile.am: Install the schemas.
+
+2002-03-05  Iain <iain@ximian.com>
+	
+	* src/grec.c (save_dont_or_cancel): Fix i18n issues.
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* src/gui.c: Call it the gnome volume control, and remove the ...
+
+	* src/preferences.c (load_config_file): The mixer command is
+	gnome-volume-control, not gnome-sound-recorder.
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* src/grec.c (check_if_sounddevice_ready): Use GtkMessageDialog again.
+	Make the error message read better.
+	(on_new_activate_cb): Use new sig for set_min_sec_time.
+	(store_filename): Ditto. Fix memory leak.
+	(UpdateStatusbarPlay): Ditto (not mem leak :).
+	(UpdateStatusbarRecord): Ditto.
+	(check_if_loading_fininshed): Ditto.
+	(save_filename): Fix memory leak.
+	Fix some other dialogs too.
+
+	* src/gui.c (set_window_title): Utility function to set the window
+	title properly.
+	(create_grecord_window): Set the default title.
+
+	* src/sound.[ch] (set_min_sec_time): Remove the crap to set the
+	window title.
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* src/grec.c (save_dont_or_cancel): Display the current filename in
+	the error message.
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* src/grec.c (save_dont_or_cancel): Set the parent window correctly
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* src/grec.c (save_filename): Make all dialogs use gtk_message_dialog
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* src/grec.c (store_filename): Fix memory leak. Make all the dialogs
+	use gtk_message_dialog
+
+2002-03-03  Iain <iain@ximian.com>
+
+	* src/grec.c (on_new_activate_cb): Update for new signature.
+	(on_open_activate_cb): Ditto.
+	(on_exit_activate_cb): Ditto.
+	(save_dont_or_cancel): Rewrite using GtkMessageDialog so that the
+	buttons and text are the same as the HIG would like us to be.
+
+2002-02-09  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* src/gui.c: remove Exit from toolbar
+	* src/main.c: use gnome2 initialization to get entries history
+	working
+	* src/preferences.c: make default mixer gnome-volume-control
+
+2002-02-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/gui.c: Remove unsupported #ifdef ENABLE_NLS.
+	
+2002-01-31  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* Soundrecorder.desktop.in:
+	* gnome-sound-recorder.desktop.in:
+	* src/Makefile.am:
+	* src/grec.c:
+	* src/gui.c: (create_about):
+
+	Use a consistent name throughout the program
+	(Sound Recorder) and renname the .desktop file
+	and binary to match the menu name.
+	
+2002-01-26  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* main.c: get translations in UTF-8
+
+2001-12-09  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+
+	fix install location of .desktop files
+
+2001-12-09  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+
+	install .desktop files into datadir/applications
+
+	Use INTL_DESKTOP_RULE rather than SERVER_RULE
+
+	Don't deal with .keys and .mime files.
+	
+	* Soundrecorder.desktop.in:
+
+	Add categories field.
+	
+	* grecord.keys.in:
+	* grecord.mime:
+
+	Whenever possible, applications should not install
+	MIME or Keys files but should have types registered
+	in the central registry. WAV has been in both KDE
+	and GnomeVFS registries for a while. Remove these files.
+	
+2001-12-02  Iain Holmes <iain@ximian.com>
+
+	* Makefile.am: Comment out the .desktop lines.
+
+2001-11-03  Iain Holmes  <iain@ximian.com>
+
+	* src/main.c (main): Updated for new glib-gettext
+
 2001-06-01  Peter Teichman  <peter@ximian.com>
 
 	* src/grec.c, src/gui.c, src/sound.c: purge c++ style comments

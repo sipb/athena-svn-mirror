@@ -1,0 +1,443 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "CD Player">
+]>
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="en">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo> 
+    <title>&app; Manual V&manrevision;</title>       
+
+    <copyright> 
+      <year>2002</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+    <publisher> 
+      <publishername> GNOME Documentation Project </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup> 
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOME Documentation Team</surname> 
+	<affiliation> 
+	  <orgname>GNOME Documentation Project</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address> 
+	</affiliation> 
+      </author> 
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+ 
+    <revhistory>
+      <revision> 
+	<revnumber>&app; Manual V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision>
+      <revision> 
+	<revnumber>CD Player Manual V2.1</revnumber> 
+	<date>July 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision> 
+      <revision> 
+	<revnumber>CD Player Manual V2.0</revnumber> 
+	<date>May 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision> 
+    </revhistory> 
+
+    <releaseinfo>This manual describes version &appversion; of &app;.
+    </releaseinfo> 
+    <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+	this manual, follow the directions in the 
+	<ulink url="ghelp:gnome-feedback"
+	  type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice> 
+  </articleinfo> 
+
+  <indexterm> 
+    <primary>CD Player</primary> 
+  </indexterm> 
+
+
+<sect1 id="gtcd-introduction">
+<title>Introduction</title>
+<para>The <application>&app;</application> application enables you to
+play audio Compact Discs (CDs) on your computer. You can use <application>CD Player</application>
+to perform the following tasks with audio CDs:</para>
+<itemizedlist>
+<listitem><para>Play, pause, stop, or eject a CD.</para></listitem>
+<listitem><para>Move through the tracks on the CD.</para></listitem>
+<listitem><para>Adjust the output volume from the CD Player.</para></listitem>
+<listitem><para>Edit the track information.</para></listitem>
+</itemizedlist>
+</sect1>
+<!-- =========== Getting Started ============================== -->
+<sect1 id="gtcd-getting-started">
+<title>Getting Started</title>
+
+<sect2 id="gtcd-to-start">
+<title>To Start CD Player</title>
+<para>You can start <application>&app;</application> in the following ways:</para>
+<variablelist>
+<varlistentry>
+<term><guimenu>Applications</guimenu> menu</term>
+<listitem>
+<para>Choose 
+<menuchoice>
+<guisubmenu>Sound &amp; Video </guisubmenu>
+<guimenuitem> &app;</guimenuitem>
+</menuchoice>. </para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Command line</term>
+<listitem>
+<para>Type <command>gnome-cd</command>, then press <keycap>Return</keycap>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gtcd-when-start">
+<title>When You Start CD Player</title>
+<para>When you start <application>&app;</application>, the following window
+is displayed.</para>
+<!-- ==== Figure ==== -->
+      <figure id="cdplayer_start_window"> 
+	<title>&app; Window</title> 
+	<screenshot> 
+	  <mediaobject> 
+	    <imageobject><imagedata fileref="figures/cdplayer_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject> 
+	      <phrase>Shows CD Player main window.</phrase> 
+	    </textobject> 
+	  </mediaobject> 
+	</screenshot> 
+      </figure>
+<!-- ==== End of Figure ==== -->
+<para>The <application>&app;</application> window contains the following elements:</para>
+<itemizedlist>
+<listitem><para>A 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Open track editor button.</phrase></textobject>
+</inlinemediaobject> button that enables you to open the <guilabel>Track Editor</guilabel> dialog. </para></listitem>
+<listitem><para>A <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Preferences button.</phrase></textobject>
+</inlinemediaobject> button that enables you to open the <guilabel>Preferences</guilabel> dialog. </para></listitem>
+<listitem><para>A display area that displays details about the CD that you are playing. </para></listitem>
+<listitem><para>A slider control that enables you to control the output volume. </para></listitem>
+<listitem><para>A drop-down list box that enables you to view the names of the tracks on the CD and move to a track. </para></listitem>
+<listitem><para>A button area that enables you to play the tracks on the CD. </para></listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+
+<!-- ============= Usage ============================= -->
+<sect1 id="gtcd-usage">
+<title>Usage</title>
+
+<!--=========== To Play a CD ============================= -->
+<sect2 id="gtcd_play">
+<title>To Play a CD</title>
+<para>To play a CD, insert the CD in the CD drive of your computer, then press the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Play button.</phrase></textobject>
+</inlinemediaobject> button. </para>
+<para>The application displays the following information in the display area: 
+</para>
+<itemizedlist>
+<listitem><para>The time elapsed on the current track.</para></listitem>
+<listitem><para>The name of the artist.</para></listitem>
+<listitem><para>The title of the CD.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_pause">
+<title>To Pause a CD</title>
+<para>To pause a CD that is playing, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/pause_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Pause button.</phrase></textobject>
+</inlinemediaobject> button. To resume playing the CD, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Play button.</phrase></textobject>
+</inlinemediaobject> button again. </para>
+</sect2>
+
+<sect2 id="gtcd_movetracks">
+<title>To Move Through Tracks</title>
+<para>To play different tracks on the CD, perform the following actions:
+</para>
+<itemizedlist>
+<listitem><para>To move to the next track on the CD, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/next_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Next track button.</phrase></textobject>
+</inlinemediaobject> button. </para></listitem>
+<listitem><para>To move to the previous track on the CD, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/previous_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Previous track button.</phrase></textobject>
+</inlinemediaobject> button. </para></listitem>
+<listitem><para>To display a list of the tracks on the CD, click on the drop-down list box located below the display area.
+To move to a track on the list, select a track from the list.</para></listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_forward">
+<title>To Fast Forward a Track</title>
+<para>To fast forward a track, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/forward_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Fast forward button.</phrase></textobject>
+</inlinemediaobject> button.</para>
+</sect2>
+
+<sect2 id="gtcd_rewind">
+<title>To Rewind a Track</title>
+<para>To rewind a track, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/rewind_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Rewind button.</phrase></textobject>
+</inlinemediaobject> button.</para>
+</sect2>
+
+<sect2 id="gtcd_stop">
+<title>To Stop a CD</title>
+<para>To stop playing a CD, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/stop_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Stop button.</phrase></textobject>
+</inlinemediaobject> button.</para>
+</sect2>
+
+<sect2 id="gtcd_adjust_vol">
+<title>To Adjust the Volume</title>
+<para>To adjust the output volume of the CD Player, move the volume slider
+to specify the volume level you require. The volume slider is located to the right of
+the display area in the application window. Move the slider upwards to increase the volume.
+Move the slider downwards to decrease the volume.</para>
+</sect2>
+
+<sect2 id="gtcd_edit_info">
+<title>To Edit CD Information</title>
+<para>To edit the CD information, perform the following steps:</para>
+<orderedlist>
+<listitem><para>To open the <guilabel>Track Editor</guilabel> dialog, click on the <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject> button. The <guilabel>Track Editor</guilabel> dialog is displayed, 
+see <xref linkend="fig-cd-track-editor"/>. </para></listitem>
+<listitem><para>To edit the name of the artist, edit the contents of the <guilabel>Artist</guilabel> text box.</para></listitem>
+<listitem><para>To edit the title of the CD, edit the contents of the <guilabel>Disc Title</guilabel> text box.</para></listitem>
+<listitem><para>To add comments about the CD, the genre of music, and the year the CD was produced, click on the arrow next to 
+<guilabel>Show advanced disc options</guilabel>.</para></listitem>
+<listitem><para>To edit the title of a track, double-click on the track in the <guilabel>Title</guilabel> column of the track table, 
+then type the new title.</para></listitem>
+<listitem><para>To add additional information about a track, select the track in the track table, 
+then click on the arrow next to <guilabel>Show advanced track options</guilabel>.</para></listitem>
+<listitem><para>Type the additional track information in the <guilabel>Extra track data</guilabel> text box.</para></listitem>
+<listitem><para>To save the changes on your local computer, click <guibutton>Save</guibutton>.</para></listitem>
+</orderedlist>
+<!-- ==== Figure ==== -->
+      <figure id="fig-cd-track-editor"> 
+	<title>Track Editor Dialog</title> 
+	<screenshot> 
+	  <mediaobject> 
+	    <imageobject><imagedata
+		fileref="figures/cdplayer_trackeditor_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject> 
+	      <phrase></phrase> 
+	    </textobject> 
+	  </mediaobject> 
+	</screenshot> 
+      </figure>
+<!-- ==== End of Figure ==== -->
+</sect2>
+
+<sect2 id="gtcd_eject">
+<title>To Eject a CD</title>
+<para>To eject a CD, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/eject_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Eject CD button.</phrase></textobject>
+</inlinemediaobject> button. This action stops the CD if the CD is still playing, and opens the CD tray.</para>
+</sect2>
+
+</sect1>
+
+<!-- ================= Preferences =================== -->
+<sect1 id="gtcd-prefs">
+<title>Preferences</title>
+<para>To configure <application>&app;</application>, click on the 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Shows Preferences button.</phrase></textobject>
+</inlinemediaobject> button. </para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>CD player device</guilabel> </term>
+<listitem>
+<para>Use this text box to specify the name of the CDROM device. Click <guibutton>Apply change</guibutton> to save a change to this setting.</para>
+<para>Default: depends on your operating system. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>When GNOME CD Player starts</guilabel> </term>
+<listitem>
+<para>Select one of the following radio buttons to determine the action that <application>CD Player</application> takes when you start the application:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>Do nothing</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Start playing CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Stop playing CD</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Default: <guilabel>Do nothing</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>When GNOME CD Player quits</guilabel> </term>
+<listitem>
+<para>Select one of the following radio buttons to determine the action that <application>CD Player</application> takes when you quit the application:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>Do nothing</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Stop playing CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Attempt to open CD tray</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Default: <guilabel>Do nothing</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Theme name</guilabel> </term>
+<listitem>
+<para>Use this list box to select a display theme for the <application>&app;</application>. The themes available are as follows:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>lcd</guilabel> </para>
+<para>Provides standard buttons and a gray background in the display area.</para>
+</listitem>
+<listitem>
+<para><guilabel>media</guilabel> </para>
+<para>Provides modified buttons and a red background in the display area.</para>
+</listitem>
+<listitem>
+<para><guilabel>red-lcd</guilabel> </para>
+<para>Provides standard buttons and a red background in the display area.</para>
+</listitem>
+</itemizedlist>
+<para>Default: <guilabel>lcd</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+</article>

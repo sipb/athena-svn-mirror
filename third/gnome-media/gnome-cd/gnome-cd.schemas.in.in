@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/schemas/apps/gnome-cd/device</key>
+      <applyto>/apps/gnome-cd/device</applyto>
+      <owner>Gnome-CD</owner>
+      <type>string</type>
+      <default>@default_cd_device@</default>
+      <locale name="C">
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-cd/on-start</key>
+      <applyto>/apps/gnome-cd/on-start</applyto>
+      <owner>Gnome-CD</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-cd/close-on-start</key>
+      <applyto>/apps/gnome-cd/close-on-start</applyto>
+      <owner>Gnome-CD</owner>
+      <type>bool</type>
+      <default>FALSE</default>
+      <locale name="C">
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-cd/on-stop</key>
+      <applyto>/apps/gnome-cd/on-stop</applyto>
+      <owner>Gnome-CD</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-cd/theme-name</key>
+      <applyto>/apps/gnome-cd/theme-name</applyto>
+      <owner>Gnome-CD</owner>
+      <type>string</type>
+      <default>media</default>
+      <locale name="C">
+      </locale>
+    </schema>
+
+  </schemalist>
+</gconfschemafile>

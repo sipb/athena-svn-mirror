@@ -22,7 +22,7 @@
 #include <gnome.h>
 
 gdouble get_play_time (const char* file);
-void    set_min_sec_time (gint sec, gboolean set_topic);
+void    set_min_sec_time (gint sec);
 
 
 /* Effects */

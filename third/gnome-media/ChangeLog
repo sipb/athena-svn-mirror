@@ -1,3 +1,249 @@
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-08-11  Ross Burton  <ross@burtonini.com>
+
+	* **/*.deskop.in: Add Encoding keyword, remove old Info keyword,
+	fix Terminal keyword and add GNOME to the Categories keyword.
+
+2002-08-02  Iain <iain@prettypeople.org>
+
+	* configure.in: Generate the correct schemas files.
+
+2002-07-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* cddb-slave2/cddb-slave2.desktop.in: Fix the name and tooltip in
+	this file. #87760
+ 
+2002-06-18  Shivram U  <shivaram.upadhyayula@wipro.com>
+
+	* cddb-slave2/Makefile.am, gmix/Makefile.am, gnome-cd/Makefile.am,
+	gnome-volume-control/Makefile.am, vu-meter/Makefile.am: Changed
+	-DGNOMELOCALEDIR to "${prefix}/${DATADIRNAME}/locale".
+	 Fix for #83624, as per the suggestions given by 
+	Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+2002-06-10  Iain <iain@ximian.com>
+
+	* configure.in: TWO POINT OH POINT OH!
+
+2002-06-10  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-05-29  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* configure.in: Build gmix desktop files only in Solaris
+
+2002-05-27  Chris Lyttle  <chris@wilddev.net>
+
+	* omf.make: Added for new scrollkeeper system
+	* xmldocs.make: Changed for new scrollkeeper system
+	* Makefile.am: Added omf.make to EXTRA_DIST
+	* gmix/doc/C/Makefile.am: Changed figs to figdir
+	* gmix/doc/C/gmix-C.omf: Updated to new scrollkeeper format
+	* gnome-cd/doc/C/Makefile.am: Changed figs to figdir
+	* grecord/doc/C/Makefile.am: Changed figs to figdir
+
+2002-05-22  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* acconfig.h configure.in:Check for sdtaudiocontrol in the proper
+	path. Define HAVE_MIXER if we have a audio mixer
+
+2002-05-16  Sander Vesik <sander.vesik@sun.com>
+
+	* grecord/doc/C: integrated sun docs for sound recorder
+
+2002-05-16  Sander Vesik <sander.vesik@sun.com>
+
+	* gnome-cd/doc/C: integrated sun docs for cd player
+
+2002-05-14  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Vietnamese (vi) to ALL_LINGUAS
+
+2002-05-13  Iain <iain@ximian.com>
+
+	* configure.in: Bump version number
+
+2002-05-06  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	* grecord/gnome-sound-recorder.desktop.in:
+       	* gnome-cd/gnome-cd.desktop.in :
+          Added the Docpath  to open the help document from panel (launcher menu)
+2002-04-30  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Basque (eu) and Walloon (wa) to ALL_LINGUAS
+
+2002-04-25 Iain <iain@ximian.com>
+
+	* configure.in: Bump version number to indicate a change.
+
+2002-04-18  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: fix checks for network libs (stolen from linc,
+	fixes bug #78548)
+
+2002-04-15  Iain <iain@ximian.com>
+
+	* configure.in: Bump version number slightly to indicate that there's
+	a new icon.
+
+2002-04-15  Iain <iain@ximian.com>
+
+	* configure.in: Version++
+	Check for some socket libs.
+
+2002-04-04  Iain <iain@ximian.com>
+
+	* configure.in: Fix the check for the host name
+
+2002-04-02  Iain <iain@ximian.com>
+
+	* configure.in: Updated version :)
+	Check sdtaudiocontrol if we're not going to build gmix and we're ont
+	Solaris.
+
+2002-04-01  jacob berkman  <jacob@ximian.com>
+
+	* xmldocs.make: 
+	* Makefile.am (EXTRA_DIST): add xmldocs.make (fixes build bustage)
+
+2002-04-01  Iain <iain@ximian.com>
+
+	* added documentation.
+
+2002-03-30  Iain <iain@ximian.com>
+
+	* configure.in: Change version to something.
+	Check for the presence of CDROMCLOSETRAY in the cdrom header.
+
+2002-03-14  Laszlo Peter  <laca@ireland.sun.com>
+
+	* gnome-cd/callbacks.c: s/__FUNCTION__/G_GNUC_FUNCTION/
+	* gnome-cd/cdrom.c: ditto
+	* gnome-cd/gnome-cd.c: ditto
+	* gnome-cd/linux-cdrom.c: ditto
+	* gnome-cd/solaris-cdrom.c: ditto
+
+2002-03-13  Theo van Klaveren <t.vanklaveren@student.utwente.nl>
+
+	* configure.in: Add FreeBSD platform detection for GnomeCD.
+
+2002-03-04  Iain <iain@ximian.com>
+
+	* TODO: Add some TODO stuff.
+
+	* Makefile.am: Disable building the new gnome-volume-control
+
+	* configure.in: Ditto.
+
+2002-02-27  Iain <iain@ximian.com>
+
+	* configure.in: Use the gconf2 AM rule 
+
+2002-02-27  Iain <iain@ximian.com>
+
+	* tcd/*: Removed.
+
+	* gnomovision/*: Removed.
+
+	* cddbslave/*: Removed.
+
+	* debian/*: Removed.
+
+2002-02-27  Iain <iain@ximian.com>
+
+	* AUTHORS: Ego got the better of me.
+
+	* TODO: Update.
+
+2002-02-27  Iain <iain@ximian.com>
+
+	* configure.in: Add the Solaris detection stuff from Balamurali
+	Viswanathan. Substitute default devices for Solaris and Linux.
+	Generate gnome-cd/gnome-cd.schemas
+	Print some stats about whats going on.
+
+2002-02-20  Iain <iain@ximian.com>
+
+	* configure.in: Add a check for sys/sockio.h
+
+2002-02-15  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am (DIST_SUBDIRS):
+	* configure.in (AC_OUTPUT): it's gnome-volume-control, not
+	volume-control
+
+2002-02-05  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_CN.GB2312 -> zh_CN
+
+2002-02-02  Iain Holmes  <iain@ximian.com>
+
+	* configure.in: Update version number.
+
+2002-01-17 Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.in: Added 'ms' at ALL_LINGUAS.
+	* po/ms.po: Added Malay Translation.
+
+2002-01-12  Iain Holmes  <iain@ximian.com>
+
+	* configure.in: Remove some line, that I've forgotten and create the
+	Makefile in the lcd-theme dir
+
+2001-12-03  Sander Vesik <Sander.Vesik@sun.com>
+	* autogen.sh: Remove test for CERTIFIED_GNOMIE 
+	* configure.in: Remove test for CERTIFIED_GNOMIE and add 
+	  missing [] to AC_MESSAGE_ERROR for the case of missing
+	  scrollkeeper
+
+2001-12-02  Iain Holmes  <iain@ximian.com>
+
+	* configure.in: Add a check for esd.
+
+2001-12-02  Iain Holmes  <iain@ximian.com>
+
+	* configure.in: Remove the bonobo-config check.
+
+2001-11-17  Iain Holmes  <iain@ximian.com>
+
+	* configure.in: Make a stripped down link list for CDDBSlave.
+
+2001-11-03  Iain Holmes  <iain@ximian.com>
+
+	* configure.in: Use the new glib-gettext stuff
+
+2001-10-30  Iain Holmes  <iain@ximian.com>
+
+	* branched for gnome2. Old branch is at gnome-media-1-0
+
+	* Added cddb-slave2 and gnome-cd
+
+2001-10-07  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in (ALL_LINGUAS): added lv
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-07-28  Dan Mueth  <d-mueth@uchicago.edu>
+
+	Adding line so help docs are included in RPMs.
+
+	* gnome-media.spec.in:
+
+2001-07-27  Dan Mueth  <d-mueth@uchicago.edu>
+
+	Updating doc build stuff to use jw on RH 7.1 and any other dist which
+	has moved to docbook-utils.
+
+	* configure.in:
+	* sgmldocs.make:
+
 2001-06-07  Peter Teichman  <peter@phb>
 
 	* release 1.2.3

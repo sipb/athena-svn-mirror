@@ -26,23 +26,19 @@
 #include <gnome.h>
 #include <libgnomeui/gnome-window-icon.h>
 
+#include <gconf/gconf-client.h>
+
 #include "gui.h"
 #include "grec.h"
 #include "prog.h"
 #include "preferences.h"
 
+gboolean able_to_record = TRUE;
+
 static gchar* geometry = NULL;
 static gboolean sfiles = FALSE;
 static gboolean srecord = FALSE;
 static gboolean splay = FALSE;
-
-static gint grec_save_session (GnomeClient* client, gint phase,
-			       GnomeSaveStyle save_stype,
-			       gint is_shutdown, GnomeInteractStyle interact_style,
-			       gint is_fast, gpointer client_data);
-
-static gint grec_kill_session (GnomeClient* client, gpointer client_data);
-static gint on_dontshowagain_dialog_destroy_activate (GtkWidget* widget, gpointer checkbutton);
 
 struct poptOption grec_options[] = {
 	{
@@ -91,126 +87,16 @@ struct poptOption grec_options[] = {
 		NULL
 	}
 };
-
-int
-main (int argc, char *argv[])
+static int
+grec_save_session (GnomeClient* client, int phase,
+		   GnomeSaveStyle save_stype,
+		   int is_shutdown, GnomeInteractStyle interact_style,
+		   int is_fast, gpointer client_data)
 {
-	GtkWidget* grecord_window;
-	poptContext pctx;
-	GnomeClient* client;
-	gchar** args = NULL;
-	gboolean dont_show_warningmess;
-	gint temp_count;
-	gboolean fullpath = FALSE;
-	
-	/* i18n stuff ---------------------------------- */
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-	
-	gnome_init_with_popt_table (_("GNOME Sound recorder"), VERSION, argc, argv,
-				    grec_options, 0, &pctx);
-	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-audio2.png");
-	args = (gchar**) poptGetArgs (pctx);
-	
-	mwin.x = -1;
-	mwin.y = -1;
-	mwin.width = 400;
-	mwin.height = 170;
-	
-	if (geometry)
-		gnome_parse_geometry (geometry, &mwin.x, &mwin.y,
-				      &mwin.width, &mwin.height);
-
-	/* Session management ------------------------- */
-	client = gnome_master_client ();
-	gtk_signal_connect (GTK_OBJECT (client),
-			    "save_yourself",
-			    GTK_SIGNAL_FUNC (grec_save_session),
-			    argv[0]);
-	gtk_signal_connect (GTK_OBJECT (client),
-			    "die",
-			    GTK_SIGNAL_FUNC (grec_kill_session),
-			    NULL);
-
-	/* Load configuration */
-	load_config_file ();
-
-	if (sfiles)
-		active_file = g_strdup (args[0]);
-	else if (splay) {
-		active_file = g_strdup (args[0]);
-		on_play_activate_cb (NULL, NULL);
-	}
-	else if (srecord) {
-		active_file = g_strdup (args[0]);
-		on_record_activate_cb (NULL, NULL);
-	}
-	else
-		active_file = g_concat_dir_and_file (temp_dir, temp_filename_play);
-
-	poptFreeContext (pctx);
-	
-	/* Initate some vars */
-	PlayEng.is_running = FALSE;
-	RecEng.is_running = FALSE;
-	
-	/* Popup mainwindow */
-	grecord_window = create_grecord_window ();
-	gtk_widget_show (grecord_window);
-
-	dont_show_warningmess = gnome_config_get_bool ("/grecord/Misc/dontshowwarningmess=FALSE");
-
-	/* Check if the sox command is a path */
-	temp_count = 0;
-	while (sox_command[temp_count] != '\0') {
-		if (sox_command[temp_count] == '/')
-			fullpath = TRUE;
-		temp_count++;
-	}
-
-	/* Check for program 'sox' ------------------- */
-	if (fullpath) {
-		if (!g_file_exists (sox_command) && !dont_show_warningmess) {
-			GtkWidget* dont_show_again_checkbutton = gtk_check_button_new_with_label (_("Don't show this message again."));
-			
-			gchar* show_mess = g_strdup_printf (_("Could not find '%s'.\nSet the correct path to sox in preferences under the tab 'paths'.\n\nIf you don't have sox, you will not be able to record or do any effects."), sox_command);
-			
-			GtkWidget* mess = gnome_message_box_new (show_mess,
-								 GNOME_MESSAGE_BOX_WARNING,
-								 GNOME_STOCK_BUTTON_OK,
-								 NULL);
-			
-			gtk_widget_show (dont_show_again_checkbutton);
-			gtk_container_add (GTK_CONTAINER (GNOME_DIALOG (mess)->vbox), dont_show_again_checkbutton);
-			
-			/* Connect a signal on ok-button, so we can get the stat on the checkbutton */
-			gtk_signal_connect (GTK_OBJECT (mess), "destroy",
-					    GTK_SIGNAL_FUNC (on_dontshowagain_dialog_destroy_activate), dont_show_again_checkbutton);
-			
-			gnome_dialog_run (GNOME_DIALOG (mess));
-			
-			g_free (show_mess);
-			on_preferences_activate_cb (NULL, NULL);
-		}
-	}
-
-	gtk_main ();
-	
-	/* This funtions free's som strings */
-	free_vars ();
-	
-	return 0;
-}
-
-static gint grec_save_session (GnomeClient* client, gint phase,
-			       GnomeSaveStyle save_stype,
-			       gint is_shutdown, GnomeInteractStyle interact_style,
-			       gint is_fast, gpointer client_data)
-{
-	gchar** argv;
+	char **argv;
 	guint argc;
 
-	argv = g_malloc0(sizeof(gchar*)*4);
+	argv = g_new0 (char *, 4);
 	argc = 1;
 
 	argv[0] = client_data;
@@ -227,11 +113,13 @@ static gint grec_save_session (GnomeClient* client, gint phase,
 	return TRUE;
 }
 
-static gint grec_kill_session (GnomeClient* client, gpointer client_data)
+static int
+grec_kill_session (GnomeClient* client,
+		   gpointer client_data)
 {
-	gchar* file1 = g_concat_dir_and_file (temp_dir, temp_filename_record);
-	gchar* file2 = g_concat_dir_and_file (temp_dir, temp_filename_play);
-	gchar* file3 = g_concat_dir_and_file (temp_dir, temp_filename_backup);
+	char* file1 = g_build_filename (temp_dir, temp_filename_record, NULL);
+	char* file2 = g_build_filename (temp_dir, temp_filename_play, NULL);
+	char* file3 = g_build_filename (temp_dir, temp_filename_backup, NULL);
 
 	remove (file1);
 	remove (file2);
@@ -246,14 +134,148 @@ static gint grec_kill_session (GnomeClient* client, gpointer client_data)
 	return TRUE;
 }
 
-static gint on_dontshowagain_dialog_destroy_activate (GtkWidget* widget, gpointer checkbutton)
+static void
+on_dontshowagain_dialog_destroy_activate (GtkWidget* widget,
+					  gpointer checkbutton)
 {
+	GConfClient *client;
 	gboolean stat = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbutton));
-	gnome_config_set_bool ("/grecord/Misc/dontshowwarningmess", stat);
-
-	/* Save it */
-	gnome_config_sync ();
-
-	/* Exit the dialog */
-	return TRUE;
+	
+	client = gconf_client_get_default ();
+	gconf_client_set_bool (client, "/apps/gnome-sound-recorder/show-warning-messages", !stat, NULL);
+	g_object_unref (client);
 }
+
+int
+main (int argc,
+      char *argv[])
+{
+	GtkWidget* grecord_window;
+	GValue value = { 0, };
+    	GnomeProgram *program;
+	poptContext pctx;
+	GnomeClient* client;
+	gchar **args = NULL;
+	gboolean show_warningmess;
+	GConfClient *gconf_client;
+	char *p;
+	
+	/* i18n stuff ---------------------------------- */
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+	
+	program = gnome_program_init ("grecord", VERSION,
+				      LIBGNOMEUI_MODULE, argc, argv,
+				      GNOME_PARAM_POPT_TABLE, grec_options,
+				      GNOME_PARAM_HUMAN_READABLE_NAME,
+				      _("Sound recorder"),
+				      GNOME_PARAM_APP_DATADIR,DATADIR,NULL);
+	
+	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-audio2.png");
+	g_value_init (&value, G_TYPE_POINTER);
+    	g_object_get_property (G_OBJECT (program), GNOME_PARAM_POPT_CONTEXT, &value);
+    	pctx = g_value_get_pointer (&value);
+    	g_value_unset (&value);
+
+	args = (gchar**) poptGetArgs (pctx);
+	
+	mwin.x = -1;
+	mwin.y = -1;
+	mwin.width = 400;
+	mwin.height = 170;
+
+#ifdef GEOMETRY	
+	if (geometry)
+		gnome_parse_geometry (geometry, &mwin.x, &mwin.y,
+				      &mwin.width, &mwin.height);
+#endif
+
+	/* Session management ------------------------- */
+	client = gnome_master_client ();
+	g_signal_connect (client, "save_yourself", 
+			  G_CALLBACK (grec_save_session), argv[0]);
+	g_signal_connect (client, "die", G_CALLBACK (grec_kill_session), NULL);
+
+	/* Load configuration */
+	load_config_file ();
+
+	/* Initate some vars */
+	PlayEng.is_running = FALSE;
+	RecEng.is_running = FALSE;
+
+	if (sfiles) {
+		active_file = g_strdup (args[0]);
+	} else if (splay) {
+		active_file = g_strdup (args[0]);
+	} else if (srecord) {
+		active_file = g_strdup (args[0]);
+	} else {
+		active_file = g_build_filename (temp_dir, 
+						temp_filename_play, NULL);
+	}
+
+	/* Popup mainwindow */
+	grecord_window = create_grecord_window ();
+
+	poptFreeContext (pctx);
+	
+	if (splay) {
+		on_play_activate_cb (NULL, NULL);
+	}
+
+	if (srecord) {
+		on_record_activate_cb (NULL, NULL);
+	}
+	
+	gtk_widget_show (grecord_window);
+
+	gconf_client = gconf_client_get_default ();
+	show_warningmess = gconf_client_get_bool (gconf_client,
+						  "/apps/gnome-sound-recorder/show-warning-messages", NULL);
+	g_object_unref (gconf_client);
+	
+	/* Check if the sox command is a path */
+	if (sox_command == NULL) {
+		sox_command = g_strdup ("sox");
+	}
+
+	p = g_find_program_in_path (sox_command);
+	if (p == NULL) {
+		able_to_record = FALSE;
+		gtk_widget_set_sensitive (GTK_WIDGET (grecord_widgets.Record_button), FALSE);
+		if (show_warningmess) {
+			GtkWidget* dont_show_again_checkbutton = gtk_check_button_new_with_label (_("Don't show this message again."));
+			
+			gchar* show_mess = g_strdup_printf (_("Could not find '%s'.\nSet the correct path to sox in"
+							      "preferences under the tab 'paths'.\n\nIf you don't have"
+							      " sox, you will not be able to record or do any effects."),
+							    sox_command);
+			GtkWidget* mess = gtk_message_dialog_new (NULL,
+								  GTK_DIALOG_MODAL,	
+								  GTK_MESSAGE_WARNING,
+								  GTK_BUTTONS_OK,
+								  show_mess);
+			g_free (show_mess);
+			
+			gtk_widget_show (dont_show_again_checkbutton);
+			gtk_container_add (GTK_CONTAINER (GTK_DIALOG (mess)->vbox), dont_show_again_checkbutton);
+			
+			/* Connect a signal on ok-button, so we can get the stat on the checkbutton */
+			g_signal_connect (mess, "destroy",
+					  G_CALLBACK (on_dontshowagain_dialog_destroy_activate), dont_show_again_checkbutton);
+			
+			gtk_dialog_run (GTK_DIALOG (mess));
+			gtk_widget_destroy (mess);
+			
+			on_preferences_activate_cb (NULL, NULL);
+		}
+	} else {
+		g_free (p);
+	}
+
+	gtk_main ();
+	
+	return 0;
+}
+

@@ -1,3 +1,305 @@
+2002-09-23  Iain <iain@prettypeople.org>
+
+	* gmix.c: Patch from Trevor Hamm to stop generating invalid GConf keys
+
+2002-08-01  Iain <iain@prettypeople.org>
+
+	* gmix.c (recsrc_from_channels): Patch from Iiya to fix recsrc stuff.
+
+2002-08-01  Iain <iain@prettypeople.org>
+
+	* prefs.c: Remove all manner of crap useless headers...ioctl.h? WTF?
+	Remove the whole notebook, and first page thing as it wasnt needed.
+	(prefs_make_window): Set a decent default size.
+
+	* gmix. (fill_in_device_guis): Always show icon and label.
+
+2002-05-21  Jorn Baayen  <jorn@nl.linux.org>
+
+	* gmix.c (gmix_hide_last_separator): new function to
+	hide the last visible separator
+	(gmix_change_channel): do not show icons/labels when
+	they are turned off, call gmix_hide_last_separator
+	(fill_in_device_guis): some more spacing, center labels,
+	bigger font for labels (<span size="larger">), call
+	gmix_hide_last_separator.
+
+	* prefs.c (prefs_make_windows): s/Labels/Controls on
+	notebook label.
+	(labels_create_page): Change shadow type of the labels
+	view to SHADOW_IN for consistency, don't use a notebook
+	when there's only one page (fixes ugly relief).
+	(label_one_device_config): Ditto.
+	(label_one_device_config_widget): New function, Ditto.
+	(general_page): some more spacing for consistency
+
+2002-07-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-volume-control.desktop.in.in: use X-GNOME-DocPath
+	instead of DocPath.
+
+2002-06-22 Iain <iain@prettypeople.org>
+
+	* Applied HELP patch from Satyajit Kanungo
+
+2002-05-31 John Fleck <jfleck@inkstain.net>
+
+	* doc/C/gnome-volume-control.xml, gnome-volume-control-C.omf,
+	Makefile.am
+	updating to new name - gnome-volume-control
+	removing old gmix.sgml, gmix.xml, gmix-C.omf
+
+2002-05-29 Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* Makefile.am: Install only the desktop files in Solaris
+
+2002-05-13 Iain <iain@ximian.com>
+
+	* gmix.c (make_slider_mixer): Use better increment values
+
+2002-05-09 Iain <iain@ximian.com>
+
+	* gmix.c (open_device): Fix alsa compile errors.
+	(init_one_device): Ditto
+
+2002-04-15 Iain <iain@ximian.com>
+
+	* gmix.c (gmix_change_icons): Only show the icon if the channel is
+	visible.
+	(gmix_change_labels): Ditto
+
+2002-04-13	Diego González <diego@pemas.net>
+
+	* gmix/gmix.c (open_device): use g_strdelimit to get rid of the 
+	  spaces in the name of the sound card, so that gconf gives no 
+	  problem.
+		
+2002-04-10 Iain <iain@ximian.com>
+
+	* gmix.c (get_*_with_default): Use gconf_client_get so that we can
+	track when a key doesn't exist correctly.
+
+2002-04-09 Iain <iain@ximian.com>
+
+	* gmix.c (get_one_device_config): If the cards directory doesn't exist
+	just load the defaults. Get the visible key.
+	(put_one_device_config): Set the visible.
+	(fill_in_device_guis): Keep the mixer widget around. Hide everything
+	if the channel isn't visible.
+	(open_dialog): Make the window not resizable.
+	(gmix_change_channel): Hide or show a channel.
+
+	* prefs.c (make_tree_model): Set the visible column to the correct
+	value.
+	(toggled): Show or hide a channel.
+	(label_one_device_config): Add a toggle button column. Add a mnemonic
+	to the button.
+
+2002-04-08 Iain <iain@ximian.com>
+
+	* gmix.c (get_one_device_config): Don't load the volume.
+
+2002-04-02 Iain <iain@ximian.com>
+
+	* gmix.c (init_one_device): Don't reset the volume. Lets work out what
+	we want it to do first.
+
+2002-04-01 Iain <iain@ximian.com>
+
+	* gmix.c: Update copyright notice.
+	Include gconf-client.h
+	Make static definitions.
+	(element_cb): Realign some stuff.
+	(main): Add white space. Always initialise the mixer prefs.
+	(recsrc_from_channels): Utility function to convert all the channel
+	info into a bitmask
+	(set_channels_from_recsrc): Set all the channels depending on the
+	bitmask.
+	(open_device): Add whitespace to stuff to make it readable.
+	Create a unique card name dependant on the driver, the card name and
+	the card position.
+	Create the individual channels here, instead of using bitmasks.
+	Remove debugging info.
+	(make_channels): Removed.
+	(scan_devices): Don't call make_channels anymore.
+	(free_one_channel): Free some ALSA specific stuff.
+	(free_one_device): Free a device.
+	(init_one_device): Init the devices from the settings.
+	(init_devices): Init all the devices.
+	(get_bool_with_default): Get a key from GConf or the default value if
+	there's an error.
+	(get_int_with_default): Ditto.
+	(get_string_with_default): ditto.
+	(get_one_device_config): Use the card names and GConf. Don't need any
+	card specific stuff.
+	(get_device_config): Add whitespace.
+	(put_one_device_config): Use the card names and GConf. don't need any
+	card specific stuff.
+	(make_slider_mixer): Add whitespace. Use the new info in channel_info.
+	Update functions. Make i18n easier.
+	(fill_in_device_guis): Add whitespaces. Use the new info. Create the
+	correct width of a table.
+	(build_slidernotebook): Whitespace.
+	(lock_cb): Update for the new info. (Whitespace)
+	(mute_cb): Ditto.
+	(turn_off_record_except): A sort of radiobutton utility function for
+	checkboxes.
+	(rec_cb): Update for new info. (Whitespace)
+	(adj_left_cb): Update for new info, manipulate the adjustment
+	correctly.
+	(adk_right_cb): ditto.
+	(about_cb): Add me to the copyright.
+
+	* gmix.h: Move the channel bitmasks out of the device struct and into
+	the channel one where they should have been.
+	
+2002-03-21 Iain <iain@ximian.com>
+
+	* gmix.c: Remove the mixer pages list; 
+	Comment out the help menu.
+	Add a hashtable to get a device_info from the device name.
+	(main): Realign the header :)
+	(scan_devices): Add the device to the hash table.
+	(device_from_name): Get the device_info given a name.
+	(fill_in_device_gui): Remove the crap GMixerPages stuff. Put all the
+	label and icon data in the channel_info struct.
+	Only create one lock checkbutton.
+	(help_cb): Remove.
+	(gmix_change_icons): Go through the device list instead.
+	(gmix_change_labels): Ditto.
+
+	* prefs.c (labels_retrueve_on_slider): Delete.
+	(reset_labels): Set the label to the default.
+	(labels_retrieve_one_page): delete.
+	(labels_reset_page_cb): Call reset_labels for each treeiter.
+	(labels_destroy_one_page): delete.
+	(make_label_model): Make a model for the treeview.
+	(edited): Set the new text.
+	(labels_destroy_all): Delete.
+	(labels_reset_one_slider): delete.
+	(labels_reset_page_cb): Delete.
+	(labels_changed_cb): Delete.
+	(labels_create_one_slider): Delete.
+	(label_one_device_config): Realign. Use a GtkTreeView instead of an
+	ugly GtkTable inside a scrolled window.
+
+2002-03-13 Theo van Klaveren <t.vanklaveren@student.utwente.nl>
+
+	* gmix.c: Set the minimum volume slider size to 100. Fixes bugzilla
+	bug #74227.
+
+2002-03-09 Iain <iain@ximian.com>
+
+	* gmix.[ch] (fill_in_device_guis): Create a GMixMixerPage with a list
+	of all the gui parts that we need to change later.
+	(gmix_change_icons): Show or hide all the icons.
+	(gmix_change_labels): Show or hide all the labels.
+
+	* prefs.c (restore_toggled): Set the gconf key.
+	(show_icons_toggled): Set the gconf key too.
+	(show_labels_toggled): And set this one as well.
+	(general_page): Hook up the new callbacks and make the widgets not 
+	resize stupidly.
+	(prefs_response_cb): Destroy the dialog.
+	(prefs_destroy_cb): Do nothing, yet.
+	(prefs_make_window): Use a GtkDialog instead of a GnomePropertyDialog.
+	(init_on_start_changed): Change the prefs setting.
+	(show_icons_changed): Hide or show the icons.
+	(show_labels_changed): Hide of show the labels.
+	(get_gui_config): Get the gconf client, cache the dir and get the
+	settings.
+	
+	* Makefile.am: Install the schemas.
+
+	* gnome-volume-control.schemas: GConf schema file.
+
+2002-03-08 Iain <iain@ximian.com>
+
+	* gmix.c (fill_in_device_guis): Changed the tab order so that the
+	checkboxes went in order.
+	Turn off the notebook tabs if there's only one mixer.
+	Put the icons and the text beside each other.
+	Shrink the size of the table so there's no more ununsed cells.
+
+	* prefs.c (label_one_device_config): Move the reset button out of the
+	scrolled window and onto the main page.
+
+2002-03-03 Iain <iain@ximian.com>
+
+	* gmix.c: Changed instances of GMix to Gnome Volume Control.
+
+2002-02-10 Marc Mulcahy <marc.mulcahy@sun.com>
+
+	* gmix.c: Added accessible names for all sliders-- changed tab
+	order so related checkboxes come after the corresponding sliders.
+
+
+	2002-01-31  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* gmix.c: (open_dialog):
+	* gmix.desktop.in:
+	* gnome-volume-control.desktop.in:
+
+	Renname binary and .desktop to "gnome-volume-control"
+	to more closely match the menu name. This makes it
+	easier for users to figure out the mapping between
+	menu names and commands.
+	
+2002-01-29  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-mixer.png:
+
+	Make the icon consistent with the new mixer applet.
+
+2002-01-26  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* main.c: get translations in UTF-8
+
+2001-12-09  Seth Nickell  <snickell@stanford.edu>
+
+	* gmix.c: (open_dialog):
+
+	Change window caption to match desktop menu entry.
+
+2001-12-09  Seth Nickell  <snickell@stanford.edu>
+
+	* gmix.desktop.in:
+
+	Further compliance with Nils' panel menu specification.
+
+2001-12-09  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+
+	install .desktop file into datadir/applications
+	
+	* gmix.desktop.in:
+
+	Add categories field and a description that complies with
+	the HIG.
+	
+2001-12-02  Iain Holmes  <iain@ximian.com>
+
+	* Makefile.am: Comment out the .desktop lines
+
+2001-11-03  Iain Holmes  <iain@ximian.com>
+
+	* gmix.c (main): Updated for the new glib-gettext stuff
+
+2001-10-30  Iain Holmes  <iain@ximian.com>
+
+	* branch for 1.0
+
+	* gnome-fader.c:
+	* gnome-mixer.[ch]: Abstraction objects.
+
+2001-09-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gmix.c: Mark a string for translation.
+	* NEWS: Update
+	* TODO: Fix a typo.
+	
 2001-06-02  Peter Teichman  <peter@ximian.com>
 
 	* mark a string for translation

@@ -1,21 +1,34 @@
-SUBDIRS = src
+SUBDIRS = src doc
 
 EXTRA_DIST = \
-	Soundrecorder.desktop.in README COPYING AUTHORS INSTALL \
-	pixmaps/gnome_mixer.xpm grecord.keys.in grecord.mime \
-	gnome-grecord.png
+	gnome-sound-recorder.desktop.in README COPYING AUTHORS INSTALL \
+	pixmaps/gnome_mixer.xpm \
+	$(pixmap_DATA)		\
+	$(Icon_DATA)		\
+	gnome-grecord.png	\
+	gnome-sound-recorder.schemas.in
 
-Applicationsdir = $(datadir)/gnome/apps/Multimedia
-Applications_in_files = Soundrecorder.desktop.in 
+@INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_SCHEMAS_RULE@
+
+Applicationsdir = $(datadir)/applications
+Applications_in_files = gnome-sound-recorder.desktop.in 
 Applications_DATA = $(Applications_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
 
-Mimedir = $(datadir)/mime-info
-Mime_DATA = grecord.keys grecord.mime
 
 Icondir = $(datadir)/pixmaps
 Icon_DATA = gnome-grecord.png
 
-grecord.keys: grecord.keys.in Makefile
-	sed -e 's^\@icondir\@^$(appicondir)^g' < $(srcdir)/grecord.keys.in > grecord.keys.tmp \
-	&& mv grecord.keys.tmp grecord.keys 
+pixmapdir = $(datadir)/pixmaps/gnome-media/gnome-sound-recorder
+pixmap_DATA = media-rec.png		\
+	      media-play.png		\
+	      media-stop.png
+
+schemadir=$(sysconfdir)/gconf/schemas
+schema_DATA=gnome-sound-recorder.schemas
+
+install-schemas:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schema_DATA)
+
+install-data-local: install-schemas
+

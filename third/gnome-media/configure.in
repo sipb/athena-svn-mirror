@@ -1,66 +1,124 @@
+AC_PREREQ(2.52)
 AC_INIT(gmix)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-media, 1.2.3)
+AM_INIT_AUTOMAKE(gnome-media, 2.0.3)
 AM_MAINTAINER_MODE
-AM_PROG_XML_I18N_TOOLS
 
-AM_ACLOCAL_INCLUDE(macros)
+AC_PROG_INTLTOOL
+
+#GNOME_COMMON_INIT
+#GNOME_PLATFORM_GNOME_2(yes, force)
+
+GETTEXT_PACKAGE=gnome-media-2.0
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 
 AC_PROG_CC
 AC_ISC_POSIX
 
-GNOME_INIT
-GNOME_COMPILE_WARNINGS
-
-dnl Checks for programs.
+# Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
-dnl Look for some version of curses (keeping AM_'s out of curses.m4)
-AC_CHECK_CURSES
-AM_CONDITIONAL(HAS_CURSES, test "$has_curses" = true)
-
-dnl Utility conditional
-AM_CONDITIONAL(FALSE, test x = y)
-
-dnl Checks for header files.
+# Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h sys/ioctl.h unistd.h)
+AC_CHECK_HEADERS([sys/sockio.h sys/param.h])
 
-dnl Checks for typedefs, structures, and compiler characteristics.
+# Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 
-dnl Checks for library functions.
-AC_FUNC_ALLOCA
+# Checks for library functions.
+#AC_FUNC_ALLOCA
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(getcwd getwd putenv strdup strerror)
+#AC_CHECK_FUNCS(getcwd getwd putenv strdup strerror)
 AM_PROG_LIBTOOL
 
-dnl
-dnl Check for esound library
-dnl
+# Start of pkg-config checks
+PKG_CHECK_MODULES(MEDIA, glib-2.0 >= 1.3.7 gmodule-2.0 >= 1.3.7 \
+		  libgnomeui-2.0 >= 1.102.0\
+		  esound >= 0.2.23)
+host=`uname -s`
+case "$host" in
+*SunOS*)
+	MEDIA_LIBS="$MEDIA_LIBS -ldevinfo"
+        ;;
+esac
+
+AC_SUBST(MEDIA_CFLAGS)
+AC_SUBST(MEDIA_LIBS)
+
+# Check for the CDDBSlave2 modules
+PKG_CHECK_MODULES(CDDBSLAVE, glib-2.0 >= 1.3.7 gmodule-2.0 >= 1.3.7 \
+		  libgnomeui-2.0 >= 1.102.0)
+
+# Check for network stuff
+AC_CHECK_FUNCS(poll basename)
+AC_CHECK_FUNC(inet_aton,,[AC_CHECK_LIB(resolv,inet_aton,CDDBSLAVE_LIBS="$CDDBSLAVE_LIBS -lresolv")])
+AC_CHECK_FUNC(socket,,[AC_CHECK_LIB(socket,socket,CDDBSLAVE_LIBS="$CDDBSLAVE_LIBS -lsocket")])
+AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname,CDDBSLAVE_LIBS="$CDDBSLAVE_LIBS -lnsl")])
+
+AC_SUBST(CDDBSLAVE_LIBS)
+AC_SUBST(CDDBSLAVE_CFLAGS)
+
+PKG_CHECK_MODULES(VUMETER, glib-2.0 >= 1.3.7 gtk+-2.0 >= 1.3.7 \
+		  esound >= 0.2.23 libgnomeui-2.0 > 1.102.0)
+AC_SUBST(VUMETER_CFLAGS)
+AC_SUBST(VUMETER_LIBS)
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+AM_GCONF_SOURCE_2
+
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
+BONOBO_IDLDIR="`$PKG_CONFIG --variable=idldir libbonobo-2.0`"
+AC_SUBST(BONOBO_IDLDIR)
+BONOBO_ACT_IDLDIR="`$PKG_CONFIG --variable=idldir bonobo-activation-2.0`"
+AC_SUBST(BONOBO_ACT_IDLDIR)
+
+ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
+AC_SUBST(ORBIT_IDL)
+
+# Check for sox
+AC_PATH_PROG(SOX_PATH, sox, no)
+if test "$SOX_PATH" = "no"; then
+  path_to_sox="sox"
+else
+  path_to_sox=$SOX_PATH
+fi
+AC_SUBST(path_to_sox)
+
+# Check for esound library
+got_esd=no
 AM_PATH_ESD(0.2.7, we_have_esd=true)
 if test -n "$we_have_esd"; then
-AC_DEFINE(HAVE_ESD)
+  got_esd=yes
+  AC_DEFINE(HAVE_ESD)
 fi
 
-dnl
-dnl Check for ScrollKeeper
-dnl
+# Check for ScrollKeeper
 AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
 if test x$SCROLLKEEPER_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find scrollkeeper-config, please install the scrollkeeper package)
+  AC_MSG_ERROR([Couldn't find scrollkeeper-config, please install the scrollkeeper package])
 fi
 
-dnl
-dnl ALSA
-dnl
+# Test whether jw is installed
+AC_PATH_PROG(JW,jw,no)
+if test x$JW = xno; then
+  HAVE_JW="no"
+else
+  HAVE_JW="yes"
+fi
+AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
+AC_SUBST(HAVE_JW)
+
+# ALSA
 AC_ARG_ENABLE(alsa, 
 [  --enable-alsa=[no/yes]      Enable support for ALSA sound library],,enable_alsa=no)
 AC_CHECK_HEADERS(sys/asoundlib.h)
@@ -72,54 +130,79 @@ if test "x$enable_alsa" = "xyes"; then
     fi
 fi
 
-ALL_LINGUAS="az ca cs da de el en_GB es et fi fr ga gl hu it ja ko lt nl no pl pt pt_BR ro ru sk sl sv tr uk zh_TW.Big5 zh_CN.GB2312"
-AM_GNU_GETTEXT
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_TW zh_CN"
+AM_GLIB_GNU_GETTEXT
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-dnl
-dnl vu-meter
-dnl
+# vu-meter
 PROGRAMS_VUMETER=""
 if test -n "$we_have_esd"; then
 PROGRAMS_VUMETER="vu-meter"
 fi
 AC_SUBST(PROGRAMS_VUMETER)
 
-dnl
-dnl gmix
-dnl
+# gmix
 PROGRAMS_GMIX=""
 GMIX_LIBS=""
+build_gmix=false
 AC_CHECK_HEADERS(soundcard.h linux/soundcard.h sys/soundcard.h)
 AC_CHECK_HEADERS(machine/soundcard.h)
 if test "x$enable_alsa" = "xyes"; then
     PROGRAMS_GMIX=gmix
+    build_gmix=true
     GMIX_LIBS="-lasound"
 elif test "${ac_cv_header_sys_soundcard_h}" = "yes" || \
      test "${ac_cv_header_soundcard_h}" = "yes" || \
      test "${ac_cv_header_linux_soundcard_h}" = "yes" || \
      test "${ac_cv_header_machine_soundcard_h}" = "yes"; then
     PROGRAMS_GMIX=gmix
+    build_gmix=true
 fi
 AC_SUBST(PROGRAMS_GMIX)
 AC_SUBST(GMIX_LIBS)
 
-
-dnl
-dnl cddbslave
-dnl
-GNOME_GHTTP_CHECK
-if test -n "`echo x$GHTTP_LIB | grep ghttp`"; then
-  AC_DEFINE(WITH_LIBGHTTP)
+# Check for the Solaris mixer to use until gnome-volume-control is ported
+AC_MSG_CHECKING([for default mixer])
+if test "x$build_gmix" = "xtrue"; then
+    DEFAULT_MIXER=gnome-volume-control
+    AC_DEFINE(HAVE_MIXER)
+    AC_MSG_RESULT($DEFAULT_MIXER)
 else
-  GHTTP_LIB=
+# Bala thinks this should be done at runtime.
+# Probably should.
+  host=`uname -s`
+  
+  case "$host" in
+  *SunOS*)
+    AC_MSG_RESULT([sdtaudiocontrol])
+    AC_PATH_PROG(SDTAUDIOCONTROL, sdtaudiocontrol, no, "/usr/dt/bin")
+    if test x$SDTAUDIOCONTROL = xno; then
+	    DEFAULT_MIXER=gnome-volume-control
+    else
+	    DEFAULT_MIXER=sdtaudiocontrol
+	    AC_DEFINE(HAVE_MIXER)
+    fi
+    ;;
+  esac
 fi
 
-dnl find the mailer for use with the submission helper
-dnl This code is from the gnome-bug script.  It should work for most systems
+#Just to install gnome-volume-control desktop files for Solaris
+AC_SUBST(DEFAULT_MIXER)
+
+  case "$host" in
+  *SunOS*)
+    PROGRAMS_GMIX=gmix
+  ;;
+  esac
+AM_CONDITIONAL(BUILD_GMIX, $build_gmix)
+
+AC_DEFINE_UNQUOTED(DEFAULT_MIXER, "$DEFAULT_MIXER")
+
+# find the mailer for use with the submission helper
+# This code is from the gnome-bug script.  It should work for most systems
 AC_MSG_CHECKING(for the MTA)
 if test -f /usr/sbin/sendmail; then
   MAIL_TRANSFER_AGENT="/usr/sbin/sendmail -t"
@@ -131,16 +214,22 @@ fi
 AC_DEFINE_UNQUOTED(MAIL_TRANSFER_AGENT, "$MAIL_TRANSFER_AGENT")
 AC_MSG_RESULT($MAIL_TRANSFER_AGENT)
 
-dnl
-dnl Everything OK for tcd?
-dnl
-PROGRAMS_TCD=""
-AC_CHECK_HEADERS(linux/cdrom.h,[PROGRAMS_TCD=tcd])
-AC_CHECK_HEADERS(linux/ucdrom.h)
-AC_CHECK_HEADERS(sys/cdio.h,[PROGRAMS_TCD=tcd])
-AC_CHECK_HEADERS(sun/dkio.h,[PROGRAMS_TCD=tcd])
+# Everything OK for gnome-cd?
+PROGRAMS_GNOME_CD=""
+cdrom_header=""
+AC_CHECK_HEADERS(linux/cdrom.h,[
+  PROGRAMS_GNOME_CD=gnome-cd
+  cdrom_header=linux/cdrom.h])
+AC_CHECK_HEADERS(linux/ucdrom.h,[
+  cdrom_header=linux/ucdrom.h])
+AC_CHECK_HEADERS(sys/cdio.h,[
+  PROGRAMS_GNOME_CD=gnome-cd
+  cdrom_header=sys/cdio.h])
+AC_CHECK_HEADERS(sun/dkio.h,[
+  PROGRAMS_GNOME_CD=gnome-cd
+  cdrom_header=sun/dkio.h])
 
-AC_MSG_CHECKING([whether to use cd changer support (Linux 2.1.x headers required)])
+AC_MSG_CHECKING([whether to use cd changer support])
 AC_EGREP_CPP(answer_affirmatively,
 [#include <linux/cdrom.h>
  #ifdef CDROM_CHANGER_NSLOTS
@@ -150,14 +239,50 @@ AC_EGREP_CPP(answer_affirmatively,
 if test "$cd_changer" = "yes"; then
 	USE_CD_CHANGER="-DTCD_CHANGER_ENABLED"
 fi
-AC_MSG_RESULT("$cd_changer")
+AC_MSG_RESULT($cd_changer)
 
 AC_SUBST(USE_CD_CHANGER)
-AC_SUBST(PROGRAMS_TCD)
+AC_SUBST(PROGRAMS_GNOME_CD)
 
-dnl
-dnl grecord
-dnl
+close_tray=no
+AC_MSG_CHECKING([whether OS supports the CDROMCLOSETRAY ioctl])
+AC_EGREP_CPP(answer_affirmatively,
+[#include <$cdrom_header>
+ #ifdef CDROMCLOSETRAY
+ 	answer_affirmatively
+ #endif
+], close_tray=yes)
+if test "$close_tray" = "yes"; then
+	AC_DEFINE(HAVE_CDROMCLOSETRAY_IOCTL)
+fi
+AC_MSG_RESULT($close_tray)
+
+host=`uname -s`
+
+case "$host" in
+*FreeBSD*)
+	CDROM_HOST=freebsd
+	default_cd_device="/dev/acd0c"
+	;;
+*Linux*) 
+	CDROM_HOST=linux
+	default_cd_device="/dev/cdrom"
+	;;
+*SunOS*) 
+	CDROM_HOST=solaris
+	default_cd_device="/vol/dev/aliases/cdrom0"
+	;;
+esac
+
+AC_SUBST(CDROM_HOST)
+AC_SUBST(default_cd_device)
+
+PKG_CHECK_MODULES(GAILUTIL, gail >= 0.0.3)
+
+AC_SUBST(GAILUTIL_CFLAGS)
+AC_SUBST(GAILUTIL_LIBS)
+
+# grecord
 PROGRAMS_GRECORD="grecord"
 AC_SUBST(PROGRAMS_GRECORD)
 
@@ -166,18 +291,56 @@ gnome-media.spec
 Makefile
 po/Makefile.in
 gmix/Makefile
+gmix/gnome-volume-control.desktop.in
 gmix/doc/Makefile
 gmix/doc/C/Makefile
-gmix/doc/it/Makefile
 vu-meter/Makefile
-macros/Makefile
-intl/Makefile
-tcd/Makefile
-tcd/icons/Makefile
-tcd/doc/Makefile
-tcd/doc/C/Makefile
-cddbslave/Makefile
+cddb-slave2/Makefile
+gnome-cd/Makefile
+gnome-cd/gnome-cd.schemas.in
+gnome-cd/images/Makefile
+gnome-cd/images/lcd-theme/Makefile
+gnome-cd/images/red-lcd-theme/Makefile
+gnome-cd/images/media-theme/Makefile
+gnome-cd/access/Makefile
+gnome-cd/doc/Makefile
+gnome-cd/doc/C/Makefile
 grecord/Makefile
+grecord/gnome-sound-recorder.schemas.in
 grecord/src/Makefile
-omf-install/Makefile
+grecord/doc/Makefile
+grecord/doc/C/Makefile
 version.h])
+
+echo ""
+echo "Gnome-Media has been configured as follows: "
+echo "------------------------------------------- "
+echo "Architecture:           ${CDROM_HOST}"
+echo "Source code location:   ${srcdir}"
+echo "Compiler:               ${CC}"
+echo "System CDRom header:    ${cdrom_header}"
+echo "Default CD device:      ${default_cd_device}"
+echo "Default mixer program:  ${DEFAULT_MIXER}"
+echo "OS supports close tray: ${close_tray}"
+if test x$got_esd = xyes; then
+  echo "ESD support:            ${got_esd} (Building gnome-sound-recorder and vumeter.)"
+  if test x$SOX_PATH = xno; then
+    echo ""
+    echo "sox is not installed on this machine. This means that"
+    echo "gnome-sound-recorder will be unable to record."
+    echo ""
+    echo "sox is available from http://sox.sourceforge.net"
+  else
+    echo "Sox path:               ${path_to_sox}"
+  fi
+else
+  echo ""
+  echo "ESD was not found."
+  echo "vumeter and gnome-sound-recorder will not be built."
+  echo ""
+  echo "ESD is available from ftp://ftp.gnome.org"
+fi
+echo "------------------------------------------- "
+echo ""
+echo "Hope (n): Theological virtue defined as the desire and search for a future good,"
+echo "          difficult but not impossible to attain with God's help."

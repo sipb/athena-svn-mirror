@@ -1,0 +1,735 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CDDBSLAVE_CFLAGS = @CDDBSLAVE_CFLAGS@
+CDDBSLAVE_LIBS = @CDDBSLAVE_LIBS@
+CDROM_HOST = @CDROM_HOST@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+DATADIRNAME = @DATADIRNAME@
+DEFAULT_MIXER = @DEFAULT_MIXER@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+ESD_CFLAGS = @ESD_CFLAGS@
+ESD_CONFIG = @ESD_CONFIG@
+ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
+GAILUTIL_CFLAGS = @GAILUTIL_CFLAGS@
+GAILUTIL_LIBS = @GAILUTIL_LIBS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GMIX_LIBS = @GMIX_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+HAVE_JW = @HAVE_JW@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+JW = @JW@
+LDFLAGS = @LDFLAGS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MEDIA_CFLAGS = @MEDIA_CFLAGS@
+MEDIA_LIBS = @MEDIA_LIBS@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PROGRAMS_GMIX = @PROGRAMS_GMIX@
+PROGRAMS_GNOME_CD = @PROGRAMS_GNOME_CD@
+PROGRAMS_GRECORD = @PROGRAMS_GRECORD@
+PROGRAMS_VUMETER = @PROGRAMS_VUMETER@
+RANLIB = @RANLIB@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SDTAUDIOCONTROL = @SDTAUDIOCONTROL@
+SOX_PATH = @SOX_PATH@
+STRIP = @STRIP@
+USE_CD_CHANGER = @USE_CD_CHANGER@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+VUMETER_CFLAGS = @VUMETER_CFLAGS@
+VUMETER_LIBS = @VUMETER_LIBS@
+default_cd_device = @default_cd_device@
+path_to_sox = @path_to_sox@
+
+INCLUDES = \
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	$(CDDBSLAVE_CFLAGS)			\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	-DDATADIR=\""$(datadir)"\"		\
+	-DG_LOG_DOMAIN=\"CDDBSlave2\"
+
+
+bin_PROGRAMS = cddb-slave2-properties
+lib_LTLIBRARIES = libcddb-slave2.la
+libexec_PROGRAMS = CDDBSlave2 cddb-track-editor
+
+IDLS = GNOME_Media_CDDBSlave2.idl
+
+IDL_GENERATED = \
+	GNOME_Media_CDDBSlave2.h		\
+	GNOME_Media_CDDBSlave2-common.c		\
+	GNOME_Media_CDDBSlave2-skels.c		\
+	GNOME_Media_CDDBSlave2-stubs.c
+
+
+idldir = $(datadir)/idl
+idl_DATA = $(IDLS)
+
+CDDBSlave2_SOURCES = \
+	$(IDL_GENERATED)			\
+	cddb-slave.c				\
+	cddb-slave.h				\
+	cddb-parser.c				\
+	cddb-parser.h				\
+	gnet.h					\
+	gnet-private.c				\
+	gnet-private.h				\
+	iochannel.c				\
+	iochannel.h				\
+	inetaddr.c				\
+	inetaddr.h				\
+	main.c					\
+	socks.c					\
+	socks.h					\
+	socks-private.c				\
+	socks-private.h				\
+	tcp.c					\
+	tcp.h
+
+
+CDDBSlave2_LDADD = \
+	$(CDDBSLAVE_LIBS)				\
+	$(INTLLIBS)
+
+
+cddb_track_editor_SOURCES = \
+	$(IDL_GENERATED)			\
+	cddb-disclosure.c	\
+	cddb-disclosure.h			\
+	cddb-track-editor.c
+
+
+cddb_track_editor_LDADD = \
+	$(CDDBSLAVE_LIBS)				\
+	libcddb-slave2.la
+
+
+cddb_slave2_properties_LDADD = $(CDDBSLAVE_LIBS)
+cddb_slave2_properties_SOURCES = cddb-slave-capplet.c	\
+				 gnet.h			\
+				 gnet-private.c		\
+				 gnet-private.h		\
+				 iochannel.c		\
+				 iochannel.h		\
+				 inetaddr.c		\
+				 inetaddr.h		\
+				 socks.c		\
+				 socks.h		\
+				 socks-private.c	\
+				 socks-private.h	\
+				 tcp.c			\
+				 tcp.h
+
+
+libcddb_slave2includedir = $(includedir)/cddb-slave2
+libcddb_slave2_la_SOURCES = \
+	$(IDL_GENERATED)			\
+	cddb-slave-client.c
+
+
+libcddb_slave2include_HEADERS = \
+	cddb-slave-client.h
+
+
+schemadir = $(sysconfdir)/gconf/schemas
+schema_DATA = CDDB-Slave2.schemas
+
+server_in_files = GNOME_Media_CDDBSlave2.server.in.in
+
+serverdir = $(libdir)/bonobo/servers
+server_DATA = $(server_in_files:.server.in.in=.server)
+
+desktopdir = $(datadir)/control-center-2.0/capplets
+Desktop_in_files = cddb-slave.desktop.in
+desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
+
+EXTRA_DIST = $(server_in_files) $(Desktop_in_files) $(IDLS) $(schema_DATA)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LIBS = @LIBS@
+libcddb_slave2_la_LDFLAGS = 
+libcddb_slave2_la_LIBADD = 
+libcddb_slave2_la_OBJECTS =  GNOME_Media_CDDBSlave2-common.lo \
+GNOME_Media_CDDBSlave2-skels.lo GNOME_Media_CDDBSlave2-stubs.lo \
+cddb-slave-client.lo
+bin_PROGRAMS =  cddb-slave2-properties$(EXEEXT)
+libexec_PROGRAMS =  CDDBSlave2$(EXEEXT) cddb-track-editor$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS) $(libexec_PROGRAMS)
+
+cddb_slave2_properties_OBJECTS =  cddb-slave-capplet.$(OBJEXT) \
+gnet-private.$(OBJEXT) iochannel.$(OBJEXT) inetaddr.$(OBJEXT) \
+socks.$(OBJEXT) socks-private.$(OBJEXT) tcp.$(OBJEXT)
+cddb_slave2_properties_DEPENDENCIES = 
+cddb_slave2_properties_LDFLAGS = 
+CDDBSlave2_OBJECTS =  GNOME_Media_CDDBSlave2-common.$(OBJEXT) \
+GNOME_Media_CDDBSlave2-skels.$(OBJEXT) \
+GNOME_Media_CDDBSlave2-stubs.$(OBJEXT) cddb-slave.$(OBJEXT) \
+cddb-parser.$(OBJEXT) gnet-private.$(OBJEXT) iochannel.$(OBJEXT) \
+inetaddr.$(OBJEXT) main.$(OBJEXT) socks.$(OBJEXT) \
+socks-private.$(OBJEXT) tcp.$(OBJEXT)
+CDDBSlave2_DEPENDENCIES = 
+CDDBSlave2_LDFLAGS = 
+cddb_track_editor_OBJECTS =  GNOME_Media_CDDBSlave2-common.$(OBJEXT) \
+GNOME_Media_CDDBSlave2-skels.$(OBJEXT) \
+GNOME_Media_CDDBSlave2-stubs.$(OBJEXT) cddb-disclosure.$(OBJEXT) \
+cddb-track-editor.$(OBJEXT)
+cddb_track_editor_DEPENDENCIES =  libcddb-slave2.la
+cddb_track_editor_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(desktop_DATA) $(idl_DATA) $(schema_DATA) $(server_DATA)
+
+HEADERS =  $(libcddb_slave2include_HEADERS)
+
+DIST_COMMON =  COPYING.LIB ChangeLog Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libcddb_slave2_la_SOURCES) $(cddb_slave2_properties_SOURCES) $(CDDBSlave2_SOURCES) $(cddb_track_editor_SOURCES)
+OBJECTS = $(libcddb_slave2_la_OBJECTS) $(cddb_slave2_properties_OBJECTS) $(CDDBSlave2_OBJECTS) $(cddb_track_editor_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps cddb-slave2/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libcddb-slave2.la: $(libcddb_slave2_la_OBJECTS) $(libcddb_slave2_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libcddb_slave2_la_LDFLAGS) $(libcddb_slave2_la_OBJECTS) $(libcddb_slave2_la_LIBADD) $(LIBS)
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+mostlyclean-libexecPROGRAMS:
+
+clean-libexecPROGRAMS:
+	-test -z "$(libexec_PROGRAMS)" || rm -f $(libexec_PROGRAMS)
+
+distclean-libexecPROGRAMS:
+
+maintainer-clean-libexecPROGRAMS:
+
+install-libexecPROGRAMS: $(libexec_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
+	@list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-libexecPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+cddb-slave2-properties$(EXEEXT): $(cddb_slave2_properties_OBJECTS) $(cddb_slave2_properties_DEPENDENCIES)
+	@rm -f cddb-slave2-properties$(EXEEXT)
+	$(LINK) $(cddb_slave2_properties_LDFLAGS) $(cddb_slave2_properties_OBJECTS) $(cddb_slave2_properties_LDADD) $(LIBS)
+
+CDDBSlave2$(EXEEXT): $(CDDBSlave2_OBJECTS) $(CDDBSlave2_DEPENDENCIES)
+	@rm -f CDDBSlave2$(EXEEXT)
+	$(LINK) $(CDDBSlave2_LDFLAGS) $(CDDBSlave2_OBJECTS) $(CDDBSlave2_LDADD) $(LIBS)
+
+cddb-track-editor$(EXEEXT): $(cddb_track_editor_OBJECTS) $(cddb_track_editor_DEPENDENCIES)
+	@rm -f cddb-track-editor$(EXEEXT)
+	$(LINK) $(cddb_track_editor_LDFLAGS) $(cddb_track_editor_OBJECTS) $(cddb_track_editor_LDADD) $(LIBS)
+
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(desktopdir)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(desktop_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
+	done
+
+install-idlDATA: $(idl_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(idldir)
+	@list='$(idl_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-idlDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(idl_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(idldir)/$$p; \
+	done
+
+install-schemaDATA: $(schema_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(schemadir)
+	@list='$(schema_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(schemadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(schemadir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-schemaDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(schema_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(schemadir)/$$p; \
+	done
+
+install-serverDATA: $(server_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-serverDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
+	done
+
+install-libcddb_slave2includeHEADERS: $(libcddb_slave2include_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libcddb_slave2includedir)
+	@list='$(libcddb_slave2include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libcddb_slave2includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libcddb_slave2includedir)/$$p; \
+	done
+
+uninstall-libcddb_slave2includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libcddb_slave2include_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libcddb_slave2includedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = cddb-slave2
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+cddb-disclosure.o: cddb-disclosure.c ../config.h cddb-disclosure.h
+cddb-parser.o: cddb-parser.c ../config.h cddb-slave.h \
+	GNOME_Media_CDDBSlave2.h
+cddb-slave-capplet.o: cddb-slave-capplet.c ../config.h gnet.h inetaddr.h \
+	iochannel.h socks.h tcp.h
+cddb-slave-client.lo cddb-slave-client.o : cddb-slave-client.c \
+	../config.h GNOME_Media_CDDBSlave2.h cddb-slave-client.h
+cddb-slave.o: cddb-slave.c ../config.h gnet.h inetaddr.h iochannel.h \
+	socks.h tcp.h cddb-slave.h GNOME_Media_CDDBSlave2.h \
+	cddb-parser.h
+cddb-track-editor.o: cddb-track-editor.c ../config.h cddb-disclosure.h \
+	cddb-slave-client.h GNOME_Media_CDDBSlave2.h
+gnet-private.o: gnet-private.c gnet-private.h ../config.h gnet.h \
+	inetaddr.h iochannel.h socks.h tcp.h
+GNOME_Media_CDDBSlave2-common.lo GNOME_Media_CDDBSlave2-common.o : \
+	GNOME_Media_CDDBSlave2-common.c GNOME_Media_CDDBSlave2.h
+GNOME_Media_CDDBSlave2-skels.lo GNOME_Media_CDDBSlave2-skels.o : \
+	GNOME_Media_CDDBSlave2-skels.c GNOME_Media_CDDBSlave2.h
+GNOME_Media_CDDBSlave2-stubs.lo GNOME_Media_CDDBSlave2-stubs.o : \
+	GNOME_Media_CDDBSlave2-stubs.c GNOME_Media_CDDBSlave2.h
+inetaddr.o: inetaddr.c gnet-private.h ../config.h gnet.h inetaddr.h \
+	iochannel.h socks.h tcp.h
+iochannel.o: iochannel.c gnet-private.h ../config.h gnet.h inetaddr.h \
+	iochannel.h socks.h tcp.h
+main.o: main.c ../config.h cddb-slave.h GNOME_Media_CDDBSlave2.h
+socks-private.o: socks-private.c gnet-private.h ../config.h gnet.h \
+	inetaddr.h iochannel.h socks.h tcp.h socks-private.h
+socks.o: socks.c socks-private.h gnet-private.h ../config.h gnet.h \
+	inetaddr.h iochannel.h socks.h tcp.h
+tcp.o: tcp.c gnet-private.h ../config.h gnet.h inetaddr.h iochannel.h \
+	socks.h tcp.h socks-private.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
+		install-libexecPROGRAMS
+install-exec: install-exec-am
+
+install-data-am: install-desktopDATA install-idlDATA install-schemaDATA \
+		install-serverDATA install-libcddb_slave2includeHEADERS \
+		install-data-local
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
+		uninstall-libexecPROGRAMS uninstall-desktopDATA \
+		uninstall-idlDATA uninstall-schemaDATA \
+		uninstall-serverDATA \
+		uninstall-libcddb_slave2includeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(libexecdir) $(DESTDIR)$(desktopdir) \
+		$(DESTDIR)$(idldir) $(DESTDIR)$(schemadir) \
+		$(DESTDIR)$(serverdir) \
+		$(DESTDIR)$(libcddb_slave2includedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-binPROGRAMS \
+		mostlyclean-libexecPROGRAMS mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-binPROGRAMS clean-libexecPROGRAMS clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-binPROGRAMS \
+		distclean-libexecPROGRAMS distclean-tags \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-binPROGRAMS \
+		maintainer-clean-libexecPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS mostlyclean-libexecPROGRAMS \
+distclean-libexecPROGRAMS clean-libexecPROGRAMS \
+maintainer-clean-libexecPROGRAMS uninstall-libexecPROGRAMS \
+install-libexecPROGRAMS uninstall-desktopDATA install-desktopDATA \
+uninstall-idlDATA install-idlDATA uninstall-schemaDATA \
+install-schemaDATA uninstall-serverDATA install-serverDATA \
+uninstall-libcddb_slave2includeHEADERS \
+install-libcddb_slave2includeHEADERS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-local install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+GNOME_Media_CDDBSlave2-impl.o: GNOME_Media_CDDBSlave.h
+
+$(IDL_GENERATED): $(IDLS)
+	$(ORBIT_IDL) -I $(BONOBO_IDLDIR) -I $(BONOBO_ACT_IDLDIR)	\
+	-I $(srcdir) -I $(datadir)/idl 	\
+		$(srcdir)/GNOME_Media_CDDBSlave2.idl
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
+@INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_SCHEMAS_RULE@
+
+install-schemas:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
+
+install-data-local: install-schemas
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,2591 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Josu Waliño <josu@elhuyar.com>, 2001
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-media 1.2.3\n"
+"POT-Creation-Date: 2002-11-18 23:59+0000\n"
+"PO-Revision-Date: 2001-05-25 13:35+0200\n"
+"Last-Translator: Unmantained\n"
+"Language-Team: Euskara\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cddb-slave2/cddb-disclosure.c:245
+msgid "Expander Size"
+msgstr ""
+
+#: cddb-slave2/cddb-disclosure.c:246
+msgid "Size of the expander arrow"
+msgstr ""
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:648
+#, fuzzy
+msgid "Log on information"
+msgstr "Soinuari buruzko informazioa erakusten du"
+
+#: cddb-slave2/cddb-slave-capplet.c:657
+msgid "Send _no info"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:666
+msgid "Send real _info"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:675
+msgid "Send _other info..."
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:692
+msgid "N_ame:"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:710
+msgid "_Hostname:"
+msgstr ""
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+#, fuzzy
+msgid "Server"
+msgstr "SOCKS zerbitzaria"
+
+#: cddb-slave2/cddb-slave-capplet.c:739
+msgid "FreeDB _round robin server"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:745
+msgid "Other _FreeDB server..."
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:774
+msgid "Port"
+msgstr "Ataka"
+
+#: cddb-slave2/cddb-slave-capplet.c:777
+#, fuzzy
+msgid "Location"
+msgstr "Ekintza"
+
+#: cddb-slave2/cddb-slave-capplet.c:783
+msgid "Update server list"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:790
+msgid "Other _server..."
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:802
+msgid "Hostname:"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:814
+#, fuzzy
+msgid "_Port:"
+msgstr "Ataka"
+
+#: cddb-slave2/cddb-slave-capplet.c:863
+#, fuzzy
+msgid "CD Database Preferences"
+msgstr "Hobespenak"
+
+#: cddb-slave2/cddb-slave.c:213
+msgid "Unknown / Unknown"
+msgstr "Ezezaguna / Ezezaguna"
+
+#: cddb-slave2/cddb-slave.c:219
+msgid "Unknown"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:441
+msgid "Multiple matches..."
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:446
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:457
+#, fuzzy
+msgid "Category"
+msgstr "Kategoria: "
+
+#: cddb-slave2/cddb-slave.c:461
+msgid "Disc ID"
+msgstr "Diskoaren IDa"
+
+#: cddb-slave2/cddb-slave.c:465
+#, fuzzy
+msgid "Artist and Title"
+msgstr "Artista / Titulua"
+
+#: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
+#: gnome-cd/gnome-cd.c:125
+#, fuzzy
+msgid "Unknown track"
+msgstr "Ezezaguna / Ezezaguna"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+#, fuzzy
+msgid "CD Database"
+msgstr "Datu-base lokala"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+msgid "Modify your CD database preferences"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:78
+msgid "Blues"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Classical Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:80
+#, fuzzy
+msgid "Country"
+msgstr "Erdia"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Dance"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:82
+#, fuzzy
+msgid "Disco"
+msgstr "Ez dago diskorik"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Funk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Grunge"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Hip-Hop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Jazz"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:88
+#, fuzzy
+msgid "New Age"
+msgstr "Berria"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "Oldies"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Other"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Pop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "R&B"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Reggae"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:95
+#, fuzzy
+msgid "Rock"
+msgstr "Blokeatu"
+
+#: cddb-slave2/cddb-track-editor.c:96
+#, fuzzy
+msgid "Techno"
+msgstr "Oihartzuna"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Industrial"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Alternative"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Ska"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Death Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Pranks"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:102
+#, fuzzy
+msgid "Soundtrack"
+msgstr "Soinua"
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Euro-Techno"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Ambient"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Trip-Hop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:106
+#, fuzzy
+msgid "Vocal"
+msgstr "Bol  "
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Jazz+Funk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Fusion"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Trance"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Classical"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Instrumental"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:112
+#, fuzzy
+msgid "Acid"
+msgstr "Ekintza"
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "Game"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:115
+#, fuzzy
+msgid "Sound Clip"
+msgstr "Soinua"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Gospel"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:117
+#, fuzzy
+msgid "Noise"
+msgstr "Ez dago diskorik"
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Alt"
+msgstr ""
+
+#. groups
+#. max 24 chars
+#: cddb-slave2/cddb-track-editor.c:119 gmix/device_labels_alsa.h:37
+msgid "Bass"
+msgstr "Baxua"
+
+#: cddb-slave2/cddb-track-editor.c:120
+#, fuzzy
+msgid "Soul"
+msgstr "Soinua"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Space"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Meditative"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Instrumental Pop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Ethnic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Gothic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Darkwave"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Techno-Industrial"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Electronic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Pop-Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Eurodance"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Dream"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Southern Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Comedy"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Cult"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Gangsta Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:138
+#, fuzzy
+msgid "Top 40"
+msgstr "Hona: "
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Christian Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Pop/Funk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Jungle"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Native American"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Cabaret"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "New Wave"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "Psychedelic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:146
+#, fuzzy
+msgid "Rave"
+msgstr "Kendu"
+
+#: cddb-slave2/cddb-track-editor.c:147
+#, fuzzy
+msgid "Showtunes"
+msgstr "Erakutsi ordua"
+
+#: cddb-slave2/cddb-track-editor.c:148
+#, fuzzy
+msgid "Trailer"
+msgstr "Titulua"
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Lo-Fi"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:150
+#, fuzzy
+msgid "Tribal"
+msgstr "Altua"
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Acid Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Jazz"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:153
+#, fuzzy
+msgid "Polka"
+msgstr "Erreproduzitu"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Retro"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Musical"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Rock & Roll"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Hard Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk/Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "National Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "Swing"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Fast-Fusion"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Bebop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:164
+#, fuzzy
+msgid "Latin"
+msgstr "Lerroa"
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Revival"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Celtic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:167
+#, fuzzy
+msgid "Bluegrass"
+msgstr "Baxua"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Avantgarde"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Gothic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Progressive Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Psychedelic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Symphonic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Slow Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Big Band"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Chorus"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Easy Listening"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:177
+#, fuzzy
+msgid "Acoustic"
+msgstr "Honi buruz"
+
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Humour"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Speech"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:180
+#, fuzzy
+msgid "Chanson"
+msgstr "Aldatu letra-tipoa"
+
+#: cddb-slave2/cddb-track-editor.c:181
+#, fuzzy
+msgid "Opera"
+msgstr "Ireki erretilua "
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Chamber Music"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Sonata"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Symphony"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Booty Bass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Primus"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Porn Groove"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:188
+#, fuzzy
+msgid "Satire"
+msgstr "Tamaina"
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Slow Jam"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Club"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Tango"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Samba"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Folklore"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Ballad"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Power Ballad"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Rythmic Soul"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Freestyle"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Duet"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Punk Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Drum Solo"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "A Cappella"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "Euro-House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Dance Hall"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Goa"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Drum & Bass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Club-House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Hardcore"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:208
+#, fuzzy
+msgid "Terror"
+msgstr "Errorea"
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Indie"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "BritPop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "Negerpunk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Polsk Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:213
+#, fuzzy
+msgid "Beat"
+msgstr "Errepikatu"
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Christian Gangsta Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Heavy Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Black Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Crossover"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Contemporary Christian"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Christian Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Merengue"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Salsa"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Thrash Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:223
+#, fuzzy
+msgid "Anime"
+msgstr "Ordua"
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "JPop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:225
+#, fuzzy
+msgid "Synthpop"
+msgstr "Sint"
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Nu-Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Art Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:525
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr ""
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:615
+msgid "Editing Disc ID: "
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:626
+msgid "_Artist:"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:640
+#, fuzzy
+msgid "Disc _Title:"
+msgstr "Diskoaren titulua"
+
+#: cddb-slave2/cddb-track-editor.c:650
+#, fuzzy
+msgid "Show advanced disc options"
+msgstr "Soinu-aukerak"
+
+#: cddb-slave2/cddb-track-editor.c:651
+msgid "Hide advanced disc options"
+msgstr ""
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:664
+msgid "_Disc comments:"
+msgstr ""
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:679
+msgid "_Genre:"
+msgstr ""
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:695
+msgid "_Year:"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:734
+msgid "Title"
+msgstr "Titulua"
+
+#: cddb-slave2/cddb-track-editor.c:741
+msgid "Length"
+msgstr ""
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:755
+#, fuzzy
+msgid "Show advanced track options"
+msgstr "Soinu-aukerak"
+
+#: cddb-slave2/cddb-track-editor.c:756
+msgid "Hide advanced track options"
+msgstr ""
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:764
+msgid "_Extra track data:"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:891
+#, fuzzy
+msgid "CDDB Track Editor"
+msgstr "Pista-editorea"
+
+#: cddb-slave2/cddb-track-editor.c:1021
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+
+#: gmix/device_labels_alsa.h:7 gmix/device_labels_linux.h:7
+msgid "Synth"
+msgstr "Sint"
+
+#: gmix/device_labels_alsa.h:8
+msgid "PCM"
+msgstr "PCM"
+
+#: gmix/device_labels_alsa.h:9
+msgid "DAC"
+msgstr "DAC"
+
+#: gmix/device_labels_alsa.h:10
+msgid "FM"
+msgstr "FM"
+
+#: gmix/device_labels_alsa.h:11
+msgid "DSP Input"
+msgstr "DSP sarrera"
+
+#: gmix/device_labels_alsa.h:12
+msgid "Line"
+msgstr "Lerroa"
+
+#: gmix/device_labels_alsa.h:13
+msgid "MIC"
+msgstr "Mik"
+
+#: gmix/device_labels_alsa.h:14
+msgid "CD"
+msgstr "CD"
+
+#: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+msgid "Video"
+msgstr "Bideoa"
+
+#: gmix/device_labels_alsa.h:16 gmix/device_labels_linux.h:10
+msgid "Radio"
+msgstr "Irratia"
+
+#: gmix/device_labels_alsa.h:17
+msgid "Phone"
+msgstr "Telefonoa"
+
+#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
+msgid "Mono"
+msgstr "Mono"
+
+#: gmix/device_labels_alsa.h:19
+msgid "PC Speaker"
+msgstr "Ordenagailuko bozgorailua"
+
+#: gmix/device_labels_alsa.h:20
+msgid "Aux"
+msgstr "Aux"
+
+#: gmix/device_labels_alsa.h:21
+msgid "Center Input"
+msgstr "Erdiko sarrera"
+
+#: gmix/device_labels_alsa.h:22
+msgid "Woofer Input"
+msgstr "Woofer sarrera"
+
+#: gmix/device_labels_alsa.h:23
+msgid "Surround Input"
+msgstr "Surround sarrera"
+
+#. outputs
+#. max 24 chars
+#: gmix/device_labels_alsa.h:26
+msgid "Master"
+msgstr "Maisua"
+
+#: gmix/device_labels_alsa.h:27
+msgid "Master Mono"
+msgstr "Mono maisua"
+
+#: gmix/device_labels_alsa.h:28
+msgid "Master Digital"
+msgstr "Digital maisua"
+
+#: gmix/device_labels_alsa.h:29
+msgid "Headphone"
+msgstr "Entzungailua"
+
+#: gmix/device_labels_alsa.h:30
+msgid "Phone Output"
+msgstr "Telefono-irteera"
+
+#: gmix/device_labels_alsa.h:31
+msgid "Center"
+msgstr "Erdia"
+
+#: gmix/device_labels_alsa.h:32
+msgid "Woofer"
+msgstr "Woofer"
+
+#: gmix/device_labels_alsa.h:33
+msgid "Surround"
+msgstr "Surround"
+
+#: gmix/device_labels_alsa.h:34
+msgid "DSP Output"
+msgstr "DSP irteera"
+
+#: gmix/device_labels_alsa.h:38
+msgid "Treble"
+msgstr "Altua"
+
+#: gmix/device_labels_alsa.h:39
+msgid "Equalizer"
+msgstr "Ekualizadorea "
+
+#: gmix/device_labels_alsa.h:40
+msgid "Fader"
+msgstr "Difuminatzailea"
+
+#: gmix/device_labels_alsa.h:41
+msgid "Effect"
+msgstr "Efektua"
+
+#: gmix/device_labels_alsa.h:42
+msgid "3D Effect"
+msgstr "3D efektua"
+
+#: gmix/device_labels_alsa.h:43
+msgid "Mic Gain"
+msgstr "Mikro-irabazia"
+
+#: gmix/device_labels_alsa.h:44
+msgid "Input Gain"
+msgstr "Sarrera-irabazia"
+
+#: gmix/device_labels_alsa.h:45
+msgid "Output Gain"
+msgstr "Irteera-irabazia"
+
+#: gmix/device_labels_alsa.h:46
+msgid "Analog Loopback"
+msgstr "Atzera-begizta analogikoa"
+
+#: gmix/device_labels_alsa.h:47
+msgid "Digital Loopback"
+msgstr "Atzera-begizta digitala"
+
+#: gmix/device_labels_linux.h:7
+msgid "Vol  "
+msgstr "Bol  "
+
+#: gmix/device_labels_linux.h:7
+msgid "Bass "
+msgstr "Baxua "
+
+#: gmix/device_labels_linux.h:7
+msgid "Trebl"
+msgstr "Altua"
+
+#: gmix/device_labels_linux.h:7
+msgid "Pcm  "
+msgstr "Pcm  "
+
+#: gmix/device_labels_linux.h:7
+msgid "Spkr "
+msgstr "Bozg "
+
+#: gmix/device_labels_linux.h:7
+msgid "Line "
+msgstr "Lerroa "
+
+#: gmix/device_labels_linux.h:8
+msgid "Mic  "
+msgstr "Mik  "
+
+#: gmix/device_labels_linux.h:8
+msgid "CD   "
+msgstr "CD   "
+
+#: gmix/device_labels_linux.h:8
+msgid "Mix  "
+msgstr "Nahasi  "
+
+#: gmix/device_labels_linux.h:8
+msgid "Pcm2 "
+msgstr "Pcm2 "
+
+#: gmix/device_labels_linux.h:8
+msgid "Rec  "
+msgstr "Grab  "
+
+#: gmix/device_labels_linux.h:8
+msgid "IGain"
+msgstr "SIrabazia"
+
+#: gmix/device_labels_linux.h:8
+msgid "OGain"
+msgstr "IIrabazia"
+
+#: gmix/device_labels_linux.h:9
+msgid "Line1"
+msgstr "1. lerroa"
+
+#: gmix/device_labels_linux.h:9
+msgid "Line2"
+msgstr "2. lerroa"
+
+#: gmix/device_labels_linux.h:9
+msgid "Line3"
+msgstr "3. lerroa"
+
+#: gmix/device_labels_linux.h:9
+msgid "Digital1"
+msgstr "1digitala"
+
+#: gmix/device_labels_linux.h:9
+msgid "Digital2"
+msgstr "2digitala"
+
+#: gmix/device_labels_linux.h:9
+msgid "Digital3"
+msgstr "3digitala"
+
+#: gmix/device_labels_linux.h:10
+msgid "PhoneIn"
+msgstr "TelefonoSa"
+
+#: gmix/device_labels_linux.h:10
+msgid "PhoneOut"
+msgstr "TelefonoIr"
+
+#: gmix/device_labels_linux.h:10
+msgid "Monitor"
+msgstr "Monitorea"
+
+#: gmix/gmix.c:115
+msgid "Help"
+msgstr "Laguntza"
+
+#: gmix/gmix.c:147
+msgid "don't restore mixer-settings from configuration"
+msgstr "ez leheneratu konfigurazioko nahastaile-ezarpenak "
+
+#: gmix/gmix.c:148
+msgid "restore mixer-settings from configuration"
+msgstr "leheneratu konfigurazioko nahastaile-ezarpenak"
+
+#: gmix/gmix.c:149
+msgid "initialise the mixer(s) from stored configuration and exit"
+msgstr "hasieratu gordetako konfigurazioko nahastailea(k) eta irten"
+
+#: gmix/gmix.c:150
+msgid "don't save (modified) mixer-settings into configuration"
+msgstr "ez gorde (aldatu) nahastaile-ezarpenak konfigurazioan "
+
+#: gmix/gmix.c:382
+msgid ""
+"I was not able to open your audio device.\n"
+"Please check that you have permission to open /dev/mixer\n"
+"and make sure you have sound support compiled into your kernel."
+msgstr ""
+"Ezin izan dut zure audio-gailua ireki.\n"
+"Egiaztatu /dev/mixer irekitzeko baimena baduzula\n"
+"eta ziurtatu nukleoan soinu-euskarria konpilatuta duzula."
+
+#: gmix/gmix.c:603
+#, fuzzy, c-format
+msgid ""
+"Warning: This version of the Gnome Volume Control was compiled with\n"
+"OSS version %d.%d.%d, and your system is running\n"
+"a version prior to 3.6.0.\n"
+msgstr ""
+"Abisua: Gmix-en bertsio hau OSSren\n"
+"%d.%d.%d bertsioan konpilatu zen, eta zure sistema\n"
+"3.6.0. bertsioa baino zaharrago bat exekutatzen ari da\n"
+
+#: gmix/gmix.c:611
+#, fuzzy, c-format
+msgid ""
+"Warning: This version of the Gnome Volume Control was compiled with\n"
+"OSS version %d.%d.%d, and your system is running\n"
+"version %d.%d.%d.\n"
+msgstr ""
+"Abisua: Gmix-en bertsio hau OSSren\n"
+"%d.%d.%d bertsioan konpilatu zen, eta zure sistema\n"
+"%d.%d.%d bertsioa exekutatzen ari da.\n"
+
+#: gmix/gmix.c:1065
+#, c-format
+msgid "left %s"
+msgstr ""
+
+#: gmix/gmix.c:1091
+#, c-format
+msgid "Right %s"
+msgstr ""
+
+#: gmix/gmix.c:1184
+msgid "Lock"
+msgstr "Blokeatu"
+
+#: gmix/gmix.c:1197
+#, fuzzy, c-format
+msgid "%s Lock"
+msgstr "Blokeatu"
+
+#: gmix/gmix.c:1208
+msgid "Mute"
+msgstr "Mutua"
+
+#: gmix/gmix.c:1221
+#, fuzzy, c-format
+msgid "%s Mute"
+msgstr "Mutua"
+
+#: gmix/gmix.c:1235
+msgid "Rec."
+msgstr "Grab."
+
+#: gmix/gmix.c:1247
+#, fuzzy, c-format
+msgid "%s Record"
+msgstr "Grabatu"
+
+#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gnome-volume-control/gnome-volume-control.desktop.in.h:2
+#, fuzzy
+msgid "Volume Control"
+msgstr "Jaitsi bolumena "
+
+#: gmix/gmix.c:1725
+msgid "Gnome Volume Control"
+msgstr ""
+
+#: gmix/gmix.c:1728
+#, fuzzy
+msgid "This is a mixer for sound devices"
+msgstr "OSS soinu-gailuentzako nahastailea da."
+
+#: gmix/gnome-volume-control.desktop.in.in.h:1
+#: gnome-volume-control/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr ""
+
+#: gmix/prefs.c:193 gmix/prefs.c:196
+#, fuzzy
+msgid "Shown"
+msgstr "Soinua"
+
+#: gmix/prefs.c:204 gmix/prefs.c:207
+#, fuzzy
+msgid "Mixer label"
+msgstr "Erabili nahastaile-etiketak"
+
+#. Add the label reset button
+#: gmix/prefs.c:216
+msgid "_Reset labels to their defaults"
+msgstr ""
+
+#: gmix/prefs.c:313
+msgid "Gnome Volume Control Preferences"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:117
+#, fuzzy
+msgid "CD Display"
+msgstr "CD erreproduzigailua"
+
+#: gnome-cd/access/cddisplayaccessible.c:119
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:188
+#, fuzzy
+msgid "Time Line"
+msgstr "Lerroa"
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Line for displaying the time elapsed for the current track"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:192
+#, fuzzy
+msgid "Info Line"
+msgstr "Lerroa"
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+#, fuzzy
+msgid "Line for displaying information"
+msgstr "Soinuari buruzko informazioa erakusten du"
+
+#: gnome-cd/access/cddisplayaccessible.c:196
+#, fuzzy
+msgid "Artist Line"
+msgstr "Artista / Titulua"
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Line for displaying the name of the artist"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:200
+msgid "Album Line"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Line for displaying the name of the album"
+msgstr ""
+
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
+#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+msgid "Play"
+msgstr "Erreproduzitu"
+
+#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
+#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
+#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+#, fuzzy
+msgid "Pause"
+msgstr "Erreproduzitu/Pausarazi"
+
+#: gnome-cd/callbacks.c:603
+#, fuzzy
+msgid "Disc error"
+msgstr "Diskoaren titulua"
+
+#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+msgid "Unknown Artist"
+msgstr ""
+
+#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+msgid "Unknown Album"
+msgstr ""
+
+#: gnome-cd/callbacks.c:690
+#, fuzzy
+msgid "No disc"
+msgstr "Ez dago diskorik"
+
+#: gnome-cd/callbacks.c:716
+msgid "Drive open"
+msgstr ""
+
+#: gnome-cd/callbacks.c:740
+msgid "Data CD"
+msgstr ""
+
+#: gnome-cd/callbacks.c:762
+msgid "No Cdrom"
+msgstr ""
+
+#: gnome-cd/callbacks.c:774
+#, fuzzy
+msgid "Drive Error"
+msgstr "Errorea"
+
+#: gnome-cd/callbacks.c:795
+#, fuzzy
+msgid "Copyright (C) 2001, 2002"
+msgstr "Copyright (C)  2000 Andreas Hyden"
+
+#: gnome-cd/callbacks.c:796
+msgid "A GNOME cd player"
+msgstr ""
+
+#: gnome-cd/cdrom.c:362
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr ""
+
+#: gnome-cd/cdrom.c:368
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not compiled into Linux\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+
+#: gnome-cd/display.c:74
+msgid "Unknown artist"
+msgstr ""
+
+#: gnome-cd/display.c:75
+msgid "Unknown disc"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
+msgid "Gnome CD Player"
+msgstr "Gnome-ren CD erreproduzigailua"
+
+#: gnome-cd/gnome-cd.c:151
+#, fuzzy, c-format
+msgid "%d - Unknown"
+msgstr "Ezezaguna / Ezezaguna"
+
+#: gnome-cd/gnome-cd.c:295
+msgid "P_revious track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:296
+#, fuzzy
+msgid "_Stop"
+msgstr "Gelditu"
+
+#: gnome-cd/gnome-cd.c:297
+#, fuzzy
+msgid "_Play / Pause"
+msgstr "Erreproduzitu/Pausarazi"
+
+#: gnome-cd/gnome-cd.c:298
+msgid "_Next track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:299
+#, fuzzy
+msgid "_Eject disc"
+msgstr "Egotzi"
+
+#: gnome-cd/gnome-cd.c:300
+#, fuzzy
+msgid "_Help"
+msgstr "Laguntza"
+
+#: gnome-cd/gnome-cd.c:301
+msgid "_About Gnome-CD"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:375
+msgid ""
+"There is no CD device set. This means that GnomeCD\n"
+"will be unable to run. Press Set device to go to a dialog\n"
+"where you can set the device, or click Quit to quit GnomeCD"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+#, fuzzy
+msgid "Set device"
+msgstr "CD-ROM gailua"
+
+#: gnome-cd/gnome-cd.c:381
+#, fuzzy
+msgid "No CD device"
+msgstr "CD-ROM gailua"
+
+#: gnome-cd/gnome-cd.c:414
+#, c-format
+msgid ""
+"%s\n"
+"This means that GnomeCD will be unable to run correctly. Press Set device to "
+"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:420
+#, fuzzy
+msgid "Invalid CD device"
+msgstr "CD-ROM gailua"
+
+#: gnome-cd/gnome-cd.c:488
+#, fuzzy
+msgid "Volume control"
+msgstr "Jaitsi bolumena "
+
+#: gnome-cd/gnome-cd.c:497
+msgid "Open track editor"
+msgstr "Ireki pista-editorea"
+
+#: gnome-cd/gnome-cd.c:498
+#, fuzzy
+msgid "Track editor"
+msgstr "Pista-editorea"
+
+#: gnome-cd/gnome-cd.c:505
+#, fuzzy
+msgid "Open preferences"
+msgstr "Hobespenak"
+
+#: gnome-cd/gnome-cd.c:506
+msgid "Preferences"
+msgstr "Hobespenak"
+
+#: gnome-cd/gnome-cd.c:514
+#, fuzzy
+msgid "Track List"
+msgstr "Pista-editorea"
+
+#: gnome-cd/gnome-cd.c:534
+msgid "Previous track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:534
+msgid "Previous"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:538
+msgid "Rewind"
+msgstr "Atzera eraman"
+
+#: gnome-cd/gnome-cd.c:555
+#, fuzzy
+msgid "Play / Pause"
+msgstr "Erreproduzitu/Pausarazi"
+
+#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+msgid "Stop"
+msgstr "Gelditu"
+
+#: gnome-cd/gnome-cd.c:564
+#, fuzzy
+msgid "Fast forward"
+msgstr "Aurreratze azkarra"
+
+#: gnome-cd/gnome-cd.c:572
+msgid "Next track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:576
+#, fuzzy
+msgid "Eject CD"
+msgstr "Egotzi"
+
+#: gnome-cd/gnome-cd.c:576
+msgid "Eject"
+msgstr "Egotzi"
+
+#: gnome-cd/gnome-cd.c:640
+msgid "Cannot create player"
+msgstr ""
+
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "CD erreproduzigailua"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr ""
+
+#: gnome-cd/preferences.c:82
+#, c-format
+msgid ""
+"%s\n"
+"This means that Gnome-CD will not be able to run."
+msgstr ""
+
+#: gnome-cd/preferences.c:83
+#, fuzzy
+msgid "Error setting device"
+msgstr "Errorea soinu-fitxategia gordetzean"
+
+#: gnome-cd/preferences.c:793
+#, fuzzy
+msgid "Gnome CD Player Preferences"
+msgstr "Hobespenak"
+
+#: gnome-cd/preferences.c:813
+#, fuzzy
+msgid "CD player de_vice:"
+msgstr "CD-ROM gailua"
+
+#: gnome-cd/preferences.c:828
+msgid "_Apply change"
+msgstr ""
+
+#. left side
+#: gnome-cd/preferences.c:841
+#, fuzzy
+msgid "When Gnome CD Player starts"
+msgstr "Gnome-ren CD erreproduzigailua"
+
+#: gnome-cd/preferences.c:849
+#, fuzzy
+msgid "Do _nothing"
+msgstr "Ez egin ezer"
+
+#: gnome-cd/preferences.c:858
+#, fuzzy
+msgid "Start _playing CD"
+msgstr "Hasi erreproduzitzen"
+
+#: gnome-cd/preferences.c:867
+#, fuzzy
+msgid "_Stop playing CD"
+msgstr "Gelditu erreprodukzioa "
+
+#: gnome-cd/preferences.c:880
+msgid "Attempt to _close CD tray"
+msgstr ""
+
+#. Right side
+#: gnome-cd/preferences.c:892
+#, fuzzy
+msgid "When Gnome CD Player quits"
+msgstr "Gnome-ren CD erreproduzigailua"
+
+#: gnome-cd/preferences.c:900
+#, fuzzy
+msgid "Do not_hing"
+msgstr "Ez egin ezer"
+
+#: gnome-cd/preferences.c:909
+#, fuzzy
+msgid "S_top playing CD"
+msgstr "Gelditu erreprodukzioa "
+
+#: gnome-cd/preferences.c:918
+msgid "Attempt to _open CD tray"
+msgstr ""
+
+#: gnome-cd/preferences.c:928
+msgid "Attempt to c_lose CD tray"
+msgstr ""
+
+#: gnome-cd/preferences.c:959
+msgid "Theme name"
+msgstr ""
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr ""
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+#, fuzzy
+msgid "Sound Recorder"
+msgstr "Soinu-grabagailua"
+
+#: grecord/src/grec.c:56
+#, fuzzy
+msgid "Sound Recorder:"
+msgstr "Soinu-grabagailua"
+
+#: grecord/src/grec.c:108 grecord/src/main.c:248
+msgid "Don't show this message again."
+msgstr "Ez erakutsi mezu hau berriro."
+
+#: grecord/src/grec.c:110 grecord/src/main.c:250
+#, fuzzy, c-format
+msgid ""
+"Could not find '%s'.\n"
+"Set the correct path to sox inpreferences under the tab 'paths'.\n"
+"\n"
+"If you don't have sox, you will not be able to record or do any effects."
+msgstr ""
+"Ezin izan da '%s' aurkitu.\n"
+"Ezarri sox-erako bide-izen zuzena hobespenen 'bide-izen' fitxan.\n"
+"\n"
+"Ez baduzu sox-ik, ezingo duzu grabatu edo efekturik egin."
+
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+msgid "Could not fork child process"
+msgstr "Ezin izan da ume-prozesua bikoiztu"
+
+#: grecord/src/grec.c:173
+msgid "Recording..."
+msgstr "Grabatzen..."
+
+#: grecord/src/grec.c:220
+msgid "Playing..."
+msgstr "Erreproduzitzen..."
+
+#: grecord/src/grec.c:272
+msgid "Converting file..."
+msgstr "Fitxategia bihurtzen..."
+
+#: grecord/src/grec.c:302 grecord/src/grec.c:436
+#, fuzzy
+msgid "Cancel"
+msgstr "Kanalak: "
+
+#: grecord/src/grec.c:345 grecord/src/grec.c:793
+msgid "Audioformat: "
+msgstr "Audioformatua: "
+
+#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+msgid "Sample rate: "
+msgstr "Lagin-maiztasuna: "
+
+#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+msgid "Channels: "
+msgstr "Kanalak: "
+
+#: grecord/src/grec.c:381
+#, fuzzy
+msgid "Cancel open"
+msgstr "Aldatu letra-tipoa"
+
+#: grecord/src/grec.c:390
+msgid "Select a sound file"
+msgstr "Hautatu soinu-fitxategia"
+
+#: grecord/src/grec.c:516
+#, c-format
+msgid "%s is not installed in the path"
+msgstr ""
+
+#: grecord/src/grec.c:523
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr ""
+
+#: grecord/src/grec.c:615
+msgid "Undoing all changes..."
+msgstr "Aldaketa guztiak desegiten..."
+
+#: grecord/src/grec.c:718
+#, fuzzy, c-format
+msgid ""
+"'%s' is a folder.\n"
+"Please select a sound file to be opened."
+msgstr ""
+"'%s' direktorioa da.\n"
+"Hautatu irekitzeko soinu-fitxategi bat."
+
+#: grecord/src/grec.c:730
+#, fuzzy, c-format
+msgid ""
+"File '%s' doesn't exist.\n"
+"Please select an existing sound file to be opened."
+msgstr ""
+"'%s' fitxategia ez dago.\n"
+"Hautatu irekitzeko lehendik dagoen soinu-fitxategia."
+
+#: grecord/src/grec.c:743
+#, fuzzy, c-format
+msgid "File '%s isn't a valid sound file."
+msgstr "'%s' fitxategia ez da baliozko soinu-fitxategia."
+
+#: grecord/src/grec.c:817
+#, fuzzy, c-format
+msgid ""
+"'%s' is a folder.\n"
+"Please enter another filename."
+msgstr ""
+"'%s' direktorioa da.\n"
+"Sartu beste fitxategi-izen bat."
+
+#: grecord/src/grec.c:829
+#, fuzzy, c-format
+msgid ""
+"<b>File '%s' already exists.</b>\n"
+"Do you want to overwrite it?"
+msgstr ""
+"'%s' fitxategia badago lehendik ere.\n"
+"Gainidatzi nahi duzu?"
+
+#: grecord/src/grec.c:832
+msgid "Cancel save"
+msgstr ""
+
+#: grecord/src/grec.c:833
+msgid "Overwrite"
+msgstr ""
+
+#: grecord/src/grec.c:860
+#, fuzzy, c-format
+msgid "Error saving '%s'"
+msgstr "Errorea irakurtzean [%s]\n"
+
+#: grecord/src/grec.c:974
+#, c-format
+msgid ""
+"<b>Do you want to save the changes you made to \"%s\"?</b>\n"
+"\n"
+"Your changes will be lost if you don't save them."
+msgstr ""
+
+#: grecord/src/grec.c:979
+msgid "Do_n't save"
+msgstr ""
+
+#: grecord/src/grec.c:986
+#, c-format
+msgid "Save %s?"
+msgstr ""
+
+#. Save the file
+#: grecord/src/grec.c:1010
+msgid "Saving..."
+msgstr "Gordetzen..."
+
+#: grecord/src/grec.c:1140
+#, fuzzy, c-format
+msgid ""
+"The size of the current sample is more than\n"
+"%i Mb!"
+msgstr "Uneko laginaren tamaina %i Mb baino handiagoa da!"
+
+#: grecord/src/grec.c:1196
+msgid "Save sound file"
+msgstr "Gorde soinu-fitxategia"
+
+#: grecord/src/grec.c:1425
+#, fuzzy
+msgid ""
+"The sound device is not ready. Please check that there isn't\n"
+"another program running that is using the device."
+msgstr ""
+"Soinu-gailua ez dago prest! Ziurtatu soinu-gailua \n"
+"erabiltzen ari den beste programarik ez dela exekutatzen ari."
+
+#: grecord/src/gui.c:45
+msgid "_New"
+msgstr "_Berria"
+
+#: grecord/src/gui.c:46
+msgid "Create a new sample"
+msgstr "Sortu lagin berria"
+
+#: grecord/src/gui.c:54
+#, fuzzy
+msgid "Run _Mixer"
+msgstr "Exekutatu nahastailea..."
+
+#: grecord/src/gui.c:55
+#, fuzzy
+msgid "Run GNOME Volume Control"
+msgstr "Exekutatu GNOME nahastailea"
+
+#: grecord/src/gui.c:69
+msgid "Add echo"
+msgstr "Gehitu oihartzuna"
+
+#: grecord/src/gui.c:70
+msgid "Add echo to the current sample"
+msgstr "Gehitu oihartzuna uneko laginari"
+
+#: grecord/src/gui.c:103
+msgid "Echo"
+msgstr "Oihartzuna"
+
+#: grecord/src/gui.c:112
+msgid "_Undo All"
+msgstr ""
+
+#: grecord/src/gui.c:113
+msgid "Undo all changes made on the current sample"
+msgstr "Desegin uneko laginean egindako aldaketa guztiak"
+
+#: grecord/src/gui.c:120
+msgid "Effects"
+msgstr "Efektuak"
+
+#: grecord/src/gui.c:155
+#, fuzzy, c-format
+msgid "%s - Sound Recorder"
+msgstr "Soinu-grabagailua"
+
+#: grecord/src/gui.c:197
+#, fuzzy
+msgid "16bit PCM"
+msgstr "16 biteko pcm-a"
+
+#: grecord/src/gui.c:199
+#, fuzzy
+msgid "8bit PCM"
+msgstr "8 biteko pcm-a"
+
+#: grecord/src/gui.c:202
+msgid "stereo"
+msgstr "estereo"
+
+#: grecord/src/gui.c:204
+msgid "mono"
+msgstr "mono"
+
+#: grecord/src/gui.c:217
+msgid "New"
+msgstr "Berria"
+
+#: grecord/src/gui.c:218
+msgid "Create new sample"
+msgstr "Sortu lagin berria"
+
+#: grecord/src/gui.c:234
+msgid "Play current sample"
+msgstr "Erreproduzitu uneko lagina"
+
+#: grecord/src/gui.c:248
+msgid "Stop playing/recording"
+msgstr "Gelditu erreprodukzioa/grabazioa "
+
+#: grecord/src/gui.c:261
+msgid "Record"
+msgstr "Grabatu"
+
+#: grecord/src/gui.c:262
+msgid "Start recording"
+msgstr "Hasi grabazioa"
+
+#: grecord/src/gui.c:301
+#, fuzzy
+msgid "Audio format: "
+msgstr "Audioformatua: "
+
+#: grecord/src/gui.c:358
+#, c-format
+msgid "File '%s' doesn't exist; using default."
+msgstr "'%s' fitxategia ez dago; lehenetsia erabiltzen."
+
+#: grecord/src/gui.c:382
+#, c-format
+msgid "File '%s' isn't a supported soundfile."
+msgstr "'%s' fitxategiak ez du soinu-fitxategia onartzen."
+
+#. if your charset allows it, replace the "e" of "Hyden"
+#. *  by an "eacute" (U00E9)
+#: grecord/src/gui.c:420
+msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
+msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
+
+#: grecord/src/gui.c:427
+msgid "translator_credits"
+msgstr ""
+
+#: grecord/src/gui.c:431
+#, fuzzy
+msgid "Gnome Sound Recorder"
+msgstr "Soinu-grabagailua"
+
+#. if your charset allows it, replace the
+#. "e" of Hyden by an "eacute" (U00E9)
+#: grecord/src/gui.c:434
+msgid "Copyright (C)  2000 Andreas Hyden"
+msgstr "Copyright (C)  2000 Andreas Hyden"
+
+#: grecord/src/gui.c:435
+msgid ""
+"A simple soundrecorder and soundplayer for GNOME.\n"
+"Dedicated to my cat, Malte."
+msgstr ""
+"GNOMEren soinu-grabagailu eta soinu-erreproduzigailu arrunta.\n"
+"Malte, nire katuari eskainia."
+
+#: grecord/src/gui.c:701
+msgid "Gnome Sound Recorder Preferences"
+msgstr ""
+
+#: grecord/src/gui.c:708
+#, fuzzy
+msgid "Sound Recorder Preferences"
+msgstr "Soinu-grabagailua"
+
+#: grecord/src/gui.c:720
+msgid "Recording"
+msgstr "Grabatzen"
+
+#: grecord/src/gui.c:725
+msgid "Time"
+msgstr "Ordua"
+
+#: grecord/src/gui.c:738
+#, fuzzy
+msgid "_Recording timeout: "
+msgstr "Grabazioaren denbora-muga: "
+
+#: grecord/src/gui.c:754
+msgid "minutes"
+msgstr "minutu"
+
+#: grecord/src/gui.c:761
+#, fuzzy
+msgid "_Stop recording on timeout"
+msgstr "Gelditu grabazioa denbora-mugara iristean"
+
+#: grecord/src/gui.c:769
+#, fuzzy
+msgid "_Open save dialog when recording is finished"
+msgstr "Gorde elkarrizketa-koadroa agertuko da grabazioa amaitzen"
+
+#: grecord/src/gui.c:776
+msgid "Size"
+msgstr "Tamaina"
+
+#: grecord/src/gui.c:785
+#, fuzzy
+msgid "Show warning _message if size (MB) of sample becomes bigger than:"
+msgstr ""
+"Abisu-mezua agertuko da laginaren tamaina (Mb) hau baino handiagoa denean:"
+
+#: grecord/src/gui.c:803
+#, fuzzy
+msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
+msgstr "Gelditu grabazioa laginaren tamaina (Mb) hau baino handiagoa denean:"
+
+#: grecord/src/gui.c:825
+msgid "Playing"
+msgstr "Erreproduzitzen"
+
+#: grecord/src/gui.c:830
+#, fuzzy
+msgid "Repetition"
+msgstr "Errepikatu"
+
+#: grecord/src/gui.c:840
+msgid "_Repeat the sound"
+msgstr ""
+
+#: grecord/src/gui.c:847
+msgid "Play the sound _once only."
+msgstr ""
+
+#: grecord/src/gui.c:853
+msgid "Repeat _forever"
+msgstr ""
+
+#: grecord/src/gui.c:864
+#, fuzzy
+msgid "_Number of times:"
+msgstr "Maiztasuna:"
+
+#: grecord/src/gui.c:885
+msgid "Paths"
+msgstr "Bide-izenak"
+
+#: grecord/src/gui.c:890
+msgid "Program files"
+msgstr "Programako fitxategiak"
+
+#: grecord/src/gui.c:903
+#, fuzzy
+msgid "_Path to sox:"
+msgstr "Sox-erako bide-izena:"
+
+#: grecord/src/gui.c:917
+msgid "_Apply"
+msgstr ""
+
+#: grecord/src/gui.c:926
+#, fuzzy
+msgid "Folders"
+msgstr "Difuminatzailea"
+
+#: grecord/src/gui.c:939
+msgid "_Temporary folder:"
+msgstr ""
+
+#: grecord/src/gui.c:953
+msgid "Apply"
+msgstr ""
+
+#: grecord/src/gui.c:965
+msgid "Sound"
+msgstr "Soinua"
+
+#: grecord/src/gui.c:970
+msgid "Sound options"
+msgstr "Soinu-aukerak"
+
+#: grecord/src/gui.c:979
+msgid ""
+"Note: These options only take effect whenever a new sound sample\n"
+"is created. They do not operate on an existing sample."
+msgstr ""
+
+#: grecord/src/gui.c:992
+#, fuzzy
+msgid "Audio format:"
+msgstr "Audioformatua:"
+
+#: grecord/src/gui.c:1001
+msgid "8 _bit PCM"
+msgstr ""
+
+#: grecord/src/gui.c:1007
+#, fuzzy
+msgid "16 b_it PCM"
+msgstr "16 biteko pcm-a"
+
+#. If only combos didn't suck!
+#: grecord/src/gui.c:1021
+#, fuzzy
+msgid "S_ample rate:"
+msgstr "Lagin-maiztasuna:"
+
+#: grecord/src/gui.c:1052
+#, fuzzy
+msgid "Mono or Stereo:"
+msgstr "mono/estereo"
+
+#: grecord/src/gui.c:1061
+#, fuzzy
+msgid "_Mono"
+msgstr "Mono"
+
+#: grecord/src/gui.c:1067
+#, fuzzy
+msgid "_Stereo"
+msgstr "estereo"
+
+#: grecord/src/gui.c:1088
+#, fuzzy
+msgid "Stereo"
+msgstr "estereo"
+
+#: grecord/src/main.c:50
+msgid "Specify the geometry of the main window"
+msgstr "Zehaztu leiho nagusiaren geometria"
+
+#: grecord/src/main.c:51
+msgid "GEOMETRY"
+msgstr "GEOMETRIA"
+
+#: grecord/src/main.c:59
+msgid "Specify a file to be opened"
+msgstr "Zehaztu ireki behar den fitxategia"
+
+#: grecord/src/main.c:68
+msgid "Specify a file to start recording"
+msgstr "Zehaztu grabatzen hasi behar den fitxategia"
+
+#: grecord/src/main.c:77
+msgid "Specify a file to start playing"
+msgstr "Zehaztu erreproduzitzen hasi behar den fitxategia"
+
+#: grecord/src/main.c:172
+msgid "Sound recorder"
+msgstr "Soinu-grabagailua"
+
+#: grecord/src/preferences.c:192
+#, fuzzy
+msgid "Audio format: 8bit PCM"
+msgstr "Audioformatua: "
+
+#: grecord/src/preferences.c:192
+#, fuzzy
+msgid "Audio format: 16bit PCM"
+msgstr "Audioformatua: "
+
+#: grecord/src/preferences.c:213
+#, fuzzy, c-format
+msgid "Sample rate: %s"
+msgstr "Lagin-maiztasuna: "
+
+#: grecord/src/preferences.c:231
+#, fuzzy
+msgid "Channels: mono"
+msgstr "Kanalak: "
+
+#: grecord/src/preferences.c:231
+#, fuzzy
+msgid "Channels: stereo"
+msgstr "Kanalak: "
+
+#: grecord/src/sound.c:136
+msgid "Adding echo to sample..."
+msgstr "Laginari oihartzuna gehitzen..."
+
+#: vu-meter/main.c:120
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+"Ezin da soinuaren daemon-arekin konektatu.\n"
+"Exekutatu 'esd' komando-gonbitean."
+
+#: vu-meter/main.c:246
+msgid "Specify the X position of the meter."
+msgstr "Zehaztu neurgailuaren X kokalekua."
+
+#: vu-meter/main.c:247
+msgid "X-Position"
+msgstr "X kokalekua"
+
+#: vu-meter/main.c:249
+msgid "Specify the Y position of the meter."
+msgstr "Zehaztu neurgailuaren Y kokalekua."
+
+#: vu-meter/main.c:250
+msgid "Y-Position"
+msgstr "Y kokalekua"
+
+#: vu-meter/main.c:252
+msgid "Connect to the esd server on this host."
+msgstr "Konektatu esd zerbitzariarekin ostalari honetan."
+
+#: vu-meter/main.c:253
+msgid "ESD Server Host"
+msgstr "ESD zerbitzariaren ostalaria"
+
+#: vu-meter/main.c:255
+msgid "Open a vertical version of the meter."
+msgstr "Ireki neurgailuaren bertsio bertikala."
+
+#: vu-meter/main.c:257
+msgid "Act as recording level meter."
+msgstr "Grabazio-mailaren neurgailu gisa aritu."
+
+#: vu-meter/main.c:274
+#, c-format
+msgid "Host is %s\n"
+msgstr "Ostalaria %s da\n"
+
+#: vu-meter/main.c:291
+msgid "Recording level"
+msgstr "Grabazio-maila"
+
+#: vu-meter/main.c:291
+msgid "Volume Meter"
+msgstr "Bolumenaren neurgailua"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr ""
+
+#: vu-meter/reclevel.desktop.in.h:2
+#, fuzzy
+msgid "Recording level monitor"
+msgstr "ESDren grabazio-mailaren neurgailu-unitatea "
+
+#: vu-meter/vumeter.desktop.in.h:1
+msgid "Monitor the sound output volume"
+msgstr ""
+
+#: vu-meter/vumeter.desktop.in.h:2
+#, fuzzy
+msgid "Volume monitor"
+msgstr "Bolumenaren neurgailua"
+
+#, fuzzy
+#~ msgid "CDDB"
+#~ msgstr "CD"
+
+#, fuzzy
+#~ msgid "CDDB Properties"
+#~ msgstr "CDDB ezarpenak"
+
+#~ msgid "On startup"
+#~ msgstr "Abioan"
+
+#~ msgid "Restore saved mixer levels on startup"
+#~ msgstr "Leheneratu abioan gordetako nahastaile-mailak"
+
+#~ msgid "GUI"
+#~ msgstr "GUI"
+
+#, fuzzy
+#~ msgid "Show mixer icons"
+#~ msgstr "Erabili nahastaile-ikonoak"
+
+#, fuzzy
+#~ msgid "Show mixer labels"
+#~ msgstr "Erabili nahastaile-etiketak"
+
+#~ msgid "Labels"
+#~ msgstr "Etiketak"
+
+#, fuzzy
+#~ msgid "Error opening CD"
+#~ msgstr "Errorea konektatzean [%s]\n"
+
+#, fuzzy
+#~ msgid "Error reading CD header"
+#~ msgstr "Errorea irakurtzean [%s]\n"
+
+#~ msgid "Ready for command: %s\n"
+#~ msgstr "Prest komandorako: %s\n"
+
+#~ msgid "Connecting [%s]\n"
+#~ msgstr "Konektatzen [%s]\n"
+
+#~ msgid "Querying server [%s]\n"
+#~ msgstr "Zerbitzariari kontsultatzen [%s]\n"
+
+#~ msgid "Waiting for reply [%s]\n"
+#~ msgstr "Erantzunaren zain [%s]\n"
+
+#~ msgid "Reading reply [%s]\n"
+#~ msgstr "Erantzuna irakurtzen [%s]\n"
+
+#~ msgid "Disconnecting [%s]\n"
+#~ msgstr "Deskonektatzen [%s]\n"
+
+#~ msgid "Error querying [%s]\n"
+#~ msgstr "Errorea kontsultatzean [%s]\n"
+
+#~ msgid "No match found for %s\n"
+#~ msgstr "Ez da %s(r)ekin bat datorrenik aurkitu\n"
+
+#~ msgid "Timeout: %s\n"
+#~ msgstr "Denbora-muga: %s\n"
+
+#~ msgid "Inactive. %s\n"
+#~ msgstr "Inaktiboa. %s\n"
+
+#~ msgid "GMIX 3.0"
+#~ msgstr "GMIX 3.0"
+
+#~ msgid "GMIX - The Gnome Mixer"
+#~ msgstr "GMIX - Gnome nahastailea"
+
+#~ msgid "Hide menu on start"
+#~ msgstr "Ezkutatu menua abioan"
+
+#~ msgid "Defaults"
+#~ msgstr "Lehenetsiak"
+
+#~ msgid "GNOME Soundrecorder:"
+#~ msgstr "GNOMEren soinu-grabagailua:"
+
+#~ msgid "File not saved. Do you want to save it?"
+#~ msgstr "Fitxategia ez da gorde. Gorde nahi duzu?"
+
+#~ msgid "Undo all changes"
+#~ msgstr "Desegin aldaketa guztiak"
+
+#~ msgid "Show soundinfo"
+#~ msgstr "Erakutsi soinuari buruzko informazioa"
+
+#~ msgid "Exit"
+#~ msgstr "Irten"
+
+#~ msgid "Exit this program"
+#~ msgstr "Irten programatik"
+
+#~ msgid "Info"
+#~ msgstr "Informazioa"
+
+#~ msgid "GNOME Sound recorder"
+#~ msgstr "GNOME soinu-grabatzailea"
+
+#~ msgid "Play-repeating"
+#~ msgstr "Erreproduzitu errepikapena"
+
+#~ msgid "Forever"
+#~ msgstr "Betiko"
+
+#~ msgid "Path to mixer:"
+#~ msgstr "Nahastailerako bide-izena:"
+
+#~ msgid "Directories"
+#~ msgstr "Direktorioak"
+
+#~ msgid "Temp dir:"
+#~ msgstr "Aldi baterako direktorioa:"
+
+#~ msgid "Main window"
+#~ msgstr "Leiho nagusia"
+
+#~ msgid "User interface"
+#~ msgstr "Erabiltzailearen interfazea"
+
+#~ msgid ""
+#~ "You havn't entered a sox command; you will not be able to record.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "Ez duzu sox komandoa sartu; ezingo duzu grabatu.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "File %s in 'sox command' does not exist.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "'sox komandoko' %s fitxategia ez dago.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "You havn't entered a mixer command; you will not be able to start the "
+#~ "mixer.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "Ez duzu nahastailearen komandoa sartu; ezingo duzu nahastailea hasi.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "File %s in 'mixer command' does not exist.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "'nahastailearen komandoko' %s fitxategia ez dago.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "You havn't entered a temp dir. You will not be able to record.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "Ez duzu aldi baterako direktoriorik sartu. Ezingo duzu grabatu.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "Temp directory %s is a file.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "Aldi baterako %s direktorioa fitxategia da.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "You don't have the correct permissions (read & write) for temp directory %"
+#~ "s.\n"
+#~ "Do you want to use it anyway?"
+#~ msgstr ""
+#~ "Ez duzu baimen egokirik (irakurri & idatzi) aldi baterako %s "
+#~ "direktorioarentzat.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid ""
+#~ "Directory %s does not exist.\n"
+#~ "Do want to use it anyway?"
+#~ msgstr ""
+#~ "%s direktorioa ez dago.\n"
+#~ "Erabili nahi duzu hala ere?"
+
+#~ msgid " untitled.wav"
+#~ msgstr " untitled.wav"
+
+#~ msgid "TCD - The Gnome CD Player"
+#~ msgstr "TCD - Gnome-ren CD erreproduzigailua"
+
+#~ msgid ""
+#~ "GTCD is the Gnome CD player application. Includes CDDB support. Please "
+#~ "see the 'Thanks' file included with the distribution for more credits."
+#~ msgstr ""
+#~ "GTCD Gnome-ren CD erreproduzigailuaren aplikazioa da. CDDB euskarria "
+#~ "dauka. Ikus banaketarekin datorren 'Eskerrak' fitxategia laguntzaileen "
+#~ "zerrenda ikusteko."
+
+#~ msgid "Edit"
+#~ msgstr "Editatu"
+
+#~ msgid "Refresh List"
+#~ msgstr "Freskatu zerrenda"
+
+#~ msgid "Server Settings"
+#~ msgstr "Zerbitzariaren ezarpenak"
+
+#~ msgid "Address"
+#~ msgstr "Helbidea"
+
+#~ msgid "Use HTTP"
+#~ msgstr "Erabili HTTPa"
+
+#~ msgid "Proxy"
+#~ msgstr "Proxy-a"
+
+#~ msgid "Use proxy authentication"
+#~ msgstr "Erabili autentifikazio proxy-a"
+
+#~ msgid "Username"
+#~ msgstr "Erabiltzaile-izena"
+
+#~ msgid "Password"
+#~ msgstr "Pasahitza"
+
+#~ msgid "Use SOCKS"
+#~ msgstr "Erabili SOCKS"
+
+#~ msgid "CDDB Data"
+#~ msgstr "CDDB Datuak"
+
+#~ msgid "CDDB Editor"
+#~ msgstr "CDDB editorea"
+
+#~ msgid "Error reading $HOME/.cddbslave."
+#~ msgstr "Errorea $HOME/.cddbslave irakurtzean."
+
+#~ msgid "Couldn't remove file: %s\n"
+#~ msgstr "Ezin izan da fitxategia kendu: %s\n"
+
+#~ msgid "Delete CDDB Entry?"
+#~ msgstr "Ezabatu nahi duzu CDDB sarrera?"
+
+#~ msgid "CDDB Status"
+#~ msgstr "CDDBren egoera"
+
+#~ msgid "Get CDDB Now"
+#~ msgstr "Lortu CDDB orain"
+
+#~ msgid "trk-e"
+#~ msgstr "pst-e"
+
+#~ msgid "trk-r"
+#~ msgstr "pst-r"
+
+#~ msgid "dsc-e"
+#~ msgstr "dsk-e"
+
+#~ msgid "dsc-r"
+#~ msgstr "dsk-r"
+
+#~ msgid "loop-cd"
+#~ msgstr "begizta-CDa"
+
+#~ msgid "loop-t"
+#~ msgstr "begizta-t"
+
+#~ msgid "normal"
+#~ msgstr "normala"
+
+#~ msgid "random"
+#~ msgstr "ausazkoa"
+
+#~ msgid "-adobe-helvetica-medium-r-normal-*-*-100-*-*-p-*-*-*"
+#~ msgstr "-adobe-helvetica-medium-r-normal-*-*-100-*-*-p-*-*-*"
+
+#~ msgid "Skip backwards"
+#~ msgstr "Saltatu atzerantz"
+
+#~ msgid "Skip forwards"
+#~ msgstr "Saltatu aurrerantz"
+
+#~ msgid "Quit"
+#~ msgstr "Irten"
+
+#~ msgid "Mixer"
+#~ msgstr "Nahastailea"
+
+#~ msgid "Volume Up"
+#~ msgstr "Igo bolumena"
+
+#~ msgid "(Scanning)"
+#~ msgstr "(Eskaneatzen)"
+
+#~ msgid "Volume"
+#~ msgstr "Bolumena"
+
+#~ msgid "Cannot load requested font. Reloading default font."
+#~ msgstr ""
+#~ "Ezin da eskatutako letra-tipoa kargatu. Letra-tipo lehenetsia berritzen."
+
+#~ msgid "Cannot load default Helvetica font. Loading any fixed width font."
+#~ msgstr ""
+#~ "Ezin da Helvetica letra-tipo lehenetsia kargatu. Zabalera finkoa duen "
+#~ "edozein letra-tipo kargatzen."
+
+#~ msgid "Cannot load fixed width font. Exiting."
+#~ msgstr "Ezin da zabalera finkoa duen letra-tipoa kargatu. Irteten."
+
+#~ msgid "Filename of the CD device"
+#~ msgstr "CD gailuaren fitxategi-izena "
+
+#~ msgid "FILE"
+#~ msgstr "FITXATEGIA"
+
+#~ msgid "Play CD on startup"
+#~ msgstr "Erreproduzitu CDa abioan "
+
+#~ msgid "Trk"
+#~ msgstr "Pst"
+
+#~ msgid "Disc Information (%02u:%02u minutes)"
+#~ msgstr "Diskoari buruzko informazioa (%02u:%02u minutu)"
+
+#~ msgid "Track Information"
+#~ msgstr "Pistari buruzko informazioa"
+
+#~ msgid "Clear"
+#~ msgstr "Garbitu"
+
+#~ msgid "Playlist"
+#~ msgstr "Gogokoen zerrenda"
+
+#~ msgid "Submit"
+#~ msgstr "Bidali"
+
+#~ msgid "Submit Information"
+#~ msgstr "Bidali informazioa"
+
+#~ msgid ""
+#~ "Submit information about\n"
+#~ "'%s'"
+#~ msgstr ""
+#~ "Bidali honi buruzko informazioa:\n"
+#~ "'%s'"
+
+#~ msgid ""
+#~ "Error accessing cdrom device.\n"
+#~ "Please check to make sure cdrom drive support\n"
+#~ "is compiled into the kernel, and that you have\n"
+#~ "permission to access the device.\n"
+#~ "\n"
+#~ "Reason: %s\n"
+#~ msgstr ""
+#~ "Errorea CD-ROM gailua atzitzean.\n"
+#~ "Egiaztatu CD-ROM unitate-euskarria\n"
+#~ "nukleoan konpilatuta dagoela, eta\n"
+#~ "gailua atzitzeko baimena baduzula.\n"
+#~ "\n"
+#~ "Arrazoia: %s\n"
+
+#~ msgid "Track %d"
+#~ msgstr "%d pista"
+
+#~ msgid "Preferences..."
+#~ msgstr "Hobespenak..."
+
+#~ msgid "Track Editor..."
+#~ msgstr "Pista-editorea..."
+
+#~ msgid "Mixer..."
+#~ msgstr "Nahastailea..."
+
+#~ msgid "Close tray"
+#~ msgstr "Itxi erretilua"
+
+#~ msgid "Mixer Command"
+#~ msgstr "Nahastailearen komandoa "
+
+#~ msgid "Track/title color"
+#~ msgstr "Pistaren/Tituluaren kolorea "
+
+#~ msgid "Track/title font"
+#~ msgstr "Pistaren/tituluaren letra-tipoa"
+
+#~ msgid "Show handles (restart required)"
+#~ msgstr "Erakutsi maneiatzaileak (berriro hasi behar da)"
+
+#~ msgid "Show tooltips"
+#~ msgstr "Erakutsi argibideak "
+
+#~ msgid "Use alternate method to play CD"
+#~ msgstr "Erabili ordezko metodo bat CDa erreproduzitzeko"
+
+#~ msgid "Use squared law volume control"
+#~ msgstr "Erabili bolumenaren kontrol karratua"
+
+#~ msgid "On exit"
+#~ msgstr "Irtetean"
+
+#~ msgid "Key"
+#~ msgstr "Tekla"
+
+#~ msgid "Click here to change (restart required):"
+#~ msgstr "Egin klik hemen aldatzeko (berriro hasi behar da):"
+
+#~ msgid "Keybindings"
+#~ msgstr "Laster-teklak"
+
+#~ msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
+#~ msgstr "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
+
+#~ msgid "-*-fixed-*-*-*-*-*-*-*-*-*-*-*-*"
+#~ msgstr "-*-fixed-*-*-*-*-*-*-*-*-*-*-*-*"
+
+#~ msgid "ESD Recording Level"
+#~ msgstr "ESDren grabazio-maila "
+
+#~ msgid "A Volume Unit Meter for ESD"
+#~ msgstr "ESDren bolumen-unitatearen neurgailua "
+
+#~ msgid "ESD Volume Meter"
+#~ msgstr "ESDren bolumen-neurgailua"
+
+#~ msgid "A simple soundrecording program for GNOME"
+#~ msgstr "GNOMEren soinu-grabaziorako programa arrunta"
+
+#~ msgid "Audio Mixer"
+#~ msgstr "Audio-nahastailea"

@@ -1,81 +1,828 @@
-# Translation of gnome-media into greek.
-# Copyright (C) 1999, 2000, 2001 Free Software Foundation, Inc.
-# Simos Xenitellis <simos@hellug.gr>, 1999, 2000, 2001.
+# Translation of gnome-media into Greek.
+# Copyright (C) 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+# Simos Xenitellis <simos@hellug.gr>, 1999, 2000, 2001, 2002.
+# Nikos Charonitakis <florix68@yahoo.com>, 2002.
+# AARG! Anonymous <remailer@aarg.net>, 2002.
+# Kostas Papadimas <pkst@gmx.net>, 2002.
+#
+# simos: around 250 messages (initial translation, started counting)
+# nikos: 336 messages, 13Jul2002, updated translation for GNOME 2.0.
+# aarg : 336 messages, 19Jul2002, fixes to translation.
+# kostas: 475 messages, 26Oct2002, completed translation.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-media 1.2.0\n"
-"POT-Creation-Date: 2001-06-12 08:06-0400\n"
-"PO-Revision-Date: 2001-02-18 17:45:32+0900\n"
-"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
-"Language-Team: Greek <simos@hellug.gr>\n"
+"Project-Id-Version: gnome-media 2.0.2.5\n"
+"POT-Creation-Date: 2002-11-18 23:59+0000\n"
+"PO-Revision-Date: 2002-10-26 12:13+0200\n"
+"Last-Translator: Kostas <pkst@gmx.net>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-7\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: cddbslave/main.c:56
-#, c-format
-msgid "Ready for command: %s\n"
-msgstr "Έτοιμο για εντολή: %s\n"
+#: cddb-slave2/cddb-disclosure.c:245
+msgid "Expander Size"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚ Expander"
 
-#: cddbslave/main.c:57
-#, c-format
-msgid "Connecting [%s]\n"
-msgstr "Σύνδεση με [%s]\n"
+#: cddb-slave2/cddb-disclosure.c:246
+msgid "Size of the expander arrow"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚ Ο„ΞΏΟ… expander arrow"
 
-#: cddbslave/main.c:58
-#, c-format
-msgid "Querying server [%s]\n"
-msgstr "Ερώτηση εξυπηρετητή [%s]\n"
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:648
+msgid "Log on information"
+msgstr "Ξ Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ ΟƒΟΞ½Ξ΄ΞµΟƒΞ·Ο‚"
 
-#: cddbslave/main.c:59
-#, c-format
-msgid "Waiting for reply [%s]\n"
-msgstr "Αναμονή απάντησης [%s]\n"
+#: cddb-slave2/cddb-slave-capplet.c:657
+msgid "Send _no info"
+msgstr "ΞΞ± ΞΌΞ®Ξ½_Ξ±Ο€ΞΏΟƒΟ„Ξ­Ξ»Ξ»ΞΏΞ½Ο„Ξ±ΞΉ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚"
 
-#: cddbslave/main.c:60
-#, c-format
-msgid "Reading reply [%s]\n"
-msgstr "Ανάγνωση απάντησης [%s]\n"
+#: cddb-slave2/cddb-slave-capplet.c:666
+msgid "Send real _info"
+msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ®_Ο€ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΟΞ½ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½"
 
-#: cddbslave/main.c:61
-#, c-format
-msgid "Disconnecting [%s]\n"
-msgstr "Αποσύνδεση [%s]\n"
+#: cddb-slave2/cddb-slave-capplet.c:675
+msgid "Send _other info..."
+msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ®_Ξ¬Ξ»Ξ»Ο‰Ξ½ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½..."
 
-#: cddbslave/main.c:62
-#, c-format
-msgid "Error connecting [%s]\n"
-msgstr "Σφάλμα σύνδεσης [%s]\n"
+#: cddb-slave2/cddb-slave-capplet.c:692
+msgid "N_ame:"
+msgstr "Ξ_Ξ½ΞΏΞΌΞ±:"
 
-#: cddbslave/main.c:63
-#, c-format
-msgid "Error querying [%s]\n"
-msgstr "Σφάλμα ερώτησης [%s]\n"
+#: cddb-slave2/cddb-slave-capplet.c:710
+msgid "_Hostname:"
+msgstr "_ΞΞ½ΞΏΞΌΞ± ΟƒΟ…ΟƒΟ„Ξ®ΞΌΞ±Ο„ΞΏΟ‚:"
 
-#: cddbslave/main.c:64
-#, c-format
-msgid "Error reading [%s]\n"
-msgstr "Σφάλμα ανάγνωσης [%s]\n"
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+msgid "Server"
+msgstr "Ξ•ΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„Ξ®Ο‚"
 
-#: cddbslave/main.c:65
-#, c-format
-msgid "No match found for %s\n"
-msgstr "Δε βρέθηκε ταίριασμα για %s\n"
+#: cddb-slave2/cddb-slave-capplet.c:739
+msgid "FreeDB _round robin server"
+msgstr "Ξ•ΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„Ξ®Ο‚ FreeDB _round robin"
 
-#: cddbslave/main.c:66
-#, c-format
-msgid "Timeout: %s\n"
-msgstr "Λήξη χρόνου: %s\n"
+#: cddb-slave2/cddb-slave-capplet.c:745
+msgid "Other _FreeDB server..."
+msgstr "Ξ†Ξ»Ξ»ΞΏΟ‚ ΞµΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„Ξ®Ο‚  _FreeDB..."
 
-#: cddbslave/main.c:67
+#: cddb-slave2/cddb-slave-capplet.c:774
+msgid "Port"
+msgstr "ΞΟΟΞ±"
+
+#: cddb-slave2/cddb-slave-capplet.c:777
+msgid "Location"
+msgstr "Ξ¤ΞΏΟ€ΞΏΞΈΞµΟƒΞ―Ξ±"
+
+#: cddb-slave2/cddb-slave-capplet.c:783
+msgid "Update server list"
+msgstr "Ξ•Ξ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ· Ξ»Ξ―ΟƒΟ„Ξ±Ο‚ ΞµΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„ΟΞ½"
+
+#: cddb-slave2/cddb-slave-capplet.c:790
+msgid "Other _server..."
+msgstr "Ξ†Ξ»Ξ»ΞΏΟ‚ _ΞµΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„Ξ®Ο‚..."
+
+#: cddb-slave2/cddb-slave-capplet.c:802
+msgid "Hostname:"
+msgstr "ΞΞ½ΞΏΞΌΞ± ΟƒΟ…ΟƒΟ„Ξ®ΞΌΞ±Ο„ΞΏΟ‚:"
+
+#: cddb-slave2/cddb-slave-capplet.c:814
+msgid "_Port:"
+msgstr "_ΞΟΟΞ±:"
+
+#: cddb-slave2/cddb-slave-capplet.c:863
+msgid "CD Database Preferences"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ Ξ’Ξ¬ΟƒΞ·Ο‚ Ξ”ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½ CD"
+
+#: cddb-slave2/cddb-slave.c:213
+msgid "Unknown / Unknown"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ / Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ"
+
+#: cddb-slave2/cddb-slave.c:219
+msgid "Unknown"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ"
+
+#: cddb-slave2/cddb-slave.c:441
+msgid "Multiple matches..."
+msgstr "Ξ ΞΏΞ»Ξ»Ξ±Ο€Ξ»Ξ¬ Ο„Ξ±ΞΉΟΞΉΞ¬ΟƒΞΌΞ±Ο„Ξ±..."
+
+#: cddb-slave2/cddb-slave.c:446
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+"Ξ’ΟΞ­ΞΈΞ·ΞΊΞ±Ξ½ Ο€ΞΏΞ»Ξ»Ξ±Ο€Ξ»Ξ¬ Ο„Ξ±ΞΉΟΞΉΞ¬ΟƒΞΌΞ±Ο„Ξ± ΟƒΟ„Ξ·Ξ½ Ξ²Ξ¬ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ¬Ο„Ο‰ ΞµΞ―Ξ½Ξ±ΞΉ ΞΌΞΉΞ± Ξ»Ξ―ΟƒΟ„Ξ± Ξ±Ο€Ο Ο€ΞΉΞΈΞ±Ξ½Ξ­Ο‚ ΞµΞ³Ξ³ΟΞ±Ο†Ξ­Ο‚, Ξ΄ΞΉΞ±Ξ»Ξ­ΞΎΟ„Ξµ Ο„Ξ·Ξ½ ΞΊΞ±Ξ»ΟΟ„ΞµΟΞ·."
+
+#: cddb-slave2/cddb-slave.c:457
+msgid "Category"
+msgstr "ΞΞ±Ο„Ξ·Ξ³ΞΏΟΞ―Ξ±"
+
+#: cddb-slave2/cddb-slave.c:461
+msgid "Disc ID"
+msgstr "ID Ξ”Ξ―ΟƒΞΊΞΏΟ…"
+
+#: cddb-slave2/cddb-slave.c:465
+msgid "Artist and Title"
+msgstr "ΞΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ·Ο‚ ΞΊΞ±ΞΉ Ξ¤Ξ―Ο„Ξ»ΞΏΟ‚"
+
+#: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
+#: gnome-cd/gnome-cd.c:125
+msgid "Unknown track"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+msgid "CD Database"
+msgstr "Ξ’Ξ¬ΟƒΞ· Ξ”ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½ CD"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+msgid "Modify your CD database preferences"
+msgstr "Ξ¤ΟΞΏΟ€ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ· Ο„Ο‰Ξ½ Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΟ‰Ξ½ Ξ²Ξ¬ΟƒΞ·Ο‚ Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½ CD"
+
+#: cddb-slave2/cddb-track-editor.c:78
+msgid "Blues"
+msgstr "ΞΟ€Ξ»ΞΏΟ…Ξ¶"
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Classical Rock"
+msgstr "ΞΞ»Ξ±ΟƒΟƒΞΉΞΊΟ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:80
+msgid "Country"
+msgstr "ΞΞ¬Ξ½Ο„ΟΟ…"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Dance"
+msgstr "Ξ§ΞΏΟΞµΟ…Ο„ΞΉΞΊΞ®"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Disco"
+msgstr "ΞΟ„Ξ―ΟƒΞΊΞΏ"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Funk"
+msgstr "Ξ¦Ξ±Ξ½ΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Grunge"
+msgstr "Grunge"
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Hip-Hop"
+msgstr "Ξ§ΞΉΟ€-Ξ§ΞΏΟ€"
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Jazz"
+msgstr "Ξ¤Ξ¶Ξ±Ξ¶"
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Metal"
+msgstr "Metal"
+
+#: cddb-slave2/cddb-track-editor.c:88
+msgid "New Age"
+msgstr "New Age"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "Oldies"
+msgstr "Oldies"
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Other"
+msgstr "Ξ†Ξ»Ξ»ΞΏ"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Pop"
+msgstr "Ξ ΞΏΟ€"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "R&B"
+msgstr "R&B"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "Rap"
+msgstr "Ξ΅Ξ±Ο€"
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Reggae"
+msgstr "Ξ΅Ξ­Ξ³ΞΊΞµ"
+
+#: cddb-slave2/cddb-track-editor.c:95
+msgid "Rock"
+msgstr "Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Techno"
+msgstr "Techno"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Industrial"
+msgstr "Ξ’ΞΉΞΏΞΌΞ·Ο‡Ξ±Ξ½ΞΉΞΊΟ"
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Alternative"
+msgstr "Ξ•Ξ½Ξ±Ξ»Ξ»Ξ±ΞΊΟ„ΞΉΞΊΟ"
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Ska"
+msgstr "Ξ£ΞΊΞ±"
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Death Metal"
+msgstr "Death Metal"
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Pranks"
+msgstr "Pranks"
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Soundtrack"
+msgstr "ΞΞΉΞ½Ξ·ΞΌΞ±Ο„ΞΏΞ³ΟΞ±Ο†ΞΉΞΊΞ® ΞΞΏΟ…ΟƒΞΉΞΊΞ®"
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Euro-Techno"
+msgstr "Euro-Techno"
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Ambient"
+msgstr "Ambient"
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Trip-Hop"
+msgstr "Trip-Hop"
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Vocal"
+msgstr "Vocal"
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Jazz+Funk"
+msgstr "Ξ¤Ξ¶Ξ±Ξ¶+Ξ¦Ξ±Ξ½ΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Fusion"
+msgstr "Fusion"
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Trance"
+msgstr "Ξ¤ΟΞ±Ξ½Ο‚"
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Classical"
+msgstr "ΞΞ»Ξ±ΟƒΟƒΞΉΞΊΞ®"
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Instrumental"
+msgstr "ΞΟΞ³Ξ±Ξ½ΞΉΞΊΞ®"
+
+#: cddb-slave2/cddb-track-editor.c:112
+msgid "Acid"
+msgstr "Acid"
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "House"
+msgstr "House"
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "Game"
+msgstr "Ξ Ξ±ΞΉΟ‡Ξ½Ξ―Ξ΄ΞΉ"
+
+#: cddb-slave2/cddb-track-editor.c:115
+msgid "Sound Clip"
+msgstr "Ξ—Ο‡Ξ·Ο„ΞΉΞΊΟ ΞΊΞ»ΞΉΟ€"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Gospel"
+msgstr "Ξ“ΞΊΟΟƒΟ€ΞµΞ»"
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Noise"
+msgstr "ΞΟΟΟ…Ξ²ΞΏΟ‚"
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Alt"
+msgstr "Alt"
+
+#  groups
+#  max 24 chars
+#. groups
+#. max 24 chars
+#: cddb-slave2/cddb-track-editor.c:119 gmix/device_labels_alsa.h:37
+msgid "Bass"
+msgstr "ΞΟ€Ξ¬ΟƒΞ± "
+
+#: cddb-slave2/cddb-track-editor.c:120
+msgid "Soul"
+msgstr "Ξ£ΟΞΏΟ…Ξ»"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Punk"
+msgstr "Ξ Ξ±Ξ½ΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Space"
+msgstr "Space"
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Meditative"
+msgstr "Meditative"
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Instrumental Pop"
+msgstr "Instrumental Pop"
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Rock"
+msgstr "Instrumental Rock"
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Ethnic"
+msgstr "ΞΞΈΞ½ΞΉΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Gothic"
+msgstr "Gothic"
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Darkwave"
+msgstr "Darkwave"
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Techno-Industrial"
+msgstr "Techno-Industrial"
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Electronic"
+msgstr "Electronic"
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Pop-Folk"
+msgstr "Pop-Folk"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Eurodance"
+msgstr "Eurodance"
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Dream"
+msgstr "Dream"
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Southern Rock"
+msgstr "Southern Rock"
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Comedy"
+msgstr "Comedy"
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Cult"
+msgstr "Cult"
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Gangsta Rap"
+msgstr "Gangsta Rap"
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Top 40"
+msgstr "Ξ¤ΞΏΟ€ 40"
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Christian Rap"
+msgstr "Christian Rap"
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Pop/Funk"
+msgstr "Ξ ΞΏΟ€/Ξ¦Ξ±Ξ½ΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Jungle"
+msgstr "Jungle"
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Native American"
+msgstr "Native American"
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Cabaret"
+msgstr "Cabaret"
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "New Wave"
+msgstr "New Wave"
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "Psychedelic"
+msgstr "Ξ¨Ο…Ο‡ΞµΞ΄Ξ­Ξ»ΞµΞΉΞ±"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Rave"
+msgstr "Rave"
+
+#: cddb-slave2/cddb-track-editor.c:147
+msgid "Showtunes"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· tunes"
+
+#: cddb-slave2/cddb-track-editor.c:148
+msgid "Trailer"
+msgstr "Ξ¤ΟΞ±Ξ―Ξ·Ξ»ΞµΟ"
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Lo-Fi"
+msgstr "Lo-Fi"
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Tribal"
+msgstr "Tribal"
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Acid Punk"
+msgstr "Acid Punk"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Jazz"
+msgstr "Acid Jazz"
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Polka"
+msgstr "Ξ ΟΞ»ΞΊΞ±"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Retro"
+msgstr "Retro"
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Musical"
+msgstr "ΞΞΉΞΏΟΞ¶ΞΉΞΊΞ±Ξ»"
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Rock & Roll"
+msgstr "Ξ΅ΞΏΞΊ & Ξ΅ΞΏΞ»"
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Hard Rock"
+msgstr "Ξ£ΞΊΞ»Ξ·ΟΟ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Folk"
+msgstr "Ξ¦ΞΏΞ»ΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk/Rock"
+msgstr "Folk/Rock"
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "National Folk"
+msgstr "National Folk"
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "Swing"
+msgstr "Swing"
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Fast-Fusion"
+msgstr "Fast-Fusion"
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Bebop"
+msgstr "Bebop"
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Latin"
+msgstr "Ξ›Ξ¬Ο„ΞΉΞ½"
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Revival"
+msgstr "Revival"
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Celtic"
+msgstr "Celtic"
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Bluegrass"
+msgstr "Bluegrass"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Avantgarde"
+msgstr "Avantgarde"
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Gothic Rock"
+msgstr "Ξ“ΞΏΟ„ΞΈΞΉΞΊΟ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Progressive Rock"
+msgstr "Progressive Rock"
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Psychedelic Rock"
+msgstr "Ξ¨Ο…Ο‡ΞµΞ΄ΞµΞ»ΞΉΞΊΟ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Symphonic Rock"
+msgstr "Ξ£Ο…ΞΌΟ†Ο‰Ξ½ΞΉΞΊΟ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Slow Rock"
+msgstr "Slow Rock"
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Big Band"
+msgstr "Big Band"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Chorus"
+msgstr "Chorus"
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Easy Listening"
+msgstr "Easy Listening"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Acoustic"
+msgstr "Ξ‘ΞΊΞΏΟ…ΟƒΟ„ΞΉΞΊΞ®"
+
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Humour"
+msgstr "Humour"
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Speech"
+msgstr "ΞΞΌΞΉΞ»Ξ―Ξ±"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Chanson"
+msgstr "Chanson"
+
+#: cddb-slave2/cddb-track-editor.c:181
+msgid "Opera"
+msgstr "ΞΟ€ΞµΟΞ±"
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Chamber Music"
+msgstr "Chamber Music"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Sonata"
+msgstr "Ξ£ΞΏΞ½Ξ¬Ο„Ξ±"
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Symphony"
+msgstr "Ξ£Ο…ΞΌΟ†Ο‰Ξ½ΞΉΞΊΞ®"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Booty Bass"
+msgstr "Booty Bass"
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Primus"
+msgstr "Primus"
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Porn Groove"
+msgstr "Porn Groove"
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Satire"
+msgstr "Satire"
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Slow Jam"
+msgstr "Slow Jam"
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Club"
+msgstr "Club"
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Tango"
+msgstr "Ξ¤Ξ±Ξ½Ξ³ΞΊΟ"
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Samba"
+msgstr "Ξ£Ξ¬ΞΌΟ€Ξ±"
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Folklore"
+msgstr "Folklore"
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Ballad"
+msgstr "ΞΟ€Ξ±Ξ»Ξ¬Ξ½Ο„Ξ±"
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Power Ballad"
+msgstr "Power Ballad"
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Rythmic Soul"
+msgstr "Rythmic Soul"
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Freestyle"
+msgstr "Freestyle"
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Duet"
+msgstr "ΞΟ„ΞΏΟ…Ξ­Ο„ΞΏ"
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Punk Rock"
+msgstr "Ξ Ξ±Ξ½ΞΊ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Drum Solo"
+msgstr "Drum Solo"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "A Cappella"
+msgstr "A Cappella"
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "Euro-House"
+msgstr "Euro-House"
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Dance Hall"
+msgstr "Dance Hall"
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Goa"
+msgstr "Goa"
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Drum & Bass"
+msgstr "Drum & Bass"
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Club-House"
+msgstr "Club-House"
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Hardcore"
+msgstr "Hardcore"
+
+#: cddb-slave2/cddb-track-editor.c:208
+msgid "Terror"
+msgstr "Terror"
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Indie"
+msgstr "Ξ‘Ξ½ΞµΞΎΞ¬ΟΟ„Ξ·Ο„ΞΏ"
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "BritPop"
+msgstr "Ξ’ΟΞµΟ„Ξ±Ξ½ΞΉΞΊΞ® Ξ ΞΏΟ€"
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "Negerpunk"
+msgstr "Negerpunk"
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Polsk Punk"
+msgstr "Polsk Punk"
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Beat"
+msgstr "Beat"
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Christian Gangsta Rap"
+msgstr "Christian Gangsta Rap"
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Heavy Metal"
+msgstr "Heavy Metal"
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Black Metal"
+msgstr "Black Metal"
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Crossover"
+msgstr "Crossover"
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Contemporary Christian"
+msgstr "Contemporary Christian"
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Christian Rock"
+msgstr "Ξ§ΟΞΉΟƒΟ„ΞΉΞ±Ξ½ΞΉΞΊΟ Ξ΅ΞΏΞΊ"
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Merengue"
+msgstr "Merengue"
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Salsa"
+msgstr "Ξ£Ξ¬Ξ»ΟƒΞ±"
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Thrash Metal"
+msgstr "Thrash Metal"
+
+#: cddb-slave2/cddb-track-editor.c:223
+msgid "Anime"
+msgstr "Anime"
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "JPop"
+msgstr "JPop"
+
+#: cddb-slave2/cddb-track-editor.c:225
+msgid "Synthpop"
+msgstr "Synthpop"
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Nu-Metal"
+msgstr "Nu-Metal"
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Art Rock"
+msgstr "Art Rock"
+
+#: cddb-slave2/cddb-track-editor.c:525
 #, c-format
-msgid "Inactive. %s\n"
-msgstr "Ανενεργό. %s\n"
+msgid "Editing Disc ID: %s"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± ID Ξ΄Ξ―ΟƒΞΊΞΏΟ…: %s"
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:615
+msgid "Editing Disc ID: "
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ο„ΞΏΟ… ID Ξ΄Ξ―ΟƒΞΊΞΏΟ…:"
+
+#: cddb-slave2/cddb-track-editor.c:626
+msgid "_Artist:"
+msgstr "_ΞΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ·Ο‚:"
+
+#: cddb-slave2/cddb-track-editor.c:640
+msgid "Disc _Title:"
+msgstr "Ξ¤Ξ―Ο„Ξ»ΞΏΟ‚ _Ξ”Ξ―ΟƒΞΊΞΏΟ…:"
+
+#: cddb-slave2/cddb-track-editor.c:650
+msgid "Show advanced disc options"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· ΞµΞΉΞ΄ΞΉΞΊΟΞ½ ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ Ξ΄Ξ―ΟƒΞΊΞΏΟ…"
+
+#: cddb-slave2/cddb-track-editor.c:651
+msgid "Hide advanced disc options"
+msgstr "Ξ‘Ο€ΟΞΊΟΟ…ΟΞ· ΞµΞΉΞ΄ΞΉΞΊΟΞ½ ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ Ξ΄Ξ―ΟƒΞΊΞΏΟ…"
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:664
+msgid "_Disc comments:"
+msgstr "_Ξ£Ο‡ΟΞ»ΞΉΞ± Ξ΄Ξ―ΟƒΞΊΞΏΟ…:"
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:679
+msgid "_Genre:"
+msgstr "_Ξ•Ξ―Ξ΄ΞΏΟ‚:"
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:695
+msgid "_Year:"
+msgstr "_ΞΟ„ΞΏΟ‚:"
+
+#: cddb-slave2/cddb-track-editor.c:734
+msgid "Title"
+msgstr "Ξ¤Ξ―Ο„Ξ»ΞΏΟ‚"
+
+#: cddb-slave2/cddb-track-editor.c:741
+msgid "Length"
+msgstr "Ξ”ΞΉΞ¬ΟΞΊΞµΞΉΞ±"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Show advanced track options"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® Ο€ΟΞΏΟ‡Ο‰ΟΞ·ΞΌΞ­Ξ½Ο‰Ξ½ ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΞΏΟ"
+
+#: cddb-slave2/cddb-track-editor.c:756
+msgid "Hide advanced track options"
+msgstr "Ξ‘Ο€ΟΞΊΟΟ…ΟΞ· Ο€ΟΞΏΟ‡Ο‰ΟΞ·ΞΌΞ­Ξ½Ο‰Ξ½ ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΞΏΟ"
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:764
+msgid "_Extra track data:"
+msgstr "_Extra Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ξ± ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΞΏΟ:"
+
+#: cddb-slave2/cddb-track-editor.c:891
+msgid "CDDB Track Editor"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΟ„Ξ®Ο‚ ΞΞΏΞΌΞΌΞ±Ο„ΞΉΟΞ½ CDDB"
+
+#: cddb-slave2/cddb-track-editor.c:1021
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ CDDBTrackEditor factory.\n"
+"Ξ‘Ο…Ο„Ξ»ΞΏ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± ΞΏΟ†ΞµΞ―Ξ»ΞµΟ„Ξ±ΞΉ ΟƒΟ„ΞΏ ΟΟ„ΞΉ ΞµΞΊΟ„ΞµΞ»ΞµΞ―Ο„Ξ±ΞΉ Ξ­Ξ½Ξ± Ξ¬Ξ»Ξ»ΞΏ Ξ±Ξ½Ο„Ξ―Ξ³ΟΞ±Ο†ΞΏ Ο„ΞΏΟ… cddb-"
+"track-editor.\n"
 
 #: gmix/device_labels_alsa.h:7 gmix/device_labels_linux.h:7
 msgid "Synth"
-msgstr "Σύνθ. "
+msgstr "Synth"
 
 #: gmix/device_labels_alsa.h:8
 msgid "PCM"
@@ -91,11 +838,11 @@ msgstr "FM"
 
 #: gmix/device_labels_alsa.h:11
 msgid "DSP Input"
-msgstr "Είσοδος DSP"
+msgstr "Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚ DSP"
 
 #: gmix/device_labels_alsa.h:12
 msgid "Line"
-msgstr "Γραμμή"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ®"
 
 #: gmix/device_labels_alsa.h:13
 msgid "MIC"
@@ -107,23 +854,23 @@ msgstr "CD"
 
 #: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
 msgid "Video"
-msgstr "Βίντεο"
+msgstr "Ξ’Ξ―Ξ½Ο„ΞµΞΏ"
 
 #: gmix/device_labels_alsa.h:16 gmix/device_labels_linux.h:10
 msgid "Radio"
-msgstr "Ράδιο"
+msgstr "Ξ΅Ξ¬Ξ΄ΞΉΞΏ"
 
 #: gmix/device_labels_alsa.h:17
 msgid "Phone"
-msgstr "Τηλέφωνο"
+msgstr "Ξ‘ΞΊΞΏΟ…ΟƒΟ„ΞΉΞΊΟ"
 
-#: gmix/device_labels_alsa.h:18
+#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
 msgid "Mono"
-msgstr "Μονοφωνικό"
+msgstr "ΞΞΏΞ½ΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
 
 #: gmix/device_labels_alsa.h:19
 msgid "PC Speaker"
-msgstr "Μεγάφωνο PC"
+msgstr "Ξ—Ο‡ΞµΞ―ΞΏ PC"
 
 #: gmix/device_labels_alsa.h:20
 msgid "Aux"
@@ -131,111 +878,105 @@ msgstr "Aux"
 
 #: gmix/device_labels_alsa.h:21
 msgid "Center Input"
-msgstr "Είσοδος Κέντρου"
+msgstr "Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚ ΞΞµΞ½Ο„ΟΞΉΞΊΞΏΟ ΞΊΞ±Ξ½Ξ±Ξ»ΞΉΞΏΟ"
 
 #: gmix/device_labels_alsa.h:22
 msgid "Woofer Input"
-msgstr "Είσοδος Γούφερ"
+msgstr "Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚ Ξ“ΞΏΟΟ†ΞµΟ"
 
 #: gmix/device_labels_alsa.h:23
 msgid "Surround Input"
-msgstr "Είσοδος Σαράουντ"
+msgstr "Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚ Ξ£Ξ±ΟΞ¬ΞΏΟ…Ξ½Ο„"
 
 #. outputs
 #. max 24 chars
 #: gmix/device_labels_alsa.h:26
 msgid "Master"
-msgstr "Πρωτεύων"
+msgstr "Ξ ΟΟ‰Ο„ΞµΟΟ‰Ξ½"
 
 #: gmix/device_labels_alsa.h:27
 msgid "Master Mono"
-msgstr "Πρωτεύον Μονοφωνικό"
+msgstr "Ξ ΟΟ‰Ο„ΞµΟΞΏΞ½ ΞΞΏΞ½ΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
 
 #: gmix/device_labels_alsa.h:28
 msgid "Master Digital"
-msgstr "Πρωτεύων Ψηφιακό"
+msgstr "Ξ ΟΟ‰Ο„ΞµΟΟ‰Ξ½ Ξ¨Ξ·Ο†ΞΉΞ±ΞΊΟ"
 
 #: gmix/device_labels_alsa.h:29
 msgid "Headphone"
-msgstr "Ακουστικά"
+msgstr "Ξ‘ΞΊΞΏΟ…ΟƒΟ„ΞΉΞΊΞ¬"
 
 #: gmix/device_labels_alsa.h:30
 msgid "Phone Output"
-msgstr "Έξοδος Τηλεφ."
+msgstr "ΞΞΎΞΏΞ΄ΞΏΟ‚ Ξ¤Ξ·Ξ»ΞµΟ†."
 
 #: gmix/device_labels_alsa.h:31
 msgid "Center"
-msgstr "Κέντρο"
+msgstr "ΞΞµΞ½Ο„ΟΞΉΞΊΟ"
 
 #: gmix/device_labels_alsa.h:32
 msgid "Woofer"
-msgstr "Γούφερ"
+msgstr "Ξ“ΞΏΟΟ†ΞµΟ"
 
 #: gmix/device_labels_alsa.h:33
 msgid "Surround"
-msgstr "Τετρακαναλικό"
+msgstr "Ξ ΞµΟΞΉΞ²Ξ¬Ξ»Ξ»ΞΏΞ½ Ξ®Ο‡ΞΏΟ‚"
 
 #: gmix/device_labels_alsa.h:34
 msgid "DSP Output"
-msgstr "Έξοδος DSP"
-
-#. groups
-#. max 24 chars
-#: gmix/device_labels_alsa.h:37
-msgid "Bass"
-msgstr "Μπάσα "
+msgstr "ΞΞΎΞΏΞ΄ΞΏΟ‚ DSP"
 
 #: gmix/device_labels_alsa.h:38
 msgid "Treble"
-msgstr "Πρίμα "
+msgstr "Ξ ΟΞ―ΞΌΞ± "
 
 #: gmix/device_labels_alsa.h:39
 msgid "Equalizer"
-msgstr "Αντισταθμιστής"
+msgstr "Ξ™ΟƒΞΏΟƒΟ„Ξ±ΞΈΞΌΞΉΟƒΟ„Ξ®Ο‚"
 
 #: gmix/device_labels_alsa.h:40
 msgid "Fader"
-msgstr "Μειωτήρας"
+msgstr "ΞΞµΞΉΟ‰Ο„Ξ®ΟΞ±Ο‚"
 
 #: gmix/device_labels_alsa.h:41
 msgid "Effect"
-msgstr "Εφφέ"
+msgstr "Ξ•Ο†Ο†Ξ­"
 
 #: gmix/device_labels_alsa.h:42
 msgid "3D Effect"
-msgstr "Εφφέ 3Δ"
+msgstr "Ξ•Ο†Ο†Ξ­ 3Ξ”"
 
 #: gmix/device_labels_alsa.h:43
 msgid "Mic Gain"
-msgstr "Μικρφ+"
+msgstr "ΞΞΉΞΊΟΟ†+"
 
 #: gmix/device_labels_alsa.h:44
 msgid "Input Gain"
-msgstr "Είσδ+"
+msgstr "Ξ•Ξ―ΟƒΞ΄+"
 
 #: gmix/device_labels_alsa.h:45
 msgid "Output Gain"
-msgstr "Έξοδ+"
+msgstr "ΞΞΎΞΏΞ΄+"
 
 #: gmix/device_labels_alsa.h:46
 msgid "Analog Loopback"
-msgstr "Αναλογικό Loopback"
+msgstr "Ξ‘Ξ½Ξ±Ξ»ΞΏΞ³ΞΉΞΊΟ Loopback"
 
 #: gmix/device_labels_alsa.h:47
 msgid "Digital Loopback"
-msgstr "Ψηφιακό Loopback"
+msgstr "Ξ¨Ξ·Ο†ΞΉΞ±ΞΊΟ Loopback"
 
 #: gmix/device_labels_linux.h:7
 msgid "Vol  "
-msgstr "Ένταση "
+msgstr "ΞΞ½Ο„Ξ±ΟƒΞ· "
 
 #: gmix/device_labels_linux.h:7
 msgid "Bass "
-msgstr "Μπάσα"
+msgstr "ΞΟ€Ξ¬ΟƒΞΏ"
 
 #: gmix/device_labels_linux.h:7
 msgid "Trebl"
-msgstr "Trebl"
+msgstr "Ξ ΟΞ―ΞΌΞ±"
 
 #: gmix/device_labels_linux.h:7
 msgid "Pcm  "
@@ -243,15 +984,15 @@ msgstr "Pcm "
 
 #: gmix/device_labels_linux.h:7
 msgid "Spkr "
-msgstr "Ηχείο "
+msgstr "Ξ—Ο‡ΞµΞ―ΞΏ "
 
 #: gmix/device_labels_linux.h:7
 msgid "Line "
-msgstr "Γραμμή"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ®"
 
 #: gmix/device_labels_linux.h:8
 msgid "Mic  "
-msgstr "Μικροφ"
+msgstr "ΞΞΉΞΊΟΞΏΟ†"
 
 #: gmix/device_labels_linux.h:8
 msgid "CD   "
@@ -259,7 +1000,7 @@ msgstr "CD    "
 
 #: gmix/device_labels_linux.h:8
 msgid "Mix  "
-msgstr "Μίκτης"
+msgstr "ΞΞ―ΞΊΟ„Ξ·Ο‚"
 
 #: gmix/device_labels_linux.h:8
 msgid "Pcm2 "
@@ -267,1162 +1008,1086 @@ msgstr "Pcm2 "
 
 #: gmix/device_labels_linux.h:8
 msgid "Rec  "
-msgstr "Ηχογ. "
+msgstr "Rec"
 
 #: gmix/device_labels_linux.h:8
 msgid "IGain"
-msgstr "Είσδ+"
+msgstr "Ξ•Ξ―ΟƒΞ΄+"
 
 #: gmix/device_labels_linux.h:8
 msgid "OGain"
-msgstr "Έξοδ+"
+msgstr "ΞΞΎΞΏΞ΄+"
 
 #: gmix/device_labels_linux.h:9
 msgid "Line1"
-msgstr "Γραμ.1"
+msgstr "Ξ“ΟΞ±ΞΌ.1"
 
 #: gmix/device_labels_linux.h:9
 msgid "Line2"
-msgstr "Γραμ.2"
+msgstr "Ξ“ΟΞ±ΞΌ.2"
 
 #: gmix/device_labels_linux.h:9
 msgid "Line3"
-msgstr "Γραμ.3"
+msgstr "Ξ“ΟΞ±ΞΌ.3"
 
 #: gmix/device_labels_linux.h:9
 msgid "Digital1"
-msgstr "Ψηφιακό1"
+msgstr "Ξ¨Ξ·Ο†ΞΉΞ±ΞΊΟ1"
 
 #: gmix/device_labels_linux.h:9
 msgid "Digital2"
-msgstr "Ψηφιακό2"
+msgstr "Ξ¨Ξ·Ο†ΞΉΞ±ΞΊΟ2"
 
 #: gmix/device_labels_linux.h:9
 msgid "Digital3"
-msgstr "Ψηφιακό3"
+msgstr "Ξ¨Ξ·Ο†ΞΉΞ±ΞΊΟ3"
 
 #: gmix/device_labels_linux.h:10
 msgid "PhoneIn"
-msgstr "Τηλεφ.Εισ."
+msgstr "ΞµΞ―ΟƒΞΏΞ΄ΞΏΟ‚ Ξ±ΞΊΞΏΟ…ΟƒΟ„"
 
 #: gmix/device_labels_linux.h:10
 msgid "PhoneOut"
-msgstr "Τηλεφ.Εξ."
+msgstr "Ξ­ΞΎΞΏΞ΄ΞΏΟ‚ Ξ±ΞΊΞΏΟ…ΟƒΟ„"
 
 #: gmix/device_labels_linux.h:10
 msgid "Monitor"
-msgstr "Έλεγχος"
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞΏΞ»ΞΏΟΞΈΞ·ΟƒΞ·"
 
-#: gmix/gmix.c:111 tcd/popup.c:22
+#: gmix/gmix.c:115
 msgid "Help"
-msgstr "Βοήθεια"
+msgstr "Ξ’ΞΏΞ®ΞΈΞµΞΉΞ±"
 
-#: gmix/gmix.c:142
+#: gmix/gmix.c:147
 msgid "don't restore mixer-settings from configuration"
-msgstr "να μην ανακτηθούν οι ρυθμίσεις μίκτη από τη διαμόρφωση"
+msgstr "Ξ½Ξ± ΞΌΞ·Ξ½ Ξ±Ξ½Ξ±ΞΊΟ„Ξ·ΞΈΞΏΟΞ½ ΞΏΞΉ ΟΟ…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞΌΞ―ΞΊΟ„Ξ· Ξ±Ο€Ο Ο„Ξ· Ξ΄ΞΉΞ±ΞΌΟΟΟ†Ο‰ΟƒΞ·"
 
-#: gmix/gmix.c:143
+#: gmix/gmix.c:148
 msgid "restore mixer-settings from configuration"
-msgstr "ανάκτηση των ρυθμίσεων μίκτη από τη διαμόρφωση"
+msgstr "Ξ±Ξ½Ξ¬ΞΊΟ„Ξ·ΟƒΞ· Ο„Ο‰Ξ½ ΟΟ…ΞΈΞΌΞ―ΟƒΞµΟ‰Ξ½ ΞΌΞ―ΞΊΟ„Ξ· Ξ±Ο€Ο Ο„Ξ· Ξ΄ΞΉΞ±ΞΌΟΟΟ†Ο‰ΟƒΞ·"
 
-#: gmix/gmix.c:144
+#: gmix/gmix.c:149
 msgid "initialise the mixer(s) from stored configuration and exit"
-msgstr "αρχικοποίηση του μίκτη/μικτών από αποθηκευμένη διαμόρφωση και έξοδος"
+msgstr "Ξ±ΟΟ‡ΞΉΞΊΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ· Ο„ΞΏΟ… ΞΌΞ―ΞΊΟ„Ξ·/ΞΌΞΉΞΊΟ„ΟΞ½ Ξ±Ο€Ο Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟ…ΞΌΞ­Ξ½Ξ· Ξ΄ΞΉΞ±ΞΌΟΟΟ†Ο‰ΟƒΞ· ΞΊΞ±ΞΉ Ξ­ΞΎΞΏΞ΄ΞΏΟ‚"
 
-#: gmix/gmix.c:145
+#: gmix/gmix.c:150
 msgid "don't save (modified) mixer-settings into configuration"
-msgstr "να μη αποθηκευθούν οι (τροποποιημένες) ρυθμίσεις μίκτη στη διαμόρφωση"
+msgstr "Ξ½Ξ± ΞΌΞ· Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟ…ΞΈΞΏΟΞ½ ΞΏΞΉ (Ο„ΟΞΏΟ€ΞΏΟ€ΞΏΞΉΞ·ΞΌΞ­Ξ½ΞµΟ‚) ΟΟ…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞΌΞ―ΞΊΟ„Ξ· ΟƒΟ„Ξ· Ξ΄ΞΉΞ±ΞΌΟΟΟ†Ο‰ΟƒΞ·"
 
-#: gmix/gmix.c:520
+#: gmix/gmix.c:382
+msgid ""
+"I was not able to open your audio device.\n"
+"Please check that you have permission to open /dev/mixer\n"
+"and make sure you have sound support compiled into your kernel."
+msgstr ""
+"Ξ”ΞµΞ½ Ξ®Ο„Ξ±Ξ½ Ξ΄Ο…Ξ½Ξ±Ο„Ο Ξ½Ξ± Ξ±Ξ½ΞΏΞΉΟ‡Ο„ΞµΞ― Ξ· ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® Ξ®Ο‡ΞΏΟ….\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ»Ξ­Ξ³ΞΎΟ„Ξµ ΟΟ„ΞΉ Ξ­Ο‡ΞµΟ„Ξµ Ξ΄ΞΉΞΊΞ±Ξ―Ο‰ΞΌΞ± Ξ±Ξ½ΞΏΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚ Ο„ΞΏΟ… /dev/mixer\n"
+"ΞΊΞ±ΞΉ ΞµΟ€ΞΉΞ²ΞµΞ²Ξ±ΞΉΟΟƒΟ„Ξµ ΟΟ„ΞΉ Ξ­Ο‡ΞµΟ„Ξµ Ο…Ο€ΞΏΟƒΟ„Ξ®ΟΞΉΞΎΞ· Ξ®Ο‡ΞΏΟ… ΞΌΞµΟ„Ξ±Ξ³Ξ»Ο‰Ο„Ο„ΞΉΟƒΞΌΞ­Ξ½Ξ· ΟƒΟ„ΞΏΞ½ Ο€Ο…ΟΞ®Ξ½Ξ±."
+
+#: gmix/gmix.c:603
 #, c-format
 msgid ""
-"Warning: This version of gmix was compiled with\n"
+"Warning: This version of the Gnome Volume Control was compiled with\n"
 "OSS version %d.%d.%d, and your system is running\n"
 "a version prior to 3.6.0.\n"
 msgstr ""
+"Ξ ΟΞΏΞµΞΉΞ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·: Ξ‘Ο…Ο„Ξ® Ξ· Ξ­ΞΊΞ΄ΞΏΟƒΞ· Ο„ΞΏΟ… Gnome Volume Control ΞΌΞµΟ„Ξ±Ξ³Ξ»Ο‰Ο„Ο„Ξ―ΟƒΟ„Ξ·ΞΊΞµ\n"
+"ΞΌΞµ Ο„Ξ·Ξ½ Ξ­ΞΊΞ΄ΞΏΟƒΞ· %d.%d.%d Ο„ΞΏΟ… OSS ΞΊΞ±ΞΉ Ο„ΞΏ ΟƒΟΟƒΟ„Ξ·ΞΌΞ¬ ΟƒΞ±Ο‚ \n"
+"ΞµΞΊΟ„ΞµΞ»ΞµΞ― ΞΌΞΉΞ± Ξ­ΞΊΞ΄ΞΏΟƒΞ· Ο€Ξ±Ξ»Ξ±ΞΉΟΟ„ΞµΟΞ· Ο„ΞΏΟ… 3.6.0.\n"
 
-#: gmix/gmix.c:528
+#: gmix/gmix.c:611
 #, c-format
 msgid ""
-"Warning: This version of gmix was compiled with\n"
+"Warning: This version of the Gnome Volume Control was compiled with\n"
 "OSS version %d.%d.%d, and your system is running\n"
 "version %d.%d.%d.\n"
 msgstr ""
+"Ξ ΟΞΏΞµΞΉΞ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·: Ξ‘Ο…Ο„Ξ® Ξ· Ξ­ΞΊΞ΄ΞΏΟƒΞ· Ο„ΞΏΟ… Gnome Volume Control ΞΌΞµΟ„Ξ±Ξ³Ξ»Ο‰Ο„Ο„Ξ―ΟƒΟ„Ξ·ΞΊΞµ\n"
+"ΞΌΞµ Ο„Ξ·Ξ½ Ξ­ΞΊΞ΄ΞΏΟƒΞ· %d.%d.%d Ο„ΞΏΟ… OSS ΞΊΞ±ΞΉ Ο„ΞΏ ΟƒΟΟƒΟ„Ξ·ΞΌΞ¬ ΟƒΞ±Ο‚ \n"
+"ΞµΞΊΟ„ΞµΞ»ΞµΞ― Ο„Ξ·Ξ½ Ξ­ΞΊΞ΄ΞΏΟƒΞ· %d.%d.%d.\n"
 
-#. lock-button, only useful for stereo
-#: gmix/gmix.c:1013
+#: gmix/gmix.c:1065
+#, c-format
+msgid "left %s"
+msgstr "Ξ±ΟΞΉΟƒΟ„ΞµΟΞ¬ %s"
+
+#: gmix/gmix.c:1091
+#, c-format
+msgid "Right %s"
+msgstr "Ξ”ΞµΞΎΞΉΞ¬ %s"
+
+#: gmix/gmix.c:1184
 msgid "Lock"
-msgstr "Κλείδ."
+msgstr "ΞΞ»ΞµΞ―Ξ΄."
 
-#: gmix/gmix.c:1023
-msgid "Rec."
-msgstr "Ηχογρ."
+#: gmix/gmix.c:1197
+#, c-format
+msgid "%s Lock"
+msgstr "%s ΞΞ»ΞµΞ―Ξ΄Ο‰ΞΌΞ±"
 
-#: gmix/gmix.c:1041
+#: gmix/gmix.c:1208
 msgid "Mute"
-msgstr "Σιώπ."
+msgstr "Ξ£Ξ―Ξ³Ξ±ΟƒΞ·"
 
-#: gmix/gmix.c:1084
-msgid "GMIX 3.0"
-msgstr "GMIX 3.0"
+#: gmix/gmix.c:1221
+#, c-format
+msgid "%s Mute"
+msgstr "%s Ξ£Ξ―Ξ³Ξ±ΟƒΞ·"
 
-#: gmix/gmix.c:1396
-msgid "GMIX - The Gnome Mixer"
-msgstr "GMIX - Ο Μίκτης του GNOME"
+#: gmix/gmix.c:1235
+msgid "Rec."
+msgstr "Rec."
 
-#: gmix/gmix.c:1399
-msgid "This is a mixer for OSS sound-devices."
-msgstr "Αυτός είναι μίκτης για συσκευές ήχου OSS."
+#: gmix/gmix.c:1247
+#, c-format
+msgid "%s Record"
+msgstr "%s Ξ—Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·"
 
-#. start frame
-#: gmix/prefs.c:98 tcd/prefs.c:561
-msgid "On startup"
-msgstr "Κατά την εκκίνιση"
+#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gnome-volume-control/gnome-volume-control.desktop.in.h:2
+msgid "Volume Control"
+msgstr "Ξ΅Ο…ΞΈΞΌΞΉΟƒΟ„ΞΉΞΊΟ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚"
 
-#. Set on start
-#: gmix/prefs.c:104
-msgid "Restore saved mixer levels on startup"
-msgstr "Ανάκτηση αποθηκευμένων επίπεδων μίκτη στην εκκίνηση"
+#: gmix/gmix.c:1725
+msgid "Gnome Volume Control"
+msgstr "Ξ΅Ο…ΞΈΞΌΞΉΟƒΟ„ΞΉΞΊΟ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚ Ο„ΞΏΟ… Gnome"
 
-#: gmix/prefs.c:110
-msgid "Hide menu on start"
-msgstr "Απόκρυψη μενού στην εκκίνηση"
+#: gmix/gmix.c:1728
+msgid "This is a mixer for sound devices"
+msgstr "Ξ‘Ο…Ο„ΟΟ‚ ΞµΞ―Ξ½Ξ±ΞΉ ΞΌΞ―ΞΊΟ„Ξ·Ο‚ Ξ³ΞΉΞ± ΟƒΟ…ΟƒΞΊΞµΟ…Ξ­Ο‚ Ξ®Ο‡ΞΏΟ…"
 
-#: gmix/prefs.c:125
-msgid "GUI"
-msgstr "Γραφικό Περιβάλλον Διασύνδεσης"
+#: gmix/gnome-volume-control.desktop.in.in.h:1
+#: gnome-volume-control/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr "Ξ΅ΟΞΈΞΌΞΉΟƒΞ· ΞµΟ€ΞΉΟ€Ξ­Ξ΄ΞΏΟ… Ξ­Ξ½Ο„Ξ±ΟƒΞ·Ο‚"
 
-#: gmix/prefs.c:129
-msgid "Use mixer icons"
-msgstr "Χρήση εικονιδίων μίκτη"
+#: gmix/prefs.c:193 gmix/prefs.c:196
+msgid "Shown"
+msgstr "Ξ•ΞΌΟ†Ξ±Ξ½Ξ―Ξ¶ΞµΟ„Ξ±ΞΉ"
 
-#: gmix/prefs.c:137
-msgid "Use mixer labels"
-msgstr "Χρήση ετικέτων μίκτη"
+#: gmix/prefs.c:204 gmix/prefs.c:207
+msgid "Mixer label"
+msgstr "Ξ§ΟΞ®ΟƒΞ· ΞµΟ„ΞΉΞΊΞµΟ„ΟΞ½ ΞΌΞ―ΞΊΟ„Ξ·"
 
-#: gmix/prefs.c:409
-msgid "Defaults"
+#. Add the label reset button
+#: gmix/prefs.c:216
+msgid "_Reset labels to their defaults"
+msgstr "_Ξ•Ο€Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ Ο€ΟΞΏΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ Ξ³ΞΉΞ± Ο„ΞΉΟ‚ ΞµΟ„ΞΉΞΊΞ­Ο„ΞµΟ‚"
+
+#: gmix/prefs.c:313
+msgid "Gnome Volume Control Preferences"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ Ο„ΞΏΟ… Ξ΅Ο…ΞΈΞΌΞΉΟƒΟ„ΞΉΞΊΞΏΟ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚ Ο„ΞΏΟ… Gnome"
+
+#: gnome-cd/access/cddisplayaccessible.c:117
+msgid "CD Display"
+msgstr "ΞΞΈΟΞ½Ξ· CD"
+
+#: gnome-cd/access/cddisplayaccessible.c:119
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
 msgstr ""
+"Ξ ΟΞΏΞ²Ξ¬Ξ»Ξ»ΞµΞΉ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ³ΞΉΞ± Ο„ΞΏ Ξ¬Ξ»ΞΌΟ€ΞΏΟ…ΞΌ Ο€ΞΏΟ… Ο€Ξ±Ξ―Ξ¶ΞµΞ±Ο„ΞΉ, Ο„ΞΏΞ½ ΞΊΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ· ΞΊΞ±ΞΉ Ο„ΞΏΞ½ "
+"Ο‡ΟΟΞ½ΞΏ Ο€ΞΏΟ… Ο€Ξ­ΟΞ±ΟƒΞµ"
 
-#: gmix/prefs.c:483 tcd/gtcd.c:490 tcd/prefs.c:751
-msgid "Preferences"
-msgstr "Προτιμήσεις"
+#: gnome-cd/access/cddisplayaccessible.c:188
+msgid "Time Line"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® Ξ§ΟΟΞ½ΞΏΟ…"
 
-#: gmix/prefs.c:489
-msgid "Labels"
-msgstr ""
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Line for displaying the time elapsed for the current track"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® Ο€ΟΞΏΞ²ΞΏΞ»Ξ®Ο‚ Ο„ΞΏΟ… Ο‡ΟΟΞ½ΞΏΟ… Ο€ΞΏΟ… Ο€Ξ­ΟΞ±ΟƒΞµ Ξ³ΞΉΞ± Ο„ΞΏ Ο„ΟΞ­Ο‡ΞΏΞ½ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
 
-#: grecord/src/grec.c:51
-msgid "GNOME Soundrecorder:"
-msgstr "Ηχογράφηση ήχου GNOME:"
+#: gnome-cd/access/cddisplayaccessible.c:192
+msgid "Info Line"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® Ξ Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½"
 
-#: grecord/src/grec.c:90 grecord/src/grec.c:120 grecord/src/grec.c:1032
-msgid "Could not fork child process"
-msgstr "Αδύνατη η διχάλωση θυγατρικής διεργασίάς"
+#: gnome-cd/access/cddisplayaccessible.c:193
+msgid "Line for displaying information"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® Ξ³ΞΉΞ± Ο„Ξ·Ξ½ ΞµΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½"
 
-#: grecord/src/grec.c:92
-msgid "Recording..."
-msgstr "Σε ηχογράφηση..."
+#: gnome-cd/access/cddisplayaccessible.c:196
+msgid "Artist Line"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® ΞΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ·"
 
-#: grecord/src/grec.c:122
-msgid "Playing..."
-msgstr "Σε αναπαραγωγή..."
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Line for displaying the name of the artist"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® ΞµΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ·Ο‚ ΞΏΞ½ΟΞΌΞ±Ο„ΞΏΟ‚ Ο„ΞΏΟ… ΞΊΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ·"
 
-#: grecord/src/grec.c:175
-msgid "Converting file..."
-msgstr "Μετατροπή αρχείου..."
+#: gnome-cd/access/cddisplayaccessible.c:200
+msgid "Album Line"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® Ξ”Ξ―ΟƒΞΊΞΏΟ…"
 
-#: grecord/src/grec.c:241 grecord/src/grec.c:654 grecord/src/gui.c:327
-#: grecord/src/preferences.c:412
-msgid "Audioformat: "
-msgstr "Μορφή Ήχου: "
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Line for displaying the name of the album"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ® ΞµΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ·Ο‚ Ο„ΞΏΟ… ΞΏΞ½ΟΞΌΞ±Ο„ΞΏΟ‚ Ο„ΞΏΟ… Ξ΄Ξ―ΟƒΞΊΞΏΟ…"
 
-#: grecord/src/grec.c:245 grecord/src/grec.c:640 grecord/src/gui.c:334
-#: grecord/src/preferences.c:416
-msgid "Sample rate: "
-msgstr "Δειγματοληψία: "
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
+#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+msgid "Play"
+msgstr "Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®"
 
-#: grecord/src/grec.c:255 grecord/src/grec.c:644 grecord/src/gui.c:341
-#: grecord/src/preferences.c:420
-msgid "Channels: "
-msgstr "Κανάλια: "
+#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
+#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
+#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+msgid "Pause"
+msgstr "Ξ‘Ξ½Ξ¬Ο€Ξ±Ο…Ξ»Ξ±"
 
-#: grecord/src/grec.c:285
-msgid "Select a sound file"
-msgstr "Επιλογή αρχείου ήχου"
+#: gnome-cd/callbacks.c:603
+msgid "Disc error"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± Ξ΄Ξ―ΟƒΞΊΞΏΟ…"
 
-#: grecord/src/grec.c:504
-msgid "Undoing all changes..."
-msgstr "Επαναφορά όλων των αλλαγών..."
+#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+msgid "Unknown Artist"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏΟ‚ ΞΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ·Ο‚"
 
-#: grecord/src/grec.c:581
+#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+msgid "Unknown Album"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏΟ‚ Ξ”Ξ―ΟƒΞΊΞΏΟ‚"
+
+#: gnome-cd/callbacks.c:690
+msgid "No disc"
+msgstr "Ξ§Ο‰ΟΞ―Ο‚ Ξ΄Ξ―ΟƒΞΊΞΏ"
+
+#: gnome-cd/callbacks.c:716
+msgid "Drive open"
+msgstr "Ξ‘Ξ½ΞΏΞΉΞΊΟ„ΟΟ‚  ΞΏΞ΄Ξ·Ξ³ΟΟ‚ "
+
+#: gnome-cd/callbacks.c:740
+msgid "Data CD"
+msgstr "CD Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½"
+
+#: gnome-cd/callbacks.c:762
+msgid "No Cdrom"
+msgstr "Ξ”ΞµΞ½ Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ  Cdrom"
+
+#: gnome-cd/callbacks.c:774
+msgid "Drive Error"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΞΞ΄Ξ·Ξ³ΞΏΟ"
+
+#: gnome-cd/callbacks.c:795
+msgid "Copyright (C) 2001, 2002"
+msgstr "Ξ Ξ½ΞµΟ…ΞΌΞ±Ο„ΞΉΞΊΞ¬ Ξ”ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ± (C) 2001, 2002"
+
+#: gnome-cd/callbacks.c:796
+msgid "A GNOME cd player"
+msgstr "Ξ ΟΟΞ³ΟΞ±ΞΌΞΌΞ± Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚ CD Ο„ΞΏΟ… GNOME"
+
+#: gnome-cd/cdrom.c:362
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr "Ξ”ΞµΞ½ Ο†Ξ±Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ½Ξ± Ξ­Ο‡ΞµΟ„Ξµ Ο„Ξ± Ξ±Ο€Ξ±ΟΞ±Ξ―Ο„Ξ·Ο„Ξ± Ξ΄ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ± Ο€ΟΟΟƒΞ²Ξ±ΟƒΞ·Ο‚ ΟƒΟ„ΞΏ  %s."
+
+#: gnome-cd/cdrom.c:368
 #, c-format
 msgid ""
-"'%s' is a directory.\n"
-"Please select a soundfile to be opened."
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not compiled into Linux\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
 msgstr ""
-"Το '%s' είναι κατάλογος.\n"
-"Παρακαλώ επιλέξτε αρχείο ήχου για άνοιγμα."
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ Ο†Ξ±Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ½Ξ± ΞΊΞ±Ο„Ξ±Ξ»Ξ®Ξ³ΞµΞΉ ΟƒΞµ Ξ­Ξ³ΞΊΟ…ΟΞ· ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® CD. Ξ‘Ο…Ο„Ο ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± "
+"ΞΏΟ†ΞµΞ―Ξ»ΞµΟ„Ξ±ΞΉ:\n"
+"Ξ±) Ξ— Ο…Ο€ΞΏΟƒΟ„Ξ®ΟΞΉΞΎΞ· CD Ξ΄ΞµΞ½ Ξ­Ο‡ΞµΞΉ Ξ³Ξ―Ξ½ΞµΞΉ compiled ΟƒΟ„ΞΏ Linux\n"
+"Ξ²) Ξ”ΞµΞ½ Ξ­Ο‡ΞµΟ„Ξµ Ο„Ξ± Ξ±Ο€Ξ±ΟΞ±Ξ―Ο„Ξ·Ο„Ξ± Ξ΄ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ± Ο€ΟΟΟƒΞ²Ξ±ΟƒΞ·Ο‚ ΟƒΟ„ΞΏΞ½ ΞΏΞ΄Ξ·Ξ³Ο CD\n"
+"Ξ³) Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ ΞΏ ΞΏΞ΄Ξ·Ξ³ΟΟ‚ CD.\n"
 
-#: grecord/src/grec.c:593
+#: gnome-cd/display.c:74
+msgid "Unknown artist"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏΟ‚ ΞΊΞ±Ξ»Ξ»ΞΉΟ„Ξ­Ο‡Ξ½Ξ·Ο‚"
+
+#: gnome-cd/display.c:75
+msgid "Unknown disc"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏΟ‚ Ξ΄Ξ―ΟƒΞΊΞΏΟ‚"
+
+#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
+msgid "Gnome CD Player"
+msgstr "Ξ‘Ξ½Ξ±Ξ³Ξ½ΟΟƒΟ„Ξ·Ο‚ CD GNOME ΞΌΞµ Ο…Ο€ΞΏΟƒΟ„Ξ®ΟΞΉΞΎΞ· CDDB"
+
+#: gnome-cd/gnome-cd.c:151
+#, c-format
+msgid "%d - Unknown"
+msgstr "%d - Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ"
+
+#: gnome-cd/gnome-cd.c:295
+msgid "P_revious track"
+msgstr "Ξ _ΟΞΏΞ·Ξ³ΞΏΟΞΌΞµΞ½ΞΏ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
+
+#: gnome-cd/gnome-cd.c:296
+msgid "_Stop"
+msgstr "_Ξ”ΞΉΞ±ΞΊΞΏΟ€Ξ®"
+
+#: gnome-cd/gnome-cd.c:297
+msgid "_Play / Pause"
+msgstr "_Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ® / Ξ‘Ξ½Ξ¬Ο€Ξ±Ο…Ξ»Ξ±"
+
+#: gnome-cd/gnome-cd.c:298
+msgid "_Next track"
+msgstr "_Ξ•Ο€ΟΞΌΞµΞ½ΞΏ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
+
+#: gnome-cd/gnome-cd.c:299
+msgid "_Eject disc"
+msgstr "_Ξ•ΞΊΞ²ΞΏΞ»Ξ® Ξ΄Ξ―ΟƒΞΊΞΏΟ…"
+
+#: gnome-cd/gnome-cd.c:300
+msgid "_Help"
+msgstr "_Ξ’ΞΏΞ®ΞΈΞµΞΉΞ±"
+
+#: gnome-cd/gnome-cd.c:301
+msgid "_About Gnome-CD"
+msgstr "_Ξ ΞµΟΞ― Gnome-CD"
+
+#: gnome-cd/gnome-cd.c:375
+msgid ""
+"There is no CD device set. This means that GnomeCD\n"
+"will be unable to run. Press Set device to go to a dialog\n"
+"where you can set the device, or click Quit to quit GnomeCD"
+msgstr ""
+"Ξ”ΞµΞ½ Ξ­Ο‡ΞµΞΉ ΞΏΟΞΉΟƒΞΈΞµΞ― ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® CD. Ξ‘Ο…Ο„Ο ΟƒΞ·ΞΌΞ±Ξ―Ξ½ΞµΞΉ ΟΟ„ΞΉ Ο„ΞΏ Gnome-CD\n"
+"Ξ΄ΞµΞ½ ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± ΞµΞΊΟ„ΞµΞ»ΞµΞ―Ο„Ξ±ΞΉ. Ξ ΞΉΞ­ΟƒΟ„Ξµ Ο„ΞΏ ΞΊΞΏΟ…ΞΌΟ€Ξ― ΞΏΟΞΉΟƒΞΌΞΏΟ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚\n"
+"ΞΉΞ± Ξ½Ξ± ΞΌΞµΟ„Ξ±Ξ²ΞµΞ―Ο„Ξµ ΟƒΞµ Ξ­Ξ½Ξ± Ξ΄ΞΉΞ¬Ξ»ΞΏΞ³ΞΏ ΟΟ€ΞΏΟ… ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± ΞΏΟΞ―ΟƒΞµΟ„Ξµ Ο„Ξ·Ξ½ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® Ξ® "
+"Ο€Ξ±Ο„Ξ®ΟƒΟ„Ξµ Ξ­ΞΎΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ξ½Ξ± ΞµΞ³ΞΊΞ±Ο„Ξ±Ξ»ΞµΞ―ΟΞµΟ„Ξµ Ο„ΞΏ  GnomeCD"
+
+#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+msgid "Set device"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚"
+
+#: gnome-cd/gnome-cd.c:381
+msgid "No CD device"
+msgstr "Ξ‘Ο€ΞΏΟ…ΟƒΞ―Ξ± ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚ CDROM"
+
+#: gnome-cd/gnome-cd.c:414
+#, c-format
+msgid ""
+"%s\n"
+"This means that GnomeCD will be unable to run correctly. Press Set device to "
+"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+msgstr ""
+"%s\n"
+"Ξ‘Ο…Ο„Ο ΟƒΞ·ΞΌΞ±Ξ―Ξ½ΞµΞΉ ΟΟ„ΞΉ Ο„ΞΏ Gnome-CD Ξ΄ΞµΞ½ ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± ΞµΞΊΟ„ΞµΞ»ΞµΞ―Ο„Ξ±ΞΉ ΟƒΟ‰ΟƒΟ„Ξ¬. Ξ ΞΉΞ­ΟƒΟ„Ξµ Ο„ΞΏ "
+"ΞΊΞΏΟ…ΞΌΟ€Ξ― ΞΏΟΞΉΟƒΞΌΞΏΟ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚ Ξ³ΞΉΞ± Ξ½Ξ± ΞΌΞµΟ„Ξ±Ξ²ΞµΞ―Ο„Ξµ ΟƒΞµ Ξ­Ξ½Ξ± Ξ΄ΞΉΞ¬Ξ»ΞΏΞ³ΞΏ ΟΟ€ΞΏΟ… ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± "
+"ΞΏΟΞ―ΟƒΞµΟ„Ξµ Ο„Ξ·Ξ½ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® Ξ® Ο€Ξ±Ο„Ξ®ΟƒΟ„Ξµ Ξ­ΞΎΞΏΞ΄ΞΏΟ‚ Ξ³ΞΉΞ± Ξ½Ξ± ΞµΞ³ΞΊΞ±Ο„Ξ±Ξ»ΞµΞ―ΟΞµΟ„Ξµ Ο„ΞΏ  GnomeCD."
+
+#: gnome-cd/gnome-cd.c:420
+msgid "Invalid CD device"
+msgstr "ΞΞ· Ξ­Ξ³ΞΊΟ…ΟΞ· ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® CDROM"
+
+#: gnome-cd/gnome-cd.c:488
+msgid "Volume control"
+msgstr "Ξ΅Ο…ΞΈΞΌΞΉΟƒΟ„ΞΉΞΊΟ_ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚"
+
+#: gnome-cd/gnome-cd.c:497
+msgid "Open track editor"
+msgstr "Ξ•ΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· ΞµΟ€ΞµΞΎΞµΟΞ³Ξ±ΟƒΟ„Ξ® Ο„ΟΞΏΟ‡ΞΉΞ¬Ο‚"
+
+#: gnome-cd/gnome-cd.c:498
+msgid "Track editor"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΟ„Ξ®Ο‚ ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΟΞ½"
+
+#: gnome-cd/gnome-cd.c:505
+msgid "Open preferences"
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ± Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΟ‰Ξ½"
+
+#: gnome-cd/gnome-cd.c:506
+msgid "Preferences"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚"
+
+#: gnome-cd/gnome-cd.c:514
+msgid "Track List"
+msgstr "Ξ›Ξ―ΟƒΟ„Ξ± ΞΞΏΞΌΞΌΞ±Ο„ΞΉΟΞ½"
+
+#: gnome-cd/gnome-cd.c:534
+msgid "Previous track"
+msgstr "Ξ ΟΞΏΞ·Ξ³ΞΏΟΞΌΞµΞ½ΞΏ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
+
+#: gnome-cd/gnome-cd.c:534
+msgid "Previous"
+msgstr "Ξ ΟΞΏΞ·Ξ³ΞΏΟΞΌΞµΞ½ΞΏ"
+
+#: gnome-cd/gnome-cd.c:538
+msgid "Rewind"
+msgstr "ΞΞµΟ„Ξ±ΞΊΞ―Ξ½Ξ·ΟƒΞ· ΟƒΟ„Ξ·Ξ½ Ξ±ΟΟ‡Ξ®"
+
+#: gnome-cd/gnome-cd.c:555
+msgid "Play / Pause"
+msgstr "Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ® / Ξ‘Ξ½Ξ¬Ο€Ξ±Ο…Ξ»Ξ±"
+
+#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+msgid "Stop"
+msgstr "Ξ”ΞΉΞ±ΞΊΞΏΟ€Ξ®"
+
+#: gnome-cd/gnome-cd.c:564
+msgid "Fast forward"
+msgstr "Ξ¤Ξ±Ο‡ΞµΞ―Ξ± ΞΊΞ―Ξ½Ξ·ΟƒΞ· ΞΌΟ€ΟΞΏΟƒΟ„Ξ¬"
+
+#: gnome-cd/gnome-cd.c:572
+msgid "Next track"
+msgstr "Ξ•Ο€ΟΞΌΞµΞ½ΞΏ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
+
+#: gnome-cd/gnome-cd.c:576
+msgid "Eject CD"
+msgstr "Ξ•ΞΊΞ²ΞΏΞ»Ξ® CD"
+
+#: gnome-cd/gnome-cd.c:576
+msgid "Eject"
+msgstr "Ξ•ΞΊΞ²ΞΏΞ»Ξ®"
+
+#: gnome-cd/gnome-cd.c:640
+msgid "Cannot create player"
+msgstr "Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚ Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚"
+
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "Ξ‘Ξ½Ξ±Ξ³Ξ½ΟΟƒΟ„Ξ·Ο‚ CD"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr "Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ® ΞΞΏΟ…ΟƒΞΉΞΊΟΞ½ CD"
+
+#: gnome-cd/preferences.c:82
+#, c-format
+msgid ""
+"%s\n"
+"This means that Gnome-CD will not be able to run."
+msgstr ""
+"%s\n"
+"Ξ‘Ο…Ο„Ο ΟƒΞ·ΞΌΞ±Ξ―Ξ½ΞµΞΉ ΟΟ„ΞΉ Ο„ΞΏ Gnome-CD Ξ΄ΞµΞ½ ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± ΞµΞΊΟ„ΞµΞ»ΞµΞ―Ο„Ξ±ΞΉ."
+
+#: gnome-cd/preferences.c:83
+msgid "Error setting device"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΞΊΞ±Ο„Ξ¬ Ο„ΞΏΞ½ ΞΏΟΞΉΟƒΞΌΟ Ο„Ξ·Ο‚ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚"
+
+#: gnome-cd/preferences.c:793
+msgid "Gnome CD Player Preferences"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ Ο„ΞΏΟ… Gnome CD "
+
+#: gnome-cd/preferences.c:813
+msgid "CD player de_vice:"
+msgstr "Ξ£Ο…_ΟƒΞΊΞµΟ…Ξ® Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚ CD"
+
+#: gnome-cd/preferences.c:828
+msgid "_Apply change"
+msgstr "_Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ® Ξ±Ξ»Ξ»Ξ±Ξ³Ξ®Ο‚"
+
+#. left side
+#: gnome-cd/preferences.c:841
+msgid "When Gnome CD Player starts"
+msgstr "ΞΟ„Ξ±Ξ½ ΞΎΞµΞΊΞΉΞ½Ξ¬ΞµΞΉ Ο„ΞΏ CD Ο„ΞΏΟ… GNOME"
+
+#: gnome-cd/preferences.c:849
+msgid "Do _nothing"
+msgstr "ΞΞ±ΞΌΞ―Ξ± _ΞµΞ½Ξ­ΟΞ³ΞµΞΉΞ±"
+
+#: gnome-cd/preferences.c:858
+msgid "Start _playing CD"
+msgstr "Ξ•ΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚ CD"
+
+#: gnome-cd/preferences.c:867
+msgid "_Stop playing CD"
+msgstr "_Ξ”ΞΉΞ±ΞΊΞΏΟ€Ξ® Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚ CD"
+
+#: gnome-cd/preferences.c:880
+msgid "Attempt to _close CD tray"
+msgstr "Ξ ΟΞΏΟƒΟ€Ξ¬ΞΈΞµΞΉΞ± _ΞΊΞ»ΞµΞΉΟƒΞ―ΞΌΞ±Ο„ΞΏΟ‚ ΟƒΟ…ΟΟ„Ξ±ΟΞΉΞΏΟ Ο„ΞΏΟ… CD "
+
+#. Right side
+#: gnome-cd/preferences.c:892
+msgid "When Gnome CD Player quits"
+msgstr "ΞΟ„Ξ±Ξ½ Ο„ΞΏ CD Ο„ΞΏΟ… GNOME Ο„ΞµΟΞΌΞ±Ο„Ξ―Ξ¶ΞµΟ„Ξ±ΞΉ"
+
+#: gnome-cd/preferences.c:900
+msgid "Do not_hing"
+msgstr "ΞΞ±ΞΌΞ―Ξ± ΞµΞ½Ξ­_ΟΞ³ΞµΞΉΞ±"
+
+#: gnome-cd/preferences.c:909
+msgid "S_top playing CD"
+msgstr "Ξ”_ΞΉΞ±ΞΊΞΏΟ€Ξ® Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚ CD"
+
+#: gnome-cd/preferences.c:918
+msgid "Attempt to _open CD tray"
+msgstr "Ξ ΟΞΏΟƒΟ€Ξ¬ΞΈΞµΞΉΞ± _Ξ±Ξ½ΞΏΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚ ΟƒΟ…ΟΟ„Ξ±ΟΞΉΞΏΟ Ο„ΞΏΟ… CD"
+
+#: gnome-cd/preferences.c:928
+msgid "Attempt to c_lose CD tray"
+msgstr "Ξ ΟΞΏΟƒΟ€Ξ¬ΞΈΞµΞΉΞ± ΞΊ_Ξ»ΞµΞΉΟƒΞ―ΞΌΞ±Ο„ΞΏΟ‚ ΟƒΟ…ΟΟ„Ξ±ΟΞΉΞΏΟ Ο„ΞΏΟ… CD"
+
+#: gnome-cd/preferences.c:959
+msgid "Theme name"
+msgstr "ΞΞ½ΞΏΞΌΞ± ΞΈΞ­ΞΌΞ±Ο„ΞΏΟ‚"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr "Ξ—Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ· Ξ·Ο‡Ξ·Ο„ΞΉΞΊΟΞ½ ΞΊΞ»ΞΉΟ€"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+msgid "Sound Recorder"
+msgstr "Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ±Ο‚ Ξ‰Ο‡ΞΏΟ…"
+
+#: grecord/src/grec.c:56
+msgid "Sound Recorder:"
+msgstr "Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ±Ο‚ Ξ‰Ο‡ΞΏΟ…:"
+
+#: grecord/src/grec.c:108 grecord/src/main.c:248
+msgid "Don't show this message again."
+msgstr "ΞΞ± ΞΌΞ·Ξ½ ΞµΞΌΟ†Ξ±Ξ½ΞΉΟƒΟ„ΞµΞ― Ξ±Ο…Ο„Ο Ο„ΞΏ ΞΌΞ®Ξ½Ο…ΞΌΞ± ΞΎΞ±Ξ½Ξ¬."
+
+#: grecord/src/grec.c:110 grecord/src/main.c:250
+#, c-format
+msgid ""
+"Could not find '%s'.\n"
+"Set the correct path to sox inpreferences under the tab 'paths'.\n"
+"\n"
+"If you don't have sox, you will not be able to record or do any effects."
+msgstr ""
+"Ξ”Ξµ Ξ²ΟΞ­ΞΈΞ·ΞΊΞµ Ο„ΞΏ '%s'.\n"
+"ΞΟΞ―ΟƒΟ„Ξµ Ο„ΞΏ ΟƒΟ‰ΟƒΟ„Ο ΞΌΞΏΞ½ΞΏΟ€Ξ¬Ο„ΞΉ Ξ³ΞΉΞ± Ο„ΞΏ sox ΟƒΟ„ΞΉΟ‚ Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ ΞΊΞ¬Ο„Ο‰ Ξ±Ο€Ο Ο„Ξ·Ξ½ ΟƒΟ„Ξ®Ξ»Ξ·  "
+"'Ξ΄ΞΉΞ±Ξ΄ΟΞΏΞΌΞ­Ο‚'.\n"
+"\n"
+"Ξ‘Ξ½ Ξ΄ΞµΞ½ Ξ­Ο‡ΞµΟ„Ξµ Ο„ΞΏ sox, Ξ΄Ξµ ΞΈΞ± ΞΌΟ€ΞΏΟΞ­ΟƒΞµΟ„Ξµ Ξ½Ξ± ΞΊΞ¬Ξ½ΞµΟ„Ξµ Ξ·Ο‡ΞΏΞ³ΟΞ±Ο†Ξ®ΟƒΞµΞΉΟ‚ Ξ® Ξ΄ΞΉΞ¬Ο†ΞΏΟΞ± ΞµΟ†Ο†Ξ­."
+
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+msgid "Could not fork child process"
+msgstr "Ξ‘Ξ΄ΟΞ½Ξ±Ο„Ξ· Ξ· Ξ΄ΞΉΟ‡Ξ¬Ξ»Ο‰ΟƒΞ· ΞΈΟ…Ξ³Ξ±Ο„ΟΞΉΞΊΞ®Ο‚ Ξ΄ΞΉΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚"
+
+#: grecord/src/grec.c:173
+msgid "Recording..."
+msgstr "Ξ£Ξµ Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·..."
+
+#: grecord/src/grec.c:220
+msgid "Playing..."
+msgstr "Ξ£Ξµ Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®..."
+
+#: grecord/src/grec.c:272
+msgid "Converting file..."
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…..."
+
+#: grecord/src/grec.c:302 grecord/src/grec.c:436
+msgid "Cancel"
+msgstr "Ξ†ΞΊΟ…ΟΞΏ "
+
+#: grecord/src/grec.c:345 grecord/src/grec.c:793
+msgid "Audioformat: "
+msgstr "ΞΞΏΟΟ†Ξ® Ξ‰Ο‡ΞΏΟ…: "
+
+#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+msgid "Sample rate: "
+msgstr "Ξ΅Ο…ΞΈΞΌΟΟ‚ Ξ΄ΞµΞΉΞ³ΞΌΞ±Ο„ΞΏΞ»Ξ·ΟΞ―Ξ±Ο‚: "
+
+#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+msgid "Channels: "
+msgstr "ΞΞ±Ξ½Ξ¬Ξ»ΞΉΞ±: "
+
+#: grecord/src/grec.c:381
+msgid "Cancel open"
+msgstr "Ξ‘ΞΊΟΟΟ‰ΟƒΞ· Ξ±Ξ½ΞΏΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚"
+
+#: grecord/src/grec.c:390
+msgid "Select a sound file"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ξ®Ο‡ΞΏΟ…"
+
+#: grecord/src/grec.c:516
+#, c-format
+msgid "%s is not installed in the path"
+msgstr "%s Ξ΄ΞµΞ½ Ξ­Ο‡ΞµΞΉ ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ±ΞΈΞµΞ― ΟƒΟ„ΞΏ ΞΌΞΏΞ½ΞΏΟ€Ξ¬Ο„ΞΉ"
+
+#: grecord/src/grec.c:523
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr "Ξ¥Ο€Ξ®ΟΞΎΞµ ΟƒΟ†Ξ¬Ξ»ΞΌΞ± ΞµΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ·Ο‚ %s: %s"
+
+#: grecord/src/grec.c:615
+msgid "Undoing all changes..."
+msgstr "Ξ•Ο€Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ξ±Ξ»Ξ»Ξ±Ξ³ΟΞ½..."
+
+#: grecord/src/grec.c:718
+#, c-format
+msgid ""
+"'%s' is a folder.\n"
+"Please select a sound file to be opened."
+msgstr ""
+"Ξ¤ΞΏ '%s' ΞµΞ―Ξ½Ξ±ΞΉ ΞΊΞ±Ο„Ξ¬Ξ»ΞΏΞ³ΞΏΟ‚.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ®Ο‡ΞΏΟ… Ξ³ΞΉΞ± Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ±."
+
+#: grecord/src/grec.c:730
 #, c-format
 msgid ""
 "File '%s' doesn't exist.\n"
-"Please select a existing soundfile to be opened."
+"Please select an existing sound file to be opened."
 msgstr ""
-"Το αρχείου '%s' δεν υπάρχει.\n"
-"Παρακαλώ επιλέξτε αρχείο ήχου για άνοιγμα."
+"Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… '%s' Ξ΄ΞµΞ½ Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ®Ο‡ΞΏΟ… Ξ³ΞΉΞ± Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ±."
 
-#: grecord/src/grec.c:605
+#: grecord/src/grec.c:743
 #, c-format
-msgid "File '%s' isn't a valid soundfile."
-msgstr "Το αρχείο '%s' δεν είναι έγκυρο αρχείο ήχου."
+msgid "File '%s isn't a valid sound file."
+msgstr "Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ '%s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ³ΞΊΟ…ΟΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ®Ο‡ΞΏΟ…."
 
-#: grecord/src/grec.c:678
+#: grecord/src/grec.c:817
 #, c-format
 msgid ""
-"'%s' is a directory.\n"
+"'%s' is a folder.\n"
 "Please enter another filename."
 msgstr ""
-"Το '%s' είναι κατάλογος.\n"
-"Παρακαλώ επιλέξτε άλλο όνομα αρχείου."
+"Ξ¤ΞΏ '%s' ΞµΞ―Ξ½Ξ±ΞΉ Ο†Ξ¬ΞΊΞµΞ»ΞΏΟ‚.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ¬Ξ»Ξ»ΞΏ ΟΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…."
 
-#: grecord/src/grec.c:688
+#: grecord/src/grec.c:829
 #, c-format
 msgid ""
-"File '%s' already exists.\n"
+"<b>File '%s' already exists.</b>\n"
 "Do you want to overwrite it?"
+msgstr "<b>Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ '%s' Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ Ξ®Ξ΄Ξ·..</b>\\nΞΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± Ο„ΞΏ Ξ±Ξ½Ο„ΞΉΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ®ΟƒΞµΟ„Ξµ;"
+
+#: grecord/src/grec.c:832
+msgid "Cancel save"
+msgstr "Ξ‘ΞΊΟΟΟ‰ΟƒΞ· Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·Ο‚"
+
+#: grecord/src/grec.c:833
+msgid "Overwrite"
+msgstr "Ξ“ΟΞ¬ΟΞΉΞΌΞΏ Ξ±Ο€ΞΏ Ο€Ξ¬Ξ½Ο‰"
+
+#: grecord/src/grec.c:860
+#, c-format
+msgid "Error saving '%s'"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·Ο‚ '%s'"
+
+#: grecord/src/grec.c:974
+#, c-format
+msgid ""
+"<b>Do you want to save the changes you made to \"%s\"?</b>\n"
+"\n"
+"Your changes will be lost if you don't save them."
 msgstr ""
-"Το αρχείο '%s' υπάρχει ήδη.\n"
-"Θέλετε να γράψετε από επάνω;"
+"<b>ΞΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ Ο„ΞΉΟ‚ Ξ±Ξ»Ξ»Ξ±Ξ³Ξ­Ο‚ ΟƒΟ„ΞΏ \"%s\"?</b>\n"
+"\n"
+"ΞΞΉ Ξ±Ξ»Ξ»Ξ±Ξ³Ξ­Ο‚ ΟƒΞ±Ο‚ ΞΈΞ± Ο‡Ξ±ΞΈΞΏΟΞ½ Ξ±Ξ½ Ξ΄ΞµΞ½ Ο„ΞΉΟ‚ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ."
 
-#: grecord/src/grec.c:703
-msgid "Error saving sound file"
-msgstr "Σφάλμα στην αποθήκευση αρχείου ήχου"
+#: grecord/src/grec.c:979
+msgid "Do_n't save"
+msgstr "ΞΞ±_ ΞΌΞ·Ξ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟ…Ο„ΞµΞ―"
 
-#: grecord/src/grec.c:739
-msgid "File not saved. Do you want to save it?"
-msgstr "Το αρχείο δεν αποθηκεύτηκε. Θέλετε να το αποθηκεύσετε τώρα;"
+#: grecord/src/grec.c:986
+#, c-format
+msgid "Save %s?"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· %s;"
 
 #. Save the file
-#: grecord/src/grec.c:758
+#: grecord/src/grec.c:1010
 msgid "Saving..."
-msgstr "Σε αποθήκευση..."
+msgstr "Ξ£Ξµ Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·..."
 
-#: grecord/src/grec.c:879
+#: grecord/src/grec.c:1140
 #, c-format
-msgid "The size of the current sample is more than %i Mb!"
-msgstr "Το μέγεθος του τρέχοντος δείγματος είναι μεγαλύτερο από %i Mb!"
-
-#: grecord/src/grec.c:927
-msgid "Save sound file"
-msgstr "Αποθήκευση αρχείου ήχου"
-
-#: grecord/src/grec.c:1095
 msgid ""
-"Sounddevice not ready! Please check that there isn't\n"
-"another program running that's using the sounddevice."
+"The size of the current sample is more than\n"
+"%i Mb!"
 msgstr ""
-"Η συσκευή ήχου δεν είναι έτοιμη! Παρακαλώ ελέγξτε ότι\n"
-"δεν τρέχει άλλο πρόγραμμα που κάνει χρήση τη συσκευή ήχου."
+"Ξ¤ΞΏ ΞΌΞ­Ξ³ΞµΞΈΞΏΟ‚ Ο„ΞΏΟ… Ο„ΟΞ­Ο‡ΞΏΞ½Ο„ΞΏΟ‚ Ξ΄ΞµΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚ ΞµΞ―Ξ½Ξ±ΞΉ ΞΌΞµΞ³Ξ±Ξ»ΟΟ„ΞµΟΞΏ Ξ±Ο€Ο\n"
+" %i Mb!"
 
-#: grecord/src/gui.c:42
+#: grecord/src/grec.c:1196
+msgid "Save sound file"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ξ®Ο‡ΞΏΟ…"
+
+#: grecord/src/grec.c:1425
+msgid ""
+"The sound device is not ready. Please check that there isn't\n"
+"another program running that is using the device."
+msgstr ""
+"Ξ— ΟƒΟ…ΟƒΞΊΞµΟ…Ξ® Ξ®Ο‡ΞΏΟ… Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ο„ΞΏΞΉΞΌΞ·! Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ»Ξ­Ξ³ΞΎΟ„Ξµ ΟΟ„ΞΉ\n"
+"Ξ΄ΞµΞ½ ΞµΞΊΟ„ΞµΞ»ΞµΞ―Ο„Ξ±ΞΉ  Ξ¬Ξ»Ξ»ΞΏ Ο€ΟΟΞ³ΟΞ±ΞΌΞΌΞ± Ο€ΞΏΟ… ΞΊΞ¬Ξ½ΞµΞΉ Ο‡ΟΞ®ΟƒΞ· Ξ±Ο…Ο„Ξ®Ο‚ Ο„Ξ·Ο‚ ΟƒΟ…ΟƒΞΊΞµΟ…Ξ®Ο‚."
+
+#: grecord/src/gui.c:45
 msgid "_New"
-msgstr "_Νέο"
+msgstr "_ΞΞ­ΞΏ"
 
-#: grecord/src/gui.c:43
+#: grecord/src/gui.c:46
 msgid "Create a new sample"
-msgstr "Δημιουργία νέου δείγματος"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ½Ξ­ΞΏΟ… Ξ΄ΞµΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚"
 
-#: grecord/src/gui.c:50
-msgid "Run mixer..."
-msgstr "Εκτέλεση μίκτη..."
+#: grecord/src/gui.c:54
+msgid "Run _Mixer"
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ±  _MΞ―ΞΊΟ„Ξ·"
 
-#: grecord/src/gui.c:51
-msgid "Run GNOME mixer"
-msgstr "Εκτέλεση του μίκτη του GNOME"
+#: grecord/src/gui.c:55
+msgid "Run GNOME Volume Control"
+msgstr "Ξ•ΞΊΟ„Ξ­Ξ»ΞµΟƒΞ· Ο„ΞΏΟ… Ξ΅Ο…ΞΈΞΌΞΉΟƒΟ„ΞΉΞΊΞΏΟ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚ Ο„ΞΏΟ… Gnome"
 
-#: grecord/src/gui.c:64
+#: grecord/src/gui.c:69
 msgid "Add echo"
-msgstr "Προσθήκη ηχώς"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· Ξ·Ο‡ΞΏΟΟ‚"
 
-#: grecord/src/gui.c:65
+#: grecord/src/gui.c:70
 msgid "Add echo to the current sample"
-msgstr "Προσθήκη ηχώς στο τρέχον δείγμα"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· Ξ·Ο‡ΞΏΟΟ‚ ΟƒΟ„ΞΏ Ο„ΟΞ­Ο‡ΞΏΞ½ Ξ΄ΞµΞ―Ξ³ΞΌΞ±"
 
-#: grecord/src/gui.c:96
+#: grecord/src/gui.c:103
 msgid "Echo"
-msgstr "Ηχώ"
+msgstr "Ξ—Ο‡Ο"
 
-#: grecord/src/gui.c:105
-msgid "Undo all changes"
-msgstr "Επαναφορά όλων των τροποποιήσεων"
-
-#: grecord/src/gui.c:106
-msgid "Undo all changes made on the current sample"
-msgstr "Επαναφορά όλων των τροποποιήσεων που έγιναν στο τρέχον δείγμα"
+#: grecord/src/gui.c:112
+msgid "_Undo All"
+msgstr "_Ξ‘Ξ½Ξ¬ΞΊΞ»Ξ·ΟƒΞ· ΞΞ»Ο‰Ξ½"
 
 #: grecord/src/gui.c:113
+msgid "Undo all changes made on the current sample"
+msgstr "Ξ‘Ξ½Ξ¬ΞΊΞ»Ξ·ΟƒΞ· ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ο„ΟΞΏΟ€ΞΏΟ€ΞΏΞΉΞ®ΟƒΞµΟ‰Ξ½ Ο€ΞΏΟ… Ξ­Ξ³ΞΉΞ½Ξ±Ξ½ ΟƒΟ„ΞΏ Ο„ΟΞ­Ο‡ΞΏΞ½ Ξ΄ΞµΞ―Ξ³ΞΌΞ±"
+
+#: grecord/src/gui.c:120
 msgid "Effects"
-msgstr "Εφφέ"
+msgstr "Ξ•Ο†Ο†Ξ­"
 
-#: grecord/src/gui.c:122 grecord/src/gui.c:123 grecord/src/gui.c:868
-msgid "Show time"
-msgstr "Εμφάνιση ώρας"
+#: grecord/src/gui.c:155
+#, c-format
+msgid "%s - Sound Recorder"
+msgstr "%s - Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ±Ο‚ Ξ‰Ο‡ΞΏΟ…"
 
-#: grecord/src/gui.c:129
-msgid "Show soundinfo"
-msgstr "Εμφάνιση πληροφοριών ήχου"
+#: grecord/src/gui.c:197
+msgid "16bit PCM"
+msgstr "16bit PCM"
 
-#: grecord/src/gui.c:130 grecord/src/gui.c:873
-msgid "Show sound information"
-msgstr "Εμφάνιση πληροφοριών των χαρακτηριστικών του ήχου"
+#: grecord/src/gui.c:199
+msgid "8bit PCM"
+msgstr "8bit PCM"
 
-#: grecord/src/gui.c:232
+#: grecord/src/gui.c:202
+msgid "stereo"
+msgstr "ΟƒΟ„ΞµΟΞµΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
+
+#: grecord/src/gui.c:204
+msgid "mono"
+msgstr "ΞΌΞΏΞ½ΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
+
+#: grecord/src/gui.c:217
 msgid "New"
-msgstr "Νέο"
+msgstr "ΞΞ­ΞΏ"
 
-#: grecord/src/gui.c:233
+#: grecord/src/gui.c:218
 msgid "Create new sample"
-msgstr "Δημιουργία νέου δείγματος"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ½Ξ­ΞΏΟ… Ξ΄ΞµΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚"
 
-#: grecord/src/gui.c:243 tcd/popup.c:15
-msgid "Play"
-msgstr "Αναπαραγωγή"
-
-#: grecord/src/gui.c:244
+#: grecord/src/gui.c:234
 msgid "Play current sample"
-msgstr "Αναπαραγωγή τρέχοντος δείγματος"
+msgstr "Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ® Ο„ΟΞ­Ο‡ΞΏΞ½Ο„ΞΏΟ‚ Ξ΄ΞµΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚"
 
-#: grecord/src/gui.c:252 tcd/gtcd.c:456 tcd/popup.c:16
-msgid "Stop"
-msgstr "Διακοπή"
-
-#: grecord/src/gui.c:253
+#: grecord/src/gui.c:248
 msgid "Stop playing/recording"
-msgstr "Παύση αναπαραγωγής/ηχογράφησης"
+msgstr "Ξ”ΞΉΞ±ΞΊΞΏΟ€Ξ® Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚/Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚"
 
 #: grecord/src/gui.c:261
 msgid "Record"
-msgstr "Ηχογράφηση"
+msgstr "Ξ—Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·"
 
 #: grecord/src/gui.c:262
 msgid "Start recording"
-msgstr "Εκκίνηση ηχογράφησης"
+msgstr "Ξ•ΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚"
 
-#: grecord/src/gui.c:272
-msgid "Exit"
-msgstr "Έξοδος"
+#: grecord/src/gui.c:301
+msgid "Audio format: "
+msgstr "Ξ¦ΞΏΟΞΌΞ¬ Ξ®Ο‡ΞΏΟ…: "
 
-#: grecord/src/gui.c:273
-msgid "Exit this program"
-msgstr "Έξοδος από το πρόγραμμα"
-
-#: grecord/src/gui.c:287
-msgid "Info"
-msgstr "Πληροφορίες"
-
-#: grecord/src/gui.c:386
+#: grecord/src/gui.c:358
 #, c-format
 msgid "File '%s' doesn't exist; using default."
-msgstr "Το αρχείο '%s' δεν υπάρχει· χρήση εξ ορισμού."
+msgstr "Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ '%s' Ξ΄ΞµΞ½ Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉΒ· Ο‡ΟΞ®ΟƒΞ· ΞµΞΎ ΞΏΟΞΉΟƒΞΌΞΏΟ."
 
-#: grecord/src/gui.c:407
+#: grecord/src/gui.c:382
 #, c-format
 msgid "File '%s' isn't a supported soundfile."
-msgstr "Το αρχείο ήχου '%s' δεν είναι υποστηριζόμενο."
+msgstr "Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ®Ο‡ΞΏΟ… '%s' Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ο…Ο€ΞΏΟƒΟ„Ξ·ΟΞΉΞ¶ΟΞΌΞµΞ½ΞΏ."
 
 #. if your charset allows it, replace the "e" of "Hyden"
 #. *  by an "eacute" (U00E9)
-#: grecord/src/gui.c:438
+#: grecord/src/gui.c:420
 msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
 msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
 
-#: grecord/src/gui.c:446 grecord/src/main.c:110
-msgid "GNOME Sound recorder"
-msgstr "Ηχογράφηση Ήχου GNOME"
+#: grecord/src/gui.c:427
+msgid "translator_credits"
+msgstr ""
+"Ξ£Ξ―ΞΌΞΏΟ‚ ΞΞµΞ½ΞΉΟ„Ο„Ξ­Ξ»Ξ·Ο‚ <simos@gmx.net>\\nΞΞ―ΞΊΞΏΟ‚ Ξ§Ξ±ΟΟ‰Ξ½ΞΉΟ„Ξ¬ΞΊΞ·Ο‚ <charosn@her.forthnet."
+"gr>"
+
+#: grecord/src/gui.c:431
+msgid "Gnome Sound Recorder"
+msgstr "Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ±Ο‚ Ξ®Ο‡ΞΏΟ… Ο„ΞΏΟ… Gnome"
 
 #. if your charset allows it, replace the
 #. "e" of Hyden by an "eacute" (U00E9)
-#: grecord/src/gui.c:449
+#: grecord/src/gui.c:434
 msgid "Copyright (C)  2000 Andreas Hyden"
-msgstr "Πνευματικά Δικαιώματα (C) 2000 Andreas Hyden"
+msgstr "Ξ Ξ½ΞµΟ…ΞΌΞ±Ο„ΞΉΞΊΞ¬ Ξ”ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ± (C) 2000 Andreas Hyden"
 
-#: grecord/src/gui.c:451
+#: grecord/src/gui.c:435
 msgid ""
 "A simple soundrecorder and soundplayer for GNOME.\n"
 "Dedicated to my cat, Malte."
 msgstr ""
-"Ένα απλό πρόγραμμα ηχογράφησης και αναπαραγωγής ήχου για το GNOME.\n"
-"Αφιερωμένο στη γάτα μου, τη Μάλτε."
+"ΞΞ½Ξ± Ξ±Ο€Ξ»Ο Ο€ΟΟΞ³ΟΞ±ΞΌΞΌΞ± Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚ ΞΊΞ±ΞΉ Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚ Ξ®Ο‡ΞΏΟ… Ξ³ΞΉΞ± Ο„ΞΏ GNOME.\n"
+"Ξ‘Ο†ΞΉΞµΟΟ‰ΞΌΞ­Ξ½ΞΏ ΟƒΟ„Ξ· Ξ³Ξ¬Ο„Ξ± ΞΌΞΏΟ…, Ο„Ξ· ΞΞ¬Ξ»Ο„Ξµ."
 
-#: grecord/src/gui.c:542 tcd/gtracked.c:173
-msgid "Time"
-msgstr "Χρόνος"
+#: grecord/src/gui.c:701
+msgid "Gnome Sound Recorder Preferences"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚  Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ± Ξ®Ο‡ΞΏΟ… Ο„ΞΏΟ… Gnome"
 
-#: grecord/src/gui.c:555
-msgid "Recording timeout: "
-msgstr "Λήξη χρόνου ηχογράφησης: "
+#: grecord/src/gui.c:708
+msgid "Sound Recorder Preferences"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ Ο„ΞΏΟ… Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ± Ξ‰Ο‡ΞΏΟ…"
 
-#: grecord/src/gui.c:566
-msgid "minutes"
-msgstr "λεπτά"
-
-#: grecord/src/gui.c:571
-msgid "Stop recording on timeout"
-msgstr "Παύση ηχογράφησης στη λήξη χρόνου"
-
-#: grecord/src/gui.c:576
-msgid "Popup save dialog when recording is finished"
-msgstr "Εμφάνιση διαλόγου αποθήκευσης μόλις τερματιστεί η ηχογράφηση"
-
-#: grecord/src/gui.c:585
-msgid "Size"
-msgstr "Μέγεθος"
-
-#: grecord/src/gui.c:594
-msgid "Popup warning message if size (Mb) of sample becomes bigger than:"
-msgstr ""
-"Εμφάνιση προειδ. μηνύματος εάν το μέγεθος (Mb) του δείγματος γίνει μεγ. από:"
-
-#: grecord/src/gui.c:604
-msgid "Stop recording if size (Mb) of sample becomes bigger than:"
-msgstr "Παύση ηχογράφησης εάν το μέγεθος (Mb) του δείγματος γίνει μεγ. από:"
-
-#: grecord/src/gui.c:615
+#: grecord/src/gui.c:720
 msgid "Recording"
-msgstr "Σε ηχογράφηση"
+msgstr "Ξ—Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·"
 
-#: grecord/src/gui.c:624
-msgid "Play-repeating"
-msgstr "Αναπαραγωγή με επανάληψη"
+#: grecord/src/gui.c:725
+msgid "Time"
+msgstr "Ξ§ΟΟΞ½ΞΏΟ‚"
 
-#: grecord/src/gui.c:633
-msgid "Repeat"
-msgstr "Επανάληψη"
+#: grecord/src/gui.c:738
+msgid "_Recording timeout: "
+msgstr "Ξ›Ξ®ΞΎΞ· Ο‡ΟΟΞ½ΞΏΟ… _Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚: "
 
-#: grecord/src/gui.c:642
-msgid "Forever"
-msgstr "Για πάντα"
+#: grecord/src/gui.c:754
+msgid "minutes"
+msgstr "Ξ»ΞµΟ€Ο„Ξ¬"
 
-#: grecord/src/gui.c:647
-msgid "Nr of times:"
-msgstr "Αριθμός φορών:"
+#: grecord/src/gui.c:761
+msgid "_Stop recording on timeout"
+msgstr "_Ξ”ΞΉΞ±ΞΊΞΏΟ€Ξ® Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚ ΟƒΟ„Ξ· Ξ»Ξ®ΞΎΞ· Ο‡ΟΟΞ½ΞΏΟ…"
 
-#: grecord/src/gui.c:658
-msgid "Playing"
-msgstr "Σε αναπαραγωγή"
+#: grecord/src/gui.c:769
+msgid "_Open save dialog when recording is finished"
+msgstr "_Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ± Ξ΄ΞΉΞ±Ξ»ΟΞ³ΞΏΟ… Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·Ο‚ ΞΌΟΞ»ΞΉΟ‚ Ο„ΞµΟΞΌΞ±Ο„ΞΉΟƒΟ„ΞµΞ― Ξ· Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·"
 
-#: grecord/src/gui.c:667
-msgid "Program files"
-msgstr "Προγράμματα"
+#: grecord/src/gui.c:776
+msgid "Size"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚"
 
-#: grecord/src/gui.c:684
-msgid "Path to sox:"
-msgstr "Μονοπάτι για το sox:"
+#: grecord/src/gui.c:785
+msgid "Show warning _message if size (MB) of sample becomes bigger than:"
+msgstr ""
+"Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ο€ΟΞΏΞµΞΉΞ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·Ο‚ ΞµΞ¬Ξ½ Ο„ΞΏ ΞΌΞ­Ξ³ΞµΞΈΞΏΟ‚ ΟƒΞµ (Mb) Ο„ΞΏΟ… Ξ΄ΞµΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚ ΞΎΞµΟ€ΞµΟΞ¬ΟƒΞµΞΉ Ο„Ξ±:"
 
-#: grecord/src/gui.c:700
-msgid "Path to mixer:"
-msgstr "Μονοπάτι για το mixer:"
-
-#: grecord/src/gui.c:716
-msgid "Directories"
-msgstr "Κατάλογοι"
-
-#: grecord/src/gui.c:729
-msgid "Temp dir:"
-msgstr "Προσωρ. καταλ.:"
-
-#: grecord/src/gui.c:745
-msgid "Paths"
-msgstr "Μονοπάτια"
-
-#: grecord/src/gui.c:753
-msgid "Sound options"
-msgstr "Επιλογές ήχου"
-
-#: grecord/src/gui.c:766
-msgid "Audioformat:"
-msgstr "Μορφή Ήχου:"
-
-#: grecord/src/gui.c:777 grecord/src/gui.c:787
-msgid "8bit pcm"
-msgstr "8bit pcm"
-
-#: grecord/src/gui.c:778 grecord/src/gui.c:789
-msgid "16bit pcm"
-msgstr "16bit pcm"
-
-#: grecord/src/gui.c:795
-msgid "Sample rate:"
-msgstr "Δειγματοληψία:"
+#: grecord/src/gui.c:803
+msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
+msgstr ""
+"Ξ”ΞΉΞ±ΞΊΞΏΟ€_Ξ® Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚ ΞµΞ¬Ξ½ Ο„ΞΏ ΞΌΞ­Ξ³ΞµΞΈΞΏΟ‚ ΟƒΞµ (Mb) Ο„ΞΏΟ… Ξ΄ΞµΞ―Ξ³ΞΌΞ±Ο„ΞΏΟ‚ ΞΎΞµΟ€ΞµΟΞ¬ΟƒΞµΞΉ Ο„Ξ±:"
 
 #: grecord/src/gui.c:825
-msgid "mono/stereo"
-msgstr "μονοφωνικό/στερεοφωνικό"
+msgid "Playing"
+msgstr "Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®"
 
-#: grecord/src/gui.c:836 grecord/src/gui.c:846
-msgid "mono"
-msgstr "μονοφωνικό"
+#: grecord/src/gui.c:830
+msgid "Repetition"
+msgstr "Ξ•Ο€Ξ±Ξ½Ξ¬Ξ»Ξ·ΟΞ·"
 
-#: grecord/src/gui.c:837 grecord/src/gui.c:848
-msgid "stereo"
-msgstr "στερεοφωνικό"
+#: grecord/src/gui.c:840
+msgid "_Repeat the sound"
+msgstr "_Ξ•Ο€Ξ±Ξ½Ξ¬Ξ»Ξ·ΟΞ· Ο„ΞΏΟ… Ξ®Ο‡ΞΏΟ…"
 
-#: grecord/src/gui.c:851
+#: grecord/src/gui.c:847
+msgid "Play the sound _once only."
+msgstr "Ξ‘Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ® _ΞΌΞΉΞ± Ο†ΞΏΟΞ¬ ΞΌΟΞ½ΞΏ."
+
+#: grecord/src/gui.c:853
+msgid "Repeat _forever"
+msgstr "Ξ‘Ο„Ξ­ΟΞΌΞΏΞ½Ξ· _ΞµΟ€Ξ±Ξ½Ξ¬Ξ»Ξ·ΟΞ·"
+
+#: grecord/src/gui.c:864
+msgid "_Number of times:"
+msgstr "_Ξ‘ΟΞΉΞΈΞΌΟΟ‚ ΞµΟ€Ξ±Ξ½Ξ±Ξ»Ξ®ΟΞµΟ‰Ξ½:"
+
+#: grecord/src/gui.c:885
+msgid "Paths"
+msgstr "ΞΞΏΞ½ΞΏΟ€Ξ¬Ο„ΞΉΞ±"
+
+#: grecord/src/gui.c:890
+msgid "Program files"
+msgstr "Ξ ΟΞΏΞ³ΟΞ¬ΞΌΞΌΞ±Ο„Ξ±"
+
+#: grecord/src/gui.c:903
+msgid "_Path to sox:"
+msgstr "_ΞΞΏΞ½ΞΏΟ€Ξ¬Ο„ΞΉ Ξ³ΞΉΞ± Ο„ΞΏ sox:"
+
+#: grecord/src/gui.c:917
+msgid "_Apply"
+msgstr "_Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ®"
+
+#: grecord/src/gui.c:926
+msgid "Folders"
+msgstr "Ξ¦Ξ¬ΞΊΞµΞ»ΞΏΞΉ"
+
+#: grecord/src/gui.c:939
+msgid "_Temporary folder:"
+msgstr "_Ξ ΟΞΏΟƒΟ‰ΟΞΉΞ½ΟΟ‚ Ο†Ξ¬ΞΊΞµΞ»ΞΏΟ‚:"
+
+#: grecord/src/gui.c:953
+msgid "Apply"
+msgstr "Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ®"
+
+#: grecord/src/gui.c:965
 msgid "Sound"
-msgstr "Ήχος"
+msgstr "Ξ‰Ο‡ΞΏΟ‚"
 
-#: grecord/src/gui.c:859
-msgid "Main window"
-msgstr "Κυρίως παράθυρο"
+#: grecord/src/gui.c:970
+msgid "Sound options"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ Ξ®Ο‡ΞΏΟ…"
 
-#: grecord/src/gui.c:878
-msgid "User interface"
-msgstr "Διασύνδεση χρήστη"
-
-#: grecord/src/main.c:54
-msgid "Specify the geometry of the main window"
-msgstr "Καθορίστε τις διαστάσεις του κυρίου παραθύρου"
-
-#: grecord/src/main.c:55
-msgid "GEOMETRY"
-msgstr "ΓΕΩΜΕΤΡΙΑ"
-
-#: grecord/src/main.c:63
-msgid "Specify a file to be opened"
-msgstr "Ορισμός αρχείου προς άνοιγμα"
-
-#: grecord/src/main.c:72
-msgid "Specify a file to start recording"
-msgstr "Ορισμός αρχείου προς ηχογράφηση"
-
-#: grecord/src/main.c:81
-msgid "Specify a file to start playing"
-msgstr "Ορισμός αρχείου προς αναπαραγωγή"
-
-#: grecord/src/main.c:174
-msgid "Don't show this message again."
-msgstr "Να μην εμφάνιστει αυτό το μήνυμα ξανά."
-
-#: grecord/src/main.c:176
-#, c-format
+#: grecord/src/gui.c:979
 msgid ""
-"Could not find '%s'.\n"
-"Set the correct path to sox in preferences under the tab 'paths'.\n"
-"\n"
-"If you don't have sox, you will not be able to record or do any effects."
+"Note: These options only take effect whenever a new sound sample\n"
+"is created. They do not operate on an existing sample."
 msgstr ""
-"Δε βρέθηκε το '%s'.\n"
-"Ορίστε το σωστό μονοπάτι για το sox στις προτιμίσεις κάτω από την επιλογή "
-"'Προγράμματα'.\n"
-"\n"
-"Αν δεν έχετε το sox, δε θα μπορέσετε να κάνετε ηχογραφήσεις ή διάφορα εφφέ."
+"Ξ£Ξ·ΞΌΞµΞ―Ο‰ΟƒΞ·: Ξ‘Ο…Ο„Ξ­Ο‚ ΞΏΞΉ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ Ο€ΟΞ±Ξ³ΞΌΞ±Ο„ΞΏΟ€ΞΏΞΉΞΏΟΞ½Ο„Ξ±ΞΉ ΞΌΟΞ½ΞΏ ΟΟ„Ξ±Ξ½ Ξ­Ξ½Ξ± Ξ½Ξ­ΞΏ Ξ΄ΞµΞ―Ξ³ΞΌΞ± Ξ®Ο‡ΞΏΟ…\n"
+"Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³ΞµΞ―Ο„Ξ±ΞΉ. Ξ”ΞµΞ½ Ξ»ΞµΞΉΟ„ΞΏΟ…ΟΞ³ΞΏΟΞ½  ΟƒΞµ Ξ®Ξ΄Ξ· Ο…Ο€Ξ¬ΟΟ‡ΞΏΞ½ Ξ΄ΞµΞ―Ξ³ΞΌΞ±."
+
+#: grecord/src/gui.c:992
+msgid "Audio format:"
+msgstr "Ξ¦ΞΏΟΞΌΞ¬ Ξ®Ο‡ΞΏΟ…:"
+
+#: grecord/src/gui.c:1001
+msgid "8 _bit PCM"
+msgstr "8_bit PCM"
+
+#: grecord/src/gui.c:1007
+msgid "16 b_it PCM"
+msgstr "16 b_it PCM"
+
+#  If only combos didn't suck!
+#. If only combos didn't suck!
+#: grecord/src/gui.c:1021
+msgid "S_ample rate:"
+msgstr "Ξ΅_Ο…ΞΈΞΌΟΟ‚ Ξ΄ΞµΞΉΞ³ΞΌΞ±Ο„ΞΏΞ»Ξ·ΟΞ―Ξ±Ο‚:"
+
+#: grecord/src/gui.c:1052
+msgid "Mono or Stereo:"
+msgstr "ΞΞΏΞ½ΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ Ξ® Ξ£Ο„ΞµΟΞµΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
+
+#: grecord/src/gui.c:1061
+msgid "_Mono"
+msgstr "_MΞΏΞ½ΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
+
+#: grecord/src/gui.c:1067
+msgid "_Stereo"
+msgstr "_Ξ£Ο„ΞµΟΞµΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
+
+#: grecord/src/gui.c:1088
+msgid "Stereo"
+msgstr "Ξ£Ο„ΞµΟΞµΞΏΟ†Ο‰Ξ½ΞΉΞΊΟ"
+
+#: grecord/src/main.c:50
+msgid "Specify the geometry of the main window"
+msgstr "ΞΞ±ΞΈΞΏΟΞ―ΟƒΟ„Ξµ Ο„ΞΉΟ‚ Ξ΄ΞΉΞ±ΟƒΟ„Ξ¬ΟƒΞµΞΉΟ‚ Ο„ΞΏΟ… ΞΊΟ…ΟΞ―ΞΏΟ… Ο€Ξ±ΟΞ±ΞΈΟΟΞΏΟ…"
+
+#: grecord/src/main.c:51
+msgid "GEOMETRY"
+msgstr "Ξ“Ξ•Ξ©ΞΞ•Ξ¤Ξ΅Ξ™Ξ‘"
+
+#: grecord/src/main.c:59
+msgid "Specify a file to be opened"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ο€ΟΞΏΟ‚ Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ±"
+
+#: grecord/src/main.c:68
+msgid "Specify a file to start recording"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ο€ΟΞΏΟ‚ Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·"
+
+#: grecord/src/main.c:77
+msgid "Specify a file to start playing"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ο€ΟΞΏΟ‚ Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®"
+
+#: grecord/src/main.c:172
+msgid "Sound recorder"
+msgstr "Ξ•Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ±Ο‚ Ξ®Ο‡ΞΏΟ…"
+
+#: grecord/src/preferences.c:192
+msgid "Audio format: 8bit PCM"
+msgstr "Ξ¦ΞΏΟΞΌΞ¬ Ξ®Ο‡ΞΏΟ…: 8bit PCM"
+
+#: grecord/src/preferences.c:192
+msgid "Audio format: 16bit PCM"
+msgstr "Ξ¦ΞΏΟΞΌΞ¬ Ξ®Ο‡ΞΏΟ…: 16bit PCM"
 
 #: grecord/src/preferences.c:213
-msgid ""
-"You havn't entered a sox command; you will not be able to record.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Δεν εισαγάγατε εντολή sox· δε θα μπορέσετε να κάνετε ηχογραφήσεις.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλος;"
-
-#: grecord/src/preferences.c:238
 #, c-format
-msgid ""
-"File %s in 'sox command' does not exist.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Το αρχείο %s στην 'εντολή sox' δεν υπάρχει.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
+msgid "Sample rate: %s"
+msgstr "Ξ΅Ο…ΞΈΞΌΟΟ‚ Ξ΄ΞµΞΉΞ³ΞΌΞ±Ο„ΞΏΞ»Ξ·ΟΞ―Ξ±Ο‚: %s "
 
-#: grecord/src/preferences.c:263
-msgid ""
-"You havn't entered a mixer command; you will not be able to start the "
-"mixer.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Δεν εισαγάγετε εντολή μίκτη· δε θα μπορέσετε να εκκινήσετε το μίκτη.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
+#: grecord/src/preferences.c:231
+msgid "Channels: mono"
+msgstr "ΞΞ±Ξ½Ξ¬Ξ»ΞΉΞ±: ΞΌΞΏΞ½ΞΏΟ†Ο‰Ξ½ΞΉΞΊΞ¬"
 
-#: grecord/src/preferences.c:288
-#, c-format
-msgid ""
-"File %s in 'mixer command' does not exist.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Το αρχείο %s στην 'εντολή mixer' δεν υπάρχει.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
+#: grecord/src/preferences.c:231
+msgid "Channels: stereo"
+msgstr "ΞΞ±Ξ½Ξ¬Ξ»ΞΉΞ±: ΟƒΟ„ΞµΟΞµΞΏΟ†Ο‰Ξ½ΞΉΞΊΞ¬"
 
-#: grecord/src/preferences.c:311
-msgid ""
-"You havn't entered a temp dir. You will not be able to record.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Δεν εισαγάγατε κατάλογο προσωρινών αρχείων. Δε θα μπορέσετε να "
-"ηχογραφήσετε.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
-
-#. Check if the given temp directory exists --------------------
-#. Exists
-#. Not a directory
-#: grecord/src/preferences.c:330
-#, c-format
-msgid ""
-"Temp directory %s is a file.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Ο προσωρινός κατάλογος %s είναι αρχείο.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
-
-#: grecord/src/preferences.c:350
-#, c-format
-msgid ""
-"You don't have the correct permissions (read & write) for temp directory "
-"%s.\n"
-"Do you want to use it anyway?"
-msgstr ""
-"Δεν έχετε τα σωστά δικαιώματα (ανάγνωση και εγγραφή) για το προσωρινό "
-"κατάλογο %s.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
-
-#. Does not exist
-#: grecord/src/preferences.c:368
-#, c-format
-msgid ""
-"Directory %s does not exist.\n"
-"Do want to use it anyway?"
-msgstr ""
-"Ο κατάλογος %s δεν υπάρχει.\n"
-"Θέλετε να το χρησιμοποιήσετε ούτως ή άλλως;"
-
-#: grecord/src/sound.c:101
-msgid " untitled.wav"
-msgstr " untitled.wav"
-
-#: grecord/src/sound.c:146 grecord/src/sound.c:150
+#: grecord/src/sound.c:136
 msgid "Adding echo to sample..."
-msgstr "Προσθήκη στο δείγμα ηχώ..."
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· Ξ·Ο‡ΞΏΟΟ‚ ΟƒΟ„ΞΏ Ξ΄ΞµΞ―Ξ³ΞΌΞ±..."
 
-#: tcd/callbacks.c:85
-msgid "TCD - The Gnome CD Player"
-msgstr "TCD - Αναπαραγωγή CD GNOME"
-
-#: tcd/callbacks.c:89
-msgid ""
-"GTCD is the Gnome CD player application. Includes CDDB support. Please see "
-"the 'Thanks' file included with the distribution for more credits."
-msgstr ""
-"To GTCD είναι μια εφαρμογή αναπαραγωγής CD του GNOME. Περιλαμβάνει "
-"υποστήριξη CDDB. Παρακαλώ δείτε το αρχείο 'Thanks' που περιλαμβάνετε με στη "
-"διανομή για περισσότερα ευχαριστήρια."
-
-#: tcd/cddb_props.c:72
-msgid "Disc ID"
-msgstr "ID Δίσκου"
-
-#: tcd/cddb_props.c:72
-msgid "Disc Title"
-msgstr "Τίτλος Δίσκου"
-
-#: tcd/cddb_props.c:87
-msgid "Edit"
-msgstr "Επεξεργασία"
-
-#: tcd/cddb_props.c:91
-msgid "Remove"
-msgstr "Αφαίρεση"
-
-#: tcd/cddb_props.c:97
-msgid "Refresh List"
-msgstr "Ενημέρωση Λίστας"
-
-#. server settings
-#: tcd/cddb_props.c:148
-msgid "Server Settings"
-msgstr "Ρυθμίσεις εξυπερητητή"
-
-#: tcd/cddb_props.c:157
-msgid "Address"
-msgstr "Τοποθεσία"
-
-#: tcd/cddb_props.c:167
-msgid "Port"
-msgstr "Θύρα"
-
-#: tcd/cddb_props.c:176
-msgid "Use HTTP"
-msgstr "Χρήση HTTP"
-
-#: tcd/cddb_props.c:181
-msgid "Proxy"
-msgstr "Διαμεσολαβητής"
-
-#: tcd/cddb_props.c:199
-msgid "Use proxy authentication"
-msgstr "Χρήση ελέγχου αυθεντικότητας διαμεσολαβητή"
-
-#: tcd/cddb_props.c:207
-msgid "Username"
-msgstr "Όνομα χρήστη"
-
-#: tcd/cddb_props.c:227
-msgid "Password"
-msgstr "Κωδικός"
-
-#: tcd/cddb_props.c:247
-msgid "SOCKS Server"
-msgstr "Εξυπηρετητής SOCKS"
-
-#: tcd/cddb_props.c:254
-msgid "Use SOCKS"
-msgstr "Χρήση SOCKS"
-
-#. local db
-#: tcd/cddb_props.c:267
-msgid "Local Database"
-msgstr "Τοπική Βάση Δεδομένων"
-
-#. frame
-#: tcd/cddb_props.c:309
-msgid "CDDB Data"
-msgstr "Δεδομένα CDDB"
-
-#: tcd/cddb_props.c:342
-msgid "CDDB Editor"
-msgstr "Επεξεργαστής CDDB"
-
-#: tcd/cddb_props.c:356
-msgid "Error reading $HOME/.cddbslave."
-msgstr "Σφάλμα στην ανάγνωση του $HOME/.cddbslave."
-
-#: tcd/cddb_props.c:472
-#, c-format
-msgid "Couldn't remove file: %s\n"
-msgstr "Αδύνατη διαγραφή του: %s\n"
-
-#: tcd/cddb_props.c:484
-msgid "Delete CDDB Entry?"
-msgstr "Διαγραφή καταχώρησης CDDB;"
-
-#. CDDB Status  button
-#: tcd/cddb_status.c:53 tcd/gtracked.c:312
-msgid "CDDB Status"
-msgstr "Κατάσταση CDDB"
-
-#. grab button
-#: tcd/cddb_status.c:71
-msgid "Get CDDB Now"
-msgstr "Λήψη CDDB Τώρα"
-
-#: tcd/gtcd.c:63
-msgid "trk-e"
-msgstr "trk-e"
-
-#: tcd/gtcd.c:64
-msgid "trk-r"
-msgstr "trk-r"
-
-#: tcd/gtcd.c:65
-msgid "dsc-e"
-msgstr "dsc-e"
-
-#: tcd/gtcd.c:66
-msgid "dsc-r"
-msgstr "dsc-r"
-
-#: tcd/gtcd.c:71
-msgid "loop-cd"
-msgstr "loop-cd"
-
-#: tcd/gtcd.c:72
-msgid "loop-t"
-msgstr "loop-t"
-
-#: tcd/gtcd.c:73
-msgid "normal"
-msgstr "κανονικό"
-
-#: tcd/gtcd.c:74
-msgid "random"
-msgstr "τυχαίο"
-
-#: tcd/gtcd.c:368 tcd/gtcd.c:1101
-msgid "-adobe-helvetica-medium-r-normal-*-*-100-*-*-p-*-*-*"
-msgstr "-greek-helvetica-medium-r-normal-*-*-100-*-*-p-*-*-*"
-
-#. TOP ROW
-#: tcd/gtcd.c:452
-msgid "Play/Pause"
-msgstr "Αναπαραγωγή/Παύση"
-
-#: tcd/gtcd.c:457 tcd/popup.c:17
-msgid "Eject"
-msgstr "Εκβολή"
-
-#. MIDDLE ROW
-#: tcd/gtcd.c:464 tcd/gtcd.c:501
-msgid "Skip backwards"
-msgstr "Παράκαμψη προς τα πίσω"
-
-#: tcd/gtcd.c:465 tcd/gtcd.c:502
-msgid "Skip forwards"
-msgstr "Παράκαμψη προς τα εμπρός"
-
-#. BOTTOM ROW
-#: tcd/gtcd.c:489
-msgid "Open track editor"
-msgstr "Εκκίνηση επεξεργαστή τροχιάς"
-
-#: tcd/gtcd.c:491 tcd/popup.c:25
-msgid "Quit"
-msgstr "Έξοδος"
-
-#. INVISIBLE BUTTONS
-#: tcd/gtcd.c:498
-#, fuzzy
-msgid "Mixer"
-msgstr "Μίκτης Ήχου"
-
-#: tcd/gtcd.c:503
-msgid "Fast Forward"
-msgstr ""
-
-#: tcd/gtcd.c:504
-msgid "Rewind"
-msgstr ""
-
-#: tcd/gtcd.c:505
-#, fuzzy
-msgid "Volume Up"
-msgstr "Ένταση"
-
-#: tcd/gtcd.c:506
-#, fuzzy
-msgid "Volume Down"
-msgstr "Ένταση"
-
-#: tcd/gtcd.c:642 tcd/gtcd.c:643 tcd/gtcd.c:644
-msgid "(Scanning)"
-msgstr "(Σάρρωση)"
-
-#: tcd/gtcd.c:666
-msgid "No Disc"
-msgstr "Χωρίς Δίσκο"
-
-#: tcd/gtcd.c:701
-msgid "Error"
-msgstr "Σφάλμα"
-
-#: tcd/gtcd.c:1001
-msgid "Volume"
-msgstr "Ένταση"
-
-#: tcd/gtcd.c:1072
-msgid "Cannot load requested font. Reloading default font."
-msgstr ""
-
-#: tcd/gtcd.c:1083
-msgid "Cannot load default Helvetica font. Loading any fixed width font."
-msgstr ""
-
-#: tcd/gtcd.c:1090
-msgid "Cannot load fixed width font. Exiting."
-msgstr ""
-
-#: tcd/gtcd.c:1288
-msgid "Filename of the CD device"
-msgstr "Όνομα συσκευής CD"
-
-#: tcd/gtcd.c:1288
-msgid "FILE"
-msgstr "ΑΡΧΕΙΟ"
-
-#: tcd/gtcd.c:1290
-msgid "Play CD on startup"
-msgstr "Αναπαραγωγή CD στην εκκίνηση"
-
-#: tcd/gtracked.c:173
-msgid "Trk"
-msgstr "Trk"
-
-#: tcd/gtracked.c:173
-msgid "Title"
-msgstr "Τίτλος"
-
-#: tcd/gtracked.c:197
-msgid "Track Editor"
-msgstr "Επεξεργαστής τροχιών"
-
-#. Disc area
-#: tcd/gtracked.c:213
-#, c-format
-msgid "Disc Information (%02u:%02u minutes)"
-msgstr "Πληροφορίες Δίσκου  (%02u:%02u λεπτά)"
-
-#: tcd/gtracked.c:222
-msgid "Artist / Title"
-msgstr "Καλλιτέχνης / Τίτλος"
-
-#. END Disc area
-#. Track area
-#: tcd/gtracked.c:245
-msgid "Track Information"
-msgstr "Πληροφορίες Τροχιάς"
-
-#. Clear button
-#: tcd/gtracked.c:301
-msgid "Clear"
-msgstr "Καθαρισμός"
-
-#. Playlist button
-#: tcd/gtracked.c:306
-msgid "Playlist"
-msgstr "Λίστα Αναπαραγωγής"
-
-#: tcd/gtracked.c:318
-msgid "Submit"
-msgstr "Υποβολή"
-
-#: tcd/gtracked.c:380
-msgid "Submit Information"
-msgstr "Υποβολή Πληροφοριών"
-
-#: tcd/gtracked.c:386
-#, c-format
-msgid ""
-"Submit information about\n"
-"'%s'"
-msgstr ""
-"Υποβολή πληροφοριών περί\n"
-"'%s'"
-
-#: tcd/gtracked.c:395
-msgid "To: "
-msgstr "Στον: "
-
-#. end of service menu
-#: tcd/gtracked.c:427
-msgid "Category: "
-msgstr "Κατηγορία: "
-
-#: tcd/linux-cdrom.c:678
-#, c-format
-msgid ""
-"Error accessing cdrom device.\n"
-"Please check to make sure cdrom drive support\n"
-"is compiled into the kernel, and that you have\n"
-"permission to access the device.\n"
-"\n"
-"Reason: %s\n"
-msgstr ""
-"Σφάλμα στην πρόσβαση της συσκευής CDROM.\n"
-"Παρακαλώ επιβεβαιώστε ότι έχετε υποστήριξη συσκευής\n"
-"CDROM στο πυρήνα και ότι έχετε δικαιώματα πρόσβασης\n"
-"στη συσκευή.\n"
-"\n"
-"Αιτία: %s\n"
-
-#: tcd/linux-cdrom.c:771
-msgid "Unknown / Unknown"
-msgstr "¶γνωστο / ¶γνωστο"
-
-#: tcd/linux-cdrom.c:777
-#, c-format
-msgid "Track %d"
-msgstr "Τροχιά %d"
-
-#: tcd/popup.c:19
-msgid "Preferences..."
-msgstr "Προτιμήσεις..."
-
-#: tcd/popup.c:20
-msgid "Track Editor..."
-msgstr "Επεξεργαστής Τροχιών..."
-
-#: tcd/popup.c:21
-#, fuzzy
-msgid "Mixer..."
-msgstr "Εκτέλεση μίκτη..."
-
-#: tcd/popup.c:23
-msgid "About"
-msgstr "Πέρι"
-
-#. do nothing
-#: tcd/prefs.c:333 tcd/prefs.c:388
-msgid "Do nothing"
-msgstr "Καμία λειτουργία"
-
-#: tcd/prefs.c:339
-msgid "Start playing"
-msgstr "Εκκίνηση αναπαραγωγής"
-
-#: tcd/prefs.c:345 tcd/prefs.c:394
-msgid "Stop playing"
-msgstr "Παύση αναπαραγωγής"
-
-#. close tray
-#: tcd/prefs.c:349 tcd/prefs.c:406
-msgid "Close tray"
-msgstr "Κλείσιμο συσκευής CDROM"
-
-#: tcd/prefs.c:400
-msgid "Open tray"
-msgstr "¶νοιγμα συσκευής CDROM"
-
-#. device entry
-#: tcd/prefs.c:482
-msgid "CDROM device"
-msgstr "Συσκευή CDROM"
-
-#. device entry
-#: tcd/prefs.c:491
-msgid "Mixer Command"
-msgstr ""
-
-#. Color picker
-#: tcd/prefs.c:500
-msgid "Track/title color"
-msgstr "Χρώμα Τροχιάς/Τίτλου"
-
-#. font picker
-#: tcd/prefs.c:512
-msgid "Track/title font"
-msgstr "Γραμματοσειρά τροχιάς/τίτλου"
-
-#: tcd/prefs.c:513
-msgid "Change font"
-msgstr "Αλλαγή γραμματοσειράς"
-
-#. show handles
-#: tcd/prefs.c:520
-msgid "Show handles (restart required)"
-msgstr "Εμφάνιση χειριστών (απαιτείται επανεκκίνηση)"
-
-#. show tooltips
-#: tcd/prefs.c:527
-msgid "Show tooltips"
-msgstr "Εμφάνιση υποδείξεων"
-
-#. use alternate play ioctl
-#: tcd/prefs.c:534
-msgid "Use alternate method to play CD"
-msgstr "Χρήση ενναλακτικής μεθόδου αναπαραγωγής CDROM"
-
-#. use squared law volume
-#: tcd/prefs.c:541
-msgid "Use squared law volume control"
-msgstr "Χρήση ελέγχου έντασης ήχου με κανονισμών τετραγώνων"
-
-#. exit frame
-#: tcd/prefs.c:567
-msgid "On exit"
-msgstr "Στην έξοδο"
-
-#: tcd/prefs.c:667
-msgid "Key"
-msgstr "Κλειδί"
-
-#: tcd/prefs.c:668
-msgid "Action"
-msgstr "Ενέργεια"
-
-#: tcd/prefs.c:691
-msgid "Click here to change (restart required):"
-msgstr "Κάντε κλικ εδώ για να αλλάξετε (απαιτείται επανεκκίνηση)"
-
-#. Frame
-#: tcd/prefs.c:705 tcd/prefs.c:755
-msgid "Keybindings"
-msgstr "Συνδέσεις πλήκτρων"
-
-#: tcd/prefs.c:759
-msgid "CDDB Settings"
-msgstr "Ρυθμίσεις CDDB"
-
-#: vu-meter/main.c:118
+#: vu-meter/main.c:120
 msgid ""
 "Cannot connect to sound daemon.\n"
 "Please run 'esd' at a command prompt."
 msgstr ""
-"Σφάλμα στη σύνδεση με διεργασία ήχου.\n"
-"Παρακαλώ τρέξτε 'esd' στη γραμμή εντολών."
+"Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΟƒΟ„Ξ· ΟƒΟΞ½Ξ΄ΞµΟƒΞ· ΞΌΞµ Ξ΄ΞΉΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ξ®Ο‡ΞΏΟ….\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ο„ΟΞ­ΞΎΟ„Ξµ 'esd' ΟƒΟ„Ξ· Ξ³ΟΞ±ΞΌΞΌΞ® ΞµΞ½Ο„ΞΏΞ»ΟΞ½."
 
-#: vu-meter/main.c:241
+#: vu-meter/main.c:246
 msgid "Specify the X position of the meter."
-msgstr "Καθορίστε τη θέση X στο μετρητή."
-
-#: vu-meter/main.c:242
-msgid "X-Position"
-msgstr "Θέση-Χ"
-
-#: vu-meter/main.c:244
-msgid "Specify the Y position of the meter."
-msgstr "Καθορίστε τη θέση Ψ στο μετρητή."
-
-#: vu-meter/main.c:245
-msgid "Y-Position"
-msgstr "Θέση-Ψ"
+msgstr "ΞΞ±ΞΈΞΏΟΞ―ΟƒΟ„Ξµ Ο„Ξ· ΞΈΞ­ΟƒΞ· X ΟƒΟ„ΞΏ ΞΌΞµΟ„ΟΞ·Ο„Ξ®."
 
 #: vu-meter/main.c:247
-msgid "Connect to the esd server on this host."
-msgstr "Σύνδεση σε εξυπηρετητή esd σε αυτό το σύστημα."
+msgid "X-Position"
+msgstr "ΞΞ­ΟƒΞ·-Ξ§"
 
-#: vu-meter/main.c:248
-msgid "ESD Server Host"
-msgstr "Σύστημα Εξυπηρετητή ESD"
+#: vu-meter/main.c:249
+msgid "Specify the Y position of the meter."
+msgstr "ΞΞ±ΞΈΞΏΟΞ―ΟƒΟ„Ξµ Ο„Ξ· ΞΈΞ­ΟƒΞ· Ξ¨ ΟƒΟ„ΞΏ ΞΌΞµΟ„ΟΞ·Ο„Ξ®."
 
 #: vu-meter/main.c:250
-msgid "Open a vertical version of the meter."
-msgstr "¶νοιγμα μιας κάθετης έκδοσης του μετρητή."
+msgid "Y-Position"
+msgstr "ΞΞ­ΟƒΞ·-Ξ¨"
 
-#: vu-meter/main.c:263
+#: vu-meter/main.c:252
+msgid "Connect to the esd server on this host."
+msgstr "Ξ£ΟΞ½Ξ΄ΞµΟƒΞ· ΟƒΞµ ΞµΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„Ξ® esd ΟƒΞµ Ξ±Ο…Ο„Ο Ο„ΞΏ ΟƒΟΟƒΟ„Ξ·ΞΌΞ±."
+
+#: vu-meter/main.c:253
+msgid "ESD Server Host"
+msgstr "Ξ£ΟΟƒΟ„Ξ·ΞΌΞ± Ξ•ΞΎΟ…Ο€Ξ·ΟΞµΟ„Ξ·Ο„Ξ® ESD"
+
+#: vu-meter/main.c:255
+msgid "Open a vertical version of the meter."
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ± ΞΌΞΉΞ±Ο‚ ΞΊΞ¬ΞΈΞµΟ„Ξ·Ο‚ Ξ­ΞΊΞ΄ΞΏΟƒΞ·Ο‚ Ο„ΞΏΟ… ΞΌΞµΟ„ΟΞ·Ο„Ξ®."
+
+#: vu-meter/main.c:257
+msgid "Act as recording level meter."
+msgstr "Ξ›ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ± Ο‰Ο‚ ΞΌΞµΟ„ΟΞ·Ο„Ξ®Ο‚ ΞµΟ€ΞΉΟ€Ξ­Ξ΄ΞΏΟ… Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚."
+
+#: vu-meter/main.c:274
 #, c-format
 msgid "Host is %s\n"
-msgstr "Το σύστημα είναι το %s\n"
+msgstr "Ξ¤ΞΏ ΟƒΟΟƒΟ„Ξ·ΞΌΞ± ΞµΞ―Ξ½Ξ±ΞΉ Ο„ΞΏ %s\n"
 
-#: vu-meter/main.c:286
+#: vu-meter/main.c:291
+msgid "Recording level"
+msgstr "Ξ•Ο€Ξ―Ο€ΞµΞ΄ΞΏ Ξ·Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚"
+
+#: vu-meter/main.c:291
 msgid "Volume Meter"
-msgstr "Μετρητής Έντασης Ήχου"
+msgstr "ΞΞµΟ„ΟΞ·Ο„Ξ®Ο‚ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚ Ξ‰Ο‡ΞΏΟ…"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞΏΞ»ΞΏΟΞΈΞ·ΟƒΞ· Ο„Ξ·Ο‚ Ξ­Ξ½Ο„Ξ±ΟƒΞ·Ο‚ ΞµΞ³Ξ³ΟΞ±Ο†Ξ®Ο‚ ΞµΞΉΟƒΟΞ΄ΞΏΟ… Ξ®Ο‡ΞΏΟ…"
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr "ΞΞµΟ„ΟΞ·Ο„Ξ®Ο‚ Ξ•Ο€ΞΉΟ€Ξ­Ξ΄ΞΏΟ… Ξ—Ο‡ΞΏΞ³ΟΞ¬Ο†Ξ·ΟƒΞ·Ο‚"
 
 #: vu-meter/vumeter.desktop.in.h:1
-msgid "A Volume Unit Meter for ESD "
-msgstr "Μετρητής ήχου για το ESD"
+msgid "Monitor the sound output volume"
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞΏΞ»ΞΏΟΞΈΞ·ΟƒΞ· Ο„Ξ·Ο‚ Ξ­Ξ½Ο„Ξ±ΟƒΞ·Ο‚ ΞµΞΎΟΞ΄ΞΏΟ… Ξ®Ο‡ΞΏΟ…"
 
 #: vu-meter/vumeter.desktop.in.h:2
-msgid "ESD Volume Meter"
-msgstr "Μετρητής ήχου ESD"
-
-#: tcd/gtcd.desktop.in.h:1
-msgid "CD Player"
-msgstr "Αναγνώστης CD"
-
-#: tcd/gtcd.desktop.in.h:2
-msgid "Gnome CD Player"
-msgstr "Αναγνώστης CD GNOME με υποστήριξη CDDB"
-
-#: grecord/Soundrecorder.desktop.in.h:1
-msgid "A simple soundrecording program for GNOME"
-msgstr ""
-
-#: grecord/Soundrecorder.desktop.in.h:2
-#, fuzzy
-msgid "Sound recorder"
-msgstr "Ηχογράφηση Ήχου GNOME"
-
-#: gmix/gmix.desktop.in.h:1
-msgid "Audio Mixer"
-msgstr "Μίκτης Ήχου"
-
-#~ msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
-#~ msgstr "-greek-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
-
-#~ msgid "Speed"
-#~ msgstr "Ταχύτητα"
-
-#~ msgid "TV set"
-#~ msgstr "Συσκευή Τηλεόρασης"
-
-#~ msgid "Gnomovision applications"
-#~ msgstr "Εφαρμογές Gnomovision"
+msgid "Volume monitor"
+msgstr "ΞΞµΟ„ΟΞ·Ο„Ξ®Ο‚ ΞΞ½Ο„Ξ±ΟƒΞ·Ο‚ Ξ‰Ο‡ΞΏΟ…"

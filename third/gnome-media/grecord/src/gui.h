@@ -53,3 +53,6 @@ GtkWidget* create_grecord_window      (void);
 GtkWidget* create_about               (void);
 GtkWidget* create_grecord_propertybox (void);
 
+/* Accessibilty functions ----------------------------------------- */
+void add_relation (AtkRelationSet* relations, AtkRelationType relation_type, AtkObject* target_accessible);
+void add_paired_relations (GtkWidget* target1, AtkRelationType target1_type, GtkWidget* target2, AtkRelationType target2_type);

@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<omf>
+  <resource>
+    <creator>
+	ejarvi@megsinet.net (Erik Jarvi)
+    </creator>
+    <title>
+      Gnome Volume Control Manual
+    </title>
+    <date>
+      2002-05-27
+   </date>
+    <version identifier="2.0" date="2002-05-27" description="Updated to full OMF format"/>
+    <subject category="GNOME|Multimedia"/>
+    <description>
+      This is the Gnome Volume Control manual
+    </description>
+    <type>
+       user's guide
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="gnome-volume-control.xml"/>
+    <language code="C"/>
+    <relation seriesid="29373b86-71da-11d6-8ef4-86f9340ccc37"/>
+    <rights type="GNU FDL" license.version="1.1" holder="Erik Jarvi"/>
+  </resource>
+</omf>

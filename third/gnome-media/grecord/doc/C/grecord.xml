@@ -1,0 +1,387 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "Sound Recorder">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Apr 11, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="en">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo> 
+    <title>&app; Manual V&manrevision;</title>       
+
+    <copyright> 
+      <year>2002</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+    <publisher> 
+      <publishername> GNOME Documentation Project </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup> 
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOME Documentation Team</surname> 
+	<affiliation> 
+	  <orgname>Sun Microsystems</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address> 
+	</affiliation> 
+      </author> 
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+    <revhistory>
+      <revision> 
+	<revnumber>&app; Manual V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision>
+      <revision> 
+	<revnumber>Sound Recorder Manual V2.1</revnumber> 
+	<date>June 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision>
+      <revision> 
+	<revnumber>Sound Recorder Manual V2.0</revnumber> 
+	<date>May 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision> 
+    </revhistory> 
+
+    <releaseinfo>This manual describes version &appversion; of &app;.
+    </releaseinfo> 
+    <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+	this manual, follow the directions in the 
+	<ulink url="ghelp:gnome-feedback"
+	  type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice> 
+  </articleinfo> 
+
+  <indexterm> 
+    <primary>Sound Recorder</primary> 
+  </indexterm> 
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+
+  <sect1 id="grecord-introduction"> 
+    <title>Introduction</title> 
+    <para>The <application>&app;</application> application enables you to record and play waveform (<filename>.wav</filename>) sound files.</para> 
+  </sect1>
+
+  <sect1 id="grecord-getting-started">
+    <title>Getting Started</title> 
+
+    <para>You can start <application>&app;</application> in the following ways:
+    </para> 
+    <variablelist>
+    	<varlistentry>
+    		<term><guimenu>Applications</guimenu> menu</term>
+    		<listitem>
+    		<para>Choose <menuchoice><guisubmenu>Sound &amp; Video</guisubmenu><guimenuitem>Sound Recorder</guimenuitem></menuchoice></para>
+    		</listitem>
+    	</varlistentry>
+    	<varlistentry>
+    		<term>Command line</term>
+    		<listitem>
+    		<para>Type <command>gnome-sound-recorder</command>, then press <keycap>Return</keycap>.</para>
+    		<para> 		 
+    		</para> 
+    		</listitem>
+    	</varlistentry>
+    </variablelist>
+
+    <para>When you start <application>&app;</application>, the following window is displayed.</para>
+
+    <!-- ==== Figure ==== -->
+      <figure id="grecord-fig"> 
+	<title>&app; Window</title> 
+	<screenshot> 
+	  <mediaobject> 
+	    <imageobject>
+	    <imagedata fileref="figures/grecord_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject> 
+	      <phrase>Shows &app; main window. Contains menubar, toolbar, progress bar, and statusbar. </phrase> 
+	    </textobject> 
+	  </mediaobject> 
+	</screenshot> 
+      </figure>
+    <!-- ==== End of Figure ==== -->
+
+  </sect1>
+
+<!-- ================ Usage ================================ -->
+
+  <sect1 id="grecord-usage"> 
+    <title>Usage</title>
+
+    <sect2 id="grecord-record">
+    	<title>To Start a New Recording</title>
+    	<para>To start a new recording session, perform the following steps:</para> 
+    	<orderedlist>
+    		<listitem><para>Click <guibutton>New</guibutton> on the toolbar.</para></listitem>
+    		<listitem><para>To start recording, click <guibutton>Record</guibutton> on the toolbar.</para></listitem>
+    		<listitem><para>To stop recording, click <guibutton>Stop</guibutton> on the toolbar.</para></listitem>
+    		<listitem><para>To play back the recording, click <guibutton>Play</guibutton> on the toolbar.</para></listitem>
+    		<listitem><para>To save the recording, choose <menuchoice><guimenu>File</guimenu><guimenuitem>Save As</guimenuitem></menuchoice>, then
+    		type a name for the sound file.</para></listitem>    		
+    	</orderedlist>
+    </sect2>
+ 
+    <sect2 id="grecord-play">
+    	<title>To Play a Sound File</title>
+    	<para>To play a sound file, choose 
+		<menuchoice><guimenu>File</guimenu><guimenuitem>Open</guimenuitem></menuchoice>. Select a 
+		sound file in the <guilabel>Select a sound file</guilabel> dialog, then click <guibutton>OK</guibutton>. 
+		<application>&app;</application> displays the duration of the file in minutes and seconds to the right
+		of the progress bar. To play the file, click <guibutton>Play</guibutton>. The progress indicator moves
+		along the progress bar as the sound file is playing. </para> 
+    </sect2>  
+ 
+    <sect2 id="grecord-echo">
+    	<title>To Add an Echo to a Sound File</title>
+    	<para>To add an echo to a sound file, open the sound file, then choose 
+		<menuchoice><guimenu>Edit</guimenu><guisubmenu>Effects</guisubmenu>
+		<guisubmenu>Echo</guisubmenu><guimenuitem>Add echo</guimenuitem></menuchoice>.</para> 
+    </sect2>
+    
+    
+    <sect2 id="grecord-undo">
+    	<title>To Undo Changes to a Sound File</title>
+    	<para>To undo all of the changes that you made to a sound file since you last saved the file, choose 
+    	<menuchoice><guimenu>Edit</guimenu><guimenuitem>Undo All</guimenuitem></menuchoice>.</para> 
+    </sect2>
+    
+  </sect1>
+
+<!-- ================ Preferences ================================ -->
+
+  <sect1 id="grecord-prefs"> 
+    <title>Preferences</title>
+    <para>To configure <application>&app;</application>, choose 
+		<menuchoice> 
+		<guimenu>Edit</guimenu>
+		<guimenuitem>Preferences</guimenuitem> 
+		</menuchoice>.
+	The <guilabel>&app; Preferences</guilabel> dialog contains the following
+	tabbed sections:</para>
+	<itemizedlist> 
+		<listitem><para><xref linkend="grecord-prefs-recording"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-playing"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-paths"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-sound"/></para>
+		</listitem>
+	</itemizedlist>
+	
+	<sect2 id="grecord-prefs-recording">
+	<title>Recording</title>   
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Recording timeout</guilabel> </term> 
+			<listitem> 
+			<para>Use this spin box to specify the time in minutes after which <application>&app;</application> 
+			stops recording if there is no interaction from the user. </para>
+			<para>Default: 2 minutes.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Stop recording on timeout</guilabel> </term> 
+			<listitem> 
+			<para>Select this option to stop recordings when <application>&app;</application> reaches 
+			the timeout limit specified in the 
+			<guilabel>Recording timeout</guilabel> spin box. </para>
+			<para>Default: selected.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Open Save dialog when recording is finished</guilabel> </term> 
+			<listitem> 
+			<para>Select this option to automatically open the <guilabel>Save sound file</guilabel> dialog when 
+			<application>&app;</application> finishes a recording. </para>
+			<para>Default: unselected.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Show warning message if size (MB) of sample becomes bigger than</guilabel> </term> 
+			<listitem> 
+			<para>Select this option to display a warning message if the size of the sound file that you are recording exceeds 100 MB. 
+			Use the spin box to modify the file size at which you want to display a warning.</para>
+			<para>Default: selected, 100 MB.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Stop recording if size (MB) of sample becomes bigger than</guilabel> </term> 
+			<listitem> 
+			<para>Select this option to stop the recording if the size of the sound file exceeds 200 MB. 
+			Use the spin box to modify the file size at which you want to stop recording.</para>
+			<para>Default: unselected, 200 MB.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-playing">
+	<title>Playing</title>   
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Repetition</guilabel> </term> 
+			<listitem> 
+			<para>Select one of the following options to determine how <application>&app;</application>
+			plays sound files:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Play the sound once only</guilabel></para>
+				<para>Select this option to play the sound file once.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Repeat forever</guilabel></para>
+				<para>Select this option to play the sound file indefinitely until you click <guibutton>Stop</guibutton> or
+				quit the application.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Number of times</guilabel></para>
+				<para>Select this option to play the sound file the number of the times that is specified in the spin box. 
+				Use the spin box to modify the number of times <application>&app;</application> plays the file.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Default: <guilabel>Number of times</guilabel>, 2.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+	
+	<sect2 id="grecord-prefs-paths">
+	<title>Paths</title>   
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Path to sox</guilabel> </term> 
+			<listitem> 
+			<para>Use this field to specify the location of the <application>sox</application> application. 
+			<application>&app;</application> uses <application>sox</application> to play back recordings. To determine
+			the location of <application>sox</application>, type <command>which sox</command> at a command line. 
+			To apply a change to the field, click <guibutton>Apply</guibutton>.</para>
+			<para>Default: depends on your operating system.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Temporary folder</guilabel> </term> 
+			<listitem> 
+			<para>Use this field to specify the directory in which to temporarily save sound files while <application>&app;</application> 
+			is recording the files. To apply a change to the field, click <guibutton>Apply</guibutton>.</para>
+			<para>Default: depends on your operating system.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-sound">
+	<title>Sound</title>   
+	<para>The preferences that you select in this tabbed section only apply to new sound files that you create.</para>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>Audio format</guilabel> </term> 
+			<listitem> 
+			<para>Select one of the following options to determine the number of bits per sample in the sound files:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>8-bit PCM</guilabel></para>
+				<para>Select this option to save the sound files using 8-bit pulse code modulation (PCM).</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>16-bit PCM</guilabel></para>
+				<para>Select this option to save the sound files using 16-bit PCM.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Default: <guilabel>8-bit PCM</guilabel>.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Sample rate</guilabel> </term> 
+			<listitem> 
+			<para>Use this field to specify the number of samples per second.</para>
+			<para>Default: 11025.</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>Mono or Stereo</guilabel> </term> 
+			<listitem> 
+			<para>Select one of the following options to determine whether the sound file is mono or stereo:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Mono</guilabel></para>
+				<para>Select this option to save the sound files in monophonic format.</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Stereo</guilabel></para>
+				<para>Select this option to save the sound files in stereophonic format. This format
+				results in a larger sound file.</para>
+				</listitem>
+				</itemizedlist>
+			<para>Default: <guilabel>Stereo</guilabel>.</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>		
+	
+
+  </sect1> 
+
+</article>

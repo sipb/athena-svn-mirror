@@ -1,8 +1,9 @@
 [Desktop Entry]
-_Name=ESD Volume Meter
-_Comment=A Volume Unit Meter for ESD 
+Encoding=UTF-8
+_Name=Volume monitor
+_Comment=Monitor the sound output volume
 Exec=vumeter
 Icon=gnome-vumeter.png
-Info=An Audio Volume Meter
-Terminal=0
+Terminal=false
 Type=Application
+Categories=GNOME;Application;AudioVideo;
