@@ -83,12 +83,12 @@ database.  If the \fI.xscreensaver\fP file exists, it overrides any settings
 in the resource database.  
 
 The syntax of the \fI.xscreensaver\fP file is similar to that of
-the \fI.Xdefaults\fP file; for example, to set the \fItimeout\fP paramter
+the \fI.Xresources\fP file; for example, to set the \fItimeout\fP paramter
 in the \fI.xscreensaver\fP file, you would write the following:
 .EX
 timeout: 5
 .EE
-whereas, in the \fI.Xdefaults\fP file, you would write
+whereas, in the \fI.Xresources\fP file, you would write
 .EX
 XScreenSaver.timeout: 5
 .EE
@@ -104,14 +104,14 @@ to re-initialize itself, like so:
 .EX
 xss-command -restart
 .EE
-Note that if you changed the \fI.Xdefaults\fP file, you might also need to run
+Note that if you changed the \fI.Xresources\fP file, you might also need to run
 .BR xrdb (1):
 .EX
-xrdb < ~/.Xdefaults
+xrdb < ~/.Xresources
 .EE
 When settings are changed in the Preferences dialog box (see above)
 the current settings will be written to the \fI.xscreensaver\fP file.
-(The \fI.Xdefaults\fP file and the app-defaults file will never be
+(The \fI.Xresources\fP file and the app-defaults file will never be
 written by xss itself.)
 .PP
 .TP 8
