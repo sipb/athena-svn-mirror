@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: shanzer $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.1 1989-05-31 11:43:38 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.2 1989-05-31 11:45:11 shanzer Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -143,7 +143,7 @@ install: all
 #	install -s lptest ${DESTDIR}/${BINDIR}/lptest
 	install -s pac ${DESTDIR}/usr/etc/pac
 	install -c print.sh ${DESTDIR}/usr/ucb/print
-#	install -c -m 755 makespools ${DESTDIR}/etc/athena
+	install -c -m 755 makespools ${DESTDIR}/etc
 
 	@echo  To build spooling directories:
 	@echo makespools ${DESTDIR} 775 ${DAEMON} ${SPGRP}
