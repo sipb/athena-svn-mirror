@@ -1,16 +1,17 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.6 1992-01-06 15:52:42 probe Exp $
+ *	$Author: miki $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.7 1994-06-07 17:23:24 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.6 1992-01-06 15:52:42 probe Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.7 1994-06-07 17:23:24 miki Exp $";
 #endif
 
 #include "attach.h"
 #include "pwd.h"
 #include <string.h>
+
 
 #define TOKSEP	" \t\r\n"
 
@@ -267,7 +268,7 @@ static int get_fstype(cpp, explicit)
 	}
 	if (explicit)
 		*explicit = exp;
-	if (!index(cp, '}')) {
+	if (!strchr(cp, '}')) {
 		fprintf(stderr,"Error in filesystem specification:\n{%s\n",
 			cp);
 		config_abort();
@@ -280,8 +281,8 @@ static int get_fstype(cpp, explicit)
 	type = 0;
 	while (parsing) {
 		ptrstart = cp;
-		if (!(cp = index(ptrstart,','))) {
-			cp = index(ptrstart,'}');
+		if (!(cp = strchr(ptrstart,','))) {
+			cp = strchr(ptrstart,'}');
 			parsing = 0;
 		}
 		*cp++ = '\0';
@@ -357,7 +358,7 @@ int nosetuid_filsys(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*err;
+	char	*retval;
 
 	for (fp = nosuidtab.tab; fp->regexp; fp++) {
 		if (fp->explicit && ((explicit && fp->explicit == -1) ||
@@ -365,14 +366,16 @@ int nosetuid_filsys(name, type)
 			continue;
 		if (!(fp->fs_type & type))
 			continue;
-		if (err=re_comp(fp->regexp)) {
+
+		if (retval=re_comp(fp->regexp)) {
 			fprintf(stderr, "Nosetuid config: %s: %s",
-				err, fp->regexp);
+				retval, fp->regexp);
 			return(default_suid);
 		}
 		if (re_exec(name))
 			return(fp->tab_data ? 1 : 0);
 	}
+
 	return(default_suid);
 }
 
@@ -381,7 +384,8 @@ int allow_filsys(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*err;
+	char	*retval;
+
 
 	for (fp = allowtab.tab; fp->regexp; fp++) {
 		if (fp->explicit && ((explicit && fp->explicit == -1) ||
@@ -389,13 +393,15 @@ int allow_filsys(name, type)
 			continue;
 		if (!(fp->fs_type & type))
 			continue;
-		if (err=re_comp(fp->regexp)) {
+
+		if (retval=re_comp(fp->regexp)) {
 			fprintf(stderr, "Allow config: %s: %s",
-				err, fp->regexp);
+				retval, fp->regexp);
 			return(1); 
 		}
 		if (re_exec(name))
 			return(fp->tab_data ? 1 : 0);
+
 	}
 	return(1);		/* Default to allow filsystem to be mounted */
 }
@@ -405,7 +411,8 @@ int check_mountpt(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*err;
+	char	*retval;
+
 
 	for (fp = goodmntpt.tab; fp->regexp; fp++) {
 		if (fp->explicit && ((explicit && fp->explicit == -1) ||
@@ -413,13 +420,16 @@ int check_mountpt(name, type)
 			continue;
 		if (!(fp->fs_type & type))
 			continue;
-		if (err=re_comp(fp->regexp)) {
+
+
+		if (retval=re_comp(fp->regexp)) {
 			fprintf(stderr, "Mountpoint config: %s: %s",
-				err, fp->regexp);
+				retval, fp->regexp);
 			return(1);
 		}
 		if (re_exec(name))
 			return(fp->tab_data ? 1 : 0);
+
 	}
 	return(1);		/* Default to allow filsystem mounted */
 				/* anywhere */
@@ -469,7 +479,8 @@ char *filsys_options(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*err;
+	char	*retval;
+
 
 	for (fp = optionsdb.tab; fp->regexp; fp++) {
 		if (fp->explicit && ((explicit && fp->explicit == -1) ||
@@ -477,13 +488,16 @@ char *filsys_options(name, type)
 			continue;
 		if (!(fp->fs_type & type))
 			continue;
-		if (err=re_comp(fp->regexp)) {
+
+
+		if (retval=re_comp(fp->regexp)) {
 			fprintf(stderr, "Mountpoint config: %s: %s",
-				err, fp->regexp);
+				retval, fp->regexp);
 			config_abort();
 		}
 		if (re_exec(name))
 			return(fp->tab_data);
+
 	}
 	return(NULL);
 }
