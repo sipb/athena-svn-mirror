@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.18 1990-06-05 22:03:31 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.19 1990-06-07 22:28:09 jik Exp $
 #
 
 DESTDIR=
@@ -16,20 +16,40 @@ MANSECT=	1
 CC= 		cc
 COMPILE_ET= 	compile_et
 LINT= 		lint
-DEFINES=	-DAFS_MOUNTPOINTS
-# Use AFSBLD=bld.beta for the mips as of 6/5/90
+DEFINES=	$(AFSDEFINES)
+
+
+# These variables apply only if you want this program to recognize
+# Andrew File System mount points.  If you don't want to support AFS,
+# then set all the variables starting with "AFS" to nothing.
 AFSBLD=		bld
 AFSINC=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/include
 AFSLIB=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/lib
-INCLUDES=	-I/usr/include\
-		-I$(AFSINC)
+AFSINCS=	-I$(AFSINC)
+AFSLDFLAGS=	-L$(AFSLIB) -L$(AFSLIB)/afs
+AFSLIBS=	-lsys -lrx -llwp $(AFSLIB)/afs/util.a
+AFSDEFINES=	-DAFS_MOUNTPOINTS
+
+
+# ETINCS is a -I flag pointing to the directory in which the et header
+# files are stored. 
+# ETLDFLAGS is a -L flag pointing to the directory where the et
+# library is stored.
+# ETLIBS lists the et libraries we want to link against
+ETINCS=		-I/usr/include
+ETLDFLAGS=	-L/usr/athena/lib
+ETLIBS=		-lcom_err
+
+
+# You probably won't have to edit anything below this line.
+
+INCLUDES=	$(ETINCS) $(AFSINCS)
+LDFLAGS=	$(ETLDFLAGS) $(AFSLDFLAGS) 
+LIBS= 		$(ETLIBS) $(AFSLIBS)
 CFLAGS= 	-O $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
-LDFLAGS=	-L/usr/athena/lib\
-		-L$(AFSLIB)\
-		-L$(AFSLIB)/afs
-LIBS= 		-lcom_err -lsys -lrx -llwp $(AFSLIB)/afs/util.a
-LINTFLAGS=	$(DEFINES) $(INCLUDES) $(CDEBUGFLAGS) -u
+LINTFLAGS=	-u $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
 LINTLIBS=	
+
 SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
 		expunge.c lsdel.c col.c shell_regexp.c\
 		errors.c stack.c
