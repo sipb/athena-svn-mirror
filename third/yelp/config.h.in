@@ -29,8 +29,17 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
+/* Compile with libbz2 support */
+#undef HAVE_LIBBZ2
+
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
+
+/* man(1) has a -d debug option */
+#undef HAVE_MAN_DEBUG
+
+/* man(1) understands -w option */
+#undef HAVE_MAN_WHEREIS
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -79,3 +88,36 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Needed to get Bzip2 working */
+#undef bzCompress
+
+/* Needed to get Bzip2 working */
+#undef bzCompressInit
+
+/* Needed to get Bzip2 working */
+#undef bzDecompress
+
+/* Needed to get Bzip2 working */
+#undef bzDecompressInit
+
+/* Needed to get Bzip2 working */
+#undef bzclose
+
+/* Needed to get Bzip2 working */
+#undef bzdopen
+
+/* Needed to get Bzip2 working */
+#undef bzerror
+
+/* Needed to get Bzip2 working */
+#undef bzflush
+
+/* Needed to get Bzip2 working */
+#undef bzopen
+
+/* Needed to get Bzip2 working */
+#undef bzread
+
+/* Needed to get Bzip2 working */
+#undef bzwrite

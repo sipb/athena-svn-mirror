@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2001-2002 Mikael Hallendal <micke@codefactory.se>
+ * Copyright (C) 2001-2002 Mikael Hallendal <micke@imendio.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Mikael Hallendal <micke@codefactory.se>
+ * Author: Mikael Hallendal <micke@imendio.com>
  */
 
 #include <config.h>
@@ -28,10 +28,9 @@
 
 #include "yelp-cache.h"
 #include "yelp-window.h"
-#include "yelp-section.h"
-#include "yelp-scrollkeeper.h"
-#include "yelp-man.h"
-#include "yelp-info.h"
+#include "yelp-theme.h"
+#include "yelp-pager.h"
+#include "yelp-toc-pager.h"
 #include "yelp-base.h"
 
 struct _YelpBasePriv {
@@ -90,7 +89,8 @@ impl_Yelp_getWindows (PortableServer_Servant  servant,
 		gchar *str_uri;
 
 		uri = yelp_window_get_current_uri (YELP_WINDOW (node->data));
-		str_uri = yelp_uri_to_string (uri);
+		str_uri = gnome_vfs_uri_to_string (uri->uri,
+						   GNOME_VFS_URI_HIDE_NONE);
 		list->_buffer[i] = CORBA_string_dup (str_uri);
 		g_free (str_uri);
 	}
@@ -111,6 +111,7 @@ yelp_base_init (YelpBase *base)
         base->priv     = priv;
 
 	yelp_cache_init ();
+	yelp_theme_init ();
 }
 
 static void
@@ -162,11 +163,15 @@ yelp_base_new (void)
         base = g_object_new (YELP_TYPE_BASE, NULL);
 	priv = base->priv;
 	
+	yelp_toc_pager_init ();
+
+	/*
 	yelp_scrollkeeper_init (priv->toc_tree, &priv->index);
 	yelp_man_init (base->priv->toc_tree, &priv->index);
 	yelp_info_init (base->priv->toc_tree, &priv->index);
 	
 	priv->index = g_list_sort (priv->index, yelp_section_compare);
+	*/
 
         return base;
 }
@@ -175,6 +180,8 @@ GtkWidget *
 yelp_base_new_window (YelpBase *base, const gchar *str_uri)
 {
 	YelpBasePriv *priv;
+	gchar        *str;
+	YelpURI      *uri;
 	GtkWidget    *window;
         
         g_return_val_if_fail (YELP_IS_BASE (base), NULL);
@@ -197,10 +204,19 @@ yelp_base_new_window (YelpBase *base, const gchar *str_uri)
 	gtk_widget_show_all (window);
 
 	if (str_uri && strcmp (str_uri, "")) {
-		yelp_window_open_uri (YELP_WINDOW (window), str_uri);
+		gchar *dir = g_get_current_dir ();
+		gchar *dirs = g_strconcat ("file://", dir, "/", NULL);
+		str = gnome_vfs_uri_make_full_from_relative (dirs, str_uri);
+		g_free (dirs);
+		g_free (dir);
 	} else {
-		yelp_window_open_uri (YELP_WINDOW (window), "toc:");
+		str = g_strdup ("toc:");
 	}
+
+	uri = yelp_uri_new (str);
+	g_free (str);
+
+	yelp_window_open_uri (YELP_WINDOW (window), uri);
 
 	return window;
 }

@@ -1,6 +1,344 @@
+Changes in 2.6.3:
+-----------------
+* Updated translations:
+  cs      (Miloslav Trmac)
+  en_CA   (Adam Weinberger)
+  et      (Priit Laes)
+  ga      (J.H.M. Dassen (Ray))
+  sk      (Ivan Noris)
+
+Changes in 2.6.2:
+-----------------
+* Fixed various leaks and crashes:
+    #140663  #140757  #139739  #142081  #140595  #140630
+* Updated translations:
+  bg     (Vladimir "Kaladan" Petkov)
+  bs     (Kemal Sanjta)
+  en_CA  (Alexander Winston)
+  eu     (Iñaki Larrañaga)
+  fi     (Pauli Virtanen)
+  fr     (Christophe Merlet)
+  hi     (Guntupalli Karunakar)
+  hu     (Laszlo Dvornik)
+  ka     (Pablo Saratxaga)
+  mi     (John C Barstow)
+  nb     (Kjartan Marass)
+  nl     (Tino Meinen)
+  pt_BR  (Gustavo Maciel Dias Vieira)
+  sq     (Laurent Dhima)
+  sv     (Christian Rose)
+  tg     (Pablo Saratxaga)
+  tk     (Gurban M. Tewekgeli)
+
+Changes in 2.6.1:
+-----------------
+* Numerous leaks identified and fixed:
+  #140597, #140595, #140546, #140525, #140524          (Morten Welinder)
+* Crash on close fixed, #140300                        (Morten Welinder)
+* Fixed compile failure, #134886                       (Shaun McCance)
+* Fixed potential memory error, #128914                (Shaun McCance)
+* Updated translations:
+  af      (Zuza Software Foundation)
+  gu      (Gujarati Team)
+  is      (Helgi Þormar Þorbjörnsson)
+  th      (Theppitak Karoonboonyanan)
+  hr      (Robert Sedak)
+  hu      (Andras Timar)
+
+Changes in 2.6.0:
+-----------------
+* Fix for for #134534, portable sed usage.          (Laszlo Peter)
+* Updated translations:
+  ar      (Arafat Medini)
+  cs      (Miloslav Trmac)
+  en_GB   (Gareth Owen)
+  hu      (Andras Timar)
+  pa      (Amanpreet Singh Alam)
+  ro      (Mugurel Tudor)
+  ru      (Russian team)
+  sr      (Slobodan Sredojević)
+  sr@Latn (Slobodan Sredojević)
+  zh_CN   (jan2xue)
+
+Changes in 2.5.91:
+------------------
+* Fix for #137216, infinite loop in tree traversal.    (Shaun McCance)
+* Updated translations:
+  be      (Ales Nyakhaychyk)
+  bn      (Sayamindu Dasgupta)
+  da      (Ole Laursen)
+  el      (Nikos Charonitakis)
+  en_CA   (Alexander Winston)
+  ga      (Alastair McKinstry)
+  nn      (Åsmund Skjæveland)
+  pt_BR   (Estêvão Samuel Procópio)
+  sr      (Danilo Šegan)
+  sr@Latn (Danilo Šegan)
+  th      (Paisa Seeluangsawat)
+  uk      (Maxim Dziumanenko)
+
+Changes in 2.5.90:
+------------------
+* Fixed problem where documents in certain categories weren't
+  being displayed.                                       (Shaun McCance)
+* Fixed #134698, because people like my name.            (Shaun McCance)
+* A few stylistic changes to the HTML output.            (Shaun McCance)
+* Implement some dictionary magic from DV which fixes the problem
+  with libxslt 1.1.3 and should provide a speedup.       (Shaun McCance)
+* Updated translations:
+  az      (Mətin Əmirov)
+  et      (Priit Laes)
+  fi      (Lauri Nurmi)
+  fr      (Jean-Michel Ardantz)
+  it      (Luca Ferretti)
+  lt      (Žygimantas Beručka)
+  ta      (Dinesh Nadarajah)
+  zh_TW   (Roy Chan)
+
+Changes in 2.5.6:
+-----------------
+* Don't break with libxslt 1.1.3                           (Shaun McCance)
+* Better author/editor/othercredit support (#134769)       (Shaun McCance)
+* Portability fix in build (#134534)                        (Merino Vidal)
+* Don't crash when the window is closed before the
+  transformation is finished (#134266)                 (Jan Arne Petersen)
+* Don't crash on compulsive page switching                 (Shaun McCance)
+* Some more stylesheet work                                (Shaun McCance)
+* Translation updates:
+  ar      (Arafat Medini)
+  az      (Mətin Əmirov)
+  be      (Ales Nyakhaychyk)
+  ca      (Jordi Mallach)
+  cs      (Miloslav Trmac)
+  cy      (Rhys Jones)
+  da      (Ole Laursen)
+  de      (Christian Neumair)
+  el      (Kostas Papadimas)
+  ko      (Changwoo Ryu)
+  ja      (Takeshi AIHANA)
+  mn      (Sanlig Badral)
+  nn      (Åsmund Skjæveland)
+  no      (Kjartan Maraas)
+  pt      (Duarte Loreto)
+  sq      (Laurent Dhima)
+  sr      (Danilo Šegan)
+  sr@Latn (Danilo Šegan)
+  th      (Paisa Seeluangsawat)
+
+Changes in 2.5.5:
+-----------------
+* Fixed orphaned Contents header                       (Shaun McCance)
+* Implemented releaseinfo element                      (Shaun McCance)
+* Various stylesheet improvements and speed-ups        (Shaun McCance)
+* Stop grabbing focus on the HTML widget all the time  (Shaun McCance)
+* Leak less memory in the DocBook converter            (Shaun McCance)
+* Made the interface more responsive while transforming
+  really large documents                               (Shaun McCance)
+* Fixed stupidly wrong chunking for refentry           (Shaun McCance)
+* Fixed stupidly wrong ulink handling                  (Shaun McCance)
+* Translation updates:
+  ca      (Jordi Mallach)
+  es      (Francisco Javier F. Serrador)
+  hr      (Robert Sedak)
+  ja      (Takeshi AIHANA)
+  ko      (Changwoo Ryu)
+  mn      (Sanlig Badral)
+  nl      (Tino Meinen)
+  pl      (GNOME PL Team)
+  sq      (Laurent Dhima)
+  sv      (Christian Rose)
+  zh_CN   (Funda Wang)
+
+Changes in 2.5.4:
+-----------------
+* Massive amount of mind-numbing work in fixing various scrolling
+  issues, including pages loading at the bottom of the page (#131305)
+  and not scrolling to anchors (#93721).                  (Shaun McCance)
+* Build fix in yelp-window.c.                          (Mikael Hallendal)
+* Handle mailto: URIs correctly again.                    (Shaun McCance)
+* Fix double history problem on first page of a document. (Shaun McCance)
+* Fix history problem for any external links.             (Shaun McCance)
+* Some stylistic changes to the stylesheets.              (Shaun McCance)
+* Don't leak massive amounts of memory in yelp-window.c   (Shaun McCance)
+* Nicer automatic chunk depth determination.              (Shaun McCance)
+* Handle XInclude properly.                               (Shaun McCance)
+* Work around libxml2 bug (now fixed, but I don't want to depend
+  on that recent of a version) which caused the TOC not to get
+  loaded if there was a single bad OMF file.              (Shaun McCance)
+* Allow relative paths to file on the command line.       (Shaun McCance)
+* Updated translations:
+  az      (Mətin Əmirov)
+  cs      (Miloslav Trmac)
+  da      (Ole Laursen
+  de      (Christian Neumair)
+  el      (Kostas Papadimas)
+  es      (Francisco Javier F. Serrador)
+  fr      (Christophe Merlet)
+  ga      (Alastair McKinstry)
+  hu      (Andras Timar)
+  ja      (Takeshi AIHANA)
+  ko      (Changwoo Ryu)
+  lt      (Žygimantas Beručka)
+  ms      (Hasbullah Bin Pit)
+  nl      (Vincent van Adrighem)
+  no      (Kjartan Maraas)
+  pl      (Artur Flinta)
+  pt      (Duarte Loreto)
+  pt_BR   (Estêvão Samuel Procópio)
+  sq      (Laurent Dhima)
+  sr      (Danilo Šegan)
+  sr@Latn (Danilo Šegan)
+  sv      (Christian Rose)
+
+Changes in 2.5.3:
+-----------------
+* Previous and Next changed to Previous Page and Next Page  (Shaun McCance)
+* Set encoding to utf-8 in the generated html (#131186)     (Richard Hult)
+* New man converter, which will be totally unadvertised
+  for the 2.6 release, due to its unreadiness               (Shaun McCance)
+* i18n in place for the XSLT                                (Shaun McCance)
+* Some nice work on the test document, which though not
+  included in the release, has shown some XSLT errors       (Eric Baudais)
+* Fixes and improvements to the DocBook XSLT                (Shaun McCance)
+* Mildly better error dialogs, still need work              (Shaun McCance)
+* Some under-the-hood improvements to the TOC maker         (Shaun McCance)
+* Anchor jumping stuff, which is still giving problems      (Shaun McCance)
+* Added yelp:chunk-depth processing instruction             (Shaun McCance)
+* Handle absolute ghelp: URIs again                         (Shaun McCance)
+* Actually handle HTML pages                                (Shaun McCance)
+* Handle links to stuff that goes outside Yelp              (Shaun McCance)
+* Fix annoying whitespace problem in sidebar                (Shaun McCance)
+* Update translations:
+  ar      (Arafat Medini)
+  ca      (Jordi Mallach)
+  cs      (Miloslav Trmac)
+  de      (Christian Neumair)
+  es      (Francisco Javier F. Serrador)
+  et      (Tõivo Leedjärv)
+  fr      (Sebastien Bacher)
+  hr      (Robert Sedak) 
+  ko      (Changwoo Ryu) 
+  lt      (Žygimantas Beručka)
+  mn      (Sanlig Badral)
+  ms      (Hasbullah Bin Pit)
+  nl      (Tino Meinen)
+  nn      (Åsmund Skjæveland)
+  pl      (GNOME PL Team)
+  pt      (Duarte Loreto)
+  sr      (Danilo Šegan)
+  sr@Latn (Danilo Šegan)
+  sv      (Christian Rose)
+  ja      (Takeshi AIHANA)
+
+Changes in 2.5.2.1:
+-------------------
+* Fix the intltool 0.28 build breakage
+
+Changes in 2.5.2:
+-----------------
+* Lots and lots of work on the Find dialog          (Chee Bin HOH)
+* Page titles now show up in the titlebar           (Shaun McCance)
+* Non-existent pages are discovered faster          (Shaun McCance)
+* Sidebar selection follows loaded page again       (Shaun McCance)
+* Previous, Next, and TOC have menu items           (Shaun McCance)
+* Window icon from the icon theme, more to come     (Shaun McCance)
+* Pretty colored boxes that follow the theme        (Shaun McCance)
+* Admonition graphics work again                    (Shaun McCance)
+* Plenty more work on the DocBook XSLT              (Shaun McCance)
+* Display a busy cursor while loading               (Shaun McCance)
+* Put Titlepage and Contents in the right order     (Shaun McCance)
+* Prevent duplicate entry in history                (Shaun McCance)
+* Do startup notification right                     (Shaun McCance)
+* Various crashers and leaks fixed
+* Updated translations:
+  ar       (Arafat Medini)
+  be       (Ales Nyakhaychyk)
+  ca       (Jordi Mallach)
+  cs       (Miloslav Trmac)
+  da       (Ole Laursen)
+  de       (Christian Neumair)
+  el       (Nikos Charonitakis)
+  es       (Francisco Javier F. Serrador)
+  ja       (Takeshi AIHANA)
+  nl       (Tino Meinen)
+  nn       (Åsmund Skjæveland)
+  pl       (GNOME PL Team)
+  sr       (Danilo Šegan)
+  sr@Latn  (Danilo Šegan)
+  sv       (Christian Rose)
+
+Changes in 2.5.1:
+-----------------
+* Remove empty Categories headers from TOC      (Shaun McCance)
+* Back, Forward, and Find in Page are back      (Chee Bin HOH)  
+* Crashes found and fixed:
+  Joe Markus Clarke (2)
+  Diego González    (1)
+  Shaun McCance     (1)
+* Updated translations:
+  cs      (Miloslav Trmac)
+  lt      (Žygimantas Beručka)
+  mn      (Sanlig Badral)
+  nl      (Tino Meinen)
+  sr      (Danilo Šegan)
+  sr@Latn (Danilo Šegan)
+  th      (Paisa Seeluangsawat)
+  fr      (Jean-Michel Ardantz)
+
+Changes in 2.5.0:
+-----------------
+Completely new transformation system.  This is really just a whole
+slew of changes that I just can't list.  The transformations are
+done entirely differently, in-process, and unthreaded.  A YelpPager
+is used to hold the transformation, and it emits signals when pages
+are ready to be displayed.  The "views" are removed from YelpWindow,
+because everything goes through YelpPager, and it's considerably
+simpler.  There are a lot of regressions and breakages, but the
+new infastructure will prove itself.            (Shaun McCance)
+
+Changes in 2.3.6:
+-----------------
+* A11y fixes to the contents view, #89838       (Shaun McCance)
+* A11y fixes to info viewing, #89838            (Shaun McCance)
+* Updated translations
+  (pt, ja, hi, zh_CN, es and sr)
+
+Changes in 2.3.4:
+-----------------
+* move man and info help converters into Yelp	(Anders Carlsson
+* add StarupNotify support			(Jordi Mallach)
+* additional language support for stylesheets	(Glynn foster, Mike Lei)
+* improve style guide compliance		(Alex Duggan)
+* better warning if document does not exist	(Mikael Hallendal)
+* truly massive stylesheet improvements		(Shaun McCance)
+
+
+Changes in 2.3.3:
+-----------------
+* About window fixes                            (Alex Duggan, Steven Chaplin)
+* Memory leak fixes                             (Narayana Pattipati,
+                                                 Mikael Hallendal,
+						 Kjartan Maraas)
+* Expand the contents tree correctly            (Narayana Pattipati, 
+                                                 Mikael Hallendal)
+* New translations
+  (bn, ga, sr, cy, li)
+* Updated translations
+  (ja, zh_TW, sv, cs, he, sq, ga, fr, es, de, ca, ms, pt, da, be, nl)
+
+Changes in 2.3.0: 
+-----------------
+* Lots of updates to the stylesheets
+* Removed support for gtkthml1 (no CSS)
+* Removed the 'gman' symlink (#103750)
+* Fixed the command line argument parsing
+* Updated translations
+  (mn, id, kn, fa, th, is, eo, ml, de,          
+   fi, zh_TW, zh_CN, ro, es, it, pt, am,       
+   tr, nl, be, th, he)
+
 Changes in 2.2.0:
 -----------------
-
 * Updated translations
   (hi, he, vi, de)                              (Christian Neumair,
                                                  Pablo Saratxaga,
@@ -10,7 +348,6 @@ Changes in 2.2.0:
 
 Changes in 2.1.5:
 -----------------
-
 * Stylesheet fixes                              (Padraig O'Briain)
 * Hide unimplemented search options             (Richard Hult)
 * Updated translations 
@@ -18,13 +355,11 @@ Changes in 2.1.5:
 
 Changes in 2.1.4:
 -----------------
-
 * Updated translations 
   (am, bg, ca, el, es, ja, lv, no, pl, pt_BR, sk, wa)
 
 Changes in 2.1.3:
 -----------------
-
 * Multihead fix                                 (Mark McLoughlin)
 * Updated translations 
   (be, fr, hu, da, nl, am, de, fr, sq,
@@ -50,7 +385,7 @@ Changes in 2.1.2:
 
 * Search in page                                (Richard Hult)
 * Fixes to yelp-pregenerate                     (Richard Hult)
-* Updated Norwegian (bokm�l) translation        (Kjartan Maraas)
+* Updated Norwegian (bokmål) translation        (Kjartan Maraas)
 
 Changes in 2.1.1:
 -----------------
@@ -172,7 +507,7 @@ Changes in 0.8:
 * Added support for gtkhtml1                     (Mikael Hallendal)
 * Plugged lots of mem leaks                      (Mikael Hallendal)
 * Fixed the nasty bug that made it crash on      (Mikael Hallendal,
-  Debian unstable.                                St�phane D�murget)
+  Debian unstable.                                Stéphane Démurget)
 * Various bugfixes                               (Mikael Hallendal)
 * Stylesheets improvments                        (Sander Vesik)
 

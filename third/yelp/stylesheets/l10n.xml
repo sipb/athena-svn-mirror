@@ -1,139 +1,4223 @@
-<?xml version="1.0" encoding="US-ASCII"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<l10n>
 
-<!-- Localization of the text added by GNOME stylesheets.
-     Please note: all non-ascii symbols should be encoded using Unicode
-     character entities, see Russian localization for an example. To
-     convert the file from any normal encoding to this form, use GNU
-     recode: 
-     recode -d input_encoding..h0 l10n.xml
-     Please do not convert the file to UTF8 or any other encoding
-     unless you really understand how i18n of Norman Walsh's modular
-     stylesheets works and are ready to rewrite the rest of it in
-     UTF8, too. 
-  -->
+<msg>
+	
+	<msgid>&#8220;</msgid>
+	<msgstr>&#8220;</msgstr>
+	<msgstr xml:lang="af">&#8220;</msgstr>
+	<msgstr xml:lang="ar">&#8220;</msgstr>
+	<msgstr xml:lang="az">&#8220;</msgstr>
+	<msgstr xml:lang="be">&#8220;</msgstr>
+	<msgstr xml:lang="bg">&#8220;</msgstr>
+	<msgstr xml:lang="bn">&#8220;</msgstr>
+	<msgstr xml:lang="bs">&#8220;</msgstr>
+	<msgstr xml:lang="ca">&#8220;</msgstr>
+	<msgstr xml:lang="cs">„</msgstr>
+	<msgstr xml:lang="cy">&#8220;</msgstr>
+	<msgstr xml:lang="da">„</msgstr>
+	<msgstr xml:lang="de">&#8220;</msgstr>
+	<msgstr xml:lang="el">&#8220;</msgstr>
+	<msgstr xml:lang="en_CA">&#8220;</msgstr>
+	<msgstr xml:lang="en_GB">&#8220;</msgstr>
+	<msgstr xml:lang="es">&#8220;</msgstr>
+	<msgstr xml:lang="et">&#8220;</msgstr>
+	<msgstr xml:lang="eu">&#8220;</msgstr>
+	<msgstr xml:lang="fi">”</msgstr>
+	<msgstr xml:lang="fr">&#8220;</msgstr>
+	<msgstr xml:lang="ga">&#8220;</msgstr>
+	<msgstr xml:lang="gu">&#8220;</msgstr>
+	<msgstr xml:lang="hi">&#8220;</msgstr>
+	<msgstr xml:lang="hr">&#8220;</msgstr>
+	<msgstr xml:lang="hu">&#8222;</msgstr>
+	<msgstr xml:lang="it">«</msgstr>
+	<msgstr xml:lang="ja">“</msgstr>
+	<msgstr xml:lang="ka">&#8222;</msgstr>
+	<msgstr xml:lang="ko">&#8220;</msgstr>
+	<msgstr xml:lang="lt">&#8220;</msgstr>
+	<msgstr xml:lang="mn">&#8220;</msgstr>
+	<msgstr xml:lang="ms">&#8220;</msgstr>
+	<msgstr xml:lang="nb">&#8220;</msgstr>
+	<msgstr xml:lang="nl">“</msgstr>
+	<msgstr xml:lang="nn">«</msgstr>
+	<msgstr xml:lang="no">&#8220;</msgstr>
+	<msgstr xml:lang="pa">&#8220;</msgstr>
+	<msgstr xml:lang="pl">&#8220;</msgstr>
+	<msgstr xml:lang="pt">&#8220;</msgstr>
+	<msgstr xml:lang="pt_BR">&#8220;</msgstr>
+	<msgstr xml:lang="ro">&#8220;</msgstr>
+	<msgstr xml:lang="ru">&#8222;</msgstr>
+	<msgstr xml:lang="sk">&#8220;</msgstr>
+	<msgstr xml:lang="sq">&#8220;</msgstr>
+	<msgstr xml:lang="sr">„</msgstr>
+	<msgstr xml:lang="sr@Latn">„</msgstr>
+	<msgstr xml:lang="sv">&#8220;</msgstr>
+	<msgstr xml:lang="ta">&#8220;</msgstr>
+	<msgstr xml:lang="tg">&#8220;</msgstr>
+	<msgstr xml:lang="th">&#8220;</msgstr>
+	<msgstr xml:lang="tk">&#8220;</msgstr>
+	<msgstr xml:lang="tr">&#8220;</msgstr>
+	<msgstr xml:lang="uk">„</msgstr>
+	<msgstr xml:lang="vi">&#8220;</msgstr>
+	<msgstr xml:lang="zh_CN">&#8220;</msgstr>
+	<msgstr xml:lang="zh_TW">&#8220;</msgstr>
+</msg>
+<msg>
+	
+	<msgid>&#8221;</msgid>
+	<msgstr>&#8221;</msgstr>
+	<msgstr xml:lang="af">&#8221;</msgstr>
+	<msgstr xml:lang="ar">&#8221;</msgstr>
+	<msgstr xml:lang="az">&#8221;</msgstr>
+	<msgstr xml:lang="be">&#8221;</msgstr>
+	<msgstr xml:lang="bg">&#8221;</msgstr>
+	<msgstr xml:lang="bn">&#8221;</msgstr>
+	<msgstr xml:lang="bs">&#8221;</msgstr>
+	<msgstr xml:lang="ca">&#8221;</msgstr>
+	<msgstr xml:lang="cs">”</msgstr>
+	<msgstr xml:lang="cy">&#8221;</msgstr>
+	<msgstr xml:lang="da">‟</msgstr>
+	<msgstr xml:lang="de">&#8221;</msgstr>
+	<msgstr xml:lang="el">&#8221;</msgstr>
+	<msgstr xml:lang="en_CA">&#8221;</msgstr>
+	<msgstr xml:lang="en_GB">&#8221;</msgstr>
+	<msgstr xml:lang="es">&#8221;</msgstr>
+	<msgstr xml:lang="et">&#8221;</msgstr>
+	<msgstr xml:lang="eu">&#8221;</msgstr>
+	<msgstr xml:lang="fi">”</msgstr>
+	<msgstr xml:lang="fr">&#8221;</msgstr>
+	<msgstr xml:lang="ga">&#8221;</msgstr>
+	<msgstr xml:lang="gu">&#8221;</msgstr>
+	<msgstr xml:lang="hi">&#8221;</msgstr>
+	<msgstr xml:lang="hr">&#8221;</msgstr>
+	<msgstr xml:lang="hu">&#8221;</msgstr>
+	<msgstr xml:lang="it">»</msgstr>
+	<msgstr xml:lang="ja">”</msgstr>
+	<msgstr xml:lang="ka">&#8220;</msgstr>
+	<msgstr xml:lang="ko">&#8221;</msgstr>
+	<msgstr xml:lang="lt">&#8221;</msgstr>
+	<msgstr xml:lang="mn">&#8221;</msgstr>
+	<msgstr xml:lang="ms">&#8221;</msgstr>
+	<msgstr xml:lang="nb">&#8221;</msgstr>
+	<msgstr xml:lang="nl">”</msgstr>
+	<msgstr xml:lang="nn">»</msgstr>
+	<msgstr xml:lang="no">&#8221;</msgstr>
+	<msgstr xml:lang="pa">&#8221;</msgstr>
+	<msgstr xml:lang="pl">&#8221;</msgstr>
+	<msgstr xml:lang="pt">&#8221;</msgstr>
+	<msgstr xml:lang="pt_BR">&#8221;</msgstr>
+	<msgstr xml:lang="ro">&#8221;</msgstr>
+	<msgstr xml:lang="ru">&#8220;</msgstr>
+	<msgstr xml:lang="sk">&#8221;</msgstr>
+	<msgstr xml:lang="sq">&#8221;</msgstr>
+	<msgstr xml:lang="sr">“</msgstr>
+	<msgstr xml:lang="sr@Latn">“</msgstr>
+	<msgstr xml:lang="sv">&#8221;</msgstr>
+	<msgstr xml:lang="ta">&#8221;</msgstr>
+	<msgstr xml:lang="tg">&#8221;</msgstr>
+	<msgstr xml:lang="th">&#8221;</msgstr>
+	<msgstr xml:lang="tk">&#8221;</msgstr>
+	<msgstr xml:lang="tr">&#8221;</msgstr>
+	<msgstr xml:lang="uk">“</msgstr>
+	<msgstr xml:lang="vi">&#8221;</msgstr>
+	<msgstr xml:lang="zh_CN">&#8221;</msgstr>
+	<msgstr xml:lang="zh_TW">&#8221;</msgstr>
+</msg>
+<msg>
+	
+	<msgid>&#8216;</msgid>
+	<msgstr>&#8216;</msgstr>
+	<msgstr xml:lang="af">&#8216;</msgstr>
+	<msgstr xml:lang="ar">&#8216;</msgstr>
+	<msgstr xml:lang="az">&#8216;</msgstr>
+	<msgstr xml:lang="be">&#8216;</msgstr>
+	<msgstr xml:lang="bg">&#8216;</msgstr>
+	<msgstr xml:lang="bn">&#8216;</msgstr>
+	<msgstr xml:lang="bs">&#8216;</msgstr>
+	<msgstr xml:lang="ca">&#8216;</msgstr>
+	<msgstr xml:lang="cs">‘</msgstr>
+	<msgstr xml:lang="cy">&#8216;</msgstr>
+	<msgstr xml:lang="da">‚</msgstr>
+	<msgstr xml:lang="de">&#8216;</msgstr>
+	<msgstr xml:lang="el">&#8216;</msgstr>
+	<msgstr xml:lang="en_CA">&#8216;</msgstr>
+	<msgstr xml:lang="en_GB">&#8216;</msgstr>
+	<msgstr xml:lang="es">&#8216;</msgstr>
+	<msgstr xml:lang="et">&#8216;</msgstr>
+	<msgstr xml:lang="eu">&#8216;</msgstr>
+	<msgstr xml:lang="fi">’</msgstr>
+	<msgstr xml:lang="fr">&#8216;</msgstr>
+	<msgstr xml:lang="ga">&#8216;</msgstr>
+	<msgstr xml:lang="gu">&#8216;</msgstr>
+	<msgstr xml:lang="hi">&#8216;</msgstr>
+	<msgstr xml:lang="hr">&#8216;</msgstr>
+	<msgstr xml:lang="hu">&#0187;</msgstr>
+	<msgstr xml:lang="it">“</msgstr>
+	<msgstr xml:lang="ja">‘</msgstr>
+	<msgstr xml:lang="ka">&#0171;</msgstr>
+	<msgstr xml:lang="ko">&#8216;</msgstr>
+	<msgstr xml:lang="lt">&#8216;</msgstr>
+	<msgstr xml:lang="mn">&#8216;</msgstr>
+	<msgstr xml:lang="ms">&#8216;</msgstr>
+	<msgstr xml:lang="nb">&#8216;</msgstr>
+	<msgstr xml:lang="nl">‘</msgstr>
+	<msgstr xml:lang="nn">‘</msgstr>
+	<msgstr xml:lang="no">&#8216;</msgstr>
+	<msgstr xml:lang="pa">&#8216;</msgstr>
+	<msgstr xml:lang="pl">&#8216;</msgstr>
+	<msgstr xml:lang="pt">&#8216;</msgstr>
+	<msgstr xml:lang="pt_BR">&#8216;</msgstr>
+	<msgstr xml:lang="ro">&#8216;</msgstr>
+	<msgstr xml:lang="ru">&#8219;</msgstr>
+	<msgstr xml:lang="sk">&#8216;</msgstr>
+	<msgstr xml:lang="sq">&#8216;</msgstr>
+	<msgstr xml:lang="sr">‘</msgstr>
+	<msgstr xml:lang="sr@Latn">‘</msgstr>
+	<msgstr xml:lang="sv">&#8216;</msgstr>
+	<msgstr xml:lang="ta">&#8216;</msgstr>
+	<msgstr xml:lang="tg">&#8216;</msgstr>
+	<msgstr xml:lang="th">&#8216;</msgstr>
+	<msgstr xml:lang="tk">&#8216;</msgstr>
+	<msgstr xml:lang="tr">&#8216;</msgstr>
+	<msgstr xml:lang="uk">‘</msgstr>
+	<msgstr xml:lang="vi">&#8216;</msgstr>
+	<msgstr xml:lang="zh_CN">&#8216;</msgstr>
+	<msgstr xml:lang="zh_TW">&#8216;</msgstr>
+</msg>
+<msg>
+	
+	<msgid>&#8217;</msgid>
+	<msgstr>&#8217;</msgstr>
+	<msgstr xml:lang="af">&#8217;</msgstr>
+	<msgstr xml:lang="ar">&#8217;</msgstr>
+	<msgstr xml:lang="az">&#8217;</msgstr>
+	<msgstr xml:lang="be">&#8217;</msgstr>
+	<msgstr xml:lang="bg">&#8217;</msgstr>
+	<msgstr xml:lang="bn">&#8217;</msgstr>
+	<msgstr xml:lang="bs">&#8217;</msgstr>
+	<msgstr xml:lang="ca">&#8217;</msgstr>
+	<msgstr xml:lang="cs">’</msgstr>
+	<msgstr xml:lang="cy">&#8217;</msgstr>
+	<msgstr xml:lang="da">‛</msgstr>
+	<msgstr xml:lang="de">&#8217;</msgstr>
+	<msgstr xml:lang="el">&#8217;</msgstr>
+	<msgstr xml:lang="en_CA">&#8217;</msgstr>
+	<msgstr xml:lang="en_GB">&#8217;</msgstr>
+	<msgstr xml:lang="es">&#8217;</msgstr>
+	<msgstr xml:lang="et">&#8217;</msgstr>
+	<msgstr xml:lang="eu">&#8217;</msgstr>
+	<msgstr xml:lang="fi">’</msgstr>
+	<msgstr xml:lang="fr">&#8217;</msgstr>
+	<msgstr xml:lang="ga">&#8217;</msgstr>
+	<msgstr xml:lang="gu">&#8217;</msgstr>
+	<msgstr xml:lang="hi">&#8217;</msgstr>
+	<msgstr xml:lang="hr">&#8217;</msgstr>
+	<msgstr xml:lang="hu">&#0171;</msgstr>
+	<msgstr xml:lang="it">”</msgstr>
+	<msgstr xml:lang="ja">’</msgstr>
+	<msgstr xml:lang="ka">&#0187;</msgstr>
+	<msgstr xml:lang="ko">&#8217;</msgstr>
+	<msgstr xml:lang="lt">&#8217;</msgstr>
+	<msgstr xml:lang="mn">&#8217;</msgstr>
+	<msgstr xml:lang="ms">&#8217;</msgstr>
+	<msgstr xml:lang="nb">&#8217;</msgstr>
+	<msgstr xml:lang="nl">’</msgstr>
+	<msgstr xml:lang="nn">’</msgstr>
+	<msgstr xml:lang="no">&#8217;</msgstr>
+	<msgstr xml:lang="pa">&#8217;</msgstr>
+	<msgstr xml:lang="pl">&#8217;</msgstr>
+	<msgstr xml:lang="pt">&#8217;</msgstr>
+	<msgstr xml:lang="pt_BR">&#8217;</msgstr>
+	<msgstr xml:lang="ro">&#8217;</msgstr>
+	<msgstr xml:lang="ru">&#8216;</msgstr>
+	<msgstr xml:lang="sk">&#8217;</msgstr>
+	<msgstr xml:lang="sq">&#8217;</msgstr>
+	<msgstr xml:lang="sr">’</msgstr>
+	<msgstr xml:lang="sr@Latn">’</msgstr>
+	<msgstr xml:lang="sv">&#8217;</msgstr>
+	<msgstr xml:lang="ta">&#8217;</msgstr>
+	<msgstr xml:lang="tg">&#8217;</msgstr>
+	<msgstr xml:lang="th">&#8217;</msgstr>
+	<msgstr xml:lang="tk">&#8217;</msgstr>
+	<msgstr xml:lang="tr">&#8217;</msgstr>
+	<msgstr xml:lang="uk">’</msgstr>
+	<msgstr xml:lang="vi">&#8217;</msgstr>
+	<msgstr xml:lang="zh_CN">&#8217;</msgstr>
+	<msgstr xml:lang="zh_TW">&#8217;</msgstr>
+</msg>
 
-<i18n xmlns="http://docbook.sourceforge.net/xmlns/l10n/1.0">
-<!-- ************ English ******************* -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="en">
-  <l:gentext key="Title" text="Title"/>  
-  <l:gentext key="Author" text="Author"/>
-  <l:gentext key="Authors" text="Authors"/>
-  <l:gentext key="Affiliation" text="Affiliation"/>  
-  <l:gentext key="History" text="History"/>  
-  <l:gentext key="Email" text="Email"/>  
-  <l:gentext key="Publisher" text="Publisher"/>
-  <l:gentext key="Date" text="Date"/>
-  <l:gentext key="Next" text="Next"/>
-  <l:gentext key="Previous" text="Previous"/>
-  <l:gentext key="Contents" text="Contents"/>
+<msg>
+	
+	<msgid>About This Article</msgid>
+	<msgstr>About This Article</msgstr>
+	<msgstr xml:lang="af">Aangaande dié artikel</msgstr>
+	<msgstr xml:lang="ar">حول هذا المقال</msgstr>
+	<msgstr xml:lang="az">Bu Məqalə Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэты артыкул</msgstr>
+	<msgstr xml:lang="bg">Относно тази статия</msgstr>
+	<msgstr xml:lang="bn">এই তথ্যপত্রটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O ovom članku</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest article</msgstr>
+	<msgstr xml:lang="cs">O tomto článku</msgstr>
+	<msgstr xml:lang="cy">Ynghylch yr Erthygl Hon</msgstr>
+	<msgstr xml:lang="da">Om denne artikel</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Artikel</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Άρθρου</msgstr>
+	<msgstr xml:lang="en_CA">About This Article</msgstr>
+	<msgstr xml:lang="en_GB">About This Article</msgstr>
+	<msgstr xml:lang="es">Acerca de este artículo</msgstr>
+	<msgstr xml:lang="et">Artiklist</msgstr>
+	<msgstr xml:lang="eu">Artikulu honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä artikkelista</msgstr>
+	<msgstr xml:lang="fr">À propos de cet article</msgstr>
+	<msgstr xml:lang="gu">આ લેખ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस आलेख के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom članku</msgstr>
+	<msgstr xml:lang="hu">A cikk névjegye</msgstr>
+	<msgstr xml:lang="is">Um Þessa Grein</msgstr>
+	<msgstr xml:lang="it">Informazioni su questo articolo</msgstr>
+	<msgstr xml:lang="ja">この記事について</msgstr>
+	<msgstr xml:lang="ka">ამ სტატიის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 글에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šį straipsnį</msgstr>
+	<msgstr xml:lang="mn">Энэ нийтлэлийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Artikel Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne artikkelen</msgstr>
+	<msgstr xml:lang="nl">Over dit onderdeel</msgstr>
+	<msgstr xml:lang="nn">Om denne artikkelen</msgstr>
+	<msgstr xml:lang="no">Om denne artikkelen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਲੇਖ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o tym artykule</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Artigo</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Artigo</msgstr>
+	<msgstr xml:lang="ro">Despre acest articol</msgstr>
+	<msgstr xml:lang="ru">Об этой статье</msgstr>
+	<msgstr xml:lang="sk">O tomto článku</msgstr>
+	<msgstr xml:lang="sq">Informacione mbi këtë artikull</msgstr>
+	<msgstr xml:lang="sr">О овом упутству</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom uputstvu</msgstr>
+	<msgstr xml:lang="sv">Om denna artikel</msgstr>
+	<msgstr xml:lang="ta">இக்கட்டுரையாப் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Мақола</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับเอกสารนี้</msgstr>
+	<msgstr xml:lang="tk">Bu Makala Barada</msgstr>
+	<msgstr xml:lang="tr">Bu Makale Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю статтю</msgstr>
+	<msgstr xml:lang="vi">Về bài viết này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此文章</msgstr>
+	<msgstr xml:lang="zh_TW">關於這份文件</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Bibliography</msgid>
+	<msgstr>About This Bibliography</msgstr>
+	<msgstr xml:lang="af">Aangaande dié bibliografie</msgstr>
+	<msgstr xml:lang="ar">حول هذه الببليوغرافيا</msgstr>
+	<msgstr xml:lang="az">Bu Biblioqrafiya Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэтую крыніцу</msgstr>
+	<msgstr xml:lang="bg">Относно тази Библиография</msgstr>
+	<msgstr xml:lang="bn">এই গ্রন্থতালিকাটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovoj Bibliografiji</msgstr>
+	<msgstr xml:lang="ca">Quant a aquesta bibliografia</msgstr>
+	<msgstr xml:lang="cs">O této bibliografii</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Llyfryddiaeth Hon</msgstr>
+	<msgstr xml:lang="da">Om denne litteraturliste</msgstr>
+	<msgstr xml:lang="de">Info zu dieser Bibliographie</msgstr>
+	<msgstr xml:lang="el">Περί Αυτής της Βιβλιογραφίας</msgstr>
+	<msgstr xml:lang="en_CA">About This Bibliography</msgstr>
+	<msgstr xml:lang="en_GB">About This Bibliography</msgstr>
+	<msgstr xml:lang="es">Acerca de esta bibliografía</msgstr>
+	<msgstr xml:lang="et">Bibliograafiast</msgstr>
+	<msgstr xml:lang="eu">Bibliografia honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä lähdeluettelosta</msgstr>
+	<msgstr xml:lang="fr">À propos de cette bibliographie</msgstr>
+	<msgstr xml:lang="gu">આ સંદર્ભગ્રંથ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस ग्रंथसूची के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovoj bibliografiji</msgstr>
+	<msgstr xml:lang="hu">Az irodalomjegyzék névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questa bibliografia</msgstr>
+	<msgstr xml:lang="ja">この目録について</msgstr>
+	<msgstr xml:lang="ka">ამ ბიბლიოგრაფიის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 참고목록에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šią bibliografiją</msgstr>
+	<msgstr xml:lang="mn">Энэ ашигласан номын тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Biblografi Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne bibliografien</msgstr>
+	<msgstr xml:lang="nl">Over deze bibliografie</msgstr>
+	<msgstr xml:lang="nn">Om denne bibliografien</msgstr>
+	<msgstr xml:lang="no">Om denne bibliografien</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਪੁਸਤਕ-ਸੂਚੀ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o bibliografii</msgstr>
+	<msgstr xml:lang="pt">Sobre Esta Bibliografia</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Esta Bibliografia</msgstr>
+	<msgstr xml:lang="ro">Despre acestă bibliografie</msgstr>
+	<msgstr xml:lang="ru">Об этой библиографической сводке</msgstr>
+	<msgstr xml:lang="sk">O tejto bibliografii</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë Bibliografi</msgstr>
+	<msgstr xml:lang="sr">О овој литератури</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovoj literaturi</msgstr>
+	<msgstr xml:lang="sv">Om denna bibliografi</msgstr>
+	<msgstr xml:lang="ta">இந்த புத்தக பட்டியல் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Китобшиносӣ</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับบรรณานุกรมนี้</msgstr>
+	<msgstr xml:lang="tk">Bu Biblograf Barada</msgstr>
+	<msgstr xml:lang="tr">Bu Bibliografya Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю бібліографію</msgstr>
+	<msgstr xml:lang="vi">Về thư mục này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此参考书目</msgstr>
+	<msgstr xml:lang="zh_TW">關於這參考書目錄</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Book</msgid>
+	<msgstr>About This Book</msgstr>
+	<msgstr xml:lang="af">Aangaande dié boek</msgstr>
+	<msgstr xml:lang="ar">حول هذا الكتاب</msgstr>
+	<msgstr xml:lang="az">Bu Kitab Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэтую кнігу</msgstr>
+	<msgstr xml:lang="bg">Относно Тази Книга</msgstr>
+	<msgstr xml:lang="bn">এই বইটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O ovoj Knjizi</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest llibre</msgstr>
+	<msgstr xml:lang="cs">O této knize</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Llyfr Hwn</msgstr>
+	<msgstr xml:lang="da">Om denne bog</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Buch</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Βιβλίου</msgstr>
+	<msgstr xml:lang="en_CA">About This Book</msgstr>
+	<msgstr xml:lang="en_GB">About This Book</msgstr>
+	<msgstr xml:lang="es">Acerca de este libro</msgstr>
+	<msgstr xml:lang="et">Raamatust</msgstr>
+	<msgstr xml:lang="eu">Liburu honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä kirjasta</msgstr>
+	<msgstr xml:lang="fr">À propos de ce livre</msgstr>
+	<msgstr xml:lang="gu">આ પુસ્તક વિશે</msgstr>
+	<msgstr xml:lang="hi">इस पुस्तक के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovoj knjizi</msgstr>
+	<msgstr xml:lang="hu">A könyv névjegye</msgstr>
+	<msgstr xml:lang="is">Um Þessa Bók</msgstr>
+	<msgstr xml:lang="it">Informazioni su questo libro</msgstr>
+	<msgstr xml:lang="ja">このブックについて</msgstr>
+	<msgstr xml:lang="ka">ამ წიგნის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 책에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šią knygą</msgstr>
+	<msgstr xml:lang="mn">Энэ номын тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Buku Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne boken</msgstr>
+	<msgstr xml:lang="nl">Over dit boek</msgstr>
+	<msgstr xml:lang="nn">Om denne boka</msgstr>
+	<msgstr xml:lang="no">Om denne boken</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਪੁਸਤਕ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o książce</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Livro</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Livro</msgstr>
+	<msgstr xml:lang="ro">Despre această carte</msgstr>
+	<msgstr xml:lang="ru">Об этой книге</msgstr>
+	<msgstr xml:lang="sk">O tejto knihe</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë libër</msgstr>
+	<msgstr xml:lang="sr">О овој књизи</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovoj knjizi</msgstr>
+	<msgstr xml:lang="sv">Om denna bok</msgstr>
+	<msgstr xml:lang="ta">இப்புத்தகதைப் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Китоб</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับหนังสือนี้</msgstr>
+	<msgstr xml:lang="tk">Bu Kitap Barada</msgstr>
+	<msgstr xml:lang="tr">Bu Kitap Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю книгу</msgstr>
+	<msgstr xml:lang="vi">Về cuốn sách này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此书</msgstr>
+	<msgstr xml:lang="zh_TW">關於這本書籍</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Chapter</msgid>
+	<msgstr>About This Chapter</msgstr>
+	<msgstr xml:lang="af">Aangaande dié hoofstuk</msgstr>
+	<msgstr xml:lang="ar">حول هذا الفصل</msgstr>
+	<msgstr xml:lang="az">Bu Fəsil Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэтую падзел</msgstr>
+	<msgstr xml:lang="bg">Относно Тази Глава</msgstr>
+	<msgstr xml:lang="bn">এই চ্যাপ্টারটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Poglavlju</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest capítol</msgstr>
+	<msgstr xml:lang="cs">O této kapitole</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Bennod Hon</msgstr>
+	<msgstr xml:lang="da">Om dette kapitel</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Kapitel</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Κεφαλαίου</msgstr>
+	<msgstr xml:lang="en_CA">About This Chapter</msgstr>
+	<msgstr xml:lang="en_GB">About This Chapter</msgstr>
+	<msgstr xml:lang="es">Acerca de este capítulo</msgstr>
+	<msgstr xml:lang="et">Peatükist</msgstr>
+	<msgstr xml:lang="eu">Kapitulu honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä luvusta</msgstr>
+	<msgstr xml:lang="fr">À propos de ce chapitre</msgstr>
+	<msgstr xml:lang="gu">આ પ્રકરણ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस अध्याय के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom poglavlju</msgstr>
+	<msgstr xml:lang="hu">A fejezet névjegye</msgstr>
+	<msgstr xml:lang="is">Um Þennan Kafla</msgstr>
+	<msgstr xml:lang="it">Informazioni su questo capitolo</msgstr>
+	<msgstr xml:lang="ja">この章について</msgstr>
+	<msgstr xml:lang="ka">ამ გვერდის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 장에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šį skyrių</msgstr>
+	<msgstr xml:lang="mn">Энэ бүлгийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Bab ini</msgstr>
+	<msgstr xml:lang="nb">Om dette kapittelet</msgstr>
+	<msgstr xml:lang="nl">Over dit hoofdstuk</msgstr>
+	<msgstr xml:lang="nn">Om dette kapittelet</msgstr>
+	<msgstr xml:lang="no">Om dette kapittelet</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਪਾਠ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o rozdziale</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Capítulo</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Capítulo</msgstr>
+	<msgstr xml:lang="ro">Despre acest capitol</msgstr>
+	<msgstr xml:lang="ru">Об этой главе</msgstr>
+	<msgstr xml:lang="sk">O tejto kapitole</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë kapitull</msgstr>
+	<msgstr xml:lang="sr">О овом поглављу</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom poglavlju</msgstr>
+	<msgstr xml:lang="sv">Om detta kapitel</msgstr>
+	<msgstr xml:lang="ta">ீந்த அத்தியாயத்தைப் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Боб</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับบทนี้</msgstr>
+	<msgstr xml:lang="tr">Bu Bölüm Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю главу</msgstr>
+	<msgstr xml:lang="vi">Về chương này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此章</msgstr>
+	<msgstr xml:lang="zh_TW">關於這一章</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Entry</msgid>
+	<msgstr>About This Entry</msgstr>
+	<msgstr xml:lang="af">Aangaande dié inskrywing</msgstr>
+	<msgstr xml:lang="ar">حول هذه الخانة</msgstr>
+	<msgstr xml:lang="az">Bu Giriş Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэты запіс</msgstr>
+	<msgstr xml:lang="bg">Относно Този Запис</msgstr>
+	<msgstr xml:lang="bn">এই এন্ট্রিটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Unosu</msgstr>
+	<msgstr xml:lang="ca">Quant a aquesta entrada</msgstr>
+	<msgstr xml:lang="cs">O této položce</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Gofnod Hwn</msgstr>
+	<msgstr xml:lang="da">Om dette element</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Eintrag</msgstr>
+	<msgstr xml:lang="el">Περί Aυτής της Καταχώρησης</msgstr>
+	<msgstr xml:lang="en_CA">About This Entry</msgstr>
+	<msgstr xml:lang="en_GB">About This Entry</msgstr>
+	<msgstr xml:lang="es">Acerca de esta entrada</msgstr>
+	<msgstr xml:lang="et">Sissekandest</msgstr>
+	<msgstr xml:lang="eu">Sarrera honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä merkinnästä</msgstr>
+	<msgstr xml:lang="fr">À propos de cette entrée</msgstr>
+	<msgstr xml:lang="gu">આ પ્રવેશ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस प्रविष्टि के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovoj stavci</msgstr>
+	<msgstr xml:lang="hu">A bejegyzés névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questa voce</msgstr>
+	<msgstr xml:lang="ja">このエントリについて</msgstr>
+	<msgstr xml:lang="ka">ამ შენატანის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 항목에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šį įrašą</msgstr>
+	<msgstr xml:lang="mn">Энэ бичлэгийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Kemasukan Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne oppføringen</msgstr>
+	<msgstr xml:lang="nl">Over dit onderwerp</msgstr>
+	<msgstr xml:lang="nn">Om denne oppføringa</msgstr>
+	<msgstr xml:lang="no">Om denne oppføringen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਇੰਦਰਾਜ਼ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o pozycji</msgstr>
+	<msgstr xml:lang="pt">Sobre Esta Entrada</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Esta Entrada</msgstr>
+	<msgstr xml:lang="ro">Despre această intrare</msgstr>
+	<msgstr xml:lang="ru">Об этой ссылке</msgstr>
+	<msgstr xml:lang="sk">O tejto položke</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë zë</msgstr>
+	<msgstr xml:lang="sr">О овом уносу</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom unosu</msgstr>
+	<msgstr xml:lang="sv">Om denna post</msgstr>
+	<msgstr xml:lang="ta">ீந்த உள்ளீடு பர்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Элемент</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับรายการบันทึกนี้</msgstr>
+	<msgstr xml:lang="tk">Bu Giriş Barada</msgstr>
+	<msgstr xml:lang="tr">Bu Girdi Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про це поле</msgstr>
+	<msgstr xml:lang="vi">Về mục này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此条目</msgstr>
+	<msgstr xml:lang="zh_TW">關於這個項目</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Glossary</msgid>
+	<msgstr>About This Glossary</msgstr>
+	<msgstr xml:lang="af">Aangaande dié termlys</msgstr>
+	<msgstr xml:lang="ar">حول قاموس المصطلحات هذا</msgstr>
+	<msgstr xml:lang="az">Bu Lüğət Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэты сьпіс тэрмінаў</msgstr>
+	<msgstr xml:lang="bg">Относно Този Речник</msgstr>
+	<msgstr xml:lang="bn">এই গ্লসারিটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Rječniku</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest glossari</msgstr>
+	<msgstr xml:lang="cs">O tomto slovníku pojmů</msgstr>
+	<msgstr xml:lang="cy">Ynghylch yr Eirfa Hon</msgstr>
+	<msgstr xml:lang="da">Om denne ordliste</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Glossar</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Γλωσσαρίου</msgstr>
+	<msgstr xml:lang="en_CA">About This Glossary</msgstr>
+	<msgstr xml:lang="en_GB">About This Glossary</msgstr>
+	<msgstr xml:lang="es">Acerca de este glosario</msgstr>
+	<msgstr xml:lang="et">Sõnastikust</msgstr>
+	<msgstr xml:lang="eu">Glosategi honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä sanastosta</msgstr>
+	<msgstr xml:lang="fr">À propos de ce glossaire</msgstr>
+	<msgstr xml:lang="gu">આ સાર વિશે</msgstr>
+	<msgstr xml:lang="hi">इस शब्दसंग्रह के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom indeksu riječi</msgstr>
+	<msgstr xml:lang="hu">A kifejezésgyűjtemény névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questo glossario</msgstr>
+	<msgstr xml:lang="ja">この用語集について</msgstr>
+	<msgstr xml:lang="ka">ამ სიტყვარის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 용어해설에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šį terminų žodyną</msgstr>
+	<msgstr xml:lang="mn">Энэ тайлбар толийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Glosari Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne ordboken</msgstr>
+	<msgstr xml:lang="nl">Over deze woordenlijst</msgstr>
+	<msgstr xml:lang="nn">Om denne ordlista</msgstr>
+	<msgstr xml:lang="no">Om denne ordboken</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਸ਼ਬਦਾਵਲੀ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o słowniku</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Glossário</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Glossário</msgstr>
+	<msgstr xml:lang="ro">Despre acest glosar</msgstr>
+	<msgstr xml:lang="ru">Об этом глоссарии</msgstr>
+	<msgstr xml:lang="sk">O tomto slovníku</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë përmbledhje</msgstr>
+	<msgstr xml:lang="sr">О овом појмовнику</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom pojmovniku</msgstr>
+	<msgstr xml:lang="sv">Om denna ordlista</msgstr>
+	<msgstr xml:lang="ta">இந்த அறிகுறியைப் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Феҳристи Вожаҳо</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับอภิธานศัพท์นี้</msgstr>
+	<msgstr xml:lang="tk">Bu Sözlük Barada</msgstr>
+	<msgstr xml:lang="tr">Bu Sözlük Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цей глосарій</msgstr>
+	<msgstr xml:lang="vi">Về Từ điển Thuật ngữ này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此字典</msgstr>
+	<msgstr xml:lang="zh_TW">關於這份辭彙</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Index</msgid>
+	<msgstr>About This Index</msgstr>
+	<msgstr xml:lang="af">Aangaande dié indeks</msgstr>
+	<msgstr xml:lang="ar">حول هذا الفهرس</msgstr>
+	<msgstr xml:lang="az">Bu Məzmun Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэтыя ключавыя словы</msgstr>
+	<msgstr xml:lang="bg">Относно Този Индекс</msgstr>
+	<msgstr xml:lang="bn">এই ইন্ডেক্সটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Indexu</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest índex</msgstr>
+	<msgstr xml:lang="cs">O tomto rejstříku</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Mynegai Hwn</msgstr>
+	<msgstr xml:lang="da">Om dette indeks</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Index</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Ευρετηρίου</msgstr>
+	<msgstr xml:lang="en_CA">About This Index</msgstr>
+	<msgstr xml:lang="en_GB">About This Index</msgstr>
+	<msgstr xml:lang="es">Acerca de este índice</msgstr>
+	<msgstr xml:lang="et">Aineregistrist</msgstr>
+	<msgstr xml:lang="eu">Indize honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä hakemistosta</msgstr>
+	<msgstr xml:lang="fr">À propos de cet index</msgstr>
+	<msgstr xml:lang="gu">આ અનુક્રમ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस निर्देशिका के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom indeksu</msgstr>
+	<msgstr xml:lang="hu">Az index névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questo indice</msgstr>
+	<msgstr xml:lang="ja">この目次について</msgstr>
+	<msgstr xml:lang="ka">ამ სარჩევის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 찾아보기에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šią rodyklę</msgstr>
+	<msgstr xml:lang="mn">Энэ индексийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Indeks Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne indeksen</msgstr>
+	<msgstr xml:lang="nl">Over deze index</msgstr>
+	<msgstr xml:lang="nn">Om denne indeksen</msgstr>
+	<msgstr xml:lang="no">Om denne indeksen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਤਤਕਰੇ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o skorowidzu</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Índice</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Índice</msgstr>
+	<msgstr xml:lang="ro">Despre acest index</msgstr>
+	<msgstr xml:lang="ru">Об этом индексе</msgstr>
+	<msgstr xml:lang="sk">O tomto indexe</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë tregues</msgstr>
+	<msgstr xml:lang="sr">О овом попису</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom popisu</msgstr>
+	<msgstr xml:lang="sv">Om detta index</msgstr>
+	<msgstr xml:lang="ta">இந்த சுட்டு பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Нишондиҳанда</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับดัชนีนี้</msgstr>
+	<msgstr xml:lang="tk">Bu Indeks Barada</msgstr>
+	<msgstr xml:lang="tr">Bu İndeks Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цей покажчик</msgstr>
+	<msgstr xml:lang="vi">Về Mục lục này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此索引</msgstr>
+	<msgstr xml:lang="zh_TW">關於這份索引</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Part</msgid>
+	<msgstr>About This Part</msgstr>
+	<msgstr xml:lang="af">Aangaande dié deel</msgstr>
+	<msgstr xml:lang="ar">حول هذا الجزء</msgstr>
+	<msgstr xml:lang="az">Bu Qisim Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэтую частку</msgstr>
+	<msgstr xml:lang="bg">Относно Тази Част</msgstr>
+	<msgstr xml:lang="bn">এই অংশটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Dijelu</msgstr>
+	<msgstr xml:lang="ca">Quant a aquesta part</msgstr>
+	<msgstr xml:lang="cs">O této části</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Rhan Hon</msgstr>
+	<msgstr xml:lang="da">Om denne del</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Teil</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Κομματιού</msgstr>
+	<msgstr xml:lang="en_CA">About This Part</msgstr>
+	<msgstr xml:lang="en_GB">About This Part</msgstr>
+	<msgstr xml:lang="es">Acerca de esta parte</msgstr>
+	<msgstr xml:lang="et">Osast</msgstr>
+	<msgstr xml:lang="eu">Zati honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä osasta</msgstr>
+	<msgstr xml:lang="fr">À propos de cette partie</msgstr>
+	<msgstr xml:lang="gu">આ ભાગ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस हिस्से के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom dijelu</msgstr>
+	<msgstr xml:lang="hu">A rész névjegye</msgstr>
+	<msgstr xml:lang="is">Um Þennan Part</msgstr>
+	<msgstr xml:lang="it">Informazioni su questa parte</msgstr>
+	<msgstr xml:lang="ja">このパートについて</msgstr>
+	<msgstr xml:lang="ka">ამ ნაწილის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 부에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šią dalį</msgstr>
+	<msgstr xml:lang="mn">Энэ хэсгийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Bahagian Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne delen</msgstr>
+	<msgstr xml:lang="nl">Over dit onderdeel</msgstr>
+	<msgstr xml:lang="nn">Om denne delen</msgstr>
+	<msgstr xml:lang="no">Om denne delen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਹਿੱਸੇ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o części</msgstr>
+	<msgstr xml:lang="pt">Sobre Esta Parte</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Esta Parte</msgstr>
+	<msgstr xml:lang="ro">Despre această parte</msgstr>
+	<msgstr xml:lang="ru">Об этой части</msgstr>
+	<msgstr xml:lang="sk">O tejto časti</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë pjesë</msgstr>
+	<msgstr xml:lang="sr">О овом делу</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom delu</msgstr>
+	<msgstr xml:lang="sv">Om denna del</msgstr>
+	<msgstr xml:lang="ta">இந்த உறுப்பு பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Қисм</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับส่วนนี้</msgstr>
+	<msgstr xml:lang="tr">Bu Bölüm Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю частину</msgstr>
+	<msgstr xml:lang="vi">Về phần này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此部分</msgstr>
+	<msgstr xml:lang="zh_TW">關於這部份</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Preface</msgid>
+	<msgstr>About This Preface</msgstr>
+	<msgstr xml:lang="af">Aangaande dié voorwoord</msgstr>
+	<msgstr xml:lang="ar">حول هذه المقدمة</msgstr>
+	<msgstr xml:lang="az">Bu Giriş Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэтую прадмову</msgstr>
+	<msgstr xml:lang="bg">Относно Този Предговор</msgstr>
+	<msgstr xml:lang="bn">এই মুখবন্ধটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Predgovoru</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest prefaci</msgstr>
+	<msgstr xml:lang="cs">O této předmluvě</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Rhagymadrodd Hwn</msgstr>
+	<msgstr xml:lang="da">Om dette forord</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Vorwort</msgstr>
+	<msgstr xml:lang="el">Περί Αυτής της Εισαγωγής</msgstr>
+	<msgstr xml:lang="en_CA">About This Preface</msgstr>
+	<msgstr xml:lang="en_GB">About This Preface</msgstr>
+	<msgstr xml:lang="es">Acerca de este prefacio</msgstr>
+	<msgstr xml:lang="et">Eessõnast</msgstr>
+	<msgstr xml:lang="eu">Hitzaurre honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä johdannosta</msgstr>
+	<msgstr xml:lang="fr">À propos de cette préface</msgstr>
+	<msgstr xml:lang="gu">આ પ્રસ્તાવના વિશે</msgstr>
+	<msgstr xml:lang="hi">इस प्रीफ़ेस के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom predgovoru</msgstr>
+	<msgstr xml:lang="hu">Az előszó névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questa prefazione</msgstr>
+	<msgstr xml:lang="ja">この序文について</msgstr>
+	<msgstr xml:lang="ka">ამ შესავლის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 서문에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šią įžangą</msgstr>
+	<msgstr xml:lang="mn">Энэ хэллэгийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Pendahuluan Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne innledningen</msgstr>
+	<msgstr xml:lang="nl">Over dit inleiding</msgstr>
+	<msgstr xml:lang="nn">Om denne innleiinga</msgstr>
+	<msgstr xml:lang="no">Om denne innledningen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਭੂਮਿਕਾ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o przedmowie</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Prefácio</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Prefácio</msgstr>
+	<msgstr xml:lang="ro">Despre acestă prefaţă</msgstr>
+	<msgstr xml:lang="ru">Об этом предисловии</msgstr>
+	<msgstr xml:lang="sk">O tomto predslove</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë hyrje</msgstr>
+	<msgstr xml:lang="sr">О овом предговору</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom predgovoru</msgstr>
+	<msgstr xml:lang="sv">Om detta förord</msgstr>
+	<msgstr xml:lang="ta">இந்த விருப்பங்கள் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Пешрӯй</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับคำนำนี้</msgstr>
+	<msgstr xml:lang="tr">Bu Önsöz Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю передмову</msgstr>
+	<msgstr xml:lang="vi">Về Lời giới thiệu này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此前言</msgstr>
+	<msgstr xml:lang="zh_TW">關於這篇序</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Reference</msgid>
+	<msgstr>About This Reference</msgstr>
+	<msgstr xml:lang="af">Aangaande dié naslaanwerk</msgstr>
+	<msgstr xml:lang="ar">حول هذا المرجع</msgstr>
+	<msgstr xml:lang="az">Bu Bələdçi Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэты даведнік</msgstr>
+	<msgstr xml:lang="bg">Относно Тази Референция</msgstr>
+	<msgstr xml:lang="bn">এই রেফারেন্সের পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Obraćanju?</msgstr>
+	<msgstr xml:lang="ca">Quant a aquesta referència</msgstr>
+	<msgstr xml:lang="cs">O této příručce</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Cyfeiriad Hwn</msgstr>
+	<msgstr xml:lang="da">Om denne reference</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Verweis</msgstr>
+	<msgstr xml:lang="el">Περί Αυτής της Αναφοράς</msgstr>
+	<msgstr xml:lang="en_CA">About This Reference</msgstr>
+	<msgstr xml:lang="en_GB">About This Reference</msgstr>
+	<msgstr xml:lang="es">Acerca de esta referencia</msgstr>
+	<msgstr xml:lang="et">Viitest</msgstr>
+	<msgstr xml:lang="eu">Erreferentzia honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä viitteestä</msgstr>
+	<msgstr xml:lang="fr">À propos de cette référence</msgstr>
+	<msgstr xml:lang="gu">આ સંદર્ભ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस सन्दर्भ के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovoj referenci</msgstr>
+	<msgstr xml:lang="hu">A kézikönyv névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questo riferimento</msgstr>
+	<msgstr xml:lang="ja">このリファレンスについて</msgstr>
+	<msgstr xml:lang="ka">ამ მოხსენიების შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 참고문헌에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šią nuorodą</msgstr>
+	<msgstr xml:lang="mn">Энэ хамаарлын тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Rujukan Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne referansen</msgstr>
+	<msgstr xml:lang="nl">Over deze referentie</msgstr>
+	<msgstr xml:lang="nn">Om denne referansen</msgstr>
+	<msgstr xml:lang="no">Om denne referansen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਹਵਾਲੇ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o odnośniku</msgstr>
+	<msgstr xml:lang="pt">Sobre Esta Referência</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Esta Referência</msgstr>
+	<msgstr xml:lang="ro">Despre această referinţă</msgstr>
+	<msgstr xml:lang="ru">Об этих ссылках</msgstr>
+	<msgstr xml:lang="sk">O tomto odkaze</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë referim</msgstr>
+	<msgstr xml:lang="sr">О овој литератури</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovoj literaturi</msgstr>
+	<msgstr xml:lang="sv">Om denna referens</msgstr>
+	<msgstr xml:lang="ta">இந்த குறிப்புகள் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Нишон</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับส่วนอ้างอิงนี้</msgstr>
+	<msgstr xml:lang="tr">Bu Referans Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про це посилання</msgstr>
+	<msgstr xml:lang="vi">Về tham khảo này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此参考</msgstr>
+	<msgstr xml:lang="zh_TW">關於這份參考</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Section</msgid>
+	<msgstr>About This Section</msgstr>
+	<msgstr xml:lang="af">Aangaande dié afdeling</msgstr>
+	<msgstr xml:lang="ar">حول هذا القسم</msgstr>
+	<msgstr xml:lang="az">Bu Bölmə Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэты падзел</msgstr>
+	<msgstr xml:lang="bg">Относно Тази Секция</msgstr>
+	<msgstr xml:lang="bn">এই অংশটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovoj Sekciji</msgstr>
+	<msgstr xml:lang="ca">Quant a aquesta secció</msgstr>
+	<msgstr xml:lang="cs">O tomto oddílu</msgstr>
+	<msgstr xml:lang="cy">Ynghylch yr Adran Hon</msgstr>
+	<msgstr xml:lang="da">Om denne sektion</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Abschnitt</msgstr>
+	<msgstr xml:lang="el">Περί Αυτής της Ενότητας</msgstr>
+	<msgstr xml:lang="en_CA">About This Section</msgstr>
+	<msgstr xml:lang="en_GB">About This Section</msgstr>
+	<msgstr xml:lang="es">Acerca de esta sección</msgstr>
+	<msgstr xml:lang="et">Osast</msgstr>
+	<msgstr xml:lang="eu">Atal honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä luvusta</msgstr>
+	<msgstr xml:lang="fr">À propos de cette section</msgstr>
+	<msgstr xml:lang="gu">આ વિભાગ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस खण्ड के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom odjeljku</msgstr>
+	<msgstr xml:lang="hu">A bekezdés névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questa sezione</msgstr>
+	<msgstr xml:lang="ja">このセクションについて</msgstr>
+	<msgstr xml:lang="ka">ამ განყოფილების შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 절에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šį skyrių</msgstr>
+	<msgstr xml:lang="mn">Энэ бүлгийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Seksyen Ini</msgstr>
+	<msgstr xml:lang="nb">Om denne seksjonen</msgstr>
+	<msgstr xml:lang="nl">Over deze sectie</msgstr>
+	<msgstr xml:lang="nn">Om dette avsnittet</msgstr>
+	<msgstr xml:lang="no">Om denne seksjonen</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਭਾਗ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o sekcji</msgstr>
+	<msgstr xml:lang="pt">Sobre Esta Secção</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Esta Seção</msgstr>
+	<msgstr xml:lang="ro">Despre această secţiune</msgstr>
+	<msgstr xml:lang="ru">Об этой секции</msgstr>
+	<msgstr xml:lang="sk">O tejto sekcii</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë seksion</msgstr>
+	<msgstr xml:lang="sr">О овом одељку</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom odeljku</msgstr>
+	<msgstr xml:lang="sv">Om detta avsnitt</msgstr>
+	<msgstr xml:lang="ta">இந்த பகுதியைப் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Бахш</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับส่วนนี้</msgstr>
+	<msgstr xml:lang="tr">Bu Bölüm Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цей розділ</msgstr>
+	<msgstr xml:lang="vi">Về phần này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此段</msgstr>
+	<msgstr xml:lang="zh_TW">關於這一節</msgstr>
+</msg>
+<msg>
+	
+	<msgid>About This Set</msgid>
+	<msgstr>About This Set</msgstr>
+	<msgstr xml:lang="af">Aangaande dié stel</msgstr>
+	<msgstr xml:lang="ar">حول هذه المجموعة</msgstr>
+	<msgstr xml:lang="az">Bu Dəstə Haqqında</msgstr>
+	<msgstr xml:lang="be">Пра гэты збор</msgstr>
+	<msgstr xml:lang="bg">Относно Тази Подредба</msgstr>
+	<msgstr xml:lang="bn">এই সেটটির পরিচিতি</msgstr>
+	<msgstr xml:lang="bs">O Ovom Kompletu</msgstr>
+	<msgstr xml:lang="ca">Quant a aquest joc</msgstr>
+	<msgstr xml:lang="cs">O této sadě</msgstr>
+	<msgstr xml:lang="cy">Ynghylch y Set Hon</msgstr>
+	<msgstr xml:lang="da">Om dette sæt</msgstr>
+	<msgstr xml:lang="de">Info zu diesem Satz</msgstr>
+	<msgstr xml:lang="el">Περί Αυτού του Σετ</msgstr>
+	<msgstr xml:lang="en_CA">About This Set</msgstr>
+	<msgstr xml:lang="en_GB">About This Set</msgstr>
+	<msgstr xml:lang="es">Acerca de este conjunto</msgstr>
+	<msgstr xml:lang="et">Kogumikust</msgstr>
+	<msgstr xml:lang="eu">Multzo honi buruz</msgstr>
+	<msgstr xml:lang="fi">Tietoja tästä sarjasta</msgstr>
+	<msgstr xml:lang="fr">À propos de cet ensemble</msgstr>
+	<msgstr xml:lang="gu">આ ગણ વિશે</msgstr>
+	<msgstr xml:lang="hi">इस सेट के बारे में</msgstr>
+	<msgstr xml:lang="hr">O ovom skupu</msgstr>
+	<msgstr xml:lang="hu">A sorozat névjegye</msgstr>
+	<msgstr xml:lang="it">Informazioni su questa raccolta</msgstr>
+	<msgstr xml:lang="ja">このセットについて</msgstr>
+	<msgstr xml:lang="ka">ამ რიგის შესახებ</msgstr>
+	<msgstr xml:lang="ko">이 전집에 대한 정보</msgstr>
+	<msgstr xml:lang="lt">Apie šį rinkinį</msgstr>
+	<msgstr xml:lang="mn">Энэ олонлогийн тухай</msgstr>
+	<msgstr xml:lang="ms">Perihal Set Ini</msgstr>
+	<msgstr xml:lang="nb">Om dette settet</msgstr>
+	<msgstr xml:lang="nl">Over deze verzameling</msgstr>
+	<msgstr xml:lang="nn">Om dette settet</msgstr>
+	<msgstr xml:lang="no">Om dette settet</msgstr>
+	<msgstr xml:lang="pa">ਇਸ ਸਮੂਹ ਬਾਰੇ</msgstr>
+	<msgstr xml:lang="pl">Informacje o zestawie</msgstr>
+	<msgstr xml:lang="pt">Sobre Este Conjunto</msgstr>
+	<msgstr xml:lang="pt_BR">Sobre Este Conjunto</msgstr>
+	<msgstr xml:lang="ro">Despre acest set</msgstr>
+	<msgstr xml:lang="ru">Об этом наборе</msgstr>
+	<msgstr xml:lang="sq">Informacione në lidhje me këtë sqarim</msgstr>
+	<msgstr xml:lang="sr">О овом скупу</msgstr>
+	<msgstr xml:lang="sr@Latn">O ovom skupu</msgstr>
+	<msgstr xml:lang="sv">Om denna samling</msgstr>
+	<msgstr xml:lang="ta">இந்த அமைப்புகள் பற்றி</msgstr>
+	<msgstr xml:lang="tg">Оиди Ин Маҷмӯъ</msgstr>
+	<msgstr xml:lang="th">เกี่ยวกับชุดนี้</msgstr>
+	<msgstr xml:lang="tr">Bu Küme Hakkında</msgstr>
+	<msgstr xml:lang="uk">Про цю збірку</msgstr>
+	<msgstr xml:lang="vi">Về phần này</msgstr>
+	<msgstr xml:lang="zh_CN">关于此集</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Affiliation</msgid>
+	<msgstr>Affiliation</msgstr>
+	<msgstr xml:lang="af">Affiliasie</msgstr>
+	<msgstr xml:lang="ar">الإنتساب</msgstr>
+	<msgstr xml:lang="az">Bağlılıq</msgstr>
+	<msgstr xml:lang="be">Бацькоўства</msgstr>
+	<msgstr xml:lang="bg">Съединение</msgstr>
+	<msgstr xml:lang="bn">অ্যাফিলিয়েশন</msgstr>
+	<msgstr xml:lang="bs">Pripajanje</msgstr>
+	<msgstr xml:lang="ca">Afiliació</msgstr>
+	<msgstr xml:lang="cs">Přidružení</msgstr>
+	<msgstr xml:lang="cy">Mabwysiad</msgstr>
+	<msgstr xml:lang="da">Tilknytning</msgstr>
+	<msgstr xml:lang="de">Mitgliedschaft</msgstr>
+	<msgstr xml:lang="el">Υπαγωγή</msgstr>
+	<msgstr xml:lang="en_CA">Affiliation</msgstr>
+	<msgstr xml:lang="en_GB">Affiliation</msgstr>
+	<msgstr xml:lang="es">Afiliación</msgstr>
+	<msgstr xml:lang="et">Ühing</msgstr>
+	<msgstr xml:lang="eu">Afiliazio</msgstr>
+	<msgstr xml:lang="fi">Yhteys</msgstr>
+	<msgstr xml:lang="fr">Affiliation</msgstr>
+	<msgstr xml:lang="gu">અફિલિએશન</msgstr>
+	<msgstr xml:lang="hi">से सम्बद्ध</msgstr>
+	<msgstr xml:lang="hr">Grupacija</msgstr>
+	<msgstr xml:lang="hu">Kapcsolat</msgstr>
+	<msgstr xml:lang="it">Associazione</msgstr>
+	<msgstr xml:lang="ja">関連項目</msgstr>
+	<msgstr xml:lang="ka">კავშირი</msgstr>
+	<msgstr xml:lang="ko">추천의 글</msgstr>
+	<msgstr xml:lang="lt">Narystė</msgstr>
+	<msgstr xml:lang="mn">Бүлэгчилэл</msgstr>
+	<msgstr xml:lang="ms">Afiliasi</msgstr>
+	<msgstr xml:lang="nb">Tilhørighet</msgstr>
+	<msgstr xml:lang="nl">Verwantschap</msgstr>
+	<msgstr xml:lang="nn">Tilknytt</msgstr>
+	<msgstr xml:lang="no">Tilhørighet</msgstr>
+	<msgstr xml:lang="pa">ਸੰਬੰਧ</msgstr>
+	<msgstr xml:lang="pl">Przynależność</msgstr>
+	<msgstr xml:lang="pt">Afiliação</msgstr>
+	<msgstr xml:lang="pt_BR">Afiliação</msgstr>
+	<msgstr xml:lang="ro">Afiliere</msgstr>
+	<msgstr xml:lang="ru">Принадлежность</msgstr>
+	<msgstr xml:lang="sk">Pridruženie</msgstr>
+	<msgstr xml:lang="sq">Afilim</msgstr>
+	<msgstr xml:lang="sr">Запослење</msgstr>
+	<msgstr xml:lang="sr@Latn">Zaposlenje</msgstr>
+	<msgstr xml:lang="sv">Anknytning</msgstr>
+	<msgstr xml:lang="ta">இணைப்பு கொண்டது</msgstr>
+	<msgstr xml:lang="tg">Ҷузъиёт</msgstr>
+	<msgstr xml:lang="th">ผูกพันกับ</msgstr>
+	<msgstr xml:lang="tr">Üyelikler</msgstr>
+	<msgstr xml:lang="uk">Приналежність</msgstr>
+	<msgstr xml:lang="zh_CN">加盟</msgstr>
+	<msgstr xml:lang="zh_TW">履歷</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Appendix</msgid>
+	<msgstr>Appendix</msgstr>
+	<msgstr xml:lang="af">Aanhangsel</msgstr>
+	<msgstr xml:lang="ar">الملحق</msgstr>
+	<msgstr xml:lang="az">Əlavə</msgstr>
+	<msgstr xml:lang="be">Дадаткі</msgstr>
+	<msgstr xml:lang="bg">Притурка</msgstr>
+	<msgstr xml:lang="bn">অ্যাপেন্ডিক্স</msgstr>
+	<msgstr xml:lang="bs">Prilog</msgstr>
+	<msgstr xml:lang="ca">Apèndix</msgstr>
+	<msgstr xml:lang="cs">Příloha</msgstr>
+	<msgstr xml:lang="cy">Atodiad</msgstr>
+	<msgstr xml:lang="da">Appendiks</msgstr>
+	<msgstr xml:lang="de">Anhang</msgstr>
+	<msgstr xml:lang="el">Appendix</msgstr>
+	<msgstr xml:lang="en_CA">Appendix</msgstr>
+	<msgstr xml:lang="en_GB">Appendix</msgstr>
+	<msgstr xml:lang="es">Apéndice</msgstr>
+	<msgstr xml:lang="et">Lisa</msgstr>
+	<msgstr xml:lang="eu">Eranskina</msgstr>
+	<msgstr xml:lang="fi">Liite</msgstr>
+	<msgstr xml:lang="fr">Annexe</msgstr>
+	<msgstr xml:lang="gu">અનુક્રમણિકા</msgstr>
+	<msgstr xml:lang="hi">परिशिष्ट</msgstr>
+	<msgstr xml:lang="hr">Dodatak</msgstr>
+	<msgstr xml:lang="hu">Függelék</msgstr>
+	<msgstr xml:lang="it">Appendice</msgstr>
+	<msgstr xml:lang="ja">補足</msgstr>
+	<msgstr xml:lang="ka">დამატება</msgstr>
+	<msgstr xml:lang="ko">부록</msgstr>
+	<msgstr xml:lang="lt">Priedas</msgstr>
+	<msgstr xml:lang="mn">Хавсралт</msgstr>
+	<msgstr xml:lang="ms">Apendiks</msgstr>
+	<msgstr xml:lang="nb">Appendiks</msgstr>
+	<msgstr xml:lang="nl">Appendix</msgstr>
+	<msgstr xml:lang="nn">Appendiks</msgstr>
+	<msgstr xml:lang="no">Appendiks</msgstr>
+	<msgstr xml:lang="pa">ਅੰਤਿਕਾ</msgstr>
+	<msgstr xml:lang="pl">Załącznik</msgstr>
+	<msgstr xml:lang="pt">Apêndice</msgstr>
+	<msgstr xml:lang="pt_BR">Apêndice</msgstr>
+	<msgstr xml:lang="ro">Appendix</msgstr>
+	<msgstr xml:lang="ru">Приложение</msgstr>
+	<msgstr xml:lang="sk">Príloha</msgstr>
+	<msgstr xml:lang="sq">Shtesë</msgstr>
+	<msgstr xml:lang="sr">Додатак</msgstr>
+	<msgstr xml:lang="sr@Latn">Dodatak</msgstr>
+	<msgstr xml:lang="sv">Appendix</msgstr>
+	<msgstr xml:lang="ta">அனுபந்தம்</msgstr>
+	<msgstr xml:lang="tg">Илова</msgstr>
+	<msgstr xml:lang="th">ภาคผนวก</msgstr>
+	<msgstr xml:lang="tk">Apendiks</msgstr>
+	<msgstr xml:lang="tr">Ekler</msgstr>
+	<msgstr xml:lang="uk">Додаток</msgstr>
+	<msgstr xml:lang="vi">Phụ lục</msgstr>
+	<msgstr xml:lang="zh_CN">附录</msgstr>
+	<msgstr xml:lang="zh_TW">附錄</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Article</msgid>
+	<msgstr>Article</msgstr>
+	<msgstr xml:lang="af">Artikel</msgstr>
+	<msgstr xml:lang="ar">المقال</msgstr>
+	<msgstr xml:lang="az">Məqalə</msgstr>
+	<msgstr xml:lang="be">Артыкул</msgstr>
+	<msgstr xml:lang="bg">Статия</msgstr>
+	<msgstr xml:lang="bn">আর্টিকাল</msgstr>
+	<msgstr xml:lang="bs">Članak</msgstr>
+	<msgstr xml:lang="ca">Article</msgstr>
+	<msgstr xml:lang="cs">Článek</msgstr>
+	<msgstr xml:lang="cy">Erthygl</msgstr>
+	<msgstr xml:lang="da">Artikel</msgstr>
+	<msgstr xml:lang="de">Artikel</msgstr>
+	<msgstr xml:lang="el">Άρθρο</msgstr>
+	<msgstr xml:lang="en_CA">Article</msgstr>
+	<msgstr xml:lang="en_GB">Article</msgstr>
+	<msgstr xml:lang="es">Artículo</msgstr>
+	<msgstr xml:lang="et">Artikkel</msgstr>
+	<msgstr xml:lang="eu">Artikulua</msgstr>
+	<msgstr xml:lang="fi">Artikkeli</msgstr>
+	<msgstr xml:lang="fr">Article</msgstr>
+	<msgstr xml:lang="gu">લેખ</msgstr>
+	<msgstr xml:lang="hi">आलेख</msgstr>
+	<msgstr xml:lang="hr">Članak</msgstr>
+	<msgstr xml:lang="hu">Cikk</msgstr>
+	<msgstr xml:lang="is">Grein</msgstr>
+	<msgstr xml:lang="it">Articolo</msgstr>
+	<msgstr xml:lang="ja">記事</msgstr>
+	<msgstr xml:lang="ka">სტატია</msgstr>
+	<msgstr xml:lang="ko">논설</msgstr>
+	<msgstr xml:lang="lt">Straipsnis</msgstr>
+	<msgstr xml:lang="mn">Нийтлэл</msgstr>
+	<msgstr xml:lang="ms">Artikel</msgstr>
+	<msgstr xml:lang="nb">Artikkel</msgstr>
+	<msgstr xml:lang="nl">Artikel</msgstr>
+	<msgstr xml:lang="nn">Artikkel</msgstr>
+	<msgstr xml:lang="no">Artikkel</msgstr>
+	<msgstr xml:lang="pa">ਲੇਖ</msgstr>
+	<msgstr xml:lang="pl">Artykuł</msgstr>
+	<msgstr xml:lang="pt">Artigo</msgstr>
+	<msgstr xml:lang="pt_BR">Artigo</msgstr>
+	<msgstr xml:lang="ro">Articol</msgstr>
+	<msgstr xml:lang="ru">Статья</msgstr>
+	<msgstr xml:lang="sk">Článok</msgstr>
+	<msgstr xml:lang="sq">Artikull</msgstr>
+	<msgstr xml:lang="sr">Чланак</msgstr>
+	<msgstr xml:lang="sr@Latn">Članak</msgstr>
+	<msgstr xml:lang="sv">Artikel</msgstr>
+	<msgstr xml:lang="ta">கட்டுரை</msgstr>
+	<msgstr xml:lang="tg">Мақола</msgstr>
+	<msgstr xml:lang="th">เอกสาร</msgstr>
+	<msgstr xml:lang="tk">Makala</msgstr>
+	<msgstr xml:lang="tr">Makale</msgstr>
+	<msgstr xml:lang="uk">Стаття</msgstr>
+	<msgstr xml:lang="vi">Bài viết</msgstr>
+	<msgstr xml:lang="zh_CN">文章</msgstr>
+	<msgstr xml:lang="zh_TW">文章</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Audience</msgid>
+	<msgstr>Audience</msgstr>
+	<msgstr xml:lang="af">Gehoor</msgstr>
+	<msgstr xml:lang="ar">الجمهور</msgstr>
+	<msgstr xml:lang="az">Audiyensiya</msgstr>
+	<msgstr xml:lang="be">Слухачы</msgstr>
+	<msgstr xml:lang="bg">Публика</msgstr>
+	<msgstr xml:lang="bn">শ্রোতা</msgstr>
+	<msgstr xml:lang="bs">Publika</msgstr>
+	<msgstr xml:lang="ca">Audiència</msgstr>
+	<msgstr xml:lang="cs">Adresáti</msgstr>
+	<msgstr xml:lang="cy">Cynulleidfa</msgstr>
+	<msgstr xml:lang="da">Publikum</msgstr>
+	<msgstr xml:lang="de">Zielgruppe</msgstr>
+	<msgstr xml:lang="el">Κοινό</msgstr>
+	<msgstr xml:lang="en_CA">Audience</msgstr>
+	<msgstr xml:lang="en_GB">Audience</msgstr>
+	<msgstr xml:lang="es">Audiencia</msgstr>
+	<msgstr xml:lang="et">Kuulajaskond</msgstr>
+	<msgstr xml:lang="eu">Entzulegoa</msgstr>
+	<msgstr xml:lang="fi">Lukijakunta</msgstr>
+	<msgstr xml:lang="fr">Destinataires</msgstr>
+	<msgstr xml:lang="gu">પ્રેક્ષકો</msgstr>
+	<msgstr xml:lang="hi">सभा</msgstr>
+	<msgstr xml:lang="hr">Publika</msgstr>
+	<msgstr xml:lang="hu">Közönség</msgstr>
+	<msgstr xml:lang="it">Pubblico</msgstr>
+	<msgstr xml:lang="ja">読者</msgstr>
+	<msgstr xml:lang="ka">აუდიენცია</msgstr>
+	<msgstr xml:lang="ko">독자</msgstr>
+	<msgstr xml:lang="lt">Auditorija</msgstr>
+	<msgstr xml:lang="mn">Уншигчид</msgstr>
+	<msgstr xml:lang="ms">Pendengar</msgstr>
+	<msgstr xml:lang="nb">Publikum</msgstr>
+	<msgstr xml:lang="nl">Publiek</msgstr>
+	<msgstr xml:lang="nn">Publikum</msgstr>
+	<msgstr xml:lang="no">Publikum</msgstr>
+	<msgstr xml:lang="pa">ਪਾਠਕ</msgstr>
+	<msgstr xml:lang="pl">Publiczność</msgstr>
+	<msgstr xml:lang="pt">Audiência</msgstr>
+	<msgstr xml:lang="pt_BR">Público</msgstr>
+	<msgstr xml:lang="ro">Audienţă</msgstr>
+	<msgstr xml:lang="ru">Аудитория</msgstr>
+	<msgstr xml:lang="sk">Publikum</msgstr>
+	<msgstr xml:lang="sq">Dëgjim</msgstr>
+	<msgstr xml:lang="sr">Публика</msgstr>
+	<msgstr xml:lang="sr@Latn">Publika</msgstr>
+	<msgstr xml:lang="sv">Målgrupp</msgstr>
+	<msgstr xml:lang="ta">பார்வையாளர்கள்</msgstr>
+	<msgstr xml:lang="tg">Шунавандагон</msgstr>
+	<msgstr xml:lang="th">ผู้อ่าน</msgstr>
+	<msgstr xml:lang="tr">İzleyici</msgstr>
+	<msgstr xml:lang="uk">Аудиторія</msgstr>
+	<msgstr xml:lang="vi">Độc giả</msgstr>
+	<msgstr xml:lang="zh_CN">受众</msgstr>
+	<msgstr xml:lang="zh_TW">讀者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Author</msgid>
+	<msgstr>Author</msgstr>
+	<msgstr xml:lang="af">Outeur</msgstr>
+	<msgstr xml:lang="ar">المؤلف</msgstr>
+	<msgstr xml:lang="az">Müəllif</msgstr>
+	<msgstr xml:lang="be">Аўтар</msgstr>
+	<msgstr xml:lang="bg">Автор</msgstr>
+	<msgstr xml:lang="bn">লেখক</msgstr>
+	<msgstr xml:lang="bs">Autor</msgstr>
+	<msgstr xml:lang="ca">Autor</msgstr>
+	<msgstr xml:lang="cs">Autor</msgstr>
+	<msgstr xml:lang="cy">Awdur</msgstr>
+	<msgstr xml:lang="da">Forfatter</msgstr>
+	<msgstr xml:lang="de">Autor</msgstr>
+	<msgstr xml:lang="el">Συγγραφέας</msgstr>
+	<msgstr xml:lang="en_CA">Author</msgstr>
+	<msgstr xml:lang="en_GB">Author</msgstr>
+	<msgstr xml:lang="es">Autor</msgstr>
+	<msgstr xml:lang="et">Autor</msgstr>
+	<msgstr xml:lang="eu">Egilea</msgstr>
+	<msgstr xml:lang="fi">Tekijä</msgstr>
+	<msgstr xml:lang="fr">Auteur</msgstr>
+	<msgstr xml:lang="gu">લેખક</msgstr>
+	<msgstr xml:lang="hi">लेखक</msgstr>
+	<msgstr xml:lang="hr">Autor</msgstr>
+	<msgstr xml:lang="hu">Szerző</msgstr>
+	<msgstr xml:lang="is">Höfundur</msgstr>
+	<msgstr xml:lang="it">Autore</msgstr>
+	<msgstr xml:lang="ja">作者</msgstr>
+	<msgstr xml:lang="ka">ავტორი</msgstr>
+	<msgstr xml:lang="ko">저자</msgstr>
+	<msgstr xml:lang="lt">Autorius</msgstr>
+	<msgstr xml:lang="mn">Зохиогч</msgstr>
+	<msgstr xml:lang="ms">Penulis</msgstr>
+	<msgstr xml:lang="nb">Forfatter</msgstr>
+	<msgstr xml:lang="nl">Auteur</msgstr>
+	<msgstr xml:lang="nn">Forfattar</msgstr>
+	<msgstr xml:lang="no">Forfatter</msgstr>
+	<msgstr xml:lang="pa">ਲੇਖਕ</msgstr>
+	<msgstr xml:lang="pl">Autor</msgstr>
+	<msgstr xml:lang="pt">Autor</msgstr>
+	<msgstr xml:lang="pt_BR">Autor</msgstr>
+	<msgstr xml:lang="ro">Autor</msgstr>
+	<msgstr xml:lang="ru">Автор</msgstr>
+	<msgstr xml:lang="sk">Autor</msgstr>
+	<msgstr xml:lang="sq">Autori</msgstr>
+	<msgstr xml:lang="sr">Аутор</msgstr>
+	<msgstr xml:lang="sr@Latn">Autor</msgstr>
+	<msgstr xml:lang="sv">Författare</msgstr>
+	<msgstr xml:lang="ta">¬º¢Ã¢Â÷</msgstr>
+	<msgstr xml:lang="tg">Муаллиф</msgstr>
+	<msgstr xml:lang="th">ผู้เขียน</msgstr>
+	<msgstr xml:lang="tk">Ýazujy</msgstr>
+	<msgstr xml:lang="tr">Yazar</msgstr>
+	<msgstr xml:lang="uk">Автор</msgstr>
+	<msgstr xml:lang="vi">Tác giả</msgstr>
+	<msgstr xml:lang="zh_CN">作者</msgstr>
+	<msgstr xml:lang="zh_TW">作者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Authors</msgid>
+	<msgstr>Authors</msgstr>
+	<msgstr xml:lang="af">Outeurs</msgstr>
+	<msgstr xml:lang="ar">المؤلفين</msgstr>
+	<msgstr xml:lang="az">Müəlliflər</msgstr>
+	<msgstr xml:lang="be">Аўтары</msgstr>
+	<msgstr xml:lang="bg">Автори</msgstr>
+	<msgstr xml:lang="bn">লেখকবৃন্দ</msgstr>
+	<msgstr xml:lang="bs">Autori</msgstr>
+	<msgstr xml:lang="ca">Autors</msgstr>
+	<msgstr xml:lang="cs">Autoři</msgstr>
+	<msgstr xml:lang="cy">Awduron</msgstr>
+	<msgstr xml:lang="da">Forfattere</msgstr>
+	<msgstr xml:lang="de">Autoren</msgstr>
+	<msgstr xml:lang="el">Συγγραφείς</msgstr>
+	<msgstr xml:lang="en_CA">Authors</msgstr>
+	<msgstr xml:lang="en_GB">Authors</msgstr>
+	<msgstr xml:lang="es">Autores</msgstr>
+	<msgstr xml:lang="et">Autorid</msgstr>
+	<msgstr xml:lang="eu">Egileak</msgstr>
+	<msgstr xml:lang="fi">Tekijät</msgstr>
+	<msgstr xml:lang="fr">Auteurs</msgstr>
+	<msgstr xml:lang="gu">લેખકો</msgstr>
+	<msgstr xml:lang="hi">लेखकगण</msgstr>
+	<msgstr xml:lang="hr">Autori</msgstr>
+	<msgstr xml:lang="hu">Szerzők</msgstr>
+	<msgstr xml:lang="is">Höfundar</msgstr>
+	<msgstr xml:lang="it">Autori</msgstr>
+	<msgstr xml:lang="ja">作者</msgstr>
+	<msgstr xml:lang="ka">ავტორები</msgstr>
+	<msgstr xml:lang="ko">저자</msgstr>
+	<msgstr xml:lang="lt">Autoriai</msgstr>
+	<msgstr xml:lang="mn">Зохиогчид</msgstr>
+	<msgstr xml:lang="ms">Penulis</msgstr>
+	<msgstr xml:lang="nb">Forfattere</msgstr>
+	<msgstr xml:lang="nl">Auteurs</msgstr>
+	<msgstr xml:lang="nn">Forfattarar</msgstr>
+	<msgstr xml:lang="no">Forfattere</msgstr>
+	<msgstr xml:lang="pa">ਲੇਖਕ</msgstr>
+	<msgstr xml:lang="pl">Autorzy</msgstr>
+	<msgstr xml:lang="pt">Autores</msgstr>
+	<msgstr xml:lang="pt_BR">Autores</msgstr>
+	<msgstr xml:lang="ro">Autori</msgstr>
+	<msgstr xml:lang="ru">Авторы</msgstr>
+	<msgstr xml:lang="sk">Autori</msgstr>
+	<msgstr xml:lang="sq">Autorët</msgstr>
+	<msgstr xml:lang="sr">Аутори</msgstr>
+	<msgstr xml:lang="sr@Latn">Autori</msgstr>
+	<msgstr xml:lang="sv">Författare</msgstr>
+	<msgstr xml:lang="ta">ஆசி¡¢யர்கள்</msgstr>
+	<msgstr xml:lang="tg">Муаллифҳо</msgstr>
+	<msgstr xml:lang="th">ผู้เขียน</msgstr>
+	<msgstr xml:lang="tk">Ýazujylar</msgstr>
+	<msgstr xml:lang="tr">Yazarlar</msgstr>
+	<msgstr xml:lang="uk">Автори</msgstr>
+	<msgstr xml:lang="vi">Tác giả</msgstr>
+	<msgstr xml:lang="zh_CN">作者</msgstr>
+	<msgstr xml:lang="zh_TW">作者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Bibliography</msgid>
+	<msgstr>Bibliography</msgstr>
+	<msgstr xml:lang="af">Bibliografie</msgstr>
+	<msgstr xml:lang="ar">ببليوغرافيا</msgstr>
+	<msgstr xml:lang="az">Biblioqrafiya</msgstr>
+	<msgstr xml:lang="be">Бібліяграфія</msgstr>
+	<msgstr xml:lang="bg">Библиография</msgstr>
+	<msgstr xml:lang="bn">গ্রন্থতালিকা</msgstr>
+	<msgstr xml:lang="bs">Bibliografija</msgstr>
+	<msgstr xml:lang="ca">Bibliografia</msgstr>
+	<msgstr xml:lang="cs">Bibliografie</msgstr>
+	<msgstr xml:lang="cy">Llyfryddiaeth</msgstr>
+	<msgstr xml:lang="da">Litteraturliste</msgstr>
+	<msgstr xml:lang="de">Bibliographie</msgstr>
+	<msgstr xml:lang="el">Βιβλιογραφία</msgstr>
+	<msgstr xml:lang="en_CA">Bibliography</msgstr>
+	<msgstr xml:lang="en_GB">Bibliography</msgstr>
+	<msgstr xml:lang="es">Bibliografía</msgstr>
+	<msgstr xml:lang="et">Bibliograafia</msgstr>
+	<msgstr xml:lang="eu">Bibliografia</msgstr>
+	<msgstr xml:lang="fi">Lähdeluettelo</msgstr>
+	<msgstr xml:lang="fr">Bibliographie</msgstr>
+	<msgstr xml:lang="gu">સંદર્ભગ્રંથ</msgstr>
+	<msgstr xml:lang="hi">ग्रंथसूची</msgstr>
+	<msgstr xml:lang="hr">Bibliografija</msgstr>
+	<msgstr xml:lang="hu">Irodalomjegyzék</msgstr>
+	<msgstr xml:lang="it">Bibliografia</msgstr>
+	<msgstr xml:lang="ja">目録</msgstr>
+	<msgstr xml:lang="ka">ბიბლიოგრაფია</msgstr>
+	<msgstr xml:lang="ko">참고목록</msgstr>
+	<msgstr xml:lang="lt">Bibliografija</msgstr>
+	<msgstr xml:lang="mn">Ашигласан ном</msgstr>
+	<msgstr xml:lang="ms">Bibliografi</msgstr>
+	<msgstr xml:lang="nb">Bibliografi</msgstr>
+	<msgstr xml:lang="nl">Bibliografie</msgstr>
+	<msgstr xml:lang="nn">Bibliografi</msgstr>
+	<msgstr xml:lang="no">Bibliografi</msgstr>
+	<msgstr xml:lang="pa">ਪੁਸਤਕ-ਸੂਚੀ</msgstr>
+	<msgstr xml:lang="pl">Bibliografia</msgstr>
+	<msgstr xml:lang="pt">Bibliografia</msgstr>
+	<msgstr xml:lang="pt_BR">Bibliografia</msgstr>
+	<msgstr xml:lang="ro">Bibliografie</msgstr>
+	<msgstr xml:lang="ru">Библиография</msgstr>
+	<msgstr xml:lang="sk">Bibliografia</msgstr>
+	<msgstr xml:lang="sq">Bibliografia</msgstr>
+	<msgstr xml:lang="sr">Литература</msgstr>
+	<msgstr xml:lang="sr@Latn">Literatura</msgstr>
+	<msgstr xml:lang="sv">Bibliografi</msgstr>
+	<msgstr xml:lang="ta">புத்தகபட்டியல்</msgstr>
+	<msgstr xml:lang="tg">Китобшиносӣ</msgstr>
+	<msgstr xml:lang="th">บรรณานุกรม</msgstr>
+	<msgstr xml:lang="tk">Biblogarf</msgstr>
+	<msgstr xml:lang="tr">Bibliografya</msgstr>
+	<msgstr xml:lang="uk">Бібліографія</msgstr>
+	<msgstr xml:lang="vi">Thư mục</msgstr>
+	<msgstr xml:lang="zh_CN">参考书目</msgstr>
+	<msgstr xml:lang="zh_TW">參考書目錄</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Book</msgid>
+	<msgstr>Book</msgstr>
+	<msgstr xml:lang="af">Boek</msgstr>
+	<msgstr xml:lang="ar">الكتاب</msgstr>
+	<msgstr xml:lang="az">Kitab</msgstr>
+	<msgstr xml:lang="be">Кніга</msgstr>
+	<msgstr xml:lang="bg">Книга</msgstr>
+	<msgstr xml:lang="bn">বই</msgstr>
+	<msgstr xml:lang="bs">Knjiga</msgstr>
+	<msgstr xml:lang="ca">Llibre</msgstr>
+	<msgstr xml:lang="cs">Kniha</msgstr>
+	<msgstr xml:lang="cy">Llyfr</msgstr>
+	<msgstr xml:lang="da">Bog</msgstr>
+	<msgstr xml:lang="de">Buch</msgstr>
+	<msgstr xml:lang="el">Βιβλίο</msgstr>
+	<msgstr xml:lang="en_CA">Book</msgstr>
+	<msgstr xml:lang="en_GB">Book</msgstr>
+	<msgstr xml:lang="es">Libro</msgstr>
+	<msgstr xml:lang="et">Raamat</msgstr>
+	<msgstr xml:lang="eu">Liburua</msgstr>
+	<msgstr xml:lang="fi">Kirja</msgstr>
+	<msgstr xml:lang="fr">Livre</msgstr>
+	<msgstr xml:lang="gu">પુસ્તક</msgstr>
+	<msgstr xml:lang="hi">पुस्तक</msgstr>
+	<msgstr xml:lang="hr">Knjiga</msgstr>
+	<msgstr xml:lang="hu">Könyv</msgstr>
+	<msgstr xml:lang="is">Bók</msgstr>
+	<msgstr xml:lang="it">Libro</msgstr>
+	<msgstr xml:lang="ja">ブック</msgstr>
+	<msgstr xml:lang="ka">წიგნი</msgstr>
+	<msgstr xml:lang="ko">책</msgstr>
+	<msgstr xml:lang="lt">Knyga</msgstr>
+	<msgstr xml:lang="mn">Ном</msgstr>
+	<msgstr xml:lang="ms">Buku</msgstr>
+	<msgstr xml:lang="nb">Bok</msgstr>
+	<msgstr xml:lang="nl">Boek</msgstr>
+	<msgstr xml:lang="nn">Bok</msgstr>
+	<msgstr xml:lang="no">Bok</msgstr>
+	<msgstr xml:lang="pa">ਪੁਸਤਕ</msgstr>
+	<msgstr xml:lang="pl">Książka</msgstr>
+	<msgstr xml:lang="pt">Livro</msgstr>
+	<msgstr xml:lang="pt_BR">Livro</msgstr>
+	<msgstr xml:lang="ro">Carte</msgstr>
+	<msgstr xml:lang="ru">Книга</msgstr>
+	<msgstr xml:lang="sk">Kniha</msgstr>
+	<msgstr xml:lang="sq">Libri</msgstr>
+	<msgstr xml:lang="sr">Књига</msgstr>
+	<msgstr xml:lang="sr@Latn">Knjiga</msgstr>
+	<msgstr xml:lang="sv">Bok</msgstr>
+	<msgstr xml:lang="ta">புத்தகம்</msgstr>
+	<msgstr xml:lang="tg">Китоб</msgstr>
+	<msgstr xml:lang="th">หนังสือ</msgstr>
+	<msgstr xml:lang="tk">Kitap</msgstr>
+	<msgstr xml:lang="tr">Kitap </msgstr>
+	<msgstr xml:lang="uk">Книга</msgstr>
+	<msgstr xml:lang="vi">Sách</msgstr>
+	<msgstr xml:lang="zh_CN">书</msgstr>
+	<msgstr xml:lang="zh_TW">書籍</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Caution</msgid>
+	<msgstr>Caution</msgstr>
+	<msgstr xml:lang="af">Oppas</msgstr>
+	<msgstr xml:lang="ar">إنتبه</msgstr>
+	<msgstr xml:lang="az">Diqqət</msgstr>
+	<msgstr xml:lang="be">Перасьцярога</msgstr>
+	<msgstr xml:lang="bg">Внимание</msgstr>
+	<msgstr xml:lang="bn">সাবধান</msgstr>
+	<msgstr xml:lang="bs">Obazrivost</msgstr>
+	<msgstr xml:lang="ca">Compte</msgstr>
+	<msgstr xml:lang="cs">Pozor</msgstr>
+	<msgstr xml:lang="cy">Rhybudd</msgstr>
+	<msgstr xml:lang="da">Advarsel</msgstr>
+	<msgstr xml:lang="de">Achtung</msgstr>
+	<msgstr xml:lang="el">Caution</msgstr>
+	<msgstr xml:lang="en_CA">Caution</msgstr>
+	<msgstr xml:lang="en_GB">Caution</msgstr>
+	<msgstr xml:lang="es">Precaución</msgstr>
+	<msgstr xml:lang="et">Hoiatus</msgstr>
+	<msgstr xml:lang="eu">Kontuz</msgstr>
+	<msgstr xml:lang="fi">Varoitus</msgstr>
+	<msgstr xml:lang="fr">Attention</msgstr>
+	<msgstr xml:lang="gu">બચો</msgstr>
+	<msgstr xml:lang="hi">चेतावनी</msgstr>
+	<msgstr xml:lang="hr">Oprez</msgstr>
+	<msgstr xml:lang="hu">Figyelem</msgstr>
+	<msgstr xml:lang="it">Attenzione</msgstr>
+	<msgstr xml:lang="ja">注意</msgstr>
+	<msgstr xml:lang="ka">გაფრთხილება</msgstr>
+	<msgstr xml:lang="ko">주의</msgstr>
+	<msgstr xml:lang="lt">Įspėjimas</msgstr>
+	<msgstr xml:lang="mn">Анхааруулга</msgstr>
+	<msgstr xml:lang="ms">Amaran</msgstr>
+	<msgstr xml:lang="nb">Advarsel</msgstr>
+	<msgstr xml:lang="nl">Waarschuwing</msgstr>
+	<msgstr xml:lang="nn">Åtvaring</msgstr>
+	<msgstr xml:lang="no">Advarsel</msgstr>
+	<msgstr xml:lang="pa">ਸਾਵਧਾਨੀ</msgstr>
+	<msgstr xml:lang="pl">Ostrzeżenie</msgstr>
+	<msgstr xml:lang="pt">Cuidado</msgstr>
+	<msgstr xml:lang="pt_BR">Cuidado</msgstr>
+	<msgstr xml:lang="ro">Avertisment</msgstr>
+	<msgstr xml:lang="ru">Внимание</msgstr>
+	<msgstr xml:lang="sk">Pozor</msgstr>
+	<msgstr xml:lang="sq">Kujdes</msgstr>
+	<msgstr xml:lang="sr">Пажња</msgstr>
+	<msgstr xml:lang="sr@Latn">Pažnja</msgstr>
+	<msgstr xml:lang="sv">Varning</msgstr>
+	<msgstr xml:lang="ta">கவனம்</msgstr>
+	<msgstr xml:lang="tg">Эҳтиётӣ</msgstr>
+	<msgstr xml:lang="th">คำเตือน</msgstr>
+	<msgstr xml:lang="tr">Dikkat</msgstr>
+	<msgstr xml:lang="uk">Попередження</msgstr>
+	<msgstr xml:lang="vi">Thận trọng</msgstr>
+	<msgstr xml:lang="zh_CN">警告</msgstr>
+	<msgstr xml:lang="zh_TW">注意</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Chapter</msgid>
+	<msgstr>Chapter</msgstr>
+	<msgstr xml:lang="af">Hoofstuk</msgstr>
+	<msgstr xml:lang="ar">الفصل</msgstr>
+	<msgstr xml:lang="az">Fəsil</msgstr>
+	<msgstr xml:lang="be">Падзел</msgstr>
+	<msgstr xml:lang="bg">Глава</msgstr>
+	<msgstr xml:lang="bn">চ্যাপ্টার</msgstr>
+	<msgstr xml:lang="bs">Dio</msgstr>
+	<msgstr xml:lang="ca">Capítol</msgstr>
+	<msgstr xml:lang="cs">Kapitola</msgstr>
+	<msgstr xml:lang="cy">Pennod</msgstr>
+	<msgstr xml:lang="da">Kapitel</msgstr>
+	<msgstr xml:lang="de">Kapitel</msgstr>
+	<msgstr xml:lang="el">Κεφάλαιο</msgstr>
+	<msgstr xml:lang="en_CA">Chapter</msgstr>
+	<msgstr xml:lang="en_GB">Chapter</msgstr>
+	<msgstr xml:lang="es">Capítulo</msgstr>
+	<msgstr xml:lang="et">Peatükk</msgstr>
+	<msgstr xml:lang="eu">Kapitulua</msgstr>
+	<msgstr xml:lang="fi">Luku</msgstr>
+	<msgstr xml:lang="fr">Chapitre</msgstr>
+	<msgstr xml:lang="gu">પ્રકરણ</msgstr>
+	<msgstr xml:lang="hi">अध्याय</msgstr>
+	<msgstr xml:lang="hr">Poglavlje</msgstr>
+	<msgstr xml:lang="hu">Fejezet</msgstr>
+	<msgstr xml:lang="is">Kafli</msgstr>
+	<msgstr xml:lang="it">Capitolo</msgstr>
+	<msgstr xml:lang="ja">章</msgstr>
+	<msgstr xml:lang="ka">თავი</msgstr>
+	<msgstr xml:lang="ko">장</msgstr>
+	<msgstr xml:lang="lt">Skyrius</msgstr>
+	<msgstr xml:lang="mn">Бүлэг</msgstr>
+	<msgstr xml:lang="ms">Bab</msgstr>
+	<msgstr xml:lang="nb">Kapittel</msgstr>
+	<msgstr xml:lang="nl">Hoofdstuk</msgstr>
+	<msgstr xml:lang="nn">Kapittel</msgstr>
+	<msgstr xml:lang="no">Kapittel</msgstr>
+	<msgstr xml:lang="pa">ਪਾਠ</msgstr>
+	<msgstr xml:lang="pl">Rozdział</msgstr>
+	<msgstr xml:lang="pt">Capítulo</msgstr>
+	<msgstr xml:lang="pt_BR">Capítulo</msgstr>
+	<msgstr xml:lang="ro">Capitol</msgstr>
+	<msgstr xml:lang="ru">Глава</msgstr>
+	<msgstr xml:lang="sk">Kapitola</msgstr>
+	<msgstr xml:lang="sq">Kapitulli</msgstr>
+	<msgstr xml:lang="sr">Глава</msgstr>
+	<msgstr xml:lang="sr@Latn">Glava</msgstr>
+	<msgstr xml:lang="sv">Kapitel</msgstr>
+	<msgstr xml:lang="ta">அத்தியாயம்</msgstr>
+	<msgstr xml:lang="tg">Боб</msgstr>
+	<msgstr xml:lang="th">บท</msgstr>
+	<msgstr xml:lang="tr">Bölüm</msgstr>
+	<msgstr xml:lang="uk">Глава</msgstr>
+	<msgstr xml:lang="vi">Chương</msgstr>
+	<msgstr xml:lang="zh_CN">章</msgstr>
+	<msgstr xml:lang="zh_TW">章</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Colophon</msgid>
+	<msgstr>Colophon</msgstr>
+	<msgstr xml:lang="af">Kolofon</msgstr>
+	<msgstr xml:lang="ar">الورقة الأخيرة المحتوية على معلومات حول الناشر و الكاتب الخ (لم تعد مستخدمة)</msgstr>
+	<msgstr xml:lang="az">Kolofon</msgstr>
+	<msgstr xml:lang="be">Выходныя зьвесткі</msgstr>
+	<msgstr xml:lang="bg">винетка/емблема</msgstr>
+	<msgstr xml:lang="bn">কলোফোন</msgstr>
+	<msgstr xml:lang="bs">Colophon</msgstr>
+	<msgstr xml:lang="ca">Colofó</msgstr>
+	<msgstr xml:lang="cs">Tiráž</msgstr>
+	<msgstr xml:lang="cy">Coloffon</msgstr>
+	<msgstr xml:lang="da">Kolofon</msgstr>
+	<msgstr xml:lang="de">Kolophon</msgstr>
+	<msgstr xml:lang="el">Τυπογραφική κορωνίδα</msgstr>
+	<msgstr xml:lang="en_CA">Colophon</msgstr>
+	<msgstr xml:lang="en_GB">Colophon</msgstr>
+	<msgstr xml:lang="es">Colofón</msgstr>
+	<msgstr xml:lang="et">Järelsõna</msgstr>
+	<msgstr xml:lang="eu">Azken oharra</msgstr>
+	<msgstr xml:lang="fi">Loppukirjoitus</msgstr>
+	<msgstr xml:lang="fr">Colophon</msgstr>
+	<msgstr xml:lang="gu">કોલોફોન</msgstr>
+	<msgstr xml:lang="hi">पुष्पिका</msgstr>
+	<msgstr xml:lang="hr">Colophon</msgstr>
+	<msgstr xml:lang="hu">Kolofon</msgstr>
+	<msgstr xml:lang="it">Colophon</msgstr>
+	<msgstr xml:lang="ja">出版社のマーク</msgstr>
+	<msgstr xml:lang="ka">კოლოფონი</msgstr>
+	<msgstr xml:lang="ko">판권</msgstr>
+	<msgstr xml:lang="lt">Kolofonas</msgstr>
+	<msgstr xml:lang="mn">Түлхүүр бичиг</msgstr>
+	<msgstr xml:lang="nb">Kolofon</msgstr>
+	<msgstr xml:lang="nl">Colofon</msgstr>
+	<msgstr xml:lang="nn">Kolofon</msgstr>
+	<msgstr xml:lang="no">Kolofon</msgstr>
+	<msgstr xml:lang="pa">ਕੋਲੋਫੋਨ</msgstr>
+	<msgstr xml:lang="pl">Kolofon</msgstr>
+	<msgstr xml:lang="pt">Notas Finais</msgstr>
+	<msgstr xml:lang="pt_BR">Colophon</msgstr>
+	<msgstr xml:lang="ro">Colophon</msgstr>
+	<msgstr xml:lang="ru">Выходные данные</msgstr>
+	<msgstr xml:lang="sk">Tiráž</msgstr>
+	<msgstr xml:lang="sq">Colophon</msgstr>
+	<msgstr xml:lang="sr">Знак штампара</msgstr>
+	<msgstr xml:lang="sr@Latn">Znak štampara</msgstr>
+	<msgstr xml:lang="sv">Kolofon</msgstr>
+	<msgstr xml:lang="ta">செலபோன்</msgstr>
+	<msgstr xml:lang="tg">Colophon</msgstr>
+	<msgstr xml:lang="th">ข้อมูลการผลิต</msgstr>
+	<msgstr xml:lang="tr">Baskı bilgisi</msgstr>
+	<msgstr xml:lang="uk">Колофон</msgstr>
+	<msgstr xml:lang="vi">Lời kết</msgstr>
+	<msgstr xml:lang="zh_CN">末页</msgstr>
+	<msgstr xml:lang="zh_TW">末頁</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Contents</msgid>
+	<msgstr>Contents</msgstr>
+	<msgstr xml:lang="af">Inhoudsopgawe</msgstr>
+	<msgstr xml:lang="ar">المحتويات</msgstr>
+	<msgstr xml:lang="az">Məzmun</msgstr>
+	<msgstr xml:lang="be">Зьмест</msgstr>
+	<msgstr xml:lang="bg">Съдържание</msgstr>
+	<msgstr xml:lang="bn">সূচী</msgstr>
+	<msgstr xml:lang="bs">Sadržaji</msgstr>
+	<msgstr xml:lang="ca">Continguts</msgstr>
+	<msgstr xml:lang="cs">Obsah</msgstr>
+	<msgstr xml:lang="cy">Cynnwys</msgstr>
+	<msgstr xml:lang="da">Indhold</msgstr>
+	<msgstr xml:lang="de">Inhalt</msgstr>
+	<msgstr xml:lang="el">Περιεχόμενα</msgstr>
+	<msgstr xml:lang="en_CA">Contents</msgstr>
+	<msgstr xml:lang="en_GB">Contents</msgstr>
+	<msgstr xml:lang="es">Índice</msgstr>
+	<msgstr xml:lang="et">Sisukord</msgstr>
+	<msgstr xml:lang="eu">Edukia</msgstr>
+	<msgstr xml:lang="fi">Sisältö</msgstr>
+	<msgstr xml:lang="fr">Sommaire</msgstr>
+	<msgstr xml:lang="gu">વિષયસૂચી</msgstr>
+	<msgstr xml:lang="hi">विषय सूची</msgstr>
+	<msgstr xml:lang="hr">Sadržaj</msgstr>
+	<msgstr xml:lang="hu">Tartalom</msgstr>
+	<msgstr xml:lang="it">Sommario</msgstr>
+	<msgstr xml:lang="ja">目次</msgstr>
+	<msgstr xml:lang="ka">შინაარსი</msgstr>
+	<msgstr xml:lang="ko">차례</msgstr>
+	<msgstr xml:lang="lt">Turinys</msgstr>
+	<msgstr xml:lang="mn">Агууллагууд</msgstr>
+	<msgstr xml:lang="ms">Kandungan</msgstr>
+	<msgstr xml:lang="nb">Innhold</msgstr>
+	<msgstr xml:lang="nl">Inhoudsopgave</msgstr>
+	<msgstr xml:lang="nn">Innhald</msgstr>
+	<msgstr xml:lang="no">Innhold</msgstr>
+	<msgstr xml:lang="pa">ਹਿੱਸੇ</msgstr>
+	<msgstr xml:lang="pl">Zawartość</msgstr>
+	<msgstr xml:lang="pt">Conteúdo</msgstr>
+	<msgstr xml:lang="pt_BR">Conteúdo</msgstr>
+	<msgstr xml:lang="ro">Conţinut</msgstr>
+	<msgstr xml:lang="ru">Содержание</msgstr>
+	<msgstr xml:lang="sk">Obsah</msgstr>
+	<msgstr xml:lang="sq">Përmbajtja</msgstr>
+	<msgstr xml:lang="sr">Садржај</msgstr>
+	<msgstr xml:lang="sr@Latn">Sadržaj</msgstr>
+	<msgstr xml:lang="sv">Innehåll</msgstr>
+	<msgstr xml:lang="ta">உள்ளடக்கங்கள்</msgstr>
+	<msgstr xml:lang="tg">Таркибҳо</msgstr>
+	<msgstr xml:lang="th">สารบัญ</msgstr>
+	<msgstr xml:lang="tk">Mazmunlar</msgstr>
+	<msgstr xml:lang="tr">İçindekiler</msgstr>
+	<msgstr xml:lang="uk">Коментарі</msgstr>
+	<msgstr xml:lang="vi">Nội dung</msgstr>
+	<msgstr xml:lang="zh_CN">目录</msgstr>
+	<msgstr xml:lang="zh_TW">內容</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Collaborator</msgid>
+	<msgstr>Collaborator</msgstr>
+	<msgstr xml:lang="af">Medewerker</msgstr>
+	<msgstr xml:lang="ar">المتعاون</msgstr>
+	<msgstr xml:lang="az">İkinci Müəllif</msgstr>
+	<msgstr xml:lang="be">Супрацоўнік</msgstr>
+	<msgstr xml:lang="bg">Сътрудник</msgstr>
+	<msgstr xml:lang="bn">সঙ্গে কাজ করেছেন</msgstr>
+	<msgstr xml:lang="bs">Saradnik</msgstr>
+	<msgstr xml:lang="ca">Col·laborador</msgstr>
+	<msgstr xml:lang="cs">Spolupracovník</msgstr>
+	<msgstr xml:lang="cy">Cydweithiwr</msgstr>
+	<msgstr xml:lang="da">Bidrager</msgstr>
+	<msgstr xml:lang="de">Mitwirkender</msgstr>
+	<msgstr xml:lang="el">Συνεργάτης</msgstr>
+	<msgstr xml:lang="en_CA">Collaborator</msgstr>
+	<msgstr xml:lang="en_GB">Collaborator</msgstr>
+	<msgstr xml:lang="es">Colaborador</msgstr>
+	<msgstr xml:lang="et">Kaastöötaja</msgstr>
+	<msgstr xml:lang="eu">Laguntzailea</msgstr>
+	<msgstr xml:lang="fi">Avustaja</msgstr>
+	<msgstr xml:lang="fr">Collaborateur</msgstr>
+	<msgstr xml:lang="gu">સમજૂતી કરનાર</msgstr>
+	<msgstr xml:lang="hi">सहयोगी</msgstr>
+	<msgstr xml:lang="hr">Suradnik</msgstr>
+	<msgstr xml:lang="hu">Munkatárs</msgstr>
+	<msgstr xml:lang="it">Collaboratore</msgstr>
+	<msgstr xml:lang="ja">共著者</msgstr>
+	<msgstr xml:lang="ka">თანამშრომელი</msgstr>
+	<msgstr xml:lang="ko">공동 저자</msgstr>
+	<msgstr xml:lang="lt">Bendradarbis</msgstr>
+	<msgstr xml:lang="mn">Хамтрагч</msgstr>
+	<msgstr xml:lang="nb">Medarbeider</msgstr>
+	<msgstr xml:lang="nl">Medewerker</msgstr>
+	<msgstr xml:lang="nn">Medarbeidar</msgstr>
+	<msgstr xml:lang="no">Medarbeider</msgstr>
+	<msgstr xml:lang="pa">ਸਹਿਯੋਗੀ</msgstr>
+	<msgstr xml:lang="pl">Współpracownik</msgstr>
+	<msgstr xml:lang="pt">Colaborador</msgstr>
+	<msgstr xml:lang="pt_BR">Colaborador</msgstr>
+	<msgstr xml:lang="ro">Colaborator</msgstr>
+	<msgstr xml:lang="ru">Помощник</msgstr>
+	<msgstr xml:lang="sk">Spolupracovník</msgstr>
+	<msgstr xml:lang="sq">Bashkpunëtori</msgstr>
+	<msgstr xml:lang="sr">Сарадник</msgstr>
+	<msgstr xml:lang="sr@Latn">Saradnik</msgstr>
+	<msgstr xml:lang="sv">Kollaboratör</msgstr>
+	<msgstr xml:lang="ta">ஒருங்கிணைத்தவர்</msgstr>
+	<msgstr xml:lang="tg">Collaborator</msgstr>
+	<msgstr xml:lang="th">ผู้ร่วมมือ</msgstr>
+	<msgstr xml:lang="tr">Katkıda bulunan</msgstr>
+	<msgstr xml:lang="uk">Співпраця</msgstr>
+	<msgstr xml:lang="vi">Người cộng tác</msgstr>
+	<msgstr xml:lang="zh_CN">合作者</msgstr>
+	<msgstr xml:lang="zh_TW">協力者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Collaborators</msgid>
+	<msgstr>Collaborators</msgstr>
+	<msgstr xml:lang="af">Medewerkers</msgstr>
+	<msgstr xml:lang="ar">المتعاونون</msgstr>
+	<msgstr xml:lang="az">Digər Müəlliflər</msgstr>
+	<msgstr xml:lang="be">Супрацоўнік</msgstr>
+	<msgstr xml:lang="bg">Сътрудници</msgstr>
+	<msgstr xml:lang="bn">সঙ্গে কাজ করেছেন</msgstr>
+	<msgstr xml:lang="bs">Saradnici</msgstr>
+	<msgstr xml:lang="ca">Col·laboradors</msgstr>
+	<msgstr xml:lang="cs">Spolupracovníci</msgstr>
+	<msgstr xml:lang="cy">Cydweithwyr</msgstr>
+	<msgstr xml:lang="da">Bidragere</msgstr>
+	<msgstr xml:lang="de">Mitwirkende</msgstr>
+	<msgstr xml:lang="el">Συνεργάτες</msgstr>
+	<msgstr xml:lang="en_CA">Collaborators</msgstr>
+	<msgstr xml:lang="en_GB">Collaborators</msgstr>
+	<msgstr xml:lang="es">Colaboradores</msgstr>
+	<msgstr xml:lang="et">Kaastöötajad</msgstr>
+	<msgstr xml:lang="eu">Laguntzaileak</msgstr>
+	<msgstr xml:lang="fi">Avustajat</msgstr>
+	<msgstr xml:lang="fr">Collaborateurs</msgstr>
+	<msgstr xml:lang="gu">સમજૂતી કરનારો</msgstr>
+	<msgstr xml:lang="hi">सहयोगी</msgstr>
+	<msgstr xml:lang="hr">Sudionici</msgstr>
+	<msgstr xml:lang="hu">Munkatársak</msgstr>
+	<msgstr xml:lang="it">Collaboratori</msgstr>
+	<msgstr xml:lang="ja">共著者</msgstr>
+	<msgstr xml:lang="ka">თანამშრომლები</msgstr>
+	<msgstr xml:lang="ko">공동 저자</msgstr>
+	<msgstr xml:lang="lt">Bendradarbiai</msgstr>
+	<msgstr xml:lang="mn">Хамтрагчид</msgstr>
+	<msgstr xml:lang="nb">Medarbeidere</msgstr>
+	<msgstr xml:lang="nl">Medewerkers</msgstr>
+	<msgstr xml:lang="nn">Medarbeidarar</msgstr>
+	<msgstr xml:lang="no">Medarbeidere</msgstr>
+	<msgstr xml:lang="pa">ਸਹਿਯੋਗੀ</msgstr>
+	<msgstr xml:lang="pl">Współpracownicy</msgstr>
+	<msgstr xml:lang="pt">Colaboradores</msgstr>
+	<msgstr xml:lang="pt_BR">Colaboradores</msgstr>
+	<msgstr xml:lang="ro">Colaboratori</msgstr>
+	<msgstr xml:lang="ru">Помощники</msgstr>
+	<msgstr xml:lang="sk">Spolupracovníci</msgstr>
+	<msgstr xml:lang="sq">Bashkpunues</msgstr>
+	<msgstr xml:lang="sr">Сарадници</msgstr>
+	<msgstr xml:lang="sr@Latn">Saradnici</msgstr>
+	<msgstr xml:lang="sv">Kollaboratörer</msgstr>
+	<msgstr xml:lang="ta">ஒருங்கிணைத்தவர்கள்</msgstr>
+	<msgstr xml:lang="tg">Collaborators</msgstr>
+	<msgstr xml:lang="th">ผู้ร่วมมือ</msgstr>
+	<msgstr xml:lang="tr">Katkıda bulunanlar</msgstr>
+	<msgstr xml:lang="uk">Співпрацівники</msgstr>
+	<msgstr xml:lang="vi">Người cộng tác</msgstr>
+	<msgstr xml:lang="zh_CN">合作者</msgstr>
+	<msgstr xml:lang="zh_TW">協力者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Copyright</msgid>
+	<msgstr>Copyright</msgstr>
+	<msgstr xml:lang="af">Kopiereg</msgstr>
+	<msgstr xml:lang="ar">حقق النشر</msgstr>
+	<msgstr xml:lang="az">Müəllif Hüququ</msgstr>
+	<msgstr xml:lang="be">Аўтарскае права</msgstr>
+	<msgstr xml:lang="bg">Авторско право</msgstr>
+	<msgstr xml:lang="bn">সত্ত্বাধিকার</msgstr>
+	<msgstr xml:lang="bs">Copyright</msgstr>
+	<msgstr xml:lang="ca">Copyright</msgstr>
+	<msgstr xml:lang="cs">Copyright</msgstr>
+	<msgstr xml:lang="cy">Hawlfraint</msgstr>
+	<msgstr xml:lang="da">Ophavsret</msgstr>
+	<msgstr xml:lang="de">Copyright</msgstr>
+	<msgstr xml:lang="el">Πνευματικό Δικαίωμα</msgstr>
+	<msgstr xml:lang="en_CA">Copyright</msgstr>
+	<msgstr xml:lang="en_GB">Copyright</msgstr>
+	<msgstr xml:lang="es">Copyright</msgstr>
+	<msgstr xml:lang="et">Autoriõigus</msgstr>
+	<msgstr xml:lang="eu">Copyright-a</msgstr>
+	<msgstr xml:lang="fi">Tekijänoikeus</msgstr>
+	<msgstr xml:lang="fr">Copyright</msgstr>
+	<msgstr xml:lang="gu">મુદ્રણાધિકાર</msgstr>
+	<msgstr xml:lang="hi">सर्वाधिकार सुरक्षित</msgstr>
+	<msgstr xml:lang="hr">Autorsko pravo</msgstr>
+	<msgstr xml:lang="hu">Copyright</msgstr>
+	<msgstr xml:lang="is">Höfundaréttur</msgstr>
+	<msgstr xml:lang="it">Copyright</msgstr>
+	<msgstr xml:lang="ja">著作権</msgstr>
+	<msgstr xml:lang="ka">საავტორო უფლებები</msgstr>
+	<msgstr xml:lang="ko">저작권</msgstr>
+	<msgstr xml:lang="lt">Autorinės teisės</msgstr>
+	<msgstr xml:lang="mn">Зохиогчийн эрх</msgstr>
+	<msgstr xml:lang="ms">Hakcipta</msgstr>
+	<msgstr xml:lang="nb">Opphavsrett</msgstr>
+	<msgstr xml:lang="nl">Auteursrecht</msgstr>
+	<msgstr xml:lang="nn">Opphavsrett</msgstr>
+	<msgstr xml:lang="no">Opphavsrett</msgstr>
+	<msgstr xml:lang="pa">ਹੱਕ ਰਾਖਵੇ ਹਨ</msgstr>
+	<msgstr xml:lang="pl">Chroniony prawem autorskim</msgstr>
+	<msgstr xml:lang="pt">Copyright</msgstr>
+	<msgstr xml:lang="pt_BR">Copyright</msgstr>
+	<msgstr xml:lang="ro">Copyright</msgstr>
+	<msgstr xml:lang="ru">Авторское право</msgstr>
+	<msgstr xml:lang="sk">Copyright</msgstr>
+	<msgstr xml:lang="sq">Copyright</msgstr>
+	<msgstr xml:lang="sr">Ауторска права</msgstr>
+	<msgstr xml:lang="sr@Latn">Autorska prava</msgstr>
+	<msgstr xml:lang="sv">Copyright</msgstr>
+	<msgstr xml:lang="ta">படியுரிமை</msgstr>
+	<msgstr xml:lang="tg">Ҳуқуқи Нусхабардорӣ</msgstr>
+	<msgstr xml:lang="th">ลิขสิทธิ์</msgstr>
+	<msgstr xml:lang="tr">Tekif hakkı</msgstr>
+	<msgstr xml:lang="uk">Авторське право</msgstr>
+	<msgstr xml:lang="vi">Bản quyền</msgstr>
+	<msgstr xml:lang="zh_CN">版权</msgstr>
+	<msgstr xml:lang="zh_TW">版權所有</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Copyrights</msgid>
+	<msgstr>Copyrights</msgstr>
+	<msgstr xml:lang="af">Kopieregte</msgstr>
+	<msgstr xml:lang="ar">حقوق النشر</msgstr>
+	<msgstr xml:lang="az">Müəllif Hüququ</msgstr>
+	<msgstr xml:lang="be">Аўтарскія правы</msgstr>
+	<msgstr xml:lang="bg">Авторски права</msgstr>
+	<msgstr xml:lang="bn">সত্ত্বাধিকার সমূহ</msgstr>
+	<msgstr xml:lang="bs">Copyrights</msgstr>
+	<msgstr xml:lang="ca">Copyrights</msgstr>
+	<msgstr xml:lang="cs">Copyright</msgstr>
+	<msgstr xml:lang="cy">Hawlfreintiau</msgstr>
+	<msgstr xml:lang="da">Ophavsret</msgstr>
+	<msgstr xml:lang="de">Copyright</msgstr>
+	<msgstr xml:lang="el">Πνευματικά Δικαιώματα</msgstr>
+	<msgstr xml:lang="en_CA">Copyrights</msgstr>
+	<msgstr xml:lang="en_GB">Copyrights</msgstr>
+	<msgstr xml:lang="es">Copyrights</msgstr>
+	<msgstr xml:lang="et">Autoriõigused</msgstr>
+	<msgstr xml:lang="eu">Copyright-ak</msgstr>
+	<msgstr xml:lang="fi">Tekijänoikeudet</msgstr>
+	<msgstr xml:lang="fr">Copyright</msgstr>
+	<msgstr xml:lang="gu">મુદ્રણાધિકારો</msgstr>
+	<msgstr xml:lang="hi">सर्वाधिकार</msgstr>
+	<msgstr xml:lang="hr">Autorska prava</msgstr>
+	<msgstr xml:lang="hu">Copyrightok</msgstr>
+	<msgstr xml:lang="is">Höfundaréttir</msgstr>
+	<msgstr xml:lang="it">Copyright</msgstr>
+	<msgstr xml:lang="ja">著作権</msgstr>
+	<msgstr xml:lang="ka">საავტორო უფლებები</msgstr>
+	<msgstr xml:lang="ko">저작권</msgstr>
+	<msgstr xml:lang="lt">Autorinės teisės</msgstr>
+	<msgstr xml:lang="mn">Зохиогчидын эрх</msgstr>
+	<msgstr xml:lang="ms">Hakcipta</msgstr>
+	<msgstr xml:lang="nb">Opphavsrett</msgstr>
+	<msgstr xml:lang="nl">Auteursrechten</msgstr>
+	<msgstr xml:lang="nn">Opphavsrettar</msgstr>
+	<msgstr xml:lang="no">Opphavsrett</msgstr>
+	<msgstr xml:lang="pa">ਹੱਕ ਰਾਖਵੇ ਹਨ</msgstr>
+	<msgstr xml:lang="pl">Chroniony prawami autorskimi</msgstr>
+	<msgstr xml:lang="pt">Copyrights</msgstr>
+	<msgstr xml:lang="pt_BR">Copyrights</msgstr>
+	<msgstr xml:lang="ro">Copyrights</msgstr>
+	<msgstr xml:lang="ru">Авторские права</msgstr>
+	<msgstr xml:lang="sk">Copyrights</msgstr>
+	<msgstr xml:lang="sq">Copyrights</msgstr>
+	<msgstr xml:lang="sr">Ауторска права</msgstr>
+	<msgstr xml:lang="sr@Latn">Autorska prava</msgstr>
+	<msgstr xml:lang="sv">Copyright</msgstr>
+	<msgstr xml:lang="ta">படியுரிமைகள்</msgstr>
+	<msgstr xml:lang="tg">Ҳуқуқҳои Нусхабардорӣ</msgstr>
+	<msgstr xml:lang="th">ลิขสิทธิ์</msgstr>
+	<msgstr xml:lang="tr">Telif hakları</msgstr>
+	<msgstr xml:lang="uk">Авторські права</msgstr>
+	<msgstr xml:lang="vi">Bản quyền</msgstr>
+	<msgstr xml:lang="zh_CN">版权</msgstr>
+	<msgstr xml:lang="zh_TW">版權所有</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Date</msgid>
+	<msgstr>Date</msgstr>
+	<msgstr xml:lang="af">Datum</msgstr>
+	<msgstr xml:lang="ar">التاريخ</msgstr>
+	<msgstr xml:lang="az">Tarix</msgstr>
+	<msgstr xml:lang="be">Дата</msgstr>
+	<msgstr xml:lang="bg">Дата</msgstr>
+	<msgstr xml:lang="bn">তারিখ</msgstr>
+	<msgstr xml:lang="bs">Datum</msgstr>
+	<msgstr xml:lang="ca">Data</msgstr>
+	<msgstr xml:lang="cs">Datum</msgstr>
+	<msgstr xml:lang="cy">Dyddiad</msgstr>
+	<msgstr xml:lang="da">Dato</msgstr>
+	<msgstr xml:lang="de">Datum</msgstr>
+	<msgstr xml:lang="el">Ημερομηνία</msgstr>
+	<msgstr xml:lang="en_CA">Date</msgstr>
+	<msgstr xml:lang="en_GB">Date</msgstr>
+	<msgstr xml:lang="es">Fecha</msgstr>
+	<msgstr xml:lang="et">Kuupäev</msgstr>
+	<msgstr xml:lang="eu">Data</msgstr>
+	<msgstr xml:lang="fi">Päiväys</msgstr>
+	<msgstr xml:lang="fr">Date</msgstr>
+	<msgstr xml:lang="ga">Dáta</msgstr>
+	<msgstr xml:lang="gu">તારીખ</msgstr>
+	<msgstr xml:lang="hi">तिथि</msgstr>
+	<msgstr xml:lang="hr">Datum</msgstr>
+	<msgstr xml:lang="hu">Dátum</msgstr>
+	<msgstr xml:lang="is">Dagsetning</msgstr>
+	<msgstr xml:lang="it">Data</msgstr>
+	<msgstr xml:lang="ja">発行日</msgstr>
+	<msgstr xml:lang="ka">თარიღი</msgstr>
+	<msgstr xml:lang="ko">날짜</msgstr>
+	<msgstr xml:lang="lt">Data</msgstr>
+	<msgstr xml:lang="mn">Огноо</msgstr>
+	<msgstr xml:lang="ms">Tarikh</msgstr>
+	<msgstr xml:lang="nb">Dato</msgstr>
+	<msgstr xml:lang="nl">Datum</msgstr>
+	<msgstr xml:lang="nn">Dato</msgstr>
+	<msgstr xml:lang="no">Dato</msgstr>
+	<msgstr xml:lang="pa">ਮਿਤੀ</msgstr>
+	<msgstr xml:lang="pl">Data</msgstr>
+	<msgstr xml:lang="pt">Data</msgstr>
+	<msgstr xml:lang="pt_BR">Data</msgstr>
+	<msgstr xml:lang="ro">Dată</msgstr>
+	<msgstr xml:lang="ru">Дата</msgstr>
+	<msgstr xml:lang="sk">Dátum</msgstr>
+	<msgstr xml:lang="sq">Data</msgstr>
+	<msgstr xml:lang="sr">Датум</msgstr>
+	<msgstr xml:lang="sr@Latn">Datum</msgstr>
+	<msgstr xml:lang="sv">Datum</msgstr>
+	<msgstr xml:lang="ta">திகதி</msgstr>
+	<msgstr xml:lang="tg">Сана</msgstr>
+	<msgstr xml:lang="th">วันที่</msgstr>
+	<msgstr xml:lang="tk">Taryh</msgstr>
+	<msgstr xml:lang="tr">Tarih</msgstr>
+	<msgstr xml:lang="uk">Дата</msgstr>
+	<msgstr xml:lang="vi">Ngày</msgstr>
+	<msgstr xml:lang="zh_CN">日期</msgstr>
+	<msgstr xml:lang="zh_TW">日期</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Dedication</msgid>
+	<msgstr>Dedication</msgstr>
+	<msgstr xml:lang="af">Opdraging</msgstr>
+	<msgstr xml:lang="ar">الإخلاص</msgstr>
+	<msgstr xml:lang="az">Həsr</msgstr>
+	<msgstr xml:lang="be">Прысьвячэньне</msgstr>
+	<msgstr xml:lang="bg">Посвещение</msgstr>
+	<msgstr xml:lang="bn">উত্‍‌সর্গ</msgstr>
+	<msgstr xml:lang="bs">Posveta</msgstr>
+	<msgstr xml:lang="ca">Dedicatòria</msgstr>
+	<msgstr xml:lang="cs">Věnování</msgstr>
+	<msgstr xml:lang="cy">Cyflwyniad</msgstr>
+	<msgstr xml:lang="da">Dedikering</msgstr>
+	<msgstr xml:lang="de">Widmung</msgstr>
+	<msgstr xml:lang="el">Αφιέρωση</msgstr>
+	<msgstr xml:lang="en_CA">Dedication</msgstr>
+	<msgstr xml:lang="en_GB">Dedication</msgstr>
+	<msgstr xml:lang="es">Dedicatoria</msgstr>
+	<msgstr xml:lang="et">Pühendus</msgstr>
+	<msgstr xml:lang="eu">Eskaintza</msgstr>
+	<msgstr xml:lang="fi">Omistuskirjoitus</msgstr>
+	<msgstr xml:lang="fr">Dedicace</msgstr>
+	<msgstr xml:lang="gu">યાદગીરી</msgstr>
+	<msgstr xml:lang="hi">समर्पण</msgstr>
+	<msgstr xml:lang="hr">Posvećivanje</msgstr>
+	<msgstr xml:lang="hu">Dedikáció</msgstr>
+	<msgstr xml:lang="it">Dedica</msgstr>
+	<msgstr xml:lang="ja">献辞</msgstr>
+	<msgstr xml:lang="ka">დახმარება</msgstr>
+	<msgstr xml:lang="ko">바치는 글</msgstr>
+	<msgstr xml:lang="lt">Dedikacija</msgstr>
+	<msgstr xml:lang="mn">Оршил</msgstr>
+	<msgstr xml:lang="ms">Dedikasi</msgstr>
+	<msgstr xml:lang="nb">Dedikasjon</msgstr>
+	<msgstr xml:lang="nl">Toewijding</msgstr>
+	<msgstr xml:lang="nn">Tileigning</msgstr>
+	<msgstr xml:lang="no">Dedikasjon</msgstr>
+	<msgstr xml:lang="pa">ਸਮਰਪਨ</msgstr>
+	<msgstr xml:lang="pl">Dedykacja</msgstr>
+	<msgstr xml:lang="pt">Dedicatória</msgstr>
+	<msgstr xml:lang="pt_BR">Dedicatória</msgstr>
+	<msgstr xml:lang="ro">Dedicaţie</msgstr>
+	<msgstr xml:lang="ru">Посвящение</msgstr>
+	<msgstr xml:lang="sk">Venovanie</msgstr>
+	<msgstr xml:lang="sq">Dedikimi</msgstr>
+	<msgstr xml:lang="sr">Посвета</msgstr>
+	<msgstr xml:lang="sr@Latn">Posveta</msgstr>
+	<msgstr xml:lang="sv">Tillägning</msgstr>
+	<msgstr xml:lang="ta">அர்ப்பணம்</msgstr>
+	<msgstr xml:lang="tg">Таъинот</msgstr>
+	<msgstr xml:lang="th">อุทิศแด่</msgstr>
+	<msgstr xml:lang="tr">Adama</msgstr>
+	<msgstr xml:lang="uk">Присвята</msgstr>
+	<msgstr xml:lang="vi">Đề tặng</msgstr>
+	<msgstr xml:lang="zh_CN">献辞</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Editor</msgid>
+	<msgstr>Editor</msgstr>
+	<msgstr xml:lang="af">Redakteur</msgstr>
+	<msgstr xml:lang="ar">محرر</msgstr>
+	<msgstr xml:lang="az">Editor</msgstr>
+	<msgstr xml:lang="be">Рэдактар</msgstr>
+	<msgstr xml:lang="bg">Редактор</msgstr>
+	<msgstr xml:lang="bn">সম্পাদক</msgstr>
+	<msgstr xml:lang="bs">Editor</msgstr>
+	<msgstr xml:lang="ca">Editor</msgstr>
+	<msgstr xml:lang="cs">Redaktor</msgstr>
+	<msgstr xml:lang="cy">Golygydd</msgstr>
+	<msgstr xml:lang="da">Redigeringsprogram</msgstr>
+	<msgstr xml:lang="de">Editor</msgstr>
+	<msgstr xml:lang="el">Επεξεργαστής</msgstr>
+	<msgstr xml:lang="en_CA">Editor</msgstr>
+	<msgstr xml:lang="en_GB">Editor</msgstr>
+	<msgstr xml:lang="es">Redactor</msgstr>
+	<msgstr xml:lang="et">Redaktor</msgstr>
+	<msgstr xml:lang="eu">Editorea</msgstr>
+	<msgstr xml:lang="fi">Toimittaja</msgstr>
+	<msgstr xml:lang="fr">Éditeur</msgstr>
+	<msgstr xml:lang="ga">Eagarthóir</msgstr>
+	<msgstr xml:lang="gu">સંપાદક</msgstr>
+	<msgstr xml:lang="hi">संपादक</msgstr>
+	<msgstr xml:lang="hr">Uređivač</msgstr>
+	<msgstr xml:lang="hu">Szerkesztő</msgstr>
+	<msgstr xml:lang="is">Ritill</msgstr>
+	<msgstr xml:lang="it">Editore</msgstr>
+	<msgstr xml:lang="ja">エディタ</msgstr>
+	<msgstr xml:lang="ka">რედაქტორი</msgstr>
+	<msgstr xml:lang="ko">편집</msgstr>
+	<msgstr xml:lang="lt">Redaktorius</msgstr>
+	<msgstr xml:lang="mn">Боловсруулагч</msgstr>
+	<msgstr xml:lang="ms">Editor</msgstr>
+	<msgstr xml:lang="nb">Redaktør</msgstr>
+	<msgstr xml:lang="nl">Editor</msgstr>
+	<msgstr xml:lang="nn">Redaktør</msgstr>
+	<msgstr xml:lang="no">Redaktør</msgstr>
+	<msgstr xml:lang="pa">ਸੰਪਾਦਕ</msgstr>
+	<msgstr xml:lang="pl">Redaktor</msgstr>
+	<msgstr xml:lang="pt">Editor</msgstr>
+	<msgstr xml:lang="pt_BR">Editor</msgstr>
+	<msgstr xml:lang="ro">Editor</msgstr>
+	<msgstr xml:lang="ru">Редактор</msgstr>
+	<msgstr xml:lang="sk">Redaktor</msgstr>
+	<msgstr xml:lang="sq">Editori</msgstr>
+	<msgstr xml:lang="sr">Уредник</msgstr>
+	<msgstr xml:lang="sr@Latn">Urednik</msgstr>
+	<msgstr xml:lang="sv">Redaktör</msgstr>
+	<msgstr xml:lang="ta">பதிப்பான்</msgstr>
+	<msgstr xml:lang="tg">Муҳаррир</msgstr>
+	<msgstr xml:lang="th">บรรณาธิการ</msgstr>
+	<msgstr xml:lang="tk">Editçi</msgstr>
+	<msgstr xml:lang="tr">Düzenleyici</msgstr>
+	<msgstr xml:lang="uk">Редактор</msgstr>
+	<msgstr xml:lang="vi">Chủ bút</msgstr>
+	<msgstr xml:lang="zh_CN">编辑</msgstr>
+	<msgstr xml:lang="zh_TW">編者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Editors</msgid>
+	<msgstr>Editors</msgstr>
+	<msgstr xml:lang="af">Redigeerders</msgstr>
+	<msgstr xml:lang="ar">محررات</msgstr>
+	<msgstr xml:lang="az">Editorlar</msgstr>
+	<msgstr xml:lang="be">Рэдагавальнікі</msgstr>
+	<msgstr xml:lang="bg">Редактори</msgstr>
+	<msgstr xml:lang="bn">সম্পাদক সমূহ</msgstr>
+	<msgstr xml:lang="bs">Editori</msgstr>
+	<msgstr xml:lang="ca">Editors</msgstr>
+	<msgstr xml:lang="cs">Editory</msgstr>
+	<msgstr xml:lang="cy">Golygyddion</msgstr>
+	<msgstr xml:lang="da">Redigeringsprogrammer</msgstr>
+	<msgstr xml:lang="de">Editoren</msgstr>
+	<msgstr xml:lang="el">Διορθωτές Κειμένου</msgstr>
+	<msgstr xml:lang="en_CA">Editors</msgstr>
+	<msgstr xml:lang="en_GB">Editors</msgstr>
+	<msgstr xml:lang="es">Editores</msgstr>
+	<msgstr xml:lang="et">Tekstiredaktorid</msgstr>
+	<msgstr xml:lang="eu">Editoreak</msgstr>
+	<msgstr xml:lang="fi">Muokkaimet</msgstr>
+	<msgstr xml:lang="fr">Éditeurs</msgstr>
+	<msgstr xml:lang="ga">Eagarthóirenna</msgstr>
+	<msgstr xml:lang="gu">સંપાદકો</msgstr>
+	<msgstr xml:lang="hi">संपादक</msgstr>
+	<msgstr xml:lang="hr">Uređivali</msgstr>
+	<msgstr xml:lang="hu">Szövegszerkesztők</msgstr>
+	<msgstr xml:lang="is">Ritlar</msgstr>
+	<msgstr xml:lang="it">Editori</msgstr>
+	<msgstr xml:lang="ja">エディタ</msgstr>
+	<msgstr xml:lang="ka">რედაქტორები</msgstr>
+	<msgstr xml:lang="ko">편집기</msgstr>
+	<msgstr xml:lang="lt">Redaktoriai</msgstr>
+	<msgstr xml:lang="mn">Засварлагчууд</msgstr>
+	<msgstr xml:lang="ms">Editor</msgstr>
+	<msgstr xml:lang="nb">Redigeringsprogram</msgstr>
+	<msgstr xml:lang="nl">Editors</msgstr>
+	<msgstr xml:lang="nn">Redigeringsprogram</msgstr>
+	<msgstr xml:lang="no">Redigeringsprogram</msgstr>
+	<msgstr xml:lang="pa">ਸੰਪਾਦਕ</msgstr>
+	<msgstr xml:lang="pl">Edytory</msgstr>
+	<msgstr xml:lang="pt">Editores</msgstr>
+	<msgstr xml:lang="pt_BR">Editores</msgstr>
+	<msgstr xml:lang="ro">Editoare</msgstr>
+	<msgstr xml:lang="ru">Редакторы</msgstr>
+	<msgstr xml:lang="sk">Editory</msgstr>
+	<msgstr xml:lang="sq">Botuesit</msgstr>
+	<msgstr xml:lang="sr">Уређивачи</msgstr>
+	<msgstr xml:lang="sr@Latn">Uređivači</msgstr>
+	<msgstr xml:lang="sv">Redigerare</msgstr>
+	<msgstr xml:lang="ta">பதிப்பாலர்</msgstr>
+	<msgstr xml:lang="tg">Муҳаррирон</msgstr>
+	<msgstr xml:lang="th">ตัวแก้ไข</msgstr>
+	<msgstr xml:lang="tk">Editçiler</msgstr>
+	<msgstr xml:lang="tr">Düzenleyiciler</msgstr>
+	<msgstr xml:lang="uk">Редактори</msgstr>
+	<msgstr xml:lang="vi">Chủ bút</msgstr>
+	<msgstr xml:lang="zh_CN">编辑器</msgstr>
+	<msgstr xml:lang="zh_TW">編輯器</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Email</msgid>
+	<msgstr>Email</msgstr>
+	<msgstr xml:lang="af">E-pos</msgstr>
+	<msgstr xml:lang="ar">البريد الإلكتروني</msgstr>
+	<msgstr xml:lang="az">Epoçt</msgstr>
+	<msgstr xml:lang="be">Адрас</msgstr>
+	<msgstr xml:lang="bg">Електронна поща</msgstr>
+	<msgstr xml:lang="bn">ইমেইল</msgstr>
+	<msgstr xml:lang="bs">Email</msgstr>
+	<msgstr xml:lang="ca">Correu-e</msgstr>
+	<msgstr xml:lang="cs">E-mail</msgstr>
+	<msgstr xml:lang="cy">Ebost</msgstr>
+	<msgstr xml:lang="da">Epost</msgstr>
+	<msgstr xml:lang="de">E-Mail</msgstr>
+	<msgstr xml:lang="el">Email</msgstr>
+	<msgstr xml:lang="en_CA">Email</msgstr>
+	<msgstr xml:lang="en_GB">Email</msgstr>
+	<msgstr xml:lang="es">Correo-e</msgstr>
+	<msgstr xml:lang="et">Email</msgstr>
+	<msgstr xml:lang="eu">Hel.Elek.</msgstr>
+	<msgstr xml:lang="fi">Sähköposti</msgstr>
+	<msgstr xml:lang="fr">Courrier électronique</msgstr>
+	<msgstr xml:lang="ga">Rphost</msgstr>
+	<msgstr xml:lang="gu">ઈ-મેઈલ</msgstr>
+	<msgstr xml:lang="hi">ईमेल</msgstr>
+	<msgstr xml:lang="hr">E-pošta</msgstr>
+	<msgstr xml:lang="hu">E-mail</msgstr>
+	<msgstr xml:lang="is">Email</msgstr>
+	<msgstr xml:lang="it">Email</msgstr>
+	<msgstr xml:lang="ja">E-メール</msgstr>
+	<msgstr xml:lang="ka">ელფოსტა</msgstr>
+	<msgstr xml:lang="ko">전자메일</msgstr>
+	<msgstr xml:lang="lt">El. paštas</msgstr>
+	<msgstr xml:lang="mn">Эшуудан</msgstr>
+	<msgstr xml:lang="ms">Emel</msgstr>
+	<msgstr xml:lang="nb">E-post</msgstr>
+	<msgstr xml:lang="nl">E-mail</msgstr>
+	<msgstr xml:lang="nn">E-post</msgstr>
+	<msgstr xml:lang="no">E-post</msgstr>
+	<msgstr xml:lang="pa">ਈ-ਪੱਤਰ</msgstr>
+	<msgstr xml:lang="pl">E-mail</msgstr>
+	<msgstr xml:lang="pt">Email</msgstr>
+	<msgstr xml:lang="pt_BR">Email</msgstr>
+	<msgstr xml:lang="ro">Email</msgstr>
+	<msgstr xml:lang="ru">Элетронный адрес</msgstr>
+	<msgstr xml:lang="sk">E-mail</msgstr>
+	<msgstr xml:lang="sq">Email</msgstr>
+	<msgstr xml:lang="sr">Е-пошта</msgstr>
+	<msgstr xml:lang="sr@Latn">E-pošta</msgstr>
+	<msgstr xml:lang="sv">E-post</msgstr>
+	<msgstr xml:lang="ta">மின்அஞ்சல்</msgstr>
+	<msgstr xml:lang="tg">Пости Электронӣ</msgstr>
+	<msgstr xml:lang="th">อีเมล</msgstr>
+	<msgstr xml:lang="tr">Eposta</msgstr>
+	<msgstr xml:lang="uk">Електронна адреса</msgstr>
+	<msgstr xml:lang="vi">Email</msgstr>
+	<msgstr xml:lang="zh_CN">电子邮件</msgstr>
+	<msgstr xml:lang="zh_TW">電郵</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Example</msgid>
+	<msgstr>Example</msgstr>
+	<msgstr xml:lang="af">Voorbeeld</msgstr>
+	<msgstr xml:lang="ar">مثال</msgstr>
+	<msgstr xml:lang="az">Nümunə</msgstr>
+	<msgstr xml:lang="be">Прыклад</msgstr>
+	<msgstr xml:lang="bg">Пример</msgstr>
+	<msgstr xml:lang="bn">যেমন</msgstr>
+	<msgstr xml:lang="bs">Primjer</msgstr>
+	<msgstr xml:lang="ca">Exemple</msgstr>
+	<msgstr xml:lang="cs">Příklad</msgstr>
+	<msgstr xml:lang="cy">Esiampl</msgstr>
+	<msgstr xml:lang="da">Eksempel</msgstr>
+	<msgstr xml:lang="de">Beispiel</msgstr>
+	<msgstr xml:lang="el">Παράδειγμα</msgstr>
+	<msgstr xml:lang="en_CA">Example</msgstr>
+	<msgstr xml:lang="en_GB">Example</msgstr>
+	<msgstr xml:lang="es">Ejemplo</msgstr>
+	<msgstr xml:lang="et">Näidis</msgstr>
+	<msgstr xml:lang="eu">Adibidea</msgstr>
+	<msgstr xml:lang="fi">Esimerkki</msgstr>
+	<msgstr xml:lang="fr">Exemple</msgstr>
+	<msgstr xml:lang="ga">Sampla</msgstr>
+	<msgstr xml:lang="gu">ઉદાહરણ</msgstr>
+	<msgstr xml:lang="hi">उदाहरण</msgstr>
+	<msgstr xml:lang="hr">Primjer</msgstr>
+	<msgstr xml:lang="hu">Példa</msgstr>
+	<msgstr xml:lang="is">Dæmi</msgstr>
+	<msgstr xml:lang="it">Esempio</msgstr>
+	<msgstr xml:lang="ja">サンプル</msgstr>
+	<msgstr xml:lang="ka">მაგალითი</msgstr>
+	<msgstr xml:lang="ko">예제</msgstr>
+	<msgstr xml:lang="lt">Pavyzdys</msgstr>
+	<msgstr xml:lang="mn">Жишээ</msgstr>
+	<msgstr xml:lang="ms">Contoh</msgstr>
+	<msgstr xml:lang="nb">Eksempel</msgstr>
+	<msgstr xml:lang="nl">Voorbeeld</msgstr>
+	<msgstr xml:lang="nn">Døme</msgstr>
+	<msgstr xml:lang="no">Eksempel</msgstr>
+	<msgstr xml:lang="pa">ਉਦਾਹਰਨ</msgstr>
+	<msgstr xml:lang="pl">Przykład</msgstr>
+	<msgstr xml:lang="pt">Exemplo</msgstr>
+	<msgstr xml:lang="pt_BR">Exemplo</msgstr>
+	<msgstr xml:lang="ro">Exemplu</msgstr>
+	<msgstr xml:lang="ru">Пример</msgstr>
+	<msgstr xml:lang="sk">Príklad</msgstr>
+	<msgstr xml:lang="sq">Shembull</msgstr>
+	<msgstr xml:lang="sr">Пример</msgstr>
+	<msgstr xml:lang="sr@Latn">Primer</msgstr>
+	<msgstr xml:lang="sv">Exempel</msgstr>
+	<msgstr xml:lang="ta">உதாரணம்</msgstr>
+	<msgstr xml:lang="tg">Мисол</msgstr>
+	<msgstr xml:lang="th">ตัวอย่าง</msgstr>
+	<msgstr xml:lang="tk">Mysal</msgstr>
+	<msgstr xml:lang="tr">Örnek</msgstr>
+	<msgstr xml:lang="uk">Приклад</msgstr>
+	<msgstr xml:lang="vi">Ví dụ</msgstr>
+	<msgstr xml:lang="zh_CN">例</msgstr>
+	<msgstr xml:lang="zh_TW">例子</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Figure</msgid>
+	<msgstr>Figure</msgstr>
+	<msgstr xml:lang="af">Figuur</msgstr>
+	<msgstr xml:lang="ar">المظهر</msgstr>
+	<msgstr xml:lang="az">Fiqur</msgstr>
+	<msgstr xml:lang="be">Малюнак</msgstr>
+	<msgstr xml:lang="bg">Фигура</msgstr>
+	<msgstr xml:lang="bn">ছবি</msgstr>
+	<msgstr xml:lang="bs">Oblik</msgstr>
+	<msgstr xml:lang="ca">Imatge</msgstr>
+	<msgstr xml:lang="cs">Obrázek</msgstr>
+	<msgstr xml:lang="cy">Ffigur</msgstr>
+	<msgstr xml:lang="da">Figur</msgstr>
+	<msgstr xml:lang="de">Illustration</msgstr>
+	<msgstr xml:lang="el">Figure</msgstr>
+	<msgstr xml:lang="en_CA">Figure</msgstr>
+	<msgstr xml:lang="en_GB">Figure</msgstr>
+	<msgstr xml:lang="es">Figura</msgstr>
+	<msgstr xml:lang="et">Joonis</msgstr>
+	<msgstr xml:lang="eu">Irudia</msgstr>
+	<msgstr xml:lang="fi">Kuva</msgstr>
+	<msgstr xml:lang="fr">Figure</msgstr>
+	<msgstr xml:lang="ga">Tarraingt</msgstr>
+	<msgstr xml:lang="gu">આકૃતિ</msgstr>
+	<msgstr xml:lang="hi">आकृति</msgstr>
+	<msgstr xml:lang="hr">Slika</msgstr>
+	<msgstr xml:lang="hu">Ábra</msgstr>
+	<msgstr xml:lang="it">Figura</msgstr>
+	<msgstr xml:lang="ja">図</msgstr>
+	<msgstr xml:lang="ka">ციფრი/ფიგურა</msgstr>
+	<msgstr xml:lang="ko">그림</msgstr>
+	<msgstr xml:lang="lt">Iliustracija</msgstr>
+	<msgstr xml:lang="mn">Зураг</msgstr>
+	<msgstr xml:lang="ms">Gambarajah</msgstr>
+	<msgstr xml:lang="nb">Figur</msgstr>
+	<msgstr xml:lang="nl">Figuur</msgstr>
+	<msgstr xml:lang="nn">Figur</msgstr>
+	<msgstr xml:lang="no">Figur</msgstr>
+	<msgstr xml:lang="pa">ਸ਼ਕਲ</msgstr>
+	<msgstr xml:lang="pl">Figura</msgstr>
+	<msgstr xml:lang="pt">Figura</msgstr>
+	<msgstr xml:lang="pt_BR">Figura</msgstr>
+	<msgstr xml:lang="ro">Figura</msgstr>
+	<msgstr xml:lang="ru">Иллюстрация</msgstr>
+	<msgstr xml:lang="sk">Obrázok</msgstr>
+	<msgstr xml:lang="sq">Figura</msgstr>
+	<msgstr xml:lang="sr">Слика</msgstr>
+	<msgstr xml:lang="sr@Latn">Slika</msgstr>
+	<msgstr xml:lang="sv">Figur</msgstr>
+	<msgstr xml:lang="ta">ஓவியம்</msgstr>
+	<msgstr xml:lang="tg">Шакл</msgstr>
+	<msgstr xml:lang="th">รูป</msgstr>
+	<msgstr xml:lang="tk">Şekil</msgstr>
+	<msgstr xml:lang="tr">Figür</msgstr>
+	<msgstr xml:lang="uk">Рисунок</msgstr>
+	<msgstr xml:lang="vi">Hình</msgstr>
+	<msgstr xml:lang="zh_CN">图</msgstr>
+	<msgstr xml:lang="zh_TW">圖</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Glossary</msgid>
+	<msgstr>Glossary</msgstr>
+	<msgstr xml:lang="af">Termlys</msgstr>
+	<msgstr xml:lang="ar">قاموس المصطلحات</msgstr>
+	<msgstr xml:lang="az">Lüğət</msgstr>
+	<msgstr xml:lang="be">Сьпіс тэрмінаў</msgstr>
+	<msgstr xml:lang="bg">Речник</msgstr>
+	<msgstr xml:lang="bn">গ্লোসারি</msgstr>
+	<msgstr xml:lang="bs">Rječnik</msgstr>
+	<msgstr xml:lang="ca">Glossari</msgstr>
+	<msgstr xml:lang="cs">Slovník pojmů</msgstr>
+	<msgstr xml:lang="cy">Geirfa</msgstr>
+	<msgstr xml:lang="da">Ordliste</msgstr>
+	<msgstr xml:lang="de">Glossar</msgstr>
+	<msgstr xml:lang="el">Γλωσσάρι</msgstr>
+	<msgstr xml:lang="en_CA">Glossary</msgstr>
+	<msgstr xml:lang="en_GB">Glossary</msgstr>
+	<msgstr xml:lang="es">Glosario</msgstr>
+	<msgstr xml:lang="et">Sõnastik</msgstr>
+	<msgstr xml:lang="eu">Glosategia</msgstr>
+	<msgstr xml:lang="fi">Sanasto</msgstr>
+	<msgstr xml:lang="fr">Glossaire</msgstr>
+	<msgstr xml:lang="gu">સાર</msgstr>
+	<msgstr xml:lang="hi">शब्दसंग्रह</msgstr>
+	<msgstr xml:lang="hr">Rječnik</msgstr>
+	<msgstr xml:lang="hu">Kifejezésgyűjtemény</msgstr>
+	<msgstr xml:lang="it">Glossario</msgstr>
+	<msgstr xml:lang="ja">用語集</msgstr>
+	<msgstr xml:lang="ka">სიტყვარი</msgstr>
+	<msgstr xml:lang="ko">용어해설</msgstr>
+	<msgstr xml:lang="lt">Terminų žodynas</msgstr>
+	<msgstr xml:lang="mn">Тайлбар толь</msgstr>
+	<msgstr xml:lang="ms">Glosari</msgstr>
+	<msgstr xml:lang="nb">Ordbok</msgstr>
+	<msgstr xml:lang="nl">Woordenlijst</msgstr>
+	<msgstr xml:lang="nn">Ordliste</msgstr>
+	<msgstr xml:lang="no">Ordbok</msgstr>
+	<msgstr xml:lang="pa">ਸ਼ਬਦਾਵਲੀ</msgstr>
+	<msgstr xml:lang="pl">Słownik</msgstr>
+	<msgstr xml:lang="pt">Glossário</msgstr>
+	<msgstr xml:lang="pt_BR">Glossário</msgstr>
+	<msgstr xml:lang="ro">Glosar</msgstr>
+	<msgstr xml:lang="ru">Глоссарий</msgstr>
+	<msgstr xml:lang="sk">Slovník</msgstr>
+	<msgstr xml:lang="sq">Termet</msgstr>
+	<msgstr xml:lang="sr">Појмовник</msgstr>
+	<msgstr xml:lang="sr@Latn">Pojmovnik</msgstr>
+	<msgstr xml:lang="sv">Ordlista</msgstr>
+	<msgstr xml:lang="ta">அறிகுறி</msgstr>
+	<msgstr xml:lang="tg">Феҳристи Вожаҳо</msgstr>
+	<msgstr xml:lang="th">อภิธาน</msgstr>
+	<msgstr xml:lang="tk">Sözlük</msgstr>
+	<msgstr xml:lang="tr">Sözlük</msgstr>
+	<msgstr xml:lang="uk">Глосарій</msgstr>
+	<msgstr xml:lang="vi">Từ điển Thuật ngữ</msgstr>
+	<msgstr xml:lang="zh_CN">术语表</msgstr>
+	<msgstr xml:lang="zh_TW">辭彙</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Important</msgid>
+	<msgstr>Important</msgstr>
+	<msgstr xml:lang="af">Belangrik</msgstr>
+	<msgstr xml:lang="ar">مهم</msgstr>
+	<msgstr xml:lang="az">Vacib</msgstr>
+	<msgstr xml:lang="be">Важна</msgstr>
+	<msgstr xml:lang="bg">Важно</msgstr>
+	<msgstr xml:lang="bn">জরুরি</msgstr>
+	<msgstr xml:lang="bs">Važno</msgstr>
+	<msgstr xml:lang="ca">Important</msgstr>
+	<msgstr xml:lang="cs">Důležité</msgstr>
+	<msgstr xml:lang="cy">Pwysig</msgstr>
+	<msgstr xml:lang="da">Vigtigt</msgstr>
+	<msgstr xml:lang="de">Wichtig</msgstr>
+	<msgstr xml:lang="el">Σημαντικό</msgstr>
+	<msgstr xml:lang="en_CA">Important</msgstr>
+	<msgstr xml:lang="en_GB">Important</msgstr>
+	<msgstr xml:lang="es">Importante</msgstr>
+	<msgstr xml:lang="et">Tähtis</msgstr>
+	<msgstr xml:lang="eu">Garrantzitsua</msgstr>
+	<msgstr xml:lang="fi">Tärkeä</msgstr>
+	<msgstr xml:lang="fr">Important</msgstr>
+	<msgstr xml:lang="gu">મહત્વનું</msgstr>
+	<msgstr xml:lang="hi">महत्वपूर्ण</msgstr>
+	<msgstr xml:lang="hr">Važno</msgstr>
+	<msgstr xml:lang="hu">Fontos</msgstr>
+	<msgstr xml:lang="is">Mikilvægt</msgstr>
+	<msgstr xml:lang="it">Importante</msgstr>
+	<msgstr xml:lang="ja">重要</msgstr>
+	<msgstr xml:lang="ka">მნიშვნელოვანი</msgstr>
+	<msgstr xml:lang="ko">중요</msgstr>
+	<msgstr xml:lang="lt">Svarbu</msgstr>
+	<msgstr xml:lang="mn">Чухал</msgstr>
+	<msgstr xml:lang="ms">Penting</msgstr>
+	<msgstr xml:lang="nb">Viktig</msgstr>
+	<msgstr xml:lang="nl">Belangrijk</msgstr>
+	<msgstr xml:lang="nn">Viktig</msgstr>
+	<msgstr xml:lang="no">Viktig</msgstr>
+	<msgstr xml:lang="pa">ਖਾਸ</msgstr>
+	<msgstr xml:lang="pl">Ważne</msgstr>
+	<msgstr xml:lang="pt">Importante</msgstr>
+	<msgstr xml:lang="pt_BR">Importante</msgstr>
+	<msgstr xml:lang="ro">Important</msgstr>
+	<msgstr xml:lang="ru">Важно</msgstr>
+	<msgstr xml:lang="sk">Dôležité</msgstr>
+	<msgstr xml:lang="sq">I rëndësishëm</msgstr>
+	<msgstr xml:lang="sr">Важно</msgstr>
+	<msgstr xml:lang="sr@Latn">Važno</msgstr>
+	<msgstr xml:lang="sv">Viktigt</msgstr>
+	<msgstr xml:lang="ta">முக்கியம்</msgstr>
+	<msgstr xml:lang="tg">Муҳим</msgstr>
+	<msgstr xml:lang="th">สำคัญ</msgstr>
+	<msgstr xml:lang="tk">Möhüm</msgstr>
+	<msgstr xml:lang="tr">Önemli</msgstr>
+	<msgstr xml:lang="uk">Важливо</msgstr>
+	<msgstr xml:lang="vi">Quan trọng</msgstr>
+	<msgstr xml:lang="zh_CN">要点</msgstr>
+	<msgstr xml:lang="zh_TW">重要</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Index</msgid>
+	<msgstr>Index</msgstr>
+	<msgstr xml:lang="af">Indeks</msgstr>
+	<msgstr xml:lang="am">ማውጫ</msgstr>
+	<msgstr xml:lang="ar">فهرس</msgstr>
+	<msgstr xml:lang="az">Məzmun</msgstr>
+	<msgstr xml:lang="be">Ключавыя словы</msgstr>
+	<msgstr xml:lang="bg">Индекс</msgstr>
+	<msgstr xml:lang="bn">সূচী</msgstr>
+	<msgstr xml:lang="bs">Index</msgstr>
+	<msgstr xml:lang="ca">Índex</msgstr>
+	<msgstr xml:lang="cs">Rejstřík</msgstr>
+	<msgstr xml:lang="cy">Mynegai</msgstr>
+	<msgstr xml:lang="da">Indeks</msgstr>
+	<msgstr xml:lang="de">Index</msgstr>
+	<msgstr xml:lang="el">Ευρετήριο</msgstr>
+	<msgstr xml:lang="en_CA">Index</msgstr>
+	<msgstr xml:lang="en_GB">Index</msgstr>
+	<msgstr xml:lang="eo">Indekso</msgstr>
+	<msgstr xml:lang="es">Índice analítico</msgstr>
+	<msgstr xml:lang="et">Indeks</msgstr>
+	<msgstr xml:lang="eu">Indizea</msgstr>
+	<msgstr xml:lang="fa">نمایه</msgstr>
+	<msgstr xml:lang="fi">Hakemisto</msgstr>
+	<msgstr xml:lang="fr">Index</msgstr>
+	<msgstr xml:lang="ga">Innéacs</msgstr>
+	<msgstr xml:lang="gl">Índice</msgstr>
+	<msgstr xml:lang="gu">અનુક્રમણિકા</msgstr>
+	<msgstr xml:lang="he">אינדקס</msgstr>
+	<msgstr xml:lang="hi">निर्देशिका</msgstr>
+	<msgstr xml:lang="hr">Indeks</msgstr>
+	<msgstr xml:lang="hu">Tárgymutató</msgstr>
+	<msgstr xml:lang="id">Indeks</msgstr>
+	<msgstr xml:lang="is">Spjaldskrá</msgstr>
+	<msgstr xml:lang="it">Indice</msgstr>
+	<msgstr xml:lang="ja">目次</msgstr>
+	<msgstr xml:lang="ka">სარჩევი</msgstr>
+	<msgstr xml:lang="ko">찾아보기</msgstr>
+	<msgstr xml:lang="li">Indeks</msgstr>
+	<msgstr xml:lang="lt">Rodyklė</msgstr>
+	<msgstr xml:lang="lv">Indekss</msgstr>
+	<msgstr xml:lang="mk">Индекс</msgstr>
+	<msgstr xml:lang="ml">സൂചിക</msgstr>
+	<msgstr xml:lang="mn">Индекс</msgstr>
+	<msgstr xml:lang="mr">विवरणिका</msgstr>
+	<msgstr xml:lang="ms">Indeks</msgstr>
+	<msgstr xml:lang="nb">Indeks</msgstr>
+	<msgstr xml:lang="ne">सुचीपत्र</msgstr>
+	<msgstr xml:lang="nl">Index</msgstr>
+	<msgstr xml:lang="nn">Indeks</msgstr>
+	<msgstr xml:lang="no">Indeks</msgstr>
+	<msgstr xml:lang="pa">ਤਤਕਰਾ</msgstr>
+	<msgstr xml:lang="pl">Indeks</msgstr>
+	<msgstr xml:lang="pt">Índice</msgstr>
+	<msgstr xml:lang="pt_BR">Índice</msgstr>
+	<msgstr xml:lang="ro">Index</msgstr>
+	<msgstr xml:lang="ru">Содержание</msgstr>
+	<msgstr xml:lang="sk">Index</msgstr>
+	<msgstr xml:lang="sl">Kazalo</msgstr>
+	<msgstr xml:lang="sq">Treguesi</msgstr>
+	<msgstr xml:lang="sr">Индекс</msgstr>
+	<msgstr xml:lang="sr@Latn">Indeks</msgstr>
+	<msgstr xml:lang="sv">Index</msgstr>
+	<msgstr xml:lang="ta">சுட்டு</msgstr>
+	<msgstr xml:lang="tg">Нишондиҳанда</msgstr>
+	<msgstr xml:lang="th">ดัชนี</msgstr>
+	<msgstr xml:lang="tk">Indeks</msgstr>
+	<msgstr xml:lang="tr">İndeks</msgstr>
+	<msgstr xml:lang="uk">Покажчик</msgstr>
+	<msgstr xml:lang="vi">Mục lục</msgstr>
+	<msgstr xml:lang="wa">Indecse</msgstr>
+	<msgstr xml:lang="zh_CN">索引</msgstr>
+	<msgstr xml:lang="zh_TW">索引</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Legal Notice</msgid>
+	<msgstr>Legal Notice</msgstr>
+	<msgstr xml:lang="af">Regskennisgewing</msgstr>
+	<msgstr xml:lang="ar">ملاحظة قانونية</msgstr>
+	<msgstr xml:lang="az">Rəsmi Qeyd</msgstr>
+	<msgstr xml:lang="be">Прававы стан</msgstr>
+	<msgstr xml:lang="bg">Бележка за законността</msgstr>
+	<msgstr xml:lang="bn">আইনি নোটিস</msgstr>
+	<msgstr xml:lang="bs">Pravni izvještaj</msgstr>
+	<msgstr xml:lang="ca">Nota legal</msgstr>
+	<msgstr xml:lang="cs">Právní oznámení</msgstr>
+	<msgstr xml:lang="cy">Rhybudd Cyfreithiol</msgstr>
+	<msgstr xml:lang="da">Betingelser for brug</msgstr>
+	<msgstr xml:lang="de">Rechtlicher Hinweis</msgstr>
+	<msgstr xml:lang="el">Νομική Ειδοποίηση</msgstr>
+	<msgstr xml:lang="en_CA">Legal Notice</msgstr>
+	<msgstr xml:lang="en_GB">Legal Notice</msgstr>
+	<msgstr xml:lang="es">Advertencia legal</msgstr>
+	<msgstr xml:lang="et">Juriidiline märkus</msgstr>
+	<msgstr xml:lang="eu">Legediko oharra</msgstr>
+	<msgstr xml:lang="fi">Ehtoilmoitus</msgstr>
+	<msgstr xml:lang="fr">Notification légale</msgstr>
+	<msgstr xml:lang="gu">માન્ય સૂચન</msgstr>
+	<msgstr xml:lang="hi">कानूनी सूचना</msgstr>
+	<msgstr xml:lang="hr">Pravna napomena</msgstr>
+	<msgstr xml:lang="hu">Jogi megjegyzés</msgstr>
+	<msgstr xml:lang="it">Note legali</msgstr>
+	<msgstr xml:lang="ja">商標</msgstr>
+	<msgstr xml:lang="ka">იურიდიული გაფრთხილება</msgstr>
+	<msgstr xml:lang="ko">법적 고지</msgstr>
+	<msgstr xml:lang="lt">Teisinė pastaba</msgstr>
+	<msgstr xml:lang="mn">Хууль зүйн тэмдэглэл</msgstr>
+	<msgstr xml:lang="ms">Maklumat Perundangan</msgstr>
+	<msgstr xml:lang="nb">Juridisk notat</msgstr>
+	<msgstr xml:lang="nl">Juridische opmerking</msgstr>
+	<msgstr xml:lang="nn">Juridisk notat</msgstr>
+	<msgstr xml:lang="no">Juridisk notat</msgstr>
+	<msgstr xml:lang="pa">ਕਾਨੂੰਨੀ ਸੂਚਨਾ</msgstr>
+	<msgstr xml:lang="pl">Uwaga prawna</msgstr>
+	<msgstr xml:lang="pt">Nota Legal</msgstr>
+	<msgstr xml:lang="pt_BR">Observação Legal</msgstr>
+	<msgstr xml:lang="ro">Înştiinţări legale</msgstr>
+	<msgstr xml:lang="ru">Предупреждение</msgstr>
+	<msgstr xml:lang="sk">Právne oznámenie</msgstr>
+	<msgstr xml:lang="sq">Njoftimi ligjor</msgstr>
+	<msgstr xml:lang="sr">Законска напомена</msgstr>
+	<msgstr xml:lang="sr@Latn">Zakonska napomena</msgstr>
+	<msgstr xml:lang="sv">Juridisk information</msgstr>
+	<msgstr xml:lang="ta">சட்டபூர்வமான அறிவிப்பு</msgstr>
+	<msgstr xml:lang="tg">Огоҳии Қонунӣ</msgstr>
+	<msgstr xml:lang="th">ประกาศด้านกฏหมาย</msgstr>
+	<msgstr xml:lang="tr">Yasal Uyarı</msgstr>
+	<msgstr xml:lang="uk">Юридичне попередження</msgstr>
+	<msgstr xml:lang="zh_CN">法律声明</msgstr>
+	<msgstr xml:lang="zh_TW">版權公告</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Level</msgid>
+	<msgstr>Level</msgstr>
+	<msgstr xml:lang="af">Vlak</msgstr>
+	<msgstr xml:lang="ar">المستوى</msgstr>
+	<msgstr xml:lang="az">Səviyyə</msgstr>
+	<msgstr xml:lang="be">Узровень</msgstr>
+	<msgstr xml:lang="bg">Ниво</msgstr>
+	<msgstr xml:lang="bn">মাত্রা</msgstr>
+	<msgstr xml:lang="bs">Nivo</msgstr>
+	<msgstr xml:lang="ca">Nivell</msgstr>
+	<msgstr xml:lang="cs">Úroveň</msgstr>
+	<msgstr xml:lang="cy">Lefel</msgstr>
+	<msgstr xml:lang="da">Niveau</msgstr>
+	<msgstr xml:lang="de">Niveau</msgstr>
+	<msgstr xml:lang="el">Επίπεδο</msgstr>
+	<msgstr xml:lang="en_CA">Level</msgstr>
+	<msgstr xml:lang="en_GB">Level</msgstr>
+	<msgstr xml:lang="es">Nivel</msgstr>
+	<msgstr xml:lang="et">Tase</msgstr>
+	<msgstr xml:lang="eu">Maila</msgstr>
+	<msgstr xml:lang="fi">Taso</msgstr>
+	<msgstr xml:lang="fr">Niveau</msgstr>
+	<msgstr xml:lang="gu">સ્તર</msgstr>
+	<msgstr xml:lang="hi">स्तर</msgstr>
+	<msgstr xml:lang="hr">Razina</msgstr>
+	<msgstr xml:lang="hu">Szint</msgstr>
+	<msgstr xml:lang="it">Livello</msgstr>
+	<msgstr xml:lang="ja">レベル</msgstr>
+	<msgstr xml:lang="ka">დონე</msgstr>
+	<msgstr xml:lang="ko">중요도</msgstr>
+	<msgstr xml:lang="lt">Lygis</msgstr>
+	<msgstr xml:lang="mn">Төвшин</msgstr>
+	<msgstr xml:lang="ms">Peringkat</msgstr>
+	<msgstr xml:lang="nb">Nivå</msgstr>
+	<msgstr xml:lang="nl">Niveau</msgstr>
+	<msgstr xml:lang="nn">Level</msgstr>
+	<msgstr xml:lang="no">Nivå</msgstr>
+	<msgstr xml:lang="pa">ਪੱਧਰ</msgstr>
+	<msgstr xml:lang="pl">Poziom</msgstr>
+	<msgstr xml:lang="pt">Nível</msgstr>
+	<msgstr xml:lang="pt_BR">Nível</msgstr>
+	<msgstr xml:lang="ro">Nivel</msgstr>
+	<msgstr xml:lang="ru">Уровень</msgstr>
+	<msgstr xml:lang="sk">Úroveň</msgstr>
+	<msgstr xml:lang="sq">Etiketa</msgstr>
+	<msgstr xml:lang="sr">Ниво</msgstr>
+	<msgstr xml:lang="sr@Latn">Nivo</msgstr>
+	<msgstr xml:lang="sv">Nivå</msgstr>
+	<msgstr xml:lang="ta">மட்டம்</msgstr>
+	<msgstr xml:lang="tg">Сатҳ</msgstr>
+	<msgstr xml:lang="th">ระดับ</msgstr>
+	<msgstr xml:lang="tk">Dereje</msgstr>
+	<msgstr xml:lang="tr">Seviye</msgstr>
+	<msgstr xml:lang="uk">Рівень</msgstr>
+	<msgstr xml:lang="vi">Mức</msgstr>
+	<msgstr xml:lang="zh_CN">级别</msgstr>
+	<msgstr xml:lang="zh_TW">階級</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Message Audience</msgid>
+	<msgstr>Message Audience</msgstr>
+	<msgstr xml:lang="af">Boodskapgehoor</msgstr>
+	<msgstr xml:lang="ar">جمهور الرسالة</msgstr>
+	<msgstr xml:lang="az">İsmarış Audiyensiyası</msgstr>
+	<msgstr xml:lang="be">Слухачы паведамленьня</msgstr>
+	<msgstr xml:lang="bg">Зрители на Съобщението</msgstr>
+	<msgstr xml:lang="bn">বার্তার শ্রোতা</msgstr>
+	<msgstr xml:lang="bs">Poruke publike</msgstr>
+	<msgstr xml:lang="ca">Audiència del missatge</msgstr>
+	<msgstr xml:lang="cs">Adresáti zprávy</msgstr>
+	<msgstr xml:lang="cy">Cynulleidfa Neges</msgstr>
+	<msgstr xml:lang="da">Budskabsmodtager</msgstr>
+	<msgstr xml:lang="de">Zielgruppe der Nachricht</msgstr>
+	<msgstr xml:lang="el">Μήνυμα Κοινού</msgstr>
+	<msgstr xml:lang="en_CA">Message Audience</msgstr>
+	<msgstr xml:lang="en_GB">Message Audience</msgstr>
+	<msgstr xml:lang="es">Audiencia del mensaje</msgstr>
+	<msgstr xml:lang="et">Sõnumi kuulajaskond</msgstr>
+	<msgstr xml:lang="eu">Mezuaren entzulegoa</msgstr>
+	<msgstr xml:lang="fi">Viestin lukijakunta</msgstr>
+	<msgstr xml:lang="fr">Destinataire du message</msgstr>
+	<msgstr xml:lang="gu">સંદેશા પ્રેક્ષક</msgstr>
+	<msgstr xml:lang="hi">संदेश सभा</msgstr>
+	<msgstr xml:lang="hr">Publika za poruku</msgstr>
+	<msgstr xml:lang="hu">Üzenet közönsége</msgstr>
+	<msgstr xml:lang="it">Pubblico</msgstr>
+	<msgstr xml:lang="ja">メッセージの読者</msgstr>
+	<msgstr xml:lang="ka">წერილის აუდიენცია</msgstr>
+	<msgstr xml:lang="ko">읽는 사람</msgstr>
+	<msgstr xml:lang="lt">Žinutės auditorija</msgstr>
+	<msgstr xml:lang="mn">Уншигчийн зурвас</msgstr>
+	<msgstr xml:lang="ms">Pengdengar Mesej</msgstr>
+	<msgstr xml:lang="nb">Publikum for melding</msgstr>
+	<msgstr xml:lang="nl">Bericht publiek</msgstr>
+	<msgstr xml:lang="nn">Meldingspublikum</msgstr>
+	<msgstr xml:lang="no">Publikum for melding</msgstr>
+	<msgstr xml:lang="pa">ਸੁਨੇਹਾ ਪਾਠਕ</msgstr>
+	<msgstr xml:lang="pl">Odbiorcy wiadomości</msgstr>
+	<msgstr xml:lang="pt">Audiência da Mensagem</msgstr>
+	<msgstr xml:lang="pt_BR">Público da Mensagem</msgstr>
+	<msgstr xml:lang="ro">Audienţă a mesajului</msgstr>
+	<msgstr xml:lang="ru">Аудитория сообщения</msgstr>
+	<msgstr xml:lang="sk">Adresáti správy</msgstr>
+	<msgstr xml:lang="sq">Dëgjim mesazhi</msgstr>
+	<msgstr xml:lang="sr">Намена поруке</msgstr>
+	<msgstr xml:lang="sr@Latn">Namena poruke</msgstr>
+	<msgstr xml:lang="sv">Meddelandemålgrupp</msgstr>
+	<msgstr xml:lang="ta">பார்வையாளர் செய்தி</msgstr>
+	<msgstr xml:lang="tg">Паёми Шунавандагон</msgstr>
+	<msgstr xml:lang="tr">İleti İzleyicisi</msgstr>
+	<msgstr xml:lang="uk">Аудиторія повідомлення</msgstr>
+	<msgstr xml:lang="zh_CN">消息受众</msgstr>
+	<msgstr xml:lang="zh_TW">訊息聽眾</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Message Level</msgid>
+	<msgstr>Message Level</msgstr>
+	<msgstr xml:lang="af">Boodskapvlak</msgstr>
+	<msgstr xml:lang="ar">مستوى الرسالة</msgstr>
+	<msgstr xml:lang="az">İsmarış Səviyyəsi</msgstr>
+	<msgstr xml:lang="be">Узровень паведамленьня</msgstr>
+	<msgstr xml:lang="bg">Ниво на Съобщението</msgstr>
+	<msgstr xml:lang="bn">বার্তার মাত্রা</msgstr>
+	<msgstr xml:lang="bs">Nivo poruke</msgstr>
+	<msgstr xml:lang="ca">Nivell del missatge</msgstr>
+	<msgstr xml:lang="cs">Úroveň zprávy</msgstr>
+	<msgstr xml:lang="cy">Lefel Neges</msgstr>
+	<msgstr xml:lang="da">Budskabsniveau</msgstr>
+	<msgstr xml:lang="de">Nachrichtenniveau</msgstr>
+	<msgstr xml:lang="el">Επίπεδο Μηνύματος</msgstr>
+	<msgstr xml:lang="en_CA">Message Level</msgstr>
+	<msgstr xml:lang="en_GB">Message Level</msgstr>
+	<msgstr xml:lang="es">Nivel del mensaje</msgstr>
+	<msgstr xml:lang="et">Sõnumi tase</msgstr>
+	<msgstr xml:lang="eu">Mezuaren maila</msgstr>
+	<msgstr xml:lang="fi">Viestin taso</msgstr>
+	<msgstr xml:lang="fr">Niveau du message</msgstr>
+	<msgstr xml:lang="gu">સંદેશા સ્તર</msgstr>
+	<msgstr xml:lang="hi">संदेश स्तर</msgstr>
+	<msgstr xml:lang="hr">Razina poruke</msgstr>
+	<msgstr xml:lang="hu">Üzenet szintje</msgstr>
+	<msgstr xml:lang="it">Livello</msgstr>
+	<msgstr xml:lang="ja">メッセージのレベル</msgstr>
+	<msgstr xml:lang="ka">წერილის დონე</msgstr>
+	<msgstr xml:lang="ko">중요도</msgstr>
+	<msgstr xml:lang="lt">Žinutės lygis</msgstr>
+	<msgstr xml:lang="mn">Зурвасын төвшин</msgstr>
+	<msgstr xml:lang="ms">Peringkat Mesej</msgstr>
+	<msgstr xml:lang="nb">Meldingsnivå</msgstr>
+	<msgstr xml:lang="nl">Bericht niveau</msgstr>
+	<msgstr xml:lang="nn">Meldingsnivå</msgstr>
+	<msgstr xml:lang="no">Meldingsnivå</msgstr>
+	<msgstr xml:lang="pa">ਸੁਨੇਹਾ ਪੱਧਰ</msgstr>
+	<msgstr xml:lang="pl">Poziom wiadomości</msgstr>
+	<msgstr xml:lang="pt">Nível da Mensagem</msgstr>
+	<msgstr xml:lang="pt_BR">Nível da Mensagem</msgstr>
+	<msgstr xml:lang="ro">Nivelul mesajului</msgstr>
+	<msgstr xml:lang="ru">Уровень сообщения</msgstr>
+	<msgstr xml:lang="sk">Úroveň správy</msgstr>
+	<msgstr xml:lang="sq">Etiketa e mesazhit</msgstr>
+	<msgstr xml:lang="sr">Ниво поруке</msgstr>
+	<msgstr xml:lang="sr@Latn">Nivo poruke</msgstr>
+	<msgstr xml:lang="sv">Meddelandenivå</msgstr>
+	<msgstr xml:lang="ta">தகவல் மட்டம்</msgstr>
+	<msgstr xml:lang="tg">Сатҳи Паём</msgstr>
+	<msgstr xml:lang="th">ระดับข้อความ</msgstr>
+	<msgstr xml:lang="tr">İleti Seviyesi</msgstr>
+	<msgstr xml:lang="uk">Рівень повідомлення</msgstr>
+	<msgstr xml:lang="zh_CN">消息级别</msgstr>
+	<msgstr xml:lang="zh_TW">訊息階級</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Message Origin</msgid>
+	<msgstr>Message Origin</msgstr>
+	<msgstr xml:lang="af">Boodskapoorsprong</msgstr>
+	<msgstr xml:lang="ar">مصدر الرسالة</msgstr>
+	<msgstr xml:lang="az">İsmarış Mənbəsi</msgstr>
+	<msgstr xml:lang="be">Першакрыніца паведамленьня</msgstr>
+	<msgstr xml:lang="bg">Произход на Съобщението</msgstr>
+	<msgstr xml:lang="bn">বার্তার ওরিজিন</msgstr>
+	<msgstr xml:lang="bs">Izvor poruke</msgstr>
+	<msgstr xml:lang="ca">Origen del missatge</msgstr>
+	<msgstr xml:lang="cs">Původ zprávy</msgstr>
+	<msgstr xml:lang="cy">Gwraidd Neges</msgstr>
+	<msgstr xml:lang="da">Budskabsophav</msgstr>
+	<msgstr xml:lang="de">Nachrichtenursprung</msgstr>
+	<msgstr xml:lang="el">Σημείο Αναφοράς Μηνύματος</msgstr>
+	<msgstr xml:lang="en_CA">Message Origin</msgstr>
+	<msgstr xml:lang="en_GB">Message Origin</msgstr>
+	<msgstr xml:lang="es">Origen del mensaje</msgstr>
+	<msgstr xml:lang="et">Sõnumi algallikas</msgstr>
+	<msgstr xml:lang="eu">Mezuaren jatorria</msgstr>
+	<msgstr xml:lang="fi">Viestin alkuperä</msgstr>
+	<msgstr xml:lang="fr">Origine du message</msgstr>
+	<msgstr xml:lang="gu">સંદેશાનું મૂળ</msgstr>
+	<msgstr xml:lang="hi">संदेश उद्गम</msgstr>
+	<msgstr xml:lang="hr">Izvorište poruke</msgstr>
+	<msgstr xml:lang="hu">Üzenet eredete</msgstr>
+	<msgstr xml:lang="it">Origine</msgstr>
+	<msgstr xml:lang="ja">メッセージ元</msgstr>
+	<msgstr xml:lang="ka">წერილის წარმომავლობა</msgstr>
+	<msgstr xml:lang="ko">보내는 사람</msgstr>
+	<msgstr xml:lang="lt">Žinutės šaltinis</msgstr>
+	<msgstr xml:lang="mn">Зурвас эх үүсэл</msgstr>
+	<msgstr xml:lang="ms">Asal Mesej</msgstr>
+	<msgstr xml:lang="nb">Meldingsopphav</msgstr>
+	<msgstr xml:lang="nl">Bericht bron</msgstr>
+	<msgstr xml:lang="nn">Meldingsopphav</msgstr>
+	<msgstr xml:lang="no">Meldingsopphav</msgstr>
+	<msgstr xml:lang="pa">ਸੁਨੇਹਾ ਖੇਤਰ</msgstr>
+	<msgstr xml:lang="pl">Źródło wiadomości</msgstr>
+	<msgstr xml:lang="pt">Origem da Mensagem</msgstr>
+	<msgstr xml:lang="pt_BR">Origem da Mensagem</msgstr>
+	<msgstr xml:lang="ro">Originea mesajului</msgstr>
+	<msgstr xml:lang="ru">Источник сообщения</msgstr>
+	<msgstr xml:lang="sk">Pôvod správy</msgstr>
+	<msgstr xml:lang="sq">Origjina e mesazhit</msgstr>
+	<msgstr xml:lang="sr">Порекло поруке</msgstr>
+	<msgstr xml:lang="sr@Latn">Poreklo poruke</msgstr>
+	<msgstr xml:lang="sv">Meddelandeursprung</msgstr>
+	<msgstr xml:lang="ta">தகவல் தொடக்கம்</msgstr>
+	<msgstr xml:lang="tg">Сарчашмаи Паём</msgstr>
+	<msgstr xml:lang="th">ที่มาของข้อความ</msgstr>
+	<msgstr xml:lang="tr">İleti Temeli</msgstr>
+	<msgstr xml:lang="uk">Джерело повідомлення</msgstr>
+	<msgstr xml:lang="zh_CN">信息来源</msgstr>
+	<msgstr xml:lang="zh_TW">訊息來源</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Note</msgid>
+	<msgstr>Note</msgstr>
+	<msgstr xml:lang="af">Opmerking</msgstr>
+	<msgstr xml:lang="ar">ملاحظة</msgstr>
+	<msgstr xml:lang="az">Qeyd</msgstr>
+	<msgstr xml:lang="be">Нататка</msgstr>
+	<msgstr xml:lang="bg">Бележка</msgstr>
+	<msgstr xml:lang="bn">দৃষ্টব্য</msgstr>
+	<msgstr xml:lang="bs">Zabilješka</msgstr>
+	<msgstr xml:lang="ca">Nota</msgstr>
+	<msgstr xml:lang="cs">Poznámka</msgstr>
+	<msgstr xml:lang="cy">Nodyn</msgstr>
+	<msgstr xml:lang="da">Bemærk</msgstr>
+	<msgstr xml:lang="de">Hinweis</msgstr>
+	<msgstr xml:lang="el">Σημείωση</msgstr>
+	<msgstr xml:lang="en_CA">Note</msgstr>
+	<msgstr xml:lang="en_GB">Note</msgstr>
+	<msgstr xml:lang="es">Nota</msgstr>
+	<msgstr xml:lang="et">Märkus</msgstr>
+	<msgstr xml:lang="eu">Oharra</msgstr>
+	<msgstr xml:lang="fi">Huomautus</msgstr>
+	<msgstr xml:lang="fr">Note</msgstr>
+	<msgstr xml:lang="ga">Nota</msgstr>
+	<msgstr xml:lang="gu">નોંધ</msgstr>
+	<msgstr xml:lang="hi">टिप्पणी</msgstr>
+	<msgstr xml:lang="hr">Bilješka</msgstr>
+	<msgstr xml:lang="hu">Megjegyzés</msgstr>
+	<msgstr xml:lang="it">Annotazione</msgstr>
+	<msgstr xml:lang="ja">注記</msgstr>
+	<msgstr xml:lang="ka">შენიშვნა</msgstr>
+	<msgstr xml:lang="ko">참고</msgstr>
+	<msgstr xml:lang="lt">Pastaba</msgstr>
+	<msgstr xml:lang="mn">Тэмдэглэл</msgstr>
+	<msgstr xml:lang="ms">Nota</msgstr>
+	<msgstr xml:lang="nb">Merknad</msgstr>
+	<msgstr xml:lang="nl">Opmerking</msgstr>
+	<msgstr xml:lang="nn">Merknad</msgstr>
+	<msgstr xml:lang="no">Merknad</msgstr>
+	<msgstr xml:lang="pa">ਸੂਚਨਾ</msgstr>
+	<msgstr xml:lang="pl">Uwaga</msgstr>
+	<msgstr xml:lang="pt">Nota</msgstr>
+	<msgstr xml:lang="pt_BR">Nota</msgstr>
+	<msgstr xml:lang="ro">Notă</msgstr>
+	<msgstr xml:lang="ru">Замечание</msgstr>
+	<msgstr xml:lang="sk">Poznámka</msgstr>
+	<msgstr xml:lang="sq">Shënim</msgstr>
+	<msgstr xml:lang="sr">Белешка</msgstr>
+	<msgstr xml:lang="sr@Latn">Beleška</msgstr>
+	<msgstr xml:lang="sv">Anteckning</msgstr>
+	<msgstr xml:lang="ta">குறிப்பு</msgstr>
+	<msgstr xml:lang="tg">Эзоҳ</msgstr>
+	<msgstr xml:lang="th">หมายเหตุ</msgstr>
+	<msgstr xml:lang="tr">Not</msgstr>
+	<msgstr xml:lang="uk">Примітка</msgstr>
+	<msgstr xml:lang="vi">Ghi chú</msgstr>
+	<msgstr xml:lang="zh_CN">注释</msgstr>
+	<msgstr xml:lang="zh_TW">備註</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Origin</msgid>
+	<msgstr>Origin</msgstr>
+	<msgstr xml:lang="af">Oorsprong</msgstr>
+	<msgstr xml:lang="ar">المصدر</msgstr>
+	<msgstr xml:lang="az">Mənbə</msgstr>
+	<msgstr xml:lang="be">Першакрыніца</msgstr>
+	<msgstr xml:lang="bg">Произход</msgstr>
+	<msgstr xml:lang="bn">ওরিজিন</msgstr>
+	<msgstr xml:lang="bs">Izvor</msgstr>
+	<msgstr xml:lang="ca">Origen</msgstr>
+	<msgstr xml:lang="cs">Původ</msgstr>
+	<msgstr xml:lang="cy">Gwraidd</msgstr>
+	<msgstr xml:lang="da">Ophav</msgstr>
+	<msgstr xml:lang="de">Ursprung</msgstr>
+	<msgstr xml:lang="el">Σημείο αναφοράς</msgstr>
+	<msgstr xml:lang="en_CA">Origin</msgstr>
+	<msgstr xml:lang="en_GB">Origin</msgstr>
+	<msgstr xml:lang="es">Origen</msgstr>
+	<msgstr xml:lang="et">Algallikas</msgstr>
+	<msgstr xml:lang="eu">Jatorria</msgstr>
+	<msgstr xml:lang="fi">Alkuperä</msgstr>
+	<msgstr xml:lang="fr">Origine</msgstr>
+	<msgstr xml:lang="gu">મૂળ</msgstr>
+	<msgstr xml:lang="hi">मूल</msgstr>
+	<msgstr xml:lang="hr">Izvorište</msgstr>
+	<msgstr xml:lang="hu">Eredet</msgstr>
+	<msgstr xml:lang="it">Origine</msgstr>
+	<msgstr xml:lang="ja">元</msgstr>
+	<msgstr xml:lang="ka">წარმომავლობა</msgstr>
+	<msgstr xml:lang="ko">보냄</msgstr>
+	<msgstr xml:lang="lt">Šaltinis</msgstr>
+	<msgstr xml:lang="mn">Эх үүсэл</msgstr>
+	<msgstr xml:lang="ms">Asalan</msgstr>
+	<msgstr xml:lang="nb">Opphav</msgstr>
+	<msgstr xml:lang="nl">Afkomst</msgstr>
+	<msgstr xml:lang="nn">Opphav</msgstr>
+	<msgstr xml:lang="no">Opphav</msgstr>
+	<msgstr xml:lang="pa">ਖੇਤਰ</msgstr>
+	<msgstr xml:lang="pl">Źródło</msgstr>
+	<msgstr xml:lang="pt">Origem</msgstr>
+	<msgstr xml:lang="pt_BR">Origem</msgstr>
+	<msgstr xml:lang="ro">Origine</msgstr>
+	<msgstr xml:lang="ru">Источник</msgstr>
+	<msgstr xml:lang="sk">Pôvod</msgstr>
+	<msgstr xml:lang="sq">Origjina</msgstr>
+	<msgstr xml:lang="sr">Порекло</msgstr>
+	<msgstr xml:lang="sr@Latn">Poreklo</msgstr>
+	<msgstr xml:lang="sv">Ursprung</msgstr>
+	<msgstr xml:lang="ta">தொடக்கம்</msgstr>
+	<msgstr xml:lang="tg">Ибтидоӣ</msgstr>
+	<msgstr xml:lang="th">ที่มา</msgstr>
+	<msgstr xml:lang="tr">Temel</msgstr>
+	<msgstr xml:lang="uk">Джерело</msgstr>
+	<msgstr xml:lang="vi">Nguồn gốc</msgstr>
+	<msgstr xml:lang="zh_CN">来源</msgstr>
+	<msgstr xml:lang="zh_TW">來源</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Other Contributor</msgid>
+	<msgstr>Other Contributor</msgstr>
+	<msgstr xml:lang="af">Ander bydraer</msgstr>
+	<msgstr xml:lang="ar">مساهم آخر</msgstr>
+	<msgstr xml:lang="az">Digər Köməkçi</msgstr>
+	<msgstr xml:lang="be">Іншы ўкладальнік</msgstr>
+	<msgstr xml:lang="bg">Друг сътрудник</msgstr>
+	<msgstr xml:lang="bn">অন্যান্য লেখক</msgstr>
+	<msgstr xml:lang="bs">Drugi Saradnik</msgstr>
+	<msgstr xml:lang="ca">Altre contribuïdor</msgstr>
+	<msgstr xml:lang="cs">Jiný spolupracovník</msgstr>
+	<msgstr xml:lang="cy">Cyfrannwr Arall</msgstr>
+	<msgstr xml:lang="da">Anden bidragyder</msgstr>
+	<msgstr xml:lang="de">Weiterer Mitwirkender</msgstr>
+	<msgstr xml:lang="el">Άλλος Συντελεστής</msgstr>
+	<msgstr xml:lang="en_CA">Other Contributor</msgstr>
+	<msgstr xml:lang="en_GB">Other Contributor</msgstr>
+	<msgstr xml:lang="es">Otro contribuidor</msgstr>
+	<msgstr xml:lang="et">Teine kaastööline</msgstr>
+	<msgstr xml:lang="eu">Beste laguntzailea</msgstr>
+	<msgstr xml:lang="fi">Muu myötävaikuttaja</msgstr>
+	<msgstr xml:lang="fr">Autres contributeurs</msgstr>
+	<msgstr xml:lang="gu">બીજી ફાળો આપનાર</msgstr>
+	<msgstr xml:lang="hi">अन्य सहयोगी</msgstr>
+	<msgstr xml:lang="hr">Neki drugi suradnik</msgstr>
+	<msgstr xml:lang="hu">Egyéb hozzájáruló</msgstr>
+	<msgstr xml:lang="it">Altro contributore</msgstr>
+	<msgstr xml:lang="ja">その他の貢献者</msgstr>
+	<msgstr xml:lang="ka">სხვა მხარდამჭერი</msgstr>
+	<msgstr xml:lang="ko">그 외 도와주신 분</msgstr>
+	<msgstr xml:lang="lt">Kiti pagalbininkai</msgstr>
+	<msgstr xml:lang="mn">Бусад оролцогч</msgstr>
+	<msgstr xml:lang="ms">Penyumbang Lain</msgstr>
+	<msgstr xml:lang="nb">Annen deltaker</msgstr>
+	<msgstr xml:lang="nl">Andere medewerker</msgstr>
+	<msgstr xml:lang="nn">Annan bidragsytar</msgstr>
+	<msgstr xml:lang="no">Annen deltaker</msgstr>
+	<msgstr xml:lang="pa">ਹੋਰ ਯੋਗਦਾਨੀ</msgstr>
+	<msgstr xml:lang="pl">Inny współpracownik</msgstr>
+	<msgstr xml:lang="pt">Outra Contribuição</msgstr>
+	<msgstr xml:lang="pt_BR">Outro Contribuinte</msgstr>
+	<msgstr xml:lang="ro">Alt contributor</msgstr>
+	<msgstr xml:lang="ru">Другой помощник</msgstr>
+	<msgstr xml:lang="sk">Iný prispievateľ</msgstr>
+	<msgstr xml:lang="sq">Kontribues të tjerë</msgstr>
+	<msgstr xml:lang="sr">Остали доприносиоци</msgstr>
+	<msgstr xml:lang="sr@Latn">Ostali doprinosioci</msgstr>
+	<msgstr xml:lang="sv">Annan bidragsgivare</msgstr>
+	<msgstr xml:lang="ta">மற்ற பங்கு அளிப்பவர்</msgstr>
+	<msgstr xml:lang="tg">Дигар Ҳамкор</msgstr>
+	<msgstr xml:lang="th">ผู้ให้ความช่วยเหลือ</msgstr>
+	<msgstr xml:lang="tr">Diğer Katkı Sağlayan</msgstr>
+	<msgstr xml:lang="uk">Інший співпрацівник</msgstr>
+	<msgstr xml:lang="vi">Những người tham gia khác</msgstr>
+	<msgstr xml:lang="zh_CN">其他贡献者</msgstr>
+	<msgstr xml:lang="zh_TW">其他貢獻者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Other Contributors</msgid>
+	<msgstr>Other Contributors</msgstr>
+	<msgstr xml:lang="af">Ander bydraers</msgstr>
+	<msgstr xml:lang="ar">مساهمون آخرون</msgstr>
+	<msgstr xml:lang="az">Digər Köməkçilər</msgstr>
+	<msgstr xml:lang="be">Іншыя ўкладальнікі</msgstr>
+	<msgstr xml:lang="bg">Други Сътрудници</msgstr>
+	<msgstr xml:lang="bn">অন্যান্য লেখকবৃন্দ</msgstr>
+	<msgstr xml:lang="bs">Drugi Saradnici</msgstr>
+	<msgstr xml:lang="ca">Altres contribuïdors</msgstr>
+	<msgstr xml:lang="cs">Jiní spolupracovníci</msgstr>
+	<msgstr xml:lang="cy">Cyfranwyr Eraill</msgstr>
+	<msgstr xml:lang="da">Andre bidragyder</msgstr>
+	<msgstr xml:lang="de">Weitere Mitwirkende</msgstr>
+	<msgstr xml:lang="el">Άλλοι Συντελεστές</msgstr>
+	<msgstr xml:lang="en_CA">Other Contributors</msgstr>
+	<msgstr xml:lang="en_GB">Other Contributors</msgstr>
+	<msgstr xml:lang="es">Otros contribuidores</msgstr>
+	<msgstr xml:lang="et">Teised kaastöölised</msgstr>
+	<msgstr xml:lang="eu">Beste laguntzaileak</msgstr>
+	<msgstr xml:lang="fi">Muut myötävaikuttaja</msgstr>
+	<msgstr xml:lang="fr">Autres contributeurs</msgstr>
+	<msgstr xml:lang="gu">બીજા ફાળો આપનારો</msgstr>
+	<msgstr xml:lang="hi">अन्य सहयोगी</msgstr>
+	<msgstr xml:lang="hr">Ostali suradnici</msgstr>
+	<msgstr xml:lang="hu">Egyéb hozzájárulók</msgstr>
+	<msgstr xml:lang="it">Altri contributori</msgstr>
+	<msgstr xml:lang="ja">その他の貢献者</msgstr>
+	<msgstr xml:lang="ka">სხვა მხარდამჭერები</msgstr>
+	<msgstr xml:lang="ko">그 외 도와주신 분</msgstr>
+	<msgstr xml:lang="lt">Kiti pagalbininkai</msgstr>
+	<msgstr xml:lang="mn">Бусад оролцогчид</msgstr>
+	<msgstr xml:lang="ms">Penyumbang Lain</msgstr>
+	<msgstr xml:lang="nb">Andre deltakere</msgstr>
+	<msgstr xml:lang="nl">Overige medewerkers</msgstr>
+	<msgstr xml:lang="nn">Andre bidragsytarar</msgstr>
+	<msgstr xml:lang="no">Andre deltakere</msgstr>
+	<msgstr xml:lang="pa">ਹੋਰ ਯੋਗਦਾਨੀ</msgstr>
+	<msgstr xml:lang="pl">Inni współpracownicy</msgstr>
+	<msgstr xml:lang="pt">Outras Contribuições</msgstr>
+	<msgstr xml:lang="pt_BR">Outros Contribuintes</msgstr>
+	<msgstr xml:lang="ro">Alţi contributori</msgstr>
+	<msgstr xml:lang="ru">Другие помощники</msgstr>
+	<msgstr xml:lang="sk">Iní prispievatelia</msgstr>
+	<msgstr xml:lang="sq">Kontribues të tjerë</msgstr>
+	<msgstr xml:lang="sr">Остали доприносиоци</msgstr>
+	<msgstr xml:lang="sr@Latn">Ostali doprinosioci</msgstr>
+	<msgstr xml:lang="sv">Andra bidragsgivare</msgstr>
+	<msgstr xml:lang="ta">மற்ற பங்கு அளிப்பவர்கள்</msgstr>
+	<msgstr xml:lang="tg">Дигар Ҳамкорон</msgstr>
+	<msgstr xml:lang="th">ผู้ให้ความช่วยเหลือ</msgstr>
+	<msgstr xml:lang="tr">Diğer Katkı Sağlayanlar</msgstr>
+	<msgstr xml:lang="uk">Інші співпрацівники</msgstr>
+	<msgstr xml:lang="vi">Những người tham gia khác</msgstr>
+	<msgstr xml:lang="zh_CN">其他贡献者</msgstr>
+	<msgstr xml:lang="zh_TW">其他貢獻者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Part</msgid>
+	<msgstr>Part</msgstr>
+	<msgstr xml:lang="af">Deel</msgstr>
+	<msgstr xml:lang="ar">جزء</msgstr>
+	<msgstr xml:lang="az">Hissə</msgstr>
+	<msgstr xml:lang="be">Частка</msgstr>
+	<msgstr xml:lang="bg">Част</msgstr>
+	<msgstr xml:lang="bn">অংশ</msgstr>
+	<msgstr xml:lang="bs">Dio</msgstr>
+	<msgstr xml:lang="ca">Part</msgstr>
+	<msgstr xml:lang="cs">Část</msgstr>
+	<msgstr xml:lang="cy">Rhan</msgstr>
+	<msgstr xml:lang="da">Del</msgstr>
+	<msgstr xml:lang="de">Teil</msgstr>
+	<msgstr xml:lang="el">Μέρος</msgstr>
+	<msgstr xml:lang="en_CA">Part</msgstr>
+	<msgstr xml:lang="en_GB">Part</msgstr>
+	<msgstr xml:lang="es">Parte</msgstr>
+	<msgstr xml:lang="et">Osa</msgstr>
+	<msgstr xml:lang="eu">Zatia</msgstr>
+	<msgstr xml:lang="fi">Osa</msgstr>
+	<msgstr xml:lang="fr">Partie</msgstr>
+	<msgstr xml:lang="gu">ભાગ</msgstr>
+	<msgstr xml:lang="hi">भाग</msgstr>
+	<msgstr xml:lang="hr">Dio</msgstr>
+	<msgstr xml:lang="hu">Rész</msgstr>
+	<msgstr xml:lang="it">Parte</msgstr>
+	<msgstr xml:lang="ja">パート</msgstr>
+	<msgstr xml:lang="ka">ნაწილი</msgstr>
+	<msgstr xml:lang="ko">부</msgstr>
+	<msgstr xml:lang="lt">Dalis</msgstr>
+	<msgstr xml:lang="mn">Хэсэг</msgstr>
+	<msgstr xml:lang="ms">Bahagian</msgstr>
+	<msgstr xml:lang="nb">Del</msgstr>
+	<msgstr xml:lang="nl">Deel</msgstr>
+	<msgstr xml:lang="nn">Del</msgstr>
+	<msgstr xml:lang="no">Del</msgstr>
+	<msgstr xml:lang="pa">ਹਿੱਸਾ</msgstr>
+	<msgstr xml:lang="pl">Część</msgstr>
+	<msgstr xml:lang="pt">Parte</msgstr>
+	<msgstr xml:lang="pt_BR">Parte</msgstr>
+	<msgstr xml:lang="ro">Parte</msgstr>
+	<msgstr xml:lang="ru">Часть</msgstr>
+	<msgstr xml:lang="sk">Časť</msgstr>
+	<msgstr xml:lang="sq">Pjesa</msgstr>
+	<msgstr xml:lang="sr">Део</msgstr>
+	<msgstr xml:lang="sr@Latn">Deo</msgstr>
+	<msgstr xml:lang="sv">Del</msgstr>
+	<msgstr xml:lang="ta">உறுப்பு</msgstr>
+	<msgstr xml:lang="tg">Қисм</msgstr>
+	<msgstr xml:lang="th">ส่วน</msgstr>
+	<msgstr xml:lang="tk">Gysmat</msgstr>
+	<msgstr xml:lang="tr">Bölüm</msgstr>
+	<msgstr xml:lang="uk">Частина</msgstr>
+	<msgstr xml:lang="vi">Phần</msgstr>
+	<msgstr xml:lang="zh_CN">部分</msgstr>
+	<msgstr xml:lang="zh_TW">部</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Preface</msgid>
+	<msgstr>Preface</msgstr>
+	<msgstr xml:lang="af">Voorwoord</msgstr>
+	<msgstr xml:lang="ar">المقدمة</msgstr>
+	<msgstr xml:lang="az">Giriş</msgstr>
+	<msgstr xml:lang="be">Прадмова</msgstr>
+	<msgstr xml:lang="bg">Предговор</msgstr>
+	<msgstr xml:lang="bn">মুখবন্ধ</msgstr>
+	<msgstr xml:lang="bs">Predgovor</msgstr>
+	<msgstr xml:lang="ca">Prefaci</msgstr>
+	<msgstr xml:lang="cs">Předmluva</msgstr>
+	<msgstr xml:lang="cy">Rhagymadrodd</msgstr>
+	<msgstr xml:lang="da">Forord</msgstr>
+	<msgstr xml:lang="de">Vorwort</msgstr>
+	<msgstr xml:lang="el">Εισαγωγή</msgstr>
+	<msgstr xml:lang="en_CA">Preface</msgstr>
+	<msgstr xml:lang="en_GB">Preface</msgstr>
+	<msgstr xml:lang="es">Prólogo</msgstr>
+	<msgstr xml:lang="et">Eessõna</msgstr>
+	<msgstr xml:lang="eu">Hitzaurrea</msgstr>
+	<msgstr xml:lang="fi">Johdanto</msgstr>
+	<msgstr xml:lang="fr">Préface</msgstr>
+	<msgstr xml:lang="gu">પ્રસ્તાવના</msgstr>
+	<msgstr xml:lang="hi">प्रीफेस</msgstr>
+	<msgstr xml:lang="hr">Predgovor</msgstr>
+	<msgstr xml:lang="hu">Előszó</msgstr>
+	<msgstr xml:lang="it">Prefazione</msgstr>
+	<msgstr xml:lang="ja">はじめに</msgstr>
+	<msgstr xml:lang="ka">წინასიტყვაობა</msgstr>
+	<msgstr xml:lang="ko">서문</msgstr>
+	<msgstr xml:lang="lt">Įžanga</msgstr>
+	<msgstr xml:lang="mn">Өмнөх үг</msgstr>
+	<msgstr xml:lang="ms">Pendahuluan</msgstr>
+	<msgstr xml:lang="nb">Innledning</msgstr>
+	<msgstr xml:lang="nl">Voorwoord</msgstr>
+	<msgstr xml:lang="nn">Innleiing</msgstr>
+	<msgstr xml:lang="no">Innledning</msgstr>
+	<msgstr xml:lang="pa">ਭੂਮਿਕਾ</msgstr>
+	<msgstr xml:lang="pl">Wstęp</msgstr>
+	<msgstr xml:lang="pt">Prefácio</msgstr>
+	<msgstr xml:lang="pt_BR">Prefácio</msgstr>
+	<msgstr xml:lang="ro">Prefaţă</msgstr>
+	<msgstr xml:lang="ru">Вступление</msgstr>
+	<msgstr xml:lang="sk">Predslov</msgstr>
+	<msgstr xml:lang="sq">Hyrja</msgstr>
+	<msgstr xml:lang="sr">Предговор</msgstr>
+	<msgstr xml:lang="sr@Latn">Predgovor</msgstr>
+	<msgstr xml:lang="sv">Förord</msgstr>
+	<msgstr xml:lang="ta">முன்னுரை</msgstr>
+	<msgstr xml:lang="tg">Пешрӯй</msgstr>
+	<msgstr xml:lang="th">คำนำ</msgstr>
+	<msgstr xml:lang="tr">Önsöz</msgstr>
+	<msgstr xml:lang="uk">Передмова</msgstr>
+	<msgstr xml:lang="vi">Mở đầu</msgstr>
+	<msgstr xml:lang="zh_CN">前言</msgstr>
+	<msgstr xml:lang="zh_TW">序</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Publisher</msgid>
+	<msgstr>Publisher</msgstr>
+	<msgstr xml:lang="af">Uitgewer</msgstr>
+	<msgstr xml:lang="ar">الناشر</msgstr>
+	<msgstr xml:lang="az">Nəşriyyatçı</msgstr>
+	<msgstr xml:lang="be">Выдавец</msgstr>
+	<msgstr xml:lang="bg">Издател</msgstr>
+	<msgstr xml:lang="bn">প্রকাশক</msgstr>
+	<msgstr xml:lang="bs">Izdavać</msgstr>
+	<msgstr xml:lang="ca">Editor</msgstr>
+	<msgstr xml:lang="cs">Vydavatel</msgstr>
+	<msgstr xml:lang="cy">Cyhoeddwr</msgstr>
+	<msgstr xml:lang="da">Forlag</msgstr>
+	<msgstr xml:lang="de">Herausgeber</msgstr>
+	<msgstr xml:lang="el">Εκδότης</msgstr>
+	<msgstr xml:lang="en_CA">Publisher</msgstr>
+	<msgstr xml:lang="en_GB">Publisher</msgstr>
+	<msgstr xml:lang="es">Editor</msgstr>
+	<msgstr xml:lang="et">Kirjastaja</msgstr>
+	<msgstr xml:lang="eu">Argitaratzailea</msgstr>
+	<msgstr xml:lang="fi">Kustantaja</msgstr>
+	<msgstr xml:lang="fr">Éditeur</msgstr>
+	<msgstr xml:lang="gu">પ્રકાશક</msgstr>
+	<msgstr xml:lang="hi">प्रकाशक</msgstr>
+	<msgstr xml:lang="hr">Izdavač</msgstr>
+	<msgstr xml:lang="hu">Kiadó</msgstr>
+	<msgstr xml:lang="is">Útgefandi</msgstr>
+	<msgstr xml:lang="it">Pubblicato</msgstr>
+	<msgstr xml:lang="ja">発行者</msgstr>
+	<msgstr xml:lang="ka">გამომცემელი</msgstr>
+	<msgstr xml:lang="ko">펴냄</msgstr>
+	<msgstr xml:lang="lt">Leidėjas</msgstr>
+	<msgstr xml:lang="mn">Хэвлэгч</msgstr>
+	<msgstr xml:lang="ms">Penerbit</msgstr>
+	<msgstr xml:lang="nb">Utgiver</msgstr>
+	<msgstr xml:lang="nl">Uitgever</msgstr>
+	<msgstr xml:lang="nn">Utgjevar</msgstr>
+	<msgstr xml:lang="no">Utgiver</msgstr>
+	<msgstr xml:lang="pa">ਪ੍ਰਕਾਸ਼ਕ</msgstr>
+	<msgstr xml:lang="pl">Wydawca</msgstr>
+	<msgstr xml:lang="pt">Editor</msgstr>
+	<msgstr xml:lang="pt_BR">Editora</msgstr>
+	<msgstr xml:lang="ro">Editor</msgstr>
+	<msgstr xml:lang="ru">Издательство</msgstr>
+	<msgstr xml:lang="sk">Vydavateľ</msgstr>
+	<msgstr xml:lang="sq">Publikues</msgstr>
+	<msgstr xml:lang="sr">Издавач</msgstr>
+	<msgstr xml:lang="sr@Latn">Izdavač</msgstr>
+	<msgstr xml:lang="sv">Förläggare</msgstr>
+	<msgstr xml:lang="ta">பதிப்பாளர்</msgstr>
+	<msgstr xml:lang="tg">Матбуотҳо</msgstr>
+	<msgstr xml:lang="th">สำนักพิมพ์</msgstr>
+	<msgstr xml:lang="tr">Yayımcı</msgstr>
+	<msgstr xml:lang="uk">Видавець</msgstr>
+	<msgstr xml:lang="vi">Nhà xuất bản</msgstr>
+	<msgstr xml:lang="zh_CN">出版者</msgstr>
+	<msgstr xml:lang="zh_TW">出版者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Publishers</msgid>
+	<msgstr>Publishers</msgstr>
+	<msgstr xml:lang="af">Uitgewers</msgstr>
+	<msgstr xml:lang="ar">الناشرون</msgstr>
+	<msgstr xml:lang="az">Nəşriyyatçılar</msgstr>
+	<msgstr xml:lang="be">Выдаўцы</msgstr>
+	<msgstr xml:lang="bg">Издатели</msgstr>
+	<msgstr xml:lang="bn">প্রকাশকবৃন্দ</msgstr>
+	<msgstr xml:lang="bs">Izdavaći</msgstr>
+	<msgstr xml:lang="ca">Editors</msgstr>
+	<msgstr xml:lang="cs">Vydavatelé</msgstr>
+	<msgstr xml:lang="cy">Cyhoeddwyr</msgstr>
+	<msgstr xml:lang="da">Forlag</msgstr>
+	<msgstr xml:lang="de">Herausgeber</msgstr>
+	<msgstr xml:lang="el">Εκδότες</msgstr>
+	<msgstr xml:lang="en_CA">Publishers</msgstr>
+	<msgstr xml:lang="en_GB">Publishers</msgstr>
+	<msgstr xml:lang="es">Editores</msgstr>
+	<msgstr xml:lang="et">Kirjastajad</msgstr>
+	<msgstr xml:lang="eu">Argitaratzaileak</msgstr>
+	<msgstr xml:lang="fi">Kustantajat</msgstr>
+	<msgstr xml:lang="fr">Éditeurs</msgstr>
+	<msgstr xml:lang="gu">પ્રકાશકો</msgstr>
+	<msgstr xml:lang="hi">प्रकाशक</msgstr>
+	<msgstr xml:lang="hr">Izdavači</msgstr>
+	<msgstr xml:lang="hu">Kiadók</msgstr>
+	<msgstr xml:lang="is">Útgefendur</msgstr>
+	<msgstr xml:lang="it">Pubblicato</msgstr>
+	<msgstr xml:lang="ja">発行者</msgstr>
+	<msgstr xml:lang="ka">გამომცემლები</msgstr>
+	<msgstr xml:lang="ko">펴냄</msgstr>
+	<msgstr xml:lang="lt">Leidėjai</msgstr>
+	<msgstr xml:lang="mn">Хэвлэгчид</msgstr>
+	<msgstr xml:lang="ms">Penerbit</msgstr>
+	<msgstr xml:lang="nb">Utgivere</msgstr>
+	<msgstr xml:lang="nl">Uitgevers</msgstr>
+	<msgstr xml:lang="nn">Utgjevarar</msgstr>
+	<msgstr xml:lang="no">Utgivere</msgstr>
+	<msgstr xml:lang="pa">ਪ੍ਰਕਾਸ਼ਕ</msgstr>
+	<msgstr xml:lang="pl">Wydawcy</msgstr>
+	<msgstr xml:lang="pt">Editores</msgstr>
+	<msgstr xml:lang="pt_BR">Editoras</msgstr>
+	<msgstr xml:lang="ro">Editori</msgstr>
+	<msgstr xml:lang="ru">Издательства</msgstr>
+	<msgstr xml:lang="sk">Vydavatelia</msgstr>
+	<msgstr xml:lang="sq">Publikues</msgstr>
+	<msgstr xml:lang="sr">Издавачи</msgstr>
+	<msgstr xml:lang="sr@Latn">Izdavači</msgstr>
+	<msgstr xml:lang="sv">Förläggare</msgstr>
+	<msgstr xml:lang="ta">பதிப்பாளர்கள்</msgstr>
+	<msgstr xml:lang="tg">Матбуотҳо</msgstr>
+	<msgstr xml:lang="th">สำนักพิมพ์</msgstr>
+	<msgstr xml:lang="tr">Yayımcılar</msgstr>
+	<msgstr xml:lang="uk">Видавці</msgstr>
+	<msgstr xml:lang="vi">Nhà xuất bản</msgstr>
+	<msgstr xml:lang="zh_CN">出版者</msgstr>
+	<msgstr xml:lang="zh_TW">出版者</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Reference</msgid>
+	<msgstr>Reference</msgstr>
+	<msgstr xml:lang="af">Naslaanwerk</msgstr>
+	<msgstr xml:lang="ar">المرجع</msgstr>
+	<msgstr xml:lang="az">Bələdçi</msgstr>
+	<msgstr xml:lang="be">Даведнік</msgstr>
+	<msgstr xml:lang="bg">Референция</msgstr>
+	<msgstr xml:lang="bn">রেফারেন্স</msgstr>
+	<msgstr xml:lang="bs">Reference</msgstr>
+	<msgstr xml:lang="ca">Referència</msgstr>
+	<msgstr xml:lang="cs">Příručka</msgstr>
+	<msgstr xml:lang="cy">Cyfeiriad</msgstr>
+	<msgstr xml:lang="da">Reference</msgstr>
+	<msgstr xml:lang="de">Verweis</msgstr>
+	<msgstr xml:lang="el">Αναφορά</msgstr>
+	<msgstr xml:lang="en_CA">Reference</msgstr>
+	<msgstr xml:lang="en_GB">Reference</msgstr>
+	<msgstr xml:lang="es">Referencia</msgstr>
+	<msgstr xml:lang="et">Viide</msgstr>
+	<msgstr xml:lang="eu">Erreferentzia</msgstr>
+	<msgstr xml:lang="fi">Viite</msgstr>
+	<msgstr xml:lang="fr">Référence</msgstr>
+	<msgstr xml:lang="gu">સંદર્ભ</msgstr>
+	<msgstr xml:lang="hi">सन्दर्भ</msgstr>
+	<msgstr xml:lang="hr">Referenca</msgstr>
+	<msgstr xml:lang="hu">Hivatkozás</msgstr>
+	<msgstr xml:lang="it">Riferimento</msgstr>
+	<msgstr xml:lang="ja">リファレンス</msgstr>
+	<msgstr xml:lang="ka">მოხსენიება</msgstr>
+	<msgstr xml:lang="ko">참고문헌</msgstr>
+	<msgstr xml:lang="lt">Nurodymas</msgstr>
+	<msgstr xml:lang="mn">Хамаарал</msgstr>
+	<msgstr xml:lang="ms">Rujukan</msgstr>
+	<msgstr xml:lang="nb">Referanse</msgstr>
+	<msgstr xml:lang="nl">Verwijzing</msgstr>
+	<msgstr xml:lang="nn">Referanse</msgstr>
+	<msgstr xml:lang="no">Referanse</msgstr>
+	<msgstr xml:lang="pa">ਹਵਾਲਾ</msgstr>
+	<msgstr xml:lang="pl">Odniesienie</msgstr>
+	<msgstr xml:lang="pt">Referência</msgstr>
+	<msgstr xml:lang="pt_BR">Referência</msgstr>
+	<msgstr xml:lang="ro">Referinţă</msgstr>
+	<msgstr xml:lang="ru">Ссылки</msgstr>
+	<msgstr xml:lang="sk">Odkaz</msgstr>
+	<msgstr xml:lang="sq">Referime</msgstr>
+	<msgstr xml:lang="sr">Референца</msgstr>
+	<msgstr xml:lang="sr@Latn">Referenca</msgstr>
+	<msgstr xml:lang="sv">Referens</msgstr>
+	<msgstr xml:lang="ta">குறிப்பு</msgstr>
+	<msgstr xml:lang="tg">Нишон</msgstr>
+	<msgstr xml:lang="th">อ้างอิง</msgstr>
+	<msgstr xml:lang="tr">Referans</msgstr>
+	<msgstr xml:lang="uk">Посилання</msgstr>
+	<msgstr xml:lang="vi">Tham khảo</msgstr>
+	<msgstr xml:lang="zh_CN">参考</msgstr>
+	<msgstr xml:lang="zh_TW">參考</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Reference Entry</msgid>
+	<msgstr>Reference Entry</msgstr>
+	<msgstr xml:lang="af">Naslaaninskrywing</msgstr>
+	<msgstr xml:lang="ar">خانة المرجع</msgstr>
+	<msgstr xml:lang="az">Bələdçi Boşdur</msgstr>
+	<msgstr xml:lang="be">Запіс з даведніка</msgstr>
+	<msgstr xml:lang="bg">Запис на Референция</msgstr>
+	<msgstr xml:lang="bn">রেফারেন্স এন্ট্রি</msgstr>
+	<msgstr xml:lang="bs">Unos Referenci</msgstr>
+	<msgstr xml:lang="ca">Entrada de referència</msgstr>
+	<msgstr xml:lang="cs">Položka příručky</msgstr>
+	<msgstr xml:lang="cy">Cofnod Cyfeiriad</msgstr>
+	<msgstr xml:lang="da">Referencepunkt</msgstr>
+	<msgstr xml:lang="de">Verweiseintrag</msgstr>
+	<msgstr xml:lang="el">Καταχώρηση Αναφοράς</msgstr>
+	<msgstr xml:lang="en_CA">Reference Entry</msgstr>
+	<msgstr xml:lang="en_GB">Reference Entry</msgstr>
+	<msgstr xml:lang="es">Entrada de referencia</msgstr>
+	<msgstr xml:lang="et">Viite kirjend</msgstr>
+	<msgstr xml:lang="eu">Erreferentzi-sarrera</msgstr>
+	<msgstr xml:lang="fi">Viitemerkintä</msgstr>
+	<msgstr xml:lang="fr">Entrée de référence</msgstr>
+	<msgstr xml:lang="gu">સંદર્ભ પ્રવેશ</msgstr>
+	<msgstr xml:lang="hi">सन्दर्भ प्रविष्टि</msgstr>
+	<msgstr xml:lang="hr">Zapis reference</msgstr>
+	<msgstr xml:lang="hu">Hivatkozásbejegyzés</msgstr>
+	<msgstr xml:lang="it">Riferimento voce</msgstr>
+	<msgstr xml:lang="ja">リファレンスのエントリ</msgstr>
+	<msgstr xml:lang="ka">მოხსენიების შენატანი</msgstr>
+	<msgstr xml:lang="ko">참고문헌 항목</msgstr>
+	<msgstr xml:lang="lt">Nuorodos įrašas</msgstr>
+	<msgstr xml:lang="mn">Хамаарлын бичлэг</msgstr>
+	<msgstr xml:lang="ms">Kemasukan Rujukan</msgstr>
+	<msgstr xml:lang="nb">Referanseoppføring</msgstr>
+	<msgstr xml:lang="nl">Referentie onderwerp</msgstr>
+	<msgstr xml:lang="nn">Referanseoppføring</msgstr>
+	<msgstr xml:lang="no">Referanseoppføring</msgstr>
+	<msgstr xml:lang="pa">ਹਵਾਲਾ ਇੰਦਰਾਜ਼</msgstr>
+	<msgstr xml:lang="pl">Pozycja odniesienia</msgstr>
+	<msgstr xml:lang="pt">Entrada de Referência</msgstr>
+	<msgstr xml:lang="pt_BR">Item de Referência</msgstr>
+	<msgstr xml:lang="ro">Intrare pentru referinţă</msgstr>
+	<msgstr xml:lang="ru">Ссылка</msgstr>
+	<msgstr xml:lang="sq">Element referues</msgstr>
+	<msgstr xml:lang="sr">Унос референце</msgstr>
+	<msgstr xml:lang="sr@Latn">Unos reference</msgstr>
+	<msgstr xml:lang="sv">Referenspost</msgstr>
+	<msgstr xml:lang="ta">குறிப்பு உள்ளிட்பு</msgstr>
+	<msgstr xml:lang="tg">Элементи Нишон</msgstr>
+	<msgstr xml:lang="th">เอกสารอ้างอิง</msgstr>
+	<msgstr xml:lang="tr">Referans Girdisi</msgstr>
+	<msgstr xml:lang="uk">Поле посилання</msgstr>
+	<msgstr xml:lang="vi">Mục nhập Tham khảo</msgstr>
+	<msgstr xml:lang="zh_CN">参考条目</msgstr>
+	<msgstr xml:lang="zh_TW">參考項目</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Reference Section</msgid>
+	<msgstr>Reference Section</msgstr>
+	<msgstr xml:lang="af">Naslaanafdeling</msgstr>
+	<msgstr xml:lang="ar">قسم المرجع</msgstr>
+	<msgstr xml:lang="az">Bələdçi Qismi</msgstr>
+	<msgstr xml:lang="be">Частка даведніка</msgstr>
+	<msgstr xml:lang="bg">Секция на Референция</msgstr>
+	<msgstr xml:lang="bn">রেফারেন্স অংশ</msgstr>
+	<msgstr xml:lang="bs">Sekcija Referenci</msgstr>
+	<msgstr xml:lang="ca">Secció de referència</msgstr>
+	<msgstr xml:lang="cs">Oddíl příručky</msgstr>
+	<msgstr xml:lang="cy">Adran Gyfeiriad</msgstr>
+	<msgstr xml:lang="da">Referencesektion</msgstr>
+	<msgstr xml:lang="de">Verweisabschnitt</msgstr>
+	<msgstr xml:lang="el">Ενότητα Αναφοράς</msgstr>
+	<msgstr xml:lang="en_CA">Reference Section</msgstr>
+	<msgstr xml:lang="en_GB">Reference Section</msgstr>
+	<msgstr xml:lang="es">Sección de referencias</msgstr>
+	<msgstr xml:lang="et">Viiteosa</msgstr>
+	<msgstr xml:lang="eu">Erreferentzi-atala</msgstr>
+	<msgstr xml:lang="fi">Viiteluku</msgstr>
+	<msgstr xml:lang="fr">Section de référence</msgstr>
+	<msgstr xml:lang="gu">સંદર્ભ વિભાગ</msgstr>
+	<msgstr xml:lang="hi">संदर्भ खण्ड</msgstr>
+	<msgstr xml:lang="hr">Odjeljak reference</msgstr>
+	<msgstr xml:lang="hu">Hivatkozás szakasz</msgstr>
+	<msgstr xml:lang="it">Riferimento sezione</msgstr>
+	<msgstr xml:lang="ja">リファレンスのセクション</msgstr>
+	<msgstr xml:lang="ka">მოხსენიებიებს განყოფილება</msgstr>
+	<msgstr xml:lang="ko">참고문헌 절</msgstr>
+	<msgstr xml:lang="lt">Nuorodos skyrius</msgstr>
+	<msgstr xml:lang="mn">Хамаарлын хэсэг</msgstr>
+	<msgstr xml:lang="ms">Seksyen Rujukan</msgstr>
+	<msgstr xml:lang="nb">Referanseseksjon</msgstr>
+	<msgstr xml:lang="nl">Referentie sectie</msgstr>
+	<msgstr xml:lang="nn">Referanseavsnitt</msgstr>
+	<msgstr xml:lang="no">Referanseseksjon</msgstr>
+	<msgstr xml:lang="pa">ਹਵਾਲਾ ਹਿੱਸਾ</msgstr>
+	<msgstr xml:lang="pl">Rozdział odniesienia</msgstr>
+	<msgstr xml:lang="pt">Secção de Referência</msgstr>
+	<msgstr xml:lang="pt_BR">Seção de Referência</msgstr>
+	<msgstr xml:lang="ro">Secţiune pentru referinţă</msgstr>
+	<msgstr xml:lang="ru">Блок ссылок</msgstr>
+	<msgstr xml:lang="sq">Seksioni i referimeve</msgstr>
+	<msgstr xml:lang="sr">Одељак са референцама</msgstr>
+	<msgstr xml:lang="sr@Latn">Odeljak sa referencama</msgstr>
+	<msgstr xml:lang="sv">Referensavsnitt</msgstr>
+	<msgstr xml:lang="ta">குறிப்பு பகுதி</msgstr>
+	<msgstr xml:lang="tg">Бахшҳои Нишон</msgstr>
+	<msgstr xml:lang="th">ส่วนอ้างอิง</msgstr>
+	<msgstr xml:lang="tr">Referans Bölümü</msgstr>
+	<msgstr xml:lang="uk">Розділ посилання</msgstr>
+	<msgstr xml:lang="vi">Phần tham khảo</msgstr>
+	<msgstr xml:lang="zh_CN">参考部分</msgstr>
+	<msgstr xml:lang="zh_TW">參考章節</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Release Information</msgid>
+	<msgstr>Release Information</msgstr>
+	<msgstr xml:lang="af">Vrystellinginligting</msgstr>
+	<msgstr xml:lang="ar">معلومات النشر</msgstr>
+	<msgstr xml:lang="az">Buraxılış Mə'lumatı</msgstr>
+	<msgstr xml:lang="be">Зьвесткі выпуска</msgstr>
+	<msgstr xml:lang="bg">Информация относно датата на издаване</msgstr>
+	<msgstr xml:lang="bn">রিলিজ সম্বন্ধীয় তথ্য</msgstr>
+	<msgstr xml:lang="bs">Informacija o izdanju</msgstr>
+	<msgstr xml:lang="ca">Informació del llançament</msgstr>
+	<msgstr xml:lang="cs">Informace o vydání</msgstr>
+	<msgstr xml:lang="cy">Gwybodaeth Rhyddhad</msgstr>
+	<msgstr xml:lang="da">Frigivelsesoplysninger</msgstr>
+	<msgstr xml:lang="de">Release-Informationen</msgstr>
+	<msgstr xml:lang="el">Πληροφορίες Έκδοσης</msgstr>
+	<msgstr xml:lang="en_CA">Release Information</msgstr>
+	<msgstr xml:lang="en_GB">Release Information</msgstr>
+	<msgstr xml:lang="es">Información de publicación</msgstr>
+	<msgstr xml:lang="et">Väljaandmise info</msgstr>
+	<msgstr xml:lang="eu">Argitalpenaren informazioa</msgstr>
+	<msgstr xml:lang="fi">Julkaisutiedot</msgstr>
+	<msgstr xml:lang="fr">Information sur la version</msgstr>
+	<msgstr xml:lang="gu">પ્રકાશન જાણકારી</msgstr>
+	<msgstr xml:lang="hi">ज़ारी जानकारी</msgstr>
+	<msgstr xml:lang="hr">Informacije izdanja</msgstr>
+	<msgstr xml:lang="hu">Kiadási információk</msgstr>
+	<msgstr xml:lang="it">Informazioni sul rilascio</msgstr>
+	<msgstr xml:lang="ja">リリース情報</msgstr>
+	<msgstr xml:lang="ka">ინფორმაცია გამოქვეყნების შესახებ</msgstr>
+	<msgstr xml:lang="ko">릴리즈 정보</msgstr>
+	<msgstr xml:lang="lt">Leidimo informacija</msgstr>
+	<msgstr xml:lang="mn">Хэвлэлтийн мэдээлэл</msgstr>
+	<msgstr xml:lang="nb">Informasjon om denne utgaven</msgstr>
+	<msgstr xml:lang="nl">Versie-informatie</msgstr>
+	<msgstr xml:lang="nn">Informasjon om denne utgåva</msgstr>
+	<msgstr xml:lang="no">Informasjon om denne utgaven</msgstr>
+	<msgstr xml:lang="pa">ਜਾਰੀ ਜਾਣਕਾਰੀ</msgstr>
+	<msgstr xml:lang="pl">Informacje wydania</msgstr>
+	<msgstr xml:lang="pt">Informação de Distribuição</msgstr>
+	<msgstr xml:lang="pt_BR">Informações de Lançamento</msgstr>
+	<msgstr xml:lang="ro">Informaţii despre versiune</msgstr>
+	<msgstr xml:lang="ru">Информация о выпуске</msgstr>
+	<msgstr xml:lang="sk">Informácie o vydaní</msgstr>
+	<msgstr xml:lang="sq">Informacione mbi versionin</msgstr>
+	<msgstr xml:lang="sr">Подаци о издању</msgstr>
+	<msgstr xml:lang="sr@Latn">Podaci o izdanju</msgstr>
+	<msgstr xml:lang="sv">Utgåveinformation</msgstr>
+	<msgstr xml:lang="ta">வெளியீட்பு தகவல்</msgstr>
+	<msgstr xml:lang="tg">Ахбороти Барориш</msgstr>
+	<msgstr xml:lang="th">ประกาศวันเผยแพร่</msgstr>
+	<msgstr xml:lang="tr">Referans Bilgisi</msgstr>
+	<msgstr xml:lang="uk">Інформація щодо випуску</msgstr>
+	<msgstr xml:lang="zh_CN">版本信息</msgstr>
+	<msgstr xml:lang="zh_TW">發行資訊</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Revision History</msgid>
+	<msgstr>Revision History</msgstr>
+	<msgstr xml:lang="af">Hersiengeskiedenis</msgstr>
+	<msgstr xml:lang="ar">تاريخ التنقيح</msgstr>
+	<msgstr xml:lang="az">Reviziya Keçmişi</msgstr>
+	<msgstr xml:lang="be">Гісторыя выданьняў</msgstr>
+	<msgstr xml:lang="bg">История на редакциите</msgstr>
+	<msgstr xml:lang="bn">রিভিশন হিস্টরি</msgstr>
+	<msgstr xml:lang="bs">Ponovni pregled zapamćenog</msgstr>
+	<msgstr xml:lang="ca">Historia de revisions</msgstr>
+	<msgstr xml:lang="cs">Historie změn</msgstr>
+	<msgstr xml:lang="cy">Hanes Adolygiadau</msgstr>
+	<msgstr xml:lang="da">Reversionshistorik</msgstr>
+	<msgstr xml:lang="de">Revisionschronik</msgstr>
+	<msgstr xml:lang="el">Ιστορικό Αναθεώρησης</msgstr>
+	<msgstr xml:lang="en_CA">Revision History</msgstr>
+	<msgstr xml:lang="en_GB">Revision History</msgstr>
+	<msgstr xml:lang="es">Histórico de revisiones</msgstr>
+	<msgstr xml:lang="et">Paranduste ajalugu</msgstr>
+	<msgstr xml:lang="eu">Historiaren berrikustea</msgstr>
+	<msgstr xml:lang="fi">Muutoshistoria</msgstr>
+	<msgstr xml:lang="fr">Historique des révisions</msgstr>
+	<msgstr xml:lang="gu">પુનરાવર્તન ઈતિહાસ</msgstr>
+	<msgstr xml:lang="hi">संशोधन इतिहास</msgstr>
+	<msgstr xml:lang="hr">Povijest revizije</msgstr>
+	<msgstr xml:lang="hu">Változások története</msgstr>
+	<msgstr xml:lang="it">Cronologia delle revisioni</msgstr>
+	<msgstr xml:lang="ja">改版履歴</msgstr>
+	<msgstr xml:lang="ka">ცვლილებების ისტორია</msgstr>
+	<msgstr xml:lang="ko">개정판 내역</msgstr>
+	<msgstr xml:lang="lt">Peržiūrėjimo istorija</msgstr>
+	<msgstr xml:lang="mn">Шинэчилэгдсэн түүх</msgstr>
+	<msgstr xml:lang="ms">Sejarah Rujukan</msgstr>
+	<msgstr xml:lang="nb">Revisjonshistorikk</msgstr>
+	<msgstr xml:lang="nl">Revisiegeschiedenis</msgstr>
+	<msgstr xml:lang="nn">Revisjonshistorikk</msgstr>
+	<msgstr xml:lang="no">Revisjonshistorikk</msgstr>
+	<msgstr xml:lang="pa">ਅਤੀਤ ਦੁਹਰਾਓ</msgstr>
+	<msgstr xml:lang="pl">Historia poprawek</msgstr>
+	<msgstr xml:lang="pt">Histórico de Revisões</msgstr>
+	<msgstr xml:lang="pt_BR">Histórico de Revisão</msgstr>
+	<msgstr xml:lang="ro">Istoric revizuire</msgstr>
+	<msgstr xml:lang="ru">История выпусков</msgstr>
+	<msgstr xml:lang="sk">História revízií</msgstr>
+	<msgstr xml:lang="sq">Historiku revizionit</msgstr>
+	<msgstr xml:lang="sr">Историјат издања</msgstr>
+	<msgstr xml:lang="sr@Latn">Istorijat izdanja</msgstr>
+	<msgstr xml:lang="sv">Revisionshistorik</msgstr>
+	<msgstr xml:lang="ta">மாற்றம் வரலாறு</msgstr>
+	<msgstr xml:lang="tg">Таърихи Гузашта</msgstr>
+	<msgstr xml:lang="th">ประวัติการแก้ไข</msgstr>
+	<msgstr xml:lang="tr">Referans Geçmişi</msgstr>
+	<msgstr xml:lang="uk">Історія виправлень</msgstr>
+	<msgstr xml:lang="zh_CN">修订历史</msgstr>
+	<msgstr xml:lang="zh_TW">版本歷史</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Section</msgid>
+	<msgstr>Section</msgstr>
+	<msgstr xml:lang="af">Afdeling</msgstr>
+	<msgstr xml:lang="am">ክፍል</msgstr>
+	<msgstr xml:lang="ar">فصل</msgstr>
+	<msgstr xml:lang="az">Qisim</msgstr>
+	<msgstr xml:lang="be">Параграфы</msgstr>
+	<msgstr xml:lang="bg">Секция</msgstr>
+	<msgstr xml:lang="bn">অংশ</msgstr>
+	<msgstr xml:lang="bs">Sekcija</msgstr>
+	<msgstr xml:lang="ca">Secció</msgstr>
+	<msgstr xml:lang="cs">Sekce</msgstr>
+	<msgstr xml:lang="cy">Adran</msgstr>
+	<msgstr xml:lang="da">Sektion</msgstr>
+	<msgstr xml:lang="de">Abschnitt</msgstr>
+	<msgstr xml:lang="el">Ενότητα</msgstr>
+	<msgstr xml:lang="en_CA">Section</msgstr>
+	<msgstr xml:lang="en_GB">Section</msgstr>
+	<msgstr xml:lang="eo">Sekcio</msgstr>
+	<msgstr xml:lang="es">Sección</msgstr>
+	<msgstr xml:lang="et">Peatükk</msgstr>
+	<msgstr xml:lang="eu">Atala</msgstr>
+	<msgstr xml:lang="fa">قسمت</msgstr>
+	<msgstr xml:lang="fi">Luku</msgstr>
+	<msgstr xml:lang="fr">Section</msgstr>
+	<msgstr xml:lang="ga">Earnáil</msgstr>
+	<msgstr xml:lang="gl">Sección</msgstr>
+	<msgstr xml:lang="gu">વિભાગ</msgstr>
+	<msgstr xml:lang="he">חלק</msgstr>
+	<msgstr xml:lang="hi">खण्ड</msgstr>
+	<msgstr xml:lang="hr">Odsječak</msgstr>
+	<msgstr xml:lang="hu">Fejezet</msgstr>
+	<msgstr xml:lang="id">Bagian</msgstr>
+	<msgstr xml:lang="is">Deildir</msgstr>
+	<msgstr xml:lang="it">Sezione</msgstr>
+	<msgstr xml:lang="ja">セクション</msgstr>
+	<msgstr xml:lang="ka">განყოფილება</msgstr>
+	<msgstr xml:lang="kn">ವಿಭಾಗ</msgstr>
+	<msgstr xml:lang="ko">절</msgstr>
+	<msgstr xml:lang="li">Seksie</msgstr>
+	<msgstr xml:lang="lt">Skyrius</msgstr>
+	<msgstr xml:lang="lv">Sekcija</msgstr>
+	<msgstr xml:lang="mk">Оддел</msgstr>
+	<msgstr xml:lang="ml">വിഭാഗം</msgstr>
+	<msgstr xml:lang="mn">Хэсэг</msgstr>
+	<msgstr xml:lang="mr">विभाग</msgstr>
+	<msgstr xml:lang="ms">Seksyen</msgstr>
+	<msgstr xml:lang="nb">Del</msgstr>
+	<msgstr xml:lang="ne">शाखा</msgstr>
+	<msgstr xml:lang="nl">Sectie</msgstr>
+	<msgstr xml:lang="nn">Avsnitt</msgstr>
+	<msgstr xml:lang="no">Del</msgstr>
+	<msgstr xml:lang="pa">ਭਾਗ</msgstr>
+	<msgstr xml:lang="pl">Sekcja</msgstr>
+	<msgstr xml:lang="pt">Secção</msgstr>
+	<msgstr xml:lang="pt_BR">Seção</msgstr>
+	<msgstr xml:lang="ro">Secţiune</msgstr>
+	<msgstr xml:lang="ru">Разделы</msgstr>
+	<msgstr xml:lang="sk">Kapitola</msgstr>
+	<msgstr xml:lang="sl">Odsek</msgstr>
+	<msgstr xml:lang="sq">Seksioni</msgstr>
+	<msgstr xml:lang="sr">Одељак</msgstr>
+	<msgstr xml:lang="sr@Latn">Odeljak</msgstr>
+	<msgstr xml:lang="sv">Avdelning</msgstr>
+	<msgstr xml:lang="ta">பிரிவு</msgstr>
+	<msgstr xml:lang="tg">Бахш</msgstr>
+	<msgstr xml:lang="th">ส่วน</msgstr>
+	<msgstr xml:lang="tr">Bölüm</msgstr>
+	<msgstr xml:lang="uk">Розділ</msgstr>
+	<msgstr xml:lang="vi">Phần</msgstr>
+	<msgstr xml:lang="wa">Seccion</msgstr>
+	<msgstr xml:lang="zh_CN">章节</msgstr>
+	<msgstr xml:lang="zh_TW">章節</msgstr>
+</msg>
+<msg>
+	
+	<msgid>See</msgid>
+	<msgstr>See</msgstr>
+	<msgstr xml:lang="af">Kyk</msgstr>
+	<msgstr xml:lang="ar">راجع</msgstr>
+	<msgstr xml:lang="az">Baxın</msgstr>
+	<msgstr xml:lang="be">Глядзіце</msgstr>
+	<msgstr xml:lang="bg">Виж</msgstr>
+	<msgstr xml:lang="bn">দেখুন</msgstr>
+	<msgstr xml:lang="bs">Pogledaj</msgstr>
+	<msgstr xml:lang="ca">Vegeu</msgstr>
+	<msgstr xml:lang="cs">Viz</msgstr>
+	<msgstr xml:lang="cy">Gweler</msgstr>
+	<msgstr xml:lang="da">Se</msgstr>
+	<msgstr xml:lang="de">Siehe</msgstr>
+	<msgstr xml:lang="el">Βλ.</msgstr>
+	<msgstr xml:lang="en_CA">See</msgstr>
+	<msgstr xml:lang="en_GB">See</msgstr>
+	<msgstr xml:lang="es">Vea</msgstr>
+	<msgstr xml:lang="et">Vaata</msgstr>
+	<msgstr xml:lang="eu">Ikusi</msgstr>
+	<msgstr xml:lang="fi">Katso</msgstr>
+	<msgstr xml:lang="fr">Voir</msgstr>
+	<msgstr xml:lang="gu">જુઓ</msgstr>
+	<msgstr xml:lang="hi">देखें</msgstr>
+	<msgstr xml:lang="hr">Vidi</msgstr>
+	<msgstr xml:lang="hu">Lásd</msgstr>
+	<msgstr xml:lang="it">Cfr.</msgstr>
+	<msgstr xml:lang="ja">参照</msgstr>
+	<msgstr xml:lang="ka">იხ.</msgstr>
+	<msgstr xml:lang="ko">살펴볼 내용</msgstr>
+	<msgstr xml:lang="lt">Žr.</msgstr>
+	<msgstr xml:lang="mn">Харна уу</msgstr>
+	<msgstr xml:lang="ms">Lihat</msgstr>
+	<msgstr xml:lang="nb">Se</msgstr>
+	<msgstr xml:lang="nl">Zie</msgstr>
+	<msgstr xml:lang="nn">Sjå</msgstr>
+	<msgstr xml:lang="no">Se</msgstr>
+	<msgstr xml:lang="pa">ਵੇਖੋ</msgstr>
+	<msgstr xml:lang="pl">Zobacz</msgstr>
+	<msgstr xml:lang="pt">Consulte</msgstr>
+	<msgstr xml:lang="pt_BR">Veja</msgstr>
+	<msgstr xml:lang="ro">Vezi</msgstr>
+	<msgstr xml:lang="ru">См.</msgstr>
+	<msgstr xml:lang="sk">Pozri</msgstr>
+	<msgstr xml:lang="sq">Shiko</msgstr>
+	<msgstr xml:lang="sr">Видети</msgstr>
+	<msgstr xml:lang="sr@Latn">Videti</msgstr>
+	<msgstr xml:lang="sv">Se</msgstr>
+	<msgstr xml:lang="ta">பார்க்கவும்</msgstr>
+	<msgstr xml:lang="tg">Нигаред</msgstr>
+	<msgstr xml:lang="tk">Gör</msgstr>
+	<msgstr xml:lang="tr">Bakın</msgstr>
+	<msgstr xml:lang="uk">Див.</msgstr>
+	<msgstr xml:lang="vi">Xem</msgstr>
+	<msgstr xml:lang="zh_CN">参见</msgstr>
+	<msgstr xml:lang="zh_TW">參考</msgstr>
+</msg>
+<msg>
+	
+	<msgid>See Also</msgid>
+	<msgstr>See Also</msgstr>
+	<msgstr xml:lang="af">Kyk ook</msgstr>
+	<msgstr xml:lang="ar">راجع كذلك</msgstr>
+	<msgstr xml:lang="az">Əlaqəli Olaraq Baxın</msgstr>
+	<msgstr xml:lang="be">Глядзіце так сама</msgstr>
+	<msgstr xml:lang="bg">Виж Също</msgstr>
+	<msgstr xml:lang="bn">এছাড়াও দেখুন</msgstr>
+	<msgstr xml:lang="bs">Također Pogledaj</msgstr>
+	<msgstr xml:lang="ca">Vegeu també</msgstr>
+	<msgstr xml:lang="cs">Viz také</msgstr>
+	<msgstr xml:lang="cy">Gweler Hefyd</msgstr>
+	<msgstr xml:lang="da">Se også</msgstr>
+	<msgstr xml:lang="de">Siehe auch</msgstr>
+	<msgstr xml:lang="el">Βλ. Ακόμα</msgstr>
+	<msgstr xml:lang="en_CA">See Also</msgstr>
+	<msgstr xml:lang="en_GB">See Also</msgstr>
+	<msgstr xml:lang="es">Vea además</msgstr>
+	<msgstr xml:lang="et">Vaata ka</msgstr>
+	<msgstr xml:lang="eu">Ikusi baita ere</msgstr>
+	<msgstr xml:lang="fi">Katso myös</msgstr>
+	<msgstr xml:lang="fr">Voir aussi</msgstr>
+	<msgstr xml:lang="gu">પણ જુઓ</msgstr>
+	<msgstr xml:lang="hi">यह भी देखें</msgstr>
+	<msgstr xml:lang="hr">Pogledajte također</msgstr>
+	<msgstr xml:lang="hu">Lásd még</msgstr>
+	<msgstr xml:lang="is">Sjá einnig</msgstr>
+	<msgstr xml:lang="it">Cfr. anche</msgstr>
+	<msgstr xml:lang="ja">関連項目</msgstr>
+	<msgstr xml:lang="ka">იხ. ასევე</msgstr>
+	<msgstr xml:lang="ko">살펴볼 다른 내용</msgstr>
+	<msgstr xml:lang="lt">Taip pat žr.</msgstr>
+	<msgstr xml:lang="mn">Мөн харна уу</msgstr>
+	<msgstr xml:lang="ms">Lihat Juga</msgstr>
+	<msgstr xml:lang="nb">Se også</msgstr>
+	<msgstr xml:lang="nl">Zie ook</msgstr>
+	<msgstr xml:lang="nn">Sjå også</msgstr>
+	<msgstr xml:lang="no">Se også</msgstr>
+	<msgstr xml:lang="pa">ਇਹ ਵੀ ਵੇਖੋ</msgstr>
+	<msgstr xml:lang="pl">Zobacz również</msgstr>
+	<msgstr xml:lang="pt">Consulte Também</msgstr>
+	<msgstr xml:lang="pt_BR">Veja Também</msgstr>
+	<msgstr xml:lang="ro">Vezi de asemenea</msgstr>
+	<msgstr xml:lang="ru">См. также</msgstr>
+	<msgstr xml:lang="sk">Pozri aj</msgstr>
+	<msgstr xml:lang="sq">Shiko gjithashtu</msgstr>
+	<msgstr xml:lang="sr">Видети такође</msgstr>
+	<msgstr xml:lang="sr@Latn">Videti takođe</msgstr>
+	<msgstr xml:lang="sv">Se även</msgstr>
+	<msgstr xml:lang="ta">இதையும் பார்க்கவும்</msgstr>
+	<msgstr xml:lang="tg">Инчунин Нигаред</msgstr>
+	<msgstr xml:lang="tr">Ayrıca Bakın</msgstr>
+	<msgstr xml:lang="uk">Див. також</msgstr>
+	<msgstr xml:lang="vi">Xem thêm</msgstr>
+	<msgstr xml:lang="zh_CN">另见</msgstr>
+	<msgstr xml:lang="zh_TW">請參考</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Set Index</msgid>
+	<msgstr>Set Index</msgstr>
+	<msgstr xml:lang="af">Stel indeks op</msgstr>
+	<msgstr xml:lang="ar">تحديد الفهرس</msgstr>
+	<msgstr xml:lang="az">Məzmunu Seç</msgstr>
+	<msgstr xml:lang="be">Усталяваць індакс</msgstr>
+	<msgstr xml:lang="bg">Индекс</msgstr>
+	<msgstr xml:lang="bn">সূচি নির্ধারণ</msgstr>
+	<msgstr xml:lang="bs">Postavi Index</msgstr>
+	<msgstr xml:lang="ca">Estableix l'índex</msgstr>
+	<msgstr xml:lang="cs">Skupina indexů</msgstr>
+	<msgstr xml:lang="cy">Gosod Mynegai</msgstr>
+	<msgstr xml:lang="da">Sætindeks</msgstr>
+	<msgstr xml:lang="de">Satzindex</msgstr>
+	<msgstr xml:lang="el">Ορισμός Ευρετηρίου</msgstr>
+	<msgstr xml:lang="en_CA">Set Index</msgstr>
+	<msgstr xml:lang="en_GB">Set Index</msgstr>
+	<msgstr xml:lang="es">Establecer índice</msgstr>
+	<msgstr xml:lang="et">Komplekti aineregister</msgstr>
+	<msgstr xml:lang="eu">Ezarri indizea</msgstr>
+	<msgstr xml:lang="fi">Aseta hakemisto</msgstr>
+	<msgstr xml:lang="fr">Postionner l'index</msgstr>
+	<msgstr xml:lang="gu">અનુક્રમ સુયોજિત કરો</msgstr>
+	<msgstr xml:lang="hi">निर्देशिका नियत करें</msgstr>
+	<msgstr xml:lang="hr">Postavi indeks</msgstr>
+	<msgstr xml:lang="hu">Tárgymutató beállítása</msgstr>
+	<msgstr xml:lang="it">Indice raccolta</msgstr>
+	<msgstr xml:lang="ja">インデックスのセット</msgstr>
+	<msgstr xml:lang="ka">სარჩევის დაყენება</msgstr>
+	<msgstr xml:lang="ko">전집 찾아보기</msgstr>
+	<msgstr xml:lang="lt">Nustatyti rodyklę</msgstr>
+	<msgstr xml:lang="mn">Индекс тогтоох</msgstr>
+	<msgstr xml:lang="ms">Set Indeks</msgstr>
+	<msgstr xml:lang="nb">Sett indeks</msgstr>
+	<msgstr xml:lang="nl">Index instellen</msgstr>
+	<msgstr xml:lang="nn">Settindeks</msgstr>
+	<msgstr xml:lang="no">Sett indeks</msgstr>
+	<msgstr xml:lang="pa">ਤਤਕਰਾ ਨਿਰਧਾਰਿਤ ਕਰੋ</msgstr>
+	<msgstr xml:lang="pl">Indeks</msgstr>
+	<msgstr xml:lang="pt">Definir Índice</msgstr>
+	<msgstr xml:lang="pt_BR">Inserir Índice</msgstr>
+	<msgstr xml:lang="ro">Setează index</msgstr>
+	<msgstr xml:lang="ru">Set Index</msgstr>
+	<msgstr xml:lang="sk">Nastaviť index</msgstr>
+	<msgstr xml:lang="sq">Përcakto treguesin</msgstr>
+	<msgstr xml:lang="sr">Индекс скупа</msgstr>
+	<msgstr xml:lang="sr@Latn">Indeks skupa</msgstr>
+	<msgstr xml:lang="sv">Samlingsindex</msgstr>
+	<msgstr xml:lang="ta">சுட்டு அமைக்கவும்</msgstr>
+	<msgstr xml:lang="tg">Барпосозии Нишондиҳанда</msgstr>
+	<msgstr xml:lang="th">ดัชนีของชุด</msgstr>
+	<msgstr xml:lang="tr">İndeks Ayarla</msgstr>
+	<msgstr xml:lang="uk">Встановити покажчик</msgstr>
+	<msgstr xml:lang="vi">Đặt Mục lục</msgstr>
+	<msgstr xml:lang="zh_CN">设置索引</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Table</msgid>
+	<msgstr>Table</msgstr>
+	<msgstr xml:lang="af">Tabel</msgstr>
+	<msgstr xml:lang="ar">الجدول</msgstr>
+	<msgstr xml:lang="az">Cədvəl</msgstr>
+	<msgstr xml:lang="be">Табліца</msgstr>
+	<msgstr xml:lang="bg">Таблица</msgstr>
+	<msgstr xml:lang="bn">টেবল</msgstr>
+	<msgstr xml:lang="bs">Sto</msgstr>
+	<msgstr xml:lang="ca">Taula</msgstr>
+	<msgstr xml:lang="cs">Tabulka</msgstr>
+	<msgstr xml:lang="cy">Tabl</msgstr>
+	<msgstr xml:lang="da">Tabel</msgstr>
+	<msgstr xml:lang="de">Tabelle</msgstr>
+	<msgstr xml:lang="el">Πίνακας</msgstr>
+	<msgstr xml:lang="en_CA">Table</msgstr>
+	<msgstr xml:lang="en_GB">Table</msgstr>
+	<msgstr xml:lang="es">Tabla</msgstr>
+	<msgstr xml:lang="et">Tabl</msgstr>
+	<msgstr xml:lang="eu">Taula</msgstr>
+	<msgstr xml:lang="fi">Taulukko</msgstr>
+	<msgstr xml:lang="fr">Table</msgstr>
+	<msgstr xml:lang="ga">Tabla</msgstr>
+	<msgstr xml:lang="gu">કોષ્ટક</msgstr>
+	<msgstr xml:lang="hi">तालिका</msgstr>
+	<msgstr xml:lang="hr">Tablica</msgstr>
+	<msgstr xml:lang="hu">Táblázat</msgstr>
+	<msgstr xml:lang="is">Tafla</msgstr>
+	<msgstr xml:lang="it">Tabella</msgstr>
+	<msgstr xml:lang="ja">表</msgstr>
+	<msgstr xml:lang="ka">ცხრილი</msgstr>
+	<msgstr xml:lang="ko">표</msgstr>
+	<msgstr xml:lang="lt">Lentelė</msgstr>
+	<msgstr xml:lang="mn">Хүснэгт</msgstr>
+	<msgstr xml:lang="ms">Jadual</msgstr>
+	<msgstr xml:lang="nb">Tabell</msgstr>
+	<msgstr xml:lang="nl">Tabel</msgstr>
+	<msgstr xml:lang="nn">Tabell</msgstr>
+	<msgstr xml:lang="no">Tabell</msgstr>
+	<msgstr xml:lang="pa">ਸਾਰਣੀ</msgstr>
+	<msgstr xml:lang="pl">Tabela</msgstr>
+	<msgstr xml:lang="pt">Tabela</msgstr>
+	<msgstr xml:lang="pt_BR">Tabela</msgstr>
+	<msgstr xml:lang="ro">Tabel</msgstr>
+	<msgstr xml:lang="ru">Таблица</msgstr>
+	<msgstr xml:lang="sk">Tabuľka</msgstr>
+	<msgstr xml:lang="sq">Tabela</msgstr>
+	<msgstr xml:lang="sr">Табела</msgstr>
+	<msgstr xml:lang="sr@Latn">Tabela</msgstr>
+	<msgstr xml:lang="sv">Tabell</msgstr>
+	<msgstr xml:lang="ta">அட்டவணை</msgstr>
+	<msgstr xml:lang="tg">Ҷадвал</msgstr>
+	<msgstr xml:lang="th">ตาราง</msgstr>
+	<msgstr xml:lang="tk">Jedwel</msgstr>
+	<msgstr xml:lang="tr">Tablo</msgstr>
+	<msgstr xml:lang="uk">Таблиця</msgstr>
+	<msgstr xml:lang="vi">Bảng</msgstr>
+	<msgstr xml:lang="zh_CN">表</msgstr>
+	<msgstr xml:lang="zh_TW">表格</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Table of Contents</msgid>
+	<msgstr>Table of Contents</msgstr>
+	<msgstr xml:lang="af">Inhoudsopgawe</msgstr>
+	<msgstr xml:lang="ar">جدول المحتويات</msgstr>
+	<msgstr xml:lang="az">Məzmun</msgstr>
+	<msgstr xml:lang="be">Зьмест</msgstr>
+	<msgstr xml:lang="bg">Таблица на Съдържанието</msgstr>
+	<msgstr xml:lang="bn">সূচীপত্র</msgstr>
+	<msgstr xml:lang="bs">Sadržaj</msgstr>
+	<msgstr xml:lang="ca">Taula de continguts</msgstr>
+	<msgstr xml:lang="cs">Obsah</msgstr>
+	<msgstr xml:lang="cy">Tabl Cynnwys</msgstr>
+	<msgstr xml:lang="da">Indholdsfortegnelse</msgstr>
+	<msgstr xml:lang="de">Inhaltsverzeichnis</msgstr>
+	<msgstr xml:lang="el">Πίνακας Περιεχομένων</msgstr>
+	<msgstr xml:lang="en_CA">Table of Contents</msgstr>
+	<msgstr xml:lang="en_GB">Table of Contents</msgstr>
+	<msgstr xml:lang="es">Índice</msgstr>
+	<msgstr xml:lang="et">Sisukord</msgstr>
+	<msgstr xml:lang="eu">Gaien edukia</msgstr>
+	<msgstr xml:lang="fi">Sisällysluettelo</msgstr>
+	<msgstr xml:lang="fr">Table des matières</msgstr>
+	<msgstr xml:lang="gu">કોષ્ટકની વિષયસૂચી</msgstr>
+	<msgstr xml:lang="hi">विषय-सूची तालिका</msgstr>
+	<msgstr xml:lang="hr">Tablica sadržaja</msgstr>
+	<msgstr xml:lang="hu">Tartalomjegyzék</msgstr>
+	<msgstr xml:lang="it">Tavola del sommario</msgstr>
+	<msgstr xml:lang="ja">目次</msgstr>
+	<msgstr xml:lang="ka">სარჩევი</msgstr>
+	<msgstr xml:lang="ko">차례</msgstr>
+	<msgstr xml:lang="lt">Turinys</msgstr>
+	<msgstr xml:lang="mn">Агуулгын хүснэгт</msgstr>
+	<msgstr xml:lang="ms">Jadual Kandungan</msgstr>
+	<msgstr xml:lang="nb">Innholdsfortegnelse</msgstr>
+	<msgstr xml:lang="nl">Inhoudsopgave</msgstr>
+	<msgstr xml:lang="nn">Innhaldsliste</msgstr>
+	<msgstr xml:lang="no">Innholdsfortegnelse</msgstr>
+	<msgstr xml:lang="pa">ਹਿੱਸਿਆ ਦੀ ਸਾਰਣੀ</msgstr>
+	<msgstr xml:lang="pl">Spis treści</msgstr>
+	<msgstr xml:lang="pt">Tabela de Conteúdo</msgstr>
+	<msgstr xml:lang="pt_BR">Conteúdo da Ajuda</msgstr>
+	<msgstr xml:lang="ro">Cuprins</msgstr>
+	<msgstr xml:lang="ru">Содержание</msgstr>
+	<msgstr xml:lang="sk">Obsah</msgstr>
+	<msgstr xml:lang="sq">Tabela e përmbajtjes</msgstr>
+	<msgstr xml:lang="sr">Садржај</msgstr>
+	<msgstr xml:lang="sr@Latn">Sadržaj</msgstr>
+	<msgstr xml:lang="sv">Innehållsförteckning</msgstr>
+	<msgstr xml:lang="ta">உள்ளடக்கங்கள்</msgstr>
+	<msgstr xml:lang="tg">Ҷадвали Таркибҳо</msgstr>
+	<msgstr xml:lang="th">สารบัญ</msgstr>
+	<msgstr xml:lang="tk">Mazmular Jedweli</msgstr>
+	<msgstr xml:lang="tr">İçerik Tablosu</msgstr>
+	<msgstr xml:lang="uk">Зміст</msgstr>
+	<msgstr xml:lang="vi">Mục lục</msgstr>
+	<msgstr xml:lang="zh_CN">目录</msgstr>
+	<msgstr xml:lang="zh_TW">目錄</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Tip</msgid>
+	<msgstr>Tip</msgstr>
+	<msgstr xml:lang="af">Wenk</msgstr>
+	<msgstr xml:lang="ar">تلميحة</msgstr>
+	<msgstr xml:lang="az">Məsləhət</msgstr>
+	<msgstr xml:lang="be">Парада</msgstr>
+	<msgstr xml:lang="bg">Подсказка</msgstr>
+	<msgstr xml:lang="bn">টিপ্পনী</msgstr>
+	<msgstr xml:lang="bs">Tip</msgstr>
+	<msgstr xml:lang="ca">Suggeriment</msgstr>
+	<msgstr xml:lang="cs">Tip</msgstr>
+	<msgstr xml:lang="cy">Cyngor</msgstr>
+	<msgstr xml:lang="da">Tip</msgstr>
+	<msgstr xml:lang="de">Tipp</msgstr>
+	<msgstr xml:lang="el">Συμβουλή</msgstr>
+	<msgstr xml:lang="en_CA">Tip</msgstr>
+	<msgstr xml:lang="en_GB">Tip</msgstr>
+	<msgstr xml:lang="es">Consejo</msgstr>
+	<msgstr xml:lang="et">Vihje</msgstr>
+	<msgstr xml:lang="eu">Aholkua</msgstr>
+	<msgstr xml:lang="fi">Vihje</msgstr>
+	<msgstr xml:lang="fr">Indice</msgstr>
+	<msgstr xml:lang="ga">Leathfhocal</msgstr>
+	<msgstr xml:lang="gu">મદદ</msgstr>
+	<msgstr xml:lang="hi">युक्ति</msgstr>
+	<msgstr xml:lang="hr">Savjet</msgstr>
+	<msgstr xml:lang="hu">Tipp</msgstr>
+	<msgstr xml:lang="is">Ábending</msgstr>
+	<msgstr xml:lang="it">Suggerimento</msgstr>
+	<msgstr xml:lang="ja">チップス</msgstr>
+	<msgstr xml:lang="ka">რჩევა</msgstr>
+	<msgstr xml:lang="ko">설명</msgstr>
+	<msgstr xml:lang="lt">Patarimas</msgstr>
+	<msgstr xml:lang="mn">Зөвлөмж</msgstr>
+	<msgstr xml:lang="ms">Tip</msgstr>
+	<msgstr xml:lang="nb">Tips</msgstr>
+	<msgstr xml:lang="nl">Tip</msgstr>
+	<msgstr xml:lang="nn">Tips</msgstr>
+	<msgstr xml:lang="no">Tips</msgstr>
+	<msgstr xml:lang="pa">ਸੰਕੇਤ</msgstr>
+	<msgstr xml:lang="pl">Podpowiedź</msgstr>
+	<msgstr xml:lang="pt">Dica</msgstr>
+	<msgstr xml:lang="pt_BR">Dica</msgstr>
+	<msgstr xml:lang="ro">Pont</msgstr>
+	<msgstr xml:lang="ru">Подсказка</msgstr>
+	<msgstr xml:lang="sk">Tip</msgstr>
+	<msgstr xml:lang="sq">Tip</msgstr>
+	<msgstr xml:lang="sr">Савет</msgstr>
+	<msgstr xml:lang="sr@Latn">Savet</msgstr>
+	<msgstr xml:lang="sv">Tips</msgstr>
+	<msgstr xml:lang="ta">தகவல்</msgstr>
+	<msgstr xml:lang="tg">Маслиҳат</msgstr>
+	<msgstr xml:lang="th">คำแนะนำ</msgstr>
+	<msgstr xml:lang="tr">Tüyo</msgstr>
+	<msgstr xml:lang="uk">Підказка</msgstr>
+	<msgstr xml:lang="vi">Mẹo</msgstr>
+	<msgstr xml:lang="zh_CN">提示</msgstr>
+	<msgstr xml:lang="zh_TW">提示</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Title</msgid>
+	<msgstr>Title</msgstr>
+	<msgstr xml:lang="af">Titel</msgstr>
+	<msgstr xml:lang="ar">العنوان</msgstr>
+	<msgstr xml:lang="az">Başlıq</msgstr>
+	<msgstr xml:lang="be">Назва</msgstr>
+	<msgstr xml:lang="bg">Заглавие</msgstr>
+	<msgstr xml:lang="bn">শিরোনাম</msgstr>
+	<msgstr xml:lang="bs">Naslov</msgstr>
+	<msgstr xml:lang="ca">Títol</msgstr>
+	<msgstr xml:lang="cs">Název</msgstr>
+	<msgstr xml:lang="cy">Teitl</msgstr>
+	<msgstr xml:lang="da">Titel</msgstr>
+	<msgstr xml:lang="de">Titel</msgstr>
+	<msgstr xml:lang="el">Τίτλος</msgstr>
+	<msgstr xml:lang="en_CA">Title</msgstr>
+	<msgstr xml:lang="en_GB">Title</msgstr>
+	<msgstr xml:lang="es">Título</msgstr>
+	<msgstr xml:lang="et">Pealkiri</msgstr>
+	<msgstr xml:lang="eu">Titulua</msgstr>
+	<msgstr xml:lang="fi">Nimiö</msgstr>
+	<msgstr xml:lang="fr">Titre</msgstr>
+	<msgstr xml:lang="ga">Tidéal</msgstr>
+	<msgstr xml:lang="gu">શીર્ષક</msgstr>
+	<msgstr xml:lang="hi">शीर्षक</msgstr>
+	<msgstr xml:lang="hr">Naslov</msgstr>
+	<msgstr xml:lang="hu">Cím</msgstr>
+	<msgstr xml:lang="is">Titill</msgstr>
+	<msgstr xml:lang="it">Titolo</msgstr>
+	<msgstr xml:lang="ja">タイトル</msgstr>
+	<msgstr xml:lang="ka">სათაური</msgstr>
+	<msgstr xml:lang="ko">제목</msgstr>
+	<msgstr xml:lang="lt">Antraštė</msgstr>
+	<msgstr xml:lang="mn">Гарчиг</msgstr>
+	<msgstr xml:lang="ms">Tajuk</msgstr>
+	<msgstr xml:lang="nb">Tittel</msgstr>
+	<msgstr xml:lang="nl">Titel</msgstr>
+	<msgstr xml:lang="nn">Tittel</msgstr>
+	<msgstr xml:lang="no">Tittel</msgstr>
+	<msgstr xml:lang="pa">ਸਿਰਲੇਖ</msgstr>
+	<msgstr xml:lang="pl">Tytuł</msgstr>
+	<msgstr xml:lang="pt">Título</msgstr>
+	<msgstr xml:lang="pt_BR">Título</msgstr>
+	<msgstr xml:lang="ro">Titlu</msgstr>
+	<msgstr xml:lang="ru">Заголовок</msgstr>
+	<msgstr xml:lang="sk">Nadpis</msgstr>
+	<msgstr xml:lang="sq">Titulli</msgstr>
+	<msgstr xml:lang="sr">Наслов</msgstr>
+	<msgstr xml:lang="sr@Latn">Naslov</msgstr>
+	<msgstr xml:lang="sv">Titel</msgstr>
+	<msgstr xml:lang="ta">தலைப்பு</msgstr>
+	<msgstr xml:lang="tg">Унвон</msgstr>
+	<msgstr xml:lang="th">ชื่อเอกสาร</msgstr>
+	<msgstr xml:lang="tk">Sözbaşy</msgstr>
+	<msgstr xml:lang="tr">Başlık</msgstr>
+	<msgstr xml:lang="uk">Заголовок</msgstr>
+	<msgstr xml:lang="vi">Tựa đề</msgstr>
+	<msgstr xml:lang="zh_CN">标题</msgstr>
+	<msgstr xml:lang="zh_TW">標題</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Unknown</msgid>
+	<msgstr>Unknown</msgstr>
+	<msgstr xml:lang="af">Onbekend</msgstr>
+	<msgstr xml:lang="ar">مجهول</msgstr>
+	<msgstr xml:lang="az">Namə'lum</msgstr>
+	<msgstr xml:lang="be">Невядома</msgstr>
+	<msgstr xml:lang="bg">Неизвестен</msgstr>
+	<msgstr xml:lang="bn">অজানা</msgstr>
+	<msgstr xml:lang="bs">Nepoznato</msgstr>
+	<msgstr xml:lang="ca">Desconegut</msgstr>
+	<msgstr xml:lang="cs">Neznámý</msgstr>
+	<msgstr xml:lang="cy">Anhysbys</msgstr>
+	<msgstr xml:lang="da">Ukendt</msgstr>
+	<msgstr xml:lang="de">Unbekannt</msgstr>
+	<msgstr xml:lang="el">Άγνωστο</msgstr>
+	<msgstr xml:lang="en_CA">Unknown</msgstr>
+	<msgstr xml:lang="en_GB">Unknown</msgstr>
+	<msgstr xml:lang="es">Desconocido</msgstr>
+	<msgstr xml:lang="et">Tundmatu</msgstr>
+	<msgstr xml:lang="eu">Ezezaguna</msgstr>
+	<msgstr xml:lang="fi">Tuntematon</msgstr>
+	<msgstr xml:lang="fr">Inconnu</msgstr>
+	<msgstr xml:lang="ga">Gan fhois</msgstr>
+	<msgstr xml:lang="gu">અજ્ઞાત</msgstr>
+	<msgstr xml:lang="hi">अज्ञात</msgstr>
+	<msgstr xml:lang="hr">Nepoznato</msgstr>
+	<msgstr xml:lang="hu">Ismeretlen</msgstr>
+	<msgstr xml:lang="is">Óþekkt</msgstr>
+	<msgstr xml:lang="it">Sconosciuto</msgstr>
+	<msgstr xml:lang="ja">不明</msgstr>
+	<msgstr xml:lang="ka">უცნობი</msgstr>
+	<msgstr xml:lang="ko">알 수 없음</msgstr>
+	<msgstr xml:lang="lt">Nežinima</msgstr>
+	<msgstr xml:lang="mn">Үл мэдэгдэх</msgstr>
+	<msgstr xml:lang="ms">Entah</msgstr>
+	<msgstr xml:lang="nb">Ukjent</msgstr>
+	<msgstr xml:lang="nl">Onbekend</msgstr>
+	<msgstr xml:lang="nn">Ukjend</msgstr>
+	<msgstr xml:lang="no">Ukjent</msgstr>
+	<msgstr xml:lang="pa">ਅਣਪਛਾਤਾ</msgstr>
+	<msgstr xml:lang="pl">Nieznany</msgstr>
+	<msgstr xml:lang="pt">Desconhecido</msgstr>
+	<msgstr xml:lang="pt_BR">Desconhecido</msgstr>
+	<msgstr xml:lang="ro">Necunoscut</msgstr>
+	<msgstr xml:lang="ru">Неизвестное</msgstr>
+	<msgstr xml:lang="sk">Neznámy</msgstr>
+	<msgstr xml:lang="sq">Nuk njihet</msgstr>
+	<msgstr xml:lang="sr">Непознато</msgstr>
+	<msgstr xml:lang="sr@Latn">Nepoznato</msgstr>
+	<msgstr xml:lang="sv">Okänd</msgstr>
+	<msgstr xml:lang="ta">தெரியாதது</msgstr>
+	<msgstr xml:lang="tg">Номаълум</msgstr>
+	<msgstr xml:lang="th">ไม่รู้จัก</msgstr>
+	<msgstr xml:lang="tk">Natanyş</msgstr>
+	<msgstr xml:lang="tr">Bilinmeyen</msgstr>
+	<msgstr xml:lang="uk">Невідомий</msgstr>
+	<msgstr xml:lang="vi">Không rõ</msgstr>
+	<msgstr xml:lang="zh_CN">未知</msgstr>
+	<msgstr xml:lang="zh_TW">未知</msgstr>
+</msg>
+<msg>
+	
+	<msgid>Warning</msgid>
+	<msgstr>Warning</msgstr>
+	<msgstr xml:lang="af">Let wel</msgstr>
+	<msgstr xml:lang="ar">تنبيه</msgstr>
+	<msgstr xml:lang="az">Xəbərdarlıq</msgstr>
+	<msgstr xml:lang="be">Увага</msgstr>
+	<msgstr xml:lang="bg">Предупреждение</msgstr>
+	<msgstr xml:lang="bn">সতর্কবার্তা</msgstr>
+	<msgstr xml:lang="bs">Upozorenje</msgstr>
+	<msgstr xml:lang="ca">Avís</msgstr>
+	<msgstr xml:lang="cs">Varování</msgstr>
+	<msgstr xml:lang="cy">Rhybudd</msgstr>
+	<msgstr xml:lang="da">Advarsel</msgstr>
+	<msgstr xml:lang="de">Warnung</msgstr>
+	<msgstr xml:lang="el">Προειδοποίηση</msgstr>
+	<msgstr xml:lang="en_CA">Warning</msgstr>
+	<msgstr xml:lang="en_GB">Warning</msgstr>
+	<msgstr xml:lang="es">Atención</msgstr>
+	<msgstr xml:lang="et">Hoiatus</msgstr>
+	<msgstr xml:lang="eu">Abisua</msgstr>
+	<msgstr xml:lang="fi">Varoitus</msgstr>
+	<msgstr xml:lang="fr">Avertissement</msgstr>
+	<msgstr xml:lang="ga">Rabhadh</msgstr>
+	<msgstr xml:lang="gu">ચેતવણી</msgstr>
+	<msgstr xml:lang="hi">चेतावनी</msgstr>
+	<msgstr xml:lang="hr">Upozorenje</msgstr>
+	<msgstr xml:lang="hu">Figyelmeztetés</msgstr>
+	<msgstr xml:lang="is">Aðvörun</msgstr>
+	<msgstr xml:lang="it">Avviso</msgstr>
+	<msgstr xml:lang="ja">警告</msgstr>
+	<msgstr xml:lang="ka">გაფრთხილება</msgstr>
+	<msgstr xml:lang="ko">경고</msgstr>
+	<msgstr xml:lang="lt">Įspėjimas</msgstr>
+	<msgstr xml:lang="mn">Сануулга</msgstr>
+	<msgstr xml:lang="ms">Amaran</msgstr>
+	<msgstr xml:lang="nb">Advarsel</msgstr>
+	<msgstr xml:lang="nl">Waarschuwing</msgstr>
+	<msgstr xml:lang="nn">Åtvaring</msgstr>
+	<msgstr xml:lang="no">Advarsel</msgstr>
+	<msgstr xml:lang="pa">ਚੇਤਵਾਨੀ</msgstr>
+	<msgstr xml:lang="pl">Uwaga</msgstr>
+	<msgstr xml:lang="pt">Aviso</msgstr>
+	<msgstr xml:lang="pt_BR">Aviso</msgstr>
+	<msgstr xml:lang="ro">Avertisment</msgstr>
+	<msgstr xml:lang="ru">Предупреждение</msgstr>
+	<msgstr xml:lang="sk">Varovanie</msgstr>
+	<msgstr xml:lang="sq">Kujdes</msgstr>
+	<msgstr xml:lang="sr">Упозорење</msgstr>
+	<msgstr xml:lang="sr@Latn">Upozorenje</msgstr>
+	<msgstr xml:lang="sv">Varning</msgstr>
+	<msgstr xml:lang="ta">எச்சரிக்கை</msgstr>
+	<msgstr xml:lang="tg">Огоҳӣ</msgstr>
+	<msgstr xml:lang="th">คำเตือน</msgstr>
+	<msgstr xml:lang="tk">Hatar</msgstr>
+	<msgstr xml:lang="tr">Uyarı</msgstr>
+	<msgstr xml:lang="uk">Увага</msgstr>
+	<msgstr xml:lang="vi">Cảnh báo</msgstr>
+	<msgstr xml:lang="zh_CN">警告</msgstr>
+	<msgstr xml:lang="zh_TW">警告</msgstr>
+</msg>
 
-  <l:context name="title">
-    <l:template name="bookinfo" text="About This Document"/>
-    <l:template name="articleinfo" text="About This Document"/>
-  </l:context>
-
-   <l:context name="section-xref">
-      <l:template name="bridgehead" text="%t"/>
-      <l:template name="sect1" text="%t"/>
-      <l:template name="sect2" text="%t"/>
-      <l:template name="sect3" text="%t"/>
-      <l:template name="sect4" text="%t"/>
-      <l:template name="sect5" text="%t"/>
-      <l:template name="section" text="%t"/>
-      <l:template name="simplesect" text="%t"/>
-   </l:context>
-
-   <l:context name="section-xref-numbered">
-      <l:template name="bridgehead" text="%t"/>
-      <l:template name="sect1" text="%t"/>
-      <l:template name="sect2" text="%t"/>
-      <l:template name="sect3" text="%t"/>
-      <l:template name="sect4" text="%t"/>
-      <l:template name="sect5" text="%t"/>
-      <l:template name="section" text="%t"/>
-      <l:template name="simplesect" text="%t"/>
-   </l:context>
-
-</l:l10n>
-
-<!-- ************ Russian ******************* -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="ru">
-  <l:gentext key="Title" text="&#1047;&#1072;&#1075;&#1083;&#1072;&#1074;&#1080;&#1077;"/>  <!-- zaglavie -->
-  <l:gentext key="Author" text="&#1040;&#1074;&#1090;&#1086;&#1088;"/>    <!-- avtor -->
-  <l:gentext key="Authors" text="&#1040;&#1074;&#1090;&#1086;&#1088;&#1099;"/>  <!-- avtory -->
-  <l:gentext key="Affiliation" text="&#1054;&#1088;&#1075;&#1072;&#1085;&#1080;&#1079;&#1072;&#1094;&#1080;&#1103;"/>  <!-- organizaciya -->
-  <l:gentext key="Email" text="Email"/>  
-  <l:gentext key="Publisher" text="&#1048;&#1079;&#1076;&#1072;&#1090;&#1077;&#1083;&#1100;&#1089;&#1090;&#1074;&#1086;"/> <!-- izdatel'stvo -->
-  <l:gentext key="Date" text="&#1044;&#1072;&#1090;&#1072;"/>              <!-- data -->  
-  <l:context name="title">
-    <l:template name="bookinfo" text="&#1054;&#1073; &#1101;&#1090;&#1086;&#1084; &#1076;&#1086;&#1082;&#1091;&#1084;&#1077;&#1085;&#1090;&#1077;"/> 
-                                    <!-- Ob etom dokumente --> 
-    <l:template name="articleinfo" text="&#1054;&#1073; &#1101;&#1090;&#1086;&#1084; &#1076;&#1086;&#1082;&#1091;&#1084;&#1077;&#1085;&#1090;&#1077;"/>
-  </l:context>
-</l:l10n>
-
-<!-- ************ Estonian ******************* -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="et">
-  <l:gentext key="Title" text="Pealkiri"/>  
-  <l:gentext key="Author" text="Autor"/>
-  <l:gentext key="Authors" text="Autorid"/>
-  <l:gentext key="Affiliation" text="Organisatsioon"/>  
-  <l:gentext key="Email" text="E-post"/>  
-  <l:gentext key="Publisher" text="Kirjastaja"/>
-  <l:gentext key="Date" text="Kuup&#228;ev"/>
-  <l:context name="title">
-    <l:template name="bookinfo" text="Sellest dokumendist"/>
-    <l:template name="articleinfo" text="Sellest dokumendist"/>
-  </l:context>
-</l:l10n>
-
-<!-- *************** Italian ***************** -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="it">
-  <l:gentext key="Title" text="Titolo"/>
-  <l:gentext key="Author" text="Autore"/>
-  <l:gentext key="Authors" text="Autori"/>
-  <l:gentext key="Affiliation" text="Organizzazione"/>  
-  <l:gentext key="Email" text="Email"/>  
-  <l:gentext key="Publisher" text="Editore"/>
-  <l:gentext key="Date" text="Data"/>
-  <l:context name="title">
-   <l:template name="bookinfo" text="Informazioni su questo documento"/>
-   <l:template name="articleinfo" text="Informazioni su questo documento"/>
-  </l:context>
- </l:l10n>
-
-<!-- ************ Greek ******************* -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="el">
-  <l:gentext key="Title" text="&#932;&#943;&#964;&#955;&#959;&#962;"/>  
-  <l:gentext key="Author" text="&#931;&#965;&#947;&#947;&#961;&#945;&#966;&#941;&#945;&#962;"/>
-  <l:gentext key="Authors" text="&#931;&#965;&#947;&#947;&#961;&#945;&#966;&#949;&#943;&#962;"/>
-  <l:gentext key="Affiliation" text="&#933;&#960;&#945;&#947;&#969;&#947;&#942;"/>  
-  <l:gentext key="Email" text="&#919;&#955;&#949;&#954;. &#916;&#953;&#949;&#973;&#952;."/>  
-  <l:gentext key="Publisher" text="&#917;&#954;&#948;&#972;&#964;&#951;&#962;"/>
-  <l:gentext key="Date" text="&#919;&#956;&#949;&#961;&#959;&#956;&#951;&#957;&#943;&#945;"/>
-  <l:context name="title">
-    <l:template name="bookinfo" text="&#928;&#949;&#961;&#943; &#945;&#965;&#964;&#959;&#973; &#964;&#959;&#965; &#949;&#947;&#947;&#961;&#940;&#966;&#959;&#965;"/>
-    <l:template name="articleinfo" text="&#928;&#949;&#961;&#943; &#945;&#965;&#964;&#959;&#973; &#964;&#959;&#965; &#949;&#947;&#947;&#961;&#940;&#966;&#959;&#965;"/>
-  </l:context>
-</l:l10n>
- 
-<!-- *************** Romanian ***************** -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="ro">
-  <l:gentext key="Title" text="Titlu"/>
-  <l:gentext key="Author" text="Autor"/>
-  <l:gentext key="Authors" text="Autori"/>
-  <l:gentext key="Affiliation" text="Organiza&#355;ie"/>  
-  <l:gentext key="Email" text="Email"/>  
-  <l:gentext key="Publisher" text="Editor"/>
-  <l:gentext key="Date" text="Data"/>
-  <l:gentext key="Next" text="Urm&#259;torul"/>
-  <l:gentext key="Previous" text="Precedentul"/>
-  <l:gentext key="Contents" text="Cuprins"/>
-
-  <l:context name="title">
-   <l:template name="bookinfo" text="Informa&#355;ii despre acest document"/>
-   <l:template name="articleinfo" text="Informa&#355;ii despre acest document"/>
-  </l:context>
- </l:l10n>
-
-</i18n>
+</l10n>

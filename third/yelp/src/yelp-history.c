@@ -1,6 +1,6 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
- * Copyright (C) 2001-2002 Mikael Hallendal <micke@codefactory.se>
+ * Copyright (C) 2001-2002 Mikael Hallendal <micke@imendio.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Mikael Hallendal <micke@codefactory.se>
+ * Author: Mikael Hallendal <micke@imendio.com>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +39,8 @@ enum {
 	BACK_EXISTS_CHANGED, 
 	LAST_SIGNAL 
 }; 
+
+static GObjectClass *parent_class;
 
 static gint signals[LAST_SIGNAL] = { 0 };
 
@@ -95,6 +97,8 @@ history_class_init (YelpHistoryClass *klass)
 {
         GObjectClass *object_class;
         
+	parent_class = g_type_class_peek_parent (klass);
+
         object_class = (GObjectClass *) klass;
 
         object_class->finalize = history_finalize;
@@ -136,7 +140,7 @@ history_finalize (GObject *object)
 	priv    = history->priv;
         
 	for (node = priv->history_list; node; node = node->next) {
-		yelp_uri_unref (YELP_URI (node->data));
+		g_object_unref (G_OBJECT (node->data));
 	}
 
 	g_list_free (priv->history_list);
@@ -144,6 +148,8 @@ history_finalize (GObject *object)
 	g_free (priv);
 
 	history->priv = NULL;
+
+        (* parent_class->finalize) (object);
 }
 
 static void
@@ -151,9 +157,8 @@ history_free_history_list (GList *history_list)
 {
 	GList *node;
         
-	for (node = history_list; node; node = node->next) {
-		yelp_uri_unref (YELP_URI (node->data));
-	}
+	for (node = history_list; node; node = node->next)
+		yelp_uri_unref ((YelpURI *) node->data);
 
 	g_list_free (history_list);
 }
@@ -188,32 +193,41 @@ history_maybe_emit (YelpHistory *history)
 void
 yelp_history_goto (YelpHistory *history, YelpURI *uri)
 {
-	YelpHistoryPriv *priv;
-	GList           *forward_list;
+    YelpHistoryPriv *priv;
+    GList           *forward_list;
 	
-	g_return_if_fail (history != NULL);
-	g_return_if_fail (YELP_IS_HISTORY (history));
+    g_return_if_fail (history != NULL);
+    g_return_if_fail (YELP_IS_HISTORY (history));
 
-	priv = history->priv;
+    priv = history->priv;
 
-	if (priv->current && priv->current->data &&
-	    yelp_uri_equal (YELP_URI (priv->current->data), uri)) {
+    if (priv->current && priv->current->data) {
+	YelpURI *cur_uri = (YelpURI *) priv->current->data;
+	if (gnome_vfs_uri_equal(cur_uri->uri, uri->uri)) {
+	    const gchar *cur_frag, *frag;
+
+	    cur_frag = gnome_vfs_uri_get_fragment_identifier (cur_uri->uri);
+	    frag     = gnome_vfs_uri_get_fragment_identifier (uri->uri);
+
+	    if ((!cur_frag && !frag)
+		|| (cur_frag && frag && !strcmp (cur_frag, frag)))
 		return;
 	}
+    }
 
-	if (yelp_history_exist_forward (history)) {
-		forward_list = priv->current->next;
-		priv->current->next = NULL;
+    if (yelp_history_exist_forward (history)) {
+	forward_list = priv->current->next;
+	priv->current->next = NULL;
 			
-		history_free_history_list (forward_list);
-	}
+	history_free_history_list (forward_list);
+    }
 
- 	priv->history_list = g_list_append (priv->history_list, 
-					    yelp_uri_ref (uri));
+    priv->history_list = g_list_append (priv->history_list,
+					yelp_uri_ref (uri));
 	
-	priv->current = g_list_last (priv->history_list);
+    priv->current = g_list_last (priv->history_list);
 	
-	history_maybe_emit (history);
+    history_maybe_emit (history);
 }
 
 YelpURI *
@@ -231,7 +245,7 @@ yelp_history_go_forward (YelpHistory *history)
 
 		history_maybe_emit (history);
 		
-		return YELP_URI (priv->current->data);
+		return (YelpURI *) priv->current->data;
 	}
 
 	return NULL;
@@ -252,7 +266,7 @@ yelp_history_go_back (YelpHistory *history)
 
 		history_maybe_emit (history);
 
-		return YELP_URI (priv->current->data);
+		return (YelpURI *) priv->current->data;
 	}
         
 	return NULL;
@@ -272,7 +286,7 @@ yelp_history_get_current (YelpHistory *history)
 		return NULL;
 	}
 
-	return YELP_URI (priv->current->data);
+	return (YelpURI *) priv->current->data;
 }
 
 gboolean

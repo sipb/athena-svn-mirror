@@ -1,6 +1,6 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
- * Copyright (C) 2002 Mikael Hallendal <micke@codefactory.se>
+ * Copyright (C) 2003 Shaun McCance <shaunm@gnome.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,20 +17,21 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Mikael Hallendal <micke@codefactory.se>
+ * Author: Shaun McCance <shaunm@gnome.org>
  */
 
 #ifndef __YELP_CACHE_H__
 #define __YELP_CACHE_H__
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include "yelp-uri.h"
 
 void           yelp_cache_init          (void);
 
-const gchar *  yelp_cache_lookup        (const gchar *path);
+GObject *      yelp_cache_lookup        (const gchar *path);
 
 void           yelp_cache_add           (const gchar *path,
-                                         const gchar *html);
+					 GObject     *object);
 #endif /* __YELP_CACHE_H__ */
