@@ -1,3 +1,5 @@
 #!/bin/sh
 
-cat $LIBDIR/deadfiles-9.2.10				>> $DEADFILES
+# There was a special Athena cell 9.2.10 release, which means Athena
+# cell machines won't run this version script.  So its contents have
+# been moved to the 9.2.14 version script.
