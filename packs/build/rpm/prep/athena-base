@@ -1,8 +1,3 @@
 #!/bin/sh
 
 cp $1/packs/config/mandesc $2
-cp $1/packs/config/masks $2
-cp $1/packs/config/shells $2
-cp $1/packs/config/os/linux/passwd.fallback $2
-cp $1/packs/config/os/linux/rc.conf $2
-cp $1/packs/config/os/linux/syslog.conf $2
