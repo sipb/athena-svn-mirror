@@ -4,7 +4,7 @@
 # Copyright 1987, 1988 by the MIT Student Information Processing Board
 # For copyright info, see copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.3 1989-10-11 09:56:28 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/Makefile,v 1.4 1989-10-11 11:04:19 epeisach Exp $
 #	$Locker:  $
 
 MACHINE=`/bin/athena/machtype`
@@ -80,7 +80,7 @@ install: all
 	@mkdir ${DESTDIR}/usr/include/ss
 	cp ss.h ss_err.h ss_internal.h copyright.h ${DESTDIR}/usr/include/ss/
 	cp copyright.h ${DESTDIR}/usr/include/ss/mit-sipb-copyright.h
-	install -c -m 644 llib-lss.ln ${DESTDIR}/usr/athena/lib/llib-lcom_err.ln
+	install -c -m 644 llib-lss.ln ${DESTDIR}/usr/lib/lint/llib-lcom_err.ln
 
 tags:	TAGS
 
