@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.7 2001-04-13 21:03:08 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.8 2001-04-18 18:55:00 amb Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -614,6 +614,7 @@ static char *fudge_arch_in_filename(char *filename)
   int i, j, len;
   struct utsname buf;
   char *newfile;
+  struct stat statbuf;
 
   /* Find the beginning of the arch string in filename. */
   p = find_back(filename, filename + strlen(filename), '.');
@@ -647,12 +648,23 @@ static char *fudge_arch_in_filename(char *filename)
     return filename;
 
   /* We have to downgrade the architecture of the filename.  Make a
-   * new string and free the old one.
+   * new string with the highest version of the architecture available
+   * and free the old one.  
    */
-  easprintf(&newfile, "%.*s%s%s", p - filename, filename, arches[j],
-	    p + strlen(arches[i]));
-  free(filename);
-  return newfile;
+  for(i = j; i >= 0; i--)
+    {
+      easprintf(&newfile, "%.*s%s%s", p - filename, filename, arches[i],
+		p + strlen(arches[i]));
+      if (!stat(newfile,&statbuf))
+	{
+	  free(filename);
+	  return newfile;
+	}
+    }
+  /* no appropriate RPM exists */
+  fprintf(stderr, "Can't find appropriate RPM for architecture %s for %s\n",
+	  arches[j], filename);
+  exit(1);
 }
 
 static void printrev(struct rev *rev)
