@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.25 1991-07-11 01:44:46 probe Exp $
+# $Id: xsession,v 1.26 1991-07-14 00:52:47 lwvanels Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -120,7 +120,7 @@ if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time
 
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
-	(xterm -geometry 80x48+0+0 &)
+	(xterm -geometry 80x48+0+30 &)
 	sleep $sleep_time
 endif
 
