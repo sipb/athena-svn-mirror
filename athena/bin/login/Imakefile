@@ -4,7 +4,8 @@ AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
 
 #if defined(SOLARIS)
 MACHDEP = -DINITTAB
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a /usr/athena/lib/libbsd.a
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a 
+LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
 #endif
 
 #ifdef sgi
