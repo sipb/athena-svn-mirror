@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 2000-04-25 13:51:14 rbasch Exp $
+# $Id: Makefile,v 1.7 2000-04-28 15:07:23 ghudson Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
@@ -27,7 +27,6 @@ install:
 	install -c -m 0755 Xstartup ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
-	install -c -m 0755 axdm ${DESTDIR}${INITD}
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 network ${DESTDIR}${INITD}
@@ -35,8 +34,6 @@ install:
 	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
-	rm -f ${DESTDIR}${RC0}/K02xdm
-	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02xdm
 	rm -f ${DESTDIR}${RC0}/K07athena
 	ln -s ../init.d/athena ${DESTDIR}${RC0}/K07athena
 	rm -f ${DESTDIR}${RC0}/K79athena.config
@@ -49,8 +46,6 @@ install:
 	ln -s ../init.d/finish-update ${DESTDIR}${RC2}/S36finish-update
 	rm -f ${DESTDIR}${RC2}/S93athena
 	ln -s ../init.d/athena ${DESTDIR}${RC2}/S93athena
-	rm -f ${DESTDIR}${RC2}/S98xdm
-	ln -s ../init.d/axdm ${DESTDIR}${RC2}/S98xdm
 
 clean:
 	rm -f os-checkfiles.o array.o os-checkfiles
