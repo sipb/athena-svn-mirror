@@ -197,8 +197,9 @@ It also honors
 .IR /etc/nologin,
 .IR /etc/nocreate,
 .IR /etc/noremote,
+.IR /etc/noattach,
 and
-.IR /etc/noattach.
+.IR /etc/nocrack.
 .PP
 Upon closing of the ftp connection (or HUP and TERM signals),
 .I ftpd
