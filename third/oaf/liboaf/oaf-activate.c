@@ -38,8 +38,7 @@ static gboolean test_components_enabled = FALSE;
  * oaf_set_test_components_enabled:
  * @val: if TRUE, enable test components. If FALSE, disable them.
  * 
- *
- * FIXME: add doc for this. 
+ * Enable test components.
  */
 void
 oaf_set_test_components_enabled (gboolean val)
@@ -54,17 +53,12 @@ oaf_set_test_components_enabled (gboolean val)
  *               test components are enabled.
  */
 gboolean
-oaf_get_test_components_enabled ()
+oaf_get_test_components_enabled (void)
 {
         return test_components_enabled;
 }
 
-/**
- * oaf_maybe_add_test_requirements:
- * @requirements: the user requirements.
- *
- * internal function only: returns a new query string.
- **/
+/* internal function.*/
 char *
 oaf_maybe_add_test_requirements (const char *requirements) 
 {
@@ -81,6 +75,8 @@ oaf_maybe_add_test_requirements (const char *requirements)
         return ext_requirements;
 }
 
+
+/* internal funtion */
 void 
 oaf_copy_string_array_to_GNOME_stringlist (char *const *selection_order, GNOME_stringlist *ret_val)
 {

@@ -51,3 +51,10 @@ oaf_init
 oaf_orb_get
 oaf_name_service_get
 </SECTION>
+
+<SECTION>
+<FILE>debugging</FILE>
+<TITLE>Debugging</TITLE>
+oaf_get_test_components_enabled
+oaf_set_test_components_enabled
+</SECTION>

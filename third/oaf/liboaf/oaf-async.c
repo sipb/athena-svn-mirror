@@ -94,6 +94,10 @@ void oaf_activate_async (const char *requirements,
         if (ev->_major != CORBA_NO_EXCEPTION
             || callback_object == CORBA_OBJECT_NIL) {
                 callback (CORBA_OBJECT_NIL, "Could not create CORBA callback", user_data);
+		if (ext_requirements != NULL) {
+                	g_free (ext_requirements);
+		}
+		
                 return;
         }
 
@@ -110,6 +114,10 @@ void oaf_activate_async (const char *requirements,
                                                       flags, callback_object, 
                                                       oaf_context_get (), ev);
         }
+
+	if (ext_requirements != NULL) {
+		g_free (ext_requirements);
+	}	
 
         if (ev->_major != CORBA_NO_EXCEPTION) {
                 char *message;

@@ -109,9 +109,6 @@
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
 
-/* Define if you have the strsignal function.  */
-#undef HAVE_STRSIGNAL
-
 /* Define if you have the strtol function.  */
 #undef HAVE_STRTOL
 

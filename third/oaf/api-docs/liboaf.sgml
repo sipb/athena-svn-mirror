@@ -1,5 +1,6 @@
 <!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
 <!entity init SYSTEM "sgml/initialization.sgml">
+<!entity debugging SYSTEM "sgml/debugging.sgml">
 <!entity registration SYSTEM "sgml/registration.sgml">
 <!entity activation SYSTEM "sgml/query.sgml">
 <!entity utils SYSTEM "sgml/utilities.sgml">
@@ -70,6 +71,7 @@
     &activation;
     &utils;
     &registration;
+    &debugging;
 
   </chapter>
 

@@ -1,4 +1,32 @@
 ====================================
+oaf-0.6.2
+---------
+
+* Leak fixes (Ali)
+
+* xml-18n-toolize (Maciej)
+
+* Add DTD for oafinfo files (Maciej)
+
+* Rewrite and clean up oafinfo loading code; make it accept .oaf as
+  well as .oafinfo files (.oaf is the preferred naming now) (Maciej)
+
+* Pass IOR by environment variable, not command line arg for security (Elliot Lee)
+
+* Doc updates (Mathieu, John R. Sheets)
+
+* Assorted portability fixes (Jason Leach)
+
+* libxml 1.x/2.x compatibility (Darin)
+
+* Build fixes (Eskil, Mathieu, Maciej)
+
+* Assorted bug fixes (Michael)
+
+* New translations (Szabolcs BAN, Stanislav Visnovsky)
+
+
+====================================
 oaf-0.6.1
 ---------
 
@@ -18,7 +46,6 @@ oaf-0.6
 ---------
 
 New in this release:
-
 
 * Query and activation changes:
 

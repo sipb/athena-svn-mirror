@@ -26,6 +26,8 @@
 #ifndef OAF_ACTIVATE_H
 #define OAF_ACTIVATE_H
 
+#include <orb/orbit.h>
+#include <liboaf/oaf.h>
 
 CORBA_Object oaf_name_service_get (CORBA_Environment * ev);
 

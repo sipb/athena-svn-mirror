@@ -1,3 +1,228 @@
+2001-01-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	* NEWS: Updated for 0.6.2
+	* configure.in: Bumped version to 0.6.2
+
+2001-01-19  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added sk (Slovak) to ALL_LINGUAS.
+
+2001-01-09  Darin Adler  <darin@eazel.com>
+
+	* .cvsignore:
+	* po/.cvsignore:
+	Shh!
+
+2001-01-09  Darin Adler  <darin@eazel.com>
+
+	* liboaf/oaf-mainloop.c: Added i18n domain to popt options.
+
+2001-01-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: George Lebl  <jirka@5z.com>
+
+	Part of the fix to bug 2693 (Localizers don't know how to localize
+	.oafinfo); make .oaf files translatable through the normal po
+	mechanism.
+	
+	* autogen.sh, configure.in: Enable oaf-xml-i18n-tools
+	* oafd/OAF_naming-service.oaf.in: Renamed from oafd.oafinfo, added
+	* oafd/Makefile.am: Add translation merge rule.
+	* po/POTFILES.in: Added oafd/OAF_naming-service.oaf.in
+	* xml-i18n-extract, xml-i18n-merge: Remove (now using copies we
+	get from xml-i18n-toolize).
+
+2001-01-01  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        This is the 'manual eyeball' technique to fixing memory leaks - also
+        known as "I don't need no steenkin' memprof".
+
+        * liboaf/oaf_async.c:
+        (oaf_activate_async): Free the 'ext_requirements' variable before
+        returning.
+
+        * oafd/ac-corba.c:
+        (impl_OAF_ActivationContext_activate_async): Free 'hostname' when
+        done with it.
+        (impl_OAF_ActivationContext_activate_from_id_async): Free
+        'requirements' if we get an exception.
+
+        * oafd/od-corba.c:
+        (od_get_active_server): Free 'display' variable when done with it.
+
+2000-12-30  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	We now save a whopping 28 bytes with this fix (according to
+	memprof)
+
+	* oafd/od-utils.c (od_utils_load_xml_file): Free a leaked
+	string.
+
+	* oafd/main.c (main): ditto.
+
+2000-12-28  Michael Meeks  <michael@helixcode.com>
+
+	* test/oaf-slay.tmpl: Reverse grep on type="shlib" so we don't
+	go round trying to kill shared libraries.
+
+2000-12-24  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	* oafd/od-load.c (od_load_directory): Free the pathname. It was
+	  getting leaked.
+
+2000-12-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	* xml-i18n-merge: Entity-encode the translated strings, to avoid
+	possible XML parsing problems. This is really the wrong way to
+	handle things - the encoding should be converted to UTF-8 and the
+	characters should be entity encoded as UTF-8 multibyte chars, not
+	bytes. But this should work OK for now.
+	
+2000-12-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	* xml-i18n-extract, xml-i18n-merge: First cut of translation
+	extraction and merge tools, based on Kenneth Christiansen's
+	ui-xml-extract.pl. The merge tool still needs to deal with
+	different character sets and both need a better home.
+
+2000-11-29  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/liboaf.h: Make definition of oaf_popt_options
+	unconditional.
+
+2000-11-28  Maciej Stachowiak  <mjs@eazel.com>
+
+	* configure.in: Reject libxml 2.x and other unknown libxml
+	versions to fix bug 1956 (oaf config does not reject libxml 2).
+
+2000-11-28  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/liboaf.h: Made inclusion of popt.h and definition of the
+	popt argument table unconditional, fixing bug 1291 (liboaf.h
+	include isn't standalone). OAF depends on popt anyway so the
+	reason for the optionality was unclear.
+	* docs/oaf.dtd: Added DTD for oafinfo files.
+	* oafd/oafd.oafinfo: Improved formatting.
+
+2000-11-24  Michael Meeks  <michael@helixcode.com>
+
+	* oafd/od-utils.c (od_utils_load_config_file): fix leak.
+
+2000-11-22  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Mathieu Lacage  <mathieu@eazel.com>
+
+	* oafd/od-load.c:
+	(OAF_ServerInfo_load): Massively refactored and cleaned up for
+	style. Also, made the loader accept ".oaf" as well as ".oafinfo"
+	files.
+	(od_entry_read_props, od_validate, od_process_server_xml_node,
+	od_load_file, od_load_directory, od_string_to_boolean,
+	od_filename_has_extension): New and updated helper functions.
+	* oafd/oafd.h: Changed prototype for OAF_ServerInfo_load
+	* oafd/od-corba.c: (update_registry): Fixed call to OAF_ServerInfo_load
+	
+	* oafd/ac-corba.c (ac_context_to_string_array): Removed out of
+	date FIXME comment.
+
+2000-11-21  Mathieu Lacage  <mathieu@eazel.com>
+
+	* liboaf/oaf-servreg.h: once more, add correct includes.
+
+2000-11-21  Mathieu Lacage  <mathieu@eazel.com>
+
+	add corrct includes within the header file.
+	* liboaf/oaf-activate.h:
+
+2000-11-21  Mathieu Lacage  <mathieu@eazel.com>
+
+	Patch from John R. Sheets <dusk@ravendusk.org>
+	* api-docs/architecture.sgml:
+	* api-docs/configuring.sgml:
+	* api-docs/migrating.sgml:
+	* api-docs/oafinfo-ref.sgml:
+	* api-docs/query-langage.sgml:
+	* api-docs/tutorial.sgml:
+
+2000-11-16  Elliot Lee  <sopwith@redhat.com>
+
+	* (oaf_server_by_forking) Use $OAF_OD_IOR environment variable
+	instead of --oaf-od-ior cmdline arg.
+
+2000-11-16  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 4658
+	* api-docs/Makefile.am: add new doc file.
+	* api-docs/liboaf-decl.txt: add declarations of new API.
+	* api-docs/liboaf-sections.txt: add declaration of new file.
+	* api-docs/liboaf.sgml: add ref to new API.
+	* api-docs/tmpl/debugging.sgml: new doc file.	
+	* liboaf/oaf-activate.c: (oaf_get_test_components_enabled):
+	add proper API doc.
+
+2000-11-12  Jason Leach  <leach@wam.umd.edu>
+
+	* oafd/Makefile.am (LDADD): added @INTLLIBS@ because some
+	platforms don't do -lintl automatically.  From the bug reports
+	listed below.
+
+	* utils/Makefile.am (LDADD): same here.
+
+	* configure.in: don't need to AC_CHECK_FUNC strsignal here anymore
+
+	* liboaf/oaf-registration.c (oaf_strsignal): remove this function
+	(actually it's just a define to strsignal or a
+	not-totally-portable replacement function for systems without
+	strsignal.h).  Fixes bugs.gnome.org reports #10807, #17146, and
+	#31298.
+
+	* liboaf/oaf-registration.c (oaf_server_by_forking): replace a
+	oaf_strsignal() call with a g_strsignal().
+
+2000-11-09  Josh Barrow  <josh@eazel.com>
+
+	* liboaf/oaf-activate.c:
+	* oafd/ac-corba.c: (ac_aid_to_query_string):
+	Put bug numbers to the only FIXMEs.
+
+2000-11-09  Darin Adler  <darin@eazel.com>
+
+	Do the recommended (by DV) steps to make oaf ready for either
+	gnome-xml 1.X or gnome-xml 2.X, to save us some work later.
+
+	* oafd/main.c: (main): Use LIBXML_TEST_VERSION macro.
+
+	* oafd/od-load.c: (od_entry_read_props), (OAF_ServerInfo_load):
+	* oafd/od-utils.c: (od_utils_load_config_file):
+	* utils/oaf-sysconf.c: (add_directory), (remove_directory),
+	(display_directories):
+	Use xmlChildrenNode instead of childs and xmlRootNode instead
+	of root.
+
+2000-11-08  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* oafd/main.c:
+	#include <locale.h> for setlocale
+
+2000-11-08  Szabolcs BAN <shooby@gnome.hu>
+
+	* configure.in: Initial support of Hungarian language.
+
+2000-11-08  Michael Meeks  <michael@helixcode.com>
+
+	* test/oaf-slay.tmpl: kill apps with the 'lt-' prefix as well.
+
+	* test/Makefile.am (check): impl. overriding autoconf version,
+	setup the OAF_INFO_PATH and the PATH to avoid needing to install
+	stuff.
+
+2000-09-07  Michael Meeks  <michael@helixcode.com>
+
+	* test/oaf-slay.tmpl: add kill of lt-app-name as well as
+	just app-name.
+
 2000-11-06  Maciej Stachowiak  <mjs@eazel.com>
 
 	* NEWS, configure.in: Updated for 0.6.1

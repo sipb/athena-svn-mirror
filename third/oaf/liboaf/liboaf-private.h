@@ -47,6 +47,7 @@ gboolean     oaf_timeout_reg_check      (gpointer data);
 CORBA_Object oaf_server_by_forking      (const char **cmd, 
                                          int fd_Arg,
                                          const char *display,
+					 const char *od_iorstr,
                                          CORBA_Environment * ev);
 void         oaf_rloc_file_register     (void);
 int          oaf_ior_fd_get             (void);

@@ -159,15 +159,8 @@ od_server_activate_exe (OAF_ServerInfo * si, ODActivationInfo * actinfo,
         iorstr = CORBA_ORB_object_to_string (oaf_orb_get (), od_obj,
                                              ev);
 
-        if (ev->_major == CORBA_NO_EXCEPTION) {
-                extra_arg =
-                        oaf_alloca (sizeof ("--oaf-od-ior=") +
-                                    strlen (iorstr));
-                args[i++] = extra_arg;
-                sprintf (extra_arg, "--oaf-od-ior=%s", iorstr);
-                
-                CORBA_free (iorstr);
-        }
+        if (ev->_major != CORBA_NO_EXCEPTION)
+	  iorstr = NULL;
 
         if(actinfo->flags & OAF_FLAG_PRIVATE) {
                 extra_arg =
@@ -181,11 +174,11 @@ od_server_activate_exe (OAF_ServerInfo * si, ODActivationInfo * actinfo,
 
         display = oafd_CORBA_Context_get_value (actinfo->ctx, "display", NULL, ev);
 
-	retval = oaf_server_by_forking ((const char **) args, fd_arg, display, ev);
+	retval = oaf_server_by_forking ((const char **) args, fd_arg, display,
+					iorstr, ev);
         
         g_free (display);
+	CORBA_free (iorstr);
 
         return retval;
 }
-
-

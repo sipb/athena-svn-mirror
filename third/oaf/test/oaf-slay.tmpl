@@ -15,7 +15,7 @@ while ($fname = shift (@files)) {
 	open (FILE, $fname);
 	while (<FILE>) {
 		$line = $_;
-		if ($line =~m/location[ \t]*\=/) {
+		if ($line =~m/location[ \t]*\=/ && !($line =~m/type=\"shlib\"/)) {
 			$line =~s/.*location[ \t]*\="//;
 			$line =~s/".*//;
 			chomp ($line);
@@ -23,6 +23,10 @@ while ($fname = shift (@files)) {
 			$line =~s/\.\///;
 			if (not ($line =~m/^OAFIID:/)) {
 				$cmd = $killall . $kill_params . $line;
+#				print "'", $cmd, "'\n";
+				system ($cmd);
+# Get people who ran it by hande from a libtool script.
+				$cmd = $killall . $kill_params . 'lt-' . $line;
 #				print "'", $cmd, "'\n";
 				system ($cmd);
 			}

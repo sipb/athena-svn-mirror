@@ -14,18 +14,17 @@
 #endif
 
 /* od-corba.c */
-OAF_ObjectDirectory
-OAF_ObjectDirectory_create (PortableServer_POA poa,
-			    const char *domain,
-			    const char *source_directory,
-			    CORBA_Environment * ev);
+OAF_ObjectDirectory OAF_ObjectDirectory_create (PortableServer_POA poa,
+                                                const char *domain,
+                                                const char *source_directory,
+                                                CORBA_Environment * ev);
 /* od-load.c */
 
-OAF_ServerInfo *OAF_ServerInfo_load (char **dirs,
-				     CORBA_unsigned_long * nservers,
-				     GHashTable ** by_iid,
-				     const char *user,
-				     const char *host, const char *domain);
+void OAF_ServerInfo_load (char                **dirs,
+                          OAF_ServerInfoList   *servers,
+                          GHashTable          **by_iid,
+                          const char           *host, 
+                          const char           *domain);
 
 /* od-activate.c */
 typedef struct

@@ -45,9 +45,11 @@ od_utils_load_xml_file (void)
                 g_warning (_("The OAF configuration file was not read "
                              "successfully. Please, check it is valid in: %s"),
                            oaf_config_file);
+		g_free (oaf_config_file);
                 return NULL;
         }
 
+	g_free (oaf_config_file);
         return doc;
 }
 
@@ -60,21 +62,24 @@ od_utils_load_config_file (void)
         xmlNodePtr search_node;
 
         doc = od_utils_load_xml_file ();
- 
-        search_node = doc->root->childs;
-        result = "";
+
+        search_node = doc->xmlRootNode->xmlChildrenNode;
+        result = g_strdup ("");
         while (search_node != NULL) {
                 if (strcmp (search_node->name, "searchpath") == 0) {
                         xmlNodePtr item_node;
-                        item_node = search_node->childs;
+                        item_node = search_node->xmlChildrenNode;
                         while (item_node != NULL) {
                                 if (strcmp (item_node->name, "item") == 0) {
                                         char *directory;
-                                        /* FIXME bugzilla.eazel.com 2726: this may be slow and has probably
-                                           a direct influence on startup time. */
+                                        char *old_result = result;
+
                                         directory = xmlNodeGetContent (item_node);
-                                        result = g_strconcat (result, ":", directory, NULL);
-                                        xmlFree (directory);
+                                        if (directory) {
+                                                result = g_strconcat (old_result, ":", directory, NULL);
+                                                xmlFree (directory);
+                                                g_free (old_result);
+                                        }
                                 }
                                 item_node = item_node->next;
                         }

@@ -1,142 +1,141 @@
-# OAF Finnish translation.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000.
-#
-# GNOME Finnish Translation Team: http://gnome-fi.sourceforge.net/
+# Oaf Slovak translation.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OAF\n"
-"POT-Creation-Date: 2000-12-31 00:03+0200\n"
-"PO-Revision-Date: 2000-12-09 19:40+02:00\n"
-"Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
-"Language-Team: Finnish <fi@li.org>\n"
+"Project-Id-Version: oaf 0.6.1\n"
+"POT-Creation-Date: 2001-01-19 12:53+0100\n"
+"PO-Revision-Date: 2001-01-19 12:54CET\n"
+"Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
+"Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.8pre\n"
 
-#: liboaf/oaf-mainloop.c:190
+#: liboaf/oaf-mainloop.c:191
 msgid "Object directory to use when registering servers"
-msgstr "Palvelimia rekisteröidessä käytettävä oliohakemisto"
+msgstr "Prieèinok pre objekty pou¾itý pri registrácii serverov"
 
-#: liboaf/oaf-mainloop.c:192
+#: liboaf/oaf-mainloop.c:193
 msgid "File descriptor to print IOR on"
-msgstr "Tiedostokahva, johon IOR tulostuu"
+msgstr "Deskriptor súboru, do ktorého vytlaèi» IOR"
 
-#: liboaf/oaf-mainloop.c:192 oafd/main.c:68
+#: liboaf/oaf-mainloop.c:193 oafd/main.c:68
 msgid "FD"
-msgstr "FD"
+msgstr "DS"
 
-#: liboaf/oaf-mainloop.c:194
+#: liboaf/oaf-mainloop.c:195
 msgid "IID to activate"
-msgstr "Aktivoitava IID"
+msgstr "aktivova» IID"
 
-#: liboaf/oaf-mainloop.c:196
+#: liboaf/oaf-mainloop.c:197
 msgid "Prevent registering of server with OAF"
-msgstr "Estä palvelimen rekisteröityminen OAF:lla"
+msgstr "Zabráni» registrácii serveru v OAF"
 
 #: liboaf/oaf-registration.c:309
 msgid "Couldn't fork a new process"
-msgstr "Uutta prosessia ei voitu luoda"
+msgstr "Nie je mo¾né vytvori» nový proces"
 
 #: liboaf/oaf-registration.c:330
 #, c-format
 msgid "Child received signal %u (%s)"
-msgstr "Lapsi vastaanotti signaalin %u (%s)"
+msgstr "Potomok zachytil signál %u (%s)"
 
 #: liboaf/oaf-registration.c:336
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
-msgstr "Tuntematon ei-lopetusvirhe (tila on %u)"
+msgstr "Neznáma nenávratová chyba (stav je %u)"
 
 #: liboaf/oaf-registration.c:413
 #, c-format
 msgid "Exec failed: %d (%s)\n"
-msgstr "Käynnistys epäonnistui: %d (%s)\n"
+msgstr "Exec zlyhal: %d (%s)\n"
 
 #: oafd/ac-corba.c:476
 msgid "Couldn't find which child the server was listed in"
-msgstr "Ei voitu selvittää, missä lapsiprosessissa palvelin on luetteloitu"
+msgstr "Nie je mo¾né zisti» server, v ktorom bol zapísaný potomok"
 
 #: oafd/ac-corba.c:645
 msgid "Query failed: "
-msgstr "Kysely epäonnistui: "
+msgstr "Otázka zlyhala: "
 
 #: oafd/ac-corba.c:673
 msgid "Activation failed: "
-msgstr "Aktivointi epäonnistui: "
+msgstr "Aktivácia zlyhala: "
 
-#: oafd/ac-corba.c:1089
+#: oafd/ac-corba.c:1091
 msgid "Could not parse AID"
-msgstr "AID:ta ei voitu tulkita"
+msgstr "Nie je mo¾né spracova» AID"
 
-#: oafd/ac-corba.c:1098
+#: oafd/ac-corba.c:1101
 msgid "Could not parse context: "
-msgstr "Kontekstia ei voitu tulkita: "
+msgstr "Nie je mo¾né spracova» kontext: "
 
-#: oafd/ac-corba.c:1121
+#: oafd/ac-corba.c:1124
 msgid "Could not activate server: "
-msgstr "Palvelinta ei voitu aktivoida: "
+msgstr "Nie je mo¾né aktivova» server: "
 
 #: oafd/main.c:58
 msgid "Directory to read .oafinfo files from"
-msgstr "Hakemisto, josta .oafinfo-tiedostot luetaan"
+msgstr "Prieèinok, z ktorého èíta» súbory .oafinfo"
 
 #: oafd/main.c:58
 msgid "DIRECTORY"
-msgstr "HAKEMISTO"
+msgstr "PRIEÈINOK"
 
 #: oafd/main.c:60
 msgid "Domain of ObjectDirectory"
-msgstr "ObjectDirectoryn verkkoalue"
+msgstr "Doména ObjectDirectory"
 
 #: oafd/main.c:60
 msgid "DOMAIN"
-msgstr "VERKKOALUE"
+msgstr "DOMÉNA"
 
 #: oafd/main.c:63
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
-msgstr "Toimi ActivationContextina (oletuksena on vain ObjectDirectory)"
+msgstr "Fungova» ako aktivaèný kontext (¹tandardne je iba ako ObjectDirectory)"
 
 #: oafd/main.c:68
 msgid "File descriptor to write IOR to"
-msgstr "Tiedostokahva, johon IOR kirjoitetaan"
+msgstr "Deskriptor súboru, do ktorého zapísa» IOR"
 
 #: oafd/main.c:73
 msgid "Query expression to evaluate"
-msgstr "Käsiteltävä kyselylauseke"
+msgstr "Výraz, ktorý sa má vyhodnoti»"
 
 #: oafd/main.c:73
 msgid "EXPRESSION"
-msgstr "LAUSEKE"
+msgstr "VÝRAZ"
 
 #: oafd/od-activate.c:62
 msgid "We don't handle activating shlib objects in a remote process yet"
-msgstr "shlib-olioiden aktivointia etäprosessissa ei vielä käsitellä.  "
+msgstr "Zatiaµ nie je mo¾né aktivova» shlib objekty vo vzdialených procesoch"
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
-msgstr "Ominaisuudella '%s' ei ole arvoa"
+msgstr "Vlastnos» '%s' nemá hodnotu"
 
 #: oafd/od-load.c:171
 msgid "a NULL iid is not valid"
-msgstr "NULL iid ei kelpaa"
+msgstr "NULL iid nie je platné"
 
 #: oafd/od-load.c:175
 #, c-format
 msgid "iid %s has a NULL type"
-msgstr "iid:llä %s on NULL-tyyppi"
+msgstr "iid %s má typ NULL"
 
 #: oafd/od-load.c:179
 #, c-format
 msgid "iid %s has a NULL location"
-msgstr "iid:llä %s on NULL-sijainti"
+msgstr "iid %s má umiestnenie NULL"
 
 #: oafd/od-load.c:188
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr "virheellinen merkki '%c' iid:ssä '%s'"
+msgstr "neplatný znak '%c' v iid '%s'"
 
 #: oafd/od-utils.c:45
 #, c-format
@@ -144,22 +143,20 @@ msgid ""
 "The OAF configuration file was not read successfully. Please, check it is "
 "valid in: %s"
 msgstr ""
-"OAF-asetustiedoston lukeminen ei onnistunut. Tarkista, että se on kunnossa: "
-"%s"
+"Konfiguraèný súbor OAF nebol úspe¹ne naèítaný. Prosím, overte, ¾e je platný "
+"v: %s"
 
 #: utils/oaf-sysconf.c:65
 msgid "Could not save OAF configuration file.\n"
-msgstr "OAF-asetustiedostoa ei voitu tallentaa.\n"
+msgstr "Nie je mo¾né ulo¾i» konfiguraèný súbor OAF.\n"
 
 #: utils/oaf-sysconf.c:66
-msgid ""
-"Please, make sure you have permissions to write OAF configuration file.\n"
-msgstr ""
-"Tarkista, että sinulla on oikeudet OAF-asetustiedostoon kirjoittamiseen.\n"
+msgid "Please, make sure you have permissions to write OAF configuration file.\n"
+msgstr "Prosím, overte, ¾e máte práva pre zápis do konfiguraèného súboru OAF.\n"
 
 #: utils/oaf-sysconf.c:69
 msgid "Successfully wrote OAF configuration file.\n"
-msgstr "OAF-asetustiedoston kirjoittaminen onnistui.\n"
+msgstr "Úspe¹ne zapísaný konfiguraèný súbor OAF.\n"
 
 #: utils/oaf-sysconf.c:81
 #, c-format
@@ -167,38 +164,39 @@ msgid ""
 "OAF configuration file is:\n"
 "    %s\n"
 msgstr ""
-"OAF-asetustiedosto on:\n"
+"Konfiguraèný súbor OAF je:\n"
 "    %s\n"
 
 #: utils/oaf-sysconf.c:108
 #, c-format
 msgid "%s already in OAF configuration file\n"
-msgstr "%s on jo OAF-asetustiedostossa\n"
+msgstr "%s u¾ je v konfiguraènom súbore OAF.\n"
 
 #: utils/oaf-sysconf.c:184
 msgid "OAF configuration file contains:\n"
-msgstr "OAF-asetustiedosto sisältää:\n"
+msgstr "Konfiguraèný súbor OAF obsahuje:\n"
 
 #: utils/oaf-sysconf.c:216
 msgid "Directory to remove from OAF configuration file"
-msgstr "Hakemisto, joka poistetaan OAF-asetustiedostosta"
+msgstr "Prieèinok, ktorý má by» odstránený z konfiguraèného súboru OAF"
 
 #: utils/oaf-sysconf.c:216 utils/oaf-sysconf.c:219
 msgid "directory path"
-msgstr "hakemisto"
+msgstr "cesta k prieèinku"
 
 #: utils/oaf-sysconf.c:219
 msgid "Directory to add to OAF configuration file"
-msgstr "Hakemisto, joka lisätään OAF-asetustiedostoon"
+msgstr "Prieèinok, ktorý má by» pridaný do konfiguraèného súboru OAF"
 
 #: utils/oaf-sysconf.c:222
 msgid "Display directories in OAF configuration file"
-msgstr "Näytä OAF-asetustiedostossa olevat hakemistot"
+msgstr "Zobrazi» prieèinky, ktoré sú konfiguraènom súbore OAF"
 
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
-msgstr "Näytä OAF-asetustiedoston polku"
+msgstr "Zobrazi» cestu ku konfiguraènému súboru OAF"
 
 #: liboaf/oaf-async-corba.c:182
 msgid "No server corresponding to your query"
-msgstr "Yksikään palvelin ei vastannut kyselyysi"
+msgstr "®iadny server neodpovedá otázke"
+

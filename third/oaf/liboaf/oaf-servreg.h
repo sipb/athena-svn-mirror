@@ -26,6 +26,9 @@
 #ifndef OAF_SERVREG_H
 #define OAF_SERVREG_H
 
+#include <orb/orbit.h>
+#include <liboaf/oaf.h>
+
 OAF_RegistrationResult oaf_active_server_register (const char  *iid,
 						   CORBA_Object obj);
 void        oaf_active_server_unregister (const char  *iid, 

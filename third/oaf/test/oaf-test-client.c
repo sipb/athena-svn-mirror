@@ -35,8 +35,8 @@ test_oafd (CORBA_Environment *ev, const char *type)
 
         ns = oaf_name_service_get (ev);
         if (ev->_major != CORBA_NO_EXCEPTION) {
-                g_warning ("Exception '%s' finding oafd %s",
-                           oaf_exception_id (ev), type);
+                g_warning ("Exception '%s' (%s) finding oafd %s",
+                           oaf_exception_id (ev), ev->_repo_id, type);
                 return FALSE;
         }
 
@@ -215,6 +215,8 @@ main (int argc, char *argv[])
                 fprintf (stderr, "It looks like you havn't installed broken.oafinfo "
                          "into ${prefix}/oaf, this must be done by hand to avoid "
                          "redundant warnings.\n");
+		fprintf (stderr, "Another possibility is that you failed to kill "
+			 "oafd before running make check; try running oaf-slay.\n");
         }
 
 	CORBA_exception_free (&ev);

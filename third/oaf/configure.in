@@ -3,7 +3,7 @@ AC_INIT(idl/oaf.idl)
 
 OAF_MAJOR_VERSION=0
 OAF_MINOR_VERSION=6
-OAF_MICRO_VERSION=1
+OAF_MICRO_VERSION=2
 OAF_VERSION="$OAF_MAJOR_VERSION.$OAF_MINOR_VERSION.$OAF_MICRO_VERSION"
 AM_INIT_AUTOMAKE(oaf, $OAF_VERSION)
 AC_SUBST(OAF_MAJOR_VERSION)
@@ -20,6 +20,9 @@ dnl Initialize libtool
 AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
+AM_PROG_XML_I18N_TOOLS
+
+
 dnl Build time sanity check
 AM_SANITY_CHECK
 
@@ -33,7 +36,7 @@ AC_PROG_MAKE_SET
 AC_ISC_POSIX
 
 dnl internationalization support
-ALL_LINGUAS="da de es fi fr ga gl it ja ko no ru sl sv tr uk pl"
+ALL_LINGUAS="da de es fi fr ga gl hu it ja ko no ru sk sl sv tr uk pl"
 AM_GNU_OAF_GETTEXT
 
 
@@ -71,9 +74,17 @@ if test "$XML_CONFIG" != ""
 then
   XML_LIBS="`$XML_CONFIG --libs`"
   XML_CFLAGS="`$XML_CONFIG --cflags`"
+  XML_VERSION="`$XML_CONFIG --version`"
 else
   AC_MSG_ERROR(Can't find gnome-xml library.)
 fi
+
+case $XML_VERSION in
+1.*) ;;
+2.*) AC_MSG_ERROR(libxml 2.x detected; OAF requires libxml 1.x) ;;
+*) AC_MSG_ERROR(unrecognized version of libxml detected; OAF requires libxml 1.x) ;;
+esac;
+
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
@@ -105,7 +116,7 @@ dnl ======================
 
 
 AC_CHECK_LIB(popt, poptGetContext,,
-AC_MSG_ERROR([You must have popt installed. Get it from ftp://ftp.redhat.com/pub/redhat/code/popt/]))
+AC_MSG_ERROR([You must have popt installed. Get it from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/popt-1.6.tar.gz]))
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -116,7 +127,7 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
 dnl Checks for library functions
-AC_CHECK_FUNCS(select strcspn strdup strtol snprintf usleep nanosleep strsignal)
+AC_CHECK_FUNCS(select strcspn strdup strtol snprintf usleep nanosleep)
 
 dnl declare --enable-* args
 
