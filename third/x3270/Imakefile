@@ -93,9 +93,11 @@ mkfb: mkfb.c
  */
 AD_OPTS=-DCOLOR
 /* AD_OPTS=-UCOLOR */
-X3270.ad: X3270.xad
-	$(CC) $(AD_OPTS) -E X3270.xad | \
-	 sed -e '/^#/d' -e '/^[ 	]*$$/d' >X3270.ad
+X3270.ad: X3270.xad qcpp
+	$(RM) $@
+	qcpp $(AD_OPTS) X3270.xad >$@
+qcpp: qcpp.c
+	$(CC) -o $@ qcpp.c
 
 /* Extra install rule to regenerate misc/fonts.dir */
 install:: $(DESTDIR)$(FONTINSTDIR)/fonts.dir
