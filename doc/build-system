@@ -143,14 +143,13 @@ to it) which does the following:
 			    [  --with-afs=PREFIX       Compile with AFS],
 			    [afs="$withval"], [afs=no])
 
-		# Where you do checks for libraries
-		AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
-		AC_CHECK_FUNC(bcopy, :, AC_CHECK_LIB(ucb, bcopy))
-		AC_CHECK_FUNC(gethostbyname, :,
-			      AC_CHECK_LIB(nsl, gethostbyname))
-		AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
-
 		if test "$afs" != no; then
+			AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
+			AC_CHECK_FUNC(sigvec, :, AC_CHECK_LIB(ucb, sigvec))
+			AC_CHECK_FUNC(gethostbyname, :,
+				      AC_CHECK_LIB(nsl, gethostbyname))
+			AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+
 			if test "$afs" != yes; then
 				CPPFLAGS="${CPPFLAGS} -I$afs/include"
 				LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
