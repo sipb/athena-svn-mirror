@@ -62,6 +62,13 @@ case "$1" in
 			|| failure "removing stale files"
 	echo
 
+	if [ -e /dev/cdrom ]; then
+		echo -n "Fixing permissions on CDROM device"
+		chmod 666 /dev/cdrom \
+			 && success "CDROM device chmod" \
+				 || failure "CDROM device chmod"
+		echo
+	fi
 
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
