@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.17 1988-08-08 13:16:18 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.18 1988-11-14 11:30:20 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.17 1988-08-08 13:16:18 jtkohl Exp $";
+static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.18 1988-11-14 11:30:20 jtkohl Exp $";
 static char copyright[] = "Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.";
 #endif lint
 
@@ -782,12 +782,10 @@ Code_t Z_SendFragmentedNotice(notice, len, send_func)
 				       fragsize);
 	if ((retval = ZFormatSmallRawNotice(&partnotice, buffer,
 					    &ret_len)) != ZERR_NONE) {
-	    free(buffer);
 	    return (retval);
 	}
 	if ((retval = (*send_func)(&partnotice, buffer, ret_len,
 				   waitforack)) != ZERR_NONE) {
-	    free(buffer);
 	    return (retval);
 	}
 	offset += fragsize;
@@ -807,3 +805,10 @@ int wait;
 {
 	return(ZSendPacket(buf, len, wait));
 }
+
+#if (BSD < 43) || defined(STRCASE)
+#ifndef ULTRIX30
+/* Ultrix 3.0 has strcasecmp/strncasecmp */
+#include "strcasecmp.c"
+#endif /* ULTRIX30 */
+#endif /* BSD < 43 */
