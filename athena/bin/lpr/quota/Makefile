@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
-#	$Author: ilham $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.7 1990-07-13 14:12:57 ilham Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.8 1990-08-25 18:09:34 epeisach Exp $
 #
 #
 #     Copyright 1990 Massachusetts Institute of Technology.
@@ -70,7 +70,7 @@ DBOBJS          = dump_db.o restore_db.o bill_db.o \
                   quota_dba.o gquota_dba.o
 
 
-ALL=	lpqd lpquota qdb_create s_chkaf $(DBPROGRAMS)
+ALL=	lpqd lpquota qdb_create s_chkaf $(DBPROGRAMS) dump_logs
 
 all:	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a ${ALL} 
 
@@ -105,8 +105,11 @@ saber_lpquota:
 lpquota: ${COBJS}
 	${CC} -o lpquota ${COBJS} ${LIBS}
 
-consist: consist.o journal.o user.o parser.o strings.o
-	${CC} -o consist consist.o journal.o user.o parser.o strings.o ${LIBS}
+dump_logs: consist.o journal.o user.o parser.o strings.o
+	${CC} -o dump_logs consist.o journal.o user.o parser.o strings.o ${LIBS}
+
+dump_user: dump_user.o user.o strings.o
+	${CC} -o dump_user dump_user.o user.o strings.o ${LIBS}
 
 lint_lpquota:
 	lint -u ${CFLAGS} lpquota.c 
