@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.33 2004-10-26 16:19:04 ghudson Exp $
+# $Id: bashrc,v 1.34 2004-11-05 22:19:10 zacheiss Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -30,7 +30,7 @@ if [ "${ENV_SET:+set}" != set -a "${SHELL##*/}" = bash ]; then
 
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
-	ulimit -c 0				# Don't allow coredumps
+	ulimit -S -c 0				# Don't allow coredumps
 	export EDITOR=emacs			# Set default editor
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
@@ -198,7 +198,7 @@ if [ "${PS1+set}" = set ]; then
 fi
 
 # Fix coredumpsize limit in case it was reset
-[ -n "$COREDUMPSIZE_LIMIT" ] && ulimit -c $COREDUMPSIZE_LIMIT
+[ -n "$COREDUMPSIZE_LIMIT" ] && ulimit -S -c $COREDUMPSIZE_LIMIT
 
 #   alias for re-establishing authentication
 renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
