@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpr.h,v 1.1.1.1 1999-05-04 18:07:03 danw Exp $
+ * $Id: lpr.h,v 1.2 1999-05-07 15:31:16 danw Exp $
  ***************************************************************************/
 
 
@@ -33,6 +33,7 @@ EXTERN int Removefiles;	    /* Remove files */
 EXTERN char *Username_JOB;	/* Specified with the -U option */
 EXTERN int Secure;		/* Secure filter option */
 EXTERN int Setup_mailaddress;   /* Set up mail address */
+EXTERN int Zephyr;		/* Zephyr user on job completion */
 EXTERN char *Zopts_JOB;     /* Z options */
 
 EXTERN int DevNullFD;	/* DevNull File descriptor */

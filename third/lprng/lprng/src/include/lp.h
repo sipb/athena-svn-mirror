@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.5 1999-05-04 19:24:32 danw Exp $
+ * $Id: lp.h,v 1.6 1999-05-07 15:31:15 danw Exp $
  ***************************************************************************/
 
 
@@ -248,6 +248,7 @@ EXTERN int Allow_getenv_DYN;
 EXTERN int Allow_user_logging_DYN; /* allow users to get log info */
 EXTERN int Always_banner_DYN; /* always print banner, ignore lpr -h option */
 EXTERN char* Architecture_DYN;
+EXTERN int Athena_Z_compat_DYN;
 EXTERN char* Auth_DYN;			/* authentication to use to send to server */
 EXTERN char* Auth_client_filter_DYN;	/* client use authentication to server */
 EXTERN char* Auth_forward_DYN;	/* server use authentication when forwarding */
@@ -291,6 +292,7 @@ EXTERN char* Default_remote_host_DYN;
 EXTERN char* Default_tmp_dir_DYN;	/* default temporary file directory */
 EXTERN char* Destinations_DYN; /* printers that a route filter may return and we should query */
 EXTERN char* Env_names_DYN; /* environment information from config file */
+EXTERN int Extended_notification_DYN;
 EXTERN int FF_on_close_DYN; /* print a form feed when device is closed */
 EXTERN int FF_on_open_DYN; /* print a form feed when device is opened */
 EXTERN char* Filter_DYN; /* default filter */
@@ -309,6 +311,7 @@ EXTERN int Full_time_DYN; /* full or complete time format in messages */
 EXTERN char* IF_Filter_DYN; /* filter command, run on a per-file basis */
 EXTERN int IPV6Protocol_DYN;	/* IPV4 or IPV6 protocol */
 EXTERN int Ignore_requested_user_priority_DYN;	 /* ignore requested user priority */
+EXTERN int KA_DYN;
 EXTERN char* Kerberos_keytab_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_dest_id_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_life_DYN;	/* kerberos lifetime */
@@ -417,6 +420,7 @@ EXTERN int Use_queuename_DYN;	/* put queuename in control file */
 EXTERN int Use_queuename_flag_DYN;	/* Specified with the -Q option */
 EXTERN int Use_shorthost_DYN;	/* Use short hostname in control file information */
 EXTERN char* Xlate_format_DYN;	/* translate format ids */
+EXTERN char* Zwrite_DYN;
 
 #if defined(DMALLOC)
 #  include <dmalloc.h>
