@@ -1,9 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-_Name=Floppy Formatter
-_Comment=Format Floppy Disks
-Exec=gfloppy
-Terminal=false
-Icon=document-icons/i-floppy.png
-Type=Application
-Categories=GNOME;Application;System;
