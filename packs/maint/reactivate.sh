@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.61 2001-07-09 20:15:05 zacheiss Exp $
+# $Id: reactivate.sh,v 1.62 2001-07-11 12:34:22 zacheiss Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -202,6 +202,11 @@ fi
 
 # Clean up occasional leavings of emacs and esd.
 rm -rf /var/tmp/!!!SuperLock!!! /tmp/.esd
+
+# Remove utmp and wtmp so Solaris doesn't complain.
+if [ sun4 = "$HOSTTYPE" ]; then
+	rm -rf /var/adm/utmp /var/adm/wtmp
+fi
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
