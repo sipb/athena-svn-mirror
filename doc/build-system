@@ -131,25 +131,34 @@ to it) which does the following:
 	  (Omit the `if test "$motif" != "no"' test if you cannot
 	  build without Motif.  Also omit the AC_DEFINE(WITH_MOTIF).)
 
-	* Sets prefix to /usr/athena, datadir to '${prefix}/lib', and
-	  sbindir to '${prefix}/etc'.  You do not need to take these
-	  into account in configure.in; just put in your Makefile.in:
+	* Sets prefix to /usr/athena, datadir to '${prefix}/lib',
+	  sbindir to '${prefix}/etc', and sysconfdir to '/etc/athena'.
+	  You do not need to take these into account in configure.in;
+	  just put in your Makefile.in:
 
 		prefix=@prefix@
 		exec_prefix=@exec_prefix@
 		datadir=@datadir@
 		sbindir=@sbindir@
+		sysconfdir=@sysconfdir@
 
-	* Sets shell variables lbindir, lsbindir, and letcdir to
-	  /bin/athena, /etc/athena, and /etc/athena respectively.  If
-	  your build system needs to install files in /bin/athena or
-	  /etc/athena when built for the Athena environment, use the
-	  following in your configure.in:
+	  Your package should look for configuration files in /etc
+	  first and in ${sysconfdir} if they do not exist in /etc.
+	  This way a single configuration location, guaranteed to be
+	  on local disk, will work for all builds of your package, but
+	  configuration files can also be located centrally if
+	  desired.  If you have programs which reference pathnames
+	  in ${datadir} or other places under ${prefix}, it is
+	  encouraged that you allow your configuration files to
+	  override the compiled-in defaults for those directories.
+
+	* Sets shell variables lbindir and lsbindir to /bin/athena and
+	  /etc/athena respectively.  If your build system needs to
+	  install files in /bin/athena or /etc/athena when built for
+	  the Athena environment, use the following in your configure.in:
 
 		test -z "$lbindir" && lbindir='${bindir}'
 		test -z "$lsbindir" && lsbindir='${sbindir}'
-		test -z "$letcdir" && letcdir='${sysconfdir}'
-		AC_SUBST(letcdir)
 		AC_SUBST(lbindir)
 		AC_SUBST(lsbindir)
 
@@ -159,10 +168,8 @@ to it) which does the following:
 		exec_prefix=@exec_prefix@
 		bindir=@bindir@
 		sbindir=@sbindir@
-		sysconfdir=@sysconfdir@
 		lbindir=@lbindir@
 		lsbindir=@lsbindir@
-		etcdir=@etcdir@
 
 The build environment will ensure that the following things are true:
 
