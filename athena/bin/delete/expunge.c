@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.1 1989-01-27 02:57:58 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.2 1989-01-27 03:20:08 jik Exp $";
 #endif
 
 /*
@@ -157,6 +157,7 @@ usage()
      printf("     -n     noop\n");
      printf("     -v     verbose\n");
      printf("     -l     list files before expunging\n");
+     printf("     --     end options and start filenames\n");
 }
 
 
