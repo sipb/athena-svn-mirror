@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/regexp.c,v $
- *      $Author: jtkohl $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,10 +13,8 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_regexp_c[] = "$Id: regexp.c,v 1.3 1989-11-15 16:34:59 jtkohl Exp $";
+static char rcsid_regexp_c[] = "$Id: regexp.c,v 1.4 1991-06-20 09:20:45 jfc Exp $";
 #endif
-
-#include <zephyr/mit-copyright.h>
 
 #include <stdio.h>
 #include "regexp.h"
@@ -42,3 +40,35 @@ int ed_regexp_match_p(test_string, pattern)
 
     return(exec_retval);
 }
+
+
+/*
+ * This is for AUX.
+ * It is a wrapper around the C library regexp functions.
+ */
+
+#ifdef _AUX_SOURCE
+
+static char *re;
+
+char *re_comp(s)
+    char *s;
+{
+    if(!s)
+	return 0;
+    if(re)
+	free(re);
+
+    if(!(re = regcmp(s, (char *)0)))
+	return "Bad argument to re_comp";
+
+    return 0;
+}
+
+int re_exec(s)
+    char *s;
+{
+    return regex(re, s) != 0;
+}
+
+#endif
