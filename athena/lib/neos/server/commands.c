@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.4 1996-09-20 04:40:20 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.5 1997-11-14 22:29:02 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.4 1996-09-20 04:40:20 ghudson Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.5 1997-11-14 22:29:02 ghudson Exp $";
 #endif /* lint */
 
 #include <com_err.h>
@@ -35,7 +35,7 @@ static long rpc_ret_int = 0;
  * Initialize a session.  This includes making sure the course exists, etc.
  */
 
-init_res *init_1(params, rqstp)
+init_res *init_1_svc(params, rqstp)
      init_data *params;
      struct svc_req *rqstp;
 {
@@ -101,15 +101,9 @@ init_res *init_1(params, rqstp)
   /* 
    * Deal with Kerberos authentication
    */
-#ifndef SOLARIS
   if (krb_rd_req(&params->auth, KRB_SERVICE, my_hostname,
 		 svc_getcaller(rqstp->rq_xprt)->sin_addr.s_addr,
 		 &curconn->auth, "") != RD_AP_OK) {
-#else
-  if (krb_rd_req(&params->auth, KRB_SERVICE, my_hostname,
-		 svc_getrpccaller(rqstp->rq_xprt)->sin_addr.s_addr,
-		 &curconn->auth, "") != RD_AP_OK) {
-#endif /* SOLARIS */
     res.errno = ERR_WONT_BE_AUTHED;
     Debug(("ERROR init_1: %s\n", error_message(res.errno)));
     curconn->authed = 0;
@@ -158,7 +152,7 @@ init_res *init_1(params, rqstp)
  * Anyone can do this.  Is this a good thing?
  */
 
-stringlist_res *list_acl_1(aclname, rqstp)
+stringlist_res *list_acl_1_svc(aclname, rqstp)
      char **aclname;
      struct svc_req *rqstp;
 {
@@ -284,9 +278,9 @@ long *acl_do_add_del(params, rqstp, func)
 	DebugMulti(("Calling add_acl_1 for server %s\n",
 		    servers[i].name));
 	if (func == acl_add)
-	  res = (long *)_add_acl_1(params, servers[i].cl);
+	  res = add_acl_1(params, servers[i].cl);
 	else
-	  res = (long *)_delete_acl_1(params, servers[i].cl);
+	  res = delete_acl_1(params, servers[i].cl);
 	/* XXX */
 	if (!res)
 	  multi_conn_dropped(i);
@@ -304,7 +298,7 @@ long *acl_do_add_del(params, rqstp, func)
  * course.  This command requires "maint" access.
  */
 
-long *add_acl_1(params, rqstp)
+long *add_acl_1_svc(params, rqstp)
      acl_maint *params;
      struct svc_req *rqstp;
 {
@@ -320,7 +314,7 @@ long *add_acl_1(params, rqstp)
  * course.  This command requires "maint" access.
  */
 
-long *delete_acl_1(params, rqstp)
+long *delete_acl_1_svc(params, rqstp)
      acl_maint *params;
      struct svc_req *rqstp;
 {
@@ -335,7 +329,7 @@ long *delete_acl_1(params, rqstp)
  * Create a new course.  This requires GOD access.
  */
 
-long *create_course_1(coursename, rqstp)
+long *create_course_1_svc(coursename, rqstp)
      char **coursename;
      struct svc_req *rqstp;
 {
@@ -408,7 +402,7 @@ long *create_course_1(coursename, rqstp)
 	DebugMulti(("Calling create_course_1 for server %s\n",
 		    servers[i].name));
 	/* XXX Who owns it?? */
-	res = (long *)_create_course_1(coursename, servers[i].cl);
+	res = create_course_1(coursename, servers[i].cl);
 	/* XXX */
 	if (!res)
 	  multi_conn_dropped(i);
@@ -445,7 +439,7 @@ long *create_course_1(coursename, rqstp)
  * Delete a course.  This requires GOD access.
  */
 
-long *delete_course_1(coursename, rqstp)
+long *delete_course_1_svc(coursename, rqstp)
      char **coursename;
      struct svc_req *rqstp;
 {
@@ -511,7 +505,7 @@ long *delete_course_1(coursename, rqstp)
       if (servers[i].cl) {
 	DebugMulti(("Calling delete_course_1 for server %s\n",
 		    servers[i].name));
-	res = (long *)_delete_course_1(coursename, servers[i].cl);
+	res = delete_course_1(coursename, servers[i].cl);
 	/* XXX */
 	if (!res)
 	  multi_conn_dropped(i);
@@ -529,7 +523,7 @@ long *delete_course_1(coursename, rqstp)
  * List available courses.
  */
 
-stringlist_res *list_courses_1(dummy, rqstp)
+stringlist_res *list_courses_1_svc(dummy, rqstp)
      int *dummy;
      struct svc_req *rqstp;
 {
@@ -580,7 +574,7 @@ stringlist_res *list_courses_1(dummy, rqstp)
  * security to make sure people can't look at each other's papers, etc.
  */
 
-Paperlist_res *list_1(paper, rqstp)
+Paperlist_res *list_1_svc(paper, rqstp)
      Paper *paper;
      struct svc_req *rqstp;
 {
@@ -675,7 +669,7 @@ Paperlist_res *list_1(paper, rqstp)
  * Start a file transfer from the client for this connection.
  */
 
-long *send_file_1(paper, rqstp)
+long *send_file_1_svc(paper, rqstp)
      Paper *paper;
      struct svc_req *rqstp;
 {
@@ -757,7 +751,7 @@ long *send_file_1(paper, rqstp)
  * Store a burst of data into the currently open file.
  */
 
-long *send_burst_1(params, rqstp)
+long *send_burst_1_svc(params, rqstp)
      burst_data *params;
      struct svc_req *rqstp;
 {
@@ -799,8 +793,8 @@ long *send_burst_1(params, rqstp)
  * Finish a file send and make the database entry.
  */
 
-long *end_send_1(params, rqstp)
-     int params;
+long *end_send_1_svc(params, rqstp)
+     int *params;
      struct svc_req *rqstp;
 {
   Debug(("end_send_1:\n"));
@@ -840,7 +834,7 @@ long *end_send_1(params, rqstp)
  * Retrieve a file from the local server.
  */
 
-long *retrieve_file_1(paper, rqstp)
+long *retrieve_file_1_svc(paper, rqstp)
      Paper *paper;
      struct svc_req *rqstp;
 {
@@ -905,7 +899,7 @@ long *retrieve_file_1(paper, rqstp)
  * Retrieve a portion of a file from the local server.
  */
 
-long *portion_1(portion, rqstp)
+long *portion_1_svc(portion, rqstp)
      portionspec *portion;
      struct svc_req *rqstp;
 {
@@ -985,7 +979,7 @@ long *portion_1(portion, rqstp)
  * Retrieve a "burst" of data from the currently open file.
  */
 
-retrieve_res *retrieve_burst_1(params, rqstp)
+retrieve_res *retrieve_burst_1_svc(params, rqstp)
      int *params;
      struct svc_req *rqstp;
 {
@@ -1141,7 +1135,7 @@ long *do_copy_move(params, rqstp, move)
  * Copy a paper to another paper.  Requires "grader" access.
  */
 
-long *copy_1(params, rqstp)
+long *copy_1_svc(params, rqstp)
      TwoPaper *params;
      struct svc_req *rqstp;
 {
@@ -1154,7 +1148,7 @@ long *copy_1(params, rqstp)
  * Move a paper to another paper.  Requires "grader" access.
  */
 
-long *move_1(params, rqstp)
+long *move_1_svc(params, rqstp)
      TwoPaper *params;
      struct svc_req *rqstp;
 {
@@ -1167,7 +1161,7 @@ long *move_1(params, rqstp)
  * Delete a paper.  Requires "grader" access.
  */
 
-long *delete_1(paper, rqstp)
+long *delete_1_svc(paper, rqstp)
      Paper *paper;
      struct svc_req *rqstp;
 {
@@ -1217,7 +1211,7 @@ long *delete_1(paper, rqstp)
  * realm.  Error if not compiled to use Kerberos.
  */
 
-krb_info_res *krb_info_1(dummy, rqstp)
+krb_info_res *krb_info_1_svc(dummy, rqstp)
      int *dummy;
      struct svc_req *rqstp;
 {
@@ -1253,7 +1247,7 @@ krb_info_res *krb_info_1(dummy, rqstp)
  * return an RPC value if it succeeds.
  */
 
-long *kill_server_1(dummy, rqstp)
+long *kill_server_1_svc(dummy, rqstp)
      int *dummy;
      struct svc_req *rqstp;
 {
@@ -1283,7 +1277,7 @@ long *kill_server_1(dummy, rqstp)
  * Return server statistics.
  */
 
-server_stats *server_stats_1(dummy, rqstp)
+server_stats *server_stats_1_svc(dummy, rqstp)
      int *dummy;
      struct svc_req *rqstp;
 {
