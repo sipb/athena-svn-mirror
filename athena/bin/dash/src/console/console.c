@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.15 1998-07-16 20:01:38 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.16 1998-10-29 21:39:57 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -24,6 +24,7 @@ static char rcsid[] =
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
+#include <syslog.h>
 #include <Jets.h>
 #include <Window.h>
 #include <Button.h>
@@ -429,21 +430,23 @@ int input(fd, pfd)
   int redo = 0;
   int cl, vl, l;
   char ctrl[2];
-  int i = 0, j;
+  int i = 0, j, err;
   static int eol = 1;
 
   ctrl[0] = '^';
   l = read(*pfd, inputbuf, INPUTSIZE);
 
-  if (l < 0)
+  if (l < 0 && errno != EIO)
     {
+      err = errno;
+      syslog(LOG_ERR, "Error reading from fd %d: %m", *pfd);
       XjReadCallback((XjCallbackProc)NULL, *pfd, (caddr_t) pfd);
       sprintf(inputbuf, "Error reading from fd %d: %s\n", *pfd,
-	      strerror(errno));
+	      strerror(err));
       l = strlen(inputbuf);
     }
 
-  if (l != 0)
+  if (l > 0)
     {
       while (i < l)
 	{
@@ -671,6 +674,7 @@ main(argc, argv)
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
 
+  openlog("console", 0, LOG_USER);
 
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
