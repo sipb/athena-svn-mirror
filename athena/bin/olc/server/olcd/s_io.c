@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.15 1990-07-16 08:30:12 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: s_io.c,v 1.16 1990-07-16 10:16:47 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.15 1990-07-16 08:30:12 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.16 1990-07-16 10:16:47 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -107,7 +107,9 @@ read_request(fd, request)
   printf("%d %d\n",request->requester.uid,request->version);
 #endif TEST
 
-  if ((request->version != VERSION_4) && (request->version != VERSION_3))
+  if ((request->version != VERSION_5)  &&
+      (request->version != VERSION_4)  &&
+      (request->version != VERSION_3))
     {
       sprintf(msgbuf,
 	      "Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
