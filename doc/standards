@@ -47,9 +47,12 @@ if you haven't set it to something else in your .emacs.)  Remember to
 drop to the next line before each open brace.
 
 When writing return statements, do not put parentheses around the
-return value; just write "return foo;".  This convention is not
+return value; just write "return foo;".  (This convention is not
 specified in the Gnu coding standards, but is consistent with the
-examples in the standards.
+examples in the standards.)
+
+Put braces around the bodies of control constructs (if, while, for,
+do, switch) if they are more than one line long.
 
 Each C source file should begin with an MIT copyright statement, a
 comment describing what the file does, and a line:
