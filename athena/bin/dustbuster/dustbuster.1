@@ -1,0 +1,38 @@
+.\" $Id: dustbuster.1,v 1.1 2001-04-30 15:25:42 ghudson Exp $
+.\"
+.\" Copyright 2001 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.TH DUSTBUSTER 1 "28 Apr 2001"
+.SH NAME
+dustbuster \- Limit a command to the lifetime of the current login session
+.SH SYNOPSIS
+.B dustbuster \fIprogname\fP \fIarguments\fP ...
+.SH DESCRIPTION
+.B dustbuster
+runs the specified command, and ensures that the resulting process
+receives a SIGHUP when the current login session is over.
+.PP
+If the environment variable XSESSION is set (it is set by the Athena
+default xsession script), then
+.B dustbuster
+determines when the current login session is over by opening a
+connection to the default X display and waiting for it to be closed.
+If the environment variable XSESSION is not set, then
+.B dustbuster
+periodically (once every five seconds) checks to see whether the
+controlling tty can be opened.
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 2001 by the Massachusetts Institute of Technology.
