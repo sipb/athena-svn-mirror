@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.20 2004-03-31 00:38:13 rbasch Exp $
+# $Id: finish-update.sh,v 1.21 2004-05-06 20:10:32 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -42,6 +42,12 @@ if [ -s "$MIT_NONCORE_PACKAGES" ]; then
   done
   echo "Finished installing Athena packages."
 fi
+
+# Run catman to format Athena man pages, and create the windex
+# database.  Suppress all output, since catman will complain about
+# pages in lockers which cannot be read without tokens (e.g. psutils).
+echo "Formatting Athena man pages."
+/usr/bin/catman -M $UPDATE_ROOT/usr/athena/man > /dev/null 2>&1
 
 rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
