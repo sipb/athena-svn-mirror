@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY pango-Text-Processing SYSTEM "xml/main.xml">
+<!ENTITY pango-Glyph-Storage SYSTEM "xml/glyphs.xml">
+<!ENTITY pango-Coverage-Maps SYSTEM "xml/coverage-maps.xml">
+<!ENTITY pango-Fonts SYSTEM "xml/fonts.xml">
+<!ENTITY pango-Text-Attributes SYSTEM "xml/text-attributes.xml">
+<!ENTITY pango-Tab-Stops SYSTEM "xml/tab-stops.xml">
+<!ENTITY pango-Layout-Objects SYSTEM "xml/layout.xml">
+<!ENTITY pango-Engines SYSTEM "xml/engines.xml">
+<!ENTITY pango-Indic-Engine-Support SYSTEM "xml/pango-indic.xml">
+<!ENTITY pango-Modules SYSTEM "xml/modules.xml">
+<!ENTITY pango-X-Fonts-and-Rendering SYSTEM "xml/x-fonts.xml">
+<!ENTITY pango-Win32-Fonts-and-Rendering SYSTEM "xml/win32-fonts.xml">
+<!ENTITY pango-FreeType-Fonts-and-Rendering SYSTEM "xml/freetype-fonts.xml">
+<!ENTITY pango-Xft-Fonts-and-Rendering SYSTEM "xml/xft-fonts.xml">
+<!ENTITY pango-OpenType-Font-Handling SYSTEM "xml/opentype.xml">
+<!ENTITY markup-format SYSTEM "pango_markup.sgml">
+<!ENTITY version SYSTEM "version.xml">
+]>
+<book id="index">
+  <bookinfo>
+    <title>Pango Reference Manual</title>
+    <releaseinfo>for Pango &version;</releaseinfo>
+  </bookinfo>
+
+  <chapter id="pango">
+    <title>Basic Pango Interfaces</title>
+    &pango-Text-Processing;
+    &pango-Glyph-Storage;
+    &pango-Fonts;
+    &pango-Text-Attributes;
+    &pango-Tab-Stops;
+    &markup-format;
+    &pango-Layout-Objects;
+  </chapter>
+
+  <chapter id="rendering">
+    <title>Rendering with Pango</title>
+    &pango-X-Fonts-and-Rendering;
+    &pango-Win32-Fonts-and-Rendering;
+    &pango-FreeType-Fonts-and-Rendering;
+    &pango-Xft-Fonts-and-Rendering;
+  </chapter>
+
+  <chapter id="lowlevel">
+    <title>Low Level Functionality</title>
+    &pango-OpenType-Font-Handling;
+    &pango-Coverage-Maps;
+    &pango-Engines;
+    &pango-Indic-Engine-Support;
+    &pango-Modules;
+    </chapter>
+</book>

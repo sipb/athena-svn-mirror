@@ -1,0 +1,389 @@
+<!-- ##### SECTION Title ##### -->
+Rendering
+
+<!-- ##### SECTION Short_Description ##### -->
+Functions to run the rendering pipeline
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+The Pango rendering pipeline takes a string of
+Unicode characters and converts it into glyphs.
+The functions described in this section accomplish
+various steps of this process.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT PangoContext ##### -->
+<para>
+The #PangoContext structure stores global information
+used to control the itemization process. It contains
+the following fields:
+
+<informaltable pgwide="1" frame="none" role="struct">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry>gchar *lang;</entry>
+<entry>the global default language in the standard form
+       "fr" or "fr_FR". (This may be overriden
+       with the @lang_info parameter to pango_itemize().)</entry>
+</row>
+
+<row>
+<entry>gchar *render_type;</entry>
+<entry>a string identifier for the rendering system to use,
+       for instance %PANGO_RENDER_TYPE_X</entry>
+</row>
+
+</tbody></tgroup></informaltable>
+</para>
+
+
+<!-- ##### STRUCT PangoItem ##### -->
+<para>
+The #PangoItem structure stores information about
+a segment of text. It contains the following fields:
+
+<informaltable pgwide="1" frame="none" role="struct">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry>gint offset;</entry>
+<entry>the offset of the segment from the beginning of the
+       string in bytes.</entry>
+</row>
+
+<row>
+<entry>gint length;</entry>
+<entry>the length of the segment in bytes.</entry>
+</row>
+
+<row>
+<entry>gint num_chars;</entry>
+<entry>the length of the segment in characters.</entry>
+</row>
+
+<row>
+<entry>gint analysis;</entry>
+<entry>the properties of the segment.</entry>
+</row>
+
+</tbody></tgroup></informaltable>
+</para>
+
+@offset: 
+@length: 
+@num_chars: 
+@analysis: 
+
+<!-- ##### STRUCT PangoAnalysis ##### -->
+<para>
+The #PangoAnalysis structure stores information about
+the properties of a segment of text. It has the following
+fields:
+
+<informaltable pgwide="1" frame="none" role="struct">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry>#PangoEngineShape *shape_engine;</entry>
+<entry>the engine for doing rendering-system-dependent processing</entry>
+</row>
+
+<row>
+<entry>#PangoEngineLang *lang_engine;</entry>
+<entry>the engine for doing rendering-system-independent processing</entry>
+</row>
+
+<row>
+<entry>guint8 level;</entry>
+<entry>the bidrectional level for this segment.</entry>
+</row>
+
+</tbody></tgroup></informaltable>
+</para>
+
+@shape_engine: 
+@lang_engine: 
+@font: 
+@level: 
+@language: 
+@extra_attrs: 
+
+<!-- ##### ENUM PangoDirection ##### -->
+<para>
+The #PangoDirection type represents the direction of writing
+for text.
+</para>
+
+@PANGO_DIRECTION_LTR: The text is written left-to-right
+@PANGO_DIRECTION_RTL: The text is written right-to-left
+@PANGO_DIRECTION_TTB_LTR: The text is written vertically
+                          top-to-bottom, with the rows ordered from
+                          left to right.
+@PANGO_DIRECTION_TTB_RTL: The text is written vertically
+                          top-to-bottom, with the rows ordered from
+                          right to left.
+
+<!-- ##### MACRO PANGO_TYPE_DIRECTION ##### -->
+<para>
+The GObject type for #PangoDirection.
+</para>
+
+
+
+<!-- ##### FUNCTION pango_itemize ##### -->
+<para>
+
+</para>
+
+@context: 
+@text: 
+@start_index: 
+@length: 
+@attrs: 
+@cached_iter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_item_free ##### -->
+<para>
+
+</para>
+
+@item: 
+
+
+<!-- ##### FUNCTION pango_item_copy ##### -->
+<para>
+
+</para>
+
+@item: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_item_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_item_split ##### -->
+<para>
+
+</para>
+
+@orig: 
+@split_index: 
+@split_offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_reorder_items ##### -->
+<para>
+
+</para>
+
+@logical_items: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_set_font_map ##### -->
+<para>
+
+</para>
+
+@context: 
+@font_map: 
+
+
+<!-- ##### FUNCTION pango_context_get_font_description ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_set_font_description ##### -->
+<para>
+
+</para>
+
+@context: 
+@desc: 
+
+
+<!-- ##### FUNCTION pango_context_get_language ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_set_language ##### -->
+<para>
+
+</para>
+
+@context: 
+@language: 
+
+
+<!-- ##### FUNCTION pango_context_get_base_dir ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_set_base_dir ##### -->
+<para>
+
+</para>
+
+@context: 
+@direction: 
+
+
+<!-- ##### FUNCTION pango_context_load_font ##### -->
+<para>
+
+</para>
+
+@context: 
+@desc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_load_fontset ##### -->
+<para>
+
+</para>
+
+@context: 
+@desc: 
+@language: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_get_metrics ##### -->
+<para>
+
+</para>
+
+@context: 
+@desc: 
+@language: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_list_families ##### -->
+<para>
+
+</para>
+
+@context: 
+@families: 
+@n_families: 
+
+
+<!-- ##### FUNCTION pango_break ##### -->
+<para>
+
+</para>
+
+@text: 
+@length: 
+@analysis: 
+@attrs: 
+@attrs_len: 
+
+
+<!-- ##### FUNCTION pango_get_log_attrs ##### -->
+<para>
+
+</para>
+
+@text: 
+@length: 
+@level: 
+@language: 
+@log_attrs: 
+@attrs_len: 
+
+
+<!-- ##### FUNCTION pango_find_paragraph_boundary ##### -->
+<para>
+
+</para>
+
+@text: 
+@length: 
+@paragraph_delimiter_index: 
+@next_paragraph_start: 
+
+
+<!-- ##### FUNCTION pango_default_break ##### -->
+<para>
+
+</para>
+
+@text: 
+@length: 
+@analysis: 
+@attrs: 
+@attrs_len: 
+
+
+<!-- ##### STRUCT PangoLogAttr ##### -->
+<para>
+The #PangoLogAttr structure stores information
+about the attributes of a single character.
+</para>
+
+@is_line_break: 
+@is_mandatory_break: 
+@is_char_break: 
+@is_white: 
+@is_cursor_position: 
+@is_word_start: 
+@is_word_end: 
+@is_sentence_boundary: 
+@is_sentence_start: 
+@is_sentence_end: 
+
+<!-- ##### FUNCTION pango_shape ##### -->
+<para>
+
+</para>
+
+@text: 
+@length: 
+@analysis: 
+@glyphs: 
+
+

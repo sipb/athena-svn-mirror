@@ -1,0 +1,254 @@
+<refentry id="pango-X-Rendering">
+<refmeta>
+<refentrytitle>X Rendering</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>PANGO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>X Rendering</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="PANGO-RENDER-TYPE-X-CAPS">PANGO_RENDER_TYPE_X</link>
+<link linkend="PangoContext">PangoContext</link>* <link linkend="pango-x-get-context">pango_x_get_context</link>           (<link linkend="Display">Display</link> *display);
+void        <link linkend="pango-x-context-set-funcs">pango_x_context_set_funcs</link>       (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="PangoGetGCFunc">PangoGetGCFunc</link> get_gc_func,
+                                             <link linkend="PangoFreeGCFunc">PangoFreeGCFunc</link> free_gc_func);
+<link linkend="GC-CAPS">GC</link>          (<link linkend="PangoGetGCFunc">*PangoGetGCFunc</link>)               (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="PangoColor">PangoColor</link> *color,
+                                             <link linkend="GC-CAPS">GC</link> base_gc);
+void        (<link linkend="PangoFreeGCFunc">*PangoFreeGCFunc</link>)              (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="GC-CAPS">GC</link> gc);
+void        <link linkend="pango-x-render">pango_x_render</link>                  (<link linkend="Display">Display</link> *display,
+                                             <link linkend="Drawable">Drawable</link> d,
+                                             <link linkend="GC-CAPS">GC</link> gc,
+                                             <link linkend="PangoFont">PangoFont</link> *font,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
+                                             <link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y);
+void        <link linkend="pango-x-render-layout-line">pango_x_render_layout_line</link>      (<link linkend="Display">Display</link> *display,
+                                             <link linkend="Drawable">Drawable</link> drawable,
+                                             <link linkend="GC-CAPS">GC</link> gc,
+                                             <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
+                                             int x,
+                                             int y);
+void        <link linkend="pango-x-render-layout">pango_x_render_layout</link>           (<link linkend="Display">Display</link> *display,
+                                             <link linkend="Drawable">Drawable</link> drawable,
+                                             <link linkend="GC-CAPS">GC</link> gc,
+                                             <link linkend="PangoLayout">PangoLayout</link> *layout,
+                                             int x,
+                                             int y);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="PANGO-RENDER-TYPE-X-CAPS"/>PANGO_RENDER_TYPE_X</title>
+<programlisting>#define PANGO_RENDER_TYPE_X "PangoRenderX"
+</programlisting>
+<para>
+A string constant identifying the X renderer. The associated quark (see 
+<link linkend="g-quark-from-string">g_quark_from_string</link>()) is used to identify the renderer in <link linkend="pango-find-map">pango_find_map</link>(). 
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-x-get-context"/>pango_x_get_context ()</title>
+<programlisting><link linkend="PangoContext">PangoContext</link>* pango_x_get_context           (<link linkend="Display">Display</link> *display);</programlisting>
+<para>
+Retrieves a <link linkend="PangoContext">PangoContext</link> appropriate for rendering with X fonts on the
+given display.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>display</parameter>&nbsp;:</term>
+<listitem><simpara> an X display (As returned by <link linkend="XOpenDisplay">XOpenDisplay</link>().)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoContext">PangoContext</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-x-context-set-funcs"/>pango_x_context_set_funcs ()</title>
+<programlisting>void        pango_x_context_set_funcs       (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="PangoGetGCFunc">PangoGetGCFunc</link> get_gc_func,
+                                             <link linkend="PangoFreeGCFunc">PangoFreeGCFunc</link> free_gc_func);</programlisting>
+<para>
+Sets the functions that will be used to get GC's in various colors when
+rendering layouts with this context.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_gc_func</parameter>&nbsp;:</term>
+<listitem><simpara> function called to create a new GC for a given color.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>free_gc_func</parameter>&nbsp;:</term>
+<listitem><simpara> function called to free a GC created with <parameter>get_gc_func</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="PangoGetGCFunc"/>PangoGetGCFunc ()</title>
+<programlisting><link linkend="GC-CAPS">GC</link>          (*PangoGetGCFunc)               (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="PangoColor">PangoColor</link> *color,
+                                             <link linkend="GC-CAPS">GC</link> base_gc);</programlisting>
+<para>
+Specifies the type of the function used to create a new GC for a given
+color. 
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="PangoContext">PangoContext</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>color</parameter>&nbsp;:</term>
+<listitem><simpara>the color to create a new GC for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>base_gc</parameter>&nbsp;:</term>
+<listitem><simpara>the GC to base the new GC on.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new GC.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="PangoFreeGCFunc"/>PangoFreeGCFunc ()</title>
+<programlisting>void        (*PangoFreeGCFunc)              (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="GC-CAPS">GC</link> gc);</programlisting>
+<para>
+Specifies the type of the function used to free a GC created with 
+the corresponding <link linkend="PangoGetGCFunc">PangoGetGCFunc</link> function.
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="PangoContext">PangoContext</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
+<listitem><simpara>the GC to free.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-x-render"/>pango_x_render ()</title>
+<programlisting>void        pango_x_render                  (<link linkend="Display">Display</link> *display,
+                                             <link linkend="Drawable">Drawable</link> d,
+                                             <link linkend="GC-CAPS">GC</link> gc,
+                                             <link linkend="PangoFont">PangoFont</link> *font,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
+                                             <link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y);</programlisting>
+<para>
+Renders a <link linkend="PangoGlyphString">PangoGlyphString</link> onto an X drawable.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>display</parameter>&nbsp;:</term>
+<listitem><simpara> the X display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>d</parameter>&nbsp;:</term>
+<listitem><simpara>       the drawable on which to draw string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
+<listitem><simpara>      the graphics context.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
+<listitem><simpara>    the font in which to draw the string.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>  the glyph string to draw.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>       the x position of start of string (in pixels).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>       the y position of baseline (in pixels).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-x-render-layout-line"/>pango_x_render_layout_line ()</title>
+<programlisting>void        pango_x_render_layout_line      (<link linkend="Display">Display</link> *display,
+                                             <link linkend="Drawable">Drawable</link> drawable,
+                                             <link linkend="GC-CAPS">GC</link> gc,
+                                             <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
+                                             int x,
+                                             int y);</programlisting>
+<para>
+Renders a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto an X drawable.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>display</parameter>&nbsp;:</term>
+<listitem><simpara>   the X display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
+<listitem><simpara>  the drawable on which to draw.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
+<listitem><simpara>        GC to use for uncolored drawing.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>line</parameter>&nbsp;:</term>
+<listitem><simpara>      a <link linkend="PangoLayoutLine">PangoLayoutLine</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>         the x position of start of string (in pixels).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>         the y position of baseline (in pixels).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-x-render-layout"/>pango_x_render_layout ()</title>
+<programlisting>void        pango_x_render_layout           (<link linkend="Display">Display</link> *display,
+                                             <link linkend="Drawable">Drawable</link> drawable,
+                                             <link linkend="GC-CAPS">GC</link> gc,
+                                             <link linkend="PangoLayout">PangoLayout</link> *layout,
+                                             int x,
+                                             int y);</programlisting>
+<para>
+Renders a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto an X drawable.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>display</parameter>&nbsp;:</term>
+<listitem><simpara>   the X display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
+<listitem><simpara>  the drawable on which to draw.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
+<listitem><simpara>        GC to use for uncolored drawing.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara>    a <link linkend="PangoLayout">PangoLayout</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>         the x position of the left of the layout (in pixels).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>         the y position of the top of the layout (in pixels).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

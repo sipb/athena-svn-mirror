@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Engines</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Pango Reference Manual"><link rel="up" href="lowlevel.html" title="Low Level Functionality"><link rel="previous" href="pango-Coverage-Maps.html" title="Coverage Maps"><link rel="next" href="pango-Indic-Engine-Support.html" title="Indic Engine Support"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="pango-Coverage-Maps.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="lowlevel.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Pango Reference Manual</th><td><a accesskey="n" href="pango-Indic-Engine-Support.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="pango-Engines"></a><div class="titlepage"></div><div class="refnamediv"><h2>Engines</h2><p>Engines &#8212; Language-specific and rendering-system-specific processing</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="pango-Engines.html#PangoEngineInfo">PangoEngineInfo</a>;
+struct      <a href="pango-Engines.html#PangoEngineRange">PangoEngineRange</a>;
+struct      <a href="pango-Engines.html#PangoEngine">PangoEngine</a>;
+struct      <a href="pango-Engines.html#PangoEngineLang">PangoEngineLang</a>;
+struct      <a href="pango-Engines.html#PangoEngineShape">PangoEngineShape</a>;
+#define     <a href="pango-Engines.html#PANGO-ENGINE-TYPE-LANG-CAPS">PANGO_ENGINE_TYPE_LANG</a>
+#define     <a href="pango-Engines.html#PANGO-ENGINE-TYPE-SHAPE-CAPS">PANGO_ENGINE_TYPE_SHAPE</a>
+#define     <a href="pango-Engines.html#PANGO-RENDER-TYPE-NONE-CAPS">PANGO_RENDER_TYPE_NONE</a>
+void        <a href="pango-Engines.html#script-engine-list">script_engine_list</a>              (<a href="pango-Engines.html#PangoEngineInfo">PangoEngineInfo</a> **engines,
+                                             int *n_engines);
+<a href="pango-Engines.html#PangoEngine">PangoEngine</a>* <a href="pango-Engines.html#script-engine-load">script_engine_load</a>             (const char *id);
+void        <a href="pango-Engines.html#script-engine-unload">script_engine_unload</a>            (<a href="pango-Engines.html#PangoEngine">PangoEngine</a> *engine);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+Pango utilizes a module architecture in which the language-specific
+and render-system-specific components are provided by loadable
+modules. Each loadable module supplies one or more
+<i>engines</i>.  Each <i>engine</i>
+has an associated <i>engine type</i> and
+<i>render type</i>. These two types are represented by
+strings.
+</p><p>
+Each dynamically-loaded module exports several functions which provide
+the public API. These functions are <a href="pango-Engines.html#script-engine-list">script_engine_list</a>(),
+<a href="pango-Engines.html#script-engine-load">script_engine_load</a>() and <a href="pango-Engines.html#script-engine-unload">script_engine_unload</a>().  The latter two
+functions are used for loading and unloading modules, while the first
+function is used when building a catalog of all available modules.
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="PangoEngineInfo"></a>struct PangoEngineInfo</h3><pre class="programlisting">struct PangoEngineInfo {
+
+  gchar *id;
+  gchar *engine_type;
+  gchar *render_type;
+  PangoEngineRange *ranges;
+  gint n_ranges;
+};
+</pre><p>
+The <a href="pango-Engines.html#PangoEngineInfo">PangoEngineInfo</a> structure contains information about a particular
+engine. It contains the following fields:
+
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td>gchar *id;</td><td>a unique string ID for the engine.</td></tr><tr><td>gchar *engine_type;</td><td>a string identifying the engine type.</td></tr><tr><td>gchar *render type;</td><td>a string identifying the render type.</td></tr><tr><td><a href="pango-Engines.html#PangoEngineRange">PangoEngineRange</a> *ranges;</td><td>a pointer to an array of <a href="pango-Engines.html#PangoEngineRange">PangoEngineRange</a>
+       structures. Each structure contains information
+       about a range of Unicode code points that
+       this engine handles.</td></tr><tr><td>gint n_ranges;</td><td>the number of elements in <i><tt>ranges</tt></i>.</td></tr></tbody></table></div><p>
+</p></div><hr><div class="refsect2"><h3><a name="PangoEngineRange"></a>struct PangoEngineRange</h3><pre class="programlisting">struct PangoEngineRange {
+
+  guint32 start;
+  guint32 end;
+  gchar *langs;
+};
+</pre><p>
+The PangoEngineRange structure contains
+information about a range of Unicode code
+points. It contains the following fields:
+
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td>guint32 start;</td><td>the first code point in the range.</td></tr><tr><td>guint32 end;</td><td>the last code point for the range.</td></tr><tr><td>gchar *langs;</td><td>A semicolon separated list of languages that this
+       engine handles for this range. This may be empty, 
+       in which case the engine is saying that it is a
+       fallback choice for all languages for this range,
+       but should not be used if another engine 
+       indicates that it is specific for the language for
+       a given code point. An entry in this list of &quot;*&quot;
+       indicates that this engine is specific to all
+       languages for this range.</td></tr></tbody></table></div><p>
+</p></div><hr><div class="refsect2"><h3><a name="PangoEngine"></a>struct PangoEngine</h3><pre class="programlisting">struct PangoEngine {
+
+  gchar *id;
+  gchar *type;
+  gint length;
+};
+</pre><p>
+The <a href="pango-Engines.html#PangoEngine">PangoEngine</a> structure contains basic
+information common to all script engines. It
+contains the following fields:
+
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td>gchar *id;</td><td>a unique string ID for this language engine.</td></tr><tr><td>gchar *type;</td><td>The &quot;type&quot; of the engine. (Is this engine type or render type??).</td></tr><tr><td>gint length;</td><td>the length of the entire structure in bytes. This is 
+       provided so that new functions can be added at the
+       end of subtypes of <a href="pango-Engines.html#PangoEngine">PangoEngine</a> without breaking
+       older modules.</td></tr></tbody></table></div><p>
+</p></div><hr><div class="refsect2"><h3><a name="PangoEngineLang"></a>struct PangoEngineLang</h3><pre class="programlisting">struct PangoEngineLang {
+
+  PangoEngine engine;
+  void (*script_break) (const char    *text,
+			int            len,
+			PangoAnalysis *analysis,
+			PangoLogAttr  *attrs,
+                        int            attrs_len);
+};
+</pre><p>
+The <a href="pango-Engines.html#PangoEngineLang">PangoEngineLang</a> structure extends the
+basic <a href="pango-Engines.html#PangoEngine">PangoEngine</a> structure to engines that
+deal with the rendering-system independent part
+of of the rendering pipeline. It contains the following fields:
+
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td><a href="pango-Engines.html#PangoEngine">PangoEngine</a> engine;</td><td>A nested structure containing basic engine data.</td></tr><tr><td>void (*script_break) (...);</td><td>A function that provides an implementation
+       for <a href="pango-Text-Processing.html#pango-break">pango_break</a>().</td></tr></tbody></table></div><p>
+</p></div><hr><div class="refsect2"><h3><a name="PangoEngineShape"></a>struct PangoEngineShape</h3><pre class="programlisting">struct PangoEngineShape {
+
+  PangoEngine engine;
+  void (*script_shape) (PangoFont        *font,
+			const char       *text,
+			int               length,
+			PangoAnalysis    *analysis,
+			PangoGlyphString *glyphs);
+  PangoCoverage *(*get_coverage) (PangoFont        *font,
+				  PangoLanguage    *language);
+};
+</pre><p>
+The <a href="pango-Engines.html#PangoEngineShape">PangoEngineShape</a> structure extends the
+basic <a href="pango-Engines.html#PangoEngine">PangoEngine</a> structure to engines that
+deal with the rendering-system dependent part
+of of the rendering pipeline. It contains the following fields:
+
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td><a href="pango-Engines.html#PangoEngine">PangoEngine</a> engine;</td><td>A nested structure containing basic engine data.</td></tr><tr><td> void (*script_shape) (...);</td><td>A function that provides an implementation
+       for pango_shape.</td></tr></tbody></table></div><p>
+</p></div><hr><div class="refsect2"><h3><a name="PANGO-ENGINE-TYPE-LANG-CAPS"></a>PANGO_ENGINE_TYPE_LANG</h3><pre class="programlisting">#define PANGO_ENGINE_TYPE_LANG &quot;PangoEngineLang&quot;
+</pre><p>
+A string constant defining the engine type
+for <i>language engines</i>.
+These engines have a engine structure of 
+type <a href="pango-Engines.html#PangoEngineLang">PangoEngineLang</a>.
+</p></div><hr><div class="refsect2"><h3><a name="PANGO-ENGINE-TYPE-SHAPE-CAPS"></a>PANGO_ENGINE_TYPE_SHAPE</h3><pre class="programlisting">#define PANGO_ENGINE_TYPE_SHAPE &quot;PangoEngineShape&quot;
+</pre><p>
+A string constant defining the engine type
+for <i>shaping engines</i>.
+These engines have a engine structure of 
+type <a href="pango-Engines.html#PangoEngineShape">PangoEngineShape</a>.
+</p></div><hr><div class="refsect2"><h3><a name="PANGO-RENDER-TYPE-NONE-CAPS"></a>PANGO_RENDER_TYPE_NONE</h3><pre class="programlisting">#define PANGO_RENDER_TYPE_NONE &quot;PangoRenderNone&quot;
+</pre><p>
+A string constant defining the render type
+for engines that are not rendering-system 
+specific.
+</p></div><hr><div class="refsect2"><h3><a name="script-engine-list"></a>script_engine_list ()</h3><pre class="programlisting">void        script_engine_list              (<a href="pango-Engines.html#PangoEngineInfo">PangoEngineInfo</a> **engines,
+                                             int *n_engines);</pre><p>
+Function to be provided by a module to list the engines that the
+module supplies. The function stores a pointer to an array
+of <a href="pango-Engines.html#PangoEngineInfo">PangoEngineInfo</a> structures and the length of that array in
+the given location.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>engines</tt></i> :</span></td><td>location to store a pointer to an array of engines.
+</td></tr><tr><td><span class="term"><i><tt>n_engines</tt></i> :</span></td><td>location to store the number of elements in <i><tt>engines</tt></i>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="script-engine-load"></a>script_engine_load ()</h3><pre class="programlisting"><a href="pango-Engines.html#PangoEngine">PangoEngine</a>* script_engine_load             (const char *id);</pre><p>
+Function to be provided by a module to load a particular engine.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>id</tt></i> :</span></td><td>the ID from the <a href="pango-Engines.html#PangoEngineInfo">PangoEngineInfo</a> structure of the
+     module to load.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the newly created script engine.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="script-engine-unload"></a>script_engine_unload ()</h3><pre class="programlisting">void        script_engine_unload            (<a href="pango-Engines.html#PangoEngine">PangoEngine</a> *engine);</pre><p>
+Function to be provided by a module to unload an engine loaded
+with <a href="pango-Engines.html#script-engine-load">script_engine_load</a>().
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>engine</tt></i> :</span></td><td>the engine to unload.
+
+
+
+
+
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="pango-Coverage-Maps.html"><b>&lt;&lt; Coverage Maps</b></a></td><td align="right"><a accesskey="n" href="pango-Indic-Engine-Support.html"><b>Indic Engine Support &gt;&gt;</b></a></td></tr></table></body></html>

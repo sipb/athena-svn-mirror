@@ -1,0 +1,62 @@
+This directory holds a stripped down version of Dov Grobgeld's FriBidi
+library. The fribidi version that fribidi.patch is against was
+obtained with "cvs up -D '4/16/2001'" from the fribidi cvs repository.
+
+Like Pango, FriBidi is licensed under the terms of the GNU Lesser
+General Public License - see the file COPYING in the toplevel
+directory of the Pango distribution.
+
+12 November 2000, 18 October 2001
+Owen Taylor
+
+
+From the README of Fribidi:
+
+
+This is is FriBidi, a Free Implementation of the Unicode BiDi algorithm.
+
+Background
+==========
+One of the missing links stopping the penetration of free software in
+Israel is the lack of support for Hebrew. In order to have proper
+Hebrew support, the BiDi algorithm must be implemented. It is my hope
+that this library will stimulate more Hebrew free software.
+
+Of course the BiDi algorithm is not limited to Hebrew, so I expect 
+that our Arab neighbors will also find this software useful.
+
+Audience
+========
+
+It is my hope that this library will stimulate the implementation of
+Hebrew and Arabic in lots of free software. Here is a small list of
+projects that would benifit from the use of the FriBidi library, but
+of course there are many more: Wine, Mozilla, Gtk, Gnome, Qt, KDE,
+AbiWord, lynx.
+
+Downloading
+===========
+The latest version of FriBidi may be found at:
+
+   http://fribidi.sourceforge.net
+
+Notes
+=====
+
+- shell fragment to generate fribidi.patch:
+
+ echo -n "" > fribidi.patch
+ for i in fribidi.c fribidi_get_type.c fribidi_tables.i fribidi_types.h ; do
+   diff -u ~/cvs/fribidi/$i $i >> fribidi.patch
+ done
+
+- Shell fragment to update from fribidi
+
+ for i in fribidi.c fribidi_get_type.c fribidi_tables.i fribidi_types.h ; do
+   cp ~/cvs/fribidi/$i .
+ done
+ patch < fribidi.patch
+ 
+ (And fix rejects)
+
+- Current fribidi.patch is against fribidi CVS with -D "15 Apr 2001"

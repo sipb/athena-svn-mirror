@@ -1,0 +1,265 @@
+<refentry id="pango-Indic-Engine-Support">
+<refmeta>
+<refentrytitle>Indic Engine Support</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>PANGO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Indic Engine Support</refname><refpurpose>Indic support for legacy shaper engines</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="PANGO-ZERO-WIDTH-NON-JOINER-CAPS">PANGO_ZERO_WIDTH_NON_JOINER</link>
+#define     <link linkend="PANGO-ZERO-WIDTH-JOINER-CAPS">PANGO_ZERO_WIDTH_JOINER</link>
+struct      <link linkend="PangoIndicScript">PangoIndicScript</link>;
+void        <link linkend="pango-indic-shift-vowels">pango_indic_shift_vowels</link>        (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             <link linkend="gunichar">gunichar</link> *chars,
+                                             <link linkend="gunichar">gunichar</link> *end);
+void        <link linkend="pango-indic-compact">pango_indic_compact</link>             (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             int *num,
+                                             <link linkend="gunichar">gunichar</link> *chars,
+                                             int *cluster);
+void        <link linkend="pango-indic-convert-vowels">pango_indic_convert_vowels</link>      (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             <link linkend="gboolean">gboolean</link> in_middle,
+                                             int *num,
+                                             <link linkend="gunichar">gunichar</link> *chars,
+                                             <link linkend="gboolean">gboolean</link> has_standalone_vowels);
+void        <link linkend="pango-indic-split-out-characters">pango_indic_split_out_characters</link>
+                                            (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             const <link linkend="gchar">gchar</link> *text,
+                                             int n_chars,
+                                             <link linkend="gunichar">gunichar</link> **wc,
+                                             int *n_glyph,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The <function>pango_indic_*</function> functions are used to
+implement indic shaping support for certain legacy shaping engines,
+in particular the shaping engines for bitmap X fonts.
+These are basically internal routines and should not be
+used by applications.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="PANGO-ZERO-WIDTH-NON-JOINER-CAPS"/>PANGO_ZERO_WIDTH_NON_JOINER</title>
+<programlisting>#define PANGO_ZERO_WIDTH_NON_JOINER 0x200c
+</programlisting>
+<para>
+The Unicode character 'ZERO WIDTH NON-JOINER', 0x200c.
+</para></refsect2>
+<refsect2>
+<title><anchor id="PANGO-ZERO-WIDTH-JOINER-CAPS"/>PANGO_ZERO_WIDTH_JOINER</title>
+<programlisting>#define PANGO_ZERO_WIDTH_JOINER     0x200d
+</programlisting>
+<para>
+The Unicode character 'ZERO WIDTH JOINER', 0x200d.
+</para></refsect2>
+<refsect2>
+<title><anchor id="PangoIndicScript"/>struct PangoIndicScript</title>
+<programlisting>struct PangoIndicScript {
+
+  /* Compulsory */
+  gchar *name;
+  /* Compulsory */
+  gboolean (*is_prefixing_vowel)  (gunichar  what);
+  /* Compulsory */
+  gboolean (*is_vowel_sign)       (gunichar  what);
+  /* Optional */
+  gunichar (*vowel_sign_to_matra) (gunichar  what);
+  /* Optional */
+  gboolean (*is_vowel_half)       (gunichar  what);
+  
+  /* Optional */
+  gboolean (*vowel_split)         (gunichar  what, 
+                                   gunichar *prefix, 
+                                   gunichar *suffix);
+};
+</programlisting>
+<para>
+The <structname>PangoIndicScript</structname> struct contains a few 
+script-dependent functions which are used by the 
+<function>pango_indic_*</function> functions.
+Renderers must provide a suitable <structname>PangoIndicScript</structname>
+struct.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="gchar">gchar</link> *<structfield>name</structfield></term>
+<listitem><simpara>the name of the script.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gboolean">gboolean</link> (*<structfield>is_prefixing_vowel</structfield>) (gunichar  what)</term>
+<listitem><simpara>determines whether a vowel is left-joining.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gboolean">gboolean</link> (*<structfield>is_vowel_sign</structfield>) (gunichar  what)</term>
+<listitem><simpara>determines whether the given character is a vowel sign.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gunichar">gunichar</link> (*<structfield>vowel_sign_to_matra</structfield>) (gunichar  what)</term>
+<listitem><simpara>converts a vowel sign to a matra (abbreviated form).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gboolean">gboolean</link> (*<structfield>is_vowel_half</structfield>) (gunichar  what)</term>
+<listitem><simpara>determines whether the given character is part of a two-part
+vowel. This is an optional function.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gboolean">gboolean</link> (*<structfield>vowel_split</structfield>) (gunichar  what, 
+                                   gunichar *prefix, 
+                                   gunichar *suffix)</term>
+<listitem><simpara>returns whether the given vowel can be split and the pieces in
+which it can be split. This is an optional function.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-indic-shift-vowels"/>pango_indic_shift_vowels ()</title>
+<programlisting>void        pango_indic_shift_vowels        (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             <link linkend="gunichar">gunichar</link> *chars,
+                                             <link linkend="gunichar">gunichar</link> *end);</programlisting>
+<para>
+This causes the any vowels in <parameter>chars</parameter> which are
+left-joining vowels to move to the start of <parameter>chars</parameter>.
+</para>
+<para>
+It determines whether the vowels are left-joining 
+by calling is_prefixing_vowel from <parameter>script</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>script</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="PangoIndicScript">PangoIndicScript</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>chars</parameter>&nbsp;:</term>
+<listitem><simpara> Array of <link linkend="gunichar">gunichar</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to just after the end of <parameter>chars</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-indic-compact"/>pango_indic_compact ()</title>
+<programlisting>void        pango_indic_compact             (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             int *num,
+                                             <link linkend="gunichar">gunichar</link> *chars,
+                                             int *cluster);</programlisting>
+<para>
+This eliminates any blank space in the <parameter>chars</parameter>
+array, updated <parameter>clusters</parameter> and <parameter>num</parameter> also. 
+(Blank space is defines as U+0000)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>script</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="PangoIndicScript">PangoIndicScript</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num</parameter>&nbsp;:</term>
+<listitem><simpara> The number of glyphs
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>chars</parameter>&nbsp;:</term>
+<listitem><simpara> An array of glyphs/characters
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cluster</parameter>&nbsp;:</term>
+<listitem><simpara> The cluster array.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-indic-convert-vowels"/>pango_indic_convert_vowels ()</title>
+<programlisting>void        pango_indic_convert_vowels      (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             <link linkend="gboolean">gboolean</link> in_middle,
+                                             int *num,
+                                             <link linkend="gunichar">gunichar</link> *chars,
+                                             <link linkend="gboolean">gboolean</link> has_standalone_vowels);</programlisting>
+<para>
+This converts the second two vowel signs in a row
+in a string, to either a vowel letter or spacing forms
+of the combining vowel.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>script</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="PangoIndicScript">PangoIndicScript</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>in_middle</parameter>&nbsp;:</term>
+<listitem><simpara> Whether vowels should be converted 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num</parameter>&nbsp;:</term>
+<listitem><simpara> The number of elements in <parameter>chars</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>chars</parameter>&nbsp;:</term>
+<listitem><simpara> An array of glyphs/characters
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>has_standalone_vowels</parameter>&nbsp;:</term>
+<listitem><simpara> Whether the font has standalone vowels.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-indic-split-out-characters"/>pango_indic_split_out_characters ()</title>
+<programlisting>void        pango_indic_split_out_characters
+                                            (<link linkend="PangoIndicScript">PangoIndicScript</link> *script,
+                                             const <link linkend="gchar">gchar</link> *text,
+                                             int n_chars,
+                                             <link linkend="gunichar">gunichar</link> **wc,
+                                             int *n_glyph,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);</programlisting>
+<para>
+This splits out the string <parameter>text</parameter> into characters. It will
+split out two-part vowels using <parameter>script</parameter>->vowel_split if
+this function is available.
+</para>
+<para>
+*<parameter>n_chars</parameter> is allocated with g_new, you must free it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>script</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="PangoIndicScript">PangoIndicScript</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara> A UTF-8 string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_chars</parameter>&nbsp;:</term>
+<listitem><simpara> The number of UTF-8 sequences in <parameter>text</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>wc</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to array of <link linkend="gunichar">gunichar</link> (output param)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_glyph</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to number of elements in <parameter>wc</parameter>. (output param)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="PangoGlyphString">PangoGlyphString</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
