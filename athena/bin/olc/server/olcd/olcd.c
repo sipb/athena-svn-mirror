@@ -53,7 +53,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.16 1990-02-05 00:09:27 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.17 1990-02-06 03:43:28 vanharen Exp $";
 
 /* Global variables. */
 
@@ -615,12 +615,14 @@ punt(sig)
     {
 	got_signal = 1;
 	log_status("Caught signal, will exit after finishing request");
-	dump_server_stats(REQ_STATS_LOG);
+	dump_request_stats(REQ_STATS_LOG);
+	dump_question_stats(QUES_STATS_LOG);
     }
     else
     {
 	log_status("Caught signal, exiting...");
-	dump_server_stats(REQ_STATS_LOG);
+	dump_request_stats(REQ_STATS_LOG);
+	dump_question_stats(QUES_STATS_LOG);
 	exit(1);
     }
 }
