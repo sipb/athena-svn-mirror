@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  ;;
+
+sgi)
+  # Install patch 4606.
+  echo "i patchSG0004606.c++_eoe_sw.lib"	>> "$LOCALPACKAGES.patches"
+  echo "k patchSG0004606.c++_eoe_sw.lib"	>> "$LINKPACKAGES.patches"
+  echo "i patchSG0004606.c++_eoe_sw64.lib"	>> "$LINKPACKAGES.patches"
+  echo "OSCHANGES=true"				>> "$CONFVARS"
+  ;;
+esac
