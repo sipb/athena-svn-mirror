@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/Imakefile,v $
- * $Id: Imakefile,v 1.1 1991-03-11 15:02:59 lwvanels Exp $
+ * $Id: Imakefile,v 1.2 1991-03-24 15:01:01 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -37,7 +37,7 @@ depend: Makefile
 
 LintTarget()
 
-#ifdef TestInstall
+#ifdef InstallAltLoc
 InstallProgram(oreplay,/mit/olcdev/@sys)
 install::
 	(cd /mit/olcdev/@sys; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
