@@ -21,6 +21,7 @@
 DASH		=	dash
 CONSOLE		=	console
 SINTABLE	=	sintable
+COMPILE		=	compile_menu
 
 CONSOLERESOURCES=	Console console.xbm gray
 DASHRESOURCES	=	Dash
@@ -45,23 +46,41 @@ M_LIB		=
 #if defined(HaveKerberos)
 K_DEF		=	-DKERBEROS
 K_LIB		=	-lkrb
+K_SRC		=	klist.c
+K_OBJ		=	klist.o
 #else  /* HaveKerberos */
 K_DEF		=
 K_LIB		=
+K_LIST		=
+K_OBJ		=
 #endif /* HaveKerberos */
 
 
+STR_OBJS	=	StrToBool.o StrToDirect.o StrToJust.o \
+			StrToOrient.o StrToPixmap.o StrToXColor.o \
+			StrToXFont.o
+STR_C		=	StrToBool.c StrToDirect.c StrToJust.c \
+			StrToOrient.c StrToPixmap.c StrToXColor.c \
+			StrToXFont.c
+			
+
 COREOBJS	=	Jets.o hash.o registerCallbacks.o \
-			Label.o Icon.o Form.o Button.o Window.o ${SPECIALOBJS}
+			Label.o Form.o Button.o Window.o \
+			XjVaCreateJet.o \
+			${STR_OBJS} \
+			${SPECIALOBJS}
 DASHOBJS	=	dash.o Tree.o Menu.o DClock.o AClock.o \
-			klist.o warn.o
+			${K_OBJ} warn.o List.o
 
-UNUSED		=	StripChart.o get_load.o get_cpu.o
+UNUSED		=	Icon.o StripChart.o get_load.o get_cpu.o List.o
 
-CONSOLEOBJS	=	console.o ScrollBar.o TextDisplay.o xselect.o
+CONSOLEOBJS	=	console.o ScrollBar.o TextDisplay.o xselect.o Arrow.o
 D_OBJS		=	${COREOBJS} ${DASHOBJS}
 C_OBJS		=	${COREOBJS} ${CONSOLEOBJS}
-SIN_OBJS	=	sintable.o
+SIN_OBJS	=	sintable.o xs.o
+CMP_OBJS	=	compile_menu.o Jets.o XjVaCreateJet.o \
+			registerCallbacks.o hash.o \
+			${STR_OBJS}
 
 CFILES		=	dash.c console.c hash.c registerCallbacks.c \
 			Jets.c AClock.c Button.c DClock.c Form.c Icon.c \
@@ -69,12 +88,16 @@ CFILES		=	dash.c console.c hash.c registerCallbacks.c \
 			TextDisplay.c Tree.c Window.c \
 			xselect.c \
 			strcasecmp.c vsprintf.c \
-			sintable.c klist.c warn.c
+			sintable.c ${K_SRC} warn.c \
+			Arrow.c compile_menu.c \
+			XjVaCreateJet.c \
+			${STR_C} List.c
 
-NOTUSED		=	StripChart.c get_load.c get_cpu.c
+NOTUSED		=	Icon.c StripChart.c get_load.c get_cpu.c List.c
 
 D_LIBS		=	-lXext -lX11 -lXmu ${K_LIB} ${M_LIB}
 C_LIBS		=	-lXext -lX11 ${M_LIB}
+CMP_LIBS	=	-lX11
 SIN_LIBS	=	-lm
 
 #if defined(ibm032)
@@ -86,7 +109,6 @@ DEFINES		=	-DSHAPE ${K_DEF} -DAPPDEFDIR=\"${ATHXAPPDIR}\" \
 			-DBITMAPDIR=\"${ATHXBITDIR}\"
 #endif
 
-MENUFLAGS	=	`sh -c "if [ $(MACHINE)x = mipsx ]; then echo; else echo $${CFLAGS}; fi"`
 
 
 AnsiCC()
@@ -94,6 +116,7 @@ AnsiCC()
 all::	sintable.h
 
 build_program(${SINTABLE},${SIN_OBJS},,${SIN_LIBS})
+build_program(${COMPILE},${CMP_OBJS},,${CMP_LIBS})
 create_dir(/etc/athena/login)
 SimpleProgram(${DASH},${D_OBJS},${D_LIBS},${ATHBINDIR}/${DASH})
 
@@ -107,18 +130,39 @@ install_file(arrow,${ATHXBITDIR})
 install_file(question,${ATHXBITDIR})
 install_file(Dash.xbm,${ATHXBITDIR})
 install_file(Console,/etc/athena/login)
-install_file(console.xbm,/etc/athena/login)
-install_file(gray,/etc/athena/login)
-install_file(/afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.73,/usr/athena/lib/Dash.fallback)
+install_file(console.xbm,/etc/athena/login/bitmaps)
+install_file(gray,/etc/athena/login/bitmaps)
+install::
+	. $(ATHVERS); \
+	$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)/usr/athena/lib/Dash.fallback
+
 create_depend(${CFILES})
 
 install::
 	${RM} $(DESTDIR)/usr/athena/lib/Dash.menus
-	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.73 $(DESTDIR)/usr/athena/lib/Dash.menus
+	. $(ATHVERS); \
+	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)/usr/athena/lib/Dash.menus; \
+	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV.cmp $(DESTDIR)/usr/athena/lib/Dash.menus.cmp
 
 sintable.h: ${SINTABLE}
 	${RM} $@
 	./${SINTABLE} > $@
 
+compile_menu.o:	compile_menu.c
+	${CC} -c -DMENU_COMPILER ${CFLAGS} compile_menu.c
+
 clean::
 	${RM} sintable.h
+	${RM} strings
+	${RM} x.c
+
+/* .c.o:
+ *	${CC} ${CFLAGS} -E $*.c | xstr -c -
+ *	${CC} ${CFLAGS} -c x.c
+ *	mv x.o $*.o
+ *	${RM} x.c
+ *
+ *xs.o:
+ *	xstr
+ *	${CC} ${CFLAGS} -c xs.c
+ */
