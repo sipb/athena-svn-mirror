@@ -38,7 +38,7 @@
     </Key>
     <Key Id="Output">
       <Key Id="Media">
-        <Key Id="PhysicalSize" Value="A4"/>
+        <Key Id="PhysicalSize" Value="USLetter"/>
       </Key>
       <Key Id="Resolution" Value="360x360"/>
     </Key>
