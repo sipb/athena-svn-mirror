@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme 1.99.2\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-07 20:43+0100\n"
 "Last-Translator: Germán Poo-Caamaño <gpoo@ubiobio.cl>\n"
 "Language-Team:  <traductores@es.gnome.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -23,7 +23,7 @@ msgstr ""
 "No se ha podido ejecutar el comando: %s\n"
 "Verifique que ese comando existe."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -34,7 +34,7 @@ msgstr ""
 "ni el comando: %s\n"
 "Verifique que existe al menos uno de esos comandos."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -43,7 +43,7 @@ msgstr ""
 "Los permisos del archivo %s son incorrectos\n"
 "Consulte la documentación de ACME, solucione el problema y reinicie ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -52,7 +52,7 @@ msgstr ""
 "Se ha producido un error al eliminar el acceso a las teclas multimedios.\n"
 "La tecla %d no puede liberarse."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -64,25 +64,25 @@ msgstr ""
 "La tecla %d no se puede capturar.\n"
 "¿Hay algún otro servicio ejecutándose ya?."
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 "Carlos Perelló Marín <carlos@gnome-db.org>\n"
 "Germán Poo-Caamaño <gpoo@ubiobio.cl>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Gestor de teclas multimedios"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "El gestor de teclas multimedios está activo"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

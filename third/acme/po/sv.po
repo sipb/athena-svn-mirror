@@ -2,12 +2,12 @@
 # Copyright (C) 2002, 2003 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-29 21:58:16 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-02-12 07:05:48 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: acme\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-16 13:29+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Kunde inte köra kommandot: %s\n"
 "Verifiera att detta kommando finns."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -35,7 +35,7 @@ msgstr ""
 "eller kommandot: %s\n"
 "Verifiera att åtminstone ett av dessa kommandon finns."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Rättigheterna på filen %s är felaktiga\n"
 "Kontrollera ACME:s dokumentation, rätta till felet och starta om ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -53,7 +53,7 @@ msgstr ""
 "Ett fel inträffade när åtkomst till multimediatangenterna skulle tas bort.\n"
 "Tangent %d kunde inte avbindas."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -66,25 +66,25 @@ msgstr ""
 "Tangent %d kunde inte avbindas.\n"
 "Kör en annan demon redan?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 "Christian Rose\n"
 "Skicka synpunkter på översättningen till sv@li.org"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Multimediatangentdemon"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Multimediatangentdemonen aktiv"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

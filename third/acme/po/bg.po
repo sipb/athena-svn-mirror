@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-14 12:30+0200\n"
 "Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Не можах да изпълня командата : %s\n"
 "Проверете дали съществува."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -35,7 +35,7 @@ msgstr ""
 "нито : %s\n"
 "Проверете дали поне една от двете съществува."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Режимът за достъп на файла %s са неправилни. Проверете документацията на "
 "Екми, оправете проблема и рестартирайте Екми."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -53,7 +53,7 @@ msgstr ""
 "Грешка при опит за премахване на достъпа до мултимедийните клавиши.\n"
 "Клавишът %d все още има действие."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -65,23 +65,23 @@ msgstr ""
 "На клавиша %d не може да се присвои действие.\n"
 "Да няма друг демон?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "Александър Шопов <al_shopov@yahoo.com>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Екми"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Демон за мултимедийни клавиши"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Демонът за мултимедийни клавиши е активен"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

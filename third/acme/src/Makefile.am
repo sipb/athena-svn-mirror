@@ -47,7 +47,6 @@ acme_SOURCES =						\
 	acme.c acme.h
 
 acme_LDFLAGS =						\
-	-export-dynamic					\
 	$(EXTRA_GNOME_LIBS)				\
 	$(ALSA_LIBS)					\
 	$(INTLLIBS)

@@ -1,0 +1,504 @@
+# Romanian translation for acme
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Mişu Moldovan <dumol@go.ro>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: acme 2.0\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
+"PO-Revision-Date: 2003-01-19 14:28+0200\n"
+"Last-Translator: Mişu Moldovan <dumol@go.ro>\n"
+"Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/acme.c:170
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"Nu am putut executa comanda: %s\n"
+"Verificaţi dacă există acest program."
+
+#: src/acme.c:189
+#, c-format
+msgid ""
+"Couldn't execute either command: %s\n"
+"or command: %s\n"
+"Verify that at least one of these commands exist."
+msgstr ""
+"Nu am putut executa nici comanda: %s,\n"
+"nici comanda: %s\n"
+"Verificaţi dacă cel puţin unul din aceste programe există."
+
+#: src/acme.c:232
+#, c-format
+msgid ""
+"Permissions on the file %s are broken\n"
+"Please check ACME's documentation, correct the problem and restart ACME."
+msgstr ""
+"Permisiile fişierului %s sunt invalide\n"
+"Consultaţi documentaţia ACME, corectaţi problemă şi apoi reporniţi ACME."
+
+#: src/acme.c:321
+#, c-format
+msgid ""
+"There was an error removing access to the multimedia keys.\n"
+"Key %d couldn't be unbound."
+msgstr ""
+"Eroare la ştergerea accesului la tastele multimedia.\n"
+"Tasta %d nu a putut fi găsită."
+
+#: src/acme.c:389
+#, c-format
+msgid ""
+"It seems that another application already has access to the multimedia "
+"keys.\n"
+"Key %d couldn't be bound.\n"
+"Is another daemon already running ?"
+msgstr ""
+"Se pare că o altă aplicaţie are deja acces la tastele multimedia.\n"
+"Tasta %d nu a putut fi alocată.\n"
+"Este pornit un alt demon?"
+
+#: src/acme.c:614
+msgid "translator_credits"
+msgstr "Mişu Moldovan <dumol@go.ro>"
+
+#: src/acme.c:625
+msgid "Acme"
+msgstr "Acme"
+
+#: src/acme.c:627
+msgid "Multimedia keys daemon"
+msgstr "Demonul tastelor multimedia"
+
+#: src/acme.c:687
+msgid "Multimedia Keys daemon active"
+msgstr "Demonul tastelor multimedia este activ"
+
+#: src/acme.c:1180
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"Nu am putut încărca fişierul Glade.\n"
+"Asiguraţi-vă că acest demon este corect instalat."
+
+#: src/acme.glade.h:1
+msgid "Volume"
+msgstr "Volum"
+
+#: src/acme.h:72
+msgid "Mute key"
+msgstr "Tastă Amuţire"
+
+#: src/acme.h:74
+msgid "Volume down key"
+msgstr "Tastă Volum micşorat"
+
+#: src/acme.h:76
+msgid "Volume up key"
+msgstr "Tastă Volum mărit"
+
+#: src/acme.h:78
+msgid "Power key"
+msgstr "Tastă Oprire"
+
+#: src/acme.h:80
+msgid "Eject key"
+msgstr "Tastă Eject"
+
+#: src/acme.h:82
+msgid "Media key"
+msgstr "Tastă Media"
+
+#: src/acme.h:84
+msgid "Play key"
+msgstr "Tastă Redare"
+
+#: src/acme.h:86
+msgid "Pause key"
+msgstr "Tastă Pauză"
+
+#: src/acme.h:88
+msgid "Stop (Audio) key"
+msgstr "Tastă Stop (Audio)"
+
+#: src/acme.h:90
+msgid "Previous (Audio) key"
+msgstr "Tastă Înapoi (Audio)"
+
+#: src/acme.h:92
+msgid "Next (Audio) key"
+msgstr "Tastă Înainte (Audio)"
+
+#: src/acme.h:94
+msgid "My Home key"
+msgstr "Tastă Acasă"
+
+#: src/acme.h:96
+msgid "Refresh key"
+msgstr "Tastă Reîncărcare"
+
+#: src/acme.h:98
+msgid "Search key"
+msgstr "Tastă Căutare"
+
+#: src/acme.h:100
+msgid "E-Mail key"
+msgstr "Tastă Email"
+
+#: src/acme.h:102
+msgid "Sleep key"
+msgstr "Tastă Adormire"
+
+#: src/acme.h:104
+msgid "Screensaver key"
+msgstr "Tastă Protecţie ecran"
+
+#: src/acme.h:106
+msgid "Finance key"
+msgstr "Tastă Finanţe"
+
+#: src/acme.h:108
+msgid "Help key"
+msgstr "Tastă Ajutor"
+
+#: src/acme.h:110
+msgid "WWW key"
+msgstr "Tastă Net"
+
+#: src/acme.h:112
+msgid "Groups key"
+msgstr "Tastă Grupuri"
+
+#: src/acme.h:114
+msgid "Calculator key"
+msgstr "Tastă Calculator"
+
+#: src/acme.h:116
+msgid "Record key"
+msgstr "Tastă Înregistrare"
+
+#: src/acme.h:118
+msgid "Close Window key"
+msgstr "Tastă Închidere fereastră"
+
+#: src/acme.h:120
+msgid "Shade Window key"
+msgstr "Tastă Umbrire fereastră"
+
+#: src/acme.h:123
+msgid "Brightness down key"
+msgstr "Tastă Strălucire crescută"
+
+#: src/acme.h:125
+msgid "Brightness up key"
+msgstr "Tastă Strălucire micşorată"
+
+#: src/acme-properties.c:170 src/acme-properties.c:255
+#: src/eggcellrendererkeys.c:219
+msgid "Disabled"
+msgstr "Dezactivată"
+
+#: src/acme-properties.c:175 src/acme-properties.c:252
+msgid "Enabled"
+msgstr "Activată"
+
+#: src/acme-properties.c:185
+msgid ""
+"This key is already bound to an action.\n"
+"Please select another key."
+msgstr ""
+"Această tastă este deja asociată unei alte acţiuni.\n"
+"Vă rugăm să selectaţi o altă tastă."
+
+#: src/acme-properties.c:292
+msgid "Description"
+msgstr "Descriere"
+
+#: src/acme-properties.c:312
+msgid "Status"
+msgstr "Status"
+
+#: src/acme-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/acme-properties.glade.h:2
+msgid "<span weight=\"bold\">Keys Setup </span>"
+msgstr "<span weight=\"bold\">Configurare taste </span>"
+
+#: src/acme-properties.glade.h:3
+msgid "<span weight=\"bold\">Sound Setup</span>"
+msgstr "<span weight=\"bold\">Configurare sunet</span>"
+
+#: src/acme-properties.glade.h:4
+msgid "Multimedia Keys Preferences"
+msgstr "Preferinţe taste multimedia"
+
+#: src/acme-properties.glade.h:5
+msgid ""
+"To assign a key to an action, click on a line, and press the key you want to "
+"associate with it.\n"
+"\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
+msgstr ""
+"Pentru a asocia o tastă unei acţiuni, daţi clic pe o linie şi apăsaţi tasta "
+"pe care doriţi să o asignaţi.\n"
+"\"C\" renunţă la tasta reţinută, iar \"Backspace\" dezactiveaza tasta "
+"asociată."
+
+#: src/acme-properties.glade.h:7
+msgid "Use _PCM volume instead of Master volume"
+msgstr "Foloseşte volumul _PCM în loc de volumul General"
+
+#: src/acme-properties.glade.h:8
+msgid "_Launch the multimedia key daemon"
+msgstr "_Porneşte demonul tastelor multimedia"
+
+#: src/acme.desktop.in.h:1
+msgid "Configure multimedia keys behaviour"
+msgstr "Configurarea comportamentului tastelor multimedia"
+
+#: src/acme.desktop.in.h:2
+msgid "Multimedia Keys"
+msgstr "Taste multimedia"
+
+#: src/acme.schemas.in.h:1
+msgid "Brightness down key's XKeycode"
+msgstr "Codul XKeycode al tastei Strălucire mişorată"
+
+#: src/acme.schemas.in.h:2
+msgid "Brightness down key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Strălucire mişorată, O pentru dezactivare"
+
+#: src/acme.schemas.in.h:3
+msgid "Brightness up key's XKeycode"
+msgstr "Codul XKeycode al tastei Strălucire mărită"
+
+#: src/acme.schemas.in.h:4
+msgid "Brightness up key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Strălucire mărită, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:5
+msgid "Calculator key's XKeycode"
+msgstr "Codul XKeycode al tastei Calculator"
+
+#: src/acme.schemas.in.h:6
+msgid "Calculator key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Calculator, O pentru dezactivare"
+
+#: src/acme.schemas.in.h:7
+msgid "Close Window key's XKeycode"
+msgstr "Codul XKeycode al tastei Închidere fereastră"
+
+#: src/acme.schemas.in.h:8
+msgid "Close Window key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Închidere fereastră, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:9
+msgid "Command to execute when the Eject button is pressed"
+msgstr "Comandă de executat la apăsarea butonului Eject"
+
+#: src/acme.schemas.in.h:10
+msgid "E-Mail key's XKeycode"
+msgstr "Codul XKeycode al tastei Email"
+
+#: src/acme.schemas.in.h:11
+msgid "E-Mail key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Email, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:12
+msgid "Eject key's XKeycode"
+msgstr "Codul XKeycode al tastei Eject"
+
+#: src/acme.schemas.in.h:13
+msgid "Eject key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Eject, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:14
+msgid "Finance key's XKeycode"
+msgstr "Codul XKeycode al tastei Finanţe"
+
+#: src/acme.schemas.in.h:15
+msgid "Finance key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Finanţa, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:16
+msgid "Groups key's XKeycode"
+msgstr "Codul XKeycode al tastei Grupuri"
+
+#: src/acme.schemas.in.h:17
+msgid "Groups key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Grupuri, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:18
+msgid "Help key's XKeycode"
+msgstr "Codul XKeycode al tastei Ajutor"
+
+#: src/acme.schemas.in.h:19
+msgid "Help key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Ajutor, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:20
+msgid "Mute key's XKeycode"
+msgstr "Codul XKeycode al tastei Amuţire"
+
+#: src/acme.schemas.in.h:21
+msgid "Mute key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Amuţire, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:22
+msgid "My Home key's XKeycode"
+msgstr "Codul XKeycode al tastei Acasă"
+
+#: src/acme.schemas.in.h:23
+msgid "My Home key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Acasă, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:24
+msgid "Next key's XKeycode"
+msgstr "Codul XKeycode al tastei Înainte"
+
+#: src/acme.schemas.in.h:25
+msgid "Next key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Înainte, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:26
+msgid "Pause key's XKeycode"
+msgstr "Codul XKeycode al tastei Pauză"
+
+#: src/acme.schemas.in.h:27
+msgid "Pause key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Pauză, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:28
+msgid "Play key's XKeycode"
+msgstr "Codul XKeycode al tastei Redare"
+
+#: src/acme.schemas.in.h:29
+msgid "Play key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Redare, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:30
+msgid "Power key's XKeycode"
+msgstr "Codul XKeycode al tastei Oprire"
+
+#: src/acme.schemas.in.h:31
+msgid "Power key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Oprire, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:32
+msgid "Previous key's XKeycode"
+msgstr "Codul XKeycode al tastei Înapoi"
+
+#: src/acme.schemas.in.h:33
+msgid "Previous key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Înapoi, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:34
+msgid "Record key's XKeycode"
+msgstr "Codul XKeycode al tastei Înregistrare"
+
+#: src/acme.schemas.in.h:35
+msgid "Record key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Înregistrare, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:36
+msgid "Refresh key's XKeycode"
+msgstr "Codul XKeycode al tastei Reîncărcare"
+
+#: src/acme.schemas.in.h:37
+msgid "Refresh key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Reîncărcare, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:38
+msgid "Screensaver key's XKeycode"
+msgstr "Codul XKeycode al tastei Protecţie ecran"
+
+#: src/acme.schemas.in.h:39
+msgid "Screensaver key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Protecţie ecran, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:40
+msgid "Search key's XKeycode"
+msgstr "Codul XKeycode al tastei Căutare"
+
+#: src/acme.schemas.in.h:41
+msgid "Search key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Căutare, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:42
+msgid "Shade Window key's XKeycode"
+msgstr "Codul XKeycode al tastei Umbrire fereastră"
+
+#: src/acme.schemas.in.h:43
+msgid "Shade Window key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Umbrire fereastră, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:44
+msgid "Sleep key's XKeycode"
+msgstr "Codul XKeycode al tastei Adormire"
+
+#: src/acme.schemas.in.h:45
+msgid "Sleep key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Adormire, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:46
+msgid "Sound file to be played when volume is changed"
+msgstr "Fişier multimedia de redat la schimbarea volumului"
+
+#: src/acme.schemas.in.h:47
+msgid "Use PCM Volume instead of Master Volume"
+msgstr "Utilizează volumul PCM în locul volumului General"
+
+#: src/acme.schemas.in.h:48
+msgid "Volume down key's XKeycode"
+msgstr "Codul XKeycode al tastei Volum mişorat"
+
+#: src/acme.schemas.in.h:49
+msgid "Volume down key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Volum micşorat, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:50
+msgid "Volume up key's XKeycode"
+msgstr "Codul XKeycode al tastei Volum mărit"
+
+#: src/acme.schemas.in.h:51
+msgid "Volume up key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Volum mărit, 0 pentru dezactivare"
+
+#: src/acme.schemas.in.h:52
+msgid "WWW key's XKeycode"
+msgstr "Codul XKeycode al tastei Net"
+
+#: src/acme.schemas.in.h:53
+msgid "WWW key's XKeycode, 0 to disable"
+msgstr "Codul XKeycode al tastei Net, 0 pentru dezactivare"
+
+#: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
+msgid "Accelerator key"
+msgstr "Tastă acceleratoare"
+
+#: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
+msgid "Accelerator modifiers"
+msgstr "Modificatori accelerare"
+
+#: src/eggcellrendererkeys.c:180
+msgid "Accelerator Mode"
+msgstr "Mod accelerare"
+
+#: src/eggcellrendererkeys.c:181
+msgid "The type of accelerator."
+msgstr "Tipul acceleratorului."
+
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
+msgid "Type a new accelerator, or press Backspace to clear"
+msgstr "Introduceţi un noi accelerator, sau apăsaţi Backspace pentru ştergere"
+
+#: src/eggcellrendererkeys.c:567
+msgid "Type a new accelerator"
+msgstr "Introduceţi un nou accelerator"

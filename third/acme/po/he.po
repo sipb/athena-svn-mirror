@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme.HEAD.he\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-14 13:12+0200\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -25,7 +25,7 @@ msgstr ""
 "לא ניתן לבצע את הפקודה: %s\n"
 "ודא כי פקודה זו קיימת."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -36,7 +36,7 @@ msgstr ""
 "או את הפקודה: %s\n"
 "ודא כי לפחות אחת מהפקודות הללו קיימות."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -45,7 +45,7 @@ msgstr ""
 "הרשאות לקובץ %s שבורות\n"
 "אנא בדוק בתיעוד של אקמי, תקן את התקלה והפעל מחדש את אקמי."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -54,7 +54,7 @@ msgstr ""
 "ארעה שגיאה בהסרת הגישה למקשי המולטימדיה.\n"
 "לא ניתן לנתק את המקש %d."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -66,7 +66,7 @@ msgstr ""
 "לא ניתן לשר את המקש %d.\n"
 "האם תהליך שירות אחר מופעל ?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 "גיל אשר\n"
@@ -75,19 +75,19 @@ msgstr ""
 "פרוייקט linBrew\n"
 "http://linbrew.sourceforge.net"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "אקמי"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "תהליך שירות למקשי מולטימדיה"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "תהליך השירות למקשי המולטימדיה פעיל"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

@@ -128,7 +128,7 @@ BUILT_files_unconditional =  	g-volume.c g-volume.h g-volume-private.h
 acme_SOURCES =  	$(ALSA_gob_files) $(OSS_gob_files)			$(FB_gob_files)						g-volume.gob						$(ALSA_files) $(OSS_files) $(FB_files)			$(BUILT_files_unconditional)				eggtrayicon.h eggtrayicon.c				acme.c acme.h
 
 
-acme_LDFLAGS =  	-export-dynamic						$(EXTRA_GNOME_LIBS)					$(ALSA_LIBS)						$(INTLLIBS)
+acme_LDFLAGS =  	$(EXTRA_GNOME_LIBS)					$(ALSA_LIBS)						$(INTLLIBS)
 
 
 acme_properties_SOURCES =  	acme-properties.c					eggcellrendererkeys.c					eggcellrendererkeys.h					eggaccelerators.h					eggaccelerators.c

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-14 16:34+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Kunne ikke køre kommandoen: %s\n"
 "Kontrollér at kommandoen eksisterer."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -33,7 +33,7 @@ msgstr ""
 "eller kommandoen: %s\n"
 "Kontrollér at mindst en af kommandoerne eksisterer."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -42,7 +42,7 @@ msgstr ""
 "Rettighederne for filen %s er ikke korrekte.\n"
 "Kig i dokumentationen til ACME, ret problemet og genstart ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Der opstod en fejl under fjernelse af adgang til multimedietasterne.\n"
 "Bindingen til tasten %d kunne ikke fjernes."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -64,23 +64,23 @@ msgstr ""
 "Tasten %d kunne ikke bindes til noget.\n"
 "Kører en anden dæmon allerede?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "Ole Laursen <olau@hardworking.dk>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Ajax"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Dæmon til multimediataster"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Dæmon til multimediataster aktiv"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

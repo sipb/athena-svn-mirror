@@ -5,15 +5,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ACME for Gnome 2.1.x\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
-"PO-Revision-Date: 2002-12-26 19:41+0700\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
+"PO-Revision-Date: 2003-01-18 21:39+0700\n"
 "Last-Translator: Trinh Minh Thanh <tmthanh@yahoo.com>\n"
 "Language-Team: Gnome-Vi <Gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Không thể thực thi lệnh: %s\n"
 "Kiểm tra xem lệnh này có tồn tại không."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -33,7 +33,7 @@ msgstr ""
 "hay lệnh: %s\n"
 "Kiểm tra xem một trong các lệnh đó có tồn tại không."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -42,7 +42,7 @@ msgstr ""
 "Sự cho phép với tập tin %s bị hỏng\n"
 "Hãy kiểm tra tài liệu ACME, hiệu chỉnh trục trặc và khởi động lại ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Có lỗi khi gỡ bỏ truy cập tới các phím đa phương tiện.\n"
 "Không thể giải phóng phím %d."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -63,23 +63,23 @@ msgstr ""
 "Không thể giải phóng phím %d.\n"
 "Có phải một daemon khác đang chạy rồi phải không ?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "đóng góp dịch thuật"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Daemon phím đa phương tiện"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Daemon Phím Đa Phương Tiện hoạt động"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."
@@ -479,29 +479,28 @@ msgid "WWW key's XKeycode, 0 to disable"
 msgstr "XKeycode của phím WWW, 0 là tắt chức năng"
 
 #: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
-#, fuzzy
 msgid "Accelerator key"
-msgstr "Phím trình Bàn Tính"
+msgstr "Phím nóng"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr ""
+msgstr "Phím biến đổi nóng"
 
 #: src/eggcellrendererkeys.c:180
 msgid "Accelerator Mode"
-msgstr ""
+msgstr "Chế độ phím nóng"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr ""
+msgstr "Kiểu phím nóng."
 
 #: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
-msgstr ""
+msgstr "Kiểu phím nóng mới, hoặc nhấn Backspace (phím lùi) để xóa sạch"
 
 #: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
-msgstr ""
+msgstr "Kiểu phím nóng mới"
 
 #~ msgid "(C) 2001, 2002 Bastien Nocera"
 #~ msgstr "(C) 2001, 2002 Bastien Nocera"

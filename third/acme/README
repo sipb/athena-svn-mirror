@@ -34,8 +34,16 @@ http://lists.debian.org/debian-powerpc/2002/debian-powerpc-200204/msg00615.html
 New in version
 --------------
 
-1.99.14:
+2.0.2:
+- Build fixes for non-XFree86 X11 installations
+
+2.0.1:
+- Plenty of translation updates, and a small fix for Anders that nobody else
+  will care about ;)
+
+2.0:
 - Fix key names not getting translated in the preferences
+- Work properly on multihead
 
 1.99.13:
 - Build fixes again
