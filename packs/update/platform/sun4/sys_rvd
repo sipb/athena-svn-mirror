@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.31 1998-04-16 22:32:44 ghudson Exp $
+## $Id: sys_rvd,v 1.32 1998-05-06 12:37:03 miki Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -8,12 +8,16 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 	/etc:::			# These are specific to each machine.
 		crontab.root.add
 		default/su
+		driver_aliases.*
+		driver_classes.*
 		ftpusers
 		group
 		mail
 		inet/inetd.conf
 		inet/netmasks	
 		inet/services
+		minor_perm.*
+		name_to_major.*
 		netspy
 		ntp.conf
 		passwd
