@@ -12,7 +12,7 @@
  *
  */
 
-#include "../Xj.tmpl"
+#include "../Xj.defs"
 
 #include "mit-copyright.h"
 
@@ -40,12 +40,12 @@ INCLUDES	=	-I.. ${LOCAL_INCLUDES}
 
 AllTarget(${CONSOLE})
 NormalProgramTarget($(CONSOLE),$(OBJS),$(XJLIB),,$(C_LIBS))
-InstallProgram($(CONSOLE),$(ATHRETCDIR))
+InstallProgram($(CONSOLE),$(CONSOLE_BIN_DIR))
 
-InstallNonExec(${CONSOLE}.8,${ATHMANDIR}/${CONSOLE}.8)
-InstallNonExec(Console,/etc/athena/login/Console)
-InstallNonExec(console.xbm,/etc/athena/login/bitmaps/console.xbm)
-InstallNonExec(gray,/etc/athena/login/bitmaps/gray)
+InstallNonExec(${CONSOLE}.8,${MAN_DIR}/${CONSOLE}.8)
+InstallNonExec(Console,${CONSOLE_APP_DIR}/Console)
+InstallNonExec(console.xbm,${CONSOLE_XBM_DIR}/console.xbm)
+InstallNonExec(gray,${CONSOLE_XBM_DIR}/gray)
 
 DependTarget()
 
