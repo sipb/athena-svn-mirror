@@ -9,12 +9,13 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.7 1992-01-06 15:51:44 probe Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.8 1992-07-31 19:18:30 probe Exp $";
 #endif
 
 #include "attach.h"
 #include <sys/file.h>
 #include <pwd.h>
+#include <fcntl.h>
 #include <string.h>
 
 #define TOKSEP " \t\r\n"
@@ -32,6 +33,10 @@ static int attach_lock_count = 0;
 void lock_attachtab()
 {
 	register char	*lockfn;
+	register int	status;
+#ifdef POSIX
+	struct flock fl;
+#endif
 	
 	if (debug_flag)
 		printf("Locking attachtab....");
@@ -54,7 +59,17 @@ void lock_attachtab()
 				exit(ERR_FATAL);
 			}
 		}
-		if (flock(attach_lock_fd, LOCK_EX) == -1) {
+#ifdef POSIX
+		fl.l_type = F_WRLCK;
+		fl.l_whence = SEEK_SET;
+		fl.l_start = 0;
+		fl.l_len = 0;
+		fl.l_pid = getpid();
+		status = fcntl(attach_lock_fd, F_SETLKW, &fl);
+#else
+		status = flock(attach_lock_fd, LOCK_EX);
+#endif
+		if (status == -1) {
 			fprintf(stderr, "%s: unable to lock attachtab: %s\n",
 				progname, errstr(errno));
 			fputs(abort_msg, stderr);
