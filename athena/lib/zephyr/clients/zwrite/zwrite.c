@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.38 1991-12-05 15:32:38 lwvanels Exp $";
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.39 1993-09-24 16:33:54 probe Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -285,7 +285,7 @@ main(argc, argv)
 		    exit(1);
 		}
 		message = realloc(message, (unsigned)(msgsize+nchars));
-		bcopy(bfr, message+msgsize, nchars);
+		_BCOPY(bfr, message+msgsize, nchars);
 		msgsize += nchars;
 	    }
 	    /* end of msg */
