@@ -1,8 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.4 1988-06-20 18:53:42 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.5 1988-06-21 19:38:41 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.4  88/06/20  18:53:42  don
+ * changed updating traversal to invoke readstat() twice:
+ * first pass updates only the dir's & symlinks in the statfile,
+ * second pas updates everything else, including the dir's.
+ * this causes the update to make space for itself, BEFORE the space
+ * is needed. previously, track didn't do  well on crowded file-sys'.
+ * this version needs stamp.c version 4.6 .
+ * 
  * Revision 4.3  88/06/10  15:56:55  don
  * fixed two bugs: now, /tmp/sys_rvd.started is ug+w, thus deletable.
  * also, -F/ & -T/ don't make paths that begin // anymore.
@@ -110,7 +118,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.4 1988-06-20 18:53:42 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.5 1988-06-21 19:38:41 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -401,7 +409,7 @@ char **argv;
 
 #define pathtail( p) p[1+*(int*)p[CNT]]
 
-readstat() {
+readstat( types) char *types; {
 	struct currentness rem_currency, *cmp_currency;
 	char statline[ LINELEN], *remname;
 	char **from, **to, **cmp;
@@ -419,6 +427,12 @@ readstat() {
 	init_next_match();
 
 	while ( NULL != fgets( statline, sizeof statline, statfile)) {
+
+		/* XXX : needs data-hiding work, but will do:
+		 *	 only update what main tells us to in this pass.
+		 */
+		if ( ! index( types, *statline)) continue;
+
 		/* extract the currency data from the statline:
 		 */
 		remname = dec_statfile( statline, &rem_currency);
@@ -477,7 +491,12 @@ readstat() {
 		poppath( from);
 	}
 	/* track is often used just before a reboot;
-	 * make sure that the file-systems' superblocks are up-to-date.
+	 * flush the kernel's text-table,
+	 * to ensure that the vnodes we've freed get scavenged,
+	 */
+	unmount("/");		/* XXX */
+
+	/* then make sure that the file-systems' superblocks are up-to-date.
 	 */
 	sync();
 	sleep(2);
@@ -570,9 +589,8 @@ writestat()
 		/* sort the statfile, and write it out
 		 * to the correct directory:
 		 */
-		sort_stat();
-		cur_line = 0;
 	}
+	sort_stat();
 }
 
 /* if the current entry's fromfile is a directory, but its cmpfile isn't,
