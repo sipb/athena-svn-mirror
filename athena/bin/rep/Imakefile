@@ -1,8 +1,8 @@
 /*
- * $Id: Imakefile,v 1.4 1991-07-07 19:37:00 probe Exp $
+ * $Id: Imakefile,v 1.5 1992-07-17 14:38:20 miki Exp $
  */
 
-#if defined(vax) || defined(ibm032) || defined(ultrix)
+#if defined(vax) || defined(ibm032) || defined(ultrix) || defined(sun)
 LIBS=-lcurses -ltermlib
 #else
 LIBS=-lcurses
