@@ -63,9 +63,9 @@ main(argc, argv)
 
 #ifdef OPERATOR
 #ifdef LOG_AUTH
-	openlog("lpc", 0, LOG_AUTH);
+	openlog("lprm", 0, LOG_AUTH);
 #else
-	openlog("lpc", 0);
+	openlog("lprm", 0);
 #endif
 #endif
 
@@ -74,10 +74,12 @@ main(argc, argv)
 	hp = gethostbyname(host);
 	if (hp) strcpy(host, hp -> h_name);
 
+#ifndef OPERATOR
 #ifdef LOG_LPR
-	openlog("lpd", 0, LOG_LPR);
+	openlog("lprm", 0, LOG_LPR);
 #else
-	openlog("lpd", 0);
+	openlog("lprm", 0);
+#endif
 #endif
 
 	if ((p = getpwuid(GETUID())) == NULL)
