@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.28 1997-06-27 22:56:32 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.29 1997-10-13 21:52:45 ghudson Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.28 1997-06-27 22:56:32 ghudson Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.29 1997-10-13 21:52:45 ghudson Exp $";
 #endif
 
 /*
@@ -95,7 +95,7 @@ int	remote;			/* true if sending files to remote */
 dev_t	fdev;			/* device of file pointed to by symlink */
 ino_t	fino;			/* inode of file pointed to by symlink */
 
-char	fromhost[32];		/* user's host machine */
+char	fromhost[MAXHOSTNAMELEN + 1];		/* user's host machine */
 #ifdef KERBEROS
 char    logname[ANAME_SZ + INST_SZ + REALM_SZ + 3];
 #else
@@ -104,7 +104,7 @@ char	logname[32];		/* user's login name */
 char	jobname[100];		/* job or file name */
 char	queuename[100];		/* print queue name */
 
-char	class[32];		/* classification field */
+char	class[MAXHOSTNAMELEN + 1];		/* classification field */
 char	width[10] = "-w";	/* page width in characters */
 char	length[10] = "-l";	/* page length in lines */
 char	pxwidth[10] = "-x";	/* page width in pixels */
@@ -446,7 +446,10 @@ printit(file)
 			        struct hostent *hp;
 				gethostname(class, sizeof(class));
 				hp = gethostbyname(class);
-				if (hp) strcpy(class, hp -> h_name);
+				if (hp) {
+					strncpy(class, hp -> h_name, sizeof(class));
+					class[sizeof(class) - 1] = '\0';
+				}
 			  }
 			continue;
 
@@ -530,7 +533,7 @@ pass2:
 			continue;
 
 		case 'U':
-			(void) UNLINK(line+1);
+			(void) spool_unlink(line+1, 'd', 1);
 			continue;
 #ifdef ZEPHYR
 		case 'Z':
@@ -545,7 +548,7 @@ pass2:
 	 */
 	(void) fclose(cfp);
 	cfp = NULL;
-	(void) UNLINK(file); 
+	(void) spool_unlink(file, 'c', 1); 
 	return(bombed == OK ? OK : ERROR);
 }
 
@@ -574,6 +577,20 @@ print(format, file)
 	union wait status;
 #endif
 	struct stat stb;
+
+        if (file[0] == '.' || strchr(file, '/')) {
+        	syslog(LOG_ERR, "lpd attempted to print %s", file);
+		return(ERROR);
+	}
+        if (file[0] != 'd' || file[1] != 'f' ||
+            file[2] != 'A' || !isxdigit(file[3]) ||
+            !isxdigit(file[4]) || !isxdigit(file[5])) {
+		syslog(LOG_NOTICE,
+		       "nonstandard job character for print in %d.%d.%d.%d.%d.%d",
+		       file[0], file[1], file[2], file[3],
+		       file[4], file[5]);
+	}
+
 	if (lstat(file, &stb) < 0 || (fi = open(file, O_RDONLY)) < 0)
 		return(ERROR);
 	/*
@@ -838,7 +855,8 @@ sendit(file)
 			continue;
 		}
 		if (line[0] >= 'a' && line[0] <= 'z' && line[0] != 'q') {
-			strcpy(last, line);
+			strncpy(last, line, sizeof(last));
+			last[sizeof(last) - 1] = '\0';
 			while (i = getline(cfp))
 				if (strcmp(last, line))
 					break;
@@ -874,13 +892,13 @@ sendit(file)
 	fseek(cfp, 0L, 0);
 	while (getline(cfp))
 		if (line[0] == 'U')
-			(void) UNLINK(line+1);
+			(void) spool_unlink(line+1, 'd', 1);
 	/*
 	 * clean-up in case another control file exists
 	 */
 	(void) fclose(cfp);
 	cfp = NULL;
-	(void) UNLINK(file); 
+	(void) spool_unlink(file, 'c', 1); 
 	return(err);
 }
 
@@ -1116,7 +1134,7 @@ sendmail(user, bombed)
 	register int i;
 	int p[2], s;
 	register char *cp;
-	char buf[100];
+	char buf[MAXHOSTNAMELEN + 100];
 	struct stat stb;
 	FILE *fp;
 #ifdef ALLOW_MAIL
@@ -1184,7 +1202,8 @@ int bombed;
 	notice.z_class_inst=ZINSTANCE;
 	notice.z_opcode="";
 	notice.z_sender=ZSENDER;
-	strcpy(zrecipient,logname);
+	strncpy(zrecipient,logname,sizeof(zrecipient));
+	zrecipient[sizeof(zrecipient) - 1] = '\0';
 	notice.z_recipient=zrecipient;
 	notice.z_default_format=ZDEFAULTFORMAT;
 	notice.z_num_other_fields=0;
@@ -1333,7 +1352,7 @@ init()
 
         if (RM != (char *) NULL) {
 
-               char name[255];
+               char name[MAXHOSTNAMELEN + 1];
                struct hostent *hp;
 
                        /* get the name of the local host */
@@ -1346,7 +1365,8 @@ init()
                    printf ("unable to get hostname for local machine %s\n",
                                name);
                } else {
-		 	strcpy (name, hp->h_name);
+		 	strncpy (name, hp->h_name, sizeof(name));
+			name[sizeof(name) - 1] = '\0';
 
 			/* get the network standard name of RM */
 			hp = gethostbyname (RM);
@@ -1358,7 +1378,7 @@ init()
 			   ignore LP and SD */
 			else if (strcasecmp(name, hp->h_name) != 0) {
 			        if (lflag) syslog(LOG_INFO, "printer is remote; ignoring LP");
-			        *LP = '\0';
+			        LP = "";
 				SD = DEFSPOOL;
 			}
 		      }

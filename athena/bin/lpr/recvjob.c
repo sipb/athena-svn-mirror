@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.14 1997-06-28 05:48:19 ghudson Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.15 1997-10-13 21:52:46 ghudson Exp $";
 #endif
 
 /*
@@ -15,6 +15,7 @@ static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.14 1997-06-28 05:48:19 ghudso
  */
 
 #include "lp.h"
+#include <limits.h>
 
 #ifdef _AUX_SOURCE
 #include <sys/sysmacros.h>
@@ -192,6 +193,8 @@ find_dev(dev, type)
 		if (dev == stb.st_rdev) {
 			closedir(dfd);
 			dp = (char *)malloc(strlen(devname)+1);
+			if (!dp)
+				frecverr("out of memory while finding device %d, %d", major(dev), minor(dev));
 			strcpy(dp, devname);
 			return(dp);
 		}
@@ -230,6 +233,7 @@ jobnum()
 readjob()
 {
 	register int size, nfiles;
+	int n, toobig;
 	register char *cp;
 #if defined(PQUOTA) || defined(LACL)
 	char *cret;
@@ -250,7 +254,13 @@ readjob()
 		 * Read a command to tell us what to do
 		 */
 		cp = line;
+		n = 0;
+		toobig = 0;
 		do {
+			if (++n >= sizeof(line)) {
+				frecverr("%s: line too long", printer);
+				return(nfiles);
+			}
 			if ((size = read(1, cp, 1)) != 1) {
 				if (size < 0)
 					frecverr("%s: Lost connection",printer);
@@ -267,14 +277,42 @@ readjob()
 
 		case '\2':	/* read cf file */
 			size = 0;
-			while (*cp >= '0' && *cp <= '9')
+			while (*cp >= '0' && *cp <= '9') {
+				if (size > INT_MAX/10)
+					toobig = 1;
 				size = size * 10 + (*cp++ - '0');
-			if (*cp++ != ' ')
+			}
+			if (*cp++ != ' ' || toobig)
 				break;
+
+			if (!isalnum(cp[0]) || !isalnum(cp[1]) ||
+			    !isalnum(cp[2]) || !isalnum(cp[3]) ||
+			    !isalnum(cp[4]) || !isalnum(cp[5])) {
+				syslog(LOG_ERR,
+			   "unexpected job character in cf %d.%d.%d.%d.%d.%d",
+				       cp[0], cp[1], cp[2], cp[3],
+				       cp[4], cp[5]);
+				break;
+			}
+			if (cp[0] != 'c' || cp[1] != 'f' ||
+			    cp[2] != 'A' || !isxdigit(cp[3]) ||
+			    !isxdigit(cp[4]) || !isxdigit(cp[5])) {
+				syslog(LOG_NOTICE,
+			   "nonstandard job character in cf %d.%d.%d.%d.%d.%d",
+				       cp[0], cp[1], cp[2], cp[3],
+				       cp[4], cp[5]);
+			}
 
 			/* Compute local filenames. */
 			sprintf(cfname, "cfA%03d%s", jobnum(), from);
-			strcpy(tfname, cp);
+			strncpy(tfname, cp, sizeof(tfname));
+			tfname[sizeof(tfname) - 1] = '\0';
+                        if (strchr(cfname, '/') || strchr(tfname, '/'))
+                          {
+                            syslog(LOG_ERR,
+                                   "/ found in control or temporary file name");
+                            break;
+                          }
 			tfname[0] = 't';
 #ifdef KERBEROS
 			strcpy(tempfile, tfname);
@@ -287,7 +325,7 @@ readjob()
 			    
 			/* Don't send final acknowledge beacuse we may wish to 
 			   send error below */
-			if (!readfile(tfname, size, 0)) {
+			if (!readfile(tfname, size, 0, 't')) {
 			    syslog(LOG_DEBUG, "Failed read");
 				rcleanup();
 				continue;
@@ -341,26 +379,48 @@ readjob()
 			if (link(tfname, cfname) < 0) 
 				frecverr("%s: %m", tfname);
 
-			(void) UNLINK(tfname);  
+			(void) spool_unlink(tfname, 't', 1);  
 			tfname[0] = '\0';
 			nfiles++;
 			continue;
 
 		case '\3':	/* read df file */
 			size = 0;
-			while (*cp >= '0' && *cp <= '9')
+			while (*cp >= '0' && *cp <= '9') {
+                        	if (size > INT_MAX/10) toobig = 1;
 				size = size * 10 + (*cp++ - '0');
-			if (*cp++ != ' ')
+			}
+			if (*cp++ != ' ' || toobig)
 				break;
+
+			if (!isalnum(cp[0]) || !isalnum(cp[1]) ||
+			    !isalnum(cp[2]) || !isalnum(cp[3]) ||
+			    !isalnum(cp[4]) || !isalnum(cp[5])) {
+				syslog(LOG_ERR,
+			   "unexpected job character in df %d.%d.%d.%d.%d.%d",
+				       cp[0], cp[1], cp[2], cp[3],
+				       cp[4], cp[5]);
+				break;
+			}
+                        if (cp[0] != 'd' || cp[1] != 'f' ||
+                            cp[2] != 'A' || !isxdigit(cp[3]) ||
+                            !isxdigit(cp[4]) || !isxdigit(cp[5])) {
+				syslog(LOG_NOTICE,
+                           "nonstandard job character in df %d.%d.%d.%d.%d.%d",
+                                       cp[0], cp[1], cp[2], cp[3],
+                                       cp[4], cp[5]);
+			}
+
 			if (!chksize(size)) {
 				(void) write(1, "\2", 1);
 				continue;
 			}
 
-			(void) strcpy(dfname, cp);
+			(void) strncpy(dfname, cp, sizeof(dfname));
+			dfname[sizeof(dfname) - 1] = '\0';
 			if (strchr(dfname, '/'))
 				frecverr("illegal path name");
-			(void) readfile(dfname, size, 1);
+			(void) readfile(dfname, size, 1, 'd');
 			continue;
 		}
 		frecverr("protocol screwup");
@@ -370,10 +430,11 @@ readjob()
 /*
  * Read files send by lpd and copy them to the spooling directory.
  */
-readfile(file, size, acknowledge)
+readfile(file, size, acknowledge, flag)
 	char *file;
 	int size;
         int acknowledge;
+	int flag;
 {
 	register char *cp;
 	char buf[BUFSIZ];
@@ -409,7 +470,7 @@ readfile(file, size, acknowledge)
 	if (err)
 		frecverr("%s: write error", file);
 	if (noresponse()) {		/* file sent had bad data in it */
-		(void) UNLINK(file); 
+		(void) spool_unlink(file, flag, 1); 
 		return(0);	
 	    }
 	if(acknowledge)
@@ -462,7 +523,7 @@ char *file, *tfile;
 	 */
 	if (link(file, tfile) < 0)
 		return(0);
-	(void) UNLINK(file); 
+	(void) spool_unlink(file, 't', 1); 
 
 	/* If we cannot open tf file, then return error */
 	if ((tfp = fopen(tfile, "r")) == NULL)
@@ -493,7 +554,7 @@ char *file, *tfile;
 
 	(void) fclose(cfp);
 	(void) fclose(tfp);
-	(void) UNLINK(tfile); 
+	(void) spool_unlink(tfile, 'T', 1); 
 
 	return(1);
 }
@@ -568,15 +629,16 @@ rcleanup()
 	 */
 
 	if (tfname[0])
-		(void) UNLINK(tfname); 
+		(void) spool_unlink(tfname, 't', 1); 
 #ifdef KERBEROS
 	if (tempfile[0])
-		(void) UNLINK(tempfile); 
+		(void) spool_unlink(tempfile, 'T', 1); 
 #endif
 	if (dfname[0])
 		do {
 			do
-				(void) UNLINK(dfname); 
+				if ((spool_unlink(dfname, 'd', 0)) == -2)
+					return;
 			while (dfname[2]-- >= 'A');
 			dfname[2] = 'z';
 		} while (dfname[0]-- >= 'd');
@@ -668,7 +730,7 @@ char file[];
 	else 
 	    sin_c.sin_port = servname->s_port;
 
-	memcpy(&sin_c.sin_addr,hp->h_addr_list[0], hp->h_length);
+	memcpy(&sin_c.sin_addr,hp->h_addr_list[0], sizeof(sin_c.sin_addr));
 
 	if(connect(fd, &sin_c, sizeof(sin_c)) < 0) {
 	    syslog(LOG_WARNING, "Could not connect with UDP - quota server down?");
@@ -831,7 +893,7 @@ check_remhost()
     register char *cp, *sp;
     extern char from_host[];
     register FILE *hostf;
-    char ahost[MAXHOSTNAMELEN];
+    char ahost[MAXHOSTNAMELEN + 1];
     int baselen = -1;
 
     if(!strcasecmp(from_host, host)) return NULL;
