@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 1998-07-05 05:27:43 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 1998-12-18 17:23:25 danw Exp $
 
 SHELL=/bin/sh
 
@@ -22,4 +22,4 @@ install:
 	cd src && ${MAKE} install "DESTDIR=$$SRVD"
 	mkdir -p "$$SRVD/usr/athena/man"
 	cd doc/man && ${MAKE} install "DESTDIR=$$SRVD" \
-		DESTMAN=/usr/athena/man MANDIR=man OUT_EXT='' CATEXT='$$$$N'
+		DESTMAN=/usr/athena/man MANDIR=man OUT_EXT=man CATEXT='$$$$N'
