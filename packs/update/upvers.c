@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.7 1988-09-06 04:57:31 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.8 1990-08-10 18:15:39 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
  * $Author: probe $
  */
@@ -12,10 +12,10 @@ struct	verfile {
 	int	mjr;	/* Major Version Number */
 	int	mnr; 	/* Minor Version Number */
 	int	deg;	/* Version Designation Char */
-} vf[20];
+} vf[1024];
 
 #ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.7 1988-09-06 04:57:31 probe Exp $";
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.8 1990-08-10 18:15:39 probe Exp $";
 #endif
 
 main(argc, argv)
