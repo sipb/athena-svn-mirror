@@ -24,16 +24,16 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
  *****************************************************************************/
 
 #ifdef BeforeVendorCF
+
 #define	ATHENA
-#if defined(VaxArchitecture) || defined(sparc) || defined(SparcArchitecture)
+#ifdef SparcArchitecture
 #define	HasGcc	YES
 #endif
 
 #define	TroffCmd psroff -t
 
-#if defined(RsArchitecture) || defined(SparcArchitecture)
+/* We're not interested in building shread libraries. */
 #define HasSharedLibraries	NO
-#endif
 
 #endif /* BeforeVendorCF */
 
@@ -42,90 +42,19 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #define InstallLibManPages NO
 
 #undef ProjectRoot
-#define ProjectRoot	/usr/athena
+#define ProjectRoot		/usr/athena
 
-#ifdef PS2Architecture
-#define ExtraLoadFlags  -T0x400000
-#define	HasSaberC	YES			/* stop jik from flaming */
+#undef ConfigDir
+#define ConfigDir		SRCDIR/packs/build/xconfig
+
+#ifdef SunArchitecture
+#define SiteIncludes		-I/usr/openwin/include -I/usr/dt/include
+#define SiteLdLibs		-L/usr/openwin/lib -Xlinker -R/usr/openwin/lib -L/usr/dt/lib -Xlinker -R/usr/dt/lib
+#define BuildPex		NO
+#define	CcCmd			/usr/gcc/bin/gcc -traditional -DSOLARIS
+#define DoRanlibCmd		No
+#define ExtraLibraries		-lsocket -lresolv -lnsl
+#define OptimizedCDebugFlags	-O2
 #endif
-
-#ifdef RtArchitecture
-#define ExtraLoadFlags  -Z
-#define	BuildPexExt	NO
-#define	StripInstalledPrograms YES
-#endif
-
-#ifdef UltrixArchitecture
-/* Build the Xdec server */
-#define XcfbpmaxServer NO
-#ifdef XdecServer
-#undef XdecServer
-#endif
-#define XdecServer NO
-#define BuildServer NO
-#define BuildPex	NO
-/* We have better uses for 100 MB of disk space than to hold mips
-   debugging information.  If you own stock in a disk manufacturer,
-   define KeepHugeSymbols and you will get full size MIPS binaries.  */
-#ifndef KeepHugeSymbols
-#undef	ObjectCompile
-#define	ObjectCompile(options) $(RM) $@					@@\
-	$(CC) -c options $(CFLAGS) $*.c					@@\
-	ld -X -r -o $@.strip $@						@@\
-	mv $@.strip $@
-
-#undef	LibObjCompile
-#define	LibObjCompile(dir,options) $(RM) $@ dir/$@			@@\
-	$(CC) -c options $(CCOPTIONS) $(ALLDEFINES) $*.c		@@\
-	ld -X -r -o dir/$@ $@						@@\
-	$(RM) $@
-
-.c.o:
-	$(CC) -c $(CFLAGS) $*.c
-	ld -X -r -o $@.strip $@
-	mv $@.strip $@
-#endif
-#define	StripInstalledPrograms YES
-#endif
-
-#ifdef RsArchitecture
-#define BuildPex	NO
-#define	CcCmd		xlc -D_ALL_SOURCE
-#endif
-
-#ifdef VaxArchitecture
-#define ExtraLoadFlags  -Z
-#define	StripInstalledPrograms YES
-#undef CcCmd
-#define	CcCmd gcc2 -pipe -fpcc-struct-return
-#define OptimizedCDebugFlags -O3
-#endif
-
-#ifdef SparcArchitecture
-#define BuildPex	NO
-#define	CcCmd		/usr/gcc/bin/gcc -traditional -DSOLARIS
-#define DoRanlibCmd No
-#define ExtraLibraries	-lsocket -lresolv -lnsl
-
-#undef SharedLibraryCcCmd
-#define SharedLibraryCcCmd gcc2 -pipe
-#undef XSunMonoServer
-#define	XSunMonoServer	NO
-#define OptimizedCDebugFlags -O2
-#undef PositionIndependentCFlags
-#define	PositionIndependentCFlags -fpic
-#undef ExtraLoadFlags
-#endif
-
-/* somewhere in EZ
-compiler flags: -G -fpic
-loader flags: -R XSharedFilePath */
-
-#define	XSharedFilePath /usr/athena/lib/X11/lib
-
-#undef MotifBC
-#define MotifBC	YES
 
 #endif /* AfterVendorCF */
-
-#define BuildXInputLib  NO
