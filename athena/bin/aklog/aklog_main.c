@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.1 1990-06-22 18:03:01 qjb Exp $
+ * $Id: aklog_main.c,v 1.2 1990-06-22 18:43:28 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.1 1990-06-22 18:03:01 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.2 1990-06-22 18:43:28 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -71,7 +71,7 @@ extern int errno;
 extern char *sys_errlist[];
 
 static aklog_params params;	/* Various aklog functions */
-static char errmsg[BUFSIZ];	/* String for constructing error messages */
+static char msgbuf[BUFSIZ];	/* String for constructing error messages */
 static char *progname = NULL;	/* Name of this program */
 static int dflag = FALSE;	/* Give debugging information */
 static int noauth = FALSE;	/* If true, don't try to get tokens */
@@ -124,17 +124,20 @@ static void get_local_cell(cell, size)
     struct afsconf_dir *configdir;
     
     if (!(configdir = afsconf_Open(AFSCONF_CLIENTNAME))) {
-	fprintf(stderr, 
+	sprintf(msgbuf, 
 		"%s: can't get afs configuration. Is this an afs client?\n",
 		progname);
-	exit(AKLOG_AFS);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_AFS);
     }
     
     if (afsconf_GetLocalCell(configdir, cell, size)) {
-	fprintf(stderr, "%s: can't find local cell.\n", progname);
-	fprintf(stderr, "You may want to check %s/ThisCell.\n", 
+	sprintf(msgbuf, "%s: can't find local cell.\n", progname);
+	params.pstderr(msgbuf);
+	sprintf(msgbuf, "You may want to check %s/ThisCell.\n", 
 		AFSCONF_CLIENTNAME);
-	exit(AKLOG_AFS);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_AFS);
     }
 
     afsconf_Close(configdir);
@@ -161,17 +164,20 @@ static int get_host_of_cell(cell, host)
     bzero(&cellinfo, sizeof(cellinfo));
 
     if (!(configdir = afsconf_Open(AFSCONF_CLIENTNAME))) {
-	fprintf(stderr, 
+	sprintf(msgbuf, 
 		"%s: can't get afs configuration. Is this an afs client?\n",
 		progname);
-	exit(AKLOG_AFS);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_AFS);
     }
 
     if (afsconf_GetCellInfo(configdir, cell, NULL, &cellinfo)) {
-	fprintf(stderr, "%s: Can't get information about cell %s.\n",
+	sprintf(msgbuf, "%s: Can't get information about cell %s.\n",
 		progname, cell);
-	fprintf(stderr, "You may want to check %s/CellServDB\n",
+	params.pstderr(msgbuf);
+	sprintf(msgbuf, "You may want to check %s/CellServDB\n",
 		 AFSCONF_CLIENTNAME);
+	params.pstderr(msgbuf);
 	status = AKLOG_AFS;
     }
 
@@ -252,14 +258,18 @@ static int auth_to_cell(cell, realm)
     }
 
     if (ll_string(&authedcells, ll_s_check, cell_to_use)) {
-	if (dflag)
-	    printf("Already authenticated to %s\n", cell_to_use);
+	if (dflag) {
+	    sprintf(msgbuf, "Already authenticated to %s\n", cell_to_use);
+	    params.pstdout(msgbuf);
+	}
 	return(AKLOG_SUCCESS);
     }
 
     if (!noauth) {
-	if (dflag)
-	    printf("Authenticating to cell %s.\n", cell_to_use);
+	if (dflag) {
+	    sprintf(msgbuf, "Authenticating to cell %s.\n", cell_to_use);
+	    params.pstdout(msgbuf);
+	}
 	
 	if (realm && realm[0])
 	    strcpy(realm_of_cell, realm);
@@ -273,25 +283,25 @@ static int auth_to_cell(cell, realm)
 	strncpy(instance, cell_to_use, sizeof(instance));
 	instance[sizeof(instance)-1] = NULL;
 	
-	if (dflag)
-	    printf("Getting tickets: %s.%s@%s\n", name, instance, 
-		   realm_of_cell);
+	if (dflag) {
+	    sprintf(msgbuf, "Getting tickets: %s.%s@%s\n", name, instance, 
+		    realm_of_cell);
+	    params.pstdout(msgbuf);
+	}
 	
 	/* 
 	 * Extract the session key from the ticket file and hand-frob an
 	 * afs style authenticator.
 	 */
-	status = krb_get_cred(name, instance, realm_of_cell, &c);
-	if (status != KSUCCESS) {
-	    status = get_ad_tkt(name, instance, realm_of_cell, 255);
-	    if (status == KSUCCESS)
-		status = krb_get_cred(name, instance, realm_of_cell, &c);
-	}
+	status = params.get_cred(name, instance, realm_of_cell, &c);
 	
 	if (status != KSUCCESS) {
-	    fprintf(stderr, "%s: Couldn't get AFS tickets", progname);
-	    fprintf(stderr," for cell %s", cell_to_use);
-	    fprintf(stderr,":\n%s\n", krb_err_txt[status]);
+	    sprintf(msgbuf, "%s: Couldn't get AFS tickets", progname);
+	    params.pstderr(msgbuf);
+	    sprintf(msgbuf," for cell %s", cell_to_use);
+	    params.pstderr(msgbuf);
+	    sprintf(msgbuf,":\n%s\n", krb_err_txt[status]);
+	    params.pstderr(msgbuf);
 	    return(AKLOG_KERBEROS);
 	}
 	
@@ -310,8 +320,10 @@ static int auth_to_cell(cell, realm)
 	atoken.ticketLen = c.ticket_st.length;
 	bcopy (c.ticket_st.dat, atoken.ticket, atoken.ticketLen);
 	
-	if (dflag)
-	    printf("Getting tokens.\n");
+	if (dflag) {
+	    sprintf(msgbuf, "Getting tokens.\n");
+	    params.pstdout(msgbuf);
+	}
 	
 	/* 
 	 * Last argument is only used for non-afs services; not 
@@ -319,24 +331,28 @@ static int auth_to_cell(cell, realm)
 	 */
 	
 	if (ktc_SetToken(&aserver, &atoken, &aclient)) {
-	    fprintf(stderr, "%s: unable to obtain tokens for cell %s.\n",
+	    sprintf(msgbuf, "%s: unable to obtain tokens for cell %s.\n",
 		    progname, cell_to_use);
+	    params.pstderr(msgbuf);
 	    status = AKLOG_TOKEN;
 	}
     }
     else
-	if (dflag)
-	    printf("Noauth mode; not authenticating.\n");
+	if (dflag) {
+	    sprintf(msgbuf, "Noauth mode; not authenticating.\n");
+	    params.pstdout(msgbuf);
+	}
 	
     /* Record that we have logged to this cell */
     (void)ll_string(&authedcells, ll_s_add, cell_to_use);
 
     /* Record this cell in the list of zephyr subscriptions */
     if (ll_string(&zsublist, ll_s_add, cell_to_use) == LL_FAILURE) {
-	fprintf(stderr, 
+	sprintf(msgbuf, 
 		"%s: failure adding cell to zephyr subscriptions list.\n",
 		progname);
-	exit(AKLOG_MISC);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_MISC);
     }
 
     return(status);
@@ -447,10 +463,12 @@ static char *next_path(origpath)
 	    ? elast_comp - last_comp : strlen(last_comp);
 	strncat(pathtocheck, last_comp, len);
 	bzero(linkbuf, sizeof(linkbuf));
-	if (link = (readlink(pathtocheck, linkbuf, sizeof(linkbuf)) > 0)) {
+	if (link = (params.readlink(pathtocheck, linkbuf, 
+				    sizeof(linkbuf)) > 0)) {
 	    if (++symlinkcount > MAXSYMLINKS) {
-		fprintf(stderr, "%s: %s\n", progname, sys_errlist[ELOOP]);
-		exit(AKLOG_BADPATH);
+		sprintf(msgbuf, "%s: %s\n", progname, sys_errlist[ELOOP]);
+		params.pstderr(msgbuf);
+		params.exitprog(AKLOG_BADPATH);
 	    }
 	    bzero(tmpbuf, sizeof(tmpbuf));
 	    if (elast_comp)
@@ -512,8 +530,10 @@ static void add_hosts_to_zsublist(file)
     vio.in_size = 0;
     vio.out = outbuf;
 
-    if (dflag)
-	printf("Getting list of hosts for %s\n", file);
+    if (dflag) {
+	sprintf(msgbuf, "Getting list of hosts for %s\n", file);
+	params.pstdout(msgbuf);
+    }
     /* Don't worry about errors. */
     if (!pioctl(file, VIOCWHEREIS, &vio, 1)) {
 	hosts = (long *) outbuf;
@@ -533,15 +553,19 @@ static void add_hosts_to_zsublist(file)
 #ifdef ALLHOSTS
 	for (i = 0; hosts[i]; i++) 
 	    if (hp = gethostbyaddr(&hosts[i], sizeof(long), AF_INET)) {
-		if (dflag)
-		    printf("Got host %s\n", hp->h_name);
+		if (dflag) {
+		    sprintf(msgbuf, "Got host %s\n", hp->h_name);
+		    params.pstdout(msgbuf);
+		}
 		ll_string(&zsublist, SL_ADD, hp->h_name);
 	    }
 #else
 	if (hosts[1] == NULL) 
 	    if (hp = gethostbyaddr(&hosts[0], sizeof(long), AF_INET)) {
-		if (dflag)
-		    printf("Got host %s\n", hp->h_name);
+		if (dflag) {
+		    sprintf(msgbuf, "Got host %s\n", hp->h_name);
+		    params.pstdout(msgbuf);
+		}
 		ll_string(&zsublist, ll_s_add, hp->h_name);
 	    }
 #endif /* ALLHOSTS */
@@ -575,10 +599,13 @@ static int auth_to_path(path)
 	strcpy(pathtocheck, path);
     else {
 	if (getwd(pathtocheck) == NULL) {
-	    fprintf(stderr, "Unable to find current working directory.  ");
-	    fprintf(stderr, "Try an absolute pathname:\n");
-	    fprintf(stderr, "%s\n", pathtocheck);
-	    exit(AKLOG_BADPATH);
+	    sprintf(msgbuf, "Unable to find current working directory.  ");
+	    params.pstderr(msgbuf);
+	    sprintf(msgbuf, "Try an absolute pathname:\n");
+	    params.pstderr(msgbuf);
+	    sprintf(msgbuf, "%s\n", pathtocheck);
+	    params.pstderr(msgbuf);
+	    params.exitprog(AKLOG_BADPATH);
 	}
 	else {
 	    strcat(pathtocheck, DIRSTRING);
@@ -590,8 +617,10 @@ static int auth_to_path(path)
     /* Go on to the next level down the path */
     while (nextpath = next_path(NULL)) {
 	strcpy(pathtocheck, nextpath);
-	if (dflag)
-	    printf("Checking directory %s\n", pathtocheck);
+	if (dflag) {
+	    sprintf(msgbuf, "Checking directory %s\n", pathtocheck);
+	    params.pstdout(msgbuf);
+	}
 	/* 
 	 * If this is an afs mountpoint, determine what cell from 
 	 * the mountpoint name which is of the form 
@@ -611,19 +640,21 @@ static int auth_to_path(path)
 	    }
 	}
 	else
-	    if (lstat(pathtocheck, &stat) < 0) {
+	    if (params.lstat(pathtocheck, &stat) < 0) {
 		/*
 		 * If we've logged and still can't stat, there's
 		 * a problem... 
 		 */
-		fprintf(stderr, "%s: %s: %s\n", progname, 
+		sprintf(msgbuf, "%s: %s: %s\n", progname, 
 			pathtocheck, sys_errlist[errno]);
+		params.pstderr(msgbuf);
 		return(AKLOG_BADPATH);
 	    }
 	    else if ((stat.st_mode & S_IFMT) != S_IFDIR) {
 		/* Allow only directories */
-		fprintf(stderr, "%s: %s: %s\n", progname, pathtocheck,
+		sprintf(msgbuf, "%s: %s: %s\n", progname, pathtocheck,
 			sys_errlist[ENOTDIR]);
+		params.pstderr(msgbuf);
 		return(AKLOG_BADPATH);
 	    }
     }
@@ -638,19 +669,29 @@ static void usage(void)
 static void usage()
 #endif /* __STDC__ */
 {
-    fprintf(stderr, "\nUsage: %s %s%s\n", progname,
+    sprintf(msgbuf, "\nUsage: %s %s%s\n", progname,
 	    "[-d] [[-cell | -c] cell [-k krb_realm]] [[-path] pathname]\n",
 	    "    [-zsubs] [-noauth]\n");
-    fprintf(stderr, "    -d gives debugging information.\n");
-    fprintf(stderr, "    krb_realm is the kerberos realm of a cell.\n");
-    fprintf(stderr, "    pathname is the name of a directory to which ");
-    fprintf(stderr, "you wish to authenticate.\n");
-    fprintf(stderr, "    -zsubs gives zephyr subscription information.\n");
-    fprintf(stderr, "    -noauth does not attempt to get tokens.\n");
-    fprintf(stderr, "    No commandline arguments means ");
-    fprintf(stderr, "authenticate to the local cell.\n");
-    fprintf(stderr, "\n");
-    exit(AKLOG_USAGE);
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    -d gives debugging information.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    krb_realm is the kerberos realm of a cell.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    pathname is the name of a directory to which ");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "you wish to authenticate.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    -zsubs gives zephyr subscription information.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    -noauth does not attempt to get tokens.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "    No commandline arguments means ");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "authenticate to the local cell.\n");
+    params.pstderr(msgbuf);
+    sprintf(msgbuf, "\n");
+    params.pstderr(msgbuf);
+    params.exitprog(AKLOG_USAGE);
 }
 
 #ifdef __STDC__
@@ -700,7 +741,7 @@ void aklog(argc, argv, a_params)
     else
 	progname = argv[0];
 
-    bcopy((char *)&params, (char *)a_params, sizeof(aklog_params));
+    bcopy((char *)a_params, (char *)&params, sizeof(aklog_params));
 
     /* Initialize list of cells to which we have authenticated */
     (void)ll_init(&authedcells);
@@ -760,15 +801,17 @@ void aklog(argc, argv, a_params)
 		if (new_cellinfo = copy_cellinfo(&cellinfo))
 		    ll_add_data(cur_node, new_cellinfo);
 		else {
-		    fprintf(stderr, 
+		    sprintf(msgbuf, 
 			    "%s: failure copying cellinfo.\n", progname);
-		    exit(AKLOG_MISC);
+		    params.pstderr(msgbuf);
+		    params.exitprog(AKLOG_MISC);
 		}
 	    }
 	    else {
-		fprintf(stderr, "%s: failure adding cell to cells list.\n",
+		sprintf(msgbuf, "%s: failure adding cell to cells list.\n",
 			progname);
-		exit(AKLOG_MISC);
+		params.pstderr(msgbuf);
+		params.exitprog(AKLOG_MISC);
 	    }
 	    bzero(&cellinfo, sizeof(cellinfo));
 	    cmode = FALSE;
@@ -782,15 +825,17 @@ void aklog(argc, argv, a_params)
 		if (new_path = copy_string(path)) 
 		    ll_add_data(cur_node, new_path);
 		else {
-		    fprintf(stderr, "%s: failure copying path name.\n",
+		    sprintf(msgbuf, "%s: failure copying path name.\n",
 			    progname);
-		    exit(AKLOG_MISC);
+		    params.pstderr(msgbuf);
+		    params.exitprog(AKLOG_MISC);
 		}
 	    }
 	    else {
-		fprintf(stderr, "%s: failure adding path to paths list.\n",
+		sprintf(msgbuf, "%s: failure adding path to paths list.\n",
 			progname);
-		exit(AKLOG_MISC);
+		params.pstderr(msgbuf);
+		params.exitprog(AKLOG_MISC);
 	    }
 	    pmode = FALSE;
 	    bzero(path, sizeof(path));
@@ -825,8 +870,10 @@ void aklog(argc, argv, a_params)
 
     /* If we are keeping track of zephyr subscriptions, print them. */
     if (zsubs) 
-	for (cur_node = zsublist.first; cur_node; cur_node = cur_node->next)
-	    printf("zsub: %s\n", cur_node->data);
+	for (cur_node = zsublist.first; cur_node; cur_node = cur_node->next) {
+	    sprintf(msgbuf, "zsub: %s\n", cur_node->data);
+	    params.pstdout(msgbuf);
+	}
     
-    exit(status);
+    params.exitprog(status);
 }
