@@ -33,7 +33,21 @@ set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 "
 
 set tools="athena/etc/synctree"
 
-set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/tcsh6 third/supported/emacs-18.59 third/unsupported/perl third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/ansi third/unsupported/jove third/unsupported/learn third/unsupported/patch third/unsupported/tac third/unsupported/tools third/unsupported/transcript-v2.1 third/supported/mh.6.8"
+set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/tcsh6 third/supported/emacs-18.59 third/unsupported/perl third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
+
+switch ( $machine )
+  case decmips
+    set machthird="third/unsupported/ditroff third/unsupported/transcript-v2.1"
+    breaksw
+
+  case sun4
+    set machthird="third/unsupported/transcript-v2.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
+    breaksw
+
+  case rsaix
+    set machthird="third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
+    breaksw
+endsw
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr.p4 athena/lib/moira.dev athena/lib/neos"
 
@@ -53,6 +67,7 @@ set MOTIF="motif"
 set found=0
 set installonly=0
 set installman=0
+set done=0
 set zap=0
 
 while ( $#argv > 0 )
@@ -90,17 +105,17 @@ echo on a $machine >> $outfile
 
 if ($machine == "sun4") then
 
-set packages = setup $machine $libs1 $tools $third $libs2 $etcs $bins
+set packages = setup $machine $libs1 $tools $third $machthird $libs2 $etcs $bins
 
 else if ($machine == "rsaix" ) then
 
-set packages = setup $libs1 $tools $third $libs2 $etcs $bins
+set packages = setup $libs1 $tools $third $machthird $libs2 $etcs $bins
 
 else
 
 # if ($machine == "decmips") then...
 
-set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $libs2 $etcs $bins $machine athena/etc/nfsc)
+set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc)
 
 # at the moment, lib/resolv gets built twice...
 
@@ -129,11 +144,25 @@ endif
 
 foreach package ( $packages )
 
+# The following code before the switch should be changed to filter
+# packages, and be moved to right after packages is generated. Then
+# it will apply to both installman and what it works for now.
+
 if ($found == "0" && $1 != "") then
   if ($1 == $package) then
     set found=1
   else
     continue
+  endif
+endif
+
+if ($done == 1) then
+  break
+endif
+
+if ($done == 0 && $2 != "") then
+  if ($2 == $package) then
+    set done=1
   endif
 endif
 
@@ -720,4 +749,4 @@ endif # installonly
 endsw
 end
 echo ending `date` >>& $outfile
-cp -p $outfile /build/washlog.`date '+%y.%m.%d.%H'`"
+cp -p $outfile "/build/washlog.`date '+%y.%m.%d.%H'`"
