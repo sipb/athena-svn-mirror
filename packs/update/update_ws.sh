@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.57 2002-06-26 22:23:15 ghudson Exp $
+# $Id: update_ws.sh,v 1.58 2002-06-28 05:42:26 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -312,24 +312,31 @@ sun4)
 esac
 
 # Ensure that we have enough disk space on the IRIX root partition
-# for an OS upgrade.
+# for an upgrade to 9.1.
 # We also require a minimum of 64MB of memory on all SGI's.
 case $HOSTTYPE in
 sgi)
   case `uname -r` in
   6.2)
-    rootneeded=130
+    rootneeded=150
     ;;
   6.3)
-    rootneeded=70
+    rootneeded=90
     ;;
   6.5)
     case "`uname -R | awk '{ print $2; }'`" in
     6.5.3m)
-      rootneeded=30
+      rootneeded=50
       ;;
     *)
-      rootneeded=0
+      case $version in
+      9.1.*)
+	rootneeded=0
+	;;
+      *)
+	rootneeded=20
+	;;
+      esac
       ;;
     esac
     ;;
