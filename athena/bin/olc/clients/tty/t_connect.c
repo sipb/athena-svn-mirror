@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.8 1990-02-14 15:50:36 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.9 1990-02-15 18:12:43 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -68,7 +68,7 @@ t_grab(Request,flag,hold)
       break;
 
     case ALREADY_CONNECTED:
-      printf("Someone is already connected to %s (%d).\n",
+      printf("Someone is already connected to %s [%d].\n",
              Request->target.username,Request->target.instance);
       status = NO_ACTION;
       break;
@@ -80,7 +80,7 @@ t_grab(Request,flag,hold)
       break;
 
     case NO_QUESTION:
-      printf("%s (%d) does not have a question.\n",Request->target.username,
+      printf("%s [%d] does not have a question.\n",Request->target.username,
 	     Request->target.instance);
       status = ERROR;
       break;
@@ -98,7 +98,7 @@ t_grab(Request,flag,hold)
 
   if((instance != Request->requester.instance) && !hold)
     {
-      printf("You are now %s (%d).\n",Request->requester.username,
+      printf("You are now %s [%d].\n",Request->requester.username,
 	   Request->requester.instance);
       User.instance =  Request->requester.instance;
     }
@@ -170,7 +170,7 @@ t_forward(Request)
     }
 
   if(instance != Request->requester.instance)
-    printf("%s (%d) has been deactivated.  You are now %s (%d), again!\n",
+    printf("%s [%d] has been deactivated.  You are now %s [%d], again!\n",
 	Request->requester.username,instance,
 	Request->requester.username, Request->requester.instance);
 

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.7 1990-02-14 18:22:40 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.8 1990-02-15 18:14:24 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -55,12 +55,12 @@ t_replay(Request,file, display, sort)
 
     case NOT_CONNECTED:
       fprintf(stderr,
-	"%s (%d) does not have a question.\n",
+	"%s [%d] does not have a question.\n",
 	 Request->target.username, Request->target.instance);
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You cannot replay log of %s (%d).\n", 
+      fprintf(stderr, "You cannot replay log of %s [%d].\n", 
 	      Request->target.username, Request->target.instance);
        break;
 
@@ -119,7 +119,7 @@ t_show_message(Request, file, display, connected, noflush)
       if(isme(Request))
 	fprintf(stderr, "You are not connected.\n");
       else
-	fprintf(stderr, "%s (%d) is not connected to anyone.\n",
+	fprintf(stderr, "%s [%d] is not connected to anyone.\n",
 		Request->target.username, Request->target.instance);
       break;
 

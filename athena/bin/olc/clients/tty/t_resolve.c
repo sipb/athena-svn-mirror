@@ -136,7 +136,7 @@ t_done(Request,title)
 	printf("Your question is resolved. Thank you for using OLC.\n");
       else
 	{
-	  printf("%s's (%d) question is resolved. Thank him for using OLC.\n",
+	  printf("%s's [%d] question is resolved. Thank him for using OLC.\n",
 		 Request->target.username, Request->target.instance);
 	  printf("That tom and his sexist messages!\n");
 	}
@@ -163,7 +163,7 @@ t_done(Request,title)
     }
 
     if(instance != Request->requester.instance)
-    printf("%s (%d) has been deactivated.  You are %s (%d).\n",
+    printf("%s [%d] has been deactivated.  You are %s [%d].\n",
   	Request->requester.username, instance,
         Request->requester.username, Request->requester.instance);
 
@@ -250,7 +250,7 @@ t_cancel(Request,title)
     }
 
   if(instance != Request->requester.instance)
-    printf("%s (%d) has been deactivated.  You are now %s (%d).\n",
+    printf("%s [%d] has been deactivated.  You are now %s [%d].\n",
 	Request->requester.username, instance,
         Request->requester.username, Request->requester.instance);
 

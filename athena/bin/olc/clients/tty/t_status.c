@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.10 1990-02-14 16:38:00 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.11 1990-02-15 18:14:52 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -47,7 +47,7 @@ t_personal_status(Request,chart)
       if(isme(Request))
 	printf("You are not doing anything in OLC.\n");
       else
-	printf("%s (%d) is not doing anything in OLC.\n",
+	printf("%s [%d] is not doing anything in OLC.\n",
 	       Request->target.username, Request->target.instance);
       break;
 
@@ -219,7 +219,7 @@ t_who(Request)
       else
 	{
 	  if(list.connected.uid > 0)
-	    printf("%s %s (%d) (%s@%s) is currently connected to %s %s (%d) (%s@%s).\n",
+	    printf("%s %s [%d] (%s@%s) is currently connected to %s %s [%d] (%s@%s).\n",
 		   cap(list.user.title), list.user.realname, 
 		   list.user.instance,list.user.username,
 		   list.user.machine, list.connected.title,
@@ -228,14 +228,14 @@ t_who(Request)
 	  else
 	    {
 	      if(list.nseen >=0)
-		printf("%s %s (%d) (%s@%s) currently has %s %s in the queue.\n",
+		printf("%s %s [%d] (%s@%s) currently has %s %s in the queue.\n",
 		       list.user.title,
 		       list.user.realname, list.user.instance,
 		       list.user.username,
 		       list.user.machine, article(list.topic),
 		       list.topic);
 	      else
-		printf("%s %s (%d) (%s@%s) is just hanging out.\n%s\n",
+		printf("%s %s [%d] (%s@%s) is just hanging out.\n%s\n",
 		       list.user.title,list.user.realname,
 		       list.user.instance,list.user.username,
 		       list.user.machine,happy_message());

@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.5 1990-01-17 02:40:47 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.6 1990-02-15 18:14:56 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -182,7 +182,7 @@ t_get_topic(Request, topic)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You are not allowed to see %s's (%d) topic.\n",
+      fprintf(stderr, "You are not allowed to see %s's [%d] topic.\n",
 	      Request->target.username, Request->target.instance);
       status = ERROR;
       break;
@@ -216,7 +216,7 @@ t_change_topic(Request,topic)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You are not allowed to change %s's (%d) topic.\n",
+      fprintf(stderr, "You are not allowed to change %s's [%d] topic.\n",
 	      Request->target.username, Request->target.instance);
       status = ERROR;
       break;

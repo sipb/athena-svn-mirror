@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.8 1990-01-17 02:40:34 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.9 1990-02-15 18:14:29 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -37,7 +37,7 @@ t_queue(Request,queue)
   
   if(queue == (char *) NULL)
     {
-      printf("You are %s (%d). %s.\n",Request->requester.username,Request->requester.instance,happy_message());
+      printf("You are %s [%d]. %s.\n",Request->requester.username,Request->requester.instance,happy_message());
       return(SUCCESS);
     }
 

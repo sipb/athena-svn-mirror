@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.6 1990-02-14 15:20:55 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.7 1990-02-15 18:13:42 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -49,7 +49,7 @@ t_sign_on(Request,flag,hold)
       if(isme(Request))
 	printf("You have signed on to OLC.\n");
       else
-	printf("%s (%d) is signed on.  I hope you told him.\n",
+	printf("%s [%d] is signed on.  I hope you told him.\n",
 	       Request->target.username,Request->target.instance);
       status = SUCCESS; 
       break; 
@@ -58,7 +58,7 @@ t_sign_on(Request,flag,hold)
       if(isme(Request))
 	fprintf(stderr,"You are already signed on.\n");
       else
-	printf("%s (%d) is already signed on.\n",
+	printf("%s [%d] is already signed on.\n",
 	       Request->target.username,Request->target.instance);
       status = NO_ACTION;
       break;
@@ -71,7 +71,7 @@ t_sign_on(Request,flag,hold)
 	  break;
 	}
       else
-	printf("%s (%d) is already asking a question in that instance.\n",
+	printf("%s [%d] is already asking a question in that instance.\n",
 	       Request->target.username,Request->target.instance);
       break;
 
@@ -85,7 +85,7 @@ t_sign_on(Request,flag,hold)
       if(isme(Request))
 	printf("You have signed on to OLC. You are already connected.\n");
       else
-	printf("%s (%d) is signed on and connected.\n",
+	printf("%s [%d] is signed on and connected.\n",
 	        Request->target.username,Request->target.instance);
       status = SUCCESS;
       break; 	
@@ -94,7 +94,7 @@ t_sign_on(Request,flag,hold)
       if(isme(Request))
 	printf("Congratulations, you have been connected.\n");
       else
-        printf("%s (%d) has just been connected and it's your fault.\n",
+        printf("%s [%d] has just been connected and it's your fault.\n",
                Request->target.username,Request->target.instance);
       status = SUCCESS;
       break;
@@ -115,7 +115,7 @@ t_sign_on(Request,flag,hold)
 
   if((instance != Request->requester.instance) && !hold)
     {
-      printf("You are now %s (%d).\n",Request->requester.username,
+      printf("You are now %s [%d].\n",Request->requester.username,
 	     Request->requester.instance);
       User.instance =  Request->requester.instance;
     }
@@ -172,7 +172,7 @@ t_olc_off(Request)
     }
 
   if(instance != Request->requester.instance)
-    printf("%s (%d) has been deactivated.  You are now %s (%d). %s\n",
+    printf("%s [%d] has been deactivated.  You are now %s [%d]. %s\n",
   	Request->requester.username, instance,
         Request->requester.username, Request->requester.instance, 
 	happy_message());

@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.11 1990-02-07 03:36:29 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.12 1990-02-15 18:15:01 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -263,7 +263,7 @@ handle_response(response, req)
       if(isme(req))
 	fprintf(stderr, "You are not signed on to OLC.\n");
       else
-	fprintf(stderr, "%s (%d) is not signed on to OLC.\n",
+	fprintf(stderr, "%s [%d] is not signed on to OLC.\n",
 		req->target.username,req->target.instance);
       return(NO_ACTION);   
 
@@ -278,7 +278,7 @@ handle_response(response, req)
 	    }
 	}
       else
-	fprintf(stderr,"%s (%d) does not have a question.\n",
+	fprintf(stderr,"%s [%d] does not have a question.\n",
 		req->target.username, req->target.instance);
       return(ERROR);
 
@@ -286,7 +286,7 @@ handle_response(response, req)
       if(isme(req))
 	fprintf(stderr,"You have a question.\n");
       else
-	fprintf(stderr,"%s (%d) does not have a question.\n",
+	fprintf(stderr,"%s [%d] does not have a question.\n",
 		req->target.username,req->target.instance);
       return(ERROR);
 
@@ -295,7 +295,7 @@ handle_response(response, req)
 	fprintf(stderr,"You are not connected to a %s.\n", 
 		OLC?"consultant":"user");	  
       else
-	fprintf(stderr,"%s (%d) is not connected nor is asking a question.\n",
+	fprintf(stderr,"%s [%d] is not connected nor is asking a question.\n",
 		req->target.username,req->target.instance);
       return(NO_ACTION);   
 
@@ -304,12 +304,12 @@ handle_response(response, req)
       return(NO_ACTION);   
  
     case TARGET_NOT_FOUND:
-      fprintf(stderr,"Target user %s (%d) not found.\n",  req->target.username,
+      fprintf(stderr,"Target user %s [%d] not found.\n",  req->target.username,
 	      req->target.instance);
       return(ERROR);       
 
     case REQUESTER_NOT_FOUND:
-      fprintf(stderr,"You [%s (%d)] are unknown.  There is a problem.\n",
+      fprintf(stderr,"You (%s [%d]) are unknown.  There is a problem.\n",
 	      req->requester.username, 
 	      req->requester.instance);
       return(ERROR);       

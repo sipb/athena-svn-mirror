@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.3 1990-01-17 02:40:22 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.4 1990-02-15 18:14:15 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -48,7 +48,7 @@ t_live(Request,file)
     case SUCCESS:
       break;
     case PERMISSION_DENIED:
-      fprintf(stderr, "You are not allowed to send to %s (%d).\n",
+      fprintf(stderr, "You are not allowed to send to %s [%d].\n",
 	      Request->target.username,
 	      Request->target.instance);
       status = NO_ACTION;

@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.6 1989-11-17 14:12:19 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.7 1990-02-15 18:14:48 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -47,7 +47,7 @@ t_reply(Request,file,editor)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You are not allowed to send to %s (%d).\n",
+      fprintf(stderr, "You are not allowed to send to %s [%d].\n",
 	      Request->target.username,
 	      Request->target.instance);
       status = NO_ACTION;
@@ -91,7 +91,7 @@ t_reply(Request,file,editor)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You are no longer allowed to send to %s (%d).\n",
+      fprintf(stderr, "You are no longer allowed to send to %s [%d].\n",
 	      Request->target.username,
 	      Request->target.instance);
       status = ERROR;
@@ -131,7 +131,7 @@ t_comment(Request,file,editor)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr,  "You are not allowed to comment in %s (%d)'s log.\n",
+      fprintf(stderr,  "You are not allowed to comment in %s [%d]'s log.\n",
 	      Request->target.username,
 	      Request->target.instance);
       status = NO_ACTION;
@@ -165,7 +165,8 @@ t_comment(Request,file,editor)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You no longer allowed to comment in %s (%d)'s log.\n",
+      fprintf(stderr,
+	      "You are no longer allowed to comment in %s [%d]'s log.\n",
 	      Request->target.username,
 	      Request->target.instance);
       status = ERROR;
