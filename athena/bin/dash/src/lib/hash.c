@@ -19,10 +19,10 @@
  *  another project (smsdev).
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/hash.c,v 1.1 1991-09-03 11:13:34 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/hash.c,v 1.2 1991-12-17 11:38:41 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h> /* this is annoying... */
@@ -36,7 +36,7 @@ static char rcsid[] =
 /* Create a hash table.  The size is just a hint, not a maximum. */
 
 struct hash *create_hash(size)
-int size;
+     int size;
 {
     struct hash *h;
 
@@ -53,8 +53,8 @@ int size;
  */
 
 caddr_t hash_lookup(h, key)
-struct hash *h;
-register int key;
+     struct hash *h;
+     register int key;
 {
     register struct bucket *b;
 
@@ -73,9 +73,9 @@ register int key;
  */
 
 int hash_store(h, key, value)
-struct hash *h;
-register int key;
-caddr_t value;
+     struct hash *h;
+     register int key;
+     caddr_t value;
 {
     register struct bucket *b, **p;
 
@@ -99,6 +99,26 @@ caddr_t value;
     b->key = key;
     b->data = value;
     return(0);
+}
+
+
+caddr_t hash_give_any_value(h, key)
+     struct hash *h;
+     int *key;
+{
+  register struct bucket *b, **p;
+
+  for (p = &(h->data[h->size - 1]); p >= h->data; p--)
+    {
+      b = *p;
+      if (b)
+	{
+	  *key = b->key;
+	  return(b->data);
+	}
+    }
+
+  return(0);
 }
 
 
