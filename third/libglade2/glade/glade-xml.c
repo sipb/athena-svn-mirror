@@ -1107,7 +1107,7 @@ guint
 glade_flags_from_string (GType type, const char *string)
 {
     GFlagsClass *fclass;
-    gchar *endptr;
+    gchar *endptr, *prevptr;
     guint i, j, ret = 0;
     char *flagstr;
 
@@ -1127,21 +1127,47 @@ glade_flags_from_string (GType type, const char *string)
 	if (eos || flagstr [i] == '|') {
 	    GFlagsValue *fv;
 	    const char  *flag;
+	    gunichar ch;
 
 	    flag = &flagstr [j];
+            endptr = &flagstr [i];
 
 	    if (!eos) {
 		flagstr [i++] = '\0';
 		j = i;
 	    }
 
-	    fv = g_flags_get_value_by_name (fclass, flag);
+            /* trim spaces */
+	    for (;;)
+	      {
+		ch = g_utf8_get_char (flag);
+		if (!g_unichar_isspace (ch))
+		  break;
+		flag = g_utf8_next_char (flag);
+	      }
 
-	    if (!fv)
-		fv = g_flags_get_value_by_nick (fclass, flag);
+	    while (endptr > flag)
+	      {
+		prevptr = g_utf8_prev_char (endptr);
+		ch = g_utf8_get_char (prevptr);
+		if (!g_unichar_isspace (ch))
+		  break;
+		endptr = prevptr;
+	      }
 
-	    if (fv)
-		ret |= fv->value;
+	    if (endptr > flag)
+	      {
+		*endptr = '\0';
+		fv = g_flags_get_value_by_name (fclass, flag);
+
+		if (!fv)
+		  fv = g_flags_get_value_by_nick (fclass, flag);
+
+		if (fv)
+		  ret |= fv->value;
+		else
+		  g_warning ("Unknown flag: '%s'", flag);
+	      }
 
 	    if (eos)
 		break;
@@ -1193,21 +1219,21 @@ struct _GladeWidgetBuildData {
 /**
  * glade_register_widget:
  * @type: the GType of the widget.
- * @new: the function used to construct instances of the widget.
+ * @new_func: the function used to construct instances of the widget.
  * @build_children: function used to construct children (or NULL).
  * @find_internal_child: function to find internal children (or NULL).
  *
  * This function is used to register new construction functions for a
  * widget type.  The child building routine would call
- * glade_xml_build_widget on each child node to create the child
+ * glade_xml_build_widget() on each child node to create the child
  * before packing it.
  *
  * This function is mainly useful for addon widget modules for libglade
- * (it would get called from the glade_init_module function).
+ * (it would get called from the glade_init_module() function).
  */
 void
 glade_register_widget(GType type,
-		      GladeNewFunc new,
+		      GladeNewFunc new_func,
 		      GladeBuildChildrenFunc build_children,
 		      GladeFindInternalChildFunc find_internal_child)
 {
@@ -1219,11 +1245,11 @@ glade_register_widget(GType type,
     if (glade_build_data_id == 0)
 	glade_build_data_id = g_quark_from_static_string(glade_build_data_key);
 
-    if (!new) new = glade_standard_build_widget;
+    if (!new_func) new_func = glade_standard_build_widget;
 
     data = g_new(GladeWidgetBuildData, 1);
 
-    data->new = new;
+    data->new = new_func;
     data->build_children = build_children;
     data->find_internal_child = find_internal_child;
 
@@ -1667,7 +1693,7 @@ glade_standard_build_widget(GladeXML *xml, GType widget_type,
 
 	glade_xml_handle_widget_prop(xml, widget, prop->name, prop->value);
     }
-    g_list_free(tmp);
+    g_list_free(deferred_props);
 
     g_array_set_size(props_array, 0);
     g_array_set_size(custom_props_array, 0);

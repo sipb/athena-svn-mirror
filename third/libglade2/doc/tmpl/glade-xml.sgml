@@ -38,6 +38,8 @@ automatically connect as many handlers up as it can that way.
 
 </para>
 
+@parent_class: 
+@lookup_type: 
 
 <!-- ##### FUNCTION glade_xml_new ##### -->
 <para>

@@ -111,6 +111,7 @@ struct _GladeParseState {
     enum {PROP_NONE, PROP_WIDGET, PROP_ATK, PROP_CHILD } prop_type;
     gchar *prop_name;
     gboolean translate_prop;
+    gboolean context_prop;
     GArray *props;
 
     GArray *signals;
@@ -586,6 +587,8 @@ glade_parser_start_element(GladeParseState *state,
 						      attrs[i+1]);
 		else if (!strcmp(attrs[i], "translatable"))
 		    state->translate_prop = !strcmp(attrs[i+1], "yes");
+		else if (!strcmp(attrs[i], "context"))
+		    state->context_prop = !strcmp(attrs[i+1], "yes");
 		else if (!strcmp(attrs[i], "agent"))
 		    bad_agent = strcmp(attrs[i], "libglade") != 0;
 		else
@@ -642,6 +645,8 @@ glade_parser_start_element(GladeParseState *state,
 						      attrs[i+1]);
 		else if (!strcmp(attrs[i], "translatable"))
 		    state->translate_prop = !strcmp(attrs[i+1], "yes");
+		else if (!strcmp(attrs[i], "context"))
+		    state->context_prop = !strcmp(attrs[i+1], "yes");
 		else
 		    g_warning("unknown attribute `%s' for <atkproperty>.",
 			      attrs[i]);
@@ -791,6 +796,8 @@ glade_parser_start_element(GladeParseState *state,
 						      attrs[i+1]);
 		else if (!strcmp(attrs[i], "translatable"))
 		    state->translate_prop = !strcmp(attrs[i+1], "yes");
+		else if (!strcmp(attrs[i], "context"))
+		    state->context_prop = !strcmp(attrs[i+1], "yes");
 		else if (!strcmp(attrs[i], "agent"))
 		    bad_agent = strcmp(attrs[i], "libglade") != 0;
 		else
@@ -899,12 +906,17 @@ glade_parser_end_element(GladeParseState *state, const xmlChar *name)
 	if (!state->props)
 	    state->props = g_array_new(FALSE, FALSE, sizeof(GladeProperty));
 	prop.name = state->prop_name;
-	if (state->translate_prop && state->content->str[0] != '\0') {
-	    prop.value = alloc_string(state->interface,
-			dgettext(state->domain, state->content->str));
-	} else {
-	    prop.value = alloc_string(state->interface, state->content->str);
-	}
+ 	if (state->translate_prop && state->content->str[0] != '\0') {
+	    if (state->context_prop) 
+		prop.value = alloc_string(state->interface,
+					  g_strip_context(state->content->str,
+							   dgettext(state->domain, state->content->str)));
+	    else
+		prop.value = alloc_string(state->interface,
+					  dgettext(state->domain, state->content->str));
+ 	} else {
+ 	    prop.value = alloc_string(state->interface, state->content->str);
+  	}
 	g_array_append_val(state->props, prop);
 	state->prop_name = NULL;
 	state->state = PARSER_WIDGET;
@@ -921,12 +933,17 @@ glade_parser_end_element(GladeParseState *state, const xmlChar *name)
 	if (!state->props)
 	    state->props = g_array_new(FALSE, FALSE, sizeof(GladeProperty));
 	prop.name = state->prop_name;
-	if (state->translate_prop && state->content->str[0] != '\0') {
-	    prop.value = alloc_string(state->interface,
-			dgettext(state->domain, state->content->str));
-	} else {
-	    prop.value = alloc_string(state->interface, state->content->str);
-	}
+ 	if (state->translate_prop && state->content->str[0] != '\0') {
+	    if (state->context_prop) 
+		prop.value = alloc_string(state->interface,
+					  g_strip_context(state->content->str,
+							   dgettext(state->domain, state->content->str)));
+	    else
+		prop.value = alloc_string(state->interface,
+					  dgettext(state->domain, state->content->str));
+ 	} else {
+ 	    prop.value = alloc_string(state->interface, state->content->str);
+  	}
 	g_array_append_val(state->props, prop);
 	state->prop_name = NULL;
 	state->state = PARSER_WIDGET_ATK;
@@ -983,12 +1000,17 @@ glade_parser_end_element(GladeParseState *state, const xmlChar *name)
 	if (!state->props)
 	    state->props = g_array_new(FALSE, FALSE, sizeof(GladeProperty));
 	prop.name = state->prop_name;
-	if (state->translate_prop && state->content->str[0] != '\0') {
-	    prop.value = alloc_string(state->interface,
-			dgettext(state->domain, state->content->str));
-	} else {
-	    prop.value = alloc_string(state->interface, state->content->str);
-	}
+ 	if (state->translate_prop && state->content->str[0] != '\0') {
+	    if (state->context_prop) 
+		prop.value = alloc_string(state->interface,
+					  g_strip_context(state->content->str,
+							   dgettext(state->domain, state->content->str)));
+	    else
+		prop.value = alloc_string(state->interface,
+					  dgettext(state->domain, state->content->str));
+ 	} else {
+ 	    prop.value = alloc_string(state->interface, state->content->str);
+  	}
 	g_array_append_val(state->props, prop);
 	state->prop_name = NULL;
 	state->state = PARSER_WIDGET_CHILD_PACKING;

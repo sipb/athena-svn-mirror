@@ -97,9 +97,11 @@ the actual widgets from the XML node data structures.
 </para>
 
 @type: 
-@new: 
+@new_func: 
 @build_children: 
 @find_internal_child: 
+<!-- # Unused Parameters # -->
+@new: 
 
 
 <!-- ##### FUNCTION glade_standard_build_widget ##### -->

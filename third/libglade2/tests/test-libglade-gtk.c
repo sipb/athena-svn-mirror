@@ -1,10 +1,11 @@
 /* -*- mode: C; c-basic-offset: 4 -*- */
+#include <gmodule.h>
 #include <gtk/gtk.h>
 #include <glade/glade-xml.h>
 
-GtkWidget *test_create(char *s1, char *s2, int i1, int i2, gpointer data);
+G_MODULE_EXPORT GtkWidget *test_create(char *s1, char *s2, int i1, int i2, gpointer data);
 
-GtkWidget *
+G_MODULE_EXPORT GtkWidget *
 test_create(char *s1, char *s2, int i1, int i2, gpointer data)
 {
     return gtk_label_new("Custom Widget");

@@ -1,3 +1,167 @@
+2004-05-17  James Henstridge  <james@daa.com.au>
+
+	* NEWS: add small news message.
+
+	* autogen.sh: make autogen script a little more robust, and call
+	auto-tools in the right order.
+
+	* glade/Makefile.am: update libtool version.
+
+	* configure.in: increment version number to 2.4.0.  Also perform a
+	few small cleanups.
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am, configure.in, libglade-2.0-uninstalled.pc.in:
+	Add uninstalled pkg-config file to allow library to be linked
+	without installation. Fixes #136094.
+
+2004-03-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.6.
+
+2004-03-08  Damon Chaplin  <damon@gnome.org>
+
+	* glade/glade-gtk.c (toggle_tool_button_set_active)
+	(tool_button_set_icon, combo_box_set_items): implement custom
+	properties.
+
+	(_glade_init_gtk_widgets): register above custom properties, and
+	register GtkComboBoxEntry, GtkToolItem, GtkToolButton,
+	GtkToggleToolButton, GtkRadioToolButton & GtkSeparatorToolItem.
+	Bugs #127805 and #134835.
+
+2004-02-07  Steve Chaplin <stevech1097@yahoo.com.au>
+
+	* tests/Makefile.am (AM_LDFLAGS): Fix a warning with automake.
+	(#119071, Steve Chaplin)
+
+Fri Jan 23 01:56:03 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glade/glade-xml.c (glade_flags_from_string): Handle spaces 
+	and UTF-8.  (#128013, Pedro Abelleira Seco and Damon Chaplin)
+
+Fri Jan 23 01:46:59 2004  Matthias Clasen  <maclas@gmx.de>
+
+	Fix #126181, reported by Steve Chaplin:	
+	
+	* configure.in: Generate doc/version.xml.
+
+	* doc/Makefile.am (content_files): Include version.xml
+
+	* doc/Makefile.am (EXTRA_DIST): Distribute version.xml.in
+
+	* doc/libglade-docs.xml: Include version.xml
+
+	* doc/version.xml.in: New file in which the version number will
+	be inserted by the configure script.
+
+Fri Jan 23 01:18:33 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glade/glade-build.h: 
+	* glade/glade-xml.c (glade_register_widget): Don't use the
+	C++ keyword 'new' as argument name.  (#96050, Bas Driessen)
+
+Fri Jan 23 01:07:10 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glade-2.0.dtd: Allow <property> in <signal> for the benefit
+	of glademm.  (#88968, Christof Petig)
+
+Fri Jan 23 01:01:44 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glade/glade-gtk.c (toolbar_build_children): Support tooltips
+	in toolbars.  (#101459, Michael Voigt)
+
+Tue Jan 13 21:41:12 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* configure.in: Version 2.3.2
+
+	* glade/Makefile.am: LTVERSION 0:2:0.
+
+Mon Jan 12 21:52:07 2004  Matthias Clasen  <maclas@gmx.de>
+
+	Support disambiguating msgids by adding a context prefix.
+	To learn more about this technique, read the chapter "How to 
+	use gettext in GUI programs" in the gettext manual, and see 
+	the GLib API documentation for g_strip_context(). 
+	
+	* glade-2.0.dtd: Add a context attribute to the property 
+	element.
+	
+	* doc/libglade-docs.xml: Document the context attribute.
+	
+	* glade/glade-parser.c: Call g_strip_context() on  
+	translated properties whose context attribute says "yes".
+
+2003-11-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.1.
+
+Sat Nov  1 20:43:05 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* glade/glade-gtk.c (_glade_init_gtk_widgets): add GtkColorButton,
+	GtkComboBox, GtkFileChooser and GtkFontButton.  GtkComboBox will
+	need better support in the future.
+
+2003-10-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: bump version to 2.3.0 (in sync with
+	gtk+), require gtk+ 2.3.0 and kill the crufty
+	development branch warning.
+	
+	* glade/glade-gtk.c: (expander_build_children),
+	(_glade_init_gtk_widgets): implement support
+	for GtkExpander.
+
+2003-07-23  Morten Welinder  <terra@gnome.org>
+
+	* glade/glade-xml.c (glade_standard_build_widget): Plug leak.
+
+	* glade/glade-gtk.c (pixmap_set_filename): Use the right colormap.
+
+2003-06-13  Michael Meeks  <michael@ximian.com>
+
+	* doc/Makefile.am: define content_files and HTML_IMAGES
+	to please gtk-doc.make.
+
+2003-04-29  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* glade/Makefile.am (libglade_2_0_la_LDFLAGS) use -no-undefined
+	unconditionaly.
+
+2003-01-06  Tor Lillqvist  <tml@iki.fi>
+
+	Use same style auto* build for Win32 as GLib etc:
+
+	* configure.in: Call AC_LIBTOOL_WIN32_DLL. Check for Win32, set
+	automake conditionals OS_WIN32 and PLATFORM_WIN32.
+
+	* glade/Makefile.am: Pass -no-undefined to libtool. Use the
+	glade.def file instead of -export-symbols. Install import
+	libraries.
+
+	* config.h.win32
+	* makefile.mingw
+	* glade/makefile.mingw: Remove, obsolete and unmaintained. If
+	somebody actually was using these, please scream...
+
+	* Makefile.am
+	* glade/Makefile.am (EXTRA_DIST): Remove the above from here, too.
+
+	* tests/test-libglade-gtk.c (test_create): Mark function to be
+	called from libglade with G_MODULE_EXPORT.
+	
+	* tests/Makefile.am: [Win32] Must create separate .exp file to get
+	the entry points properly exported, gcc doesn't believe just the
+	G_MODULE_EXPORT. (MSVC does, this is a gcc bug or misfeature?)
+
+2002-12-14  James Henstridge  <james@daa.com.au>
+
+	* doc/Makefile.am: update for XML documentation.
+
+	* autogen.sh (have_autoconf): update so that it will build with
+	automake-1.7 if available.
+
 2002-08-29  James Henstridge  <james@daa.com.au>
 
 	* NEWS: add news items.
