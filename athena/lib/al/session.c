@@ -22,8 +22,9 @@ char *al__session_dir = PATH_SESSIONS;
 void zero_record(struct al_record *r)
 {
   r->exists = r->passwd_added = r->attached = r->ngroups = r->npids = 0;
-  r->old_homedir = 0;
-  r->groups = r->pids = 0;
+  r->old_homedir = NULL;
+  r->groups = NULL;
+  r->pids = NULL;
 }
 
 /* This is an internal function.  Its contract is to open the session
