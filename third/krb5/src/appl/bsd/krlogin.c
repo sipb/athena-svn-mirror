@@ -188,17 +188,21 @@ int	flowcontrol;			/* Since emacs can alter the
 					   the original characteristics */
 int	confirm = 0;			/* ask if ~. is given before dying. */
 int	litout;
-#if defined(hpux) || defined(__hpux)
-char	*speeds[] =
-{ "0", "50", "75", "110", "134", "150", "200", "300", "600",
-    "900", "1200", "1800", "2400", "3600", "4800", "7200", "9600",
-    "19200", "38400", "EXTA", "EXTB" };
-#else
-char    *speeds[] =
-{ "0", "50", "75", "110", "134", "150", "200", "300",
-    "600", "1200", "1800", "2400", "4800", "9600", "19200", "38400" };
-#endif
 char	term[256] = "network";
+
+char *speeds[] = {
+	"0", "50", "75", "110", "134", "150", "200", "300", "600",
+	"1200", "1800", "2400", "4800", "9600", "19200", "38400",
+};
+#define	NSPEEDS	(sizeof(speeds) / sizeof(speeds[0]))
+
+#ifdef POSIX_TERMIOS
+/* this must be in sync with the list above */
+speed_t b_speeds[] = {
+	B0, B50, B75, B110, B134, B150, B200, B300, B600,
+	B1200, B1800, B2400, B4800, B9600, B19200, B38400,
+};
+#endif
 
 #ifndef POSIX_SIGNALS
 #ifndef sigmask
@@ -504,23 +508,14 @@ main(argc, argv)
       (void) strcpy(term, cp);
 #ifdef POSIX_TERMIOS
 	if (tcgetattr(0, &ttyb) == 0) {
-		int ospeed = cfgetospeed (&ttyb);
+		int i;
+		speed_t ospeed = cfgetospeed (&ttyb);
 
-		(void) strcat(term, "/");
-		if (ospeed >= 50)
-			/* On some systems, ospeed is the baud rate itself,
-			   not a table index.  */
-			sprintf (term + strlen (term), "%d", ospeed);
-		else {
-			(void) strcat(term, speeds[ospeed]);
-#if 0
-			/* XXX - Not used, since the above code was
-			 * not ifdef'd and it relied on cfget... */
-
-			/* some "posix" systems don't have cfget...
-			 * so used CBAUD if it's there */
-			(void) strcat(term, speeds[ttyb.c_cflag & CBAUD]);
-#endif
+		for (i = 0; i < NSPEEDS; i++) {
+		    if (b_speeds[i] == ospeed) {
+			sprintf(term + strlen(term), "/%d", speeds[i]);
+			break;
+		    }
 		}
 	}
 #else
