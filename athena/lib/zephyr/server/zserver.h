@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.12 1987-07-17 09:54:55 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.13 1987-07-20 17:03:54 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,8 @@
 					   <sys/types.h>,
 					   <netinet/in.h>,
 					   <sys/time.h>, 
-					   <stdio.h> */
+					   <stdio.h>,
+					   <krb.h> */
 #include <arpa/inet.h>
 #include <zephyr/acl.h>
 #include <sys/file.h>
@@ -280,6 +281,8 @@ extern char *pktypes[];			/* names of the packet types */
 #define	LOGIN_ACL	"login.acl"
 #define	LOCATE_ACL	"locate.acl"
 #define	MATCH_ALL_ACL	"matchall.acl"
+#define	ZEPHYR_SRVTAB	"/site/zephyr/srvtab"
+#define	ZEPHYR_TKFILE	"/site/zephyr/ztkts"
 
 /* debugging macros */
 #ifdef DEBUG
