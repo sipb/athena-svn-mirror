@@ -128,14 +128,6 @@ if [ "${PUBLIC}" = "true" ]; then
 	echo "Public workstation cleanup... \c"			>/dev/console
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
-	rm -f /var/spool/cron/crontabs/root
-	for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
-		if [ -f /srvd$i ]; then
-			cp -p /srvd$i $i
-		else
-			cp -p /os$i $i
-		fi
-	done
 	if [ -r /srvd/etc/passwd ]; then
 	  cp -p /srvd/etc/passwd /etc/passwd.local
 	  chmod 644 /etc/passwd.local
@@ -173,6 +165,13 @@ if [ "${PUBLIC}" = "true" ]; then
 			  -e p /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
        	        	. /etc/athena/rc.conf
 		fi
+		for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
+			if [ -f /srvd$i ]; then
+				cp -p /srvd$i $i
+			else
+				cp -p /os$i $i
+			fi
+		done
 	    fi
 	fi
 
