@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #include <olc/lang.h>
@@ -53,7 +53,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.15 1990-01-19 04:17:10 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.16 1990-02-05 00:09:27 vanharen Exp $";
 
 /* Global variables. */
 
@@ -61,7 +61,9 @@ extern int errno;		      /* System error number. */
 extern PROC  Proc_List[];              /* OLC Proceedure Table */
 char DaemonHost[LINE_SIZE];	      /* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
-static int request_count = 0;
+int request_count = 0;
+int request_counts[OLC_NUM_REQUESTS];
+long start_time;
 int select_timeout = 10;
 
 #ifdef KERBEROS
@@ -406,7 +408,12 @@ restart:
 
     get_kerberos_ticket ();
 
-    /*
+    olc_broadcast_message("syslog",
+		fmt("%s successfully started.  Waiting for requests.", ME),
+		"system");
+    start_time = time(0);
+
+     /*
      * Wait for requests (hum drum life of a server)
      */
 
@@ -517,6 +524,7 @@ process_request (fd, from)
     {
 
 	++request_count;
+	++request_counts[index];
 #if 0
 	printf("%d> Got %s request from %s\n",request_count,
 	       Proc_List[index].description,
@@ -607,10 +615,12 @@ punt(sig)
     {
 	got_signal = 1;
 	log_status("Caught signal, will exit after finishing request");
+	dump_server_stats(REQ_STATS_LOG);
     }
     else
     {
 	log_status("Caught signal, exiting...");
+	dump_server_stats(REQ_STATS_LOG);
 	exit(1);
     }
 }
