@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/Imakefile,v $
- *   $Author: ghudson $ 
+ *   $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -28,7 +28,7 @@ SRCS		=	console.c
 OBJS		=	console.o
 
 XJLIB		=	../lib/libXj.a
-#ifdef SOLARIS
+#ifdef SunArchitecture
 OS_LIBS		=	-lbsd
 #endif
 C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB} ${OS_LIBS}
@@ -36,6 +36,16 @@ C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB} ${OS_LIBS}
 DEFINES         =       ${G_DEFINES}
 
 INCLUDES	=	-I.. ${LOCAL_INCLUDES}
+
+#ifdef SGIArchitecture
+DEFGEOM=588x207-0+30
+#else
+DEFGEOM=503x207-0+30
+#endif
+
+Console:	Console.presed
+		rm -f Console
+		sed -e "s/GEOMETRY/${DEFGEOM}/" Console.presed > Console
 
 AllTarget(${CONSOLE})
 NormalProgramTarget($(CONSOLE),$(OBJS),$(XJLIB),,$(C_LIBS))
