@@ -1,0 +1,15 @@
+#!/bin/sh -
+# Version-specific update script for 7.7L
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+DS*)
+	;;
+RSAIX)
+	;;
+SUN*)
+	echo "NEWUNIX=true"		>> ${CONFVARS}
+	echo "NEWAUDIO=true"		>> ${CONFVARS}
+	;;
+esac
