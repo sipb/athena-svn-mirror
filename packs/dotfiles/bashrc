@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.6 1999-06-21 21:02:11 rbasch Exp $
+# $Id: bashrc,v 1.7 1999-06-23 21:40:59 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -116,7 +116,7 @@ if [ "${ENV_SET+set}" != set ]; then
 	# Special version of ADD for the .bash_environment file.
 
 	add () {
-		eval "$(/bin/athena/attach -b -Padd -P" '$athena_path' "$@" ")"
+		eval "$( /bin/athena/attach -b -Padd -P"$athena_path" "$@" )"
 	}
 
 	# Run user environment customizations identified in your
@@ -182,14 +182,14 @@ fi
 renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
 
 #   alias for a convenient way to change terminal type
-term () { set -f; unset TERMCAP; eval "$(tset -s -I -Q " "$@" ")"; unset -f; }
+term () { set -f; unset TERMCAP; eval "$( tset -s -I -Q "$@" )"; set +f; }
 
 #   aliases dealing with mail
 alias mail=Mail
 Mail () { more /usr/prototype_user/README.mail ; }
 
 #   aliases dealing with x window system
-xresize () { set -f; eval $(resize -c) || unset -f ; }
+xresize () { set -f; eval "$( resize -u )"; set +f ; }
 
 if [ "${XSESSION+set}" == set ]; then
 	if [ -z "$XSESSION" ]; then
@@ -202,7 +202,7 @@ fi
 #   aliases dealing with adding locker programs
 
 add_flags=
-add () { eval "$(/bin/athena/attach -Padd -b "$add_flags "$@"")" ; }
+add () { eval "$( /bin/athena/attach -Padd -b $add_flags "$@" )" ; }
 
 alias setup='echo "setup is not supported in bash yet"'
 
