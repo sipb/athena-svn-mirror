@@ -58,7 +58,6 @@
 #include "nsString.h"
 #include "nsFontMetricsPS.h"
 #include "nsPostScriptObj.h"
-#include "nsFontPSDebug.h"
 #include "nspr.h"
 #include "nsILanguageAtomService.h"
 
@@ -66,7 +65,6 @@
 static PRLogModuleInfo *nsDeviceContextPSLM = PR_NewLogModule("nsDeviceContextPS");
 #endif /* PR_LOGGING */
 
-PRUint32 gFontPSDebug = 0;
 nsIAtom* gUsersLocale = nsnull;
 
 #ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
@@ -198,12 +196,12 @@ nsDeviceContextPS::InitDeviceContextPS(nsIDeviceContext *aCreatingDeviceContext,
   mTwipsToPixels = (float)72.0/(float)NSIntPointsToTwips(72);
   mPixelsToTwips = 1.0f / mTwipsToPixels;
 
-  GetTwipsToDevUnits(newscale);
-  aParentContext->GetTwipsToDevUnits(origscale);
+  newscale = TwipsToDevUnits();
+  origscale = aParentContext->TwipsToDevUnits();
   mCPixelScale = newscale / origscale;
 
-  aParentContext->GetTwipsToDevUnits(t2d);
-  aParentContext->GetAppUnitsToDevUnits(a2d);
+  t2d = aParentContext->TwipsToDevUnits();
+  a2d = aParentContext->AppUnitsToDevUnits();
 
   mAppUnitsToDevUnits = (a2d / t2d) * mTwipsToPixels;
   mDevUnitsToAppUnits = 1.0f / mAppUnitsToDevUnits;
@@ -226,13 +224,6 @@ nsDeviceContextPS::InitDeviceContextPS(nsIDeviceContext *aCreatingDeviceContext,
     }
   }
   
-#ifdef NS_FONTPS_DEBUG
-  char* debug = PR_GetEnv("NS_FONTPS_DEBUG");
-  if (debug) {
-    PR_sscanf(debug, "%lX", &gFontPSDebug);
-  }
-#endif
-
   // the user's locale
   nsCOMPtr<nsILanguageAtomService> langService;
   langService = do_GetService(NS_LANGUAGEATOMSERVICE_CONTRACTID);
@@ -513,27 +504,15 @@ NS_IMETHODIMP nsDeviceContextPS::EndPage(void)
   return NS_OK;
 }
 
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- *	@update 12/21/98 dwc
- */
-NS_IMETHODIMP nsDeviceContextPS::ConvertPixel(nscolor aColor, PRUint32 & aPixel)
-{
-  PR_LOG(nsDeviceContextPSLM, PR_LOG_DEBUG, ("nsDeviceContextPS::ConvertPixel()\n"));
-
-  aPixel = aColor;
-  return NS_OK;
-}
-
 class nsFontCachePS : public nsFontCache
 {
 public:
   /* override DeviceContextImpl::CreateFontCache() */
-  NS_IMETHODIMP CreateFontMetricsInstance(nsIFontMetrics** aResult);
+  virtual nsresult CreateFontMetricsInstance(nsIFontMetrics** aResult);
 };
 
 
-NS_IMETHODIMP nsFontCachePS::CreateFontMetricsInstance(nsIFontMetrics** aResult)
+nsresult nsFontCachePS::CreateFontMetricsInstance(nsIFontMetrics** aResult)
 {
   NS_PRECONDITION(aResult, "null out param");
   nsIFontMetrics *fm = new nsFontMetricsPS();

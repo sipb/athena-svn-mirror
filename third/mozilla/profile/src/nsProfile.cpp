@@ -112,7 +112,6 @@
 #define PROFILE_MANAGER_URL            "chrome://communicator/content/profile/profileSelection.xul?manage=true"
 #define PROFILE_MANAGER_CMD_LINE_ARG   "-ProfileManager"
 #define PROFILE_WIZARD_URL             "chrome://communicator/content/profile/createProfileWizard.xul"
-#define CONFIRM_AUTOMIGRATE_URL        "chrome://communicator/content/profile/confirmMigration.xul"
 #define PROFILE_WIZARD_CMD_LINE_ARG    "-ProfileWizard"
 #define INSTALLER_CMD_LINE_ARG         "-installer"
 #define CREATE_PROFILE_CMD_LINE_ARG    "-CreateProfile"
@@ -805,7 +804,7 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
             nsAutoString currProfileName; 
  
             if (nsCRT::IsAscii(cmdResult))  {
-                currProfileName.AssignWithConversion(strtok(NS_CONST_CAST(char*,(const char*)cmdResult), " "));
+                currProfileName.AssignWithConversion(strtok(cmdResult.BeginWriting(), " "));
             }
             else {
                 // get a platform charset
@@ -814,7 +813,7 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
                 NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get a platform charset");
 
                 // convert the profile name to Unicode
-                nsCAutoString profileName(strtok(NS_CONST_CAST(char*,(const char*)cmdResult), " "));
+                nsCAutoString profileName(strtok(cmdResult.BeginWriting(), " "));
                 rv = ConvertStringToUnicode(charSet, profileName.get(), currProfileName);
                 NS_ASSERTION(NS_SUCCEEDED(rv), "failed to convert ProfileName to unicode");
             }
@@ -1379,9 +1378,10 @@ NS_IMETHODIMP nsProfile::ShutDownCurrentProfile(PRUint32 shutDownType)
 #define SALT_SIZE 8
 #define TABLE_SIZE 36
 
-NS_NAMED_LITERAL_CSTRING(kSaltExtensionCString, ".slt");
+static const char kSaltExtensionCString[] = ".slt";
+#define kSaltExtensionCString_Len PRUint32(sizeof(kSaltExtensionCString)-1)
 
-const char table[] = 
+static const char table[] = 
 	{ 'a','b','c','d','e','f','g','h','i','j',
 	  'k','l','m','n','o','p','q','r','s','t',
 	  'u','v','w','x','y','z','0','1','2','3',
@@ -1437,9 +1437,11 @@ nsProfile::AddLevelOfIndirection(nsIFile *aDir)
 	 	if (NS_SUCCEEDED(rv) && !leafName.IsEmpty()) {
 		  PRUint32 length = leafName.Length();
 		  // check if the filename is the right length, len("xxxxxxxx.slt")
-		  if (length == (SALT_SIZE + kSaltExtensionCString.Length())) {
+		  if (length == (SALT_SIZE + kSaltExtensionCString_Len)) {
 			// check that the filename ends with ".slt"
-			if (nsCRT::strncmp(leafName.get() + SALT_SIZE, kSaltExtensionCString.get(), kSaltExtensionCString.Length()) == 0) {
+			if (nsCRT::strncmp(leafName.get() + SALT_SIZE,
+                         kSaltExtensionCString,
+                         kSaltExtensionCString_Len) == 0) {
 			  // found a salt directory, use it
 			  rv = aDir->AppendNative(leafName);
 			  return rv;
@@ -1465,7 +1467,7 @@ nsProfile::AddLevelOfIndirection(nsIFile *aDir)
   for (i=0;i<SALT_SIZE;i++) {
   	saltStr.Append(table[rand()%TABLE_SIZE]);
   }
-  saltStr.Append(kSaltExtensionCString);
+  saltStr.Append(kSaltExtensionCString, kSaltExtensionCString_Len);
 #ifdef DEBUG_profile_verbose
   printf("directory name: %s\n",saltStr.get());
 #endif
@@ -1509,15 +1511,16 @@ nsresult nsProfile::IsProfileDirSalted(nsIFile *profileDir, PRBool *isSalted)
     if (NS_FAILED(rv)) return rv;
 
     PRBool endsWithSalt = PR_FALSE;    
-    if (leafName.Length() >= kSaltExtensionCString.Length())
+    if (leafName.Length() >= kSaltExtensionCString_Len)
     {
         nsReadingIterator<char> stringEnd;
         leafName.EndReading(stringEnd);
 
         nsReadingIterator<char> stringStart = stringEnd;
-        stringStart.advance( -(NS_STATIC_CAST(PRInt32, kSaltExtensionCString.Length())) );
+        stringStart.advance( -(NS_STATIC_CAST(PRInt32, kSaltExtensionCString_Len)) );
 
-        endsWithSalt = kSaltExtensionCString.Equals(Substring(stringStart, stringEnd));
+        endsWithSalt =
+            Substring(stringStart, stringEnd).Equals(kSaltExtensionCString);
     }
     if (!endsWithSalt)
         return NS_OK;
@@ -1740,6 +1743,14 @@ nsProfile::CreateNewProfileWithLocales(const PRUnichar* profileName,
                 nsCStringKey key(pathBuf);
                 gLocaleProfiles->Put(&key, (void*)PR_TRUE);
             }
+        }
+
+        //need to set skin info here
+        nsCAutoString currentSkinName;
+        rv = packageRegistry->GetSelectedSkin(NS_LITERAL_CSTRING("global"),currentSkinName);
+        if (!currentSkinName.IsEmpty()) {
+            rv = chromeRegistry->SelectSkinForProfile(currentSkinName,
+                                         NS_ConvertUTF8toUCS2(fileStr).get());
         }
 
         if (!contentLocale.IsEmpty()) {

@@ -189,9 +189,9 @@ public:
     MOZ_COUNT_DTOR(searchTerm);
   }
   
-  nsDependentSingleFragmentCSubstring datasource;  // should always be "history" ?
-  nsDependentSingleFragmentCSubstring property;    // AgeInDays, Hostname, etc
-  nsDependentSingleFragmentCSubstring method;      // is, isgreater, isless
+  nsDependentCSubstring datasource;  // should always be "history" ?
+  nsDependentCSubstring property;    // AgeInDays, Hostname, etc
+  nsDependentCSubstring method;      // is, isgreater, isless
   nsXPIDLString text;          // text to match
   rowMatchCallback match;      // matching callback if needed
 };
@@ -570,7 +570,7 @@ nsGlobalHistory::~nsGlobalHistory()
 //   nsISupports methods
 
 NS_IMPL_ISUPPORTS7(nsGlobalHistory,
-                   nsIGlobalHistory,
+                   nsIGlobalHistory2,
                    nsIBrowserHistory,
                    nsIObserver,
                    nsISupportsWeakReference,
@@ -582,58 +582,79 @@ NS_IMPL_ISUPPORTS7(nsGlobalHistory,
 //
 // nsGlobalHistory
 //
-//   nsIGlobalHistory methods
+//   nsIGlobalHistory2 methods
 //
 
 
 NS_IMETHODIMP
-nsGlobalHistory::AddPage(const char *aURL)
+nsGlobalHistory::AddURI(nsIURI *aURI, PRBool aRedirect, PRBool aTopLevel)
 {
+  nsresult rv;
+  NS_ENSURE_ARG_POINTER(aURI);
+
   // If history is set to expire after 0 days,
   // then it's technically disabled. Don't even
   // bother adding the page
   if (mExpireDays == 0)
     return NS_OK;
 
-  NS_ENSURE_ARG_POINTER(aURL);
-  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
+  // filter out unwanted URIs such as chrome: mailbox: etc
+  // The model is really if we don't know differently then add which basically
+  // means we are suppose to try all the things we know not to allow in and
+  // then if we don't bail go on and allow it in.  But here lets compare
+  // against the most common case we know to allow in and go on and say yes
+  // to it.
 
-  nsresult rv = AddPageToDatabase(aURL, GetNow());
+  PRBool isHTTP = PR_FALSE;
+  PRBool isHTTPS = PR_FALSE;
+
+  NS_ENSURE_SUCCESS(rv = aURI->SchemeIs("http", &isHTTP), rv);
+  NS_ENSURE_SUCCESS(rv = aURI->SchemeIs("https", &isHTTPS), rv);
+
+  if (!isHTTP && !isHTTPS) {
+    PRBool isAbout, isImap, isNews, isMailbox, isViewSource, isChrome, isData;
+
+    rv = aURI->SchemeIs("about", &isAbout);
+    rv |= aURI->SchemeIs("imap", &isImap);
+    rv |= aURI->SchemeIs("news", &isNews);
+    rv |= aURI->SchemeIs("mailbox", &isMailbox);
+    rv |= aURI->SchemeIs("view-source", &isViewSource);
+    rv |= aURI->SchemeIs("chrome", &isChrome);
+    rv |= aURI->SchemeIs("data", &isData);
+    NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
+
+    if (isAbout || isImap || isNews || isMailbox || isViewSource || isChrome || isData) {
+      return NS_OK;
+    }
+  }
+
+  rv = OpenDB();
   NS_ENSURE_SUCCESS(rv, rv);
 
-  return NS_OK;
-}
+  nsCAutoString URISpec;
+  rv = aURI->GetSpec(URISpec);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-nsresult
-nsGlobalHistory::AddPageToDatabase(const char *aURL,
-                                   PRInt64 aDate)
-{
-  nsresult rv;
-  
-  // Sanity check the URL
-  PRInt32 len = PL_strlen(aURL);
-  NS_ASSERTION(len != 0, "no URL");
-  if (! len)
-    return NS_ERROR_INVALID_ARG;
-  
+  PRInt64 now = GetNow();
+
   // For notifying observers, later...
   nsCOMPtr<nsIRDFResource> url;
-  rv = gRDFService->GetResource(nsDependentCString(aURL, len), getter_AddRefs(url));
+  rv = gRDFService->GetResource(URISpec, getter_AddRefs(url));
   if (NS_FAILED(rv)) return rv;
 
   nsCOMPtr<nsIRDFDate> date;
-  rv = gRDFService->GetDateLiteral(aDate, getter_AddRefs(date));
+  rv = gRDFService->GetDateLiteral(now, getter_AddRefs(date));
   if (NS_FAILED(rv)) return rv;
 
   nsCOMPtr<nsIMdbRow> row;
-  rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
+  rv = FindRow(kToken_URLColumn, URISpec.get(), getter_AddRefs(row));
 
   if (NS_SUCCEEDED(rv)) {
 
     // update the database, and get the old info back
     PRInt64 oldDate;
     PRInt32 oldCount;
-    rv = AddExistingPageToDatabase(row, aDate, &oldDate, &oldCount);
+    rv = AddExistingPageToDatabase(row, now, &oldDate, &oldCount);
     NS_ASSERTION(NS_SUCCEEDED(rv), "AddExistingPageToDatabase failed; see bug 88961");
     if (NS_FAILED(rv)) return rv;
     
@@ -662,23 +683,57 @@ nsGlobalHistory::AddPageToDatabase(const char *aURL,
     
   }
   else {
-    rv = AddNewPageToDatabase(aURL, aDate, getter_AddRefs(row));
+    rv = AddNewPageToDatabase(URISpec.get(), now, getter_AddRefs(row));
     NS_ASSERTION(NS_SUCCEEDED(rv), "AddNewPageToDatabase failed; see bug 88961");
     if (NS_FAILED(rv)) return rv;
     
-    // Notify observers
-    rv = NotifyAssert(url, kNC_Date, date);
-    if (NS_FAILED(rv)) return rv;
+    PRBool isJavascript;
+    rv = aURI->SchemeIs("javascript", &isJavascript);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (isJavascript || aRedirect || !aTopLevel) {
+      // if this is a JS url, or a redirected URI or in a frame, hide it in
+      // global history so that it doesn't show up in the autocomplete
+      // dropdown. AddExistingPageToDatabase has logic to override this
+      // behavior for URIs which were typed. See bug 197127 and bug 161531
+      // for details.
+      rv = SetRowValue(row, kToken_HiddenColumn, 1);
+      NS_ENSURE_SUCCESS(rv, rv);
+    }
+    else {
+      // Notify observers
+      rv = NotifyAssert(url, kNC_Date, date);
+      if (NS_FAILED(rv)) return rv;
+
+      rv = NotifyAssert(kNC_HistoryRoot, kNC_child, url);
+      if (NS_FAILED(rv)) return rv;
     
-    rv = NotifyAssert(kNC_HistoryRoot, kNC_child, url);
-    if (NS_FAILED(rv)) return rv;
-    
-    NotifyFindAssertions(url, row);
+      NotifyFindAssertions(url, row);
+    }
+  }
+
+  // Store last visited page if we have the pref set accordingly
+  if (aTopLevel) {
+    PRInt32 choice = 0;
+    if (NS_SUCCEEDED(gPrefBranch->GetIntPref("startup.page", &choice))) {
+      if (choice != 2) {
+        if (NS_SUCCEEDED(gPrefBranch->GetIntPref("windows.loadOnNewWindow", &choice))) {
+          if (choice != 2) {
+            gPrefBranch->GetIntPref("tabs.loadOnNewTab", &choice);
+          }
+        }
+      }
+    }
+    if (choice == 2) {
+      NS_ENSURE_STATE(mMetaRow);
+
+      SetRowValue(mMetaRow, kToken_LastPageVisited, URISpec.get());
+    }
   }
  
   SetDirty();
   
-  return rv;
+  return NS_OK;
 }
 
 nsresult
@@ -687,7 +742,6 @@ nsGlobalHistory::AddExistingPageToDatabase(nsIMdbRow *row,
                                            PRInt64 *aOldDate,
                                            PRInt32 *aOldCount)
 {
-
   nsresult rv;
   
   // if the page was typed, unhide it now because it's
@@ -960,30 +1014,31 @@ nsGlobalHistory::GetCount(PRUint32* aCount)
 }
 
 NS_IMETHODIMP
-nsGlobalHistory::SetPageTitle(const char *aURL, const PRUnichar *aTitle)
+nsGlobalHistory::SetPageTitle(nsIURI *aURI, const nsAString& aTitle)
 {
-  NS_PRECONDITION(aURL != nsnull, "null ptr");
-  if (! aURL)
-    return NS_ERROR_NULL_POINTER;
+  nsresult rv;
+  NS_ENSURE_ARG_POINTER(aURI);
 
-  // avoid this one well-known url since we can avoid
-  // reading in the db
-  if (PL_strcmp(aURL, "about:blank")==0)
-    return NS_OK;
-  
+  const nsAFlatString& titleString = PromiseFlatString(aTitle);
+
+  // skip about: URIs to avoid reading in the db (about:blank, especially)
+  PRBool isAbout;
+  rv = aURI->SchemeIs("about", &isAbout);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (isAbout) return NS_OK;
+
   NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   
-  nsresult rv;
-  
-  // Be defensive if somebody sends us a null title.
-  static PRUnichar kEmptyString[] = { 0 };
-  if (! aTitle)
-    aTitle = kEmptyString;
+  nsCAutoString URISpec;
+  rv = aURI->GetSpec(URISpec);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIMdbRow> row;
-  rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
-  if (NS_FAILED(rv))
-    return rv;
+  rv = FindRow(kToken_URLColumn, URISpec.get(), getter_AddRefs(row));
+
+  // if the row doesn't exist, we silently succeed
+  if (rv == NS_ERROR_NOT_AVAILABLE) return NS_OK;
+  NS_ENSURE_SUCCESS(rv, rv);
 
   // Get the old title so we can notify observers
   nsAutoString oldtitle;
@@ -996,15 +1051,15 @@ nsGlobalHistory::SetPageTitle(const char *aURL, const PRUnichar *aTitle)
     if (NS_FAILED(rv)) return rv;
   }
 
-  SetRowValue(row, kToken_NameColumn, aTitle);
+  SetRowValue(row, kToken_NameColumn, titleString.get());
 
   // ...and update observers
   nsCOMPtr<nsIRDFResource> url;
-  rv = gRDFService->GetResource(nsDependentCString(aURL), getter_AddRefs(url));
+  rv = gRDFService->GetResource(URISpec, getter_AddRefs(url));
   if (NS_FAILED(rv)) return rv;
 
   nsCOMPtr<nsIRDFLiteral> name;
-  rv = gRDFService->GetLiteral(aTitle, getter_AddRefs(name));
+  rv = gRDFService->GetLiteral(titleString.get(), getter_AddRefs(name));
   if (NS_FAILED(rv)) return rv;
 
   if (oldname) {
@@ -1090,7 +1145,7 @@ nsGlobalHistory::MatchHost(nsIMdbRow *aRow,
   // now try for a domain match, if necessary
   if (hostInfo->entireDomain) {
     // do a reverse-search to match the end of the string
-    char *domain = PL_strrstr(urlHost.get(), hostInfo->host);
+    const char *domain = PL_strrstr(urlHost.get(), hostInfo->host);
     
     // now verify that we're matching EXACTLY the domain, and
     // not some random string inside the hostname
@@ -1196,17 +1251,19 @@ nsGlobalHistory::RemoveMatchingRows(rowMatchCallback aMatchFunc,
 }
 
 NS_IMETHODIMP
-nsGlobalHistory::IsVisited(const char *aURL, PRBool *_retval)
+nsGlobalHistory::IsVisited(nsIURI* aURI, PRBool *_retval)
 {
-  NS_PRECONDITION(aURL != nsnull, "null ptr");
-  if (! aURL)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_ARG_POINTER(aURI);
 
   nsresult rv;
   NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_NOT_INITIALIZED);
 
+  nsCAutoString URISpec;
+  rv = aURI->GetSpec(URISpec);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   nsCOMPtr<nsIMdbRow> row;
-  rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
+  rv = FindRow(kToken_URLColumn, URISpec.get(), getter_AddRefs(row));
 
   *_retval = NS_SUCCEEDED(rv);
 
@@ -1214,32 +1271,14 @@ nsGlobalHistory::IsVisited(const char *aURL, PRBool *_retval)
 }
 
 NS_IMETHODIMP
-nsGlobalHistory::SetLastPageVisited(const char *aURL)
-{
-  NS_ENSURE_TRUE(aURL, NS_ERROR_FAILURE);
-  NS_ENSURE_STATE(mMetaRow);
-
-  mdb_err err = SetRowValue(mMetaRow, kToken_LastPageVisited, aURL);
-  NS_ENSURE_TRUE(err == 0, NS_ERROR_FAILURE);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGlobalHistory::GetLastPageVisited(char **_retval)
+nsGlobalHistory::GetLastPageVisited(nsACString& _retval)
 { 
   NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
 
-  NS_ENSURE_ARG_POINTER(_retval);
   NS_ENSURE_STATE(mMetaRow);
 
-
-  nsCAutoString lastPageVisited;
-  mdb_err err = GetRowValue(mMetaRow, kToken_LastPageVisited, lastPageVisited);
+  mdb_err err = GetRowValue(mMetaRow, kToken_LastPageVisited, _retval);
   NS_ENSURE_TRUE(err == 0, NS_ERROR_FAILURE);
-  
-  *_retval = ToNewCString(lastPageVisited);
-  NS_ENSURE_TRUE(*_retval, NS_ERROR_OUT_OF_MEMORY);
 
   return NS_OK;
 }
@@ -1281,21 +1320,26 @@ nsGlobalHistory::GetByteOrder(char **_retval)
 }
 
 NS_IMETHODIMP
-nsGlobalHistory::HidePage(const char *aURL)
+nsGlobalHistory::HidePage(nsIURI *aURI)
 {
   nsresult rv;
+  NS_ENSURE_ARG_POINTER(aURI);
+
+  nsCAutoString URISpec;
+  rv = aURI->GetSpec(URISpec);
+  NS_ENSURE_SUCCESS(rv, rv);
   
   nsCOMPtr<nsIMdbRow> row;
 
-  rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
+  rv = FindRow(kToken_URLColumn, URISpec.get(), getter_AddRefs(row));
 
   if (NS_FAILED(rv)) {
     // it hasn't been visited yet, but if one ever comes in, we need
     // to hide it when it is visited
-    rv = AddPage(aURL);
+    rv = AddURI(aURI, PR_FALSE, PR_FALSE);
     if (NS_FAILED(rv)) return rv;
     
-    rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
+    rv = FindRow(kToken_URLColumn, URISpec.get(), getter_AddRefs(row));
     if (NS_FAILED(rv)) return rv;
   }
 
@@ -1306,7 +1350,7 @@ nsGlobalHistory::HidePage(const char *aURL)
   // HasAssertion() correctly checks the Hidden column to show that
   // the row is hidden
   nsCOMPtr<nsIRDFResource> urlResource;
-  rv = gRDFService->GetResource(nsDependentCString(aURL), getter_AddRefs(urlResource));
+  rv = gRDFService->GetResource(URISpec, getter_AddRefs(urlResource));
   if (NS_FAILED(rv)) return rv;
   return NotifyFindUnassertions(urlResource, row);
 }
@@ -1317,18 +1361,14 @@ nsGlobalHistory::MarkPageAsTyped(const char* aURL)
   nsCOMPtr<nsIMdbRow> row;
   nsresult rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
   if (NS_FAILED(rv)) {
-    rv = AddPage(aURL);
-    if (NS_FAILED(rv)) return rv;
-    
-    rv = FindRow(kToken_URLColumn, aURL, getter_AddRefs(row));
-    if (NS_FAILED(rv)) return rv;
+    rv = AddNewPageToDatabase(aURL, GetNow(), getter_AddRefs(row));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // We don't know if this is a valid URI yet. Hide it until it finishes
+    // loading.
+    SetRowValue(row, kToken_HiddenColumn, 1);
   }
   
-  // hide the page for now in case the url turns out to be invalid
-  // we'll unhide it in AddExistingPageToDatabase
-  rv = SetRowValue(row, kToken_HiddenColumn, 1);
-  if (NS_FAILED(rv)) return rv;
-
   return SetRowValue(row, kToken_TypedColumn, 1);
 }
 
@@ -1368,6 +1408,7 @@ nsGlobalHistory::GetSource(nsIRDFResource* aProperty,
   if (! aTarget)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsresult rv;
 
   *aSource = nsnull;
@@ -1425,6 +1466,7 @@ nsGlobalHistory::GetSources(nsIRDFResource* aProperty,
   if (! aTarget)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsresult rv;
 
   if (aProperty == kNC_URL) {
@@ -1549,6 +1591,7 @@ nsGlobalHistory::GetTarget(nsIRDFResource* aSource,
   if (! aProperty)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsresult rv;
 
   // Initialize return value.
@@ -1707,8 +1750,7 @@ nsGlobalHistory::GetTarget(nsIRDFResource* aSource,
           if (strcmp(filename.get(), "/") == 0) {
             // if the top of a site does not have a title
             // (common for redirections) then return the hostname
-            return GetTarget(aSource, kNC_Hostname, aTruthValue, aTarget);
-            
+            rv = GetRowValue(row, kToken_HostnameColumn, filename);
           }
         }
 
@@ -1904,6 +1946,7 @@ nsGlobalHistory::Unassert(nsIRDFResource* aSource,
                           nsIRDFResource* aProperty,
                           nsIRDFNode* aTarget)
 {
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   // translate into an appropriate removehistory call
   nsresult rv;
   if ((aSource == kNC_HistoryRoot || aSource == kNC_HistoryByDate || IsFindResource(aSource)) &&
@@ -1992,6 +2035,7 @@ nsGlobalHistory::HasAssertion(nsIRDFResource* aSource,
     return NS_OK;
   }
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsresult rv;
   
   // answer if a specific row matches a find URI
@@ -2095,6 +2139,7 @@ nsGlobalHistory::HasArcIn(nsIRDFNode *aNode, nsIRDFResource *aArc, PRBool *resul
   if (! aNode)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsCOMPtr<nsIRDFResource> resource = do_QueryInterface(aNode);
   if (resource && IsURLInHistory(resource)) {
     *result = (aArc == kNC_child);
@@ -2112,6 +2157,7 @@ nsGlobalHistory::HasArcOut(nsIRDFResource *aSource, nsIRDFResource *aArc, PRBool
   if (! aSource)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   if ((aSource == kNC_HistoryRoot) ||
       (aSource == kNC_HistoryByDate)) {
     *result = (aArc == kNC_child);
@@ -2146,6 +2192,7 @@ nsGlobalHistory::ArcLabelsIn(nsIRDFNode* aNode,
   if (! aNode)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsCOMPtr<nsIRDFResource> resource = do_QueryInterface(aNode);
   if (resource && IsURLInHistory(resource)) {
     return NS_NewSingletonEnumerator(aLabels, kNC_child);
@@ -2163,6 +2210,7 @@ nsGlobalHistory::ArcLabelsOut(nsIRDFResource* aSource,
   if (! aSource)
     return NS_ERROR_NULL_POINTER;
 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   nsresult rv;
 
   if ((aSource == kNC_HistoryRoot) ||
@@ -2230,6 +2278,7 @@ nsGlobalHistory::DoCommand(nsISupportsArray/*<nsIRDFResource>*/* aSources,
 NS_IMETHODIMP
 nsGlobalHistory::GetAllResources(nsISimpleEnumerator** aResult)
 {
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
   URLEnumerator* result = new URLEnumerator(kToken_URLColumn,
                                             kToken_HiddenColumn);
   if (! result)
@@ -4062,7 +4111,7 @@ nsGlobalHistory::OnStartLookup(const PRUnichar *searchString,
   
   // pass string through filter and then determine which prefixes to exclude
   // when chopping prefixes off of history urls during comparison
-  nsSharableString filtered = AutoCompletePrefilter(nsDependentString(searchString));
+  nsString filtered = AutoCompletePrefilter(nsDependentString(searchString));
   AutocompleteExclude exclude;
   AutoCompleteGetExcludeInfo(filtered, &exclude);
   
@@ -4305,7 +4354,7 @@ nsGlobalHistory::AutoCompleteCutPrefix(nsAString& aURL, AutocompleteExclude* aEx
     aURL.Cut(0, idx);
 }
 
-nsSharableString
+nsString
 nsGlobalHistory::AutoCompletePrefilter(const nsAString& aSearchString)
 {
   nsAutoString url(aSearchString);
@@ -4324,7 +4373,7 @@ nsGlobalHistory::AutoCompletePrefilter(const nsAString& aSearchString)
     ToLowerCase(url);
   }
   
-  return nsSharableString(url);
+  return nsString(url);
 }
 
 PRBool
