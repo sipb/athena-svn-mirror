@@ -91,6 +91,9 @@ gtk_html_im_realize (GtkHTML *html)
 		
 		gdk_window_get_size (widget->window,
 				     &width, &height);
+
+		height = widget->style->font->ascent +
+			 widget->style->font->descent;
 		
 		attrmask |= GDK_IC_PREEDIT_POSITION_REQ;
 		attr->spot_location.x = 0;
@@ -152,6 +155,32 @@ gtk_html_im_size_allocate (GtkHTML *html)
 		gdk_ic_set_attr (html->priv->ic, html->priv->ic_attr,
 				 GDK_IC_PREEDIT_AREA);
 	}
+}
+
+void
+gtk_html_im_position_update (GtkHTML *html, gint x, gint y)
+{
+        GtkWidget *widget = GTK_WIDGET (html);
+
+        if (!GTK_WIDGET_REALIZED (widget))
+                return;
+
+        if (html->priv->ic == NULL)
+                return;
+
+        if (gdk_ic_get_style (html->priv->ic) & GDK_IM_PREEDIT_POSITION) {
+                gint width, height;
+
+		html->priv->ic_attr->spot_location.x = x+1;
+		html->priv->ic_attr->spot_location.y = y;
+
+                gdk_window_get_size (widget->window,
+                                     &width, &height);
+                html->priv->ic_attr->preedit_area.width = width;
+                html->priv->ic_attr->preedit_area.height = height;
+                gdk_ic_set_attr (html->priv->ic, html->priv->ic_attr,
+                                 GDK_IC_SPOT_LOCATION | GDK_IC_PREEDIT_AREA);
+        }
 }
 
 

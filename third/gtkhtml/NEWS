@@ -1,3 +1,13 @@
+Current version:
+----------------
+
+ - Change selection color and focus change
+ - Fixed scrolling
+ - Rendering fixes
+ - Improved links handling
+ - Avoid empty dialogs in editor
+ - Fixed search/replace in editor
+
 Version 0.9, "Lighthouse", 2000-12-14
 -------------------------------------
 

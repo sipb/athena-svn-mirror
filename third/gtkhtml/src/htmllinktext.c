@@ -259,17 +259,15 @@ html_link_text_new (const gchar *text,
 	return html_link_text_new_with_len (text, -1, font_style, color, url, target);
 }
 
-void
+HTMLObject *
 html_link_text_to_text (HTMLLinkText *link, HTMLEngine *e)
 {
 	HTMLObject *new_text;
 
 	new_text = html_text_new (HTML_TEXT (link)->text,
-				  GTK_HTML_FONT_STYLE_DEFAULT,
+				  HTML_TEXT (link)->font_style,
 				  html_colorset_get_color (e->settings->color_set, HTMLTextColor));
+	html_text_set_font_face (HTML_TEXT (new_text), HTML_TEXT (link)->face);
 
-	g_warning ("FIXME!!!\n");
-	/* html_engine_replace_by_object (e, HTML_OBJECT (link), 0,
-	   HTML_OBJECT (link), HTML_TEXT (link)->text_len,
-	   new_text); */
+	return new_text;
 }

@@ -53,6 +53,9 @@ gtk_html_control_data_destroy (GtkHTMLControlData *cd)
 {
 	g_assert (cd);
 
+	if (cd->properties_dialog)
+		gtk_html_edit_properties_dialog_destroy (cd->properties_dialog);
+
 	if (cd->search_dialog)
 		gtk_html_search_dialog_destroy (cd->search_dialog);
 

@@ -1,0 +1,153 @@
+<refentry id="gtkhtml-gtkhtml-stream">
+<refmeta>
+<refentrytitle>GtkHTML stream</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTKHTML Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkHTML stream</refname><refpurpose>data stream for loading HTML contents into GtkHTML widget.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+<link linkend="GtkHTMLStream">GtkHTMLStream</link>* <link linkend="gtk-html-stream-new">gtk_html_stream_new</link>          (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLStreamWriteFunc">GtkHTMLStreamWriteFunc</link> write_func,
+                                             <link linkend="GtkHTMLStreamCloseFunc">GtkHTMLStreamCloseFunc</link> close_func,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        <link linkend="gtk-html-stream-write">gtk_html_stream_write</link>           (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *stream,
+                                             const <link linkend="gchar">gchar</link> *buffer,
+                                             <link linkend="size-t">size_t</link> size);
+void        <link linkend="gtk-html-stream-destroy">gtk_html_stream_destroy</link>         (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *stream);
+<link linkend="GtkHTMLStream">GtkHTMLStream</link>* <link linkend="gtk-html-stream-ref">gtk_html_stream_ref</link>          (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle);
+void        <link linkend="gtk-html-stream-unref">gtk_html_stream_unref</link>           (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gtk-html-stream-new">gtk_html_stream_new ()</title>
+<programlisting><link linkend="GtkHTMLStream">GtkHTMLStream</link>* gtk_html_stream_new          (<link linkend="GtkHTML">GtkHTML</link> *html,
+                                             <link linkend="GtkHTMLStreamWriteFunc">GtkHTMLStreamWriteFunc</link> write_func,
+                                             <link linkend="GtkHTMLStreamCloseFunc">GtkHTMLStreamCloseFunc</link> close_func,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>html</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>write_func</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>close_func</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-stream-write">gtk_html_stream_write ()</title>
+<programlisting>void        gtk_html_stream_write           (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *stream,
+                                             const <link linkend="gchar">gchar</link> *buffer,
+                                             <link linkend="size-t">size_t</link> size);</programlisting>
+<para>
+Write data to a GtkHTMLStream.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>stream</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-stream-destroy">gtk_html_stream_destroy ()</title>
+<programlisting>void        gtk_html_stream_destroy         (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *stream);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>stream</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-stream-ref">gtk_html_stream_ref ()</title>
+<programlisting><link linkend="GtkHTMLStream">GtkHTMLStream</link>* gtk_html_stream_ref          (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gtk-html-stream-unref">gtk_html_stream_unref ()</title>
+<programlisting>void        gtk_html_stream_unref           (<link linkend="GtkHTMLStream">GtkHTMLStream</link> *handle);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>handle</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -353,7 +353,7 @@ draw (HTMLObject *o,
 	GdkPixbuf *pixbuf;
 	gint base_x, base_y;
 	gint scale_width, scale_height;
-	const GdkColor *highlight_color;
+	GdkColor *highlight_color;
 	guint pixel_size;
 	ArtIRect paint;
 
@@ -366,9 +366,10 @@ draw (HTMLObject *o,
 	pixbuf = image->image_ptr->pixbuf;
 	pixel_size = html_painter_get_pixel_size (painter);
 
-	if (o->selected)
-		highlight_color = &html_colorset_get_color_allocated (painter, HTMLHighlightColor)->color;
-	else
+	if (o->selected) {
+		highlight_color = &html_colorset_get_color_allocated
+			(painter, painter->focus ? HTMLHighlightColor : HTMLHighlightNFColor)->color;
+	} else
 		highlight_color = NULL;
 
 	if (pixbuf == NULL) {

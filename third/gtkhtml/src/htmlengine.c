@@ -4244,7 +4244,15 @@ html_engine_get_editable (HTMLEngine *e)
 		return FALSE;
 }
 
-
+static void
+set_focus (HTMLObject *o, HTMLEngine *e, gpointer data)
+{
+	if (HTML_IS_IFRAME (o) || HTML_IS_FRAME (o)) {
+		HTMLEngine *cur_e = GTK_HTML (HTML_IS_FRAME (o) ? HTML_FRAME (o)->html : HTML_IFRAME (o)->html)->engine;
+		html_painter_set_focus (cur_e->painter, GPOINTER_TO_INT (data));
+	}
+}
+
 void
 html_engine_set_focus (HTMLEngine *engine,
 		       gboolean have_focus)
@@ -4260,6 +4268,10 @@ html_engine_set_focus (HTMLEngine *engine,
 	}
 
 	engine->have_focus = have_focus;
+
+	html_painter_set_focus (engine->painter, engine->have_focus);
+	html_object_forall (engine->clue, engine, set_focus, GINT_TO_POINTER (have_focus));
+	html_engine_redraw_selection (engine);
 }
 
 
@@ -4700,15 +4712,20 @@ static void
 replace (HTMLEngine *e)
 {
 	HTMLObject *first = HTML_OBJECT (e->search_info->found->data);
-	HTMLObject *new_text;
 
 	html_engine_edit_selection_updater_update_now (e->selection_updater);
 
-	new_text = text_new (e, e->replace_info->text,
-			     HTML_TEXT (first)->font_style,
-			     HTML_TEXT (first)->color);
-	html_text_set_font_face (HTML_TEXT (new_text), HTML_TEXT (first)->face);
-	html_engine_paste_object (e, new_text, html_object_get_length (HTML_OBJECT (new_text)));
+	if (e->replace_info->text && *e->replace_info->text) {
+		HTMLObject *new_text;
+
+		new_text = text_new (e, e->replace_info->text,
+				     HTML_TEXT (first)->font_style,
+				     HTML_TEXT (first)->color);
+		html_text_set_font_face (HTML_TEXT (new_text), HTML_TEXT (first)->face);
+		html_engine_paste_object (e, new_text, html_object_get_length (HTML_OBJECT (new_text)));
+	} else {
+		html_engine_delete (e);
+	}
 
 	/* update search info to point just behind replaced text */
 	g_list_free (e->search_info->found);
@@ -4771,17 +4788,20 @@ html_engine_spell_check (HTMLEngine *e)
 		html_object_forall (e->clue, NULL, (HTMLObjectForallFunc) check_paragraph, e);
 }
 
+
 gchar *
-html_engine_get_word (HTMLEngine *e)
+html_engine_get_spell_word (HTMLEngine *e)
 {
 	GString *text;
 	HTMLCursor *cursor;
 	gchar *word;
 	gint pos;
 	gunichar uc;
+	gboolean cited, cited2;
 
-	if (!html_is_in_word (html_cursor_get_current_char (e->cursor))
-	    && !html_is_in_word (html_cursor_get_prev_char (e->cursor)))
+	cited = FALSE;
+	if (!html_selection_spell_word (html_cursor_get_current_char (e->cursor), &cited) && !cited
+	    && !html_selection_spell_word (html_cursor_get_prev_char (e->cursor), &cited) && !cited)
 		return NULL;
 
 	cursor = html_cursor_dup (e->cursor);
@@ -4789,11 +4809,13 @@ html_engine_get_word (HTMLEngine *e)
 	text   = g_string_new (NULL);
 
 	/* move to the beginning of word */
-	while (html_is_in_word (html_cursor_get_prev_char (cursor)))
+	cited = FALSE;
+	while (html_selection_spell_word (html_cursor_get_prev_char (cursor), &cited))
 		html_cursor_backward (cursor, e);
 
 	/* move to the end of word */
-	while (html_is_in_word (uc = html_cursor_get_current_char (cursor))) {
+	cited2 = FALSE;
+	while (html_selection_spell_word (uc = html_cursor_get_current_char (cursor), &cited2) || (!cited && cited2)) {
 		gchar out [7];
 		gint size;
 
@@ -4802,6 +4824,7 @@ html_engine_get_word (HTMLEngine *e)
 		out [size] = 0;
 		text = g_string_append (text, out);
 		html_cursor_forward (cursor, e);
+		cited2 = FALSE;
 	}
 
 	word = text->str;
@@ -4812,7 +4835,7 @@ html_engine_get_word (HTMLEngine *e)
 }
 
 gboolean
-html_engine_word_is_valid (HTMLEngine *e)
+html_engine_spell_word_is_valid (HTMLEngine *e)
 {
 	HTMLObject *obj;
 	HTMLText   *text;
@@ -4820,15 +4843,17 @@ html_engine_word_is_valid (HTMLEngine *e)
 	gboolean valid = TRUE;
 	gint offset;
 	gchar prev, curr;
+	gboolean cited;
 
+	cited = FALSE;
 	prev = html_cursor_get_prev_char (e->cursor);
 	curr = html_cursor_get_current_char (e->cursor);
 
 	/* if we are not in word always return TRUE so we care only about invalid words */
-	if (!html_is_in_word (prev) && !html_is_in_word (curr))
+	if (!html_selection_spell_word (prev, &cited) && !cited && !html_selection_spell_word (curr, &cited) && !cited)
 		return TRUE;
 
-	if (html_is_in_word (curr)) {
+	if (html_selection_spell_word (curr, &cited)) {
 		gboolean end;
 
 		end    = (e->cursor->offset == html_object_get_length (e->cursor->object));
@@ -4861,26 +4886,12 @@ html_engine_word_is_valid (HTMLEngine *e)
 }
 
 void
-html_engine_replace_word_with (HTMLEngine *e, const gchar *word)
+html_engine_replace_spell_word_with (HTMLEngine *e, const gchar *word)
 {
 	HTMLObject *replace = NULL;
 	HTMLText   *orig;
 
-	if (!html_is_in_word (html_cursor_get_current_char (e->cursor))
-	    && !html_is_in_word (html_cursor_get_prev_char (e->cursor)))
-		return;
-
-	html_engine_disable_selection (e);
-	html_engine_edit_selection_updater_update_now (e->selection_updater);
-
-	/* move to the beginning of word */
-	while (html_is_in_word (html_cursor_get_prev_char (e->cursor)))
-		html_cursor_backward (e->cursor, e);
-	html_engine_set_mark (e);
-
-	/* move to the end of word */
-	while (html_is_in_word (html_cursor_get_current_char (e->cursor)))
-		html_cursor_forward (e->cursor, e);
+	html_engine_select_spell_word_editable (e);
 
 	orig = HTML_TEXT (e->mark->object);
 	switch (HTML_OBJECT_TYPE (e->mark->object)) {
@@ -5080,4 +5091,15 @@ html_engine_add_expose  (HTMLEngine *e, gint x, gint y, gint width, gint height)
 	r->height = height;
 
 	e->pending_expose = g_slist_prepend (e->pending_expose, r);
+}
+
+void
+html_engine_redraw_selection (HTMLEngine *e)
+{
+	if (e->selection) {
+		html_interval_unselect (e->selection, e);
+		html_draw_queue_clear (e->draw_queue);
+		html_interval_select (e->selection, e);
+		html_engine_flush_draw_queue (e);
+	}
 }

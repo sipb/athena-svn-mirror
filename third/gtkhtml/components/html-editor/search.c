@@ -67,7 +67,7 @@ gtk_html_search_dialog_new (GtkHTML *html)
 	GtkWidget *hbox;
 
 	dialog->dialog         = GNOME_DIALOG (gnome_dialog_new (NULL, _("Find"), GNOME_STOCK_BUTTON_CANCEL, NULL));
-	dialog->entry          = gtk_entry_new_with_max_length (20);
+	dialog->entry          = gtk_entry_new ();
 	dialog->backward       = gtk_check_button_new_with_label (_("backward"));
 	dialog->case_sensitive = gtk_check_button_new_with_label (_("case sensitive"));
 	dialog->html           = html;

@@ -737,6 +737,25 @@ insert_empty_paragraph (HTMLEngine *e, HTMLUndoDirection dir, gboolean add_undo)
 	orig = html_cursor_dup (e->cursor);
 	split_and_add_empty_texts (e, 2, &left, &right);
 	remove_empty_and_merge (e, FALSE, left, right, orig);
+
+	/* replace empty link in empty flow by text with the same style */
+	if (HTML_IS_LINK_TEXT (e->cursor->object) && html_clueflow_is_empty (HTML_CLUEFLOW (e->cursor->object->parent))) {
+		HTMLObject *flow = e->cursor->object->parent;
+		HTMLObject *new_text;
+
+		new_text = html_link_text_to_text (HTML_LINK_TEXT (e->cursor->object), e);
+		html_clue_remove (HTML_CLUE (flow), e->cursor->object);
+		html_object_destroy (e->cursor->object);
+		if (orig->object == e->cursor->object) {
+			orig->object = NULL;
+		}
+		e->cursor->object = new_text;
+		if (!orig->object) {
+			orig->object = e->cursor->object;
+		}
+		html_clue_append (HTML_CLUE (flow), e->cursor->object);
+	}
+
 	html_cursor_forward (e->cursor, e);
 
 	/* replace empty text in new empty flow by text with current style */

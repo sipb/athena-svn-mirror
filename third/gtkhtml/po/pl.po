@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2001-11-21 13:41-0600\n"
+"POT-Creation-Date: 2001-12-17 11:20-0600\n"
 "PO-Revision-Date: 2001-10-14 16:17+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -246,7 +246,7 @@ msgid "Check spelling of the document"
 msgstr "Sprawdza pisowniê dokumentu"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-#: components/html-editor/popup.c:398
+#: components/html-editor/popup.c:401
 msgid "Copy"
 msgstr "Skopiuj"
 
@@ -263,7 +263,7 @@ msgid "Cu_t"
 msgstr "_Wytnij"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-#: components/html-editor/popup.c:399
+#: components/html-editor/popup.c:402
 msgid "Cut"
 msgstr "Wytnij"
 
@@ -338,7 +338,7 @@ msgstr "Nag³ówek _6"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 #: components/html-editor/editor-control-factory.c:186
-#: components/html-editor/menubar.c:106 components/html-editor/popup.c:164
+#: components/html-editor/menubar.c:106 components/html-editor/popup.c:166
 msgid "Image"
 msgstr "Obraz"
 
@@ -371,7 +371,7 @@ msgstr "Wyrównuje akapity do lewej"
 #: components/html-editor/body.c:187
 #: components/html-editor/editor-control-factory.c:221
 #: components/html-editor/menubar.c:111 components/html-editor/menubar.c:132
-#: components/html-editor/popup.c:178
+#: components/html-editor/popup.c:180
 msgid "Link"
 msgstr "Odno¶nik"
 
@@ -451,7 +451,7 @@ msgid "Other..."
 msgstr "Inny..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-#: components/html-editor/popup.c:405
+#: components/html-editor/popup.c:408
 msgid "Paste"
 msgstr "Wklej"
 
@@ -510,7 +510,7 @@ msgstr "Lista numerowana liczbami rzymskimi"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 #: components/html-editor/editor-control-factory.c:206
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#: components/html-editor/menubar.c:150 components/html-editor/popup.c:192
+#: components/html-editor/menubar.c:150 components/html-editor/popup.c:194
 msgid "Rule"
 msgstr "Linia"
 
@@ -545,8 +545,8 @@ msgstr "Indeks górny"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
-#: components/html-editor/menubar.c:167 components/html-editor/popup.c:199
-#: components/html-editor/popup.c:458 components/html-editor/popup.c:467
+#: components/html-editor/menubar.c:167 components/html-editor/popup.c:201
+#: components/html-editor/popup.c:461 components/html-editor/popup.c:470
 msgid "Table"
 msgstr "Tabela"
 
@@ -727,7 +727,7 @@ msgstr "Kolory"
 
 #: components/html-editor/body.c:186
 #: components/html-editor/editor-control-factory.c:195
-#: components/html-editor/menubar.c:127 components/html-editor/popup.c:157
+#: components/html-editor/menubar.c:127 components/html-editor/popup.c:159
 msgid "Text"
 msgstr "Tekst"
 
@@ -742,17 +742,17 @@ msgid "Automatic"
 msgstr "Automatycznie"
 
 #: components/html-editor/editor-control-factory.c:176
-#: components/html-editor/popup.c:149
+#: components/html-editor/popup.c:151
 msgid "Properties"
 msgstr "W³a¶ciwo¶ci"
 
 #: components/html-editor/editor-control-factory.c:216
-#: components/html-editor/popup.c:171
+#: components/html-editor/popup.c:173
 msgid "Paragraph"
 msgstr "Akapit"
 
 #: components/html-editor/editor-control-factory.c:226
-#: components/html-editor/popup.c:185
+#: components/html-editor/popup.c:187
 msgid "Page"
 msgstr "Strona"
 
@@ -793,7 +793,7 @@ msgid "Bottom"
 msgstr "Dó³"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
-#: components/html-editor/popup.c:206
+#: components/html-editor/popup.c:208
 msgid "Cell"
 msgstr "Komórka"
 
@@ -807,7 +807,7 @@ msgid "Color:"
 msgstr "Kolor:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
-#: components/html-editor/popup.c:469
+#: components/html-editor/popup.c:472
 msgid "Column"
 msgstr "Kolumna"
 
@@ -890,7 +890,7 @@ msgid "Right"
 msgstr "Do prawej"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#: components/html-editor/popup.c:468
+#: components/html-editor/popup.c:471
 msgid "Row"
 msgstr "Wiersz"
 
@@ -1051,92 +1051,92 @@ msgstr "Element listy wyliczanej literami"
 msgid "Align"
 msgstr "Wyrównanie"
 
-#: components/html-editor/popup.c:361
+#: components/html-editor/popup.c:364
 #, c-format
 msgid "Check '%s' spelling..."
 msgstr "Sprawd¼ pisowniê \"%s\"..."
 
-#: components/html-editor/popup.c:364
+#: components/html-editor/popup.c:367
 #, c-format
 msgid "Add '%s' to dictionary"
 msgstr "Dodaj \"%s\" do s³ownika"
 
-#: components/html-editor/popup.c:367
+#: components/html-editor/popup.c:370
 #, c-format
 msgid "Ignore '%s'"
 msgstr "Zignoruj \"%s\""
 
-#: components/html-editor/popup.c:370 components/html-editor/spell.c:416
+#: components/html-editor/popup.c:373 components/html-editor/spell.c:419
 msgid "Spell checker"
 msgstr "Sprawdzanie pisowni"
 
-#: components/html-editor/popup.c:374
+#: components/html-editor/popup.c:377
 msgid "Suggest word"
 msgstr "Zasugeruj s³owo"
 
-#: components/html-editor/popup.c:393
+#: components/html-editor/popup.c:396
 msgid "Remove link"
 msgstr "Usuñ odno¶nik"
 
-#: components/html-editor/popup.c:409 components/html-editor/popup.c:435
+#: components/html-editor/popup.c:412 components/html-editor/popup.c:438
 msgid "Text..."
 msgstr "Tekst..."
 
-#: components/html-editor/popup.c:411 components/html-editor/popup.c:426
-#: components/html-editor/popup.c:437
+#: components/html-editor/popup.c:414 components/html-editor/popup.c:429
+#: components/html-editor/popup.c:440
 msgid "Paragraph..."
 msgstr "Akapit..."
 
-#: components/html-editor/popup.c:413 components/html-editor/popup.c:428
-#: components/html-editor/popup.c:439
+#: components/html-editor/popup.c:416 components/html-editor/popup.c:431
+#: components/html-editor/popup.c:442
 msgid "Link..."
 msgstr "Odno¶nik..."
 
-#: components/html-editor/popup.c:419
+#: components/html-editor/popup.c:422
 msgid "Rule..."
 msgstr "Linia..."
 
-#: components/html-editor/popup.c:424
+#: components/html-editor/popup.c:427
 msgid "Image..."
 msgstr "Obraz..."
 
-#: components/html-editor/popup.c:444 components/html-editor/popup.c:454
+#: components/html-editor/popup.c:447 components/html-editor/popup.c:457
 msgid "Table..."
 msgstr "Tabela..."
 
-#: components/html-editor/popup.c:451
+#: components/html-editor/popup.c:454
 msgid "Cell..."
 msgstr "Komórka..."
 
-#: components/html-editor/popup.c:457
+#: components/html-editor/popup.c:460
 msgid "Table insert"
 msgstr "Wstawienie do tabeli"
 
-#: components/html-editor/popup.c:460
+#: components/html-editor/popup.c:463
 msgid "Row above"
 msgstr "Wiersz powy¿ej"
 
-#: components/html-editor/popup.c:461
+#: components/html-editor/popup.c:464
 msgid "Row below"
 msgstr "Wiersz poni¿ej"
 
-#: components/html-editor/popup.c:463
+#: components/html-editor/popup.c:466
 msgid "Column before"
 msgstr "Kolumna przed"
 
-#: components/html-editor/popup.c:464
+#: components/html-editor/popup.c:467
 msgid "Column after"
 msgstr "Kolumna po"
 
-#: components/html-editor/popup.c:466
+#: components/html-editor/popup.c:469
 msgid "Table delete"
 msgstr "Usuniêcie z tabeli"
 
-#: components/html-editor/popup.c:470
+#: components/html-editor/popup.c:473
 msgid "Cell contents"
 msgstr "Zawarto¶æ komórki"
 
-#: components/html-editor/popup.c:478
+#: components/html-editor/popup.c:481
 msgid "Page..."
 msgstr "Strona..."
 
@@ -1184,7 +1184,7 @@ msgstr "Wstecz"
 msgid "Find Regular Expression"
 msgstr "Wyszukiwanie wed³ug wyra¿enia regularnego"
 
-#: components/html-editor/spell.c:411
+#: components/html-editor/spell.c:414
 msgid "No misspelled word found"
 msgstr "Nie odnaleziono niepoprawnie zapisanych s³ów"
 

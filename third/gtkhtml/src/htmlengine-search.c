@@ -24,6 +24,7 @@
 #include "htmlcursor.h"
 #include "htmlengine.h"
 #include "htmlengine-edit.h"
+#include "htmlengine-edit-cursor.h"
 #include "htmlengine-search.h"
 #include "htmlinterval.h"
 #include "htmlsearch.h"
@@ -121,15 +122,17 @@ display_search_results (HTMLSearch *info)
 	if (!info->found)
 		return;
 	if (e->editable) {
+		html_engine_hide_cursor (e);
 		html_engine_disable_selection (e);
 		html_cursor_jump_to (e->cursor, e, HTML_OBJECT (info->found->data), info->start_pos);
 		html_engine_set_mark (e);
 		html_cursor_jump_to (e->cursor, e, info->last, info->stop_pos);
-	} else
+		html_engine_show_cursor (e);
+	} else {
 		html_engine_select_interval (e, html_interval_new (HTML_OBJECT (info->found->data), info->last,
 								   info->start_pos, info->stop_pos));
-
-	move_to_found (info);
+		move_to_found (info);
+	}
 }
 
 gboolean
@@ -168,17 +171,24 @@ html_engine_search_next (HTMLEngine *e)
 	if (!info)
 		return FALSE;
 
-	if (info->stack)
-		retval = html_object_search (HTML_OBJECT (info->stack->data), info);
-	else {
-		html_search_push (info, e->clue);
-		retval = html_object_search (e->clue, info);
-	}
-	if (retval)
-		display_search_results (info);
-	else {
-		html_search_pop (info);
-		html_engine_disable_selection (e);
+	if (html_engine_get_editable (e)) {
+		gchar *text = g_strdup (info->text);
+
+		retval = html_engine_search (e, text, info->case_sensitive, info->forward, info->regular);
+		g_free (text);
+	} else {
+		if (info->stack)
+			retval = html_object_search (HTML_OBJECT (info->stack->data), info);
+		else {
+			html_search_push (info, e->clue);
+			retval = html_object_search (e->clue, info);
+		}
+		if (retval)
+			display_search_results (info);
+		else {
+			html_search_pop (info);
+			html_engine_disable_selection (e);
+		}
 	}
 
 	return retval;

@@ -46,6 +46,8 @@ html_colorset_new (GtkWidget *w)
 		s->color [HTMLBgColor]            = html_color_new_from_rgb (0xffff, 0xffff, 0xffff);
 		s->color [HTMLHighlightColor]     = html_color_new_from_rgb (0x7fff, 0x7fff, 0xffff);
 		s->color [HTMLHighlightTextColor] = html_color_new ();
+		s->color [HTMLHighlightNFColor]   = html_color_new ();
+		s->color [HTMLHighlightTextNFColor] = html_color_new ();
 		s->color [HTMLTextColor]          = html_color_new ();
 	}
 
@@ -144,8 +146,10 @@ html_colorset_set_unchanged (HTMLColorSet *s, HTMLColorSet *o)
 void
 html_colorset_set_style (HTMLColorSet *s, GtkStyle *style)
 {
-	SET_GCOLOR (Bg,            style->base [GTK_STATE_NORMAL]);
-	SET_GCOLOR (Text,          style->text [GTK_STATE_NORMAL]);
-	SET_GCOLOR (Highlight,     style->bg   [GTK_STATE_SELECTED]);
-	SET_GCOLOR (HighlightText, style->fg   [GTK_STATE_SELECTED]);	
+	SET_GCOLOR (Bg,              style->base [GTK_STATE_NORMAL]);
+	SET_GCOLOR (Text,            style->text [GTK_STATE_NORMAL]);
+	SET_GCOLOR (Highlight,       style->bg   [GTK_STATE_SELECTED]);
+	SET_GCOLOR (HighlightText,   style->fg   [GTK_STATE_SELECTED]);
+	SET_GCOLOR (HighlightNF,     style->bg   [GTK_STATE_ACTIVE]);
+	SET_GCOLOR (HighlightTextNF, style->fg   [GTK_STATE_ACTIVE]);
 }	

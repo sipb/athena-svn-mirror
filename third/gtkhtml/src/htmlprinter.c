@@ -57,60 +57,60 @@ static HTMLPainterClass *parent_class = NULL;
 static const GnomePaper *paper = NULL;
 
 static void
-insure_paper (void)
+insure_paper (HTMLPrinter *printer)
 {
 	if (paper != NULL)
 		return;
 
-	paper = gnome_paper_with_name ("A4");
+	if (printer->print_master) {
+		paper = gnome_print_master_get_paper (printer->print_master);
+	}
+	if (!paper)
+		paper = gnome_paper_with_name (_("US-Letter"));
 	g_assert (paper != NULL);
 }
 
 static gdouble
 printer_get_page_height (HTMLPrinter *printer)
 {
-	insure_paper ();
+	insure_paper (printer);
 	return gnome_paper_psheight (paper);
 }
 
 static gdouble
 printer_get_page_width (HTMLPrinter *printer)
 {
-	insure_paper ();
+	insure_paper (printer);
 	return gnome_paper_pswidth (paper);
 }
 
 static gdouble
 get_lmargin (HTMLPrinter *printer)
 {
-	insure_paper ();
-	return gnome_paper_lmargin (paper);
+	insure_paper (printer);
+	return gnome_paper_lmargin (paper) / 2;
 }
 
 static gdouble
 get_rmargin (HTMLPrinter *printer)
 {
-	insure_paper ();
-	return gnome_paper_rmargin (paper);
+	insure_paper (printer);
+	return gnome_paper_rmargin (paper) / 2;
 }
 
 static gdouble
 get_tmargin (HTMLPrinter *printer)
 {
-	insure_paper ();
-	return gnome_paper_tmargin (paper);
+	insure_paper (printer);
+	return gnome_paper_tmargin (paper) / 2;
 }
 
-#if 0
 static gdouble
 get_bmargin (HTMLPrinter *printer)
 {
-	insure_paper ();
-	return gnome_paper_bmargin (paper);
+	insure_paper (printer);
+	return gnome_paper_bmargin (paper) / 2;
 }
-#endif
-
-
 
 gdouble
 html_printer_scale_to_gnome_print (HTMLPrinter *printer, gint x)
@@ -836,7 +836,7 @@ html_printer_get_type (void)
 
 
 HTMLPainter *
-html_printer_new (GnomePrintContext *print_context)
+html_printer_new (GnomePrintContext *print_context, GnomePrintMaster *print_master)
 {
 	HTMLPrinter *new;
 
@@ -844,6 +844,7 @@ html_printer_new (GnomePrintContext *print_context)
 
 	gtk_object_ref (GTK_OBJECT (print_context));
 	new->print_context = print_context;
+	new->print_master = print_master;
 
 	return HTML_PAINTER (new);
 }
@@ -873,7 +874,7 @@ html_printer_get_page_height (HTMLPrinter *printer)
 	g_return_val_if_fail (printer != NULL, 0);
 	g_return_val_if_fail (HTML_IS_PRINTER (printer), 0);
 
-	printer_height = printer_get_page_height (printer) - get_lmargin (printer) - get_rmargin (printer);
+	printer_height = printer_get_page_height (printer) - get_tmargin (printer) - get_bmargin (printer);
 	engine_height = SCALE_GNOME_PRINT_TO_ENGINE (printer_height);
 
 	return engine_height;

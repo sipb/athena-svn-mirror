@@ -27,6 +27,7 @@
 
 #define HTML_LINK_TEXT(x) ((HTMLLinkText *)(x))
 #define HTML_LINK_TEXT_CLASS(x) ((HTMLLinkTextClass *)(x))
+#define HTML_IS_LINK_TEXT(x) (HTML_CHECK_TYPE ((x), HTML_TYPE_LINKTEXT))
 
 struct _HTMLLinkText {
 	HTMLText text;
@@ -64,6 +65,6 @@ HTMLObject *html_link_text_new_with_len  (const gchar       *text,
 					  HTMLColor         *color,
 					  const gchar       *url,
 					  const gchar       *target);
-void        html_link_text_to_text       (HTMLLinkText      *link,
-					  HTMLEngine        *e);
+HTMLObject *html_link_text_to_text       (HTMLLinkText      *link,
+					  HTMLEngine        *engine);
 #endif /* _HTMLLINKTEXT_H_ */

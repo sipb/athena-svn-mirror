@@ -25,7 +25,9 @@
 #include <sys/types.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtklayout.h>
+#include <libgnome/gnome-paper.h>
 #include <libgnomeprint/gnome-print.h>
+#include <libgnomeprint/gnome-print-master.h>
 
 #include "gtkhtml-types.h"
 #include "gtkhtml-enums.h"
@@ -203,6 +205,8 @@ void  gtk_html_print_with_header_footer  (GtkHTML              *html,
 					  gpointer              user_data);
 void  gtk_html_print                     (GtkHTML              *html,
 					  GnomePrintContext    *print_context);
+void  gtk_html_print_set_master          (GtkHTML              *html,
+					  GnomePrintMaster     *print_master);
 
 /* Title.  */
 const gchar *gtk_html_get_title  (GtkHTML *html);

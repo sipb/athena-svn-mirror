@@ -4,11 +4,11 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2001-11-21 13:41-0600\n"
-"PO-Revision-Date: 2001-09-20 10:38+0800\n"
+"Project-Id-Version: gtkhtml 1.0.0\n"
+"POT-Creation-Date: 2001-12-17 11:20-0600\n"
+"PO-Revision-Date: 2001-11-26 10:38+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
-"Language-Team: Chinese <zh@li.org>\n"
+"Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=big5\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -46,7 +46,7 @@ msgstr "*********************"
 
 #: capplet/gtkhtml-capplet.glade.h:2
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 
 # capplet/gtkhtml-capplet.glade.h:7
 # capplet/gtkhtml-capplet.glade.h:7
@@ -346,7 +346,7 @@ msgstr "檢查文件的拼字"
 # components/html-editor/GNOME_GtkHTML_Editor.xml.h:2
 # components/html-editor/popup.c:249
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
-#: components/html-editor/popup.c:398
+#: components/html-editor/popup.c:401
 msgid "Copy"
 msgstr "複製"
 
@@ -375,7 +375,7 @@ msgstr "剪下 (_T)"
 # components/html-editor/GNOME_GtkHTML_Editor.xml.h:5
 # components/html-editor/popup.c:250
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
-#: components/html-editor/popup.c:399
+#: components/html-editor/popup.c:402
 msgid "Cut"
 msgstr "剪下"
 
@@ -502,7 +502,7 @@ msgstr "標題 _6"
 # components/html-editor/popup.c:100
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
 #: components/html-editor/editor-control-factory.c:186
-#: components/html-editor/menubar.c:106 components/html-editor/popup.c:164
+#: components/html-editor/menubar.c:106 components/html-editor/popup.c:166
 msgid "Image"
 msgstr "影像"
 
@@ -557,7 +557,7 @@ msgstr "將段落靠左對齊"
 #: components/html-editor/body.c:187
 #: components/html-editor/editor-control-factory.c:221
 #: components/html-editor/menubar.c:111 components/html-editor/menubar.c:132
-#: components/html-editor/popup.c:178
+#: components/html-editor/popup.c:180
 msgid "Link"
 msgstr "連結"
 
@@ -633,9 +633,8 @@ msgid "Numbered List"
 msgstr "阿拉伯數字清單"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:59
-#, fuzzy
 msgid "Numbered _List"
-msgstr "阿拉伯數字清單"
+msgstr "阿拉伯數字清單(_L)"
 
 # components/html-editor/editor-control-factory.c:196
 # components/html-editor/popup.c:121
@@ -654,7 +653,7 @@ msgstr "其它..."
 # components/html-editor/GNOME_GtkHTML_Editor.xml.h:19
 # components/html-editor/popup.c:256
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
-#: components/html-editor/popup.c:405
+#: components/html-editor/popup.c:408
 msgid "Paste"
 msgstr "貼上"
 
@@ -747,7 +746,7 @@ msgstr "羅馬數字清單"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
 #: components/html-editor/editor-control-factory.c:206
 #: components/html-editor/gtkhtml-editor-properties.glade.h:36
-#: components/html-editor/menubar.c:150 components/html-editor/popup.c:192
+#: components/html-editor/menubar.c:150 components/html-editor/popup.c:194
 msgid "Rule"
 msgstr "水平線"
 
@@ -794,8 +793,8 @@ msgstr "上標"
 # components/html-editor/popup.c:135
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
 #: components/html-editor/gtkhtml-editor-properties.glade.h:44
-#: components/html-editor/menubar.c:167 components/html-editor/popup.c:199
-#: components/html-editor/popup.c:458 components/html-editor/popup.c:467
+#: components/html-editor/menubar.c:167 components/html-editor/popup.c:201
+#: components/html-editor/popup.c:461 components/html-editor/popup.c:470
 msgid "Table"
 msgstr "表格"
 
@@ -1110,7 +1109,7 @@ msgstr "色彩"
 # components/html-editor/popup.c:93
 #: components/html-editor/body.c:186
 #: components/html-editor/editor-control-factory.c:195
-#: components/html-editor/menubar.c:127 components/html-editor/popup.c:157
+#: components/html-editor/menubar.c:127 components/html-editor/popup.c:159
 msgid "Text"
 msgstr "文字"
 
@@ -1143,7 +1142,7 @@ msgstr "自動"
 # components/html-editor/editor-control-factory.c:146
 # components/html-editor/popup.c:85
 #: components/html-editor/editor-control-factory.c:176
-#: components/html-editor/popup.c:149
+#: components/html-editor/popup.c:151
 msgid "Properties"
 msgstr "內容"
 
@@ -1152,7 +1151,7 @@ msgstr "內容"
 # components/html-editor/editor-control-factory.c:186
 # components/html-editor/popup.c:107
 #: components/html-editor/editor-control-factory.c:216
-#: components/html-editor/popup.c:171
+#: components/html-editor/popup.c:173
 msgid "Paragraph"
 msgstr "段落"
 
@@ -1161,7 +1160,7 @@ msgstr "段落"
 # components/html-editor/editor-control-factory.c:196
 # components/html-editor/popup.c:121
 #: components/html-editor/editor-control-factory.c:226
-#: components/html-editor/popup.c:185
+#: components/html-editor/popup.c:187
 msgid "Page"
 msgstr "頁面"
 
@@ -1224,7 +1223,7 @@ msgstr "底"
 # components/html-editor/gtkhtml-editor-properties.glade.h:4
 # components/html-editor/popup.c:142
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
-#: components/html-editor/popup.c:206
+#: components/html-editor/popup.c:208
 msgid "Cell"
 msgstr "儲存格"
 
@@ -1252,7 +1251,7 @@ msgstr "色彩："
 # components/html-editor/gtkhtml-editor-properties.glade.h:25
 # components/html-editor/gtkhtml-editor-properties.glade.h:25
 #: components/html-editor/gtkhtml-editor-properties.glade.h:11
-#: components/html-editor/popup.c:469
+#: components/html-editor/popup.c:472
 msgid "Column"
 msgstr "列"
 
@@ -1395,7 +1394,7 @@ msgid "Right"
 msgstr "右"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:33
-#: components/html-editor/popup.c:468
+#: components/html-editor/popup.c:471
 msgid "Row"
 msgstr "行"
 
@@ -1680,36 +1679,36 @@ msgstr "英文字母項目"
 msgid "Align"
 msgstr "對齊"
 
-#: components/html-editor/popup.c:361
+#: components/html-editor/popup.c:364
 #, c-format
 msgid "Check '%s' spelling..."
 msgstr "檢查 '%s' 的併字..."
 
-#: components/html-editor/popup.c:364
+#: components/html-editor/popup.c:367
 #, c-format
 msgid "Add '%s' to dictionary"
 msgstr "新增 '%s' 到字典"
 
-#: components/html-editor/popup.c:367
+#: components/html-editor/popup.c:370
 #, c-format
 msgid "Ignore '%s'"
 msgstr "忽略 '%s'"
 
 # capplet/gtkhtml-capplet.glade.h:17
 # capplet/gtkhtml-capplet.glade.h:17
-#: components/html-editor/popup.c:370 components/html-editor/spell.c:416
+#: components/html-editor/popup.c:373 components/html-editor/spell.c:419
 msgid "Spell checker"
 msgstr "拼字檢查程式"
 
 # components/html-editor/popup.c:235
 # components/html-editor/popup.c:235
-#: components/html-editor/popup.c:374
+#: components/html-editor/popup.c:377
 msgid "Suggest word"
 msgstr "建議用詞"
 
 # components/html-editor/popup.c:244
 # components/html-editor/popup.c:244
-#: components/html-editor/popup.c:393
+#: components/html-editor/popup.c:396
 msgid "Remove link"
 msgstr "移除連結"
 
@@ -1717,7 +1716,7 @@ msgstr "移除連結"
 # components/html-editor/popup.c:286
 # components/html-editor/popup.c:260
 # components/html-editor/popup.c:286
-#: components/html-editor/popup.c:409 components/html-editor/popup.c:435
+#: components/html-editor/popup.c:412 components/html-editor/popup.c:438
 msgid "Text..."
 msgstr "文字..."
 
@@ -1727,8 +1726,8 @@ msgstr "文字..."
 # components/html-editor/popup.c:262
 # components/html-editor/popup.c:277
 # components/html-editor/popup.c:288
-#: components/html-editor/popup.c:411 components/html-editor/popup.c:426
-#: components/html-editor/popup.c:437
+#: components/html-editor/popup.c:414 components/html-editor/popup.c:429
+#: components/html-editor/popup.c:440
 msgid "Paragraph..."
 msgstr "段落..."
 
@@ -1738,20 +1737,20 @@ msgstr "段落..."
 # components/html-editor/popup.c:264
 # components/html-editor/popup.c:279
 # components/html-editor/popup.c:290
-#: components/html-editor/popup.c:413 components/html-editor/popup.c:428
-#: components/html-editor/popup.c:439
+#: components/html-editor/popup.c:416 components/html-editor/popup.c:431
+#: components/html-editor/popup.c:442
 msgid "Link..."
 msgstr "連結..."
 
 # components/html-editor/popup.c:270
 # components/html-editor/popup.c:270
-#: components/html-editor/popup.c:419
+#: components/html-editor/popup.c:422
 msgid "Rule..."
 msgstr "水平線..."
 
 # components/html-editor/popup.c:275
 # components/html-editor/popup.c:275
-#: components/html-editor/popup.c:424
+#: components/html-editor/popup.c:427
 msgid "Image..."
 msgstr "影像..."
 
@@ -1759,13 +1758,13 @@ msgstr "影像..."
 # components/html-editor/popup.c:304
 # components/html-editor/popup.c:295
 # components/html-editor/popup.c:304
-#: components/html-editor/popup.c:444 components/html-editor/popup.c:454
+#: components/html-editor/popup.c:447 components/html-editor/popup.c:457
 msgid "Table..."
 msgstr "表格..."
 
 # components/html-editor/popup.c:301
 # components/html-editor/popup.c:301
-#: components/html-editor/popup.c:451
+#: components/html-editor/popup.c:454
 msgid "Cell..."
 msgstr "儲存格..."
 
@@ -1777,25 +1776,25 @@ msgstr "儲存格..."
 # components/html-editor/menubar.c:121
 # components/html-editor/menubar.c:144
 # components/html-editor/properties.c:110
-#: components/html-editor/popup.c:457
+#: components/html-editor/popup.c:460
 msgid "Table insert"
 msgstr "插入表格項目"
 
-#: components/html-editor/popup.c:460
+#: components/html-editor/popup.c:463
 msgid "Row above"
 msgstr "行上"
 
-#: components/html-editor/popup.c:461
+#: components/html-editor/popup.c:464
 msgid "Row below"
 msgstr "行下"
 
-#: components/html-editor/popup.c:463
+#: components/html-editor/popup.c:466
 msgid "Column before"
 msgstr "列前"
 
 # components/html-editor/gtkhtml-editor-properties.glade.h:24
 # components/html-editor/gtkhtml-editor-properties.glade.h:24
-#: components/html-editor/popup.c:464
+#: components/html-editor/popup.c:467
 msgid "Column after"
 msgstr "列後"
 
@@ -1807,17 +1806,17 @@ msgstr "列後"
 # components/html-editor/menubar.c:121
 # components/html-editor/menubar.c:144
 # components/html-editor/properties.c:110
-#: components/html-editor/popup.c:466
+#: components/html-editor/popup.c:469
 msgid "Table delete"
 msgstr "刪除表格項目"
 
-#: components/html-editor/popup.c:470
+#: components/html-editor/popup.c:473
 msgid "Cell contents"
 msgstr "儲存格內容"
 
 # components/html-editor/popup.c:311
 # components/html-editor/popup.c:311
-#: components/html-editor/popup.c:478
+#: components/html-editor/popup.c:481
 msgid "Page..."
 msgstr "頁面..."
 
@@ -1885,7 +1884,7 @@ msgstr "向後"
 msgid "Find Regular Expression"
 msgstr "使用正規表示式尋找"
 
-#: components/html-editor/spell.c:411
+#: components/html-editor/spell.c:414
 msgid "No misspelled word found"
 msgstr "找不到錯誤的併字"
 
