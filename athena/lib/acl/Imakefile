@@ -5,7 +5,7 @@ all:: llib-lacl.ln libacl.a
 install:: all
 	install -c libacl.a ${DESTDIR}${ATHLIBDIR}/libacl.a
 	ranlib ${DESTDIR}${ATHLIBDIR}/libacl.a
-	cp llib-lacl.ln ${DESTDIR}/usr/lib/lint/llib-lacl.ln
+	install -c -m 0444 llib-lacl.ln ${DESTDIR}/usr/lib/lint/llib-lacl.ln
 
 clean::
 	rm -f libacl.a acl_files.o llib-lacl.ln *~ 
