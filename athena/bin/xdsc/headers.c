@@ -39,6 +39,7 @@ extern int	topscreen;
 extern void	TopSelect();
 
 static void	FetchHeaders();
+static char	oldmeeting[LONGNAMELEN];
 
 /*
 ** Get the list of transaction headers from start to finish and
@@ -51,7 +52,6 @@ int	finish;
 {
 	char		command[LONGNAMELEN + 25];
 	char		filename[70];
-	static char	oldmeeting[LONGNAMELEN];
 	static int	oldstart=0, oldfinish=0;
 	Arg		args[1];
 
@@ -332,4 +332,9 @@ HighlightedTransaction()
 	num = atoi (strchr (tempstring + start, '[') + 1);
 
 	return (num);
+}
+
+InvalidateHeaders()
+{
+	strcpy (oldmeeting, "\0");
 }
