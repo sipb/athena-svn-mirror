@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xrevstack.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,12 +13,10 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.5 1989-11-15 22:46:47 marc Exp $";
+static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.6 1989-11-21 11:30:09 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
-
-#define REVSTACK
 
 #ifdef REVSTACK
 #include "X_gram.h"
