@@ -97,14 +97,25 @@ if [ `expr "$HOST" : '\.'` -eq 0 ]; then
 fi
 
 # Do a little rc.conf editing to take care of possible updates to HOST,
-# MACHINE, and SYSTEM.
+# MACHINE, and SYSTEM.  We have to be careful with SYSTEM because it
+# isn't already present on the sun4.
 ed -s /etc/athena/rc.conf << EOS
 /^HOST/s/=[^;]*/=$HOST/
 /^MACHINE/s/=[^;]*/=$MACHINE/
+w
+q
+EOS
+if [ `grep -c '^SYSTEM' /etc/athena/rc.conf` = 1 ]; then
+	ed -s /etc/athena/rc.conf << EOS
 /^SYSTEM/s/=[^;]*/=$SYSTEM/
 w
 q
 EOS
+else
+		cat >> /etc/athena/rc.conf << EOM
+SYSTEM=$SYSTEM;		export SYSTEM		#  Type of operating system
+EOM
+fi
 
 # On Solaris machines with SYNCCONFIG set, update /etc/nodename so we
 # don't have to reboot an extra time during this update.
