@@ -31,7 +31,6 @@ echo "113993-01"					>> $PATCHES
 echo "113718-01"					>> $PATCHES
 echo "114135-01"					>> $PATCHES
 echo "114133-01"					>> $PATCHES
-echo "113575-03"					>> $PATCHES
 echo "113713-02"					>> $PATCHES
 echo "112902-11"					>> $PATCHES
 echo "113277-05"					>> $PATCHES
