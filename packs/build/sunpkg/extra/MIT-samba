@@ -5,4 +5,4 @@ etcdir=/etc/athena
 mkdir -p $2$etcdir
 
 cp $1/packs/config/smb.conf $2$etcdir
-chmod 644 $2$etcdir/ifhp.conf
+chmod 644 $2$etcdir/smb.conf
