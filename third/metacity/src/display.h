@@ -3,6 +3,7 @@
 /* 
  * Copyright (C) 2001 Havoc Pennington
  * Copyright (C) 2002 Red Hat, Inc.
+ * Copyright (C) 2003 Rob Adams
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -53,6 +54,7 @@ struct _MetaRectangle
   int height;
 };
 
+typedef struct MetaCompositor  MetaCompositor;
 typedef struct _MetaDisplay    MetaDisplay;
 typedef struct _MetaFrame      MetaFrame;
 typedef struct _MetaKeyBinding MetaKeyBinding;
@@ -67,6 +69,7 @@ typedef struct _MetaGroupPropHooks  MetaGroupPropHooks;
 
 typedef void (* MetaWindowPingFunc) (MetaDisplay *display,
 				     Window       xwindow,
+				     Time         timestamp,
 				     gpointer     user_data);
 
 
@@ -120,10 +123,6 @@ struct _MetaDisplay
   Atom atom_net_client_list_stacking;
   Atom atom_net_wm_state_skip_taskbar;
   Atom atom_net_wm_state_skip_pager;
-  Atom atom_win_workspace;
-  Atom atom_win_layer;
-  Atom atom_win_protocols;
-  Atom atom_win_supporting_wm_check;
   Atom atom_net_wm_icon_name;
   Atom atom_net_wm_icon;
   Atom atom_net_wm_icon_geometry;
@@ -134,7 +133,6 @@ struct _MetaDisplay
   Atom atom_net_active_window;
   Atom atom_metacity_restart_message;
   Atom atom_net_wm_strut;
-  Atom atom_win_hints;
   Atom atom_metacity_reload_theme_message;
   Atom atom_metacity_set_keybindings_message;
   Atom atom_net_wm_state_hidden;
@@ -157,6 +155,8 @@ struct _MetaDisplay
   Atom atom_net_wm_allowed_actions;
   Atom atom_net_wm_action_move;
   Atom atom_net_wm_action_resize;
+  Atom atom_net_wm_action_fullscreen;
+  Atom atom_net_wm_action_minimize;
   Atom atom_net_wm_action_shade;
   Atom atom_net_wm_action_stick;
   Atom atom_net_wm_action_maximize_horz;
@@ -167,9 +167,22 @@ struct _MetaDisplay
   Atom atom_net_wm_state_below;
   Atom atom_net_startup_id;
   Atom atom_metacity_toggle_verbose;
-  Atom atom_metacity_update_counter;
-  Atom atom_sync_counter;
-  
+  Atom atom_net_wm_sync_request;
+  Atom atom_net_wm_sync_request_counter;
+  Atom atom_gnome_panel_action;
+  Atom atom_gnome_panel_action_main_menu;
+  Atom atom_gnome_panel_action_run_dialog;
+  Atom atom_metacity_sentinel;
+  Atom atom_net_wm_strut_partial;
+  Atom atom_net_frame_extents;
+  Atom atom_net_request_frame_extents;
+  Atom atom_net_wm_user_time;
+  Atom atom_net_wm_state_demands_attention;
+  Atom atom_net_restack_window;
+  Atom atom_net_moveresize_window;
+  Atom atom_net_desktop_geometry;
+  Atom atom_net_desktop_viewport;
+
   /* This is the actual window from focus events,
    * not the one we last set
    */
@@ -178,11 +191,6 @@ struct _MetaDisplay
   /* window we are expecting a FocusIn event for
    */
   MetaWindow *expected_focus_window;
-
-  /* Most recently focused list. Always contains all
-   * live windows.
-   */
-  GList *mru_list;  
 
   guint static_gravity_works : 1;
   
@@ -202,7 +210,6 @@ struct _MetaDisplay
   Window no_focus_window;
   
   /* for double click */
-  int double_click_time;
   Time last_button_time;
   Window last_button_xwindow;
   int last_button_num;
@@ -231,33 +238,46 @@ struct _MetaDisplay
   MetaScreen *grab_screen;
   MetaWindow *grab_window;
   Window      grab_xwindow;
+  gulong      grab_start_serial;
   int         grab_button;
-  int         grab_initial_root_x;
-  int         grab_initial_root_y;
-  int         grab_current_root_x;
-  int         grab_current_root_y;
+  int         grab_anchor_root_x;
+  int         grab_anchor_root_y;
+  MetaRectangle grab_anchor_window_pos;
   int         grab_latest_motion_x;
   int         grab_latest_motion_y;
   gulong      grab_mask;
   guint       grab_have_pointer : 1;
   guint       grab_have_keyboard : 1;
+  guint       grab_wireframe_active : 1;
+  guint       grab_was_cancelled : 1;
+  MetaRectangle grab_wireframe_rect;
+  MetaRectangle grab_wireframe_last_xor_rect;
   MetaRectangle grab_initial_window_pos;
-  MetaRectangle grab_current_window_pos;
   MetaResizePopup *grab_resize_popup;
   GTimeVal    grab_last_moveresize_time;
   Time        grab_motion_notify_time;
-#ifdef HAVE_XSYNC
-  /* alarm monitoring client's _METACITY_UPDATE_COUNTER */
-  XSyncAlarm  grab_update_alarm;
+  
+  /* we use property updates as sentinels for certain window focus events
+   * to avoid some race conditions on EnterNotify events
+   */
+  int         sentinel_counter;
+
+#ifdef HAVE_XKB
+  int         xkb_base_event_type;
 #endif
+#ifdef HAVE_XSYNC
+  /* alarm monitoring client's _NET_WM_SYNC_REQUEST_COUNTER */
+  XSyncAlarm  grab_sync_request_alarm;
+#endif
+  int	      grab_resize_timeout_id;
 
   /* Keybindings stuff */
   MetaKeyBinding *screen_bindings;
   int             n_screen_bindings;
   MetaKeyBinding *window_bindings;
   int             n_window_bindings;
-  int min_keycode;
-  int max_keycode;
+  unsigned int min_keycode;
+  unsigned int max_keycode;
   KeySym *keymap;
   int keysyms_per_keycode;
   XModifierKeymap *modmap;
@@ -286,6 +306,9 @@ struct _MetaDisplay
 
   /* Managed by group-props.c */
   MetaGroupPropHooks *group_prop_hooks;
+
+  /* Managed by compositor.c */
+  MetaCompositor *compositor;
   
 #ifdef HAVE_STARTUP_NOTIFICATION
   SnDisplay *sn_display;
@@ -293,16 +316,32 @@ struct _MetaDisplay
 #ifdef HAVE_XSYNC
   int xsync_event_base;
   int xsync_error_base;
-#define META_DISPLAY_HAS_XSYNC(display) ((display)->xsync_event_base != 0)
-#else
-#define META_DISPLAY_HAS_XSYNC(display) FALSE
 #endif
 #ifdef HAVE_SHAPE
   int shape_event_base;
   int shape_error_base;
-#define META_DISPLAY_HAS_SHAPE(display) ((display)->shape_event_base != 0)
+#endif
+#ifdef HAVE_RENDER
+  int render_event_base;
+  int render_error_base;
+#endif
+#ifdef HAVE_XSYNC
+  unsigned int have_xsync : 1;
+#define META_DISPLAY_HAS_XSYNC(display) ((display)->have_xsync)
+#else
+#define META_DISPLAY_HAS_XSYNC(display) FALSE
+#endif
+#ifdef HAVE_SHAPE
+  unsigned int have_shape : 1;
+#define META_DISPLAY_HAS_SHAPE(display) ((display)->have_shape)
 #else
 #define META_DISPLAY_HAS_SHAPE(display) FALSE
+#endif
+#ifdef HAVE_RENDER
+  unsigned int have_render : 1;
+#define META_DISPLAY_HAS_RENDER(display) ((display)->have_render)
+#else
+#define META_DISPLAY_HAS_RENDER(display) FALSE
 #endif
 };
 
@@ -355,6 +394,7 @@ gboolean meta_display_begin_grab_op (MetaDisplay *display,
                                      MetaWindow  *window,
                                      MetaGrabOp   op,
                                      gboolean     pointer_already_grabbed,
+                                     int          event_serial,
                                      int          button,
                                      gulong       modmask,
                                      Time         timestamp,
@@ -369,9 +409,9 @@ void     meta_display_ungrab_window_buttons  (MetaDisplay *display,
                                               Window       xwindow);
 
 void meta_display_grab_focus_window_button   (MetaDisplay *display,
-                                              Window       xwindow);
+                                              MetaWindow  *window);
 void meta_display_ungrab_focus_window_button (MetaDisplay *display,
-                                              Window       xwindow);
+                                              MetaWindow  *window);
 
 /* make a request to ensure the event serial has changed */
 void     meta_display_increment_event_serial (MetaDisplay *display);
@@ -404,10 +444,10 @@ typedef enum
 
 } MetaTabList;
 
-GSList* meta_display_get_tab_list (MetaDisplay   *display,
-                                   MetaTabList    type,
-                                   MetaScreen    *screen,
-                                   MetaWorkspace *workspace);
+GList* meta_display_get_tab_list (MetaDisplay   *display,
+                                  MetaTabList    type,
+                                  MetaScreen    *screen,
+                                  MetaWorkspace *workspace);
 
 MetaWindow* meta_display_get_tab_next (MetaDisplay   *display,
                                        MetaTabList    type,
@@ -429,9 +469,15 @@ gboolean meta_grab_op_is_resizing (MetaGrabOp op);
 gboolean meta_rectangle_intersect (MetaRectangle *src1,
                                    MetaRectangle *src2,
                                    MetaRectangle *dest);
+gboolean meta_rectangle_equal (const MetaRectangle *src1,
+                               const MetaRectangle *src2);
 
 void meta_display_devirtualize_modifiers (MetaDisplay        *display,
                                           MetaVirtualModifier modifiers,
                                           unsigned int       *mask);
+
+void meta_display_increment_focus_sentinel (MetaDisplay *display);
+void meta_display_decrement_focus_sentinel (MetaDisplay *display);
+gboolean meta_display_focus_sentinel_clear (MetaDisplay *display);
 
 #endif

@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libmetacity-private.la
 
 SUBDIRS=wm-tester tools themes
 
-INCLUDES=@METACITY_CFLAGS@ -DMETACITY_LIBEXECDIR=\"$(libexecdir)\" -DHOST_ALIAS=\"@HOST_ALIAS@\" -DMETACITY_LOCALEDIR=\"$(prefix)/@DATADIRNAME@/locale\" -DMETACITY_PKGDATADIR=\"$(pkgdatadir)\" -DMETACITY_DATADIR=\"$(datadir)\" -DG_LOG_DOMAIN=\"metacity\" -DSN_API_NOT_YET_FROZEN=1
+INCLUDES=@METACITY_CFLAGS@ -DMETACITY_LIBEXECDIR=\"$(libexecdir)\" -DMETACITY_LIBDIR=\"$(libdir)\" -DHOST_ALIAS=\"@HOST_ALIAS@\" -DMETACITY_LOCALEDIR=\"$(prefix)/@DATADIRNAME@/locale\" -DMETACITY_PKGDATADIR=\"$(pkgdatadir)\" -DMETACITY_DATADIR=\"$(datadir)\" -DG_LOG_DOMAIN=\"metacity\" -DSN_API_NOT_YET_FROZEN=1
 
 EGGFILES=			\
 	eggaccelerators.c	\
@@ -11,7 +11,13 @@ EGGFILES=			\
 metacity_SOURCES= 				\
 	async-getprop.c				\
 	async-getprop.h				\
+	bell.h					\
+	bell.c					\
 	common.h				\
+	compositor.c				\
+	compositor.h				\
+	constraints.c				\
+	constraints.h				\
 	core.c					\
 	core.h					\
 	delete.c				\
@@ -97,6 +103,9 @@ libmetacity_private_la_SOURCES=	\
 	util.h			\
 	common.h
 
+libmetacity_private_la_LDFLAGS = -no-undefined
+libmetacity_private_la_LIBADD  = @METACITY_LIBS@
+
 libmetacityincludedir = $(includedir)/metacity-1/metacity-private
 
 libmetacityinclude_HEADERS =	\
@@ -141,8 +150,12 @@ schema_DATA = $(schema_in_files:.schemas.in=.schemas)
 
 @INTLTOOL_SCHEMAS_RULE@
 
+if GCONF_SCHEMAS_INSTALL
 install-data-local:
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
+else
+install-data-local:
+endif
 
 IMAGES=default_icon.png stock_maximize.png stock_minimize.png stock_delete.png
 VARIABLES=default_icon_data $(srcdir)/default_icon.png \

@@ -29,6 +29,11 @@
 #include "prefs.h"
 
 #include <glib-object.h>
+#include <gmodule.h>
+#ifdef HAVE_GCONF
+#include <gconf/gconf-client.h>
+#endif
+
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -61,7 +66,7 @@ log_handler (const gchar   *log_domain,
 static void
 usage (void)
 {
-  g_print (_("metacity [--disable-sm] [--sm-save-file=FILENAME] [--display=DISPLAY] [--replace] [--version]\n"));
+  g_print (_("metacity [--sm-disable] [--sm-client-id=ID] [--sm-save-file=FILENAME] [--display=DISPLAY] [--replace] [--version]\n"));
   exit (1);
 }
 
@@ -74,6 +79,90 @@ version (void)
              "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"),
            VERSION);
   exit (0);
+}
+
+#define GNOME_ACCESSIBILITY_KEY "/desktop/gnome/interface/accessibility"
+
+static char *
+find_accessibility_module (const char *libname)
+{
+  char *path;
+  char *fname;
+  char *retval;
+
+  retval = NULL;
+  
+  fname = g_strconcat (libname, "." G_MODULE_SUFFIX, NULL);
+  path = g_strconcat (METACITY_LIBDIR"/gtk-2.0/modules", G_DIR_SEPARATOR_S, fname, NULL);
+
+  if (g_file_test (path, G_FILE_TEST_EXISTS))
+    retval = path;
+
+  if (path)
+    retval = path;
+  else
+    g_free (path);
+
+  g_free (fname);
+
+  return retval;
+}
+
+static gboolean
+accessibility_invoke_module (const char   *libname,
+			     gboolean      init)
+{
+  GModule    *handle;
+  void      (*invoke_fn) (void);
+  const char *method;
+  gboolean    retval = FALSE;
+  char       *module_name;
+
+  if (init)
+    method = "gnome_accessibility_module_init";
+  else
+    method = "gnome_accessibility_module_shutdown";
+
+  module_name = find_accessibility_module (libname);
+
+  if (!module_name)
+    {
+      g_warning ("Accessibility: failed to find module '%s' which "
+		 "is needed to make this application accessible",
+		 libname);
+
+    }
+  else if (!(handle = g_module_open (module_name, G_MODULE_BIND_LAZY)))
+    {
+      g_warning ("Accessibility: failed to load module '%s': '%s'",
+		 libname, g_module_error ());
+
+    }
+  else if (!g_module_symbol (handle, method, (gpointer *)&invoke_fn))
+    {
+      g_warning ("Accessibility: error library '%s' does not include "
+		 "method '%s' required for accessibility support",
+		 libname, method);
+      g_module_close (handle);
+
+    }
+  else
+    {
+      retval = TRUE;
+      invoke_fn ();
+    }
+
+  g_free (module_name);
+
+  return retval;
+}
+
+static gboolean
+accessibility_invoke (gboolean init)
+{
+  accessibility_invoke_module ("libgail", init);
+  accessibility_invoke_module ("libatk-bridge", init);
+  return TRUE;
 }
 
 int
@@ -111,6 +200,9 @@ main (int argc, char **argv)
   if (g_getenv ("METACITY_DEBUG"))
     meta_set_debugging (TRUE);
   meta_set_syncing (g_getenv ("METACITY_SYNC") != NULL);
+
+  if (g_get_home_dir ())
+    chdir (g_get_home_dir ());
 
   {
     char buf[256];
@@ -271,6 +363,26 @@ main (int argc, char **argv)
 #else
   meta_topic (META_DEBUG_XINERAMA, " (not using Solaris Xinerama)\n");
 #endif
+#ifdef HAVE_XSYNC
+  meta_verbose ("Compiled with sync extension\n");
+#else
+  meta_verbose ("Compiled without sync extension\n");
+#endif
+#ifdef HAVE_RANDR
+  meta_verbose ("Compiled with randr extension\n");
+#else
+  meta_verbose ("Compiled without randr extension\n");
+#endif
+#ifdef HAVE_STARTUP_NOTIFICATION
+  meta_verbose ("Compiled with startup notification\n");
+#else
+  meta_verbose ("Compiled without startup notification\n");
+#endif
+#ifdef HAVE_COMPOSITE_EXTENSIONS
+  meta_verbose ("Compiled with composite extensions\n");
+#else
+  meta_verbose ("Compiled without composite extensions\n");
+#endif
   
   /* Load prefs */
   meta_prefs_init ();
@@ -313,18 +425,39 @@ main (int argc, char **argv)
   
   meta_ui_set_current_theme (meta_prefs_get_theme (), FALSE);
 
-  /* Try some panic stuff, this is lame but we really
-   * don't want users to lose their WM :-/
+  /* Try to find some theme that'll work if the theme preference
+   * doesn't exist.  First try Simple (the default theme) then just
+   * try anything in the themes directory.
    */
   if (!meta_ui_have_a_theme ())
-    meta_ui_set_current_theme ("Atlanta", FALSE);
-
+    meta_ui_set_current_theme ("Simple", FALSE);
+  
   if (!meta_ui_have_a_theme ())
-    meta_ui_set_current_theme ("Crux", FALSE);
-
+    {
+      const char *dir_entry = NULL;
+      GError *err = NULL;
+      GDir   *themes_dir = NULL;
+      
+      if (!(themes_dir = g_dir_open (METACITY_DATADIR"/themes", 0, &err)))
+        {
+          meta_fatal (_("Failed to scan themes directory: %s\n"), err->message);
+          g_error_free (err);
+        } 
+      else 
+        {
+          while (((dir_entry = g_dir_read_name (themes_dir)) != NULL) && 
+                 (!meta_ui_have_a_theme ()))
+            {
+              meta_ui_set_current_theme (dir_entry, FALSE);
+            }
+          
+          g_dir_close (themes_dir);
+        }
+    }
+  
   if (!meta_ui_have_a_theme ())
     meta_fatal (_("Could not find a theme! Be sure %s exists and contains the usual themes."),
-                METACITY_PKGDATADIR"/themes");
+                METACITY_DATADIR"/themes");
   
   /* Connect to SM as late as possible - but before managing display,
    * or we might try to manage a window before we have the session
@@ -336,6 +469,20 @@ main (int argc, char **argv)
   if (!meta_display_open (NULL))
     meta_exit (META_EXIT_ERROR);
   
+  {
+    gboolean do_init_a11y;
+    do_init_a11y = FALSE;
+
+#ifdef HAVE_GCONF
+    do_init_a11y = gconf_client_get_bool (
+			gconf_client_get_default (),
+			GNOME_ACCESSIBILITY_KEY, NULL);
+#endif
+
+    if (do_init_a11y)
+      accessibility_invoke (TRUE);
+  }
+
   g_main_run (meta_main_loop);
 
   {

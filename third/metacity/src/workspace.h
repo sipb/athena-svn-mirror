@@ -40,9 +40,15 @@ struct _MetaWorkspace
   MetaScreen *screen;
   
   GList *windows;
-  
-  MetaRectangle work_area;
-  guint work_area_invalid : 1;
+  GList *mru_list;
+
+  MetaRectangle all_work_areas;
+  MetaRectangle *work_areas;
+  GSList *left_struts;
+  GSList *right_struts;
+  GSList *top_struts;
+  GSList *bottom_struts;
+  guint work_areas_invalid : 1;
 };
 
 MetaWorkspace* meta_workspace_new           (MetaScreen    *screen);
@@ -56,14 +62,27 @@ void           meta_workspace_relocate_windows (MetaWorkspace *workspace,
 /* don't confuse with meta_window_visible_on_workspace() */
 gboolean       meta_workspace_contains_window (MetaWorkspace *workspace,
                                                MetaWindow  *window);
-void           meta_workspace_activate      (MetaWorkspace *workspace);
+void           meta_workspace_activate_with_focus (MetaWorkspace *workspace,
+                                                   MetaWindow    *focus_this);
+void           meta_workspace_activate            (MetaWorkspace *workspace);
 int            meta_workspace_index         (MetaWorkspace *workspace);
 GList*         meta_workspace_list_windows  (MetaWorkspace *workspace);
 
 void meta_workspace_invalidate_work_area (MetaWorkspace *workspace);
-void meta_workspace_get_work_area        (MetaWorkspace *workspace,
-                                          MetaRectangle *area);
 
+
+void meta_workspace_get_work_area_for_xinerama  (MetaWorkspace *workspace,
+                                                 int            which_xinerama,
+                                                 MetaRectangle *area);
+void meta_workspace_get_work_area_all_xineramas (MetaWorkspace *workspace,
+                                                 MetaRectangle *area);
+
+void meta_workspace_focus_mru_window     (MetaWorkspace *workspace,
+                                          MetaWindow    *not_this_one);
+void meta_workspace_focus_default_window (MetaWorkspace *workspace,
+                                          MetaWindow    *not_this_one);
+void meta_workspace_focus_top_window     (MetaWorkspace *workspace,
+                                          MetaWindow    *not_this_one);
 
 MetaWorkspace* meta_workspace_get_neighbor (MetaWorkspace      *workspace,
                                             MetaMotionDirection direction);

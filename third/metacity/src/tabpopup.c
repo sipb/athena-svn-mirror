@@ -101,6 +101,20 @@ outline_window_expose (GtkWidget      *widget,
   return FALSE;
 }
 
+static char*
+utf8_strndup (const char *src,
+              int         n)
+{
+  const gchar *s = src;
+  while (n && *s)
+    {
+      s = g_utf8_next_char (s);
+      n--;
+    }
+
+  return g_strndup (src, s - src);
+}
+
 MetaTabPopup*
 meta_ui_tab_popup_new (const MetaTabEntry *entries,
                        int                 screen_number,
@@ -117,16 +131,18 @@ meta_ui_tab_popup_new (const MetaTabEntry *entries,
   GtkWidget *align;
   GList *tmp;
   GtkWidget *frame;
-  int max_label_width;
-
+  int max_label_width; /* the actual max width of the labels we create */
+  AtkObject *obj;
+  int max_chars_per_title; /* max chars we allow in a label */
+  GdkScreen *screen;
+  
   popup = g_new (MetaTabPopup, 1);
 
   popup->outline_window = gtk_window_new (GTK_WINDOW_POPUP);
-#ifdef HAVE_GTK_MULTIHEAD
+
   gtk_window_set_screen (GTK_WINDOW (popup->outline_window),
 			 gdk_display_get_screen (gdk_display_get_default (),
 						 screen_number));
-#endif
 
   gtk_widget_set_app_paintable (popup->outline_window, TRUE);
   gtk_widget_realize (popup->outline_window);
@@ -135,11 +151,12 @@ meta_ui_tab_popup_new (const MetaTabEntry *entries,
                     G_CALLBACK (outline_window_expose), popup);
   
   popup->window = gtk_window_new (GTK_WINDOW_POPUP);
-#ifdef HAVE_GTK_MULTIHEAD
+
+  screen = gdk_display_get_screen (gdk_display_get_default (),
+                                   screen_number);
+  
   gtk_window_set_screen (GTK_WINDOW (popup->window),
-			 gdk_display_get_screen (gdk_display_get_default (),
-						 screen_number));
-#endif
+			 screen);
 
   gtk_window_set_position (GTK_WINDOW (popup->window),
                            GTK_WIN_POS_CENTER_ALWAYS);
@@ -150,6 +167,11 @@ meta_ui_tab_popup_new (const MetaTabEntry *entries,
   popup->entries = NULL;
   popup->current_selected_entry = NULL;
   popup->outline = outline;
+
+  /* make max title size some random relationship to the screen,
+   * avg char width of our font would be a better number.
+   */
+  max_chars_per_title = gdk_screen_get_width (screen) / 15; 
   
   tab_entries = NULL;
   for (i = 0; i < entry_count; ++i)
@@ -158,7 +180,10 @@ meta_ui_tab_popup_new (const MetaTabEntry *entries,
 
       te = g_new (TabEntry, 1);
       te->key = entries[i].key;
-      te->title = g_strdup (entries[i].title);
+      te->title =
+	entries[i].title 
+	? utf8_strndup (entries[i].title, max_chars_per_title)
+	: NULL;
       te->widget = NULL;
       te->icon = entries[i].icon;
       te->blank = entries[i].blank;
@@ -207,6 +232,9 @@ meta_ui_tab_popup_new (const MetaTabEntry *entries,
                      table);
   
   popup->label = gtk_label_new ("");
+  obj = gtk_widget_get_accessible (popup->label);
+  atk_object_set_role (obj, ATK_ROLE_STATUSBAR);
+  
   gtk_misc_set_padding (GTK_MISC (popup->label), 3, 3);
 
   gtk_box_pack_end (GTK_BOX (vbox), popup->label, FALSE, FALSE, 0);

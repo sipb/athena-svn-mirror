@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Rob Adams
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -30,6 +31,15 @@ void meta_workspace_queue_calc_showing  (MetaWorkspace *workspace);
 
 static void set_active_space_hint      (MetaScreen *screen);
 
+static void
+maybe_add_to_list (MetaScreen *screen, MetaWindow *window, gpointer data)
+{
+  GList **mru_list = data;
+
+  if (window->on_all_workspaces)
+    *mru_list = g_list_prepend (*mru_list, window);
+}
+
 MetaWorkspace*
 meta_workspace_new (MetaScreen *screen)
 {
@@ -41,12 +51,20 @@ meta_workspace_new (MetaScreen *screen)
   workspace->screen->workspaces =
     g_list_append (workspace->screen->workspaces, workspace);
   workspace->windows = NULL;
+  workspace->mru_list = NULL;
+  meta_screen_foreach_window (screen, maybe_add_to_list, &workspace->mru_list);
 
-  workspace->work_area.x = 0;
-  workspace->work_area.y = 0;
-  workspace->work_area.width = screen->width;
-  workspace->work_area.height = screen->height;
-  workspace->work_area_invalid = TRUE;
+  workspace->work_areas = NULL;
+  workspace->work_areas_invalid = TRUE;
+  workspace->all_work_areas.x = 0;
+  workspace->all_work_areas.y = 0;
+  workspace->all_work_areas.width = 0;
+  workspace->all_work_areas.height = 0;
+
+  workspace->left_struts = NULL;
+  workspace->right_struts = NULL;
+  workspace->top_struts = NULL;
+  workspace->bottom_struts = NULL;
   
   return workspace;
 }
@@ -84,6 +102,14 @@ meta_workspace_free (MetaWorkspace *workspace)
   workspace->screen->workspaces =
     g_list_remove (workspace->screen->workspaces, workspace);
   
+  g_free (workspace->work_areas);
+
+  g_list_free (workspace->mru_list);
+  g_slist_free (workspace->left_struts);
+  g_slist_free (workspace->right_struts);
+  g_slist_free (workspace->top_struts);
+  g_slist_free (workspace->bottom_struts);
+
   g_free (workspace);
 
   /* don't bother to reset names, pagers can just ignore
@@ -97,13 +123,37 @@ meta_workspace_add_window (MetaWorkspace *workspace,
 {
   g_return_if_fail (!meta_workspace_contains_window (workspace, window));
   
+  /* If the window is on all workspaces, we want to add it to all mru
+   * lists, otherwise just add it to this workspaces mru list
+   */
+  if (window->on_all_workspaces) 
+    {
+      if (window->workspaces == NULL)
+        {
+          GList* tmp = window->screen->workspaces;
+          while (tmp)
+            {
+              MetaWorkspace* work = (MetaWorkspace*) tmp->data;
+              if (!g_list_find (work->mru_list, window))
+                work->mru_list = g_list_prepend (work->mru_list, window);
+
+              tmp = tmp->next;
+            }
+        }
+    }
+  else
+    {
+      g_assert (g_list_find (workspace->mru_list, window) == NULL);
+      workspace->mru_list = g_list_prepend (workspace->mru_list, window);
+    }
+
   workspace->windows = g_list_prepend (workspace->windows, window);
   window->workspaces = g_list_prepend (window->workspaces, workspace);
 
   meta_window_set_current_workspace_hint (window);
   
   meta_window_queue_calc_showing (window);
-  if (window->has_struts)
+  if (window->struts)
     {
       meta_topic (META_DEBUG_WORKAREA,
                   "Invalidating work area of workspace %d since we're adding window %s to it\n",
@@ -126,11 +176,35 @@ meta_workspace_remove_window (MetaWorkspace *workspace,
   workspace->windows = g_list_remove (workspace->windows, window);
   window->workspaces = g_list_remove (window->workspaces, workspace);
 
+  /* If the window is on all workspaces, we don't want to remove it
+   * from the MRU list unless this causes it to be removed from all 
+   * workspaces
+   */
+  if (window->on_all_workspaces) 
+    {
+      if (window->workspaces == NULL)
+        {
+          GList* tmp = window->screen->workspaces;
+          while (tmp)
+            {
+              MetaWorkspace* work = (MetaWorkspace*) tmp->data;
+              work->mru_list = g_list_remove (work->mru_list, window);
+
+              tmp = tmp->next;
+            }
+        }
+    }
+  else
+    {
+      workspace->mru_list = g_list_remove (workspace->mru_list, window);
+      g_assert (g_list_find (workspace->mru_list, window) == NULL);
+    }
+
   meta_window_set_current_workspace_hint (window);
   
   meta_window_queue_calc_showing (window);
 
-  if (window->has_struts)
+  if (window->struts)
     {
       meta_topic (META_DEBUG_WORKAREA,
                   "Invalidating work area of workspace %d since we're removing window %s from it\n",
@@ -176,7 +250,7 @@ gboolean
 meta_workspace_contains_window (MetaWorkspace *workspace,
                                 MetaWindow    *window)
 {
-  return g_list_find (workspace->windows, window) != NULL;
+  return g_list_find (window->workspaces, workspace) != NULL;
 }
 
 void
@@ -194,9 +268,11 @@ meta_workspace_queue_calc_showing  (MetaWorkspace *workspace)
 }
 
 void
-meta_workspace_activate (MetaWorkspace *workspace)
+meta_workspace_activate_with_focus (MetaWorkspace *workspace,
+                                    MetaWindow    *focus_this)
 {
   MetaWorkspace *old;
+  MetaWindow *move_window;
   
   meta_verbose ("Activating workspace %d\n",
                 meta_workspace_index (workspace));
@@ -213,11 +289,58 @@ meta_workspace_activate (MetaWorkspace *workspace)
   if (old == NULL)
     return;
 
+  move_window = NULL;
+  if (workspace->screen->display->grab_op == META_GRAB_OP_MOVING ||
+      workspace->screen->display->grab_op == META_GRAB_OP_KEYBOARD_MOVING)
+    move_window = workspace->screen->display->grab_window;
+      
+  if (move_window != NULL)
+    {
+      if (move_window->on_all_workspaces)
+        move_window = NULL; /* don't move it after all */
+
+      /* We put the window on the new workspace, flip spaces,
+       * then remove from old workspace, so the window
+       * never gets unmapped and we maintain the button grab
+       * on it.
+       */
+      if (move_window)
+        {
+          if (!meta_workspace_contains_window (workspace,
+                                               move_window))
+            meta_workspace_add_window (workspace, move_window);
+        }
+    }
+
   meta_workspace_queue_calc_showing (old);
   meta_workspace_queue_calc_showing (workspace);
 
-  meta_topic (META_DEBUG_FOCUS, "Focusing default window on new workspace\n");
-  meta_screen_focus_default_window (workspace->screen, NULL);
+  if (move_window)
+      /* Removes window from other spaces */
+      meta_window_change_workspace (move_window, workspace);
+
+  if (focus_this)
+    {
+      meta_window_focus (focus_this,
+                         meta_display_get_current_time (focus_this->display));
+      meta_window_raise (focus_this);
+    }
+  else if (move_window)
+    {
+      meta_window_raise (move_window);
+    }
+  else
+    {
+      meta_topic (META_DEBUG_FOCUS, "Focusing default window on new workspace\n");
+      meta_workspace_focus_default_window (workspace, NULL);
+    }
+}
+
+void
+meta_workspace_activate (MetaWorkspace *workspace)
+{
+  meta_workspace_activate_with_focus (workspace,
+                                      NULL);
 }
 
 int
@@ -304,7 +427,7 @@ meta_workspace_invalidate_work_area (MetaWorkspace *workspace)
   GList *tmp;
   GList *windows;
   
-  if (workspace->work_area_invalid)
+  if (workspace->work_areas_invalid)
     {
       meta_topic (META_DEBUG_WORKAREA,
                   "Work area for workspace %d is already invalid\n",
@@ -315,8 +438,20 @@ meta_workspace_invalidate_work_area (MetaWorkspace *workspace)
   meta_topic (META_DEBUG_WORKAREA,
               "Invalidating work area for workspace %d\n",
               meta_workspace_index (workspace));
+
+  g_free (workspace->work_areas);
+  workspace->work_areas = NULL;
+      
+  g_slist_free (workspace->left_struts);
+  workspace->left_struts = NULL;
+  g_slist_free (workspace->right_struts);
+  workspace->right_struts = NULL;
+  g_slist_free (workspace->top_struts);
+  workspace->top_struts = NULL;
+  g_slist_free (workspace->bottom_struts);
+  workspace->bottom_struts = NULL;
   
-  workspace->work_area_invalid = TRUE;
+  workspace->work_areas_invalid = TRUE;
 
   /* redo the size/position constraints on all windows */
   windows = meta_workspace_list_windows (workspace);
@@ -335,81 +470,238 @@ meta_workspace_invalidate_work_area (MetaWorkspace *workspace)
   meta_screen_queue_workarea_recalc (workspace->screen);
 }
 
-void
-meta_workspace_get_work_area (MetaWorkspace *workspace,
-                              MetaRectangle *area)
-{  
-  if (workspace->work_area_invalid)
-    {
-      int left_strut = 0;
-      int right_strut = 0;
-      int top_strut = 0;
-      int bottom_strut = 0;
-      GList *tmp;
-      GList *windows;
+static void
+ensure_work_areas_validated (MetaWorkspace *workspace)
+{
+  int left_strut = 0;
+  int right_strut = 0;
+  int top_strut = 0;
+  int bottom_strut = 0;
+  int all_left_strut = 0;
+  int all_right_strut = 0;
+  int all_top_strut = 0;
+  int all_bottom_strut = 0;
+  int i;
+  GList *tmp;
+  GList *windows;
 
-      windows = meta_workspace_list_windows (workspace);
+  if (!workspace->work_areas_invalid)
+    return;
+
+  g_assert (workspace->top_struts == NULL);
+  g_assert (workspace->bottom_struts == NULL);
+  g_assert (workspace->left_struts == NULL);
+  g_assert (workspace->right_struts == NULL);
+  
+  windows = meta_workspace_list_windows (workspace);
+
+  g_free (workspace->work_areas);
+  workspace->work_areas = g_new (MetaRectangle,
+                                 workspace->screen->n_xinerama_infos);
+      
+  i = 0;
+  while (i < workspace->screen->n_xinerama_infos)
+    {
+      left_strut = 0;
+      right_strut = 0;
+      top_strut = 0;
+      bottom_strut = 0;
+
       tmp = windows;
       while (tmp != NULL)
         {
           MetaWindow *w = tmp->data;
 
-          if (w->has_struts)
+          if (w->struts)
             {
               meta_topic (META_DEBUG_WORKAREA,
-                          "Merging win %s with %d %d %d %d with %d %d %d %d\n",
+                          "Merging win %s with %d %d %d %d "
+                          "with %d %d %d %d\n",
                           w->desc,
-                          w->left_strut, w->right_strut, w->top_strut, w->bottom_strut,
-                          left_strut, right_strut, top_strut, bottom_strut);
-              left_strut = MAX (left_strut, w->left_strut);
-              right_strut = MAX (right_strut, w->right_strut);
-              top_strut = MAX (top_strut, w->top_strut);
-              bottom_strut = MAX (bottom_strut, w->bottom_strut);
+                          w->struts->left.width, w->struts->right.width, 
+                          w->struts->top.height, w->struts->bottom.height,
+                          left_strut, right_strut, 
+                          top_strut, bottom_strut);
+
+              if ((i == 0) && (w->struts->left.width > 0))
+                {
+                  workspace->left_struts = g_slist_prepend (workspace->left_struts,
+                                                            &w->struts->left);
+                }
+
+              if (meta_screen_rect_intersects_xinerama (w->screen,
+                                                        &w->struts->left,
+                                                        i))
+                {
+                  left_strut = MAX (left_strut, 
+                                    w->struts->left.width - 
+                                    workspace->screen->xinerama_infos[i].x_origin);
+                  all_left_strut = MAX (all_left_strut, w->struts->left.width);
+                }
+
+              if ((i == 0) && (w->struts->right.width > 0))
+                {
+                  workspace->right_struts = g_slist_prepend (workspace->right_struts,
+                                                             &w->struts->right);
+                }
+
+              if (meta_screen_rect_intersects_xinerama (w->screen,
+                                                        &w->struts->right,
+                                                        i))
+                {
+                  right_strut = MAX (right_strut, w->struts->right.width - 
+                                     workspace->screen->width + 
+                                     workspace->screen->xinerama_infos[i].width +
+                                     workspace->screen->xinerama_infos[i].x_origin);
+                  all_right_strut = MAX (all_right_strut, w->struts->right.width);
+                }
+
+              if ((i == 0) && (w->struts->top.height > 0))
+                {
+                  workspace->top_struts = g_slist_prepend (workspace->top_struts,
+                                                           &w->struts->top);
+                }
+
+              if (meta_screen_rect_intersects_xinerama (w->screen,
+                                                        &w->struts->top,
+                                                        i))
+                {
+                  top_strut = MAX (top_strut,
+                                   w->struts->top.height - 
+                                   workspace->screen->xinerama_infos[i].y_origin);
+                  all_top_strut = MAX (all_top_strut, w->struts->top.height);
+                }
+
+              if ((i == 0) && (w->struts->bottom.height > 0))
+                {
+                  workspace->bottom_struts = g_slist_prepend (workspace->bottom_struts,
+                                                              &w->struts->bottom);
+                }
+
+              if (meta_screen_rect_intersects_xinerama (w->screen,
+                                                        &w->struts->bottom,
+                                                        i))
+                {
+                  bottom_strut = MAX (bottom_strut, w->struts->bottom.height - 
+                                     workspace->screen->height + 
+                                     workspace->screen->xinerama_infos[i].height +
+                                     workspace->screen->xinerama_infos[i].y_origin);
+                  all_bottom_strut = MAX (all_bottom_strut, w->struts->bottom.height);
+                }
             }
           
           tmp = tmp->next;
         }
 
-      g_list_free (windows);
-
       /* Some paranoid robustness */
 #define MIN_SANE_AREA 100
       
-      if ((left_strut + right_strut) > (workspace->screen->width - MIN_SANE_AREA))
+      if ((left_strut + right_strut) > 
+          (workspace->screen->xinerama_infos[i].width - MIN_SANE_AREA))
         {
           meta_topic (META_DEBUG_WORKAREA,
-                      "Making left/right struts %d %d sane\n",
-                      left_strut, right_strut);
-          left_strut = (workspace->screen->width - MIN_SANE_AREA) / 2;
+                      "Making left/right struts %d %d sane xinerama %d\n",
+                      left_strut, right_strut, i);
+          left_strut = (workspace->screen->xinerama_infos[i].width - 
+                        MIN_SANE_AREA) / 2;
           right_strut = left_strut;
         }
 
-      if ((top_strut + bottom_strut) > (workspace->screen->height - MIN_SANE_AREA))
+      if ((top_strut + bottom_strut) > 
+          (workspace->screen->xinerama_infos[i].height - MIN_SANE_AREA))
         {
           meta_topic (META_DEBUG_WORKAREA,
-                      "Making top/bottom struts %d %d sane\n",
-                      top_strut, bottom_strut);
-          top_strut = (workspace->screen->height - MIN_SANE_AREA) / 2;
+                      "Making top/bottom struts %d %d sane xinerama %d\n",
+                      top_strut, bottom_strut, i);
+          top_strut = (workspace->screen->xinerama_infos[i].height - 
+                       MIN_SANE_AREA) / 2;
           bottom_strut = top_strut;
         }
-      
-      workspace->work_area.x = left_strut;
-      workspace->work_area.y = top_strut;
-      workspace->work_area.width = workspace->screen->width - left_strut - right_strut;
-      workspace->work_area.height = workspace->screen->height - top_strut - bottom_strut;
 
-      workspace->work_area_invalid = FALSE;
+      workspace->work_areas[i].x = 
+        left_strut + workspace->screen->xinerama_infos[i].x_origin;
+      workspace->work_areas[i].y = top_strut + 
+        workspace->screen->xinerama_infos[i].y_origin;
+      workspace->work_areas[i].width = 
+        workspace->screen->xinerama_infos[i].width - 
+        left_strut - right_strut;
+      workspace->work_areas[i].height = 
+        workspace->screen->xinerama_infos[i].height - 
+        top_strut - bottom_strut;
 
       meta_topic (META_DEBUG_WORKAREA,
-                  "Computed work area for workspace %d: %d,%d %d x %d\n",
+                  "Computed work area for workspace %d "
+                  "xinerama %d: %d,%d %d x %d\n",
                   meta_workspace_index (workspace),
-                  workspace->work_area.x,
-                  workspace->work_area.y,
-                  workspace->work_area.width,
-                  workspace->work_area.height);
+                  i,
+                  workspace->work_areas[i].x,
+                  workspace->work_areas[i].y,
+                  workspace->work_areas[i].width,
+                  workspace->work_areas[i].height);
+
+      ++i;
     }
 
-  *area = workspace->work_area;
+  g_list_free (windows);
+
+  if ((all_left_strut + all_right_strut) > 
+      (workspace->screen->width - MIN_SANE_AREA))
+    {
+      meta_topic (META_DEBUG_WORKAREA,
+                  "Making screen-wide left/right struts %d %d sane\n",
+                  all_left_strut, all_right_strut);
+      all_left_strut = (workspace->screen->width - MIN_SANE_AREA) / 2;
+      all_right_strut = all_left_strut;
+    }
+      
+  if ((all_top_strut + all_bottom_strut) > 
+      (workspace->screen->height - MIN_SANE_AREA))
+    {
+      meta_topic (META_DEBUG_WORKAREA,
+                  "Making top/bottom struts %d %d sane\n",
+                  all_top_strut, all_bottom_strut);
+      all_top_strut = (workspace->screen->height - MIN_SANE_AREA) / 2;
+      all_bottom_strut = all_top_strut;
+    }
+      
+  workspace->all_work_areas.x = all_left_strut;
+  workspace->all_work_areas.y = all_top_strut;
+  workspace->all_work_areas.width = 
+    workspace->screen->width - all_left_strut - all_right_strut;
+  workspace->all_work_areas.height = 
+    workspace->screen->height - all_top_strut - all_bottom_strut;
+  
+  workspace->work_areas_invalid = FALSE;
+
+  meta_topic (META_DEBUG_WORKAREA,
+              "Computed work area for workspace %d: %d,%d %d x %d\n",
+              meta_workspace_index (workspace),
+              workspace->all_work_areas.x,
+              workspace->all_work_areas.y,
+              workspace->all_work_areas.width,
+              workspace->all_work_areas.height);    
+}
+
+void
+meta_workspace_get_work_area_for_xinerama (MetaWorkspace *workspace,
+                                           int            which_xinerama,
+                                           MetaRectangle *area)
+{
+  g_assert (which_xinerama >= 0);
+
+  ensure_work_areas_validated (workspace);
+  g_assert (which_xinerama < workspace->screen->n_xinerama_infos);
+  
+  *area = workspace->work_areas[which_xinerama];
+}
+
+void
+meta_workspace_get_work_area_all_xineramas (MetaWorkspace *workspace,
+                                            MetaRectangle *area)
+{
+  ensure_work_areas_validated (workspace);
+  
+  *area = workspace->all_work_areas;
 }
 
 #ifdef WITH_VERBOSE_MODE
@@ -493,4 +785,120 @@ const char*
 meta_workspace_get_name (MetaWorkspace *workspace)
 {
   return meta_prefs_get_workspace_name (meta_workspace_index (workspace));
+}
+
+void
+meta_workspace_focus_default_window (MetaWorkspace *workspace,
+                                     MetaWindow *not_this_one)
+{
+  if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
+    meta_workspace_focus_mru_window (workspace, not_this_one);
+  else
+    {
+      MetaWindow * window;
+      window = meta_screen_get_mouse_window (workspace->screen, not_this_one);
+      if (window &&
+          window->type != META_WINDOW_DOCK &&
+          window->type != META_WINDOW_DESKTOP)
+        {
+          meta_topic (META_DEBUG_FOCUS,
+                      "Focusing mouse window %s\n", window->desc);
+
+          meta_window_focus (window, meta_display_get_current_time (workspace->screen->display));
+        }
+      else if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_SLOPPY)
+        meta_workspace_focus_mru_window (workspace, not_this_one);
+      else if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_MOUSE)
+        {
+          meta_topic (META_DEBUG_FOCUS,
+                      "Setting focus to no_focus_window, since no valid "
+                      "window to focus found.\n");
+          XSetInputFocus (workspace->screen->display->xdisplay,
+                          workspace->screen->display->no_focus_window,
+                          RevertToPointerRoot,
+                          meta_display_get_current_time (workspace->screen->display));
+        }
+    }
+}
+
+/* Focus MRU window (or top window if failed) on active workspace */
+void
+meta_workspace_focus_mru_window (MetaWorkspace *workspace,
+                                 MetaWindow *not_this_one)
+{
+  MetaWindow *window = NULL;
+  GList *tmp;
+
+  if (not_this_one)
+    meta_topic (META_DEBUG_FOCUS,
+                "Focusing MRU window excluding %s\n", not_this_one->desc);
+  
+  tmp = workspace->mru_list;  
+
+  while (tmp)
+    {
+      MetaWindow* tmp_window;
+      tmp_window = ((MetaWindow*) tmp->data);
+      if (tmp_window != not_this_one           &&
+          tmp_window->type != META_WINDOW_DOCK &&
+          tmp_window->type != META_WINDOW_DESKTOP)
+        {
+          window = tmp->data;
+	  break;
+        }
+
+      tmp = tmp->next;
+    }
+
+  if (window)
+    {
+      meta_topic (META_DEBUG_FOCUS,
+                  "Focusing workspace MRU window %s\n", window->desc);
+      
+      meta_window_focus (window,
+                         meta_display_get_current_time (workspace->screen->display));
+
+      /* Also raise the window if in click-to-focus */
+      if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
+        meta_window_raise (window);
+    }
+  else
+    {
+      meta_topic (META_DEBUG_FOCUS, "No MRU window to focus found\n");
+      meta_workspace_focus_top_window (workspace, not_this_one);
+    }
+}
+
+/* Focus top window on workspace */
+void
+meta_workspace_focus_top_window (MetaWorkspace *workspace,
+                                 MetaWindow    *not_this_one)
+{
+  MetaWindow *window;
+
+  if (not_this_one)
+    meta_topic (META_DEBUG_FOCUS,
+                "Focusing top window excluding %s\n", not_this_one->desc);
+  
+  window = meta_stack_get_default_focus_window (workspace->screen->stack,
+                                                workspace,
+                                                not_this_one);
+
+  /* FIXME I'm a loser on the CurrentTime front */
+  if (window)
+    {
+      meta_topic (META_DEBUG_FOCUS,
+                  "Focusing top window %s\n", window->desc);
+
+      meta_window_focus (window, 
+	                 meta_display_get_current_time (workspace->screen->display));
+
+      /* Also raise the window if in click-to-focus */
+      if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
+        meta_window_raise (window);
+    }
+  else
+    {
+      meta_topic (META_DEBUG_FOCUS, "No top window to focus found\n");
+    }
 }

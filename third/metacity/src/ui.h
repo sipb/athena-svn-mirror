@@ -29,6 +29,11 @@
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+/* This is between GTK_PRIORITY_RESIZE (+10) and GTK_PRIORITY_REDRAW (+20) */
+#define META_PRIORITY_RESIZE    (G_PRIORITY_HIGH_IDLE + 15)
+/* lower than GTK_PRIORITY_REDRAW */
+#define META_PRIORITY_COMPOSITE (G_PRIORITY_HIGH_IDLE + 25)
+
 typedef struct _MetaUI MetaUI;
 
 typedef struct _MetaImageWindow MetaImageWindow;
@@ -50,15 +55,33 @@ MetaUI* meta_ui_new (Display *xdisplay,
                      Screen  *screen);
 void    meta_ui_free (MetaUI *ui);
 
+void meta_ui_theme_get_frame_borders (MetaUI *ui,
+                                      MetaFrameType      type,
+                                      MetaFrameFlags     flags,
+                                      int               *top_height,
+                                      int               *bottom_height,
+                                      int               *left_width,
+                                      int               *right_width);
 void meta_ui_get_frame_geometry (MetaUI *ui,
                                  Window frame_xwindow,
                                  int *top_height, int *bottom_height,
                                  int *left_width, int *right_width);
-void meta_ui_add_frame    (MetaUI *ui,
-                           Window  xwindow);
-void meta_ui_remove_frame (MetaUI *ui,
-                           Window  xwindow);
-                               
+Window meta_ui_create_frame_window (MetaUI *ui,
+                                    Display *xdisplay,
+                                    Visual *xvisual,
+				    gint x,
+				    gint y,
+				    gint width,
+				    gint height,
+				    gint screen_no);
+void meta_ui_destroy_frame_window (MetaUI *ui,
+				   Window  xwindow);
+void meta_ui_move_resize_frame (MetaUI *ui,
+				Window frame,
+				int x,
+				int y,
+				int width,
+				int height);
 
 /* GDK insists on tracking map/unmap */
 void meta_ui_map_frame   (MetaUI *ui,
@@ -165,7 +188,9 @@ gboolean meta_ui_parse_modifier    (const char          *accel,
 gboolean meta_ui_window_is_widget (MetaUI *ui,
                                    Window  xwindow);
 
+int      meta_ui_get_double_click_timeout (MetaUI *ui);
+int      meta_ui_get_drag_threshold       (MetaUI *ui);
+
 #include "tabpopup.h"
 
 #endif
-

@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2004 Rob Adams
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -36,6 +37,7 @@ struct _MenuItem
 {
   MetaMenuOp op;
   const char *stock_id;
+  const gboolean checked;
   const char *label;
 };
 
@@ -49,18 +51,24 @@ struct _MenuData
 static void activate_cb (GtkWidget *menuitem, gpointer data);
 
 static MenuItem menuitems[] = {
-  { META_MENU_OP_MINIMIZE, METACITY_STOCK_MINIMIZE, N_("Mi_nimize") },
-  { META_MENU_OP_MAXIMIZE, METACITY_STOCK_MAXIMIZE, N_("Ma_ximize") },
-  { META_MENU_OP_UNMAXIMIZE, NULL, N_("Unma_ximize") },
-  { META_MENU_OP_SHADE, NULL, N_("Roll _Up") },
-  { META_MENU_OP_UNSHADE, NULL, N_("_Unroll") },
-  { META_MENU_OP_MOVE, NULL, N_("_Move") },
-  { META_MENU_OP_RESIZE, NULL, N_("_Resize") },
-  { 0, NULL, NULL }, /* separator */
-  { META_MENU_OP_DELETE, METACITY_STOCK_DELETE, N_("_Close") },
-  { 0, NULL, NULL }, /* separator */
-  { META_MENU_OP_STICK, NULL, N_("Put on _All Workspaces") },
-  { META_MENU_OP_UNSTICK, NULL, N_("Only on _This Workspace") }
+  { META_MENU_OP_MINIMIZE, METACITY_STOCK_MINIMIZE, FALSE, N_("Mi_nimize") },
+  { META_MENU_OP_MAXIMIZE, METACITY_STOCK_MAXIMIZE, FALSE, N_("Ma_ximize") },
+  { META_MENU_OP_UNMAXIMIZE, NULL, FALSE, N_("Unma_ximize") },
+  { META_MENU_OP_SHADE, NULL, FALSE, N_("Roll _Up") },
+  { META_MENU_OP_UNSHADE, NULL, FALSE, N_("_Unroll") },
+  { META_MENU_OP_ABOVE, NULL, FALSE, N_("On _Top") },
+  { META_MENU_OP_UNABOVE, NULL, TRUE, N_("On _Top") },
+  { META_MENU_OP_MOVE, NULL, FALSE, N_("_Move") },
+  { META_MENU_OP_RESIZE, NULL, FALSE, N_("_Resize") },
+  { 0, NULL, FALSE, NULL }, /* separator */
+  { META_MENU_OP_DELETE, METACITY_STOCK_DELETE, FALSE, N_("_Close") },
+  { META_MENU_OP_WORKSPACES, NULL, FALSE, NULL }, /* separator */
+  { META_MENU_OP_STICK, NULL, FALSE, N_("Put on _All Workspaces") },
+  { META_MENU_OP_UNSTICK, NULL, FALSE,  N_("Only on _This Workspace") },
+  { META_MENU_OP_MOVE_LEFT, NULL, FALSE, N_("Move to Workspace _Left") },
+  { META_MENU_OP_MOVE_RIGHT, NULL, FALSE, N_("Move to Workspace R_ight") },
+  { META_MENU_OP_MOVE_UP, NULL, FALSE, N_("Move to Workspace _Up") },
+  { META_MENU_OP_MOVE_DOWN, NULL, FALSE, N_("Move to Workspace _Down") }
 };
 
 static void
@@ -96,6 +104,7 @@ menu_closed (GtkMenu *widget,
   meta_frames_notify_menu_hide (menu->frames);
   (* menu->func) (menu, gdk_display,
                   menu->client_xwindow,
+		  gtk_get_current_event_time (),
                   0, 0,
                   menu->data);
   
@@ -114,6 +123,7 @@ activate_cb (GtkWidget *menuitem, gpointer data)
   meta_frames_notify_menu_hide (md->menu->frames);
   (* md->menu->func) (md->menu, gdk_display,
                       md->menu->client_xwindow,
+		      gtk_get_current_event_time (),
                       md->op,
                       GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menuitem),
                                                           "workspace")),
@@ -157,26 +167,30 @@ get_workspace_name_with_accel (Display *display,
        * Above name is a pointer into the Workspace struct. Here we make
        * a copy copy so we can have our wicked way with it.
        */
-      new_name = g_strdup_printf (_("Workspace %s%d"),
-                                  number < 10 ? "_" : "",
-                                  number);
+      if (number == 10)
+        new_name = g_strdup_printf (_("Workspace 1_0"));
+      else
+        new_name = g_strdup_printf (_("Workspace %s%d"),
+                                    number < 10 ? "_" : "",
+                                    number);
       return new_name;
     }
   else
     {
       /*
-       * Otherwise this is just a normal name to which we cannot really
-       * add accelerators. Escape any _ characters so that the user's
-       * workspace names do not get mangled.
+       * Otherwise this is just a normal name. Escape any _ characters so that
+       * the user's workspace names do not get mangled.  If the number is less
+       * than 10 we provide an accelerator.
        */
       char *new_name;
       const char *source;
       char *dest;
 
       /*
-       * Assume the worst case, that every character is a _
+       * Assume the worst case, that every character is a _.  We also
+       * provide memory for " (_#)"
        */
-      new_name = g_malloc0 (strlen (name) * 2 + 1);
+      new_name = g_malloc0 (strlen (name) * 2 + 6 + 1);
 
       /*
        * Now iterate down the strings, adding '_' to escape as we go
@@ -190,6 +204,16 @@ get_workspace_name_with_accel (Display *display,
           *dest++ = *source++;
         }
 
+      /* People don't start at workstation 0, but workstation 1 */
+      if (index < 9)
+        {
+          g_snprintf (dest, 6, " (_%d)", index + 1);
+        }
+      else if (index == 9)
+        {
+          g_snprintf (dest, 6, " (_0)");
+        }
+
       return new_name;
     }
 }
@@ -197,13 +221,20 @@ get_workspace_name_with_accel (Display *display,
 static GtkWidget*
 menu_item_new (const char         *label,
                gboolean            with_image,
+	       gboolean		   with_check,
                unsigned int        key,
                MetaVirtualModifier mods)
 {
   GtkWidget *menu_item;
   GtkWidget *accel_label;
 
-  if (with_image)
+  if (with_check)
+    {
+      menu_item = gtk_check_menu_item_new ();    
+      gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item),
+                                      TRUE);
+    }
+  else if (with_image)
     menu_item = gtk_image_menu_item_new ();
   else
     menu_item = gtk_menu_item_new ();
@@ -232,19 +263,22 @@ meta_window_menu_new   (MetaFrames         *frames,
   int i;
   MetaWindowMenu *menu;
 
+  if (n_workspaces < 2)
+    ops &= ~(META_MENU_OP_STICK | META_MENU_OP_UNSTICK | META_MENU_OP_WORKSPACES);
+  
   menu = g_new (MetaWindowMenu, 1);
   menu->frames = frames;
   menu->client_xwindow = client_xwindow;
   menu->func = func;
   menu->data = data;
   menu->ops = ops;
-  menu->insensitive = insensitive;
+  menu->insensitive = insensitive;  
   
   menu->menu = gtk_menu_new ();
-#ifdef HAVE_GTK_MULTIHEAD
+
   gtk_menu_set_screen (GTK_MENU (menu->menu),
 		       gtk_widget_get_screen (GTK_WIDGET (frames)));
-#endif
+
   i = 0;
   while (i < (int) G_N_ELEMENTS (menuitems))
     {
@@ -255,7 +289,7 @@ meta_window_menu_new   (MetaFrames         *frames,
           unsigned int key;
           MetaVirtualModifier mods;
           
-          if (menuitems[i].op == 0)
+          if (menuitems[i].label == NULL)
             {
               mi = gtk_separator_menu_item_new ();
             }
@@ -274,17 +308,18 @@ meta_window_menu_new   (MetaFrames         *frames,
 
               meta_core_get_menu_accelerator (menuitems[i].op, -1,
                                               &key, &mods);
-              
+
               if (image)
                 {
-                  mi = menu_item_new (_(menuitems[i].label), TRUE, key, mods);
+                  mi = menu_item_new (_(menuitems[i].label), TRUE, FALSE, key, mods);
                   gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (mi),
                                                  image);
                   gtk_widget_show (image);
                 }
               else
                 {
-                  mi = menu_item_new (_(menuitems[i].label), FALSE, key, mods);
+                  mi = menu_item_new (_(menuitems[i].label), FALSE, 
+                                      menuitems[i].checked, key, mods);
                 }
               
               if (insensitive & menuitems[i].op)
@@ -313,80 +348,74 @@ meta_window_menu_new   (MetaFrames         *frames,
 
   if (ops & META_MENU_OP_WORKSPACES)
     {
+
+      GtkWidget *mi;
+      Display *display;
+      Window xroot;
+      GdkScreen *screen;
+      GtkWidget *submenu;
+      GtkWidget *submenuitem;
+
       meta_verbose ("Creating %d-workspace menu current space %d\n",
                     n_workspaces, active_workspace);
-      
-      if (n_workspaces > 1)
+          
+      display = gdk_x11_drawable_get_xdisplay (GTK_WIDGET (frames)->window);
+          
+      screen = gdk_drawable_get_screen (GTK_WIDGET (frames)->window);
+      xroot = GDK_DRAWABLE_XID (gdk_screen_get_root_window (screen));
+
+      submenu = gtk_menu_new ();
+      submenuitem = menu_item_new (_("Move to Another _Workspace"), FALSE, FALSE, 0, 0);
+      gtk_menu_item_set_submenu (GTK_MENU_ITEM (submenuitem), submenu);
+      gtk_menu_shell_append (GTK_MENU_SHELL (menu->menu),
+			     submenuitem);
+      gtk_widget_show (submenuitem);
+           
+      i = 0;
+      while (i < n_workspaces)
         {
-          GtkWidget *mi;
-          Display *display;
-          Window xroot;
-          
-          display = gdk_x11_drawable_get_xdisplay (GTK_WIDGET (frames)->window);
-
-#ifdef HAVE_GTK_MULTIHEAD
-          {
-            GdkScreen *screen;
-            screen = gdk_drawable_get_screen (GTK_WIDGET (frames)->window);
-            xroot = GDK_DRAWABLE_XID (gdk_screen_get_root_window (screen));
-          }
-#else
-          {
-            xroot = gdk_x11_get_default_root_xwindow ();
-          }
-#endif
-          
-          i = 0;
-          while (i < n_workspaces)
-            {
-              char *label, *name;
-              MenuData *md;
-              unsigned int key;
-              MetaVirtualModifier mods;
+          char *label;
+          MenuData *md;
+          unsigned int key;
+          MetaVirtualModifier mods;
               
-              meta_core_get_menu_accelerator (META_MENU_OP_WORKSPACES,
-                                              i + 1,
-                                              &key, &mods);
+          meta_core_get_menu_accelerator (META_MENU_OP_WORKSPACES,
+                                          i + 1,
+                                          &key, &mods);
               
-              name = get_workspace_name_with_accel (display, xroot, i);
-              if (ops & META_MENU_OP_UNSTICK)
-                label = g_strdup_printf (_("Only on %s"), name);
-              else
-                label = g_strdup_printf(_("Move to %s"), name);
-              mi = menu_item_new (label, FALSE, key, mods);
+          label = get_workspace_name_with_accel (display, xroot, i);
+          mi = menu_item_new (label, FALSE, FALSE, key, mods);
 
-              g_free (name);
-              g_free (label);
+          g_free (label);
 
-              if (!(ops & META_MENU_OP_UNSTICK) &&
-                  (active_workspace == i ||
-                   insensitive & META_MENU_OP_WORKSPACES))
-                gtk_widget_set_sensitive (mi, FALSE);
-	      else if (insensitive & META_MENU_OP_WORKSPACES)
-		gtk_widget_set_sensitive (mi, FALSE);
-              md = g_new (MenuData, 1);
+          if (!(ops & META_MENU_OP_UNSTICK) &&
+              (active_workspace == i ||
+               insensitive & META_MENU_OP_WORKSPACES))
+            gtk_widget_set_sensitive (mi, FALSE);
+          else if (insensitive & META_MENU_OP_WORKSPACES)
+            gtk_widget_set_sensitive (mi, FALSE);
+          md = g_new (MenuData, 1);
 
-              md->menu = menu;
-              md->op = META_MENU_OP_WORKSPACES;
+          md->menu = menu;
+          md->op = META_MENU_OP_WORKSPACES;
 
-              g_object_set_data (G_OBJECT (mi),
-                                 "workspace",
-                                 GINT_TO_POINTER (i));
+          g_object_set_data (G_OBJECT (mi),
+                             "workspace",
+                             GINT_TO_POINTER (i));
           
-              gtk_signal_connect_full (GTK_OBJECT (mi),
-                                       "activate",
-                                       GTK_SIGNAL_FUNC (activate_cb),
-                                       NULL,
-                                       md,
-                                       g_free, FALSE, FALSE);
+          gtk_signal_connect_full (GTK_OBJECT (mi),
+                                   "activate",
+                                   GTK_SIGNAL_FUNC (activate_cb),
+                                   NULL,
+                                   md,
+                                   g_free, FALSE, FALSE);
 
-              gtk_menu_shell_append (GTK_MENU_SHELL (menu->menu),
-                                     mi);
+          gtk_menu_shell_append (GTK_MENU_SHELL (submenu),
+                                 mi);
           
-              gtk_widget_show (mi);
+          gtk_widget_show (mi);
           
-              ++i;
-            }
+          ++i;
         }
     }
   else

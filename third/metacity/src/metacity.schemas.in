@@ -66,13 +66,13 @@
       <applyto>/apps/metacity/general/action_double_click_titlebar</applyto>
       <owner>metacity</owner>
       <type>string</type>
-      <default>toggle_shade</default>
+      <default>toggle_maximize</default>
       <locale name="C">
          <short>Action on title bar double-click</short>
          <long>
 	  This option determines the effects of double-clicking on the
-	  title bar.  Current valid options are 'toggle_shaded', which will
-	  shade/unshade the window, and 'toggle_maximized' which will
+	  title bar.  Current valid options are 'toggle_shade', which will
+	  shade/unshade the window, and 'toggle_maximize' which will
 	  maximize/unmaximize the window.
          </long>
       </locale>
@@ -129,7 +129,7 @@
       <applyto>/apps/metacity/general/titlebar_uses_system_font</applyto>      
       <owner>metacity</owner>
       <type>bool</type>
-      <default>true</default>
+      <default>false</default>
       <locale name="C">
          <short>Use standard system font in window titles</short>
          <long> 
@@ -178,6 +178,57 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/metacity/general/visual_bell</key>
+      <applyto>/apps/metacity/general/visual_bell</applyto>      
+      <owner>metacity</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Enable Visual Bell</short>
+         <long>Turns on a visual indication when an application or the system
+	issues a 'bell' or 'beep'; useful for the hard-of-hearing and for use
+	in noisy environments, or when 'audible bell' is off.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/general/audible_bell</key>
+      <applyto>/apps/metacity/general/audible_bell</applyto>      
+      <owner>metacity</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>System Bell is Audible</short>
+         <long>Determines whether applications or the system can generate audible 
+	'beeps'; may be used in conjunction with 'visual bell' to 
+	allow silent 'beeps'.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/general/visual_bell_type</key>
+      <applyto>/apps/metacity/general/visual_bell_type</applyto>      
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>fullscreen</default>
+      <locale name="C">
+         <short>Visual Bell Type</short>
+         <long>
+	Tells Metacity how to implement the visual indication that
+	the system bell or another application 'bell' indicator has
+	been rung.  Currently there are two valid values, "fullscreen",
+	which causes a fullscreen white-black flash, and "frame_flash" which
+	causes the titlebar of the application which sent the bell signal to
+	flash.  If the application which sent the bell is unknown (as is
+	usually the case for the default "system beep"), the currently
+	focused window's titlebar is flashed.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/metacity/workspace_names/name</key>
       <applyto>/apps/metacity/workspace_names/name_1</applyto>
       <applyto>/apps/metacity/workspace_names/name_2</applyto>
@@ -206,6 +257,25 @@
       </locale>
     </schema>
 
+    <schema>
+      <key>/schemas/apps/metacity/general/reduced_resources</key>
+      <applyto>/apps/metacity/general/reduced_resources</applyto>
+      <owner>metacity</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>If true, trade off usability for less resource usage</short>
+         <long>
+          If true, metacity will give the user less feedback and 
+        less sense of "direct manipulation", by using wireframes, 
+        avoiding animations, or other means. This is a significant 
+        reduction in usability for many users, but may allow 
+        legacy applications and terminal servers to function 
+        when they would otherwise be impractical.
+         </long>
+      </locale>
+    </schema>
+
     <!-- Window Keybindings -->
 
     <schema>
@@ -218,7 +288,7 @@
          <short>Activate window menu</short>
          <long>
           The keybinding used to activate the window menu.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -240,7 +310,30 @@ you set
          <short>Toggle fullscreen mode</short>
          <long>
           The keybinding used to toggle fullscreen mode.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
+          The parser is
+          fairly liberal and allows lower or upper case, and also
+          abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
+you set
+          the option to the special string "disabled", then there 
+          will be no keybinding for this action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/window_keybindings/toggle_above</key>
+      <applyto>/apps/metacity/window_keybindings/toggle_above</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>disabled</default>
+      <locale name="C">
+         <short>Toggle always on top state</short>
+         <long>
+
+          The keybinding used to toggle always on top.  A window that
+	  is always on top will always be visible over other overlapping windows.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -261,7 +354,7 @@ you set
          <short>Toggle maximization state</short>
          <long>
           The keybinding used to toggle maximization.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -279,10 +372,10 @@ you set
       <type>string</type>
       <default>&lt;Alt&gt;F10</default>
       <locale name="C">
-         <short>Maximize a window</short>
+         <short>Maximize window</short>
          <long>
           The keybinding used to maximize a window
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If you set
@@ -299,10 +392,10 @@ you set
       <type>string</type>
       <default>&lt;Alt&gt;F5</default>
       <locale name="C">
-         <short>Unmaximize a window</short>
+         <short>Unmaximize window</short>
          <long>
           The keybinding used to unmaximize a window.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If you set
@@ -317,12 +410,12 @@ you set
       <applyto>/apps/metacity/window_keybindings/toggle_shaded</applyto>
       <owner>metacity</owner>
       <type>string</type>
-      <default>&lt;Alt&gt;F12</default>
+      <default>disabled</default>
       <locale name="C">
          <short>Toggle shaded state</short>
          <long>
           The keybinding used to toggle shaded/unshaded state.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -340,10 +433,10 @@ you set
       <type>string</type>
       <default>&lt;Alt&gt;F4</default>
       <locale name="C">
-         <short>Close a window</short>
+         <short>Close window</short>
          <long>
           The keybinding used to close a window.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -361,10 +454,10 @@ you set
       <type>string</type>
       <default>&lt;Alt&gt;F9</default>
       <locale name="C">
-         <short>Minimize a window</short>
+         <short>Minimize window</short>
          <long>
           The keybinding used to minimize a window.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -382,11 +475,11 @@ you set
       <type>string</type>
       <default>&lt;Alt&gt;F7</default>
       <locale name="C">
-         <short>Move a window</short>
+         <short>Move window</short>
          <long>
           The keybinding used to enter "move mode" and begin moving a
         window using the keyboard.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -404,11 +497,11 @@ you set
       <type>string</type>
       <default>&lt;Alt&gt;F8</default>
       <locale name="C">
-         <short>Resize a window</short>
+         <short>Resize window</short>
          <long>
           The keybinding used to enter "resize mode" and begin resizing a
         window using the keyboard.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -430,7 +523,7 @@ you set
          <long>
           The keybinding used to toggle whether the window is on all 
           workspaces or just one.
-          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1.
+          The format looks like "&lt;Control&gt;a" or "&lt;Shift&gt;&lt;Alt&gt;F1".
           The parser is
           fairly liberal and allows lower or upper case, and also
           abbreviations such as "&lt;Ctl&gt;" and "&lt;Ctrl&gt;". If
@@ -453,7 +546,7 @@ you set
           The keybinding used to move a window to workspace 1.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -476,7 +569,7 @@ you set
           The keybinding used to move a window to workspace 2.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -499,7 +592,7 @@ you set
           The keybinding used to move a window to workspace 3.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -522,7 +615,7 @@ you set
           The keybinding used to move a window to workspace 4.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -545,7 +638,7 @@ you set
           The keybinding used to move a window to workspace 5.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -568,7 +661,7 @@ you set
           The keybinding used to move a window to workspace 6.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -592,7 +685,7 @@ you set
           The keybinding used to move a window to workspace 7.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -615,7 +708,7 @@ you set
           The keybinding used to move a window to workspace 8.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -638,7 +731,7 @@ you set
           The keybinding used to move a window to workspace 9.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -661,7 +754,7 @@ you set
           The keybinding used to move a window to workspace 10.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -684,7 +777,7 @@ you set
           The keybinding used to move a window to workspace 11.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -707,7 +800,7 @@ you set
           The keybinding used to move a window to workspace 12.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -724,14 +817,14 @@ you set
       <applyto>/apps/metacity/window_keybindings/move_to_workspace_left</applyto>
       <owner>metacity</owner>
       <type>string</type>
-      <default>&lt;Shift&gt;&lt;Alt&gt;Left</default>
+      <default>&lt;Control&gt;&lt;Shift&gt;&lt;Alt&gt;Left</default>
       <locale name="C">
          <short>Move window one workspace to the left</short>
          <long>
           The keybinding used to move a window one workspace to the left.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -749,14 +842,14 @@ you set
       <applyto>/apps/metacity/window_keybindings/move_to_workspace_right</applyto>
       <owner>metacity</owner>
       <type>string</type>
-      <default>&lt;Shift&gt;&lt;Alt&gt;Right</default>
+      <default>&lt;Control&gt;&lt;Shift&gt;&lt;Alt&gt;Right</default>
       <locale name="C">
          <short>Move window one workspace to the right</short>
          <long>
           The keybinding used to move a window one workspace to the right.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -773,14 +866,14 @@ you set
       <applyto>/apps/metacity/window_keybindings/move_to_workspace_up</applyto>
       <owner>metacity</owner>
       <type>string</type>
-      <default>&lt;Shift&gt;&lt;Alt&gt;Up</default>
+      <default>&lt;Control&gt;&lt;Shift&gt;&lt;Alt&gt;Up</default>
       <locale name="C">
          <short>Move window one workspace up</short>
          <long>
           The keybinding used to move a window one workspace up.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -797,14 +890,14 @@ you set
       <applyto>/apps/metacity/window_keybindings/move_to_workspace_down</applyto>
       <owner>metacity</owner>
       <type>string</type>
-      <default>&lt;Shift&gt;&lt;Alt&gt;Down</default>
+      <default>&lt;Control&gt;&lt;Shift&gt;&lt;Alt&gt;Down</default>
       <locale name="C">
          <short>Move window one workspace down</short>
          <long>
           The keybinding used to move a window one workspace down.  
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -831,7 +924,7 @@ you set
             it lowers the window below other windows.
 
             The format looks like "&lt;Control&gt;a" or
-            "&lt;Shift&gt;&lt;Alt&gt;F1.
+            "&lt;Shift&gt;&lt;Alt&gt;F1".
 
             The parser is fairly liberal and allows lower or upper case,
             and also abbreviations such as "&lt;Ctl&gt;" and
@@ -854,7 +947,7 @@ you set
             This keybinding raises the window above other windows.
 
             The format looks like "&lt;Control&gt;a" or
-            "&lt;Shift&gt;&lt;Alt&gt;F1.
+            "&lt;Shift&gt;&lt;Alt&gt;F1".
 
             The parser is fairly liberal and allows lower or upper case,
             and also abbreviations such as "&lt;Ctl&gt;" and
@@ -877,7 +970,7 @@ you set
             This keybinding lowers a window below other windows.
 
             The format looks like "&lt;Control&gt;a" or
-            "&lt;Shift&gt;&lt;Alt&gt;F1.
+            "&lt;Shift&gt;&lt;Alt&gt;F1".
 
             The parser is fairly liberal and allows lower or upper case,
             and also abbreviations such as "&lt;Ctl&gt;" and
@@ -900,7 +993,7 @@ you set
             This keybinding resizes a window to fill available vertical space.
 
             The format looks like "&lt;Control&gt;a" or
-            "&lt;Shift&gt;&lt;Alt&gt;F1.
+            "&lt;Shift&gt;&lt;Alt&gt;F1".
 
             The parser is fairly liberal and allows lower or upper case,
             and also abbreviations such as "&lt;Ctl&gt;" and
@@ -923,7 +1016,7 @@ you set
             This keybinding resizes a window to fill available horizontal space.
 
             The format looks like "&lt;Control&gt;a" or
-            "&lt;Shift&gt;&lt;Alt&gt;F1.
+            "&lt;Shift&gt;&lt;Alt&gt;F1".
 
             The parser is fairly liberal and allows lower or upper case,
             and also abbreviations such as "&lt;Ctl&gt;" and
@@ -952,7 +1045,7 @@ you set
           while using this binding reverses the direction of movement.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -977,7 +1070,7 @@ you set
           binding makes the direction go forward again.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1001,7 +1094,7 @@ you set
           the desktop, using a popup window.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1025,7 +1118,7 @@ you set
           and the desktop, using a popup window.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1051,7 +1144,7 @@ you set
           while using this binding reverses the direction of movement.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1076,7 +1169,7 @@ you set
           binding makes the direction go forward again.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1100,7 +1193,7 @@ you set
           the desktop, without a popup window.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1124,7 +1217,7 @@ you set
           the desktop, without a popup window.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1148,7 +1241,7 @@ you set
           focus to the desktop background.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1171,7 +1264,7 @@ you set
           The keybinding that switches to workspace 1.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1194,7 +1287,7 @@ you set
           The keybinding that switches to workspace 2.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1217,7 +1310,7 @@ you set
           The keybinding that switches to workspace 3.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1241,7 +1334,7 @@ you set
           The keybinding that switches to workspace 4.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1265,7 +1358,7 @@ you set
           The keybinding that switches to workspace 5.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1290,7 +1383,7 @@ you set
           The keybinding that switches to workspace 6.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1315,7 +1408,7 @@ you set
           The keybinding that switches to workspace 7.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1339,7 +1432,7 @@ you set
           The keybinding that switches to workspace 8.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1364,7 +1457,7 @@ you set
           The keybinding that switches to workspace 9.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1389,7 +1482,7 @@ you set
           The keybinding that switches to workspace 10.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1413,7 +1506,7 @@ you set
           The keybinding that switches to workspace 11.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1436,7 +1529,7 @@ you set
           The keybinding that switches to workspace 12.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1461,7 +1554,7 @@ you set
           of the current workspace.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1487,7 +1580,7 @@ you set
           of the current workspace.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1512,7 +1605,7 @@ you set
           the current workspace.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1537,7 +1630,101 @@ you set
           the current workspace.
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
+
+          The parser is fairly liberal and allows lower or upper case,
+          and also abbreviations such as "&lt;Ctl&gt;" and
+          "&lt;Ctrl&gt;". If you set the option to the special string
+          "disabled", then there will be no keybinding for this
+          action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/global_keybindings/panel_main_menu</key>
+      <applyto>/apps/metacity/global_keybindings/panel_main_menu</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>&lt;Alt&gt;F1</default>
+      <locale name="C">
+         <short>Show the panel menu</short>
+         <long>
+          The keybinding which shows the panel's main menu.
+
+          The format looks like "&lt;Control&gt;a" or
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
+
+          The parser is fairly liberal and allows lower or upper case,
+          and also abbreviations such as "&lt;Ctl&gt;" and
+          "&lt;Ctrl&gt;". If you set the option to the special string
+          "disabled", then there will be no keybinding for this
+          action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/global_keybindings/panel_run_dialog</key>
+      <applyto>/apps/metacity/global_keybindings/panel_run_dialog</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>&lt;Alt&gt;F2</default>
+      <locale name="C">
+         <short>Show the panel run application dialog</short>
+         <long>
+          The keybinding which display's the panel's "Run Application" dialog
+          box.
+
+          The format looks like "&lt;Control&gt;a" or
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
+
+          The parser is fairly liberal and allows lower or upper case,
+          and also abbreviations such as "&lt;Ctl&gt;" and
+          "&lt;Ctrl&gt;". If you set the option to the special string
+          "disabled", then there will be no keybinding for this
+          action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/global_keybindings/run_command_screenshot</key>
+      <applyto>/apps/metacity/global_keybindings/run_command_screenshot</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>Print</default>
+      <locale name="C">
+         <short>Take a screenshot</short>
+         <long>
+          The keybinding which invokes the panel's screenshot utility.
+
+          The format looks like "&lt;Control&gt;a" or
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
+
+          The parser is fairly liberal and allows lower or upper case,
+          and also abbreviations such as "&lt;Ctl&gt;" and
+          "&lt;Ctrl&gt;". If you set the option to the special string
+          "disabled", then there will be no keybinding for this
+          action.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/global_keybindings/run_command_window_screenshot</key>
+      <applyto>/apps/metacity/global_keybindings/run_command_window_screenshot</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>&lt;Alt&gt;Print</default>
+      <locale name="C">
+         <short>Take a screenshot of a window</short>
+         <long>
+          The keybinding which invokes the panel's screenshot utility
+          to take a screenshot of a window.
+
+          The format looks like "&lt;Control&gt;a" or
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1572,7 +1759,7 @@ you set
           command in /apps/metacity/keybinding_commands
 
           The format looks like "&lt;Control&gt;a" or
-          "&lt;Shift&gt;&lt;Alt&gt;F1.
+          "&lt;Shift&gt;&lt;Alt&gt;F1".
 
           The parser is fairly liberal and allows lower or upper case,
           and also abbreviations such as "&lt;Ctl&gt;" and
@@ -1584,6 +1771,38 @@ you set
     </schema>
 
     <!-- commands to run with the run_command keybindings -->
+
+    <schema>
+      <key>/schemas/apps/metacity/keybinding_commands/command_screenshot</key>
+      <applyto>/apps/metacity/keybinding_commands/command_screenshot</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>gnome-panel-screenshot</default>
+      <locale name="C">
+         <short>The screenshot command</short>
+         <long>
+         The /apps/metacity/global_keybindings/run_command_screenshot
+         key defines a keybinding which causes the command specified
+         by this setting to be invoked.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/metacity/keybinding_commands/command_window_screenshot</key>
+      <applyto>/apps/metacity/keybinding_commands/command_window_screenshot</applyto>
+      <owner>metacity</owner>
+      <type>string</type>
+      <default>gnome-panel-screenshot --window</default>
+      <locale name="C">
+         <short>The window screenshot command</short>
+         <long>
+         The /apps/metacity/global_keybindings/run_command_window_screenshot
+         key defines a keybinding which causes the command specified
+         by this setting to be invoked.
+         </long>
+      </locale>
+    </schema>
 
     <schema>
       <key>/schemas/apps/metacity/keybinding_commands/command</key>

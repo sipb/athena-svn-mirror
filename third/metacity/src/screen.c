@@ -5,6 +5,7 @@
  * Copyright (C) 2002, 2003 Red Hat Inc.
  * Some ICCCM manager selection code derived from fvwm2,
  * Copyright (C) 2001 Dominik Vogt, Matthias Clasen, and fvwm2 team
+ * Copyright (C) 2003 Rob Adams
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,6 +34,7 @@
 #include "keybindings.h"
 #include "stack.h"
 #include "xprops.h"
+#include "compositor.h"
 
 #ifdef HAVE_SOLARIS_XINERAMA
 #include <X11/extensions/xinerama.h>
@@ -51,9 +53,12 @@ static char* get_screen_name (MetaDisplay *display,
 
 static void update_num_workspaces  (MetaScreen *screen);
 static void update_focus_mode      (MetaScreen *screen);
-static void update_workspace_names (MetaScreen *screen);
+static void set_workspace_names    (MetaScreen *screen);
 static void prefs_changed_callback (MetaPreference pref,
                                     gpointer       data);
+
+static void set_desktop_geometry_hint (MetaScreen *screen);
+static void set_desktop_viewport_hint (MetaScreen *screen);
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 static void meta_screen_sn_event   (SnMonitorEvent *event,
@@ -74,24 +79,13 @@ set_wm_check_hint (MetaScreen *screen)
                    XA_WINDOW,
                    32, PropModeReplace, (guchar*) data, 1);
 
-  /* Legacy GNOME hint (uses cardinal, dunno why) */
-
-  /* do this after setting up window fully, to avoid races
-   * with clients listening to property notify on root.
-   */
-  XChangeProperty (screen->display->xdisplay, screen->xroot,
-                   screen->display->atom_win_supporting_wm_check,
-                   XA_CARDINAL,
-                   32, PropModeReplace, (guchar*) data, 1);
-  
   return Success;
 }
 
 static int
 set_supported_hint (MetaScreen *screen)
 {
-#define N_SUPPORTED 45
-#define N_WIN_SUPPORTED 1
+#define N_SUPPORTED 58
   Atom atoms[N_SUPPORTED];
   
   atoms[0] = screen->display->atom_net_wm_name;
@@ -115,43 +109,50 @@ set_supported_hint (MetaScreen *screen)
   atoms[18] = screen->display->atom_net_client_list_stacking;
   atoms[19] = screen->display->atom_net_wm_state_skip_taskbar;
   atoms[20] = screen->display->atom_net_wm_state_skip_pager;
-  atoms[21] = screen->display->atom_net_wm_icon;
-  atoms[22] = screen->display->atom_net_wm_moveresize;
-  atoms[23] = screen->display->atom_net_wm_state_hidden;
-  atoms[24] = screen->display->atom_net_wm_window_type_utility;
-  atoms[25] = screen->display->atom_net_wm_window_type_splash;
-  atoms[26] = screen->display->atom_net_wm_state_fullscreen;
-  atoms[27] = screen->display->atom_net_wm_ping;
-  atoms[28] = screen->display->atom_net_active_window;
-  atoms[29] = screen->display->atom_net_workarea;
-  atoms[30] = screen->display->atom_net_showing_desktop;
-  atoms[31] = screen->display->atom_net_desktop_layout;
-  atoms[32] = screen->display->atom_net_desktop_names;
-  atoms[33] = screen->display->atom_net_wm_allowed_actions;
-  atoms[34] = screen->display->atom_net_wm_action_move;
-  atoms[35] = screen->display->atom_net_wm_action_resize;
-  atoms[36] = screen->display->atom_net_wm_action_shade;
-  atoms[37] = screen->display->atom_net_wm_action_stick;
-  atoms[38] = screen->display->atom_net_wm_action_maximize_horz;
-  atoms[39] = screen->display->atom_net_wm_action_maximize_vert;
-  atoms[40] = screen->display->atom_net_wm_action_change_desktop;
-  atoms[41] = screen->display->atom_net_wm_action_close;
-  atoms[42] = screen->display->atom_net_wm_state_above;
-  atoms[43] = screen->display->atom_net_wm_state_below;
-  atoms[44] = screen->display->atom_net_startup_id;
+  atoms[21] = screen->display->atom_net_wm_icon_name;
+  atoms[22] = screen->display->atom_net_wm_icon;
+  atoms[23] = screen->display->atom_net_wm_icon_geometry;
+  atoms[24] = screen->display->atom_net_wm_moveresize;
+  atoms[25] = screen->display->atom_net_active_window;
+  atoms[26] = screen->display->atom_net_wm_strut;
+  atoms[27] = screen->display->atom_net_wm_state_hidden;
+  atoms[28] = screen->display->atom_net_wm_window_type_utility;
+  atoms[29] = screen->display->atom_net_wm_window_type_splash;
+  atoms[30] = screen->display->atom_net_wm_state_fullscreen;
+  atoms[31] = screen->display->atom_net_wm_ping;
+  atoms[32] = screen->display->atom_net_wm_pid;
+  atoms[33] = screen->display->atom_net_workarea;
+  atoms[34] = screen->display->atom_net_showing_desktop;
+  atoms[35] = screen->display->atom_net_desktop_layout;
+  atoms[36] = screen->display->atom_net_desktop_names;
+  atoms[37] = screen->display->atom_net_wm_allowed_actions;
+  atoms[38] = screen->display->atom_net_wm_action_move;
+  atoms[39] = screen->display->atom_net_wm_action_resize;
+  atoms[40] = screen->display->atom_net_wm_action_shade;
+  atoms[41] = screen->display->atom_net_wm_action_stick;
+  atoms[42] = screen->display->atom_net_wm_action_maximize_horz;
+  atoms[43] = screen->display->atom_net_wm_action_maximize_vert;
+  atoms[44] = screen->display->atom_net_wm_action_change_desktop;
+  atoms[45] = screen->display->atom_net_wm_action_close;
+  atoms[46] = screen->display->atom_net_wm_state_above;
+  atoms[47] = screen->display->atom_net_wm_state_below;
+  atoms[48] = screen->display->atom_net_startup_id;
+  atoms[49] = screen->display->atom_net_wm_strut_partial;
+  atoms[50] = screen->display->atom_net_wm_action_fullscreen;
+  atoms[51] = screen->display->atom_net_wm_action_minimize;
+  atoms[52] = screen->display->atom_net_frame_extents;
+  atoms[53] = screen->display->atom_net_request_frame_extents;
+  atoms[54] = screen->display->atom_net_wm_user_time;
+  atoms[55] = screen->display->atom_net_wm_state_demands_attention;
+  atoms[56] = screen->display->atom_net_desktop_geometry;
+  atoms[57] = screen->display->atom_net_desktop_viewport;
+  //atoms[58] = screen->display->atom_net_restack_window;
+  //atoms[59] = screen->display->atom_net_moveresize_window;
   
   XChangeProperty (screen->display->xdisplay, screen->xroot,
                    screen->display->atom_net_supported,
                    XA_ATOM,
                    32, PropModeReplace, (guchar*) atoms, N_SUPPORTED);
-
-  /* Set legacy GNOME hints */
-  atoms[0] = screen->display->atom_win_layer;
-  
-  XChangeProperty (screen->display->xdisplay, screen->xroot,
-                   screen->display->atom_win_protocols,
-                   XA_ATOM,
-                   32, PropModeReplace, (guchar*) atoms, N_WIN_SUPPORTED);
   
   return Success;
 #undef N_SUPPORTED
@@ -352,11 +353,26 @@ reload_xinerama_infos (MetaScreen *screen)
 
   g_assert (screen->n_xinerama_infos > 0);
   g_assert (screen->xinerama_infos != NULL);
+
+  {
+    GList *tmp;
+
+    tmp = screen->workspaces;
+    while (tmp != NULL)
+      {
+        MetaWorkspace *space = tmp->data;
+
+        meta_workspace_invalidate_work_area (space);
+        
+        tmp = tmp->next;
+      }
+  }
 }
 
 MetaScreen*
 meta_screen_new (MetaDisplay *display,
-                 int          number)
+                 int          number,
+                 Time         timestamp)
 {
   MetaScreen *screen;
   Window xroot;
@@ -422,24 +438,7 @@ meta_screen_new (MetaDisplay *display,
 
   new_wm_sn_owner = meta_create_offscreen_window (xdisplay, xroot);
 
-  {
-    /* Generate a timestamp */
-    XSetWindowAttributes attrs;
-    XEvent event;
-
-    attrs.event_mask = PropertyChangeMask;
-    XChangeWindowAttributes (xdisplay, new_wm_sn_owner, CWEventMask, &attrs);
-    
-    XChangeProperty (xdisplay,
-                     new_wm_sn_owner, XA_WM_CLASS, XA_STRING, 8,
-                     PropModeAppend, NULL, 0);
-    XWindowEvent (xdisplay, new_wm_sn_owner, PropertyChangeMask, &event);
-    attrs.event_mask = NoEventMask;
-    XChangeWindowAttributes (display->xdisplay,
-                             new_wm_sn_owner, CWEventMask, &attrs);
-
-    manager_timestamp = event.xproperty.time;
-  }
+  manager_timestamp = timestamp;
   
   XSetSelectionOwner (xdisplay, wm_sn_atom, new_wm_sn_owner,
                       manager_timestamp);
@@ -496,9 +495,11 @@ meta_screen_new (MetaDisplay *display,
                 SubstructureRedirectMask | SubstructureNotifyMask |
                 ColormapChangeMask | PropertyChangeMask |
                 LeaveWindowMask | EnterWindowMask |
-                ButtonPressMask | ButtonReleaseMask |
                 KeyPressMask | KeyReleaseMask |
                 FocusChangeMask | StructureNotifyMask |
+#ifdef HAVE_COMPOSITE_EXTENSIONS
+                ExposureMask |
+#endif
 		attr.your_event_mask);
   if (meta_error_trap_pop_with_return (display, FALSE) != Success)
     {
@@ -523,6 +524,7 @@ meta_screen_new (MetaDisplay *display,
   screen->current_cursor = -1; /* invalid/unset */
   screen->default_xvisual = DefaultVisualOfScreen (screen->xscreen);
   screen->default_depth = DefaultDepthOfScreen (screen->xscreen);
+  screen->flash_window = None;
 
   screen->wm_sn_selection_window = new_wm_sn_owner;
   screen->wm_sn_atom = wm_sn_atom;
@@ -538,18 +540,33 @@ meta_screen_new (MetaDisplay *display,
   screen->starting_corner = META_SCREEN_TOPLEFT;
 
   screen->showing_desktop = FALSE;
+
+  screen->compositor_windows = NULL;
+  screen->damage_region = None;
+  screen->root_picture = None;
+  screen->trans_pixmap = None;
+  screen->trans_picture = None;
+  
+  {
+    XGCValues gc_values;
+    
+    gc_values.subwindow_mode = IncludeInferiors;
+    gc_values.function = GXinvert;
+    gc_values.line_width = META_WIREFRAME_XOR_LINE_WIDTH;
+    
+    screen->root_xor_gc = XCreateGC (screen->display->xdisplay,
+                                     screen->xroot,
+                                     GCSubwindowMode | GCFunction | GCLineWidth,
+                                     &gc_values);
+  }
   
   screen->xinerama_infos = NULL;
   screen->n_xinerama_infos = 0;
-  screen->last_xinerama_index = 0;
+  screen->last_xinerama_index = 0;  
   
   reload_xinerama_infos (screen);
   
   meta_screen_set_cursor (screen, META_CURSOR_DEFAULT);
-  
-  if (display->leader_window == None)
-    display->leader_window = meta_create_offscreen_window (display->xdisplay,
-                                                           screen->xroot);
   
   if (display->no_focus_window == None)
     {
@@ -567,8 +584,11 @@ meta_screen_new (MetaDisplay *display,
   
   set_wm_check_hint (screen);
 
+  set_desktop_viewport_hint (screen);
+
+  set_desktop_geometry_hint (screen);
+
   meta_screen_update_workspace_layout (screen);
-  meta_screen_update_workspace_names (screen);
 
   /* Get current workspace */
   current_workspace = 0;
@@ -587,6 +607,8 @@ meta_screen_new (MetaDisplay *display,
   meta_workspace_activate (meta_workspace_new (screen));
   update_num_workspaces (screen);
   
+  set_workspace_names (screen);
+
   screen->all_keys_grabbed = FALSE;
   screen->keys_grabbed = FALSE;
   meta_screen_grab_keys (screen);
@@ -621,9 +643,12 @@ meta_screen_new (MetaDisplay *display,
     if (space != NULL)
       meta_workspace_activate (space);
   }
+
+  meta_compositor_manage_screen (screen->display->compositor,
+                                 screen);
   
   meta_verbose ("Added screen %d ('%s') root 0x%lx\n",
-                screen->number, screen->screen_name, screen->xroot);  
+                screen->number, screen->screen_name, screen->xroot);
   
   return screen;
 }
@@ -639,6 +664,9 @@ meta_screen_free (MetaScreen *screen)
   
   meta_display_grab (display);
 
+  meta_compositor_unmanage_screen (screen->display->compositor,
+                                   screen);
+  
   meta_display_unmanage_windows_for_screen (display, screen);
   
   meta_prefs_remove_listener (prefs_changed_callback, screen);
@@ -678,6 +706,9 @@ meta_screen_free (MetaScreen *screen)
   
   if (screen->work_area_idle != 0)
     g_source_remove (screen->work_area_idle);
+
+  XFreeGC (screen->display->xdisplay,
+           screen->root_xor_gc);
   
   g_free (screen->screen_name);
   g_free (screen);
@@ -713,7 +744,26 @@ meta_screen_manage_all_windows (MetaScreen *screen)
   i = 0;
   while (i < n_children)
     {
-      meta_window_new (screen->display, children[i], TRUE);
+      XWindowAttributes attrs;
+      
+      meta_error_trap_push_with_return (screen->display);
+      
+      XGetWindowAttributes (screen->display->xdisplay,
+                            children[i], &attrs);
+      
+      if (meta_error_trap_pop_with_return (screen->display, TRUE) != Success)
+        {
+          meta_verbose ("Failed to get attributes for window 0x%lx\n",
+                        children[i]);
+        }
+      else
+        {
+          meta_window_new_with_attrs (screen->display, children[i], TRUE,
+                                      &attrs);
+
+          meta_compositor_add_window (screen->display->compositor,
+                                      children[i], &attrs);
+        }
 
       ++i;
     }
@@ -754,7 +804,7 @@ prefs_changed_callback (MetaPreference pref,
     }
   else if (pref == META_PREF_WORKSPACE_NAMES)
     {
-      update_workspace_names (screen);
+      set_workspace_names (screen);
     }
 }
 
@@ -929,6 +979,51 @@ set_number_of_spaces_hint (MetaScreen *screen,
 }
 
 static void
+set_desktop_geometry_hint (MetaScreen *screen)
+{
+  unsigned long data[2];
+
+  if (screen->closing > 0)
+    return;
+
+  data[0] = screen->width;
+  data[1] = screen->height;
+
+  meta_verbose ("Setting _NET_DESKTOP_GEOMETRY to %ld, %ld\n", data[0], data[1]);
+
+  meta_error_trap_push (screen->display);
+  XChangeProperty (screen->display->xdisplay, screen->xroot,
+                   screen->display->atom_net_desktop_geometry,
+                   XA_CARDINAL,
+                   32, PropModeReplace, (guchar*) data, 2);
+  meta_error_trap_pop (screen->display, FALSE);
+}
+
+static void
+set_desktop_viewport_hint (MetaScreen *screen)
+{
+  unsigned long data[2];
+
+  if (screen->closing > 0)
+    return;
+
+  /*
+   * Metacity does not implement viewports, so this is a fixed 0,0
+   */
+  data[0] = 0;
+  data[1] = 0;
+
+  meta_verbose ("Setting _NET_DESKTOP_VIEWPORT to 0, 0\n");
+
+  meta_error_trap_push (screen->display);
+  XChangeProperty (screen->display->xdisplay, screen->xroot,
+                   screen->display->atom_net_desktop_viewport,
+                   XA_CARDINAL,
+                   32, PropModeReplace, (guchar*) data, 2);
+  meta_error_trap_pop (screen->display, FALSE);
+}
+
+static void
 update_num_workspaces (MetaScreen *screen)
 {
   int new_num;
@@ -1028,6 +1123,7 @@ meta_screen_set_cursor (MetaScreen *screen,
   
   xcursor = meta_display_create_x_cursor (screen->display, cursor);
   XDefineCursor (screen->display->xdisplay, screen->xroot, xcursor);
+  XFlush (screen->display->xdisplay);
   XFreeCursor (screen->display->xdisplay, xcursor);
 }
 
@@ -1036,8 +1132,8 @@ meta_screen_ensure_tab_popup (MetaScreen *screen,
                               MetaTabList type)
 {
   MetaTabEntry *entries;
-  GSList *tab_list;
-  GSList *tmp;
+  GList *tab_list;
+  GList *tmp;
   int len;
   int i;
 
@@ -1049,7 +1145,7 @@ meta_screen_ensure_tab_popup (MetaScreen *screen,
                                         screen,
                                         screen->active_workspace);
   
-  len = g_slist_length (tab_list);
+  len = g_list_length (tab_list);
 
   entries = g_new (MetaTabEntry, len + 1);
   entries[len].key = NULL;
@@ -1116,7 +1212,7 @@ meta_screen_ensure_tab_popup (MetaScreen *screen,
                                              TRUE);
   g_free (entries);
 
-  g_slist_free (tab_list);
+  g_list_free (tab_list);
   
   /* don't show tab popup, since proper window isn't selected yet */
 }
@@ -1187,42 +1283,9 @@ meta_screen_ensure_workspace_popup (MetaScreen *screen)
   /* don't show tab popup, since proper space isn't selected yet */
 }
 
-/* Focus top window on active workspace */
-void
-meta_screen_focus_top_window (MetaScreen *screen,
-                              MetaWindow *not_this_one)
-{
-  MetaWindow *window;
-
-  if (not_this_one)
-    meta_topic (META_DEBUG_FOCUS,
-                "Focusing top window excluding %s\n", not_this_one->desc);
-  
-  window = meta_stack_get_default_focus_window (screen->stack,
-                                                screen->active_workspace,
-                                                not_this_one);
-
-  /* FIXME I'm a loser on the CurrentTime front */
-  if (window)
-    {
-      meta_topic (META_DEBUG_FOCUS,
-                  "Focusing top window %s\n", window->desc);
-
-      meta_window_focus (window, meta_display_get_current_time (screen->display));
-
-      /* Also raise the window if in click-to-focus */
-      if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
-        meta_window_raise (window);
-    }
-  else
-    {
-      meta_topic (META_DEBUG_FOCUS, "No top window to focus found\n");
-    }
-}
-
-void
-meta_screen_focus_mouse_window (MetaScreen  *screen,
-                                MetaWindow  *not_this_one)
+MetaWindow*
+meta_screen_get_mouse_window (MetaScreen  *screen,
+                              MetaWindow  *not_this_one)
 {
   MetaWindow *window;
   Window root_return, child_return;
@@ -1252,47 +1315,19 @@ meta_screen_focus_mouse_window (MetaScreen  *screen,
                                                          root_x_return,
                                                          root_y_return);
 
-  /* FIXME I'm a loser on the CurrentTime front */
-  if (window)
-    {
-      meta_topic (META_DEBUG_FOCUS,
-                  "Focusing mouse window %s\n", window->desc);
-
-      meta_window_focus (window, meta_display_get_current_time (screen->display));
-
-      /* Also raise the window if in click-to-focus */
-      if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
-        meta_window_raise (window);
-    }
-  else
-    {
-      meta_topic (META_DEBUG_FOCUS, "No mouse window to focus found\n");
-    }
-}
-
-void
-meta_screen_focus_default_window (MetaScreen *screen,
-                                  MetaWindow *not_this_one)
-{
-  if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
-    meta_screen_focus_top_window (screen, not_this_one);
-  else
-    meta_screen_focus_mouse_window (screen, not_this_one);
+  return window;
 }
 
 const MetaXineramaScreenInfo*
-meta_screen_get_xinerama_for_window (MetaScreen *screen,
-				     MetaWindow *window)
+meta_screen_get_xinerama_for_rect (MetaScreen    *screen,
+				   MetaRectangle *rect)
 {
   int i;
   int best_xinerama, xinerama_score;
-  MetaRectangle window_rect;
 
   if (screen->n_xinerama_infos == 1)
     return &screen->xinerama_infos[0];
-  
-  meta_window_get_outer_rect (window, &window_rect);
-  
+
   best_xinerama = 0;
   xinerama_score = 0;
 
@@ -1306,7 +1341,7 @@ meta_screen_get_xinerama_for_window (MetaScreen *screen,
       screen_info.width = screen->xinerama_infos[i].width;
       screen_info.height = screen->xinerama_infos[i].height;
       
-      if (meta_rectangle_intersect (&screen_info, &window_rect, &dest))
+      if (meta_rectangle_intersect (&screen_info, rect, &dest))
         {
           if (dest.width * dest.height > xinerama_score)
             {
@@ -1314,7 +1349,7 @@ meta_screen_get_xinerama_for_window (MetaScreen *screen,
               best_xinerama = i;
             }
         }
-
+      
       ++i;
     }
 
@@ -1322,11 +1357,172 @@ meta_screen_get_xinerama_for_window (MetaScreen *screen,
 }
 
 const MetaXineramaScreenInfo*
+meta_screen_get_xinerama_for_window (MetaScreen *screen,
+				     MetaWindow *window)
+{
+  MetaRectangle window_rect;
+  
+  meta_window_get_outer_rect (window, &window_rect);
+
+  return meta_screen_get_xinerama_for_rect (screen, &window_rect);
+}
+
+const MetaXineramaScreenInfo* 
+meta_screen_get_xinerama_neighbor (MetaScreen         *screen,
+                                   int                 which_xinerama,
+                                   MetaScreenDirection direction)
+{
+  MetaXineramaScreenInfo* input = screen->xinerama_infos + which_xinerama;
+  MetaXineramaScreenInfo* current;
+  int i;
+
+  for (i = 0; i < screen->n_xinerama_infos; i++)
+    {
+      current = screen->xinerama_infos + i;
+
+      if (((direction == META_SCREEN_RIGHT) && 
+           (current->x_origin == input->x_origin + input->width) &&
+           (current->y_origin >= input->y_origin) &&
+           (current->y_origin <= input->y_origin+input->height)) ||
+          ((direction == META_SCREEN_LEFT) && 
+           (input->x_origin == current->x_origin + current->width) &&
+           (current->y_origin >= input->y_origin) &&
+           (current->y_origin <= input->y_origin + input->height)) ||
+          ((direction == META_SCREEN_UP) && 
+           (input->y_origin == current->y_origin + current->height) &&
+           (current->x_origin >= input->x_origin) &&
+           (current->x_origin <= input->x_origin + input->width)) ||
+          ((direction == META_SCREEN_DOWN) && 
+           (current->y_origin == input->y_origin + input->height) &&
+           (current->x_origin >= input->x_origin) &&
+           (current->x_origin <= input->x_origin + input->width)))
+        {
+          return current;
+        }
+    }
+  
+  return NULL;
+}
+
+void
+meta_screen_get_natural_xinerama_list (MetaScreen *screen,
+                                       int**       xineramas_list,
+                                       int*        n_xineramas)
+{
+  const MetaXineramaScreenInfo* current;
+  const MetaXineramaScreenInfo* tmp;
+  GQueue* xinerama_queue;
+  int* visited;
+  int cur = 0;
+  int i;
+
+  *n_xineramas = screen->n_xinerama_infos;
+  *xineramas_list = g_new (int, screen->n_xinerama_infos);
+
+  /* we calculate a natural ordering by which to choose xineramas for
+   * window placement.  We start at the current xinerama, and perform
+   * a breadth-first search of the xineramas starting from that
+   * xinerama.  We choose preferentially left, then right, then down,
+   * then up.  The visitation order produced by this traversal is the
+   * natural xinerama ordering.
+   */
+
+  visited = g_new (int, screen->n_xinerama_infos);
+  for (i = 0; i < screen->n_xinerama_infos; i++)
+    {
+      visited[i] = FALSE;
+    }
+
+  current = meta_screen_get_current_xinerama (screen);
+  xinerama_queue = g_queue_new ();
+  g_queue_push_tail (xinerama_queue, (gpointer) current);
+  visited[current->number] = TRUE;
+
+  while (!g_queue_is_empty (xinerama_queue))
+    {
+      current = (const MetaXineramaScreenInfo*) 
+        g_queue_pop_head (xinerama_queue);
+
+      (*xineramas_list)[cur++] = current->number;
+
+      /* enqueue each of the directions */
+      tmp = meta_screen_get_xinerama_neighbor (screen,
+                                               current->number,
+                                               META_SCREEN_LEFT);
+      if (tmp && !visited[tmp->number])
+        {
+          g_queue_push_tail (xinerama_queue,
+                             (MetaXineramaScreenInfo*) tmp);
+          visited[tmp->number] = TRUE;
+        }
+      tmp = meta_screen_get_xinerama_neighbor (screen,
+                                               current->number,
+                                               META_SCREEN_RIGHT);
+      if (tmp && !visited[tmp->number])
+        {
+          g_queue_push_tail (xinerama_queue,
+                             (MetaXineramaScreenInfo*) tmp);
+          visited[tmp->number] = TRUE;
+        }
+      tmp = meta_screen_get_xinerama_neighbor (screen,
+                                               current->number,
+                                               META_SCREEN_UP);
+      if (tmp && !visited[tmp->number])
+        {
+          g_queue_push_tail (xinerama_queue,
+                             (MetaXineramaScreenInfo*) tmp);
+          visited[tmp->number] = TRUE;
+        }
+      tmp = meta_screen_get_xinerama_neighbor (screen,
+                                               current->number,
+                                               META_SCREEN_DOWN);
+      if (tmp && !visited[tmp->number])
+        {
+          g_queue_push_tail (xinerama_queue,
+                             (MetaXineramaScreenInfo*) tmp);
+          visited[tmp->number] = TRUE;
+        }
+    }
+
+  /* in case we somehow missed some set of xineramas, go through the
+   * visited list and add in any xineramas that were missed
+   */
+  for (i = 0; i < screen->n_xinerama_infos; i++)
+    {
+      if (visited[i] == FALSE)
+        {
+          (*xineramas_list)[cur++] = i;
+        }
+    }
+
+  g_free (visited);
+  g_queue_free (xinerama_queue);
+}
+
+gboolean
+meta_screen_rect_intersects_xinerama (MetaScreen    *screen,
+                                      MetaRectangle *rect,
+                                      int            which_xinerama)
+{
+  MetaRectangle dest, screen_rect;
+  
+  screen_rect.x = screen->xinerama_infos[which_xinerama].x_origin;
+  screen_rect.y = screen->xinerama_infos[which_xinerama].y_origin;
+  screen_rect.width = screen->xinerama_infos[which_xinerama].width;
+  screen_rect.height = screen->xinerama_infos[which_xinerama].height;
+  
+  if (meta_rectangle_intersect (&screen_rect, rect, &dest))
+    return TRUE;
+
+  return FALSE;
+}
+
+const MetaXineramaScreenInfo*
 meta_screen_get_current_xinerama (MetaScreen *screen)
 {
   if (screen->n_xinerama_infos == 1)
     return &screen->xinerama_infos[0];
-
+  
   /* Sadly, we have to do it this way. Yuck.
    */
   
@@ -1355,9 +1551,11 @@ meta_screen_get_current_xinerama (MetaScreen *screen)
       while (i < screen->n_xinerama_infos)
         {
           if ((root_x_return >= screen->xinerama_infos[i].x_origin &&
-               root_x_return < (screen->xinerama_infos[i].x_origin + screen->xinerama_infos[i].width) &&
+               root_x_return < (screen->xinerama_infos[i].x_origin + 
+                                screen->xinerama_infos[i].width) &&
                root_y_return >= screen->xinerama_infos[i].y_origin &&
-               root_y_return < (screen->xinerama_infos[i].y_origin + screen->xinerama_infos[i].height)))
+               root_y_return < (screen->xinerama_infos[i].y_origin + 
+                                screen->xinerama_infos[i].height)))
           {
             screen->last_xinerama_index = i;
             break;
@@ -1454,6 +1652,8 @@ meta_screen_update_workspace_layout (MetaScreen *screen)
                     break;
                 }
             }
+          else
+            screen->starting_corner = META_SCREEN_TOPLEFT;
         }
       else
         {
@@ -1472,7 +1672,7 @@ meta_screen_update_workspace_layout (MetaScreen *screen)
 }
 
 static void
-update_workspace_names (MetaScreen *screen)
+set_workspace_names (MetaScreen *screen)
 {
   /* This updates names on root window when the pref changes,
    * note we only get prefs change notify if things have
@@ -1561,6 +1761,7 @@ meta_create_offscreen_window (Display *xdisplay,
    * (but on a display we are managing at least one screen for)
    */
   attrs.override_redirect = True;
+  attrs.event_mask = PropertyChangeMask;
   
   return XCreateWindow (xdisplay,
                         parent,
@@ -1569,7 +1770,7 @@ meta_create_offscreen_window (Display *xdisplay,
                         CopyFromParent,
                         CopyFromParent,
                         CopyFromParent,
-                        CWOverrideRedirect,
+                        CWOverrideRedirect | CWEventMask,
                         &attrs);
 }
 
@@ -1592,7 +1793,7 @@ set_work_area_hint (MetaScreen *screen)
 
       if (workspace->screen == screen)
         {
-          meta_workspace_get_work_area (workspace, &area);
+          meta_workspace_get_work_area_all_xineramas (workspace, &area);
           tmp[0] = area.x;
           tmp[1] = area.y;
           tmp[2] = area.width;
@@ -1943,6 +2144,10 @@ meta_screen_resize_func (MetaScreen *screen,
                          MetaWindow *window,
                          void       *user_data)
 {
+  if (window->struts)
+    {
+      meta_window_update_struts (window);
+    }
   meta_window_queue_move_resize (window);
 }
 
@@ -1955,6 +2160,7 @@ meta_screen_resize (MetaScreen *screen,
   screen->height = height;
 
   reload_xinerama_infos (screen);
+  set_desktop_geometry_hint (screen);
   
   /* Queue a resize on all the windows */
   meta_screen_foreach_window (screen, meta_screen_resize_func, 0);
@@ -1998,6 +2204,31 @@ queue_windows_showing (MetaScreen *screen)
 }
 
 void
+meta_screen_minimize_all_except (MetaScreen *screen,
+                                 MetaWindow *keep)
+{
+  GSList *windows;
+  GSList *tmp;
+  
+  windows = meta_display_list_windows (screen->display);
+  
+  tmp = windows;
+  while (tmp != NULL)
+    {
+      MetaWindow *w = tmp->data;
+      
+      if (w->screen == screen  &&
+          w->has_minimize_func &&
+	  w != keep)
+	meta_window_minimize (w);
+      
+      tmp = tmp->next;
+    }
+  
+  g_slist_free (windows);
+}
+
+void
 meta_screen_show_desktop (MetaScreen *screen)
 {
   if (screen->showing_desktop)
@@ -2008,6 +2239,8 @@ meta_screen_show_desktop (MetaScreen *screen)
   queue_windows_showing (screen);
 
   update_showing_desktop_hint (screen);
+
+  meta_workspace_focus_top_window (screen->active_workspace, NULL);
 }
 
 void
@@ -2021,8 +2254,6 @@ meta_screen_unshow_desktop (MetaScreen *screen)
   queue_windows_showing (screen);
 
   update_showing_desktop_hint (screen);
-
-  meta_screen_focus_top_window (screen, NULL);
 }
 
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -2295,6 +2526,7 @@ meta_screen_apply_startup_properties (MetaScreen *screen,
   if (sequence != NULL)
     {
       int space;
+      Time timestamp;
           
       meta_topic (META_DEBUG_STARTUP,
                   "Found startup sequence for window %s ID \"%s\"\n",
@@ -2312,6 +2544,17 @@ meta_screen_apply_startup_properties (MetaScreen *screen,
               window->initial_workspace_set = TRUE;
               window->initial_workspace = space;
             }
+        }
+
+      if (!window->initial_timestamp_set)
+        {
+          timestamp = sn_startup_sequence_get_timestamp (sequence);
+          meta_topic (META_DEBUG_STARTUP,
+                      "Setting initial window timestamp to %lu based on startup info\n",
+                      timestamp);
+              
+          window->initial_timestamp_set = TRUE;
+          window->initial_timestamp = timestamp;
         }
 
       return;

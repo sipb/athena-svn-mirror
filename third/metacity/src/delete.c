@@ -23,6 +23,7 @@
 #include "util.h"
 #include "window.h"
 #include "errors.h"
+#include "workspace.h"
 
 #include <sys/types.h>
 #include <signal.h>
@@ -30,12 +31,14 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static void meta_window_present_delete_dialog (MetaWindow *window);
 
 static void
 delete_ping_reply_func (MetaDisplay *display,
                         Window       xwindow,
+                        Time         timestamp,
                         void        *user_data)
 {
   meta_topic (META_DEBUG_PING,
@@ -288,13 +291,16 @@ io_from_ping_dialog (GIOChannel   *channel,
 static void
 delete_ping_timeout_func (MetaDisplay *display,
                           Window       xwindow,
+                          Time         timestamp,
                           void        *user_data)
 {
   MetaWindow *window = user_data;
   GError *err;
   int child_pid;
   int outpipe;
-  char *argv[5];
+  char *argv[9];
+  char numbuf[32];
+  char timestampbuf[32];
   char *window_id_str;
   GIOChannel *channel;
   
@@ -309,12 +315,19 @@ delete_ping_timeout_func (MetaDisplay *display,
     }
   
   window_id_str = g_strdup_printf ("0x%lx", window->xwindow);
+
+  sprintf (numbuf, "%d", window->screen->number);
+  sprintf (timestampbuf, "%lu", timestamp);
   
   argv[0] = METACITY_LIBEXECDIR"/metacity-dialog";
-  argv[1] = "--kill-window-question";
-  argv[2] = window->title;
-  argv[3] = window_id_str;
-  argv[4] = NULL;
+  argv[1] = "--screen";
+  argv[2] = numbuf;
+  argv[3] = "--timestamp";
+  argv[4] = timestampbuf;
+  argv[5] = "--kill-window-question";
+  argv[6] = window->title;
+  argv[7] = window_id_str;
+  argv[8] = NULL;
   
   err = NULL;
   if (!g_spawn_async_with_pipes ("/",
@@ -380,14 +393,24 @@ meta_window_delete (MetaWindow  *window,
   
   if (window->has_focus)
     {
+      /* FIXME Clean this up someday 
+       * http://bugzilla.gnome.org/show_bug.cgi?id=108706
+       */
+#if 0
       /* This is unfortunately going to result in weirdness
        * if the window doesn't respond to the delete event.
        * I don't know how to avoid that though.
        */
       meta_topic (META_DEBUG_FOCUS,
-                  "Focusing top window because focus window %s was deleted/killed\n",
+                  "Focusing default window because focus window %s was deleted/killed\n",
                   window->desc);
-      meta_screen_focus_top_window (window->screen, window);
+      meta_workspace_focus_default_window (window->screen->active_workspace,
+                                           window);
+#else
+      meta_topic (META_DEBUG_FOCUS,
+                  "Not unfocusing %s on delete/kill\n",
+                  window->desc);
+#endif
     }
   else
     {

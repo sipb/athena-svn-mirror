@@ -2,7 +2,8 @@
 
 /* 
  * Copyright (C) 2001 Havoc Pennington
- * Copyright (C) 2002 Red Hat, Inc.
+ * Copyright (C) 2002, 2003 Red Hat, Inc.
+ * Copyright (C) 2004 Rob Adams
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -31,7 +32,23 @@
 
 #include <X11/Xatom.h>
 
+#define WINDOW_HAS_TRANSIENT_TYPE(w)                    \
+          (w->type == META_WINDOW_DIALOG ||             \
+	   w->type == META_WINDOW_MODAL_DIALOG ||       \
+           w->type == META_WINDOW_TOOLBAR ||            \
+           w->type == META_WINDOW_MENU ||               \
+           w->type == META_WINDOW_UTILITY)
+
+#define WINDOW_TRANSIENT_FOR_WHOLE_GROUP(w)             \
+         ((w->xtransient_for == None ||                 \
+           w->transient_parent_is_root_window) &&       \
+          WINDOW_HAS_TRANSIENT_TYPE (w))
+
+#define WINDOW_IN_STACK(w) (w->stack_position >= 0)
+
 static void meta_stack_sync_to_server (MetaStack *stack);
+static void meta_window_set_stack_position_no_sync (MetaWindow *window,
+                                                    int         position);
 
 MetaStack*
 meta_stack_new (MetaScreen *screen)
@@ -107,8 +124,8 @@ meta_stack_remove (MetaStack  *stack,
   /* Set window to top position, so removing it will not leave gaps
    * in the set of positions
    */
-  meta_window_set_stack_position (window,
-                                  stack->n_positions - 1);
+  meta_window_set_stack_position_no_sync (window,
+                                          stack->n_positions - 1);
   window->stack_position = -1;
   stack->n_positions -= 1;  
 
@@ -147,8 +164,8 @@ void
 meta_stack_raise (MetaStack  *stack,
                   MetaWindow *window)
 {  
-  meta_window_set_stack_position (window,
-                                  stack->n_positions - 1);
+  meta_window_set_stack_position_no_sync (window,
+                                          stack->n_positions - 1);
   
   meta_stack_sync_to_server (stack);
 }
@@ -157,7 +174,7 @@ void
 meta_stack_lower (MetaStack  *stack,
                   MetaWindow *window)
 {
-  meta_window_set_stack_position (window, 0);
+  meta_window_set_stack_position_no_sync (window, 0);
   
   meta_stack_sync_to_server (stack);
 }
@@ -191,9 +208,11 @@ window_is_fullscreen_size (MetaWindow *window)
        */
       MetaRectangle workarea;
       
-      meta_window_get_work_area (window, FALSE, &workarea);
+      meta_window_get_work_area_current_xinerama (window, &workarea);
       if (window->rect.x <= workarea.x &&
-          window->rect.y <= workarea.y) 
+          window->rect.y <= workarea.y &&
+	  window->rect.x + window->rect.width >= workarea.x + workarea.width &&
+	  window->rect.y + window->rect.height >= workarea.y + workarea.height) 
         return TRUE;
     }
   
@@ -205,9 +224,11 @@ window_is_fullscreen_size (MetaWindow *window)
         {
           MetaRectangle workarea;
           
-          meta_window_get_work_area (window, TRUE, &workarea);
+          meta_window_get_work_area_current_xinerama (window, &workarea);
           if (window->rect.x <= workarea.x &&
-              window->rect.y <= workarea.y) 
+              window->rect.y <= workarea.y &&
+	      window->rect.x + window->rect.width >= workarea.x + workarea.width &&
+	      window->rect.y + window->rect.height >= workarea.y + workarea.height) 
             return TRUE;
         }
       
@@ -217,11 +238,25 @@ window_is_fullscreen_size (MetaWindow *window)
   return FALSE;
 }
 
+static gboolean
+is_focused_foreach (MetaWindow *window,
+                    void       *data)
+{
+  if (window->has_focus ||
+      (window == window->display->expected_focus_window))
+    {
+      *((gboolean*) data) = TRUE;
+      return FALSE;
+    }
+  return TRUE;
+}
+
 /* Get layer ignoring any transient or group relationships */
 static MetaStackLayer
 get_standalone_layer (MetaWindow *window)
 {
   MetaStackLayer layer;
+  gboolean focused_transient = FALSE;
   
   switch (window->type)
     {
@@ -242,15 +277,15 @@ get_standalone_layer (MetaWindow *window)
       break;
       
     default:       
+      meta_window_foreach_transient (window,
+                                     is_focused_foreach,
+                                     &focused_transient);
 
-#if 0
-      if (window->has_focus &&
-          meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
-        layer = META_LAYER_FOCUSED_WINDOW;
-#endif
-      
-      if (window->has_focus &&
-          (window->fullscreen || window_is_fullscreen_size (window)))
+      if (window->wm_state_below)
+        layer = META_LAYER_BOTTOM;
+      else if ((window->has_focus || focused_transient ||
+                (window == window->display->expected_focus_window)) &&
+               (window->fullscreen || window_is_fullscreen_size (window)))
         layer = META_LAYER_FULLSCREEN;
       else if (window->wm_state_above)
         layer = META_LAYER_DOCK;
@@ -260,39 +295,6 @@ get_standalone_layer (MetaWindow *window)
     }
 
   return layer;
-}
-
-static MetaStackLayer
-get_maximum_layer_of_ancestor (MetaWindow *window)
-{
-  MetaWindow *w;
-  MetaStackLayer max;
-  MetaStackLayer layer;
-  
-  max = get_standalone_layer (window);
-  
-  w = window;
-  while (w != NULL)
-    {
-      if (w->xtransient_for == None ||
-          w->transient_parent_is_root_window)
-        break;
-      
-      w = meta_display_lookup_x_window (w->display, w->xtransient_for);
-      
-      if (w == window)
-        break; /* Cute, someone thought they'd make a transient_for cycle */
-      
-      /* w may be null... */
-      if (w != NULL)
-        {
-          layer = get_standalone_layer (w);
-          if (layer > max)
-            max = layer;
-        }
-    }
-
-  return max;
 }
 
 /* Note that this function can never use window->layer only
@@ -344,58 +346,29 @@ compute_layer (MetaWindow *window)
    * windows getting in fullscreen layer if any terminal is
    * fullscreen.
    */
-  if (window->type == META_WINDOW_DIALOG ||
-      window->type == META_WINDOW_MODAL_DIALOG ||
-      window->type == META_WINDOW_UTILITY ||
-      window->type == META_WINDOW_MENU ||
-      window->type == META_WINDOW_TOOLBAR)
+  if (WINDOW_HAS_TRANSIENT_TYPE(window) &&
+      (window->xtransient_for == None ||
+       window->transient_parent_is_root_window))
     {
-      if (window->xtransient_for != None &&
-          !window->transient_parent_is_root_window)
+      /* We only do the group thing if the dialog is NOT transient for
+       * a particular window. Imagine a group with a normal window, a dock,
+       * and a dialog transient for the normal window; you don't want the dialog
+       * above the dock if it wouldn't normally be.
+       */
+      
+      MetaStackLayer group_max;
+      
+      group_max = get_maximum_layer_in_group (window);
+      
+      if (group_max > window->layer)
         {
-          MetaStackLayer ancestor_max;
-
-          ancestor_max = get_maximum_layer_of_ancestor (window);
-          
-          if (ancestor_max > window->layer)
-            {
-              meta_topic (META_DEBUG_STACK,
-                          "Promoting window %s from layer %d to %d due to transiency\n",
-                          window->desc, window->layer, ancestor_max);
-              window->layer = ancestor_max;
-            }
-        }
-      else
-        {
-          /* We only do the group thing if the dialog is NOT transient for
-           * a particular window. Imagine a group with a normal window, a dock,
-           * and a dialog transient for the normal window; you don't want the dialog
-           * above the dock if it wouldn't normally be.
-           */
-
-          /* FIXME when promoting a window here,
-           * it's necessary to promote its transient children
-           * (or other windows constrained to be above it)
-           * as well, but we aren't handling that, and it's
-           * somewhat hard to fix.
-           *
-           * http://bugzilla.gnome.org/show_bug.cgi?id=96140
-           */
-          
-          MetaStackLayer group_max;
-          
-          group_max = get_maximum_layer_in_group (window);
-          
-          if (group_max > window->layer)
-            {
-              meta_topic (META_DEBUG_STACK,
-                          "Promoting window %s from layer %d to %d due to group membership\n",
-                          window->desc, window->layer, group_max);
-              window->layer = group_max;
-            }
+          meta_topic (META_DEBUG_STACK,
+                      "Promoting window %s from layer %d to %d due to group membership\n",
+                      window->desc, window->layer, group_max);
+          window->layer = group_max;
         }
     }
-  
+
   meta_topic (META_DEBUG_STACK, "Window %s on layer %d type = %d has_focus = %d\n",
               window->desc, window->layer,
               window->type, window->has_focus);
@@ -501,6 +474,8 @@ add_constraint (Constraint **constraints,
                 MetaWindow  *below)
 {
   Constraint *c;
+
+  g_assert (above->screen == below->screen);
   
   /* check if constraint is a duplicate */
   c = constraints[below->stack_position];
@@ -522,20 +497,6 @@ add_constraint (Constraint **constraints,
 
   constraints[below->stack_position] = c;
 }
-
-#define WINDOW_HAS_TRANSIENT_TYPE(w)                    \
-          (w->type == META_WINDOW_DIALOG ||             \
-	   w->type == META_WINDOW_MODAL_DIALOG ||       \
-           w->type == META_WINDOW_TOOLBAR ||            \
-           w->type == META_WINDOW_MENU ||               \
-           w->type == META_WINDOW_UTILITY)
-
-#define WINDOW_TRANSIENT_FOR_WHOLE_GROUP(w)             \
-         ((w->xtransient_for == None ||                 \
-           w->transient_parent_is_root_window) &&       \
-          WINDOW_HAS_TRANSIENT_TYPE (w))
-
-#define WINDOW_IN_STACK(w) (w->stack_position >= 0)
 
 static void
 create_constraints (Constraint **constraints,
@@ -575,7 +536,8 @@ create_constraints (Constraint **constraints,
             {
               MetaWindow *group_window = tmp2->data;
 
-              if (!WINDOW_IN_STACK (group_window))
+              if (!WINDOW_IN_STACK (group_window) ||
+                  w->screen != group_window->screen)
                 {
                   tmp2 = tmp2->next;
                   continue;
@@ -610,7 +572,8 @@ create_constraints (Constraint **constraints,
           parent =
             meta_display_lookup_x_window (w->display, w->xtransient_for);
 
-          if (parent && WINDOW_IN_STACK (parent))
+          if (parent && WINDOW_IN_STACK (parent) &&
+              parent->screen == w->screen)
             {
               meta_topic (META_DEBUG_STACK, "Constraining %s above %s due to transiency\n",
                           w->desc, parent->desc);
@@ -696,13 +659,21 @@ static void
 ensure_above (MetaWindow *above,
               MetaWindow *below)
 {  
+  if (WINDOW_HAS_TRANSIENT_TYPE(above) &&
+      above->layer < below->layer)
+    {
+      meta_topic (META_DEBUG_STACK,
+		  "Promoting window %s from layer %d to %d due to contraint\n",
+		  above->desc, above->layer, below->layer);
+      above->layer = below->layer;
+    }
+
   if (above->stack_position < below->stack_position)
     {
       /* move above to below->stack_position bumping below down the stack */
-      meta_window_set_stack_position (above, below->stack_position);
+      meta_window_set_stack_position_no_sync (above, below->stack_position);
       g_assert (below->stack_position + 1 == above->stack_position);
     }
-
   meta_topic (META_DEBUG_STACK, "%s above at %d > %s below at %d\n",
               above->desc, above->stack_position,
               below->desc, below->stack_position);
@@ -916,6 +887,7 @@ meta_stack_ensure_sorted (MetaStack *stack)
                           w->desc, old_layer, w->layer);
               
               stack->need_resort = TRUE;
+              stack->need_constrain = TRUE;
               /* don't need to constrain as constraining
                * purely operates in terms of stack_position
                * not layer
@@ -928,7 +900,8 @@ meta_stack_ensure_sorted (MetaStack *stack)
       stack->need_relayer = FALSE;
     }
 
-  /* Update stack_position to reflect transiency constraints */
+  /* Update stack_position and layer to reflect transiency
+     constraints */
   constrain_stacking (stack);
   
   /* Sort stack->sorted with layers having priority over stack_position
@@ -1494,8 +1467,8 @@ meta_stack_windows_cmp  (MetaStack  *stack,
 }
 
 void
-meta_window_set_stack_position (MetaWindow *window,
-                                int         position)
+meta_window_set_stack_position_no_sync (MetaWindow *window,
+                                        int         position)
 {
   int low, high, delta;
   GList *tmp;
@@ -1545,4 +1518,12 @@ meta_window_set_stack_position (MetaWindow *window,
   meta_topic (META_DEBUG_STACK,
               "Window %s had stack_position set to %d\n",
               window->desc, window->stack_position);
+}
+
+void
+meta_window_set_stack_position (MetaWindow *window,
+                                int         position)
+{
+  meta_window_set_stack_position_no_sync (window, position);
+  meta_stack_sync_to_server (window->screen->stack);
 }

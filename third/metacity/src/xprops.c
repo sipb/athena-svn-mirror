@@ -451,7 +451,7 @@ utf8_list_from_results (GetPropertyResults *results,
    * property is nul-separated
    */
   i = 0;
-  n_strings = 1;
+  n_strings = 0;
   while (i < (int) results->n_items)
     {
       if (results->prop[i] == '\0')
@@ -459,6 +459,9 @@ utf8_list_from_results (GetPropertyResults *results,
       ++i;
     }
 
+  if (results->prop[results->n_items - 1] != '\0')
+    ++n_strings;
+ 
   /* we're guaranteed that results->prop has a nul on the end
    * by XGetWindowProperty
    */
@@ -541,7 +544,7 @@ counter_from_results (GetPropertyResults *results,
                       XSyncCounter       *counter_p)
 {
   if (!validate_or_free_results (results, 32,
-                                 results->display->atom_sync_counter,
+                                 XA_CARDINAL,
                                  TRUE))
     return FALSE;  
 
@@ -654,7 +657,7 @@ meta_prop_get_text_property (MetaDisplay   *display,
 
 /* From Xmd.h */
 #ifndef cvtINT32toInt
-#if defined(WORD64) && defined(UNSIGNEDBITFIELDS)
+#if SIZEOF_VOID_P == 8
 #define cvtINT8toInt(val)   (((val) & 0x00000080) ? ((val) | 0xffffffffffffff00) : (val))
 #define cvtINT16toInt(val)  (((val) & 0x00008000) ? ((val) | 0xffffffffffff0000) : (val))
 #define cvtINT32toInt(val)  (((val) & 0x80000000) ? ((val) | 0xffffffff00000000) : (val))
@@ -674,7 +677,7 @@ meta_prop_get_text_property (MetaDisplay   *display,
 #define cvtINT8toLong(val) (val)
 #define cvtINT16toLong(val) (val)
 #define cvtINT32toLong(val) (val)
-#endif /* WORD64 and UNSIGNEDBITFIELDS */
+#endif /* SIZEOF_VOID_P == 8 */
 #endif /* cvtINT32toInt() */
 
 static gboolean
@@ -983,7 +986,7 @@ meta_prop_get_values (MetaDisplay   *display,
               values[i].required_type = XA_WM_SIZE_HINTS;
               break;
             case META_PROP_VALUE_SYNC_COUNTER:
-              values[i].required_type = display->atom_sync_counter;
+	      values[i].required_type = XA_CARDINAL;
               break;
             }
         }

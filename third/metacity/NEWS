@@ -1,33 +1,323 @@
-2.4.34
+2.8.5
+==
+
+This is a stable release for Gnome 2.8.  Only translations and some
+new developer documentation was added.
+
+Translations
+
+  * ar(Abdulaziz Al-Arfaj), cs(Miloslav Trmac), cy(Dafydd Harries),
+    en_GB(David Lodge), fr(Christophe Merlet (RedFox)), 
+    nn(≈smund SkjÊveland), or(Gora Mohanty), 
+    pr_BR(Gustavo Noronha Silva), ro(Mugurel Tudor), 
+    th(Paisa Seeluangsawat), tr(Baris Cicek), zh_TW(Woodman Tuen)
+
+2.8.4
+==
+
+This release features a number of bug fixes, and also the disabling of
+the focus-stealing-prevention code (we're entering hard code freeze in
+Gnome so it's too late to fix the remaining issues, especially since
+it requires several patches to modules other than Metacity).
+
+Thanks to Havoc Pennington, Soeren Sandmann, Elijah Newren, and Rich
+Wareham for fixes in this release
+
+Fixes
+  * track the last_xor_rect, for wireframe painting (Havoc)
+  * Move wireframe code before grab is released to prevent endless
+    loops with fullscreen windows. (Soeren)
+  * Make dialogs that Metacity shows follow focus-stealing-prevention
+    conventions. (Elijah; part of #149028)
+  * add render extension check to the display, don't build the
+    compositing manager by default, use an ARGB visual when available
+    for the window frame (Rich Wareham; various tweaks added later by
+    Havoc)
+  * move the have_xrender variable initialization up in the file since
+    it can be set as part of composite check (Havoc)
+  * make argb stuff compile, add some code from xcompmgr (Havoc)
+  * fix an assertion failure that would occur after increasing the
+    number of workspaces; fix stacking order when a window is denied
+    focus (Elijah; #150615)
+  * disable some compositor code that wasn't working, don't grab the
+    server during repaint, various set_background fixes and
+    refactoring (Havoc)
+
+Translations
+  * az(Metin Amiroff), bs(Kemal Sanjta), ca(Jordi Mallach), 
+    el(Kostas Papadimas), es(Francisco Javier F. Serrador), 
+    eu(IÅÒaki LarraÅÒaga Murgoitio), fi(Pauli Virtanen),
+    nb(Kjartan Maraas), sq(Laurent Dhima), uk(Maxim Dziumanenko)
+
+
+2.8.3
+==
+
+Some important bug fixes in this release, including somy a11y bugs,
+and a compile issue on Solaris.
+
+Thanks to Rob Adams, Bill Haneman, Peter O'Shea, Mike Castle, Soeren
+Sandman, Elijah Newren, and Havoc Pennington for fixes in this
+release.
+
+Fixes
+  * Adjust the MRU list when preventing focus stealing (Elijah)
+  * Ensure that we maintain a focus window when switching workspaces
+    in mouse focus mode (Elijah)
+  * Some improvements in the showing desktop mode, and window
+    activation (Elijah)
+  * Make sure cursors changes are handled correctly (Havoc, Soeren)
+  * Some fixes to the window menu (Rob)
+  * Fix a compile issue on Solaris (Peter, Mike)
+  * Allow struts to go past the middle of the screen, provided there's
+    a gap between them, fixing an issue with gnome magnifier (Bill)
+
+Translations
+  * fi (Pauli Virtanen), ja (Takeshi AIHANA), ko (Young-Ho, Cha), 
+    pl (Gnome PL Team), ru (Dmitry G. Mastrukov), sr (Danilo Å≈Å†egan),
+    tk (Gurban M. Tewekgeli), zh_CN (Funda Wang)
+
+2.8.2
 ===
 
- - tons of new translations
- - add new theme Simple and make it the default
- - match key handlers to key codes instead of key syms 
-   which fixes some occasional keybinding bugs
- - don't show workspace menu items if there's only one workspace
- - fix fullscreen mode workaround for xine/mplayer
- - fix startup sequences that use StartupWMClass
- - fix 64-bit bug in async-getprop.c that caused a lockup
- - put metacity-properties.c in the tarball
- - don't mess up the focus window in mouse focus mode when 
-   switching workspaces
- - improve event compression to speed up window move/resize
-   a bit more
- - don't jump mozilla windows between workspaces
- - don't stick the tab/workspace-switch popup 
-   on machines under heavy load or slow machines
+Many bugfixes and better support for the freedesktop.org EWMH spec.
 
-2.4.21
+Thanks to Rob Adams, Anders Carlsson, Elijah Newren, Soeren Sandmann,
+Emil Soleyman-Zomalan, Michael Terry, and Jeff Waugh for fixes in this
+release.
+
+  - set titlebar_uses_system_font = false (it was ugly)
+  - make naming for "move a window"/"move the window"/"move window"
+    more consistent (fixes #142235)
+  - Add trailing quotes to keybinding explanation text.
+  - support for EWMH update counter spec & add compensation events
+    when events are ignored. (fixes #143333 and #109362)
+  - Fix focus bugs: remove race condition on window close/minimize
+    (#131582), make focus choice consistent for each focus mode
+    (#135810), choose correct focus window when "un-showing the
+    desktop (#144900), make sure correct window is focused when using
+    the workspace switcher (#120100).
+  - Use meta_topic instead of meta_warning when failing to connect to
+    a session manager; reduces metacity verbosity. (fixes #136218)
+  - Make meta_window_delete take a timestamp, and be sure to pass it
+    one.
+  - Add support for EWMH _NET_WM_USER_TIME spec.  This enables part of
+    preventing focus stealing.  (bug #118372) Also fix bug with
+    windows not being focused on unminimizing caused by original
+    patch.  (also bug #118372)
+  - Fix some support for EWMH hints, and fix USER_TIME support to
+    include the DEMANDS_ATTENTION hint.  Also includes some code for
+    implementing _NET_RESTACK_WINDOW and _NET_MOVERESIZE_WINDOW, but
+    this is disabled pending feature thaw.
+
+2.8.1
 ===
 
- - fix for #103317 (windows getting "stuck" when unfullscreened)
- - support up to 32 run_command keybindings (Rob Adams)
- - add compression for motion events, somewhat suboptimally, 
-   a better patch is pending for GNOME 2.2.1, should fix "slow
-   move/resize" for most people (especially when combined 
-   with Alex's nautilus fixes)
- - fix configure options (Akira Tagoh)
+Thanks to Olivier Crete, Jarrod Johnson, Neil Muller, Elijah Newren,
+Mark McLoughlin, Rob Adams, and foser AT gentoo.org for fixes in this
+release.
+
+  - make the --enable-xinerama switch work properly
+  - prevent unwanted grab op from occurring
+  - don't down-size nitems from a gulong to an int
+  - add a value type check for the visual/audible bell gconf settings
+  - make the no sm support warning resizable
+  - more translations
+
+2.8.0
+===
+
+No code changes in this release, but some new translations.
+
+2.7.1
+===
+
+Thanks to Rob Adams for fixes in this release.
+
+ - bug #122016 - fix a focus race
+ - Change move_to_workspace_left/right/up/down keybindings to
+   <Control><Alt><Shift> arrow to avoid conflicting with new
+   keybindings in spacial nautilus.
+ - fix dialog stacking order issues so e.g. panel properties 
+   dialog is above the panel
+
+2.7.0
+===
+
+First unstable release tarball for GNOME 2.6.
+
+Thanks to Anders Carlsson, Elijah Newren, Rob Adams, James Cape,
+Thomas Fitzimmons, Calum Benson for fixes in this release.
+
+2.6.2
+===
+
+Thanks to Yukihiro Nakai, Rached Ben Mustapha, Gwenole Beauchesne,
+Padraig O'Briain, Laurent Vivier, Rob Adams for contributions to this
+release.
+
+ - fix to repaint after resize always, so on maximize 
+   and theme changes we get things drawn properly
+ - fix a compile issue on HPUX
+ - fix translations of metacity-message output
+ - fix to update window icons when they change
+ - put a limit on number of characters displayed in 
+   window titles during Alt+tab
+ - fix configure check for Xrandr
+ - fix 64-bit bug in property reading that broke 
+   things badly on 64-bit
+ - don't move focus when clicking close button on a window
+ - fix a crash in getting pixmap icons
+ - spawn dialogs and child processes on the proper 
+   screen in multihead situations
+ - if the focus gets set to None, set it back to 
+   something sane
+ - load accessibility modules and set accessibility roles
+ - fix hang after displaying warning dialogs
+ - fix a memory corruption when sticking/unsticking windows
+   that lead to a frequent crash and windows appearing 
+   in Alt+tab improperly
+ - fix some handling of partial-width panel struts
+ - more translations
+
+2.6.1
+===
+
+ - rebuild with fixed glib-gettext.m4
+
+2.6.0
+===
+
+ - some additional translations
+
+2.5.5
+===
+
+ Thanks to Rob Adams, Arvind Samptur, Andreas Volz, Ray Strode, John
+ Paul Wallington, Soeren Sandmann for contributions to this release. 
+ And as always thanks to the translators.
+
+ - fix aspect ratio handling
+ - fix "shake loose" functionality for maximized windows
+ - handle Xrandr size changes properly again
+ - fix fullscreen window detection
+ - fix workspace name handling
+ - don't steal button press events on root window
+ - nuke metacity.spec due to nonmaintenance
+ - allow too-large-for-screen windows to move their titlebar offscreen
+ - keep an MRU list of windows per-workspace and use it to focus 
+   the next window when the focused window disappears
+ - fix cursor when moving
+ - improve appearance of opaque resize
+ - make BELOW window state work
+ - fix a crash when gdk_pixmap_foreign_new() returned NULL
+
+2.5.3
+===
+
+ Thanks to Jordi Mallach, Padraig O'Briain, Rob Adams, Julio Merino,
+ Ben Jansens, Jurg Billeter, Ray Strode, marcus@freebsd.org, James
+ Laska, for contributions to this release. Thanks also to 
+ all the tireless translators.
+
+ - fixups to .desktop file
+ - activate window prior to grab end, avoiding
+   extra focus events
+ - add support for partial-width panels (fixes corner panel 
+   and xinerama window position constraints)
+ - added keybinding to toggle window as "always on top"
+ - support --disable-schemas-install option to configure
+ - destroy support for legacy GNOME 1.x hints; metacity 
+   no longer works with GNOME 1.x
+ - disable raise-on-click for mouse focus modes
+ - fix bug that broke many Javascript popup menus with mozilla
+ - allow "shaking loose" maximized windows, to move them 
+   between Xinerama heads or whatever
+ - honor desktop-wide double click timeout
+ - handle window placement properly for windows that 
+   start out maximized
+ - integrate Ximian patch to go ahead and log out after 4 minutes
+   even if a dialog is open
+ - fix a segfault
+ - fix bug where window groups weren't always kept up to date
+ - fix bug where focus got confused when switching workspaces
+   with mouse focus mode
+ - fix 64-bit crash on s390x
+ - chdir to user's homedir on startup
+ - keep window in fullscreen layer when its transients are focused
+ - fix keybindings bug when you had ScrollLock enabled
+ - many translation updates
+
+2.5.2
+===
+
+ Thanks to David Santiago, Julien Olivier, Anders Carlsson, Rob Adams
+ for fixes in this release.
+
+ - improved wording/UI for some dialogs
+ - while clicking a window button, if you move the mouse outside 
+   the button such that releasing the mouse button won't activate 
+   the window button, visually indicate by "popping out" the button.
+ - fix some valgrind errors
+ - change "show desktop mode" to convert to "everything is minimized
+   mode" if you open a new window while showing desktop, rather 
+   than previous behavior of simply leaving show desktop mode.
+ - fix a trivial memory leak
+ - change "move to workspace N" so it doesn't switch workspaces, 
+   just moves the window.
+ - translation updates
+
+2.5.1
+===
+
+ Thanks to Rob Adams, Peter O'Shea, Dafydd Harries, Masahiro Sakai, 
+ Soeren Sandmann for fixes in this release.
+
+ - fix bug where fullscreen windows were below top panels
+ - build fix for Solaris
+ - support diagonal window movement with numeric keypad
+ - multihead fix
+ - build fix for Cygwin 
+ - place on xinerama containing the pointer
+ - fix totally hosed window placement/movement for frameless
+   windows
+ - improvement to smoothness of window move/resize
+
+2.5.0
+===
+
+ Thanks to Rob Adams, Owen Taylor, Frederic Crozat, Arvind Samptur,
+ Bill Haneman, Akira Tagoh for help with fixes in this release.
+
+ - many new translations
+ - fix an infinite loop while holding a server grab triggered by 
+   some recent Qt versions doing weird stuff
+ - fix bug where Alt+rightclick repeatedly on titlebar resulted 
+   in zillions of menus
+ - fix Alt+Tab to *actually* put minimized windows at the end, 
+   though this was always intended
+ - rewrite size/positions constraint code (currently known 
+   to be quite buggy, e.g. xmms is hosed)
+ - enforce size of at least 1x1 on windows
+ - reduce latency of managing new windows still further 
+   by using async properties code in more places
+ - don't grab keybindings on docks, so gnome-panel 
+   can handle them
+ - suck in the panel's screenshot and run dialog global 
+   bindings
+ - lots of improvements to window placement
+ - sync max number of workspaces with pager applet
+ - fix to keep focus when inside window frame in 
+   strict mouse focus mode
+ - make it possible to start a reverse tab with 
+   shift+alt+tab (vs. alt+tab then shift)
+ - fix a multihead issue with constraints between two 
+   windows on different heads
+ - require GTK+ 2.2.0 and fontconfig
+ - default theme is now Simple
+ - add visual bell feature
+ - incorporate many fixes from 2.4.34
+ - other stuff
 
 2.4.13
 ===

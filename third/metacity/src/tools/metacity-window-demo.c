@@ -26,6 +26,8 @@
 
 static GtkWidget* do_appwindow (void);
 
+gboolean aspect_on;
+
 static void
 set_gdk_window_struts (GdkWindow *window,
                        int        left,
@@ -33,19 +35,27 @@ set_gdk_window_struts (GdkWindow *window,
                        int        top,
                        int        bottom)
 {
-  long vals[4];
+  long vals[12];
   
   vals[0] = left;
   vals[1] = right;
   vals[2] = top;
   vals[3] = bottom;
-  
+  vals[4] = 000;
+  vals[5] = 400;
+  vals[6] = 200;
+  vals[7] = 600;
+  vals[8] = 76;
+  vals[9] = 676;
+  vals[10] = 200;
+  vals[11] = 800;
+
   XChangeProperty (GDK_WINDOW_XDISPLAY (window),
                    GDK_WINDOW_XWINDOW (window),
                    XInternAtom (GDK_WINDOW_XDISPLAY (window),
-                                "_NET_WM_STRUT", False),
+                                "_NET_WM_STRUT_PARTIAL", False),
                    XA_CARDINAL, 32, PropModeReplace,
-                   (guchar *)vals, 4);
+                   (guchar *)vals, 12);
 }
 
 static void
@@ -441,6 +451,7 @@ border_only_cb (gpointer             callback_data,
   gtk_widget_show_all (window);
 }
 
+#if 0
 static void
 changing_icon_cb (gpointer             callback_data,
                   guint                callback_action,
@@ -462,6 +473,7 @@ changing_icon_cb (gpointer             callback_data,
   
   gtk_widget_show_all (window);
 }
+#endif
 
 static gboolean
 focus_in_event_cb (GtkWidget *window,
@@ -473,6 +485,8 @@ focus_in_event_cb (GtkWidget *window,
   widget = GTK_WIDGET (data);
 
   gtk_label_set_text (GTK_LABEL (widget), "Has focus");
+
+  return TRUE;
 }
 
 
@@ -486,6 +500,8 @@ focus_out_event_cb (GtkWidget *window,
   widget = GTK_WIDGET (data);
 
   gtk_label_set_text (GTK_LABEL (widget), "Not focused");
+  
+  return TRUE;
 }
 
 static GtkWidget*
@@ -583,26 +599,26 @@ make_dock (int type)
   switch (type)
     {
     case DOCK_LEFT:
-      gtk_widget_set_size_request (window, DOCK_SIZE, gdk_screen_height ());
-      gtk_window_move (GTK_WINDOW (window), 0, 0);
+      gtk_widget_set_size_request (window, DOCK_SIZE, 400);
+      gtk_window_move (GTK_WINDOW (window), 0, 000);
       set_gtk_window_struts (window, DOCK_SIZE, 0, 0, 0);
       gtk_window_set_title (GTK_WINDOW (window), "LeftDock");
       break;
     case DOCK_RIGHT:      
-      gtk_widget_set_size_request (window, DOCK_SIZE, gdk_screen_height ());
-      gtk_window_move (GTK_WINDOW (window), gdk_screen_width () - DOCK_SIZE, 0);
+      gtk_widget_set_size_request (window, DOCK_SIZE, 400);
+      gtk_window_move (GTK_WINDOW (window), gdk_screen_width () - DOCK_SIZE, 200);
       set_gtk_window_struts (window, 0, DOCK_SIZE, 0, 0);
       gtk_window_set_title (GTK_WINDOW (window), "RightDock");
       break;
     case DOCK_TOP:
-      gtk_widget_set_size_request (window, gdk_screen_width (), DOCK_SIZE);
-      gtk_window_move (GTK_WINDOW (window), 0, 0);
+      gtk_widget_set_size_request (window, 600, DOCK_SIZE);
+      gtk_window_move (GTK_WINDOW (window), 76, 0);
       set_gtk_window_struts (window, 0, 0, DOCK_SIZE, 0);
       gtk_window_set_title (GTK_WINDOW (window), "TopDock");
       break;
     case DOCK_BOTTOM:
-      gtk_widget_set_size_request (window, gdk_screen_width (), DOCK_SIZE);
-      gtk_window_move (GTK_WINDOW (window), 0, gdk_screen_height () - DOCK_SIZE);
+      gtk_widget_set_size_request (window, 600, DOCK_SIZE);
+      gtk_window_move (GTK_WINDOW (window), 200, gdk_screen_height () - DOCK_SIZE);
       set_gtk_window_struts (window, 0, 0, 0, DOCK_SIZE);
       gtk_window_set_title (GTK_WINDOW (window), "BottomDock");
       break;
@@ -686,6 +702,35 @@ sleep_cb (GtkWidget *button,
           gpointer   data)
 {
   sleep (1000);
+}
+
+static void
+toggle_aspect_ratio (GtkWidget *button,
+                     gpointer   data)
+{
+  GtkWidget *window;
+  GdkGeometry geom;
+
+  if (aspect_on)
+    {
+      geom.min_aspect = 0;
+      geom.max_aspect = 65535;
+    }
+  else
+    {
+      geom.min_aspect = 1.777778;
+      geom.max_aspect = 1.777778;
+    }
+
+  aspect_on = !aspect_on;
+
+  window = gtk_widget_get_ancestor (button, GTK_TYPE_WINDOW);
+  if (window)
+    gtk_window_set_geometry_hints (GTK_WINDOW (window),
+				   GTK_WIDGET (data),
+				   &geom,
+				   GDK_HINT_ASPECT);
+				   
 }
 
 static void
@@ -785,7 +830,9 @@ do_appwindow (void)
    */
 
   ++window_count;
-  
+
+  aspect_on = FALSE;
+
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (window), "Application Window");
   
@@ -824,6 +871,35 @@ do_appwindow (void)
                     GTK_EXPAND | GTK_FILL,     0,
                     0,                         0);
 
+  /* Create document
+   */
+
+  sw = gtk_scrolled_window_new (NULL, NULL);
+
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
+                                  GTK_POLICY_AUTOMATIC,
+                                  GTK_POLICY_AUTOMATIC);
+
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
+                                       GTK_SHADOW_IN);
+      
+  gtk_table_attach (GTK_TABLE (table),
+                    sw,
+                    /* X direction */       /* Y direction */
+                    0, 1,                   2, 3,
+                    GTK_EXPAND | GTK_FILL,  GTK_EXPAND | GTK_FILL,
+                    0,                      0);
+
+  gtk_window_set_default_size (GTK_WINDOW (window),
+                               200, 200);
+      
+  contents = gtk_text_view_new ();
+  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (contents),
+                               PANGO_WRAP_WORD);
+      
+  gtk_container_add (GTK_CONTAINER (sw),
+                     contents);
+
   /* Create the toolbar
    */
   toolbar = gtk_toolbar_new ();
@@ -853,6 +929,14 @@ do_appwindow (void)
                             -1);  /* -1 means "append" */
   
   gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
+                            GTK_STOCK_OPEN,
+                            "This is a demo button that locks the aspect ratio using a hint",
+                            NULL,
+                            G_CALLBACK (toggle_aspect_ratio),
+                            contents, /* user data for callback */
+                            -1);  /* -1 means "append" */
+  
+  gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                             GTK_STOCK_QUIT,
                             "This is a demo button with a 'quit' icon",
                             NULL,
@@ -870,35 +954,6 @@ do_appwindow (void)
                     0, 1,                   1, 2,
                     GTK_EXPAND | GTK_FILL,  0,
                     0,                      0);
-
-  /* Create document
-   */
-
-  sw = gtk_scrolled_window_new (NULL, NULL);
-
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
-                                  GTK_POLICY_AUTOMATIC,
-                                  GTK_POLICY_AUTOMATIC);
-
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
-                                       GTK_SHADOW_IN);
-      
-  gtk_table_attach (GTK_TABLE (table),
-                    sw,
-                    /* X direction */       /* Y direction */
-                    0, 1,                   2, 3,
-                    GTK_EXPAND | GTK_FILL,  GTK_EXPAND | GTK_FILL,
-                    0,                      0);
-
-  gtk_window_set_default_size (GTK_WINDOW (window),
-                               200, 200);
-      
-  contents = gtk_text_view_new ();
-  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (contents),
-                               PANGO_WRAP_WORD);
-      
-  gtk_container_add (GTK_CONTAINER (sw),
-                     contents);
 
   /* Create statusbar */
 

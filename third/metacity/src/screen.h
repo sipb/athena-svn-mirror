@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Rob Adams
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -48,6 +49,16 @@ typedef enum
   META_SCREEN_BOTTOMRIGHT
 } MetaScreenCorner;
 
+typedef enum
+{
+  META_SCREEN_UP,
+  META_SCREEN_DOWN,
+  META_SCREEN_LEFT,
+  META_SCREEN_RIGHT
+} MetaScreenDirection;
+
+#define META_WIREFRAME_XOR_LINE_WIDTH 5
+
 struct _MetaScreen
 {
   MetaDisplay *display;
@@ -69,6 +80,8 @@ struct _MetaScreen
   MetaStack *stack;
 
   MetaCursor current_cursor;
+
+  Window flash_window;
 
   Window wm_sn_selection_window;
   Atom wm_sn_atom;
@@ -98,10 +111,21 @@ struct _MetaScreen
   guint showing_desktop : 1;
   
   int closing;
+
+  /* gc for XOR on root window */
+  GC root_xor_gc;
+
+  /* Managed by compositor.c; top of stack is first in list */
+  GList *compositor_windows;
+  XID root_picture;
+  XID damage_region;
+  XID trans_pixmap;
+  XID trans_picture;
 };
 
 MetaScreen*   meta_screen_new                 (MetaDisplay                *display,
-                                               int                         number);
+                                               int                         number,
+                                               Time                        timestamp);
 void          meta_screen_free                (MetaScreen                 *screen);
 void          meta_screen_manage_all_windows  (MetaScreen                 *screen);
 MetaScreen*   meta_screen_for_x_screen        (Screen                     *xscreen);
@@ -124,16 +148,25 @@ void          meta_screen_ensure_tab_popup    (MetaScreen                 *scree
 
 void          meta_screen_ensure_workspace_popup (MetaScreen *screen);
 
-void          meta_screen_focus_top_window     (MetaScreen                 *screen,
-                                                MetaWindow                 *not_this_one);
-void          meta_screen_focus_mouse_window   (MetaScreen                 *screen,
-                                                MetaWindow                 *not_this_one);
-void          meta_screen_focus_default_window (MetaScreen                 *screen,
+MetaWindow*   meta_screen_get_mouse_window     (MetaScreen                 *screen,
                                                 MetaWindow                 *not_this_one);
 
-const MetaXineramaScreenInfo* meta_screen_get_current_xinerama (MetaScreen *screen);
-const MetaXineramaScreenInfo* meta_screen_get_xinerama_for_window (MetaScreen *screen,
-								   MetaWindow *window);
+const MetaXineramaScreenInfo* meta_screen_get_current_xinerama    (MetaScreen    *screen);
+const MetaXineramaScreenInfo* meta_screen_get_xinerama_for_rect   (MetaScreen    *screen,
+                                                                   MetaRectangle *rect);
+const MetaXineramaScreenInfo* meta_screen_get_xinerama_for_window (MetaScreen    *screen,
+                                                                   MetaWindow    *window);
+
+gboolean      meta_screen_rect_intersects_xinerama (MetaScreen    *screen, 
+                                                    MetaRectangle *window,
+                                                    int            which_xinerama);
+
+const MetaXineramaScreenInfo* meta_screen_get_xinerama_neighbor (MetaScreen *screen,
+                                                                 int         which_xinerama,
+                                                                 MetaScreenDirection dir);
+void          meta_screen_get_natural_xinerama_list (MetaScreen *screen,
+                                                     int**       xineramas_list,
+                                                     int*        n_xineramas);
 
 void          meta_screen_update_workspace_layout (MetaScreen             *screen);
 void          meta_screen_update_workspace_names  (MetaScreen             *screen);
@@ -164,10 +197,12 @@ void meta_screen_resize (MetaScreen *screen,
                          int         width,
                          int         height);
 
+void     meta_screen_minimize_all_except (MetaScreen *screen,
+                                          MetaWindow *keep);
 
 /* Show/hide the desktop (temporarily hide all windows) */
-void     meta_screen_show_desktop   (MetaScreen *screen);
-void     meta_screen_unshow_desktop (MetaScreen *screen);
+void     meta_screen_show_desktop        (MetaScreen *screen);
+void     meta_screen_unshow_desktop      (MetaScreen *screen);
 
 void     meta_screen_apply_startup_properties (MetaScreen *screen,
                                                MetaWindow *window);
