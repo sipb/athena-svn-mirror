@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.11 1990-04-26 12:51:41 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.12 1990-04-27 11:50:10 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -198,7 +198,7 @@ t_display_list(list,comments,file)
 		    ubuf, uinstbuf, ustatusbuf, l->connected.username,
 		    cinstbuf,chstatusbuf,nseenbuf,l->topic, time_buf);
 	    if (comments && (l->note[0] != '\0'))
-		fprintf(fp,"\t\t[%-64.64s]",l->note);
+		fprintf(fp,"\t\t[%-63.63s]",l->note);
 	}
 	else if ((l->nseen >= 0) && (l->connected.uid <0)) {
 	    /* unconnected user */
@@ -214,7 +214,7 @@ t_display_list(list,comments,file)
 		     ubuf, uinstbuf, ustatusbuf, "", "", "",
 		     nseenbuf, l->topic, time_buf);
 	    if(comments && (l->note[0] != '\0'))
-		fprintf(fp,"\t\t[%-64.64s]",l->note);
+		fprintf(fp,"\t\t[%-63.63s]",l->note);
 	}
 	else if((l->nseen < 0) && (l->connected.uid < 0)) {
 	    /* unconnected consultant */
