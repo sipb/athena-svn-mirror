@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.9 1994-01-27 10:31:38 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.10 1994-06-01 13:53:58 vrt Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -26,7 +26,8 @@ GLOBAL : *.CKP *.local *.pid :
 		usr
 		var
 		ufsboot
-		-> update_ws
+		update_ws
+		.rvdinfo
 		:
 	/etc:::			# These are specific to each machine.
 		.*.lock
@@ -62,7 +63,7 @@ GLOBAL : *.CKP *.local *.pid :
 			# needed
 		-> dump
 		-> gateways
-		-> lp
+		-> lp.sun
 		-> makespools
 		-> named-xfer
 		-> networks
@@ -294,7 +295,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> a*
 		-> c*
 		-> h*
-		fonts
+		X11	
 		-> lib*.a
 		-> *.ln
 		-> locale
@@ -304,7 +305,10 @@ GLOBAL : *.CKP *.local *.pid :
 		-> xdm*
 		-> xman.help
 		:
-	/usr/openwin/lib/fonts:::
+	/usr/openwin/lib/X11:::
+		fonts
+		:
+	/usr/openwin/lib/X11/fonts:::
 		-> A*
 		-> B*
 		-> C*
@@ -336,6 +340,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> sy*
 		-> term*
 		-> tim*
+		-> 100dpi*
+		-> 75dpi*
 		:
 	/usr/openwin/bin:::
 		-> a*
