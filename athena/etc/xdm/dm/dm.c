@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.37 1994-04-28 13:23:28 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.38 1994-04-28 13:56:33 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -55,7 +55,7 @@ static sigset_t sig_cur;
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.37 1994-04-28 13:23:28 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.38 1994-04-28 13:56:33 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -1580,7 +1580,7 @@ char *getconf(file, name)
 char *file;
 char *name;
 {
-    static char buf[2048];
+    static char buf[8192];
     static int inited = 0;
     char *p, *ret, *malloc();
     int i;
