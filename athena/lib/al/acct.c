@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.9 1998-04-08 02:15:21 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.10 1998-04-25 23:14:57 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -91,6 +91,11 @@ int al_acct_create(const char *username, const char *cryptpw,
 {
   int retval = AL_SUCCESS, nwarns = 0, warns[6], i;
   struct al_record record;
+
+  /* If the caller wants warnings, initialize them to NULL so that
+   * the caller can easily tell if they were set. */
+  if (warnings)
+    *warnings = NULL;
 
   if (!al__username_valid(username))
     return AL_ENOUSER;
@@ -167,14 +172,15 @@ int al_acct_create(const char *username, const char *cryptpw,
   /* Set warnings. */
   if (nwarns > 0)
     {
-      warns[nwarns++] = AL_SUCCESS;
-      *warnings = malloc(nwarns * sizeof(int));
-      if (!*warnings)
-	retval = AL_ENOMEM;
-      else
+      retval = AL_WARNINGS;
+      if (warnings)
 	{
-	  retval = AL_WARNINGS;
-	  memcpy(*warnings, warns, nwarns * sizeof(int));
+	  warns[nwarns++] = AL_SUCCESS;
+	  *warnings = malloc(nwarns * sizeof(int));
+	  if (!*warnings)
+	    retval = AL_ENOMEM;
+	  else
+	    memcpy(*warnings, warns, nwarns * sizeof(int));
 	}
     }
 

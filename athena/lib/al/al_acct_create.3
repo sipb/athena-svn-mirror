@@ -1,4 +1,4 @@
-.\" $Id: al_acct_create.3,v 1.4 1998-01-26 06:35:51 danw Exp $
+.\" $Id: al_acct_create.3,v 1.5 1998-04-25 23:14:58 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -75,7 +75,8 @@ home directory cannot be attached.
 .I warnings
 Points to a variable which may be set to an allocated array (which the
 caller must free) of warning codes giving a list of possible non-fatal
-error codes.
+error codes.  The variable will otherwise be set to NULL.  The caller
+may pass a NULL pointer if it does not want warning codes.
 .PP
 The caller may invoke
 .I al_acct_create
@@ -110,10 +111,12 @@ Memory was exhausted.
 .TP 15
 .I AL_WARNINGS
 Account creation succeeded but some suboptimal condition occurred.
-The variable pointed to by
+If
 .I warnings
-is set to an allocated array of warning codes terminated by
+is non-NULL, the variable it points to is set to an allocated array of
+warning codes terminated by
 .IR AL_SUCCESS .
+The caller must free this array.
 .SH WARNINGS
 Possible warning codes are:
 .TP 15
