@@ -1,4 +1,4 @@
-# $Id: packages,v 1.53 1998-12-31 23:45:05 ghudson Exp $
+# $Id: packages,v 1.54 1999-01-14 23:21:57 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -106,6 +106,7 @@ athena/bin/lpr
 athena/bin/quota
 athena/bin/saferm
 athena/bin/passwd
+athena/bin/hesinfo
 third/perl			solaris
 third/transcript
 packs/config
