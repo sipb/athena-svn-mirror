@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.28 1992-05-26 17:33:46 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.29 1992-06-08 17:41:05 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -156,6 +156,14 @@ char *display;
 	    } else
 	      return("Unable to find account information due to network failure.  Try another workstation or try again later.");
  	}
+#ifdef _AIX
+	/*
+	 * Because the default shell is /bin/csh, and we wish to provide
+	 * users with the line-editing of tcsh, we will reset their shell.
+	 */
+	if (!strcmp(pwd->pw_shell, "/bin/csh"))
+	    pwd->pw_shell = "/bin/athena/tcsh";
+#endif
     }
 
     if (nocreate && !local_passwd) {
