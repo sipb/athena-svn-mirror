@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v $
- *	$Id: list.c,v 1.5 1990-11-13 18:59:48 lwvanels Exp $
+ *	$Id: list.c,v 1.6 1990-11-15 15:12:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.5 1990-11-13 18:59:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.6 1990-11-15 15:12:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -45,13 +45,13 @@ OListQueue(Request,list,queues,topics,users,stati)
   int status;
   int n;
 
-  if(strlen(queues) > NAME_SIZE)
+  if((queues != NULL) && (strlen(queues) > NAME_SIZE))
     return(ERROR);
 
-  if(strlen(topics) > NAME_SIZE)
+  if((topics != NULL) && (strlen(topics) > NAME_SIZE))
     return(ERROR);
 
-  if(strlen(users) > NAME_SIZE)
+  if((users != NULL) && (strlen(users) > NAME_SIZE))
     return(ERROR);
 
   Request->request_type = OLC_LIST;
