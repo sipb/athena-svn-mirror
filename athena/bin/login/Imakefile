@@ -1,5 +1,13 @@
 DEFINES=-DRVD -DNAMESERVER -DVFS $(MACHDEP)
 
+#ifdef UseInstalled
+AFSDIR = /mit/afsdev/bld/dest
+#else
+AFSDIR = /usr/local
+#endif
+
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
+
 #ifdef ultrix
 #ifdef vax
 MACHDEP=-DPOSIX -DSYSLOG42
@@ -10,5 +18,6 @@ MACHDEP=-DPOSIX -DSYSLOG42 -Olimit 535
 #ifdef i386
 MACHDEP=-DPOSIX -DSYSV -DINITTAB -DNOPFLAG
 #endif
-build_program(login,login.o,,-lknet -lkrb -ldes -lhesiod)
+
+build_program(login,login.o,,$(AFSLIBS) -lknet -lkrb -ldes -lhesiod)
 install_program(login,-o root -m 4555,/bin/login)
