@@ -1,5 +1,6 @@
-# Id:$
+# $Id: configure.athena,v 1.3 2002-07-01 15:08:23 zacheiss Exp $
 PERL=/usr/athena/bin/perl LIBS="-lal -lhesiod" ./configure --disable-suid-ssh \
 	--with-kerberos5=/usr/athena --with-tcp-wrappers=/usr/athena \
 	--with-rsh=/usr/athena/bin/rsh --with-ssl-dir=/usr/athena \
+	--with-md5-passwords \
 	--with-default-path="/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/sbin"
