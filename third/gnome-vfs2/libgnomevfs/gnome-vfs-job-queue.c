@@ -103,7 +103,7 @@ key_compare (gconstpointer cast_to_key1, gconstpointer cast_to_key2, gpointer us
 static void
 value_destroy (gpointer cast_to_job)
 {
-	gnome_vfs_job_destroy ((GnomeVFSJob *)cast_to_job);
+	_gnome_vfs_job_destroy ((GnomeVFSJob *)cast_to_job);
 }
 
 static JobQueueType *
@@ -173,7 +173,7 @@ job_queue_delete_first (void)
 }
 
 void 
-gnome_vfs_job_queue_init (void)
+_gnome_vfs_job_queue_init (void)
 {
 	static gboolean queue_initialized = FALSE;
 
@@ -260,7 +260,7 @@ job_can_start (int priority)
 }
 
 void
-gnome_vfs_job_queue_run (void)
+_gnome_vfs_job_queue_run (void)
 {
 	GnomeVFSJob *job_to_run;
 
@@ -283,7 +283,7 @@ gnome_vfs_job_queue_run (void)
 				 running_job_count,
 				 job_queue_length));
 			g_static_mutex_unlock (&job_queue_lock);
-			gnome_vfs_job_create_slave (job_to_run);
+			_gnome_vfs_job_create_slave (job_to_run);
 		} else {
 			g_static_mutex_unlock (&job_queue_lock);
 			Q_DEBUG (("waiting job is too low priority (%2d) to start;"
@@ -299,7 +299,7 @@ gnome_vfs_job_queue_run (void)
 }
 
 gboolean
-gnome_vfs_job_schedule (GnomeVFSJob *job)
+_gnome_vfs_job_schedule (GnomeVFSJob *job)
 {
 	g_static_mutex_lock (&job_queue_lock);
       	if (!job_can_start (job->priority)) {
@@ -317,11 +317,18 @@ gnome_vfs_job_schedule (GnomeVFSJob *job)
 			running_job_count,
 			job_queue_length));
 		g_static_mutex_unlock (&job_queue_lock);
-		gnome_vfs_job_create_slave (job);
+		_gnome_vfs_job_create_slave (job);
 	}
 	return TRUE;
 }
 
+/**
+ * gnome_vfs_async_set_job_limit:
+ * @limit: maximuum number of allowable threads
+ *
+ * Restrict the number of worker threads used by Async operations
+ * to @limit.
+ **/
 void
 gnome_vfs_async_set_job_limit (int limit)
 {
@@ -337,6 +344,14 @@ gnome_vfs_async_set_job_limit (int limit)
 	g_static_mutex_unlock (&job_queue_lock);
 }
 
+/**
+ * gnome_vfs_async_get_job_limit:
+ * 
+ * Get the current maximuum allowable number of
+ * worker threads for Asynch operations.
+ *
+ * Return value: current maximuum number of threads
+ **/
 int
 gnome_vfs_async_get_job_limit (void)
 {
@@ -344,7 +359,7 @@ gnome_vfs_async_get_job_limit (void)
 }
 
 void
-gnome_vfs_job_queue_shutdown (void)
+_gnome_vfs_job_queue_shutdown (void)
 {
 	g_static_mutex_lock (&job_queue_lock);
 

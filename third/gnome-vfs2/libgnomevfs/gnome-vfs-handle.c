@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include "gnome-vfs-handle.h"
+#include "gnome-vfs-handle-private.h"
 #include "gnome-vfs-method.h"
 
 #include <glib/gmessages.h>
@@ -67,7 +68,7 @@ G_STMT_START{						\
 
 
 GnomeVFSHandle *
-gnome_vfs_handle_new (GnomeVFSURI *uri,
+_gnome_vfs_handle_new (GnomeVFSURI *uri,
 		      GnomeVFSMethodHandle *method_handle,
 		      GnomeVFSOpenMode open_mode)
 {
@@ -86,7 +87,7 @@ gnome_vfs_handle_new (GnomeVFSURI *uri,
 }
 
 void
-gnome_vfs_handle_destroy (GnomeVFSHandle *handle)
+_gnome_vfs_handle_destroy (GnomeVFSHandle *handle)
 {
 	g_return_if_fail (handle != NULL);
 
@@ -97,7 +98,7 @@ gnome_vfs_handle_destroy (GnomeVFSHandle *handle)
 
 
 GnomeVFSOpenMode
-gnome_vfs_handle_get_open_mode (GnomeVFSHandle *handle)
+_gnome_vfs_handle_get_open_mode (GnomeVFSHandle *handle)
 {
 	g_return_val_if_fail (handle != NULL, (GnomeVFSOpenMode) 0);
 
@@ -108,7 +109,7 @@ gnome_vfs_handle_get_open_mode (GnomeVFSHandle *handle)
 /* Actions.  */
 
 GnomeVFSResult
-gnome_vfs_handle_do_close (GnomeVFSHandle *handle,
+_gnome_vfs_handle_do_close (GnomeVFSHandle *handle,
 			   GnomeVFSContext *context)
 {
 	GnomeVFSResult result;
@@ -116,13 +117,13 @@ gnome_vfs_handle_do_close (GnomeVFSHandle *handle,
 	INVOKE (result, handle, close, (handle->uri->method, handle->method_handle, context));
 
 	/* Even if close has failed, we shut down the handle. */
-	gnome_vfs_handle_destroy (handle);
+	_gnome_vfs_handle_destroy (handle);
 
 	return result;
 }
 
 GnomeVFSResult
-gnome_vfs_handle_do_read (GnomeVFSHandle *handle,
+_gnome_vfs_handle_do_read (GnomeVFSHandle *handle,
 			  gpointer buffer,
 			  GnomeVFSFileSize num_bytes,
 			  GnomeVFSFileSize *bytes_read,
@@ -134,7 +135,7 @@ gnome_vfs_handle_do_read (GnomeVFSHandle *handle,
 }
 
 GnomeVFSResult
-gnome_vfs_handle_do_write (GnomeVFSHandle *handle,
+_gnome_vfs_handle_do_write (GnomeVFSHandle *handle,
 			   gconstpointer buffer,
 			   GnomeVFSFileSize num_bytes,
 			   GnomeVFSFileSize *bytes_written,
@@ -147,7 +148,7 @@ gnome_vfs_handle_do_write (GnomeVFSHandle *handle,
 
 
 GnomeVFSResult
-gnome_vfs_handle_do_seek (GnomeVFSHandle *handle,
+_gnome_vfs_handle_do_seek (GnomeVFSHandle *handle,
 			  GnomeVFSSeekPosition whence,
 			  GnomeVFSFileSize offset,
 			  GnomeVFSContext *context)
@@ -157,7 +158,7 @@ gnome_vfs_handle_do_seek (GnomeVFSHandle *handle,
 }
 
 GnomeVFSResult
-gnome_vfs_handle_do_tell (GnomeVFSHandle *handle,
+_gnome_vfs_handle_do_tell (GnomeVFSHandle *handle,
 			  GnomeVFSFileSize *offset_return)
 {
 	INVOKE_AND_RETURN (handle, tell, (handle->uri->method, handle->method_handle,
@@ -166,7 +167,7 @@ gnome_vfs_handle_do_tell (GnomeVFSHandle *handle,
 
 
 GnomeVFSResult
-gnome_vfs_handle_do_get_file_info (GnomeVFSHandle *handle,
+_gnome_vfs_handle_do_get_file_info (GnomeVFSHandle *handle,
 				   GnomeVFSFileInfo *info,
 				   GnomeVFSFileInfoOptions options,
 				   GnomeVFSContext *context)
@@ -176,9 +177,18 @@ gnome_vfs_handle_do_get_file_info (GnomeVFSHandle *handle,
 			    context));
 }
 
-GnomeVFSResult gnome_vfs_handle_do_truncate     (GnomeVFSHandle *handle,
+GnomeVFSResult _gnome_vfs_handle_do_truncate     (GnomeVFSHandle *handle,
 						 GnomeVFSFileSize length,
 						 GnomeVFSContext *context)
 {
 	INVOKE_AND_RETURN (handle, truncate_handle, (handle->uri->method, handle->method_handle, length, context));
+}
+
+GnomeVFSResult
+_gnome_vfs_handle_do_file_control  (GnomeVFSHandle          *handle,
+				   const char              *operation,
+				   gpointer                 operation_data,
+				   GnomeVFSContext         *context)
+{
+	INVOKE_AND_RETURN (handle, file_control, (handle->uri->method, handle->method_handle, operation, operation_data, context));
 }

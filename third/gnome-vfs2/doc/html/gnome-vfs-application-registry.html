@@ -1,0 +1,2346 @@
+<HTML
+><HEAD
+><TITLE
+>Application Registry</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="MIME types & the Application Registry"
+HREF="mime-registry.html"><LINK
+REL="PREVIOUS"
+TITLE="Algorithmic Sniff Buffer"
+HREF="gnome-vfs-mime-sniff-buffer.html"><LINK
+REL="NEXT"
+TITLE="Magic MIME Detection"
+HREF="gnome-vfs-mime-magic.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-mime-sniff-buffer.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-mime-magic.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY"
+>Application Registry</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN5568"
+></A
+><H2
+>Name</H2
+>Application Registry&nbsp;--&nbsp;a database of the available applications and their capabilities</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN5571"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+#define     <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-COMMAND-CAPS"
+>GNOME_VFS_APPLICATION_REGISTRY_COMMAND</A
+>
+#define     <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-NAME-CAPS"
+>GNOME_VFS_APPLICATION_REGISTRY_NAME</A
+>
+#define     <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-CAN-OPEN-MULTIPLE-FILES-CAPS"
+>GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES</A
+>
+#define     <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-REQUIRES-TERMINAL-CAPS"
+>GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL</A
+>
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-EXISTS"
+>gnome_vfs_application_registry_exists</A
+>
+                                            (const char *app_id);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-GET-KEYS"
+>gnome_vfs_application_registry_get_keys</A
+>
+                                            (const char *app_id);
+const char* <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-PEEK-VALUE"
+>gnome_vfs_application_registry_peek_value</A
+>
+                                            (const char *app_id,
+                                             const char *key);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-GET-BOOL-VALUE"
+>gnome_vfs_application_registry_get_bool_value</A
+>
+                                            (const char *app_id,
+                                             const char *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *got_key);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-REMOVE-APPLICATION"
+>gnome_vfs_application_registry_remove_application</A
+>
+                                            (const char *app_id);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SET-VALUE"
+>gnome_vfs_application_registry_set_value</A
+>
+                                            (const char *app_id,
+                                             const char *key,
+                                             const char *value);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SET-BOOL-VALUE"
+>gnome_vfs_application_registry_set_bool_value</A
+>
+                                            (const char *app_id,
+                                             const char *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> value);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-UNSET-KEY"
+>gnome_vfs_application_registry_unset_key</A
+>
+                                            (const char *app_id,
+                                             const char *key);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-GET-APPLICATIONS"
+>gnome_vfs_application_registry_get_applications</A
+>
+                                            (const char *mime_type);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-GET-MIME-TYPES"
+>gnome_vfs_application_registry_get_mime_types</A
+>
+                                            (const char *app_id);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SUPPORTS-MIME-TYPE"
+>gnome_vfs_application_registry_supports_mime_type</A
+>
+                                            (const char *app_id,
+                                             const char *mime_type);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SUPPORTS-URI-SCHEME"
+>gnome_vfs_application_registry_supports_uri_scheme</A
+>
+                                            (const char *app_id,
+                                             const char *uri_scheme);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-IS-USER-OWNED-APPLICATION"
+>gnome_vfs_application_is_user_owned_application</A
+>
+                                            (const <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-CLEAR-MIME-TYPES"
+>gnome_vfs_application_registry_clear_mime_types</A
+>
+                                            (const char *app_id);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-ADD-MIME-TYPE"
+>gnome_vfs_application_registry_add_mime_type</A
+>
+                                            (const char *app_id,
+                                             const char *mime_type);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-REMOVE-MIME-TYPE"
+>gnome_vfs_application_registry_remove_mime_type</A
+>
+                                            (const char *app_id,
+                                             const char *mime_type);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SYNC"
+>gnome_vfs_application_registry_sync</A
+>
+                                            (void);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SHUTDOWN"
+>gnome_vfs_application_registry_shutdown</A
+>
+                                            (void);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-RELOAD"
+>gnome_vfs_application_registry_reload</A
+>
+                                            (void);
+<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-GET-MIME-APPLICATION"
+>gnome_vfs_application_registry_get_mime_application</A
+>
+                                            (const char *app_id);
+void        <A
+HREF="gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-SAVE-MIME-APPLICATION"
+>gnome_vfs_application_registry_save_mime_application</A
+>
+                                            (const <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN5613"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN5616"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5618"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-COMMAND-CAPS"
+></A
+>GNOME_VFS_APPLICATION_REGISTRY_COMMAND</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_APPLICATION_REGISTRY_COMMAND "command"</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5623"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-NAME-CAPS"
+></A
+>GNOME_VFS_APPLICATION_REGISTRY_NAME</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_APPLICATION_REGISTRY_NAME "name"</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5628"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-CAN-OPEN-MULTIPLE-FILES-CAPS"
+></A
+>GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES "can_open_multiple_files"</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5633"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-REQUIRES-TERMINAL-CAPS"
+></A
+>GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL "requires_terminal"</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5638"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-EXISTS"
+></A
+>gnome_vfs_application_registry_exists ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_application_registry_exists
+                                            (const char *app_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will return TRUE if there is an entry for <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+> in
+the registry, otherwise FALSE.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5646"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an application ID</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if the application is in the registry, FALSE if not &#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5659"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-GET-KEYS"
+></A
+>gnome_vfs_application_registry_get_keys ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_application_registry_get_keys
+                                            (const char *app_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function wil return a list of strings which is the list of
+keys set for <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+> in the application registry.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5667"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the application ID for which to get keys</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A list of the keys set for <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5681"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-PEEK-VALUE"
+></A
+>gnome_vfs_application_registry_peek_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gnome_vfs_application_registry_peek_value
+                                            (const char *app_id,
+                                             const char *key);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will return the value associated with <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> for <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+> in the
+application registry. There is no need to free the return value.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5689"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the application ID for which to look up a value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the key to look up</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the value associated with the key, or NULL if there is no
+associated value&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5706"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-GET-BOOL-VALUE"
+></A
+>gnome_vfs_application_registry_get_bool_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_application_registry_get_bool_value
+                                            (const char *app_id,
+                                             const char *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *got_key);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will look up a key in the structure pointed to by app_id and return the
+boolean value of that key.  It will return false if there are no
+applications associated with the app_id.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5714"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  registry id of the application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> key to look up</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>got_key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if a setting was dound, otherwise FALSE</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is set to "true" or "yes" for <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>, otherwise FALSE&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5737"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-REMOVE-APPLICATION"
+></A
+>gnome_vfs_application_registry_remove_application ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_remove_application
+                                            (const char *app_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Given the registry id this function will remove all applications that has
+been set by the user.  You will need to call
+gnome_vfs_application_registry_sync to save the changes.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5743"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  registry id of the application</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5752"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SET-VALUE"
+></A
+>gnome_vfs_application_registry_set_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_set_value
+                                            (const char *app_id,
+                                             const char *key,
+                                             const char *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will set values pertaining to registry entry pointed to by
+app_id.  You will need to call gnome_vfs_application_registry_sync to
+realize the changes.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5758"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  registry id of the application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> target key</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> value to set the target key to</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5775"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SET-BOOL-VALUE"
+></A
+>gnome_vfs_application_registry_set_bool_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_set_bool_value
+                                            (const char *app_id,
+                                             const char *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> value);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5781"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5798"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-UNSET-KEY"
+></A
+>gnome_vfs_application_registry_unset_key ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_unset_key
+                                            (const char *app_id,
+                                             const char *key);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function given the application and the target will wipe the current
+value that the key contains.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5804"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> registry id of the application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> search key</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5817"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-GET-APPLICATIONS"
+></A
+>gnome_vfs_application_registry_get_applications ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_application_registry_get_applications
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will return all applications from the registry that are associated with
+the given mime type string.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5824"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  mime type string</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a list of the application IDs for all applications which
+support the given mime type.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5837"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-GET-MIME-TYPES"
+></A
+>gnome_vfs_application_registry_get_mime_types ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_application_registry_get_mime_types
+                                            (const char *app_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function returns a list of strings that represent the mime
+types that can be handled by an application.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5844"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> registry id of application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a list of the mime types supported&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5857"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SUPPORTS-MIME-TYPE"
+></A
+>gnome_vfs_application_registry_supports_mime_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_application_registry_supports_mime_type
+                                            (const char *app_id,
+                                             const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Use this function to see if there is an application associated with a given
+mime type.  The function will return true or false.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5864"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> registry id of application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> mime type string</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+> supports <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>, otherwise FALSE.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5883"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SUPPORTS-URI-SCHEME"
+></A
+>gnome_vfs_application_registry_supports_uri_scheme ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_application_registry_supports_uri_scheme
+                                            (const char *app_id,
+                                             const char *uri_scheme);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Given the id of the application this function will determine if the
+uri scheme will given is supported.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5890"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> registry id of application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri_scheme</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> uri schme string</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if <TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+> supports <TT
+CLASS="PARAMETER"
+><I
+>uri_scheme</I
+></TT
+>, otherwise FALSE&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5909"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-IS-USER-OWNED-APPLICATION"
+></A
+>gnome_vfs_application_is_user_owned_application ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_application_is_user_owned_application
+                                            (const <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will determine if a mime application is user owned or not.  By
+user ownered this means that the application is not a system application
+located in the prerequisite /usr area but rather in the user's area.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5917"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  data structure of the mime application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> gboolean</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5930"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-CLEAR-MIME-TYPES"
+></A
+>gnome_vfs_application_registry_clear_mime_types ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_clear_mime_types
+                                            (const char *app_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will remove the mime types associated with the application.
+Changes are not realized until the  gnome_vfs_application_registry_sync
+function is called to save the changes to the file.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5936"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Application id</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5945"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-ADD-MIME-TYPE"
+></A
+>gnome_vfs_application_registry_add_mime_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_add_mime_type
+                                            (const char *app_id,
+                                             const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will associate a mime type with an application given the   
+application registry id and the mime type.  Changes are not realized until
+the gnome_vfs_application_registry_sync function is called to save the
+changes to the file.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5951"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> registry id of application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> mime type string</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5964"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-REMOVE-MIME-TYPE"
+></A
+>gnome_vfs_application_registry_remove_mime_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_remove_mime_type
+                                            (const char *app_id,
+                                             const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will de-associate a mime type from an application registry.  
+Given the application registry id and the mime type.  Changes are not
+realized until the gnome_vfs_application_registry_sync function is called to
+save the changes to the file.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5970"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> registry id of the application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> mime type string</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5983"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SYNC"
+></A
+>gnome_vfs_application_registry_sync ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_application_registry_sync
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will sync the registry.  Typically you would use this function
+after a modification of the registry.  When you modify the registry a dirty
+flag is set.  Calling this function will save your modifications to disk and
+reset the flag.</P
+><P
+>If successful, will return GNOME_VFS_OK</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5991"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSResult&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6000"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SHUTDOWN"
+></A
+>gnome_vfs_application_registry_shutdown ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_shutdown
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Synchronize gnome-vfs application registry data to disk, and free
+resources.</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6006"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-RELOAD"
+></A
+>gnome_vfs_application_registry_reload ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_reload
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>If this function is called for the first time it will initialize the
+registry.  Subsequent calls to the function will clear out the current
+registry contents and load registry contents from the save file.  Make
+certain that you've saved your registry before calling this function.  It
+will destroy unsaved changes.</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6012"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-GET-MIME-APPLICATION"
+></A
+>gnome_vfs_application_registry_get_mime_application ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* gnome_vfs_application_registry_get_mime_application
+                                            (const char *app_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a structure that contains the application that handles
+the mime type associated by the application referred by app_id.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6019"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  registry id of the application</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSMimeApplication&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6032"
+></A
+><H3
+><A
+NAME="GNOME-VFS-APPLICATION-REGISTRY-SAVE-MIME-APPLICATION"
+></A
+>gnome_vfs_application_registry_save_mime_application ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_application_registry_save_mime_application
+                                            (const <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This will save to the registry the application that will be associated with
+a defined mime type.  The defined mime type is located within the
+GnomeVFSMimeApplication structure.  Changes are not realized until the
+gnome_vfs_application_registry_sync function is called.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6039"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> application associated with the mime type</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-mime-sniff-buffer.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-mime-magic.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Algorithmic Sniff Buffer</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Magic MIME Detection</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

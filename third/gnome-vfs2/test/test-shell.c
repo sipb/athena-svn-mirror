@@ -547,6 +547,7 @@ do_info (void)
 	GnomeVFSResult    result;
 	GnomeVFSFileInfo *info;
 	const char *mime_type;
+       struct tm *loctime;
 
 	from = get_fname ();
 
@@ -584,7 +585,9 @@ do_info (void)
 			fprintf (stdout, "block");
 			break;
 		case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
-			fprintf (stdout, "symlink");
+			fprintf (stdout, "symlink\n");
+                       fprintf (stdout, "symlink points to: %s", 
+                                                     info->symlink_name);
 			break;
 		default:
 			fprintf (stdout, "Error; invalid value");
@@ -605,10 +608,19 @@ do_info (void)
 	mime_type = gnome_vfs_file_info_get_mime_type (info);
 
 	fprintf (stdout, "Mime Type: %s \n", mime_type);
-
+        
+       loctime = localtime(&info->atime);
+       fprintf (stdout, "Last Accessed: %s", asctime(loctime));
+       loctime = localtime(&info->mtime);
+       fprintf (stdout, "Last Modified: %s", asctime(loctime));
+       loctime = localtime(&info->ctime);
+       fprintf (stdout, "Last Changed: %s", asctime(loctime));
+        
+       fprintf (stdout, "uid: %d\n", info->uid);
+       fprintf (stdout, "gid: %d\n", info->gid);
 	fprintf (stdout, "\n");
 	/* FIXME bugzilla.eazel.com 2800: hack here; should dump them all */
-	    
+	
 	gnome_vfs_file_info_unref (info);
 }
 

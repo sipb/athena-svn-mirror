@@ -42,23 +42,23 @@ static guint async_job_callback_map_next_id;
 void async_job_callback_map_destroy (void);
 
 void 
-gnome_vfs_async_job_map_init (void)
+_gnome_vfs_async_job_map_init (void)
 {
 }
 
 GnomeVFSJob *
-gnome_vfs_async_job_map_get_job (const GnomeVFSAsyncHandle *handle)
+_gnome_vfs_async_job_map_get_job (const GnomeVFSAsyncHandle *handle)
 {
-	gnome_vfs_async_job_map_assert_locked ();
+	_gnome_vfs_async_job_map_assert_locked ();
 	g_assert (async_job_map != NULL);
 
 	return g_hash_table_lookup (async_job_map, handle);
 }
 
 void
-gnome_vfs_async_job_map_add_job (GnomeVFSJob *job)
+_gnome_vfs_async_job_map_add_job (GnomeVFSJob *job)
 {
-	gnome_vfs_async_job_map_lock ();
+	_gnome_vfs_async_job_map_lock ();
 
 	g_assert (!async_job_map_shutting_down);
 
@@ -74,26 +74,26 @@ gnome_vfs_async_job_map_add_job (GnomeVFSJob *job)
 
 	g_hash_table_insert (async_job_map, job->job_handle, job);
 
-	gnome_vfs_async_job_map_unlock ();
+	_gnome_vfs_async_job_map_unlock ();
 }
 
 void
-gnome_vfs_async_job_map_remove_job (GnomeVFSJob *job)
+_gnome_vfs_async_job_map_remove_job (GnomeVFSJob *job)
 {
-	gnome_vfs_async_job_map_lock ();
+	_gnome_vfs_async_job_map_lock ();
 	
 	g_assert (async_job_map);
 
 	g_hash_table_remove (async_job_map, job->job_handle);
 	
-	gnome_vfs_async_job_map_unlock ();
+	_gnome_vfs_async_job_map_unlock ();
 }
 
 
 static void
 gnome_vfs_async_job_map_destroy (void)
 {
-	gnome_vfs_async_job_map_assert_locked ();
+	_gnome_vfs_async_job_map_assert_locked ();
 	g_assert (async_job_map_shutting_down);
 	g_assert (async_job_map != NULL);
 	
@@ -102,18 +102,18 @@ gnome_vfs_async_job_map_destroy (void)
 }
 
 gboolean 
-gnome_vfs_async_job_completed (GnomeVFSAsyncHandle *handle)
+_gnome_vfs_async_job_completed (GnomeVFSAsyncHandle *handle)
 {
 	GnomeVFSJob *job;
 
-	gnome_vfs_async_job_map_lock ();
+	_gnome_vfs_async_job_map_lock ();
 
 	JOB_DEBUG (("%d", GPOINTER_TO_UINT (handle)));
 	/* Job done, remove it's id from the map */
 
 	g_assert (async_job_map != NULL);
 
-	job = gnome_vfs_async_job_map_get_job (handle);
+	job = _gnome_vfs_async_job_map_get_job (handle);
 	if (job != NULL) {
 		g_hash_table_remove (async_job_map, handle);
 	}
@@ -123,15 +123,15 @@ gnome_vfs_async_job_completed (GnomeVFSAsyncHandle *handle)
 		gnome_vfs_async_job_map_destroy ();
 	}
 	
-	gnome_vfs_async_job_map_unlock ();
+	_gnome_vfs_async_job_map_unlock ();
 	
 	return job != NULL;
 }
 
 void
-gnome_vfs_async_job_map_shutdown (void)
+_gnome_vfs_async_job_map_shutdown (void)
 {
-	gnome_vfs_async_job_map_lock ();
+	_gnome_vfs_async_job_map_lock ();
 	
 	if (async_job_map) {
 
@@ -147,33 +147,33 @@ gnome_vfs_async_job_map_shutdown (void)
 	}
 
 	/* The last expiring job will delete the hash table. */
-	gnome_vfs_async_job_map_unlock ();
+	_gnome_vfs_async_job_map_unlock ();
 	
 	async_job_callback_map_destroy ();
 }
 
 void 
-gnome_vfs_async_job_map_lock (void)
+_gnome_vfs_async_job_map_lock (void)
 {
 	g_static_rec_mutex_lock (&async_job_map_lock);
 	async_job_map_locked++;
 }
 
 void 
-gnome_vfs_async_job_map_unlock (void)
+_gnome_vfs_async_job_map_unlock (void)
 {
 	async_job_map_locked--;
 	g_static_rec_mutex_unlock (&async_job_map_lock);
 }
 
 void 
-gnome_vfs_async_job_map_assert_locked (void)
+_gnome_vfs_async_job_map_assert_locked (void)
 {
 	g_assert (async_job_map_locked);
 }
 
 void 
-gnome_vfs_async_job_callback_valid (guint     callback_id,
+_gnome_vfs_async_job_callback_valid (guint     callback_id,
 				    gboolean *valid,
 				    gboolean *cancelled)
 {
@@ -197,7 +197,7 @@ gnome_vfs_async_job_callback_valid (guint     callback_id,
 }
 
 gboolean 
-gnome_vfs_async_job_add_callback (GnomeVFSJob *job, GnomeVFSNotifyResult *notify_result)
+_gnome_vfs_async_job_add_callback (GnomeVFSJob *job, GnomeVFSNotifyResult *notify_result)
 {
 	gboolean cancelled;
 
@@ -232,7 +232,7 @@ gnome_vfs_async_job_add_callback (GnomeVFSJob *job, GnomeVFSNotifyResult *notify
 }
 
 void 
-gnome_vfs_async_job_remove_callback (guint callback_id)
+_gnome_vfs_async_job_remove_callback (guint callback_id)
 {
 	g_assert (async_job_callback_map != NULL);
 
@@ -260,7 +260,7 @@ callback_map_cancel_one (gpointer key, gpointer value, gpointer user_data)
 }
 
 void
-gnome_vfs_async_job_cancel_job_and_callbacks (GnomeVFSAsyncHandle *job_handle, GnomeVFSJob *job)
+_gnome_vfs_async_job_cancel_job_and_callbacks (GnomeVFSAsyncHandle *job_handle, GnomeVFSJob *job)
 {
 	g_static_mutex_lock (&async_job_callback_map_lock);
 	

@@ -1,0 +1,3941 @@
+<HTML
+><HEAD
+><TITLE
+>uri</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Common Data Types"
+HREF="data-types.html"><LINK
+REL="PREVIOUS"
+TITLE="Result Codes"
+HREF="gnome-vfs-result.html"><LINK
+REL="NEXT"
+TITLE="MIME types & the Application Registry"
+HREF="mime-registry.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-result.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-URI"
+>uri</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4248"
+></A
+><H2
+>Name</H2
+>uri&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4251"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-NEW"
+>gnome_vfs_uri_new</A
+>              (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri);
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-REF"
+>gnome_vfs_uri_ref</A
+>              (GnomeVFSURI *uri);
+void        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-UNREF"
+>gnome_vfs_uri_unref</A
+>             (GnomeVFSURI *uri);
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-APPEND-STRING"
+>gnome_vfs_uri_append_string</A
+>    (const GnomeVFSURI *uri,
+                                             const char *path);
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-APPEND-PATH"
+>gnome_vfs_uri_append_path</A
+>      (const GnomeVFSURI *uri,
+                                             const char *path);
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-APPEND-FILE-NAME"
+>gnome_vfs_uri_append_file_name</A
+> (const GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *filename);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-TO-STRING"
+>gnome_vfs_uri_to_string</A
+>         (const GnomeVFSURI *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSURIHIDEOPTIONS"
+>GnomeVFSURIHideOptions</A
+> hide_options);
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-DUP"
+>gnome_vfs_uri_dup</A
+>              (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-IS-LOCAL"
+>gnome_vfs_uri_is_local</A
+>          (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-HAS-PARENT"
+>gnome_vfs_uri_has_parent</A
+>        (const GnomeVFSURI *uri);
+GnomeVFSURI* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-PARENT"
+>gnome_vfs_uri_get_parent</A
+>       (const GnomeVFSURI *uri);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSTOPLEVELURI"
+>GnomeVFSToplevelURI</A
+>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-TOPLEVEL"
+>gnome_vfs_uri_get_toplevel</A
+>
+                                            (const GnomeVFSURI *uri);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-HOST-NAME"
+>gnome_vfs_uri_get_host_name</A
+>    (const GnomeVFSURI *uri);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-SCHEME"
+>gnome_vfs_uri_get_scheme</A
+>       (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A>       <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-HOST-PORT"
+>gnome_vfs_uri_get_host_port</A
+>     (const GnomeVFSURI *uri);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-USER-NAME"
+>gnome_vfs_uri_get_user_name</A
+>    (const GnomeVFSURI *uri);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-PASSWORD"
+>gnome_vfs_uri_get_password</A
+>     (const GnomeVFSURI *uri);
+void        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-SET-HOST-NAME"
+>gnome_vfs_uri_set_host_name</A
+>     (GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *host_name);
+void        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-SET-HOST-PORT"
+>gnome_vfs_uri_set_host_port</A
+>     (GnomeVFSURI *uri,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> host_port);
+void        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-SET-USER-NAME"
+>gnome_vfs_uri_set_user_name</A
+>     (GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *user_name);
+void        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-SET-PASSWORD"
+>gnome_vfs_uri_set_password</A
+>      (GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *password);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-EQUAL"
+>gnome_vfs_uri_equal</A
+>             (const GnomeVFSURI *a,
+                                             const GnomeVFSURI *b);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-IS-PARENT"
+>gnome_vfs_uri_is_parent</A
+>         (const GnomeVFSURI *parent,
+                                             const GnomeVFSURI *item,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> recursive);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-PATH"
+>gnome_vfs_uri_get_path</A
+>         (const GnomeVFSURI *uri);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-GET-FRAGMENT-IDENTIFIER"
+>gnome_vfs_uri_get_fragment_identifier</A
+>
+                                            (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-EXTRACT-DIRNAME"
+>gnome_vfs_uri_extract_dirname</A
+>   (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-EXTRACT-SHORT-NAME"
+>gnome_vfs_uri_extract_short_name</A
+>
+                                            (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-EXTRACT-SHORT-PATH-NAME"
+>gnome_vfs_uri_extract_short_path_name</A
+>
+                                            (const GnomeVFSURI *uri);
+<A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-HEQUAL"
+>gnome_vfs_uri_hequal</A
+>            (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> a,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> b);
+<A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A>       <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-HASH"
+>gnome_vfs_uri_hash</A
+>              (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> p);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-LIST-REF"
+>gnome_vfs_uri_list_ref</A
+>          (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-LIST-UNREF"
+>gnome_vfs_uri_list_unref</A
+>        (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-LIST-COPY"
+>gnome_vfs_uri_list_copy</A
+>         (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+void        <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-LIST-FREE"
+>gnome_vfs_uri_list_free</A
+>         (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+#define     <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-MAGIC-CHR-CAPS"
+>GNOME_VFS_URI_MAGIC_CHR</A
+>
+#define     <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-MAGIC-STR-CAPS"
+>GNOME_VFS_URI_MAGIC_STR</A
+>
+#define     <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-PATH-CHR-CAPS"
+>GNOME_VFS_URI_PATH_CHR</A
+>
+#define     <A
+HREF="gnome-vfs-uri.html#GNOME-VFS-URI-PATH-STR-CAPS"
+>GNOME_VFS_URI_PATH_STR</A
+></PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4364"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4367"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4369"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-NEW"
+></A
+>gnome_vfs_uri_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_new              (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new URI from <TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4378"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A string representing a URI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new URI.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4391"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-REF"
+></A
+>gnome_vfs_uri_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_ref              (GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increment <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>'s reference count.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4400"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4414"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-UNREF"
+></A
+>gnome_vfs_uri_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_uri_unref             (GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrement <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>'s reference count.  If the reference count reaches zero,
+<TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> is destroyed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4423"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4432"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-APPEND-STRING"
+></A
+>gnome_vfs_uri_append_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_append_string    (const GnomeVFSURI *uri,
+                                             const char *path);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new URI obtained by appending <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+> to <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.  This will take care
+of adding an appropriate directory separator between the end of <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> and
+the start of <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+> if necessary.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4444"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new URI obtained by combining <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4463"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-APPEND-PATH"
+></A
+>gnome_vfs_uri_append_path ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_append_path      (const GnomeVFSURI *uri,
+                                             const char *path);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new URI obtained by appending <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+> to <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.  This will take care
+of adding an appropriate directory separator between the end of <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> and
+the start of <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+> if necessary as well as escaping <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+> as necessary.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4476"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A non-escaped file path</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new URI obtained by combining <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4495"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-APPEND-FILE-NAME"
+></A
+>gnome_vfs_uri_append_file_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_append_file_name (const GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new URI obtained by appending <TT
+CLASS="PARAMETER"
+><I
+>file_name</I
+></TT
+> to <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.  This will take care
+of adding an appropriate directory separator between the end of <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> and
+the start of <TT
+CLASS="PARAMETER"
+><I
+>file_name</I
+></TT
+> if necessary.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4508"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The new URI obtained by combining <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4527"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-TO-STRING"
+></A
+>gnome_vfs_uri_to_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gnome_vfs_uri_to_string         (const GnomeVFSURI *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSURIHIDEOPTIONS"
+>GnomeVFSURIHideOptions</A
+> hide_options);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Translate <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> into a printable string.  The string will not contain the
+URI elements specified by <TT
+CLASS="PARAMETER"
+><I
+>hide_options</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4538"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>hide_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Bitmask specifying what URI elements (e.g. password,
+user name etc.) should not be represented in the returned string.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A malloced printable string representing <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4556"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-DUP"
+></A
+>gnome_vfs_uri_dup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_dup              (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Duplicate <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4565"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to a new URI that is exactly the same as <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4579"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-IS-LOCAL"
+></A
+>gnome_vfs_uri_is_local ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_uri_is_local          (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check if <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> is a local (native) file system.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4588"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> is not a local file system, <TT
+CLASS="LITERAL"
+>TRUE</TT
+> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4604"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-HAS-PARENT"
+></A
+>gnome_vfs_uri_has_parent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_uri_has_parent        (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check if URI has a parent or not.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4612"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> has a parent, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4628"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-PARENT"
+></A
+>gnome_vfs_uri_get_parent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSURI* gnome_vfs_uri_get_parent       (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>'s parent URI.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4637"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>'s parent URI.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4651"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-TOPLEVEL"
+></A
+>gnome_vfs_uri_get_toplevel ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSTOPLEVELURI"
+>GnomeVFSToplevelURI</A
+>* gnome_vfs_uri_get_toplevel
+                                            (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve the toplevel URI in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4660"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to the toplevel URI object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4673"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-HOST-NAME"
+></A
+>gnome_vfs_uri_get_host_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_vfs_uri_get_host_name    (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve the host name for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4682"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A string representing the host name.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4695"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-SCHEME"
+></A
+>gnome_vfs_uri_get_scheme ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_vfs_uri_get_scheme       (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve the scheme used for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4704"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A string representing the scheme</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4717"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-HOST-PORT"
+></A
+>gnome_vfs_uri_get_host_port ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A>       gnome_vfs_uri_get_host_port     (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve the host port number in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4726"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The host port number used by <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.  If the value is zero, the
+default port value for the specified toplevel access method is used.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4740"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-USER-NAME"
+></A
+>gnome_vfs_uri_get_user_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_vfs_uri_get_user_name    (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve the user name in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4749"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A string representing the user name in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4763"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-PASSWORD"
+></A
+>gnome_vfs_uri_get_password ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_vfs_uri_get_password     (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve the password for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4772"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The password for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4786"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-SET-HOST-NAME"
+></A
+>gnome_vfs_uri_set_host_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_uri_set_host_name     (GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *host_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set <TT
+CLASS="PARAMETER"
+><I
+>host_name</I
+></TT
+> as the host name accessed by <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4796"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>host_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A string representing a host name.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4809"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-SET-HOST-PORT"
+></A
+>gnome_vfs_uri_set_host_port ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_uri_set_host_port     (GnomeVFSURI *uri,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> host_port);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the host port number in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.  If <TT
+CLASS="PARAMETER"
+><I
+>host_port</I
+></TT
+> is zero, the default port
+for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>'s toplevel access method is used.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4820"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>host_port</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A TCP/IP port number.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4833"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-SET-USER-NAME"
+></A
+>gnome_vfs_uri_set_user_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_uri_set_user_name     (GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *user_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set <TT
+CLASS="PARAMETER"
+><I
+>user_name</I
+></TT
+> as the user name for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4843"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A string representing a user name on the host accessed by <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4857"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-SET-PASSWORD"
+></A
+>gnome_vfs_uri_set_password ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_uri_set_password      (GnomeVFSURI *uri,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *password);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set <TT
+CLASS="PARAMETER"
+><I
+>password</I
+></TT
+> as the password for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4867"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>password</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A password string.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4880"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-EQUAL"
+></A
+>gnome_vfs_uri_equal ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_uri_equal             (const GnomeVFSURI *a,
+                                             const GnomeVFSURI *b);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Compare <TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4891"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+> are equal, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise.
+
+FIXME: This comparison should take into account the possiblity
+that unreserved characters may be escaped.
+...or perhaps gnome_vfs_uri_new should unescape unreserved characters?</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4912"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-IS-PARENT"
+></A
+>gnome_vfs_uri_is_parent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_uri_is_parent         (const GnomeVFSURI *parent,
+                                             const GnomeVFSURI *item,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> recursive);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check if <TT
+CLASS="PARAMETER"
+><I
+>possible_child</I
+></TT
+> is contained by <TT
+CLASS="PARAMETER"
+><I
+>possible_parent</I
+></TT
+>.
+If <TT
+CLASS="PARAMETER"
+><I
+>recursive</I
+></TT
+> is FALSE, just try the immediate parent directory, else
+search up through the hierarchy.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4925"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>parent</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>item</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recursive</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a flag to turn recursive check on.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>possible_child</I
+></TT
+> is contained in  <TT
+CLASS="PARAMETER"
+><I
+>possible_child</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4949"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-PATH"
+></A
+>gnome_vfs_uri_get_path ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_vfs_uri_get_path         (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve full path name for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4958"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to the full path name in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>.  Notice that the
+pointer points to the name store in <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>, so the name returned must not
+be modified nor freed.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4973"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-GET-FRAGMENT-IDENTIFIER"
+></A
+>gnome_vfs_uri_get_fragment_identifier ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gnome_vfs_uri_get_fragment_identifier
+                                            (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4980"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4993"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-EXTRACT-DIRNAME"
+></A
+>gnome_vfs_uri_extract_dirname ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gnome_vfs_uri_extract_dirname   (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Extract the name of the directory in which the file pointed to by <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> is
+stored as a newly allocated string.  The string will end with a
+GNOME_VFS_URI_PATH_CHR.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5002"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to the newly allocated string representing the
+parent directory.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5015"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-EXTRACT-SHORT-NAME"
+></A
+>gnome_vfs_uri_extract_short_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gnome_vfs_uri_extract_short_name
+                                            (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve base file name for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>, ignoring any trailing path separators.
+This matches the XPG definition of basename, but not g_basename. This is
+often useful when you want the name of something that's pointed to by a
+uri, and don't care whether the uri has a directory or file form.
+If <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> points to the root of a domain, returns the host name. If there's
+no host name, returns GNOME_VFS_URI_PATH_STR.</P
+><P
+>See also: gnome_vfs_uri_extract_short_path_name.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5026"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to the newly allocated string representing the
+unescaped short form of the name.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5039"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-EXTRACT-SHORT-PATH-NAME"
+></A
+>gnome_vfs_uri_extract_short_path_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gnome_vfs_uri_extract_short_path_name
+                                            (const GnomeVFSURI *uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve base file name for <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>, ignoring any trailing path separators.
+This matches the XPG definition of basename, but not g_basename. This is
+often useful when you want the name of something that's pointed to by a
+uri, and don't care whether the uri has a directory or file form.
+If <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+> points to the root (including the root of any domain),
+returns GNOME_VFS_URI_PATH_STR.</P
+><P
+>See also: gnome_vfs_uri_extract_short_name.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5050"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSURI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to the newly allocated string representing the
+escaped short form of the name.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5063"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-HEQUAL"
+></A
+>gnome_vfs_uri_hequal ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        gnome_vfs_uri_hequal            (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> a,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> b);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5071"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5088"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-HASH"
+></A
+>gnome_vfs_uri_hash ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A>       gnome_vfs_uri_hash              (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> p);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5095"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>p</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5108"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-LIST-REF"
+></A
+>gnome_vfs_uri_list_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_uri_list_ref          (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5115"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5128"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-LIST-UNREF"
+></A
+>gnome_vfs_uri_list_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_uri_list_unref        (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5135"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5148"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-LIST-COPY"
+></A
+>gnome_vfs_uri_list_copy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_uri_list_copy         (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5155"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5168"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-LIST-FREE"
+></A
+>gnome_vfs_uri_list_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_uri_list_free         (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5174"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5183"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-MAGIC-CHR-CAPS"
+></A
+>GNOME_VFS_URI_MAGIC_CHR</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_URI_MAGIC_CHR	'#'</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5188"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-MAGIC-STR-CAPS"
+></A
+>GNOME_VFS_URI_MAGIC_STR</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_URI_MAGIC_STR "#"</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5193"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-PATH-CHR-CAPS"
+></A
+>GNOME_VFS_URI_PATH_CHR</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_URI_PATH_CHR '/'</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5198"
+></A
+><H3
+><A
+NAME="GNOME-VFS-URI-PATH-STR-CAPS"
+></A
+>GNOME_VFS_URI_PATH_STR</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_URI_PATH_STR "/"</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-result.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Result Codes</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>MIME types &#38; the Application Registry</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -136,14 +136,14 @@ wake_up (GIOChannel *source,
 	if (WIFSIGNALED (status)) {
 		g_hash_table_remove (pid_to_process,
 				     GINT_TO_POINTER (process->pid));
-		gnome_vfs_process_free (process);
+		_gnome_vfs_process_free (process);
 	}
 
 	return TRUE;
 }
 
 gboolean
-gnome_vfs_process_init (void)
+_gnome_vfs_process_init (void)
 {
 	gint pipe_fd[2];
 	struct sigaction sigchld_action;
@@ -179,7 +179,7 @@ gnome_vfs_process_init (void)
 }
 
 /**
- * gnome_vfs_process_new:
+ * _gnome_vfs_process_new:
  * @file_name: Name of the executable.
  * @argv: NULL-terminated parameter list.
  * @use_search_path: If TRUE, use the `PATH' environment variable to locate
@@ -198,7 +198,7 @@ gnome_vfs_process_init (void)
  * Return value: An opaque structure describing the launched process.
  **/
 GnomeVFSProcess *
-gnome_vfs_process_new (const gchar *file_name,
+_gnome_vfs_process_new (const gchar *file_name,
 		       const gchar * const argv[],
 		       GnomeVFSProcessOptions options,
 		       GnomeVFSProcessInitFunc init_func,
@@ -235,21 +235,21 @@ gnome_vfs_process_new (const gchar *file_name,
 }
 
 /**
- * gnome_vfs_process_free:
+ * _gnome_vfs_process_free:
  * @process: An existing process.
  * 
  * Free @process.  This will not kill the process, but will prevent the
  * associated callbacks to be called.
  **/
 void
-gnome_vfs_process_free (GnomeVFSProcess *process)
+_gnome_vfs_process_free (GnomeVFSProcess *process)
 {
 	g_hash_table_remove (pid_to_process, GINT_TO_POINTER (process->pid));
 	g_free (process);
 }
 
 /**
- * gnome_vfs_process_signal:
+ * _gnome_vfs_process_signal:
  * @process: A launched process
  * @signal_number: A signal number
  * 
@@ -258,7 +258,7 @@ gnome_vfs_process_free (GnomeVFSProcess *process)
  * Return value: A numeric value reporting the result of the operation.
  **/
 GnomeVFSProcessRunResult
-gnome_vfs_process_signal (GnomeVFSProcess *process,
+_gnome_vfs_process_signal (GnomeVFSProcess *process,
 			  guint signal_number)
 {
 	gint kill_result;

@@ -6,8 +6,8 @@
 
 G_BEGIN_DECLS
 
-void	    gnome_vfs_get_current_context       (/* OUT */ GnomeVFSContext **context);
-void        gnome_vfs_dispatch_module_callback  (GnomeVFSAsyncModuleCallback    callback,
+void	    _gnome_vfs_get_current_context       (/* OUT */ GnomeVFSContext **context);
+void        _gnome_vfs_dispatch_module_callback  (GnomeVFSAsyncModuleCallback    callback,
 						 gconstpointer                  in,
 						 gsize                          in_size,
 						 gpointer                       out, 

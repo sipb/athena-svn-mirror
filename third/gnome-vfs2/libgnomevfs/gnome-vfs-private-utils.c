@@ -21,7 +21,7 @@
 
    Author: Ettore Perazzoli <ettore@comm2000.it>
 
-   `gnome_vfs_canonicalize_pathname()' derived from code by Brian Fox and Chet
+   `_gnome_vfs_canonicalize_pathname()' derived from code by Brian Fox and Chet
    Ramey in GNU Bash, the Bourne Again SHell.  Copyright (C) 1987, 1988, 1989,
    1990, 1991, 1992 Free Software Foundation, Inc.  */
 
@@ -96,7 +96,7 @@ collapse_slash_runs (char *path, int from_offset)
      Non-leading `../'s and trailing `..'s are handled by removing
      portions of the path.  */
 gchar *
-gnome_vfs_canonicalize_pathname (gchar *path)
+_gnome_vfs_canonicalize_pathname (gchar *path)
 {
 	int i, marker;
 
@@ -480,11 +480,11 @@ gnome_vfs_atotm (const gchar *time_string,
 	return FALSE;
 }
 
-/* gnome_vfs_istr_has_prefix
+/* _gnome_vfs_istr_has_prefix
  * copy-pasted from Nautilus
  */
 gboolean
-gnome_vfs_istr_has_prefix (const char *haystack, const char *needle)
+_gnome_vfs_istr_has_prefix (const char *haystack, const char *needle)
 {
 	const char *h, *n;
 	char hc, nc;
@@ -507,11 +507,11 @@ gnome_vfs_istr_has_prefix (const char *haystack, const char *needle)
 	return FALSE;
 }
 
-/* gnome_vfs_istr_has_suffix
+/* _gnome_vfs_istr_has_suffix
  * copy-pasted from Nautilus
  */
 gboolean
-gnome_vfs_istr_has_suffix (const char *haystack, const char *needle)
+_gnome_vfs_istr_has_suffix (const char *haystack, const char *needle)
 {
 	const char *h, *n;
 	char hc, nc;

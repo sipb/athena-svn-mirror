@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+Listing Directory Contents</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-directory-operations.html" title="Directory Handling"><link rel="previous" href="gnome-vfs-gnome-vfs-directory-basic-ops.html" title="
+Basic Directory Operations"><link rel="next" href="gnome-vfs-gnome-vfs-directory-find-ops.html" title="
+Locating Standard Directories"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-directory-basic-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-directory-operations.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-directory-find-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-directory-list-ops"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+Listing Directory Contents</h2><p>
+Listing Directory Contents &#8212; 
+Listing the contents of directories.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a>;
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    (<a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">*GnomeVFSDirectoryVisitFunc</a>)   (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *rel_path,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> recursing_will_loop,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *recurse);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-open">gnome_vfs_directory_open</a>     (GnomeVFSDirectoryHandle **handle,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-open-from-uri">gnome_vfs_directory_open_from_uri</a>
+                                            (GnomeVFSDirectoryHandle **handle,
+                                             GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-read-next">gnome_vfs_directory_read_next</a>
+                                            (GnomeVFSDirectoryHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *file_info);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-close">gnome_vfs_directory_close</a>    (GnomeVFSDirectoryHandle *handle);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-visit">gnome_vfs_directory_visit</a>    (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-visit-uri">gnome_vfs_directory_visit_uri</a>
+                                            (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-visit-files">gnome_vfs_directory_visit_files</a>
+                                            (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *file_list,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-visit-files-at-uri">gnome_vfs_directory_visit_files_at_uri</a>
+                                            (GnomeVFSURI *uri,
+                                             <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *file_list,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#gnome-vfs-directory-list-load">gnome_vfs_directory_list_load</a>
+                                            (<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> **list,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GnomeVFSDirectoryVisitOptions"></a>enum GnomeVFSDirectoryVisitOptions</h3><pre class="programlisting">typedef enum {
+	GNOME_VFS_DIRECTORY_VISIT_DEFAULT = 0,
+	GNOME_VFS_DIRECTORY_VISIT_SAMEFS = 1 &lt;&lt; 0,
+	GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK = 1 &lt;&lt; 1
+} GnomeVFSDirectoryVisitOptions;
+</pre><p>
+This options control the way in which directories are visited.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><tt>GNOME_VFS_DIRECTORY_VISIT_DEFAULT</tt></span></td><td> 
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_DIRECTORY_VISIT_SAMEFS</tt></span></td><td> Visit only directories on the same 
+file system as the parent
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK</tt></span></td><td> Loop prevention
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GnomeVFSDirectoryVisitFunc"></a>GnomeVFSDirectoryVisitFunc ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    (*GnomeVFSDirectoryVisitFunc)   (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *rel_path,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> recursing_will_loop,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *recurse);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>rel_path</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>recursing_will_loop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>recurse</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-open"></a>gnome_vfs_directory_open ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_open     (GnomeVFSDirectoryHandle **handle,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);</pre><p>
+Open directory <i><tt>text_uri</tt></i> for reading.  On return, @*handle will point to
+a <tt>GnomeVFSDirectoryHandle</tt> object which can be used to read the directory
+entries one by one.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> A pointer to a pointer to a GnomeVFSDirectoryHandle object
+</td></tr><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> String representing the URI to open
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> Options for reading file information
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-open-from-uri"></a>gnome_vfs_directory_open_from_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_open_from_uri
+                                            (GnomeVFSDirectoryHandle **handle,
+                                             GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);</pre><p>
+Open directory <i><tt>text_uri</tt></i> for reading.  On return, @*handle will point to
+a <tt>GnomeVFSDirectoryHandle</tt> object which can be used to read the directory
+entries one by one.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> A pointer to a pointer to a GnomeVFSDirectoryHandle object
+</td></tr><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI to open
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> Options for reading file information
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-read-next"></a>gnome_vfs_directory_read_next ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_read_next
+                                            (GnomeVFSDirectoryHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *file_info);</pre><p>
+Read the next directory entry from <i><tt>handle</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> A directory handle
+</td></tr><tr><td><span class="term"><i><tt>file_info</tt></i> :</span></td><td> Pointer to a <tt>GnomeVFSFileInfo</tt> struct where the data about
+the entry will be stored
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer value representing the result of the operation.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-close"></a>gnome_vfs_directory_close ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_close    (GnomeVFSDirectoryHandle *handle);</pre><p>
+Close <i><tt>handle</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> A directory handle.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-visit"></a>gnome_vfs_directory_visit ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_visit    (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre><p>
+Visit <i><tt>uri</tt></i>, retrieving information as specified by <i><tt>info_options</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI to start from
+</td></tr><tr><td><span class="term"><i><tt>info_options</tt></i> :</span></td><td> Options specifying what kind of file information must be
+retrieved
+</td></tr><tr><td><span class="term"><i><tt>visit_options</tt></i> :</span></td><td> Options specifying the type of visit
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> Callback to be called for every visited file
+</td></tr><tr><td><span class="term"><i><tt>data</tt></i> :</span></td><td> Data to be passed to <i><tt>callback</tt></i> at each iteration
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-visit-uri"></a>gnome_vfs_directory_visit_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_visit_uri
+                                            (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre><p>
+Visit <i><tt>uri</tt></i>, retrieving information as specified by <i><tt>info_options</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI to start from
+</td></tr><tr><td><span class="term"><i><tt>info_options</tt></i> :</span></td><td> Options specifying what kind of file information must be
+retrieved
+</td></tr><tr><td><span class="term"><i><tt>visit_options</tt></i> :</span></td><td> Options specifying the type of visit
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> Callback to be called for every visited file
+</td></tr><tr><td><span class="term"><i><tt>data</tt></i> :</span></td><td> Data to be passed to <i><tt>callback</tt></i> at each iteration
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A result code indicating whether the operation succeeded. 
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-visit-files"></a>gnome_vfs_directory_visit_files ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_visit_files
+                                            (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *file_list,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre><p>
+Fetches information about a list of files in a base URI <i><tt>uri</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> string representing the URI of a directory to &quot;visit&quot; the files in
+</td></tr><tr><td><span class="term"><i><tt>file_list</tt></i> :</span></td><td> GList of char *s of file names in <i><tt>uri</tt></i> to visit
+</td></tr><tr><td><span class="term"><i><tt>info_options</tt></i> :</span></td><td> bitmask controlling the type of information to fetch
+</td></tr><tr><td><span class="term"><i><tt>visit_options</tt></i> :</span></td><td> options controlling e.g. loop prevention, and filesystem checks.
+Affects the way visiting is done.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> function to call with the file info structs
+</td></tr><tr><td><span class="term"><i><tt>data</tt></i> :</span></td><td> data to pass to <i><tt>callback</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GnomeVFSResult indication the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-visit-files-at-uri"></a>gnome_vfs_directory_visit_files_at_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_visit_files_at_uri
+                                            (GnomeVFSURI *uri,
+                                             <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *file_list,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> info_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</a> visit_options,
+                                             <a href="gnome-vfs-gnome-vfs-directory-list-ops.html#GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre><p>
+Fetches information about a list of files in a base URI <i><tt>uri</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI of a directory to &quot;visit&quot; the files in
+</td></tr><tr><td><span class="term"><i><tt>file_list</tt></i> :</span></td><td> GList of char *s of file names in <i><tt>uri</tt></i> to visit
+</td></tr><tr><td><span class="term"><i><tt>info_options</tt></i> :</span></td><td> bitmask controlling the type of information to fetch
+</td></tr><tr><td><span class="term"><i><tt>visit_options</tt></i> :</span></td><td> options controlling e.g. loop prevention, and filesystem checks.
+Affects the way visiting is done.
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> function to call with the file info structs
+</td></tr><tr><td><span class="term"><i><tt>data</tt></i> :</span></td><td> data to pass to <i><tt>callback</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GnomeVFSResult indication the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-directory-list-load"></a>gnome_vfs_directory_list_load ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_directory_list_load
+                                            (<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> **list,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);</pre><p>
+Load a directory from <i><tt>text_uri</tt></i> with the specified <i><tt>options</tt></i>
+into a list.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>list</tt></i> :</span></td><td> An address of a pointer to a list of GnomeVFSFileInfo
+</td></tr><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> A text URI
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> Options for loading the directory 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-directory-basic-ops.html"><b>&lt;&lt; 
+Basic Directory Operations</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-directory-find-ops.html"><b>
+Locating Standard Directories &gt;&gt;</b></a></td></tr></table></body></html>

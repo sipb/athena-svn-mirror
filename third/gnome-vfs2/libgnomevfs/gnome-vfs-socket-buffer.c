@@ -60,7 +60,17 @@ buffer_init (Buffer *buffer)
 	buffer->last_error = GNOME_VFS_OK;
 }
 
-
+/**
+ * gnome_vfs_socket_buffer_new:
+ * @socket: socket to be buffered
+ *
+ * Create a socket buffer around @socket. A buffered
+ * socket allows data to be poked at without reading it
+ * as it will be buffered. A future read will retrieve
+ * the data again.
+ *
+ * Return value: a newly allocated GnomeVFSSocketBuffer
+ **/
 GnomeVFSSocketBuffer*  
 gnome_vfs_socket_buffer_new (GnomeVFSSocket *socket)
 {
@@ -77,16 +87,25 @@ gnome_vfs_socket_buffer_new (GnomeVFSSocket *socket)
 	return socket_buffer;
 }
 
+/**
+ * gnome_vfs_socket_buffer_destroy:
+ * @socket_buffer: buffered socket to destray
+ * @close_socket: if %TRUE the socket being buffered will be closed too
+ *
+ * Free the socket buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult   
-gnome_vfs_socket_buffer_destroy  (GnomeVFSSocketBuffer *buffer, 
+gnome_vfs_socket_buffer_destroy  (GnomeVFSSocketBuffer *socket_buffer, 
 				  gboolean close_socket)
 {
-	gnome_vfs_socket_buffer_flush (buffer);
+	gnome_vfs_socket_buffer_flush (socket_buffer);
 
         if (close_socket) {
-		gnome_vfs_socket_close (buffer->socket);
+		gnome_vfs_socket_close (socket_buffer->socket);
 	}
-	g_free (buffer);
+	g_free (socket_buffer);
 	return GNOME_VFS_OK;
 }
 
@@ -123,7 +142,19 @@ refill_input_buffer (GnomeVFSSocketBuffer *socket_buffer)
 
 	return TRUE;
 }
- 
+
+/**
+ * gnome_vfs_socket_buffer_read:
+ * @socket_buffer: buffered socket to read data from
+ * @buffer: allocated buffer of at least @bytes bytes to be read into
+ * @bytes: number of bytes to read from @socket into @socket_buffer
+ * @bytes_read: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually read from the socket on return.
+ *
+ * Read @bytes bytes of data from the @socket into @socket_buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult   
 gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 			      gpointer buffer,
@@ -179,15 +210,27 @@ gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 	return result;
 }
 
+/**
+ * gnome_vfs_socket_buffer_peekc:
+ * @socket_buffer: the socket buffer to read from
+ * @character: pointer to a char, will contain a character on return from
+ * a successful "peek"
+ *
+ * Peek at the next character in @socket_buffer without actually reading
+ * the character in. The next read will retrieve @c (as well as any following
+ * data if requested).
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_socket_buffer_peekc (GnomeVFSSocketBuffer *socket_buffer,
-			       gchar *c)
+			       gchar *character)
 {
 	GnomeVFSResult result;
 	Buffer *input_buffer;
 
 	g_return_val_if_fail (socket_buffer != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	g_return_val_if_fail (c != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (character != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
 	input_buffer = &socket_buffer->input_buffer;
 	result = GNOME_VFS_OK;
@@ -202,7 +245,7 @@ gnome_vfs_socket_buffer_peekc (GnomeVFSSocketBuffer *socket_buffer,
 	}
 
 	if (result == GNOME_VFS_OK) {
-		*c = *input_buffer->data;
+		*character = *(input_buffer->data + input_buffer->offset);
 	}
 
 	return result;
@@ -231,7 +274,18 @@ flush (GnomeVFSSocketBuffer *socket_buffer)
 	return GNOME_VFS_OK;
 }
 
-
+/**
+ * gnome_vfs_socket_buffer_write:
+ * @socket_buffer: buffered socket to write data to
+ * @buffer: data to write to the socket
+ * @bytes: number of bytes from @buffer to write to @socket_buffer
+ * @bytes_written: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually written to the socket on return.
+ *
+ * Write @bytes bytes of data from @buffer to @socket_buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/ 
 GnomeVFSResult   
 gnome_vfs_socket_buffer_write (GnomeVFSSocketBuffer *socket_buffer, 
 			       gconstpointer buffer,
@@ -279,6 +333,14 @@ gnome_vfs_socket_buffer_write (GnomeVFSSocketBuffer *socket_buffer,
 	return result;
 }
 
+/**
+ * gnome_vfs_socket_buffer_flush:
+ * @socket_buffer: buffer to flush
+ *
+ * Write all outstanding data to @socket_buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult   
 gnome_vfs_socket_buffer_flush (GnomeVFSSocketBuffer *socket_buffer)
 {

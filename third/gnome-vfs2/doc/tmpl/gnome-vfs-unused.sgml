@@ -1,817 +1,114 @@
-<!-- ##### SECTION ./tmpl/app-context.sgml:Long_Description ##### -->
->>>>>>> 1.19
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:Long_Description ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### SECTION ./tmpl/app-context.sgml:See_Also ##### -->
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:See_Also ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### SECTION ./tmpl/app-context.sgml:Short_Description ##### -->
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:Short_Description ##### -->
+
+Reading the contents of directories
 
 
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:Title ##### -->
 
-<!-- ##### SECTION ./tmpl/app-context.sgml:Title ##### -->
-app-context
-
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
+Directory Operations
 
 
-<!-- ##### SECTION ./tmpl/backend.sgml:Long_Description ##### -->
-<para>
->>>>>>> 1.19
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### SECTION ./tmpl/backend.sgml:See_Also ##### -->
-<para>
->>>>>>> 1.19
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### SECTION ./tmpl/backend.sgml:Short_Description ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/backend.sgml:Title ##### -->
-Backend
-
-
-<!-- ##### SECTION ./tmpl/constants.sgml:Long_Description ##### -->
->>>>>>> 1.19
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:Long_Description ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### SECTION ./tmpl/constants.sgml:See_Also ##### -->
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:See_Also ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### SECTION ./tmpl/constants.sgml:Short_Description ##### -->
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:Short_Description ##### -->
+
+utilities for locating standard directories such as the desktop and trash
 
 
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:Title ##### -->
 
-<!-- ##### SECTION ./tmpl/constants.sgml:Title ##### -->
-Constants
-
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
+Locating Standard Directories
 
 
-<!-- ##### SECTION ./tmpl/directory-filter.sgml:Long_Description ##### -->
->>>>>>> 1.19
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:Long_Description ##### -->
 <para>
 
 </para>
 
 
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### SECTION ./tmpl/directory-filter.sgml:See_Also ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-
-<!-- ##### SECTION ./tmpl/directory-filter.sgml:Short_Description ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/directory-filter.sgml:Title ##### -->
-Directory Filter
-
-
-<!-- ##### SECTION ./tmpl/fnmatch.sgml:Long_Description ##### -->
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:See_Also ##### -->
 <para>
 
 </para>
 
 
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:Short_Description ##### -->
 
-<<<<<<< gnome-vfs-unused.sgml
-=======
+attach extra pieces of information to files, such as icons or positions
 
 
-<!-- ##### SECTION ./tmpl/fnmatch.sgml:See_Also ##### -->
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:Title ##### -->
+
+Metadata
+
+
+<!-- ##### MACRO GNOME_VFS_METADATA_CONST ##### -->
 <para>
->>>>>>> 1.19
 
-@process: 
-@status: 
-@data: 
+</para>
 
-<<<<<<< gnome-vfs-unused.sgml
+@obj: 
 
-<!-- ##### SECTION ./tmpl/fnmatch.sgml:Short_Description ##### -->
->>>>>>> 1.19
-
-
-<!-- ##### SECTION ./tmpl/fnmatch.sgml:Title ##### -->
-File Matching
-
-
-<!-- ##### SECTION ./tmpl/list-sort.sgml:Long_Description ##### -->
-<para>
-=======
-
-
-<!-- ##### SECTION ./tmpl/list-sort.sgml:See_Also ##### -->
+<!-- ##### STRUCT GnomeVfsMetadataPrivate ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### SECTION ./tmpl/list-sort.sgml:Short_Description ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/list-sort.sgml:Title ##### -->
-list-sort
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### SECTION ./tmpl/module-api.sgml:Long_Description ##### -->
->>>>>>> 1.19
+<!-- ##### FUNCTION gnome_vfs_metadata_get_int ##### -->
 <para>
 
 </para>
 
-@a: 
-@b: 
-@data: 
+@self: 
+@key: 
 @Returns: 
 
-<!-- ##### SECTION ./tmpl/module-api.sgml:See_Also ##### -->
+<!-- ##### FUNCTION gnome_vfs_metadata_new ##### -->
 <para>
 
 </para>
 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### SECTION ./tmpl/module-api.sgml:Short_Description ##### -->
->>>>>>> 1.19
-
-
-<!-- ##### SECTION ./tmpl/module-api.sgml:Title ##### -->
-module-api
-
-
-<!-- ##### SECTION ./tmpl/regexp-filter.sgml:Long_Description ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/regexp-filter.sgml:See_Also ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/regexp-filter.sgml:Short_Description ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/regexp-filter.sgml:Title ##### -->
-regexp-filter
-
-
-<!-- ##### SECTION ./tmpl/seekable.sgml:Long_Description ##### -->
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### SECTION ./tmpl/seekable.sgml:See_Also ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-
-<!-- ##### SECTION ./tmpl/seekable.sgml:Short_Description ##### -->
->>>>>>> 1.19
-
-
-<!-- ##### SECTION ./tmpl/seekable.sgml:Title ##### -->
-seekable
-
-
-<!-- ##### SECTION ./tmpl/shellpattern-filter.sgml:Long_Description ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/shellpattern-filter.sgml:See_Also ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/shellpattern-filter.sgml:Short_Description ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/shellpattern-filter.sgml:Title ##### -->
-shellpattern-filter
-
-
-<!-- ##### MACRO FNM_CASEFOLD ##### -->
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### MACRO FNM_FILE_NAME ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-<<<<<<< gnome-vfs-unused.sgml
-
-@list: 
-@compare_func: 
-@data: 
-@Returns: 
-=======
->>>>>>> 1.19
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### MACRO FNM_LEADING_DIR ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### MACRO FNM_NOESCAPE ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-
-<!-- ##### MACRO FNM_NOMATCH ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO FNM_PATHNAME ##### -->
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### MACRO FNM_PERIOD ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### MACRO GNOME_VFS_HOOKNAME_BASIC_AUTH ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-
-<!-- ##### MACRO GNOME_VFS_HOOKNAME_HTTP_PROXY_AUTH ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### USER_FUNCTION GnomeVFSCallback ##### -->
-<para>
-
-</para>
-
-@user_data: 
-@in: 
-@in_size: 
-@out: 
-@out_size: 
-
-<!-- ##### TYPEDEF GnomeVFSCallbackSimpleAuthIn ##### -->
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### TYPEDEF GnomeVFSCallbackSimpleAuthOut ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### USER_FUNCTION GnomeVFSDirectoryFilterFunc ##### -->
-<para>
->>>>>>> 1.19
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### ENUM GnomeVFSDirectoryFilterNeeds ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-@GNOME_VFS_DIRECTORY_FILTER_NEEDS_NOTHING: 
-@GNOME_VFS_DIRECTORY_FILTER_NEEDS_NAME: 
-@GNOME_VFS_DIRECTORY_FILTER_NEEDS_TYPE: 
-@GNOME_VFS_DIRECTORY_FILTER_NEEDS_STAT: 
-@GNOME_VFS_DIRECTORY_FILTER_NEEDS_MIMETYPE: 
-
-<!-- ##### ENUM GnomeVFSDirectoryFilterOptions ##### -->
-<para>
-
-</para>
-
-@GNOME_VFS_DIRECTORY_FILTER_DEFAULT: 
-@GNOME_VFS_DIRECTORY_FILTER_NODIRS: 
-@GNOME_VFS_DIRECTORY_FILTER_DIRSONLY: 
-@GNOME_VFS_DIRECTORY_FILTER_NODOTFILES: 
-@GNOME_VFS_DIRECTORY_FILTER_IGNORECASE: 
-@GNOME_VFS_DIRECTORY_FILTER_EXTENDEDREGEXP: 
-@GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR: 
-@GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR: 
-@GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES: 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### ENUM GnomeVFSDirectoryFilterType ##### -->
-<para>
->>>>>>> 1.19
-
-</para>
-
-@GNOME_VFS_DIRECTORY_FILTER_NONE: 
-@GNOME_VFS_DIRECTORY_FILTER_SHELLPATTERN: 
-@GNOME_VFS_DIRECTORY_FILTER_REGEXP: 
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### USER_FUNCTION GnomeVFSListCompareFunc ##### -->
-<para>
->>>>>>> 1.19
-
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-@a: 
-@b: 
-@data: 
+@uri: 
 @Returns: 
 
->>>>>>> 1.19
-
-<!-- ##### TYPEDEF GnomeVFSMimeAction ##### -->
+<!-- ##### FUNCTION gnome_vfs_metadata_set_int ##### -->
 <para>
 
 </para>
 
-
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackAuthenticationIn ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### STRUCT GnomeVFSProcess ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### USER_FUNCTION GnomeVFSProcessCallback ##### -->
-<para>
->>>>>>> 1.16
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-</para>
-
-@process: 
-@status: 
-@data: 
->>>>>>> 1.19
-
-<!-- ##### USER_FUNCTION GnomeVFSProcessInitFunc ##### -->
-<para>
-
-</para>
-
-@data: 
-
-<!-- ##### ENUM GnomeVFSProcessOptions ##### -->
-<para>
-
-</para>
-
-@GNOME_VFS_PROCESS_DEFAULT: 
-@GNOME_VFS_PROCESS_USEPATH: 
-@GNOME_VFS_PROCESS_CLOSEFDS: 
-@GNOME_VFS_PROCESS_SETSID: 
-
-<!-- ##### ENUM GnomeVFSProcessResult ##### -->
-<para>
-
-</para>
-
-@GNOME_VFS_PROCESS_OK: 
-@GNOME_VFS_PROCESS_ERROR_UNKNOWN: 
-@GNOME_VFS_PROCESS_ERROR_INVALIDSIGNAL: 
-@GNOME_VFS_PROCESS_ERROR_NOPERM: 
-@GNOME_VFS_PROCESS_ERROR_NOPROCESS: 
-
-<!-- ##### ENUM GnomeVFSProcessRunResult ##### -->
-<para>
-
-</para>
-
-@GNOME_VFS_PROCESS_RUN_OK: 
-@GNOME_VFS_PROCESS_RUN_ERROR: 
-@GNOME_VFS_PROCESS_RUN_CANCELLED: 
-@GNOME_VFS_PROCESS_RUN_SIGNALED: 
-@GNOME_VFS_PROCESS_RUN_STOPPED: 
-
-<!-- ##### USER_FUNCTION GnomeVFSStatusCallback ##### -->
-<para>
-
-</para>
-
-@message: 
-@callback_data: 
-
-<!-- ##### FUNCTION gnome_vfs_app_context_get_attribute ##### -->
-<para>
-
-</para>
-
-@app_context: 
-@attribute_name: 
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_get_callback ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-@app_context: 
-@hook_name: 
-@user_data: 
-@p_dispatch_on_job_thread: 
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_get_current ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-@Returns: 
->>>>>>> 1.19
-
-<!-- ##### FUNCTION gnome_vfs_app_context_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_peek_current ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_pop ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-
-<!-- ##### FUNCTION gnome_vfs_app_context_push_override_takesref ##### -->
-<para>
-
-</para>
-
-@app_context: 
-
-<!-- ##### FUNCTION gnome_vfs_app_context_push_takesref ##### -->
-<para>
-
-</para>
-
-@app_context: 
-
-<!-- ##### FUNCTION gnome_vfs_app_context_ref ##### -->
-<para>
-
-</para>
-
-@app_context: 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_set_attribute ##### -->
-<para>
->>>>>>> 1.19
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-@app_context: 
-@attribute_name: 
+@self: 
+@key: 
 @value: 
->>>>>>> 1.19
 
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_set_callback ##### -->
-<para>
->>>>>>> 1.19
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-=======
-</para>
->>>>>>> 1.19
-
-@app_context: 
-@hook_name: 
-@callback: 
-@user_data: 
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_set_callback_full ##### -->
-<para>
->>>>>>> 1.19
-
-=======
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-@app_context: 
-@hook_name: 
-@callback: 
-@user_data: 
-@dispatch_on_job_thread: 
-@notify: 
->>>>>>> 1.19
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_app_context_unref ##### -->
-<para>
-
-</para>
->>>>>>> 1.19
-
-<<<<<<< gnome-vfs-unused.sgml
-=======
-
-@app_context: 
->>>>>>> 1.19
-
-<!-- ##### FUNCTION gnome_vfs_backend_get_job_count ##### -->
+<!-- ##### FUNCTION gnome_vfs_metadata_set_string ##### -->
 <para>
 
 </para>
 
-@Returns: 
-
-<!-- ##### FUNCTION gnome_vfs_backend_init ##### -->
-<para>
-
-</para>
-
-@init_deps: 
-@Returns: 
-
-<!-- ##### FUNCTION gnome_vfs_backend_loadinit ##### -->
-<para>
-
-</para>
-
-@app: 
-@modinfo: 
-
-<!-- ##### FUNCTION gnome_vfs_backend_name ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-<!-- ##### FUNCTION gnome_vfs_backend_shutdown ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### FUNCTION gnome_vfs_callback_call_hook ##### -->
-<para>
-
-</para>
-
-@hookname: 
-@in: 
-@in_size: 
-@out: 
-@out_size: 
-@Returns: 
-
-<!-- ##### FUNCTION gnome_vfs_context_peek_app_context ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_context_peek_app_context_current ##### -->
-<para>
->>>>>>> 1.19
-
-</para>
-
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_list_sort ##### -->
->>>>>>> 1.19
-<para>
-
-</para>
-
-<<<<<<< gnome-vfs-unused.sgml
-
-@uri: 
-@Returns: 
-=======
-@list: 
-@compare_func: 
-@data: 
-@Returns: 
->>>>>>> 1.19
-
-<!-- ##### FUNCTION gnome_vfs_process_free ##### -->
-<para>
-
-</para>
-
-@process: 
-
-<!-- ##### FUNCTION gnome_vfs_process_init ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-<!-- ##### FUNCTION gnome_vfs_process_new ##### -->
-<para>
-
-</para>
-
-@file_name: 
-@argv: 
-@options: 
-@init_func: 
-@init_data: 
-@callback: 
-@callback_data: 
-@Returns: 
-
-<!-- ##### FUNCTION gnome_vfs_seek_emulate ##### -->
-<para>
-
-</para>
-
-@handle: 
-@child_handle: 
-@open_mode: 
-@Returns: 
-
-<<<<<<< gnome-vfs-unused.sgml
-<<<<<<< gnome-vfs-unused.sgml
-
-<!-- ##### FUNCTION gnome_vfs_ssl_new ##### -->
->>>>>>> 1.19
-<para>
-=======
-
-
-<<<<<<< gnome-vfs-unused.sgml
-
-
-<!-- ##### FUNCTION gnome_vfs_ssl_new_from_uri ##### -->
-<para>
-
-</para>
-
-@uri: 
-@Returns: 
->>>>>>> 1.19
-
-<!-- ##### FUNCTION gnome_vfs_uri_get_basename ##### -->
-<para>
-
-</para>
-
-@uri: 
-@Returns: 
+@self: 
+@key: 
+@value: 
 

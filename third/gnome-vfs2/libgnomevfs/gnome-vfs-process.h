@@ -58,16 +58,16 @@ typedef void (* GnomeVFSProcessCallback) (GnomeVFSProcess *process,
 					  gint status,
 					  gpointer data);
 
-gboolean              gnome_vfs_process_init   (void);
-GnomeVFSProcess *     gnome_vfs_process_new    (const gchar             *file_name,
+gboolean              _gnome_vfs_process_init   (void);
+GnomeVFSProcess *     _gnome_vfs_process_new    (const gchar             *file_name,
 						const gchar * const      argv[],
 						GnomeVFSProcessOptions   options,
 						GnomeVFSProcessInitFunc  init_func,
 						gpointer                 init_data,
 						GnomeVFSProcessCallback  callback,
 						gpointer                 callback_data);
-GnomeVFSProcessResult gnome_vfs_process_signal (GnomeVFSProcess         *process,
+GnomeVFSProcessResult _gnome_vfs_process_signal (GnomeVFSProcess         *process,
 						guint                    signal_number);
-void                  gnome_vfs_process_free   (GnomeVFSProcess         *process);
+void                  _gnome_vfs_process_free   (GnomeVFSProcess         *process);
 
 #endif /* GNOME_VFS_PROCESS_H */

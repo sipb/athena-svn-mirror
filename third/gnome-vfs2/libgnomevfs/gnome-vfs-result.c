@@ -72,10 +72,19 @@ static char *status_strings[] = {
 	/* GNOME_VFS_ERROR_NAME_TOO_LONG */		N_("Name too long"),
 	/* GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE */     N_("Service not available"),
 	/* GNOME_VFS_ERROR_SERVICE_OBSOLETE */          N_("Request obsoletes service's data"),
-	/* GNOME_VFS_ERROR_PROTOCOL_ERROR */		N_("Protocol error")
+	/* GNOME_VFS_ERROR_PROTOCOL_ERROR */		N_("Protocol error"),
+	/* GNOME_VFS_ERROR_NO_MASTER_BROWSER */		N_("Could not find master browser")
 };
 
 
+/**
+ * gnome_vfs_result_from_errno_code
+ * @errno_code: integer of the same type as the system "errno"
+ *
+ * Converts a system errno value to a GnomeVFSResult.
+ *
+ * Return value: a GnomeVFSResult equivalent to @errno_code
+ **/
 GnomeVFSResult
 gnome_vfs_result_from_errno_code (int errno_code)
 {
@@ -109,6 +118,13 @@ gnome_vfs_result_from_errno_code (int errno_code)
 	}
 }
 
+/**
+ * gnome_vfs_result_from_errno:
+ * 
+ * Converts the system errno to a GnomeVFSResult.
+ *
+ * Return value: a GnomeVFSResult equivalent to the current system errno
+ **/
 GnomeVFSResult
 gnome_vfs_result_from_errno (void)
 {
@@ -116,6 +132,14 @@ gnome_vfs_result_from_errno (void)
 }
  
 
+/**
+ * gnome_vfs_result_from_h_errno:
+ * 
+ * Converts the system "h_errno" to a GnomeVFSResult (h_errno represents errors
+ * accessing and finding internet hosts)
+ *
+ * Return value: a GnomeVFSResult equivalent to the current system "h_errno"
+ **/
 GnomeVFSResult
 gnome_vfs_result_from_h_errno (void)
 {
@@ -129,12 +153,21 @@ gnome_vfs_result_from_h_errno (void)
 	}
 }
 
+/**
+ * gnome_vfs_result_to_string:
+ * @result: the result to convert to a string
+ *
+ * Returns a string representation of @result, useful for debugging
+ * purposes, but probably not appropriate for passing to the user.
+ *
+ * Return value: a string representing @result
+ **/
 const char *
-gnome_vfs_result_to_string (GnomeVFSResult error)
+gnome_vfs_result_to_string (GnomeVFSResult result)
 {
-	if ((guint) error >= (guint) (sizeof (status_strings)
+	if ((guint) result >= (guint) (sizeof (status_strings)
 				      / sizeof (*status_strings)))
 		return _("Unknown error");
 
-	return _(status_strings[(guint) error]);
+	return _(status_strings[(guint) result]);
 }

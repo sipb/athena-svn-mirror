@@ -43,6 +43,19 @@ struct GnomeVFSInetConnection {
 	guint sock;
 };
 
+/**
+ * gnome_vfs_inet_connection_create:
+ * @connection_return: pointer to a GnomeVFSInetConnection, which will
+ * contain an allocated GnomeVFSInetConnection object on return.
+ * @host_name: string indicating the host to establish an internet connection with
+ * @host_port: the port number to connect to
+ * @cancellation: handle allowing cancellation of the operation
+ *
+ * Creates a connection at @handle_return to @host_name using
+ * port @port.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_inet_connection_create (GnomeVFSInetConnection **connection_return,
 				  const gchar *host_name,
@@ -89,6 +102,13 @@ gnome_vfs_inet_connection_create (GnomeVFSInetConnection **connection_return,
 }
 
 
+/**
+ * gnome_vfs_inet_connection_destroy:
+ * @connection: connection to destroy
+ * @cancellation: handle for cancelling the operation
+ *
+ * Closes/Destroys @connection.
+ **/
 void
 gnome_vfs_inet_connection_destroy (GnomeVFSInetConnection *connection,
 				   GnomeVFSCancellation   *cancellation)
@@ -99,20 +119,26 @@ gnome_vfs_inet_connection_destroy (GnomeVFSInetConnection *connection,
 	g_free (connection);
 }
 
+/**
+ * gnome_vfs_inet_connection_close:
+ * @connection: connection to close
+ *
+ * Closes @connection, freeing all used resources.
+ **/
 static void
 gnome_vfs_inet_connection_close (GnomeVFSInetConnection *connection)
 {
 	gnome_vfs_inet_connection_destroy (connection, NULL);
 }
 
-GnomeVFSIOBuf *
-gnome_vfs_inet_connection_get_iobuf (GnomeVFSInetConnection *connection)
-{
-	g_return_val_if_fail (connection != NULL, NULL);
-
-	return gnome_vfs_iobuf_new (connection->sock);
-}
-
+/**
+ * gnome_vfs_inet_connection_get_fd:
+ * @connection: connection to get the file descriptor from
+ *
+ * Retrieve the UNIX file descriptor corresponding to @connection.
+ *
+ * Return value: file descriptor
+ **/
 gint 
 gnome_vfs_inet_connection_get_fd (GnomeVFSInetConnection *connection)
 {
@@ -122,6 +148,18 @@ gnome_vfs_inet_connection_get_fd (GnomeVFSInetConnection *connection)
 
 /* SocketImpl for InetConnections */
 
+/**
+ * gnome_vfs_inet_connection_read:
+ * @connection: connection to read data from
+ * @buffer: allocated buffer of at least @bytes bytes to be read into
+ * @bytes: number of bytes to read from @socket into @buffer
+ * @bytes_read: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually read from the socket on return.
+ *
+ * Read @bytes bytes of data from @connection into @buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 static GnomeVFSResult 
 gnome_vfs_inet_connection_read (GnomeVFSInetConnection *connection,
 		                gpointer buffer,
@@ -144,6 +182,18 @@ gnome_vfs_inet_connection_read (GnomeVFSInetConnection *connection,
 	return bytes_read == 0 ? GNOME_VFS_ERROR_EOF : GNOME_VFS_OK;
 }
 
+/**
+ * gnome_vfs_inet_connection_write:
+ * @connection: connection to write data to
+ * @buffer: data to write to the connection
+ * @bytes: number of bytes from @buffer to write to @socket
+ * @bytes_written: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually written to the connection on return.
+ *
+ * Write @bytes bytes of data from @buffer to @connection.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 static GnomeVFSResult 
 gnome_vfs_inet_connection_write (GnomeVFSInetConnection *connection,
 			         gconstpointer buffer,
@@ -171,8 +221,32 @@ static GnomeVFSSocketImpl inet_connection_socket_impl = {
 	(GnomeVFSSocketCloseFunc)gnome_vfs_inet_connection_close
 };
 
+/**
+ * gnome_vfs_inet_connection_to_socket:
+ * @connection: connection to convert to wrapper in a GnomeVFSSocket
+ *
+ * Wrapper @connection inside a standard GnomeVFSSocket for convenience.
+ *
+ * Return value: a newly created GnomeVFSSocket around @connection.
+ **/
 GnomeVFSSocket *
 gnome_vfs_inet_connection_to_socket (GnomeVFSInetConnection *connection)
 {
 	return gnome_vfs_socket_new (&inet_connection_socket_impl, connection);
+}
+
+/**
+ * gnome_vfs_inet_connection_to_socket_buffer:
+ * @connection: connection to convert to wrapper in a GnomeVFSSocketBuffer
+ *
+ * Wrapper @connection inside a standard GnomeVFSSocketBuffer for convenience.
+ *
+ * Return value: a newly created GnomeVFSSocketBuffer around @connection.
+ **/
+GnomeVFSSocketBuffer *
+gnome_vfs_inet_connection_to_socket_buffer (GnomeVFSInetConnection *connection)
+{
+	GnomeVFSSocket *socket;
+	socket = gnome_vfs_inet_connection_to_socket (connection);
+	return gnome_vfs_socket_buffer_new (socket);
 }

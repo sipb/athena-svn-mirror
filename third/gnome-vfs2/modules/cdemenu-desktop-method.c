@@ -61,16 +61,45 @@ struct _DtFile {
 
 static GnomeVFSMethod *parent_method = NULL;
 
+static gchar *
+find_title_for_menu (gchar *name)
+{
+	GSList *filename;
+	char line[LINESIZE];
+	gboolean found=FALSE;
+	char *title="\0";
+    FILE *file = NULL;
+    gchar *tmp=NULL;
+
+    for (filename = cdemenufiles; filename !=NULL; filename=filename->next){
+		file = fopen((gchar*)filename->data,"r");
+		while (fgets(line,LINESIZE,file) != NULL){
+            if (strstr(line,"f.menu")  && strstr(line, name)) {
+				tmp = strstr (line, "f.menu");
+				*tmp = '\0';
+				title = strdup (line);
+				found = TRUE;
+				break;
+			}
+		}
+		fclose (file);
+		file = NULL;
+		if (found) break;
+	}
+	return title;
+}
+
 static FILE *
 open_and_find_pointer_to_menu(gchar *name)
 {
 	GSList *filename;
 	gchar line[LINESIZE];
-	FILE *file = NULL;
+	FILE *filesave = NULL, *file = NULL;
 	gboolean found = FALSE;
 	gchar *tmp=NULL;
 	
 	for (filename = cdemenufiles; filename !=NULL; filename=filename->next){
+		found = FALSE;
 		file = fopen((gchar*)filename->data,"r");
 		while (fgets(line,LINESIZE,file) != NULL){
 			if (strstr(line,"Menu") == line) {
@@ -83,11 +112,16 @@ open_and_find_pointer_to_menu(gchar *name)
 				}
 			}
 		}
-		if (found) break;
-		fclose(file);
-		file=NULL;
+		if (found) {
+			if (filesave !=NULL) fclose(filesave);
+			filesave = file;
+			if (!strcmp(name, "DtRootMenu")) break;
+		} else {
+			fclose(file);
+			file=NULL;
+		}
 	}
-	return file;
+	return filesave;
 }
 
 static char *
@@ -214,7 +248,7 @@ do_open (GnomeVFSMethod *method,
 	FILE *file;
 	gchar *tmp, *tmp2, *end;
 	gchar line[LINESIZE];
-	gchar *name, *exec=NULL, *icon=NULL;
+	gchar *name, *title, *exec=NULL, *icon=NULL;
 	gchar *menuname = g_path_get_basename(g_path_get_dirname(uri->text));
 	DtFile *dtfile = g_new0(DtFile, 1);
 
@@ -237,13 +271,11 @@ do_open (GnomeVFSMethod *method,
 	if(!file) return GNOME_VFS_ERROR_NOT_FOUND;
 
 	if (strcmp(name,".directory") == 0) {
-		while (fgets(line,LINESIZE,file) != NULL){
-			if (line[0] == '#') continue;
-			else if (line[0] == '}') break;
-			else if (strstr(line,"f.title")) {
 				char *utf8_name = NULL;
-				
-				tmp = strchr(line,'\"'); tmp ++;
+				if (!strcmp (menuname, "DtRootMenu"))
+					title = g_strdup_printf ("\"%s\"",menuname);
+				else title = find_title_for_menu(menuname);
+				tmp = strchr(title,'\"'); tmp ++;
 				tmp2 = strchr(tmp,'\"'); if(tmp2) *tmp2='\0';
 
 				utf8_name = g_locale_to_utf8 (tmp, -1,
@@ -264,14 +296,11 @@ do_open (GnomeVFSMethod *method,
 					 "Comment=\n"
 					 "Icon=%s\n"
 					 "Type=Directory\n",
-					 utf8_name, 
+					 utf8_name,
 					 get_icon_for_menu(tmp));
-				/* Title is found, dont look for secondary title*/
 
 				g_free (utf8_name);
-				break;
-			}
-		}
+				g_free (title);
 	} else {
 		while (fgets(line,LINESIZE,file) != NULL){
 			if (line[0] == '#') continue;

@@ -40,7 +40,8 @@
       </para>
     </sect2>
   </sect1>
-  <sect1>
+
+  <sect1 id="gnome-vfs-first-steps">
     <title>A Gentle Programming Primer</title>
     <para>
       Using GnomeVFS in an existing application, or writing a new application

@@ -40,8 +40,8 @@ struct GnomeVFSMimeSniffBuffer {
 	gpointer context;
 };
 
-const char *gnome_vfs_get_mime_type_internal         (GnomeVFSMimeSniffBuffer *buffer,
+const char *_gnome_vfs_get_mime_type_internal         (GnomeVFSMimeSniffBuffer *buffer,
 						      const char              *file_name);
-const char *gnome_vfs_mime_get_type_from_magic_table (GnomeVFSMimeSniffBuffer *buffer);
+const char *_gnome_vfs_mime_get_type_from_magic_table (GnomeVFSMimeSniffBuffer *buffer);
 
 #endif

@@ -47,39 +47,39 @@ thread_routine (void *data)
 	id = GPOINTER_TO_UINT (job_handle);
 	/* job map must always be locked before the job_lock
 	 * if both locks are needed */
-	gnome_vfs_async_job_map_lock ();
+	_gnome_vfs_async_job_map_lock ();
 	
-	job = gnome_vfs_async_job_map_get_job (job_handle);
+	job = _gnome_vfs_async_job_map_get_job (job_handle);
 	
 	if (job == NULL) {
 		JOB_DEBUG (("job already dead, bail %u", id));
-		gnome_vfs_async_job_map_unlock ();
+		_gnome_vfs_async_job_map_unlock ();
 		return NULL;
 	}
 	
 	JOB_DEBUG (("locking job_lock %u", id));
 	g_mutex_lock (job->job_lock);
-	gnome_vfs_async_job_map_unlock ();
+	_gnome_vfs_async_job_map_unlock ();
 
-	gnome_vfs_job_execute (job);
-	complete = gnome_vfs_job_complete (job);
+	_gnome_vfs_job_execute (job);
+	complete = _gnome_vfs_job_complete (job);
 	
 	JOB_DEBUG (("Unlocking access lock %u", id));
 	g_mutex_unlock (job->job_lock);
 
 	if (complete) {
-		gnome_vfs_async_job_map_lock ();
+		_gnome_vfs_async_job_map_lock ();
 		JOB_DEBUG (("job %u done, removing from map and destroying", id));
-		gnome_vfs_async_job_completed (job_handle);
-		gnome_vfs_job_destroy (job);
-		gnome_vfs_async_job_map_unlock ();
+		_gnome_vfs_async_job_completed (job_handle);
+		_gnome_vfs_job_destroy (job);
+		_gnome_vfs_async_job_map_unlock ();
 	}
 
 	return NULL;
 }
 
 gboolean
-gnome_vfs_job_create_slave (GnomeVFSJob *job)
+_gnome_vfs_job_create_slave (GnomeVFSJob *job)
 {
 	g_return_val_if_fail (job != NULL, FALSE);
 
@@ -96,12 +96,12 @@ gnome_vfs_job_create_slave (GnomeVFSJob *job)
 		return FALSE;
 	}
 	
-	if (gnome_vfs_thread_create (thread_routine, job->job_handle) != 0) {
+	if (_gnome_vfs_thread_create (thread_routine, job->job_handle) != 0) {
 		g_warning ("Impossible to allocate a new GnomeVFSJob thread.");
 		
 		/* thread did not start up, remove the job from the hash table */
-		gnome_vfs_async_job_completed (job->job_handle);
-		gnome_vfs_job_destroy (job);
+		_gnome_vfs_async_job_completed (job->job_handle);
+		_gnome_vfs_job_destroy (job);
 		return FALSE;
 	}
 
@@ -109,7 +109,7 @@ gnome_vfs_job_create_slave (GnomeVFSJob *job)
 }
 
 void
-gnome_vfs_thread_backend_shutdown (void)
+_gnome_vfs_thread_backend_shutdown (void)
 {
 	gboolean done;
 	int count;
@@ -120,7 +120,7 @@ gnome_vfs_thread_backend_shutdown (void)
 
 	JOB_DEBUG (("###### shutting down"));
 
-	gnome_vfs_job_queue_shutdown();
+	_gnome_vfs_job_queue_shutdown();
 
 	for (count = 0; ; count++) {
 		/* Check if it is OK to quit. Originally we used a
@@ -144,6 +144,6 @@ gnome_vfs_thread_backend_shutdown (void)
 		usleep (20000);
 	}
 
-	gnome_vfs_thread_pool_shutdown ();
-	gnome_vfs_async_job_map_shutdown ();
+	_gnome_vfs_thread_pool_shutdown ();
+	_gnome_vfs_async_job_map_shutdown ();
 }

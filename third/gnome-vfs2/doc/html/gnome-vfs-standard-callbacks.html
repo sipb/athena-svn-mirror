@@ -1,0 +1,719 @@
+<HTML
+><HEAD
+><TITLE
+>Standard Callbacks</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basic File Operations"
+HREF="file-operations.html"><LINK
+REL="PREVIOUS"
+TITLE="Module Callbacks"
+HREF="gnome-vfs-module-callbacks.html"><LINK
+REL="NEXT"
+TITLE="Common Data Types"
+HREF="data-types.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-module-callbacks.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-STANDARD-CALLBACKS"
+>Standard Callbacks</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3141"
+></A
+><H2
+>Name</H2
+>Standard Callbacks&nbsp;--&nbsp;module callbacks pre-defined by gnome-vfs</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3144"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+#define     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"
+>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</A
+>
+#define     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"
+>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</A
+>
+typedef     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKAUTHENTICATIONIN"
+>GnomeVFSModuleCallbackAuthenticationIn</A
+>;
+typedef     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKAUTHENTICATIONOUT"
+>GnomeVFSModuleCallbackAuthenticationOut</A
+>;
+#define     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"
+>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</A
+>
+typedef     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKSTATUSMESSAGEIN"
+>GnomeVFSModuleCallbackStatusMessageIn</A
+>;
+typedef     <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKSTATUSMESSAGEOUT"
+>GnomeVFSModuleCallbackStatusMessageOut</A
+>;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3154"
+></A
+><H2
+>Description</H2
+><P
+>Some standard module callbacks are predefined. They include callbacks
+for authentication, http proxy authentication, and status
+messages. For each standard callback, a macro provides the name, and
+structures are defined for the in and out argument.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3157"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3159"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"
+></A
+>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"</PRE
+></TD
+></TR
+></TABLE
+><P
+>This callback is called when access to a URI requires a username and
+password.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3164"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKAUTHENTICATIONIN"
+>GnomeVFSModuleCallbackAuthenticationIn</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKAUTHENTICATIONOUT"
+>GnomeVFSModuleCallbackAuthenticationOut</A
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3179"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"
+></A
+>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"</PRE
+></TD
+></TR
+></TABLE
+><P
+>This callback is called when access to an HTTP proxy requires a
+username and password.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3184"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKAUTHENTICATIONIN"
+>GnomeVFSModuleCallbackAuthenticationIn</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKAUTHENTICATIONOUT"
+>GnomeVFSModuleCallbackAuthenticationOut</A
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3199"
+></A
+><H3
+><A
+NAME="GNOMEVFSMODULECALLBACKAUTHENTICATIONIN"
+></A
+>GnomeVFSModuleCallbackAuthenticationIn</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	char *uri;		/* Full URI of operation */
+	char *realm;		/* for HTTP auth, NULL for others */
+	gboolean previous_attempt_failed;
+				/* TRUE if there were credentials specified
+				 * for this request, but they resulted in
+				 * an authorization error. 
+				 * ("you gave me the wrong pw!")
+				 * 
+				 * FALSE if there were no credentials specified
+				 * but they are required to continue
+				 * 
+				 */
+	enum {
+		AuthTypeBasic,	/* Password will be transmitted unencrypted */
+		AuthTypeDigest	/* Digest is transferred, not plaintext credentials */		
+	} auth_type;
+} GnomeVFSModuleCallbackAuthenticationIn;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3204"
+></A
+><H3
+><A
+NAME="GNOMEVFSMODULECALLBACKAUTHENTICATIONOUT"
+></A
+>GnomeVFSModuleCallbackAuthenticationOut</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	char *username;		/* will be freed by g_free,
+				 * NULL indicates no auth should be provided;
+				 * if the request requires authn, the operation
+				 * will fail with a GNOME_VFS_ERROR_ACCESS_DENIED
+				 * code
+				 */
+	char *password;		/* will be freed by g_free */
+} GnomeVFSModuleCallbackAuthenticationOut;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3209"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"
+></A
+>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE "status-message"</PRE
+></TD
+></TR
+></TABLE
+><P
+>This callback is called when a GnomeVFS module operation has a status
+message to return to the application.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3214"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKSTATUSMESSAGEIN"
+>GnomeVFSModuleCallbackStatusMessageIn</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="gnome-vfs-standard-callbacks.html#GNOMEVFSMODULECALLBACKSTATUSMESSAGEOUT"
+>GnomeVFSModuleCallbackStatusMessageOut</A
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3229"
+></A
+><H3
+><A
+NAME="GNOMEVFSMODULECALLBACKSTATUSMESSAGEIN"
+></A
+>GnomeVFSModuleCallbackStatusMessageIn</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	char *uri;		/* Full URI of operation */
+	char *message;		/* A message indicating the current state or
+				 * NULL if there is no message */
+	int percentage;		/* Percentage indicating completeness 0-100 or
+				 * -1 if there is no progress percentage to
+				 * report */
+} GnomeVFSModuleCallbackStatusMessageIn;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3234"
+></A
+><H3
+><A
+NAME="GNOMEVFSMODULECALLBACKSTATUSMESSAGEOUT"
+></A
+>GnomeVFSModuleCallbackStatusMessageOut</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	int dummy; /* empty structs not allowed */
+} GnomeVFSModuleCallbackStatusMessageOut;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3239"
+></A
+><H2
+>See Also</H2
+><P
+><A
+HREF="gnome-vfs-module-callbacks.html"
+>Module Callbacks</A
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-module-callbacks.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Module Callbacks</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Common Data Types</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

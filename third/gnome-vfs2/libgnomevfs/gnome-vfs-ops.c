@@ -25,6 +25,7 @@
 #include "gnome-vfs-ops.h"
 #include "gnome-vfs-monitor-private.h"
 #include "gnome-vfs-cancellable-ops.h"
+#include "gnome-vfs-handle-private.h"
 #include <glib/gmessages.h>
 
 /**
@@ -33,7 +34,7 @@
  * @text_uri: String representing the URI to open
  * @open_mode: Open mode
  * 
- * Open @text_uri according to mode @open_mode.  On return, @*handle will then
+ * Open @text_uri according to mode @open_mode.  On return, @handle will then
  * contain a pointer to a handle for the open file.
  * 
  * Return value: An integer representing the result of the operation
@@ -66,7 +67,7 @@ gnome_vfs_open (GnomeVFSHandle **handle,
  * @uri: URI to open
  * @open_mode: Open mode
  * 
- * Open @uri according to mode @open_mode.  On return, @*handle will then
+ * Open @uri according to mode @open_mode.  On return, @handle will then
  * contain a pointer to a handle for the open file.
  * 
  * Return value: An integer representing the result of the operation
@@ -83,14 +84,15 @@ gnome_vfs_open_uri (GnomeVFSHandle **handle,
  * gnome_vfs_create:
  * @handle: A pointer to a pointer to a GnomeVFSHandle object
  * @text_uri: String representing the URI to create
- * @open_mode: Open mode
+ * @open_mode: mode to leave the file opened in after creation (or %GNOME_VFS_OPEN_MODE_NONE
+ * to leave the file closed after creation)
  * @exclusive: Whether the file should be created in "exclusive" mode:
  * i.e. if this flag is nonzero, operation will fail if a file with the
  * same name already exists.
  * @perm: Bitmap representing the permissions for the newly created file
  * (Unix style).
  * 
- * Create @uri according to mode @open_mode.  On return, @*handle will then
+ * Create @uri according to mode @open_mode.  On return, @handle will then
  * contain a pointer to a handle for the open file.
  * 
  * Return value: An integer representing the result of the operation
@@ -130,7 +132,7 @@ gnome_vfs_create (GnomeVFSHandle **handle,
  * @perm: Bitmap representing the permissions for the newly created file
  * (Unix style).
  * 
- * Create @uri according to mode @open_mode.  On return, @*handle will then
+ * Create @uri according to mode @open_mode.  On return, @handle will then
  * contain a pointer to a handle for the open file.
  * 
  * Return value: An integer representing the result of the operation
@@ -170,7 +172,7 @@ gnome_vfs_close (GnomeVFSHandle *handle)
  * 
  * Read @bytes from @handle.  As with Unix system calls, the number of
  * bytes read can effectively be less than @bytes on return and will be
- * stored in @*bytes_read.
+ * stored in @bytes_read.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -189,12 +191,12 @@ gnome_vfs_read (GnomeVFSHandle *handle,
  * @handle: Handle of the file to write data to
  * @buffer: Pointer to the buffer containing the data to be written
  * @bytes: Number of bytes to write
- * @bytes_write: Pointer to a variable that will hold the number of bytes
+ * @bytes_written: Pointer to a variable that will hold the number of bytes
  * effectively written on return.
  * 
  * Write @bytes into the file opened through @handle.  As with Unix system
  * calls, the number of bytes written can effectively be less than @bytes on
- * return and will be stored in @*bytes_written.
+ * return and will be stored in @bytes_written.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -233,7 +235,8 @@ gnome_vfs_seek (GnomeVFSHandle *handle,
  * @offset_return: Pointer to a variable that will contain the current position
  * on return
  * 
- * Return the current position on @handle.
+ * Return the current position on @handle. This is the point in the file
+ * pointed to by handle that reads and writes will occur on.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -243,7 +246,7 @@ gnome_vfs_tell (GnomeVFSHandle *handle,
 {
 	g_return_val_if_fail (handle != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
-	return gnome_vfs_handle_do_tell (handle, offset_return);
+	return _gnome_vfs_handle_do_tell (handle, offset_return);
 }
 
 /**
@@ -255,7 +258,7 @@ gnome_vfs_tell (GnomeVFSHandle *handle,
  * to retrieve for the file
  * 
  * Retrieve information about @text_uri.  The information will be stored in
- * @*info.
+ * @info.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -311,7 +314,7 @@ gnome_vfs_get_file_info_uri (GnomeVFSURI *uri,
  * to retrieve for the file
  * 
  * Retrieve information about an open file.  The information will be stored in
- * @*info.
+ * @info.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -325,6 +328,15 @@ gnome_vfs_get_file_info_from_handle (GnomeVFSHandle *handle,
 								NULL);
 }
 
+/**
+ * gnome_vfs_truncate:
+ * @text_uri: URI of the file to be truncated
+ * @length: length of the new file at @text_uri
+ * 
+ * Truncate the file at @text_uri to @length bytes.
+ * 
+ * Return value: An integer representing the result of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_truncate (const char *text_uri, GnomeVFSFileSize length)
 {
@@ -343,12 +355,32 @@ gnome_vfs_truncate (const char *text_uri, GnomeVFSFileSize length)
 }
 
 
+/**
+ * gnome_vfs_truncate_uri:
+ * @uri: URI of the file to be truncated
+ * @length: length of the new file at @uri
+ * 
+ * Truncate the file at @uri to be only @length bytes. Data past @length
+ * bytes will be discarded.
+ * 
+ * Return value: An integer representing the result of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_truncate_uri (GnomeVFSURI *uri, GnomeVFSFileSize length)
 {
 	return gnome_vfs_truncate_uri_cancellable(uri, length, NULL);
 }
 
+/**
+ * gnome_vfs_truncate_handle:
+ * @handle: a handle to the file to be truncated
+ * @length: length of the new file the handle is open to
+ * 
+ * Truncate the file pointed to be @handle to be only @length bytes. 
+ * Data past @length bytes will be discarded.
+ * 
+ * Return value: An integer representing the result of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_truncate_handle (GnomeVFSHandle *handle, GnomeVFSFileSize length)
 {
@@ -360,7 +392,8 @@ gnome_vfs_truncate_handle (GnomeVFSHandle *handle, GnomeVFSFileSize length)
  * @uri: URI of the directory to be created
  * @perm: Unix-style permissions for the newly created directory
  * 
- * Create @uri as a directory.
+ * Create a directory at @uri. Only succeeds if a file or directory
+ * does not already exist at @uri.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -415,10 +448,10 @@ gnome_vfs_remove_directory_from_uri (GnomeVFSURI *uri)
 }
 
 /**
- * gnome_vfs_remove_directory_from:
+ * gnome_vfs_remove_directory:
  * @text_uri: URI of the directory to be removed
  * 
- * Remove @text_uri.  @uri must be an empty directory.
+ * Remove @text_uri.  @text_uri must be an empty directory.
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -445,7 +478,7 @@ gnome_vfs_remove_directory (const gchar *text_uri)
  * gnome_vfs_unlink_from_uri:
  * @uri: URI of the file to be unlinked
  * 
- * Unlink @uri.
+ * Unlink @uri (i.e. delete the file).
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -472,10 +505,10 @@ gnome_vfs_create_symbolic_link (GnomeVFSURI *uri, const gchar *target_reference)
 }
 
 /**
- * gnome_vfs_unlink_from_uri:
+ * gnome_vfs_unlink:
  * @text_uri: URI of the file to be unlinked
  * 
- * Unlink @text_uri.
+ * Unlink @text_uri (i.e. delete the file).
  * 
  * Return value: An integer representing the result of the operation
  **/
@@ -502,6 +535,8 @@ gnome_vfs_unlink (const gchar *text_uri)
  * gnome_vfs_move_uri:
  * @old_uri: Source URI
  * @new_uri: Destination URI
+ * @force_replace: If %TRUE, move target to @new_uri even if there 
+ * is already a file at @new_uri. If there is a file, it will be discarded.
  * 
  * Move a file from URI @old_uri to @new_uri.  This will only work if @old_uri 
  * and @new_uri are on the same file system.  Otherwise, it is necessary 
@@ -522,6 +557,8 @@ gnome_vfs_move_uri (GnomeVFSURI *old_uri,
  * gnome_vfs_move:
  * @old_text_uri: Source URI
  * @new_text_uri: Destination URI
+ * @force_replace: if %TRUE, perform the operation even if it unlinks an existing
+ * file at @new_text_uri
  * 
  * Move a file from URI @old_text_uri to @new_text_uri.  This will only work 
  * if @old_text_uri and @new_text_uri are on the same file system.  Otherwise,
@@ -560,54 +597,55 @@ gnome_vfs_move (const gchar *old_text_uri,
 
 /**
  * gnome_vfs_check_same_fs_uris:
- * @a: A URI
- * @b: Another URI
+ * @source_uri: A URI
+ * @target_uri: Another URI
  * @same_fs_return: Pointer to a boolean variable which will be set to %TRUE
- * if @a and @b are on the same file system on return.
+ * if @source_uri and @target_uri are on the same file system on return.
  * 
- * Check if @a and @b are on the same file system.
+ * Check if @source_uri and @target_uri are on the same file system.
  * 
  * Return value: An integer representing the result of the operation.
  **/
 GnomeVFSResult
-gnome_vfs_check_same_fs_uris (GnomeVFSURI *a,
-			      GnomeVFSURI *b,
+gnome_vfs_check_same_fs_uris (GnomeVFSURI *source_uri,
+			      GnomeVFSURI *target_uri,
 			      gboolean *same_fs_return)
 {
-	return gnome_vfs_check_same_fs_uris_cancellable (a, b, same_fs_return,
+	return gnome_vfs_check_same_fs_uris_cancellable (source_uri, 
+							 target_uri, 
+							 same_fs_return,
 							 NULL);
 }
 
 /**
  * gnome_vfs_check_same_fs:
- * @a: A URI
- * @b: Another URI
+ * @source: A URI
+ * @target: Another URI
  * @same_fs_return: Pointer to a boolean variable which will be set to %TRUE
- * if @a and @b are on the same file system on return.
- * 
- * Check if @a and @b are on the same file system.
+ *
+ * Return %TRUE if @source and @target are on the same file system.
  * 
  * Return value: An integer representing the result of the operation.
  **/
 GnomeVFSResult
-gnome_vfs_check_same_fs (const gchar *a,
-			 const gchar *b,
+gnome_vfs_check_same_fs (const gchar *source,
+			 const gchar *target,
 			 gboolean *same_fs_return)
 {
 	GnomeVFSURI *a_uri, *b_uri;
 	GnomeVFSResult retval;
 
-	g_return_val_if_fail (a != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	g_return_val_if_fail (b != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (source != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (target != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	g_return_val_if_fail (same_fs_return != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
 	*same_fs_return = FALSE;
 
-	a_uri = gnome_vfs_uri_new (a);
+	a_uri = gnome_vfs_uri_new (source);
 	if (a_uri == NULL)
 		return GNOME_VFS_ERROR_INVALID_URI;
 
-	b_uri = gnome_vfs_uri_new (b);
+	b_uri = gnome_vfs_uri_new (target);
 	if (b_uri == NULL) {
 		gnome_vfs_uri_unref (a_uri);
 		return GNOME_VFS_ERROR_INVALID_URI;
@@ -691,6 +729,20 @@ gnome_vfs_uri_exists (GnomeVFSURI *uri)
 	return result == GNOME_VFS_OK;
 }
 
+/**
+ * gnome_vfs_monitor_add:
+ * @handle: after the call, @handle will be a pointer to an operation handle
+ * @text_uri: URI to monitor
+ * @monitor_type: add a directory or file monitor
+ * @callback: function to call when the monitor is tripped
+ * @user_data: data to pass to @callback
+ *
+ * Watch the file or directory at @text_uri for changes (or the creation/deletion of the file)
+ * and call @callback when there is a change. If a directory monitor is added, @callback is
+ * notified when any file in the directory changes.
+ *
+ * Return value: an integer representing the success of the operation
+ **/
 GnomeVFSResult 
 gnome_vfs_monitor_add (GnomeVFSMonitorHandle **handle,
                        const gchar *text_uri,
@@ -709,7 +761,7 @@ gnome_vfs_monitor_add (GnomeVFSMonitorHandle **handle,
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 
-	result = gnome_vfs_monitor_do_add (uri->method, handle, uri,
+	result = _gnome_vfs_monitor_do_add (uri->method, handle, uri,
 						monitor_type, callback, 
 						user_data);
 
@@ -718,11 +770,41 @@ gnome_vfs_monitor_add (GnomeVFSMonitorHandle **handle,
 	return result;
 }
 
+/**
+ * gnome_vfs_monitor_cancel:
+ * @handle: handle of the monitor to cancel
+ *
+ * Cancel the monitor pointed to be @handle.
+ *
+ * Return value: an integer representing the success of the operation
+ **/
 GnomeVFSResult 
 gnome_vfs_monitor_cancel (GnomeVFSMonitorHandle *handle)
 {
 	g_return_val_if_fail (handle != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
-	return gnome_vfs_monitor_do_cancel (handle);
+	return _gnome_vfs_monitor_do_cancel (handle);
+}
+
+/**
+ * gnome_vfs_file_control:
+ * @handle: handle of the file to affect
+ * @operation: The operation to execute
+ * @operation_data: The data needed to execute the operation
+ *
+ * Execute a backend dependent operation specified by the string @operation.
+ * This is typically used for specialized vfs backends that need additional
+ * operations that gnome-vfs doesn't have. Compare it to the unix call ioctl().
+ * The format of @operation_data depends on the operation. Operation that are
+ * backend specific are normally namespaced by their module name.
+ *
+ * Return value: an integer representing the success of the operation
+ **/
+GnomeVFSResult
+gnome_vfs_file_control (GnomeVFSHandle *handle,
+			const char *operation,
+			gpointer operation_data)
+{
+	return gnome_vfs_file_control_cancellable (handle, operation, operation_data, NULL);
 }
 

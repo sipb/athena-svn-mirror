@@ -30,7 +30,10 @@
 #include <stdlib.h>
 
 static int recursive = 0;
+static int replace = 0;
 static int remove_source = 0;
+static int follow_symlinks = 0;
+static int follow_symlinks_recursive = 0;
 
 const struct poptOption options[] = {
 	POPT_AUTOHELP
@@ -41,6 +44,33 @@ const struct poptOption options[] = {
 		&recursive,
 		0,
 		"Copy directories recursively",
+		NULL
+	},
+	{
+		"follow-symlinks",
+		'L',
+		POPT_ARG_NONE,
+		&follow_symlinks,
+		0,
+		"Follow symlinks",
+		NULL
+	},
+	{
+		"recursive-symlinks",
+		'Z',
+		POPT_ARG_NONE,
+		&follow_symlinks_recursive,
+		0,
+		"Follow symlinks",
+		NULL
+	},
+	{
+		"replace",
+		'R',
+		POPT_ARG_NONE,
+		&replace,
+		0,
+		"Replace files automatically",
 		NULL
 	},
 	{
@@ -150,6 +180,7 @@ main (int argc, const char **argv)
 	GList *src_uri_list, *dest_uri_list;
 	GnomeVFSResult result;
 	GnomeVFSXferOptions xfer_options;
+	GnomeVFSXferOverwriteMode overwrite_mode;
 
 	if (! gnome_vfs_init ()) {
 		fprintf (stderr,
@@ -185,9 +216,22 @@ main (int argc, const char **argv)
 
 
 	xfer_options = 0;
+	overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
 	if (recursive) {
 		fprintf (stderr, "Warning: Recursive xfer of directories.\n");
 		xfer_options |= GNOME_VFS_XFER_RECURSIVE;
+	}
+	if (follow_symlinks) {
+		fprintf (stderr, "Warning: Following symlinks.\n");
+		xfer_options |= GNOME_VFS_XFER_FOLLOW_LINKS;
+	}
+	if (follow_symlinks_recursive) {
+		fprintf (stderr, "Warning: Following symlinks recursively.\n");
+		xfer_options |= GNOME_VFS_XFER_FOLLOW_LINKS_RECURSIVE;
+	}
+	if (replace) {
+		fprintf (stderr, "Warning: Using replace overwrite mode.\n");
+		overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 	}
 	if (remove_source) {
 		fprintf (stderr, "Warning: Removing source files.\n");
@@ -199,7 +243,7 @@ main (int argc, const char **argv)
 	result = gnome_vfs_xfer_uri_list (src_uri_list, dest_uri_list,
 					  xfer_options,
 					  GNOME_VFS_XFER_ERROR_MODE_QUERY,
-					  GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+					  overwrite_mode,
 					  xfer_progress_callback,
 					  NULL);
 

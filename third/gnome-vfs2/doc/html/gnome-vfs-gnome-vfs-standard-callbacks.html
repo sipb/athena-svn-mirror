@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-standard-callbacks</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="ch08.html" title="Other Stuff"><link rel="previous" href="gnome-vfs-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="next" href="gnome-vfs-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-utils.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch08.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-inet-connection.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-standard-callbacks"></a><div class="titlepage"></div><div class="refnamediv"><h2>gnome-vfs-standard-callbacks</h2><p>gnome-vfs-standard-callbacks &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS">GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</a>
+#define     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</a>
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackAuthenticationOut">GnomeVFSModuleCallbackAuthenticationOut</a>;
+#define     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</a>
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackAdditionalHeadersIn">GnomeVFSModuleCallbackAdditionalHeadersIn</a>;
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackAdditionalHeadersOut">GnomeVFSModuleCallbackAdditionalHeadersOut</a>;
+#define     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</a>
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackReceivedHeadersIn">GnomeVFSModuleCallbackReceivedHeadersIn</a>;
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackReceivedHeadersOut">GnomeVFSModuleCallbackReceivedHeadersOut</a>;
+#define     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS">GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</a>
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackStatusMessageIn">GnomeVFSModuleCallbackStatusMessageIn</a>;
+typedef     <a href="gnome-vfs-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModuleCallbackStatusMessageOut</a>;
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</h3><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION &quot;simple-authentication&quot;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</h3><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION &quot;http:proxy-authentication&quot;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackAuthenticationOut"></a>GnomeVFSModuleCallbackAuthenticationOut</h3><pre class="programlisting">typedef struct {
+	char *username;		/* will be freed by g_free,
+				 * NULL indicates no auth should be provided;
+				 * if the request requires authn, the operation
+				 * will fail with a GNOME_VFS_ERROR_ACCESS_DENIED
+				 * code
+				 */
+	char *password;		/* will be freed by g_free */
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+
+} GnomeVFSModuleCallbackAuthenticationOut;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</h3><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS &quot;http:send-additional-headers&quot;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackAdditionalHeadersIn"></a>GnomeVFSModuleCallbackAdditionalHeadersIn</h3><pre class="programlisting">typedef struct {
+	GnomeVFSURI *uri;		/* URI of operation */
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackAdditionalHeadersIn;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackAdditionalHeadersOut"></a>GnomeVFSModuleCallbackAdditionalHeadersOut</h3><pre class="programlisting">typedef struct {
+	GList *headers;			/* list of headers, will be freeed */
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackAdditionalHeadersOut;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</h3><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS &quot;http:received-headers&quot;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackReceivedHeadersIn"></a>GnomeVFSModuleCallbackReceivedHeadersIn</h3><pre class="programlisting">typedef struct {
+	GnomeVFSURI *uri;		/* URI of operation */
+	GList *headers;			/* list of headers */
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackReceivedHeadersIn;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackReceivedHeadersOut"></a>GnomeVFSModuleCallbackReceivedHeadersOut</h3><pre class="programlisting">typedef struct {
+	int dummy;
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackReceivedHeadersOut;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</h3><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE &quot;status-message&quot;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackStatusMessageIn"></a>GnomeVFSModuleCallbackStatusMessageIn</h3><pre class="programlisting">typedef struct {
+	char *uri;		/* Full URI of operation */
+	char *message;		/* A message indicating the current state or
+				 * NULL if there is no message */
+	int percentage;		/* Percentage indicating completeness 0-100 or
+				 * -1 if there is no progress percentage to
+				 * report */
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackStatusMessageIn;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSModuleCallbackStatusMessageOut"></a>GnomeVFSModuleCallbackStatusMessageOut</h3><pre class="programlisting">typedef struct {
+	int dummy; /* empty structs not allowed */
+
+	/* Reserved &quot;padding&quot; to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackStatusMessageOut;
+</pre><p>
+
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-utils.html"><b>&lt;&lt; gnome-vfs-utils</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-inet-connection.html"><b>gnome-vfs-inet-connection &gt;&gt;</b></a></td></tr></table></body></html>

@@ -32,13 +32,37 @@
 
 G_BEGIN_DECLS
 	
-/* These are the standard string keys to get */
+/**
+ * GNOME_VFS_APPLICATION_REGISTRY_COMMAND:
+ *
+ * Application registry key for fetching the command to execute
+ * an application.
+ **/
 #define GNOME_VFS_APPLICATION_REGISTRY_COMMAND "command"
+
+/**
+ * GNOME_VFS_APPLICATION_REGISTRY_NAME:
+ *
+ * Application registry key for fetching the name of an application.
+ **/
 #define GNOME_VFS_APPLICATION_REGISTRY_NAME "name"
 
-/* These are the standard boolean keys to get */
+/**
+ * GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES:
+ *
+ * Application registry key for determining if an application 
+ * can open multiple files in the same invocation.
+ **/
 #define GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES "can_open_multiple_files"
+
+/**
+ * GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL:
+ *
+ * Application registry key for determining if an application
+ * needs to run from within a terminal (for example, mpg123)
+ **/
 #define GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL "requires_terminal"
+#define GNOME_VFS_APPLICATION_REGISTRY_USES_GNOMEVFS "uses_gnomevfs"
 	
 /*
  * Existance check

@@ -1,0 +1,1268 @@
+<refentry id="gnome-vfs-gnome-vfs-mime-database">
+<refmeta>
+<refentrytitle>
+File Types</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>
+File Types</refname><refpurpose>
+functions for getting information about files based on their MIME type</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GNOME-VFS-MIME-TYPE-UNKNOWN-CAPS">GNOME_VFS_MIME_TYPE_UNKNOWN</link>
+const char* <link linkend="gnome-vfs-get-mime-type-for-data">gnome_vfs_get_mime_type_for_data</link>
+                                            (<link linkend="gconstpointer">gconstpointer</link> data,
+                                             int data_size);
+char*       <link linkend="gnome-vfs-get-mime-type">gnome_vfs_get_mime_type</link>         (const char *text_uri);
+enum        <link linkend="GnomeVFSMimeActionType">GnomeVFSMimeActionType</link>;
+enum        <link linkend="GnomeVFSMimeApplicationArgumentType">GnomeVFSMimeApplicationArgumentType</link>;
+typedef     <link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>;
+<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>* <link linkend="gnome-vfs-mime-application-copy">gnome_vfs_mime_application_copy</link>
+                                            (<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link> *application);
+<link linkend="GnomeVFSMimeActionType">GnomeVFSMimeActionType</link> <link linkend="gnome-vfs-mime-get-default-action-type">gnome_vfs_mime_get_default_action_type</link>
+                                            (const char *mime_type);
+<link linkend="GnomeVFSMimeAction">GnomeVFSMimeAction</link>* <link linkend="gnome-vfs-mime-get-default-action">gnome_vfs_mime_get_default_action</link>
+                                            (const char *mime_type);
+<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>* <link linkend="gnome-vfs-mime-get-default-application">gnome_vfs_mime_get_default_application</link>
+                                            (const char *mime_type);
+<link linkend="Bonobo-ServerInfo">Bonobo_ServerInfo</link>* <link linkend="gnome-vfs-mime-get-default-component">gnome_vfs_mime_get_default_component</link>
+                                            (const char *mime_type);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-get-short-list-applications">gnome_vfs_mime_get_short_list_applications</link>
+                                            (const char *mime_type);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-get-short-list-components">gnome_vfs_mime_get_short_list_components</link>
+                                            (const char *mime_type);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-get-all-applications">gnome_vfs_mime_get_all_applications</link>
+                                            (const char *mime_type);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-get-all-components">gnome_vfs_mime_get_all_components</link>
+                                            (const char *mime_type);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-default-action-type">gnome_vfs_mime_set_default_action_type</link>
+                                            (const char *mime_type,
+                                             <link linkend="GnomeVFSMimeActionType">GnomeVFSMimeActionType</link> action_type);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-default-application">gnome_vfs_mime_set_default_application</link>
+                                            (const char *mime_type,
+                                             const char *application_id);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-default-component">gnome_vfs_mime_set_default_component</link>
+                                            (const char *mime_type,
+                                             const char *component_iid);
+const char* <link linkend="gnome-vfs-mime-get-icon">gnome_vfs_mime_get_icon</link>         (const char *mime_type);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-icon">gnome_vfs_mime_set_icon</link>      (const char *mime_type,
+                                             const char *filename);
+const char* <link linkend="gnome-vfs-mime-get-description">gnome_vfs_mime_get_description</link>  (const char *mime_type);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-description">gnome_vfs_mime_set_description</link>
+                                            (const char *mime_type,
+                                             const char *description);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-mime-can-be-executable">gnome_vfs_mime_can_be_executable</link>
+                                            (const char *mime_type);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-can-be-executable">gnome_vfs_mime_set_can_be_executable</link>
+                                            (const char *mime_type,
+                                             <link linkend="gboolean">gboolean</link> new_value);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-short-list-applications">gnome_vfs_mime_set_short_list_applications</link>
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *application_ids);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-short-list-components">gnome_vfs_mime_set_short_list_components</link>
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *component_iids);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-add-application-to-short-list">gnome_vfs_mime_add_application_to_short_list</link>
+                                            (const char *mime_type,
+                                             const char *application_id);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-remove-application-from-short-list">gnome_vfs_mime_remove_application_from_short_list</link>
+                                            (const char *mime_type,
+                                             const char *application_id);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-add-component-to-short-list">gnome_vfs_mime_add_component_to_short_list</link>
+                                            (const char *mime_type,
+                                             const char *iid);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-remove-component-from-short-list">gnome_vfs_mime_remove_component_from_short_list</link>
+                                            (const char *mime_type,
+                                             const char *iid);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-add-extension">gnome_vfs_mime_add_extension</link> (const char *mime_type,
+                                             const char *extension);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-remove-extension">gnome_vfs_mime_remove_extension</link>
+                                            (const char *mime_type,
+                                             const char *extension);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-extend-all-applications">gnome_vfs_mime_extend_all_applications</link>
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *application_ids);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-remove-from-all-applications">gnome_vfs_mime_remove_from_all_applications</link>
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *application_ids);
+<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>* <link linkend="gnome-vfs-mime-application-new-from-id">gnome_vfs_mime_application_new_from_id</link>
+                                            (const char *id);
+void        <link linkend="gnome-vfs-mime-application-free">gnome_vfs_mime_application_free</link> (<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link> *application);
+void        <link linkend="gnome-vfs-mime-action-free">gnome_vfs_mime_action_free</link>      (<link linkend="GnomeVFSMimeAction">GnomeVFSMimeAction</link> *action);
+void        <link linkend="gnome-vfs-mime-application-list-free">gnome_vfs_mime_application_list_free</link>
+                                            (<link linkend="GList">GList</link> *list);
+void        <link linkend="gnome-vfs-mime-component-list-free">gnome_vfs_mime_component_list_free</link>
+                                            (<link linkend="GList">GList</link> *list);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-mime-id-in-application-list">gnome_vfs_mime_id_in_application_list</link>
+                                            (const char *id,
+                                             <link linkend="GList">GList</link> *applications);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-mime-id-in-component-list">gnome_vfs_mime_id_in_component_list</link>
+                                            (const char *iid,
+                                             <link linkend="GList">GList</link> *components);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-remove-application-from-list">gnome_vfs_mime_remove_application_from_list</link>
+                                            (<link linkend="GList">GList</link> *applications,
+                                             const char *application_id,
+                                             <link linkend="gboolean">gboolean</link> *did_remove);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-remove-component-from-list">gnome_vfs_mime_remove_component_from_list</link>
+                                            (<link linkend="GList">GList</link> *components,
+                                             const char *iid,
+                                             <link linkend="gboolean">gboolean</link> *did_remove);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-id-list-from-component-list">gnome_vfs_mime_id_list_from_component_list</link>
+                                            (<link linkend="GList">GList</link> *components);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-id-list-from-application-list">gnome_vfs_mime_id_list_from_application_list</link>
+                                            (<link linkend="GList">GList</link> *applications);
+void        <link linkend="gnome-vfs-mime-freeze">gnome_vfs_mime_freeze</link>           (void);
+void        <link linkend="gnome-vfs-mime-thaw">gnome_vfs_mime_thaw</link>             (void);
+void        <link linkend="gnome-vfs-mime-info-reload">gnome_vfs_mime_info_reload</link>      (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-mime-type-is-known">gnome_vfs_mime_type_is_known</link>    (const char *mime_type);
+const char* <link linkend="gnome-vfs-mime-get-value">gnome_vfs_mime_get_value</link>        (const char *mime_type,
+                                             const char *key);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-value">gnome_vfs_mime_set_value</link>     (const char *mime_type,
+                                             const char *key,
+                                             const char *value);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-get-key-list">gnome_vfs_mime_get_key_list</link>     (const char *mime_type);
+void        <link linkend="gnome-vfs-mime-keys-list-free">gnome_vfs_mime_keys_list_free</link>   (<link linkend="GList">GList</link> *mime_type_list);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-mime-get-extensions-list">gnome_vfs_mime_get_extensions_list</link>
+                                            (const char *mime_type);
+void        <link linkend="gnome-vfs-mime-extensions-list-free">gnome_vfs_mime_extensions_list_free</link>
+                                            (<link linkend="GList">GList</link> *list);
+char*       <link linkend="gnome-vfs-mime-get-extensions-string">gnome_vfs_mime_get_extensions_string</link>
+                                            (const char *mime_type);
+char*       <link linkend="gnome-vfs-mime-get-extensions-pretty-string">gnome_vfs_mime_get_extensions_pretty_string</link>
+                                            (const char *mime_type);
+<link linkend="GList">GList</link>*      <link linkend="gnome-vfs-get-registered-mime-types">gnome_vfs_get_registered_mime_types</link>
+                                            (void);
+void        <link linkend="gnome-vfs-mime-registered-mime-type-list-free">gnome_vfs_mime_registered_mime_type_list_free</link>
+                                            (<link linkend="GList">GList</link> *list);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-registered-type-key">gnome_vfs_mime_set_registered_type_key</link>
+                                            (const char *mime_type,
+                                             const char *key,
+                                             const char *data);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-mime-set-extensions-list">gnome_vfs_mime_set_extensions_list</link>
+                                            (const char *mime_type,
+                                             const char *extensions_list);
+void        <link linkend="gnome-vfs-mime-registered-mime-type-delete">gnome_vfs_mime_registered_mime_type_delete</link>
+                                            (const char *mime_type);
+void        <link linkend="gnome-vfs-mime-reset">gnome_vfs_mime_reset</link>            (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GNOME-VFS-MIME-TYPE-UNKNOWN-CAPS"/>GNOME_VFS_MIME_TYPE_UNKNOWN</title>
+<programlisting>#define GNOME_VFS_MIME_TYPE_UNKNOWN "application/octet-stream"
+</programlisting>
+<para>
+The value returned for the MIME type when a file did
+not match any entries in the MIME database. May be
+treated as a file of an unknown type.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-get-mime-type-for-data"/>gnome_vfs_get_mime_type_for_data ()</title>
+<programlisting>const char* gnome_vfs_get_mime_type_for_data
+                                            (<link linkend="gconstpointer">gconstpointer</link> data,
+                                             int data_size);</programlisting>
+<para>
+Tries to guess the mime type of the data in <parameter>data</parameter>
+using the magic patterns.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to data in memory.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data_size</parameter>&nbsp;:</term>
+<listitem><simpara> Size of the data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the mime-type for this filename.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-get-mime-type"/>gnome_vfs_get_mime_type ()</title>
+<programlisting>char*       gnome_vfs_get_mime_type         (const char *text_uri);</programlisting>
+<para>
+Determine the mime type of <parameter>text_uri</parameter>. The mime type is determined
+in the same way as by <link linkend="gnome-vfs-get-file-info">gnome_vfs_get_file_info</link>(). This is meant as
+a convenience function for times when you only want the mime type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>text_uri</parameter>&nbsp;:</term>
+<listitem><simpara> URI of the file for which to get the mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The mime type, or NULL if there is an error reading 
+the file.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSMimeActionType"/>enum GnomeVFSMimeActionType</title>
+<programlisting>typedef enum {
+	GNOME_VFS_MIME_ACTION_TYPE_NONE,
+	GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
+	GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
+} GnomeVFSMimeActionType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSMimeApplicationArgumentType"/>enum GnomeVFSMimeApplicationArgumentType</title>
+<programlisting>typedef enum {
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS,
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS,
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES
+} GnomeVFSMimeApplicationArgumentType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSMimeApplication"/>GnomeVFSMimeApplication</title>
+<programlisting>typedef struct {
+	char *id;
+	char *name;
+	char *command;
+	gboolean can_open_multiple_files;
+	GnomeVFSMimeApplicationArgumentType expects_uris;
+	GList *supported_uri_schemes;
+	gboolean requires_terminal;
+
+	/* Padded to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+
+} GnomeVFSMimeApplication;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-application-copy"/>gnome_vfs_mime_application_copy ()</title>
+<programlisting><link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>* gnome_vfs_mime_application_copy
+                                            (<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link> *application);</programlisting>
+<para>
+Creates a newly referenced copy of a GnomeVFSMimeApplication object.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>application</parameter>&nbsp;:</term>
+<listitem><simpara> The GnomeVFSMimeApplication to be duplicated.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A copy of <parameter>application</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-default-action-type"/>gnome_vfs_mime_get_default_action_type ()</title>
+<programlisting><link linkend="GnomeVFSMimeActionType">GnomeVFSMimeActionType</link> gnome_vfs_mime_get_default_action_type
+                                            (const char *mime_type);</programlisting>
+<para>
+Query the MIME database for the type of action to be performed on a particular MIME type by default.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The type of action to be performed on a file of 
+MIME type, <parameter>mime_type</parameter> by default.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-default-action"/>gnome_vfs_mime_get_default_action ()</title>
+<programlisting><link linkend="GnomeVFSMimeAction">GnomeVFSMimeAction</link>* gnome_vfs_mime_get_default_action
+                                            (const char *mime_type);</programlisting>
+<para>
+Query the MIME database for default action associated with a particular MIME type <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSMimeAction representing the default action to perform upon
+file of type <parameter>mime_type</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-default-application"/>gnome_vfs_mime_get_default_application ()</title>
+<programlisting><link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>* gnome_vfs_mime_get_default_application
+                                            (const char *mime_type);</programlisting>
+<para>
+Query the MIME database for the application to be executed on files of MIME type
+<parameter>mime_type</parameter> by default.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSMimeApplication representing the default handler of <parameter>mime_type</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-default-component"/>gnome_vfs_mime_get_default_component ()</title>
+<programlisting><link linkend="Bonobo-ServerInfo">Bonobo_ServerInfo</link>* gnome_vfs_mime_get_default_component
+                                            (const char *mime_type);</programlisting>
+<para>
+Query the MIME database for the default Bonobo component to be activated to 
+view files of MIME type <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> An Bonobo_ServerInfo * representing the OAF server to be activated
+to get a reference to the proper component.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-short-list-applications"/>gnome_vfs_mime_get_short_list_applications ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_get_short_list_applications
+                                            (const char *mime_type);</programlisting>
+<para>
+Return an alphabetically sorted list of GnomeVFSMimeApplication
+data structures for the requested mime type.	The short list contains
+"select" applications recommended for handling this MIME type, appropriate for
+display to the user.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GList * where the elements are GnomeVFSMimeApplication *
+representing various applications to display in the short list for <parameter>mime_type</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-short-list-components"/>gnome_vfs_mime_get_short_list_components ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_get_short_list_components
+                                            (const char *mime_type);</programlisting>
+<para>
+Return an unsorted sorted list of Bonobo_ServerInfo *
+data structures for the requested mime type.	The short list contains
+"select" components recommended for handling this MIME type, appropriate for
+display to the user.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GList * where the elements are Bonobo_ServerInfo *
+representing various components to display in the short list for <parameter>mime_type</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-all-applications"/>gnome_vfs_mime_get_all_applications ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_get_all_applications
+                                            (const char *mime_type);</programlisting>
+<para>
+Return an alphabetically sorted list of GnomeVFSMimeApplication
+data structures representing all applications in the MIME database registered
+to handle files of MIME type <parameter>mime_type</parameter> (and supertypes).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GList * where the elements are GnomeVFSMimeApplication *
+representing applications that handle MIME type <parameter>mime_type</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-all-components"/>gnome_vfs_mime_get_all_components ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_get_all_components
+                                            (const char *mime_type);</programlisting>
+<para>
+Return an alphabetically sorted list of Bonobo_ServerInfo
+data structures representing all Bonobo components registered
+to handle files of MIME type <parameter>mime_type</parameter> (and supertypes).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GList * where the elements are Bonobo_ServerInfo *
+representing components that can handle MIME type <parameter>mime_type</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-default-action-type"/>gnome_vfs_mime_set_default_action_type ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_default_action_type
+                                            (const char *mime_type,
+                                             <link linkend="GnomeVFSMimeActionType">GnomeVFSMimeActionType</link> action_type);</programlisting>
+<para>
+Sets the default action type to be performed on files of MIME type <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "image/png"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>action_type</parameter>&nbsp;:</term>
+<listitem><simpara> A GnomeVFSMimeActionType containing the action to perform by default
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-default-application"/>gnome_vfs_mime_set_default_application ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_default_application
+                                            (const char *mime_type,
+                                             const char *application_id);</programlisting>
+<para>
+Sets the default application to be run on files of MIME type <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_id</parameter>&nbsp;:</term>
+<listitem><simpara> A key representing an application in the MIME database 
+(GnomeVFSMimeApplication-&gt;id, for example)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-default-component"/>gnome_vfs_mime_set_default_component ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_default_component
+                                            (const char *mime_type,
+                                             const char *component_iid);</programlisting>
+<para>
+Sets the default component to be activated for files of MIME type <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>component_iid</parameter>&nbsp;:</term>
+<listitem><simpara> The OAFIID of a component
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-icon"/>gnome_vfs_mime_get_icon ()</title>
+<programlisting>const char* gnome_vfs_mime_get_icon         (const char *mime_type);</programlisting>
+<para>
+Query the MIME database for an icon representing the specified MIME type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a  MIME type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The filename of the icon as listed in the MIME database. This is
+usually a filename without path information, e.g. "i-chardev.png", and sometimes
+does not have an extension, e.g. "i-regular" if the icon is supposed to be image
+type agnostic between icon themes. Icons are generic, and not theme specific. These
+will not necessarily match with the icons a user sees in Nautilus, you have been warned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-icon"/>gnome_vfs_mime_set_icon ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_icon      (const char *mime_type,
+                                             const char *filename);</programlisting>
+<para>
+Set the icon entry for a particular MIME type in the MIME database. Note that
+icon entries need not necessarily contain the full path, and do not necessarily need to
+specify an extension. So "i-regular", "my-special-icon.png", and "some-icon"
+are all valid icon filenames.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a  MIME type
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> a const char * containing an image filename
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation
+or any errors that may have occurred.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-description"/>gnome_vfs_mime_get_description ()</title>
+<programlisting>const char* gnome_vfs_mime_get_description  (const char *mime_type);</programlisting>
+<para>
+Query the MIME database for a description of the specified MIME type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> the mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A description of MIME type <parameter>mime_type</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-description"/>gnome_vfs_mime_set_description ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_description
+                                            (const char *mime_type,
+                                             const char *description);</programlisting>
+<para>
+Set the description of this MIME type in the MIME database. The description
+should be something like "Gnumeric spreadsheet".</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>description</parameter>&nbsp;:</term>
+<listitem><simpara> A description of this MIME type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-can-be-executable"/>gnome_vfs_mime_can_be_executable ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_mime_can_be_executable
+                                            (const char *mime_type);</programlisting>
+<para>
+Check whether files of this MIME type might conceivably be executable.
+Default for known types if FALSE. Default for unknown types is TRUE.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> gboolean containing TRUE if some files of this MIME type
+are registered as being executable, and false otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-can-be-executable"/>gnome_vfs_mime_set_can_be_executable ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_can_be_executable
+                                            (const char *mime_type,
+                                             <link linkend="gboolean">gboolean</link> new_value);</programlisting>
+<para>
+Set whether files of this MIME type might conceivably be executable.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_value</parameter>&nbsp;:</term>
+<listitem><simpara> A boolean value indicating whether <parameter>mime_type</parameter> could be executable.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-short-list-applications"/>gnome_vfs_mime_set_short_list_applications ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_short_list_applications
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *application_ids);</programlisting>
+<para>
+Set the short list of applications for the specified MIME type. The short list
+contains applications recommended for possible selection by the user.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_ids</parameter>&nbsp;:</term>
+<listitem><simpara> GList of const char * application ids
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-short-list-components"/>gnome_vfs_mime_set_short_list_components ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_short_list_components
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *component_iids);</programlisting>
+<para>
+Set the short list of components for the specified MIME type. The short list
+contains companents recommended for possible selection by the user. *</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>component_iids</parameter>&nbsp;:</term>
+<listitem><simpara> GList of const char * OAF IIDs
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-add-application-to-short-list"/>gnome_vfs_mime_add_application_to_short_list ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_add_application_to_short_list
+                                            (const char *mime_type,
+                                             const char *application_id);</programlisting>
+<para>
+Add an application to the short list for MIME type <parameter>mime_type</parameter>. The short list contains
+applications recommended for display as choices to the user for a particular MIME type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_id</parameter>&nbsp;:</term>
+<listitem><simpara> const char * containing the application's id in the MIME database
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-remove-application-from-short-list"/>gnome_vfs_mime_remove_application_from_short_list ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_remove_application_from_short_list
+                                            (const char *mime_type,
+                                             const char *application_id);</programlisting>
+<para>
+Remove an application from the short list for MIME type <parameter>mime_type</parameter>. The short list contains
+applications recommended for display as choices to the user for a particular MIME type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_id</parameter>&nbsp;:</term>
+<listitem><simpara> const char * containing the application's id in the MIME database
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-add-component-to-short-list"/>gnome_vfs_mime_add_component_to_short_list ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_add_component_to_short_list
+                                            (const char *mime_type,
+                                             const char *iid);</programlisting>
+<para>
+Add a component to the short list for MIME type <parameter>mime_type</parameter>. The short list contains
+components recommended for display as choices to the user for a particular MIME type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> const char * containing the component's OAF IID
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-remove-component-from-short-list"/>gnome_vfs_mime_remove_component_from_short_list ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_remove_component_from_short_list
+                                            (const char *mime_type,
+                                             const char *iid);</programlisting>
+<para>
+Remove a component from the short list for MIME type <parameter>mime_type</parameter>. The short list contains
+components recommended for display as choices to the user for a particular MIME type.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> const char * containing the component's OAF IID
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-add-extension"/>gnome_vfs_mime_add_extension ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_add_extension (const char *mime_type,
+                                             const char *extension);</programlisting>
+<para>
+Add a file extension to the specificed MIME type in the MIME database.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> The mime type to add the mapping to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>extension</parameter>&nbsp;:</term>
+<listitem><simpara> The extension to add (e.g. "txt")
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-remove-extension"/>gnome_vfs_mime_remove_extension ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_remove_extension
+                                            (const char *mime_type,
+                                             const char *extension);</programlisting>
+<para>
+Removes a file extension from the specificed MIME type in the MIME database.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> The mime type to remove the extension from
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>extension</parameter>&nbsp;:</term>
+<listitem><simpara> The extension to remove
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-extend-all-applications"/>gnome_vfs_mime_extend_all_applications ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_extend_all_applications
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *application_ids);</programlisting>
+<para>
+Register <parameter>mime_type</parameter> as being handled by all applications list in <parameter>application_ids</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_ids</parameter>&nbsp;:</term>
+<listitem><simpara> a GList of const char * containing application ids
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-remove-from-all-applications"/>gnome_vfs_mime_remove_from_all_applications ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_remove_from_all_applications
+                                            (const char *mime_type,
+                                             <link linkend="GList">GList</link> *application_ids);</programlisting>
+<para>
+Remove <parameter>mime_type</parameter> as a handled type from every application in <parameter>application_ids</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing a mime type, e.g. "application/x-php"
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_ids</parameter>&nbsp;:</term>
+<listitem><simpara> a GList of const char * containing application ids
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-application-new-from-id"/>gnome_vfs_mime_application_new_from_id ()</title>
+<programlisting><link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link>* gnome_vfs_mime_application_new_from_id
+                                            (const char *id);</programlisting>
+<para>
+Fetches the GnomeVFSMimeApplication associated with the specified
+application ID from the MIME database.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> A const char * containing an application id
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSMimeApplication * corresponding to <parameter>id</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-application-free"/>gnome_vfs_mime_application_free ()</title>
+<programlisting>void        gnome_vfs_mime_application_free (<link linkend="GnomeVFSMimeApplication">GnomeVFSMimeApplication</link> *application);</programlisting>
+<para>
+Frees a GnomeVFSMimeApplication *.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>application</parameter>&nbsp;:</term>
+<listitem><simpara> The GnomeVFSMimeApplication to be freed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-action-free"/>gnome_vfs_mime_action_free ()</title>
+<programlisting>void        gnome_vfs_mime_action_free      (<link linkend="GnomeVFSMimeAction">GnomeVFSMimeAction</link> *action);</programlisting>
+<para>
+Frees a GnomeVFSMimeAction *.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> The GnomeVFSMimeAction to be freed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-application-list-free"/>gnome_vfs_mime_application_list_free ()</title>
+<programlisting>void        gnome_vfs_mime_application_list_free
+                                            (<link linkend="GList">GList</link> *list);</programlisting>
+<para>
+Frees lists of GnomeVFSApplications, as returned from functions such
+as <link linkend="gnome-vfs-get-all-applications">gnome_vfs_get_all_applications</link>().</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara> a GList of GnomeVFSApplication * to be freed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-component-list-free"/>gnome_vfs_mime_component_list_free ()</title>
+<programlisting>void        gnome_vfs_mime_component_list_free
+                                            (<link linkend="GList">GList</link> *list);</programlisting>
+<para>
+Frees lists of Bonobo_ServerInfo * (as returned from functions such
+as <parameter>gnome_vfs_get_all_components</parameter>)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara> a GList of Bonobo_ServerInfo * to be freed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-id-in-application-list"/>gnome_vfs_mime_id_in_application_list ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_mime_id_in_application_list
+                                            (const char *id,
+                                             <link linkend="GList">GList</link> *applications);</programlisting>
+<para>
+Check whether an application id is in a list of GnomeVFSMimeApplications.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> An application id.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>applications</parameter>&nbsp;:</term>
+<listitem><simpara> A GList * whose nodes are GnomeVFSMimeApplications, such as the
+result of <link linkend="gnome-vfs-mime-get-short-list-applications">gnome_vfs_mime_get_short_list_applications</link>().
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if an application whose id matches <parameter>id</parameter> is in <parameter>applications</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-id-in-component-list"/>gnome_vfs_mime_id_in_component_list ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_mime_id_in_component_list
+                                            (const char *iid,
+                                             <link linkend="GList">GList</link> *components);</programlisting>
+<para>
+Check whether a component iid is in a list of Bonobo_ServerInfos.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> A component iid.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>components</parameter>&nbsp;:</term>
+<listitem><simpara> A GList * whose nodes are Bonobo_ServerInfos, such as the
+result of <link linkend="gnome-vfs-mime-get-short-list-components">gnome_vfs_mime_get_short_list_components</link>().
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if a component whose iid matches <parameter>iid</parameter> is in <parameter>components</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-remove-application-from-list"/>gnome_vfs_mime_remove_application_from_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_remove_application_from_list
+                                            (<link linkend="GList">GList</link> *applications,
+                                             const char *application_id,
+                                             <link linkend="gboolean">gboolean</link> *did_remove);</programlisting>
+<para>
+Remove an application specified by id from a list of GnomeVFSMimeApplications.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>applications</parameter>&nbsp;:</term>
+<listitem><simpara> A GList * whose nodes are GnomeVFSMimeApplications, such as the
+result of <link linkend="gnome-vfs-mime-get-short-list-applications">gnome_vfs_mime_get_short_list_applications</link>().
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>application_id</parameter>&nbsp;:</term>
+<listitem><simpara> The id of an application to remove from <parameter>applications</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>did_remove</parameter>&nbsp;:</term>
+<listitem><simpara> If non-NULL, this is filled in with TRUE if the application
+was found in the list, FALSE otherwise.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The modified list. If the application is not found, the list will 
+be unchanged.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-remove-component-from-list"/>gnome_vfs_mime_remove_component_from_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_remove_component_from_list
+                                            (<link linkend="GList">GList</link> *components,
+                                             const char *iid,
+                                             <link linkend="gboolean">gboolean</link> *did_remove);</programlisting>
+<para>
+Remove a component specified by iid from a list of Bonobo_ServerInfos.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>components</parameter>&nbsp;:</term>
+<listitem><simpara> A GList * whose nodes are Bonobo_ServerInfos, such as the
+result of <link linkend="gnome-vfs-mime-get-short-list-components">gnome_vfs_mime_get_short_list_components</link>().
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> The iid of a component to remove from <parameter>components</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>did_remove</parameter>&nbsp;:</term>
+<listitem><simpara> If non-NULL, this is filled in with TRUE if the component
+was found in the list, FALSE otherwise.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The modified list. If the component is not found, the list will 
+be unchanged.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-id-list-from-component-list"/>gnome_vfs_mime_id_list_from_component_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_id_list_from_component_list
+                                            (<link linkend="GList">GList</link> *components);</programlisting>
+<para>
+Create a list of component iids from a list of Bonobo_ServerInfos.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>components</parameter>&nbsp;:</term>
+<listitem><simpara> A GList * whose nodes are Bonobo_ServerInfos, such as the
+result of <link linkend="gnome-vfs-mime-get-short-list-components">gnome_vfs_mime_get_short_list_components</link>().
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new list where each Bonobo_ServerInfo in the original
+list is replaced by a char * with the component's iid. The original list is
+not modified.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-id-list-from-application-list"/>gnome_vfs_mime_id_list_from_application_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_id_list_from_application_list
+                                            (<link linkend="GList">GList</link> *applications);</programlisting>
+<para>
+Create a list of application ids from a list of GnomeVFSMimeApplications.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>applications</parameter>&nbsp;:</term>
+<listitem><simpara> A GList * whose nodes are GnomeVFSMimeApplications, such as the
+result of <link linkend="gnome-vfs-mime-get-short-list-applications">gnome_vfs_mime_get_short_list_applications</link>().
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new list where each GnomeVFSMimeApplication in the original
+list is replaced by a char * with the application's id. The original list is
+not modified.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-freeze"/>gnome_vfs_mime_freeze ()</title>
+<programlisting>void        gnome_vfs_mime_freeze           (void);</programlisting>
+<para>
+Freezes the mime data so that you can do multiple
+updates to the dat in one batch without needing
+to back the files to disk or readind them</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-thaw"/>gnome_vfs_mime_thaw ()</title>
+<programlisting>void        gnome_vfs_mime_thaw             (void);</programlisting>
+<para>
+UnFreezes the mime data so that you can do multiple
+updates to the dat in one batch without needing
+to back the files to disk or readind them</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-info-reload"/>gnome_vfs_mime_info_reload ()</title>
+<programlisting>void        gnome_vfs_mime_info_reload      (void);</programlisting>
+<para>
+Reload the MIME database from disk and notify any listeners
+holding active <link linkend="GnomeVFSMIMEMonitor">GnomeVFSMIMEMonitor</link> objects.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-type-is-known"/>gnome_vfs_mime_type_is_known ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_mime_type_is_known    (const char *mime_type);</programlisting>
+<para>
+This function returns TRUE if <parameter>mime_type</parameter> is in the MIME database at all.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> a mime type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if anything is known about <parameter>mime_type</parameter>, otherwise FALSE
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-value"/>gnome_vfs_mime_get_value ()</title>
+<programlisting>const char* gnome_vfs_mime_get_value        (const char *mime_type,
+                                             const char *key);</programlisting>
+<para>
+This function retrieves the value associated with <parameter>key</parameter> in
+the given GnomeMimeContext.  The string is private, you
+should not free the result.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> a mime type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> A key to lookup for the given mime-type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_VFS_OK if the operation succeeded, otherwise an error code
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-value"/>gnome_vfs_mime_set_value ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_value     (const char *mime_type,
+                                             const char *key,
+                                             const char *value);</programlisting>
+<para>
+This function is going to set the value
+associated to the key and it will save it
+to the user' file if necessary.
+You should not free the key/values passed to
+this function. They are used internally.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> a mime type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> a key to store the value in.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> the value to store in the key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_VFS_OK if the operation succeeded, otherwise an error code
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-key-list"/>gnome_vfs_mime_get_key_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_get_key_list     (const char *mime_type);</programlisting>
+<para>
+Gets a list of all keys associated with <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> the MIME type to lookup
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GList of const char * representing keys associated
+with <parameter>mime_type</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-keys-list-free"/>gnome_vfs_mime_keys_list_free ()</title>
+<programlisting>void        gnome_vfs_mime_keys_list_free   (<link linkend="GList">GList</link> *mime_type_list);</programlisting>
+<para>
+Frees the mime type list.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type_list</parameter>&nbsp;:</term>
+<listitem><simpara> A mime type list to free.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-extensions-list"/>gnome_vfs_mime_get_extensions_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_mime_get_extensions_list
+                                            (const char *mime_type);</programlisting>
+<para>
+Get the file extensions associated with mime type <parameter>mime_type</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> type to get the extensions of
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GList of char *s
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-extensions-list-free"/>gnome_vfs_mime_extensions_list_free ()</title>
+<programlisting>void        gnome_vfs_mime_extensions_list_free
+                                            (<link linkend="GList">GList</link> *list);</programlisting>
+<para>
+Call this function on the list returned by gnome_vfs_mime_extensions
+to free the list and all of its elements.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara> the extensions list
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-extensions-string"/>gnome_vfs_mime_get_extensions_string ()</title>
+<programlisting>char*       gnome_vfs_mime_get_extensions_string
+                                            (const char *mime_type);</programlisting>
+<para>
+Retrieves the extensions associated with <parameter>mime_type</parameter> as a single
+space seperated string.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> the mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a string containing space seperated extensions for <parameter>mime_type</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-get-extensions-pretty-string"/>gnome_vfs_mime_get_extensions_pretty_string ()</title>
+<programlisting>char*       gnome_vfs_mime_get_extensions_pretty_string
+                                            (const char *mime_type);</programlisting>
+<para>
+Returns the supported extensions for <parameter>mime_type</parameter> as a comma-seperated list.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> the mime type
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a string containing comma seperated extensions for this mime-type
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-get-registered-mime-types"/>gnome_vfs_get_registered_mime_types ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_vfs_get_registered_mime_types
+                                            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-registered-mime-type-list-free"/>gnome_vfs_mime_registered_mime_type_list_free ()</title>
+<programlisting>void        gnome_vfs_mime_registered_mime_type_list_free
+                                            (<link linkend="GList">GList</link> *list);</programlisting>
+<para>
+Call this function on the list returned by gnome_vfs_get_registered_mime_types
+to free the list and all of its elements.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara> the extensions list
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-registered-type-key"/>gnome_vfs_mime_set_registered_type_key ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_registered_type_key
+                                            (const char *mime_type,
+                                             const char *key,
+                                             const char *data);</programlisting>
+<para>
+This function sets the key data for the registered mime
+type's hash table.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> 	Mime type to set key for
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> 	The key to set
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> 	The data to set for the key
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_VFS_OK if the operation succeeded, otherwise an error code
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-set-extensions-list"/>gnome_vfs_mime_set_extensions_list ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_mime_set_extensions_list
+                                            (const char *mime_type,
+                                             const char *extensions_list);</programlisting>
+<para>
+Sets the extensions for a given mime type. Overrides
+the previously set extensions.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> the mime type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>extensions_list</parameter>&nbsp;:</term>
+<listitem><simpara> a whitespace-separated list of the
+                  extensions to set for this mime type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_VFS_OK if the operation succeeded, otherwise an error code.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-registered-mime-type-delete"/>gnome_vfs_mime_registered_mime_type_delete ()</title>
+<programlisting>void        gnome_vfs_mime_registered_mime_type_delete
+                                            (const char *mime_type);</programlisting>
+<para>
+Delete a mime type for the user which runs this command.
+You can undo this only by calling gnome_vfs_mime_reset</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>mime_type</parameter>&nbsp;:</term>
+<listitem><simpara> string representing the existing type to delete
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-mime-reset"/>gnome_vfs_mime_reset ()</title>
+<programlisting>void        gnome_vfs_mime_reset            (void);</programlisting>
+<para>
+resets the user's mime database to the system defaults.</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

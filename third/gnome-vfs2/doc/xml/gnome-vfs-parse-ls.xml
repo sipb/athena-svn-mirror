@@ -1,0 +1,72 @@
+<refentry id="gnome-vfs-gnome-vfs-parse-ls">
+<refmeta>
+<refentrytitle>gnome-vfs-parse-ls</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-vfs-parse-ls</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+int         <link linkend="gnome-vfs-parse-ls-lga">gnome_vfs_parse_ls_lga</link>          (const char *p,
+                                             struct <link linkend="stat">stat</link> *s,
+                                             char **filename,
+                                             char **linkname);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-vfs-parse-ls-lga"/>gnome_vfs_parse_ls_lga ()</title>
+<programlisting>int         gnome_vfs_parse_ls_lga          (const char *p,
+                                             struct <link linkend="stat">stat</link> *s,
+                                             char **filename,
+                                             char **linkname);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>p</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>s</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>linkname</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

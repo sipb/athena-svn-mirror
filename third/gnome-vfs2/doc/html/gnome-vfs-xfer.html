@@ -1,0 +1,1103 @@
+<HTML
+><HEAD
+><TITLE
+>Copy Engine</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basic File Operations"
+HREF="file-operations.html"><LINK
+REL="PREVIOUS"
+TITLE="Asynchronous File I/O"
+HREF="gnome-vfs-asynchronous-operations.html"><LINK
+REL="NEXT"
+TITLE="Module Callbacks"
+HREF="gnome-vfs-module-callbacks.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-asynchronous-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-module-callbacks.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-XFER"
+>Copy Engine</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2549"
+></A
+><H2
+>Name</H2
+>Copy Engine&nbsp;--&nbsp;asynchronous copy/move/delete engine</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2552"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-xfer.html#GNOME-VFS-XFER-URI-LIST"
+>gnome_vfs_xfer_uri_list</A
+>      (const <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *source_uri_list,
+                                             const <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *target_uri_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+> xfer_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+> error_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROVERWRITEMODE"
+>GnomeVFSXferOverwriteMode</A
+> overwrite_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>GnomeVFSXferProgressCallback</A
+> progress_callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-xfer.html#GNOME-VFS-XFER-URI"
+>gnome_vfs_xfer_uri</A
+>           (const GnomeVFSURI *source_uri,
+                                             const GnomeVFSURI *target_uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+> xfer_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+> error_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROVERWRITEMODE"
+>GnomeVFSXferOverwriteMode</A
+> overwrite_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>GnomeVFSXferProgressCallback</A
+> progress_callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-xfer.html#GNOME-VFS-XFER-DELETE-LIST"
+>gnome_vfs_xfer_delete_list</A
+>   (const <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *source_uri_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+> error_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+> xfer_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>GnomeVFSXferProgressCallback</A
+> progress_callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2580"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2583"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2585"
+></A
+><H3
+><A
+NAME="GNOME-VFS-XFER-URI-LIST"
+></A
+>gnome_vfs_xfer_uri_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_xfer_uri_list      (const <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *source_uri_list,
+                                             const <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *target_uri_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+> xfer_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+> error_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROVERWRITEMODE"
+>GnomeVFSXferOverwriteMode</A
+> overwrite_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>GnomeVFSXferProgressCallback</A
+> progress_callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will transfer multiple files to a multiple targets.  Given a
+a source uri(s) and a destination uri(s).   There are a list of options that
+your application can use to control how the transfer is done.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>source_urilist</I
+></TT
+>: A Glist of uris  (ie file;//)
+<TT
+CLASS="PARAMETER"
+><I
+>target_uri_list</I
+></TT
+>: A GList of uris  
+<TT
+CLASS="PARAMETER"
+><I
+>xfer_options</I
+></TT
+>: These are options you wish to set for the transfer. For
+instance by setting the xfer behavior you can either make a copy or a 
+move.  
+<TT
+CLASS="PARAMETER"
+><I
+>error_mode</I
+></TT
+>:  Decide how to behave if the xfer is interrupted.  For instance
+you could set your application to return an error code in case of an
+interuption.
+<TT
+CLASS="PARAMETER"
+><I
+>overwrite_mode</I
+></TT
+>: How to react if a file your copying is being overwritten.
+<TT
+CLASS="PARAMETER"
+><I
+>progress_callback</I
+></TT
+>:  This is used to monitor the progress of a transfer.
+Common use would be to check to see if the transfer is asking for permission
+to overwrite a file.
+<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>: Data to be want passed back in callbacks from the xfer engine</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2607"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>source_uri_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>target_uri_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>xfer_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>error_mode</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>overwrite_mode</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>progress_callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> If all goes well it returns GNOME_VFS_OK.  Check GnomeVFSResult for
+other values.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2644"
+></A
+><H3
+><A
+NAME="GNOME-VFS-XFER-URI"
+></A
+>gnome_vfs_xfer_uri ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_xfer_uri           (const GnomeVFSURI *source_uri,
+                                             const GnomeVFSURI *target_uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+> xfer_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+> error_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROVERWRITEMODE"
+>GnomeVFSXferOverwriteMode</A
+> overwrite_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>GnomeVFSXferProgressCallback</A
+> progress_callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function will allow a person to copy data from one location to another.
+The location is specified using a URIs as the means to describe the location
+of the data.  Like any copy there are several options that can be set.
+These can be set using the xfer_options.    In addition there are callback
+mechanisms and error codes to provide feedback in the copy
+process.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>source_uri</I
+></TT
+>: This is the location of where your data resides.  
+<TT
+CLASS="PARAMETER"
+><I
+>target_uri</I
+></TT
+>: This is the location of where you want your data to go.
+<TT
+CLASS="PARAMETER"
+><I
+>xfer_options</I
+></TT
+>: Set the kind of transfers you want.  These are:
+GNOME_VFS_XFER_DEFAULT:  Default behavior.  Which is to do a straight one to
+one copy.
+GNOME_VFS_XFER_FOLLOW_LINKS:  This means follow the value of the symbolic
+link when copying.  (ie treat a symbolic link as a directory)
+GNOME_VFS_RECURSIVE:  Do a recursive copy of the source to the destination.
+Equivalent to the cp -r option in GNU cp.
+GNOME_VFS_XFER_SAME_FS:  This only allows copying onto the same filesystem.
+GNOME_VFS_DELETE_ITEM: This is equivalent to a mv.  Where you will copy the
+contents of the source to the destination and then remove data from the
+source URI.
+GNOME_VFS_XFER_EMPTY_DIRECTORIES: &lt;TBA&gt;
+GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY:  This will create a directory if it
+doesn't exist in the destination area.  Useful with the
+GNOME_VFS_XFER_RECURSIVE xfer option.
+GNOME_VFS_XFER_REMOVESOURCE: This option will remove the source data after
+whatever xfer option has been taken.
+GNOME_VFS_USE_UNIQUE_NAMES:  This is a check ot make sure that what you copy
+onto the destination is not overwritten.  It will only copy the unique items
+from the source to the destjnation.
+GNOME_VFS_XFER_LINK_ITEMS: &lt;TBA&gt;
+<TT
+CLASS="PARAMETER"
+><I
+>error_mode</I
+></TT
+>:  When this function returns you need to check the error code
+for the results of the copy.  The results are generally:
+GNOME_VFS_XFER_ERROR_MODE_ABORT: This means that the operation was aborted
+by some sort of signal that interrupted the transfer.
+GNOME_VFS_ERROR_MODE_QUERY: This means that no error has occured and that
+you should query with the GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR.  See</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>overwrite_mode</I
+></TT
+>:  This sets the options to deal with data that are duplicate
+between the source and the destination.  Your choices are:
+GNOME_VFS_XFER_OVERWRITE_MODE_ABORT:  This means abort the transfer if you
+see duplicate data.
+GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE: Replace the files silently.  Don't
+worry be happy.
+GNOME_VFS_XFER_OVERWRITE_MODE_SKIP: Skip duplicate files silenty.
+target.
+<TT
+CLASS="PARAMETER"
+><I
+>progress_callback</I
+></TT
+>:  This is an important call back because this is how you
+communicate with your copy process.  
+<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>: Data to be want passed back in callbacks from the xfer engine</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2667"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>source_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>target_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>xfer_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>error_mode</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>overwrite_mode</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>progress_callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2704"
+></A
+><H3
+><A
+NAME="GNOME-VFS-XFER-DELETE-LIST"
+></A
+>gnome_vfs_xfer_delete_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_xfer_delete_list   (const <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *source_uri_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+> error_mode,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+> xfer_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>GnomeVFSXferProgressCallback</A
+> progress_callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>uri_list</I
+></TT
+>:  This is a list containing uris
+<TT
+CLASS="PARAMETER"
+><I
+>error_mode</I
+></TT
+>:  Decide how you want to deal with interruptions
+<TT
+CLASS="PARAMETER"
+><I
+>xfer_options</I
+></TT
+>: Set whatever transfer options you need.
+<TT
+CLASS="PARAMETER"
+><I
+>progress_callback</I
+></TT
+>: Callback to check on progress of transfer.
+<TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>: Data to be want passed back in callbacks from the xfer engine</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2721"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>source_uri_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>error_mode</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>xfer_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>progress_callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-asynchronous-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-module-callbacks.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Asynchronous File I/O</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Module Callbacks</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

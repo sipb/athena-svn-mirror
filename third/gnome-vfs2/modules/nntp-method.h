@@ -55,7 +55,7 @@ typedef struct
 typedef struct {
 	GnomeVFSMethodHandle method_handle;
 	GnomeVFSInetConnection *inet_connection;
-	GnomeVFSIOBuf *iobuf;
+	GnomeVFSSocketBuffer *socketbuf;
 	GnomeVFSURI *uri;
 	GString *response_buffer;
 	gchar *response_message;

@@ -1,0 +1,4630 @@
+<HTML
+><HEAD
+><TITLE
+>MIME Handlers</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="MIME types & the Application Registry"
+HREF="mime-registry.html"><LINK
+REL="PREVIOUS"
+TITLE="MIME Type Detection"
+HREF="gnome-vfs-mime.html"><LINK
+REL="NEXT"
+TITLE="mime-info"
+HREF="gnome-vfs-mime-info.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-mime.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-mime-info.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-MIME-HANDLERS"
+>MIME Handlers</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN6382"
+></A
+><H2
+>Name</H2
+>MIME Handlers&nbsp;--&nbsp;functions for getting and manipulating the actions to be performed on mime types</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN6385"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+enum        <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTIONTYPE"
+>GnomeVFSMimeActionType</A
+>;
+enum        <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATIONARGUMENTTYPE"
+>GnomeVFSMimeApplicationArgumentType</A
+>;
+typedef     <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>;
+typedef     <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTION"
+>GnomeVFSMimeAction</A
+>;
+<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-APPLICATION-COPY"
+>gnome_vfs_mime_application_copy</A
+>
+                                            (<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);
+<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTIONTYPE"
+>GnomeVFSMimeActionType</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-DEFAULT-ACTION-TYPE"
+>gnome_vfs_mime_get_default_action_type</A
+>
+                                            (const char *mime_type);
+<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTION"
+>GnomeVFSMimeAction</A
+>* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-DEFAULT-ACTION"
+>gnome_vfs_mime_get_default_action</A
+>
+                                            (const char *mime_type);
+<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-DEFAULT-APPLICATION"
+>gnome_vfs_mime_get_default_application</A
+>
+                                            (const char *mime_type);
+Bonobo_ServerInfo* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-DEFAULT-COMPONENT"
+>gnome_vfs_mime_get_default_component</A
+>
+                                            (const char *mime_type);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-APPLICATIONS"
+>gnome_vfs_mime_get_short_list_applications</A
+>
+                                            (const char *mime_type);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-COMPONENTS"
+>gnome_vfs_mime_get_short_list_components</A
+>
+                                            (const char *mime_type);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-ALL-APPLICATIONS"
+>gnome_vfs_mime_get_all_applications</A
+>
+                                            (const char *mime_type);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-ALL-COMPONENTS"
+>gnome_vfs_mime_get_all_components</A
+>
+                                            (const char *mime_type);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-DEFAULT-ACTION-TYPE"
+>gnome_vfs_mime_set_default_action_type</A
+>
+                                            (const char *mime_type,
+                                             <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTIONTYPE"
+>GnomeVFSMimeActionType</A
+> action_type);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-DEFAULT-APPLICATION"
+>gnome_vfs_mime_set_default_application</A
+>
+                                            (const char *mime_type,
+                                             const char *application_id);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-DEFAULT-COMPONENT"
+>gnome_vfs_mime_set_default_component</A
+>
+                                            (const char *mime_type,
+                                             const char *component_iid);
+const char* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-ICON"
+>gnome_vfs_mime_get_icon</A
+>         (const char *mime_type);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-ICON"
+>gnome_vfs_mime_set_icon</A
+>      (const char *mime_type,
+                                             const char *filename);
+const char* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-DESCRIPTION"
+>gnome_vfs_mime_get_description</A
+>  (const char *mime_type);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-DESCRIPTION"
+>gnome_vfs_mime_set_description</A
+>
+                                            (const char *mime_type,
+                                             const char *description);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-CAN-BE-EXECUTABLE"
+>gnome_vfs_mime_can_be_executable</A
+>
+                                            (const char *mime_type);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-CAN-BE-EXECUTABLE"
+>gnome_vfs_mime_set_can_be_executable</A
+>
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> new_value);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-SHORT-LIST-APPLICATIONS"
+>gnome_vfs_mime_set_short_list_applications</A
+>
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *application_ids);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-SET-SHORT-LIST-COMPONENTS"
+>gnome_vfs_mime_set_short_list_components</A
+>
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *component_iids);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ADD-APPLICATION-TO-SHORT-LIST"
+>gnome_vfs_mime_add_application_to_short_list</A
+>
+                                            (const char *mime_type,
+                                             const char *application_id);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-REMOVE-APPLICATION-FROM-SHORT-LIST"
+>gnome_vfs_mime_remove_application_from_short_list</A
+>
+                                            (const char *mime_type,
+                                             const char *application_id);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ADD-COMPONENT-TO-SHORT-LIST"
+>gnome_vfs_mime_add_component_to_short_list</A
+>
+                                            (const char *mime_type,
+                                             const char *iid);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-REMOVE-COMPONENT-FROM-SHORT-LIST"
+>gnome_vfs_mime_remove_component_from_short_list</A
+>
+                                            (const char *mime_type,
+                                             const char *iid);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ADD-EXTENSION"
+>gnome_vfs_mime_add_extension</A
+> (const char *mime_type,
+                                             const char *extension);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-REMOVE-EXTENSION"
+>gnome_vfs_mime_remove_extension</A
+>
+                                            (const char *mime_type,
+                                             const char *extension);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-EXTEND-ALL-APPLICATIONS"
+>gnome_vfs_mime_extend_all_applications</A
+>
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *application_ids);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-REMOVE-FROM-ALL-APPLICATIONS"
+>gnome_vfs_mime_remove_from_all_applications</A
+>
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *application_ids);
+<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-APPLICATION-NEW-FROM-ID"
+>gnome_vfs_mime_application_new_from_id</A
+>
+                                            (const char *id);
+void        <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-APPLICATION-FREE"
+>gnome_vfs_mime_application_free</A
+> (<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);
+void        <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ACTION-FREE"
+>gnome_vfs_mime_action_free</A
+>      (<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTION"
+>GnomeVFSMimeAction</A
+> *action);
+void        <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-APPLICATION-LIST-FREE"
+>gnome_vfs_mime_application_list_free</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+void        <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-COMPONENT-LIST-FREE"
+>gnome_vfs_mime_component_list_free</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ID-IN-APPLICATION-LIST"
+>gnome_vfs_mime_id_in_application_list</A
+>
+                                            (const char *id,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *applications);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ID-IN-COMPONENT-LIST"
+>gnome_vfs_mime_id_in_component_list</A
+>
+                                            (const char *iid,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *components);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-REMOVE-APPLICATION-FROM-LIST"
+>gnome_vfs_mime_remove_application_from_list</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *applications,
+                                             const char *application_id,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *did_remove);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-REMOVE-COMPONENT-FROM-LIST"
+>gnome_vfs_mime_remove_component_from_list</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *components,
+                                             const char *iid,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *did_remove);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ID-LIST-FROM-COMPONENT-LIST"
+>gnome_vfs_mime_id_list_from_component_list</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *components);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-ID-LIST-FROM-APPLICATION-LIST"
+>gnome_vfs_mime_id_list_from_application_list</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *applications);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6483"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6486"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6488"
+></A
+><H3
+><A
+NAME="GNOMEVFSMIMEACTIONTYPE"
+></A
+>enum GnomeVFSMimeActionType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_MIME_ACTION_TYPE_NONE,
+	GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
+	GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
+} GnomeVFSMimeActionType;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6493"
+></A
+><H3
+><A
+NAME="GNOMEVFSMIMEAPPLICATIONARGUMENTTYPE"
+></A
+>enum GnomeVFSMimeApplicationArgumentType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS,
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS,
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES
+} GnomeVFSMimeApplicationArgumentType;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6498"
+></A
+><H3
+><A
+NAME="GNOMEVFSMIMEAPPLICATION"
+></A
+>GnomeVFSMimeApplication</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	char *id;
+	char *name;
+	char *command;
+	gboolean can_open_multiple_files;
+	GnomeVFSMimeApplicationArgumentType expects_uris;
+	GList *supported_uri_schemes;
+	gboolean requires_terminal;
+} GnomeVFSMimeApplication;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6503"
+></A
+><H3
+><A
+NAME="GNOMEVFSMIMEACTION"
+></A
+>GnomeVFSMimeAction</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	GnomeVFSMimeActionType action_type;
+	union {
+		Bonobo_ServerInfo *component;
+		void *dummy_component;
+		GnomeVFSMimeApplication *application;
+	} action;
+} GnomeVFSMimeAction;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6508"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-APPLICATION-COPY"
+></A
+>gnome_vfs_mime_application_copy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* gnome_vfs_mime_application_copy
+                                            (<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a newly referenced copy of a GnomeVFSMimeApplication object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6516"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The GnomeVFSMimeApplication to be duplicated.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A copy of <TT
+CLASS="PARAMETER"
+><I
+>application</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6530"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-DEFAULT-ACTION-TYPE"
+></A
+>gnome_vfs_mime_get_default_action_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTIONTYPE"
+>GnomeVFSMimeActionType</A
+> gnome_vfs_mime_get_default_action_type
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query the MIME database for the type of action to be performed on a particular MIME type by default.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6537"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The type of action to be performed on a file of 
+MIME type, <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> by default.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6551"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-DEFAULT-ACTION"
+></A
+>gnome_vfs_mime_get_default_action ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTION"
+>GnomeVFSMimeAction</A
+>* gnome_vfs_mime_get_default_action
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query the MIME database for default action associated with a particular MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6559"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSMimeAction representing the default action to perform upon
+file of type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6573"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-DEFAULT-APPLICATION"
+></A
+>gnome_vfs_mime_get_default_application ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* gnome_vfs_mime_get_default_application
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query the MIME database for the application to be executed on files of MIME type
+<TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> by default.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6581"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSMimeApplication representing the default handler of <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6595"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-DEFAULT-COMPONENT"
+></A
+>gnome_vfs_mime_get_default_component ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Bonobo_ServerInfo* gnome_vfs_mime_get_default_component
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query the MIME database for the default Bonobo component to be activated to 
+view files of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6603"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An Bonobo_ServerInfo * representing the OAF server to be activated
+to get a reference to the proper component.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6616"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-SHORT-LIST-APPLICATIONS"
+></A
+>gnome_vfs_mime_get_short_list_applications ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_get_short_list_applications
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Return an alphabetically sorted list of GnomeVFSMimeApplication
+data structures for the requested mime type.	The short list contains
+"select" applications recommended for handling this MIME type, appropriate for
+display to the user.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6623"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * where the elements are GnomeVFSMimeApplication *
+representing various applications to display in the short list for <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6637"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-SHORT-LIST-COMPONENTS"
+></A
+>gnome_vfs_mime_get_short_list_components ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_get_short_list_components
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Return an unsorted sorted list of Bonobo_ServerInfo *
+data structures for the requested mime type.	The short list contains
+"select" components recommended for handling this MIME type, appropriate for
+display to the user.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6644"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * where the elements are Bonobo_ServerInfo *
+representing various components to display in the short list for <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6658"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-ALL-APPLICATIONS"
+></A
+>gnome_vfs_mime_get_all_applications ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_get_all_applications
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Return an alphabetically sorted list of GnomeVFSMimeApplication
+data structures representing all applications in the MIME database registered
+to handle files of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> (and supertypes).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6666"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * where the elements are GnomeVFSMimeApplication *
+representing applications that handle MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6680"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-ALL-COMPONENTS"
+></A
+>gnome_vfs_mime_get_all_components ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_get_all_components
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Return an alphabetically sorted list of Bonobo_ServerInfo
+data structures representing all Bonobo components registered
+to handle files of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> (and supertypes).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6688"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * where the elements are Bonobo_ServerInfo *
+representing components that can handle MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6702"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-DEFAULT-ACTION-TYPE"
+></A
+>gnome_vfs_mime_set_default_action_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_default_action_type
+                                            (const char *mime_type,
+                                             <A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTIONTYPE"
+>GnomeVFSMimeActionType</A
+> action_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the default action type to be performed on files of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6711"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "image/png"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>action_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSMimeActionType containing the action to perform by default</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6728"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-DEFAULT-APPLICATION"
+></A
+>gnome_vfs_mime_set_default_application ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_default_application
+                                            (const char *mime_type,
+                                             const char *application_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the default application to be run on files of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6736"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A key representing an application in the MIME database 
+(GnomeVFSMimeApplication-&gt;id, for example)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6753"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-DEFAULT-COMPONENT"
+></A
+>gnome_vfs_mime_set_default_component ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_default_component
+                                            (const char *mime_type,
+                                             const char *component_iid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the default component to be activated for files of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6761"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component_iid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The OAFIID of a component</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6778"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-ICON"
+></A
+>gnome_vfs_mime_get_icon ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gnome_vfs_mime_get_icon         (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query the MIME database for an icon representing the specified MIME type.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6784"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a  MIME type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The filename of the icon as listed in the MIME database. This is
+usually a filename without path information, e.g. "i-chardev.png", and sometimes
+does not have an extension, e.g. "i-regular" if the icon is supposed to be image
+type agnostic between icon themes. Icons are generic, and not theme specific. These
+will not necessarily match with the icons a user sees in Nautilus, you have been warned.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6797"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-ICON"
+></A
+>gnome_vfs_mime_set_icon ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_icon      (const char *mime_type,
+                                             const char *filename);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the icon entry for a particular MIME type in the MIME database. Note that
+icon entries need not necessarily contain the full path, and do not necessarily need to
+specify an extension. So "i-regular", "my-special-icon.png", and "some-icon"
+are all valid icon filenames.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6804"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a  MIME type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>filename</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a const char * containing an image filename</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation
+or any errors that may have occurred.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6821"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-DESCRIPTION"
+></A
+>gnome_vfs_mime_get_description ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gnome_vfs_mime_get_description  (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query the MIME database for a description of the specified MIME type.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6827"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mime type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A description of MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6841"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-DESCRIPTION"
+></A
+>gnome_vfs_mime_set_description ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_description
+                                            (const char *mime_type,
+                                             const char *description);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the description of this MIME type in the MIME database. The description
+should be something like "Gnumeric spreadsheet".</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6848"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>description</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A description of this MIME type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6865"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-CAN-BE-EXECUTABLE"
+></A
+>gnome_vfs_mime_can_be_executable ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_mime_can_be_executable
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check whether files of this MIME type might conceivably be executable.
+Default for known types if FALSE. Default for unknown types is TRUE.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6872"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> gboolean containing TRUE if some files of this MIME type
+are registered as being executable, and false otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6885"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-CAN-BE-EXECUTABLE"
+></A
+>gnome_vfs_mime_set_can_be_executable ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_can_be_executable
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> new_value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set whether files of this MIME type might conceivably be executable.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6893"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>new_value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A boolean value indicating whether <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> could be executable.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6911"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-SHORT-LIST-APPLICATIONS"
+></A
+>gnome_vfs_mime_set_short_list_applications ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_short_list_applications
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *application_ids);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the short list of applications for the specified MIME type. The short list
+contains applications recommended for possible selection by the user.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6919"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_ids</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GList of const char * application ids</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6936"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-SHORT-LIST-COMPONENTS"
+></A
+>gnome_vfs_mime_set_short_list_components ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_short_list_components
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *component_iids);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the short list of components for the specified MIME type. The short list
+contains companents recommended for possible selection by the user. *</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6944"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>component_iids</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GList of const char * OAF IIDs</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6961"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ADD-APPLICATION-TO-SHORT-LIST"
+></A
+>gnome_vfs_mime_add_application_to_short_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_add_application_to_short_list
+                                            (const char *mime_type,
+                                             const char *application_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Add an application to the short list for MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>. The short list contains
+applications recommended for display as choices to the user for a particular MIME type.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6969"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> const char * containing the application's id in the MIME database</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6986"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REMOVE-APPLICATION-FROM-SHORT-LIST"
+></A
+>gnome_vfs_mime_remove_application_from_short_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_remove_application_from_short_list
+                                            (const char *mime_type,
+                                             const char *application_id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove an application from the short list for MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>. The short list contains
+applications recommended for display as choices to the user for a particular MIME type.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6994"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> const char * containing the application's id in the MIME database</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7011"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ADD-COMPONENT-TO-SHORT-LIST"
+></A
+>gnome_vfs_mime_add_component_to_short_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_add_component_to_short_list
+                                            (const char *mime_type,
+                                             const char *iid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Add a component to the short list for MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>. The short list contains
+components recommended for display as choices to the user for a particular MIME type.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7019"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>iid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> const char * containing the component's OAF IID</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7036"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REMOVE-COMPONENT-FROM-SHORT-LIST"
+></A
+>gnome_vfs_mime_remove_component_from_short_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_remove_component_from_short_list
+                                            (const char *mime_type,
+                                             const char *iid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove a component from the short list for MIME type <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>. The short list contains
+components recommended for display as choices to the user for a particular MIME type.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7044"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>iid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> const char * containing the component's OAF IID</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7061"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ADD-EXTENSION"
+></A
+>gnome_vfs_mime_add_extension ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_add_extension (const char *mime_type,
+                                             const char *extension);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Add a file extension to the specificed MIME type in the MIME database.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7068"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The mime type to add the mapping to.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>extension</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The extension to add (e.g. "txt")</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7085"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REMOVE-EXTENSION"
+></A
+>gnome_vfs_mime_remove_extension ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_remove_extension
+                                            (const char *mime_type,
+                                             const char *extension);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Removes a file extension from the specificed MIME type in the MIME database.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7092"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The mime type to remove the extension from</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>extension</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The extension to remove</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSResult indicating the success of the operation or any
+errors that may have occurred.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7109"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-EXTEND-ALL-APPLICATIONS"
+></A
+>gnome_vfs_mime_extend_all_applications ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_extend_all_applications
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *application_ids);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Register <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> as being handled by all applications list in <TT
+CLASS="PARAMETER"
+><I
+>application_ids</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7119"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_ids</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a GList of const char * containing application ids</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7136"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REMOVE-FROM-ALL-APPLICATIONS"
+></A
+>gnome_vfs_mime_remove_from_all_applications ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_remove_from_all_applications
+                                            (const char *mime_type,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *application_ids);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> as a handled type from every application in <TT
+CLASS="PARAMETER"
+><I
+>application_ids</I
+></TT
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7146"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing a mime type, e.g. "application/x-php"</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_ids</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a GList of const char * containing application ids</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GnomeVFSResult indicating the success of the operation or reporting 
+any errors encountered.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7163"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-APPLICATION-NEW-FROM-ID"
+></A
+>gnome_vfs_mime_application_new_from_id ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+>* gnome_vfs_mime_application_new_from_id
+                                            (const char *id);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Fetches the GnomeVFSMimeApplication associated with the specified
+application ID from the MIME database.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7170"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A const char * containing an application id</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GnomeVFSMimeApplication * corresponding to <TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7184"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-APPLICATION-FREE"
+></A
+>gnome_vfs_mime_application_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_application_free (<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEAPPLICATION"
+>GnomeVFSMimeApplication</A
+> *application);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a GnomeVFSMimeApplication *.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7191"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The GnomeVFSMimeApplication to be freed</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7200"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ACTION-FREE"
+></A
+>gnome_vfs_mime_action_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_action_free      (<A
+HREF="gnome-vfs-mime-handlers.html#GNOMEVFSMIMEACTION"
+>GnomeVFSMimeAction</A
+> *action);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees a GnomeVFSMimeAction *.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7207"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>action</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The GnomeVFSMimeAction to be freed</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7216"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-APPLICATION-LIST-FREE"
+></A
+>gnome_vfs_mime_application_list_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_application_list_free
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees lists of GnomeVFSApplications, as returned from functions such
+as gnome_vfs_get_all_applications().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7224"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a GList of GnomeVFSApplication * to be freed</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7233"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-COMPONENT-LIST-FREE"
+></A
+>gnome_vfs_mime_component_list_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_component_list_free
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees lists of Bonobo_ServerInfo * (as returned from functions such
+as <TT
+CLASS="PARAMETER"
+><I
+>gnome_vfs_get_all_components</I
+></TT
+>)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7241"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a GList of Bonobo_ServerInfo * to be freed</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7250"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ID-IN-APPLICATION-LIST"
+></A
+>gnome_vfs_mime_id_in_application_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_mime_id_in_application_list
+                                            (const char *id,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *applications);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check whether an application id is in a list of GnomeVFSMimeApplications.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7258"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An application id.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>applications</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * whose nodes are GnomeVFSMimeApplications, such as the
+result of <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-APPLICATIONS"
+>gnome_vfs_mime_get_short_list_applications</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if an application whose id matches <TT
+CLASS="PARAMETER"
+><I
+>id</I
+></TT
+> is in <TT
+CLASS="PARAMETER"
+><I
+>applications</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7278"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ID-IN-COMPONENT-LIST"
+></A
+>gnome_vfs_mime_id_in_component_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_mime_id_in_component_list
+                                            (const char *iid,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *components);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check whether a component iid is in a list of Bonobo_ServerInfos.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7286"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>iid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A component iid.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>components</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * whose nodes are Bonobo_ServerInfos, such as the
+result of <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-COMPONENTS"
+>gnome_vfs_mime_get_short_list_components</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if a component whose iid matches <TT
+CLASS="PARAMETER"
+><I
+>iid</I
+></TT
+> is in <TT
+CLASS="PARAMETER"
+><I
+>components</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7306"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REMOVE-APPLICATION-FROM-LIST"
+></A
+>gnome_vfs_mime_remove_application_from_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_remove_application_from_list
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *applications,
+                                             const char *application_id,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *did_remove);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove an application specified by id from a list of GnomeVFSMimeApplications.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7315"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>applications</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * whose nodes are GnomeVFSMimeApplications, such as the
+result of <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-APPLICATIONS"
+>gnome_vfs_mime_get_short_list_applications</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>application_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The id of an application to remove from <TT
+CLASS="PARAMETER"
+><I
+>applications</I
+></TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>did_remove</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> If non-NULL, this is filled in with TRUE if the application
+was found in the list, FALSE otherwise.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The modified list. If the application is not found, the list will 
+be unchanged.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7338"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REMOVE-COMPONENT-FROM-LIST"
+></A
+>gnome_vfs_mime_remove_component_from_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_remove_component_from_list
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *components,
+                                             const char *iid,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *did_remove);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove a component specified by iid from a list of Bonobo_ServerInfos.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7347"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>components</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * whose nodes are Bonobo_ServerInfos, such as the
+result of <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-COMPONENTS"
+>gnome_vfs_mime_get_short_list_components</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>iid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The iid of a component to remove from <TT
+CLASS="PARAMETER"
+><I
+>components</I
+></TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>did_remove</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> If non-NULL, this is filled in with TRUE if the component
+was found in the list, FALSE otherwise.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The modified list. If the component is not found, the list will 
+be unchanged.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7370"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ID-LIST-FROM-COMPONENT-LIST"
+></A
+>gnome_vfs_mime_id_list_from_component_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_id_list_from_component_list
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *components);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a list of component iids from a list of Bonobo_ServerInfos.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7378"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>components</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * whose nodes are Bonobo_ServerInfos, such as the
+result of <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-COMPONENTS"
+>gnome_vfs_mime_get_short_list_components</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A new list where each Bonobo_ServerInfo in the original
+list is replaced by a char * with the component's iid. The original list is
+not modified.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7392"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-ID-LIST-FROM-APPLICATION-LIST"
+></A
+>gnome_vfs_mime_id_list_from_application_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_id_list_from_application_list
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *applications);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a list of application ids from a list of GnomeVFSMimeApplications.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7400"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>applications</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A GList * whose nodes are GnomeVFSMimeApplications, such as the
+result of <A
+HREF="gnome-vfs-mime-handlers.html#GNOME-VFS-MIME-GET-SHORT-LIST-APPLICATIONS"
+>gnome_vfs_mime_get_short_list_applications</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A new list where each GnomeVFSMimeApplication in the original
+list is replaced by a char * with the application's id. The original list is
+not modified.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-mime.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-mime-info.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>MIME Type Detection</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>mime-info</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -57,7 +57,7 @@ static void *thread_entry (void *cast_to_state);
 static void destroy_thread_state (GnomeVFSThreadState *state);
 
 void 
-gnome_vfs_thread_pool_init (void)
+_gnome_vfs_thread_pool_init (void)
 {
 }
 
@@ -185,7 +185,7 @@ thread_entry (void *cast_to_state)
 		/* We're finished with this job so run the job queue scheduler 
 		 * to start a new job if the queue is not empty
 		 */
-		gnome_vfs_job_queue_run ();
+		_gnome_vfs_job_queue_run ();
 	}
 
 	destroy_thread_state (state);
@@ -193,7 +193,7 @@ thread_entry (void *cast_to_state)
 }
 
 int 
-gnome_vfs_thread_create (void *(* thread_routine) (void *),
+_gnome_vfs_thread_create (void *(* thread_routine) (void *),
 			 void *thread_arguments)
 {
 	GnomeVFSThreadState *available_thread;
@@ -233,7 +233,7 @@ gnome_vfs_thread_create (void *(* thread_routine) (void *),
 }
 
 void 
-gnome_vfs_thread_pool_shutdown (void)
+_gnome_vfs_thread_pool_shutdown (void)
 {
 	GnomeVFSThreadState *thread_state;
 	for (;;) {

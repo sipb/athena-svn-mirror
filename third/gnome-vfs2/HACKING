@@ -1,33 +1,43 @@
-Build sherrif commits welcome.
+===Commit Permissions==
+Build sherrif commits are welcome.
 
-Please send patches to gnome-vfs@ximian.com with detailed
-ChangeLog entires for review before committing, and get approval from
-Ian McKellar. Please send to the list and not to anyone directly so
-all Gnome VFS hackers have the opportunity to comment. 
+If you are an experienced GNOME hacker and confident that your code is right,
+you don't need maintainer approval to commit to HEAD. You still need to get your patch
+reviewed by some other (competent) GNOME hacker.
 
-Please do not check in changes without approval.
+If you are unsure of your change, please feel free to send the patch to
+gnome-vfs@gnome.org and get our approval so we won't execute you when it breaks 
+things / does them wrong.
 
-Please do not check in changes without a ChangeLog entry. 
+Please get approval for commits to the gnome-2-0 branch.
 
-All ChangeLog entries go into the root ChangeLog except for entries for
-changes in the po and data/mime directories.
+
+===Prior to Checkin===
+Create a ChangeLog entry
+
+Get your code reviewed by an experienced GNOME hacker, who's participation you should
+cite in the ChangeLog entry by including a "Reviewed by:" line at the top of the entry.
+
+Make sure that any API additions or changes are reflected correctly in the documentation.
+
+Make sure your code does not generate warnings. Do not turn any warnings off, do not 
+turn -Werror off in configure.in. If you have problems with the existing warnings building 
+on your environment, please contact the maintainers. 
+
+Make sure your changes are properly tested, ammong other things run a "make check".
 
 Please make sure components that depend on Gnome VFS (eg Nautilus, Evolution) 
 do not break with your change or arrange that an update to the dependent
 components gets submitted at the same time. 
 
+
+===Style===
 Please use a coding style that is consistent with the existing Gnome VFS code.
 Gnome VFS uses the GNOME Programming Guidelines with 8-space tabs and a
 "K&R" indentation style.
 
-Make sure all of your new code compiles without any warnings.
 
-Do not turn any warnings off, do not turn -Werror off in configure.in. If you have
-problems with the existing warnings building on your environment, please contact the
-maintainers.
-
-Make sure your changes are properly tested, ammong other things run a "make check".
-
+===FIXMEs===
 Use "FIXME" to augument code that needs more work, that is missing functionality or
 in general needs attention. Include a comprehensive comment explaining what is 
 missing, why you think something is broken, what you suggest as a fix, etc.
@@ -35,7 +45,10 @@ FIXME entries are periodically converted into bugzilla bugs.
 Do not use any other format to draw attention to problems, comments that do
 not contain "FIXME" are not going to be found by our problem tracking tools.
 
-GnomeVFS bugs and open tasks are tracked in ... (bugzilla.gnome.org? please stay tuned
-as we transition away Eazel Bugzilla)
+
+===Feedback===
+GnomeVFS bugs and open tasks are tracked in http://bugzilla.gnome.org
 
 For IRC help/feedback use irc.gnome.org/#nautilus.
+
+A GnomeVFS mailing list is available at http://lists.gnome.org/

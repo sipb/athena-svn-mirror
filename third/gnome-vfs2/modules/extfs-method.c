@@ -52,7 +52,7 @@
 ssize_t getdelim (char **lineptr, size_t *n, int terminator, FILE *stream);
 #endif
 
-#define EXTFS_COMMAND_DIR	PREFIX "/lib/vfs/2.0/extfs"
+#define EXTFS_COMMAND_DIR	LIBDIR "/vfs/2.0/extfs"
 
 /* Our private handle struct.  */
 struct _ExtfsHandle {

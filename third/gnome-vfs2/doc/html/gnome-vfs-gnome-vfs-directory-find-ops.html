@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+Locating Standard Directories</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-directory-operations.html" title="Directory Handling"><link rel="previous" href="gnome-vfs-gnome-vfs-directory-list-ops.html" title="
+Listing Directory Contents"><link rel="next" href="gnome-vfs-file-operations.html" title="File Handling"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-directory-list-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-directory-operations.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-file-operations.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-directory-find-ops"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+Locating Standard Directories</h2><p>
+Locating Standard Directories &#8212; 
+Utilities for locating standard directories such as the desktop and trash</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gnome-vfs-gnome-vfs-directory-find-ops.html#GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</a>;
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-find-ops.html#gnome-vfs-find-directory">gnome_vfs_find_directory</a>     (GnomeVFSURI *near_uri,
+                                             <a href="gnome-vfs-gnome-vfs-directory-find-ops.html#GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</a> kind,
+                                             GnomeVFSURI **result,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> create_if_needed,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> find_if_needed,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> permissions);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GnomeVFSFindDirectoryKind"></a>enum GnomeVFSFindDirectoryKind</h3><pre class="programlisting">typedef enum {
+	GNOME_VFS_DIRECTORY_KIND_DESKTOP = 1000,
+	GNOME_VFS_DIRECTORY_KIND_TRASH = 1001
+} GnomeVFSFindDirectoryKind;
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gnome-vfs-find-directory"></a>gnome_vfs_find_directory ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_find_directory     (GnomeVFSURI *near_uri,
+                                             <a href="gnome-vfs-gnome-vfs-directory-find-ops.html#GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</a> kind,
+                                             GnomeVFSURI **result,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> create_if_needed,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> find_if_needed,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> permissions);</pre><p>
+Used to return well known directories such as Trash, Desktop, etc. from different
+file systems.
+</p><p>
+There is quite a complicated logic behind finding/creating a Trash directory
+and you need to be aware of some implications:
+Finding the Trash the first time when using the file method may be pretty 
+expensive. A cache file is used to store the location of that Trash file
+for next time.
+If <i><tt>ceate_if_needed</tt></i> is specified without <i><tt>find_if_needed</tt></i>, you may end up
+creating a Trash file when there already is one. Your app should start out
+by doing a gnome_vfs_find_directory with the <i><tt>find_if_needed</tt></i> to avoid this
+and then use the <i><tt>create_if_needed</tt></i> flag to create Trash lazily when it is
+needed for throwing away an item on a given disk.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>near_uri</tt></i> :</span></td><td> find a well known directory on the same volume as <i><tt>near_uri</tt></i>
+</td></tr><tr><td><span class="term"><i><tt>kind</tt></i> :</span></td><td> kind of well known directory
+</td></tr><tr><td><span class="term"><i><tt>result</tt></i> :</span></td><td> newly created URI of the directory we found
+</td></tr><tr><td><span class="term"><i><tt>create_if_needed</tt></i> :</span></td><td> If directory we are looking for does not exist, try to create it
+</td></tr><tr><td><span class="term"><i><tt>find_if_needed</tt></i> :</span></td><td> If we don't know where trash is yet, look for it.
+</td></tr><tr><td><span class="term"><i><tt>permissions</tt></i> :</span></td><td> If creating, use these permissions
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-directory-list-ops.html"><b>&lt;&lt; 
+Listing Directory Contents</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-file-operations.html"><b>File Handling &gt;&gt;</b></a></td></tr></table></body></html>

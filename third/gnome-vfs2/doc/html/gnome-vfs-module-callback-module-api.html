@@ -1,0 +1,522 @@
+<HTML
+><HEAD
+><TITLE
+>Module Callbacks (Module API)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Filesystem Modules"
+HREF="modules.html"><LINK
+REL="PREVIOUS"
+TITLE="module"
+HREF="gnome-vfs-module.html"><LINK
+REL="NEXT"
+TITLE="inet-connection"
+HREF="gnome-vfs-inet-connection.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-module.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="modules.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-inet-connection.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-MODULE-API"
+>Module Callbacks (Module API)</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN8490"
+></A
+><H2
+>Name</H2
+>Module Callbacks (Module API)&nbsp;--&nbsp;interface to module callbacks for use by gnome-vfs modules</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN8493"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-module-callback-module-api.html#GNOME-VFS-MODULE-CALLBACK-INVOKE"
+>gnome_vfs_module_callback_invoke</A
+>
+                                            (const char *callback_name,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> in,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> in_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> out,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> out_size);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8502"
+></A
+><H2
+>Description</H2
+><P
+>Modules need to perform special operations on callbacks that are not
+needed by applications, for instance, invoking them.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8505"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN8507"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-INVOKE"
+></A
+>gnome_vfs_module_callback_invoke ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_module_callback_invoke
+                                            (const char *callback_name,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> in,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> in_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> out,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> out_size);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Invoke a default callback for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>, with in arguments
+specified by <TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>in_size</I
+></TT
+>, and out arguments specified by <TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>
+and <TT
+CLASS="PARAMETER"
+><I
+>out_size</I
+></TT
+>.</P
+><P
+>This function should only be called by gnome-vfs modules.</P
+><P
+>If this function is called from an async job thread, it will invoke
+the current async handler for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>, if any. If no async
+handler is set, or the function is not called from an async job
+thread, the regular handler, if any, will be invoked instead. If no
+handler at all is found for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>, the function returns
+FALSE.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN8527"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the module callback to set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> In argument - type dependent on the specific callback</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Size of the in argument</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Out argument - type dependent on the specific callback</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Size of the out argument</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if a callback was invoked, FALSE if none was set.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN8556"
+></A
+><H2
+>See Also</H2
+><P
+><A
+HREF="gnome-vfs-module-callbacks.html"
+>Module Callbacks</A
+>
+<A
+HREF="gnome-vfs-standard-callbacks.html"
+>Standard Callbacks</A
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-module.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="modules.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-inet-connection.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>module</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>inet-connection</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

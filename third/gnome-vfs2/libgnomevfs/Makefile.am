@@ -19,6 +19,18 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"libgnomevfs\"		\
 	$(NULL)
 
+# %.c %.h: %.gob
+#	$(top_srcdir)/gob/src/gob2 $<
+#
+# GOB_SRCLIST = 					\
+#	gnome-vfs-metadata.c			\
+#	gnome-vfs-metadata.h			\
+#	gnome-vfs-metadata-private.h		\
+#	$(NULL)
+# GOB_FILES =					\
+#	gnome-vfs-metadata.gob			\
+#	$(NULL)
+
 lib_LTLIBRARIES = libgnomevfs-2.la
 
 libgnomevfs_2_la_LIBADD =			\
@@ -29,15 +41,37 @@ libgnomevfsincludedir = $(includedir)/gnome-vfs-2.0/libgnomevfs
 
 libgnomevfsmoduleincludedir = $(includedir)/gnome-vfs-module-2.0/libgnomevfs
 
+# mime-sniff-buffers and cancellabe-ops are used by modules
+noinst_HEADERS =				\
+	gnome-vfs-async-job-map.h		\
+	gnome-vfs-backend.h			\
+	gnome-vfs-cancellable-ops.h		\
+	gnome-vfs-configuration.h		\
+	gnome-vfs-handle-private.h		\
+	gnome-vfs-i18n.h			\
+	gnome-vfs-job-queue.h			\
+	gnome-vfs-job-slave.h			\
+	gnome-vfs-job.h				\
+	gnome-vfs-mime-magic.h			\
+	gnome-vfs-mime-private.h		\
+	gnome-vfs-mime-sniff-buffer.h		\
+	gnome-vfs-mime-sniff-buffer-private.h	\
+	gnome-vfs-module-callback-private.h	\
+	gnome-vfs-monitor-private.h		\
+	gnome-vfs-private-utils.h		\
+	gnome-vfs-private.h			\
+	gnome-vfs-process.h			\
+	gnome-vfs-ssl-private.h			\
+	gnome-vfs-thread-pool.h			\
+	$(NULL)
+#	gnome-vfs-metadata-private.h		\
+
 libgnomevfsmoduleinclude_HEADERS =		\
 	gnome-vfs-cancellable-ops.h		\
 	gnome-vfs-inet-connection.h		\
-	gnome-vfs-iobuf.h			\
 	gnome-vfs-method.h			\
 	gnome-vfs-mime.h			\
 	gnome-vfs-mime-info.h			\
-	gnome-vfs-mime-magic.h			\
-	gnome-vfs-mime-sniff-buffer.h		\
 	gnome-vfs-module-callback-module-api.h	\
 	gnome-vfs-module-shared.h		\
 	gnome-vfs-module.h			\
@@ -75,27 +109,24 @@ libgnomevfsinclude_HEADERS =			\
 	gnome-vfs-xfer.h			\
 	gnome-vfs.h				\
 	$(NULL)
+#	gnome-vfs-metadata.h			\
 
 libgnomevfs_2_la_SOURCES =			\
 	gnome-vfs-application-registry.c	\
 	gnome-vfs-async-job-map.c		\
 	gnome-vfs-async-ops.c			\
-	gnome-vfs-backend.h			\
 	gnome-vfs-cancellable-ops.c	 	\
-	gnome-vfs-cancellable-ops.h		\
 	gnome-vfs-cancellation.c		\
 	gnome-vfs-configuration.c		\
-	gnome-vfs-configuration.h		\
 	gnome-vfs-context.c			\
 	gnome-vfs-directory.c			\
+	gnome-vfs-open-fd.c			\
 	gnome-vfs-file-info.c			\
 	gnome-vfs-find-directory.c		\
 	gnome-vfs-handle.c			\
 	gnome-vfs-i18n.c			\
-	gnome-vfs-i18n.h			\
 	gnome-vfs-inet-connection.c		\
 	gnome-vfs-init.c			\
-	gnome-vfs-iobuf.c			\
 	gnome-vfs-job-queue.c			\
 	gnome-vfs-job-slave.c			\
 	gnome-vfs-job.c				\
@@ -104,54 +135,40 @@ libgnomevfs_2_la_SOURCES =			\
 	gnome-vfs-mime-info.c			\
 	gnome-vfs-mime-magic.c			\
 	gnome-vfs-mime-monitor.c		\
-	gnome-vfs-mime-private.h		\
 	gnome-vfs-mime-sniff-buffer.c		\
-	gnome-vfs-mime-sniff-buffer-private.h	\
 	gnome-vfs-mime.c			\
 	gnome-vfs-module-callback-module-api.c	\
 	gnome-vfs-module-callback-private.c	\
-	gnome-vfs-module-callback-private.h	\
 	gnome-vfs-module-callback.c		\
 	gnome-vfs-module-shared.c		\
 	gnome-vfs-module.c			\
 	gnome-vfs-monitor.c			\
-	gnome-vfs-monitor-private.h		\
 	gnome-vfs-ops.c				\
 	gnome-vfs-parse-ls.c			\
 	gnome-vfs-private-utils.c		\
-	gnome-vfs-private-utils.h		\
 	gnome-vfs-private.c			\
-	gnome-vfs-private.h			\
 	gnome-vfs-process.c			\
-	gnome-vfs-process.h			\
 	gnome-vfs-result.c			\
 	gnome-vfs-socket-buffer.c		\
 	gnome-vfs-socket.c			\
 	gnome-vfs-ssl.c				\
-	gnome-vfs-ssl-private.h			\
 	gnome-vfs-thread-pool.c			\
 	gnome-vfs-transform.c			\
 	gnome-vfs-uri.c				\
 	gnome-vfs-utils.c			\
 	gnome-vfs-xfer.c			\
-	gnome-vfs-async-job-map.h		\
-	gnome-vfs-backend.h			\
-	gnome-vfs-i18n.h			\
-	gnome-vfs-job-queue.h			\
-	gnome-vfs-job-slave.h			\
-	gnome-vfs-job.h				\
-	gnome-vfs-mime-private.h		\
-	gnome-vfs-mime-sniff-buffer-private.h	\
-	gnome-vfs-module-callback-private.h	\
-	gnome-vfs-process.h			\
-	gnome-vfs-thread-pool.h			\
 	$(NULL)
+
+#	$(GOB_SRCLIST)				\
+#	$(GOB_FILES)				\
+# BUILT_SOURCES = $(GOB_SRCLIST)
+# CLEANFILES = $(BUILT_SOURCES)
 
 # Platform specific includes
 libgnomevfsplatformincludedir = $(libdir)/gnome-vfs-2.0/include
 libgnomevfsplatforminclude_HEADERS =		\
 	gnome-vfs-file-size.h
 
-TESTS = check-headers.pl
+# TESTS = check-headers.pl
 EXTRA_DIST = check-headers.pl getdelim.c
 

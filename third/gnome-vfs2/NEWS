@@ -1,10 +1,80 @@
+gnome-vfs 2.2.0
+
+	* Bugs fixed:
+	       + races and bugs in the GIOChannel support (Josh Parsons)
+	* Featurelets
+	       + Added (disabled for now) gnutls ssl lib (Andrew McDonald)
+	         This will be enabled later when its been tested more.
+
+gnome-vfs 2.1.91
+
+	* Bugs fixed:
+	       + gzip header creation time
+	       + gnome_vfs_uri_extract_dirname crash
+	       + gnome_vfs_socket_buffer_peekc corrected
+
+gnome-vfs 2.1.6
+
+	* Bugs fixed:
+	       + fixed -lpthreads build failure (Owen Taylor)
+	       + Handle directory moves overwriting themselves (Alex Larsson)
+	       + Correct libdir handling (Frederic Crozat)
+	* Featurelets
+	       + Deprecated gnome_vfs_mime_shutdown, gnome_vfs_loadinit,
+	         gnome_vfs_preinit and gnome_vfs_postinit. (Alex Larsson)
+	       + Lots of docs updates (Diego Gonzalez)
+	       + _ prefix internal functions. (Tim Janik)
+
+gnome-vfs 2.1.5
+
+	* Featurelets
+		+ Added GNOME_VFS_ERROR_NO_MASTER_BROWSER to GnomeVFSResult
+
+gnome-vfs 2.1.4
+
+	* Featurelets
+		+ gnome_vfs_open_fd() replaced console: method (Giovanni Corriga)
+	* Bugs fixed:
+	        + Avoid polling when user mime dir doesn't exist (Frederic Crozat)
+		+ Fix memleak in mime data directory handling (Frederic Crozat)
+
+gnome-vfs 2.1.2,3
+
+	* Featurelets
+		+ vfolder re-write (Alex Graveley)
+		+ add access check API (Christophe Fergeau)
+		+ funky network: scheme (Bastien Nocera)
+		+ symlink following cp -R (Colin Walters)
+		+ async performance improvements (Brian Cameron)
+		+ favorites updates (Seth Nickell)
+		+ eel vfs utils merged (James Willcox)
+		+ 'uses_gnomevfs' in .application (Christophe Fergeau)
+		+ update docs (Ian McKellar)
+	* Bugs fixed
+		+ URI canonicalization (Frederic Crozat)
+		+ config source fix (Ian McKellar)
+		+ vfolder misc, lots. (Alex, Damon Chaplin)
+		+ turn off vfolder debug (Mark McLouglin)
+		+ CDE integration fixes (Stephen Browne,
+	 	  Arvind Samptur, HideToshi Tajima)
+		+ remove hard-coding (Seth)
+		+ ssh quoting fixes (Christophe)
+		+ several ERROR_EOF fixes (Christophe)
+		+ buffer overflow fix (Christophe)
+		+ http fd leak (Ghee Teo)
+		+ OP_XFER leak fix (Jody Goldberg)
+		+ fix trash locking, and IO (Michael Meeks)
+		+ g_memory management fix (Dave Camp)
+		+ newer findutils fixes (Federico Mena)
+		+ build fixes (Michael, Yanko Kaneti, Jacob Berkman)
+
 gnome-vfs 2.0.2
 
 	* Bugs fixed
 		+ gcc 3.1 build (Frederic Crozat)
 		+ don't leak async pipes (Frederic)
 		+ kill 5 second bug (Jody Goldberg, Michael Meeks)
-		+ major locking re-hash (Michael, Jacob Berkman)
+		+ major locking re-hash (Jacob Berkman, Michael)
 		+ cancellation efficiency (Michael)
 		+ init threads earlier (Michael)
 		+ URI canonicalization (Frederic)

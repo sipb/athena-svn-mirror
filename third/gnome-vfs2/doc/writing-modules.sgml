@@ -1,4 +1,4 @@
-<refentry id="writing-modules" revision="6 Sep 2001">
+<refentry id="gnome-vfs-writing-modules" revision="6 Sep 2001">
 <refmeta>
 <refentrytitle>Writing Modules</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -400,8 +400,7 @@ gboolean gnome_vfs_cancellation_check (GnomeVFSCancellation *cancellation);</pro
         <listitem><para>Clean things up so that the result of the
         operations that have been performed are all
         cancelled.</para></listitem>
-
-        <listitem<para>>Return the
+        <listitem><para>Return the
         <symbol>GNOME_VFS_ERROR_CANCELLED</symbol> error
         code.</para></listitem>
       </orderedlist>
@@ -553,9 +552,3 @@ gint gnome_vfs_cancellation_get_fd (GnomeVFSCancellation *cancellation); </progr
   </refsect1>
 
 </refentry>
-
-<!--
-Local Variables:
-indent-tabs-mode: nil
-End:
--->

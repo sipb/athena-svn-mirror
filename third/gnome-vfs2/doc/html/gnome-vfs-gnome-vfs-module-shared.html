@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-module-shared</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="gnome-vfs-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="next" href="gnome-vfs-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-module.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-module-callback-module-api.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-module-shared"></a><div class="titlepage"></div><div class="refnamediv"><h2>gnome-vfs-module-shared</h2><p>gnome-vfs-module-shared &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>* <a href="gnome-vfs-gnome-vfs-module-shared.html#gnome-vfs-mime-type-from-mode">gnome_vfs_mime_type_from_mode</a>  (mode_t mode);
+void        <a href="gnome-vfs-gnome-vfs-module-shared.html#gnome-vfs-stat-to-file-info">gnome_vfs_stat_to_file_info</a>     (<a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *file_info,
+                                             const struct stat *statptr);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-module-shared.html#gnome-vfs-set-meta">gnome_vfs_set_meta</a>           (<a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             const char *file_name,
+                                             const char *meta_key);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-module-shared.html#gnome-vfs-set-meta-for-list">gnome_vfs_set_meta_for_list</a>  (<a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             const char *file_name,
+                                             const <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *meta_keys);
+const char* <a href="gnome-vfs-gnome-vfs-module-shared.html#gnome-vfs-get-special-mime-type">gnome_vfs_get_special_mime_type</a> (GnomeVFSURI *uri);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-mime-type-from-mode"></a>gnome_vfs_mime_type_from_mode ()</h3><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>* gnome_vfs_mime_type_from_mode  (mode_t mode);</pre><p>
+Returns a MIME type based on the mode passed. It only works when mode
+references a special file (directory, device, fifo, socket or symlink)
+</p><p>
+Returns: a string containing the MIME type, if <i><tt>mode</tt></i> is a normal file</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>mode</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-stat-to-file-info"></a>gnome_vfs_stat_to_file_info ()</h3><pre class="programlisting">void        gnome_vfs_stat_to_file_info     (<a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *file_info,
+                                             const struct stat *statptr);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>file_info</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>statptr</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-set-meta"></a>gnome_vfs_set_meta ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_set_meta           (<a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             const char *file_name,
+                                             const char *meta_key);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>file_name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>meta_key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-set-meta-for-list"></a>gnome_vfs_set_meta_for_list ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_set_meta_for_list  (<a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             const char *file_name,
+                                             const <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *meta_keys);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>file_name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>meta_keys</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-special-mime-type"></a>gnome_vfs_get_special_mime_type ()</h3><pre class="programlisting">const char* gnome_vfs_get_special_mime_type (GnomeVFSURI *uri);</pre><p>
+Gets the MIME type for <i><tt>uri</tt></i>, this function only returns the type
+when the URI points to a file that can't be sniffed (sockets, 
+directories, devices, and fifos).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a string containing the mime type, NULL if the <i><tt>uri</tt></i> doesn't 
+present an special file.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-module.html"><b>&lt;&lt; gnome-vfs-module</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-module-callback-module-api.html"><b>gnome-vfs-module-callback-module-api &gt;&gt;</b></a></td></tr></table></body></html>

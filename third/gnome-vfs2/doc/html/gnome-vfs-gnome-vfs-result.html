@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+GnomeVFSResult</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="data-types.html" title="Data Types"><link rel="previous" href="gnome-vfs-gnome-vfs-file-size.html" title="
+GnomeVFSFileSize"><link rel="next" href="gnome-vfs-gnome-vfs-uri.html" title="
+GnomeVFSURI"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-file-size.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="data-types.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-uri.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-result"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+GnomeVFSResult</h2><p>
+GnomeVFSResult &#8212; 
+Result of I/O operations, the equivalent of errno</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a>;
+const char* <a href="gnome-vfs-gnome-vfs-result.html#gnome-vfs-result-to-string">gnome_vfs_result_to_string</a>      (<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> result);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-result.html#gnome-vfs-result-from-errno-code">gnome_vfs_result_from_errno_code</a>
+                                            (int errno_code);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-result.html#gnome-vfs-result-from-errno">gnome_vfs_result_from_errno</a>  (void);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-result.html#gnome-vfs-result-from-h-errno">gnome_vfs_result_from_h_errno</a>
+                                            (void);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GnomeVFSResult"></a>enum GnomeVFSResult</h3><pre class="programlisting">typedef enum {
+	GNOME_VFS_OK,
+	GNOME_VFS_ERROR_NOT_FOUND,
+	GNOME_VFS_ERROR_GENERIC,
+	GNOME_VFS_ERROR_INTERNAL,
+	GNOME_VFS_ERROR_BAD_PARAMETERS,
+	GNOME_VFS_ERROR_NOT_SUPPORTED,
+	GNOME_VFS_ERROR_IO,
+	GNOME_VFS_ERROR_CORRUPTED_DATA,
+	GNOME_VFS_ERROR_WRONG_FORMAT,
+	GNOME_VFS_ERROR_BAD_FILE,
+	GNOME_VFS_ERROR_TOO_BIG,
+	GNOME_VFS_ERROR_NO_SPACE,
+	GNOME_VFS_ERROR_READ_ONLY,
+	GNOME_VFS_ERROR_INVALID_URI,
+	GNOME_VFS_ERROR_NOT_OPEN,
+	GNOME_VFS_ERROR_INVALID_OPEN_MODE,
+	GNOME_VFS_ERROR_ACCESS_DENIED,
+	GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES,
+	GNOME_VFS_ERROR_EOF,
+	GNOME_VFS_ERROR_NOT_A_DIRECTORY,
+	GNOME_VFS_ERROR_IN_PROGRESS,
+	GNOME_VFS_ERROR_INTERRUPTED,
+	GNOME_VFS_ERROR_FILE_EXISTS,
+	GNOME_VFS_ERROR_LOOP,
+	GNOME_VFS_ERROR_NOT_PERMITTED,
+	GNOME_VFS_ERROR_IS_DIRECTORY,
+	GNOME_VFS_ERROR_NO_MEMORY,
+	GNOME_VFS_ERROR_HOST_NOT_FOUND,
+	GNOME_VFS_ERROR_INVALID_HOST_NAME,
+	GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS,
+	GNOME_VFS_ERROR_LOGIN_FAILED,
+	GNOME_VFS_ERROR_CANCELLED,
+	GNOME_VFS_ERROR_DIRECTORY_BUSY,
+	GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY,
+	GNOME_VFS_ERROR_TOO_MANY_LINKS,
+	GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM,
+	GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM,
+	GNOME_VFS_ERROR_NAME_TOO_LONG,
+	GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE,
+	GNOME_VFS_ERROR_SERVICE_OBSOLETE,
+	GNOME_VFS_ERROR_PROTOCOL_ERROR,
+	GNOME_VFS_ERROR_NO_MASTER_BROWSER,
+	GNOME_VFS_NUM_ERRORS
+} GnomeVFSResult;
+</pre><p>
+ 
+</p></div><hr><div class="refsect2"><h3><a name="gnome-vfs-result-to-string"></a>gnome_vfs_result_to_string ()</h3><pre class="programlisting">const char* gnome_vfs_result_to_string      (<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> result);</pre><p>
+Returns a string representation of <i><tt>result</tt></i>, useful for debugging
+purposes, but probably not appropriate for passing to the user.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>result</tt></i> :</span></td><td> the result to convert to a string
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a string representing <i><tt>result</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-result-from-errno-code"></a>gnome_vfs_result_from_errno_code ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_result_from_errno_code
+                                            (int errno_code);</pre><p>
+Converts a system errno value to a GnomeVFSResult.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>errno_code</tt></i> :</span></td><td> integer of the same type as the system &quot;errno&quot;
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GnomeVFSResult equivalent to <i><tt>errno_code</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-result-from-errno"></a>gnome_vfs_result_from_errno ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_result_from_errno  (void);</pre><p>
+Converts the system errno to a GnomeVFSResult.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GnomeVFSResult equivalent to the current system errno
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-result-from-h-errno"></a>gnome_vfs_result_from_h_errno ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_result_from_h_errno
+                                            (void);</pre><p>
+Converts the system &quot;h_errno&quot; to a GnomeVFSResult (h_errno represents errors
+accessing and finding internet hosts)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GnomeVFSResult equivalent to the current system &quot;h_errno&quot;
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-file-size.html"><b>&lt;&lt; 
+GnomeVFSFileSize</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-uri.html"><b>
+GnomeVFSURI &gt;&gt;</b></a></td></tr></table></body></html>

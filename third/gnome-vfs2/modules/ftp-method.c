@@ -44,7 +44,7 @@
 #include <arpa/inet.h>
 #include <libgnomevfs/gnome-vfs-context.h>
 #include <libgnomevfs/gnome-vfs-inet-connection.h>
-#include <libgnomevfs/gnome-vfs-iobuf.h>
+#include <libgnomevfs/gnome-vfs-socket-buffer.h>
 #include <libgnomevfs/gnome-vfs-method.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
@@ -55,6 +55,7 @@
 #include <stdio.h> /* for sscanf */
 #include <stdlib.h> /* for atoi */
 #include <string.h>
+#include <time.h>
 
 /* maximum size of response we're expecting to get */
 #define MAX_RESPONSE_SIZE 4096 
@@ -69,14 +70,14 @@
 typedef struct {
 	GnomeVFSMethodHandle method_handle;
 	GnomeVFSInetConnection *inet_connection;
-	GnomeVFSIOBuf *iobuf;
+	GnomeVFSSocketBuffer *socket_buf;
 	GnomeVFSURI *uri;
 	gchar *cwd;
 	GString *response_buffer;
 	gchar *response_message;
 	gint response_code;
 	GnomeVFSInetConnection *data_connection;
-	GnomeVFSIOBuf *data_iobuf;
+	GnomeVFSSocketBuffer *data_socketbuf;
 	enum {
 		FTP_NOTHING,
 		FTP_READ,
@@ -214,8 +215,8 @@ static GnomeVFSResult read_response_line(FtpConnection *conn, gchar **line) {
 		/* we don't have a full line. Lets read some... */
 		/*ftp_debug (conn,g_strdup_printf ("response `%s' is incomplete", conn->response_buffer->str));*/
 		bytes_read = 0;
-		result = gnome_vfs_iobuf_read (conn->iobuf, buf,
-					       bytes, &bytes_read);
+		result = gnome_vfs_socket_buffer_read (conn->socket_buf, buf,
+						       bytes, &bytes_read);
 		buf[bytes_read] = '\0';
 		/*ftp_debug (conn,g_strdup_printf ("read `%s'", buf));*/
 		conn->response_buffer = g_string_append (conn->response_buffer,
@@ -298,12 +299,12 @@ static GnomeVFSResult do_control_write (FtpConnection *conn,
 {
         gchar *actual_command = g_strdup_printf ("%s\r\n", command);
 	GnomeVFSFileSize bytes = strlen (actual_command), bytes_written;
-	GnomeVFSResult result = gnome_vfs_iobuf_write (conn->iobuf,
-						       actual_command, bytes, &bytes_written);
+	GnomeVFSResult result = gnome_vfs_socket_buffer_write (conn->socket_buf,
+							       actual_command, bytes, &bytes_written);
 #if 0
 	ftp_debug (conn, g_strdup_printf ("sent \"%s\\r\\n\"", command));
 #endif
-	gnome_vfs_iobuf_flush (conn->iobuf);
+	gnome_vfs_socket_buffer_flush (conn->socket_buf);
 
 	if(result != GNOME_VFS_OK) {
 		g_free (actual_command);
@@ -389,6 +390,7 @@ do_transfer_command (FtpConnection *conn, gchar *command, GnomeVFSContext *conte
 	char *host = NULL;
 	gint port;
 	GnomeVFSResult result;
+	GnomeVFSSocket *socket;
 
 	/* Image mode (binary to the uninitiated) */
 	do_basic_command (conn, "TYPE I");
@@ -428,9 +430,10 @@ do_transfer_command (FtpConnection *conn, gchar *command, GnomeVFSContext *conte
 		return result;
 	}
 
-	conn->data_iobuf = gnome_vfs_inet_connection_get_iobuf (conn->data_connection);
+	socket = gnome_vfs_inet_connection_to_socket (conn->data_connection);
+	conn->data_socketbuf = gnome_vfs_socket_buffer_new (socket);
 
-	if (conn->iobuf == NULL) {
+	if (conn->socket_buf == NULL) {
 		gnome_vfs_inet_connection_destroy (conn->data_connection, NULL);
 		return GNOME_VFS_ERROR_GENERIC;
 	}
@@ -438,7 +441,7 @@ do_transfer_command (FtpConnection *conn, gchar *command, GnomeVFSContext *conte
 	result = do_control_write (conn, command);
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_iobuf_destroy (conn->data_iobuf);
+		gnome_vfs_socket_buffer_destroy (conn->data_socketbuf, FALSE);
 		gnome_vfs_inet_connection_destroy (conn->data_connection, NULL);
 		return result;
 	}
@@ -446,7 +449,7 @@ do_transfer_command (FtpConnection *conn, gchar *command, GnomeVFSContext *conte
 	result = get_response (conn);
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_iobuf_destroy (conn->data_iobuf);
+		gnome_vfs_socket_buffer_destroy (conn->data_socketbuf, FALSE);
 		gnome_vfs_inet_connection_destroy (conn->data_connection, NULL);
 		return result;
 	}
@@ -487,10 +490,10 @@ end_transfer (FtpConnection *conn)
 
 	/*ftp_debug (conn, g_strdup ("end_transfer()"));*/
 
-	if(conn->data_iobuf) {
-		gnome_vfs_iobuf_flush (conn->data_iobuf);
-		gnome_vfs_iobuf_destroy (conn->data_iobuf);
-		conn->data_iobuf = NULL;
+	if(conn->data_socketbuf) {
+		gnome_vfs_socket_buffer_flush (conn->data_socketbuf);
+		gnome_vfs_socket_buffer_destroy (conn->data_socketbuf, FALSE);
+		conn->data_socketbuf = NULL;
 	}
 
 	if (conn->data_connection) {
@@ -569,10 +572,10 @@ ftp_connection_create (FtpConnection **connptr, GnomeVFSURI *uri, GnomeVFSContex
 		return result;
 	}
 
-	conn->iobuf = gnome_vfs_inet_connection_get_iobuf (conn->inet_connection);
+	conn->socket_buf = gnome_vfs_inet_connection_to_socket_buffer (conn->inet_connection);
 
-	if (conn->iobuf == NULL) {
-		g_warning ("gnome_vfs_inet_connection_get_iobuf () failed");
+	if (conn->socket_buf == NULL) {
+		g_warning ("Getting socket buffer failed");
 		gnome_vfs_inet_connection_destroy (conn->inet_connection, NULL);
 		gnome_vfs_uri_unref (conn->uri);
 		g_string_free (conn->response_buffer, TRUE);
@@ -599,7 +602,7 @@ ftp_connection_create (FtpConnection **connptr, GnomeVFSURI *uri, GnomeVFSContex
 		/* login failed */
 		g_warning ("FTP server said: \"%d %s\"\n", conn->response_code,
 			   conn->response_message);
-		gnome_vfs_iobuf_destroy (conn->iobuf);
+		gnome_vfs_socket_buffer_destroy (conn->socket_buf, FALSE);
 		gnome_vfs_inet_connection_destroy (conn->inet_connection, NULL);
 		gnome_vfs_uri_unref (conn->uri);
 		g_string_free (conn->response_buffer, TRUE);
@@ -635,8 +638,8 @@ ftp_connection_destroy (FtpConnection *conn)
 	if (conn->inet_connection) 
 	        gnome_vfs_inet_connection_destroy (conn->inet_connection, NULL);
 
-	if (conn->iobuf) 
-	        gnome_vfs_iobuf_destroy (conn->iobuf);
+	if (conn->socket_buf) 
+	        gnome_vfs_socket_buffer_destroy (conn->socket_buf, FALSE);
 
 	gnome_vfs_uri_unref (conn->uri);
 	g_free (conn->cwd);
@@ -649,8 +652,8 @@ ftp_connection_destroy (FtpConnection *conn)
 	if (conn->data_connection) 
 		gnome_vfs_inet_connection_destroy(conn->data_connection, NULL);
 
-	if (conn->data_iobuf) 
-	        gnome_vfs_iobuf_destroy (conn->data_iobuf);
+	if (conn->data_socketbuf) 
+	        gnome_vfs_socket_buffer_destroy (conn->data_socketbuf, FALSE);
 
 	g_free (conn->dirlist);
 	g_free (conn->dirlistptr);
@@ -883,11 +886,12 @@ do_read (GnomeVFSMethod *method,
 	g_print ("do_read (%p)\n", method_handle);
 #endif
 
-	result = gnome_vfs_iobuf_read (conn->data_iobuf, buffer, num_bytes, bytes_read);
-	if (*bytes_read == 0) {
-		result = GNOME_VFS_ERROR_EOF;
-	}
-	return result;
+	result = gnome_vfs_socket_buffer_read (conn->data_socketbuf, buffer, num_bytes, bytes_read);
+
+ 	if (*bytes_read == 0) {
+ 		result = GNOME_VFS_ERROR_EOF;
+ 	}
+ 	return result;
 }
 
 static GnomeVFSResult 
@@ -908,15 +912,244 @@ do_write (GnomeVFSMethod *method,
 	if (conn->operation != FTP_WRITE) 
 		return GNOME_VFS_ERROR_NOT_PERMITTED;
 	
-	result = gnome_vfs_iobuf_write (conn->data_iobuf, buffer, num_bytes, 
-				      bytes_written);
+	result = gnome_vfs_socket_buffer_write (conn->data_socketbuf, buffer, 
+						num_bytes, 
+						bytes_written);
 	return result;
 }
 
+/* parse one directory listing from the string pointed to by ls. Parse
+ * only one line from that string. Fill in the appropriate fields of file_info.
+ * return TRUE if a directory entry was found, FALSE otherwise
+ */
+static gboolean 
+winnt_ls_to_file_info (gchar *ls, GnomeVFSFileInfo *file_info, 
+		       GnomeVFSFileInfoOptions options) 
+{
+	char *mtime_str;
+	int m, d, y, h, mn;
+	const char *mime_type;
+
+	/* check parameters */
+	g_return_val_if_fail (file_info != NULL, FALSE);
+
+	/* fill in bits of valid_fields as we go along */
+	file_info->valid_fields = 0;
+
+	/* First 17 chars are DOS date */
+	file_info->mtime = 0;
+	mtime_str = g_strndup (ls, 17);
+	if (sscanf (mtime_str, "%2d-%2d-%2d  %2d:%2d",
+	                &m, &d, &y, &h, &mn) == 5) {
+		/* yes it's a dos date */
+		struct tm mtime_parts;
+		mtime_parts.tm_mon = m - 1;   /* tm_mon is zero-based */
+		mtime_parts.tm_mday = d;
+		mtime_parts.tm_year = y >= 70 ? y : y + 100;  /* handle y2k */
+		mtime_parts.tm_hour = strcasecmp (mtime_str + 15, "pm") == 0 ?
+                                        h + 12 : h;
+		mtime_parts.tm_min = mn;
+		mtime_parts.tm_sec = 0;
+		mtime_parts.tm_isdst = -1;
+		file_info->mtime = mktime (&mtime_parts);
+		file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MTIME;
+	}
+	/* TODO: if there isn't a date it's probably a Unix-style ftp server
+	 * running under Windows */
+
+	g_free (mtime_str);
+
+	/* just in case client doesn't check valid_fields */
+	file_info->atime = file_info->mtime;
+	file_info->ctime = file_info->mtime;
+
+	/* filename begins in column 39 */
+	if (strlen (ls) >= 39) {
+		int i;
+		i = strcspn (ls + 39, "\r\n");
+		file_info->name = g_strndup (ls + 39, i);
+	} else {
+		file_info->name = NULL;
+		return FALSE;
+	}
+
+	/* if it's a directory, columns 24-29 contains "<DIR>" */
+	file_info->type = GNOME_VFS_FILE_TYPE_REGULAR;
+	if (strlen (ls) >= 24) {
+		char *dirflag_str;
+		dirflag_str = g_strndup (ls + 24, 5);
+		if (strcmp (dirflag_str, "<DIR>") == 0) {
+			file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
+		}
+		g_free (dirflag_str);
+	}
+	file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_TYPE;
+
+	/* if not a directory, we should find right-aligned size ending
+	 * at column 37 */
+	if (file_info->type == GNOME_VFS_FILE_TYPE_REGULAR &&
+	                strlen (ls) > 17) {
+		file_info->size = strtol (ls + 17, NULL, 0);
+		file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_SIZE;
+	}
+
+	/* mime type */
+	if (file_info->type == GNOME_VFS_FILE_TYPE_REGULAR) {
+		mime_type = gnome_vfs_mime_type_from_name_or_default (
+		                 file_info->name,
+		                 GNOME_VFS_MIME_TYPE_UNKNOWN);
+	} else {
+		mime_type = gnome_vfs_mime_type_from_mode (S_IFDIR);
+	}
+	file_info->mime_type = g_strdup (mime_type);
+	file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
+
+	/* fill in other structures with meaningful data, even though
+	 * it may not be valid */
+	file_info->permissions = GNOME_VFS_PERM_USER_ALL |
+	                         GNOME_VFS_PERM_GROUP_ALL |
+	                         GNOME_VFS_PERM_OTHER_ALL;
+	file_info->flags = GNOME_VFS_FILE_FLAGS_NONE;
+
+	return TRUE;
+}
+
+/**
+ * return TRUE if entry found, FALSE otherwise
+ */
+static gboolean 
+netware_ls_to_file_info (gchar *ls, GnomeVFSFileInfo *file_info, 
+			 GnomeVFSFileInfoOptions options) 
+{
+	const char *mime_type;
+
+	/* check parameters */
+	g_return_val_if_fail (file_info != NULL, FALSE);
+
+	/* start by knowing nothing */
+	file_info->valid_fields = 0;
+
+	/* If line starts with "total" then we should skip it */
+	if (strncmp (ls, "total", 5) == 0) {
+		return FALSE;
+	}
+
+	/* First char is 'd' for directory, '-' for regular file */
+	file_info->type = GNOME_VFS_FILE_TYPE_UNKNOWN;
+	if (strlen (ls) >= 1) {
+		if (ls[0] == 'd') {
+			file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
+		} else if (ls[0] == '-') {
+			file_info->type = GNOME_VFS_FILE_TYPE_REGULAR;
+		} else {
+			g_warning ("netware_ls_to_file_info: unknown file type '%c'", ls[0]);
+		}
+	}
+	file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_TYPE;
+    
+	/* Next is a listing of Netware permissions */
+	/* ignored */
+
+	/* Following the permissions is the "owner/creator" of the file */
+	/* file info structure requires a UID, which of course is not available */
+	/* ignored */
+
+	/* following type, permissions, and owner is the size, right justified up
+	 * to but not including column 50. */
+	/* if we start at column 35, that allows 15 chars for size--that should be
+	 * enough :) */
+	if (strlen (ls) > 35) {
+		file_info->size = strtol (ls + 35, NULL, 0);
+		file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_SIZE;
+	}
+
+	/* columns 51-63 contain modification date of file/directory */
+	file_info->mtime = 0;
+	if (strlen (ls) >= 51) {
+		char *mtime_str = g_strndup (ls + 51, 12);
+		GDate *mtime_date;
+
+		/* mtime_str is one of two formats...
+		 *  1)  "mmm dd hh:mm"        (24hr time)
+		 *  2)  "mmm dd  yyyy"
+		 */
+		mtime_date = g_date_new ();
+		if (index (mtime_str, ':') != NULL) {
+			/* separate time */
+			char *date_str = g_strndup (mtime_str, 6);
+			g_date_set_parse (mtime_date, date_str);
+			g_free (date_str);
+		} else {
+			g_date_set_parse (mtime_date, mtime_str);
+		}
+
+		if (!g_date_valid (mtime_date)) {
+			g_warning ("netware_ls_to_file_info: cannot parse date '%s'",
+			           mtime_str);
+		}
+		else {
+			struct tm mtime_parts;
+			g_date_to_struct_tm (mtime_date, &mtime_parts);
+			mtime_parts.tm_hour = 0;
+			mtime_parts.tm_min = 0;
+			mtime_parts.tm_sec = 0;
+			mtime_parts.tm_isdst = -1;
+			if (index (mtime_str, ':')) {
+				/* get the time */
+				int h, mn;
+				if (sscanf (mtime_str + 7, "%2d:%2d", &h, &mn) == 2) {
+					mtime_parts.tm_hour = h;
+					mtime_parts.tm_min = mn;
+				} else {
+					g_warning ("netware_ls_to_file_info: invalid time '%s'",
+					           mtime_str + 7);
+				}
+			}
+			file_info->mtime = mktime (&mtime_parts);
+			file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MTIME;
+		}
+
+		g_date_free (mtime_date);
+		g_free (mtime_str);
+	}
+
+	/* just in case client doesn't check valid_fields */
+	file_info->atime = file_info->mtime;
+	file_info->ctime = file_info->mtime;
+
+	/* finally, the file/directory name (column 64) */
+	if (strlen (ls) >= 64) {
+		int i;
+		i = strcspn (ls + 64, "\r\n");
+		file_info->name = g_strndup (ls + 64, i);
+	} else {
+		file_info->name = NULL;
+	}
+
+	/* mime type */
+	if (file_info->type == GNOME_VFS_FILE_TYPE_REGULAR) {
+		mime_type = gnome_vfs_mime_type_from_name_or_default (
+		                 file_info->name,
+		                 GNOME_VFS_MIME_TYPE_UNKNOWN);
+	} else {
+		mime_type = gnome_vfs_mime_type_from_mode (S_IFDIR);
+	}
+	file_info->mime_type = g_strdup (mime_type);
+	file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
+
+	/* fill in other structures with meaningful data, even though
+	 * it may not be valid */
+	file_info->permissions = GNOME_VFS_PERM_USER_ALL |
+	                         GNOME_VFS_PERM_GROUP_ALL |
+	                         GNOME_VFS_PERM_OTHER_ALL;
+	file_info->flags = GNOME_VFS_FILE_FLAGS_NONE;
+
+	return TRUE;
+}
 
 static gboolean 
-ls_to_file_info (gchar *ls, GnomeVFSFileInfo *file_info, 
-		GnomeVFSFileInfoOptions options) 
+unix_ls_to_file_info (gchar *ls, GnomeVFSFileInfo *file_info, 
+		      GnomeVFSFileInfoOptions options) 
 {
 	struct stat s;
 	gchar *filename = NULL, *linkname = NULL;
@@ -1003,11 +1236,11 @@ internal_get_file_info (GnomeVFSMethod *method,
 		do_path_transfer_command (conn, "LIST -ldL", uri, context);
 	}
 
-	result = gnome_vfs_iobuf_read (conn->data_iobuf, buffer, 
-				       num_bytes, &bytes_read);
+	result = gnome_vfs_socket_buffer_read (conn->data_socketbuf, buffer, 
+					       num_bytes, &bytes_read);
 
 	if (result != GNOME_VFS_OK) {
-		/*ftp_debug (conn, g_strdup ("gnome_vfs_iobuf_read failed"));*/
+		/*ftp_debug (conn, g_strdup ("gnome_vfs_socket_buffer_read failed"));*/
 		ftp_connection_release (conn);
 		return result;
 	}
@@ -1163,7 +1396,7 @@ do_open_directory (GnomeVFSMethod *method,
 	}
 
 	while (result == GNOME_VFS_OK) {
-		result = gnome_vfs_iobuf_read (conn->data_iobuf, buffer, 
+		result = gnome_vfs_socket_buffer_read (conn->data_socketbuf, buffer, 
 					       num_bytes, &bytes_read);
 		if (result == GNOME_VFS_OK && bytes_read > 0) {
 			buffer[bytes_read] = '\0';
@@ -1219,7 +1452,20 @@ do_read_directory (GnomeVFSMethod *method,
 		return GNOME_VFS_ERROR_EOF;
 
 	while (TRUE) {
-		gboolean success = ls_to_file_info (conn->dirlistptr, file_info, conn->file_info_options);
+		gboolean success;
+                
+		if (strncmp (conn->server_type, "Windows_NT", 10) == 0) {
+			success = winnt_ls_to_file_info (conn->dirlistptr, file_info,
+			                                 conn->file_info_options);
+		}
+		else if (strncmp (conn->server_type, "NETWARE", 7) == 0) {
+			success = netware_ls_to_file_info (conn->dirlistptr, file_info,
+			                                   conn->file_info_options);
+		}
+		else {
+			success = unix_ls_to_file_info (conn->dirlistptr, file_info,
+			                                conn->file_info_options);
+		}
 
 		/* permissions aren't valid */
 		file_info->valid_fields &= ~GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS;

@@ -116,6 +116,15 @@ print_file_info (const GnomeVFSFileInfo *info)
 	if(info->valid_fields&GNOME_VFS_FILE_INFO_FIELDS_INODE)
 		printf ("Inode #           : %ld\n", (gulong) info->inode);
 
+     if(info->valid_fields&GNOME_VFS_FILE_INFO_FIELDS_ACCESS) {
+             printf ("Readable          : %s\n", 
+                     (info->permissions&GNOME_VFS_PERM_ACCESS_READABLE?"YES":"NO"));
+             printf ("Writable          : %s\n", 
+                     (info->permissions&GNOME_VFS_PERM_ACCESS_WRITABLE?"YES":"NO"));
+             printf ("Executable        : %s\n", 
+                     (info->permissions&GNOME_VFS_PERM_ACCESS_EXECUTABLE?"YES":"NO"));
+     }
+     
 
 #undef FLAG_STRING
 }
@@ -142,6 +151,7 @@ main (int argc,
 	}
 
 	while (i < argc) {
+		const char *path;
 
 		uri = argv[i];
 
@@ -151,6 +161,7 @@ main (int argc,
 		result = gnome_vfs_get_file_info (uri, 
 						  info,
 						  (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+						   | GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS
 						   | GNOME_VFS_FILE_INFO_FOLLOW_LINKS));
 		if (result != GNOME_VFS_OK) {
 			fprintf (stderr, "%s: %s: %s\n",
@@ -164,6 +175,8 @@ main (int argc,
 		gnome_vfs_file_info_unref (info);
 
 		vfs_uri = gnome_vfs_uri_new (uri);
+		path = gnome_vfs_uri_get_path (vfs_uri);
+		printf ("Path: %s\n", path ? path : "<null>");
 		printf (gnome_vfs_uri_is_local (vfs_uri)
 			? "File is local\n" : "File is not local\n");
 		gnome_vfs_uri_unref (vfs_uri);

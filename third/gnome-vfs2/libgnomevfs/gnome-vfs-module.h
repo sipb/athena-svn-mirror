@@ -28,12 +28,45 @@
 
 G_BEGIN_DECLS
 
-#define GNOME_VFS_MODULE_INIT      "vfs_module_init"
-#define GNOME_VFS_MODULE_TRANSFORM "vfs_module_transform"
-#define GNOME_VFS_MODULE_SHUTDOWN  "vfs_module_shutdown"
 
+/**
+ * vfs_module_init:
+ * @method_name: name of the method that invoked this module (e.g. "http", "ftp", "file").
+ * @args: not used by most modules, but potential arguments for creating the module (could
+ * be a file to point at, for example)
+ *
+ * Standard extern call implemented by each filesystem module. This is called
+ * to initialize the module and setup any basic structures / connections the
+ * method requires. It also allows the module to identify the URI method it is
+ * associated with in this instance.
+ *
+ * Return value: the module symbol table, pointing to the appropriate calls for
+ * this module.
+ **/
 extern GnomeVFSMethod    *vfs_module_init	(const char *method_name, const char *args);
+
+/**
+ * vfs_module_transform:
+ * @method_name: name of the method that invoked this module (e.g. "http", "ftp", "file").
+ * @args: not used by most modules, but potential arguments for creating the module (could
+ * be a file to point at, for example)
+ *
+ * Shift an already instanced module to a new method name. This call is not implemented
+ * by most modules and is optional.
+ *
+ * Return value: the module symbol table, pointing to the appropriate calls for
+ * this module.
+ **/
 extern GnomeVFSTransform *vfs_module_transform	(const char *method_name, const char *args);
+
+/**
+ * vfs_module_shutdown:
+ * @method: the symbol table of the module being shut down
+ *
+ * Called to tell a module to end any active operations, free all used memory,
+ * and close any connections (as appropriate) or resources.
+ *
+ **/
 extern void               vfs_module_shutdown	(GnomeVFSMethod *method);
 
 G_END_DECLS

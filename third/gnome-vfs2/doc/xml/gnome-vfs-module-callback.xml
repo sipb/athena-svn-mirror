@@ -1,0 +1,411 @@
+<refentry id="gnome-vfs-gnome-vfs-module-callback">
+<refmeta>
+<refentrytitle>gnome-vfs-module-callback</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-vfs-module-callback</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+void        (<link linkend="GnomeVFSModuleCallback">*GnomeVFSModuleCallback</link>)       (<link linkend="gconstpointer">gconstpointer</link> in,
+                                             <link linkend="gsize">gsize</link> in_size,
+                                             <link linkend="gpointer">gpointer</link> out,
+                                             <link linkend="gsize">gsize</link> out_size,
+                                             <link linkend="gpointer">gpointer</link> callback_data);
+void        (<link linkend="GnomeVFSModuleCallbackResponse">*GnomeVFSModuleCallbackResponse</link>)
+                                            (<link linkend="gpointer">gpointer</link> response_data);
+void        (<link linkend="GnomeVFSAsyncModuleCallback">*GnomeVFSAsyncModuleCallback</link>)  (<link linkend="gconstpointer">gconstpointer</link> in,
+                                             <link linkend="gsize">gsize</link> in_size,
+                                             <link linkend="gpointer">gpointer</link> out,
+                                             <link linkend="gsize">gsize</link> out_size,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GnomeVFSModuleCallbackResponse">GnomeVFSModuleCallbackResponse</link> response,
+                                             <link linkend="gpointer">gpointer</link> response_data);
+void        <link linkend="gnome-vfs-module-callback-set-default">gnome_vfs_module_callback_set_default</link>
+                                            (const char *callback_name,
+                                             <link linkend="GnomeVFSModuleCallback">GnomeVFSModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);
+void        <link linkend="gnome-vfs-module-callback-push">gnome_vfs_module_callback_push</link>  (const char *callback_name,
+                                             <link linkend="GnomeVFSModuleCallback">GnomeVFSModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);
+void        <link linkend="gnome-vfs-module-callback-pop">gnome_vfs_module_callback_pop</link>   (const char *callback_name);
+void        <link linkend="gnome-vfs-async-module-callback-set-default">gnome_vfs_async_module_callback_set_default</link>
+                                            (const char *callback_name,
+                                             <link linkend="GnomeVFSAsyncModuleCallback">GnomeVFSAsyncModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);
+void        <link linkend="gnome-vfs-async-module-callback-push">gnome_vfs_async_module_callback_push</link>
+                                            (const char *callback_name,
+                                             <link linkend="GnomeVFSAsyncModuleCallback">GnomeVFSAsyncModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);
+void        <link linkend="gnome-vfs-async-module-callback-pop">gnome_vfs_async_module_callback_pop</link>
+                                            (const char *callback_name);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallback"/>GnomeVFSModuleCallback ()</title>
+<programlisting>void        (*GnomeVFSModuleCallback)       (<link linkend="gconstpointer">gconstpointer</link> in,
+                                             <link linkend="gsize">gsize</link> in_size,
+                                             <link linkend="gpointer">gpointer</link> out,
+                                             <link linkend="gsize">gsize</link> out_size,
+                                             <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
+<para>
+This is the type of a callback function that gets set for a module
+callback. 
+</para>
+<para>
+When the callback is invoked, the user function is called with an
+<parameter>in</parameter> argument, the exact type of which depends on the specific
+callback. It is generally a pointer to a struct with several fields
+that provide information to the callback.
+</para>
+<para>
+The <parameter>out</parameter> argument is used to return a values from the
+callback. Once again the exact type depends on the specific
+callback. It is generally a pointer to a pre-allocated struct with
+several fields that the callback function should fill in before
+returning.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>in</parameter>&nbsp;:</term>
+<listitem><simpara> The in argument for this callback; the exact type depends on the specific callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>in_size</parameter>&nbsp;:</term>
+<listitem><simpara> Size of the in argument; useful for sanity-checking
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>out</parameter>&nbsp;:</term>
+<listitem><simpara> The out argument for this callback; the exact type depends on the specific callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>out_size</parameter>&nbsp;:</term>
+<listitem><simpara> Size of the out argument; useful for sanity-checking
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> The <parameter>callback_data</parameter> specified when this callback was set
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackResponse"/>GnomeVFSModuleCallbackResponse ()</title>
+<programlisting>void        (*GnomeVFSModuleCallbackResponse)
+                                            (<link linkend="gpointer">gpointer</link> response_data);</programlisting>
+<para>
+This is the type of the response function passed to a
+<link linkend="GnomeVFSAsyncModuleCallback">GnomeVFSAsyncModuleCallback</link>(). It should be called when the async
+callback has completed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>response_data</parameter>&nbsp;:</term>
+<listitem><simpara> Pass the <parameter>response_data</parameter> argument originally passed to the async callback
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSAsyncModuleCallback"/>GnomeVFSAsyncModuleCallback ()</title>
+<programlisting>void        (*GnomeVFSAsyncModuleCallback)  (<link linkend="gconstpointer">gconstpointer</link> in,
+                                             <link linkend="gsize">gsize</link> in_size,
+                                             <link linkend="gpointer">gpointer</link> out,
+                                             <link linkend="gsize">gsize</link> out_size,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GnomeVFSModuleCallbackResponse">GnomeVFSModuleCallbackResponse</link> response,
+                                             <link linkend="gpointer">gpointer</link> response_data);</programlisting>
+<para>
+This is the type of a callback function that gets set for an async
+module callback. 
+</para>
+<para>
+Such callbacks are useful when you are using the API and want
+callbacks to be handled from the main thread, for instance if they
+need to put up a dialog.
+</para>
+<para>
+Like a <link linkend="GnomeVFSModuleCallback">GnomeVFSModuleCallback</link>(), an async callback has <parameter>in</parameter> and <parameter>out</parameter>
+arguments for passing data into and out of the callback. However,
+an async callback does not need to fill in the <parameter>out</parameter> argument before
+returning. Instead, it can arrange to have the work done from a
+callback on the main loop, from another thread, etc. The <parameter>response</parameter>
+function should be called by whatever code finishes the work of the
+callback with <parameter>response_data</parameter> as an argument once the <parameter>out</parameter> argument
+is filled in and the callback is done.
+</para>
+<para>
+The <parameter>in</parameter> and <parameter>out</parameter> arguments are guaranteed to remain valid until the
+<parameter>response</parameter> function is called.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>in</parameter>&nbsp;:</term>
+<listitem><simpara> The in argument for this callback; the exact type depends on the specific callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>in_size</parameter>&nbsp;:</term>
+<listitem><simpara> Size of the in argument; useful for sanity-checking
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>out</parameter>&nbsp;:</term>
+<listitem><simpara> The out argument for this callback; the exact type depends on the specific callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>out_size</parameter>&nbsp;:</term>
+<listitem><simpara> Size of the out argument; useful for sanity-checking
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> The <parameter>callback_data</parameter> specified when this callback was set
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>response</parameter>&nbsp;:</term>
+<listitem><simpara> Response function to call when the callback is completed
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>response_data</parameter>&nbsp;:</term>
+<listitem><simpara> Argument to pass to <parameter>response</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-module-callback-set-default"/>gnome_vfs_module_callback_set_default ()</title>
+<programlisting>void        gnome_vfs_module_callback_set_default
+                                            (const char *callback_name,
+                                             <link linkend="GnomeVFSModuleCallback">GnomeVFSModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);</programlisting>
+<para>
+Set the default callback for <parameter>callback_name</parameter> to
+<parameter>callback</parameter>. <parameter>callback</parameter> will be called with <parameter>callback_data</parameter> on the
+same thread as the gnome-vfs operation that invokes it. The default
+value is shared for all threads, but setting it is thread-safe.
+</para>
+<para>
+Use this function if you want to set a handler to be used by your
+whole application. You can use <link linkend="gnome-vfs-module-callback-push">gnome_vfs_module_callback_push</link>() to
+set a callback function that will temporarily override the default
+on the current thread instead. Or you can also use
+<link linkend="gnome-vfs-async-module-callback-set-default">gnome_vfs_async_module_callback_set_default</link>() to set an async
+callback function.
+</para>
+<para>
+Note: <parameter>destroy_notify</parameter> may be called on any thread - it is not
+guaranteed to be called on the main thread.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the module callback to set
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> The function to call when the callback is invoked
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to pass as the <parameter>callback_data</parameter> argument to <parameter>callback</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy_notify</parameter>&nbsp;:</term>
+<listitem><simpara> Function to call when <parameter>callback_data</parameter> is to be freed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-module-callback-push"/>gnome_vfs_module_callback_push ()</title>
+<programlisting>void        gnome_vfs_module_callback_push  (const char *callback_name,
+                                             <link linkend="GnomeVFSModuleCallback">GnomeVFSModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);</programlisting>
+<para>
+Set <parameter>callback</parameter> as a temprary handler for <parameter>callback_name</parameter>. <parameter>callback</parameter>
+will be called with <parameter>callback_data</parameter> on the same thread as the
+gnome-vfs operation that invokes it. The temporary handler is set
+per-thread.
+</para>
+<para>
+<link linkend="gnome-vfs-module-callback-pop">gnome_vfs_module_callback_pop</link>() removes the most recently set
+temporary handler. The temporary handlers are treated as a first-in
+first-out stack.
+</para>
+<para>
+Use this function to set a temporary callback handler for a single
+call or a few calls. You can use
+<link linkend="gnome-vfs-module-callback-set-default">gnome_vfs_module_callback_set_default</link>() to set a callback function
+that will establish a permanent global setting for all threads
+instead.
+</para>
+<para>
+Note: <parameter>destroy_notify</parameter> may be called on any thread - it is not
+guaranteed to be called on the main thread.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the module callback to set temporarily
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> The function to call when the callback is invoked
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to pass as the <parameter>callback_data</parameter> argument to <parameter>callback</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy_notify</parameter>&nbsp;:</term>
+<listitem><simpara> Function to call when <parameter>callback_data</parameter> is to be freed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-module-callback-pop"/>gnome_vfs_module_callback_pop ()</title>
+<programlisting>void        gnome_vfs_module_callback_pop   (const char *callback_name);</programlisting>
+<para>
+Remove the temporary handler for <parameter>callback_name</parameter> most recently set
+with <link linkend="gnome-vfs-module-callback-push">gnome_vfs_module_callback_push</link>().  If another temporary
+handler was previously set on the same thread, it becomes the
+current handler. Otherwise, the default handler, if any, becomes
+current. 
+</para>
+<para>
+The temporary handlers are treated as a first-in first-out
+stack.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the module callback to remove a temporary handler for
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-async-module-callback-set-default"/>gnome_vfs_async_module_callback_set_default ()</title>
+<programlisting>void        gnome_vfs_async_module_callback_set_default
+                                            (const char *callback_name,
+                                             <link linkend="GnomeVFSAsyncModuleCallback">GnomeVFSAsyncModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);</programlisting>
+<para>
+Set the default async callback for <parameter>callback_name</parameter> to
+<parameter>callback</parameter>. <parameter>callback</parameter> will be called with <parameter>callback_data</parameter>
+from a callback on the main thread. It will be passed a response
+function which should be called to signal completion of the callback.
+The callback function itself may return in the meantime.
+</para>
+<para>
+The default value is shared for all threads, but setting it is
+thread-safe.
+</para>
+<para>
+Use this function if you want to globally set a callback handler
+for use with async operations.
+</para>
+<para>
+You can use <link linkend="gnome-vfs-async-module-callback-push">gnome_vfs_async_module_callback_push</link>() to set an async
+callback function that will temporarily override the default on the
+current thread instead. Or you can also use
+<link linkend="gnome-vfs-module-callback-set-default">gnome_vfs_module_callback_set_default</link>() to set a regular callback
+function.
+</para>
+<para>
+Note: <parameter>destroy_notify</parameter> may be called on any thread - it is not
+guaranteed to be called on the main thread.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the async module callback to set
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> The function to call when the callback is invoked
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to pass as the <parameter>callback_data</parameter> argument to <parameter>callback</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy_notify</parameter>&nbsp;:</term>
+<listitem><simpara> Function to call when <parameter>callback_data</parameter> is to be freed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-async-module-callback-push"/>gnome_vfs_async_module_callback_push ()</title>
+<programlisting>void        gnome_vfs_async_module_callback_push
+                                            (const char *callback_name,
+                                             <link linkend="GnomeVFSAsyncModuleCallback">GnomeVFSAsyncModuleCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_notify);</programlisting>
+<para>
+Set <parameter>callback_func</parameter> as a temprary async handler for
+<parameter>callback_name</parameter>. <parameter>callback</parameter> will be called with <parameter>callback_data</parameter>
+from a callback on the main thread. It will be passed a response
+function which should be called to signal completion of the
+callback. The callback function itself may return in the meantime.
+</para>
+<para>
+The temporary async handler is set per-thread.
+</para>
+<para>
+<link linkend="gnome-vfs-async-module-callback-pop">gnome_vfs_async_module_callback_pop</link>() removes the most recently set
+temporary temporary handler. The temporary async handlers are
+treated as a first-in first-out stack.
+</para>
+<para>
+Use this function to set a temporary async callback handler for a
+single call or a few calls. You can use
+<link linkend="gnome-vfs-async-module-callback-set-default">gnome_vfs_async_module_callback_set_default</link>() to set an async
+callback function that will establish a permanent global setting
+for all threads instead.
+</para>
+<para>
+Note: <parameter>destroy_notify</parameter> may be called on any thread - it is not
+guaranteed to be called on the main thread.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the module callback to set temporarily
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> The function to call when the callback is invoked
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to pass as the <parameter>callback_data</parameter> argument to <parameter>callback</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy_notify</parameter>&nbsp;:</term>
+<listitem><simpara> Function to call when <parameter>callback_data</parameter> is to be freed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-async-module-callback-pop"/>gnome_vfs_async_module_callback_pop ()</title>
+<programlisting>void        gnome_vfs_async_module_callback_pop
+                                            (const char *callback_name);</programlisting>
+<para>
+Remove the temporary async handler for <parameter>callback_name</parameter> most recently
+set with <link linkend="gnome-vfs-async-module-callback-push">gnome_vfs_async_module_callback_push</link>().  If another
+temporary async handler was previously set on the same thread, it
+becomes the current handler. Otherwise, the default async handler,
+if any, becomes current.
+</para>
+<para>
+The temporary async handlers are treated as a first-in first-out
+stack.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>callback_name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the module callback to remove a temporary handler for
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

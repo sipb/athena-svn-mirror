@@ -94,9 +94,7 @@ GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -111,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -119,6 +118,9 @@ LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
 LIBGNOMEVFS_CFLAGS = @LIBGNOMEVFS_CFLAGS@
 LIBGNOMEVFS_LIBS = @LIBGNOMEVFS_LIBS@
+LIBGNUTLS_CFLAGS = @LIBGNUTLS_CFLAGS@
+LIBGNUTLS_CONFIG = @LIBGNUTLS_CONFIG@
+LIBGNUTLS_LIBS = @LIBGNUTLS_LIBS@
 LIBIDL_REQUIRED = @LIBIDL_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -146,6 +148,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
@@ -168,10 +172,17 @@ WARN_CFLAGS = @WARN_CFLAGS@
 XML_REQUIRED = @XML_REQUIRED@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES =  	-I$(top_srcdir)					-I$(top_builddir)				$(VFS_CFLAGS)					$(MONIKERS_CFLAGS)				-DG_DISABLE_DEPRECATED				-DG_LOG_DOMAIN=\"GnomeVFSMonikers\"
+INCLUDES = \
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	$(VFS_CFLAGS)				\
+	$(MONIKERS_CFLAGS)			\
+	-DG_DISABLE_DEPRECATED			\
+	-DG_LOG_DOMAIN=\"GnomeVFSMonikers\"
 
 
-EXTRA_DIST =  	GNOME_VFS_Moniker_std.server.in.in
+EXTRA_DIST = \
+	GNOME_VFS_Moniker_std.server.in.in
 
 
 moniker_LTLIBRARIES = libmoniker_gnome_vfs_std.la
@@ -182,13 +193,29 @@ CLEANFILES =  GNOME_VFS_Moniker_std.server GNOME_VFS_Moniker_std.server.in
 serverdir = $(libdir)/bonobo/servers
 server_DATA = GNOME_VFS_Moniker_std.server
 
-libmoniker_gnome_vfs_std_la_SOURCES =  	gnome-moniker-std.c			gnome-moniker-std.h			bonobo-stream-fs.h			bonobo-stream-fs.c			bonobo-storage-fs.h			bonobo-storage-fs.c			bonobo-moniker-extender-file.c		bonobo-moniker-file.c			bonobo-stream-vfs.h			bonobo-stream-vfs.c			bonobo-storage-vfs.h			bonobo-storage-vfs.c			bonobo-moniker-vfs.c
+libmoniker_gnome_vfs_std_la_SOURCES = \
+	gnome-moniker-std.c		\
+	gnome-moniker-std.h		\
+	bonobo-stream-fs.h		\
+	bonobo-stream-fs.c		\
+	bonobo-storage-fs.h		\
+	bonobo-storage-fs.c		\
+	bonobo-moniker-extender-file.c	\
+	bonobo-moniker-file.c		\
+	bonobo-stream-vfs.h		\
+	bonobo-stream-vfs.c		\
+	bonobo-storage-vfs.h		\
+	bonobo-storage-vfs.c		\
+	bonobo-moniker-vfs.c
 
 
-libmoniker_gnome_vfs_std_la_LIBADD =  	$(MONIKERS_LIBS)             	$(top_builddir)/libgnomevfs/libgnomevfs-2.la             	
+libmoniker_gnome_vfs_std_la_LIBADD = \
+	$(MONIKERS_LIBS)             \
+	$(top_builddir)/libgnomevfs/libgnomevfs-2.la             	
 
 
-libmoniker_gnome_vfs_std_la_LDFLAGS =  	-module -avoid-version 
+libmoniker_gnome_vfs_std_la_LDFLAGS = \
+	-module -avoid-version 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -215,7 +242,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libmoniker_gnome_vfs_std_la_SOURCES)
 OBJECTS = $(libmoniker_gnome_vfs_std_la_OBJECTS)
@@ -340,7 +367,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -366,6 +393,53 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+bonobo-moniker-extender-file.lo bonobo-moniker-extender-file.o : \
+	bonobo-moniker-extender-file.c ../config.h \
+	../libgnomevfs/gnome-vfs-mime.h ../libgnomevfs/gnome-vfs-uri.h \
+	gnome-moniker-std.h
+bonobo-moniker-file.lo bonobo-moniker-file.o : bonobo-moniker-file.c \
+	../config.h gnome-moniker-std.h bonobo-stream-fs.h \
+	bonobo-storage-fs.h
+bonobo-moniker-vfs.lo bonobo-moniker-vfs.o : bonobo-moniker-vfs.c \
+	../config.h gnome-moniker-std.h bonobo-stream-vfs.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h bonobo-storage-vfs.h
+bonobo-storage-fs.lo bonobo-storage-fs.o : bonobo-storage-fs.c \
+	../config.h bonobo-storage-fs.h ../libgnomevfs/gnome-vfs-mime.h \
+	../libgnomevfs/gnome-vfs-uri.h bonobo-stream-fs.h
+bonobo-storage-vfs.lo bonobo-storage-vfs.o : bonobo-storage-vfs.c \
+	../config.h bonobo-storage-vfs.h bonobo-stream-vfs.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+bonobo-stream-fs.lo bonobo-stream-fs.o : bonobo-stream-fs.c ../config.h \
+	bonobo-stream-fs.h ../libgnomevfs/gnome-vfs-mime.h \
+	../libgnomevfs/gnome-vfs-uri.h
+bonobo-stream-vfs.lo bonobo-stream-vfs.o : bonobo-stream-vfs.c \
+	../config.h bonobo-stream-vfs.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+gnome-moniker-std.lo gnome-moniker-std.o : gnome-moniker-std.c \
+	../config.h gnome-moniker-std.h
 
 info-am:
 info: info-am

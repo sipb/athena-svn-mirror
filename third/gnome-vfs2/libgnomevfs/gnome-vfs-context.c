@@ -38,15 +38,21 @@
 
 struct GnomeVFSContext {
         GnomeVFSCancellation *cancellation;
-
-        guint refcount;
 };
 
 /* This is a token Context to return in situations
  * where we don't normally have a context: eg, during sync calls
  */
-const GnomeVFSContext sync_context = {NULL, 1};
+const GnomeVFSContext sync_context = {NULL};
 
+/**
+ * gnome_vfs_context_new:
+ * 
+ * Creates a new context and cancellation object. Must be called
+ * from the main glib event loop.
+ *
+ * Return value: a newly allocated #GnomeVFSContext
+ **/
 GnomeVFSContext*
 gnome_vfs_context_new (void)
 {
@@ -57,39 +63,34 @@ gnome_vfs_context_new (void)
         ctx = g_new0(GnomeVFSContext, 1);
 
         ctx->cancellation = gnome_vfs_cancellation_new();
-
-        ctx->refcount = 1;
  
         return ctx;
 }
 
+/**
+ * gnome_vfs_context_free:
+ * @ctx: context to be freed
+ *
+ * Free @ctx and destroy the associated #GnomeVFSCancellation.
+ **/
 void
-gnome_vfs_context_ref (GnomeVFSContext *ctx)
+gnome_vfs_context_free (GnomeVFSContext *ctx)
 {
         g_return_if_fail(ctx != NULL);
-
-	/* FIXME: this function should be removed in Gnome 2.0 GnomeVFS */
-  	g_warning ("Warning call to deprecated function '%s'\n", G_GNUC_FUNCTION);
-  	
-        ctx->refcount += 1;
-}
-
-/* Note: _unref should be replaced with a _free function in the gnome 2.0 platform */ 
-void
-gnome_vfs_context_unref (GnomeVFSContext *ctx)
-{
-        g_return_if_fail(ctx != NULL);
-        g_return_if_fail(ctx->refcount > 0);
   
-        if (ctx->refcount == 1) {
-                gnome_vfs_cancellation_destroy(ctx->cancellation);
-
-                g_free(ctx);
-        } else {
-                ctx->refcount -= 1;
-        }
+	gnome_vfs_cancellation_destroy(ctx->cancellation);
+	
+	g_free(ctx);
 }
 
+/**
+ * gnome_vfs_context_get_cancellation:
+ * @ctx: context to get the #GnomeVFSCancellation from
+ *
+ * Retrieve the #GnomeVFSCancellation associated with @ctx.
+ *
+ * Return value: @ctx 's #GnomeVFSCancellation
+ **/
 GnomeVFSCancellation*
 gnome_vfs_context_get_cancellation (const GnomeVFSContext *ctx)
 {
@@ -97,12 +98,21 @@ gnome_vfs_context_get_cancellation (const GnomeVFSContext *ctx)
         return ctx->cancellation;
 }
 
+/**
+ * gnome_vfs_context_peek_current:
+ *
+ * Get the currently active context. It shouldn't be
+ * manipulated but can be compared to context's the module
+ * holds to determine whether they are active.
+ *
+ * Return value: the currently active #GnomeVFSContext
+ **/
 const GnomeVFSContext *
 gnome_vfs_context_peek_current		  (void)
 {
 	const GnomeVFSContext *ret;
 	
-	gnome_vfs_get_current_context ((GnomeVFSContext **)&ret);
+	_gnome_vfs_get_current_context ((GnomeVFSContext **)&ret);
 
 	/* If the context is NULL, then this must be a synchronous call */
 	if (ret == NULL) {
@@ -112,6 +122,13 @@ gnome_vfs_context_peek_current		  (void)
 	return ret;
 }
 
+/**
+ * gnome_vfs_context_check_cancellation_current:
+ * 
+ * Check to see if the currently active context has been cancelled.
+ *
+ * Return value: %TRUE if the currently active context has been cancelled, otherwise %FALSE
+ **/
 gboolean
 gnome_vfs_context_check_cancellation_current (void)
 {

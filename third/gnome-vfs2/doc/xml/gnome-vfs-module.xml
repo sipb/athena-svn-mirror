@@ -1,0 +1,104 @@
+<refentry id="gnome-vfs-gnome-vfs-module">
+<refmeta>
+<refentrytitle>gnome-vfs-module</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-vfs-module</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* <link linkend="vfs-module-init">vfs_module_init</link>             (const char *method_name,
+                                             const char *args);
+<link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* <link linkend="vfs-module-transform">vfs_module_transform</link>     (const char *method_name,
+                                             const char *args);
+void        <link linkend="vfs-module-shutdown">vfs_module_shutdown</link>             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="vfs-module-init"/>vfs_module_init ()</title>
+<programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* vfs_module_init             (const char *method_name,
+                                             const char *args);</programlisting>
+<para>
+Standard extern call implemented by each filesystem module. This is called
+to initialize the module and setup any basic structures / connections the
+method requires. It also allows the module to identify the URI method it is
+associated with in this instance.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method_name</parameter>&nbsp;:</term>
+<listitem><simpara> name of the method that invoked this module (e.g. "http", "ftp", "file").
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>args</parameter>&nbsp;:</term>
+<listitem><simpara> not used by most modules, but potential arguments for creating the module (could
+be a file to point at, for example)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the module symbol table, pointing to the appropriate calls for
+this module.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="vfs-module-transform"/>vfs_module_transform ()</title>
+<programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* vfs_module_transform     (const char *method_name,
+                                             const char *args);</programlisting>
+<para>
+Shift an already instanced module to a new method name. This call is not implemented
+by most modules and is optional.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method_name</parameter>&nbsp;:</term>
+<listitem><simpara> name of the method that invoked this module (e.g. "http", "ftp", "file").
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>args</parameter>&nbsp;:</term>
+<listitem><simpara> not used by most modules, but potential arguments for creating the module (could
+be a file to point at, for example)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the module symbol table, pointing to the appropriate calls for
+this module.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="vfs-module-shutdown"/>vfs_module_shutdown ()</title>
+<programlisting>void        vfs_module_shutdown             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);</programlisting>
+<para>
+Called to tell a module to end any active operations, free all used memory,
+and close any connections (as appropriate) or resources.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method</parameter>&nbsp;:</term>
+<listitem><simpara> the symbol table of the module being shut down
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

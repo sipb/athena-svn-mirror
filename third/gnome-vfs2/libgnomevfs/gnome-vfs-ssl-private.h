@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-void gnome_vfs_ssl_init (void);
+void _gnome_vfs_ssl_init (void);
 
 G_END_DECLS
 

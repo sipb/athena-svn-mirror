@@ -47,7 +47,7 @@
 #endif
 
 #include <libgnomevfs/gnome-vfs-context.h>
-#include <libgnomevfs/gnome-vfs-iobuf.h>
+#include <libgnomevfs/gnome-vfs-socket-buffer.h>
 #include <libgnomevfs/gnome-vfs-inet-connection.h>
 #include <libgnomevfs/gnome-vfs-method.h>
 #include <libgnomevfs/gnome-vfs-module.h>
@@ -168,8 +168,8 @@ static GnomeVFSResult read_response_line(NNTPConnection *conn, char **line) {
 	while (!strstr (conn->response_buffer->str, "\r\n")) {
 		/* we don't have a full line. Lets read some... */
 		bytes_read = 0;
-		result = gnome_vfs_iobuf_read (conn->iobuf, buf,
-					       bytes, &bytes_read);
+		result = gnome_vfs_socket_buffer_read (conn->socketbuf, buf,
+						       bytes, &bytes_read);
 		buf[bytes_read] = '\0';
 		conn->response_buffer = g_string_append (conn->response_buffer,
 							 buf);
@@ -242,9 +242,9 @@ static GnomeVFSResult do_control_write (NNTPConnection *conn,
 {
         char *actual_command = g_strdup_printf ("%s\r\n", command);
 	GnomeVFSFileSize bytes = strlen (actual_command), bytes_written;
-	GnomeVFSResult result = gnome_vfs_iobuf_write (conn->iobuf,
-						       actual_command, bytes, &bytes_written);
-	gnome_vfs_iobuf_flush (conn->iobuf);
+	GnomeVFSResult result = gnome_vfs_socket_buffer_write (conn->socketbuf,
+							       actual_command, bytes, &bytes_written);
+	gnome_vfs_socket_buffer_flush (conn->socketbuf);
 	g_free (actual_command);
 
 	return result;
@@ -332,10 +332,10 @@ nntp_connection_create (NNTPConnection **connptr, GnomeVFSURI *uri, GnomeVFSCont
 		return result;
 	}
 
-	conn->iobuf = gnome_vfs_inet_connection_get_iobuf (conn->inet_connection);
+	conn->socketbuf = gnome_vfs_inet_connection_to_socket_buffer (conn->inet_connection);
 
-	if (conn->iobuf == NULL) {
-		g_warning ("gnome_vfs_inet_connection_get_iobuf () failed");
+	if (conn->socketbuf == NULL) {
+		g_warning ("gnome_vfs_inet_connection_get_socket_buffer () failed");
 		gnome_vfs_inet_connection_destroy (conn->inet_connection, NULL);
 		g_string_free (conn->response_buffer, TRUE);
 		g_free (conn);
@@ -369,7 +369,7 @@ nntp_connection_create (NNTPConnection **connptr, GnomeVFSURI *uri, GnomeVFSCont
 			/* login failed */
 			g_warning ("NNTP server said: \"%d %s\"\n", conn->response_code,
 			   	conn->response_message);
-			gnome_vfs_iobuf_destroy (conn->iobuf);
+			gnome_vfs_socket_buffer_destroy (conn->socketbuf, FALSE);
 			gnome_vfs_inet_connection_destroy (conn->inet_connection, NULL);
 			g_free (conn);
 			return result;
@@ -394,8 +394,8 @@ nntp_connection_destroy (NNTPConnection *conn)
 		gnome_vfs_inet_connection_destroy (conn->inet_connection, NULL);
 	}
 	
-	if (conn->iobuf) 
-	        gnome_vfs_iobuf_destroy (conn->iobuf);
+	if (conn->socketbuf) 
+	        gnome_vfs_socket_buffer_destroy (conn->socketbuf, FALSE);
 
 	gnome_vfs_uri_unref (conn->uri);
 

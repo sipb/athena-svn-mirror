@@ -25,8 +25,8 @@
 #define GNOME_VFS_INET_CONNECTION_H
 
 #include <libgnomevfs/gnome-vfs-cancellation.h>
-#include <libgnomevfs/gnome-vfs-iobuf.h>
 #include <libgnomevfs/gnome-vfs-socket.h>
+#include <libgnomevfs/gnome-vfs-socket-buffer.h>
 
 G_BEGIN_DECLS
 
@@ -48,13 +48,13 @@ void		 gnome_vfs_inet_connection_free
 					(GnomeVFSInetConnection *connection,
 					 GnomeVFSCancellation *cancellation);
 
-GnomeVFSIOBuf	*gnome_vfs_inet_connection_get_iobuf
-					(GnomeVFSInetConnection *connection);
-
 GnomeVFSSocket * gnome_vfs_inet_connection_to_socket 
 					(GnomeVFSInetConnection *connection);
 
-int gnome_vfs_inet_connection_get_fd   (GnomeVFSInetConnection *connection);
+GnomeVFSSocketBuffer *gnome_vfs_inet_connection_to_socket_buffer 
+                                        (GnomeVFSInetConnection *connection);
+
+int gnome_vfs_inet_connection_get_fd    (GnomeVFSInetConnection *connection);
 
 G_END_DECLS
 

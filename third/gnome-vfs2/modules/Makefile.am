@@ -17,6 +17,7 @@ INCLUDES =					\
 	-DG_DISABLE_DEPRECATED			\
 	-DDATADIR=\"$(datadir)\"		\
 	-DPREFIX=\"$(prefix)\"			\
+	-DLIBDIR=\"$(libdir)\"			\
 	-DSYSCONFDIR=\"$(sysconfdir)\"		\
 	-DG_LOG_DOMAIN=\"gnome-vfs-modules\"	\
 	$(NULL)

@@ -94,9 +94,7 @@ GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -111,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -119,6 +118,9 @@ LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
 LIBGNOMEVFS_CFLAGS = @LIBGNOMEVFS_CFLAGS@
 LIBGNOMEVFS_LIBS = @LIBGNOMEVFS_LIBS@
+LIBGNUTLS_CFLAGS = @LIBGNUTLS_CFLAGS@
+LIBGNUTLS_CONFIG = @LIBGNUTLS_CONFIG@
+LIBGNUTLS_LIBS = @LIBGNUTLS_LIBS@
 LIBIDL_REQUIRED = @LIBIDL_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -146,6 +148,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
@@ -170,10 +174,39 @@ cxxflags_set = @cxxflags_set@
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)					-I$(top_builddir)				$(MODULES_XML_GCONF_CFLAGS)			$(MODULES_FILE_CFLAGS) 				$(LIBEFS_CFLAGS)				$(VFS_CFLAGS)					-D_FILE_OFFSET_BITS=64				-D_BSD_SOURCE					-D_GNU_SOURCE					-D_LARGEFILE64_SOURCE				-D_POSIX_PTHREAD_SEMANTICS			-D_REENTRANT					-DG_DISABLE_DEPRECATED				-DDATADIR=\"$(datadir)\"			-DPREFIX=\"$(prefix)\"				-DSYSCONFDIR=\"$(sysconfdir)\"			-DG_LOG_DOMAIN=\"gnome-vfs-modules\"		$(TESTS_INCLUDES)				$(NULL)
+INCLUDES = \
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	$(MODULES_XML_GCONF_CFLAGS)		\
+	$(MODULES_FILE_CFLAGS) 			\
+	$(LIBEFS_CFLAGS)			\
+	$(VFS_CFLAGS)				\
+	-D_FILE_OFFSET_BITS=64			\
+	-D_BSD_SOURCE				\
+	-D_GNU_SOURCE				\
+	-D_LARGEFILE64_SOURCE			\
+	-D_POSIX_PTHREAD_SEMANTICS		\
+	-D_REENTRANT				\
+	-DG_DISABLE_DEPRECATED			\
+	-DDATADIR=\"$(datadir)\"		\
+	-DPREFIX=\"$(prefix)\"			\
+	-DSYSCONFDIR=\"$(sysconfdir)\"		\
+	-DG_LOG_DOMAIN=\"gnome-vfs-modules\"	\
+	$(TESTS_INCLUDES)			\
+	$(NULL)
 
 
-EXTRA_DIST =  	applications-all-users.vfolder-info.in		preferences-all-users.vfolder-info.in		favorites.vfolder-info.in			start-here.vfolder-info.in			server-settings.vfolder-info.in			system-settings.vfolder-info.in				test-vfolder.vfolder-info.in			test-vfolder-parent.vfolder-info.in		test-vfolder-modules.conf
+EXTRA_DIST = \
+	applications-all-users.vfolder-info.in	\
+	preferences-all-users.vfolder-info.in	\
+	favorites.vfolder-info.in		\
+	network.vfolder-info.in			\
+	start-here.vfolder-info.in		\
+	server-settings.vfolder-info.in		\
+	system-settings.vfolder-info.in		\
+	test-vfolder.vfolder-info.in		\
+	test-vfolder-parent.vfolder-info.in	\
+	test-vfolder-modules.conf
 
 
 ###  Module setup
@@ -185,18 +218,36 @@ modules_LTLIBRARIES = libvfolder-desktop.la
 
 ###  `vfolder-desktop' method
 
-libvfolder_desktop_la_SOURCES =  	vfolder-info.c   		vfolder-util.c   		vfolder-util.h   		vfolder-common.c 		vfolder-common.h 		vfolder-method.c
+libvfolder_desktop_la_SOURCES = \
+	vfolder-info.c   	\
+	vfolder-util.c   	\
+	vfolder-util.h   	\
+	vfolder-common.c 	\
+	vfolder-common.h 	\
+	vfolder-method.c
 
 libvfolder_desktop_la_LDFLAGS = $(module_flags)
-libvfolder_desktop_la_LIBADD = $(top_builddir)/libgnomevfs/libgnomevfs-2.la
+libvfolder_desktop_la_LIBADD = $(top_builddir)/libgnomevfs/libgnomevfs-2.la $(TEST_LIBS)
 
 ###  Default .vfolder-info files
 
 vfolderdir = $(sysconfdir)/gnome-vfs-2.0/vfolders
-vfolder_DATA =  	applications-all-users.vfolder-info 		preferences-all-users.vfolder-info		favorites.vfolder-info				start-here.vfolder-info				server-settings.vfolder-info			system-settings.vfolder-info
+vfolder_DATA = \
+	applications-all-users.vfolder-info 	\
+	network.vfolder-info			\
+	preferences-all-users.vfolder-info	\
+	favorites.vfolder-info			\
+	start-here.vfolder-info			\
+	server-settings.vfolder-info		\
+	system-settings.vfolder-info
 
 
-VFOLDER_INFO_CREATE =  	sed -e "s,\@datadir\@,$(datadir),"       	    -e "s,\@sysconfdir\@,$(sysconfdir)," 	    -e "s,\@prefix\@,$(prefix),"         	    -e "s,\@vfolderdir\@,$(vfolderdir)," 	    < $< > $@
+VFOLDER_INFO_CREATE = \
+	sed -e "s,\@datadir\@,$(datadir),"       \
+	    -e "s,\@sysconfdir\@,$(sysconfdir)," \
+	    -e "s,\@prefix\@,$(prefix),"         \
+	    -e "s,\@vfolderdir\@,$(vfolderdir)," \
+	    < $< > $@
 
 
 ###  test-vfolder regression test
@@ -204,13 +255,16 @@ VFOLDER_INFO_CREATE =  	sed -e "s,\@datadir\@,$(datadir),"       	    -e "s,\@sy
 noinst_PROGRAMS = test-vfolder
 noinst_DATA = test-vfolder-parent.vfolder-info test-vfolder.vfolder-info
 
-module_path =  	$(top_builddir)/modules/vfolder/.libs:$(top_builddir)/modules/.libs
+module_path = \
+	$(top_builddir)/modules/vfolder/.libs:$(top_builddir)/modules/.libs
 
 
-TESTS_INCLUDES =  	-DGNOME_VFS_MODULE_PATH=\"$(module_path)\" 			  	-DGNOME_VFS_MODULE_CONFIG_PATH=\"$(top_srcdir)/modules/vfolder\"
+TESTS_INCLUDES = \
+	-DGNOME_VFS_MODULE_PATH=\"$(module_path)\" 			  \
+	-DGNOME_VFS_MODULE_CONFIG_PATH=\"$(top_srcdir)/modules/vfolder\"
 
 
-TESTS = test-vfolder
+# TESTS = test-vfolder
 
 test_vfolder_SOURCES = test-vfolder.c
 test_vfolder_LDADD = $(top_builddir)/libgnomevfs/libgnomevfs-2.la
@@ -244,7 +298,7 @@ DIST_COMMON =  Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libvfolder_desktop_la_SOURCES) $(test_vfolder_SOURCES)
 OBJECTS = $(libvfolder_desktop_la_OBJECTS) $(test_vfolder_OBJECTS)
@@ -382,7 +436,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -408,38 +462,102 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+test-vfolder.o: test-vfolder.c ../../libgnomevfs/gnome-vfs.h \
+	../../libgnomevfs/gnome-vfs-async-ops.h \
+	../../libgnomevfs/gnome-vfs-file-info.h \
+	../../libgnomevfs/gnome-vfs-file-size.h \
+	../../libgnomevfs/gnome-vfs-result.h \
+	../../libgnomevfs/gnome-vfs-uri.h \
+	../../libgnomevfs/gnome-vfs-find-directory.h \
+	../../libgnomevfs/gnome-vfs-handle.h \
+	../../libgnomevfs/gnome-vfs-context.h \
+	../../libgnomevfs/gnome-vfs-cancellation.h \
+	../../libgnomevfs/gnome-vfs-xfer.h \
+	../../libgnomevfs/gnome-vfs-directory.h \
+	../../libgnomevfs/gnome-vfs-init.h \
+	../../libgnomevfs/gnome-vfs-module-callback.h \
+	../../libgnomevfs/gnome-vfs-monitor.h \
+	../../libgnomevfs/gnome-vfs-ops.h \
+	../../libgnomevfs/gnome-vfs-utils.h
+vfolder-common.lo vfolder-common.o : vfolder-common.c ../../config.h \
+	../../libgnomevfs/gnome-vfs-directory.h \
+	../../libgnomevfs/gnome-vfs-file-info.h \
+	../../libgnomevfs/gnome-vfs-file-size.h \
+	../../libgnomevfs/gnome-vfs-result.h \
+	../../libgnomevfs/gnome-vfs-uri.h \
+	../../libgnomevfs/gnome-vfs-ops.h \
+	../../libgnomevfs/gnome-vfs-handle.h \
+	../../libgnomevfs/gnome-vfs-context.h \
+	../../libgnomevfs/gnome-vfs-cancellation.h \
+	../../libgnomevfs/gnome-vfs-monitor.h \
+	../../libgnomevfs/gnome-vfs-xfer.h vfolder-common.h \
+	../../libgnomevfs/gnome-vfs-method.h \
+	../../libgnomevfs/gnome-vfs-find-directory.h \
+	../../libgnomevfs/gnome-vfs-transform.h vfolder-util.h \
+	../../libgnomevfs/gnome-vfs-utils.h
+vfolder-info.lo vfolder-info.o : vfolder-info.c ../../config.h \
+	../../libgnomevfs/gnome-vfs.h \
+	../../libgnomevfs/gnome-vfs-async-ops.h \
+	../../libgnomevfs/gnome-vfs-file-info.h \
+	../../libgnomevfs/gnome-vfs-file-size.h \
+	../../libgnomevfs/gnome-vfs-result.h \
+	../../libgnomevfs/gnome-vfs-uri.h \
+	../../libgnomevfs/gnome-vfs-find-directory.h \
+	../../libgnomevfs/gnome-vfs-handle.h \
+	../../libgnomevfs/gnome-vfs-context.h \
+	../../libgnomevfs/gnome-vfs-cancellation.h \
+	../../libgnomevfs/gnome-vfs-xfer.h \
+	../../libgnomevfs/gnome-vfs-directory.h \
+	../../libgnomevfs/gnome-vfs-init.h \
+	../../libgnomevfs/gnome-vfs-module-callback.h \
+	../../libgnomevfs/gnome-vfs-monitor.h \
+	../../libgnomevfs/gnome-vfs-ops.h \
+	../../libgnomevfs/gnome-vfs-utils.h \
+	../../libgnomevfs/gnome-vfs-monitor-private.h \
+	../../libgnomevfs/gnome-vfs-method.h \
+	../../libgnomevfs/gnome-vfs-transform.h vfolder-common.h \
+	vfolder-util.h
+vfolder-method.lo vfolder-method.o : vfolder-method.c ../../config.h \
+	../../libgnomevfs/gnome-vfs-cancellable-ops.h \
+	../../libgnomevfs/gnome-vfs-directory.h \
+	../../libgnomevfs/gnome-vfs-file-info.h \
+	../../libgnomevfs/gnome-vfs-file-size.h \
+	../../libgnomevfs/gnome-vfs-result.h \
+	../../libgnomevfs/gnome-vfs-uri.h \
+	../../libgnomevfs/gnome-vfs-find-directory.h \
+	../../libgnomevfs/gnome-vfs-handle.h \
+	../../libgnomevfs/gnome-vfs-context.h \
+	../../libgnomevfs/gnome-vfs-cancellation.h \
+	../../libgnomevfs/gnome-vfs-xfer.h \
+	../../libgnomevfs/gnome-vfs-module.h \
+	../../libgnomevfs/gnome-vfs-method.h \
+	../../libgnomevfs/gnome-vfs-transform.h \
+	../../libgnomevfs/gnome-vfs-monitor.h \
+	../../libgnomevfs/gnome-vfs-ops.h \
+	../../libgnomevfs/gnome-vfs-utils.h \
+	../../libgnomevfs/gnome-vfs-private-utils.h \
+	../../libgnomevfs/gnome-vfs-process.h vfolder-common.h \
+	vfolder-util.h
+vfolder-util.lo vfolder-util.o : vfolder-util.c ../../config.h \
+	../../libgnomevfs/gnome-vfs-file-info.h \
+	../../libgnomevfs/gnome-vfs-file-size.h \
+	../../libgnomevfs/gnome-vfs-result.h \
+	../../libgnomevfs/gnome-vfs-uri.h \
+	../../libgnomevfs/gnome-vfs-ops.h \
+	../../libgnomevfs/gnome-vfs-handle.h \
+	../../libgnomevfs/gnome-vfs-context.h \
+	../../libgnomevfs/gnome-vfs-cancellation.h \
+	../../libgnomevfs/gnome-vfs-monitor.h vfolder-util.h \
+	../../libgnomevfs/gnome-vfs-utils.h vfolder-common.h \
+	../../libgnomevfs/gnome-vfs-method.h \
+	../../libgnomevfs/gnome-vfs-find-directory.h \
+	../../libgnomevfs/gnome-vfs-transform.h
 
-check-TESTS: $(TESTS)
-	@failed=0; all=0; \
-	srcdir=$(srcdir); export srcdir; \
-	for tst in $(TESTS); do \
-	  if test -f $$tst; then dir=.; \
-	  else dir="$(srcdir)"; fi; \
-	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
-	    all=`expr $$all + 1`; \
-	    echo "PASS: $$tst"; \
-	  elif test $$? -ne 77; then \
-	    all=`expr $$all + 1`; \
-	    failed=`expr $$failed + 1`; \
-	    echo "FAIL: $$tst"; \
-	  fi; \
-	done; \
-	if test "$$failed" -eq 0; then \
-	  banner="All $$all tests passed"; \
-	else \
-	  banner="$$failed of $$all tests failed"; \
-	fi; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"; \
-	test "$$failed" -eq 0
 info-am:
 info: info-am
 dvi-am:
 dvi: dvi-am
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
@@ -508,8 +626,8 @@ clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-vfolderDATA \
 install-vfolderDATA tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir check-TESTS info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \

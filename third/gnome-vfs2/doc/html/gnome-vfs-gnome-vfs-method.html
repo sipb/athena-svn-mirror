@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-method</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="gnome-vfs-gnome-vfs-mime.html" title="
+MIME typing"><link rel="next" href="gnome-vfs-gnome-vfs-module.html" title="gnome-vfs-module"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-mime.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-module.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-method"></a><div class="titlepage"></div><div class="refnamediv"><h2>gnome-vfs-method</h2><p>gnome-vfs-method &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+GnomeVFSMethod* (<a href="gnome-vfs-gnome-vfs-method.html#GnomeVFSMethodInitFunc">*GnomeVFSMethodInitFunc</a>)   (const char *method_name,
+                                             const char *config_args);
+void        (<a href="gnome-vfs-gnome-vfs-method.html#GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownFunc</a>)   (GnomeVFSMethod *method);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (<a href="gnome-vfs-gnome-vfs-method.html#GnomeVFSMethodTruncateFunc">*GnomeVFSMethodTruncateFunc</a>)
+                                            (GnomeVFSMethod *method,
+                                             GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length,
+                                             GnomeVFSContext *context);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (<a href="gnome-vfs-gnome-vfs-method.html#GnomeVFSMethodTruncateHandleFunc">*GnomeVFSMethodTruncateHandleFunc</a>)
+                                            (GnomeVFSMethod *method,
+                                             GnomeVFSMethodHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length,
+                                             GnomeVFSContext *context);
+#define     <a href="gnome-vfs-gnome-vfs-method.html#VFS-METHOD-HAS-FUNC-CAPS">VFS_METHOD_HAS_FUNC</a>             (method,func)
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-method.html#gnome-vfs-method-init">gnome_vfs_method_init</a>           (void);
+GnomeVFSMethod* <a href="gnome-vfs-gnome-vfs-method.html#gnome-vfs-method-get">gnome_vfs_method_get</a>        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+GnomeVFSTransform* <a href="gnome-vfs-gnome-vfs-method.html#gnome-vfs-transform-get">gnome_vfs_transform_get</a>  (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GnomeVFSMethodInitFunc"></a>GnomeVFSMethodInitFunc ()</h3><pre class="programlisting">GnomeVFSMethod* (*GnomeVFSMethodInitFunc)   (const char *method_name,
+                                             const char *config_args);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method_name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>config_args</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GnomeVFSMethodShutdownFunc"></a>GnomeVFSMethodShutdownFunc ()</h3><pre class="programlisting">void        (*GnomeVFSMethodShutdownFunc)   (GnomeVFSMethod *method);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GnomeVFSMethodTruncateFunc"></a>GnomeVFSMethodTruncateFunc ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (*GnomeVFSMethodTruncateFunc)
+                                            (GnomeVFSMethod *method,
+                                             GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length,
+                                             GnomeVFSContext *context);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>length</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>context</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GnomeVFSMethodTruncateHandleFunc"></a>GnomeVFSMethodTruncateHandleFunc ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (*GnomeVFSMethodTruncateHandleFunc)
+                                            (GnomeVFSMethod *method,
+                                             GnomeVFSMethodHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length,
+                                             GnomeVFSContext *context);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>length</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>context</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="VFS-METHOD-HAS-FUNC-CAPS"></a>VFS_METHOD_HAS_FUNC()</h3><pre class="programlisting">#define VFS_METHOD_HAS_FUNC(method,func) ((((char *)&amp;((method)-&gt;func)) - ((char *)(method)) &lt; (method)-&gt;method_table_size) &amp;&amp; method-&gt;func != NULL)
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>func</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-method-init"></a>gnome_vfs_method_init ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_method_init           (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-method-get"></a>gnome_vfs_method_get ()</h3><pre class="programlisting">GnomeVFSMethod* gnome_vfs_method_get        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-transform-get"></a>gnome_vfs_transform_get ()</h3><pre class="programlisting">GnomeVFSTransform* gnome_vfs_transform_get  (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-mime.html"><b>&lt;&lt; 
+MIME typing</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-module.html"><b>gnome-vfs-module &gt;&gt;</b></a></td></tr></table></body></html>

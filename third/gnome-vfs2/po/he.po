@@ -1,0 +1,340 @@
+# translation of gnome-vfs.HEAD.he.po to Hebrew
+# translation of gnome-vfs.gnome-2-0.he.po to Hebrew
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Gil Osher <dolfin@rpg.org.il>, 2002
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2003
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-vfs.HEAD.he\n"
+"POT-Creation-Date: 2003-01-20 20:46+0100\n"
+"PO-Revision-Date: 2003-01-05 22:14+0200\n"
+"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
+
+#: libgnomevfs/gnome-vfs-configuration.c:223
+#, c-format
+msgid "%s:%d contains NUL characters."
+msgstr "%s:%d מכיל תוים ריקים."
+
+#: libgnomevfs/gnome-vfs-configuration.c:240
+#, c-format
+msgid "%s:%d contains no method name."
+msgstr "%s:%d לא מכיל שם שיטה."
+
+#: libgnomevfs/gnome-vfs-configuration.c:269
+#, c-format
+msgid "%s:%d contains no module name."
+msgstr "%s: %d לא מכיל שם מודול."
+
+#: libgnomevfs/gnome-vfs-configuration.c:322
+#, c-format
+msgid "Configuration file `%s' was not found: %s"
+msgstr "קובץ ההגדרות '%s' לא נמצא: %s"
+
+#: libgnomevfs/gnome-vfs-job.c:737
+#, c-format
+msgid "Unknown op type %u"
+msgstr "סוג op לא ידוע %u"
+
+#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
+#, c-format
+msgid "Cannot create pipe for open GIOChannel: %s"
+msgstr "לא ניתן ליצור צינור כדי לפתוח GIOChannel: %s"
+
+#: libgnomevfs/gnome-vfs-job.c:1661
+#, c-format
+msgid "Unknown job kind %u"
+msgstr "סוג עבודה לא ידוע %u"
+
+#: libgnomevfs/gnome-vfs-job.c:1694
+msgid "Operation stopped"
+msgstr "פעולה נעצרה"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:652
+#, c-format
+msgid "Could not parse: %s"
+msgstr "לא ניתן לפענח: %s"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:654
+msgid "More parsing errors will be ignored."
+msgstr "התעלמות משגיאות הפיענוח הבאות."
+
+#. GNOME_VFS_OK
+#: libgnomevfs/gnome-vfs-result.c:35
+msgid "No error"
+msgstr "אין שגיאה"
+
+#. GNOME_VFS_ERROR_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:36
+msgid "File not found"
+msgstr "קובץ לא נמצא"
+
+#. GNOME_VFS_ERROR_GENERIC
+#: libgnomevfs/gnome-vfs-result.c:37
+msgid "Generic error"
+msgstr "שגיאה כללית"
+
+#. GNOME_VFS_ERROR_INTERNAL
+#: libgnomevfs/gnome-vfs-result.c:38
+msgid "Internal error"
+msgstr "שגיאה פנימית"
+
+#. GNOME_VFS_ERROR_BAD_PARAMETERS
+#: libgnomevfs/gnome-vfs-result.c:39
+msgid "Invalid parameters"
+msgstr "פרמטרים לא תקניים"
+
+#. GNOME_VFS_ERROR_NOT_SUPPORTED
+#: libgnomevfs/gnome-vfs-result.c:40
+msgid "Unsupported operation"
+msgstr "פעולה לא נתמכת"
+
+#. GNOME_VFS_ERROR_IO
+#: libgnomevfs/gnome-vfs-result.c:41
+msgid "I/O error"
+msgstr "שגיאת קלט/פלט"
+
+#. GNOME_VFS_ERROR_CORRUPTED_DATA
+#: libgnomevfs/gnome-vfs-result.c:42
+msgid "Data corrupted"
+msgstr "מידע פגום"
+
+#. GNOME_VFS_ERROR_WRONG_FORMAT
+#: libgnomevfs/gnome-vfs-result.c:43
+msgid "Format not valid"
+msgstr "מבנה לא תקני"
+
+#. GNOME_VFS_ERROR_BAD_FILE
+#: libgnomevfs/gnome-vfs-result.c:44
+msgid "Bad file handle"
+msgstr ""
+
+#. GNOME_VFS_ERROR_TOO_BIG
+#: libgnomevfs/gnome-vfs-result.c:45
+msgid "File too big"
+msgstr "הקובץ גדול מידי"
+
+#. GNOME_VFS_ERROR_NO_SPACE
+#: libgnomevfs/gnome-vfs-result.c:46
+msgid "No space left on device"
+msgstr "לא נותר מקום על ההתקן"
+
+#. GNOME_VFS_ERROR_READ_ONLY
+#: libgnomevfs/gnome-vfs-result.c:47
+msgid "Read-only file system"
+msgstr "מערכת קבצים לקריאה בלבד"
+
+#. GNOME_VFS_ERROR_INVALID_URI
+#: libgnomevfs/gnome-vfs-result.c:48
+msgid "Invalid URI"
+msgstr "כתובת לא תקנית"
+
+#. GNOME_VFS_ERROR_NOT_OPEN
+#: libgnomevfs/gnome-vfs-result.c:49
+msgid "File not open"
+msgstr "הקובץ לא פתוח"
+
+#. GNOME_VFS_ERROR_INVALID_OPEN_MODE
+#: libgnomevfs/gnome-vfs-result.c:50
+msgid "Open mode not valid"
+msgstr "מצב פתיחה לא תקין"
+
+#. GNOME_VFS_ERROR_ACCESS_DENIED
+#: libgnomevfs/gnome-vfs-result.c:51
+msgid "Access denied"
+msgstr "הגישה נדחית"
+
+#. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
+#: libgnomevfs/gnome-vfs-result.c:52
+msgid "Too many open files"
+msgstr "יותר מידי קבצים פתוחים"
+
+#. GNOME_VFS_ERROR_EOF
+#: libgnomevfs/gnome-vfs-result.c:53
+msgid "End of file"
+msgstr "סוף הקובץ"
+
+#. GNOME_VFS_ERROR_NOT_A_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:54
+msgid "Not a directory"
+msgstr "לא סיפרייה"
+
+#. GNOME_VFS_ERROR_IN_PROGRESS
+#: libgnomevfs/gnome-vfs-result.c:55
+msgid "Operation in progress"
+msgstr "הפעולה בתהליך"
+
+#. GNOME_VFS_ERROR_INTERRUPTED
+#: libgnomevfs/gnome-vfs-result.c:56
+msgid "Operation interrupted"
+msgstr "הפעולה הפורעה"
+
+#. GNOME_VFS_ERROR_FILE_EXISTS
+#: libgnomevfs/gnome-vfs-result.c:57
+msgid "File exists"
+msgstr "הקובץ קיים"
+
+#. GNOME_VFS_ERROR_LOOP
+#: libgnomevfs/gnome-vfs-result.c:58
+msgid "Looping links encountered"
+msgstr ""
+
+#. GNOME_VFS_ERROR_NOT_PERMITTED
+#: libgnomevfs/gnome-vfs-result.c:59
+msgid "Operation not permitted"
+msgstr "הפעולה אינה מורשית"
+
+#. GNOME_VFS_ERROR_IS_DIRECTORY
+#: libgnomevfs/gnome-vfs-result.c:60
+msgid "Is a directory"
+msgstr "הוא ספרייה"
+
+#. GNOME_VFS_ERROR_NO_MEMMORY
+#: libgnomevfs/gnome-vfs-result.c:61
+msgid "Not enough memory"
+msgstr "אין מספיק זכרון"
+
+#. GNOME_VFS_ERROR_HOST_NOT_FOUND
+#: libgnomevfs/gnome-vfs-result.c:62
+msgid "Host not found"
+msgstr "מארח לא נמצא"
+
+#. GNOME_VFS_ERROR_INVALID_HOST_NAME
+#: libgnomevfs/gnome-vfs-result.c:63
+msgid "Host name not valid"
+msgstr "שם המארח לא תקין"
+
+#. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
+#: libgnomevfs/gnome-vfs-result.c:64
+msgid "Host has no address"
+msgstr "למארח אין כתובת"
+
+#. GNOME_VFS_ERROR_LOGIN_FAILED
+#: libgnomevfs/gnome-vfs-result.c:65
+msgid "Login failed"
+msgstr "התחברות נכשלה"
+
+#. GNOME_VFS_ERROR_CANCELLED
+#: libgnomevfs/gnome-vfs-result.c:66
+msgid "Operation cancelled"
+msgstr "הפעולה התבטלה"
+
+#. GNOME_VFS_ERROR_DIRECTORY_BUSY
+#: libgnomevfs/gnome-vfs-result.c:67
+msgid "Directory busy"
+msgstr "הסיפרייה עסוקה"
+
+#. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+#: libgnomevfs/gnome-vfs-result.c:68
+msgid "Directory not empty"
+msgstr "הסיפרייה לא ריקה"
+
+#. GNOME_VFS_ERROR_TOO_MANY_LINKS
+#: libgnomevfs/gnome-vfs-result.c:69
+msgid "Too many links"
+msgstr "יותר מידי קישורים"
+
+#. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:70
+msgid "Read only file system"
+msgstr "מערכת קבצים לקריאה בלבד"
+
+#. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
+#: libgnomevfs/gnome-vfs-result.c:71
+msgid "Not on the same file system"
+msgstr "לא באותה המערכת"
+
+#. GNOME_VFS_ERROR_NAME_TOO_LONG
+#: libgnomevfs/gnome-vfs-result.c:72
+msgid "Name too long"
+msgstr "שם ארוך מידי"
+
+#. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
+#: libgnomevfs/gnome-vfs-result.c:73
+msgid "Service not available"
+msgstr "שירות אינו זמין"
+
+#. GNOME_VFS_ERROR_SERVICE_OBSOLETE
+#: libgnomevfs/gnome-vfs-result.c:74
+msgid "Request obsoletes service's data"
+msgstr ""
+
+#. GNOME_VFS_ERROR_PROTOCOL_ERROR
+#: libgnomevfs/gnome-vfs-result.c:75
+msgid "Protocol error"
+msgstr "שגיאת פרוטוקול"
+
+#. GNOME_VFS_ERROR_NO_MASTER_BROWSER
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Could not find master browser"
+msgstr "לא ניתן למצוא דפדפן ראשי"
+
+#: libgnomevfs/gnome-vfs-result.c:170
+msgid "Unknown error"
+msgstr "שגיאה לא ידועה"
+
+#: libgnomevfs/gnome-vfs-utils.c:83
+msgid "1 byte"
+msgstr "בית אחד"
+
+#: libgnomevfs/gnome-vfs-utils.c:85
+#, c-format
+msgid "%u bytes"
+msgstr "%u בתים"
+
+#: libgnomevfs/gnome-vfs-utils.c:92
+#, c-format
+msgid "%.1f K"
+msgstr "KB %.1f"
+
+#: libgnomevfs/gnome-vfs-utils.c:96
+#, c-format
+msgid "%.1f MB"
+msgstr "MB %.1f"
+
+#: libgnomevfs/gnome-vfs-utils.c:100
+#, c-format
+msgid "%.1f GB"
+msgstr "GB %.1f"
+
+#: libgnomevfs/gnome-vfs-utils.c:1109
+msgid " (invalid Unicode)"
+msgstr " (יוניקוד לא תקני)"
+
+#: modules/file-method.c:382
+#, c-format
+msgid "Unknown GnomeVFSSeekPosition %d"
+msgstr "GnomeVFSSeekPosition לא ידוע %d"
+
+#. FIXME: we probably shouldn't use printf to output the message
+#: modules/test-method.c:590
+#, c-format
+msgid "Didn't find a valid settings file at %s\n"
+msgstr "לא נמצא קובץ הגדרות תקני ב %s\n"
+
+#: modules/test-method.c:592
+#, c-format
+msgid "Use the %s environment variable to specify a different location.\n"
+msgstr "השתמש במשתנה הסביבה %s כדי לציין מיקום אחר.\n"
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:1
+msgid "Standard Moniker factory"
+msgstr ""
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:2
+msgid "file MonikerExtender"
+msgstr ""
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:3
+msgid "generic Gnome VFS moniker"
+msgstr ""
+
+#: monikers/GNOME_VFS_Moniker_std.server.in.in.h:4
+msgid "generic file moniker"
+msgstr ""

@@ -1,0 +1,138 @@
+<refentry id="gnome-vfs-gnome-vfs-init">
+<refmeta>
+<refentrytitle>
+Initialization/Shutdown</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>
+Initialization/Shutdown</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-init">gnome_vfs_init</link>                  (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-initialized">gnome_vfs_initialized</link>           (void);
+void        <link linkend="gnome-vfs-shutdown">gnome_vfs_shutdown</link>              (void);
+void        <link linkend="gnome-vfs-loadinit">gnome_vfs_loadinit</link>              (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> modinfo);
+void        <link linkend="gnome-vfs-preinit">gnome_vfs_preinit</link>               (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> modinfo);
+void        <link linkend="gnome-vfs-postinit">gnome_vfs_postinit</link>              (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> modinfo);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Starting GnomeVFS up and shutting it down. Usually when using the whole
+GNOME framework this library is initialized and shutdown automatically 
+when calling gnome_init.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-vfs-init"/>gnome_vfs_init ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_init                  (void);</programlisting>
+<para>
+If GnomeVFS is not already initialized, initialize it. This must be
+called prior to performing any other GnomeVFS operations, and may
+be called multiple times without error.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if GnomeVFS is successfully initialized (or was
+already initialized)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-initialized"/>gnome_vfs_initialized ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_initialized           (void);</programlisting>
+<para>
+Detects if GnomeVFS has already been initialized (GnomeVFS must be
+initialized prior to using any methods or operations).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if GnomeVFS has already been initialized
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-shutdown"/>gnome_vfs_shutdown ()</title>
+<programlisting>void        gnome_vfs_shutdown              (void);</programlisting>
+<para>
+Cease all active GnomeVFS operations and unload the MIME
+database from memory.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-loadinit"/>gnome_vfs_loadinit ()</title>
+<programlisting>void        gnome_vfs_loadinit              (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> modinfo);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>modinfo</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-preinit"/>gnome_vfs_preinit ()</title>
+<programlisting>void        gnome_vfs_preinit               (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> modinfo);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>modinfo</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-postinit"/>gnome_vfs_postinit ()</title>
+<programlisting>void        gnome_vfs_postinit              (<link linkend="gpointer">gpointer</link> app,
+                                             <link linkend="gpointer">gpointer</link> modinfo);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>modinfo</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

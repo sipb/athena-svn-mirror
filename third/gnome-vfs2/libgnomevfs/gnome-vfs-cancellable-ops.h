@@ -131,7 +131,7 @@ GnomeVFSResult gnome_vfs_set_file_info_cancellable
 					  GnomeVFSSetFileInfoMask mask,
 					  GnomeVFSContext *context);
 
-GnomeVFSResult gnome_vfs_xfer_private   (const GList *source_uri_list,
+GnomeVFSResult _gnome_vfs_xfer_private   (const GList *source_uri_list,
 					 const GList *target_uri_list,
 					 GnomeVFSXferOptions xfer_options,
 					 GnomeVFSXferErrorMode error_mode,
@@ -150,6 +150,12 @@ GnomeVFSResult  gnome_vfs_directory_open_from_uri_cancellable
 					(GnomeVFSDirectoryHandle **handle,
 					 GnomeVFSURI *uri,
 					 GnomeVFSFileInfoOptions options,
+					 GnomeVFSContext *context);
+
+GnomeVFSResult  gnome_vfs_file_control_cancellable
+                                        (GnomeVFSHandle *handle,
+					 const char *operation,
+					 gpointer operation_data,
 					 GnomeVFSContext *context);
 
 G_END_DECLS

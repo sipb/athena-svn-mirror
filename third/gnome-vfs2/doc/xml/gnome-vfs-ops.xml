@@ -1,0 +1,53 @@
+<refentry id="gnome-vfs-gnome-vfs-ops">
+<refmeta>
+<refentrytitle>
+File Operations</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>
+File Operations</refname><refpurpose>
+basic POSIX-style file operations</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+typedef     <link linkend="GnomeVFSMethodHandle">GnomeVFSMethodHandle</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeVFSMethodHandle"/>GnomeVFSMethodHandle</title>
+<programlisting>typedef gpointer GnomeVFSMethodHandle;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

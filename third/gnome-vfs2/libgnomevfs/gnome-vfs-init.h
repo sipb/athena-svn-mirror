@@ -32,6 +32,7 @@ gboolean gnome_vfs_init        (void);
 gboolean gnome_vfs_initialized (void);
 void     gnome_vfs_shutdown    (void);
 
+#ifndef GNOME_VFS_DISABLE_DEPRECATED
 /* Stuff for use in a GnomeModuleInfo */
 void     gnome_vfs_loadinit    (gpointer app,
 				gpointer modinfo);
@@ -39,6 +40,7 @@ void     gnome_vfs_preinit     (gpointer app,
 				gpointer modinfo);
 void     gnome_vfs_postinit    (gpointer app,
 				gpointer modinfo);
+#endif
 
 G_END_DECLS
 

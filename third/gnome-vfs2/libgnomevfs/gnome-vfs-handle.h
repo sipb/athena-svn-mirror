@@ -31,10 +31,26 @@
 G_BEGIN_DECLS
 
 typedef gpointer GnomeVFSMethodHandle;
+/**
+ * GnomeVFSHandle:
+ *
+ * Handle to a file, a handle is obtained using gnome_vfs_open and gnome_vfs_create
+ * family of functions on the file. A handle represents a file stream, gnome_vfs_close,
+ * gnome_vfs_write, gnome_vfs_read and all the other operations take a GnomeVFSHandle
+ * that identifies the file where the operation is going to be performed.
+ **/
 typedef struct GnomeVFSHandle GnomeVFSHandle;
 
-/* Open mode.  If you don't set `GNOME_VFS_OPEN_RANDOM', you have to access the
-   file sequentially.  */
+/**
+ * GnomeVFSOpenMode:
+ * @GNOME_VFS_OPEN_NONE:
+ * @GNOME_VFS_OPEN_READ:
+ * @GNOME_VFS_OPEN_WRITE:
+ * @GNOME_VFS_OPEN_RANDOM:
+ *
+ * Mode in which files are opened. If GNOME_VFS_OPEN_RANDOM is not used, the
+ * file will be have to be accessed sequentially.
+ **/
 typedef enum {
         GNOME_VFS_OPEN_NONE = 0,
         GNOME_VFS_OPEN_READ = 1 << 0,
@@ -42,49 +58,20 @@ typedef enum {
         GNOME_VFS_OPEN_RANDOM = 1 << 2
 } GnomeVFSOpenMode;
 
-/* This is used to specify the start position for seek operations.  */
+/**
+ * GnomeVFSSeekPosition:
+ * @GNOME_VFS_SEEK_START: Start of the file.
+ * @GNOME_VFS_SEEK_CURRENT: Current position.
+ * @GNOME_VFS_SEEK_END: End of the file.
+ *
+ * This is used to specify the start position for seek operations.
+ **/
 typedef enum {
         GNOME_VFS_SEEK_START,
         GNOME_VFS_SEEK_CURRENT,
         GNOME_VFS_SEEK_END
 } GnomeVFSSeekPosition;
 
-
-GnomeVFSHandle * gnome_vfs_handle_new                (GnomeVFSURI             *uri,
-						      GnomeVFSMethodHandle    *method_handle,
-						      GnomeVFSOpenMode         open_mode);
-void             gnome_vfs_handle_destroy            (GnomeVFSHandle          *handle);
-GnomeVFSOpenMode gnome_vfs_handle_get_open_mode      (GnomeVFSHandle          *handle);
-GnomeVFSResult   gnome_vfs_handle_do_close           (GnomeVFSHandle          *handle,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_read            (GnomeVFSHandle          *handle,
-						      gpointer                 buffer,
-						      GnomeVFSFileSize         num_bytes,
-						      GnomeVFSFileSize        *bytes_read,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_write           (GnomeVFSHandle          *handle,
-						      gconstpointer            buffer,
-						      GnomeVFSFileSize         num_bytes,
-						      GnomeVFSFileSize        *bytes_written,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_close_directory (GnomeVFSHandle          *handle,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_read_directory  (GnomeVFSHandle          *handle,
-						      GnomeVFSFileInfo        *file_info,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_seek            (GnomeVFSHandle          *handle,
-						      GnomeVFSSeekPosition     whence,
-						      GnomeVFSFileSize         offset,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_tell            (GnomeVFSHandle          *handle,
-						      GnomeVFSFileSize        *offset_return);
-GnomeVFSResult   gnome_vfs_handle_do_get_file_info   (GnomeVFSHandle          *handle,
-						      GnomeVFSFileInfo        *info,
-						      GnomeVFSFileInfoOptions  options,
-						      GnomeVFSContext         *context);
-GnomeVFSResult   gnome_vfs_handle_do_truncate        (GnomeVFSHandle          *handle,
-						      GnomeVFSFileSize         length,
-						      GnomeVFSContext         *context);
 
 G_END_DECLS
 

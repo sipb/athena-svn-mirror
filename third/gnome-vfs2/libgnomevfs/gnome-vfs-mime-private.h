@@ -27,16 +27,16 @@
 
 G_BEGIN_DECLS
 
-void gnome_vfs_mime_info_shutdown 	      (void);
-void gnome_vfs_mime_monitor_emit_data_changed (GnomeVFSMIMEMonitor *monitor);
+void _gnome_vfs_mime_info_shutdown 	      (void);
+void _gnome_vfs_mime_monitor_emit_data_changed (GnomeVFSMIMEMonitor *monitor);
 
 typedef struct FileDateTracker FileDateTracker;
 
-FileDateTracker	*gnome_vfs_file_date_tracker_new                 (void);
-void             gnome_vfs_file_date_tracker_free                (FileDateTracker *tracker);
-void             gnome_vfs_file_date_tracker_start_tracking_file (FileDateTracker *tracker,
+FileDateTracker	*_gnome_vfs_file_date_tracker_new                 (void);
+void             _gnome_vfs_file_date_tracker_free                (FileDateTracker *tracker);
+void             _gnome_vfs_file_date_tracker_start_tracking_file (FileDateTracker *tracker,
 								  const char      *local_file_path);
-gboolean         gnome_vfs_file_date_tracker_date_has_changed    (FileDateTracker *tracker);
+gboolean         _gnome_vfs_file_date_tracker_date_has_changed    (FileDateTracker *tracker);
 void             _gnome_vfs_mime_info_mark_gnome_mime_dir_dirty  (void);
 void             _gnome_vfs_mime_info_mark_user_mime_dir_dirty   (void);
 

@@ -2,8 +2,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <applyto>/system/http_proxy/use_http_proxy</applyto>
       <key>/schemas/system/http_proxy/use_http_proxy</key>
+      <applyto>/system/http_proxy/use_http_proxy</applyto>
       <owner>gnome-vfs</owner>
       <type>bool</type>
       <default>false</default>
@@ -14,8 +14,8 @@
       </locale>
     </schema>
     <schema>
-      <applyto>/system/http_proxy/host</applyto>
       <key>/schemas/system/http_proxy/host</key>
+      <applyto>/system/http_proxy/host</applyto>
       <owner>gnome-vfs</owner>
       <type>string</type>
       <default></default>
@@ -25,8 +25,8 @@
       </locale>
     </schema>
     <schema>
-      <applyto>/system/http_proxy/port</applyto>
       <key>/schemas/system/http_proxy/port</key>
+      <applyto>/system/http_proxy/port</applyto>
       <owner>gnome-vfs</owner>
       <type>int</type>
       <default>8080</default>
@@ -37,8 +37,8 @@
       </locale>
     </schema>
     <schema>
-      <applyto>/system/http_proxy/use_authentication</applyto>
       <key>/schemas/system/http_proxy/use_authentication</key>
+      <applyto>/system/http_proxy/use_authentication</applyto>
       <owner>gnome-vfs</owner>
       <type>bool</type>
       <default>false</default>
@@ -51,8 +51,8 @@
       </locale>
     </schema>
     <schema>
-      <applyto>/system/http_proxy/authentication_user</applyto>
       <key>/schemas/system/http_proxy/authentication_user</key>
+      <applyto>/system/http_proxy/authentication_user</applyto>
       <owner>gnome-vfs</owner>
       <type>string</type>
       <default></default>
@@ -62,8 +62,8 @@
       </locale>
     </schema>
     <schema>
-      <applyto>/system/http_proxy/authentication_password</applyto>
       <key>/schemas/system/http_proxy/authentication_password</key>
+      <applyto>/system/http_proxy/authentication_password</applyto>
       <owner>gnome-vfs</owner>
       <type>string</type>
       <default></default>

@@ -49,7 +49,7 @@ GnomeVFSResult        gnome_vfs_socket_buffer_write    (GnomeVFSSocketBuffer *so
 							gconstpointer         buffer,
 							GnomeVFSFileSize      bytes,
 							GnomeVFSFileSize     *bytes_written);
-GnomeVFSResult        gnome_vfs_socket_buffer_flush    (GnomeVFSSocketBuffer *buffer);
+GnomeVFSResult        gnome_vfs_socket_buffer_flush    (GnomeVFSSocketBuffer *socket_buffer);
 
 G_END_DECLS
 

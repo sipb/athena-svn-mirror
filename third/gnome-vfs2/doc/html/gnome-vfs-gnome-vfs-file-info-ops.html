@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Getting and Setting File Information</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-file-operations.html" title="File Handling"><link rel="previous" href="gnome-vfs-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="next" href="gnome-vfs-gnome-vfs-file-trunc-ops.html" title="Truncating Files"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-file-rw-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-file-operations.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-file-trunc-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-file-info-ops"></a><div class="titlepage"></div><div class="refnamediv"><h2>Getting and Setting File Information</h2><p>Getting and Setting File Information &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-info-ops.html#gnome-vfs-get-file-info">gnome_vfs_get_file_info</a>      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-info-ops.html#gnome-vfs-get-file-info-uri">gnome_vfs_get_file_info_uri</a>  (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-info-ops.html#gnome-vfs-get-file-info-from-handle">gnome_vfs_get_file_info_from_handle</a>
+                                            (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-info-ops.html#gnome-vfs-set-file-info-uri">gnome_vfs_set_file_info_uri</a>  (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</a> mask);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-info-ops.html#gnome-vfs-set-file-info">gnome_vfs_set_file_info</a>      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</a> mask);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+    Applications can use the <a href="gnome-vfs-gnome-vfs-file-info-ops.html#gnome-vfs-get-file-info">gnome_vfs_get_file_info</a> family of operations to
+    retrieve file information, as this operation can be quite costly in
+    terms of time (specilly when sniffing the MIME type) applications can 
+    specify which information need at any time, reducing the performance 
+    impact.
+</p><p>
+    All of these operations use a <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> data structure that holds 
+    the file information, there are several methods that can be used to 
+    manipulate this information. See <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> for more information.
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-get-file-info"></a>gnome_vfs_get_file_info ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_get_file_info      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);</pre><p>
+Retrieve information about <i><tt>text_uri</tt></i>.  The information will be stored in
+<i><tt>info</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> URI of the file for which information will be retrieved
+</td></tr><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> Pointer to a GnomeVFSFileInfo object that will hold the information
+for the file on return
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> Options for retrieving file information
+to retrieve for the file
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-file-info-uri"></a>gnome_vfs_get_file_info_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_get_file_info_uri  (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);</pre><p>
+Retrieve information about <i><tt>text_uri</tt></i>.  The information will be stored in
+<i><tt>info</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI of the file for which information will be retrieved
+</td></tr><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> Pointer to a GnomeVFSFileInfo object that will hold the information
+for the file on return
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> Options for retrieving file information
+to retrieve for the file
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-file-info-from-handle"></a>gnome_vfs_get_file_info_from_handle ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_get_file_info_from_handle
+                                            (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</a> options);</pre><p>
+Retrieve information about an open file.  The information will be stored in
+<i><tt>info</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> Handle of the file for which information must be retrieved
+</td></tr><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> Pointer to a GnomeVFSFileInfo object that will hold the information
+for the file on return
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> Options for retrieving file information
+to retrieve for the file
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-set-file-info-uri"></a>gnome_vfs_set_file_info_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_set_file_info_uri  (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</a> mask);</pre><p>
+Set file information for <i><tt>uri</tt></i>; only the information for which the
+corresponding bit in <i><tt>mask</tt></i> is set is actually modified.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> A URI
+</td></tr><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> Information that must be set for the file
+</td></tr><tr><td><span class="term"><i><tt>mask</tt></i> :</span></td><td> Bit mask representing which fields of <i><tt>info</tt></i> need to be set 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-set-file-info"></a>gnome_vfs_set_file_info ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_set_file_info      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a> *info,
+                                             <a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</a> mask);</pre><p>
+Set file information for <i><tt>uri</tt></i>; only the information for which the
+corresponding bit in <i><tt>mask</tt></i> is set is actually modified.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> A URI
+</td></tr><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> Information that must be set for the file
+</td></tr><tr><td><span class="term"><i><tt>mask</tt></i> :</span></td><td> Bit mask representing which fields of <i><tt>info</tt></i> need to be set 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation.
+</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>See Also</h2><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a href="gnome-vfs-gnome-vfs-file-info.html#GnomeVFSFileInfo">GnomeVFSFileInfo</a></span></td><td></td></tr></tbody></table></div><p>
+
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-file-rw-ops.html"><b>&lt;&lt; Reading and Writing</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-file-trunc-ops.html"><b>Truncating Files &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,26 +1,26 @@
 # GNOME VFS Greek translation.
-# Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 2000-2003 Free Software Foundation, Inc.
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
-# Simos Xenitellis <simos@hellug.gr>, 2000, 2001, 2002.
-#
+# Simos Xenitellis <simos@teiath.gr>, 2000-2001.
 # Spiros did 90 messages.
 # Simos added 34. (15/07/2000)
 # simos: 384 messages, 14Feb2001, (sgpbea).
 # simos: 384 messages, 18Feb2001, two fuzzies.
 # simos: 405 messages, 27Feb2001, (rgmtsgpbea).
 # simos: 406 messages, 01Mar2001, (rgmtsgpbea).
-# simos: 64 messages, 19Aug2002, reinitialised after GNOME2 cleanup.
+# kostas:66 messages, 07Jan2003,updated translation for Gnome2.1x
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs 2.0.2\n"
-"POT-Creation-Date: 2002-11-13 12:11-0500\n"
-"PO-Revision-Date: 2002-08-19 12:48+0100\n"
-"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
+"Project-Id-Version: gnome-vfs 0.6.2\n"
+"POT-Creation-Date: 2003-01-20 20:46+0100\n"
+"PO-Revision-Date: 2003-01-07 17:57+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: libgnomevfs/gnome-vfs-configuration.c:223
 #, c-format
@@ -42,22 +42,22 @@ msgstr "Το %s:%d δεν περιέχει όνομα αρθρώματος."
 msgid "Configuration file `%s' was not found: %s"
 msgstr "Το αρχείο ρυθμίσεων `%s' δε βρέθηκε: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:707
+#: libgnomevfs/gnome-vfs-job.c:737
 #, c-format
 msgid "Unknown op type %u"
 msgstr "Άγνωστος κωδικός op %u"
 
-#: libgnomevfs/gnome-vfs-job.c:996 libgnomevfs/gnome-vfs-job.c:1141
+#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
 msgstr "Ανεπιτυχής δημιουργία διασωλήνωσης για το ανοιχτό GIOChannel: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:1601
+#: libgnomevfs/gnome-vfs-job.c:1661
 #, c-format
 msgid "Unknown job kind %u"
 msgstr "Άγνωστη είδος εργασίας %u"
 
-#: libgnomevfs/gnome-vfs-job.c:1634
+#: libgnomevfs/gnome-vfs-job.c:1694
 msgid "Operation stopped"
 msgstr "Η λειτουργία διακόπηκε"
 
@@ -273,35 +273,44 @@ msgstr "Η αίτηση απαρχαιώνει τα δεδομένα της υπ
 #. GNOME_VFS_ERROR_PROTOCOL_ERROR
 #: libgnomevfs/gnome-vfs-result.c:75
 msgid "Protocol error"
-msgstr "Σφάλμα πρωτοκόλλου"
+msgstr "Σφάλμα πρωτοκόλου"
 
-#: libgnomevfs/gnome-vfs-result.c:137
+#. GNOME_VFS_ERROR_NO_MASTER_BROWSER
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Could not find master browser"
+msgstr "Αδύνατη η εύρεση πρωτεύοντος φυλλομετρητή"
+
+#: libgnomevfs/gnome-vfs-result.c:170
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
 
-#: libgnomevfs/gnome-vfs-utils.c:65
+#: libgnomevfs/gnome-vfs-utils.c:83
 msgid "1 byte"
 msgstr "1 byte"
 
-#: libgnomevfs/gnome-vfs-utils.c:67
+#: libgnomevfs/gnome-vfs-utils.c:85
 #, c-format
 msgid "%u bytes"
 msgstr "%u byte"
 
-#: libgnomevfs/gnome-vfs-utils.c:74
+#: libgnomevfs/gnome-vfs-utils.c:92
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: libgnomevfs/gnome-vfs-utils.c:78
+#: libgnomevfs/gnome-vfs-utils.c:96
 #, c-format
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: libgnomevfs/gnome-vfs-utils.c:82
+#: libgnomevfs/gnome-vfs-utils.c:100
 #, c-format
 msgid "%.1f GB"
 msgstr "%.1f GΒ"
+
+#: libgnomevfs/gnome-vfs-utils.c:1109
+msgid " (invalid Unicode)"
+msgstr " (μή έγκυρο Unicode)"
 
 #: modules/file-method.c:382
 #, c-format
@@ -312,30 +321,30 @@ msgstr "Άγνωστη GnomeVFSSeekPosition %d"
 #: modules/test-method.c:590
 #, c-format
 msgid "Didn't find a valid settings file at %s\n"
-msgstr "Δε βρέθηκε ένα έγκυρο αρχείο ρυθμίσεων στο %s\n"
+msgstr "Δεν βρέθηκε αρχείο έγκυρων ρυθμίσεων στο %s\n"
 
 #: modules/test-method.c:592
 #, c-format
 msgid "Use the %s environment variable to specify a different location.\n"
 msgstr ""
-"Χρησιμοποιήστε τη μεταβλητή περιβάλλοντος %s για να καθορίστε μια "
-"διαφορετική διαδρομή.\n"
+"Χρήση της μεταβλητής περιβάλλοντος %s  για τον καθορισμό μιας διαφορετικής "
+"τοποθεσίας.\n"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:1
 msgid "Standard Moniker factory"
-msgstr "Πρότυπο εργοστάσιο Απλουστ. ονόματος"
+msgstr "Εργοστάσιο Standard Moniker"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:2
 msgid "file MonikerExtender"
-msgstr "αρχείο MonikerExtender"
+msgstr "file MonikerExtender"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:3
 msgid "generic Gnome VFS moniker"
-msgstr "γενικό απλουστ. όνομα Gnome VFS"
+msgstr "γενικό Gnome VFS moniker"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:4
 msgid "generic file moniker"
-msgstr "γενικό απλουστ. όνομα αρχείου"
+msgstr "γενικό αρχείο moniker"
 
 #~ msgid "3D Studio image"
 #~ msgstr "Εικόνα 3D Studio"

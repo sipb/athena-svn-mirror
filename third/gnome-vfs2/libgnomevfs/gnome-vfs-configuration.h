@@ -29,11 +29,11 @@
 
 G_BEGIN_DECLS
 
-void         gnome_vfs_configuration_add_directory   (const char *dir);
-gboolean     gnome_vfs_configuration_init            (void);
-void         gnome_vfs_configuration_uninit          (void);
-const gchar *gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args);
-GList       *gnome_vfs_configuration_get_methods_list(void);
+void         _gnome_vfs_configuration_add_directory   (const char *dir);
+gboolean     _gnome_vfs_configuration_init            (void);
+void         _gnome_vfs_configuration_uninit          (void);
+const gchar *_gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args);
+GList       *_gnome_vfs_configuration_get_methods_list(void);
 
 
 G_END_DECLS

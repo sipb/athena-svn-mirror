@@ -3,6 +3,7 @@
 /* gnome-vfs-ssl.h
  *
  * Copyright (C) 2001 Ian McKellar
+ * Copyright (C) 2002 Andrew McDonald
  *
  * The Gnome Library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public License as
@@ -23,6 +24,9 @@
  * Authors: Ian McKellar <yakk@yakk.net>
  *   My knowledge of SSL programming is due to reading Jeffrey Stedfast's
  *   excellent SSL implementation in Evolution.
+ *
+ *          Andrew McDonald <andrew@mcdonald.org.uk>
+ *   Basic SSL/TLS support using the LGPL'ed GNUTLS Library
  */
 
 #include <config.h>
@@ -36,6 +40,10 @@
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
 #include <openssl/err.h>
+#elif defined HAVE_GNUTLS
+#include <gnutls/gnutls.h>
+#endif
+#if defined(HAVE_OPENSSL) || defined(HAVE_GNUTLS)
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -51,12 +59,14 @@ typedef struct {
 #ifdef HAVE_OPENSSL
 	int sockfd;
 	SSL *ssl;
-#else
-#ifdef HAVE_NSS
+#elif defined HAVE_GNUTLS
+	int sockfd;
+	GNUTLS_STATE tlsstate;
+	GNUTLS_CERTIFICATE_CLIENT_CREDENTIALS xcred;
+#elif defined HAVE_NSS
 	PRFileDesc *sockfd;
 #else
 	char	dummy;
-#endif
 #endif
 } GnomeVFSSSLPrivate;
 
@@ -65,29 +75,51 @@ struct GnomeVFSSSL {
 };
 
 void 
-gnome_vfs_ssl_init () {
+_gnome_vfs_ssl_init () {
 #ifdef HAVE_OPENSSL
 	SSL_library_init ();
+#elif defined HAVE_GNUTLS
+	gnutls_global_init();
 #endif
 }
 
+/**
+ * gnome_vfs_ssl_enabled:
+ *
+ * Checks whether GnomeVFS was compiled with SSL support.
+ *
+ * Return value: %TRUE if GnomeVFS was compiled with SSL support,
+ * otherwise %FALSE.
+ **/
 gboolean
 gnome_vfs_ssl_enabled ()
 {
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL || defined HAVE_GNUTLS
 	return TRUE;
 #else
 	return FALSE;
 #endif
 }
 
-/* FIXME: add *some* kind of cert verification! */
+/**
+ * gnome_vfs_ssl_create:
+ * @handle_return: pointer to a GnmoeVFSSSL struct, which will
+ * contain an allocated GnomeVFSSSL object on return.
+ * @host: string indicating the host to establish an SSL connection with
+ * @port: the port number to connect to
+ *
+ * Creates an SSL socket connection at @handle_return to @host using
+ * port @port.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_ssl_create (GnomeVFSSSL **handle_return, 
 		      const char *host, 
 		      unsigned int port)
 {
-#ifdef HAVE_OPENSSL
+/* FIXME: add *some* kind of cert verification! */
+#if defined(HAVE_OPENSSL) || defined(HAVE_GNUTLS)
 	int fd;
 	int ret;
 	struct hostent *h;
@@ -121,6 +153,30 @@ gnome_vfs_ssl_create (GnomeVFSSSL **handle_return,
 #endif
 }
 
+#ifdef HAVE_GNUTLS
+static const int protocol_priority[] = {GNUTLS_TLS1, GNUTLS_SSL3, 0};
+static const int cipher_priority[] = 
+	{GNUTLS_CIPHER_RIJNDAEL_128_CBC, GNUTLS_CIPHER_3DES_CBC,
+	 GNUTLS_CIPHER_RIJNDAEL_256_CBC, GNUTLS_CIPHER_TWOFISH_128_CBC,
+	 GNUTLS_CIPHER_ARCFOUR, 0};
+static const int comp_priority[] =
+	{GNUTLS_COMP_ZLIB, GNUTLS_COMP_NULL, 0};
+static const int kx_priority[] =
+	{GNUTLS_KX_DHE_RSA, GNUTLS_KX_RSA, GNUTLS_KX_DHE_DSS, 0};
+static const int mac_priority[] =
+	{GNUTLS_MAC_SHA, GNUTLS_MAC_MD5, 0};
+#endif
+
+/**
+ * gnome_vfs_ssl_create_from_fd:
+ * @handle_return: pointer to a GnmoeVFSSSL struct, which will
+ * contain an allocated GnomeVFSSSL object on return.
+ * @fd: file descriptior to try and establish an SSL connection over
+ *
+ * Try to establish an SSL connection over the file descriptor @fd.
+ *
+ * Return value: a GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_ssl_create_from_fd (GnomeVFSSSL **handle_return, 
 		              gint fd)
@@ -167,12 +223,69 @@ gnome_vfs_ssl_create_from_fd (GnomeVFSSSL **handle_return,
 
 	return GNOME_VFS_OK;
 
+#elif defined HAVE_GNUTLS
+	GnomeVFSSSL *ssl;
+	int err;
 
+	ssl = g_new0 (GnomeVFSSSL, 1);
+	ssl->private = g_new0 (GnomeVFSSSLPrivate, 1);
+	ssl->private->sockfd = fd;
+
+	err = gnutls_certificate_allocate_sc (&ssl->private->xcred);
+	if (err < 0) {
+		g_free (ssl->private);
+		g_free (ssl);
+		return GNOME_VFS_ERROR_INTERNAL;
+	}
+
+	gnutls_init (&ssl->private->tlsstate, GNUTLS_CLIENT);
+
+	/* set socket */
+	gnutls_transport_set_ptr (ssl->private->tlsstate, fd);
+
+	gnutls_protocol_set_priority (ssl->private->tlsstate, protocol_priority);
+	gnutls_cipher_set_priority (ssl->private->tlsstate, cipher_priority);
+	gnutls_compression_set_priority (ssl->private->tlsstate, comp_priority);
+	gnutls_kx_set_priority (ssl->private->tlsstate, kx_priority);
+	gnutls_mac_set_priority (ssl->private->tlsstate, mac_priority);
+
+	gnutls_cred_set (ssl->private->tlsstate, GNUTLS_CRD_CERTIFICATE,
+			 ssl->private->xcred);
+
+	err = gnutls_handshake (ssl->private->tlsstate);
+
+	while (err == GNUTLS_E_AGAIN || err == GNUTLS_E_INTERRUPTED) {
+		err = gnutls_handshake (ssl->private->tlsstate);
+	}
+
+	if (err < 0) {
+		gnutls_certificate_free_sc (ssl->private->xcred);
+		gnutls_deinit (ssl->private->tlsstate);
+		g_free (ssl->private);
+		g_free (ssl);
+		return GNOME_VFS_ERROR_IO;
+	}
+
+	*handle_return = ssl;
+
+	return GNOME_VFS_OK;
 #else
 	return GNOME_VFS_ERROR_NOT_SUPPORTED;
 #endif
 }
 
+/**
+ * gnome_vfs_ssl_read:
+ * @ssl: SSL socket to read data from
+ * @buffer: allocated buffer of at least @bytes bytes to be read into
+ * @bytes: number of bytes to read from @ssl into @buffer
+ * @bytes_read: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually read from the socket on return.
+ *
+ * Read @bytes bytes of data from the SSL socket @ssl into @buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult 
 gnome_vfs_ssl_read (GnomeVFSSSL *ssl,
 		    gpointer buffer,
@@ -192,11 +305,36 @@ gnome_vfs_ssl_read (GnomeVFSSSL *ssl,
 		return GNOME_VFS_ERROR_GENERIC;
 	}
 	return GNOME_VFS_OK;
+#elif defined HAVE_GNUTLS
+	if (bytes == 0) {
+		*bytes_read = 0;
+		return GNOME_VFS_OK;
+	}
+
+	*bytes_read = gnutls_record_recv (ssl->private->tlsstate, buffer, bytes);
+
+	if (*bytes_read <= 0) {
+		*bytes_read = 0;
+		return GNOME_VFS_ERROR_GENERIC;
+	}
+	return GNOME_VFS_OK;
 #else
 	return GNOME_VFS_ERROR_NOT_SUPPORTED;
 #endif
 }
 
+/**
+ * gnome_vfs_ssl_write:
+ * @ssl: SSL socket to write data to
+ * @buffer: data to write to the socket
+ * @bytes: number of bytes from @buffer to write to @ssl
+ * @bytes_written: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually written to the socket on return.
+ *
+ * Write @bytes bytes of data from @buffer to @ssl.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult 
 gnome_vfs_ssl_write (GnomeVFSSSL *ssl,
 		     gconstpointer buffer,
@@ -216,11 +354,30 @@ gnome_vfs_ssl_write (GnomeVFSSSL *ssl,
 		return GNOME_VFS_ERROR_GENERIC;
 	}
 	return GNOME_VFS_OK;
+#elif defined HAVE_GNUTLS
+	if (bytes == 0) {
+		*bytes_written = 0;
+		return GNOME_VFS_OK;
+	}
+
+	*bytes_written = gnutls_record_send (ssl->private->tlsstate, buffer, bytes);
+
+	if (*bytes_written <= 0) {
+		*bytes_written = 0;
+		return GNOME_VFS_ERROR_GENERIC;
+	}
+	return GNOME_VFS_OK;
 #else
 	return GNOME_VFS_ERROR_NOT_SUPPORTED;
 #endif
 }
 
+/**
+ * gnome_vfs_ssl_destroy:
+ * @ssl: SSL socket to be closed and destroyed
+ *
+ * Free resources used by @ssl and close the connection.
+ */
 void
 gnome_vfs_ssl_destroy (GnomeVFSSSL *ssl) 
 {
@@ -228,6 +385,11 @@ gnome_vfs_ssl_destroy (GnomeVFSSSL *ssl)
 	SSL_shutdown (ssl->private->ssl);
 	SSL_CTX_free (ssl->private->ssl->ctx);
 	SSL_free (ssl->private->ssl);
+	close (ssl->private->sockfd);
+#elif defined HAVE_GNUTLS
+	gnutls_bye (ssl->private->tlsstate, GNUTLS_SHUT_RDWR);
+	gnutls_certificate_free_sc (ssl->private->xcred);
+	gnutls_deinit (ssl->private->tlsstate);
 	close (ssl->private->sockfd);
 #else
 #endif
@@ -241,6 +403,14 @@ static GnomeVFSSocketImpl ssl_socket_impl = {
 	(GnomeVFSSocketCloseFunc)gnome_vfs_ssl_destroy
 };
 
+/**
+ * gnome_vfs_ssl_to_socket:
+ * @ssl: SSL socket to convert into a standard socket
+ *
+ * Wrapper an SSL socket inside a standard GnomeVFSSocket.
+ *
+ * Return value: a newly allocated GnomeVFSSocket corresponding to @ssl.
+ **/
 GnomeVFSSocket *
 gnome_vfs_ssl_to_socket (GnomeVFSSSL *ssl)
 {

@@ -28,6 +28,13 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GNOME_VFS_MIME_TYPE_UNKNOWN:
+ *
+ * The value returned for the MIME type when a file did
+ * not match any entries in the MIME database. May be
+ * treated as a file of an unknown type.
+ **/
 #define GNOME_VFS_MIME_TYPE_UNKNOWN "application/octet-stream"
 
 const char  *gnome_vfs_get_mime_type_for_data (gconstpointer data,

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+MIME typing</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="next" href="gnome-vfs-gnome-vfs-method.html" title="gnome-vfs-method"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-writing-modules.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-method.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-mime"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+MIME typing</h2><p>
+MIME typing &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-mime-shutdown">gnome_vfs_mime_shutdown</a>         (void);
+const char* <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-mime-type-from-name">gnome_vfs_mime_type_from_name</a>   (const char *filename);
+const char* <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-mime-type-from-name-or-default">gnome_vfs_mime_type_from_name_or_default</a>
+                                            (const char *filename,
+                                             const char *defaultv);
+const char* <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-get-mime-type-common">gnome_vfs_get_mime_type_common</a>  (GnomeVFSURI *uri);
+const char* <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-get-mime-type-from-uri">gnome_vfs_get_mime_type_from_uri</a>
+                                            (GnomeVFSURI *uri);
+const char* <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-get-mime-type-from-file-data">gnome_vfs_get_mime_type_from_file_data</a>
+                                            (GnomeVFSURI *uri);
+const char* <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-get-file-mime-type">gnome_vfs_get_file_mime_type</a>    (const char *path,
+                                             const struct stat *optional_stat_info,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> suffix_only);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-mime-type-is-supertype">gnome_vfs_mime_type_is_supertype</a>
+                                            (const char *mime_type);
+char*       <a href="gnome-vfs-gnome-vfs-mime.html#gnome-vfs-get-supertype-from-mime-type">gnome_vfs_get_supertype_from_mime_type</a>
+                                            (const char *mime_type);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-mime-shutdown"></a>gnome_vfs_mime_shutdown ()</h3><pre class="programlisting">void        gnome_vfs_mime_shutdown         (void);</pre><p>
+Unload the MIME database from memory.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gnome-vfs-mime-type-from-name"></a>gnome_vfs_mime_type_from_name ()</h3><pre class="programlisting">const char* gnome_vfs_mime_type_from_name   (const char *filename);</pre><p>
+Determined the mime type for <i><tt>filename</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>filename</tt></i> :</span></td><td> A filename (the file does not necessarily exist).
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the mime-type for this filename.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-mime-type-from-name-or-default"></a>gnome_vfs_mime_type_from_name_or_default ()</h3><pre class="programlisting">const char* gnome_vfs_mime_type_from_name_or_default
+                                            (const char *filename,
+                                             const char *defaultv);</pre><p>
+This routine tries to determine the mime-type of the filename
+only by looking at the filename from the GNOME database of mime-types.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>filename</tt></i> :</span></td><td> A filename (the file does not necesarily exist).
+</td></tr><tr><td><span class="term"><i><tt>defaultv</tt></i> :</span></td><td> A default value to be returned if no match is found
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the mime-type of the <i><tt>filename</tt></i>.  If no value could be
+determined, it will return <i><tt>defaultv</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-mime-type-common"></a>gnome_vfs_get_mime_type_common ()</h3><pre class="programlisting">const char* gnome_vfs_get_mime_type_common  (GnomeVFSURI *uri);</pre><p>
+Tries to guess the mime type of the file represented by <i><tt>uir</tt></i>.
+Favors using the file data to the <i><tt>uri</tt></i> extension.
+Handles passing <i><tt>uri</tt></i> of a non-existent file by falling back
+on returning a type based on the extension.
+</p><p>
+FIXME: This function will not necessarily return the same mime type as doing a
+get file info on the text uri.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> a real file or a non-existent uri.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the mime-type for this uri.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-mime-type-from-uri"></a>gnome_vfs_get_mime_type_from_uri ()</h3><pre class="programlisting">const char* gnome_vfs_get_mime_type_from_uri
+                                            (GnomeVFSURI *uri);</pre><p>
+Tries to guess the mime type of the file <i><tt>uri</tt></i> by
+checking the file name extension. Works on non-existent
+files.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> A file uri.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the mime-type for this filename.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-mime-type-from-file-data"></a>gnome_vfs_get_mime_type_from_file_data ()</h3><pre class="programlisting">const char* gnome_vfs_get_mime_type_from_file_data
+                                            (GnomeVFSURI *uri);</pre><p>
+Tries to guess the mime type of the file <i><tt>uri</tt></i> by
+checking the file data using the magic patterns. Does not handle text files properly</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> A file uri.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the mime-type for this filename.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-file-mime-type"></a>gnome_vfs_get_file_mime_type ()</h3><pre class="programlisting">const char* gnome_vfs_get_file_mime_type    (const char *path,
+                                             const struct stat *optional_stat_info,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> suffix_only);</pre><p>
+Tries to guess the mime type of the file represented by <i><tt>path</tt></i>.
+If <i><tt>suffix_only</tt></i> is false, uses the mime-magic based lookup first.
+Handles passing <i><tt>path</tt></i> of a non-existent file by falling back
+on returning a type based on the extension.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>path</tt></i> :</span></td><td> a path of a file.
+</td></tr><tr><td><span class="term"><i><tt>optional_stat_info</tt></i> :</span></td><td> optional stat buffer.
+</td></tr><tr><td><span class="term"><i><tt>suffix_only</tt></i> :</span></td><td> whether or not to do a magic-based lookup.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the mime-type for this path
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-mime-type-is-supertype"></a>gnome_vfs_mime_type_is_supertype ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_mime_type_is_supertype
+                                            (const char *mime_type);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-get-supertype-from-mime-type"></a>gnome_vfs_get_supertype_from_mime_type ()</h3><pre class="programlisting">char*       gnome_vfs_get_supertype_from_mime_type
+                                            (const char *mime_type);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-writing-modules.html"><b>&lt;&lt; Writing Modules</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-method.html"><b>gnome-vfs-method &gt;&gt;</b></a></td></tr></table></body></html>

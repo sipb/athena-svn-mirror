@@ -26,11 +26,11 @@
 
 #include <pthread.h>
 
-int  gnome_vfs_thread_create (void *(* thread_routine) (void *),
+int  _gnome_vfs_thread_create (void *(* thread_routine) (void *),
 			      void *thread_arguments);
 
-void gnome_vfs_thread_pool_init     (void);
-void gnome_vfs_thread_pool_shutdown (void);
+void _gnome_vfs_thread_pool_init     (void);
+void _gnome_vfs_thread_pool_shutdown (void);
 /* called during app shutdown, quit all the threads from the pool */
 
 #endif

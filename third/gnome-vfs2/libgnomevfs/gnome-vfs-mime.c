@@ -181,13 +181,13 @@ mime_fill_from_file (const char *filename)
 
 	g_assert (filename != NULL);
 
-	gnome_vfs_file_date_tracker_start_tracking_file (mime_data_date_tracker, filename);
+	_gnome_vfs_file_date_tracker_start_tracking_file (mime_data_date_tracker, filename);
 	file = fopen (filename, "r");
 
 	if (file == NULL) {
 		return;
 	}
-
+	
 	current_key = NULL;
 	while (fgets (buf, sizeof (buf), file) != NULL) {
 		char *p;
@@ -295,7 +295,7 @@ mime_load (mime_dir_source_t *source)
 		g_free (filename);
 	}
 	if (dir != NULL)
-		closedir (dir);
+	closedir (dir);
 
 	if (!source->system_dir) {
 		filename = g_strconcat (source->dirname, "/user.mime", NULL);
@@ -303,7 +303,7 @@ mime_load (mime_dir_source_t *source)
 		g_free (filename);
 	}
 
-	gnome_vfs_file_date_tracker_start_tracking_file (mime_data_date_tracker, source->dirname);
+	_gnome_vfs_file_date_tracker_start_tracking_file (mime_data_date_tracker, source->dirname);
 }
 
 static gboolean
@@ -342,7 +342,7 @@ mime_extensions_empty (void)
 static void
 maybe_reload (void)
 {
-	if (!gnome_vfs_file_date_tracker_date_has_changed (mime_data_date_tracker)) {
+	if (!_gnome_vfs_file_date_tracker_date_has_changed (mime_data_date_tracker)) {
 		return;
 	}
 
@@ -358,7 +358,7 @@ mime_init (void)
 	mime_extensions [0] = g_hash_table_new (g_str_hash, g_str_equal);
 	mime_extensions [1] = g_hash_table_new (g_str_hash, g_str_equal);
 
-	mime_data_date_tracker = gnome_vfs_file_date_tracker_new ();
+	mime_data_date_tracker = _gnome_vfs_file_date_tracker_new ();
 	
 	gnome_mime_dir.dirname = g_strdup (DATADIR "/mime-info");
 	gnome_mime_dir.system_dir = TRUE;
@@ -372,21 +372,27 @@ mime_init (void)
 	module_inited = TRUE;
 }
 
+/**
+ * gnome_vfs_mime_shutdown:
+ *
+ * Unload the MIME database from memory.
+ **/
+
 void
 gnome_vfs_mime_shutdown (void)
 {
 	if (!module_inited)
 		return;
 
-	gnome_vfs_mime_info_shutdown ();
-	gnome_vfs_mime_clear_magic_table ();
+	_gnome_vfs_mime_info_shutdown ();
+	_gnome_vfs_mime_clear_magic_table ();
 
 	mime_extensions_empty ();
 	
 	g_hash_table_destroy (mime_extensions[0]);
 	g_hash_table_destroy (mime_extensions[1]);
 
-	gnome_vfs_file_date_tracker_free (mime_data_date_tracker);
+	_gnome_vfs_file_date_tracker_free (mime_data_date_tracker);
 	
 	g_free (gnome_mime_dir.dirname);
 	g_free (user_mime_dir.dirname);
@@ -509,31 +515,27 @@ gnome_vfs_get_mime_type_from_uri_internal (GnomeVFSURI *uri)
 }
 
 const char *
-gnome_vfs_get_mime_type_internal (GnomeVFSMimeSniffBuffer *buffer, const char *file_name)
+_gnome_vfs_get_mime_type_internal (GnomeVFSMimeSniffBuffer *buffer, const char *file_name)
 {
 	const char *result;
 
 	result = NULL;
 	
 	if (buffer != NULL) {
-		result = gnome_vfs_mime_get_type_from_magic_table (buffer);
+		result = _gnome_vfs_mime_get_type_from_magic_table (buffer);
 		
 		if (result != NULL) {
-			return result;
-		}
+			if (strcmp (result, "application/x-gzip") == 0) {
 		
-		/* So many file types come compressed by gzip that extensions are
-		 * more reliable than magic typing. If the file has a suffix, then
-		 * use the type from the suffix.
-		 *
-		 * FIXME bugzilla.eazel.com 6867:
-		 * Allow specific mime types to override magic detection
-		 */
-		if (gnome_vfs_sniff_buffer_looks_like_gzip (buffer, file_name)) {
-			/* gzip -- treat extensions as a more accurate source
-			 * of type information.
+				/* So many file types come compressed by gzip 
+				 * that extensions are more reliable than magic
+				 * typing. If the file has a suffix, then use 
+				 * the type from the suffix.
+		 		 *
+				 * FIXME bugzilla.gnome.org 46867:
+				 * Allow specific mime types to override 
+				 * magic detection
 			 */
-			
 			if (file_name != NULL) {
 				result = gnome_vfs_mime_type_from_name_or_default (file_name, NULL);
 			}
@@ -541,17 +543,18 @@ gnome_vfs_get_mime_type_internal (GnomeVFSMimeSniffBuffer *buffer, const char *f
 			if (result != NULL) {
 				return result;
 			}
-			
-			/* Didn't find an extension match, assume gzip. */
+				/* Didn't find an extension match,
+				 * assume gzip. */
 			return "application/x-gzip";
+		}
+			return result;
 		}
 		
 		if (result == NULL) {
-			if (gnome_vfs_sniff_buffer_looks_like_text (buffer)) {
-				/* Text file -- treat extensions as a more accurate source
-				 * of type information.
+			if (_gnome_vfs_sniff_buffer_looks_like_text (buffer)) {
+				/* Text file -- treat extensions as a more 
+				 * accurate source of type information.
 				 */
-				
 				if (file_name != NULL) {
 					result = gnome_vfs_mime_type_from_name_or_default (file_name, NULL);
 				}
@@ -563,7 +566,7 @@ gnome_vfs_get_mime_type_internal (GnomeVFSMimeSniffBuffer *buffer, const char *f
 				/* Didn't find an extension match, assume plain text. */
 				return "text/plain";
 
-			} else if (gnome_vfs_sniff_buffer_looks_like_mp3 (buffer)) {
+			} else if (_gnome_vfs_sniff_buffer_looks_like_mp3 (buffer)) {
 				return "audio/x-mp3";
 			}
 		}
@@ -618,10 +621,11 @@ gnome_vfs_get_mime_type_common (GnomeVFSURI *uri)
 		return gnome_vfs_get_mime_type_from_uri_internal (uri);
 	}
 	
-	buffer = gnome_vfs_mime_sniff_buffer_new_from_handle (handle);
+	buffer = _gnome_vfs_mime_sniff_buffer_new_from_handle (handle);
 
 	base_name = gnome_vfs_uri_extract_short_path_name (uri);
-	result = gnome_vfs_get_mime_type_internal (buffer, base_name);
+
+	result = _gnome_vfs_get_mime_type_internal (buffer, base_name);
 	g_free (base_name);
 
 	gnome_vfs_mime_sniff_buffer_free (buffer);
@@ -710,14 +714,14 @@ gnome_vfs_get_file_mime_type (const char *path, const struct stat *optional_stat
 	}
 
 	if (file != NULL) {
-		buffer = gnome_vfs_mime_sniff_buffer_new_generic
+		buffer = _gnome_vfs_mime_sniff_buffer_new_generic
 			(file_seek_binder, file_read_binder, file);
 
-		result = gnome_vfs_get_mime_type_internal (buffer, path);
+		result = _gnome_vfs_get_mime_type_internal (buffer, path);
 		gnome_vfs_mime_sniff_buffer_free (buffer);
 		fclose (file);
 	} else {
-		result = gnome_vfs_get_mime_type_internal (NULL, path);
+		result = _gnome_vfs_get_mime_type_internal (NULL, path);
 	}
 
 	
@@ -772,8 +776,8 @@ gnome_vfs_get_mime_type_from_file_data (GnomeVFSURI *uri)
 		return GNOME_VFS_MIME_TYPE_UNKNOWN;
 	}
 	
-	buffer = gnome_vfs_mime_sniff_buffer_new_from_handle (handle);
-	result = gnome_vfs_get_mime_type_internal (buffer, NULL);	
+	buffer = _gnome_vfs_mime_sniff_buffer_new_from_handle (handle);
+	result = _gnome_vfs_get_mime_type_internal (buffer, NULL);	
 	gnome_vfs_mime_sniff_buffer_free (buffer);
 	gnome_vfs_close (handle);
 
@@ -798,8 +802,7 @@ gnome_vfs_get_mime_type_for_data (gconstpointer data, int data_size)
 
 	buffer = gnome_vfs_mime_sniff_buffer_new_from_existing_data
 		(data, data_size);
-
-	result = gnome_vfs_get_mime_type_internal (buffer, NULL);	
+	result = _gnome_vfs_get_mime_type_internal (buffer, NULL);	
 
 	gnome_vfs_mime_sniff_buffer_free (buffer);
 
@@ -883,7 +886,7 @@ file_date_record_free (FileDateRecord *record)
 }
 
 FileDateTracker *
-gnome_vfs_file_date_tracker_new (void)
+_gnome_vfs_file_date_tracker_new (void)
 {
 	FileDateTracker *tracker;
 
@@ -904,7 +907,7 @@ release_key_and_value (gpointer key, gpointer value, gpointer user_data)
 }
 
 void
-gnome_vfs_file_date_tracker_free (FileDateTracker *tracker)
+_gnome_vfs_file_date_tracker_free (FileDateTracker *tracker)
 {
 	g_hash_table_foreach_remove (tracker->records, release_key_and_value, NULL);
 	g_hash_table_destroy (tracker->records);
@@ -916,7 +919,7 @@ gnome_vfs_file_date_tracker_free (FileDateTracker *tracker)
  * later whether it has changed.
  */
 void
-gnome_vfs_file_date_tracker_start_tracking_file (FileDateTracker *tracker, 
+_gnome_vfs_file_date_tracker_start_tracking_file (FileDateTracker *tracker, 
 				                 const char *local_file_path)
 {
 	FileDateRecord *record;
@@ -954,7 +957,7 @@ check_and_update_one (gpointer key, gpointer value, gpointer user_data)
 }
 
 gboolean
-gnome_vfs_file_date_tracker_date_has_changed (FileDateTracker *tracker)
+_gnome_vfs_file_date_tracker_date_has_changed (FileDateTracker *tracker)
 {
 	time_t now;
 	gboolean any_date_changed;
