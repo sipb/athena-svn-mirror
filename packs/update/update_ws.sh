@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.18 1997-04-01 00:59:28 ghudson Exp $
+# $Id: update_ws.sh,v 1.19 1997-04-02 21:42:09 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -72,6 +72,13 @@ else
 	export PUBLIC AUTOUPDATE
 	PUBLIC=true
 	AUTOUPDATE=true
+fi
+
+# Make sure /var/athena exists (it was introduced in 8.1.0) so we have a
+# place to put the temporary clusterinfo file and the desync state file
+# and the update log.
+if [ ! -d /var/athena ]; then
+	mkdir -m 755 /var/athena
 fi
 
 # Get clusterinfo for the version in /srvd/.rvdinfo to determine what
@@ -177,12 +184,6 @@ EOF
 	esac
 
 	exit 1
-fi
-
-# Make sure /var/athena exists (it was introduced in 8.1.0) so we have a
-# place to put the desync state file and the update log.
-if [ ! -d /var/athena ]; then
-	mkdir -m 755 /var/athena
 fi
 
 if [ "$AUTO" = true ]; then
