@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 1997-03-06 00:53:30 ghudson Exp $
+# $Id: Makefile,v 1.10 1997-03-11 18:52:03 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -87,6 +87,7 @@ install:
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 emacs19.sh ${DESTDIR}${ATHBINDIR}/emacs19
+	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 kermit ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv ${DESTDIR}${ATHBINDIR}
