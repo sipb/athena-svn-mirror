@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.23 1990-12-09 16:47:45 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.24 1990-12-12 15:13:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.23 1990-12-09 16:47:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.24 1990-12-12 15:13:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -1057,6 +1057,9 @@ connect_knuckles(a,b)
       owner->question->seen[owner->question->nseen] = -1;
     }
 
+#ifdef SABER
+  ret = ret;
+#endif
   return(SUCCESS);
 /*
  *  It would be nice to be able to return "ret", since that way the
