@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -66,27 +65,28 @@ Index of Functions, Variables, & Directives
 * *D (automatic variable):               Automatic.
 * *F (automatic variable):               Automatic.
 * + (automatic variable):                Automatic.
-* .DEFAULT <1>:                          Special Targets.
-* .DEFAULT:                              Last Resort.
+* .DEFAULT <1>:                          Last Resort.
+* .DEFAULT:                              Special Targets.
 * .DEFAULT, and empty commands:          Empty Commands.
 * .DELETE_ON_ERROR <1>:                  Special Targets.
 * .DELETE_ON_ERROR:                      Errors.
 * .EXPORT_ALL_VARIABLES <1>:             Variables/Recursion.
 * .EXPORT_ALL_VARIABLES:                 Special Targets.
-* .IGNORE <1>:                           Special Targets.
-* .IGNORE:                               Errors.
+* .IGNORE <1>:                           Errors.
+* .IGNORE:                               Special Targets.
 * .INTERMEDIATE:                         Special Targets.
 * .LIBPATTERNS:                          Libraries/Search.
-* .PHONY <1>:                            Phony Targets.
-* .PHONY:                                Special Targets.
+* .NOTPARALLEL:                          Special Targets.
+* .PHONY <1>:                            Special Targets.
+* .PHONY:                                Phony Targets.
 * .POSIX:                                Options/Recursion.
 * .PRECIOUS <1>:                         Special Targets.
 * .PRECIOUS:                             Interrupts.
 * .SECONDARY:                            Special Targets.
 * .SILENT <1>:                           Special Targets.
 * .SILENT:                               Echoing.
-* .SUFFIXES <1>:                         Suffix Rules.
-* .SUFFIXES:                             Special Targets.
+* .SUFFIXES <1>:                         Special Targets.
+* .SUFFIXES:                             Suffix Rules.
 * /usr/gnu/include:                      Include.
 * /usr/include:                          Include.
 * /usr/local/include:                    Include.
@@ -166,14 +166,14 @@ Index of Functions, Variables, & Directives
 * origin:                                Origin Function.
 * OUTPUT_OPTION:                         Catalogue of Rules.
 * override:                              Override Directive.
-* patsubst <1>:                          Text Functions.
-* patsubst:                              Substitution Refs.
+* patsubst <1>:                          Substitution Refs.
+* patsubst:                              Text Functions.
 * PC:                                    Implicit Variables.
 * PFLAGS:                                Implicit Variables.
 * RFLAGS:                                Implicit Variables.
 * RM:                                    Implicit Variables.
-* SHELL:                                 Execution.
 * shell:                                 Shell Function.
+* SHELL:                                 Execution.
 * SHELL (command execution):             Execution.
 * sort:                                  Text Functions.
 * strip:                                 Text Functions.
@@ -185,14 +185,14 @@ Index of Functions, Variables, & Directives
 * TEX:                                   Implicit Variables.
 * TEXI2DVI:                              Implicit Variables.
 * unexport:                              Variables/Recursion.
-* vpath:                                 Selective Search.
-* VPATH:                                 General Search.
+* vpath <1>:                             Selective Search.
 * vpath:                                 Directory Search.
-* VPATH:                                 Directory Search.
+* VPATH <1>:                             Directory Search.
+* VPATH:                                 General Search.
 * warning:                               Make Control Functions.
 * WEAVE:                                 Implicit Variables.
-* wildcard <1>:                          Wildcard Function.
-* wildcard:                              File Name Functions.
+* wildcard <1>:                          File Name Functions.
+* wildcard:                              Wildcard Function.
 * word:                                  File Name Functions.
 * wordlist:                              File Name Functions.
 * words:                                 File Name Functions.

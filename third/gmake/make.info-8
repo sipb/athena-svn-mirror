@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -29,6 +28,246 @@ permission notice identical to this one.
 manual into another language, under the above conditions for modified
 versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
+
+
+File: make.info,  Node: Standard Targets,  Next: Install Command Categories,  Prev: Directory Variables,  Up: Makefile Conventions
+
+Standard Targets for Users
+==========================
+
+   All GNU programs should have the following targets in their
+Makefiles:
+
+`all'
+     Compile the entire program.  This should be the default target.
+     This target need not rebuild any documentation files; Info files
+     should normally be included in the distribution, and DVI files
+     should be made only when explicitly asked for.
+
+     By default, the Make rules should compile and link with `-g', so
+     that executable programs have debugging symbols.  Users who don't
+     mind being helpless can strip the executables later if they wish.
+
+`install'
+     Compile the program and copy the executables, libraries, and so on
+     to the file names where they should reside for actual use.  If
+     there is a simple test to verify that a program is properly
+     installed, this target should run that test.
+
+     Do not strip executables when installing them.  Devil-may-care
+     users can use the `install-strip' target to do that.
+
+     If possible, write the `install' target rule so that it does not
+     modify anything in the directory where the program was built,
+     provided `make all' has just been done.  This is convenient for
+     building the program under one user name and installing it under
+     another.
+
+     The commands should create all the directories in which files are
+     to be installed, if they don't already exist.  This includes the
+     directories specified as the values of the variables `prefix' and
+     `exec_prefix', as well as all subdirectories that are needed.  One
+     way to do this is by means of an `installdirs' target as described
+     below.
+
+     Use `-' before any command for installing a man page, so that
+     `make' will ignore any errors.  This is in case there are systems
+     that don't have the Unix man page documentation system installed.
+
+     The way to install Info files is to copy them into `$(infodir)'
+     with `$(INSTALL_DATA)' (*note Command Variables::), and then run
+     the `install-info' program if it is present.  `install-info' is a
+     program that edits the Info `dir' file to add or update the menu
+     entry for the given Info file; it is part of the Texinfo package.
+     Here is a sample rule to install an Info file:
+
+          $(DESTDIR)$(infodir)/foo.info: foo.info
+                  $(POST_INSTALL)
+          # There may be a newer info file in . than in srcdir.
+                  -if test -f foo.info; then d=.; \
+                   else d=$(srcdir); fi; \
+                  $(INSTALL_DATA) $$d/foo.info $(DESTDIR)$@; \
+          # Run install-info only if it exists.
+          # Use `if' instead of just prepending `-' to the
+          # line so we notice real errors from install-info.
+          # We use `$(SHELL) -c' because some shells do not
+          # fail gracefully when there is an unknown command.
+                  if $(SHELL) -c 'install-info --version' \
+                     >/dev/null 2>&1; then \
+                    install-info --dir-file=$(DESTDIR)$(infodir)/dir \
+                                 $(DESTDIR)$(infodir)/foo.info; \
+                  else true; fi
+
+     When writing the `install' target, you must classify all the
+     commands into three categories: normal ones, "pre-installation"
+     commands and "post-installation" commands.  *Note Install Command
+     Categories::.
+
+`uninstall'
+     Delete all the installed files--the copies that the `install'
+     target creates.
+
+     This rule should not modify the directories where compilation is
+     done, only the directories where files are installed.
+
+     The uninstallation commands are divided into three categories,
+     just like the installation commands.  *Note Install Command
+     Categories::.
+
+`install-strip'
+     Like `install', but strip the executable files while installing
+     them.  In many cases, the definition of this target can be very
+     simple:
+
+          install-strip:
+                  $(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
+                          install
+
+     Normally we do not recommend stripping an executable unless you
+     are sure the program has no bugs.  However, it can be reasonable
+     to install a stripped executable for actual execution while saving
+     the unstripped executable elsewhere in case there is a bug.
+
+`clean'
+     Delete all files from the current directory that are normally
+     created by building the program.  Don't delete the files that
+     record the configuration.  Also preserve files that could be made
+     by building, but normally aren't because the distribution comes
+     with them.
+
+     Delete `.dvi' files here if they are not part of the distribution.
+
+`distclean'
+     Delete all files from the current directory that are created by
+     configuring or building the program.  If you have unpacked the
+     source and built the program without creating any other files,
+     `make distclean' should leave only the files that were in the
+     distribution.
+
+`mostlyclean'
+     Like `clean', but may refrain from deleting a few files that people
+     normally don't want to recompile.  For example, the `mostlyclean'
+     target for GCC does not delete `libgcc.a', because recompiling it
+     is rarely necessary and takes a lot of time.
+
+`maintainer-clean'
+     Delete almost everything from the current directory that can be
+     reconstructed with this Makefile.  This typically includes
+     everything deleted by `distclean', plus more: C source files
+     produced by Bison, tags tables, Info files, and so on.
+
+     The reason we say "almost everything" is that running the command
+     `make maintainer-clean' should not delete `configure' even if
+     `configure' can be remade using a rule in the Makefile.  More
+     generally, `make maintainer-clean' should not delete anything that
+     needs to exist in order to run `configure' and then begin to build
+     the program.  This is the only exception; `maintainer-clean' should
+     delete everything else that can be rebuilt.
+
+     The `maintainer-clean' target is intended to be used by a
+     maintainer of the package, not by ordinary users.  You may need
+     special tools to reconstruct some of the files that `make
+     maintainer-clean' deletes.  Since these files are normally
+     included in the distribution, we don't take care to make them easy
+     to reconstruct.  If you find you need to unpack the full
+     distribution again, don't blame us.
+
+     To help make users aware of this, the commands for the special
+     `maintainer-clean' target should start with these two:
+
+          @echo 'This command is intended for maintainers to use; it'
+          @echo 'deletes files that may need special tools to rebuild.'
+
+`TAGS'
+     Update a tags table for this program.
+
+`info'
+     Generate any Info files needed.  The best way to write the rules
+     is as follows:
+
+          info: foo.info
+          
+          foo.info: foo.texi chap1.texi chap2.texi
+                  $(MAKEINFO) $(srcdir)/foo.texi
+
+     You must define the variable `MAKEINFO' in the Makefile.  It should
+     run the `makeinfo' program, which is part of the Texinfo
+     distribution.
+
+     Normally a GNU distribution comes with Info files, and that means
+     the Info files are present in the source directory.  Therefore,
+     the Make rule for an info file should update it in the source
+     directory.  When users build the package, ordinarily Make will not
+     update the Info files because they will already be up to date.
+
+`dvi'
+     Generate DVI files for all Texinfo documentation.  For example:
+
+          dvi: foo.dvi
+          
+          foo.dvi: foo.texi chap1.texi chap2.texi
+                  $(TEXI2DVI) $(srcdir)/foo.texi
+
+     You must define the variable `TEXI2DVI' in the Makefile.  It should
+     run the program `texi2dvi', which is part of the Texinfo
+     distribution.(1)  Alternatively, write just the dependencies, and
+     allow GNU `make' to provide the command.
+
+`dist'
+     Create a distribution tar file for this program.  The tar file
+     should be set up so that the file names in the tar file start with
+     a subdirectory name which is the name of the package it is a
+     distribution for.  This name can include the version number.
+
+     For example, the distribution tar file of GCC version 1.40 unpacks
+     into a subdirectory named `gcc-1.40'.
+
+     The easiest way to do this is to create a subdirectory
+     appropriately named, use `ln' or `cp' to install the proper files
+     in it, and then `tar' that subdirectory.
+
+     Compress the tar file file with `gzip'.  For example, the actual
+     distribution file for GCC version 1.40 is called `gcc-1.40.tar.gz'.
+
+     The `dist' target should explicitly depend on all non-source files
+     that are in the distribution, to make sure they are up to date in
+     the distribution.  *Note Making Releases: (standards)Releases.
+
+`check'
+     Perform self-tests (if any).  The user must build the program
+     before running the tests, but need not install the program; you
+     should write the self-tests so that they work when the program is
+     built but not installed.
+
+   The following targets are suggested as conventional names, for
+programs in which they are useful.
+
+`installcheck'
+     Perform installation tests (if any).  The user must build and
+     install the program before running the tests.  You should not
+     assume that `$(bindir)' is in the search path.
+
+`installdirs'
+     It's useful to add a target named `installdirs' to create the
+     directories where files are installed, and their parent
+     directories.  There is a script called `mkinstalldirs' which is
+     convenient for this; you can find it in the Texinfo package.  You
+     can use a rule like this:
+
+          # Make sure all installation directories (e.g. $(bindir))
+          # actually exist by making them if necessary.
+          installdirs: mkinstalldirs
+                  $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
+                                          $(libdir) $(infodir) \
+                                          $(mandir)
+
+     This rule should not modify the directories where compilation is
+     done.  It should do nothing but create installation directories.
+
+   ---------- Footnotes ----------
+
+   (1) `texi2dvi' uses TeX to do the real work of formatting. TeX is
+not distributed with Texinfo.
 
 
 File: make.info,  Node: Install Command Categories,  Prev: Standard Targets,  Up: Makefile Conventions
@@ -71,7 +310,7 @@ variable, plus an optional comment at the end.  There are three
 variables you can use, one for each category; the variable name
 specifies the category.  Category lines are no-ops in ordinary execution
 because these three Make variables are normally undefined (and you
-*should not* define them in the makefile).
+_should not_ define them in the makefile).
 
    Here are the three possible category lines, each with a comment that
 explains what it means:
@@ -95,7 +334,7 @@ classified as normal.
 from the Info directory.
 
    If the `install' or `uninstall' target has any dependencies which
-act as subroutines of installation, then you should start *each*
+act as subroutines of installation, then you should start _each_
 dependency's commands with a category line, and start the main target's
 commands with a category line also.  This way, you can ensure that each
 command is placed in the right category regardless of which of the
@@ -137,7 +376,7 @@ where the file `pre-install.awk' could contain this:
 shell script as part of installing the binary package.
 
 
-File: make.info,  Node: Quick Reference,  Next: Make Errors,  Prev: Makefile Conventions,  Up: Top
+File: make.info,  Node: Quick Reference,  Next: Error Messages,  Prev: Makefile Conventions,  Up: Top
 
 Quick Reference
 ***************
@@ -209,7 +448,7 @@ Targets::, *Note Catalogue of Implicit Rules: Catalogue of Rules, and
      directive.
 
    Here is a summary of the text manipulation functions (*note
-Functions::.):
+Functions::):
 
 `$(subst FROM,TO,TEXT)'
      Replace FROM with TO in TEXT.
@@ -237,7 +476,7 @@ Functions::.):
      Functions.
 
 `$(filter-out PATTERN...,TEXT)'
-     Select words in TEXT that *do not* match any of the PATTERN words.
+     Select words in TEXT that _do not_ match any of the PATTERN words.
      *Note Functions for String Substitution and Analysis: Text
      Functions.
 
@@ -292,7 +531,7 @@ Functions::.):
      *Note Functions for File Names: File Name Functions.
 
 `$(wildcard PATTERN...)'
-     Find file names matching a shell file name pattern (*not* a `%'
+     Find file names matching a shell file name pattern (_not_ a `%'
      pattern).
      *Note The Function `wildcard': Wildcard Function.
 
@@ -340,13 +579,13 @@ Variables: Automatic, for full information.
 `$?'
      The names of all the prerequisites that are newer than the target,
      with spaces between them.  For prerequisites which are archive
-     members, only the member named is used (*note Archives::.).
+     members, only the member named is used (*note Archives::).
 
 `$^'
 `$+'
      The names of all the prerequisites, with spaces between them.  For
      prerequisites which are archive members, only the member named is
-     used (*note Archives::.).  The value of `$^' omits duplicate
+     used (*note Archives::).  The value of `$^' omits duplicate
      prerequisites, while `$+' retains them and preserves their order.
 
 `$*'
@@ -415,6 +654,11 @@ Variables: Automatic, for full information.
      a makefile to set flags.
      *Note Communicating Options to a Sub-`make': Options/Recursion.
 
+     It is _never_ appropriate to use `MAKEFLAGS' directly on a command
+     line: its contents may not be quoted correctly for use in the
+     shell.  Always allow recursive `make''s to obtain these values
+     through the environment from its parent.
+
 `MAKECMDGOALS'
      The targets given to `make' on the command line.  Setting this
      variable has no effect on the operation of `make'.
@@ -435,12 +679,12 @@ Variables: Automatic, for full information.
      *Note Directory Search for Link Libraries: Libraries/Search.
 
 
-File: make.info,  Node: Make Errors,  Next: Complex Makefile,  Prev: Quick Reference,  Up: Top
+File: make.info,  Node: Error Messages,  Next: Complex Makefile,  Prev: Quick Reference,  Up: Top
 
 Errors Generated by Make
 ************************
 
-   Here is a list of the most common errors you might see generated by
+   Here is a list of the more common errors you might see generated by
 `make', and some information about what they mean and how to fix them.
 
    Sometimes `make' errors are not fatal, especially in the presence of
@@ -584,7 +828,7 @@ the file and linenumber containing the problem.
      proceed with its build in a sequential manner.
 
 
-File: make.info,  Node: Complex Makefile,  Next: Concept Index,  Prev: Make Errors,  Up: Top
+File: make.info,  Node: Complex Makefile,  Next: Concept Index,  Prev: Error Messages,  Up: Top
 
 Complex Makefile Example
 ************************

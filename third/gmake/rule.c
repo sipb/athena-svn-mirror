@@ -108,11 +108,15 @@ count_implicit_rule_limits ()
 	  unsigned int len = strlen (dep->name);
 
 #ifdef VMS
-	  char *p = rindex (dep->name, ']');
+	  char *p = strrchr (dep->name, ']');
+          char *p2;
+          if (p == 0)
+            p = strrchr (dep->name, ':');
+          p2 = p != 0 ? strchr (dep->name, '%') : 0;
 #else
-	  char *p = rindex (dep->name, '/');
+	  char *p = strrchr (dep->name, '/');
+	  char *p2 = p != 0 ? strchr (dep->name, '%') : 0;
 #endif
-	  char *p2 = p != 0 ? index (dep->name, '%') : 0;
 	  ndeps++;
 
 	  if (len > max_pattern_dep_length)
@@ -140,7 +144,7 @@ count_implicit_rule_limits ()
 
 	      dep->changed = !dir_file_exists_p (name, "");
 #ifdef VMS
-	      if (dep->changed && *name == ']')
+              if (dep->changed && strchr (name, ':') != 0)
 #else
 	      if (dep->changed && *name == '/')
 #endif
@@ -603,12 +607,12 @@ lookup_pattern_var (target)
         continue;
 
       /* Compare the text in the pattern after the stem, if any.
-         We could test simply use streq, but this way we compare the
+         We could test simply using streq, but this way we compare the
          first two characters immediately.  This saves time in the very
          common case where the first character matches because it is a
          period.  */
       if (*p->suffix == stem[stemlen]
-          && (*p->suffix == '\0'|| streq (&p->suffix[1], &stem[stemlen+1])))
+          && (*p->suffix == '\0' || streq (&p->suffix[1], &stem[stemlen+1])))
         break;
     }
 

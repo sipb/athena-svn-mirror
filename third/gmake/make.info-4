@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -77,7 +76,7 @@ because it will cause an infinite loop in the variable expansion.
 (Actually `make' detects the infinite loop and reports an error.)
 
    Another disadvantage is that any functions (*note Functions for
-Transforming Text: Functions.) referenced in the definition will be
+Transforming Text: Functions.)  referenced in the definition will be
 executed every time the variable is expanded.  This makes `make' run
 slower; worse, it causes the `wildcard' and `shell' functions to give
 unpredictable results because you cannot easily control when they are
@@ -92,8 +91,8 @@ is scanned once and for all, expanding any references to other
 variables and functions, when the variable is defined.  The actual
 value of the simply expanded variable is the result of expanding the
 text that you write.  It does not contain any references to other
-variables; it contains their values *as of the time this variable was
-defined*.  Therefore,
+variables; it contains their values _as of the time this variable was
+defined_.  Therefore,
 
      x := foo
      y := $(x) bar
@@ -145,11 +144,11 @@ protecting them with variable references, like this:
 
 Here the value of the variable `space' is precisely one space.  The
 comment `# end of the line' is included here just for clarity.  Since
-trailing space characters are *not* stripped from variable values, just
+trailing space characters are _not_ stripped from variable values, just
 a space at the end of the line would have the same effect (but be
 rather hard to read).  If you put whitespace at the end of a variable
 value, it is a good idea to put a comment like that at the end of the
-line to make your intent clear.  Conversely, if you do *not* want any
+line to make your intent clear.  Conversely, if you do _not_ want any
 whitespace characters at the end of your variable value, you must
 remember not to put a random comment on the end of the line after some
 whitespace, such as this:
@@ -483,7 +482,7 @@ values.
 
    When the variable in question has not been defined before, `+=' acts
 just like normal `=': it defines a recursively-expanded variable.
-However, when there *is* a previous definition, exactly what `+=' does
+However, when there _is_ a previous definition, exactly what `+=' does
 depends on what flavor of variable you defined originally.  *Note The
 Two Flavors of Variables: Flavors, for an explanation of the two
 flavors of variables.
@@ -534,7 +533,7 @@ The first line defines the `CFLAGS' variable with a reference to another
 variable, `includes'.  (`CFLAGS' is used by the rules for C
 compilation; *note Catalogue of Implicit Rules: Catalogue of Rules..)
 Using `=' for the definition makes `CFLAGS' a recursively-expanded
-variable, meaning `$(includes) -O' is *not* expanded when `make'
+variable, meaning `$(includes) -O' is _not_ expanded when `make'
 processes the definition of `CFLAGS'.  Thus, `includes' need not be
 defined yet for its value to take effect.  It only has to be defined
 before any reference to `CFLAGS'.  If we tried to append to the value
@@ -547,7 +546,7 @@ This is pretty close, but not quite what we want.  Using `:=' redefines
 text `$(CFLAGS) -pg' before setting the variable.  If `includes' is not
 yet defined, we get ` -O -pg', and a later definition of `includes'
 will have no effect.  Conversely, by using `+=' we set `CFLAGS' to the
-*unexpanded* value `$(includes) -O -pg'.  Thus we preserve the
+_unexpanded_ value `$(includes) -O -pg'.  Thus we preserve the
 reference to `includes', so if that variable gets defined at any later
 point, a reference like `$(CFLAGS)' still uses its value.
 
@@ -792,7 +791,7 @@ Conditional Parts of Makefiles
 depending on the values of variables.  Conditionals can compare the
 value of one variable to another, or the value of a variable to a
 constant string.  Conditionals control what `make' actually "sees" in
-the makefile, so they *cannot* be used to control shell commands at the
+the makefile, so they _cannot_ be used to control shell commands at the
 time of execution.
 
 * Menu:
@@ -921,9 +920,9 @@ that test different conditions.  Here is a table of them:
      the value results from complex expansions of variables and
      functions, expansions you would consider empty may actually
      contain whitespace characters and thus are not seen as empty.
-     However, you can use the `strip' function (*note Text
-     Functions::.) to avoid interpreting whitespace as a non-empty
-     value.  For example:
+     However, you can use the `strip' function (*note Text Functions::)
+     to avoid interpreting whitespace as a non-empty value.  For
+     example:
 
           ifeq ($(strip $(foo)),)
           TEXT-IF-EMPTY
@@ -1201,7 +1200,7 @@ Functions for String Substitution and Analysis
      The function `strip' can be very useful when used in conjunction
      with conditionals.  When comparing something with the empty string
      `' using `ifeq' or `ifneq', you usually want a string of just
-     whitespace to match the empty string (*note Conditionals::.).
+     whitespace to match the empty string (*note Conditionals::).
 
      Thus, the following may fail to have the desired results:
 
@@ -1229,8 +1228,8 @@ Functions for String Substitution and Analysis
      *Note Testing Flags::, for a practical application of `findstring'.
 
 `$(filter PATTERN...,TEXT)'
-     Returns all whitespace-separated words in TEXT that *do* match any
-     of the PATTERN words, removing any words that *do not* match.  The
+     Returns all whitespace-separated words in TEXT that _do_ match any
+     of the PATTERN words, removing any words that _do not_ match.  The
      patterns are written using `%', just like the patterns used in the
      `patsubst' function above.
 
@@ -1246,12 +1245,12 @@ Functions for String Substitution and Analysis
      command to the compiler.
 
 `$(filter-out PATTERN...,TEXT)'
-     Returns all whitespace-separated words in TEXT that *do not* match
-     any of the PATTERN words, removing the words that *do* match one
+     Returns all whitespace-separated words in TEXT that _do not_ match
+     any of the PATTERN words, removing the words that _do_ match one
      or more.  This is the exact opposite of the `filter' function.
 
-     Removes all whitespace-separated words in TEXT that *do* match the
-     PATTERN words, returning only the words that *do not* match.  This
+     Removes all whitespace-separated words in TEXT that _do_ match the
+     PATTERN words, returning only the words that _do not_ match.  This
      is the exact opposite of the `filter' function.
 
      For example, given:

@@ -222,7 +222,7 @@ construct_vpath_list (pattern, dirpath)
   maxelem = 2;
   p = dirpath;
   while (*p != '\0')
-    if (*p++ == PATH_SEPARATOR_CHAR || isblank (*p))
+    if (*p++ == PATH_SEPARATOR_CHAR || isblank ((unsigned char)*p))
       ++maxelem;
 
   vpath = (char **) xmalloc (maxelem * sizeof (char *));
@@ -230,7 +230,7 @@ construct_vpath_list (pattern, dirpath)
 
   /* Skip over any initial separators and blanks.  */
   p = dirpath;
-  while (*p == PATH_SEPARATOR_CHAR || isblank (*p))
+  while (*p == PATH_SEPARATOR_CHAR || isblank ((unsigned char)*p))
     ++p;
 
   elem = 0;
@@ -241,7 +241,8 @@ construct_vpath_list (pattern, dirpath)
 
       /* Find the end of this entry.  */
       v = p;
-      while (*p != '\0' && *p != PATH_SEPARATOR_CHAR && !isblank (*p))
+      while (*p != '\0' && *p != PATH_SEPARATOR_CHAR
+	     && !isblank ((unsigned char)*p))
 	++p;
 
       len = p - v;
@@ -274,7 +275,7 @@ construct_vpath_list (pattern, dirpath)
 	}
 
       /* Skip over separators and blanks between entries.  */
-      while (*p == PATH_SEPARATOR_CHAR || isblank (*p))
+      while (*p == PATH_SEPARATOR_CHAR || isblank ((unsigned char)*p))
 	++p;
     }
 
@@ -402,11 +403,11 @@ selective_vpath_search (path, file, mtime_ptr)
      NAME_DPLEN gets the length of the prefix; FILENAME gets the
      pointer to the name-within-directory and FLEN is its length.  */
 
-  n = rindex (*file, '/');
+  n = strrchr (*file, '/');
 #if defined (WINDOWS32) || defined (__MSDOS__)
   /* We need the rightmost slash or backslash.  */
   {
-    char *bslash = rindex(*file, '\\');
+    char *bslash = strrchr(*file, '\\');
     if (!n || bslash > n)
       n = bslash;
   }
@@ -524,10 +525,10 @@ selective_vpath_search (path, file, mtime_ptr)
 	      if (mtime_ptr != 0)
 		/* Store the modtime into *MTIME_PTR for the caller.
 		   If we have had no need to stat the file here,
-		   we record a zero modtime to indicate this.  */
+		   we record UNKNOWN_MTIME to indicate this.  */
 		*mtime_ptr = (exists_in_cache
-			      ? FILE_TIMESTAMP_STAT_MODTIME (st)
-			      : (FILE_TIMESTAMP) 0);
+			      ? FILE_TIMESTAMP_STAT_MODTIME (name, st)
+			      : UNKNOWN_MTIME);
 
 	      free (name);
 	      return 1;

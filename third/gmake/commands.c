@@ -46,7 +46,7 @@ set_file_variables (file)
   if (ar_name (file->name))
     {
       unsigned int len;
-      p = index (file->name, '(');
+      p = strchr (file->name, '(');
       at = (char *) alloca (p - file->name + 1);
       bcopy (file->name, at, p - file->name);
       at[p - file->name] = '\0';
@@ -75,7 +75,7 @@ set_file_variables (file)
 #ifndef	NO_ARCHIVES
       if (ar_name (file->name))
 	{
-	  name = index (file->name, '(') + 1;
+	  name = strchr (file->name, '(') + 1;
 	  len = strlen (name) - 1;
 	}
       else
@@ -108,7 +108,7 @@ set_file_variables (file)
     less = at;
 
 #define	DEFINE_VARIABLE(name, len, value) \
-  (void) define_variable_for_file (name, len, value, o_automatic, 0, file)
+  (void) define_variable_for_file (name,len,value,o_automatic,0,file)
 
   /* Define the variables.  */
 
@@ -146,7 +146,7 @@ set_file_variables (file)
 #ifndef	NO_ARCHIVES
 	if (ar_name (c))
 	  {
-	    c = index (c, '(') + 1;
+	    c = strchr (c, '(') + 1;
 	    len = strlen (c) - 1;
 	  }
 	else
@@ -188,7 +188,7 @@ set_file_variables (file)
 #ifndef	NO_ARCHIVES
 	if (ar_name (c))
 	  {
-	    c = index (c, '(') + 1;
+	    c = strchr (c, '(') + 1;
 	    len = strlen (c) - 1;
 	  }
 	else
@@ -233,93 +233,97 @@ void
 chop_commands (cmds)
      register struct commands *cmds;
 {
-  if (cmds != 0 && cmds->command_lines == 0)
-    {
-      /* Chop CMDS->commands up into lines in CMDS->command_lines.
+  register char *p;
+  unsigned int nlines, idx;
+  char **lines;
+
+  /* If we don't have any commands,
+     or we already parsed them, never mind.  */
+
+  if (!cmds || cmds->command_lines != 0)
+    return;
+
+  /* Chop CMDS->commands up into lines in CMDS->command_lines.
 	 Also set the corresponding CMDS->lines_flags elements,
 	 and the CMDS->any_recurse flag.  */
-      register char *p;
-      unsigned int nlines, idx;
-      char **lines;
 
-      nlines = 5;
-      lines = (char **) xmalloc (5 * sizeof (char *));
-      idx = 0;
-      p = cmds->commands;
-      while (*p != '\0')
-	{
-	  char *end = p;
-	find_end:;
-	  end = index (end, '\n');
-	  if (end == 0)
-	    end = p + strlen (p);
-	  else if (end > p && end[-1] == '\\')
-	    {
-	      int backslash = 1;
-	      register char *b;
-	      for (b = end - 2; b >= p && *b == '\\'; --b)
-		backslash = !backslash;
-	      if (backslash)
-		{
-		  ++end;
-		  goto find_end;
-		}
-	    }
+  nlines = 5;
+  lines = (char **) xmalloc (5 * sizeof (char *));
+  idx = 0;
+  p = cmds->commands;
+  while (*p != '\0')
+    {
+      char *end = p;
+    find_end:;
+      end = strchr (end, '\n');
+      if (end == 0)
+        end = p + strlen (p);
+      else if (end > p && end[-1] == '\\')
+        {
+          int backslash = 1;
+          register char *b;
+          for (b = end - 2; b >= p && *b == '\\'; --b)
+            backslash = !backslash;
+          if (backslash)
+            {
+              ++end;
+              goto find_end;
+            }
+        }
 
-	  if (idx == nlines)
-	    {
-	      nlines += 2;
-	      lines = (char **) xrealloc ((char *) lines,
-					  nlines * sizeof (char *));
-	    }
-	  lines[idx++] = savestring (p, end - p);
-	  p = end;
-	  if (*p != '\0')
-	    ++p;
-	}
+      if (idx == nlines)
+        {
+          nlines += 2;
+          lines = (char **) xrealloc ((char *) lines,
+                                      nlines * sizeof (char *));
+        }
+      lines[idx++] = savestring (p, end - p);
+      p = end;
+      if (*p != '\0')
+        ++p;
+    }
 
-      if (idx != nlines)
-	{
-	  nlines = idx;
-	  lines = (char **) xrealloc ((char *) lines,
-				      nlines * sizeof (char *));
-	}
+  if (idx != nlines)
+    {
+      nlines = idx;
+      lines = (char **) xrealloc ((char *) lines,
+                                  nlines * sizeof (char *));
+    }
 
-      cmds->ncommand_lines = nlines;
-      cmds->command_lines = lines;
+  cmds->ncommand_lines = nlines;
+  cmds->command_lines = lines;
 
-      cmds->any_recurse = 0;
-      cmds->lines_flags = (char *) xmalloc (nlines);
-      for (idx = 0; idx < nlines; ++idx)
-	{
-	  int flags = 0;
+  cmds->any_recurse = 0;
+  cmds->lines_flags = (char *) xmalloc (nlines);
+  for (idx = 0; idx < nlines; ++idx)
+    {
+      int flags = 0;
 
-	  for (p = lines[idx];
-	       isblank (*p) || *p == '-' || *p == '@' || *p == '+';
-	       ++p)
-	    switch (*p)
-	      {
-	      case '+':
-		flags |= COMMANDS_RECURSE;
-		break;
-	      case '@':
-		flags |= COMMANDS_SILENT;
-		break;
-	      case '-':
-		flags |= COMMANDS_NOERROR;
-		break;
-	      }
-	  if (!(flags & COMMANDS_RECURSE))
-	    {
-	      unsigned int len = strlen (p);
-	      if (sindex (p, len, "$(MAKE)", 7) != 0
-		  || sindex (p, len, "${MAKE}", 7) != 0)
-		flags |= COMMANDS_RECURSE;
-	    }
+      for (p = lines[idx];
+           isblank ((unsigned char)*p) || *p == '-' || *p == '@' || *p == '+';
+           ++p)
+        switch (*p)
+          {
+          case '+':
+            flags |= COMMANDS_RECURSE;
+            break;
+          case '@':
+            flags |= COMMANDS_SILENT;
+            break;
+          case '-':
+            flags |= COMMANDS_NOERROR;
+            break;
+          }
+      if (!(flags & COMMANDS_RECURSE))
+        {
+          unsigned int len = strlen (p);
+          if (sindex (p, len, "$(MAKE)", 7) != 0
+              || sindex (p, len, "${MAKE}", 7) != 0)
+            flags |= COMMANDS_RECURSE;
+        }
 
-	  cmds->lines_flags[idx] = flags;
-	  cmds->any_recurse |= flags & COMMANDS_RECURSE;
-	}
+      cmds->lines_flags[idx] = flags;
+      cmds->any_recurse |= flags & COMMANDS_RECURSE;
     }
 }
 
@@ -337,13 +341,11 @@ execute_file_commands (file)
      the commands are nothing but whitespace.  */
 
   for (p = file->cmds->commands; *p != '\0'; ++p)
-    if (!isspace (*p) && *p != '-' && *p != '@')
+    if (!isspace ((unsigned char)*p) && *p != '-' && *p != '@')
       break;
   if (*p == '\0')
     {
-      /* We are all out of commands.
-	 If we have gotten this far, all the previous commands
-	 have run successfully, so we have winning update status.  */
+      /* If there are no commands, assume everything worked.  */
       set_command_state (file, cs_running);
       file->update_status = 0;
       notice_finished_file (file);
@@ -352,7 +354,7 @@ execute_file_commands (file)
 
   /* First set the automatic variables according to this file.  */
 
-  initialize_file_variables (file);
+  initialize_file_variables (file, 0);
 
   set_file_variables (file);
 
@@ -475,7 +477,10 @@ delete_target (file, on_behalf_of)
 #ifndef NO_ARCHIVES
   if (ar_name (file->name))
     {
-      if (ar_member_date (file->name) != FILE_TIMESTAMP_S (file->last_mtime))
+      time_t file_date = (file->last_mtime == NONEXISTENT_MTIME
+			  ? (time_t) -1
+			  : (time_t) FILE_TIMESTAMP_S (file->last_mtime));
+      if (ar_member_date (file->name) != file_date)
 	{
 	  if (on_behalf_of)
 	    error (NILF, _("*** [%s] Archive member `%s' may be bogus; not deleted"),
@@ -490,7 +495,7 @@ delete_target (file, on_behalf_of)
 
   if (stat (file->name, &st) == 0
       && S_ISREG (st.st_mode)
-      && FILE_TIMESTAMP_STAT_MODTIME (st) != file->last_mtime)
+      && FILE_TIMESTAMP_STAT_MODTIME (file->name, st) != file->last_mtime)
     {
       if (on_behalf_of)
 	error (NILF, _("*** [%s] Deleting file `%s'"), on_behalf_of, file->name);
@@ -546,10 +551,10 @@ print_commands (cmds)
     {
       char *end;
 
-      while (isspace (*s))
+      while (isspace ((unsigned char)*s))
 	++s;
 
-      end = index (s, '\n');
+      end = strchr (s, '\n');
       if (end == 0)
 	end = s + strlen (s);
 

@@ -1,3 +1,801 @@
+2000-06-23  Paul D. Smith  <psmith@gnu.org>
+
+	* Version 3.79.1 released.
+
+	* configure.in: Add a new option, --disable-nsec-timestamps, to
+	avoid using sub-second timestamps on systems that support it.  It
+	can lead to problems, e.g. if your makefile relies on "cp -p".
+	* README.template: Document the issue with "cp -p".
+
+	* config.guess, config.sub: Updated.
+
+2000-06-22  Paul D. Smith  <psmith@gnu.org>
+
+	* job.c (start_job_command): Increment commands_started before the
+	special check for ":" (empty command) to avoid spurious "is up to
+	date" messages.  Also move the test for question_flag after we
+	expand arguments, and only stop if the expansion provided an
+	actual command to run, not just whitespace.  This fixes PR/1780.
+
+2000-06-21  Paul D. Smith  <psmith@gnu.org>
+
+	* read.c (read_makefile): If we find a semicolon in the target
+	definition, remember where it was.  If the line turns out to be a
+	target-specific variable, add back the semicolon and everything
+	after it.  Fixes PR/1709.
+
+2000-06-19  Paul D. Smith  <psmith@gnu.org>
+
+	* config.h-vms.template: #define uintmax_t for this system.
+	* config.ami.template: Ditto.
+	* config.h.W32.template: Ditto.
+
+	* configure.in: We don't use select(2) anymore, so don't bother
+	checking for it.
+	* acconfig.h: Ditto.
+	* acinclude.m4: Ditto.
+
+	* file.c (all_secondary): New static global; if 1 it means
+	.SECONDARY with no prerequisites was seen in the makefile.
+	(snap_deps): Set it appropriately.
+	(remove_intermediates): Check it.
+	(num_intermediates): Remove this global, it's not used anywhere.
+	(considered): Move this to remake.c and make it static.
+
+	* NEWS: Document the change to .SECONDARY.
+	* make.texinfo (Special Targets): Document the change to .SECONDARY.
+
+	* implicit.c (pattern_search): Remove the increment of
+	num_intermediates; it's not used.
+	* filedef.h: Remove num_intermediates and considered.
+
+	* function.c (handle_function): If the last argument was empty, we
+	were pretending it didn't exist rather than providing an empty
+	value.  Keep looking until we're past the end, not just at the end.
+
+	* implicit.c (pattern_search): Multi-target implicit rules weren't
+	expanding the "also made" targets correctly if the pattern didn't
+	contain a slash but the target did; in that case the directory
+	part wasn't being added back to the stem on the "also made"
+	targets.  Reported by Seth M LaForge <sethml@newtonlabs.com>, with
+	a patch.
+
+2000-06-17  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* Makefile.DOS.template (DESTDIR, bindir, datadir, libdir)
+	(infodir, mandir, includedir): Support installation under a
+	non-default DESTDIR.
+
+	* remake.c (f_mtime): Fix the spelling of __MSDOS__.
+
+	* configh.DOS.template (HAVE_FDOPEN, HAVE_MKSTEMP): Define.
+
+2000-06-14  Paul D. Smith  <psmith@gnu.org>
+
+	* acinclude.m4 (pds_WITH_GETTEXT): rewrite fp_WITH_GETTEXT and
+	rename it to avoid confusion.  This version is very specific: it
+	won't accept any gettext that isn't GNU.  If the user doesn't
+	explicitly ask for the included gettext, we look to see if the
+	system gettext is GNU (testing both the actual libintl library,
+	and the libintl.h header file).  Only if the system gettext is
+	really GNU gettext will we allow it to be used.
+	(pds_CHECK_SYSTEM_GETTEXT): A helper function.
+
+2000-06-13  Paul D. Smith  <psmith@gnu.org>
+
+	* gettext.h: If we have libintl.h, use that instead of any of the
+	contents of gettext.h.  We won't check for libintl.h unless we're
+	using the system gettext.
+
+	* function.c (func_word): Clarify error message.
+
+2000-06-10  Paul Eggert  <eggert@twinsun.com>
+
+	Support nanosecond resolution on hosts with 64-bit time_t and
+	uintmax_t (e.g. 64-bit Sparc Solaris), by splitting
+	FILE_TIMESTAMP into a 30-bit part for nanoseconds, with the
+	rest for seconds, if FILE_TIMESTAMP is at least 64 bits wide.
+
+	* make.h: Always define FILE_TIMESTAMP to be uintmax_t, for
+	simplicity.
+
+	* filedef.h (FILE_TIMESTAMP_HI_RES, FILE_TIMESTAMP_LO_BITS)
+	(UNKNOWN_MTIME, NONEXISTENT_MTIME, OLD_MTIME)
+	(ORDINARY_MTIME_MIN, ORDINARY_MTIME_MAX): New macros.
+	(FILE_TIMESTAMP_STAT_MODTIME): Now takes fname arg.  All uses changed.
+	(FILE_TIMESTAMP_DIV, FILE_TIMESTAMP_MOD)
+	(FILE_TIMESTAMP_FROM_S_AND_NS): Remove.
+	(FILE_TIMESTAMP_S, FILE_TIMESTAMP_NS): Use shifts instead of
+	multiplication and division.  Offset the timestamps by
+	ORDINARY_MTIME_MIN.
+	(file_timestamp_cons): New decl.
+	(NEW_MTIME): Now just the maximal timestamp value, as we no longer use
+	-1 to refer to nonexistent files.
+
+	* file.c (snap_deps, print_file): Use NONEXISTENT_MTIME,
+	UNKNOWN_MTIME, and OLD_MTIME instead of magic constants.
+	* filedef.h (file_mtime_1): Likewise.
+	* main.c (main): Likewise.
+	* remake.c (update_file_1, notice_finished_file, check_dep)
+	(f_mtime, name_mtime, library_search): Likewise.
+	* vpath.c (selective_vpath_search): Likewise.
+
+	* remake.c (f_mtime): Do not assume that (time_t) -1 equals
+	NONEXISTENT_MTIME.  When futzing with time stamps, adjust by
+	multiples of 2**30, not 10**9.  Do not calculate timestamp
+	adjustments on DOS unless they are needed.
+
+	* commands.c (delete_target): Do not assume that
+	FILE_TIMESTAMP_S yields -1 for a nonexistent file, as that is
+	no longer true with the new representation.
+
+	* file.c (file_timestamp_cons): New function, replacing
+	FILE_TIMESTAMP_FROM_S_AND_NS.  All uses changed.
+	(file_timestamp_now): Use FILE_TIMESTAMP_HI_RES instead of 1 <
+	FILE_TIMESTAMPS_PER_S to determine whether we're using hi-res
+	timestamps.
+	(print_file): Print OLD_MTIME values as "very old" instead of
+	as a timestamp.
+
+2000-05-31  Paul Eggert  <eggert@twinsun.com>
+
+	* remake.c (name_mtime): Check for stat failures.  Retry if EINTR.
+
+2000-05-24  Paul D. Smith  <psmith@gnu.org>
+
+	* main.c (decode_switches): The "positive_int" switch uses atoi()
+	which succeeds for any input, and doesn't notice if extra,
+	non-digit text is after the number.  This causes make to mis-parse
+	command lines like "make -j 5foo" as "make -j5" (ignoring "foo"
+	completely) instead of "make -j0 5foo" (where "5foo" is a
+	target).  Fix this by checking the value by hand.  We could use
+	strtol() if we were sure of having it; this is the only
+	questionable use of atoi() I found so we'll just stick with that.
+	Fixes PR/1716.
+
+	* i18n/ja.po, i18n/nl.po, i18n/pt_BR.po: New translation files.
+	* configure.in (ALL_LINGUAS): Added pt_BR.
+
+2000-05-22  Paul Eggert  <eggert@twinsun.com>
+
+	* remake.c (f_mtime): Fix bug when handling future odd
+	timestamps in the WINDOWS32 case.  Do not bother initializing
+	static var to zero.  Simplify code that works around WINDOWS32
+	and __MSDOS__ time skew brain damage.
+
+2000-05-22  Paul Eggert  <eggert@twinsun.com>
+
+	* job.c: Don't include time.h, as make.h already does this.
+
+2000-05-22  Paul Eggert  <eggert@twinsun.com>
+
+	* configure.in (AC_CHECK_HEADERS): Add sys/time.h.
+	(AC_HEADER_TIME): Add.
+	(clock_gettime): Prefer -lrt to -lposix4, for Solaris 7.
+	(gettimeofday): Add check for standard version of gettimeofday.
+	This merges changes written by Paul D. Smith.
+
+	* file.c (file_timestamp_now):  Use gettimeofday if available
+	and if clock_gettime does not work.  Don't bother with
+	high-resolution clocks if file timestamps have only one-second
+	resolution.
+
+	* make.h <sys/time.h>: Include, conditionally on the usual
+	TIME_WITH_SYS_TIME and HAVE_SYS_TIME_H macros.  This is needed
+	for gettimeofday.
+
+2000-05-20  Paul D. Smith  <psmith@gnu.org>
+
+	* read.c (read_makefile): We weren't keeping makefile names around
+	unless there was a rule defined in them; but now we need to keep
+	them for variables as well.  Forget trying to be fancy: just keep
+	every makefile name we successfully open.
+
+	* remote-cstms.c (start_remote_job_p): Change DB_EXTRA (?) to DB_JOBS.
+
+2000-05-17  Paul Eggert  <eggert@twinsun.com>
+
+	* commands.c (chop_commands): Ensure ctype macro args are nonnegative.
+	* expand.c (variable_expand_string): Likewise.
+	* function.c (subst_expand, lookup_function, msdos_openpipe):
+	Likewise.
+	* job.c (vms_redirect, start_job_command, new_job, child_execute_job,
+	construct_command_argv_internal, construct_command_argv): Likewise.
+	* main.c (decode_env_switches, quote_for_env): Likewise.
+	* misc.c (collapse_continuations, end_of_token, end_of_token_w32,
+	next_token): Likewise.
+	* read.c (read_makefile, do_define, conditional_line,
+	find_char_unquote,get_next_mword): Likewise.
+	* variable.c (try_variable_definition): Likewise.
+	* vpath.c (construct_vpath_list): Likewise.
+	* w32/pathstuff.c (convert_vpath_to_windows32): Likewise.
+
+2000-05-10  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* main.c (main) [__MSDOS__]: Add SIGFPE to signals we block when
+	running child programs, to prevent Make from dying on Windows 9X
+	when the child triggers an FP exception.
+
+2000-05-08  Paul D. Smith  <psmith@gnu.org>
+
+	* dir.c (find_directory) [WINDOWS32]: If we strip a trailing "\"
+	from the directory name, remember to add it back.  The argument
+	might really be inside a longer string (e.g. %Path%) and if you
+	don't restore the "\" it'll be truncated permanently.  Fixes PR/1722.
+	Reported by <steven@surfcast.com>
+
+2000-05-02  Paul D. Smith  <psmith@gnu.org>
+
+	* job.c (construct_command_argv_internal) [WINDOWS32]: Added "rd"
+	and "rmdir" to the list of command.com commands.
+	Reported by Elod Horvath <Elod_Horvath@lnotes5.bankofny.com>
+
+2000-04-24  Paul D. Smith  <psmith@gnu.org>
+
+	* i18n/ja.po: New translation file from the Japanese language team.
+
+2000-04-18  Paul D. Smith  <psmith@gnu.org>
+
+	* remake.c (f_mtime): If ar_member_date() returns -1 (the member
+	doesn't exist), then return (FILE_TIMESTAMP)-1 rather than
+	returning the timestamp calculated from the value -1.  Fixes PR/1696.
+	Reported by Gilles Bourhis <Gilles.Bourhis@univ-rennes1.fr>.
+
+2000-04-17  Paul D. Smith  <psmith@gnu.org>
+
+	* config.h.W32.template: Add LOCALEDIR macro resolving to "".
+	* w32/subproc/sub_proc.c (process_begin): Remove reference to
+	debug_flag; change it to a DB() call.  Fixes PR/1700.
+	Reported by Jim Smith <jwksmith@attglobal.net>
+
+2000-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* arscan.c [BeOS]: Add replacement for nonexistent <ar.h> from GNU
+	binutils.
+
+2000-04-11  Paul D. Smith  <psmith@gnu.org>
+
+	* function.c (expand_builtin_function): If no arguments were
+	provided, just quit early rather than changing each function to
+	test for this.
+	(function_table[]): Change the min # of arguments to 0 for all
+	those functions for which it makes sense (currently everything
+	that used to take a minimum of 1 argument, except $(call ...)).
+	Fixes PR/1689.
+
+2000-04-09  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* README.DOS: Add instructions to install a binary distro.
+	Mention latest versions of Windows.
+
+2000-04-07  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* main.c (main): Rename TMP_TEMPLATE into DEFAULT_TMPDIR, and use
+	it for the directory of the temporary file.  If P_tmpdir is
+	defined, use it in preference to "/tmp/".  Try $TMPDIR, $TEMP, and
+	$TMP in the environment before defaulting to DEFAULT_TMPDIR.
+	(print_version): Add year 2000 to the Copyright line.
+
+2000-04-04  Paul D. Smith  <psmith@gnu.org>
+
+	* Version 3.79 released.
+
+	* make.texinfo: Update documentation with new features for 3.79.
+
+	* function.c (func_wordlist): Don't re-order arguments to
+	wordlist.
+
+2000-04-03  Paul D. Smith  <psmith@gnu.org>
+
+	* remake.c (f_mtime): Archive member timestamps are stored as
+	time_t, without nanoseconds.  But, f_mtime() wants to return
+	nanosecond info on those systems that support it.  So, convert the
+	return value of ar_member_date() into a FILE_TIMESTAMP, using 0 as
+	the nanoseconds.
+
+2000-03-28  Paul D. Smith  <psmith@gnu.org>
+
+	* Version 3.78.92 released.
+
+	* build.template: Updates for gettext support; some bugs fixed.
+
+2000-03-27  Paul D. Smith  <psmith@gnu.org>
+
+	* config.guess, config.sub: Updated from config CVS archive at
+	:pserver:anoncvs@subversions.gnu.org:/home/cvs as of today.
+
+	* read.c (record_files): Check if expanding a static pattern
+	rule's prerequisite pattern leaves an empty string as the
+	prerequisite, and issue an error if so.  Fixes PR/1670.
+	(read_makefile): Store the starting linenumber for a rule in
+	TGTS_STARTED.
+	(record_waiting_files): Use the TGTS_STARTED value for the file
+	location passed to record_file() instead of the current
+	linenumber, so error messages list the line where the target was
+	defined instead of the line after the end of the rule definition.
+
+	* remake.c (start_updating, finish_updating, is_updating): Fix
+	PR/1671; circular dependencies in double-colon rules are not
+	diagnosed.  These macros set the updating flag in the root
+	double-colon file instead of the current one, if it's part of a
+	double-colon list.  This solution provided by Tim Magill
+	<magill@gate.net>; I just changed the macro names :).
+	(update_file_1): Call them.
+	(check_dep): Call them.
+
+	The change to not automatically evaluate the $(call ...)
+	function's arguments breaks recursive use of call.  Although using
+	$(if ...) and $(foreach ...) in $(call ...) macros is important,
+	the error conditions generated are simply to obscure for me to
+	feel comfortable with.  If a method is devised to get both
+	working, we'll revisit.  For now, remove this change.
+
+	* function.c (function_table): Turn on the expand bit for func_call.
+	(func_call): Don't expand arguments for builtin functions; that
+	will have already been done.
+
+2000-03-26  Paul D. Smith  <psmith@gnu.org>
+
+	* file.c (remove_intermediates): Never remove targets explicitly
+	requested on the command-line by checking the cmd_target flag.
+	Fixed PR/1669.
+
+2000-03-23  Paul Eggert  <eggert@twinsun.com>
+
+	* filedef.h (FILE_TIMESTAMP_STAT_MODTIME): Use st_mtime instead of
+	st_mtim.tv_sec; the latter doesn't work on Unixware.
+
+2000-03-18  Paul D. Smith  <psmith@gnu.org>
+
+	* file.c (file_hash_enter): If we're trying to change a file into
+	itself, just return.  We used to assert this wasn't true, but
+	someone came up with a weird case involving archives.  After
+	playing with it for a while I decided it was OK to ignore it.
+
+	* default.c: Define COFLAGS to empty to avoid spurious warnings.
+
+	* filedef.h: Change #if ST_MTIM_NSEC to #ifdef; this is a macro
+	containing the name of the nsec field, not true/false.
+	* make.h: Ditto.
+	Reported by Marco Franzen <Marco.Franzen@Thyron.com>.
+
+2000-03-08  Tim Magill  <magill@gate.net>
+
+	* remake.c (update_file): Return the exit status of the pruned
+	file when pruning, not just 0.  Fixes PR/1634.
+
+2000-02-24  Paul D. Smith  <psmith@gnu.org>
+
+	* configure.in: Close a minor potential security hole; if you're
+	reading makefiles from stdin (who does that?) you could run into a
+	race condition with the temp file using mktemp() or tmpnam().  Add
+	a check for mkstemp() and fdopen().
+	* main.c (open_tmpfile): New function to open a temporary file.
+	If we have mkstemp() (and fdopen()), use that.  If not use
+	mktemp() or tmpnam().  If we have fdopen(), use open() to open the
+	file O_CREAT|O_EXCL.  If not, fall back to normal fopen() (insecure).
+	(main): Call it.
+	* job.c (child_execute_job) [VMS]: Call it.
+
+	* variable.c (lookup_variable): If we find a variable which is
+	being expanded, then note it but keep looking through the rest of
+	the set list to see if we can find one that isn't.  If we do,
+	return that.  If we don't, return the original.  Fix for PR/1610.
+
+	While implementing this I realized that it also solves PR/1380 in
+	a much more elegant way.  I don't know what I was smoking before.
+	So, remove the hackage surrounding the original fix for that (see
+	below).  Change this function back to lookup_variable and remove
+	the extra setlist argument.
+	* variable.h (recursively_expand_setlist): Remove the macro,
+	rename the prototype, and remove the extra setlist argument.
+	(lookup_variable): Ditto.
+	* expand.c (recursively_expand): Rename and remove the extra
+	setlist argument.
+	(reference_variable): Use lookup_variable() again.
+	(allocated_variable_append): Remove the extra setlist argument.
+
+2000-02-21  Paul D. Smith  <psmith@gnu.org>
+
+	* README.template: A few updates.
+
+	* i18n/de.po: New version from the German translation team.
+
+2000-02-09  Paul D. Smith  <psmith@gnu.org>
+
+	* Version 3.78.91 released.
+
+2000-02-07  Paul D. Smith  <psmith@gnu.org>
+
+	* read.c (read_makefile): Reset *p2 to ':', not *colonp.  If any
+	filenames contained backslashes the resulting output (without
+	backslashes) will be shorter, so setting *colonp doesn't change
+	the right character.  Fix for PR/1586.
+
+	For += target-specific variables we need to remember which
+	variable set we found the variable in, so we can start looking
+	from there in the next iteration (otherwise we might see it again
+	in recursively_expand and fail!).  This is turning into a hack; if
+	it gets any worse we'll have to rethink this entire algorithm...
+	implementing expansion of these references separately from the
+	"normal" expansion, say, instead of using the same codepath.
+	Actually, it's already "worse enough" :-/.
+	Fix for PR/1380.
+
+	* variable.h (recursively_expand_setlist): Rename
+	recursively_expand to add a struct variable_set_list argument, and
+	make a macro for recursively_expand.
+	(lookup_variable_setlist): Rename lookup_variable to add a struct
+	variable_set_list argument, and make a macro for lookup_variable.
+
+	* expand.c (recursively_expand_setlist): Take an extra struct
+	variable_set_list argument and pass it to allocated_variable_append().
+	(reference_variable): Use lookup_variable_setlist() and pass the
+	returned variable_set_list to recursively_expand_setlist.
+	(allocated_variable_append): Take an extra setlist argument and
+	use this as the starting place when searching for the appended
+	expansion.  If it's null, use current_variable_set_list as before.
+
+	* variable.c (lookup_variable_setlist): If the LISTP argument is
+	not nil, set it to the list containing the variable we found.
+
+2000-02-04  Paul D. Smith  <psmith@gnu.org>
+
+	* variable.c (print_variable): Write out filename/linenumber
+	information for the variable definition if present.
+	(define_variable_in_set): Store filename information if provided.
+	(define_variable, define_variable_for_file): Removed.
+	(try_variable_definition): Use define_variable_loc() to keep
+	variable definition location information.
+	* read.c (read_makefile): Keep variable definition location info.
+	(do_define): Ditto.
+	(record_target_var): Ditto.
+	* variable.h (define_variable_in_set): New fileinfo argument.
+	(define_variable, define_variable_loc, define_variable_for_file):
+	Declare new macros.
+
+	Fix PR/1407:
+
+	* filedef.h (struct file): Rename patvar to pat_variables and make
+	it just a variable_set_list; we need our own copy of the pattern
+	variable's variable set list here to avoid overwriting the global
+	one.
+	* variable.c (initialize_file_variables): Move the instantiation
+	of the pat_variables pointer here.  Only do the search after we're
+	done reading the makefiles so we don't search too early.  If
+	there's a pat_variables value, set up the variables next ptr.
+	* expand.c (variable_expand_for_file): Remove the setup of the
+	pat_variables info; it's done earlier now to ensure the parent's
+	pattern variables are set up correctly as well.
+
+2000-02-03  Paul D. Smith  <psmith@gnu.org>
+
+	* job.c (sh_chars_dos) [WINDOWS32]: Add "&" as a shell
+	metacharacter for the W32 DOS shell.
+	Reported by Warren Jones <wjones@tc.fluke.com>.
+
+2000-02-02  Paul D. Smith  <psmith@gnu.org>
+
+	Fixes for the OpenVMS port from Hartmut Becker <becker@rto.dec.com>
+
+	* config.h-vms [VMS]: Define LOCALEDIR to something; needed for
+	the expansion of bindtextdomain() even though it's a no-op.
+	* vmsfunctions.c (strcmpi): Remove duplicate definition of strcmpi().
+	(readdir): Use DB() instead of testing debug_flag.
+	* dir.c (file_impossible) [VMS]: Search "p" not "name".
+	* job.c [VMS]: Switch from debug_flag to the new DB macro.  Add
+	some i18n _() macros (even though VMS doesn't yet support it).
+
+	* function.c (patsubst_expand): Change "len" to not be unsigned to
+	avoid type mismatches.
+
+	* main.c (main): Declare signame_init() if we're going to call it.
+
+2000-01-29  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* Makefile.DOS.template: Track changes in Makefile.in
+	(install-recursive, uninstall-recursive): Add missing targets.
+	(DESTDIR): Define.
+	(install-binPROGRAMS, uninstall-binPROGRAMS): Use $(DESTDIR).
+
+	* default.c (default_variables) [__MSDOS__]: Define CXX to gpp.
+
+2000-01-27  Paul D. Smith  <psmith@gnu.org>
+
+	* gettext.c: Some warning cleanups, and a fix for systems which
+	don't define HAVE_ALLOCA (the workaround code was included
+	twice).
+
+2000-01-26  Paul D. Smith  <psmith@gnu.org>
+
+	* Version 3.78.90 released.
+
+2000-01-25  Paul D. Smith  <psmith@gnu.org>
+
+	Change gettext support to use the simplified version in libit 0.7.
+
+	* getopt.c, make.h: Use gettext.h instead of libintl.h.
+	* ABOUT-NLS, gettext.h, gettext.c: New files from libit 0.7.
+	Modified to remove some static declarations which aren't defined.
+	* acconfig.h: Use new gettext #defines.
+	* acinclude.m4: Add fp_WITH_GETTEXT; remove AM_GNU_GETTEXT.
+	* configure.in: Call fp_WITH_GETTEXT instead.
+	* Makefile.am: New gettext stuff.  Also force inclusion of glob
+	files for systems which have LIBC glob.
+
+	* i18n/Makefile.am, i18n/.cvsignore: New dir for translation files.
+	* i18n/de.po, i18n/es.po, i18n/fr.po, i18n/ko.po, i18n/nl.po:
+	* i18n/pl.po, i18n/ru.po: Import translations already done for
+	earlier versions of GNU make.  Thanks for that work!!
+
+	* po/Makefile.in.in, po/POTFILES.in: Removed.
+
+2000-01-23  Paul D. Smith  <psmith@gnu.org>
+
+	* main.c (decode_debug_flags): If debug_flag is set, enable all
+	debugging levels.
+	(debug_flag): Resurrect this flag variable.
+	(switches): Make -d give the old behavior of turning on all
+	debugging.  Change --debug alone to emit basic debugging and take
+	optional arguments to expand debugging.
+	* NEWS: Document the new debugging options.
+
+	* remake.c (no_rule_error): Remove this function.  This tries to
+	fix a real problem--see the description with the introduction of
+	this function below.  However, the cure is worse than the disease
+	and this approach won't work.
+	(remake_file): Put the code from no_rule_error back here.
+	(update_file_1): Remove call to no_rule_error.
+
+	* filedef.h (struct file): Remove mfile_status field.
+
+2000-01-22  Paul D. Smith  <psmith@gnu.org>
+
+	Integrate GNU gettext support.
+
+	* configure.in: Add AM_GNU_GETTEXT.
+	* Makefile.am: Add options for setting LOCALEDIR, -Iintl, etc.
+	* acinclude.m4: Add gettext autoconf macros.
+	* acconfig.h: Add new gettext #defines.
+	* make.h: Include libintl.h.  Make sure _() and N_() macros are
+	declared.  Make gettext() an empty macro is NLS is disabled.
+	* main.c (struct command_switch switches[]): Can't initialize
+	static data with _() (gettext calls), so use N_() there then use
+	gettext() directly when printing the strings.
+	* remake.c (no_rule_error): The string constants can't be static
+	when initializing _() macros.
+	* file.c (print_file): Reformat a few strings to work better for
+	translation.
+	* po/POTFILES.in, po/Makefile.in.in: New files.  Take
+	Makefile.in.in from the latest GNU tar distribution, as that
+	version works better than the one that comes with gettext.
+	* NEWS: Mention i18n ability.
+
+2000-01-21  Paul D. Smith  <psmith@gnu.org>
+
+	Installed patches for the VMS port.
+	Patches provided by: Hartmut Becker <Hartmut.Becker@compaq.com>
+
+	* readme.vms, arscan.c, config.h-vms, default.c, dir.c, file.c:
+	* implicit.c, job.c, make.h, makefile.com, makefile.vms, rule.c:
+	* variable.c, vmsdir.h, vmsfunctions.c, vmsify.c, glob/glob.c:
+	* glob/glob.h: Installed patches.  See readme.vms for details.
+
+2000-01-14  Andreas Schwab  <schwab@suse.de>
+
+	* dir.c (read_dirstream): Initialize d_type if it exists.
+
+2000-01-11  Paul D. Smith  <psmith@gnu.org>
+
+	Resolve PR/xxxx: don't automatically evaluate the $(call ...)
+	function's arguments.  While we're here, clean up argument passing
+	protocol to always use simple nul-terminated strings, instead of
+	sometimes using offset pointers to mark the end of arguments.
+	This change also fixes PR/1517.
+	Reported by Damien GIBOU <damien.gibou@st.com>.
+
+	* function.c (struct function_table_entry): Remove the negative
+	required_args hack; put in explicit min and max # of arguments.
+	(function_table): Add in the max value.  Turn off the expand bit
+	for func_call.
+	(expand_builtin_function): Test against minimum_args instead of
+	the obsolete required_args.
+	(handle_function): Rewrite this.  We don't try to be fancy and
+	pass one style of arguments to expanded functions and another
+	style to non-expanded functions: pass pointers to nul-terminated
+	strings to all functions.
+	(func_call): Rewrite this.  If we are invoking a builtin function
+	and it's supposed to have its arguments expanded, do that (since
+	it's not done by handle_function for $(call ...) anymore).  For
+	non-builtins, just add the variables as before but mark them as
+	recursive so they'll be expanded later, as needed.
+	(func_if): All arguments are vanilla nul-terminated strings:
+	remove trickery with "argv[1]-1".
+	(func_foreach): Ditto.
+
+	* expand.c (expand_argument): If the second arg is NULL, expand
+	the entire first argument.
+
+	* job.c (new_job): Zero the child struct.  This change was just
+	made to keep some heap checking software happy, not because there
+	was an actual bug (the important memory was being cleared properly).
+
+1999-12-15  Paul D. Smith  <psmith@gnu.org>
+
+	* variable.c (print_variable): Print the variable with += if the
+	append flag is set.
+
+	* implicit.c (pattern_search): Remove the extra check of the
+	implicit flag added on 8/24/1998.  This causes problems and the
+	reason for the change was better resolved by the change made to
+	check_deps() on 1998-08-26.  This fixes PR/1423.
+
+1999-12-08  Paul D. Smith  <psmith@gnu.org>
+
+	* dir.c (dir_setup_glob): On 64 bit ReliantUNIX (5.44 and above)
+	in LFS mode, stat() is actually a macro for stat64().  Assignment
+	doesn't work in that case.  So, stat is a macro, make a local
+	wrapper function to invoke it.
+	(local_stat): Wrapper function, if needed.
+	Reported by Andrej Borsenkow <Andrej.Borsenkow@mow.siemens.ru>.
+
+1999-12-02  Paul D. Smith  <psmith@gnu.org>
+
+	* remake.c (update_file): Move the considered test outside the
+	double-colon loop, _but_ make sure we test the double_colon target
+	not the "current" target.  If we stop early because one
+	double-colon target is running, mark all the rest considered and
+	try to start their prerequisites (so they're marked considered).
+	Fix for PR/1476 suggested by Tim Magill <tim.magill@telops.gte.com>.
+
+1999-11-22  Rob Tulloh  <rob_tulloh@dev.tivoli.com>
+
+	* function.c (windows32_openpipe, func_shell): Correct Windows32
+	problem where $(shell nosuchfile) would incorrectly exit make. The
+	fix is to print the error and let make continue.
+	Reported by David Masterson <David.Masterson@kla-tencor.com>.
+
+	* w32/subproc/misc.c (arr2envblk): Memory leak fix.
+
+1999-11-21  Paul D. Smith  <psmith@gnu.org>
+
+	Rework GNU make debugging to provide different levels of output.
+
+	* NEWS: mention it.
+	* debug.h: New file.  Define various debugging levels and macros.
+	* function.c, implicit.c, job.c, main.c, misc.c, read.c, remake.c
+	* remote-cstms.c, vmsfunctions.c: Replace all code depending on
+	debug_flag with invocations of debugging macros.
+	* make.h: Remove debug_flag and DEBUGPR, add db_level.
+
+1999-11-18  Paul Eggert  <eggert@twinsun.com>
+
+	* acinclude.m4 (AC_SYS_LARGEFILE_FLAGS): Work around a problem
+	with the QNX 4.25 shell, which doesn't propagate exit status of
+	failed commands inside shell assignments.
+
+1999-11-17  Paul D. Smith  <psmith@gnu.org>
+
+	* function.c (func_if): Find the end of the arg list by testing
+	the next item for NULL; any other test is not correct.
+	Reported by Graham Reed <grahamr@algorithmics.com> (PR/1429).
+
+	Fix += when used in a target-specific variable context.
+
+	* variable.h: New bitfield APPEND set if we have a +=
+	target-specific variable.
+
+	* variable.c (try_variable_definition): Add an argument to specify
+	if we're trying a target-specific variable.  If we are and it's an
+	append style, don't append it, record it as normal recursive, but
+	set the APPEND flag so it'll be expanded later.
+	* main.c (handle_non_switch_argument): Use new
+	try_variable_definition() signature.
+	* read.c (read_makefile,record_target_var): Ditto.
+
+	* expand.c (allocated_variable_append): New function: like
+	allocated_variable_expand(), but we expand the same variable name
+	in the context of the ``next'' variable set, then we append this
+	expanded value.
+	(recursively_expand): Invoke it, if the APPEND bit is set.
+
+1999-11-10  Paul D. Smith  <psmith@gnu.org>
+
+	* file.c (snap_deps): If the .NOTPARALLEL target is defined, turn
+	off parallel builds for this make only (still allow submakes to be
+	run in parallel).
+	* main.c: New variable, ``not_parallel''.
+	* make.h: Add an extern for it.
+	* job.c (new_job): Test NOT_PARALLEL as well as JOB_SLOTS.
+	* NEWS: Add info on .NOTPARALLEL.
+	* make.texinfo (Special Targets): Document it.
+
+	* configure.in (GLOBDIR): Set to "glob" if we need to build the
+	glob library.
+	* Makefile.am (SUBDIRS): Use the GLOBDIR variable instead of
+	"glob" so we don't try to build glob if we don't need to (if we
+	have GLIBC glob).  Reported by Lars Hecking <lhecking@nmrc.ucc.ie>.
+
+	* main.c (main): Don't put "***" in the clock skew warning
+	message.  Reported by karl@gnu.org.
+
+	* make.h: Remove unneeded signal setup.
+
+	* signame.c: Remove extraneous #includes; some versions of Ultrix
+	don't protect against multiple inclusions and it causes compile
+	errors.  Reported by Simon Burge <simonb@thistledown.com.au>.
+
+1999-10-15  Paul D. Smith  <psmith@gnu.org>
+
+	* main.c (quote_for_env): Rename from quote_as_word().
+
+	* make.h, *.c: Prefer strchr() and strrchr() in the code
+	rather than index() and rindex().  Define strchr/strrchr in terms
+	of index/rindex if the former aren't supported.
+
+	* default.c (CHECKOUT,v): Replace the fancy, complicated
+	patsubst/filter expression with a simple $(if ...) expression.
+
+	* main.c (print_usage): Add the bug reporting mailing address to
+	the --help output, as per the GNU coding standards.
+	Reported by Paul Eggert <eggert@twinsun.com>.
+
+	* README.customs: Installed information on running Customs-ized
+	GNU make and setuid root, collected by Ted Stern <stern@tera.com>.
+
+	* read.c (read_all_makefiles): PR/1394: Mark the end of the next
+	token in the MAKEFILES value string _before_ we dup it.
+
+1999-10-13  Paul D. Smith  <psmith@gnu.org>
+
+	* configure.in (make_cv_sys_gnu_glob): We used to add the -Iglob
+	flag to CPPFLAGS, but that loses if the user specifies his own
+	CPPFLAGS; this one gets added _after_ his and if he happens to
+	have an old or broken glob.h--boom.  Instead, put it in GLOBINC
+	and SUBST it.
+
+	* Makefile.am (INCLUDES): Add @GLOBINC@ to the INCLUDES macro;
+	these things get on the compile line well before the user's
+	CPPFLAGS.
+
+1999-10-12  Paul D. Smith  <psmith@gnu.org>
+
+	* remake.c (notice_finished_file): If we get here and -n is set,
+	see if all the command lines are marked recursive.  If so, then we
+	ran every command there is, so check the mtime on this file just
+	like we would normally.  If not, we assume the command we didn't
+	run would updates the target and set mtime of the target to "very new".
+
+	* job.c (start_job_command): Update lines_flags in the file's cmds
+	structure with any per-line tokens we found (`@', `-', `+').
+
+1999-10-08  Paul D. Smith  <psmith@gnu.org>
+
+	* variable.c (initialize_file_variables): Always recurse to
+	initialize the parent's file variables: the parent might not have
+	any rules to run so it might not have been initialized before
+	this--we need this to set up the chain properly for
+	target-specific variables.
+
+1999-09-29  Paul Eggert  <eggert@twinsun.com>
+
+	* main.c (quote_as_word): Always quote for decode_env_switches
+        instead of for the shell, so that arguments with strange
+        characters are are passed to submakes correctly.  Remove
+        double_dollars arg; we always double dollars now.  All callers
+        changed.
+        (decode_env_switches): Don't run off the end of an environment
+        variable whose contents ends in a unescaped backslash.
+
+1999-09-23  Paul D. Smith  <psmith@gnu.org>
+
+	* commands.c, function.c, job.c, read.c: Cast arguments to
+	ctype.h functions/macros to _unsigned_ char for portability.
+
+	* remake.c, function.c: Compiler warning fixes: the second
+	argument to find_next_token() should be an _unsigned_ int*.
+	Reported by Han-Wen Nienhuys <hanwen@cs.uu.nl>.
+
 1999-09-23  Paul D. Smith  <psmith@gnu.org>
 
 	* Version 3.78.1 released.

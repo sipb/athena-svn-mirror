@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -151,7 +150,7 @@ between them.
      from 1.  If S is bigger than the number of words in TEXT, the
      value is empty.  If E is bigger than the number of words in TEXT,
      words up to the end of TEXT are returned.  If S is greater than E,
-     `make' swaps them for you.  For example,
+     nothing is returned.  For example,
 
           $(wordlist 2, 3, foo bar baz)
 
@@ -313,7 +312,7 @@ these temporary assignments.  Thus, any reference to `$(1)' in the
 value of VARIABLE will resolve to the first PARAM in the invocation of
 `call'.
 
-   Note that VARIABLE is the *name* of a variable, not a *reference* to
+   Note that VARIABLE is the _name_ of a variable, not a _reference_ to
 that variable.  Therefore you would not normally use a `$' or
 parentheses when writing it.  (You can, however, use a variable
 reference in the name if you want the name not to be a constant.)
@@ -321,16 +320,20 @@ reference in the name if you want the name not to be a constant.)
    If VARIABLE is the name of a builtin function, the builtin function
 is always invoked (even if a `make' variable by that name also exists).
 
+   The `call' function expands the PARAM arguments before assigning
+them to temporary variables.  This means that VARIABLE values
+containing references to builtin functions that have special expansion
+rules, like `foreach' or `if', may not work as you expect.
+
    Some examples may make this clearer.
 
    This macro simply reverses its arguments:
 
      reverse = $(2) $(1)
      
-     foo = a b
-     bar = $(call reverse,$(foo))
+     foo = $(call reverse,a,b)
 
-Here BAR will contain `b a'.
+Here FOO will contain `b a'.
 
    This one is slightly more interesting: it defines a macro to search
 for the first instance of a program in `PATH':
@@ -368,15 +371,15 @@ The `origin' Function
 =====================
 
    The `origin' function is unlike most other functions in that it does
-not operate on the values of variables; it tells you something *about*
+not operate on the values of variables; it tells you something _about_
 a variable.  Specifically, it tells you where it came from.
 
    The syntax of the `origin' function is:
 
      $(origin VARIABLE)
 
-   Note that VARIABLE is the *name* of a variable to inquire about; not
-a *reference* to that variable.  Therefore you would not normally use a
+   Note that VARIABLE is the _name_ of a variable to inquire about; not
+a _reference_ to that variable.  Therefore you would not normally use a
 `$' or parentheses when writing it.  (You can, however, use a variable
 reference in the name if you want the name not to be a constant.)
 
@@ -394,12 +397,12 @@ VARIABLE was defined:
 
 `environment'
      if VARIABLE was defined as an environment variable and the `-e'
-     option is *not* turned on (*note Summary of Options: Options
+     option is _not_ turned on (*note Summary of Options: Options
      Summary.).
 
 `environment override'
      if VARIABLE was defined as an environment variable and the `-e'
-     option *is* turned on (*note Summary of Options: Options Summary.).
+     option _is_ turned on (*note Summary of Options: Options Summary.).
 
 `file'
      if VARIABLE was defined in a makefile.
@@ -624,8 +627,8 @@ command line, this variable is empty.  Note that this variable should
 be used only in special circumstances.
 
    An example of appropriate use is to avoid including `.d' files
-during `clean' rules (*note Automatic Prerequisites::.), so `make'
-won't create them only to immediately remove them again:
+during `clean' rules (*note Automatic Prerequisites::), so `make' won't
+create them only to immediately remove them again:
 
      sources = foo.c bar.c
      
@@ -651,7 +654,7 @@ which has a rule in the makefile but is not a prerequisite of the
 default goal.
 
    Another use of specifying a goal is to run the commands associated
-with a phony target (*note Phony Targets::.) or empty target (*note
+with a phony target (*note Phony Targets::) or empty target (*note
 Empty Target Files to Record Events: Empty Targets.).  Many makefiles
 contain a phony target named `clean' which deletes everything except
 source files.  Naturally, this is done only if you request it
@@ -674,7 +677,7 @@ all the standard target names which GNU software packages use.
 `distclean'
 `realclean'
 `clobber'
-     Any of these targets might be defined to delete *more* files than
+     Any of these targets might be defined to delete _more_ files than
      `clean' does.  For example, this would delete configuration files
      or links that you would normally create as preparation for
      compilation, even if the makefile itself cannot create these files.
@@ -869,7 +872,7 @@ the makefile works by changing the variables.
 either a recursively-expanded variable or a simply-expanded variable.
 The examples shown above make a recursively-expanded variable; to make a
 simply-expanded variable, write `:=' instead of `='.  But, unless you
-want to include a variable reference or function call in the *value*
+want to include a variable reference or function call in the _value_
 that you specify, it makes no difference which kind of variable you
 create.
 
@@ -936,13 +939,48 @@ Summary of Options
      Recursive Use of `make': Recursion.).
 
 `-d'
-`--debug'
      Print debugging information in addition to normal processing.  The
      debugging information says which files are being considered for
      remaking, which file-times are being compared and with what
      results, which files actually need to be remade, which implicit
      rules are considered and which are applied--everything interesting
-     about how `make' decides what to do.
+     about how `make' decides what to do.  The `-d' option is
+     equivalent to `--debug=a' (see below).
+
+`--debug[=OPTIONS]'
+     Print debugging information in addition to normal processing.
+     Various levels and types of output can be chosen.  With no
+     arguments, print the "basic" level of debugging.  Possible
+     arguments are below; only the first character is considered, and
+     values must be comma- or space-separated.
+
+    `a (all)'
+          All types of debugging output are enabled.  This is
+          equivalent to using `-d'.
+
+    `b (basic)'
+          Basic debugging prints each target that was found to be
+          out-of-date, and whether the build was successful or not.
+
+    `v (verbose)'
+          A level above `basic'; includes messages about which
+          makefiles were parsed, prerequisites that did not need to be
+          rebuilt, etc.  This option also enables `basic' messages.
+
+    `i (implicit)'
+          Prints messages describing the implicit rule searches for
+          each target.  This option also enables `basic' messages.
+
+    `j (jobs)'
+          Prints messages giving details on the invocation of specific
+          subcommands.
+
+    `m (makefile)'
+          By default, the above messages are not enabled while trying
+          to remake the makefiles.  This option enables messages while
+          rebuilding makefiles, too.  Note that the `all' option does
+          enable this option.  This option also enables `basic'
+          messages.
 
 `-e'
 `--environment-overrides'
@@ -973,7 +1011,7 @@ Summary of Options
      in the order specified.
 
 `-j [JOBS]'
-`--jobs=[JOBS]'
+`--jobs[=JOBS]'
      Specifies the number of jobs (commands) to run simultaneously.
      With no argument, `make' runs as many jobs simultaneously as
      possible.  If there is more than one `-j' option, the last one is
@@ -1019,7 +1057,10 @@ Summary of Options
      specified.  This also prints the version information given by the
      `-v' switch (see below).  To print the data base without trying to
      remake any files, use `make -qp'.  To print the data base of
-     predefined rules and variables, use `make -p -f /dev/null'.
+     predefined rules and variables, use `make -p -f /dev/null'.  The
+     data base output contains filename and linenumber information for
+     command and variable definitions, so it can be a useful debugging
+     tool in complex environments.
 
 `-q'
 `--question'
@@ -1038,7 +1079,7 @@ Summary of Options
      of suffixes for suffix rules (*note Old-Fashioned Suffix Rules:
      Suffix Rules.).  But you can still define your own suffixes with a
      rule for `.SUFFIXES', and then define your own suffix rules.  Note
-     that only *rules* are affected by the `-r' option; default
+     that only _rules_ are affected by the `-r' option; default
      variables remain in effect (*note Variables Used by Implicit
      Rules: Implicit Variables.); see the `-R' option below.
 
@@ -1063,7 +1104,7 @@ Summary of Options
      Cancel the effect of the `-k' option.  This is never necessary
      except in a recursive `make' where `-k' might be inherited from
      the top-level `make' via `MAKEFLAGS' (*note Recursive Use of
-     `make': Recursion.) or if you set `-k' in `MAKEFLAGS' in your
+     `make': Recursion.)  or if you set `-k' in `MAKEFLAGS' in your
      environment.
 
 `-t'
@@ -1157,78 +1198,4 @@ retained for compatibility.
 * Suffix Rules::                The old-fashioned style of implicit rule.
 * Implicit Rule Search::        The precise algorithm for applying
                                   implicit rules.
-
-
-File: make.info,  Node: Using Implicit,  Next: Catalogue of Rules,  Up: Implicit Rules
-
-Using Implicit Rules
-====================
-
-   To allow `make' to find a customary method for updating a target
-file, all you have to do is refrain from specifying commands yourself.
-Either write a rule with no command lines, or don't write a rule at
-all.  Then `make' will figure out which implicit rule to use based on
-which kind of source file exists or can be made.
-
-   For example, suppose the makefile looks like this:
-
-     foo : foo.o bar.o
-             cc -o foo foo.o bar.o $(CFLAGS) $(LDFLAGS)
-
-Because you mention `foo.o' but do not give a rule for it, `make' will
-automatically look for an implicit rule that tells how to update it.
-This happens whether or not the file `foo.o' currently exists.
-
-   If an implicit rule is found, it can supply both commands and one or
-more prerequisites (the source files).  You would want to write a rule
-for `foo.o' with no command lines if you need to specify additional
-prerequisites, such as header files, that the implicit rule cannot
-supply.
-
-   Each implicit rule has a target pattern and prerequisite patterns.
-There may be many implicit rules with the same target pattern.  For
-example, numerous rules make `.o' files: one, from a `.c' file with the
-C compiler; another, from a `.p' file with the Pascal compiler; and so
-on.  The rule that actually applies is the one whose prerequisites
-exist or can be made.  So, if you have a file `foo.c', `make' will run
-the C compiler; otherwise, if you have a file `foo.p', `make' will run
-the Pascal compiler; and so on.
-
-   Of course, when you write the makefile, you know which implicit rule
-you want `make' to use, and you know it will choose that one because you
-know which possible prerequisite files are supposed to exist.  *Note
-Catalogue of Implicit Rules: Catalogue of Rules, for a catalogue of all
-the predefined implicit rules.
-
-   Above, we said an implicit rule applies if the required
-prerequisites "exist or can be made".  A file "can be made" if it is
-mentioned explicitly in the makefile as a target or a prerequisite, or
-if an implicit rule can be recursively found for how to make it.  When
-an implicit prerequisite is the result of another implicit rule, we say
-that "chaining" is occurring.  *Note Chains of Implicit Rules: Chained
-Rules.
-
-   In general, `make' searches for an implicit rule for each target, and
-for each double-colon rule, that has no commands.  A file that is
-mentioned only as a prerequisite is considered a target whose rule
-specifies nothing, so implicit rule search happens for it.  *Note
-Implicit Rule Search Algorithm: Implicit Rule Search, for the details
-of how the search is done.
-
-   Note that explicit prerequisites do not influence implicit rule
-search.  For example, consider this explicit rule:
-
-     foo.o: foo.p
-
-The prerequisite on `foo.p' does not necessarily mean that `make' will
-remake `foo.o' according to the implicit rule to make an object file, a
-`.o' file, from a Pascal source file, a `.p' file.  For example, if
-`foo.c' also exists, the implicit rule to make an object file from a C
-source file is used instead, because it appears before the Pascal rule
-in the list of predefined implicit rules (*note Catalogue of Implicit
-Rules: Catalogue of Rules.).
-
-   If you do not want an implicit rule to be used for a target that has
-no commands, you can give that target empty commands by writing a
-semicolon (*note Defining Empty Commands: Empty Commands.).
 

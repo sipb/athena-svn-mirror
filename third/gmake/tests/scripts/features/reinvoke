@@ -18,6 +18,7 @@ all: ; \@echo 'running rules.'
 
 $makefile $makefile2: $makefile_orig
 	\@echo 'rebuilding \$\@.'
+	\@sleep $wtime
 	\@echo >> \$\@
 
 include $makefile2
@@ -30,7 +31,7 @@ close(MAKEFILE);
 
 # Sleep 2 seconds for DOS/Windows FAT volumes which have 2-second
 # granularity of file times.
-sleep(2);
+sleep($wtime);
 
 &touch("$makefile_orig");
 
@@ -65,8 +66,9 @@ EOM
 
 close(MAKEFILE);
 
-&touch('a','b');
-sleep(2);
+&touch('b');
+&touch('a');
+sleep($wtime);
 &touch('c');
 
 # First try with the file that's not updated "once removed" from the

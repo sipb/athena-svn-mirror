@@ -103,6 +103,9 @@
 /* Define if you have the wait3 system call.  */
 #undef HAVE_WAIT3
 
+/* Define as __inline if that's what the C compiler calls it.  */
+#undef inline
+
 /* Define if on MINIX.  */
 #undef _MINIX
 
@@ -154,6 +157,9 @@
 /* Define if `sys_siglist' is declared by <signal.h>.  */
 #undef SYS_SIGLIST_DECLARED
 
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef uid_t
 
@@ -167,14 +173,14 @@
 /* Define vfork as fork if vfork does not work.  */
 #undef vfork
 
+/* Define if your locale.h file contains LC_MESSAGES.  */
+#undef HAVE_LC_MESSAGES
+
+/* Define to the installation directory for locales.  */
+#undef LOCALEDIR
+
 /* Define to the name of the SCCS `get' command.  */
 #undef SCCS_GET
-
-/* Define this if the SCCS `get' command understands the `-G<file>' option.  */
-#undef SCCS_GET_MINUS_G
-
-/* Define this to enable job server support in GNU make.  */
-#undef MAKE_JOBSERVER
 
 /* Define to be the nanoseconds member of struct stat's st_mtim,
    if it exists.  */
@@ -186,30 +192,18 @@
 /* Define this if the C library defines the variable `_sys_siglist'.  */
 #undef HAVE__SYS_SIGLIST
 
-/* Define this if you have the `union wait' type in <sys/wait.h>.  */
-#undef HAVE_UNION_WAIT
-
 /* Define to `unsigned long' or `unsigned long long'
    if <inttypes.h> doesn't define.  */
 #undef uintmax_t
 
-/* Define if the system doesn't provide fd_set.  */
-#undef fd_set
-
-/* Define the type of the first arg to select().  */
-#undef fd_set_size_t
-
-/* Define this if select() args need to be cast away from fd_set (HP-UX).  */
-#undef SELECT_FD_SET_CAST
-
 /* Define if you have the INTTYPES_H function.  */
 #undef HAVE_INTTYPES_H
 
-/* Define if you have the clock_gettime function.  */
-#undef HAVE_CLOCK_GETTIME
-
 /* Define if you have the dup2 function.  */
 #undef HAVE_DUP2
+
+/* Define if you have the fdopen function.  */
+#undef HAVE_FDOPEN
 
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
@@ -226,8 +220,14 @@
 /* Define if you have the getloadavg function.  */
 #undef HAVE_GETLOADAVG
 
+/* Define if you have the memcpy function.  */
+#undef HAVE_MEMCPY
+
 /* Define if you have the memmove function.  */
 #undef HAVE_MEMMOVE
+
+/* Define if you have the mkstemp function.  */
+#undef HAVE_MKSTEMP
 
 /* Define if you have the mktemp function.  */
 #undef HAVE_MKTEMP
@@ -241,9 +241,6 @@
 /* Define if you have the pstat_getdynamic function.  */
 #undef HAVE_PSTAT_GETDYNAMIC
 
-/* Define if you have the select function.  */
-#undef HAVE_SELECT
-
 /* Define if you have the setegid function.  */
 #undef HAVE_SETEGID
 
@@ -252,6 +249,9 @@
 
 /* Define if you have the setlinebuf function.  */
 #undef HAVE_SETLINEBUF
+
+/* Define if you have the setlocale function.  */
+#undef HAVE_SETLOCALE
 
 /* Define if you have the setregid function.  */
 #undef HAVE_SETREGID
@@ -268,8 +268,14 @@
 /* Define if you have the socket function.  */
 #undef HAVE_SOCKET
 
+/* Define if you have the stpcpy function.  */
+#undef HAVE_STPCPY
+
 /* Define if you have the strcasecmp function.  */
 #undef HAVE_STRCASECMP
+
+/* Define if you have the strchr function.  */
+#undef HAVE_STRCHR
 
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
@@ -298,6 +304,9 @@
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
+/* Define if you have the <locale.h> header file.  */
+#undef HAVE_LOCALE_H
+
 /* Define if you have the <mach/mach.h> header file.  */
 #undef HAVE_MACH_MACH_H
 
@@ -322,20 +331,11 @@
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H
 
-/* Define if you have the <sys/select.h> header file.  */
-#undef HAVE_SYS_SELECT_H
-
-/* Define if you have the <sys/socket.h> header file.  */
-#undef HAVE_SYS_SOCKET_H
-
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
 
 /* Define if you have the <sys/timeb.h> header file.  */
 #undef HAVE_SYS_TIMEB_H
-
-/* Define if you have the <sys/types.h> header file.  */
-#undef HAVE_SYS_TYPES_H
 
 /* Define if you have the <sys/wait.h> header file.  */
 #undef HAVE_SYS_WAIT_H
@@ -352,12 +352,6 @@
 /* Define if you have the kstat library (-lkstat).  */
 #undef HAVE_LIBKSTAT
 
-/* Define if you have the posix4 library (-lposix4).  */
-#undef HAVE_LIBPOSIX4
-
-/* Define if you have the sun library (-lsun).  */
-#undef HAVE_LIBSUN
-
 /* Name of package */
 #undef PACKAGE
 
@@ -372,6 +366,33 @@
 
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
+
+/* Define if NLS is requested. */
+#undef ENABLE_NLS
+
+/* Define if you have <libintl.h>. */
+#undef HAVE_LIBINTL_H
+
+/* Define if you have the gettext function. */
+#undef HAVE_GETTEXT
+
+/* Define if you have the dcgettext function. */
+#undef HAVE_DCGETTEXT
+
+/* Define if you have the clock_gettime function. */
+#undef HAVE_CLOCK_GETTIME
+
+/* Define if you have a standard gettimeofday function */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define this if you have the `union wait' type in <sys/wait.h>. */
+#undef HAVE_UNION_WAIT
+
+/* Define this to enable job server support in GNU make. */
+#undef MAKE_JOBSERVER
+
+/* Define this if the SCCS `get' command understands the `-G<file>' option. */
+#undef SCCS_GET_MINUS_G
 
 /* Build host information. */
 #undef MAKE_HOST

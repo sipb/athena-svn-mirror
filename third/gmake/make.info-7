@@ -1,5 +1,4 @@
-This is Info file make.info, produced by Makeinfo version 1.67 from the
-input file make.texinfo.
+This is make.info, produced by makeinfo version 4.0 from make.texinfo.
 
 INFO-DIR-SECTION GNU Packages
 START-INFO-DIR-ENTRY
@@ -10,11 +9,11 @@ END-INFO-DIR-ENTRY
 automatically which pieces of a large program need to be recompiled,
 and issues the commands to recompile them.
 
-   This is Edition 0.54, last updated 09 September 1999, of `The GNU
-Make Manual', for `make', Version 3.78.1.
+   This is Edition 0.55, last updated 04 April 2000, of `The GNU Make
+Manual', for `make', Version 3.79.
 
    Copyright (C) 1988, '89, '90, '91, '92, '93, '94, '95, '96, '97,
-'98, '99         Free Software Foundation, Inc.
+'98, '99, 2000         Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -29,6 +28,98 @@ permission notice identical to this one.
 manual into another language, under the above conditions for modified
 versions, except that this permission notice may be stated in a
 translation approved by the Free Software Foundation.
+
+
+File: make.info,  Node: Archive Members,  Next: Archive Update,  Up: Archives
+
+Archive Members as Targets
+==========================
+
+   An individual member of an archive file can be used as a target or
+prerequisite in `make'.  You specify the member named MEMBER in archive
+file ARCHIVE as follows:
+
+     ARCHIVE(MEMBER)
+
+This construct is available only in targets and prerequisites, not in
+commands!  Most programs that you might use in commands do not support
+this syntax and cannot act directly on archive members.  Only `ar' and
+other programs specifically designed to operate on archives can do so.
+Therefore, valid commands to update an archive member target probably
+must use `ar'.  For example, this rule says to create a member `hack.o'
+in archive `foolib' by copying the file `hack.o':
+
+     foolib(hack.o) : hack.o
+             ar cr foolib hack.o
+
+   In fact, nearly all archive member targets are updated in just this
+way and there is an implicit rule to do it for you.  *Note:* The `c'
+flag to `ar' is required if the archive file does not already exist.
+
+   To specify several members in the same archive, you can write all the
+member names together between the parentheses.  For example:
+
+     foolib(hack.o kludge.o)
+
+is equivalent to:
+
+     foolib(hack.o) foolib(kludge.o)
+
+   You can also use shell-style wildcards in an archive member
+reference.  *Note Using Wildcard Characters in File Names: Wildcards.
+For example, `foolib(*.o)' expands to all existing members of the
+`foolib' archive whose names end in `.o'; perhaps `foolib(hack.o)
+foolib(kludge.o)'.
+
+
+File: make.info,  Node: Archive Update,  Next: Archive Pitfalls,  Prev: Archive Members,  Up: Archives
+
+Implicit Rule for Archive Member Targets
+========================================
+
+   Recall that a target that looks like `A(M)' stands for the member
+named M in the archive file A.
+
+   When `make' looks for an implicit rule for such a target, as a
+special feature it considers implicit rules that match `(M)', as well as
+those that match the actual target `A(M)'.
+
+   This causes one special rule whose target is `(%)' to match.  This
+rule updates the target `A(M)' by copying the file M into the archive.
+For example, it will update the archive member target `foo.a(bar.o)' by
+copying the _file_ `bar.o' into the archive `foo.a' as a _member_ named
+`bar.o'.
+
+   When this rule is chained with others, the result is very powerful.
+Thus, `make "foo.a(bar.o)"' (the quotes are needed to protect the `('
+and `)' from being interpreted specially by the shell) in the presence
+of a file `bar.c' is enough to cause the following commands to be run,
+even without a makefile:
+
+     cc -c bar.c -o bar.o
+     ar r foo.a bar.o
+     rm -f bar.o
+
+Here `make' has envisioned the file `bar.o' as an intermediate file.
+*Note Chains of Implicit Rules: Chained Rules.
+
+   Implicit rules such as this one are written using the automatic
+variable `$%'.  *Note Automatic Variables: Automatic.
+
+   An archive member name in an archive cannot contain a directory
+name, but it may be useful in a makefile to pretend that it does.  If
+you write an archive member target `foo.a(dir/file.o)', `make' will
+perform automatic updating with this command:
+
+     ar r foo.a dir/file.o
+
+which has the effect of copying the file `dir/file.o' into a member
+named `file.o'.  In connection with such usage, the automatic variables
+`%D' and `%F' may be useful.
+
+* Menu:
+
+* Archive Symbols::             How to update archive symbol directories.
 
 
 File: make.info,  Node: Archive Symbols,  Up: Archive Update
@@ -86,7 +177,7 @@ Suffix Rules for Archive Files
    You can write a special kind of suffix rule for dealing with archive
 files.  *Note Suffix Rules::, for a full explanation of suffix rules.
 Archive suffix rules are obsolete in GNU `make', because pattern rules
-for archives are a more general mechanism (*note Archive Update::.).
+for archives are a more general mechanism (*note Archive Update::).
 But they are retained for compatibility with other `make's.
 
    To write a suffix rule for archives, you simply write a suffix rule
@@ -113,7 +204,7 @@ prerequisite pattern of `%.X'.
 
    Since you might want to use `.a' as the suffix for some other kind
 of file, `make' also converts archive suffix rules to pattern rules in
-the normal way (*note Suffix Rules::.).  Thus a double-suffix rule
+the normal way (*note Suffix Rules::).  Thus a double-suffix rule
 `.X.a' produces two pattern rules: `(%.o): %.X' and `%.a: %.X'.
 
 
@@ -169,7 +260,7 @@ listed here, nor the ones in *Note Missing::.
      Rules::.  This feature is obsolete in GNU `make', because the
      general feature of rule chaining (*note Chains of Implicit Rules:
      Chained Rules.) allows one pattern rule for installing members in
-     an archive (*note Archive Update::.) to be sufficient.
+     an archive (*note Archive Update::) to be sufficient.
 
    * The arrangement of lines and backslash-newline combinations in
      commands is retained when the commands are printed, so they appear
@@ -374,13 +465,13 @@ these features.
 
    * In some Unix `make's, the automatic variable `$*' appearing in the
      prerequisites of a rule has the amazingly strange "feature" of
-     expanding to the full name of the *target of that rule*.  We cannot
+     expanding to the full name of the _target of that rule_.  We cannot
      imagine what went on in the minds of Unix `make' developers to do
      this; it is utterly inconsistent with the normal definition of
      `$*'.
 
    * In some Unix `make's, implicit rule search (*note Using Implicit
-     Rules: Implicit Rules.) is apparently done for *all* targets, not
+     Rules: Implicit Rules.) is apparently done for _all_ targets, not
      just those without commands.  This means you can do:
 
           foo.o:
@@ -398,7 +489,7 @@ these features.
 
    * It appears that in SVR4 `make', a suffix rule can be specified with
      no commands, and it is treated as if it had empty commands (*note
-     Empty Commands::.).  For example:
+     Empty Commands::).  For example:
 
           .c.a:
 
@@ -596,12 +687,12 @@ is used to supply options to the program.  Append `FLAGS' to the
 program-name variable name to get the options variable name--for
 example, `BISONFLAGS'.  (The names `CFLAGS' for the C compiler,
 `YFLAGS' for yacc, and `LFLAGS' for lex, are exceptions to this rule,
-but we keep them because they are standard.) Use `CPPFLAGS' in any
+but we keep them because they are standard.)  Use `CPPFLAGS' in any
 compilation command that runs the preprocessor, and use `LDFLAGS' in
 any compilation command that does linking as well as in any direct use
 of `ld'.
 
-   If there are C compiler options that *must* be used for proper
+   If there are C compiler options that _must_ be used for proper
 compilation of certain files, do not include them in `CFLAGS'.  Users
 expect to be able to specify `CFLAGS' freely themselves.  Instead,
 arrange to pass the necessary options to the C compiler independently
@@ -614,7 +705,7 @@ by defining an implicit rule, like this:
              $(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
 
    Do include the `-g' option in `CFLAGS', because that is not
-*required* for proper compilation.  You can consider it a default that
+_required_ for proper compilation.  You can consider it a default that
 is only recommended.  If the package is set up so that it is compiled
 with GCC by default, then you might as well include `-O' in the default
 value of `CFLAGS' as well.
@@ -738,7 +829,7 @@ directories:
      The directory for installing read-only architecture independent
      data files.  This should normally be `/usr/local/share', but write
      it as `$(prefix)/share'.  (If you are using Autoconf, write it as
-     `@datadir@'.) As a special exception, see `$(infodir)' and
+     `@datadir@'.)  As a special exception, see `$(infodir)' and
      `$(includedir)' below.
 
 `sysconfdir'
@@ -899,244 +990,4 @@ of variable names for installation directories is to enable the user to
 specify the exact same values for several different GNU packages.  In
 order for this to be useful, all the packages must be designed so that
 they will work sensibly when the user does so.
-
-
-File: make.info,  Node: Standard Targets,  Next: Install Command Categories,  Prev: Directory Variables,  Up: Makefile Conventions
-
-Standard Targets for Users
-==========================
-
-   All GNU programs should have the following targets in their
-Makefiles:
-
-`all'
-     Compile the entire program.  This should be the default target.
-     This target need not rebuild any documentation files; Info files
-     should normally be included in the distribution, and DVI files
-     should be made only when explicitly asked for.
-
-     By default, the Make rules should compile and link with `-g', so
-     that executable programs have debugging symbols.  Users who don't
-     mind being helpless can strip the executables later if they wish.
-
-`install'
-     Compile the program and copy the executables, libraries, and so on
-     to the file names where they should reside for actual use.  If
-     there is a simple test to verify that a program is properly
-     installed, this target should run that test.
-
-     Do not strip executables when installing them.  Devil-may-care
-     users can use the `install-strip' target to do that.
-
-     If possible, write the `install' target rule so that it does not
-     modify anything in the directory where the program was built,
-     provided `make all' has just been done.  This is convenient for
-     building the program under one user name and installing it under
-     another.
-
-     The commands should create all the directories in which files are
-     to be installed, if they don't already exist.  This includes the
-     directories specified as the values of the variables `prefix' and
-     `exec_prefix', as well as all subdirectories that are needed.  One
-     way to do this is by means of an `installdirs' target as described
-     below.
-
-     Use `-' before any command for installing a man page, so that
-     `make' will ignore any errors.  This is in case there are systems
-     that don't have the Unix man page documentation system installed.
-
-     The way to install Info files is to copy them into `$(infodir)'
-     with `$(INSTALL_DATA)' (*note Command Variables::.), and then run
-     the `install-info' program if it is present.  `install-info' is a
-     program that edits the Info `dir' file to add or update the menu
-     entry for the given Info file; it is part of the Texinfo package.
-     Here is a sample rule to install an Info file:
-
-          $(DESTDIR)$(infodir)/foo.info: foo.info
-                  $(POST_INSTALL)
-          # There may be a newer info file in . than in srcdir.
-                  -if test -f foo.info; then d=.; \
-                   else d=$(srcdir); fi; \
-                  $(INSTALL_DATA) $$d/foo.info $(DESTDIR)$@; \
-          # Run install-info only if it exists.
-          # Use `if' instead of just prepending `-' to the
-          # line so we notice real errors from install-info.
-          # We use `$(SHELL) -c' because some shells do not
-          # fail gracefully when there is an unknown command.
-                  if $(SHELL) -c 'install-info --version' \
-                     >/dev/null 2>&1; then \
-                    install-info --dir-file=$(DESTDIR)$(infodir)/dir \
-                                 $(DESTDIR)$(infodir)/foo.info; \
-                  else true; fi
-
-     When writing the `install' target, you must classify all the
-     commands into three categories: normal ones, "pre-installation"
-     commands and "post-installation" commands.  *Note Install Command
-     Categories::.
-
-`uninstall'
-     Delete all the installed files--the copies that the `install'
-     target creates.
-
-     This rule should not modify the directories where compilation is
-     done, only the directories where files are installed.
-
-     The uninstallation commands are divided into three categories,
-     just like the installation commands.  *Note Install Command
-     Categories::.
-
-`install-strip'
-     Like `install', but strip the executable files while installing
-     them.  In many cases, the definition of this target can be very
-     simple:
-
-          install-strip:
-                  $(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
-                          install
-
-     Normally we do not recommend stripping an executable unless you
-     are sure the program has no bugs.  However, it can be reasonable
-     to install a stripped executable for actual execution while saving
-     the unstripped executable elsewhere in case there is a bug.
-
-`clean'
-     Delete all files from the current directory that are normally
-     created by building the program.  Don't delete the files that
-     record the configuration.  Also preserve files that could be made
-     by building, but normally aren't because the distribution comes
-     with them.
-
-     Delete `.dvi' files here if they are not part of the distribution.
-
-`distclean'
-     Delete all files from the current directory that are created by
-     configuring or building the program.  If you have unpacked the
-     source and built the program without creating any other files,
-     `make distclean' should leave only the files that were in the
-     distribution.
-
-`mostlyclean'
-     Like `clean', but may refrain from deleting a few files that people
-     normally don't want to recompile.  For example, the `mostlyclean'
-     target for GCC does not delete `libgcc.a', because recompiling it
-     is rarely necessary and takes a lot of time.
-
-`maintainer-clean'
-     Delete almost everything from the current directory that can be
-     reconstructed with this Makefile.  This typically includes
-     everything deleted by `distclean', plus more: C source files
-     produced by Bison, tags tables, Info files, and so on.
-
-     The reason we say "almost everything" is that running the command
-     `make maintainer-clean' should not delete `configure' even if
-     `configure' can be remade using a rule in the Makefile.  More
-     generally, `make maintainer-clean' should not delete anything that
-     needs to exist in order to run `configure' and then begin to build
-     the program.  This is the only exception; `maintainer-clean' should
-     delete everything else that can be rebuilt.
-
-     The `maintainer-clean' target is intended to be used by a
-     maintainer of the package, not by ordinary users.  You may need
-     special tools to reconstruct some of the files that `make
-     maintainer-clean' deletes.  Since these files are normally
-     included in the distribution, we don't take care to make them easy
-     to reconstruct.  If you find you need to unpack the full
-     distribution again, don't blame us.
-
-     To help make users aware of this, the commands for the special
-     `maintainer-clean' target should start with these two:
-
-          @echo 'This command is intended for maintainers to use; it'
-          @echo 'deletes files that may need special tools to rebuild.'
-
-`TAGS'
-     Update a tags table for this program.
-
-`info'
-     Generate any Info files needed.  The best way to write the rules
-     is as follows:
-
-          info: foo.info
-          
-          foo.info: foo.texi chap1.texi chap2.texi
-                  $(MAKEINFO) $(srcdir)/foo.texi
-
-     You must define the variable `MAKEINFO' in the Makefile.  It should
-     run the `makeinfo' program, which is part of the Texinfo
-     distribution.
-
-     Normally a GNU distribution comes with Info files, and that means
-     the Info files are present in the source directory.  Therefore,
-     the Make rule for an info file should update it in the source
-     directory.  When users build the package, ordinarily Make will not
-     update the Info files because they will already be up to date.
-
-`dvi'
-     Generate DVI files for all Texinfo documentation.  For example:
-
-          dvi: foo.dvi
-          
-          foo.dvi: foo.texi chap1.texi chap2.texi
-                  $(TEXI2DVI) $(srcdir)/foo.texi
-
-     You must define the variable `TEXI2DVI' in the Makefile.  It should
-     run the program `texi2dvi', which is part of the Texinfo
-     distribution.(1)  Alternatively, write just the dependencies, and
-     allow GNU `make' to provide the command.
-
-`dist'
-     Create a distribution tar file for this program.  The tar file
-     should be set up so that the file names in the tar file start with
-     a subdirectory name which is the name of the package it is a
-     distribution for.  This name can include the version number.
-
-     For example, the distribution tar file of GCC version 1.40 unpacks
-     into a subdirectory named `gcc-1.40'.
-
-     The easiest way to do this is to create a subdirectory
-     appropriately named, use `ln' or `cp' to install the proper files
-     in it, and then `tar' that subdirectory.
-
-     Compress the tar file file with `gzip'.  For example, the actual
-     distribution file for GCC version 1.40 is called `gcc-1.40.tar.gz'.
-
-     The `dist' target should explicitly depend on all non-source files
-     that are in the distribution, to make sure they are up to date in
-     the distribution.  *Note Making Releases: (standards)Releases.
-
-`check'
-     Perform self-tests (if any).  The user must build the program
-     before running the tests, but need not install the program; you
-     should write the self-tests so that they work when the program is
-     built but not installed.
-
-   The following targets are suggested as conventional names, for
-programs in which they are useful.
-
-`installcheck'
-     Perform installation tests (if any).  The user must build and
-     install the program before running the tests.  You should not
-     assume that `$(bindir)' is in the search path.
-
-`installdirs'
-     It's useful to add a target named `installdirs' to create the
-     directories where files are installed, and their parent
-     directories.  There is a script called `mkinstalldirs' which is
-     convenient for this; you can find it in the Texinfo package.  You
-     can use a rule like this:
-
-          # Make sure all installation directories (e.g. $(bindir))
-          # actually exist by making them if necessary.
-          installdirs: mkinstalldirs
-                  $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
-                                          $(libdir) $(infodir) \
-                                          $(mandir)
-
-     This rule should not modify the directories where compilation is
-     done.  It should do nothing but create installation directories.
-
-   ---------- Footnotes ----------
-
-   (1)  `texi2dvi' uses TeX to do the real work of formatting. TeX is
-not distributed with Texinfo.
 

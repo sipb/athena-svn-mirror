@@ -1,3 +1,168 @@
+2000-06-22  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/options/dash-q: New file; test the -q option.  Includes
+	a test for PR/1780.
+
+2000-06-21  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/targetvars: Added a test for PR/1709: allowing
+	semicolons in target-specific variable values.
+
+2000-06-19  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/functions/addsuffix: Test for an empty final argument.
+	Actually this bug might have happened for any function, but this
+	one was handy.
+
+2000-06-17  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* scripts/options/general: If parallel jobs are not supported,
+	expect a warning message from Make.
+
+2000-06-15  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* scripts/options/general: Don't try -jN with N != 1 if parallel
+	jobs are not supported.
+
+2000-05-24  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/options/general: Test general option processing (PR/1716).
+
+2000-04-11  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/functions/strip: Test empty value to strip (PR/1689).
+
+2000-04-08  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* scripts/features/reinvoke: Sleep before updating the target
+	files in the first test, to ensure its time stamp really gets
+	newer; otherwise Make might re-exec more than once.
+
+2000-04-07  Eli Zaretskii  <eliz@is.elta.co.il>
+
+	* scripts/features/double_colon: Don't run the parallel tests if
+	parallel jobs aren't supported.
+
+2000-04-04  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/functions/word: wordlist doesn't swap arguments anymore.
+
+2000-03-27  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/statipattrules: Test that static pattern rules
+	whose prerequisite patterns resolve to empty strings throw an
+	error (instead of dumping core).  Fixes PR/1670.
+
+	* scripts/features/reinvoke: Make more robust by touching "b"
+	first, to ensure it's not newer than "a".
+	Reported by Marco Franzen <Marco.Franzen@Thyron.com>.
+	* scripts/options/dash-n: Ditto.
+
+	* scripts/functions/call: Whoops.  The fix to PR/1527 caused
+	recursive invocations of $(call ...) to break.  I can't come up
+	with any way to get both working at the same time, so I backed out
+	the fix to 1527 and added a test case for recursive calls.  This
+	also tests the fix for PR/1610.
+
+	* scripts/features/double_colon: Test that circular dependencies
+	in double-colon rule sets are detected correctly (PR/1671).
+
+2000-03-26  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/targets/INTERMEDIATE: Test that make doesn't remove
+	.INTERMEDIATE files when given on the command line (PR/1669).
+
+2000-03-08  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/options/dash-k: Add a test for error detection by
+	multiple targets depending on the same prerequisite with -k.
+	For PR/1634.
+
+2000-02-07  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/escape: Add a test for backslash-escaped spaces
+	in a target name (PR/1586).
+
+2000-02-04  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/patspecific_vars: Add a test for pattern-specific
+	target variables inherited from the parent target (PR/1407).
+
+2000-02-02  Paul D. Smith  <psmith@gnu.org>
+
+	* run_make_tests.pl (set_more_defaults): Hard-code the LANG to C
+	to make sure sorting order, etc. is predictable.
+	Reported by Andreas Jaeger <aj@suse.de>.
+
+	* run_make_tests.pl (set_more_defaults): Set the $wtime variable
+	depending on the OS.  Eli Zaretskii <eliz@is.elta.co.il> reports
+	this seems to need to be *4* on DOS/Windows, not just 2.  Keep it
+	1 for other systems.
+	* scripts/features/vpathplus (touchfiles): Use the $wtime value
+	instead of hardcoding 2.
+	* scripts/targets/SECONDARY: Ditto.
+	* scripts/targets/INTERMEDIATE: Ditto.
+
+2000-01-27  Paul D. Smith  <psmith@gnu.org>
+
+	* test_driver.pl (toplevel): Don't try to run test scripts which
+	are really directories.
+
+2000-01-23  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/include: Remove a check; the fix caused more
+	problems than the error, so I removed it and removed the test for
+	it.
+
+2000-01-11  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/functions/call: Add a test for PR/1517 and PR/1527: make
+	sure $(call ...) doesn't eval its arguments and that you can
+	invoke foreach from it without looping forever.
+
+1999-12-15  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/targets/INTERMEDIATE: Add a test for PR/1423: make sure
+	.INTERMEDIATE settings on files don't disable them as implicit
+	intermediate possibilities.
+
+1999-12-01  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/double_colon: Add a test for PR/1476: Try
+	double-colon rules as non-goal targets and during parallel builds
+	to make sure they're handled serially.
+
+1999-11-17  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/functions/if: Add a test for PR/1429: put some text
+	after an if-statement to make sure it works.
+
+	* scripts/features/targetvars: Add a test for PR/1380: handling +=
+	in target-specific variable definitions correctly.
+
+1999-10-15  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/variables/MAKEFILES: This was really broken: it didn't
+	test anything at all, really.  Rewrote it, plus added a test for
+	PR/1394.
+
+1999-10-13  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/options/dash-n: Add a test for PR/1379: "-n doesn't
+	behave properly when used with recursive targets".
+
+1999-10-08  Paul D. Smith  <psmith@gnu.org>
+
+	* scripts/features/targetvars: Add a check for PR/1378:
+	"Target-specific vars don't inherit correctly"
+
+1999-09-29  Paul D. Smith  <psmith@gnu.org>
+
+	* test_driver.pl (get_osname): Change $fancy_file_names to
+	$short_filenames and reverse the logic.
+	(run_each_test): Change test of non-existent $port_host to use
+	$short_filenames--problem reported by Eli Zaretskii.
+
 1999-09-23  Paul D. Smith  <psmith@gnu.org>
 
 	* scripts/features/parallelism: Add a check to ensure that the

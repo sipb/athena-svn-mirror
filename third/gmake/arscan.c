@@ -37,8 +37,6 @@ USA.  */
 #include <lbr$routines.h>
 #endif
 
-#define uppercasify(str) {char *str1; for (str1 = str; *str1; str1++) *str1 = _toupper(*str1);}
-
 static void *VMS_lib_idx;
 
 static char *VMS_saved_memname;
@@ -80,10 +78,12 @@ VMS_get_member_info (module, rfa)
 
   mhd = (struct mhddef *) filename;
 
+#ifdef __DECC
   val = decc$fix_time (&mhd->mhd$l_datim);
+#endif
 
   for (i = 0; i < module->dsc$w_length; i++)
-    filename[i] = _tolower (module->dsc$a_pointer[i]);
+    filename[i] = _tolower ((unsigned char)module->dsc$a_pointer[i]);
 
   filename[i] = '\0';
 
@@ -172,7 +172,7 @@ ar_scan (archive, function, arg)
 
   /* For comparison, delete .obj from arg name.  */
 
-  p = rindex (VMS_saved_memname, '.');
+  p = strrchr (VMS_saved_memname, '.');
   if (p)
     *p = '\0';
 
@@ -232,7 +232,25 @@ ar_scan (archive, function, arg)
 #endif
 
 #ifndef WINDOWS32
-# include <ar.h>
+# ifndef __BEOS__
+#  include <ar.h>
+# else
+   /* BeOS 5 doesn't have <ar.h> but has archives in the same format
+    * as many other Unices.  This was taken from GNU binutils for BeOS.
+    */
+#  define ARMAG	"!<arch>\n"	/* String that begins an archive file.  */
+#  define SARMAG 8		/* Size of that string.  */
+#  define ARFMAG "`\n"		/* String in ar_fmag at end of each header.  */
+struct ar_hdr
+  {
+    char ar_name[16];		/* Member file name, sometimes / terminated. */
+    char ar_date[12];		/* File date, decimal seconds since Epoch.  */
+    char ar_uid[6], ar_gid[6];	/* User and group IDs, in ASCII decimal.  */
+    char ar_mode[8];		/* File mode, in ASCII octal.  */
+    char ar_size[10];		/* File size, in ASCII decimal.  */
+    char ar_fmag[2];		/* Always contains ARFMAG.  */
+  };
+# endif
 #else
 /* These should allow us to read Windows (VC++) libraries (according to Frank
  * Libbrecht <frankl@abzx.belgium.hp.com>)
@@ -698,7 +716,7 @@ ar_name_equal (name, mem, truncated)
 {
   char *p;
 
-  p = rindex (name, '/');
+  p = strrchr (name, '/');
   if (p != 0)
     name = p + 1;
 
