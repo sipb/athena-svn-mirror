@@ -1,0 +1,18 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "Removing S88sendmail and K57sendmail "
+	echo "/etc/rc2.d/S88sendmail"		>> "$DEADFILES"
+	echo "/etc/rc0.d/K57sendmail"		>> "$DEADFILES"
+	echo "/etc/rc1.d/K57sendmail"		>> "$DEADFILES"
+	if [ "$PUBLIC" != "true" ]; then
+		echo "inetd.conf and athena/inetd.conf were mv to *.old"
+		mv /etc/inetd.conf /etc/inetd.conf.old
+		ln -s /etc/inet/inetd.conf /etc/inetd.conf
+                cp -p /srvd/etc/inet/inetd.conf /etc/inet/inetd.conf
+		mv /etc/athena/inetd.conf /etc/athena/inetd.conf.old
+		cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
+	fi
+	;;
+esac

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	echo "/etc/syslog.conf"			>> "$CONFCHG"
+	echo "/etc/athena/newsyslog.conf"	>> "$CONFCHG"
+	echo "/var/spool/cron/crontabs/root"	>> "$CONFCHG"
+
+	if [ ! -f /etc/cron.d/cron.allow -a ! -s /etc/cron.d/cron.deny ]; then
+		echo "/etc/cron.d/cron.deny"	>> "$DEADFILES"
+	fi
+	if [ ! -f /etc/cron.d/at.allow -a ! -s /etc/cron.d/at.deny ]; then
+		echo "/etc/cron.d/at.deny"	>> "$DEADFILES"
+	fi
+	echo "/etc/rc2.d/S61bsdlpr"		>> "$DEADFILES"
+	echo "/etc/rc0.d/K26bsdlpr"		>> "$DEADFILES"
+	echo 'CHANGES="$CHANGES SENDMAIL SAVECORE"' >> /etc/athena/.rc.conf.sync
+
+	cat "$LIBDIR/irix52-53"			>> "$DEADFILES"
+
+	# Force a MAKEDEV after reboot. See athena.config.
+	touch /dev/MAKEDEV.new
+	;;
+esac

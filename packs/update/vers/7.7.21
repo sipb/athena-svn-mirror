@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "Removing S88sendmail and K57sendmail"
+	echo "/etc/rc2.d/S88sendmail"		>> "$DEADFILES"
+	echo "/etc/rc0.d/K57sendmail"		>> "$DEADFILES"
+	echo "/etc/rc1.d/K57sendmail"		>> "$DEADFILES"
+	;;
+esac
