@@ -1,7 +1,0 @@
-TODO for pdfTeX:
-- enable pdfTeX to output PDF/X-3 compliant PDF
-- include patch for changebar
-- allow access to the object number of the current page
-
-$Id: TODO,v 1.1.1.1 2003-02-25 22:12:47 amb Exp $
-// vim: tw=79
