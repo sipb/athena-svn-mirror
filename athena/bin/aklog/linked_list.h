@@ -1,8 +1,8 @@
-/* 
- * $Id: linked_list.h,v 1.4 1997-11-17 16:23:50 ghudson Exp $
+/*
+ * $Id: linked_list.h,v 1.5 1999-09-20 16:25:49 danw Exp $
  *
  * This is the header file for a general list linked package.
- * 
+ *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
@@ -14,15 +14,15 @@
 #define LL_FAILURE -1
 
 typedef struct _ll_node {
-    struct _ll_node *prev;
-    struct _ll_node *next;
-    char *data;
+  struct _ll_node *prev;
+  struct _ll_node *next;
+  char *data;
 } ll_node;
 
 typedef struct {
-    ll_node *first;
-    ll_node *last;
-    int nelements;
+  ll_node *first;
+  ll_node *last;
+  int nelements;
 } linked_list;
 
 typedef enum {ll_head, ll_tail} ll_end;
