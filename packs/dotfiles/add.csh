@@ -19,14 +19,14 @@
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
               add_opts add_attach add_dirs add_bin add_bindir \
-              add_man add_mandir add_print add_path add_i)
+              add_man add_mandir add_print add_path add_arg add_i)
 
 set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
 while ( $#add_opts > 0 )
-  set arg = $add_opts[1]
+  set add_arg = $add_opts[1]
 
-  switch ($arg)
+  switch ($add_arg)
 
     case -v:
       set add_verbose
