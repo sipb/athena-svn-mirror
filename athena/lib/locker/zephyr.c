@@ -17,7 +17,7 @@
  * pertaining to lockers.
  */
 
-static const char rcsid[] = "$Id: zephyr.c,v 1.3 1999-04-06 21:56:07 danw Exp $";
+static const char rcsid[] = "$Id: zephyr.c,v 1.4 1999-05-22 17:57:55 danw Exp $";
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -55,8 +55,13 @@ int locker_do_zsubs(locker_context context, int op)
 		    error_message(status));
       return LOCKER_EZEPHYR;
     }
-  else
-    wgport = ZGetWGPort();
+
+  wgport = ZGetWGPort();
+  if (wgport == -1)
+    {
+      locker__free_zsubs(context);
+      return LOCKER_EZEPHYR;
+    }
 
   for (j = 0; j < ZEPHYR_MAXONEPACKET; j++)
     {
