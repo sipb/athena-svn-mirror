@@ -26,7 +26,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.6 1987-03-15 19:38:22 cref Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.1 1989-12-13 14:14:52 vanharen Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -47,14 +47,16 @@ static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/a
  * Notes:
  */
 
-err_abort(message)
+err_abort(message, string)
      char *message;
+     char *string;
 {
   move(LINES, 0);
+  fprintf(stderr, "%s %s\n", message, string);
+  wait_for_key();
   echo();
   noraw();
   endwin();
-  fprintf(stderr, "%s\n", message);
   exit(ERROR);
 }
 
@@ -152,9 +154,9 @@ get_input(buffer)
   length = strlen(buffer);
   ptr = buffer + length;
   noecho();
+  addstr(buffer);
   getyx(stdscr, y, x);
   x_start = x - length;
-  addstr(buffer);
   refresh();
   while ( (c = getch()) != '\n')
     {
@@ -171,7 +173,7 @@ get_input(buffer)
 	    }
 	  else if (x == x_start)
 	    {
-	      move(y, x-1);
+	      move(y, x);
 	      clrtoeol();
 	      refresh();
 	      *ptr = (char) NULL;
@@ -288,7 +290,7 @@ copy_file(src_file, dest_file)
 wait_for_key()
 {
   standout();
-  mvaddstr(LINES-1, 3, "Hit any key to continue");
+  mvaddstr(LINES-1, 0, " Hit any key to continue...");
   standend();
   refresh();
   getch();
