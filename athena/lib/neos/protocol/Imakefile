@@ -1,7 +1,7 @@
 /* 
  * Makefile for the FX (file exchange) protocol
  *
- * $Id: Imakefile,v 1.9 1999-01-22 23:18:09 ghudson Exp $
+ * $Id: Imakefile,v 1.10 1999-01-29 00:41:48 ghudson Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -49,6 +49,7 @@ fx_prot_xdr.o: fx_prot_xdr.c
 fx_prot_svc.c fx_prot_clnt.c fx_prot_xdr.c: fx_prot.x
 	${RPCGEN} fx_prot.x
 	cat xdr_extras.c >> fx_prot_xdr.c
+	rm -f fx_prot_svc.c
 	${RPCGEN} -m -o fx_prot_svc.c fx_prot.x
 /* IRIX (as of 6.3) doesn't support rpcgen -C the way other operating
  * systems do.  Instead, we have to convert the server call names by
