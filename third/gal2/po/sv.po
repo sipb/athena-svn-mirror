@@ -3,7 +3,7 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.1 2003-07-13 05:00:05 ghudson Exp $
+# $Id: sv.po,v 1.1.2.1 2003-07-14 16:59:29 ghudson Exp $
 #
 msgid ""
 msgstr ""
