@@ -9,7 +9,7 @@ ln -sf ../dist $db_dist/../db/dist
 ln -sf ../dist $db_dist
 
 CC="$CC" CFLAGS="$CFLAGS" $db_dist/configure \
-	`echo $* | sed -e "s% --cache-file=.*$% --enable-shared --enable-static --enable-debug --enable-rpc --with-uniquename=_rpmdb --srcdir=$db_dist%"`
+	`echo $* | sed -e "s%--cache-file=.*$%--enable-shared --enable-static --enable-debug --enable-rpc --with-uniquename=_rpmdb --srcdir=$db_dist%"`
 
 # XXX hack to get db-3.3.4 to configure properly
 rm -f $db_dist/../db/dist $db_dist/dist
