@@ -15,9 +15,11 @@
 
 /* Program to convert an old attachtab into a new one. */
 
-static const char rcsid[] = "$Id: atconvert.c,v 1.1 1999-03-19 16:35:09 danw Exp $";
+static const char rcsid[] = "$Id: atconvert.c,v 1.2 1999-03-20 17:16:46 ghudson Exp $";
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include <locker.h>
 
