@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.2 1995-07-12 03:36:52 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.3 1997-02-27 06:47:00 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1995/07/12 03:36:52  cfields
+ * Removed some frighteningly broken and useless cruft.
+ *
  * Revision 1.1  1994/09/18  12:55:54  cfields
  * Initial revision
  *
@@ -51,7 +54,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.2 1995-07-12 03:36:52 cfields Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/main.c,v 1.3 1997-02-27 06:47:00 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *
@@ -114,9 +117,9 @@ main(argc, argv)
 	/*
 	 *  zero out statistics structure.
 	 */
-	bzero((char *)&s_stat, sizeof(s_stat));
-	bzero((char *)&ovec, sizeof(ovec));
-	bzero((char *)&vec, sizeof(vec));
+	memset(&s_stat, 0, sizeof(s_stat));
+	memset(&ovec, 0, sizeof(ovec));
+	memset(&vec, 0, sizeof(vec));
 
 	/*
 	 * check arguments for turning on debugging and a log file
@@ -134,11 +137,13 @@ main(argc, argv)
 		(void) open("/", O_RDONLY);
 		(void) dup2(0, 1);
 		(void) dup2(0, 2);
+#ifdef TIOCNOTTY
 		t = open("/dev/tty", O_RDWR);
 		if (t >= 0) {
 			(void) ioctl(t, TIOCNOTTY, (char *)NULL);
 			(void) close(t);
 		}
+#endif
 	}
 	if (logfile != NULL)
 		(void) traceon(logfile);
@@ -373,6 +378,7 @@ recvpkt(sock)
 	struct sockaddr from;
 	struct sockaddr_in *from_in;
 	int fromlen = sizeof(from), count, omask;
+	sigset_t set, oset;
 
 	/*
 	 *  If we are not doing debugging, we do
@@ -381,7 +387,7 @@ recvpkt(sock)
 	if (debuglevel > 0)
 		getod();			/* current time */
 
-	bzero((char *)&from, sizeof(struct sockaddr));
+	memset(&from, 0, sizeof(struct sockaddr));
 	count = recvfrom(sock, packet, sizeof(packet), 0, &from, &fromlen);
 	from_in = (struct sockaddr_in *)&from;
 	s_stat.inpkts++;
@@ -405,9 +411,9 @@ recvpkt(sock)
 		return;
 	}
 
-#define	mask(s)	(1<<((s)-1))
-
-	omask = sigblock(mask(SIGTERM));
+	sigemptyset(&set);
+	sigaddset(&set, SIGTERM);
+	sigprocmask(SIG_BLOCK, &set, &oset);
 
 	if (sock == snmp_socket)
 		snmpin(&from, count, packet);   /* process SNMP packet */
@@ -416,7 +422,7 @@ recvpkt(sock)
 	else
 		syslog(LOG_ERR, "recvpkt: bad socket");
 
-	(void) sigsetmask(omask);
+	sigprocmask(SIG_SETMASK, &oset, NULL);
 	return;
 }
 
@@ -517,7 +523,7 @@ get_my_address(myaddstr)
 	char hname[SNMPSTRLEN];
 	struct hostent *hp;
 
-	bzero((char *)myaddstr, sizeof(struct sockaddr_in));
+	memset(myaddstr, 0, sizeof(struct sockaddr_in));
 
 	if (gethostname(hname, SNMPSTRLEN) < 0)   /* get local host name */
 		return(BUILD_ERR);
@@ -526,9 +532,9 @@ get_my_address(myaddstr)
 		return(BUILD_ERR);
 
 #ifdef NAMED
-	bcopy((char *)&(hp->h_addr),(char *)&myaddstr->sin_addr,hp->h_length);
+	memcpy(&myaddstr->sin_addr,&(hp->h_addr),hp->h_length);
 #else
-	bcopy((char *)(hp->h_addr),(char *)&myaddstr->sin_addr,hp->h_length);
+	memcpy(&myaddstr->sin_addr,(hp->h_addr),hp->h_length);
 #endif /* NAMED */
 
 	myaddstr->sin_family = AF_INET;       /* use internet family */

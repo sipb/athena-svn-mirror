@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.3 1993-06-18 14:35:19 root Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.4 1997-02-27 06:46:58 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1993/06/18 14:35:19  root
+ * first cut at solaris port
+ *
  * Revision 1.2  90/05/26  13:34:53  tom
  * release 7.0e
  * 
@@ -30,7 +33,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.3 1993-06-18 14:35:19 root Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.4 1997-02-27 06:46:58 ghudson Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -120,7 +123,7 @@ agentin(from, size, pkt)
 					syslog(LOG_ERR, "agentin: malloc: %m");
 					break;
 				}
-				bcopy((char *)sin_from, (char *)tn->from, sizeof(struct sockaddr_in));
+				memcpy(tn->from, sin_from, sizeof(struct sockaddr_in));
 				if (debuglevel > 3) {
 					(void) printf("\nADDING AGENT VARIABLE:\n\n");
 					pvartree(tn);
@@ -147,7 +150,7 @@ agentin(from, size, pkt)
  *
  *	TO DO:  Make Lexi-stuff work on agent error
  */
-jmp_buf env;
+sigjmp_buf env;
 
 int
 get_agent_var(varnode, repl, instptr, reqflg)
@@ -164,8 +167,9 @@ get_agent_var(varnode, repl, instptr, reqflg)
 	struct itimerval interval, disable;
 	struct sockaddr_in remote, *krt, keynet;
 	struct rtentry rte;
-	int onintr();
+	void onintr();
 	u_long *ch;
+	struct sigaction action;
 
 #define TMO	3
 
@@ -199,7 +203,7 @@ get_agent_var(varnode, repl, instptr, reqflg)
 		
 	size = varnode->var_code->ncmp + 2;
 
-        bzero((char *)&keynet, sizeof(keynet));
+        memset(&keynet, 0, sizeof(keynet));
         keynet.sin_family = AF_INET;
 	cnt = 0;
 
@@ -224,7 +228,7 @@ getanother:
                 	return(BUILD_ERR);
 
 		krt = (struct sockaddr_in *)&rte.rt_dst;
-		bcopy((char *)&krt->sin_addr.s_addr, p, sizeof(krt->sin_addr.s_addr));
+		memcpy(p, &krt->sin_addr.s_addr, sizeof(krt->sin_addr.s_addr));
 		if (firstsend) {
 			size += sizeof(krt->sin_addr.s_addr);
 			reqpkt[1] += sizeof(krt->sin_addr.s_addr);
@@ -242,8 +246,7 @@ getanother:
         /*
          *  fill in variable name we are sending back a response for.
          */
-        bcopy((char *)varnode->var_code, (char *)&repl->name,
-                sizeof(repl->name));
+        memcpy(&repl->name, varnode->var_code, sizeof(repl->name));
 
         /*
          *  fill in the object instance and return value!
@@ -266,14 +269,17 @@ getanother:
 	 *  Save the environment, so in case of a time-out on
 	 *  the request, we can return an error.
 	 */
-	if (setjmp(env) == 3)
+	if (sigsetjmp(env, 1) == 3)
 		return(BUILD_ERR);
 
 	/*
 	 *  Ignore signal SIGALRM when we send the request.
 	 *  Send the request packet out!
 	 */
-	(void) signal(SIGALRM, SIG_IGN);
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = 0;
+	action.sa_handler = SIG_IGN;
+	sigaction(SIGALRM, &action, NULL);
 
 	pktsnd = sendto(agent_socket, reqpkt, size, 0,
 			(struct sockaddr *)varnode->from,
@@ -293,7 +299,10 @@ getanother:
 	 */
 wantrsp:
 
-	(void) signal(SIGALRM, onintr);
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = 0;
+	action.sa_handler = onintr;
+	sigaction(SIGALRM, &action, NULL);
 	(void) setitimer(ITIMER_REAL, &interval, (struct itimerval *)NULL);
 	remotelen = sizeof(remote);
  	pktrec = recvfrom(agent_socket, agntpkt, SNMPMAXPKT, 0,
@@ -332,11 +341,11 @@ wantrsp:
 			rspsize = *p++;
 			switch (agntvartype) {
 				case INT:
-					bcopy(p, (char *)&repl->val.value.intgr, rspsize);
+					memcpy(&repl->val.value.intgr, p, rspsize);
 					repl->val.type = INT;
 					break;
 				case CNTR:
-					bcopy(p, (char *)&repl->val.value.cntr, rspsize);
+					memcpy(&repl->val.value.cntr, p, rspsize);
 					repl->val.type = CNTR;
 					break;
 				default:
@@ -356,8 +365,8 @@ wantrsp:
 }
 			
 
-onintr()
+void onintr()
 {
-	longjmp(env, 3);
+	siglongjmp(env, 3);
 }
 
