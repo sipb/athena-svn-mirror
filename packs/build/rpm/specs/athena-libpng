@@ -1,6 +1,6 @@
 Name: athena-libpng
 Summary: A library for manipulating PNG image format files, for Athena
-Copyright: distributable
+License: distributable
 Group: System Environment/Libraries
 
 %description

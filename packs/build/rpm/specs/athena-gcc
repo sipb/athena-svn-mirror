@@ -1,6 +1,6 @@
 Name: athena-gcc
 Summary: Various compilers, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Languages
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-libal
 Summary: The Athena login library
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 Requires: athena-hesiod athena-openafs

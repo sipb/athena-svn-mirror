@@ -1,6 +1,6 @@
 Name: athena-openssl
 Summary: Secure Sockets Layer and cryptography libraries and tools, for Athena
-Copyright: Freely distributable
+License: Freely distributable
 Group: System Environment/Libraries
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-m4
 Summary: GNU m4 for Athena workstations.
-Copyright: GPL
+License: GPL
 Group: Applications/Text
 
 %description

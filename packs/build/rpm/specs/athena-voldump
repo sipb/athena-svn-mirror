@@ -1,6 +1,6 @@
 Name: athena-voldump
 Summary: Print AFS volume information 
-Copyright: Transarc and MIT
+License: Transarc and MIT
 Group: Applications/Internet
 
 Requires: athena-openafs athena-hesiod

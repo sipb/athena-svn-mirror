@@ -1,6 +1,6 @@
 Name: athena-dustbuster
 Summary: Restrict the lifetime of a command to the current login session
-Copyright: MIT
+License: MIT
 Group: Applications/System
 
 %description

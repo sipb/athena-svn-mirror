@@ -1,6 +1,6 @@
 Name: athena-gmake
 Summary: GNU Make as modified for Athena workstations.
-Copyright: GPL
+License: GPL
 Group: Development/Tools
 
 %description

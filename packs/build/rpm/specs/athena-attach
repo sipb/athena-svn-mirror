@@ -1,6 +1,6 @@
 Name: athena-attach
 Summary: An Athena utility to attach a remote file system to the workstation
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-locker

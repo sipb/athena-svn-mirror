@@ -1,6 +1,6 @@
 Name: athena-cviewd
 Summary: Respond to cview requests for workstation status information
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-larv

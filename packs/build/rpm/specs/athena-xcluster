@@ -1,6 +1,6 @@
 Name: athena-xcluster
 Summary: Utilities to display cluster usage status
-Copyright: MIT
+License: MIT
 Group: Applications/Communication
 
 Requires: athena-libXj athena-hesiod

@@ -1,6 +1,6 @@
 Name: athena-scrollkeeper
 Summary: A cataloging system for documentation on open systems, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Base
 Provides: scrollkeeper = 0.3.11
 

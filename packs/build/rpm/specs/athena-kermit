@@ -1,6 +1,6 @@
 Name: athena-kermit
 Summary: The ubiquitous Kermit file transfer implementation
-Copyright: Columbia University
+License: Columbia University
 Group: Applications/Communications
 Provides: kermit = 6.0
 

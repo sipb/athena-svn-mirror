@@ -1,6 +1,6 @@
 Name: athena-libungif
 Summary: A library for manipulating GIF format image files, for Athena
-Copyright: X11ish
+License: X11ish
 Group: System Environment/Libraries
 
 %description

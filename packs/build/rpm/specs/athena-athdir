@@ -1,6 +1,6 @@
 Name: athena-athdir
 Summary: A utility to find machine-specific directories using Athena conventions
-Copyright: MIT
+License: MIT
 Group: Applications/File
 
 Requires: athena-libathdir

@@ -1,6 +1,6 @@
 Name: athena-bind
 Summary: The Berkeley Internet Name Daemon, implementing DNS for Athena
-Copyright: BSD
+License: BSD
 Group: System Environment/Daemons
 Provides: bind = 9.2.1
 

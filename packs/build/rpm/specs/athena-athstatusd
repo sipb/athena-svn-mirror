@@ -1,6 +1,6 @@
 Name: athena-athstatusd
 Summary: The Athena disconnected-status daemon
-Copyright: MIT
+License: MIT
 Group: System Environment/Daemons
 ExclusiveOS: linux
 

@@ -1,6 +1,6 @@
 Name: athena-libole2
 Summary: Structured Storage OLE2 library, for Athena
-Copyright: GPL
+License: GPL
 Group: System Environment/Libraries
 Provides: libole2 = 0.2.4
 

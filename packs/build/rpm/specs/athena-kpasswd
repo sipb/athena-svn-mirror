@@ -1,6 +1,6 @@
 Name: athena-kpasswd
 Summary: kpasswd changes your password on a Kerberos server
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 Requires: athena-krb5

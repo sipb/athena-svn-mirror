@@ -1,6 +1,6 @@
 Name: athena-getcluster
 Summary: Retrieve service cluster info from Hesiod for Athena workstations
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 Requires: athena-hesiod

@@ -1,6 +1,6 @@
 Name: athena-xpm
 Summary: The X Pixmap Library, for Athena
-Copyright: MITish
+License: MITish
 Group: Development/Libraries
 
 %description

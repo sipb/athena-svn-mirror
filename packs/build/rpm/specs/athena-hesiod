@@ -1,6 +1,6 @@
 Name: athena-hesiod
 Summary: The Athena Hesiod name service library
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-top
 Summary: Process table monitoring utility, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/System
 
 %description

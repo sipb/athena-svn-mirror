@@ -1,6 +1,6 @@
 Name: athena-gnome-vfs2
 Summary: The GNOME virtual file-system libraries, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: gnome-vfs2 = 2.0.4.1
 

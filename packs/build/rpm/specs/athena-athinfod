@@ -1,6 +1,6 @@
 Name: athena-athinfod
 Summary: An Athena server to respond to athinfo requests
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 %description 

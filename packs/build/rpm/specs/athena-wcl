@@ -1,6 +1,6 @@
 Name: athena-wcl
 Summary: The Widget Creation Library, for Athena
-Copyright: David Smyth
+License: David Smyth
 Group: User Interface/X
 Provides: wcl = 2.7
 

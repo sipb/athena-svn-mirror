@@ -1,6 +1,6 @@
 Name: athena-libacl
 Summary: An Athena library for the manipulation of access control lists
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 %description

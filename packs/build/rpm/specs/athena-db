@@ -1,6 +1,6 @@
 Name: athena-db
 Summary: The Berkeley DB database library for C
-Copyright: BSDish
+License: BSDish
 Group: System Environment/Libraries
 
 %description

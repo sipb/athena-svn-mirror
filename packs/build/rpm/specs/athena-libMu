@@ -1,6 +1,6 @@
 Name: athena-libMu
 Summary: An Athena library for use with Motif and UIL
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 %description

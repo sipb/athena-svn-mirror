@@ -1,6 +1,6 @@
 Name: athena-lam
 Summary: "laminate" files by putting them into multi-column format
-Copyright: BSD
+License: BSD
 Group: Applications/Text
 
 %description

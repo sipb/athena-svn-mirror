@@ -1,6 +1,6 @@
 Name: athena-athlsync
 Summary: Synchronize locker contents to local disk
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 %description

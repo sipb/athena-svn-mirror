@@ -1,6 +1,6 @@
 Name: athena-config_console
 Summary: An Athena utility to communicate with the console program
-Copyright: MIT
+License: MIT
 Group: User Interface/X
 
 Requires: athena-console

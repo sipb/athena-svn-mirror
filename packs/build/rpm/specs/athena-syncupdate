@@ -1,6 +1,6 @@
 Name: athena-syncupdate
 Summary: An Athena utility to sync files to disk before updating them
-Copyright: MIT
+License: MIT
 Group: Applications/Text
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-discuss
 Summary: A conferencing and mail archiving system
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-krb5 athena-zephyr athena-libet

@@ -1,6 +1,6 @@
 Name: athena-panel-wrapper
 Summary: Runs panel and confirms user desire to logout
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktops
 
 Requires: athena-gnome-core

@@ -1,6 +1,6 @@
 Name: athena-libbonoboui
 Summary: Bonobo user interface components
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: libbonoboui = 2.0.3.3
 

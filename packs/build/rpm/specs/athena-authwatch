@@ -1,6 +1,6 @@
 Name: athena-authwatch
 Summary: Warn user of expiring authentication
-Copyright: MIT
+License: MIT
 Group: User Interface/Desktops
 
 Requires: athena-krb5 athena-gnome-libs

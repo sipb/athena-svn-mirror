@@ -1,6 +1,6 @@
 Name: athena-mail-dialog
 Summary: Displays a dialog about the change in default mail client
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktops
 
 Requires: athena-gnome-libs

@@ -1,6 +1,6 @@
 Name: athena-intltool
 Summary: Scripts for internationalizing data files, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Tools
 Provides: intltool = 0.24
 

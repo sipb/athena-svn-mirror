@@ -1,6 +1,6 @@
 Name: athena-messaged
 Summary: A program to serve the global Athena message of the day
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-gms athena-libet

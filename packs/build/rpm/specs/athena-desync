@@ -1,6 +1,6 @@
 Name: athena-desync
 Summary: Desynchronize timed jobs on networks
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 %description

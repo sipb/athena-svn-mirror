@@ -1,6 +1,6 @@
 Name: athena-hesinfo
 Summary: An Athena program to fetch and print Hesiod records
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-hesiod

@@ -1,6 +1,6 @@
 Name: athena-fontconfig
 Summary: Font configuration and customization library, for Athena
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 Provides: fontconfig = 2.1
 

@@ -1,6 +1,6 @@
 Name: athena-expat
 Summary: A library for parsing XML, for Athena
-Copyright: BSD
+License: BSD
 Group: System Environment/Libraries
 Provides: expat = 1.95.5
 

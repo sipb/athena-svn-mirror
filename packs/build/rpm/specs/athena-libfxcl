@@ -1,6 +1,6 @@
 Name: athena-libfxcl
 Summary: The secure file exchange library
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 Requires: athena-krb5 athena-hesiod

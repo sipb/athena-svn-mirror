@@ -1,6 +1,6 @@
 Name: athena-tetex
 Summary: The TeX typesetting system and support utilities, for Athena
-Copyright: Donald Knuth and others
+License: Donald Knuth and others
 Group: Applications/Publishing
 Provides: tetex = 1.0.6
 

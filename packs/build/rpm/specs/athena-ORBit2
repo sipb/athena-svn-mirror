@@ -1,6 +1,6 @@
 Name: athena-ORBit2
 Summary: A CORBA Object Request Broker, for Athena
-Copyright: LGPL/GPL
+License: LGPL/GPL
 Group: System Environment/Daemons
 Provides: ORBit2 = 2.4.4
 Requires: athena-glib2 athena-linc athena-libIDL

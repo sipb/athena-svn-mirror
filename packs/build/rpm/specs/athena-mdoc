@@ -1,6 +1,6 @@
 Name: athena-mdoc
 Summary: troff macro parsing and documenting facilities
-Copyright: BSD
+License: BSD
 Group: Applications/Publishing
 
 %description

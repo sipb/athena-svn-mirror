@@ -1,6 +1,6 @@
 Name: athena-bzip2
 Summary: A file compression utility, for Athena
-Copyright: BSD
+License: BSD
 Group: Applications/File
 
 %description

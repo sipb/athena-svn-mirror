@@ -1,6 +1,6 @@
 Name: athena-libzvt
 Summary: Zed's Virtual Terminal widget, for Athena
-Copyright: LGPL
+License: LGPL
 Group: X11/Libraries
 
 Requires: athena-glib2 athena-gtk2 athena-libart_lgpl

@@ -1,6 +1,6 @@
 Name: athena-sendbug
 Summary: An Athena program to report bugs in a standardized format.
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 %description

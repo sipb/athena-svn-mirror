@@ -1,6 +1,6 @@
 Name: athena-rcs
 Summary: RCS file version management tools, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Tools
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-saferm
 Summary: An Athena completely safe version of rm.
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 %description

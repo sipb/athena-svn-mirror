@@ -1,6 +1,6 @@
 Name: athena-fxserver
 Summary: The File Exchange server
-Copyright: MIT
+License: MIT
 Group: Applications/Productivity
 
 Requires: athena-libfxcl athena-krb5 athena-hesiod

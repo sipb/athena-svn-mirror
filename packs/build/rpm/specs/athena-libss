@@ -1,6 +1,6 @@
 Name: athena-libss
 Summary: The Athena ss library
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 Requires: athena-libet

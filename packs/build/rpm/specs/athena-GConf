@@ -1,6 +1,6 @@
 Name: athena-GConf
 Summary: The GNOME configuration database system, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Base
 Provides: GConf = 1.0.0
 

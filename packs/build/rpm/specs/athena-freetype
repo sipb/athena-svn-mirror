@@ -1,6 +1,6 @@
 Name: athena-freetype
 Summary: A free and portable TrueType font rendering engine, for Athena
-Copyright: BSD-like
+License: BSD-like
 Group: System Environment/Libraries
 Provides: freetype = 2.0.8
 

@@ -1,6 +1,6 @@
 Name: athena-patch
 Summary: The GNU patch command for modifying/upgrading files, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Tools
 
 %description

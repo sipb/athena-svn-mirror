@@ -1,6 +1,6 @@
 Name: athena-dm
 Summary: The Athena display manager
-Copyright: MIT
+License: MIT
 Group: User Interface/X
 
 Requires: athena-libal athena-xlogin athena-console

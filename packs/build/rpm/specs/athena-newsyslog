@@ -1,6 +1,6 @@
 Name: athena-newsyslog
 Summary: An Athena utility to maintain system log files at manageable sizes
-Copyright: MIT
+License: MIT
 Group: Applications/File
 
 %description

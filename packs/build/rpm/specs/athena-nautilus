@@ -1,6 +1,6 @@
 Name: athena-nautilus
 Summary: A file manager and graphical shell, for Athena
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktop
 Provides: nautilus = 2.0.8
 

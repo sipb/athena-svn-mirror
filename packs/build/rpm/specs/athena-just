@@ -1,6 +1,6 @@
 Name: athena-just
 Summary: Simple text formatting utilities on Athena
-Copyright: MIT
+License: MIT
 Group: Applications/Text
 
 %description

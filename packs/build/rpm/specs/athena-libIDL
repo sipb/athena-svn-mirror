@@ -1,6 +1,6 @@
 Name: athena-libIDL
 Summary: IDL parsing library, for Athena
-Copyright: LGPL
+License: LGPL
 Group: Development/Libraries
 Provides: libIDL = 0.8.0
 Requires: athena-glib2

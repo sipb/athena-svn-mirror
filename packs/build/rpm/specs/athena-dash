@@ -1,6 +1,6 @@
 Name: athena-dash
 Summary: The Athena dashboard; a pull-down menu implementation
-Copyright: MIT
+License: MIT
 Group: User Interface/Desktops
 
 Requires: athena-libXj athena-krb5 athena-libathdir athena-openafs

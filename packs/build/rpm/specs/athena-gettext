@@ -1,6 +1,6 @@
 Name: athena-gettext
 Summary: GNU library for producing multi-lingual messages, for Athena
-Copyright: GPL/LGPL
+License: GPL/LGPL
 Group: Development/Tools
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-larvnetd
 Summary: Monitor a set of cluster workstations and printers
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-larv, athena-ares, athena-hesiod

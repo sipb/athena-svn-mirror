@@ -1,6 +1,6 @@
 Name: athena-gnome-applets
 Summary: Small applications for the GNOME panel, for Athena
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktops
 Provides: gnome-applets = 2.0.4
 

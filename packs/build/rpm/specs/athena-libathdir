@@ -1,6 +1,6 @@
 Name: athena-libathdir
 Summary: A library to implement machine-specific directory location
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 %description

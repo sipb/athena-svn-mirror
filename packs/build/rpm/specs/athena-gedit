@@ -1,6 +1,6 @@
 Name: athena-gedit
 Summary: A small but powerful text editor for GNOME, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/Editors
 Provides: gedit = 2.0.6
 

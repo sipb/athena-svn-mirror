@@ -1,6 +1,6 @@
 Name: athena-gms
 Summary: A library used by the global Athena message service
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-libet

@@ -1,6 +1,6 @@
 Name: athena-write
 Summary: An Athena program to facilitate remote `write' functionality
-Copyright: BSD and MIT
+License: BSD and MIT
 Group: Applications/Communication
 
 %description

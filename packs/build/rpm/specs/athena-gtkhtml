@@ -1,6 +1,6 @@
 Name: athena-gtkhtml
 Summary: GTK-based HTML rendering library, for Athena
-Copyright: GPL
+License: GPL
 Group: System Environment/Libraries
 Provides: gtkhtml = 1.1.7
 

@@ -1,6 +1,6 @@
 Name: athena-gdbm
 Summary: A GNU set of database routines, for Athena
-Copyright: GPL
+License: GPL
 Group: System Environment/Libraries
 
 %description

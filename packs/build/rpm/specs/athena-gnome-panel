@@ -1,6 +1,6 @@
 Name: athena-gnome-panel
 Summary: GNOME panel, for Athena
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktops
 Provides: gnome-panel = 2.0.11
 

@@ -1,6 +1,6 @@
 Name: athena-rkinitd
 Summary: An Athena server for rkinit requests
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-krb5 athena-librkinit

@@ -1,6 +1,6 @@
 Name: athena-yelp
 Summary: A system documentation reader from the Gnome project, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/System
 Provides: yelp = 1.0.7
 

@@ -1,6 +1,6 @@
 Name: athena-libghttp
 Summary: GNOME http client library, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: libghttp = 1.0.9
 

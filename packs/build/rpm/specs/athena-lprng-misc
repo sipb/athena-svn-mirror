@@ -1,6 +1,6 @@
 Name: athena-lprng-misc
 Summary: Miscellaneous support files for the Athena lprng installation
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 Requires: athena-hesinfo

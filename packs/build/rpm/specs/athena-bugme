@@ -1,6 +1,6 @@
 Name: athena-bugme
 Summary: A utility to limit user login time on Athena workstations
-Copyright: MIT
+License: MIT
 Group: Applications/Productivity
 
 Requires: athena-libXj

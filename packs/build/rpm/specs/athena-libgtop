@@ -1,6 +1,6 @@
 Name: athena-libgtop
 Summary: A library which retrieves system information, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: libgtop2 = 2.0.0
 

@@ -1,6 +1,6 @@
 Name: athena-gail
 Summary: Accessibility implementation for GTK+ and GNOME libraries
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: gail = 0.17
 

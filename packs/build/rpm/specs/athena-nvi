@@ -1,6 +1,6 @@
 Name: athena-nvi
 Summary: An implementation of the vi editor from Keith Bostic
-Copyright: BSD
+License: BSD
 Group: Applications/Editors
 Provides: nvi = 1.79
 

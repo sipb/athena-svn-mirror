@@ -1,6 +1,6 @@
 Name: athena-eog
 Summary: Eye of GNOME image viewer, for athena
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktops
 Provides: eog = 1.0.4
 

@@ -1,6 +1,6 @@
 Name: athena-nmh
 Summary: The NMH mail handling system
-Copyright: Richard Coleman
+License: Richard Coleman
 Group: Applications/Communications
 Provides: mh
 Provides: nmh = 1.0

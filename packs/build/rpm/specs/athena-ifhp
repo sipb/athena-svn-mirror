@@ -1,6 +1,6 @@
 Name: athena-ifhp
 Summary: Print filter for the Athena lprng installation
-Copyright: Artistic License
+License: Artistic License
 Group: System Environment/Base
 Provides: ifhp = 3.2.9
 

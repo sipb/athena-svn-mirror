@@ -1,6 +1,6 @@
 Name: athena-track
 Summary: An Athena program to maintain files between machines
-Copyright: Bellcore
+License: Bellcore
 Group: Applications/Internet
 
 %description 

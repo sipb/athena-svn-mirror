@@ -1,6 +1,6 @@
 Name: athena-evolution
 Summary: Evolution application suite for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/Communications
 Provides: evolution = 1.2.1
 

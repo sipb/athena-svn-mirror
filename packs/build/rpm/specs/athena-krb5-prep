@@ -1,6 +1,6 @@
 Name: athena-krb5-prep
 Summary: don't install this rpm
-Copyright: MIT
+License: MIT
 Group: Nothing
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-rkinit
 Summary: An Athena client to safely establish kerberos tickets on a remote host
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-krb5 

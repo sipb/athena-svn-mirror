@@ -1,6 +1,6 @@
 Name: athena-finger
 Summary: The Athena version of the normal finger utility
-Copyright: MIT and UCB
+License: MIT and UCB
 Group: Applications/Internet
 
 Requires: athena-hesiod athena-zephyr

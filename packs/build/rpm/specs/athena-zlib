@@ -1,6 +1,6 @@
 Name: athena-zlib
 Summary: The zlib compression and decompression library, for Athena
-Copyright: BSD
+License: BSD
 Group: System Environment/Libraries
 
 %description

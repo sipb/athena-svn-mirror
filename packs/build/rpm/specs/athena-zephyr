@@ -1,6 +1,6 @@
 Name: athena-zephyr
 Summary: The Athena Zephyr instant messaging system
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 Requires: athena-krb5 athena-ares athena-hesiod athena-libss athena-libet

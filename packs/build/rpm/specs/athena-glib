@@ -1,6 +1,6 @@
 Name: athena-glib
 Summary: The glib utility library, for Athena
-Copyright: GPL
+License: GPL
 Group: System Environment/Libraries
 Provides: glib = 1.2.10
 

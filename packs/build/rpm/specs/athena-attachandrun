@@ -1,6 +1,6 @@
 Name: athena-attachandrun
 Summary: An Athena utility for scripts to run a program from a locker
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-attach

@@ -1,6 +1,6 @@
 Name: athena-athneteventd
 Summary: The Athena disconnected-status user event daemon
-Copyright: MIT
+License: MIT
 Group: User Environment/Daemons
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-passwd
 Summary: Change Kerberos or local password on Athena
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 Requires: athena-krb5 athena-libal

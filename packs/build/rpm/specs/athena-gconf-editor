@@ -1,6 +1,6 @@
 Name: athena-gconf-editor
 Summary: Editor/admin tool for GConf, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/System
 Provides: gconf-editor = 0.4.0
 

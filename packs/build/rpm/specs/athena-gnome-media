@@ -1,6 +1,6 @@
 Name: athena-gnome-media
 Summary: GNOME media programs, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/Multimedia
 Provides: gnome-media = 2.0.3
 

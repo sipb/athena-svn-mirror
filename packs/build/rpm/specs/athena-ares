@@ -1,6 +1,6 @@
 Name: athena-ares
 Summary: An asynchronous resolver library 
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 %description

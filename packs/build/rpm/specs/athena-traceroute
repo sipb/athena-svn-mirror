@@ -1,6 +1,6 @@
 Name: athena-traceroute
 Summary: Tool for tracing packet routes over a TCP/IP network, for Athena
-Copyright: BSD
+License: BSD
 Group: Applications/Internet
 
 %description

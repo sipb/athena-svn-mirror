@@ -1,6 +1,6 @@
 Name: athena-at-spi
 Summary: Assistive Technology Service Provider Interface, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: at-spi = 1.0.2
 

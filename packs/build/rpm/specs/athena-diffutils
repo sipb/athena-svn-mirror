@@ -1,6 +1,6 @@
 Name: athena-diffutils
 Summary: A GNU collection of diff utilities, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/Text
 
 %description

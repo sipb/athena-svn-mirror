@@ -1,6 +1,6 @@
 Name: athena-bonobo
 Summary: The bonobo library for compound documents in GNOME, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Libraries
 Provides: bonobo = 1.0.19
 

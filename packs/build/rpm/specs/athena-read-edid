@@ -1,6 +1,6 @@
 Name: athena-read-edid
 Summary: A package to read data from PnP-conformant monitors
-Copyright: John Fremlin and Josh Vanderhoof
+License: John Fremlin and Josh Vanderhoof
 Group: System Environment/Base
 
 %description

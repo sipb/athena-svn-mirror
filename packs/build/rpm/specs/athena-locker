@@ -1,6 +1,6 @@
 Name: athena-locker
 Summary: Locker management library functions for Athena
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 Requires: athena-zephyr athena-krb5 athena-hesiod athena-openafs athena-libet

@@ -1,6 +1,6 @@
 Name: athena-athrun
 Summary: An Athena utility for users to run a program from a locker
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-attachandrun

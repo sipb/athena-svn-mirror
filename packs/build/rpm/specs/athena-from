@@ -1,6 +1,6 @@
 Name: athena-from
 Summary: Print a list of the user's unread mail
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-hesiod athena-krb5

@@ -1,6 +1,6 @@
 Name: athena-install
 Summary: BSD-compatible install program, for Athena
-Copyright: UCB
+License: UCB
 Group: Applications/File
 
 %description

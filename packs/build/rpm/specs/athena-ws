@@ -1,6 +1,6 @@
 Name: athena-ws
 Summary: Athena workstation management infrastructure
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 Requires: athena-desync, athena-base, athena-sendmail, athena-gettime, athena-ntp, athena-read-edid, pciutils
 

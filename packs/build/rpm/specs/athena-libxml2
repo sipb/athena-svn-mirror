@@ -1,6 +1,6 @@
 Name: athena-libxml2
 Summary: An XML library used by GNOME, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: libxml2 = 2.4.30
 

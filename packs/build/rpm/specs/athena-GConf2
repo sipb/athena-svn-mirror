@@ -1,6 +1,6 @@
 Name: athena-GConf2
 Summary: The GNOME configuration database system, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Base
 Provides: GConf2 = 1.2.1
 

@@ -1,6 +1,6 @@
 Name: athena-gtk2
 Summary: The Gimp Toolkit, version2, for Athena
-Copyright: LGPL
+License: LGPL
 Group: X11/Libraries
 Provides: gtk2 = 2.2.0
 

@@ -1,6 +1,6 @@
 Name: athena-olc
 Summary: The Athena Online Consultant system
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-krb5 athena-hesiod athena-zephyr athena-libet athena-openmotif

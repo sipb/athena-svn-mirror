@@ -1,6 +1,6 @@
 Name: athena-flex
 Summary: The flex utility for creating lexical scanners, for Athena
-Copyright: BSD
+License: BSD
 Group: Development/Tools
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-lert
 Summary: Display Athena accounts notification messages
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-krb5 athena-hesiod

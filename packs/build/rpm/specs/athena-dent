@@ -1,6 +1,6 @@
 Name: athena-dent
 Summary: An Athena utility to indent files
-Copyright: MIT
+License: MIT
 Group: Applications/Text
 
 %description

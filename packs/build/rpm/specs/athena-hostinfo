@@ -1,6 +1,6 @@
 Name: athena-hostinfo
 Summary: An Athena utility to ask an Internet nameserver for host information
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-bind athena-perl

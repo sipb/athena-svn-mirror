@@ -1,6 +1,6 @@
 Name: athena-gurlview
 Summary: Display a URL in an appropriate viewer
-Copyright: MIT
+License: MIT
 Group: User Interface/Desktops
 
 Requires: athena-gnome-libs

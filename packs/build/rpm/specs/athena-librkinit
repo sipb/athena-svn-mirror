@@ -1,6 +1,6 @@
 Name: athena-librkinit
 Summary: Support routines for contacting Athena rkinit servers
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 Requires: athena-krb5 athena-libet

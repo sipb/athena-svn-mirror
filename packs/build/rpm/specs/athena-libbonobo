@@ -1,6 +1,6 @@
 Name: athena-libbonobo
 Summary: Bonobo component system, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: libbonobo = 2.0.1
 

@@ -1,6 +1,6 @@
 Name: athena-openmotif
 Summary: The Motif libraries and utilities 
-Copyright: The Open Group and others
+License: The Open Group and others
 Group: User Interface/Desktops
 Provides: openmotif = 2.2.1
 

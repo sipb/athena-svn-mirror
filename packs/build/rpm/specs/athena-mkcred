@@ -1,6 +1,6 @@
 Name: athena-mkcred
 Summary: Compile a knfs credentials file
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 %description

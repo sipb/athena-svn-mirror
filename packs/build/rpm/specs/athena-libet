@@ -1,6 +1,6 @@
 Name: athena-libet
 Summary: The com_err library; tools for building error code tables
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 
 %description

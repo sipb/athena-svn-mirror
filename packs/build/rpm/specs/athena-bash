@@ -1,6 +1,6 @@
 Name: athena-bash
 Summary: The GNU Bourne Again shell (bash), as configured for Athena.
-Copyright: GPL
+License: GPL
 Group: System Environment/Shells
 Provides: bash = 2.05
 

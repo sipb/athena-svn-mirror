@@ -1,6 +1,6 @@
 Name: athena-xlogin
 Summary: The Athena graphical login interface
-Copyright: MIT
+License: MIT
 Group: User Interface/X
 
 Requires: athena-krb5 athena-libal athena-wcl athena-larv athena-libMu

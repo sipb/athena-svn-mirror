@@ -1,6 +1,6 @@
 Name: athena-soup
 Summary: Soup, a SOAP implementation, for Athena
-Copyright: LGPL
+License: LGPL
 Group: Libraries/Network
 Provides: soup = 0.7.10
 

@@ -1,6 +1,6 @@
 Name: athena-gnome-terminal
 Summary: GNOME terminal, for Athena
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktops
 Provides: gnome-terminal = 2.0.2
 

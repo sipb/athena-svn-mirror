@@ -1,6 +1,6 @@
 Name: athena-binutils
 Summary: GNU ld, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Tools
 
 %description

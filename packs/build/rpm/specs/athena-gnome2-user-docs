@@ -1,6 +1,6 @@
 Name: athena-gnome2-user-docs
 Summary: GNOME user documentation, for Athena
-Copyright: FDL
+License: FDL
 Group: Documentation
 Provides: gnome-user-docs = 2.0.1
 

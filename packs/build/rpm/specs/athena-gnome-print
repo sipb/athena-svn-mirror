@@ -1,6 +1,6 @@
 Name: athena-gnome-print
 Summary: GNOME printing libraries, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Base
 Provides: gnome-print = 0.35
 

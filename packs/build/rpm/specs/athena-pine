@@ -1,6 +1,6 @@
 Name: athena-pine
 Summary: The PINE terminal mail-reading client, for Athena
-Copyright: distributable
+License: distributable
 Group: Applications/Internet
 
 Requires: athena-hesiod athena-krb5

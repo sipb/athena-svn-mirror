@@ -1,6 +1,6 @@
 Name: athena-cleanup
 Summary: An Athena program to restore a workstation to a clean state
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 Requires: athena-libal

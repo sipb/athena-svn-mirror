@@ -1,6 +1,6 @@
 Name: athena-control-center
 Summary: GNOME Control Center, for Athena
-Copyright: GPL/LGPL
+License: GPL/LGPL
 Group: User Interface/Desktops
 Provides: control-center = 2.0.3.2
 

@@ -1,6 +1,6 @@
 Name: athena-readline
 Summary: The GNU readline library, as configured for Athena.
-Copyright: GPL
+License: GPL
 Group: Development/Libraries
 
 %description

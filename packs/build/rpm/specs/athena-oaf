@@ -1,6 +1,6 @@
 Name: athena-oaf
 Summary: GNOME object activation framework, for Athena
-Copyright: LGPL and GPL
+License: LGPL and GPL
 Group: System Environment/Libraries
 Provides: oaf = 0.6.10
 

@@ -1,6 +1,6 @@
 Name: athena-ispell
 Summary: A spelling checker, for Athena
-Copyright: BSDish
+License: BSDish
 Group: Applications/Text
 Provides: ispell = 3.1.20
 

@@ -1,6 +1,6 @@
 Name: athena-gettime
 Summary: An Athena program to sychronize the clock with a remote host
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 %description

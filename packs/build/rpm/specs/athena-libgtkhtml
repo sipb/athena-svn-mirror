@@ -1,6 +1,6 @@
 Name: athena-libgtkhtml
 Summary: An HTML widget, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 Provides: gtkhtml2 = 2.0.3
 

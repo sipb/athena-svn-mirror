@@ -1,6 +1,6 @@
 Name: athena-busyd
 Summary: An Athena server to tell if a workstation is in use
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-larv

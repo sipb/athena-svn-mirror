@@ -1,6 +1,6 @@
 Name: athena-quota
 Summary: Print disk usage and quota limits
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 Requires: athena-locker athena-openafs

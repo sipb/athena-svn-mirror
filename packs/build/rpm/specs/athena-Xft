@@ -1,6 +1,6 @@
 Name: athena-Xft
 Summary: X Font Rendering library, for Athena
-Copyright: MIT
+License: MIT
 Group: System Environment/Libraries
 Provides: Xft = 2.1
 

@@ -1,6 +1,6 @@
 Name: athena-jpeg
 Summary: A library for manipulating JPEG image format files, for Athena
-Copyright: distributable
+License: distributable
 Group: System Environment/Libraries
 
 %description

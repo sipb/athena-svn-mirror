@@ -1,6 +1,6 @@
 Name: athena-delete
 Summary: A friendlier version of rm for Athena.
-Copyright: MIT
+License: MIT
 Group: Applications/File
 
 Requires: athena-openafs athena-libet

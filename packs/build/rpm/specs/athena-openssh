@@ -1,6 +1,6 @@
 Name: athena-openssh
 Summary: The Secure remote Shell program
-Copyright: BSD
+License: BSD
 Group: Applications/Internet
 Provides: openssh = 3.0.2p1
 

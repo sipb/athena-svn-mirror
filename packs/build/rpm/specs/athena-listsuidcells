@@ -1,6 +1,6 @@
 Name: athena-listsuidcells
 Summary: An Athena tool to find out what AFS cells are trusted with suid binaries
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 Requires: athena-openafs

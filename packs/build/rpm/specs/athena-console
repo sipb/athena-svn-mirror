@@ -1,6 +1,6 @@
 Name: athena-console
 Summary: An Athena program to provide an X interface to the system console
-Copyright: MIT
+License: MIT
 Group: User Interface/X
 
 Requires: athena-libXj

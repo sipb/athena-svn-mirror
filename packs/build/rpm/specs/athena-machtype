@@ -1,6 +1,6 @@
 Name: athena-machtype
 Summary: Print Athena machine type to standard output
-Copyright: MIT
+License: MIT
 Group: Applications/System
 
 %description

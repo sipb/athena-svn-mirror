@@ -1,6 +1,6 @@
 Name: athena-sed
 Summary: GNU sed, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/Text
 
 %description

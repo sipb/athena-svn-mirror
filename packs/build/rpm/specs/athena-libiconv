@@ -1,6 +1,6 @@
 Name: athena-libiconv
 Summary: GNU libiconv character set conversion library, for Athena
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
 
 %description

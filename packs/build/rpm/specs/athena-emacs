@@ -1,6 +1,6 @@
 Name: athena-emacs
 Summary: The Emacs text editor, as configured for Athena workstations
-Copyright: GPL
+License: GPL
 Group: Applications/Editors
 Provides: emacs = 21.1
 

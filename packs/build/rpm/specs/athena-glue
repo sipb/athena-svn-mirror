@@ -1,6 +1,6 @@
 Name: athena-glue
 Summary: Various small attach-and-run scripts and other such things
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 %description

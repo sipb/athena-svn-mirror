@@ -1,6 +1,6 @@
 Name: athena-bison
 Summary: Bison parser generator, for Athena
-Copyright: GPL
+License: GPL
 Group: Development/Tools
 
 %description

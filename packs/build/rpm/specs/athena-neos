@@ -1,6 +1,6 @@
 Name: athena-neos
 Summary: The Athena Educational Online System
-Copyright: MIT
+License: MIT
 Group: Applications/Productivity
 
 Requires: athena-libfxcl athena-krb5 athena-hesiod

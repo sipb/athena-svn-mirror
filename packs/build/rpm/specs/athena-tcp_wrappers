@@ -1,6 +1,6 @@
 Name: athena-tcp_wrappers
 Summary: A security tool which acts as a wrapper for TCP daemons, for Athena
-Copyright: Distributable
+License: Distributable
 Group: System Environment/Daemons
 
 %description

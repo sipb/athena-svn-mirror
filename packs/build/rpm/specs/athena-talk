@@ -1,6 +1,6 @@
 Name: athena-talk
 Summary: Talk client and server for one-on-one Internet chatting, for Athena
-Copyright: BSD
+License: BSD
 Group: Applications/Internet
 
 %description

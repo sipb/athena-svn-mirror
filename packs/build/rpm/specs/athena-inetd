@@ -1,6 +1,6 @@
 Name: athena-inetd
 Summary: The Athena version of Internet master daemon server.
-Copyright: BSD
+License: BSD
 Group: System Environment/Daemons
 
 %description

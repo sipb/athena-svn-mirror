@@ -1,6 +1,6 @@
 Name: athena-enscript
 Summary: The GNU enscript text to postscript utility, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/Publishing
 
 %description

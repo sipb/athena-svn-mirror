@@ -1,6 +1,6 @@
 Name: athena-imlib
 Summary: The imlib library, for Athena
-Copyright: GPL and LGPL
+License: GPL and LGPL
 Group: System Environment/Libraries
 Provides: imlib = 1.9.11
 

@@ -1,6 +1,6 @@
 Name: athena-get_message
 Summary: A program to display the global Athena message of the day
-Copyright: MIT
+License: MIT
 Group: Applications/Communications
 
 Requires: athena-gms athena-hesiod athena-libet

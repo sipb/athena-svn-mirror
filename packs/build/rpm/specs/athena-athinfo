@@ -1,6 +1,6 @@
 Name: athena-athinfo
 Summary: An Athena utility to retrieve information about a workstation.
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 %description

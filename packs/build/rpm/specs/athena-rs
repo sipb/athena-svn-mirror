@@ -1,6 +1,6 @@
 Name: athena-rs
 Summary: Reshape a data array
-Copyright: BSD
+License: BSD
 Group: Applications/Text
 
 %description

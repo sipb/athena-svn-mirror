@@ -1,6 +1,6 @@
 Name: athena-ammonite
 Summary: The Ammonite HTTP proxy, for Athena
-Copyright: GPL
+License: GPL
 Group: User Interface/Desktop
 Provides: ammonite = 0.8.1
 

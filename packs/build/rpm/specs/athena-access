@@ -1,6 +1,6 @@
 Name: athena-access
 Summary: Utilities to turn on or off remote access to Athena workstations.
-Copyright: MIT
+License: MIT
 Group: Applications/Internet
 
 %description

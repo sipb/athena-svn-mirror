@@ -1,6 +1,6 @@
 Name: athena-base
 Summary: A few base files needed by any Athena package
-Copyright: MIT
+License: MIT
 Group: System Environment/Base
 
 %description

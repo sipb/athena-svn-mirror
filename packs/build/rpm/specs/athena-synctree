@@ -1,6 +1,6 @@
 Name: athena-synctree
 Summary: An Athena tool to synchronize directory trees
-Copyright: MIT
+License: MIT
 Group: Applications/File
 
 %description

@@ -1,6 +1,6 @@
 Name: athena-gnome-utils
 Summary: GNOME utility programs, for Athena
-Copyright: GPL
+License: GPL
 Group: Applications/System
 Provides: gnome-utils = 2.0.6
 
