@@ -277,8 +277,10 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	/* FIXME: Need to run indexing off of the setv method */
 
 	/* if we have no/invalid index file, force it */
-	forceindex = camel_text_index_check(lf->index_path) == -1;
-	if (lf->flags & CAMEL_STORE_FOLDER_BODY_INDEX) {
+	/* Athena local modification: index files aren't portable
+	   between Linux and Solaris, so we can't use them. */
+	forceindex = FALSE;
+	if (FALSE && (lf->flags & CAMEL_STORE_FOLDER_BODY_INDEX)) {
 		int flag = O_RDWR|O_CREAT;
 
 		if (forceindex)
