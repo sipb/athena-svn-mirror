@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_uloc_c[] =
-  "$Id: uloc.c,v 1.45 1993-04-20 15:37:25 probe Exp $";
+  "$Id: uloc.c,v 1.46 1993-04-20 16:04:05 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -97,12 +97,12 @@ typedef struct _ZLocation_t {
 
 static void ulogin_locate P((ZNotice_t *notice, struct sockaddr_in *who,
 			     int auth)),
-    ulogin_add_user P((ZNotice_t *notice, exposure_type exposure,
-		    struct sockaddr_in *who)),
     ulogin_flush_user P((ZNotice_t *notice));
 static ZLocation_t *ulogin_find P((ZNotice_t *notice, int strict));
 static int ulogin_setup P((ZNotice_t *notice, ZLocation_t *locs,
 			exposure_type exposure, struct sockaddr_in *who)),
+    ulogin_add_user P((ZNotice_t *notice, exposure_type exposure,
+		    struct sockaddr_in *who)),
     ulogin_parse P((ZNotice_t *notice, ZLocation_t *locs)),
     ulogin_expose_user P((ZNotice_t *notice, exposure_type exposure));
 static exposure_type ulogin_remove_user P((ZNotice_t *notice, int auth,
@@ -419,6 +419,7 @@ ulocate_dispatch(notice, auth, who, server)
 		syslog(LOG_ERR, "unknown uloc opcode %s", notice->z_opcode);
 		if (server == me_server)
 			nack(notice, who);
+		return(ZERR_NONE);
 	}
 	if (server == me_server) {
 		server_forward(notice, auth, who);
