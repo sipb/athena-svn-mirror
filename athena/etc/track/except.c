@@ -1,12 +1,15 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 1.1 1987-02-12 21:14:36 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.0 1987-11-30 15:19:17 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.1  87/02/12  21:14:36  rfrench
+ * Initial revision
+ * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 1.1 1987-02-12 21:14:36 rfrench Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.0 1987-11-30 15:19:17 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -15,99 +18,100 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 
 /*
 **	routine to implement exception lists
-**	returns 1 if the filename passed in theline is
-**		matches the string passed in rootstring
-**		and does NOT match any of the exceptions
-**		found in the entry pointed at by entnum
+**	returns 1 if the filename matches the fromfile in entnum's entry,
+**			and does NOT match any of entnum's exceptions.
 **	returns 0 otherwise
-**	
 */
 
-goodname(theline,rootstring,entnum)
-char *rootstring;
-char *theline;
+int
+goodname( tail, entnum)
+char *tail;
 int entnum;
 {
-	extern char *index(), *re_conv();
-	char buf[LINELEN],buf2[LINELEN],*ptr,*ptr2;
+	char *pattern;
 	int i;
 
-	strcpy(buf,theline);
-	/*
-	**	chop off newline if there is one
-	*/
-	if (*buf && (buf[strlen(buf)-1] == '\n'))
-		buf[strlen(buf)-1] = '\0';
-
 	if (debug)
-		printf("goodname(%s,%s,%d)\n",buf,rootstring,entnum);
+		printf("goodname(%s,%d); fromname=%s\n",
+			tail,entnum, entries[cur_ent].fromfile);
 
-	/*
-	**	find the first /
-	*/
-	if (!(ptr = index(buf,'/'))) {
-		sprintf(errmsg,"can't find / in %s\n", ptr);
-		do_panic();
+	switch( ( unsigned) *tail) {
+	case '\0': return( 1);
+	case '/':  break;
+	default: sprintf( errmsg, "bad tail value: %s\n", tail);
+		 do_gripe();
+		 return(0);
 	}
 
-	/*
-	**	and chop off any trailing white space
-	*/
-	for(ptr2 = ptr; *ptr2;ptr2++)
-		if (isspace(*ptr2)) {
-			*ptr2 = '\0';
-			break;
-		}
-
-	/*
-	**	does the beginning of the string match the head pattern
-	*/
-	if (!headmatch(ptr,rootstring))
-		return(0);
-
-	/*
-	** if this is the end of word, it's a match.
-	*/
-	if (strlen(ptr) == strlen(rootstring))
-		return(1);
-
-	/*
-	**	the head matches, so now we have to check the tail
-	**	get just the tail in buf2
-	**	SKIPPING THE / SEPERATING THE HEAD AND TAIL
-	*/
-	strcpy(buf2,ptr+strlen(rootstring)+1);
+	/* skip the leading slash: */
+	tail++;
 	
-	/*
-	**	compare the tail with each exception
-	**	if there is a match, the return(0) else return(1)
-	*/
-	for(i=0;entries[entnum].exceptions[i];i++) {
-		if (nofunny(entries[entnum].exceptions[i])) {
-			if(!strcmp(buf2,entries[entnum].exceptions[i]))
-				return(0);
-		}
-		else {
-			if( re_comp(re_conv(entries[entnum].exceptions[i]))) {
-				sprintf(errmsg,"%s bad regular expression\n",
-						entries[entnum].exceptions[i]);
-				do_panic();
-			}
-			if (re_exec(buf2))
-				return(0) ;
-		}
-	}
+	/*	compare the tail with each exception in both lists:
+	 *	the global list ( entries[0].exceptions[] ),
+	 *	and the current entry's exceptions list.
+	 */
+	for( i=0; pattern = entries[ 0     ].exceptions[ i]; i++)
+		if ( match( pattern, tail)) return( 0);
+
+	for( i=0; pattern = entries[ entnum].exceptions[ i]; i++)
+		if ( match( pattern, tail)) return( 0);
 
 	return(1);
 }
 
-nofunny(ptr)
+char *
+next_def_except() {
+	static char *g_except[] = DEF_EXCEPT; /* default GLOBAL exceptions */
+	static int next = 0;
+
+	if ( next < sizeof g_except / 4)
+		return ( g_except[ next++]);
+	else return( NULL);
+}
+
+/*
+**	if there is a match, then return(1) else return(0)
+*/
+match( p, fname) char *p, *fname;
+{
+	/* all our regexp's begin with ^,
+	 * because re_conv() makes them.
+	 */
+	if ( *p != '^' && !strcmp( p, fname))
+		return(1);
+
+	if ( re_comp( p)) {
+		sprintf(errmsg, "%s bad regular expression\n", p);
+		do_panic();
+	}
+	if ( re_exec( fname)) return(1) ;
+	return( 0);
+}
+
+file_pat( ptr)
 char *ptr;
 {
-	return( ! (index(ptr,'*') ||
-		   index(ptr,'[') ||
-		   index(ptr,']') ||
-		   index(ptr,'?')));
+	return( (index(ptr,'*') ||
+		 index(ptr,'[') ||
+		 index(ptr,']') ||
+		 index(ptr,'?')));
+}
+
+#define FASTEQ( a, b) (*((short *)(a)) == *((short*)(b)))
+
+duplicate( word, entnum) char *word; int entnum; {
+        int i;
+        char *re;
+
+        for (i=0; re = entries[ entnum].exceptions[ i]; i++) {
+                if ( FASTEQ( word, re) &&
+                   ! strcmp( word, re))
+                        return( 1);
+        }
+	/* check the global exceptions list
+	 */
+	if ( entnum) return( duplicate( word, 0));
+	return( 0);
 }
 
 /*
@@ -123,46 +127,30 @@ char *from;
 	*to++ = '^';
 	while(*from) {
 		switch (*from) {
-			case '.':
-				*to++ = '\\';
-				*to++ = '.';
-				from++;
-				break;
+		case '.':
+			*to++ = '\\';
+			*to++ = '.';
+			from++;
+			break;
 
-			case '*':
-				*to++ = '.';
-				*to++ = '*';
-				from++;
-				break;
+		case '*':
+			*to++ = '.';
+			*to++ = '*';
+			from++;
+			break;
 
-			case '?':
-				*to++ = '.';
-				from++;
-				break;
-				
-			default:
-				*to++ = *from++;
-				break;
+		case '?':
+			*to++ = '.';
+			from++;
+			break;
+			
+		default:
+			*to++ = *from++;
+			break;
 		}
 	}
 
 	*to++ = '$';
 	*to++ = '\0';
 	return(tmp);
-}
-
-headmatch(s1,root)
-char *s1,*root;
-{
-	char nextchar;
-
-	if (!strncmp(s1,root,strlen(root))) {
-		nextchar = *(s1+strlen(root));
-		if ((nextchar == '\0') || (nextchar == '/'))
-			return(1);
-		else
-			return(0);
-	}
-
-	return(0);
 }

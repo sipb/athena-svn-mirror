@@ -1,148 +1,175 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 1.2 1987-09-02 17:44:20 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.0 1987-11-30 15:19:35 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  87/09/02  17:44:20  shanzer
+ * Aborts if We get a write error when copying a file.. 
+ * 
  * Revision 1.1  87/02/12  21:16:00  rfrench
  * Initial revision
  * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 1.2 1987-09-02 17:44:20 shanzer Exp $";
+static char
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.0 1987-11-30 15:19:35 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
 
 #include "track.h"
 
-update_file(remote,local,forcecp)
-char *remote,*local;
-int forcecp;
+int
+update_file(r, remlink, remotename,
+	    l, loclink, localname)
+struct stat *r, *l;
+char *remlink, *loclink, *remotename, *localname;
 {
-	struct stamp rstamp,lstamp;
-	char fullrname[LINELEN],fulllname[LINELEN];
-	int oumask;
-	unsigned long timevec[2];
+	int exists, oumask;
+	int diff, type_diff;
 
-	if (debug)
-		printf("update_file(%s,%s,%d)\n",remote,local,forcecp);
+	diff =  UID( *r)  != UID( *l) ||
+		GID( *r)  != GID( *l) ||
+		MODE( *r) != MODE( *l);
 
-	dec_stamp(remote,&rstamp);
-	dec_stamp(local,&lstamp);
+	type_diff = TYPE( *r) != TYPE( *l);
 
-	timevec[0] = rstamp.ftime;
-	timevec[1] = rstamp.ftime;
+	switch ( TYPE( *r)) {
 
-	sprintf(fulllname,"%s%s",toroot,lstamp.name);
-	sprintf(fullrname,"%s%s",fromroot,rstamp.name);
+	case S_IFREG:
+		diff |= (uflag     == DO_CLOBBER)  ||
+			 TIME( *r) != TIME( *l); /*    ||
+			 strcmp( remotename, localname); */
+	case S_IFDIR: break;
 
-	if (verboseflag) {
-		fprintf(stderr,"Updating: source - %s\n",
-			make_name(fullrname,&rstamp));
-		fprintf(stderr,"            dest - %s\n",
-			make_name(fulllname,&lstamp));
+	case S_IFCHR:
+	case S_IFBLK:
+		if (! incl_devs) return(-1);
+		type_diff |= ( DEV( *r) != DEV( *l));
+		break;
+
+	case S_IFLNK:
+		diff = strcmp( remlink, loclink);
+		break;
+	case S_IFMT:
+		return (-1);
+	default:
+		sprintf(errmsg,"bad string passed to update\n");
+		do_panic();
+		break;
 	}
 
-	if (!checkroot(fulllname))
-		if (lstamp.type == 'd')
-			makeroot(fulllname,rstamp.uid,rstamp.gid,rstamp.mode);
-		else {
-			sprintf(errmsg,"can't find parent directory for %s",
-				fulllname);
+	if (!diff && !type_diff) return(-1);
+
+	if ( verboseflag) {
+		fprintf(stderr,"Updating: source - %s\n",
+			make_name( remotename, r, remlink));
+		fprintf(stderr,"            dest - %s\n",
+			make_name( localname,  l, loclink));
+	}
+	if ( nopullflag)
+		return(-1);
+
+	exists = !access( localname, 0);
+
+	if ( S_IFDIR != TYPE( *l) && !exists && findparent( localname)) {
+		sprintf(errmsg,"can't find parent directory for %s",
+			localname);
+		do_gripe();
+		return(-1);
+	}
+
+	if ( type_diff && exists && removeit( localname, TYPE( *l))) {
+		sprintf( errmsg,"can't remove %s\n",localname);
+		do_gripe();
+		return(-1);
+	}
+
+	switch ( TYPE( *r)) {
+
+	case S_IFREG:
+		(*r).st_atime = TIME( *r);
+		/*
+		 * it's important to call utimes before set_prots:
+		 */
+		return( copy_file( remotename, localname) ||
+			utimes(	   localname, &(*r).st_atime) ||
+			set_prots( localname, r));
+
+	case S_IFDIR:
+		return( exists	? set_prots( localname, r)
+				: makepath(  localname, r));
+
+	case S_IFBLK:		/* XXX: stat.st_mode != MODE() macro */
+	case S_IFCHR:
+		if ( !exists && mknod( localname, (*r).st_mode, DEV( *r))) {
+			sprintf(errmsg,"can't make device %s\n",localname);
 			do_gripe();
-			return;
+			return(-1);
 		}
+		return( set_prots( localname, r));
 
-	if (exists(fulllname))
-		if (!((rstamp.type == 'f' && lstamp.type == 'f') ||
-		     (rstamp.type == 'd' && lstamp.type == 'd') ||
-		     (((rstamp.type == 'c' && lstamp.type == 'c') ||
-		       (rstamp.type == 'b' && lstamp.type == 'b')) &&
-		      (rstamp.dev == lstamp.dev)))) {
-				    if (removeit(fulllname) == -1) {
-					    sprintf(errmsg,"can't remove %s\n",fulllname);
-					    do_gripe();
-					    return;
-				    }
-			    }
-
-	switch (rstamp.type) {
-	case '*':
-		return;
-	case 'l':
+	case S_IFLNK:
 		oumask = umask(0); /* Symlinks don't really have modes */
-		if (symlink(rstamp.link,fulllname)) {
-			sprintf(errmsg,
-				"can't create symbolic link from %s to %s\n",
-				fulllname,rstamp.link);
+		if ( symlink( remlink, localname)) {
+			sprintf(errmsg, "can't create symbolic link %s -> %s\n",
+				localname, remlink);
 			do_gripe();
-			return;
+			return(-1);
 		}
 		umask(oumask);
-		break;
-	case 'd':
-		if (!exists(fulllname) && (mkdir(fulllname,rstamp.mode) == -1)) {
-			sprintf(errmsg,
-				"can't create directory %s\n",fulllname);
-			do_gripe();
-		}
-		break;
-	case 'f':
-		if (lstamp.type != 'f' || rstamp.ftime != lstamp.ftime || forcecp)
-			if (copy_file(fullrname,fulllname))
-				return;
-		break;
-	case 'b':
-	case 'c':
-		if (rstamp.dev != lstamp.dev || rstamp.type != lstamp.type)
-		if (mknod(fulllname,rstamp.mode | (rstamp.type=='c' ? S_IFCHR :
-					     (rstamp.type=='b' ? S_IFBLK : 0)),rstamp.dev)) {
-			sprintf(errmsg,"can't make device %s\n",fulllname);
-			do_gripe();
-			return;
-		}
-		break;
-	}
-
-	if (rstamp.type != 'l') {
-		if ((rstamp.uid != fileuid(fulllname)) ||
-		    (rstamp.gid != filegid(fulllname))) {
-			    if (chown(fulllname,rstamp.uid,rstamp.gid) == -1) {
-				    sprintf(errmsg,"can't chown file %s %d %d\n",
-					    fulllname,rstamp.uid,rstamp.gid);
-				    do_gripe();
-				    return;
-			    }
-		    }
-		if (chmod(fulllname,rstamp.mode) == -1) {
-			sprintf(errmsg,
-				"can't chmod file %s %o\n",
-				fulllname,rstamp.mode);
-			do_gripe();
-			return;
-		}
-		if (rstamp.type != 'b' && rstamp.type != 'c')
-			utime(fulllname,timevec);
+		return( 0);
+	default:
+		sprintf(errmsg, "unknown file-type in update_file()\n");
+		do_gripe();
+		return(-1);
 	}
 }
+
+int
+set_prots( name, r)
+char *name;
+struct stat *r;
+{
+	struct stat sbuf;
+
+	if ( lstat( name, &sbuf)) {
+		sprintf( errmsg, "can't lstat file &s\n", name);
+		do_gripe();
+		return(-1);
+	}
+	if (( UID( sbuf) != UID( *r) || GID( sbuf) != GID( *r)) &&
+	     chown( name,   UID( *r),   GID( *r)) ) {
+		sprintf( errmsg, "can't chown file %s %d %d\n",
+			 name, UID( *r), GID( *r));
+		do_gripe();
+		return(-1);
+	}
+	if ( MODE( sbuf) != MODE( *r) && chmod( name,  MODE( *r)) ) {
+		sprintf( errmsg, "can't chmod file %s %o\n", name, MODE( *r));
+		do_gripe();
+		return(-1);
+	}
+	return(0);
+} 
 
 copy_file(from,to)
 char *from,*to;
 {
-	char buf[MAXBSIZE],tempname[LINELEN];
+	char buf[MAXBSIZE],temp[LINELEN];
 	int fdf,fdt,n;
 
 	fdf = open(from,O_RDONLY);
-	if (!fdf) {
+	if ( 0 > fdf) {
 		sprintf(errmsg,"can't open input file %s\n",from);
 		do_gripe();
 		return (1);
 	}
-	sprintf(tempname,"%s_trk.tmp",to);
-	fdt = open(tempname,O_WRONLY|O_CREAT);
-	if (!fdt) {
-		sprintf(errmsg,"can't open temporary file %s\n",tempname);
+	sprintf( temp,"%s_trk.tmp",to);
+	fdt = open( temp,O_WRONLY|O_CREAT);
+	if ( 0 > fdt) {
+		sprintf(errmsg,"can't open temporary file %s\n",temp);
 		do_gripe();
 		return (1);
 	}
@@ -156,48 +183,58 @@ char *from,*to;
 			do_gripe();
 			close(fdf);
 			close(fdt);
+			unlink( temp);
 			return (1);
 		}
 		if (write(fdt,buf,n) != n) {
-			sprintf(errmsg,"error while writing file %s\n",to);
+			sprintf(errmsg,"error while writing file %s\n",temp);
 			do_gripe();
 			close(fdf);
 			close(fdt);
+			unlink( temp);
 			exit(1);
 		}
 	}
 	close(fdf);
 	close(fdt);
-	rename(tempname,to); /* atomic! */
+	rename(temp,to); /* atomic! */ 
 	return (0);
 }
 
-char *make_name(name,stmp)
-char *name;
-struct stamp *stmp;
+/* can't be called twice in one printf,
+ * because it stores its result in static buffer.
+ */
+char *make_name( name, s, link)
+char *name, *link;
+struct stat *s;
 {
 	static char buff[LINELEN];
 
-	switch (stmp->type) {
-	case '*':
-		sprintf(buff,"nonexistant %s",name);
-		break;
-	case 'f':
+	switch ( TYPE( *s)) {
+	case S_IFREG:
 		sprintf(buff,"file %s (uid %d, gid %d, mode %04o)",
-			name,stmp->uid,stmp->gid,stmp->mode);
+			name, UID( *s), GID( *s), MODE( *s));
 		break;
-	case 'l':
-		sprintf(buff,"link %s pointing to %s",name,stmp->link);
-		break;
-	case 'd':
+
+	case S_IFDIR:
 		sprintf(buff,"dir %s (uid %d, gid %d, mode %04o)",
-			name,stmp->uid,stmp->gid,stmp->mode);
+			name, UID( *s), GID( *s), MODE( *s));
 		break;
-	case 'c':
-	case 'b':
-		sprintf(buff,"device %s (uid %d, gid %d, mode %03o) maj %d min %d",
-			name,stmp->uid,stmp->gid,stmp->mode&0777,
-			major(stmp->dev),minor(stmp->dev));
+
+	case S_IFCHR:
+	case S_IFBLK:
+		sprintf( buff,
+			"device %s (uid %d, gid %d, mode %03o) maj %d min %d",
+			name, UID( *s), GID( *s), MODE( *s),
+			major( DEV( *s)), minor( DEV( *s)));
+		break;
+
+	case S_IFLNK:
+		sprintf(buff,"link %s pointing to %s", name, link);
+		break;
+
+	case S_IFMT:
+		sprintf(buff,"nonexistant %s",name);
 		break;
 	}
 	return (buff);

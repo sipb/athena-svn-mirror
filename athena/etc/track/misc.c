@@ -1,15 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 1.2 1987-11-12 16:51:18 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.0 1987-11-30 15:19:30 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  87/11/12  16:51:18  don
+ * part of general rewrite.
+ * 
  * Revision 1.1  87/02/12  21:15:04  rfrench
  * Initial revision
  * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 1.2 1987-11-12 16:51:18 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.0 1987-11-30 15:19:30 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -73,54 +76,27 @@ doreset()
 	wordcnt = 0;
 }
 
-parseinit()
+parseinit( subfile) FILE *subfile;
 {
-	if ( *subfilepath);
-        else sprintf( subfilepath, "%s%s/%s", twdir, DEF_SUBDIR, subfilename);
-        if (!( yyin = fopen( subfilepath, "r"))) {
-                sprintf( errmsg, "Can't open %s\n", subfilepath);
-                do_panic();
-        }
+	yyin = subfile;
 	yyout = stderr;
 	doreset();
 }
 
 clear_ent()
 {
-	int i,j;
-	char ebuf[WORDLEN],*eptr;
-
-	entries[entrycnt].followlink  =         0;
-	entries[entrycnt].fromfile    = (char*) 0;
-	entries[entrycnt].tofile      = (char*) 0;
-	entries[entrycnt].cmpfile     = (char*) 0;
-	/*
-	**	add global exceptions
-	*/
-	eptr = g_except;
-	skipspace(&eptr);
-	for(i=0; *eptr != '\0';i++)
-	{
-		/* copy eptr's first word to ebuf:
-		 */
-		for ( j = 0; eptr[ j]; j++) {
-			if ( !isprint( eptr[ j]) ||
-			      isspace( eptr[ j])) break;
-			ebuf[ j] = eptr[ j];
-		}
-		ebuf[ j + 1] = '\0';
-
-		savestr(&entries[entrycnt].exceptions[i],ebuf);
-		skipword(&eptr);
-		skipspace(&eptr);
-	}
-	
-	/*
-	**	and clear the rest of the exceptions
-	*/
-	for(;i<WORDMAX;i++)
-		entries[entrycnt].exceptions[i] = (char*) 0;
-	entries[ entrycnt].cmdbuf      = (char*) 0;
+	int i;
+       *entries[ entrycnt].sortkey	=	'\0';
+	entries[ entrycnt].keylen	=	  0;
+	entries[ entrycnt].followlink	=         0;
+	entries[ entrycnt].fromfile	= (char*) 0;
+	entries[ entrycnt].tofile	= (char*) 0;
+	entries[ entrycnt].cmpfile	= (char*) 0;
+	entries[ entrycnt].cmdbuf	= (char*) 0;
+	/* add global exceptions
+	 */
+	for(i=0;i<WORDMAX;i++)
+		entries[ entrycnt].exceptions[ i] = (char *) 0;
 }
 
 savestr(to,from)

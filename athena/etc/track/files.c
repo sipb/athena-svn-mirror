@@ -1,12 +1,15 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 1.1 1987-02-12 21:14:49 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.0 1987-11-30 15:19:24 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.1  87/02/12  21:14:49  rfrench
+ * Initial revision
+ * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 1.1 1987-02-12 21:14:49 rfrench Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.0 1987-11-30 15:19:24 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -14,28 +17,11 @@ static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include "track.h"
 
 /*
- * Check to see if a file exists.
- */
-
-exists(name)
-char *name;
-{
-	struct stat sbuf;
-	int retval;
-
-	retval = !lstat(name,&sbuf);
-
-	if (debug)
-		printf("exists(%s): %d\n",name,retval);
-
-	return(retval);
-}
-
-/*
  * Check to see if a file is older than a certain amount of time.
  */
 
-too_old(name,maxtime)
+int
+too_old( name, maxtime)
 char *name;
 long maxtime;
 {
@@ -59,6 +45,7 @@ long maxtime;
 	return (retval);
 }
 
+/* 
 isdir(name)
 char *name;
 {
@@ -72,19 +59,6 @@ char *name;
 	return(retval);
 }
 
-islink(name)
-char *name;
-{
-	int retval;
-
-	retval = (gettype(name) == 'l');
-
-	if (debug)
-		printf("islink(%s): %d\n",name,retval);
-
-	return (retval);
-}
-
 isfile(name)
 char *name;
 {
@@ -94,6 +68,27 @@ char *name;
 
 	if (debug)
 		printf("isfile(%s): %d\n",name,retval);
+
+	return (retval);
+}
+
+zerolen(name)
+char *name;
+{
+	struct stat sbuf;
+	int retval;
+
+	if(stat(name,&sbuf) == -1) {
+		sprintf(errmsg,
+			"can't find file %s in routine zerolen()\n",
+			name);
+		do_panic();
+	}
+
+	retval = sbuf.st_size;
+
+	if (debug)
+		printf("zerolen(%s): %d\n",name,retval);
 
 	return (retval);
 }
@@ -137,188 +132,189 @@ char *name;
 	return (retval);
 }
 
-zerolen(name)
+islink(name)
 char *name;
 {
-	struct stat sbuf;
 	int retval;
 
-	if(stat(name,&sbuf) == -1) {
-		sprintf(errmsg,
-			"can't find file %s in routine zerolen()\n",
-			name);
-		do_panic();
-	}
-
-	retval = sbuf.st_size;
+	retval = (gettype(name) == 'l');
 
 	if (debug)
-		printf("zerolen(%s): %d\n",name,retval);
+		printf("islink(%s): %d\n",name,retval);
 
 	return (retval);
+}
+*/
+
+char *follow_link( name)
+char *name;
+{
+        static char target[ LINELEN];
+        int cc;
+        if (0 >= ( cc = readlink( name, target, LINELEN))) {
+                sprintf( errmsg, "can't read link: %s\n", name);
+                do_gripe();
+                return( NULL);
+        }
+        target[ cc] = '\0';
+
+        if ( verboseflag)
+                fprintf( stderr, "following link: %s -> %s\n", name, target);
+
+        return( target);
 }
 
 char *resolve(name)
 char *name;
 {
-	static char retval[LINELEN];
-	int linklen;
+	/* only called during parsing,
+	 * to trace links provided as cmpfiles,
+	 * and then only if the sublist entry starts with '!'.
+	 */
+	static char path[ LINELEN];
+	char *linkval = name;	/* return unqualified name if it's not link */
+	struct stat sbuf;
 
-	if (islink(name) && ((linklen = readlink(name,retval,LINELEN)) != -1))
-		retval[linklen] = '\0';
-	else {
-		sprintf(errmsg,"warning can't follow link named %s\n",name);
-		do_gripe();
-		strcpy(retval,name);
+	sprintf( path, "%s%s", writeflag ? fromroot : toroot, name);
+
+	while ( 1) {
+		if ( lstat( path, &sbuf)) {
+			sprintf( errmsg, "can't lstat %s\n", path);
+			do_gripe();
+			return("");
+		}
+		if ( S_IFLNK != TYPE( sbuf))
+			return( linkval);
+
+		if ( NULL == ( linkval = follow_link( path)))
+			return( name);	/* back out. something's broken */
+
+		strcpy( path, linkval);
 	}
-	return(retval);
 }
 
-checkroot(ptr)
-char *ptr;
+/*
+ * if the parent-dir exists, returns 0.
+ * returns the length of the parent's pathname, otherwise.
+ * this weird returned-value allows makepath
+ * to recurse without lots of strcpy's.
+ */
+int
+findparent(path)
+char *path;
 {
-	char checkbuf[LINELEN],*tmp;
+	char *tmp;
 	int retval;
 
 	/*
 	**	assume / exists
 	*/
-	if (!strcmp(ptr,"/"))
-		return(1);
-	strcpy(checkbuf,ptr);
-	if (!(tmp = rindex(checkbuf,'/'))) {
-		sprintf(errmsg,"checkroot can't find / in %s",checkbuf);
-		do_gripe();
-		return(0);
-	}
-	*tmp = '\0';
+	if (! strcmp( path,"/"))
+		return(-1);
 
-	retval = exists(checkbuf);
-	if (debug)
-		printf("checkroot(%s): %d\n",ptr,retval);
-
-	return(retval);
-}
-
-makeroot(ptr,uid,gid,mode)
-char *ptr;
-int uid,gid,mode;
-{
-	char makebuf[LINELEN],*tmp;
-	int usave;
-
-	strcpy(makebuf,ptr);
-	if (!(tmp = rindex(makebuf,'/'))) {
-		sprintf(errmsg,"makeroot can't find / in %s",ptr);
+	if (!( tmp = rindex( path,'/'))) {
+		sprintf(errmsg,"checkroot can't find / in %s", path);
 		do_gripe();
 		return(-1);
 	}
+	if ( tmp == path) return( 0);	/* root is the parent-dir */
+
 	*tmp = '\0';
-
-	if (exists(makebuf))
-		return(0);
-
-	makeroot(makebuf,uid,gid,mode);
-
-	if (verboseflag)
-		fprintf(stderr,"making root directory %s mode %o\n",makebuf,mode);
-
-	usave = umask(000);
-
-	if (mkdir(makebuf,mode) == -1) {
-		sprintf(errmsg,
-			"can't create directory %s",makebuf);
-		do_gripe();
-		umask(usave);
-		return(-1);
-	}
-	umask(usave);
-	
-	if ((uid != fileuid(makebuf)) || (gid != filegid(makebuf))) 
-		if (chown(makebuf,uid,gid) == -1) {
-			sprintf(errmsg, "can't chown directory %s %d %d\n",
-					makebuf,uid,gid);
-				do_gripe();
-		}
-
-	if (chmod(makebuf,mode) == -1) {
-		sprintf(errmsg,
-			"can't chmod directory %s %d %d\n",
-			makebuf,uid,gid);
-		do_gripe();
-	}
-
-	return (0);
+	retval = access( path, 0) ? tmp - path - 1 : 0;
+	*tmp = '/';
+	return( retval);
 }
 
-fileuid(name)
-char *name;
+int makepath( path,s)
+char *path;
+struct stat *s;
 {
-	struct stat sbuf;
+	char parent[ LINELEN];
+	int n, usave;
 
-	if (!lstat(name,&sbuf))
-		return(sbuf.st_uid);
+	if ( 0 < ( n = findparent( path))) {
+		parent[ n] = '\0';
+		if ( makepath( parent, s)) return( -1);
+		parent[ n] = '/';
+	}
+	else if ( 0 > n) return( -1);
 
-	sprintf(errmsg,"fileuid can't find %s",name);
-	do_gripe();
-	return(-1);
+        if ( verboseflag)
+                fprintf( stderr,"making root directory %s mode %o\n",
+                         path, MODE( *s));
+
+        usave = umask( 022);
+
+        if ( mkdir( path, MODE( *s))) {
+                sprintf(errmsg, "can't create directory %s", path);
+                do_gripe();
+                umask( usave);
+                return(-1);
+        }
+        umask( usave);
+
+        if ( set_prots( path, s)) return(-1);
+
+        return (0);
 }
 
-filegid(name)
+int
+removeit(name, type)
 char *name;
-{
-	struct stat sbuf;
-
-	if (!lstat(name,&sbuf))
-		return(sbuf.st_gid);
-
-	sprintf(errmsg,
-		"fileuid can't find %s",name);
-	do_gripe();
-	return(-1);
-}
-
-removeit(name)
-char *name;
+unsigned int type;
 {
 	struct direct *next;
 	DIR *dirp;
-	char rmbuf[LINELEN];
+	char *leaf, *type_str = "";
+	struct stat sbuf;
 
-	if (verboseflag)
-		fprintf(stderr,"removing %s\n",name);
+	/* caller can pass us the file-type, if he's got it:
+	 */
+	if ( type != 0);
+	else if ( lstat( name, &sbuf)) {
+		sprintf( errmsg, "can't lstat %s\n", name);
+		do_gripe();
+		return(-1);
+	}
+	else type = TYPE( sbuf);
 
-	switch (gettype(name)) {
-	case 'd':
-		if (!(dirp = (DIR *)opendir(name))) {
-			sprintf(errmsg,"removeit got an error from opendir of %s",name);
-			do_gripe();
-			return(-1);
+	if (verboseflag) {
+		switch( type) {
+		case S_IFBLK: type_str = "block special device";	break;
+		case S_IFCHR: type_str = "char special device";		break;
+		case S_IFDIR: type_str = "directory";			break;
+		case S_IFREG: type_str = "regular file";		break;
+		case S_IFLNK: type_str = "symbolic link";		break;
 		}
-		for(next = readdir(dirp);next != NULL ;next = readdir(dirp)) {
-			if (strcmp(next->d_name,".") &&
-			    strcmp(next->d_name,"..")) {
-				strcpy(rmbuf,name);
-				strcat(rmbuf,"/");
-				strcat(rmbuf,next->d_name);
-				if(removeit(rmbuf) == -1) {
-					sprintf(errmsg, "removeit can't remove %s",
-						rmbuf);
-					do_gripe();
-					return(-1);
-				}
-			}
-		}
-		if (rmdir(name) == -1) {
-			sprintf(errmsg, "removeit can't remove directory %s",name);
-			do_gripe();
-			return(-1);
-		}
-		break;
-	case '*':			/* Can't remove what isn't there! */
-		return (0);
-	default:
-		return(unlink(name));
+		fprintf(stderr,"removing %s %s\n",type_str,name);
+	}
+	if ( type == S_IFDIR);
+	else if ( unlink( name)) {
+		sprintf( errmsg, "can't remove %s %s", type_str, name);
+		do_gripe();
+		return(-1);
+	}
+	else return(0);
+
+	if (!(dirp = (DIR *) opendir( name))) {
+		sprintf(errmsg, "removeit: error from opendir of %s", name);
+		do_gripe();
+		return(-1);
+	}
+	readdir( dirp); readdir( dirp); /* skip . & .. */
+
+	strcat( name,"/");		/* XXX: don't copy for recursive call */
+	leaf =  name + strlen( name);
+	for( next = readdir(dirp); next != NULL; next = readdir(dirp)) {
+		strcpy( leaf, next->d_name);	/* changes name[] */
+		removeit( name, 0);
+	}
+	leaf[-1] = '\0';	/* XXX: see strcat, above */
+
+	if ( rmdir( name) == -1) {
+		sprintf(errmsg, "can't remove directory %s",name);
+		do_gripe();
+		return(-1);
 	}
 	return(0);
 }
