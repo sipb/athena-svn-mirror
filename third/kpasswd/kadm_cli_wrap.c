@@ -68,11 +68,6 @@ char r[];
 	char adm_hostname[MAXHOSTNAMELEN];
 	char *scol = 0;
 
-#ifdef GLOBAL_ERROR_HANDLING
-	(void) init_kadm_err_tbl();
-	(void) init_krb_err_tbl();
-#endif
-
 	(void) strcpy(client_parm.sname, n);
 	(void) strcpy(client_parm.sinst, i);
 	(void) strcpy(client_parm.krbrlm, r);
