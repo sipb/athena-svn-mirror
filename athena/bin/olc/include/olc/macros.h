@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *	$Id: macros.h,v 1.7 1990-07-24 14:06:50 lwvanels Exp $
+ *	$Id: macros.h,v 1.8 1990-08-26 16:24:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -61,7 +61,8 @@ typedef int     RESPONSE;       /* A response code. */
 
 /* Useful macros. */
 
-#define string_eq(a,b)  (!strcmp((a),(b)))      /* Compare two strings.- */
+#define string_eq(a,b) ((a[0]==b[0])?(!strcmp((a),(b))):FALSE)
+/* Compare two strings.- */
 #define string_equiv(a,b,c)   (!strncmp((a),(b),(c) < strlen((a)) \
 					? strlen((a)) : (c)))		 
 
