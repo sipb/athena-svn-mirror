@@ -17,40 +17,7 @@ TITLE="GNOME Print Overview"
 HREF="libgnomeprint.html"><LINK
 REL="NEXT"
 TITLE="Compiling GNOME Print Applications"
-HREF="libgnomeprint-compiling.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE
-></HEAD
+HREF="libgnomeprint-compiling.html"></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -58,64 +25,96 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
 ><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="libgnomeprint.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="libgnomeprint.html"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="index.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
 ><TH
-WIDTH="100%"
-align="center"
->GNOME Print Reference Manual</TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME Print Reference Manual</FONT
+></TH
+></TR
+><TR
 ><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
 ><A
-ACCESSKEY="n"
+HREF="libgnomeprint.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libgnomeprint.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
 HREF="libgnomeprint-compiling.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
 ></TD
 ></TR
 ></TABLE
+></DIV
 ><H1
 ><A
 NAME="LIBGNOMEPRINT-BUILDING"
@@ -180,10 +179,20 @@ CLASS="LITERAL"
 > file which you unpack into a 
       directory full of the source files as follows:
     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >      tar xvfz libgnomeprint-2.0.0.tar.gz
     </PRE
+></TD
+></TR
+></TABLE
 ><P
 >      In the toplevel of the directory that is created, there will be
       a shell script called <TT
@@ -211,10 +220,20 @@ CLASS="FILENAME"
 >/opt/libgnomeprint</TT
 > you would run configure as:
     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >      ./configure --prefix=/opt/libgnomeprint
     </PRE
+></TD
+></TR
+></TABLE
 ><P
 >      A full list of options can be found by running
       <TT
@@ -236,11 +255,21 @@ CLASS="COMMAND"
 > command to build the package and install
       it.
     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >      make
       make install
     </PRE
+></TD
+></TR
+></TABLE
 ><P
 >      If you don't have permission to write to the directory you are
       installing in, you may have to change to root temporarily before
@@ -287,6 +316,13 @@ CLASS="FILENAME"
 >, you
       might want to set these variables as:
     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >      CPPFLAGS="-I/opt/libgnomeprint/include"
@@ -294,6 +330,9 @@ CLASS="PROGRAMLISTING"
       PKG_CONFIG_PATH="/opt/libgnomeprint/lib/pkgconfig"
       export CPPFLAGS LDFLAGS PKG_CONFIG_PATH
     </PRE
+></TD
+></TR
+></TABLE
 ><P
 >      You may also need to set the <TT
 CLASS="ENVAR"
@@ -307,12 +346,22 @@ CLASS="ENVAR"
       environment program so that utility binaries installed by
       the various libraries will be found.
     </P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >      LD_LIBRARY_PATH="/opt/libgnomeprint/lib"
       PATH="/opt/libgnomeprint/bin:$PATH"
       export LD_LIBRARY_PATH PATH
     </PRE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
@@ -619,34 +668,109 @@ CLASS="SYSTEMITEM"
 	</P
 ></DIV
 ></DIV
-><TABLE
-CLASS="navigation"
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
 WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
 ><TR
-VALIGN="middle"
 ><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-ACCESSKEY="p"
 HREF="libgnomeprint.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
 ><B
->&lt;&lt;&lt;&nbsp;GNOME Print Overview</B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
 ></A
 ></TD
 ><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libgnomeprint.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-ACCESSKEY="n"
 HREF="libgnomeprint-compiling.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
 ><B
->Compiling GNOME Print Applications&nbsp;&gt;&gt;&gt;</B
+>Next Page &#62;&#62;&#62;</B
+></FONT
 ></A
 ></TD
 ></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GNOME Print Overview</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Compiling GNOME Print Applications</B
+></FONT
+></TD
+></TR
 ></TABLE
+></DIV
 ></BODY
 ></HTML
 >

@@ -57,7 +57,7 @@ GType     gpa_list_get_type (void);
 GPAList * gpa_list_new (GType childtype, const gchar *list_name, gboolean can_have_default);
 
 gboolean  gpa_list_set_default (GPAList *list, GPANode *def);
-GPANode * gpa_list_get_defalt (GPAList *list);
+GPANode * gpa_list_get_default (GPAList *list);
 
 G_END_DECLS
 

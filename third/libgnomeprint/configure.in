@@ -1,10 +1,10 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(libgnomeprint, 2.2.1,
+AC_INIT(libgnomeprint, 2.2.1.1,
 	http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-print)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libgnomeprint, 2.2.1)
+AM_INIT_AUTOMAKE(libgnomeprint, 2.2.1.1)
 
 AM_MAINTAINER_MODE
 
@@ -38,7 +38,7 @@ GETTEXT_PACKAGE=libgnomeprint-2.2
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package])
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et fi fr he hi hu it ja ko lv ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_TW zh_CN"
+ALL_LINGUAS="am ar az be bg ca cs da de el es et fi fr he hi hu it ja ko lv mn ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_TW zh_CN"
 AM_GLIB_GNU_GETTEXT
 
 dnl ==========================================
@@ -53,7 +53,7 @@ fi
 AC_SUBST(HTML_DIR)
 
 AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-gtk_doc_min_version=0.10
+gtk_doc_min_version=0.9
 if $GTKDOC ; then
     gtk_doc_version=`gtkdoc-mkdb --version`
     AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
@@ -170,7 +170,7 @@ if test "x$try_cups" = "xyes"; then
 	    fi
 	else
 	   AC_MSG_RESULT("cups not found, make sure cups-config is in the path")
-        cups_msg="Cups not installed (cups-config not found in the PATH)"
+        cups_msg="cups-devel not installed (cups-config not found in the PATH)"
 	fi
 fi
 AC_SUBST(CUPS_LIBS)

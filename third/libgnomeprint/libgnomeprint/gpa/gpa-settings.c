@@ -107,7 +107,8 @@ gpa_settings_finalize (GObject *object)
 	settings = GPA_SETTINGS (object);
 	node = GPA_NODE (settings);
 
-	my_gpa_node_unref (GPA_NODE (settings->printer));
+	if (settings->printer)
+		gpa_node_unref (GPA_NODE (settings->printer));
 	gpa_node_unref (GPA_NODE (settings->model));
 	settings->printer = NULL;
 	settings->model   = NULL;

@@ -14,14 +14,22 @@
   <Name xml:lang="hu">PDF-dokumentum lÃ©trehozÃ¡sa</Name>
   <Name xml:lang="it">Crea un documento PDF</Name>
   <Name xml:lang="ja">PDF ãã­ã¥ã¡ã³ãã®ä½æ</Name>
+  <Name xml:lang="ko">PDF ë¬¸ì ë§ë¤ê¸°</Name>
   <Name xml:lang="lv">Izveidot PDF dokumentu</Name>
+  <Name xml:lang="mn">PDF-Ð±Ð°ÑÐ¸Ð¼Ñ Ò¯Ò¯ÑÐ³ÑÑ</Name>
   <Name xml:lang="nl">Een PDF-document maken</Name>
   <Name xml:lang="no">Opprett ett PDF-dokument</Name>
   <Name xml:lang="pl">Utworzenie dokumentu PDF</Name>
+  <Name xml:lang="pt">Criar um documento PDF</Name>
+  <Name xml:lang="pt_BR">Criar um documento PDF</Name>
+  <Name xml:lang="ro">CreeazÄ un document PDF</Name>
+  <Name xml:lang="sk">VytvoriÅ¥ PDF dokument</Name>
   <Name xml:lang="sl">Ustvari dokument PDF</Name>
   <Name xml:lang="sv">Skapa ett PDF-dokument</Name>
   <Name xml:lang="tr">PDF belgesi yarat</Name>
+  <Name xml:lang="uk">Ð¡ÑÐ²Ð¾ÑÐ¸ÑÐ¸ Ð´Ð¾ÐºÑÐ¼ÐµÐ½Ñ Ñ ÑÐ¾ÑÐ¼Ð°ÑÑ PDF</Name>
   <Name xml:lang="vi">Táº¡o tÃ i liá»u PDF</Name>
+  <Name xml:lang="zh_CN">åå»º PDF ææ¡£</Name>
   <Name xml:lang="zh_TW">è£½ä½ PDF æä»¶</Name>
   <Model>GNOME-PDF-WRITER</Model>
   <Settings Id="SETTINGS-000123456789123456789012">

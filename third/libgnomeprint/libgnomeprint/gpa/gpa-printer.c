@@ -483,7 +483,7 @@ gpa_printer_get_default (void)
 		return NULL;
 	}
 
-	return gpa_list_get_defalt (printers_list);
+	return gpa_list_get_default (printers_list);
 }
 
 /**
@@ -534,7 +534,7 @@ gpa_printer_get_default_settings (GPAPrinter *printer)
 	g_return_val_if_fail (printer != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
 
-	child = gpa_list_get_defalt (GPA_LIST (printer->settings));
+	child = gpa_list_get_default (GPA_LIST (printer->settings));
 
 	return child;
 }

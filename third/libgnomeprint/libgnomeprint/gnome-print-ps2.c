@@ -62,6 +62,7 @@ struct _GnomePrintPs2 {
 	/* lists */
 	GnomePrintPs2Font *fonts;
 	GnomePrintPs2Page *pages;
+	GHashTable *fonts_hash; /* GnomePrintPS2Font to psname */
 
 	/* State */
 	GnomePrintPs2Font *selected_font;
@@ -79,6 +80,7 @@ struct _GnomePrintPs2Font {
 	GnomeFontFace *face;
 	GnomeFontPsObject *pso;
 	gdouble currentsize;
+	gint instance; /* See #105063 */
 };
 
 struct _GnomePrintPs2Page {
@@ -169,6 +171,7 @@ gnome_print_ps2_init (GnomePrintPs2 *ps2)
 {
 	ps2->gsave_level = 0;
 	ps2->fonts = NULL;
+	ps2->fonts_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 	ps2->pages = NULL;
@@ -208,6 +211,8 @@ gnome_print_ps2_finalize (GObject *object)
 		ps2->pages = p->next;
 		g_free (p);
 	}
+
+	g_hash_table_destroy (ps2->fonts_hash);
 
 	while (ps2->fonts) {
 		GnomePrintPs2Font *f;
@@ -806,6 +811,7 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font)
 	GnomePrintPs2Font *font;
 	gint ret = 0;
 	GSList *l;
+	gint instance = 0;
 
 	if ((ps2->selected_font) &&
 	    (ps2->selected_font->face == gnome_font->face) &&
@@ -820,14 +826,27 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font)
 			break;
 	}
 	if (!font) {
+		/* See #105063 */
+		GnomePrintPs2Font *clone;
+		clone = g_hash_table_lookup (ps2->fonts_hash, face->psname);
+		if (clone) {
+			instance = clone->instance + 1;
+		}
+	}
+	if (!font) {
 		/* No entry, so create one */
-		font = g_new (GnomePrintPs2Font, 1);
-		font->next = ps2->fonts;
-		ps2->fonts = font;
-		font->face = (GnomeFontFace *) face;
 		gnome_font_face_ref (face);
-		font->pso = gnome_font_face_pso_new ((GnomeFontFace *) face, NULL);
+		
+		font = g_new0 (GnomePrintPs2Font, 1);
+		font->next     = ps2->fonts;
+		font->face     = (GnomeFontFace *) face;
+		font->pso      = gnome_font_face_pso_new ((GnomeFontFace *) face, NULL, instance);	
+		font->instance = instance;
+
 		g_return_val_if_fail (font->pso != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+
+		ps2->fonts = font;
+		g_hash_table_insert (ps2->fonts_hash, face->psname, font);
 	}
 
 	for (l = ps2->pages->usedfonts; l != NULL; l = l->next) {

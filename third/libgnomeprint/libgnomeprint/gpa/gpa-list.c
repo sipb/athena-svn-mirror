@@ -209,7 +209,7 @@ gpa_list_new (GType childtype, const gchar *list_name, gboolean can_have_default
 
 
 /**
- * gpa_list_get_defalt:
+ * gpa_list_get_default:
  * @list: 
  * 
  * Get the list default, makes the first item on the list
@@ -219,7 +219,7 @@ gpa_list_new (GType childtype, const gchar *list_name, gboolean can_have_default
  *               if the list does not have any childs
  **/
 GPANode *
-gpa_list_get_defalt (GPAList *list)
+gpa_list_get_default (GPAList *list)
 {
 	GPANode *def;
 	

@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
 <synopsis>
 
 
@@ -45,8 +44,6 @@ void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_lis
 
 
 
-
-
 <refsect1>
 <title>Description</title>
 <para>
@@ -59,7 +56,6 @@ void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_lis
 <refsect2>
 <title><anchor id="GnomePrintUnit">struct GnomePrintUnit</title>
 <programlisting>struct GnomePrintUnit {
-
 	guint version : 8; /* Has to be 0 at moment */
 	guint base : 8; /* Base */
 	gdouble unittobase;
@@ -107,40 +103,52 @@ void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_lis
 </para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>base</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>base</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-get-default">gnome_print_unit_get_default ()</title>
 <programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_default
                                             (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-get-by-name">gnome_print_unit_get_by_name ()</title>
 <programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_by_name
                                             (const <link linkend="guchar">guchar</link> *name);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-get-by-abbreviation">gnome_print_unit_get_by_abbreviation ()</title>
 <programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_by_abbreviation
@@ -149,39 +157,51 @@ void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_lis
 get a unit based on its abbreviation like "cm" "pts" or "in".</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>abbreviation</parameter>&nbsp;:</term>
-<listitem><simpara> an ascii string poiting to the abbreviation
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a constant pointer to a GnomePrintUnit, NULL on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>abbreviation</parameter>&nbsp;:</entry>
+<entry> an ascii string poiting to the abbreviation
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a constant pointer to a GnomePrintUnit, NULL on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-get-list">gnome_print_unit_get_list ()</title>
 <programlisting><link linkend="GList">GList</link>*      gnome_print_unit_get_list       (<link linkend="guint">guint</link> bases);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>bases</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>bases</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-free-list">gnome_print_unit_free_list ()</title>
 <programlisting>void        gnome_print_unit_free_list      (<link linkend="GList">GList</link> *units);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>units</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>units</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-convert-distance">gnome_print_convert_distance ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_print_convert_distance    (<link linkend="gdouble">gdouble</link> *distance,
@@ -191,20 +211,24 @@ get a unit based on its abbreviation like "cm" "pts" or "in".</para>
 Check wether a conversion between <parameter>from</parameter> and <parameter>to</parameter> can be made</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>distance</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if the conversion is possible, FALSE if
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>distance</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>from</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>to</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if the conversion is possible, FALSE if
               it is not or on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-convert-distance-full">gnome_print_convert_distance_full ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_print_convert_distance_full
@@ -217,25 +241,29 @@ Check wether a conversion between <parameter>from</parameter> and <parameter>to<
 ctmscale is userspace->absolute, devicescale is device->absolute</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>distance</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>ctmscale</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>devicescale</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>distance</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>from</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>to</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>ctmscale</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>devicescale</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

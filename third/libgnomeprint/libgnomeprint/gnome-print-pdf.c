@@ -1517,7 +1517,7 @@ gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *gnome_font)
 	font = g_new (GnomePrintPdfFont, 1);
 	font->face = gnome_font_get_face (gnome_font);
 	g_object_ref (font->face);
-	font->pso  = gnome_font_face_pso_new (font->face, NULL);
+	font->pso  = gnome_font_face_pso_new (font->face, NULL, 0);
 	font->is_basic_14 = FALSE;
 	font->nglyphs = gnome_font_face_get_num_glyphs (face);
 	font->glyph_to_code = g_hash_table_new (NULL, NULL);

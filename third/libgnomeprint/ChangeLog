@@ -1,3 +1,100 @@
+2003-02-02  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry_alias):
+	disable the patch for #105006 which was causing problems
+
+	* configure.in: Version 2.2.1.1
+
+2003-02-02  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am (mydistcheck): use $(AMTAR) rather than $(TAR) which
+	I guess is needed because I am using a newer automake.
+
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry_alias):
+	Fix #105006
+
+2003-02-02  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/gpa/gpa-settings.c (gpa_settings_finalize): only
+	gpa_node_unref settings->printer when it is not NULL. Settings can
+	be unatached to a printer in some cases
+
+2003-02-02  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/gnome-print-ps2.c: allow us to embed two fonts
+	who happen to have the same Postscript name. See #105063.
+	(gnome_print_ps2_init): create fonts_hash
+	(gnome_print_ps2_finalize): destroy fonts_hash
+	(gnome_print_ps2_set_font_real): when creating PSOs, specify
+	which instance of the psname the font is for.
+
+	* libgnomeprint/gnome-font-face.c (gnome_font_face_pso_new):
+	add a "instance" argument that allows us to embed to fonts
+	who happen to have the same postscript name. Set ->encodedname
+	accordingly to the instance
+	
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_set_font_real):
+	when creating a pso, pass 0 as the instance.
+
+	* libgnomeprint/gnome-font-private.h: update _pso_new's prototype,
+	update the description of GnomeFontPsObject->encodedname.
+
+	* tests/simple.c: add file used for simple code to test or
+	replicate a bug.
+	* tests/Makefile.am: add simple to Makefile
+
+2003-02-01  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-font-family.c (gnome_font_family_style_list):
+	Don't return duplicated styles, the font-dialog no longer displays
+	duplicated styles.
+
+2003-01-31  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gp-gc.c (gp_gc_get_linecap): Fix the first
+	part of #104932. Spotted by jean.brefort@ac-dijon.fr
+
+	* libgnomeprint/gnome-font-face.c (gff_load_outline):
+	Fix #104754
+
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry):
+	Fix #104710, patch from Akira TAGOH
+
+	* configure.in (gtk_doc_min_version): don't need to check
+	for "gtk-doc > 0.10". 0.9 is good enough
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c: add
+	Output.Job.Copies & Output.Job.Collate
+	* data/models/GNOME-PDF-WRITER.xml: same here
+
+	* libgnomeprint/gpa/gpa-list.[ch]: fix a typo s/defalt/default/
+	* libgnomeprint/gpa/gpa-printer.c: here too
+
+2003-01-31  Chema Celorio  <chema@celorio.com>
+	
+	* configure.in (cups_msg): make the "cups not installed" message a little
+	bit more explicit
+
+2003-01-28  Chema Celorio  <chema@celorio.com>
+
+	* doc/reference/Makefile.am: install API docs in
+	$(HTML_DIR)/libgnomeprint-2.2 so that it parallel installs with
+	libgnomeprint-devel (1.116.x)
+
+2003-01-27  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-pdf-t1.c (gnome_print_pdf_t1_determine_lengths_pfa):
+	remove a compile time warning that might break non gcc compilations. Spotted
+	by Chris Lahey <clahey@ximian.com>
+
+2003-01-27  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 2.2.2
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2003-01-21  Chema Celorio  <chema@celorio.com>
 
 	* configure.in: Check for that -lfreetype has

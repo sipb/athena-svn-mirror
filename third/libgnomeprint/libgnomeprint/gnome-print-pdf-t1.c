@@ -106,7 +106,7 @@ gnome_print_pdf_t1_determine_lengths_pfa (GnomePrintPdfT1Font *font)
 	while ((zeros > 0) && (pos > buf) && ((*pos == '0' || *pos == '\r' || *pos == '\n'))) {
 		if (*pos == '0')
 			zeros--;
-		*pos --;
+		pos --;
 	}
 	error = 5;
 	if (zeros > 0)

@@ -28,6 +28,7 @@
             <Name xml:lang="ja">ç¸¦ç½®ã</Name>
             <Name xml:lang="ko">ì¸ë¡</Name>
             <Name xml:lang="lv">VertikÄli</Name>
+            <Name xml:lang="mn">ÐÐ¾ÑÐ¾Ð¾</Name>
             <Name xml:lang="ms">Potret</Name>
             <Name xml:lang="nl">Portret</Name>
             <Name xml:lang="nn">StÃ¥ande</Name>
@@ -71,6 +72,7 @@
             <Name xml:lang="ja">æ¨ªç½®ã</Name>
             <Name xml:lang="ko">ê°ë¡</Name>
             <Name xml:lang="lv">HorizontÄli</Name>
+            <Name xml:lang="mn">Ð¥ÑÐ²ÑÑÑ</Name>
             <Name xml:lang="ms">Lanskap</Name>
             <Name xml:lang="nl">Landschap</Name>
             <Name xml:lang="nn">Liggjande</Name>
@@ -113,6 +115,7 @@
             <Name xml:lang="ja">ç¸¦ç½®ãã®é</Name>
             <Name xml:lang="ko">ìì§ì¼ë¡ ë¤ì§ê¸°</Name>
             <Name xml:lang="lv">Portrets otrÄdi</Name>
+            <Name xml:lang="mn">ÐÐ¾Ð¾Ñ ÑÐ°ÑÑÐ°Ð½ Ð±Ð¾ÑÐ¾Ð¾</Name>
             <Name xml:lang="ms">Potret tertonggeng</Name>
             <Name xml:lang="nl">Portret, ondersteboven</Name>
             <Name xml:lang="nn">Oppned stÃ¥ande</Name>
@@ -128,7 +131,7 @@
             <Name xml:lang="ta">Â¾Â¨ÃÂ¸Â£Ãº ÃÃÃÃÃÃµ</Name>
             <Name xml:lang="uk">ÐÐµÑÐµÐ²ÐµÑÐ½ÑÑÐ¸Ð¹ Ð¿Ð¾ÑÑÑÐµÑ</Name>
             <Name xml:lang="vi">Tháº³ng tá»« trÃªn xuá»ng</Name>
-            <Name xml:lang="zh_CN">é¢ åçºµå</Name>
+            <Name xml:lang="zh_CN">çºµååç½®</Name>
             <Name xml:lang="zh_TW">ä¸ä¸åç½®ãç¸±å</Name>
             <Key Id="Page2LayoutTransform" Value="matrix(-1 0 0 -1 1 1)"/>
           </Item>
@@ -153,6 +156,7 @@
             <Name xml:lang="ja">æ¨ªç½®ãã®é</Name>
             <Name xml:lang="ko">ìíì¼ë¡ ë¤ì§ê¸°</Name>
             <Name xml:lang="lv">No augÅ¡as uz leju horizontÄli</Name>
+            <Name xml:lang="mn">ÐÐ¾Ð¾Ñ ÑÐ°ÑÑÐ°Ð½ ÑÑÐ²ÑÑÑ</Name>
             <Name xml:lang="ms">Lanskap tertonggeng</Name>
             <Name xml:lang="nl">Landschap, ondersteboven</Name>
             <Name xml:lang="nn">Oppned liggjande</Name>
@@ -168,7 +172,7 @@
             <Name xml:lang="ta">Â¾Â¨ÃÂ¸Â£Ãº ÃÂ¢ÃÃÃÃÃµ</Name>
             <Name xml:lang="uk">ÐÐµÑÐµÐ²ÐµÑÐ½ÑÑÐ¸Ð¹ Ð°Ð»ÑÐ±Ð¾Ð¼</Name>
             <Name xml:lang="vi">Tháº³ng tá»« trÃªn xuá»n</Name>
-            <Name xml:lang="zh_CN">é¢ åæ¨ªå</Name>
+            <Name xml:lang="zh_CN">æ¨ªååç½®</Name>
             <Name xml:lang="zh_TW">ä¸ä¸åç½®ãæ©«å</Name>
             <Key Id="Page2LayoutTransform" Value="matrix(0 -1 1 0 1 0)"/>
           </Item>
@@ -200,6 +204,7 @@
             <Name xml:lang="ja">éå¸¸</Name>
             <Name xml:lang="ko">ì¼ë°</Name>
             <Name xml:lang="lv">Parasts</Name>
+            <Name xml:lang="mn">Ð­Ð½Ð³Ð¸Ð¹Ð½</Name>
             <Name xml:lang="ms">Jelas</Name>
             <Name xml:lang="nl">Standaard</Name>
             <Name xml:lang="nn">Enkel</Name>
@@ -242,14 +247,22 @@
             <Name xml:lang="hu">2 oldalt 1-re</Name>
             <Name xml:lang="it">2 pagine in 1</Name>
             <Name xml:lang="ja">äºæ®µçµ</Name>
+            <Name xml:lang="ko">1ì¥ì 2íì´ì§</Name>
             <Name xml:lang="lv">2 lapas uz 1</Name>
+            <Name xml:lang="mn">2 ÑÑÑÐ´Ð°Ñ 1 Ð´ÑÑÑ</Name>
             <Name xml:lang="nl">2 pagina&apos;s naar 1</Name>
             <Name xml:lang="no">2 sider til 1</Name>
             <Name xml:lang="pl">2 strony na 1</Name>
+            <Name xml:lang="pt">2 pÃ¡ginas para 1</Name>
+            <Name xml:lang="pt_BR">2 pÃ¡ginas para 1</Name>
+            <Name xml:lang="ro">2 pagini Ã®n 1</Name>
+            <Name xml:lang="sk">2 strany na 1</Name>
             <Name xml:lang="sl">2 strani na 1</Name>
             <Name xml:lang="sv">2 sidor pÃ¥ 1</Name>
             <Name xml:lang="tr">1 sayfaya 2 sayfa</Name>
+            <Name xml:lang="uk">2 ÑÑÐ¾ÑÑÐ½ÐºÐ¸ Ð½Ð° 1</Name>
             <Name xml:lang="vi">2 trang thÃ nh 1</Name>
+            <Name xml:lang="zh_CN">2 é¡µå¹¶ä¸º 1 é¡µ</Name>
             <Key Id="ValidPhysicalSizes" Value="All"/>
             <Key Id="LogicalPages" Value="2"/>
             <Key Id="PhysicalPages" Value="1"/>
@@ -275,14 +288,22 @@
             <Name xml:lang="hu">4 oldalt 1-re</Name>
             <Name xml:lang="it">4 pagine in 1</Name>
             <Name xml:lang="ja">åæ®µçµ</Name>
+            <Name xml:lang="ko">1ì¥ì 4íì´ì§</Name>
             <Name xml:lang="lv">4 lapas uz 1</Name>
+            <Name xml:lang="mn">4 ÑÑÑÐ´Ð°Ñ 1 Ð´ÑÑÑ</Name>
             <Name xml:lang="nl">4 pagina&apos;s naar 1</Name>
             <Name xml:lang="no">4 sider til 1</Name>
             <Name xml:lang="pl">4 strony na 1</Name>
+            <Name xml:lang="pt">4 pÃ¡ginas para 1</Name>
+            <Name xml:lang="pt_BR">4 pÃ¡ginas para 1</Name>
+            <Name xml:lang="ro">4 pagini Ã®n 1</Name>
+            <Name xml:lang="sk">4 strany na 1</Name>
             <Name xml:lang="sl">Å¡tiri strani na 1</Name>
             <Name xml:lang="sv">4 sidor pÃ¥ 1</Name>
             <Name xml:lang="tr">1 sayfaya 4 sayfa</Name>
+            <Name xml:lang="uk">4 ÑÑÐ¾ÑÑÐ½ÐºÐ¸ Ð½Ð° 1</Name>
             <Name xml:lang="vi">4 trang thÃ nh 1</Name>
+            <Name xml:lang="zh_CN">4 é¡µå¹¶ä¸º 1 é¡µ</Name>
             <Key Id="ValidPhysicalSizes" Value="All"/>
             <Key Id="LogicalPages" Value="4"/>
             <Key Id="PhysicalPages" Value="1"/>
@@ -310,10 +331,16 @@
             <Name xml:lang="hu">Osztott</Name>
             <Name xml:lang="it">Diviso</Name>
             <Name xml:lang="ja">åé¡</Name>
+            <Name xml:lang="ko">ëë¨</Name>
             <Name xml:lang="lv">SadalÄ«tas</Name>
+            <Name xml:lang="mn">Ð¥ÑÐ²Ð°Ð°ÑÐ°Ð½</Name>
             <Name xml:lang="nl">Gedeeld</Name>
             <Name xml:lang="no">Delt</Name>
             <Name xml:lang="pl">Podzielony</Name>
+            <Name xml:lang="pt">Dividido</Name>
+            <Name xml:lang="pt_BR">Dividido</Name>
+            <Name xml:lang="ro">ÃmpÄrÅ£itÄ</Name>
+            <Name xml:lang="sk">DelenÃ½</Name>
             <Name xml:lang="sl">Razdeljeno</Name>
             <Name xml:lang="sv">Delad</Name>
             <Name xml:lang="tr">BÃ¶lÃ¼nmÃ¼Å</Name>
@@ -342,10 +369,16 @@
             <Name xml:lang="he">××ª××××§</Name>
             <Name xml:lang="hu">Hajtott</Name>
             <Name xml:lang="ja">æãè¾¼ã¿</Name>
+            <Name xml:lang="ko">ì í</Name>
             <Name xml:lang="lv">SalocÄ«ta</Name>
+            <Name xml:lang="mn">Ð­Ð²ÑÑÑÐ½</Name>
             <Name xml:lang="nl">Gevouwen</Name>
             <Name xml:lang="no">Brettet</Name>
             <Name xml:lang="pl">ZÅoÅ¼ony</Name>
+            <Name xml:lang="pt">Dobrado</Name>
+            <Name xml:lang="pt_BR">Dobrado</Name>
+            <Name xml:lang="ro">Ãndoit</Name>
+            <Name xml:lang="sk">SkladanÃ½</Name>
             <Name xml:lang="sl">Zavit</Name>
             <Name xml:lang="sv">Vikt</Name>
             <Name xml:lang="tr">KatlÄ±</Name>
@@ -388,6 +421,7 @@
           <Name xml:lang="ja">A4ç</Name>
           <Name xml:lang="ko">A4</Name>
           <Name xml:lang="lv">A4</Name>
+          <Name xml:lang="mn">A4</Name>
           <Name xml:lang="ms">A4</Name>
           <Name xml:lang="nl">A4</Name>
           <Name xml:lang="nn">A4</Name>
@@ -425,14 +459,22 @@
           <Name xml:lang="hu">US Letter</Name>
           <Name xml:lang="it">Lettera US</Name>
           <Name xml:lang="ja">US ã¬ã¿ã¼</Name>
+          <Name xml:lang="ko">US Letter</Name>
           <Name xml:lang="lv">ASV VÄstule</Name>
+          <Name xml:lang="mn">US-Letter</Name>
           <Name xml:lang="nl">US Letter</Name>
           <Name xml:lang="no">US Letter</Name>
           <Name xml:lang="pl">US Letter</Name>
+          <Name xml:lang="pt">Carta US</Name>
+          <Name xml:lang="pt_BR">Carta dos EUA</Name>
+          <Name xml:lang="ro">US Letter</Name>
+          <Name xml:lang="sk">USA list</Name>
           <Name xml:lang="sl">ZDA pismo</Name>
           <Name xml:lang="sv">US Letter</Name>
           <Name xml:lang="tr">Mektup</Name>
+          <Name xml:lang="uk">US Letter</Name>
           <Name xml:lang="vi">ThÆ° US</Name>
+          <Name xml:lang="zh_CN">US ä¿¡å½</Name>
           <Name xml:lang="zh_TW">US Letter</Name>
           <Key Id="Width" Value="8.5in"/>
           <Key Id="Height" Value="11in"/>
@@ -452,13 +494,21 @@
           <Name xml:lang="hu">US Legal</Name>
           <Name xml:lang="it">US Legal</Name>
           <Name xml:lang="ja">US ãªã¼ã¬ã«</Name>
+          <Name xml:lang="ko">US Legal</Name>
           <Name xml:lang="lv">ASV juridiska</Name>
+          <Name xml:lang="mn">US-Legal</Name>
           <Name xml:lang="nl">US Legal</Name>
           <Name xml:lang="no">US Legal</Name>
           <Name xml:lang="pl">US Legal</Name>
+          <Name xml:lang="pt">Legal US</Name>
+          <Name xml:lang="pt_BR">Legal dos EUA</Name>
+          <Name xml:lang="ro">US Legal</Name>
+          <Name xml:lang="sk">USA prÃ¡vnickÃ½</Name>
           <Name xml:lang="sl">ZDA legal</Name>
           <Name xml:lang="sv">US Legal</Name>
           <Name xml:lang="tr">US Legal</Name>
+          <Name xml:lang="uk">US Legal</Name>
+          <Name xml:lang="zh_CN">US æ³å¾</Name>
           <Name xml:lang="zh_TW">US Legal</Name>
 		<Key Id="Width" Value="8.5in"/>
 		<Key Id="Height" Value="14in"/>
@@ -478,14 +528,22 @@
           <Name xml:lang="hu">US Executive</Name>
           <Name xml:lang="it">US Executive</Name>
           <Name xml:lang="ja">US ã¨ã°ã¼ã°ãã£ã</Name>
+          <Name xml:lang="ko">US Executive</Name>
           <Name xml:lang="lv">ASV Izpildu</Name>
+          <Name xml:lang="mn">US-executive</Name>
           <Name xml:lang="nl">US Executive</Name>
           <Name xml:lang="no">US Executive</Name>
           <Name xml:lang="pl">US Executive</Name>
+          <Name xml:lang="pt">Executivo US</Name>
+          <Name xml:lang="pt_BR">Executivo dos EUA</Name>
+          <Name xml:lang="ro">US Executive</Name>
+          <Name xml:lang="sk">USA exekutÃ­va</Name>
           <Name xml:lang="sl">ZDA excetuive</Name>
           <Name xml:lang="sv">US Executive</Name>
           <Name xml:lang="tr">US Executive</Name>
+          <Name xml:lang="uk">US Executive</Name>
           <Name xml:lang="vi">HÃ nh chÃ­nh US</Name>
+          <Name xml:lang="zh_CN">US è¡æ¿</Name>
           <Name xml:lang="zh_TW">US Executive</Name>
 		<Key Id="Width" Value="7.5in"/>
 		<Key Id="Height" Value="10in"/>
@@ -512,12 +570,13 @@
           <Name xml:lang="ja">ã«ã¹ã¿ã </Name>
           <Name xml:lang="ko">ì¬ì©ì ì¤ì </Name>
           <Name xml:lang="lv">PÄc izvÄles</Name>
+          <Name xml:lang="mn">Ð¥ÑÑÑÐ³Ð»ÑÐ³Ñ ÑÐ¾Ð´/Ñ</Name>
           <Name xml:lang="ms">Sendiri</Name>
           <Name xml:lang="nl">Aangepast</Name>
           <Name xml:lang="nn">Tilpassa</Name>
           <Name xml:lang="no">Egendefinert</Name>
           <Name xml:lang="pl">Dowolny</Name>
-          <Name xml:lang="pt">Customizado</Name>
+          <Name xml:lang="pt">Costumizado</Name>
           <Name xml:lang="pt_BR">Customizado</Name>
           <Name xml:lang="ro">Personalizat</Name>
           <Name xml:lang="ru">ÐÑÑÐ³Ð¾Ð¹</Name>
@@ -551,14 +610,22 @@
           <Name xml:lang="hu">A0</Name>
           <Name xml:lang="it">A0</Name>
           <Name xml:lang="ja">A0ç</Name>
+          <Name xml:lang="ko">A0</Name>
           <Name xml:lang="lv">A0</Name>
+          <Name xml:lang="mn">A0</Name>
           <Name xml:lang="nl">A0</Name>
           <Name xml:lang="no">A0</Name>
           <Name xml:lang="pl">A0</Name>
+          <Name xml:lang="pt">A0</Name>
+          <Name xml:lang="pt_BR">A0</Name>
+          <Name xml:lang="ro">A0</Name>
+          <Name xml:lang="sk">A0</Name>
           <Name xml:lang="sl">A0</Name>
           <Name xml:lang="sv">A0</Name>
           <Name xml:lang="tr">A0</Name>
+          <Name xml:lang="uk">A0</Name>
           <Name xml:lang="vi">A0</Name>
+          <Name xml:lang="zh_CN">A0</Name>
           <Name xml:lang="zh_TW">A0</Name>
 		<Key Id="Width" Value="841mm"/>
 		<Key Id="Height" Value="1189mm"/>
@@ -579,14 +646,22 @@
           <Name xml:lang="hu">A1</Name>
           <Name xml:lang="it">A1</Name>
           <Name xml:lang="ja">A1ç</Name>
+          <Name xml:lang="ko">A1</Name>
           <Name xml:lang="lv">A1</Name>
+          <Name xml:lang="mn">A1</Name>
           <Name xml:lang="nl">A1</Name>
           <Name xml:lang="no">A1</Name>
           <Name xml:lang="pl">A1</Name>
+          <Name xml:lang="pt">A1</Name>
+          <Name xml:lang="pt_BR">A1</Name>
+          <Name xml:lang="ro">A1</Name>
+          <Name xml:lang="sk">A1</Name>
           <Name xml:lang="sl">A1</Name>
           <Name xml:lang="sv">A1</Name>
           <Name xml:lang="tr">A1</Name>
+          <Name xml:lang="uk">A1</Name>
           <Name xml:lang="vi">A1</Name>
+          <Name xml:lang="zh_CN">A1</Name>
           <Name xml:lang="zh_TW">A1</Name>
 		<Key Id="Width" Value="594mm"/>
 		<Key Id="Height" Value="841mm"/>
@@ -607,14 +682,22 @@
           <Name xml:lang="hu">A2</Name>
           <Name xml:lang="it">A2</Name>
           <Name xml:lang="ja">A2ç</Name>
+          <Name xml:lang="ko">A2</Name>
           <Name xml:lang="lv">A2</Name>
+          <Name xml:lang="mn">A20</Name>
           <Name xml:lang="nl">A2</Name>
           <Name xml:lang="no">A2</Name>
           <Name xml:lang="pl">A2</Name>
+          <Name xml:lang="pt">A2</Name>
+          <Name xml:lang="pt_BR">A2</Name>
+          <Name xml:lang="ro">A2</Name>
+          <Name xml:lang="sk">A2</Name>
           <Name xml:lang="sl">A2</Name>
           <Name xml:lang="sv">A2</Name>
           <Name xml:lang="tr">A2</Name>
+          <Name xml:lang="uk">A2</Name>
           <Name xml:lang="vi">A2</Name>
+          <Name xml:lang="zh_CN">A2</Name>
           <Name xml:lang="zh_TW">A2</Name>
 		<Key Id="Width" Value="420mm"/>
 		<Key Id="Height" Value="594mm"/>
@@ -635,14 +718,22 @@
           <Name xml:lang="hu">A3</Name>
           <Name xml:lang="it">A3</Name>
           <Name xml:lang="ja">A3ç</Name>
+          <Name xml:lang="ko">A3</Name>
           <Name xml:lang="lv">A3</Name>
+          <Name xml:lang="mn">A3</Name>
           <Name xml:lang="nl">A3</Name>
           <Name xml:lang="no">A3</Name>
           <Name xml:lang="pl">A3</Name>
+          <Name xml:lang="pt">A3</Name>
+          <Name xml:lang="pt_BR">A3</Name>
+          <Name xml:lang="ro">A3</Name>
+          <Name xml:lang="sk">A3</Name>
           <Name xml:lang="sl">A3</Name>
           <Name xml:lang="sv">A3</Name>
           <Name xml:lang="tr">A3</Name>
+          <Name xml:lang="uk">A3</Name>
           <Name xml:lang="vi">A3</Name>
+          <Name xml:lang="zh_CN">A3</Name>
           <Name xml:lang="zh_TW">A3</Name>
 		<Key Id="Width" Value="297mm"/>
 		<Key Id="Height" Value="420mm"/>
@@ -663,14 +754,22 @@
           <Name xml:lang="hu">A5</Name>
           <Name xml:lang="it">A5</Name>
           <Name xml:lang="ja">A5ç</Name>
+          <Name xml:lang="ko">A5</Name>
           <Name xml:lang="lv">A5</Name>
+          <Name xml:lang="mn">A5</Name>
           <Name xml:lang="nl">A5</Name>
           <Name xml:lang="no">A5</Name>
           <Name xml:lang="pl">A5</Name>
+          <Name xml:lang="pt">A5</Name>
+          <Name xml:lang="pt_BR">A5</Name>
+          <Name xml:lang="ro">A5</Name>
+          <Name xml:lang="sk">A5</Name>
           <Name xml:lang="sl">A5</Name>
           <Name xml:lang="sv">A5</Name>
           <Name xml:lang="tr">A5</Name>
+          <Name xml:lang="uk">A5</Name>
           <Name xml:lang="vi">A5</Name>
+          <Name xml:lang="zh_CN">A5</Name>
           <Name xml:lang="zh_TW">A5</Name>
 		<Key Id="Width" Value="148mm"/>
 		<Key Id="Height" Value="210mm"/>
@@ -691,14 +790,22 @@
           <Name xml:lang="hu">A6</Name>
           <Name xml:lang="it">A6</Name>
           <Name xml:lang="ja">A6ç</Name>
+          <Name xml:lang="ko">A6</Name>
           <Name xml:lang="lv">A6</Name>
+          <Name xml:lang="mn">A6</Name>
           <Name xml:lang="nl">A6</Name>
           <Name xml:lang="no">A6</Name>
           <Name xml:lang="pl">A6</Name>
+          <Name xml:lang="pt">A6</Name>
+          <Name xml:lang="pt_BR">A6</Name>
+          <Name xml:lang="ro">A6</Name>
+          <Name xml:lang="sk">A6</Name>
           <Name xml:lang="sl">A6</Name>
           <Name xml:lang="sv">A6</Name>
           <Name xml:lang="tr">A6</Name>
+          <Name xml:lang="uk">A6</Name>
           <Name xml:lang="vi">A6</Name>
+          <Name xml:lang="zh_CN">A6</Name>
           <Name xml:lang="zh_TW">A6</Name>
 		<Key Id="Width" Value="105mm"/>
 		<Key Id="Height" Value="148mm"/>
@@ -719,14 +826,22 @@
           <Name xml:lang="hu">A7</Name>
           <Name xml:lang="it">A7</Name>
           <Name xml:lang="ja">A7ç</Name>
+          <Name xml:lang="ko">A7</Name>
           <Name xml:lang="lv">A7</Name>
+          <Name xml:lang="mn">A7</Name>
           <Name xml:lang="nl">A7</Name>
           <Name xml:lang="no">A7</Name>
           <Name xml:lang="pl">A7</Name>
+          <Name xml:lang="pt">A7</Name>
+          <Name xml:lang="pt_BR">A7</Name>
+          <Name xml:lang="ro">A7</Name>
+          <Name xml:lang="sk">A7</Name>
           <Name xml:lang="sl">A7</Name>
           <Name xml:lang="sv">A7</Name>
           <Name xml:lang="tr">A7</Name>
+          <Name xml:lang="uk">A7</Name>
           <Name xml:lang="vi">A7</Name>
+          <Name xml:lang="zh_CN">A7</Name>
           <Name xml:lang="zh_TW">A7</Name>
 		<Key Id="Width" Value="74mm"/>
 		<Key Id="Height" Value="105mm"/>
@@ -747,14 +862,22 @@
           <Name xml:lang="hu">A8</Name>
           <Name xml:lang="it">A8</Name>
           <Name xml:lang="ja">A8ç</Name>
+          <Name xml:lang="ko">A8</Name>
           <Name xml:lang="lv">A8</Name>
+          <Name xml:lang="mn">A8</Name>
           <Name xml:lang="nl">A8</Name>
           <Name xml:lang="no">A8</Name>
           <Name xml:lang="pl">A8</Name>
+          <Name xml:lang="pt">A8</Name>
+          <Name xml:lang="pt_BR">A8</Name>
+          <Name xml:lang="ro">A8</Name>
+          <Name xml:lang="sk">A8</Name>
           <Name xml:lang="sl">A8</Name>
           <Name xml:lang="sv">A8</Name>
           <Name xml:lang="tr">A8</Name>
+          <Name xml:lang="uk">A8</Name>
           <Name xml:lang="vi">A8</Name>
+          <Name xml:lang="zh_CN">A8</Name>
           <Name xml:lang="zh_TW">A8</Name>
 		<Key Id="Width" Value="52mm"/>
 		<Key Id="Height" Value="74mm"/>
@@ -775,14 +898,22 @@
           <Name xml:lang="hu">A9</Name>
           <Name xml:lang="it">A9</Name>
           <Name xml:lang="ja">A9ç</Name>
+          <Name xml:lang="ko">A9</Name>
           <Name xml:lang="lv">A9</Name>
+          <Name xml:lang="mn">A9</Name>
           <Name xml:lang="nl">A9</Name>
           <Name xml:lang="no">A9</Name>
           <Name xml:lang="pl">A9</Name>
+          <Name xml:lang="pt">A9</Name>
+          <Name xml:lang="pt_BR">A9</Name>
+          <Name xml:lang="ro">A9</Name>
+          <Name xml:lang="sk">A9</Name>
           <Name xml:lang="sl">A9</Name>
           <Name xml:lang="sv">A9</Name>
           <Name xml:lang="tr">A9</Name>
+          <Name xml:lang="uk">A9</Name>
           <Name xml:lang="vi">A9</Name>
+          <Name xml:lang="zh_CN">A9</Name>
           <Name xml:lang="zh_TW">A9</Name>
 		<Key Id="Width" Value="37mm"/>
 		<Key Id="Height" Value="52mm"/>
@@ -803,14 +934,22 @@
           <Name xml:lang="hu">A10</Name>
           <Name xml:lang="it">A10</Name>
           <Name xml:lang="ja">A10ç</Name>
+          <Name xml:lang="ko">A10</Name>
           <Name xml:lang="lv">A10</Name>
+          <Name xml:lang="mn">A10</Name>
           <Name xml:lang="nl">A10</Name>
           <Name xml:lang="no">A10</Name>
           <Name xml:lang="pl">A10</Name>
+          <Name xml:lang="pt">A10</Name>
+          <Name xml:lang="pt_BR">A10</Name>
+          <Name xml:lang="ro">A10</Name>
+          <Name xml:lang="sk">A10</Name>
           <Name xml:lang="sl">A10</Name>
           <Name xml:lang="sv">A10</Name>
           <Name xml:lang="tr">A10</Name>
+          <Name xml:lang="uk">A10</Name>
           <Name xml:lang="vi">A10</Name>
+          <Name xml:lang="zh_CN">A10</Name>
           <Name xml:lang="zh_TW">A10</Name>
 		<Key Id="Width" Value="26mm"/>
 		<Key Id="Height" Value="37mm"/>
@@ -832,14 +971,22 @@
           <Name xml:lang="hu">B0</Name>
           <Name xml:lang="it">B0</Name>
           <Name xml:lang="ja">B0ç</Name>
+          <Name xml:lang="ko">B0</Name>
           <Name xml:lang="lv">B0</Name>
+          <Name xml:lang="mn">B0</Name>
           <Name xml:lang="nl">B0</Name>
           <Name xml:lang="no">B0</Name>
           <Name xml:lang="pl">B0</Name>
+          <Name xml:lang="pt">B0</Name>
+          <Name xml:lang="pt_BR">B0</Name>
+          <Name xml:lang="ro">B0</Name>
+          <Name xml:lang="sk">B0</Name>
           <Name xml:lang="sl">B0</Name>
           <Name xml:lang="sv">B0</Name>
           <Name xml:lang="tr">B0</Name>
+          <Name xml:lang="uk">B0</Name>
           <Name xml:lang="vi">B0</Name>
+          <Name xml:lang="zh_CN">B0</Name>
           <Name xml:lang="zh_TW">B0</Name>
 		<Key Id="Width" Value="1000mm"/>
 		<Key Id="Height" Value="1414mm"/>
@@ -860,14 +1007,22 @@
           <Name xml:lang="hu">B1</Name>
           <Name xml:lang="it">B1</Name>
           <Name xml:lang="ja">B1ç</Name>
+          <Name xml:lang="ko">B1</Name>
           <Name xml:lang="lv">B1</Name>
+          <Name xml:lang="mn">B1</Name>
           <Name xml:lang="nl">B1</Name>
           <Name xml:lang="no">B1</Name>
           <Name xml:lang="pl">B1</Name>
+          <Name xml:lang="pt">B1</Name>
+          <Name xml:lang="pt_BR">B1</Name>
+          <Name xml:lang="ro">B1</Name>
+          <Name xml:lang="sk">B1</Name>
           <Name xml:lang="sl">B1</Name>
           <Name xml:lang="sv">B1</Name>
           <Name xml:lang="tr">B1</Name>
+          <Name xml:lang="uk">B1</Name>
           <Name xml:lang="vi">B1</Name>
+          <Name xml:lang="zh_CN">B1</Name>
           <Name xml:lang="zh_TW">B1</Name>
 		<Key Id="Width" Value="707mm"/>
 		<Key Id="Height" Value="1000mm"/>
@@ -888,14 +1043,22 @@
           <Name xml:lang="hu">B2</Name>
           <Name xml:lang="it">B2</Name>
           <Name xml:lang="ja">B2ç</Name>
+          <Name xml:lang="ko">B2</Name>
           <Name xml:lang="lv">B2</Name>
+          <Name xml:lang="mn">B2</Name>
           <Name xml:lang="nl">B2</Name>
           <Name xml:lang="no">B2</Name>
           <Name xml:lang="pl">B2</Name>
+          <Name xml:lang="pt">B2</Name>
+          <Name xml:lang="pt_BR">B2</Name>
+          <Name xml:lang="ro">B2</Name>
+          <Name xml:lang="sk">B2</Name>
           <Name xml:lang="sl">B2</Name>
           <Name xml:lang="sv">B2</Name>
           <Name xml:lang="tr">B2</Name>
+          <Name xml:lang="uk">B2</Name>
           <Name xml:lang="vi">B2</Name>
+          <Name xml:lang="zh_CN">B2</Name>
           <Name xml:lang="zh_TW">B2</Name>
 		<Key Id="Width" Value="500mm"/>
 		<Key Id="Height" Value="707mm"/>
@@ -916,14 +1079,22 @@
           <Name xml:lang="hu">B3</Name>
           <Name xml:lang="it">B3</Name>
           <Name xml:lang="ja">B3ç</Name>
+          <Name xml:lang="ko">B3</Name>
           <Name xml:lang="lv">B3</Name>
+          <Name xml:lang="mn">B3</Name>
           <Name xml:lang="nl">B3</Name>
           <Name xml:lang="no">B3</Name>
           <Name xml:lang="pl">B3</Name>
+          <Name xml:lang="pt">B3</Name>
+          <Name xml:lang="pt_BR">B3</Name>
+          <Name xml:lang="ro">B3</Name>
+          <Name xml:lang="sk">B3</Name>
           <Name xml:lang="sl">B3</Name>
           <Name xml:lang="sv">B3</Name>
           <Name xml:lang="tr">B3</Name>
+          <Name xml:lang="uk">B3</Name>
           <Name xml:lang="vi">B3</Name>
+          <Name xml:lang="zh_CN">B3</Name>
           <Name xml:lang="zh_TW">B3</Name>
 		<Key Id="Width" Value="353mm"/>
 		<Key Id="Height" Value="500mm"/>
@@ -944,14 +1115,22 @@
           <Name xml:lang="hu">B4</Name>
           <Name xml:lang="it">B4</Name>
           <Name xml:lang="ja">B4ç</Name>
+          <Name xml:lang="ko">B4</Name>
           <Name xml:lang="lv">B4</Name>
+          <Name xml:lang="mn">B4</Name>
           <Name xml:lang="nl">B4</Name>
           <Name xml:lang="no">B4</Name>
           <Name xml:lang="pl">B4</Name>
+          <Name xml:lang="pt">B4</Name>
+          <Name xml:lang="pt_BR">B4</Name>
+          <Name xml:lang="ro">B4</Name>
+          <Name xml:lang="sk">B4</Name>
           <Name xml:lang="sl">B4</Name>
           <Name xml:lang="sv">B4</Name>
           <Name xml:lang="tr">B4</Name>
+          <Name xml:lang="uk">B4</Name>
           <Name xml:lang="vi">B4</Name>
+          <Name xml:lang="zh_CN">B4</Name>
           <Name xml:lang="zh_TW">B4</Name>
 		<Key Id="Width" Value="250mm"/>
 		<Key Id="Height" Value="353mm"/>
@@ -972,14 +1151,22 @@
           <Name xml:lang="hu">B5</Name>
           <Name xml:lang="it">B5</Name>
           <Name xml:lang="ja">B5ç</Name>
+          <Name xml:lang="ko">B5</Name>
           <Name xml:lang="lv">B5</Name>
+          <Name xml:lang="mn">B5</Name>
           <Name xml:lang="nl">B5</Name>
           <Name xml:lang="no">B5</Name>
           <Name xml:lang="pl">B5</Name>
+          <Name xml:lang="pt">B5</Name>
+          <Name xml:lang="pt_BR">B5</Name>
+          <Name xml:lang="ro">B5</Name>
+          <Name xml:lang="sk">B5</Name>
           <Name xml:lang="sl">B5</Name>
           <Name xml:lang="sv">B5</Name>
           <Name xml:lang="tr">B5</Name>
+          <Name xml:lang="uk">B5</Name>
           <Name xml:lang="vi">B5</Name>
+          <Name xml:lang="zh_CN">B5</Name>
           <Name xml:lang="zh_TW">B5</Name>
 		<Key Id="Width" Value="176mm"/>
 		<Key Id="Height" Value="250mm"/>
@@ -1000,14 +1187,22 @@
           <Name xml:lang="hu">B6</Name>
           <Name xml:lang="it">B6</Name>
           <Name xml:lang="ja">B6ç</Name>
+          <Name xml:lang="ko">B6</Name>
           <Name xml:lang="lv">B6</Name>
+          <Name xml:lang="mn">B6</Name>
           <Name xml:lang="nl">B6</Name>
           <Name xml:lang="no">B6</Name>
           <Name xml:lang="pl">B6</Name>
+          <Name xml:lang="pt">B6</Name>
+          <Name xml:lang="pt_BR">B6</Name>
+          <Name xml:lang="ro">B6</Name>
+          <Name xml:lang="sk">B6</Name>
           <Name xml:lang="sl">B6</Name>
           <Name xml:lang="sv">B6</Name>
           <Name xml:lang="tr">B6</Name>
+          <Name xml:lang="uk">B6</Name>
           <Name xml:lang="vi">B6</Name>
+          <Name xml:lang="zh_CN">B6</Name>
           <Name xml:lang="zh_TW">B6</Name>
 		<Key Id="Width" Value="125mm"/>
 		<Key Id="Height" Value="176mm"/>
@@ -1028,14 +1223,22 @@
           <Name xml:lang="hu">B7</Name>
           <Name xml:lang="it">B7</Name>
           <Name xml:lang="ja">B7ç</Name>
+          <Name xml:lang="ko">B7</Name>
           <Name xml:lang="lv">B7</Name>
+          <Name xml:lang="mn">B7</Name>
           <Name xml:lang="nl">B7</Name>
           <Name xml:lang="no">B7</Name>
           <Name xml:lang="pl">B7</Name>
+          <Name xml:lang="pt">B7</Name>
+          <Name xml:lang="pt_BR">B7</Name>
+          <Name xml:lang="ro">B7</Name>
+          <Name xml:lang="sk">B7</Name>
           <Name xml:lang="sl">B7</Name>
           <Name xml:lang="sv">B7</Name>
           <Name xml:lang="tr">B7</Name>
+          <Name xml:lang="uk">B7</Name>
           <Name xml:lang="vi">B7</Name>
+          <Name xml:lang="zh_CN">B7</Name>
           <Name xml:lang="zh_TW">B7</Name>
 		<Key Id="Width" Value="88mm"/>
 		<Key Id="Height" Value="125mm"/>
@@ -1056,14 +1259,22 @@
           <Name xml:lang="hu">B8</Name>
           <Name xml:lang="it">B8</Name>
           <Name xml:lang="ja">B8ç</Name>
+          <Name xml:lang="ko">B8</Name>
           <Name xml:lang="lv">B8</Name>
+          <Name xml:lang="mn">B8</Name>
           <Name xml:lang="nl">B8</Name>
           <Name xml:lang="no">B8</Name>
           <Name xml:lang="pl">B8</Name>
+          <Name xml:lang="pt">B8</Name>
+          <Name xml:lang="pt_BR">B8</Name>
+          <Name xml:lang="ro">B8</Name>
+          <Name xml:lang="sk">B8</Name>
           <Name xml:lang="sl">B8</Name>
           <Name xml:lang="sv">B8</Name>
           <Name xml:lang="tr">B8</Name>
+          <Name xml:lang="uk">B8</Name>
           <Name xml:lang="vi">B8</Name>
+          <Name xml:lang="zh_CN">B8</Name>
           <Name xml:lang="zh_TW">B8</Name>
 		<Key Id="Width" Value="62mm"/>
 		<Key Id="Height" Value="88mm"/>
@@ -1084,14 +1295,22 @@
           <Name xml:lang="hu">B9</Name>
           <Name xml:lang="it">B9</Name>
           <Name xml:lang="ja">B9ç</Name>
+          <Name xml:lang="ko">B9</Name>
           <Name xml:lang="lv">B9</Name>
+          <Name xml:lang="mn">B9</Name>
           <Name xml:lang="nl">B9</Name>
           <Name xml:lang="no">B9</Name>
           <Name xml:lang="pl">B9</Name>
+          <Name xml:lang="pt">B9</Name>
+          <Name xml:lang="pt_BR">B9</Name>
+          <Name xml:lang="ro">B9</Name>
+          <Name xml:lang="sk">B9</Name>
           <Name xml:lang="sl">B9</Name>
           <Name xml:lang="sv">B9</Name>
           <Name xml:lang="tr">B9</Name>
+          <Name xml:lang="uk">B9</Name>
           <Name xml:lang="vi">B9</Name>
+          <Name xml:lang="zh_CN">B9</Name>
           <Name xml:lang="zh_TW">B9</Name>
 		<Key Id="Width" Value="44mm"/>
 		<Key Id="Height" Value="62mm"/>
@@ -1112,14 +1331,22 @@
           <Name xml:lang="hu">B10</Name>
           <Name xml:lang="it">B10</Name>
           <Name xml:lang="ja">B10ç</Name>
+          <Name xml:lang="ko">B10</Name>
           <Name xml:lang="lv">B10</Name>
+          <Name xml:lang="mn">B10</Name>
           <Name xml:lang="nl">B10</Name>
           <Name xml:lang="no">B10</Name>
           <Name xml:lang="pl">B10</Name>
+          <Name xml:lang="pt">B10</Name>
+          <Name xml:lang="pt_BR">B10</Name>
+          <Name xml:lang="ro">B10</Name>
+          <Name xml:lang="sk">B10</Name>
           <Name xml:lang="sl">B10</Name>
           <Name xml:lang="sv">B10</Name>
           <Name xml:lang="tr">B10</Name>
+          <Name xml:lang="uk">B10</Name>
           <Name xml:lang="vi">B10</Name>
+          <Name xml:lang="zh_CN">B10</Name>
           <Name xml:lang="zh_TW">B10</Name>
 		<Key Id="Width" Value="31mm"/>
 		<Key Id="Height" Value="44mm"/>
@@ -1140,14 +1367,22 @@
           <Name xml:lang="hu">C0</Name>
           <Name xml:lang="it">C0</Name>
           <Name xml:lang="ja">C0ç</Name>
+          <Name xml:lang="ko">C0</Name>
           <Name xml:lang="lv">C0</Name>
+          <Name xml:lang="mn">C0</Name>
           <Name xml:lang="nl">C0</Name>
           <Name xml:lang="no">C0</Name>
           <Name xml:lang="pl">C0</Name>
+          <Name xml:lang="pt">C0</Name>
+          <Name xml:lang="pt_BR">C0</Name>
+          <Name xml:lang="ro">C0</Name>
+          <Name xml:lang="sk">C0</Name>
           <Name xml:lang="sl">C0</Name>
           <Name xml:lang="sv">C0</Name>
           <Name xml:lang="tr">C0</Name>
+          <Name xml:lang="uk">C0</Name>
           <Name xml:lang="vi">C0</Name>
+          <Name xml:lang="zh_CN">C0</Name>
           <Name xml:lang="zh_TW">C0</Name>
 		<Key Id="Width" Value="917mm"/>
 		<Key Id="Height" Value="1297mm"/>
@@ -1167,14 +1402,22 @@
           <Name xml:lang="hu">C1</Name>
           <Name xml:lang="it">C1</Name>
           <Name xml:lang="ja">C1ç</Name>
+          <Name xml:lang="ko">C1</Name>
           <Name xml:lang="lv">C1</Name>
+          <Name xml:lang="mn">C1</Name>
           <Name xml:lang="nl">C1</Name>
           <Name xml:lang="no">C1</Name>
           <Name xml:lang="pl">C1</Name>
+          <Name xml:lang="pt">C1</Name>
+          <Name xml:lang="pt_BR">C1</Name>
+          <Name xml:lang="ro">C1</Name>
+          <Name xml:lang="sk">C1</Name>
           <Name xml:lang="sl">C1</Name>
           <Name xml:lang="sv">C1</Name>
           <Name xml:lang="tr">C1</Name>
+          <Name xml:lang="uk">C1</Name>
           <Name xml:lang="vi">C1</Name>
+          <Name xml:lang="zh_CN">C1</Name>
           <Name xml:lang="zh_TW">C1</Name>
 		<Key Id="Width" Value="648mm"/>
 		<Key Id="Height" Value="917mm"/>
@@ -1194,14 +1437,22 @@
           <Name xml:lang="hu">C2</Name>
           <Name xml:lang="it">C2</Name>
           <Name xml:lang="ja">C2ç</Name>
+          <Name xml:lang="ko">C2</Name>
           <Name xml:lang="lv">C2</Name>
+          <Name xml:lang="mn">C2</Name>
           <Name xml:lang="nl">C2</Name>
           <Name xml:lang="no">C2</Name>
           <Name xml:lang="pl">C2</Name>
+          <Name xml:lang="pt">C2</Name>
+          <Name xml:lang="pt_BR">C2</Name>
+          <Name xml:lang="ro">C2</Name>
+          <Name xml:lang="sk">C2</Name>
           <Name xml:lang="sl">C2</Name>
           <Name xml:lang="sv">C2</Name>
           <Name xml:lang="tr">C2</Name>
+          <Name xml:lang="uk">C2</Name>
           <Name xml:lang="vi">C2</Name>
+          <Name xml:lang="zh_CN">C2</Name>
           <Name xml:lang="zh_TW">C2</Name>
 		<Key Id="Width" Value="458mm"/>
 		<Key Id="Height" Value="648mm"/>
@@ -1221,14 +1472,22 @@
           <Name xml:lang="hu">C3</Name>
           <Name xml:lang="it">C3</Name>
           <Name xml:lang="ja">C3ç</Name>
+          <Name xml:lang="ko">C3</Name>
           <Name xml:lang="lv">C3</Name>
+          <Name xml:lang="mn">C3</Name>
           <Name xml:lang="nl">C3</Name>
           <Name xml:lang="no">C3</Name>
           <Name xml:lang="pl">C3</Name>
+          <Name xml:lang="pt">C3</Name>
+          <Name xml:lang="pt_BR">C3</Name>
+          <Name xml:lang="ro">C3</Name>
+          <Name xml:lang="sk">C3</Name>
           <Name xml:lang="sl">C3</Name>
           <Name xml:lang="sv">C3</Name>
           <Name xml:lang="tr">C3</Name>
+          <Name xml:lang="uk">C3</Name>
           <Name xml:lang="vi">C3</Name>
+          <Name xml:lang="zh_CN">C3</Name>
           <Name xml:lang="zh_TW">C3</Name>
 		<Key Id="Width" Value="324mm"/>
 		<Key Id="Height" Value="458mm"/>
@@ -1248,14 +1507,22 @@
           <Name xml:lang="hu">C4</Name>
           <Name xml:lang="it">C4</Name>
           <Name xml:lang="ja">C4ç</Name>
+          <Name xml:lang="ko">C4</Name>
           <Name xml:lang="lv">C4</Name>
+          <Name xml:lang="mn">C4</Name>
           <Name xml:lang="nl">C4</Name>
           <Name xml:lang="no">C4</Name>
           <Name xml:lang="pl">C4</Name>
+          <Name xml:lang="pt">C4</Name>
+          <Name xml:lang="pt_BR">C4</Name>
+          <Name xml:lang="ro">C4</Name>
+          <Name xml:lang="sk">C4</Name>
           <Name xml:lang="sl">C4</Name>
           <Name xml:lang="sv">C4</Name>
           <Name xml:lang="tr">C4</Name>
+          <Name xml:lang="uk">C4</Name>
           <Name xml:lang="vi">C4</Name>
+          <Name xml:lang="zh_CN">C4</Name>
           <Name xml:lang="zh_TW">C4</Name>
 		<Key Id="Width" Value="229mm"/>
 		<Key Id="Height" Value="324mm"/>
@@ -1275,14 +1542,22 @@
           <Name xml:lang="hu">C5</Name>
           <Name xml:lang="it">C5</Name>
           <Name xml:lang="ja">C5ç</Name>
+          <Name xml:lang="ko">C5</Name>
           <Name xml:lang="lv">C5</Name>
+          <Name xml:lang="mn">C5</Name>
           <Name xml:lang="nl">C5</Name>
           <Name xml:lang="no">C5</Name>
           <Name xml:lang="pl">C5</Name>
+          <Name xml:lang="pt">C5</Name>
+          <Name xml:lang="pt_BR">C5</Name>
+          <Name xml:lang="ro">C5</Name>
+          <Name xml:lang="sk">C5</Name>
           <Name xml:lang="sl">C5</Name>
           <Name xml:lang="sv">C5</Name>
           <Name xml:lang="tr">C5</Name>
+          <Name xml:lang="uk">C5</Name>
           <Name xml:lang="vi">C5</Name>
+          <Name xml:lang="zh_CN">C5</Name>
           <Name xml:lang="zh_TW">C5</Name>
 		<Key Id="Width" Value="162mm"/>
 		<Key Id="Height" Value="229mm"/>
@@ -1302,14 +1577,22 @@
           <Name xml:lang="hu">C6</Name>
           <Name xml:lang="it">C6</Name>
           <Name xml:lang="ja">C6ç</Name>
+          <Name xml:lang="ko">C6</Name>
           <Name xml:lang="lv">C6</Name>
+          <Name xml:lang="mn">C6</Name>
           <Name xml:lang="nl">C6</Name>
           <Name xml:lang="no">C6</Name>
           <Name xml:lang="pl">C6</Name>
+          <Name xml:lang="pt">C6</Name>
+          <Name xml:lang="pt_BR">C6</Name>
+          <Name xml:lang="ro">C6</Name>
+          <Name xml:lang="sk">C6</Name>
           <Name xml:lang="sl">C6</Name>
           <Name xml:lang="sv">C6</Name>
           <Name xml:lang="tr">C6</Name>
+          <Name xml:lang="uk">C6</Name>
           <Name xml:lang="vi">C6</Name>
+          <Name xml:lang="zh_CN">C6</Name>
           <Name xml:lang="zh_TW">C6</Name>
 		<Key Id="Width" Value="114mm"/>
 		<Key Id="Height" Value="162mm"/>
@@ -1329,14 +1612,22 @@
           <Name xml:lang="hu">C7</Name>
           <Name xml:lang="it">C7</Name>
           <Name xml:lang="ja">C7ç</Name>
+          <Name xml:lang="ko">C7</Name>
           <Name xml:lang="lv">C7</Name>
+          <Name xml:lang="mn">C7</Name>
           <Name xml:lang="nl">C7</Name>
           <Name xml:lang="no">C7</Name>
           <Name xml:lang="pl">C7</Name>
+          <Name xml:lang="pt">C7</Name>
+          <Name xml:lang="pt_BR">C7</Name>
+          <Name xml:lang="ro">C7</Name>
+          <Name xml:lang="sk">C7</Name>
           <Name xml:lang="sl">C7</Name>
           <Name xml:lang="sv">C7</Name>
           <Name xml:lang="tr">C7</Name>
+          <Name xml:lang="uk">C7</Name>
           <Name xml:lang="vi">C7</Name>
+          <Name xml:lang="zh_CN">C7</Name>
           <Name xml:lang="zh_TW">C7</Name>
 		<Key Id="Width" Value="81mm"/>
 		<Key Id="Height" Value="114mm"/>
@@ -1356,14 +1647,22 @@
           <Name xml:lang="hu">C8</Name>
           <Name xml:lang="it">C8</Name>
           <Name xml:lang="ja">C8ç</Name>
+          <Name xml:lang="ko">C8</Name>
           <Name xml:lang="lv">C8</Name>
+          <Name xml:lang="mn">C8</Name>
           <Name xml:lang="nl">C8</Name>
           <Name xml:lang="no">C8</Name>
           <Name xml:lang="pl">C8</Name>
+          <Name xml:lang="pt">C8</Name>
+          <Name xml:lang="pt_BR">C8</Name>
+          <Name xml:lang="ro">C8</Name>
+          <Name xml:lang="sk">C8</Name>
           <Name xml:lang="sl">C8</Name>
           <Name xml:lang="sv">C8</Name>
           <Name xml:lang="tr">C8</Name>
+          <Name xml:lang="uk">C8</Name>
           <Name xml:lang="vi">C8</Name>
+          <Name xml:lang="zh_CN">C8</Name>
           <Name xml:lang="zh_TW">C8</Name>
 		<Key Id="Width" Value="57mm"/>
 		<Key Id="Height" Value="81mm"/>
@@ -1383,14 +1682,22 @@
           <Name xml:lang="hu">C9</Name>
           <Name xml:lang="it">C9</Name>
           <Name xml:lang="ja">C9ç</Name>
+          <Name xml:lang="ko">C9</Name>
           <Name xml:lang="lv">C9</Name>
+          <Name xml:lang="mn">C9</Name>
           <Name xml:lang="nl">C9</Name>
           <Name xml:lang="no">C9</Name>
           <Name xml:lang="pl">C9</Name>
+          <Name xml:lang="pt">C9</Name>
+          <Name xml:lang="pt_BR">C9</Name>
+          <Name xml:lang="ro">C9</Name>
+          <Name xml:lang="sk">C9</Name>
           <Name xml:lang="sl">C9</Name>
           <Name xml:lang="sv">C9</Name>
           <Name xml:lang="tr">C9</Name>
+          <Name xml:lang="uk">C9</Name>
           <Name xml:lang="vi">C9</Name>
+          <Name xml:lang="zh_CN">C9</Name>
           <Name xml:lang="zh_TW">C9</Name>
 		<Key Id="Width" Value="40mm"/>
 		<Key Id="Height" Value="57mm"/>
@@ -1410,14 +1717,22 @@
           <Name xml:lang="hu">C10</Name>
           <Name xml:lang="it">C10</Name>
           <Name xml:lang="ja">C10ç</Name>
+          <Name xml:lang="ko">C10</Name>
           <Name xml:lang="lv">C10</Name>
+          <Name xml:lang="mn">C10</Name>
           <Name xml:lang="nl">C10</Name>
           <Name xml:lang="no">C10</Name>
           <Name xml:lang="pl">C10</Name>
+          <Name xml:lang="pt">C10</Name>
+          <Name xml:lang="pt_BR">C10</Name>
+          <Name xml:lang="ro">C10</Name>
+          <Name xml:lang="sk">C10</Name>
           <Name xml:lang="sl">C10</Name>
           <Name xml:lang="sv">C10</Name>
           <Name xml:lang="tr">C10</Name>
+          <Name xml:lang="uk">C10</Name>
           <Name xml:lang="vi">C10</Name>
+          <Name xml:lang="zh_CN">C10</Name>
           <Name xml:lang="zh_TW">C10</Name>
 		<Key Id="Width" Value="28mm"/>
 		<Key Id="Height" Value="40mm"/>
@@ -1438,14 +1753,22 @@
           <Name xml:lang="hu">1/3 A4</Name>
           <Name xml:lang="it">1/3 A4</Name>
           <Name xml:lang="ja">A4çã® 1/3</Name>
+          <Name xml:lang="ko">1/3 A4</Name>
           <Name xml:lang="lv">1/3 A4</Name>
+          <Name xml:lang="mn">1/3 A4</Name>
           <Name xml:lang="nl">1/3 A4</Name>
           <Name xml:lang="no">1/3 A4</Name>
           <Name xml:lang="pl">1/3 A4</Name>
+          <Name xml:lang="pt">1/3 A4</Name>
+          <Name xml:lang="pt_BR">1/3 A4</Name>
+          <Name xml:lang="ro">1/3 A4</Name>
+          <Name xml:lang="sk">1/3 A4</Name>
           <Name xml:lang="sl">1/3 A4</Name>
           <Name xml:lang="sv">1/3 A4</Name>
           <Name xml:lang="tr">1/3 A4</Name>
+          <Name xml:lang="uk">1/3 A4</Name>
           <Name xml:lang="vi">1/3 A4</Name>
+          <Name xml:lang="zh_CN">1/3 A4</Name>
           <Name xml:lang="zh_TW">1/3 A4</Name>
 		<Key Id="Width" Value="99mm"/>
 		<Key Id="Height" Value="210mm"/>
@@ -1465,14 +1788,22 @@
           <Name xml:lang="hu">1/4 A4</Name>
           <Name xml:lang="it">1/4 A4</Name>
           <Name xml:lang="ja">A4çã® 1/4</Name>
+          <Name xml:lang="ko">1/4 A4</Name>
           <Name xml:lang="lv">1/4 A4</Name>
+          <Name xml:lang="mn">1/4 A4</Name>
           <Name xml:lang="nl">1/4 A4</Name>
           <Name xml:lang="no">1/4 A4</Name>
           <Name xml:lang="pl">1/4 A4</Name>
+          <Name xml:lang="pt">1/4 A4</Name>
+          <Name xml:lang="pt_BR">1/4 A4</Name>
+          <Name xml:lang="ro">1/4 A4</Name>
+          <Name xml:lang="sk">1/4 A4</Name>
           <Name xml:lang="sl">1/4 A4</Name>
           <Name xml:lang="sv">Â¼ A4</Name>
           <Name xml:lang="tr">1/4 A4</Name>
+          <Name xml:lang="uk">1/4 A4</Name>
           <Name xml:lang="vi">1/4 A4</Name>
+          <Name xml:lang="zh_CN">1/4 A4</Name>
           <Name xml:lang="zh_TW">1/4 A4</Name>
 		<Key Id="Width" Value="74mm" />
 		<Key Id="Height" Value="210mm"/>
@@ -1492,14 +1823,22 @@
           <Name xml:lang="hu">1/8 A4</Name>
           <Name xml:lang="it">1/8 A4</Name>
           <Name xml:lang="ja">A4çã® 1/8</Name>
+          <Name xml:lang="ko">1/8 A4</Name>
           <Name xml:lang="lv">1/8 A4</Name>
+          <Name xml:lang="mn">1/8 A4</Name>
           <Name xml:lang="nl">1/8 A4</Name>
           <Name xml:lang="no">1/8 A4</Name>
           <Name xml:lang="pl">1/8 A4</Name>
+          <Name xml:lang="pt">1/8 A4</Name>
+          <Name xml:lang="pt_BR">1/8 A4</Name>
+          <Name xml:lang="ro">1/8 A4</Name>
+          <Name xml:lang="sk">1/8 A4</Name>
           <Name xml:lang="sl">1/8 A4</Name>
           <Name xml:lang="sv">1/8 A4</Name>
           <Name xml:lang="tr">1/8 A4</Name>
+          <Name xml:lang="uk">1/8 A4</Name>
           <Name xml:lang="vi">1/8 A4</Name>
+          <Name xml:lang="zh_CN">1/8 A4</Name>
           <Name xml:lang="zh_TW">1/8 A4</Name>
 		<Key Id="Width" Value="37mm" />
 		<Key Id="Height" Value="210mm"/>
@@ -1519,14 +1858,22 @@
           <Name xml:lang="hu">1/4 A3</Name>
           <Name xml:lang="it">1/4 A3</Name>
           <Name xml:lang="ja">A3çã® 1/3</Name>
+          <Name xml:lang="ko">1/4 A3</Name>
           <Name xml:lang="lv">1/4 A3</Name>
+          <Name xml:lang="mn">1/4 A3</Name>
           <Name xml:lang="nl">1/4 A3</Name>
           <Name xml:lang="no">1/4 A3</Name>
           <Name xml:lang="pl">1/4 A3</Name>
+          <Name xml:lang="pt">1/4 A3</Name>
+          <Name xml:lang="pt_BR">1/4 A3</Name>
+          <Name xml:lang="ro">1/4 A3</Name>
+          <Name xml:lang="sk">1/4 A3</Name>
           <Name xml:lang="sl">1/4 A3</Name>
           <Name xml:lang="sv">Â¼ A3</Name>
           <Name xml:lang="tr">1/4 A3</Name>
+          <Name xml:lang="uk">1/4 A3</Name>
           <Name xml:lang="vi">1/4 A3</Name>
+          <Name xml:lang="zh_CN">1/4 A3</Name>
           <Name xml:lang="zh_TW">1/4 A3</Name>
 		<Key Id="Width" Value="105mm" />
 		<Key Id="Height" Value="297mm"/>
@@ -1546,14 +1893,22 @@
           <Name xml:lang="hu">1/3 A5</Name>
           <Name xml:lang="it">1/3 A5</Name>
           <Name xml:lang="ja">A5çã® 1/3</Name>
+          <Name xml:lang="ko">1/3 A5</Name>
           <Name xml:lang="lv">1/3 A5</Name>
+          <Name xml:lang="mn">1/3 A5</Name>
           <Name xml:lang="nl">1/3 A5</Name>
           <Name xml:lang="no">1/3 A5</Name>
           <Name xml:lang="pl">1/3 A5</Name>
+          <Name xml:lang="pt">1/3 A5</Name>
+          <Name xml:lang="pt_BR">1/3 A5</Name>
+          <Name xml:lang="ro">1/3 A5</Name>
+          <Name xml:lang="sk">1/3 A5</Name>
           <Name xml:lang="sl">1/3 A5</Name>
           <Name xml:lang="sv">1/3 A5</Name>
           <Name xml:lang="tr">1/3 A5</Name>
+          <Name xml:lang="uk">1/3 A5</Name>
           <Name xml:lang="vi">1/3 A5</Name>
+          <Name xml:lang="zh_CN">1/3 A5</Name>
           <Name xml:lang="zh_TW">1/3 A5</Name>
 		<Key Id="Width" Value="70mm" />
 		<Key Id="Height" Value="148mm"/>
@@ -1574,14 +1929,21 @@
           <Name xml:lang="hu">DL borÃ­tÃ©k</Name>
           <Name xml:lang="it">Busta DL</Name>
           <Name xml:lang="ja">DL å°ç­</Name>
+          <Name xml:lang="ko">DL Envelope</Name>
           <Name xml:lang="lv">DL Aploksne</Name>
+          <Name xml:lang="mn">DL-ÐÑÐ³ÑÑÐ¹</Name>
           <Name xml:lang="nl">DL-Envelop</Name>
           <Name xml:lang="no">DL konvolutt</Name>
           <Name xml:lang="pl">Koperta DL</Name>
+          <Name xml:lang="pt">Envelope DL</Name>
+          <Name xml:lang="pt_BR">Envelope DL</Name>
+          <Name xml:lang="ro">Plic DL</Name>
+          <Name xml:lang="sk">ObÃ¡lka DL</Name>
           <Name xml:lang="sl">DL ovojnica</Name>
           <Name xml:lang="sv">DL-kuvert</Name>
           <Name xml:lang="tr">DL Zarf</Name>
           <Name xml:lang="vi">Bao thÆ° DL</Name>
+          <Name xml:lang="zh_CN">DL ä¿¡å°</Name>
           <Name xml:lang="zh_TW">DL ä¿¡å°</Name>
 		<Key Id="Width" Value="110mm" />
 		<Key Id="Height" Value="220mm"/>
@@ -1601,14 +1963,21 @@
           <Name xml:lang="hu">C6/C5 borÃ­tÃ©k</Name>
           <Name xml:lang="it">Busta C6/C5</Name>
           <Name xml:lang="ja">C6/C5 çã®å°ç­</Name>
+          <Name xml:lang="ko">C6/C5 Envelope</Name>
           <Name xml:lang="lv">C6/C5 Aploksne</Name>
+          <Name xml:lang="mn">C5/C6-ÐÑÐ³ÑÑÐ¹</Name>
           <Name xml:lang="nl">C6/C5 Envelop</Name>
           <Name xml:lang="no">C6/C5 konvolutt</Name>
           <Name xml:lang="pl">C6/koperta C5</Name>
+          <Name xml:lang="pt">Envelope C6/C5</Name>
+          <Name xml:lang="pt_BR">C6/C5 Envelope</Name>
+          <Name xml:lang="ro">Plic C6/C5</Name>
+          <Name xml:lang="sk">ObÃ¡lka C6/C5</Name>
           <Name xml:lang="sl">C6/C5 ovojnica</Name>
           <Name xml:lang="sv">C6/C5-kuvert</Name>
           <Name xml:lang="tr">C6/C5 Zarf</Name>
           <Name xml:lang="vi">Bao thÆ° C6/C5</Name>
+          <Name xml:lang="zh_CN">C6/C5 ä¿¡å°</Name>
           <Name xml:lang="zh_TW">C6/C5 ä¿¡å°</Name>
 		<Key Id="Width" Value="114mm" />
 		<Key Id="Height" Value="229mm"/>
@@ -1627,14 +1996,21 @@
           <Name xml:lang="he">××¢××¤× ××¡×¤×¨ 10</Name>
           <Name xml:lang="hu">No10 borÃ­tÃ©k</Name>
           <Name xml:lang="ja">å°ç­ (No10)</Name>
+          <Name xml:lang="ko">Envelope No10</Name>
           <Name xml:lang="lv">Aploksne No10</Name>
+          <Name xml:lang="mn">No10-ÐÑÐ³ÑÑÐ¹</Name>
           <Name xml:lang="nl">Envelop No10</Name>
           <Name xml:lang="no">Konvolutt No10</Name>
           <Name xml:lang="pl">Koperta No10</Name>
+          <Name xml:lang="pt">Envelope No10</Name>
+          <Name xml:lang="pt_BR">Envelope No10</Name>
+          <Name xml:lang="ro">Plic No10</Name>
+          <Name xml:lang="sk">ObÃ¡lka Ä. 10</Name>
           <Name xml:lang="sl">Ovojnica No10</Name>
           <Name xml:lang="sv">Kuvert No10</Name>
           <Name xml:lang="tr">No10 Zarf</Name>
           <Name xml:lang="vi">Bao thÆ° No10</Name>
+          <Name xml:lang="zh_CN">10 å·ä¿¡å°</Name>
           <Name xml:lang="zh_TW">10 èä¿¡å°</Name>
 		<Key Id="Width" Value="297" />
 		<Key Id="Height" Value="684"/>
@@ -1654,14 +2030,21 @@
           <Name xml:lang="hu">6x9 borÃ­tÃ©k</Name>
           <Name xml:lang="it">Busta 6x9</Name>
           <Name xml:lang="ja">å°ç­ (6x9)</Name>
+          <Name xml:lang="ko">Envelope 6x9</Name>
           <Name xml:lang="lv">Aploksne 6x9</Name>
+          <Name xml:lang="mn">6x9-ÐÑÐ³ÑÑÐ¹</Name>
           <Name xml:lang="nl">Envelop 6x9</Name>
           <Name xml:lang="no">Konvolutt 6x9</Name>
           <Name xml:lang="pl">Koperta 6x9</Name>
+          <Name xml:lang="pt">Envelope 6x9</Name>
+          <Name xml:lang="pt_BR">Envelope 6x9</Name>
+          <Name xml:lang="ro">Plic 6x9</Name>
+          <Name xml:lang="sk">ObÃ¡lka 6x9</Name>
           <Name xml:lang="sl">Ovojnica 6x9</Name>
           <Name xml:lang="sv">Kuvert 6Ã9</Name>
           <Name xml:lang="tr">6x9 Zarf</Name>
           <Name xml:lang="vi">Bao thÆ° 6x9</Name>
+          <Name xml:lang="zh_CN">ä¿¡å° 6x9</Name>
           <Name xml:lang="zh_TW">6Ã9 è±åä¿¡å°</Name>
 		<Key Id="Width" Value="432" />
 		<Key Id="Height" Value="648"/>
@@ -1693,6 +2076,7 @@
           <Name xml:lang="ja">ã¹ãã¬ã¼ã</Name>
           <Name xml:lang="ko">ëë°ë¡</Name>
           <Name xml:lang="lv">Taisni</Name>
+          <Name xml:lang="mn">Ð¨ÑÐ»ÑÑÐ½</Name>
           <Name xml:lang="ms">Tegak</Name>
           <Name xml:lang="nl">Recht</Name>
           <Name xml:lang="nn">Rett</Name>
@@ -1710,7 +2094,7 @@
           <Name xml:lang="uk">ÐÑÑÐ¼Ð¸Ð¹</Name>
           <Name xml:lang="vi">Tháº³ng</Name>
           <Name xml:lang="wa">Droet</Name>
-          <Name xml:lang="zh_CN">ç´æ¥</Name>
+          <Name xml:lang="zh_CN">æ­£å¸¸</Name>
           <Name xml:lang="zh_TW">åä¾æ¹å</Name>
           <Key Id="Paper2PrinterTransform" Value="matrix(1 0 0 1 0 0)"/>
         </Item>
@@ -1735,6 +2119,7 @@
           <Name xml:lang="ja">90Â°åè»¢</Name>
           <Name xml:lang="ko">90ë íì </Name>
           <Name xml:lang="lv">Pagriezts par 90 grÄdiem</Name>
+          <Name xml:lang="mn">90 Ð³ÑÐ°Ð´ÑÑ ÑÑÐ³Ò¯Ò¯Ð»ÑÑ</Name>
           <Name xml:lang="ms">Dikilas 90 darjah</Name>
           <Name xml:lang="nl">90 graden gedraaid</Name>
           <Name xml:lang="nn">Rotert 90 grader</Name>
@@ -1777,6 +2162,7 @@
           <Name xml:lang="ja">180Â°åè»¢</Name>
           <Name xml:lang="ko">180ë íì </Name>
           <Name xml:lang="lv">Pagriezts par 180 grÄdiem</Name>
+          <Name xml:lang="mn">180 Ð³ÑÐ°Ð´ÑÑ ÑÑÐ³Ò¯Ò¯Ð»ÑÑ</Name>
           <Name xml:lang="ms">Dikilas 180 darjah</Name>
           <Name xml:lang="nl">180 graden gedraaid</Name>
           <Name xml:lang="nn">Rotert 180 grader</Name>
@@ -1819,6 +2205,7 @@
           <Name xml:lang="ja">270Â°åè»¢</Name>
           <Name xml:lang="ko">270ë íì </Name>
           <Name xml:lang="lv">Pagriezts par 270 grÄdiem</Name>
+          <Name xml:lang="mn">270 Ð³ÑÐ°Ð´ÑÑ ÑÑÐ³Ò¯Ò¯Ð»ÑÑ</Name>
           <Name xml:lang="ms">Dikilas 270 darjah</Name>
           <Name xml:lang="nl">270 graden gedraaid</Name>
           <Name xml:lang="nn">Rotert 270 grader</Name>

@@ -185,8 +185,10 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 	 *     strcmp (FT_MODULE_CLASS (face->driver)->module_name, "truetype") == 0;
 	 * which isn't prety either (Chema)
  	 */
-	c = fc_file + strlen (fc_file) - 4;
-	if (strcasecmp (c, ".pfb") == 0)
+	c = rindex (fc_file, '.');
+	if (!c)
+		return NULL;
+	else if (strcasecmp (c, ".pfb") == 0)
 		font_type = GP_FONT_ENTRY_TYPE1;
 	else if (strcasecmp (c, ".pfa") == 0)
 		font_type = GP_FONT_ENTRY_TYPE1;
@@ -223,15 +225,27 @@ static GPFontEntry *
 fcpattern_to_gp_font_entry_alias (FcPattern *font, const gchar *name)
 {
 	GPFontEntry *e;
+#if 0
+	gint len;
+#endif
 
 	e = fcpattern_to_gp_font_entry (font);
 	if (e == NULL)
 		return NULL;
 
-	my_g_free (e->name);
-	e->name   = g_strdup (name);
-	e->is_alias = TRUE;
-	   
+	g_free (e->name);
+#if 0
+	g_free (e->familyname);
+
+	len = strchr (name, ' ') - (char *) name;
+
+#endif
+	e->is_alias   = TRUE;
+	e->name       = g_strdup (name);
+#if 0
+	e->familyname = g_strndup (name, len);
+#endif
+
 	return e;
 }
 

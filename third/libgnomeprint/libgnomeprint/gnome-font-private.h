@@ -96,7 +96,7 @@ typedef struct _GnomeFontPsObject GnomeFontPsObject;
 struct _GnomeFontPsObject {
 	GnomeFontFace *face; 	/* Our face (NB referenced) */
 	guchar *residentname;	/* Resident face name, if any */
-	guchar *encodedname;	/* Name of final font (i.e. findfont argument) */
+	guchar *encodedname;	/* Name of the font in output (i.e. GnomeUni-LuxiSans_001) */
 
 	gint encodedbytes;	/* 1 or 2 byte encoding
 				 * This will be set according to total number of
@@ -111,7 +111,7 @@ struct _GnomeFontPsObject {
 	guchar *buf;
 };
 
-GnomeFontPsObject *gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname);
+GnomeFontPsObject *gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname, gint instance);
 /* Mark glyph as used in internal bit array */
 void gnome_font_face_pso_mark_glyph (GnomeFontPsObject *pso, gint glyph);
 void gnome_font_face_pso_free (GnomeFontPsObject *pso);

@@ -37,6 +37,10 @@
           </Item>
         </Option>
       </Option>
+      <Option Id="Job">
+        <Option Id="NumCopies" Type="String" Default="1"/>
+        <Option Id="Collate" Type="String" Default="false"/>
+      </Option>
     </Option>
     <Option Id="Transport">
       <Option Id="Backend" Type="List" Default="file">

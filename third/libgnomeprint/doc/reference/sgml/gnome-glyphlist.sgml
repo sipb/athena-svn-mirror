@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
 <synopsis>
 
 
@@ -73,8 +72,6 @@ void        <link linkend="gnome-glyphlist-text-sized-dumb">gnome_glyphlist_text
 
 
 
-
-
 <refsect1>
 <title>Description</title>
 <para>
@@ -95,72 +92,92 @@ void        <link linkend="gnome-glyphlist-text-sized-dumb">gnome_glyphlist_text
 <programlisting><link linkend="GnomeGlyphList">GnomeGlyphList</link>* gnome_glyphlist_new         (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-ref">gnome_glyphlist_ref ()</title>
 <programlisting><link linkend="GnomeGlyphList">GnomeGlyphList</link>* gnome_glyphlist_ref         (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-unref">gnome_glyphlist_unref ()</title>
 <programlisting><link linkend="GnomeGlyphList">GnomeGlyphList</link>* gnome_glyphlist_unref       (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-duplicate">gnome_glyphlist_duplicate ()</title>
 <programlisting><link linkend="GnomeGlyphList">GnomeGlyphList</link>* gnome_glyphlist_duplicate   (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-check">gnome_glyphlist_check ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_glyphlist_check           (const <link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
                                              <link linkend="gboolean">gboolean</link> rules);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>rules</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>rules</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-from-text-dumb">gnome_glyphlist_from_text_dumb ()</title>
 <programlisting><link linkend="GnomeGlyphList">GnomeGlyphList</link>* gnome_glyphlist_from_text_dumb
@@ -173,25 +190,29 @@ void        <link linkend="gnome-glyphlist-text-sized-dumb">gnome_glyphlist_text
 See _from_text_sized_dumb</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>color</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>letterspace</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>kerning</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>letterspace</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-from-text-sized-dumb">gnome_glyphlist_from_text_sized_dumb ()</title>
 <programlisting><link linkend="GnomeGlyphList">GnomeGlyphList</link>* gnome_glyphlist_from_text_sized_dumb
@@ -208,28 +229,32 @@ language-specific typesetting rules, so if the given script
 does not use trivial placement, you should better avoid this</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>color</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>letterspace</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>kerning</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>letterspace</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-advance">gnome_glyphlist_advance ()</title>
 <programlisting>void        gnome_glyphlist_advance         (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -240,14 +265,18 @@ advance vector. Advancing happens immediately after glyph is
 sent through pipeline.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>advance</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>advance</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-kerning">gnome_glyphlist_kerning ()</title>
 <programlisting>void        gnome_glyphlist_kerning         (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -260,14 +289,18 @@ Kerning will be added immediately before placing a new glyph
 FIXME: What does the last sentence mean? (Chema)</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>kerning</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-letterspace">gnome_glyphlist_letterspace ()</title>
 <programlisting>void        gnome_glyphlist_letterspace     (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -281,14 +314,18 @@ immediately before placing a new glyph
 FIXME: what does the last sentence mean? (Chema)</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>letterspace</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>letterspace</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-font">gnome_glyphlist_font ()</title>
 <programlisting>void        gnome_glyphlist_font            (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -297,14 +334,18 @@ FIXME: what does the last sentence mean? (Chema)</para>
 Specify the font to be used for the glyphs that follow</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-color">gnome_glyphlist_color ()</title>
 <programlisting>void        gnome_glyphlist_color           (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -314,14 +355,18 @@ Specify the color as RRGGBBAA to be used for the glyphs
 that follow</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>color</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-moveto">gnome_glyphlist_moveto ()</title>
 <programlisting>void        gnome_glyphlist_moveto          (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -331,17 +376,21 @@ that follow</para>
 Position manually the glyph following</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-rmoveto">gnome_glyphlist_rmoveto ()</title>
 <programlisting>void        gnome_glyphlist_rmoveto         (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -351,17 +400,21 @@ Position manually the glyph following</para>
 Position the glyph following relative to current pen position</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-glyph">gnome_glyphlist_glyph ()</title>
 <programlisting>void        gnome_glyphlist_glyph           (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -371,14 +424,18 @@ Appends a single glyph to the glyphlist. It will be connected
 to the previous glyphs by the previously defined rules</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-glyphs">gnome_glyphlist_glyphs ()</title>
 <programlisting>void        gnome_glyphlist_glyphs          (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -388,17 +445,21 @@ to the previous glyphs by the previously defined rules</para>
 Append a string of glyphs</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>num_glyphs</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>glyphs</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>num_glyphs</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-text-dumb">gnome_glyphlist_text_dumb ()</title>
 <programlisting>void        gnome_glyphlist_text_dumb       (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -407,14 +468,18 @@ Append a string of glyphs</para>
 See _text_sized_dumb</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-text-sized-dumb">gnome_glyphlist_text_sized_dumb ()</title>
 <programlisting>void        gnome_glyphlist_text_sized_dumb (<link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -426,17 +491,21 @@ It just places glyphs one after another - no ligaturing etc.
 text is utf8, of course</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-glyphlist-bbox">gnome_glyphlist_bbox ()</title>
 <programlisting><link linkend="ArtDRect">ArtDRect</link>*   gnome_glyphlist_bbox            (const <link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
@@ -448,22 +517,26 @@ Get ink dimensions of transformed glyphlist
 Flags are to specify user preferences, should be 0 for now</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>gl</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>transform</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara> should be 0 for now
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> bbox, NULL on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gl</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>transform</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
+<entry> should be 0 for now
+</entry></row>
+<row><entry align="right"><parameter>bbox</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> bbox, NULL on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

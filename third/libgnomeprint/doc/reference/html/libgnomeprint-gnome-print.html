@@ -17,40 +17,7 @@ TITLE="gnome-print-paper"
 HREF="libgnomeprint-gnome-print-paper.html"><LINK
 REL="NEXT"
 TITLE="gnome-print-unit"
-HREF="libgnomeprint-gnome-print-unit.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE
-></HEAD
+HREF="libgnomeprint-gnome-print-unit.html"></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -58,64 +25,96 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
 ><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="libgnomeprint-gnome-print-paper.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="libgnomeprintunsorted.html"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="index.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
 ><TH
-WIDTH="100%"
-align="center"
->GNOME Print Reference Manual</TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME Print Reference Manual</FONT
+></TH
+></TR
+><TR
 ><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
 ><A
-ACCESSKEY="n"
+HREF="libgnomeprint-gnome-print-paper.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libgnomeprintunsorted.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
 HREF="libgnomeprint-gnome-print-unit.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
 ></TD
 ></TR
 ></TABLE
+></DIV
 ><H1
 ><A
 NAME="LIBGNOMEPRINT-GNOME-PRINT"
@@ -124,7 +123,7 @@ NAME="LIBGNOMEPRINT-GNOME-PRINT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3757"
+NAME="AEN3919"
 ></A
 ><H2
 >Name</H2
@@ -132,10 +131,17 @@ NAME="AEN3757"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3760"
+NAME="AEN3922"
 ></A
 ><H2
 >Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;
@@ -511,11 +517,14 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble y,
                                              gdouble width,
                                              gdouble height);&#13;</PRE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3955"
+NAME="AEN4117"
 ></A
 ><H2
 >Description</H2
@@ -525,20 +534,27 @@ NAME="AEN3955"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3958"
+NAME="AEN4120"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3960"
+NAME="AEN4122"
 ></A
 ><H3
 ><A
 NAME="GNOMEPRINTRETURNCODE"
 ></A
 >enum GnomePrintReturnCode</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >typedef enum {
@@ -552,35 +568,55 @@ CLASS="PROGRAMLISTING"
 	GNOME_PRINT_ERROR_NOPAGE         = -7,
 	GNOME_PRINT_ERROR_NOMATCH        = -8
 } GnomePrintReturnCode;</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3965"
+NAME="AEN4127"
 ></A
 ><H3
 ><A
 NAME="GNOMEPRINTCONTEXT"
 ></A
 >struct GnomePrintContext</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct GnomePrintContext;</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3970"
+NAME="AEN4132"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-CONTEXT-NEW"
 ></A
 >gnome_print_context_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
@@ -590,6 +626,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 HREF="libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
 >GnomePrintConfig</A
 > *config);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Create new printing context from config. You have to have set
 all the options/settings beforehand, as changing the config of
@@ -601,76 +640,88 @@ latter also can create output context for you, so in most cases
 you may want to ignore gnome_print_context_new at all.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4141"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN3980"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >config</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> GnomePrintConfig object to query print settings from</P
-></TD
+> GnomePrintConfig object to query print settings from</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN3985"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> The new GnomePrintContext or NULL on error</P
-></TD
+> The new GnomePrintContext or NULL on error</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3990"
+NAME="AEN4154"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-CONTEXT-CLOSE"
 ></A
 >gnome_print_context_close ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_context_close       (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Informs given <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
@@ -687,153 +738,174 @@ Some printing contexts may not start printing before context is
 closed.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4164"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4001"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4007"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4013"
+NAME="AEN4179"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-NEWPATH"
 ></A
 >gnome_print_newpath ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_newpath             (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Resets currentpath to empty path. As currentpoint is defined as
 the last point of open path segment, is also erases currentpoint.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4187"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4022"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4028"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4034"
+NAME="AEN4202"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-MOVETO"
 ></A
 >gnome_print_moveto ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_moveto              (<A
@@ -842,6 +914,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              gdouble x,
                                              gdouble y);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Starts new subpath in currentpath with coordinates <TT
 CLASS="PARAMETER"
@@ -867,116 +942,117 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4216"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4049"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4055"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X position in user coordinates</P
-></TD
+> X position in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4060"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y position in user coordinates</P
-></TD
+> Y position in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4065"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4071"
+NAME="AEN4239"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-LINETO"
 ></A
 >gnome_print_lineto ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_lineto              (<A
@@ -985,6 +1061,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              gdouble x,
                                              gdouble y);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Adds new straight line segment from currentpoint to <TT
 CLASS="PARAMETER"
@@ -1011,116 +1090,117 @@ CLASS="PARAMETER"
 If currentpoint is not defined, returns GNOME_PRINT_ERROR_NOCURRENTPOINT.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4254"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4087"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4093"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X position in user coordinates</P
-></TD
+> X position in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4098"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y position in user coordinates</P
-></TD
+> Y position in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4103"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4109"
+NAME="AEN4277"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-CURVETO"
 ></A
 >gnome_print_curveto ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_curveto             (<A
@@ -1133,6 +1213,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble y2,
                                              gdouble x3,
                                              gdouble y3);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Adds new cubig bezier segment with control points <TT
 CLASS="PARAMETER"
@@ -1180,206 +1263,194 @@ CLASS="PARAMETER"
 If currentpoint is not defined, returns GNOME_PRINT_ERROR_NOCURRENTPOINT.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4300"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4133"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4139"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x1</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X position of first control point in user coordinates</P
-></TD
+> X position of first control point in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4144"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y1</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y position of first control point in user coordinates</P
-></TD
+> Y position of first control point in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4149"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x2</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X position of second control point in user coordinates</P
-></TD
+> X position of second control point in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4154"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y2</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y position of second control point in user coordinates</P
-></TD
+> Y position of second control point in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4159"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x3</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X position of endpoint in user coordinates</P
-></TD
+> X position of endpoint in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4164"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y3</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y position of endpoint in user coordinates</P
-></TD
+> Y position of endpoint in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4169"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4175"
+NAME="AEN4339"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-CLOSEPATH"
 ></A
 >gnome_print_closepath ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_closepath           (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Closes the last segment of currentpath, optionally drawing straight
 line segment from its endpoint to starting point.
@@ -1387,80 +1458,92 @@ Erases currentpoint.
 If currentpath is empty, returns GNOME_PRINT_ERROR_NOCURRENTPATH.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4348"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4185"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4191"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4197"
+NAME="AEN4363"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-STROKEPATH"
 ></A
 >gnome_print_strokepath ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_strokepath          (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Converts currentpath to new path, that is identical to area painted
 by <A
@@ -1472,74 +1555,83 @@ If currentpath is empty, returns GNOME_PRINT_ERROR_NOCURRENTPATH.
 Stroked path is always closed, so currentpoint is erased.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4373"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4208"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4214"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4220"
+NAME="AEN4388"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-BPATH"
 ></A
 >gnome_print_bpath ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_bpath               (<A
@@ -1548,6 +1640,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              const ArtBpath *bpath,
                                              gboolean append);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Adds all <TT
 CLASS="PARAMETER"
@@ -1566,116 +1661,117 @@ This is identical to adding all segments by hand, so the final state
 of currentpoint depends on segments processed.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4401"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4234"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4240"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >bpath</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Array of ArtBpath segments</P
-></TD
+> Array of ArtBpath segments</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4246"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >append</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Whether to append to currentpath</P
-></TD
+> Whether to append to currentpath</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4251"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4257"
+NAME="AEN4425"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-VPATH"
 ></A
 >gnome_print_vpath ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_vpath               (<A
@@ -1684,6 +1780,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              const ArtVpath *vpath,
                                              gboolean append);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Adds all <TT
 CLASS="PARAMETER"
@@ -1702,116 +1801,117 @@ This is identical to adding all segments by hand, so the final state
 of currentpoint depends on segments processed.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4438"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4271"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4277"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >vpath</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Array of ArtVpath segments</P
-></TD
+> Array of ArtVpath segments</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4283"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >append</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Whether to append to currentpath</P
-></TD
+> Whether to append to currentpath</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4288"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4294"
+NAME="AEN4462"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-ARCTO"
 ></A
 >gnome_print_arcto ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_arcto               (<A
@@ -1824,6 +1924,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble angle1,
                                              gdouble angle2,
                                              gint direction);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Adds an arc with control points <TT
 CLASS="PARAMETER"
@@ -1859,196 +1962,181 @@ CLASS="PARAMETER"
 > 1 is clockwise 0 counterclockwise</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4482"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4315"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> A GnomePrintContextx</P
-></TD
+> A GnomePrintContextx</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4321"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X position of control point in user coordinates</P
-></TD
+> X position of control point in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4326"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y position of control point in user coordinates</P
-></TD
+> Y position of control point in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4331"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >radius</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> the radius of the arc</P
-></TD
+> the radius of the arc</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4336"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >angle1</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> start angle in degrees</P
-></TD
+> start angle in degrees</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4341"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >angle2</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> end angle in degrees</P
-></TD
+> end angle in degrees</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4346"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >direction</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> direction of movement, 0 counterclockwise 1 clockwise</P
-></TD
+> direction of movement, 0 counterclockwise 1 clockwise</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4351"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> GNOME_PRINT_OK or postive value on success, a negative value otherwise</P
-></TD
+> GNOME_PRINT_OK or postive value on success, a negative value otherwise</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4356"
+NAME="AEN4520"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETRGBCOLOR"
 ></A
 >gnome_print_setrgbcolor ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setrgbcolor         (<A
@@ -2058,143 +2146,143 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble r,
                                              gdouble g,
                                              gdouble b);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets color in graphic state to RGB triplet. This does not imply anything
 about which colorspace is used internally.
 Channel values are clamped to 0.0 - 1.0 region, 0.0 meaning minimum.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4531"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4368"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4374"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >r</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Red channel value</P
-></TD
+> Red channel value</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4379"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >g</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Green channel value</P
-></TD
+> Green channel value</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4384"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >b</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Blue channel value</P
-></TD
+> Blue channel value</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4389"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4395"
+NAME="AEN4558"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETOPACITY"
 ></A
 >gnome_print_setopacity ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setopacity          (<A
@@ -2202,101 +2290,109 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              gdouble opacity);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets painting opacity in graphic state to given value.
 Value is clamped to 0.0 - 1.0 region, 0.0 meaning full transparency and
 1.0 completely opaque paint.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4567"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4405"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4411"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >opacity</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Opacity value</P
-></TD
+> Opacity value</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4416"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4422"
+NAME="AEN4586"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETLINEWIDTH"
 ></A
 >gnome_print_setlinewidth ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setlinewidth        (<A
@@ -2304,6 +2400,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              gdouble width);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets line width in graphic state to given value.
 Value is given in user coordinates, so effective line width depends on
@@ -2319,95 +2418,100 @@ factor of CTM.
 Default line width is 1.0 in user coordinates.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4597"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4434"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4440"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Line width in user coordinates</P
-></TD
+> Line width in user coordinates</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4445"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4451"
+NAME="AEN4616"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETMITERLIMIT"
 ></A
 >gnome_print_setmiterlimit ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setmiterlimit       (<A
@@ -2415,101 +2519,109 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              gdouble limit);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets minimum angle between two lines, in which case miter join is
 used. For smaller angles, join is beveled.
 Default miter limit is 4 degrees.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4625"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4461"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4467"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >limit</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Miter limit in degrees</P
-></TD
+> Miter limit in degrees</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4472"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4478"
+NAME="AEN4644"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETLINEJOIN"
 ></A
 >gnome_print_setlinejoin ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setlinejoin         (<A
@@ -2517,6 +2629,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              gint jointype);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets join type for non-colinear line segments.
 0 - miter
@@ -2525,95 +2640,100 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 Default join type is miter.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4653"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4488"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4494"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >jointype</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Integer indicating join type</P
-></TD
+> Integer indicating join type</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4499"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4505"
+NAME="AEN4672"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETLINECAP"
 ></A
 >gnome_print_setlinecap ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setlinecap          (<A
@@ -2621,6 +2741,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              gint captype);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets cap type for line endpoints.
 0 - butt
@@ -2629,95 +2752,100 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 Default cap type is butt.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4681"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4515"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4521"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >captype</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Integer indicating cap type</P
-></TD
+> Integer indicating cap type</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4526"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4532"
+NAME="AEN4700"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETDASH"
 ></A
 >gnome_print_setdash ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setdash             (<A
@@ -2727,6 +2855,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gint n_values,
                                              const gdouble *values,
                                              gdouble offset);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets line dashing to given pattern. If n_dash is odd, the result is,
 as if actual number of segments is 2 times bigger, and 2 copies
@@ -2745,137 +2876,134 @@ regardless of the stretching factor of CTM.
 Default is solid line.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4713"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4546"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4552"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >n_values</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Number of dash segment lengths</P
-></TD
+> Number of dash segment lengths</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4557"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >values</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Array of dash segment lengths</P
-></TD
+> Array of dash segment lengths</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4562"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >offset</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Line starting offset in dash</P
-></TD
+> Line starting offset in dash</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4567"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4573"
+NAME="AEN4740"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SETFONT"
 ></A
 >gnome_print_setfont ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_setfont             (<A
@@ -2886,110 +3014,121 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
 >GnomeFont</A
 > *font);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Sets font in graphic state. Font is referenced by gnome print,
 so caller may discard it immediately afterwards.
 Default font is system dependent.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4749"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4583"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4589"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >font</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > <A
 HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
 >GnomeFont</A
-> to use for text</P
-></TD
+> to use for text</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4595"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4601"
+NAME="AEN4769"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-CLIP"
 ></A
 >gnome_print_clip ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_clip                (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Defines drawing region as inside area of currentpath. If path is
 self-intersecting or consists of several overlapping subpaths,
@@ -3000,80 +3139,92 @@ returned.
 Currentpath is emptied by this function.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4778"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4611"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4617"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4623"
+NAME="AEN4793"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-EOCLIP"
 ></A
 >gnome_print_eoclip ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_eoclip              (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Defines drawing region as inside area of currentpath. If path is
 self-intersecting or consists of several overlapping subpaths,
@@ -3084,74 +3235,83 @@ returned.
 Currentpath is emptied by this function.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4802"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4633"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4639"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4645"
+NAME="AEN4817"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-CONCAT"
 ></A
 >gnome_print_concat ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_concat              (<A
@@ -3159,6 +3319,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              const gdouble *matrix);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Appends <TT
 CLASS="PARAMETER"
@@ -3179,95 +3342,100 @@ X' = X * m[0] + Y * m[2] + m[4]
 Y' = X * m[1] + Y * m[3] + m[5]</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4828"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4657"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4663"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >matrix</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> 3x2 affine transformation matrix</P
-></TD
+> 3x2 affine transformation matrix</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4668"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4674"
+NAME="AEN4847"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SCALE"
 ></A
 >gnome_print_scale ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_scale               (<A
@@ -3276,120 +3444,124 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              gdouble sx,
                                              gdouble sy);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Scales user coordinate system by given X and Y values.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4857"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4685"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4691"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >sx</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> X scale</P
-></TD
+> X scale</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4696"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >sy</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Y scale</P
-></TD
+> Y scale</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4701"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4707"
+NAME="AEN4880"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-ROTATE"
 ></A
 >gnome_print_rotate ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_rotate              (<A
@@ -3397,99 +3569,107 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              gdouble theta);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Rotates user coordinate system theta degrees counterclockwise.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4889"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4717"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4723"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >theta</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Angle in degrees</P
-></TD
+> Angle in degrees</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4728"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4734"
+NAME="AEN4908"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-TRANSLATE"
 ></A
 >gnome_print_translate ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_translate           (<A
@@ -3498,126 +3678,133 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              gdouble x,
                                              gdouble y);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Move the starting point of user coordinate system to given point.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4918"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4745"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4751"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> New starting X</P
-></TD
+> New starting X</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4756"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> New starting Y</P
-></TD
+> New starting Y</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4761"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4767"
+NAME="AEN4941"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-GSAVE"
 ></A
 >gnome_print_gsave ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_gsave               (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Saves current graphic state (transformation, color, line properties, font)
 into stack (push). Values itself remain unchanged.
@@ -3639,159 +3826,183 @@ HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-GRESTORE"
 > for each page.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4953"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4780"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4786"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4792"
+NAME="AEN4968"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-GRESTORE"
 ></A
 >gnome_print_grestore ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_grestore            (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Retrieves last saved graphic state from stack (pop). Stack has to be
 at least the size of one.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4976"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4801"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4807"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4813"
+NAME="AEN4991"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-FILL"
 ></A
 >gnome_print_fill ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_fill                (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Fills the inside area of currentpath, using current graphic state.
 If path is self-intersecting or consists of several overlapping subpaths,
@@ -3802,80 +4013,92 @@ returned.
 Currentpath is emptied by this function.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5000"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4823"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4829"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4835"
+NAME="AEN5015"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-EOFILL"
 ></A
 >gnome_print_eofill ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_eofill              (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Fills the inside area of currentpath, using current graphic state.
 If path is self-intersecting or consists of several overlapping subpaths,
@@ -3886,80 +4109,92 @@ returned.
 Currentpath is emptied by this function.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5024"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4845"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4851"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4857"
+NAME="AEN5039"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-STROKE"
 ></A
 >gnome_print_stroke ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_stroke              (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Strokes currentpath, i.e. draws line along it, with style, defined
 by current graphic state values.
@@ -3968,74 +4203,83 @@ returned.
 Currentpath is emptied by this function.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5048"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4867"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4873"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4879"
+NAME="AEN5063"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SHOW"
 ></A
 >gnome_print_show ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_show                (<A
@@ -4043,6 +4287,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              const guchar *text);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Draws UTF-8 text at currentpoint, using current font from graphic
 state.
@@ -4051,95 +4298,100 @@ if it is not valid UTF-8.
 Both currentpath and currentpoint are erased.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5073"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4890"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4896"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >text</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Null-terminated UTF-8 string</P
-></TD
+> Null-terminated UTF-8 string</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4901"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4907"
+NAME="AEN5092"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SHOW-SIZED"
 ></A
 >gnome_print_show_sized ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_show_sized          (<A
@@ -4148,6 +4400,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 > *pc,
                                              const guchar *text,
                                              gint bytes);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Draws UTF-8 text at currentpoint, using current font from graphic
 state.
@@ -4156,116 +4411,117 @@ if it is not valid UTF-8.
 Both currentpath and currentpoint are erased.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5103"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4919"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4925"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >text</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> UTF-8 text string</P
-></TD
+> UTF-8 text string</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4930"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >bytes</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Number of bytes to use from string</P
-></TD
+> Number of bytes to use from string</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4935"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4941"
+NAME="AEN5126"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-GLYPHLIST"
 ></A
 >gnome_print_glyphlist ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_glyphlist           (<A
@@ -4276,6 +4532,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
 >GnomeGlyphList</A
 > *glyphlist);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Draws text, using <A
 HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
@@ -4286,98 +4545,103 @@ currentpoint.
 Both currentpath and currentpoint are erased.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5136"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4952"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4958"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >glyphlist</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > <A
 HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
 >GnomeGlyphList</A
-> text object</P
-></TD
+> text object</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4964"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4970"
+NAME="AEN5156"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-GRAYIMAGE"
 ></A
 >gnome_print_grayimage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_grayimage           (<A
@@ -4388,6 +4652,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gint width,
                                              gint height,
                                              gint rowstride);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Draws grayscale image into unit square (0,0 - 1,1) in current coordinate
 system.
@@ -4395,158 +4662,151 @@ Image buffer has to be 1 byte per pixel, with value 255 marking
 white and 0 black.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5168"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4983"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4989"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >data</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Pointer to image pixel buffer</P
-></TD
+> Pointer to image pixel buffer</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4994"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer width</P
-></TD
+> Image buffer width</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN4999"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >height</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer height</P
-></TD
+> Image buffer height</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5004"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >rowstride</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer rowstride</P
-></TD
+> Image buffer rowstride</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5009"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5015"
+NAME="AEN5199"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-RGBIMAGE"
 ></A
 >gnome_print_rgbimage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_rgbimage            (<A
@@ -4557,6 +4817,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gint width,
                                              gint height,
                                              gint rowstride);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Draws RGB color image into unit square (0,0 - 1,1) in current coordinate
 system.
@@ -4564,158 +4827,151 @@ Image buffer has to be 3 bytes per pixel, order RGB, with value 255 marking
 maximum and 0 minimum value.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5211"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5028"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5034"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >data</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Pointer to image pixel buffer</P
-></TD
+> Pointer to image pixel buffer</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5039"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer width</P
-></TD
+> Image buffer width</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5044"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >height</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer height</P
-></TD
+> Image buffer height</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5049"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >rowstride</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer rowstride</P
-></TD
+> Image buffer rowstride</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5054"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5060"
+NAME="AEN5242"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-RGBAIMAGE"
 ></A
 >gnome_print_rgbaimage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_rgbaimage           (<A
@@ -4726,6 +4982,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gint width,
                                              gint height,
                                              gint rowstride);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Draws RGB color image with transparency channel image into unit square
 (0,0 - 1,1) in current coordinate system.
@@ -4734,158 +4993,151 @@ maximum and 0 minimum value. Alpha value 255 means full opacity, 0 full
 transparency.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5254"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5073"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5079"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >data</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Pointer to image pixel buffer</P
-></TD
+> Pointer to image pixel buffer</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5084"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer width</P
-></TD
+> Image buffer width</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5089"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >height</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer height</P
-></TD
+> Image buffer height</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5094"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >rowstride</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Image buffer rowstride</P
-></TD
+> Image buffer rowstride</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5099"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5105"
+NAME="AEN5285"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-BEGINPAGE"
 ></A
 >gnome_print_beginpage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_beginpage           (<A
@@ -4893,6 +5145,9 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc,
                                              const guchar *name);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Starts new output page with <TT
 CLASS="PARAMETER"
@@ -4900,9 +5155,7 @@ CLASS="PARAMETER"
 >name</I
 ></TT
 >. Naming is used for interactive
-contexts like <a
-href="../libgnomeprintui/libgnomeprintui-gnome-print-preview.html#GNOMEPRINTPREVIEW"
->GnomePrintPreview</a> and Document Structuring Convention
+contexts like GnomePrintPreview and Document Structuring Convention
 conformant PostScript output.
 This function has to be called before any drawing methods and immediately
 after each <A
@@ -4913,108 +5166,114 @@ graphic state values (transformation, color, line properties, font),
 so one has to define these again at the beginning of each page.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5297"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5118"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5124"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-> Name of the page, NULL if you just want to use the page number of the page</P
-></TD
+> Name of the page, NULL if you just want to use the page number of the page</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5129"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5135"
+NAME="AEN5316"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-SHOWPAGE"
 ></A
 >gnome_print_showpage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_showpage            (<A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Finishes rendering of current page, and marks it as shown. All subsequent
 drawing methods will fail, until new page is started with gnome_print_newpage.
 Printing contexts may process drawing methods differently - some do
-rendering immediately (like <a
-href="../libgnomeprintui/libgnomeprintui-gnome-print-preview.html#GNOMEPRINTPREVIEW"
->GnomePrintPreview</a>), some accumulate all
+rendering immediately (like GnomePrintPreview), some accumulate all
 operators to internal stack, and only after <A
 HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-SHOWPAGE"
 >gnome_print_showpage</A
@@ -5022,74 +5281,83 @@ HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-SHOWPAGE"
 any output produced.</P
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5327"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5147"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > A <A
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
-></P
 ></TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5153"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
 > GNOME_PRINT_OK or positive value on success, negative error
-code on failure.</P
-></TD
+code on failure.</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5159"
+NAME="AEN5342"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-LINE-STROKED"
 ></A
 >gnome_print_line_stroked ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_line_stroked        (<A
@@ -5100,156 +5368,152 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble y0,
                                              gdouble x1,
                                              gdouble y1);</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5353"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5171"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5176"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x0</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5181"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y0</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5186"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x1</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5191"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y1</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5196"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
->&#13;</P
-></TD
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5201"
+NAME="AEN5382"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-RECT-STROKED"
 ></A
 >gnome_print_rect_stroked ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_rect_stroked        (<A
@@ -5260,156 +5524,152 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble y,
                                              gdouble width,
                                              gdouble height);</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5393"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5213"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5218"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5223"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5228"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5233"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >height</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5238"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
->&#13;</P
-></TD
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
+></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5243"
+NAME="AEN5422"
 ></A
 ><H3
 ><A
 NAME="GNOME-PRINT-RECT-FILLED"
 ></A
 >gnome_print_rect_filled ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >gint        gnome_print_rect_filled         (<A
@@ -5420,175 +5680,239 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
                                              gdouble y,
                                              gdouble width,
                                              gdouble height);</PRE
+></TD
+></TR
+></TABLE
 ><P
 ></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN5433"
+></A
 ><P
 ></P
 ><TABLE
-CLASS="variablelist"
 BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
+CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5255"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >pc</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5260"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5265"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5270"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5275"><SPAN
-STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >height</I
 ></TT
->&nbsp;:</SPAN
-></TD
+>&nbsp;:</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
-></P
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
+WIDTH="20%"
+ALIGN="RIGHT"
 VALIGN="TOP"
-><A
-NAME="AEN5280"><SPAN
-STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</SPAN
-></TD
+> :</TD
 ><TD
+WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
->&#13;</P
-></TD
+>&nbsp;</TD
 ></TR
 ></TBODY
 ></TABLE
+><P
+></P
 ></DIV
 ></DIV
-><TABLE
-CLASS="navigation"
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
 WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
 ><TR
-VALIGN="middle"
 ><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-ACCESSKEY="p"
 HREF="libgnomeprint-gnome-print-paper.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
 ><B
->&lt;&lt;&lt;&nbsp;gnome-print-paper</B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
 ></A
 ></TD
 ><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="libgnomeprintunsorted.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-ACCESSKEY="n"
 HREF="libgnomeprint-gnome-print-unit.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
 ><B
->gnome-print-unit&nbsp;&gt;&gt;&gt;</B
+>Next Page &#62;&#62;&#62;</B
+></FONT
 ></A
 ></TD
 ></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gnome-print-paper</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gnome-print-unit</B
+></FONT
+></TD
+></TR
 ></TABLE
+></DIV
 ></BODY
 ></HTML
 >

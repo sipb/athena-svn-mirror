@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
 <synopsis>
 
 
@@ -89,8 +88,6 @@ void        <link linkend="gnome-font-style-list-free">gnome_font_style_list_fre
 
 
 
-
-
 <refsect1>
 <title>Description</title>
 <para>
@@ -117,25 +114,33 @@ void        <link linkend="gnome-font-style-list-free">gnome_font_style_list_fre
 <programlisting>#define     gnome_font_ref(f)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>f</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>f</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-unref">gnome_font_unref()</title>
 <programlisting>#define     gnome_font_unref(f)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>f</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>f</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GnomeFontWeight">enum GnomeFontWeight</title>
 <programlisting>typedef enum {
@@ -164,57 +169,73 @@ void        <link linkend="gnome-font-style-list-free">gnome_font_style_list_fre
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_get_name           (const <link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-family-name">gnome_font_get_family_name ()</title>
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_get_family_name    (const <link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-species-name">gnome_font_get_species_name ()</title>
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_get_species_name   (const <link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-ps-name">gnome_font_get_ps_name ()</title>
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_get_ps_name        (const <link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-lookup-default">gnome_font_lookup_default ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_font_lookup_default       (<link linkend="GnomeFont">GnomeFont</link> *font,
@@ -223,16 +244,20 @@ void        <link linkend="gnome-font-style-list-free">gnome_font_style_list_fre
 Get the glyph number corresponding to a given unicode</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>unicode</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> glyph number, -1 if it is not mapped
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>unicode</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> glyph number, -1 if it is not mapped
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-glyph-stdadvance">gnome_font_get_glyph_stdadvance ()</title>
 <programlisting><link linkend="ArtPoint">ArtPoint</link>*   gnome_font_get_glyph_stdadvance (<link linkend="GnomeFont">GnomeFont</link> *font,
@@ -240,21 +265,25 @@ Get the glyph number corresponding to a given unicode</para>
                                              <link linkend="ArtPoint">ArtPoint</link> *advance);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>advance</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>advance</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-glyph-stdbbox">gnome_font_get_glyph_stdbbox ()</title>
 <programlisting><link linkend="ArtDRect">ArtDRect</link>*   gnome_font_get_glyph_stdbbox    (<link linkend="GnomeFont">GnomeFont</link> *font,
@@ -262,21 +291,25 @@ Get the glyph number corresponding to a given unicode</para>
                                              <link linkend="ArtDRect">ArtDRect</link> *bbox);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>bbox</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-glyph-stdoutline">gnome_font_get_glyph_stdoutline ()</title>
 <programlisting>const <link linkend="ArtBpath">ArtBpath</link>* gnome_font_get_glyph_stdoutline
@@ -284,18 +317,22 @@ Get the glyph number corresponding to a given unicode</para>
                                              <link linkend="gint">gint</link> glyph);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-glyph-stdkerning">gnome_font_get_glyph_stdkerning ()</title>
 <programlisting><link linkend="ArtPoint">ArtPoint</link>*   gnome_font_get_glyph_stdkerning (<link linkend="GnomeFont">GnomeFont</link> *font,
@@ -304,88 +341,112 @@ Get the glyph number corresponding to a given unicode</para>
                                              <link linkend="ArtPoint">ArtPoint</link> *kerning);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph0</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph0</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>kerning</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-face">gnome_font_get_face ()</title>
 <programlisting><link linkend="GnomeFontFace">GnomeFontFace</link>* gnome_font_get_face          (const <link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-size">gnome_font_get_size ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_size             (const <link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-weight-code">gnome_font_get_weight_code()</title>
 <programlisting>#define     gnome_font_get_weight_code(f)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>f</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>f</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-is-italic">gnome_font_is_italic()</title>
 <programlisting>#define     gnome_font_is_italic(f)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>f</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>f</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-is-fixed-width">gnome_font_is_fixed_width()</title>
 <programlisting>#define     gnome_font_is_fixed_width(f)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>f</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>f</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-ascender">gnome_font_get_ascender ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_ascender         (<link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
@@ -395,13 +456,17 @@ ligatures. When the text libs get written, this function will be
 deprecated.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> the GnomeFont to operate on
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The ascender of the font.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> the GnomeFont to operate on
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The ascender of the font.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-descender">gnome_font_get_descender ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_descender        (<link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
@@ -411,13 +476,17 @@ ligatures. When the text libs get written, this function will be
 deprecated.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> the GnomeFont to operate on
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The descender of the font.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> the GnomeFont to operate on
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The descender of the font.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-underline-position">gnome_font_get_underline_position ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_underline_position
@@ -428,13 +497,17 @@ ligatures. When the text libs get written, this function will be
 deprecated.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> the GnomeFont to operate on
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The underline position of the font.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> the GnomeFont to operate on
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The underline position of the font.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-underline-thickness">gnome_font_get_underline_thickness ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_underline_thickness
@@ -445,31 +518,39 @@ ligatures. When the text libs get written, this function will be
 deprecated.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> the GnomeFont to operate on
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The underline thickness of the font.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> the GnomeFont to operate on
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The underline thickness of the font.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-glyph-width">gnome_font_get_glyph_width ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_glyph_width      (<link linkend="GnomeFont">GnomeFont</link> *font,
                                              <link linkend="gint">gint</link> glyph);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-glyph-kerning">gnome_font_get_glyph_kerning ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>     gnome_font_get_glyph_kerning    (<link linkend="GnomeFont">GnomeFont</link> *font,
@@ -477,21 +558,25 @@ deprecated.</para>
                                              <link linkend="gint">gint</link> glyph2);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph2</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph2</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-find-closest-from-weight-slant">gnome_font_find_closest_from_weight_slant ()</title>
 <programlisting><link linkend="GnomeFont">GnomeFont</link>*  gnome_font_find_closest_from_weight_slant
@@ -501,175 +586,223 @@ deprecated.</para>
                                              <link linkend="gdouble">gdouble</link> size);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>family</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>weight</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>italic</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>family</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>weight</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>italic</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-find">gnome_font_find ()</title>
 <programlisting><link linkend="GnomeFont">GnomeFont</link>*  gnome_font_find                 (const <link linkend="guchar">guchar</link> *name,
                                              <link linkend="gdouble">gdouble</link> size);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-find-closest">gnome_font_find_closest ()</title>
 <programlisting><link linkend="GnomeFont">GnomeFont</link>*  gnome_font_find_closest         (const <link linkend="guchar">guchar</link> *name,
                                              <link linkend="gdouble">gdouble</link> size);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-find-from-full-name">gnome_font_find_from_full_name ()</title>
 <programlisting><link linkend="GnomeFont">GnomeFont</link>*  gnome_font_find_from_full_name  (const <link linkend="guchar">guchar</link> *string);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>string</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>string</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-find-closest-from-full-name">gnome_font_find_closest_from_full_name ()</title>
 <programlisting><link linkend="GnomeFont">GnomeFont</link>*  gnome_font_find_closest_from_full_name
                                             (const <link linkend="guchar">guchar</link> *string);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>string</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>string</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-list">gnome_font_list ()</title>
 <programlisting><link linkend="GList">GList</link>*      gnome_font_list                 (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-list-free">gnome_font_list_free ()</title>
 <programlisting>void        gnome_font_list_free            (<link linkend="GList">GList</link> *fontlist);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>fontlist</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>fontlist</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-family-list">gnome_font_family_list ()</title>
 <programlisting><link linkend="GList">GList</link>*      gnome_font_family_list          (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-family-list-free">gnome_font_family_list_free ()</title>
 <programlisting>void        gnome_font_family_list_free     (<link linkend="GList">GList</link> *fontlist);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>fontlist</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>fontlist</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-style-list">gnome_font_style_list ()</title>
 <programlisting><link linkend="GList">GList</link>*      gnome_font_style_list           (const <link linkend="guchar">guchar</link> *family);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>family</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>family</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-style-list-free">gnome_font_style_list_free ()</title>
 <programlisting>void        gnome_font_style_list_free      (<link linkend="GList">GList</link> *styles);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>styles</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>styles</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-full-name">gnome_font_get_full_name ()</title>
 <programlisting><link linkend="guchar">guchar</link>*     gnome_font_get_full_name        (<link linkend="GnomeFont">GnomeFont</link> *font);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-closest-pango-font">gnome_font_get_closest_pango_font ()</title>
 <programlisting><link linkend="PangoFont">PangoFont</link>*  gnome_font_get_closest_pango_font
@@ -678,21 +811,25 @@ deprecated.</para>
                                              <link linkend="gdouble">gdouble</link> dpi);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>map</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>dpi</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>map</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>dpi</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-get-pango-description">gnome_font_get_pango_description ()</title>
 <programlisting><link linkend="PangoFontDescription">PangoFontDescription</link>* gnome_font_get_pango_description
@@ -700,18 +837,22 @@ deprecated.</para>
                                              <link linkend="gdouble">gdouble</link> dpi);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>dpi</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>dpi</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 
