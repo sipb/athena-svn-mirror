@@ -1,6 +1,6 @@
 /* expr.c -- arithmetic expression evaluation. */
 
-/* Copyright (C) 1990, 1991 Free Software Foundation, Inc.
+/* Copyright (C) 1990-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -19,7 +19,7 @@
    Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 /*
- All arithmetic is done as long integers with no checking for overflow
+ All arithmetic is done as intmax_t integers with no checking for overflow
  (though division by 0 is caught and flagged as an error).
 
  The following operators are handled, grouped into a set of levels in
@@ -77,7 +77,7 @@
 #  include <unistd.h>
 #endif
 
-#include <ctype.h>
+#include "chartypes.h"
 
 #include "shell.h"
 
@@ -142,31 +142,55 @@ static int	curtok;		/* the current token */
 static int	lasttok;	/* the previous token */
 static int	assigntok;	/* the OP in OP= */
 static char	*tokstr;	/* current token string */
-static int	tokval;		/* current token value */
+static intmax_t	tokval;		/* current token value */
 static int	noeval;		/* set to 1 if no assignment to be done */
 static procenv_t evalbuf;
 
-static void	readtok ();	/* lexical analyzer */
-static long	subexpr (), expassign (), exp0 (), exp1 (), exp2 (), exp3 (),
-		exp4 (), exp5 (), expshift (), expland (), explor (),
-		expband (), expbor (), expbxor (), expcond (), exppower (),
-		expcomma ();
-static long	strlong ();
-static void	evalerror ();
+static void	readtok __P((void));	/* lexical analyzer */
+
+static intmax_t	expr_streval __P((char *, int));
+static intmax_t	strlong __P((char *));
+static void	evalerror __P((char *));
+
+static void	pushexp __P((void));
+static void	popexp __P((void));
+static void	expr_unwind __P((void));
+
+static intmax_t subexpr __P((char *));
+
+static intmax_t	expcomma __P((void));
+static intmax_t expassign __P((void));
+static intmax_t	expcond __P((void));
+static intmax_t explor __P((void));
+static intmax_t expland __P((void));
+static intmax_t	expbor __P((void));
+static intmax_t	expbxor __P((void));
+static intmax_t	expband __P((void));
+static intmax_t exp5 __P((void));
+static intmax_t exp4 __P((void));
+static intmax_t expshift __P((void));
+static intmax_t exp3 __P((void));
+static intmax_t exp2 __P((void));
+static intmax_t	exppower __P((void));
+static intmax_t exp1 __P((void));
+static intmax_t exp0 __P((void));
 
 /* A structure defining a single expression context. */
 typedef struct {
   int curtok, lasttok;
   char *expression, *tp, *lasttp;
-  int tokval;
+  intmax_t tokval;
   char *tokstr;
   int noeval;
 } EXPR_CONTEXT;
 
+#ifdef INCLUDE_UNUSED
+/* Not used yet. */
 typedef struct {
   char *tokstr;
-  int tokval;
+  intmax_t tokval;
 } LVALUE;
+#endif
 
 /* Global var which contains the stack of expression contexts. */
 static EXPR_CONTEXT **expr_stack;
@@ -174,6 +198,7 @@ static int expr_depth;		   /* Location in the stack. */
 static int expr_stack_size;	   /* Number of slots already allocated. */
 
 extern char *this_command_name;
+extern int unbound_vars_is_error;
 
 #define SAVETOK(X) \
   do { \
@@ -209,9 +234,8 @@ pushexp ()
 
   if (expr_depth >= expr_stack_size)
     {
-      expr_stack = (EXPR_CONTEXT **)
-	xrealloc (expr_stack, (expr_stack_size += EXPR_STACK_GROW_SIZE)
-		  * sizeof (EXPR_CONTEXT *));
+      expr_stack_size += EXPR_STACK_GROW_SIZE;
+      expr_stack = (EXPR_CONTEXT **)xrealloc (expr_stack, expr_stack_size * sizeof (EXPR_CONTEXT *));
     }
 
   context = (EXPR_CONTEXT *)xmalloc (sizeof (EXPR_CONTEXT));
@@ -240,6 +264,22 @@ popexp ()
   free (context);
 }
 
+static void
+expr_unwind ()
+{
+  while (--expr_depth > 0)
+    {
+      if (expr_stack[expr_depth]->tokstr)
+	free (expr_stack[expr_depth]->tokstr);
+
+      if (expr_stack[expr_depth]->expression)
+	free (expr_stack[expr_depth]->expression);
+
+      free (expr_stack[expr_depth]);
+    }
+  free (expr_stack[expr_depth]);	/* free the allocated EXPR_CONTEXT */
+}
+
 /* Evaluate EXPR, and return the arithmetic result.  If VALIDP is
    non-null, a zero is stored into the location to which it points
    if the expression is invalid, non-zero otherwise.  If a non-zero
@@ -253,23 +293,14 @@ popexp ()
    were assigned at program startup or by the compiler.  Therefore, it is
    safe to let the loop terminate when expr_depth == 0, without freeing up
    any of the expr_depth[0] stuff. */
-long
+intmax_t
 evalexp (expr, validp)
      char *expr;
      int *validp;
 {
-  long val;
-#if 0
-  procenv_t old_evalbuf;
-#endif
+  intmax_t val;
 
-  val = 0L;
-
-#if 0
-  /* Save the value of evalbuf to protect it around possible recursive
-     calls to evalexp (). */
-  COPY_PROCENV (evalbuf, old_evalbuf);
-#endif
+  val = 0;
 
   if (setjmp (evalbuf))
     {
@@ -277,30 +308,14 @@ evalexp (expr, validp)
       FREE (expression);
       tokstr = expression = (char *)NULL;
 
-      while (--expr_depth > 0)
-	{
-	  if (expr_stack[expr_depth]->tokstr)
-	    free (expr_stack[expr_depth]->tokstr);
-
-	  if (expr_stack[expr_depth]->expression)
-	    free (expr_stack[expr_depth]->expression);
-
-	  free (expr_stack[expr_depth]);
-	}
-      free (expr_stack[expr_depth]);	/* free the allocated EXPR_CONTEXT */
+      expr_unwind ();
 
       if (validp)
 	*validp = 0;
-      return (0L);
+      return (0);
     }
 
   val = subexpr (expr);
-
-#if 0
-  /* Restore the value of evalbuf so that any subsequent longjmp calls
-     will have a valid location to jump to. */
-  COPY_PROCENV (old_evalbuf, evalbuf);
-#endif
 
   if (validp)
     *validp = 1;
@@ -308,18 +323,18 @@ evalexp (expr, validp)
   return (val);
 }
 
-static long
+static intmax_t
 subexpr (expr)
      char *expr;
 {
-  long val;
+  intmax_t val;
   char *p;
 
   for (p = expr; p && *p && cr_whitespace (*p); p++)
     ;
 
   if (p == NULL || *p == '\0')
-    return (0L);
+    return (0);
 
   pushexp ();
   curtok = lasttok = 0;
@@ -327,7 +342,7 @@ subexpr (expr)
   tp = expression;
 
   tokstr = (char *)NULL;
-  tokval = 0L;
+  tokval = 0;
 
   readtok ();
 
@@ -344,10 +359,10 @@ subexpr (expr)
   return val;
 }
 
-static long
+static intmax_t
 expcomma ()
 {
-  register long value;
+  register intmax_t value;
 
   value = expassign ();
   while (curtok == COMMA)
@@ -359,17 +374,17 @@ expcomma ()
   return value;
 }
   
-static long
+static intmax_t
 expassign ()
 {
-  register long	value;
+  register intmax_t value;
   char *lhs, *rhs;
 
   value = expcond ();
   if (curtok == EQ || curtok == OP_ASSIGN)
     {
       int special, op;
-      long lvalue;
+      intmax_t lvalue;
 
       special = curtok == OP_ASSIGN;
 
@@ -394,9 +409,13 @@ expassign ()
 	      lvalue *= value;
 	      break;
 	    case DIV:
+	      if (value == 0)
+		evalerror ("division by 0");
 	      lvalue /= value;
 	      break;
 	    case MOD:
+	      if (value == 0)
+		evalerror ("division by 0");
 	      lvalue %= value;
 	      break;
 	    case PLUS:
@@ -440,10 +459,10 @@ expassign ()
 }
 
 /* Conditional expression (expr?expr:expr) */
-static long
+static intmax_t
 expcond ()
 {
-  long cval, val1, val2, rval;
+  intmax_t cval, val1, val2, rval;
   int set_noeval;
 
   set_noeval = 0;
@@ -458,11 +477,9 @@ expcond ()
 	  set_noeval = 1;
 	  noeval++;
 	}
-#if 0
-      val1 = explor ();
-#else
+
       val1 = EXP_HIGHEST ();
-#endif
+
       if (set_noeval)
 	noeval--;
       if (curtok != COL)
@@ -486,10 +503,10 @@ expcond ()
 }
 
 /* Logical OR. */
-static long
+static intmax_t
 explor ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
   int set_noeval;
 
   val1 = expland ();
@@ -514,10 +531,10 @@ explor ()
 }
 
 /* Logical AND. */
-static long
+static intmax_t
 expland ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
   int set_noeval;
 
   val1 = expbor ();
@@ -542,10 +559,10 @@ expland ()
 }
 
 /* Bitwise OR. */
-static long
+static intmax_t
 expbor ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = expbxor ();
 
@@ -560,10 +577,10 @@ expbor ()
 }
 
 /* Bitwise XOR. */
-static long
+static intmax_t
 expbxor ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = expband ();
 
@@ -578,10 +595,10 @@ expbxor ()
 }
 
 /* Bitwise AND. */
-static long
+static intmax_t
 expband ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = exp5 ();
 
@@ -595,10 +612,10 @@ expband ()
   return (val1);
 }
 
-static long
+static intmax_t
 exp5 ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = exp4 ();
 
@@ -616,10 +633,10 @@ exp5 ()
   return (val1);
 }
 
-static long
+static intmax_t
 exp4 ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = expshift ();
   while ((curtok == LEQ) ||
@@ -645,10 +662,10 @@ exp4 ()
 }
 
 /* Left and right shifts. */
-static long
+static intmax_t
 expshift ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = exp3 ();
 
@@ -668,10 +685,10 @@ expshift ()
   return (val1);
 }
 
-static long
+static intmax_t
 exp3 ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = exp2 ();
 
@@ -690,10 +707,10 @@ exp3 ()
   return (val1);
 }
 
-static long
+static intmax_t
 exp2 ()
 {
-  register long val1, val2;
+  register intmax_t val1, val2;
 
   val1 = exppower ();
 
@@ -720,10 +737,10 @@ exp2 ()
   return (val1);
 }
 
-static long
+static intmax_t
 exppower ()
 {
-  register long val1, val2, c;
+  register intmax_t val1, val2, c;
 
   val1 = exp1 ();
   if (curtok == POWER)
@@ -731,7 +748,7 @@ exppower ()
       readtok ();
       val2 = exp1 ();
       if (val2 == 0)
-	return (1L);
+	return (1);
       if (val2 < 0)
 	evalerror ("exponent less than 0");
       for (c = 1; val2--; c *= val1)
@@ -741,10 +758,10 @@ exppower ()
   return (val1);
 }
 
-static long
+static intmax_t
 exp1 ()
 {
-  register long val;
+  register intmax_t val;
 
   if (curtok == NOT)
     {
@@ -762,10 +779,10 @@ exp1 ()
   return (val);
 }
 
-static long
+static intmax_t
 exp0 ()
 {
-  register long val = 0L, v2;
+  register intmax_t val = 0, v2;
   char *vincdec;
   int stok;
 
@@ -814,7 +831,7 @@ exp0 ()
     {
       val = tokval;
       if (curtok == STR && (*tp == '+' || *tp == '-') && tp[1] == *tp &&
-		(tp[2] == '\0' || (isalnum (tp[2]) == 0)))
+		(tp[2] == '\0' || (ISALNUM ((unsigned char)tp[2]) == 0)))
 	{
 	  /* post-increment or post-decrement */
 	  v2 = val + ((*tp == '+') ? 1 : -1);
@@ -834,6 +851,61 @@ exp0 ()
   return (val);
 }
 
+static intmax_t
+expr_streval (tok, e)
+     char *tok;
+     int e;
+{
+  SHELL_VAR *v;
+  char *value;
+  intmax_t tval;
+
+  /* [[[[[ */
+#if defined (ARRAY_VARS)
+  v = (e == ']') ? array_variable_part (tok, (char **)0, (int *)0) : find_variable (tok);
+#else
+  v = find_variable (tok);
+#endif
+
+  if ((v == 0 || invisible_p (v)) && unbound_vars_is_error)
+    {
+#if defined (ARRAY_VARS)
+      value = (e == ']') ? array_variable_name (tok, (char **)0, (int *)0) : tok;
+#else
+      value = tok;
+#endif
+
+      err_unboundvar (value);
+
+#if defined (ARRAY_VARS)
+      if (e == ']')
+	FREE (value);	/* array_variable_name returns new memory */
+#endif
+
+      if (interactive_shell)
+	{
+	  expr_unwind ();
+	  jump_to_top_level (DISCARD);
+	}
+      else
+	jump_to_top_level (FORCE_EOF);
+    }
+
+#if defined (ARRAY_VARS)
+  /* Second argument of 0 to get_array_value means that we don't allow
+     references like array[@].  In this case, get_array_value is just
+     like get_variable_value in that it does not return newly-allocated
+     memory or quote the results. */
+  value = (e == ']') ? get_array_value (tok, 0, (int *)NULL) : get_variable_value (v);
+#else
+  value = get_variable_value (v);
+#endif
+
+  tval = (value && *value) ? subexpr (value) : 0;
+
+  return (tval);
+}
+
 /* Lexical analyzer/token reader for the expression evaluator.  Reads the
    next token and puts its value into curtok, while advancing past it.
    Updates value of tp.  May also set tokval (for number) or tokstr (for
@@ -842,7 +914,8 @@ static void
 readtok ()
 {
   register char *cp;
-  register int c, c1, e;
+  register unsigned char c, c1;
+  register int e;
 
   /* Skip leading whitespace. */
   cp = tp;
@@ -866,7 +939,7 @@ readtok ()
   if (legal_variable_starter (c))
     {
       /* variable names not preceded with a dollar sign are shell variables. */
-      char *value, *savecp;
+      char *savecp;
       EXPR_CONTEXT ec;
       int peektok;
 
@@ -909,29 +982,16 @@ readtok ()
       /* The tests for PREINC and PREDEC aren't strictly correct, but they
 	 preserve old behavior if a construct like --x=9 is given. */
       if (lasttok == PREINC || lasttok == PREDEC || peektok != EQ)
-	{
-#if defined (ARRAY_VARS)
-	  value = (e == ']') ? get_array_value (tokstr, 0) : get_string_value (tokstr);
-#else
-	  value = get_string_value (tokstr);
-#endif
-
-	  tokval = (value && *value) ? subexpr (value) : 0;
-
-#if defined (ARRAY_VARS)
-	  if (e == ']')
-	    FREE (value);	/* get_array_value returns newly-allocated memory */
-#endif
-	}
+	tokval = expr_streval (tokstr, e);
       else
 	tokval = 0;
 
       lasttok = curtok;
       curtok = STR;
     }
-  else if (digit(c))
+  else if (DIGIT(c))
     {
-      while (digit (c) || isletter (c) || c == '#' || c == '@' || c == '_')
+      while (ISALNUM (c) || c == '#' || c == '@' || c == '_')
 	c = *cp++;
 
       c = *--cp;
@@ -981,9 +1041,9 @@ readtok ()
 	c = LOR;
       else if ((c == '*') && (c1 == '*'))
 	c = POWER;
-      else if ((c == '-') && (c1 == '-') && legal_variable_starter (*cp))
+      else if ((c == '-') && (c1 == '-') && legal_variable_starter ((unsigned char)*cp))
 	c = PREDEC;
-      else if ((c == '+') && (c1 == '+') && legal_variable_starter (*cp))
+      else if ((c == '+') && (c1 == '+') && legal_variable_starter ((unsigned char)*cp))
 	c = PREINC;
       else if (c1 == EQ && member (c, "*/%+-&^|"))
 	{
@@ -1013,7 +1073,7 @@ evalerror (msg)
   longjmp (evalbuf, 1);
 }
 
-/* Convert a string to a long integer, with an arbitrary base.
+/* Convert a string to an intmax_t integer, with an arbitrary base.
    0nnn -> base 8
    0[Xx]nn -> base 16
    Anything else: [base#]number (this is implemented to match ksh93)
@@ -1024,18 +1084,16 @@ evalerror (msg)
    from [0-9][a-z][A-Z]_@ (a = 10, z = 35, A = 36, Z = 61, _ = 62, @ = 63 --
    you get the picture). */
 
-static long
+static intmax_t
 strlong (num)
      char *num;
 {
   register char *s;
-  register int c;
+  register unsigned char c;
   int base, foundbase;
-  long val = 0L;
+  intmax_t val;
 
   s = num;
-  if (s == NULL || *s == '\0')
-    return 0L;
 
   base = 10;
   foundbase = 0;
@@ -1043,8 +1101,8 @@ strlong (num)
     {
       s++;
 
-      if (s == NULL || *s == '\0')
-	return 0L;
+      if (*s == '\0')
+	return 0;
 
        /* Base 16? */
       if (*s == 'x' || *s == 'X')
@@ -1057,7 +1115,7 @@ strlong (num)
       foundbase++;
     }
 
-  val = 0L;
+  val = 0;
   for (c = *s++; c; c = *s++)
     {
       if (c == '#')
@@ -1065,26 +1123,25 @@ strlong (num)
 	  if (foundbase)
 	    evalerror ("bad number");
 
-	  base = (int)val;
-
 	  /* Illegal base specifications raise an evaluation error. */
-	  if (base < 2 || base > 64)
+	  if (val < 2 || val > 64)
 	    evalerror ("illegal arithmetic base");
 
-	  val = 0L;
+	  base = val;
+	  val = 0;
 	  foundbase++;
 	}
-      else if (isletter(c) || digit(c) || (c == '_') || (c == '@'))
+      else if (ISALNUM(c) || (c == '_') || (c == '@'))
 	{
-	  if (digit(c))
-	    c = digit_value(c);
+	  if (DIGIT(c))
+	    c = TODIGIT(c);
 	  else if (c >= 'a' && c <= 'z')
 	    c -= 'a' - 10;
 	  else if (c >= 'A' && c <= 'Z')
 	    c -= 'A' - ((base <= 36) ? 10 : 36);
-	  else if (c == '_')
-	    c = 62;
 	  else if (c == '@')
+	    c = 62;
+	  else if (c == '_')
 	    c = 63;
 
 	  if (c >= base)
@@ -1099,14 +1156,14 @@ strlong (num)
 }
 
 #if defined (EXPR_TEST)
-char *
+void *
 xmalloc (n)
      int n;
 {
   return (malloc (n));
 }
 
-char *
+void *
 xrealloc (s, n)
      char *s;
      int n;
@@ -1126,7 +1183,7 @@ main (argc, argv)
      char **argv;
 {
   register int i;
-  long v;
+  intmax_t v;
   int expok;
 
   if (setjmp (top_level))
@@ -1155,7 +1212,7 @@ builtin_error (format, arg1, arg2, arg3, arg4, arg5)
 
 char *
 itos (n)
-     int n;
+     intmax_t n;
 {
   return ("42");
 }

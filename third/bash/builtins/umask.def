@@ -1,7 +1,7 @@
 This file is umask.def, from which is created umask.c.
 It implements the builtin "umask" in Bash.
 
-Copyright (C) 1987, 1989, 1991 Free Software Foundation, Inc.
+Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -46,11 +46,16 @@ $END
 #endif
 
 #include <stdio.h>
+#include <chartypes.h>
 
 #include "../shell.h"
 #include "posixstat.h"
 #include "common.h"
 #include "bashgetopt.h"
+
+#ifdef __LCC__
+#define mode_t int
+#endif
 
 /* **************************************************************** */
 /*                                                                  */
@@ -58,8 +63,8 @@ $END
 /*                                                                  */
 /* **************************************************************** */
 
-static void print_symbolic_umask ();
-static int symbolic_umask ();
+static void print_symbolic_umask __P((mode_t));
+static int symbolic_umask __P((WORD_LIST *));
 
 /* Set or display the mask used by the system when creating files.  Flag
    of -S means display the umask in a symbolic mode. */
@@ -92,7 +97,7 @@ umask_builtin (list)
 
   if (list)
     {
-      if (digit (*list->word->word))
+      if (DIGIT (*list->word->word))
 	{
 	  umask_value = read_octal (list->word->word);
 
@@ -102,8 +107,7 @@ umask_builtin (list)
 	     is lousy. */
 	  if (umask_value == -1)
 	    {
-	      builtin_error ("`%s' is not an octal number from 000 to 777",
-				list->word->word);
+	      sh_erange (list->word->word, "octal number");
 	      return (EXECUTION_FAILURE);
 	    }
 	}
@@ -128,7 +132,7 @@ umask_builtin (list)
       if (print_symbolically)
 	print_symbolic_umask (umask_arg);
       else
-	printf ("%03o\n", umask_arg);
+	printf ("%04lo\n", (unsigned long)umask_arg);
     }
 
   fflush (stdout);
@@ -179,12 +183,12 @@ parse_symbolic_mode (mode, initial_bits)
      char *mode;
      int initial_bits;
 {
-  int who, op, perm, mask, bits, c;
+  int who, op, perm, bits, c;
   char *s;
 
   for (s = mode, bits = initial_bits;;)
     {
-      who = op = perm = mask = 0;
+      who = op = perm = 0;
 
       /* Parse the `who' portion of the symbolic mode clause. */
       while (member (*s, "agou"))
@@ -217,7 +221,7 @@ parse_symbolic_mode (mode, initial_bits)
 	case '=':
 	  break;
 	default:
-	  builtin_error ("bad symbolic mode operator: %c", op);
+	  builtin_error ("`%c': invalid symbolic mode operator", op);
 	  return (-1);
 	}
 
@@ -270,7 +274,7 @@ parse_symbolic_mode (mode, initial_bits)
 	}
       else
 	{
-	  builtin_error ("bad character in symbolic mode: %c", *s);
+	  builtin_error ("`%c': invalid symbolic mode character", *s);
 	  return (-1);
 	}
     }

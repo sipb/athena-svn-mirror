@@ -42,6 +42,11 @@
    of processes that are piped together.  The first process encountered is
    the group leader. */
 
+/* Values for the `running' field of a struct process. */
+#define PS_DONE		0
+#define PS_RUNNING	1
+#define PS_STOPPED	2
+
 /* Each child of the shell is remembered in a STRUCT PROCESS.  A chain of
    such structures is a pipeline.  The chain is circular. */
 typedef struct process {
@@ -51,6 +56,11 @@ typedef struct process {
   int running;		/* Non-zero if this process is running. */
   char *command;	/* The particular program that is running. */
 } PROCESS;
+
+/* PRUNNING really means `not exited' */
+#define PRUNNING(p)	((p)->running || WIFSTOPPED((p)->status))
+#define PSTOPPED(p)	(WIFSTOPPED((p)->status))
+#define PDEADPROC(p)	((p)->running == PS_DONE)
 
 /* A description of a pipeline's state. */
 typedef enum { JRUNNING, JSTOPPED, JDEAD, JMIXED } JOB_STATE;
@@ -78,7 +88,7 @@ typedef struct job {
   int flags;	   /* Flags word: J_NOTIFIED, J_FOREGROUND, or J_JOBCONTROL. */
 #if defined (JOB_CONTROL)
   COMMAND *deferred;	/* Commands that will execute when this job is done. */
-  VFunction *j_cleanup; /* Cleanup function to call when job marked JDEAD */
+  sh_vptrfunc_t *j_cleanup; /* Cleanup function to call when job marked JDEAD */
   PTR_T cleanarg;	/* Argument passed to (*j_cleanup)() */
 #endif /* JOB_CONTROL */
 } JOB;

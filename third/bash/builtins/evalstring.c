@@ -40,6 +40,7 @@
 #include "../input.h"
 #include "../execute_cmd.h"
 #include "../redir.h"
+#include "../trap.h"
 
 #if defined (HISTORY)
 #  include "../bashhist.h"
@@ -53,20 +54,15 @@ extern int errno;
 
 #define IS_BUILTIN(s)	(builtin_address_internal(s, 0) != (struct builtin *)NULL)
 
-extern void run_trap_cleanup ();
-extern int zwrite ();
-
-extern int interactive, interactive_shell;
 extern int indirection_level, startup_state, subshell_environment;
 extern int line_number;
 extern int last_command_exit_value;
 extern int running_trap;
 extern int posixly_correct;
-extern COMMAND *global_command;
 
 int parse_and_execute_level = 0;
 
-static int cat_file ();
+static int cat_file __P((REDIRECT *));
 
 /* How to force parse_and_execute () to clean up after itself. */
 void
@@ -87,12 +83,13 @@ parse_and_execute_cleanup ()
    	(flags & SEVAL_NONINT) -> interactive = 0;
    	(flags & SEVAL_INTERACT) -> interactive = 1;
    	(flags & SEVAL_NOHIST) -> call bash_history_disable ()
+   	(flags & SEVAL_NOFREE) -> don't free STRING when finished
 */
 
 int
 parse_and_execute (string, from_file, flags)
      char *string;
-     char *from_file;
+     const char *from_file;
      int flags;
 {
   int code, x;
@@ -127,7 +124,7 @@ parse_and_execute (string, from_file, flags)
     }
   
   add_unwind_protect (pop_stream, (char *)NULL);
-  if (orig_string)
+  if (orig_string && ((flags & SEVAL_NOFREE) == 0))
     add_unwind_protect (xfree, orig_string);
   end_unwind_frame ();
 
@@ -297,7 +294,8 @@ cat_file (r)
      REDIRECT *r;
 {
   char lbuf[128], *fn;
-  int nr, fd, rval;
+  int fd, rval;
+  ssize_t nr;
 
   if (r->instruction != r_input_direction)
     return -1;
@@ -323,26 +321,10 @@ cat_file (r)
       return -1;
     }
 
-  rval = 0;
-  while (1)
-    {
-      nr = zread (fd, lbuf, sizeof(lbuf));
-      if (nr == 0)
-	break;
-      else if (nr < 0)
-	{
-	  rval = -1;
-	  break;
-	}
-      if (zwrite (1, lbuf, nr) < 0)
-	{
-	  rval = -1;
-	  break;
-	}
-    }
+  rval = zcatfd (fd, 1, fn);
 
   free (fn);
   close (fd);
 
-  return (0);  
+  return (rval);
 }

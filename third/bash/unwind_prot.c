@@ -1,7 +1,7 @@
 /* I can't stand it anymore!  Please can't we just write the
    whole Unix system in lisp or something? */
 
-/* Copyright (C) 1987,1989 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -33,41 +33,62 @@ Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #  include <unistd.h>
 #endif
 
+#if STDC_HEADERS
+#  include <stddef.h>
+#endif
+
+#ifndef offsetof
+#  define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#endif
+
 #include "command.h"
 #include "general.h"
 #include "unwind_prot.h"
 #include "quit.h"
 #include "sig.h"
 
-/* If CLEANUP is null, then ARG contains a tag to throw back to. */
-typedef struct _uwp {
-  struct _uwp *next;
-  Function *cleanup;
-  char *arg;
-} UNWIND_ELT;
-
-/* Structure describing a saved variable and the value to restore it to.
-   If a cleanup function is set to restore_variable, the `arg' pointer
-   points to this. */
+/* Structure describing a saved variable and the value to restore it to.  */
 typedef struct {
-  int *variable;
-  char *desired_setting;
+  char *variable;
   int size;
+  char desired_setting[1]; /* actual size is `size' */
 } SAVED_VAR;
 
-static void without_interrupts ();
-static void unwind_frame_discard_internal ();
-static void unwind_frame_run_internal ();
-static void add_unwind_protect_internal ();
-static void remove_unwind_protect_internal ();
-static void run_unwind_protects_internal ();
-static void clear_unwind_protects_internal ();
-static void restore_variable ();
-static void discard_saved_var ();
+/* If HEAD.CLEANUP is null, then ARG.V contains a tag to throw back to.
+   If HEAD.CLEANUP is restore_variable, then SV.V contains the saved
+   variable.  Otherwise, call HEAD.CLEANUP (ARG.V) to clean up.  */
+typedef union uwp {
+  struct uwp_head {
+    union uwp *next;
+    Function *cleanup;
+  } head;
+  struct {
+    struct uwp_head uwp_head;
+    char *v;
+  } arg;
+  struct {
+    struct uwp_head uwp_head;
+    SAVED_VAR v;
+  } sv;
+} UNWIND_ELT;
+
+
+extern int interrupt_immediately;
+
+static void without_interrupts __P((VFunction *, char *, char *));
+static void unwind_frame_discard_internal __P((char *, char *));
+static void unwind_frame_run_internal __P((char *, char *));
+static void add_unwind_protect_internal __P((Function *, char *));
+static void remove_unwind_protect_internal __P((char *, char *));
+static void run_unwind_protects_internal __P((char *, char *));
+static void clear_unwind_protects_internal __P((char *, char *));
+static inline void restore_variable __P((SAVED_VAR *));
+static void unwind_protect_mem_internal __P((char *, char *));
 
 static UNWIND_ELT *unwind_protect_list = (UNWIND_ELT *)NULL;
 
-extern int interrupt_immediately;
+#define uwpalloc(elt)	(elt) = (UNWIND_ELT *)xmalloc (sizeof (UNWIND_ELT))
+#define uwpfree(elt)	free(elt)
 
 /* Run a function without interrupts.  This relies on the fact that the
    FUNCTION cannot change the value of interrupt_immediately.  (I.e., does
@@ -145,9 +166,14 @@ void
 clear_unwind_protect_list (flags)
      int flags;
 {
+  char *flag;
+
   if (unwind_protect_list)
-    without_interrupts
-      (clear_unwind_protects_internal, (char *)flags, (char *)NULL);
+    {
+      flag = flags ? "" : (char *)NULL;
+      without_interrupts
+        (clear_unwind_protects_internal, flag, (char *)NULL);
+    }
 }
 
 /* **************************************************************** */
@@ -163,10 +189,10 @@ add_unwind_protect_internal (cleanup, arg)
 {
   UNWIND_ELT *elt;
 
-  elt = (UNWIND_ELT *)xmalloc (sizeof (UNWIND_ELT));
-  elt->cleanup = cleanup;
-  elt->arg = arg;
-  elt->next = unwind_protect_list;
+  uwpalloc (elt);
+  elt->head.next = unwind_protect_list;
+  elt->head.cleanup = cleanup;
+  elt->arg.v = arg;
   unwind_protect_list = elt;
 }
 
@@ -179,10 +205,8 @@ remove_unwind_protect_internal (ignore1, ignore2)
   elt = unwind_protect_list;
   if (elt)
     {
-      unwind_protect_list = unwind_protect_list->next;
-      if (elt->cleanup && elt->cleanup == (Function *)restore_variable)
-	discard_saved_var ((SAVED_VAR *)elt->arg);
-      free (elt);
+      unwind_protect_list = unwind_protect_list->head.next;
+      uwpfree (elt);
     }
 }
 
@@ -190,32 +214,14 @@ static void
 run_unwind_protects_internal (ignore1, ignore2)
      char *ignore1, *ignore2;
 {
-  UNWIND_ELT *t, *elt = unwind_protect_list;
-
-  while (elt)
-   {
-      /* This function can be run at strange times, like when unwinding
-	 the entire world of unwind protects.  Thus, we may come across
-	 an element which is simply a label for a catch frame.  Don't call
-	 the non-existant function. */
-      if (elt->cleanup)
-	(*(elt->cleanup)) (elt->arg);
-
-      t = elt;
-      elt = elt->next;
-      free (t);
-    }
-  unwind_protect_list = elt;
+  unwind_frame_run_internal ((char *) NULL, (char *) NULL);
 }
 
 static void
 clear_unwind_protects_internal (flag, ignore)
      char *flag, *ignore;
 {
-  int free_elts = (int)flag;
-  UNWIND_ELT *elt;
-
-  if (free_elts != 0 && unwind_protect_list)
+  if (flag)
     {
       while (unwind_protect_list)
 	remove_unwind_protect_internal ((char *)NULL, (char *)NULL);
@@ -231,20 +237,25 @@ unwind_frame_discard_internal (tag, ignore)
 
   while (elt = unwind_protect_list)
     {
-      unwind_protect_list = unwind_protect_list->next;
-      if (elt->cleanup == 0 && (STREQ (elt->arg, tag)))
+      unwind_protect_list = unwind_protect_list->head.next;
+      if (elt->head.cleanup == 0 && (STREQ (elt->arg.v, tag)))
 	{
-	  free (elt);
+	  uwpfree (elt);
 	  break;
 	}
-      else if (elt->cleanup && elt->cleanup == (Function *)restore_variable)
-	{
-	  discard_saved_var ((SAVED_VAR *)elt->arg);
-	  free (elt);
-	}
       else
-	free (elt);
+	uwpfree (elt);
     }
+}
+
+/* Restore the value of a variable, based on the contents of SV.
+   sv->desired_setting is a block of memory SIZE bytes long holding the
+   value itself.  This block of memory is copied back into the variable. */
+static inline void
+restore_variable (sv)
+     SAVED_VAR *sv;
+{
+  FASTCOPY (sv->desired_setting, sv->variable, sv->size);
 }
 
 static void
@@ -255,76 +266,55 @@ unwind_frame_run_internal (tag, ignore)
 
   while (elt = unwind_protect_list)
     {
-      unwind_protect_list = elt->next;
+      unwind_protect_list = elt->head.next;
 
       /* If tag, then compare. */
-      if (!elt->cleanup)
+      if (!elt->head.cleanup)
 	{
-	  if (STREQ (elt->arg, tag))
+	  if (tag && STREQ (elt->arg.v, tag))
 	    {
-	      free (elt);
+	      uwpfree (elt);
 	      break;
 	    }
-	  free (elt);
-	  continue;
 	}
       else
 	{
-	  (*(elt->cleanup)) (elt->arg);
-	  free (elt);
+	  if (elt->head.cleanup == (Function *) restore_variable)
+	    restore_variable (&elt->sv.v);
+	  else
+	    (*(elt->head.cleanup)) (elt->arg.v);
 	}
+
+      uwpfree (elt);
     }
 }
 
 static void
-discard_saved_var (sv)
-     SAVED_VAR *sv;
+unwind_protect_mem_internal (var, psize)
+     char *var;
+     char *psize;
 {
-  if (sv->size != sizeof (int))
-    free (sv->desired_setting);
-  free (sv);
-}
+  int size, allocated;
+  UNWIND_ELT *elt;
 
-/* Restore the value of a variable, based on the contents of SV.  If
-   sv->size is greater than sizeof (int), sv->desired_setting points to
-   a block of memory SIZE bytes long holding the value, rather than the
-   value itself.  This block of memory is copied back into the variable. */
-static void
-restore_variable (sv)
-     SAVED_VAR *sv;
-{
-  if (sv->size != sizeof (int))
-    {
-      FASTCOPY ((char *)sv->desired_setting, (char *)sv->variable, sv->size);
-      free (sv->desired_setting);
-    }
-  else
-    *(sv->variable) = (int)sv->desired_setting;
-
-  free (sv);
+  size = *(int *) psize;
+  allocated = size + offsetof (UNWIND_ELT, sv.v.desired_setting[0]);
+  elt = (UNWIND_ELT *)xmalloc (allocated);
+  elt->head.next = unwind_protect_list;
+  elt->head.cleanup = (Function *) restore_variable;
+  elt->sv.v.variable = var;
+  elt->sv.v.size = size;
+  FASTCOPY (var, elt->sv.v.desired_setting, size);
+  unwind_protect_list = elt;
 }
 
 /* Save the value of a variable so it will be restored when unwind-protects
-   are run.  VAR is a pointer to the variable.  VALUE is the value to be
-   saved.  SIZE is the size in bytes of VALUE.  If SIZE is bigger than what
-   can be saved in an int, memory will be allocated and the value saved
-   into that using bcopy (). */
+   are run.  VAR is a pointer to the variable.  SIZE is the size in
+   bytes of VAR.  */
 void
-unwind_protect_var (var, value, size)
-     int *var;
-     char *value;
+unwind_protect_mem (var, size)
+     char *var;
      int size;
 {
-  SAVED_VAR *s = (SAVED_VAR *)xmalloc (sizeof (SAVED_VAR));
-
-  s->variable = var;
-  if (size != sizeof (int))
-    {
-      s->desired_setting = (char *)xmalloc (size);
-      FASTCOPY (value, (char *)s->desired_setting, size);
-    }
-  else
-    s->desired_setting = value;
-  s->size = size;
-  add_unwind_protect ((Function *)restore_variable, (char *)s);
+  without_interrupts (unwind_protect_mem_internal, var, (char *) &size);
 }

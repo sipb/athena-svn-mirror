@@ -1,7 +1,7 @@
 /* pcomplete.h - structure definitions and other stuff for programmable
 		 completion. */
 
-/* Copyright (C) 1999 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -51,29 +51,32 @@ typedef struct compspec {
 #define CA_EXPORT	(1<<8)
 #define CA_FILE		(1<<9)
 #define CA_FUNCTION	(1<<10)
-#define CA_HELPTOPIC	(1<<11)
-#define CA_HOSTNAME	(1<<12)
-#define CA_JOB		(1<<13)
-#define CA_KEYWORD	(1<<14)
-#define CA_RUNNING	(1<<15)
-#define CA_SETOPT	(1<<16)
-#define CA_SHOPT	(1<<17)
-#define CA_SIGNAL	(1<<18)
-#define CA_STOPPED	(1<<19)
-#define CA_USER		(1<<20)
-#define CA_VARIABLE	(1<<21)
+#define CA_GROUP	(1<<11)
+#define CA_HELPTOPIC	(1<<12)
+#define CA_HOSTNAME	(1<<13)
+#define CA_JOB		(1<<14)
+#define CA_KEYWORD	(1<<15)
+#define CA_RUNNING	(1<<16)
+#define CA_SERVICE	(1<<17)
+#define CA_SETOPT	(1<<18)
+#define CA_SHOPT	(1<<19)
+#define CA_SIGNAL	(1<<20)
+#define CA_STOPPED	(1<<21)
+#define CA_USER		(1<<22)
+#define CA_VARIABLE	(1<<23)
 
 /* Values for COMPSPEC options field. */
 #define COPT_RESERVED	(1<<0)		/* reserved for other use */
 #define COPT_DEFAULT	(1<<1)
 #define COPT_FILENAMES	(1<<2)
 #define COPT_DIRNAMES	(1<<3)
+#define COPT_NOSPACE	(1<<4)
 
 /* List of items is used by the code that implements the programmable
    completions. */
 typedef struct _list_of_items {
   int flags;
-  Function *list_getter;	/* function to call to get the list */
+  int (*list_getter) __P((struct _list_of_items *));	/* function to call to get the list */
 
   STRINGLIST *slist;
 
@@ -106,10 +109,12 @@ extern ITEMLIST it_enabled;
 extern ITEMLIST it_exports;
 extern ITEMLIST it_files;
 extern ITEMLIST it_functions;
+extern ITEMLIST it_groups;
 extern ITEMLIST it_hostnames;
 extern ITEMLIST it_jobs;
 extern ITEMLIST it_keywords;
 extern ITEMLIST it_running;
+extern ITEMLIST it_services;
 extern ITEMLIST it_setopts;
 extern ITEMLIST it_shopts;
 extern ITEMLIST it_signals;
@@ -118,26 +123,27 @@ extern ITEMLIST it_users;
 extern ITEMLIST it_variables;
 
 /* Functions from pcomplib.c */
+extern COMPSPEC *compspec_create __P((void));
+extern void compspec_dispose __P((COMPSPEC *));
+extern COMPSPEC *compspec_copy __P((COMPSPEC *));
 
-extern COMPSPEC *alloc_compspec __P((void));
-extern void free_compspec __P((COMPSPEC *));
+extern void progcomp_create __P((void));
+extern void progcomp_flush __P((void));
+extern void progcomp_dispose __P((void));
 
-extern COMPSPEC *copy_compspec __P((COMPSPEC *));
+extern int progcomp_size __P((void));
 
-extern void initialize_progcomp __P((void));
-extern void clear_progcomps __P((void));
+extern int progcomp_insert __P((char *, COMPSPEC *));
+extern int progcomp_remove __P((char *));
 
-extern int remove_progcomp __P((char *));
-extern int add_progcomp __P((char *, COMPSPEC *));
+extern COMPSPEC *progcomp_search __P((const char *));
 
-extern int num_progcomps __P((void));
-
-extern COMPSPEC *find_compspec __P((const char *));
-
-extern void print_all_compspecs __P((VFunction *));
+extern void progcomp_walk __P((hash_wfunc *));
 
 /* Functions from pcomplete.c */
 extern void set_itemlist_dirty __P((ITEMLIST *));
+
+extern STRINGLIST *completions_to_stringlist __P((char **));
 
 extern STRINGLIST *gen_compspec_completions __P((COMPSPEC *, const char *, const char *, int, int));
 extern char **programmable_completions __P((const char *, const char *, int, int, int *));

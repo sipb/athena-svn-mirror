@@ -43,16 +43,17 @@
 #  include "bashhist.h"
 #endif
 
-extern int yyparse ();
-
 extern int EOF_reached;
-extern int indirection_level, interactive, interactive_shell;
+extern int indirection_level;
 extern int posixly_correct;
 extern int subshell_environment, running_under_emacs;
 extern int last_command_exit_value, stdin_redir;
 extern int need_here_doc;
 extern int current_command_number, current_command_line_count, line_number;
 extern int expand_aliases;
+
+static void send_pwd_to_eterm __P((void));
+static sighandler alrm_catcher __P((int));
 
 /* Read and execute commands until EOF is reached.  This assumes that
    the input source has already been initialized. */
@@ -61,6 +62,8 @@ reader_loop ()
 {
   int our_indirection_level;
   COMMAND *current_command = (COMMAND *)NULL;
+
+  USE_VAR(current_command);
 
   our_indirection_level = ++indirection_level;
 
@@ -114,7 +117,8 @@ reader_loop ()
 	}
 
       executing = 0;
-      dispose_used_env_vars ();
+      if (temporary_env)
+	dispose_used_env_vars ();
 
 #if (defined (ultrix) && defined (mips)) || defined (C_ALLOCA)
       /* Attempt to reclaim memory allocated with alloca (). */
@@ -234,15 +238,15 @@ read_command ()
   /* Only do timeouts if interactive. */
   tmout_var = (SHELL_VAR *)NULL;
   tmout_len = 0;
+  old_alrm = (SigHandler *)NULL;
 
   if (interactive)
     {
       tmout_var = find_variable ("TMOUT");
-      old_alrm = (SigHandler *)NULL;
 
-      if (tmout_var && tmout_var->value)
+      if (tmout_var && var_isset (tmout_var))
 	{
-	  tmout_len = atoi (tmout_var->value);
+	  tmout_len = atoi (value_cell (tmout_var));
 	  if (tmout_len > 0)
 	    {
 	      old_alrm = set_signal_handler (SIGALRM, alrm_catcher);

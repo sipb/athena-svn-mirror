@@ -1,6 +1,6 @@
 /* redir.c -- Functions to perform input and output redirection. */
 
-/* Copyright (C) 1997 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -54,20 +54,27 @@ extern int errno;
 #endif
 
 extern int posixly_correct;
-extern int interactive, interactive_shell;
 extern REDIRECT *redirection_undo_list;
 extern REDIRECT *exec_redirection_undo_list;
 
 /* Static functions defined and used in this file. */
-static void add_undo_close_redirect ();
-static void add_exec_redirect ();
-static int add_undo_redirect ();
-static int do_redirection_internal ();
-static int expandable_redirection_filename ();
-static int stdin_redirection ();
+static void add_undo_close_redirect __P((int));
+static void add_exec_redirect __P((REDIRECT *));
+static int add_undo_redirect __P((int));
+static int expandable_redirection_filename __P((REDIRECT *));
+static int stdin_redirection __P((enum r_instruction, int));
+static int do_redirection_internal __P((REDIRECT *, int, int, int));
 
-/* Spare redirector used when translating [N]>&WORD or [N]<&WORD to a new
-   redirection and when creating the redirection undo list. */
+static int write_here_document __P((int, WORD_DESC *));
+static int write_here_string __P((int, WORD_DESC *));
+static int here_document_to_fd __P((WORD_DESC *, enum r_instruction));
+
+static int redir_special_open __P((int, char *, int, int, enum r_instruction));
+static int noclobber_open __P((char *, int, int, enum r_instruction));
+static int redir_open __P((char *, int, int, enum r_instruction));
+
+/* Spare redirector used when translating [N]>&WORD[-] or [N]<&WORD[-] to
+   a new redirection and when creating the redirection undo list. */
 static REDIRECTEE rd;
 
 /* Set to errno when a here document cannot be created for some reason.
@@ -79,29 +86,51 @@ redirection_error (temp, error)
      REDIRECT *temp;
      int error;
 {
-  char *filename;
+  char *filename, *allocname;
   int oflags;
 
-  if (expandable_redirection_filename (temp))
+  allocname = 0;
+  if (temp->redirector < 0)
+    /* This can happen when read_token_word encounters overflow, like in
+       exec 4294967297>x */
+    filename = "file descriptor out of range";
+#ifdef EBADF
+  else if (temp->redirector >= 0 && errno == EBADF)
+    {
+      /* If we're dealing with two file descriptors, we have to guess about
+         which one is invalid; in the cases of r_{duplicating,move}_input and
+         r_{duplicating,move}_output we're here because dup2() failed. */
+      switch (temp->instruction)
+        {
+        case r_duplicating_input:
+        case r_duplicating_output:
+        case r_move_input:
+        case r_move_output:
+	  filename = allocname = itos (temp->redirectee.dest);
+	  break;
+	default:
+	  filename = allocname = itos (temp->redirector);
+	  break;
+        }
+    }
+#endif
+  else if (expandable_redirection_filename (temp))
     {
       if (posixly_correct && interactive_shell == 0)
 	{
 	  oflags = temp->redirectee.filename->flags;
 	  temp->redirectee.filename->flags |= W_NOGLOB;
 	}
-      filename = redirection_expand (temp->redirectee.filename);
+      filename = allocname = redirection_expand (temp->redirectee.filename);
       if (posixly_correct && interactive_shell == 0)
 	temp->redirectee.filename->flags = oflags;
       if (filename == 0)
-	filename = savestring (temp->redirectee.filename->word);
-      if (filename == 0)
-	{
-	  filename = xmalloc (1);
-	  filename[0] = '\0';
-	}
+	filename = temp->redirectee.filename->word;
     }
+  else if (temp->redirectee.dest < 0)
+    filename = "file descriptor out of range";
   else
-    filename = itos (temp->redirectee.dest);
+    filename = allocname = itos (temp->redirectee.dest);
 
   switch (error)
     {
@@ -128,7 +157,7 @@ redirection_error (temp, error)
       break;
     }
 
-  FREE (filename);
+  FREE (allocname);
 }
 
 /* Perform the redirections on LIST.  If FOR_REAL, then actually make
@@ -185,6 +214,8 @@ expandable_redirection_filename (redirect)
     case r_output_force:
     case r_duplicating_input_word:
     case r_duplicating_output_word:
+    case r_move_input_word:
+    case r_move_output_word:
       return 1;
 
     default:
@@ -222,6 +253,34 @@ redirection_expand (word)
   dispose_words (tlist2);
   return (result);
 }
+
+static int
+write_here_string (fd, redirectee)
+     int fd;
+     WORD_DESC *redirectee;
+{
+  char *herestr;
+  int herelen, n, e;
+
+  herestr = expand_string_to_string (redirectee->word, 0);
+  herelen = strlen (herestr);
+
+  n = write (fd, herestr, herelen);
+  if (n == herelen)
+    {
+      n = write (fd, "\n", 1);
+      herelen = 1;
+    }
+  e = errno;
+  free (herestr);
+  if (n != herelen)
+    {
+      if (e == 0)
+	e = ENOSPC;
+      return e;
+    }
+  return 0;
+}  
 
 /* Write the text of the here document pointed to by REDIRECTEE to the file
    descriptor FD, which is already open to a temp file.  Return 0 if the
@@ -289,8 +348,13 @@ write_here_document (fd, redirectee)
 	      return (fd2);
 	    }
 	}
-      fclose (fp);
       dispose_words (tlist);
+      if (fclose (fp) != 0)
+	{
+	  if (errno == 0)
+	    errno = ENOSPC;
+	  return (errno);
+	}
     }
   return 0;
 }
@@ -299,12 +363,12 @@ write_here_document (fd, redirectee)
    by REDIRECTEE, and return a file descriptor open for reading to the temp
    file.  Return -1 on any error, and make sure errno is set appropriately. */
 static int
-here_document_to_fd (redirectee)
+here_document_to_fd (redirectee, ri)
      WORD_DESC *redirectee;
+     enum r_instruction ri;
 {
   char *filename;
   int r, fd, fd2;
-  static int fnum = 0;
 
   fd = sh_mktmpfd ("sh-thd", MT_USERANDOM, &filename);
 
@@ -318,7 +382,8 @@ here_document_to_fd (redirectee)
   errno = r = 0;		/* XXX */
   /* write_here_document returns 0 on success, errno on failure. */
   if (redirectee->word)
-    r = write_here_document (fd, redirectee);
+    r = (ri != r_reading_string) ? write_here_document (fd, redirectee)
+				 : write_here_string (fd, redirectee);
 
   if (r)
     {
@@ -399,15 +464,20 @@ redir_special_open (spec, filename, flags, mode, ri)
      enum r_instruction ri;
 {
   int fd;
-  long lfd;
+#if !defined (HAVE_DEV_FD)
+  intmax_t lfd;
+#endif
 
   fd = -1;
   switch (spec)
     {
 #if !defined (HAVE_DEV_FD)
     case RF_DEVFD:
-      if (legal_number, filename+8, &lfd)
-	fd = fcntl ((int)lfd, F_DUPFD, 10);
+      if (all_digits (filename+8) && legal_number (filename+8, &lfd) && lfd == (int)lfd)
+	{
+	  fd = lfd;
+	  fd = fcntl (fd, F_DUPFD, 10);
+	}
       else
 	fd = AMBIGUOUS_REDIRECT;
       break;
@@ -541,6 +611,7 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
 {
   WORD_DESC *redirectee;
   int redir_fd, fd, redirector, r, oflags;
+  intmax_t lfd;
   char *redirectee_word;
   enum r_instruction ri;
   REDIRECT *new_redirect;
@@ -550,30 +621,41 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
   redirector = redirect->redirector;
   ri = redirect->instruction;
 
-  if (ri == r_duplicating_input_word || ri == r_duplicating_output_word)
+  if (TRANSLATE_REDIRECT (ri))
     {
-      /* We have [N]>&WORD or [N]<&WORD.  Expand WORD, then translate
+      /* We have [N]>&WORD[-] or [N]<&WORD[-].  Expand WORD, then translate
 	 the redirection into a new one and continue. */
       redirectee_word = redirection_expand (redirectee);
 
+      /* XXX - what to do with [N]<&$w- where w is unset or null?  ksh93
+	       closes N. */
       if (redirectee_word == 0)
 	return (AMBIGUOUS_REDIRECT);
       else if (redirectee_word[0] == '-' && redirectee_word[1] == '\0')
 	{
-	  rd.dest = 0L;
+	  rd.dest = 0;
 	  new_redirect = make_redirection (redirector, r_close_this, rd);
 	}
       else if (all_digits (redirectee_word))
 	{
-	  if (ri == r_duplicating_input_word)
-	    {
-	      rd.dest = atol (redirectee_word);
-	      new_redirect = make_redirection (redirector, r_duplicating_input, rd);
-	    }
+	  if (legal_number (redirectee_word, &lfd) && (int)lfd == lfd)
+	    rd.dest = lfd;
 	  else
+	    rd.dest = -1;	/* XXX */
+	  switch (ri)
 	    {
-	      rd.dest = atol (redirectee_word);
+	    case r_duplicating_input_word:
+	      new_redirect = make_redirection (redirector, r_duplicating_input, rd);
+	      break;
+	    case r_duplicating_output_word:
 	      new_redirect = make_redirection (redirector, r_duplicating_output, rd);
+	      break;
+	    case r_move_input_word:
+	      new_redirect = make_redirection (redirector, r_move_input, rd);
+	      break;
+	    case r_move_output_word:
+	      new_redirect = make_redirection (redirector, r_move_output, rd);
+	      break;
 	    }
 	}
       else if (ri == r_duplicating_output_word && redirector == 1)
@@ -660,11 +742,13 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
       if (for_real)
 	{
 	  if (remembering)
-	    /* Only setup to undo it if the thing to undo is active. */
-	    if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
-	      add_undo_redirect (redirector);
-	    else
-	      add_undo_close_redirect (redirector);
+	    {
+	      /* Only setup to undo it if the thing to undo is active. */
+	      if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
+		add_undo_redirect (redirector);
+	      else
+		add_undo_close_redirect (redirector);
+	    }
 
 #if defined (BUFFERED_INPUT)
 	  check_bash_input (redirector);
@@ -721,11 +805,12 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
 
     case r_reading_until:
     case r_deblank_reading_until:
+    case r_reading_string:
       /* REDIRECTEE is a pointer to a WORD_DESC containing the text of
 	 the new input.  Place it in a temporary file. */
       if (redirectee)
 	{
-	  fd = here_document_to_fd (redirectee);
+	  fd = here_document_to_fd (redirectee, ri);
 
 	  if (fd < 0)
 	    {
@@ -736,11 +821,13 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
 	  if (for_real)
 	    {
 	      if (remembering)
-		/* Only setup to undo it if the thing to undo is active. */
-		if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
-		  add_undo_redirect (redirector);
-		else
-		  add_undo_close_redirect (redirector);
+	        {
+		  /* Only setup to undo it if the thing to undo is active. */
+		  if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
+		    add_undo_redirect (redirector);
+		  else
+		    add_undo_close_redirect (redirector);
+	        }
 
 #if defined (BUFFERED_INPUT)
 	      check_bash_input (redirector);
@@ -771,14 +858,18 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
 
     case r_duplicating_input:
     case r_duplicating_output:
+    case r_move_input:
+    case r_move_output:
       if (for_real && (redir_fd != redirector))
 	{
 	  if (remembering)
-	    /* Only setup to undo it if the thing to undo is active. */
-	    if (fcntl (redirector, F_GETFD, 0) != -1)
-	      add_undo_redirect (redirector);
-	    else
-	      add_undo_close_redirect (redirector);
+	    {
+	      /* Only setup to undo it if the thing to undo is active. */
+	      if (fcntl (redirector, F_GETFD, 0) != -1)
+		add_undo_redirect (redirector);
+	      else
+		add_undo_close_redirect (redirector);
+	    }
 
 #if defined (BUFFERED_INPUT)
 	  check_bash_input (redirector);
@@ -788,7 +879,7 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
 	    return (errno);
 
 #if defined (BUFFERED_INPUT)
-	  if (ri == r_duplicating_input)
+	  if (ri == r_duplicating_input || ri == r_move_input)
 	    duplicate_buffered_stream (redir_fd, redirector);
 #endif /* BUFFERED_INPUT */
 
@@ -802,6 +893,10 @@ do_redirection_internal (redirect, for_real, remembering, set_clexec)
 	  if (((fcntl (redir_fd, F_GETFD, 0) == 1) || set_clexec) &&
 	       (redirector > 2))
 	    SET_CLOSE_ON_EXEC (redirector);
+
+	  /* dup-and-close redirection */
+	  if (ri == r_move_input || ri == r_move_output)
+	    close (redir_fd);
 	}
       break;
 
@@ -851,11 +946,11 @@ add_undo_redirect (fd)
 
   clexec_flag = fcntl (fd, F_GETFD, 0);
 
-  rd.dest = 0L;
+  rd.dest = 0;
   closer = make_redirection (new_fd, r_close_this, rd);
   dummy_redirect = copy_redirects (closer);
 
-  rd.dest = (long)new_fd;
+  rd.dest = new_fd;
   if (fd == 0)
     new_redirect = make_redirection (fd, r_duplicating_input, rd);
   else
@@ -891,7 +986,7 @@ add_undo_close_redirect (fd)
 {
   REDIRECT *closer;
 
-  rd.dest = 0L;
+  rd.dest = 0;
   closer = make_redirection (fd, r_close_this, rd);
   closer->next = redirection_undo_list;
   redirection_undo_list = closer;
@@ -919,6 +1014,7 @@ stdin_redirection (ri, redirector)
     case r_input_output:
     case r_reading_until:
     case r_deblank_reading_until:
+    case r_reading_string:
       return (1);
     case r_duplicating_input:
     case r_duplicating_input_word:

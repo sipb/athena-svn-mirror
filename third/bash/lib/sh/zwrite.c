@@ -1,4 +1,4 @@
-/* Copyright (C) 1999 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -36,7 +36,7 @@ extern int errno;
 int
 zwrite (fd, buf, nb)
      int fd;
-     unsigned char *buf;
+     char *buf;
      size_t nb;
 {
   int n, i, nt;

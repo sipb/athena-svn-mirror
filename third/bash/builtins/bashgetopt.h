@@ -23,15 +23,17 @@
 #if !defined (__BASH_GETOPT_H)
 #  define __BASH_GETOPT_H
 
+#include <stdc.h>
+
 extern char *list_optarg;
 
 extern int list_optopt;
+extern int list_opttype;
 
 extern WORD_LIST *lcurrent;
 extern WORD_LIST *loptend;
 
-extern int internal_getopt ();
-extern void reset_internal_getopt ();
-extern void report_bad_option ();
+extern int internal_getopt __P((WORD_LIST *, char *));
+extern void reset_internal_getopt __P((void));
 
 #endif /* !__BASH_GETOPT_H */

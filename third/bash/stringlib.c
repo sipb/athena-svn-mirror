@@ -1,7 +1,6 @@
 /* stringlib.c - Miscellaneous string functions. */
 
-/* Copyright (C) 1996
-   Free Software Foundation, Inc.
+/* Copyright (C) 1996-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -29,13 +28,15 @@
 
 #include "bashansi.h"
 #include <stdio.h>
-#include <ctype.h>
+#include "chartypes.h"
 
 #include "shell.h"
 #include "pathexp.h"
 
+#include <glob/glob.h>
+
 #if defined (EXTENDED_GLOB)
-#  include <glob/fnmatch.h>
+#  include <glob/strmatch.h>
 #endif
 
 /* **************************************************************** */
@@ -44,68 +45,8 @@
 /*								    */
 /* **************************************************************** */
 
-/* Cons up a new array of words.  The words are taken from LIST,
-   which is a WORD_LIST *.  If COPY is true, everything is malloc'ed,
-   so you should free everything in this array when you are done.
-   The array is NULL terminated.  If IP is non-null, it gets the
-   number of words in the returned array.  STARTING_INDEX says where
-   to start filling in the returned array; it can be used to reserve
-   space at the beginning of the array. */
-char **
-word_list_to_argv (list, copy, starting_index, ip)
-     WORD_LIST *list;
-     int copy, starting_index, *ip;
-{
-  int count;
-  char **array;
-
-  count = list_length (list);
-  array = (char **)xmalloc ((1 + count + starting_index) * sizeof (char *));
-
-  for (count = 0; count < starting_index; count++)
-    array[count] = (char *)NULL;
-  for (count = starting_index; list; count++, list = list->next)
-    array[count] = copy ? savestring (list->word->word) : list->word->word;
-  array[count] = (char *)NULL;
-
-  if (ip)
-    *ip = count;
-  return (array);
-}
-
-/* Convert an array of strings into the form used internally by the shell.
-   COPY means to copy the values in ARRAY into the returned list rather
-   than allocate new storage.  STARTING_INDEX says where in ARRAY to begin. */
-WORD_LIST *
-argv_to_word_list (array, copy, starting_index)
-     char **array;
-     int copy, starting_index;
-{
-  WORD_LIST *list;
-  WORD_DESC *w;
-  int i, count;
-
-  if (array == 0 || array[0] == 0)
-    return (WORD_LIST *)NULL;
-
-  for (count = 0; array[count]; count++)
-    ;
-
-  for (i = starting_index, list = (WORD_LIST *)NULL; i < count; i++)
-    {
-      w = make_bare_word (copy ? "" : array[i]);
-      if (copy)
-	{
-	  free (w->word);
-	  w->word = array[i];
-	}
-      list = make_word_list (w, list);
-    }
-  return (REVERSE_LIST(list, WORD_LIST *));
-}
-
 /* Find STRING in ALIST, a list of string key/int value pairs.  If FLAGS
-   is 1, STRING is treated as a pattern and matched using fnmatch. */
+   is 1, STRING is treated as a pattern and matched using strmatch. */
 int
 find_string_in_alist (string, alist, flags)
      char *string;
@@ -119,7 +60,7 @@ find_string_in_alist (string, alist, flags)
     {
 #if defined (EXTENDED_GLOB)
       if (flags)
-	r = fnmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
+	r = strmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
       else
 #endif
 	r = STREQ (string, alist[i].word);
@@ -130,11 +71,72 @@ find_string_in_alist (string, alist, flags)
   return -1;
 }
 
+/* Find TOKEN in ALIST, a list of string/int value pairs.  Return the
+   corresponding string.  Allocates memory for the returned
+   string.  FLAGS is currently ignored, but reserved. */
+char *
+find_token_in_alist (token, alist, flags)
+     int token;
+     STRING_INT_ALIST *alist;
+     int flags;
+{
+  register int i;
+
+  for (i = 0; alist[i].word; i++)
+    {
+      if (alist[i].token == token)
+        return (savestring (alist[i].word));
+    }
+  return ((char *)NULL);
+}
+
+int
+find_index_in_alist (string, alist, flags)
+     char *string;
+     STRING_INT_ALIST *alist;
+     int flags;
+{
+  register int i;
+  int r;
+
+  for (i = r = 0; alist[i].word; i++)
+    {
+#if defined (EXTENDED_GLOB)
+      if (flags)
+	r = strmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
+      else
+#endif
+	r = STREQ (string, alist[i].word);
+
+      if (r)
+	return (i);
+    }
+
+  return -1;
+}
+
 /* **************************************************************** */
 /*								    */
 /*		    String Management Functions			    */
 /*								    */
 /* **************************************************************** */
+
+/* Cons a new string from STRING starting at START and ending at END,
+   not including END. */
+char *
+substring (string, start, end)
+     char *string;
+     int start, end;
+{
+  register int len;
+  register char *result;
+
+  len = end - start;
+  result = (char *)xmalloc (len + 1);
+  strncpy (result, string + start, len);
+  result[len] = '\0';
+  return (result);
+}
 
 /* Replace occurrences of PAT with REP in STRING.  If GLOBAL is non-zero,
    replace all occurrences, otherwise replace only the first.
@@ -153,12 +155,13 @@ strsub (string, pat, rep, global)
     {
       if (repl && STREQN (string + i, pat, patlen))
 	{
-	  RESIZE_MALLOCED_BUFFER (temp, templen, replen, tempsize, (replen * 2));
+	  if (replen)
+	    RESIZE_MALLOCED_BUFFER (temp, templen, replen, tempsize, (replen * 2));
 
 	  for (r = rep; *r; )
 	    temp[templen++] = *r++;
 
-	  i += patlen;
+	  i += patlen ? patlen : 1;	/* avoid infinite recursion */
 	  repl = global != 0;
 	}
       else
@@ -186,7 +189,7 @@ strcreplace (string, c, text, do_glob)
 
   len = STRLEN (text);
   rlen = len + strlen (string) + 2;
-  ret = xmalloc (rlen);
+  ret = (char *)xmalloc (rlen);
 
   for (p = string, r = ret; p && *p; )
     {
@@ -220,6 +223,7 @@ strcreplace (string, c, text, do_glob)
       if (*p == '\\' && p[1] == c)
 	p++;
 
+      ind = r - ret;
       RESIZE_MALLOCED_BUFFER (ret, ind, 2, rlen, rlen);
       r = ret + ind;			/* in case reallocated */
       *r++ = *p++;

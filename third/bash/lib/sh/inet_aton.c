@@ -57,7 +57,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)inet_addr.c	8.1 (Berkeley) 6/17/93";
-static char rcsid[] = "$Id: inet_aton.c,v 1.1.1.1 2001-11-16 17:40:32 zacheiss Exp $";
+static char rcsid[] = "$Id: inet_aton.c,v 1.1.1.2 2003-01-02 21:32:15 zacheiss Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include <config.h>
@@ -115,7 +115,7 @@ inet_aton(cp, addr)
 {
 	register u_bits32_t val;
 	register int base, n;
-	register char c;
+	register unsigned char c;
 	u_int parts[4];
 	register u_int *pp = parts;
 
@@ -126,7 +126,12 @@ inet_aton(cp, addr)
 		 * Values are specified as for C:
 		 * 0x=hex, 0=octal, isdigit=decimal.
 		 */
+#if 0
 		if (!isdigit(c))
+#else
+		if (c != '0' && c != '1' && c != '2' && c != '3' && c != '4' &&
+		    c != '5' && c != '6' && c != '7' && c != '8' && c != '9')
+#endif
 			return (0);
 		val = 0; base = 10;
 		if (c == '0') {

@@ -1,7 +1,7 @@
 This file is wait.def, from which is created wait.c.
 It implements the builtin "wait" in Bash.
 
-Copyright (C) 1987, 1989, 1991 Free Software Foundation, Inc.
+Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -50,6 +50,8 @@ $END
 #  include <unistd.h>
 #endif
 
+#include <chartypes.h>
+
 #include "../bashansi.h"
 
 #include "../shell.h"
@@ -58,6 +60,7 @@ $END
 #include "bashgetopt.h"
 
 extern int interrupt_immediately;
+extern int wait_signal_received;
 
 procenv_t wait_intr_buf;
 
@@ -81,10 +84,11 @@ wait_builtin (list)
   int status, code;
   volatile int old_interrupt_immediately;
 
+  USE_VAR(list);
+
   if (no_options (list))
     return (EX_USAGE);
-  if (list != loptend)
-    list = loptend;
+  list = loptend;
 
   old_interrupt_immediately = interrupt_immediately;
   interrupt_immediately++;
@@ -100,7 +104,7 @@ wait_builtin (list)
   code = setjmp (wait_intr_buf);
   if (code)
     {
-      status = 128 + SIGINT;
+      status = 128 + wait_signal_received;
       WAIT_RETURN (status);
     }
 
@@ -120,18 +124,19 @@ wait_builtin (list)
     {
       pid_t pid;
       char *w;
+      intmax_t pid_value;
 
       w = list->word->word;
-      if (digit (*w))
+      if (DIGIT (*w))
 	{
-	  if (all_digits (w + 1))
+	  if (legal_number (w, &pid_value) && pid_value == (pid_t)pid_value)
 	    {
-	      pid = (pid_t)atoi (w);
+	      pid = (pid_t)pid_value;
 	      status = wait_for_single_pid (pid);
 	    }
 	  else
 	    {
-	      builtin_error ("`%s' is not a pid or valid job spec", w);
+	      sh_badpid (w);
 	      WAIT_RETURN (EXECUTION_FAILURE);
 	    }
 	}
@@ -148,7 +153,7 @@ wait_builtin (list)
 	  if (job < 0 || job >= job_slots || !jobs[job])
 	    {
 	      if (job != DUP_JOB)
-		builtin_error ("%s: no such job", list->word->word);
+		sh_badjob (list->word->word);
 	      UNBLOCK_CHILD (oset);
 	      status = 127;	/* As per Posix.2, section 4.70.2 */
 	      list = list->next;
@@ -162,13 +167,13 @@ wait_builtin (list)
       else if (job_control == 0 && *w == '%')
 	{
 	  /* can't use jobspecs as arguments if job control is not active. */
-	  builtin_error ("job control not enabled");
+	  sh_nojobs ((char *)NULL);
 	  status = EXECUTION_FAILURE;
 	}
 #endif /* JOB_CONTROL */
       else
 	{
-	  builtin_error ("`%s' is not a pid or valid job spec", w);
+	  sh_badpid (w);
 	  status = EXECUTION_FAILURE;
 	}
       list = list->next;
