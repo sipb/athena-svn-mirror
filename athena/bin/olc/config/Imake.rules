@@ -611,12 +611,18 @@ BuildMakefileTarget(Imakefile,/**/)
 #endif /* MakefileTarget */
 
 
+#ifndef OutputRebuildReason
+#define OutputRebuildReason(target,modules)				@@\
+	@echo "#* Generating" target because of modules
+#endif
+
 /*
  * NormalLibraryObjectRule - generate make rules to build "normal" objects.
  */
 #ifndef NormalLibraryObjectRule
 #define	NormalLibraryObjectRule()					@@\
 .c.o:									@@\
+	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@							@@\
 	$(CC) -c $(CFLAGS) $*.c
 #endif /* NormalLibraryObjectRule */
@@ -624,6 +630,7 @@ BuildMakefileTarget(Imakefile,/**/)
 #ifndef NormalFortranObjectRule
 #define NormalFortranObjectRule()					@@\
 .f.o:									@@\
+	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@							@@\
 	$(FC) -c $(FCFLAGS) $*.f
 #endif
@@ -639,6 +646,7 @@ all::									@@\
 	@if [ ! -d profiled ]; then mkdir profiled; else exit 0; fi	@@\
 									@@\
 .c.o:									@@\
+	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@ profiled/$@						@@\
 	$(CC) -pg -c $(CFLAGS) $*.c					@@\
 	$(MV) $*.o profiled/$*.o					@@\
@@ -661,6 +669,7 @@ all::									@@\
 	@if [ ! -d debugger ]; then mkdir debugger; else exit 0; fi	@@\
 									@@\
 .c.o:									@@\
+	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@ debugger/$@						@@\
 	$(CC) -g -c $(CFLAGS) $*.c					@@\
 	$(MV) $*.o debugger/$*.o					@@\
@@ -684,6 +693,7 @@ all::									@@\
 	@if [ ! -d debugger ]; then mkdir debugger; else exit 0; fi	@@\
 									@@\
 .c.o:									@@\
+	OutputRebuildReason($@,$?)					@@\
 	$(RM) $@ profiled/$@ debugger/$@				@@\
 	$(CC) -pg -c $(CFLAGS) $*.c					@@\
 	$(MV) $*.o profiled/$*.o					@@\
