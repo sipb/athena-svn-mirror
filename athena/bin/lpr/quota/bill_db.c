@@ -13,11 +13,18 @@
 #include "quota_db.h"
 #include "quota.h"
 
+/* These have to be defined here because quota_dba.o declares them */
+/* extern.   Normally, the are declared in qmain.c. */
+#ifdef DEBUG
+char *progname = "bill_db";
+int quota_debug=1;
+#endif
+
 /* Define all codes that that the bursar files will use. */
 #define STUFF "SU1"
-#define ATHCODE "385"
+#define ATHCODE "721"
 #define TITLE "Printing: "
-#define TITLE1 "Printing Charges"
+#define TITLE1 "Athena Printing Charges"
 #define ACC "24745"
 #define OBJ "480"
 
@@ -27,6 +34,7 @@ static char filename2[] = "/tmp/bursar_studentsXXXXXX";
 static char filename3[] = "/tmp/bursar_facultyXXXXXX";
 
 int clean1=0, clean2=0, clean3=0;
+extern int errno;
 
 FILE *fp, *fp2, *fp3;
 char realm[REALM_SZ];
@@ -76,7 +84,7 @@ char *argv[];
   kresult = krb_get_lrealm(realm, 1);
   if (kresult != KSUCCESS)
     fprintf(stderr, "bill_db: error in obtaining realm\n");
-  else if (!(name_list = read_name_list(argv[1])))
+  else if (!(name_list = read_name_list(argv[1])) && errno)
     fprintf(stderr, "error in reading name list file %s\n", argv[1]);
   else if (quota_db_set_name(argv[2]))
     fprintf(stderr, "error in setting db name %s\n", argv[2]);
@@ -128,7 +136,9 @@ char* argv;
 
   current = new = name_list = (struct person *)NULL;
 
+  errno = ENOENT;
   if(!(fp = fopen(argv, "r"))) return NULL;
+  errno = 0;
   while (fscanf(fp, "%[^:]:%d:%c:%[^\n]\n", user_name, &number, 
 		&flag, real_name) != EOF) {
     if (trip == 1) 
@@ -153,7 +163,7 @@ char* argv;
   }
   (void)fclose(fp);
   if (trip == 0)
-    return(NULL);
+    return((struct person *)NULL);
   return(name_list);
 }
 
