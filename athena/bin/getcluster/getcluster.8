@@ -2,7 +2,7 @@
 .SH NAME
 getcluster \- retrieve service cluster info from Hesiod as environment vars
 .SH SYNOPSIS
-getcluster [-b] hostname version
+getcluster [-b] [-d] hostname version
 
 # C shell example
 .br
@@ -19,30 +19,46 @@ queries the Hesiod database for service cluster information associated
 with the workstation on which it is run.  It writes a set of environment
 variable assignments on its standard output in a format acceptable
 to the C shell, or, if the -b flag is present, in Bourne shell syntax.
-If any errors are encountered in querying the Hesiod database or
-during the output of the information, the standard
-output is truncated to size 0, ensuring that partial data will not
-remain in the file.
 .I Getcluster
-also returns an exit status of -1 if any errors were encountered.
+returns an exit status of 1 if any errors were encountered.
+
+In some cases there may be several Hesiod variable definitions for the
+same variable, all or all but one of which is tagged with a distinct
+version number in the third field.  In this case,
+.I Getcluster
+if the environment variable AUTOUPDATE does not have the value "true",
+.I Getcluster
+takes the value matching the major and minor number of the version
+number passed on the command line.  If the environment variable
+AUTOUPDATE has the value "true",
+.I Getcluster
+takes the value with the higher version number tag, discarding any
+entries marked as testing whose version numbers do not match the major
+and minor number of the command line version.  Entries are marked as
+testing by a fourth field containing the letter t.  The idea is that
+the maintainer of an auto-update machine must update manually to
+testing releases, but the machine will update automatically to
+production releases.
+
+If the -d flag is present,
+.I Getcluster
+will ignore the hostname argument and instead read lines from standard
+input, treating each line as if it were an entry in the Hesiod
+database for the host's cluster information.
 
 .I Getcluster
-is usually invoked from a suitable shell script in /etc/rc
-to retrieve environment variables which will be used by applications during
-the session.  These are placed, if successful, in the files
+is usually invoked from save_cluster_info(8), which places its output
+in the files
 .I /etc/athena/clusterinfo
 and
 .I /etc/athena/clusterinfo.bsh
-to be accessed by the C shell in a user's .login file
-and the Bourne shell in a user's .profile, respectively.
-It may also be invoked directly by any user.
+to be accessed by the C shell in a user's .login file and the Bourne
+shell in a user's .profile, respectively.  It may also be invoked
+directly by any user.
 .PP
 Getcluster uses the Hesiodnametypes "clustername" and "cluster".
-.SH FILES
-/etc/athena/clusterinfo
-/etc/athena/clusterinfo.bsh
 .SH "SEE ALSO"
-`Hesiod - Project Athena Technical Plan -- Name Service'
+`Hesiod - Project Athena Technical Plan -- Name Service', save_cluster_info(8)
 .SH AUTHOR
 Steve Dyer, IBM/Project Athena
 .br
