@@ -575,7 +575,7 @@ main(argc, argv)
       authopts |= OPTS_FORWARDABLE_CREDS;
 
     status = kcmd(&sock, &host, debug_port,
-		  null_local_username ? NULL : pwd->pw_name,
+		  null_local_username ? "" : pwd->pw_name,
 		  name ? name : pwd->pw_name, term,
 		  0, "host", krb_realm,
 		  &cred,
