@@ -55,6 +55,8 @@
 
 #ifdef	KRB4
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/telnet.h>
 #include <stdio.h>
 #include <des.h>        /* BSD wont include this in krb.h, so we do it here */
@@ -139,13 +141,16 @@ kerberos4_init(ap, server)
 	Authenticator *ap;
 	int server;
 {
-	FILE *fp;
+	char instance[INST_SZ + 1] = "*", realm[REALM_SZ + 1], key[8];
 
 	if (server) {
 		str_data[3] = TELQUAL_REPLY;
-		if ((fp = fopen(KEYFILE, "r")) == NULL)
+		if (krb_get_lrealm(realm, 1) != KSUCCESS)
 			return(0);
-		fclose(fp);
+		if (read_service_key(KRB_SERVICE_NAME, instance, realm,
+				     0, NULL, key) != KSUCCESS)
+			return(0);
+		memset(key, 0, sizeof(key));
 	} else {
 		str_data[3] = TELQUAL_IS;
 	}
@@ -261,6 +266,9 @@ kerberos4_is(ap, data, cnt)
 	char realm[REALM_SZ];
 	char instance[INST_SZ];
 	int r;
+	unsigned long from_addr = 0;
+	struct sockaddr_in sin;
+	int sin_len = sizeof(sin);
 
 	if (cnt-- < 1)
 		return;
@@ -281,8 +289,11 @@ kerberos4_is(ap, data, cnt)
 			printf("\r\n");
 		}
 		instance[0] = '*'; instance[1] = 0;
+		if (getpeername(0, (struct sockaddr *) &sin, &sin_len) == 0
+		    && sin.sin_family == AF_INET)
+			from_addr = sin.sin_addr.s_addr;
 		if (r = krb_rd_req(&auth, KRB_SERVICE_NAME,
-				   instance, 0, &adat, "")) {
+				   instance, from_addr, &adat, "")) {
 			if (auth_debug_mode)
 				printf("Kerberos failed him as %s\r\n", name);
 			Data(ap, KRB_REJECT, (void *)krb_err_txt[r], -1);
