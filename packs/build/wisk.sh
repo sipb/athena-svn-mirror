@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.61 $
+# $Revision: 1.62 $
 
 umask 2
 
@@ -80,7 +80,7 @@ switch ( $machine )
     set machthird="third/unsupported/transcript-v4.1 athena/ucb/look athena/lib/AL"
 endsw
 
-set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
+set libs2="athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
 
 # athena/lib/moira.dev ; I think this is not ours at the moment.
 
@@ -89,7 +89,7 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 # Decomissioned 9/95 by fiat
 # athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/lert athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/bin/athdir athena/ucb/lpr athena/ucb/quota athena/bin/telnet"
+set bins="athena/bin/aklog athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/lert athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/bin/athdir athena/ucb/lpr athena/ucb/quota"
 
 set machbins=""
 switch ( $machine )
@@ -153,12 +153,12 @@ echo on a $machine >> $outfile
 switch ( $machine )
   case sun4
     set packages =(setup $machine $libs1 $tools $third $machthird $libs2 \
-			$etcs $bins $machbins)
+	$etcs $bins $machbins athena/bin/AL athena/bin/telnet $end)
     breaksw
 
   case rsaix
     set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins \
-			$machbins)
+			$machbins $end)
     breaksw
 
   case decmips
@@ -170,7 +170,8 @@ switch ( $machine )
     breaksw
 
   case sgi
-    set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins)
+    set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins \
+	$end)
 endsw
 
 # at the moment, lib/resolv gets built twice...
@@ -272,7 +273,6 @@ endif
 	endif
 
 	if ($machine == "sun4" ) then
-		mkdir -p $SRVD/usr/athena/include/rpc
 		(cd $BUILD/sun4/include; make install DESTDIR=$SRVD >>& $outfile)
 		if ($status == 1 ) then
 		        echo "We bombed in sun4/include" >>& $outfile
