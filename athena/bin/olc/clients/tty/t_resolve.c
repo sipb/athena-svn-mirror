@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.16 1992-05-01 12:18:28 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_resolve.c,v 1.17 1997-04-30 18:05:18 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.16 1992-05-01 12:18:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.17 1997-04-30 18:05:18 ghudson Exp $";
 #endif
 #endif
 
@@ -86,10 +86,10 @@ t_done(Request,title,check)
 		if(*buf != 'y')
 		  return(SUCCESS);
 	      }
-	    printf("Using this command means that the %s has satisfactorily answered\n",DEFAULT_CONSULTANT_TITLE);
+	    printf("Using this command means that the %s has satisfactorily answered\n",client_default_consultant_title());
 	    printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
 	    printf("and %s will save your question until a %s can answer it.  If you\n",
-                    OLC_SERVICE_NAME,DEFAULT_CONSULTANT_TITLE);
+                    client_service_name(),client_default_consultant_title());
 	    printf("wish to withdraw your question, use the 'cancel' command.\n");
 	    buf[0] = '\0';
 	    get_prompted_input("Really done? [y/n] ", buf, LINE_SIZE,0);
@@ -107,8 +107,8 @@ t_done(Request,title,check)
 	  
 	case NOT_CONNECTED:
 	case NO_QUESTION:
-	  if(OLC) {
-	    printf("You do not have a question in %s.\n", OLC_SERVICE_NAME);
+	  if(client_is_user_client()) {
+	    printf("You do not have a question in %s.\n", client_service_name());
 	    printf("Type \"ask\" to ask a question, or \"quit\" to quit.\n");
 	    return(NO_ACTION);
 	  }
@@ -131,9 +131,9 @@ t_done(Request,title,check)
     case SIGNED_OFF:
       printf("Question resolved. ");
       if(is_option(Request->options,OFF_OPT))
-	printf("You have signed off %s.\n", OLC_SERVICE_NAME);
+	printf("You have signed off %s.\n", client_service_name());
       else
-	printf("You are signed off %s.\n", OLC_SERVICE_NAME);
+	printf("You are signed off %s.\n", client_service_name());
 
       t_set_default_instance(Request);
       status = SUCCESS;
@@ -145,9 +145,9 @@ t_done(Request,title,check)
       break;
 
     case OK:
-      printf("The %s has been notified that you are finished with your question.\n",DEFAULT_CONSULTANT_TITLE);
-      printf("Thank you for using %s!\n", OLC_SERVICE_NAME);
-      if(OLC) {
+      printf("The %s has been notified that you are finished with your question.\n",client_default_consultant_title());
+      printf("Thank you for using %s!\n", client_service_name());
+      if(client_is_user_client()) {
 	exit(0);
       }
 
@@ -157,11 +157,11 @@ t_done(Request,title,check)
     case SUCCESS:
       if(isme(Request))
 	printf("Your question is resolved. Thank you for using %s.\n",
-	       OLC_SERVICE_NAME);
+	       client_service_name());
       else
 	  printf("%s's [%d] question is resolved.\n",
 		 Request->target.username, Request->target.instance);
-      if(OLC) {
+      if(client_is_user_client()) {
 	exit(0);
       }
 
@@ -210,13 +210,13 @@ t_cancel(Request,title)
   switch(status)
     {
     case OK:
-      if(OLC)
+      if(client_is_user_client())
 	{
 	  printf("Using this command means that you want to withdraw your question. If you \n");
 	  printf("do not, %s will store your question until a %s can answer it.\n",
-		OLC_SERVICE_NAME,DEFAULT_CONSULTANT_TITLE);
-	  printf("In that case, exit using the 'quit' command. If the %s has\n",DEFAULT_CONSULTANT_TITLE);
-	  printf("satisfactorily answered your question, use the 'done' command to exit %s.\n", OLC_SERVICE_NAME);
+		client_service_name(),client_default_consultant_title());
+	  printf("In that case, exit using the 'quit' command. If the %s has\n",client_default_consultant_title());
+	  printf("satisfactorily answered your question, use the 'done' command to exit %s.\n", client_service_name());
 	}
 
       buf[0] = '\0';
@@ -231,8 +231,8 @@ t_cancel(Request,title)
 
     case NOT_CONNECTED:
     case NO_QUESTION:
-      if(OLC) {
-	printf("You do not have a question in %s.\n", OLC_SERVICE_NAME);
+      if(client_is_user_client()) {
+	printf("You do not have a question in %s.\n", client_service_name());
 	printf("Type \"ask\" to ask a question, or \"quit\" to quit.\n");
 	return(NO_ACTION);
       }
@@ -260,7 +260,7 @@ t_cancel(Request,title)
     case SUCCESS:
       printf("Question cancelled. \n");
       t_set_default_instance(Request);
-      if(OLC) {
+      if(client_is_user_client()) {
 	exit(0);
       }
       status = SUCCESS;
@@ -268,7 +268,7 @@ t_cancel(Request,title)
 
     case OK:
       printf("Your question has been cancelled.\n");
-      if(OLC) {
+      if(client_is_user_client()) {
 	exit(0);
       }
       
@@ -278,9 +278,9 @@ t_cancel(Request,title)
     case SIGNED_OFF:
       printf("Question cancelled.  ");
       if(is_option(Request->options,OFF_OPT))
-	printf("You have signed off %s.\n", OLC_SERVICE_NAME);
+	printf("You have signed off %s.\n", client_service_name());
       else
-	printf("You are signed off %s.\n", OLC_SERVICE_NAME);
+	printf("You are signed off %s.\n", client_service_name());
       
       t_set_default_instance(Request);
       status = SUCCESS;

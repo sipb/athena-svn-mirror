@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.24 1992-02-14 21:22:01 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_status.c,v 1.25 1997-04-30 18:05:19 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.24 1992-02-14 21:22:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.25 1997-04-30 18:05:19 ghudson Exp $";
 #endif
 #endif
 
@@ -52,12 +52,12 @@ t_personal_status(Request,chart)
 
     case EMPTY_LIST:
       if(isme(Request))
-	printf("You are not doing anything in %s.\n", OLC_SERVICE_NAME);
+	printf("You are not doing anything in %s.\n", client_service_name());
       else
 	printf("%s %s [%d] (%s@%s) is not doing anything in %s.\n",
 	       cap(Request->target.title), Request->target.realname, 
 	       Request->target.instance, Request->target.username,
-	       Request->target.machine, OLC_SERVICE_NAME);
+	       Request->target.machine, client_service_name());
       break;
 
     case ERROR:
@@ -128,9 +128,9 @@ t_display_personal_status(Request,list,chart)
 
 	      printf("%s \"%s\" question in the queue.\n",
 		   article(list->topic),list->topic);
-	      if(OLC)
+	      if(client_is_user_client())
 		printf("You are waiting to be connected to a %s.\n",
-		       DEFAULT_CONSULTANT_TITLE);
+		       client_default_consultant_title());
 	    }
 	}
       else
@@ -160,7 +160,7 @@ t_display_personal_status(Request,list,chart)
 		       list->user.instance, list->user.username,
 		       list->user.machine);
 
-	      printf("signed on to %s!\n", OLC_SERVICE_NAME);
+	      printf("signed on to %s!\n", client_service_name());
 	    }
 	}
     }
@@ -239,7 +239,7 @@ t_who(Request)
 	    {
 	      if(list.nseen >= 0)
 		printf("You are not connected to a %s.\n",
-		       DEFAULT_CONSULTANT_TITLE);
+		       client_default_consultant_title());
 	      else
 		printf("You are not connected to a user.\n");
 	    }
