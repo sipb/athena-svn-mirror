@@ -104,7 +104,9 @@ int MAIN(int argc, char **argv)
 	int need_rand = 0;
 	int informat = FORMAT_SMIME, outformat = FORMAT_SMIME;
         int keyform = FORMAT_PEM;
+#ifndef OPENSSL_NO_ENGINE
 	char *engine=NULL;
+#endif
 
 	args = argv + 1;
 	ret = 1;
@@ -166,6 +168,10 @@ int MAIN(int argc, char **argv)
 				flags |= PKCS7_BINARY;
 		else if (!strcmp (*args, "-nosigs"))
 				flags |= PKCS7_NOSIGS;
+		else if (!strcmp (*args, "-nooldmime"))
+				flags |= PKCS7_NOOLDMIMETYPE;
+		else if (!strcmp (*args, "-crlfeol"))
+				flags |= PKCS7_CRLFEOL;
 		else if (!strcmp (*args, "-crl_check"))
 				store_flags |= X509_V_FLAG_CRL_CHECK;
 		else if (!strcmp (*args, "-crl_check_all"))
@@ -176,11 +182,13 @@ int MAIN(int argc, char **argv)
 				inrand = *args;
 			} else badarg = 1;
 			need_rand = 1;
+#ifndef OPENSSL_NO_ENGINE
 		} else if (!strcmp(*args,"-engine")) {
 			if (args[1]) {
 				args++;
 				engine = *args;
 			} else badarg = 1;
+#endif
 		} else if (!strcmp(*args,"-passin")) {
 			if (args[1]) {
 				args++;
@@ -330,7 +338,9 @@ int MAIN(int argc, char **argv)
 		BIO_printf (bio_err, "-CAfile file   trusted certificates file\n");
 		BIO_printf (bio_err, "-crl_check     check revocation status of signer's certificate using CRLs\n");
 		BIO_printf (bio_err, "-crl_check_all check revocation status of signer's certificate chain using CRLs\n");
+#ifndef OPENSSL_NO_ENGINE
 		BIO_printf (bio_err, "-engine e      use engine e, possibly a hardware device.\n");
+#endif
 		BIO_printf (bio_err, "-passin arg    input file pass phrase source\n");
 		BIO_printf(bio_err,  "-rand file%cfile%c...\n", LIST_SEPARATOR_CHAR, LIST_SEPARATOR_CHAR);
 		BIO_printf(bio_err,  "               load the file (or the files in the directory) into\n");
@@ -339,7 +349,9 @@ int MAIN(int argc, char **argv)
 		goto end;
 	}
 
+#ifndef OPENSSL_NO_ENGINE
         e = setup_engine(bio_err, engine, 0);
+#endif
 
 	if(!app_passwd(bio_err, passargin, NULL, &passin, NULL)) {
 		BIO_printf(bio_err, "Error getting password\n");

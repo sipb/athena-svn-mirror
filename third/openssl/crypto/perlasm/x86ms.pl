@@ -144,7 +144,10 @@ sub main'jle	{ &out1("jle",@_); }
 sub main'jz	{ &out1("jz",@_); }
 sub main'jge	{ &out1("jge",@_); }
 sub main'jl	{ &out1("jl",@_); }
+sub main'ja	{ &out1("ja",@_); }
+sub main'jae	{ &out1("jae",@_); }
 sub main'jb	{ &out1("jb",@_); }
+sub main'jbe	{ &out1("jbe",@_); }
 sub main'jc	{ &out1("jc",@_); }
 sub main'jnc	{ &out1("jnc",@_); }
 sub main'jnz	{ &out1("jnz",@_); }
@@ -365,6 +368,12 @@ sub out1p
 	local($l,$t);
 
 	push(@out,"\t$name\t ".&conv($p1)."\n");
+	}
+
+sub main'picmeup
+	{
+	local($dst,$sym)=@_;
+	&main'lea($dst,&main'DWP($sym));
 	}
 
 sub main'blindpop { &out1("pop",@_); }

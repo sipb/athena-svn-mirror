@@ -175,12 +175,13 @@ static signed char *compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len, B
  *       (thus the boundaries should be increased)
  */
 #define EC_window_bits_for_scalar_size(b) \
-		((b) >= 2000 ? 6 : \
-		 (b) >=  800 ? 5 : \
-		 (b) >=  300 ? 4 : \
-		 (b) >=   70 ? 3 : \
-		 (b) >=   20 ? 2 : \
-		  1)
+		((size_t) \
+		 ((b) >= 2000 ? 6 : \
+		  (b) >=  800 ? 5 : \
+		  (b) >=  300 ? 4 : \
+		  (b) >=   70 ? 3 : \
+		  (b) >=   20 ? 2 : \
+		   1))
 
 /* Compute
  *      \sum scalars[i]*points[i],
@@ -209,6 +210,17 @@ int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
 	EC_POINT ***val_sub = NULL; /* pointers to sub-arrays of 'val' */
 	int ret = 0;
 	
+	if (group->meth != r->meth)
+		{
+		ECerr(EC_F_EC_POINTS_MUL, EC_R_INCOMPATIBLE_OBJECTS);
+		return 0;
+		}
+
+	if ((scalar == NULL) && (num == 0))
+		{
+		return EC_POINT_set_to_infinity(group, r);
+		}
+
 	if (scalar != NULL)
 		{
 		generator = EC_GROUP_get0_generator(group);

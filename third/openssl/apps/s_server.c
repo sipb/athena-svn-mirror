@@ -140,10 +140,6 @@ typedef unsigned int u_int;
 #include <openssl/rand.h>
 #include "s_apps.h"
 
-#ifdef OPENSSL_SYS_WINDOWS
-#include <conio.h>
-#endif
-
 #ifdef OPENSSL_SYS_WINCE
 /* Windows CE incorrectly defines fileno as returning void*, so to avoid problems below... */
 #ifdef fileno
@@ -242,7 +238,9 @@ static int s_msg=0;
 static int s_quiet=0;
 
 static int hack=0;
+#ifndef OPENSSL_NO_ENGINE
 static char *engine_id=NULL;
+#endif
 static const char *session_id_prefix=NULL;
 
 #ifdef MONOLITH
@@ -267,7 +265,9 @@ static void s_server_init(void)
 	s_msg=0;
 	s_quiet=0;
 	hack=0;
+#ifndef OPENSSL_NO_ENGINE
 	engine_id=NULL;
+#endif
 	}
 #endif
 
@@ -316,7 +316,9 @@ static void sv_usage(void)
 	BIO_printf(bio_err," -WWW          - Respond to a 'GET /<path> HTTP/1.0' with file ./<path>\n");
 	BIO_printf(bio_err," -HTTP         - Respond to a 'GET /<path> HTTP/1.0' with file ./<path>\n");
         BIO_printf(bio_err,"                 with the assumption it contains a complete HTTP response.\n");
+#ifndef OPENSSL_NO_ENGINE
 	BIO_printf(bio_err," -engine id    - Initialise and use the specified engine\n");
+#endif
 	BIO_printf(bio_err," -id_prefix arg - Generate SSL/TLS session IDs prefixed by 'arg'\n");
 	BIO_printf(bio_err," -rand file%cfile%c...\n", LIST_SEPARATOR_CHAR, LIST_SEPARATOR_CHAR);
 	}
@@ -490,7 +492,9 @@ int MAIN(int argc, char *argv[])
 	int no_tmp_rsa=0,no_dhe=0,nocert=0;
 	int state=0;
 	SSL_METHOD *meth=NULL;
+#ifndef OPENSSL_NO_ENGINE
 	ENGINE *e=NULL;
+#endif
 	char *inrand=NULL;
 
 #if !defined(OPENSSL_NO_SSL2) && !defined(OPENSSL_NO_SSL3)
@@ -665,11 +669,13 @@ int MAIN(int argc, char *argv[])
 			if (--argc < 1) goto bad;
 			session_id_prefix = *(++argv);
 			}
+#ifndef OPENSSL_NO_ENGINE
 		else if (strcmp(*argv,"-engine") == 0)
 			{
 			if (--argc < 1) goto bad;
 			engine_id= *(++argv);
 			}
+#endif
 		else if (strcmp(*argv,"-rand") == 0)
 			{
 			if (--argc < 1) goto bad;
@@ -694,7 +700,9 @@ bad:
 	SSL_load_error_strings();
 	OpenSSL_add_ssl_algorithms();
 
+#ifndef OPENSSL_NO_ENGINE
         e = setup_engine(bio_err, engine_id, 1);
+#endif
 
 	if (!app_RAND_load_file(NULL, bio_err, 1) && inrand == NULL
 		&& !RAND_status())
@@ -905,7 +913,7 @@ static int sv_body(char *hostname, int s, unsigned char *context)
 	unsigned long l;
 	SSL *con=NULL;
 	BIO *sbio;
-#ifdef OPENSSL_SYS_WINDOWS
+#if defined(OPENSSL_SYS_WINDOWS) || defined(OPENSSL_SYS_MSDOS)
 	struct timeval tv;
 #endif
 
@@ -979,7 +987,7 @@ static int sv_body(char *hostname, int s, unsigned char *context)
 		if (!read_from_sslcon)
 			{
 			FD_ZERO(&readfds);
-#ifndef OPENSSL_SYS_WINDOWS
+#if !defined(OPENSSL_SYS_WINDOWS) && !defined(OPENSSL_SYS_MSDOS)
 			FD_SET(fileno(stdin),&readfds);
 #endif
 			FD_SET(s,&readfds);
@@ -989,8 +997,8 @@ static int sv_body(char *hostname, int s, unsigned char *context)
 			 * the compiler: if you do have a cast then you can either
 			 * go for (int *) or (void *).
 			 */
-#ifdef OPENSSL_SYS_WINDOWS
-			/* Under Windows we can't select on stdin: only
+#if defined(OPENSSL_SYS_WINDOWS) || defined(OPENSSL_SYS_MSDOS)
+                        /* Under DOS (non-djgpp) and Windows we can't select on stdin: only
 			 * on sockets. As a workaround we timeout the select every
 			 * second and check for any keypress. In a proper Windows
 			 * application we wouldn't do this because it is inefficient.
@@ -1251,7 +1259,13 @@ static int init_ssl_connection(SSL *con)
 	if (SSL_ctrl(con,SSL_CTRL_GET_FLAGS,0,NULL) &
 		TLS1_FLAGS_TLS_PADDING_BUG)
 		BIO_printf(bio_s_out,"Peer has incorrect TLSv1 block padding\n");
-
+#ifndef OPENSSL_NO_KRB5
+	if (con->kssl_ctx->client_princ != NULL)
+		{
+		BIO_printf(bio_s_out,"Kerberos peer principal is %s\n",
+			con->kssl_ctx->client_princ);
+		}
+#endif /* OPENSSL_NO_KRB5 */
 	return(1);
 	}
 

@@ -320,7 +320,11 @@ static unsigned char ofb_cipher[24]=
 	0x3d,0x6d,0x5b,0xe3,0x25,0x5a,0xf8,0xc3
 	};
 
+#if 0
 static DES_LONG cbc_cksum_ret=0xB462FEF7L;
+#else
+static DES_LONG cbc_cksum_ret=0xF7FE62B4L;
+#endif
 static unsigned char cbc_cksum_data[8]={0x1D,0x26,0x93,0x97,0xf7,0xfe,0x62,0xb4};
 
 static char *pt(unsigned char *p);
@@ -427,7 +431,7 @@ int main(int argc, char *argv[])
 
 #ifndef LIBDES_LIT
 	printf("Doing ede ecb\n");
-	for (i=0; i<(NUM_TESTS-1); i++)
+	for (i=0; i<(NUM_TESTS-2); i++)
 		{
 		DES_set_key_unchecked(&key_data[i],&ks);
 		DES_set_key_unchecked(&key_data[i+1],&ks2);
