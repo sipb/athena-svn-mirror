@@ -344,4 +344,20 @@ extern	void	zephyr_addsub(const char *);
 #endif
 #else
 #define	const
+#ifdef NFS
+extern int	nfsid();
+extern AUTH	*spoofunix_create_default();
+#endif
+extern	int	attach(), detach();
+extern	void	detach_all(), detach_host();
+extern	int	read_config_file(), parse_username(), trusted_user();
+extern	void	lock_attachtab(), unlock_attachtab();
+extern	void	get_attachtab(), free_attachtab();
+#ifdef AFS
+extern	int	afs_auth();
+#endif
+#ifdef ZEPHYR
+extern	int	zephyr_sub(), zephyr_unsub();
+extern	void	zephyr_addsub();
+#endif
 #endif
