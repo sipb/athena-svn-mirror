@@ -2,7 +2,7 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1997 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.2 1999-02-22 03:44:49 danw Exp $
+#* $Id: Makefile.in,v 1.3 1999-02-27 18:07:12 danw Exp $
 #
 
 prefix=@prefix@
@@ -31,7 +31,7 @@ install: $(INSTALL)
 	done ;
 
 clean:
-	rm -f ifhp.8
+	rm -f ifhp.8 textps.8
 
 ifhp.8: ifhp.n Makefile
 	VERSION=`cat $(SRC)/../VERSION | sed 's/.* //'`; \
