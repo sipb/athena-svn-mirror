@@ -18,63 +18,17 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v $
+ *	$Id: x_instance.c,v 1.4 1991-03-24 14:33:52 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.3 1991-03-06 15:37:50 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.4 1991-03-24 14:33:52 lwvanels Exp $";
 #endif
 
+#include <mit-copyright.h>
+
 #include "xolc.h"
-
-/*
-t_instance(Request,instance)
-     REQUEST *Request;
-     int instance;
-{
-  char buf[BUFSIZE];
-  int status;
-
-  if(instance == -2)
-    {
-      buf[0] = '\0';
-      get_prompted_input("enter new instance (<return> to exit): ",buf);
-      if(buf[0] == '\0')
-	return(ERROR);
-      instance = atoi(buf);
-    }
-  else
-    if(instance == -1)
-      {
-	printf("You are %s (%d). %s.\n",Request->requester.username,Request->requester.instance,happy_message());
-	return(SUCCESS);
-      }
-
-  Request->requester.instance = 0;
-  Request->target.instance = 0;
-  while(1)
-    {
-      status = OVerifyInstance(Request,instance);
-      if(status == SUCCESS)
-	{
-	  User.instance = instance;
-	  printf("You are now %s (%d).\n",User.username, User.instance);
-	  return(SUCCESS);
-	}
-      else
-	{  
-	  printf("%s (%d) does not exist. Your status is... \n\n",User.username, instance);
-	  t_personal_status(Request,TRUE);
-	  buf[0] = '\0';
-	  get_prompted_input("enter new instance (<return> to exit): ",buf);
-	  instance = atoi(buf);
-	  if(buf[0] == '\0')
-	    return(ERROR);
-	}
-    }
-}
-*/
-
 
 t_set_default_instance(Request)
      REQUEST *Request;
