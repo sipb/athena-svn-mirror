@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.18 1991-02-01 23:20:21 lwvanels Exp $
+ *	$Id: list.c,v 1.19 1991-03-07 13:35:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.18 1991-02-01 23:20:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.19 1991-03-07 13:35:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -348,7 +348,7 @@ char *name;
 {
   int i;
   struct tm *t;
-  char st[LABEL_SIZE];
+  char st[STATUS_SIZE];
 
   fprintf(f,"%s\n%d\n",name,n);
 
