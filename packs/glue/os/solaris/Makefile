@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2000-04-28 15:19:55 ghudson Exp $
+# $Id: Makefile,v 1.3 2004-03-14 05:02:40 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -23,7 +23,6 @@ install:
 	mkdir -p ${DESTDIR}${USRBINDIR}
 	mkdir -p ${DESTDIR}${USRLIBDIR}
 	mkdir -p ${DESTDIR}${PRINTDIR}
-	install -c -m 555 answerbook.sh ${DESTDIR}${ATHBINDIR}/answerbook
 	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f90 ${DESTDIR}${ATHBINDIR}
