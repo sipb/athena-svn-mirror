@@ -24,11 +24,13 @@ if [ -s "$DEADFILES" ]; then
   done
 fi
 
+yes="y\ny\ny\ny\ny\ny\ny\ny"
+
 if [ -s "$LOCALPACKAGES" ]; then
   echo "Installing os local packages"
   for i in `cat "$LOCALPACKAGES"`; do
     echo "$i"
-    cat /util/yes-file | pkgadd -R "$UPDATE_ROOT" -d /cdrom "$i"
+    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /cdrom "$i"
   done 2>/dev/null
 fi
 
@@ -36,7 +38,7 @@ if [ -s "$LINKPACKAGES" ]; then
   echo "Installing the os link packages"
   for i in `cat "$LINKPACKAGES"`; do
     echo "$i"
-    cat /util/yes-file | pkgadd -R "$UPDATE_ROOT" -d /cdrom/cdrom.link "$i"
+    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /cdrom/cdrom.link "$i"
   done 2>/dev/null
 fi
 
@@ -50,8 +52,10 @@ fi
 
 if [ -s "$PATCHES" ]; then
   echo "Installing OS patches"
-  cat /util/yes-file | patchadd -d -R "$UPDATE_ROOT" -u \
-    -M /patches/patches.link `cat $PATCHES`
+  # patchadd is stupid and elides blank arguments, so we have to be careful
+  # specifying the update root.
+  ur="${UPDATE_ROOT:+-R $UPDATE_ROOT}"
+  echo "$yes" | patchadd -d $ur -u -M /patches/patches.link `cat $PATCHES`
 fi
 
 if [ "$OSCHANGES" = true ]; then
