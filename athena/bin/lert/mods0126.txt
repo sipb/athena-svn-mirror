@@ -1,0 +1,17 @@
+changes as of 1/26/95
+
+1.  Lert now has a configurable subject for the email messages.  just
+put what you want in "/afs/.athena/system/config/lert/lertsub" and
+either in the nightly release (or a special release) the subject line
+will change to the first line in the file.
+
+2.  several code fixes to improve portability, security, etc.  while
+largely invisible to users (aside from improved handling of some
+cryptic error conditions), these should make it easier to improve lert.
+
+3.  display routine code was almost completely overhauled to avoid
+"cut and paste" growth.
+
+4.  the program (files, etc) previously known as mom has been renamed.
+lert.  that is the new name.
+
