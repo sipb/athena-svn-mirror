@@ -125,6 +125,11 @@ int dpy_stopX(dpy_state *dpy)
   if (1 != run(CHKCONFIG WS "off", 0))
     return 1;
 
+  /* Kill xdm to work around bug in IRIX 6.5 xdm, which loops trying
+   * to restart Xsgi when the latter exits.
+   */
+  run(KILLALL "-TERM " XDM, 0);
+
   run(KILLALL "Xsgi", 0); /* don't know enough about the exit status...
 			     it might not have found a server, which is
 			     fine, or something strange might have happened,
