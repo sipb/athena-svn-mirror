@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.3.2.2 1997-07-08 18:50:59 ghudson Exp $
+# $Id: syncconf.sh,v 1.3.2.3 1997-09-08 20:57:33 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -91,12 +91,14 @@ handle()
 		;;
 
 	HOSTADDR)
+		oldhost=`cat /etc/nodename`
+		oldaddr=`awk '{ a = $1; } END { print a; }' /etc/inet/hosts`
+
 		move /etc/nodename /etc/nodename.saved
 		move /etc/hostname.le0 /etc/hostname.le0.saved
 		move /etc/defaultrouter /etc/defaultrouter.saved
 		move /etc/inet/hosts /etc/inet/hosts.saved
 
-		oldhost=`cat /etc/nodename.saved`
 		net=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
 		gateway=$net.0.1
 		broadcast=$net.255.255
@@ -112,7 +114,7 @@ handle()
 
 		# Hostname configuration happens prior to rc scripts on
 		# Solaris.
-		if [ "$HOST" != "$oldhost" ]; then
+		if [ "$HOST" != "$oldhost" -o "$ADDR" != "$oldaddr" ]; then
 			mustreboot=1
 		fi
 		;;
