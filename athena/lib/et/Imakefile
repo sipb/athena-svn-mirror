@@ -4,7 +4,7 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.1 1990-05-03 11:12:30 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/Imakefile,v 1.2 1990-05-03 11:13:20 epeisach Exp $
 #	$Locker:  $
 #
 
@@ -97,6 +97,7 @@ install:: all
 	ranlib ${DESTDIR}${LIBDIR}/libcom_err.a
 	install -c libcom_err_p.a ${DESTDIR}${LIBDIR}/libcom_err_p.a
 	ranlib ${DESTDIR}${LIBDIR}/libcom_err_p.a
+	-mkdir ${DESTDIR}${DOCDIR}
 	install -c com_err.texinfo ${DESTDIR}${DOCDIR}/com_err.texinfo
 	install -c com_err.3 ${DESTDIR}/usr/man/man3/com_err.3
 	install -c compile_et.1 ${DESTDIR}/usr/man/man1/compile_et.1
