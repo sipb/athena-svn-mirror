@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1999-02-08 18:21:06 rbasch Exp $
+# $Id: Makefile,v 1.4 1999-02-10 15:26:37 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -61,6 +61,8 @@ install:
 	install -c -m 0644 netwr_client ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 ns_fasttrack ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 nsd.options ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 pcnfsd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 ppagesd ${DESTDIR}${SGICONFIG}
