@@ -283,6 +283,7 @@ auth_krb5_password(Authctxt *authctxt, const char *password)
 	if (problem)
 		goto out;
 
+	restore_uid();
 #ifdef HEIMDAL	
 	problem = krb5_verify_user(authctxt->krb5_ctx, authctxt->krb5_user,
 	    authctxt->krb5_fwd_ccache, password, 1, NULL);
@@ -303,6 +304,7 @@ auth_krb5_password(Authctxt *authctxt, const char *password)
 #if 0	/* This should be set in krb5.conf if at all */
         krb5_verify_init_creds_opt_set_ap_req_nofail(&vopt,1);
 #endif
+	temporarily_use_uid(authctxt->pw);
 
         problem = krb5_verify_init_creds(authctxt->krb5_ctx, &creds, server, NULL, NULL, 
             &vopt);
