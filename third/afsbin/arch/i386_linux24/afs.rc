@@ -25,6 +25,9 @@ if [ -f /etc/sysconfig/afs ]; then
 fi
 
 # Athena additions
+if [ "${OPTIONS+set}" != set ]; then
+	OPTIONS="-stat 2000 -dcache 800 -daemons 4 -volumes 70"
+fi
 AFS_POST_INIT=/etc/athena/config_afs
 athena_afsadjust () {
 	. /etc/athena/rc.conf
@@ -147,6 +150,8 @@ load_client() {
 
 case "$1" in 
   start)
+	athena_afsadjust
+
 	# Load kernel extensions
 	if  load_client  ; then :
 	else
@@ -171,6 +176,7 @@ case "$1" in
 		$AFS_POST_INIT
 	fi
 
+	touch /var/lock/subsys/afs
 	;;
 
   stop)
@@ -194,6 +200,7 @@ case "$1" in
 		/sbin/rmmod $LIBAFS
 	fi
 
+	rm -f /var/lock/subsys/afs
 	;;
 
   *)
