@@ -6,12 +6,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.2 1990-07-31 10:25:17 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.3 1990-08-02 15:36:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.2 1990-07-31 10:25:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.3 1990-08-02 15:36:55 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -46,6 +46,7 @@ main (argc, argv)
   struct direct *next;		/* directory entry */
   int lock_fd;			/* file descriptor of lock file */
   int fd;			/* file descriptor of control file */
+  int retval;			/* Error code returned by system */
   FILE *file;			/* file stream used to read control file */
 
   char logname[SIZE];		/* name of log file */
@@ -54,7 +55,9 @@ main (argc, argv)
   char username[SIZE];		/* name of person that asked the question */
 
   char syscmd[SIZE];		/* buffer for constructing sys call */
-  
+
+  char *temp;			/* pointer used for walking over title to */
+				/* remove "s */
 
 /*
  *  Chdir to the directory containing the done'd logs, in case we dump
@@ -126,6 +129,14 @@ main (argc, argv)
 	    continue;
 	  }
 	  title[strlen(title) - 1] = '\0';
+	  
+	  temp = title;
+	  while (*temp != '\0') {
+	    if (*temp == '\"') *temp = '\'';
+	    if (*temp == '!') *temp = '.';
+	    temp++;
+	  }
+
 
 	  if (fgets(topic, SIZE, file) == NULL)  {
 	    fprintf(stderr, "lumberjack: unable to get topic from file %s.\n",
@@ -142,19 +153,21 @@ main (argc, argv)
 	    continue;
 	  }
 	  username[strlen(username) - 1] = '\0';
+	  fclose(file);
 
 /* If we've made it this far, we've got everything we need to ship to
  * discuss.
  */ 
-	  sprintf(syscmd, "%s %s%s -t '%s: %s' < %s",
+	  sprintf(syscmd, "%s %s%s -t \"%s: %s\" < %s",
 		  DSPIPE, PREFIX, topic, username, title, logname);
-	  if (system(syscmd))
-	    fprintf(stderr, "lumberjack: an error occurred in:\n\t%s\n", syscmd);
+	  retval = system(syscmd);
+	  /* dspipe sometimes looses and returns a bogus error value (36096) */
+	  if (retval != 0)
+	    fprintf(stderr, "lumberjack: bad exit status %d occurred in:\n\t%s\n",retval, syscmd);
 	  else
 	    {
 	      unlink(logname);
 	      unlink(next->d_name);
-	      fclose(file);
 	    }
 	}
     }
