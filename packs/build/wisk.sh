@@ -1,6 +1,6 @@
 #!/bin/athena/tcsh
 
-# $Revision: 1.26 $
+# $Revision: 1.27 $
 
 umask 2
 
@@ -564,13 +564,13 @@ if ( $installonly == "0" ) then
 		echo "We bombed in $package" >>& $outfile
 		exit -1
 	endif
-if ($machine != "decmips") then
-	((cd /build/$package;make depend) >>& $outfile)
-	if ($status == 1) then
-		echo "We bombed in $package" >>& $outfile
-		exit -1
-	endif
-endif
+#if ($machine != "decmips") then
+#	((cd /build/$package;make depend) >>& $outfile)
+#	if ($status == 1) then
+#		echo "We bombed in $package" >>& $outfile
+#		exit -1
+#	endif
+#endif
 	((cd /build/$package;make all) >> & $outfile )
 	if ($status == 1) then
 		echo "We bombed in $package" >>& $outfile
