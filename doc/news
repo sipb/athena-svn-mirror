@@ -98,3 +98,8 @@ Changes from release 8.0 to release 8.1:
 	  full suite of man pages is available (see "man hesiod", "man
 	  hesiod_getmailhost", "man hesiod_getpwnam", and  "man
 	  hesiod_getservbyname").
+
+	* An attach.conf file with additional security features
+	  enabled has been installed.  The most noticeable change is
+	  that the setuid and setgid bits on programs in NFS mounted
+	  lockers will not be honored.
