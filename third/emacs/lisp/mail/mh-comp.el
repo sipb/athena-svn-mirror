@@ -26,7 +26,7 @@
 
 ;;; Change Log:
 
-;; $Id: mh-comp.el,v 1.2.2.1 2001-01-02 17:28:23 ghudson Exp $
+;; $Id: mh-comp.el,v 1.2.2.2 2001-01-22 22:59:21 ghudson Exp $
 
 ;;; Code:
 
@@ -509,7 +509,7 @@ See also documentation for `\\[mh-send]' function."
 		      components)
 		     ((file-exists-p
 		       (setq components
-			     (expand-file-name mh-comp-formfile mh-etc)))
+			     (expand-file-name mh-comp-formfile mh-lib)))
 		      components)
 		     (t
 		      (error (format "Can't find components file \"%s\""
