@@ -1,4 +1,13 @@
 /*
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.2 1986-09-04 17:42:33 jtkohl Exp $
+ */
+
+#ifndef lint
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.2 1986-09-04 17:42:33 jtkohl Exp $";
+#endif lint
+
+/*
  * Copyright (c) 1980 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
@@ -329,7 +338,7 @@ main(argc, argv)
 		close(f);
 	}
 	chown(ttyn, pwd->pw_uid, TTYGID(pwd->pw_gid));
-	if (!hflag && !rflag)					/* XXX */
+	if (!hflag && !rflag && !pflag)				/* XXX */
 		ioctl(0, TIOCSWINSZ, &win);
 	chmod(ttyn, 0620);
 	setgid(pwd->pw_gid);
