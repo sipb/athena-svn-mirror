@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.11 1991-04-08 21:05:20 lwvanels Exp $
+ *	$Id: acl_files.c,v 1.12 1991-04-14 17:20:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.11 1991-04-08 21:05:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.12 1991-04-14 17:20:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -27,8 +27,8 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include <stdio.h>
 #include <strings.h>
-#include <sys/file.h>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
@@ -393,7 +393,7 @@ char *el;
   
   hv = hashval(el) % h->size;
   while(h->tbl[hv] != NULL && strcmp(h->tbl[hv], el)) hv = (hv+1) % h->size;
-  s = malloc(strlen(el)+1);
+  s = (char *) malloc(strlen(el)+1);
   strcpy(s, el);
   h->tbl[hv] = s;
   h->entries++;
