@@ -41,6 +41,9 @@ static char *rcsid_cref_c = "$Header: ";
 char *Prog_Name;			/* Name this program was invoked as */
 int CREF;				/*  Are we running as CREF or not? */
 
+#define DELETE	'\177'
+#define CTRL_L	'\f'
+
 /* Function:	main() is the starting point for the CREF finder.
  * Arguments:	argc:	Number of command line arguments.
  *		argv:	Array of command line arguments.
@@ -98,10 +101,12 @@ command_loop()
       addstr((CREF) ? CREF_PROMPT : STOCK_PROMPT);
       clrtoeol();
       refresh();
+      noecho();
       command = getch();
       if (isdigit(command))
 	{
 	  move(LINES - 3, strlen((CREF) ? CREF_PROMPT : STOCK_PROMPT) + 3);
+	  echo();
 	  clrtoeol();
 	  message(1, "Read section:");
 	  refresh();
@@ -127,8 +132,19 @@ command_loop()
 	  message(1,"");
 	  next_page();
 	}
+      else if (command == DELETE)
+	{
+	  message(1,"");
+	  prev_page();
+	}
+      else if (command == CTRL_L)
+	{
+	  message(1,"");
+	  redisplay();
+	}
       else
 	{
+	  echo();
 	  message(1,"");
 	  for (index = 0; index < Command_Count; index++)
 	    {
