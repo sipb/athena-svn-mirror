@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.10 1999-06-23 23:04:19 danw Exp $
+# $Id: cshrc,v 1.11 1999-08-03 04:55:10 jweiss Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -68,11 +68,10 @@ if (! $?ENV_SET) then
 	setenv NOMSGSEVERITY 1
 
 	setenv ATHENA_SYS `/bin/athena/machtype -S`
-	setenv ATHENA_SYS_COMPAT `/bin/athena/machtype -C`
-
 	if ( $ATHENA_SYS == "" ) then
 		setenv ATHENA_SYS @sys
 	endif
+	setenv ATHENA_SYS_COMPAT `/bin/athena/machtype -C`
 
 	set bindir=arch/${ATHENA_SYS}/bin
 

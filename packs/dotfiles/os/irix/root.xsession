@@ -1,5 +1,5 @@
 #!/bin/csh -f
-# $Id: root.xsession,v 1.3 1999-04-09 19:14:39 ghudson Exp $
+# $Id: root.xsession,v 1.4 1999-08-03 04:55:10 jweiss Exp $
 
 # Source the user's .cshrc if one exists otherwise 
 # do some minimal stuff
@@ -10,6 +10,7 @@ else
 	set path=(/srvd/patch /usr/athena/bin /etc/athena /bin/athena \
 		  /usr/sbin /usr/bsd /sbin /usr/bin /bin /etc \
 		  /usr/athena/etc /usr/etc /usr/bin/X11)
+	set prompt="`uname -n`# "
 endif
 
 # Start up an xterm window
