@@ -69,27 +69,29 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -103,11 +105,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -122,14 +122,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -145,27 +144,23 @@ static_targets = @static_targets@
 sysdeps_dir = @sysdeps_dir@
 sysdeps_suid_lib = @sysdeps_suid_lib@
 
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-
 INCLUDES = @INCLUDES@
-@INODEDB_TRUE@inodedb_SRCLIST = @INODEDB_TRUE@inodedb.c
+@INODEDB_TRUE@inodedb_SRCLIST = inodedb.c
 @INODEDB_FALSE@inodedb_SRCLIST = 
-@INODEDB_TRUE@inodedb_DEFS = @INODEDB_TRUE@-DSYSTEM_INODEDB=\"$(prefix)/var/libgtop/inodedb.db\"
+@INODEDB_TRUE@inodedb_DEFS = -DSYSTEM_INODEDB=\"$(prefix)/var/libgtop/inodedb.db\"
 @INODEDB_FALSE@inodedb_DEFS = 
 
 CFLAGS = @CFLAGS@ $(inodedb_DEFS)
 
-lib_LTLIBRARIES = libgtop_common-2.0.la libgtop_suid_common-2.0.la
+noinst_LTLIBRARIES = libgtop_common-2.0.la libgtop_suid_common-2.0.la
 
-libgtop_common_2_0_la_SOURCES = xmalloc.c error.c gnuslib.c \
-				  fsusage.c fsusage.h mountlist.c mountlist.h \
-				  $(inodedb_SRCLIST)
+libgtop_common_2_0_la_SOURCES = error.c gnuslib.c 				  fsusage.c                                   mountlist.c mountlist.h                                   procargs.c 				  $(inodedb_SRCLIST)
 
 
 libgtop_common_2_0_la_LDFLAGS = $(LT_VERSION_INFO)
 libgtop_common_2_0_la_LIBADD = $(LIBGTOP_EXTRA_LIBS)
 
-libgtop_suid_common_2_0_la_SOURCES = xmalloc.c error.c sysdeps_suid.c
+libgtop_suid_common_2_0_la_SOURCES = error.c sysdeps_suid.c
 
 libgtop_suid_common_2_0_la_LDFLAGS = $(LT_VERSION_INFO)
 
@@ -173,7 +168,7 @@ EXTRA_DIST = inodedb.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
@@ -185,22 +180,22 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libgtop_common_2_0_la_DEPENDENCIES = 
-@INODEDB_FALSE@libgtop_common_2_0_la_OBJECTS =  xmalloc.lo error.lo \
-@INODEDB_FALSE@gnuslib.lo fsusage.lo mountlist.lo
-@INODEDB_TRUE@libgtop_common_2_0_la_OBJECTS =  xmalloc.lo error.lo \
-@INODEDB_TRUE@gnuslib.lo fsusage.lo mountlist.lo inodedb.lo
+@INODEDB_FALSE@libgtop_common_2_0_la_OBJECTS =  error.lo gnuslib.lo \
+@INODEDB_FALSE@fsusage.lo mountlist.lo procargs.lo
+@INODEDB_TRUE@libgtop_common_2_0_la_OBJECTS =  error.lo gnuslib.lo \
+@INODEDB_TRUE@fsusage.lo mountlist.lo procargs.lo inodedb.lo
 libgtop_suid_common_2_0_la_LIBADD = 
-libgtop_suid_common_2_0_la_OBJECTS =  xmalloc.lo error.lo \
-sysdeps_suid.lo
+libgtop_suid_common_2_0_la_OBJECTS =  error.lo sysdeps_suid.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libgtop_common_2_0_la_SOURCES) $(libgtop_suid_common_2_0_la_SOURCES)
 OBJECTS = $(libgtop_common_2_0_la_OBJECTS) $(libgtop_suid_common_2_0_la_OBJECTS)
@@ -216,30 +211,14 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-noinstLTLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-noinstLTLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
-
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
-	done
+maintainer-clean-noinstLTLIBRARIES:
 
 .c.o:
 	$(COMPILE) -c $<
@@ -286,10 +265,10 @@ distclean-libtool:
 maintainer-clean-libtool:
 
 libgtop_common-2.0.la: $(libgtop_common_2_0_la_OBJECTS) $(libgtop_common_2_0_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgtop_common_2_0_la_LDFLAGS) $(libgtop_common_2_0_la_OBJECTS) $(libgtop_common_2_0_la_LIBADD) $(LIBS)
+	$(LINK)  $(libgtop_common_2_0_la_LDFLAGS) $(libgtop_common_2_0_la_OBJECTS) $(libgtop_common_2_0_la_LIBADD) $(LIBS)
 
 libgtop_suid_common-2.0.la: $(libgtop_suid_common_2_0_la_OBJECTS) $(libgtop_suid_common_2_0_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgtop_suid_common_2_0_la_LDFLAGS) $(libgtop_suid_common_2_0_la_OBJECTS) $(libgtop_suid_common_2_0_la_LIBADD) $(LIBS)
+	$(LINK)  $(libgtop_suid_common_2_0_la_LDFLAGS) $(libgtop_suid_common_2_0_la_OBJECTS) $(libgtop_suid_common_2_0_la_LIBADD) $(LIBS)
 
 tags: TAGS
 
@@ -309,7 +288,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -337,31 +316,29 @@ distdir: $(DISTFILES)
 	done
 error.lo error.o : error.c ../../include/glibtop/error.h ../../glibtop.h \
 	../../include/glibtop/global.h ../../config.h \
-	../../support/gnomesupport.h ../../support/getopt.h \
 	../../sysdeps/linux/glibtop_server.h \
 	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h
-fsusage.lo fsusage.o : fsusage.c ../../config.h fsusage.h \
-	../../glibtop.h ../../include/glibtop/global.h \
-	../../support/gnomesupport.h ../../support/getopt.h \
+fsusage.lo fsusage.o : fsusage.c ../../config.h ../../glibtop.h \
+	../../include/glibtop/global.h \
 	../../sysdeps/linux/glibtop_server.h \
 	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h \
-	../../include/glibtop/error.h ../../include/glibtop/fsusage.h
+	../../include/glibtop/fsusage.h
 gnuslib.lo gnuslib.o : gnuslib.c ../../glibtop.h \
 	../../include/glibtop/global.h ../../config.h \
-	../../support/gnomesupport.h ../../support/getopt.h \
 	../../sysdeps/linux/glibtop_server.h \
 	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h \
 	../../include/glibtop/gnuserv.h ../../include/glibtop/error.h
 mountlist.lo mountlist.o : mountlist.c ../../config.h mountlist.h \
 	../../glibtop.h ../../include/glibtop/global.h \
-	../../support/gnomesupport.h ../../support/getopt.h \
 	../../sysdeps/linux/glibtop_server.h \
 	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h \
-	../../include/glibtop/xmalloc.h ../../include/glibtop/error.h \
 	../../include/glibtop/mountlist.h
+procargs.lo procargs.o : procargs.c ../../include/glibtop/procargs.h \
+	../../glibtop.h ../../include/glibtop/global.h ../../config.h \
+	../../sysdeps/linux/glibtop_server.h \
+	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h
 sysdeps_suid.lo sysdeps_suid.o : sysdeps_suid.c ../../glibtop.h \
 	../../include/glibtop/global.h ../../config.h \
-	../../support/gnomesupport.h ../../support/getopt.h \
 	../../sysdeps/linux/glibtop_server.h \
 	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h \
 	../../include/glibtop/open.h ../../include/glibtop/read.h \
@@ -384,12 +361,6 @@ sysdeps_suid.lo sysdeps_suid.o : sysdeps_suid.c ../../glibtop.h \
 	../../include/glibtop/mountlist.h \
 	../../include/glibtop/fsusage.h ../../include/glibtop/netload.h \
 	../../include/glibtop/ppp.h
-xmalloc.lo xmalloc.o : xmalloc.c ../../include/glibtop/xmalloc.h \
-	../../glibtop.h ../../include/glibtop/global.h ../../config.h \
-	../../support/gnomesupport.h ../../support/getopt.h \
-	../../sysdeps/linux/glibtop_server.h \
-	../../include/glibtop/types.h ../../include/glibtop/sysdeps.h \
-	../../include/glibtop/error.h
 
 info-am:
 info: info-am
@@ -399,7 +370,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 install-exec: install-exec-am
 
 install-data-am:
@@ -408,14 +379,13 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am:
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir)
 
 
 mostlyclean-generic:
@@ -427,25 +397,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-noinstLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+distclean-am:  distclean-noinstLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -454,18 +424,17 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

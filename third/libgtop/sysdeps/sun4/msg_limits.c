@@ -1,4 +1,4 @@
-/* $Id: msg_limits.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: msg_limits.c,v 1.1.1.2 2004-10-03 04:59:50 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -44,15 +44,15 @@ void
 glibtop_get_msg_limits_p (glibtop *server, glibtop_msg_limits *buf)
 {
 	struct msginfo	msginfo;
-  
+
 	glibtop_init_p (server, (1 << GLIBTOP_SYSDEPS_MSG_LIMITS), 0);
 
 	memset (buf, 0, sizeof (glibtop_msg_limits));
-  
+
 	/* !!! THE FOLLOWING CODE RUNS SGID KMEM - CHANGE WITH CAUTION !!! */
-	
+
 	setregid (server->machine.gid, server->machine.egid);
-	
+
 	/* get the load average array */
 
 	(void) _glibtop_getkval (server, _glibtop_nlist [X_MSGINFO].n_value,
@@ -61,9 +61,9 @@ glibtop_get_msg_limits_p (glibtop *server, glibtop_msg_limits *buf)
 
 	if (setregid (server->machine.egid, server->machine.gid))
 		_exit (1);
-	
+
 	/* !!! END OF SGID KMEM PART !!! */
-  
+
 	buf->msgmap = msginfo.msgmap;
 	buf->msgmax = msginfo.msgmax;
 	buf->msgmnb = msginfo.msgmnb;

@@ -1,4 +1,4 @@
-/* $Id: procmap.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: procmap.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,11 +22,12 @@
 */
 
 #include <locale.h>
+#include <libintl.h>
+#include <stdio.h>
 
 #include <glibtop.h>
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/parameter.h>
 
@@ -60,7 +61,7 @@ main (int argc, char *argv [])
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
-	
+
 	glibtop_init_r (&glibtop_global_server, 0, GLIBTOP_INIT_NO_OPEN);
 
 	glibtop_get_parameter (GLIBTOP_PARAM_METHOD, &method, sizeof (method));
@@ -96,7 +97,7 @@ main (int argc, char *argv [])
 		const char *filename = NULL;
 		unsigned device, device_major, device_minor;
 		char perm [5];
-		
+
 		if (maps [i].flags & (1L << GLIBTOP_MAP_ENTRY_FILENAME))
 			filename = maps [i].filename;
 
@@ -153,10 +154,10 @@ main (int argc, char *argv [])
 		}
 
 		if (filename && (filename != maps [i].filename))
-			glibtop_free (filename);
+			g_free ((void*)filename);
 	}
 
-	glibtop_free (maps);
+	g_free (maps);
 
 	glibtop_close ();
 

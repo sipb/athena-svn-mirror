@@ -1,4 +1,4 @@
-/* $Id: loadavg.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: loadavg.c,v 1.1.1.2 2004-10-03 04:59:50 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -42,9 +42,9 @@ glibtop_get_loadavg_p (glibtop *server, glibtop_loadavg *buf)
 	memset (buf, 0, sizeof (glibtop_loadavg));
 
 	/* !!! THE FOLLOWING CODE RUNS SGID KMEM - CHANGE WITH CAUTION !!! */
-	
+
 	setregid (server->machine.gid, server->machine.egid);
-	
+
 	/* get the load average array */
 
 	(void) _glibtop_getkval (server, _glibtop_nlist [X_AVENRUN].n_value,
@@ -53,7 +53,7 @@ glibtop_get_loadavg_p (glibtop *server, glibtop_loadavg *buf)
 
 	if (setregid (server->machine.egid, server->machine.gid))
 		_exit (1);
-	
+
 	/* !!! END OF SGID KMEM PART !!! */
 
 	for (i = 0; i < 3; i++) {

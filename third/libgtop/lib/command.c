@@ -1,4 +1,4 @@
-/* $Id: command.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: command.c,v 1.1.1.2 2004-10-03 05:00:35 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -26,18 +26,15 @@
 #include <glibtop/read_data.h>
 
 #include <glibtop/command.h>
-#include <glibtop/xmalloc.h>
 
 void *
 glibtop_call_l (glibtop *server, unsigned command, size_t send_size,
 		const void *send_buf, size_t recv_size, void *recv_buf)
 {
-	glibtop_command cmnd;
-	glibtop_response response;
+	glibtop_command cmnd = {0};
+	glibtop_response response = {0};
 
 	glibtop_init_r (&server, 0, 0);
-
-	memset (&cmnd, 0, sizeof (glibtop_command));
 
 	cmnd.command = command;
 
@@ -51,7 +48,7 @@ glibtop_call_l (glibtop *server, unsigned command, size_t send_size,
 	} else {
 		cmnd.data_size = send_size;
 	}
-	
+
 	glibtop_write_l (server, sizeof (glibtop_command), &cmnd);
 
 	glibtop_read_l (server, sizeof (glibtop_response), &response);
@@ -66,7 +63,7 @@ glibtop_call_l (glibtop *server, unsigned command, size_t send_size,
 			recv_size);
 
 	if (response.data_size) {
-		void *ptr = glibtop_malloc_r (server, response.data_size);
+		void *ptr = g_malloc (response.data_size);
 
 		glibtop_read_l (server, response.data_size, ptr);
 

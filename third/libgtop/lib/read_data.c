@@ -1,4 +1,4 @@
-/* $Id: read_data.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: read_data.c,v 1.1.1.2 2004-10-03 04:59:56 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -21,8 +21,10 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include <glibtop/xmalloc.h>
+#include <config.h>
+
 #include <glibtop/read_data.h>
+#include "libgtop-i18n.h"
 
 /* Reads some data from server. */
 
@@ -40,9 +42,9 @@ glibtop_read_data_l (glibtop *server)
 #endif
 
 	if (server->socket) {
-		ret = recv (server->socket, (void *)&size, sizeof (size_t), 0);
+		ret = recv (server->socket, &size, sizeof (size_t), 0);
 	} else {
-		ret = read (server->input [0], (void *)&size, sizeof (size_t));
+		ret = read (server->input [0], &size, sizeof (size_t));
 	}
 
 	if (ret < 0)
@@ -52,10 +54,10 @@ glibtop_read_data_l (glibtop *server)
 	fprintf (stderr, "LIBRARY: really reading %d data bytes (ret = %d).\n", size, ret);
 #endif
 
-	if (!size) return NULL;	
+	if (!size) return NULL;
 
-	ptr = glibtop_malloc_r (server, size);
-	
+	ptr = g_malloc (size);
+
 	if (server->socket) {
 		ret = recv (server->socket, ptr, size, 0);
 	} else {
@@ -63,7 +65,7 @@ glibtop_read_data_l (glibtop *server)
 	}
 
 	if (ret < 0)
-		glibtop_error_io_r (server, _("read data %d bytes"));
+		glibtop_error_io_r (server, ngettext ("read data %d byte", "read data %d bytes", size));
 
 	return ptr;
 }

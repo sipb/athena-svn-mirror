@@ -1,4 +1,4 @@
-/* $Id: loadavg.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: loadavg.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_LOADAVG_LOADAVG		0
 #define GLIBTOP_LOADAVG_NR_RUNNING	1
@@ -40,9 +40,9 @@ typedef struct _glibtop_loadavg	glibtop_loadavg;
 
 struct _glibtop_loadavg
 {
-	u_int64_t flags;
+	guint64 flags;
 	double loadavg [3];		/* GLIBTOP_LOADAVG_LOADAVG	*/
-	u_int64_t nr_running,		/* GLIBTOP_LOADAVG_NR_RUNNING	*/
+	guint64 nr_running,		/* GLIBTOP_LOADAVG_NR_RUNNING	*/
 		nr_tasks,		/* GLIBTOP_LOADAVG_NR_TASKS	*/
 		last_pid;		/* GLIBTOP_LOADAVG_LAST_PID	*/
 };
@@ -76,6 +76,6 @@ extern const char *glibtop_descriptions_loadavg [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

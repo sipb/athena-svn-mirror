@@ -1,4 +1,4 @@
-/* $Id: version.c,v 1.1.1.1 2003-01-02 04:56:07 ghudson Exp $ */
+/* $Id: version.c,v 1.1.1.2 2004-10-03 05:00:40 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -37,7 +37,7 @@ glibtop_send_version (glibtop *server, int fd)
 		 sizeof (glibtop_response),
 		 sizeof (glibtop_union),
 		 sizeof (glibtop_sysdeps));
-	
+
 	size = strlen (buffer) + 1;
 
 #ifdef DEBUG

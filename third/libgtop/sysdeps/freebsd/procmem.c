@@ -1,4 +1,4 @@
-/* $Id: procmem.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: procmem.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -31,8 +31,12 @@
 #include <sys/param.h>
 #include <sys/proc.h>
 #include <sys/resource.h>
+#ifdef __NetBSD__ && (__NetBSD_Version__ >= 105020000)
+#include <uvm/uvm_extern.h>
+#else
 #include <vm/vm_object.h>
 #include <vm/vm_map.h>
+#endif
 
 #include <sys/vnode.h>
 #include <ufs/ufs/quota.h>
@@ -43,9 +47,14 @@
 #include <sys/user.h>
 #endif
 #include <sys/sysctl.h>
+#ifdef __NetBSD__ && (__NetBSD_Version__ >= 105020000)
+#include <uvm/uvm.h>
+#else
 #include <vm/vm.h>
+#endif
 
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(__NetBSD__) && \
+	(__NetBSD_Version__ >= 104000000) && (__NetBSD_Version__ < 105020000)
 /* Fixme ... */
 #undef _KERNEL
 #define _UVM_UVM_AMAP_I_H_ 1
@@ -113,7 +122,6 @@ glibtop_get_proc_mem_p (glibtop *server, glibtop_proc_mem *buf,
 	struct vmspace *vms, vmspace;
 #if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
 	struct vnode vnode;
-	struct inode inode;
 #else
 	struct vm_object object;
 #endif
@@ -121,7 +129,7 @@ glibtop_get_proc_mem_p (glibtop *server, glibtop_proc_mem *buf,
 	int count;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_PROC_MEM), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_mem));
 
 	if (server->sysdeps.proc_mem == 0)
@@ -129,36 +137,52 @@ glibtop_get_proc_mem_p (glibtop *server, glibtop_proc_mem *buf,
 
 	/* It does not work for the swapper task. */
 	if (pid == 0) return;
-	
+
 	/* Get the process data */
 	pinfo = kvm_getprocs (server->machine.kd, KERN_PROC_PID, pid, &count);
 	if ((pinfo == NULL) || (count < 1)) {
 		glibtop_warn_io_r (server, "kvm_getprocs (%d)", pid);
 		return;
 	}
+#if defined(__FreeBSD__) && (__FreeBSD_version >= 500013)
+
+#define        PROC_VMSPACE   ki_vmspace
+
+       buf->rss_rlim = pinfo [0].ki_rssize;
+
+       buf->vsize = buf->size = (guint64) pagetok
+               (pinfo [0].ki_tsize + pinfo [0].ki_dsize + pinfo[0].ki_ssize)
+                       << LOG1024;
+       buf->resident = buf->rss = (guint64) pagetok
+               (pinfo [0].ki_rssize) << LOG1024;
+
+#else
+
+#define        PROC_VMSPACE   kp_proc.p_vmspace
 
 	if (kvm_read (server->machine.kd,
-		      (unsigned long) pinfo [0].kp_proc.p_limit,
+		      (unsigned long) pinfo [0].PROC_VMSPACE,
 		      (char *) &plimit, sizeof (plimit)) != sizeof (plimit)) {
 		glibtop_warn_io_r (server, "kvm_read (plimit)");
 		return;
 	}
 
-	buf->rss_rlim = (u_int64_t) 
+	buf->rss_rlim = (guint64)
 		(plimit.pl_rlimit [RLIMIT_RSS].rlim_cur);
-	
+
 	vms = &pinfo [0].kp_eproc.e_vm;
 
-	buf->vsize = buf->size = (u_int64_t) pagetok
+	buf->vsize = buf->size = (guint64) pagetok
 		(vms->vm_tsize + vms->vm_dsize + vms->vm_ssize) << LOG1024;
-	
-	buf->resident = buf->rss = (u_int64_t) pagetok
+
+	buf->resident = buf->rss = (guint64) pagetok
 		(vms->vm_rssize) << LOG1024;
+#endif
 
 	/* Now we get the shared memory. */
 
 	if (kvm_read (server->machine.kd,
-		      (unsigned long) pinfo [0].kp_proc.p_vmspace,
+		      (unsigned long) pinfo [0].PROC_VMSPACE,
 		      (char *) &vmspace, sizeof (vmspace)) != sizeof (vmspace)) {
 		glibtop_warn_io_r (server, "kvm_read (vmspace)");
 		return;
@@ -233,17 +257,26 @@ glibtop_get_proc_mem_p (glibtop *server, glibtop_proc_mem *buf,
 		/* If the object is of type vnode, add its size */
 
 #if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(UVM_VNODE_VALID)
 		if (!vnode.v_uvm.u_flags & UVM_VNODE_VALID)
 			continue;
-
+#endif
 		if ((vnode.v_type != VREG) || (vnode.v_tag != VT_UFS) ||
 		    !vnode.v_data) continue;
+#if defined(__NetBSD__) && (__NetBSD_Version__ >= 105250000)
+		/* Reference count must be at least two. */
+		if (vnode.v_usecount <= 1)
+			continue;
+
+		buf->share += pagetok (vnode.v_uobj.uo_npages) << LOG1024;
+#else
 
 		/* Reference count must be at least two. */
 		if (vnode.v_uvm.u_obj.uo_refs <= 1)
 			continue;
 
 		buf->share += pagetok (vnode.v_uvm.u_obj.uo_npages) << LOG1024;
+#endif /* __NetBSD_Version__ >= 105250000 */
 #endif
 
 #ifdef __FreeBSD__

@@ -1,4 +1,4 @@
-/* $Id: procstate.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: procstate.c,v 1.1.1.2 2004-10-03 04:59:50 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -44,6 +44,6 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 			  pid_t pid)
 {
 	glibtop_init_p (server, GLIBTOP_SYSDEPS_PROC_STATE, 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_state));
 }

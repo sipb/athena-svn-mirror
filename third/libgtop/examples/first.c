@@ -1,4 +1,4 @@
-/* $Id: first.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: first.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,11 +22,12 @@
 */
 
 #include <locale.h>
+#include <libintl.h>
+#include <stdio.h>
 
 #include <glibtop.h>
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/parameter.h>
 
@@ -54,7 +55,7 @@ main (int argc, char *argv [])
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
-	
+
 	glibtop_init_r (&glibtop_global_server, 0, GLIBTOP_INIT_NO_OPEN);
 
 	glibtop_get_parameter (GLIBTOP_PARAM_METHOD, &method, sizeof (method));
@@ -134,7 +135,7 @@ main (int argc, char *argv [])
 
 	for (c = 0; c < PROFILE_COUNT; c++)
 		glibtop_get_shm_limits (&data.shm_limits);
-	
+
 	printf ("Shm Limits   (0x%08lx): %lu, %lu, %lu, %lu, %lu\n",
 		(unsigned long) data.shm_limits.flags,
 		(unsigned long) data.shm_limits.shmmax,
@@ -158,7 +159,7 @@ main (int argc, char *argv [])
 
 	for (c = 0; c < PROFILE_COUNT; c++)
 		glibtop_get_sem_limits (&data.sem_limits);
-	
+
 	printf ("Sem Limits   (0x%08lx): "
 		"%lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu\n",
 		(unsigned long) data.sem_limits.flags,
@@ -216,7 +217,7 @@ main (int argc, char *argv [])
 		(unsigned long) sysdeps.ppp);
 
 	printf ("\n");
-	
+
 	ptr = glibtop_get_proclist (&data.proclist, 0, 0);
 
 	printf ("Proclist     (0x%08lx): %lu, %lu, %lu\n",
@@ -232,7 +233,7 @@ main (int argc, char *argv [])
 		printf ("\n");
 	}
 
-	glibtop_free (ptr);
+	g_free (ptr);
 
 	pid = getpid ();
 	ppid = getppid ();
@@ -307,7 +308,7 @@ main (int argc, char *argv [])
 
 	for (c = 0; c < PROFILE_COUNT; c++)
 		glibtop_get_proc_signal (&data.proc_signal, pid);
-	
+
 	printf ("Proc_Signal  PID  %5d (0x%08lx): "
 		"%lu %lu %lu %lu\n", (int) pid,
 		(unsigned long) data.proc_signal.flags,
@@ -346,7 +347,7 @@ main (int argc, char *argv [])
 		(unsigned long) data.proc_args.size,
 		args ? args : "");
 
-	glibtop_free (args);
+	g_free (args);
 
 	printf ("\n");
 
@@ -456,7 +457,7 @@ main (int argc, char *argv [])
 		(unsigned long) data.proc_args.size,
 		args ? args : "");
 
-	glibtop_free (args);
+	g_free (args);
 
 	printf ("\n");
 
@@ -567,7 +568,7 @@ main (int argc, char *argv [])
 		(unsigned long) data.proc_args.size,
 		args ? args : "");
 
-	glibtop_free (args);
+	g_free (args);
 
 	glibtop_close ();
 

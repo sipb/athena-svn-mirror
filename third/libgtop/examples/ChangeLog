@@ -1,3 +1,39 @@
+2004-07-07  Benoît Dejean  <tazforever@dlfp.org>
+
+	* procargs.c: Added glibtop_get_proc_argv demo.
+
+2003-12-27  Ole Laursen  <olau@hardworking.dk>
+
+	* mountlist.c: Updated to display block size too.
+
+2004-03-04  Bastien Nocera  <hadess@hadess.net>
+
+	* smp.c: use libgtop-i18n.h
+
+2003-10-21  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am:
+	* smp.c:
+	* sysdeps.c: (main): install only one library, libgtop-2.0
+	Fix build-time warnings due to the redefinition of guint64
+	Fix building smp.c and sysdeps.c
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* first.c:
+	* mountlist.c:
+	* netload.c:
+	* procmap.c:
+	* second.c:
+	* smp.c:
+	* sysdeps.c:
+	* third.c:
+	* timings.c: fixed compilation
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: removed traces of guile, intllibs and libgnomesupport
+
 2001-01-14  Abel Cheung  <maddog@linux.org.hk>
 
 	* \*.c: bindtextdomain and textdomain uses GETTEXT_PACKAGE.
@@ -18,7 +54,7 @@
 
 Fri Apr  9 00:14:52 1999 Timur Bakeyev  <timur@gnu.org>
 
-	* timings.c: Added timersub defenition, to make code compilable on 
+	* timings.c: Added timersub defenition, to make code compilable on
 	BSDI.
 
 1999-03-24  Martin Baulig  <martin@home-of-linux.org>
@@ -84,11 +120,11 @@ Fri Apr  9 00:14:52 1999 Timur Bakeyev  <timur@gnu.org>
 1998-06-12  Martin Baulig  <martin@home-of-linux.org>
 
 	* test.scm: New file.
-	
+
 1998-06-07  Martin Baulig  <martin@home-of-linux.org>
 
 	* Makefile.am (CFLAGS): Disable optimize.
-	
+
 	* first.c (PROFILE_COUNT): Number of times each function
 	should be called. Defaults to 1; to profile the code, you
 	can increase this when compiling.

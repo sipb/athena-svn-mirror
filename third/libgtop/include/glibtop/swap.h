@@ -1,4 +1,4 @@
-/* $Id: swap.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: swap.h,v 1.1.1.2 2004-10-03 04:59:42 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_SWAP_TOTAL	0
 #define GLIBTOP_SWAP_USED	1
@@ -41,7 +41,7 @@ typedef struct _glibtop_swap	glibtop_swap;
 
 struct _glibtop_swap
 {
-	u_int64_t	flags,
+	guint64	flags,
 		total,		/* GLIBTOP_SWAP_TOTAL	*/
 		used,		/* GLIBTOP_SWAP_USED	*/
 		free,		/* GLIBTOP_SWAP_FREE	*/
@@ -78,6 +78,6 @@ extern const char *glibtop_descriptions_swap [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

@@ -1,4 +1,4 @@
-/* $Id: procmap.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: procmap.c,v 1.1.1.2 2004-10-03 05:00:41 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,7 +24,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/procmap.h>
 
 #include <errno.h>
@@ -75,7 +74,7 @@ glibtop_get_proc_map_s (glibtop *server, glibtop_proc_map *buf,	pid_t pid)
 	glibtop_map_entry *entry;
 	struct stat inode;
 	char buffer[BUFSIZ];
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_map));
 
 #ifdef HAVE_PROCFS_H
@@ -121,14 +120,10 @@ glibtop_get_proc_map_s (glibtop *server, glibtop_proc_map *buf,	pid_t pid)
 		return NULL;
 	}
 #endif
-	if(!(entry = glibtop_malloc_r(server,
-		    		      nmaps * sizeof(glibtop_map_entry))))
-	   	return NULL;
 	buf->number = nmaps;
 	buf->size = sizeof(glibtop_map_entry);
 	buf->total = nmaps * sizeof(glibtop_map_entry);
-
-	memset(entry, 0, nmaps * sizeof(glibtop_map_entry));
+	entry = g_malloc0(buf->total);
 
 #if GLIBTOP_SOLARIS_RELEASE >= 560
 

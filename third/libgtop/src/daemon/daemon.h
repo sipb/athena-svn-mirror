@@ -1,4 +1,4 @@
-/* $Id: daemon.h,v 1.1.1.1 2003-01-02 04:56:07 ghudson Exp $ */
+/* $Id: daemon.h,v 1.1.1.2 2004-10-03 04:59:10 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -30,7 +30,6 @@
 
 #include <glibtop/open.h>
 #include <glibtop/union.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/version.h>
 #include <glibtop/command.h>
 #include <glibtop/parameter.h>
@@ -40,7 +39,7 @@
 #include <sys/socket.h>
 #include <syslog.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 /* Some don't have LOG_PERROR */
 #ifndef LOG_PERROR
@@ -76,6 +75,6 @@ void syslog_io_message (int priority, char *format, ...);
 extern int enable_debug;
 extern int verbose_output;
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

@@ -1,4 +1,4 @@
-/* $Id: procargs.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: procargs.c,v 1.1.1.2 2004-10-03 04:59:37 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/procargs.h>
 
 static const unsigned long _glibtop_sysdeps_proc_args =
@@ -61,7 +60,7 @@ glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
 	      break;
 	if(max_len)
 	{
-	   	ret = glibtop_malloc_r(server, max_len + 1);
+	   	ret = g_malloc(max_len + 1);
 		if(max_len < len)
 		   	len = max_len;
 		memcpy(ret, pinfo.pr_psargs, len);
@@ -69,7 +68,7 @@ glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
 	}
 	else
 	{
-	   ret = glibtop_malloc_r(server, len + 1);
+	   ret = g_malloc(len + 1);
 	   memcpy(ret, pinfo.pr_psargs, len);
 	   ret[len] = 0;
 

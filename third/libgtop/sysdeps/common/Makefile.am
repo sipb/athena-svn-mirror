@@ -1,4 +1,3 @@
-LINK				= $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 INCLUDES			= @INCLUDES@
 
@@ -12,16 +11,18 @@ endif
 
 CFLAGS				= @CFLAGS@ $(inodedb_DEFS)
 
-lib_LTLIBRARIES			= libgtop_common-2.0.la libgtop_suid_common-2.0.la
+noinst_LTLIBRARIES		= libgtop_common-2.0.la libgtop_suid_common-2.0.la
 
-libgtop_common_2_0_la_SOURCES	= xmalloc.c error.c gnuslib.c \
-				  fsusage.c fsusage.h mountlist.c mountlist.h \
+libgtop_common_2_0_la_SOURCES	= error.c gnuslib.c \
+				  fsusage.c \
+                                  mountlist.c mountlist.h \
+                                  procargs.c \
 				  $(inodedb_SRCLIST)
 
 libgtop_common_2_0_la_LDFLAGS	= $(LT_VERSION_INFO)
 libgtop_common_2_0_la_LIBADD	= $(LIBGTOP_EXTRA_LIBS)
 
-libgtop_suid_common_2_0_la_SOURCES	= xmalloc.c error.c sysdeps_suid.c
+libgtop_suid_common_2_0_la_SOURCES	= error.c sysdeps_suid.c
 
 libgtop_suid_common_2_0_la_LDFLAGS	= $(LT_VERSION_INFO)
 

@@ -1,4 +1,4 @@
-/* $Id: shm_limits.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: shm_limits.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -25,7 +25,7 @@
 #include <glibtop/error.h>
 #include <glibtop/shm_limits.h>
 
-static unsigned long _glibtop_sysdeps_shm_limits =
+static const unsigned long _glibtop_sysdeps_shm_limits =
 (1L << GLIBTOP_IPC_SHMMAX) + (1L << GLIBTOP_IPC_SHMMIN) +
 (1L << GLIBTOP_IPC_SHMMNI) + (1L << GLIBTOP_IPC_SHMSEG);
 
@@ -47,43 +47,43 @@ glibtop_get_shm_limits_s (glibtop *server, glibtop_shm_limits *buf)
 	glibtop_init_s (&server, 0, 0);
 
 	memset (buf, 0, sizeof (glibtop_shm_limits));
-	
+
 	ret = table (TBL_SHMINFO, SHMINFO_MAX, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 
 	buf->flags += (1L << GLIBTOP_IPC_SHMMAX);
-		
+
 	buf->shmmax = value;
-	
+
 
 	ret = table (TBL_SHMINFO, SHMINFO_MIN, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
-		
+
 	buf->flags += (1L << GLIBTOP_IPC_SHMMIN);
-		
+
 	buf->shmmin = value;
-	
+
 
 	ret = table (TBL_SHMINFO, SHMINFO_MNI, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
-		
+
 	buf->flags += (1L << GLIBTOP_IPC_SHMMNI);
-		
+
 	buf->shmmni = value;
-	
+
 
 	ret = table (TBL_SHMINFO, SHMINFO_SEG, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
-		
+
 	buf->flags += (1L << GLIBTOP_IPC_SHMSEG);
-		
+
 	buf->shmseg = value;
 }

@@ -1,4 +1,4 @@
-/* $Id: swap.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: swap.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -25,7 +25,7 @@
 #include <glibtop/error.h>
 #include <glibtop/swap.h>
 
-static unsigned long _glibtop_sysdeps_swap =
+static const unsigned long _glibtop_sysdeps_swap =
 (1L << GLIBTOP_SWAP_TOTAL) + (1L << GLIBTOP_SWAP_USED) +
 (1L << GLIBTOP_SWAP_FREE);
 
@@ -50,7 +50,7 @@ glibtop_get_swap_s (glibtop *server, glibtop_swap *buf)
 	memset (buf, 0, sizeof (glibtop_swap));
 
 	i = 0;
-	
+
 	while (table (TBL_SWAPINFO, i, (char *) &swapinfo, 1,
 		      sizeof (struct tbl_swapinfo)) > 0) {
 		buf->total += swapinfo.size * getpagesize ();
@@ -59,6 +59,6 @@ glibtop_get_swap_s (glibtop *server, glibtop_swap *buf)
 	}
 
 	buf->flags = _glibtop_sysdeps_swap;
-	
+
 	buf->used  = buf->total - buf->free;
 }

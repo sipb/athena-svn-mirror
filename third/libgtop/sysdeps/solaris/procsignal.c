@@ -1,4 +1,4 @@
-/* $Id: procsignal.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: procsignal.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -26,7 +26,7 @@
 
 #include <glibtop_private.h>
 
-static const unsigned long _glibtop_sysdeps_proc_signal = 
+static const unsigned long _glibtop_sysdeps_proc_signal =
 (1L << GLIBTOP_PROC_SIGNAL_SIGNAL) + (1L << GLIBTOP_PROC_SIGNAL_BLOCKED);
 
 /* Init function. */
@@ -51,7 +51,7 @@ glibtop_get_proc_signal_s (glibtop *server, glibtop_proc_signal *buf,
 	int size;
 
 	memset (buf, 0, sizeof (glibtop_proc_signal));
-	
+
 	if(glibtop_get_proc_status_s(server, &pstatus, pid))
 	   	return;
 

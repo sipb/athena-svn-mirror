@@ -1,4 +1,4 @@
-/* $Id: second.c,v 1.1.1.2 2003-01-27 03:24:10 ghudson Exp $ */
+/* $Id: second.c,v 1.1.1.3 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,11 +23,12 @@
 
 #include <locale.h>
 #include <math.h>
+#include <stdio.h>
+#include <libintl.h>
 
 #include <glibtop.h>
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/union.h>
 #include <glibtop/sysdeps.h>
@@ -45,11 +46,11 @@ output (pid_t pid)
 	double b_total, b_utime, b_stime;
 	double s_total, s_utime, s_stime;
 	double my_utime, my_stime;
-	int ncpu;
+	unsigned int ncpu;
 #endif
 
 	printf ("\n");
-		
+
 	glibtop_get_proc_state (&data.proc_state, pid);
 
 	printf ("Proc_State   PID  %5d (0x%08lx): "
@@ -58,9 +59,9 @@ output (pid_t pid)
 		data.proc_state.cmd, data.proc_state.state,
 		(unsigned long) data.proc_state.uid,
 		(unsigned long) data.proc_state.gid);
-		
+
 	glibtop_get_proc_uid (&data.proc_uid, pid);
-	
+
 	printf ("Proc_Uid     PID  %5d (0x%08lx): "
 		"%d %d %d %d %d %d %d %d %d %d %d %d\n", (int) pid,
 		(unsigned long) data.proc_uid.flags,
@@ -72,7 +73,7 @@ output (pid_t pid)
 		data.proc_uid.priority, data.proc_uid.nice);
 
 	glibtop_get_proc_mem (&data.proc_mem, pid);
-		
+
 	printf ("Proc_Mem     PID  %5d (0x%08lx): "
 		"%lu %lu %lu %lu %lu %lu\n", (int) pid,
 		(unsigned long) data.proc_mem.flags,
@@ -82,7 +83,7 @@ output (pid_t pid)
 		(unsigned long) data.proc_mem.share,
 		(unsigned long) data.proc_mem.rss,
 		(unsigned long) data.proc_mem.rss_rlim);
-		
+
 	glibtop_get_proc_segment (&data.proc_segment, pid);
 
 	printf ("Proc_Segment PID  %5d (0x%08lx): "
@@ -98,7 +99,7 @@ output (pid_t pid)
 		(unsigned long) data.proc_segment.start_stack);
 
 	glibtop_get_proc_time (&data.proc_time, pid);
-		
+
 	printf ("Proc_Time    PID  %5d (0x%08lx): "
 		"%lu %lu %lu %lu %lu %lu %lu %lu %lu\n", (int) pid,
 		(unsigned long) data.proc_time.flags,
@@ -113,7 +114,7 @@ output (pid_t pid)
 		(unsigned long) data.proc_time.frequency);
 
 	glibtop_get_proc_signal (&data.proc_signal, pid);
-	
+
 	printf ("Proc_Signal  PID  %5d (0x%08lx): "
 		"%lu %lu %lu %lu\n", (int) pid,
 		(unsigned long) data.proc_signal.flags,
@@ -151,7 +152,7 @@ output (pid_t pid)
 		(unsigned long) data.proc_args.size,
 		args ? args : "");
 
-	glibtop_free (args);
+	g_free (args);
 
 	printf ("\n");
 
@@ -159,7 +160,7 @@ output (pid_t pid)
 	ncpu = glibtop_global_server->ncpu;
 
 	glibtop_get_proc_time (&data.proc_time, pid);
-		
+
 	total = (unsigned long) data.proc_time.utime +
 		(unsigned long) data.proc_time.stime;
 
@@ -241,7 +242,7 @@ main (int argc, char *argv [])
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
-	
+
 	glibtop_init ();
 
 	glibtop_get_sysdeps (&sysdeps);
@@ -287,11 +288,11 @@ main (int argc, char *argv [])
 	for (i = 0; i < proclist.number; i++) {
 
 		pid = ptr [i];
-		
+
 		output (pid);
 	}
 
-	glibtop_free (ptr);
+	g_free (ptr);
 
 	exit (0);
 }

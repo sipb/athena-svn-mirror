@@ -1,3 +1,54 @@
+August 13, 2004: Overview of Changes from 2.7.92 to 2.8.0
+=========================================================
+* No changes
+
+
+August 30, 2004:
+===============
+* Applied some *BSD patches.
+* Removed old files.
+
+
+August 15, 2004:
+===============
+* Fixed compilation with C89-only compilers and old libc.
+
+
+August 3, 2004:
+==============
+* Some cleanups.
+* Fixed the behaviour of some linux proc_*() functions.
+* Updated the documentation.
+
+
+July 19, 2004: Overview of Changes from 2.6.1 to 2.7.4
+======================================================
+* Plenty of code cleanups. Uninlined a lot of functions. ~5-10KB object size
+  reduction.
+* Glibify a bit more.
+* API changes:
+ - glibtop_fsusage provides total read and writes since boot_time.
+ - glibtop_netload provides hardware address. IPv6 enable.
+ - Added glibtop_get_proc_argv.
+
+Work in progress :
+* Finish glibtop_fsusage implementation for Linux.
+* Some fuctions don't conform to the documentation, e.g. proctime.
+
+March 11, 2004:
+===============
+
+* Released LibGTop 2.5.99 "Gross Work", dedicated to people who do push-ups
+  in the loos.
+
+  - plenty of code cleanups
+
+  - removed the dependency on libgnome, only glib required now
+
+  - Linux 2.6 support, NetBSD support and better FreeBSD support
+
+  - Make the block size available for filesystem statistics
+
 February 27, 2001:
 =================
 

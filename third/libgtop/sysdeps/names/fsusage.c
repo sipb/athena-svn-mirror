@@ -1,4 +1,4 @@
-/* $Id: fsusage.c,v 1.1.1.1 2003-01-02 04:56:10 ghudson Exp $ */
+/* $Id: fsusage.c,v 1.1.1.2 2004-10-03 05:00:09 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,16 +22,17 @@
 */
 
 #include <glibtop/fsusage.h>
+#include "libgtop-i18n.h"
 
 const char *glibtop_names_fsusage [GLIBTOP_MAX_FSUSAGE] =
 {
-	"blocks", "bfree", "bavail", "files", "ffree"
+	"blocks", "bfree", "bavail", "files", "ffree", "block_size"
 };
 
 const unsigned glibtop_types_fsusage [GLIBTOP_MAX_FSUSAGE] =
-{ 
+{
 	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG,
-	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG
+	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_INT
 };
 
 const char *glibtop_labels_fsusage [GLIBTOP_MAX_FSUSAGE] =
@@ -40,7 +41,8 @@ const char *glibtop_labels_fsusage [GLIBTOP_MAX_FSUSAGE] =
 	N_("Free blocks"),
 	N_("Available blocks"),
 	N_("Total file nodes"),
-	N_("Free file nodes")
+	N_("Free file nodes"),
+	N_("Block size")
 };
 
 const char *glibtop_descriptions_fsusage [GLIBTOP_MAX_FSUSAGE] =
@@ -49,5 +51,6 @@ const char *glibtop_descriptions_fsusage [GLIBTOP_MAX_FSUSAGE] =
 	N_("Free blocks available to the superuser"),
 	N_("Free blocks available to non-superusers"),
 	N_("Total file nodes"),
-	N_("Free file nodes")
+	N_("Free file nodes"),
+	N_("Block size")
 };

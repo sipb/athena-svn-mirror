@@ -1,4 +1,4 @@
-/* $Id: ppp.c,v 1.1.1.1 2003-01-02 04:56:11 ghudson Exp $ */
+/* $Id: ppp.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,6 +22,7 @@
 */
 
 #include <glibtop/ppp.h>
+#include "libgtop-i18n.h"
 
 const char *glibtop_names_ppp [GLIBTOP_MAX_PPP] =
 {
@@ -29,7 +30,7 @@ const char *glibtop_names_ppp [GLIBTOP_MAX_PPP] =
 };
 
 const unsigned glibtop_types_ppp [GLIBTOP_MAX_PPP] =
-{ 
+{
 	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG
 };
 

@@ -69,27 +69,29 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -103,11 +105,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -122,14 +122,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -149,16 +148,10 @@ bin_PROGRAMS = mkinodedb2 file_by_inode2
 
 INCLUDES = @INCLUDES@
 
-mkinodedb2_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
+mkinodedb2_LDADD = $(top_builddir)/lib/libgtop-2.0.la 			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la 			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
 
 
-file_by_inode2_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
+file_by_inode2_LDADD = $(top_builddir)/lib/libgtop-2.0.la 			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la 			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la 			  $(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
 
 
 EXTRA_DIST = README.inodedb
@@ -187,7 +180,8 @@ file_by_inode2_SOURCES = file_by_inode2.c
 file_by_inode2_OBJECTS =  file_by_inode2.$(OBJEXT)
 file_by_inode2_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
 $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
+$(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
 file_by_inode2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -199,7 +193,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = mkinodedb2.c file_by_inode2.c
 OBJECTS = mkinodedb2.$(OBJEXT) file_by_inode2.$(OBJEXT)
@@ -310,7 +304,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 

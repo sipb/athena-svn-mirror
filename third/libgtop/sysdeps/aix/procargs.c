@@ -1,4 +1,4 @@
-/* $Id: procargs.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: procargs.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -25,12 +25,11 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/procargs.h>
 
 #include "utils.h"
 
-static const unsigned long _glibtop_sysdeps_proc_args = 
+static const unsigned long _glibtop_sysdeps_proc_args =
 	(1 << GLIBTOP_PROC_ARGS_SIZE);
 
 /* Init function. */
@@ -72,23 +71,16 @@ glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
 
 		return NULL;
 	}
-	
+
 	size = max_len != 0 ? max_len : 4096;
-	args_buffer = glibtop_malloc_r (server, size);
-	if (args_buffer == NULL)
-	{
-		glibtop_error_io_r (server, "Cannot malloc procsinfo");
-
-		return NULL;
-
-	}
+	args_buffer = g_malloc (size);
 
 	result = getargs(pinfo, sizeof(struct procsinfo), args_buffer, size);
 	if (result == -1)
 	{
 		glibtop_error_io_r (server, "Cannot malloc getargs");
 
-		glibtop_free_r(server, args_buffer);
+		g_free(args_buffer);
 
 		return NULL;
 	}
@@ -97,7 +89,7 @@ glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
 
 	if (args_buffer[0] == 0)
 	{
-		glibtop_free_r(server, args_buffer);
+		g_free(args_buffer);
 
 		return NULL;
 	}
@@ -112,17 +104,10 @@ glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
 		len += strlen(args_buffer + len) + 1;
 	}
 
-	args = glibtop_malloc_r (server, len);
-	if (args == NULL)
-	{
-		glibtop_error_io_r (server, "Cannot malloc procsinfo");
+	args = g_malloc (len);
 
-		glibtop_free_r(server, args_buffer);
-
-		return NULL;
-	}
 	memcpy(args, args_buffer, len);
-	glibtop_free_r(server, args_buffer);
+	g_free(args_buffer);
 
 	buf->size = len - 1;
 

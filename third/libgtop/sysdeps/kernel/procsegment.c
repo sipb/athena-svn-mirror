@@ -1,4 +1,4 @@
-/* $Id: procsegment.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procsegment.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -59,7 +59,7 @@ glibtop_get_proc_segment_s (glibtop *server, glibtop_proc_segment *buf,
 
 	if (table (TABLE_PROC_MEM, &tbl, &pid))
 		glibtop_error_io_r (server, "table(TABLE_PROC_MEM)");
-	
+
 	buf->start_code = tbl.proc_mem.start_code;
 	buf->end_code = tbl.proc_mem.end_code;
 	buf->start_stack = tbl.proc_mem.start_stack;

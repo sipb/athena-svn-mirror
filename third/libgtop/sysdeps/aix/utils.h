@@ -1,6 +1,6 @@
-/* $Id: utils.h,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: utils.h,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
-/* 
+/*
    This file is part of LibGTop 1.0.
 
    Contributed by Martin Baulig <martin@home-of-linux.org>, March 1999.
@@ -24,9 +24,9 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
-extern off_t 
+extern off_t
 _glibtop_get_kmem_offset(glibtop* server, char* kname);
 
 extern int
@@ -40,6 +40,6 @@ extern  int
 _glibtop_vmgetinfo (void *out, int command, int arg);
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif /* __UTILS_H__ */

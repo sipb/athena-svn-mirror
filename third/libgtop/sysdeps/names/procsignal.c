@@ -1,4 +1,4 @@
-/* $Id: procsignal.c,v 1.1.1.1 2003-01-02 04:56:11 ghudson Exp $ */
+/* $Id: procsignal.c,v 1.1.1.2 2004-10-03 04:59:34 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,6 +23,7 @@
 
 #include <glibtop.h>
 #include <glibtop/procsignal.h>
+#include "libgtop-i18n.h"
 
 const char *glibtop_names_proc_signal [GLIBTOP_MAX_PROC_SIGNAL] =
 {

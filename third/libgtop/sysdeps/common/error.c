@@ -1,4 +1,4 @@
-/* $Id: error.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: error.c,v 1.1.1.2 2004-10-03 05:00:07 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -28,9 +28,9 @@
 /* Prints error message and exits. */
 
 static void
-print_server_name (glibtop *server)
+print_server_name (const glibtop *server)
 {
-	fprintf (stderr, "%s: ", server ? 
+	fprintf (stderr, "%s: ", server ?
 		 (server->name ? server->name : DEFAULT_NAME)
 		 : DEFAULT_NAME);
 }
@@ -38,7 +38,7 @@ print_server_name (glibtop *server)
 void
 glibtop_error_vr (glibtop *server, char *format, va_list args)
 {
-	print_server_name (server);	
+	print_server_name (server);
 	vfprintf (stderr, format, args);
 	fprintf (stderr, "\n");
 
@@ -86,3 +86,85 @@ glibtop_warn_io_vr (glibtop *server, char *format, int error, va_list args)
 	abort ();
 #endif
 }
+
+
+void G_GNUC_UNUSED
+glibtop_error_r (glibtop *server, char *format, ...)
+{
+	va_list args;
+
+	va_start (args, format);
+	glibtop_error_vr (server, format, args);
+	va_end (args);
+}
+
+
+void G_GNUC_UNUSED
+glibtop_warn_r (glibtop *server, char *format, ...)
+{
+	va_list args;
+
+	va_start (args, format);
+	glibtop_warn_vr (server, format, args);
+	va_end (args);
+}
+
+void G_GNUC_UNUSED
+glibtop_error_io_r (glibtop *server, char *format, ...)
+{
+	va_list args;
+
+	va_start (args, format);
+	glibtop_error_io_vr (server, format, errno, args);
+	va_end (args);
+}
+
+void G_GNUC_UNUSED
+glibtop_warn_io_r (glibtop *server, char *format, ...)
+{
+	va_list args;
+
+	va_start (args, format);
+	glibtop_warn_io_vr (server, format, errno, args);
+	va_end (args);
+}
+
+#ifndef __GNUC__
+
+void
+glibtop_error (char *format, ...)
+{
+	va_list args;
+	va_start (args, format);
+	glibtop_error_vr (glibtop_global_server, format, args);
+	va_end (args);
+}
+
+void
+glibtop_warn (char *format, ...)
+{
+	va_list args;
+	va_start (args, format);
+	glibtop_warn_vr (glibtop_global_server, format, args);
+	va_end (args);
+}
+
+void
+glibtop_error_io (char *format, ...)
+{
+	va_list args;
+	va_start (args, format);
+	glibtop_error_io_vr (glibtop_global_server, format, errno, args);
+	va_end (args);
+}
+
+void
+glibtop_warn_io (char *format, ...)
+{
+	va_list args;
+	va_start (args, format);
+	glibtop_warn_io_vr (glibtop_global_server, format, errno, args);
+	va_end (args);
+}
+
+#endif /* __GNUC__ */

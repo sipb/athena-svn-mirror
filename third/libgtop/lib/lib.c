@@ -1,11 +1,14 @@
 /* lib.c */
 /* This is a generated file.  Please modify `lib.pl' */
 
+#include <config.h>
+
 #include <glibtop.h>
 #include <glibtop/open.h>
 
 #include <glibtop/sysdeps.h>
 #include <glibtop/union.h>
+#include "libgtop-i18n.h"
 
 #include <glibtop/command.h>
 
@@ -13,9 +16,9 @@
 
 static void
 _glibtop_missing_feature (glibtop *server, const char *feature,
-			  const u_int64_t present, u_int64_t *required)
+			  const guint64 present, guint64 *required)
 {
-	u_int64_t old_required = *required;
+	guint64 old_required = *required;
 
 	/* Return if we have all required fields. */
 	if ((~present & old_required) == 0)
@@ -309,7 +312,7 @@ glibtop_get_sem_limits_l (glibtop *server, glibtop_sem_limits *buf)
 
 unsigned *
 glibtop_get_proclist_l (glibtop *server, glibtop_proclist *buf,
-                        int64_t which, int64_t arg)
+                        gint64 which, gint64 arg)
 {
 	const void *send_ptr = &which;
 	const size_t send_size =

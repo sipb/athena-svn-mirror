@@ -1,4 +1,4 @@
-/* $Id: sysinfo.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: sysinfo.c,v 1.1.1.2 2004-10-03 05:00:40 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -164,7 +164,7 @@ static void init_sysinfo(void)
 		if (_system_configuration.cache_attrib & (1 << 31))
 		{
 			/* L1 cache is present */
-			
+
 			sprintf(buf,"%d", _system_configuration.icache_size);
 			add_info( &sysinfo.cpuinfo[cpu], "L1 instruction cache size", buf);
 
@@ -179,7 +179,7 @@ static void init_sysinfo(void)
 	sysinfo.flags = _glibtop_sysdeps_sysinfo;
 }
 
-glibtop_sysinfo *
+const glibtop_sysinfo *
 glibtop_get_sysinfo_s (glibtop *server)
 {
 	static int first_time = 1;

@@ -1,4 +1,4 @@
-/* $Id: mem.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: mem.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,13 +22,13 @@
 */
 
 #include <unistd.h>
-#include <sys/vminfo.h> 
+#include <sys/vminfo.h>
 
 #include <glibtop.h>
 #include <glibtop/error.h>
 #include <glibtop/mem.h>
 
-static const unsigned long _glibtop_sysdeps_mem = 
+static const unsigned long _glibtop_sysdeps_mem =
 (1 << GLIBTOP_MEM_TOTAL) + (1 << GLIBTOP_MEM_USED) +
 (1 << GLIBTOP_MEM_FREE) + (1 << GLIBTOP_MEM_LOCKED);
 

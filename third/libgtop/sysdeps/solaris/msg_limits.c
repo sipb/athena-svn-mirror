@@ -1,4 +1,4 @@
-/* $Id: msg_limits.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: msg_limits.c,v 1.1.1.2 2004-10-03 04:59:44 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <kvm.h>
 #include <sys/msg.h>
 
-static struct nlist nlst[] = { {"msginfo"}, {NULL} };
+static const struct nlist nlst[] = { {"msginfo"}, {NULL} };
 static const unsigned long _glibtop_sysdeps_msg_limits =
 #if GLIBTOP_SOLARIS_RELEASE <= 570
 (1L << GLIBTOP_IPC_MSGMAP) +  (1L << GLIBTOP_IPC_MSGSSZ) +

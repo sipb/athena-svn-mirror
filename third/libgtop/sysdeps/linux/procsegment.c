@@ -1,4 +1,4 @@
-/* $Id: procsegment.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procsegment.c,v 1.1.1.2 2004-10-03 05:00:03 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -37,34 +37,13 @@ static const unsigned long _glibtop_sysdeps_proc_segment_statm =
 (1L << GLIBTOP_PROC_SEGMENT_DATA_RSS) +
 (1L << GLIBTOP_PROC_SEGMENT_DIRTY_SIZE);
 
-#ifndef LOG1024
-#define LOG1024		10
-#endif
-
-/* these are for getting the memory statistics */
-static int pageshift;		/* log base 2 of the pagesize */
-
-/* define pagetok in terms of pageshift */
-#define pagetok(size) ((size) << pageshift)
-
 /* Init function. */
 
 void
 glibtop_init_proc_segment_s (glibtop *server)
 {
-	register int pagesize;
-
 	server->sysdeps.proc_segment = _glibtop_sysdeps_proc_segment |
 	  _glibtop_sysdeps_proc_segment_statm;
-
-	/* get the page size with "getpagesize" and calculate pageshift
-	 * from it */
-	pagesize = getpagesize ();
-	pageshift = 0;
-	while (pagesize > 1) {
-		pageshift++;
-		pagesize >>= 1;
-	}
 }
 
 /* Provides detailed information about a process. */
@@ -74,7 +53,8 @@ glibtop_get_proc_segment_s (glibtop *server, glibtop_proc_segment *buf,
 			    pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
-	
+	const unsigned pageshift = get_pageshift();
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_SEGMENT, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_segment));
@@ -87,9 +67,9 @@ glibtop_get_proc_segment_s (glibtop *server, glibtop_proc_segment *buf,
 
 	p = skip_multiple_token (p, 23);
 
-	buf->start_code = strtoul (p, &p, 0);
-	buf->end_code = strtoul (p, &p, 0);
-	buf->start_stack = strtoul (p, &p, 0);
+	buf->start_code  = strtoull (p, &p, 0);
+	buf->end_code    = strtoull (p, &p, 0);
+	buf->start_stack = strtoull (p, &p, 0);
 
 	buf->flags = _glibtop_sysdeps_proc_segment;
 
@@ -101,10 +81,10 @@ glibtop_get_proc_segment_s (glibtop *server, glibtop_proc_segment *buf,
 	/* This doesn't work very well due to a bug in the Linux kernel.
 	 * I'll submit a patch to the kernel mailing list soon. */
 
-	buf->text_rss = strtoul (p, &p, 0);
-	buf->shlib_rss = strtoul (p, &p, 0);
-	buf->data_rss = strtoul (p, &p, 0);
-	buf->dirty_size = strtoul (p, &p, 0);
+	buf->text_rss   = strtoull (p, &p, 0);
+	buf->shlib_rss  = strtoull (p, &p, 0);
+	buf->data_rss   = strtoull (p, &p, 0);
+	buf->dirty_size = strtoull (p, &p, 0);
 
 	buf->text_rss   <<= pageshift;
 	buf->shlib_rss  <<= pageshift;

@@ -69,28 +69,30 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INCLUDES = @INCLUDES@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -104,11 +106,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -122,14 +122,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -147,9 +146,7 @@ sysdeps_suid_lib = @sysdeps_suid_lib@
 
 info_TEXINFOS = libgtop2.texi
 
-libgtop2_TEXINFOS = libgtop2.texi about.texi reference.texi \
-			  auto-macros.texi version.texi main.texi \
-			  white-paper.texi
+libgtop2_TEXINFOS = libgtop2.texi about.texi reference.texi 			  auto-macros.texi version.texi main.texi 			  white-paper.texi
 
 
 MAKEINFO = @MAKEINFO@ -I @libgtop_top_builddir@/doc
@@ -168,7 +165,7 @@ mdate-sh stamp-vti texinfo.tex version.texi
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -416,10 +413,6 @@ auto-macros.texi: auto-macros.texi.in Makefile
 	  -e 's#\%LIBGTOP_INCS\%#$(LIBGTOP_INCS)#g' \
 	  -e 's#\%LIBGTOP_NAMES_LIBS\%#$(LIBGTOP_NAMES_LIBS)#g' \
 	  -e 's#\%LIBGTOP_NAMES_INCS\%#$(LIBGTOP_NAMES_INCS)#g' \
-	  -e 's#\%LIBGTOP_GUILE_LIBS\%#$(LIBGTOP_GUILE_LIBS)#g' \
-	  -e 's#\%LIBGTOP_GUILE_INCS\%#$(LIBGTOP_GUILE_INCS)#g' \
-	  -e 's#\%LIBGTOP_GUILE_NAMES_LIBS\%#$(LIBGTOP_GUILE_NAMES_LIBS)#g' \
-	  -e 's#\%LIBGTOP_GUILE_NAMES_INCS\%#$(LIBGTOP_GUILE_NAMES_INCS)#g' \
 	  -e 's#\%LIBGTOP_BINDIR\%#$(LIBGTOP_BINDIR)#g' \
 	  -e 's#\%LIBGTOP_SERVER\%#$(LIBGTOP_SERVER)#g' \
 	  -e 's#\%LIBGTOP_MAJOR_VERSION\%#$(LIBGTOP_MAJOR_VERSION)#g' \
@@ -431,7 +424,6 @@ auto-macros.texi: auto-macros.texi.in Makefile
 	  -e 's#\%libgtop_sysdeps_dir\%#$(libgtop_sysdeps_dir)#g' \
 	  -e 's#\%libgtop_need_server\%#$(libgtop_need_server)#g' \
 	  -e 's#\%libgtop_use_machine_h\%#$(libgtop_use_machine_h)#g' \
-	  -e 's#\%libgtop_guile_found\%#$(libgtop_guile_found)#g' \
 	  -e 's#\%libgtop_want_examples\%#$(libgtop_want_examples)#g' \
 	      < $(srcdir)/auto-macros.texi.in > auto-macros.tmp
 	echo '@c Set this if this is LibGTop 1.1.x' >> auto-macros.tmp

@@ -69,28 +69,30 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INCLUDES = @INCLUDES@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -104,11 +106,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -123,14 +123,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -148,14 +147,7 @@ sysdeps_suid_lib = @sysdeps_suid_lib@
 
 glibtopdir = $(includedir)/libgtop-2.0/glibtop
 
-glibtop_HEADERS = close.h loadavg.h prockernel.h procstate.h \
-			  sem_limits.h uptime.h command.h mem.h proclist.h \
-			  proctime.h shm_limits.h version.h cpu.h msg_limits.h \
-			  procmem.h procuid.h swap.h write.h error.h open.h \
-			  procsegment.h read.h sysdeps.h xmalloc.h global.h \
-			  procsignal.h read_data.h union.h types.h gnuserv.h \
-			  parameter.h mountlist.h fsusage.h procmap.h signal.h \
-			  inodedb.h sysinfo.h ppp.h procargs.h netload.h
+glibtop_HEADERS = close.h loadavg.h prockernel.h procstate.h 			  sem_limits.h uptime.h command.h mem.h proclist.h 			  proctime.h shm_limits.h version.h cpu.h msg_limits.h 			  procmem.h procuid.h swap.h write.h error.h open.h 			  procsegment.h read.h sysdeps.h global.h 			  procsignal.h read_data.h union.h types.h gnuserv.h 			  parameter.h mountlist.h fsusage.h procmap.h signal.h 			  inodedb.h sysinfo.h ppp.h procargs.h netload.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -167,7 +159,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -212,7 +204,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 

@@ -1,4 +1,4 @@
-/* $Id: procuid.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: procuid.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -31,7 +31,7 @@
 
 #include "utils.h"
 
-static const unsigned long _glibtop_sysdeps_proc_uid = 
+static const unsigned long _glibtop_sysdeps_proc_uid =
 (1 << GLIBTOP_PROC_UID_UID) + (1 << GLIBTOP_PROC_UID_EUID) +
 (1 << GLIBTOP_PROC_UID_GID) + (1 << GLIBTOP_PROC_UID_EGID) +
 (1 << GLIBTOP_PROC_UID_PID) + (1 << GLIBTOP_PROC_UID_PPID) +

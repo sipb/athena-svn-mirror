@@ -1,4 +1,4 @@
-/* $Id: ppp.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: ppp.c,v 1.1.1.2 2004-10-03 04:58:57 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.

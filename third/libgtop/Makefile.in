@@ -69,28 +69,30 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INCLUDES = @INCLUDES@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -104,11 +106,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -123,14 +123,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -145,28 +144,17 @@ smp_examples = @smp_examples@
 static_targets = @static_targets@
 sysdeps_dir = @sysdeps_dir@
 sysdeps_suid_lib = @sysdeps_suid_lib@
-@EXAMPLES_TRUE@examples_SUBDIRS = @EXAMPLES_TRUE@examples
-@EXAMPLES_FALSE@examples_SUBDIRS = 
 
-@BUILD_GNOME_SUPPORT_TRUE@support = @BUILD_GNOME_SUPPORT_TRUE@support
-
-SUBDIRS = po $(support) misc include sysdeps lib src \
-	  $(examples_SUBDIRS) doc
-
+SUBDIRS = po misc include sysdeps lib src examples doc
 
 libgtopinclude_HEADERS = glibtop.h
 libgtopincludedir = $(includedir)/libgtop-2.0
 
-EXTRA_DIST = autogen.sh libgtop.spec.in copyright.txt libgtopConf.sh.in \
-	LIBGTOP-VERSION features.def libgtop-config.in RELNOTES-0.25 \
-	RELNOTES-1.0 RELNOTES-1.0.x libgtop-sysdeps.m4 README \
-	libgtop-mirror.sh libgtop-2.0.pc.in acinclude.m4
+EXTRA_DIST = autogen.sh libgtop.spec.in copyright.txt 	LIBGTOP-VERSION features.def 	libgtop-sysdeps.m4 README 	libgtop-mirror.sh libgtop-2.0.pc.in acinclude.m4
 
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libgtop-2.0.pc
-
-CLEANFILES = libgtopConf.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -176,16 +164,16 @@ DATA =  $(pkgconfig_DATA)
 HEADERS =  $(libgtopinclude_HEADERS)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
-Makefile.am Makefile.in NEWS acconfig.h acinclude.m4 aclocal.m4 \
+Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 aclocal.m4 \
 config.guess config.h.in config.sub configure configure.in install-sh \
-libgtop-2.0.pc.in libgtop.spec.in ltmain.sh missing mkinstalldirs
+libgtop-2.0.pc.in libgtop.spec.in ltconfig ltmain.sh missing \
+mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-DIST_SUBDIRS =  po support misc include sysdeps lib src examples doc
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
@@ -347,7 +335,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LI
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -406,7 +394,7 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	for subdir in $(DIST_SUBDIRS); do \
+	for subdir in $(SUBDIRS); do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \
@@ -452,7 +440,6 @@ installdirs-am:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -499,46 +486,6 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 dist-hook:
 	cp libgtop.spec $(distdir)
-
-release:
-	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)
-
-$(top_srcdir)/aclocal.m4: libgtop-sysdeps.m4 LIBGTOP-VERSION
-
-libgtopConf.sh: libgtopConf.sh.in Makefile
-	sed -e 's#\@LIBGTOP_LIBDIR\@#$(libdir)#g' \
-	  -e 's#\@LIBGTOP_INCLUDEDIR\@#$(includedir)/libgtop-2.0#g' \
-	  -e 's#\@LIBGTOP_DATADIR\@#$(datadir)#g' \
-	  -e 's#\@LIBGTOP_EXTRA_LIBS\@#$(LIBGTOP_EXTRA_LIBS)#g' \
-	  -e 's#\@LIBGTOP_LIBS\@#$(LIBGTOP_LIBS)#g' \
-	  -e 's#\@LIBGTOP_INCS\@#$(LIBGTOP_INCS)#g' \
-	  -e 's#\@LIBGTOP_NAMES_LIBS\@#$(LIBGTOP_NAMES_LIBS)#g' \
-	  -e 's#\@LIBGTOP_NAMES_INCS\@#$(LIBGTOP_NAMES_INCS)#g' \
-	  -e 's#\@LIBGTOP_GUILE_LIBS\@#$(LIBGTOP_GUILE_LIBS)#g' \
-	  -e 's#\@LIBGTOP_GUILE_INCS\@#$(LIBGTOP_GUILE_INCS)#g' \
-	  -e 's#\@LIBGTOP_GUILE_NAMES_LIBS\@#$(LIBGTOP_GUILE_NAMES_LIBS)#g' \
-	  -e 's#\@LIBGTOP_GUILE_NAMES_INCS\@#$(LIBGTOP_GUILE_NAMES_INCS)#g' \
-	  -e 's#\@LIBGTOP_BINDIR\@#$(LIBGTOP_BINDIR)#g' \
-	  -e 's#\@LIBGTOP_SERVER\@#$(LIBGTOP_SERVER)#g' \
-	  -e 's#\@LIBGTOP_MAJOR_VERSION\@#$(LIBGTOP_MAJOR_VERSION)#g' \
-	  -e 's#\@LIBGTOP_MINOR_VERSION\@#$(LIBGTOP_MINOR_VERSION)#g' \
-	  -e 's#\@LIBGTOP_MICRO_VERSION\@#$(LIBGTOP_MICRO_VERSION)#g' \
-	  -e 's#\@LIBGTOP_VERSION\@#$(LIBGTOP_VERSION)#g' \
-	  -e 's#\@LIBGTOP_VERSION_CODE\@#$(LIBGTOP_VERSION_CODE)#g' \
-	  -e 's#\@LIBGTOP_SERVER_VERSION\@#$(LIBGTOP_SERVER_VERSION)#g' \
-	  -e 's#\@libgtop_sysdeps_dir\@#$(libgtop_sysdeps_dir)#g' \
-	  -e 's#\@libgtop_need_server\@#$(libgtop_need_server)#g' \
-	  -e 's#\@libgtop_use_machine_h\@#$(libgtop_use_machine_h)#g' \
-	  -e 's#\@libgtop_guile_found\@#$(libgtop_guile_found)#g' \
-	  -e 's#\@libgtop_want_examples\@#$(libgtop_want_examples)#g' \
-	      < $(srcdir)/libgtopConf.sh.in > libgtopConf.tmp \
-	  && mv libgtopConf.tmp libgtopConf.sh
-
-# libgtop-config: libgtop-config.in Makefile
-#	sed -e 's#\@LIBGTOP_LIBDIR\@#$(libdir)#g' \
-#	      < $(srcdir)/libgtop-config.in > libgtop-config.tmp \
-#	  && mv libgtop-config.tmp libgtop-config && \
-#		chmod 755 libgtop-config
 
 libgtop-features.def: features.def
 	@LN_S@ $< $@

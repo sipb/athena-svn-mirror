@@ -1,4 +1,4 @@
-/* $Id: procsegment.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: procsegment.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROC_SEGMENT_TEXT_RSS		0
 #define GLIBTOP_PROC_SEGMENT_SHLIB_RSS		1
@@ -46,7 +46,7 @@ typedef struct _glibtop_proc_segment	glibtop_proc_segment;
 
 struct _glibtop_proc_segment
 {
-	u_int64_t	flags,
+	guint64	flags,
 		text_rss,	/* text resident set size */
 		shlib_rss,	/* shared-lib resident set size */
 		data_rss,	/* data resident set size */
@@ -87,6 +87,6 @@ extern const char *glibtop_descriptions_proc_segment [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

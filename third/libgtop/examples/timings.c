@@ -1,4 +1,4 @@
-/* $Id: timings.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: timings.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,11 +22,12 @@
 */
 
 #include <locale.h>
+#include <stdio.h>
+#include <libintl.h>
 
 #include <glibtop.h>
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/parameter.h>
 
@@ -86,7 +87,7 @@ main (int argc, char *argv [])
 		"Feature", "Flags", "Count", "utime", "stime");
 	printf ("-------------------------------------------"
 		"---------------\n");
-	
+
 	glibtop_init_r (&glibtop_global_server, 0, 0);
 
 	getrusage (RUSAGE_SELF, &total_start);
@@ -187,7 +188,7 @@ main (int argc, char *argv [])
 
 	for (c = 0; c < PROFILE_COUNT_EXPENSIVE; c++) {
 		ptr = glibtop_get_proclist (&data.proclist, 0, 0);
-		glibtop_free (ptr);
+		g_free (ptr);
 	}
 
 	getrusage (RUSAGE_SELF, &rusage_end);
@@ -302,7 +303,7 @@ main (int argc, char *argv [])
 
 	for (c = 0; c < PROFILE_COUNT; c++)
 		glibtop_get_proc_signal (&data.proc_signal, pid);
-	
+
 	getrusage (RUSAGE_SELF, &rusage_end);
 
 	libgtop_timersub (&rusage_end.ru_utime, &rusage_start.ru_utime,
@@ -333,7 +334,7 @@ main (int argc, char *argv [])
 		(unsigned long) data.proc_kernel.flags, PROFILE_COUNT,
 		(long double) ELAPSED_UTIME / PROFILE_COUNT,
 		(long double) ELAPSED_STIME / PROFILE_COUNT);
-	
+
 	getrusage (RUSAGE_SELF, &total_end);
 
 	libgtop_timersub (&total_end.ru_utime, &total_start.ru_utime,

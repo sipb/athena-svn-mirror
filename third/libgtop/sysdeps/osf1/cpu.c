@@ -1,4 +1,4 @@
-/* $Id: cpu.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: cpu.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -45,23 +45,23 @@ glibtop_get_cpu_s (glibtop *server, glibtop_cpu *buf)
 {
 	struct tbl_sysinfo sysinfo;
 	int ret;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_CPU, 0);
 
 	memset (buf, 0, sizeof (glibtop_cpu));
-	
+
 	ret = table (TBL_SYSINFO, 0, (char *) &sysinfo, 1,
-		     sizeof (struct tbl_sysinfo)); 
+		     sizeof (struct tbl_sysinfo));
 
 	if (ret != 1) return;
 
 	buf->flags = _glibtop_sysdeps_cpu;
-		
+
 	buf->user = sysinfo.si_user;
 	buf->nice = sysinfo.si_nice;
 	buf->sys  = sysinfo.si_sys;
 	buf->idle = sysinfo.si_idle;
-	
+
 	buf->total = sysinfo.si_user + sysinfo.si_nice +
 		sysinfo.si_sys + sysinfo.si_idle;
 

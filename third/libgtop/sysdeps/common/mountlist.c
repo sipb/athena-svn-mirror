@@ -19,15 +19,11 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include "mountlist.h"
 
-#ifdef STDC_HEADERS
-#include <stdlib.h>
-#else
-void free ();
-#endif
 #if defined(STDC_HEADERS) || defined(HAVE_STRING_H)
 #include <string.h>
 #else
@@ -35,19 +31,9 @@ void free ();
 #endif
 
 #include <glibtop.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/mountlist.h>
 
-static struct mount_entry *read_filesystem_list (int need_fs_type, int all_fs);
-
-#undef xmalloc
-#undef xrealloc
-#undef xstrdup
-
-#define xmalloc(p1)	glibtop_malloc_r (NULL, p1)
-#define xrealloc(p1,p2)	glibtop_realloc_r (NULL, p1, p2)
-#define xstrdup(p1)	glibtop_strdup_r (NULL, p1)
-#define xfree(p1)	glibtop_free_r (NULL, p1)
+static struct mount_entry *read_filesystem_list (gboolean need_fs_type);
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -108,38 +94,10 @@ static struct mount_entry *read_filesystem_list (int need_fs_type, int all_fs);
 #define MOUNTED_GETMNTTBL
 #endif
 
-#ifdef MOUNTED_GETMNTENT1	/* 4.3BSD, SunOS, HP-UX, Dynix, Irix.  */
-/* Return the value of the hexadecimal number represented by CP.
-   No prefix (like '0x') or suffix (like 'h') is expected to be
-   part of CP. */
 
-static int
-xatoi (cp)
-     char *cp;
-{
-  int val;
-
-  val = 0;
-  while (*cp)
-    {
-      if (*cp >= 'a' && *cp <= 'f')
-	val = val * 16 + *cp - 'a' + 10;
-      else if (*cp >= 'A' && *cp <= 'F')
-	val = val * 16 + *cp - 'A' + 10;
-      else if (*cp >= '0' && *cp <= '9')
-	val = val * 16 + *cp - '0';
-      else
-	break;
-      cp++;
-    }
-  return val;
-}
-#endif /* MOUNTED_GETMNTENT1.  */
-
-#if defined (MOUNTED_GETMNTINFO) && !defined (__NetBSD__) && !defined (__OpenBSD__)
-static char *
-fstype_to_string (t)
-     short t;
+#if defined (MOUNTED_GETMNTINFO) && !defined (__NetBSD__) && !defined (__OpenBSD__) && !defined(__FreeBSD__)
+static const char *
+fstype_to_string (short t)
 {
   switch (t)
     {
@@ -234,9 +192,8 @@ fstype_to_string (t)
 #endif /* MOUNTED_GETMNTINFO */
 
 #ifdef MOUNTED_VMOUNT		/* AIX.  */
-static char *
-fstype_to_string (t)
-     int t;
+static const char *
+fstype_to_string (int t)
 {
   struct vfs_ent *e;
 
@@ -252,19 +209,17 @@ fstype_to_string (t)
    Add each entry to the tail of the list so that they stay in order.
    If NEED_FS_TYPE is nonzero, ensure that the filesystem type fields in
    the returned list are valid.  Otherwise, they might not be.
-   If ALL_FS is zero, do not return entries for filesystems that
-   are automounter (dummy) entries.  */
+*/
 
 static struct mount_entry *
-read_filesystem_list (need_fs_type, all_fs)
-     int need_fs_type, all_fs;
+read_filesystem_list (gboolean need_fs_type)
 {
   struct mount_entry *mount_list;
   struct mount_entry *me;
   struct mount_entry *mtail;
 
   /* Start the list off with a dummy entry. */
-  me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
+  me = g_new (struct mount_entry, 1);
   me->me_next = NULL;
   mount_list = mtail = me;
 
@@ -284,10 +239,10 @@ read_filesystem_list (need_fs_type, all_fs)
     p = mntlist;
     while(p){
       mnt = p->ment;
-      me = (struct mount_entry*) xmalloc(sizeof (struct mount_entry));
-      me->me_devname = xstrdup(mnt->mnt_fsname);
-      me->me_mountdir = xstrdup(mnt->mnt_dir);
-      me->me_type = xstrdup(mnt->mnt_type);
+      me = (struct mount_entry*) g_malloc(sizeof (struct mount_entry));
+      me->me_devname = g_strdup(mnt->mnt_fsname);
+      me->me_mountdir = g_strdup(mnt->mnt_dir);
+      me->me_type = g_strdup(mnt->mnt_type);
       me->me_dev = -1;
       me->me_next = NULL;
       mtail->me_next = me;
@@ -298,37 +253,28 @@ read_filesystem_list (need_fs_type, all_fs)
   }
 #endif
 
-#ifdef MOUNTED_GETMNTENT1	/* 4.3BSD, SunOS, HP-UX, Dynix, Irix.  */
+#ifdef MOUNTED_GETMNTENT1   /* Linux, 4.3BSD, SunOS, HP-UX, Dynix, Irix.  */
   {
-    struct mntent *mnt;
-    char *table = MOUNTED;
+    const struct mntent *mnt;
     FILE *fp;
-    char *devopt;
+    const char *devopt;
 
-    fp = setmntent (table, "r");
+    fp = setmntent (MOUNTED, "r");
     if (fp == NULL)
       return NULL;
 
     while ((mnt = getmntent (fp)))
       {
-	if (!all_fs && (!strcmp (mnt->mnt_type, "ignore")
-			|| !strcmp (mnt->mnt_type, "auto")))
-	  continue;
-
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
-	me->me_devname = xstrdup (mnt->mnt_fsname);
-	me->me_mountdir = xstrdup (mnt->mnt_dir);
-	me->me_type = xstrdup (mnt->mnt_type);
+	me = g_new(struct mount_entry, 1);
+	me->me_devname = g_strdup (mnt->mnt_fsname);
+	me->me_mountdir = g_strdup (mnt->mnt_dir);
+	me->me_type = g_strdup (mnt->mnt_type);
 	devopt = strstr (mnt->mnt_opts, "dev=");
 	if (devopt)
-	  {
-	    if (devopt[4] == '0' && (devopt[5] == 'x' || devopt[5] == 'X'))
-	      me->me_dev = xatoi (devopt + 6);
-	    else
-	      me->me_dev = xatoi (devopt + 4);
-	  }
+	    me->me_dev = (dev_t) strtoull( devopt + 4, NULL, 0);
 	else
-	  me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
+	    me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
+
 	me->me_next = NULL;
 
 	/* Add to the linked list. */
@@ -351,13 +297,13 @@ read_filesystem_list (need_fs_type, all_fs)
       return NULL;
     while (entries-- > 0)
       {
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
-	me->me_devname = xstrdup (fsp->f_mntfromname);
-	me->me_mountdir = xstrdup (fsp->f_mntonname);
-#if defined(__NetBSD__) || defined(__OpenBSD__)
-	me->me_type = xstrdup (fsp->f_fstypename);
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
+	me->me_devname = g_strdup (fsp->f_mntfromname);
+	me->me_mountdir = g_strdup (fsp->f_mntonname);
+#if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__)
+	me->me_type = g_strdup (fsp->f_fstypename);
 #else
-	me->me_type = xstrdup (fstype_to_string (fsp->f_type));
+	me->me_type = g_strdup (fstype_to_string (fsp->f_type));
 #endif
 	me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
 	me->me_next = NULL;
@@ -379,10 +325,10 @@ read_filesystem_list (need_fs_type, all_fs)
     while ((val = getmnt (&offset, &fsd, sizeof (fsd), NOSTAT_MANY,
 			  (char *) 0)) > 0)
       {
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
-	me->me_devname = xstrdup (fsd.fd_req.devname);
-	me->me_mountdir = xstrdup (fsd.fd_req.path);
-	me->me_type = xstrdup (gt_names[fsd.fd_req.fstype]);
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
+	me->me_devname = g_strdup (fsd.fd_req.devname);
+	me->me_mountdir = g_strdup (fsd.fd_req.path);
+	me->me_type = g_strdup (gt_names[fsd.fd_req.fstype]);
 	me->me_dev = fsd.fd_req.dev;
 	me->me_next = NULL;
 
@@ -405,21 +351,21 @@ read_filesystem_list (need_fs_type, all_fs)
       return (NULL);
 
     bufsize = (1 + numsys) * sizeof (struct statfs);
-    stats = (struct statfs *)xmalloc (bufsize);
+    stats = (struct statfs *) g_malloc (bufsize);
     numsys = getfsstat (stats, bufsize, MNT_WAIT);
 
     if (numsys < 0)
       {
-	free (stats);
+	g_free (stats);
 	return (NULL);
       }
 
     for (counter = 0; counter < numsys; counter++)
       {
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
-	me->me_devname = xstrdup (stats[counter].f_mntfromname);
-	me->me_mountdir = xstrdup (stats[counter].f_mntonname);
-	me->me_type = xstrdup (mnt_names[stats[counter].f_type]);
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
+	me->me_devname = g_strdup (stats[counter].f_mntfromname);
+	me->me_mountdir = g_strdup (stats[counter].f_mntonname);
+	me->me_type = g_strdup (mnt_names[stats[counter].f_type]);
 	me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
 	me->me_next = NULL;
 
@@ -428,33 +374,29 @@ read_filesystem_list (need_fs_type, all_fs)
 	mtail = me;
       }
 
-    free (stats);
+    g_free (stats);
   }
 #endif /* MOUNTED_GETFSSTAT */
 
 #if defined (MOUNTED_FREAD) || defined (MOUNTED_FREAD_FSTYP) /* SVR[23].  */
   {
     struct mnttab mnt;
-    char *table = "/etc/mnttab";
     FILE *fp;
-
-    fp = fopen (table, "r");
+    fp = fopen ("/etc/mnttab", "r");
     if (fp == NULL)
       return NULL;
 
     while (fread (&mnt, sizeof mnt, 1, fp) > 0)
       {
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
 #ifdef GETFSTYP			/* SVR3.  */
-	me->me_devname = xstrdup (mnt.mt_dev);
+	me->me_devname = g_strdup (mnt.mt_dev);
 #else
-	me->me_devname = xmalloc (strlen (mnt.mt_dev) + 6);
-	strcpy (me->me_devname, "/dev/");
-	strcpy (me->me_devname + 5, mnt.mt_dev);
+	me->me_devname = g_strdup_printf("/dev/%s", mnt.mt_dev);
 #endif
-	me->me_mountdir = xstrdup (mnt.mt_filsys);
+	me->me_mountdir = g_strdup (mnt.mt_filsys);
 	me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
-	me->me_type = xstrdup ("");
+	me->me_type = g_strdup ("");
 #ifdef GETFSTYP			/* SVR3.  */
 	if (need_fs_type)
 	  {
@@ -463,7 +405,7 @@ read_filesystem_list (need_fs_type, all_fs)
 
 	    if (statfs (me->me_mountdir, &fsd, sizeof fsd, 0) != -1
 		&& sysfs (GETFSTYP, fsd.f_fstyp, typebuf) != -1)
-	      me->me_type = xstrdup (typebuf);
+	      me->me_type = g_strdup (typebuf);
 	  }
 #endif
 	me->me_next = NULL;
@@ -483,10 +425,10 @@ read_filesystem_list (need_fs_type, all_fs)
     struct mntent **mnttbl=getmnttbl(),**ent;
     for (ent=mnttbl;*ent;ent++)
       {
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
-	me->me_devname = xstrdup ( (*ent)->mt_resource);
-	me->me_mountdir = xstrdup( (*ent)->mt_directory);
-	me->me_type =  xstrdup ((*ent)->mt_fstype);
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
+	me->me_devname = g_strdup ( (*ent)->mt_resource);
+	me->me_mountdir = g_strdup( (*ent)->mt_directory);
+	me->me_type =  g_strdup ((*ent)->mt_fstype);
 	me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
 	me->me_next = NULL;
 
@@ -501,20 +443,19 @@ read_filesystem_list (need_fs_type, all_fs)
 #ifdef MOUNTED_GETMNTENT2	/* SVR4.  */
   {
     struct mnttab mnt;
-    char *table = MNTTAB;
     FILE *fp;
     int ret;
 
-    fp = fopen (table, "r");
+    fp = fopen (MNTTAB, "r");
     if (fp == NULL)
       return NULL;
 
     while ((ret = getmntent (fp, &mnt)) == 0)
       {
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
-	me->me_devname = xstrdup (mnt.mnt_special);
-	me->me_mountdir = xstrdup (mnt.mnt_mountp);
-	me->me_type = xstrdup (mnt.mnt_fstype);
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
+	me->me_devname = g_strdup (mnt.mnt_special);
+	me->me_mountdir = g_strdup (mnt.mnt_mountp);
+	me->me_type = g_strdup (mnt.mnt_fstype);
 	me->me_dev = (dev_t) -1;	/* Magic; means not known yet. */
 	me->me_next = NULL;
 
@@ -538,7 +479,7 @@ read_filesystem_list (need_fs_type, all_fs)
 
     /* Ask how many bytes to allocate for the mounted filesystem info.  */
     mntctl (MCTL_QUERY, sizeof bufsize, (struct vmount *) &bufsize);
-    entries = xmalloc (bufsize);
+    entries = g_malloc (bufsize);
 
     /* Get the list of mounted filesystems.  */
     mntctl (MCTL_QUERY, bufsize, (struct vmount *) entries);
@@ -547,26 +488,22 @@ read_filesystem_list (need_fs_type, all_fs)
 	 thisent += vmp->vmt_length)
       {
 	vmp = (struct vmount *) thisent;
-	me = (struct mount_entry *) xmalloc (sizeof (struct mount_entry));
+	me = (struct mount_entry *) g_malloc (sizeof (struct mount_entry));
 	if (vmp->vmt_flags & MNT_REMOTE)
 	  {
-	    char *host, *path;
-
 	    /* Prepend the remote pathname.  */
-	    host = thisent + vmp->vmt_data[VMT_HOSTNAME].vmt_off;
-	    path = thisent + vmp->vmt_data[VMT_OBJECT].vmt_off;
-	    me->me_devname = xmalloc (strlen (host) + strlen (path) + 2);
-	    strcpy (me->me_devname, host);
-	    strcat (me->me_devname, ":");
-	    strcat (me->me_devname, path);
+	    me->me_devname = \
+	      g_strdup_printf("%s:%s",
+			      thisent + vmp->vmt_data[VMT_HOSTNAME].vmt_off
+			      thisent + vmp->vmt_data[VMT_OBJECT  ].vmt_off);
 	  }
 	else
 	  {
-	    me->me_devname = xstrdup (thisent +
+	    me->me_devname = g_strdup (thisent +
 				      vmp->vmt_data[VMT_OBJECT].vmt_off);
 	  }
-	me->me_mountdir = xstrdup (thisent + vmp->vmt_data[VMT_STUB].vmt_off);
-	me->me_type = xstrdup (fstype_to_string (vmp->vmt_gfstype));
+	me->me_mountdir = g_strdup (thisent + vmp->vmt_data[VMT_STUB].vmt_off);
+	me->me_type = g_strdup (fstype_to_string (vmp->vmt_gfstype));
 	me->me_dev = (dev_t) -1; /* vmt_fsid might be the info we want.  */
 	me->me_next = NULL;
 
@@ -574,23 +511,51 @@ read_filesystem_list (need_fs_type, all_fs)
 	mtail->me_next = me;
 	mtail = me;
       }
-    free (entries);
+    g_free (entries);
   }
 #endif /* MOUNTED_VMOUNT. */
 
   /* Free the dummy head. */
   me = mount_list;
   mount_list = mount_list->me_next;
-  free (me);
+  g_free (me);
   return mount_list;
 }
+
+
+static gboolean ignore_mount_entry(const struct mount_entry *me)
+{
+	static const char ignored[][12] = {
+		"proc",
+		"procfs",
+		"autofs",
+		"sysfs",
+		"none",
+		"devpts",
+		"usbdevfs",
+		"binfmt_misc",
+		"supermount"
+	};
+
+	const char (*i)[12] = &ignored[0];
+
+	while(i != (&ignored[0] + G_N_ELEMENTS(ignored))) {
+		if(strcmp(*i, me->me_type) == 0)
+			return TRUE;
+		++i;
+	}
+
+	return FALSE;
+}
+
 
 glibtop_mountentry *
 glibtop_get_mountlist_s (glibtop *server, glibtop_mountlist *buf, int all_fs)
 {
-	struct mount_entry *me, *tmp, *next;
-	glibtop_mountentry *mount_list;
-	int count;
+	struct mount_entry *entries, *cur, *next;
+
+	GArray *mount_array = g_array_new(FALSE, FALSE,
+					  sizeof(glibtop_mountentry));
 
 	glibtop_init_r (&server, 0, 0);
 
@@ -598,47 +563,34 @@ glibtop_get_mountlist_s (glibtop *server, glibtop_mountlist *buf, int all_fs)
 
 	/* Read filesystem list. */
 
-	me = read_filesystem_list (1, all_fs);
-
-	if (me == NULL)
+	if((entries = read_filesystem_list (TRUE)) == NULL)
 		return NULL;
 
-	/* Count entries. */
+	for (cur = &entries[0]; cur != NULL; cur = next) {
 
-	for (count = 0, tmp = me; tmp; count++, tmp = tmp->me_next)
-		;
+		if(all_fs || !ignore_mount_entry(cur)) {
+			/* add a new glibtop_mountentry */
+			glibtop_mountentry e;
 
-	buf->size = sizeof (glibtop_mountentry);
-	buf->number = count;
+			g_strlcpy(e.devname,  cur->me_devname,  sizeof e.devname);
+			g_strlcpy(e.mountdir, cur->me_mountdir, sizeof e.mountdir);
+			g_strlcpy(e.type,     cur->me_type,     sizeof e.type);
+			e.dev = cur->me_dev;
 
-	buf->total = buf->number * buf->size;
+			g_array_append_val(mount_array, e);
+		}
 
-	mount_list = glibtop_malloc_r (server, buf->total);
-
-	/* Write data into mount_list. */
-
-	for (count = 0, tmp = me; tmp; count++, tmp = tmp->me_next) {
-		strncpy (mount_list [count].devname, tmp->me_devname, 
-			 GLIBTOP_MOUNTENTRY_LEN);
-		strncpy (mount_list [count].mountdir, tmp->me_mountdir,
-			 GLIBTOP_MOUNTENTRY_LEN);
-		strncpy (mount_list [count].type, tmp->me_type,
-			 GLIBTOP_MOUNTENTRY_LEN);
-		mount_list [count].devname [GLIBTOP_MOUNTENTRY_LEN] = 0;
-		mount_list [count].mountdir [GLIBTOP_MOUNTENTRY_LEN] = 0;
-		mount_list [count].type [GLIBTOP_MOUNTENTRY_LEN] = 0;
-		mount_list [count].dev = tmp->me_dev;
+		/* free current mount_entry and move to the next */
+		next = cur->me_next;
+		g_free(cur->me_devname);
+		g_free(cur->me_mountdir);
+		g_free(cur->me_type);
+		g_free(cur);
 	}
 
-	/* Free memory. */
+	buf->size   = sizeof (glibtop_mountentry);
+	buf->number = mount_array->len;
+	buf->total  = buf->number * buf->size;
 
-	for (count = 0, tmp = me; tmp; count++, tmp = next) {
-		next = tmp->me_next;
-		xfree (tmp->me_devname);
-		xfree (tmp->me_mountdir);
-		xfree (tmp->me_type);
-		xfree (tmp);
-	}
-
-	return mount_list;
+	return (glibtop_mountentry*) g_array_free(mount_array, FALSE);
 }

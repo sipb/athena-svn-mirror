@@ -1,4 +1,4 @@
-/* $Id: mem.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: mem.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -52,7 +52,7 @@ glibtop_init_mem_s (glibtop *server)
 void
 glibtop_get_mem_s (glibtop *server, glibtop_mem *buf)
 {
-    kstat_ctl_t *kc = server->machine.kc; 
+    kstat_ctl_t *kc = server->machine.kc;
     kstat_t *ksp;
     kstat_named_t *kn;
     int pagesize = server->machine.pagesize;
@@ -63,7 +63,7 @@ glibtop_get_mem_s (glibtop *server, glibtop_mem *buf)
 
     memset (buf, 0, sizeof (glibtop_mem));
 
-    buf->total = (u_int64_t)sysconf(_SC_PHYS_PAGES) << pagesize << 10;
+    buf->total = (guint64)sysconf(_SC_PHYS_PAGES) << pagesize << 10;
     buf->flags = _glibtop_sysdeps_mem_os_sysconf;
 
     if(!kc)

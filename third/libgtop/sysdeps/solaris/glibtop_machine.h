@@ -1,4 +1,4 @@
-/* $Id: glibtop_machine.h,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: glibtop_machine.h,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -36,7 +36,7 @@
 #include <kvm.h>
 #include <sys/sysinfo.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 typedef struct _glibtop_machine glibtop_machine;
 
@@ -49,7 +49,7 @@ struct _glibtop_machine
     kvm_t *kd;
 
     kstat_ctl_t *kc;
-    
+
     kstat_t *vminfo_kstat;
     hrtime_t vminfo_snaptime;
     vminfo_t vminfo;
@@ -73,6 +73,6 @@ struct _glibtop_machine
 #endif
 };
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
-#endif __GLIBTOP_MACHINE_H__
+#endif /* __GLIBTOP_MACHINE_H__ */

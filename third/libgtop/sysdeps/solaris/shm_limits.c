@@ -1,4 +1,4 @@
-/* $Id: shm_limits.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: shm_limits.c,v 1.1.1.2 2004-10-03 04:59:44 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <kvm.h>
 #include <sys/shm.h>
 
-static struct nlist nlst[] = { {"shminfo"}, {NULL} };
+static const struct nlist nlst[] = { {"shminfo"}, {NULL} };
 static const unsigned long _glibtop_sysdeps_shm_limits =
 (1L << GLIBTOP_IPC_SHMMAX) + (1L << GLIBTOP_IPC_SHMMIN) +
 (1L << GLIBTOP_IPC_SHMMNI) + (1L << GLIBTOP_IPC_SHMSEG);
@@ -60,9 +60,11 @@ glibtop_get_shm_limits_p (glibtop *server, glibtop_shm_limits *buf)
 	if(kvm_read(kd, nlst[0].n_value, (void *)&sinfo,
 		    sizeof(struct shminfo)) != sizeof(struct shminfo))
 	        return;
-        buf->shmmax = sinfo.shmmax;
-	buf->shmmin = sinfo.shmmin;
+	buf->shmmax = sinfo.shmmax;
 	buf->shmmni = sinfo.shmmni;
+#if GLIBTOP_SOLARIS_RELEASE < 590
+	buf->shmmin = sinfo.shmmin;
 	buf->shmseg = sinfo.shmseg;
+#endif
 	buf->flags = _glibtop_sysdeps_shm_limits;
 }

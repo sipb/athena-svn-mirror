@@ -1,4 +1,4 @@
-/* $Id: open.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: open.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/open.h>
-#include <glibtop/xmalloc.h>
 
 /* !!! THIS FUNCTION RUNS SUID ROOT - CHANGE WITH CAUTION !!! */
 
@@ -43,7 +42,7 @@ glibtop_init_p (glibtop *server, const unsigned long features,
 
 		for (init_fkt = _glibtop_init_hook_p; *init_fkt; init_fkt++)
 			(*init_fkt) (server);
-		
+
 		server->flags |= _GLIBTOP_INIT_STATE_SYSDEPS;
 	}
 }
@@ -54,7 +53,7 @@ glibtop_open_p (glibtop *server, const char *program_name,
 		const unsigned flags)
 {
 #ifdef DEBUG
-	fprintf (stderr, "DEBUG (%d): glibtop_open_p ()\n", getpid ()); 
+	fprintf (stderr, "DEBUG (%d): glibtop_open_p ()\n", getpid ());
 #endif
 
 	/* !!! WE ARE ROOT HERE - CHANGE WITH CAUTION !!! */
@@ -67,23 +66,23 @@ glibtop_open_p (glibtop *server, const char *program_name,
 #ifdef __FreeBSD__
 	server->os_version_code = __FreeBSD_version;
 #endif
-  
+
 	/* Setup machine-specific data */
 	server->machine.kd = kvm_open (NULL, NULL, NULL, O_RDONLY, "kvm_open");
-	
+
 	if (server->machine.kd == NULL)
 		glibtop_error_io_r (server, "kvm_open");
-	
-	/* Drop priviledges. */	
+
+	/* Drop priviledges. */
 
 	if (setreuid (server->machine.euid, server->machine.uid))
 		_exit (1);
-	
+
 	if (setregid (server->machine.egid, server->machine.gid))
 		_exit (1);
-	
+
 	/* !!! END OF SUID ROOT PART !!! */
-		
+
 	/* Our effective uid is now those of the user invoking the server,
 	 * so we do no longer have any priviledges. */
 

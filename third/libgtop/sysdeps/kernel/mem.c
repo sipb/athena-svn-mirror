@@ -1,4 +1,4 @@
-/* $Id: mem.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: mem.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -47,7 +47,7 @@ void
 glibtop_get_mem_s (glibtop *server, glibtop_mem *buf)
 {
 	union table tbl;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_MEM, 0);
 
 	memset (buf, 0, sizeof (glibtop_mem));

@@ -1,4 +1,4 @@
-/* $Id: procstate.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: procstate.c,v 1.1.1.2 2004-10-03 04:59:50 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -41,7 +41,7 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 
 	memset (buf, 0, sizeof (glibtop_proc_state));
 
-	/* Read process table from kernel. */	
+	/* Read process table from kernel. */
 
 	_glibtop_read_proc_table (server);
 

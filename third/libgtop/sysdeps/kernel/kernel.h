@@ -1,4 +1,4 @@
-/* $Id: kernel.h,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: kernel.h,v 1.1.1.2 2004-10-03 04:59:13 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -31,10 +31,10 @@
 
 #include <syscall.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 extern int table (int, union table *, const void *);
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

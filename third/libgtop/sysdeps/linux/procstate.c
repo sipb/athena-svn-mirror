@@ -1,4 +1,4 @@
-/* $Id: procstate.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procstate.c,v 1.1.1.2 2004-10-03 05:00:41 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -49,7 +49,7 @@ glibtop_get_proc_state_s (glibtop *server, glibtop_proc_state *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
 	struct stat statb;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_STATE, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_state));
@@ -66,28 +66,56 @@ glibtop_get_proc_state_s (glibtop *server, glibtop_proc_state *buf, pid_t pid)
 
 	/* For security reasons we use stat () since it is
 	 * more failsafe than parsing the file. */
-	
+
 	buf->uid = statb.st_uid;
 	buf->gid = statb.st_gid;
 
 	buf->flags = _glibtop_sysdeps_proc_state_uid;
-
-	sprintf (buffer, "/proc/%d", pid);
 
 	/* Now we read the remaining fields. */
 
 	if (proc_stat_to_buffer (buffer, pid))
 		return;
 
-	p = strrchr (buffer, ')'); *p = '\0';
-	buf->state = p [2];
+	p = proc_stat_after_cmd(buffer);
+	p = next_token(p);
 
-	p = skip_token (buffer); p++;	/* pid */
-	if (*p++ != '(')
+	switch(*p)
+	  {
+	  case 'R':
+	    buf->state = GLIBTOP_PROCESS_RUNNING;
+	    break;
+
+	  case 'Z':
+	    buf->state = GLIBTOP_PROCESS_ZOMBIE;
+	    break;
+
+	  case 'S':
+	    buf->state = GLIBTOP_PROCESS_INTERRUPTIBLE;
+	    break;
+
+	  case 'T':
+	    buf->state = GLIBTOP_PROCESS_STOPPED;
+	    break;
+
+	  case 'D':
+	    buf->state = GLIBTOP_PROCESS_UNINTERRUPTIBLE;
+	    break;
+
+	  case 'W':
+	    buf->state = GLIBTOP_PROCESS_SWAPPING;
+	    break;
+
+	  case 'X':
+	    buf->state = GLIBTOP_PROCESS_DEAD;
+	    break;
+	  }
+
+	p = skip_token (buffer); /* pid */
+	if (G_UNLIKELY(*p++ != '('))
 		glibtop_error_r (server, "Bad data in /proc/%d/stat", pid);
 
-	strncpy (buf->cmd, p, sizeof (buf->cmd)-1);
-	buf->cmd [sizeof (buf->cmd)-1] = 0;
+	g_strlcpy (buf->cmd, p, sizeof buf->cmd);
 
 	buf->flags |= _glibtop_sysdeps_proc_state;
 }

@@ -1,4 +1,4 @@
-/* $Id: cpu.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: cpu.h,v 1.1.1.2 2004-10-03 04:59:41 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_CPU_TOTAL	0
 #define GLIBTOP_CPU_USER	1
@@ -41,8 +41,9 @@ BEGIN_LIBGTOP_DECLS
 #define GLIBTOP_XCPU_NICE	8
 #define GLIBTOP_XCPU_SYS	9
 #define GLIBTOP_XCPU_IDLE	10
+#define GLIBTOP_XCPU_FLAGS  11
 
-#define GLIBTOP_MAX_CPU		11
+#define GLIBTOP_MAX_CPU		12
 
 /* Nobody should really be using more than 4 processors. */
 #define GLIBTOP_NCPU		4
@@ -51,7 +52,7 @@ typedef struct _glibtop_cpu	glibtop_cpu;
 
 struct _glibtop_cpu
 {
-	u_int64_t	flags,
+	guint64	flags,
 		total,				/* GLIBTOP_CPU_TOTAL		*/
 		user,				/* GLIBTOP_CPU_USER		*/
 		nice,				/* GLIBTOP_CPU_NICE		*/
@@ -62,7 +63,8 @@ struct _glibtop_cpu
 		xcpu_user [GLIBTOP_NCPU],	/* GLIBTOP_XCPU_USER		*/
 		xcpu_nice [GLIBTOP_NCPU],	/* GLIBTOP_XCPU_NICE		*/
 		xcpu_sys  [GLIBTOP_NCPU],	/* GLIBTOP_XCPU_SYS		*/
-		xcpu_idle [GLIBTOP_NCPU];	/* GLIBTOP_XCPU_IDLE		*/
+		xcpu_idle [GLIBTOP_NCPU],	/* GLIBTOP_XCPU_IDLE		*/
+		xcpu_flags;	                /* GLIBTOP_XCPU_IDLE		*/
 };
 
 #define glibtop_get_cpu(cpu)	glibtop_get_cpu_l(glibtop_global_server, cpu)
@@ -94,6 +96,6 @@ extern const char *glibtop_descriptions_cpu [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

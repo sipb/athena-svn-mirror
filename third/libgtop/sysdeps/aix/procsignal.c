@@ -1,4 +1,4 @@
-/* $Id: procsignal.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: procsignal.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C)) +998-99 Martin Baulig
    This file is part of LibGTop) +.0.
@@ -32,7 +32,7 @@
 
 #include "utils.h"
 
-static const unsigned long _glibtop_sysdeps_proc_signal = 
+static const unsigned long _glibtop_sysdeps_proc_signal =
 (1 <<GLIBTOP_PROC_SIGNAL_SIGNAL) + (1 <<GLIBTOP_PROC_SIGNAL_BLOCKED) +
 (1 <<GLIBTOP_PROC_SIGNAL_SIGIGNORE) + (1 <<GLIBTOP_PROC_SIGNAL_SIGCATCH);
 
@@ -63,10 +63,10 @@ glibtop_get_proc_signal_s (glibtop *server, glibtop_proc_signal *buf,
 
 		return;
 	}
-	
+
 	/* pending signals */
 
-#define NB_BITS	(8 * sizeof(u_int64_t))
+#define NB_BITS	(8 * sizeof(guint64))
 
 	for (i = 0; (i < NSIG) && (i < 2 * NB_BITS); i++)
 	{
@@ -84,6 +84,6 @@ glibtop_get_proc_signal_s (glibtop *server, glibtop_proc_signal *buf,
 		if (pinfo->pi_signal[i] == (long)SIG_CATCH)
 			buf->sigcatch[i / NB_BITS] |= bit;
 	}
-	
+
 	buf->flags = _glibtop_sysdeps_proc_signal;
 }

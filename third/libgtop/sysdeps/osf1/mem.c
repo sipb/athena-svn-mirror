@@ -1,4 +1,4 @@
-/* $Id: mem.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: mem.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -55,14 +55,14 @@ glibtop_get_mem_s (glibtop *server, glibtop_mem *buf)
 	memset (buf, 0, sizeof (glibtop_mem));
 
 	buf->flags = _glibtop_sysdeps_mem;
-	
+
 	(void) vm_statistics(task_self(), &vmstats);
 
 	buf->free = vmstats.free_count   * vmstats.pagesize;
 	buf->used = vmstats.active_count * vmstats.pagesize;
 
 	/* [FIXME]: Is this correct? */
-	
+
 	buf->total = (vmstats.active_count + vmstats.inactive_count +
 		      vmstats.free_count + vmstats.wire_count) *
 		vmstats.pagesize;

@@ -1,4 +1,4 @@
-/* $Id: msg_limits.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: msg_limits.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop/error.h>
 #include <glibtop/msg_limits.h>
 
-static const unsigned long _glibtop_sysdeps_msg_limits = 
+static const unsigned long _glibtop_sysdeps_msg_limits =
 (1 << GLIBTOP_IPC_MSGMAX) + (1 << GLIBTOP_IPC_MSGMNB) +
 (1 << GLIBTOP_IPC_MSGMNI) + (1 << GLIBTOP_IPC_MSGTQL);
 

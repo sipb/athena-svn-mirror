@@ -1,4 +1,4 @@
-/* $Id: glibtop_machine.h,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: glibtop_machine.h,v 1.1.1.2 2004-10-03 04:59:18 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -48,7 +48,7 @@
 
 #include "loadavg.h"
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 /* Older versions of SunOS don't have a typedef for pid_t.
    Hopefully this will catch all those cases without causing other problems.
@@ -112,6 +112,6 @@ struct proc *_glibtop_find_pid (void *void_server, pid_t pid);
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

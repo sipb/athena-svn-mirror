@@ -1,4 +1,4 @@
-/* $Id: write.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: write.c,v 1.1.1.2 2004-10-03 04:59:33 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -21,7 +21,10 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <config.h>
+
 #include <glibtop/write.h>
+#include "libgtop-i18n.h"
 
 /* Writes some data to server. */
 
@@ -45,5 +48,5 @@ glibtop_write_l (glibtop *server, size_t size, void *buf)
 	}
 
 	if (ret < 0)
-		glibtop_error_io_r (server, _("write %d bytes"), size);
+		glibtop_error_io_r (server, ngettext ("write %d byte", "write %d bytes", size), size);
 }

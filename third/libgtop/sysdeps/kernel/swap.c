@@ -1,4 +1,4 @@
-/* $Id: swap.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: swap.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 
 #include "kernel.h"
 
-static unsigned long _glibtop_sysdeps_swap =
+static const unsigned long _glibtop_sysdeps_swap =
 (1 << GLIBTOP_SWAP_TOTAL) + (1 << GLIBTOP_SWAP_USED) +
 (1 << GLIBTOP_SWAP_FREE) + (1 << GLIBTOP_SWAP_PAGEIN) +
 (1 << GLIBTOP_SWAP_PAGEOUT);
@@ -46,7 +46,7 @@ void
 glibtop_get_swap_s (glibtop *server, glibtop_swap *buf)
 {
 	union table tbl;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_SWAP, 0);
 
 	memset (buf, 0, sizeof (glibtop_swap));

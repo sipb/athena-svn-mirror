@@ -1,4 +1,4 @@
-/* $Id: procstate.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: procstate.h,v 1.1.1.2 2004-10-03 05:00:14 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,14 +27,27 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROC_STATE_CMD		0
 #define GLIBTOP_PROC_STATE_STATE	1
 #define GLIBTOP_PROC_STATE_UID		2
 #define GLIBTOP_PROC_STATE_GID		3
+#define GLIBTOP_PROC_STATE_RUID     4
+#define GLIBTOP_PROC_STATE_RGID     5
+#define GLIBTOP_PROC_STATE_HAS_CPU  6
+#define GLIBTOP_PROC_STATE_PROCESSOR 7
+#define GLIBTOP_PROC_STATE_LAST_PROCESSOR 8
 
-#define GLIBTOP_MAX_PROC_STATE		4
+#define GLIBTOP_MAX_PROC_STATE		9
+
+#define GLIBTOP_PROCESS_RUNNING                 1
+#define GLIBTOP_PROCESS_INTERRUPTIBLE           2
+#define GLIBTOP_PROCESS_UNINTERRUPTIBLE         4
+#define GLIBTOP_PROCESS_ZOMBIE                  8
+#define GLIBTOP_PROCESS_STOPPED                 16
+#define GLIBTOP_PROCESS_SWAPPING                32
+#define GLIBTOP_PROCESS_DEAD                    64
 
 typedef struct _glibtop_proc_state	glibtop_proc_state;
 
@@ -42,10 +55,10 @@ typedef struct _glibtop_proc_state	glibtop_proc_state;
 
 struct _glibtop_proc_state
 {
-	u_int64_t flags;
-	char cmd[40],		/* basename of executable file in 
+	guint64 flags;
+	char cmd[40];		/* basename of executable file in
 				 * call to exec(2) */
-		state;		/* single-char code for process state
+	unsigned state;		/* single-char code for process state
 				 * (S=sleeping) */
 	/* NOTE: when porting the library, TRY HARD to implement the
 	 *       following two fields. */
@@ -53,7 +66,12 @@ struct _glibtop_proc_state
 	 *                   only to set the flags value for those two
 	 *                   fields if their values are corrent ! */
 	int uid,		/* UID of process */
-		gid;		/* GID of process */
+		gid,		/* GID of process */
+        ruid,
+        rgid;
+    int has_cpu,
+        processor,
+        last_processor;
 };
 
 #define glibtop_get_proc_state(p1, p2)	glibtop_get_proc_state_l(glibtop_global_server, p1, p2)
@@ -73,7 +91,7 @@ void glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf, pid_t p
 void glibtop_init_proc_state_s (glibtop *server);
 void glibtop_get_proc_state_s (glibtop *server, glibtop_proc_state *buf, pid_t pid);
 #endif
-     
+
 #ifdef GLIBTOP_NAMES
 
 /* You need to link with -lgtop_names to get this stuff here. */
@@ -85,6 +103,6 @@ extern const char *glibtop_descriptions_proc_state [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

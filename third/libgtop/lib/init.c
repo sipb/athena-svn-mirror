@@ -1,4 +1,4 @@
-/* $Id: init.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: init.c,v 1.1.1.2 2004-10-03 04:59:51 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,7 +22,6 @@
 */
 
 #include <glibtop.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/sysdeps.h>
 #include <glibtop/parameter.h>
 
@@ -30,7 +29,7 @@
 #define DEFAULT_PORT 42800
 #endif
 
-static glibtop _glibtop_global_server;
+static glibtop _glibtop_global_server = { .flags = 0 };
 glibtop *glibtop_global_server = &_glibtop_global_server;
 
 static void
@@ -45,14 +44,14 @@ _init_server (glibtop *server, const unsigned features)
 		const char *temp = getenv ("LIBGTOP_SERVER") ?
 			getenv ("LIBGTOP_SERVER") : LIBGTOP_SERVER;
 
-		server->server_command = glibtop_strdup_r (server, temp);
+		server->server_command = g_strdup (temp);
 	}
 
 	if (server->server_rsh == NULL) {
 		const char *temp = getenv ("LIBGTOP_RSH") ?
 			getenv ("LIBGTOP_RSH") : "/usr/bin/ssh";
-		
-		server->server_rsh = glibtop_strdup_r (server, temp);
+
+		server->server_rsh = g_strdup (temp);
 	}
 
 	/* Try to get server method, but don't override if already
@@ -79,15 +78,15 @@ _init_server (glibtop *server, const unsigned features)
 
 	/* If the first character of 'server_command' is a colon,
 	 * the first field is the method to connect to the server. */
-	
+
 	/* Everything up to the next colon is the method. */
-	
-	command = glibtop_strdup_r (server, server->server_command+1);
+
+	command = g_strdup (server->server_command+1);
 	temp = strstr (command, ":");
 	if (temp) *temp = 0;
-	
+
 	/* Dispatch method. */
-			
+
 	if (!strcmp (command, "direct")) {
 		/* Use sysdeps dir instead of connecting to server
 		 * even if using the server would be required on
@@ -103,23 +102,20 @@ _init_server (glibtop *server, const unsigned features)
 		if (temp == NULL) {
 			/* If no value was set, we use 'localhost'. */
 			if (server->server_host == NULL)
-				server->server_host = glibtop_strdup_r
-					(server, "localhost");
+				server->server_host = g_strdup ("localhost");
 		} else {
 			char *temp2 = strstr (temp+1, ":");
 			if (temp2) *temp2 = 0;
-					
+
 			/* Override default. */
 			if (server->server_host)
-				glibtop_free_r (server,
-						(char *) server->server_host);
+				g_free ((char *) server->server_host);
 
-			server->server_host = glibtop_strdup_r
-				(server, temp+1);
-					
+			server->server_host = g_strdup (temp+1);
+
 			temp = temp2;
 		}
-			
+
 		if (temp == NULL) {
 			/* If no value was set, we use DEFAULT_PORT. */
 			if (server->server_port == 0)
@@ -127,10 +123,10 @@ _init_server (glibtop *server, const unsigned features)
 		} else {
 			char *temp2 = strstr (temp+1, ":");
 			if (temp2) *temp2 = 0;
-					
+
 			if (sscanf (temp+1, "%ld", &server->server_port) != 1)
 				server->server_port = DEFAULT_PORT;
-					
+
 			temp = temp2 ? temp2 + 1 : temp2;
 		}
 
@@ -150,8 +146,8 @@ _init_server (glibtop *server, const unsigned features)
 				 server->server_command+1);
 
 	}
-			
-	glibtop_free_r (server, command);
+
+	g_free (command);
 }
 
 glibtop *
@@ -177,27 +173,27 @@ glibtop_init_r (glibtop **server_ptr, unsigned long features, unsigned flags)
 	if ((server->flags & _GLIBTOP_INIT_STATE_INIT) == 0) {
 		if (flags & GLIBTOP_FEATURES_EXCEPT)
 			features = ~features & GLIBTOP_SYSDEPS_ALL;
-		
+
 		if (features == 0)
 			features = GLIBTOP_SYSDEPS_ALL;
-		
+
 		if (flags & GLIBTOP_FEATURES_NO_SERVER) {
 			server->method = GLIBTOP_METHOD_DIRECT;
 			features = 0;
 		}
-		
+
 		server->features = features;
-		
+
 		_init_server (server, features);
-		
+
 		server->flags |= _GLIBTOP_INIT_STATE_INIT;
-		
+
 		switch (server->method) {
 		case GLIBTOP_METHOD_PIPE:
 		case GLIBTOP_METHOD_UNIX:
 			if (glibtop_server_features & features)
 				break;
-			
+
 			server->method = GLIBTOP_METHOD_DIRECT;
 			break;
 		}
@@ -209,11 +205,11 @@ glibtop_init_r (glibtop **server_ptr, unsigned long features, unsigned flags)
 		return server;
 
 	/* Open server, but only if not already opened. */
-	
+
 	if ((server->flags & _GLIBTOP_INIT_STATE_OPEN) == 0)
 		glibtop_open_l (glibtop_global_server, "glibtop",
 				features, flags);
-	
+
 	return server;
 }
 
@@ -222,7 +218,7 @@ glibtop_init_s (glibtop **server_ptr, unsigned long features, unsigned flags)
 {
 	glibtop *server;
 	glibtop_init_func_t *init_fkt;
-	
+
 	if (server_ptr == NULL)
 		return NULL;
 
@@ -243,7 +239,7 @@ glibtop_init_s (glibtop **server_ptr, unsigned long features, unsigned flags)
 
 		for (init_fkt = _glibtop_init_hook_s; *init_fkt; init_fkt++)
 			(*init_fkt) (server);
-		
+
 		server->flags |= _GLIBTOP_INIT_STATE_SYSDEPS;
 	}
 

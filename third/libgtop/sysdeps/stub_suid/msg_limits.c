@@ -1,4 +1,4 @@
-/* $Id: msg_limits.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: msg_limits.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -43,6 +43,6 @@ void
 glibtop_get_msg_limits_p (glibtop *server, glibtop_msg_limits *buf)
 {
 	glibtop_init_p (server, GLIBTOP_SYSDEPS_MSG_LIMITS, 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_msg_limits));
 }

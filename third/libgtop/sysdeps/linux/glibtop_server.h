@@ -1,4 +1,4 @@
-/* $Id: glibtop_server.h,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: glibtop_server.h,v 1.1.1.2 2004-10-03 05:00:23 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -21,62 +21,81 @@
    Boston, MA 02111-1307, USA.
 */
 
-#ifndef __GLIBTOP_SERVER_H__
-#define __GLIBTOP_SERVER_H__
+#ifndef __LINUX__GLIBTOP_SERVER_H__
+#define __LINUX__GLIBTOP_SERVER_H__
+
+#include <glibtop.h>
+
+#include <glib.h>
 
 #include <fcntl.h>
 #include <ctype.h>
+#include <string.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #ifdef _IN_LIBGTOP
+
+#define LINUX_VERSION_CODE(x,y,z)   (0x10000*(x) + 0x100*(y) + z)
+
+
+unsigned get_pageshift();
+
+static inline char*
+next_token(const char *p)
+{
+	while (isspace(*p)) p++;
+	return (char*) p;
+}
 
 static inline char *
 skip_token (const char *p)
 {
-        while (isspace(*p)) p++;
-        while (*p && !isspace(*p)) p++;
+	p = next_token(p);
+	while (*p && !isspace(*p)) p++;
+	p = next_token(p);
 	return (char *)p;
 }
 
 static inline char *
-skip_multiple_token (const char *p, int count)
+skip_multiple_token (const char *p, size_t count)
 {
-	int i;
-
-	for (i = 0; i < count; i++)
+	while(count--)
 		p = skip_token (p);
 
 	return (char *)p;
 }
 
+
 static inline char *
 skip_line (const char *p)
 {
-	while (*p != '\n') p++;
-	return (char *) ++p;
+	while (*p && *p != '\n') p++;
+	return (char *) (*p ? p+1 : p);
 }
+
+
+unsigned long long
+get_scaled(const char *buffer, const char *key);
+
+
+/* aborts on error */
+void
+file_to_buffer(glibtop *server, char *buffer, const char *filename);
+
+/* return < 0 on error, otherwise 0 on success */
+int
+try_file_to_buffer(char *buffer, const char *format, ...);
+
+
+/* some inline functions that wrap proc path
+ * as fast as macros :)
+ */
 
 static inline int
 proc_file_to_buffer (char *buffer, const char *fmt, pid_t pid)
 {
-	char filename [BUFSIZ];
-	int fd, len;
-
-	sprintf (filename, fmt, pid);
-
-	fd = open (filename, O_RDONLY);
-	if (fd < 0) return -1;
-
-	len = read (fd, buffer, BUFSIZ-1);
-	close (fd);
-
-	if (len < 0)
-	    return -1;
-
-	buffer [len] = '\0';
-
-	return 0;
+	return try_file_to_buffer(buffer, fmt, pid);
 }
 
 static inline int
@@ -97,13 +116,13 @@ proc_statm_to_buffer (char *buffer, pid_t pid)
 	return proc_file_to_buffer (buffer, "/proc/%d/statm", pid);
 }
 
+
 static inline char *
 proc_stat_after_cmd (char *p)
 {
 	p = strrchr (p, ')');
-	if (!p) return p;
-
-	*p++ = '\0';
+	if (G_LIKELY(p))
+		*p++ = '\0';
 	return p;
 }
 
@@ -130,6 +149,6 @@ proc_stat_after_cmd (char *p)
 #define GLIBTOP_SUID_NETLOAD		0
 #define GLIBTOP_SUID_PPP		0
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
-#endif
+#endif /* __LINUX__GLIBTOP_SERVER_H__ */

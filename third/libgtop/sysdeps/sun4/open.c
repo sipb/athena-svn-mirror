@@ -1,4 +1,4 @@
-/* $Id: open.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: open.c,v 1.1.1.2 2004-10-03 04:59:50 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/open.h>
-#include <glibtop/xmalloc.h>
 
 struct nlist _glibtop_nlist[] = {
 #ifdef i386
@@ -92,21 +91,21 @@ glibtop_open_p (glibtop *server, const char *program_name,
 	/* initialize the kernel interface */
 
 	server->machine.kd = kvm_open (NULL, NULL, NULL, O_RDONLY, "libgtop");
-	
+
 	if (server->machine.kd == NULL)
 		glibtop_error_io_r (server, "kvm_open");
-	
+
 	/* get the list of symbols we want to access in the kernel */
-	
+
 	server->machine.nlist_count = kvm_nlist
 		(server->machine.kd, _glibtop_nlist);
-	
+
 	if (server->machine.nlist_count < 0)
 		glibtop_error_io_r (server, "nlist");
 
 #ifdef MULTIPROCESSOR
 	/* were ncpu and xp_time not found in the nlist? */
-	
+
 	if ((server->machine.nlist_count > 0) &&
 	    (_glibtop_nlist[X_NCPU].n_type == 0) &&
 	    (_glibtop_nlist[X_MP_TIME].n_type == 0)) {
@@ -121,7 +120,7 @@ glibtop_open_p (glibtop *server, const char *program_name,
 #ifdef solbourne
 	{
 		unsigned int status, type;
-		
+
 		/* Get the number of CPUs on this system.  */
 		syscall(SYS_getcpustatus, &status,
 			&server->machine.ncpu, &type);
@@ -149,11 +148,11 @@ glibtop_open_p (glibtop *server, const char *program_name,
 	server->machine.ptable_size = (unsigned long) server->machine.nproc *
 		(unsigned long) sizeof (struct proc);
 
-	server->machine.proc_table = glibtop_malloc_r
+	server->machine.proc_table = g_malloc
 		(server, server->machine.ptable_size);
 
 	/* This are for the memory statistics. */
-	
+
 	(void) _glibtop_getkval (server, _glibtop_nlist[X_PAGES].n_value,
 				 (int *)(&server->machine.pages),
 				 sizeof (server->machine.pages),
@@ -170,7 +169,7 @@ glibtop_open_p (glibtop *server, const char *program_name,
 		sizeof (struct page);
 
 	server->machine.physpage = (struct page *)
-		glibtop_malloc_r (server, server->machine.bytesize);
+		g_malloc (server->machine.bytesize);
 
 	/* get the page size with "getpagesize" and
 	 * calculate pageshift from it */
@@ -188,16 +187,16 @@ glibtop_open_p (glibtop *server, const char *program_name,
 
 	server->machine.pageshift -= LOG1024;
 
-	/* Drop priviledges. */	
-	
+	/* Drop priviledges. */
+
 	if (setreuid (server->machine.euid, server->machine.uid))
 		_exit (1);
-	
+
 	if (setregid (server->machine.egid, server->machine.gid))
 		_exit (1);
-	
+
 	/* !!! END OF SUID ROOT PART !!! */
-		
+
 	/* Our effective uid is now those of the user invoking the server,
 	 * so we do no longer have any priviledges. */
 
@@ -215,12 +214,12 @@ int
 _glibtop_check_nlist (void *server, register struct nlist *nlst)
 {
 	register int not_found;
-	
+
 	/* check to see if we got ALL the symbols we requested */
 	/* this will write one line to stderr for every symbol not found */
-	
+
 	not_found = 0;
-	
+
 	while (nlst->n_name != NULL) {
 
 #ifdef i386
@@ -241,7 +240,7 @@ _glibtop_check_nlist (void *server, register struct nlist *nlst)
 
 		nlst++;
 	}
-	
+
 	return not_found;
 }
 
@@ -256,11 +255,11 @@ _glibtop_getkval (void *void_server, unsigned long offset, int *ptr,
 	if (kvm_read (server->machine.kd, offset, ptr, size) != size)
 		{
 			if (*refstr == '!') return 0;
-			
+
 			glibtop_error_r (server, "kvm_read(%s): %s",
 					 refstr, strerror (errno));
 		}
-	
+
 	return 1;
 }
 
@@ -272,19 +271,19 @@ _glibtop_read_proc_table (void *void_server)
 	glibtop *server = (glibtop *) void_server;
 
 	/* !!! THE FOLLOWING CODE RUNS SGID KMEM - CHANGE WITH CAUTION !!! */
-	
+
 	setregid (server->machine.gid, server->machine.egid);
-	
-	/* Read process table from kernel. */	
+
+	/* Read process table from kernel. */
 
 	(void) _glibtop_getkval (server, server->machine.ptable_offset,
 				 (int *) server->machine.proc_table,
 				 (size_t) server->machine.ptable_size,
 				 _glibtop_nlist[X_PROC].n_name);
-	
+
 	if (setregid (server->machine.egid, server->machine.gid))
 		_exit (1);
-	
+
 	/* !!! END OF SGID KMEM PART !!! */
 }
 

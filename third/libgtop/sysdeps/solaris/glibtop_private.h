@@ -1,4 +1,4 @@
-/* $Id: glibtop_private.h,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: glibtop_private.h,v 1.1.1.2 2004-10-03 04:59:15 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -38,7 +38,7 @@
 # error Cannot compile without <procfs.h> or <sys/procfs.h>
 #endif
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #ifdef HAVE_PROCFS_H
 
@@ -63,6 +63,6 @@ int glibtop_get_proc_credentials_s(glibtop *, struct prcred *, gid_t *, pid_t);
 /* Reread kstat chains */
 void glibtop_get_kstats(glibtop *);
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
-#endif __GLIBTOP_PRIVATE_H__
+#endif /* __GLIBTOP_PRIVATE_H__ */

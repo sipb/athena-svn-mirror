@@ -1,4 +1,4 @@
-/* $Id: read.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: read.c,v 1.1.1.2 2004-10-03 04:59:56 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -21,44 +21,35 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <config.h>
 #include <glibtop/read.h>
+#include "libgtop-i18n.h"
+
 
 /* Reads some data from server. */
 
 static void
 do_read (int s, void *ptr, size_t total_size)
 {
-	int nread;
-	size_t already_read = 0, remaining = total_size;
-	char *tmp_ptr;
-	
-	while (already_read < total_size) {
-		nread = recv (s, ptr, remaining, 0);
+	ssize_t nread;
 
-		if (nread == 0) {
-			close (s);
-			continue;
-		}
-		
-		if (nread <= 0) {
-			glibtop_error_io ("recv");
-			return;
-		}
-		
-		already_read += nread;
-		remaining -= nread;
-		/* (char *) ptr += nread; */
-		tmp_ptr = ptr;
-		tmp_ptr += nread;
-		ptr = tmp_ptr;
+	if(!total_size) return;
+
+	while (total_size && (nread = recv (s, ptr, total_size, 0)) > 0) {
+		total_size -= nread;
+		ptr = (char*)ptr + nread;
 	}
+
+	if(nread == 0)
+		close (s);
+
+	if (nread < 0)
+		glibtop_error_io ("recv");
 }
 
 void
 glibtop_read_l (glibtop *server, size_t size, void *buf)
 {
-	int ret = 0;
-
 	glibtop_init_r (&server, 0, 0);
 
 #ifdef DEBUG
@@ -68,9 +59,11 @@ glibtop_read_l (glibtop *server, size_t size, void *buf)
 	if (server->socket) {
 		do_read (server->socket, buf, size);
 	} else {
-		ret = read (server->input [0], buf, size);
+		if(read (server->input [0], buf, size) < 0)
+			glibtop_error_io_r (
+				server,
+				ngettext ("read %d byte",
+					  "read %d bytes", size),
+				size);
 	}
-
-	if (ret < 0)
-		glibtop_error_io_r (server, _("read %d bytes"), size);
 }

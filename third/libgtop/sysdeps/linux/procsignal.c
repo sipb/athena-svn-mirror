@@ -1,4 +1,4 @@
-/* $Id: procsignal.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procsignal.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -43,7 +43,7 @@ void
 glibtop_get_proc_signal_s (glibtop *server, glibtop_proc_signal *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_SIGNAL, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_signal));
@@ -56,10 +56,10 @@ glibtop_get_proc_signal_s (glibtop *server, glibtop_proc_signal *buf, pid_t pid)
 
 	p = skip_multiple_token (p, 28);
 
-	buf->signal [0] = strtoul (p, &p, 0);
-	buf->blocked [0] = strtoul (p, &p, 0);
-	buf->sigignore [0] = strtoul (p, &p, 0);
-	buf->sigcatch [0] = strtoul (p, &p, 0);
+	buf->signal [0]    = strtoull (p, &p, 0);
+	buf->blocked [0]   = strtoull (p, &p, 0);
+	buf->sigignore [0] = strtoull (p, &p, 0);
+	buf->sigcatch [0]  = strtoull (p, &p, 0);
 
 	buf->flags = _glibtop_sysdeps_proc_signal;
 }

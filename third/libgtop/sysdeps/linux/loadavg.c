@@ -1,4 +1,4 @@
-/* $Id: loadavg.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: loadavg.c,v 1.1.1.2 2004-10-03 05:00:01 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -49,36 +49,25 @@ void
 glibtop_get_loadavg_s (glibtop *server, glibtop_loadavg *buf)
 {
 	char buffer [BUFSIZ], *p, *old;
-	int fd, len;
 
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_LOADAVG, 0);
 
 	memset (buf, 0, sizeof (glibtop_loadavg));
 
-	fd = open (FILENAME, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", FILENAME);
+	file_to_buffer(server, buffer, FILENAME);
 
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", FILENAME);
-
-	close (fd);
-
-	buffer [len] = '\0';
-
-	buf->loadavg [0] = (float) strtod (buffer, &p);
-	buf->loadavg [1] = (float) strtod (p, &p);
-	buf->loadavg [2] = (float) strtod (p, &p);
+	buf->loadavg [0] = strtod (buffer, &p);
+	buf->loadavg [1] = strtod (p, &p);
+	buf->loadavg [2] = strtod (p, &p);
 
 	buf->flags = _glibtop_sysdeps_loadavg;
 
-        while (isspace(*p)) p++;
+	while (isspace(*p)) p++;
 
 	/* Older Linux versions don't have the nr_running/nr_tasks fields. */
 
 	old = p;
-        while (*p) {
+	while (*p) {
 		if (*p == '/')
 			break;
 		if (!isdigit (*p))
@@ -86,9 +75,9 @@ glibtop_get_loadavg_s (glibtop *server, glibtop_loadavg *buf)
 		p++;
 	}
 
-	buf->nr_running  = strtoul (old, &p, 0); p++;
-	buf->nr_tasks    = strtoul (p, &p, 0);
-	buf->last_pid    = strtoul (p, &p, 0);
+	buf->nr_running  = strtoull (old, &p, 0); p++;
+	buf->nr_tasks    = strtoull (p, &p, 0);
+	buf->last_pid    = strtoull (p, &p, 0);
 
 	buf->flags |= _glibtop_sysdeps_loadavg_tasks;
 }

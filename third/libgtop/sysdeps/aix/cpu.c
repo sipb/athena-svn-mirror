@@ -1,4 +1,4 @@
-/* $Id: cpu.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: cpu.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -31,7 +31,7 @@
 
 #include <utils.h>
 
-static const unsigned long _glibtop_sysdeps_cpu = 
+static const unsigned long _glibtop_sysdeps_cpu =
 (1L << GLIBTOP_CPU_TOTAL) + (1L << GLIBTOP_CPU_USER) +
 (1L << GLIBTOP_CPU_SYS) + (1L << GLIBTOP_CPU_IDLE) +
 (1L << GLIBTOP_CPU_NICE) + (1 << GLIBTOP_CPU_FREQUENCY) +
@@ -80,7 +80,7 @@ glibtop_get_cpu_p (glibtop *server, glibtop_cpu *buf)
 
 	result = _glibtop_get_kmem_info(server, server->machine.cpuinfo_offset,
 					server->machine.cpuinfo,
-					_system_configuration.ncpus 
+					_system_configuration.ncpus
 						* sizeof(struct cpuinfo));
 
 	if (result <= 0)
@@ -88,7 +88,7 @@ glibtop_get_cpu_p (glibtop *server, glibtop_cpu *buf)
 		glibtop_error_io_r (server, "Cannot read cpuinfo");
 		return;
 	}
-	
+
 	buf->idle = 0;
 	buf->user = 0;
 	buf->sys = 0;
@@ -97,7 +97,7 @@ glibtop_get_cpu_p (glibtop *server, glibtop_cpu *buf)
 	{
 		if (cpu < GLIBTOP_NCPU)
 		{
-			buf->xcpu_idle[cpu] = 
+			buf->xcpu_idle[cpu] =
 				server->machine.cpuinfo[cpu].cpu[CPU_IDLE];
 			buf->xcpu_user[cpu] =
 				server->machine.cpuinfo[cpu].cpu[CPU_USER];
@@ -119,7 +119,7 @@ glibtop_get_cpu_p (glibtop *server, glibtop_cpu *buf)
 
 		buf->total = buf->idle + buf->user + buf->sys + buf->nice ;
 	}
-	
+
 	buf->frequency = sysconf(_SC_CLK_TCK);
 	buf->flags = _glibtop_sysdeps_cpu;
 }

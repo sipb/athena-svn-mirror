@@ -1,4 +1,4 @@
-/* $Id: proclist.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: proclist.c,v 1.1.1.2 2004-10-03 05:00:41 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,7 +22,6 @@
 */
 
 #include <config.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/proclist.h>
 
 #include <glibtop/procuid.h>
@@ -63,7 +62,7 @@ glibtop_init_proclist_s (glibtop *server)
 
 unsigned *
 glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg)
+			gint64 which, gint64 arg)
 {
 	DIR *proc;
 	struct dirent *entry;
@@ -91,7 +90,7 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 		ok = 1; len = strlen (entry->d_name);
 
 		/* does it consist entirely of digits? */
-		
+
 		for (i = 0; i < len; i++)
 			if (!isdigit (entry->d_name [i])) ok = 0;
 		if (!ok) continue;
@@ -103,7 +102,7 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 		/* is it really a directory? */
 
 		sprintf (buffer, "/proc/%d", pid);
-		
+
 		if (stat (buffer, &statb)) continue;
 
 		if (!S_ISDIR (statb.st_mode)) continue;
@@ -171,15 +170,14 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 		 * full, we copy it to the pids_chain. */
 
 		if (count >= BLOCK_COUNT) {
-			/* The following call to glibtop_realloc will be
-			 * equivalent to glibtop_malloc () if `pids_chain' is
+			/* The following call to g_realloc will be
+			 * equivalent to g_malloc () if `pids_chain' is
 			 * NULL. We just calculate the new size and copy `pids'
 			 * to the beginning of the newly allocated block. */
 
 			new_size = pids_size + BLOCK_SIZE;
 
-			pids_chain = glibtop_realloc_r
-				(server, pids_chain, new_size);
+			pids_chain = g_realloc (pids_chain, new_size);
 
 			memcpy (pids_chain + pids_offset, pids, BLOCK_SIZE);
 
@@ -191,12 +189,12 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 		}
 
 		/* pids is now big enough to hold at least one single pid. */
-		
+
 		pids [count++] = pid;
 
 		total++;
 	}
-	
+
 	closedir (proc);
 
 	/* count is only zero if an error occured (one a running Linux system,
@@ -204,19 +202,19 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 
 	if (!count) return NULL;
 
-	/* The following call to glibtop_realloc will be equivalent to
-	 * glibtop_malloc if pids_chain is NULL. We just calculate the
+	/* The following call to g_realloc will be equivalent to
+	 * g_malloc if pids_chain is NULL. We just calculate the
 	 * new size and copy pids to the beginning of the newly allocated
 	 * block. */
-	
+
 	new_size = pids_size + count * sizeof (unsigned);
-	
-	pids_chain = glibtop_realloc_r (server, pids_chain, new_size);
-	
+
+	pids_chain = g_realloc (pids_chain, new_size);
+
 	memcpy (pids_chain + pids_offset, pids, count * sizeof (unsigned));
-	
+
 	pids_size = new_size;
-	
+
 	pids_offset += BLOCK_COUNT;
 
 	/* Since everything is ok now, we can set buf->flags, fill in the

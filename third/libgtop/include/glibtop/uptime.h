@@ -1,4 +1,4 @@
-/* $Id: uptime.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: uptime.h,v 1.1.1.2 2004-10-03 04:59:23 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,20 +27,22 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_UPTIME_UPTIME		0
 #define GLIBTOP_UPTIME_IDLETIME		1
+#define GLIBTOP_UPTIME_BOOT_TIME    2
 
-#define GLIBTOP_MAX_UPTIME		2
+#define GLIBTOP_MAX_UPTIME		3
 
 typedef struct _glibtop_uptime	glibtop_uptime;
 
 struct _glibtop_uptime
 {
-	u_int64_t flags;
+	guint64 flags;
 	double uptime,		/* GLIBTOP_UPTIME_UPTIME	*/
 		idletime;	/* GLIBTOP_UPTIME_IDLETIME	*/
+	guint64 boot_time;
 };
 
 #define glibtop_get_uptime(uptime)	glibtop_get_uptime_l(glibtop_global_server, uptime)
@@ -72,6 +74,6 @@ extern const char *glibtop_descriptions_uptime [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

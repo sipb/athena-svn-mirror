@@ -1,4 +1,4 @@
-/* $Id: glibtop_suid.h,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: glibtop_suid.h,v 1.1.1.2 2004-10-03 04:59:18 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,7 +24,7 @@
 #ifndef __GLIBTOP_SUID_H__
 #define __GLIBTOP_SUID_H__
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 static inline void glibtop_suid_enter (glibtop *server) {
 	setregid (server->machine.gid, server->machine.egid);
@@ -43,6 +43,6 @@ glibtop_open_p (glibtop *server, const char *program_name,
 		const unsigned long features,
 		const unsigned flags);
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif
