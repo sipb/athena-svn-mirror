@@ -78,6 +78,8 @@ struct keywords Pc_var_list[] = {
 { "architecture", STRING_K, &Architecture,1,0,ARCHITECTURE},
    /*  accounting at start (see also af, la, ar) */
 { "as",  STRING_K,  &Accounting_start,0,0,"=jobstart $H $n $P $k $b $t"},
+   /*  old Athena Z flag compatibility */
+{ "az", FLAG_K, &Athena_Z_compat,0,0},
    /*  end banner printing program overides bp */
 { "be",  STRING_K,  &Banner_end,0,0},
    /*  Berkeley LPD: job file strictly RFC-compliant */
@@ -416,10 +418,14 @@ struct keywords Pc_var_list[] = {
 { "user_lpc", STRING_K, &User_lpc,1,0},
    /*  if lp is a tty, clear local mode bits (see ty) */
 { "xc",  INTEGER_K,  &Clear_local_bits,0,0},
+   /*  server supports extended notification (M cf line) */
+{ "xn",  FLAG_K,  &Extended_notification,0,0},
    /*  like `xc' but set bits (see ty) */
 { "xs",  INTEGER_K,  &Set_local_bits,0,0},
    /*  formats to check for printable files */
 { "xt",  FLAG_K,  &Check_for_nonprintable,0,0},
+   /*  zwrite program */
+{ "zwrite", STRING_K, &Zwrite,1,0,"=/usr/athena/bin/zwrite"},
 /* END */
 { (char *)0 }
 } ;

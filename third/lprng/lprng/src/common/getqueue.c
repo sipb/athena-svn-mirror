@@ -301,6 +301,22 @@ int Parse_cf( struct dpathname *dpath, struct control_file *cf, int check_df )
 				goto error;
 			}
 			DEBUG4("Parse_cf: cap option '%c'='%s'",c,s);
+
+			/* If doing Athena compat, rewrite Zfoo to
+			 * Mzephyr%foo
+			 */
+			if( (c == 'Z') && Athena_Z_compat &&
+                           cf->capoptions[ 'P' - 'A' ] &&
+			   (strcmp( s + 1, cf->capoptions[ 'P' - 'A' ] + 1 ) == 0 ) ){
+				static char zbuf[LINEBUFFER];
+
+				plp_snprintf( zbuf, sizeof(zbuf),
+					     "Mzephyr%%%s", s + 1 );
+				lines[i] = zbuf;
+				s = lines[i];
+				c = s[0];
+			}
+
 			cf->capoptions[ c - 'A' ] = s;
 			if( c == 'A' ){
 				if( s[1] == 0 ){
