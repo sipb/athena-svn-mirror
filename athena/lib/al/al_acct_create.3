@@ -1,4 +1,4 @@
-.\" $Id: al_acct_create.3,v 1.5 1998-04-25 23:14:58 ghudson Exp $
+.\" $Id: al_acct_create.3,v 1.5.2.1 1998-07-16 15:38:21 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -21,7 +21,8 @@ al_acct_create \- Set up a local account for a user
 .nf
 .B #include <al.h>
 .PP
-.B int al_acct_create(const char *\fIusername\fP, const char *\fIcryptpw\fP,
+.B
+int al_acct_create(const char *\fIusername\fP, const char *\fIcryptpw\fP,
 .B 	pid_t \fIsessionpid\fP, int \fIhavecred\fP, int \fItmphomedir\fP,
 .B 	int **\fIwarnings\fP)
 .PP
