@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.70 2002-04-05 14:51:03 zacheiss Exp $
+# $Id: reactivate.sh,v 1.71 2002-10-24 23:01:00 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -329,6 +329,7 @@ if [ "$PUBLIC" = true ]; then
 		# public machines shouldn't be running an sshd
 		kill `cat /var/athena/sshd.pid`
 	fi
+	rm -rf /etc/athena/orbitrc
 fi
 
 if [ "$ACCESSON" = true -a -f /usr/athena/bin/access_on ]; then

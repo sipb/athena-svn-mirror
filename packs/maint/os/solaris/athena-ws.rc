@@ -1,4 +1,4 @@
-# $Id: athena-ws.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+# $Id: athena-ws.rc,v 1.2 2002-10-24 23:01:06 rbasch Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -139,6 +139,7 @@ start)
     rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist /usr/local
     rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
     rm -f /etc/ssh_host_* /etc/ssh_random_seed
+    rm -rf /etc/athena/orbitrc
     if [ -r /srvd/etc/passwd ]; then
       syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \
         /etc/passwd.local
