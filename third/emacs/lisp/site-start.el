@@ -1,14 +1,3 @@
-; Some gnus settings.  We set gnus-mode-non-string-length to 27 to make room
-; for line-number-mode; this seems to be an oversight in the defaults
-; (understandable since line-number-mode wasn't on by default until 19.30).
-; We set gnus-use-long-filename to t to force consistent filenames on all
-; platforms, overriding the backward-compatible default for System V.
-(setq news-inews-program "/afs/sipb.mit.edu/project/sipb/bin/inews"
-      gnus-default-nntp-server "news.mit.edu"
-      gnus-local-organization "Massachusetts Institute of Technology"
-      gnus-mode-non-string-length 27
-      gnus-use-long-file-name t)
-
 ; mh-rmail won't find mh programs by default; tell it where they are.
 (setq mh-progs "/usr/athena/bin/"
       mh-lib "/usr/athena/etc/")
@@ -54,6 +43,19 @@
 	    ((file-accessible-directory-p "/usr/spool/mail/")
 	     "/usr/spool/mail/$USER")))
 (setq rmail-primary-inbox-list (list "~/mbox" local-inbox "po:$USER"))
+
+; Some gnus settings.  We set gnus-mode-non-string-length to 27 to make room
+; for line-number-mode; this seems to be an oversight in the defaults
+; (understandable since line-number-mode wasn't on by default until 19.30).
+; We set nnmail-crosspost-link-function to 'copy-file because AFS does not
+; support hard links.  We set nnmail-spool-file to retrieve mail from the
+; same place rmail does.
+(setq news-inews-program "/afs/sipb.mit.edu/project/sipb/bin/inews"
+      gnus-default-nntp-server "news.mit.edu"
+      gnus-local-organization "Massachusetts Institute of Technology"
+      gnus-mode-non-string-length 27
+      nnmail-crosspost-link-function 'copy-file
+      nnmail-spool-file rmail-primary-inbox-list)
 
 (autoload 'discuss "discuss" "Emacs Discuss" t)
 
