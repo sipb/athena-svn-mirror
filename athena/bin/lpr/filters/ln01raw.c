@@ -1,3 +1,6 @@
+#ifdef _AUX_SOURCE
+#include <sys/types.h>
+#endif
 #include <sys/file.h>
 main()
 {
