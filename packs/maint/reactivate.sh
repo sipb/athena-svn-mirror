@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.4 1991-02-04 15:14:47 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.5 1991-02-06 14:44:22 probe Exp $
 
 trap "" 1 15
 
@@ -48,6 +48,7 @@ fi
 # Next, restore password, group, and AFS-cell files
 if [ -f /etc/passwd.local ] ; then
 	${cp} /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
+	/bin/rm -f /etc/passwd.dir /etc/passwd.pag
 fi
 if [ -f /etc/group.local ] ; then
 	${cp} /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
