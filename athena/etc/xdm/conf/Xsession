@@ -2,13 +2,17 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.12 1995-01-10 07:27:11 cfields Exp $
+# $Id: Xsession,v 1.13 1995-09-04 21:22:27 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
 initlib="/usr/athena/lib/init"
 defsession=$1
 defsessioncmd="$2"
+
+if [ -f .noignore ]; then
+	defsession=1;
+fi
 
 case $defsession in
 1|4)
