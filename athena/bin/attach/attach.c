@@ -1,17 +1,20 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.8 1990-08-01 18:11:37 epeisach Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.9 1990-11-15 22:38:38 probe Exp $";
 #endif lint
 
 #include "attach.h"
 #include <signal.h>
+#include <string.h>
+
+int attach_mul();
 
 /*
  * Attempt to attach a filesystem.  Lookup the name with Hesiod as
@@ -93,6 +96,10 @@ retry:
 	    if (owner_list || lock_filesystem)
 		    put_attachtab();
 	    unlock_attachtab();
+
+	    if (atp->fs->type == TYPE_MUL)
+		return attach_mul(atp);
+	    
 	    if (print_path)
 		printf("%s\n", atp->mntpt);
 	    else if(verbose)
@@ -347,4 +354,23 @@ try_attach(name, hesline, errorout)
 	    if (at.fs->flags & FS_MNTPT)
 		    rm_mntpt(&at);
     return (status);
+}
+
+attach_mul(atp, mopt, errorout)
+struct _attachtab *atp;
+struct mntopts *mopt;
+int errorout;
+{
+	char mul_buf[BUFSIZ], *cp, *mp;
+	
+	strcpy(cp = mul_buf, atp->hostdir);
+	while (mp = cp) {
+		cp = index(mp, ',');
+		if (cp)
+			*cp = '\0';
+		attach(mp);
+		if (cp)
+			cp++;
+	}
+	return SUCCESS;
 }

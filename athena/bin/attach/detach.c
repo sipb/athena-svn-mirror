@@ -1,14 +1,17 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.4 1990-07-04 17:35:56 jfc Exp $";
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.5 1990-11-15 22:39:33 probe Exp $";
 
 #include "attach.h"
+#include <string.h>
+
+int detach_mul();
 
 /*
  * Detach the filesystem called name.
@@ -266,3 +269,24 @@ void detach_host(host)
 	explicit = tempexp;
 }
 
+
+detach_mul(atp)
+struct _attachtab *atp;
+{
+    int status;
+    char mul_buf[BUFSIZ], *cp;
+    
+    strcpy(mul_buf, atp->hostdir);
+    cp = &mul_buf[strlen(mul_buf)];
+    while (--cp >= mul_buf)
+	if (*cp == ',') {
+	    *cp = '\0';
+	    if (detach(cp+1) != SUCCESS && error_status!=ERR_DETACHNOTATTACHED)
+		status = FAILURE;
+	}
+
+    if (detach(cp+1) != SUCCESS && error_status != ERR_DETACHNOTATTACHED)
+	status = FAILURE;
+
+    return status;
+}

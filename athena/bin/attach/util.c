@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.7 1990-08-30 13:17:54 epeisach Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.8 1990-11-15 22:39:44 probe Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -185,7 +185,7 @@ int parse_hes(hes, at, errorname)
     char *hes, *errorname;
     struct _attachtab *at;
 {
-    char	*cp;
+    char	*cp, *t;
     struct hostent *hent;
     int		type;
 
@@ -205,32 +205,41 @@ int parse_hes(hes, at, errorname)
 	    return(0);
     }
 
-    if (!(cp = strtok(NULL, TOKSEP)))
+    if (!(cp = strtok(NULL, (type & TYPE_MUL) ? "" : TOKSEP)))
 	    goto bad_hes_line;
     strcpy(at->hostdir, cp);
 
-    if (type & ~(TYPE_UFS | TYPE_AFS)) {
+    if (type & ~(TYPE_UFS | TYPE_AFS | TYPE_MUL)) {
 	    if (!(cp = strtok(NULL, TOKSEP)))
 		    goto bad_hes_line;
 	    strcpy(at->host, cp);
     } else
 	    strcpy(at->host, "localhost");
 
-    if (!(cp = strtok(NULL, TOKSEP)))
-	    goto bad_hes_line;
-    at->mode = *cp;
-    if (at->mode == 'x')
-	    at->mode = 'w';  /* Backwards compatibility */
-    if (at->fs->good_flags) {
-	    if (!index(at->fs->good_flags, at->mode))
-		    goto bad_hes_line;	/* Bad attach mode */
+    if (type & TYPE_MUL) {
+	    t = at->hostdir;
+	    while (t = index(t,' '))
+		    *t = ',';
+	    at->mode = 'n';
+	    strcpy(at->mntpt, "/");
+    } else {
+
+	    if (!(cp = strtok(NULL, TOKSEP)))
+		    goto bad_hes_line;
+	    at->mode = *cp;
+	    if (at->mode == 'x')
+		    at->mode = 'w';  /* Backwards compatibility */
+	    if (at->fs->good_flags) {
+		    if (!index(at->fs->good_flags, at->mode))
+			    goto bad_hes_line;	/* Bad attach mode */
+	    }
+
+	    if (!(cp = strtok(NULL, TOKSEP)))
+		    goto bad_hes_line;
+	    strcpy(at->mntpt, cp);
     }
 
-    if (!(cp = strtok(NULL, TOKSEP)))
-	    goto bad_hes_line;
-    strcpy(at->mntpt, cp);
-
-    if (type & ~(TYPE_UFS | TYPE_AFS)) {
+    if (type & ~(TYPE_UFS | TYPE_AFS | TYPE_MUL)) {
 	    hent = gethostbyname(at->host);
 	    if (!hent) {
 		    fprintf(stderr,"%s: Can't resolve host %s\n",errorname,

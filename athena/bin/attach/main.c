@@ -6,10 +6,11 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.17 1990-11-15 18:04:41 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.18 1990-11-15 22:39:38 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
+#include <string.h>
 
 int verbose = 1, debug_flag = 0, map_anyway = 1, do_nfsid = 1;
 int print_path = 0, explicit = 0, owner_check = 0, override = 0;
@@ -57,6 +58,7 @@ int ufs_attach(), ufs_detach();
 #endif
 int err_attach(), null_detach();
 char	**ufs_explicit();
+int attach_mul(), detach_mul();
 
 struct _fstypes fstypes[] = {
     { "---", 0, -1, 0, (char *) 0, 0, null_detach, 0 },	/* The null type */
@@ -77,7 +79,7 @@ struct _fstypes fstypes[] = {
     { "AFS", TYPE_AFS, -1, FS_MNTPT | FS_PARENTMNTPT, "nrw", afs_attach, 
 	      afs_detach, afs_explicit },
 #endif
-    { "MUL", TYPE_MUL, -1, 0, (char *) 0, 0, 0, 0 },
+    { "MUL", TYPE_MUL, -1, 0, "n", attach_mul, detach_mul, 0 },
     { 0, -1, 0, 0, (char *) 0, 0, 0, 0 }
 };
 
@@ -180,6 +182,8 @@ nfsidcmd(argc, argv)
     struct hostent *hent;
     char hostname[BUFSIZ];
     struct _attachtab	*atp;
+    struct _attachtab	*save_atp=0;
+    char		*save_atp_hostdir;
     struct in_addr addr;
     static struct command_list options[] = {
 	{ "-verbose", "-v" },
@@ -307,7 +311,7 @@ nfsidcmd(argc, argv)
 					       atp->hesiodname, ops);
 #endif
 			} else
-				if (verbose)
+				if (atp->fs->type != TYPE_MUL && verbose)
 				    printf("%s: %s ignored (not NFS)\n",
 					   progname, atp->hesiodname);
 			atp = atp->next;
@@ -333,19 +337,9 @@ nfsidcmd(argc, argv)
 	     * on the host associated with it.
 	     */
 	    if (atp = attachtab_lookup(argv[i])) {
-		    if (atp->fs->type == TYPE_NFS) {
-			    if ((nfsid(atp->host, atp->hostaddr, op, 1,
-				       argv[i], 0, owner_uid) == SUCCESS) &&
-				verbose)
-				    printf("%s: %s %s\n", progname, argv[i], ops);
-#ifdef AFS
-		    } else if (atp->fs->type == TYPE_AFS) {
-			    if (op == MOUNTPROC_KUIDMAP &&
-				(afs_auth(atp->hesiodname, atp->hostdir) == SUCCESS)
-				&& verbose)
-				    printf("%s: %s %s\n", progname, argv[i], ops);
-#endif
-		    }
+		    if (atp->fs->type == TYPE_MUL)
+			    gotname = 2;
+		    nfsid_filsys(atp, op, ops, argv[i], owner_uid);
 	    } else {
 		error_status = ERR_NFSIDNOTATTACHED;
 		fprintf(stderr, "%s: %s not attached\n", progname, argv[i]);
@@ -379,6 +373,40 @@ nfsidcmd(argc, argv)
 }
 #endif
 #endif
+
+nfsid_filsys(atp, op, ops, filsys, uid)
+struct _attachtab *atp;
+int op;
+char *ops;
+char *filsys;
+int uid;
+{
+	char mul_buf[BUFSIZ], *cp;
+	
+	if (atp->fs->type == TYPE_MUL) {
+		strcpy(mul_buf, atp->hostdir);
+		cp = strtok(mul_buf, ",");
+		while (cp) {
+			atp = attachtab_lookup(cp);
+			if (atp)
+				nfsid_filsys(atp,op,ops,atp->hesiodname,uid);
+			cp = strtok(NULL, ",");
+		}
+	} else if (atp->fs->type == TYPE_NFS) {
+		if ((nfsid(atp->host, atp->hostaddr, op, 1,
+			   filsys, 0, owner_uid) == SUCCESS) &&
+		    verbose)
+			printf("%s: %s %s\n", progname, filsys, ops);
+#ifdef AFS
+	} else if (atp->fs->type == TYPE_AFS) {
+		if (op == MOUNTPROC_KUIDMAP &&
+		    (afs_auth(atp->hesiodname, atp->hostdir) == SUCCESS)
+		    && verbose)
+			printf("%s: %s %s\n", progname, filsys, ops);
+#endif
+	}
+}
+
 
 char *attach_list_format = "%-22s %-22s %c%-18s%s\n";
 
