@@ -885,7 +885,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #endif
 #ifdef UseInstalled
 #if AlternateIncRoot
-     TOP_INCLUDES = -I$(INCROOT)	/* def: for alternative /usr/include */
+     TOP_INCLUDES = 
 #endif
 #else
      TOP_INCLUDES = -I$(TOP)		/* def: for builds within tree */
@@ -903,16 +903,8 @@ XCOMM the platform-specific parameters - edit site.def to change
        ALLDEFINES = $(ALLINCLUDES) $(STD_DEFINES) $(EXTRA_DEFINES) $(PROTO_DEFINES) $(DEFINES)
            CFLAGS = $(CDEBUGFLAGS) $(CCOPTIONS) $(ALLDEFINES)
         LINTFLAGS = $(LINTOPTS) -DLINT $(ALLDEFINES)
-#if AlternateUsrLibDir && !defined(UseInstalled)
-           LDLIBS = $(SITELDLIBS) -L$(USRLIBDIR) $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
-#else
            LDLIBS = $(SITELDLIBS) $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
-#endif
-#if AlternateUsrLibDir && defined(UseInstalled)
-        LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(EXTRA_LDOPTIONS) $(LOCAL_LDFLAGS) -L$(USRLIBDIR)
-#else
         LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(EXTRA_LDOPTIONS) $(LOCAL_LDFLAGS)
-#endif
    LDCOMBINEFLAGS = LdCombineFlags
       DEPENDFLAGS = DependFlags
 
