@@ -326,7 +326,6 @@ static EAccount *make_mit_account (const char *name, const char *url)
 						g_get_user_name ());
 	account->id->reply_to = g_strdup ("");
 	account->id->organization = g_strdup ("");
-	account->id->def_signature = -1;
 	account->source->url = g_strdup (url);
 	account->transport->url = g_strdup ("sendmail:");
 	account->drafts_folder_uri =
