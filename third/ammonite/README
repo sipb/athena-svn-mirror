@@ -1,0 +1,60 @@
+Ammonite is a client-side HTTP proxy that implements special features needed for
+the Eazel Service user authentication system.  It's primary purpose is to consolidate
+Eazel Service session information across Eazel Service client side components 
+(often called "Trilobites") and to tunnel all HTTP traffic inside an SSL tunnel.
+Ammonite's features are largely Eazel-service specific, but some of the functionality
+may be useful in other contexts.  If you're interested in applying Ammonite to
+another task, feel free to contact the maintainers as they may be interested in
+aiding you.
+
+Ammonite is required by nautilus when nautilus is configured with
+"--enable-eazel-services"
+
+Ammonite was originally based on tinyproxy v1.3 by Steven Young 
+<sdyoung@well.com> and Robert James Kaes <rjkaes@flarenet.com>.  However, almost
+none of the original tinyproxy code remains.
+
+Ammonite's primary features include:
+
+o Fully asynchronous socket library, mini-HTTP library, and proxy-core
+o CORBA interface and socket library share same main thread
+o Upstream SSL support via OpenSSL
+o Upstream HTTP proxy support
+o Run in special "eazel-proxy" mode or in normal HTTP proxy mode
+o Proxy core is very modular, although it is not separated into an external library
+o Support for Eazel's user authentication system.
+
+The following packages are required to build ammonite:
+
+openSSL-0.9.5a - You can download the rpms from:
+ftp://ftp.zedz.net/pub/crypto/redhat/official_redhat/6.2/i386/
+
+The tested rpms are openssl-0.9.5a-2.i386.rpm and openssl-devel-0.9.5a-2.i386.rpm.
+
+Source for OpenSSL is available from:
+ftp://ftp.openssl.org/source/
+
+You will also need the following:
+Module		version		cvs branch	configure options	dist
+------          -------		------          -----------------	----
+glib		1.2.8		glib-1-2				HC1.2
+gconf		0.11		HEAD					
+gtk+		1.2.8		gtk-1-2					HC1.2
+OAF		0.6.0		HEAD					HC1.2
+gnome-xml	1.8.10          LIB_XML_1_BRANCH                        HC1.2
+gnome-libs	1.2.7		gnome-libs-1-0				HC1.2
+
+H6.2 == Version from Red Hat 6.2 OK
+HC1.2 == Version from Helix Code Gnome 1.2 OK
+
+Ammonite also requires an operating system with "/proc/net/tcp", so that it can validate the UID connected to a socket peer.  This is an implicit dependency;
+Ammonite will fail silently if this dependency is not fulfilled.  Currently,
+only Linux 2.2+ OS's have this file.
+
+To make and run this code, you can use
+./autogen.sh
+./configure
+make
+make install.
+
+Send bug reports to mfleming@eazel.com or robey@eazel.com
