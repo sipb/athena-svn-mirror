@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.9 2000-05-02 17:25:04 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.10 2000-06-19 13:38:48 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -652,6 +652,7 @@ static void start_reactivate(XtPointer data, XtIntervalId *timerid)
 	  if (utmp.ut_name[0] != 0
 #ifdef USER_PROCESS
 	      && utmp.ut_type == USER_PROCESS
+	      && kill(utmp.ut_pid, 0) == 0	/* check for stale entry */
 #endif
 	      )
 	    {
