@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.25 1991-01-03 16:26:34 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.26 1991-01-06 01:14:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.25 1991-01-03 16:26:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.26 1991-01-06 01:14:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -206,7 +206,9 @@ create_knuckle(user)
   k->connected = (KNUCKLE *)  NULL;
   k->status = 0;
   k->new_messages = -1;
+  sprintf(k->nm_file,"%s/%s_%d.nm", LOG_DIR, k->user->username,k->instance);
   strcpy(k->title,k->user->title2);
+
 
 #ifdef TEST
   printf("create_knuckle: %s (%d)\n",user->username, k->instance);
@@ -868,6 +870,7 @@ find_knuckle(person,knuckle)
 	return(ERROR);
     }
   else {
+    strcpy((*knuckle)->user->machine,person->machine);
     (*knuckle)->user->status = ACTIVE;
   }
   return(status);
@@ -1334,10 +1337,6 @@ new_message(target, sender, message)
   char timebuf[TIME_SIZE];      /* Current time. */
   char foo[BUF_SIZE];
 
-  if ((target->new_messages == -1) || (target->nm_file[0] == '\0'))
-    sprintf(target->nm_file,"%s/%s_%d.nm", LOG_DIR, target->user->username,
-	    target->instance);
-
   msg_file = fopen(target->nm_file,"a");
 
   if (msg_file == NULL) {
@@ -1367,8 +1366,6 @@ has_new_messages(target)
       (target->new_messages == 1))
     return(target->new_messages);
 
-  sprintf(target->nm_file,"%s/%s_%d.nm", LOG_DIR, target->user->username,
-	  target->instance);
   result = stat(target->nm_file,&stat_info);
   if ((result != 0) && (errno != ENOENT)) {
     log_error("has_new_messages: stat: %m");
@@ -1389,11 +1386,7 @@ void
 free_new_messages(knuckle)
      KNUCKLE *knuckle;
 {
-  if (knuckle->new_messages == -1) {
-    sprintf(knuckle->nm_file,"%s/%s_%d.nm", LOG_DIR, knuckle->user->username,
-	    knuckle->instance);
-  }
-  if (knuckle->new_messages == 1)
+  if (knuckle->new_messages != 0)
     unlink(knuckle->nm_file);
   knuckle->new_messages = 0;
 }
