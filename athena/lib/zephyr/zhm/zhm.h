@@ -6,8 +6,8 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: opus $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.2 1987-07-01 03:24:42 opus Exp $
+ *      $Author: rfrench $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.3 1987-08-06 00:43:21 rfrench Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -35,7 +35,7 @@
 #define BOOTING 1
 #define NOTICES 2
 
-#define MAXRETRIES 5
+#define MAXRETRIES 2
 
 extern char *malloc();
 
