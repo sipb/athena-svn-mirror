@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.19 1987-11-07 15:15:54 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.20 1987-11-16 21:31:19 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -202,10 +202,10 @@ extern int ZMakeAuthentication();
 
 #define EXPOSE_NONE		"NONE"		/* Opcode: Not visible */
 #define EXPOSE_OPSTAFF		"OPSTAFF"	/* Opcode: Opstaff visible */
-#define EXPOSE_REALMVIS		"REALM_VISIBLE"	/* Opcode: Realm visible */
-#define EXPOSE_REALMANN		"REALM_ANNOUNCE"/* Opcode: Realm announced */
-#define EXPOSE_NETVIS		"NET_VISIBLE"	/* Opcode: Net visible */
-#define EXPOSE_NETANN		"NET_ANNOUNCE"	/* Opcode: Net announced */
+#define EXPOSE_REALMVIS		"REALM-VISIBLE"	/* Opcode: Realm visible */
+#define EXPOSE_REALMANN		"REALM-ANNOUNCED"/* Opcode: Realm announced */
+#define EXPOSE_NETVIS		"NET-VISIBLE"	/* Opcode: Net visible */
+#define EXPOSE_NETANN		"NET-ANNOUNCED"	/* Opcode: Net announced */
 #define LOGIN_USER_LOGOUT	"USER_LOGOUT"	/* Opcode: User logout */
 #define	LOGIN_USER_FLUSH	"USER_FLUSH"	/* Opcode: flush all locs */
 
