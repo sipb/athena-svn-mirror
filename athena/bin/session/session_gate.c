@@ -2,8 +2,8 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.7 1991-02-05 15:55:38 mar Exp $
- *	$Author: mar $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.8 1992-01-28 10:57:36 probe Exp $
+ *	$Author: probe $
  */
 
 #include <signal.h>
@@ -127,7 +127,7 @@ void logout( )
     f = open(".logout", O_RDONLY, 0);
     if (f >= 0) {
 	dup2(f, 0);
-	execl("/bin/csh", "logout", 0);
+	execl("/bin/athena/tcsh", "logout", 0);
     }
     exit(0);
 }
