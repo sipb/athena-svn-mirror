@@ -1,6 +1,0 @@
-width=0,leftadjust
-Date:formatfield="%<(nodate{text})%{text}%|%(tws{text})%>"
-From:
-Subject:
-:
-body:nocomponent,noleftadjust
