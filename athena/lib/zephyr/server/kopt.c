@@ -22,7 +22,7 @@
 #ifndef lint
 #ifndef SABER
 static const char *rcsid_rd_req_c =
-    "$Id: kopt.c,v 1.11 1997-09-14 21:54:15 ghudson Exp $";
+    "$Id: kopt.c,v 1.12 1997-09-23 19:27:42 ghudson Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -551,7 +551,7 @@ decomp_ticket(tkt, flags, pname, pinstance, prealm, paddress, session,
     char *sinstance;            /* Service instance */
     C_Block key;                /* Service's secret key
                                  * (to decrypt the ticket) */
-    des_key_sched key_s;	/* The precomputed key schedule */
+    des_key_schedule key_s;	/* The precomputed key schedule */
 {
     static int tkt_swap_bytes;
     unsigned char *uptr;
