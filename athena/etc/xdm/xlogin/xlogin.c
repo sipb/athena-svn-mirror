@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.29 1992-10-01 11:35:12 miki Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.30 1992-11-07 03:48:24 probe Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -33,6 +33,7 @@
 #endif
 
 #if defined(_IBMR2)
+#include <time.h>
 #include <sys/id.h>
 #endif
 
