@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v $
- * $Author: jik $
+ * $Author: lwvanels $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,10 +11,13 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.27 1991-06-25 16:13:37 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.28 1991-08-13 21:54:24 lwvanels Exp $";
 #endif
 
 #include <sys/types.h>
+#ifdef AFS_MOUNTPOINTS
+#include <sys/time.h>
+#endif
 #include <stdio.h>
 #ifdef POSIX
 #include <dirent.h>
@@ -78,6 +81,9 @@
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 int emulate_rm, linked_to_rm, linked_to_rmdir;
 extern int errno;
+#ifdef AFS_MOUNTPOINTS
+struct timeval tvp[2];
+#endif
 
 main(argc, argv)
 int argc;
@@ -90,7 +96,12 @@ char *argv[];
      whoami = lastpart(argv[0]);
 
      initialize_del_error_table();
-     
+
+#ifdef AFS_MOUNTPOINTS
+     gettimeofday(&tvp[0], (struct timezone *)0);
+     bcopy(&tvp[0], &tvp[1], sizeof(struct timeval));
+#endif
+
      force = interactive = recursive = noop = verbose = filesonly =
 	  directoriesonly = emulate_rm = linked_to_rm = linked_to_rmdir = 0;
 
@@ -503,6 +514,23 @@ int subs_not_deleted; /* If the file in question is a directory, and  */
      else {
 	  if (verbose)
 	       fprintf(stderr, "%s: %s removed\n", whoami, filename);
+#ifdef AFS_MOUNTPOINTS
+	  /*
+	   * Normally, expunge uses the ctime to determine how long
+	   * ago a file was deleted (since the ctime is normally
+	   * updated when a file is renamed).  However, in AFS,
+	   * renaming a file does not change the ctime, mtime OR
+	   * atime, so we have to use utimes to force the change.
+	   * This unfortunately causes the loss of the real mtime, but
+	   * there's nothing we can do about that, if we want expunge
+	   * to be able to do the right thing.
+	   *
+	   * Don't bother checking for errors, because we can't do
+	   * anything about them anyway, and in any case, this isn't a
+	   * *really* important operation.
+	   */
+	  utimes(buf, tvp);
+#endif
 	  return 0;
      }
 }
