@@ -1,4 +1,5 @@
 INSTALL = :
+RANLIB = :
 CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
 SED = sed
 
