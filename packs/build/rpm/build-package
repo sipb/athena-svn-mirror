@@ -1,0 +1,241 @@
+#!/bin/sh
+
+# Build a standard Athena package into an RPM.
+# Currently this is hardwired for Linux.
+
+# We regard the "Athena source directory" as the "pristine source"
+# of the RPM model, and other modifications are handled as patches.
+
+usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release] source rpmname"
+
+sourcedir=/mit/source
+destdir=/usr/src/athena
+makepackage=yes
+
+while getopts s:d:v:r: opt; do
+    case "$opt" in
+    n)
+	makepackage=no
+	;;
+    s)
+	sourcedir="$OPTARG"
+	;;
+    d)
+	destdir="$OPTARG"
+	;;
+    v)
+	version="$OPTARG"
+	;;
+    r)
+	release="$OPTARG"
+	;;
+    esac
+done
+shift `expr $OPTIND - 1`
+
+athena_dir=$1
+package_name=$2
+
+# XXX sigh.
+if [ third/krb5/src/appl = "$athena_dir" ]; then
+  athena_dir=third/krb5
+fi
+
+. $sourcedir/packs/build/version
+if [ "${version+set}" != set ]; then 
+  version=$major.$minor
+fi
+if [ "${release+set}" != set ]; then
+  release=$patch
+fi
+
+source_name=$package_name-$version
+
+# Make the environment suitable so that we can build packages that
+# use things in $destdir/athtools.
+PATH=$destdir/athtools/usr/athena/bin:$PATH
+export ATHTOOLROOT=$destdir/athtools
+
+## STEP 0: Prepare the "topdir" area.
+
+echo "==== prepare topdir"
+
+mkdir -p \
+$destdir/BUILD \
+$destdir/SOURCES \
+$destdir/INSTALL \
+$destdir/SPECS \
+$destdir/SRPMS \
+$destdir/RPMS/i386 \
+$destdir/athtools 
+
+rm -f $destdir/rpmmacros
+cat > $destdir/rpmmacros <<EOF
+%_topdir	$destdir
+EOF
+
+rm -f $destdir/rpmrc
+cat > $destdir/rpmrc <<EOF
+macrofiles:	/usr/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/etc/rpm/macros:/etc/rpm/%{_target}/macros:$destdir/rpmmacros
+EOF
+
+
+## STEP 1: Generate canonical source and patch files
+
+echo "==== prepare sources and patches"
+
+rm -rf $destdir/SOURCES/$source_name $destdir/SOURCES/$source_name-orig
+mkdir $destdir/SOURCES/$source_name
+mkdir $destdir/SOURCES/$source_name-orig
+cd $destdir/SOURCES
+
+# Copy them in, twice.
+(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
+(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name-orig; tar xfp -)
+
+# Copy the "patches" in.
+if [ -a $sourcedir/packs/build/rpm/patches/$source_name ]; then
+  (cd $sourcedir/packs/build/rpm/patches/$source_name; tar cf - .) | \
+    (cd $source_name; tar xfp -)
+fi
+if [ -a $sourcedir/packs/build/rpm/prep/$package_name ]; then
+    $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name
+fi
+sed -e 's%$source/packs/build/version%version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
+cp $sourcedir/packs/build/version $source_name
+
+# Do the `do.sh prepare' step
+(cd $source_name; \
+ $sourcedir/packs/build/do.sh  \
+        -s $sourcedir \
+	-d $destdir/INSTALL \
+	-t $destdir/athtools \
+	prepare )
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# Generate the patch file
+diff -uNr $source_name-orig $source_name > $source_name.patch
+
+# Generate the sources file, and remove what we don't need any more.
+rm -rf $source_name
+mv $source_name-orig $source_name
+(cd $destdir/SOURCES; tar cfz $source_name.tar.gz $source_name )
+rm -rf $source_name
+
+
+## STEP 2: Generate a specs file
+
+echo "==== create specs"
+
+# We fill in this; the rest is specified in the per-package file
+rm -f $destdir/SPECS/$source_name
+touch $destdir/SPECS/$source_name
+
+# Necessary preamble fields; fill them in if we need to.
+# Name, Summary, Copyright, Group, and %description may not be omitted.
+
+# Everything depends on athena-base.
+echo Requires: athena-base >> $destdir/SPECS/$source_name
+
+if grep -q Version: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo Version: $version >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Release: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo Release: $release >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Source: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo Source: $source_name.tar.gz >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Patch: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo Patch: $source_name.patch >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Distribution: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo Distribution: Athena $version >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Vendor: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo Vendor: MIT Athena >> $destdir/SPECS/$source_name
+fi
+
+# Now the file as we have it gets included.
+cat $sourcedir/packs/build/rpm/specs/$package_name >> $destdir/SPECS/$source_name
+
+# And finally the scripts get included.
+if grep -q %prep $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+cat >> $destdir/SPECS/$source_name << EOF
+%prep
+%setup
+%patch -p1
+chmod ugo+x do.sh
+if [ -a mkinstalldirs ]; then
+  chmod ugo+x mkinstalldirs
+fi
+if [ -a config.status ]; then
+  chmod ugo+x config.status
+fi
+
+EOF
+fi
+
+if grep -q %build $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+cat >> $destdir/SPECS/$source_name << EOF
+%build
+if [ X\$RPM_BUILD_ROOT = X ]; then
+cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+exit 1
+fi
+./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT all
+
+EOF
+fi
+
+if grep -q %install $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+cat >> $destdir/SPECS/$source_name << EOF
+%install
+if [ X\$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf \$RPM_BUILD_ROOT
+mkdir \$RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT install
+
+EOF
+fi
+
+if grep -q %files $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+cat >> $destdir/SPECS/$source_name << EOF
+%files
+/
+
+EOF
+fi
+
+## STEP 3: Make the package.
+
+echo "==== build package"
+
+rpm -ba -v --rcfile $destdir/rpmrc --target i386-athena-linux --buildroot $destdir/INSTALL $destdir/SPECS/$source_name
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+
+## STEP 4: Copy the built package into athtools
+
+echo "==== save tools"
+
+(cd $destdir/INSTALL; tar cf - .) | (cd $destdir/athtools; tar xfp - .)
