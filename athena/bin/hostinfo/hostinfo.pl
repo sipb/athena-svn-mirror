@@ -5,6 +5,21 @@ $hostprog = "/usr/athena/bin/host";
 $long_output = $show_host = $show_addr = $show_hinfo = $show_mx = 1;
 $server = "localhost";
 
+sub usage {
+    print STDERR "Usage: hostinfo <options> <host-names-or-addresses>\n";
+    print STDERR "  -h: output only hostname\n";
+    print STDERR "  -a: output only address\n";
+    print STDERR "  -i: output only host info record\n";
+    print STDERR "  -m: output only mx record\n";
+    print STDERR "  -q: disable additional query for hinfo & mx\n";
+    print STDERR "  -ns <server>: ask specified name server\n";
+    exit 1;
+}
+
+if (! @ARGV) {
+    &usage();
+}
+
 while (@ARGV) {
     my $arg = shift(@ARGV);
     if ($arg eq "-h") {
@@ -40,14 +55,7 @@ while (@ARGV) {
 	}
 	next;
     } elsif ($arg =~ /^-/) {
-	print STDERR "Usage: hostinfo <options> <host-names-or-addresses>\n";
-	print STDERR "  -h: output only hostname\n";
-	print STDERR "  -a: output only address\n";
-	print STDERR "  -i: output only host info record\n";
-	print STDERR "  -m: output only mx record\n";
-	print STDERR "  -q: disable additional query for hinfo & mx\n";
-	print STDERR "  -ns <server>: ask specified name server\n";
-	exit 1;
+	&usage();
     }
 
     if ($arg =~ /[^a-zA-Z0-9.-]/) {
