@@ -2,6 +2,10 @@
 @comment %**start of header (This is for running Texinfo on a region.)
 @setfilename gdbm.info
 @settitle gdbm
+@dircategory Programming & development tools
+@direntry
+* GDBM: (gdbm).			The GNU database manager.
+@end direntry
 @c @setchapternewpage odd
 @comment %**end of header (This is for running Texinfo on a region.)
 
@@ -47,7 +51,7 @@ into another language, under the above conditions for modified versions.
 @sp 1
 @center Edition 1.5
 @sp 1
-@center for GNU @code{dbm}, Version 1.8.
+@center for GNU @code{dbm}, Version 1.8.3.
 @page
 @null
 @vskip 0pt plus 1filll
@@ -55,8 +59,8 @@ Copyright @copyright{} 1993-99 Free Software Foundation, Inc.
 @sp 2
 
 This is Edition 1.5 of the @cite{GNU @code{dbm} Manual}, for @code{gdbm}
-Version 1.8. @*
-Last updated May 19, 1999
+Version 1.8.3. @*
+Last updated October 15, 2002
 
 Published by the Free Software Foundation @*
 675 Massachusetts Avenue, @*
@@ -81,7 +85,7 @@ by the Free Software Foundation.
 @node Top, Copying, (dir), (dir)
 @ifinfo
 GNU @code{dbm} is a library of functions implementing a hashed database
-on a disk file.  This manual documents GNU @code{dbm} Version 1.8
+on a disk file.  This manual documents GNU @code{dbm} Version 1.8.3
 (@code{gdbm}).  The software was written by Philip A. Nelson. This
 document was originally written by Pierre Gaumond from texts written by
 Phil.
@@ -708,7 +712,7 @@ If you want to compile an old C program that used UNIX @code{dbm} or @code{ndbm}
 and want to use @code{gdbm} files, execute the following @code{cc} command:
 
 @example
-cc ... -L /usr/local/lib -lgdbm
+cc ... -L/usr/local/lib -lgdbm -lgdbm_compat
 @end example
 
 @node Conversion, Bugs, Compatibility, Top

@@ -55,7 +55,7 @@ int _gdbm_hash __P((datum));
 
 /* From update.c */
 void _gdbm_end_update   __P((gdbm_file_info *));
-int _gdbm_fatal         __P((gdbm_file_info *, char *));
+void _gdbm_fatal         __P((gdbm_file_info *, char *));
 
 /* From gdbmopen.c */
 int _gdbm_init_cache	__P((gdbm_file_info *, int));

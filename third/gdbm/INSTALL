@@ -1,28 +1,3 @@
-Installation Notes
-
-SunOS 4:
-
-	The SunOS 4 stock compiler returns structures in a manner different
-from the method GCC uses.  If you are compiling this library using GCC,
-and are linking in any other libraries that return structures and are not
-compiled with GCC (such as system libraries), you must compile this
-library, and your entire application, with the -fpcc-struct-return flag.
-
-	On the other hand, if you are certain that this library will
-*never* be linked with anything compiled with anything other than normal
-GCC, it is safe to compile without the flag.
-
-	If you're using pure stock Sun CC, disregard the above.
-
-ndbm/dbm:
-
-	Some systems do not have a default dbm or ndbm library.  On such
-systems, some of the test and/or conversion programs included in this
-distribution will fail to compile.  This is purposeful, since without
-default system libraries, there is nothing to test or convert from.
-
---------
-
 This is a generic INSTALL file for utilities distributions.
 If this package does not come with, e.g., installable documentation or
 data files, please ignore the references to them below.

@@ -47,13 +47,15 @@ const char * const gdbm_errlist[] = {
   "Illegal data", "Option already set", "Illegal option"
 };
 
+#define gdbm_errorcount	((sizeof(gdbm_errlist) / sizeof(gdbm_errlist[0])) - 1)
+
 const char *
 gdbm_strerror(error)
     gdbm_error error;
 {
-  if(((int)error < 0) || ((int)error > 18))
+  if(((int)error < 0) || ((int)error > gdbm_errorcount))
     {
-      return("Unkown error");
+      return("Unknown error");
     }
   else
     {
