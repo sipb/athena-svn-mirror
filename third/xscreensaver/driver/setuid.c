@@ -80,6 +80,8 @@ describe_uids (saver_info *si, FILE *out)
 static int
 set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
 {
+  int uid_errno = 0;
+  int gid_errno = 0;
   struct passwd *p;
   struct group *g;
 
