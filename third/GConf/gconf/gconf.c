@@ -153,8 +153,6 @@ static void       ctable_insert              (CnxnTable           *ct,
                                               GConfCnxn           *cnxn);
 static void       ctable_remove              (CnxnTable           *ct,
                                               GConfCnxn           *cnxn);
-static void       ctable_remove_by_client_id (CnxnTable           *ct,
-                                              guint                client_id);
 static GSList*    ctable_remove_by_conf      (CnxnTable           *ct,
                                               GConfEngine         *conf);
 static GConfCnxn* ctable_lookup_by_client_id (CnxnTable           *ct,
@@ -287,7 +285,7 @@ gconf_engine_connect (GConfEngine *conf,
       if (err)
         *err = gconf_error_new(GCONF_ERROR_BAD_ADDRESS,
                                _("Server couldn't resolve the address `%s'"),
-                               conf->address);
+                               conf->address ? conf->address : "default");
           
       return FALSE;
     }
@@ -523,7 +521,10 @@ gconf_engine_unref        (GConfEngine* conf)
           
           ctable_destroy (conf->ctable);
         }
-      
+
+      if (conf == default_engine)
+        default_engine = NULL;
+
       g_free(conf);
     }
 }
@@ -666,13 +667,14 @@ gconf_engine_notify_remove(GConfEngine* conf,
 }
 
 GConfValue *
-gconf_engine_get_full (GConfEngine *conf,
-                       const gchar *key,
-                       const gchar *locale,
-                       gboolean use_schema_default,
-                       gboolean *is_default_p,
-                       gboolean *is_writable_p,
-                       GError **err)
+gconf_engine_get_fuller (GConfEngine *conf,
+                         const gchar *key,
+                         const gchar *locale,
+                         gboolean use_schema_default,
+                         gboolean *is_default_p,
+                         gboolean *is_writable_p,
+                         gchar   **schema_name_p,
+                         GError **err)
 {
   GConfValue* val;
   ConfigValue* cv;
@@ -681,6 +683,7 @@ gconf_engine_get_full (GConfEngine *conf,
   gint tries = 0;
   CORBA_boolean is_default = FALSE;
   CORBA_boolean is_writable = TRUE;
+  CORBA_char *corba_schema_name = NULL;
   
   g_return_val_if_fail(conf != NULL, NULL);
   g_return_val_if_fail(key != NULL, NULL);
@@ -694,6 +697,7 @@ gconf_engine_get_full (GConfEngine *conf,
       gchar** locale_list;
       gboolean tmp_is_default = FALSE;
       gboolean tmp_is_writable = TRUE;
+      gchar *tmp_schema_name = NULL;
       
       locale_list = gconf_split_locale(locale);
       
@@ -703,17 +707,22 @@ gconf_engine_get_full (GConfEngine *conf,
                                       use_schema_default,
                                       &tmp_is_default,
                                       &tmp_is_writable,
+                                      schema_name_p ? &tmp_schema_name : NULL,
                                       err);
 
       if (locale_list != NULL)
         g_strfreev(locale_list);
-
-
+      
       if (is_default_p)
         *is_default_p = tmp_is_default;
 
       if (is_writable_p)
         *is_writable_p = tmp_is_writable;
+
+      if (schema_name_p)
+        *schema_name_p = tmp_schema_name;
+      else
+        g_free (tmp_schema_name);
       
       return val;
     }
@@ -733,14 +742,35 @@ gconf_engine_get_full (GConfEngine *conf,
       return NULL;
     }
 
-  cv = ConfigDatabase_lookup_with_locale(db,
-                                         (gchar*)key, (gchar*)
-                                         (locale ? locale : gconf_current_locale()),
-                                         use_schema_default,
-                                         &is_default,
-                                         &is_writable,
-                                         &ev);
-  
+  if (schema_name_p)
+    *schema_name_p = NULL;
+
+
+  corba_schema_name = NULL;
+  cv = ConfigDatabase2_lookup_with_schema_name (db,
+                                                (gchar*)key, (gchar*)
+                                                (locale ? locale : gconf_current_locale()),
+                                                use_schema_default,
+                                                &corba_schema_name,
+                                                &is_default,
+                                                &is_writable,
+                                                &ev);
+
+  if (ev._major == CORBA_SYSTEM_EXCEPTION &&
+      CORBA_exception_id (&ev) &&
+      strcmp (CORBA_exception_id (&ev), "IDL:CORBA/BAD_OPERATION:1.0") == 0)
+    {
+      CORBA_exception_free (&ev);
+      CORBA_exception_init (&ev);
+      
+      cv = ConfigDatabase_lookup_with_locale(db,
+                                             (gchar*)key, (gchar*)
+                                             (locale ? locale : gconf_current_locale()),
+                                             use_schema_default,
+                                             &is_default,
+                                             &is_writable,
+                                             &ev);
+    }
   
   if (gconf_server_broken(&ev))
     {
@@ -768,10 +798,40 @@ gconf_engine_get_full (GConfEngine *conf,
       if (is_writable_p)
         *is_writable_p = !!is_writable;
 
+      /* we can't get a null pointer through corba
+       * so the server sent us an empty string
+       */
+      if (corba_schema_name && corba_schema_name[0] != '/')
+        {
+          CORBA_free (corba_schema_name);
+          corba_schema_name = NULL;
+        }
+
+      if (schema_name_p)
+        *schema_name_p = g_strdup (corba_schema_name);
+
+      if (corba_schema_name)
+        CORBA_free (corba_schema_name);
+      
       return val;
     }
 }
-                       
+
+
+GConfValue *
+gconf_engine_get_full (GConfEngine *conf,
+                       const gchar *key,
+                       const gchar *locale,
+                       gboolean use_schema_default,
+                       gboolean *is_default_p,
+                       gboolean *is_writable_p,
+                       GError **err)
+{
+  return gconf_engine_get_fuller (conf, key, locale, use_schema_default,
+                                  is_default_p, is_writable_p,
+                                  NULL, err);
+}
+
 GConfEntry*
 gconf_engine_get_entry(GConfEngine* conf,
                        const gchar* key,
@@ -784,10 +844,13 @@ gconf_engine_get_entry(GConfEngine* conf,
   GConfValue *val;
   GError *error;
   GConfEntry *entry;
-  
+  gchar *schema_name;
+
+  schema_name = NULL;
   error = NULL;
-  val = gconf_engine_get_full (conf, key, locale, use_schema_default,
-                               &is_default, &is_writable, &error);
+  val = gconf_engine_get_fuller (conf, key, locale, use_schema_default,
+                                 &is_default, &is_writable,
+                                 &schema_name, &error);
   if (error != NULL)
     {
       g_propagate_error (err, error);
@@ -799,6 +862,7 @@ gconf_engine_get_entry(GConfEngine* conf,
   
   entry->is_default = is_default;
   entry->is_writable = is_writable;
+  entry->schema_name = schema_name; /* transfer memory ownership */
 
   return entry;
 }
@@ -928,6 +992,9 @@ gconf_engine_set (GConfEngine* conf, const gchar* key,
   if (!gconf_key_check(key, err))
     return FALSE;
 
+  if (!gconf_value_validate (value, err))
+    return FALSE;
+  
   if (gconf_engine_is_local(conf))
     {
       GError* error = NULL;
@@ -1167,6 +1234,7 @@ gconf_engine_all_entries(GConfEngine* conf, const gchar* dir, GError** err)
   ConfigDatabase_KeyList* keys;
   ConfigDatabase_IsDefaultList* is_defaults;
   ConfigDatabase_IsWritableList* is_writables;
+  ConfigDatabase2_SchemaNameList *schema_names;
   CORBA_Environment ev;
   ConfigDatabase db;
   guint i;
@@ -1229,12 +1297,29 @@ gconf_engine_all_entries(GConfEngine* conf, const gchar* dir, GError** err)
 
       return NULL;
     }
+
+  schema_names = NULL;
   
-  ConfigDatabase_all_entries(db,
-                             (gchar*)dir,
-                             (gchar*)gconf_current_locale(),
-                             &keys, &values, &is_defaults, &is_writables,
-                             &ev);
+  ConfigDatabase2_all_entries_with_schema_name (db,
+                                                (gchar*)dir,
+                                                (gchar*)gconf_current_locale(),
+                                                &keys, &values, &schema_names,
+                                                &is_defaults, &is_writables,
+                                                &ev);
+  
+  if (ev._major == CORBA_SYSTEM_EXCEPTION &&
+      CORBA_exception_id (&ev) &&
+      strcmp (CORBA_exception_id (&ev), "IDL:CORBA/BAD_OPERATION:1.0") == 0)
+    {
+      CORBA_exception_free (&ev);
+      CORBA_exception_init (&ev);
+      
+      ConfigDatabase_all_entries(db,
+                                 (gchar*)dir,
+                                 (gchar*)gconf_current_locale(),
+                                 &keys, &values, &is_defaults, &is_writables,
+                                 &ev);
+    }
 
   if (gconf_server_broken(&ev))
     {
@@ -1270,6 +1355,12 @@ gconf_engine_all_entries(GConfEngine* conf, const gchar* dir, GError** err)
          cheating and not using */
       pair->is_default = is_defaults->_buffer[i];
       pair->is_writable = is_writables->_buffer[i];
+      if (schema_names)
+        {
+          /* empty string means no schema name */
+          if (*(schema_names->_buffer[i]) != '\0')
+            pair->schema_name = g_strdup (schema_names->_buffer[i]);
+        }
       
       pairs = g_slist_prepend(pairs, pair);
       
@@ -1280,6 +1371,8 @@ gconf_engine_all_entries(GConfEngine* conf, const gchar* dir, GError** err)
   CORBA_free(values);
   CORBA_free(is_defaults);
   CORBA_free(is_writables);
+  if (schema_names)
+    CORBA_free (schema_names);
   
   return pairs;
 }
@@ -1750,20 +1843,17 @@ static ConfigServer   server = CORBA_OBJECT_NIL;
 
 /* errors in here should be GCONF_ERROR_NO_SERVER */
 static ConfigServer
-try_to_contact_server(gboolean start_if_not_found, GError** err)
+try_to_contact_server (gboolean start_if_not_found, GError** err)
 {
   CORBA_Environment ev;
-  OAF_ActivationFlags flags;
-  
-  CORBA_exception_init(&ev);
 
-  flags = 0;
-  if (!start_if_not_found)
-    flags |= OAF_FLAG_EXISTING_ONLY;
+  /* Try to launch server */      
+  server = gconf_activate_server (start_if_not_found,
+                                  err);
   
-  server = oaf_activate_from_id("OAFAID:["IID"]", flags, NULL, &ev);
-
-  /* So try to ping server, by adding ourselves as a client */
+  /* Try to ping server, by adding ourselves as a client */
+  CORBA_exception_init (&ev);
+  
   if (!CORBA_Object_is_nil (server, &ev))
     {
       ConfigServer_add_client (server,
@@ -1780,18 +1870,6 @@ try_to_contact_server(gboolean start_if_not_found, GError** err)
 
           CORBA_exception_free(&ev);
 	}
-    }
-  else
-    {
-      if (gconf_handle_oaf_exception(&ev, err))
-        {
-          /* Make the errno more specific */
-          if (err && *err)
-            (*err)->code = GCONF_ERROR_NO_SERVER;
-        }
-
-      if (err && *err == NULL)
-        *err = gconf_error_new(GCONF_ERROR_NO_SERVER, _("Error contacting configuration server: OAF returned nil from oaf_activate_from_id() and did not set an exception explaining the problem. Please file an OAF bug report."));
     }
 
 #ifdef GCONF_ENABLE_DEBUG      
@@ -2020,6 +2098,7 @@ drop_all_caches (PortableServer_Servant     _servant,
 static ConfigListener 
 gconf_get_config_listener(void)
 {
+  g_return_val_if_fail (listener != CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   return listener;
 }
 
@@ -2036,7 +2115,7 @@ gconf_postinit(gpointer app, gpointer mod_info)
   if (listener == CORBA_OBJECT_NIL)
     {
       CORBA_Environment ev;
-      PortableServer_ObjectId objid = {0, sizeof("ConfigListener"), "ConfigListener"};
+      PortableServer_ObjectId* objid;
       PortableServer_POA poa;
 
       CORBA_exception_init(&ev);
@@ -2044,7 +2123,7 @@ gconf_postinit(gpointer app, gpointer mod_info)
       
       g_assert (ev._major == CORBA_NO_EXCEPTION);
 
-      poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references(oaf_orb_get(), "RootPOA", &ev);
+      poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references(gconf_orb_get(), "RootPOA", &ev);
 
       g_assert (ev._major == CORBA_NO_EXCEPTION);
 
@@ -2052,8 +2131,7 @@ gconf_postinit(gpointer app, gpointer mod_info)
 
       g_assert (ev._major == CORBA_NO_EXCEPTION);
 
-      PortableServer_POA_activate_object_with_id(poa,
-                                                 &objid, &poa_listener_servant, &ev);
+      objid = PortableServer_POA_activate_object(poa, &poa_listener_servant, &ev);
 
       g_assert (ev._major == CORBA_NO_EXCEPTION);
       
@@ -2093,7 +2171,7 @@ gconf_init           (int argc, char **argv, GError** err)
     }
   else
     {
-      orb = oaf_orb_get();
+      orb = gconf_orb_get();
     }
       
   gconf_postinit(NULL, NULL);
@@ -2329,18 +2407,6 @@ ctable_remove(CnxnTable* ct, GConfCnxn* cnxn)
 {
   g_hash_table_remove (ct->server_ids, &cnxn->server_id);
   g_hash_table_remove (ct->client_ids, &cnxn->client_id);
-}
-
-static void       
-ctable_remove_by_client_id(CnxnTable* ct, guint client_id)
-{
-  GConfCnxn* cnxn;
-
-  cnxn = ctable_lookup_by_client_id (ct, client_id);
-
-  g_return_if_fail (cnxn != NULL);
-
-  ctable_remove (ct, cnxn);
 }
 
 struct RemoveData {
@@ -2671,7 +2737,7 @@ gconf_engine_get_schema  (GConfEngine* conf, const gchar* key, GError** err)
 
 GSList*
 gconf_engine_get_list    (GConfEngine* conf, const gchar* key,
-                   GConfValueType list_type, GError** err)
+                          GConfValueType list_type, GError** err)
 {
   GConfValue* val;
 
@@ -2770,7 +2836,7 @@ error_checked_set(GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_float   (GConfEngine* conf, const gchar* key,
-                   gdouble val, GError** err)
+                          gdouble val, GError** err)
 {
   GConfValue* gval;
 
@@ -2787,7 +2853,7 @@ gconf_engine_set_float   (GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_int     (GConfEngine* conf, const gchar* key,
-                   gint val, GError** err)
+                          gint val, GError** err)
 {
   GConfValue* gval;
 
@@ -2804,14 +2870,16 @@ gconf_engine_set_int     (GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_string  (GConfEngine* conf, const gchar* key,
-                    const gchar* val, GError** err)
+                          const gchar* val, GError** err)
 {
   GConfValue* gval;
 
-  g_return_val_if_fail(val != NULL, FALSE);
-  g_return_val_if_fail(conf != NULL, FALSE);
-  g_return_val_if_fail(key != NULL, FALSE);
-  g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
+  g_return_val_if_fail (val != NULL, FALSE);
+  g_return_val_if_fail (conf != NULL, FALSE);
+  g_return_val_if_fail (key != NULL, FALSE);
+  g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
+  
+  g_return_val_if_fail (g_utf8_validate (val, -1, NULL), FALSE);
   
   gval = gconf_value_new(GCONF_VALUE_STRING);
 
@@ -2822,7 +2890,7 @@ gconf_engine_set_string  (GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_bool    (GConfEngine* conf, const gchar* key,
-                   gboolean val, GError** err)
+                          gboolean val, GError** err)
 {
   GConfValue* gval;
 
@@ -2839,7 +2907,7 @@ gconf_engine_set_bool    (GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_schema  (GConfEngine* conf, const gchar* key,
-                    GConfSchema* val, GError** err)
+                          GConfSchema* val, GError** err)
 {
   GConfValue* gval;
 
@@ -2857,11 +2925,12 @@ gconf_engine_set_schema  (GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_list    (GConfEngine* conf, const gchar* key,
-                   GConfValueType list_type,
-                   GSList* list,
-                   GError** err)
+                          GConfValueType list_type,
+                          GSList* list,
+                          GError** err)
 {
   GConfValue* value_list;
+  GError *tmp_err = NULL;
   
   g_return_val_if_fail(conf != NULL, FALSE);
   g_return_val_if_fail(key != NULL, FALSE);
@@ -2870,7 +2939,13 @@ gconf_engine_set_list    (GConfEngine* conf, const gchar* key,
   g_return_val_if_fail(list_type != GCONF_VALUE_PAIR, FALSE);
   g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
 
-  value_list = gconf_value_list_from_primitive_list(list_type, list);
+  value_list = gconf_value_list_from_primitive_list(list_type, list, &tmp_err);
+
+  if (tmp_err)
+    {
+      g_propagate_error (err, tmp_err);
+      return FALSE;
+    }
   
   /* destroys the value_list */
   
@@ -2879,12 +2954,13 @@ gconf_engine_set_list    (GConfEngine* conf, const gchar* key,
 
 gboolean
 gconf_engine_set_pair    (GConfEngine* conf, const gchar* key,
-                   GConfValueType car_type, GConfValueType cdr_type,
-                   gconstpointer address_of_car,
-                   gconstpointer address_of_cdr,
-                   GError** err)
+                          GConfValueType car_type, GConfValueType cdr_type,
+                          gconstpointer address_of_car,
+                          gconstpointer address_of_cdr,
+                          GError** err)
 {
   GConfValue* pair;
+  GError *tmp_err = NULL;
   
   g_return_val_if_fail(conf != NULL, FALSE);
   g_return_val_if_fail(key != NULL, FALSE);
@@ -2900,7 +2976,14 @@ gconf_engine_set_pair    (GConfEngine* conf, const gchar* key,
   
 
   pair = gconf_value_pair_from_primitive_pair(car_type, cdr_type,
-                                              address_of_car, address_of_cdr);
+                                              address_of_car, address_of_cdr,
+                                              &tmp_err);
+
+  if (tmp_err)
+    {
+      g_propagate_error (err, tmp_err);
+      return FALSE;
+    }  
   
   return error_checked_set(conf, key, pair, err);
 }

@@ -20,7 +20,7 @@
 #include "xml-dir.h"
 #include "xml-entry.h"
 
-#include <gnome-xml/parser.h>
+#include <libxml/parser.h>
 
 #include <stdio.h>
 #include <time.h>
@@ -487,12 +487,9 @@ dir_get_value   (Dir* d,
 
       val = entry_get_value (e, locales, err);
 
-      /* Fill schema name if value is NULL because we might be
-         interested in the default value of the key in that case. */
-      if (schema_name &&
-          val == NULL &&
-          entry_get_schema_name(e))
-        *schema_name = g_strdup(entry_get_schema_name(e));
+      /* Get schema name if requested */
+      if (schema_name && entry_get_schema_name (e))
+        *schema_name = g_strdup (entry_get_schema_name (e));
       
       /* return copy of the value */
       if (val != NULL)
@@ -975,9 +972,11 @@ dir_fill_cache_from_doc(Dir* d)
         }
       else
         {
-          gconf_log(GCL_WARNING,
-                     _("Toplevel node in XML file `%s' is not an <entry>, ignoring"),
-                     d->xml_filename);
+          if (node->type == XML_ELEMENT_NODE)
+            gconf_log(GCL_WARNING,
+                      _("A toplevel node in XML file `%s' is <%s> rather than <entry>, ignoring"),
+                      d->xml_filename,
+                      node->name ? (char*) node->name : "unknown");
         }
       
       node = node->next;

@@ -26,8 +26,8 @@
 #include "xml-cache.h"
 
 
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
 
 #include <stdio.h>
 #include <time.h>
@@ -230,7 +230,7 @@ static GConfBackendVTable xml_vtable = {
 static void          
 x_shutdown (GError** err)
 {
-  gconf_log(GCL_INFO, _("Unloading XML backend module."));
+  gconf_log(GCL_DEBUG, _("Unloading XML backend module."));
 }
 
 static void
@@ -278,6 +278,9 @@ resolve_address (const gchar* address, GError** err)
   GConfLock* lock = NULL;
   guint dir_mode = 0700;
   guint file_mode = 0600;
+  gchar** address_flags;
+  gchar** iter;
+  gboolean force_readonly;
   
   root_dir = gconf_address_resource(address);
 
@@ -315,26 +318,51 @@ resolve_address (const gchar* address, GError** err)
             }
         }
     }
+
+  force_readonly = FALSE;
   
+  address_flags = gconf_address_flags (address);  
+  if (address_flags)
+    {
+      iter = address_flags;
+      while (*iter)
+        {
+          if (strcmp (*iter, "readonly") == 0)
+            {
+              force_readonly = TRUE;
+              break;
+            }
+
+          ++iter;
+        }
+    }
+
+  g_strfreev (address_flags);
+
   {
     /* See if we're writable */
-    gboolean writable = FALSE;
+    gboolean writable;
     int fd;
     gchar* testfile;
 
-    testfile = g_strconcat(root_dir, "/.testing.writeability", NULL);    
+    writable = FALSE;
     
-    fd = open(testfile, O_CREAT|O_WRONLY, S_IRWXU);
-
-    if (fd >= 0)
+    if (!force_readonly)
       {
-        writable = TRUE;
-        close(fd);
-      }
+        testfile = g_strconcat(root_dir, "/.testing.writeability", NULL);    
         
-    unlink(testfile);
-
-    g_free(testfile);
+        fd = open(testfile, O_CREAT|O_WRONLY, S_IRWXU);
+        
+        if (fd >= 0)
+          {
+            writable = TRUE;
+            close(fd);
+          }
+        
+        unlink(testfile);
+        
+        g_free(testfile);
+      }
     
     if (writable)
       flags |= GCONF_SOURCE_ALL_WRITEABLE;
@@ -392,7 +420,7 @@ resolve_address (const gchar* address, GError** err)
 
   xsource = xs_new(root_dir, dir_mode, file_mode, lock);
 
-  gconf_log(GCL_INFO,
+  gconf_log(GCL_DEBUG,
             _("Directory/file permissions for XML source at root %s are: %o/%o"),
             root_dir, dir_mode, file_mode);
   
@@ -429,7 +457,7 @@ query_value (GConfSource* source,
      problem, since some errors may be added that need reporting. */
   if (error != NULL)
     {
-      gconf_log(GCL_WARNING, error->message);
+      gconf_log(GCL_WARNING, "%s", error->message);
       g_error_free(error);
       error = NULL;
     }
@@ -449,7 +477,7 @@ query_value (GConfSource* source,
       /* perhaps we should be reporting this error... */
       if (error != NULL)
         {
-          gconf_log(GCL_WARNING, error->message);
+          gconf_log(GCL_WARNING, "%s", error->message);
           g_error_free(error);
           error = NULL;
         }
@@ -677,7 +705,7 @@ clear_cache     (GConfSource* source)
 G_MODULE_EXPORT const gchar*
 g_module_check_init (GModule *module)
 {
-  gconf_log(GCL_INFO, _("Initializing XML backend module"));
+  gconf_log(GCL_DEBUG, _("Initializing XML backend module"));
 
   return NULL;
 }

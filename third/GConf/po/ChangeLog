@@ -1,3 +1,257 @@
+2002-01-27  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2002-01-16  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2002-01-09  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Final updates for German translation.
+
+2002-01-06  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Updated German translation and dumped Kai's pseudo-German.
+                 Many thanks to Manuel Borchers <webmaster@matronix.de>.
+
+2002-01-05  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2002-01-04  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* eu.po: Added Basque file
+
+2001-12-30  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-12-27  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-12-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmÂl) translation.
+	
+2001-12-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-12-10  Takeshi Aihana <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation
+
+2001-12-09  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Updated German translation.
+
+2001-12-07  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation
+
+2001-12-06  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-27  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-11-15  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by NilgÅ¸n.
+
+2001-11-08  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-10-31  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-10-24  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-10-22  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-17  Carlos PerellÅÛ MarÅÌn <carlos@gnome-db.org>
+
+	* pt.po: Updated by Duarte Loreto <happyguy_pt@hotmail.com>
+
+2001-10-17  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-10-14  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-14  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-14  Carlos PerellÅÛ MarÅÌn <carlos@gnome-db.org>
+
+	* pt.po: Added by Duarte Loreto <happyguy_pt@hotmail.com>
+
+2001-10-13  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-10-13  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: More updates.
+
+2001-10-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	
+2001-10-12  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-10-12  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-10-07  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Fixed some things. Thanks to
+	Gvran Uddeborg <goeran@uddeborg.pp.se>
+	for his review.
+
+2001-10-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	
+2001-10-07  Sami Pesonen  <spesonen@dlc.fi>
+
+	* fi.po: Updated Finnish translation by
+	Pauli Virtanen  <pauli.virtanen@saunalahti.fi>.
+
+2001-10-06  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* es.po: Copied from HEAD && review && updated.
+
+2001-10-03  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-09-18  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-09-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Added Polish translation.
+
+2001-08-15  Carlos Perells Marmn <carlos@gnome-db.org>
+
+	* es.po: Fixed the header.
+
+2001-09-13  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* da.po: Updated Danish file
+
+2001-09-06  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ga.po: Updated Irish file
+
+2001-09-02  Simos Xenitellis <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-08-30  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-08-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	
+2001-08-19  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* gl.po: Added Galician translation.
+
+2001-08-16  Sami Pesonen  <spesonen@dlc.fi>
+
+	* fi.po: Updated Finnish translation by
+	Pauli Virtanen  <pauli.virtanen@saunalahti.fi>.
+
+2001-08-14  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Nilg|n.
+
+2001-08-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-08-11  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-07-29  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-07-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+	* no.po: Updated Norwegian (bokmel) translation.
+	
+2001-07-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+	* no.po: Updated Norwegian (bokmel) translation.
+	
+2001-07-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nn.po: Added Norwegian (nynorsk) translation.
+	
+2001-05-25  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ca.po: Updated Catalan file
+
+2001-05-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2001-03-26  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Commit just to be sure.
+
+2001-03-21  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-03-20  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Updated German translation for Matthias Warkus.
+
+2001-03-17  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Updated Turkish translation.
+
+2001-03-15  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-03-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+	* zh_CN.GB2312: added Chinese file from HEAD
+
+2001-03-11  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
 2001-03-10  Hector Garcia Alvarez <hector@scouts-es.org>
 
         * es.po: Updated Spanish translation.
@@ -23,7 +277,7 @@
 2001-03-06  Fatih Demir	<kabalak@gtranslator.org>
 
 	* tr.po: Committed updated Turkish translation by
-		÷zg¸r Doan.
+		Vzg|r Dopan.
 
 2001-02-21  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
 
@@ -362,7 +616,7 @@
 
 	* de.po: Added.
 
-2000-03-14  Martin Norb$Bdc(Bk  <d95mback@dtek.chalmers.se>
+2000-03-14  Martin Norbí‰„k  <d95mback@dtek.chalmers.se>
 
 	* sv.po: fixed one message
 

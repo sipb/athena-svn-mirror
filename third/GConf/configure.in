@@ -4,7 +4,7 @@ AC_INIT(gconf/gconf.h)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(GConf, 1.0.0)
+AM_INIT_AUTOMAKE(GConf, 1.0.8)
 
 AM_MAINTAINER_MODE
 
@@ -73,7 +73,7 @@ GCONF_CURRENT=1
 
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
-GCONF_REVISION=0
+GCONF_REVISION=3
 
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
@@ -100,6 +100,9 @@ prefix=$REAL_PREFIX
 EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`
 prefix=$old_prefix
 AC_SUBST(EXPANDED_SYSCONFDIR)
+
+dnl Save flags to aclocal
+ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
 dnl Specify the configuration source, default to xml::$(sysconfdir)/gconf/gconf.xml.defaults
 
@@ -137,6 +140,12 @@ if test "x$docs_only" = "xyes"; then
         AC_FYI("Only building documentation")
 else
 
+AC_CHECK_LIB(popt, poptGetArg, POPT_LIBS=-lpopt,
+	[AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR([[
+*** Couldn't find popt. Please download and install from
+*** ftp://ftp.redhat.com/pub/redhat/code/popt and try again.]]))])
+AC_SUBST(POPT_LIBS)
+
 AM_PATH_GLIB(1.2.0,,AC_MSG_ERROR(glib not found or too old),gmodule)
 AM_PATH_OAF(0.2.0,,AC_MSG_ERROR([OAF not found or too old]))
 AM_PATH_GTK(1.2.0,,HAVE_GTK=no)
@@ -158,22 +167,24 @@ AC_SUBST(XML_CFLAGS)
 BDB_LIBS=
 BDB_CFLAGS=
 
-AC_CHECK_LIB(db-3, db_env_create, BDB_LIBS=-ldb-3)
+
+for dblib in db-3.3 db-3.2 db-3.1 db-3; do
+  AC_CHECK_LIB($dblib, db_env_create, BDB_LIBS=-l$dblib)
+  if test "x$BDB_LIBS" != x; then
+    break
+  fi
+done
 
 if test "x$BDB_LIBS" = x; then
   AC_MSG_WARN(No db3 library found. Not building bdb backend.)
+else
+  AC_CHECK_HEADERS(db3/db.h,  , AC_MSG_ERROR([db3 library found but db3/db.h not found]))
 fi
 
 AM_CONDITIONAL(BDB, test -n "$BDB_LIBS")
 
 AC_SUBST(BDB_LIBS)
 AC_SUBST(BDB_CFLAGS)
-
-AC_CHECK_LIB(popt, poptGetArg, POPT_LIBS=-lpopt,
-	[AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR([[
-*** Couldn't find popt. Please download and install from
-*** ftp://ftp.redhat.com/pub/redhat/code/popt and try again.]]))])
-AC_SUBST(POPT_LIBS)
 
 AC_PATH_PROG(ORBIT_CONFIG,orbit-config,no)
 if test x$ORBIT_CONFIG = xno; then
@@ -210,7 +221,7 @@ AC_CHECK_FUNCS(flockfile)
 
 fi # docs_only
 
-ALL_LINGUAS="az ca cs da de el es fi fr ga hu it ja ko nl no pt_BR ru sk sl sv tr uk"
+ALL_LINGUAS="az ca cs da de el es eu fi fr ga gl hu it ja ko nl nn no pl pt pt_BR ru sk sl sv tr uk zh_CN.GB2312"
 
 AM_GCONF_GNU_GETTEXT
 
@@ -234,7 +245,6 @@ gconf.spec
 gconf.m4
 gconf/Makefile
 gconf/default.path
-gconf/gconfd.oafinfo
 backends/Makefile
 wrappers/Makefile
 wrappers/gtk/Makefile
@@ -244,6 +254,8 @@ doc/gconf/Makefile
 examples/Makefile
 tests/Makefile
 standard-schemas/Makefile
+gconf.pc
+gconfgtk.pc
 ],
 chmod +x gconf-config)
 

@@ -1,3 +1,430 @@
+2002-02-04  Havoc Pennington  <hp@redhat.com>
+
+	* autogen.sh (ACLOCAL): prefer automake-1.4 etc.
+
+	* configure.in: bump version to 1.0.8
+
+2002-01-23  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-internals.c (gconf_activate_server): try to use
+	gconfd-2 if it exists
+
+2002-01-04  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure,in (ALL_LINGUAS): Added "eu".
+
+2001-12-17  Havoc Pennington  <hp@pobox.com>
+
+        Backport from HEAD
+	
+	* backends/xml-dir.c (dir_get_value): always get schema name, not
+	just if value is unset
+
+	* gconf/gconf-sources.c (gconf_sources_query_value): don't look
+	for a default value for the schema. Useless and adds a bit of
+	inefficiency.
+
+	* gconf/gconf-sources.c (gconf_sources_query_value): Fix this so
+	Gergo's bug doesn't happen; hope no other semantic gets broken.
+	
+2001-12-17  Havoc Pennington  <hp@pobox.com>
+
+        Backport from HEAD
+	
+	* gconf/gconf-listeners.c: reference count the listeners, make a
+	copy of listener lists and ref all listeners prior to doing the
+	notifies, to minimize reentrancy screwups.
+
+2001-12-04  Havoc Pennington  <hp@redhat.com>
+
+        Backport from HEAD
+	
+	* gconf/gconf-internals.c (open_empty_locked_file): improve error
+
+	* gconf/gconftool.c (main): complain about using --config-source
+	but not --direct
+
+	* backends/xml-backend.c (resolve_address): don't try to lock 
+	readonly sources; fixes the case where users install to a prefix 
+	that they can write to, was causing problems for people using
+	build scripts.
+
+	* gconf/gconfd.c (gconf_set_exception): add missing value to case
+	statement so we don't crash
+
+	* gconf/gconftool.c (process_schema_list): make sure we have an
+	element instead of a text node before we try to process it; kills
+	a bunch of irritating warnings.
+
+2001-10-31  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* gconf/gconf-internals.c (gconf_activate_server): Plug leak.
+
+2001-10-30  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* backends/val-encode.c: add missing headers to remove
+	some warnings.
+
+2001-10-29  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump version to 1.0.7
+
+2001-10-29  Havoc Pennington  <hp@redhat.com>
+
+        Un-fubar this.
+	
+	* gconf/gconf-internals.c (g_utf8_skip, g_utf8_validate):
+	rename, don't just make them static. g_utf8_validate is used 
+	in other files. The idiocy continues.
+
+2001-10-29  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf-internals.c (g_utf8_validate): make this function
+	static, I'm a dumbass, hopefully fixes a problem people were
+	seeing with GAL
+	(g_utf8_skip): this is static too
+
+2001-10-17  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Try to detect and use DB 3.3 and 3.2 if found.
+
+2001-10-16  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 1.0.6
+
+2001-10-15  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconftool.c (main): don't create config daemon for
+	--get-default-source
+	(main): shut down daemon in makefile install mode
+
+	* gconf/gconfd.c (main): get dup2 arguments in the right order,
+	fixes all kinds of weirdness.
+
+2001-10-14  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump version, GCONF_REVISION
+
+2001-10-14  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* configure.in (ALL_LINGUAS): Added pt.
+	
+2001-10-12  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf.c (gconf_engine_set): check UTF-8 validity here,
+	instead of at the higher levels	
+
+	* gconf/gconf-value.c (gconf_value_validate): new internal function
+
+2001-10-12  Havoc Pennington  <hp@redhat.com>
+
+	* tests/testschemas.c (check_schema_storage): add some UTF-8
+
+	* tests/testpersistence.c: UTF-8 test
+
+	* tests/testgconf.c: add a UTF-8 test
+
+	* gconf/gconf.c: UTF-8 checks, and some indentation
+
+	* gconf/gconf-schema.c: UTF-8 checks
+
+	* gconf/gconf-internals.c (g_utf8_validate): cut-and-paste this in
+	here
+
+	* gconf/gconf-value.c: add some UTF-8 robustness
+
+2001-10-12  Havoc Pennington  <hp@redhat.com>
+
+	* backends/xml-entry.c (entry_unset_value): don't translate "%s"
+
+	* backends/xml-cache.c (cache_sync_foreach): printf string screwup
+
+	* backends/xml-backend.c (query_value): fix printf string derived
+	from untrusted data
+	(query_value): ditto
+
+	* configure.in: ensure we find the right bdb headers, if we find
+	the library, error if not. Reported by Samuel Stringham
+
+	* backends/xml-entry.c, * backends/xml-backend.c, etc.: fix libxml
+	headers, should now work with libxml in a funny prefix, reported
+	by Tim Mooney
+
+	* gconf/gconftool.c: fix libxml headers
+
+	* backends/bdb.h, backends/bdb.c: s/uint32_t/guint32/ for
+	portability, reported by several people
+
+	* gconf/gconf-internals.c (gconf_double_to_string): use g_snprintf
+	not plain snprintf for Solaris 2.5.1 friendliness
+
+	* doc/gconf/tmpl/gconf-value.sgml: fix docs to mention that pairs
+	contain only primitive types; pointed out by Gregory Merchan
+
+	* configure.in (BDB_CFLAGS): patch from Nils Philippsen to detect
+	DB 3.1 if available.
+
+	Check for popt before OAF, because OAF requires popt; 
+	reported by Drazen Kacar
+
+2001-10-04  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf-internals.c (gconf_release_lock): do wack-ass juju
+	to avoid .nfs23344534543 files appearing in the lock directory 
+	and causing warnings.
+
+2001-10-04  Havoc Pennington  <hp@redhat.com>
+
+	* backends/xml-dir.c (dir_fill_cache_from_doc): fix another
+	spurious warning
+
+2001-10-04  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf-internals.c (open_empty_locked_file): put strerror 
+	in the error message for lock failure, just for thrills
+
+2001-10-01  Michael Meeks  <michael@ximian.com>
+
+	* gconf/gconf.c (ctable_remove_by_client_id): remove unused.
+
+2001-09-28  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf-internals.c (gconf_get_current_lock_holder): we read
+	the IOR file, not the directory it's inside
+
+	* gconf/gconfd.c (main): fix uninitialized write_byte_fd variable
+
+2001-09-26  Havoc Pennington  <hp@redhat.com>
+
+        Experimental changes, GCONF_BEFORE_OAF_REMOVAL tag will allow 
+	us to back them out if required.
+	
+	* gconf.m4.in: patch from Yanko Kaneti to have AM_GCONF_SOURCE
+	define a GCONF_SCHEMA_FILE_DIR variable for the directory where
+	schema files should be installed
+
+	* gconf/Makefile.am (install-data-local): don't install oafinfo
+
+	* configure.in: don't generate oafinfo
+
+	* gconf/gconftool.c (main): remove error message about running
+	gconfd while installing schemas, instead we'll fail to get a lock.
+
+	* gconf/gconfd.c (main): redirect stdin/out/err to /dev/null
+	instead of just closing them, saves ORBit some confusion
+
+	* backends/xml-cache.c (cache_clean): change the "items remain in
+	cache" message to DEBUG level
+ 
+ 	* gconf/gconf.c (gconf_postinit): merge from HEAD, don't use
+ 	custom object ID
+ 
+ 	* gconf/gconf-internals.c (gconf_get_lock_or_current_holder):
+	rearrange locking to just use fcntl()
+ 
+ 	* gconf/gconf.c (gconf_engine_connect): fix error message in
+ 	default daemon case
+ 
+ 	* gconf/gconfd.c (gconf_main): reduce exit-after-unused timeout to
+ 	2 minutes
+ 
+ 	* gconf/Makefile.am (INCLUDES): add -DGCONF_BINDIR
+ 
+ 	* gconf/gconf-internals.c: delete nanosleep junk
+	
+2001-09-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in (ALL_LINGUAS): Added pl.
+
+2001-08-19  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS.
+
+2001-08-15  Havoc Pennington  <hp@redhat.com>
+
+	* backends/xml-backend.c (x_shutdown): ditto
+	(resolve_address): ditto
+
+	* backends/bdb-backend.c (vtable_bdb_shutdown): ditto
+	(vtable_bdb_resolve_address): ditto
+
+	* gconf/gconf-internals.c (gconf_load_source_path): ditto
+
+	* gconf/gconfd.c (gconf_server_load_sources): change to DEBUG
+	level
+
+	* backends/xml-backend.c (g_module_check_init): change a log
+	message to DEBUG level
+
+2001-08-07  Marco Pesenti Gritti  <mpeseng@tin.it>
+
+	* doc/gconf/gconf.sgml: small explanation about AM_GCONF_SOURCE
+	macro
+	* gconf.m4.in: fix a typo in dnl
+	
+2001-08-13  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf-internals.c (gconf_load_source_path): patch from
+	Adam Spiers to honor variables in include lines
+
+	* gconf/gconf-database.c (notify_listeners_cb):
+	indentation/whitespace changes
+
+	* backends/xml-entry.c (entry_fill_from_node): Only print a
+	warning if there's no schema name. Avoids spurious warnings 
+	on nodes that only have a schema name.
+
+2001-08-07  Marco Pesenti Gritti  <mpeseng@tin.it>
+
+	* Makefile.am: Setup a default gconf source on make install
+	* galeon.spec.in: Distribute also the path file and
+	the directories for the default source
+	* gconf/Makefile.am: install the default path as "path" instead
+	of "path.example". Add GCONF_ETCDIR define.
+	* gconf/gconftool.c: Add --get-default-source option
+	* gconf/gconf.m4.in: Add GCONF_SCHEMA_CONFIG_SOURCE macro
+	
+2001-07-28  Yanko Kaneti  <yaneti@declera.com>
+
+	* gconf/gconftool.c (main): s/all-pairs/all-entries/ in the error
+	messages
+
+2001-07-24  Darin Adler  <darin@bentspoon.com>
+
+	* acinclude.m4: Set BUILD_INCLUDED_LIBINTL for compatibility
+	with newer versions of gettext.
+
+2001-07-23  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconfd.c (main): don't warn about failure to create
+	~/.gconfd if EEXIST
+
+	* gconf/gconf.c (gconf_engine_all_entries): convert empty string 
+	to NULL
+
+	* gconf/gconf-database.c
+	(impl_ConfigDatabase2_all_entries_with_schema_name): don't give
+	ORBit any NULL strings in the array, avoids a core dump
+
+	* gconf/gconftool.c (list_pairs_in_dir): put a newline after the
+	error message
+
+2001-07-23  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: Remove checks for gnome-config, move to 1.0.3
+
+2001-07-22  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: version 1.0.2
+
+2001-07-16  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconfd.c (main): add super-lame hack to 
+	pass currently-running gconfd to oafd if oafd has lamely leaked it
+	due to lame-assness
+
+	* gconf/gconf-internals.c (gconf_get_lock): fix leak of object
+	reference belonging to server that held the lock
+	(gconf_get_lock_or_current_holder): add function to get current
+	owner of a lock
+
+	* gconf/GConf.idl: add subclass of ConfigDatabase for some
+	exciting new hacky functions. 
+
+	So an extensible IDL interface would probably have simply passed
+	XML messages. But then what's the point of an IDL interface, if
+	it's just going to be parse_string() get_string()?  Hmm. Cosmic
+	question. ;-)
+
+	* gconf/gconf.c (try_to_contact_server): make the error on
+	OAF-did-not-set-exception really, really verbose, and explicitly
+	say "do not file a GConf bug report." But with fixed OAF this 
+	shouldn't happen anymore anyhow.
+
+	* gconf/gconf-sources.c (gconf_sources_set_value): lengthy verbose
+	error message about possible causes of lack of a config database.
+	But my lame-ass hack above should keep this from happening so
+	much.
+	
+2001-07-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "nn" to ALL_LINGUAS.
+	
+2001-06-20  Peter Williams  <peterw@ximian.com>
+
+	* configure.in (ACLOCAL): Save flags to aclocal -- life
+	easier when configure.in changes.
+
+2001-06-01  Peter Williams  <peterw@ximian.com>
+
+	* configure.in: Check if DB3 headers are in db3/db.h as well.
+
+	* acconfig.h: Add HAVE_DB3_DB_H
+
+	* backends/bdb.c: #include config.h to get HAVE_DB3_DB_H
+
+	* backends/bdb.h: Include the proper db.h
+
+2001-05-11  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump version to 1.0.1
+
+	* gconf/gconfd.c (signal_handler): on SIGUSR1, enable/disable
+	debug spew.
+
+	* gconf/gconf-internals.c (gconf_log): use a runtime variable to
+	decide whether to log debug messages
+
+	* gconf/gconf-database.c, gconf/gconfd.c, gconf/gconf-internals.c:
+	Change some GCL_WARNING to GCL_DEBUG to chill out logging of
+	fairly normal events
+
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* gconf/Makefile.am: Another try at that. This time for sure.
+
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* gconf/Makefile.am: Now that we are not distributing built sources
+	we need some more dependencies to get the Tinderbox working.
+
+2001-04-17  Michael Meeks  <michael@ximian.com>
+
+	* gconf/Makefile.am (dist-hook): don't distribute built
+	sources.
+
+Wed Apr 11 08:07:11 2001  George Lebl <jirka@5z.com>
+
+	* gconf/gconf.c (gconf_engine_unref): If unreffing the default engine
+	  set the default_engine pointer to NULL
+
+2001-03-26  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* gconf.spec.in: added .pc files
+
+2001-03-23  Martin Baulig  <baulig@suse.de>
+
+	* gconf.pc.in, gconfgtk.pc.in: New files.
+
+	* Makefile.am: Create .pc files and install them.
+
+2001-03-13  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* backends/xml-entry.c:
+	* gconf/gconftool.c:
+	Add inclusion of <gnome-xml/xmlmemory.h> to fix the fact that
+	'xmlFree' is undefined.  This was caused by the last free
+	vs. xmlFree change.
+	
+2001-03-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* backends/xml-entry.c: Fix to use xmlFree() instead of free().
+	* gconf/gconftool.c: Same here.
+	
+2001-03-12  Timur Bakeyev  <timur@gnu.org>
+
+	* Makefile.am: Made warning printing a bit nicer.
+	
 2001-03-11  Havoc Pennington  <hp@redhat.com>
 
 	* configure.in: 1.0.0, woo-hoo!
