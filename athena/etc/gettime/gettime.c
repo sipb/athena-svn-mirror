@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: treese $
+ *	$Author: tytso $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.3 1987-08-30 19:56:33 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.4 1987-12-14 18:03:02 tytso Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.3 1987-08-30 19:56:33 treese Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.4 1987-12-14 18:03:02 tytso Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -18,6 +18,8 @@ static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <netdb.h>
 #include <signal.h>
 #include <setjmp.h>
+
+#define DEFAULT_TIME_SERVER "dcn1.arpa"
 
 /* On the RT, we need to explicitly make this an unsigned long.  Neither the
    VAX or RT versions of pcc accept this syntax, however.
@@ -49,8 +51,9 @@ main(argc, argv)
 	long hosttime;
 	register int *nettime;
 	char hostname[64];
-	int attempts = 0;
-	strcpy (hostname, "dcn1");
+	int attempts = 0, cc;
+	
+	strcpy (hostname, DEFAULT_TIME_SERVER);
 	for (i = 1;i < argc;i++) {
 		if (*argv[i] == '-') {
 			if (argv[i][1] == 's') setflg++;
@@ -102,7 +105,21 @@ main(argc, argv)
 		perror ("gettime: gettimeofday");
 		exit (5);
 	}
-	recv (s, buffer, 512, 0);  /* Wait for the reply */
+	cc = recv (s, buffer, 512, 0);
+	if (cc < 0) {
+		perror("recv");
+		close(s);
+		fprintf (stderr, "Failed to get time from %s\n",
+			 hostname);
+		exit (7);
+	}
+	if (cc != 4) {
+		close(s);
+		fprintf(stderr,
+			"Protocol error -- received %d bytes; expected 4.\n",
+			cc);
+		exit(8);
+	}
 	nettime = (int *)buffer;
 	hosttime = (long) ntohl (*nettime) - TM_OFFSET;
 	fprintf (stdout, "%s", ctime(&hosttime));
