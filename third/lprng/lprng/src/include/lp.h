@@ -842,6 +842,7 @@ EXTERN char * Server_tmp_dir;	/* default temporary file directory */
 EXTERN char * Filter_ld_path;
 EXTERN char * Filter_options;
 EXTERN char * Filter_path;
+EXTERN int KA;
 EXTERN char * Lockfile;
 EXTERN char * Logfile;
 EXTERN char * Lpd_port;

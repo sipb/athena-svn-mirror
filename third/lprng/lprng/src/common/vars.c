@@ -196,6 +196,8 @@ struct keywords Pc_var_list[] = {
 { "ignore_requested_user_priority",  FLAG_K,  &Ignore_requested_user_priority,0,0},
    /*  Running IPV6 */
 { "ipv6",  FLAG_K,  &IPV6Protocol,0,0},
+   /*  Old Athena Kerberos authentication flag */
+{ "ka", INTEGER_K, &KA,0,0},
 	/* keytab file location for kerberos, used by server */
 { "kerberos_keytab", STRING_K, &Kerberos_keytab,0,0,"=/etc/lpd.keytab"},
 	/* key lifetime for kerberos, used by server */
