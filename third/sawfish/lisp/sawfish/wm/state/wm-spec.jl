@@ -1,6 +1,6 @@
 ;; wm-spec.jl -- implement the new (GNOME/KDE) wm hints spec
 
-;; $Id: wm-spec.jl,v 1.1.1.5 2003-01-05 00:33:14 ghudson Exp $
+;; $Id: wm-spec.jl,v 1.2 2003-05-03 15:25:36 ghudson Exp $
 
 ;; Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,7 +37,6 @@
 
   ;; todo:
 
-  ;; - _NET_WM_NAME		-- needs to be in C code?
   ;; - _NET_WM_ICON
 
   ;; 1.1 additions:
@@ -574,7 +573,7 @@
 		    (vector wm-spec-window-id) 'WINDOW 32)
     (set-x-property wm-spec-window-id '_NET_SUPPORTING_WM_CHECK
 		    (vector wm-spec-window-id) 'WINDOW 32)
-    (set-x-property wm-spec-window-id '_NET_WM_NAME "Sawfish" 'STRING 8)
+    (set-x-property wm-spec-window-id '_NET_WM_NAME "Sawfish" 'UTF8_STRING 8)
 
     (set-x-property 'root '_NET_SUPPORTED supported-atoms 'ATOM 32)
 
