@@ -305,6 +305,9 @@ gnome_print_paper_selector_update_spin_units (GnomePaperSelector *ps)
 static void
 gnome_paper_selector_unit_changed_cb (GnomePrintUnitSelector *sel, GnomePaperSelector *ps)
 {
+	const GnomePrintUnit *unit = gnome_print_unit_selector_get_unit (sel);
+	if (NULL != unit)
+		gnome_print_config_set (ps->config, GNOME_PRINT_KEY_PREFERED_UNIT, unit->abbr);
 	gnome_print_paper_selector_update_spin_units (ps);
 }
 

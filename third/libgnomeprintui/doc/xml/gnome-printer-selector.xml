@@ -15,8 +15,8 @@
 
 
 
-struct      <link linkend="GnomePrinterSelector-struct">GnomePrinterSelector</link>;
-struct      <link linkend="GnomePrinterSelectorClass">GnomePrinterSelectorClass</link>;
+            <link linkend="GnomePrinterSelector-struct">GnomePrinterSelector</link>;
+            <link linkend="GnomePrinterSelectorClass">GnomePrinterSelectorClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-printer-selector-new-default">gnome_printer_selector_new_default</link>
                                             (void);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-printer-selector-new">gnome_printer_selector_new</link>      (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
@@ -65,17 +65,16 @@ GnomePrinterSelector implements
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePrinterSelector-struct"/>struct GnomePrinterSelector</title>
-<indexterm><primary>GnomePrinterSelector</primary></indexterm><programlisting>struct GnomePrinterSelector;</programlisting>
+<title><anchor id="GnomePrinterSelector-struct"/>GnomePrinterSelector</title>
+<indexterm><primary>GnomePrinterSelector</primary></indexterm><programlisting>typedef struct _GnomePrinterSelector GnomePrinterSelector;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomePrinterSelectorClass"/>struct GnomePrinterSelectorClass</title>
-<indexterm><primary>GnomePrinterSelectorClass</primary></indexterm><programlisting>struct GnomePrinterSelectorClass {
-
+<title><anchor id="GnomePrinterSelectorClass"/>GnomePrinterSelectorClass</title>
+<indexterm><primary>GnomePrinterSelectorClass</primary></indexterm><programlisting>typedef struct {
 	GPAWidgetClass gpa_widget_class;
-};
+} GnomePrinterSelectorClass;
 </programlisting>
 <para>
 
@@ -87,7 +86,7 @@ GnomePrinterSelector implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -101,7 +100,7 @@ GnomePrinterSelector implements
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -116,7 +115,7 @@ GnomePrinterSelector implements
 <varlistentry><term><parameter>psel</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

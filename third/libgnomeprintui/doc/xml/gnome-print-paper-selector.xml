@@ -15,24 +15,24 @@
 
 
 
-struct      <link linkend="GnomePaperPreview">GnomePaperPreview</link>;
-struct      <link linkend="GnomePaperPreviewClass">GnomePaperPreviewClass</link>;
-#define     <link linkend="GNOME-TYPE-PAPER-SELECTOR-CAPS">GNOME_TYPE_PAPER_SELECTOR</link>
-#define     <link linkend="GNOME-PAPER-SELECTOR-CAPS">GNOME_PAPER_SELECTOR</link>            (o)
-#define     <link linkend="GNOME-PAPER-SELECTOR-CLASS-CAPS">GNOME_PAPER_SELECTOR_CLASS</link>      (k)
-#define     <link linkend="GNOME-IS-PAPER-SELECTOR-CAPS">GNOME_IS_PAPER_SELECTOR</link>         (o)
-#define     <link linkend="GNOME-IS-PAPER-SELECTOR-CLASS-CAPS">GNOME_IS_PAPER_SELECTOR_CLASS</link>   (k)
-#define     <link linkend="GNOME-PAPER-SELECTOR-GET-CLASS-CAPS">GNOME_PAPER_SELECTOR_GET_CLASS</link>  (o)
-struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
-struct      <link linkend="GnomePaperSelectorClass">GnomePaperSelectorClass</link>;
-#define     <link linkend="GNOME-TYPE-PRINT-UNIT-SELECTOR-CAPS">GNOME_TYPE_PRINT_UNIT_SELECTOR</link>
-#define     <link linkend="GNOME-PRINT-UNIT-SELECTOR-CAPS">GNOME_PRINT_UNIT_SELECTOR</link>       (o)
-#define     <link linkend="GNOME-PRINT-UNIT-SELECTOR-CLASS-CAPS">GNOME_PRINT_UNIT_SELECTOR_CLASS</link> (k)
-#define     <link linkend="GNOME-IS-PRINT-UNIT-SELECTOR-CAPS">GNOME_IS_PRINT_UNIT_SELECTOR</link>    (o)
-#define     <link linkend="GNOME-IS-PRINT-UNIT-SELECTOR-CLASS-CAPS">GNOME_IS_PRINT_UNIT_SELECTOR_CLASS</link>(k)
-#define     <link linkend="GNOME-PRINT-UNIT-SELECTOR-GET-CLASS-CAPS">GNOME_PRINT_UNIT_SELECTOR_GET_CLASS</link>(o)
-struct      <link linkend="GnomePrintUnitSelector-struct">GnomePrintUnitSelector</link>;
-struct      <link linkend="GnomePrintUnitSelectorClass">GnomePrintUnitSelectorClass</link>;
+            <link linkend="GnomePaperPreview">GnomePaperPreview</link>;
+            <link linkend="GnomePaperPreviewClass">GnomePaperPreviewClass</link>;
+#define     <link linkend="GNOME-TYPE-PAPER-SELECTOR:CAPS">GNOME_TYPE_PAPER_SELECTOR</link>
+#define     <link linkend="GNOME-PAPER-SELECTOR:CAPS">GNOME_PAPER_SELECTOR</link>            (o)
+#define     <link linkend="GNOME-PAPER-SELECTOR-CLASS:CAPS">GNOME_PAPER_SELECTOR_CLASS</link>      (k)
+#define     <link linkend="GNOME-IS-PAPER-SELECTOR:CAPS">GNOME_IS_PAPER_SELECTOR</link>         (o)
+#define     <link linkend="GNOME-IS-PAPER-SELECTOR-CLASS:CAPS">GNOME_IS_PAPER_SELECTOR_CLASS</link>   (k)
+#define     <link linkend="GNOME-PAPER-SELECTOR-GET-CLASS:CAPS">GNOME_PAPER_SELECTOR_GET_CLASS</link>  (o)
+            <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
+            <link linkend="GnomePaperSelectorClass">GnomePaperSelectorClass</link>;
+#define     <link linkend="GNOME-TYPE-PRINT-UNIT-SELECTOR:CAPS">GNOME_TYPE_PRINT_UNIT_SELECTOR</link>
+#define     <link linkend="GNOME-PRINT-UNIT-SELECTOR:CAPS">GNOME_PRINT_UNIT_SELECTOR</link>       (o)
+#define     <link linkend="GNOME-PRINT-UNIT-SELECTOR-CLASS:CAPS">GNOME_PRINT_UNIT_SELECTOR_CLASS</link> (k)
+#define     <link linkend="GNOME-IS-PRINT-UNIT-SELECTOR:CAPS">GNOME_IS_PRINT_UNIT_SELECTOR</link>    (o)
+#define     <link linkend="GNOME-IS-PRINT-UNIT-SELECTOR-CLASS:CAPS">GNOME_IS_PRINT_UNIT_SELECTOR_CLASS</link>(k)
+#define     <link linkend="GNOME-PRINT-UNIT-SELECTOR-GET-CLASS:CAPS">GNOME_PRINT_UNIT_SELECTOR_GET_CLASS</link>(o)
+            <link linkend="GnomePrintUnitSelector-struct">GnomePrintUnitSelector</link>;
+            <link linkend="GnomePrintUnitSelectorClass">GnomePrintUnitSelectorClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-paper-preview-new">gnome_paper_preview_new</link>         (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
 <link linkend="GType">GType</link>       <link linkend="gnome-paper-selector-get-type">gnome_paper_selector_get_type</link>   (void);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-paper-selector-new">gnome_paper_selector_new</link>        (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
@@ -120,9 +120,8 @@ GnomePrintUnitSelector implements
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePaperPreview"/>struct GnomePaperPreview</title>
-<indexterm><primary>GnomePaperPreview</primary></indexterm><programlisting>struct GnomePaperPreview {
-
+<title><anchor id="GnomePaperPreview"/>GnomePaperPreview</title>
+<indexterm><primary>GnomePaperPreview</primary></indexterm><programlisting>typedef struct {
 	GtkHBox box;
 
 	GtkWidget *canvas;
@@ -130,26 +129,26 @@ GnomePrintUnitSelector implements
 	GnomeCanvasItem *item;
 
 	GnomePrintConfig *config;
-};
+} GnomePaperPreview;
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomePaperPreviewClass"/>struct GnomePaperPreviewClass</title>
-<indexterm><primary>GnomePaperPreviewClass</primary></indexterm><programlisting>struct GnomePaperPreviewClass;</programlisting>
+<title><anchor id="GnomePaperPreviewClass"/>GnomePaperPreviewClass</title>
+<indexterm><primary>GnomePaperPreviewClass</primary></indexterm><programlisting>typedef struct _GnomePaperPreviewClass GnomePaperPreviewClass;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-TYPE-PAPER-SELECTOR-CAPS"/>GNOME_TYPE_PAPER_SELECTOR</title>
+<title><anchor id="GNOME-TYPE-PAPER-SELECTOR:CAPS"/>GNOME_TYPE_PAPER_SELECTOR</title>
 <indexterm><primary>GNOME_TYPE_PAPER_SELECTOR</primary></indexterm><programlisting>#define GNOME_TYPE_PAPER_SELECTOR         (gnome_paper_selector_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PAPER-SELECTOR-CAPS"/>GNOME_PAPER_SELECTOR()</title>
+<title><anchor id="GNOME-PAPER-SELECTOR:CAPS"/>GNOME_PAPER_SELECTOR()</title>
 <indexterm><primary>GNOME_PAPER_SELECTOR</primary></indexterm><programlisting>#define GNOME_PAPER_SELECTOR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelector))
 </programlisting>
 <para>
@@ -162,7 +161,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PAPER-SELECTOR-CLASS-CAPS"/>GNOME_PAPER_SELECTOR_CLASS()</title>
+<title><anchor id="GNOME-PAPER-SELECTOR-CLASS:CAPS"/>GNOME_PAPER_SELECTOR_CLASS()</title>
 <indexterm><primary>GNOME_PAPER_SELECTOR_CLASS</primary></indexterm><programlisting>#define GNOME_PAPER_SELECTOR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelectorClass))
 </programlisting>
 <para>
@@ -175,7 +174,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-PAPER-SELECTOR-CAPS"/>GNOME_IS_PAPER_SELECTOR()</title>
+<title><anchor id="GNOME-IS-PAPER-SELECTOR:CAPS"/>GNOME_IS_PAPER_SELECTOR()</title>
 <indexterm><primary>GNOME_IS_PAPER_SELECTOR</primary></indexterm><programlisting>#define GNOME_IS_PAPER_SELECTOR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PAPER_SELECTOR))
 </programlisting>
 <para>
@@ -188,7 +187,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-PAPER-SELECTOR-CLASS-CAPS"/>GNOME_IS_PAPER_SELECTOR_CLASS()</title>
+<title><anchor id="GNOME-IS-PAPER-SELECTOR-CLASS:CAPS"/>GNOME_IS_PAPER_SELECTOR_CLASS()</title>
 <indexterm><primary>GNOME_IS_PAPER_SELECTOR_CLASS</primary></indexterm><programlisting>#define GNOME_IS_PAPER_SELECTOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_PAPER_SELECTOR))
 </programlisting>
 <para>
@@ -201,7 +200,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PAPER-SELECTOR-GET-CLASS-CAPS"/>GNOME_PAPER_SELECTOR_GET_CLASS()</title>
+<title><anchor id="GNOME-PAPER-SELECTOR-GET-CLASS:CAPS"/>GNOME_PAPER_SELECTOR_GET_CLASS()</title>
 <indexterm><primary>GNOME_PAPER_SELECTOR_GET_CLASS</primary></indexterm><programlisting>#define GNOME_PAPER_SELECTOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelectorClass))
 </programlisting>
 <para>
@@ -214,26 +213,26 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GnomePaperSelector-struct"/>struct GnomePaperSelector</title>
-<indexterm><primary>GnomePaperSelector</primary></indexterm><programlisting>struct GnomePaperSelector;</programlisting>
+<title><anchor id="GnomePaperSelector-struct"/>GnomePaperSelector</title>
+<indexterm><primary>GnomePaperSelector</primary></indexterm><programlisting>typedef struct _GnomePaperSelector GnomePaperSelector;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomePaperSelectorClass"/>struct GnomePaperSelectorClass</title>
-<indexterm><primary>GnomePaperSelectorClass</primary></indexterm><programlisting>struct GnomePaperSelectorClass;</programlisting>
+<title><anchor id="GnomePaperSelectorClass"/>GnomePaperSelectorClass</title>
+<indexterm><primary>GnomePaperSelectorClass</primary></indexterm><programlisting>typedef struct _GnomePaperSelectorClass GnomePaperSelectorClass;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-TYPE-PRINT-UNIT-SELECTOR-CAPS"/>GNOME_TYPE_PRINT_UNIT_SELECTOR</title>
+<title><anchor id="GNOME-TYPE-PRINT-UNIT-SELECTOR:CAPS"/>GNOME_TYPE_PRINT_UNIT_SELECTOR</title>
 <indexterm><primary>GNOME_TYPE_PRINT_UNIT_SELECTOR</primary></indexterm><programlisting>#define GNOME_TYPE_PRINT_UNIT_SELECTOR         (gnome_print_unit_selector_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-UNIT-SELECTOR-CAPS"/>GNOME_PRINT_UNIT_SELECTOR()</title>
+<title><anchor id="GNOME-PRINT-UNIT-SELECTOR:CAPS"/>GNOME_PRINT_UNIT_SELECTOR()</title>
 <indexterm><primary>GNOME_PRINT_UNIT_SELECTOR</primary></indexterm><programlisting>#define GNOME_PRINT_UNIT_SELECTOR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelector))
 </programlisting>
 <para>
@@ -246,7 +245,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-UNIT-SELECTOR-CLASS-CAPS"/>GNOME_PRINT_UNIT_SELECTOR_CLASS()</title>
+<title><anchor id="GNOME-PRINT-UNIT-SELECTOR-CLASS:CAPS"/>GNOME_PRINT_UNIT_SELECTOR_CLASS()</title>
 <indexterm><primary>GNOME_PRINT_UNIT_SELECTOR_CLASS</primary></indexterm><programlisting>#define GNOME_PRINT_UNIT_SELECTOR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),    GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelectorClass))
 </programlisting>
 <para>
@@ -259,7 +258,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-PRINT-UNIT-SELECTOR-CAPS"/>GNOME_IS_PRINT_UNIT_SELECTOR()</title>
+<title><anchor id="GNOME-IS-PRINT-UNIT-SELECTOR:CAPS"/>GNOME_IS_PRINT_UNIT_SELECTOR()</title>
 <indexterm><primary>GNOME_IS_PRINT_UNIT_SELECTOR</primary></indexterm><programlisting>#define GNOME_IS_PRINT_UNIT_SELECTOR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_UNIT_SELECTOR))
 </programlisting>
 <para>
@@ -272,7 +271,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-PRINT-UNIT-SELECTOR-CLASS-CAPS"/>GNOME_IS_PRINT_UNIT_SELECTOR_CLASS()</title>
+<title><anchor id="GNOME-IS-PRINT-UNIT-SELECTOR-CLASS:CAPS"/>GNOME_IS_PRINT_UNIT_SELECTOR_CLASS()</title>
 <indexterm><primary>GNOME_IS_PRINT_UNIT_SELECTOR_CLASS</primary></indexterm><programlisting>#define GNOME_IS_PRINT_UNIT_SELECTOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_UNIT_SELECTOR))
 </programlisting>
 <para>
@@ -285,7 +284,7 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-UNIT-SELECTOR-GET-CLASS-CAPS"/>GNOME_PRINT_UNIT_SELECTOR_GET_CLASS()</title>
+<title><anchor id="GNOME-PRINT-UNIT-SELECTOR-GET-CLASS:CAPS"/>GNOME_PRINT_UNIT_SELECTOR_GET_CLASS()</title>
 <indexterm><primary>GNOME_PRINT_UNIT_SELECTOR_GET_CLASS</primary></indexterm><programlisting>#define GNOME_PRINT_UNIT_SELECTOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelectorClass))
 </programlisting>
 <para>
@@ -298,14 +297,14 @@ GnomePrintUnitSelector implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GnomePrintUnitSelector-struct"/>struct GnomePrintUnitSelector</title>
-<indexterm><primary>GnomePrintUnitSelector</primary></indexterm><programlisting>struct GnomePrintUnitSelector;</programlisting>
+<title><anchor id="GnomePrintUnitSelector-struct"/>GnomePrintUnitSelector</title>
+<indexterm><primary>GnomePrintUnitSelector</primary></indexterm><programlisting>typedef struct _GnomePrintUnitSelector GnomePrintUnitSelector;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomePrintUnitSelectorClass"/>struct GnomePrintUnitSelectorClass</title>
-<indexterm><primary>GnomePrintUnitSelectorClass</primary></indexterm><programlisting>struct GnomePrintUnitSelectorClass;</programlisting>
+<title><anchor id="GnomePrintUnitSelectorClass"/>GnomePrintUnitSelectorClass</title>
+<indexterm><primary>GnomePrintUnitSelectorClass</primary></indexterm><programlisting>typedef struct _GnomePrintUnitSelectorClass GnomePrintUnitSelectorClass;</programlisting>
 <para>
 
 </para></refsect2>
@@ -318,7 +317,7 @@ GnomePrintUnitSelector implements
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -329,7 +328,7 @@ GnomePrintUnitSelector implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -343,7 +342,7 @@ GnomePrintUnitSelector implements
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -362,7 +361,7 @@ GnomePrintUnitSelector implements
 <varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -374,7 +373,7 @@ GnomePrintUnitSelector implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -388,7 +387,7 @@ GnomePrintUnitSelector implements
 <varlistentry><term><parameter>bases</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -403,7 +402,7 @@ GnomePrintUnitSelector implements
 <varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

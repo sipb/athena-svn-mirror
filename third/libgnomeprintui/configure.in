@@ -1,6 +1,6 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(libgnomeprintui, 2.8.0,
+AC_INIT(libgnomeprintui, 2.8.2,
 	http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-print)
 
 AM_CONFIG_HEADER(config.h)
@@ -60,7 +60,7 @@ dnl It is ugly to put a build time check in for a run time dependency on gnome-i
 dnl but this will hopefully keep the packagers on their toes
 PKG_CHECK_MODULES(LIBGNOMEPRINTUI, [
 	gtk+-2.0	   >= 2.4.0
-	libgnomeprint-2.2  >= 2.7.1
+	libgnomeprint-2.2  >= 2.8.2
 	libgnomecanvas-2.0 >= 1.117.0
 	gnome-icon-theme   >= 1.1.92
 ])

@@ -20,8 +20,8 @@ INCLUDES = \
 
 
 libgnomeprintui_2_2_la_LIBADD = \
-	gpaui/libgpaui.la \
-	$(LIBGNOMEPRINTUI_LIBS)
+	$(LIBGNOMEPRINTUI_LIBS) \
+	gpaui/libgpaui.la 
 
 libgnomeprintui_2_2_la_LDFLAGS = \
 	-no-undefined \

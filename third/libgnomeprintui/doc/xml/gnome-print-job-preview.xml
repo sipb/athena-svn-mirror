@@ -15,14 +15,14 @@
 
 
 
-struct      <link linkend="GnomePrintJobPreview-struct">GnomePrintJobPreview</link>;
-struct      <link linkend="GnomePrintJobPreviewClass">GnomePrintJobPreviewClass</link>;
-#define     <link linkend="GNOME-TYPE-PRINT-JOB-PREVIEW-CAPS">GNOME_TYPE_PRINT_JOB_PREVIEW</link>
-#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-CAPS">GNOME_PRINT_JOB_PREVIEW</link>         (o)
-#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-CLASS-CAPS">GNOME_PRINT_JOB_PREVIEW_CLASS</link>   (k)
-#define     <link linkend="GNOME-IS-PRINT-JOB-PREVIEW-CAPS">GNOME_IS_PRINT_JOB_PREVIEW</link>      (o)
-#define     <link linkend="GNOME-IS-PRINT-JOB-PREVIEW-CLASS-CAPS">GNOME_IS_PRINT_JOB_PREVIEW_CLASS</link>(k)
-#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-GET-CLASS-CAPS">GNOME_PRINT_JOB_PREVIEW_GET_CLASS</link>(o)
+            <link linkend="GnomePrintJobPreview-struct">GnomePrintJobPreview</link>;
+            <link linkend="GnomePrintJobPreviewClass">GnomePrintJobPreviewClass</link>;
+#define     <link linkend="GNOME-TYPE-PRINT-JOB-PREVIEW:CAPS">GNOME_TYPE_PRINT_JOB_PREVIEW</link>
+#define     <link linkend="GNOME-PRINT-JOB-PREVIEW:CAPS">GNOME_PRINT_JOB_PREVIEW</link>         (o)
+#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-CLASS:CAPS">GNOME_PRINT_JOB_PREVIEW_CLASS</link>   (k)
+#define     <link linkend="GNOME-IS-PRINT-JOB-PREVIEW:CAPS">GNOME_IS_PRINT_JOB_PREVIEW</link>      (o)
+#define     <link linkend="GNOME-IS-PRINT-JOB-PREVIEW-CLASS:CAPS">GNOME_IS_PRINT_JOB_PREVIEW_CLASS</link>(k)
+#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-GET-CLASS:CAPS">GNOME_PRINT_JOB_PREVIEW_GET_CLASS</link>(o)
 <link linkend="GtkType">GtkType</link>     <link linkend="gnome-print-job-preview-get-type">gnome_print_job_preview_get_type</link>
                                             (void);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-print-job-preview-new">gnome_print_job_preview_new</link>     (<link linkend="GnomePrintJob">GnomePrintJob</link> *gpm,
@@ -77,26 +77,26 @@ GnomePrintJobPreview implements
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePrintJobPreview-struct"/>struct GnomePrintJobPreview</title>
-<indexterm><primary>GnomePrintJobPreview</primary></indexterm><programlisting>struct GnomePrintJobPreview;</programlisting>
+<title><anchor id="GnomePrintJobPreview-struct"/>GnomePrintJobPreview</title>
+<indexterm><primary>GnomePrintJobPreview</primary></indexterm><programlisting>typedef struct _GnomePrintJobPreview GnomePrintJobPreview;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomePrintJobPreviewClass"/>struct GnomePrintJobPreviewClass</title>
-<indexterm><primary>GnomePrintJobPreviewClass</primary></indexterm><programlisting>struct GnomePrintJobPreviewClass;</programlisting>
+<title><anchor id="GnomePrintJobPreviewClass"/>GnomePrintJobPreviewClass</title>
+<indexterm><primary>GnomePrintJobPreviewClass</primary></indexterm><programlisting>typedef struct _GnomePrintJobPreviewClass GnomePrintJobPreviewClass;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-TYPE-PRINT-JOB-PREVIEW-CAPS"/>GNOME_TYPE_PRINT_JOB_PREVIEW</title>
+<title><anchor id="GNOME-TYPE-PRINT-JOB-PREVIEW:CAPS"/>GNOME_TYPE_PRINT_JOB_PREVIEW</title>
 <indexterm><primary>GNOME_TYPE_PRINT_JOB_PREVIEW</primary></indexterm><programlisting>#define GNOME_TYPE_PRINT_JOB_PREVIEW         (gnome_print_job_preview_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-JOB-PREVIEW-CAPS"/>GNOME_PRINT_JOB_PREVIEW()</title>
+<title><anchor id="GNOME-PRINT-JOB-PREVIEW:CAPS"/>GNOME_PRINT_JOB_PREVIEW()</title>
 <indexterm><primary>GNOME_PRINT_JOB_PREVIEW</primary></indexterm><programlisting>#define GNOME_PRINT_JOB_PREVIEW(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_JOB_PREVIEW, GnomePrintJobPreview))
 </programlisting>
 <para>
@@ -109,7 +109,7 @@ GnomePrintJobPreview implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-JOB-PREVIEW-CLASS-CAPS"/>GNOME_PRINT_JOB_PREVIEW_CLASS()</title>
+<title><anchor id="GNOME-PRINT-JOB-PREVIEW-CLASS:CAPS"/>GNOME_PRINT_JOB_PREVIEW_CLASS()</title>
 <indexterm><primary>GNOME_PRINT_JOB_PREVIEW_CLASS</primary></indexterm><programlisting>#define GNOME_PRINT_JOB_PREVIEW_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),    GNOME_TYPE_PRINT_JOB_PREVIEW, GnomePrintJobPreviewClass))
 </programlisting>
 <para>
@@ -122,7 +122,7 @@ GnomePrintJobPreview implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-PRINT-JOB-PREVIEW-CAPS"/>GNOME_IS_PRINT_JOB_PREVIEW()</title>
+<title><anchor id="GNOME-IS-PRINT-JOB-PREVIEW:CAPS"/>GNOME_IS_PRINT_JOB_PREVIEW()</title>
 <indexterm><primary>GNOME_IS_PRINT_JOB_PREVIEW</primary></indexterm><programlisting>#define GNOME_IS_PRINT_JOB_PREVIEW(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_JOB_PREVIEW))
 </programlisting>
 <para>
@@ -135,7 +135,7 @@ GnomePrintJobPreview implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-PRINT-JOB-PREVIEW-CLASS-CAPS"/>GNOME_IS_PRINT_JOB_PREVIEW_CLASS()</title>
+<title><anchor id="GNOME-IS-PRINT-JOB-PREVIEW-CLASS:CAPS"/>GNOME_IS_PRINT_JOB_PREVIEW_CLASS()</title>
 <indexterm><primary>GNOME_IS_PRINT_JOB_PREVIEW_CLASS</primary></indexterm><programlisting>#define GNOME_IS_PRINT_JOB_PREVIEW_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_JOB_PREVIEW))
 </programlisting>
 <para>
@@ -148,7 +148,7 @@ GnomePrintJobPreview implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-JOB-PREVIEW-GET-CLASS-CAPS"/>GNOME_PRINT_JOB_PREVIEW_GET_CLASS()</title>
+<title><anchor id="GNOME-PRINT-JOB-PREVIEW-GET-CLASS:CAPS"/>GNOME_PRINT_JOB_PREVIEW_GET_CLASS()</title>
 <indexterm><primary>GNOME_PRINT_JOB_PREVIEW_GET_CLASS</primary></indexterm><programlisting>#define GNOME_PRINT_JOB_PREVIEW_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_JOB_PREVIEW, GnomePrintJobPreviewClass))
 </programlisting>
 <para>
@@ -167,7 +167,7 @@ GnomePrintJobPreview implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -185,7 +185,7 @@ GnomePrintJobPreview implements
 <varlistentry><term><parameter>title</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

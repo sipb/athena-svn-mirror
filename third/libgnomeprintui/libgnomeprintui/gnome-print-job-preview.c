@@ -105,8 +105,10 @@ struct _GPMPPrivate {
 	GtkWidget *use_theme_button;	
 };
 
-static void gpmp_parse_layout (GnomePrintJobPreview *mp);
-static void gnome_print_job_preview_update (GnomePrintJobPreview *pmp);
+static void gpmp_parse_layout			  (GnomePrintJobPreview *pmp);
+static void gnome_print_job_preview_update	  (GnomePrintJobPreview *pmp);
+static void gnome_print_job_preview_set_nx_and_ny (GnomePrintJobPreview *pmp,
+						   gulong nx, gulong ny);
 
 /*
  * Padding in points around the simulated page
@@ -168,18 +170,22 @@ change_page_cmd (GtkEntry *entry, GnomePrintJobPreview *pmp)
 #define CLOSE_ENOUGH(a,b) (fabs (a - b) < 1e-6)
 
 static void
-gpmp_zoom (GnomePrintJobPreview *mp, gdouble factor, gboolean relative)
+gpmp_zoom (GnomePrintJobPreview *mp, gdouble factor)
 {
-	GPMPPrivate *priv;
-	gdouble zoom;
+	gdouble	     zoom, xdpi, ydpi;
+	int          w, h, w_mm, h_mm;
+	GdkScreen   *screen;
+	GPMPPrivate *priv = (GPMPPrivate *) mp->priv;
 
-	priv = (GPMPPrivate *) mp->priv;
+	if (factor <= 0.) {
+		gint width = GTK_WIDGET (priv->canvas)->allocation.width;
+		gint height = GTK_WIDGET (priv->canvas)->allocation.height;
+		gdouble zoomx = width  / ((mp->paw + PAGE_PAD * 2) * mp->nx + PAGE_PAD * 2);
+		gdouble zoomy = height / ((mp->pah + PAGE_PAD * 2) * mp->ny + PAGE_PAD * 2);
 
-	if (relative) {
+		zoom = MIN (zoomx, zoomy);
+	} else
 		zoom = mp->zoom * factor;
-	} else {
-		zoom = factor / MAX (mp->nx, mp->ny);
-	}
 
 	mp->zoom = CLAMP (zoom, GPMP_ZOOM_MIN, GPMP_ZOOM_MAX);
 
@@ -187,7 +193,50 @@ gpmp_zoom (GnomePrintJobPreview *mp, gdouble factor, gboolean relative)
 	gtk_widget_set_sensitive (mp->bzi, (!CLOSE_ENOUGH (mp->zoom, GPMP_ZOOM_MAX)));
 	gtk_widget_set_sensitive (mp->bzo, (!CLOSE_ENOUGH (mp->zoom, GPMP_ZOOM_MIN)));
 
-	gnome_canvas_set_pixels_per_unit (priv->canvas, mp->zoom);
+	screen = gtk_widget_get_screen (GTK_WIDGET (priv->canvas)),
+#if 0
+       /* there is no per monitor physical size info available for now */
+	n = gdk_screen_get_n_monitors (screen);
+	for (i = 0; i < n; i++) {
+		gdk_screen_get_monitor_geometry (screen, i, &monitor);
+		if (x >= monitor.x && x <= monitor.x + monitor.width &&
+		    y >= monitor.y && y <= monitor.y + monitor.height) {
+			break;
+		}
+	}
+#endif
+	/*
+	 * From xdpyinfo.c:
+	 *
+	 * there are 2.54 centimeters to an inch; so there are 25.4 millimeters.
+	 *
+	 *     dpi = N pixels / (M millimeters / (25.4 millimeters / 1 inch))
+	 *         = N pixels / (M inch / 25.4)
+	 *         = N * 25.4 pixels / M inch
+	 */
+	w_mm = gdk_screen_get_width_mm (screen);
+	xdpi = -1.;
+	if (w_mm > 0) {
+		w    = gdk_screen_get_width (screen);
+		xdpi = (w * 25.4) / (gdouble) w_mm;
+	} 
+	if (xdpi < 30. || 600. < xdpi) {
+		g_warning ("Invalid the x-resolution for the screen, assuming 96dpi");
+		xdpi = 96.;
+	}
+
+	h_mm = gdk_screen_get_height_mm (screen);
+	ydpi = -1.;
+	if (h_mm > 0) {
+		h    = gdk_screen_get_height (screen);
+		ydpi = (h * 25.4) / (gdouble) h_mm;
+	}
+	if (ydpi < 30. || 600. < ydpi) {
+		g_warning ("Invalid the y-resolution for the screen, assuming 96dpi");
+		ydpi = 96.;
+	}
+
+	gnome_canvas_set_pixels_per_unit (priv->canvas, mp->zoom * (xdpi + ydpi) / (72. * 2.));
 }
 
 /* Button press handler for the print preview canvas */
@@ -341,37 +390,25 @@ preview_last_page_cmd (void *unused, GnomePrintJobPreview *pmp)
 static void
 gpmp_zoom_in_cmd (GtkToggleButton *t, GnomePrintJobPreview *pmp)
 {
-	gpmp_zoom (pmp, GPMP_ZOOM_IN_FACTOR, TRUE);
+	gpmp_zoom (pmp, GPMP_ZOOM_IN_FACTOR);
 }
 
 static void
 gpmp_zoom_out_cmd (GtkToggleButton *t, GnomePrintJobPreview *pmp)
 {
-	gpmp_zoom (pmp, GPMP_ZOOM_OUT_FACTOR, TRUE);
+	gpmp_zoom (pmp, GPMP_ZOOM_OUT_FACTOR);
 }
 
 static void
-preview_zoom_fit_cmd (GtkToggleButton *t, GnomePrintJobPreview *mp)
+preview_zoom_fit_cmd (GnomePrintJobPreview *mp)
 {
-	GPMPPrivate *priv;
-	gdouble zoomx, zoomy;
-	gint width, height;
-
-	priv = (GPMPPrivate *) mp->priv;
-
-	width = GTK_WIDGET (priv->canvas)->allocation.width;
-	height = GTK_WIDGET (priv->canvas)->allocation.height;
-
-	zoomx = width / (mp->paw + 5.0 + PAGE_PAD * 2);
-	zoomy = height / (mp->pah + 5.0 + PAGE_PAD * 2);
-
-	gpmp_zoom (mp, MIN (zoomx, zoomy), FALSE);
+	gpmp_zoom (mp, -1.);
 }
 
 static void
-preview_zoom_100_cmd (GtkToggleButton *t, GnomePrintJobPreview *mp)
+preview_zoom_100_cmd (GnomePrintJobPreview *mp)
 {
-	gpmp_zoom (mp, 1.0, FALSE);
+	gpmp_zoom (mp,  1. / mp->zoom); /* cheesy way to force 100% */
 }
 
 static gint
@@ -393,7 +430,7 @@ preview_canvas_key (GtkWidget *widget, GdkEventKey *event, gpointer data)
 
 	switch (event->keyval) {
 	case '1':
-		preview_zoom_100_cmd (0, pmp);
+		preview_zoom_100_cmd (pmp);
 		break;
 	case '+':
 	case '=':
@@ -592,7 +629,7 @@ check_button_toggled_cb (GtkWidget *widget, GnomePrintJobPreview *mp)
 	priv = (GPMPPrivate *)mp->priv;
 	use_theme = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 	priv->theme_compliance = use_theme;
-	gnome_print_preview_use_theme (use_theme);
+	gnome_print_preview_set_use_theme (use_theme);
 	g_signal_emit_by_name (G_OBJECT (priv->canvas), "style_set", NULL);
 }
 
@@ -613,6 +650,7 @@ create_preview_canvas (GnomePrintJobPreview *mp)
 
 	gtk_widget_push_colormap (gdk_rgb_get_colormap ());
 	priv->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
+	gnome_canvas_set_center_scroll_region (priv->canvas, FALSE);
 	gtk_widget_pop_colormap ();
 	atko = gtk_widget_get_accessible (GTK_WIDGET (priv->canvas));
 	atk_object_set_name (atko, _("Page Preview"));
@@ -661,6 +699,8 @@ create_preview_canvas (GnomePrintJobPreview *mp)
 	priv->use_theme_button = gtk_check_button_new_with_mnemonic (_("Use _theme colors for content"));
 	gtk_box_pack_end (GTK_BOX (status), priv->use_theme_button, FALSE,
 			    FALSE, 2);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->use_theme_button),
+		gnome_print_preview_get_use_theme ());
 	g_signal_connect (G_OBJECT (priv->use_theme_button), "toggled",
 			  G_CALLBACK (check_button_toggled_cb), mp);
 
@@ -685,29 +725,25 @@ create_preview_canvas (GnomePrintJobPreview *mp)
 static void
 on_1x1_clicked (GtkMenuItem *i, GnomePrintJobPreview *mp)
 {
-	g_object_set (G_OBJECT (mp), "nx", 1, "ny", 1, NULL);
-	preview_zoom_fit_cmd (NULL, mp);
+	gnome_print_job_preview_set_nx_and_ny (mp, 1, 1);
 }
 
 static void
 on_1x2_clicked (GtkMenuItem *i, GnomePrintJobPreview *mp)
 {
-	g_object_set (G_OBJECT (mp), "nx", 2, "ny", 1, NULL);
-	preview_zoom_fit_cmd (NULL, mp);
+	gnome_print_job_preview_set_nx_and_ny (mp, 2, 1);
 }
 
 static void
 on_2x1_clicked (GtkMenuItem *i, GnomePrintJobPreview *mp)
 {
-	g_object_set (G_OBJECT (mp), "nx", 1, "ny", 2, NULL);
-	preview_zoom_fit_cmd (NULL, mp);
+	gnome_print_job_preview_set_nx_and_ny (mp, 1, 2);
 }
 
 static void
 on_2x2_clicked (GtkMenuItem *i, GnomePrintJobPreview *mp)
 {
-	g_object_set (G_OBJECT (mp), "nx", 2, "ny", 2, NULL);
-	preview_zoom_fit_cmd (NULL, mp);
+	gnome_print_job_preview_set_nx_and_ny (mp, 2, 2);
 }
 
 #if 0
@@ -837,16 +873,16 @@ create_toplevel (GnomePrintJobPreview *mp)
 	mp->bz1 = GTK_WIDGET (i);
 	gtk_tool_item_set_tooltip (i, GTK_TOOLBAR (tb)->tooltips,
 				   _("Zooms 1:1"), "");
-	g_signal_connect (i, "clicked",
-			  G_CALLBACK (preview_zoom_100_cmd), mp);
+	g_signal_connect_swapped (i, "clicked",
+		G_CALLBACK (preview_zoom_100_cmd), mp);
 	gtk_widget_show (GTK_WIDGET (i));
 	gtk_toolbar_insert (GTK_TOOLBAR (tb), i, -1);
 	i = gtk_tool_button_new_from_stock (GTK_STOCK_ZOOM_FIT);
 	mp->bzf = GTK_WIDGET (i);
 	gtk_tool_item_set_tooltip (i, GTK_TOOLBAR (tb)->tooltips,
 				   _("Zooms to fit the whole page"), "");
-	g_signal_connect (i, "clicked",
-			  G_CALLBACK (preview_zoom_fit_cmd), mp);
+	g_signal_connect_swapped (i, "clicked",
+		G_CALLBACK (preview_zoom_fit_cmd), mp);
 	gtk_widget_show (GTK_WIDGET (i));
 	gtk_toolbar_insert (GTK_TOOLBAR (tb), i, -1);
 	i = gtk_tool_button_new_from_stock (GTK_STOCK_ZOOM_IN);
@@ -1036,7 +1072,7 @@ gnome_print_job_preview_set_nx_and_ny (GnomePrintJobPreview *pmp,
 			"y", (gdouble) row * (pmp->pah + PAGE_PAD * 2), NULL);
 	}
 
-	gpmp_zoom (pmp, 1., FALSE);
+	preview_zoom_fit_cmd (pmp);
 
 	if (!pmp->update_func_id)
 		pmp->update_func_id = g_idle_add_full (
@@ -1225,11 +1261,10 @@ gnome_print_job_preview_new (GnomePrintJob *gpm, const guchar *title)
 	gpmp_parse_layout (gpmp);
 	create_toplevel (gpmp);
 	create_preview_canvas (gpmp);
-	gnome_print_job_preview_set_nx_and_ny (gpmp, 1, 1);
 
 	/* this zooms to fit, once we know how big the window actually is */
-	g_signal_connect (G_OBJECT (priv->canvas), "realize",
-			  (GCallback) preview_zoom_fit_cmd, gpmp);
+	g_signal_connect_swapped (G_OBJECT (priv->canvas), "realize",
+		(GCallback) preview_zoom_fit_cmd, gpmp);
 
 	priv->pagecount = gnome_print_job_get_pages (gpm);
 	goto_page (gpmp, 0);

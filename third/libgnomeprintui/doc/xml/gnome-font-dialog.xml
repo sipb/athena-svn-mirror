@@ -15,24 +15,24 @@
 
 
 
-#define     <link linkend="GNOME-TYPE-FONT-SELECTION-CAPS">GNOME_TYPE_FONT_SELECTION</link>
-#define     <link linkend="GNOME-FONT-SELECTION-CAPS">GNOME_FONT_SELECTION</link>            (o)
-#define     <link linkend="GNOME-FONT-SELECTION-CLASS-CAPS">GNOME_FONT_SELECTION_CLASS</link>      (k)
-#define     <link linkend="GNOME-IS-FONT-SELECTION-CAPS">GNOME_IS_FONT_SELECTION</link>         (o)
-#define     <link linkend="GNOME-IS-FONT-SELECTION-CLASS-CAPS">GNOME_IS_FONT_SELECTION_CLASS</link>   (k)
-#define     <link linkend="GNOME-FONT-SELECTION-GET-CLASS-CAPS">GNOME_FONT_SELECTION_GET_CLASS</link>  (o)
-#define     <link linkend="GNOME-TYPE-FONT-DIALOG-CAPS">GNOME_TYPE_FONT_DIALOG</link>
-#define     <link linkend="GNOME-FONT-DIALOG-CAPS">GNOME_FONT_DIALOG</link>               (o)
-#define     <link linkend="GNOME-FONT-DIALOG-CLASS-CAPS">GNOME_FONT_DIALOG_CLASS</link>         (k)
-#define     <link linkend="GNOME-IS-FONT-DIALOG-CAPS">GNOME_IS_FONT_DIALOG</link>            (o)
-#define     <link linkend="GNOME-IS-FONT-DIALOG-CLASS-CAPS">GNOME_IS_FONT_DIALOG_CLASS</link>      (k)
-#define     <link linkend="GNOME-FONT-DIALOG-GET-CLASS-CAPS">GNOME_FONT_DIALOG_GET_CLASS</link>     (o)
-struct      <link linkend="GnomeFontSelection-struct">GnomeFontSelection</link>;
-struct      <link linkend="GnomeFontSelectionClass">GnomeFontSelectionClass</link>;
-struct      <link linkend="GnomeFontPreview-struct">GnomeFontPreview</link>;
-struct      <link linkend="GnomeFontPreviewClass">GnomeFontPreviewClass</link>;
-struct      <link linkend="GnomeFontDialog-struct">GnomeFontDialog</link>;
-struct      <link linkend="GnomeFontDialogClass">GnomeFontDialogClass</link>;
+#define     <link linkend="GNOME-TYPE-FONT-SELECTION:CAPS">GNOME_TYPE_FONT_SELECTION</link>
+#define     <link linkend="GNOME-FONT-SELECTION:CAPS">GNOME_FONT_SELECTION</link>            (o)
+#define     <link linkend="GNOME-FONT-SELECTION-CLASS:CAPS">GNOME_FONT_SELECTION_CLASS</link>      (k)
+#define     <link linkend="GNOME-IS-FONT-SELECTION:CAPS">GNOME_IS_FONT_SELECTION</link>         (o)
+#define     <link linkend="GNOME-IS-FONT-SELECTION-CLASS:CAPS">GNOME_IS_FONT_SELECTION_CLASS</link>   (k)
+#define     <link linkend="GNOME-FONT-SELECTION-GET-CLASS:CAPS">GNOME_FONT_SELECTION_GET_CLASS</link>  (o)
+#define     <link linkend="GNOME-TYPE-FONT-DIALOG:CAPS">GNOME_TYPE_FONT_DIALOG</link>
+#define     <link linkend="GNOME-FONT-DIALOG:CAPS">GNOME_FONT_DIALOG</link>               (o)
+#define     <link linkend="GNOME-FONT-DIALOG-CLASS:CAPS">GNOME_FONT_DIALOG_CLASS</link>         (k)
+#define     <link linkend="GNOME-IS-FONT-DIALOG:CAPS">GNOME_IS_FONT_DIALOG</link>            (o)
+#define     <link linkend="GNOME-IS-FONT-DIALOG-CLASS:CAPS">GNOME_IS_FONT_DIALOG_CLASS</link>      (k)
+#define     <link linkend="GNOME-FONT-DIALOG-GET-CLASS:CAPS">GNOME_FONT_DIALOG_GET_CLASS</link>     (o)
+            <link linkend="GnomeFontSelection-struct">GnomeFontSelection</link>;
+            <link linkend="GnomeFontSelectionClass">GnomeFontSelectionClass</link>;
+            <link linkend="GnomeFontPreview-struct">GnomeFontPreview</link>;
+            <link linkend="GnomeFontPreviewClass">GnomeFontPreviewClass</link>;
+            <link linkend="GnomeFontDialog-struct">GnomeFontDialog</link>;
+            <link linkend="GnomeFontDialogClass">GnomeFontDialogClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-font-selection-new">gnome_font_selection_new</link>        (void);
 <link linkend="GnomeFontFace">GnomeFontFace</link>* <link linkend="gnome-font-selection-get-face">gnome_font_selection_get_face</link>
                                             (<link linkend="GnomeFontSelection">GnomeFontSelection</link> *fontsel);
@@ -130,14 +130,14 @@ GnomeFontDialog implements
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GNOME-TYPE-FONT-SELECTION-CAPS"/>GNOME_TYPE_FONT_SELECTION</title>
+<title><anchor id="GNOME-TYPE-FONT-SELECTION:CAPS"/>GNOME_TYPE_FONT_SELECTION</title>
 <indexterm><primary>GNOME_TYPE_FONT_SELECTION</primary></indexterm><programlisting>#define GNOME_TYPE_FONT_SELECTION         (gnome_font_selection_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-FONT-SELECTION-CAPS"/>GNOME_FONT_SELECTION()</title>
+<title><anchor id="GNOME-FONT-SELECTION:CAPS"/>GNOME_FONT_SELECTION()</title>
 <indexterm><primary>GNOME_FONT_SELECTION</primary></indexterm><programlisting>#define GNOME_FONT_SELECTION(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_SELECTION, GnomeFontSelection))
 </programlisting>
 <para>
@@ -150,7 +150,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-FONT-SELECTION-CLASS-CAPS"/>GNOME_FONT_SELECTION_CLASS()</title>
+<title><anchor id="GNOME-FONT-SELECTION-CLASS:CAPS"/>GNOME_FONT_SELECTION_CLASS()</title>
 <indexterm><primary>GNOME_FONT_SELECTION_CLASS</primary></indexterm><programlisting>#define GNOME_FONT_SELECTION_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_FONT_SELECTION, GnomeFontSelectionClass))
 </programlisting>
 <para>
@@ -163,7 +163,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-FONT-SELECTION-CAPS"/>GNOME_IS_FONT_SELECTION()</title>
+<title><anchor id="GNOME-IS-FONT-SELECTION:CAPS"/>GNOME_IS_FONT_SELECTION()</title>
 <indexterm><primary>GNOME_IS_FONT_SELECTION</primary></indexterm><programlisting>#define GNOME_IS_FONT_SELECTION(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_SELECTION))
 </programlisting>
 <para>
@@ -176,7 +176,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-FONT-SELECTION-CLASS-CAPS"/>GNOME_IS_FONT_SELECTION_CLASS()</title>
+<title><anchor id="GNOME-IS-FONT-SELECTION-CLASS:CAPS"/>GNOME_IS_FONT_SELECTION_CLASS()</title>
 <indexterm><primary>GNOME_IS_FONT_SELECTION_CLASS</primary></indexterm><programlisting>#define GNOME_IS_FONT_SELECTION_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_FONT_SELECTION))
 </programlisting>
 <para>
@@ -189,7 +189,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-FONT-SELECTION-GET-CLASS-CAPS"/>GNOME_FONT_SELECTION_GET_CLASS()</title>
+<title><anchor id="GNOME-FONT-SELECTION-GET-CLASS:CAPS"/>GNOME_FONT_SELECTION_GET_CLASS()</title>
 <indexterm><primary>GNOME_FONT_SELECTION_GET_CLASS</primary></indexterm><programlisting>#define GNOME_FONT_SELECTION_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_FONT_SELECTION, GnomeFontSelectionClass))
 </programlisting>
 <para>
@@ -202,14 +202,14 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-TYPE-FONT-DIALOG-CAPS"/>GNOME_TYPE_FONT_DIALOG</title>
+<title><anchor id="GNOME-TYPE-FONT-DIALOG:CAPS"/>GNOME_TYPE_FONT_DIALOG</title>
 <indexterm><primary>GNOME_TYPE_FONT_DIALOG</primary></indexterm><programlisting>#define GNOME_TYPE_FONT_DIALOG         (gnome_font_dialog_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-FONT-DIALOG-CAPS"/>GNOME_FONT_DIALOG()</title>
+<title><anchor id="GNOME-FONT-DIALOG:CAPS"/>GNOME_FONT_DIALOG()</title>
 <indexterm><primary>GNOME_FONT_DIALOG</primary></indexterm><programlisting>#define GNOME_FONT_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_DIALOG, GnomeFontDialog))
 </programlisting>
 <para>
@@ -222,7 +222,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-FONT-DIALOG-CLASS-CAPS"/>GNOME_FONT_DIALOG_CLASS()</title>
+<title><anchor id="GNOME-FONT-DIALOG-CLASS:CAPS"/>GNOME_FONT_DIALOG_CLASS()</title>
 <indexterm><primary>GNOME_FONT_DIALOG_CLASS</primary></indexterm><programlisting>#define GNOME_FONT_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_FONT_DIALOG, GnomeFontDialogClass))
 </programlisting>
 <para>
@@ -235,7 +235,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-FONT-DIALOG-CAPS"/>GNOME_IS_FONT_DIALOG()</title>
+<title><anchor id="GNOME-IS-FONT-DIALOG:CAPS"/>GNOME_IS_FONT_DIALOG()</title>
 <indexterm><primary>GNOME_IS_FONT_DIALOG</primary></indexterm><programlisting>#define GNOME_IS_FONT_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_DIALOG))
 </programlisting>
 <para>
@@ -248,7 +248,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-IS-FONT-DIALOG-CLASS-CAPS"/>GNOME_IS_FONT_DIALOG_CLASS()</title>
+<title><anchor id="GNOME-IS-FONT-DIALOG-CLASS:CAPS"/>GNOME_IS_FONT_DIALOG_CLASS()</title>
 <indexterm><primary>GNOME_IS_FONT_DIALOG_CLASS</primary></indexterm><programlisting>#define GNOME_IS_FONT_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_FONT_DIALOG))
 </programlisting>
 <para>
@@ -261,7 +261,7 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-FONT-DIALOG-GET-CLASS-CAPS"/>GNOME_FONT_DIALOG_GET_CLASS()</title>
+<title><anchor id="GNOME-FONT-DIALOG-GET-CLASS:CAPS"/>GNOME_FONT_DIALOG_GET_CLASS()</title>
 <indexterm><primary>GNOME_FONT_DIALOG_GET_CLASS</primary></indexterm><programlisting>#define GNOME_FONT_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_FONT_DIALOG, GnomeFontDialogClass))
 </programlisting>
 <para>
@@ -274,38 +274,38 @@ GnomeFontDialog implements
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontSelection-struct"/>struct GnomeFontSelection</title>
-<indexterm><primary>GnomeFontSelection</primary></indexterm><programlisting>struct GnomeFontSelection;</programlisting>
+<title><anchor id="GnomeFontSelection-struct"/>GnomeFontSelection</title>
+<indexterm><primary>GnomeFontSelection</primary></indexterm><programlisting>typedef struct _GnomeFontSelection GnomeFontSelection;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontSelectionClass"/>struct GnomeFontSelectionClass</title>
-<indexterm><primary>GnomeFontSelectionClass</primary></indexterm><programlisting>struct GnomeFontSelectionClass;</programlisting>
+<title><anchor id="GnomeFontSelectionClass"/>GnomeFontSelectionClass</title>
+<indexterm><primary>GnomeFontSelectionClass</primary></indexterm><programlisting>typedef struct _GnomeFontSelectionClass GnomeFontSelectionClass;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontPreview-struct"/>struct GnomeFontPreview</title>
-<indexterm><primary>GnomeFontPreview</primary></indexterm><programlisting>struct GnomeFontPreview;</programlisting>
+<title><anchor id="GnomeFontPreview-struct"/>GnomeFontPreview</title>
+<indexterm><primary>GnomeFontPreview</primary></indexterm><programlisting>typedef struct _GnomeFontPreview GnomeFontPreview;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontPreviewClass"/>struct GnomeFontPreviewClass</title>
-<indexterm><primary>GnomeFontPreviewClass</primary></indexterm><programlisting>struct GnomeFontPreviewClass;</programlisting>
+<title><anchor id="GnomeFontPreviewClass"/>GnomeFontPreviewClass</title>
+<indexterm><primary>GnomeFontPreviewClass</primary></indexterm><programlisting>typedef struct _GnomeFontPreviewClass GnomeFontPreviewClass;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontDialog-struct"/>struct GnomeFontDialog</title>
-<indexterm><primary>GnomeFontDialog</primary></indexterm><programlisting>struct GnomeFontDialog;</programlisting>
+<title><anchor id="GnomeFontDialog-struct"/>GnomeFontDialog</title>
+<indexterm><primary>GnomeFontDialog</primary></indexterm><programlisting>typedef struct _GnomeFontDialog GnomeFontDialog;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontDialogClass"/>struct GnomeFontDialogClass</title>
-<indexterm><primary>GnomeFontDialogClass</primary></indexterm><programlisting>struct GnomeFontDialogClass;</programlisting>
+<title><anchor id="GnomeFontDialogClass"/>GnomeFontDialogClass</title>
+<indexterm><primary>GnomeFontDialogClass</primary></indexterm><programlisting>typedef struct _GnomeFontDialogClass GnomeFontDialogClass;</programlisting>
 <para>
 
 </para></refsect2>
@@ -315,7 +315,7 @@ GnomeFontDialog implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -330,7 +330,7 @@ GnomeFontDialog implements
 <varlistentry><term><parameter>fontsel</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -344,7 +344,7 @@ GnomeFontDialog implements
 <varlistentry><term><parameter>fontsel</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -358,7 +358,7 @@ GnomeFontDialog implements
 <varlistentry><term><parameter>fontsel</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -385,7 +385,7 @@ GnomeFontDialog implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -396,7 +396,7 @@ GnomeFontDialog implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -455,7 +455,7 @@ GnomeFontDialog implements
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -469,7 +469,7 @@ GnomeFontDialog implements
 <varlistentry><term><parameter>title</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -483,7 +483,7 @@ GnomeFontDialog implements
 <varlistentry><term><parameter>gfsd</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -497,7 +497,7 @@ GnomeFontDialog implements
 <varlistentry><term><parameter>gfsd</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

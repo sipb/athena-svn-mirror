@@ -62,7 +62,8 @@ struct _GnomePrintPreviewClass {
 void gnome_print_preview_theme_compliance (GnomePrintPreview *pp,
 					   gboolean strict);
 
-void gnome_print_preview_use_theme (gboolean theme);
+void     gnome_print_preview_set_use_theme (gboolean theme);
+gboolean gnome_print_preview_get_use_theme (void);
 
 G_END_DECLS
 

@@ -37,6 +37,7 @@
 #include <libgnomeprint/gnome-print-config.h>
 #include <libgnomeprint/private/gpa-node-private.h>
 #include <libgnomeprint/private/gpa-key.h>
+#include <libgnomeprint/gnome-print-transport.h>
 
 static void gpa_transport_selector_class_init (GPATransportSelectorClass *klass);
 static void gpa_transport_selector_init (GPATransportSelector *selector);
@@ -379,32 +380,45 @@ gpa_transport_selector_rebuild_combo (GPATransportSelector *ts)
 {
 	GtkListStore	*model;
 	GtkTreeIter	 iter;
-	GPANode *child, *next, *option = NULL;
-	guchar *name, *def = NULL;
+	GPANode *child, *next, *mod, *option = NULL;
+	guchar *mod_name, *trans_name;
 	gint pos = 0;
 	gint sel = -1;
 
 	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_OBJECT);
 	if (ts->node != NULL) {
+		guchar *def = gpa_node_get_value (ts->node);
 		option = GPA_KEY (ts->node)->option;
-		def = gpa_node_get_value (ts->node);
 		
 		for (child = gpa_node_get_child (option, NULL); child != NULL ; child = next) {
-			gtk_list_store_append (model, &iter);
-			name = gpa_node_get_value (child);
-			gtk_list_store_set (model, &iter,
-					    0, name,
-					    1, child,
-					    -1);
-			g_free (name);
-			
-			if (GPA_NODE_ID_COMPARE (child, def))
-				sel = pos;
-			
-			pos++;
+			mod = gpa_node_get_child_from_path (child, "Module");
+			if (mod != NULL) {
+				mod_name = gpa_node_get_value (mod);
+				if (gnome_print_transport_exists_by_name (mod_name)) {
+					trans_name = gpa_node_get_value (child);
+					gtk_list_store_append (model, &iter);
+					gtk_list_store_set (model, &iter,
+							    0, trans_name,
+							    1, child,
+							    -1);
+					if (GPA_NODE_ID_COMPARE (child, def))
+						sel = pos;
+					pos++;
+					g_free (trans_name);
+				}
+				g_free (mod_name);
+			}
+
 			next = gpa_node_get_child (option, child);
 			gpa_node_unref (child);
 		}
+
+		if (sel == -1) {
+			g_warning ("gpa_transport_selector_rebuild_combo, could not set value of %s to %s",
+				   gpa_node_id (option), def);
+			sel = 0;
+		}
+
 		if (def)
 			g_free (def);
 	}
@@ -413,12 +427,7 @@ gpa_transport_selector_rebuild_combo (GPATransportSelector *ts)
 		gtk_widget_hide (ts->combo);
 	else
 		gtk_widget_show (ts->combo);
-		if (sel == -1) {
-			g_warning ("rebuild_menu_cb, could not set value "
-				   "of %s to %s",
-				   gpa_node_id (option), def);
-			sel = 0;
-		}
+
 	ts->updating = TRUE;
 	gtk_combo_box_set_model (GTK_COMBO_BOX (ts->combo), GTK_TREE_MODEL (model));
 	if (pos > 0)

@@ -429,9 +429,14 @@ clear_val (GtkObject *object, void **val)
 }
 
 void
-gnome_print_preview_use_theme (gboolean theme)
+gnome_print_preview_set_use_theme (gboolean theme)
 {
 	use_theme = theme;
+}
+gboolean
+gnome_print_preview_get_use_theme ()
+{
+	return use_theme;
 }
 
 /**
