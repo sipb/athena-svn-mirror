@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.16 1991-09-23 10:59:54 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.17 1992-01-27 07:11:27 probe Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -24,6 +24,10 @@
 #define DISABLE_AUTO_REP
 #endif
 
+#if defined(_IBMR2)
+#include <sys/id.h>
+#endif
+
 #define OWL_AWAKE 0
 #define OWL_SLEEPY 1
 
@@ -37,6 +41,8 @@
 #define REACTIVATING 2
 
 #define DAEMON 1	/* UID for scripts to run as */
+
+gid_t def_grplist[] = { 101 };			/* default group list */
 
 /*
  * Function declarations.
@@ -744,6 +750,7 @@ Cardinal *n;
 
     unsetenv("XAPPLRESDIR");
     unsetenv("XENVIRONMENT");
+
     setenv("PATH", defaultpath, 1);
     setenv("USER", "daemon", 1);
     setenv("SHELL", "/bin/sh", 1);
@@ -758,7 +765,15 @@ Cardinal *n;
     setenv("hosttype", "decmips", 1);
 #endif
 
-    setreuid(DAEMON, DAEMON);
+    setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
+
+#if defined(_AIX) && defined(_IBMR2)
+    setgidx(ID_SAVED|ID_REAL|ID_EFFECTIVE, def_grplist[0]);
+    setuidx(ID_LOGIN|ID_SAVED|ID_REAL|ID_EFFECTIVE, DAEMON);
+#else
+    setgid(def_grplist[0]);
+    setuid(DAEMON);
+#endif
     execv("/bin/sh", argv);
     fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
     _exit(3);
@@ -1188,7 +1203,7 @@ static void catch_child()
     } else if (pid == attachhelp_pid) {
 	attachhelp_state = status.w_retcode;
     } else if (pid == quota_pid) {
-	/* don't need to do anything here */
+	quota_pid = 0;
     } else
       fprintf(stderr, "XLogin: child %d exited with status %d\n",
 	      pid, status.w_retcode);
