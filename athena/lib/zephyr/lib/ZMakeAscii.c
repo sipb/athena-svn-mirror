@@ -10,14 +10,14 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.1 1987-06-23 16:14:32 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.2 1987-06-23 17:32:39 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
 Code_t ZMakeAscii(ptr,len,field,num)
-	char **ptr;
+	char *ptr;
 	int len;
 	char *field;
 	int num;
@@ -29,17 +29,15 @@ Code_t ZMakeAscii(ptr,len,field,num)
 			if (len < 3+(i!=0))
 				return (ZERR_FIELDLEN);
 			sprintf(*ptr,"%s0x",i?" ":"");
-			*ptr += 2+(i!=0);
+			ptr += 2+(i!=0);
 			len -= 2+(i!=0);
 		} 
 		if (len < 3)
 			return (ZERR_FIELDLEN);
-		sprintf(*ptr,"%02x",field[i]);
-		*ptr += 2;
+		sprintf(ptr,"%02x",field[i]);
+		ptr += 2;
 		len -= 2;
 	}
 
-	(*ptr)++;
-	
 	return (ZERR_NONE);
 }
