@@ -30,7 +30,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: install.c,v 1.6 1999-11-22 15:59:33 danw Exp $";
+static const char rcsid[] = "$Id: install.c,v 1.7 2004-04-30 04:37:41 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -65,9 +65,8 @@ int utimes(const char *path, const struct timeval *times);
 static uid_t uid;
 static gid_t gid;
 
-static int docopy = 0;
 static int dostrip = 0;
-static int domove = 0;
+static int dodir = 0;
 static int dotime = 0;
 static mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 
@@ -81,6 +80,7 @@ static void copy(int from_fd, const char *from_name, int to_fd,
 static void strip(const char *name);
 static int isnumber(const char *s);
 static int atoo(const char *str);
+static int mkdirp(char *dir, int mode);
 static void bad(const char *head, const char *str);
 static void usage(void);
 
@@ -131,10 +131,9 @@ int main(int cmdline_argc, char **cmdline_argv)
       switch(ch)
 	{
 	case 'c':
-	  docopy = 1;
 	  break;
 	case 'd':
-	  domove = 1;
+	  dodir = 1;
 	  break;
 	case 'g':
 	  group = optarg;
@@ -158,19 +157,8 @@ int main(int cmdline_argc, char **cmdline_argv)
     }
   argc -= optind;
   argv += optind;
-  if (argc < 2)
+  if (!dodir && argc < 2)
     usage();
-
-  /* Check for multiple specifications of copy and move. */
-  if (domove && docopy)
-    {
-      fprintf(stderr, "install: cannot specify both -c and -d\n");
-      return 1;
-    }
-
-  /* If neither copy nor move specified, do copy. */
-  if (!domove)
-    docopy = 1;
 
   /* Get group and owner ids. */
   if (owner)
@@ -224,6 +212,50 @@ int main(int cmdline_argc, char **cmdline_argv)
     gid = -1;
 
   to_name = argv[argc - 1];
+
+  if (dodir)
+    {
+      if (mkdirp(to_name, 0777) < 0) 
+	{
+	  if (errno != EEXIST)
+	    {
+	      fprintf(stderr, "install: mkdir: %s: %s\n", to_name, strerror(errno));
+	      return -1;
+	    }
+	}
+
+      if (stat(to_name, &to_sb) < 0)
+	{
+	  fprintf(stderr, "install: stat: %s: %s\n", to_name, strerror(errno));
+	  return -1;
+	}
+
+      if (!S_ISDIR(to_sb.st_mode))
+	{
+	  fprintf(stderr, "install: %s is not a directory\n", to_name);
+	  return -1;
+	}
+
+      if (chmod(to_name, mode) < 0)
+	{
+	  fprintf(stderr, "install: chmod: %s: %s\n", to_name, strerror(errno));
+	  return -1;
+	}
+
+      if (uid != -1 || gid != -1)
+	{
+	  uid = (uid != -1) ? uid : to_sb.st_uid;
+	  gid = (gid != -1) ? gid : to_sb.st_gid;
+	  if (chown(to_name, uid, gid) < 0)
+	    {
+	      fprintf(stderr, "install: chown: %s: %s\n", to_name, strerror(errno));
+	      return -1;
+	    }
+	}
+
+      return 0;
+    }
+
   no_target = stat(to_name, &to_sb);
   if (!no_target && S_ISDIR(to_sb.st_mode))
     {
@@ -322,8 +354,6 @@ static void install(const char *from_name, const char *to_name, int isdir)
       close(to_fd);
       if (dostrip)
 	strip(pathbuf);
-      if (!docopy)
-	unlink(from_name);
     }
   if (dotime)
     {
@@ -417,4 +447,29 @@ static void usage(void)
   fputs("usage: install [-cds] [-g group] [-m mode] [-o owner]"
 	" file1 file2;\n\tor file1 ... fileN directory\n", stderr);
   exit(1);
+}
+
+static int mkdirp(char *dir, int mode)
+{
+  int err;
+  char *slash;
+
+  if (mkdir(dir, mode) == 0)
+    return 0;
+
+  if (errno != ENOENT)
+    return -1;
+
+  slash = strrchr(dir, '/');
+  if (slash == NULL)
+    return -1;
+ 
+ *slash = '\0';
+  err = mkdirp(dir, 0777);
+  *slash = '/';
+
+  if (err)
+    return err;
+
+  return mkdir(dir, mode);
 }

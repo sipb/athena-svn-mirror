@@ -1,4 +1,4 @@
-.\" $Id: install.1,v 1.1 1996-12-16 08:28:08 ghudson Exp $
+.\" $Id: install.1,v 1.2 2004-04-30 04:37:41 zacheiss Exp $
 .\"
 .\" Copyright (c) 1987 Regents of the University of California.
 .\" All rights reserved.
@@ -36,9 +36,11 @@ install \- install binaries
 .SH SYNOPSIS
 .B install
 [
-.B \-c|\-d
+.B \-c 
 ] [
-.B \-m
+.B \-d 
+] [ 
+.B \-m 
 mode ] [
 .B \-o
 owner ] [
@@ -47,14 +49,16 @@ group ] [
 .B \-s
 ] file1 file2; or file1 ... fileN directory
 .SH DESCRIPTION
-The file(s) are copied (or moved if the \fB-d\fP option is specified)
-to the target file or directory.  If the destination is a directory, then
-the \fIfile\fP is moved into \fIdirectory\fP with its original file-name.
-If the target file already exists, it is replaced.
+The file(s) are copied to the target file or directory.  If the
+destination is a directory and the -d flag is given, the directory is
+created.  Otherwise, the \fIfile\fP is moved into \fIdirectory\fP with 
+its original file-name. If the target file already exists, it is replaced.
 .PP
 The \fB-c\fP option is present for compatibility only; it has no
-effect.  However, you may not specify both \fB-c\fP and \fB-d\fP at
-the same time.
+effect.
+.PP
+The \fB-d\fP option causes all components of the specified directory to
+be created if they do not already exist.
 .PP
 The mode is set to 755; the \fB-m\fP option may be used to specify
 an alternate mode.
