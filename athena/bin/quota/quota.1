@@ -19,7 +19,8 @@ the given user or group (See \fBPERMISSIONS\fP below).
 those filesystems that the user has attached and to which the user has
 write access at the filesystem's top-level directory.  Without any
 options, \fIquota\fP displays warnings about those filesystems where
-usage is over quota.
+usage is over quota.  With AFS filesystems, warnings are displayed when
+90% of the volume's quota has been reached.
 
 .SH OPTIONS
 
