@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zwrite.c,v 1.49 1999-08-13 00:19:42 danw Exp $
+ *	$Id: zwrite.c,v 1.50 2002-05-22 15:13:51 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static const char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.49 1999-08-13 00:19:42 danw Exp $";
+static const char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.50 2002-05-22 15:13:51 ghudson Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -348,7 +348,7 @@ send_off(notice, real)
 
     success = 0;
 	
-    for (i=0;i<nrecips || !nrecips;i++) {
+    for (i=0;i<nrecips || i==0;i++) {
 	if (realm) {
 	    sprintf(realm_recip, "%s@%s", (nrecips) ? recips[i] : "", realm);
 	    notice->z_recipient = realm_recip;
@@ -439,8 +439,6 @@ send_off(notice, real)
 	else
 	    printf("Internal failure - illegal message field in server response\n");
 	ZFreeNotice(&retnotice);
-	if (!nrecips)
-	    break;
     }
     if (!success)
 	exit(1);
