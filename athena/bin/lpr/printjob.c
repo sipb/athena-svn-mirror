@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.14 1990-08-25 14:08:36 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.15 1990-11-07 14:16:56 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.14 1990-08-25 14:08:36 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.15 1990-11-07 14:16:56 epeisach Exp $";
 #endif lint
 
 /*
@@ -323,6 +323,8 @@ printit(file)
 		strcpy(fonts[i], ifonts[i]);
 	sprintf(&width[2], "%d", PW);
 	strcpy(indent+2, "0");
+	qacct[2] = NULL;
+	jobname[0] = '\0';
 
 	/*
 	 *      read the control file for work to do
@@ -393,7 +395,7 @@ printit(file)
 		case 'A':   /* For old client compatibility */
 	        case 'Q':
 			if (line[1] != '\0') {
-			    strcat(qacct, line+1);
+			    strcpy(&qacct[2], line+1);
 			    account_flag = 1;
 			}
 			continue;
