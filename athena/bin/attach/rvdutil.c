@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.1 1990-07-16 08:01:14 jfc Exp $";
+static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.2 1991-01-22 16:18:48 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -132,8 +132,6 @@ avail_drive(hostaddr, pack, drive)
     for (i=0, d=drives; i < lstats.num_drives; i++, d++) {
 	if (d->vd_device.state == OFF ||
 	    d->vd_device.state == UNUSED) {
-	    if (debug_flag)
-		printf("Found free drive %d\n", i);
 	    *drive = i;
 	    return (SUCCESS);
 	}
@@ -150,6 +148,9 @@ rvd_spindown(drive)
 {
     rvd_open();
 
+    if (debug_flag)
+	    printf("Spinning down drive %d\n", drive);
+    
     if (setjmp(rvd_timeout)) {
 	    if (debug_flag)
 		    printf("rvd_spindown: timed out");
