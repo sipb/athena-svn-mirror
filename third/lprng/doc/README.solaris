@@ -1,0 +1,595 @@
+         Installing LPRng on Solaris and System V
+           Updated: Fri Dec 27 06:08:26 PST 1996
+           Updated: Mon Sep 15 11:13:08 PDT 1997
+              Patrick Powell
+
+The LPRng system now simulates the Solaris/SystemV lp, lpstat,
+and cancel commands.  It does a good enough job that you can
+probably replace them by these versions.
+Read the directions below on how to modify the rc startup
+scripts.  You should remove the Solaris/System V printer
+startup script - i.e. -
+        rm /etc/rc2.d/S80lp
+and replace it with the lpd startup script below.  You might
+also want to rename the lp, lpstat, etc., scripts as well
+and create symbolic links to lpr and lpq.
+
+Also, see the very interesting shell script by Bertrand Decouty
+that does all of the normal installation and more.  Comments
+are en Francais,  but the code is clear enough that you don't
+need them.
+
+Subject: Re: How to installed LPRng-2.3.0 into Solaris 2.5
+To: plp@iona.com
+Date: Mon, 27 May 1996 00:05:17 -0400 (EDT)
+From: edan@mtu.edu (Edan Idzerda)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: majordomo-owner@iona.com
+Precedence: bulk
+Reply-To: plp@iona.com
+Status: RO
+
+> lpd: Fatal error - Another print spooler is using TCP printer port
+
+I haven't had time to clean this stuff up, but below are the notes I
+wrote for installing LPRng on a Solaris 2.x system.  I've also
+included a sample /etc/init.d/lpd script at the end, but I've
+had some quirky problems with it that I haven't had time to look
+at.  (Basically, the ps line somethings grabs more than one PID,
+it's probably something dumb.)
+
+I hope this helps someone, somewhat.
+
+- edan
+
+-- README.solaris
+
+When Solaris 2 changes init levels, it runs scripts in the /etc/rc?.d
+directories giving them 'start' or 'stop' commands.
+
+Remove the Solaris lp start up by removing the link in rc2.d:
+
+    # rm /etc/rc2.d/S80lp
+
+Then hard link your lpd script in the rc?.d directories like so:
+
+    # ln /etc/init.d/lpd /etc/rc0.d/K20lpd
+    # ln /etc/init.d/lpd /etc/rc2.d/K20lpd
+    # ln /etc/init.d/lpd /etc/rc2.d/S80lpd
+
+* Note: I really recommend rebooting at this point,  as there
+*  are some strange things that Solaris does with printing that
+*  may cause problems - Patrick Powell
+
+If you don't want to reboot, you may need to use the nlsadmin(1M)
+command to remove the network listeners on your printer port.  Even
+after doing an lpshut, there is still a little devil hanging on.
+
+For instance, on our systems it looked like so:
+
+# nlsadmin -v tcp
+lpd     \x00020203000000000000000000000000      ENABLED         NORPC   root   NOMODULES        /var/spool/lp/fifos/listenBSD   #  
+0       \x00020ACE000000000000000000000000      ENABLED         NORPC   root   NOMODULES        /usr/lib/saf/nlps_server        #  
+lp      NOADDR  ENABLED         NORPC   root    NOMODULES       /var/spool/lp/fifos/listenS5    #  
+
+To remove them:
+
+    # nlsadmin -r lpd tcp
+    # nlsadmin -r lp tcp
+
+You can then start lpd by typing 
+
+    # /etc/init.d/lpd start
+
+
+-- /etc/init.d/lpd
+#!/bin/sh
+#
+# LPD control script
+# 
+# hacked by edan idzerda (edan@mtu.edu) 24 Apr 96
+# Update by Patrick Powell Fri Dec 27 06:18:31 PST 1996
+#
+
+#HOSTNAME=`/usr/bin/hostname`
+#LOCKFILE=/var/spool/lpd/lpd.lock.${HOSTNAME}.printer
+
+#if [ -f $LOCKFILE ]; 
+#then
+#	PID=`cat $LOCKFILE`
+#	RUNNING=`/usr/bin/ps -p $PID | egrep lpd`
+#fi
+
+LPD=/usr/local/bin/lpd
+LPC=/usr/local/bin/lpc
+
+PID=`${LPC} lpd | awk '{ pid = ($3+0); if( pid ) print pid;  }' `
+
+echo PID "$PID"
+state=$1
+
+case $state in
+
+'start')
+
+	if [ -z "$PID" ];
+	then
+		echo LPRng print services starting.
+		[ -f $LPD ] && $LPD
+	else
+		echo LPRng print services already started.
+	fi
+	;;
+'stop')
+	if [ -z "$PID" ];
+	then
+		echo LPRng print services already stopped.
+	else
+		echo Stopping LPRng print services.
+		/usr/bin/kill $PID
+	fi
+	;;
+*)
+	echo "Usage: $0 { start | stop }"
+esac
+
+---------------------------------------------------
+
+Date: Mon, 08 Sep 1997 15:14:11 +0200
+From: Bertrand Decouty <Bertrand.Decouty@irisa.fr>
+Organization: IRISA-INRIA, Campus de Beaulieu, 35042 Rennes Cedex, FRANCE
+To: lprng@iona.com, Russell D Murphy <rdmurphy@cashel.econ.vt.edu>
+Subject: Re: [LPRng] Solaris 2.5.1, LPRng 3.2.3
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Ivan Popov wrote:
+> 
+> On Fri, 5 Sep 1997, Russell D. Murphy Jr. wrote:
+> 
+> > cashel [rdmurphy]% lpq -l
+> > UX:lpq: ERROR: Can't establish contact with the LP print service.
+> >        TO FIX: Either the LP print service has stopped,
+> >                or all message channels are busy. If the
+> >                problem continues, get help from your
+> >                system administrator.
+> >
+> > I've tried everything I can think of (reading README.*, re-installing,
+> > . . .), but I've missed something.
+> >
+> > Any suggestions?
+> 
+> Try to call it by full path name (to be sure you are not calling another
+> lpq)
+
+Good answer! Of course, you (Russell D Murphy) are calling Sun
+/usr/ucb/lpq, NOT LPRng lpq!!
+
+You MUST replace any Sun original
+lpr/lprm/lpq/lpc/lpd/lp/lpstat/cancel/lpsched for LPRng to work
+perfectly.
+
+I have put in ftp://ftp.irisa.fr/pub/install-LPRng the installation
+script i am using her, on each of our 400 Sun's using Solaris (i
+have another script, much more simpler for SunOS). Of course, you
+will need to tweak it accordingly to your installation, and probably
+delete any unneeded stuff (like the one dealing with printer server
+and crontab).
+
+Have a look into it, i believe that all save/install is inside,
+even old man pages are suppressed. Of course, comments are ... in
+french :-)
+
+Any comment is welcome.
+
+BD
+-- 
+| Bertrand DECOUTY              | mailto:Bertrand.Decouty@irisa.fr   |
+| IRISA - INRIA (Atelier)       | PHONE : 0299847346 / 0299847100    |
+| Campus de Beaulieu            | FAX   : +33 (0) 299847171          |
+| F-35042 Rennes Cedex - FRANCE | http://www.irisa.fr/               |
+
+#!/bin/sh
+# This is a shell archive (produced by GNU sharutils 4.2).
+# To extract the files from this archive, save it to some FILE, remove
+# everything before the `!/bin/sh' line above, then type `sh FILE'.
+#
+# Made on 1997-09-15 11:12 PDT by <papowell@astart4.astart.com>.
+# Source directory was `/tmp'.
+#
+# Existing files will *not* be overwritten unless `-c' is specified.
+#
+# This shar contains:
+# length mode       name
+# ------ ---------- ------------------------------------------
+#  13910 -rw-rw-r-- install-LPRng.sh
+#
+save_IFS="${IFS}"
+IFS="${IFS}:"
+gettext_dir=FAILED
+locale_dir=FAILED
+first_param="$1"
+for dir in $PATH
+do
+  if test "$gettext_dir" = FAILED && test -f $dir/gettext \
+     && ($dir/gettext --version >/dev/null 2>&1)
+  then
+    set `$dir/gettext --version 2>&1`
+    if test "$3" = GNU
+    then
+      gettext_dir=$dir
+    fi
+  fi
+  if test "$locale_dir" = FAILED && test -f $dir/shar \
+     && ($dir/shar --print-text-domain-dir >/dev/null 2>&1)
+  then
+    locale_dir=`$dir/shar --print-text-domain-dir`
+  fi
+done
+IFS="$save_IFS"
+if test "$locale_dir" = FAILED || test "$gettext_dir" = FAILED
+then
+  echo=echo
+else
+  TEXTDOMAINDIR=$locale_dir
+  export TEXTDOMAINDIR
+  TEXTDOMAIN=sharutils
+  export TEXTDOMAIN
+  echo="$gettext_dir/gettext -s"
+fi
+touch -am 1231235999 $$.touch >/dev/null 2>&1
+if test ! -f 1231235999 && test -f $$.touch; then
+  shar_touch=touch
+else
+  shar_touch=:
+  echo
+  $echo 'WARNING: not restoring timestamps.  Consider getting and'
+  $echo "installing GNU \`touch', distributed in GNU File Utilities..."
+  echo
+fi
+rm -f 1231235999 $$.touch
+#
+if mkdir _sh00406; then
+  $echo 'x -' 'creating lock directory'
+else
+  $echo 'failed to create lock directory'
+  exit 1
+fi
+# ============= install-LPRng.sh ==============
+if test -f 'install-LPRng.sh' && test "$first_param" != -c; then
+  $echo 'x -' SKIPPING 'install-LPRng.sh' '(file already exists)'
+else
+  $echo 'x -' extracting 'install-LPRng.sh' '(binary)'
+  sed 's/^X//' << 'SHAR_EOF' | uudecode &&
+begin 600 install-LPRng.sh
+M(R$O8FEN+W-H"@HC('-C<FEP="!D92!R96-O<&EE(&1E<R!B:6YA:7)E<R!U
+M=&EL97,@9&%N<R`O=&UP(&5T(&1E(&-RZ6%T:6]N(&1U(`HC('-C<FEP="!D
+M)VEN<W1A;&QA=&EO;B!D86YS("]U<W(O8FEN(.`@97CI8W5T97(@96X@=&%N
+M="!Q=64@<F]O="X*"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,*(R!E<W0M;VX@8FEE;B!E;B!3
+M;VQA<FES(#(N>"`_"FEF(%L@(F!U;F%M92`M<F`B("UL="`U(%T[('1H96X*
+M"65C:&\@(@<A(2$@4&%S('-O=7,@4V]L87)I<R$@1.ES;VSI+BXN(CL@97AI
+M="`Q"F9I"@I0051(/2(D4$%42#HO=7-R+W5C8B([(&5X<&]R="!0051("2,@
+M<&]U<B!W:&]A;6D*"B,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(PHC(&5S="UO;B!R;V]T(#\*:68@
+M6R`B8'=H;V%M:6`B("$](")R;V]T(B!=.R!T:&5N"@EE8VAO("('5F]U<R!N
+M)^IT97,@<&%S(')O;W0N+BX@26YS=&%L;&%T:6]N(&EM<&]S<VEB;&4N+B!$
+MZ7-O;.DN+B(*"65X:70@,0IF:0H*(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C"@I,3T=&24Q%/2]T
+M;7`O;&]G+6EN<W1A;&PM3%!2;F=?8&1A=&4@*R59+25M+25D8`IC<"`O9&5V
+M+VYU;&P@)$Q/1T9)3$4[(&-H;6]D(&$K<B`D3$]'1DE,10IE8VAO("(J*BH@
+M1.EB=70@9&4@;"=I;G-T86QL871I;VX@9&4@3%!2;F<@<W5R(&!U;F%M92`M
+M;F`@*BHJ(@IE8VAO("(J*BH@8&1A=&5@("HJ*B(*96-H;R`B*BHJ(%1O=7,@
+M;&5S(&UE<W-A9V5S(&ER;VYT(&1A;G,@)$Q/1T9)3$4@*BHJ(@IE8VAO("(J
+M*BH@3"=I;G-T86QL871I;VX@9'5R92!E;G9I<F]N(#$@;6EN=71E("HJ*B(*
+M"F5X96,@/CXD3$]'1DE,12`R/B8Q"F5C:&\@(BHJ*B!$Z6)U="!D92!L)VEN
+M<W1A;&QA=&EO;B!D92!,4%)N9R!S=7(@8'5N86UE("UN8"`J*BHB"F5C:&\@
+M(BHJ*B!@9&%T96`@*BHJ(@IE8VAO("(J*BH@8'5N86UE("UA8"`J*BHB"F5C
+M:&\@(BHJ*B!U=&EL:7-A=&5U<G,Z("HJ*B([('=H;PDC('!O=7(@:6YF;RXN
+M+@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,*(R!P<F]CZ61U<F4@9&4@8W+I871I;VX@9'4@<V-R
+M:7!T(&AO=7)L>2YC=&P*(PIH;W5R;'D@*"D@>PH)8V%T(#X@+W5S<B]S:&%R
+M92]H;W5R;'DN8W1L(#P\14]&"B,A+V)I;B]S:`HC"B,@:&]U<FQY+F-T;"`Z
+M(')E8VAA<F=E<B!L92!H86YD;&5R(&0G97)R975R<R!P;W-T<V-R:7!T+@HC
+M"F5C:&\@(BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ
+M*BHJ*BHJ*BHJ*BHJ*BHJ(@I,0U]424U%/69R.R!E>'!O<G0@3$-?5$E-12`C
+M('!O=7(@879O:7(@;&$@9&%T92!E;B!F<F%N8V%I<R$*96-H;R`B:&]U<FQY
+M+F-T;"`M(%Q@9&%T95Q@(@IE8VAO("(]/3T]/3T]/3T](@IF;W(@24U0(&EN
+M("104DE.5$524PID;PHC"@DO=7-R+V)I;B]L<'(@+5!<)'M)35!]("UH("]U
+M<W(O;&]C86PO;&EB+VQW+V5H86YD;&5R+G!S"@EE8VAO(")<)$E-4#H@17)R
+M;W(@:&%N9&QE<B!E;G9O>>DB"F1O;F4*14]&"@EC:&UO9"!A*W(L;RUW("]U
+M<W(O<VAA<F4O9&%I;'DN8W1L"@EE8VAO("(@("`@+W5S<B]S:&%R92]H;W5R
+M;'DN8W1L(&EN:71I86QI<^DN(@I](",@96YD(&]F(")H;W5R;'DB"B,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(PH*(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C"B,@<')O8^ED=7)E(&1E(&-RZ6%T:6]N
+M(&1U('-C<FEP="!D86EL>2YC=&P*(PID86EL>2`H*2!["@EC870@/B`O=7-R
+M+W-H87)E+V1A:6QY+F-T;"`\/$5/1@HC(2]B:6XO<V@*(PHC(&1A:6QY+F-T
+M;"`*(R`]/3T]/3T]/3T*(R!V97)S:6]N(%-O;&%R:7,N($UO9&EF:65R(&QE
+M(&YO;2!D97,@:6UP<FEM86YT97,@9^ERZ65S+"!D86YS(&QA(&QI9VYE(")F
+M;W(@24U0(&EN+BXN(@HC"G5M87-K(#`P-PHC"F5C:&\@(BHJ*BHJ*BHJ*BHJ
+M*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ(@I,
+M0U]424U%/69R.R!E>'!O<G0@3$-?5$E-12`C('!O=7(@879O:7(@;&$@9&%T
+M92!E;B!F<F%N8V%I<R$*96-H;R`B9&%I;'DN8W1L("T@7&!D871E7&`B"F5C
+M:&\@(CT]/3T]/3T]/2(*9F]R($E-4"!I;B`D4%))3E1%4E,*9&\*(PHC"71O
+M=6-H("]V87(O<W!O;VPO7"1)35`O7"1[24U0?5]L;V<@+W9A<B]S<&]O;"]<
+M)$E-4"]<)'M)35!]7VQO9RXQ+F=Z"@DO=7-R+VQO8V%L+V)I;B]G;G4O9WII
+M<"`M9B`O=F%R+W-P;V]L+UPD24U0+UPD>TE-4'U?;&]G"@EM=B`O=F%R+W-P
+M;V]L+UPD24U0+UPD>TE-4'U?;&]G+C$N9WH@+W9A<B]S<&]O;"]<)$E-4"]<
+M)'M)35!]7VQO9RXR+F=Z"@EM=B`O=F%R+W-P;V]L+UPD24U0+UPD>TE-4'U?
+M;&]G+F=Z("`@+W9A<B]S<&]O;"]<)$E-4"]<)'M)35!]7VQO9RXQ+F=Z"@EC
+M<"`O9&5V+VYU;&P)+W9A<B]S<&]O;"]<)$E-4"]<)'M)35!]7VQO9PH)+W5S
+M<B]B:6XO8VAO=VX@9&%E;6]N("]V87(O<W!O;VPO7"1)35`O7"1[24U0?5]L
+M;V<@+W9A<B]S<&]O;"]<)$E-4"]<)'M)35!]7VQO9RXQ+F=Z("]V87(O<W!O
+M;VPO7"1)35`O7"1[24U0?5]L;V<N,BYG>@H)+W5S<B]B:6XO8VAM;V0@82MR
+M("]V87(O<W!O;VPO7"1)35`O7"1[24U0?5]L;V<*(R!U;B!P974@9&4@;>EN
+M86=E(0H)1DE,13TB+W9A<B]S<&]O;"]<)$E-4"]C;W)E(@H)6R`M9B`@7"1&
+M24Q%(%T@)B8@<FT@7"1&24Q%("8F(&5C:&\@(EPD1DE,13H@<W5P<')E<W-I
+M;VXB"@H)1DE,13U<8&QS("]V87(O<W!O;VPO7"1)35`O0F8J("]V87(O<W!O
+M;VPO7"1)35`O:&8J(#(^+V1E=B]N=6QL(%Q@"@EI9B!;("$@+7H@(EPD1DE,
+M12(@73L@=&AE;@H)"69O<B!&24-((&EN(%PD1DE,10H)"61O"@D)"7)M(%PD
+M1DE#2"`F)B!E8VAO(")<)$9)0T@Z('-U<'!R97-S:6]N(@H)"61O;F4*"65L
+M<V4*"0EE8VAO(")2:65N(.`@<W5P<')I;65R(&1A;G,@+W9A<B]S<&]O;"]<
+M)$E-4"`A(@H)9FD*9&]N90I;("UF("]U<W(O<VAA<F4O:&]U<FQY+FQO9R!=
+M("8F(&-P("]D978O;G5L;"`O=7-R+W-H87)E+VAO=7)L>2YL;V<*(R!.;W5V
+M96QL97,@:6UP<FEM86YT97,_/PIL<&,@+58@<F5R96%D(&%L;`HC(&WI;F%G
+M92!D86YS(&QE<R!V:65U>"!F:6-H:65R<PIC:&5C:W!C("UF("UR("U!(#)$
+M"D5/1@H)8VAM;V0@82MR+&\M=R`O=7-R+W-H87)E+V1A:6QY+F-T;`H)96-H
+M;R`B("`@("]U<W(O<VAA<F4O9&%I;'DN8W1L(&EN:71I86QI<^DN(@D*?2`C
+M(&5N9"!O9B`B9&%I;'DB('!R;V-E9'5R90H*(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C"B,@0VAO
+M:7@@9'4@<NEP97)T;VER92!S;W5R8V4@9&5S(&)I;F%I<F5S"FEF(%L@(2`M
+M9B`N+VQP<B!=.R!T:&5N"@E,4%).1STO=7-R+VQO8V%L+VQI8B],4%)N9R]B
+M:6X)(R!RZ6;I<F5N8V4@9&4@3%!2;F<*"6-D("1,4%).1PIE;'-E"@E,4%).
+M1SU@<'=D8`IF:0IE8VAO("(J*BH@4NEP97)T;VER92!S;W5R8V4@9&5S(&)I
+M;F%I<F5S.B`D3%!23D<B"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,*1$535#TO=7-R+V)I;@I0
+M4D<Q/2)L<'(@;'!Q(&QP8R!L<&0@;'!R;2!C:&5C:W!C(@I04D<R/2)L<"!L
+M<'-T870@8V%N8V5L(@H*(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C"0HC(&%R<F5T(&1E(&QP<V-H
+M960@/3X@+W5S<B]L:6(O;'!S:'5T"FEF(%L@(2`M>B`B8'!S("UE9B!\(&=R
+M97`@;'!S8VAE9"!\(&=R97`@+78@9W)E<&`B(%T[('1H96X*"65C:&\@(BHJ
+M*B!!<G+J="!D92!L<'-C:&5D(B`F)B!S:"`O971C+VEN:70N9"]L<"!S=&]P
+M"F5L<V4*"65C:&\@(BHJ*B!L92!P<F]C97-S=7,@;'!S8VAE9"!N92!S96UB
+M;&4@<&%S(&5X:7-T97(N+B(*9FD*"B,@87)R970@9&4@;'!D("AA=2!C87,@
+M;_DN+BXI+B!);"!F875T(&QE(&9A:7)E('1O=70@9&4@<W5I=&4L(&%U(&-A
+M<R!O^0HC(&]N(&UO9&EF:65R86ET(&QE(&)I;F%I<F4@*'5P9W)A9&4@9&4@
+M=F5R<VEO;BXN*0HC(`II9B!;("$@+7H@(F!P<R`M968@?"!G<F5P(&QP9"!\
+M(&=R97`@+78@9W)E<&`B(%T[('1H96X*"65C:&\@(BHJ*B!!<G+J="!D92!L
+M<&0B("`@("`F)B!S:"`O971C+VEN:70N9"]L<&0@<W1O<`IF:0H*(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C"0IF;W(@0DE.(&EN("104D<Q"F1O"@EI9B!;("UF("1"24X@73L@
+M=&AE;@H)"6-P("1"24X@)$1%4U0@)B8@96-H;R`B*BHJ("1"24X@<F5C;W!I
+MZ2!D86YS("1$15-4(@H)"6-H;6]D(&$]<G@L=2MW("1$15-4+R1"24X*"65L
+M<V4*"0EE8VAO("(A(2$@8'!W9&`O)$))3B!N)V5X:7-T92!P87,A(2$@4&%S
+M(&1E(&UI<V4@X"!J;W5R+BXN(@H)9FD*9&]N90H*(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C"0HC
+M(&]N('-A=79E9V%R9&4@;'`L(&QP<W1A="!D)V]R:6=I;F4@<74G;VX@<F5M
+M<&QA8V4@<&%R('5N(.EQ=6EV86QE;G0*(R!L97,@8V]M;6%N9&5S(&QP861M
+M:6XO;'!S>7-T96TO;'!U<V5R<R]L<&UO=F4O;'!S:'5T("AD86YS("]U<W(O
+M<V)I;@HC(&%V96,@=6X@;&EE;B#@('!A<G1I<B!D92`O=7-R+VQI8BD@;F4@
+M<V]N="!P87,@=&]U8VCI<R`M($$@1D%)4D4@/S\*"F9O<B!"24X@:6X@)%!2
+M1S(*9&\*("`@("`@("!I9B!;("$@+68@)$1%4U0O)$))3BYO<FEG(%T[('1H
+M96X*("`@("`@("`@("`@("`@(&UV("1$15-4+R1"24X@)$1%4U0O)$))3BYO
+M<FEG("8F(&5C:&\@(BHJ*B`D0DE.("T^("1"24XN;W)I9R(*("`@("`@("!F
+M:0H):68@6R`M9B`D0DE.(%T[('1H96X*"2`@("`@("`@8W`@)$))3B`D1$53
+M5"`F)B!E8VAO("(J*BH@)$))3B!R96-O<&GI(&1A;G,@)$1%4U0B"@D@("`@
+M("`@(&-H;6]D(&$]<G@L=2MW("1$15-4+R1"24X*"65L<V4*"0EE8VAO("(A
+M(2$@8'!W9&`O)$))3B!N)V5X:7-T92!P87,A(2$@4&%S(&1E(&UI<V4@X"!J
+M;W5R+BXN(@H)9FD*9&]N90H*96-H;R`B*BHJ("104D<Q(&5T("104D<R(&UI
+M<R#@(&IO=7(@9&%N<R`D1$535"(*"B,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(PD*(R!O;B!S=7!P
+M<FEM92!L97,@=F5R<VEO;G,@9&%N<R`O=7-R+W5C8BP@<&]U<B#I=FET97(@
+M=&]U=&4@8V]N9G5S:6]N("AP8B!P871H*0I50T(](B]U<W(O=6-B(@I04D=5
+M0T(](FQP<B!L<&,@;'!Q(&QP<FTB"@IE8VAO("(J*BH@+W5S<B]U8V(Z('-U
+M<'!R97-S:6]N<R!D97,@=F5R<VEO;G,@0D-0(&5T(')E;7!L86-E;65N=',@
+M<&%R($Q04FYG(@IC9"`D54-"("8F(&5C:&\@(F-D("150T(B"F9O<B!"24X@
+M:6X@)%!21U5#0@ID;PH):68@6R`M9B`D0DE.(%T[('1H96X*"0EI9B!;("$@
+M+68@)$))3BYO<FEG(%T[('1H96X*"0D);78@)$))3B`D0DE.+F]R:6<@)B8@
+M96-H;R`B("`@("150T(O)$))3B`]/B`D54-"+R1"24XN;W)I9R(*"0EE;'-E
+M"@D)"7)M("1"24X@)B8@96-H;R`B("`@("150T(O)$))3B!S=7!P<FEMZ2(*
+M"0EF:0H)96QS90H)"65C:&\@(B`@("`D54-"+R1"24X@;B=E>&ES=&4@<&QU
+M<RXB"@EF:0H);&X@+7,@)$1%4U0O)$))3B`N("8F(&5C:&\@(B`@("`@)%5#
+M0B\D0DE.("T^("1$15-4+R1"24XB"F1O;F4*"B,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(PD*(R!3
+M=7!P<F5S<VEO;B!D97,@;6%N(&0G;W)I9VEN92X@"B,@4&%S(&QA('!E:6YE
+M(&1E('1R;W`@=&5S=&5R("AP87,@9"=I;G-T86QL871I;VX@9&4@<F5M<&QA
+M8V5M96YT*0IE8VAO("(J*BH@4W5P<')E<W-I;VX@9&5S(&UA;B!D97,@8V]M
+M;6%N9&5S(%5#0B`H)%!21U5#0BD@4W5N(@IC9"`O=7-R+VUA;B`F)B!E8VAO
+M(")C9"`O=7-R+VUA;B(*"F9O<B!-04X@:6X@)%!21U5#0@ID;PH)6R`M9B`N
+M+VUA;C%B+R1-04XN,6(@72`F)B!M=B`N+VUA;C%B+R1-04XN,6(@+B]M86XQ
+M8B\D34%.+C%B+F]R:6<@)B8@96-H;R`B("`@(&UA;C%B+R1-04XN,6(@/3X@
+M;6%N,6(O)$U!3BXQ8BYO<FEG(@H)6R`M9B`N+V-A=#%B+R1-04XN,6(@72`F
+M)B!M=B`N+V-A=#%B+R1-04XN,6(@+B]C870Q8B\D34%.+C%B+F]R:6<@)B8@
+M96-H;R`B("`@(&-A=#%B+R1-04XN,6(@/3X@8V%T,6(O)$U!3BXQ8BYO<FEG
+M(@ID;VYE"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,)"B,@<W5I9"!R;V]T('!O=7(@<75E(&-A
+M(&UA<F-H92!A=F5C(&QP9"!3=6Y/4RP@<V%U9B!L<&,*(V5C:&\@(BHJ*B!#
+M:&%N9V5M96YT(&1E(&UO9&4@*'4K<RD@970@<')O<')IZ71A:7)E("AR;V]T
+M+FQP*2(*(R!#2$%.1T5-14Y4("A"1"D@;&4@-R!F978@.3<L(#$X:#H@;VX@
+M<W5P<')I;64@=2MS"F5C:&\@(BHJ*B!#:&%N9V5M96YT(&1E(&UO9&4@*&$]
+M<G@L=2MW*2!E="!P<F]P<FGI=&%I<F4@*')O;W0N;'`I(@IC9"`D1$535"`F
+M)B!E8VAO(")C9"`D1$535"(*9F]R(%!21R!I;B`D4%)'54-"(&QP9`ID;PH)
+M8VAM;V0@83UR>"QU*W<@)%!21PH)8VAO=VX@<F]O="`D4%)'"@EC:&=R<"!L
+M<"`D4%)'"@EE8VAO("(@("`@)%!21R`N+BX@9F%I="(*9&]N90H*(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C"0HC(&QA;F-E;65N="!D92!L<&0@874@8F]O=`I,4$0]+V5T8R]I
+M;FET+F0O;'!D"E-(3%!$/2(D3%!23D<O;'!D+7-T87)T+G-H(@H*96-H;R`B
+M*BHJ($EN<W1A;&QA=&EO;B!D97,@<V-R:7!T<R!D92!B;V]T(@II9B!;("UF
+M("132$Q01"!=.R!T:&5N"@EI9B!;("UF("1,4$0@73L@=&AE;@H)"7)M("1,
+M4$0@("`@("`@("`@("8F(&5C:&\@(B`@("`D3%!$.B`@('-U<'!R:6WI(@H)
+M9FD*"6-P("132$Q01"`D3%!$("8F(&5C:&\@(B`@("`D3%!$.B`@(')E8V]P
+M:>DB"@EC:&UO9"!A/7)X+'4K=R`D3%!$.R!C:&]W;B!R;V]T("1,4$0[(&-H
+M9W)P('-Y<R`@)$Q01`IE;'-E"@EE8VAO("(A(2$@)%-(3%!$(&XG97AI<W1E
+M('!A<RXN+B!087,@9&4@8VAA;F=E;65N="!P;W5R("1,4$0B"F9I"@HC(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,)"B,@<W5P<')E<W-I;VX@9&5S('-C<FEP=',@;'`*"E)#3%`]
+M(B`O971C+W)C,BYD+U,X,&QP("`O971C+W)C,"YD+TLR,&QP("`O971C+W)C
+M,BYD+TLR,&QP(@IF;W(@0DE.(&EN("120TQ0"F1O"@EI9B!;("UF("1"24X@
+M73L@"@ET:&5N"@D)<FT@)$))3B`F)B!E8VAO("(@("`@)$))3CH@<W5P<')I
+M;>DB"@EF:0ID;VYE"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,)"B,@:6YS=&%L;&%T:6]N(&1E
+M<R!S8W)I<'1S('!O=7(@;'!D"@I20TQ04CTB+V5T8R]R8S(N9"]3.#!L<&0@
+M+V5T8R]R8S`N9"]+,C!L<&0@+V5T8R]R8S(N9"]+,C!L<&0B"F9O<B!"24X@
+M:6X@)%)#3%!2"F1O"@EI9B!;("UF("1"24X@73L@"@ET:&5N"@D)<FT@)$))
+M3B`@)B8@96-H;R`B("`@("1"24XZ('-U<'!R:6WI(@H)9FD*"6QN("US("1,
+M4$0@)$))3B`F)B!E8VAO("(@("`@)$))3CH@+BXN:6YS=&%L;.DB"F1O;F4*
+M"B,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(PD*(R!L:65N(&QP9"T^;'!S8VAE9`H*8V0@+W5S<B]L
+M:6(O;'`*:68@6R`A("UR(&QP<V-H960N;W)I9R!=.R!T:&5N"@EM=B!L<'-C
+M:&5D(&QP<V-H960N;W)I9R`F)B!E8VAO("(J*BH@;'!S8VAE9"T^;'!S8VAE
+M9"YO<FEG(@IE;'-E"@ER;2!L<'-C:&5D("8F(&5C:&\@(BHJ*B!L<'-C:&5D
+M('-U<'!R:6WI(@IF:0IL;B`M<R`O=7-R+V)I;B]L<&0@;'!S8VAE9"`F)B!E
+M8VAO("(J*BH@;'!S8VAE9#UL<&0Z(&QN("US("]U<W(O8FEN+VQP9"!L<'-C
+M:&5D(@H*(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C"0HC('-U<'!R97-S:6]N(&1E(&QA(&-R;VYT
+M86(@;'`*0U)/3DQ0/2]V87(O<W!O;VPO8W)O;B]C<F]N=&%B<R]L<`II9B!;
+M("UR("(D0U)/3DQ0(B!=.R!T:&5N"@EC<F]N=&%B("UR(&QP("8F(&5C:&\@
+M(BHJ*B!S=7!P<F5S<VEO;B!C<F]N=&%B(&QP("(*96QS90H)96-H;R`B)$-2
+M3TY,4"!N)V5X:7-T92!P87,B"F9I"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,)"B,@4D%:(&1E
+M<R!F:6-H:65R<R!U=&EL:7/I<R!P87(@;'!.970*"F-D("]V87(O;'`O;&]G
+M<PIF;W(@3%!.(&EN(&QP3F5T(&QP<V-H960@<F5Q=65S=',*9&\*"6EF(%L@
+M+7(@)$Q03B!=.R!T:&5N"@D)8W`@+V1E=B]N=6QL("1,4$X*"0EE8VAO("(J
+M*BH@4D%:("1,4$XB"@EF:0H):68@6R`M<B`D3%!.+C$@73L@=&AE;@H)"6-P
+M("]D978O;G5L;"`D3%!.+C$*"0EE8VAO("(J*BH@4D%:("1,4$XN,2(*"69I
+M"@EI9B!;("UR("1,4$XN,B!=.R!T:&5N"@D)8W`@+V1E=B]N=6QL("1,4$XN
+M,@H)"65C:&\@(BHJ*B!205H@)$Q03BXR(@H)9FD*9&]N90H*(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C"0HC($5F9F%C96UE;G0@9&5S(&IO8G,@96X@871T96YT92!D)VEM<')E
+M<W-I;VX*(R!/;B!P;W5R<F%I="!M96UE(&5F9F%C97(@5$]55"`O=F%R+W-P
+M;V]L+VQP+W1M<`H*4U!/3TP](B]V87(O<W!O;VPO;'`O=&UP+V!U;F%M92`M
+M;F`B"FEF(%L@+60@("(D4U!/3TPB(%T[('1H96X*"65C:&\@(BHJ*B!%9F9A
+M8V5M96YT(&1U('+I<&5R=&]I<F4@)%-03T],(@H)<FT@)%-03T],+RH*9FD*
+M"B,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(PD*(R!S=7!P<F5S<VEO;B!D92`O971C+W!R:6YT8V%P
+M"FEF(%L@+68@+V5T8R]P<FEN=&-A<"!=.R!T:&5N"@EI9B!;("$@+68@+V5T
+M8R]P<FEN=&-A<"YO<FEG(%T[('1H96X*"0EE8VAO("(J*BH@+V5T8R]P<FEN
+M=&-A<"`M/B`O971C+W!R:6YT8V%P+F]R:6<B("8F(&UV("]E=&,O<')I;G1C
+M87`@+V5T8R]P<FEN=&-A<"YO<FEG"@EE;'-E"@D)96-H;R`B(2$A("]E=&,O
+M<')I;G1C87`@+3X@+W1M<"]P<FEN=&-A<"(@)B8@;78@+V5T8R]P<FEN=&-A
+M<"`O=&UP+W!R:6YT8V%P"@EF:0IE;'-E"@EE8VAO("(J*BH@<&%S(&1E(&9I
+M8VAI97(@+V5T8R]P<FEN=&-A<"(*9FD*"B,@;VX@<F5C;W!I92!L82!V97)S
+M:6]N(&-O=7)A;G1E($U)3DE-54TZ('!O=7(@;&5S(&%P<&QI<R!Q=6DN+BX@
+M*'=I;F=Z/RDL(&%U(&-A<R!O^2XN"FEF(%L@+68@+W5S<B]L;V-A;"]L:6(O
+M3%!2;F<O<')I;G1C87`N97AT(%T[('1H96X*"6-P("]U<W(O;&]C86PO;&EB
+M+TQ04FYG+W!R:6YT8V%P+F5X="`O971C+W!R:6YT8V%P("8F(&5C:&\@(B`@
+M("`O971C+W!R:6YT8V%P(')E8V]P:>DB"@EC:&UO9"!A/7(L=2MW("]E=&,O
+M<')I;G1C87`*96QS90H)96-H;R`B!R$A(2!705).24Y'.B`O=7-R+VQO8V%L
+M+VQI8B],4%)N9R]P<FEN=&-A<"!I;F%C8V5S<VEB;&4N+BX@<&%S(&EN<W1A
+M;&SI(@IF:0H*(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C"0HC(&QA(&UA8VAI;F4@97-T+65L;&4@
+M<V5R=F5U<B!D)VEM<')E<W-I;VX@/S\*(R!O;B!VZ7)I9FEE(.`@<&%R=&ER
+M(&1E(&QI<W1E+6EM<')I;6%N=&4@<75I($1/250@971R92#@(&IO=7(*(R!P
+M;W5R('%U92!C82!M87)C:&4@8V]R<F5C=&5M96YT+@H*2$]35#TB8'5N86UE
+M("UN8"(*3$E35$5)35`]+W5S<B]L;V-A;"]S>7-T96UE+V5T8R]L:7-T92UI
+M;7!R:6UA;G1E"E-%4E8](F!G<F5P(%PB7B1(3U-47"(@)$Q)4U1%24U08"(*
+M96-H;R`B4V5R=F5U<B!D)VEM<')E<W-I;VXZ("1315)6(@I04DE.5$524STB
+M(@IF;W(@4%)4(&EN(&!E8VAO("1315)6('P@8W5T("UF(#(M("UD("<@)R!@
+M"F1O"B,@;&5S(&EM<"!C;W5L975R<R!S;VYT('1R86ET965S(&-O;6UE(&QE
+M<R!.)D(@*#$Q+S`W+SDW*0H)8V%S92`D4%)4(&EN"@D);"H@?"!M*B!\(&,J
+M("D@4%))3E1%4E,](B104DE.5$524R`D4%)4(B`[.PHC"0D@*B`@*2`[.R`C
+M('-I(&-O=6QE=7(@<&%R(&5X96UP;&4N+BX*"65S86,*9&]N90H*:68@6R`A
+M("UZ("`B)%-%4E8B(%T[('1H96X@(R!M86-H:6YE('-E<G9E=7(@9"=I;7!R
+M:6UA;G1E*',I"@EE8VAO("(J*BH@36%C:&EN92!S97)V975R(&1E<R!I;7!R
+M:6UA;G1E<R`Z("104DE.5$524R(*"6EF(%L@(2`M>B`B)%!224Y415)3(B!=
+M.R!T:&5N"@D)(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,*"0DC(&-R
+MZ6%T:6]N(&1U('-C<FEP="!D86EL>2YC=&P*"0ED86EL>0H)"@D)(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C"@D)(R!C<NEA=&EO;B!D=2!S8W)I
+M<'0@:&]U<FQY+F-T;`H)"6AO=7)L>0H*"0DC(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(PH)"2,@8W+I871I;VX@9&5S(&9I8VAI97)S
+M(&QO9W,@9&5S(&-R;VYS"@D)8W`@+V1E=B]N=6QL("]U<W(O<VAA<F4O9&%I
+M;'DN;&]G"@D)8W`@+V1E=B]N=6QL("]U<W(O<VAA<F4O:&]U<FQY+FQO9PH)
+M"6-H;6]D(&$K<B`O=7-R+W-H87)E+V1A:6QY+FQO9R`O=7-R+W-H87)E+VAO
+M=7)L>2YL;V<*"0EE8VAO("(J*BH@+W5S<B]S:&%R92]D86EL>2YL;V<@+W5S
+M<B]S:&%R92]H;W5R;'DN;&]G(&EN:71I86QI<^ES(@H*"0DC(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,)"@D)(R!M;V1I9FEC871I;VX@9&4@;&$@8W)O;G1A8@H)"2,@;VX@969F
+M86-E(&QE('9I975X(&-O;G1E;G4*"@D)8W)O;G1A8B`M;"`^("]T;7`O8W)O
+M;G1A8BY,4%)N9RYO<FEG"@D)96-H;R`B*BHJ(&-R;VYT86(Z('-U<'!R97-S
+M:6]N(&1E(&PG86YC:65N(&-O;G1E;G4B"@D)<V5D("UE("(O97)R;W(@:&%N
+M9&QE<B]D(B`M92`B+VAO=7)L>2YC=&PO9"(@7`H)"2`@("`M92`B+W-A=79E
+M9V%R9&4@9&5S(&QO9W,O9"(@+64@(B]D86EL>2YC=&PO9"(@7`H)"2`@("`\
+M("]T;7`O8W)O;G1A8BY,4%)N9RYO<FEG(#X@+W1M<"]C<F]N=&%B+DQ04FYG
+M"@H)"2,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(PH)"2,@86IO=70@:&]U
+M<FQY+F-T;`H*"0EC870@/CX@+W1M<"]C<F]N=&%B+DQ04FYG(#P\+45/1@HC
+M+2TM+2TM+2TM+2TM+2TM+2TM+2TM+2!);7!R:6UA;G1E<SH@:6UP(&5R<F]R
+M(&AA;F1L97(@("`M+2TM+2TM+2TM+2TM+2T*,3D@."TQ."`J("H@,2TU('-H
+M(#P@+W5S<B]S:&%R92]H;W5R;'DN8W1L(#X^("]U<W(O<VAA<F4O:&]U<FQY
+M+FQO9R`R/B8Q"D5/1@H)"65C:&\@(BHJ*B!C<F]N=&%B.B!A:F]U="!H;W5R
+M;'DN8W1L(@H*"0DC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,*"0DC(&UE
+M;64@8VAO<V4@<&]U<B!D86EL>2YC=&P*"@D)8V%T(#X^("]T;7`O8W)O;G1A
+M8BY,4%)N9R`\/"U%3T8*(RTM+2TM+2TM+2TM+2TM+2TM+2TM+2T@26UP<FEM
+M86YT97,Z('-A=79E9V%R9&4@9&5S(&QO9W,@("`M+2TM+2TM+2TM+2TM+2T*
+M,34@,"`J("H@,2TU('-H(#P@+W5S<B]S:&%R92]D86EL>2YC=&P@/CX@+W5S
+M<B]S:&%R92]D86EL>2YL;V<@,CXF,0I%3T8*"0EE8VAO("(J*BH@8W)O;G1A
+M8CH@86IO=70@9&%I;'DN8W1L(@H*"0DC(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,*"0DC(&5T(&]N(&UO9&EF:64@;&$@8W)O;G1A8CH*"0EC<F]N=&%B
+M("]T;7`O8W)O;G1A8BY,4%)N9R`F)B!E8VAO("(J*BH@8W)O;G1A8B!M;V1I
+M9FGI92(*"0DO8FEN+W)M("]T;7`O8W)O;G1A8BY,4%)N9PH)96QS90H)"65C
+M:&\@(E!A<R!D)VEM<')I;6%N=&4@;&%S97(@;6]N;V-H<F]M92!S97)V:65S
+M+BXB"@EF:0H*"2,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(PH)(R!M;V1I
+M9FEC871I;VX@+V5T8R]P87-S=V0*"@ES960@+64@(B]R96QA;F-L<"]D(B`@
+M+64@)R]>*SHO:5P*<F5L86YC;'`Z>#HP.C$Z(&%R<F5T(&EM<')I;6%N=&4Z
+M+SHO=7-R+W-I=&4O<VAA<F4O<WES=&5M92]E=&,O<F5L86YC;'`G(%P*"2]E
+M=&,O<&%S<W=D(#X@+W1M<"]P87-S=V0N3%!2;F<*"6-P("]T;7`O<&%S<W=D
+M+DQ04FYG("]E=&,O<&%S<W=D"@EC:&UO9"!A*W(L;RUW("]E=&,O<&%S<W=D
+M"@EE8VAO("(J*BH@+V5T8R]P87-S=V0@;6]D:69IZ2!P;W5R(')E;&%N8VQP
+M(@H)+V)I;B]R;2`O=&UP+W!A<W-W9"Y,4%)N9PH)"@DC(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,*"2,@;6]D:69I8V%T:6]N("]E=&,O<VAA9&]W"@D*
+M"7-E9"`M92`B+W)E;&%N8VQP+V0B("UE("<O7BLO:5P*<F5L86YC;'`Z,%I+
+M879Y=CDY-75B33HV-#0U.CHZ.CHZ)R!<"@DO971C+W-H861O=R`^("]T;7`O
+M<VAA9&]W+DQ04FYG"@EC:&UO9"!U*W<@+V5T8R]S:&%D;W<*"6-P("]T;7`O
+M<VAA9&]W+DQ04FYG("]E=&,O<VAA9&]W"B,)96-H;R`B(2$A($$@1D%)4D4Z
+M(&-P("`O=&UP+W-H861O=RY,4%)N9R`O971C+W-H861O=R`A(2$B"@EC:&UO
+M9"!A/2QU/7(@+V5T8R]S:&%D;W<*"65C:&\@(BHJ*B`O971C+W-H861O=R!M
+M;V1I9FGI('!O=7(@<F5L86YC;'`B"@DO8FEN+W)M("]T;7`O<VAA9&]W+DQ0
+M4FYG"@IE;'-E"@EE8VAO("(J*BH@36%C:&EN92!.3TX@<V5R=F5U<B!D)VEM
+M<')E<W-I;VXB"F9I"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,)"B,@8W+I871I;VX@9&5S('-P
+M;V]L<PIE8VAO("(J*BH@8VAE8VMP8R`M9B(@)B8@+W5S<B]B:6XO8VAE8VMP
+M8R`M9B`M<B`M02`R1`H*(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C"0HC(&QA;F-E;65N="!L<&0*
+M96-H;R`B*BHJ("]E=&,O:6YI="YD+VQP9"!S=&%R="(@)B8@+V5T8R]I;FET
+M+F0O;'!D('-T87)T"@HC(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,)"B,@=NER:69I8V%T:6]N"F5C
+M:&\@(BHJ*B!6Z7)I9FEC871I;VX@9'4@8F]N(&9O;F-T:6]N;F5M96YT(&1E
+M($Q04FYG(@IE8VAO("(J*BH@;'!C(&QP9"!X>'@B("`@("8F("]U<W(O8FEN
+M+VQP8R!L<&0@>'AX"G-L965P(#,)(R!P;W5R('%U)VEL('-E(')E+6QA;F-E
+M+BX*96-H;R`B*BHJ(&QP<2`M4&QB83`B("8F("]U<W(O8FEN+VQP<2`M4&QB
+M83`*"B,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C
+M(R,C(R,C(R,C(R,C(R,C(PD*(R!C<NEA=&EO;B!D97,@;&EE;G,@<&]U<B!Q
+M=64@8V$@;6%R8VAE.B!C;VUM92!O;B!E<W0@<F]O=`HC(&QE('-C<FEP="!L
+M92!F86ET('1O=70@<V5U;"$A"F5C:&\@(BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ
+M*BHJ*BHB"F5C:&\@(DEN<W1A;&QA=&EO;B!P86-K86=E(&AP;G`B"B]U<W(O
+M;&]C86PO8FEN+VQA8C$*"F5C:&\@(BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ
+M*BHB"F5C:&\@(BHJ*B!&:6X@9&4@;"=I;G-T86QL871I;VX@<W5R(&!U;F%M
+M92`M;F`@+2!@9&%T96`@*BHJ(@IE8VAO("(]/3T]/3T]/3T]/3T]/3T]/3T]
+M/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]/3T]
+M/3T]/3TB"F5X96,@/F!T='E@(#(^)C$*"B,C(R,C(R,C(R,C(R,C(R,*(R!S
+M8W)I<'0@=&5R;6ENZ0IE8VAO("(J*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ
+M*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*B(*96-H;R`B*BHJ
+M(&!D871E8"`M($EN<W1A;&QA=&EO;B!T97)M:6[I92`J*BHJ*BHJ(@IE8VAO
+M("(J*BH@4D%04$5,.B!L;V<@9&%N<R`D3$]'1DE,12`J*BHJ*BHJ*B(*"B,@
+%1FEN:0H@
+`
+end
+SHAR_EOF
+  $shar_touch -am 0915110897 'install-LPRng.sh' &&
+  chmod 0664 'install-LPRng.sh' ||
+  $echo 'restore of' 'install-LPRng.sh' 'failed'
+  if ( md5sum --help 2>&1 | grep 'sage: md5sum \[' ) >/dev/null 2>&1 \
+  && ( md5sum --version 2>&1 | grep -v 'textutils 1.12' ) >/dev/null; then
+    md5sum -c << SHAR_EOF >/dev/null 2>&1 \
+    || $echo 'install-LPRng.sh:' 'MD5 check failed'
+e170fcee2813d64b9fbfe1a5b0bc13db  install-LPRng.sh
+SHAR_EOF
+  else
+    shar_count="`LC_ALL= LC_CTYPE= LANG= wc -c < 'install-LPRng.sh'`"
+    test 13910 -eq "$shar_count" ||
+    $echo 'install-LPRng.sh:' 'original size' '13910,' 'current size' "$shar_count!"
+  fi
+fi
+rm -fr _sh00406
+exit 0
