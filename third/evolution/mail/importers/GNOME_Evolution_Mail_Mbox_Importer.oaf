@@ -19,11 +19,11 @@
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik for at importere mbox til Evolution"/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Fabrik, um mbox in Evolution zu importieren."/>
+		       value="Fabrik, zum Import von mbox-Dateien in Evolution."/>
 	<oaf_attribute name="description-el" type="string"
 		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#225;&#241;&#247;&#229;&#223;&#249;&#237; mbox &#243;&#244;&#239; Evolution"/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#237;a para importar archivos de mbox a Evolution."/>
+		       value="Factor&#195;&#173;a para importar archivos de mbox a Evolution."/>
 	<oaf_attribute name="description-eu" type="string"
 		       value="mbox Evolution-era inportatzeko fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -59,7 +59,7 @@
 	<oaf_attribute name="description-sl" type="string"
 		       value="Tovarna za uvoz mbox predalov v Evolucijo"/>
 	<oaf_attribute name="description-sv" type="string"
-		       value="Fabrik f&#195;&#182;r import av brevl&#195;&#165;da (mbox) till Evolution"/>
+		       value="Fabrik f&#246;r import av brevl&#229;da (mbox) till Evolution"/>
 	<oaf_attribute name="description-tr" type="string"
 		       value="Mbox dosyalar&#196;&#177;n&#196;&#177; Evolution&#39;a aktar&#196;&#177;m mimarisi"/>
 	<oaf_attribute name="description-uk" type="string"
@@ -133,7 +133,7 @@
 	<oaf_attribute name="description-sl" type="string"
 		       value="Uvozi mbox daoteke v Evolucijo"/>
 	<oaf_attribute name="description-sv" type="string"
-		       value="Importerar brevl&#195;&#165;defiler (mbox-filer) till Evolution"/>
+		       value="Importerar brevl&#229;defiler (mbox-filer) till Evolution"/>
 	<oaf_attribute name="description-tr" type="string"
 		       value="Mbox dosyalar&#196;&#177;n&#196;&#177; Evolution&#39;a aktar&#196;&#177;r"/>
 	<oaf_attribute name="description-uk" type="string"

@@ -1,3 +1,56 @@
+2003-02-04  JP Rosevear  <jpr@ximian.com>
+
+       Partially  Fixes #23606 (from Jack Jia <jack.jia@sun.com>)
+	
+	* gui/dialogs/schedule-page.c (update_time): handle no end date if
+	the start is date only
+
+	* gui/dialogs/event-page.c (update_time): ditto
+
+2003-30-01 Ronald Kuetemeier <ronald@kuetemeier.com>
+
+	Fixes #35572
+
+	* gui/alarm-notify/alarm-queue.c: set saved_notification_time to last
+	notification time when we update the config to last notification, so
+	alarms will not get trigged again if a new calendar window is opened.
+
+2003-01-22  Jack Jia  <jack.jia@sun.com>
+
+	Fixes #34927
+
+	* gui/e-meeting-model.c (async_open): Call process_callback function
+	to process the data when it can not open free-busy url correctly.
+	Don't try to close the invalid handle.
+
+2002-12-11  Jack Jia  <jack.jia@sun.com>
+
+	Fixes #34933
+
+	* gui/e-day-view.c (e_day_view_on_editing_stopped): Don't update
+	appointment if both the old and the new summary texts are empty.
+
+	* gui/e-week-view.c (e_day_view_on_editing_stopped): Don't update
+	appointment if both the old and the new summary texts are empty.
+
+2002-12-06  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #35003
+
+	* gui/misc.[ch] (get_uri_without_password): new function for
+	removing the password from the CalClient's uris.
+
+	* gui/gnome-cal.c (client_cal_opened_cb): use the URI returned by
+	get_uri_without_password for messages.
+	(backend_error_cb): likewise.
+	(backend_died_cb): likewise.
+	(gnome_calendar_open): likewise.
+	(open_error, method_error, permission_error): likewise.
+
+	* gui/e-tasks.c (e_tasks_open): hide the password from the URI
+	being displayed in messages.
+	(backend_error_cb): likewise.
+
 2002-12-02  Dan Winship  <danw@ximian.com>
 
 	* gui/e-itip-control.c (write_recurrence_piece): Describe

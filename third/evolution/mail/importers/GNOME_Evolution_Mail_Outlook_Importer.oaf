@@ -19,11 +19,11 @@
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik for at importere Outlook Express 4-beskeder til Evolution"/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Fabrik, um Outlook-Express-4-Mails in Evolution zu importieren."/>
+		       value="Fabrik zum Import von mit Outlook Express 4 erstellten E-Mails in Evolution."/>
 	<oaf_attribute name="description-el" type="string"
 		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#236;&#231;&#237;&#253;&#236;&#225;&#244;&#225; Outlook Express 4 &#243;&#244;&#239; Evolution"/>
 	<oaf_attribute name="description-es" type="string"
-		       value="Factor&#237;a para importar mensajes de Outlook Express 4 a Evolution."/>
+		       value="Factor&#195;&#173;a para importar mensajes de Outlook Express 4 a Evolution."/>
 	<oaf_attribute name="description-eu" type="string"
 		       value="Outlook Express 4ko mezuak Evolution-era inportatzeko fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -59,7 +59,7 @@
 	<oaf_attribute name="description-sl" type="string"
 		       value="Tovarna za uvoz po&#197;&#161;te Outlook Express 4 v Evolucijo"/>
 	<oaf_attribute name="description-sv" type="string"
-		       value="Fabrik f&#195;&#182;r import av Outlook Express 4-post till Evolution"/>
+		       value="Fabrik f&#246;r import av Outlook Express 4-post till Evolution"/>
 	<oaf_attribute name="description-tr" type="string"
 		       value="Outlook Express 4 iletilerini Evolution&#39;a aktar&#196;&#177;m mimarisi"/>
 	<oaf_attribute name="description-uk" type="string"

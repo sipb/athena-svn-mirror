@@ -19,11 +19,11 @@
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til adressebogens gr&#230;nseflade for navnevalg"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Fabrik f&#195;&#188;r die Namenauswahl-Schnittstelle des Adressbuchs"/>
+                       value="Fabrik f&#252;r die Oberfl&#228;che zur Auswahl eines Namens f&#252;r das Evolution-Adressbuch"/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231; &#228;&#233;&#225;&#243;&#253;&#237;&#228;&#229;&#243;&#231; &#229;&#240;&#233;&#235;&#239;&#227;&#222;&#242; &#239;&#237;&#239;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Factor&#237;a para la interfaz de selecci&#243;n de nombre de la Agenda"/>
+                       value="F&#195;&#161;brica para la interfaz de selecci&#195;&#179;n de nombre de la Agenda"/>
 	<oaf_attribute name="description-eu" type="string"
                        value="Helbide-liburuko izen-hautaketaren interfazerako fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -41,7 +41,7 @@
 	<oaf_attribute name="description-lt" type="string"
                        value="Adres&#248; knygel&#235;s vard&#248; pasirinkimo s&#224;sajos gamykla"/>
 	<oaf_attribute name="description-lv" type="string"
-                       value="Ra&#197;&#190;otne Adre&#197;&#161;u gr&#196;&#129;matas v&#196;&#129;rda izv&#196;&#147;les interfeisam"/>
+                       value="Ra&#197;&#190;otne Adre&#197;&#161;u gr&#196;&#129;matas v&#196;&#129;rda izv&#196;&#147;les saskarnei"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="Factory voor de naamselectie-interface van het Adresboek"/>
 	<oaf_attribute name="description-no" type="string"
@@ -59,7 +59,7 @@
 	<oaf_attribute name="description-sl" type="string"
                        value="Tovarna Evolucijinih vmesnikov za izbiro imen iz adresarja"/>
 	<oaf_attribute name="description-sv" type="string"
-                       value="Fabrik f&#195;&#182;r adressbokens namnvalsgr&#195;&#164;nssnitt"/>
+                       value="Fabrik f&#246;r adressbokens namnvalsgr&#228;nssnitt"/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Adres defteri isim se&#195;&#167;im aray&#195;&#188;z&#195;&#188; mimarisi"/>
 	<oaf_attribute name="description-uk" type="string"
@@ -92,11 +92,11 @@
 	<oaf_attribute name="description-da" type="string"
                        value="Evolution adressebog-komponent"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Evolution Namenauswahlschnittstelle f&#195;&#188;r das Adressbuch."/>
+                       value="Oberfl&#228;che zur Auswahl eines Namens f&#252;r das Evolution-Adressbuch"/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#196;&#233;&#225;&#243;&#253;&#237;&#228;&#229;&#243;&#231; &#229;&#240;&#233;&#235;&#239;&#227;&#222;&#242; &#239;&#237;&#239;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237; &#244;&#239;&#245; Evolution."/>
 	<oaf_attribute name="description-es" type="string"
-                       value="Interfaz de Evolution de selecci&#243;n de nombre de la agenda."/>
+                       value="Interfaz de selecci&#195;&#179;n de nombre de la agenda."/>
 	<oaf_attribute name="description-et" type="string"
                        value="Evolutioni aadressiraamatu nime valiku kasutajaliides."/>
 	<oaf_attribute name="description-eu" type="string"
@@ -116,7 +116,7 @@
 	<oaf_attribute name="description-lt" type="string"
                        value="Evolution adres&#248; knygel&#235;s vard&#248; pasirinkimo s&#224;saja."/>
 	<oaf_attribute name="description-lv" type="string"
-                       value="Evolution adre&#197;&#161;u gr&#196;&#129;matas v&#196;&#129;rda izv&#196;&#147;les interfeiss."/>
+                       value="Evolution adre&#197;&#161;u gr&#196;&#129;matas v&#196;&#129;rda izv&#196;&#147;les saskarne."/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De adresboeknaam-selectie-interface van Evolution."/>
 	<oaf_attribute name="description-no" type="string"
@@ -134,7 +134,7 @@
 	<oaf_attribute name="description-sl" type="string"
                        value="Evolucijin vmesnik za izibro imen iz adresarja."/>
 	<oaf_attribute name="description-sv" type="string"
-                       value="Evolutions adressboks namnvalsgr&#195;&#164;nssnitt."/>
+                       value="Evolutions adressboks namnvalsgr&#228;nssnitt."/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Evolution adres defteri isim se&#195;&#167;me aray&#195;&#188;z&#195;&#188;."/>
 	<oaf_attribute name="description-uk" type="string"

@@ -43,7 +43,7 @@
     <oaf_attribute name="description-lt" type="string"
 		   value="Evolution apvalkalas."/>
     <oaf_attribute name="description-lv" type="string"
-		   value="Evolution kommandrinda."/>
+		   value="Evolution &#196;&#141;aula."/>
     <oaf_attribute name="description-nl" type="string"
 		   value="De Evolution shell."/>
     <oaf_attribute name="description-no" type="string"
@@ -97,18 +97,32 @@
 		   value="Nastaven&#237; slo&#190;ky"/>
     <oaf_attribute name="evolution:config_item:title-de" type="string"
 		   value="Ordner-Einstellungen"/>
+    <oaf_attribute name="evolution:config_item:title-es" type="string"
+		   value="Configuraci&#195;&#179;n de Carpetas"/>
     <oaf_attribute name="evolution:config_item:title-fr" type="string"
 		   value="Param&#232;tres de Dossier"/>
     <oaf_attribute name="evolution:config_item:title-hu" type="string"
 		   value="Mappabe&#225;ll&#237;t&#225;sok"/>
+    <oaf_attribute name="evolution:config_item:title-it" type="string"
+		   value="Impostazioni Cartella"/>
     <oaf_attribute name="evolution:config_item:title-ko" type="string"
 		   value="&#198;&#250;&#180;&#245; &#188;&#179;&#193;&#164;"/>
+    <oaf_attribute name="evolution:config_item:title-lv" type="string"
+		   value="Mapes uzst&#196;&#129;d&#196;&#171;jumi"/>
     <oaf_attribute name="evolution:config_item:title-no" type="string"
 		   value="Mappeinnstillinger"/>
     <oaf_attribute name="evolution:config_item:title-pl" type="string"
 		   value="Ustawienia folder&#243;w"/>
     <oaf_attribute name="evolution:config_item:title-pt_BR" type="string"
 		   value="Configura&#231;&#245;es de pastas"/>
+    <oaf_attribute name="evolution:config_item:title-ru" type="string"
+		   value="&#238;&#193;&#211;&#212;&#210;&#207;&#202;&#203;&#201; &#208;&#193;&#208;&#203;&#201;"/>
+    <oaf_attribute name="evolution:config_item:title-sk" type="string"
+		   value="Nastavenie prie&#196;&#141;inkov"/>
+    <oaf_attribute name="evolution:config_item:title-sv" type="string"
+		   value="Mappinst&#228;llningar"/>
+    <oaf_attribute name="evolution:config_item:title-tr" type="string"
+		   value="Dizin Ayarlar&#196;&#177;"/>
     <oaf_attribute name="evolution:config_item:title-uk" type="string"
 		   value="&#208;&#159;&#208;&#176;&#209;&#128;&#208;&#176;&#208;&#188;&#208;&#181;&#209;&#130;&#209;&#128;&#208;&#184; &#209;&#130;&#208;&#181;&#208;&#186;&#208;&#184;"/>
     <oaf_attribute name="evolution:config_item:title-vi" type="string"
@@ -117,11 +131,21 @@
     <oaf_attribute name="evolution:config_item:description" type="string"
 		   value="Configure special folders and offline folder behavior here"/>
     <oaf_attribute name="evolution:config_item:description-de" type="string"
-		   value="Hier k&#195;&#182;nnen Sie spezielle und Offline-Ordner konfigurieren"/>
+		   value="Hier k&#246;nnen Sie spezielle Ordner und Offline-Ordner konfigurieren"/>
+    <oaf_attribute name="evolution:config_item:description-es" type="string"
+		   value="Configura aqu&#195;&#173; el comportamiento de las carpetas en conexi&#195;&#179;n y desconexi&#195;&#179;n"/>
+    <oaf_attribute name="evolution:config_item:description-it" type="string"
+		   value="Configura qui il comportamento delle cartelle speciali e non in linea"/>
+    <oaf_attribute name="evolution:config_item:description-lv" type="string"
+		   value="Konfigur&#196;&#147;t speci&#196;&#129;lo mapju un nesaistes mapes uzved&#196;&#171;bu &#197;&#161;eit"/>
     <oaf_attribute name="evolution:config_item:description-no" type="string"
 		   value="Konfigurer spesielle mapper og oppf&#248;rsel n&#229;r du arbeider frakoblet her"/>
     <oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
 		   value="Configure pastas especiais e comportamento desconectado de pastas aqui"/>
+    <oaf_attribute name="evolution:config_item:description-sk" type="string"
+		   value="Nastavenie &#197;&#161;peci&#195;&#161;lnych prie&#196;&#141;inkov a ich off-line chovanie"/>
+    <oaf_attribute name="evolution:config_item:description-sv" type="string"
+		   value="Konfigurera beteende f&#246;r specialmappar och fr&#229;nkopplade mappar h&#228;r"/>
     <oaf_attribute name="evolution:config_item:description-vi" type="string"
 		   value="C&#225;&#186;&#165;u h&#195;&#172;nh th&#198;&#176; m&#225;&#187;&#165;c &#196;&#145;&#225;&#186;&#183;c bi&#225;&#187;&#135;t v&#195;&#160; h&#195;&#160;nh vi th&#198;&#176; m&#225;&#187;&#165;c ngo&#225;&#186;&#161;i tuy&#225;&#186;&#191;n &#225;&#187;&#159; &#196;&#145;&#195;&#162;y"/>
 
@@ -137,11 +161,21 @@
     <oaf_attribute name="description" type="string"
 		   value="Configuration control for Evolution folder settings."/>
     <oaf_attribute name="description-de" type="string"
-		   value="Konfigurationssteuerung f&#195;&#188;r die Ordnereinstellungen von Evolution."/>
+		   value="Konfigurations-Bedienelement f&#252;r die Ordnereinstellungen von Evolution."/>
+    <oaf_attribute name="description-es" type="string"
+		   value="Control de Configuraci&#195;&#179;n para las opciones de Carpeta de Evolution."/>
+    <oaf_attribute name="description-it" type="string"
+		   value="Controllo configurazione per le impostazioni cartelle di Evolution."/>
+    <oaf_attribute name="description-lv" type="string"
+		   value="Konfigur&#196;&#129;cijas kontrole Evolution mapju uzst&#196;&#129;d&#196;&#171;jumiem."/>
     <oaf_attribute name="description-no" type="string"
 		   value="Konfigurasjonskontroll for mappeinnstillinger i Evolution."/>
     <oaf_attribute name="description-pt_BR" type="string"
 		   value="Controle de configura&#231;&#227;o para as configura&#231;&#245;es de pasta do Evolution."/>
+    <oaf_attribute name="description-sk" type="string"
+		   value="Ovl&#195;&#161;dac&#195;&#173; prvok nastavenia prie&#196;&#141;inkov Evolution."/>
+    <oaf_attribute name="description-sv" type="string"
+		   value="Konfigurationsverktyg f&#246;r Evolutions mappinst&#228;llningar."/>
     <oaf_attribute name="description-vi" type="string"
 		   value="&#196;&#144;i&#225;&#187;&#129;u khi&#225;&#187;&#131;n c&#225;&#186;&#165;u h&#195;&#172;nh cho thi&#225;&#186;&#191;t l&#225;&#186;&#173;p th&#198;&#176; m&#225;&#187;&#165;c Evolution."/>
   </oaf_server>

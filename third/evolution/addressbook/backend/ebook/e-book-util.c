@@ -31,6 +31,8 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+#include <bonobo/bonobo-listener.h>
+#include <bonobo/bonobo-event-source.h>
 #include "e-card-compare.h"
 
 typedef struct _CommonBookInfo CommonBookInfo;
@@ -193,31 +195,58 @@ set_default_book_uri_local (void)
 {
 	char *filename;
 
-	if (default_book_uri)
-		g_free (default_book_uri);
-
 	filename = gnome_util_prepend_user_home ("evolution/local/Contacts/addressbook.db");
 	default_book_uri = g_strdup_printf ("file://%s", filename);
 	g_free (filename);
 }
 
 static void
-set_default_book_uri_from_bonobo_conf (void)
+set_default_book_uri (char *val)
 {
-	CORBA_Environment ev;
-	char *val;
-	Bonobo_ConfigDatabase config_db;
-
-	CORBA_exception_init (&ev);
-	config_db = e_book_get_config_database (&ev);
-	val = bonobo_config_get_string (config_db, "/DefaultFolders/contacts_uri", &ev);
-	CORBA_exception_free (&ev);
+	if (default_book_uri)
+		g_free (default_book_uri);
 
 	if (val) {
 		default_book_uri = e_book_expand_uri (val);
 		g_free (val);
-	} else
+	}
+	else {
 		set_default_book_uri_local ();
+	}
+}
+
+static void
+default_folder_listener (BonoboListener *listener, char *event_name, 
+			 CORBA_any *any, CORBA_Environment *ev,
+			 gpointer user_data)
+{
+	Bonobo_ConfigDatabase config_db;
+	char *val;
+
+	config_db = e_book_get_config_database (ev);
+	val = bonobo_config_get_string (config_db, "/DefaultFolders/contacts_uri", ev);
+
+	set_default_book_uri (val);
+}
+
+static void
+set_default_book_uri_from_bonobo_conf (void)
+{
+	char *val;
+	Bonobo_ConfigDatabase config_db;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+	config_db = e_book_get_config_database (&ev);
+	val = bonobo_config_get_string (config_db, "/DefaultFolders/contacts_uri", &ev);
+
+	bonobo_event_source_client_add_listener (config_db, default_folder_listener,
+						 "Bonobo/ConfigDatabase:change/DefaultFolders:contacts_uri",
+						 NULL,
+						 NULL);
+
+	CORBA_exception_free (&ev);
+	set_default_book_uri (val);
 }
 
 typedef struct {

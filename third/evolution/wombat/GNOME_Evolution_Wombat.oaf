@@ -18,7 +18,7 @@
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Der Pers&#195;&#182;nliche Adressbuch-Server"/>
+                       value="Der pers&#246;nliche Adressbuch-Server"/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#207; &#228;&#233;&#225;&#234;&#239;&#236;&#233;&#243;&#244;&#222;&#242; &#240;&#241;&#239;&#243;&#249;&#240;&#233;&#234;&#239;&#253; &#226;&#233;&#226;&#235;&#223;&#239;&#245; &#228;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
@@ -32,7 +32,7 @@
 	<oaf_attribute name="description-gl" type="string"
                        value="O Servidor Persoal de Libro de Enderezos"/>
 	<oaf_attribute name="description-hu" type="string"
-                       value="A Personal Addressbook Server"/>
+                       value="A Szem&#233;lyes c&#237;mjegyz&#233;k szerver"/>
 	<oaf_attribute name="description-it" type="string"
                        value="Server Personale della Rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
@@ -42,7 +42,7 @@
 	<oaf_attribute name="description-lt" type="string"
                        value="Asmeninis Adres&#248; knygel&#235;s serveris"/>
 	<oaf_attribute name="description-lv" type="string"
-                       value="Person&#196;&#129;lais Adre&#197;&#161;u Gr&#196;&#129;matas Serveris"/>
+                       value="Person&#196;&#129;lais adre&#197;&#161;u gr&#196;&#129;matas serveris"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De Persoonlijke Adresboekserver"/>
 	<oaf_attribute name="description-nn" type="string"
@@ -62,7 +62,7 @@
 	<oaf_attribute name="description-sl" type="string"
                        value="Stre&#197;&#190;nik osebnega adresarja"/>
 	<oaf_attribute name="description-sv" type="string"
-                       value="Server f&#195;&#182;r personlig adressbok"/>
+                       value="Server f&#246;r personlig adressbok"/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Ki&#197;&#159;isel Adres Defteri Sunucusu"/>
 	<oaf_attribute name="description-uk" type="string"
@@ -98,25 +98,23 @@
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server; fabrik"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Der pers&#195;&#182;nliche Kalenderserver; Kalender-Fabrik"/>
+                       value="Der pers&#246;nliche Kalender-Server; Kalenderfabrik"/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#207; &#208;&#241;&#239;&#243;&#249;&#240;&#233;&#234;&#252;&#242; &#197;&#238;&#245;&#240;&#231;&#241;&#229;&#244;&#231;&#244;&#222;&#242; &#199;&#236;&#229;&#241;&#239;&#235;&#239;&#227;&#223;&#239;&#245;, &#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#199;&#236;&#229;&#241;&#239;&#235;&#239;&#227;&#223;&#239;&#245;"/>
 	<oaf_attribute name="description-es" type="string"
-                       value="El Servidor de Calendarios Personales. Factor&#237;a de calendarios"/>
+                       value="El Servidor de Calendarios Personales. Factor&#195;&#173;a de calendarios"/>
 	<oaf_attribute name="description-eu" type="string"
                        value="Egutegi pertsonalaren zerbitzaria; egutegi-fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
                        value="Le serveur de calendrier personnel; utilitaire de calendrier"/>
 	<oaf_attribute name="description-gl" type="string"
                        value="O Servidor Persoal de Axenda; f&#225;brica de axendas"/>
-	<oaf_attribute name="description-hu" type="string"
-                       value="A Personal Calendar Server; napt&#225;r factory"/>
 	<oaf_attribute name="description-it" type="string"
                        value="Server personale del Calendario; fabbrica del calendario"/>
 	<oaf_attribute name="description-ja" type="string"
                        value="&#165;&#209;&#161;&#188;&#165;&#189;&#165;&#202;&#165;&#235;&#165;&#171;&#165;&#236;&#165;&#243;&#165;&#192;&#165;&#181;&#161;&#188;&#165;&#208;; &#165;&#171;&#165;&#236;&#165;&#243;&#165;&#192;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lv" type="string"
-                       value="Person&#196;&#129;lais Kalend&#196;&#129;ra Serveris, kalend&#196;&#129;ra ra&#197;&#190;otne"/>
+                       value="Person&#196;&#129;lais kalend&#196;&#129;ra serveris; kalend&#196;&#129;ra ra&#197;&#190;otne"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De Persoonlijke Kalenderserver; kalender fabriek"/>
 	<oaf_attribute name="description-nn" type="string"
@@ -136,7 +134,7 @@
 	<oaf_attribute name="description-sl" type="string"
                        value="Stre&#197;&#190;nik osebnega koledarja; tovarna koledarjal"/>
 	<oaf_attribute name="description-sv" type="string"
-                       value="Server f&#195;&#182;r personlig kalender; kalenderfabrik"/>
+                       value="Server f&#246;r personlig kalender; kalenderfabrik"/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Ki&#197;&#159;isel Takvim Sunucusu"/>
 	<oaf_attribute name="description-uk" type="string"
