@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67.2.1 1996-03-08 03:08:59 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67.2.2 1996-03-08 21:39:18 cfields Exp $
  */
 
 #include <stdio.h>
@@ -315,7 +315,7 @@ char *display;
 	cleanup(NULL);
 	return(errbuf);
     }
-#ifndef SOLARIS 
+#ifdef ultrix
     /* Make sure root login is on a secure tty */
     if (pwd->pw_uid == ROOT) {
 	struct ttyent *te;
