@@ -1,41 +1,65 @@
+# Disk geometry: <SUN1.05 cyl 2036 alt 2 hd 14 sec 72>
+#
+# Part      Tag    Flag     Cylinders        Size       Blocks
+#   0       root    wm       0 -   97       48.23MB    (98/0/0)
+#   1       swap    wu     424 -  708      140.27MB    (285/0/0)
+#   2     backup    wu       0 - 2035     1002.09MB    (2036/0/0)
+#   3 unassigned    wm     709 -  912      100.41MB    (204/0/0)
+#   4 unassigned    wm       0               0         (0/0/0)
+#   5        usr    wm      98 -  423      160.45MB    (326/0/0)
+#   6        var    wm     913 - 2035      552.73MB    (1123/0/0)
+#   7 unassigned    wm       0               0         (0/0/0)
 0
 partition
-print
+
 0
 root
-
+wm
 0
-30mb
+98c
+
 1
 swap
+wu
+424
+285c
 
-61
-150mb
+2
+backup
+wu
+0
+2036c
+
 3
 unassigned
+wm
+709
+204c
 
-366
-100mb
 4
 unassigned
-
+wm
 0
-0mb
+0c
+
 5
 usr
+wm
+98
+326c
 
-570
-120mb
 6
 var
+wm
+913
+1123c
 
-814
-1222c
 7
 unassigned
-
+wm
 0
-0mb
+0c
+
 label
 y
 print
