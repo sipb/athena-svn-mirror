@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.53 1993-05-14 14:22:35 vanharen Exp $
+ *	$Id: requests_olc.c,v 1.54 1993-08-05 19:27:00 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.53 1993-05-14 14:22:35 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.54 1993-08-05 19:27:00 vanharen Exp $";
 #endif
 #endif
 
@@ -892,7 +892,8 @@ olc_ask(fd, request)
     question_len = strlen(text);
     question = (char *) malloc(question_len+1);
     if (!question) {
-      log_error("Couldn't malloc %d bytes for question");
+      sprintf(msgbuf,"Couldn't malloc %d bytes for question",question_len+1);
+      log_error(msgbuf);
       return(send_response(fd,ERROR));
     }
     question[question_len] = '\0';
