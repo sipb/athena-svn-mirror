@@ -1,5 +1,5 @@
 .\" This file uses -man macros.
-.TH XDSC 1 "August 6, 1991"
+.TH XDSC 1 "May 14, 1992"
 .SH NAME
 \fIxdsc\fR \- X interface to the discuss system
 .SH SYNOPSIS
@@ -53,8 +53,9 @@ The upper text pane initially contains a listing of the meetings you
 attend.  The current meeting, i.e., the one from which you are
 reading transactions, will have a plus sign ("+") next to it.  
 To change meetings, you
-can either double-click on a meeting's line with mouse button one, or use
-the \fIUp\fP and \fIDown\fP buttons or the arrow keys as described below.
+can either double-click on a meeting's line with mouse button one, use
+the \fIUp\fP and \fIDown\fP buttons, or use the arrow keys as described
+under "Keyboard Equivalents" below.
 If this
 is the first time you have used \fIdiscuss\fP in any form, only two
 meetings will be listed, namely "New_meetings" and "Everybody."  
@@ -96,9 +97,10 @@ will already be filled in, and the user need only confirm the action
 by pressing the \fIAdd\fP or \fIDelete\fP button at the bottom of the 
 dialog box.
 
-The typical procedure for adding new meetings is as follows:  Click on
-the line for New_meetings (with button two) in the upper text pane.  Move
-through meeting announcements with the \fIleft-arrow\fP and \fIright-arrow\fP
+The typical procedure for adding new meetings is as follows:  Read the
+New_meetings meeting by swiftly double-clicking on its line in the upper
+text pane.
+Move through meeting announcements with the \fInext\fP and \fIprev\fP
 buttons,
 and add the meetings which seem interesting by selecting \fIadd meeting\fP
 from the \fIconfigure\fP menu and pressing the \fIAdd\fP button at the bottom
@@ -193,6 +195,7 @@ chicken out and decide not to send the transaction.
 Is used for writing the current transaction to a file.  It pops up a
 dialog box where the user can enter a file name, and pressing the
 \fIWrite\fP button causes the transaction to be written out to this file.
+The \fImail to someone\fP feature is not currently available.
 
 .SH KEYBOARD EQUIVALENTS
 Xdsc has been designed to minimize dependance on a mouse.  Nearly every
