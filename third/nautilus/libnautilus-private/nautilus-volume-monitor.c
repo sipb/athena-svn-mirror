@@ -739,9 +739,27 @@ nautilus_volume_get_target_uri (const NautilusVolume *volume)
 gboolean 
 nautilus_volume_should_integrate_trash (const NautilusVolume *volume)
 {
+	struct stat home_stat;
+
 	g_return_val_if_fail (volume != NULL, FALSE);
-	return volume->file_system_type != NULL
-		&& volume->file_system_type->can_handle_trash;
+	if (volume->file_system_type != NULL
+	    && volume->file_system_type->can_handle_trash)
+		return TRUE;
+
+	/* Athena hack:
+	 * We return TRUE if this volume contains the user's home
+	 * directory and is writable, regardless of the file system
+	 * type's "can_handle_trash" setting, since the volume's trash
+	 * directory will be in the home directory in that case.  This
+	 * supports use of the trash directory in an AFS home directory,
+	 * without having to specify the afs file system type as
+	 * supporting trash directories.
+	 */
+	if (!volume->is_read_only
+	    && stat(g_get_home_dir(), &home_stat) == 0
+	    && volume->device == home_stat.st_dev)
+		return TRUE;
+	return FALSE;
 }
 
 const char *
