@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.8 1994-08-14 16:56:51 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.9 1995-05-26 03:43:13 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -664,7 +664,7 @@ main(argc, argv)
   int auxinput = -1;
   int size=0;
   struct stat buf;
-#if defined(SOLARIS) || defined(_IBMR2)
+#ifndef ultrix
   struct sigaction act;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
@@ -674,7 +674,7 @@ main(argc, argv)
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
 
-#if defined(SOLARIS) || defined(_IBMR2)
+#ifndef ultrix /* s.b. ifdef POSIX but need to test on ultrix */
   act.sa_handler= (void (*)()) sighandler;
   (void) sigaction(SIGHUP, &act, NULL);
   (void) sigaction(SIGFPE, &act, NULL);
