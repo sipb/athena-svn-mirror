@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.22 1988-02-05 15:05:07 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.23 1988-02-05 15:40:23 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
@@ -393,7 +393,6 @@ int sig;
 	/*NOTREACHED*/
 }
 
-#ifdef DEBUG
 static void
 dbug_on()
 {
@@ -407,8 +406,8 @@ dbug_off()
 	syslog(LOG_DEBUG, "debugging turned off");
 	zdebug = 0;
 }
-#endif
 
+#ifndef DEBUG
 /*
  * detach from the terminal
  */
@@ -433,3 +432,4 @@ detach()
 	(void) close(i);
 
 }
+#endif !DEBUG
