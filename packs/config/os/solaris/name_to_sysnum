@@ -58,7 +58,16 @@ umask			60
 chroot			61
 fcntl			62
 ulimit			63
-afs			73
+afs			65
+tasksys			70
+acctctl			71
+exacctsys		72
+reserved_73		73
+reserved_74		74
+reserved_75		75
+reserved_76		76
+reserved_77		77
+reserved_78		78
 rmdir			79
 mkdir			80
 getdents		81
@@ -147,7 +156,9 @@ pread			173
 pwrite			174
 llseek			175
 inst_sync		176
+srmlimitsys		177
 kaio			178
+cpc			179
 tsolsys			184
 acl			185
 c2audit			186
@@ -215,3 +226,5 @@ lwp_mutex_unlock	250
 lwp_mutex_trylock	251
 lwp_mutex_init		252
 cladm			253
+lwp_sigtimedwait	254
+umount2			255
