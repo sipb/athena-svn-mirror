@@ -1246,7 +1246,7 @@ retrieve(cmd, name)
 	} else {
 		char line[FTP_BUFSIZ];
 
-		(void) sprintf(line, cmd, name), name = line;
+		(void) snprintf(line, sizeof(line), cmd, name), name = line;
 		fin = ftpd_popen(line, "r"), closefunc = ftpd_pclose;
 		st.st_size = -1;
 #ifndef NOSTBLKSIZE
@@ -1418,7 +1418,7 @@ dataconn(name, size, mode)
 {
 	char sizebuf[32];
 	FILE *file;
-	int retry = 0, tos;
+	int retry = 0, tos, on = 1;
 
 	file_size = size;
 	byte_count = 0;
@@ -1446,6 +1446,9 @@ dataconn(name, size, mode)
 		    sizeof(int));
 #endif
 #endif
+		setsockopt(pdata, SOL_SOCKET, SO_KEEPALIVE,
+			   (void *)&on, sizeof(on));
+
 		reply(150, "Opening %s mode data connection for %s%s.",
 		     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 		return(fdopen(pdata, mode));
@@ -1479,6 +1482,7 @@ dataconn(name, size, mode)
 		data = -1;
 		return (NULL);
 	}
+	setsockopt(data, SOL_SOCKET, SO_KEEPALIVE, (void *)&on, sizeof(on));
 	reply(150, "Opening %s mode data connection for %s%s.",
 	     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 	return (file);
@@ -1497,7 +1501,7 @@ secure_error(fmt, p1, p2, p3, p4, p5)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 #else
 	sprintf(buf, fmt, p1, p2, p3, p4, p5);
@@ -1686,7 +1690,7 @@ statfilecmd(filename)
 	int c;
 	char str[FTP_BUFSIZ], *p;
 
-	(void) sprintf(line, "/bin/ls -lgA %s", filename);
+	(void) snprintf(line, sizeof(line), "/bin/ls -lgA %s", filename);
 	fin = ftpd_popen(line, "r");
 	lreply(211, "status of %s:", filename);
 	p = str;
@@ -1804,10 +1808,10 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 #else
-	sprintf(buf, fmt, p0, p1, p2, p3, p4, p5);
+	snprintf(buf, sizeof(buf), fmt, p0, p1, p2, p3, p4, p5);
 #endif
 
 	if (auth_type) {
@@ -1903,7 +1907,7 @@ lreply(n, fmt, p0, p1, p2, p3, p4, p5)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 #else
 	sprintf(buf, fmt, p0, p1, p2, p3, p4, p5);
@@ -2183,6 +2187,7 @@ gunique(local)
 	struct stat st;
 	char *cp = strrchr(local, '/');
 	int count = 0;
+	int cplen;
 
 	if (cp)
 		*cp = '\0';
@@ -2192,11 +2197,12 @@ gunique(local)
 	}
 	if (cp)
 		*cp = '/';
-	(void) strcpy(new, local);
+	(void) strncpy(new, local, sizeof(new) - 1);
 	cp = new + strlen(new);
+	cplen = sizeof(new) - strlen(new) - 2;
 	*cp++ = '.';
 	for (count = 1; count < 100; count++) {
-		(void) sprintf(cp, "%d", count);
+		(void) snprintf(cp, cplen, "%d", count);
 		if (stat(new, &st) < 0)
 			return(new);
 	}
@@ -2542,7 +2548,7 @@ char *fmt;
         va_start(ap, fmt);
         if (dlevel == PROT_C) rval = vfprintf(stream, fmt, ap);
         else {
-                vsprintf(s, fmt, ap);
+                vsnprintf(s, sizeof(s), fmt, ap);
                 rval = secure_write(fileno(stream), s, strlen(s));
         }
         va_end(ap);
@@ -2642,7 +2648,7 @@ send_file_list(whichfiles)
 			    dir->d_name[2] == '\0')
 				continue;
 
-			sprintf(nbuf, "%s/%s", dirname, dir->d_name);
+			snprintf(nbuf, sizeof(nbuf), "%s/%s", dirname, dir->d_name);
 
 			/*
 			 * We have to do a stat to insure it's
