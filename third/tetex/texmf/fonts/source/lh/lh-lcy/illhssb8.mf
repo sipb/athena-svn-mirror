@@ -1,7 +1,0 @@
-% This is illhssb8.mf in text format as of 2000/12/9
-% created by LHfonts (TeX4MF) version 3.4
-%
-%
-
-def fonteq=4 enddef;
-input fikparm;
