@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.2 1990-05-26 13:35:00 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.3 1993-06-18 14:35:28 root Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/05/26  13:35:00  tom
+ * release 7.0e
+ * 
  * Revision 1.1  90/04/26  15:30:36  tom
  * Initial revision
  * 
@@ -31,7 +34,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.2 1990-05-26 13:35:00 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/at_grp.c,v 1.3 1993-06-18 14:35:28 root Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -337,7 +340,7 @@ lu_atent(varnode, repl, instptr, reqflg)
 				syslog(LOG_ERR, "lu_atent: malloc: %m");
 				return(BUILD_ERR);
 			}
-#if defined(SUN40)
+#if defined(SUN40) || defined (SOLARIS)
 			bcopy((char *)&at.at_enaddr, (char *)repl->val.value.str.str, sizeof(at.at_enaddr));
 #else
 #      if defined(BSD43) || defined(ULTRIX2_2)

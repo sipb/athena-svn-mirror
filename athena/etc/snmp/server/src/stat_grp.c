@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v $
- *    $Author: tom $
+ *    $Author: root $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 2.1  93/02/19  15:14:50  tom
+ * ported load av stuff to decmips (very quickly)
+ * 
  * Revision 2.0  92/04/22  02:05:13  tom
  * release 7.4
  * 	removed version stuff from this file
@@ -45,7 +48,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 2.1 1993-02-19 15:14:50 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 2.2 1993-06-18 14:35:54 root Exp $";
 #endif
 
 
@@ -220,8 +223,7 @@ get_rtload(ret)
 
 #if defined(vax) || defined(ibm032)
   double avenrun[3];
-#endif
-#if defined(AIX) || defined(mips) || defined(RSPOS)
+#else
   int avenrun[3];
 #endif
 
@@ -246,8 +248,8 @@ get_rtload(ret)
       syslog(LOG_ERR, "avenrun read(%d, %#x, %d) failed.\n",
 	     kmem, avenrun, sizeof(avenrun));
 #else
-      syslog(LOG_ERR, "avenrun read(%d, %#x, %d) failed: %s\n",
-	      kmem, avenrun, sizeof(avenrun), sys_errlist[errno]);
+      syslog(LOG_ERR, "avenrun read(%d, %#x, %d) failed\n",
+	      kmem, avenrun, sizeof(avenrun));
 #endif
       return(BUILD_ERR);
     } 
@@ -304,7 +306,7 @@ get_inuse(ret)
   ucount = loop = 0;
   while(read(fd,lbuf,usize) > 0) 
     {
-#ifdef RSPOS
+#if defined(RSPOS) || defined(SOLARIS)
       if(uptr->ut_type != USER_PROCESS)
 	continue;
 #endif /* RSPOS */

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.2 1990-05-26 13:34:53 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.3 1993-06-18 14:35:19 root Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/05/26  13:34:53  tom
+ * release 7.0e
+ * 
  * Revision 1.1  90/04/26  15:28:15  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.2 1990-05-26 13:34:53 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/agent.c,v 1.3 1993-06-18 14:35:19 root Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -215,7 +218,9 @@ get_agent_var(varnode, repl, instptr, reqflg)
                 }
 		keynet.sin_addr.s_addr = (u_long)ntohl(keynet.sin_addr.s_addr);
 getanother:
+#ifndef SOLARIS
         	if (find_a_rt(&keynet, &rte, reqflg) <= 0)
+#endif
                 	return(BUILD_ERR);
 
 		krt = (struct sockaddr_in *)&rte.rt_dst;

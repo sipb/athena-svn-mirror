@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v $
- *    $Author: tom $
+ *    $Author: root $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 2.0  92/04/22  01:56:13  tom
+ * release 7.4
+ * 	no changes
+ * 
  * Revision 1.3  90/05/26  13:40:30  tom
  * athena release 7.0e
  * 
@@ -25,7 +29,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 2.0 1992-04-22 01:56:13 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 2.1 1993-06-18 14:35:46 root Exp $";
 #endif
 
 #include "include.h"
