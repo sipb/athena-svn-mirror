@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.39 1991-01-22 13:26:02 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.40 1991-02-01 15:52:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.39 1991-01-22 13:26:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.40 1991-02-01 15:52:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -171,6 +171,7 @@ olc_on(fd, request)
   else
     send_response(fd,SUCCESS);
 
+  needs_backup = TRUE;
   return(SUCCESS);
 }
 
@@ -457,6 +458,7 @@ olc_who(fd,request)
 	      set_status(requester, PENDING); */
 	    olc_broadcast_message("resurrection",message, 
 				  requester->question->topic);
+	  needs_backup = TRUE;
 	}
     }
 
