@@ -134,6 +134,8 @@ DASH_APP_DIR = XAppLoadDir
 CONSOLE_BIN_DIR = BinDir
 CONSOLE_XBM_DIR = ${INCDIR}/bitmaps
 CONSOLE_APP_DIR = XAppLoadDir
+XCLUSTER_BIN_DIR = BinDir
+XCLUSTER_APP_DIR = XAppLoadDir
 
 /*
  * Two more paths...  these are where libXj.a will look for bitmap files
