@@ -15,24 +15,27 @@
 
 /* This is the client for the lert system. */
 
-static const char rcsid[] = "$Id: lert.c,v 1.7 1999-12-09 22:24:24 danw Exp $";
+static const char rcsid[] = "$Id: lert.c,v 1.8 1999-12-13 15:55:41 danw Exp $";
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <krb.h>
-#include <des.h>
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
+#include <sys/stat.h>
 #include <sys/time.h>
-#include <hesiod.h>
-#include <string.h>
-#include <pwd.h>
+
 #include <errno.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <pwd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <des.h>
+#include <hesiod.h>
+#include <krb.h>
+
 #include "lert.h"
 
 static struct timeval timeout = { LERT_TIMEOUT, 0 };
@@ -47,146 +50,169 @@ static void usage(char *pname, char *errname)
 	  pname, errname, pname);
 }
 
-static int lert_says(char *get_lerts_blessing, int no_p)
+static char *lert_says(int no_more)
 {
-  KTEXT_ST authent;
-  unsigned char packet[2048];
-  unsigned char ipacket[2048];
-  u_long iplen;
-  int biplen;
-  int gotit;
+  void *hes_context = NULL;
+  char *lert_host, *message;
   struct hostent *hp;
+  struct servent *sp;
   struct sockaddr_in sin, lsin;
-  fd_set readfds;
-  int i;
-  char *ip;
-  char **tip;
-  int tries;
-  char srealm[REALM_SZ];
-  char sname[SNAME_SZ];
-  char sinst[INST_SZ];
-  char *cp;
-  Key_schedule sched;
+  char *cp, *srealm, *sinst;
+  KTEXT_ST authent;
   CREDENTIALS cred;
-  int plen;
-  int status;
-  int s;
-  u_long checksum_sent;
-  u_long checksum_rcv;
+  Key_schedule sched;
+  int plen, packetsize, s, i, tries, status, gotit;
+  unsigned char *packet;
+  fd_set readfds;
   MSG_DAT msg_data;
-  char hostname[256];
 
   /* Find out where lert lives. (Note the presumption that there is
    * only one lert!)
    */
-  tip = hes_resolve(LERT_SERVER, LERT_TYPE);
-  if (tip == NULL)
+  lert_host = NULL;
+  if (hesiod_init(&hes_context) == 0)
     {
-      /* No Hesiod available. Fall back to hardcoded. */
-      ip = LERT_HOME;
+      char **slocs = hesiod_resolve(hes_context, LERT_SERVER, LERT_TYPE);
+      if (slocs)
+	{
+	  lert_host = strdup(slocs[0]);
+	  if (!lert_host)
+	    bombout(ERR_MEMORY);
+	  hesiod_free_list(hes_context, slocs);
+	}
     }
-  else
-    ip = tip[0];
+  if (!lert_host)
+    {
+      lert_host = strdup(LERT_HOME);
+      if (!lert_host)
+	bombout(ERR_MEMORY);
+    }
 
-  /* Find out what Kerberos realm the server is in and get a ticket
-   * for it.
-   */
-  cp = krb_realmofhost(ip);
-  if (cp == NULL)
-    bombout(ERR_KERB_REALM);
-  strcpy(srealm, cp);
-
-  /* Resolve hostname for service principal. */
-  cp = krb_get_phost(ip);
-  if (cp == NULL)
-    bombout(ERR_KERB_PHOST);
-  strcpy(sinst, cp);
-
-  strcpy(sname, LERT_SERVICE);
-  checksum_sent = (u_long) no_p;
-
-  status = krb_mk_req(&authent, sname, sinst, srealm, checksum_sent);
-  if (status != KSUCCESS)
-    bombout(ERR_KERB_AUTH);
-
-  /* Now do the client-server exchange. */
-
-  /* Zero out the packets. */
-  memset(packet, 0, sizeof(packet));
-  memset(ipacket, 0, sizeof(ipacket));
-
-  hp = gethostbyname(ip);
+  hp = gethostbyname(lert_host);
   if (hp == NULL)
     bombout(ERR_HOSTNAME);
 
   memset(&sin, 0, sizeof(sin));
   sin.sin_family = hp->h_addrtype;
   memcpy(&sin.sin_addr, hp->h_addr, sizeof(sin.sin_addr));
+
+  /* Find out what port lert is on. */
   sin.sin_port = htons(LERT_PORT);
+  sp = getservbyname(LERT_SERVED, LERT_PROTO);
+  if (sp)
+    sin.sin_port = sp->s_port;
+  else if (hes_context)
+    {
+      sp = hesiod_getservbyname(hes_context, LERT_SERVED, LERT_PROTO);
+      sin.sin_port = sp->s_port;
+      hesiod_free_servent(hes_context, sp);
+    }
+    
+  if (hes_context)
+    hesiod_end(hes_context);
+
+  /* Find out what Kerberos realm the server is in and get a ticket
+   * for it.
+   */
+  cp = krb_realmofhost(lert_host);
+  if (cp == NULL)
+    bombout(ERR_KERB_REALM);
+  srealm = strdup(cp);
+  if (!srealm)
+    bombout(ERR_MEMORY);
+
+  /* Resolve hostname for service principal. */
+  cp = krb_get_phost(lert_host);
+  free(lert_host);
+  if (cp == NULL)
+    bombout(ERR_KERB_PHOST);
+  sinst = strdup(cp);
+  if (!sinst)
+    bombout(ERR_MEMORY);
+
+  status = krb_mk_req(&authent, LERT_SERVICE, sinst, srealm, no_more);
+  if (status != KSUCCESS)
+    bombout(ERR_KERB_AUTH);
+
+  /* Get the session key now... we'll need it later. */
+  status = krb_get_cred(LERT_SERVICE, sinst, srealm, &cred);
+  if (status != KSUCCESS)
+    bombout(ERR_KERB_CRED);
+  des_key_sched(cred.session, sched);
+
+  free(srealm);
+  free(sinst);
 
   /* Lert's basic protocol:
-   * Client send version, one byte query code, and authentication.
+   * Client sends version, one byte query code, and authentication.
    */
-  packet[0] = LERT_VERSION;
-  packet[1] = no_p;
-  memcpy(&packet[LERT_LENGTH], &authent, sizeof(int) + authent.length);
   plen = LERT_LENGTH + sizeof(int) + authent.length;
+  packet = malloc(plen);
+  if (!packet)
+    bombout(ERR_MEMORY);
+  packet[0] = LERT_VERSION;
+  packet[1] = no_more;
+  memcpy(packet + LERT_LENGTH, &authent, sizeof(int) + authent.length);
 
   s = socket(AF_INET, SOCK_DGRAM, 0);
   if (s < 0)
     bombout(ERR_SOCKET);
   if (connect(s, (struct sockaddr *)&sin, sizeof(struct sockaddr_in)) < 0)
     bombout(ERR_CONNECT);
-  tries = RETRIES;
-  gotit = 0;
-  while (tries > 0)
-    {
-      if (send(s, packet, plen, 0) < 0)
-	bombout(ERR_SEND);
-      FD_ZERO(&readfds);
-      FD_SET(s, &readfds);
-      if ((select(s+1, &readfds, NULL, NULL, &timeout) < 1)
-	  || !FD_ISSET(s, &readfds))
-	{
-	  tries--;
-	  continue;
-	}
-
-      iplen = recv(s, ipacket, 2048, 0);
-      if (iplen < 0)
-	bombout(ERR_RCV);
-
-      gotit++;
-      break;
-    }
-
-  /* Get my address. */
+  /* Get my address, for krb_rd_priv. */
   memset(&lsin, 0, sizeof(lsin));
   i = sizeof(lsin);
   if (getsockname(s, (struct sockaddr *)&lsin, &i) < 0)
     bombout(LERT_NO_SOCK);
 
-  gethostname(hostname, sizeof(hostname));
-  hp = gethostbyname(hostname);
-  memcpy(&lsin.sin_addr.s_addr, hp->h_addr, hp->h_length);
-
-  shutdown(s, 2);
-  close(s);
-  if (!gotit)
+  gotit = 0;
+  for (tries = 0; tries < RETRIES && !gotit; tries++)
+    {
+      if (send(s, packet, plen, 0) < 0)
+	bombout(ERR_SEND);
+      FD_ZERO(&readfds);
+      FD_SET(s, &readfds);
+      gotit = select(s + 1, &readfds, NULL, NULL, &timeout) == 1;
+    }
+  free(packet);
+  if (tries == 0)
     bombout(ERR_TIMEOUT);
 
-  status = krb_get_cred(sname, sinst, srealm, &cred);
-  if (status != KSUCCESS)
-    bombout(ERR_KERB_CRED);
-  des_key_sched(cred.session, sched);
+  /* Read the response. */
+  packetsize = 2048;
+  packet = malloc(packetsize);
+  if (!packet)
+    bombout(ERR_MEMORY);
+  plen = 0;
+  while (1)
+    {
+      int nread;
 
-  status = krb_rd_priv(ipacket, iplen, sched, cred.session,
+      nread = recv(s, packet + plen, packetsize - plen, 0);
+      if (nread < 0)
+	bombout(ERR_RCV);
+      plen += nread;
+
+      if (nread < packetsize - plen)
+	break;
+
+      packetsize *= 2;
+      packet = realloc(packet, packetsize);
+      if (!packet)
+	bombout(ERR_MEMORY);
+    }
+
+  /* Now close the socket. */
+  shutdown(s, 2);
+  close(s);
+
+  status = krb_rd_priv(packet, plen, sched, cred.session,
 		       &sin, &lsin, &msg_data);
   if (status)
     bombout(ERR_SERVER);
 
   if (msg_data.app_length == 0)
-    return LERT_NOT_IN_DB;
+    return NULL;
 
   /* At this point, we have a packet.  Check it out:
    * [0] LERT_VERSION
@@ -196,18 +222,22 @@ static int lert_says(char *get_lerts_blessing, int no_p)
 
   if (msg_data.app_data[0] != LERT_VERSION)
     bombout(ERR_VERSION);
+
   if (msg_data.app_data[1] == LERT_MSG)
     {
       /* We have a message from the server. */
-      memcpy(get_lerts_blessing, msg_data.app_data + LERT_CHECK,
+      message = malloc(msg_data.app_length - LERT_CHECK + 1);
+      if (!message)
+	bombout(ERR_MEMORY);
+      memcpy(message, msg_data.app_data + LERT_CHECK,
 	   msg_data.app_length - LERT_CHECK);
-      return LERT_GOTCHA;
+      message[msg_data.app_length - LERT_CHECK] = '\0';
     }
   else
-    {
-      get_lerts_blessing[0] = '\0';
-      return LERT_NOT_IN_DB;
-    }
+    message = NULL;
+  free(packet);
+
+  return message;
 }
 
 /* General error reporting */
@@ -250,6 +280,9 @@ static void bombout(int mess)
 	case ERR_MEMORY:
 	  fprintf(stderr, "Out of memory\n");
 	  break;
+	case ERR_FILE:
+	  fprintf(stderr, "Could not read message file\n");
+	  break;
 	default:
 	  fprintf(stderr, "A problem (%d) occurred when checking the "
 		  "database\n", mess);
@@ -262,189 +295,149 @@ static void bombout(int mess)
   exit(1);
 }
 
-/* Get a subject line for a lert email message.
- * (Returns malloc'ed memory.)
- */
-static char *get_lert_sub(void)
+/* Send a message from lert via zephyr. */
+static void zephyr_message(char *user, char *header, char *message)
 {
-  FILE *myfile;
-  char buffer[250];
-  char *turkey;
-  char *mugwump;
+  FILE *p;
+  char *cmd;
 
-  strcpy(buffer, LERTS_DEF_SUBJECT);
-
-  myfile = fopen(LERTS_MSG_SUBJECT, "r");
-  if (myfile != NULL)
-    {
-      turkey = fgets(buffer, 250, myfile);
-      if (turkey == NULL)
-	strcpy(buffer, LERTS_DEF_SUBJECT);
-      fclose(myfile);
-    }
-
-  /* Take care of the line feed read by fgets. */
-  mugwump = strchr(buffer, '\n');
-  if (mugwump != NULL)
-    *mugwump = '\0';
-
-  /* Now make a buffer for the subject. */
-  mugwump = malloc(strlen(buffer) + 1);
-  if (mugwump == NULL)
+  cmd = malloc(11 + strlen(user));
+  if (!cmd)
     bombout(ERR_MEMORY);
-  strcpy(mugwump, buffer);
-  return mugwump;
+  sprintf(cmd, "zwrite -q %s", user);
+
+  p = popen(cmd, "w");
+  if (!p)
+    bombout(NO_PROCS);
+  fputs("@bold{", p);
+  fputs(header, p);
+  fputs("}", p);
+  fputs(message, p);
+  pclose(p);
 }
 
-/* View the message from lert. Currently supports cat, zephyr,
- * and email messaging.
- */
-static void view_message(char *message, int type)
+/* Send a message from lert via mail. */
+static void mail_message(char *user, char *subject,
+			 char *header, char *message)
 {
-  char *whoami;
-  char *ptr;
-  char *tail;
-  char *type_buffer;
-  char buffer[512];
-  struct passwd *pw;
-  int status;
+  FILE *p;
+  char *cmd;
 
-  /* These buffers permit centralized handling of the various options.
-   * Note that both z and m require on the fly construction (at least
-   * user name) so buffers are kept roomy...
-   */
-  char zprog[128];
-  char mprog[512];
-  char cprog[4];
+  cmd = malloc(20 + strlen(subject) + strlen(user));
+  if (!cmd)
+    bombout(ERR_MEMORY);
+  sprintf(cmd, "mhmail %s -subject \"%s\"", user, subject);
 
-  strcpy(zprog, "zwrite -q ");
-  strcpy(mprog, "mhmail ");
-  strcpy(cprog, "cat");
+  p = popen(cmd, "w");
+  if (!p)
+    bombout(NO_PROCS);
+  fputs(header, p);
+  fputs(message, p);
+  pclose(p);
+}
 
-  whoami = getenv("USER");
-  if (!whoami)
-    whoami = getlogin();
-  if (!whoami)
+/* Print a message from lert to stdout. */
+static void cat_message(char *header, char *message)
+{
+  fputs(header, stdout);
+  fputs(message, stdout);
+}	  
+
+/* Read a file from the lert directory. */
+static char *read_file(char *name)
+{
+  struct stat st;
+  int fd;
+  char *buf;
+
+  fd = open(name, O_RDONLY);
+  if (fd < 0 || fstat(fd, &st) < 0)
+    bombout(ERR_FILE);
+
+  buf = malloc(st.st_size + 1);
+  if (!buf)
+    bombout(ERR_MEMORY);
+
+  if (read(fd, buf, st.st_size) < st.st_size)
+    bombout(ERR_FILE);
+  buf[st.st_size] = '\0';
+  close(fd);
+
+  return buf;
+}
+
+/* View the message from lert. */
+static void view_message(char *msgs, int type)
+{
+  char name[sizeof(LERTS_MSG_FILES) + 2];
+  char *user, *subject = NULL;
+  char *header, *body = NULL;
+
+  if (type == LERT_Z || type == LERT_MAIL)
     {
+      struct passwd *pw;
+
       pw = getpwuid(getuid());
       if (pw)
-	whoami = pw->pw_name;
+	user = pw->pw_name;
       else
-	bombout(ERR_USER);
+	{
+	  user = getenv("USER");
+	  if (!user)
+	    user = getlogin();
+	}
+      if (!user)
+	type = LERT_CAT;
     }
 
-  ptr = message;
-  while (*ptr)
+  if (type == LERT_MAIL)
     {
-    switch (type)
-      {
-      case LERT_Z:
-	/* zwrite -q whoami */
-	type_buffer = zprog;
-	strcat(type_buffer, whoami);
-	type = LERT_HANDLE;
-	break;
-
-      case LERT_MAIL:
-	/* cat ... | mhmail whoami -subject "lert's msg" */
-	type_buffer = mprog;
-	strcat(type_buffer, whoami);
-	strcat(type_buffer, " -subject \"");
-	strcat(type_buffer, get_lert_sub());
-	strcat(type_buffer, "\" ");
-	type = LERT_HANDLE;
-	break;
-
-      case LERT_HANDLE:
-	/* Take care of the case where there is one lonely message.
-	 * Just combine the two (lert0 and lertx) for the zwrite
-	 * hope the writer of the messages realizes they will be
-	 * jammed together...
-	 */
-
-	if (strlen(ptr) == 1)
-	  {
-	    strcpy(buffer, "cat ");
-	    strcat(buffer, LERTS_MSG_FILES);
-	    strcat(buffer, "0 ");
-	    strcat(buffer, LERTS_MSG_FILES);
-	    if (isalnum(*ptr))
-	      strcat(buffer, ptr);
-	    else
-	      bombout(ERR_SERVED);
-	    strcat(buffer, " | ");
-	    strcat(buffer, type_buffer);
-	    status = system(buffer);
-	    if (status)
-	      {
-		/* If zwrite or email failed, try cat. */
-		if (type_buffer != cprog)
-		  type = LERT_CAT;
-		else
-		  bombout(NO_PROCS);
-		break;
-	      }
-	    ptr++;
-	  }
-	else
-	  {
-	    /* Do multiple message notification. */
-	    strcpy(buffer, type_buffer);
-	    strcat(buffer, " < ");
-	    strcat(buffer, LERTS_MSG_FILES);
-
-	    tail = buffer + strlen(buffer);
-	    *(tail + 1) = '\0';
-
-	    /* Always start with the lert0. */
-	    *tail = '0';
-	    status = system(buffer);
-	    if (status)
-	      {
-		/* If zwrite or emai failed, try cat. */
-		if (type_buffer != cprog)
-		  type = LERT_CAT;
-		else
-		  bombout(NO_PROCS);
-		break;
-	      }
-
-	    /* Now step through the rest of the messages for this user. */
-	    while (*ptr)
-	      {
-		if (isalnum(*ptr))
-		  *tail = *ptr;
-		else
-		  bombout(ERR_SERVED);
-		status = system(buffer);
-		if (status)
-		  bombout(NO_PROCS);
-		ptr++;
-	      }
-	  }
-	break;
-
-      case LERT_CAT:
-      default:
-	/* Cat notification. */
-	type_buffer = cprog;
-	type = LERT_HANDLE;
-	break;
-
-      }
+      subject = read_file(LERTS_MSG_SUBJECT);
+      if (!subject)
+	subject = strdup(LERTS_DEF_SUBJECT);
+      if (!subject)
+	bombout(ERR_MEMORY);
     }
+
+  header = read_file(LERTS_MSG_FILES "0");
+
+  while (*msgs)
+    {
+      sprintf(name, "%s%c", LERTS_MSG_FILES, *msgs);
+      body = read_file(name);
+      switch (type)
+	{
+	case LERT_Z:
+	  zephyr_message(user, header, body);
+	  break;
+
+	case LERT_MAIL:
+	  mail_message(user, subject, header, body);
+	  break;
+
+	default:
+	  cat_message(header, body);
+	  break;
+	}
+
+      free(body);
+      msgs++;
+    }
+
+  free(header);
+  free(subject);
 }
 
 int main(int argc, char **argv)
 {
-  char buffer[512];
-  char *get_lerts_blessing;
-  char **xargv = argv;
-  int xargc = argc;
-  int method = LERT_CAT, no_p = FALSE;
-  int result;
+  char *whoami, *message;
+  int method = LERT_CAT, no_more = FALSE;
 
-  get_lerts_blessing = buffer;
+  whoami = strrchr(argv[0], '/');
+  if (whoami)
+    whoami++;
+  else
+    whoami = argv[0];
 
   /* Argument Processing:
    * 	-z or -zephyr: send the message as a zephyrgram.
@@ -454,39 +447,36 @@ int main(int argc, char **argv)
 
   if (argc > 3)
     {
-      usage(argv[0], "too many arguments");
+      usage(whoami, "too many arguments");
       exit(1);
     }
 
-  /* Note: xargc/xargv initialized in declaration. */
-  while (--xargc)
+  /* Note: argc/argv initialized in declaration. */
+  while (--argc)
     {
-      xargv++;
-      if (!strcmp(xargv[0],"-zephyr") || !strcmp(xargv[0],"-z"))
+      argv++;
+      if (!strcmp(argv[0],"-zephyr") || !strcmp(argv[0],"-z"))
 	method = LERT_Z;
-      else if (!strcmp(xargv[0],"-mail") || !strcmp(xargv[0],"-m"))
+      else if (!strcmp(argv[0],"-mail") || !strcmp(argv[0],"-m"))
 	method = LERT_MAIL;
-      else if (!strcmp(xargv[0],"-no") || !strcmp(xargv[0],"-n"))
-	no_p = TRUE;
-      else if (!strcmp(xargv[0],"-quiet") || !strcmp(xargv[0],"-q"))
+      else if (!strcmp(argv[0],"-no") || !strcmp(argv[0],"-n"))
+	no_more = TRUE;
+      else if (!strcmp(argv[0],"-quiet") || !strcmp(argv[0],"-q"))
 	error_messages = FALSE;
       else
 	{
-	  usage(argv[0], xargv[0]);
+	  usage(whoami, argv[0]);
 	  exit(1);
 	}
     }
 
   /* Get the server's string for this user. */
-  result = lert_says(get_lerts_blessing, no_p);
-
-  if (result == LERT_GOTCHA)
-    view_message(get_lerts_blessing, method);
+  message = lert_says(no_more);
+  if (message)
+    {
+      view_message(message, method);
+      free(message);
+    }
 
   return 0;
 }
-
-
-
-
-
