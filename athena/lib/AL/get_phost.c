@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v $
- * $Author: jtkohl $
+ * $Author: vrt $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char *rcsid_phost_c =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.6 1989-01-23 09:25:40 jtkohl Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.7 1993-04-28 18:57:19 vrt Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -41,12 +41,28 @@ char * krb_get_phost(alias)
     char *alias;
 {
     struct hostent *h;
+#ifdef SOLARIS
+    char phost[100];
+    char *p;
+    strcpy(phost, alias);
+    if ((h=gethostbyname(&phost[0])) != (struct hostent *)NULL ) {
+        p = index( h->h_name, '.' );
+#else
     char *phost = alias;
     if ((h=gethostbyname(alias)) != (struct hostent *)NULL ) {
         char *p = index( h->h_name, '.' );
+#endif
         if (p)
             *p = NULL;
+#ifdef SOLARIS
+	p = h->name;
+	do {
+		if (isupper(*p)) *p=tolower(*p);
+	} while  (*p++);
+	strcpy(phost,p);
+#else
         p = phost = h->h_name;
+#endif
         do {
             if (isupper(*p)) *p=tolower(*p);
         } while (*p++);
