@@ -1,11 +1,11 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.15 1998-12-15 02:42:45 ghudson Exp $
+# $Id: config.site,v 1.16 1998-12-20 05:40:14 ghudson Exp $
 #
 
 athena=true
 
 # Set compiler.
-case "${HOSTTYPE}" in
+case "$HOSTTYPE" in
 	sun4)
 		CC=/usr/gcc/bin/gcc
 		;;
@@ -18,13 +18,15 @@ esac
 # of maintenance.  Use headers and libraries from /usr/athena.
 # ATHTOOLROOT is set to the target directory by do.sh for a
 # self-contained build.
-CFLAGS=-g
-CPPFLAGS="$CPPFLAGS -I$ATHTOOLROOT/usr/athena/include"
-CPPFLAGS="$CPPFLAGS -I$ATHTOOLROOT/usr/athena/include/kerberosIV"
-LDFLAGS="$LDFLAGS -L$ATHTOOLROOT/usr/athena/lib"
+[ -n "$CFLAGS" ]	|| CFLAGS=-g
+[ -n "$LDFLAGS" ]	|| LDFLAGS=-L$ATHTOOLROOT/usr/athena/lib
+[ -n "$CPPFLAGS" ]	|| {
+	CPPFLAGS=-I$ATHTOOLROOT/usr/athena/include
+	CPPFLAGS="$CPPFLAGS -I$ATHTOOLROOT/usr/athena/include/kerberosIV"
+}
 
 # Set location of X and Motif includes and libraries.
-case "${HOSTTYPE}" in
+case "$HOSTTYPE" in
 	sun4)
 		x_includes=/usr/openwin/include
 		x_libraries=/usr/openwin/lib
@@ -49,8 +51,8 @@ esac
 [ -n "$with_ares" ]	|| with_ares=yes
 
 prefix=/usr/athena
-datadir='${exec_prefix}/lib'
-sbindir='${exec_prefix}/etc'
+datadir='$exec_prefix/lib'
+sbindir='$exec_prefix/etc'
 sysconfdir=/etc/athena
 lbindir=/bin/athena
 lsbindir=/etc/athena
