@@ -4,13 +4,14 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.3 1990-06-07 21:48:26 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.4 1990-06-07 22:53:45 jik Exp $
 #	$Locker:  $
 #
 
 RANLIB= ranlib
 
-CFLAGS=	-O
+DEFINES= 
+CFLAGS=	-O $(DEFINES)
 LINTFLAGS= -uhvpb
 LINTFILES= error_message.c et_name.c init_et.c com_err.c # perror.c
 LIBOBJS= error_message.o et_name.o init_et.o com_err.o # perror.o
