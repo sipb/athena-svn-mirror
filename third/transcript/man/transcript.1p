@@ -1,11 +1,11 @@
 .TH TRANSCRIPT 1 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1987,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/transcript.1p,v 1.1.1.1 1996-10-07 20:25:40 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/transcript.1p,v 1.2 1996-10-14 05:09:51 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-\*(TS\(emPrograms for accessing P\s-2OST\s+2S\s-2CRIPT\s+2 printers
+TranScript \- Programs for accessing PostScript printers
 .SH DESCRIPTION
 The \*(TS package is a suite of UNIX programs that enables
 UNIX systems to access state-of-the-art \*(PS printers.
@@ -136,11 +136,7 @@ manual page for a more complete description.
 .TP
 .I psdman
 the \*(TS document manager.  Invoked by 
-psinterface
-(System V), or
-psint.sh
-(BSD)
-to process print files.  Calls 
+psint.sh to process print files.  Calls 
 enscript
 to convert text files to \*(PS language format, if necessary.
 psdman 
