@@ -1,27 +1,5 @@
-<HTML
-><HEAD
-><TITLE
->Bonobo Activation .server Files For Applets</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
-REL="HOME"
-TITLE="Panel Applet Writer's Reference Manual"
-HREF="libpanel-applet.html"><LINK
-REL="UP"
-TITLE="Writing Applets"
-HREF="applet-writing.html"><LINK
-REL="PREVIOUS"
-TITLE="Writing Applets"
-HREF="applet-writing.html"><LINK
-REL="NEXT"
-TITLE="Defining a Popup Context Menu"
-HREF="applet-popups.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
+<HTML><HEAD><TITLE>Bonobo Activation .server Files For Applets</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK REL="HOME" TITLE="Panel Applet Writer's Reference Manual" HREF="libpanel-applet.html"><LINK REL="UP" TITLE="Writing Applets" HREF="applet-writing.html"><LINK REL="PREVIOUS" TITLE="Writing Applets" HREF="applet-writing.html"><LINK REL="NEXT" TITLE="Defining a Popup Context Menu" HREF="applet-popups.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
     background: #eeeeee;
     border: solid 1px #aaaaaa;
     padding: 0.5em;
@@ -49,91 +27,11 @@ TYPE="text/css"
 }
 .navigation .title {
     font-size: 200%;
-}</STYLE
-></HEAD
-><BODY
-CLASS="SECT1"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><TABLE
-WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="applet-writing.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="applet-writing.html"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="libpanel-applet.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
-><TH
-WIDTH="100%"
-align="center"
->Panel Applet Writer's Reference Manual</TH
-><TD
-><A
-ACCESSKEY="n"
-HREF="applet-popups.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
-></TD
-></TR
-></TABLE
-><BR
-CLEAR="all"><DIV
-CLASS="SECT1"
-><H1
-CLASS="SECT1"
-><A
-NAME="SERVER-FILES"
->Bonobo Activation .server Files For Applets</A
-></H1
-><P
->Since an applet is a bonobo component, you must write
+}</STYLE></HEAD><BODY CLASS="SECT1" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="applet-writing.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="applet-writing.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="libpanel-applet.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">Panel Applet Writer's Reference Manual</TH><TD><A ACCESSKEY="n" HREF="applet-popups.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><BR CLEAR="all"><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="SERVER-FILES">Bonobo Activation .server Files For Applets</A></H1><P>Since an applet is a bonobo component, you must write
 a .server file so that the bonobo activation daemon is aware that
 your component exists and how to activate it. Copy and paste is
 your friend here ...
-      </P
-><PRE
-CLASS="PROGRAMLISTING"
->&lt;oaf_info&gt;
+      </P><PRE CLASS="PROGRAMLISTING">&lt;oaf_info&gt;
 &lt;oaf_server iid="OAFIID:My_HelloApplet_Factory" type="exe"
             location="test-bonobo-applet"&gt;
 
@@ -159,42 +57,8 @@ CLASS="PROGRAMLISTING"
         &lt;oaf_attribute name="panel:icon" type="string" value="gnome-applets.png"/&gt;
 &lt;/oaf_server&gt;
 &lt;/oaf_info&gt;
-      </PRE
-><P
->Probably the most important thing to note here is that, unlike
+      </PRE><P>Probably the most important thing to note here is that, unlike
 .server files for other bonobo components, applet .server files contain
 two special attributes - 'panel:category' and 'panel:icon'. Both are used
 by the panel to display an entry for the applet in the 'Add to Panel' menu.
-      </P
-></DIV
-><TABLE
-CLASS="navigation"
-WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-ALIGN="left"
-><A
-ACCESSKEY="p"
-HREF="applet-writing.html"
-><B
->&lt;&lt;&lt;&nbsp;Writing Applets</B
-></A
-></TD
-><TD
-ALIGN="right"
-><A
-ACCESSKEY="n"
-HREF="applet-popups.html"
-><B
->Defining a Popup Context Menu&nbsp;&gt;&gt;&gt;</B
-></A
-></TD
-></TR
-></TABLE
-></BODY
-></HTML
->
+      </P></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="applet-writing.html"><B>&lt;&lt;&lt;&nbsp;Writing Applets</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="applet-popups.html"><B>Defining a Popup Context Menu&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>

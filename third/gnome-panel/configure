@@ -1573,7 +1573,7 @@ fi
 
 PACKAGE=gnome-panel
 
-VERSION=2.2.0
+VERSION=2.2.0.1
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -10011,7 +10011,7 @@ _ACEOF
 
 
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk wa vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sp sq sr sv ta tr uk wa vi zh_CN zh_TW"
 
 
 for ac_header in locale.h
@@ -11675,7 +11675,7 @@ if test "x$enable_rebuilds" = "xyes" && \
 fi
 
 
-ac_config_files="$ac_config_files Makefile gnome-panel.spec idl/Makefile gnome-panel/Makefile libpanel-applet/libpanelapplet-2.0.pc libpanel-applet/Makefile po/Makefile.in applets/Makefile applets/fish/Makefile applets/gen_util/Makefile applets/notification_area/Makefile doc/Makefile doc/reference/Makefile doc/reference/panel-applet/Makefile help/Makefile help/C/Makefile help/C/fish/Makefile help/C/clock/Makefile help/C/mailcheck/Makefile help/C/window-list/Makefile help/C/workspace-switcher/Makefile man/Makefile"
+ac_config_files="$ac_config_files Makefile gnome-panel.spec idl/Makefile gnome-panel/Makefile libpanel-applet/libpanelapplet-2.0.pc libpanel-applet/Makefile po/Makefile.in applets/Makefile applets/fish/Makefile applets/gen_util/Makefile applets/notification_area/Makefile doc/Makefile doc/reference/Makefile doc/reference/panel-applet/Makefile help/Makefile help/C/Makefile help/C/fish/Makefile help/C/clock/Makefile help/C/mailcheck/Makefile help/C/window-list/Makefile help/C/workspace-switcher/Makefile help/C/notification_area/Makefile man/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -12187,6 +12187,7 @@ do
   "help/C/mailcheck/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/C/mailcheck/Makefile" ;;
   "help/C/window-list/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/C/window-list/Makefile" ;;
   "help/C/workspace-switcher/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/C/workspace-switcher/Makefile" ;;
+  "help/C/notification_area/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/C/notification_area/Makefile" ;;
   "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
   "default-2" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-2" ;;

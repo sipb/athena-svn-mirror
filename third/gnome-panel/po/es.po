@@ -15,14 +15,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-panel.HEAD\n"
-"POT-Creation-Date: 2003-01-21 18:37+1300\n"
-"PO-Revision-Date: 2003-01-16 09:59GMT\n"
-"Last-Translator: Juan Manuel García Molina <juanma_gm@wanadoo.es>\n"
+"POT-Creation-Date: 2003-02-04 12:29+1300\n"
+"PO-Revision-Date: 2003-01-24 16:05-0300\n"
+"Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: applets/fish/fish.c:128 applets/gen_util/clock.c:909
 #: applets/gen_util/clock.c:1149 applets/gen_util/mailcheck.c:1623
@@ -1314,7 +1314,7 @@ msgstr "_Propiedades"
 
 #: gnome-panel/foobar-widget.c:176 gnome-panel/menu.c:3818
 msgid "Run Program..."
-msgstr "Ejecutar programa..."
+msgstr "Ejecutar un programa..."
 
 #: gnome-panel/foobar-widget.c:180
 msgid "Run applications, if you know the correct command to type in"
@@ -1330,7 +1330,7 @@ msgstr "Busca archivos, carpetas y documentos en su computadora"
 
 #: gnome-panel/foobar-widget.c:213 gnome-panel/menu.c:3853
 msgid "Screenshot..."
-msgstr "Captura de pantalla..."
+msgstr "Capturar la pantalla..."
 
 #: gnome-panel/foobar-widget.c:217 gnome-panel/menu.c:3856
 msgid "Take a screenshot of your desktop"
@@ -1585,7 +1585,7 @@ msgstr "No se puede tomar una captura de pantalla del escritorio actual."
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:2
 msgid "<b>Options</b>"
-msgstr "<b>Opciones</p>"
+msgstr "<b>Opciones</b>"
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:3
 msgid "<b>Preview</b>"

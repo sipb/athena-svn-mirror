@@ -1,6 +1,6 @@
 AC_INIT(gnome-panel)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-panel, 2.2.0)
+AM_INIT_AUTOMAKE(gnome-panel, 2.2.0.1)
 
 # Before making a release, the LT_VERSION string should be modified.
 # The string is of the form C:R:A.
@@ -130,7 +130,7 @@ GETTEXT_PACKAGE=gnome-panel-2.0
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk wa vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sp sq sr sv ta tr uk wa vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 
@@ -285,5 +285,6 @@ help/C/clock/Makefile
 help/C/mailcheck/Makefile
 help/C/window-list/Makefile
 help/C/workspace-switcher/Makefile
+help/C/notification_area/Makefile
 man/Makefile
 ])

@@ -176,7 +176,7 @@ ui_DATA = GNOME_NotificationAreaApplet.xml
 EXTRA_DIST =  	GNOME_NotificationAreaApplet.server.in.in		$(ui_DATA)					update-from-egg.sh				eggmarshalers.list
 
 
-EGGDIR = $(srcdir)/../../libegg/libegg/tray
+EGGDIR = $(srcdir)/../../../libegg/libegg/tray
 
 CLEANFILES =  	GNOME_NotificationAreaApplet.server.in        	GNOME_NotificationAreaApplet.server
 
