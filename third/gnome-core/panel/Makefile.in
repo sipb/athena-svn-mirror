@@ -808,6 +808,8 @@ dockletsConf.sh: dockletsConf.sh.in Makefile
 
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
 
+applet-widget.o applet.o extern.o panel.o status-docklet.o status.o xstuff.o applet-widget.lo applet.lo extern.lo panel.lo status-docklet.lo status.lo xstuff.lo: gnome-panel.h
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
