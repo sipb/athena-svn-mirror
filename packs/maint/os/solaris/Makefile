@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12.2.4 2003-11-04 19:32:32 ghudson Exp $
+# $Id: Makefile,v 1.12.2.5 2003-11-13 01:55:06 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 ATHETCDIR=/usr/athena/etc
@@ -8,6 +8,7 @@ RC0=/etc/rc0.d
 RC1=/etc/rc1.d
 RC2=/etc/rc2.d
 RCS=/etc/rcS.d
+USRLIBDIR=/usr/lib
 
 all:
 
@@ -22,6 +23,7 @@ install:
 	mkdir -p ${DESTDIR}${RC1}
 	mkdir -p ${DESTDIR}${RC2}
 	mkdir -p ${DESTDIR}${RCS}
+	mkdir -p ${DESTDIR}${USRLIBDIR}
 	install -c -m 0755 Xreset ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 Xstartup ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 athena-bind.rc ${DESTDIR}${INITD}/athena-bind
