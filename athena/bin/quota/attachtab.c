@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.2 1991-07-18 22:47:19 probe Exp $
+ * $Id: attachtab.c,v 1.3 1992-04-10 20:23:43 probe Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/attachtab.c,v 1.2 1991-07-18 22:47:19 probe Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/attachtab.c,v 1.3 1992-04-10 20:23:43 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -366,6 +366,7 @@ host_occurs(name)
 	}
 	return (0);
 }
+#endif
 
 /*
  * Lookup an entry in attachtab  --- uses the linked list stored in memory
@@ -377,13 +378,12 @@ struct _attachtab *attachtab_lookup(hesiod)
 
 	p = attachtab_first;
 	while (p) {
-		if (p->explicit == explicit && !hescmp(p, hesiod)) 
+		if (!strcmp(p->hesiodname, hesiod))
 			return(p);
 		p = p->next;
 	}
 	return (NULL);
 }
-#endif
 
 /*
  * Lookup an entry in attachtab by mountpoint --- uses the linked list
