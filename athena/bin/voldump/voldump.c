@@ -13,7 +13,7 @@
 /* voldump: Dump a volume by volume name/ID, server, and partition, without
  *	    using the VLDB.
  *
- * $Id: voldump.c,v 1.7 1999-08-13 22:27:29 danw Exp $
+ * $Id: voldump.c,v 1.8 2000-04-13 20:58:53 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -56,21 +56,23 @@ extern jmp_buf env;
 static int rxInitDone = 0;
 static const char *confdir;
 
-static int32 before(struct cmd_syndesc *as, char *arock);
-static int32 dump_volume(struct cmd_syndesc *as);
-static int32 get_server(const char *aname);
-static int is_part_valid(int32 partId, int32 server, int32 *code);
-static int32 dump(struct rx_call *call, char *rock);
+static int before(struct cmd_syndesc *as, char *arock);
+static int dump_volume(struct cmd_syndesc *as);
+static afs_int32 get_server(const char *aname);
+static int is_part_valid(afs_int32 partId, afs_int32 server, afs_int32 *code);
+static afs_int32 dump(struct rx_call *call, char *rock);
 static int receive_file(int fd, struct rx_call *call, struct stat *status);
-static void print_diagnostics(const char *astring, int32 acode);
-static int UV_DumpVolume(int32 afromvol, int32 afromserver, int32 afrompart,
-			 int32 fromdate, int32 (*dumpfunc)(), char *rock);
+static void print_diagnostics(const char *astring, afs_int32 acode);
+static int UV_DumpVolume(afs_int32 afromvol, afs_int32 afromserver,
+			 afs_int32 afrompart, afs_int32 fromdate,
+			 afs_int32 (*dumpfunc)(), char *rock);
 static void dump_sig_handler(int);
-static u_int32 get_volume_id(const char *name, int32 server, int32 part);
+static afs_uint32 get_volume_id(const char *name, afs_int32 server,
+				afs_int32 part);
 
 int main(int argc, char **argv)
 {
-    int32 code;
+    afs_int32 code;
     struct cmd_syndesc *ts;
 
     confdir = AFSDIR_CLIENT_ETC_DIRPATH;
@@ -95,10 +97,10 @@ int main(int argc, char **argv)
     return (code) ? 1 : 0;
 }
 
-static int32 before(struct cmd_syndesc *as, char *arock)
+static int before(struct cmd_syndesc *as, char *arock)
 {
     char *tcell;
-    int32 code, sauth;
+    afs_int32 code, sauth;
 
     sauth = 0;
     tcell = (char *) 0;
@@ -117,9 +119,9 @@ static int32 before(struct cmd_syndesc *as, char *arock)
     return 0;
 }
 
-static int32 dump_volume(struct cmd_syndesc *as)
+static int dump_volume(struct cmd_syndesc *as)
 {    
-    int32 avolid, aserver = 0, apart = -1, voltype, fromdate, code, err, i;
+    afs_int32 avolid, aserver = 0, apart = -1, voltype, fromdate, code, err, i;
     char filename[512];
 
     rx_SetRxDeadTime(60 * 10);
@@ -187,10 +189,10 @@ static int32 dump_volume(struct cmd_syndesc *as)
 }
 
 /* return host address in network byte order */
-static int32 get_server(const char *aname)
+static afs_int32 get_server(const char *aname)
 {
     struct hostent *th;
-    int32 addr, code;
+    afs_int32 addr, code;
 
     if (isdigit(*aname))
 	return inet_addr(aname);
@@ -201,10 +203,10 @@ static int32 get_server(const char *aname)
     return addr;
 }
 
-static int is_part_valid(int32 partId, int32 server, int32 *code)
+static int is_part_valid(afs_int32 partId, afs_int32 server, afs_int32 *code)
 {   
     struct partList partlist;
-    int32 cnt;
+    afs_int32 cnt;
     int i, success = 0;
 
     *code = UV_ListPartitions(server, &partlist, &cnt);
@@ -218,12 +220,12 @@ static int is_part_valid(int32 partId, int32 server, int32 *code)
     return success;
 }
 
-static int32 dump(struct rx_call *call, char *rock)
+static afs_int32 dump(struct rx_call *call, char *rock)
 {
     char *filename;
     int fd;
     struct stat status;
-    int32 error,code;
+    afs_int32 error,code;
 
     error = 0;
     fd = -1;
@@ -263,7 +265,7 @@ static int32 dump(struct rx_call *call, char *rock)
 static int receive_file(int fd, struct rx_call *call, struct stat *status)
 {
     char *buffer = NULL;
-    int32 bytesread, nbytes, bytesleft, w, error = 0;
+    afs_int32 bytesread, nbytes, bytesleft, w, error = 0;
     fd_set out;
 
     FD_ZERO (&out);
@@ -299,7 +301,7 @@ static int receive_file(int fd, struct rx_call *call, struct stat *status)
     return error;
 }
 
-static void print_diagnostics(const char *astring, int32 acode)
+static void print_diagnostics(const char *astring, afs_int32 acode)
 {
     if (acode == EACCES) {
 	fprintf(stderr,
@@ -319,17 +321,18 @@ static void print_diagnostics(const char *astring, int32 acode)
 * <afrompart> to <afilename> starting from <fromdate>.
 * DumpFunction does the real work behind the scenes after
 * extracting parameters from the rock  */
-static int UV_DumpVolume(int32 afromvol, int32 afromserver, int32 afrompart,
-			 int32 fromdate, int32 (*dumpfunc)(), char *rock)
+static int UV_DumpVolume(afs_int32 afromvol, afs_int32 afromserver,
+			 afs_int32 afrompart, afs_int32 fromdate,
+			 afs_int32 (*dumpfunc)(), char *rock)
 {
     struct rx_connection  *fromconn;
     struct rx_call *fromcall;
-    int32 fromtid;
-    int32 vcode,tcode,rxError, terror;
-    int32 rcode;
+    afs_int32 fromtid;
+    afs_int32 vcode,tcode,rxError, terror;
+    afs_int32 rcode;
 
-    register int32 code;
-    int32 error;
+    register afs_int32 code;
+    afs_int32 error;
     int islocked;
 
     islocked = 0;
@@ -428,9 +431,10 @@ static void dump_sig_handler(int signo)
 /* The normal way to convert a volume name to ID is via a VLDB lookup, but we
  * don't want to use the VLDB, so instead list the volumes on the given server
  * and partition. */
-static u_int32 get_volume_id(const char *name, int32 server, int32 part)
+static afs_uint32 get_volume_id(const char *name, afs_int32 server,
+				afs_int32 part)
 {
-    int32 code, size, i;
+    afs_int32 code, size, i;
     struct volintInfo *volumes;
     const char *p;
 
