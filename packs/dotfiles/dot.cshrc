@@ -5,10 +5,10 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.3 1987-07-30 16:57:45 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.4 1987-08-04 22:54:17 treese Exp $
 
 # First, source the standard csh startup script.  If it can't be found, notify
-# the user and execute some backup commands.
+# the user and execute some backup commands.  In particular, set a sane path.
 
 if (-r /usr/athena/.cshrc) then
 	source /usr/athena/.cshrc
@@ -19,7 +19,7 @@ else
 			 /usr/new/mh/bin /usr/ucb /bin /usr/bin /usr/games)
 endif
 
-# Note that the variable athena_path is set in the standard Athena .login
+# Note that the variable athena_path is set in the standard Athena .cshrc
 # file. It contains the standard system directories, which may be changed
 # in the future.  Additional directories should be added at the desired
 # place in the following command:

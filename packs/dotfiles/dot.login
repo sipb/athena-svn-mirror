@@ -5,11 +5,10 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.3 1987-08-01 00:39:33 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.4 1987-08-04 22:54:11 treese Exp $
 
 # First, source the standard login script.  If it can't be found, notify
-# the user and execute some backup commands.  In particular, set the path
-# to something close to reality.
+# the user and execute some backup commands.
 
 if (-r /usr/athena/.login) then
 	source /usr/athena/.login
@@ -35,15 +34,15 @@ umask 66			# Files are not readable or writable by anyone
 
 stty dec			# Set DEC-style control characters
 
-# If the login is on an X display, and the DISPLAY variable is set,
-# ask the user if he wants a window manager.  If the DISPLAY variable
-# has not been set, ask the user what the DISPLAY should be.
+# If the login is on an X display, and the DISPLAY variable is set, start a
+# window manager.  If the DISPLAY variable has not been set, ask the user
+# what the DISPLAY should be.
 
 if ( $term =~ xterm* ) then
-	if ($?DISPLAY) then
+	if ( `tty` =~ ttyv* ) then
 		echo -n "Starting window manager: "
 		uwm &
-	else
+	else if (! $?DISPLAY) then
 		echo -n "What DISPLAY are you using [default: none]? "
 		set response = ($<)
 		if ($response != "") then
@@ -61,4 +60,4 @@ endif
 # The following obscurity gets terminal characteristics into the
 # environment:
 
-set noglob; eval `tset -s -Q -m 'switch>1200:?vt100' -m 'switch<=1200:?vt100'`
+set noglob; eval `tset -s -I -Q -m 'switch:?vt100' -m 'network:?vt100'`
