@@ -42,7 +42,7 @@ LIBDIRS=confLIBDIRS
 
 # libraries required on your system
 #  delete -l44bsd if you are not running BIND 4.9.x
-LIBS=	ifdef(`confLIBS', `confLIBS')
+LIBS=	ifdef(`confLIBS', `confLIBS') -lwrap
 
 # location of sendmail binary (usually /usr/sbin or /usr/lib)
 BINDIR=	${DESTDIR}ifdef(`confMBINDIR', `confMBINDIR', `/usr/sbin')
