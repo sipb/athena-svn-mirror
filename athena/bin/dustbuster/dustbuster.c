@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.6 2002-05-08 15:40:20 ghudson Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.7 2002-09-29 06:18:09 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     sessionbust(argv);
   else
     {
-      fprintf(stderr, "%s: error: can't find any way to dusbust\n",
+      fprintf(stderr, "%s: error: can't find any way to dustbust\n",
 	      progname, strerror(errno));
       exit(1);
     }
