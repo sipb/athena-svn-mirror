@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v $
- *      $Author: marc $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.9 1990-04-13 02:40:36 marc Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.10 1990-10-19 08:17:38 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -274,7 +274,10 @@ int open_display_and_load_resources(pargc, argv)
     /*
      * Get resources from the just opened display:
      */
-    temp_db2 = XrmGetStringDatabase(dpy->xdefaults);
+    if (dpy->zdefaults != NULL)
+	temp_db2 = XrmGetStringDatabase(dpy->xdefaults);
+    else
+	temp_db2 = NULL;
 
     /*
      * Merge the 4 sets of resources together such that when searching
