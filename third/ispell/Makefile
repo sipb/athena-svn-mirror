@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $
+# $Id: Makefile,v 1.2 1997-09-29 08:52:35 ghudson Exp $
 #
 # Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -47,6 +47,9 @@
 #   buildhash <dictfile> <affix-file> <outfile>
 
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1997/09/03 21:08:11  ghudson
+# Import of ispell 3.1.20
+#
 # Revision 1.102  1995/10/11  04:30:25  geoff
 # Allow DEFHASH and MASTERHASH to be the same.
 #
@@ -318,24 +321,6 @@ install-languages:
 	    ln $$MASTERHASH $$DEFHASH; \
 	  fi
 
-ispell.info:	config.sh ispell.texinfo
-	set +e; \
-	  . ./config.sh; \
-	  set $(SHELLDEBUG); \
-	  if [ -d $$TEXINFODIR ]; then \
-	    if sh iwhich makeinfo >/dev/null \
-	      &&  makeinfo ispell.texinfo 2>/dev/null; then \
-		:; \
-	    elif sh iwhich $$EMACS >/dev/null; then \
-		set -e; \
-		$$EMACS -batch dummy -i ispell.texinfo \
-		  -f texinfo-format-buffer -f save-buffer; \
-	    fi; \
-	    rm -f ispell.info~; \
-	  else \
-	    : ; \
-	  fi
-
 munchable:	findaffix tryaffix munchlist buildhash ispell icombine
 munchable:	ijoin
 munchable:	sq unsq
@@ -554,7 +539,7 @@ clean:	config.sh clean-languages
 	rm -f *.o core a.out mon.out hash.out y.tab.c *.stat *.cnt \
 		config.h msgs.h
 	rm -f buildhash findaffix tryaffix ispell icombine ijoin \
-		munchlist subset sq unsq zapdups ispell.1 ispell.info
+		munchlist subset sq unsq zapdups ispell.1
 
 clean-languages:
 	$(MAKE) LANGUAGE_TARGET=clean SHELLDEBUG=$(SHELLDEBUG) language-subdirs
