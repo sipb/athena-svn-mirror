@@ -47,7 +47,7 @@ main(argc, argv)
 int argc;
 char **argv;
 {
-	char inline[BUFSIZ];
+	char in_line[BUFSIZ];
 	char *gets();
 	int val;
 
@@ -71,29 +71,29 @@ char **argv;
 	/* else
 		use default width */
 
-	if(gets(inline) == NULL)
+	if(gets(in_line) == NULL)
 	{
 		fprintf(stderr, "%s: standard input is empty.\n", name);
 		exit(1);
 	}
 
-	if((val = breakup(inline)) == ERROR)
+	if((val = breakup(in_line)) == ERROR)
 	{
-		fprintf(stderr, "%s: malformed input '%s'\n", name, inline);
+		fprintf(stderr, "%s: malformed input '%s'\n", name, in_line);
 		exit(2);
 	}
 
 	output(val);		/* does proper formatting */
 
-	while(gets(inline) != NULL && val != ERROR)
+	while(gets(in_line) != NULL && val != ERROR)
 	{
-		val = breakup(inline);
+		val = breakup(in_line);
 		output(val);
 	}
 
 	if(val == ERROR)
 	{
-		fprintf(stderr, "%s: malformed input '%s'\n", name, inline);
+		fprintf(stderr, "%s: malformed input '%s'\n", name, in_line);
 		exit(2);
 	}
 
