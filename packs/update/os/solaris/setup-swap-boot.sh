@@ -52,8 +52,6 @@ cp -p /etc/netmasks "$swapmount/etc" || die
 cp -p /etc/defaultrouter "$swapmount/etc" || die
 cp -p /etc/networks "$swapmount/etc" || die
 cp -p "/etc/hostname.$NETDEV" "$swapmount/etc" || die
-cp -p /etc/driver_aliases "$swapmount/etc" || die
-cp -p /etc/driver_classes "$swapmount/etc" || die
 
 # Great big kludge.  Some IDE based Ultras have a "dad" device of 134
 # while others have 136.  We need the name_to_major file in the miniroot
@@ -62,15 +60,7 @@ cp -p /etc/driver_classes "$swapmount/etc" || die
 #
 # We should find a better way to do this.
 dad=`awk '$1 == "dad" {print $2}' /etc/name_to_major`
-cputype=`machtype -c`
-case $cputype in
- UltraAX-i2|Sun-Blade*)
-    cp -p "$swapmount/etc/name_to_major.$dad.$cputype" "$swapmount/etc/name_to_major" || die
-    ;;
- *)
-    cp -p "$swapmount/etc/name_to_major.$dad" "$swapmount/etc/name_to_major" || die
-    ;;
-esac
+cp -p "$swapmount/etc/name_to_major.$dad" "$swapmount/etc/name_to_major" || die
 
 echo "Making devices..."
 (cd $swapmount && drvconfig -r devices "-p$swapmount/etc/path_to_inst") || die
@@ -123,7 +113,4 @@ cd /
 umount "$swapmount"
 fsck -y -F ufs "$rswapdev"
 rmdir $swapmount
-echo "Update partially completed, system will reboot in 15 seconds."
-sync
-sleep 15
-exec reboot -- "$newboot"
+
