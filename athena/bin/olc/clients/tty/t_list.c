@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *	$Id: t_list.c,v 1.16 1990-11-16 06:14:05 lwvanels Exp $
+ *	$Id: t_list.c,v 1.17 1991-01-23 12:09:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.16 1990-11-16 06:14:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.17 1991-01-23 12:09:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,6 +36,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 static const char *const default_sort_order[] = {
     "foo",
     "unconnected_consultants_last",
+    "q_status",
     "time",
     0,
 };
