@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.2 1989-07-16 17:02:45 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.3 1989-07-17 08:07:10 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -61,7 +61,7 @@ t_grab(Request,flag,hold)
     case HAS_QUESTION:
       get_prompted_input("Would you like to create another instance to grab this question? " ,buf);
       if(string_equiv(buf,"yes",1))
-	return(t_grab(Request,TRUE));
+	return(t_grab(Request,TRUE,hold));
       status = NO_ACTION;
       break;
 
