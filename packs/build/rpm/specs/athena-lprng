@@ -30,6 +30,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/bin
 ln -s ../athena/bin/lpr $RPM_BUILD_ROOT/usr/bin/lpr
 ln -s ../athena/bin/lpq $RPM_BUILD_ROOT/usr/bin/lpq
 ln -s ../athena/bin/lprm $RPM_BUILD_ROOT/usr/bin/lprm
+ln -s ../athena/etc/lpc $RPM_BUILD_ROOT/usr/sbin/lpc
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
