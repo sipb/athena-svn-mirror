@@ -1,6 +1,11 @@
-# $Id: Imakefile,v 1.1 1991-07-08 01:01:58 probe Exp $
+# $Id: Imakefile,v 1.2 1994-05-31 14:06:52 vrt Exp $
 
 OBJS       =   gethostnamadr.o hostinfo.o res_query.o
 
 SimpleProgram(hostinfo, ${OBJS}, ,${ATHBINDIR})
 install_man(hostinfo.1,hostinfo.1)
+
+#ifdef SOLARIS
+install:
+	install -c -s hostinfo ${DESTDIR}/sbin
+#endif
