@@ -2546,7 +2546,7 @@ send_file_list(whichfiles)
 		}
 		(void) closedir(dirp);
 	}
-	ret = secure_write(fileno(dout), "", 0);
+	ret = secure_flush(fileno(dout));
 data_err:
 	if (dout == NULL)
 		reply(550, "No files found.");
