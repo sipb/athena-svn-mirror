@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.1 1991-06-30 16:25:08 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.2 1991-06-30 16:26:42 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.1 1991-06-30 16:25:08 probe Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.2 1991-06-30 16:26:42 probe Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -32,7 +32,8 @@ int kbytes = 0;
 
 /*
  * pickup_arg checks to see if the current argument indicates
- * a type for which PRESERVE should be set.
+ * a type for which PRESERVE should be set or a type for which
+ * we pickup papers authored by others, e.g. handouts.
  */
 
 /*ARGSUSED*/
@@ -44,8 +45,16 @@ pickup_arg(argc, argv, ip, p, flagp)
      Paper *p;
      int *flagp;
 {
-  if (argv[*ip][0] == '-' && index("*TtPheAH", argv[*ip][1]))
+  static int initialized = 0;
+
+  if (!initialized) {
+    *flagp |= ONE_AUTHOR;
+    initialized = 1;
+  }
+  if (argv[*ip][0] == '-' && index("*TtPheAH", argv[*ip][1])) {
     *flagp |= PRESERVE;
+    *flagp &= ~ONE_AUTHOR;
+  }
   return(0);
 }
 

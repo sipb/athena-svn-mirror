@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.1 1991-06-30 16:25:09 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.2 1991-06-30 16:26:44 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.1 1991-06-30 16:25:09 probe Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.2 1991-06-30 16:26:44 probe Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -58,6 +58,9 @@ do_dump(fxp, criterion, flags, string)
 
   verbose = flags & VERBOSE;
   adjust_criterion(criterion, string);
+  if ((flags & ONE_AUTHOR) && !(criterion->author))
+    criterion->author = fxp->owner;
+
   /******** get list of papers from server ********/
   code = fx_list(fxp, criterion, &plist);
   if (code) {

@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.h,v 1.1 1991-06-30 16:25:05 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxmain.h,v 1.2 1991-06-30 16:26:32 probe Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -20,6 +20,7 @@
 #define VERBOSE 1
 #define LISTONLY 2
 #define PRESERVE 4
+#define ONE_AUTHOR 8
 
 #define ERR_USAGE -1L
 
