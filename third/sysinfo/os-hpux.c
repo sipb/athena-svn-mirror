@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-hpux.c,v 1.1.1.1 1996-10-07 20:16:54 ghudson Exp $";
+static char *RCSid = "$Id: os-hpux.c,v 1.1.1.2 1998-02-12 21:32:20 ghudson Exp $";
 #endif
 
 /*
@@ -301,7 +302,7 @@ extern char *GetNumCpuPSTAT()
 
     pstatbuff.pst_dynamic = &pst;
     Status = pstat(PSTAT_DYNAMIC, pstatbuff, sizeof(pst), 0, 0);
-    if (Status != 0) {
+    if (Status == -1) {
 	if (Debug) Error("pstat(PSTAT_DYNAMIC) returned status %d.", Status);
 	return((char *) NULL);
     }
@@ -396,7 +397,7 @@ extern char *GetMemoryPSTAT()
 
     pstatbuff.pst_static = &pst;
     Status = pstat(PSTAT_STATIC, pstatbuff, sizeof(pst), 0, 0);
-    if (Status != 0) {
+    if (Status == -1) {
 	if (Debug) Error("pstat(PSTAT_STATIC) returned status %d.", Status);
 	return((char *) NULL);
     }

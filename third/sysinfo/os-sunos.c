@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-sunos.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
+static char *RCSid = "$Id: os-sunos.c,v 1.1.1.2 1998-02-12 21:32:17 ghudson Exp $";
 #endif
 
 /*
@@ -24,11 +25,19 @@ static char *RCSid = "$Id: os-sunos.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp 
 
 #if	OSMVER == 5
 #include "os-sunos5.h"
+#include <sys/scsi/scsi.h>			/* SCSI inquiry */
+#include <sys/scsi/impl/uscsi.h>		/* SCSI inquiry */
+#if		OSVER >= 56
+#include <sys/scsi/scsi_types.h>		/* For stdef.h */
+#else
 #include <sys/t_lock.h>				/* For stdef.h */
+#endif		/* 5.6 */
 #include <sys/scsi/targets/stdef.h>		/* For st_drivetype */
 #else
 #include "os-sunos4.h"
 #include <scsi/targets/stdef.h>			/* For st_drivetype */
+#include <scsi/impl/uscsi.h>			/* SCSI inquiry */
+#include <scsi/generic/commands.h>		/* SCSI inquiry */
 #endif	/* SUNOS == 5 */
 
 /*
@@ -404,6 +413,7 @@ extern DevInfo_t *ProbeFrameBuffer(FBname, DevData, DevDefine)
     static char			FileBuff[MAXPATHLEN];
     static char			Buff[BUFSIZ], Buff2[BUFSIZ];
     int 			FileDesc;
+    int				GotAttr = 0;
     register int		i;
 
     if (!FBname)
@@ -448,13 +458,15 @@ extern DevInfo_t *ProbeFrameBuffer(FBname, DevData, DevDefine)
     /*
      * Get real fb attributes
      */
-    if (ioctl(FileDesc, FBIOGATTR, &fbgattr) != 0) {
+    if ((GotAttr = ioctl(FileDesc, FBIOGATTR, &fbgattr)) != 0) {
 	if (Debug) Error("%s: FBIOGATTR failed: %s.", File, SYSERR);
-	if (ioctl(FileDesc, FBIOGTYPE, &fbgattr.fbtype) != 0) {
+	if ((GotAttr = ioctl(FileDesc, FBIOGTYPE, &fbgattr.fbtype)) != 0)
 	    if (Debug) Error("%s: FBIOGTYPE failed: %s.", File, SYSERR);
-	    return((DevInfo_t *) NULL);
-	}
     }
+    if (GotAttr == 0)
+	GotAttr = 1;
+    else
+	GotAttr = 0;
 
     /*
      * We're committed to try
@@ -513,10 +525,10 @@ extern DevInfo_t *ProbeFrameBuffer(FBname, DevData, DevDefine)
     /*
      * Find out what type of fb this is.
      */
-    if (FLAGS_ON(DevDefine->Flags, DDT_DEFINFO)) {
+    if (!GotAttr || FLAGS_ON(DevDefine->Flags, DDT_DEFINFO)) {
 	DevInfo->Model = DevDefine->Model;
-    } else if (FBdef = DevDefGet(NULL, DT_FRAMEBUFFER, 
-				 fbgattr.fbtype.fb_type)) {
+    } else if (GotAttr && (FBdef = DevDefGet(NULL, DT_FRAMEBUFFER, 
+					     fbgattr.fbtype.fb_type))) {
 	if (FBdef->Model) {
 	    (void) strcpy(Buff, FBdef->Model);
 	    if (FBdef->Name)
@@ -525,29 +537,31 @@ extern DevInfo_t *ProbeFrameBuffer(FBname, DevData, DevDefine)
 	    DevInfo->Model	= strdup(Buff);
 	} else
 	    DevInfo->Model 	= FBdef->Name;
-    } else {
+    } else if (GotAttr) {
 	Error("Device `%s' is an unknown type (%d) of frame buffer.",
 	      FBname, fbgattr.fbtype.fb_type);
 	DevInfo->Model 		= "UNKNOWN";
     }
 
 #if	defined(FB_ATTR_NEMUTYPES)
-    /*
-     * See if this fb emulates other fb's.
-     */
-    Buff[0] = CNULL;
-    for (i = 0; i < FB_ATTR_NEMUTYPES && fbgattr.emu_types[i] >= 0; ++i)
-	if (fbgattr.emu_types[i] != fbgattr.fbtype.fb_type &&
-	    (FBdef = DevDefGet(NULL, DT_FRAMEBUFFER, 
-			       (long)fbgattr.emu_types[i]))) {
-	    if (Buff[0])
-		(void) strcat(Buff, ", ");
-	    (void) strcat(Buff,
-			  (FBdef->Name) ? FBdef->Name : 
-			  ((FBdef->Model) ? FBdef->Model : ""));
-	}
-    if (Buff[0])
-	AddDevDesc(DevInfo, Buff, "Emulates", DA_APPEND);
+    if (GotAttr) {
+	/*
+	 * See if this fb emulates other fb's.
+	 */
+	Buff[0] = CNULL;
+	for (i = 0; i < FB_ATTR_NEMUTYPES && fbgattr.emu_types[i] >= 0; ++i)
+	    if (fbgattr.emu_types[i] != fbgattr.fbtype.fb_type &&
+		(FBdef = DevDefGet(NULL, DT_FRAMEBUFFER, 
+				   (long)fbgattr.emu_types[i]))) {
+		if (Buff[0])
+		    (void) strcat(Buff, ", ");
+		(void) strcat(Buff,
+			      (FBdef->Name) ? FBdef->Name : 
+			      ((FBdef->Model) ? FBdef->Model : ""));
+	    }
+	if (Buff[0])
+	    AddDevDesc(DevInfo, Buff, "Emulates", DA_APPEND);
+    }
 #endif	/* FB_ATTR_NEMUTYPES */
 
     /*
@@ -558,11 +572,13 @@ extern DevInfo_t *ProbeFrameBuffer(FBname, DevData, DevDefine)
     DevInfo->NodeID			= DevData->NodeID;
     DevInfo->DevSpec	 		= (caddr_t *) fb;
 
-    fb->Height 				= fbgattr.fbtype.fb_height;
-    fb->Width 				= fbgattr.fbtype.fb_width;
-    fb->Depth 				= fbgattr.fbtype.fb_depth;
-    fb->Size 				= fbgattr.fbtype.fb_size;
-    fb->CMSize 				= fbgattr.fbtype.fb_cmsize;
+    if (GotAttr) {
+	fb->Height 			= fbgattr.fbtype.fb_height;
+	fb->Width 			= fbgattr.fbtype.fb_width;
+	fb->Depth 			= fbgattr.fbtype.fb_depth;
+	fb->Size 			= fbgattr.fbtype.fb_size;
+	fb->CMSize 			= fbgattr.fbtype.fb_cmsize;
+    }
 
     DevInfo->Master 			= MkMasterFromDevData(DevData);
 
@@ -866,4 +882,126 @@ extern char *DecodeVal(Value, Size)
 	    (void) strcpy(Buff, GetLongValStr(Value));
 	return(Buff);
     }
+}
+
+/*
+ * Get description info about SCSI devices by sending a SCSI INQUIRY
+ * to the device.
+ */
+extern int ScsiGetDesc(DevInfo, DevFD)
+    DevInfo_t		       *DevInfo;
+    int				DevFD;
+{
+    struct scsi_inquiry	       *Inq;
+    char			InqBuff[8192];
+    union scsi_cdb		Cdb;
+    int 			CdbLen;
+    struct uscsi_cmd 		Cmd;
+    char			DevModel[BUFSIZ];
+    char		       *DevType = NULL;
+    Define_t		       *Def;
+    static char			Vendor[sizeof(Inq->inq_vid)+1];
+    static char			Model[sizeof(Inq->inq_pid)+1];
+    static char			Revision[sizeof(Inq->inq_revision)+1];
+#if	OSMVER >= 5
+    static char			Serial[sizeof(Inq->inq_serial)+1];
+#endif
+
+    if (!DevInfo || DevFD < 0) {
+	if (Debug) Error("ScsiGetDesc: Bad parameters");
+	return(-1);
+    }
+
+    /*
+     * Initialize
+     */
+    Inq = (struct scsi_inquiry *) InqBuff;
+    memset(Inq, 0, sizeof(Inq));
+    memset(&Cdb, 0, sizeof(Cdb));
+    memset(&Cmd, 0, sizeof(Cmd));
+
+    Cdb.scc_cmd = SCMD_INQUIRY;
+    Cdb.scc_lun = 0;
+    Cdb.g0_count0 = 200;
+    
+    Cmd.uscsi_cdb = (caddr_t) &Cdb;
+    Cmd.uscsi_cdblen = 6;	/* SCSI Group 0 cmd */
+    Cmd.uscsi_bufaddr = (caddr_t) Inq;
+    Cmd.uscsi_buflen = sizeof(InqBuff);
+    Cmd.uscsi_flags = USCSI_ISOLATE | USCSI_SILENT | USCSI_READ;
+
+    /*
+     * Send inquiry to device
+     */
+    errno = 0;
+    ioctl(DevFD,  USCSICMD, &Cmd);
+    if (Cmd.uscsi_status != 0 || errno > 0)  {
+	if (Debug) Error("SCSI Inquiry failed: %s", SYSERR);
+	return(-1);
+    }
+
+    /*
+     * Decode results
+     */
+    if (Inq->inq_vid && Inq->inq_vid[0]) {
+	(void) strncpy(Vendor, Inq->inq_vid, sizeof(Inq->inq_vid));
+	if (Vendor[sizeof(Vendor)-2] == ' ') 
+	    Vendor[sizeof(Vendor)-2] = CNULL;
+	AddDevDesc(DevInfo, Vendor, "Vendor", DA_APPEND);
+    }
+    if (Inq->inq_pid && Inq->inq_pid[0]) {
+	(void) strncpy(Model, Inq->inq_pid, sizeof(Inq->inq_pid));
+	if (Model[sizeof(Model)-2] == ' ') 
+	    Model[sizeof(Model)-2] = CNULL;
+	AddDevDesc(DevInfo, Model, "Model", DA_APPEND);
+    }
+    if (Inq->inq_revision && Inq->inq_revision[0]) {
+	(void) strncpy(Revision, Inq->inq_revision, sizeof(Inq->inq_revision));
+	if (Revision[sizeof(Revision)-2] == ' ') 
+	    Revision[sizeof(Revision)-2] = CNULL;
+	AddDevDesc(DevInfo, Revision, "Revision", DA_APPEND);
+    }
+#if	OSMVER >= 5
+    if (Inq->inq_serial && Inq->inq_serial[0]) {
+	(void) strncpy(Serial, Inq->inq_serial, sizeof(Inq->inq_serial));
+	if (Serial[sizeof(Serial)-2] == ' ') 
+	    Serial[sizeof(Serial)-2] = CNULL;
+	AddDevDesc(DevInfo, Inq->inq_serial, "Serial", DA_APPEND);
+    }
+#endif
+    if (Inq->inq_rmb)
+	AddDevDesc(DevInfo, "Removable Media", "Has", DA_APPEND);
+
+    /*
+     * Look up device type
+     */
+    Def = DefGet(DL_SCSI_DTYPE, (char *) NULL, (long) Inq->inq_dtype, 0);
+    if (Def) {
+	if (Def->ValStr2) {
+	    DevType = Def->ValStr2;
+	    AddDevDesc(DevInfo, Def->ValStr2, "Device Type", DA_APPEND);
+	}
+	/*
+	 * Set Device Type 
+	 */
+	if (Def->ValStr1) {
+	    DevType_t		*dtPtr;
+
+	    dtPtr = TypeGetByName(Def->ValStr1);
+	    if (dtPtr)
+		DevInfo->Type = dtPtr->Type;
+	}
+    }
+
+    /*
+     * Add Model name if none exists
+     */
+    if (!DevInfo->Model && Vendor && Model) { 
+	(void) sprintf(DevModel, "%s %s%s%s", Vendor, Model,
+		       (DevType) ? " " : "", (DevType) ? DevType : "");
+	DevInfo->Model = strdup(DevModel);
+    }
+
+	
+    return(0);
 }

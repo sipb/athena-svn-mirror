@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: kdt-sunos.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
+static char *RCSid = "$Id: kdt-sunos.c,v 1.1.1.2 1998-02-12 21:32:15 ghudson Exp $";
 #endif
 
 /*
@@ -17,6 +18,7 @@ static char *RCSid = "$Id: kdt-sunos.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp
 
 extern char		 	KDTsymbol[];
 static kvm_t		       *kd = NULL;
+static int			KDTtraverse();
 
 /*
  * Get the root (top) node from the KDT

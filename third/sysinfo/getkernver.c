@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getkernver.c,v 1.1.1.1 1996-10-07 20:16:51 ghudson Exp $";
+static char *RCSid = "$Id: getkernver.c,v 1.1.1.2 1998-02-12 21:32:05 ghudson Exp $";
 #endif
 
 

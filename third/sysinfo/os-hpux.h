@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 /*
- * $Id: os-hpux.h,v 1.1.1.1 1996-10-07 20:16:55 ghudson Exp $
+ * $Id: os-hpux.h,v 1.1.1.2 1998-02-12 21:32:29 ghudson Exp $
  */
 
 #ifndef __os_hpux_h__
@@ -28,7 +29,6 @@
 
 #define VERSION_SYM		"_release_version"
 #define PHYSMEM_SYM		"physmem"
-#
 #define IS_POSIX_SOURCE		1
 #define NEED_KVM		1
 #define HAVE_NLIST		1
@@ -55,7 +55,9 @@
 /*
  * Compatibility
  */
+#if OSMVER == 9
 #define setreuid(r,e)		setresuid(r,e,-1)
+#endif
 #define GETPAGESIZE()		sysconf(_SC_PAGE_SIZE)
 
 #endif	/* __os_hpux_h__ */

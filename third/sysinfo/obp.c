@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: obp.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
+static char *RCSid = "$Id: obp.c,v 1.1.1.2 1998-02-12 21:32:14 ghudson Exp $";
 #endif
 
 /*
@@ -769,7 +770,12 @@ extern DevInfo_t *OBPprobe(Node, TreePtr, SearchNames)
 		 EQ(Node->Name, OBP_MEMUNIT)) {
 	    MemSize = OBPGetMemSize(PropPtr->Value);
 	    OBPSetMemGrps(DevInfo, PropPtr->Value);
-	} else if (EQ(PropPtr->Key, OBP_KEYBOARD)) {
+	    /*
+	     * If this node has a key="keyboard" and is _NOT_ the
+	     * node called "aliases", then this is the kbd parent
+	     */
+	} else if (EQ(PropPtr->Key, OBP_KEYBOARD) && 
+		   !EQ(Node->Name, OBP_ALIASES)) {
 	    DevInfo->Slaves = ProbeKbd((DevInfo_t **)NULL);
 	}
 
@@ -1300,9 +1306,14 @@ extern char *OBPgetSubSysModel(SubSysDef)
     CPUspeed = OBPgetCPUspeed(OBPnodeTree);
 
     /*
-     * Expand name if needed
+     * Expand name if needed.
+     *
+     * The actual CPUspeed reported by the OBP can be +/-1 from 
+     * what is expected.
      */
-    if (((HasCPUspeed && HasCPUspeed == CPUspeed) || !HasCPUspeed) &&
+    if (((HasCPUspeed && (HasCPUspeed == CPUspeed || 
+			  HasCPUspeed == CPUspeed-1 ||
+			  HasCPUspeed == CPUspeed+1)) || !HasCPUspeed) &&
 	((HasNumCPU && HasNumCPU == NumCPU) || !HasNumCPU) && 
 	(((HasTypeArgc - 1) == TypesMatch) || !HasTypeArgc) &&
 	(((HasDevArgc - 1) == DevsMatch) || !HasDevArgc)) {

@@ -1,5 +1,5 @@
 #
-# $Id: irix.cf,v 1.1.1.1 1996-10-07 20:16:56 ghudson Exp $
+# $Id: irix.cf,v 1.1.1.2 1998-02-12 21:32:31 ghudson Exp $
 #
 # SGI IRIX Sysinfo Configuration File
 #
@@ -69,7 +69,7 @@ define|SysConf|_SC_KERN_POINTERS |31    |long|32 or 64 bit kernel value
 # Inventory definetions from <sys/invent.h>
 #
 #
-# CPU Board Types.
+# CPU Board Types	(INV_IP*)
 #
 define|CPUBoard			||1	|R2300 CPU Board	|R2300
 define|CPUBoard			||2	|IP4 CPU Board		|IP4
@@ -86,6 +86,9 @@ define|CPUBoard			||12	|IP22 CPU Board		|IP22
 define|CPUBoard			||13	|IP21 CPU Board		|IP21
 define|CPUBoard			||14	|IP26 CPU Board		|IP26
 define|CPUBoard			||15	|IP25 CPU Board		|IP25
+define|CPUBoard			||16	|IP30 CPU Board		|IP30
+define|CPUBoard			||17	|IP28 CPU Board		|IP28
+define|CPUBoard			||18	|IP32 CPU Board		|IP32
 #
 # SCSI Controller types
 #
@@ -149,6 +152,7 @@ define|ParallelTypes||2	|National Instrument GPIB Parallel Board|gpib
 define|ParallelTypes||3	|National Instrument GPIB Parallel Board (E Space)|gpibe
 define|ParallelTypes||4	|Everest I/O EPC Parallel Port		|epcplp
 define|ParallelTypes||5	|Onboard Parallel Port			|obplp
+define|ParallelTypes||6	|Onboard EPP/ECP Parallel Port		|eppepcplp
 #
 # I/O Board Types
 #
@@ -190,6 +194,10 @@ define|SCSITapeTypes||9		|3480 Compatible Cartridge	|tps
 define|SCSITapeTypes||10	|DEC Digital Linear Tape Cartridge|tps
 define|SCSITapeTypes||11	|D2 Tape Cartridge		|tps
 define|SCSITapeTypes||12	|DEC Digital Linear Tape Stacker|tps
+define|SCSITapeTypes||13	|IBM NTP Magnetic Tape Cartridge|tps
+define|SCSITapeTypes||14	|IBM NTP Magnetic Tape Stacker|tps
+define|SCSITapeTypes||15	|StorageTeK 9490		|tps
+define|SCSITapeTypes||16	|StorageTeK SD3			|tps
 #
 # General Graphics Types
 #
@@ -208,6 +216,8 @@ define|GraphicsTypes||12|RealityEngine Graphics			|REALITY
 define|GraphicsTypes||13|VTX RealityEngine Graphics		|VTX
 define|GraphicsTypes||14|Newport Graphics			|NEWPORT
 define|GraphicsTypes||15|High-AA Impact (Mardigras) Graphics	|MGRAS
+define|GraphicsTypes||16|InfiniteReality			|IR
+define|GraphicsTypes||17|Moosehead onboard CRIME Graphics	|CRIME
 #
 # GR1 Graphics States
 #
@@ -220,7 +230,20 @@ define|GR1States||0x200	|Using 14" Monitor
 define|GR1States||0x400	|Has 256 Entry Color Map
 define|GR1States||0x800	|Has AUX/WID Plane Option
 #
-# GR2 Graphics States
+# GR2 Graphics configurations
+#
+define|GR2configs||0x0	|GR2-XS
+define|GR2configs||0x1	|GR2-XS Z-Buffer
+define|GR2configs||0x2	|GR2-XS24
+define|GR2configs||0x3	|GR2-XS24 Z-Buffer
+define|GR2configs||0x4	|GR2-XSM
+define|GR2configs||0x7	|GR2-Elan
+define|GR2configs||0x13	|GR2-XZ
+define|GR2configs||0xa3	|GU1-Extreme
+define|GR2configs||0x44	|GR2-XSM
+define|GR2configs||0x47	|GR2-Elan
+#
+# GR2 Graphics features
 #
 define|GR2States||0x1	|Has Z-Buffer Option
 define|GR2States||0x2	|Has BitPlane Option
@@ -277,6 +300,8 @@ define|AudioTypes||0	|Indigo DSP System			|hdsp
 define|AudioTypes||1	|ViGRA 110 Audio Board			|vigra110aud
 define|AudioTypes||2	|ViGRA 210 Audio Board			|vigra210aud
 define|AudioTypes||3	|HAL2 / Audio Module for Indigo 2	|atwo
+define|AudioTypes||4	|Moosehead AD1843 codec			|athree
+define|AudioTypes||5	|RAD PCI chip				|rad
 #
 # Video Types
 #
@@ -311,6 +336,7 @@ define|VinoVideoStates||0x10		|IndyCam Connected
 define|CompressionTypes||0	|Cosmo Compression Device	|cosmo
 define|CompressionTypes||1	|Indy Compression Device	|indycomp
 define|CompressionTypes||2	|Impact Compression (cosmo2)	|impactcomp
+define|CompressionTypes||3	|Video Imaging & Compression Engine|vice
 #
 # Misc Devices
 #
@@ -354,6 +380,12 @@ define|SysModels|R4.00,IP22,EXPRESS,.*		||Indigo2 {Extreme,XZ}
 define|SysModels|R4.00,IP22,NEWPORT,.*		||Indigo2 XL
 define|SysModels|R4.00,IP22,NEWPRESS,.*		||Indigo2 Extreme+XL
 define|SysModels|R4.00,IP22,IMPACT,.*		||Indigo2 Impact
+define|SysModels|R4.00,IP22,MGRAS,.*		||Indigo2 High-AA Impact
+define|SysModels|R5.00,IP22,EXPRESS,.*		||Indigo R5K
+define|SysModels|R5.00,IP22,CRIME,.*		||O2
 define|SysModels|R8.00,IP21,-,.*		||Power Challenge
 define|SysModels|R8.00,IP21,VENICE,.*		||Power Onyx
 define|SysModels|R8.00,IP26,EXPRESS,.*		||Power Indigo2 {Extreme,XZ}
+define|SysModels|R10.00,IP25,IR,.*		||Onyx R10K InfiniteReality
+define|SysModels|R10.00,IP28,MGRAS,.*		||Indigo2 R10K Maximum Impact
+define|SysModels|R10.00,IP32,CRIME,.*		||O2 R10K
