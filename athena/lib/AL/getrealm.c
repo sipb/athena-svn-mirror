@@ -12,12 +12,13 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.1 1988-11-15 14:32:55 jtkohl Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.2 1988-11-15 15:44:22 jtkohl Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
 #include <strings.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <krb.h>
 #include <sys/param.h>
 
@@ -33,7 +34,7 @@ static char rcsid_getrealm_c[] =
  * If the hostname contains no discernable domain, or an error occurs,
  * return the local realm name, as supplied by get_krbrlm().
  * If the hostname contains a domain, but no translation is found,
- * the hostname's domain is returned.
+ * the hostname's domain is converted to upper-case and returned.
  *
  * The format of each line of the translation file is:
  * domain_name kerberos_realm
@@ -60,8 +61,14 @@ char *host;
 
 	/* prepare default */
 	if (domain) {
+		char *cp;
+
 		strncpy(ret_realm, &domain[1], REALM_SZ);
 		ret_realm[REALM_SZ] = '\0';
+		/* Upper-case realm */
+		for (cp = ret_realm; *cp; cp++)
+			if (islower(*cp))
+				*cp = toupper(*cp);
 	} else {
 		get_krbrlm(ret_realm, 1);
 	}
