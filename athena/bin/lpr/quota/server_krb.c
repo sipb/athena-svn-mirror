@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.4 1990-11-14 17:29:15 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.5 1991-01-23 15:16:46 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.4 1990-11-14 17:29:15 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.5 1991-01-23 15:16:46 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -57,9 +57,17 @@ handle_t h;
 /* Form a complete string name consisting of principal,
  * instance and realm
  */
-make_kname(principal, instance, realm, out_name)
+#ifdef __STDC__
+void make_kname(char *principal, char *instance, char *realm, char *out_name)
+#else
+void make_kname(principal, instance, realm, out_name)
 char *principal, *instance, *realm, *out_name;
+#endif
 {
+    if(realm == NULL) realm = "";
+    if(instance == NULL) instance = "";
+    if(principal == NULL) principal = "";
+
     if ((instance[0] == '\0') && (realm[0] == '\0'))
 	(void) strcpy(out_name, principal);
     else {
@@ -75,16 +83,24 @@ char *principal, *instance, *realm, *out_name;
     }
 }
 
+#ifdef __STDC__
+is_suser(char *principal)
+#else
 is_suser(principal)
 char *principal;
+#endif
 {
     extern char aclname[];
     return(acl_check(aclname, principal));
 }
 
+#ifdef __STDC__
+is_sacct(char *principal, char *qservice)
+#else
 is_sacct(principal, qservice)
 char *principal;
 char *qservice;
+#endif
 {
     extern char saclname[];
     char aclkey[MAX_K_NAME_SZ + SERV_SZ + 1];
@@ -93,8 +109,14 @@ char *qservice;
     return(acl_check(saclname, aclkey));
 }
 
+#ifdef __STDC__
+parse_username(unsigned char *name, char *qprincipal, 
+	       char *qinstance, char *qrealm)
+#else
 parse_username(name, qprincipal, qinstance, qrealm)
-char *name, *qprincipal, *qinstance, *qrealm;
+#endif
+unsigned char *name;
+char *qprincipal, *qinstance, *qrealm;
 {
 #ifdef KERBEROS
     extern char my_realm[];
@@ -118,8 +140,12 @@ char *name, *qprincipal, *qinstance, *qrealm;
     return;
 }
 
+#ifdef __STDC__
+char *set_service(char *in)
+#else
 char *set_service(in)
 char *in;
+#endif
 {
     if(!in || in[0] == '\0') return DEFSERVICE;
     else return in;
