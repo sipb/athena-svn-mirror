@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.11 1999-11-21 15:41:43 ghudson Exp $
+/* $Id: dm.c,v 1.12 2000-02-15 15:54:32 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.11 1999-11-21 15:41:43 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.12 2000-02-15 15:54:32 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -84,10 +84,6 @@ char *wtmpf = _PATH_WTMP;
 #else
 char *utmpf = "/var/adm/utmp";
 char *wtmpf = "/var/adm/wtmp";
-#endif
-#ifdef HAVE_UTMPX_H
-char *utmpfx = UTMPX_FILE;
-char *wtmpfx = WTMPX_FILE;
 #endif
 char *xpids = "/var/athena/X%d.pid";
 char *xhosts = "/etc/X%d.hosts";
