@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_timer_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.c,v 1.7 1987-07-14 17:05:51 jtkohl Exp $";
+static char rcsid_timer_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.c,v 1.8 1987-12-18 11:47:33 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -97,6 +97,9 @@ timer timer_set_rel (time_rel, proc, arg)
 	return(new_t);
 }
 
+#ifdef notdef
+/* currently unused */
+
 /*
  * timer_set_abs (time_abs, proc, arg)
  *   time_abs: alarm time, absolute
@@ -123,6 +126,7 @@ timer timer_set_abs (time_abs, proc, arg)
 	add_timer(new_t);
 	return(new_t);
 }
+#endif notdef
 
 /*
  * timer_reset

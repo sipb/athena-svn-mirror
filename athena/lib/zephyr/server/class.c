@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.7 1987-11-09 12:09:07 jtkohl Exp $";
+static char rcsid_class_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.8 1987-12-18 11:42:50 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -329,6 +329,8 @@ char *class;
 	return(NULLZACLT);
 }
 
+#ifdef notdef
+/* currently not used */
 /*
  * restrict class by associating it with the acl structure acl.
  * return ZERR_NONE if no error, or ZSRV_NOCLASS if there is no such
@@ -357,6 +359,7 @@ ZAcl_t *acl;
 	/* fell off the end, no match */
 	return(ZSRV_NOCLASS);
 }
+#endif notdef
 
 /*
  * restrict class by registering it and  associating it with the acl

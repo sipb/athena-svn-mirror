@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.13 1987-09-28 15:38:34 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.14 1987-12-18 11:44:22 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -147,7 +147,7 @@ struct sockaddr_in *who;
 		clt_ack(notice, who, AUTH_FAILED);
 		return;
 	}	
-	if ((clientlist = subscr_match_list(notice, acl))) {
+	if ((clientlist = subscr_match_list(notice))) {
 		for (ptr = clientlist->q_forw;
 		     ptr != clientlist;
 		     ptr = ptr->q_forw) {
