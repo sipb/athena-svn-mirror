@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.5 1991-06-28 13:20:56 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.6 1992-09-29 11:17:27 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.5 1991-06-28 13:20:56 epeisach Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.6 1992-09-29 11:17:27 probe Exp $";
 #endif lint
 
 /*
@@ -820,6 +820,7 @@ prstat()
 			(void) fwrite(line, 1, i, stdout);
 		(void) close(fd);	/* unlocks as well */
 	}
+	putchar('\n');
 }
 
 /*
