@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.9 1989-05-26 15:00:38 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.10 1990-11-04 10:26:12 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.9 1989-05-26 15:00:38 jtkohl Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.10 1990-11-04 10:26:12 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -26,6 +26,10 @@ static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/
 
 extern char *getenv();
 extern uid_t getuid();
+
+static int get_localvarfile();
+static char *get_varval();
+static int varline();
 
 char *ZGetVariable(var)
     char *var;
