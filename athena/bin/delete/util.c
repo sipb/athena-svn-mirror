@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.18 1990-09-26 03:47:37 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.19 1991-02-18 17:51:49 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -292,8 +292,8 @@ struct stat *oldbuf;
  * is a reasonable thing to do.
  */
 /*
- * The second parameter is optional -- if it is non-NULL< it is
- * presumed to be a stat structure fo the file being passed in.
+ * The second parameter is optional -- if it is non-NULL, it is
+ * presumed to be a stat structure for the file being passed in.
  */
 int is_mountpoint(name, oldbuf)
 char *name;
