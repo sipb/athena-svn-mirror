@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.2 1989-01-26 10:59:50 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.3 1989-01-26 12:26:38 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -52,7 +52,6 @@ char *file_pattern;
 	  perror(sprintf(error_buf, "%s: parse_pattern", whoami));
 	  exit(1);
      }
-     cur_ptr = file_pattern;
      
      for (cur_ptr = file_pattern, re_ptr = re_pattern; *cur_ptr != NULL;
 	  cur_ptr++) {
