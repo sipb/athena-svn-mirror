@@ -17,7 +17,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.7 1999-09-19 23:51:03 danw Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.8 2000-01-31 15:58:02 danw Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -31,6 +31,7 @@ static const char rcsid[] = "$Id: fsid.c,v 1.7 1999-09-19 23:51:03 danw Exp $";
 static void usage(void);
 static int fsid_attachent(locker_context context, locker_attachent *at,
 			  void *opp);
+static void fsid_auth_to_cells(locker_context context, char *cells, int op);
 static char *opped(int op);
 
 static struct agetopt_option fsid_options[] = {
@@ -79,8 +80,13 @@ int fsid_main(int argc, char **argv)
 		}
 	      else
 		{
+		  char *cells;
+
 		  locker_iterate_attachtab(context, locker_check_owner, &uid,
 					   fsid_attachent, &op);
+		  cells = getenv("FSID_EXTRA_CELLS");
+		  if (cells)
+		    fsid_auth_to_cells(context, cells, op);
 		}
 	      gotname++;
 	      break;
@@ -191,6 +197,19 @@ static int fsid_attachent(locker_context context, locker_attachent *at,
   if (verbose && status == LOCKER_SUCCESS)
     printf("%s: %s %s\n", whoami, at->name, opped(*(int *)opp));
   return 0;
+}
+
+static void fsid_auth_to_cells(locker_context context, char *cells, int op)
+{
+  char *cell;
+  int status;
+
+  for (cell = strtok(cells, " "); cell; cell = strtok(NULL, " "))
+    {
+      status = locker_auth_to_cell(context, whoami, cell, op);
+      if (verbose && status == LOCKER_SUCCESS)
+	printf("%s: %s %s\n", whoami, cell, opped(op));
+    }
 }
 
 static char *opped(int op)

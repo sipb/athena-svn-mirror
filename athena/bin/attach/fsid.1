@@ -1,4 +1,4 @@
-.\" $Id: fsid.1,v 1.9 1999-05-12 17:35:12 danw Exp $
+.\" $Id: fsid.1,v 1.10 2000-01-31 15:57:59 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -80,7 +80,10 @@ Authenticate the user to the specified NFS server host.
 .I --all (-a)
 Perform the current mapping operation for all filesystems attached by
 the user. (For "purge" and "purge user", the operation is performed
-for all filesystems in the attachtab.)
+for all filesystems in the attachtab.) If the environment variable
+\fIFSID_EXTRA_CELLS\fR is defined, \fIfsid\fR will treat it as a
+space-separated list of additional AFS cells to authenticate or
+unauthenticate to.
 
 .SH DIAGNOSTICS
 If \fIfsid\fP is unable to initalize the locker library, it will exist
