@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.47 2001-10-02 02:56:19 zacheiss Exp $
+# $Id: Makefile,v 1.48 2002-02-05 17:53:08 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,9 +6,9 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
-ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint gs help klog \
+ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs help \
 	lastlog listmaint mailmaint moira mrcheck namespace olh olh_ascii \
-	olh_motif pts stanley stella usermaint vos xinfo \
+	olh_motif stanley stella usermaint xinfo \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex
@@ -77,7 +77,6 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 blanche ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 bos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 chfn ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chpobox ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
@@ -85,7 +84,6 @@ install:
 	install -c -m 555 gs ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
-	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
 	install -c -m 555 lastlog ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
@@ -100,7 +98,6 @@ install:
 	install -c -m 555 olh_ascii ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 olh_motif ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
-	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
 	install -c -m 555 stanley ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 stella ${DESTDIR}${ATHBINDIR}
@@ -108,7 +105,6 @@ install:
 	install -c -m 555 vacation.sh ${DESTDIR}${ATHBINDIR}/vacation
 	install -c -m 555 verify-message.sh \
 		${DESTDIR}${ATHBINDIR}/verify-message
-	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 xlock.sh ${DESTDIR}${ATHBINDIR}/xlock

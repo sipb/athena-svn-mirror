@@ -1,13 +1,11 @@
 addusr		moira
 blanche		moira
-bos		afsuser
 chfn		moira
 chpobox		moira
 chsh		moira
 dcmmaint	moira
 gs		ghostscript
 help		help
-klog		afsuser
 lastlog		consult
 listmaint	moira
 mailmaint	moira
@@ -17,11 +15,9 @@ namespace	moira
 olh		help
 olh_ascii	help
 olh_motif	help
-pts		afsuser
 stanley   	moira
 stella		moira
 usermaint	moira
-vos		afsuser
 xinfo		xmit
 
 # MIME helpers for nmh
