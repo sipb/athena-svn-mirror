@@ -163,7 +163,7 @@ Makefile:: $(ICONFIGFILE)						@@\
         	echo "  $(RM) Makefile.bak; mv Makefile Makefile.bak"; \ @@\
 		$(RM) Makefile.bak; mv Makefile Makefile.bak; \		@@\
         else exit 0; fi                                                 @@\
-	$(IMAKE) $(IFLAGS) $(IPROJ) -DNEWTOP=$(TOP)
+	$(IMAKE) $(IFLAGS) $(IPROJ) -DNEWTOP=$(TOP) -DNEWCURDIR=$(CURDIR)
 
 #define foreach_subdirs_flags(name,subdirs,flgs)			@@\
 name:: FRC								@@\
