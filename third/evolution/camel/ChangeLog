@@ -1,15 +1,579 @@
+2005-02-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #72020.
+
+	* camel-filter-driver.c (do_score): don't use
+	camel_folder_set_message_user_tag anymore, use the messageinfo
+	interface.
+	(do_adjust_score): implement missing function.
+
+2005-02-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #65329
+
+	* camel-vtrash-folder.c (camel_vtrash_folder_new): api chagne and
+	translate the short name.
+
+	* camel-vee-folder.c (camel_vee_folder_construct): take full-name
+	argument separately from short-name.
+	(camel_vee_folder_new): calculate short-name.
+
+2005-02-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #38791 and bug #36142.
+
+	* camel-gpg-context.c (gpg_ctx_op_step): use poll rather than
+	select, and listen to the cancellation fd as well.  perform all
+	cancellation here.
+	(gpg_sign): remove cancellation check/processing.
+	(gpg_verify): same.
+	(gpg_encrypt): same.
+	(gpg_decrypt): same.
+	(gpg_ctx_op_step): remove the messy execption handling stuff, it
+	wasn't useful.
+	(gpg_import_keys, gpg_export_keys): clean up exception case.
+
+2005-01-31  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #70303.
+
+	* tests/mime-filter/test1.c: added new test for
+	camel-mime-filter-canon.c
+
+	* camel-mime-filter-canon.c (filter_run): separated out from
+	filter.  Fix a case when it finds an embedded "From " not to
+	create "=46rom rom".
+	(complete): Properly canonicalise \n -> \r\n rather than just
+	copying it across (use filter_run now).
+
+2005-01-31  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69757.
+	
+	* providers/imap/camel-imap-store.c (create_folder)
+	(parse_list_response_as_folder_info): free the
+	folder from parse_list_response.
+
+2005-01-28  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #22496.
+
+	* providers/imap/camel-imap-command.c
+	(camel_imap_command_response): check for no and bad [alert] as
+	well as ok [alert].
+
+2005-01-17  Not Zed  <NotZed@Ximian.com>
+
+	* tests/lib/folders.c (test_folder_basic): dont enforce local
+	store == no inbox; maildir implements one now.
+
+2005-01-14  Not Zed  <NotZed@Ximian.com>
+
+	** Better fix for #65178.
+	
+	* tests/folder/test11.c: new maildir test.
+
+	* camel-store.c (camel_store_folder_uri_equal): dont pass NULL
+	values to compare_folder_name.
+
+	* providers/local/camel-maildir-store.c (get_folder_info):
+	reimplemented, now everything isn't a subfolder of INBOX ('.')
+	anymore.
+	(get_inbox): call main entry point so we don't create multiple
+	inboxes each call.
+	(scan_dirs): re-implemented using non-recursive implementation.
+	(scan_fi, scan_free, scan_equal, scan_hash): helpers for above.
+	(md_canon_name): helper to canonicalise old-format names to new
+	ones.
+	(maildir_hash_folder_name, maildir_compare_folder_name): implement
+	custom folder hash functions so canonicalisation works.
+	(get_folder): canoncalise name before using it.  special case '.'
+	aka 'inbox', so that it is implicitly created if accessed.
+	(delete_folder): don't let the caller delete ".".
+	(camel_folder_info_new): removed.
+
+2005-01-24  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #71427.
+
+	* providers/pop3/camel-pop3-store.c (pop3_connect): fix the
+	exception case for re-prompting for the password.
+
+	** See bug #71625, and bug #56110.
+
+	* providers/imap/camel-imap-folder.c (get_content): when getting a
+	simple content for a message, don't get .TEXT, as that is the full
+	content of a message, not the part itself.
+
+2005-01-17  Not Zed  <NotZed@Ximian.com>
+
+	* camel-multipart-signed.c (skip_content): in the message state
+	skip a state, otherwise we go nowhere but down an overflowed stack drain.
+
+2005-01-13  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69024.
+
+	* providers/nntp/camel-nntp-store.c
+	(nntp_store_get_subscribed_folder_info): emit a folder_changed
+	event if refreshing it added any changes.
+
+2005-01-12  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47824.
+
+	* camel-multipart-signed.c (parse_content): re-implemented to use
+	camel-mime-parser.  For the annoying pathalogical case of re-used
+	multipart boundary markers.
+
+	* camel-mime-parser.c (folder_scan_step): modified the multipart
+	state so that we don't try to match the same boundary again if
+	we've already seen an end boundary for this part.  This is for the
+	annoying case of a multipart inside a multipart which shares an
+	identical boundary marker (groupwise!).
+	(camel_mime_parser_tell_start_boundary): new function to indicate
+	the offset of the start of the last boundary.
+
+	* tests/lib/folders.c (test_folder_message_ops): fix test case for
+	deleting message - marks message read too.
+	(test_folder_counts): fix typo.
+
+	* tests/message/test3.c (main): remove the nonfatal fixme & put
+	extra null check for pre/postface text checks.
+
+	* tests/message/test2.c (convert): use size_t for iconv length
+	types.
+
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* camel-sasl-ntlm.c: convert all the unsigned long/long stuff to
+	guint32 since it seems to need 32 bit integers.
+
+	* camel-url.c (camel_url_new_with_base): cast length to int.
+
+	* providers/imap/camel-imap-command.c
+	(imap_command_strdup_vprintf): cast strlen to int.
+
+	* camel-mime-utils.c (append_quoted_pair, header_decode_text): use
+	gssize for length to match dumb g-api.
+
+
+2005-01-20  Not Zed  <NotZed@Ximian.com>
+
+	* camel-lock-helper.c (main): since malloc(MAXINT+1) returns a
+	valid pointer, validate the length of the path before using it.
+	set maximum path to 65000 characters.  Spotted by Max Vozeler
+	<max@hinterhof.net>
+
+2005-01-11  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #70919.
+
+	* camel-multipart-signed.c (parse_content): treat the post pointer
+	as binary, not 0 terminated.
+
+2004-12-23  Not Zed  <NotZed@Ximian.com>
+  
+	** See bug #70556.
+	
+	* providers/imap/camel-imap-command.c (imap_read_untagged): scan
+	the non-literal contnet for s-expression brackets, and if we seem
+	to be outside of one, don't try the 'blank line after literal'
+	hack.
+
+2004-12-23  Not Zed  <NotZed@Ximian.com>
+  
+	* camel-folder-search.c (check_header): treat a missing header as
+	if it was set to "".
+
+2004-12-02  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69533.
+
+	* providers/imap/camel-imap-command.c (imap_read_untagged): gross
+	hack, if we get a blank line after a literal, assume the server
+	(read: groupwise) made a mistake.  Given the complexity of this
+	code i'm not sure it is the server anyway but what can you do.
+
+2004-12-01  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69776.
+
+	* camel-multipart-signed.c (parse_boundary): take end of data
+	argument, so it handles binary data.  Use a binary data string
+	search rather than strstr.
+	(parse_content): dont bother to append a \0 on the end of the
+	data, not binary capable.
+
+2004-11-23  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69615.
+
+	* camel-smime-context.c (sm_get_passwd): removed.  All callers
+	that passed it now pass NULL.  This is so we don't override the
+	password function set by e-cert-db.  Seems to work ok, I think.
+
+2004-11-22  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69109.
+
+	* providers/smtp/camel-smtp-transport.c (smtp_helo): if we have
+	ipv6 address and it is numeric, prefix it with "IPv6:"
+
+2004-11-30  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69982 (maybe).
+
+	* providers/nntp/camel-nntp-stream.c (CAMEL_NNTP_STREAM_LINE):
+	rename to STREAM_LINE_SIZE so it doesn't override the STREAM_LINE
+	enum.  Sigh.
+	(camel_nntp_stream_init): fix for above change.
+
+2004-11-28	S.Çağlar Onur <caglar@uludag.org.tr>
+
+	** See bug #69446.
+
+	* evolution-2.0.2/camel/camel-charset-map.c (camel_charset_iso_to_windows)
+	* evolution-2.0.2/camel/camel-filter-search.c (check_header)
+	* evolution-2.0.2/camel/camel-folder-search.c (check_header)
+	* evolution-2.0.2/camel/camel-folder-summary.c (message_info_new,summary_build_content_info,camel_system_flag)
+	* evolution-2.0.2/camel/camel-html-parser.c (camel_html_parser_attr)
+	* evolution-2.0.2/camel/camel-mime-filter-enriched.c (param_parse,camel_mime_filter_enriched_init)
+	* evolution-2.0.2/camel/camel-mime-parser.c (folder_scan_step,main)
+	* evolution-2.0.2/camel/camel-mime-utils.c (camel_header_param,camel_header_set_param,camel_content_type_is,camel_transfer_encoding_from_string,camel_content_type_format,camel_content_type_simple,camel_header_decode_date,header_raw_find_node)
+	* evolution-2.0.2/camel/camel-sasl-digest-md5.c (decode_data_type)
+	* evolution-2.0.2/camel/providers/imap/camel-imap-command.c (camel_imap_response_free)
+	* evolution-2.0.2/camel/providers/imap/camel-imap-folder.c (camel_imap_folder_new,camel_imap_folder_selected,imap_refresh_info,camel_imap_folder_new,camel_imap_folder_selected)
+	* evolution-2.0.2/camel/providers/imap/camel-imap-store.c (imap_get_capability,imap_connect_online,get_folder_online,get_folder_offline,get_subscribed_folders,folder_hash,get_folders)
+	* evolution-2.0.2/camel/providers/imap4/camel-imap4-engine.c (engine_parse_capability)
+	* evolution-2.0.2/camel/providers/pop3/camel-pop3-store.c (get_folder)
+	* evolution-2.0.2/camel/tests/lib/folders.c: (test_folder_message_ops)
+	some strcasecmp() calls changed with g_ascii_strcasecmp() for Turkish 
+	character conversiton problems [ http://www.i18nguy.com/unicode/turkish-i18n.html ]
+
+2004-11-10  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69109.
+	
+	* camel-service.c (cs_getnameinfo): honour the NI_NAMEREQD flag.
+
+	* providers/smtp/camel-smtp-transport.c (smtp_helo): change the
+	nameinfo flags a bit so we know when we got a numeric name and
+	need to wrap it in [].
+
+2004-11-19  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-store.c (connect_to_server): if we
+	have CAMEL_IMAP_BRAINDAMAGED set, then treat the server as
+	braindamaged ok.  Testing for #69533.
+
+2004-11-18  Not Zed  <NotZed@Ximian.com>
+
+	* providers/nntp/camel-nntp-stream.c:
+	* providers/nntp/camel-nntp-store.c:
+	* providers/nntp/camel-nntp-summary.c: Make debug run based on
+	'nntp' debug option.
+
+	* providers/nntp/camel-nntp-store.c (camel_nntp_try_authenticate):
+	retry if the password attempt failed.
+
+	** See bug #68556.
+
+	* providers/nntp/camel-nntp-store.c (xover_setup): don't overwrite
+	exception if we get a failure.
+	(camel_nntp_command): if we continue, then set the return code to
+	-1, so we re-loop rather than abort.
+
+2004-11-09  Not Zed  <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-folder.c (imap_get_message): before
+	short-circuiting the check for child content, check the child
+	content info is actually correct.
+
+2004-11-08  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #69145.
+
+	* providers/imap/camel-imap-folder.c (get_message): remove spec
+	argument, always calculate it from the content-info.
+	(content_info_incomplete): recursively check the content-info for
+	completeness, not just one level.
+
+2004-11-08  Jeffrey Stedfast  <fejj@novell.com>
+
+	Fix for bug #69241.
+
+	* camel-gpg-context.c (gpg_decrypt): We need to extract just the
+	application/pgp-encrypted part from the multipart/encrypted that
+	gets passed in. Added checks to verify that the input part is the
+	correct type as well. Once we have the application/pgp-encrypted
+	part, we need to use camel_data_wrapper_decode_to_stream() in case
+	the part was encoded in any way.
+
+2004-10-27  Julio M. Merino Vidal <jmmv@menta.net>
+
+	* camel-operation.c (camel_operation_shutdown): fix the arguments
+	to pthread_key_delete.
+
+2004-10-12  Not Zed  <NotZed@Ximian.com>
+
+	** See bug ???
+
+	* providers/nntp/camel-nntp-store.c (connect_to_server): if we
+	have a username, try to authenticate before doing anything else.
+
+	** See bug #67895.
+
+	* providers/nntp/camel-nntp-summary.c (add_range_xover)
+	(add_range_head): use raw_command_auth since we might need auth
+	here.
+
+	* providers/nntp/camel-nntp-store.c (camel_nntp_raw_command_auth):
+	new almost-raw command that also does auth.
+	(xover_setup, connect_to_server, camel_nntp_command): use
+	raw_command_auth since we might need auth here.
+
+2004-10-12  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #67898 and probably others.
+
+	* providers/imapp/camel-imapp-store.c (connect_to_server):
+	* providers/pop3/camel-pop3-store.c (connect_to_server): 
+	* providers/imap4/camel-imap4-store.c (connect_to_server_wrapper): 
+	* providers/imap/camel-imap-store.c (connect_to_server): 
+	* providers/nntp/camel-nntp-store.c (connect_to_server): 
+	* providers/smtp/camel-smtp-transport.c (connect_to_server):
+	Fallback to hard-coded port number if the name lookup fails and no
+	port was supplied.
+
+2004-10-11  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #67211.
+
+	* camel-mime-utils.c (camel_header_raw_check_mailing_list):
+	initialise the match start/end pointers, since some regexec's
+	don't seem to do it.
+
+2004-10-09  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* providers/groupwise/camel-gw-listner.c (add_esource) :
+        add the source uid to list of selected calendar and tasks
+        so that groupwise calendar and tasks are automatically selected
+        (remove_esource) : remove the uids from corresponding gconf keys
+        Fixes #62053
+
+2004-10-08  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #67170.
+
+	* providers/nntp/camel-nntp-store.c
+	(nntp_store_get_cached_folder_info): compare newsgroup names case
+	sensitively.
+
+2004-10-05  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-service.c (camel_getaddrinfo): Check msg->result for error
+	and set an exception if appropriate.
+	(camel_getnameinfo): Same.
+
+2004-10-04  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-service.c (camel_getaddrinfo): Add a non-const cast for
+	hints when changing the ai_family member in the IPv6-disabled
+	case. Fixes bug #67028.
+
+2004-10-05  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #67527.
+
+	* camel-service.c (cs_getaddrinfo, cs_getnameinfo): don't loop on
+	EAI_AGAIN, it doesn't appear to mean the same as EAGAIN does with
+	system calls (i guess 'no shit sherlock' really).
+
+2004-09-28  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #66509.
+
+	* providers/nntp/camel-nntp-store.c (camel_nntp_command): if we
+	get an error selecting the folder, disconnect/include it in the
+	re-try loop.
+	(camel_nntp_command): don't set the exception based on errno,
+	exception processing is already done.  don't clear it if we're on
+	the 3rd retry.
+
+2004-09-27  Not Zed  <NotZed@Ximian.com>
+	
+	* providers/nntp/camel-nntp-store.c (nntp_get_folder_info): don't
+	do any locking here.
+	(nntp_store_get_folder_info_all): move the locking here.
+	(nntp_store_get_subscribed_folder_info): and some here too.
+
+	* providers/nntp/camel-nntp-store.c:
+	* providers/nntp/camel-nntp-folder.c: Remove nntp command_lock and
+	just use the service connect lock for serialisation.
+
+2004-09-14  Jeffrey Stedfast  <fejj@novell.com>
+
+	* providers/nntp/camel-nntp-store.c (camel_nntp_try_authenticate):
+	s/not/no/ in the error string. Fixes bug #65828.
+
+2004-09-24  Not Zed  <NotZed@Ximian.com>
+
+	* camel-vee-store.c (camel_vee_store_finalise): free the unmatched
+	uid values as well.
+
+	* camel-vee-folder.c (vee_folder_remove_folder): lock main folder
+	summary lock before doing the unmatched stuff, so the order is
+	right.
+
+2004-08-25  Ed Catmur  <ed@catmur.co.uk>
+
+	** See bug #63881.
+
+	* camel-vee-store.c:
+	* camel-vee-folder.c: move the unmatched
+	folder onto the camel-vee-store object.  Removede the global
+	unmatched folder and associated locks/etc, fixed all the code up
+	to work with the new unmatched folder, if present.
+
+2004-09-27  Not Zed  <NotZed@Ximian.com>
+
+	* providers/local/camel-spool-folder.c (camel_spool_folder_new):
+	make sure body indexing is turned off always, missed the ~ bit.
+
+	* providers/local/camel-spool-store.c (camel_folder_info_new):
+	dont take unread count.
+	(spool_fill_fi): copied from mbox more or less.
+	(scan_dir): use fill_fi to setup counts.
+	(spool_new_fi): replace camel_foldeR_info_new with one that does
+	most of the work, also generates uri's properly.
+	(get_folder_info_mbox): make the 'system' inbox name translatable.
+
+	* providers/local/camel-mbox-folder.h: make the
+	camel_mbox_folder_get* functions properly public.
+
+	* providers/local/camel-local-folder.h: pass the object to the
+	virtual methods now, fix all callers.
+
+	* providers/local/camel-spool-folder.c (spool_get_full_path)
+	(spool_get_meta_path): implement, this needs to work differnetly
+	to the parent classes implementations :-/.
+
+2004-09-21  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #63521.
+
+	* camel-movemail.c (camel_movemail): don't clear exception on entry.
+
+	* camel-folder-search.c (match_words_message): use local exception.
+
+	* camel-operation.c (camel_operation_cancel_check): soak up all
+	cancellation requests as soon as we get one.
+	(camel_operation_uncancel): soak up all cancellation reqeusts when
+	we uncancel.
+
+	* camel-uid-cache.c (camel_uid_cache_save): open the file O_TRUNC
+	rather than O_EXCL, otherwise a crash would mean this file never
+	gets updated.
+	(camel_uid_cache_save): block cancellation around writes otherwise
+	we could be interupted from old cancellation.
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_construct): don't clear exception here, just
+	don't pass it to summary load.
+
+	* providers/pop3/camel-pop3-store.c (pop3_connect): only clear the
+	exception when we received one we handled.
+
+	* camel-filter-driver.c (close_folder): if exception is already
+	set, don't pass it to folder.sync().
+
+	* camel-lock.c (camel_lock_folder): don't clear the exception
+	here, if it came in set its a programming error.
+
+	* camel-filter-driver.c (camel_filter_driver_filter_message): if
+	the exception is set after evaluating the expression, stop
+	immediately.
+
+2004-09-13  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #47821.
+
+	* camel-service.c: removed the old hostent based hostname interfaces.
+
+	* camel-sasl-kerberos4.c (krb4_challenge): new hostname interfaces.
+
+	* camel-sasl-gssapi.c (gssapi_challenge): new hostname interfaces.
+
+	* camel-sasl-digest-md5.c (digest_md5_challenge): use new hostname
+	interfaces.
+	(generate_response): just take hostname directly, not hostent.
+
+	* camel-mime-utils.c (camel_header_msgid_generate): use new
+	hostname interfaces.
+
+	* providers/smtp/camel-smtp-transport.c (connect_to_server): fixed
+	to use new addrinfo apis.
+
+	* providers/pop3/camel-pop3-store.c (connect_to_server): fixed to
+	use new addrinfo apis.
+
+	* camel-tcp-stream-ssl.c (stream_connect): try all addresses
+	supplied.
+
+	* camel-tcp-stream.c (camel_tcp_stream_get_remote_address)
+	(camel_tcp_stream_get_local_address): return a sockaddr now, and
+	also the address length.  Fixed all implementations and callers.
+	(camel_tcp_stream_connect): use addrinfo rather than hostent for
+	host AND port info.  Fixed all implementations and callers.
+
+2004-09-22  Not Zed  <NotZed@Ximian.com>
+
+	* camel-folder-summary.c (camel_folder_summary_decode_token):
+	handle a zero-length token read rather than failing.
+
+2004-09-21  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #66199.
+
+	* camel-http-stream.c (stream_read): handle relative url's in
+	redirect.
+	(camel_http_stream_set_proxy): generate the basic auth token for
+	basic proxy auth if we have a user and password.
+
+	* camel-http-stream.c: turn off debug.
+
+2004-09-15  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #0xffff.
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_construct): only emit folder_created if we
+	actually created it.
+
+2004-09-03  Not Zed  <NotZed@Ximian.com>
+
+	* camel-tcp-stream-ssl.c (stream_connect): make ssl connection
+	async and cancellable, and minor api update to async connection.
+
+2004-08-27  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #64023.
+
+	* providers/nntp/camel-nntp-store.c (camel_nntp_try_authenticate):
+	forget the password if it was wrong.
+
 2004-08-26  Sivaiah Nallagatla <snallagatla@novell.com>
 	
-	* provoders/groupwise/camel-gw-listner.c 
+	* providers/groupwise/camel-gw-listner.c
 	(add_calendar_tasks_sources) : change the "CheckList" to "Tasks"
-	as there is another foder called chekclist in groupwise
-	not related to tasks
-	Fixes #64092 
+	as there is another foder called chekclist in groupwise not
+	related to tasks Fixes #64092
 
 2004-08-25  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
-	* camel-folder.c: (folder_getv):
-	Init one variable (remove warning) and don't redefine it.
+	* camel-folder.c (folder_getv): Init one variable (remove warning)
+	and don't redefine it.
 
 2004-08-23  Not Zed  <NotZed@Ximian.com>
 

@@ -1,3 +1,157 @@
+2004-02-03  Hans Petter Jansson  <hpj@ximian.com>
+
+       * gui/component/addressbook-component.c (ensure_sources): Implement
+       based on the create_groups () function in addressbook-migrate.c.
+       (addressbook_component_init): Call ensure_sources (). This will create
+       the necessary addressbook source groups if they somehow disappeared
+       from GConf.
+
+       * gui/component/addressbook-config.c (addressbook_add_server_dialog):
+       If we can't get any source groups, just issue a console warning and
+       return NULL. Creating sources without groups is meaningless.
+       (addressbook_config_create_new_source): Return NULL if dialog
+       creation failed.
+	Work around for #67411
+
+2005-01-26  Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* gui/component/addressbook.c (addressbook_authenticate) :
+	Remove leading "%s" from the transalatable string 
+	Fixes #36137 
+
+2005-01-26  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * util/eab-book-util.c (strstrcase) :
+       case insesitive version of strstr. Used
+       from camel
+
+       (eab_contact_list_from_string) : do case in sensitive
+       search for "BEGIN:VCARD" and "END:VCARD" to
+       take care of broken vcards
+
+       Fixes #70339
+
+
+2005-01-21  JP Rosevear  <jpr@novell.com>
+
+	Fixes #70622
+	
+	* gui/widgets/eab-contact-display.c (eab_contact_display_init):
+	construct the html widget
+
+2005-01-21  Hans Petter Jansson  <hpj@novell.com>
+
+	* gui/contact-editor/e-contact-quick-add.c (quick_add_set_name)
+	(quick_add_set_email): Don't set properties on the contact immediately.
+	(clicked_cb): Set the properties on the contact immediately before
+	passing it on. This way, the FULL_NAME will only be set once, and so
+	the FILE_AS field will be updated here.
+
+2005-01-21  Not Zed  <NotZed@Ximian.com>
+
+	* util/eab-book-util.c (eab_name_and_email_query): cast length
+	specifier.
+
+2005-01-17 Sivaiah Nallagatla <snallagatla@novell.com>
+                                                                                                                             
+        * gui/contact-editor/e-contact-editor.c
+        (fill_in_email_record) : show "other" when email
+        does not carry "TYPE"
+        (fill_in_email) : pass deafult email
+        types instead of -1 when clearing fields
+                                                                                                                             
+        Fixes #70922
+
+2004-11-28  S.Çaglar Onur  <caglar@uludag.org.tr>
+
+	* evolution-2.0.2/addressbook/gui/contact-editor/e-contact-editor.c
+	(get_ui_slot_param)
+	(get_attributes_named): some strcasecmp() calls changed with
+	g_ascii_strcasecmp() for Turkish character conversiton problems
+	[ http://www.i18nguy.com/unicode/turkish-i18n.html ]
+
+2004-11-07  Sivaiah Nallagatla <snallagatla@novell.com>
+                                                                                                                             
+       * util/eab-book-util.c (eab_name_and_email_query) :
+       When name is NULL query against complete email id instead of
+       user name part to take care of users@foo.org not matching
+       against users@bar.org . Also include query based on name always
+                                                                                                                             
+       Fix for  #67656
+
+2004-11-04  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * gui/contact-editor/e-contact-editor.c (save_contact) :
+       populate contact only afte we are sure that data is valid
+       and we can create that.
+       Fixes #69079
+
+2004-11-07  Rodney Dawes  <dobey@novell.com>
+
+	* gui/contact-editor/e-contact-editor.c
+	(init_email_record_location, init_im_record_location):
+	Translate the category pretty names that we pass for creation of
+	new menu item entries for the E-Mail and IM dropdown selections
+
+	Partially fixes bug #66854
+	
+2004-10-11  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gui/component/addressbook-view.c (source_list_changed_cb): Don't
+	unref the view - removing it from the hash table will do this for us.
+	Remove from hash table after removing the notebook page.
+	(addressbook_view_init): Unref views when removed from the hash
+	table.
+
+2004-10-01  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/component/component-factory.c (factory): Quiet debug messages.
+
+	* gui/component/apps_evolution_addressbook.schemas.in.in: Add
+	missing show_preview schema.  Add missing long descriptions.
+
+2004-09-29  Not Zed  <NotZed@Ximian.com>
+
+	Fixes bug #66520.
+
+	* gui/widgets/e-addressbook-view.c (eab_view_dispose): don't unref
+	the contact_display_window, it will be destroyed by being
+	parented.
+
+2004-09-29  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes bug #66369.
+
+	* util/eab-book-util.c (eab_contact_list_from_string): Make the
+	vcard splitter work with any amount of blank lines between vcards.
+
+2004-09-29  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes bug #65537.
+
+	* gui/merging/eab-contact-compare.c (query_cb): Protect against NULL
+	UIDs, and make fewer calls to e_contact_get_const () as a bonus.
+
+2004-09-23  Fazlu & Hannah <hannah_lins@yahoo.co.in>
+
+	Fixes bug #61070
+
+	* addressbook/tools/evolution-addressbook-export.c (main):
+	Changed the string into proper grammar 'In normal mode,
+	there should not need size option.' to 'In normal mode, there
+	is no need for the size option.'
+
+2004-09-23  JP Rosevear  <jpr@novell.com>
+
+	* conduit/address-conduit.c (ecard_from_remote_record): only set
+	the file as address to the company if no full name exists
+	(delete_record): don't bail out if the record simply isn't found
+
+	Fixes #59725
+	
+	* conduit/address-conduit.c (local_record_from_uid): remove
+	extraneous semicolon
+
 2004-09-13  Rodney Dawes  <dobey@novell.com>
 
 	* gui/contact-editor/e-contact-editor.c (show_help_cb):
@@ -17,6 +171,60 @@
 
 	* gui/component/Makefile.am (libevolution_addressbook_la_LIBADD):
 	link addressbook to camel.
+
+2004-09-13  Rodney Dawes  <dobey@novell.com>
+
+	* gui/contact-editor/e-contact-editor.c (show_help_cb):
+	Point at the correct XML file for documentation
+
+2004-09-13 Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * gui/contact-editor/e-contact-editor.c
+       (sensitize_address) : check for _LABEL
+       type address fields also in supported fileds
+       while sensitizing the address fields
+
+2004-09-03  JP Rosevear  <jpr@novell.com>
+ 
+ 	Fixes #63191
+ 	
+ 	* gui/contact-list-editor/contact-list-editor.glade: set the title
+ 	properly
+	
+2004-09-08  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #64080.
+
+	* gui/component/Makefile.am (libevolution_addressbook_la_LIBADD):
+	link addressbook to camel.
+
+2004-09-04 Sivaiah Nallagatla <snallagatla@novell.com>
+
+	* gui/widgets/e-addressbook-view.h : add
+	new widget variable contact_dsiplay_window to _EABView strcut
+	to store. Remove unused scrolled varible
+	* gui/widgets/e-addressbook-view.c (eab_view_init)
+	(eab_view_dispose) : initialize and unref the new widget
+	added 
+	(eab_view_new) : remove the loca variable scrlled_window 
+	instead use eav->contact_display_window
+	(eab_view_show_contact_preview) : show/hide contact_display_window 
+	instead of contact_display
+	Fixes #64024 
+
+
+2004-08-27  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #62856 (workaround).
+
+	* gui/component/addressbook.c (addressbook_authenticate): add
+	online flag to password request.
+
+	** See bug #64011.
+
+	* gui/component/addressbook-view.c (edit_addressbook_cb): Remove
+	double ;; in declaration section (c99 extension).  From Vincent
+	Noel <vnoel@cox.net>.
 
 2004-08-26  Hans Petter Jansson  <hpj@ximian.com>
 

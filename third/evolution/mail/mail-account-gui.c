@@ -30,6 +30,7 @@
 
 #include <string.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #include <gconf/gconf-client.h>
 
@@ -44,6 +45,12 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkdialog.h>
+#include <gtk/gtkstock.h>
+#ifdef USE_GTKFILECHOOSER
+#include <gtk/gtkfilechooser.h>
+#include <gtk/gtkradiobutton.h>
+#include <libgnomeui/gnome-file-entry.h>
+#endif
 
 #include <e-util/e-account-list.h>
 #include <e-util/e-signature-list.h>
@@ -521,7 +528,7 @@ mail_account_gui_transport_complete (MailAccountGui *gui, GtkWidget **incomplete
 		return FALSE;
 	
 	/* FIXME? */
-	if (gtk_toggle_button_get_active (gui->transport_needs_auth) &&
+	if (gtk_toggle_button_get_active (gui->transport.needs_auth) &&
 	    CAMEL_PROVIDER_ALLOWS (gui->transport.provider, CAMEL_URL_PART_USER)) {
 		const char *text = gtk_entry_get_text (gui->transport.username);
 		
@@ -837,9 +844,9 @@ transport_type_changed (GtkWidget *widget, gpointer user_data)
 		/* auth */
 		if (CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_AUTH) &&
 		    !CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_AUTH))
-			gtk_widget_show (GTK_WIDGET (gui->transport_needs_auth));
+			gtk_widget_show (GTK_WIDGET (gui->transport.needs_auth));
 		else
-			gtk_widget_hide (GTK_WIDGET (gui->transport_needs_auth));
+			gtk_widget_hide (GTK_WIDGET (gui->transport.needs_auth));
 	} else
 		gtk_widget_hide (frame);
 	
@@ -858,7 +865,7 @@ transport_type_changed (GtkWidget *widget, gpointer user_data)
 		}
 		
 		build_auth_menu (&gui->transport, provider->authtypes, NULL, FALSE);
-		transport_needs_auth_toggled (gui->transport_needs_auth, gui);
+		transport_needs_auth_toggled (gui->transport.needs_auth, gui);
 	} else
 		gtk_widget_hide (frame);
 	
@@ -874,38 +881,95 @@ service_changed (GtkEntry *entry, gpointer user_data)
 				  service_complete (service, NULL, NULL));
 }
 
+/* the fun of async ... */
+struct _service_check_data {
+	MailAccountGuiService *gsvc;
+	GtkWidget *dialog;
+	GtkWidget *window;
+
+	int id;
+	gulong destroy_id;
+	int destroyed:1;
+};
+
+static void
+service_check_done(const char *url, CamelProviderType type, GList *types, void *data)
+{
+	struct _service_check_data *sd = data;
+
+	if (!sd->destroyed) {
+		gtk_widget_set_sensitive(sd->window, TRUE);
+		build_auth_menu(sd->gsvc, sd->gsvc->provider->authtypes, types, TRUE);
+	}
+
+	if (sd->dialog) {
+		gtk_widget_destroy(sd->dialog);
+		sd->dialog = NULL;
+	}
+
+	if (sd->destroy_id)
+		g_signal_handler_disconnect(sd->window, sd->destroy_id);
+
+	g_free(sd);
+}
+
+static void
+service_check_response(GtkDialog *d, int button, struct _service_check_data *sd)
+{
+	mail_msg_cancel(sd->id);
+
+	gtk_widget_destroy(sd->dialog);
+	sd->dialog = NULL;
+}
+
+static void
+service_check_destroy(GtkWindow *w, struct _service_check_data *sd)
+{
+	sd->destroy_id = 0;
+	sd->destroyed = TRUE;
+	mail_msg_cancel(sd->id);
+}
+
 static void
 service_check_supported (GtkButton *button, gpointer user_data)
 {
 	MailAccountGuiService *gsvc = user_data;
 	EAccountService *service;
-	GList *authtypes = NULL;
+	GtkWidget *dialog;
 	GtkWidget *authitem;
-	GtkWidget *window;
-	
-	service = g_new0 (EAccountService, 1);
-	
+	struct _service_check_data *sd;
+
+	sd = g_malloc0(sizeof(*sd));
+	sd->id = -1;
+	sd->gsvc = gsvc;
+
 	/* This is sort of a hack, when checking for supported AUTH
            types we don't want to use whatever authtype is selected
            because it may not be available. */
+	service = g_malloc0(sizeof(*service));
 	authitem = gsvc->authitem;
 	gsvc->authitem = NULL;
-	
 	save_service (gsvc, NULL, service);
-	
 	gsvc->authitem = authitem;
-	
-	window = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW);
-	
-	if (mail_config_check_service (service->url, gsvc->provider_type, &authtypes, GTK_WINDOW (window))) {
-		build_auth_menu (gsvc, gsvc->provider->authtypes, authtypes, TRUE);
-		if (!authtypes) {
-			/* provider doesn't support any authtypes */
-			gtk_widget_set_sensitive (GTK_WIDGET (gsvc->check_supported), FALSE);
-		}
-		g_list_free (authtypes);
-	}
-	
+
+	sd->window = gtk_widget_get_toplevel((GtkWidget *)button);
+	sd->destroy_id = g_signal_connect(sd->window, "destroy", G_CALLBACK(service_check_destroy), sd);
+
+	gtk_widget_set_sensitive(sd->window, FALSE);
+	dialog = gtk_dialog_new_with_buttons(_("Connecting to server..."),
+					     (GtkWindow *)sd->window,
+					     GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					     NULL);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
+			   gtk_label_new(_("Connecting to server...")),
+			   TRUE, TRUE, 10);
+	g_signal_connect(dialog, "response", G_CALLBACK(service_check_response), sd);
+	gtk_widget_show_all(dialog);
+
+	sd->dialog = dialog;
+	sd->id = mail_check_service(service->url, gsvc->provider_type, service_check_done, sd);
+
 	g_free (service->url);
 	g_free (service);
 }
@@ -1753,10 +1817,49 @@ smime_encrypt_key_clear(GtkWidget *w, MailAccountGui *gui)
 }
 #endif
 
+#ifdef USE_GTKFILECHOOSER
+static void
+select_file_toggled (GtkToggleButton *toggle, GtkFileChooser *chooser)
+{
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
+	
+	if (gtk_toggle_button_get_active (toggle))
+		action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	
+	gtk_file_chooser_set_action (chooser, action);
+}
+
+static void
+browse_clicked (GnomeFileEntry *fentry, MailAccountGui *gui)
+{
+	GtkWidget *check;
+	struct stat st;
+	char *path;
+	
+	if (GTK_IS_FILE_CHOOSER (fentry->fsw)) {
+		check = gtk_check_button_new_with_label (_("Select a file"));
+		g_signal_connect (check, "toggled", G_CALLBACK (select_file_toggled), fentry->fsw);
+		gtk_widget_show (check);
+		gtk_file_chooser_set_extra_widget (GTK_FILE_CHOOSER (fentry->fsw), check);
+		
+		path = gnome_file_entry_get_full_path (fentry, TRUE);
+		if (path && stat (path, &st) == 0 && S_ISREG (st.st_mode))
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check), TRUE);
+		else
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check), FALSE);
+		gtk_toggle_button_toggled (GTK_TOGGLE_BUTTON (check));
+		g_free (path);
+	}
+	
+	g_signal_handlers_disconnect_by_func (fentry, G_CALLBACK (fentry), gui);
+}
+#endif /* USE_GTKFILECHOOSER */
+
 MailAccountGui *
 mail_account_gui_new (EAccount *account, EMAccountPrefs *dialog)
 {
 	MailAccountGui *gui;
+	GtkWidget *fileentry;
 	
 	g_object_ref (account);
 	
@@ -1764,6 +1867,15 @@ mail_account_gui_new (EAccount *account, EMAccountPrefs *dialog)
 	gui->account = account;
 	gui->dialog = dialog;
 	gui->xml = glade_xml_new (EVOLUTION_GLADEDIR "/mail-config.glade", NULL, NULL);
+	
+#ifdef USE_GTKFILECHOOSER
+	/* KLUDGE: If this Evolution was built with GtkFileChooser support, the user
+	 * won't be able to create some types of local accounts because GtkFileChooser
+	 * must be set to allow selection of one or the other of file vs folder.
+	 * However, some providers allow the selection of files *or* folders. */
+	fileentry = glade_xml_get_widget (gui->xml, "source_path_entry");
+	g_signal_connect_after (fileentry, "browse-clicked", G_CALLBACK (browse_clicked), gui);
+#endif
 	
 	/* Management */
 	gui->account_name = GTK_ENTRY (glade_xml_get_widget (gui->xml, "management_name"));
@@ -1836,8 +1948,8 @@ mail_account_gui_new (EAccount *account, EMAccountPrefs *dialog)
 	gui->transport.use_ssl = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "transport_use_ssl"));
 	construct_ssl_menu (&gui->transport);
 	gui->transport.no_ssl = glade_xml_get_widget (gui->xml, "transport_ssl_disabled");
-	gui->transport_needs_auth = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "transport_needs_auth"));
-	g_signal_connect (gui->transport_needs_auth, "toggled",
+	gui->transport.needs_auth = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "transport_needs_auth"));
+	g_signal_connect (gui->transport.needs_auth, "toggled",
 			  G_CALLBACK (transport_needs_auth_toggled), gui);
 	gui->transport.authtype = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "transport_auth_omenu"));
 	gui->transport.remember = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "transport_remember_password"));
@@ -2000,7 +2112,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 				hstore = si;
 			}
 			
-			if (source_proto && !strcasecmp (provider->protocol, source_proto)) {
+			if (source_proto && !g_ascii_strcasecmp (provider->protocol, source_proto)) {
 				fstore = item;
 				hstore = si;
 			}
@@ -2028,7 +2140,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 				htransport = ti;
 			}
 			
-			if (transport_proto && !strcasecmp (provider->protocol, transport_proto)) {
+			if (transport_proto && !g_ascii_strcasecmp (provider->protocol, transport_proto)) {
 				ftransport = item;
 				htransport = ti;
 			}
@@ -2117,7 +2229,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 	
 	if (transport_proto) {
 		if (setup_service (gui, &gui->transport, gui->account->transport))
-			gtk_toggle_button_set_active (gui->transport_needs_auth, TRUE);
+			gtk_toggle_button_set_active (gui->transport.needs_auth, TRUE);
 		gui->transport.provider_type = CAMEL_PROVIDER_TRANSPORT;
 		g_free (transport_proto);
 	}
@@ -2193,15 +2305,17 @@ save_service (MailAccountGuiService *gsvc, GHashTable *extra_config, EAccountSer
 			url->user = g_strstrip (g_strdup (str));
 	}
 	
-	if (CAMEL_PROVIDER_ALLOWS (gsvc->provider, CAMEL_URL_PART_AUTH) &&
-	    GTK_WIDGET_IS_SENSITIVE (gsvc->authtype) && gsvc->authitem && url->user) {
-		CamelServiceAuthType *authtype;
+	if (CAMEL_PROVIDER_ALLOWS (gsvc->provider, CAMEL_URL_PART_AUTH) && url->user) {
+		if (gsvc->needs_auth == NULL || gtk_toggle_button_get_active(gsvc->needs_auth)) {
+			CamelServiceAuthType *authtype;
 		
-		authtype = g_object_get_data(G_OBJECT(gsvc->authitem), "authtype");
-		if (authtype && authtype->authproto && *authtype->authproto)
-			url->authmech = g_strdup (authtype->authproto);
-		
-		service->save_passwd = gtk_toggle_button_get_active (gsvc->remember);
+			authtype = g_object_get_data(G_OBJECT(gsvc->authitem), "authtype");
+			if (authtype && authtype->authproto && *authtype->authproto)
+				url->authmech = g_strdup (authtype->authproto);
+		}
+
+		if (gsvc->remember)
+			service->save_passwd = gtk_toggle_button_get_active (gsvc->remember);
 	}
 	
 	if (CAMEL_PROVIDER_ALLOWS (gsvc->provider, CAMEL_URL_PART_HOST)) {
@@ -2322,8 +2436,9 @@ mail_account_gui_save (MailAccountGui *gui)
 		save_service (&gui->transport, NULL, new->transport);
 	
 	/* Check to make sure that the Drafts folder uri is "valid" before assigning it */
-	if (mail_config_get_account_by_source_url (gui->drafts_folder_uri) ||
-		!strncmp (gui->drafts_folder_uri, "mbox:", 5)) {
+	if (gui->drafts_folder_uri != NULL
+	    && (mail_config_get_account_by_source_url (gui->drafts_folder_uri) ||
+		!strncmp (gui->drafts_folder_uri, "mbox:", 5))) {
 		new->drafts_folder_uri = em_uri_from_camel (gui->drafts_folder_uri);
 	} else {
 		/* assign defaults - the uri is unknown to us (probably pointed to an old source url) */
@@ -2331,8 +2446,9 @@ mail_account_gui_save (MailAccountGui *gui)
 	}
 	
 	/* Check to make sure that the Sent folder uri is "valid" before assigning it */
-	if (mail_config_get_account_by_source_url (gui->sent_folder_uri) ||
-		!strncmp (gui->sent_folder_uri, "mbox:", 5)) {
+	if (gui->sent_folder_uri != NULL
+	    && (mail_config_get_account_by_source_url (gui->sent_folder_uri) ||
+		!strncmp (gui->sent_folder_uri, "mbox:", 5))) {
 		new->sent_folder_uri = em_uri_from_camel (gui->sent_folder_uri);
 	} else {
 		/* assign defaults - the uri is unknown to us (probably pointed to an old source url) */

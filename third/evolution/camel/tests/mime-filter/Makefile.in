@@ -187,7 +187,6 @@ MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
 MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
 MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
@@ -272,17 +271,20 @@ EXTRA_DIST = \
 
 
 check_PROGRAMS = \
+	test1			\
 	test-crlf		\
 	test-charset		\
 	test-tohtml
 
 
-TESTS = test-crlf test-charset test-tohtml
+TESTS = test1 \
+	test-crlf test-charset test-tohtml
+
 subdir = camel/tests/mime-filter
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = test-crlf$(EXEEXT) test-charset$(EXEEXT) \
+check_PROGRAMS = test1$(EXEEXT) test-crlf$(EXEEXT) test-charset$(EXEEXT) \
 	test-tohtml$(EXEEXT)
 test_charset_SOURCES = test-charset.c
 test_charset_OBJECTS = test-charset.$(OBJEXT)
@@ -305,6 +307,13 @@ test_tohtml_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
 	$(top_builddir)/e-util/libeutil.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a
 test_tohtml_LDFLAGS =
+test1_SOURCES = test1.c
+test1_OBJECTS = test1.$(OBJEXT)
+test1_LDADD = $(LDADD)
+test1_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
+	$(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/camel/tests/lib/libcameltest.a
+test1_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -314,7 +323,8 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/test-charset.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/test-crlf.Po ./$(DEPDIR)/test-tohtml.Po
+@AMDEP_TRUE@	./$(DEPDIR)/test-crlf.Po ./$(DEPDIR)/test-tohtml.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test1.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -323,9 +333,9 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = test-charset.c test-crlf.c test-tohtml.c
+DIST_SOURCES = test-charset.c test-crlf.c test-tohtml.c test1.c
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = test-charset.c test-crlf.c test-tohtml.c
+SOURCES = test-charset.c test-crlf.c test-tohtml.c test1.c
 
 all: all-am
 
@@ -352,6 +362,9 @@ test-crlf$(EXEEXT): $(test_crlf_OBJECTS) $(test_crlf_DEPENDENCIES)
 test-tohtml$(EXEEXT): $(test_tohtml_OBJECTS) $(test_tohtml_DEPENDENCIES) 
 	@rm -f test-tohtml$(EXEEXT)
 	$(LINK) $(test_tohtml_LDFLAGS) $(test_tohtml_OBJECTS) $(test_tohtml_LDADD) $(LIBS)
+test1$(EXEEXT): $(test1_OBJECTS) $(test1_DEPENDENCIES) 
+	@rm -f test1$(EXEEXT)
+	$(LINK) $(test1_LDFLAGS) $(test1_OBJECTS) $(test1_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -362,6 +375,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-charset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-crlf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-tohtml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test1.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

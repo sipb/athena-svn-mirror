@@ -1632,6 +1632,8 @@ e_itip_control_set_data (EItipControl *itip, const gchar *text)
 	icalcompiter tz_iter;
 
 	priv = itip->priv;
+	if (priv == NULL)
+		return;
 
 	clean_up (itip);
 
@@ -2419,6 +2421,9 @@ ok_clicked_cb (GtkWidget *widget, gpointer data)
 	gboolean status = FALSE;
 
 	priv = itip->priv;
+
+	if (!priv->my_address && priv->current_ecal != NULL)
+		e_cal_get_cal_address (priv->current_ecal, &priv->my_address, NULL);
 
 	switch (priv->action) {
 	case 'U':

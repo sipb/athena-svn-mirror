@@ -242,7 +242,7 @@ get_completed (ECalModelComponent *comp_data)
 			return NULL;
 
 		tt_completed = icalproperty_get_completed (prop);
-		if (!icaltime_is_valid_time (tt_completed))
+		if (!icaltime_is_valid_time (tt_completed) || icaltime_is_null_time (tt_completed))
 			return NULL;
 
 		comp_data->completed = g_new0 (ECellDateEditValue, 1);
@@ -272,7 +272,7 @@ get_due (ECalModelComponent *comp_data)
 			return NULL;
 
 		tt_due = icalproperty_get_due (prop);
-		if (!icaltime_is_valid_time (tt_due))
+		if (!icaltime_is_valid_time (tt_due) || icaltime_is_null_time (tt_due))
 			return NULL;
 
 		comp_data->due = g_new0 (ECellDateEditValue, 1);
@@ -1099,6 +1099,11 @@ e_cal_model_tasks_mark_task_complete (ECalModelTasks *model, gint model_row)
 	priv = model->priv;
 
 	comp_data = e_cal_model_get_component_at (E_CAL_MODEL (model), model_row);
-	if (comp_data)
+	if (comp_data) {
+		e_table_model_pre_change (E_TABLE_MODEL (model));
+
 		ensure_task_complete (comp_data, -1);
+
+		e_table_model_row_changed (E_TABLE_MODEL (model), model_row);
+	}
 }

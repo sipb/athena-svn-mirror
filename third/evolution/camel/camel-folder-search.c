@@ -871,7 +871,7 @@ check_header(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolder
 		} else if (!strcasecmp(headername, "cc")) {
 			header = camel_message_info_cc(search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
-		} else if (!strcasecmp(headername, "x-camel-mlist")) {
+		} else if (!g_ascii_strcasecmp(headername, "x-camel-mlist")) {
 			header = camel_message_info_mlist(search->current);
 			type = CAMEL_SEARCH_TYPE_MLIST;
 		} else {
@@ -879,23 +879,24 @@ check_header(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolder
 			e_sexp_fatal_error(f, _("Performing query on unknown header: %s"), headername);
 		}
 
-		if (header) {
-			/* performs an OR of all words */
-			for (i=1;i<argc && !truth;i++) {
-				if (argv[i]->type == ESEXP_RES_STRING) {
-					if (argv[i]->value.string[0] == 0) {
-						truth = TRUE;
-					} else if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
-						/* doesn't make sense to split words on anything but contains i.e. we can't have an ending match different words */
-						words = camel_search_words_split(argv[i]->value.string);
-						truth = TRUE;
-						for (j=0;j<words->len && truth;j++) {
-							truth = camel_search_header_match(header, words->words[j]->word, how, type, NULL);
-						}
-						camel_search_words_free(words);
-					} else {
-						truth = camel_search_header_match(header, argv[i]->value.string, how, type, NULL);
+		if (header == NULL)
+			header = "";
+
+		/* performs an OR of all words */
+		for (i=1;i<argc && !truth;i++) {
+			if (argv[i]->type == ESEXP_RES_STRING) {
+				if (argv[i]->value.string[0] == 0) {
+					truth = TRUE;
+				} else if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
+					/* doesn't make sense to split words on anything but contains i.e. we can't have an ending match different words */
+					words = camel_search_words_split(argv[i]->value.string);
+					truth = TRUE;
+					for (j=0;j<words->len && truth;j++) {
+						truth = camel_search_header_match(header, words->words[j]->word, how, type, NULL);
 					}
+					camel_search_words_free(words);
+				} else {
+					truth = camel_search_header_match(header, argv[i]->value.string, how, type, NULL);
 				}
 			}
 		}
@@ -1108,15 +1109,16 @@ match_words_message(CamelFolder *folder, const char *uid, struct _camel_search_w
 {
 	guint32 mask;
 	CamelMimeMessage *msg;
+	CamelException x = CAMEL_EXCEPTION_INITIALISER;
 	int truth;
 
-	msg = camel_folder_get_message(folder, uid, ex);
+	msg = camel_folder_get_message(folder, uid, &x);
 	if (msg) {
 		mask = 0;
 		truth = match_words_1message((CamelDataWrapper *)msg, words, &mask);
 		camel_object_unref((CamelObject *)msg);
 	} else {
-		camel_exception_clear(ex);
+		camel_exception_clear(&x);
 		truth = FALSE;
 	}
 

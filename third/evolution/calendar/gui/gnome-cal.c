@@ -489,7 +489,8 @@ get_times_for_views (GnomeCalendar *gcal, GnomeCalendarViewType view_type, time_
 	GnomeCalendarPrivate *priv;
 	int shown, display_start;
 	GDate date;
-	gint weekday, day, i;
+	gint weekday, first_day, last_day, days_shown, i;
+	gboolean has_working_days = FALSE;
 	guint offset;
 	struct icaltimetype tt = icaltime_null_time ();
 	
@@ -511,22 +512,38 @@ get_times_for_views (GnomeCalendar *gcal, GnomeCalendarViewType view_type, time_
 		/* Get the weekday corresponding to start_time, 0 (Sun) to 6 (Sat). */
 		weekday = g_date_weekday (&date) % 7;
 
-		/* Calculate the first working day of the week, 0 (Sun) to 6 (Sat).
-		   It will automatically default to the week start day if no days
-		   are set as working days. */
-		day = (E_DAY_VIEW (priv->day_view)->week_start_day + 1) % 7;
+		/* Find the first working day in the week, 0 (Sun) to 6 (Sat). */
+		first_day = (E_DAY_VIEW (priv->views[view_type])->week_start_day + 1) % 7;
 		for (i = 0; i < 7; i++) {
-			if (E_DAY_VIEW (priv->day_view)->working_days & (1 << day))
+			if (E_DAY_VIEW (priv->views[view_type])->working_days & (1 << first_day)) {
+				has_working_days = TRUE;
 				break;
-			day = (day + 1) % 7;
+			}
+			first_day = (first_day + 1) % 7;
+		}
+
+		if (has_working_days) {
+			/* Now find the last working day of the week, backwards. */
+			last_day = E_DAY_VIEW (priv->views[view_type])->week_start_day % 7;
+			for (i = 0; i < 7; i++) {
+				if (E_DAY_VIEW (priv->views[view_type])->working_days & (1 << last_day))
+					break;
+				last_day = (last_day + 6) % 7;
+			}
+			/* Now calculate the days we need to show to include all the
+			   working days in the week. Add 1 to make it inclusive. */
+			days_shown = (last_day + 7 - first_day) % 7 + 1;
+		} else {
+			/* If no working days are set, just use 7. */
+			days_shown = 7;
 		}
 
 		/* Calculate how many days we need to go back to the first workday. */
-		if (weekday < day) {
-			offset = (day - weekday) % 7;
+		if (weekday < first_day) {
+			offset = (first_day - weekday) % 7;
 			g_date_add_days (&date, offset);
 		} else {
-			offset = (weekday - day) % 7;
+			offset = (weekday - first_day) % 7;
 			g_date_subtract_days (&date, offset);
 		}
 
@@ -535,7 +552,7 @@ get_times_for_views (GnomeCalendar *gcal, GnomeCalendarViewType view_type, time_
 		tt.day = g_date_day (&date);
 
 		*start_time = icaltime_as_timet_with_zone (tt, priv->zone);
-		*end_time = time_add_day_with_zone (*start_time, 5, priv->zone);
+		*end_time = time_add_day_with_zone (*start_time, days_shown, priv->zone);
 		break;
 	case GNOME_CAL_WEEK_VIEW:
 		/* FIXME We should be using the same day of the week enum every where */
@@ -922,9 +939,13 @@ connect_week_view_focus (GnomeCalendar *gcal, EWeekView *wv)
 static void
 connect_list_view_focus (GnomeCalendar *gcal, ECalListView *lv)
 {
-	g_signal_connect (lv, "focus_in_event",
+	ETable *etable;
+	
+	etable = e_table_scrolled_get_table (lv->table_scrolled);
+	
+	g_signal_connect (etable->table_canvas, "focus_in_event",
 			  G_CALLBACK (calendar_focus_change_cb), gcal);
-	g_signal_connect (lv, "focus_out_event",
+	g_signal_connect (etable->table_canvas, "focus_out_event",
 			  G_CALLBACK (calendar_focus_change_cb), gcal);
 }
 
@@ -950,8 +971,14 @@ set_week_start (GnomeCalendar *calendar)
 
 	priv = calendar->priv;
 	
-	/* FIXME we should adjust the week and work week views */
 	priv->week_start = calendar_config_get_week_start_day ();
+
+	/* Only do this if views exist */
+	if (priv->day_view && priv->work_week_view && priv->week_view && priv->month_view && priv->list_view) {
+		update_view_times (calendar, priv->base_view_time);
+		gnome_calendar_update_date_navigator (calendar);
+		gnome_calendar_notify_dates_shown_changed (calendar);
+	}
 }
 
 static void
@@ -960,6 +987,29 @@ week_start_changed_cb (GConfClient *client, guint id, GConfEntry *entry, gpointe
 	GnomeCalendar *calendar = data;
 	
 	set_week_start (calendar);
+}
+
+static void
+set_working_days (GnomeCalendar *calendar)
+{
+	GnomeCalendarPrivate *priv;
+
+	priv = calendar->priv;
+	
+	/* Only do this if views exist */
+	if (priv->day_view && priv->work_week_view && priv->week_view && priv->month_view && priv->list_view) {
+		update_view_times (calendar, priv->base_view_time);
+		gnome_calendar_update_date_navigator (calendar);
+		gnome_calendar_notify_dates_shown_changed (calendar);
+	}
+}
+
+static void
+working_days_changed_cb (GConfClient *client, guint id, GConfEntry *entry, gpointer data)
+{
+	GnomeCalendar *calendar = data;
+	
+	set_working_days (calendar);
 }
 
 static void
@@ -1050,6 +1100,11 @@ setup_config (GnomeCalendar *calendar)
 	/* Week Start */
 	set_week_start (calendar);
 	not = calendar_config_add_notification_week_start_day (week_start_changed_cb, calendar);
+	priv->notifications = g_list_prepend (priv->notifications, GUINT_TO_POINTER (not));
+
+	/* Working Days */
+	set_working_days (calendar);
+	not = calendar_config_add_notification_working_days (working_days_changed_cb, calendar);
 	priv->notifications = g_list_prepend (priv->notifications, GUINT_TO_POINTER (not));
 
 	/* Timezone */
@@ -1271,6 +1326,8 @@ setup_widgets (GnomeCalendar *gcal)
 
 	e_calendar_view_set_calendar (E_CALENDAR_VIEW (priv->list_view), gcal);
 	e_calendar_view_set_timezone (E_CALENDAR_VIEW (priv->list_view), priv->zone);
+	g_signal_connect (priv->list_view, "selection_changed",
+			  G_CALLBACK (view_selection_changed_cb), gcal);
 
 	connect_list_view_focus (gcal, E_CAL_LIST_VIEW (priv->list_view));
 

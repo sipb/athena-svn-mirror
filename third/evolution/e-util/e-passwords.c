@@ -102,6 +102,7 @@ static GHashTable *passwords = NULL;
 static GtkDialog *password_dialog;
 static EDList request_list = E_DLIST_INITIALISER(request_list);
 static int idle_id;
+static int ep_online_state = TRUE;
 
 static char *decode_base64 (char *base64);
 static int base64_encode_close(unsigned char *in, int inlen, gboolean break_lines, unsigned char *out, int *state, int *save);
@@ -427,7 +428,7 @@ ep_ask_password(EPassMsg *msg)
 							       0,
 							       GTK_MESSAGE_QUESTION,
 							       GTK_BUTTONS_OK_CANCEL,
-							       msg->prompt);
+							       "%s", msg->prompt);
 	gtk_window_set_title(GTK_WINDOW(password_dialog), msg->title);
 
 #if !GTK_CHECK_VERSION (2,4,0)
@@ -535,6 +536,23 @@ e_passwords_shutdown (void)
 		g_hash_table_destroy (passwords);
 		passwords = NULL;
 	}
+}
+
+/**
+ * e_passwords_set_online:
+ * @state: 
+ * 
+ * Set the offline-state of the application.  This is a work-around
+ * for having the backends fully offline aware, and returns a
+ * cancellation response instead of prompting for passwords.
+ *
+ * FIXME: This is not a permanent api, review post 2.0.
+ **/
+void
+e_passwords_set_online(int state)
+{
+	ep_online_state = state;
+	/* TODO: we could check that a request is open and close it, or maybe who cares */
 }
 
 /**
@@ -697,6 +715,9 @@ e_passwords_ask_password (const char *title, const char *component_name,
 {
 	char *passwd;
 	EPassMsg *msg = ep_msg_new(ep_ask_password);
+
+	if ((type & E_PASSWORDS_ONLINE) && !ep_online_state)
+		return NULL;
 
 	msg->title = title;
 	msg->component = component_name;

@@ -249,7 +249,6 @@ MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
 MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
 MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
@@ -318,6 +317,15 @@ figs = \
 	figures/evo_rule_a.png			\
 	figures/evo_send_setup_a.png		\
 	figures/evo_timezone_a.png		\
+	figures/evo_gwreceive_a.png		\
+	figures/evo_imapreceive_a.png		\
+	figures/evo_mail_callout_a.eps		\
+	figures/evo_maildirreceive_a.png	\
+	figures/evo_mboxreceive_a.png		\
+	figures/evo_mereceive_a.png		\
+	figures/evo_mhreceive_a.png		\
+	figures/evo_popreceive_a.png		\
+	figures/evo_usereceive_a.png		\
 	figures/mail_mainwindow_a.png		\
 	figures/calendar.png			\
 	figures/config-cal.png			\
@@ -365,7 +373,10 @@ docdir = $(datadir)/gnome/help/$(docname)/$(lang)
 # **************  You should not have to edit below this line  *******************
 xml_files = $(docname).xml
 
-EXTRA_DIST = $(xml_files) $(omffile)
+EXTRA_DIST = $(xml_files) $(omffile) \
+	$(doc_in_files)		\
+	$(omf_in_files)
+
 
 CLEANFILES = omf_timestamp \
 	$(docname).xml		\

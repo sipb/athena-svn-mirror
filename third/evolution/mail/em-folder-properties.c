@@ -39,9 +39,11 @@
 #include <gtk/gtkvbox.h>
 
 #include <camel/camel-folder.h>
+#include <camel/camel-vee-folder.h>
 
 #include "em-folder-properties.h"
 
+#include "mail-component.h"
 #include "mail-ops.h"
 #include "mail-mt.h"
 #include "mail-vfolder.h"
@@ -134,7 +136,15 @@ emfp_dialog_got_folder (char *uri, CamelFolder *folder, void *data)
 	gtk_box_pack_start ((GtkBox *) ((GtkDialog *) dialog)->vbox, vbox, TRUE, TRUE, 0);
 	gtk_widget_show (vbox);
 
-	title = g_strdup_printf ("<b>%s</b>", name);
+	if (folder->parent_store == mail_component_peek_local_store(NULL)
+	    && (!strcmp(name, "Drafts")
+		|| !strcmp(name, "Inbox")
+		|| !strcmp(name, "Outbox")
+		|| !strcmp(name, "Sent")))
+		title = g_strdup_printf("<b>%s</b>", _(name));
+	else
+		title = g_strdup_printf ("<b>%s</b>", name);
+
 	label = gtk_label_new (title);
 	gtk_label_set_use_markup ((GtkLabel *) label, TRUE);
 	gtk_misc_set_alignment ((GtkMisc *) label, 0.0, 0.5);
@@ -274,9 +284,23 @@ void
 em_folder_properties_show(GtkWindow *parent, CamelFolder *folder, const char *uri)
 {
 	/* HACK: its the old behaviour, not very 'neat' but it works */
-	if (!strncmp(uri, "vfolder:", 8))
-		vfolder_edit_rule(uri);
-	else if (folder == NULL)
+	if (!strncmp(uri, "vfolder:", 8)) {
+		CamelURL *url = camel_url_new(uri, NULL);
+
+		/* MORE HACK: UNMATCHED is a special folder which you can't modify, so check for it here */
+		if (url == NULL
+		    || url->fragment == NULL
+		    || strcmp(url->fragment, CAMEL_UNMATCHED_NAME) != 0) {
+			if (url)
+				camel_url_free(url);
+			vfolder_edit_rule(uri);
+			return;
+		}
+		if (url)
+			camel_url_free(url);
+	}
+
+	if (folder == NULL)
 		mail_get_folder(uri, 0, emfp_dialog_got_folder, NULL, mail_thread_new);
 	else
 		emfp_dialog_got_folder((char *)uri, folder, NULL);

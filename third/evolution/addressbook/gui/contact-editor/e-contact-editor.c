@@ -640,7 +640,7 @@ init_email_record_location (EContactEditor *editor, gint record)
 	for (i = 0; i < G_N_ELEMENTS (common_location); i++) {
 		GtkWidget *item;
 
-		item = gtk_menu_item_new_with_label (common_location [i].pretty_name);
+		item = gtk_menu_item_new_with_label (_(common_location [i].pretty_name));
 		gtk_menu_shell_append (GTK_MENU_SHELL (location_menu), item);
 	}
 
@@ -677,7 +677,7 @@ fill_in_email_record (EContactEditor *editor, gint record, const gchar *address,
 	g_free (widget_name);
 
 	set_option_menu_history (editor, GTK_OPTION_MENU (location_option_menu),
-				 location >= 0 ? location : email_default [record - 1]);
+				 location >= 0 ? location : email_default [2]);
 	set_entry_text (editor, GTK_ENTRY (email_entry), address ? address : "");
 }
 
@@ -774,7 +774,7 @@ get_ui_slot_param (EVCardAttribute *attr)
 		param = l->data;
 
 		str = e_vcard_attribute_param_get_name (param);
-		if (!strcasecmp (str, EVOLUTION_UI_SLOT_PARAM))
+		if (!g_ascii_strcasecmp (str, EVOLUTION_UI_SLOT_PARAM))
 			break;
 
 		param = NULL;
@@ -878,7 +878,7 @@ fill_in_email (EContactEditor *editor)
 	/* Clear */
 
 	for (record_n = 1; record_n <= EMAIL_SLOTS; record_n++) {
-		fill_in_email_record (editor, record_n, NULL, -1);
+		fill_in_email_record (editor, record_n, NULL, email_default [record_n - 1]);
 	}
 
 	/* Fill in */
@@ -1006,7 +1006,7 @@ get_attributes_named (EVCard *vcard, const gchar *attr_name)
 
 		name = e_vcard_attribute_get_name (attr);
 
-		if (!strcasecmp (attr_name, name)) {
+		if (!g_ascii_strcasecmp (attr_name, name)) {
 			attr_list_out = g_list_append (attr_list_out, e_vcard_attribute_copy (attr));
 		}
 	}
@@ -1314,7 +1314,7 @@ init_im_record_location (EContactEditor *editor, gint record)
 	for (i = 0; i < G_N_ELEMENTS (common_location); i++) {
 		GtkWidget *item;
 
-		item = gtk_menu_item_new_with_label (common_location [i].pretty_name);
+		item = gtk_menu_item_new_with_label (_(common_location [i].pretty_name));
 		gtk_menu_shell_append (GTK_MENU_SHELL (location_menu), item);
 	}
 
@@ -2735,7 +2735,6 @@ real_save_contact (EContactEditor *ce, gboolean should_close)
 static void
 save_contact (EContactEditor *ce, gboolean should_close)
 {
-	extract_all (ce);
 	if (!ce->target_book)
 		return;
 
@@ -2746,7 +2745,7 @@ save_contact (EContactEditor *ce, gboolean should_close)
 		if (e_error_run (GTK_WINDOW (ce->app), "addressbook:prompt-move", NULL) == GTK_RESPONSE_NO)
 			return;
 	}
-
+	extract_all (ce);
 	real_save_contact (ce, should_close);
 }
 

@@ -187,7 +187,6 @@ MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
 MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
 MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
-MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
@@ -265,13 +264,13 @@ check_PROGRAMS = \
 	test1	test2	test3	\
 	test4	test5	test6	\
 	test7	test8	test9	\
-	test10
+	test10  test11
 
 
 TESTS = test1 	test2 	test3 	\
 	test4 	test5 	test6 	\
 	test7	test8	test9	\
-	test10
+	test10  test11
 
 subdir = camel/tests/folder
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -279,7 +278,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = test1$(EXEEXT) test2$(EXEEXT) test3$(EXEEXT) \
 	test4$(EXEEXT) test5$(EXEEXT) test6$(EXEEXT) test7$(EXEEXT) \
-	test8$(EXEEXT) test9$(EXEEXT) test10$(EXEEXT)
+	test8$(EXEEXT) test9$(EXEEXT) test10$(EXEEXT) test11$(EXEEXT)
 test1_SOURCES = test1.c
 test1_OBJECTS = test1.$(OBJEXT)
 test1_LDADD = $(LDADD)
@@ -294,6 +293,13 @@ test10_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
 	$(top_builddir)/e-util/libeutil.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a
 test10_LDFLAGS =
+test11_SOURCES = test11.c
+test11_OBJECTS = test11.$(OBJEXT)
+test11_LDADD = $(LDADD)
+test11_DEPENDENCIES = $(top_builddir)/camel/libcamel.la \
+	$(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/camel/tests/lib/libcameltest.a
+test11_LDFLAGS =
 test2_SOURCES = test2.c
 test2_OBJECTS = test2.$(OBJEXT)
 test2_LDADD = $(LDADD)
@@ -359,10 +365,11 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/test1.Po ./$(DEPDIR)/test10.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/test2.Po ./$(DEPDIR)/test3.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/test4.Po ./$(DEPDIR)/test5.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/test6.Po ./$(DEPDIR)/test7.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/test8.Po ./$(DEPDIR)/test9.Po
+@AMDEP_TRUE@	./$(DEPDIR)/test11.Po ./$(DEPDIR)/test2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test3.Po ./$(DEPDIR)/test4.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test5.Po ./$(DEPDIR)/test6.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test7.Po ./$(DEPDIR)/test8.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test9.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -371,10 +378,10 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = test1.c test10.c test2.c test3.c test4.c test5.c test6.c \
-	test7.c test8.c test9.c
+DIST_SOURCES = test1.c test10.c test11.c test2.c test3.c test4.c test5.c \
+	test6.c test7.c test8.c test9.c
 DIST_COMMON = README Makefile.am Makefile.in
-SOURCES = test1.c test10.c test2.c test3.c test4.c test5.c test6.c test7.c test8.c test9.c
+SOURCES = test1.c test10.c test11.c test2.c test3.c test4.c test5.c test6.c test7.c test8.c test9.c
 
 all: all-am
 
@@ -398,6 +405,9 @@ test1$(EXEEXT): $(test1_OBJECTS) $(test1_DEPENDENCIES)
 test10$(EXEEXT): $(test10_OBJECTS) $(test10_DEPENDENCIES) 
 	@rm -f test10$(EXEEXT)
 	$(LINK) $(test10_LDFLAGS) $(test10_OBJECTS) $(test10_LDADD) $(LIBS)
+test11$(EXEEXT): $(test11_OBJECTS) $(test11_DEPENDENCIES) 
+	@rm -f test11$(EXEEXT)
+	$(LINK) $(test11_LDFLAGS) $(test11_OBJECTS) $(test11_LDADD) $(LIBS)
 test2$(EXEEXT): $(test2_OBJECTS) $(test2_DEPENDENCIES) 
 	@rm -f test2$(EXEEXT)
 	$(LINK) $(test2_LDFLAGS) $(test2_OBJECTS) $(test2_LDADD) $(LIBS)
@@ -431,6 +441,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test10.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test11.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test4.Po@am__quote@

@@ -1,3 +1,20 @@
+2004-11-05  JP Rosevear  <jpr@novell.com>
+
+	Fixes #68742
+	
+	* C/evolution.xml: fix section id
+
+2004-10-11  Rodney Dawes  <dobey@novell.com>
+
+	* C/Makefile.am: Add new images to figures
+	* C/figures/*.(png|eps): Update and add new images
+
+	* C/evolution.xml: Update to lastest version of docs
+
+2004-10-04  Rodney Dawes  <dobey@novell.com>
+
+	* C/Makefile.am: Add unversioned xml/omf to EXTRA_DIST
+
 2004-09-13  Rodney Dawes  <dobey@novell.com>
 
 	* xmldocs.make: Don't requires entities here
