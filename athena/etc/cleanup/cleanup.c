@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.27 2000-01-14 22:36:44 danw Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.28 2000-05-08 15:57:39 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -87,9 +87,10 @@ static const char rcsid[] = "$Id: cleanup.c,v 2.27 2000-01-14 22:36:44 danw Exp 
 
 #define PATH_INETD_PID "/var/athena/inetd.pid"
 
+/* Holder for the pid, parent pid, and real uid of a process. */
 struct process {
   pid_t pid, ppid;
-  uid_t uid;
+  uid_t ruid;
 };
 
 static struct process *get_processes(int *nprocs);
@@ -138,7 +139,7 @@ int main(int argc, char **argv)
   return 0;
 }
 
-/* Retrieve a list of process pids and uids. */
+/* Retrieve a list of process pids and ruids. */
 static struct process *get_processes(int *nprocs)
 {
   struct process *plist = emalloc(256 * sizeof(struct process));
@@ -174,7 +175,7 @@ static struct process *get_processes(int *nprocs)
 	  check_plist(n, &plist, &psize);
 	  plist[n].pid = pid_buf.pid_id;
 	  plist[n].ppid = p->p_ppid;
-	  plist[n].uid = cred_buf.cr_uid;
+	  plist[n].ruid = cred_buf.cr_ruid;
 	  n++;
 	}
     }
@@ -218,7 +219,7 @@ static struct process *get_processes(int *nprocs)
 	  check_plist(n, &plist, &psize);
 	  plist[n].pid = pbuf.pr_pid;
 	  plist[n].ppid = pbuf.pr_ppid;
-	  plist[n].uid = pbuf.pr_uid;
+	  plist[n].ruid = pbuf.pr_uid;
 	  n++;
 	}
       close(fd);
@@ -250,7 +251,7 @@ static struct process *get_processes(int *nprocs)
 	  check_plist(n, &plist, &psize);
 	  plist[n].pid = kprocs[i].kp_proc.p_pid;
 	  plist[n].ppid = kprocs[i].kp_eproc.e_ppid;
-	  plist[n].uid = kprocs[i].kp_eproc.e_pcred.p_ruid;
+	  plist[n].ruid = kprocs[i].kp_eproc.e_pcred.p_ruid;
 	}
     }
 
@@ -261,8 +262,9 @@ static struct process *get_processes(int *nprocs)
   DIR *dir;
   struct dirent *entry;
   char *filename;
-  struct stat statbuf;
-  int result, bufsize;
+  int bufsize;
+  pid_t ppid;
+  uid_t uid;
   char *buf = NULL, *p;
   FILE *f;
 
@@ -284,37 +286,39 @@ static struct process *get_processes(int *nprocs)
       if (atoi(entry->d_name) == 0)
 	continue;
 
-      /* Stat the process file. */
+      /* Open the process file and parse out the parent pid and ruid. */
       filename = emalloc(strlen(entry->d_name) + 14);
       sprintf(filename, "/proc/%s/status", entry->d_name);
-      result = stat(filename, &statbuf);
-
-      if (result == 0)
+      f = fopen(filename, "r");
+      if (f)
 	{
-	  /* Parse out the ppid. */
-	  f = fopen(filename, "r");
-	  if (f)
+	  p = NULL;
+	  while (read_line(f, &buf, &bufsize) == 0)
 	    {
-	      p = NULL;
-	      while (read_line(f, &buf, &bufsize) == 0)
+	      if (strncmp(buf, "PPid:", 5) == 0)
 		{
-		  if (strncmp(buf, "PPid:", 5))
-		    continue;
 		  p = buf + 5;
 		  while (isspace((unsigned char)*p))
 		    p++;
-		  break;
+		  ppid = atoi(p);
 		}
-	      fclose(f);
-
-	      if (p)
+	      else if (strncmp(buf, "Uid:", 4) == 0)
 		{
-		  check_plist(n, &plist, &psize);
-		  plist[n].pid = atoi(entry->d_name);
-		  plist[n].ppid = atoi(p);
-		  plist[n].uid = statbuf.st_uid;
-		  n++;
+		  p = buf + 4;
+		  while (isspace((unsigned char)*p))
+		    p++;
+		  uid = atoi(p);
 		}
+	    }
+	  fclose(f);
+
+	  if (p)
+	    {
+	      check_plist(n, &plist, &psize);
+	      plist[n].pid = atoi(entry->d_name);
+	      plist[n].ppid = ppid;
+	      plist[n].ruid = uid;
+	      n++;
 	    }
 	}
 
@@ -494,7 +498,7 @@ static uid_t *get_logged_in_uids(int *nuids, struct process *plist, int nprocs)
 		      uids_size *= 2;
 		      uids = erealloc(uids, uids_size * sizeof(uid_t));
 		    }
-		  uids[n++] = plist[i].uid;
+		  uids[n++] = plist[i].ruid;
 		}
 	    }
 	}
@@ -514,7 +518,7 @@ static void kill_processes(struct process *plist, int nprocs,
   /* Send a SIGHUP to any process not belonging to an approved uid. */
   for (i = 0; i < nprocs; i++)
     {
-      if (!uid_okay(plist[i].uid, approved, nuids))
+      if (!uid_okay(plist[i].ruid, approved, nuids))
 	{
 	  if (kill(plist[i].pid, SIGHUP) == 0)
 	    found = 1;
@@ -529,7 +533,7 @@ static void kill_processes(struct process *plist, int nprocs,
   sleep(5);
   for (i = 0; i < nprocs; i++)
     {
-      if (!uid_okay(plist[i].uid, approved, nuids))
+      if (!uid_okay(plist[i].ruid, approved, nuids))
 	kill(plist[i].pid, SIGKILL);
     }
 }
