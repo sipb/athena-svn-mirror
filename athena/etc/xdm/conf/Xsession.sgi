@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.8 1996-07-23 20:20:52 cfields Exp $
+# $Id: Xsession.sgi,v 1.9 1996-10-03 04:59:05 ghudson Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -10,7 +10,7 @@ initlib="/usr/athena/lib/init"
 defsession=$1
 defsessioncmd="$2"
 
-aklog -path .
+aklog -path "$HOME"
 
 if [ -f .noignore ]; then
 	defsession=1;
