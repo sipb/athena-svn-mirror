@@ -38,7 +38,7 @@ extern int errno;
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.18 1990-01-30 03:57:01 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.19 1990-02-09 18:05:46 vanharen Exp $";
 #endif
 
 #if __STDC__
@@ -566,8 +566,8 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
   else if (pid == 0) 
     {
       (void) sprintf(notesfile, "%s%s", NF_PREFIX, question->topic);
-      (void) sprintf(msgbuf, "%s to crash",
-		     question->logfile);
+      (void) sprintf(msgbuf, "%s to %s",
+		     question->logfile, notesfile);
       log_status(msgbuf);
       
       if ((fd = open(newfile, O_RDONLY, 0)) == -1) 
