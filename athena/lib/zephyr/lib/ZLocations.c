@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.1 1987-06-20 19:22:24 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.2 1987-06-23 17:11:56 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -29,5 +29,5 @@ Code_t ZSetLocation()
 	notice.z_recipient = "";
 	notice.z_message_len = 0;
 
-	return (ZSendNotice(&notice));
+	return (ZSendNotice(&notice,1));
 }
