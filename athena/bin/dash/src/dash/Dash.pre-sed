@@ -213,3 +213,40 @@
 
 *foreground:			FOREGROUND
 *background:			BACKGROUND
+
+!
+! Quit Dash dialog
+!
+*quitDialog.tree:                                               \
+{                                                               \
+  Window window;                                                \
+    {                                                           \
+      Form form;                                                \
+        {                                                       \
+          Label dashLogo;                                       \
+          Label question;                                       \
+          Window yes; { Button yes; { Label yes; } }            \
+          Window no; { Button no; { Label no; } }               \
+        }                                                       \
+    }                                                           \
+}
+ 
+*quitDialog.window.mapped:            False
+*quitDialog*form.form:                dashLogo: 0 0 - -         \
+                                        yes: 10 - - 95          \
+                                        no: - - 90 95           \
+                                        question: 0 35 100 -
+*quitDialog*form.padding:             2
+ 
+*quitDialog*window.geometry:          415x150+318+326
+*quitDialog*window.title:             You sure?
+*quitDialog*window.rootTransient:     True
+ 
+*quitDialog*Label.font:               *-times-medium-r-*--18-*
+*quitDialog*yes.label:                Yes, quit Dash
+*quitDialog*yes.activateProc:         unmapTree("quitDialog"),quit()
+*quitDialog*no.label:                 No, keep Dash running
+*quitDialog*no.activateProc:          unmapTree("quitDialog")
+*quitDialog*question.label:           Do you really want to quit Dash?
+*quitDialog*question.font:            *-times-medium-i-*--24-*
+*quitDialog*question.Center:          True
