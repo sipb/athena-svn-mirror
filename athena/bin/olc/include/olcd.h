@@ -16,8 +16,8 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: vanharen $
- *      $Id: olcd.h,v 1.8 1990-01-10 10:28:10 vanharen Exp $
+ *      $Author: raeburn $
+ *      $Id: olcd.h,v 1.9 1990-01-10 14:19:47 raeburn Exp $
  */
 
 #ifndef __olcd_h
@@ -345,10 +345,10 @@ extern int	insert_knuckle_in_user (KNUCKLE *, USER *);
 extern void	init_dbinfo (USER *);
 extern void	load_user (USER *);
 extern int	verify_topic (char *);
-extern ERRCODE	init_log (KNUCKLE *, char *);
+extern ERRCODE	init_log (KNUCKLE *, const char *);
 extern int	is_topic (int *, int);
 extern int	owns_question (KNUCKLE *);
-extern void	log_daemon (KNUCKLE *, char *);
+extern void	log_daemon (const KNUCKLE *, const char *);
 extern int	insert_topic (TOPIC *);
 extern void	get_list_info (KNUCKLE *, LIST *);
 extern int	load_db (void);
@@ -371,12 +371,13 @@ extern int	send_list (int, REQUEST *, LIST *);
 extern ERRCODE	terminate_log_answered (KNUCKLE *);
 extern ERRCODE	terminate_log_unanswered (KNUCKLE *);
 extern void	new_message (char **, KNUCKLE *, char *);
-extern void	log_message (KNUCKLE *, KNUCKLE *, char *);
-extern void	log_comment (KNUCKLE *, KNUCKLE *, char *);
-extern void	log_description (KNUCKLE *, KNUCKLE *, char *);
+extern void	log_message (const KNUCKLE *, const KNUCKLE *, const char *);
+extern void	log_comment (const KNUCKLE *, const KNUCKLE *, const char *);
+extern void	log_description (const KNUCKLE *, const KNUCKLE *,
+				 const char *);
 extern int	list_user_knuckles (KNUCKLE *, LIST **, int *);
 extern int	list_queue (int, LIST **, int, int *, int, char *, int *);
-extern void	log_mail (KNUCKLE *, KNUCKLE *, char *);
+extern void	log_mail (const KNUCKLE *, const KNUCKLE *, const char *);
 extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
 extern int	init_question (KNUCKLE *, char *, char *);
 
