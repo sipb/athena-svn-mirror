@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.2 1990-04-25 11:52:42 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.3 1990-06-27 14:13:30 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.2 1990-04-25 11:52:42 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.3 1990-06-27 14:13:30 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -153,7 +153,7 @@ char *argv[];
 int
 init() {
     int cnt = 0;
-    int i, status;
+    int i, status, ret;
 
     char buf[BUFSIZ], buf1[BUFSIZ];
     char *bp = buf1;	/* A temp buffer for string work */
@@ -176,7 +176,7 @@ init() {
     }
     
     /* Loop through all the entries in the printcap file */
-    while (getprent(buf)) {
+    while ((ret=getprent(buf)) && (ret != -1)) {
 	bp = buf1;
 	if ((RQ = pgetstr("rq", &bp)) != NULL
 	    && (AF = pgetstr("af", &bp)) != NULL) {
@@ -289,6 +289,11 @@ init() {
 	    if(p_stat[cnt].fp) (void) fclose(p_stat[cnt].fp);
 	    cnt++;
 	}
+    } /* while */
+    if(ret == -1) {
+	syslog(LOG_ERR, "s_chkaf: printcap file not found");
+	fprintf(stderr, "s_chkaf: printcap file not found\n");
+	exit(1);
     }
     endprent();
     if(cache_fp != NULL) (void) fclose(cache_fp);
