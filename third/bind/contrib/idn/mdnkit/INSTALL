@@ -245,4 +245,4 @@ see an error message output by `mdnconv', `nslookup' or `mdnslookup'
 itself.
 
 
-; $Id: INSTALL,v 1.1.1.1 2002-06-07 05:25:34 ghudson Exp $
+; $Id: INSTALL,v 1.1.2.1 2002-06-07 16:35:31 ghudson Exp $

@@ -1,4 +1,4 @@
-/* $Id: amcacez.h,v 1.1.1.1 2002-06-07 05:26:00 ghudson Exp $ */
+/* $Id: amcacez.h,v 1.1.2.1 2002-06-07 16:35:33 ghudson Exp $ */
 /*
  * Copyright (c) 2001 Japan Network Information Center.  All rights reserved.
  *  

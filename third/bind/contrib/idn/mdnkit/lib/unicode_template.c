@@ -1,4 +1,4 @@
-/* $Id: unicode_template.c,v 1.1.1.1 2002-06-07 05:27:20 ghudson Exp $ */
+/* $Id: unicode_template.c,v 1.1.2.1 2002-06-07 16:35:39 ghudson Exp $ */
 
 /*
  * Copyright (c) 2000,2001 Japan Network Information Center.

@@ -1,6 +1,6 @@
 /*
- * Portions Copyright (C) 2001  Internet Software Consortium.
- * Portions Copyright (C) 2001  Nominum, Inc.
+ * Portions Copyright (C) 2001, 2002  Internet Software Consortium.
+ * Portions Copyright (C) 2001, 2002  Nominum, Inc.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: cc.c,v 1.1.1.1 2002-02-03 04:26:08 ghudson Exp $ */
+/* $Id: cc.c,v 1.1.1.1.2.1 2002-06-07 16:36:14 ghudson Exp $ */
 
 #include <config.h>
 
@@ -558,7 +558,7 @@ isccc_cc_isack(isccc_sexpr_t *message)
 
 	_ctrl = isccc_alist_lookup(message, "_ctrl");
 	if (_ctrl == NULL)
-		return (ISC_R_FAILURE);
+		return (ISC_FALSE);
 	if (isccc_cc_lookupstring(_ctrl, "_ack", NULL) == ISC_R_SUCCESS)
 		return (ISC_TRUE);
 	return (ISC_FALSE);
@@ -571,7 +571,7 @@ isccc_cc_isreply(isccc_sexpr_t *message)
 
 	_ctrl = isccc_alist_lookup(message, "_ctrl");
 	if (_ctrl == NULL)
-		return (ISC_R_FAILURE);
+		return (ISC_FALSE);
 	if (isccc_cc_lookupstring(_ctrl, "_rpl", NULL) == ISC_R_SUCCESS)
 		return (ISC_TRUE);
 	return (ISC_FALSE);

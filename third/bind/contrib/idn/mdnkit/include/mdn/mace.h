@@ -1,4 +1,4 @@
-/* $Id: mace.h,v 1.1.1.1 2002-06-07 05:26:16 ghudson Exp $ */
+/* $Id: mace.h,v 1.1.2.1 2002-06-07 16:35:34 ghudson Exp $ */
 /*
  * Copyright (c) 2001 Japan Network Information Center.  All rights reserved.
  *  

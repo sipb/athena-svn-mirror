@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001  Internet Software Consortium.
+ * Copyright (C) 2000-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: host.c,v 1.1.1.2 2002-02-03 04:22:35 ghudson Exp $ */
+/* $Id: host.c,v 1.1.1.2.2.1 2002-06-07 16:35:25 ghudson Exp $ */
 
 #include <config.h>
 #include <stdlib.h>
@@ -78,7 +78,7 @@ static const char *rcodetext[] = {
 	"FORMERR",
 	"SERVFAIL",
 	"NXDOMAIN",
-	"NOTIMPL",
+	"NOTIMP",
 	"REFUSED",
 	"YXDOMAIN",
 	"YXRRSET",

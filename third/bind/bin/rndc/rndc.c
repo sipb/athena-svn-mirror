@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rndc.c,v 1.1.1.2 2002-02-03 04:22:54 ghudson Exp $ */
+/* $Id: rndc.c,v 1.1.1.2.2.1 2002-06-07 16:35:29 ghudson Exp $ */
 
 /*
  * Principal Author: DCL
@@ -89,7 +89,8 @@ static isc_socket_t *sock = NULL;
 static void
 usage(int status) {
 	fprintf(stderr, "\
-Usage: %s [-c config] [-s server] [-p port] [-y key] [-V] command\n\
+Usage: %s [-c config] [-s server] [-p port]\n\
+        [-k key-file ] [-y key] [-V] command\n\
 \n\
 command is one of the following:\n\
 \n\

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001  Internet Software Consortium.
+ * Copyright (C) 2001, 2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,17 +15,23 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: check.c,v 1.1.1.1 2002-02-03 04:26:10 ghudson Exp $ */
+/* $Id: check.c,v 1.1.1.1.2.1 2002-06-07 16:36:14 ghudson Exp $ */
 
 #include <config.h>
 
 #include <stdlib.h>
 #include <string.h>
 
+#include <isc/buffer.h>
 #include <isc/log.h>
+#include <isc/mem.h>
+#include <isc/netaddr.h>
 #include <isc/result.h>
+#include <isc/sockaddr.h>
 #include <isc/symtab.h>
 #include <isc/util.h>
+
+#include <dns/fixedname.h>
 
 #include <isccfg/cfg.h>
 #include <isccfg/check.h>
@@ -101,19 +107,25 @@ typedef struct {
 } optionstable;
 
 static isc_result_t
-check_zoneconf(cfg_obj_t *zconfig, isc_symtab_t *symtab, isc_log_t *logctx) {
+check_zoneconf(cfg_obj_t *zconfig, isc_symtab_t *symtab, isc_log_t *logctx,
+	       isc_mem_t *mctx)
+{
 	const char *zname;
 	const char *typestr;
 	unsigned int ztype;
 	cfg_obj_t *zoptions;
 	cfg_obj_t *obj = NULL;
+	cfg_obj_t *addrlist = NULL;
 	isc_symvalue_t symvalue;
 	isc_result_t result = ISC_R_SUCCESS;
 	isc_result_t tresult;
 	unsigned int i;
+ 	dns_fixedname_t fixedname;
+ 	isc_buffer_t b;
 
 	static optionstable options[] = {
 	{ "allow-query", MASTERZONE | SLAVEZONE | STUBZONE },
+	{ "allow-notify", SLAVEZONE },
 	{ "allow-transfer", MASTERZONE | SLAVEZONE },
 	{ "notify", MASTERZONE | SLAVEZONE },
 	{ "also-notify", MASTERZONE | SLAVEZONE },
@@ -186,17 +198,41 @@ check_zoneconf(cfg_obj_t *zconfig, isc_symtab_t *symtab, isc_log_t *logctx) {
 
 	/*
 	 * Look for an already existing zone.
+	 * We need to make this cannonical as isc_symtab_define()
+	 * deals with strings.
 	 */
-	symvalue.as_pointer = NULL;
-	tresult = isc_symtab_define(symtab, zname,
-				    ztype == HINTZONE ? 1 : 2,
-				    symvalue, isc_symexists_reject);
-	if (tresult == ISC_R_EXISTS) {
+	dns_fixedname_init(&fixedname);
+	isc_buffer_init(&b, zname, strlen(zname));
+	isc_buffer_add(&b, strlen(zname));
+	result = dns_name_fromtext(dns_fixedname_name(&fixedname), &b,
+				   dns_rootname, ISC_TRUE, NULL);
+	if (result != ISC_R_SUCCESS) {
 		cfg_obj_log(zconfig, logctx, ISC_LOG_ERROR,
-			    "zone '%s': already exists ", zname);
+			    "zone '%s': is not a valid name", zname);
 		result = ISC_R_FAILURE;
-	} else if (tresult != ISC_R_SUCCESS)
-		return (tresult);
+	} else {
+		char namebuf[DNS_NAME_FORMATSIZE];
+		char *key;
+
+		dns_name_format(dns_fixedname_name(&fixedname),
+				namebuf, sizeof(namebuf));
+		key = isc_mem_strdup(mctx, namebuf);
+		if (key == NULL)
+			return (ISC_R_NOMEMORY);
+		symvalue.as_pointer = NULL;
+		tresult = isc_symtab_define(symtab, key,
+					    ztype == HINTZONE ? 1 : 2,
+					    symvalue, isc_symexists_reject);
+		if (tresult == ISC_R_EXISTS) {
+			isc_mem_free(mctx, key);
+			cfg_obj_log(zconfig, logctx, ISC_LOG_ERROR,
+				    "zone '%s': already exists ", zname);
+			result = ISC_R_FAILURE;
+		} else if (tresult != ISC_R_SUCCESS) {
+			isc_mem_strdup(mctx, key);
+			return (tresult);
+		}
+	}
 
 	/*
 	 * Look for inappropriate options for the given zone type.
@@ -225,6 +261,14 @@ check_zoneconf(cfg_obj_t *zconfig, isc_symtab_t *symtab, isc_log_t *logctx) {
 				    "zone '%s': missing 'masters' entry",
 				    zname);
 			result = ISC_R_FAILURE;
+		} else {
+			addrlist = cfg_tuple_get(obj, "addresses");
+			if (cfg_list_first(addrlist) == NULL) {
+				cfg_obj_log(zoptions, logctx, ISC_LOG_ERROR,
+					    "zone '%s': empty 'masters' entry",
+					    zname);
+				result = ISC_R_FAILURE;
+			}
 		}
 	}
 
@@ -344,10 +388,53 @@ check_keylist(cfg_obj_t *keys, isc_symtab_t *symtab, isc_log_t *logctx) {
 	}
 	return (result);
 }
-		
+
+static void
+freekey(char *key, unsigned int type, isc_symvalue_t value, void *userarg) {
+	UNUSED(type);
+	UNUSED(value);
+	isc_mem_free(userarg, key);
+}
+
+static isc_result_t
+check_servers(cfg_obj_t *servers, isc_log_t *logctx) {
+	isc_result_t result = ISC_R_SUCCESS;
+	cfg_listelt_t *e1, *e2;
+	cfg_obj_t *v1, *v2;
+	isc_sockaddr_t *s1, *s2;
+	isc_netaddr_t na;
+
+	for (e1 = cfg_list_first(servers); e1 != NULL; e1 = cfg_list_next(e1)) {
+		v1 = cfg_listelt_value(e1);
+		s1 = cfg_obj_assockaddr(cfg_map_getname(v1));
+		e2 = e1;
+		while ((e2 = cfg_list_next(e2)) != NULL) {
+			v2 = cfg_listelt_value(e2);
+			s2 = cfg_obj_assockaddr(cfg_map_getname(v2));
+			if (isc_sockaddr_eqaddr(s1, s2)) {
+				isc_buffer_t target;
+				char buf[128];
+
+				isc_netaddr_fromsockaddr(&na, s2);
+				isc_buffer_init(&target, buf, sizeof(buf) - 1);
+				INSIST(isc_netaddr_totext(&na, &target)
+				       == ISC_R_SUCCESS);
+				buf[isc_buffer_usedlength(&target)] = '\0';
+
+				cfg_obj_log(v2, logctx, ISC_LOG_ERROR,
+					    "server '%s': already exists",
+					    buf);
+				result = ISC_R_FAILURE;
+			}
+		}
+	}
+	return (result);
+}
+  		
 static isc_result_t
 check_viewconf(cfg_obj_t *config, cfg_obj_t *vconfig, isc_log_t *logctx, isc_mem_t *mctx)
 {
+	cfg_obj_t *servers = NULL;
 	cfg_obj_t *zones = NULL;
 	cfg_obj_t *keys = NULL;
 	cfg_listelt_t *element;
@@ -359,7 +446,8 @@ check_viewconf(cfg_obj_t *config, cfg_obj_t *vconfig, isc_log_t *logctx, isc_mem
 	 * Check that all zone statements are syntactically correct and
 	 * there are no duplicate zones.
 	 */
-	tresult = isc_symtab_create(mctx, 100, NULL, NULL, ISC_TRUE, &symtab);
+	tresult = isc_symtab_create(mctx, 100, freekey, mctx,
+				    ISC_TRUE, &symtab);
 	if (tresult != ISC_R_SUCCESS)
 		return (ISC_R_NOMEMORY);
 
@@ -374,7 +462,7 @@ check_viewconf(cfg_obj_t *config, cfg_obj_t *vconfig, isc_log_t *logctx, isc_mem
 	{
 		cfg_obj_t *zone = cfg_listelt_value(element);
 
-		if (check_zoneconf(zone, symtab, logctx) != ISC_R_SUCCESS)
+		if (check_zoneconf(zone, symtab, logctx, mctx) != ISC_R_SUCCESS)
 			result = ISC_R_FAILURE;
 	}
 
@@ -425,6 +513,14 @@ check_viewconf(cfg_obj_t *config, cfg_obj_t *vconfig, isc_log_t *logctx, isc_mem
 			result = ISC_R_FAILURE;
 	}
 
+
+	if (vconfig != NULL) {
+		(void)cfg_map_get(vconfig, "server", &servers);
+		if (servers != NULL &&
+		    check_servers(servers, logctx) != ISC_R_SUCCESS)
+			result = ISC_R_FAILURE;
+	}
+
 	if (vconfig != NULL)
 		tresult = check_options(vconfig, logctx);
 	else
@@ -439,16 +535,26 @@ check_viewconf(cfg_obj_t *config, cfg_obj_t *vconfig, isc_log_t *logctx, isc_mem
 isc_result_t
 cfg_check_namedconf(cfg_obj_t *config, isc_log_t *logctx, isc_mem_t *mctx) {
 	cfg_obj_t *options = NULL;
+	cfg_obj_t *servers = NULL;
 	cfg_obj_t *views = NULL;
+	cfg_obj_t *acls = NULL;
 	cfg_obj_t *obj;
 	cfg_listelt_t *velement;
 	isc_result_t result = ISC_R_SUCCESS;
 	isc_result_t tresult;
 
+	static const char *builtin[] = { "localhost", "localnets",
+					 "any", "none" };
+
 	(void)cfg_map_get(config, "options", &options);
 
 	if (options != NULL &&
 	    check_options(options, logctx) != ISC_R_SUCCESS)
+		result = ISC_R_FAILURE;
+
+	(void)cfg_map_get(config, "server", &servers);
+	if (servers != NULL &&
+	    check_servers(servers, logctx) != ISC_R_SUCCESS)
 		result = ISC_R_FAILURE;
 
 	(void)cfg_map_get(config, "view", &views);
@@ -489,6 +595,49 @@ cfg_check_namedconf(cfg_obj_t *config, isc_log_t *logctx, isc_mem_t *mctx) {
 				    "'cache-file' cannot be a global "
 				    "option if views are present");
 			result = ISC_R_FAILURE;
+		}
+	}
+
+        tresult = cfg_map_get(config, "acl", &acls);
+        if (tresult == ISC_R_SUCCESS) {
+		cfg_listelt_t *elt;
+		cfg_listelt_t *elt2;
+		const char *aclname;
+
+		for (elt = cfg_list_first(acls);
+		     elt != NULL;
+		     elt = cfg_list_next(elt)) {
+			cfg_obj_t *acl = cfg_listelt_value(elt);
+			unsigned int i;
+
+			aclname = cfg_obj_asstring(cfg_tuple_get(acl, "name"));
+			for (i = 0;
+			     i < sizeof(builtin) / sizeof(builtin[0]);
+			     i++)
+				if (strcasecmp(aclname, builtin[i]) == 0) {
+					cfg_obj_log(acl, logctx, ISC_LOG_ERROR,
+						    "attempt to redefine "
+						    "builtin acl '%s'",
+				    		    aclname);
+					result = ISC_R_FAILURE;
+					break;
+				}
+
+			for (elt2 = cfg_list_next(elt);
+			     elt2 != NULL;
+			     elt2 = cfg_list_next(elt2)) {
+				cfg_obj_t *acl2 = cfg_listelt_value(elt2);
+				const char *name;
+				name = cfg_obj_asstring(cfg_tuple_get(acl2,
+								      "name"));
+				if (strcasecmp(aclname, name) == 0) {
+					cfg_obj_log(acl2, logctx, ISC_LOG_ERROR,
+						    "attempt to redefine "
+						    "acl '%s'", name);
+					result = ISC_R_FAILURE;
+					break;
+				}
+			}
 		}
 	}
 
