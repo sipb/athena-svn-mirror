@@ -98,7 +98,6 @@ RCSID("$OpenBSD: session.c,v 1.108 2001/10/11 13:45:21 markus Exp $");
 
 #ifdef KRB5
 #include <krb5.h>
-#include <krb.h>
 #ifndef HEIMDAL
 #define krb5_get_err_text(context,code) error_message(code)
 #endif /* !HEIMDAL */
@@ -724,70 +723,18 @@ do_exec(Session *s, const char *command)
 #if KRB5
   if (s->authctxt->krb5_ticket_file)
     {
-		/* Now that we have krb5 tickets (via forwarding or
-		   password auth, do the krb524init */
-			if (options.kerberos524 && s->authctxt->krb5_user) {
-				static char tktname[512];
-				int problem;
-				krb5_creds increds, *v5creds;
-				krb5_data *realm;
-				CREDENTIALS v4creds;
-				
-				krb524_init_ets(s->authctxt->krb5_ctx);
-				realm = krb5_princ_realm(s->authctxt->krb5_ctx,
-				    s->authctxt->krb5_user);
-
-
-				memset(&increds, 0, sizeof(increds));
-				if ((problem = krb5_build_principal_ext(
-				    s->authctxt->krb5_ctx,
-				    &(increds.server),
-				    realm->length, realm->data, 6,
-				    "krbtgt", realm->length, realm->data,
-				    NULL)))
-					goto out;
-			
-				increds.client = s->authctxt->krb5_user;
-				increds.times.endtime = 0;
-				increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
-				if ((problem = krb5_get_credentials(
-				    s->authctxt->krb5_ctx, 0,
-				    s->authctxt->krb5_fwd_ccache, &increds,
-				    &v5creds)))
-					goto out;
-  
-				if ((problem = krb524_convert_creds_kdc(
-				    s->authctxt->krb5_ctx, v5creds,
-				    &v4creds)))
-					goto out;
-
-				sprintf(tktname, "KRBTKFILE=/tmp/tkt_p%d",
-				    getpid());
-				putenv(xstrdup(tktname));
-				if (problem = in_tkt(v4creds.pname,
-				    v4creds.pinst))
-					goto out;
-
-				if ((problem = krb_save_credentials(
-				    v4creds.service,
-				    v4creds.instance,
-				    v4creds.realm, v4creds.session,
-				    v4creds.lifetime, v4creds.kvno,
-				    &(v4creds.ticket_st), v4creds.issue_date)))
-					goto out;
-
-				chown(tkt_string(), s->authctxt->pw->pw_uid,
-				      s->authctxt->pw->pw_gid);
-				havecred = 1;
-			out:
-				if (problem) {
-					debug("krb524 failed: %s",
-					      krb5_get_err_text(
-						  s->authctxt->krb5_ctx,
-						  problem));
-					krb5_cleanup_proc(s->authctxt);
-				}
-			}
+      if (options.kerberos524 && s->authctxt->krb5_user)
+	{
+	  status = do_krb524_conversion(s->authctxt);
+	  if (status)
+	    {
+	      debug("krb524 failed: %s",
+		    krb5_get_err_text(s->authctxt->krb5_ctx, status));
+	      krb5_cleanup_proc(s->authctxt);
+	    }
+	  else
+	    havecred = 1;
+	}
     }
 #endif
      	try_afscall(setpag);
