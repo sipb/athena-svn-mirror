@@ -40,7 +40,7 @@ char	*CF;		/* name of cifplot filter (per job) */
 char	*PF;		/* name of vrast filter (per job) */
 char	*FF;		/* form feed string */
 char	*TR;		/* trailer string to be output when Q empties */
-#endif SERVER
+#endif /* SERVER */
 short	SC;		/* suppress multiple copies */
 #ifdef SERVER
 short	SF;		/* suppress FF on each print job */
@@ -62,7 +62,11 @@ short	RS;		/* restricted to those with local accounts */
 char     *RQ; 	        /* Name of remote quota server */
 int      CP; 	  	/* Cost per page */
 char	 *QS;		/* Quota service for printer */
-#endif PQUOTA
+#endif /* PQUOTA */
+#ifdef LACL
+char	 *AC;		/* Local ACL file to use */
+short	 PA;		/* ACL file used as positive ACL */
+#endif /* LACL */
 #endif SERVER
 
 char	line[BUFSIZ];
