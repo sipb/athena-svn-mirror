@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.5 1987-08-08 16:44:43 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.6 1987-08-10 02:12:28 treese Exp $
 
 # First, source the standard csh startup script.  If it can't be found, notify
 # the user and execute some backup commands.  In particular, set a sane path.
@@ -17,7 +17,7 @@ if (-r /usr/athena/.cshrc) then
 else
 	echo "Unable to load system-wide cshrc file."
 	echo "Some initialization has not been performed."
-	set athena_path = ( /usr/athena /bin/athena /usr/new \
+	set athena_path = ( /usr/athena /bin/athena /usr/bin/X /usr/new \
 			 /usr/new/mh/bin /usr/ucb /bin /usr/bin /usr/games)
 endif
 
