@@ -119,8 +119,16 @@ extern char *mktemp ();
 #include <k5-util.h>
 
 #ifdef STDARG
-extern reply(int, char *, ...);
-extern lreply(int, char *, ...);
+extern reply(int, char *, ...)
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
+     __attribute__ ((__format__ (__printf__, 2, 3)))
+#endif
+     ;
+extern lreply(int, char *, ...)
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
+     __attribute__ ((__format__ (__printf__, 2, 3)))
+#endif
+     ;
 #endif
 
 #ifdef KRB5_KRB4_COMPAT
@@ -792,7 +800,17 @@ user(name)
 		int result;
 #ifdef GSSAPI
 		if (auth_type && strcmp(auth_type, "GSSAPI") == 0) {
+			int len;
+
 			authorized = ftpd_gss_userok(&client_name, name) == 0;
+			len = sizeof("GSSAPI user  is not authorized as "
+				     "; Password required.")
+				+ strlen(client_name.value)
+				+ strlen(name);
+			if (len >= sizeof(buf)) {
+				syslog(LOG_ERR, "user: username too long");
+				name = "[username too long]";
+			}
 			sprintf(buf, "GSSAPI user %s is%s authorized as %s",
 				client_name.value, authorized ? "" : " not",
 				name);
@@ -803,7 +821,19 @@ user(name)
 #endif /* GSSAPI */
 #ifdef KRB5_KRB4_COMPAT
 		if (auth_type && strcmp(auth_type, "KERBEROS_V4") == 0) {
+			int len;
+
 			authorized = kuserok(&kdata,name) == 0;
+			len = sizeof("Kerberos user .@ is not authorized as "
+				     "; Password required.")
+				+ strlen(kdata.pname)
+				+ strlen(kdata.pinst)
+				+ strlen(kdata.prealm)
+				+ strlen(name);
+			if (len >= sizeof(buf)) {
+				syslog(LOG_ERR, "user: username too long");
+				name = "[username too long]";
+			}
 			sprintf(buf, "Kerberos user %s%s%s@%s is%s authorized as %s",
 				kdata.pname, *kdata.pinst ? "." : "",
 				kdata.pinst, kdata.prealm,
@@ -827,7 +857,7 @@ user(name)
 		syslog(result < 500 ? LOG_INFO : LOG_ERR, "%s", buf);
 
 		if (result == 232)
-			login(NULL);
+			login(NULL, result);
 		return;
 	}
 
@@ -1109,11 +1139,11 @@ pass(passwd)
 	}
 	login_attempts = 0;		/* this time successful */
 
-	login(passwd);
+	login(passwd, 0);
 	return;
 }
 
-login(passwd)
+login(passwd, logincode)
 	char *passwd;
 {
 	int status, *warnings;
@@ -1194,8 +1224,11 @@ login(passwd)
 			        reply(530, "User %s: can't change directory to %s.",
 				      pw->pw_name, pw->pw_dir);
 				goto bad;
-			} else
-			        lreply(230, "No directory! Logging in with home=/");
+			} else {
+				if (!logincode)
+					logincode = 230;
+			        lreply(logincode, "No directory! Logging in with home=/");
+			}
 		}
 	}
 	if (guest) {
@@ -1246,7 +1279,12 @@ retrieve(cmd, name)
 	} else {
 		char line[FTP_BUFSIZ];
 
-		(void) snprintf(line, sizeof(line), cmd, name), name = line;
+		if (strlen(cmd) + strlen(name) + 1 >= sizeof(line)) {
+			syslog(LOG_ERR, "retrieve: filename too long");
+			reply(501, "filename too long");
+			return;
+		}
+		(void) sprintf(line, cmd, name), name = line;
 		fin = ftpd_popen(line, "r"), closefunc = ftpd_pclose;
 		st.st_size = -1;
 #ifndef NOSTBLKSIZE
@@ -1488,6 +1526,10 @@ dataconn(name, size, mode)
 	return (file);
 }
 
+/*
+ * XXX callers need to limit total length of output string to
+ * FTP_BUFSIZ
+ */
 #ifdef STDARG
 secure_error(char *fmt, ...)
 #else
@@ -1525,7 +1567,7 @@ void send_data(instr, outstr, blksize)
 	register int c, cnt;
 	register char *buf;
 	int netfd, filefd;
-	int ret = 0;
+	volatile int ret = 0;
 
 	transflag++;
 	if (sigsetjmp(urgcatch, 1)) {
@@ -1606,7 +1648,7 @@ receive_data(instr, outstr)
 	FILE *instr, *outstr;
 {
 	register int c;
-	int cnt, bare_lfs = 0;
+	volatile int cnt, bare_lfs = 0;
 	char buf[FTP_BUFSIZ];
 	int ret = 0;
 
@@ -1687,13 +1729,19 @@ statfilecmd(filename)
 {
 	char line[FTP_BUFSIZ];
 	FILE *fin;
-	int c;
+	int c, n;
 	char str[FTP_BUFSIZ], *p;
 
-	(void) snprintf(line, sizeof(line), "/bin/ls -lgA %s", filename);
+	if (strlen(filename) + sizeof("/bin/ls -lgA ")
+	    >= sizeof(line)) {
+		reply(501, "filename too long");
+		return;
+	}
+	(void) sprintf(line, "/bin/ls -lgA %s", filename);
 	fin = ftpd_popen(line, "r");
 	lreply(211, "status of %s:", filename);
 	p = str;
+	n = 0;
 	while ((c = getc(fin)) != EOF) {
 		if (c == '\n') {
 			if (ferror(stdout)){
@@ -1710,7 +1758,16 @@ statfilecmd(filename)
 			*p = '\0';
 			reply(0, "%s", str);
 			p = str;
-		} else	*p++ = c;
+			n = 0;
+		} else {
+			*p++ = c;
+			n++;
+			if (n >= sizeof(str)) {
+				reply(551, "output line too long");
+				(void) ftpd_pclose(fin);
+				return;
+			}
+		}
 	}
 	if (p != str) {
 		*p = '\0';
@@ -1794,6 +1851,10 @@ fatal(s)
 
 char cont_char = ' ';
 
+/*
+ * XXX callers need to limit total length of output string to
+ * FTP_BUFSIZ bytes for now.
+ */
 #ifdef STDARG
 reply(int n, char *fmt, ...)
 #else
@@ -1815,22 +1876,32 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 #endif
 
 	if (auth_type) {
-		char in[FTP_BUFSIZ], out[FTP_BUFSIZ];
+		/*
+		 * Deal with expansion in mk_{safe,priv},
+		 * radix_encode, gss_seal, plus slop.
+		 */
+		char in[FTP_BUFSIZ*3/2], out[FTP_BUFSIZ*3/2];
 		int length, kerror;
 		if (n) sprintf(in, "%d%c", n, cont_char);
 		else in[0] = '\0';
 		strncat(in, buf, sizeof (in) - strlen(in) - 1);
 #ifdef KRB5_KRB4_COMPAT
 		if (strcmp(auth_type, "KERBEROS_V4") == 0) {
-			if ((length = clevel == PROT_P ?
-			     krb_mk_priv((unsigned char *)in,
-					 (unsigned char *)out,
-					 strlen(in), schedule, &kdata.session,
-					 &ctrl_addr, &his_addr)
-			     : krb_mk_safe((unsigned char *)in,
-					   (unsigned char *)out,
-					   strlen(in), &kdata.session,
-					   &ctrl_addr, &his_addr)) == -1) {
+			if (clevel == PROT_P)
+				length = krb_mk_priv((unsigned char *)in,
+						     (unsigned char *)out,
+						     strlen(in),
+						     schedule, &kdata.session,
+						     &ctrl_addr,
+						     &his_addr);
+			else
+				length = krb_mk_safe((unsigned char *)in,
+						     (unsigned char *)out,
+						     strlen(in),
+						     &kdata.session,
+						     &ctrl_addr,
+						     &his_addr);
+			if (length == -1) {
 				syslog(LOG_ERR,
 				       "krb_mk_%s failed for KERBEROS_V4",
 				       clevel == PROT_P ? "priv" : "safe");
@@ -1874,13 +1945,16 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 		}
 #endif /* GSSAPI */
 		/* Other auth types go here ... */
-		if (kerror = radix_encode(out, in, &length, 0)) {
+		if (length >= sizeof(in) / 4 * 3) {
+			syslog(LOG_ERR, "input to radix_encode too long");
+			fputs(in, stdout);
+		} else if (kerror = radix_encode(out, in, &length, 0)) {
 			syslog(LOG_ERR, "Couldn't encode reply (%s)",
 					radix_error(kerror));
 			fputs(in,stdout);
 		} else
-		printf("%s%c%s", clevel == PROT_P ? "632" : "631",
-				 n ? cont_char : '-', in);
+			printf("%s%c%s", clevel == PROT_P ? "632" : "631",
+			       n ? cont_char : '-', in);
 	} else {
 		if (n) printf("%d%c", n, cont_char);
 		fputs(buf, stdout);
@@ -1893,6 +1967,10 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 	}
 }
 
+/*
+ * XXX callers need to limit total length of output string to
+ * FTP_BUFSIZ
+ */
 #ifdef STDARG
 lreply(int n, char *fmt, ...)
 #else
@@ -1937,7 +2015,8 @@ yyerror(s)
 
 	if (cp = strchr(cbuf,'\n'))
 		*cp = '\0';
-	reply(500, "'%s': command not understood.", cbuf);
+	reply(500, "'%.*s': command not understood.",
+	      FTP_BUFSIZ - sizeof("'': command not understood."), cbuf);
 }
 
 delete_file(name)
@@ -2198,6 +2277,7 @@ gunique(local)
 	if (cp)
 		*cp = '/';
 	(void) strncpy(new, local, sizeof(new) - 1);
+	new[sizeof(new) - 1] = '\0';
 	cp = new + strlen(new);
 	cplen = sizeof(new) - strlen(new) - 2;
 	*cp++ = '.';
@@ -2217,7 +2297,23 @@ perror_reply(code, string)
 	int code;
 	char *string;
 {
-	reply(code, "%s: %s.", string, strerror(errno));
+	char *err_string;
+	size_t extra_len;
+
+	err_string = strerror(errno);
+	if (err_string == NULL)
+		err_string = "(unknown error)";
+	extra_len = strlen(err_string) + sizeof("(truncated): .");
+
+	/*
+	 * XXX knows about FTP_BUFSIZ in reply()
+	 */
+	if (strlen(string) + extra_len > FTP_BUFSIZ) {
+		reply(code, "(truncated)%.*s: %s.",
+		      FTP_BUFSIZ - extra_len, string, err_string);
+	} else {
+		reply(code, "%s: %s.", string, err_string);
+	}
 }
 
 auth(type)
@@ -2248,7 +2344,7 @@ char *data;
 	int kerror, length;
 #ifdef KRB5_KRB4_COMPAT
 	int i;
-	static char *service;
+	static char **service=NULL;
 	char instance[INST_SZ];
 	u_long cksum;
 	char buf[FTP_BUFSIZ];
@@ -2274,23 +2370,22 @@ char *data;
 		}
 		(void) memcpy((char *)ticket.dat, (char *)out_buf, ticket.length = length);
 		strcpy(instance, "*");
-		if (!service) {
-			char realm[REALM_SZ];
-			des_cblock key;
-			
-			service = "ftp";
-			if (krb_get_lrealm(realm, 1) == KSUCCESS &&
-			    read_service_key(service, instance, realm, 0, keyfile, key))
-				service = "rcmd";
-			else
-				(void) memset(key, 0, sizeof(key));
+
+		kerror = 255;
+		for (service = krb4_services; *service; service++) {
+		  kerror = krb_rd_req(&ticket, *service, instance,
+				      his_addr.sin_addr.s_addr, 
+				      &kdata, keyfile);
+		  /* Success */
+		  if(!kerror) break;
+		} 
+		/* rd_req failed.... */
+		if(kerror) {
+		  secure_error("ADAT: Kerberos V4 krb_rd_req: %s",
+			       krb_get_err_text(kerror));
+		  return(0);
 		}
-		if (kerror = krb_rd_req(&ticket, service, instance,
-					his_addr.sin_addr.s_addr, &kdata, keyfile)) {
-			secure_error("ADAT: Kerberos V4 krb_rd_req: %s",
-				     krb_get_err_text(kerror));
-			return(0);
-		}
+
 		/* add one to the (formerly) sealed checksum, and re-seal it */
 		cksum = kdata.checksum + 1;
 		cksum = htonl(cksum);
@@ -2298,6 +2393,10 @@ char *data;
 		if ((length = krb_mk_safe((u_char *)&cksum, out_buf, sizeof(cksum),
 					  &kdata.session,&ctrl_addr, &his_addr)) == -1) {
 			secure_error("ADAT: krb_mk_safe failed");
+			return(0);
+		}
+		if (length >= (FTP_BUFSIZ - sizeof("ADAT=")) / 4 * 3) {
+			secure_error("ADAT: reply too long");
 			return(0);
 		}
 		if (kerror = radix_encode(out_buf, buf, &length, 0)) {
@@ -2362,7 +2461,8 @@ char *data;
 			syslog(LOG_ERR, "Couldn't canonicalize local hostname");
 			return 0;
 		}
-		strcpy(localname, hp->h_name);
+		strncpy(localname, hp->h_name, sizeof(localname) - 1);
+		localname[sizeof(localname) - 1] = '\0';
 
 		for (service = gss_services; *service; service++) {
 			sprintf(service_name, "%s@%s", *service, localname);
@@ -2433,6 +2533,16 @@ char *data;
 		}
 
 		if (out_tok.length) {
+			if (out_tok.length >= ((FTP_BUFSIZ - sizeof("ADAT="))
+					       / 4 * 3)) {
+				secure_error("ADAT: reply too long");
+				syslog(LOG_ERR, "ADAT: reply too long");
+				(void) gss_release_cred(&stat_min, &server_creds);
+				if (ret_flags & GSS_C_DELEG_FLAG)
+					(void) gss_release_cred(&stat_min,
+								&deleg_creds);
+				return(0);
+			}
 			if (kerror = radix_encode(out_tok.value, gbuf, &out_tok.length, 0)) {
 				secure_error("Couldn't encode ADAT reply (%s)",
 					     radix_error(kerror));
@@ -2531,6 +2641,9 @@ static char *onefile[] = {
  *	n>=0 on success
  *	-1 on error
  *	-2 on security error
+ *
+ * XXX callers need to limit total length of output string to
+ * FTP_BUFSIZ
  */
 #ifdef STDARG
 secure_fprintf(FILE *stream, char *fmt, ...)
@@ -2568,13 +2681,13 @@ send_file_list(whichfiles)
 	struct stat st;
 	DIR *dirp = NULL;
 	struct dirent *dir;
-	FILE *dout = NULL;
-	register char **dirlist, *dirname;
-	int simple = 0;
+	FILE *volatile dout = NULL;
+	register char **volatile dirlist, *dirname;
+	volatile int simple = 0;
 #ifndef strpbrk
 	char *strpbrk();
 #endif
-	int ret = 0;
+	volatile int ret = 0;
 
 	if (strpbrk(whichfiles, "~{[*?") != NULL) {
 		extern char **ftpglob(), *globerr;
@@ -2648,7 +2761,16 @@ send_file_list(whichfiles)
 			    dir->d_name[2] == '\0')
 				continue;
 
-			snprintf(nbuf, sizeof(nbuf), "%s/%s", dirname, dir->d_name);
+			if (strlen(dirname) + strlen(dir->d_name)
+			    + 1 /* slash */
+			    + 2	/* CRLF */
+			    + 1 > sizeof(nbuf)) {
+				syslog(LOG_ERR,
+				       "send_file_list: pathname too long");
+				ret = -2; /* XXX */
+				goto data_err;
+			}
+			sprintf(nbuf, "%s/%s", dirname, dir->d_name);
 
 			/*
 			 * We have to do a stat to insure it's
@@ -2811,8 +2933,6 @@ ftpd_gss_convert_creds(name, creds)
 	char ccname[MAXPATHLEN];
 #ifdef KRB5_KRB4_COMPAT
 	krb5_principal kpcserver;
-	krb5_error_code kpccode;
-	int kpcval;
 	krb5_creds increds, *v5creds;
 	CREDENTIALS v4creds;
 #endif

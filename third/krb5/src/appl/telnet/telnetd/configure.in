@@ -59,15 +59,6 @@ if test $krb5_cv_sys_setpgrp_two = yes; then
   AC_DEFINE(SETPGRP_TWOARG)
 fi
 dnl
-dnl For the encryption code we need libdes425
-dnl Fix post beta-6
-withval=no
-AC_ARG_WITH([krb4],[],,withval=yes)
-if test $withval = no; then
-	DES425_LIB=-ldes425
-	DES425_DEPLIB='$(TOPLIBD)/libdes425$(DEPLIBEXT)'
-fi
-dnl
 EXTRALIBS=
 AC_CHECK_FUNC(res_send,:,AC_CHECK_LIB(resolv,res_send,
 	      [EXTRALIBS=-lresolv]))

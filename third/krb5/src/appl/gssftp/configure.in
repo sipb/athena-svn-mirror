@@ -87,7 +87,7 @@ if test $with_afs != no; then
 				    [EXTRALIBS="$EXTRALIBS -lcompat"])])
 fi
 case $krb5_cv_host in
-alpha-dec-osf*)
+alpha*-dec-osf*)
 	AC_CHECK_LIB(security,setluid,
 		AC_DEFINE(HAVE_SETLUID)
 		FTPD_LIBS="$FTPD_LIBS -lsecurity"

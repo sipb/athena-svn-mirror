@@ -153,7 +153,7 @@ extern void usage P((void));
  */
 char valid_opts[] = {
 	'd', ':', 'h', 'k', 'L', ':', 'n', 'S', ':', 'U',
-	'w',
+	'w', ':',
 #ifdef	AUTHENTICATION
 	'a', ':', 'X', ':',
 #endif
@@ -521,7 +521,7 @@ main(argc, argv)
 	    }
 	    (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 				(char *)&on, sizeof(on));
-	    if (bind(s, (struct sockaddr *)&sin, sizeof sin) < 0) {
+	    if (bind(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 		perror("bind");
 		exit(1);
 	    }
@@ -529,7 +529,7 @@ main(argc, argv)
 		perror("listen");
 		exit(1);
 	    }
-	    foo = sizeof sin;
+	    foo = sizeof(sin);
 	    ns = accept(s, (struct sockaddr *)&sin, &foo);
 	    if (ns < 0) {
 		perror("accept");
@@ -794,31 +794,26 @@ getterminaltype(name)
     if (his_state_is_will(TELOPT_TSPEED)) {
 	static unsigned char sb[] =
 			{ IAC, SB, TELOPT_TSPEED, TELQUAL_SEND, IAC, SE };
-
-	netwrite(sb, sizeof sb);
+	netwrite(sb, sizeof(sb));
     }
     if (his_state_is_will(TELOPT_XDISPLOC)) {
 	static unsigned char sb[] =
 			{ IAC, SB, TELOPT_XDISPLOC, TELQUAL_SEND, IAC, SE };
-
-	netwrite(sb, sizeof sb);
+	netwrite(sb, sizeof(sb));
     }
     if (his_state_is_will(TELOPT_NEW_ENVIRON)) {
 	static unsigned char sb[] =
 			{ IAC, SB, TELOPT_NEW_ENVIRON, TELQUAL_SEND, IAC, SE };
-
-	netwrite(sb, sizeof sb);
+	netwrite(sb, sizeof(sb));
     }
     else if (his_state_is_will(TELOPT_OLD_ENVIRON)) {
 	static unsigned char sb[] =
 			{ IAC, SB, TELOPT_OLD_ENVIRON, TELQUAL_SEND, IAC, SE };
-
-	netwrite(sb, sizeof sb);
+	netwrite(sb, sizeof(sb));
     }
-    if (his_state_is_will(TELOPT_TTYPE)) {
+    if (his_state_is_will(TELOPT_TTYPE))
+	netwrite(ttytype_sbbuf, sizeof(ttytype_sbbuf));
 
-	netwrite(ttytype_sbbuf, sizeof ttytype_sbbuf);
-    }
     if (his_state_is_will(TELOPT_TSPEED)) {
 	while (sequenceIs(tspeedsubopt, baseline))
 	    ttloop();
@@ -899,7 +894,7 @@ _gettermname()
     if (his_state_is_wont(TELOPT_TTYPE))
 	return;
     settimer(baseline);
-    netwrite(ttytype_sbbuf, sizeof ttytype_sbbuf);
+    netwrite(ttytype_sbbuf, sizeof(ttytype_sbbuf));
     while (sequenceIs(ttypesubopt, baseline))
 	ttloop();
 }
@@ -1038,6 +1033,12 @@ void doit(who)
 	level = getterminaltype(user_name);
 	setenv("TERM", *terminaltype ? terminaltype : "network", 1);
 
+#if defined (AUTHENTICATION)
+	if (level < 0 && auth_level > 0) {
+		fatal (net, "No authentication provided");
+		exit (-1);
+	}
+#endif
 	/* Give slow clients one last chance before we fork */
 	if (his_state_is_will(TELOPT_ENCRYPT) && !decrypt_input) {
 		struct sigaction sa, osa;
@@ -1239,7 +1240,7 @@ telnet(f, p, host)
 
 #if	defined(SO_OOBINLINE)
 	(void) setsockopt(net, SOL_SOCKET, SO_OOBINLINE,
-				(char *)&on, sizeof on);
+				(char *)&on, sizeof(on));
 #endif	/* defined(SO_OOBINLINE) */
 
 #ifdef	SIGTSTP
@@ -1300,7 +1301,8 @@ telnet(f, p, host)
 		HN = getstr("hn", &cp);
 		IM = getstr("im", &cp);
 		if (HN && *HN)
-			(void) strcpy(host_name, HN);
+			(void) strncpy(host_name, HN, sizeof(host_name) - 1);
+		host_name[sizeof(host_name) - 1] = '\0';
 		if (IM == 0)
 			IM = "";
 	} else {

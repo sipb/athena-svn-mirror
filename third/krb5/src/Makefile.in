@@ -6,18 +6,16 @@ MY_SUBDIRS=util include lib @krb524@ kdc kadmin slave clients tests \
 BUILDTOP=$(REL)$(C)
 LOCALINCLUDES = -I$(srcdir) 
 
-##DOS##BUILDTOP = .
-
 SRCS =  
 HDRS = 
 
 DISTFILES = $(SRCS) $(HDRS) COPYING COPYING.LIB ChangeLog Makefile.in
 
-all-unix::
+all-unix:: krb5-config
 
 all-mac::
 
-all-windows:: Makefile-windows
+all-windows:: maybe-awk Makefile-windows
 	@echo Making in util
 	cd util
 	$(MAKE) -$(MFLAGS)
@@ -33,7 +31,10 @@ all-windows:: Makefile-windows
 	@echo Making in clients
 	cd ..\clients
 	$(MAKE) -$(MFLAGS)
-	cd ..
+	@echo Making in appl\gss-sample
+	cd ..\appl\gss-sample
+	$(MAKE) -$(MFLAGS)
+	cd ..\..
 
 world::
 	date
@@ -126,9 +127,10 @@ config-windows:: Makefile-windows
 ##DOS##MKFDEP=$(WCONFIG_EXE) config\win-pre.in config\win-post.in
 
 WINMAKEFILES=Makefile \
+	appl\gss-sample\Makefile \
 	clients\Makefile clients\kdestroy\Makefile \
 	clients\kinit\Makefile clients\klist\Makefile \
-	clients\kpasswd\Makefile \
+	clients\kpasswd\Makefile clients\kvno\Makefile \
 	include\Makefile include\krb5\Makefile \
 	lib\Makefile lib\crypto\Makefile \
 	lib\crypto\crc32\Makefile lib\crypto\des\Makefile \
@@ -159,11 +161,14 @@ WINMAKEFILES=Makefile \
 	util\windows\Makefile \
 	windows\Makefile windows\lib\Makefile \
 	windows\cns\Makefile windows\gina\Makefile \
-	windows\gss\Makefile windows\wintel\Makefile
+	windows\gss\Makefile windows\ms2mit\Makefile \
+	windows\wintel\Makefile
 
 ##DOS##Makefile-windows:: $(MKFDEP) $(WINMAKEFILES)
 
 ##DOS##Makefile: Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##appl\gss-sample\Makefile: appl\gss-sample\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##clients\Makefile: clients\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
@@ -174,6 +179,8 @@ WINMAKEFILES=Makefile \
 ##DOS##clients\klist\Makefile: clients\klist\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##clients\kpasswd\Makefile: clients\kpasswd\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##clients\kvno\Makefile: clients\kvno\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##include\Makefile: include\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
@@ -255,17 +262,19 @@ WINMAKEFILES=Makefile \
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##util\windows\Makefile: util\windows\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##windows\Makefile:  windows\Makefile.in $(MKFDEP)
+##DOS##windows\Makefile: windows\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##windows\lib\Makefile:  windows\lib\Makefile.in $(MKFDEP)
+##DOS##windows\lib\Makefile: windows\lib\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##windows\cns\Makefile:  windows\cns\Makefile.in $(MKFDEP)
+##DOS##windows\cns\Makefile: windows\cns\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##windows\gina\Makefile:  windows\gina\Makefile.in $(MKFDEP)
+##DOS##windows\gina\Makefile: windows\gina\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##windows\gss\Makefile:  windows\gss\Makefile.in $(MKFDEP)
+##DOS##windows\gss\Makefile: windows\gss\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##windows\wintel\Makefile:  windows\wintel\Makefile.in $(MKFDEP)
+##DOS##windows\ms2mit\Makefile: windows\ms2mit\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##windows\wintel\Makefile: windows\wintel\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 
 clean-windows:: Makefile-windows
@@ -284,7 +293,10 @@ clean-windows:: Makefile-windows
 	@echo Making clean in clients
 	cd ..\clients
 	$(MAKE) -$(MFLAGS) clean
-	cd ..
+	@echo Making in appl\gss-sample
+	cd ..\appl\gss-sample
+	$(MAKE) -$(MFLAGS) clean
+	cd ..\..
 	@echo Making clean in root
 
 #
@@ -318,7 +330,7 @@ FILES= ./* \
 	util/* util/et/* util/profile/*
 
 WINFILES= util/windows/* windows/* windows/lib/* windows/cns/* \
-	windows/wintel/* windows/gss/* windows/gina/*
+	windows/wintel/* windows/gss/* windows/gina/* windows/ms2mit/*
 
 MACFILES= mac/* mac/libraries/* config/* include/* \
 	include/krb5/* include/krb5/stock/* include/sys/* \
@@ -371,7 +383,8 @@ macfile.list:
 
 dos-Makefile:
 	cat config/win-pre.in Makefile.in config/win-post.in | \
-		sed -e "s/^##DOS##//" -e "s/^##DOS//" > Makefile
+		sed -e "s/^##DOS##//" -e "s/^##DOS//" > Makefile.tmp
+	mv Makefile.tmp Makefile
 
 prep-windows: dos-Makefile awk-windows-mac
 
@@ -490,6 +503,17 @@ $(GG)gssapi.h: $(GG)gssapi.hin
 
 awk-windows-mac: $(ETOUT) $(HOUT)
 
+#
+# The maybe-awk target needs to happen after AWK is defined.
+#
+
+##DOS##maybe-awk::
+##DOS##!ifdef WHICH_CMD
+##DOS##!if ![ $(WHICH_CMD) $(AWK) ]
+##DOS##maybe-awk:: awk-windows-mac
+##DOS##!endif
+##DOS##!endif
+
 clean-windows-mac:
 	rm -f $(CLEANUP)
 
@@ -525,3 +549,11 @@ install-windows::
 	$(CP) clients\kpasswd\$(OUTPRE)kpasswd.exe "$(KRB_INSTALL_DIR)\bin\."
 	@if exist "$(KRB_INSTALL_DIR)\bin\krb4_32.dll" del "$(KRB_INSTALL_DIR)\bin\krb4_32.dll"
 	@if exist "$(KRB_INSTALL_DIR)\lib\krb4_32.lib" del "$(KRB_INSTALL_DIR)\lib\krb4_32.lib"
+
+install-unix:: 
+	$(INSTALL) krb5-config \
+		$(DESTDIR)$(CLIENT_BINDIR)/krb5-config
+
+krb5-config: $(srcdir)/krb5-config.in $(thisconfigdir)/config.status
+	cd $(thisconfigdir) && $(SHELL) config.status
+
