@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.2 1990-04-19 12:00:16 jfc Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.3 1990-04-19 12:56:21 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -29,7 +29,7 @@ int	old_attab = 0;
 static int attach_lock_fd = -1;
 static int attach_lock_count = 0;
 
-lock_attachtab()
+void lock_attachtab()
 {
 	char	*lockfn;
 	
@@ -64,7 +64,7 @@ lock_attachtab()
 /*
  * UNLOCK the attachtab
  */
-unlock_attachtab()
+void unlock_attachtab()
 {
 	if (debug_flag)
 		printf("Unlocking attachtab\n");
@@ -83,7 +83,7 @@ unlock_attachtab()
  * 	linked list of attachtab entries.  Assumes attachtab is
  * 	already locked.
  */
-get_attachtab()
+void get_attachtab()
 {
 	struct _attachtab	*atprev = NULL;
 	struct _attachtab	*at = NULL;
@@ -116,7 +116,7 @@ get_attachtab()
 /*
  * free the linked list of attachtab entries
  */
-free_attachtab()
+void free_attachtab()
 {
 	register struct _attachtab     	*at, *next;
 	
