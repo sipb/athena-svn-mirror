@@ -1,11 +1,11 @@
 /*
- * $Id: aklog.c,v 1.8 2000-05-03 13:40:29 rbasch Exp $
+ * $Id: aklog.c,v 1.9 2000-12-30 11:57:14 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog.c,v 1.8 2000-05-03 13:40:29 rbasch Exp $";
+static const char rcsid[] = "$Id: aklog.c,v 1.9 2000-12-30 11:57:14 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -651,7 +651,7 @@ static void usage(void)
   fprintf(stderr, "\nUsage: %s %s%s%s\n", progname,
 	  "[-d] [[-cell | -c] cell [-k krb_realm]] ",
 	  "[[-p | -path] pathname]\n",
-	  "    [-noprdb]\n");
+	  "    [-noprdb] [-force]\n");
   fprintf(stderr, "    -d gives debugging information.\n");
   fprintf(stderr, "    krb_realm is the kerberos realm of a cell.\n");
   fprintf(stderr, "    pathname is the name of a directory to which ");
