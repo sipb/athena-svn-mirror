@@ -5,13 +5,20 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.29 1991-02-28 18:41:57 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.30 1991-03-11 18:40:59 jik Exp $
 #
+
+# If you are compiling on a system that has an st_blocks field in
+# the stat structure whose value represents the number of 512-byte
+# blocks taken up by the file, add -DUSE_BLOCKS to the DEFINES
+# variable below.  If you don't know whether or not to define it, run
+# "make block-test".
 
 DESTDIR=
 TARGETS= 	delete undelete expunge purge lsdel
 INSTALLDIR= 	/usr/bin
 MANDIR=		/usr/man
+TMPDIR=		/tmp
 MANSECT=	1
 CC= 		cc
 DEPEND=		/usr/bin/X11/makedepend
@@ -72,7 +79,7 @@ MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 		man1/undelete.1
 
 ARCHIVE=	README Makefile PATCHLEVEL $(SRCS) $(INCS) $(MANS)\
-		$(ETSRCS)
+		$(ETSRCS) block-test.sh
 ARCHIVEDIRS= 	man1
 
 DELETEOBJS= 	delete.o util.o delete_errs.o errors.o
@@ -180,8 +187,11 @@ clean::
 	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge\
 		delete_errs.h delete_errs.c
 
-depend: $(SRCS) $(INCS) $(ETS)
+depend:: $(SRCS) $(INCS) $(ETS)
 	$(DEPEND) -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
+
+block-test: block-test.sh
+	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . block-test.sh
 
 $(DELETEOBJS): delete_errs.h
 $(EXPUNGEOBJS): delete_errs.h
