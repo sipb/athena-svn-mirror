@@ -8,7 +8,6 @@
 static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #endif not lint
 
-#define	BUFSIZ	1024
 #define MAXHOP	32	/* max number of tc= indirections */
 
 #include <ctype.h>
@@ -17,6 +16,10 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #include <hesiod.h>
 #include "lp.local.h"
 #endif
+#ifndef BUFSIZ
+#define	BUFSIZ	1024
+#endif
+
 /*
  * termcap - routines for dealing with the terminal capability data base
  *
