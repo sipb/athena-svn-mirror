@@ -61,11 +61,14 @@ host_alias = @host_alias@
 host_triplet = @host@
 APP_LIBS = @APP_LIBS@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
@@ -76,6 +79,8 @@ GTKDOC = @GTKDOC@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+IF_BSD_PS = @IF_BSD_PS@
+IF_POSIX_PS = @IF_POSIX_PS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -90,15 +95,20 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 OAF_MAJOR_VERSION = @OAF_MAJOR_VERSION@
 OAF_MICRO_VERSION = @OAF_MICRO_VERSION@
 OAF_MINOR_VERSION = @OAF_MINOR_VERSION@
+OAF_SLAY = @OAF_SLAY@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
+PERL_PATH = @PERL_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -114,10 +124,10 @@ l = @l@
 
 NULL = 
 
-noinst_PROGRAMS =  	oaf-empty-server 		oaf-test-client			oaf-test-async			$(NULL)
+noinst_PROGRAMS =  	oaf-test-client			oaf-test-async			$(NULL)
 
 
-bin_PROGRAMS =  	oaf-run-query			$(NULL)
+bin_PROGRAMS =  	oaf-empty-server 		oaf-run-query			$(NULL)
 
 
 oaf_test_async_SOURCES =  	oaf-test-async.c 		$(NULL)
@@ -139,19 +149,22 @@ CLEANFILES = empty_built
 
 INCLUDES = -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/liboaf -DOAFINFODIR=\"$(pkgdatadir)\" 	@ORBIT_CFLAGS@ @XML_CFLAGS@ @GLIB_CFLAGS@
 
-LDADD = ../liboaf/liboaf.la @ORBIT_LIBS@ @GLIB_LIBS@
+LDADD = ../liboaf/liboaf.la @ORBIT_LIBS@ @GLIB_LIBS@ @INTLLIBS@
 
 oaffiles = empty.oafinfo
 
 emptydatadir = $(datadir)/oaf
 emptydata_DATA = $(oaffiles)
 
-bin_SCRIPTS = oaf-slay
+bin_SCRIPTS = $(OAF_SLAY)
+EXTRA_SCRIPTS = oaf-slay.in
 
-EXTRA_DIST = empty.idl oaf-slay.tmpl $(oaffiles) broken.oafinfo
+EXTRA_DIST = empty.idl $(oaffiles) broken.oafinfo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES = 
+CONFIG_CLEAN_FILES =  oaf-slay
+bin_PROGRAMS =  oaf-empty-server$(EXEEXT) oaf-run-query$(EXEEXT)
+noinst_PROGRAMS =  oaf-test-client$(EXEEXT) oaf-test-async$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 
@@ -159,20 +172,22 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-oaf_run_query_OBJECTS =  oaf-run-query.o empty-common.o empty-stubs.o
-oaf_run_query_LDADD = $(LDADD)
-oaf_run_query_DEPENDENCIES =  ../liboaf/liboaf.la
-oaf_run_query_LDFLAGS = 
-oaf_empty_server_OBJECTS =  empty-server.o empty-common.o empty-skels.o
+oaf_empty_server_OBJECTS =  empty-server.$(OBJEXT) \
+empty-common.$(OBJEXT) empty-skels.$(OBJEXT)
 oaf_empty_server_LDADD = $(LDADD)
 oaf_empty_server_DEPENDENCIES =  ../liboaf/liboaf.la
 oaf_empty_server_LDFLAGS = 
-oaf_test_client_OBJECTS =  oaf-test-client.o empty-common.o \
-empty-stubs.o
+oaf_run_query_OBJECTS =  oaf-run-query.$(OBJEXT) empty-common.$(OBJEXT) \
+empty-stubs.$(OBJEXT)
+oaf_run_query_LDADD = $(LDADD)
+oaf_run_query_DEPENDENCIES =  ../liboaf/liboaf.la
+oaf_run_query_LDFLAGS = 
+oaf_test_client_OBJECTS =  oaf-test-client.$(OBJEXT) \
+empty-common.$(OBJEXT) empty-stubs.$(OBJEXT)
 oaf_test_client_LDADD = $(LDADD)
 oaf_test_client_DEPENDENCIES =  ../liboaf/liboaf.la
 oaf_test_client_LDFLAGS = 
-oaf_test_async_OBJECTS =  oaf-test-async.o
+oaf_test_async_OBJECTS =  oaf-test-async.$(OBJEXT)
 oaf_test_async_LDADD = $(LDADD)
 oaf_test_async_DEPENDENCIES =  ../liboaf/liboaf.la
 oaf_test_async_LDFLAGS = 
@@ -185,19 +200,19 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(emptydata_DATA)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in oaf-slay.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(oaf_run_query_SOURCES) $(oaf_empty_server_SOURCES) $(oaf_test_client_SOURCES) $(oaf_test_async_SOURCES)
-OBJECTS = $(oaf_run_query_OBJECTS) $(oaf_empty_server_OBJECTS) $(oaf_test_client_OBJECTS) $(oaf_test_async_OBJECTS)
+SOURCES = $(oaf_empty_server_SOURCES) $(oaf_run_query_SOURCES) $(oaf_test_client_SOURCES) $(oaf_test_async_SOURCES)
+OBJECTS = $(oaf_empty_server_OBJECTS) $(oaf_run_query_OBJECTS) $(oaf_test_client_OBJECTS) $(oaf_test_async_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps test/Makefile
 
@@ -205,6 +220,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+oaf-slay: $(top_builddir)/config.status oaf-slay.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-binPROGRAMS:
 
@@ -243,6 +260,11 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -251,6 +273,7 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -278,20 +301,20 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-oaf-run-query: $(oaf_run_query_OBJECTS) $(oaf_run_query_DEPENDENCIES)
-	@rm -f oaf-run-query
-	$(LINK) $(oaf_run_query_LDFLAGS) $(oaf_run_query_OBJECTS) $(oaf_run_query_LDADD) $(LIBS)
-
-oaf-empty-server: $(oaf_empty_server_OBJECTS) $(oaf_empty_server_DEPENDENCIES)
-	@rm -f oaf-empty-server
+oaf-empty-server$(EXEEXT): $(oaf_empty_server_OBJECTS) $(oaf_empty_server_DEPENDENCIES)
+	@rm -f oaf-empty-server$(EXEEXT)
 	$(LINK) $(oaf_empty_server_LDFLAGS) $(oaf_empty_server_OBJECTS) $(oaf_empty_server_LDADD) $(LIBS)
 
-oaf-test-client: $(oaf_test_client_OBJECTS) $(oaf_test_client_DEPENDENCIES)
-	@rm -f oaf-test-client
+oaf-run-query$(EXEEXT): $(oaf_run_query_OBJECTS) $(oaf_run_query_DEPENDENCIES)
+	@rm -f oaf-run-query$(EXEEXT)
+	$(LINK) $(oaf_run_query_LDFLAGS) $(oaf_run_query_OBJECTS) $(oaf_run_query_LDADD) $(LIBS)
+
+oaf-test-client$(EXEEXT): $(oaf_test_client_OBJECTS) $(oaf_test_client_DEPENDENCIES)
+	@rm -f oaf-test-client$(EXEEXT)
 	$(LINK) $(oaf_test_client_LDFLAGS) $(oaf_test_client_OBJECTS) $(oaf_test_client_LDADD) $(LIBS)
 
-oaf-test-async: $(oaf_test_async_OBJECTS) $(oaf_test_async_DEPENDENCIES)
-	@rm -f oaf-test-async
+oaf-test-async$(EXEEXT): $(oaf_test_async_OBJECTS) $(oaf_test_async_DEPENDENCIES)
+	@rm -f oaf-test-async$(EXEEXT)
 	$(LINK) $(oaf_test_async_LDFLAGS) $(oaf_test_async_OBJECTS) $(oaf_test_async_LDADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
@@ -376,6 +399,38 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+empty-common.o: empty-common.c empty.h
+empty-server.o: empty-server.c empty.h ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
+	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
+	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
+	../liboaf/oaf-registration.h
+empty-skels.o: empty-skels.c empty.h
+empty-stubs.o: empty-stubs.c empty.h
+oaf-run-query.o: oaf-run-query.c ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
+	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
+	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
+	../liboaf/oaf-registration.h empty.h
+oaf-test-async.o: oaf-test-async.c ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
+	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
+	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
+	../liboaf/oaf-registration.h ../liboaf/oaf-async.h
+oaf-test-client.o: oaf-test-client.c ../liboaf/liboaf.h \
+	../liboaf/liboaf-version.h ../liboaf/oaf.h \
+	../liboaf/oaf-factory.h ../liboaf/oaf-factory-suppress.h \
+	../liboaf/oaf-activate.h ../liboaf/oaf-servreg.h \
+	../liboaf/oaf-util.h ../liboaf/oaf-actid.h \
+	../liboaf/oaf-plugin.h ../liboaf/oaf-mainloop.h \
+	../liboaf/oaf-registration.h empty.h
+
 info-am:
 info: info-am
 dvi-am:
@@ -465,9 +520,6 @@ empty.h empty-common.c empty-stubs.c empty-skels.c: empty_built
 empty_built: empty.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(srcdir)/empty.idl
 	touch empty_built
-
-oaf-slay: $(srcdir)/oaf-slay.tmpl
-	sed 's|@oafdir@|'$(pkgdatadir)'|g' < $< > $@
 
 check:
 	OAF_INFO_PATH="$(top_srcdir)/test:$$OAF_INFO_PATH" PATH="$(top_builddir)/test:$$PATH" $(top_builddir)/test/oaf-test-client
