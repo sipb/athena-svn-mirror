@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.2 1999-03-22 21:04:51 danw Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.3 1999-03-27 17:59:28 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -279,7 +279,7 @@ int locker__canonicalize_path(locker_context context, int check,
 	      else if (st.st_mode & BAD_MODE_BITS)
 		{
 		  locker__error(context, "Cannot attach locker on %s:\n"
-				"directory %s is user/group writable.\n",
+				"directory %s is group/other writable.\n",
 				*pathp, path);
 		  status = LOCKER_EBADPATH;
 		  goto cleanup;
