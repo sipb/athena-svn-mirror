@@ -5,7 +5,7 @@ mail \- mail a message
 .SH USAGE
 .B mail [<username> <instance id>] [\-file <filename>]
 .B [\-editor <editor>] [-instance <instance id>] 
-.B [-checkhub]
+.B [-checkhub] [-noedit]
 .br
 .SH DESCRIPTION
 This command allows consultants to mail messages to the connected
@@ -36,3 +36,7 @@ Normally, the file /tmp/OLC<pid> is used as a temporary file
 for editing. This can be overridden with this argument. If this
 argument is used, OLC will not delete the file after the message
 is sent.
+.TP
+.B \-noedit
+To specify that no editor should be called, but that the message specified
+with -file should be sent without further prompting.
