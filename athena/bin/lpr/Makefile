@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.15 1990-11-07 13:37:59 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.16 1990-11-15 15:34:58 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -20,7 +20,7 @@
 DESTDIR=
 
 CFLAGS=-O -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL `./cppflags` -Iquota 
-LIBS= -lhesiod -lzephyr -lcom_err -lkrb -ldes
+LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes `./libflags`
 LIBDIR=/usr/lib
 BINDIR=/usr/ucb
 SPOOLDIR=/usr/spool/lpd
@@ -35,7 +35,9 @@ OP_GID = 28
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 	printjob.c recvjob.c displayq.c rmjob.c \
 	startdaemon.c common.c printcap.c lpdchar.c tcp_conn.c
-ALL=	cppflags lpd lpc lptest pac o_lprm o_lpc lpr lpq lprm s_lpq s_lprm s_lpr 
+
+ALL=	cppflags libflags lpd lpc lptest pac o_lprm o_lpc lpr \
+	lpq lprm s_lpq s_lprm s_lpr 
 
 SUBDIR=quota transcript-v2.1 man
 all:	${ALL} FILTERS ${SUBDIR}
@@ -55,6 +57,9 @@ lpd:	lpdchar.o s_common.o printcap.o tcp_conn.o
 
 cppflags: cppflags.c
 	${CC} -o cppflags cppflags.c
+
+libflags: libflags.c
+	${CC} -o libflags libflags.c
 
 s_rmjob.c: rmjob.c
 	rm -f s_rmjob.c
