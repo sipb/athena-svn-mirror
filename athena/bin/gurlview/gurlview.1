@@ -1,0 +1,19 @@
+.\" 
+.\" $Id: gurlview.1,v 1.1 2002-06-24 13:32:31 rbasch Exp $
+.\"
+.TH GURLVIEW 1 "15 Jun 2002"
+.SH NAME
+gurlview - display a URL with the configured viewer
+.SH SYNOPSIS
+gurlview <URL>
+.SH DESCRIPTION
+\fIgurlview\fR loads the given URL into an appropriate viewer, as
+determined by the user's GNOME preferences and the protocol specified
+in the URL.  For standard protocols, including http:, \fIgnome-moz-remote\fR
+is the default viewer; it displays the URL in a new window of a
+running Netscape or Mozilla process, starting a new process if
+necessary.  \fIgurlview\fR also supports the special URL prefixes
+man:, info:, and ghelp:; by default, the GNOME help browser will be
+invoked to display these.
+.SH "SEE ALSO"
+\fIurl-properties\fR(1), \fIgnome-moz-remote\fR(1)
