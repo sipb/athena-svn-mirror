@@ -31,6 +31,13 @@ case $1 in
 if [ "$AFSCLIENT" = false ]; then
 	exit 0
 fi
+AFSCLIENTNUM=4
+if [ "$AFSCLIENT" != true ]; then
+	AFSCLIENTNUM="$AFSCLIENT"
+else
+	AFSCLIENTNUM=4
+fi
+OPTIONS="-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70"
 if [ \( "$AFSADJUST" = true -o $PUBLIC = true \) -a -d /usr/vice/cache/ ]; then
 	echo "Adjusting the cache size" > /dev/console
 	rm -f /usr/vice/etc/cacheinfo.old
