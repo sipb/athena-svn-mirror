@@ -5,12 +5,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: list.c,v 1.27 1999-06-28 22:52:40 ghudson Exp $
+ *	$Id: list.c,v 1.28 2000-01-06 00:59:28 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: list.c,v 1.27 1999-06-28 22:52:40 ghudson Exp $";
+static char rcsid[] ="$Id: list.c,v 1.28 2000-01-06 00:59:28 zacheiss Exp $";
 #endif
 #endif
 
@@ -22,7 +22,7 @@ static char rcsid[] ="$Id: list.c,v 1.27 1999-06-28 22:52:40 ghudson Exp $";
 static void get_dlist_info (D_LIST *item , KNUCKLE *k );
 static void put_queue (FILE *f , D_LIST *q , int n , char *name );
 
-#define NBLOCKS 100
+#define NBLOCKS 200
 
 int
 list_knuckle(knuckle,data)
