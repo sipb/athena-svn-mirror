@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.2 1989-07-13 12:07:20 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.3 1989-08-22 13:49:44 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -43,13 +43,16 @@ do_olc_ask(arguments)
     {
       for (arguments++; *arguments != (char *) NULL; arguments++)
         {
-          if(string_equiv(*arguments, "-t", 2))
+          if(string_equiv(*arguments, "-topic", max(strlen(*arguments),2)))
             {
-              if(*++arguments != (char *) NULL)
+	      ++arguments;
+              if(*arguments != (char *) NULL)
                 {
-                  (void) strcpy(topic,*++arguments);
+                  (void) strcpy(topic,*arguments);
                   status = 1;
                 }
+	      else
+		break;
             }
           else
             {
