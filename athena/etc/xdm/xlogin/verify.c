@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67 1995-01-27 09:35:16 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67.2.1 1996-03-08 03:08:59 cfields Exp $
  */
 
 #include <stdio.h>
@@ -78,7 +78,6 @@
 #define TRUE (!FALSE)
 #endif
 
-#define ROOT 0
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define PASSWORD_LEN 14
 #define TEMP_DIR_PERM 0710
@@ -114,7 +113,6 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/b
 #else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 #endif
-#define file_exists(f) (access((f), F_OK) == 0)
 
 
 extern char *crypt(), *lose(), *getenv();
@@ -555,6 +553,15 @@ char *display;
     if (initgroups(user, pwd->pw_gid) < 0)
 	prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
+#ifdef SOLARIS_MAE
+    /* If the login fails, lose() is called, setting a global flag
+       to indicate that xlogin will exit as soon as the user has
+       been notified of the error. xlogin will then restart, and
+       at the beginning of xlogin we chown netdev back to root. */
+    if (netspy)
+      chown(NETDEV, pwd->pw_uid, SYS);
+#endif
+ 
     i = setuid(pwd->pw_uid);
     if (i)
       return(lose("Unable to set your user ID.\n"));
