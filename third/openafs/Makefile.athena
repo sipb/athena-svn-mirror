@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 2002-02-07 20:58:49 zacheiss Exp $
+# $Id: Makefile.athena,v 1.3 2002-04-06 21:59:39 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -247,7 +247,6 @@ install:
 	install -c -m 555 $$ATHENA_SYS/dest/bin/dpass $$SRVD${ATHBINDIR}
 	install -c -m 555 $$ATHENA_SYS/dest/bin/klog.krb $$SRVD${ATHBINDIR}
 	install -c -m 555 $$ATHENA_SYS/dest/bin/knfs $$SRVD${ATHBINDIR}
-	install -c -m 555 $$ATHENA_SYS/dest/bin/kpasswd $$SRVD${ATHBINDIR}
 	install -c -m 555 $$ATHENA_SYS/dest/bin/kpwvalid $$SRVD${ATHBINDIR}
 	install -c -m 555 $$ATHENA_SYS/dest/bin/livesys $$SRVD${ATHBINDIR}
 	install -c -m 555 $$ATHENA_SYS/dest/bin/pagsh $$SRVD${ATHBINDIR}
