@@ -1,11 +1,12 @@
 #!/bin/sh
-# $Id: import.sh,v 1.1 2003-02-12 22:50:08 ghudson Exp $
+# $Id: import.sh,v 1.2 2003-02-12 22:58:28 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
 # Usage: import [-d repdir] [-n pkgname] [-v pkgver] tarfile oldver
 #
-# tarfile may be a .tar.gz or .tar.bz2 file.
+# tarfile may be a .tar.gz or .tar.bz2 file.  It must be an absolute
+#  path.
 # pkgname and pkgver are extracted from the name of tarfile by
 #  default; this only works if the tarfile name is
 #  pkgname-pkgver.tar.{gz,bz2} and pkgver is composed entirely of
