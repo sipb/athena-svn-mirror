@@ -20,7 +20,7 @@
 static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
-static const char rcsid[] = "$Id: compile_et.c,v 1.7 1997-12-19 03:04:08 ghudson Exp $";
+static const char rcsid[] = "$Id: compile_et.c,v 1.8 1998-01-15 19:06:32 danw Exp $";
 
 enum lang {
     lang_C,			/* ANSI C (default) */
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
     if (!filename)
 	usage ();
     if (!got_language)
-	language = lang_KRC;
+	language = lang_C;
     else if (language == lang_CPP) {
 	fprintf (stderr, "%s: Sorry, C++ support is not yet finished.\n",
 		 whoami);
@@ -278,8 +278,13 @@ int main(int argc, char **argv)
     fputs("}\n", cfile);
     fclose(cfile);
 
-    fprintf (hfile, "extern void initialize_%s_error_table ();\n",
-	     table_name);
+    if (language == lang_KRC) {
+	fprintf (hfile, "extern void initialize_%s_error_table ();\n",
+		 table_name);
+    } else {
+	fprintf (hfile, "void initialize_%s_error_table (void);\n",
+		 table_name);
+    }
     fprintf (hfile, "#define ERROR_TABLE_BASE_%s (%ldL)\n",
 	     table_name, (long) table_number);
     /* compatibility... */
