@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v $
- *      $Author: marc $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,10 +13,11 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.11 1992-06-20 04:49:10 marc Exp $";
+static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.12 1993-09-24 21:31:55 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
+#include <zephyr/zephyr.h>
 
 #include <stdio.h>
 #include <ctype.h>
@@ -248,7 +249,7 @@ string verbatim(str, bracketsonly)
 	 temp=(char *) malloc((len=strlen(str))+4);
 	 temp[0]='@';
 	 temp[1]='<';
-	 bcopy(str,temp+2,len);
+	 _BCOPY(str,temp+2,len);
 	 temp[len+2]='>';
 	 temp[len+3]='\0';
 	 free(str);
@@ -258,7 +259,7 @@ string verbatim(str, bracketsonly)
 	 temp=(char *) malloc((len=strlen(str))+4);
 	 temp[0]='@';
 	 temp[1]='[';
-	 bcopy(str,temp+2,len);
+	 _BCOPY(str,temp+2,len);
 	 temp[len+2]=']';
 	 temp[len+3]='\0';
 	 free(str);
@@ -268,7 +269,7 @@ string verbatim(str, bracketsonly)
 	 temp=(char *) malloc((len=strlen(str))+4);
 	 temp[0]='@';
 	 temp[1]='{';
-	 bcopy(str,temp+2,len);
+	 _BCOPY(str,temp+2,len);
 	 temp[len+2]='}';
 	 temp[len+3]='\0';
 	 free(str);
@@ -278,7 +279,7 @@ string verbatim(str, bracketsonly)
 	 temp=(char *) malloc((len=strlen(str))+4);
 	 temp[0]='@';
 	 temp[1]='(';
-	 bcopy(str,temp+2,len);
+	 _BCOPY(str,temp+2,len);
 	 temp[len+2]=')';
 	 temp[len+3]='\0';
 	 free(str);
@@ -426,7 +427,7 @@ static int text_length(text,terminator)
 	 return(len);
 
       if (*(text+1)=='@')
-	 bcopy(text+2,text+1,strlen(text+1));
+	 _BCOPY(text+2,text+1,strlen(text+1));
       else if (env_length(text+1) != -1)
 	return(len);
 
