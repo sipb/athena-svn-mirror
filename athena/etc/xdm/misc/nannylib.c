@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <syslog.h>
 #include "nanny.h"
 #include "pc.h"
 #include "var.h"
@@ -34,6 +35,31 @@ int nanny_exchangeVars(varlist *vin, varlist **vout)
 
       pc_addport(ps, outport);
       C(pc_wait(&messageOut, ps));	/* create messageOut */
+      while (messageOut->type == PC_SIGNAL)
+	{
+	  pc_freemessage(messageOut);	messageOut = NULL;
+	  C(pc_wait(&messageOut, ps));
+	}
+
+      if (messageOut->type == PC_BROKEN)
+	{
+	  syslog(LOG_ERR, "nannylib: pc_wait returns %m");
+	  C(1);
+	}
+
+      if (messageOut->type != PC_DATA)
+	{
+	  syslog(LOG_ERR, "nannylib: pc_wait returned unexpected type %d",
+		 messageOut->type);
+	  C(1);
+	}
+
+      if (messageOut->data == NULL)
+	{
+	  syslog(LOG_ERR, "nannylib: pc_wait returned NULL data");
+	  C(1);
+	}
+
       pc_removeport(ps, outport);
       pc_close(outport);		outport = NULL;
 
