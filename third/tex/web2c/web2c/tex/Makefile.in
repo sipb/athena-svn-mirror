@@ -257,18 +257,22 @@ c-sources: texd.h patgen.c
 install: install-exec install-data
 
 install-exec: all
-	$(srcdir)/../../mkdirchain $(texpooldir) $(texdatadir) $(fontdir)
-	for p in $(program); do $(INSTALL_PROGRAM) $$p $(bindir)/$$p; done
+	$(srcdir)/../../mkdirchain ${DESTDIR}$(bindir)
+	for p in $(program); do \
+	  $(INSTALL_PROGRAM) $$p ${DESTDIR}$(bindir)/$$p; done
 
 # The dependency should really be tex.pool, but can't do that in suffix rules.
 install-data: tex0.c
-	$(SHELL) $(srcdir)/../../mkdirchain $(texpooldir) $(fontdir)
+	$(SHELL) $(srcdir)/../../mkdirchain ${DESTDIR}$(texpooldir) \
+	  ${DESTDIR}$(fontdir)
 	-if test -s tex.pool; then \
-	  $(INSTALL_DATA) tex.pool $(texpooldir)/tex.pool; else true; fi
-	if test ! -f $(fontdir)/texfonts.map				\
-	   || grep 'original texfonts.map --' $(fontdir)/texfonts.map	\
-              >/dev/null 2>&1; then					\
-         $(INSTALL_DATA) $(texsrcdir)/texfonts.map $(fontdir)/texfonts.map;\
+	  $(INSTALL_DATA) tex.pool ${DESTDIR}$(texpooldir)/tex.pool; \
+	  else true; fi
+	if test ! -f ${DESTDIR}$(fontdir)/texfonts.map			\
+	   || grep 'original texfonts.map --'				\
+              ${DESTDIR}$(fontdir)/texfonts.map >/dev/null 2>&1; then	\
+         $(INSTALL_DATA) $(texsrcdir)/texfonts.map 			\
+	   ${DESTDIR}$(fontdir)/texfonts.map;				\
         else true; fi
 
 TAGS: *.c *.h

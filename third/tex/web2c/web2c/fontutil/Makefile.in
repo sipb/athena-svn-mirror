@@ -124,7 +124,8 @@ vptovf.c
 .PHONY: c-sources
 
 install install-exec: all
-	for p in $(program); do $(INSTALL_PROGRAM) $$p $(bindir)/$$p; done
+	for p in $(program); do \
+	  $(INSTALL_PROGRAM) $$p ${DESTDIR}$(bindir)/$$p; done
 install-data:
 
 TAGS: *.c *.h

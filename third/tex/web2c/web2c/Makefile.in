@@ -289,34 +289,34 @@ install-data: install-fmts install-bases install-manpages
 .PHONY: install-data
 
 install-exec: programs
-	$(SHELL) $(srcdir)/../mkdirchain $(bindir)
+	$(SHELL) $(srcdir)/../mkdirchain ${DESTDIR}$(bindir)
 	for name in $(progdirs); do					\
           (cd $${name}; $(MAKE) $(installargs) install-exec);		\
         done
 	for f in $(fmts); do						\
-	  rm -f $(bindir)/`basename $$f .fmt`;				\
-          $(LN) $(bindir)/virtex $(bindir)/`basename $$f .fmt`;		\
+	  rm -f ${DESTDIR}$(bindir)/`basename $$f .fmt`;		\
+          $(LN) virtex ${DESTDIR}$(bindir)/`basename $$f .fmt`;		\
 	done
 	for f in $(bases); do						\
-	  rm -f $(bindir)/`basename $$f .base`;				\
-	  $(LN) $(bindir)/virmf $(bindir)/`basename $$f .base`;		\
+	  rm -f ${DESTDIR}$(bindir)/`basename $$f .base`;		\
+	  $(LN) virmf ${DESTDIR}$(bindir)/`basename $$f .base`;		\
 	done
 .PHONY: install-exec
 
 install-fmts: fmts
-	$(SHELL) $(srcdir)/../mkdirchain $(fmtdir)
+	$(SHELL) $(srcdir)/../mkdirchain ${DESTDIR}$(fmtdir)
 	for f in $(fmts); do						\
-          $(INSTALL_DATA) tex/$$f $(fmtdir)/$$f;			\
+          $(INSTALL_DATA) tex/$$f ${DESTDIR}$(fmtdir)/$$f;		\
 	done
-	cd $(fmtdir); rm -f plain.fmt; $(LN) tex.fmt plain.fmt
+	cd ${DESTDIR}$(fmtdir); rm -f plain.fmt; $(LN) tex.fmt plain.fmt
 .PHONY: install-fmts
 
 install-bases: bases
-	$(SHELL) $(srcdir)/../mkdirchain $(basedir)
+	$(SHELL) $(srcdir)/../mkdirchain ${DESTDIR}$(basedir)
 	for f in $(bases); do						\
-          $(INSTALL_DATA) mf/$$f $(basedir)/$$f;			\
+          $(INSTALL_DATA) mf/$$f ${DESTDIR}$(basedir)/$$f;		\
 	done
-	cd $(basedir); rm -f plain.base; $(LN) mf.base plain.base
+	cd ${DESTDIR}$(basedir); rm -f plain.base; $(LN) mf.base plain.base
 .PHONY: install-bases
 
 install-manpages: manpages
