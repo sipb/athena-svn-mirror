@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.12 1995-05-26 04:10:25 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.13 1995-08-18 03:14:16 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -589,6 +589,10 @@ int sh(fromJet, what, data)
   return 0;
 }
 
+/*
+ * Translate the string "what," expanding %M, %S, etc, and place
+ * it into the string "where."
+ */
 void expand(what, where)
      char *what, *where;
 {
@@ -641,7 +645,8 @@ void expand(what, where)
 	    switch(*what)
 	      {
 	      case '%':
-		*where++ = '%'; /* bug? - what++ */
+		*where++ = '%';
+		what++;
 		break;
 	      case 'M':
 		strncpy(where, bin, strlen(bin));
@@ -655,9 +660,13 @@ void expand(what, where)
 		break;
 	      case 'B':
 		tmp = where;
-		while (*tmp != ' ' && tmp > wherestart)
-		  tmp--;
-		if (*tmp == ' ') tmp++;
+		if (where != wherestart)
+		  {
+		    tmp--;
+		    while (*tmp != ' ' && tmp > wherestart)
+		      tmp--;
+		    if (*tmp == ' ') tmp++;
+		  }
 
 		strncpy(bdirname, tmp, where - tmp);
 		bdirname[where - tmp] = '\0';
@@ -1426,7 +1435,13 @@ int lowerMenu(info, what, data)
 	       info->menubar->core.window);
   return 0;
 #else
-  /* HACK HACK HACK */
+  /* HACK HACK HACK
+   * If fam is running with icons on the background, it puts a window
+   * up in front of the root window but behind everything else,
+   * override redirect, but the full size of the screen. The code in
+   * the other half of this ifdef pushes dash behind that window
+   * where you can't see it. This is clearly not satisfactory.
+   */
   Window rooter, parent, *list;
   WindowJet menuWindow;
   int i;
@@ -1437,6 +1452,10 @@ int lowerMenu(info, what, data)
   if (info->null != NULL)
     return 1;
 
+  /*
+   * If the menu bar is not override redirect, we're ok.
+   * If XQueryTree fails, just lower ourselves.
+   */
   menuWindow = (WindowJet)info->menubar->core.parent;
   if (menuWindow->window.overrideRedirect == False ||
       !XQueryTree(root->core.display, root->core.window,
@@ -1447,13 +1466,20 @@ int lowerMenu(info, what, data)
       return 0;
     }
 
+  /*
+   * Start examining the children of the root from back to font.
+   */
   for (i = 0; i < num; i++)
     {
+      /* Ignore ourselves. */
       if (list[i] == info->menubar->core.window)
 	continue;
 
       if (XGetWindowAttributes(root->core.display, list[i], &win))
 	{
+	  /* Is this the fam window? A fine heuristic. It's override
+	     redirect, we can see it, and it takes up the whole
+	     screen. */
 	  if (win.override_redirect == True &&
 	      win.map_state == IsViewable &&
 	      win.x == 0 && win.y == 0 &&
@@ -1461,15 +1487,23 @@ int lowerMenu(info, what, data)
 	      win.height == root->core.height)
 	    break;
 
+	  /* Is this a normal viewable window? Then we're safe putting
+	     ourselves behind it. (Or, in front of the window behind
+	     it.) This catches the case where fam isn't actually
+	     running. */
 	  if (win.override_redirect == False &&
 	      win.map_state == IsViewable)
 	    {
 	      if (i > 0)
-		i--;
+		i--; /* bug; we should probably really change
+			to Below, below, for this case */
 	      break;
 	    }
 	}
 
+      /* We didn't find the fam window or any viewable windows at all.
+	 So we simply lower ourselves to the bottom. We could probably
+	 just as well do nothing at all. */
       if (i == num)
 	{
 	  XLowerWindow(info->menubar->core.display,
