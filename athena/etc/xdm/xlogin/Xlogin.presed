@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.30 1993-02-25 15:12:24 probe Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.31 1993-07-16 23:53:17 cfields Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -210,8 +210,7 @@ xlogin.Geometry: 		580x325+205+105
 	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
-	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
-	Shift<Key>F10:	callbackACT(*omenuEntry10a) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
 	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
 	<Key>F2:	callbackACT(*lmenuEntry2) \n\
@@ -292,8 +291,7 @@ xlogin.Geometry: 		580x325+205+105
 	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
-	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
-	Shift<Key>F10:	callbackACT(*omenuEntry10a) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
 	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
 	<Key>F2:	callbackACT(*lmenuEntry2) \n\
@@ -430,7 +428,7 @@ xlogin.Geometry: 		580x325+205+105
 				omenuEntry4, omenuEntry5, omenuEntry6, \
 				omenuEntry6a, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
-				omenuEntry10, omenuEntry10a, omenuEntry11
+				omenuEntry10, omenuEntry11
 
 *menuLine.wcClassName:		SmeLine
 *omenuEntry1.wcClassName:	SmeBSB
@@ -444,7 +442,6 @@ xlogin.Geometry: 		580x325+205+105
 *omenuEntry8.wcClassName:	SmeBSB
 *omenuEntry9.wcClassName:	SmeBSB
 *omenuEntry10.wcClassName:	SmeBSB
-*omenuEntry10a.wcClassName:	SmeBSB
 *omenuEntry11.wcClassName:	SmeBSB
 
 *omenuEntry1.label:		Information
@@ -469,10 +466,8 @@ xlogin.Geometry: 		580x325+205+105
 *omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
 *omenuEntry9.label:		Update MIT Mailhub Info (Moira)
 *omenuEntry9.callback:		attachAndRunCB(moira,xterm -geometry 80x34+60+25 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/moira/namespace)
-*omenuEntry10.label:		Advice (lucy)
-*omenuEntry10.callback:		attachAndRunCB(lucydev,/mit/lucydev/.xlogin)
-*omenuEntry10a.label:		Display Console Window
-*omenuEntry10a.callback:	signalConsoleCB(show)
+*omenuEntry10.label:		Display Console Window
+*omenuEntry10.callback:		signalConsoleCB(show)
 *omenuEntry11.label:		Shut Down Window System
 *omenuEntry11.callback:		WcExitCB(3)
 
@@ -484,8 +479,7 @@ xlogin.Geometry: 		580x325+205+105
 *omenuEntry6a.rightBitmap:	Shift-F6
 *omenuEntry8.rightBitmap:	Shift-F7
 *omenuEntry9.rightBitmap:	Shift-F8
-*omenuEntry10.rightBitmap:	Shift-F9
-*omenuEntry10a.rightBitmap:	Prev
+*omenuEntry10.rightBitmap:	Prev
 *omenuEntry11.rightBitmap:	Ctrl-P
 
 *register.wcClassName:		Command
@@ -547,8 +541,7 @@ xlogin.Geometry: 		580x325+205+105
 	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
-	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
-	Shift<Key>F10:	callbackACT(*omenuEntry10a) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
 	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
 	<Key>F2:	callbackACT(*lmenuEntry2) \n\
