@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.5 1990-01-17 05:45:03 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.6 1990-02-06 03:50:47 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -85,13 +85,74 @@ olc_dump(fd,request,auth)
   if(status)
     return(send_response(fd,status));
    
-  if(!is_allowed(requester->user,MOTD_ACL))
+  if(!is_allowed(requester->user, ADMIN_ACL))
     return(send_response(fd,PERMISSION_DENIED));
   
   send_response(fd,SUCCESS);
   make_temp_name(file);
   dump_data(file);
   write_file_to_fd(fd,file);
+  unlink(file);
+  return(SUCCESS);
+}
+
+
+ERRCODE
+#ifdef __STDC__
+olc_dump_req_stats(int fd, REQUEST *request, int auth)
+#else
+olc_dump_req_stats(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
+{
+  KNUCKLE *requester;
+  int status;
+  char file[NAME_SIZE];
+
+  status = find_knuckle(&(request->requester), &requester);	
+  if(status)
+    return(send_response(fd,status));
+   
+  if(!is_allowed(requester->user, ADMIN_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+  
+  send_response(fd,SUCCESS);
+  make_temp_name(file);
+  dump_server_stats(file);
+  write_file_to_fd(fd,file);
+  unlink(file);
+  return(SUCCESS);
+}
+
+
+ERRCODE
+#ifdef __STDC__
+olc_dump_ques_stats(int fd, REQUEST *request, int auth)
+#else
+olc_dump_ques_stats(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
+{
+  KNUCKLE *requester;
+  int status;
+  char file[NAME_SIZE];
+
+  status = find_knuckle(&(request->requester), &requester);	
+  if(status)
+    return(send_response(fd,status));
+   
+  if(!is_allowed(requester->user, ADMIN_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+  
+  send_response(fd,SUCCESS);
+  make_temp_name(file);
+  dump_question_stats(file);
+  write_file_to_fd(fd,file);
+  unlink(file);
   return(SUCCESS);
 }
 
@@ -114,7 +175,7 @@ olc_change_motd(fd,request,auth)
   if(status)
     return(send_response(fd,status));
    
-  if(!is_allowed(requester->user,ADMIN_ACL))
+  if(!is_allowed(requester->user, MOTD_ACL))
     return(send_response(fd,PERMISSION_DENIED));
 
   send_response(fd,SUCCESS);
