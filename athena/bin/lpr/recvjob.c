@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.20 1998-07-20 16:04:07 danw Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.21 1999-01-25 19:13:06 ghudson Exp $";
 #endif
 
 /*
@@ -25,13 +25,14 @@ static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.20 1998-07-20 16:04:07 danw E
 #if defined(SYSV)
 #define USE_USTAT
 #include <ustat.h>
-#else
-#ifdef __NetBSD__
+#elif defined(__NetBSD__)
 #include <ufs/ufs/dinode.h>
 #include <ufs/ffs/fs.h>
+#elif defined(__linux__)
+#define USE_STATFS
+#include <sys/vfs.h>
 #else
 #include <ufs/fs.h>
-#endif
 #endif
 
 #ifdef PQUOTA
@@ -151,6 +152,8 @@ recvjob()
 
 #ifdef USE_USTAT
 	ddev = stb.st_dev;
+#elif defined(USE_STATFS)
+	ddev = SD;
 #else
 	ddev = find_dev(stb.st_dev, S_IFBLK);
 	if ((dfd = open(ddev, O_RDONLY)) < 0)
@@ -175,7 +178,7 @@ recvjob()
 	
 }
 
-#ifndef USE_USTAT
+#if !defined(USE_USTAT) && !defined(USE_STATFS)
 char *
 find_dev(dev, type)
 	register dev_t dev;
@@ -591,6 +594,12 @@ chksize(size)
 	if (ustat(ddev, &ubuf)) return 1;
 	size = (size+1023)/1024;
 	if (minfree + size > ubuf.f_tfree) return 0;
+	return 1;
+#elif defined(USE_STATFS)
+	struct statfs buf;
+	if (statfs(ddev, &buf)) return 1;
+	size = (size+1023)/1024;
+	if (minfree + size > buf.f_bavail) return 0;
 	return 1;
 #else
 	int spacefree;
