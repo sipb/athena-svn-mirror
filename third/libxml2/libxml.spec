@@ -1,6 +1,6 @@
 Summary: Library providing XML and HTML support
 Name: libxml2
-Version: 2.4.30
+Version: 2.5.1
 Release: 1
 License: MIT
 Group: Development/Libraries
@@ -129,6 +129,7 @@ rm -fr %{buildroot}
 
 %doc AUTHORS ChangeLog NEWS README Copyright
 %{_libdir}/python*/site-packages/libxml2.py
+%{_libdir}/python*/site-packages/drv_libxml2.py
 %{_libdir}/python*/site-packages/libxml2mod*
 %doc python/TODO
 %doc python/libxml2class.txt
@@ -137,8 +138,12 @@ rm -fr %{buildroot}
 %doc doc/python.html
 
 %changelog
-* Thu Dec 12 2002 Daniel Veillard <veillard@redhat.com>
-- upstream release 2.4.30 see http://xmlsoft.org/news.html
+* Wed Jan  8 2003 Daniel Veillard <veillard@redhat.com>
+- upstream release 2.5.1 see http://xmlsoft.org/news.html
+
+* Thu Jan  2 2003 Daniel Veillard <veillard@redhat.com>
+- integrated drv_libxml2 xml.sax driver from Stéphane Bidoul
+- provides the new XmlTextReader interfaces based on C# XML APIs
 
 * Wed Oct 23 2002 Daniel Veillard <veillard@redhat.com>
 - revamped the spec file, cleaned up some rpm building problems

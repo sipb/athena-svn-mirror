@@ -338,6 +338,8 @@ xmlNewDtd(xmlDocPtr doc, const xmlChar *name,
 	doc->extSubset = cur;
     cur->doc = doc;
 
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -445,6 +447,9 @@ xmlCreateIntSubset(xmlDocPtr doc, const xmlChar *name,
 	    }
 	}
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -463,6 +468,10 @@ xmlFreeDtd(xmlDtdPtr cur) {
 #endif
 	return;
     }
+
+    if (xmlDeregisterNodeDefaultValue)
+	xmlDeregisterNodeDefaultValue((xmlNodePtr)cur);
+
     if (cur->children != NULL) {
 	xmlNodePtr next, c = cur->children;
 
@@ -530,6 +539,9 @@ xmlNewDoc(const xmlChar *version) {
     cur->compression = -1; /* not initialized */
     cur->doc = cur;
     cur->charset = XML_CHAR_ENCODING_UTF8;
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -550,6 +562,10 @@ xmlFreeDoc(xmlDocPtr cur) {
 #endif
 	return;
     }
+
+    if (xmlDeregisterNodeDefaultValue)
+	xmlDeregisterNodeDefaultValue((xmlNodePtr)cur);
+
     /*
      * Do this before freeing the children list to avoid ID lookups
      */
@@ -837,6 +853,7 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 
 			    ent->children = xmlStringGetNodeList(doc,
 				    (const xmlChar*)node->content);
+			    ent->owner = 1;
 			    temp = ent->children;
 			    while (temp) {
 				temp->parent = (xmlNodePtr)ent;
@@ -1126,6 +1143,9 @@ xmlNewProp(xmlNodePtr node, const xmlChar *name, const xmlChar *value) {
 	    cur->prev = prev;
 	}
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -1203,6 +1223,9 @@ xmlNewNsProp(xmlNodePtr node, xmlNsPtr ns, const xmlChar *name,
 	    cur->prev = prev;
 	}
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -1280,6 +1303,9 @@ xmlNewNsPropEatName(xmlNodePtr node, xmlNsPtr ns, xmlChar *name,
 	    cur->prev = prev;
 	}
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -1332,6 +1358,9 @@ xmlNewDocProp(xmlDocPtr doc, const xmlChar *name, const xmlChar *value) {
 	    tmp = tmp->next;
 	}
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -1373,6 +1402,10 @@ xmlFreeProp(xmlAttrPtr cur) {
 #endif
 	return;
     }
+
+    if (xmlDeregisterNodeDefaultValue)
+	xmlDeregisterNodeDefaultValue((xmlNodePtr)cur);
+
     /* Check for ID removal -> leading to invalid references ! */
     if ((cur->parent != NULL) && (cur->parent->doc != NULL) &&
 	((cur->parent->doc->intSubset != NULL) ||
@@ -1470,6 +1503,9 @@ xmlNewPI(const xmlChar *name, const xmlChar *content) {
     if (content != NULL) {
 	cur->content = xmlStrdup(content);
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -1508,6 +1544,9 @@ xmlNewNode(xmlNsPtr ns, const xmlChar *name) {
     
     cur->name = xmlStrdup(name);
     cur->ns = ns;
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1546,6 +1585,9 @@ xmlNewNodeEatName(xmlNsPtr ns, xmlChar *name) {
     
     cur->name = name;
     cur->ns = ns;
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)cur);
     return(cur);
 }
 
@@ -1578,6 +1620,7 @@ xmlNewDocNode(xmlDocPtr doc, xmlNsPtr ns,
 	    UPDATE_LAST_CHILD_AND_PARENT(cur)
 	}
     }
+
     return(cur);
 }
 
@@ -1666,6 +1709,9 @@ xmlNewDocFragment(xmlDocPtr doc) {
     cur->type = XML_DOCUMENT_FRAG_NODE;
 
     cur->doc = doc;
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1696,6 +1742,9 @@ xmlNewText(const xmlChar *content) {
     if (content != NULL) {
 	cur->content = xmlStrdup(content);
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1796,6 +1845,9 @@ xmlNewCharRef(xmlDocPtr doc, const xmlChar *name) {
 	    cur->name = xmlStrndup(name, len);
     } else
 	cur->name = xmlStrdup(name);
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1847,6 +1899,9 @@ xmlNewReference(xmlDocPtr doc, const xmlChar *name) {
 	cur->children = (xmlNodePtr) ent;
 	cur->last = (xmlNodePtr) ent;
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1895,6 +1950,9 @@ xmlNewTextLen(const xmlChar *content, int len) {
     if (content != NULL) {
 	cur->content = xmlStrndup(content, len);
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1944,6 +2002,9 @@ xmlNewComment(const xmlChar *content) {
     if (content != NULL) {
 	cur->content = xmlStrdup(content);
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -1976,6 +2037,9 @@ xmlNewCDataBlock(xmlDocPtr doc, const xmlChar *content, int len) {
     if (content != NULL) {
 	cur->content = xmlStrndup(content, len);
     }
+
+    if (xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue(cur);
     return(cur);
 }
 
@@ -2397,6 +2461,7 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
     /*
      * add the first element at the end of the children list.
      */
+
     if (parent->children == NULL) {
         parent->children = cur;
     } else {
@@ -2406,7 +2471,7 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
 	if ((cur->type == XML_TEXT_NODE) && 
 	    (parent->last->type == XML_TEXT_NODE) &&
 	    (cur->name == parent->last->name)) {
-	    xmlNodeAddContent(parent->last, cur->content);
+    	    xmlNodeAddContent(parent->last, cur->content);
 	    /*
 	     * if it's the only child, nothing more to be done.
 	     */
@@ -2476,13 +2541,15 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
      */
     if (cur->type == XML_TEXT_NODE) {
 	if ((parent->type == XML_TEXT_NODE) &&
-	    (parent->content != NULL)) {
+	    (parent->content != NULL) &&
+	    (parent != cur)) {
 	    xmlNodeAddContent(parent, cur->content);
 	    xmlFreeNode(cur);
 	    return(parent);
 	}
 	if ((parent->last != NULL) && (parent->last->type == XML_TEXT_NODE) &&
-	    (parent->last->name == cur->name)) {
+	    (parent->last->name == cur->name) &&
+	    (parent->last != cur)) {
 	    xmlNodeAddContent(parent->last, cur->content);
 	    xmlFreeNode(cur);
 	    return(parent->last);
@@ -2492,16 +2559,23 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
     /*
      * add the new element at the end of the children list.
      */
+    prev = cur->parent;
     cur->parent = parent;
     if (cur->doc != parent->doc) {
 	xmlSetTreeDoc(cur, parent->doc);
     }
+    /* this check prevents a loop on tree-traversions if a developer
+     * tries to add a node to its parent multiple times
+     */
+    if (prev == parent)
+	return(cur);
 
     /*
      * Coalescing
      */
     if ((parent->type == XML_TEXT_NODE) &&
-	(parent->content != NULL)) {
+	(parent->content != NULL) &&
+	(parent != cur)) {
 	xmlNodeAddContent(parent, cur->content);
 	xmlFreeNode(cur);
 	return(parent);
@@ -2587,6 +2661,10 @@ xmlFreeNodeList(xmlNodePtr cur) {
         next = cur->next;
 	/* unroll to speed up freeing the document */
 	if (cur->type != XML_DTD_NODE) {
+
+	    if (xmlDeregisterNodeDefaultValue)
+		xmlDeregisterNodeDefaultValue(cur);
+
 	    if ((cur->children != NULL) &&
 		(cur->type != XML_ENTITY_REF_NODE))
 		xmlFreeNodeList(cur->children);
@@ -2654,6 +2732,7 @@ xmlFreeNode(xmlNodePtr cur) {
 #endif
 	return;
     }
+
     /* use xmlFreeDtd for DTD nodes */
     if (cur->type == XML_DTD_NODE) {
 	xmlFreeDtd((xmlDtdPtr) cur);
@@ -2667,6 +2746,10 @@ xmlFreeNode(xmlNodePtr cur) {
 	xmlFreeProp((xmlAttrPtr) cur);
 	return;
     }
+
+    if (xmlDeregisterNodeDefaultValue)
+	xmlDeregisterNodeDefaultValue(cur);
+
     if ((cur->children != NULL) &&
 	(cur->type != XML_ENTITY_REF_NODE))
 	xmlFreeNodeList(cur->children);
@@ -3128,13 +3211,22 @@ xmlStaticCopyNode(const xmlNodePtr node, xmlDocPtr doc, xmlNodePtr parent,
     if (parent != NULL) {
 	xmlNodePtr tmp;
 
+	/*
+	 * this is a tricky part for the node register thing:
+	 * in case ret does get coalesced in xmlAddChild
+	 * the deregister-node callback is called; so we register ret now already
+	 */
+	if (xmlRegisterNodeDefaultValue)
+	    xmlRegisterNodeDefaultValue((xmlNodePtr)ret);
+
         tmp = xmlAddChild(parent, ret);
 	/* node could have coalesced */
 	if (tmp != ret)
 	    return(tmp);
     }
     
-    if (!recursive) return(ret);
+    if (!recursive)
+	goto out;
     if (node->nsDef != NULL)
         ret->nsDef = xmlCopyNamespaceList(node->nsDef);
 
@@ -3181,6 +3273,11 @@ xmlStaticCopyNode(const xmlNodePtr node, xmlDocPtr doc, xmlNodePtr parent,
         ret->children = xmlStaticCopyNodeList(node->children, doc, ret);
 	UPDATE_LAST_CHILD_AND_PARENT(ret)
     }
+
+out:
+    /* if parent != NULL we already registered the node above */
+    if (parent == NULL && xmlRegisterNodeDefaultValue)
+	xmlRegisterNodeDefaultValue((xmlNodePtr)ret);
     return(ret);
 }
 
@@ -6603,10 +6700,10 @@ xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
             (cur->type == XML_ELEMENT_NODE) &&
             (xmlStrEqual(cur->name, BAD_CAST "html"))) {
             if (encoding != NULL)
-                htmlSetMetaEncoding((htmlDocPtr) cur,
+                htmlSetMetaEncoding((htmlDocPtr) doc,
                                     (const xmlChar *) encoding);
             else
-                htmlSetMetaEncoding((htmlDocPtr) cur, BAD_CAST "UTF-8");
+                htmlSetMetaEncoding((htmlDocPtr) doc, BAD_CAST "UTF-8");
         }
     }
 

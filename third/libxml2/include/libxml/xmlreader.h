@@ -16,13 +16,21 @@
 extern "C" {
 #endif
 
+typedef enum {
+    XML_PARSER_LOADDTD = 1,
+    XML_PARSER_DEFAULTATTRS = 2,
+    XML_PARSER_VALIDATE = 3,
+    XML_PARSER_SUBST_ENTITIES = 4
+} xmlParserProperties;
+
 typedef struct _xmlTextReader xmlTextReader;
 typedef xmlTextReader *xmlTextReaderPtr;
 
 /*
  * Constructors & Destructor
  */
-xmlTextReaderPtr	xmlNewTextReader	(xmlParserInputBufferPtr input);
+xmlTextReaderPtr	xmlNewTextReader	(xmlParserInputBufferPtr input,
+	                                         const char *URI);
 xmlTextReaderPtr	xmlNewTextReaderFilename(const char *URI);
 void			xmlFreeTextReader	(xmlTextReaderPtr reader);
 
@@ -30,6 +38,10 @@ void			xmlFreeTextReader	(xmlTextReaderPtr reader);
  * Iterators
  */
 int		xmlTextReaderRead	(xmlTextReaderPtr reader);
+xmlChar *	xmlTextReaderReadInnerXml	(xmlTextReaderPtr reader);
+xmlChar *	xmlTextReaderReadOuterXml	(xmlTextReaderPtr reader);
+xmlChar *	xmlTextReaderReadString		(xmlTextReaderPtr reader);
+int		xmlTextReaderReadAttributeValue	(xmlTextReaderPtr reader);
 
 /*
  * Attributes of the node
@@ -49,6 +61,44 @@ xmlChar *	xmlTextReaderPrefix	(xmlTextReaderPtr reader);
 int		xmlTextReaderQuoteChar	(xmlTextReaderPtr reader);
 xmlChar *	xmlTextReaderValue	(xmlTextReaderPtr reader);
 xmlChar *	xmlTextReaderXmlLang	(xmlTextReaderPtr reader);
+int		xmlTextReaderReadState	(xmlTextReaderPtr reader);
+
+/*
+ * Methods of the XmlTextReader
+ */
+int		xmlTextReaderClose		(xmlTextReaderPtr reader);
+xmlChar *	xmlTextReaderGetAttributeNo	(xmlTextReaderPtr reader,
+						 int no);
+xmlChar *	xmlTextReaderGetAttribute	(xmlTextReaderPtr reader,
+						 const xmlChar *name);
+xmlChar *	xmlTextReaderGetAttributeNs	(xmlTextReaderPtr reader,
+						 const xmlChar *localName,
+						 const xmlChar *namespaceURI);
+xmlParserInputBufferPtr xmlTextReaderGetRemainder(xmlTextReaderPtr reader);
+xmlChar *	xmlTextReaderLookupNamespace	(xmlTextReaderPtr reader,
+						 const xmlChar *prefix);
+int		xmlTextReaderMoveToAttributeNo	(xmlTextReaderPtr reader,
+						 int no);
+int		xmlTextReaderMoveToAttribute	(xmlTextReaderPtr reader,
+						 const xmlChar *name);
+int		xmlTextReaderMoveToAttributeNs	(xmlTextReaderPtr reader,
+						 const xmlChar *localName,
+						 const xmlChar *namespaceURI);
+int		xmlTextReaderMoveToFirstAttribute(xmlTextReaderPtr reader);
+int		xmlTextReaderMoveToNextAttribute(xmlTextReaderPtr reader);
+int		xmlTextReaderMoveToElement	(xmlTextReaderPtr reader);
+int		xmlTextReaderNormalization	(xmlTextReaderPtr reader);
+
+/*
+ * Extensions
+ */
+int		xmlTextReaderSetParserProp	(xmlTextReaderPtr reader,
+						 int prop,
+						 int value);
+int		xmlTextReaderGetParserProp	(xmlTextReaderPtr reader,
+						 int prop);
+xmlNodePtr	xmlTextReaderCurrentNode	(xmlTextReaderPtr reader);
+xmlDocPtr	xmlTextReaderCurrentDoc		(xmlTextReaderPtr reader);
 #ifdef __cplusplus
 }
 #endif

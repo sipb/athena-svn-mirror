@@ -13,7 +13,7 @@
    from the libxml2.dll, its name is most certainly missing here.
    Add the name of the offending function to this file and rebuild.
 
-   21.03.2001, Igor Zlatkovic (igor@stud.fh-frankfurt.de)
+   21.03.2001, Igor Zlatkovic (igor@zlatkovic.com)
 */
 
 #define LIBXML2_COMPILING_MSCCDEF
@@ -356,6 +356,7 @@ xmlCleanupPredefinedEntities
 	htmlNodeDumpFileFormat
 	htmlSaveFileEnc
 	htmlSaveFileFormat
+	htmlNodeDumpOutput
 	htmlNodeDumpFormatOutput
 	htmlDocContentDumpOutput
 	htmlDocContentDumpFormatOutput
@@ -1161,9 +1162,48 @@ xmlCleanupPredefinedEntities
 	xmlMemoryStrdup
 
 
+/* xmlreader.h 
+   --------------------------------------------------------------------- */
+	/* Constructors & Destructor */
+	xmlNewTextReader
+	xmlNewTextReaderFilename
+	xmlFreeTextReader
+	/* Iterators */
+	xmlTextReaderRead
+	/* Attributes of the node */
+	xmlTextReaderAttributeCount
+	xmlTextReaderBaseUri
+	xmlTextReaderDepth
+	xmlTextReaderHasAttributes
+	xmlTextReaderHasValue
+	xmlTextReaderIsDefault
+	xmlTextReaderIsEmptyElement
+	xmlTextReaderLocalName
+	xmlTextReaderName
+	xmlTextReaderNamespaceUri
+	xmlTextReaderNodeType
+	xmlTextReaderPrefix
+	xmlTextReaderQuoteChar
+	xmlTextReaderValue
+	xmlTextReaderXmlLang
+	/* Methods of the XmlTextReader */
+	xmlTextReaderClose
+	xmlTextReaderGetAttributeNo
+	xmlTextReaderGetAttribute
+	xmlTextReaderGetAttributeNs
+	xmlTextReaderGetRemainder
+	xmlTextReaderLookupNamespace
+	xmlTextReaderMoveToAttributeNo
+	xmlTextReaderMoveToAttribute
+	xmlTextReaderMoveToAttributeNs
+	xmlTextReaderMoveToFirstAttribute
+	xmlTextReaderMoveToNextAttribute
+	xmlTextReaderMoveToElement
+
+
+
 /* xmlregexp.h 
    --------------------------------------------------------------------- */
-
 #ifdef LIBXML_REGEXP_ENABLED
 	/* The POSIX like API */
 	xmlRegexpCompile

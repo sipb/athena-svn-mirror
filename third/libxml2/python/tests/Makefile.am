@@ -19,7 +19,11 @@ PYTESTS=	\
     outbuf.py	\
     inbuf.py	\
     resolver.py \
-    regexp.py
+    regexp.py	\
+    reader.py	\
+    reader2.py	\
+    reader3.py
+
 
 XMLS=		\
     tst.xml	\

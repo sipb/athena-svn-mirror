@@ -271,6 +271,7 @@ py_types = {
     'xmlOutputBufferPtr': ('O', "outputBuffer", "xmlOutputBufferPtr", "xmlOutputBufferPtr"),
     'xmlParserInputBufferPtr': ('O', "inputBuffer", "xmlParserInputBufferPtr", "xmlParserInputBufferPtr"),
     'xmlRegexpPtr': ('O', "xmlReg", "xmlRegexpPtr", "xmlRegexpPtr"),
+    'xmlTextReaderPtr': ('O', "xmlTextReader", "xmlTextReaderPtr", "xmlTextReaderPtr"),
 }
 
 py_return_types = {
@@ -597,6 +598,7 @@ classes_type = {
     "xmlOutputBufferPtr": ("._o", "outputBuffer(_obj=%s)", "outputBuffer"),
     "xmlParserInputBufferPtr": ("._o", "inputBuffer(_obj=%s)", "inputBuffer"),
     "xmlRegexpPtr": ("._o", "xmlReg(_obj=%s)", "xmlReg"),
+    "xmlTextReaderPtr": ("._o", "xmlTextReader(_obj=%s)", "xmlTextReader"),
 }
 
 converter_type = {
@@ -624,11 +626,16 @@ classes_destructors = {
 #    "outputBuffer": "xmlOutputBufferClose",
     "inputBuffer": "xmlFreeParserInputBuffer",
     "xmlReg": "xmlRegFreeRegexp",
+    "xmlTextReader": "xmlFreeTextReader",
 }
 
 functions_noexcept = {
     "xmlHasProp": 1,
     "xmlHasNsProp": 1,
+}
+
+reference_keepers = {
+    "xmlTextReader": [('inputBuffer', 'input')],
 }
 
 function_classes = {}
@@ -676,6 +683,8 @@ def nameFixup(name, classe, type, file):
         func = "regexp" + name[9:]
     elif name[0:6] == "xmlReg" and file == "xmlregexp":
         func = "regexp" + name[6:]
+    elif name[0:13] == "xmlTextReader" and file == "xmlreader":
+        func = name[13:]
     elif name[0:11] == "xmlACatalog":
         func = name[11:]
         func = string.lower(func[0:1]) + func[1:]
@@ -926,6 +935,10 @@ def buildWrappers():
 		classes.write("class %s(%s):\n" % (classname,
 			      classes_ancestor[classname]))
 		classes.write("    def __init__(self, _obj=None):\n")
+		if reference_keepers.has_key(classname):
+		    rlist = reference_keepers[classname]
+		    for ref in rlist:
+		        classes.write("        self.%s = None\n" % ref[1])
 		classes.write("        self._o = None\n")
 		classes.write("        %s.__init__(self, _obj=_obj)\n\n" % (
 			      classes_ancestor[classname]))
@@ -939,6 +952,10 @@ def buildWrappers():
 		txt.write("Class %s()\n" % (classname))
 		classes.write("class %s:\n" % (classname))
 		classes.write("    def __init__(self, _obj=None):\n")
+		if reference_keepers.has_key(classname):
+		    list = reference_keepers[classname]
+		    for ref in list:
+		        classes.write("        self.%s = None\n" % ref[1])
 		classes.write("        if _obj != None:self._o = _obj;return\n")
 		classes.write("        self._o = None\n\n");
 	    if classes_destructors.has_key(classname):
@@ -1024,9 +1041,30 @@ def buildWrappers():
 			    classes.write(
 		    "        if ret is None:raise treeError('%s() failed')\n"
 					  % (name))
-			classes.write("        return ");
+
+			#
+			# generate the returned class wrapper for the object
+			#
+			classes.write("        __tmp = ");
 			classes.write(classes_type[ret[0]][1] % ("ret"));
 			classes.write("\n");
+
+                        #
+			# Sometime one need to keep references of the source
+			# class in the returned class object.
+			# See reference_keepers for the list
+			#
+			tclass = classes_type[ret[0]][2]
+			if reference_keepers.has_key(tclass):
+			    list = reference_keepers[tclass]
+			    for pref in list:
+				if pref[0] == ref[0]:
+				    classes.write("        __tmp.%s = self\n" %
+						  pref[1])
+			#
+			# return the class
+			#
+			classes.write("        return __tmp\n");
 		    elif converter_type.has_key(ret[0]):
 			#
 			# Raise an exception

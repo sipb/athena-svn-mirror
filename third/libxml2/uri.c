@@ -540,7 +540,7 @@ xmlPrintURI(FILE *stream, xmlURIPtr uri) {
 
     out = xmlSaveUri(uri);
     if (out != NULL) {
-	fprintf(stream, "%s", out);
+	fprintf(stream, "%s", (char *) out);
 	xmlFree(out);
     }
 }
@@ -1754,6 +1754,13 @@ xmlBuildURI(const xmlChar *URI, const xmlChar *base) {
     }
     if (ret != 0)
 	goto done;
+    if ((ref != NULL) && (ref->scheme != NULL)) {
+	/*
+	 * The URI is absolute don't modify.
+	 */
+	val = xmlStrdup(URI);
+	goto done;
+    }
     if (base == NULL)
 	ret = -1;
     else {
