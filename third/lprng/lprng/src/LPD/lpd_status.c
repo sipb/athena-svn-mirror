@@ -73,6 +73,19 @@ Format of the information reporting:
      -7                 -20 1 -4 2                                34    5
  ***************************************************************************/
 
+/* 
+ * Local modification: REQ_DSHORT changed from LPRng specification to
+ * give a more traditional BSDish queue listing, without the LPRng-ish
+ * spewing of the status files for lpq to parse.  This works because
+ * LPRng's lpq defaults to sending REQ_DLONG, whereas BSD (and Athena)
+ * default to REQ_DSHORT.  And we don't think the one-line-per-queue
+ * listing is very useful anyway.
+ *
+ * Todo: add status-file parsing to server, so that information can be
+ * displayed by old clients.
+ *         -mwhitson 2/17/99 
+ */
+
 #define RANKW 7
 #define OWNERW 30
 #define CLASSW 1
@@ -442,13 +455,7 @@ static void Get_queue_status( char *name, int *socket, int displayformat,
 	}
 
 	len = strlen( msg );
-	if( displayformat == REQ_VERBOSE ){
-		plp_snprintf( msg+len, sizeof(msg) - len,
-			_("\n Printing: %s\n Aborted: %s\n Spooling: %s"),
-				Printing_disabled?"no":"yes",
-				Printing_aborted?"no":"yes",
-				Spooling_disabled?"no":"yes");
-	} else {
+	{
 		int flag = 0;
 		if( Printing_disabled || Spooling_disabled || Printing_aborted ){
 			plp_snprintf( msg+len, sizeof(msg) - len, " (" );
@@ -596,17 +603,9 @@ static void Get_queue_status( char *name, int *socket, int displayformat,
 	}
 
 	/* this gives a short 1 line format with minimum info */
-	if( displayformat == REQ_DSHORT ){
-		len = strlen( msg );
-		plp_snprintf( msg+len, sizeof(msg) - len, _(" %d job%s\n"),
-			count, (count == 1)?"":"s" );
-	} else {
-		safestrncat( msg, "\n" );
-	}
+	safestrncat( msg, "\n" );
 	if( Write_fd_str( *socket, msg ) < 0 ) cleanup(0);
 	msg[0] = 0;
-
-	if( displayformat == REQ_DSHORT ) goto remote;
 
 	/* now check to see if there is a server and unspooler process active */
 	path = Add_path( CDpathname, Printer );
@@ -686,15 +685,18 @@ static void Get_queue_status( char *name, int *socket, int displayformat,
 		buffer = malloc_or_die(  bsize+2 );
 	}
 	path = Add2_path( CDpathname, "status.", Printer );
-	Print_status_info( socket, path, " Status", Status_lines );
+	if (displayformat != REQ_DSHORT)
+		Print_status_info( socket, path, " Status", Status_lines );
 
-	if( Status_file && *Status_file ){
-		if( Status_file[0] == '/' ){
-			path = Status_file;
-		} else {
-			path = Add_path( SDpathname, Status_file );
+	if (displayformat != REQ_DSHORT) {
+		if( Status_file && *Status_file ){
+			if( Status_file[0] == '/' ){
+				path = Status_file;
+			} else {
+				path = Add_path( SDpathname, Status_file );
+			}
+			Print_status_info( socket, path, _(" Filter_status"), Status_lines );
 		}
-		Print_status_info( socket, path, _(" Filter_status"), Status_lines );
 	}
 
 	if( C_files_list.count > 0 ){
