@@ -18,12 +18,15 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v $
+ *      $Id: x_ask.c,v 1.3 1991-03-24 14:33:27 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.2 1991-03-06 15:37:02 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.3 1991-03-24 14:33:27 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include <sys/param.h>
 #include "xolc.h"
