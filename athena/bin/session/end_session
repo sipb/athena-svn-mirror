@@ -1,0 +1,108 @@
+#! /bin/csh -f
+#
+#  end_session - Sends hangup signal to all session_gate processes
+#
+#	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session,v $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/end_session,v 1.1 1989-08-15 16:32:27 raeburn Exp $
+#	$Author: raeburn $
+#
+
+
+#  Process the argument list.
+
+while ( $#argv != 0 )
+	switch ($argv[1])
+
+	    case "-f":
+	    case "-force":
+		set force
+		breaksw
+
+	    default:
+		goto usage
+
+	endsw
+	shift argv
+end
+
+
+#  Name of file containing process ID of the session_gate process.
+
+set pid_file=/tmp/session_gate_pid.$uid
+
+
+if ($?force) then
+
+    #  Kill session_gate processes by brute force.
+
+    set pids = `/bin/ps uxc | /bin/awk '($10 == "session_gate") { print $2 }'`
+
+    if ($#pids == 0)  then
+	echo "************************************************************"
+	echo "No session_gate processes are running -- you are probably"
+	echo "using a customized session file.  End your session by"
+	echo "terminating the last process you started in your session"
+	echo "file."
+	echo "************************************************************"
+	exit 2
+    else
+        kill -HUP $pids
+    endif
+
+else
+
+    #  Check for readability of the file containing the process ID of the
+    #  session_gate process.
+
+    if (! -r $pid_file) then
+	echo "************************************************************"
+	echo "                Your session is still running."
+	echo ""
+	echo "end_session failed because:"
+	echo "  The file $pid_file doesn't exist or is"
+	echo "  not readable."
+	echo ""
+	echo "If you are running a .xsession file other than the system"
+	echo "default, and that file does not invoke the program"
+	echo "'session_gate', then end_session will not work.  You should"
+	echo "end your session by terminating the last process you started"
+	echo "in your .xsession file."
+	echo ""
+	echo "If you did run session_gate, then the file was somehow"
+	echo "deleted.  Try typing 'end_session -force' (this time only)"
+	echo "to end your session." 
+	echo "************************************************************"
+	exit 3
+    endif
+
+    #  Read the process ID and attempt to kill the process.
+
+    set pids = `/bin/cat $pid_file`
+    if ($#pids == 0) set problem
+    foreach pid ($pids)
+	if ($pid =~ -*) then		#  Don't kill negative pid's
+	    set problem
+	else
+	    /bin/kill -HUP $pid >& /dev/null
+	    if ($status > 1) set problem
+	endif
+    end
+
+    if ($?problem) then
+	echo "************************************************************"
+	echo "end_session failed because:"
+	echo "  The file $pid_file has been modified."
+	echo ""
+	echo "Try typing 'end_session -force' (this time only) to end your"
+	echo "session."
+	echo "************************************************************"
+	exit 4
+    endif
+
+endif
+exit 0
+
+usage:
+echo "usage:  $0 [-force]"
+exit 1
+
