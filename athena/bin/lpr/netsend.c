@@ -3,11 +3,11 @@
  * printjob.c, with demon code references taken out.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.4 1990-07-07 10:44:36 epeisach Exp $
+ * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.5 1992-04-19 21:25:29 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.4 1990-07-07 10:44:36 epeisach Exp $";
+static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.5 1992-04-19 21:25:29 epeisach Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"
@@ -209,14 +209,14 @@ sendfile(type, file)
 	    if (resp == '\3') {
 		fprintf(stderr, "You are not known by the quota server and ");
 		fprintf(stderr, "are not allowed to print. \n");
-		fprintf(stderr, "See an Accounts Administrator to be added.\n");
+		fprintf(stderr, "See User Accounts to be added.\n");
 		cleanup();	/* Never returns */
 	    } else if (resp == '\4') {
 		fprintf(stderr, 
-			"You are not allowed to print on this printer\n");
+			"You are not allowed to print on this printer. Please contact Athena\n");
 		/* You cannot be over quota, because of policy... */
 		fprintf(stderr, 
-			"Contact an administrator if you should be able to.\n");
+			"User Accounts (x3-1325) or your Cluster Manager for more information.\n");
 		cleanup();	/* Never returns */
 	    } else if (resp == '\5') {
 		fprintf(stderr, 
@@ -231,13 +231,13 @@ sendfile(type, file)
 		fprintf(stderr, 
 			"You are marked for deletion on the quota server.");
 		fprintf(stderr, 
-			"\nContact an Accounts Administrator if you should not be.\n");
+			"\nContact User Accounts if you should not be.\n");
 		cleanup();	/* Never returns */
 	    } else if (resp == '\10') {
 		fprintf(stderr, 
 			"The account number is marked as deleted on the quota server.");
 		fprintf(stderr, 
-			"\nContact an Accounts Administrator if it should not be.\n");
+			"\nContact User Accounts if it should not be.\n");
 		cleanup();	/* Never returns */
 	    }
 #endif PQUOTA
