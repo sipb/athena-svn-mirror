@@ -77,14 +77,14 @@ $ECHO "done."
 $ECHO ""
 
 if [ "${PUBLIC}" = "true" ]; then
-	/sbin/cp /dev/null /usr/tmp/attachtab
+	/sbin/cp /dev/null /var/athena/attachtab
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
 	$ECHO "Getting cluster information: \c"
 	/etc/athena/save_cluster_info
-	if [ -f /etc/athena/clusterinfo.bsh ]; then
-		. /etc/athena/clusterinfo.bsh
+	if [ -f /var/athena/clusterinfo.bsh ]; then
+		. /var/athena/clusterinfo.bsh
 		$ECHO "Attaching system libraries:"
 		/bin/athena/attach -h -n -o hard $SYSLIB
 		$ECHO "done."
@@ -169,7 +169,7 @@ $ECHO "inetd... \c"
 
 if [ "${ZCLIENT}" = "true" ]; then
 	$ECHO "zhm... \c"
-	rm -f /etc/athena/zhm.pid
+	rm -f /var/athena/zhm.pid
 	/etc/athena/zhm &
 fi
 
@@ -230,16 +230,16 @@ $ECHO " done!"
 	;;
 
 'stop')
-	if [ -f /etc/athena/zhm.pid ]; then
-		pid=`cat /etc/athena/zhm.pid`
+	if [ -f /var/athena/zhm.pid ]; then
+		pid=`cat /var/athena/zhm.pid`
 		if test "$pid"
 		then
 			kill $pid
 		fi
 	fi
 
-	if [ -f /etc/athena/inetd.pid ]; then
-		pid=`cat /etc/athena/inetd.pid`
+	if [ -f /var/athena/inetd.pid ]; then
+		pid=`cat /var/athena/inetd.pid`
 		if test "$pid"
 		then
 			kill $pid
