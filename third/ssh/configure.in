@@ -8,8 +8,12 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.3 1997-11-15 00:04:17 danw Exp $
+# $Id: configure.in,v 1.4 1997-11-19 22:37:17 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.3  1997/11/15 00:04:17  danw
+# Use atexit() functions to destroy tickets and call al_acct_revert.
+# Work around Solaris lossage with libucb and grantpt.
+#
 # Revision 1.2  1997/11/12 21:16:15  danw
 # Athena-login changes (including some krb4 stuff)
 #
@@ -1220,6 +1224,7 @@ no)
   KERBEROS_INCS="-I${KERBEROS_ROOT}/include"
   KERBEROS_LIBS="-L${KERBEROS_ROOT}/lib -lkrb4 -ldes425 -lkrb524 -lkrb5 -lcrypto -lcom_err"
   AC_CHECK_LIB(ndbm, dbm_open, KERBEROS_LIBS="$KERBEROS_LIBS -lndbm")
+  AC_CHECK_LIB(gen, compile, KERBEROS_LIBS="$KERBEROS_LIBS -lgen")
   KERBEROS_OBJS="auth-kerberos.o"
   ;;
 esac
