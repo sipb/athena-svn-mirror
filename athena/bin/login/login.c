@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.87 1997-04-25 03:56:46 ghudson Exp $
+ * $Id: login.c,v 1.87.2.1 1997-05-17 08:45:09 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.87 1997-04-25 03:56:46 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.87.2.1 1997-05-17 08:45:09 ghudson Exp $";
 #endif
 
 /*
@@ -1072,14 +1072,17 @@ leavethis:
     utx_tmp = getutxline(&utmpx);
     strcpy(utmpx.ut_line, ptty);
     utmpx.ut_pid = getpid();
-    if (utx_tmp)
-          strcpy(new_id, utx_tmp->ut_id);
-    p = strchr(new_id, '/');
-    if (p)
-           strcpy(p, "\0");
-    strcpy(utmpx.ut_id , new_id);
-    if (p)
-        strcat(utmpx.ut_id, ptty);
+    if (utx_tmp) {
+	memcpy(utmpx.ut_id, utx_tmp->ut_id, sizeof(utmpx.ut_id));
+    } else {
+	p = ptty + strlen(ptty);
+	if (p > ptty && *(p - 1) != '/');
+	    p--;
+	if (p > ptty && *(p - 1) != '/');
+	    p--;
+	sprintf(new_id, "lo%s", p);
+	memcpy(utmpx.ut_id, new_id, sizeof(utmpx.ut_id));
+    }
     utmpx.ut_syslen = strlen(utmpx.ut_host);
     pututxline(&utmpx);
     getutmp(&utmpx, &utmp); 
