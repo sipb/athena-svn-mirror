@@ -1,5 +1,5 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.6 1991-02-11 09:59:48 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.7 1992-01-10 13:11:49 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
 /* $Author: epeisach $ */
 
@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.6 1991-02-11 09:59:48 epeisach Exp $";
+static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.7 1992-01-10 13:11:49 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -55,12 +55,17 @@ logger_periodic()
 	(void) strcpy(tmpname, LOGTRANSFILE);
 	(void) strcat(tmpname, ".tmp");
 	cleartime = time((long *) 0) - SAVETIME; /* Delete asap */
-	if(stat(LOGTRANSFILE, &sbuf) < 0) {
-	    cleartime += SAVETIME; /* No file, wait*/
-	}
 	if(logger_journal_get_header(&jhead)) {
 	    syslog(LOG_INFO, "Unable to read header from journal db.");
 	    exit(1);
+	}
+	if(stat(LOGTRANSFILE, &sbuf) < 0) {
+	    cleartime += SAVETIME; /* No file, wait*/
+	    jhead.quota_pos = 0;
+	    if(logger_journal_put_header(&jhead)) {
+		    syslog(LOG_INFO, "Unable to init header - fatal");
+		    exit(1);
+	    }
 	}
         inited = 1;
     }
