@@ -39,6 +39,11 @@ for screen in $screens
 
 # visuallogin:  on: clogin;                  off: plain xdm login
 # also, "-f" in clogin means grab input focus
+if [ -x /etc/athena/xlogin ] ; then
+	/etc/athena/nanny -xup
+	exec /etc/athena/xlogin -config /etc/athena/login -display :0.0
+fi
+
 if /etc/chkconfig visuallogin ; then
 	if [ -x /usr/Cadmin/bin/clogin ] ; then
 		exec /usr/Cadmin/bin/clogin -f
