@@ -9,7 +9,7 @@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
-install_prefix	=
+install_prefix	= $(DESTDIR)
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
