@@ -61,18 +61,16 @@
 /* #define POSIX_SIGNALS */ /* use POSIX signal semantics (ttyin.c) */
 #define SYSV_SIGNALS    /* use System-V signal semantics (ttyin.c) */
 
-#define	SIG_PROTO(args) args
+#define	SIGNALHASARG	1
+#define	SIG_PROTO(args)	args
 
 /*
  * Special for sgi, these aren't declared if -ansi flag used.
  * We don't understand why that is.
- * Also, redefine refresh so that it doesn't conflict with sgi's
- * refresh in one of the libraries.
  */
 extern SigType (*sigset(int, SigType(*)SIG_PROTO((int))))(int);
 extern FILE     *popen(const char *, const char *);
 extern FILE     *fdopen(int, const char *);
-#define refresh our_refresh
 
 
 

@@ -13,5 +13,3 @@ include(read.sel)
 include(raw.brk)
 
 include(term.cap)
-
-include(getcwd)

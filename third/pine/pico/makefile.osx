@@ -1,4 +1,4 @@
-# $Id: makefile.osx,v 1.1.1.1 2001-02-19 07:04:30 ghudson Exp $
+# $Id: makefile.osx,v 1.1.1.2 2003-02-12 08:00:32 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -42,7 +42,7 @@ LIBCMD=		ar
 LIBARGS=	ru
 RANLIB=		ranlib
 
-LIBS=		$(EXTRALIBES)
+LIBS=		$(EXTRALDFLAGS) -lncurses
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \
 		composer.o display.o file.o fileio.o line.o pico_os.o \
@@ -84,6 +84,5 @@ pico.o:				ebind.h
 
 osdep/os-osx.c:	osdep/header osdep/unix osdep/read.sel osdep/raw.brk \
 		osdep/spell.unx osdep/term.cap \
-		osdep/getcwd \
 		osdep/os-osx.ic
 		cd osdep; $(MAKE) includer os-osx.c; cd ..

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: imap.c,v 1.1.1.1 2001-02-19 07:11:40 ghudson Exp $";
+static char rcsid[] = "$Id: imap.c,v 1.1.1.2 2003-02-12 08:02:00 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: imap.c,v 1.1.1.1 2001-02-19 07:11:40 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -64,6 +64,8 @@ typedef struct _mmlogin_s {
     char	   *user,
 		   *passwd;
     unsigned	    altflag:1;
+    unsigned	    ok_novalidate:1;
+    unsigned	    warned:1;
     STRLIST_S	   *hosts;
     struct _mmlogin_s *next;
 } MMLOGIN_S;
@@ -83,18 +85,26 @@ long  imap_seq_exec PROTO((MAILSTREAM *, char *,
 			   long (*) PROTO((MAILSTREAM *, long, void *)),
 			   void *));
 long  imap_seq_exec_append PROTO((MAILSTREAM *, long, void *));
-char *imap_get_user PROTO((MMLOGIN_S *, STRLIST_S *, int));
+int   imap_get_ssl PROTO((MMLOGIN_S *, STRLIST_S *, int *, int *));
+char *imap_get_user PROTO((MMLOGIN_S *, STRLIST_S *));
 int   imap_get_passwd PROTO((MMLOGIN_S *, char *, char *, STRLIST_S *, int));
-void  imap_set_passwd PROTO((MMLOGIN_S **, char *, char *, STRLIST_S *, int));
+void  imap_set_passwd PROTO((MMLOGIN_S **, char *, char *, STRLIST_S *, int,
+			     int, int));
 int   imap_same_host PROTO((STRLIST_S *, STRLIST_S *));
+int   answer_cert_failure PROTO((int, MSGNO_S *, SCROLL_S *));
+char *ps_get PROTO((size_t));
+long  pine_tcptimeout_noscreen PROTO((long, long));
 #ifdef	PASSFILE
 char  xlate_in PROTO((int));
 char  xlate_out PROTO((char));
-char *passfile_name PROTO((char *, char *));
+char *passfile_name PROTO((char *, char *, size_t));
 int   read_passfile PROTO((char *, MMLOGIN_S **));
 void  write_passfile PROTO((char *, MMLOGIN_S *));
 int   get_passfile_passwd PROTO((char *, char *, char *, STRLIST_S *, int));
+int   is_using_passfile PROTO(());
 void  set_passfile_passwd PROTO((char *, char *, char *, STRLIST_S *, int));
+char *get_passfile_user PROTO((char *, STRLIST_S *));
+void  update_passfile_hostlist PROTO((char *, char *, STRLIST_S *, int));
 #endif
 
 
@@ -112,7 +122,18 @@ MM_LIST_S  *mm_list_info;
 /*
  * Local global to hook cached list of host/user/passwd triples to.
  */
-static	MMLOGIN_S	*mm_login_list = NULL;
+static	MMLOGIN_S	*mm_login_list     = NULL;
+static	MMLOGIN_S	*cert_failure_list = NULL;
+
+/*
+ * Instead of storing cached passwords in free storage, store them in this
+ * private space. This makes it easier and more reliable when we want
+ * to zero this space out. We only store passwords here (char *) so we
+ * don't need to worry about alignment.
+ */
+static	char		private_store[512];
+
+static	char *details_cert, *details_host, *details_reason;
 
 
 
@@ -127,11 +148,41 @@ void
 mm_dlog(string)
     char *string;
 {
+    char *p, *q = NULL, save, *continued;
+    int   more = 1;
+
 #ifdef	_WINDOWS
     mswin_imaptelemetry(string);
 #endif
 #ifdef	DEBUG
-    dprint(0, (debugfile, "IMAP DEBUG %s: %s\n", debug_time(1), string));
+    continued = "";
+    p = string;
+#ifdef DEBUGJOURNAL
+    /* because string can be really long and we don't want to lose any of it */
+    if(p)
+      more = 1;
+
+    while(more){
+	if(q){
+	    *q = save;
+	    p = q;
+	    continued = "(Continuation line) ";
+	}
+
+	if(strlen(p) > 63000){
+	    q = p + 60000;
+	    save = *q;
+	    *q = '\0';
+	}
+	else
+	  more = 0;
+#endif
+	dprint((ps_global->debug_imap >= 4 && debug < 4) ? debug : 4,
+	       (debugfile, "IMAP DEBUG %s%s: %s\n",
+		   continued, debug_time(1, ps_global->debug_timestamp), p));
+#ifdef DEBUGJOURNAL
+    }
+#endif
 #endif
 }
 
@@ -153,7 +204,7 @@ mm_log(string, errflg)
     long  errflg;
 {
     char        message[sizeof(ps_global->c_client_error)];
-    char       *occurance;
+    char       *occurence;
     int         was_capitalized;
     time_t      now;
     struct tm  *tm_now;
@@ -161,18 +212,17 @@ mm_log(string, errflg)
     now = time((time_t *)0);
     tm_now = localtime(&now);
 
-    dprint(ps_global->debug_imap ? 0 : (errflg == ERROR ? 1 : 2),
+    dprint(errflg == TCPDEBUG ? 7 : 2,
 	   (debugfile,
 	    "IMAP %2.2d:%2.2d:%2.2d %d/%d mm_log %s: %s\n",
-	    tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec, tm_now->tm_mon+1,
-	    tm_now->tm_mday,
-	    (errflg == ERROR)
-	      ? "ERROR"
-	      : (errflg == WARN)
-		  ? "warn"
-		  : (errflg == PARSE)
-		      ? "parse"
-		      : "babble",
+	    tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec,
+	    tm_now->tm_mon+1, tm_now->tm_mday,
+            (!errflg)            ? "babble"  : 
+	     (errflg == ERROR)    ? "error"   :
+	      (errflg == WARN)     ? "warning" :
+	       (errflg == PARSE)    ? "parse"   :
+		(errflg == TCPDEBUG) ? "tcp"     :
+		 (errflg == BYE)      ? "bye"     : "unknown",
 	    string));
 
     if(errflg == ERROR && !strncmp(string, "[TRYCREATE]", 11)){
@@ -191,18 +241,33 @@ mm_log(string, errflg)
     /*---- replace all "mailbox" with "folder" ------*/
     strncpy(message, string, sizeof(message));
     message[sizeof(message) - 1] = '\0';
-    occurance = srchstr(message, "mailbox");
-    while(occurance) {
-	if(!*(occurance+7) || isspace((unsigned char)*(occurance+8))){
-	    was_capitalized = isupper((unsigned char)*occurance);
-	    rplstr(occurance, 7, (errflg == PARSE ? "address" : "folder"));
+    occurence = srchstr(message, "mailbox");
+    while(occurence) {
+	if(!*(occurence+7)
+	   || isspace((unsigned char) *(occurence+7))
+	   || *(occurence+7) == ':'){
+	    was_capitalized = isupper((unsigned char) *occurence);
+	    rplstr(occurence, 7, (errflg == PARSE ? "address" : "folder"));
 	    if(was_capitalized)
-	      *occurance = (errflg == PARSE ? 'A' : 'F');
+	      *occurence = (errflg == PARSE ? 'A' : 'F');
 	}
 	else
-	  occurance += 7;
+	  occurence += 7;
 
-        occurance = srchstr(occurance, "mailbox");
+        occurence = srchstr(occurence, "mailbox");
+    }
+
+    /*---- replace all "GSSAPI" with "Kerberos" ------*/
+    occurence = srchstr(message, "GSSAPI");
+    while(occurence) {
+	if(!*(occurence+6)
+	   || isspace((unsigned char) *(occurence+6))
+	   || *(occurence+6) == ':')
+	  rplstr(occurence, 6, "Kerberos");
+	else
+	  occurence += 6;
+
+        occurence = srchstr(occurence, "GSSAPI");
     }
 
     if(errflg == ERROR)
@@ -231,7 +296,7 @@ mm_log(string, errflg)
 
   Args: stream  --  Mail stream message is relavant to 
         string  --  The message text
-        errflag --  Set if it is a serious error
+        errflg  --  Set if it is a serious error
 
  Result: message displayed in status line
 
@@ -239,25 +304,36 @@ mm_log(string, errflg)
  server shutting down etc... It is used infrequently.
   ----------------------------------------------------------------------*/
 void
-mm_notify(stream, string, errflag)
+mm_notify(stream, string, errflg)
     MAILSTREAM *stream;
     char       *string;
-    long        errflag;
+    long        errflg;
 {
+    time_t      now;
+    struct tm  *tm_now;
+
+    now = time((time_t *)0);
+    tm_now = localtime(&now);
+
     /* be sure to log the message... */
 #ifdef DEBUG
-    if(ps_global->debug_imap)
-      dprint(0,
-	     (debugfile, "IMAP mm_notify %s : %s (%s) : %s\n",
-               (!errflag) ? "NIL" : 
-		 (errflag == ERROR) ? "error" :
-		   (errflag == WARN) ? "warning" :
-		     (errflag == BYE) ? "bye" : "unknown",
-	       (stream && stream->mailbox) ? stream->mailbox : "-no folder-",
-	       (stream && stream == ps_global->inbox_stream) ? "inboxstream" :
-		 (stream && stream == ps_global->mail_stream) ? "mailstream" :
-		   (stream) ? "not inboxstream or mailstream" : "nostream",
-	       string));
+    if(ps_global->debug_imap || ps_global->debugmem)
+      dprint(errflg == TCPDEBUG ? 7 : 2,
+	     (debugfile,
+	      "IMAP %2.2d:%2.2d:%2.2d %d/%d mm_notify %s: %s (%s) : %s\n",
+	      tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec,
+	      tm_now->tm_mon+1, tm_now->tm_mday,
+              (!errflg)            ? "babble"     : 
+	       (errflg == ERROR)    ? "error"   :
+	        (errflg == WARN)     ? "warning" :
+	         (errflg == PARSE)    ? "parse"   :
+		  (errflg == TCPDEBUG) ? "tcp"     :
+		   (errflg == BYE)      ? "bye"     : "unknown",
+	      (stream && stream->mailbox) ? stream->mailbox : "-no folder-",
+	      (stream && stream == ps_global->inbox_stream) ? "inboxstream" :
+	        (stream && stream == ps_global->mail_stream) ? "mailstream" :
+		  (stream) ? "?" : "nostream",
+	      string));
 #endif
 
     sprintf(ps_global->last_error, "%.50s : %.*s",
@@ -270,26 +346,21 @@ mm_notify(stream, string, errflag)
     /*
      * Then either set special bits in the pine struct or
      * display the message if it's tagged as an "ALERT" or
-     * its errflag > NIL (i.e., WARN, or ERROR)
+     * its errflg > NIL (i.e., WARN, or ERROR)
      */
-    if(errflag == BYE){
-	if(stream == ps_global->mail_stream){
-	    if(ps_global->dead_stream)
-	      return;
-	    else
-	      ps_global->dead_stream = 1;
-	}
-	else if(stream && stream == ps_global->inbox_stream){
-	    if(ps_global->dead_inbox)
-	      return;
-	    else
-	      ps_global->dead_inbox = 1;
-	}
+    if(errflg == BYE){
+	if(stream == ps_global->mail_stream)
+	  ps_global->dead_stream = 1;
+	else if(stream && stream == ps_global->inbox_stream)
+	  ps_global->dead_inbox = 1;
     }
     else if(!strncmp(string, "[TRYCREATE]", 11))
       ps_global->try_to_create = 1;
+    else if(!strncmp(string, "[REFERRAL ", 10))
+      ;  /* handled in the imap_referral() callback */
     else if(!strncmp(string, "[ALERT]", 7))
-      q_status_message2(SM_MODAL, 3, 3, "Alert received while accessing \"%s\":  %s",
+      q_status_message2(SM_MODAL, 3, 3,
+		        "Alert received while accessing \"%.200s\":  %.200s",
 			(stream && stream->mailbox)
 			  ? stream->mailbox : "-no folder-",
 			rfc1522_decode((unsigned char *)tmp_20k_buf,
@@ -305,12 +376,12 @@ mm_notify(stream, string, errflag)
     }
     else if(!strncmp(string, "[READ-ONLY]", 11)
 	    && !(stream && stream->mailbox && IS_NEWS(stream)))
-      q_status_message2(SM_ORDER | SM_DING, 3, 3, "%s : %s",
+      q_status_message2(SM_ORDER | SM_DING, 3, 3, "%.200s : %.200s",
 			(stream && stream->mailbox)
 			  ? stream->mailbox : "-no folder-",
 			string + 11);
-    else if(errflag && errflag != BYE)
-      q_status_message(SM_ORDER | ((errflag == ERROR) ? SM_DING : 0),
+    else if(errflg && errflg != BYE && errflg != PARSE)
+      q_status_message(SM_ORDER | ((errflg == ERROR) ? SM_DING : 0),
 		       3, 6, ps_global->last_error);
 }
 
@@ -340,11 +411,11 @@ mm_exists(stream, number)
     unsigned long  number;
 {
     long new_this_call, n;
-    int	 exbits = 0;
+    int	 exbits = 0, lflags = 0;
 
 #ifdef DEBUG
-    if(ps_global->debug_imap > 1)
-      dprint(0,
+    if(ps_global->debug_imap > 1 || ps_global->debugmem)
+      dprint(3,
 	   (debugfile, "=== mm_exists(%lu,%s) called ===\n", number,
      !stream ? "(no stream)" : !stream->mailbox ? "(null)" : stream->mailbox));
 #endif
@@ -371,14 +442,19 @@ mm_exists(stream, number)
 
 		msgno_exceptions(stream, number, "0", &exbits, TRUE);
 
+		if(SORT_IS_THREADED())
+		  lflags |= MN_USOR;
+
 		/*
 		 * If we're zoomed, then hide this message too since
 		 * it couldn't have possibly been selected yet...
 		 */
-		if(any_lflagged(ps_global->msgmap, MN_HIDE))
+		lflags |= (any_lflagged(ps_global->msgmap, MN_HIDE)
+							? MN_HIDE : 0);
+		if(lflags)
 		  set_lflag(stream, ps_global->msgmap, 
 			    mn_get_total(ps_global->msgmap) - n, 
-			    MN_HIDE, 1);
+			    lflags, 1);
 	    }
 	}
     } else if(stream == ps_global->inbox_stream) {
@@ -402,14 +478,20 @@ mm_exists(stream, number)
 
 		msgno_exceptions(stream, number, "0", &exbits, TRUE);
 
+		if(SORT_IS_THREADED())
+		  lflags |= MN_USOR;
+
+
 		/*
 		 * If we're zoomed, then hide this message too since
 		 * it couldn't have possibly been selected yet...
 		 */
-		if(any_lflagged(ps_global->inbox_msgmap, MN_HIDE))
-		  set_lflag(stream,ps_global->inbox_msgmap,
-			    mn_get_total(ps_global->inbox_msgmap) - n,
-			    MN_HIDE,1);
+		lflags |= (any_lflagged(ps_global->inbox_msgmap, MN_HIDE)
+							? MN_HIDE : 0);
+		if(lflags)
+		  set_lflag(stream, ps_global->inbox_msgmap, 
+			    mn_get_total(ps_global->inbox_msgmap) - n, 
+			    lflags, 1);
 	    }
 	}
     }
@@ -429,30 +511,31 @@ reference to the expunged message, shifting internal mappings as
 necessary.
   ----*/
 void
-mm_expunged(stream, number)
+mm_expunged(stream, rawno)
     MAILSTREAM    *stream;
-    unsigned long  number;
+    unsigned long  rawno;
 {
     MESSAGECACHE *mc;
+    long i;
 
 #ifdef DEBUG
-    if(ps_global->debug_imap > 1)
-      dprint(0,
+    if(ps_global->debug_imap > 1 || ps_global->debugmem)
+      dprint(3,
 	   (debugfile, "mm_expunged(%s,%lu)\n",
 	       stream
 		? (stream->mailbox
 		    ? stream->mailbox
 		    : "(no stream)")
-		: "(null)", number));
+		: "(null)", rawno));
 #endif
 
     /*
      * If we ever deal with more than two streams, this'll break
      */
     if(stream == ps_global->mail_stream){
-	long i;
+	if(i = mn_raw2m(ps_global->msgmap, (long) rawno)){
+	    dprint(7, (debugfile, "mm_expunged: rawno=%lu msgno=%ld nmsgs=%ld max_msgno=%ld flagged_exld=%ld\n", rawno, i, mn_get_nmsgs(ps_global->msgmap), mn_get_total(ps_global->msgmap), ps_global->msgmap->flagged_exld));
 
-	if(i = mn_raw2m(ps_global->msgmap, (long) number)){
 	    /* flush invalid cache entries */
 	    while(i <= mn_get_total(ps_global->msgmap))
 	      clear_index_cache_ent(i++);
@@ -460,7 +543,7 @@ mm_expunged(stream, number)
 	    /* expunged something we're viewing? */
 	    if(!ps_global->expunge_in_progress
 	       && (mn_is_cur(ps_global->msgmap,
-			     mn_raw2m(ps_global->msgmap, (long) number))
+			     mn_raw2m(ps_global->msgmap, (long) rawno))
 		   && (ps_global->prev_screen == mail_view_screen
 		       || ps_global->prev_screen == attachment_screen))){
 		ps_global->next_screen = mail_index_screen;
@@ -472,6 +555,61 @@ mm_expunged(stream, number)
 	    ps_global->mangled_header = 1;
 	    ps_global->expunge_count++;
 	}
+	else{
+	    dprint(7, (debugfile,
+		   "mm_expunged: rawno=%lu was excluded, flagged_exld was %d\n",
+		   rawno, ps_global->msgmap->flagged_exld));
+	    dprint(7, (debugfile, "             nmsgs=%ld max_msgno=%ld\n",
+		   mn_get_nmsgs(ps_global->msgmap),
+		   mn_get_total(ps_global->msgmap)));
+	    mc = mail_elt(stream, rawno);
+	    if(!mc){
+		dprint(7, (debugfile, "             cannot get mail_elt(%lu)\n",
+		       rawno));
+	    }
+	    else{
+		dprint(7, (debugfile, "             mail_elt(%lu)->spare2=%d\n",
+		       rawno, (int) (mc->spare2)));
+	    }
+	}
+
+	if(SORT_IS_THREADED()
+	   && (SEP_THRDINDX()
+	       || ps_global->thread_disp_style != THREAD_NONE)){
+	    long cur;
+
+	    /*
+	     * When we're sorting with a threaded method an expunged
+	     * message may cause the rest of the sort to be wrong. This
+	     * isn't so bad if we're just looking at the index. However,
+	     * it also causes the thread tree (PINETHRD_S) to become
+	     * invalid, so if we're using a threading view we need to
+	     * sort in order to fix the tree and to protect fetch_thread().
+	     */
+	    ps_global->need_to_rethread = 1;
+
+	    /*
+	     * If we expunged the current message which was a member of the
+	     * viewed thread, and the adjustment to current will take us
+	     * out of that thread, fix it if we can, by backing current up
+	     * into the thread. We'd like to just check after mn_flush_raw
+	     * below but the problem is that the elts won't change until
+	     * after we return from mm_expunged. So we have to manually
+	     * check the other messages for CHID2 flags instead of thinking
+	     * that we can expunge the current message and then check. It won't
+	     * work because the elt will still refer to the expunged message.
+	     */
+	    if(ps_global->viewing_a_thread
+	       && get_lflag(stream, NULL, rawno, MN_CHID2)
+	       && mn_total_cur(ps_global->msgmap) == 1
+	       && mn_is_cur(ps_global->msgmap,
+			    mn_raw2m(ps_global->msgmap, (long) rawno))
+	       && (cur = mn_get_cur(ps_global->msgmap)) > 1L
+	       && cur < mn_get_total(ps_global->msgmap)
+	       && !get_lflag(stream, ps_global->msgmap, cur + 1L, MN_CHID2)
+	       && get_lflag(stream, ps_global->msgmap, cur - 1L, MN_CHID2))
+	      mn_set_cur(ps_global->msgmap, cur - 1L);
+	}
 
 	/*
 	 * Keep on top of our special flag counts.
@@ -479,7 +617,7 @@ mm_expunged(stream, number)
 	 * NOTE: This is allowed since mail_expunged releases
 	 * data for this message after the callback.
 	 */
-	if(mc = mail_elt(stream, number)){
+	if(mc = mail_elt(stream, rawno)){
 	    if(mc->spare)
 	      ps_global->msgmap->flagged_hid--;
 
@@ -489,27 +627,58 @@ mm_expunged(stream, number)
 	    if(mc->spare3)
 	      ps_global->msgmap->flagged_tmp--;
 
-	    if(mc->sparep)
-	      msgno_free_exceptions((PARTEX_S **) &mc->sparep);
+	    if(mc->spare4)
+	      ps_global->msgmap->flagged_chid--;
+
+	    if(mc->spare8)
+	      ps_global->msgmap->flagged_chid2--;
+
+	    if(mc->spare5)
+	      ps_global->msgmap->flagged_coll--;
+
+	    if(mc->spare6)
+	      ps_global->msgmap->flagged_stmp--;
+
+	    if(mc->spare7)
+	      ps_global->msgmap->flagged_usor--;
+
+	    if(mc->spare || mc->spare4)
+	      ps_global->msgmap->flagged_invisible--;
+
+	    free_pine_elt((PINELT_S **) &mc->sparep);
 	}
 
 	/*
 	 * if it's in the sort array, flush it, otherwise
-	 * decrement raw sequence numbers greater than "number"
+	 * decrement raw sequence numbers greater than "rawno"
 	 */
-	mn_flush_raw(ps_global->msgmap, (long) number);
+	mn_flush_raw(ps_global->msgmap, (long) rawno);
     }
     else if(stream == ps_global->inbox_stream){
-	long i;
-
-	if(i = mn_raw2m(ps_global->inbox_msgmap, (long) number)){
+	if(i = mn_raw2m(ps_global->inbox_msgmap, (long) rawno)){
+	    dprint(7, (debugfile, "mm_expunged (inbox_stream): rawno=%lu msgno=%ld nmsgs=%ld max_msgno=%ld flagged_exld=%ld\n", rawno, i, mn_get_nmsgs(ps_global->inbox_msgmap), mn_get_total(ps_global->inbox_msgmap), ps_global->inbox_msgmap->flagged_exld));
 	    ps_global->inbox_changed = 1;
 	    ps_global->inbox_expunge_count++;
 	}
+	else{
+	    dprint(7, (debugfile,
+    "mm_expunged (inbox_stream): rawno=%lu was excluded, flagged_exld was %d\n",
+		   rawno, ps_global->inbox_msgmap->flagged_exld));
+	    dprint(7, (debugfile, "             nmsgs=%ld max_msgno=%ld\n",
+		   mn_get_nmsgs(ps_global->inbox_msgmap),
+		   mn_get_total(ps_global->inbox_msgmap)));
+	    mc = mail_elt(stream, rawno);
+	    if(!mc){
+		dprint(7, (debugfile, "             cannot get mail_elt(%lu)\n",
+		       rawno));
+	    }
+	    else{
+		dprint(7, (debugfile, "             mail_elt(%lu)->spare2=%d\n",
+		       rawno, (int) (mc->spare2)));
+	    }
+	}
 
-	mn_flush_raw(ps_global->inbox_msgmap, (long) number);
-
-	if(mc = mail_elt(stream, number)){
+	if(mc = mail_elt(stream, rawno)){
 	    if(mc->spare)
 	      ps_global->inbox_msgmap->flagged_hid--;
 
@@ -519,9 +688,30 @@ mm_expunged(stream, number)
 	    if(mc->spare3)
 	      ps_global->inbox_msgmap->flagged_tmp--;
 
-	    if(mc->sparep)
-	      msgno_free_exceptions((PARTEX_S **) &mc->sparep);
+	    if(mc->spare4)
+	      ps_global->inbox_msgmap->flagged_chid--;
+
+	    if(mc->spare8)
+	      ps_global->inbox_msgmap->flagged_chid2--;
+
+	    if(mc->spare5)
+	      ps_global->inbox_msgmap->flagged_coll--;
+
+	    if(mc->spare6)
+	      ps_global->inbox_msgmap->flagged_stmp--;
+
+	    if(mc->spare7)
+	      ps_global->inbox_msgmap->flagged_usor--;
+
+	    if(mc->spare || mc->spare4)
+	      ps_global->msgmap->flagged_invisible--;
+
+	    /* there isn't a total associated with spare7 */
+
+	    free_pine_elt((PINELT_S **) &mc->sparep);
 	}
+
+	mn_flush_raw(ps_global->inbox_msgmap, (long) rawno);
     }
 }
 
@@ -535,11 +725,11 @@ mm_expunged(stream, number)
  Result: nothing, not used by pine
   ----*/
 void
-mm_searched(stream, number)
+mm_searched(stream, rawno)
     MAILSTREAM    *stream;
-    unsigned long  number;
+    unsigned long  rawno;
 {
-    mail_elt(stream, number)->searched = 1;
+    mail_elt(stream, rawno)->searched = 1;
     if(stream == mm_search_stream)
       mm_search_count++;
 }
@@ -566,48 +756,90 @@ mm_login(mb, user, pwd, trial)
     char   *pwd;
     long    trial;
 {
-    char      prompt[MAX_SCREEN_COLS], *last, *host;
+    char      prompt[1000], *last, *logleadin;
+    char      port[20], non_def_port[20], insecure[20];
+    char      defuser[NETMAXUSER];
+    char      hostleadin[20], hostname[200], defubuf[200];
+    char      pwleadin[50];
+    char      hostlist0[MAILTMPLEN], hostlist1[MAILTMPLEN];
+    char     *insec = " (INSECURE)";
     STRLIST_S hostlist[2];
     HelpType  help ;
-    int       i, j, goal, ugoal, len, rc, q_line, flags;
+    int       len, rc, q_line, flags;
+    int       oespace, avail, need;
+    struct servent *sv;
 #define NETMAXPASSWD 100
 
+    dprint(9, (debugfile, "mm_login trial=%ld user=%s service=%s%s%s\n",
+	       trial, mb->user ? mb->user : "(null)",
+	       mb->service ? mb->service : "(null)",
+	       mb->port ? " port=" : "",
+	       mb->port ? comatose(mb->port) : ""));
     q_line = -(ps_global->ttyo ? ps_global->ttyo->footer_rows : 3);
-
-    if(ps_global->anonymous) {
-        /*------ Anonymous login mode --------*/
-        if(trial < 1) {
-            strcpy(user, "anonymous");
-            sprintf(pwd, "%s@%s",
-		    ps_global->VAR_USER_ID ? ps_global->VAR_USER_ID : "?",
-		    ps_global->hostname);
-	}
-	else
-	  user[0] = pwd[0] = '\0';
-
-        return;
-    }
 
     /* make sure errors are seen */
     if(ps_global->ttyo)
       flush_status_messages(0);
 
     /*
+     * Add port number to hostname if going through a tunnel or something
+     */
+    non_def_port[0] = '\0';
+    if(mb->port && mb->service &&
+       (sv = getservbyname(mb->service, "tcp")) &&
+       (mb->port != ntohs(sv->s_port))){
+	sprintf(non_def_port, ":%lu", mb->port);
+	dprint(9, (debugfile, "mm_login: using non-default port=%s\n",
+		   non_def_port));
+    }
+
+    /*
      * set up host list for sybil servers...
      */
-    hostlist[0].name = mb->host;
-    if(mb->orighost[0] && strucmp(mb->host, mb->orighost)){
-	hostlist[0].next = &hostlist[1];
-	hostlist[1].name = mb->orighost;
-	hostlist[1].next = NULL;
+    if(*non_def_port){
+	strncpy(hostlist0, mb->host, sizeof(hostlist0)-1);
+	hostlist0[sizeof(hostlist0)-1] = '\0';
+	strncat(hostlist0, non_def_port, sizeof(hostlist0)-strlen(hostlist0)-1);
+	hostlist0[sizeof(hostlist0)-1] = '\0';
+	hostlist[0].name = hostlist0;
+	if(mb->orighost && mb->orighost[0] && strucmp(mb->host, mb->orighost)){
+	    strncpy(hostlist1, mb->orighost, sizeof(hostlist1)-1);
+	    hostlist1[sizeof(hostlist1)-1] = '\0';
+	    strncat(hostlist1, non_def_port, sizeof(hostlist1)-strlen(hostlist1)-1);
+	    hostlist1[sizeof(hostlist1)-1] = '\0';
+	    hostlist[0].next = &hostlist[1];
+	    hostlist[1].name = hostlist1;
+	    hostlist[1].next = NULL;
+	}
+	else
+	  hostlist[0].next = NULL;
     }
-    else
-      hostlist[0].next = NULL;
+    else{
+	hostlist[0].name = mb->host;
+	if(mb->orighost && mb->orighost[0] && strucmp(mb->host, mb->orighost)){
+	    hostlist[0].next = &hostlist[1];
+	    hostlist[1].name = mb->orighost;
+	    hostlist[1].next = NULL;
+	}
+	else
+	  hostlist[0].next = NULL;
+    }
+
+    if(hostlist[0].name){
+	dprint(9, (debugfile, "mm_login: host=%s\n", hostlist[0].name));
+	if(hostlist[0].next && hostlist[1].name){
+	    dprint(9, (debugfile, "mm_login: orighost=%s\n", hostlist[1].name));
+	}
+    }
 
     /*
      * Initialize user name with either 
      *     1) /user= value in the stream being logged into,
      *  or 2) the user name we're running under.
+     *
+     * Note that VAR_USER_ID is not yet initialized if this login is
+     * the one to access the remote config file. In that case, the user
+     * can supply the username in the config file name with /user=.
      */
     if(trial == 0L){
 	strncpy(user, (*mb->user) ? mb->user :
@@ -616,15 +848,21 @@ mm_login(mb, user, pwd, trial)
 	user[NETMAXUSER-1] = '\0';
 
 	/* try last working password associated with this host. */
-	if(imap_get_passwd(mm_login_list, pwd, user, hostlist, mb->altflag))
-	  return;
+	if(imap_get_passwd(mm_login_list, pwd, user, hostlist,
+	   (mb->sslflag||mb->tlsflag))){
+	    dprint(9, (debugfile, "mm_login: found a password to try\n"));
+	    return;
+	}
 
 #ifdef	PASSFILE
 	/* check to see if there's a password left over from last session */
 	if(get_passfile_passwd(ps_global->pinerc, pwd,
-			       user, &hostlist[0], mb->altflag)){
+			       user, hostlist, (mb->sslflag||mb->tlsflag))){
 	    imap_set_passwd(&mm_login_list, pwd, user,
-			    &hostlist[0], mb->altflag);
+			    hostlist, (mb->sslflag||mb->tlsflag), 0, 0);
+	    update_passfile_hostlist(ps_global->pinerc, user, hostlist,
+				     (mb->sslflag||mb->tlsflag));
+	    dprint(9, (debugfile, "mm_login: found a password in passfile to try\n"));
 	    return;
 	}
 #endif
@@ -632,62 +870,225 @@ mm_login(mb, user, pwd, trial)
 	/*
 	 * If no explicit user name supplied and we've not logged in
 	 * with our local user name, see if we've visited this
-	 * host before as someone else...
+	 * host before as someone else.
 	 */
-	if(!*mb->user
-	   && (last = imap_get_user(mm_login_list, hostlist, mb->altflag)))
-	  strncpy(user, last, NETMAXUSER);
+	if(!*mb->user &&
+	   (last = imap_get_user(mm_login_list, hostlist))
+#ifdef	PASSFILE
+	   ||
+	   (last = get_passfile_user(ps_global->pinerc, hostlist))
+#endif
+								  ){
+	    strncpy(user, last, NETMAXUSER);
+	    dprint(9, (debugfile, "mm_login: found user=%s\n", user));
+
+	    /* try last working password associated with this host/user. */
+	    if(imap_get_passwd(mm_login_list, pwd, user, hostlist,
+	       (mb->sslflag||mb->tlsflag))){
+		dprint(9, (debugfile, "mm_login: found a password for user=%s to try\n", user));
+		return;
+	    }
+
+#ifdef	PASSFILE
+	    /* check to see if there's a password left over from last session */
+	    if(get_passfile_passwd(ps_global->pinerc, pwd,
+				   user, hostlist, (mb->sslflag||mb->tlsflag))){
+		imap_set_passwd(&mm_login_list, pwd, user,
+				hostlist, (mb->sslflag||mb->tlsflag), 0, 0);
+		update_passfile_hostlist(ps_global->pinerc, user, hostlist,
+					 (mb->sslflag||mb->tlsflag));
+		dprint(9, (debugfile, "mm_login: found a password for user=%s in passfile to try\n", user));
+		return;
+	    }
+#endif
+	}
+
+#if !defined(DOS) && !defined(OS2)
+	if(!*mb->user && !*user &&
+	   (last = (ps_global->ui.login && ps_global->ui.login[0])
+				    ? ps_global->ui.login : NULL)
+								 ){
+	    strncpy(user, last, NETMAXUSER);
+	    dprint(9, (debugfile, "mm_login: found user=%s\n", user));
+
+	    /* try last working password associated with this host. */
+	    if(imap_get_passwd(mm_login_list, pwd, user, hostlist,
+	       (mb->sslflag||mb->tlsflag))){
+		dprint(9, (debugfile, "mm_login:ui: found a password to try\n"));
+		return;
+	    }
+
+#ifdef	PASSFILE
+	    /* check to see if there's a password left over from last session */
+	    if(get_passfile_passwd(ps_global->pinerc, pwd,
+				   user, hostlist, (mb->sslflag||mb->tlsflag))){
+		imap_set_passwd(&mm_login_list, pwd, user,
+				hostlist, (mb->sslflag||mb->tlsflag), 0, 0);
+		update_passfile_hostlist(ps_global->pinerc, user, hostlist,
+					 (mb->sslflag||mb->tlsflag));
+		dprint(9, (debugfile, "mm_login:ui: found a password in passfile to try\n"));
+		return;
+	    }
+#endif
+	}
+#endif
     }
 
     user[NETMAXUSER-1] = '\0';
 
+    /*
+     * Even if we have a user now, user gets a chance to change it.
+     */
     ps_global->mangled_footer = 1;
     if(!*mb->user){
+
 	help = NO_HELP;
 
-	/* Dress up long hostnames */
-	sprintf(prompt, "%sHOST: ",
-		(!ps_global->ttyo && mb->altflag) ? "+ " : "");
-	len = strlen(prompt);
-	/* leave space for "HOST", "ENTER NAME", and 15 chars for input name */
-	goal = (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) -
-		(len + 20 +
-		 min(15,
-		     (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80)/5));
-	last = "  ENTER LOGIN NAME: ";
-	if(goal < 9){
-	    last = " LOGIN: ";
-	    if((goal += 13) < 9){
-		last += 1;
-		goal = 0;
+	/*
+	 * Instead of offering user with a value that the user can edit,
+	 * we offer [user] as a default so that the user can type CR to
+	 * use it. Otherwise, the user has to type in whole name.
+	 */
+	strncpy(defuser, user, sizeof(defuser)-1);
+	defuser[sizeof(defuser)-1] = '\0';
+	user[0] = '\0';
+
+	/*
+	 * Need space for "+ HOST: "
+	 *                hostname
+	 *                " (INSECURE)"
+	 *                ENTER LOGIN NAME
+	 *                " [defuser] : "
+	 *                about 15 chars for input
+	 */
+
+	sprintf(hostleadin, "%sHOST: ",
+		(!ps_global->ttyo && (mb->sslflag||mb->tlsflag)) ? "+ " : "");
+
+	strncpy(hostname, mb->host, sizeof(hostname)-1);
+	hostname[sizeof(hostname)-1] = '\0';
+
+	/*
+	 * Add port number to hostname if going through a tunnel or something
+	 */
+	if(*non_def_port)
+	  strncpy(port, non_def_port, sizeof(port));
+	else
+	  port[0] = '\0';
+	
+	insecure[0] = '\0';
+	/* if not encrypted and SSL/TLS is supported */
+	if(!(mb->sslflag||mb->tlsflag) &&
+	   mail_parameters(NIL, GET_SSLDRIVER, NIL))
+	  strncpy(insecure, insec, sizeof(insecure));
+
+	logleadin = "  ENTER LOGIN NAME";
+
+	sprintf(defubuf, "%s%.100s%s : ", (*defuser) ? " [" : "",
+					  (*defuser) ? defuser : "",
+					  (*defuser) ? "]" : "");
+	/* space reserved after prompt */
+	oespace = max(min(15, (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80)/5), 6);
+
+	avail = ps_global->ttyo ? ps_global->ttyo->screen_cols : 80;
+	need = strlen(hostleadin) + strlen(hostname) + strlen(port) +
+	       strlen(insecure) + strlen(logleadin) + strlen(defubuf) + oespace;
+
+	if(avail < need){
+	    /* reduce length of logleadin */
+	    len = strlen(logleadin);
+	    logleadin = " LOGIN";
+	    need -= (len - strlen(logleadin));
+
+	    if(avail < need){
+		/* get two or three spaces from hostleadin */
+		len = strlen(hostleadin);
+		sprintf(hostleadin, "%sHST:",
+		  (!ps_global->ttyo && (mb->sslflag||mb->tlsflag)) ? "+" : "");
+		need -= (len - strlen(hostleadin));
+
+		/* get rid of port */
+		if(avail < need && strlen(port) > 0){
+		    need -= strlen(port);
+		    port[0] = '\0';
+		}
+
+		if(avail < need){
+		    int reduce_to;
+
+		    /*
+		     * Reduce space for hostname. Best we can do is 6 chars
+		     * with hos...
+		     */
+		    reduce_to = (need - avail < strlen(hostname) - 6) ? (strlen(hostname)-(need-avail)) : 6;
+		    len = strlen(hostname);
+		    strncpy(hostname+reduce_to-3, "...", 4);
+		    need -= (len - strlen(hostname));
+
+		    if(avail < need && strlen(insecure) > 0){
+			if(need - avail <= 3){
+			    need -= 3;
+			    insecure[strlen(insecure)-4] = ')';
+			    insecure[strlen(insecure)-3] = '\0';
+			}
+			else{
+			    need -= strlen(insecure);
+			    insecure[0] = '\0';
+			}
+		    }
+
+		    if(avail < need){
+			if(strlen(defubuf) > 3){
+			    len = strlen(defubuf);
+			    strncpy(defubuf, " [..] :", 9);
+			    need -= (len - strlen(defubuf));
+			}
+
+			if(avail < need)
+			  strncpy(defubuf, ":", 2);
+
+			/*
+			 * If it still doesn't fit, optionally_enter gets
+			 * to worry about it.
+			 */
+		    }
+		}
 	    }
 	}
 
-	if(goal){
-	    for(i = len, j = 0;
-		i < sizeof(prompt) && (prompt[i] = mb->host[j]); i++, j++)
-	      if(i == goal && mb->host[goal+1] && i < sizeof(prompt)){
-		  strcpy(&prompt[i-3], "...");
-		  break;
-	      }
-	}
-	else
-	  i = 0;
-
-	strncpy(&prompt[i], last, sizeof(prompt)-strlen(prompt));
-	prompt[sizeof(prompt)-1] = '\0';
+	sprintf(prompt, "%.20s%.200s%.20s%.20s%.50s%.200s",
+		hostleadin, hostname, port, insecure, logleadin, defubuf);
 
 	while(1) {
 	    if(ps_global->ttyo)
 	      mm_login_alt_cue(mb);
 
 	    flags = OE_APPEND_CURRENT;
+#ifdef _WINDOWS
+	    if(!ps_global->ttyo){
+		if(!*user && *defuser)
+		  strcpy(user, defuser);
+		rc = os_login_dialog(mb, user, NETMAXUSER, pwd, NETMAXPASSWD,
+#ifdef PASSFILE
+				is_using_passfile() ? 1 :
+#endif /* PASSFILE */
+				0, 0);
+		if(rc == 0 && *user && *pwd)
+		  goto nopwpmt;
+	    }
+	    else
+#endif /* _WINDOWS */
 	    rc = optionally_enter(user, q_line, 0, NETMAXUSER,
 				  prompt, NULL, help, &flags);
 	    if(rc == 3) {
 		help = help == NO_HELP ? h_oe_login : NO_HELP;
 		continue;
 	    }
+
+	    /* default */
+	    if(rc == 0 && !*user)
+	      strncpy(user, defuser, NETMAXUSER);
+	      
 	    if(rc != 4)
 	      break;
 	}
@@ -706,61 +1107,146 @@ mm_login(mb, user, pwd, trial)
     if(!user[0])
       return;
 
+    /*
+     * Now that we have a user, we can check in the cache again to see
+     * if there is a password there. Try last working password associated
+     * with this host and user.
+     */
+    if(trial == 0L && !*mb->user){
+	if(imap_get_passwd(mm_login_list, pwd, user, hostlist,
+	   (mb->sslflag||mb->tlsflag)))
+	  return;
+
+#ifdef	PASSFILE
+	if(get_passfile_passwd(ps_global->pinerc, pwd,
+			       user, hostlist, (mb->sslflag||mb->tlsflag))){
+	    imap_set_passwd(&mm_login_list, pwd, user,
+			    hostlist, (mb->sslflag||mb->tlsflag), 0, 0);
+	    return;
+	}
+#endif
+    }
+
+    /*
+     * Didn't find password in cache or this isn't the first try. Ask user.
+     */
     help = NO_HELP;
 
-    /* Dress up long host/user names */
-    /* leave space for "HOST", "USER" "ENTER PWD", 12 for user 6 for pwd */
-    sprintf(prompt, "%sHOST: ",
-	    (!ps_global->ttyo && mb->altflag) ? "+ " : "");
-    len = strlen(prompt);
-    goal  = strlen(mb->host);
-    ugoal = strlen(user);
-    if((i = (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) -
-		(len + 8 + 18 + 6)) < 14){
-	goal = 0;		/* no host! */
-	if((i = (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) -
-		(6 + 18 + 6)) <= 6){
-	    ugoal = 0;		/* no user! */
-	    if((i = (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80) -
-		(18 + 6)) <= 0)
-	      i = 0;
-	}
-	else{
-	    ugoal = i;		/* whatever's left */
-	    i     = 0;
-	}
-    }
+    /*
+     * Need space for "+ HOST: "
+     *                hostname
+     *                " (INSECURE) "
+     *                "  USER: "
+     *                user
+     *                "  ENTER PASSWORD: "
+     *                about 15 chars for input
+     */
+    
+    sprintf(hostleadin, "%sHOST: ",
+	    (!ps_global->ttyo && (mb->sslflag||mb->tlsflag)) ? "+ " : "");
+
+    strncpy(hostname, mb->host, sizeof(hostname)-1);
+    hostname[sizeof(hostname)-1] = '\0';
+
+    /*
+     * Add port number to hostname if going through a tunnel or something
+     */
+    if(*non_def_port)
+      strncpy(port, non_def_port, sizeof(port));
     else
-      while(goal + ugoal > i)
-	if(goal > ugoal)
-	  goal--;
-	else
-	  ugoal--;
+      port[0] = '\0';
+    
+    insecure[0] = '\0';
+    /* if not encrypted and SSL/TLS is supported */
+    if(!(mb->sslflag||mb->tlsflag) &&
+       mail_parameters(NIL, GET_SSLDRIVER, NIL))
+      strncpy(insecure, insec, sizeof(insecure));
+    
+    logleadin = "  USER: ";
 
-    if(goal){
-	sprintf(prompt, "%sHOST: ",
-		(!ps_global->ttyo && mb->altflag) ? "+ " : "");
-	for(i = len, j = 0;
-	    i < sizeof(prompt) && (prompt[i] = mb->host[j]); i++, j++)
-	  if(i == goal && mb->host[goal+1] && i < sizeof(prompt)){
-	      strcpy(&prompt[i-3], "...");
-	      break;
-	  }
+    strncpy(defubuf, user, sizeof(defubuf)-1);
+    defubuf[sizeof(defubuf)-1] = '\0';
+
+    strncpy(pwleadin, "  ENTER PASSWORD: ", sizeof(pwleadin)-1);
+    pwleadin[sizeof(pwleadin)-1] = '\0';
+
+    /* space reserved after prompt */
+    oespace = max(min(15, (ps_global->ttyo ? ps_global->ttyo->screen_cols : 80)/5), 6);
+
+    avail = ps_global->ttyo ? ps_global->ttyo->screen_cols : 80;
+    need = strlen(hostleadin) + strlen(hostname) + strlen(port) +
+	   strlen(insecure) + strlen(logleadin) + strlen(defubuf) +
+	   strlen(pwleadin) + oespace;
+    
+    if(avail < need){
+	logleadin = logleadin + 1;
+	need--;
+	rplstr(pwleadin, 1, "");
+	need--;
+
+	if(avail < need){
+	    /* get two or three spaces from hostleadin */
+	    len = strlen(hostleadin);
+	    sprintf(hostleadin, "%sHST:",
+	      (!ps_global->ttyo && (mb->sslflag||mb->tlsflag)) ? "+" : "");
+	    need -= (len - strlen(hostleadin));
+
+	    /* get rid of port */
+	    if(avail < need && strlen(port) > 0){
+		need -= strlen(port);
+		port[0] = '\0';
+	    }
+
+	    if(avail < need){
+		len = strlen(pwleadin);
+		strncpy(pwleadin, " PASSWORD: ", sizeof(pwleadin)-1);
+		pwleadin[sizeof(pwleadin)-1] = '\0';
+		need -= (len - strlen(pwleadin));
+	    }
+	}
+
+	if(avail < need){
+	    int reduce_to;
+
+	    /*
+	     * Reduce space for hostname. Best we can do is 6 chars
+	     * with hos...
+	     */
+	    reduce_to = (need - avail < strlen(hostname) - 6) ? (strlen(hostname)-(need-avail)) : 6;
+	    len = strlen(hostname);
+	    strncpy(hostname+reduce_to-3, "...", 4);
+	    need -= (len - strlen(hostname));
+	    
+	    if(avail < need && strlen(insecure) > 0){
+		if(need - avail <= 3){
+		    need -= 3;
+		    insecure[strlen(insecure)-4] = ')';
+		    insecure[strlen(insecure)-3] = '\0';
+		}
+		else{
+		    need -= strlen(insecure);
+		    insecure[0] = '\0';
+		}
+	    }
+
+	    if(avail < need){
+		len = strlen(logleadin);
+		logleadin = " ";
+		need -= (len - strlen(logleadin));
+
+		if(avail < need){
+		    reduce_to = (need - avail < strlen(defubuf) - 6) ? (strlen(defubuf)-(need-avail)) : 0;
+		    if(reduce_to)
+		      strncpy(defubuf+reduce_to-3, "...", 4);
+		    else
+		      defubuf[0] = '\0';
+		}
+	    }
+	}
     }
-    else
-      i = 0;
 
-    if(ugoal){
-	strncpy(&prompt[i], &"  USER: "[i ? 0 : 2], sizeof(prompt)-i);
-	for(i += strlen(&prompt[i]), j = 0;
-	    i < sizeof(prompt) && (prompt[i] = user[j]); i++, j++)
-	  if(j == ugoal && user[ugoal+1] && i < sizeof(prompt)){
-	      strcpy(&prompt[i-3], "...");
-	      break;
-	  }
-    }
-
-    strncpy(&prompt[i], &"  ENTER PASSWORD: "[i ? 0 : 8], sizeof(prompt)-i);
+    sprintf(prompt, "%.20s%.200s%.20s%.20s%.50s%.200s%.50s",
+	    hostleadin, hostname, port, insecure, logleadin, defubuf, pwleadin);
 
     *pwd = '\0';
     while(1) {
@@ -768,6 +1254,11 @@ mm_login(mb, user, pwd, trial)
 	  mm_login_alt_cue(mb);
 
 	flags = OE_PASSWD;
+#ifdef _WINDOWS
+	if(!ps_global->ttyo)
+	  rc = os_login_dialog(mb, user, NETMAXUSER, pwd, NETMAXPASSWD, 0, 1);
+	else
+#endif
         rc = optionally_enter(pwd, q_line, 0, NETMAXPASSWD,
 			      prompt, NULL, help, &flags);
         if(rc == 3) {
@@ -784,11 +1275,15 @@ mm_login(mb, user, pwd, trial)
         return;
     }
 
+ nopwpmt:
     /* remember the password for next time */
-    imap_set_passwd(&mm_login_list, pwd, user, hostlist, mb->altflag);
+    if(F_OFF(F_DISABLE_PASSWORD_CACHING,ps_global))
+      imap_set_passwd(&mm_login_list, pwd, user, hostlist,
+		      (mb->sslflag||mb->tlsflag), 0, 0);
 #ifdef	PASSFILE
     /* if requested, remember it on disk for next session */
-    set_passfile_passwd(ps_global->pinerc, pwd, user, hostlist, mb->altflag);
+    set_passfile_passwd(ps_global->pinerc, pwd, user, hostlist,
+			(mb->sslflag||mb->tlsflag));
 #endif
 }
 
@@ -807,7 +1302,7 @@ mm_login_alt_cue(mb)
 
 	mark_titlebar_dirty();
 	PutLine0(0, ps_global->ttyo->screen_cols - 1, 
-		 mb->altflag ? "+" : " ");
+		 (mb->sslflag||mb->tlsflag) ? "+" : " ");
 
 	if(lastc){
 	    (void)pico_set_colorp(lastc, PSC_NONE);
@@ -991,32 +1486,67 @@ mm_fatal(message)
 
 
 void
-mm_flags(stream,number)
+mm_flags(stream, rawno)
     MAILSTREAM    *stream;
-    unsigned long  number;
+    unsigned long  rawno;
 {
     /*
      * The idea here is to clean up any data pine might have cached
      * that has anything to do with the indicated message number.
-     * At the momment, this amounts only to cached index lines, but
-     * watch out for future changes...
      */
     if(stream == ps_global->mail_stream){
-	long i;
+	long msgno;
+	PINETHRD_S *thrd;
 
-	/* then clear index entry */
-	if(i = mn_raw2m(ps_global->msgmap, (long) number)){
-	    clear_index_cache_ent(i);
+	if(scores_are_used(SCOREUSE_GET) & SCOREUSE_STATEDEP)
+	  clear_msg_score(stream, rawno);
 
-	    /* in case number is current, fix titlebar */
-	    if(mn_is_cur(ps_global->msgmap, i))
+	msgno = mn_raw2m(ps_global->msgmap, (long) rawno);
+
+	/* if in thread index */
+	if(THRD_INDX()){
+	    unsigned long t;
+
+	    if((thrd = fetch_thread(stream, rawno))
+	       && thrd->top
+	       && (thrd = fetch_thread(stream, thrd->top))
+	       && thrd->rawno
+	       && (t = mn_raw2m(ps_global->msgmap, thrd->rawno)))
+	      clear_index_cache_ent(t);
+	}
+	else if(THREADING()){
+	    if(msgno)
+	      clear_index_cache_ent(msgno);
+
+	    /*
+	     * If a parent is collapsed, clear that parent's
+	     * index cache entry.
+	     */
+	    if((thrd = fetch_thread(stream, rawno)) && thrd->parent){
+		thrd = fetch_thread(stream, thrd->parent);
+		while(thrd){
+		    if(get_lflag(stream, NULL, thrd->rawno, MN_COLL))
+		      clear_index_cache_ent(mn_raw2m(ps_global->msgmap,
+					    (long) thrd->rawno));
+
+		    if(thrd->parent)
+		      thrd = fetch_thread(stream, thrd->parent);
+		    else
+		      thrd = NULL;
+		}
+	    }
+	}
+	else if(msgno)
+	  clear_index_cache_ent(msgno);
+
+	if(msgno){
+	    if(mn_is_cur(ps_global->msgmap, msgno))
 	      ps_global->mangled_header = 1;
-
+	    
 	    check_point_change();
 	}
     }
 }
-
 
 
 
@@ -1032,25 +1562,23 @@ mm_status(stream, mailbox, status)
     mm_status_result = *status;
 
 #ifdef DEBUG
-    if(ps_global->debug_imap < 3){
-	dprint(0, (debugfile, " Mailbox %s",mailbox));
-	if (status->flags & SA_MESSAGES)
-	  dprint(0, (debugfile, ", %lu messages",status->messages));
+    dprint(2, (debugfile, " Mailbox %s",mailbox));
+    if (status->flags & SA_MESSAGES)
+      dprint(2, (debugfile, ", %lu messages",status->messages));
 
-	if (status->flags & SA_RECENT)
-	  dprint(0, (debugfile, ", %lu recent",status->recent));
+    if (status->flags & SA_RECENT)
+      dprint(2, (debugfile, ", %lu recent",status->recent));
 
-	if (status->flags & SA_UNSEEN)
-	  dprint(0, (debugfile, ", %lu unseen",status->unseen));
+    if (status->flags & SA_UNSEEN)
+      dprint(2, (debugfile, ", %lu unseen",status->unseen));
 
-	if (status->flags & SA_UIDVALIDITY)
-	  dprint(0, (debugfile, ", %lu UID validity", status->uidvalidity));
+    if (status->flags & SA_UIDVALIDITY)
+      dprint(2, (debugfile, ", %lu UID validity", status->uidvalidity));
 
-	if (status->flags & SA_UIDNEXT)
-	  dprint(0, (debugfile, ", %lu next UID",status->uidnext));
+    if (status->flags & SA_UIDNEXT)
+      dprint(2, (debugfile, ", %lu next UID",status->uidnext));
 
-	dprint(0, (debugfile, "\n"));
-    }
+    dprint(2, (debugfile, "\n"));
 #endif
 }
 
@@ -1066,14 +1594,16 @@ mm_list(stream, delimiter, mailbox, attributes)
     long	attributes;
 {
 #ifdef DEBUG
-    if(ps_global->debug_imap > 2)
-      dprint(0,
-              (debugfile, "mm_list \"%s\": delim: '%c', %s%s%s%s\n",
+    if(ps_global->debug_imap > 2 || ps_global->debugmem)
+      dprint(5,
+              (debugfile, "mm_list \"%s\": delim: '%c', %s%s%s%s%s%s\n",
 	       mailbox, delimiter ? delimiter : 'X',
 	       (attributes & LATT_NOINFERIORS) ? ", no inferiors" : "",
 	       (attributes & LATT_NOSELECT) ? ", no select" : "",
 	       (attributes & LATT_MARKED) ? ", marked" : "",
-	       (attributes & LATT_UNMARKED) ? ", unmarked" : ""));
+	       (attributes & LATT_UNMARKED) ? ", unmarked" : "",
+	       (attributes & LATT_HASCHILDREN) ? ", has children" : "",
+	       (attributes & LATT_HASNOCHILDREN) ? ", has no children" : ""));
 #endif
 
     if(!mm_list_info->stream || stream == mm_list_info->stream)
@@ -1093,14 +1623,16 @@ mm_lsub(stream, delimiter, mailbox, attributes)
   long	      attributes;
 {
 #ifdef DEBUG
-    if(ps_global->debug_imap > 2)
-      dprint(0,
-              (debugfile, "LSUB \"%s\": delim: '%c', %s%s%s%s\n",
+    if(ps_global->debug_imap > 2 || ps_global->debugmem)
+      dprint(5,
+              (debugfile, "LSUB \"%s\": delim: '%c', %s%s%s%s%s%s\n",
 	       mailbox, delimiter ? delimiter : 'X',
 	       (attributes & LATT_NOINFERIORS) ? ", no inferiors" : "",
 	       (attributes & LATT_NOSELECT) ? ", no select" : "",
 	       (attributes & LATT_MARKED) ? ", marked" : "",
-	       (attributes & LATT_UNMARKED) ? ", unmarked" : ""));
+	       (attributes & LATT_UNMARKED) ? ", unmarked" : "",
+	       (attributes & LATT_HASCHILDREN) ? ", has children" : "",
+	       (attributes & LATT_HASNOCHILDREN) ? ", has no children" : ""));
 #endif
 
     if(!mm_list_info->stream || stream == mm_list_info->stream)
@@ -1108,6 +1640,28 @@ mm_lsub(stream, delimiter, mailbox, attributes)
 			      attributes, mm_list_info->data);
 }
 
+
+long
+pine_tcptimeout_noscreen(elapsed, sincelast)
+    long elapsed, sincelast;
+{
+    long rv = 1L;
+    char pmt[128];
+
+#ifdef _WINDOWS
+    mswin_killsplash();
+#endif
+
+    if(elapsed >= (long)ps_global->tcp_query_timeout){
+	sprintf(pmt,
+	 "Waited %s seconds for server reply.  Break connection to server",
+		long2string(elapsed));
+	if(want_to(pmt, 'n', 'n', NO_HELP, WT_FLUSH_IN) == 'y')
+	  return(0L);
+    }
+
+    return(rv);
+}
 
 /*
  * pine_tcptimeout - C-client callback to handle tcp-related timeouts.
@@ -1122,11 +1676,19 @@ pine_tcptimeout(elapsed, sincelast)
 #ifdef	DEBUG
     dprint(1, (debugfile, "tcptimeout: waited %s seconds\n",
 	       long2string(elapsed)));
-    fflush(debugfile);
+    if(debugfile)
+      fflush(debugfile);
+#endif
+
+#ifdef _WINDOWS
+    mswin_killsplash();
 #endif
 
     if(ps_global->noshow_timeout)
       return(rv);
+
+    if(!ps_global->ttyo)
+      return(pine_tcptimeout_noscreen(elapsed, sincelast));
 
     suspend_busy_alarm();
     
@@ -1167,6 +1729,522 @@ pine_tcptimeout(elapsed, sincelast)
     mark_status_dirty();		/* make sure it get's cleared */
 
     resume_busy_alarm((rv == 1) ? 3 : 0);
+
+    return(rv);
+}
+
+
+/*
+ * C-client callback to handle SSL/TLS certificate validation failures
+ *
+ * Returning 0 means error becomes fatal
+ *           Non-zero means certificate problem is ignored and SSL session is
+ *             established
+ *
+ *  We remember the answer and won't re-ask for subsequent open attempts to
+ *  the same hostname.
+ */
+long
+pine_sslcertquery(reason, host, cert)
+    char *reason, *host, *cert;
+{
+    char      tmp[500];
+    char     *unknown = "<unknown>";
+    long      rv = 0L;
+    STRLIST_S hostlist;
+    int       ok_novalidate = 0, warned = 0;
+
+    dprint(1, (debugfile, "sslcertificatequery: host=%s reason=%s cert=%s\n",
+			   host ? host : "?", reason ? reason : "?",
+			   cert ? cert : "?"));
+
+    hostlist.name = host ? host : "";
+    hostlist.next = NULL;
+
+    /*
+     * See if we've been asked about this host before.
+     */
+    if(imap_get_ssl(cert_failure_list, &hostlist, &ok_novalidate, &warned)){
+	/* we were asked before, did we say Yes? */
+	if(ok_novalidate)
+	  rv++;
+
+	if(rv){
+	    dprint(5, (debugfile,
+		       "sslcertificatequery: approved automatically\n"));
+	    return(rv);
+	}
+
+	dprint(1, (debugfile, "sslcertificatequery: we were asked before and said No, so ask again\n"));
+    }
+
+    if(ps_global->ttyo){
+	static struct key ans_certquery_keys[] =
+	   {HELP_MENU,
+	    NULL_MENU,
+	    {"Y","Yes, continue",{MC_YES,1,{'y'}},KS_NONE},
+	    {"D","[Details]",{MC_VIEW_HANDLE,3,{'d',ctrl('M'),ctrl('J')}},KS_NONE},
+	    {"N","No",{MC_NO,1,{'n'}},KS_NONE},
+	    NULL_MENU,
+	    PREVPAGE_MENU,
+	    NEXTPAGE_MENU,
+	    PRYNTTXT_MENU,
+	    WHEREIS_MENU,
+	    FWDEMAIL_MENU,
+	    {"S", "Save", {MC_SAVETEXT,1,{'s'}}, KS_SAVE}};
+	INST_KEY_MENU(ans_certquery_keymenu, ans_certquery_keys);
+	SCROLL_S  sargs;
+	STORE_S  *in_store, *out_store;
+	gf_io_t   pc, gc;
+	HANDLE_S *handles = NULL;
+	int       the_answer = 'n';
+
+	if(!(in_store = so_get(CharStar, NULL, EDIT_ACCESS)) ||
+	   !(out_store = so_get(CharStar, NULL, EDIT_ACCESS)))
+	  goto try_wantto;
+
+	so_puts(in_store, "<HTML><P>There was a failure validating the SSL/TLS certificate for the server");
+
+	so_puts(in_store, "<P><CENTER>");
+	so_puts(in_store, host ? host : unknown);
+	so_puts(in_store, "</CENTER>");
+
+	so_puts(in_store, "<P>The reason for the failure was");
+
+	/* squirrel away details */
+	if(details_host)
+	  fs_give((void **)&details_host);
+	if(details_reason)
+	  fs_give((void **)&details_reason);
+	if(details_cert)
+	  fs_give((void **)&details_cert);
+	
+	details_host   = cpystr(host ? host : unknown);
+	details_reason = cpystr(reason ? reason : unknown);
+	details_cert   = cpystr(cert ? cert : unknown);
+
+	so_puts(in_store, "<P><CENTER>");
+	sprintf(tmp, "%.300s (<A HREF=\"X-Pine-Cert:\">details</A>)",
+		reason ? reason : unknown);
+
+	so_puts(in_store, tmp);
+	so_puts(in_store, "</CENTER>");
+
+	so_puts(in_store, "<P>We have not verified the identity of your server. If you ignore this certificate validation problem and continue, you could end up connecting to an imposter server.");
+
+	so_puts(in_store, "<P>If the certificate validation failure was expected and permanent you may avoid seeing this warning message in the future by adding the option");
+
+	so_puts(in_store, "<P><CENTER>");
+	so_puts(in_store, "/novalidate-cert");
+	so_puts(in_store, "</CENTER>");
+
+	so_puts(in_store, "<P>to the name of the folder you attempted to access. In other words, wherever you see the characters");
+
+	so_puts(in_store, "<P><CENTER>");
+	so_puts(in_store, host ? host : unknown);
+	so_puts(in_store, "</CENTER>");
+
+	so_puts(in_store, "<P>in your configuration, replace those characters with");
+
+	so_puts(in_store, "<P><CENTER>");
+	so_puts(in_store, host ? host : unknown);
+	so_puts(in_store, "/novalidate-cert");
+	so_puts(in_store, "</CENTER>");
+
+	so_puts(in_store, "<P>Answer \"Yes\" to ignore the warning and continue, \"No\" to cancel the open of this folder.");
+
+	so_seek(in_store, 0L, 0);
+	init_handles(&handles);
+	gf_filter_init();
+	gf_link_filter(gf_html2plain,
+		       gf_html2plain_opt(NULL,
+			  ps_global->ttyo->screen_cols,
+			  &handles, GFHP_LOCAL_HANDLES));
+	gf_set_so_readc(&gc, in_store);
+	gf_set_so_writec(&pc, out_store);
+	gf_pipe(gc, pc);
+	gf_clear_so_writec(out_store);
+	gf_clear_so_readc(in_store);
+
+	memset(&sargs, 0, sizeof(SCROLL_S));
+	sargs.text.handles  = handles;
+	sargs.text.text     = so_text(out_store);
+	sargs.text.src      = CharStar;
+	sargs.text.desc     = "help text";
+	sargs.bar.title     = "SSL/TLS CERTIFICATE VALIDATION FAILURE";
+	sargs.proc.tool     = answer_cert_failure;
+	sargs.proc.data.p   = (void *)&the_answer;
+	sargs.keys.menu     = &ans_certquery_keymenu;
+	/* don't want to re-enter c-client */
+	sargs.quell_newmail = 1;
+	setbitmap(sargs.keys.bitmap);
+	sargs.help.text     = h_tls_validation_failure;
+	sargs.help.title    = "HELP FOR CERT VALIDATION FAILURE";
+
+	scrolltool(&sargs);
+
+	if(the_answer == 'y')
+	  rv++;
+
+	ps_global->mangled_screen = 1;
+	ps_global->painted_body_on_startup = 0;
+	ps_global->painted_footer_on_startup = 0;
+	so_give(&in_store);
+	so_give(&out_store);
+	free_handles(&handles);
+	if(details_host)
+	  fs_give((void **)&details_host);
+	if(details_reason)
+	  fs_give((void **)&details_reason);
+	if(details_cert)
+	  fs_give((void **)&details_cert);
+    }
+    else{
+	/*
+	 * If screen hasn't been initialized yet, use want_to.
+	 */
+try_wantto:
+	memset((void *)tmp, 0, sizeof(tmp));
+	strncpy(tmp,
+		reason ? reason : "SSL/TLS certificate validation failure",
+		sizeof(tmp)/2);
+	strncat(tmp, ": Continue anyway ", sizeof(tmp)/2);
+
+	if(want_to(tmp, 'n', 'x', NO_HELP, WT_NORM) == 'y')
+	  rv++;
+    }
+
+    if(rv == 0)
+      q_status_message1(SM_ORDER, 1, 3, "Open of %.200s cancelled",
+			host ? host : unknown);
+
+    imap_set_passwd(&cert_failure_list, "", "", &hostlist, 0, rv ? 1 : 0, 0);
+
+    dprint(5, (debugfile, "sslcertificatequery: %s\n",
+			   rv ? "approved" : "rejected"));
+
+    return(rv);
+}
+
+
+int
+url_local_certdetails(url)
+    char *url;
+{
+    if(!struncmp(url, "x-pine-cert:", 12)){
+	STORE_S  *store;
+	SCROLL_S  sargs;
+	char     *folded;
+
+	if(!(store = so_get(CharStar, NULL, EDIT_ACCESS))){
+	    q_status_message(SM_ORDER | SM_DING, 7, 10,
+			     "Error allocating space for details.");
+	    return(0);
+	}
+
+	so_puts(store, "Host given by user:\n\n  ");
+	so_puts(store, details_host);
+	so_puts(store, "\n\nReason for failure:\n\n  ");
+	so_puts(store, details_reason);
+	so_puts(store, "\n\nCertificate being verified:\n\n");
+	folded = fold(details_cert, ps_global->ttyo->screen_cols, ps_global->ttyo->screen_cols, 0, 0, "  ", "  ");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+	so_puts(store, "\n");
+
+	memset(&sargs, 0, sizeof(SCROLL_S));
+	sargs.text.text     = so_text(store);
+	sargs.text.src      = CharStar;
+	sargs.text.desc     = "Details";
+	sargs.bar.title     = "CERT VALIDATION DETAILS";
+	sargs.help.text     = NO_HELP;
+	sargs.help.title    = NULL;
+	sargs.quell_newmail = 1;
+	sargs.help.text     = h_tls_failure_details;
+	sargs.help.title    = "HELP FOR CERT VALIDATION DETAILS";
+
+	scrolltool(&sargs);
+
+	so_give(&store);	/* free resources associated with store */
+	ps_global->mangled_screen = 1;
+	return(1);
+    }
+
+    return(0);
+}
+
+
+/*
+ * C-client callback to handle SSL/TLS certificate validation failures
+ */
+void
+pine_sslfailure(host, reason, flags)
+    char *host, *reason;
+    unsigned long flags;
+{
+    static struct key ans_certfail_keys[] =
+       {NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	{"C","[Continue]",{MC_YES,3,{'c',ctrl('J'),ctrl('M')}},KS_NONE},
+	NULL_MENU,
+	NULL_MENU,
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU,
+	NULL_MENU};
+    INST_KEY_MENU(ans_certfail_keymenu, ans_certfail_keys);
+    SCROLL_S sargs;
+    STORE_S *store;
+    int      the_answer = 'n', indent, len, cols;
+    char     buf[500], buf2[500];
+    char    *folded;
+    char    *hst = host ? host : "<unknown>";
+    char    *rsn = reason ? reason : "<unknown>";
+    char    *notls = "/notls";
+    STRLIST_S hostlist;
+    int       ok_novalidate = 0, warned = 0;
+
+
+    dprint(1, (debugfile, "sslfailure: host=%s reason=%s\n", hst, rsn));
+
+    if(flags & NET_SILENT)
+      return;
+
+    hostlist.name = host ? host : "";
+    hostlist.next = NULL;
+
+    /*
+     * See if we've been told about this host before.
+     */
+    if(imap_get_ssl(cert_failure_list, &hostlist, &ok_novalidate, &warned)){
+	/* we were told already */
+	if(warned){
+	    sprintf(buf, "SSL/TLS failure for %.80s: %.300s", hst, rsn);
+	    mm_log(buf, ERROR);
+	    return;
+	}
+    }
+
+    cols = ps_global->ttyo ? ps_global->ttyo->screen_cols : 80;
+    cols--;
+
+    if(!(store = so_get(CharStar, NULL, EDIT_ACCESS)))
+      return;
+
+    strncpy(buf, "There was an SSL/TLS failure for the server", sizeof(buf));
+    folded = fold(buf, cols, cols, 0, 0, "", "");
+    so_puts(store, folded);
+    fs_give((void **)&folded);
+    so_puts(store, "\n");
+
+    if((len=strlen(hst)) <= cols){
+	if((indent=((cols-len)/2)) > 0)
+	  so_puts(store, repeat_char(indent, SPACE));
+
+	so_puts(store, hst);
+	so_puts(store, "\n");
+    }
+    else{
+	strncpy(buf, hst, sizeof(buf));
+	buf[sizeof(buf)-1] = '\0';
+	folded = fold(buf, cols, cols, 0, 0, "", "");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+    }
+
+    so_puts(store, "\n");
+
+    strncpy(buf, "The reason for the failure was", sizeof(buf));
+    folded = fold(buf, cols, cols, 0, 0, "", "");
+    so_puts(store, folded);
+    fs_give((void **)&folded);
+    so_puts(store, "\n");
+
+    if((len=strlen(rsn)) <= cols){
+	if((indent=((cols-len)/2)) > 0)
+	  so_puts(store, repeat_char(indent, SPACE));
+
+	so_puts(store, rsn);
+	so_puts(store, "\n");
+    }
+    else{
+	strncpy(buf, rsn, sizeof(buf));
+	buf[sizeof(buf)-1] = '\0';
+	folded = fold(buf, cols, cols, 0, 0, "", "");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+    }
+
+    so_puts(store, "\n");
+
+    strncpy(buf, "This is just an informational message. With the current setup, SSL/TLS will not work. If this error re-occurs every time you run Pine, your current setup is not compatible with the configuration of your mail server. You may want to add the option", sizeof(buf));
+    folded = fold(buf, cols, cols, 0, 0, "", "");
+    so_puts(store, folded);
+    fs_give((void **)&folded);
+    so_puts(store, "\n");
+
+    if((len=strlen(notls)) <= cols){
+	if((indent=((cols-len)/2)) > 0)
+	  so_puts(store, repeat_char(indent, SPACE));
+
+	so_puts(store, notls);
+	so_puts(store, "\n");
+    }
+    else{
+	strncpy(buf, notls, sizeof(buf));
+	buf[sizeof(buf)-1] = '\0';
+	folded = fold(buf, cols, cols, 0, 0, "", "");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+    }
+
+    so_puts(store, "\n");
+
+    strncpy(buf, "to the name of the mail server you are attempting to access. In other words, wherever you see the characters",
+	    sizeof(buf));
+    folded = fold(buf, cols, cols, 0, 0, "", "");
+    so_puts(store, folded);
+    fs_give((void **)&folded);
+    so_puts(store, "\n");
+
+    if((len=strlen(hst)) <= cols){
+	if((indent=((cols-len)/2)) > 0)
+	  so_puts(store, repeat_char(indent, SPACE));
+
+	so_puts(store, hst);
+	so_puts(store, "\n");
+    }
+    else{
+	strncpy(buf, hst, sizeof(buf));
+	buf[sizeof(buf)-1] = '\0';
+	folded = fold(buf, cols, cols, 0, 0, "", "");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+    }
+
+    so_puts(store, "\n");
+
+    strncpy(buf, "in your configuration, replace those characters with",
+	    sizeof(buf));
+    folded = fold(buf, cols, cols, 0, 0, "", "");
+    so_puts(store, folded);
+    fs_give((void **)&folded);
+    so_puts(store, "\n");
+
+    sprintf(buf2, "%.100s%.100s", hst, notls);
+    if((len=strlen(buf2)) <= cols){
+	if((indent=((cols-len)/2)) > 0)
+	  so_puts(store, repeat_char(indent, SPACE));
+
+	so_puts(store, buf2);
+	so_puts(store, "\n");
+    }
+    else{
+	strncpy(buf, buf2, sizeof(buf));
+	buf[sizeof(buf)-1] = '\0';
+	folded = fold(buf, cols, cols, 0, 0, "", "");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+    }
+
+    so_puts(store, "\n");
+
+    if(ps_global->ttyo){
+	strncpy(buf, "Type RETURN to continue.", sizeof(buf));
+	folded = fold(buf, cols, cols, 0, 0, "", "");
+	so_puts(store, folded);
+	fs_give((void **)&folded);
+    }
+
+    memset(&sargs, 0, sizeof(SCROLL_S));
+    sargs.text.text = so_text(store);
+    sargs.text.src  = CharStar;
+    sargs.text.desc = "help text";
+    sargs.bar.title = "SSL/TLS FAILURE";
+    sargs.proc.tool = answer_cert_failure;
+    sargs.proc.data.p = (void *)&the_answer;
+    sargs.keys.menu = &ans_certfail_keymenu;
+    setbitmap(sargs.keys.bitmap);
+    /* don't want to re-enter c-client */
+    sargs.quell_newmail = 1;
+    sargs.help.text     = h_tls_failure;
+    sargs.help.title    = "HELP FOR TLS/SSL FAILURE";
+
+    if(ps_global->ttyo)
+      scrolltool(&sargs);
+    else{
+	char **q, **qp;
+	char  *p;
+	unsigned char c;
+	int    cnt = 0;
+	
+	/*
+	 * The screen isn't initialized yet, which should mean that this
+	 * is the result of a -p argument. Display_args_err knows how to deal
+	 * with the uninitialized screen, so we mess with the data to get it
+	 * in shape for display_args_err. This is pretty hacky.
+	 */
+	
+	so_seek(store, 0L, 0);		/* rewind */
+	/* count the lines */
+	while(so_readc(&c, store))
+	  if(c == '\n')
+	    cnt++;
+	
+	qp = q = (char **)fs_get((cnt+1) * sizeof(char *));
+	memset(q, 0, (cnt+1) * sizeof(char *));
+
+	so_seek(store, 0L, 0);		/* rewind */
+	p = buf;
+	while(so_readc(&c, store)){
+	    if(c == '\n'){
+		*p = '\0';
+		*qp++ = cpystr(buf);
+		p = buf;
+	    }
+	    else
+	      *p++ = c;
+	}
+
+	display_args_err(NULL, q, 0);
+	free_list_array(&q);
+    }
+
+    ps_global->mangled_screen = 1;
+    ps_global->painted_body_on_startup = 0;
+    ps_global->painted_footer_on_startup = 0;
+    so_give(&store);
+
+    imap_set_passwd(&cert_failure_list, "", "", &hostlist, 0, ok_novalidate, 1);
+}
+
+
+int
+answer_cert_failure(cmd, msgmap, sparms)
+    int	       cmd;
+    MSGNO_S   *msgmap;
+    SCROLL_S  *sparms;
+{
+    int rv = 1;
+
+    ps_global->next_screen = SCREEN_FUN_NULL;
+
+    switch(cmd){
+      case MC_YES :
+	*(int *)(sparms->proc.data.p) = 'y';
+	break;
+
+      case MC_NO :
+	*(int *)(sparms->proc.data.p) = 'n';
+	break;
+
+      default:
+	panic("Unexpected command in answer_cert_failure");
+	break;
+    }
 
     return(rv);
 }
@@ -1383,42 +2461,6 @@ set_read_predicted(i)
 #endif
 }
 
-/*----------------------------------------------------------------------
-   Exported method to display status of mail check
-
-   Args: putstr -- should be NO LONGER THAN 2 bytes
-
- Result: putstr displayed at upper-left-hand corner of screen
-  ----*/
-void
-check_cue_display(putstr)
-     char* putstr;
-{
-    COLOR_PAIR *lastc;
-    struct variable *vars = ps_global->vars;
-    static char check_cue_char;
-  
-    if(ps_global->read_predicted && 
-       (check_cue_char == putstr[0]
-	|| putstr[0] == ' ' && putstr[1] == '\0'))
-        return;
-    else{
-        if(putstr[0] == ' ')
-	  check_cue_char = '\0';
-	else
-	  check_cue_char = putstr[0];
-    }
-
-    lastc = pico_set_colors(VAR_TITLE_FORE_COLOR, VAR_TITLE_BACK_COLOR,
-			    PSC_REV|PSC_RET);
-    PutLine0(0, 0, putstr);		/* show delay cue */
-    if(lastc){
-	(void)pico_set_colorp(lastc, PSC_NONE);
-	free_color_pair(&lastc);
-    }
-
-    fflush(stdout);
-}
 
 /*----------------------------------------------------------------------
    Exported method to retrieve logged in user name associated with stream
@@ -1432,16 +2474,13 @@ pine_block_notify(reason, data)
     int   reason;
     void *data;
 {
-    static int mask = 0;
-    static int deep = 0;
-
     switch(reason){
       case BLOCK_SENSITIVE:		/* sensitive code, disallow alarms */
-	alrm_signal_block();
+	return(alrm_signal_block());
 	break;
 
       case BLOCK_NONSENSITIVE:		/* non-sensitive code, allow alarms */
-	alrm_signal_unblock();
+	alrm_signal_unblock(data);
 	break;
 
       case BLOCK_TCPWRITE:		/* blocked on TCP write */
@@ -1521,26 +2560,61 @@ imap_same_host(hl1, hl2)
 }
 
 
-char *
-imap_get_user(m_list, hostlist, altflag)
+/*
+ * For convenience, we use the same m_list structure (but a different
+ * instance) for storing a list of hosts we've asked the user about when
+ * SSL validation fails. If this function returns TRUE, that means we
+ * have previously asked the user about this host. Ok_novalidate == 1 means
+ * the user said yes, it was ok. Ok_novalidate == 0 means the user
+ * said no. Warned means we warned them already.
+ */
+int
+imap_get_ssl(m_list, hostlist, ok_novalidate, warned)
     MMLOGIN_S *m_list;
     STRLIST_S *hostlist;
-    int	       altflag;
+    int       *ok_novalidate;
+    int       *warned;
 {
     MMLOGIN_S *l;
-    STRLIST_S *h_list;
-    char      *h;
     
     for(l = m_list; l; l = l->next)
-      /* host name and user name must match */
-      if(imap_same_host(l->hosts, hostlist) && altflag == m_list->altflag)
+      if(imap_same_host(l->hosts, hostlist)){
+	  if(ok_novalidate)
+	    *ok_novalidate = l->ok_novalidate;
+
+	  if(warned)
+	    *warned = l->warned;
+
+	  return(TRUE);
+      }
+
+    return(FALSE);
+}
+
+
+/*
+ * Just trying to guess the username the user might want to use on this
+ * host, the user will confirm.
+ */
+char *
+imap_get_user(m_list, hostlist)
+    MMLOGIN_S *m_list;
+    STRLIST_S *hostlist;
+{
+    MMLOGIN_S *l;
+    
+    for(l = m_list; l; l = l->next)
+      if(imap_same_host(l->hosts, hostlist))
 	return(l->user);
 
     return(NULL);
 }
 
 
-
+/*
+ * If we have a matching hostname, username, and altflag in our cache,
+ * attempt to login with the password from the cache.
+ */
 int
 imap_get_passwd(m_list, passwd, user, hostlist, altflag)
     MMLOGIN_S *m_list;
@@ -1549,40 +2623,53 @@ imap_get_passwd(m_list, passwd, user, hostlist, altflag)
     int	       altflag;
 {
     MMLOGIN_S *l;
-    STRLIST_S *h_list;
-    char      *h;
     
+    dprint(9, (debugfile,
+	       "imap_get_passwd: checking user=%s alt=%d host=%s%s%s\n",
+	       user ? user : "(null)",
+	       altflag,
+	       hostlist->name ? hostlist->name : "",
+	       (hostlist->next && hostlist->next->name) ? ", " : "",
+	       (hostlist->next && hostlist->next->name) ? hostlist->next->name
+						        : ""));
     for(l = m_list; l; l = l->next)
-      /* host name and user name must match */
       if(imap_same_host(l->hosts, hostlist)
-	 && (!*user || !strcmp(user, l->user))
-	 && (*user && l->altflag == altflag)){
-	  strcpy(user, l->user);
-	  strcpy(passwd, l->passwd);
+	 && *user
+	 && !strcmp(user, l->user)
+	 && l->altflag == altflag){
+	  strncpy(passwd, l->passwd, NETMAXPASSWD);
+	  passwd[NETMAXPASSWD-1] = '\0';
+	  dprint(9, (debugfile, "imap_get_passwd: match\n"));
+	  dprint(10, (debugfile, "imap_get_passwd: trying passwd=\"%s\"\n",
+		      passwd));
 	  return(TRUE);
       }
 
+    dprint(9, (debugfile, "imap_get_passwd: no match\n"));
     return(FALSE);
 }
 
 
 
 void
-imap_set_passwd(l, passwd, user, hostlist, altflag)
+imap_set_passwd(l, passwd, user, hostlist, altflag, ok_novalidate, warned)
     MMLOGIN_S **l;
     char       *passwd, *user;
     STRLIST_S  *hostlist;
+    int         altflag, ok_novalidate, warned;
 {
-    STRLIST_S *h_list, **listp;
+    STRLIST_S **listp;
+    size_t      len;
 
+    dprint(9, (debugfile, "imap_set_passwd\n"));
     for(; *l; l = &(*l)->next)
       if(imap_same_host((*l)->hosts, hostlist)
 	 && !strcmp(user, (*l)->user)
 	 && altflag == (*l)->altflag)
-	if(strcmp(passwd, (*l)->passwd)){
-	    fs_give((void **)&(*l)->passwd);
-	    break;
-	}
+	if(strcmp(passwd, (*l)->passwd) ||
+	   (*l)->ok_novalidate != ok_novalidate ||
+	   (*l)->warned != warned)
+	  break;
 	else
 	  return;
 
@@ -1591,15 +2678,21 @@ imap_set_passwd(l, passwd, user, hostlist, altflag)
 	memset(*l, 0, sizeof(MMLOGIN_S));
     }
 
-    if((*l)->passwd)
-      fs_give((void **) &(*l)->passwd);
+    len = strlen(passwd);
+    if(!(*l)->passwd || strlen((*l)->passwd) < len)
+      (*l)->passwd = ps_get(len+1);
 
-    (*l)->passwd = cpystr(passwd);
+    strncpy((*l)->passwd, passwd, len+1);
 
     (*l)->altflag = altflag;
+    (*l)->ok_novalidate = ok_novalidate;
+    (*l)->warned = warned;
 
     if(!(*l)->user)
       (*l)->user = cpystr(user);
+
+    dprint(9, (debugfile, "imap_set_passwd: user=%s altflag=%d\n", (*l)->user,
+	       (*l)->altflag));
 
     for( ; hostlist; hostlist = hostlist->next){
 	for(listp = &(*l)->hosts;
@@ -1608,11 +2701,15 @@ imap_set_passwd(l, passwd, user, hostlist, altflag)
 	  ;
 
 	if(!*listp){
-	    *listp = (STRLIST_S *) fs_get(sizeof(STRLIST_S));
+	    *listp = (STRLIST_S *)fs_get(sizeof(STRLIST_S));
 	    (*listp)->name = cpystr(hostlist->name);
+	    dprint(9, (debugfile, "imap_set_passwd: host=%s\n",
+		       (*listp)->name));
 	    (*listp)->next = NULL;
 	}
     }
+
+    dprint(10, (debugfile, "imap_set_passwd: passwd=\"%s\"\n", passwd));
 }
 
 
@@ -1622,6 +2719,8 @@ imap_flush_passwd_cache()
 {
     MMLOGIN_S *l;
 
+    memset((void *)private_store, 0, sizeof(private_store));
+
     while(l = mm_login_list){
 	mm_login_list = mm_login_list->next;
 	if(l->user)
@@ -1629,11 +2728,49 @@ imap_flush_passwd_cache()
 
 	free_strlist(&l->hosts);
 
-	if(l->passwd)
-	  fs_give((void **) &l->passwd);
+	fs_give((void **) &l);
+    }
+
+    while(l = cert_failure_list){
+	cert_failure_list = cert_failure_list->next;
+	if(l->user)
+	  fs_give((void **) &l->user);
+
+	free_strlist(&l->hosts);
 
 	fs_give((void **) &l);
     }
+}
+
+
+/*
+ * Mimics fs_get except it only works for char * (no alignment hacks), it
+ * stores in a static array so it is easy to zero it out (that's the whole
+ * purpose), allocations always happen at the end (no free).
+ * If we go past array limit, we don't break, we just use free storage.
+ * Should be awfully rare, though.
+ */
+char *
+ps_get(size)
+    size_t size;
+{
+    static char *last  = private_store;
+    char        *block = NULL;
+
+    /* there is enough space */
+    if(size <= sizeof(private_store) - (last - private_store)){
+	block = last;
+	last += size;
+    }
+    else{
+	dprint(2, (debugfile,
+		   "Out of password caching space in private_store\n"));
+	dprint(2, (debugfile,
+		   "Using free storage instead\n"));
+	block = fs_get(size);
+    }
+
+    return(block);
 }
 
 
@@ -1649,6 +2786,7 @@ imap_flush_passwd_cache()
 
 static	int		xlate_key;
 static	MMLOGIN_S	*passfile_cache = NULL;
+static  int             using_passfile;
 
 
 
@@ -1698,24 +2836,34 @@ xlate_out(c)
 
 
 char *
-passfile_name(pinerc, path)
+passfile_name(pinerc, path, len)
     char *pinerc, *path;
+    size_t len;
 {
     struct stat  sbuf;
     char	*p = NULL;
     int		 i, j;
 
-    if(!path || !pinerc || pinerc[0] == '\0')
+    if(!path || !((pinerc && pinerc[0]) || ps_global->passfile))
       return(NULL);
 
-    if(p = last_cmpnt(pinerc))
-      for(i = 0; pinerc < p; pinerc++, i++)
-	path[i] = *pinerc;
-    else
-      i = 0;
+    if(ps_global->passfile)
+      strncpy(path, ps_global->passfile, len-1);
+    else{
+	if((p = last_cmpnt(pinerc)) && *(p-1) && *(p-1) != PASSFILE[0])
+	  for(i = 0; pinerc < p && i < len; pinerc++, i++)
+	    path[i] = *pinerc;
+	else
+	  i = 0;
 
-    for(j = 0; path[i] = PASSFILE[j]; i++, j++)
-      ;
+	for(j = 0; (i < len) && (path[i] = PASSFILE[j]); i++, j++)
+	  ;
+	
+    }
+
+    path[len-1] = '\0';
+
+    dprint(9, (debugfile, "Looking for passfile \"%s\"\n", path));
 
 #if	defined(DOS) || defined(OS2)
     return((stat(path, &sbuf) == 0
@@ -1734,25 +2882,35 @@ passfile_name(pinerc, path)
 	return(path);
     }
     else
-      return(NULL);
+	return(NULL);
 #endif
 }
 
 
 
+/*
+ * Passfile lines are
+ *
+ *   passwd TAB user TAB hostname TAB flags [ TAB orig_hostname ] \n
+ *
+ * In pine4.40 and before there was no orig_hostname, and there still isn't
+ * if it is the same as hostname.
+ */
 int
 read_passfile(pinerc, l)
     char       *pinerc;
     MMLOGIN_S **l;
 {
-    char  tmp[MAILTMPLEN], *ui[4];
+    char  tmp[MAILTMPLEN], *ui[5];
     int   i, j, n;
     FILE *fp;
 
+    dprint(9, (debugfile, "read_passfile\n"));
     /* if there's no password to read, bag it!! */
-    if(!passfile_name(pinerc, tmp) || !(fp = fopen(tmp, "r")))
+    if(!passfile_name(pinerc, tmp, sizeof(tmp)) || !(fp = fopen(tmp, "r")))
       return(0);
 
+    using_passfile = 1;
     for(n = 0; fgets(tmp, sizeof(tmp), fp); n++){
 	/*** do any necessary DEcryption here ***/
 	xlate_key = n;
@@ -1762,8 +2920,9 @@ read_passfile(pinerc, l)
 	if(i && tmp[i-1] == '\n')
 	  tmp[i-1] = '\0';			/* blast '\n' */
 
-	ui[0] = ui[1] = ui[2] = ui[3] = NULL;
-	for(i = 0, j = 0; tmp[i] && j < 4; j++){
+	dprint(10, (debugfile, "read_passfile: %s\n", tmp));
+	ui[0] = ui[1] = ui[2] = ui[3] = ui[4] = NULL;
+	for(i = 0, j = 0; tmp[i] && j < 5; j++){
 	    for(ui[j] = &tmp[i]; tmp[i] && tmp[i] != '\t'; i++)
 	      ;					/* find end of data */
 
@@ -1771,13 +2930,22 @@ read_passfile(pinerc, l)
 	      tmp[i++] = '\0';			/* tie off data */
 	}
 
+	dprint(9, (debugfile, "read_passfile: calling imap_set_passwd\n"));
 	if(ui[0] && ui[1] && ui[2]){		/* valid field? */
-	    STRLIST_S hostlist[1];
+	    STRLIST_S hostlist[2];
 	    int	      flags = ui[3] ? atoi(ui[3]) : 0;
 
 	    hostlist[0].name = ui[2];
-	    hostlist[0].next = NULL;
-	    imap_set_passwd(l, ui[0], ui[1], hostlist, flags & 0x01);
+	    if(ui[4]){
+		hostlist[0].next = &hostlist[1];
+		hostlist[1].name = ui[4];
+		hostlist[1].next = NULL;
+	    }
+	    else{
+		hostlist[0].next = NULL;
+	    }
+
+	    imap_set_passwd(l, ui[0], ui[1], hostlist, flags & 0x01, 0, 0);
 	}
     }
 
@@ -1796,14 +2964,19 @@ write_passfile(pinerc, l)
     int   i, n;
     FILE *fp;
 
+    dprint(9, (debugfile, "write_passfile\n"));
     /* if there's no password to read, bag it!! */
-    if(!passfile_name(pinerc, tmp) || !(fp = fopen(tmp, "w")))
+    if(!passfile_name(pinerc, tmp, sizeof(tmp)) || !(fp = fopen(tmp, "w")))
       return;
 
     for(n = 0; l; l = l->next, n++){
 	/*** do any necessary ENcryption here ***/
-	sprintf(tmp, "%.100s\t%.100s\t%.100s\t%d\n", l->passwd, l->user,
-		l->hosts->name, l->altflag);
+	sprintf(tmp, "%.100s\t%.100s\t%.100s\t%d%s%s\n", l->passwd, l->user,
+		l->hosts->name, l->altflag,
+		(l->hosts->next && l->hosts->next->name) ? "\t" : "",
+		(l->hosts->next && l->hosts->next->name) ? l->hosts->next->name
+							 : "");
+	dprint(10, (debugfile, "write_passfile: %s", tmp));
 	xlate_key = n;
 	for(i = 0; tmp[i]; i++)
 	  tmp[i] = xlate_in(tmp[i]);
@@ -1827,10 +3000,31 @@ get_passfile_passwd(pinerc, passwd, user, hostlist, altflag)
     STRLIST_S *hostlist;
     int	       altflag;
 {
+    dprint(9, (debugfile, "get_passfile_passwd\n"));
     return((passfile_cache || read_passfile(pinerc, &passfile_cache))
 	     ? imap_get_passwd(passfile_cache, passwd,
 			       user, hostlist, altflag)
 	     : 0);
+}
+
+int
+is_using_passfile()
+{
+    return(using_passfile ? 1 : 0);
+}
+
+/*
+ * Just trying to guess the username the user might want to use on this
+ * host, the user will confirm.
+ */
+char *
+get_passfile_user(pinerc, hostlist)
+    char      *pinerc;
+    STRLIST_S *hostlist;
+{
+    return((passfile_cache || read_passfile(pinerc, &passfile_cache))
+	     ? imap_get_user(passfile_cache, hostlist)
+	     : NULL);
 }
 
 
@@ -1846,10 +3040,47 @@ set_passfile_passwd(pinerc, passwd, user, hostlist, altflag)
     STRLIST_S *hostlist;
     int	       altflag;
 {
+    dprint(9, (debugfile, "set_passfile_passwd\n"));
     if((passfile_cache || read_passfile(pinerc, &passfile_cache))
        && want_to("Preserve password on DISK for next login", 'y', 'x',
 		  NO_HELP, WT_NORM) == 'y'){
-	imap_set_passwd(&passfile_cache, passwd, user, hostlist, altflag);
+	imap_set_passwd(&passfile_cache, passwd, user, hostlist, altflag, 0, 0);
+	write_passfile(pinerc, passfile_cache);
+    }
+}
+
+
+/*
+ * Passfile lines are
+ *
+ *   passwd TAB user TAB hostname TAB flags [ TAB orig_hostname ] \n
+ *
+ * In pine4.40 and before there was no orig_hostname.
+ * This routine attempts to repair that.
+ */
+void
+update_passfile_hostlist(pinerc, user, hostlist, altflag)
+    char      *pinerc;
+    char      *user;
+    STRLIST_S *hostlist;
+    int        altflag;
+{
+    MMLOGIN_S *l;
+    STRLIST_S *h1, *h2;
+    
+    for(l = passfile_cache; l; l = l->next)
+      if(imap_same_host(l->hosts, hostlist)
+	 && *user
+	 && !strcmp(user, l->user)
+	 && l->altflag == altflag){
+	  break;
+      }
+    
+    if(l && l->hosts && hostlist && !l->hosts->next && hostlist->next &&
+       hostlist->next->name){
+	l->hosts->next = (STRLIST_S *)fs_get(sizeof(STRLIST_S));
+	l->hosts->next->name = cpystr(hostlist->next->name);
+	l->hosts->next->next = NULL;
 	write_passfile(pinerc, passfile_cache);
     }
 }

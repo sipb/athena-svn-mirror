@@ -1,4 +1,4 @@
-# $Id: makefile.d-g,v 1.1.1.1 2001-02-19 07:01:53 ghudson Exp $
+# $Id: makefile.d-g,v 1.1.1.2 2003-02-12 07:58:27 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -44,7 +44,7 @@ LIBCMD=		ar
 LIBARGS=	ru
 RANLIB=		true
 
-LIBS=		$(EXTRALIBES) -l`case \`uname -r\` in R4.11*) echo "nsl"\
+LIBS=		$(EXTRALDFLAGS) -l`case \`uname -r\` in R4.11*) echo "nsl"\
 		;; *) echo "nsl_s";;esac`  -lgen -lcurses
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \

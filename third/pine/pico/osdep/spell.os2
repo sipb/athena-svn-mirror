@@ -108,7 +108,7 @@ spell(f, n)
   unlink(fn);				/* blast temp file */
 
   ttopen();				/* reset the signals */
-  refresh(0, 1);			/* redraw */
+  pico_refresh(0, 1);			/* redraw */
   return(rc);
 }
 

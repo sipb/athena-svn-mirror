@@ -1,5 +1,5 @@
 /*
- * $Id: ebind.h,v 1.1.1.1 2001-02-19 07:01:22 ghudson Exp $
+ * $Id: ebind.h,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp $
  *
  * Program:	Default key bindings
  *
@@ -84,7 +84,7 @@ KEYTAB  keytab[NBINDS] = {
 	{CTRL|'I',		tab},
 	{CTRL|'J',		fillpara},
 	{CTRL|'K',		killregion},
-	{CTRL|'L',		refresh},
+	{CTRL|'L',		pico_refresh},
 	{CTRL|'M',		newline},
 	{CTRL|'N',		forwline},
 	{CTRL|'O',		suspend_composer},
@@ -139,7 +139,7 @@ KEYTAB  pkeytab[NBINDS] = {
 	{CTRL|'I',		tab},
 	{CTRL|'J',		fillpara},
 	{CTRL|'K',		killregion},
-	{CTRL|'L',		refresh},
+	{CTRL|'L',		pico_refresh},
 	{CTRL|'M',		newline},
 	{CTRL|'N',		forwline},
 	{CTRL|'O',		filewrite},

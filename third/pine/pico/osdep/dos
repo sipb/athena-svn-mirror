@@ -1,6 +1,6 @@
 #line 2 "osdep/dos"
 /*
- * $Id: dos,v 1.1.1.1 2001-02-19 07:04:42 ghudson Exp $
+ * $Id: dos,v 1.1.1.2 2003-02-12 08:02:02 ghudson Exp $
  *
  * Program:	Operating system dependent routines - MS DOS
  *
@@ -377,6 +377,10 @@ GetKey()
 
     ch  = (*term.t_getchar)(0, NULL, NULL);
     lch = (ch&0xff);
+
+    if(lch & 0x80 && Pmaster && Pmaster->hibit_entered)
+      *Pmaster->hibit_entered = 1;
+
     return((lch && (lch != 0xe0 || !(ch & 0xff00))) 
             ? (lch < ' ') ? (CTRL|(lch + '@')) 
                           : (lch == ' ' && ctrlkey()) ? (CTRL|'@') : lch
@@ -573,7 +577,7 @@ bktoshell()		/* suspend MicroEMACS and wait to wake up */
     if(system((shell = getenv("COMSPEC")) ? shell : "command") == -1)
       emlwrite("Error loading %s", shell ? shell : "COMMAND.COM");
     else
-      refresh(0, 1);			/* redraw */
+      pico_refresh(0, 1);		/* redraw */
     
     return(1);
 }

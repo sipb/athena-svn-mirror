@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailview.c,v 1.1.1.1 2001-02-19 07:11:46 ghudson Exp $";
+static char rcsid[] = "$Id: mailview.c,v 1.1.1.2 2003-02-12 08:02:19 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailview.c,v 1.1.1.1 2001-02-19 07:11:46 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -96,8 +96,6 @@ struct view_write_s {
 #define MAX_FUDGE (1024*1024)
 
 
-static HANDLE_S **g_handle_p;
-
 static char *g_editorial_prefix, *g_editorial_postfix;
 
 /*
@@ -159,6 +157,8 @@ static char *g_editorial_prefix, *g_editorial_postfix;
 #define	CHARSET_DISCLAIMER_2	"display is set"
 #define	CHARSET_DISCLAIMER_3	\
        " for the \"%.40s\" character set. \015\012Some characters may be displayed incorrectly."
+#define ENCODING_DISCLAIMER      \
+        "The following text contains the unknown encoding type \"%.20s\". \015\012Some or all of the text may be displayed incorrectly."
 
 
 /*
@@ -218,6 +218,7 @@ static struct key view_keys[] =
 	NULL_MENU,
 	NULL_MENU};
 INST_KEY_MENU(view_keymenu, view_keys);
+#define VIEW_ATT_KEY		 3
 #define VIEW_FULL_HEADERS_KEY	32
 #define	VIEW_VIEW_HANDLE	26
 #define VIEW_SELECT_KEY		27
@@ -226,49 +227,6 @@ INST_KEY_MENU(view_keymenu, view_keys);
 #define BOUNCE_KEY		33
 #define FLAG_KEY		34
 #define VIEW_PIPE_KEY		35
-
-static struct key nr_anon_view_keys[] = 
-       {HELP_MENU,
-	WHEREIS_MENU,
-	QUIT_MENU,
-	NULL_MENU,
-	PREVMSG_MENU,
-	NEXTMSG_MENU,
-	PREVPAGE_MENU,
-	NEXTPAGE_MENU,
-	FWDEMAIL_MENU,
-	JUMP_MENU,
-	INDEX_MENU,
-	NULL_MENU};
-INST_KEY_MENU(nr_anon_view_keymenu, nr_anon_view_keys);
-
-static struct key nr_view_keys[] = 
-       {HELP_MENU,
-	OTHER_MENU,
-	QUIT_MENU,
-	NULL_MENU,
-	PREVMSG_MENU,
-	NEXTMSG_MENU,
-	PREVPAGE_MENU,
-	NEXTPAGE_MENU,
-	{"F", "Fwd Email", {MC_FORWARD,1,{'f'}}, KS_FORWARD},
-	JUMP_MENU,
-	PRYNTTXT_MENU,
-	SAVE_MENU,
-
-	HELP_MENU,
-	OTHER_MENU,
-	EXPORT_MENU,
-	COMPOSE_MENU,
-	NULL_MENU,
-	RCOMPOSE_MENU,
-	INDEX_MENU,
-	WHEREIS_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU};
-INST_KEY_MENU(nr_view_keymenu, nr_view_keys);
 
 static struct key simple_text_keys[] =
        {HELP_MENU,
@@ -295,8 +253,10 @@ int	    is_an_env_hdr PROTO((char *));
 int         is_an_addr_hdr PROTO((char *));
 int         any_hdr_color PROTO((char *));
 int	    format_blip_seen PROTO((long));
-int	    charset_editorial PROTO((char *, long, int, int, gf_io_t));
-int	    rfc2369_editorial PROTO((long, int, int, gf_io_t));
+int	    charset_editorial PROTO((char *, long, HANDLE_S **, int, int,
+				     gf_io_t));
+int	    encoding_editorial PROTO((BODY *, int, gf_io_t));
+int	    rfc2369_editorial PROTO((long, HANDLE_S **, int, int, gf_io_t));
 void	    format_envelope PROTO((MAILSTREAM *, long, char *, ENVELOPE *,
 				   gf_io_t, long, int));
 void	    format_env_hdr PROTO((MAILSTREAM *, long, char *, ENVELOPE *,
@@ -313,8 +273,7 @@ void        pine_rfc822_write_address_noquote PROTO((ADDRESS *,
 void        pine2_rfc822_write_address_noquote PROTO((char *,ADDRESS *,int *));
 void        pine_rfc822_address PROTO((ADDRESS *, gf_io_t));
 void        pine_rfc822_cat PROTO((char *, const char *, gf_io_t));
-int	    delineate_this_header PROTO ((char *,char *,char *,char **,
-					  char **));
+int	    delineate_this_header PROTO ((char *, char *, char **, char **));
 void	    view_writec_init PROTO((STORE_S *, HANDLE_S **, int, int));
 void	    view_writec_destroy PROTO((void));
 void	    view_writec_killbuf PROTO((void));
@@ -326,7 +285,8 @@ long	    scroll_scroll_text PROTO((long, HANDLE_S *, int));
 static int  print_to_printer PROTO((SCROLL_S *));
 int	    search_scroll_text PROTO((long, int, char *, Pos *, int *));
 char	   *search_scroll_line PROTO((char *, char *, int, int));
-void	    describe_mime PROTO((BODY *, char *, int, int));
+void	    describe_mime PROTO((BODY *, char *, int, int, int));
+int         mime_known_text_subtype PROTO((char *));
 void	    format_mime_size PROTO((char *, BODY *));
 ATTACH_S   *next_attachment PROTO(());
 void	    zero_atmts PROTO((ATTACH_S *));
@@ -419,7 +379,6 @@ mail_view_screen(ps)
 {
     char            last_was_full_header = 0;
     long            last_message_viewed = -1L, raw_msgno, offset = 0L;
-    unsigned long   uid;
     OtherMenu       save_what = FirstMenu;
     int             we_cancel = 0, flags;
     MESSAGECACHE   *mc;
@@ -450,14 +409,19 @@ mail_view_screen(ps)
 	we_cancel = busy_alarm(1, NULL, NULL, 0);
 
 	if(mn_get_cur(ps->msgmap) <= 0L)
-	  mn_set_cur(ps->msgmap, 1L);
+	  mn_set_cur(ps->msgmap,
+		     THREADING() ? first_sorted_flagged(F_NONE,
+							ps->mail_stream,
+							0L, FSF_SKIP_CHID)
+				 : 1L);
 
 	raw_msgno = mn_m2raw(ps->msgmap, mn_get_cur(ps->msgmap));
-	uid	  = mail_uid(ps->mail_stream, raw_msgno);
 	body      = NULL;
-	if(!(env = mail_fetchstructure(ps->mail_stream, raw_msgno, &body))
+	if(raw_msgno == 0L
+	   || !(env = mail_fetchstructure(ps->mail_stream, raw_msgno, &body))
 	   || !(mc = mail_elt(ps->mail_stream, raw_msgno))){
-	    q_status_message1(SM_ORDER, 3, 3, "Error getting message %s data",
+	    q_status_message1(SM_ORDER, 3, 3,
+			      "Error getting message %.200s data",
 			      comatose(mn_get_cur(ps->msgmap)));
 	    dprint(1, (debugfile, "!!!! ERROR fetching %s of msg %ld\n",
 		       env ? "elt" : "env", mn_get_cur(ps->msgmap)));
@@ -495,7 +459,7 @@ mail_view_screen(ps)
 			 ps->ttyo->screen_rows - (SCROLL_LINES_ABOVE(ps)
 						  + SCROLL_LINES_BELOW(ps)));
 
-	flags = FM_HANDLES | FM_DISPLAY;
+	flags = FM_DISPLAY;
 	if((last_message_viewed != mn_get_cur(ps->msgmap)
 	    || last_was_full_header == 1))
 	  flags |= FM_NEW_MESS;
@@ -503,7 +467,14 @@ mail_view_screen(ps)
 	if(offset)		/* no pre-paint during resize */
 	  view_writec_killbuf();
 
-	(void) format_message(raw_msgno, env, body, flags, view_writec);
+#ifdef _WINDOWS
+	mswin_noscrollupdate(1);
+#endif
+	(void) format_message(raw_msgno, env, body, &handles, flags,
+			      view_writec);
+#ifdef _WINDOWS
+	mswin_noscrollupdate(0);
+#endif
 
 	view_writec_destroy();
 
@@ -541,6 +512,8 @@ mail_view_screen(ps)
 	    offset = 0L;
 	}
 	  
+	scrollargs.use_indexline_color = 1;
+
 	scrollargs.bar.title	= "MESSAGE TEXT";
 	scrollargs.end_scroll	= view_end_scroll;
 	scrollargs.resize_exit	= 1;
@@ -553,6 +526,9 @@ mail_view_screen(ps)
 	if(F_OFF(F_ENABLE_PIPE, ps_global))
 #endif
 	  clrbitn(VIEW_PIPE_KEY, scrollargs.keys.bitmap);
+
+	if(ps_global->full_header)
+	  clrbitn(VIEW_ATT_KEY, scrollargs.keys.bitmap);
 
 	if(F_OFF(F_ENABLE_BOUNCE, ps_global))
 	  clrbitn(BOUNCE_KEY, scrollargs.keys.bitmap);
@@ -615,9 +591,9 @@ mail_view_screen(ps)
  *		      as we can.
  */
 void
-view_writec_init(store, handles, first_line, last_line)
+view_writec_init(store, handlesp, first_line, last_line)
     STORE_S   *store;
-    HANDLE_S **handles;
+    HANDLE_S **handlesp;
     int	       first_line;
     int	       last_line;
 {
@@ -626,7 +602,7 @@ view_writec_init(store, handles, first_line, last_line)
     g_view_write = (struct view_write_s *)fs_get(sizeof(struct view_write_s));
     memset(g_view_write, 0, sizeof(struct view_write_s));
     g_view_write->store		   = store;
-    g_view_write->handles	   = handles;
+    g_view_write->handles	   = handlesp;
     g_view_write->screen_line	   = first_line;
     g_view_write->last_screen_line = last_line;
 
@@ -768,7 +744,7 @@ view_end_scroll(sparms)
 
 	/* act like the user hit a TAB */
 	result = process_cmd(ps_global, ps_global->mail_stream,
-			     ps_global->msgmap, MC_TAB, 0, &force);
+			     ps_global->msgmap, MC_TAB, View, &force);
 
 	if(result == 1)
 	  done = 1;
@@ -787,6 +763,8 @@ view_end_scroll(sparms)
         prefix -- The prefix for numbering the parts
         num    -- The number of this specific part
         should_show -- Flag indicating which of alternate parts should be shown
+	multalt     -- Flag indicating the part is one of the multipart
+			alternative parts (so suppress editorial comment)
 
 Result: The ps_global->attachments data structure is filled in. This
 is called recursively to descend through all the parts of a message. 
@@ -794,14 +772,14 @@ The description strings filled in are malloced and should be freed.
 
   ----*/
 void
-describe_mime(body, prefix, num, should_show)
+describe_mime(body, prefix, num, should_show, multalt)
     BODY *body;
     char *prefix;
     int   num, should_show;
 {
     PART      *part;
     char       numx[512], string[200], *description;
-    int        n, named = 0;
+    int        n, named = 0, can_display_ext;
     ATTACH_S  *a;
 
     if(!body)
@@ -814,6 +792,12 @@ describe_mime(body, prefix, num, should_show)
 	    int effort, best_effort = SHOW_NONE;
 
 	    /*---- Figure out which alternative part to display ---*/
+	    /*
+	     * This is kind of complicated because some TEXT types
+	     * are more displayable than others.  We don't want to
+	     * commit to displaying a text-part alternative that we
+	     * don't directly recognize unless that's all there is.
+	     */
 	    for(part=body->nested.part, n=1; part; part=part->next, n++)
 	      if(F_ON(F_PREFER_PLAIN_TEXT, ps_global) &&
 		 part->body.type == TYPETEXT &&
@@ -826,9 +810,14 @@ describe_mime(body, prefix, num, should_show)
 		}
 	      }
 	      else if((effort = mime_show(&part->body)) >= best_effort
+		      && (part->body.type != TYPETEXT || mime_known_text_subtype(part->body.subtype))
 		      && effort != SHOW_ALL_EXT){
 		best_effort = effort;
 		alt_to_show = n;
+	      }
+	      else if(part->body.type == TYPETEXT && alt_to_show == 0){
+		  best_effort = effort;
+		  alt_to_show = n;
 	      }
 	}
 	else if(!strucmp(body->subtype, "digest")){
@@ -847,7 +836,10 @@ describe_mime(body, prefix, num, should_show)
 	    (a+1)->description = NULL;
 	}
 	else if(mailcap_can_display(body->type, body->subtype,
-				    body->parameter)){
+				    body->parameter, 0)
+		|| (can_display_ext 
+		    = mailcap_can_display(body->type, body->subtype,
+					  body->parameter, 1))){
 	    memset(a = next_attachment(), 0, sizeof(ATTACH_S));
 	    if(*prefix){
 		prefix[n = strlen(prefix) - 1] = '\0';
@@ -862,20 +854,30 @@ describe_mime(body, prefix, num, should_show)
 	    a->description	   = cpystr(string);
 	    a->body		   = body;
 	    a->can_display	   = MCD_EXTERNAL;
+	    if(can_display_ext)
+	      a->can_display      |= MCD_EXT_PROMPT;
 	    (a+1)->description	   = NULL;
 	}
 
 	for(part=body->nested.part, n=1; part; part=part->next, n++){
 	    sprintf(numx, "%.*s%d.", sizeof(numx)-20, prefix, n);
+	    /*
+	     * Last arg to describe_mime here. If we have chosen one part
+	     * of a multipart/alternative to display then we suppress
+	     * the editorial messages on the other parts.
+	     */
 	    describe_mime(&(part->body),
 			  (part->body.type == TYPEMULTIPART) ? numx : prefix,
-			  n, (n == alt_to_show || !alt_to_show));
+			  n, (n == alt_to_show || !alt_to_show),
+			  alt_to_show != 0);
 	}
     }
     else{
 	char tmp1[MAILTMPLEN], tmp2[MAILTMPLEN];
 
 	format_mime_size((a = next_attachment())->size, body);
+
+	a->suppress_editorial = (multalt != 0);
 
 	sprintf(tmp1, "%.200s", body->description ? body->description : "");
 	sprintf(tmp2, "%.200s", (!body->description && body->type == TYPEMESSAGE && body->encoding <= ENCBINARY && body->subtype && strucmp(body->subtype, "rfc822") == 0 && body->nested.msg->env && body->nested.msg->env->subject) ? body->nested.msg->env->subject : "");
@@ -896,12 +898,13 @@ describe_mime(body, prefix, num, should_show)
 				? "Delivery Status"
 				: NULL;
 
+	description = istrncpy((char *)(tmp_20k_buf+1000), description, 1000);
         sprintf(string, "%s%s%s%s",
-                strsquish(tmp_20k_buf+1000,
+                strsquish(tmp_20k_buf+3000,
 			  type_desc(body->type,body->subtype,body->parameter,0),
 			  sizeof(string)/2 - 10),
                 description ? ", \"" : "",
-                description ? strsquish(tmp_20k_buf+1500, description,
+                description ? strsquish(tmp_20k_buf+4000, description,
 					sizeof(string)/2 - 10)
 			    : "",
                 description ? "\"": "");
@@ -949,11 +952,12 @@ describe_mime(body, prefix, num, should_show)
 	 */
 	a->shown = ((a->can_display & MCD_INTERNAL)
 		    && !MIME_VCARD(body->type,body->subtype)
-		    && (!named
+		    && (!named || multalt
 			|| (body->type == TYPETEXT && num == 1
 			    && !(*prefix && strcmp(prefix,"1."))))
-		    && body->encoding <= ((body->type == TYPEMESSAGE)
-					   ? ENCBINARY : ENCQUOTEDPRINTABLE)
+		    && (body->type != TYPEMESSAGE
+			|| (body->type == TYPEMESSAGE
+			    && body->encoding <= ENCBINARY))
 		    && should_show);
 	a->number = (char *)fs_get((strlen(prefix) + 16)* sizeof(char));
         sprintf(a->number, "%s%d",prefix, num);
@@ -962,9 +966,32 @@ describe_mime(body, prefix, num, should_show)
 	   && body->subtype && strucmp(body->subtype, "rfc822") == 0){
 	    body = body->nested.msg->body;
 	    sprintf(numx, "%.*s%d.", sizeof(numx)-20, prefix, num);
-	    describe_mime(body, numx, 1, should_show);
+	    describe_mime(body, numx, 1, should_show, 0);
         }
     }
+}
+
+
+int
+mime_known_text_subtype(subtype)
+    char *subtype;
+{
+    char **p;
+    static char *known_types[] = {
+	"plain",
+	"html",
+	"enriched",
+	"richtext",
+	NULL
+    };
+
+    if(!(subtype && *subtype))
+      return(1);
+
+    for(p = known_types; *p; p++)
+      if(!strucmp(subtype, *p))
+	return(1);
+    return(0);
 }
 
 
@@ -1391,20 +1418,20 @@ how and where the caller would like to have the text formatted.
 
  ----*/    
 int
-format_message(msgno, env, body, flgs, pc)
+format_message(msgno, env, body, handlesp, flgs, pc)
     long         msgno;
     ENVELOPE    *env;
     BODY        *body;
+    HANDLE_S   **handlesp;
     int          flgs;
     gf_io_t      pc;
 {
-    char     *decode_err = NULL;
+    char     *decode_err = NULL, *tmp1, *description;
     HEADER_S  h;
     ATTACH_S *a;
     int       show_parts, error_found = 0, seen = 1, width;
     gf_io_t   gc;
     MESSAGECACHE *mc;
-    struct variable *vars = ps_global->vars;
 
     clear_cur_embedded_color();
     mc = mail_elt(ps_global->mail_stream, msgno);
@@ -1421,7 +1448,7 @@ format_message(msgno, env, body, flgs, pc)
     HD_INIT(&h, ps_global->VAR_VIEW_HEADERS, ps_global->view_all_except,
 	    FE_DEFAULT);
     switch(format_header(ps_global->mail_stream, msgno, NULL,
-			 env, &h, NULL, flgs, pc)){
+			 env, &h, NULL, handlesp, flgs, pc)){
 			      
       case -1 :			/* write error */
 	goto write_error;
@@ -1437,7 +1464,9 @@ format_message(msgno, env, body, flgs, pc)
     if(!seen)
       check_point_change();
 
-    if(body == NULL) {
+    if(body == NULL 
+       || (ps_global->full_header
+	   && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))) {
         /*--- Server is not an IMAP2bis, It can't parse MIME
               so we just show the text here. Hopefully the 
               message isn't a MIME message 
@@ -1457,7 +1486,7 @@ format_message(msgno, env, body, flgs, pc)
 		fs_give((void **)&append_file_name);
 	    }
 
-	    q_status_message1(SM_ORDER,3,3,"Can't make temp file: %s",
+	    q_status_message1(SM_ORDER,3,3,"Can't make temp file: %.200s",
 			      error_description(errno));
 	    return(0);
 	}
@@ -1472,6 +1501,31 @@ format_message(msgno, env, body, flgs, pc)
 	    gf_set_readc(&gc, text2, (unsigned long)strlen(text2), CharStar);
 #endif
 	    gf_filter_init();
+	    /* link in filters, similar to what is done in decode_text() */
+	    if(!ps_global->pass_ctrl_chars){
+		gf_link_filter(gf_escape_filter, NULL);
+		gf_link_filter(gf_control_filter, NULL);
+	    }
+	    gf_link_filter(gf_tag_filter, NULL);
+
+	    if((F_ON(F_VIEW_SEL_URL, ps_global)
+		|| F_ON(F_VIEW_SEL_URL_HOST, ps_global)
+		|| F_ON(F_SCAN_ADDR, ps_global))
+	       && handlesp){
+		gf_link_filter(gf_line_test, gf_line_test_opt(url_hilite, handlesp));
+	    }
+
+	    if((flgs & FM_DISPLAY)
+	       && !(flgs & FM_NOCOLOR)
+	       && pico_usingcolor()
+	       && ps_global->VAR_QUOTE1_FORE_COLOR
+	       && ps_global->VAR_QUOTE1_BACK_COLOR){
+		gf_link_filter(gf_line_test, gf_line_test_opt(color_a_quote, NULL));
+	    }
+
+	    gf_link_filter(gf_wrap, gf_wrap_filter_opt(ps_global->ttyo->screen_cols,
+						       ps_global->ttyo->screen_cols,
+						       0, flgs & FM_DISPLAY ? GFW_HANDLES: 0));
 	    gf_link_filter(gf_nvtnl_local, NULL);
 	    if(decode_err = gf_pipe(gc, pc)){
                 sprintf(tmp_20k_buf, "Formatting error: %s", decode_err);
@@ -1506,7 +1560,7 @@ format_message(msgno, env, body, flgs, pc)
 
     if(flgs & FM_NEW_MESS) {
 	zero_atmts(ps_global->atmts);
-	describe_mime(body, "", 1, 1);
+	describe_mime(body, "", 1, 1, 0);
     }
 
     /*=========== Format the header into the buffer =========*/
@@ -1514,6 +1568,7 @@ format_message(msgno, env, body, flgs, pc)
     if((flgs & FM_DISPLAY) && ps_global->atmts[1].description){
 	char tmp[MAX_SCREEN_COLS + 1];
 	int  n, max_num_l = 0, size_offset = 0;
+
 
 	if(!(gf_puts("Parts/Attachments:", pc) && gf_puts(NEWLINE, pc)))
 	  goto write_error;
@@ -1533,8 +1588,7 @@ format_message(msgno, env, body, flgs, pc)
 
 	/*----- Format the list of attachments -----*/
 	for(a = ps_global->atmts; a->description != NULL; a++) {
-	    struct variable *vars = ps_global->vars;
-	    COLOR_PAIR *lastc = NULL, *color;
+	    COLOR_PAIR *lastc = NULL;
 
 	    memset(tmp, ' ', sizeof(tmp)-1);
 	    tmp[sizeof(tmp)-1] = '\0';
@@ -1552,7 +1606,8 @@ format_message(msgno, env, body, flgs, pc)
 
 	    if(a->shown)
 	      strncpy(tmp + max_num_l + 4, "Shown", 5);
-	    else if(a->can_display != MCD_NONE)
+	    else if(a->can_display != MCD_NONE
+		    && !(a->can_display & MCD_EXT_PROMPT))
 	      strncpy(tmp + max_num_l + 4, "  OK ", 5);
 
 	    if(n = strlen(a->size))
@@ -1563,12 +1618,12 @@ format_message(msgno, env, body, flgs, pc)
 
 	    tmp[ps_global->ttyo->screen_cols] = '\0';
 
-	    if(F_ON(F_VIEW_SEL_ATTACH, ps_global) && (flgs & FM_HANDLES)){
+	    if(F_ON(F_VIEW_SEL_ATTACH, ps_global) && handlesp){
 		char      buf[16], color[64];
 		int	  l;
 		HANDLE_S *h;
 
-		h	    = new_handle();
+		h	    = new_handle(handlesp);
 		h->type	    = Attach;
 		h->h.attach = a;
 
@@ -1591,7 +1646,7 @@ format_message(msgno, env, body, flgs, pc)
 	    if(!format_env_puts(tmp, pc))
 	      goto write_error;
 
-	    if(F_ON(F_VIEW_SEL_ATTACH, ps_global) && (flgs & FM_HANDLES)){
+	    if(F_ON(F_VIEW_SEL_ATTACH, ps_global) && handlesp){
 		if(lastc){
 		    if(F_OFF(F_SLCTBL_ITEM_NOBOLD, ps_global)){
 			if(!((*pc)(TAG_EMBED) && (*pc)(TAG_BOLDOFF)))
@@ -1629,6 +1684,9 @@ format_message(msgno, env, body, flgs, pc)
 	  continue;
 
         if(!a->shown) {
+	    if(a->suppress_editorial)
+	      continue;
+
 	    if((decode_err = part_desc(a->number, a->body,
 				       (flgs & FM_DISPLAY)
 				         ? (a->can_display != MCD_NONE)
@@ -1658,7 +1716,7 @@ format_message(msgno, env, body, flgs, pc)
 		char *err = NULL;
 
 		sprintf(tmp_20k_buf, 
-			"Empty message possibly malformed%s.",
+			"Malformed message%s.",
 			ps_global->full_header 
 			    ? ". Displaying raw text"
 			    : ". Use \"H\" to see raw text");
@@ -1687,28 +1745,32 @@ format_message(msgno, env, body, flgs, pc)
 	     */
 	    if(show_parts && a != ps_global->atmts 
 	       && a[-1].body && a[-1].body->type != TYPEMESSAGE){
-		sprintf(tmp_20k_buf, "Part %s: \"%.1024s\"",
-			a->number, 
-			a->body->description ? a->body->description
-					     : "Attached Text");
+		tmp1 = a->body->description ? a->body->description
+					      : "Attached Text";
+	    	description = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)(tmp_20k_buf+15000), 5000, tmp1, NULL), 5000);
+		
+		sprintf(tmp_20k_buf, "Part %s: \"%.1024s\"", a->number,
+			description);
 		if(!(gf_puts(NEWLINE, pc)
 		     && !format_editorial(tmp_20k_buf, width, pc)
 		     && gf_puts(NEWLINE, pc) && gf_puts(NEWLINE, pc)))
 		  goto write_error;
 	    }
 
-	    error_found += decode_text(a, msgno, pc,
+	    error_found += decode_text(a, msgno, pc, handlesp,
 				       (flgs & FM_DISPLAY) ? InLine : QStatus,
 				       flgs);
             break;
 
           case TYPEMESSAGE:
-            sprintf(tmp_20k_buf, "Part %s: \"%.1024s\"",
-		    a->number, 
-                    a->body->description ? a->body->description
+	    tmp1 = a->body->description ? a->body->description
 		      : (strucmp(a->body->subtype, "delivery-status") == 0)
 		          ? "Delivery Status"
-			  : "Included Message");
+			  : "Included Message";
+	    description = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)(tmp_20k_buf+15000), 5000, tmp1, NULL), 5000);
+	    
+            sprintf(tmp_20k_buf, "Part %s: \"%.1024s\"", a->number,
+		    description);
 
 	    if(!(gf_puts(NEWLINE, pc)
 		 && !format_editorial(tmp_20k_buf,
@@ -1719,7 +1781,7 @@ format_message(msgno, env, body, flgs, pc)
 	    if(a->body->subtype && strucmp(a->body->subtype, "rfc822") == 0){
 		switch(format_header(ps_global->mail_stream, msgno, a->number,
 				     a->body->nested.msg->env, &h,
-				     NULL, flgs, pc)){
+				     NULL, handlesp, flgs, pc)){
 		  case -1 :			/* write error */
 		    goto write_error;
 
@@ -1740,7 +1802,7 @@ format_message(msgno, env, body, flgs, pc)
 		  goto write_error;
             }
 	    else
-	      error_found += decode_text(a, msgno, pc, 
+	      error_found += decode_text(a, msgno, pc, handlesp,
 					 (flgs&FM_DISPLAY) ? InLine : QStatus,
 					 flgs);
 
@@ -1760,14 +1822,14 @@ format_message(msgno, env, body, flgs, pc)
     }
 
     return(!error_found
-	   && rfc2369_editorial(msgno, flgs, width, pc)
+	   && rfc2369_editorial(msgno, handlesp, flgs, width, pc)
 	   && format_blip_seen(msgno));
 
 
   write_error:
 
     if(!(flgs & FM_DISPLAY))
-      q_status_message1(SM_ORDER, 3, 4, "Error writing message: %s",
+      q_status_message1(SM_ORDER, 3, 4, "Error writing message: %.200s",
 			decode_err ? decode_err : error_description(errno));
 
     return(0);
@@ -1780,12 +1842,17 @@ format_editorial(s, width, pc)
     int	     width;
     gf_io_t  pc;
 {
-    int	    (*f) PROTO((long, char *, LT_INS_S **));
     gf_io_t   gc;
     char     *t;
     size_t    n, len;
     unsigned char *p, *tmp = NULL;
  
+    /*
+     * Warning. Some callers of this routine use the first half
+     * of tmp_20k_buf to store the passed in source string, out to as
+     * many as 10000 characters. However, we don't need to preserve the
+     * source string after we have copied it.
+     */
     if((n = strlen(s)) > SIZEOF_20KBUF-10000-1){
 	len = n+1;
 	p = tmp = (unsigned char *)fs_get(len * sizeof(unsigned char));
@@ -1834,10 +1901,6 @@ quote_editorial(linenum, line, ins, local)
     LT_INS_S **ins;
     void      *local;
 {
-    register char *lp, *urlp;
-    int		   n;
-    HANDLE_S	  *h;
-
     ins = gf_line_test_new_ins(ins, line, g_editorial_prefix,
 			       strlen(g_editorial_prefix));
     ins = gf_line_test_new_ins(ins, line + strlen(line),
@@ -1852,15 +1915,16 @@ quote_editorial(linenum, line, ins, local)
  * Format editorial comment about charset mismatch
  */
 int
-charset_editorial(charset, msgno, flags, width, pc)
-    char    *charset;
-    long     msgno;
-    int	     flags;
-    int	     width;
-    gf_io_t  pc;
+charset_editorial(charset, msgno, handlesp, flags, width, pc)
+    char      *charset;
+    long       msgno;
+    HANDLE_S **handlesp;
+    int	       flags;
+    int	       width;
+    gf_io_t    pc;
 {
     char     *p, color[64], buf[2048];
-    int	      i, n, rv = TRUE;
+    int	      i, n;
     HANDLE_S *h = NULL;
 
     sprintf(buf, CHARSET_DISCLAIMER_1, charset ? charset : "US-ASCII");
@@ -1868,8 +1932,9 @@ charset_editorial(charset, msgno, flags, width, pc)
 
     if(!(ps_global->VAR_CHAR_SET
 	 && strucmp(ps_global->VAR_CHAR_SET, "US-ASCII"))
-       && (flags & (FM_DISPLAY | FM_HANDLES)) == (FM_DISPLAY | FM_HANDLES)){
-	h		      = new_handle();
+       && handlesp
+       && (flags & FM_DISPLAY) == FM_DISPLAY){
+	h		      = new_handle(handlesp);
 	h->type		      = URL;
 	h->h.url.path	      = cpystr("x-pine-help:h_config_char_set");
 
@@ -1916,6 +1981,23 @@ charset_editorial(charset, msgno, flags, width, pc)
 	   && gf_puts(NEWLINE, pc) && gf_puts(NEWLINE, pc));
 }
 
+/*
+ * Format editorial comment about unknown encoding
+ */
+int
+encoding_editorial(body, width, pc)
+    BODY      *body;
+    int	       width;
+    gf_io_t    pc;
+{
+    char     buf[2048];
+
+    sprintf(buf, ENCODING_DISCLAIMER, body_encodings[body->encoding]);
+
+    return(format_editorial(buf, width, pc) == NULL
+	   && gf_puts(NEWLINE, pc) && gf_puts(NEWLINE, pc));
+}
+
 
 
 /*
@@ -1923,11 +2005,12 @@ charset_editorial(charset, msgno, flags, width, pc)
  * List-* header supplied commands
  */
 int
-rfc2369_editorial(msgno, flags, width, pc)
-    long    msgno;
-    int	    flags;
-    int	    width;
-    gf_io_t pc;
+rfc2369_editorial(msgno, handlesp, flags, width, pc)
+    long       msgno;
+    HANDLE_S **handlesp;
+    int	       flags;
+    int	       width;
+    gf_io_t    pc;
 {
     char     *p, *hdrp, *hdrs[MLCMD_COUNT + 1],
 	      color[64], buf[2048];
@@ -1938,11 +2021,11 @@ rfc2369_editorial(msgno, flags, width, pc)
        && (hdrp = pine_fetchheader_lines(ps_global->mail_stream, msgno,
 					 NULL, rfc2369_hdrs(hdrs)))){
 	if(*hdrp){
-	    sprintf(buf, "Note: This message contains ", msgno);
+	    sprintf(buf, "Note: This message contains ");
 	    p = buf + strlen(buf);
 
-	    if(flags & FM_HANDLES){
-		h		      = new_handle();
+	    if(handlesp){
+		h		      = new_handle(handlesp);
 		h->type		      = Function;
 		h->h.func.f	      = rfc2369_display;
 		h->h.func.args.stream = ps_global->mail_stream;
@@ -2009,7 +2092,8 @@ int
 format_blip_seen(msgno)
     long msgno;
 {
-    if(!mail_elt(ps_global->mail_stream, msgno)->seen)
+    if(!mail_elt(ps_global->mail_stream, msgno)->seen
+	&& !ps_global->mail_stream->rdonly)
       mail_flag(ps_global->mail_stream, long2string(msgno), "\\SEEN", ST_SET);
 
     return(1);
@@ -2039,7 +2123,7 @@ static struct envelope_s {
     {"reply-to",	FE_REPLYTO},
     {"followup-to",	FE_FOLLOWUPTO},
     {"in-reply-to",	FE_INREPLYTO},
-    {"return-path",	FE_RETURNPATH},
+/*  {"return-path",	FE_RETURNPATH},      not usually filled in */
     {"references",	FE_REFERENCES},
     {NULL,		0}
 };
@@ -2137,12 +2221,12 @@ format_env_hdr(stream, msgno, section, env, pc, field, flags)
 
 
 /*
- * Look through header string "headers", beginning with "begin", for the next
+ * Look through header string beginning with "begin", for the next
  * occurrence of header "field".  Set "start" to that.  Set "end" to point one
  * position past all of the continuation lines that go with "field".
  * That is, if "end" is converted to a null
  * character then the string "start" will be the next occurence of header
- * "field" including all of its continuation lines.  "Headers" is assumed to
+ * "field" including all of its continuation lines. Assume we
  * have CRLF's as end of lines.
  *
  * If "field" is NULL, then we just leave "start" pointing to "begin" and
@@ -2151,8 +2235,8 @@ format_env_hdr(stream, msgno, section, env, pc, field, flags)
  * Returns 1 if found, 0 if not.
  */
 int
-delineate_this_header(headers, field, begin, start, end)
-    char  *headers, *field, *begin;
+delineate_this_header(field, begin, start, end)
+    char  *field, *begin;
     char **start, **end;
 {
     char tmpfield[MAILTMPLEN+2]; /* copy of field with colon appended */
@@ -2229,26 +2313,29 @@ get_handle(handles, key)
 
 
 void
-init_handles(handles)
-    HANDLE_S **handles;
+init_handles(handlesp)
+    HANDLE_S **handlesp;
 {
-    *(g_handle_p = handles) = NULL;
+    if(handlesp)
+      *handlesp = NULL;
+      
     (void) url_external_specific_handler(NULL, 0);
 }
 
 
 
 HANDLE_S *
-new_handle()
+new_handle(handlesp)
+    HANDLE_S **handlesp;
 {
     HANDLE_S *hp, *h = NULL;
 
-    if(g_handle_p){
+    if(handlesp){
 	h = (HANDLE_S *) fs_get(sizeof(HANDLE_S));
 	memset(h, 0, sizeof(HANDLE_S));
 
 	/* Put it in the list */
-	if(hp = *g_handle_p){
+	if((hp = *handlesp) != NULL){
 	    while(hp->next)
 	      hp = hp->next;
 
@@ -2259,7 +2346,7 @@ new_handle()
 	else{
 	    /* Assumption #2,340: There are NO ZERO KEY HANDLES */
 	    h->key = 1;
-	    *g_handle_p = h;
+	    *handlesp = h;
 	}
     }
 
@@ -2297,19 +2384,19 @@ free_handle(h)
 
 
 void
-free_handles(handles)
-    HANDLE_S **handles;
+free_handles(handlesp)
+    HANDLE_S **handlesp;
 {
     HANDLE_S *h;
 
-    if(*handles){
-	while(h = (*handles)->next)
+    if(handlesp && *handlesp){
+	while((h = (*handlesp)->next) != NULL)
 	  free_handle(&h);
 
-	while(h = (*handles)->prev)
+	while((h = (*handlesp)->prev) != NULL)
 	  free_handle(&h);
 
-	free_handle(handles);
+	free_handle(handlesp);
     }
 }
 
@@ -2412,7 +2499,7 @@ scroll_handle_prompt(handle, force)
 				}
 				else{
 				    q_status_message1(SM_ORDER | SM_DING, 2, 2,
-						     "Browser not found: %s",
+						    "Browser not found: %.200s",
 						     error_description(errno));
 				    continue;
 				}
@@ -2574,7 +2661,7 @@ scroll_handle_launch(handle, force)
 	if(scroll_handle_prompt(handle, force))
 	  display_attachment(mn_m2raw(ps_global->msgmap,
 				      mn_get_cur(ps_global->msgmap)),
-			     handle->h.attach, DA_FROM_VIEW);
+			     handle->h.attach, DA_FROM_VIEW | DA_DIDPROMPT);
 	else
 	  return(-1);
 
@@ -3160,7 +3247,6 @@ color_a_quote(linenum, line, ins, local)
     LT_INS_S **ins;
     void      *local;
 {
-    register char *lp;
     int countem = 0;
     struct variable *vars = ps_global->vars;
     char *p;
@@ -3439,10 +3525,12 @@ color_headers(linenum, line, ins, local)
 	      case TAG_EMBED:
 		switch(*(++p)){
 		  case TAG_HANDLE:
+		    p++;
 		    p += *p + 1;	/* skip handle key */
 		    break;
 
 		  case TAG_FGCOLOR:
+		    p++;
 		    sprintf(rgbbuf, "%.*s", RGBLEN, p);
 		    p += RGBLEN;	/* advance past color value */
 		  
@@ -3453,6 +3541,7 @@ color_headers(linenum, line, ins, local)
 		    break;
 
 		  case TAG_BGCOLOR:
+		    p++;
 		    sprintf(rgbbuf, "%.*s", RGBLEN, p);
 		    p += RGBLEN;	/* advance past color value */
 		  
@@ -3590,7 +3679,6 @@ url_hilite(linenum, line, ins, local)
     int		   n, n1, n2, n3, l;
     char	   buf[256], color[256];
     HANDLE_S	  *h;
-    struct variable *vars = ps_global->vars;
 
     for(lp = line; ; lp = up + n){
 	/* scan for all of them so we can choose the first */
@@ -3625,7 +3713,7 @@ url_hilite(linenum, line, ins, local)
 	else
 	  break;
 
-	h	      = new_handle();
+	h	      = new_handle((HANDLE_S **)local);
 	h->type	      = URL;
 	h->h.url.path = (char *) fs_get((n + 10) * sizeof(char));
 	sprintf(h->h.url.path, "%s%.*s",
@@ -3733,15 +3821,13 @@ url_launch(handle)
 #define	URL_MAX_LAUNCH	(2 * MAILTMPLEN)
 
     if(handle->h.url.tool){
-	char	*toolp, *cmdp, *p, *q, cmd[URL_MAX_LAUNCH + 1];
+	char	*toolp, *cmdp, *p, *q, cmd[URL_MAX_LAUNCH + 4];
 	char    *left_double_quote, *right_double_quote;
-	int	 mode, len, hlen, quotable = 0, copied = 0, double_quoted = 0;
-	PIPE_S *syspipe;
+	int	 mode, quotable = 0, copied = 0, double_quoted = 0;
+	int      escape_single_quotes = 0;
+	PIPE_S  *syspipe;
 
-	if((len = strlen(toolp = handle->h.url.tool)) > URL_MAX_LAUNCH)
-	  return(url_launch_too_long(rv));
-	  
-	hlen	 = strlen(handle->h.url.path);
+	toolp = handle->h.url.tool;
 
 	/*
 	 * Figure out if we need to quote the URL. If there are shell
@@ -3763,7 +3849,9 @@ url_launch(handle)
 	  quotable = 0;		/* never quote */
 	else
 #endif
-	if(strpbrk(handle->h.url.path, "&*;<>?[|~$") != NULL){  /* specials? */
+	/* quote shell specials */
+	if(strpbrk(handle->h.url.path, "&*;<>?[]|~$(){}") != NULL){
+	    escape_single_quotes++;
 	    if((p = strstr(toolp, "_URL_")) != NULL){  /* explicit arg? */
 		int in_quote = 0;
 
@@ -3812,28 +3900,40 @@ url_launch(handle)
 
 	/* Build the command */
 	cmdp = cmd;
-	while(1)
+	while(cmdp-cmd < URL_MAX_LAUNCH)
 	  if((!*toolp && !copied)
 	     || (*toolp == '_' && !strncmp(toolp + 1, "URL_", 4))){
 
 	      /* implicit _URL_ at end */
-	      if(!*toolp){
-		  *cmdp++ = ' ';
-		  len++;
-	      }
+	      if(!*toolp)
+		*cmdp++ = ' ';
 
 	      /* add single quotes */
-	      if(quotable && !double_quoted){
-		  *cmdp++ = '\'';
-		  len += 2;
-	      }
-
-	      if((len += hlen) > URL_MAX_LAUNCH)
-		return(url_launch_too_long(rv));
+	      if(quotable && !double_quoted && cmdp-cmd < URL_MAX_LAUNCH)
+		*cmdp++ = '\'';
 
 	      copied = 1;
-	      sstrcpy(&cmdp, handle->h.url.path);
-	      if(quotable && !double_quoted){
+	      /*
+	       * If the url.path contains a single quote we should escape
+	       * that single quote to remove its special meaning.
+	       * Since backslash-quote is ignored inside single quotes we
+	       * close the quotes, backslash escape the quote, then open
+	       * the quotes again. So
+	       *         'fred's car'
+	       * becomes 'fred'\''s car'
+	       */
+	      for(p = handle->h.url.path;
+		  p && *p && cmdp-cmd < URL_MAX_LAUNCH; p++){
+		  if(escape_single_quotes && *p == '\''){
+		      *cmdp++ = '\'';	/* closing quote */
+		      *cmdp++ = '\\';
+		      *cmdp++ = '\'';	/* opening quote comes from p below */
+		  }
+
+		  *cmdp++ = *p;
+	      }
+
+	      if(quotable && !double_quoted && cmdp-cmd < URL_MAX_LAUNCH){
 		  *cmdp++ = '\'';
 		  *cmdp = '\0';
 	      }
@@ -3851,6 +3951,10 @@ url_launch(handle)
 	      else if(!(*cmdp++ = *toolp++))
 		break;
 	  }
+
+
+	if(cmdp-cmd >= URL_MAX_LAUNCH)
+	  return(url_launch_too_long(rv));
 	
 	mode = PIPE_RESET | PIPE_USER ;
 	if(syspipe = open_system_pipe(cmd, NULL, NULL, mode, 0)){
@@ -3859,7 +3963,7 @@ url_launch(handle)
 	}
 	else
 	  q_status_message1(SM_ORDER, 3, 4,
-			    "Cannot spawn command : %s", cmd);
+			    "Cannot spawn command : %.200s", cmd);
     }
     else if(f = url_local_handler(handle->h.url.path)){
 	if((*f)(handle->h.url.path) > 1)
@@ -3867,7 +3971,7 @@ url_launch(handle)
     }
     else
       q_status_message1(SM_ORDER, 2, 2,
-			"\"URL-Viewer\" not defined: Can't open %s",
+			"\"URL-Viewer\" not defined: Can't open %.200s",
 			handle->h.url.path);
     
     return(rv);
@@ -3978,8 +4082,8 @@ url_external_handler(handle, specific)
 	/*
 	 * Last chance, anything handling "text/html" in mailcap...
 	 */
-	if(!cmd && mailcap_can_display(TYPETEXT, "html", NULL))
-	  cmd = mailcap_build_command(TYPETEXT, "html", NULL, "_URL_", NULL);
+	if(!cmd && mailcap_can_display(TYPETEXT, "html", NULL, 0))
+	  cmd = mailcap_build_command(TYPETEXT, "html", NULL, "_URL_", NULL, 0);
     }
 
     return(cmd);
@@ -4066,6 +4170,8 @@ url_local_handler(s)
 	{"x-pine-gripe:", 13, gripe_gripe_to},
 	{"x-pine-help:", 11, url_local_helper},
 	{"x-pine-phone-home:", 18, url_local_phone_home},
+	{"x-pine-config:", 14, url_local_config},
+	{"x-pine-cert:", 12, url_local_certdetails},
 	{"#", 1, url_local_fragment},
 	{NULL, 0, NULL}
     };
@@ -4176,7 +4282,7 @@ url_local_mailto(url)
 	}
 
 	if(role)
-	  q_status_message1(SM_ORDER, 3, 4, "Composing using role \"%s\"",
+	  q_status_message1(SM_ORDER, 3, 4, "Composing using role \"%.200s\"",
 			    role->nick);
 
 	if(!was_a_body && role && role->template){
@@ -4300,7 +4406,7 @@ url_local_imap(url)
 
       case URL_IMAP_IMESSAGEPART :
       case URL_IMAP_IMESSAGELIST :
-	rv = do_broach_folder(folder, NULL);
+	rv = do_broach_folder(folder, NULL, NULL);
 	fs_give((void **) &folder);
 	switch(rv){
 	  case -1 :				/* utter failure */
@@ -4342,6 +4448,10 @@ url_local_imap(url)
 		 */
 /* BUG: not dealing with CHARSET yet */
 
+/* ANOTHER BUG: mail_criteria is a compatibility routine for IMAP2BIS
+ * so it doesn't know about IMAP4 search criteria, like SENTSINCE.
+ * It also doesn't handle literals. */
+
 		mail_search_full(ps_global->mail_stream, NULL,
 				 mail_criteria(search),
 				 SE_NOPREFETCH | SE_FREE);
@@ -4352,13 +4462,13 @@ url_local_imap(url)
 			      ps_global->msgmap, i, MN_SLCT, 1);
 
 		if(i = any_lflagged(ps_global->msgmap, MN_SLCT)){
-		    extern long zoom_index();
 
 		    q_status_message2(SM_ORDER, 0, 3,
-				      "%s message%s selected",
+				      "%.200s message%.200s selected",
 				      long2string(i), plural(i));
 		    /* Zoom the index! */
-		    zoom_index(ps_global, ps_global->msgmap);
+		    zoom_index(ps_global, ps_global->mail_stream,
+			       ps_global->msgmap);
 		}
 	    }
 	}
@@ -4406,7 +4516,7 @@ url_imap_folder(true_url, folder, uid_val, uid, search, silent)
 	*p++ = '\0';
 	server = rfc1738_str(p);
 	
-	/* only ";auth=*" supported */
+	/* only ";auth=*" supported (and also ";auth=anonymous") */
 	if(p = srchstr(url, ";auth=")){
 	    *p = '\0';
 	    auth = rfc1738_str(p + 6);
@@ -4504,7 +4614,7 @@ url_imap_folder(true_url, folder, uid_val, uid, search, silent)
 	    rv = URL_IMAP_IMESSAGELIST;
 	}
 
-	if(auth && *auth != '*')
+	if(auth && *auth != '*' && strucmp(auth, "anonymous"))
 	  q_status_message(SM_ORDER, 3, 3,
 	     "Unsupported authentication method.  Using standard login.");
 
@@ -4517,8 +4627,8 @@ url_imap_folder(true_url, folder, uid_val, uid, search, silent)
 				   + (user ? (strlen(user)+2) : 9))
 				  * sizeof(char));
 	sprintf(*folder, "{%s%s%s%s%s}%s%s", server,
-		(user || !auth) ? "/" : "",
-		user ? "user=\"" : (auth ? "" : "Anonymous"),
+		(user || !(auth && strucmp(auth, "anonymous"))) ? "/" : "",
+		user ? "user=\"" : ((auth && strucmp(auth, "anonymous")) ? "" : "Anonymous"),
 		user ? user : "",
 		user ? "\"" : "",
 		user ? "" : (strchr(mailbox, '/') ? "/" : ""), mailbox);
@@ -4565,7 +4675,7 @@ url_local_nntp(url)
 	else
 	  return(url_bogus(url, "No server specified"));
 
-	switch(do_broach_folder(rfc1738_str(folder), NULL)){
+	switch(do_broach_folder(rfc1738_str(folder), NULL, NULL)){
 	  case -1 :				/* utter failure */
 	    ps_global->next_screen = main_menu_screen;
 	    break;
@@ -4638,7 +4748,7 @@ url_local_news(url)
     }
     else{			/* fish first group from newsrc */
 	FOLDER_S  *f;
-	int	   i, alphaorder;
+	int	   alphaorder;
 
 	folder[0] = '\0';
 
@@ -4671,7 +4781,7 @@ url_local_news(url)
 	}
     }
 
-    if(do_broach_folder(rfc1738_str(folder), cntxt) < 0)
+    if(do_broach_folder(rfc1738_str(folder), cntxt, NULL) < 0)
       ps_global->next_screen = main_menu_screen;
     else
       ps_global->next_screen = mail_index_screen;
@@ -4713,7 +4823,7 @@ url_local_fragment(fragment)
     }
     else
       q_status_message1(SM_ORDER | SM_DING, 0, 3,
-			"Can't find fragment: %s", fragment);
+			"Can't find fragment: %.200s", fragment);
 
     return(1);
 }
@@ -4740,7 +4850,8 @@ url_bogus(url, reason)
     dprint(2, (debugfile, "-- bogus url \"%s\": %s\n",
 	       url ? url : "<NULL URL>", reason));
     if(url)
-      q_status_message3(SM_ORDER|SM_DING, 2, 3, "Malformed \"%.*s\" URL: %s",
+      q_status_message3(SM_ORDER|SM_DING, 2, 3,
+		        "Malformed \"%.*s\" URL: %.200s",
 			(void *) (strchr(url, ':') - url), url, reason);
 
     return(0);
@@ -4762,25 +4873,43 @@ Returns: 1 if errors encountered, 0 if everything went A-OK
 
  ----*/     
 int
-decode_text(att, msgno, pc, style, flags)
+decode_text(att, msgno, pc, handlesp, style, flags)
     ATTACH_S       *att;
     long            msgno;
     gf_io_t         pc;
+    HANDLE_S      **handlesp;
     DetachErrStyle  style;
     int		    flags;
 {
-    FILTLIST_S	filters[8];
+    FILTLIST_S	filters[12];
     char       *err, *charset;
     int		filtcnt = 0, error_found = 0, column, wrapit;
 
     column = (flags & FM_DISPLAY) ? ps_global->ttyo->screen_cols : 80;
     wrapit = column;
 
-    memset(filters, 0, 7 * sizeof(FILTLIST_S));
-    if(F_OFF(F_PASS_CONTROL_CHARS, ps_global)){
+    memset(filters, 0, sizeof(filters));
+    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+      filters[filtcnt++].filter = gf_2022_jp_to_euc;
+
+    if(charset = rfc2231_get_param(att->body->parameter,"charset",NULL,NULL)){
+	if(F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)){
+	    unsigned char *tab;
+
+	    if(tab = conversion_table(charset, ps_global->VAR_CHAR_SET)){
+		filters[filtcnt].filter = gf_convert_charset;
+		filters[filtcnt++].data = gf_convert_charset_opt(tab);
+	    }
+	}
+    }
+
+    if(!ps_global->pass_ctrl_chars){
 	filters[filtcnt++].filter = gf_escape_filter;
 	filters[filtcnt++].filter = gf_control_filter;
     }
+
+    if(flags & FM_DISPLAY)
+      filters[filtcnt++].filter = gf_tag_filter;
 
     /*
      * if it's just plain old text, look for url's
@@ -4791,9 +4920,9 @@ decode_text(att, msgno, pc, style, flags)
 	if((F_ON(F_VIEW_SEL_URL, ps_global)
 	    || F_ON(F_VIEW_SEL_URL_HOST, ps_global)
 	    || F_ON(F_SCAN_ADDR, ps_global))
-	   && (flags & FM_HANDLES)){
+	   && handlesp){
 	    filters[filtcnt].filter = gf_line_test;
-	    filters[filtcnt++].data = gf_line_test_opt(url_hilite, NULL);
+	    filters[filtcnt++].data = gf_line_test_opt(url_hilite, handlesp);
 	}
 
 	/*
@@ -4832,7 +4961,7 @@ decode_text(att, msgno, pc, style, flags)
 	int opts = 0;
 
 	if(flags & FM_DISPLAY){
-	    if(flags & FM_HANDLES)	/* pass on handles awareness */
+	    if(handlesp)		/* pass on handles awareness */
 	      opts |= GFHP_HANDLES;
 	}
 	else
@@ -4840,7 +4969,8 @@ decode_text(att, msgno, pc, style, flags)
 
 	wrapit = 0;		/* wrap already handled! */
 	filters[filtcnt].filter = gf_html2plain;
-	filters[filtcnt++].data = gf_html2plain_opt(NULL, column, opts);
+	filters[filtcnt++].data = gf_html2plain_opt(NULL, column, handlesp,
+						    opts);
     }
 
     if(wrapit && !(flags & FM_NOWRAP)){
@@ -4861,9 +4991,17 @@ decode_text(att, msgno, pc, style, flags)
 	if(strucmp(charset, "us-ascii")
 	   && (!ps_global->VAR_CHAR_SET
 	       || strucmp(charset, ps_global->VAR_CHAR_SET)))
-	  rv = charset_editorial(charset, msgno, flags, column, pc);
+	  rv = charset_editorial(charset, msgno, handlesp, flags, column, pc);
 
 	fs_give((void **) &charset);
+	if(!rv)
+	  goto write_error;
+    }
+    if(att->body->encoding > ENCQUOTEDPRINTABLE){
+	int rv = TRUE;
+
+	rv = encoding_editorial(att->body, column, pc);
+
 	if(!rv)
 	  goto write_error;
     }
@@ -4873,7 +5011,7 @@ decode_text(att, msgno, pc, style, flags)
     if(err) {
 	error_found++;
 	if(style == QStatus) {
-	    q_status_message1(SM_ORDER, 3, 4, "%s", err);
+	    q_status_message1(SM_ORDER, 3, 4, "%.200s", err);
 	} else if(style == InLine) {
 	    char buftmp[MAILTMPLEN];
 
@@ -4902,7 +5040,7 @@ decode_text(att, msgno, pc, style, flags)
 
   write_error:
     if(style == QStatus)
-      q_status_message1(SM_ORDER, 3, 4, "Error writing message: %s", 
+      q_status_message1(SM_ORDER, 3, 4, "Error writing message: %.200s", 
 			error_description(errno));
 
     return(1);
@@ -4920,8 +5058,15 @@ decode_text(att, msgno, pc, style, flags)
    NOTE: if the length of these should extend beyond 4 chars, fix
 	 MAX_ESC_LEN in filter.c
   ----*/
+#ifdef	_WINDOWS
 static char *known_escapes[] = {
     "(B",  "(J",  "$@",  "$B",			/* RFC 1468 */
+    "(H",
+    NULL};
+#else
+static char *known_escapes[] = {
+    "(B",  "(J",  "$@",  "$B",			/* RFC 1468 */
+    "(H",
     "$A",  "$(C", "$(D", ".A",  ".F",		/* added by RFC 1554 */
     "$)C", "$)A", "$*E", "$*X",			/* those in apng-draft */
     "$+G", "$+H", "$+I", "$+J", "$+K",
@@ -4930,6 +5075,7 @@ static char *known_escapes[] = {
     "-F",   "-G",  "-H",   "-L",  "-M",
     "-$(A", "$(B", "$)B", "$)D",
     NULL};
+#endif
 
 int
 match_escapes(esc_seq)
@@ -4966,13 +5112,14 @@ match_escapes(esc_seq)
 #define	FHT_WRTERR	-1
 #define	FHT_FTCHERR	1
 int
-format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
+format_header(stream, msgno, section, env, hdrs, prefix,handlesp,flags,final_pc)
     MAILSTREAM *stream;
     long	msgno;
     char       *section;
     ENVELOPE   *env;
     HEADER_S   *hdrs;
     char       *prefix;
+    HANDLE_S  **handlesp;
     int		flags;
     gf_io_t	final_pc;
 {
@@ -4982,7 +5129,6 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 	    *finish, *current;
     STORE_S *tmp_store;
     gf_io_t  tmp_pc, tmp_gc;
-    struct variable *vars = ps_global->vars;
 
     if(tmp_store = so_get(CharStar, NULL, EDIT_ACCESS))
       gf_set_so_writec(&tmp_pc, tmp_store);
@@ -5068,7 +5214,7 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 	      h = pine_fetchheader_lines_not(stream, msgno, section, fields);
 
 	    for(current = h;
-		h && delineate_this_header(h, NULL, current, &start, &finish);
+		h && delineate_this_header(NULL, current, &start, &finish);
 		current = finish){
 		char tmp[MAILTMPLEN+1];
 		char *colon_loc;
@@ -5082,9 +5228,18 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 		  colon_loc = NULL;
 
 		if(colon_loc && is_an_env_hdr(tmp)){
-		    /* pretty format for env hdrs */
-		    format_env_hdr(stream, msgno, section,
-				   env, tmp_pc, tmp, flags);
+		    char *dummystart, *dummyfinish;
+
+		    /*
+		     * Pretty format for env hdrs.
+		     * If the same header appears more than once, only
+		     * print the last to avoid duplicates.
+		     * They should have been combined in the env when parsed.
+		     */
+		    if(!delineate_this_header(tmp, current+1, &dummystart,
+					      &dummyfinish))
+		      format_env_hdr(stream, msgno, section,
+				     env, tmp_pc, tmp, flags);
 		}
 		else{
 		    if(rv = format_raw_hdr_string(start, finish, tmp_pc, flags))
@@ -5118,7 +5273,7 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 		     * and all continuation lines, and output.
 		     */
 		    for(current = h;
-			h && delineate_this_header(h,q,current,&start,&finish);
+			h && delineate_this_header(q,current,&start,&finish);
 			current = finish){
 			if(rv = format_raw_hdr_string(start, finish,
 						      tmp_pc, flags))
@@ -5155,7 +5310,7 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 		gf_set_so_readc(&tmp_gc, df_store);
 		if(errstr = dfilter(display_filter, tmp_store, tmp_pc, NULL)){
 		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				      "Formatting error: %s", errstr);
+				      "Formatting error: %.200s", errstr);
 		    rv = FHT_WRTERR;
 		}
 		else
@@ -5175,15 +5330,14 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 	}
 
 	if(!rv){
-	    COLOR_PAIR *color;
-
 	    gf_filter_init();
 	    gf_link_filter(gf_local_nvtnl, NULL);
 	    if((F_ON(F_VIEW_SEL_URL, ps_global)
-		|| F_ON(F_VIEW_SEL_URL_HOST, ps_global))
-	       && (flags & FM_HANDLES))
+		|| F_ON(F_VIEW_SEL_URL_HOST, ps_global)
+		|| F_ON(F_SCAN_ADDR, ps_global))
+	       && handlesp)
 	      gf_link_filter(gf_line_test,
-			     gf_line_test_opt(url_hilite_hdr, NULL));
+			     gf_line_test_opt(url_hilite_hdr, handlesp));
 
 	    if((flags & FM_DISPLAY)
 	       && !(flags & FM_NOCOLOR)
@@ -5197,7 +5351,7 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 
 	    gf_link_filter(gf_wrap,
 			   gf_wrap_filter_opt(column, column, 4,
-		     GFW_ONCOMMA | ((flags & FM_HANDLES) ? GFW_HANDLES : 0)));
+		     GFW_ONCOMMA | (handlesp ? GFW_HANDLES : 0)));
 
 	    if(prefix && *prefix)
 	      gf_link_filter(gf_prefix, gf_prefix_opt(prefix));
@@ -5207,7 +5361,7 @@ format_header(stream, msgno, section, env, hdrs, prefix, flags, final_pc)
 	    if(errstr = gf_pipe(tmp_gc, final_pc)){
 		rv = FHT_WRTERR;
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Can't build header : %s", errstr);
+				  "Can't build header : %.200s", errstr);
 	    }
 	}
 
@@ -5265,8 +5419,9 @@ format_raw_header(stream, msgno, section, pc)
 		if(ISRFCEOL(h))		/* all done! */
 		  return(FHT_OK);
 	    }
-	    else if(F_OFF(F_PASS_CONTROL_CHARS, ps_global) && CAN_DISPLAY(*h)){
-		if(!((*pc)('^') && (*pc)(*h++ + '@')))
+	    else if(!ps_global->pass_ctrl_chars && CAN_DISPLAY(*h) &&
+		    !(*(h+1) && *h == ESCAPE && match_escapes(h+1))){
+		if(!((*pc)('^') && (*pc)((*h++ & 0x7f) + '@')))
 		  return(FHT_WRTERR);
 	    }
 	    else if(!(*pc)(*h++))
@@ -5306,9 +5461,8 @@ format_envelope(s, n, sect, e, pc, which, flags)
     long	which;
     int         flags;
 {
-    struct variable *vars = ps_global->vars;
     char       *q;
-    unsigned char *p2;
+    char       *p2;
     char        buftmp[MAILTMPLEN];
     
     if(!e)
@@ -5317,10 +5471,10 @@ format_envelope(s, n, sect, e, pc, which, flags)
     if((which & FE_DATE) && e->date) {
 	q = "Date: ";
 	sprintf(buftmp, "%.200s", e->date);
-	p2 = rfc1522_decode((unsigned char *) tmp_20k_buf, SIZEOF_20KBUF,
-			    buftmp, NULL);
+	p2 = (char *)rfc1522_decode((unsigned char *) tmp_20k_buf,
+				    SIZEOF_20KBUF, buftmp, NULL);
 	gf_puts(q, pc);
-	format_env_puts((char *) p2, pc);
+	format_env_puts(p2, pc);
 	gf_puts(NEWLINE, pc);
     }
 
@@ -5344,7 +5498,7 @@ format_envelope(s, n, sect, e, pc, which, flags)
       format_addr_string(s, n, sect, "Return-Path: ", e->return_path,
 			 flags, pc);
 
-    if((which & FE_NEWSGROUPS) && e->newsgroups && !ps_global->nr_mode){
+    if((which & FE_NEWSGROUPS) && e->newsgroups){
 	format_newsgroup_string("Newsgroups: ", e->newsgroups, flags, pc);
 	if(e->ngbogus)
 	  q_status_message(SM_ORDER, 0, 3,
@@ -5355,27 +5509,12 @@ format_envelope(s, n, sect, e, pc, which, flags)
       format_newsgroup_string("Followup-To: ", e->followup_to, flags, pc);
 
     if((which & FE_SUBJECT) && e->subject && e->subject[0]){
-	size_t	       n, len;
-	unsigned char *p, *tmp = NULL;
-
 	q = "Subject: ";
 	gf_puts(q, pc);
 
-	if((n = strlen(e->subject)) > SIZEOF_20KBUF-1){
-	    len = n+1;
-	    p = tmp = (unsigned char *) fs_get(len * sizeof(unsigned char));
-	}
-	else{
-	    len = SIZEOF_20KBUF;
-	    p = (unsigned char *) tmp_20k_buf;
-	}
-	  
-	p2 = rfc1522_decode(p, len, e->subject, NULL);
+	p2 = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)tmp_20k_buf, 10000, e->subject, NULL), SIZEOF_20KBUF-10000);
 
-	format_env_puts((char *)p2, pc);
-
-	if(tmp)
-	  fs_give((void **) &tmp);
+	format_env_puts(p2, pc);
 
 	gf_puts(NEWLINE, pc);
     }
@@ -5387,27 +5526,24 @@ format_envelope(s, n, sect, e, pc, which, flags)
     if((which & FE_MESSAGEID) && e->message_id){
 	q = "Message-ID: ";
 	gf_puts(q, pc);
-	p2 = rfc1522_decode((unsigned char *) tmp_20k_buf,
-			    SIZEOF_20KBUF, e->message_id, NULL);
-	format_env_puts((char *)p2, pc);
+	p2 = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)tmp_20k_buf, 10000, e->message_id, NULL), SIZEOF_20KBUF-10000);
+	format_env_puts(p2, pc);
 	gf_puts(NEWLINE, pc);
     }
 
     if((which & FE_INREPLYTO) && e->in_reply_to){
 	q = "In-Reply-To: ";
 	gf_puts(q, pc);
-	p2 = rfc1522_decode((unsigned char *)tmp_20k_buf,
-			    SIZEOF_20KBUF, e->in_reply_to, NULL);
-	format_env_puts((char *)p2, pc);
+	p2 = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)tmp_20k_buf, 10000, e->in_reply_to, NULL), SIZEOF_20KBUF-10000);
+	format_env_puts(p2, pc);
 	gf_puts(NEWLINE, pc);
     }
 
     if((which & FE_REFERENCES) && e->references) {
 	q = "References: ";
 	gf_puts(q, pc);
-	p2 = rfc1522_decode((unsigned char *) tmp_20k_buf,
-			    SIZEOF_20KBUF, e->references, NULL);
-	format_env_puts((char *)p2, pc);
+	p2 = istrncpy((char *)(tmp_20k_buf+10000), (char *)rfc1522_decode((unsigned char *)tmp_20k_buf, 10000, e->references, NULL), SIZEOF_20KBUF-10000);
+	format_env_puts(p2, pc);
 	gf_puts(NEWLINE, pc);
     }
 }
@@ -5425,7 +5561,7 @@ hdr_color(fieldname, value)
 {
     HDR_COLOR_S *hc = NULL;
     COLOR_PAIR  *color_pair = NULL;
-    char        *colon, *fname, *p;
+    char        *colon, *fname;
     char         fbuf[FBUF_LEN+1];
     int          gotit;
     PATTERN_S   *pat;
@@ -5593,9 +5729,8 @@ format_addr_string(stream, msgno, section, field_name, addr, flags, pc)
 	}
 
 	ptmp	       = addr->personal;	/* RFC 1522 personal name? */
-	addr->personal = (char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
-						 SIZEOF_20KBUF,
-						 addr->personal, NULL);
+	addr->personal = istrncpy((char *)tmp_20k_buf, (char *)rfc1522_decode((unsigned char *)(tmp_20k_buf+10000), SIZEOF_20KBUF-10000, addr->personal, NULL), 10000);
+	tmp_20k_buf[10000-1] = '\0';
 
 	if(!trailing)				/* 1st pass, just address */
 	  trailing++;
@@ -5916,8 +6051,9 @@ format_raw_hdr_string(start, finish, pc, flags)
 
 	  current += 2;
       }
-      else if(F_OFF(F_PASS_CONTROL_CHARS, ps_global) && CAN_DISPLAY(*current)){
-	  if(!((*pc)('^') && (*pc)(*current++ + '@')))
+      else if(!ps_global->pass_ctrl_chars && CAN_DISPLAY(*current) &&
+	     !(*(current+1) && *current == ESCAPE && match_escapes(current+1))){
+	  if(!((*pc)('^') && (*pc)((*current++ & 0x7f) + '@')))
 	    rv = FHT_WRTERR;
       }
       else if(!(*pc)(*current++))
@@ -5948,12 +6084,12 @@ format_env_puts(s, pc)
     char    *s;
     gf_io_t  pc;
 {
-    if(F_ON(F_PASS_CONTROL_CHARS, ps_global))
+    if(ps_global->pass_ctrl_chars)
       return(gf_puts(s, pc));
 
     for(; *s; s++)
-      if(CAN_DISPLAY(*s)){
-	  if(!((*pc)('^') && (*pc)(*s + '@')))
+      if(CAN_DISPLAY(*s) && !(*(s+1) && *s == ESCAPE && match_escapes(s+1))){
+	  if(!((*pc)('^') && (*pc)((*s & 0x7f) + '@')))
 	    return(0);
       }
       else if(!(*pc)(*s))
@@ -5997,18 +6133,20 @@ part_desc(number, body, type, width, pc)
       return("No space for description");
 
     sprintf(buftmp, "%.200s", body->description ? body->description : "");
-    sprintf(tmp_20k_buf, "Part %s, %s%.2048s%s%s  %s%s.",
+    sprintf(tmp_20k_buf+10000, "Part %s, %s%.2048s%s%s  %s%s.",
             number,
             body->description == NULL ? "" : "\"",
             body->description == NULL ? ""
-	      : (char *)rfc1522_decode((unsigned char *)(tmp_20k_buf+10000),
-				       SIZEOF_20KBUF-10000, buftmp, NULL),
+	      : (char *)rfc1522_decode((unsigned char *)tmp_20k_buf,
+				       10000, buftmp, NULL),
             body->description == NULL ? "" : "\"  ",
             type_desc(body->type, body->subtype, body->parameter, 1),
             body->type == TYPETEXT ? comatose(body->size.lines) :
                                      byte_string(body->size.bytes),
             body->type == TYPETEXT ? " lines" : "");
 
+    istrncpy((char *)tmp_20k_buf, (char *)(tmp_20k_buf+10000), 10000);
+    tmp_20k_buf[10000] = '\0';
 
     t = &tmp_20k_buf[strlen(tmp_20k_buf)];
 
@@ -6074,6 +6212,7 @@ scrolltool(sparms)
     int              result, done, ch, cmd, found_on, found_on_col,
 		     first_view, force, scroll_lines, km_size,
 		     cursor_row, cursor_col, km_popped;
+    long             jn;
     struct key_menu *km;
     HANDLE_S	    *next_handle;
     bitmap_t         bitmap;
@@ -6107,25 +6246,21 @@ scrolltool(sparms)
     }
     else{
 	setbitmap(bitmap);
-	if(ps_global->anonymous) {
-	    km = &nr_anon_view_keymenu;
-	}
-	else if(ps_global->nr_mode) {
-	    km = &nr_view_keymenu;
-	}
-	else{
-	  km = &simple_text_keymenu;
+	km = &simple_text_keymenu;
 #ifdef	_WINDOWS
-	  sparms->mouse.popup = simple_text_popup;
+	sparms->mouse.popup = simple_text_popup;
 #endif
-	}
     }
 
     if(!sparms->bar.title)
       sparms->bar.title = "Text";
 
-    if(sparms->bar.style == TitleBarNone)
-      sparms->bar.style = MsgTextPercent;
+    if(sparms->bar.style == TitleBarNone){
+	if(THREADING() && ps_global->viewing_a_thread)
+	  sparms->bar.style = ThrdMsgPercent;
+	else
+	  sparms->bar.style = MsgTextPercent;
+    }
 
     switch(sparms->start.on){
       case LastPage :
@@ -6196,7 +6331,7 @@ scrolltool(sparms)
             ps_global->mangled_body   = 1;
 	}
 
-        if(streams_died())
+        if(!sparms->quell_newmail && streams_died())
           ps_global->mangled_header = 1;
 
         dprint(9, (debugfile, "@@@@ current:%ld\n",
@@ -6282,7 +6417,8 @@ scrolltool(sparms)
 	  q_status_message(SM_ORDER, 0, 3, HANDLE_INIT_MSG);
 
 	/*============ Check for New Mail and CheckPoint ============*/
-        if(new_mail(force, first_view ? 0 : NM_TIMING(ch), NM_STATUS_MSG) >= 0){
+        if(!sparms->quell_newmail &&
+	   new_mail(force, first_view ? 0 : NM_TIMING(ch), NM_STATUS_MSG) >= 0){
 	    update_scroll_titlebar(cur_top_line, 1);
 	    if(ps_global->mangled_footer)
               draw_keymenu(km, bitmap, ps_global->ttyo->screen_cols,
@@ -6301,7 +6437,7 @@ scrolltool(sparms)
 	}
 
 	if(first_view && num_display_lines >= scroll_text_lines())
-	  q_status_message1(SM_INFO, 0, 1, "ALL of %s", STYLE_NAME(sparms));
+	  q_status_message1(SM_INFO, 0, 1, "ALL of %.200s", STYLE_NAME(sparms));
 			    
 
 	force      = 0;		/* may not need to next time around */
@@ -6383,7 +6519,7 @@ scrolltool(sparms)
 	mswin_allowcopy(mswin_readscrollbuf);
 	mswin_setscrollcallback(pcpine_do_scroll);
 
-	if(sparms->help.text != NO_HELP && !ps_global->nr_mode)
+	if(sparms->help.text != NO_HELP)
 	  mswin_sethelptextcallback(pcpine_help_scroll);
 
 	mswin_setresizecallback(pcpine_resize_scroll);
@@ -6437,7 +6573,7 @@ scrolltool(sparms)
 	    }
 
 	    whereis_pos.row = 0;
-            if(sparms->help.text == NO_HELP || ps_global->nr_mode){
+            if(sparms->help.text == NO_HELP){
                 q_status_message(SM_ORDER, 0, 5,
 				 "No help text currently available");
                 break;
@@ -6478,7 +6614,7 @@ scrolltool(sparms)
 		cur_top_line -= scroll_lines;
 		if(cur_top_line <= 0){
 		    cur_top_line = 0;
-		    q_status_message1(SM_INFO, 0, 1, "START of %s",
+		    q_status_message1(SM_INFO, 0, 1, "START of %.200s",
 				      STYLE_NAME(sparms));
 		}
 	    }
@@ -6494,7 +6630,7 @@ scrolltool(sparms)
 		}
 
 		if(!next_handle)
-		  q_status_message1(SM_ORDER, 0, 1, "Already at start of %s",
+		  q_status_message1(SM_ORDER, 0, 1, "Already at start of %.200s",
 				    STYLE_NAME(sparms));
 
 	    }
@@ -6512,12 +6648,12 @@ scrolltool(sparms)
 		cur_top_line += scroll_lines;
 
 		if(cur_top_line + num_display_lines >= scroll_text_lines())
-		  q_status_message1(SM_INFO, 0, 1, "END of %s",
+		  q_status_message1(SM_INFO, 0, 1, "END of %.200s",
 				    STYLE_NAME(sparms));
             }
 	    else if(!sparms->end_scroll
 		    || !(done = (*sparms->end_scroll)(sparms))){
-		q_status_message1(SM_ORDER, 0, 1, "Already at end of %s",
+		q_status_message1(SM_ORDER, 0, 1, "Already at end of %.200s",
 				  STYLE_NAME(sparms));
 		/* hilite last available handle */
 		if(sparms->text.handles){
@@ -6587,11 +6723,11 @@ scrolltool(sparms)
 		    whereis_pos.row = 0;
 		    cur_top_line++;
 		    if(cur_top_line + num_display_lines >= scroll_text_lines())
-		      q_status_message1(SM_INFO, 0, 1, "END of %s",
+		      q_status_message1(SM_INFO, 0, 1, "END of %.200s",
 					STYLE_NAME(sparms));
 		}
 		else
-		  q_status_message1(SM_ORDER, 0, 1, "Already at end of %s",
+		  q_status_message1(SM_ORDER, 0, 1, "Already at end of %.200s",
 				    STYLE_NAME(sparms));
 	    }
 
@@ -6654,11 +6790,12 @@ scrolltool(sparms)
 		if(cur_top_line){
 		    cur_top_line--;
 		    if(cur_top_line == 0)
-		      q_status_message1(SM_INFO, 0, 1, "START of %s",
+		      q_status_message1(SM_INFO, 0, 1, "START of %.200s",
 					STYLE_NAME(sparms));
 		}
 		else
-		  q_status_message1(SM_ORDER, 0, 1, "Already at start of %s",
+		  q_status_message1(SM_ORDER, 0, 1,
+				    "Already at start of %.200s",
 				    STYLE_NAME(sparms));
 	    }
 
@@ -6693,7 +6830,7 @@ scrolltool(sparms)
 		}
 
 		q_status_message1(SM_ORDER, 0, 1,
-				  "Already on last item in %s",
+				  "Already on last item in %.200s",
 				  STYLE_NAME(sparms));
 	    }
 
@@ -6728,7 +6865,7 @@ scrolltool(sparms)
 		}
 
 		q_status_message1(SM_ORDER, 0, 1,
-				  "Already on first item in %s",
+				  "Already on first item in %.200s",
 				  STYLE_NAME(sparms));
 	    }
 
@@ -6795,7 +6932,6 @@ scrolltool(sparms)
 		 }
 	     }
 	     else if(sparms->srch_handle){
-		 POSLIST_S  *lp = NULL;
 		 HANDLE_S   *h;
 
 		 if(h = scroll_handle_next_sel(sparms->text.handles)){
@@ -6879,7 +7015,7 @@ scrolltool(sparms)
 		  q_status_message(SM_ORDER, 0, 3, tmp_20k_buf);
 		else
 		  q_status_message2(SM_ORDER, 0, 3,
-				    "%sFound on line %s on screen",
+				    "%.200sFound on line %.200s on screen",
 				    result ? "Search wrapped to start. " : "",
 				    int2string(whereis_pos.row));
 
@@ -6910,8 +7046,19 @@ scrolltool(sparms)
 	     *	     we need to get at the number..
 	     */
 	  case MC_JUMP :
-	    if(jump_to(ps_global->msgmap, -FOOTER_ROWS(ps_global), ch))
+	    jn = jump_to(ps_global->msgmap, -FOOTER_ROWS(ps_global), ch,
+			 sparms, View);
+	    if(sparms && sparms->jump_is_debug)
 	      done = 1;
+	    else if(jn > 0 && jn != mn_get_cur(ps_global->msgmap)){
+
+		if(mn_total_cur(ps_global->msgmap) > 1L)
+		  mn_reset_cur(ps_global->msgmap, jn);
+		else
+		  mn_set_cur(ps_global->msgmap, jn);
+		
+		done = 1;
+	    }
 	    else
 	      ps_global->mangled_footer = 1;
 
@@ -6922,7 +7069,6 @@ scrolltool(sparms)
             /*-------------- Mouse Event -------------*/
 	  case MC_MOUSE:
 	    {
-	      static int lastWind;
 	      MOUSEPRESS mp;
 	      long	line;
 	      int	key;
@@ -7122,7 +7268,7 @@ scrolltool(sparms)
 	      result = (*sparms->proc.tool)(cmd, ps_global->msgmap, sparms);
 	    else
 	      result = process_cmd(ps_global, ps_global->mail_stream,
-				   ps_global->msgmap, cmd, 0, &force);
+				   ps_global->msgmap, cmd, View, &force);
 
 	    dprint(7, (debugfile, "PROCESS_CMD return: %d\n", result));
 
@@ -7168,6 +7314,9 @@ scrolltool(sparms)
     ps_global->redrawer	= NULL;	/* next statement makes this invalid! */
     zero_scroll_text();		/* very important to zero out on return!!! */
     scroll_state(SS_FREE);
+    if(sparms->bar.color)
+      free_color_pair(&sparms->bar.color);
+
 #ifdef	_WINDOWS
     scroll_setrange(0L, 0L);
 #endif
@@ -7338,12 +7487,77 @@ update_scroll_titlebar(cur_top_line, redraw)
     long	new_line = (cur_top_line + num_display_lines > st->num_lines)
 			     ? st->num_lines
 			     : cur_top_line + num_display_lines;
+    long        raw_msgno;
+    COLOR_PAIR *returned_color = NULL;
+    COLOR_PAIR *titlecolor = NULL;
+    int         colormatch;
+    SEARCHSET  *ss = NULL;
+
+    if(st->parms->use_indexline_color
+       && ps_global->titlebar_color_style != TBAR_COLOR_DEFAULT){
+	raw_msgno = mn_m2raw(ps_global->msgmap, mn_get_cur(ps_global->msgmap));
+	ss = mail_newsearchset();
+	ss->first = ss->last = (unsigned long) raw_msgno;
+
+	if(ss){
+	    PAT_STATE  *pstate = NULL;
+
+	    colormatch = get_index_line_color(ps_global->mail_stream,
+					      ss, &pstate, &returned_color);
+	    mail_free_searchset(&ss);
+
+	    /*
+	     * This is a bit tricky. If there is a colormatch but returned_color
+	     * is NULL, that means that the user explicitly wanted the
+	     * Normal color used in this index line, so that is what we
+	     * use. If no colormatch then we will use the TITLE color
+	     * instead of Normal.
+	     */
+	    if(colormatch){
+		if(returned_color)
+		  titlecolor = returned_color;
+		else
+		  titlecolor = new_color_pair(ps_global->VAR_NORM_FORE_COLOR,
+					      ps_global->VAR_NORM_BACK_COLOR);
+	    }
+
+	    if(titlecolor
+	       && ps_global->titlebar_color_style == TBAR_COLOR_REV_INDEXLINE){
+		char cbuf[MAXCOLORLEN+1];
+
+		strncpy(cbuf, titlecolor->fg, MAXCOLORLEN);
+		strncpy(titlecolor->fg, titlecolor->bg, MAXCOLORLEN);
+		strncpy(titlecolor->bg, cbuf, MAXCOLORLEN);
+	    }
+	}
+	
+	/* Did the color change? */
+	if((!titlecolor && st->parms->bar.color)
+	   ||
+	   (titlecolor && !st->parms->bar.color)
+	   ||
+	   (titlecolor && st->parms->bar.color
+	    && (strcmp(titlecolor->fg, st->parms->bar.color->fg)
+		|| strcmp(titlecolor->bg, st->parms->bar.color->bg)))){
+
+	    redraw++;
+	    if(st->parms->bar.color)
+	      free_color_pair(&st->parms->bar.color);
+	    
+	    st->parms->bar.color = titlecolor;
+	    titlecolor = NULL;
+	}
+
+	if(titlecolor)
+	  free_color_pair(&titlecolor);
+    }
+
 
     if(redraw){
 	set_titlebar(st->parms->bar.title, ps_global->mail_stream,
 		     ps_global->context_current, ps_global->cur_folder,
 		     ps_global->msgmap, 1, st->parms->bar.style,
-		     new_line, st->num_lines);
+		     new_line, st->num_lines, st->parms->bar.color);
 	ps_global->mangled_header = 0;
     }
     else if(st->parms->bar.style == TextPercent)
@@ -7729,7 +7943,6 @@ ScrollFile(line)
     SCRLCTRL_S	 *st = scroll_state(SS_CUR);
     SCRLFILE_S	  sf;
     register int  i;
-	     int j, state = 0;
 
     if(line <= 0){		/* reset and load first couple of pages */
 	fseek((FILE *) st->parms->text.text, 0L, 0);
@@ -8048,7 +8261,7 @@ ng_scroll_edit(context, index)
 {
     SCRLCTRL_S *st = scroll_state(SS_CUR);
     char *ngp, tmp[MAILTMPLEN+10];
-    int i, len;
+    int   len;
     FOLDER_S *f;
 
     if (!(f = folder_entry(index, FOLDERS(context))))
@@ -8168,7 +8381,6 @@ scroll_add_listmode(context, total)
     SCRLCTRL_S	    *st = scroll_state(SS_CUR);
     long             i;
     char            *ngp, *ngname, handle_str[MAILTMPLEN];
-    FOLDER_S        *f;
     HANDLE_S        *h;
 
 
@@ -8252,8 +8464,9 @@ search_scroll_text(start_line, start_col, word, cursor_pos, offset_in_line)
     offset = (st->parms->text.src == FileStar) ? st->top_text_line : 0;
 
     /* lower the case once rather than in each search_scroll_line */
-    lcase(strncpy(loc_word, word, sizeof(loc_word)-1));
+    strncpy(loc_word, word, sizeof(loc_word)-1);
     loc_word[sizeof(loc_word)-1] = '\0';
+    lcase(loc_word);
 
     if(start_line < st->num_lines){
 	/* search first line starting at position start_col in */
@@ -8462,9 +8675,9 @@ display_output_file(filename, title, alt_msg, mode)
 		if(*msg_p[0])
 		  for(i = 0; i < msg_q; i++)
 		    q_status_message2(SM_ORDER, 3, 4,
-				      "%s Result: %s", title, msg_p[i]);
+				      "%.200s Result: %.200s", title, msg_p[i]);
 		else
-		  q_status_message2(SM_ORDER, 0, 4, "%s%s", title,
+		  q_status_message2(SM_ORDER, 0, 4, "%.200s%.200s", title,
 				    alt_msg
 				      ? alt_msg
 				      : " command completed with no output");
@@ -8477,7 +8690,7 @@ display_output_file(filename, title, alt_msg, mode)
 	    char c;
 
 	    if(fread(&c, sizeof(char), (size_t) 1, f) < 1){
-		q_status_message2(SM_ORDER, 0, 4, "%s%s", title,
+		q_status_message2(SM_ORDER, 0, 4, "%.200s%.200s", title,
 				  alt_msg
 				    ? alt_msg
 				    : " command completed with no output");
@@ -8878,7 +9091,7 @@ format_message_popup(sparms, in_handle)
 			       mn_m2raw(ps_global->msgmap,
 					mn_get_cur(ps_global->msgmap)),
 			       h->h.attach->number, &n, TRUE);
-	      q_status_message2(SM_ORDER, 0, 3, "Attachment %s %s!",
+	      q_status_message2(SM_ORDER, 0, 3, "Attachment %.200s %.200s!",
 				h->h.attach->number,
 				(n & MSG_EX_DELETE) ? "deleted" : "undeleted");
 

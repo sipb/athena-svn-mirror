@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: init.c,v 1.1.1.1 2001-02-19 07:12:04 ghudson Exp $";
+static char rcsid[] = "$Id: init.c,v 1.1.1.2 2003-02-12 08:02:15 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: init.c,v 1.1.1.1 2001-02-19 07:12:04 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -72,12 +72,6 @@ typedef enum {Sapling, Seedling, Seasoned} FeatureLevel;
 
 #define	TO_BAIL_THRESHOLD	60
 
-#define DF_GOTO_DEFAULT_RULE "inbox-or-folder-in-recent-collection"
-#define DF_INCOMING_STARTUP "first-unseen"
-#define DF_PRUNING_RULE  "ask-ask"
-
-#define REMOTE_DATA_TYPE      TYPETEXT
-#define REMOTE_DATA_VERS_NUM  1
 #define METASTR "\nremote-abook-metafile="
 static char meta_prefix[] = ".ab";
 
@@ -96,7 +90,6 @@ typedef struct remote_data_meta {
 /*
  * Internal prototypes
  */
-char	*expand_variables PROTO((char *, char *, int));
 void	 read_pinerc PROTO((PINERC_S *, struct variable *, ParsePinerc));
 int	 compare_sm_files PROTO((const QSType *, const QSType *));
 /* AIX gives warning here 'cause it can't quite cope with enums */
@@ -105,21 +98,30 @@ void	 process_feature_list PROTO((struct pine *, char **, int , int, int));
 void     display_init_err PROTO((char *, int));
 void     rd_grope_for_metaname PROTO((void));
 char    *rd_metadata_name PROTO((void));
-REMDATA_META_S *rd_find_our_metadata PROTO((char *, unsigned *));
+REMDATA_META_S *rd_find_our_metadata PROTO((char *, unsigned long *));
 int      rd_init_remote PROTO((REMDATA_S *, int));
 int      rd_add_hdr_msg PROTO((REMDATA_S *, char *));
-int      rd_store_fake_hdrs PROTO((STORE_S *, char *, char *, char *, char *));
-int      rd_chk_for_hdr_msg PROTO((MAILSTREAM *, char *));
+int      rd_store_fake_hdrs PROTO((REMDATA_S *, char *, char *, char *));
+int      rd_chk_for_hdr_msg PROTO((MAILSTREAM **, REMDATA_S *, char **));
 int      rd_meta_is_broken PROTO((FILE *));
 char    *rd_derived_cachename PROTO((char *));
+int      rd_upgrade_cookies PROTO((REMDATA_S *, long, int));
 int      copy_localfile_to_remotefldr PROTO((RemType, char *, char *, void *,
 					     char **));
 char    *read_remote_pinerc PROTO((PINERC_S *, ParsePinerc));
 void     set_current_pattern_vals PROTO((struct pine *));
 void     convert_pattern_data PROTO((void));
+void     convert_filts_pattern_data PROTO((void));
+void     convert_scores_pattern_data PROTO((void));
 void     convert_pinerc_patterns PROTO((long));
+void     convert_pinerc_filts_patterns PROTO((long));
+void     convert_pinerc_scores_patterns PROTO((long));
 int      add_to_pattern PROTO((PAT_S *, long));
 void     convert_pinerc_to_remote PROTO((struct pine *, char *));
+char    *native_nl PROTO((char *));
+int      rd_check_for_suspect_data PROTO((REMDATA_S *));
+int      rd_prompt_about_forged_remote_data PROTO((int, REMDATA_S *, char *));
+int      rd_answer_forge_warning PROTO((int, MSGNO_S *, SCROLL_S *));
 
 
 #if	defined(DOS_EXTRA) && !(defined(WIN32) || defined (_WINDOWS))
@@ -192,6 +194,10 @@ CONF_TXT_T cf_text_view_headers[] =	"When viewing messages, include this list of
 
 CONF_TXT_T cf_text_color_style[] =	"Controls display of color";
 
+CONF_TXT_T cf_text_current_indexline_style[] =	"Controls display of color for current index line";
+
+CONF_TXT_T cf_text_titlebar_color_style[] =	"Controls display of color for the titlebar at top of screen";
+
 CONF_TXT_T cf_text_view_hdr_color[] =	"When viewing messages, these are the header colors";
 
 CONF_TXT_T cf_text_save_msg_name_rule[] =	"Determines default folder name for Saves...\n# Choices: default-folder, by-sender, by-from, by-recipient, last-folder-used.\n# Default: \"default-folder\", i.e. \"saved-messages\" (Unix) or \"SAVEMAIL\" (PC).";
@@ -226,6 +232,16 @@ CONF_TXT_T cf_text_inc_startup[] =	"Sets message which cursor begins on. Choices
 
 CONF_TXT_T cf_pruning_rule[] =		"Allows a default answer for the prune folder questions. Choices: yes-ask,\n# yes-no, no-ask, no-no, ask-ask, ask-no. Default: \"ask-ask\".";
 
+CONF_TXT_T cf_text_thread_disp_style[] = "Style that MESSAGE INDEX is displayed in when threading.";
+
+CONF_TXT_T cf_text_thread_index_style[] = "Style of THREAD INDEX or default MESSAGE INDEX when threading.";
+
+CONF_TXT_T cf_text_thread_more_char[] =	"When threading, character used to indicate collapsed messages underneath.";
+
+CONF_TXT_T cf_text_thread_exp_char[] =	"When threading, character used to indicate expanded messages underneath.";
+
+CONF_TXT_T cf_text_thread_lastreply_char[] =	"When threading, character used to indicate this is the last reply\n# to the parent of this message.";
+
 CONF_TXT_T cf_text_use_only_domain_name[] = "If \"user-domain\" not set, strips hostname in FROM address. (Unix only)";
 
 CONF_TXT_T cf_text_printer[] =		"Your default printer selection";
@@ -245,6 +261,12 @@ CONF_TXT_T cf_text_disable_drivers[] =		"List of mail drivers to disable.";
 CONF_TXT_T cf_text_disable_auths[] =		"List of SASL authenticators to disable.";
 
 CONF_TXT_T cf_text_remote_abook_metafile[] =	"Set by Pine; contains data for caching remote address books.";
+
+CONF_TXT_T cf_text_old_patterns[] =		"Patterns is obsolete, use patterns-xxx";
+
+CONF_TXT_T cf_text_old_filters[] =		"Patterns-filters is obsolete, use patterns-filters2";
+
+CONF_TXT_T cf_text_old_scores[] =		"Patterns-scores is obsolete, use patterns-scores2";
 
 CONF_TXT_T cf_text_patterns[] =			"Patterns and their actions are stored here.";
 
@@ -312,6 +334,8 @@ CONF_TXT_T cf_text_mimetype_path[] =	"Sets the search path for the mimetypes con
 
 CONF_TXT_T cf_text_user_input_timeo[] =	"If no user input for this many hours, Pine will exit if in an idle loop\n# waiting for a new command.  If set to zero (the default), then there will\n# be no timeout.";
 
+CONF_TXT_T cf_text_debug_mem[] =	"This many btyes of memory is used for holding recent status messages and\n# debugging output. Default is 500,000.";
+
 CONF_TXT_T cf_text_tcp_open_timeo[] =	"Sets the time in seconds that Pine will attempt to open a network\n# connection.  The default is 30, the minimum is 5, and the maximum is\n# system defined (typically 75).";
 
 CONF_TXT_T cf_text_tcp_read_timeo[] =	"Network read warning timeout. The default is 15, the minimum is 5, and the\n# maximum is 1000.";
@@ -356,7 +380,7 @@ CONF_TXT_T cf_text_folder_extension[] =	"Folder-extension is obsolete";
 
 CONF_TXT_T cf_text_normal_foreground_color[] =	"Choose: black, blue, green, cyan, red, magenta, yellow, or white.";
 
-CONF_TXT_T cf_text_window_position[] =	"Window position in the format: CxR+X+Y\n# Where C and R are the window size in characters and X and Y are the\n# screen position of the top left corner of the window.";
+CONF_TXT_T cf_text_window_position[] =	"Window position in the format: CxR+X+Y\n# Where C and R are the window size in characters and X and Y are the\n# screen position of the top left corner of the window.\n# This is no longer used unless position is not set in registry.";
 
 CONF_TXT_T cf_text_newsrc_path[] =		"Full path and name of NEWSRC file";
 
@@ -456,6 +480,16 @@ static struct variable variables[] = {
 				cf_text_inc_startup},
 {"pruning-rule",			0, 1, 0, 1, 1, 0, 0, 0, 0,
 				cf_pruning_rule},
+{"threading-display-style",		0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_thread_disp_style},
+{"threading-index-style",		0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_thread_index_style},
+{"threading-indicator-character",	0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_thread_more_char},
+{"threading-expanded-character",	0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_thread_exp_char},
+{"threading-lastreply-character",	0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_thread_lastreply_char},
 {"character-set",			0, 1, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_character_set},
 {"editor",				0, 1, 0, 1, 1, 1, 0, 0, 0,
@@ -558,6 +592,10 @@ static struct variable variables[] = {
 				cf_text_oper_dir},
 {"user-input-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_user_input_timeo},
+#ifdef DEBUGJOURNAL
+{"debug-memory",			0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_debug_mem},
+#endif
 {"tcp-open-timeout",			0, 1, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_tcp_open_timeo},
 {"tcp-read-warning-timeout",		0, 1, 0, 1, 1, 0, 0, 0, 0,
@@ -597,14 +635,20 @@ static struct variable variables[] = {
 {"personal-print-category",		0, 1, 0, 1, 0, 0, 0, 0, 0,
 				cf_text_personal_print_cat},
 {"patterns",				1, 1, 0, 1, 1, 1, 0, 0, 0,
-				cf_text_patterns},
+				cf_text_old_patterns},
 {"patterns-roles",			0, 1, 0, 1, 1, 1, 0, 0, 0,
 				cf_text_patterns},
-{"patterns-filters",			0, 1, 0, 1, 1, 1, 0, 0, 0,
+{"patterns-filters2",			0, 1, 0, 1, 1, 1, 0, 0, 0,
 				cf_text_patterns},
-{"patterns-scores",			0, 1, 0, 1, 1, 1, 0, 0, 0,
+{"patterns-filters",			1, 1, 0, 1, 1, 1, 0, 0, 0,
+				cf_text_old_filters},
+{"patterns-scores2",			0, 1, 0, 1, 1, 1, 0, 0, 0,
 				cf_text_patterns},
+{"patterns-scores",			1, 1, 0, 1, 1, 1, 0, 0, 0,
+				cf_text_old_scores},
 {"patterns-indexcolors",		0, 1, 0, 1, 1, 1, 0, 0, 0,
+				cf_text_patterns},
+{"patterns-other",			0, 1, 0, 1, 1, 1, 0, 0, 0,
 				cf_text_patterns},
 
 /* OBSOLETE VARS */
@@ -632,6 +676,10 @@ static struct variable variables[] = {
 {"color-style",				0, 1, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_color_style},
 #endif
+{"current-indexline-style",		0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_current_indexline_style},
+{"titlebar-color-style",		0, 1, 0, 1, 1, 0, 0, 0, 0,
+				cf_text_titlebar_color_style},
 {"normal-foreground-color",		0, 1, 0, 1, 1, 0, 0, 0, 0,
 				cf_text_normal_foreground_color},
 {"normal-background-color",		0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
@@ -677,11 +725,13 @@ static struct variable variables[] = {
 				"Name and size of font."},
 {"font-size",				0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
 {"font-style",				0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
+{"font-char-set",      			0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
 {"print-font-name",			0, 1, 0, 1, 1, 0, 0, 0, 0,
 				"Name and size of printer font."},
 {"print-font-size",			0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
 {"print-font-style",			0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
-{"window-position",			0, 1, 0, 1, 1, 0, 0, 0, 0,
+{"print-font-char-set",			0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
+{"window-position",			0, 1, 0, 1, 1, 0, 0, 0, 1,
 				cf_text_window_position},
 {"cursor-style",			0, 1, 0, 1, 1, 0, 0, 0, 0, NULL},
 #endif	/* _WINDOWS */
@@ -694,15 +744,6 @@ static struct variable variables[] = {
 };
 
 
-#if	defined(DOS) || defined(OS2)
-/*
- * Table containing Code Page value to external charset value mappings
- */
-unsigned char *xlate_to_codepage   = NULL;
-unsigned char *xlate_from_codepage = NULL;
-#endif
-
-
 #ifdef	DEBUG
 /*
  * Debug level and output file defined here, referenced globally.
@@ -713,6 +754,7 @@ FILE *debugfile = NULL;
 #endif
 
 
+void
 init_init_vars(ps)
      struct pine *ps;
 {
@@ -720,16 +762,48 @@ init_init_vars(ps)
 }
 
 
+/* this is just like dprint except it prints to a char * */
+#ifdef DEBUG
+#define   mprint(n,x) {			\
+	       if(debug >= (n)){	\
+		   sprintf x ;		\
+		   db += strlen(db);	\
+	       }			\
+	   }
+#else
+#define   mprint(n,x)
+#endif
+
 /*
  * this was split out from init_vars so we can get at the
  * pinerc location sooner.
  */
 void
-init_pinerc(ps)
+init_pinerc(ps, debug_out)
      struct pine *ps;
+     char       **debug_out;
 {
-    char      buf[MAXPATH+1], buf2[MAXPATH+1], *p;
+    char      buf[MAXPATH+1], *p, *db;
+#if defined(DOS) || defined(OS2)
+    char      buf2[MAXPATH+1], l_pinerc[MAXPATH+1];
+    int nopinerc = 0, confregset = -1;
     register struct variable *vars = ps->vars;
+#endif
+
+#ifdef DEBUG
+    /*
+     * Since this routine is called before we've had a chance to set up
+     * the debug file for output, we put the debugging into memory and
+     * pass it back to the caller for use after init_debug(). We just
+     * allocate plenty of space.
+     */
+    if(debug_out){
+	db = *debug_out = (char *)fs_get(25000 * sizeof(char));
+	db[0] = '\0';
+    }
+#endif
+
+    mprint(2, (db, "\n -- init_pinerc --\n\n"));
 
 #if defined(DOS) || defined(OS2)
     /*
@@ -752,6 +826,16 @@ init_pinerc(ps)
      *    the same directory as PINE.EXE.
      */
 
+    if(ps->prc){
+      mprint(2, (db,
+	     "Personal config \"%.100s\" comes from command line\n",
+	     (ps->prc && ps->prc->name) ? ps->prc->name : "<no name>"));
+    }
+    else{
+      mprint(2, (db,
+	     "Personal config not set on cmdline, checking for $PINERC\n"));
+    }
+
     /*
      * First, if prc hasn't been set by a command-line -p, check to see
      * if PINERC is in the environment. If so, treat it just like we
@@ -773,6 +857,12 @@ init_pinerc(ps)
 	  ps->pinerc = cpystr(path);
 
 	ps->prc = new_pinerc_s(path);
+
+	if(ps->prc){
+	  mprint(2, (db,
+	  "  yes, personal config \"%.100s\" comes from $PINERC\n",
+		 (ps->prc && ps->prc->name) ? ps->prc->name : "<no name>"));
+	}
     }
 
     /*
@@ -802,8 +892,6 @@ init_pinerc(ps)
      * possibilities. When we find it, we'll also use that directory.
      */
     if(!ps->pinerc){
-	char l_pinerc[MAXPATH+1];
-
 	*l_pinerc = '\0';
 	*buf = '\0';
 
@@ -812,12 +900,6 @@ init_pinerc(ps)
 	     * We don't give them an l_pinerc unless they tell us where
 	     * to put it.
 	     */
-#ifdef _WINDOWS
-	    if(!ps->aux_files_dir){
-	        if(mswin_reg(MSWR_OP_GET, MSWR_PINE_AUX, buf2, sizeof(buf2)))
-		    ps->aux_files_dir = cpystr(buf2);
-	    }
-#endif
 	    if(ps->aux_files_dir)
 	      build_path(l_pinerc, ps->aux_files_dir, SYSTEM_PINERC,
 			 sizeof(l_pinerc));
@@ -853,7 +935,12 @@ init_pinerc(ps)
 	     * it defaults to the current working drive (often C:).
 	     * See pine.c to see how it is initially set.
 	     */
+
+	    mprint(2, (db, "  no, searching...\n"));
 	    build_path(buf2, ps->home_dir, DF_PINEDIR, sizeof(buf2));
+	    mprint(2, (db,
+	      "  checking for writable %.100s dir \"%.100s\" off of homedir\n",
+		   DF_PINEDIR, buf2));
 	    if(is_writable_dir(buf2) == 0){
 		/*
 		 * $HOME\PINE exists and is writable.
@@ -862,11 +949,14 @@ init_pinerc(ps)
 		build_path(buf, buf2, SYSTEM_PINERC, sizeof(buf));
 		strncpy(l_pinerc, buf, sizeof(l_pinerc)-1);
 		l_pinerc[sizeof(l_pinerc)-1] = '\0';
+		mprint(2, (db, "  yes, now checking for file \"%.100s\"\n",
+		       buf));
 		if(can_access(buf, ACCESS_EXISTS) == 0){	/* found it! */
 		    /*
 		     * Buf is what we were looking for.
 		     * It is local and can be used for the directory, too.
 		     */
+		    mprint(2, (db, "  found it\n"));
 		}
 		else{
 		    /*
@@ -875,33 +965,45 @@ init_pinerc(ps)
 		     */
 		    build_path(buf2, ps->pine_dir, SYSTEM_PINERC,
 			       sizeof(buf2));
-		    if(can_access(buf2, ACCESS_EXISTS) == 0){	/* found it! */
+		    mprint(2, (db,
+			   "  no, checking for \"%.100s\" in pine.exe dir\n",
+			   buf2));
+		    if(can_access(buf2, ACCESS_EXISTS) == 0){
+			/* found it! */
+			mprint(2, (db, "  found it\n"));
 			strncpy(buf, buf2, sizeof(buf)-1);
 			buf[sizeof(buf)-1] = '\0';
 			strncpy(l_pinerc, buf2, sizeof(l_pinerc)-1);
 			l_pinerc[sizeof(l_pinerc)-1] = '\0';
 		    }
+		    else{
 #ifdef	_WINDOWS
-		    /*
-		     * There was no PINERC in the PINE.EXE directory, either.
-		     * Look in the registry and use that if it's there.
-		     */
-		    else if(mswin_reg(MSWR_OP_GET, MSWR_PINE_RC,
-				      buf2, sizeof(buf2))){
-			strncpy(buf, buf2, sizeof(buf)-1);
-			buf[sizeof(buf)-1] = '\0';
-			if(!IS_REMOTE(buf2)){
-			    strncpy(l_pinerc, buf2, sizeof(l_pinerc)-1);
-			    l_pinerc[sizeof(l_pinerc)-1] = '\0';
+			mprint(2, (db, "  no, checking in registry\n"));
+			if(mswin_reg(MSWR_OP_GET, MSWR_PINE_RC,
+				     buf2, sizeof(buf2))){
+			    strncpy(buf, buf2, sizeof(buf)-1);
+			    buf[sizeof(buf)-1] = '\0';
+			    if(!IS_REMOTE(buf2)){
+				strncpy(l_pinerc, buf2, sizeof(l_pinerc)-1);
+				l_pinerc[sizeof(l_pinerc)-1] = '\0';
+			    }
+			    /*
+			     * Now buf is the pinerc to be used, l_pinerc is
+			     * the directory, which may be either same as buf
+			     * or it may be $HOME\PINE if registry gives us
+			     * a remote pinerc.
+			     */
+			    mprint(2, (db, "  found \"%.100s\" in registry\n",
+				   buf));
 			}
-			/*
-			 * Now buf is the pinerc to be used, l_pinerc is
-			 * the directory, which may be either same as buf
-			 * or it may be $HOME\PINE if registry gives us
-			 * a remote pinerc.
-			 */
-		    }
+			else{
+			    nopinerc = 1;
+			    mprint(2, (db, "  not found, asking user\n"));
+			}
+#else
+			mprint(2, (db, "  not found\n"));
 #endif
+		    }
 		}
 
 		/*
@@ -928,14 +1030,41 @@ init_pinerc(ps)
 		strncpy(l_pinerc, buf, sizeof(l_pinerc)-1);
 		l_pinerc[sizeof(l_pinerc)-1] = '\0';
 #ifdef	_WINDOWS
+		mprint(2, (db, "  no, not writable, checking in registry\n"));
 		/* if in registry, use that value */
 		if(mswin_reg(MSWR_OP_GET, MSWR_PINE_RC, buf2, sizeof(buf2))){
 		    strncpy(buf, buf2, sizeof(buf)-1);
 		    buf[sizeof(buf)-1] = '\0';
+		    mprint(2, (db, "  found \"%.100s\" in registry\n",
+			   buf));
 		    if(!IS_REMOTE(buf)){
 			strncpy(l_pinerc, buf, sizeof(l_pinerc)-1);
 			l_pinerc[sizeof(l_pinerc)-1] = '\0';
 		    }
+		}
+		else{
+		    mprint(2, (db,
+			"  no, checking for \"%.100s\" in pine.exe dir\n",
+			buf));
+
+		    if(can_access(buf, ACCESS_EXISTS) == 0){
+			mprint(2, (db, "  found it\n"));
+		    }
+		    else{
+			nopinerc = 1;
+			mprint(2, (db, "  not found, asking user\n"));
+		    }
+		}
+#else
+		mprint(2, (db,
+			"  no, checking for \"%.100s\" in pine.exe dir\n",
+			buf));
+
+		if(can_access(buf, ACCESS_EXISTS) == 0){
+		    mprint(2, (db, "  found it\n"));
+		}
+		else{
+		    mprint(2, (db, "  not found, creating it\n"));
 		}
 #endif
 	    }
@@ -946,36 +1075,60 @@ init_pinerc(ps)
 	     * set to the same as buf if buf is local, and set to another
 	     * name otherwise, hopefully contained in a writable directory.
 	     */
+#ifdef _WINDOWS
+	    if(nopinerc){
+		char buf3[MAXPATH+1];
+
+		confregset = 0;
+		strncpy(buf3, buf, MAXPATH);
+		buf3[MAXPATH] = '\0';
+		if(os_config_dialog(buf3, MAXPATH, &confregset) == 0){
+		    strncpy(buf, buf3, MAXPATH);
+		    buf[MAXPATH] = '\0';
+		    mprint(2, (db, "  not found, creating it\n"));
+		    mprint(2, (db, "  user says use \"%.100s\"\n", buf));
+		    if(!IS_REMOTE(buf)){
+			strncpy(l_pinerc, buf, MAXPATH);
+			l_pinerc[MAXPATH] = '\0';
+		    }
+		}
+		else{
+		    exit(-1);
+		}
+	    }
+#endif
 	    ps->prc = new_pinerc_s(buf);
 	}
 
-#ifdef	_WINDOWS
-	if(!ps->aux_files_dir && ps->prc && ps->prc->type == RemImap){
-	    if(mswin_reg(MSWR_OP_GET, MSWR_PINE_AUX, buf, sizeof(buf))){
-	        ps->aux_files_dir = cpystr(buf);
-		build_path(l_pinerc, ps->aux_files_dir, SYSTEM_PINERC,
-			   sizeof(l_pinerc));
-	    }
-	}
-#endif
 	ps->pinerc = cpystr(l_pinerc);
     }
 
 #if defined(DOS) || defined(OS2)
-    if(ps->aux_files_dir && ps->prc && ps->prc->type == Loc)
-      init_error(ps,
-		 "-aux <dir> is ignored when configuration file is not remote");
+    /* 
+     * The goal here is to set the auxiliary directory in the pinerc variable.
+     * We are making the assumption that any reference to the pinerc variable
+     * after this point is used only as a directory in which to store things,
+     * with the prc variable being the preferred place to store pinerc location.
+     * If -aux isn't set, then there is no change. -jpf 08/2001
+     */
+    if(ps->aux_files_dir){
+	l_pinerc[0] = '\0';
+	build_path(l_pinerc, ps->aux_files_dir, SYSTEM_PINERC,
+		   sizeof(l_pinerc));
+	if(ps->pinerc) fs_give((void **)&ps->pinerc);
+	ps->pinerc = cpystr(l_pinerc);
+	mprint(2, (db, "Setting aux_files_dir to \"%.100s\"\n",
+	       ps->aux_files_dir));
+    }
 #endif
 
 #ifdef	_WINDOWS
-    mswin_reg(MSWR_OP_SET | (ps->update_registry ? MSWR_OP_FORCE : 0),
-	      MSWR_PINE_RC, 
-	      (ps->prc && ps->prc->name) ?
-	      ps->prc->name : ps->pinerc, NULL);
-    if(ps->aux_files_dir && ps->prc && ps->prc->type == RemImap)
-      mswin_reg(MSWR_OP_SET | (ps->update_registry ? MSWR_OP_FORCE : 0),
-		MSWR_PINE_AUX,
-		ps->aux_files_dir, NULL);
+    if(confregset)
+      mswin_reg(MSWR_OP_SET | (ps->update_registry
+			       || confregset == 1 ? MSWR_OP_FORCE : 0),
+		MSWR_PINE_RC, 
+		(ps->prc && ps->prc->name) ?
+		ps->prc->name : ps->pinerc, NULL);
 #endif
 
     /*
@@ -992,6 +1145,7 @@ init_pinerc(ps)
 	buf[min(p - ps->pinerc, sizeof(buf)-1)] = '\0';
     }
 
+    mprint(2, (db, "Using directory \"%.100s\" for auxiliary files\n", buf));
     strncat(buf, "NEWSRC", sizeof(buf)-1-strlen(buf));
 
     if(!(p = (void *) mail_parameters(NULL, GET_NEWSRC, (void *)NULL))
@@ -1003,11 +1157,57 @@ init_pinerc(ps)
     else
       GLO_NEWSRC_PATH = cpystr(p);
 
-    if(!ps->pconf && (p = getenv("PINECONF")))
-      ps->pconf = new_pinerc_s(p);
+    if(ps->pconf){
+      mprint(2, (db, "Global config \"%.100s\" comes from command line\n",
+	     (ps->pconf && ps->pconf->name) ? ps->pconf->name : "<no name>"));
+    }
+    else{
+      mprint(2, (db,
+	     "Global config not set on cmdline, checking for $PINECONF\n"));
+    }
+
+    if(!ps->pconf && (p = getenv("PINECONF"))){
+	ps->pconf = new_pinerc_s(p);
+	if(ps->pconf){
+	  mprint(2, (db,
+	     "  yes, global config \"%.100s\" comes from $PINECONF\n",
+	     (ps->pconf && ps->pconf->name) ? ps->pconf->name : "<no name>"));
+	}
+    }
+#ifdef _WINDOWS
+    else if(!ps->pconf
+	    && mswin_reg(MSWR_OP_GET, MSWR_PINE_CONF, buf2, sizeof(buf2))){
+	ps->pconf = new_pinerc_s(buf2);
+	if(ps->pconf){
+	    mprint(2, (db,
+	     "  yes, global config \"%.100s\" comes from Registry\n",
+	     (ps->pconf && ps->pconf->name) ? ps->pconf->name : "<no name>"));
+	}
+    }
+#endif
+    if(!ps->pconf){
+      mprint(2, (db, "  no, there is no global config\n"));
+    }
+#ifdef _WINDOWS
+    else if (ps->pconf && ps->pconf->name){
+	mswin_reg(MSWR_OP_SET | (ps->update_registry ? MSWR_OP_FORCE : 0),
+		  MSWR_PINE_CONF,
+		  ps->pconf->name, NULL);
+    }
+#endif
     
     if(!ps->prc)
       ps->prc = new_pinerc_s(ps->pinerc);
+
+    if(ps->exceptions){
+      mprint(2, (db,
+	     "Exceptions config \"%.100s\" comes from command line\n",
+	     ps->exceptions));
+    }
+    else{
+      mprint(2, (db,
+	     "Exceptions config not set on cmdline, checking for $PINERCEX\n"));
+    }
 
     /*
      * Exceptions is done slightly differently from pinerc. Instead of setting
@@ -1018,8 +1218,14 @@ init_pinerc(ps)
      * First, just like for pinerc, check environment variable if it wasn't
      * set on the command line.
      */
-    if(!ps->exceptions && (p = getenv("PINERCEX")) && *p)
-      ps->exceptions = cpystr(p);
+    if(!ps->exceptions && (p = getenv("PINERCEX")) && *p){
+	ps->exceptions = cpystr(p);
+	if(ps->exceptions){
+	  mprint(2, (db,
+		 "  yes, exceptions config \"%.100s\" comes from $PINERCEX\n",
+		 ps->exceptions));
+	}
+    }
 
     /*
      * If still not set, try specific file in same dir as pinerc.
@@ -1035,22 +1241,67 @@ init_pinerc(ps)
 
 	strncat(buf, "PINERCEX", sizeof(buf)-1-strlen(buf));
 
+	mprint(2, (db,
+	       "  no, checking for default \"%.100s\" in pinerc dir\n", buf));
 	if(can_access(buf, ACCESS_EXISTS) == 0)		/* found it! */
 	  ps->exceptions = cpystr(buf);
+
+	if(ps->exceptions){
+	  mprint(2, (db,
+		 "  yes, exceptions config \"%.100s\" comes from default\n",
+		 ps->exceptions));
+	}
+	else{
+	  mprint(2, (db, "  no, there is no exceptions config\n"));
+	}
     }
 
 #else /* unix */
 
-    if(!ps->pconf)
-      ps->pconf = new_pinerc_s(SYSTEM_PINERC);
+    if(ps->pconf){
+      mprint(2, (db, "Global config \"%.100s\" comes from command line\n",
+	     (ps->pconf && ps->pconf->name) ? ps->pconf->name : "<no name>"));
+    }
+
+    if(!ps->pconf){
+	ps->pconf = new_pinerc_s(SYSTEM_PINERC);
+	if(ps->pconf){
+	  mprint(2, (db, "Global config \"%.100s\" is default\n",
+	     (ps->pconf && ps->pconf->name) ? ps->pconf->name : "<no name>"));
+	}
+    }
+
+    if(!ps->pconf){
+      mprint(2, (db, "No global config!\n"));
+    }
+
+    if(ps->prc){
+      mprint(2, (db, "Personal config \"%.100s\" comes from command line\n",
+	     (ps->prc && ps->prc->name) ? ps->prc->name : "<no name>"));
+    }
 
     if(!ps->pinerc){
       build_path(buf, ps->home_dir, ".pinerc", sizeof(buf));
       ps->pinerc = cpystr(buf);
     }
 
-    if(!ps->prc)
-      ps->prc = new_pinerc_s(ps->pinerc);
+    if(!ps->prc){
+	ps->prc = new_pinerc_s(ps->pinerc);
+	if(ps->prc){
+	  mprint(2, (db, "Personal config \"%.100s\" is default\n",
+	     (ps->prc && ps->prc->name) ? ps->prc->name : "<no name>"));
+	}
+    }
+
+    if(!ps->prc){
+      mprint(2, (db, "No personal config!\n"));
+    }
+
+    if(ps->exceptions){
+      mprint(2, (db,
+	     "Exceptions config \"%.100s\" comes from command line\n",
+	     ps->exceptions));
+    }
 
     /*
      * If not set, try specific file in same dir as pinerc.
@@ -1065,9 +1316,19 @@ init_pinerc(ps)
 	}
 
 	strncat(buf, ".pinercex", sizeof(buf)-1-strlen(buf));
+        mprint(2, (db, "Exceptions config not set on cmdline\n  checking for default \"%.100s\" in pinerc dir\n", buf));
 
 	if(can_access(buf, ACCESS_EXISTS) == 0)		/* found it! */
 	  ps->exceptions = cpystr(buf);
+
+	if(ps->exceptions){
+	  mprint(2, (db,
+		 "  yes, exceptions config \"%.100s\" is default\n",
+		 ps->exceptions));
+	}
+	else{
+	  mprint(2, (db, "  no, there is no exceptions config\n"));
+	}
     }
 
 #endif /* unix */
@@ -1098,8 +1359,24 @@ init_pinerc(ps)
 
 	fs_give((void **)&ps->exceptions);
     }
+
+    mprint(2, (db, "\n  Global config:     %.100s\n",
+	   (ps->pconf && ps->pconf->name) ? ps->pconf->name : "<none>"));
+    mprint(2, (db, "  Personal config:   %.100s\n",
+	   (ps->prc && ps->prc->name) ? ps->prc->name : "<none>"));
+    mprint(2, (db, "  Exceptions config: %.100s\n",
+	   (ps->post_prc && ps->post_prc->name) ? ps->post_prc->name
+						: "<none>"));
+#if !defined(DOS) && !defined(OS2)
+    if(SYSTEM_PINERC_FIXED){
+      mprint(2, (db, "  Fixed config:      %.100s\n", SYSTEM_PINERC_FIXED));
+    }
+#endif
+
+    mprint(2, (db, "\n"));
 }
     
+
 /*----------------------------------------------------------------------
      Initialize the variables
 
@@ -1123,6 +1400,8 @@ init_vars(ps)
 		 obs_save_by_sender, i, def_sort_rev;
     PINERC_S    *fixedprc = NULL;
     FeatureLevel obs_feature_level;
+
+    dprint(5, (debugfile, "init_vars:\n"));
 
     /*--- The defaults here are defined in os-xxx.h so they can vary
           per machine ---*/
@@ -1150,6 +1429,11 @@ init_vars(ps)
     GLO_GOTO_DEFAULT_RULE	= cpystr(DF_GOTO_DEFAULT_RULE);
     GLO_INCOMING_STARTUP	= cpystr(DF_INCOMING_STARTUP);
     GLO_PRUNING_RULE		= cpystr(DF_PRUNING_RULE);
+    GLO_THREAD_DISP_STYLE	= cpystr(DF_THREAD_DISP_STYLE);
+    GLO_THREAD_INDEX_STYLE	= cpystr(DF_THREAD_INDEX_STYLE);
+    GLO_THREAD_MORE_CHAR	= cpystr(DF_THREAD_MORE_CHAR);
+    GLO_THREAD_EXP_CHAR		= cpystr(DF_THREAD_EXP_CHAR);
+    GLO_THREAD_LASTREPLY_CHAR	= cpystr(DF_THREAD_LASTREPLY_CHAR);
     GLO_BUGS_FULLNAME		= cpystr(DF_BUGS_FULLNAME);
     GLO_BUGS_ADDRESS		= cpystr(DF_BUGS_ADDRESS);
     GLO_SUGGEST_FULLNAME	= cpystr(DF_SUGGEST_FULLNAME);
@@ -1161,11 +1445,13 @@ init_vars(ps)
     GLO_FILLCOL			= cpystr(DF_FILLCOL);
     GLO_REPLY_STRING		= cpystr("> ");
     GLO_REPLY_INTRO		= cpystr(DEFAULT_REPLY_INTRO);
-    GLO_EMPTY_HDR_MSG		= cpystr("Undisclosed recipients");
+    GLO_EMPTY_HDR_MSG		= cpystr("undisclosed-recipients");
     GLO_STATUS_MSG_DELAY	= cpystr("0");
     GLO_USERINPUTTIMEO		= cpystr("0");
     GLO_MAILCHECK		= cpystr(DF_MAILCHECK);
     GLO_KBLOCK_PASSWD_COUNT	= cpystr(DF_KBLOCK_PASSWD_COUNT);
+    GLO_INDEX_COLOR_STYLE	= cpystr("flip-colors");
+    GLO_TITLEBAR_COLOR_STYLE	= cpystr("default");
 #ifdef	DF_FOLDER_EXTENSION
     GLO_FOLDER_EXTENSION	= cpystr(DF_FOLDER_EXTENSION);
 #endif
@@ -1201,6 +1487,12 @@ init_vars(ps)
 #endif
 
     /*
+     * cache-remote-pinerc is experimental and unannounced as of 4.40.
+     * (Set it with cmdline -feature-list=cache-remote-pinerc.)
+     * This performance hack was put in before the stream re-use thing
+     * was put in in pine_mail_open and pine_mail_close and it wasn't
+     * redone. It needs some tuning if we want it to work smoothly with
+     * the re-use of streams. hubert 2001-08-01
      * Performance hack. We're going to check to see if any of the pinercs
      * are remote. The problem with a remote pinerc is that we open a
      * connection to see if it exists, then open another connection to
@@ -1246,14 +1538,23 @@ init_vars(ps)
     if(ps->mail_stream)
       rd_grope_for_metaname();
 
-    if(ps->pconf)
-      read_pinerc(ps->pconf, vars, ParseGlobal);
+    if(ps->pconf){
+	read_pinerc(ps->pconf, vars, ParseGlobal);
+	if(ps->pconf->type != Loc)
+	  rd_close_remote(ps->pconf->rd);
+    }
 
-    if(ps->prc)
-      read_pinerc(ps->prc, vars, ParsePers);
+    if(ps->prc){
+	read_pinerc(ps->prc, vars, ParsePers);
+	if(ps->prc->type != Loc)
+	  rd_close_remote(ps->prc->rd);
+    }
 
-    if(ps->post_prc)
-      read_pinerc(ps->post_prc, vars, ParsePersPost);
+    if(ps->post_prc){
+	read_pinerc(ps->post_prc, vars, ParsePersPost);
+	if(ps->post_prc->type != Loc)
+	  rd_close_remote(ps->post_prc->rd);
+    }
 
     if(fixedprc){
 	read_pinerc(fixedprc, vars, ParseFixed);
@@ -1295,18 +1596,9 @@ init_vars(ps)
 
     /* clean up after performance hack */
     if(ps->mail_stream){
-	mail_close(ps->mail_stream);
+	pine_mail_close(ps->mail_stream);
 	ps->mail_stream = NULL;
     }
-
-    if(ps->pconf && ps->pconf->type != Loc)
-      rd_close_remote(ps->pconf->rd);
-
-    if(ps->prc && ps->prc->type != Loc)
-      rd_close_remote(ps->prc->rd);
-
-    if(ps->post_prc && ps->post_prc->type != Loc)
-      rd_close_remote(ps->post_prc->rd);
 
 
     if(ps->exit_if_no_pinerc && ps->first_time_user){
@@ -1346,7 +1638,7 @@ init_vars(ps)
 	    sprintf(tmp_20k_buf,
 		    "User-domain (%s) cannot contain \"@\", using \"%s\"",
 		    VAR_USER_DOMAIN, p);
-	    init_error(ps, tmp_20k_buf);
+	    init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	    q = VAR_USER_DOMAIN;
 	    while((*q++ = *p++) != '\0')
 	      ;/* do nothing */
@@ -1355,7 +1647,7 @@ init_vars(ps)
 	    sprintf(tmp_20k_buf,
 		    "User-domain (%s) cannot contain \"@\", deleting",
 		    VAR_USER_DOMAIN);
-	    init_error(ps, tmp_20k_buf);
+	    init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	    if(ps->vars[V_USER_DOMAIN].post_user_val.p){
 		fs_give((void **)&ps->vars[V_USER_DOMAIN].post_user_val.p);
 		set_current_val(&vars[V_USER_DOMAIN], TRUE, TRUE);
@@ -1395,12 +1687,15 @@ init_vars(ps)
      */
     if(vars[V_PERSONAL_PRINT_COMMAND].is_fixed && !vars[V_PRINTER].is_fixed){
 	char **tt;
-	char   aname[100];
+	char   aname[100], wname[100];
 	int    ok = 0;
 
 	strncat(strncpy(aname, ANSI_PRINTER, 60), "-no-formfeed", 30);
+	strncat(strncpy(wname, WYSE_PRINTER, 60), "-no-formfeed", 30);
 	if(strucmp(VAR_PRINTER, ANSI_PRINTER) == 0
-	  || strucmp(VAR_PRINTER, aname) == 0)
+	  || strucmp(VAR_PRINTER, aname) == 0
+	  || strucmp(VAR_PRINTER, WYSE_PRINTER) == 0
+	  || strucmp(VAR_PRINTER, wname) == 0)
 	  ok++;
 	else if(VAR_STANDARD_PRINTER && VAR_STANDARD_PRINTER[0]){
 	    for(tt = VAR_STANDARD_PRINTER; *tt; tt++)
@@ -1445,7 +1740,7 @@ init_vars(ps)
             /* Fix for 0 because of old bug */
             sprintf(buf, "%d.%d", ps_global->last_expire_year,
               ps_global->last_expire_month + 1);
-            set_variable(V_LAST_TIME_PRUNE_QUESTION, buf, 1, Main);
+            set_variable(V_LAST_TIME_PRUNE_QUESTION, buf, 1, 1, Main);
         }else{
             ps->last_expire_month--; 
         } 
@@ -1481,7 +1776,7 @@ init_vars(ps)
 
     set_current_val(&vars[V_OPER_DIR], TRUE, TRUE);
     if(VAR_OPER_DIR && !VAR_OPER_DIR[0]){
-	init_error(ps,
+	init_error(ps, SM_ORDER | SM_DING, 3, 5,
  "Setting operating-dir to the empty string is not allowed.  Will be ignored.");
 	fs_give((void **)&VAR_OPER_DIR);
 	if(FIX_OPER_DIR)
@@ -1506,11 +1801,14 @@ init_vars(ps)
 
     if(ps->printer_category < 1 || ps->printer_category > 3){
 	char **tt;
-	char aname[100];
+	char aname[100], wname[100];
 
 	strncat(strncpy(aname, ANSI_PRINTER, 60), "-no-formfeed", 30);
+	strncat(strncpy(wname, WYSE_PRINTER, 60), "-no-formfeed", 30);
 	if(strucmp(VAR_PRINTER, ANSI_PRINTER) == 0
-	  || strucmp(VAR_PRINTER, aname) == 0)
+	  || strucmp(VAR_PRINTER, aname) == 0
+	  || strucmp(VAR_PRINTER, WYSE_PRINTER) == 0
+	  || strucmp(VAR_PRINTER, wname) == 0)
 	  ps->printer_category = 1;
 	else if(VAR_STANDARD_PRINTER && VAR_STANDARD_PRINTER[0]){
 	    for(tt = VAR_STANDARD_PRINTER; *tt; tt++)
@@ -1537,49 +1835,49 @@ init_vars(ps)
     set_current_val(&vars[V_OVERLAP], TRUE, TRUE);
     ps->viewer_overlap = i = atoi(DF_OVERLAP);
     if(SVAR_OVERLAP(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->viewer_overlap = i;
 
     set_current_val(&vars[V_MARGIN], TRUE, TRUE);
     ps->scroll_margin = i = atoi(DF_MARGIN);
     if(SVAR_MARGIN(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->scroll_margin = i;
 
     set_current_val(&vars[V_FILLCOL], TRUE, TRUE);
     ps->composer_fillcol = i = atoi(DF_FILLCOL);
     if(SVAR_FILLCOL(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->composer_fillcol = i;
     
     set_current_val(&vars[V_STATUS_MSG_DELAY], TRUE, TRUE);
     ps->status_msg_delay = i = 0;
     if(SVAR_MSGDLAY(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->status_msg_delay = i;
 
     set_current_val(&vars[V_REMOTE_ABOOK_HISTORY], TRUE, TRUE);
     ps->remote_abook_history = i = atoi(DF_REMOTE_ABOOK_HISTORY);
     if(SVAR_AB_HIST(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->remote_abook_history = i;
 
     set_current_val(&vars[V_REMOTE_ABOOK_VALIDITY], TRUE, TRUE);
     ps->remote_abook_validity = i = atoi(DF_REMOTE_ABOOK_VALIDITY);
     if(SVAR_AB_VALID(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->remote_abook_validity = i;
 
     set_current_val(&vars[V_USERINPUTTIMEO], TRUE, TRUE);
     ps->hours_to_timeout = i = 0;
     if(SVAR_USER_INPUT(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->hours_to_timeout = i;
 
@@ -1587,39 +1885,50 @@ init_vars(ps)
     set_current_val(&vars[V_MAILCHECK], TRUE, TRUE);
     timeo = i = 15;
     if(SVAR_MAILCHK(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       timeo = i;
+
+    ps->debugmem = i = 0;
+#ifdef DEBUGJOURNAL
+    GLO_DEBUGMEM = cpystr("500000");
+    set_current_val(&vars[V_DEBUGMEM], TRUE, TRUE);
+    ps->debugmem = i = 0;
+    if(VAR_DEBUGMEM && SVAR_DEBUGMEM(ps, i, tmp_20k_buf))
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
+    else
+      ps->debugmem = i;
+#endif
 
     set_current_val(&vars[V_TCPOPENTIMEO], TRUE, TRUE);
     /* this is just for the error, we don't save the result */
     if(VAR_TCPOPENTIMEO && SVAR_TCP_OPEN(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 
     set_current_val(&vars[V_TCPREADWARNTIMEO], TRUE, TRUE);
     /* this is just for the error, we don't save the result */
     if(VAR_TCPREADWARNTIMEO && SVAR_TCP_READWARN(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 
     set_current_val(&vars[V_TCPWRITEWARNTIMEO], TRUE, TRUE);
     /* this is just for the error, we don't save the result */
     if(VAR_TCPWRITEWARNTIMEO && SVAR_TCP_WRITEWARN(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 
     set_current_val(&vars[V_RSHOPENTIMEO], TRUE, TRUE);
     /* this is just for the error, we don't save the result */
     if(VAR_RSHOPENTIMEO && SVAR_RSH_OPEN(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 
     set_current_val(&vars[V_SSHOPENTIMEO], TRUE, TRUE);
     /* this is just for the error, we don't save the result */
     if(VAR_SSHOPENTIMEO && SVAR_SSH_OPEN(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 
     set_current_val(&vars[V_TCPQUERYTIMEO], TRUE, TRUE);
     ps->tcp_query_timeout = i = TO_BAIL_THRESHOLD;
     if(VAR_TCPQUERYTIMEO && SVAR_TCP_QUERY(ps, i, tmp_20k_buf))
-      init_error(ps, tmp_20k_buf);
+      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     else
       ps->tcp_query_timeout = i;
 
@@ -1643,7 +1952,7 @@ init_vars(ps)
       set_variable(V_DEFAULT_SAVE_FOLDER,
 		   (GLO_DEFAULT_SAVE_FOLDER && GLO_DEFAULT_SAVE_FOLDER[0])
 		     ? GLO_DEFAULT_SAVE_FOLDER
-		     : DEFAULT_SAVE, 0, Main);
+		     : DEFAULT_SAVE, 1, 0, Main);
 
     /* obsolete, backwards compatibility */
     set_current_val(&vars[V_FEATURE_LEVEL], TRUE, TRUE);
@@ -1657,6 +1966,11 @@ init_vars(ps)
     /* obsolete, backwards compatibility */
     set_current_val(&vars[V_OLD_STYLE_REPLY], TRUE, TRUE);
     obs_old_style_reply = !strucmp(VAR_OLD_STYLE_REPLY, "yes");
+
+    set_feature_list_current_val(&vars[V_FEATURE_LIST]);
+    process_feature_list(ps, VAR_FEATURE_LIST,
+           (obs_feature_level == Seasoned) ? 1 : 0,
+	   obs_header_in_reply, obs_old_style_reply);
 
     set_current_val(&vars[V_SIGNATURE_FILE], TRUE, TRUE);
     set_current_val(&vars[V_LITERAL_SIG], TRUE, TRUE);
@@ -1717,130 +2031,6 @@ init_vars(ps)
     }
 
 #if	defined(DOS) || defined(OS2)
-    /*
-     * Handle setting up page table IF running DOS 3.30 or greater
-     */
-    if(VAR_CHAR_SET
-       && strucmp(VAR_CHAR_SET, "us-ascii") != 0){
-#ifdef	DOS
-	unsigned long ver;
-        extern unsigned int dos_version();
-        extern          int dos_codepage();
-#endif
-	extern unsigned char *read_xtable();
-#ifndef	_WINDOWS
-	extern unsigned char  cp437L1[], cp850L1[], cp860L1[], cp863L1[],
-			      cp865L1[], cp866L5[], cp852L2[], cp895L2[];
-	extern unsigned char  L1cp437[], L1cp850[], L1cp860[], L1cp863[],
-			      L1cp865[], L5cp866[], L2cp852[], L2cp895[];
-#endif
-
-	/* suck in the translation table */
-#if	defined(DOS) && !defined(_WINDOWS)
-	if(((ver = dos_version()) & 0x00ff) > 3 
-	   || ((ver & 0x00ff) == 3 && (ver >> 8) >= 30))
-#endif
-	{
-	    char *in_table  = getenv("ISO_TO_CP"),
-	         *out_table = getenv("CP_TO_ISO");
-
-	    if(out_table)
-	      xlate_from_codepage = read_xtable(out_table);
-
-	    if(in_table)
-	      xlate_to_codepage = read_xtable(in_table);
-
-#ifndef	_WINDOWS
-	    /*
-	     * if tables not already set, do the best we can...
-	     */
-	    switch(dos_codepage()){
-	      case 437: /* latin-1 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-1") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp437L1;
-
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage   = L1cp437;
-		}
-
-		break;
-	      case 850: /* latin-1 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-1") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp850L1;
-
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage = L1cp850;
-		}
-
-		break;
-	      case 860: /* latin-1 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-1") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp860L1;
-
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage   = L1cp860;
-		}
-
-		break;
-	      case 863: /* latin-1 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-1") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp863L1;
-
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage   = L1cp863;
-		}
-
-		break;
-	      case 865: /* latin-1 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-1") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp865L1;
-
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage   = L1cp865;
-		}
-
-		break;
-	      case 866: /* latin-5 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-5") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp866L5;
-
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage   = L5cp866;
-		}
- 
-		break;
-	      case 852: /* latin-2 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-2") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp852L2;
- 
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage = L2cp852;
-		}
- 
-		break;
-	      case 895: /* latin-2 */
-		if(strucmp(VAR_CHAR_SET, "iso-8859-2") == 0){
-		    if(!xlate_from_codepage)
-		      xlate_from_codepage = cp895L2;
- 
-		    if(!xlate_to_codepage)
-		      xlate_to_codepage = L2cp895;
-		}
-
-		break;
-	      default:
-		break;
-	    }
-#endif	/* _WINDOWS */
-	}
-    }
 
     set_current_val(&vars[V_FILE_DIR], TRUE, TRUE);
 
@@ -1848,18 +2038,41 @@ init_vars(ps)
     set_current_val(&vars[V_FONT_NAME], TRUE, TRUE);
     set_current_val(&vars[V_FONT_SIZE], TRUE, TRUE);
     set_current_val(&vars[V_FONT_STYLE], TRUE, TRUE);
-    set_current_val(&vars[V_WINDOW_POSITION], TRUE, TRUE);
+    set_current_val(&vars[V_FONT_CHAR_SET], TRUE, TRUE);
     set_current_val(&vars[V_CURSOR_STYLE], TRUE, TRUE);
+    set_current_val(&vars[V_WINDOW_POSITION], TRUE, TRUE);
+
+    if(F_OFF(F_STORE_WINPOS_IN_CONFIG, ps_global)){
+	/* if win position is in the registry, use it */
+	if(mswin_reg(MSWR_OP_GET, MSWR_PINE_POS, buf, sizeof(buf))){
+	    if(VAR_WINDOW_POSITION)
+	      fs_give((void **)&VAR_WINDOW_POSITION);
+	    
+	    VAR_WINDOW_POSITION = cpystr(buf);
+	}
+	else if(VAR_WINDOW_POSITION){	/* otherwise, put it there */
+	    mswin_reg(MSWR_OP_SET | (ps->update_registry ? MSWR_OP_FORCE : 0),
+		      MSWR_PINE_POS, 
+		      VAR_WINDOW_POSITION, NULL);
+	}
+    }
 
     mswin_setwindow (VAR_FONT_NAME, VAR_FONT_SIZE, 
 		     VAR_FONT_STYLE, VAR_WINDOW_POSITION,
-		     VAR_CURSOR_STYLE);
+		     VAR_CURSOR_STYLE, VAR_FONT_CHAR_SET);
+
+    /* this is no longer used */
+    if(VAR_WINDOW_POSITION)
+      fs_give((void **)&VAR_WINDOW_POSITION);
+
     set_current_val(&vars[V_PRINT_FONT_NAME], TRUE, TRUE);
     set_current_val(&vars[V_PRINT_FONT_SIZE], TRUE, TRUE);
     set_current_val(&vars[V_PRINT_FONT_STYLE], TRUE, TRUE);
+    set_current_val(&vars[V_PRINT_FONT_CHAR_SET], TRUE, TRUE);
     mswin_setprintfont (VAR_PRINT_FONT_NAME,
 			VAR_PRINT_FONT_SIZE,
-			VAR_PRINT_FONT_STYLE);
+			VAR_PRINT_FONT_STYLE,
+			VAR_PRINT_FONT_CHAR_SET);
 
     mswin_setgenhelptextcallback(pcpine_general_help);
 
@@ -1868,7 +2081,8 @@ init_vars(ps)
     {
 	char foreColor[64], backColor[64];
 
-	mswin_getwindow (NULL, NULL, NULL, NULL, foreColor, backColor, NULL);
+	mswin_getwindow (NULL, NULL, NULL, NULL, foreColor, backColor,
+			 NULL, NULL);
 	if(!GLO_NORM_FORE_COLOR)
 	  GLO_NORM_FORE_COLOR = cpystr(foreColor);
 
@@ -1877,8 +2091,6 @@ init_vars(ps)
     }
 #endif	/* _WINDOWS */
 #endif	/* DOS */
-
-    set_current_color_vals(ps);
 
     set_current_val(&vars[V_LAST_VERS_USED], TRUE, TRUE);
     /* Check for special cases first */
@@ -1890,22 +2102,36 @@ init_vars(ps)
 	    * version number looks like: <number><dot><number><number><alpha>
 	    * The <alpha> on the end is key meaning its just a bug-fix patch.
 	    */
-	   || (isdigit((unsigned char)PINE_VERSION[0])
-	       && PINE_VERSION[1] == '.'
-	       && isdigit((unsigned char)PINE_VERSION[2])
-	       && isdigit((unsigned char)PINE_VERSION[3])
-	       && isalpha((unsigned char)PINE_VERSION[4])
-	       && strncmp(VAR_LAST_VERS_USED, PINE_VERSION, 4) >= 0))){
+	   || (isdigit((unsigned char)pine_version[0])
+	       && pine_version[1] == '.'
+	       && isdigit((unsigned char)pine_version[2])
+	       && isdigit((unsigned char)pine_version[3])
+	       && isalpha((unsigned char)pine_version[4])
+	       && strncmp(VAR_LAST_VERS_USED, pine_version, 4) >= 0))){
 	ps->show_new_version = 0;
     }
     /* Otherwise just do lexicographic comparision... */
     else if(VAR_LAST_VERS_USED
-	    && strcmp(VAR_LAST_VERS_USED, PINE_VERSION) >= 0){
+	    && strcmp(VAR_LAST_VERS_USED, pine_version) >= 0){
 	ps->show_new_version = 0;
     }
     else{
         ps->pre390 = !(VAR_LAST_VERS_USED
 		       && strcmp(VAR_LAST_VERS_USED, "3.90") >= 0);
+
+#ifdef	_WINDOWS
+	/*
+	 * If this is the first time we've run a version > 4.40, and there
+	 * is evidence that the config file has not been used by unix pine,
+	 * then we convert color008 to colorlgr, color009 to colormgr, and
+	 * color010 to colordgr. If the config file is being used by
+	 * unix pine then color009 may really supposed to be red, etc.
+	 * Same if we've already run 4.41 or higher. We don't have to do
+	 * anything if we are new to pine.
+	 */
+	ps->pre441 = (VAR_LAST_VERS_USED
+		      && strcmp(VAR_LAST_VERS_USED, "4.40") <= 0);
+#endif	/* _WINDOWS */
 
 	/*
 	 * Don't offer the new version message if we're told not to.
@@ -1915,7 +2141,7 @@ init_vars(ps)
 			         && strcmp(pine_version,
 					   VAR_NEW_VER_QUELL) < 0);
 
-	set_variable(V_LAST_VERS_USED, pine_version, 1,
+	set_variable(V_LAST_VERS_USED, pine_version, 1, 1,
 		     ps_global->ew_for_except_vars);
     }
 
@@ -1924,16 +2150,19 @@ init_vars(ps)
     /* Also obsolete */
     set_current_val(&vars[V_SAVE_BY_SENDER], TRUE, TRUE);
     if(!strucmp(VAR_ELM_STYLE_SAVE, "yes"))
-      set_variable(V_SAVE_BY_SENDER, "yes", 1, Main);
+      set_variable(V_SAVE_BY_SENDER, "yes", 1, 1, Main);
     obs_save_by_sender = !strucmp(VAR_SAVE_BY_SENDER, "yes");
+
+    /* this should come after pre441 is set or not */
+    set_current_color_vals(ps);
 
     set_current_val(&vars[V_PRUNED_FOLDERS], TRUE, TRUE);
     set_current_val(&vars[V_ARCHIVED_FOLDERS], TRUE, TRUE);
     set_current_val(&vars[V_INCOMING_FOLDERS], TRUE, TRUE);
     set_current_val(&vars[V_SORT_KEY], TRUE, TRUE);
     if(decode_sort(VAR_SORT_KEY, &ps->def_sort, &def_sort_rev) == -1){
-	sprintf(tmp_20k_buf, "Sort type \"%s\" is invalid", VAR_SORT_KEY);
-	init_error(ps, tmp_20k_buf);
+	sprintf(tmp_20k_buf, "Sort type \"%.200s\" is invalid", VAR_SORT_KEY);
+	init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	ps->def_sort = SortArrival;
 	ps->def_sort_rev = 0;
     }
@@ -1963,21 +2192,44 @@ init_vars(ps)
     cur_rule_value(&vars[V_COLOR_STYLE], TRUE, TRUE);
 #endif
 
+    cur_rule_value(&vars[V_INDEX_COLOR_STYLE], TRUE, TRUE);
+    cur_rule_value(&vars[V_TITLEBAR_COLOR_STYLE], TRUE, TRUE);
     cur_rule_value(&vars[V_FLD_SORT_RULE], TRUE, TRUE);
     cur_rule_value(&vars[V_INCOMING_STARTUP], TRUE, TRUE);
     cur_rule_value(&vars[V_PRUNING_RULE], TRUE, TRUE);
     cur_rule_value(&vars[V_GOTO_DEFAULT_RULE], TRUE, TRUE);
+    cur_rule_value(&vars[V_THREAD_DISP_STYLE], TRUE, TRUE);
+    cur_rule_value(&vars[V_THREAD_INDEX_STYLE], TRUE, TRUE);
+
+    set_current_val(&vars[V_THREAD_MORE_CHAR], TRUE, TRUE);
+    if(VAR_THREAD_MORE_CHAR[0] && VAR_THREAD_MORE_CHAR[1]){
+	init_error(ps, SM_ORDER | SM_DING, 3, 5,
+	  "Only using first character of threading-indicator-character option");
+	VAR_THREAD_MORE_CHAR[1] = '\0';
+    }
+
+    set_current_val(&vars[V_THREAD_EXP_CHAR], TRUE, TRUE);
+    if(VAR_THREAD_EXP_CHAR[0] && VAR_THREAD_EXP_CHAR[1]){
+	init_error(ps, SM_ORDER | SM_DING, 3, 5,
+	   "Only using first character of threading-expanded-character option");
+	VAR_THREAD_EXP_CHAR[1] = '\0';
+    }
+
+    set_current_val(&vars[V_THREAD_LASTREPLY_CHAR], TRUE, TRUE);
+    if(!VAR_THREAD_LASTREPLY_CHAR[0])
+      VAR_THREAD_LASTREPLY_CHAR = cpystr(DF_THREAD_LASTREPLY_CHAR);
+
+    if(VAR_THREAD_LASTREPLY_CHAR[0] && VAR_THREAD_LASTREPLY_CHAR[1]){
+	init_error(ps, SM_ORDER | SM_DING, 3, 5,
+	  "Only using first character of threading-lastreply-character option");
+	VAR_THREAD_LASTREPLY_CHAR[1] = '\0';
+    }
 
     /* backwards compatibility */
     if(obs_save_by_sender){
         ps->save_msg_rule = MSG_RULE_FROM;
-	set_variable(V_SAVED_MSG_NAME_RULE, "by-from", 1, Main);
+	set_variable(V_SAVED_MSG_NAME_RULE, "by-from", 1, 1, Main);
     }
-
-    set_feature_list_current_val(&vars[V_FEATURE_LIST]);
-    process_feature_list(ps, VAR_FEATURE_LIST,
-           (obs_feature_level == Seasoned) ? 1 : 0,
-	   obs_header_in_reply, obs_old_style_reply);
 
     /* this should come after process_feature_list because of use_fkeys */
     if(!ps->start_in_index)
@@ -2148,6 +2400,8 @@ feature_list(index)
 	 F_ENABLE_SIGDASHES, h_config_sigdashes, PREF_COMP},
 	{"quell-dead-letter-on-cancel",
 	 F_QUELL_DEAD_LETTER, h_config_quell_dead_letter, PREF_COMP},
+	{"spell-check-before-sending",
+	 F_ALWAYS_SPELL_CHECK, h_config_always_spell_check, PREF_COMP},
 	{"quell-user-lookup-in-passwd-file",
 	 F_QUELL_LOCAL_LOOKUP, h_config_quell_local_lookup, PREF_OS_LCLK},
 
@@ -2169,6 +2423,8 @@ feature_list(index)
 	 F_ENABLE_STRIP_SIGDASHES, h_config_strip_sigdashes, PREF_RPLY},
 
 /* Sending Prefs */
+	{"disable-sender",
+	 F_DISABLE_SENDER, h_config_disable_sender, PREF_SEND},
 	{"enable-8bit-esmtp-negotiation",
 	 F_ENABLE_8BIT, h_config_8bit_smtp, PREF_SEND},
 #ifdef	BACKGROUND_POST
@@ -2185,6 +2441,8 @@ feature_list(index)
 	 F_AUTO_FCC_ONLY, h_config_auto_fcc_only, PREF_SEND},
 	{"fcc-without-attachments",
 	 F_NO_FCC_ATTACH, h_config_no_fcc_attach, PREF_SEND},
+	{"mark-fcc-seen",
+	 F_MARK_FCC_SEEN, h_config_mark_fcc_seen, PREF_SEND},
 	{"use-sender-not-x-sender",
 	 F_USE_SENDER_NOT_X, h_config_use_sender_not_x, PREF_SEND},
 
@@ -2225,6 +2483,8 @@ feature_list(index)
 /* Index prefs */
 	{"auto-open-next-unread",
 	 F_AUTO_OPEN_NEXT_UNREAD, h_config_auto_open_unread, PREF_INDX},
+	{"thread-index-shows-important-color",
+	 F_COLOR_LINE_IMPORTANT, h_config_color_thrd_import, PREF_INDX},
 	{"continue-tab-without-confirm",
 	 F_TAB_NO_CONFIRM, h_config_tab_no_prompt, PREF_INDX},
 	{"delete-skips-deleted",
@@ -2235,6 +2495,8 @@ feature_list(index)
 	 F_ENABLE_TAB_DELETES, h_config_cruise_mode_delete, PREF_INDX},
 	{"mark-for-cc",
 	 F_MARK_FOR_CC, h_config_mark_for_cc, PREF_INDX},
+	{"next-thread-without-confirm",
+	 F_NEXT_THRD_WO_CONFIRM, h_config_next_thrd_wo_confirm, PREF_INDX},
 	{"tab-visits-next-new-message-only",
 	 F_TAB_TO_NEW, h_config_tab_new_only, PREF_INDX},
 
@@ -2251,8 +2513,11 @@ feature_list(index)
 	 F_FORCE_ARROWS, h_config_enable_view_arrows, PREF_VIEW},
 	{"prefer-plain-text",
 	 F_PREFER_PLAIN_TEXT, h_config_prefer_plain_text, PREF_VIEW},
+#ifndef	_WINDOWS
+	/* set to TRUE for windows */
 	{"pass-control-characters-as-is",
 	 F_PASS_CONTROL_CHARS, h_config_pass_control, PREF_VIEW},
+#endif
 
 /* News */
 	{"compose-sets-newsgroup-without-confirm",
@@ -2301,6 +2566,8 @@ feature_list(index)
 	 F_FLAG_SCREEN_DFLT, h_config_flag_screen_default, PREF_ACMD},
 	{"enable-full-header-cmd",
 	 F_ENABLE_FULL_HDR, h_config_enable_full_hdr, PREF_ACMD},
+	{"enable-full-header-and-text",
+	 F_ENABLE_FULL_HDR_AND_TEXT, h_config_enable_full_hdr_and_text, PREF_ACMD},
 	{"enable-goto-in-file-browser",
 	 F_ALLOW_GOTO, h_config_allow_goto, PREF_ACMD},
 	{"enable-jump-shortcut",
@@ -2329,6 +2596,11 @@ feature_list(index)
 	 F_CHECK_MAIL_ONQUIT, h_config_check_mail_onquit, PREF_MISC},
 	{"confirm-role-even-for-default",
 	 F_ROLE_CONFIRM_DEFAULT, h_config_confirm_role, PREF_MISC},
+	{"disable-2022-jp-conversions",
+	 F_DISABLE_2022_JP_CONVERSIONS, h_config_disable_2022_jp_conv,
+								 PREF_MISC},
+	{"disable-charset-conversions",
+	 F_DISABLE_CHARSET_CONVERSIONS, h_config_disable_cset_conv, PREF_MISC},
 	{"disable-keymenu",
 	 F_BLANK_KEYMENU, h_config_blank_keymenu, PREF_MISC},
 	{"disable-take-last-comma-first",
@@ -2347,10 +2619,14 @@ feature_list(index)
 	 F_ENABLE_ROLE_TAKE, h_config_enable_role_take, PREF_MISC},
 	{"enable-suspend",
 	 F_CAN_SUSPEND, h_config_can_suspend, PREF_MISC},
+	{"enable-take-export",
+	 F_ENABLE_TAKE_EXPORT, h_config_enable_take_export, PREF_MISC},
 #ifdef	_WINDOWS
 	{"enable-tray-icon",
 	 F_ENABLE_TRAYICON, h_config_tray_icon, PREF_MISC},
 #endif
+	{"expose-hidden-config",
+	 F_EXPOSE_HIDDEN_CONFIG, h_config_expose_hidden_config, PREF_MISC},
 	{"expunge-only-manually",
 	 F_EXPUNGE_MANUALLY, h_config_expunge_manually, PREF_MISC},
 	{"expunge-without-confirm",
@@ -2359,11 +2635,22 @@ feature_list(index)
 	 F_FULL_AUTO_EXPUNGE, h_config_full_auto_expunge, PREF_MISC},
 	{"preserve-start-stop-characters",
 	 F_PRESERVE_START_STOP, h_config_preserve_start_stop, PREF_OS_STSP},
+	{"quell-attachment-extra-prompt",
+	 F_QUELL_ATTACH_EXTRA_PROMPT, h_config_quell_attach_extra_prompt,
+	 PREF_MISC},
+	{"quell-content-id",
+	 F_QUELL_CONTENT_ID, h_config_quell_content_id, PREF_MISC},
+	{"quell-timezone-comment-when-sending",
+	 F_QUELL_TIMEZONE, h_config_quell_tz_comment, PREF_MISC},
 	{"quell-folder-internal-msg",
 	 F_QUELL_INTERNAL_MSG, h_config_quell_folder_internal_msg, PREF_MISC},
 	{"quell-lock-failure-warnings",
 	 F_QUELL_LOCK_FAILURE_MSGS, h_config_quell_lock_failure_warnings,
 	 PREF_MISC},
+#ifdef	_WINDOWS
+	{"quell-ssl-largeblocks",
+	 F_QUELL_SSL_LARGEBLOCKS, h_config_quell_ssl_largeblocks, PREF_MISC},
+#endif
 	{"quell-status-message-beeping",
 	 F_QUELL_BEEPS, h_config_quell_beeps, PREF_MISC},
 	{"quit-without-confirm",
@@ -2374,6 +2661,8 @@ feature_list(index)
 	 F_SAVE_WONT_DELETE, h_config_save_wont_delete, PREF_MISC},
 	{"save-will-quote-leading-froms",
 	 F_QUOTE_ALL_FROMS, h_config_quote_all_froms, PREF_MISC},
+	{"scramble-message-id",
+	 F_ROT13_MESSAGE_ID, h_config_scramble_message_id, PREF_MISC},
 	{"select-without-confirm",
 	 F_SELECT_WO_CONFIRM, h_config_select_wo_confirm, PREF_MISC},
 	{"show-cursor",
@@ -2382,8 +2671,16 @@ feature_list(index)
 	 F_SHOW_TEXTPLAIN_INT, h_config_textplain_int, PREF_MISC},
 	{"show-selected-in-boldface",
 	 F_SELECTED_SHOWN_BOLD, h_config_select_in_bold, PREF_MISC},
+	{"slash-collapses-entire-thread",
+	 F_SLASH_COLL_ENTIRE, h_config_slash_coll_entire, PREF_MISC},
+#ifdef	_WINDOWS
+	{"store-window-position-in-config",
+	 F_STORE_WINPOS_IN_CONFIG, h_config_winpos_in_config, PREF_MISC},
+#endif
 	{"try-alternative-authentication-driver-first",
 	 F_PREFER_ALT_AUTH, h_config_alt_auth, PREF_MISC},
+	{"unselect-will-not-advance",
+	 F_UNSELECT_WONT_ADVANCE, h_config_unsel_wont_advance, PREF_MISC},
 	{"use-current-dir",
 	 F_USE_CURRENT_DIR, h_config_use_current_dir, PREF_MISC},
 	{"use-subshell-for-suspend",
@@ -2404,6 +2701,9 @@ feature_list(index)
 	 F_DISABLE_CONFIG_SCREEN, h_config_disable_config_cmd, PREF_HIDDEN},
 	{"disable-keyboard-lock-cmd",
 	 F_DISABLE_KBLOCK_CMD, h_config_disable_kb_lock, PREF_HIDDEN},
+	{"disable-password-caching",
+	 F_DISABLE_PASSWORD_CACHING, h_config_disable_password_caching,
+	 PREF_HIDDEN},
 	{"disable-password-cmd",
 	 F_DISABLE_PASSWORD_CMD, h_config_disable_password_cmd, PREF_HIDDEN},
 	{"disable-pipes-in-sigs",
@@ -2418,16 +2718,18 @@ feature_list(index)
 	{"disable-roles-template-edit",
 	 F_DISABLE_ROLES_TEMPLEDIT, h_config_disable_roles_templateedit,
 	 PREF_HIDDEN},
+	{"disable-shared-namespaces",
+	 F_DISABLE_SHARED_NAMESPACES, h_config_disable_shared, PREF_HIDDEN},
 	{"disable-signature-edit-cmd",
 	 F_DISABLE_SIGEDIT_CMD, h_config_disable_signature_edit, PREF_HIDDEN},
 	{"enable-mailcap-param-substitution",
 	 F_DO_MAILCAP_PARAM_SUBST, h_config_mailcap_params, PREF_HIDDEN},
-	{"expose-hidden-config",
-	 F_EXPOSE_HIDDEN_CONFIG, h_config_expose_hidden_config, PREF_HIDDEN},
 	{"quell-berkeley-format-timezone",
 	 F_QUELL_BEZERK_TIMEZONE, h_config_no_bezerk_zone, PREF_HIDDEN},
 	{"quell-imap-envelope-update",
 	 F_QUELL_IMAP_ENV_CB, h_config_quell_imap_env, PREF_HIDDEN},
+	{"quell-maildomain-warning",
+	 F_QUELL_MAILDOMAIN_WARNING, h_config_quell_domain_warn, PREF_HIDDEN},
 	{"quell-news-envelope-update",
 	 F_QUELL_NEWS_ENV_CB, h_config_quell_news_env, PREF_HIDDEN},
 	{"quell-partial-fetching",
@@ -2499,7 +2801,6 @@ process_feature_list(ps, list, old_growth, hir, osr)
     char **list;
     int old_growth, hir, osr;
 {
-    register struct variable *vars = ps->vars;
     register char            *q;
     char                    **p,
                              *lvalue[BM_SIZE * 8];
@@ -2565,7 +2866,11 @@ process_feature_list(ps, list, old_growth, hir, osr)
     if(F_ON(F_QUELL_INTERNAL_MSG,ps_global))
       mail_parameters(NULL, SET_USERHASNOLIFE, (void *) 1);
 
-#ifndef	_WINDOWS
+#ifdef	_WINDOWS
+    ps->pass_ctrl_chars = 1;
+#else
+    ps->pass_ctrl_chars = F_ON(F_PASS_CONTROL_CHARS,ps_global) ? 1 : 0;
+
     if(F_ON(F_QUELL_BEZERK_TIMEZONE,ps_global))
       mail_parameters(NULL, SET_NOTIMEZONES, (void *) 1);
 #endif
@@ -2624,20 +2929,59 @@ set_current_pattern_vals(ps)
     set_current_val(&vars[V_PATTERNS], TRUE, TRUE);
     set_current_val(&vars[V_PAT_ROLES], TRUE, TRUE);
     set_current_val(&vars[V_PAT_FILTS], TRUE, TRUE);
+    set_current_val(&vars[V_PAT_FILTS_OLD], TRUE, TRUE);
     set_current_val(&vars[V_PAT_SCORES], TRUE, TRUE);
+    set_current_val(&vars[V_PAT_SCORES_OLD], TRUE, TRUE);
     set_current_val(&vars[V_PAT_INCOLS], TRUE, TRUE);
+    set_current_val(&vars[V_PAT_OTHER], TRUE, TRUE);
 
     /*
      * If old one (V_PATTERNS) is set and new ones aren't in config files,
      * then convert the old data into the new variables.
+     * The reason we split patterns into separate variables is so that
+     * the user could decide with greater granularity how to use global,
+     * main, and exceptions patterns.
      */
-    if(vars[V_PATTERNS].current_val.l && vars[V_PATTERNS].current_val.l[0] &&
-       !var_in_pinerc(vars[V_PAT_ROLES].name) &&
-       !var_in_pinerc(vars[V_PAT_FILTS].name) &&
-       !var_in_pinerc(vars[V_PAT_SCORES].name) &&
-       !var_in_pinerc(vars[V_PAT_INCOLS].name)){
+    if(vars[V_PATTERNS].current_val.l && vars[V_PATTERNS].current_val.l[0]
+       && !var_in_pinerc(vars[V_PAT_ROLES].name)
+       && !var_in_pinerc(vars[V_PAT_FILTS].name)
+       && !var_in_pinerc(vars[V_PAT_FILTS_OLD].name)
+       && !var_in_pinerc(vars[V_PAT_SCORES].name)
+       && !var_in_pinerc(vars[V_PAT_SCORES_OLD].name)
+       && !var_in_pinerc(vars[V_PAT_INCOLS].name)){
 
 	convert_pattern_data();
+    }
+    /*
+     * Otherwise, if FILTS_OLD is set and FILTS isn't in the config file,
+     * convert FILTS_OLD to FILTS. Same for SCORES.
+     * The reason FILTS was changed was so we could change the
+     * semantics of how rules work when there are pieces in the rule that
+     * we don't understand. At the same time as the FILTS change we added
+     * a rule to detect 8bitSubjects. So a user might have a filter that
+     * deletes messages with 8bitSubjects. The problem is that that same
+     * filter in a FILTS_OLD pine would match because it would ignore the
+     * 8bitSubject part of the pattern and match on the rest. So we changed
+     * the semantics so that rules with unknown bits would be ignored
+     * instead of used. We had to change variable names at the same time
+     * because we were adding the 8bit thing and the old pines are still
+     * out there. Filters and Scores can both be dangerous. Roles, Colors,
+     * and Other seem less dangerous so not worth adding a new variable.
+     */
+    else{
+	if(vars[V_PAT_FILTS_OLD].current_val.l
+	   && vars[V_PAT_FILTS_OLD].current_val.l[0]
+	   && !var_in_pinerc(vars[V_PAT_FILTS].name)
+	   && !var_in_pinerc(vars[V_PAT_SCORES].name)){
+	    convert_filts_pattern_data();
+	}
+
+	if(vars[V_PAT_SCORES_OLD].current_val.l
+	   && vars[V_PAT_SCORES_OLD].current_val.l[0]
+	   && !var_in_pinerc(vars[V_PAT_FILTS].name)
+	   && !var_in_pinerc(vars[V_PAT_SCORES].name)){
+	    convert_scores_pattern_data();
+	}
     }
 
     if(vars[V_PAT_ROLES].post_user_val.l)
@@ -2659,6 +3003,11 @@ set_current_pattern_vals(ps)
       ps_global->ew_for_incol_take = Post;
     else
       ps_global->ew_for_incol_take = Main;
+
+    if(vars[V_PAT_OTHER].post_user_val.l)
+      ps_global->ew_for_other_take = Post;
+    else
+      ps_global->ew_for_other_take = Main;
 }
 
 
@@ -2674,9 +3023,26 @@ convert_pattern_data()
 }
 
 
+void
+convert_filts_pattern_data()
+{
+    convert_pinerc_filts_patterns(PAT_USE_MAIN);
+    convert_pinerc_filts_patterns(PAT_USE_POST);
+}
+
+
+void
+convert_scores_pattern_data()
+{
+    convert_pinerc_scores_patterns(PAT_USE_MAIN);
+    convert_pinerc_scores_patterns(PAT_USE_POST);
+}
+
+
 /*
  * Foreach of the four variables, transfer the data for this config file
- * from the old patterns variable.
+ * from the old patterns variable. We don't have to convert OTHER patterns
+ * because they didn't exist in pines without patterns-other.
  *
  * If the original variable had patlines with type File then we convert
  * all of the individual patterns to type Lit, because each pattern can
@@ -2692,7 +3058,7 @@ convert_pinerc_patterns(use_flags)
     PAT_STATE pstate;
     ACTION_S *act;
 
-    old_rflags = (ROLE_OLD_PATS | use_flags);
+    old_rflags = (ROLE_OLD_PAT | use_flags);
 
     rflags = 0L;
     if(any_patterns(old_rflags, &pstate)){
@@ -2720,6 +3086,82 @@ convert_pinerc_patterns(use_flags)
 	  if(write_patterns(rflags | use_flags))
 	    dprint(1, (debugfile,
 		   "Trouble converting patterns to new variable\n"));
+    }
+}
+
+
+/*
+ * If the original variable had patlines with type File then we convert
+ * all of the individual patterns to type Lit, because each pattern can
+ * be of any category. Lit patterns are better tested, anyway.
+ */
+void
+convert_pinerc_filts_patterns(use_flags)
+    long use_flags;
+{
+    long      old_rflags;
+    long      rflags;
+    PAT_S    *pat;
+    PAT_STATE pstate;
+    ACTION_S *act;
+
+    old_rflags = (ROLE_OLD_FILT | use_flags);
+
+    rflags = 0L;
+    if(any_patterns(old_rflags, &pstate)){
+	dprint(2, (debugfile, "converting old filter patterns to new (%s)\n", (use_flags == PAT_USE_MAIN) ? "Main" : "Post"));
+	for(pat = first_pattern(&pstate); 
+	    pat;
+	    pat = next_pattern(&pstate)){
+	    if((act = pat->action) != NULL){
+		if(act->is_a_filter &&
+		   add_to_pattern(pat, ROLE_DO_FILTER | use_flags))
+		  rflags |= ROLE_DO_FILTER;
+	    }
+	}
+	
+	if(rflags)
+	  if(write_patterns(rflags | use_flags))
+	    dprint(1, (debugfile,
+		   "Trouble converting filter patterns to new variable\n"));
+    }
+}
+
+
+/*
+ * If the original variable had patlines with type File then we convert
+ * all of the individual patterns to type Lit, because each pattern can
+ * be of any category. Lit patterns are better tested, anyway.
+ */
+void
+convert_pinerc_scores_patterns(use_flags)
+    long use_flags;
+{
+    long      old_rflags;
+    long      rflags;
+    PAT_S    *pat;
+    PAT_STATE pstate;
+    ACTION_S *act;
+
+    old_rflags = (ROLE_OLD_SCORE | use_flags);
+
+    rflags = 0L;
+    if(any_patterns(old_rflags, &pstate)){
+	dprint(2, (debugfile, "converting old scores patterns to new (%s)\n", (use_flags == PAT_USE_MAIN) ? "Main" : "Post"));
+	for(pat = first_pattern(&pstate); 
+	    pat;
+	    pat = next_pattern(&pstate)){
+	    if((act = pat->action) != NULL){
+		if(act->is_a_score &&
+		   add_to_pattern(pat, ROLE_DO_SCORES | use_flags))
+		  rflags |= ROLE_DO_SCORES;
+	    }
+	}
+	
+	if(rflags)
+	  if(write_patterns(rflags | use_flags))
+	    dprint(1, (debugfile,
+		   "Trouble converting scores patterns to new variable\n"));
     }
 }
 
@@ -2845,28 +3287,36 @@ save_msg_rules(index)
     int index;
 {
     static NAMEVAL_S save_rules[] = {
-	{"by-from",				NULL, MSG_RULE_FROM},
-	{"by-nick-of-from",			NULL, MSG_RULE_NICK_FROM_DEF},
-	{"by-nick-of-from-then-from",		NULL, MSG_RULE_NICK_FROM},
-	{"by-fcc-of-from",			NULL, MSG_RULE_FCC_FROM_DEF},
-	{"by-fcc-of-from-then-from",		NULL, MSG_RULE_FCC_FROM},
-	{"by-sender",				NULL, MSG_RULE_SENDER},
-	{"by-nick-of-sender",			NULL, MSG_RULE_NICK_SENDER_DEF},
-	{"by-nick-of-sender-then-sender",	NULL, MSG_RULE_NICK_SENDER},
-	{"by-fcc-of-sender",			NULL, MSG_RULE_FCC_SENDER_DEF},
-	{"by-fcc-of-sender-then-sender",	NULL, MSG_RULE_FCC_SENDER},
-	{"by-recipient",			NULL, MSG_RULE_RECIP},
-	{"by-nick-of-recip",			NULL, MSG_RULE_NICK_RECIP_DEF},
-	{"by-nick-of-recip-then-recip",		NULL, MSG_RULE_NICK_RECIP},
-	{"by-fcc-of-recip",			NULL, MSG_RULE_FCC_RECIP_DEF},
-	{"by-fcc-of-recip-then-recip",		NULL, MSG_RULE_FCC_RECIP},
-	{"by-replyto",				NULL, MSG_RULE_REPLYTO},
-	{"by-nick-of-replyto",		       NULL, MSG_RULE_NICK_REPLYTO_DEF},
-	{"by-nick-of-replyto-then-replyto",	NULL, MSG_RULE_NICK_REPLYTO},
-	{"by-fcc-of-replyto",			NULL, MSG_RULE_FCC_REPLYTO_DEF},
-	{"by-fcc-of-replyto-then-replyto",	NULL, MSG_RULE_FCC_REPLYTO},
-	{"last-folder-used",			NULL, MSG_RULE_LAST}, 
-	{"default-folder",			NULL, MSG_RULE_DEFLT}
+      {"by-from",			      NULL, MSG_RULE_FROM},
+      {"by-nick-of-from",		      NULL, MSG_RULE_NICK_FROM_DEF},
+      {"by-nick-of-from-then-from",	      NULL, MSG_RULE_NICK_FROM},
+      {"by-fcc-of-from",		      NULL, MSG_RULE_FCC_FROM_DEF},
+      {"by-fcc-of-from-then-from",	      NULL, MSG_RULE_FCC_FROM},
+      {"by-realname-of-from",	 	      NULL,MSG_RULE_RN_FROM_DEF},
+      {"by-realname-of-from-then-from",	      NULL, MSG_RULE_RN_FROM},
+      {"by-sender",			      NULL, MSG_RULE_SENDER},
+      {"by-nick-of-sender",		      NULL, MSG_RULE_NICK_SENDER_DEF},
+      {"by-nick-of-sender-then-sender",	      NULL, MSG_RULE_NICK_SENDER},
+      {"by-fcc-of-sender",		      NULL, MSG_RULE_FCC_SENDER_DEF},
+      {"by-fcc-of-sender-then-sender",	      NULL, MSG_RULE_FCC_SENDER},
+      {"by-realname-of-sender",		      NULL, MSG_RULE_RN_SENDER_DEF},
+      {"by-realname-of-sender-then-sender",   NULL, MSG_RULE_RN_SENDER},
+      {"by-recipient",			      NULL, MSG_RULE_RECIP},
+      {"by-nick-of-recip",		      NULL, MSG_RULE_NICK_RECIP_DEF},
+      {"by-nick-of-recip-then-recip",	      NULL, MSG_RULE_NICK_RECIP},
+      {"by-fcc-of-recip",		      NULL, MSG_RULE_FCC_RECIP_DEF},
+      {"by-fcc-of-recip-then-recip",	      NULL, MSG_RULE_FCC_RECIP},
+      {"by-realname-of-recip",		      NULL, MSG_RULE_RN_RECIP_DEF},
+      {"by-realname-of-recip-then-recip",     NULL, MSG_RULE_RN_RECIP},
+      {"by-replyto",			      NULL, MSG_RULE_REPLYTO},
+      {"by-nick-of-replyto",		      NULL, MSG_RULE_NICK_REPLYTO_DEF},
+      {"by-nick-of-replyto-then-replyto",     NULL, MSG_RULE_NICK_REPLYTO},
+      {"by-fcc-of-replyto",		      NULL, MSG_RULE_FCC_REPLYTO_DEF},
+      {"by-fcc-of-replyto-then-replyto",      NULL, MSG_RULE_FCC_REPLYTO},
+      {"by-realname-of-replyto",	      NULL, MSG_RULE_RN_REPLYTO_DEF},
+      {"by-realname-of-replyto-then-replyto", NULL, MSG_RULE_RN_REPLYTO},
+      {"last-folder-used",		      NULL, MSG_RULE_LAST}, 
+      {"default-folder",		      NULL, MSG_RULE_DEFLT}
     };
 
     return((index >= 0 && index < (sizeof(save_rules)/sizeof(save_rules[0])))
@@ -2935,6 +3385,43 @@ col_style(index)
 
 
 /*
+ * Standard way to get at index color styles.
+ */
+NAMEVAL_S *
+index_col_style(index)
+    int index;
+{
+    static NAMEVAL_S ind_col_styles[] = {
+	{"flip-colors",			NULL, IND_COL_FLIP}, 
+	{"reverse",			NULL, IND_COL_REV}, 
+	{"reverse-fg",			NULL, IND_COL_FG},
+	{"reverse-fg-no-ambiguity",	NULL, IND_COL_FG_NOAMBIG},
+	{"reverse-bg",			NULL, IND_COL_BG},
+	{"reverse-bg-no-ambiguity",	NULL, IND_COL_BG_NOAMBIG}
+    };
+
+    return((index >= 0 && index < (sizeof(ind_col_styles)/sizeof(ind_col_styles[0]))) ? &ind_col_styles[index] : NULL);
+}
+
+
+/*
+ * Standard way to get at titlebar color styles.
+ */
+NAMEVAL_S *
+titlebar_col_style(index)
+    int index;
+{
+    static NAMEVAL_S tbar_col_styles[] = {
+	{"default",			NULL, TBAR_COLOR_DEFAULT}, 
+	{"indexline",			NULL, TBAR_COLOR_INDEXLINE}, 
+	{"reverse-indexline",		NULL, TBAR_COLOR_REV_INDEXLINE}
+    };
+
+    return((index >= 0 && index < (sizeof(tbar_col_styles)/sizeof(tbar_col_styles[0]))) ? &tbar_col_styles[index] : NULL);
+}
+
+
+/*
  * Standard way to get at folder sort rules...
  */
 NAMEVAL_S *
@@ -2974,6 +3461,26 @@ incoming_startup_rules(index)
 }
 
 
+NAMEVAL_S *
+startup_rules(index)
+    int index;
+{
+    static NAMEVAL_S is2_rules[] = {
+	{"first-unseen",		NULL, IS_FIRST_UNSEEN},
+	{"first-recent",		NULL, IS_FIRST_RECENT}, 
+	{"first-important",		NULL, IS_FIRST_IMPORTANT}, 
+	{"first-important-or-unseen",	NULL, IS_FIRST_IMPORTANT_OR_UNSEEN}, 
+	{"first-important-or-recent",	NULL, IS_FIRST_IMPORTANT_OR_RECENT}, 
+	{"first",			NULL, IS_FIRST},
+	{"last",			NULL, IS_LAST},
+	{"default",			NULL, IS_NOTSET}
+    };
+
+    return((index >= 0 && index < (sizeof(is2_rules)/sizeof(is2_rules[0])))
+	   ? &is2_rules[index] : NULL);
+}
+
+
 /*
  * Standard way to get at pruning-rule values.
  */
@@ -2992,6 +3499,49 @@ pruning_rules(index)
 
     return((index >= 0 && index < (sizeof(pr_rules)/sizeof(pr_rules[0])))
 	   ? &pr_rules[index] : NULL);
+}
+
+
+/*
+ * Standard way to get at thread_disp_style values.
+ */
+NAMEVAL_S *
+thread_disp_styles(index)
+    int index;
+{
+    static NAMEVAL_S td_styles[] = {
+	{"none",			"none",		THREAD_NONE},
+	{"show-thread-structure",	"struct",	THREAD_STRUCT},
+	{"mutt-like",			"mutt",		THREAD_MUTTLIKE},
+	{"indent-subject-1",		"subj1",	THREAD_INDENT_SUBJ1},
+	{"indent-subject-2",		"subj2",	THREAD_INDENT_SUBJ2},
+	{"indent-from-1",		"from1",	THREAD_INDENT_FROM1},
+	{"indent-from-2",		"from2",	THREAD_INDENT_FROM2},
+	{"show-structure-in-from",	"struct-from",	THREAD_STRUCT_FROM}
+    };
+
+    return((index >= 0 && index < (sizeof(td_styles)/sizeof(td_styles[0])))
+	   ? &td_styles[index] : NULL);
+}
+
+
+/*
+ * Standard way to get at thread_index_style values.
+ */
+NAMEVAL_S *
+thread_index_styles(index)
+    int index;
+{
+    static NAMEVAL_S ti_styles[] = {
+	{"regular-index-with-expanded-threads",	"exp",	THRDINDX_EXP},
+	{"regular-index-with-collapsed-threads","coll",	THRDINDX_COLL},
+	{"separate-index-screen-always",	"sep",	THRDINDX_SEP},
+	{"separate-index-screen-except-for-single-messages","sep-auto",
+							THRDINDX_SEP_AUTO}
+    };
+
+    return((index >= 0 && index < (sizeof(ti_styles)/sizeof(ti_styles[0])))
+	   ? &ti_styles[index] : NULL);
 }
 
 
@@ -3167,7 +3717,7 @@ process_init_cmds(ps, list)
 	  if(i >= MAX_INIT_CMDS){
 	      sprintf(tmp_20k_buf, 
 		      "Initial keystroke list too long at \"%s\"", *p);
-	      init_error(ps, tmp_20k_buf);
+	      init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	      break;
 	  }
 	  
@@ -3215,7 +3765,7 @@ process_init_cmds(ps, list)
 	    if(lpm1 + i - 1 > MAX_INIT_CMDS){
 		sprintf(tmp_20k_buf, 
 			"Initial keystroke list too long, truncated at %s\n", *p);
-		init_error(ps, tmp_20k_buf);
+		init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 		break;                   /* Bail out of this loop! */
 	    } else
 	      for(j = 1; j < lpm1; j++)
@@ -3223,8 +3773,8 @@ process_init_cmds(ps, list)
 	}
 	else {
 	    sprintf(tmp_20k_buf,
-		    "Bad initial keystroke \"%s\" (missing comma?)", *p);
-	    init_error(ps, tmp_20k_buf);
+		    "Bad initial keystroke \"%.500s\" (missing comma?)", *p);
+	    init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	    break;
 	}
       }
@@ -3238,7 +3788,7 @@ process_init_cmds(ps, list)
      * of function key commands in the initial-keystroke-list.
      */
     if(fkeys && not_fkeys){
-	init_error(ps,
+	init_error(ps, SM_ORDER | SM_DING, 3, 5,
 "Mixed characters and function keys in \"initial-keystroke-list\", skipping.");
 	i = 0;
     }
@@ -3307,7 +3857,8 @@ set_current_val(var, expand, cmdline)
 		}
 		else{
 		    for(i = 0; t[i]; i++){
-			if(expand_variables(tmp_20k_buf, t[i], 0)){
+			if(expand_variables(tmp_20k_buf, SIZEOF_20KBUF, t[i],
+					    0)){
 			    /* successful expand */
 			    is_set[j]++;
 			    list[j] = t;
@@ -3357,7 +3908,8 @@ set_current_val(var, expand, cmdline)
 		    for(i = 0; list[0][i]; i++){
 			if(!expand)
 			  *tmp++ = cpystr(list[0][i]);
-			else if(expand_variables(tmp_20k_buf,list[0][i],0))
+			else if(expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
+						 list[0][i], 0))
 			  *tmp++ = cpystr(tmp_20k_buf);
 		    }
 		}
@@ -3368,7 +3920,8 @@ set_current_val(var, expand, cmdline)
 			for(i = is_inherit[j] ? 1 : 0; list[j][i]; i++){
 			    if(!expand)
 			      *tmp++ = cpystr(list[j][i]);
-			    else if(expand_variables(tmp_20k_buf,list[j][i],0))
+			    else if(expand_variables(tmp_20k_buf,SIZEOF_20KBUF,
+						     list[j][i], 0))
 			      *tmp++ = cpystr(tmp_20k_buf);
 			}
 		    }
@@ -3399,7 +3952,7 @@ set_current_val(var, expand, cmdline)
 		    if(!strvar)
 			strvar = p;
 		}
-		else if(expand_variables(tmp_20k_buf, p,
+		else if(expand_variables(tmp_20k_buf, SIZEOF_20KBUF, p,
 				(var == &ps_global->vars[V_MAILCAP_PATH] ||
 				 var == &ps_global->vars[V_MIMETYPE_PATH]))){
 		    is_set[j]++;
@@ -3420,7 +3973,7 @@ set_current_val(var, expand, cmdline)
 	    if(!expand)
 	      var->current_val.p = cpystr(strvar);
 	    else{
-		expand_variables(tmp_20k_buf, strvar,
+		expand_variables(tmp_20k_buf, SIZEOF_20KBUF, strvar,
 				 (var == &ps_global->vars[V_MAILCAP_PATH] ||
 				  var == &ps_global->vars[V_MIMETYPE_PATH]));
 		var->current_val.p = cpystr(tmp_20k_buf);
@@ -3652,17 +4205,20 @@ NOTE handling of braces in ${name} doesn't check much or do error recovery
   ----*/
 
 char *
-expand_variables(lineout, linein, colon_path)
-char *linein, *lineout;
-int   colon_path;
+expand_variables(lineout, lineoutlen, linein, colon_path)
+    char  *lineout;
+    size_t lineoutlen;
+    char  *linein;
+    int    colon_path;
 {
     char *src = linein, *dest = lineout, *p;
-    int  envexpand = 0;
+    char *limit = lineout + lineoutlen;
+    int   envexpand = 0;
 
     if(!linein)
       return(NULL);
 
-    while( *src ){			/* something in input string */
+    while(*src ){			/* something in input string */
 #if defined(DOS) || defined(OS2)
         if(*src == '$' && *(src+1) == '$'){
 	    /*
@@ -3670,7 +4226,8 @@ int   colon_path;
 	     * it's up to the user of the variable to handle the 
 	     * backslash...
 	     */
-            *dest++ = *++src;		/* copy next as is */
+	    if(dest < limit)
+              *dest++ = *++src;		/* copy next as is */
         }else
 #else
         if(*src == '\\' && *(src+1) == '$'){
@@ -3679,7 +4236,8 @@ int   colon_path;
 	     * it's up to the user of the variable to handle the 
 	     * backslash...
 	     */
-            *dest++ = *++src;		/* copy next as is */
+	    if(dest < limit)
+              *dest++ = *++src;		/* copy next as is */
         }else if(*src == '~' &&
 		 (src == linein || colon_path && *(src-1) == ':')){
 	    char buf[MAXPATH];
@@ -3692,7 +4250,7 @@ int   colon_path;
 	    buf[i]  = '\0';		/* tie off buf string */
 	    fnexpand(buf, sizeof(buf));	/* expand the path */
 
-	    for(p = buf; *dest = *p; p++, dest++)
+	    for(p = buf; dest < limit && (*dest = *p); p++, dest++)
 	      ;
 
 	    continue;
@@ -3710,7 +4268,7 @@ int   colon_path;
 		found_brace = 1;
 	    }
 
-	    while(*src && !isspace((unsigned char)*src)
+	    while(*src && !isspace((unsigned char) *src)
 		  && (p-word < sizeof(word)-1)
 		  && (!found_brace || *src != '}'))
 	      *p++ = *src++;		/* copy to word */
@@ -3726,19 +4284,24 @@ int   colon_path;
 	    *p = '\0';			/* tie off word */
 
 	    if(p = getenv(word)) 	/* check for word in environment */
-	      while(*p)
+	      while(*p && dest < limit)
 		*dest++ = *p++;
 
 	    continue;
 	}else{				/* other cases: just copy */
-	    *dest++ = *src;
+	    if(dest < limit)
+	      *dest++ = *src;
 	}
 
         if(*src)			/* next character (if any) */
 	  src++;
     }
 
-    *dest = '\0';
+    if(dest < limit)
+      *dest = '\0';
+    else
+      lineout[lineoutlen-1] = '\0';
+
     return((envexpand && lineout[0] == '\0') ? NULL : lineout);
 }
 
@@ -3751,23 +4314,29 @@ int   colon_path;
   Result: sets the fullname, login and home_dir field of the pine structure
           returns 0 on success, -1 if not.
   ----*/
-#define	MAX_INIT_ERRS	5
+#define	MAX_INIT_ERRS	10
 void
-init_error(ps, s)
+init_error(ps, flags, min_time, max_time, message)
     struct pine *ps;
-    char	*s;
+    int          flags;
+    int          min_time, max_time;
+    char	*message;
 {
     int    i;
 
     if(!ps->init_errs){
-	ps->init_errs = (char **)fs_get((MAX_INIT_ERRS + 1) * sizeof(char *));
-	memset(ps->init_errs, 0, (MAX_INIT_ERRS + 1) * sizeof(char *));
+	ps->init_errs = (INIT_ERR_S *)fs_get((MAX_INIT_ERRS + 1) *
+					     sizeof(*ps->init_errs));
+	memset(ps->init_errs, 0, (MAX_INIT_ERRS + 1) * sizeof(*ps->init_errs));
     }
 
     for(i = 0; i < MAX_INIT_ERRS; i++)
-      if(!ps->init_errs[i]){
-	  ps->init_errs[i] = cpystr(s);
-	  dprint(2, (debugfile, "%s\n", s));
+      if(!(ps->init_errs)[i].message){
+	  (ps->init_errs)[i].message  = cpystr(message);
+	  (ps->init_errs)[i].min_time = min_time;
+	  (ps->init_errs)[i].max_time = max_time;
+	  (ps->init_errs)[i].flags    = flags;
+	  dprint(2, (debugfile, "%s\n", message));
 	  break;
       }
 }
@@ -3792,15 +4361,16 @@ init_username(ps)
     expanded = NULL;
 #if defined(DOS) || defined(OS2)
     if(ps->COM_USER_ID)
-      expanded = expand_variables(tmp_20k_buf, ps->COM_USER_ID, 0);
+      expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
+				  ps->COM_USER_ID, 0);
     
     if(!expanded && ps->vars[V_USER_ID].post_user_val.p)
-      expanded = expand_variables(tmp_20k_buf,
-			  ps->vars[V_USER_ID].post_user_val.p, 0);
+      expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
+				  ps->vars[V_USER_ID].post_user_val.p, 0);
 
     if(!expanded && ps->vars[V_USER_ID].main_user_val.p)
-      expanded = expand_variables(tmp_20k_buf,
-			  ps->vars[V_USER_ID].main_user_val.p, 0);
+      expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
+				  ps->vars[V_USER_ID].main_user_val.p, 0);
 
     if(!expanded)
       ps->blank_user_id = 1;
@@ -3817,7 +4387,8 @@ init_username(ps)
     expanded = NULL;
     if(ps->vars[V_PERSONAL_NAME].is_fixed){
 	if(ps->FIX_PERSONAL_NAME){
-            expanded = expand_variables(tmp_20k_buf, ps->FIX_PERSONAL_NAME, 0);
+            expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
+					ps->FIX_PERSONAL_NAME, 0);
 	}
 	if(ps->vars[V_PERSONAL_NAME].main_user_val.p ||
 	   ps->vars[V_PERSONAL_NAME].post_user_val.p){
@@ -3829,14 +4400,15 @@ init_username(ps)
     }
     else{
 	if(ps->COM_PERSONAL_NAME)
-	  expanded = expand_variables(tmp_20k_buf, ps->COM_PERSONAL_NAME, 0);
+	  expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
+				      ps->COM_PERSONAL_NAME, 0);
 
 	if(!expanded && ps->vars[V_PERSONAL_NAME].post_user_val.p)
-	  expanded = expand_variables(tmp_20k_buf,
+	  expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
 			      ps->vars[V_PERSONAL_NAME].post_user_val.p, 0);
 
 	if(!expanded && ps->vars[V_PERSONAL_NAME].main_user_val.p)
-	  expanded = expand_variables(tmp_20k_buf,
+	  expanded = expand_variables(tmp_20k_buf, SIZEOF_20KBUF,
 			      ps->vars[V_PERSONAL_NAME].main_user_val.p, 0);
     }
 
@@ -3977,13 +4549,13 @@ init_hostname(ps)
      * remote folders...
      */
     mail_parameters(NULL, SET_LOCALHOST, (void *) ps->maildomain);
-    if(!strchr(ps->maildomain, '.')){
+    if(F_OFF(F_QUELL_MAILDOMAIN_WARNING, ps) && !strchr(ps->maildomain, '.')){
 	sprintf(tmp_20k_buf, "Incomplete maildomain \"%s\".",
 		ps->maildomain);
-	init_error(ps, tmp_20k_buf);
+	init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
 	strcpy(tmp_20k_buf,
 	       "Return address in mail you send may be incorrect.");
-	init_error(ps, tmp_20k_buf);
+	init_error(ps, SM_ORDER | SM_DING, 3, 5, tmp_20k_buf);
     }
 
     dprint(1, (debugfile,"User domain name being used \"%s\"\n",
@@ -4039,7 +4611,7 @@ read_pinerc(prc, vars, which_vars)
     if(!prc)
       return;
 
-    dprint(1, (debugfile, "reading_pinerc \"%s\"\n",
+    dprint(2, (debugfile, "reading_pinerc \"%s\"\n",
 	   prc->name ? prc->name : "?"));
 
     if(prc->type == Loc){
@@ -4051,7 +4623,7 @@ read_pinerc(prc, vars, which_vars)
 
     if(file == NULL || *file == '\0'){
 	if(file == NULL){
-          dprint(1, (debugfile, "Open failed: %s\n", error_description(errno)));
+          dprint(2, (debugfile, "Open failed: %s\n", error_description(errno)));
 	}
 	else{
 	    if(prc->type == Loc){
@@ -4094,8 +4666,7 @@ read_pinerc(prc, vars, which_vars)
 	}
 
 	/*
-	 * fixup unix newlines?  note: this isn't a problem under dos
-	 * since the file's read in text mode.
+	 * accept CRLF or LF newlines
 	 */
 	for(p = file; *p && *p != '\012'; p++)
 	  ;
@@ -4106,7 +4677,7 @@ read_pinerc(prc, vars, which_vars)
 	      p1++;
     }
 
-    dprint(1, (debugfile, "Read %d characters:\n", strlen(file)));
+    dprint(2, (debugfile, "Read %d characters:\n", strlen(file)));
 
     if(which_vars == ParsePers || which_vars == ParsePersPost){
 	/*--- Count up lines and allocate structures */
@@ -4229,7 +4800,7 @@ read_pinerc(prc, vars, which_vars)
         /*---- variable is unset, or it's global but expands to nothing ----*/
         if(!*value
 	   || (which_vars == ParseGlobal
-	       && !expand_variables(tmp_20k_buf, value,
+	       && !expand_variables(tmp_20k_buf, SIZEOF_20KBUF, value,
 				    (v == &ps_global->vars[V_MAILCAP_PATH] ||
 				     v == &ps_global->vars[V_MIMETYPE_PATH])))){
             if(v->is_user && pline){
@@ -4379,9 +4950,9 @@ read_pinerc(prc, vars, which_vars)
 	            (which_vars == ParseGlobal)   ? v->global_val.l :
 						     v->fixed_val.l;
 	    if(l && *l && **l){
-                dprint(3,(debugfile, " %20.20s : %s\n", v->name, *l));
+                dprint(5,(debugfile, " %20.20s : %s\n", v->name, *l));
 	        while(++l && *l && **l)
-                    dprint(3,(debugfile, " %20.20s : %s\n", "", *l));
+                    dprint(5,(debugfile, " %20.20s : %s\n", "", *l));
 	    }
 	}else{
 	    char *p;
@@ -4390,7 +4961,7 @@ read_pinerc(prc, vars, which_vars)
 	            (which_vars == ParseGlobal)   ? v->global_val.p :
 						     v->fixed_val.p;
 	    if(p && *p)
-                dprint(3,(debugfile, " %20.20s : %s\n", v->name, p));
+                dprint(5,(debugfile, " %20.20s : %s\n", v->name, p));
 	}
 #endif /* DEBUG */
     }
@@ -4400,7 +4971,7 @@ read_pinerc(prc, vars, which_vars)
         pline->is_var = 0;
 	if(!prc->pinerc_written && prc->type == Loc){
 	    prc->pinerc_written = name_file_mtime(filename);
-	    dprint(2, (debugfile, "read_pinerc: time_pinerc_written = %ld\n",
+	    dprint(5, (debugfile, "read_pinerc: time_pinerc_written = %ld\n",
 		       prc->pinerc_written));
 	}
     }
@@ -4444,8 +5015,12 @@ read_remote_pinerc(prc, which_vars)
     else{
 	/*
 	 * We don't cache the pinerc, we always copy it.
+	 *
+	 * Don't store the config in a temporary file, just leave it
+	 * in memory while using it.
+	 * It is currently required that NO_PERM_CACHE be set if NO_FILE is set.
 	 */
-	flags = NO_PERM_CACHE;
+	flags = (NO_PERM_CACHE | NO_FILE);
     }
 
 create_the_remote_folder:
@@ -4471,6 +5046,12 @@ create_the_remote_folder:
     if(!prc->rd)
       goto bail_out;
     
+    /*
+     * On first use we just use a temp file instead of memory (NO_FILE).
+     * In other words, for our convenience, we don't turn NO_FILE back on
+     * here. Why is that convenient? Because of the stuff that happened in
+     * rd_create_remote when flags was set to zero.
+     */
     if(no_perm_create_pass)
       prc->rd->flags |= NO_PERM_CACHE;
 
@@ -4512,7 +5093,8 @@ create_the_remote_folder:
 
 	if(prc->rd->flags & REM_OUTOFDATE){
 	    if(rd_update_local(prc->rd) != 0){
-		if(!no_perm_create_pass && prc->rd->flags & NO_PERM_CACHE){
+		if(!no_perm_create_pass && prc->rd->flags & NO_PERM_CACHE
+		   && !(prc->rd->flags & USER_SAID_NO)){
 		    /*
 		     * We don't check for the existence of the remote
 		     * folder when this flag is turned on, so we could
@@ -4524,7 +5106,7 @@ create_the_remote_folder:
 		}
 
 		dprint(1, (debugfile,
-		       "pinerc_remote_open: rd_update_local failed\n"));
+		       "read_pinerc_remote: rd_update_local failed\n"));
 		/*
 		 * Don't give up altogether. We still may be
 		 * able to use a cached copy.
@@ -4558,7 +5140,11 @@ create_the_remote_folder:
 	}
     }
 
-    file = read_file(prc->rd->lf);
+    if(prc->rd->flags & NO_FILE)
+      /* copy text, leave sonofile for later use */
+      file = cpystr((char *)so_text(prc->rd->sonofile));
+    else
+      file = read_file(prc->rd->lf);
 
 bail_out:
     if((which_vars == ParsePers || which_vars == ParsePersPost) &&
@@ -4730,7 +5316,7 @@ write_pinerc(ps, which)
     EditWhich    which;
 {
     char               *p, *dir, *tmp = NULL, *pinrc;
-    char               *pval, **apval, **lval, **alval;
+    char               *pval, **lval;
     FILE               *f;
     PINERC_LINE        *pline;
     struct variable    *var;
@@ -4738,6 +5324,7 @@ write_pinerc(ps, which)
     char               *filename;
     REMDATA_S          *rd = NULL;
     PINERC_S           *prc = NULL;
+    STORE_S            *so = NULL;
 
     dprint(2,(debugfile,"---- write_pinerc(%s) ----\n",
 	    (which == Main) ? "Main" : "Post"));
@@ -4773,7 +5360,7 @@ write_pinerc(ps, which)
 		       'n', 0, NO_HELP, WT_FLUSH_IN) == 'n'){
 		prc->outstanding_pinerc_changes = 1;
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Pinerc \"%s\" NOT saved",
+				  "Pinerc \"%.200s\" NOT saved",
 				  prc->name ? prc->name : "");
 		dprint(2, (debugfile,
 			   "write_pinerc: remote pinerc changed\n"));
@@ -4816,7 +5403,7 @@ write_pinerc(ps, which)
 		    }
 
 		    q_status_message1(SM_ORDER | SM_DING, 5, 15,
-		"No write permission for remote config %s, changes NOT saved!",
+	    "No write permission for remote config %.200s, changes NOT saved!",
 				    rd->rn);
 		}
 		else{
@@ -4852,7 +5439,7 @@ write_pinerc(ps, which)
 		       'n', 0, NO_HELP, WT_FLUSH_IN) == 'n'){
 		prc->outstanding_pinerc_changes = 1;
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Pinerc \"%s\" NOT saved", pinrc);
+				  "Pinerc \"%.200s\" NOT saved", pinrc);
 		dprint(2, (debugfile,
 			   "write_pinerc: mtime mismatch: \"%s\": %ld != %ld\n",
 			   filename, prc->pinerc_written, mtime));
@@ -4863,14 +5450,15 @@ write_pinerc(ps, which)
 
     /* don't write if pinerc is read-only */
     if(prc->readonly ||
-         (can_access(filename, ACCESS_EXISTS) == 0 &&
+         (filename &&
+	  can_access(filename, ACCESS_EXISTS) == 0 &&
           can_access(filename, EDIT_ACCESS) != 0)){
 	prc->readonly = 1;
 	if(prc == ps->prc)
 	  ps->readonly_pinerc = 1;
 
 	q_status_message1(SM_ORDER | SM_DING, 0, 5,
-			  "Can't modify configuration file \"%s\": ReadOnly",
+		      "Can't modify configuration file \"%.200s\": ReadOnly",
 			  pinrc);
 	dprint(2,
 	    (debugfile,"write_pinerc: fail because can't access pinerc\n"));
@@ -4881,58 +5469,77 @@ write_pinerc(ps, which)
 	return(-1);
     }
 
-    dir = ".";
-    if(p = last_cmpnt(filename)){
-	*--p = '\0';
-	dir = filename;
+    if(rd && rd->flags & NO_FILE){
+	so = rd->sonofile;
+	so_truncate(rd->sonofile, 0L);		/* reset storage object */
     }
+    else{
+	dir = ".";
+	if(p = last_cmpnt(filename)){
+	    *--p = '\0';
+	    dir = filename;
+	}
 
 #if	defined(DOS) || defined(OS2)
-    if(!(isalpha((unsigned char)dir[0]) && dir[1] == ':' && dir[2] == '\0')
-       && (can_access(dir, EDIT_ACCESS) < 0 &&
+	if(!(isalpha((unsigned char)dir[0]) && dir[1] == ':' && dir[2] == '\0')
+	   && (can_access(dir, EDIT_ACCESS) < 0 &&
 #ifdef	DOS
-	   mkdir(dir) < 0))
+	       mkdir(dir) < 0))
 #else
-	   mkdir(dir,0700) < 0))
+	       mkdir(dir,0700) < 0))
 #endif
-    {
-	q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			  "Error creating \"%s\" : %s", dir,
-			  error_description(errno));
-	if(rd)
-	  rd->flags &= ~DO_REMTRIM;
+	{
+	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
+			      "Error creating \"%.200s\" : %.200s", dir,
+			      error_description(errno));
+	    if(rd)
+	      rd->flags &= ~DO_REMTRIM;
 
-	return(-1);
-    }
+	    return(-1);
+	}
 
-    tmp = temp_nam(dir, "rc");
-    if(p)
-      *p = '\\';
+	tmp = temp_nam(dir, "rc");
 
-    if(tmp == NULL)
-      goto io_err;
+	if(*dir && tmp && !in_dir(dir, tmp)){
+	    (void)unlink(tmp);
+	    fs_give((void **)&tmp);
+	}
 
-    f = fopen(tmp, "wt");
+	if(p)
+	  *p = '\\';
+
+	if(tmp == NULL)
+	  goto io_err;
+
 #else  /* !DOS */
-    tmp = temp_nam((*dir) ? dir : "/", "pinerc");
-    if(p)
-      *p = '/';
+	tmp = temp_nam((*dir) ? dir : "/", "pinerc");
 
-    if(tmp == NULL)
-      goto io_err;
+	/*
+	 * If temp_nam can't write in dir it puts the temp file in a
+	 * temp directory, which won't help us when we go to rename.
+	 */
+	if(*dir && tmp && !in_dir(dir, tmp)){
+	    (void)unlink(tmp);
+	    fs_give((void **)&tmp);
+	}
 
-    f = fopen(tmp, "w");
+	if(p)
+	  *p = '/';
+
+	if(tmp == NULL)
+	  goto io_err;
+
 #endif  /* !DOS */
 
-    if(f == NULL) 
-      goto io_err;
+	if((so = so_get(FileStar, tmp, WRITE_ACCESS)) == NULL)
+	  goto io_err;
+    }
 
     for(var = ps->vars; var->name != NULL; var++) 
       var->been_written = 0;
 
-    if(prc->type == Loc &&
-       ps->first_time_user &&
-       fprintf(f, "%s", cf_text_comment) == EOF)
+    if(prc->type == Loc && ps->first_time_user &&
+       !so_puts(so, native_nl(cf_text_comment)))
       goto io_err;
 
     /* Write out what was in the .pinerc */
@@ -4950,34 +5557,41 @@ write_pinerc(ps, which)
 	    if((var->is_list && (!lval || !lval[0])) ||
 	       (!var->is_list && !pval)){
 		/* leave null variables out of remote pinerc */
-		if(prc->type == Loc && fprintf(f, "%s=\n", var->name) == EOF)
+		if(prc->type == Loc &&
+		   (!so_puts(so, var->name) || !so_puts(so, "=") ||
+		    !so_puts(so, NEWLINE)))
 		  goto io_err;
 	    }
 	    /* var is set to empty string */
 	    else if((var->is_list && lval[0][0] == '\0') ||
 		    (!var->is_list && pval[0] == '\0')){
-		if(fprintf(f, "%s=%s\n", var->name, quotes) == EOF)
+		if(!so_puts(so, var->name) || !so_puts(so, "=") ||
+		   !so_puts(so, quotes) || !so_puts(so, NEWLINE))
 		  goto io_err;
 	    }
 	    else{
 		if(var->is_list){
 		    int i = 0;
 
-		    for(i = 0; lval[i]; i++)
-		      if(fprintf(f, "%s%s%s%s\n",
-				 (i) ? "\t" : var->name,
-				 (i) ? "" : "=",
-				 lval[i][0] ? lval[i] : quotes,
-				 lval[i+1] ? "," : "") == EOF)
-			goto io_err;
+		    for(i = 0; lval[i]; i++){
+			sprintf(tmp_20k_buf, "%.100s%.100s%.10000s%.100s%s",
+				(i) ? "\t" : var->name,
+				(i) ? "" : "=",
+				lval[i][0] ? lval[i] : quotes,
+				lval[i+1] ? "," : "", NEWLINE);
+			if(!so_puts(so, (char *)tmp_20k_buf))
+			  goto io_err;
+		    }
 		}
 		else{
-		    if(fprintf(f, "%s=%s%s%s\n", var->name,
-			       (pline->is_quoted && pval[0] != '\"')
-				 ? "\"" : "",
-			       pval,
-			       (pline->is_quoted && pval[0] != '\"')
-				 ? "\"" : "") == EOF)
+		    sprintf(tmp_20k_buf, "%.100s=%.100s%.10000s%.100s%s",
+			    var->name,
+			    (pline->is_quoted && pval[0] != '\"')
+			      ? "\"" : "",
+			    pval,
+			    (pline->is_quoted && pval[0] != '\"')
+			      ? "\"" : "", NEWLINE);
+		    if(!so_puts(so, (char *)tmp_20k_buf))
 		      goto io_err;
 		}
 	    }
@@ -4999,13 +5613,16 @@ write_pinerc(ps, which)
 		if(pline <= prc->pinerc_lines || (pline-1)->line == NULL ||
 		   strlen((pline-1)->line) < 3 ||
 		   strucmp((pline-1)->line+2, pline->var->descrip) != 0)
-		  if(fprintf(f, "# %s\n", pline->var->descrip) == EOF)
+		  if(!so_puts(so, "# ") ||
+		     !so_puts(so, native_nl(pline->var->descrip)) ||
+		     !so_puts(so, NEWLINE))
 		    goto io_err;
 	    }
 
 	    /* remove comments from remote pinercs */
-	    if((prc->type == Loc || pline->line[0] != '#') &&
-	       fprintf(f, "%s\n", pline->line) == EOF)
+	    if((prc->type == Loc ||
+		(pline->line[0] != '#' && pline->line[0] != '\0')) &&
+	        (!so_puts(so, pline->line) || !so_puts(so, NEWLINE)))
 	      goto io_err;
 	}
     }
@@ -5026,7 +5643,8 @@ write_pinerc(ps, which)
 	 * blank and comment line.
 	 */
 	if(prc->type == Loc && var->descrip && *var->descrip &&
-	   fprintf(f, "\n# %s\n", var->descrip) == EOF)
+	   (!so_puts(so, NEWLINE) || !so_puts(so, "# ") ||
+	    !so_puts(so, native_nl(var->descrip)) || !so_puts(so, NEWLINE)))
 	  goto io_err;
 
 	/* variable is not set */
@@ -5034,37 +5652,47 @@ write_pinerc(ps, which)
 	if((var->is_list && (!lval || (!lval[0] && !var->global_val.l))) ||
 	   (!var->is_list && !pval)){
 	    /* leave null variables out of remote pinerc */
-	    if(prc->type == Loc && fprintf(f, "%s=\n", var->name) == EOF)
+	    if(prc->type == Loc &&
+	       (!so_puts(so, var->name) || !so_puts(so, "=") ||
+	        !so_puts(so, NEWLINE)))
 	      goto io_err;
 	}
 	/* var is set to empty string */
 	else if((var->is_list && (!lval[0] || !lval[0][0]))
 		|| (!var->is_list && pval[0] == '\0')){
-	    if(fprintf(f, "%s=%s\n", var->name, quotes) == EOF)
+	    if(!so_puts(so, var->name) || !so_puts(so, "=") ||
+	       !so_puts(so, quotes) || !so_puts(so, NEWLINE))
 	      goto io_err;
 	}
 	else if(var->is_list){
 	    int i = 0;
 
-	    for(i = 0; lval[i] ; i++)
-	      if(fprintf(f, "%s%s%s%s\n", (i) ? "\t" : var->name,
-			 (i) ? "" : "=", lval[i],
-			 lval[i+1] ? ",":"") == EOF)
-		goto io_err;
+	    for(i = 0; lval[i] ; i++){
+		sprintf(tmp_20k_buf, "%.100s%.100s%.10000s%.100s%s",
+			(i) ? "\t" : var->name,
+			(i) ? "" : "=",
+			lval[i],
+			lval[i+1] ? "," : "", NEWLINE);
+		if(!so_puts(so, (char *)tmp_20k_buf))
+		  goto io_err;
+	    }
 	}
 	else{
-	    if(fprintf(f, "%s=%s\n", var->name, pval) == EOF)
+	    if(!so_puts(so, var->name) || !so_puts(so, "=") ||
+	       !so_puts(so, pval) || !so_puts(so, NEWLINE))
 	      goto io_err;
 	}
     }
 
-    if(fclose(f) == EOF)
-      goto io_err;
+    if(!(rd && rd->flags & NO_FILE)){
+	if(so_give(&so))
+	  goto io_err;
 
-    file_attrib_copy(tmp, filename);
-    if(rename_file(tmp, filename) < 0)
-      goto io_err;
-
+	file_attrib_copy(tmp, filename);
+	if(rename_file(tmp, filename) < 0)
+	  goto io_err;
+    }
+    
     if(prc->type != Loc){
 	int   e, we_cancel;
 	char datebuf[200];
@@ -5073,21 +5701,12 @@ write_pinerc(ps, which)
 
 	we_cancel = busy_alarm(1, "Copying to remote config", NULL, 0);
 	if((e = rd_update_remote(rd, datebuf)) != 0){
-	    if(e == -1){
-		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"Error opening temporary config file %s: %s",
-				rd->lf, error_description(errno));
-		dprint(1, (debugfile,
-		       "write_pinerc: error opening temp file %s\n", rd->lf));
-	    }
-	    else{
-		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"Error copying to %s: %s",
-				rd->rn, error_description(errno));
-		dprint(1, (debugfile,
-		       "write_pinerc: error copying from %s to %s\n",
-		       rd->lf, rd->rn));
-	    }
+	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
+			    "Error copying to %.200s: %.200s",
+			    rd->rn, error_description(errno));
+	    dprint(1, (debugfile,
+		   "write_pinerc: error copying from %s to %s\n",
+		   rd->lf ? rd->lf : "<memory>", rd->rn));
 	    
 	    q_status_message(SM_ORDER | SM_DING, 5, 5,
 		   "Copy of config to remote folder failed, changes NOT saved remotely");
@@ -5098,6 +5717,9 @@ write_pinerc(ps, which)
 	    rd_trim_remdata(&rd);
 	    rd_close_remote(rd);
 	}
+
+	if(we_cancel)
+	  cancel_busy_alarm(-1);
     }
 
     prc->outstanding_pinerc_changes = 0;
@@ -5120,7 +5742,7 @@ write_pinerc(ps, which)
 
   io_err:
     q_status_message2(SM_ORDER | SM_DING, 3, 5,
-		      "Error saving configuration in \"%s\": %s",
+		      "Error saving configuration in \"%.200s\": %.200s",
 		      pinrc, error_description(errno));
     dprint(1, (debugfile, "Error writing %s : %s\n", pinrc,
 	       error_description(errno)));
@@ -5132,6 +5754,41 @@ write_pinerc(ps, which)
     }
 
     return(-1);
+}
+
+
+/*
+ * Given a unix-style source string which may contain LFs,
+ * convert those to CRLFs if appropriate.
+ *
+ * Returns a pointer to the converted string. This will be a string
+ * stored in tmp_20k_buf.
+ *
+ * This is just used for the variable descriptions in the pinerc file. It
+ * could certainly be fancier. It simply converts all \n to NEWLINE.
+ */
+char *
+native_nl(src)
+    char *src;
+{ 
+    char *q, *p;
+
+    tmp_20k_buf[0] = '\0';
+
+    if(src){
+	for(q = (char *)tmp_20k_buf; *src; src++){
+	    if(*src == '\n'){
+		for(p = NEWLINE; *p; p++)
+		  *q++ = *p;
+	    }
+	    else
+	      *q++ = *src;
+	}
+
+	*q = '\0';
+    }
+
+    return((char *)tmp_20k_buf);
 }
 
 
@@ -5386,7 +6043,7 @@ char *filename;
 	goto io_err;
 
     for(var = variables; var->name != NULL; var++){
-	dprint(5,(debugfile,"write_pinerc: %s = %s\n", var->name,
+	dprint(7,(debugfile,"write_pinerc: %s = %s\n", var->name,
                    var->main_user_val.p ? var->main_user_val.p : "<not set>"));
         if(!var->is_user || !var->is_used || var->is_obsolete)
 	    continue;
@@ -5597,6 +6254,14 @@ dump_pine_struct(ps, pc)
 	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_EXLD)), pc);
 	    gf_puts(", slct=", pc);
 	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_SLCT)), pc);
+	    gf_puts(", chid=", pc);
+	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_CHID)), pc);
+	    gf_puts(", coll=", pc);
+	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_COLL)), pc);
+	    gf_puts(", usor=", pc);
+	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_USOR)), pc);
+	    gf_puts(", stmp=", pc);
+	    gf_puts(long2string(any_lflagged(ps->msgmap, MN_STMP)), pc);
 	    gf_puts(", sort=", pc);
 	    if(mn_get_revsort(ps->msgmap))
 	      gf_puts("rev-", pc);
@@ -5626,6 +6291,14 @@ dump_pine_struct(ps, pc)
 	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_EXLD)), pc);
 	    gf_puts(", slct=", pc);
 	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_SLCT)), pc);
+	    gf_puts(", chid=", pc);
+	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_CHID)), pc);
+	    gf_puts(", coll=", pc);
+	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_COLL)), pc);
+	    gf_puts(", usor=", pc);
+	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_USOR)), pc);
+	    gf_puts(", stmp=", pc);
+	    gf_puts(long2string(any_lflagged(ps->inbox_msgmap, MN_STMP)), pc);
 	    gf_puts(", sort=", pc);
 	    if(mn_get_revsort(ps->inbox_msgmap))
 	      gf_puts("rev-", pc);
@@ -5665,8 +6338,8 @@ dump_pine_struct(ps, pc)
 
  The vars data structure is updated and the pinerc saved.
  ----*/ 
-set_variable(var, value, commit, which)
-     int   var, commit;
+set_variable(var, value, expand, commit, which)
+     int   var, expand, commit;
      char *value;
      EditWhich which;
 {
@@ -5694,7 +6367,7 @@ set_variable(var, value, commit, which)
       fs_give((void **)apval);
 
     *apval = value ? cpystr(value) : NULL;
-    set_current_val(v, TRUE, FALSE);
+    set_current_val(v, expand, FALSE);
 
     switch(which){
       case Main:
@@ -6093,7 +6766,7 @@ expire_sent_mail()
 	ps_global->last_expire_month = tm_now->tm_mon;
 	sprintf(tmp, "%d.%d", ps_global->last_expire_year,
 		ps_global->last_expire_month + 1);
-	set_variable(V_LAST_TIME_PRUNE_QUESTION, tmp, 1, Main);
+	set_variable(V_LAST_TIME_PRUNE_QUESTION, tmp, 1, 1, Main);
 	return(0);
     }
 
@@ -6153,7 +6826,7 @@ expire_sent_mail()
 	ps_global->last_expire_month = tm_now->tm_mon;
 	sprintf(tmp, "%d.%d", ps_global->last_expire_year,
 		ps_global->last_expire_month + 1);
-	set_variable(V_LAST_TIME_PRUNE_QUESTION, tmp, 1, Main);
+	set_variable(V_LAST_TIME_PRUNE_QUESTION, tmp, 1, 1, Main);
     }
 
     return(1);
@@ -6199,6 +6872,7 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
     struct sm_folder *mail_list, *sm;
 
     mail_list = get_mail_list(prune_cntxt, folder_base);
+    free_folder_list(prune_cntxt);
 
 #ifdef	DEBUG
     for(sm = mail_list; sm != NULL && sm->name[0] != '\0'; sm++)
@@ -6259,7 +6933,7 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
     /*--- User says OK to rename ---*/
     dprint(5, (debugfile, "rename \"%.100s\" to \"%.100s\"\n", path, path2));
     q_status_message1(SM_ORDER, 1, 3,
-		      "Renaming \"%s\" at start of month",
+		      "Renaming \"%.200s\" at start of month",
 		      pretty_fn(folder_base));
     prune_stream = context_same_stream(prune_cntxt, path2,
 				       ps_global->mail_stream);
@@ -6270,7 +6944,7 @@ prune_folders(prune_cntxt, folder_base, cur_month, type, pr)
 
     if(!context_rename(prune_cntxt, prune_stream, path, path2)){
         q_status_message2(SM_ORDER | SM_DING, 3, 4,
-			  "Error renaming \"%s\": %s",
+			  "Error renaming \"%.200s\": %.200s",
                           pretty_fn(folder_base),
 			  error_description(errno));
         dprint(1, (debugfile, "Error renaming %.100s to %.100s: %.100s\n",
@@ -6333,9 +7007,10 @@ delete_old_mail(sml, fcc_cntxt, type)
 
 	    if(!context_delete(fcc_cntxt, del_stream, sm->name)){
 		q_status_message1(SM_ORDER,
-				  3, 3, "Error deleting \"%s\".", sm->name);
-		dprint(1, (debugfile, "Error context_deleting %s in \n",
-			   sm->name, fcc_cntxt->context));
+				  3, 3, "Error deleting \"%.200s\".", sm->name);
+		dprint(1, (debugfile, "Error context_deleting %s in %s\n",
+			   sm->name, (fcc_cntxt && fcc_cntxt->context)
+				     ? fcc_cntxt->context : "<null>"));
             }
 	    else{
 		int index;
@@ -6455,6 +7130,12 @@ rd_create_remote(type, remote_name, type_spec, flags, err_prefix, err_suffix)
       case RemImap:
 	if(rd->flags & NO_PERM_CACHE){
 	    if(rd->rn && (rd->so = so_get(CharStar, NULL, WRITE_ACCESS))){
+		if(rd->flags & NO_FILE){
+		    rd->sonofile = so_get(CharStar, NULL, WRITE_ACCESS);
+		    if(!rd->sonofile)
+		      rd->flags &= ~NO_FILE;
+		}
+
 		/*
 		 * We're not going to check if it is there in this case,
 		 * in order to save ourselves some round trips and
@@ -6464,6 +7145,7 @@ rd_create_remote(type, remote_name, type_spec, flags, err_prefix, err_suffix)
 		rd->flags |= REM_OUTOFDATE;
 		rd->access = MaybeRorW;
 	    }
+
 	}
 	else{
 	    /*
@@ -6536,11 +7218,18 @@ rd_free_remdata(rd)
 
 	if((*rd)->rn)
 	  fs_give((void **)&(*rd)->rn);
+
 	if((*rd)->lf)
 	  fs_give((void **)&(*rd)->lf);
+
 	if((*rd)->so){
 	    so_give(&(*rd)->so);
 	    (*rd)->so = NULL;
+	}
+
+	if((*rd)->sonofile){
+	    so_give(&(*rd)->sonofile);
+	    (*rd)->sonofile = NULL;
 	}
 
 	switch((*rd)->type){
@@ -6675,7 +7364,6 @@ rd_read_metadata(rd)
 {
     REMDATA_META_S *rab = NULL;
     int             try_cache = 0;
-    char           *contents, *val, *q;
     struct variable *vars = ps_global->vars;
 
     dprint(7, (debugfile, "rd_read_metadata \"%s\"\n",
@@ -6708,14 +7396,18 @@ rd_read_metadata(rd)
 
     if(!rab){
 	if(!rd->lf){
-	    rd->lf = temp_nam(NULL, "a6");
-	    rd->flags |= (NO_META_UPDATE | DEL_FILE | REM_OUTOFDATE);
+	    rd->flags |= (NO_META_UPDATE | REM_OUTOFDATE);
+	    if(!(rd->flags & NO_FILE)){
+		rd->lf = temp_nam(NULL, "a6");
+		rd->flags |= DEL_FILE;
+	    }
 
 	    /* display error */
 	    if(!(rd->flags & NO_PERM_CACHE))
 	      display_message('x');
 
-	    dprint(2, (debugfile, "using temp cache file %s\n", rd->lf));
+	    dprint(2, (debugfile, "using temp cache file %s\n",
+		   rd->lf ? rd->lf : "<none>"));
 	}
     }
     else if(rab->local_cache_file){	/* A-OK, it was in the file already */
@@ -6919,6 +7611,7 @@ rd_write_metadata(rd, delete_it)
 			 "rd_write_metadata: type not supported");
 	return;
     }
+
     dprint(9, (debugfile, " - rd_write_metadata: rn=%s lf=%s\n",
 	   rd->rn ? rd->rn : "?", rd->lf ? rd->lf : "?"));
 
@@ -7014,7 +7707,7 @@ io_err:
       metafile ? metafile : "<NULL>", tempfile ? tempfile : "<NULL>",
       error_description(errno)));
     q_status_message2(SM_ORDER, 3, 5,
-		    "Trouble updating metafile %s, continuing (%s)",
+		    "Trouble updating metafile %.200s, continuing (%.200s)",
 		    metafile ? metafile : "<NULL>", error_description(errno));
     if(tempfile){
 	(void)unlink(tempfile);
@@ -7038,28 +7731,61 @@ rd_update_metadata(rd, date)
       return;
 
     dprint(9, (debugfile, " - rd_update_metadata: rn=%s lf=%s\n",
-	   rd->rn ? rd->rn : "?", rd->lf ? rd->lf : "?"));
+	   rd->rn ? rd->rn : "?", rd->lf ? rd->lf : "<none>"));
 
     switch(rd->type){
       case RemImap:
 	if(rd->t.i.stream){
 	    ps_global->noshow_error = 1;
-	    mail_ping(rd->t.i.stream);
+	    rd_ping_stream(rd);
 	    if(rd->t.i.stream){
-		rd->t.i.chk_nmsgs = rd->t.i.stream->nmsgs;
-		rd->t.i.uidvalidity = rd->t.i.stream->uid_validity;
-		rd->t.i.uid = mail_uid(rd->t.i.stream, rd->t.i.stream->nmsgs);
-		ps_global->noshow_error = 0;
 		/*
-		 * Uid_last is not always valid. If the last known uid is
-		 * greater than uid_last, go with it instead (uid+1). If our
-		 * guess is wrong (too low), the penalty is not harsh. When the
-		 * uidnexts don't match we open the mailbox to check the uid of
-		 * the actual last message. If it was a false hit then we adjust
-		 * uidnext so it will be correct the next time through.
+		 * If nmsgs < 2 then something is wrong. Maybe it is just
+		 * that we haven't been told about the messages we've
+		 * appended ourselves. Try closing and re-opening the stream
+		 * to see those.
 		 */
-		rd->t.i.uidnext = max(rd->t.i.stream->uid_last,rd->t.i.uid) + 1;
+		if(rd->t.i.stream->nmsgs < 2 ||
+		   (rd->t.i.shouldbe_nmsgs &&
+		    (rd->t.i.shouldbe_nmsgs != rd->t.i.stream->nmsgs))){
+		    mail_check(rd->t.i.stream);
+		    if(rd->t.i.stream->nmsgs < 2 ||
+		       (rd->t.i.shouldbe_nmsgs &&
+			(rd->t.i.shouldbe_nmsgs != rd->t.i.stream->nmsgs))){
+			rd_close_remote(rd);
+			rd_open_remote(rd);
+		    }
+		}
+
+		rd->t.i.chk_nmsgs = rd->t.i.stream ? rd->t.i.stream->nmsgs : 0L;
+
+		/*
+		 * If nmsgs < 2 something is wrong.
+		 */
+		if(rd->t.i.chk_nmsgs < 2){
+		    rd->t.i.uidvalidity = 0L;
+		    rd->t.i.uid = 0L;
+		    rd->t.i.uidnext = 0L;
+		}
+		else{
+		    rd->t.i.uidvalidity = rd->t.i.stream->uid_validity;
+		    rd->t.i.uid = mail_uid(rd->t.i.stream,
+					   rd->t.i.stream->nmsgs);
+		    /*
+		     * Uid_last is not always valid. If the last known uid is
+		     * greater than uid_last, go with it instead (uid+1).
+		     * If our guess is wrong (too low), the penalty is not
+		     * harsh. When the uidnexts don't match we open the
+		     * mailbox to check the uid of the actual last message.
+		     * If it was a false hit then we adjust uidnext so it
+		     * will be correct the next time through.
+		     */
+		    rd->t.i.uidnext = max(rd->t.i.stream->uid_last,rd->t.i.uid)
+					+ 1;
+		}
 	    }
+
+	    ps_global->noshow_error = 0;
 
 	    /*
 	     * Save the date so that we can check if it changed next time
@@ -7074,6 +7800,8 @@ rd_update_metadata(rd, date)
 
 	    rd_write_metadata(rd, 0);
 	}
+
+	rd->t.i.shouldbe_nmsgs = 0;
 
 	break;
 
@@ -7120,7 +7848,7 @@ rd_metadata_name()
 						      meta_prefix, NULL))){
 	    /* fill in the pinerc variable */
 	    q = p + strlen(pinerc_dir) + 1;
-	    set_variable(V_REMOTE_ABOOK_METADATA, q, 0, Main);
+	    set_variable(V_REMOTE_ABOOK_METADATA, q, 1, 0, Main);
 	    dprint(2, (debugfile, "creating name for metadata file: %s\n", q));
 
 	    /* something's broken, return NULL rab */
@@ -7151,10 +7879,10 @@ rd_metadata_name()
 
 	if((fd = open(metafile, O_CREAT|O_EXCL|O_WRONLY, 0600)) < 0){
 
-	    set_variable(V_REMOTE_ABOOK_METADATA, NULL, 0, Main);
+	    set_variable(V_REMOTE_ABOOK_METADATA, NULL, 1, 0, Main);
 
 	    q_status_message2(SM_ORDER, 3, 5,
-		       "can't create cache file %s, continuing (%s)",
+		       "can't create cache file %.200s, continuing (%.200s)",
 		       metafile, error_description(errno));
 	    dprint(2, (debugfile, "can't create metafile %s: %s\n",
 		       metafile, error_description(errno)));
@@ -7173,15 +7901,13 @@ rd_metadata_name()
 
 REMDATA_META_S *
 rd_find_our_metadata(key, flags)
-    char     *key;
-    unsigned *flags;
+    char          *key;
+    unsigned long *flags;
 {
-    char        *p, *q, *pinerc_dir = NULL, *metafile;
+    char        *p, *q, *metafile;
     char         line[MAILTMPLEN];
     REMDATA_META_S *rab = NULL;
     FILE        *fp;
-    int          var_meta_existed = 0;
-    struct variable *vars = ps_global->vars;
 
     dprint(9, (debugfile, "rd_find_our_metadata \"%s\"\n", key ? key : "?"));
 
@@ -7199,7 +7925,7 @@ try_once_more:
     fp = fopen(metafile, "r");
     if(fp == NULL){
 	q_status_message2(SM_ORDER, 3, 5,
-		   "can't open metadata file %s, continuing (%s)",
+		   "can't open metadata file %.200s, continuing (%.200s)",
 		   metafile, error_description(errno));
 	dprint(2, (debugfile,
 		   "can't open existing metadata file %s: %s\n",
@@ -7239,7 +7965,7 @@ try_once_more:
 
 	    if((fd = open(metafile, O_TRUNC|O_WRONLY|O_CREAT, 0600)) < 0){
 		q_status_message2(SM_ORDER, 3, 5,
-			 "can't create metadata file %s, continuing (%s)",
+		       "can't create metadata file %.200s, continuing (%.200s)",
 			 metafile, error_description(errno));
 		dprint(2, (debugfile,
 			   "can't create metadata file %s: %s\n",
@@ -7411,7 +8137,7 @@ rd_open_remote(rd)
       case RemImap:
 
 #ifdef DEBUG
-	if(ps_global->debug_imap > 3)
+	if(ps_global->debug_imap > 3 || ps_global->debugmem)
 	  openmode |= OP_DEBUG;
 #endif /* DEBUG */
 
@@ -7421,6 +8147,10 @@ rd_open_remote(rd)
 	ps_global->noshow_error = 1;
 	rd->t.i.stream = context_open(NULL, NULL, rd->rn, openmode);
 	ps_global->noshow_error = 0;
+
+        /* Don't try to reopen if there was a problem (auth failure, etc.) */
+	if(!rd->t.i.stream)  
+	  rd->flags |= USER_SAID_NO; /* Caution: overloading USER_SAID_NO */
 	
 	if(rd->t.i.stream && rd->t.i.stream->halfopen){
 	    /* this is a failure */
@@ -7452,7 +8182,7 @@ rd_close_remote(rd)
     switch(rd->type){
       case RemImap:
 	ps_global->noshow_error = 1;
-	mail_close(rd->t.i.stream);
+	pine_mail_close(rd->t.i.stream);
 	rd->t.i.stream = NULL;
 	ps_global->noshow_error = 0;
 	break;
@@ -7578,11 +8308,12 @@ rd_init_remote(rd, add_only_first_msg)
      * The rest is currently type RemImap-specific. 
      */
 
-    if(!rd->lf || !rd->rn || !rd->so || !rd->t.i.stream ||
+    if(!(rd->flags & NO_FILE || rd->lf) ||
+       !rd->rn || !rd->so || !rd->t.i.stream ||
        !rd->t.i.special_hdr){
 	dprint(1, (debugfile,
 	       "rd_init_remote: Unexpected error: %s is NULL\n",
-	       !rd->lf ? "localfile" :
+	       !(rd->flags & NO_FILE || rd->lf) ? "localfile" :
 		!rd->rn ? "remotename" :
 		 !rd->so ? "so" :
 		  !rd->t.i.stream ? "stream" :
@@ -7595,7 +8326,7 @@ rd_init_remote(rd, add_only_first_msg)
        (rd->t.i.stream->nmsgs >= 1 && add_only_first_msg))
       return err;
 
-    dprint(3, (debugfile, " - rd_init_remote(%s): %s\n",
+    dprint(7, (debugfile, " - rd_init_remote(%s): %s\n",
 	       rd->t.i.special_hdr, rd->rn));
     
     /*
@@ -7610,7 +8341,7 @@ rd_init_remote(rd, add_only_first_msg)
 
     if(rd->t.i.stream->rdonly){
 	q_status_message1(SM_ORDER | SM_DING, 7, 10,
-		 "Can't initialize folder \"%s\" (write permission)", rd->rn);
+		 "Can't initialize folder \"%.200s\" (write permission)", rd->rn);
 	if(rd->t.i.stream->nmsgs > 0)
 	  q_status_message(SM_ORDER | SM_DING, 7, 10,
 	   "Choose a new, unused folder for the remote data");
@@ -7639,20 +8370,30 @@ rd_init_remote(rd, add_only_first_msg)
 	     * data folder.
 	     */
 	    err = rd_add_hdr_msg(rd, date);
+	    if(rd->t.i.stream->nmsgs == 0)
+	      rd_ping_stream(rd);
+	    if(rd->t.i.stream && rd->t.i.stream->nmsgs == 0)
+	      mail_check(rd->t.i.stream);
 
 	    if(we_cancel)
 	      cancel_busy_alarm(-1);
 	}
 	else{
-	    err = rd_chk_for_hdr_msg(rd->t.i.stream, rd->t.i.special_hdr);
+	    char *eptr = NULL;
+
+	    err = rd_chk_for_hdr_msg(&(rd->t.i.stream), rd, &eptr);
 	    if(err){
 		q_status_message1(SM_ORDER | SM_DING, 5, 5,
-		     "\"%s\" has invalid format, can't initialize", rd->rn);
+		     "\"%.200s\" has invalid format, can't initialize", rd->rn);
+
 		dprint(1, (debugfile,
 		       "Can't initialize remote data \"%s\"\n", rd->rn));
-		dprint(1, (debugfile,
-		       "  First message in folder has no \"%s\" header\n",
-		       rd->t.i.special_hdr));
+
+		if(eptr){
+		    q_status_message1(SM_ORDER, 3, 5, "%.200s", eptr);
+		    dprint(1, (debugfile, "%s\n", eptr));
+		    fs_give((void **)&eptr);
+		}
 	    }
 	}
     }
@@ -7661,53 +8402,55 @@ rd_init_remote(rd, add_only_first_msg)
      * Add the second (empty) message.
      */
     if(!err && !add_only_first_msg){
-	char *tempfile;
+	char *tempfile = NULL;
 	int   fd;
 
-	if(!(tempfile = tempfile_in_same_dir(rd->lf, "a8", NULL))){
-	    q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			      "Error opening temporary file: %s",
-			      error_description(errno));
-	    dprint(2, (debugfile, "init_remote: Error opening file: %s\n",
-		   error_description(errno)));
-	    err = -1;
+	if(rd->flags & NO_FILE){
+	    if(so_truncate(rd->sonofile, 0L) == 0)
+	      err = -1;
 	}
+	else{
+	    if(!(tempfile = tempfile_in_same_dir(rd->lf, "a8", NULL))){
+		q_status_message1(SM_ORDER | SM_DING, 3, 5,
+				  "Error opening temporary file: %.200s",
+				  error_description(errno));
+		dprint(2, (debugfile, "init_remote: Error opening file: %s\n",
+		       error_description(errno)));
+		err = -1;
+	    }
 
-	if(!err && (fd = open(tempfile, O_TRUNC|O_WRONLY|O_CREAT, 0600)) < 0){
-	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			      "Error opening temporary file %s: %s",
-			      tempfile, error_description(errno));
-	    dprint(2, (debugfile,
-		   "init_remote: Error opening temporary file: %s: %s\n",
-		   tempfile, error_description(errno)));
-	    (void)unlink(tempfile);
-	    err = -1;
+	    if(!err &&
+	       (fd = open(tempfile, O_TRUNC|O_WRONLY|O_CREAT, 0600)) < 0){
+		q_status_message2(SM_ORDER | SM_DING, 3, 5,
+				  "Error opening temporary file %.200s: %.200s",
+				  tempfile, error_description(errno));
+		dprint(2, (debugfile,
+		       "init_remote: Error opening temporary file: %s: %s\n",
+		       tempfile, error_description(errno)));
+		(void)unlink(tempfile);
+		err = -1;
+	    }
+	    else
+	      (void)close(fd);
+
+	    if(!err && rename_file(tempfile, rd->lf) < 0){
+		q_status_message2(SM_ORDER | SM_DING, 3, 5,
+			      "Error creating cache file %.200s: %.200s",
+			      rd->lf, error_description(errno));
+		(void)unlink(tempfile);
+		err = -1;
+	    }
+
+	    if(tempfile)
+	      fs_give((void **)&tempfile);
 	}
-	else
-	  (void)close(fd);
-
-	if(!err && rename_file(tempfile, rd->lf) < 0){
-	    q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			  "Error creating cache file %s: %s",
-			  rd->lf, error_description(errno));
-	    (void)unlink(tempfile);
-	    err = -1;
-	}
-
-	if(tempfile)
-	  fs_give((void **)&tempfile);
 
 	if(!err){
 	    err = rd_update_remote(rd, date);
 	    if(err){
-		if(err == -1)
-		  q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"Error opening temporary file \"%s\": %s",
-				rd->lf, error_description(errno));
-		else
-		  q_status_message2(SM_ORDER | SM_DING, 3, 5,
-			"Error copying from \"%s\" to remote folder: %s",
-			rd->lf, error_description(errno));
+		q_status_message1(SM_ORDER | SM_DING, 3, 5,
+				  "Error copying to remote folder: %.200s",
+				  error_description(errno));
 		
 		q_status_message(SM_ORDER | SM_DING, 5, 5,
 				 "Creation of remote data folder failed");
@@ -7730,39 +8473,169 @@ rd_init_remote(rd, add_only_first_msg)
  * Check the first message in the folder to be sure it is the right
  * kind of message, not some message from some other folder.
  *
- * Returns 0 if ok, -1 if invalid format.
+ * Returns 0 if ok, < 0 if invalid format.
  *
  */
 int
-rd_chk_for_hdr_msg(stream, special_hdr)
-    MAILSTREAM *stream;
-    char       *special_hdr;
+rd_chk_for_hdr_msg(streamp, rd, errmsg)
+    MAILSTREAM **streamp;
+    REMDATA_S   *rd;
+    char       **errmsg;
 {
-    char *fields[2];
+    char *fields[3], *values[3];
     char *h;
-    int   ret = -1;
+    int   tried_again = 0;
+    int   ret;
+    MAILSTREAM *st = NULL;
 
-    fields[0] = special_hdr;
-    fields[1] = NULL;
+    fields[0] = rd->t.i.special_hdr;
+    fields[1] = "received";
+    fields[2] = NULL;
 
-    if(stream && (h=pine_fetchheader_lines(stream, 1L, NULL, fields))){
-	/*
-	 * For now, just the existence of the special_hdr header is
-	 * taken as sufficient evidence that the first message in the
-	 * folder is a pine remote data header message. In the future there
-	 * may come a time when we want to increment the version number.
-	 * In that case, we could check the version number here, too.
-	 */
-	if(*h)
-	  ret = 0;
+try_again:
+    ret = -1;
+
+    if(!streamp || !*streamp){
+	dprint(1, (debugfile, "rd_chk_for_hdr_msg: stream is null\n"));
+    }
+    else if((*streamp)->nmsgs == 0){
+	ret = -2;
+	dprint(1, (debugfile,
+		   "rd_chk_for_hdr_msg: stream has nmsgs=0, try a ping\n"));
+	if(!mail_ping(*streamp))
+	  *streamp = NULL;
+
+	if(*streamp && (*streamp)->nmsgs == 0){
+	    dprint(1, (debugfile,
+	       "rd_chk_for_hdr_msg: still looks like nmsgs=0, try a check\n"));
+	    mail_check(*streamp);
+	}
+
+	if(*streamp && (*streamp)->nmsgs == 0){
+	    dprint(1, (debugfile,
+	       "rd_chk_for_hdr_msg: still nmsgs=0, try re-opening stream\n"));
+
+	    if(rd_stream_exists(rd))
+	      rd_close_remote(rd);
+
+	    rd_open_remote(rd);
+	    if(rd_stream_exists(rd))
+	      st = rd->t.i.stream;
+	}
+
+	if(!st)
+	  st = *streamp;
+
+	if(st && st->nmsgs == 0){
+	    dprint(1, (debugfile,
+		       "rd_chk_for_hdr_msg: can't see header message\n"));
+	}
+    }
+    else
+      st = *streamp;
+
+    if(st && st->nmsgs != 0
+       && (h=pine_fetchheader_lines(st, 1L, NULL, fields))){
+	simple_header_parse(h, fields, values);
+	ret = -3;
+	if(values[1])
+	  ret = -4;
+	else if(values[0]){
+	    rd->cookie = strtoul(values[0], (char **)NULL, 10);
+	    if(rd->cookie == 0)
+	      ret = -5;
+	    else if(rd->cookie == 1){
+		if(rd->flags & COOKIE_ONE_OK || tried_again)
+		  ret = 0;
+		else
+		  ret = -6;
+	    }
+	    else if(rd->cookie > 1)
+	      ret = 0;
+	}
+
+	if(values[0])
+	  fs_give((void **)&values[0]);
+
+	if(values[1])
+	  fs_give((void **)&values[1]);
 
 	fs_give((void **)&h);
     }
     
-    if(ret)
-      dprint(1, (debugfile,
-	"check_for_header: First message in folder doesn't contain %s header\n",
-	     special_hdr));
+    
+    if(ret && ret != -6 && errmsg){
+	*errmsg = (char *)fs_get(500 * sizeof(char));
+	(*errmsg)[0] = '\0';
+    }
+
+    if(ret == -1){
+	/* null stream */
+	if(errmsg)
+	  sprintf(*errmsg, "Can't open remote address book \"%.100s\"", rd->rn);
+    }
+    else if(ret == -2){
+	/* no messages in folder */
+	if(errmsg)
+	  sprintf(*errmsg,
+		  "Error: no messages in remote address book \"%.100s\"!",
+		  rd->rn);
+    }
+    else if(ret == -3){
+	/* no cookie */
+	if(errmsg)
+	  sprintf(*errmsg,
+		  "First msg in \"%.100s\" should have \"%.100s\" header",
+		  rd->rn, rd->t.i.special_hdr);
+    }
+    else if(ret == -4){
+	/* Received header */
+	if(errmsg)
+	  sprintf(*errmsg,
+		  "Suspicious Received headers in first msg in \"%.100s\"",
+		  rd->rn);
+    }
+    else if(ret == -5){
+
+	/* cookie is 0 */
+
+	/*
+	 * This is a failure and should not happen, but we're not going to
+	 * fail on this condition.
+	 */
+	dprint(1, (debugfile, "Unexpected value in \"%s\" header of \"%s\"\n",
+		   rd->t.i.special_hdr, rd->rn));
+	ret = 0;
+    }
+    else if(ret == -6){
+	dprint(1, (debugfile,
+		   "rd_chk_for_hdr_msg: cookie is 1, try to upgrade it\n"));
+
+	if(rd_remote_is_readonly(rd)){
+	    dprint(1, (debugfile,
+		   "rd_chk_for_hdr_msg:  can't upgrade, readonly\n"));
+	    ret = 0;			/* stick with 1 */
+	}
+	else{
+	    /* cookie is 1, upgrade it */
+	    if(rd_upgrade_cookies(rd, st->nmsgs, 0) == 0){
+		/* now check again */
+		if(!tried_again){
+		    tried_again++;
+		    goto try_again;
+		}
+	    }
+
+	    /*
+	     * This is actually a failure but we've decided that this
+	     * failure is ok.
+	     */
+	    ret = 0;
+	}
+    }
+
+    if(errmsg && *errmsg)
+      dprint(1, (debugfile, "rd_chk_for_hdr_msg: %s\n", *errmsg));
 
     return ret;
 }
@@ -7795,8 +8668,8 @@ rd_add_hdr_msg(rd, date)
 	return -1;
     }
 
-    err = rd_store_fake_hdrs(rd->so, "Header Message for Remote Data",
-			     "plain", rd->t.i.special_hdr, date);
+    err = rd_store_fake_hdrs(rd, "Header Message for Remote Data",
+			     "plain", date);
 
     /* Write the dummy message */
     if(!strucmp(rd->t.i.special_hdr, REMOTE_ABOOK_SUBTYPE)){
@@ -7863,10 +8736,13 @@ rd_add_hdr_msg(rd, date)
     /* Take the message from "so" to the remote folder */
     if(!err){
 	MAILSTREAM *st;
-	if((st = rd->t.i.stream) == NULL)
+
+	if((st = rd->t.i.stream) != NULL)
+	  rd->t.i.shouldbe_nmsgs = rd->t.i.stream->nmsgs + 1;
+	else
 	  st = adrbk_handy_stream(rd->rn);
 
-	err = write_fcc(rd->rn, NULL, rd->so, st, "remote data") ? 0 : -1;
+	err = write_fcc(rd->rn, NULL, rd->so, st, "remote data", NULL) ? 0 : -1;
     }
     
     return err;
@@ -7882,19 +8758,22 @@ rd_add_hdr_msg(rd, date)
  *     date    -- date to put in header
  */
 int
-rd_store_fake_hdrs(so, subject, subtype, special_hdr, date)
-    STORE_S *so;
-    char    *subject;
-    char    *subtype;
-    char    *special_hdr;
-    char    *date;
+rd_store_fake_hdrs(rd, subject, subtype, date)
+    REMDATA_S *rd;
+    char      *subject;
+    char      *subtype;
+    char      *date;
 {
     ENVELOPE     *fake_env;
     BODY         *fake_body;
     ADDRESS      *fake_from;
     int           err = 0;
-    char          vers[10], *p;
+    char          vers[50], *p;
+    unsigned long r = 0L;
 
+    if(!rd|| rd->type != RemImap || !rd->so || !rd->t.i.special_hdr)
+      return -1;
+    
     fake_env = (ENVELOPE *)fs_get(sizeof(ENVELOPE));
     memset(fake_env, 0, sizeof(ENVELOPE));
     fake_body = (BODY *)fs_get(sizeof(BODY));
@@ -7913,17 +8792,114 @@ rd_store_fake_hdrs(so, subject, subtype, special_hdr, date)
 
     p = tmp_20k_buf;
     *p = '\0';
-    sprintf(vers, "%ld", REMOTE_DATA_VERS_NUM);
-    rfc822_header_line(&p, special_hdr, fake_env, vers);
+
+    if(rd->cookie > 0)
+      r = rd->cookie;
+
+    if(!r){
+	int i;
+
+	for(i = 100; i > 0 && r < 1000000; i--)
+	  r = random();
+	
+	if(r < 1000000)
+	  r = 1712836L + getpid();
+	
+	rd->cookie = r;
+    }
+
+    sprintf(vers, "%ld", r);
+
+    rfc822_header_line(&p, rd->t.i.special_hdr, fake_env, vers);
     rfc822_header(p+strlen(p), fake_env, fake_body);
     mail_free_envelope(&fake_env);
     mail_free_body(&fake_body);
 
     /* Write the fake headers */
-    if(so_puts(so, tmp_20k_buf) == 0)
+    if(so_puts(rd->so, tmp_20k_buf) == 0)
       err = -1;
     
     return err;
+}
+
+
+/*
+ * We have discovered that the data in the remote folder is suspicious.
+ * In some cases it is just because it is from an old version of pine.
+ * We have decided to update the data so that it won't look suspicious
+ * next time.
+ *
+ * Args -- only_update_last  If set, that means to just add a new last message
+ *                           by calling rd_update_remote. Don't create a new
+ *                           header message and delete the old header message.
+ *         nmsgs             Not used if only_update_last is set
+ */
+int
+rd_upgrade_cookies(rd, nmsgs, only_update_last)
+    REMDATA_S  *rd;
+    long        nmsgs;
+    int         only_update_last;
+{
+    char date[200];
+    int  err = 0;
+
+    /*
+     * We need to copy the data from the last message, add a new header
+     * message with a random cookie, add the data back in with the
+     * new cookie, and delete the old messages.
+     */
+
+    /* get data */
+    rd->flags |= COOKIE_ONE_OK;
+
+    /*
+     * The local copy may be newer than the remote copy. We don't want to
+     * blast the local copy in that case. The BELIEVE_CACHE flag tells us
+     * to not do the blasting.
+     */
+    if(rd->flags & BELIEVE_CACHE)
+      rd->flags &= ~BELIEVE_CACHE;
+    else{
+	dprint(1, (debugfile, "rd_upgrade_cookies:  copy abook data\n"));
+	err = rd_update_local(rd);
+    }
+
+    if(!err && !only_update_last){
+	rd->cookie = 0;		/* causes new cookie to be generated */
+	rfc822_date(date);
+	dprint(1, (debugfile, "rd_upgrade_cookies:  add new hdr msg to end\n"));
+	err = rd_add_hdr_msg(rd, date);
+    }
+
+    if(!err){
+	dprint(1, (debugfile, "rd_upgrade_cookies:  copy back data\n"));
+	err = rd_update_remote(rd, NULL);
+    }
+
+    rd->flags &= ~COOKIE_ONE_OK;
+
+    if(!err && !only_update_last){
+	char sequence[20];
+
+	/*
+	 * We've created a new header message and added a new copy of the
+	 * data after it. Only problem is that the new copy will have used
+	 * the original header message to get its cookie (== 1) from. We
+	 * could have deleted the original messages before the last step
+	 * to get it right but that would delete all copies of the data
+	 * temporarily. Delete now and then re-update.
+	 */
+	rd_ping_stream(rd);
+	rd_open_remote(rd);
+	if(rd->t.i.stream && rd->t.i.stream->nmsgs >= nmsgs+2){
+	    sprintf(sequence, "1:%ld", nmsgs);
+	    mail_flag(rd->t.i.stream, sequence, "\\DELETED", ST_SET);
+	    mail_expunge(rd->t.i.stream);
+	    err = rd_update_remote(rd, NULL);
+	}
+    }
+
+    return(err);
 }
 
 
@@ -7942,24 +8918,25 @@ rd_update_local(rd)
     char     *error;
     STORE_S  *store;
     gf_io_t   pc;
-    int       i, we_cancel = 0, err = 0;
+    int       i, we_cancel = 0;
     BODY     *body = NULL;
     ENVELOPE *env;
     char     *tempfile = NULL;
 
 
-    if(!rd || !rd->lf || !rd->rn){
+    if(!rd || !(rd->flags & NO_FILE || rd->lf) || !rd->rn){
 	dprint(1, (debugfile,
 	       "rd_update_local: Unexpected error: %s is NULL\n",
 	       !rd ? "rd" :
-		!rd->lf ? "localfile" :
+		!(rd->flags & NO_FILE || rd->lf) ? "localfile" :
 		 !rd->rn ? "remotename" : "?"));
 
 	return -1;
     }
 
     dprint(3, (debugfile, " - rd_update_local(%s): %s => %s\n",
-	   rd->type == RemImap ? "Imap" : "?", rd->rn, rd->lf));
+	   rd->type == RemImap ? "Imap" : "?", rd->rn,
+	   (rd->flags & NO_FILE) ? "<mem>": rd->lf));
     
     switch(rd->type){
       case RemImap:
@@ -7986,6 +8963,9 @@ rd_update_local(rd)
 	}
 
 	if(rd->t.i.stream){
+	    char  ebuf[500];
+	    char *eptr = NULL;
+	    int   chk;
 
 	    /* force ReadOnly */
 	    if(rd->t.i.stream->rdonly){
@@ -7997,40 +8977,51 @@ rd_update_local(rd)
 
 	    if(rd->t.i.stream->nmsgs < 2)
 	      return(rd_init_remote(rd, 0));
-	    else if(rd_chk_for_hdr_msg(rd->t.i.stream, rd->t.i.special_hdr)){
+	    else if(rd_chk_for_hdr_msg(&(rd->t.i.stream), rd, &eptr)){
 		q_status_message1(SM_ORDER | SM_DING, 5, 5,
-		     "Can't initialize \"%s\" (invalid format)", rd->rn);
+		     "Can't initialize \"%.200s\" (invalid format)", rd->rn);
+
+		if(eptr){
+		    q_status_message1(SM_ORDER, 3, 5, "%.200s", eptr);
+		    dprint(1, (debugfile, "%s\n", eptr));
+		    fs_give((void **)&eptr);
+		}
+
 		dprint(1, (debugfile,
 		       "Can't initialize remote data \"%s\"\n", rd->rn));
-		dprint(1, (debugfile,
-		       "  First message in folder has no \"%s\" header\n",
-		       rd->t.i.special_hdr));
 		return -1;
 	    }
 
 	    we_cancel = busy_alarm(1, "Copying remote data", NULL, 0);
 
-	    if(!(tempfile = tempfile_in_same_dir(rd->lf, "a8", NULL))){
-		q_status_message1(SM_ORDER | SM_DING, 3, 5,
-				  "Error opening temporary file: %s",
-				  error_description(errno));
-		dprint(2, (debugfile,
-		       "rd_update_local: Error opening temporary file: %s\n",
-		       error_description(errno)));
-		return -1;
+	    if(rd->flags & NO_FILE){
+		store = rd->sonofile;
+		so_truncate(store, 0L);
 	    }
+	    else{
+		if(!(tempfile = tempfile_in_same_dir(rd->lf, "a8", NULL))){
+		    q_status_message1(SM_ORDER | SM_DING, 3, 5,
+				      "Error opening temporary file: %.200s",
+				      error_description(errno));
+		    dprint(2, (debugfile,
+			   "rd_update_local: Error opening temporary file: %s\n",
+			   error_description(errno)));
+		    return -1;
+		}
 
-	    /* Copy the data into tempfile */
-	    if((store = so_get(FileStar, tempfile, WRITE_ACCESS|OWNER_ONLY)) == NULL){
-		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				  "Error opening temporary file %s: %s",
-				  tempfile, error_description(errno));
-		dprint(2, (debugfile,
-		       "rd_update_local: Error opening temporary file: %s: %s\n",
-		       tempfile, error_description(errno)));
-		(void)unlink(tempfile);
-		fs_give((void **)&tempfile);
-		return -1;
+		/* Copy the data into tempfile */
+		if((store = so_get(FileStar, tempfile, WRITE_ACCESS|OWNER_ONLY))
+								    == NULL){
+		    q_status_message2(SM_ORDER | SM_DING, 3, 5,
+				  "Error opening temporary file %.200s: %.200s",
+				      tempfile, error_description(errno));
+		    dprint(2, (debugfile,
+		      "rd_update_local: Error opening temporary file: %s: %s\n",
+		      tempfile, error_description(errno)));
+		    (void)unlink(tempfile);
+		    fs_give((void **)&tempfile);
+		    return -1;
+		}
 	    }
 
 	    /*
@@ -8041,9 +9032,14 @@ rd_update_local(rd)
 		q_status_message(SM_ORDER | SM_DING, 3, 4,
 				 "Can't access remote IMAP data");
 		dprint(2, (debugfile, "Can't access remote IMAP data\n"));
-		(void)unlink(tempfile);
-		fs_give((void **)&tempfile);
-		so_give(&store);
+		if(tempfile){
+		    (void)unlink(tempfile);
+		    fs_give((void **)&tempfile);
+		}
+
+		if(!(rd->flags & NO_FILE))
+		  so_give(&store);
+
 		if(we_cancel)
 		  cancel_busy_alarm(-1);
 
@@ -8058,9 +9054,14 @@ rd_update_local(rd)
 				 "Remote IMAP folder has wrong contents");
 		dprint(2, (debugfile,
 		       "Remote IMAP folder has wrong contents\n"));
-		(void)unlink(tempfile);
-		fs_give((void **)&tempfile);
-		so_give(&store);
+		if(tempfile){
+		    (void)unlink(tempfile);
+		    fs_give((void **)&tempfile);
+		}
+
+		if(!(rd->flags & NO_FILE))
+		  so_give(&store);
+
 		if(we_cancel)
 		  cancel_busy_alarm(-1);
 
@@ -8073,15 +9074,57 @@ rd_update_local(rd)
 				 "Can't access check date in remote data");
 		dprint(2, (debugfile,
 		       "Can't access check date in remote data\n"));
-		(void)unlink(tempfile);
-		fs_give((void **)&tempfile);
-		so_give(&store);
+		if(tempfile){
+		    (void)unlink(tempfile);
+		    fs_give((void **)&tempfile);
+		}
+
+		if(!(rd->flags & NO_FILE))
+		  so_give(&store);
+
 		if(we_cancel)
 		  cancel_busy_alarm(-1);
 
 		return -1;
 	    }
 
+	    if(rd && rd->flags & USER_SAID_YES)
+	      chk = 0;
+	    else
+	      chk = rd_check_for_suspect_data(rd);
+
+	    switch(chk){
+	      case -1:		/* suspicious data, user says abort */
+		if(tempfile){
+		    (void)unlink(tempfile);
+		    fs_give((void **)&tempfile);
+		}
+
+		if(!(rd->flags & NO_FILE))
+		  so_give(&store);
+
+		if(we_cancel)
+		  cancel_busy_alarm(-1);
+
+		return -1;
+
+	      case 1:		/* suspicious data, user says go ahead */
+		if(rd_remote_is_readonly(rd)){
+		    dprint(1, (debugfile,
+			   "rd_update_local:  can't upgrade, readonly\n"));
+		}
+		else
+		  /* attempt to upgrade cookie in last message */
+		  (void)rd_upgrade_cookies(rd, 0, 1);
+
+	        break;
+
+	      case 0:		/* all is ok */
+	      default:
+	        break;
+	    }
+
+		
 	    gf_set_so_writec(&pc, store);
 
 	    error = detach(rd->t.i.stream, rd->t.i.stream->nmsgs, "1",
@@ -8092,23 +9135,32 @@ rd_update_local(rd)
 	    if(we_cancel)
 	      cancel_busy_alarm(-1);
 
-	    so_give(&store);
+	    if(!(rd->flags & NO_FILE)){
+		if(so_give(&store)){
+		    sprintf(ebuf, "Error writing temp file: %.50s",
+			    error_description(errno));
+		    error = ebuf;
+		}
+	    }
 
 	    if(error){
 		q_status_message1(SM_ORDER | SM_DING, 3, 4,
-				  "%s: Error copying remote IMAP data", error);
+			      "%.200s: Error copying remote IMAP data", error);
 		dprint(2, (debugfile, "rd_update_local: Error copying: %s\n",
 		       error));
-		(void)unlink(tempfile);
-		fs_give((void **)&tempfile);
+		if(tempfile){
+		    (void)unlink(tempfile);
+		    fs_give((void **)&tempfile);
+		}
+
 		return -1;
 	    }
 
-	    if((i = rename_file(tempfile, rd->lf)) < 0){
+	    if(tempfile && (i = rename_file(tempfile, rd->lf)) < 0){
 #ifdef	_WINDOWS
 		if(i == -5){
 		    q_status_message2(SM_ORDER | SM_DING, 3, 4,
-				      "Error updating local file: %s: %s",
+				    "Error updating local file: %.200s: %.200s",
 				      rd->lf, error_description(errno));
 		    q_status_message(SM_ORDER, 3, 4,
 				 "Perhaps another process has the file open?");
@@ -8118,7 +9170,7 @@ rd_update_local(rd)
 #endif	/* _WINDOWS */
 		{
 		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				  "Error updating cache file %s: %s",
+				  "Error updating cache file %.200s: %.200s",
 				  rd->lf, error_description(errno));
 		dprint(2, (debugfile,
 		       "Error updating cache file %s: rename(%s,%s): %s\n",
@@ -8131,7 +9183,7 @@ rd_update_local(rd)
 		return -1;
 	    }
 
-	    dprint(2, (debugfile,
+	    dprint(5, (debugfile,
 		   "in rd_update_local, setting chk_date to ->%s<-\n",
 		   env->date));
 	    rd_update_metadata(rd, env->date);
@@ -8139,13 +9191,14 @@ rd_update_local(rd)
 	    /* turn off out of date flag */
 	    rd->flags &= ~REM_OUTOFDATE;
 
-	    fs_give((void **)&tempfile);
+	    if(tempfile)
+	      fs_give((void **)&tempfile);
 
 	    return 0;
 	}
 	else{
 	    q_status_message1(SM_ORDER | SM_DING, 5, 5,
-		 "Can't open remote IMAP folder \"%s\"", rd->rn);
+		 "Can't open remote IMAP folder \"%.200s\"", rd->rn);
 	    dprint(1, (debugfile,
 		   "Can't open remote IMAP folder \"%s\"\n", rd->rn));
 	    rd->access = ReadOnly;
@@ -8182,34 +9235,30 @@ rd_update_remote(rd, returndate)
     int         err = 0;
     long        openmode = 0L;
     MAILSTREAM *st;
+    char       *eptr = NULL;
 
     if(rd && rd->type != RemImap){
 	dprint(1, (debugfile, "rd_update_remote: type not supported\n"));
 	return -1;
     }
 
-    if(!rd || !rd->lf || !rd->rn || !rd->so || !rd->t.i.special_hdr){
+    if(!rd || !(rd->flags & NO_FILE || rd->lf) || !rd->rn ||
+       !rd->so || !rd->t.i.special_hdr){
 	dprint(1, (debugfile,
 	       "rd_update_remote: Unexpected error: %s is NULL\n",
 	       !rd ? "rd" :
-	        !rd->lf ? "localfile" :
+	        !(rd->flags & NO_FILE || rd->lf) ? "localfile" :
 		 !rd->rn ? "remotename" :
 		  !rd->so ? "so" :
 		    !rd->t.i.special_hdr ? "special_hdr" : "?"));
 	return -1;
     }
 
-    /*
-     * The data that will be going to the remote folder rn is
-     * written into the following storage object and then copied to
-     * the remote folder from there.
-     */
-
-    dprint(3, (debugfile, " - rd_update_remote(%s): %s => %s\n",
-	   rd->t.i.special_hdr, rd->lf, rd->rn));
+    dprint(7, (debugfile, " - rd_update_remote(%s): %s => %s\n",
+	   rd->t.i.special_hdr, rd->lf ? rd->lf : "<mem>", rd->rn));
 
 #ifdef DEBUG
-    if(ps_global->debug_imap > 3)
+    if(ps_global->debug_imap > 3 || ps_global->debugmem)
       openmode |= OP_DEBUG;
 #endif /* DEBUG */
 
@@ -8221,7 +9270,7 @@ rd_update_remote(rd, returndate)
 
     if(!st){
 	q_status_message1(SM_ORDER | SM_DING, 5, 5,
-	     "Can't open \"%s\" for copying", rd->rn);
+	     "Can't open \"%.200s\" for copying", rd->rn);
 	dprint(1, (debugfile,
 	  "rd_update_remote: Can't open remote folder \"%s\" for copying\n",
 	       rd->rn));
@@ -8229,21 +9278,39 @@ rd_update_remote(rd, returndate)
     }
 
     rd->last_use = get_adj_time();
-    err = rd_chk_for_hdr_msg(st, rd->t.i.special_hdr);
+    err = rd_chk_for_hdr_msg(&st, rd, &eptr);
     if(err){
 	q_status_message1(SM_ORDER | SM_DING, 5, 5,
-	     "\"%s\" has invalid format", rd->rn);
+			  "\"%.200s\" has invalid format", rd->rn);
+
+	if(eptr){
+	    q_status_message1(SM_ORDER, 3, 5, "%.200s", eptr);
+	    dprint(1, (debugfile, "%s\n", eptr));
+	    fs_give((void **)&eptr);
+	}
+
 	dprint(1, (debugfile,
 	   "rd_update_remote: \"%s\" has invalid format\n", rd->rn));
-	dprint(1, (debugfile,
-	       "  First message in folder has no \"%s\" header\n",
-	       rd->t.i.special_hdr));
 	return 1;
     }
 
     errno = 0;
 
-    if((store = so_get(FileStar, rd->lf, READ_ACCESS)) != NULL){
+    /*
+     * The data that will be going to the remote folder rn is
+     * written into the following storage object and then copied to
+     * the remote folder from there.
+     */
+
+    if(rd->flags & NO_FILE){
+	store = rd->sonofile;
+	if(store)
+	  so_seek(store, 0L, 0);	/* rewind */
+    }
+    else
+      store = so_get(FileStar, rd->lf, READ_ACCESS);
+
+    if(store != NULL){
 	char date[200];
 	unsigned char c;
 	unsigned char last_c = 0;
@@ -8255,9 +9322,8 @@ rd_update_remote(rd, returndate)
 	rfc822_date(date);
 	dprint(7, (debugfile,
 	       "in rd_update_remote, storing date ->%s<-\n", date));
-	if(!err && rd_store_fake_hdrs(rd->so, "Pine Remote Data Container",
-				      rd->t.i.special_hdr, rd->t.i.special_hdr,
-				      date))
+	if(!err && rd_store_fake_hdrs(rd, "Pine Remote Data Container",
+				      rd->t.i.special_hdr, date))
 	  err = 1;
 	
 	/* save the date for later comparisons */
@@ -8300,21 +9366,26 @@ rd_update_remote(rd, returndate)
 	 */
 	if(!err){
 	    MAILSTREAM *st;
-	    if((st = rd->t.i.stream) == NULL)
+
+	    if((st = rd->t.i.stream) != NULL)
+	      rd->t.i.shouldbe_nmsgs = rd->t.i.stream->nmsgs + 1;
+	    else
 	      st = adrbk_handy_stream(rd->rn);
 
-	    err = write_fcc(rd->rn, NULL, rd->so, st, "remote data") ? 0 : 1;
+	    err = write_fcc(rd->rn, NULL, rd->so, st,
+			    "remote data", NULL) ? 0 : 1;
 	}
 
 
-	so_give(&store);
+	if(!(rd->flags & NO_FILE))
+	  so_give(&store);
     }
     else
       err = -1;
 
     if(err)
 	dprint(2, (debugfile, "error in rd_update_remote for %s => %s\n",
-	       rd->lf, rd->rn));
+	       rd->lf ? rd->lf : "<mem>", rd->rn));
 
     return(err);
 }
@@ -8381,7 +9452,7 @@ rd_check_remvalid(rd, do_it_now)
       return;
     
 #ifdef DEBUG
-    if(ps_global->debug_imap > 3)
+    if(ps_global->debug_imap > 3 || ps_global->debugmem)
       openmode |= OP_DEBUG;
 #endif /* DEBUG */
 
@@ -8392,7 +9463,7 @@ rd_check_remvalid(rd, do_it_now)
     mm_status_result.flags  = 0L;
 
     /* make sure the cache file is still there */
-    if(can_access(rd->lf, READ_ACCESS) != 0){
+    if(rd->lf && can_access(rd->lf, READ_ACCESS) != 0){
 	dprint(2, (debugfile,
 	   "rd_check_remvalid: %s: cache file %s disappeared\n",
 	       rd->rn, rd->lf));
@@ -8406,10 +9477,7 @@ rd_check_remvalid(rd, do_it_now)
      * ping. It would be convenient if we could use a status command
      * on the open stream but apparently that won't work everywhere.
      */
-    ps_global->noshow_error = 1;
-    if(rd->t.i.stream && (char *)mail_ping(rd->t.i.stream) == NULL)
-      rd->t.i.stream = NULL;
-    ps_global->noshow_error = 0;
+    rd_ping_stream(rd);
 
 try_looking_in_stream:
 
@@ -8449,16 +9517,39 @@ try_looking_in_stream:
 		       rd->rn));
 	    }
 	    else{
-		dprint(7, (debugfile,
-		       "rd_check_remvalid: trying status\n"));
-		ps_global->noshow_error = 1;
-		if(!mail_status(stat_stream, rd->rn,
-				SA_UIDVALIDITY | SA_UIDNEXT | SA_MESSAGES)){
-		    /* failed, mark it so we won't try again */
-		    rd->flags |= NO_STATUSCMD;
-		    dprint(2, (debugfile,
-       "rd_check_remvalid: addrbook %s: status command failed\n", rd->rn));
-		    mm_status_result.flags = 0L;
+		/*
+		 * This sure seems like a crock. We have to check to
+		 * see if the stream is actually open to the folder
+		 * we want to do the status on because c-client can't
+		 * do a status on an open folder. In this case, we fake
+		 * the status command results ourselves.
+		 * If we're so unlucky as to get back a stream that will
+		 * work for the status command while we also have another
+		 * stream that is rd->rn and we don't pick up on that,
+		 * too bad.
+		 */
+		if(same_stream_and_mailbox(rd->rn, stat_stream)){
+		    dprint(7, (debugfile,
+			   "rd_check_remvalid: faking status\n"));
+		    mm_status_result.flags = SA_MESSAGES | SA_UIDVALIDITY
+					     | SA_UIDNEXT;
+		    mm_status_result.messages = stat_stream->nmsgs;
+		    mm_status_result.uidvalidity = stat_stream->uid_validity;
+		    mm_status_result.uidnext = stat_stream->uid_last+1;
+		}
+		else{
+
+		    dprint(7, (debugfile,
+			   "rd_check_remvalid: trying status\n"));
+		    ps_global->noshow_error = 1;
+		    if(!mail_status(stat_stream, rd->rn,
+				    SA_UIDVALIDITY | SA_UIDNEXT | SA_MESSAGES)){
+			/* failed, mark it so we won't try again */
+			rd->flags |= NO_STATUSCMD;
+			dprint(2, (debugfile,
+	   "rd_check_remvalid: addrbook %s: status command failed\n", rd->rn));
+			mm_status_result.flags = 0L;
+		    }
 		}
 
 		ps_global->noshow_error = 0;
@@ -8736,6 +9827,286 @@ rd_remote_is_readonly(rd)
 }
 
 
+/*
+ * Returns  0 if ok
+ *         -1 if not ok and user says No
+ *          1 if not ok but user says Yes, ok to use it
+ */
+int
+rd_check_for_suspect_data(rd)
+    REMDATA_S *rd;
+{
+    int           ans = -1;
+    char         *fields[3], *values[3], *h;
+    unsigned long cookie;
+
+    if(!rd || rd->type != RemImap || !rd->so || !rd->rn || !rd->t.i.special_hdr)
+      return -1;
+
+    fields[0] = rd->t.i.special_hdr;
+    fields[1] = "received";
+    fields[2] = NULL;
+    cookie = 0L;
+    if(h=pine_fetchheader_lines(rd->t.i.stream, rd->t.i.stream->nmsgs,
+				NULL, fields)){
+	simple_header_parse(h, fields, values);
+	if(values[1])				/* Received lines present! */
+	  ans = rd_prompt_about_forged_remote_data(-1, rd, NULL);
+	else if(values[0]){
+	    cookie = strtoul(values[0], (char **)NULL, 10);
+	    if(cookie == rd->cookie)		/* all's well */
+	      ans = 0;
+	    else
+	      ans = rd_prompt_about_forged_remote_data(cookie > 1L
+							  ? 100 : cookie,
+						       rd, values[0]);
+	}
+	else
+	  ans = rd_prompt_about_forged_remote_data(-2, rd, NULL);
+
+	if(values[0])
+	  fs_give((void **)&values[0]);
+
+	if(values[1])
+	  fs_give((void **)&values[1]);
+
+	fs_give((void **)&h);
+    }
+    else					/* missing magic header */
+      ans = rd_prompt_about_forged_remote_data(-2, rd, NULL);
+
+    return ans;
+}
+
+
+int
+rd_prompt_about_forged_remote_data(reason, rd, extra)
+    int        reason;
+    REMDATA_S *rd;
+    char      *extra;
+{
+    char      tmp[2000];
+    char     *unknown = "<unknown>";
+    int       rv = -1;
+    char *foldertype, *foldername, *special;
+
+    foldertype = (rd && rd->t.i.special_hdr && !strucmp(rd->t.i.special_hdr, REMOTE_ABOOK_SUBTYPE)) ? "address book" : (rd && rd->t.i.special_hdr && !strucmp(rd->t.i.special_hdr, REMOTE_PINERC_SUBTYPE)) ? "configuration" : "data";
+    foldername = (rd && rd->rn) ? rd->rn : unknown;
+    special = (rd && rd->t.i.special_hdr) ? rd->t.i.special_hdr : unknown;
+
+    dprint(1, (debugfile, "rd_prompt_about_forged_remote_data:\n"));
+    dprint(1, (debugfile, " reason=%d\n", reason));
+    dprint(1, (debugfile, " folder_type=%s\n", foldertype));
+    dprint(1, (debugfile, " remotename=%s\n\n", foldername));
+
+    if(rd && rd->flags & USER_SAID_NO)
+      return rv;
+
+    if(reason == -2){
+	dprint(1, (debugfile, "The special header \"%.20s\" is missing from the last message in the folder.\nThis indicates that something is wrong.\nYou should probably answer \"No\"\nso that you don't use the corrupt data.\nThen you should investigate further.\n", special));
+    }
+    else if(reason == -1){
+	dprint(1, (debugfile,  "The last message in the folder contains \"Received\" headers.\nThis usually indicates that the message was put there by the mail\ndelivery system. Pine does not add those Received headers.\nYou should probably answer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n"));
+    }
+    else if(reason == 0){
+	dprint(1, (debugfile, "The special header \"%.20s\" in the last message\nin the folder has an unexpected value (%.30s)\nafter it. This probably indicates that something is wrong.\nThis value would not normally be put there by Pine.\nYou should probably answer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n",
+		special, (extra && *extra) ? extra : "?"));
+    }
+    else if(reason == 1){
+	dprint(1, (debugfile, "The special header \"%.20s\" in the last message\nin the folder has an unexpected value (1)\nafter it. It appears that it may have been put there by a Pine\nwith a version number less than 4.50.\nIf you believe that you have changed this data with an older Pine\nmore recently than you've changed it with this version of Pine,\nthen you can probably safely answer \"Yes\".\nIf you do not understand why this has happened, you should probably\nanswer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n",
+		special));
+    }
+    else if(reason > 1){
+	dprint(1, (debugfile, "The special header \"%.20s\" in the last message\nin the folder has an unexpected value (%.30s)\nafter it. This is the right sort of value that Pine would normally put there,\nbut it doesn't match the value from the first message in the folder.\nThis may indicate that something is wrong.\nUnless you understand why this has happened, you should probably\nanswer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n",
+		special, (extra && *extra) ? extra : "?"));
+    }
+
+    if(reason >= 0){
+	/*
+	 * This check should not really be here. We have a cookie that
+	 * has the wrong value so something is possibly wrong.
+	 * But we are worried that old pines will put the bad value in
+	 * there (which they will) and then the questions will bother
+	 * users and mystify them. So we're just going to pretend the user
+	 * said Yes in this case, and we'll try to fix the cookie.
+	 * We still catch Received lines and use that or the complete absence
+	 * of a special header as indicators of trouble.
+	 */
+	rd->flags |= USER_SAID_YES;
+	return(1);
+    }
+
+    if(ps_global->ttyo){
+	static struct key forge_keys[] =
+	   {HELP_MENU,
+	    NULL_MENU,
+	    {"Y","Yes, continue",{MC_YES,1,{'y'}},KS_NONE},
+	    {"N","No",{MC_NO,1,{'n'}},KS_NONE},
+	    NULL_MENU,
+	    NULL_MENU,
+	    PREVPAGE_MENU,
+	    NEXTPAGE_MENU,
+	    PRYNTTXT_MENU,
+	    WHEREIS_MENU,
+	    FWDEMAIL_MENU,
+	    {"S", "Save", {MC_SAVETEXT,1,{'s'}}, KS_SAVE}};
+	INST_KEY_MENU(forge_keymenu, forge_keys);
+	SCROLL_S  sargs;
+	STORE_S  *in_store, *out_store;
+	gf_io_t   pc, gc;
+	HANDLE_S *handles = NULL;
+	int       the_answer = 'n';
+
+	if(!(in_store = so_get(CharStar, NULL, EDIT_ACCESS)) ||
+	   !(out_store = so_get(CharStar, NULL, EDIT_ACCESS)))
+	  goto try_wantto;
+
+	sprintf(tmp, "<HTML><P>The data in the remote %.20s folder<P><CENTER>%.50s</CENTER><P>looks suspicious. The reason for the suspicion is<P><CENTER>",
+		foldertype, foldername);
+	so_puts(in_store, tmp);
+
+	if(reason == -2){
+	    sprintf(tmp, "header \"%.20s\" is missing</CENTER><P>The special header \"%.20s\" is missing from the last message in the folder. This indicates that something is wrong. You should probably answer \"No\" so that you don't use the corrupt data. Then you should investigate further.",
+		    special, special);
+	    so_puts(in_store, tmp);
+	}
+	else if(reason == -1){
+	    so_puts(in_store, "\"Received\" headers detected</CENTER><P>The last message in the folder contains \"Received\" headers. This usually indicates that the message was put there by the mail delivery system. Pine does not add those Received headers. You should probably answer \"No\" so that you don't use the corrupt data. Then you should investigate further.");
+	}
+	else if(reason == 0){
+	    sprintf(tmp, "Unexpected value for header \"%.20s\"</CENTER><P>The special header \"%.20s\" in the last message in the folder has an unexpected value (%.30s) after it. This probably indicates that something is wrong. This value would not normally be put there by Pine. You should probably answer \"No\" so that you don't use the corrupt data. Then you should investigate further.",
+		    special, special, (extra && *extra) ? extra : "?");
+	    so_puts(in_store, tmp);
+	}
+	else if(reason == 1){
+	    sprintf(tmp, "Unexpected value for header \"%.20s\"</CENTER><P>The special header \"%.20s\" in the last message in the folder has an unexpected value (1) after it. It appears that it may have been put there by a Pine with a version number less than 4.50. If you believe that you have changed this data with an older Pine more recently than you've changed it with this version of Pine, then you can probably safely answer \"Yes\". If you do not understand why this has happened, you should probably answer \"No\" so that you don't use the corrupt data. Then you should investigate further.",
+		    special, special);
+	    so_puts(in_store, tmp);
+	}
+	else if(reason > 1){
+	    sprintf(tmp, "Unexpected value for header \"%.20s\"</CENTER><P>The special header \"%.20s\" in the last message in the folder has an unexpected value (%.30s) after it. This is the right sort of value that Pine would normally put there, but it doesn't match the value from the first message in the folder. This may indicate that something is wrong. Unless you understand why this has happened, you should probably answer \"No\" so that you don't use the corrupt data. Then you should investigate further.",
+		    special, special, (extra && *extra) ? extra : "?");
+	    so_puts(in_store, tmp);
+	}
+
+	so_seek(in_store, 0L, 0);
+	init_handles(&handles);
+	gf_filter_init();
+	gf_link_filter(gf_html2plain,
+		       gf_html2plain_opt(NULL,
+			  ps_global->ttyo->screen_cols,
+			  &handles, GFHP_LOCAL_HANDLES));
+	gf_set_so_readc(&gc, in_store);
+	gf_set_so_writec(&pc, out_store);
+	gf_pipe(gc, pc);
+	gf_clear_so_writec(out_store);
+	gf_clear_so_readc(in_store);
+
+	memset(&sargs, 0, sizeof(SCROLL_S));
+	sargs.text.handles  = handles;
+	sargs.text.text     = so_text(out_store);
+	sargs.text.src      = CharStar;
+	sargs.bar.title     = "REMOTE DATA FORGERY WARNING";
+	sargs.proc.tool     = rd_answer_forge_warning;
+	sargs.proc.data.p   = (void *)&the_answer;
+	sargs.keys.menu     = &forge_keymenu;
+	setbitmap(sargs.keys.bitmap);
+
+	scrolltool(&sargs);
+
+	if(the_answer == 'y'){
+	    rv = 1;
+	    rd->flags |= USER_SAID_YES;
+	}
+	else if(rd)
+	  rd->flags |= USER_SAID_NO;
+
+	ps_global->mangled_screen = 1;
+	ps_global->painted_body_on_startup = 0;
+	ps_global->painted_footer_on_startup = 0;
+	so_give(&in_store);
+	so_give(&out_store);
+	free_handles(&handles);
+    }
+    else{
+	char *p = tmp;
+
+	sprintf(p, "\nThe data in the remote %.20s folder\n\n   %.70s\n\nlooks suspicious. The reason for the suspicion is\n\n   ",
+		foldertype, foldername);
+	p += strlen(p);
+
+	if(reason == -2){
+	    sprintf(p, "header \"%.20s\" is missing\n\nThe special header \"%.20s\" is missing from the last message\nin the folder. This indicates that something is wrong.\nYou should probably answer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n\n",
+		    special, special);
+	}
+	else if(reason == -1){
+	    sprintf(p, "\"Received\" headers detected\n\nThe last message in the folder contains \"Received\" headers.\nThis usually indicates that the message was put there by the\nmail delivery system. Pine does not add those Received headers.\nYou should probably answer \"No\" so that you don't use the corrupt data.\nThen you should investigate further.\n\n");
+	}
+	else if(reason == 0){
+	    sprintf(p, "Unexpected value for header \"%.20s\"\n\nThe special header \"%.20s\" in the last message in the folder\nhas an unexpected value (%.30s) after it. This probably\nindicates that something is wrong. This value would not normally be put\nthere by Pine. You should probably answer \"No\" so that you don't use\nthe corrupt data. Then you should investigate further.\n\n",
+		    special, special, (extra && *extra) ? extra : "?");
+	}
+	else if(reason == 1){
+	    sprintf(p, "Unexpected value for header \"%.20s\"\n\nThe special header \"%.20s\" in the last message in the folder\nhas an unexpected value (1) after it. It appears that it may have been\nput there by a Pine with a version number less than 4.50.\nIf you believe that you have changed this data with an older Pine more\nrecently than you've changed it with this version of Pine, then you can\nprobably safely answer \"Yes\". If you do not understand why this has\nhappened, you should probably answer \"No\" so that you don't use the\ncorrupt data. Then you should investigate further.\n\n",
+		    special, special);
+	}
+	else if(reason > 1){
+	    sprintf(p, "Unexpected value for header \"%.20s\"\n\nThe special header \"%.20s\" in the last message in the folder\nhas an unexpected\nvalue (%.30s) after it. This is\nthe right sort of value that Pine would normally put there, but it\ndoesn't match the value from the first message in the folder. This may\nindicate that something is wrong. Unless you understand why this has happened,\nyou should probably answer \"No\" so that you don't use the\ncorrupt data. Then you should investigate further.\n\n",
+		    special, special, (extra && *extra) ? extra : "?");
+	}
+
+try_wantto:
+	p += strlen(p);
+	sprintf(p, "Suspicious data in \"%.50s\": Continue anyway ",
+		(rd && rd->t.i.special_hdr) ? rd->t.i.special_hdr
+					    : unknown,
+		(rd && rd->rn) ? rd->rn : unknown,
+		short_str((rd && rd->rn) ? rd->rn : "<noname>", tmp+1900,
+			  33, FrontDots));
+	if(want_to(tmp, 'n', 'x', NO_HELP, WT_NORM) == 'y'){
+	    rv = 1;
+	    rd->flags |= USER_SAID_YES;
+	}
+	else if(rd)
+	  rd->flags |= USER_SAID_NO;
+    }
+
+    if(rv < 0)
+      q_status_message1(SM_ORDER, 1, 3, "Can't open remote %.200s",
+			(rd && rd->rn) ? rd->rn : "<noname>");
+
+    return(rv);
+}
+
+
+int
+rd_answer_forge_warning(cmd, msgmap, sparms)
+    int	       cmd;
+    MSGNO_S   *msgmap;
+    SCROLL_S  *sparms;
+{
+    int rv = 1;
+
+    ps_global->next_screen = SCREEN_FUN_NULL;
+
+    switch(cmd){
+      case MC_YES :
+	*(int *)(sparms->proc.data.p) = 'y';
+	break;
+
+      case MC_NO :
+	*(int *)(sparms->proc.data.p) = 'n';
+	break;
+
+      default:
+	panic("Unexpected command in rd_answer_forge_warning");
+	break;
+    }
+
+    return(rv);
+}
+
+
 PINERC_S *
 new_pinerc_s(name)
     char *name;
@@ -8909,10 +10280,9 @@ copy_localfile_to_remotefldr(remotetype, local, remote, subtype, err_msg)
 	    }
 	}
 
-	if(rd_chk_for_hdr_msg(rd->t.i.stream, rd->t.i.special_hdr)){
-		sprintf(*err_msg,
-			"First msg in \"%s\" should have \"%s\" header",
-			rd->rn, rd->t.i.special_hdr);
+	fs_give((void **)err_msg);
+	*err_msg = NULL;
+	if(rd_chk_for_hdr_msg(&(rd->t.i.stream), rd, err_msg)){
 		rd_free_remdata(&rd);
 		return(retfail);
 	}
@@ -8969,6 +10339,22 @@ cur_rule_value(var, expand, cmdline)
 	  }
     }
 #endif
+    else if(var == &ps_global->vars[V_INDEX_COLOR_STYLE]){
+      if(ps_global->VAR_INDEX_COLOR_STYLE)
+	for(i = 0; v = index_col_style(i); i++)
+	  if(!strucmp(ps_global->VAR_INDEX_COLOR_STYLE, S_OR_L(v))){
+	      ps_global->index_color_style = v->value;
+	      break;
+	  }
+    }
+    else if(var == &ps_global->vars[V_TITLEBAR_COLOR_STYLE]){
+      if(ps_global->VAR_TITLEBAR_COLOR_STYLE)
+	for(i = 0; v = titlebar_col_style(i); i++)
+	  if(!strucmp(ps_global->VAR_TITLEBAR_COLOR_STYLE, S_OR_L(v))){
+	      ps_global->titlebar_color_style = v->value;
+	      break;
+	  }
+    }
     else if(var == &ps_global->vars[V_FCC_RULE]){
       if(ps_global->VAR_FCC_RULE)
 	for(i = 0; v = fcc_rules(i); i++)
@@ -9017,6 +10403,22 @@ cur_rule_value(var, expand, cmdline)
 	      break;
 	  }
     }
+    else if(var == &ps_global->vars[V_THREAD_DISP_STYLE]){
+      if(ps_global->VAR_THREAD_DISP_STYLE)
+	for(i = 0; v = thread_disp_styles(i); i++)
+	  if(!strucmp(ps_global->VAR_THREAD_DISP_STYLE, S_OR_L(v))){
+	      ps_global->thread_disp_style = v->value;
+	      break;
+	  }
+    }
+    else if(var == &ps_global->vars[V_THREAD_INDEX_STYLE]){
+      if(ps_global->VAR_THREAD_INDEX_STYLE)
+	for(i = 0; v = thread_index_styles(i); i++)
+	  if(!strucmp(ps_global->VAR_THREAD_INDEX_STYLE, S_OR_L(v))){
+	      ps_global->thread_index_style = v->value;
+	      break;
+	  }
+    }
 }
 
 
@@ -9028,7 +10430,7 @@ convert_to_remote_config(ps, edit_exceptions)
     char       rem_pinerc_prefix[MAILTMPLEN];
     char      *beg, *end;
     CONTEXT_S *context;
-    int        abooks, sigs, cancel = 0;
+    int        abooks, sigs;
 
     if(edit_exceptions){
 	q_status_message(SM_ORDER, 3, 5,
@@ -9108,7 +10510,7 @@ convert_to_remote_config(ps, edit_exceptions)
 
     /* ask about converting sigfiles to literal sigs */
     if(ps->prc->type != RemImap || sigs)
-      if(convert_sigs_to_remote(ps) == -1){
+      if(convert_sigs_to_literal(ps, 1) == -1){
 	  cmd_cancelled(NULL);
 	  return;
       }

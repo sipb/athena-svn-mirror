@@ -1,4 +1,4 @@
-# $Id: makefile.ult,v 1.1.1.1 2001-02-19 07:02:10 ghudson Exp $
+# $Id: makefile.ult,v 1.1.1.2 2003-02-12 08:00:18 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -42,7 +42,7 @@ LIBCMD=		ar
 LIBARGS=	ru
 RANLIB=		ranlib
 
-LIBS=		$(EXTRALIBES) -ltermcap -lc
+LIBS=		$(EXTRALDFLAGS) -ltermcap -lc
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \
 		composer.o display.o file.o fileio.o line.o pico_os.o \
@@ -68,7 +68,7 @@ libpico.a:	$(OFILES)
 		$(RANLIB) libpico.a
 
 clean:
-		rm -f *.a *.o *~ pico_os.c os.h pico pilot
+		rm -f *.a *.o *~ pico_os.c os.h pico pico.exe pilot pilot.exe
 		cd osdep; $(MAKE) clean; cd ..
 
 os.h:		osdep/os-ult.h

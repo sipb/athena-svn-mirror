@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: line.c,v 1.1.1.1 2001-02-19 07:04:50 ghudson Exp $";
+static char rcsid[] = "$Id: line.c,v 1.1.1.2 2003-02-12 08:01:56 ghudson Exp $";
 #endif
 /*
  * Program:	Line management routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: line.c,v 1.1.1.1 2001-02-19 07:04:50 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -134,6 +134,11 @@ register LINE   *lp;
 	if (wp->w_markp == lp) {
 	    wp->w_markp = lp->l_fp;
 	    wp->w_marko = 0;
+	}
+
+	if (wp->w_imarkp == lp) {
+	    wp->w_imarkp = lp->l_fp;
+	    wp->w_imarko = 0;
 	}
 
 	wp = wp->w_wndp;
@@ -557,6 +562,10 @@ ldelnewline()
 		wp->w_markp  = lp1;
 		wp->w_marko += lp1->l_used;
 	    }
+	    if (wp->w_imarkp == lp2) {
+		wp->w_imarkp  = lp1;
+		wp->w_imarko += lp1->l_used;
+	    }
 	    wp = wp->w_wndp;
 	}
 	lp1->l_used += lp2->l_used;
@@ -599,6 +608,12 @@ ldelnewline()
 	    wp->w_markp  = lp3;
 	    wp->w_marko += lp1->l_used;
 	}
+	if (wp->w_imarkp == lp1)
+	  wp->w_imarkp  = lp3;
+	else if (wp->w_imarkp == lp2) {
+	    wp->w_imarkp  = lp3;
+	    wp->w_imarko += lp1->l_used;
+	}
 	wp = wp->w_wndp;
     }
 
@@ -616,9 +631,10 @@ lisblank(line)
     LINE *line;
 {
     int n = 0;
+    char qstr[NLINE];
 
-    n = (Pmaster && Pmaster->quote_str && quote_match(Pmaster->quote_str,line))
-	  ? strlen(Pmaster->quote_str) : 0;
+    n = (glo_quote_str && quote_match(glo_quote_str,line,qstr,NLINE))
+	  ? strlen(qstr) : 0;
 
     for(; n < llength(line); n++)
       if(!isspace((unsigned char) lgetc(line, n).c))
@@ -693,8 +709,6 @@ pkbufinsert(c, buf)
     int c;
     struct pkbuf **buf;
 {
-    register char *nbufp;
-
     if(!*buf){
 	if(*buf = (struct pkbuf *) malloc(sizeof(struct pkbuf)))
 	  memset(*buf, 0, sizeof(struct pkbuf));

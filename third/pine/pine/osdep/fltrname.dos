@@ -24,15 +24,12 @@ filter_filename(file, fatal)
 
     for(ptr = file; *ptr == ' '; ptr++) ; /* leading spaces gone */
 
-    while(*ptr && (unsigned char)(*ptr) > ' ' && strindex(illegal, *ptr) == 0)
+    while(*ptr && (unsigned char)(*ptr) >= ' ' && strindex(illegal, *ptr) == 0)
       ptr++;
 
     *fatal = TRUE;
     if(*ptr != '\0') {
-        if(*ptr == ' ') {
-            ill_char = "<space>";
-	    *fatal = FALSE;		/* just whitespace */
-        } else if(*ptr == '\t') {
+	if(*ptr == '\t') {
     	    ill_char = "<tab>";
 	    *fatal = FALSE;		/* just whitespace */
         } else if(*ptr == '\n') {

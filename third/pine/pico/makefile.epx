@@ -1,4 +1,4 @@
-# $Id: makefile.epx,v 1.1.1.1 2001-02-19 07:01:55 ghudson Exp $
+# $Id: makefile.epx,v 1.1.1.2 2003-02-12 07:58:27 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -45,7 +45,7 @@ LIBCMD=		ar
 LIBARGS=	ru
 RANLIB=		true
 
-LIBS=		$(EXTRALIBES) -ltermlib
+LIBS=		$(EXTRALDFLAGS) -ltermlib
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \
 		composer.o display.o file.o fileio.o line.o pico_os.o \

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: help.c,v 1.1.1.1 2001-02-19 07:05:18 ghudson Exp $";
+static char rcsid[] = "$Id: help.c,v 1.1.1.2 2003-02-12 08:01:26 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: help.c,v 1.1.1.1 2001-02-19 07:05:18 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -69,26 +69,6 @@ INST_KEY_MENU(help_keymenu, help_keys);
 #define	HLP_PREV_HANDLE	4
 #define	HLP_NEXT_HANDLE	5
 #define	HLP_ALL_KEY	9
-
-
-/*
- * Keys for the Report Bug screen.
- */
-static struct key gripe_modal_keys[] = 
-       {NULL_MENU,
-	NULL_MENU,
-	{"Ret","Finished",{MC_EXIT,2,{ctrl('m'),ctrl('j')}},KS_NONE},
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	PREVPAGE_MENU,
-	NEXTPAGE_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU,
-	NULL_MENU
-       };
-INST_KEY_MENU(gripe_modal_km, gripe_modal_keys);
 
 
 typedef struct _help_scroll {
@@ -139,11 +119,15 @@ static char att_cur_msg[] = "\
 /*
  * Internal prototypes
  */
-int	 helper_internal PROTO((HelpType, char *, char *, int));
+int	 helper_internal PROTO((HelpType, char **, char *, char *, int));
 HelpType help_name2section PROTO((char *, int));
 int	 help_processor PROTO((int, MSGNO_S *, SCROLL_S *));
+int	 journal_processor PROTO((int, MSGNO_S *, SCROLL_S *));
+void     prune_review_messages PROTO((size_t *, size_t));
+size_t   trim_review PROTO((unsigned long, int));
 void	 help_keymenu_tweek PROTO((SCROLL_S *, int));
 int	 help_bogus_input PROTO((int));
+char   **get_supported_options PROTO((void));
 void     print_all_help PROTO((void));
 void	 print_help_page_title PROTO((char *, HPRT_S *));
 int	 print_help_page_break PROTO((long, char *, LT_INS_S **, void *));
@@ -164,6 +148,9 @@ int	 help_subsection_popup PROTO((SCROLL_S *, int));
 
     Args: text   -- The help text to display (from pine.help --> helptext.c)
           title  -- The title of the help text 
+
+	  The dumb otext argument is for when we want to pass in a char **
+	  data item no matter what the type of HelpType is.
   
   Result: format text and call scroller
 
@@ -173,8 +160,9 @@ The list is ended with a page line number of -1. Line number 0 is also
 the first line in the text.
   -----*/
 int
-helper_internal(text, frag, title, flags)
+helper_internal(text, otext, frag, title, flags)
     HelpType  text;
+    char    **otext;
     char     *frag;
     char     *title;
     int	      flags;
@@ -188,16 +176,21 @@ helper_internal(text, frag, title, flags)
     HELP_SCROLL_S   hscroll;
     gf_io_t	    pc;
 #ifdef	HELPFILE
-    char	  **dynamic_text;
+    char	  **dynamic_text = NULL;
 #endif /* HELPFILE */
 
     dprint(1, (debugfile, "\n\n    ---- HELPER ----\n"));
 
 #ifdef	HELPFILE
-    if((shown_text = dynamic_text = get_help_text(text)) == NULL)
+    if(otext)
+      shown_text = otext;
+    else if((shown_text = dynamic_text = get_help_text(text)) == NULL)
       return(cmd);
 #else
-    shown_text = text;
+    if(otext)
+      shown_text = otext;
+    else
+      shown_text = text;
 #endif /* HELPFILE */
 
     if(F_ON(F_BLANK_KEYMENU,ps_global)){
@@ -229,7 +222,7 @@ helper_internal(text, frag, title, flags)
 	      gf_link_filter(gf_html2plain,
 			     gf_html2plain_opt("x-pine-help:",
 					ps_global->ttyo->screen_cols,
-					GFHP_HANDLES | GFHP_LOCAL_HANDLES));
+					&handles, GFHP_LOCAL_HANDLES));
 	    else
 	      gf_link_filter(gf_wrap, gf_wrap_filter_opt(
 						  ps_global->ttyo->screen_cols,
@@ -398,7 +391,8 @@ helper_internal(text, frag, title, flags)
     while(cmd == MC_RESIZE);
 
 #ifdef	HELPFILE
-    free_list_array(&dynamic_text);
+    if(dynamic_text)
+      free_list_array(&dynamic_text);
 #endif
 
     return(cmd);
@@ -414,7 +408,7 @@ helper(text, title, flags)
     char     *title;
     int	      flags;
 {
-    return(helper_internal(text, NULL, title, flags));
+    return(helper_internal(text, NULL, NULL, title, flags));
 }
 
 
@@ -535,7 +529,8 @@ print_help(text)
 	int   i;
 	char *p;
 
-	gf_link_filter(gf_html2plain,gf_html2plain_opt(NULL,80,GFHP_STRIPPED));
+	gf_link_filter(gf_html2plain,
+		       gf_html2plain_opt(NULL,80,NULL,GFHP_STRIPPED));
 	for(i = 1; i <= 5 && text[i]; i++)
 	  if(!struncmp(text[i], "<title>", 7)
 	     && (p = srchstr(text[i] + 7, "</title>"))
@@ -559,7 +554,7 @@ print_help(text)
     print_text(NEWLINE);
 
     if(error = gf_pipe(helper_getc, print_char))
-      q_status_message1(SM_ORDER | SM_DING, 3, 3, "Printing Error: %s", error);
+      q_status_message1(SM_ORDER | SM_DING, 3, 3, "Printing Error: %.200s", error);
 
     print_char(ctrl('L'));		/* new page. */
 }
@@ -689,7 +684,7 @@ url_local_helper(url)
 	if(newhelp != NO_HELP){
 	    int rv;
 
-	    rv = helper_internal(newhelp, frag, "HELP SUB-SECTION",
+	    rv = helper_internal(newhelp, NULL, frag, "HELP SUB-SECTION",
 				 HLPD_NEWWIN | HLPD_SIMPLE | HLPD_FROMHELP);
 	    ps_global->mangled_screen = 1;
 	    return((rv == MC_EXIT) ? 2 : 1);
@@ -697,8 +692,135 @@ url_local_helper(url)
     }
 
     q_status_message1(SM_ORDER | SM_DING, 0, 3,
-		      "Unrecognized Internal help: \"%s\"", url);
+		      "Unrecognized Internal help: \"%.200s\"", url);
     return(0);
+}
+
+
+char **
+get_supported_options()
+{
+    char         **config;
+    DRIVER        *d;
+    AUTHENTICATOR *a;
+    char          *title = "Supported features in this Pine";
+    char           sbuf[MAX_SCREEN_COLS+1];
+    int            cnt, len, cols, disabled, any_disabled = 0;;
+
+    /*
+     * Line count:
+     *   Title + blank			= 2
+     *   SSL Title + SSL line + blank	= 3
+     *   Auth title + blank		= 2
+     *   Driver title + blank		= 2
+     *   LDAP title + LDAP line 	= 2
+     *   Disabled explanation + blank line = 4
+     *   end				= 1
+     */
+    cnt = 16;
+    for(a = mail_lookup_auth(1); a; a = a->next)
+      cnt++;
+    for(d = (DRIVER *)mail_parameters(NIL, GET_DRIVERS, NIL);
+	d; d = d->next)
+      cnt++;
+
+    config = (char **)fs_get(cnt * sizeof(char *));
+    memset(config, 0, cnt * sizeof(char *));
+
+    cols = ps_global->ttyo ? ps_global->ttyo->screen_cols : 0;
+    len = strlen(title);
+    sprintf(sbuf, "%*s%s", cols > len ? (cols-len)/2 : 0, "", title);
+
+    config[cnt=0] = cpystr(sbuf);
+    config[++cnt] = cpystr("");
+
+    config[++cnt] = cpystr("Encryption:");
+    if(mail_parameters(NIL, GET_SSLDRIVER, NIL))
+      config[++cnt] = cpystr("  TLS and SSL");
+    else
+      config[++cnt] = cpystr("  None (no TLS or SSL)");
+
+    config[++cnt] = cpystr("");
+    config[++cnt] = cpystr("Authenticators:");
+    for(a = mail_lookup_auth(1); a; a = a->next){
+	disabled = (a->client == NULL && a->server == NULL);
+	any_disabled += disabled;
+	sprintf(sbuf, "  %s%s", a->name, disabled ? " (disabled)" : "");
+	config[++cnt] = cpystr(sbuf);
+    }
+
+    config[++cnt] = cpystr("");
+    config[++cnt] = cpystr("Mailbox drivers:");
+    for(d = (DRIVER *)mail_parameters(NIL, GET_DRIVERS, NIL);
+	d; d = d->next){
+	disabled = (d->flags & DR_DISABLE);
+	any_disabled += disabled;
+	sprintf(sbuf, "  %s%s", d->name, disabled ? " (disabled)" : "");
+	config[++cnt] = cpystr(sbuf);
+    }
+
+    config[++cnt] = cpystr("");
+    config[++cnt] = cpystr("Directories:");
+#ifdef	ENABLE_LDAP
+      config[++cnt] = cpystr("  LDAP");
+#else
+      config[++cnt] = cpystr("  None (no LDAP)");
+#endif
+
+    if(any_disabled){
+	config[++cnt] = cpystr("");
+	if(ps_global->ttyo)
+	  config[++cnt] = cpystr("Authenticators may be disabled because of the \"disable-these-authenticators\" hidden config option. Mailbox drivers may be disabled because of the \"disable-these-drivers\" hidden config option.");
+	else{
+	    config[++cnt] = cpystr("Authenticators may be disabled because of the \"disable-these-authenticators\"");
+	    config[++cnt] = cpystr("hidden config option. Mailbox drivers may be disabled because of the");
+	    config[++cnt] = cpystr("\"disable-these-drivers\" hidden config option.");
+	}
+    }
+
+    config[++cnt] = NULL;
+
+    return(config);
+}
+
+
+int
+url_local_config(url)
+    char *url;
+{
+    if(!struncmp(url, "x-pine-config:", 14)){
+	char **config;
+	int    rv;
+
+	config = get_supported_options();
+	if(config){
+	    rv = helper_internal(NO_HELP, config, NULL, "HELP CONFIG",
+				 HLPD_NEWWIN | HLPD_SIMPLE | HLPD_FROMHELP);
+	    free_list_array(&config);
+	}
+
+	ps_global->mangled_screen = 1;
+	return((rv == MC_EXIT) ? 2 : 1);
+    }
+
+    q_status_message1(SM_ORDER | SM_DING, 0, 3,
+		      "Unrecognized Internal help: \"%.200s\"", url);
+    return(0);
+}
+
+
+void
+dump_supported_options()
+{
+    char **config;
+    char **p;
+    FILE  *f = stdout;
+
+    config = get_supported_options();
+    if(config){
+	display_args_err(NULL, config, 0);
+	free_list_array(&config);
+    }
 }
 
 
@@ -751,7 +873,7 @@ help_name2section(url, url_len)
 	}
 	else
 	  q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			    "No Help!  Index \"%s\" not found.", buf);
+			    "No Help!  Index \"%.200s\" not found.", buf);
 
     }
 #else
@@ -788,7 +910,7 @@ get_help_text(index)
     build_path(buf, ps_global->pine_dir, HELPINDEX, sizeof(buf));
     if(!(helpfile = fopen(buf, "rb"))){
 	q_status_message1(SM_ORDER,3,5,
-	    "No Help!  Index \"%s\" not found.", buf);
+	    "No Help!  Index \"%.200s\" not found.", buf);
 	return(NULL);
     }
 
@@ -805,7 +927,7 @@ get_help_text(index)
     /* make sure help file is open */
     build_path(buf, ps_global->pine_dir, HELPFILE, sizeof(buf));
     if((helpfile = fopen(buf, "rb")) == NULL){
-	q_status_message2(SM_ORDER,3,5,"No Help!  \"%s\" : %s", buf,
+	q_status_message2(SM_ORDER,3,5,"No Help!  \"%.200s\" : %.200s", buf,
 			  error_description(errno));
 	return(NULL);
     }
@@ -852,148 +974,168 @@ get_help_text(index)
 #endif	/* HELPFILE */
 
 
+typedef struct _rev_msg {
+    char            *message;
+    char            *timestamp;
+    int              level;	/* -1 for journal, debuglevel for dprint */
+    unsigned long    seq;			/* used for pruning */
+    struct _rev_msg *next;
+} REV_MSG_S;
 
-
-#if defined(DOS) && !defined(_WINDOWS)
-#define NSTATUS 25  /* how many status messages to save for review */
-#else
-#define NSTATUS 100
-#endif
-
-static char *stat_msgs[NSTATUS];
-static int   latest;
+static REV_MSG_S *latest, *firstpruned_marker;
+static int        not_right_now;
+#define PRUNEWARN "**** Some debug prior to this point has been trimmed to save memory. ****"
 
 /*----------------------------------------------------------------------
-     Review last N status messages
-
-    Args: title  -- The title of the screen
+     Review latest status messages
   -----*/
 void
-review_messages(title)
-    char  *title;
+review_messages()
 {
 #define INDENT 2
-    int             how_many_lines, how_many_bytes = 0, width, resetwidth;
-    char           *tmp_text, *cur;
-    char           *p, *q, *last_space, *cp;
-    char            save, buf[MAX_SCREEN_COLS + 1];
-    register char **e;
-    register int    i, j, k, m, line_len;
     SCROLL_S	    sargs;
+    STORE_S        *in_store = NULL, *out_store = NULL;
+    gf_io_t         gc, pc;
+    REV_MSG_S      *p, *next, *marker;
+    int             cmd, timestamps = 0, show_level = -1;
+    char            debugkeylabel[20];
+    char            timestampkeylabel[] = "NoTimestamps";
+    static struct key rev_msg_keys[] =
+       {HELP_MENU,
+	NULL_MENU,
+	{"E","Exit Viewer",{MC_EXIT,1,{'e'}},KS_EXITMODE},
+	NULL_MENU,
+	{"T",NULL,{MC_TOGGLE,1,{'t'}},KS_NONE},
+	{"D",NULL,{MC_JUMP,1,{'d'}},KS_NONE},
+	PREVPAGE_MENU,
+	NEXTPAGE_MENU,
+	PRYNTTXT_MENU,
+	WHEREIS_MENU,
+	FWDEMAIL_MENU,
+	{"S", "Save", {MC_SAVETEXT,1,{'s'}}, KS_SAVE}};
+    INST_KEY_MENU(rev_msg_keymenu, rev_msg_keys);
+#define TIMESTAMP_KEY 4
+#define DEBUG_KEY     5
 
-    e = stat_msgs;
-    width = resetwidth = max(20, ps_global->ttyo->screen_cols);
+    if(!latest)
+      return;
+    
+    do{
+	if(!(in_store = so_get(CharStar, NULL, EDIT_ACCESS)) ||
+	   !(out_store = so_get(CharStar, NULL, EDIT_ACCESS))){
+	    if(in_store)
+	      so_give(&in_store);
 
-    /* conservative estimate of space we'll use */
-    for(i = 0; i < NSTATUS; i++)
-      if(e[i] && *e[i]){
-	  line_len = strlen(e[i]);
-	  how_many_lines = line_len/(width - INDENT) + 1;
-	  how_many_bytes += (line_len + how_many_lines +
-					      (how_many_lines-1) * INDENT);
-      }
-
-    cur = tmp_text = (char *)fs_get((how_many_bytes + 1) * sizeof(char *));
-    *cur = '\0';
-
-    /* allocate strings */
-    for(k = 0, j = 0, i = latest; k < NSTATUS; k++){
-	i = (i + 1) % NSTATUS;
-	if(e[i] && *e[i]){
-	    p = q = e[i];
-	    last_space = NULL;
-	    line_len   = 0;
-	    width      = resetwidth;
-	    while(*p){
-		if(*p == TAB){
-		    last_space = p++;
-		    while(line_len < width
-			  && ((++line_len)&0x07) != 0)
-		      ;
-		}
-		else if(*p == SPACE){
-		    last_space = p++;
-		    line_len++;
-		}
-		else{
-		    p++;
-		    line_len++;
-		}
-
-		if(line_len > width){
-		    if(width != resetwidth){
-			for(m = 0; m < INDENT; m++)
-			  buf[m] = SPACE;
-			
-			cp = buf + INDENT;
-		    }
-		    else
-		      cp = buf;
-
-		    if(last_space){
-			save = *last_space;
-			*last_space = '\0';
-			strncpy(cp, q,
-				(width != resetwidth) ? sizeof(buf)-INDENT
-						      : sizeof(buf));
-			buf[sizeof(buf)-1] = '\0';
-			sstrcpy(&cur, buf);
-			sstrcpy(&cur, "\n");
-			*last_space = save;
-			q = last_space + 1;
-		    }
-		    else{
-			save = q[width];
-			q[width] = '\0';
-			strncpy(cp, q,
-				(width != resetwidth) ? sizeof(buf)-INDENT
-						      : sizeof(buf));
-			buf[sizeof(buf)-1] = '\0';
-			sstrcpy(&cur, buf);
-			sstrcpy(&cur, "\n");
-			q[width] = save;
-			q = q + width;
-		    }
-
-		    p = q;
-		    line_len = 0;
-		    last_space = NULL;
-		    width = resetwidth - 2;
-		}
-	    }
-
-	    if(*q){
-		if(width != resetwidth){
-		    for(m = 0; m < INDENT; m++)
-		      buf[m] = SPACE;
-		    
-		    cp = buf + INDENT;
-		}
-		else
-		  cp = buf;
-
-		strncpy(cp, q,
-			(width != resetwidth) ? sizeof(buf)-INDENT
-					      : sizeof(buf));
-		buf[sizeof(buf)-1] = '\0';
-		sstrcpy(&cur, buf);
-		sstrcpy(&cur, "\n");
-	    }
+	    q_status_message(SM_ORDER | SM_DING, 3, 4,
+			     "Failed allocating memory");
+	    return;
 	}
+	
+	add_review_message("Turning off new messages while reviewing", 0);
+	not_right_now = 1;
+
+	marker = next = latest->next;
+	do{
+	    p = next;
+	    next = next->next;
+	    if(p->level <= show_level){
+		if(timestamps && p && p->timestamp && p->timestamp[0]){
+		    so_puts(in_store, p->timestamp);
+		    so_puts(in_store, ": ");
+		}
+
+		if(p && p->message && p->message[0]){
+		    so_puts(in_store, p->message);
+		    so_puts(in_store, "\n");
+		}
+	    }
+	}while(next != marker);
+
+	so_seek(in_store, 0L, 0);
+	gf_filter_init();
+	gf_link_filter(gf_wrap,
+		       gf_wrap_filter_opt(ps_global->ttyo->screen_cols - 4,
+					  ps_global->ttyo->screen_cols,
+					  INDENT, 0));
+	gf_set_so_readc(&gc, in_store);
+	gf_set_so_writec(&pc, out_store);
+	gf_pipe(gc, pc);
+	gf_clear_so_writec(out_store);
+	gf_clear_so_readc(in_store);
+
+	memset(&sargs, 0, sizeof(SCROLL_S));
+	sargs.text.text     = so_text(out_store);
+	sargs.text.src      = CharStar;
+	sargs.text.desc     = "journal";
+	sargs.keys.menu     = &rev_msg_keymenu;
+	sargs.proc.tool     = journal_processor;
+	sargs.start.on      = LastPage;
+	sargs.resize_exit   = 1;
+	sargs.proc.data.p   = (void *)&show_level;
+	setbitmap(sargs.keys.bitmap);
+
+#ifdef DEBUG
+#ifdef DEBUGJOURNAL
+	sargs.jump_is_debug = 1;
+	sargs.help.title    = "HELP FOR DEBUG JOURNAL";
+	sargs.help.text     = h_debugjournal;
+	sargs.bar.title     = "REVIEW DEBUGGING";
+#else	/* !DEBUGJOURNAL */
+	clrbitn(DEBUG_KEY, sargs.keys.bitmap);
+	sargs.help.title    = "HELP FOR JOURNAL";
+	sargs.help.text     = h_journal;
+	sargs.bar.title     = "REVIEW RECENT MESSAGES";
+#endif	/* !DEBUGJOURNAL */
+#else	/* !DEBUG */
+	clrbitn(DEBUG_KEY, sargs.keys.bitmap);
+	clrbitn(TIMESTAMP_KEY, sargs.keys.bitmap);
+	sargs.help.title    = "HELP FOR JOURNAL";
+	sargs.help.text     = h_journal;
+	sargs.bar.title     = "REVIEW RECENT MESSAGES";
+#endif	/* !DEBUG */
+
+	if(timestamps)
+	  rev_msg_keys[TIMESTAMP_KEY].label = timestampkeylabel;
+	else
+	  rev_msg_keys[TIMESTAMP_KEY].label = timestampkeylabel + 2;
+
+	if(show_level >= 0)
+	  sprintf(debugkeylabel, "Debug (%d)", show_level);
+	else
+	  strncpy(debugkeylabel, "DebugView", sizeof(debugkeylabel));
+
+	rev_msg_keys[DEBUG_KEY].label = debugkeylabel;
+	KS_OSDATASET(&rev_msg_keys[DEBUG_KEY], KS_NONE);
+
+	if((cmd = scrolltool(&sargs)) == MC_TOGGLE)
+	  timestamps = !timestamps;
+
+	so_give(&in_store);
+	so_give(&out_store);
+	
+    }while(cmd != MC_EXIT);
+
+    not_right_now = 0;
+    add_review_message("Done reviewing", 0);
+}
+
+
+int
+journal_processor(cmd, msgmap, sparms)
+    int	      cmd;
+    MSGNO_S  *msgmap;
+    SCROLL_S *sparms;
+{
+    switch(cmd){
+      case MC_TOGGLE:		/* turn timestamps on or off */
+        break;
+
+      default:
+        panic("Unexpected command in journal_processor");
+	break;
     }
-
-    *cur = '\0';
-
-    memset(&sargs, 0, sizeof(SCROLL_S));
-    sargs.text.text = tmp_text;
-    sargs.text.src  = CharStar;
-    sargs.text.desc = "journal";
-    sargs.bar.title = title;
-    sargs.start.on  = LastPage;
-
-    scrolltool(&sargs);
-
-    fs_give((void **)&tmp_text);
+    
+    return(1);
 }
 
 
@@ -1003,23 +1145,194 @@ review_messages(title)
     Args: message  -- The message to add
   -----*/
 void
-add_review_message(message)
+add_review_message(message, level)
     char *message;
+    int   level;
 {
-    if(!(message && *message))
+    REV_MSG_S *new_message;
+    char      *p, *q;
+    static size_t space_used = 0;
+    size_t space_available = (ps_global->debugmem > 0) ? ps_global->debugmem
+						       : 50000;
+
+    if(not_right_now || !(message && *message))
       return;
 
-    latest = (latest + 1) % NSTATUS;
-    if(stat_msgs[latest] && strlen(stat_msgs[latest]) >= strlen(message))
-      strcpy(stat_msgs[latest], message);  /* already enough space */
-    else{
-	if(stat_msgs[latest])
-	  fs_give((void **)&stat_msgs[latest]);
+    /*
+     * Debug output can have newlines in it, so split up each newline piece
+     * by hand and make them separate messages.
+     */
+    not_right_now = 1;
+    for(p = message; *p; p = (*q) ? q+1 : q){
+	for(q = p; *q && *q != '\n'; q++)
+	  ;
 
-	stat_msgs[latest] = cpystr(message);
+	if(p == q)
+	  continue;
+
+	new_message = (REV_MSG_S *) fs_get(sizeof(*new_message));
+	memset(new_message, 0, sizeof(*new_message));
+
+	new_message->message = (char *)fs_get((q-p+1) * sizeof(char));
+	strncpy(new_message->message, p, q-p);
+	new_message->message[q-p] = '\0';
+	new_message->level   = level;
+#ifdef DEBUG
+	new_message->timestamp = cpystr(debug_time(0,1));
+#endif
+	
+	space_used += sizeof(*new_message) + (q-p+1) * sizeof(char) +
+		(new_message->timestamp ? strlen(new_message->timestamp)+1 : 0);
+	
+	if(!latest)
+	  new_message->next = new_message;
+	else{
+	    new_message->seq  = latest->seq + 1;
+	    new_message->next = latest->next;
+	    latest->next      = new_message;
+	}
+
+	latest = new_message;
+	if(space_used > space_available)
+	  prune_review_messages(&space_used, (space_available/10)*9);
+    }
+
+    not_right_now = 0;
+}
+
+
+typedef struct _steps {
+    int sixteenths;
+    int level;
+}STEP_S;
+
+static STEP_S steps[] = {
+    {4, 9},
+    {8, 9},
+    {4, 7},
+    {8, 7},
+    {4, 5},
+    {8, 5},
+    {4, 3},
+    {8, 3},
+    {4, 1},
+    {8, 1},
+    {12, 9},
+    {12, 7},
+    {12, 5},
+    {12, 3},
+    {12, 1},
+    {4, 0},
+    {8, 0},
+    {12, 0},
+    {14, 9},
+    {14, 0},
+    {15, 9},
+    {16, 9},
+    {16, 5},
+    {16, 3},
+    {16, 1},
+    {16, 0},
+    {0, 0}
+};
+
+void
+prune_review_messages(used, pruneto)
+    size_t *used;
+    size_t  pruneto;
+{
+    unsigned long highest; 
+    int           i;
+    REV_MSG_S    *new_message;
+
+    if(!used)
+      return;
+
+    highest = latest->seq;
+
+    for(i = 0; *used > pruneto && steps[i].sixteenths; i++)
+      *used -= trim_review(steps[i].sixteenths * (highest/16), steps[i].level);
+    
+    /* insert informative message if we've trimmed anything */
+    if(firstpruned_marker && latest && firstpruned_marker != latest->next){
+	new_message = (REV_MSG_S *) fs_get(sizeof(*new_message));
+	memset(new_message, 0, sizeof(*new_message));
+
+	new_message->message = cpystr(PRUNEWARN);
+#ifdef DEBUG
+	new_message->timestamp = cpystr(debug_time(0,1));
+#endif
+	new_message->seq         = firstpruned_marker->seq;
+
+	new_message->next        = firstpruned_marker->next;
+	firstpruned_marker->next = new_message;
+	firstpruned_marker       = new_message;
     }
 }
 
+
+/*
+ * Trim level 'level' and above messages out of messages with sequence
+ * numbers up through 'up_through'.
+ * Returns space recovered.
+ */
+size_t
+trim_review(up_through, level)
+    unsigned long up_through;
+    int           level;
+{
+    REV_MSG_S *p, *q;
+    size_t     space = 0;
+    int        found_firstpruned_marker = 0;
+
+    if(!latest)
+      return(0);
+
+    p = latest;
+    while((q=p->next) && q != latest && q->seq <= up_through){
+	if(!found_firstpruned_marker && q == firstpruned_marker){
+	    found_firstpruned_marker++;
+
+	    /* remove the warning message if it is here */
+	    if(q->message && !strcmp(q->message, PRUNEWARN)){
+		if(q->message)
+		  fs_give((void **) &q->message);
+		if(q->timestamp)
+		  fs_give((void **) &q->timestamp);
+		
+		p->next = q->next;
+		firstpruned_marker = p;
+		fs_give((void **) &q);
+		q = NULL;
+	    }
+	}
+
+	if(q){
+	    if(q->level >= level){	/* remove this message */
+		space += sizeof(*q) + (q->message ? strlen(q->message)+1 : 0) +
+			 (q->timestamp ? strlen(q->timestamp)+1 : 0);
+		if(q->message)
+		  fs_give((void **) &q->message);
+		if(q->timestamp)
+		  fs_give((void **) &q->timestamp);
+		
+		p->next = q->next;
+
+		/* mark where we started pruning */
+		if(!firstpruned_marker || found_firstpruned_marker){
+		    firstpruned_marker = p;
+		    found_firstpruned_marker++;
+		}
+
+		fs_give((void **) &q);
+	    }
+	    else
+	      p = p->next;
+	}
+    }
+
+    return(space);
+}
 
 
 /*----------------------------------------------------------------------
@@ -1030,9 +1343,23 @@ add_review_message(message)
 void
 end_status_review()
 {
-    for(latest = NSTATUS - 1; latest >= 0; latest--)
-      if(stat_msgs[latest])
-	fs_give((void **)&stat_msgs[latest]);
+    REV_MSG_S  *p, *next, *marker;
+
+    if(latest){
+	marker = next = latest->next;
+	do{
+	    p = next;
+	    next = next->next;
+	    if(p->message)
+	      fs_give((void **)&p->message);
+	    if(p->timestamp)
+	      fs_give((void **)&p->timestamp);
+	    
+	    fs_give((void **)&p);
+	}while(next != marker);
+    }
+
+    latest = NULL;
 }
 
 
@@ -1275,7 +1602,7 @@ gripe_newbody(ps, body, msgno, flags)
 	    
 	    if(error){
 		q_status_message1(SM_ORDER | SM_DING, 3, 4, 
-				  "Problem %s", error);
+				  "Problem %.200s", error);
 		return(-1);
 	    }
 	    else			/* fixup attachment's size */
@@ -1364,7 +1691,6 @@ ADDRESS *
 gripe_token_addr(token)
     char *token;
 {
-    int	     rv = 0;
     char    *p;
     ADDRESS *a = NULL;
 
@@ -1379,7 +1705,6 @@ gripe_token_addr(token)
 				  && ps_global->VAR_LOCAL_FULLNAME[0])
 				    ? ps_global->VAR_LOCAL_FULLNAME 
 				    : "Place to report Pine Bugs");
-	    rv = 1;
 	}
 	else if(!strcmp(token, "BUGS_ADDRESS_")){
 	    p = (ps_global->VAR_BUGS_ADDRESS
@@ -1390,7 +1715,6 @@ gripe_token_addr(token)
 				  && ps_global->VAR_BUGS_FULLNAME[0])
 				    ? ps_global->VAR_BUGS_FULLNAME 
 				    : "Place to report Pine Bugs");
-	    rv = 1;
 	}
     }
 

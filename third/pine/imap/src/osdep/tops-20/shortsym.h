@@ -10,26 +10,33 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	24 May 1995
- * Last Edited:	24 October 2000
+ * Last Edited:	28 October 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
 
 #define auth_link a_link
 #define auth_log a_log
-#define auth_md5 a_md5
 #define auth_login_client al_cli
 #define auth_login_server al_ser
+#define auth_md5 a_md5
 #define auth_md5_valid a5_val
 #define auth_md5_client a5_cli
 #define auth_md5_server a5_ser
+#define auth_pla a_pla
+#define auth_plain_valid ap_val
+#define auth_plain_client ap_cli
+#define auth_plain_server ap_ser
 #define authenticate a_auth
 #define authserver_login a_serv
 #define body_encodings bencds
 #define body_types btypes
+#define compare_csizedtext cm_szt
+#define compare_cstring cm_str
+#define compare_ulong cm_uln
 #define default_proto d_prot
 #define dummy_append d_appn
 #define dummy_canonicalize d_cano
@@ -85,6 +92,7 @@
 #define imap_expunge i_expn
 #define imap_fake i_fake
 #define imap_fast i_fast
+#define imap_fetch i_fetc
 #define imap_flag i_flag
 #define imap_flags i_flgs
 #define imap_gc i_gc
@@ -126,6 +134,7 @@
 #define imap_parse_unsolicited ip_uns
 #define imap_parse_user_flag ipu_fl
 #define imap_ping i_ping
+#define imap_reform_sequence i_rfrs
 #define imap_rename i_ren
 #define imap_reply i_rep
 #define imap_response i_rspn
@@ -138,6 +147,7 @@
 #define imap_send_slist iss_sl
 #define imap_send_spgm iss_pg
 #define imap_send_sset iss_st
+#define imap_send_sset_work iss_sw
 #define imap_setacl i_sacl
 #define imap_setquota i_sqot
 #define imap_sort i_sort
@@ -147,6 +157,7 @@
 #define imap_structure i_stru
 #define imap_subscribe i_sub
 #define imap_thread i_thrd
+#define imap_thread_work i_thrw
 #define imap_uid i_uid
 #define imap_unsubscribe i_uns
 #define imap_valid i_val
@@ -157,11 +168,6 @@
 #define mail_cdate m_cdat
 #define mail_check m_chck
 #define mail_close_full m_clos
-#define mail_compare_address mc_adr
-#define mail_compare_cstring mc_cst
-#define mail_compare_msg mc_msg
-#define mail_compare_sstring mc_sst
-#define mail_compare_ulong mc_uln
 #define mail_copy_full m_copy
 #define mail_create m_crea
 #define mail_criteria m_crit
@@ -170,6 +176,7 @@
 #define mail_date m_date
 #define mail_debug m_dbug
 #define mail_delete m_del
+#define mail_dlog m_dlog
 #define mail_elt m_elt
 #define mail_exists m_exst
 #define mail_expunge m_expn

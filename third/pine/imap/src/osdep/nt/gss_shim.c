@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	6 March 2000
- * Last Edited:	24 October 2000
+ * Last Edited:	27 November 2001
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2001 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -60,7 +60,6 @@ const gss_OID_set gss_mech_set_krb5 = oidsets+0;
 
 				/* substitute for GSS_C_NO_CREDENTIAL */
 static gss_cred_id_t gss_default_cred = NIL;
-char *krb5_defkeyname = "";	/* needed for auth_gss keytab test */
 
 /* GSSAPI import name (convert to full service principal name)
  * Accepts: pointer to return minor status
@@ -78,18 +77,26 @@ OM_uint32 gss_import_name (OM_uint32 *minor_status,
   TimeStamp expiry;
   static CredHandle gss_cred;
   char *s,tmp[MAILTMPLEN];
-  char *realm = getenv ("USERDOMAIN");
+  char realm[MAILTMPLEN];
+  HKEY key;
+  DWORD len = MAILTMPLEN;
+  FILETIME ft;
   *minor_status = 0;		/* never any minor status */
   if (!gss_default_cred &&	/* default credentials set up yet? */
-      ((major_status =		/* no, do so now */
+      ((major_status =	/* no, do so now */
 	AcquireCredentialsHandle (NIL,MICROSOFT_KERBEROS_NAME_A,
 				  SECPKG_CRED_OUTBOUND,NIL,NIL,NIL,NIL,
 				  &gss_cred,&expiry)) == SEC_E_OK))
     gss_default_cred = &gss_cred;
 				/* AcquireCredentialsHandle failed */
   if (major_status != GSS_S_COMPLETE);
-				/* can't do it if no realm */
-  else if (!realm || !*realm) major_status = GSS_S_FAILURE;
+  else if (RegOpenKeyEx		/* get realm */
+	   (HKEY_LOCAL_MACHINE,
+	    "SYSTEM\\CurrentControlSet\\Control\\Lsa\\Kerberos\\Domains",NIL,
+	    KEY_ENUMERATE_SUB_KEYS,&key) ||
+	   RegEnumKeyEx (key,0,realm,&len,NIL,NIL,NIL,&ft) ||
+	   RegCloseKey (key) || !realm || !*realm)
+    major_status = GSS_S_FAILURE;
 				/* must be the gss_nt_service_name format */
   else if (input_name_type != gss_nt_service_name)
     major_status = GSS_S_BAD_NAMETYPE;
@@ -106,7 +113,8 @@ OM_uint32 gss_import_name (OM_uint32 *minor_status,
       s = tmp + strlen (tmp);	/* prepare to append */
       *s++ = '@';		/* delimiter */
       strcpy (s,realm);		/* append realm */
-      *output_name = cpystr (tmp);/* and write the name */
+				/* and write the name */
+      *output_name = cpystr (tmp);
     }
   }
   return major_status;
@@ -492,4 +500,61 @@ OM_uint32 gss_display_name (OM_uint32 *minor_status,gss_name_t input_name,
 {
   *minor_status = 0;		/* never any minor status */
   return GSS_S_FAILURE;		/* server only */
+}
+
+/* Create a Kerberos context
+ * Accepts: pointer to return context
+ * Returns: KRB5_CC_NOMEM, always
+ */
+
+krb5_error_code krb5_init_context (krb5_context *ctx)
+{
+  return KRB5_CC_NOMEM;		/* server only */
+}
+
+
+/* Free Kerberos context
+ * Accepts: context
+ */
+
+void krb5_free_context (krb5_context ctx)
+{
+				/* never called */
+}
+
+
+/* Open Kerberos keytab
+ * Accepts: context
+ *	    pointer to return keytab
+ * Returns: KRB5_KT_NOTFOUND, always
+ */
+
+krb5_error_code krb5_kt_default (krb5_context ctx,krb5_keytab *kt)
+{
+  return KRB5_KT_NOTFOUND;	/* server only */
+}
+
+
+/* Close keytab
+ * Accepts: context
+ *	    keytab
+ */
+
+void krb5_kt_close (krb5_context ctx,krb5_keytab kt)
+{
+				/* never called */
+}
+
+
+/* Get start of keytab sequence
+ * Accepts: context
+ *	    keytab
+ *	    pointer to return cursor
+ * Returns: KRB5_KT_NOTFOUND, always
+ */
+
+krb5_error_code krb5_kt_start_seq_get (krb5_context ctx,krb5_keytab kt,
+				       krb5_kt_cursor *csr)
+{
+  return KRB5_KT_NOTFOUND;	/* server only */
 }

@@ -13,10 +13,10 @@ void
 init_debug()
 {
     char nbuf[5];
-    char newfname[MAXPATH+1], filename[MAXPATH+1];
+    char newfname[MAXPATH+1], filename[MAXPATH+1], *dfile = NULL;
     int i, fd;
 
-    if(!(debug || ps_global->debug_imap))
+    if(!(debug || ps_global->debug_imap || ps_global->debug_tcp))
       return;
 
     for(i = ps_global->debug_nfiles - 1; i > 0; i--){
@@ -36,6 +36,7 @@ init_debug()
     strcat(filename, "1");
 
     debugfile = NULL;
+    dfile = filename;
     if((fd = open(filename, O_TRUNC|O_RDWR|O_CREAT, 0600)) >= 0)
       debugfile = fdopen(fd, "w+");
 
@@ -49,13 +50,23 @@ init_debug()
 	     * If no debug files are asked for, make filename a tempfile
 	     * to be used for a record should pine later crash...
 	     */
-	    if(debug < 9 && !ps_global->debug_flush && ps_global->debug_imap<4)
-	      unlink(filename);
+	    if(debug < 9 && !ps_global->debug_flush && ps_global->debug_imap<4){
+		unlink(filename);
+		dfile = NULL;
+	    }
 	}
 
-	dprint(0, (debugfile,
-  "Debug output of the Pine program (debug=%d debug_imap=%d). Version %s\n%s\n",
-	       debug, ps_global->debug_imap, pine_version, ctime(&now)));
+	dprint(0, (debugfile, "Debug output of the Pine program (debug=%d debug_imap=%d). Version %s (%s)\n%s\n",
+	       debug, ps_global->debug_imap, pine_version, SYSTYPE,
+	       ctime(&now)));
+
+	if(dfile && (debug > DEFAULT_DEBUG ||
+		     ps_global->debug_imap > 0 ||
+		     ps_global->debug_tcp > 0)){
+	    sprintf(newfname, "Debug file: %s (level=%d imap=%d)", dfile,
+		    debug, ps_global->debug_imap);
+	    init_error(ps_global, SM_ORDER, 3, 5, newfname);
+	}
     }
 }
 
@@ -151,10 +162,11 @@ FILE *debug_fp;
     static int ok = 1;
     long filesize;
 
-    if(debug == DEFAULT_DEBUG
+    if(debug <= DEFAULT_DEBUG
        && !ps_global->debug_flush
+       && !ps_global->debug_tcp
        && !ps_global->debug_timestamp
-       && ps_global->debug_imap < 2
+       && !ps_global->debug_imap
        && ok
        && --counter <= 0){
 	if((filesize = fp_file_size(debug_fp)) != -1L)
@@ -171,7 +183,7 @@ FILE *debug_fp;
     }
 
     if(ok && ps_global->debug_timestamp)
-      fprintf(debug_fp, "\n%s\n", debug_time(0));
+      fprintf(debug_fp, "\n%s\n", debug_time(0, ps_global->debug_timestamp));
 
     return(ok);
 }
@@ -183,8 +195,9 @@ FILE *debug_fp;
  * If include_date is set the date is appended.
  */
 char *
-debug_time(include_date)
+debug_time(include_date, include_subseconds)
     int include_date;
+    int include_subseconds;
 {
     time_t          t;
     struct tm      *tm_now;

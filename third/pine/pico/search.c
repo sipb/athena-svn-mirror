@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: search.c,v 1.1.1.1 2001-02-19 07:04:52 ghudson Exp $";
+static char rcsid[] = "$Id: search.c,v 1.1.1.2 2003-02-12 08:01:41 ghudson Exp $";
 #endif
 /*
  * Program:	Searching routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: search.c,v 1.1.1.1 2001-02-19 07:04:52 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -157,7 +157,7 @@ forwsearch(f, n)
 	      pico_help(SearchHelpText, "Help for Searching", 1);
 
 	  case (CTRL|'L'):			/* redraw requested */
-	    refresh(FALSE, 1);
+	    pico_refresh(FALSE, 1);
 	    update();
 	    break;
 
@@ -312,7 +312,7 @@ int  *wrapt;
   register         int status;
   char             lpat[NPAT], origpat[NPAT];     /* case sensitive pattern */
   EXTRAKEYS        menu_pat[2];
-  int              repl_all = FALSE, unhl = TRUE;
+  int              repl_all = FALSE;
   char             prompt[2*NLINE+32];
 
     forscan(wrapt, defpat, NULL, 0, PTBEG);    /* go to word to be replaced */
@@ -389,7 +389,7 @@ int  *wrapt;
 	      pico_help(SearchHelpText, "Help for Searching", 1);
 
 	  case (CTRL|'L'):			/* redraw requested */
-	    refresh(FALSE, 1);
+	    pico_refresh(FALSE, 1);
 	    update();
 	    break;
 
@@ -442,7 +442,7 @@ char *repl;
 {
   register         int status = 0;
   char             prompt[NLINE], realpat[NPAT];
-  int              wrapt, wraplatch = 0, n = 0;
+  int              wrapt, n = 0;
   LINE		  *stop_line   = curwp->w_dotp;
   int		   stop_offset = curwp->w_doto;
 
@@ -573,7 +573,6 @@ int   repl_mode;
 readnumpat(prompt)
 char *prompt;
 {
-    register int s;
     int		 i, n;
     char	 tpat[NPAT+20];
     EXTRAKEYS    menu_pat[2];
@@ -839,4 +838,22 @@ int maxlength;	/* maximum chars in destination */
 	}
 	*deststr = '\0';
 	return(TRUE);
+}
+
+
+
+/* 
+ * chword() - change the given word, wp, pointed to by the curwp->w_dot 
+ *            pointers to the word in cb
+ */
+void
+chword(wb, cb)
+  char *wb;					/* word buffer */
+  char *cb;					/* changed buffer */
+{
+    ldelete((long) strlen(wb), NULL);		/* not saved in kill buffer */
+    while(*cb != '\0')
+      linsert(1, *cb++);
+
+    curwp->w_flag |= WFEDIT;
 }

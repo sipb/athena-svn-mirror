@@ -1,4 +1,4 @@
-# $Id: makefile.uw2,v 1.1.1.1 2001-02-19 07:02:11 ghudson Exp $
+# $Id: makefile.uw2,v 1.1.1.2 2003-02-12 07:58:33 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -44,7 +44,7 @@ LIBCMD=		ar
 LIBARGS=	ru
 RANLIB=		true
 
-LIBS=		$(EXTRALIBES) -ltermlib
+LIBS=		$(EXTRALDFLAGS) -ltermlib
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \
 		composer.o display.o file.o fileio.o line.o pico_os.o \

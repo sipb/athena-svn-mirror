@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.1 2001-02-19 07:05:26 ghudson Exp $";
+static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.2 2003-02-12 08:01:30 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.1 2001-02-19 07:05:26 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -64,8 +64,6 @@ typedef struct takeaddr_line {
     char                 *comment;
     struct takeaddr_line *next, *prev;
 } TA_S;
-
-typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
 
 typedef struct takeaddress_screen {
     TakeAddrScreenMode mode;
@@ -111,6 +109,9 @@ TA_S          *next_sel_taline PROTO((TA_S *));
 TA_S          *next_taline PROTO((TA_S *));
 TA_S          *pre_sel_taline PROTO((TA_S *));
 TA_S          *pre_taline PROTO((TA_S *));
+LINES_TO_TAKE *new_ltline PROTO((LINES_TO_TAKE **));
+void           free_ltline PROTO((LINES_TO_TAKE **));
+int            convert_ta_to_lines PROTO((TA_S *, LINES_TO_TAKE **));
 int            process_vcard_atts PROTO((MAILSTREAM *, long, BODY *, BODY *,
 					 char *, TA_S **));
 void           switch_to_last_comma_first PROTO((char *, char *, size_t));
@@ -220,7 +221,7 @@ edit_nickname(abook, dl, command_line, orig, prompt, this_help,
 	    }
 
             q_status_message1(SM_ORDER, 0, 4,
-		    "Already an entry with nickname \"%s\"", edit_buf);
+		    "Already an entry with nickname \"%.200s\"", edit_buf);
 	}
 
 	if(rc == 3)
@@ -559,7 +560,7 @@ take_to_addrbooks(new_entries, nick, fullname, addr, fcc, comment, command_line,
        (pab->address_book->rd &&
 	pab->address_book->rd->flags & REM_OUTOFDATE)){
 	q_status_message3(SM_ORDER, 0, 4,
-      "Address book%s%s has changed: %stry again",
+      "Address book%.200s%.200s has changed: %.200stry again",
       (as.n_addrbk > 1 && pab->nickname) ? " " : "",
       (as.n_addrbk > 1 && pab->nickname) ? pab->nickname : "",
       (ps_global->remote_abook_validity == -1) ? "resynchronize and " : "");
@@ -623,6 +624,7 @@ take_to_addrbooks(new_entries, nick, fullname, addr, fcc, comment, command_line,
 get_nick:
     abe = NULL;
     old_tag = NotSet;
+    entry_num = NO_NEXT;
 
     /*----- nickname ------*/
     sprintf(prompt,
@@ -636,7 +638,7 @@ get_nick:
 	abe = adrbk_lookup_by_nick(abook, new_nickname, &entry_num);
 	if(!abe){  /* this shouldn't happen */
 	    q_status_message1(SM_ORDER, 0, 4,
-		"Already an entry %s in address book!",
+		"Already an entry %.200s in address book!",
 		new_nickname);
 	    goto take_to_addrbooks_cancel;
 	}
@@ -856,7 +858,7 @@ get_nick:
 
 	if(!new_entries || !*new_entries){
 	    q_status_message1(SM_ORDER, 0, 4,
-		     "All of the addresses are already included in \"%s\"",
+		     "All of the addresses are already included in \"%.200s\"",
 		     new_nickname);
 	    free_ae(&abe_copy);
 	    if(tas && *tas){
@@ -1054,7 +1056,8 @@ use_this_addrbook(command_line, cmd)
 	int flags;
 
 	if(!pab)
-          q_status_message1(SM_ORDER, 3, 4, "No addressbook \"%s\"", addrbook);
+          q_status_message1(SM_ORDER, 3, 4, "No addressbook \"%.200s\"",
+			    addrbook);
 
 	if(rc == 3)
           help = (help == NO_HELP ? h_oe_chooseabook : NO_HELP);
@@ -1232,7 +1235,7 @@ takeaddr_screen(ps, ta_list, how_many_selected, mode, tas, command)
     screen.mode    = mode;
 
     if(ta_list == NULL){
-	q_status_message1(SM_INFO, 0, 2, "No addresses to %s, cancelled",
+	q_status_message1(SM_INFO, 0, 2, "No addresses to %.200s, cancelled",
 			  command);
 	return 1;
     }
@@ -1287,7 +1290,8 @@ takeaddr_screen(ps, ta_list, how_many_selected, mode, tas, command)
 				    (screen.mode == ListMode) ? "List"
 							      : "Single");
             set_titlebar(tbuf, ps->mail_stream, ps->context_current,
-                             ps->cur_folder, ps->msgmap, 1, FolderName, 0, 0);
+                             ps->cur_folder, ps->msgmap, 1, FolderName, 0, 0,
+			     NULL);
 	    ps->mangled_header = 0;
 	}
 
@@ -2256,6 +2260,28 @@ free_taline(p)
 }
 
 
+void
+free_ltline(p)
+    LINES_TO_TAKE **p;
+{
+    if(p){
+	if((*p)->printval)
+	  fs_give((void **)&(*p)->printval);
+
+	if((*p)->exportval)
+	  fs_give((void **)&(*p)->exportval);
+
+	if((*p)->prev)
+	  (*p)->prev->next = (*p)->next;
+
+	if((*p)->next)
+	  (*p)->next->prev = (*p)->prev;
+
+	fs_give((void **)p);
+    }
+}
+
+
 /*
  * Return the first selectable TakeAddr line.
  *
@@ -2477,7 +2503,7 @@ cmd_take_addr(ps, msgmap, agg)
     long      i;
     ENVELOPE *env;
     int       how_many_selected,
-	      added,
+	      added, rtype,
 	      we_cancel,
 	      special_processing = 0,
 	      free_talines = 1,
@@ -2495,26 +2521,50 @@ cmd_take_addr(ps, msgmap, agg)
     if(agg && !pseudo_selected(msgmap))
       return;
 
-    if(mn_total_cur(msgmap) == 1)
+    if(mn_get_total(msgmap) > 0 && mn_total_cur(msgmap) == 1)
       special_processing = 1;
 
     if(agg)
       select_froms = 1;
     
-    /* Ask user if they want to do a Take Pattern or a Take Addr */
+    /* Ask user what kind of Take they want to do */
     if(!agg && F_ON(F_ENABLE_ROLE_TAKE, ps)){
-	int rtype, flags;
 
-	rtype = rule_setup_type(ps, 1, "Take to : ");
+	rtype = rule_setup_type(ps,
+				RS_RULES |
+				  ((mn_get_total(msgmap) > 0)
+				    ? (F_ON(F_ENABLE_TAKE_EXPORT, ps)
+				       ? (RS_INCADDR | RS_INCEXP)
+				       : RS_INCADDR)
+				    : RS_NONE),
+				"Take to : ");
 
 	switch(rtype){
 	  case 'a':
+	  case 'e':
+	  case 'Z':
 	    break;
 
 	  default:
 	    role_take(ps, msgmap, rtype);
 	    return;
 	}
+    }
+    else if(F_ON(F_ENABLE_TAKE_EXPORT, ps) && mn_get_total(msgmap) > 0)
+      rtype = rule_setup_type(ps, RS_INCADDR | RS_INCEXP, "Take to : ");
+    else
+      rtype = 'a';
+
+    if(rtype == 'x' || rtype == 'Z'){
+	if(rtype == 'x')
+	  cmd_cancelled(NULL);
+	else if(rtype == 'Z')
+	  q_status_message(SM_ORDER | SM_DING, 3, 5,
+			  "Try turning on color with the Setup/Kolor command.");
+	if(agg)
+	  restore_selected(msgmap);
+
+	return;
     }
 
     ps->mangled_footer = 1;
@@ -2543,7 +2593,7 @@ cmd_take_addr(ps, msgmap, agg)
 				    body, body, NULL, &current);
     }
 
-    if(!agg && added > 1){
+    if(!agg && added > 1 && rtype == 'a'){
 	char prompt[200];
 	int            command_line = -FOOTER_ROWS(ps);
 
@@ -2696,10 +2746,32 @@ cmd_take_addr(ps, msgmap, agg)
     if(we_cancel)
       cancel_busy_alarm(-1);
 
-    (void)takeaddr_screen(ps, current, how_many_selected,
-			  agg ? ListMode : SingleMode, NULL, "take");
-    
-    free_talines = 0;
+    if(rtype == 'e'){
+	LINES_TO_TAKE *lines_to_take = NULL, *lt;
+
+	added = convert_ta_to_lines(current, &lines_to_take);
+
+	if(added){
+	    while(lines_to_take && lines_to_take->prev)
+	      lines_to_take = lines_to_take->prev;
+
+	    take_to_export(ps, lines_to_take);
+	}
+	else
+	  q_status_message(SM_ORDER, 3, 4, "Can't find anything to export");
+
+	while(lines_to_take){
+	    lt = lines_to_take->next;
+	    free_ltline(&lines_to_take);
+	    lines_to_take = lt;
+	}
+    }
+    else{
+	(void)takeaddr_screen(ps, current, how_many_selected,
+			      agg ? ListMode : SingleMode, NULL, "take");
+	
+	free_talines = 0;
+    }
 
 doneskee:
     env_for_pico_callback   = NULL;
@@ -2717,6 +2789,8 @@ doneskee:
 	    current = ctmp;
 	}
     }
+
+    ps->mangled_screen = 1;
 
     if(agg)
       restore_selected(msgmap);
@@ -2867,6 +2941,129 @@ take_this_one_entry(ps, tasp, abook, cur_line)
     }
     else
       q_status_message(SM_ORDER, 0, 4, "Nothing to save, cancelled");
+}
+
+
+int
+convert_ta_to_lines(ta_list, old_current)
+    TA_S           *ta_list;
+    LINES_TO_TAKE **old_current;
+{
+    ADDRESS       *a;
+    TA_S          *ta;
+    LINES_TO_TAKE *new_current;
+    char          *exportval, *printval;
+    int            ret = 0;
+
+    for(ta = first_sel_taline(ta_list);
+	ta;
+	ta = next_sel_taline(ta)){
+	if(ta->skip_it)
+	  continue;
+	
+	if(ta->frwrded){
+	    if(ta->fullname)
+	      fs_give((void **)&ta->fullname);
+	    if(ta->fcc)
+	      fs_give((void **)&ta->fcc);
+	    if(ta->comment)
+	      fs_give((void **)&ta->comment);
+	    if(ta->nickname)
+	      fs_give((void **)&ta->nickname);
+	}
+	else if(ta->addr && ta->addr->host && ta->addr->host[0] == '.')
+	  ta->skip_it = 1;
+
+	if(ta->frwrded){
+	    for(a = ta->addr; a; a = a->next){
+		ADDRESS *next_addr;
+
+		if(a->host && a->host[0] == '.')
+		  continue;
+
+		next_addr = a->next;
+		a->next = NULL;
+
+		exportval = cpystr(simple_addr_string(a, tmp_20k_buf,
+						      SIZEOF_20KBUF));
+		if(!exportval || !exportval[0]){
+		    if(exportval)
+		      fs_give((void **)&exportval);
+		    
+		    a->next = next_addr;
+		    continue;
+		}
+
+		printval = addr_list_string(a, NULL, 0, 0);
+		if(!printval || !printval[0]){
+		    if(printval)
+		      fs_give((void **)&printval);
+		    
+		    printval = cpystr(exportval);
+		}
+	    
+		new_current = new_ltline(old_current);
+		new_current->flags = LT_NONE;
+
+		new_current->printval = printval;
+		new_current->exportval = exportval;
+		a->next = next_addr;
+		ret++;
+	    }
+	}
+	else{
+	    if(ta->addr){
+		exportval = cpystr(simple_addr_string(ta->addr, tmp_20k_buf,
+						      SIZEOF_20KBUF));
+		if(exportval && exportval[0]){
+		    new_current = new_ltline(old_current);
+		    new_current->flags = LT_NONE;
+
+		    new_current->exportval = exportval;
+
+		    if(ta->strvalue && ta->strvalue[0])
+		      new_current->printval = cpystr(ta->strvalue);
+		    else
+		      new_current->printval = cpystr(new_current->exportval);
+
+		    ret++;
+		}
+		else if(exportval)
+		  fs_give((void **)&exportval);
+	    }
+	}
+    }
+
+    return(ret);
+}
+
+
+/*
+ * new_ltline - create new LINES_TO_TAKE, zero it out,
+ *                and insert it after current.
+ *                NOTE current gets set to the new current.
+ */
+LINES_TO_TAKE *
+new_ltline(current)
+    LINES_TO_TAKE **current;
+{
+    LINES_TO_TAKE *p;
+
+    p = (LINES_TO_TAKE *)fs_get(sizeof(LINES_TO_TAKE));
+    memset((void *)p, 0, sizeof(LINES_TO_TAKE));
+    if(current){
+	if(*current){
+	    p->next	     = (*current)->next;
+	    (*current)->next = p;
+	    p->prev	     = *current;
+	    if(p->next)
+	      p->next->prev = p;
+	}
+
+	*current = p;
+    }
+
+    return(p);
 }
 
 
@@ -3488,7 +3685,7 @@ process_vcard_atts(stream, msgno, root, body, partnum, ta_list)
 			    escmiddle ? " " : "",
 			    escmiddle ? escmiddle : "");
 
-		    encoded = rfc1522_encode(tmp_20k_buf, SIZEOF_20KBUF,
+		    encoded = rfc1522_encode(tmp_20k_buf, SIZEOF_20KBUF-10000,
 					     (unsigned char *)tmp_20k_buf+10000,
 			(altcharset && *altcharset) ? altcharset
 						    : (charset && *charset)
@@ -3755,7 +3952,7 @@ take_without_edit(ta_list, num_in_list, command_line, tas, cmd)
 	    }
 	    else{
 		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				 "Error replacing entry in %s: %s",
+				 "Error replacing entry in %.200s: %.200s",
 				 pab_dst->nickname,
 				 error_description(errno));
 		err++;
@@ -3904,7 +4101,7 @@ take_without_edit(ta_list, num_in_list, command_line, tas, cmd)
 
 	if(rc != 0){
 	    q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			      "Error saving: %s",
+			      "Error saving: %.200s",
 			      error_description(errno));
 	    err++;
 	    goto get_out;
@@ -3960,7 +4157,7 @@ get_out:
 		sizeof(capcmd)-2, cmd+1);
 	if(need_write)
 	  q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			   "%s only partially completed", capcmd);
+			   "%.200s only partially completed", capcmd);
 	else
 	  cmd_cancelled(capcmd);
     }
@@ -4626,7 +4823,6 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
 }
 
 
-
 /*
  * Get the next line of the object pointed to by source.
  * Skips empty lines.
@@ -5135,7 +5331,7 @@ save_ldap_entry(ps, e, save)
 		  fs_give((void **)&addr->personal);
 
 		sprintf(buf,
-	       "%s%.100s /base=%.100s/scope=base/cust=(objectclass=*)%s%.100s",
+	       "%s%.100s /base=%.500s/scope=base/cust=(objectclass=*)%s%.100s",
 			RUN_LDAP,
 			e->serv,
 			edn,

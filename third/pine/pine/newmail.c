@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: newmail.c,v 1.1.1.1 2001-02-19 07:05:22 ghudson Exp $";
+static char rcsid[] = "$Id: newmail.c,v 1.1.1.2 2003-02-12 08:01:28 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: newmail.c,v 1.1.1.1 2001-02-19 07:05:22 ghudson Exp 
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -92,7 +92,6 @@ new_mail(force, time_for_check_point, flags)
     time_t        now;
     long          n, rv = 0;
     MAILSTREAM   *stream;
-    struct variable *vars = ps_global->vars;
     register struct pine *pine_state;
     int           checknow = 0;
 
@@ -105,6 +104,9 @@ new_mail(force, time_for_check_point, flags)
 
     if(time_for_check_point == 0)
       adrbk_maintenance();
+
+    if(pine_state->need_to_rethread)
+      force = 1;
 
     if(!force && pine_state->unsorted_newmail)
       force = !(flags & NM_DEFER_SORT);
@@ -208,24 +210,22 @@ new_mail(force, time_for_check_point, flags)
 	  fixup_flags(pine_state->mail_stream, pine_state->msgmap,
 		    pine_state->new_mail_count);
 
-	n = any_lflagged(pine_state->msgmap, MN_EXLD);
-	if(pine_state->new_mail_count){
-	    process_filter_patterns(pine_state->mail_stream,
-				    pine_state->msgmap,
-				    ps_global->new_mail_count);
-	    if((n -= any_lflagged(pine_state->msgmap, MN_EXLD)) < 0)
-	      pine_state->new_mail_count += n;
-	}
+	if(pine_state->new_mail_count)
+	  process_filter_patterns(pine_state->mail_stream,
+				  pine_state->msgmap,
+				  ps_global->new_mail_count);
 
 	/*
 	 * Lastly, worry about sorting if we got something new, otherwise
 	 * it was taken care of inside mm_expunge...
 	 */
 	if((pine_state->new_mail_count > 0L
-	    || pine_state->unsorted_newmail)
+	    || pine_state->unsorted_newmail
+	    || pine_state->need_to_rethread)
 	   && !((flags & NM_DEFER_SORT)
 		|| any_lflagged(pine_state->msgmap, MN_HIDE)))
-	  refresh_sort(pine_state->msgmap, (flags & NM_STATUS_MSG));
+	  refresh_sort(pine_state->msgmap,
+		       (flags & NM_STATUS_MSG) ? SRT_VRB : SRT_NON);
 	else if(pine_state->new_mail_count > 0L)
 	  pine_state->unsorted_newmail = 1;
 
@@ -246,6 +246,9 @@ new_mail(force, time_for_check_point, flags)
 			 mailbox_mail_since_command, n);
 	    }
         }
+
+	if(flags & NM_STATUS_MSG)
+	  pine_state->mail_box_changed = 0;
     }
 
     if(pine_state->inbox_changed
@@ -261,19 +264,15 @@ new_mail(force, time_for_check_point, flags)
 	fixup_flags(pine_state->inbox_stream, pine_state->inbox_msgmap,
 		    pine_state->inbox_new_mail_count);
 
-	n = any_lflagged(pine_state->inbox_msgmap, MN_EXLD);
-	if(pine_state->inbox_new_mail_count){
-	    process_filter_patterns(pine_state->inbox_stream,
-				    pine_state->inbox_msgmap,
-				    pine_state->inbox_new_mail_count);
-	    if((n -= any_lflagged(pine_state->inbox_msgmap, MN_EXLD)) < 0)
-	      pine_state->inbox_new_mail_count += n;
-	}
+	if(pine_state->inbox_new_mail_count)
+	  process_filter_patterns(pine_state->inbox_stream,
+				  pine_state->inbox_msgmap,
+				  pine_state->inbox_new_mail_count);
 
         if(pine_state->inbox_new_mail_count > 0) {
             inbox_mail_since_command       += pine_state->inbox_new_mail_count;
 	    rv                             += pine_state->inbox_new_mail_count;
-            ps_global->inbox_new_mail_count = 0;
+            ps_global->inbox_new_mail_count   = 0L;
 
 	    if(flags & NM_STATUS_MSG){
 		for(n = pine_state->inbox_stream->nmsgs; n > 1L; n--)
@@ -285,13 +284,12 @@ new_mail(force, time_for_check_point, flags)
 			    inbox_mail_since_command, n);
 	    }
         }
+
+	if(flags & NM_STATUS_MSG)
+	  pine_state->inbox_changed = 0;
     }
 
     rv += pine_state->expunge_count;
-    if(flags & NM_STATUS_MSG){
-	pine_state->inbox_changed    = 0;
-	pine_state->mail_box_changed = 0;
-    }
 
     dprint(6, (debugfile, "******** new mail returning %ld  ********\n", 
 	       rv ? rv : -1));
@@ -318,7 +316,7 @@ new_mail_mess(stream, folder, number, max_num)
      char       *folder;
 {
     ENVELOPE	*e;
-    char	*subject = NULL, *from = NULL, tmp[MAILTMPLEN],
+    char	*subject = NULL, *from = NULL, tmp[MAILTMPLEN+1],
 		 intro[MAX_SCREEN_COLS+1], subj_leadin[MAILTMPLEN];
     static char *carray[] = { "regarding",
 				"concerning",
@@ -338,8 +336,12 @@ new_mail_mess(stream, folder, number, max_num)
 
     if(e && e->from){
         if(e->from->personal && e->from->personal[0]){
-	    /* "75" gets us the first valid MIME3 chunk */
-	    sprintf(tmp, "%.75s", e->from->personal);
+	    /*
+	     * The reason we use so many characters for tmp is because we
+	     * may have multiple MIME3 chunks and we don't want to truncate
+	     * in the middle of one of them before decoding.
+	     */
+	    sprintf(tmp, "%.*s", MAILTMPLEN, e->from->personal);
  	    from = cpystr((char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
  						  SIZEOF_20KBUF, tmp, NULL));
  	}
@@ -354,10 +356,11 @@ new_mail_mess(stream, folder, number, max_num)
 
     if(number <= 1L) {
         if(e && e->subject && e->subject[0]){
- 	    sprintf(tmp, "%.75s", e->subject);
+ 	    sprintf(tmp, "%.*s", MAILTMPLEN, e->subject);
  	    subject = cpystr((char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
  						     SIZEOF_20KBUF, tmp, NULL));
 	}
+
 	sprintf(subj_leadin, " %s ", carray[(unsigned)random()%12]);
         if(!from)
           subj_leadin[1] = toupper((unsigned char)subj_leadin[1]);
@@ -383,7 +386,7 @@ new_mail_mess(stream, folder, number, max_num)
 	  sprintf(intro, "Mail saved to folder \"%.80s\"", folder);
 	
 	if((fl=strlen(folder)) > 10 &&
-	   (tot=strlen(intro) + strlen(from) + strlen(subject)) >
+	   (tot=strlen(intro) + strlen(from ? from : "") + strlen(subject)) >
 					   ps_global->ttyo->screen_cols - 2){
 	    newfl = max(10, fl-(tot-(ps_global->ttyo->screen_cols - 2)));
 	    if(number > 1)
@@ -396,7 +399,7 @@ new_mail_mess(stream, folder, number, max_num)
     }
 
     q_status_message7(SM_ASYNC | SM_DING, 0, 60,
- 		      "%s%s%s%s%s%s%s", intro,
+ 		      "%s%s%s%.80s%s%.80s%s", intro,
  		      from ? ((number > 1L) ? " Most recent f" : " F") : "",
  		      from ? "rom " : "",
  		      from ? from : "",
@@ -408,7 +411,7 @@ new_mail_mess(stream, folder, number, max_num)
  		      (number <= 1L) ? (subject[0] ? "" : "ith no subject")
 				     : "");
 
-    sprintf(tmp_20k_buf, "%s%s%s%s", intro,
+    sprintf(tmp_20k_buf, "%s%s%s%.80s", intro,
 	    from ? ((number > 1L) ? " Most recent f" : " F") : "",
 	    from ? "rom " : "",
 	    from ? from : "");
@@ -453,7 +456,11 @@ fixup_flags(stream, msgmap, new_msgs)
 	    for(i = 1L; i <= mn_get_total(msgmap); i++)
 	      set_lflag(stream, msgmap, i, MN_HIDE, 0);
 
-	    mn_set_cur(msgmap, mn_get_total(msgmap));
+	    mn_set_cur(msgmap, THREADING()
+				 ? first_sorted_flagged(F_NONE, stream, 0L,
+				               (THREADING() ? 0 : FSF_SKIP_CHID)
+					       | FSF_LAST)
+				 : mn_get_total(msgmap));
 	}
 	else if(any_lflagged(msgmap, MN_HIDE)){
 	    /*
@@ -462,13 +469,13 @@ fixup_flags(stream, msgmap, new_msgs)
 	     * that's not...
 	     */
 	    for(i = mn_get_cur(msgmap); i <= mn_get_total(msgmap); i++)
-	      if(!get_lflag(stream, msgmap, i, MN_HIDE)){
+	      if(!msgline_hidden(stream, msgmap, i, 0)){
 		  mn_set_cur(msgmap, i);
 		  break;
 	      }
 
 	    for(i = mn_get_cur(msgmap); i > 0L; i--)
-	      if(!get_lflag(stream, msgmap, i, MN_HIDE)){
+	      if(!msgline_hidden(stream, msgmap, i, 0)){
 		  mn_set_cur(msgmap, i);
 		  break;
 	      }
@@ -507,8 +514,6 @@ check_point(timing, flags)
     int     freq, tm;
     long    adj_cca;
     long    tmp;
-    COLOR_PAIR *lastc = NULL, *newc;
-    struct variable *vars = ps_global->vars;
 #ifdef	DEBUG
     time_t  now;
 #endif
@@ -667,7 +672,7 @@ streams_died()
     }
     if(rv == 1) 
       q_status_message1(SM_ORDER | SM_DING, 3, 6,
-                        "MAIL FOLDER \"%s\" CLOSED DUE TO ACCESS ERROR",
+                        "MAIL FOLDER \"%.200s\" CLOSED DUE TO ACCESS ERROR",
                         pretty_fn(inbox ? ps_global->inbox_name
 				  	: ps_global->cur_folder));
     return(rv);

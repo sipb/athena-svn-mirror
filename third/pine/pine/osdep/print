@@ -14,6 +14,7 @@
 
 
 static char *trailer;  /* so both open and close_printer can see it */
+static int   ansi_off;
 
 /*----------------------------------------------------------------------
        Open the printer
@@ -33,7 +34,7 @@ open_printer(desc)
     char command[201], prompt[200];
     int  cmd, rc, just_one;
     char *p, *init, *nick;
-    char aname[100];
+    char aname[100], wname[100];
     char *printer;
     int	 done = 0, i, lastprinter, cur_printer = 0;
     HelpType help;
@@ -217,18 +218,32 @@ open_printer(desc)
     ps_global->print = (PRINT_S *)fs_get(sizeof(PRINT_S));
     memset(ps_global->print, 0, sizeof(PRINT_S));
 
-    strcat(strcpy(aname, ANSI_PRINTER), "-no-formfeed");
+    strncat(strncpy(aname, ANSI_PRINTER, 50), "-no-formfeed", 30);
+    strncat(strncpy(wname, WYSE_PRINTER, 50), "-no-formfeed", 30);
     if(strucmp(command, ANSI_PRINTER) == 0
-       || strucmp(command, aname) == 0){
-        /*----------- Printer attached to ansi device ---------*/
+       || strucmp(command, aname) == 0
+       || strucmp(command, WYSE_PRINTER) == 0
+       || strucmp(command, wname) == 0){
+        /*----------- Attached printer ---------*/
         q_status_message(SM_ORDER, 0, 9,
 	    "Printing to attached desktop printer...");
         display_message('x');
 	xonxoff_proc(1);			/* make sure XON/XOFF used */
 	crlf_proc(1);				/* AND LF->CR xlation */
-        fputs("\033[5i", stdout);
+	if(strucmp(command, ANSI_PRINTER) == 0
+	   || strucmp(command, aname) == 0){
+	    fputs("\033[5i", stdout);
+	    ansi_off = 1;
+	}
+	else{
+	    ansi_off = 0;
+	    printf("%c", 18); /* aux on for wyse60,
+			         Chuck Everett <ceverett@odessa.edu> */
+	}
+
         ps_global->print->fp = stdout;
-        if(strucmp(command, ANSI_PRINTER) == 0){
+        if(strucmp(command, ANSI_PRINTER) == 0
+	   || strucmp(command, WYSE_PRINTER) == 0){
 	    /* put formfeed at the end of the trailer string */
 	    if(trailer){
 		int len = strlen(trailer);
@@ -303,7 +318,11 @@ close_printer()
     }
 
     if(ps_global->print->fp == stdout) {
-        fputs("\033[4i", stdout);
+	if(ansi_off)
+          fputs("\033[4i", stdout);
+	else
+	  printf("%c", 20); /* aux off for wyse60 */
+
         fflush(stdout);
 	if(F_OFF(F_PRESERVE_START_STOP, ps_global))
 	  xonxoff_proc(0);			/* turn off XON/XOFF */

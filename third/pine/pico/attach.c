@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: attach.c,v 1.1.1.1 2001-02-19 07:04:44 ghudson Exp $";
+static char rcsid[] = "$Id: attach.c,v 1.1.1.2 2003-02-12 08:01:38 ghudson Exp $";
 #endif
 /*
  * Program:	Routines to support attachments in the Pine composer 
@@ -121,7 +121,7 @@ char *fn, *sz, *cmnt;
 		    free_pico_state(saved_state);
 		}
 
-		refresh(FALSE, 1);
+		pico_refresh(FALSE, 1);
 		update();
 		continue;
 	    }
@@ -209,7 +209,7 @@ char *fn, *sz, *cmnt;
 	      else{                           /* trouble */
 		*fn = '\0';
 		AttachCancel(fn);
-		refresh(FALSE,1);
+		pico_refresh(FALSE,1);
 		update();
 		emlwrite("\007File name too BIG, cannot select!", NULL);
 	        sleep(3);
@@ -220,7 +220,7 @@ char *fn, *sz, *cmnt;
 	    else{
 	      *fn = '\0';
 	      AttachCancel(fn);
-	      refresh(FALSE, 1);
+	      pico_refresh(FALSE, 1);
 	      update();
 	      emlwrite("\007File name too big, cannot select!", NULL);         
 	      sleep(3);
@@ -229,7 +229,7 @@ char *fn, *sz, *cmnt;
 	    /* fall thru to clean up the screen */
 
 	  case (CTRL|'L'):
-	    refresh(FALSE, 1);
+	    pico_refresh(FALSE, 1);
 	    update();
 	    continue;
 
@@ -252,7 +252,7 @@ char *fn, *sz, *cmnt;
 		if(upload){
 		    fixpath(fn, NLINE);		/* names relative to ~ */
 		    status = AttachUpload(fn, sz);
-		    refresh(FALSE, 1);
+		    pico_refresh(FALSE, 1);
 		    update();
 		    if(!status){
 			i = 2;			/* keep prompting for file */

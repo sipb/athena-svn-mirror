@@ -495,7 +495,7 @@ pre_screen_config_opt_enter(string, field_len, prompt, escape_list, help, flags)
      int	*flags;
 {
 #ifdef _WINDOWS
-    mswin_setwindow(NULL, NULL, NULL, NULL, NULL);
+    mswin_setwindow(NULL, NULL, NULL, NULL, NULL, NULL);
     return(win_dialog_opt_enter(string, field_len, prompt, escape_list,
 				help, flags));
 #endif
@@ -514,6 +514,7 @@ win_dialog_opt_enter(string, field_len, prompt, escape_list, help, flags)
     MDlgButton button_list[12];
     int        i, b, return_v;
     char     **help_text;
+    char      *saved_string = NULL;
 
     memset (&button_list, 0, sizeof (MDlgButton) * 12);
     b = 0;
@@ -529,6 +530,9 @@ win_dialog_opt_enter(string, field_len, prompt, escape_list, help, flags)
     }
     button_list[b].ch = -1;
 
+    if(string)
+      saved_string = cpystr(string);
+
     help_text = get_help_text (help);
     return_v = mswin_dialog (prompt, string, field_len, 
 			     (flags && *flags & OE_APPEND_CURRENT),
@@ -536,6 +540,13 @@ win_dialog_opt_enter(string, field_len, prompt, escape_list, help, flags)
 			     button_list,
 			     help_text, flags ? *flags : OE_NONE);
     free_list_array (&help_text);
+    if(flags && (saved_string && !string || !saved_string && string ||
+       (saved_string && string && strcmp(saved_string, string))))
+      *flags |= OE_USER_MODIFIED;
+
+    if(saved_string)
+      fs_give((void **)&saved_string);
+
     return (return_v);
 }
 #endif

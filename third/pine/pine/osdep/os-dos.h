@@ -1,6 +1,6 @@
 #line 2 "osdep/os-dos.h"
 /*----------------------------------------------------------------------
-  $Id: os-dos.h,v 1.1.1.1 2001-02-19 07:03:25 ghudson Exp $
+  $Id: os-dos.h,v 1.1.1.2 2003-02-12 08:09:26 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -268,7 +268,7 @@ extern	unsigned alarm(unsigned);
 /* #include <sys/param.h>   */   /* Get it from param.h if available */
 /* #define MAXPATH MAXPATHLEN */ /* Longest pathname we ever expect */
 #define MAXPATH        (128)    /* Longest pathname we ever expect */
-#define MAXFOLDER      (64)     /* Longest foldername we ever expect */  
+#define MAXFOLDER      (128)    /* Longest foldername we ever expect */  
 
 
 /*-- Max screen pine will display on. Used to define some array sizes --*/

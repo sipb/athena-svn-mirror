@@ -88,7 +88,7 @@ init_debug()
      *      [5]  end
      */
 
-    if(!(debug || ps_global->debug_imap))
+    if(!(debug || ps_global->debug_imap || ps_global->debug_tcp))
       return;
 
     avail[min(NUMDEBUGFILES,9)+1] = -1;
@@ -155,9 +155,16 @@ try_again:
 	    if(ps_global->debug_flush)
 	      setbuf(debugfile, NULL);
 	    debug_slot(i);
-	    dprint(0, (debugfile,
-  "Debug output of the Pine program (debug=%d debug_imap=%d). Version %s\n%s\n",
-		   debug, ps_global->debug_imap, pine_version, ctime(&now)));
+	    dprint(0, (debugfile, "Debug output of the Pine program (debug=%d debug_imap=%d). Version %s (%s)\n%s\n",
+		   debug, ps_global->debug_imap, pine_version, SYSTYPE,
+		   ctime(&now)));
+
+	    if(debug > DEFAULT_DEBUG || ps_global->debug_imap > 0 ||
+	       ps_global->debug_tcp > 0){
+		sprintf(newfname, "Debug file: %s (level=%d imap=%d)", filename,
+			debug, ps_global->debug_imap);
+		init_error(ps_global, SM_ORDER, 3, 5, newfname);
+	    }
 	}
     }
 }
@@ -207,7 +214,13 @@ FILE *debug_fp;
     static int ok = 1;
     long filesize;
 
-    if(debug < 9 && ok && --counter <= 0){
+    if(debug <= DEFAULT_DEBUG
+       && !ps_global->debug_flush
+       && !ps_global->debug_tcp
+       && !ps_global->debug_timestamp
+       && !ps_global->debug_imap
+       && ok
+       && --counter <= 0){
 	if((filesize = fp_file_size(debug_fp)) != -1L)
 	  ok = (unsigned long)filesize < (unsigned long)MAX_DEBUG_FILE_SIZE;
 
@@ -222,10 +235,36 @@ FILE *debug_fp;
     }
 
     if(ok && ps_global->debug_timestamp)
-      fprintf(debug_fp, "\n%s\n", debug_time(0));
+      fprintf(debug_fp, "\n%s\n", debug_time(0, ps_global->debug_timestamp));
 
     return(ok);
 }
+
+
+#ifdef DEBUGJOURNAL
+#include <stdarg.h>
+
+void
+debugjournal(FILE *debug_fp, char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+
+    if(debug_fp && debug >= ps_global->dlevel && do_debug(debug_fp))
+      vfprintf(debug_fp, fmt, args);
+
+    if(ps_global->dlevel <= 9 || ps_global->dlevel <= debug){
+	char    b[64000];
+
+	_vsnprintf(b, sizeof(b), fmt, args);
+	b[sizeof(b)-1] = '\0';
+	add_review_message(b, ps_global->dlevel);
+    }
+
+    va_end(args);
+}
+#endif /* DEBUGJOURNAL */
 
 
 /*
@@ -234,13 +273,16 @@ FILE *debug_fp;
  * If include_date is set the date is appended.
  */
 char *
-debug_time(include_date)
+debug_time(include_date, include_subseconds)
     int include_date;
+    int include_subseconds;
 {
     time_t          t;
     struct tm      *tm_now;
     static char     timestring[23];
+    char            subsecond[8];
     char            datestr[7];
+    struct _timeb   timebuffer;
 
     timestring[0] = '\0';
     t = time((time_t *)0);
@@ -251,7 +293,14 @@ debug_time(include_date)
     else
       datestr[0] = '\0';
 
-    sprintf(timestring, "%.8s%s", ctime(&t)+11, datestr);
+    if(include_subseconds){
+	_ftime(&timebuffer);
+	sprintf(subsecond, ".%03ld", timebuffer.millitm);
+    }
+    else
+      subsecond[0] = '\0';
+
+    sprintf(timestring, "%.8s%.7s%.6s", ctime(&t)+11, subsecond, datestr);
 
     return(timestring);
 }

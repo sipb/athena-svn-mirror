@@ -728,7 +728,7 @@ UNICODE-1-1-UTF-7 character set is never re-labeled as US-ASCII.
 If the outgoing message is not all US-ASCII text, then it will be labeled with
 the <EM>character-set</EM> variable set by the user. If the user has not
 set the <EM>character-set</EM> variable then it will be labeled as
-<EM>X-UNKNOWN-CHARSET</EM>. <P>
+<EM>X-UNKNOWN</EM>. <P>
 
 <B>BUG</B>:  If you prepare a UNICODE-1-1 document and read it into the
 composer with <EM>^R</EM>,
@@ -776,49 +776,44 @@ contents are readable by the user.  It simply displays
 <STRONG>all</STRONG> messages of type text and makes no attempt to filter
 out characters that may be in the wrong character set.  If the text is
 tagged as something other than US-ASCII and the tag does not match the
-character set that the <EM>character-set</EM> variable is set to, then a
-warning is printed at the start of the message.  In that case, it is
-possible that the text will be displayed incorrectly.  For example, if the
-text is one variant of ISO-8859 and the display device is another variant,
-some of the characters may show up on the screen as the wrong character. 
-Or if the text is Japanese and the display device is not, some parts of
-the message may be total gibberish (which will look like ASCII gibberish). 
-On the other hand, the parts of the Japanese message that really are
-US-ASCII will be readable in the midst of the gibberish.  <P>
+character set that the <EM>character-set</EM> variable is set to,
+then an attempt is made to convert the incoming characters into the character
+set given in the <EM>character-set</EM> variable.
+Characters which are not representable in the character set of the display
+will be converted to question marks.
+The feature
+<A HREF="config.html#disable-charset-conversions"><EM>disable-charset-conversions</EM></A>
+may be used to turn off this automatic conversion.
+A warning is printed at the start of the message and the characters are
+sent to the display.  It is
+possible that the text will be displayed incorrectly.
+<P>
+There is special-case code which attempts to handle Japanese text (ISO-2022-JP).
+Incoming ISO-2022-JP text will be converted to EUC in
+UNIX <EM>Pine</EM> and to Shift-JIS in <EM>PC-Pine</EM>
+before it is sent to the display.
+Conversely, when sending mail UNIX <EM>Pine</EM> will convert EUC into ISO-2022-JP
+and <EM>PC-Pine</EM> will convert Shift-JIS into ISO-2022-JP.
+The feature
+<A HREF="config.html#disable-2022-jp-conversions"><EM>disable-2022-jp-conversions</EM></A>
+may be used to turn off this automatic conversion.
+<P>
 
-In the case of <EM>PC-Pine</EM>, the character values cannot be passed through to
-the display device unaltered since MS-DOS uses various non-standard
-character sets called "Code Pages".  <P>
-
-The mapping between DOS Code Page and standard character set is controlled
-by the <EM>character-set</EM> variable in the <CODE>PINERC</CODE> file and the PC's installed
-Code Page.  <EM>PC-Pine</EM> will automatically map common characters in IBM Code
-Pages 437, 850, 860, 863, and 865 to ISO-8859-1 and back when the <CODE>PINERC</CODE>
-has <EM>character-set=ISO-8859-1</EM>.  <EM>Pine</EM> will also map common characters for
-IBM Code Page 866 to ISO-8859-5 and
-back when <EM>character-set=ISO-8859-5</EM>. 
-The mappings are bi-directional, and applied to all saved text attachments
-in the defined character set, messages exported, etc.  <P>
-
-Alternatively, the translation tables can be configured externally and
-applied at run time whenever the <EM>character-set</EM> variable is set to
-something other then "US-ASCII" (the default).
-<EM>PC-Pine</EM> looks in the text
-file pointed to by the environment variable
-<CODE>ISO_TO_CP</CODE> for the table to
-use for mapping text matching the type defined by the <EM>character-set</EM> 
-variable into the local Code Page value.  <EM>PC-Pine</EM> looks in
-the text file pointed to by the environment variable <CODE>CP_TO_ISO</CODE>
-for the table to use
-for mapping text in the local Code Page into outbound text tagged with the
-<EM>character-set</EM> variable's value.  <P>
-
-A text file containing a character set mapping table is expected to
-contain 256 elements where each element is a decimal number separated from
-the next element by white-space (space, tab or newline, but no commas!). 
-The index of the element is the character's value in the source character
-set, and the element's value is the corresponding character's value in the
-destination character set.  <P>
+There used to be a facility in <EM>PC-Pine</EM> to map between various
+DOS Code Pages and standard character sets.
+That facility, including the <EM>CP_TO_ISO</EM> and <EM>ISO_TO_CP</EM> hooks, was broken
+for several versions of <EM>Pine</EM> and is now entirely removed.
+We hope that the character set conversion that happens automatically
+before displaying a message will handle most of what the Code Page code used
+to do.
+For example, a Russian user would probably set the
+<EM>character-set</EM> variable in the <CODE>PINERC</CODE> file to
+the value <CODE>KOI8-R</CODE>.
+That would cause outgoing messages to be labeled as <CODE>KOI8-R</CODE>.
+If an incoming message was labeled with the <CODE>Windows-1251</CODE> character set,
+<EM>Pine</EM> should be able to convert the <CODE>Windows-1251</CODE> characters to <CODE>KOI8-R</CODE> before
+sending them to the display.
+<P>
 
 <HR>
 
@@ -1082,7 +1077,14 @@ the print feature differently.  For example, NCSA telnet requires "capfile
 work at all with the telnet provided with PC-NFS. There is also a closely
 related method called <EM>attached-to-ansi-no-formfeed</EM> which is
 the same except for the lack of formfeed character at the end of the
-print job.  <P>
+print job.
+<P>
+<EM>Attached-to-wyse</EM> and <EM>attached-to-wyse-no-formfeed</EM> are
+very similar to "attached-to-ansi".
+The only difference is in the control characters sent to turn the printer
+on and off.
+The Wyse version uses Ctrl-R for on, and Ctrl-T for off.
+<P>
 
 The second selection is the standard UNIX print command.  The default is
 <EM>lpr</EM>, but it can be changed on a system basis to anything so

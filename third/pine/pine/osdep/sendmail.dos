@@ -40,10 +40,11 @@ smtp_command(errbuf)
      
    ----*/
 int
-mta_handoff(header, body, errbuf)
+mta_handoff(header, body, errbuf, len)
     METAENV *header;
     BODY    *body;
     char    *errbuf;
+    size_t   len;
 {
     return(0);
 }
@@ -59,10 +60,11 @@ mta_handoff(header, body, errbuf)
      
    ----*/
 char *
-post_handoff(header, body, errbuf)
+post_handoff(header, body, errbuf, len)
     METAENV *header;
     BODY    *body;
     char    *errbuf;
+    size_t   len;
 {
     sprintf(errbuf, "Can't post, NNTP-server must be defined!");
     return(errbuf);

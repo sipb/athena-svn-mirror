@@ -53,10 +53,16 @@ This must be the last option on the command line.
 <DT> -aux <EM>local_directory</EM>
 
 <DD> <EM>PC-Pine</EM> only.
-When using a remote configuration
-(-p &lt;remote_config&gt;) this tells <EM>PC-Pine</EM> the local directory to use
-for storing auxiliary files, like debug files,
-address books, and signature files.
+This tells <EM>PC-Pine</EM> the local directory to use for storing auxiliary
+files, like debug files, address books, and signature files.  The pinerc may 
+be local or remote.
+<P>
+
+<DT> -nosplash
+
+<DD> <EM>PC-Pine</EM> only.
+This tells <EM>PC-Pine</EM> to not display the splash screen upon startup.
+This may be helpful for certain troubleshooting or terminal server scenarios.
 <P>
 
 <DT> -bail
@@ -93,6 +99,11 @@ system configuration file, execute
 </CODE></PRE>
 <P>
 A system configuration file is not required.
+<P>
+
+<DT> -convert_sigs <EM>-p pinerc</EM>
+
+<DD> Convert signatures contained in signature files into literal signatures.
 <P>
 
 <DT> <A NAME="copy_abook">-copy_abook <EM>&lt;local_abook_file&gt; &lt;remote_abook_folder&gt;</EM>
@@ -135,17 +146,18 @@ address book after creating the lookup file.
 
 <DD> Debug Level:  Sets the level of debugging information written by
 <EM>Pine</EM>.
-<EM>debug-level</EM> can be set to any integer 0-9.
+<EM>Debug-level</EM> can be set to any integer 0-9.
 A debug level of 0 turns off debugging for the session.
 (Actually there are some levels higher than 9, but you probably don't
-want to see them.)
+want to see them. Sensitive authentication information is hidden at
+levels less than 10.)
 <P>
 
 <DT> -d <EM>keywords</EM>
 
 <DD> You may use a more detailed version of the debugging flag to set
 the debug level in separate parts of <EM>Pine</EM>.
-The possibilities are flush, timestamp, imap=0..4, numfiles=0..31, and
+The possibilities are flush, timestamp, imap=0..4, tcp, numfiles=0..31, and
 verbose=0..9.
 <EM>Flush</EM> causes debugging information to be flushed immediately to
 the debug file as it is written.
@@ -156,6 +168,9 @@ is useful when you are trying to figure out what is responsible for delays.
 <EM>Imap</EM> sets the debug level for the debugging statements related
 to the conversation with the IMAP server, and more generally, for the
 debugging related to <EM>Pine</EM>'s interaction with the C-Client library.
+If <EM>imap</EM> is set higher than 4, sensitive authentication information
+will be included in the debug file.
+<EM>Tcp</EM> adds more TCP/IP debugging information.
 <P>
 
 <DT> -f <EM>folder</EM>
@@ -247,6 +262,13 @@ Pinerc may be either a local file or a remote configuration folder.
 Pinerc may be either a local file or a remote configuration folder.
 <P>
 
+<DT> -passfile <EM>passfile</EM>
+
+<DD> <EM>PC-Pine</EM> only.
+This tells <EM>PC-Pine</EM> what file should be used as the password file.
+This should be a fully-qualified filename.
+<P>
+
 <DT> -pinerc <EM>file</EM>
 
 <DD> Output fresh pinerc configuration to <EM>file</EM>, preserving the
@@ -290,12 +312,25 @@ The <EM>key</EM> value reverse is equivalent to arrival/reverse.
 Configuration equivalent:  <EM>sort-key</EM>.
 <P>
 
+<DT> -supported
+
+<DD> Some options may or may not be supported depending on how <EM>Pine</EM>
+was compiled.
+This is a way to determine which options are supported in the particular
+copy of <EM>Pine</EM> you are using.
+<P>
+
 <DT> -url <EM>url</EM>
 
 <DD> Open the given URL.
 <P>
 
 <DT> -v
+
+<DD> Version:  Print version information to the screen.
+<P>
+
+<DT> -version
 
 <DD> Version:  Print version information to the screen.
 <P>
@@ -395,10 +430,22 @@ the number) <P>
 accessible.  Likewise, the file browser is limited to the specified
 directory subtree. <P>
 
+<DT> -p
+
+<DD> Preserve the &quot;start&quot; and &quot;stop&quot; characters, typically Ctrl-Q
+ and Ctrl-S, which are sometimes used in communications paths to control data flow
+between devices that operate at different speeds.<P>
+
 <DT> -q
 
 <DD> TermdefWins. Termcap or terminfo escape sequences are used in preference
 to default escape sequences.<P>
+
+<DT> -Q <EM>quotestr</EM>
+
+<DD> Set the quote string.  Especially useful when composing email, setting this 
+allows the quote string to be checked for when Justifying paragraphs.
+A common quote string is "> ".<P>
 
 <DT> -r<EM>n</EM>
 
@@ -414,6 +461,10 @@ Out" command. <P>
 <DT> -v
 
 <DD> View the file only, disallowing any editing. <P>
+
+<DT> -version
+
+<DD> Print version information. <P>
 
 <DT> -w
 

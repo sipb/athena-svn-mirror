@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: send.c,v 1.1.1.1 2001-02-19 07:11:51 ghudson Exp $";
+static char rcsid[] = "$Id: send.c,v 1.1.1.2 2003-02-12 08:02:35 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ static char rcsid[] = "$Id: send.c,v 1.1.1.1 2001-02-19 07:11:51 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2001 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -76,9 +76,9 @@ int	   redraft_prompt PROTO((char *, char *, int));
 int	   postpone_prompt PROTO(());
 REPLY_S   *build_reply_uid PROTO((char *));
 void       outgoing2strings PROTO((METAENV *, BODY *, void **, PATMT **));
-void       strings2outgoing PROTO((METAENV *, BODY **, PATMT *));
+void       strings2outgoing PROTO((METAENV *, BODY **, PATMT *, char *));
 void	   resolve_encoded_entries PROTO((ADDRESS *, ADDRESS *));
-void       create_message_body PROTO((BODY **, PATMT *));
+void       create_message_body PROTO((BODY **, PATMT *, char *));
 int	   check_addresses PROTO((METAENV *));
 PINEFIELD *parse_custom_hdrs PROTO((char **, CustomType));
 void       add_defaults_from_list PROTO((PINEFIELD *, char **));
@@ -90,10 +90,9 @@ PINEFIELD *combine_custom_headers PROTO((PINEFIELD *, PINEFIELD *));
 int        pine_header_forbidden PROTO((char *));
 int        hdr_is_in_list PROTO((char *, PINEFIELD *));
 CustomType set_default_hdrval PROTO((PINEFIELD *, PINEFIELD *));
-void       customized_hdr_setup PROTO((PINEFIELD *, char **, CustomType));
-void       update_message_id PROTO((ENVELOPE *, char *));
 int	   filter_message_text PROTO((char *, ENVELOPE *, BODY *, STORE_S **,
 				      METAENV *));
+void	   filter_msgtxt_euc_to_2022_jp PROTO((BODY *));
 void	   pine_send_newsgroup_name PROTO((char *, char*, size_t));
 long	   message_format_for_pico PROTO((long, int (*)(int)));
 char	  *send_exit_for_pico PROTO((struct headerentry *, void (*)()));
@@ -115,10 +114,9 @@ void       pine_free_body PROTO((BODY **));
 void       pine_free_body_data PROTO((BODY *));
 long	   pine_smtp_verbose PROTO((SENDSTREAM *));
 void	   pine_smtp_verbose_out PROTO((char *));
-int        call_mailer PROTO((METAENV *, BODY *));
+int        call_mailer PROTO((METAENV *, BODY *, char **));
 int        news_poster PROTO((METAENV *, BODY *));
 char      *tidy_smtp_mess PROTO((char *, char *, char *));
-char      *mime_stats PROTO((BODY *));
 void       mime_recur PROTO((BODY *));
 long	   piped_soutr PROTO((void *, char *));
 long	   piped_sout PROTO((void *, char *, unsigned long));
@@ -141,6 +139,7 @@ void       reset_body_particulars PROTO((BODY_PARTICULARS_S *, BODY *));
 char      *encode_header_value PROTO((char *, size_t, unsigned char *,
 				      char *, int));
 int        encode_whole_header PROTO((char *, METAENV *));
+void       strip_content_id PROTO((BODY *));
 BODY_PARTICULARS_S *save_body_particulars PROTO((BODY *));
 ADDRESS		   *phone_home_from PROTO(());
 unsigned int	    phone_home_hash PROTO((char *));
@@ -411,16 +410,14 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
     int		   fcc_is_sticky = 0,
                    intrptd = 0,
                    postponed = 0,
-                   form = 0,
-                   userole = 0;
+                   form = 0;
 
     dprint(1, (debugfile,
                  "\n\n    ---- COMPOSE SCREEN (not in pico yet) ----\n"));
 
     /*-- Check for INTERRUPTED mail  --*/
-    if(!role_arg && !ps_global->anonymous && !(given_to || attach)){
-	char	     file_path[MAXPATH+1], *p;
-	int	     ret = 'n';
+    if(!role_arg && !(given_to || attach)){
+	char	     file_path[MAXPATH+1];
 
 	/* build filename and see if it exists.  build_path creates
 	 * an explicit local path name, so all c-client access is thru
@@ -441,7 +438,6 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
     /*-- Check for postponed mail --*/
     if(!role_arg
        && !outgoing				/* not replying/forwarding */
-       && !ps_global->anonymous			/* not special anon mode */
        && !(given_to || attach)			/* not command line send */
        && ps_global->VAR_POSTPONED_FOLDER	/* folder to look in */
        && ps_global->VAR_POSTPONED_FOLDER[0])
@@ -450,13 +446,12 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
     /*-- Check for form letter folder --*/
     if(!role_arg
        && !outgoing				/* not replying/forwarding */
-       && !ps_global->anonymous			/* not special anon mode */
        && !(given_to || attach)			/* not command line send */
        && ps_global->VAR_FORM_FOLDER		/* folder to look in */
        && ps_global->VAR_FORM_FOLDER[0])
       form = 1;
 
-    if(!outgoing && !ps_global->anonymous && !(given_to || attach)
+    if(!outgoing && !(given_to || attach)
        && !role_arg && F_ON(F_ALT_COMPOSE_MENU, ps_global)){
         char     prompt[80];
  	char     letters[30];
@@ -611,10 +606,10 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 				&redraft_pos, &custom, &role, REDRAFT_DEL))
 		      return;
 		    /* NOTE: "stream" closing in redraft() */
-		    postponed = form = userole = 0;
+		    postponed = form = 0;
 		}
 		else{
-		    mail_close(stream);
+		    pine_mail_close(stream);
 		    if(ret == 'x'){
 			q_status_message(SM_ORDER, 0, 3,
 					 "Composition cancelled");
@@ -624,10 +619,10 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 	    }
 	    else{
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Can't open Interrupted mailbox: %s",
+				  "Can't open Interrupted mailbox: %.200s",
 				  file_path);
 		if(stream)
-		  mail_close(stream);
+		  pine_mail_close(stream);
 	    }
 	}
     }
@@ -694,11 +689,11 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 				REDRAFT_DEL | REDRAFT_PPND))
 		      done++;
 		    /* note: "stream" closing handled in redraft() */
-		    intrptd = form = userole = 0;
+		    intrptd = form = 0;
 		}
 		else{
 		    if(stream != ps_global->mail_stream)
-		      mail_close(stream);
+		      pine_mail_close(stream);
 
 		    if(ret == 'x'){
 			q_status_message(SM_ORDER, 0, 3,
@@ -709,9 +704,9 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 	    }
 	    else{
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Can't open Postponed mailbox: %s", mbox);
+				  "Can't open Postponed mailbox: %.200s", mbox);
 		if(stream)
-		  mail_close(stream);
+		  pine_mail_close(stream);
 	    }
 	}
 	else{
@@ -791,11 +786,11 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 				    REDRAFT_NONE))
 			  done++;
 			/* note: "stream" closing handled in redraft() */
-			intrptd = postponed = userole = 0;
+			intrptd = postponed = 0;
 		    }
 		    else{
 			if(stream != ps_global->mail_stream)
-			  mail_close(stream);
+			  pine_mail_close(stream);
 
 			if(ret == 'x'){
 			    q_status_message(SM_ORDER, 0, 3,
@@ -805,13 +800,13 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 		    }
 		}
 		else if(stream != ps_global->mail_stream)
-		  mail_close(stream);
+		  pine_mail_close(stream);
 	    }
 	    else{
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				  "Can't open form letter folder: %s", mbox);
+			      "Can't open form letter folder: %.200s", mbox);
 		if(stream)
-		  mail_close(stream);
+		  pine_mail_close(stream);
 	    }
 	}
 	else{
@@ -872,7 +867,7 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 	}
 
 	if(role)
-	  q_status_message1(SM_ORDER, 3, 4, "Composing using role \"%s\"",
+	  q_status_message1(SM_ORDER, 3, 4, "Composing using role \"%.200s\"",
 			    role->nick);
 
 	/*
@@ -927,7 +922,7 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
 	body->type = TYPETEXT;
 
 	if(attach)
-	  create_message_body(&body, attach);
+	  create_message_body(&body, attach, NULL);
     }
 
     ps_global->prev_screen = compose_screen;
@@ -939,27 +934,37 @@ compose_mail(given_to, fcc_arg, role_arg, attach, inc_text_getc)
      * fcc.  If same, do nothing, if different, set sticky bit in pine_send.
      */
     if(fcc){
-	if(outgoing->to){
-	    char *tmp_fcc;
+	char *tmp_fcc = NULL;
 
+	if(outgoing->to){
 	    tmp_fcc = get_fcc_based_on_to(outgoing->to);
 	    if(strcmp(fcc, tmp_fcc ? tmp_fcc : ""))
 	      fcc_is_sticky++;  /* cause sticky bit to get set */
 
-	    if(tmp_fcc)
-	      fs_give((void **)&tmp_fcc);
+	}
+	else if((tmp_fcc = get_fcc(NULL)) != NULL &&
+	        !strcmp(fcc, tmp_fcc)){
+	    /* not sticky */
 	}
 	else
 	  fcc_is_sticky++;
+	    
+	if(tmp_fcc)
+	  fs_give((void **)&tmp_fcc);
     }
 
     pine_send(outgoing, &body, COMPOSE_MAIL_TITLE, role, fcc,
 	      reply, redraft_pos, lcc, custom, fcc_is_sticky);
 
     if(reply){
-	fs_give((void **) &reply->mailbox);
-	fs_give((void **) &reply->prefix);
-	fs_give((void **) &reply->data.uid.msgs);
+	if(reply->mailbox)
+	  fs_give((void **) &reply->mailbox);
+	if(reply->origmbox)
+	  fs_give((void **) &reply->origmbox);
+	if(reply->prefix)
+	  fs_give((void **) &reply->prefix);
+	if(reply->data.uid.msgs)
+	  fs_give((void **) &reply->data.uid.msgs);
 	fs_give((void **) &reply);
     }
 
@@ -1015,11 +1020,12 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
     STORE_S	*so = NULL;
     PINEFIELD   *pf;
     gf_io_t	 pc;
-    char	*extras, **fields, **values, *c_string, *p;
+    char	*extras, **fields, **values, *p;
     char        *hdrs[2], *h;
+    char       **smtp_servers = NULL;
     long	 cont_msg = 1L;
     int		 i, pine_generated = 0, our_replyto = 0;
-    int          from_added_to_role = 0;
+    int          added_to_role = 0;
 
 
     /*
@@ -1028,7 +1034,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
      */
     if(!stream->nmsgs){
 	q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			  "Empty folder!  No messages really %s!",
+			  "Empty folder!  No messages really %.200s!",
 			  (REDRAFT_PPND&flags) ? "postponed" : "interrupted");
 	return(redraft_cleanup(stream, FALSE, flags));
     }
@@ -1049,13 +1055,18 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 
 	clear_index_cache();
 	while(1){
+	    void *ti;
+
+	    ti = stop_threading_temporarily();
 	    rv = index_lister(ps_global, NULL, stream->mailbox,
 			      stream, msgmap);
+	    restore_threading(&ti);
+
 	    cont_msg = mn_get_cur(msgmap);
 	    if(count_flagged(stream, F_DEL)
 	       && want_to(INTR_DEL_PMT, 'n', 0, NO_HELP, WT_NORM) == 'n'){
 		q_status_message1(SM_ORDER, 3, 3,
-				  "Undelete %s, and then continue message",
+				  "Undelete %.200s, and then continue message",
 				  (REDRAFT_PPND&flags)
 				    ? "messages to remain postponed"
 				    : "form letters you want to keep");
@@ -1122,13 +1133,15 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	if(!*custom)
 	  *custom = parse_custom_hdrs(ps_global->VAR_CUSTOM_HDRS, UseAsDef);
 
-#define INDEX_FCC 0
-#define INDEX_POSTERR 1
-#define INDEX_REPLYUID 2
-#define INDEX_CURSORPOS 3
-#define INDEX_OUR_REPLYTO 4
-#define INDEX_LCC 5		/* MUST REMAIN LAST FIELD DECLARED */
-#define FIELD_COUNT 6
+#define INDEX_FCC         0
+#define INDEX_POSTERR     1
+#define INDEX_REPLYUID    2
+#define INDEX_REPLYMBOX   3
+#define INDEX_SMTP        4
+#define INDEX_CURSORPOS   5
+#define INDEX_OUR_REPLYTO 6
+#define INDEX_LCC         7	/* MUST REMAIN LAST FIELD DECLARED */
+#define FIELD_COUNT       8
 
 	i = count_custom_hdrs_pf(*custom,1) + FIELD_COUNT + 1;
 
@@ -1148,6 +1161,8 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	fields[i = INDEX_FCC] = "Fcc";	/* Fcc: special case */
 	fields[++i]   = "X-Post-Error";	/* posting errors too */
 	fields[++i]   = "X-Reply-UID";	/* Reply'd to msg's UID */
+	fields[++i]   = "X-Reply-Mbox";	/* Reply'd to msg's Mailbox */
+	fields[++i]   = "X-SMTP-Server";/* SMTP server to use */
 	fields[++i]   = "X-Cursor-Pos";	/* Cursor position */
 	fields[++i]   = "X-Our-ReplyTo";	/* ReplyTo is real */
 	fields[++i]   = "Lcc";		/* Lcc: too... */
@@ -1168,13 +1183,22 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	     */
 	    for(i = INDEX_LCC; fields[i]; i++)
 	      if(values[i]){
+		  size_t len;
 		  char *charset;
+		  char *bufp, *biggerbuf = NULL;
 
-		  if(strlen(values[i]) > SIZEOF_20KBUF-1)
-		    values[i][SIZEOF_20KBUF-1] = '\0';
+		  if((len=strlen(values[i])) > SIZEOF_20KBUF-1){
+		      len++;
+		      biggerbuf = (char *)fs_get(len * sizeof(char));
+		      bufp = biggerbuf;
+		  }
+		  else{
+		      bufp = tmp_20k_buf;
+		      len = SIZEOF_20KBUF;
+		  }
 
-		  p = (char *)rfc1522_decode((unsigned char*)tmp_20k_buf,
-					     SIZEOF_20KBUF,values[i], &charset);
+		  p = (char *)rfc1522_decode((unsigned char*)bufp,
+					     len, values[i], &charset);
 		  if(charset)
 		    fs_give((void **)&charset);
 
@@ -1182,6 +1206,9 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 		      fs_give((void **)&values[i]);
 		      values[i] = cpystr(p);
 		  }
+
+		  if(biggerbuf)
+		    fs_give((void **)&biggerbuf);
 	      }
 
 	    for(pf = *custom, i = FIELD_COUNT;
@@ -1244,6 +1271,51 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 		  *reply = build_reply_uid(values[INDEX_REPLYUID]);
 
 		fs_give((void **) &values[INDEX_REPLYUID]);
+
+		if(values[INDEX_REPLYMBOX] && reply && *reply)
+		  (*reply)->origmbox = cpystr(values[INDEX_REPLYMBOX]);
+		
+		if(reply && *reply && !(*reply)->origmbox && (*reply)->mailbox)
+		  (*reply)->origmbox = cpystr((*reply)->mailbox);
+	    }
+
+	    if(values[INDEX_REPLYMBOX])
+	      fs_give((void **) &values[INDEX_REPLYMBOX]);
+
+	    if(values[INDEX_SMTP]){
+		char  *q;
+		char **lp;
+		size_t cnt = 0;
+
+		/*
+		 * Turn the space delimited list of smtp servers into
+		 * a char ** list.
+		 */
+		p = values[INDEX_SMTP];
+		do{
+		    if(!*p || isspace((unsigned char) *p))
+		      cnt++;
+		} while(*p++);
+		
+		smtp_servers = (char **) fs_get((cnt+1) * sizeof(char *));
+		memset(smtp_servers, 0, (cnt+1) * sizeof(char *));
+
+		cnt = 0;
+		q = p = values[INDEX_SMTP];
+		do{
+		    if(!*p || isspace((unsigned char) *p)){
+			if(*p){
+			    *p = '\0';
+			    smtp_servers[cnt++] = cpystr(q);
+			    *p = ' ';
+			    q = p+1;
+			}
+			else
+			  smtp_servers[cnt++] = cpystr(q);
+		    }
+		} while(*p++);
+
+		fs_give((void **) &values[INDEX_SMTP]);
 	    }
 
 	    if(values[INDEX_CURSORPOS]){
@@ -1295,7 +1367,6 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	 * so that it will be allowed again in pine_send.
 	 */
 	if(role && *role == NULL &&
-	   F_OFF(F_ALLOW_CHANGING_FROM, ps_global) &&
 	   !ps_global->never_allow_changing_from &&
 	   *outgoing){
 	    /*
@@ -1319,7 +1390,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 
 		(*role)->from = (*outgoing)->from;
 		(*outgoing)->from = NULL;
-		from_added_to_role++;
+		added_to_role++;
 	    }
 
 	    mail_free_address(&deffrom);
@@ -1402,8 +1473,9 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	    else  /* not standard, put in role */
 	      add_to_role++;
 
-	    if(add_to_role && role && (*role == NULL || from_added_to_role)){
+	    if(add_to_role && role && (*role == NULL || added_to_role)){
 		if(*role == NULL){
+		    added_to_role++;
 		    *role = (ACTION_S *)fs_get(sizeof(**role));
 		    memset((void *)*role, 0, sizeof(**role));
 		}
@@ -1416,6 +1488,15 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	    /* this is a bogus c-client generated replyto */
 	    if((*outgoing)->reply_to)
 	      mail_free_address(&(*outgoing)->reply_to);
+	}
+
+	if(smtp_servers && role && (*role == NULL || added_to_role)){
+	    if(*role == NULL){
+		*role = (ACTION_S *)fs_get(sizeof(**role));
+		memset((void *)*role, 0, sizeof(**role));
+	    }
+
+	    (*role)->smtp = smtp_servers;
 	}
 
 	if(!(*outgoing)->subject && hdr_is_in_list("subject", *custom))
@@ -1463,7 +1544,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	  if(b->type == TYPEMULTIPART){
 	      if(strucmp(b->subtype, "mixed")){
 		  q_status_message1(SM_INFO, 3, 4, 
-				 "Converting Multipart/%s to Multipart/Mixed", 
+			     "Converting Multipart/%.200s to Multipart/Mixed", 
 				 b->subtype);
 		  fs_give((void **)&b->subtype);
 		  b->subtype = cpystr("mixed");
@@ -1471,7 +1552,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	  }
 	  else{
 	      q_status_message2(SM_ORDER | SM_DING, 3, 4, 
-				"Unable to resume type %s/%s message",
+				"Unable to resume type %.200s/%.200s message",
 				body_types[b->type], b->subtype);
 	      return(redraft_cleanup(stream, TRUE, flags));
 	  }
@@ -1485,7 +1566,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	    set_mime_type_by_grope(&part->body, NULL);
 	    if(part->body.type != TYPETEXT){
 		q_status_message2(SM_ORDER | SM_DING, 3, 4,
-				  "Unable to resume; first part is non-text: %s/%s",
+		      "Unable to resume; first part is non-text: %.200s/%.200s",
 				  body_types[part->body.type], 
 				  part->body.subtype);
 		return(redraft_cleanup(stream, TRUE, flags));
@@ -1544,16 +1625,16 @@ redraft_cleanup(stream, problem, flags)
 
 	    if(stream == ps_global->mail_stream){
 		q_status_message2(SM_ORDER, 3, 7,
-			     "No more %s, returning to \"%s\"",
+			     "No more %.200s, returning to \"%.200s\"",
 			     (REDRAFT_PPND&flags) ? "postponed messages"
 						  : "form letters",
 			     ps_global->inbox_name);
 		do_broach_folder(ps_global->inbox_name,
-				 ps_global->context_list);
+				 ps_global->context_list, NULL);
 		ps_global->next_screen = mail_index_screen;
 	    }
 	    else
-	      mail_close(stream);
+	      pine_mail_close(stream);
 
 	    /*
 	     * At this point, one way or another stream's invalid
@@ -1567,7 +1648,7 @@ redraft_cleanup(stream, problem, flags)
 
 	    if(!mail_delete(stream, mbox))
 	      q_status_message1(SM_ORDER|SM_DING, 3, 3,
-				"Can't delete %s", mbox);
+				"Can't delete %.200s", mbox);
 
 	    fs_give((void **) &mbox);
 	    stream  = NULL;
@@ -1575,7 +1656,7 @@ redraft_cleanup(stream, problem, flags)
     }
 
     if(stream && stream != ps_global->mail_stream)
-      mail_close(stream);
+      pine_mail_close(stream);
 
     return(!problem);
 }
@@ -1589,7 +1670,7 @@ redraft_prompt(type, prompt, failure)
 {
     if(background_posting(FALSE)){
 	q_status_message1(SM_ORDER, 0, 3,
-			  "%s folder unavailable while background posting",
+			  "%.200s folder unavailable while background posting",
 			  type);
 	return(failure);
     }
@@ -1733,6 +1814,7 @@ build_reply_uid(s)
 				    if(i == nseq){
 					reply =
 					    (REPLY_S *)fs_get(sizeof(REPLY_S));
+					memset(reply, 0, sizeof(REPLY_S));
 					reply->flags	     = REPLY_UID;
 					reply->data.uid.validity
 						      = strtoul(val, NULL, 10);
@@ -1823,7 +1905,7 @@ dos_valid_from()
 		sizeof(prompt)-50, answer);
 	if(ps_global->blank_user_id
 	   && want_to(prompt, 'y', 'n', NO_HELP, WT_NORM) == 'y'){
-	    set_variable(V_USER_ID, answer, 1, Main);
+	    set_variable(V_USER_ID, answer, 1, 1, Main);
 	}
 	else{
             fs_give((void **)&(ps_global->VAR_USER_ID));
@@ -1858,7 +1940,7 @@ dos_valid_from()
 		    sizeof(prompt)-50, answer);
 	    if(ps_global->blank_personal_name
 	       && want_to(prompt, 'y', 'n', NO_HELP, WT_NORM) == 'y'){
-		set_variable(V_PERSONAL_NAME, answer, 1, Main);
+		set_variable(V_PERSONAL_NAME, answer, 1, 1, Main);
 	    }
 	    else{
         	fs_give((void **)&(ps_global->VAR_PERSONAL_NAME));
@@ -1914,7 +1996,7 @@ dos_valid_from()
 		sizeof(prompt)-50, answer);
 	if(!ps_global->userdomain && !ps_global->blank_user_domain
 	   && want_to(prompt, 'y', 'n', NO_HELP, WT_NORM) == 'y'){
-	    set_variable(V_USER_DOMAIN, answer, 1, Main);
+	    set_variable(V_USER_DOMAIN, answer, 1, 1, Main);
 	    fs_give((void **)&(ps_global->maildomain));	/* blast old val */
 	    ps_global->userdomain      = cpystr(answer);
 	    ps_global->maildomain      = ps_global->userdomain;
@@ -2040,6 +2122,21 @@ static struct headerentry he_template[]={
   {"",            "X-Reply-UID", NO_HELP,               10, 0, NULL,
    NULL,          NULL, NULL, NULL,                 NULL, NULL,
    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KS_NONE},
+  {"",            "X-Reply-Mbox", NO_HELP,              10, 0, NULL,
+   NULL,          NULL, NULL, NULL,                 NULL, NULL,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KS_NONE},
+  {"",            "X-SMTP-Server", NO_HELP,             10, 0, NULL,
+   NULL,          NULL, NULL, NULL,                 NULL, NULL,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KS_NONE},
+  {"",            "X-Cursor-Pos", NO_HELP,              10, 0, NULL,
+   NULL,          NULL, NULL, NULL,                 NULL, NULL,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KS_NONE},
+  {"",            "X-Our-ReplyTo", NO_HELP,             10, 0, NULL,
+   NULL,          NULL, NULL, NULL,                 NULL, NULL,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KS_NONE},
+  {"",            OUR_HDRS_LIST, NO_HELP,               10, 0, NULL,
+   NULL,          NULL, NULL, NULL,                 NULL, NULL,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KS_NONE},
 #if	!(defined(DOS) || defined(OS2)) || defined(NOAUTH)
   {"",            "Sender",      NO_HELP,               10, 0, NULL,
    NULL,          NULL, NULL, NULL,                 NULL, NULL,
@@ -2076,10 +2173,12 @@ static struct headerentry he_custom_free_templ={
 #define N_NOBODY  14
 #define	N_POSTERR 15
 #define	N_RPLUID  16
-#define	N_CURPOS  17
-#define	N_OURREPLYTO  18
-#define	N_OURHDRS 19
-#define N_SENDER  20
+#define	N_RPLMBOX 17
+#define	N_SMTP    18
+#define	N_CURPOS  19
+#define	N_OURREPLYTO  20
+#define	N_OURHDRS 21
+#define N_SENDER  22
 
 /* this is used in pine_send and pine_simple_send */
 /* name::type::canedit::writehdr::localcopy::rcptto */
@@ -2094,13 +2193,15 @@ static PINEFIELD pf_template[] = {
   {"Lcc",         Address,	1, 0, 1, 1},
   {"Attchmnt",    Attachment,	1, 1, 1, 0},
   {"Subject",     Subject,	1, 1, 1, 0},
-  {"References",  FreeText,	0, 0, 0, 0},
+  {"References",  FreeText,	0, 1, 1, 0},
   {"Date",        FreeText,	0, 1, 1, 0},
   {"In-Reply-To", FreeText,	0, 1, 1, 0},
   {"Message-ID",  FreeText,	0, 1, 1, 0},
   {"To",          Address,	0, 0, 0, 0},	/* N_NOBODY */
   {"X-Post-Error",FreeText,	0, 0, 0, 0},	/* N_POSTERR */
   {"X-Reply-UID", FreeText,	0, 0, 0, 0},	/* N_RPLUID */
+  {"X-Reply-Mbox",FreeText,	0, 0, 0, 0},	/* N_RPLMBOX */
+  {"X-SMTP-Server",FreeText,	0, 0, 0, 0},	/* N_SMTP */
   {"X-Cursor-Pos",FreeText,	0, 0, 0, 0},	/* N_CURPOS */
   {"X-Our-ReplyTo",FreeText,	0, 0, 0, 0},	/* N_OURREPLYTO */
   {OUR_HDRS_LIST, FreeText,	0, 0, 0, 0},	/* N_OURHDRS */
@@ -2120,7 +2221,9 @@ static PINEFIELD pf_template[] = {
         prmpt_cnf -- Optional prompt for confirmation call
     used_tobufval -- The string that the to was eventually set equal to.
 		      This gets passed back if non-NULL on entry.
-    prompt_for_to -- Allow user to change recipient
+        flagsarg  --     SS_PROMPTFORTO - Allow user to change recipient
+                         SS_NULLRP - Use null return-path so we'll send an
+			             SMTP MAIL FROM: <>
 
   Result: message "To: " field is provided and message is sent or cancelled.
 
@@ -2145,18 +2248,18 @@ CRLF.
 Returns 0 on success, -1 on failure.
   ----*/
 int
-pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
-		 prompt_for_to)
+pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval, flagsarg)
     ENVELOPE  *outgoing;  /* envelope for outgoing message */
     BODY     **body;   
     char      *prmpt_who, *prmpt_cnf;
     char     **used_tobufval;
-    int        prompt_for_to;
+    int        flagsarg;
 {
     char     **tobufp, *p;
     void      *messagebuf;
     int        done = 0, retval = 0, x;
     int        cnt, i, resize_len, result, fcc_result;
+    struct headerentry he_dummy;
     PINEFIELD *pfields, *pf, **sending_order;
     METAENV    header;
     HelpType   help;
@@ -2186,14 +2289,21 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 
     /*----- Fill in a few general parts of the envelope ----*/
     if(!outgoing->date){
+	if(F_ON(F_QUELL_TIMEZONE, ps_global))
+	  mail_parameters(NULL, SET_DISABLE822TZTEXT, (void *) TRUE);
+
 	rfc822_date(tmp_20k_buf);		/* format and copy new date */
+	if(F_ON(F_QUELL_TIMEZONE, ps_global))
+	  mail_parameters(NULL, SET_DISABLE822TZTEXT, (void *) FALSE);
+
 	outgoing->date = cpystr(tmp_20k_buf);
     }
 
     if(!outgoing->from)
       outgoing->from = generate_from();
 
-    outgoing->return_path = rfc822_cpy_adr(outgoing->from);
+    if(!(flagsarg & SS_NULLRP))
+      outgoing->return_path = rfc822_cpy_adr(outgoing->from);
 
 #if	!(defined(DOS) || defined(OS2)) || defined(NOAUTH)
 #define NN 3
@@ -2253,16 +2363,24 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 		sending_order[NN+13]	= pf;
                 break;
 
-              case N_CURPOS:			/* won't be used here */
+              case N_RPLMBOX:			/* won't be used here */
 		sending_order[NN+14]	= pf;
                 break;
 
-              case N_OURREPLYTO:		/* won't be used here */
+              case N_SMTP:			/* won't be used here */
 		sending_order[NN+15]	= pf;
                 break;
 
-              case N_OURHDRS:			/* won't be used here */
+              case N_CURPOS:			/* won't be used here */
 		sending_order[NN+16]	= pf;
+                break;
+
+              case N_OURREPLYTO:		/* won't be used here */
+		sending_order[NN+17]	= pf;
+                break;
+
+              case N_OURHDRS:			/* won't be used here */
+		sending_order[NN+18]	= pf;
                 break;
 
               default:
@@ -2287,6 +2405,9 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 		sending_order[NN+2]	= pf;
 		pf->addr		= &outgoing->to;
 	        tobufp			= &pf->scratch;
+		memset((void *) &he_dummy, 0, sizeof(he_dummy));
+		pf->he			= &he_dummy;
+		pf->he->dirty		= 1;	/* for strings2outgoing */
 		break;
 
 	      case N_CC:
@@ -2365,7 +2486,7 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 	fs_resize((void **)tobufp, resize_len+1);
 
 	flags = OE_APPEND_CURRENT;
-	if(prompt_for_to)
+	if(flagsarg & SS_PROMPTFORTO)
 	  i = optionally_enter(*tobufp, -FOOTER_ROWS(ps_global),
 				0, resize_len,
 				prmpt_who
@@ -2390,8 +2511,6 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 	   {void (*redraw) () = ps_global->redrawer;
 	    char  *returned_addr = NULL;
 	    int    len;
-	    char  *errbuf, *addr, prompt[200];
-	    int    tolen;
 
 	    if(i == 2){
 		int got_something = 0;
@@ -2439,9 +2558,9 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 		    if(used_tobufval)
 		      *used_tobufval = cpystr(addr);
 
-		    strings2outgoing(&header, body, NULL);
+		    strings2outgoing(&header, body, NULL, NULL);
 
-		    if(prompt_for_to 
+		    if((flagsarg & SS_PROMPTFORTO) 
 		       && ((x = check_addresses(&header)) == CA_BAD 
 			   || (x == CA_EMPTY && F_OFF(F_FCC_ON_BOUNCE,
 						      ps_global))))
@@ -2449,7 +2568,7 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 		      continue;
 			
 		    /* confirm address */
-		    if(prompt_for_to){
+		    if(flagsarg & SS_PROMPTFORTO){
 			char dsn_string[30];
 			int  dsn_label = 0, dsn_show, i;
 			int  verbose_label = 0;
@@ -2619,13 +2738,28 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 		    if(addr)
 		      fs_give((void **)&addr);
 
-		    if(!prompt_for_to || sendit){
+		    if(!(flagsarg & SS_PROMPTFORTO) || sendit){
 			char *fcc = NULL;
 			CONTEXT_S *fcc_cntxt = NULL;
 
 			if(F_ON(F_FCC_ON_BOUNCE, ps_global)){
-			    fcc = ba_fcc.tptr;
+			    if(ba_fcc.tptr)
+			      fcc = cpystr(ba_fcc.tptr);
+
 			    set_last_fcc(fcc);
+
+			    /*
+			     * If special name "inbox" then replace it with the
+			     * real inbox path.
+			     */
+			    if(ps_global->VAR_INBOX_PATH
+			       && strucmp(fcc, ps_global->inbox_name) == 0){
+				char *replace_fcc;
+
+				replace_fcc = cpystr(ps_global->VAR_INBOX_PATH);
+				fs_give((void **)&fcc);
+				fcc = replace_fcc;
+			    }
 			}
 
 			/*---- Check out fcc -----*/
@@ -2635,8 +2769,10 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 			    if(!(lmc.so = open_fcc(fcc, &fcc_cntxt,
 						     0, NULL, NULL))){
 				dprint(4,(debugfile,"can't open fcc, cont\n"));
-				if(!prompt_for_to){
+				if(!(flagsarg & SS_PROMPTFORTO)){
 				    retval = -1;
+				    fs_give((void **)&fcc);
+				    fcc = NULL;
 				    goto finish;
 				}
 				else
@@ -2656,7 +2792,7 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 			}
 
 			if(outgoing->to || outgoing->cc || outgoing->bcc)
-			  result = call_mailer(&header, *body);
+			  result = call_mailer(&header, *body, NULL);
 			else
 			  result = 0;
 
@@ -2676,7 +2812,10 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 
 				/* Now actually copy to fcc folder and close */
 				fcc_result = 
-				  write_fcc(fcc,fcc_cntxt,lmc.so,NULL,label);
+				  write_fcc(fcc, fcc_cntxt, lmc.so, NULL,
+					    label,
+					    F_ON(F_MARK_FCC_SEEN, ps_global)
+						? "\\SEEN" : NULL);
 			    }
 			    else if(result == 0){
 				q_status_message(SM_ORDER,3,5,
@@ -2691,7 +2830,7 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 
 			if(result < 0){
 			    dprint(1, (debugfile, "Bounce failed\n"));
-			    if(!prompt_for_to)
+			    if(!(flagsarg & SS_PROMPTFORTO))
 			      retval = -1;
 			    else
 			      continue;
@@ -2700,11 +2839,31 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 			  if(!fcc)
 			    q_status_message(SM_ORDER, 0, 3, 
 					     "Message sent");
-			  else
-			    q_status_message2(SM_ORDER, 0, 3, 
-				  "Message sent and %scopied to \"%s\"",
-					      fcc_result ? "":"NOT ", fcc);
+			  else{
+			      int avail = ps_global->ttyo->screen_cols-2;
+			      int need, fcclen;
+			      char *part1 = "Message sent and ";
+			      char *part2 = fcc_result ? "" : "NOT ";
+			      char *part3 = "copied to ";
+			      fcclen = strlen(fcc);
+
+			      need = 2 + strlen(part1) + strlen(part2) +
+				     strlen(part3) + fcclen;
+
+			      if(need > avail && fcclen > 6)
+				fcclen -= min(fcclen-6, need-avail);
+
+			      q_status_message4(SM_ORDER, 0, 3,
+						"%.200s%.200s%.200s\"%.200s\"",
+						part1, part2, part3,
+						short_str(fcc,
+							  (char *)tmp_20k_buf,
+							  fcclen, FrontDots));
+			  }
 			} 
+
+			if(fcc)
+			  fs_give((void **)&fcc);
 		    }
 		    else{
 			q_status_message(SM_ORDER, 0, 3, "Send cancelled");
@@ -2713,11 +2872,11 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval,
 		}
 		else{
 		    q_status_message1(SM_ORDER | SM_DING, 3, 5,
-				      "Error in address: %s", errbuf);
+				      "Error in address: %.200s", errbuf);
 		    if(errbuf)
 		      fs_give((void **)&errbuf);
 
-		    if(!prompt_for_to)
+		    if(!(flagsarg & SS_PROMPTFORTO))
 		      retval = -1;
 		    else
 		      continue;
@@ -2821,15 +2980,15 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
     PINEFIELD *custom;
     int        sticky_fcc;
 {
-    int			i, fixed_cnt, total_cnt, index,
+    int			i, fixed_cnt, total_cnt, index, hibit_entered,
 			editor_result = 0, body_start = 0, use_news_order = 0;
     char	       *p, *addr, *fcc, *fcc_to_free = NULL;
     char	       *start_here_name = NULL;
     char	       *title = NULL;
     struct headerentry *he, *headents, *he_to, *he_fcc, *he_news, *he_lcc,
 		       *he_from = NULL;
-    PINEFIELD          *pfields, *pf, *pf_nobody = NULL, *pf_ref = NULL,
-		       *pf_fcc = NULL, *pf_err, *pf_uid, *pf_curpos,
+    PINEFIELD          *pfields, *pf, *pf_nobody = NULL, *pf_smtp_server,
+		       *pf_fcc = NULL, *pf_err, *pf_uid, *pf_mbox, *pf_curpos,
 		       *pf_ourrep, *pf_ourhdrs, **sending_order;
     METAENV             header;
     ADDRESS            *lcc_addr = NULL;
@@ -2887,13 +3046,14 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 				? ps_global->VAR_EDITOR : NULL;
     pbf->alt_spell     = (ps_global->VAR_SPELLER && ps_global->VAR_SPELLER[0])
 				? ps_global->VAR_SPELLER : NULL;
-    pbf->quote_str     = reply ? reply->prefix : "> ";
+    pbf->always_spell_check = (F_ON(F_ALWAYS_SPELL_CHECK, ps_global));
+    pbf->quote_str     = reply && reply->prefix ? reply->prefix : "> ";
     pbf->edit_offset   = 0;
     title               = cpystr(set_titlebar(editor_title,
 				    ps_global->mail_stream,
 				    ps_global->context_current,
 				    ps_global->cur_folder,ps_global->msgmap, 
-				    0, FolderName, 0, 0));
+				    0, FolderName, 0, 0, NULL));
     pbf->pine_anchor   = title;
 
 #if	defined(DOS) || defined(OS2)
@@ -3049,7 +3209,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
     sending_order = (PINEFIELD **)fs_get((size_t) i);
     memset(sending_order, 0, (size_t) i);
 
-    pbf->headents       = headents;
+    pbf->headents        = headents;
     header.env           = outgoing;
     header.local         = pfields;
     header.sending_order = sending_order;
@@ -3092,8 +3252,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	static int news_order[] = {
 	    N_FROM, N_REPLYTO, N_NEWS, N_TO, N_CC, N_BCC, N_FCC,
 	    N_LCC, N_ATTCH, N_SUBJ, N_REF, N_DATE, N_INREPLY,
-	    N_MSGID, N_NOBODY, N_POSTERR, N_RPLUID, N_CURPOS, N_OURREPLYTO,
-	    N_OURHDRS
+	    N_MSGID, N_NOBODY, N_POSTERR, N_RPLUID, N_RPLMBOX,
+	    N_SMTP, N_CURPOS, N_OURREPLYTO, N_OURHDRS
 #if	!(defined(DOS) || defined(OS2)) || defined(NOAUTH)
 	    , N_SENDER
 #endif
@@ -3202,7 +3362,6 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    }
 	    else if(index == N_REF){
 		sending_order[NN+11]	= pf;
-		pf_ref			= pf;
 		pf->text		= &outgoing->references;
 		pf->he			= NULL;
 	    }
@@ -3218,20 +3377,32 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
 	    }
-	    else if(index == N_CURPOS){
+	    else if(index == N_RPLMBOX){
 		sending_order[NN+14]	= pf;
+		pf_mbox			= pf;
+		pf->text		= &pf->textbuf;
+		pf->he			= NULL;
+	    }
+	    else if(index == N_SMTP){
+		sending_order[NN+15]	= pf;
+		pf_smtp_server		= pf;
+		pf->text		= &pf->textbuf;
+		pf->he			= NULL;
+	    }
+	    else if(index == N_CURPOS){
+		sending_order[NN+16]	= pf;
 		pf_curpos		= pf;
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
 	    }
 	    else if(index == N_OURREPLYTO){
-		sending_order[NN+15]	= pf;
+		sending_order[NN+17]	= pf;
 		pf_ourrep		= pf;
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
 	    }
 	    else if(index == N_OURHDRS){
-		sending_order[NN+16]	= pf;
+		sending_order[NN+18]	= pf;
 		pf_ourhdrs		= pf;
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
@@ -3295,7 +3466,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 			    SIZEOF_20KBUF,
 			    (unsigned char *)(ps_global->VAR_EMPTY_HDR_MSG
 						? ps_global->VAR_EMPTY_HDR_MSG
-						: "Undisclosed recipients"),
+						: "undisclosed-recipients"),
 			    ps_global->VAR_CHAR_SET));
 		    pf->addr		= &nobody_addr;
 		}
@@ -3511,9 +3682,6 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		he->display_it = 1;  /* start this off showing */
 	    }
 
-	    if(!outgoing->return_path)
-	      outgoing->return_path = rfc822_cpy_adr(outgoing->from);
-
 	    if(pf->textbuf)		/* free default value in any case */
 	      fs_give((void **)&pf->textbuf);
 
@@ -3556,6 +3724,9 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	      case Combine:
 		pf->scratch = pf->textbuf;
 		pf->textbuf = NULL;
+		if(outgoing->subject)
+		  fs_give((void **)&outgoing->subject);
+
 		break;
 
 	      case UseAsDef:
@@ -3731,7 +3902,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	q_status_message(SM_ORDER,0,5,
 		     "No default-composer-hdrs matched, displaying defaults");
 	for(i = 0, pf = header.local; pf; pf = pf->next, i++)
-	  if(i == N_TO || i == N_CC || i == N_SUBJ || i == N_ATTCH)
+	  if((i == N_TO || i == N_CC || i == N_SUBJ || i == N_ATTCH)
+	      && pf->he)
 	    pf->he->rich_header = 0;
     }
 
@@ -3772,7 +3944,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    pbf->edit_offset = redraft_pos->offset;
 	    /* set the start_here bit in correct header */
 	    for(pf = header.local; pf && pf->name; pf = pf->next)
-	      if(strcmp(pf->name, redraft_pos->hdrname) == 0){
+	      if(strcmp(pf->name, redraft_pos->hdrname) == 0
+		  && pf->he){
 		  pf->he->start_here = 1;
 		  break;
 	      }
@@ -3781,16 +3954,11 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    if(!pf || !pf->name)
 	      pbf->pine_flags |= P_BODY;
 	}
-	else if(reply){
+	else if(reply && reply->flags != REPLY_FORW){
 	    pbf->pine_flags |= P_BODY;
 	}
 
 	/* in case these were turned on in previous pass through loop */
-	if(pf_ref){
-	    pf_ref->writehdr     = 0;
-	    pf_ref->localcopy    = 0;
-	}
-
 	if(pf_nobody){
 	    pf_nobody->writehdr  = 0;
 	    pf_nobody->localcopy = 0;
@@ -3838,7 +4006,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	 * on the first line which isn't filled in. If it isn't, then we
 	 * don't move the cursor, mostly for back-compat.
 	 */
-	if(!reply && !redraft_pos && !(pbf->pine_flags & P_BODY) && he_from &&
+	if((!reply || reply->flags == REPLY_FORW) &&
+	   !redraft_pos && !(pbf->pine_flags & P_BODY) && he_from &&
 	   (he_from->display_it || !he_from->rich_header)){
 	    for(pf = header.local; pf && pf->name; pf = pf->next)
 	      if(pf->he &&
@@ -3866,6 +4035,9 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 
 	cancel_busy_alarm(-1);
         flush_status_messages(1);
+
+	pbf->hibit_entered = &hibit_entered;
+	*pbf->hibit_entered = 0;
     
 	/* turn off user input timeout when in composer */
 	saved_user_timeout = ps_global->hours_to_timeout;
@@ -3897,7 +4069,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	  free_attachment_list(&pbf->attachments);
 
         /* Turn strings back into structures */
-        strings2outgoing(&header, body, pbf->attachments);
+        strings2outgoing(&header, body, pbf->attachments,
+			 reply ? reply->orig_charset : NULL);
   
         /* Make newsgroups NULL if it is "" (so won't show up in headers) */
 	if(outgoing->newsgroups){
@@ -3926,8 +4099,20 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	if(outgoing->date)			/* update old date */
 	  fs_give((void **)&(outgoing->date));
 
+	if(F_ON(F_QUELL_TIMEZONE, ps_global))
+	  mail_parameters(NULL, SET_DISABLE822TZTEXT, (void *) TRUE);
+
 	rfc822_date(tmp_20k_buf);		/* format and copy new date */
+	if(F_ON(F_QUELL_TIMEZONE, ps_global))
+	  mail_parameters(NULL, SET_DISABLE822TZTEXT, (void *) FALSE);
+
 	outgoing->date = cpystr(tmp_20k_buf);
+
+	/* Set return_path based on From which is going to be used */
+	if(outgoing->return_path)
+	  mail_free_address(&outgoing->return_path);
+
+	outgoing->return_path = rfc822_cpy_adr(outgoing->from);
 
 	/*
 	 * Don't ever believe the sender that is there.
@@ -3943,12 +4128,14 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	 *
 	 * Don't add a personal_name since the user can change that.
 	 */
-	if(!outgoing->from
-	   || !outgoing->from->mailbox
-	   || strucmp(outgoing->from->mailbox, ps_global->VAR_USER_ID) != 0
-	   || !outgoing->from->host
-	   || !(strucmp(outgoing->from->host, ps_global->localdomain) == 0
-	   || strucmp(outgoing->from->host, ps_global->hostname) == 0)){
+	if(F_OFF(F_DISABLE_SENDER, ps_global)
+	   &&
+	   (!outgoing->from
+	    || !outgoing->from->mailbox
+	    || strucmp(outgoing->from->mailbox, ps_global->VAR_USER_ID) != 0
+	    || !outgoing->from->host
+	    || !(strucmp(outgoing->from->host, ps_global->localdomain) == 0
+	    || strucmp(outgoing->from->host, ps_global->hostname) == 0))){
 
 	    outgoing->sender	      = mail_newaddr();
 	    outgoing->sender->mailbox = cpystr(ps_global->VAR_USER_ID);
@@ -4058,7 +4245,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		    if(!so_puts(lmc.so, tmp_20k_buf)){
 		      if(editor_result & COMP_CANCEL)
 			q_status_message2(SM_ORDER | SM_DING, 3, 3,
-					  "Can't write \"%s\": %s",
+					  "Can't write \"%.200s\": %.200s",
 					  folder, error_description(errno));
 		      else
 			dprint(1, (debugfile, "* * * CAN'T WRITE %s: %s\n",
@@ -4089,7 +4276,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		      break;
 		  }
 		
-		/* If there wasn't one, ":" we start in the body. */
+		/* If there wasn't one, ":" means we start in the body. */
 		if(!start_here_name || !*start_here_name)
 		  start_here_name = ":";
 
@@ -4113,12 +4300,6 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 
 	    if(lmc.so){
 		size_t sz;
-
-		/* Turn on references header */
-		if(outgoing->references){
-		    pf_ref->writehdr  = 1;
-		    pf_ref->localcopy = 1;
-		}
 
 		/* copy fcc line to postponed or interrupted folder */
 	        if(pf_fcc)
@@ -4154,6 +4335,17 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 			    i, reply->data.uid.validity,
 			    tmp_20k_buf, reply->mailbox);
 		    pf_uid->textbuf   = cpystr(uidbuf);
+
+		    /*
+		     * Logically, this ought to be part of pf_uid, but this
+		     * was added later and so had to be in a separate header
+		     * for backwards compatibility.
+		     */
+		    pf_mbox->writehdr  = 1;
+		    pf_mbox->localcopy = 1;
+		    pf_mbox->textbuf   = cpystr(reply->origmbox
+						  ? reply->origmbox
+						  : reply->mailbox);
 		}
 
 		/* Save cursor position */
@@ -4182,6 +4374,40 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		      pf_ourrep->textbuf   = cpystr("Empty");
 		}
 
+		/* Save the role-specific smtp server */
+		if(role && role->smtp && role->smtp[0]){
+		    char  *q, *smtp = NULL;
+		    char **lp;
+		    size_t len = 0;
+
+		    /*
+		     * Turn the list of smtp servers into a space-
+		     * delimited list in a single string.
+		     */
+		    for(lp = role->smtp; (q = *lp) != NULL; lp++)
+		      len += (strlen(q) + 1);
+
+		    if(len){
+			smtp = (char *) fs_get(len * sizeof(char));
+			smtp[0] = '\0';
+			for(lp = role->smtp; (q = *lp) != NULL; lp++){
+			    if(lp != role->smtp)
+			      strncat(smtp, " ", len-strlen(smtp));
+
+			    strncat(smtp, q, len-strlen(smtp));
+			}
+			
+			smtp[len-1] = '\0';
+		    }
+		    
+		    pf_smtp_server->writehdr  = 1;
+		    pf_smtp_server->localcopy = 1;
+		    if(smtp)
+		      pf_smtp_server->textbuf = smtp;
+		    else
+		      pf_smtp_server->textbuf = cpystr("");
+		}
+
 		/*
 		 * Write the list of custom headers to the
 		 * X-Our-Headers header so that we can recover the
@@ -4192,18 +4418,18 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		  sz += strlen(pf->name) + 1;
 
 		if(sz){
-		    char *p;
+		    char *q;
 
 		    pf_ourhdrs->writehdr  = 1;
 		    pf_ourhdrs->localcopy = 1;
 		    pf_ourhdrs->textbuf = (char *)fs_get(sz);
 		    memset(pf_ourhdrs->textbuf, 0, sz);
-		    p = pf_ourhdrs->textbuf;
+		    q = pf_ourhdrs->textbuf;
 		    for(pf = header.custom; pf && pf->name; pf = pf->next){
 			if(pf != header.custom)
-			  sstrcpy(&p, ",");
+			  sstrcpy(&q, ",");
 
-			sstrcpy(&p, pf->name);
+			sstrcpy(&q, pf->name);
 		    }
 		}
 
@@ -4224,6 +4450,14 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 			char	*err;
 			STORE_S *hup_so;
 			gf_io_t	 gc, pc;
+			int      we_cancel = 0;
+
+			if(editor_result & COMP_CANCEL){
+			    sprintf(tmp_20k_buf,
+				    "Saving to \"%.100s\"", folder);
+			    we_cancel = busy_alarm(1, (char *)tmp_20k_buf,
+						   NULL, 0);
+			}
 
 			if(hup_so =
 			    so_get(FileStar, folder, WRITE_ACCESS|OWNER_ONLY)){
@@ -4244,10 +4478,13 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 			else
 			  dprint(1, (debugfile, "*** CAN'T CREATE %s: %s\n",
 				     folder, error_description(errno)));
+			
+			if(we_cancel)
+			  cancel_busy_alarm(-1);
 		    }
 		    else
 		      fcc_result = write_fcc(folder, fcc_cntxt,
-					     lmc.so, NULL, label);
+					     lmc.so, NULL, label, NULL);
 		}
 
 		so_give(&lmc.so);
@@ -4286,7 +4523,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		if(fcc_result && folder)
 		  lc = last_cmpnt(folder);
 
-		q_status_message3(SM_ORDER, 0, 3, "Message cancelled%s%s%s",
+		q_status_message3(SM_ORDER, 0, 3,
+				  "Message cancelled%.200s%.200s%.200s",
 				  (lc && *lc) ? " and copied to \"" : "",
 				  (lc && *lc) ? lc : "",
 				  (lc && *lc) ? "\" file" : "");
@@ -4342,6 +4580,19 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 
             /*---- Check out fcc -----*/
             if(fcc && *fcc){
+		/*
+		 * If special name "inbox" then replace it with the
+		 * real inbox path.
+		 */
+		if(ps_global->VAR_INBOX_PATH
+		   && strucmp(fcc, ps_global->inbox_name) == 0){
+		    char *replace_fcc;
+
+		    replace_fcc = cpystr(ps_global->VAR_INBOX_PATH);
+		    fs_give((void **)&fcc);
+		    fcc = replace_fcc;
+		}
+
 		lmc.all_written = lmc.text_written = 0;
 /*		lmc.text_only = F_ON(F_NO_FCC_ATTACH, ps_global) != 0;*/
 	        if(!(lmc.so = open_fcc(fcc, &fcc_cntxt, 0, NULL, NULL))){
@@ -4364,27 +4615,18 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    else
 	      lmc.so = NULL;
 
-            /*---- recompute message-id to encode body info stats ----*/
-            update_message_id(outgoing, mime_stats(*body));
-
             /*---- Take care of any requested prefiltering ----*/
 	    if(sending_filter_requested
 	       && !filter_message_text(sending_filter_requested, outgoing,
 				       *body, &orig_so, &header)){
 		q_status_message1(SM_ORDER, 3, 3,
-				 "Problem filtering!  Nothing sent%s.",
+				 "Problem filtering!  Nothing sent%.200s.",
 				 fcc ? " or saved to fcc" : "");
 		continue;
 	    }
 
             /*------ Actually post  -------*/
             if(outgoing->newsgroups){
-		/* Turn on references header */
-		if(outgoing->references){
-		    pf_ref->writehdr  = 1;
-		    pf_ref->localcopy = 1;
-		}
-
 		if(news_poster(&header, *body) < 0){
 		    dprint(1, (debugfile, "Post failed, continuing\n"));
 		    continue;
@@ -4440,9 +4682,20 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		    /*------- Actually mail the message ------*/
 		    if(valid_addr == CA_OK 
 		       && (outgoing->to || outgoing->cc
-			   || outgoing->bcc || lcc_addr))
-		      result |= (call_mailer(&header, *body) > 0)
-				  ? P_MAIL_WIN : P_MAIL_LOSE;
+			   || outgoing->bcc || lcc_addr)){
+			char **alt_smtp = NULL;
+
+			if(role && role->smtp){
+			    if(ps_global->FIX_SMTP_SERVER
+			       && ps_global->FIX_SMTP_SERVER[0])
+			      q_status_message(SM_ORDER | SM_DING, 5, 5, "Use of a role-defined smtp-server is administratively prohibited");
+			    else
+			      alt_smtp = role->smtp;
+			}
+
+		        result |= (call_mailer(&header, *body, alt_smtp) > 0)
+				    ? P_MAIL_WIN : P_MAIL_LOSE;
+		    }
 
 		    /*----- Was there an fcc involved? -----*/
 		    if(lmc.so){
@@ -4459,7 +4712,9 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 
 			    /*-- Now actually copy to fcc folder and close --*/
 			    result |= (write_fcc(fcc, fcc_cntxt, lmc.so,
-						 NULL, label))
+						 NULL, label,
+					      F_ON(F_MARK_FCC_SEEN, ps_global)
+						  ? "\\SEEN" : NULL))
 					? P_FCC_WIN : P_FCC_LOSE;
 			}
 			else if(!(result & (P_MAIL_BITS | P_NEWS_BITS))){
@@ -4492,7 +4747,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		}
 		else{
 		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
-				      "Can't fork for send: %s",
+				      "Can't fork for send: %.200s",
 				      error_description(errno));
 		    if(ps_global->post->fcc)
 		      fs_give((void **) &ps_global->post->fcc);
@@ -4509,9 +4764,20 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 
             /*------- Actually mail the message ------*/
             if(valid_addr == CA_OK
-	       && (outgoing->to || outgoing->cc || outgoing->bcc || lcc_addr))
-	      result |= (call_mailer(&header, *body) > 0)
-			  ? P_MAIL_WIN : P_MAIL_LOSE;
+	       && (outgoing->to || outgoing->cc || outgoing->bcc || lcc_addr)){
+		char **alt_smtp = NULL;
+
+		if(role && role->smtp){
+		    if(ps_global->FIX_SMTP_SERVER
+		       && ps_global->FIX_SMTP_SERVER[0])
+		      q_status_message(SM_ORDER | SM_DING, 5, 5, "Use of a role-defined smtp-server is administratively prohibited");
+		    else
+		      alt_smtp = role->smtp;
+		}
+
+		result |= (call_mailer(&header, *body, alt_smtp) > 0)
+			    ? P_MAIL_WIN : P_MAIL_LOSE;
+	    }
 
 	    /*----- Was there an fcc involved? -----*/
             if(lmc.so){
@@ -4526,7 +4792,9 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		      sprintf(label + 3, " to %.40s", fcc);
 
 		    /*-- Now actually copy to fcc folder and close --*/
-		    result |= (write_fcc(fcc, fcc_cntxt, lmc.so, NULL, label))
+		    result |= (write_fcc(fcc, fcc_cntxt, lmc.so, NULL, label,
+					 F_ON(F_MARK_FCC_SEEN, ps_global)
+					    ? "\\SEEN" : NULL))
 				? P_FCC_WIN : P_FCC_LOSE;
 		}
 		else if(!(result & (P_MAIL_BITS | P_NEWS_BITS))){
@@ -4620,7 +4888,6 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 int
 postpone_prompt()
 {
-    int    ret = 1;
     static ESCKEY_S pstpn_form_opt[] = { {'p', 'p', "P", "Postponed Folder"},
 					 {'f', 'f', "F", "Form Letter Folder"},
 					 {-1, 0, NULL, NULL} };
@@ -4777,25 +5044,38 @@ pine_send_status(result, fcc_name, buf, goodorbad)
     char *buf;
     int  *goodorbad;
 {
-    sprintf(buf, "Message %s%s%s%s%s%s%s.",
-	    (result & P_NEWS_WIN)
-	       ? "posted" 
-	       : (result & P_NEWS_LOSE)
-	            ? "NOT posted" : "",
-	    ((result & P_NEWS_BITS) && (result & P_MAIL_BITS)
+    int   avail = ps_global->ttyo->screen_cols - 2;
+    int   need, lenfcc;
+    char *part1, *part2, *part3, *part4;
+    char  fbuf[MAILTMPLEN+1];
+
+    part1 = (result & P_NEWS_WIN)
+	      ? "posted"
+	      : (result & P_NEWS_LOSE) ? "NOT posted" : "";
+    part2 = ((result & P_NEWS_BITS) && (result & P_MAIL_BITS)
 	     && (result & P_FCC_BITS))
 	      ? ", "
 	      : ((result & P_NEWS_BITS) && (result & P_MAIL_BITS))
-	          ? " and " : "",
-	    (result & P_MAIL_WIN)
+	          ? " and " : "";
+    part3 = (result & P_MAIL_WIN)
 	      ? "sent"
-	      : (result & P_MAIL_LOSE)
-	          ? "NOT SENT" : "",
-	    ((result & (P_MAIL_BITS | P_NEWS_BITS)) && (result & P_FCC_BITS))
+	      : (result & P_MAIL_LOSE) ? "NOT SENT" : "";
+    part4 = ((result & (P_MAIL_BITS | P_NEWS_BITS)) && (result & P_FCC_BITS))
 	      ? " and copied to " 
-	      : (result & P_FCC_WIN) ? "ONLY copied to " : "",
+	      : (result & P_FCC_WIN) ? "ONLY copied to " : "";
+    lenfcc = min(sizeof(fbuf)-1, (result & P_FCC_WIN) ? strlen(fcc_name) : 0);
+    
+    need = 9 + strlen(part1) + strlen(part2) + strlen(part3) + strlen(part4) +
+	   ((result & P_FCC_WIN) ? 2 : 0) + lenfcc;
+
+    if(need > avail && lenfcc > 6)
+      lenfcc -= min(lenfcc-6, need-avail);
+
+    sprintf(buf, "Message %.20s%.20s%.20s%.20s%.20s%s%.20s.",
+	    part1, part2, part3, part4,
 	    (result & P_FCC_WIN) ? "\"" : "",
-	    (result & P_FCC_WIN) ? fcc_name  : "",
+	    short_str((result & P_FCC_WIN) ? fcc_name : "",
+		      fbuf, lenfcc, FrontDots), 
 	    (result & P_FCC_WIN) ? "\"" : "");
 
     if(goodorbad)
@@ -4832,7 +5112,7 @@ check_addresses(header)
 			   || (F_ON(F_COMPOSE_REJECTS_UNQUAL, ps_global)
 			       && a->host[0] == '@'))){
 		q_status_message2(SM_ORDER, 4, 7,
-				  "Can't send to address %s: %s",
+				  "Can't send to address %.200s: %.200s",
 				  a->mailbox,
 				  (a->host[0] == '.')
 				    ? a->host
@@ -5025,7 +5305,7 @@ message_format_for_pico(n, f)
     reply_delimiter(e, f);
 
     /* actually write message text */
-    if(!format_message(mn_m2raw(ps_global->msgmap, n), e, b,
+    if(!format_message(mn_m2raw(ps_global->msgmap, n), e, b, NULL,
 		       FM_NEW_MESS | FM_DISPLAY | FM_NOCOLOR, f)){
 	q_status_message(SM_ORDER|SM_DING,3,3,"Error inserting Message");
 	flush_status_messages(0);
@@ -5530,7 +5810,7 @@ mime_type_for_pico(file)
     if(body->type != TYPEOTHER){
 	rv = 1;
 	q_status_message3(SM_ORDER, 0, 3,
-	    "File %s attached as type %s/%s", file,
+	    "File %.200s attached as type %.200s/%.200s", file,
 	    body_types[body->type],
 	    body->subtype ? body->subtype : rfc822_default_subtype(body->type));
     }
@@ -5583,7 +5863,7 @@ upload_msg_to_pico(fname, size)
 	(void) close_system_pipe(&syspipe);
 	if((l = name_file_size(fname)) < 0L){
 	    q_status_message2(SM_ORDER | SM_DING, 3, 4,
-			      "Error determining size of %s: %s", fname,
+			      "Error determining size of %.200s: %.200s", fname,
 			      fnp = error_description(errno));
 	    dprint(1, (debugfile,
 		       "!!! Upload cmd \"%s\" failed for \"%s\": %s\n",
@@ -5633,7 +5913,7 @@ update_answered_flags(reply)
     MAILSTREAM *stream = NULL;
 
     /* nothing to flip in a pseudo reply */
-    if(reply && reply->flags != REPLY_PSEUDO){
+    if(reply && reply->flags != REPLY_PSEUDO && reply->flags != REPLY_FORW){
 	/*
 	 * If an established stream will do, use it, else
 	 * build one unless we have an array of msgno's...
@@ -5648,9 +5928,34 @@ update_answered_flags(reply)
 	else if(reply->flags == REPLY_MSGNO)
 	  return;
 
+	/*
+	 * This is here only for people who ran pine4.42 and are
+	 * processing postponed mail from 4.42 now. Pine4.42 saved the
+	 * original mailbox name in the canonical name's position in
+	 * the postponed-msgs folder so it won't match the canonical
+	 * name from the stream.
+	 */
+	if(!stream && (!reply->origmbox ||
+		       (reply->mailbox &&
+		        !strcmp(reply->origmbox, reply->mailbox)))){
+	    if(ps_global->mail_stream
+	       && same_stream_and_mailbox(reply->mailbox,
+				          ps_global->mail_stream))
+	      stream = ps_global->mail_stream;
+	    else if(ps_global->inbox_stream
+		    && ps_global->inbox_stream != ps_global->mail_stream
+		    && same_stream_and_mailbox(reply->mailbox,
+					       ps_global->inbox_stream))
+	      stream = ps_global->inbox_stream;
+	}
+	   
+
 	we_cancel = busy_alarm(1, "Updating \"Answered\" Flags", NULL, 1);
 	if(!stream){
-	    if(stream = pine_mail_open(NULL, reply->mailbox, OP_SILENT)){
+	    if(stream = pine_mail_open(NULL,
+				       reply->origmbox ? reply->origmbox
+						       : reply->mailbox,
+				       OP_SILENT)){
 		ourstream++;
 	    }
 	    else{
@@ -5677,10 +5982,48 @@ update_answered_flags(reply)
 	}
 
 	if(ourstream)
-	  mail_close(stream);		/* clean up dangling stream */
+	  pine_mail_close(stream);	/* clean up dangling stream */
 
 	if(we_cancel)
 	  cancel_busy_alarm(0);
+    }
+}
+
+
+/*
+ * Take the PicoText pointed to and replace it with PicoText which has been
+ * filtered to change the EUC Japanese (unix Pine) or the Shift-JIS (PC-Pine)
+ * into ISO-2022-JP.
+ */
+void
+filter_msgtxt_euc_to_2022_jp(body)
+    BODY *body;
+{
+    STORE_S **so = (STORE_S **)((body->type == TYPEMULTIPART)
+				? &body->nested.part->body.contents.text.data
+				: &body->contents.text.data);
+    STORE_S  *filtered_so = NULL; 
+    gf_io_t   pc, gc;
+    char     *errstr;
+
+    if(filtered_so = so_get(PicoText, NULL, EDIT_ACCESS)){
+	so_seek(*so, 0L, 0);
+	gf_filter_init();
+	gf_link_filter(gf_euc_to_2022_jp, NULL);
+	gf_set_so_readc(&gc, *so);
+	gf_set_so_writec(&pc, filtered_so);
+	if(errstr = gf_pipe(gc, pc)){
+	    so_give(&filtered_so);
+	    dprint(1, (debugfile,
+		       "Error with ISO-2022-JP conversion: %s\n", errstr));
+	    return;
+	}
+
+	gf_clear_so_readc(*so);
+	gf_clear_so_writec(filtered_so);
+
+	so_give(so);
+	*so = filtered_so;
     }
 }
 
@@ -5912,7 +6255,7 @@ filter_message_text(fcmd, outgoing, body, old, header)
 	if(tmp_so)
 	  so_give(&tmp_so);
 
-	q_status_message1(SM_ORDER | SM_DING, 3, 6, "Problem filtering: %s",
+	q_status_message1(SM_ORDER | SM_DING, 3, 6, "Problem filtering: %.200s",
 			  errstr);
 	dprint(1, (debugfile, "Filter FAILED: %s\n", errstr));
     }
@@ -5960,8 +6303,7 @@ void
 phone_home(addr)
     char *addr;
 {
-    int	      loser;
-    char     *tmpp, tmp[MAX_ADDRESS];
+    char      tmp[MAX_ADDRESS];
     ENVELOPE *outgoing;
     BODY     *body;
 
@@ -5984,9 +6326,9 @@ phone_home(addr)
     body->type = TYPETEXT;
 
     if(body->contents.text.data = (void *)so_get(PicoText,NULL,EDIT_ACCESS)){
-	so_puts((STORE_S *)body->contents.text.data, "Document request: Pine");
+	so_puts((STORE_S *)body->contents.text.data, "Document request: ");
 	so_puts((STORE_S *)body->contents.text.data, "Pine-");
-	so_puts((STORE_S *)body->contents.text.data, PINE_VERSION);
+	so_puts((STORE_S *)body->contents.text.data, pine_version);
 	if(ps_global->first_time_user)
 	  so_puts((STORE_S *)body->contents.text.data, " for New Users");
 
@@ -5997,7 +6339,7 @@ phone_home(addr)
 	      && ps_global->VAR_NNTP_SERVER[0][0])
 	  so_puts((STORE_S *)body->contents.text.data, " and NNTP");
 
-	loser = pine_simple_send(outgoing, &body, NULL, NULL, NULL, 0);
+	(void)pine_simple_send(outgoing, &body, NULL, NULL, NULL, SS_NULLRP);
 
 	q_status_message(SM_ORDER, 0, 3, "Thanks for being counted!");
     }
@@ -6063,11 +6405,12 @@ Args: header -- full header (envelope and local parts) of message to send
 Returns: -1 if failed, 1 if succeeded
 ----*/      
 int
-call_mailer(header, body)
+call_mailer(header, body, alt_smtp_servers)
     METAENV *header;
     BODY    *body;
+    char   **alt_smtp_servers;
 {
-    char         error_buf[100], *error_mess = NULL, *postcmd;
+    char         error_buf[200], *error_mess = NULL, *postcmd;
     ADDRESS     *a;
     ENVELOPE	*fake_env = NULL;
     int          addr_error_count, we_cancel = 0;
@@ -6100,7 +6443,7 @@ call_mailer(header, body)
 			   send_bytes_to_send ? sent_percent : NULL, 1);
 
     /* try posting via local "<mta> <-t>" if specified */
-    if(mta_handoff(header, body, error_buf)){
+    if(mta_handoff(header, body, error_buf, sizeof(error_buf))){
 	if(error_buf[0])
 	  error_mess = error_buf;
 
@@ -6115,7 +6458,9 @@ call_mailer(header, body)
        smtp_opts |= SOP_8BITMIME;
 
 #ifdef	DEBUG
+#ifndef DEBUGJOURNAL
     if(debug > 5 || verbose_requested)
+#endif
       smtp_opts |= SOP_DEBUG;
 #endif
 
@@ -6188,12 +6533,25 @@ call_mailer(header, body)
 			   (void *) pine_smtp_verbose_out);
 
     /*
+     * We do this because we want mm_log to put the error message into
+     * c_client_error instead of showing it itself.
+     */
+    ps_global->noshow_error = 1;
+
+    /*
      * OK, who posts what?  We tried an mta_handoff above, but there
      * was either none specified or we decided not to use it.  So,
      * if there's an smtp-server defined anywhere, 
      */
-    if(ps_global->VAR_SMTP_SERVER && ps_global->VAR_SMTP_SERVER[0]
-       && ps_global->VAR_SMTP_SERVER[0][0]){
+    if(alt_smtp_servers && alt_smtp_servers[0] && alt_smtp_servers[0][0]){
+	/*---------- SMTP ----------*/
+	dprint(4, (debugfile, "call_mailer: via TCP (%s)\n",
+		alt_smtp_servers[0]));
+	TIME_STAMP("smtp-open start (tcp)", 1);
+	sending_stream = smtp_open(alt_smtp_servers, smtp_opts);
+    }
+    else if(ps_global->VAR_SMTP_SERVER && ps_global->VAR_SMTP_SERVER[0]
+	    && ps_global->VAR_SMTP_SERVER[0][0]){
 	/*---------- SMTP ----------*/
 	dprint(4, (debugfile, "call_mailer: via TCP\n"));
 	TIME_STAMP("smtp-open start (tcp)", 1);
@@ -6213,6 +6571,8 @@ call_mailer(header, body)
 					SMTPTCPPORT, smtp_opts);
 /* BUG: should provide separate stderr output! */
     }
+
+    ps_global->noshow_error = 0;
 
     TIME_STAMP("smtp open", 1);
     if(sending_stream){
@@ -6303,7 +6663,7 @@ call_mailer(header, body)
 			    q_status_message(SM_ORDER, 4, 7, error_mess);
 
 			  error_mess = tidy_smtp_mess(a->error,
-						      "Mail not sent: %.60s",
+						      "Mail not sent: %.80s",
 						      error_buf);
 		      }
 
@@ -6328,7 +6688,7 @@ call_mailer(header, body)
 			    q_status_message(SM_ORDER, 4, 7, error_mess);
 
 			  error_mess = tidy_smtp_mess(a->error,
-						      "Mail not sent: %.60s",
+						      "Mail not sent: %.80s",
 						      error_buf);
 		      }
 
@@ -6353,9 +6713,11 @@ call_mailer(header, body)
 	sending_stream = NULL;
 	TIME_STAMP("smtp done", 1);
     }
-    else if(!error_mess)
-      sprintf(error_mess = error_buf, "Error sending: %.60s",
-	      ps_global->c_client_error);
+    else if(!error_mess){
+	sprintf(error_mess = error_buf, "Error sending%.2s%.80s",
+	        ps_global->c_client_error[0] ? ": " : "",
+		ps_global->c_client_error);
+    }
 
     if(verbose_file){
 	if(verbose_send_output){
@@ -6572,12 +6934,13 @@ or a disk folder.  The temp_storage is freed after it is written.
 An error message is produced if this fails.
   ----*/
 int
-write_fcc(fcc, fcc_cntxt, tmp_storage, stream, label)
+write_fcc(fcc, fcc_cntxt, tmp_storage, stream, label, flags)
      char	*fcc;
      CONTEXT_S	*fcc_cntxt;
      STORE_S	*tmp_storage;
      MAILSTREAM *stream;
      char	*label;
+     char       *flags;
 {
     STRING      msg;
     MAILSTREAM *fcc_stream;
@@ -6630,12 +6993,12 @@ write_fcc(fcc, fcc_cntxt, tmp_storage, stream, label)
     if(!fcc_stream && ps_global->mail_stream != ps_global->inbox_stream)
       fcc_stream = context_same_stream(cntxt, fcc, ps_global->inbox_stream);
 
-    if(!context_append(cntxt, fcc_stream, fcc, &msg)){
+    if(!context_append_full(cntxt, fcc_stream, fcc, flags, NULL, &msg)){
 	cancel_busy_alarm(-1);
 	we_cancel = 0;
 
 	q_status_message1(SM_ORDER | SM_DING, 3, 5,
-			  "Write to \"%s\" FAILED!!!", fcc);
+			  "Write to \"%.200s\" FAILED!!!", fcc);
 	dprint(1, (debugfile, "ERROR appending %s in \"%s\"",
 		   fcc, cntxt ? cntxt->context : "NULL"));
 	return(0);
@@ -6675,7 +7038,8 @@ char *
 tidy_smtp_mess(error, printstring, outbuf)
     char *error, *printstring, *outbuf;
 {
-    while(isdigit((unsigned char)*error) || isspace((unsigned char)*error))
+    while(isdigit((unsigned char)*error) || isspace((unsigned char)*error) ||
+	  (*error == '.' && isdigit((unsigned char)*(error+1))))
       error++;
 
     sprintf(outbuf, printstring, error);
@@ -6831,6 +7195,16 @@ outgoing2strings(header, bod, text, pico_a)
 		    if(*t == '&'){		/* find "leading" token */
 			int replacelen;
 
+			/*
+			 * Rfc822_cat has been changed so that it now quotes
+			 * this sometimes. So we have to look out for quotes
+			 * which confuse the decoder. Rfc822_base64 will
+			 * ignore the trailing quote so we don't have to
+			 * worry about that.
+			 */
+			if(t > pf->scratch && t[-1] == '\"')
+			  t[-1] = ' ';
+
 			*t++ = ' ';		/* replace token */
 			*p = '\0';		/* tie off string */
 			u = rfc822_base64((unsigned char *) t,
@@ -6850,6 +7224,25 @@ outgoing2strings(header, bod, text, pico_a)
 		      break;
 
 		removing_leading_white_space(pf->scratch);
+		if(pf->scratch){
+		    size_t l;
+
+		    /*
+		     * Replace control characters with ^C notation, unless
+		     * some conditions are met (see istrncpy).
+		     * If user doesn't edit, then we switch back to the
+		     * original version. If user does edit, then all bets
+		     * are off.
+		     */
+		    istrncpy((char *)tmp_20k_buf, pf->scratch, SIZEOF_20KBUF-1);
+		    tmp_20k_buf[SIZEOF_20KBUF-1] = '\0';
+		    if((l=strlen((char *)tmp_20k_buf)) > strlen(pf->scratch)){
+			fs_give((void **)&pf->scratch);
+			pf->scratch = (char *)fs_get((l+1) * sizeof(char));
+		    }
+
+		    strncpy(pf->scratch, (char *)tmp_20k_buf, l+1);
+		}
 	    }
 
 	    break;
@@ -6879,6 +7272,26 @@ outgoing2strings(header, bod, text, pico_a)
 
 		if(charset)
 		  fs_give((void **)&charset);
+
+		if(pf->scratch){
+		    size_t l;
+
+		    /*
+		     * Replace control characters with ^C notation, unless
+		     * some conditions are met (see istrncpy).
+		     * If user doesn't edit, then we switch back to the
+		     * original version. If user does edit, then all bets
+		     * are off.
+		     */
+		    istrncpy((char *)tmp_20k_buf, pf->scratch, SIZEOF_20KBUF-1);
+		    tmp_20k_buf[SIZEOF_20KBUF-1] = '\0';
+		    if((l=strlen((char *)tmp_20k_buf)) > strlen(pf->scratch)){
+			fs_give((void **)&pf->scratch);
+			pf->scratch = (char *)fs_get((l+1) * sizeof(char));
+		    }
+
+		    strncpy(pf->scratch, (char *)tmp_20k_buf, l+1);
+		}
 	    }
 
 	    break;
@@ -6891,10 +7304,11 @@ outgoing2strings(header, bod, text, pico_a)
     routines.
  -----*/
 void
-strings2outgoing(header, bod, attach)
+strings2outgoing(header, bod, attach, charset)
     METAENV  *header;
     BODY    **bod;
     PATMT    *attach;
+    char     *charset;
 {
     PINEFIELD *pf;
     int we_cancel = 0;
@@ -6920,8 +7334,7 @@ strings2outgoing(header, bod, attach)
 	   * there was a default from customized-hdrs, need to copy that
 	   * as if we edited it.
 	   */
-	  if((pf->canedit && (!pf->he
-			      || pf->he->dirty
+	  if((pf->canedit && ((pf->he && pf->he->dirty)
 			      || (pf->type == Address
 				  && pf->addr
 				  && *pf->addr
@@ -6972,8 +7385,14 @@ strings2outgoing(header, bod, attach)
 		  if(*pf->text)
 		    fs_give((void **)pf->text);
 
-		  if(*pf->scratch)
-		    *pf->text = cpystr(pf->scratch);
+		  if(*pf->scratch){
+		      if(ps_global->VAR_CHAR_SET &&
+		         !strucmp(ps_global->VAR_CHAR_SET, "iso-2022-jp"))
+		        *pf->text =
+			 (char *) trans_euc_to_2022_jp((unsigned char *) (pf->scratch));
+		      else
+		        *pf->text = cpystr(pf->scratch);
+		  }
 
 		  break;
 	      }
@@ -6982,7 +7401,22 @@ strings2outgoing(header, bod, attach)
 	  fs_give((void **)&pf->scratch);	/* free now useless text */
       }
 
-    create_message_body(bod, attach);
+    /*
+     * Change EUC (unix Pine) or Shift-JIS (PC-Pine) into ISO-2022-JP
+     * in the message body.
+     * We want to do it here before create_message_body because
+     * create_message_body decides the encoding level and would encode
+     * the 8-bit characters but not the ISO-2022-JP. Only do this translation
+     * if user has a character-set of ISO-2022-JP, which will make it worth
+     * less for some. But we can't be assuming 8-bit characters are
+     * always ISO-2022-JP.
+     */
+    if(bod && *bod && ps_global->VAR_CHAR_SET
+       && !strucmp(ps_global->VAR_CHAR_SET, "iso-2022-jp")
+       && F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+	filter_msgtxt_euc_to_2022_jp(*bod);
+
+    create_message_body(bod, attach, charset);
     pine_encode_body(*bod);
 
     if(we_cancel)
@@ -7004,24 +7438,41 @@ resolve_encoded_entries(new, old)
 	for(a = new; a; a = a->next)
 	  if(a->personal && a->mailbox && !strcmp(old->mailbox, a->mailbox)
 	     && a->host && !strcmp(old->host, a->host)){
-	      char *charset = NULL, *p, buftmp[MAILTMPLEN];
+	      char *charset = NULL, *p, *q = NULL, buftmp[MAILTMPLEN];
 
 	      /*
 	       * if we actually found 1522 in the personal name, then
 	       * make sure the decoded personal name matches the old 
-	       * un-encoded name.  If not, replace the new string with
+	       * un-encoded name.  If so, replace the new string with
 	       * with the old one.  If 1522 isn't involved, just trust
 	       * the change.
 	       */
 	      sprintf(buftmp, "%.200s", old->personal ? old->personal : "");
 	      p = (char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
 					  SIZEOF_20KBUF, buftmp, &charset);
+
+	      q = (char *) trans_euc_to_2022_jp((unsigned char *)(a->personal));
+
 	      if(p == tmp_20k_buf		/* personal was decoded */
-		 && !strcmp(a->personal, p)){
+		 && !strcmp(q, p)){		/* still matches what it was */
 		  fs_give((void **)&a->personal);
 		  a->personal = cpystr(old->personal);
 	      }
+	      else if(ps_global->VAR_CHAR_SET &&
+		     !strucmp(ps_global->VAR_CHAR_SET, "iso-2022-jp")){
+		  /*
+		   * Convert EUC (unix Pine) or Shift-JIS (PC-Pine) into
+		   * ISO-2022-JP.
+		   */
+		  if(a->personal)
+		    fs_give((void **)&a->personal);
 
+		  a->personal = q;
+		  q = NULL;			/* so we don't free it below */
+	      }
+
+	      if(q)
+		fs_give((void **)&q);
 	      if(charset)
 		fs_give((void **)&charset);
 
@@ -7037,9 +7488,10 @@ changed from TEXT to MULTIPART if there are attachments to be added
 and it is not already multipart. 
   ----*/
 void
-create_message_body(b, attach)
+create_message_body(b, attach, charset)
     BODY  **b;
     PATMT  *attach;
+    char   *charset;
 {
     PART       *p, **pp;
     PATMT      *pa;
@@ -7050,11 +7502,14 @@ create_message_body(b, attach)
 
     TIME_STAMP("create_body start.", 1);
     if((*b)->type != TYPEMULTIPART && !attach){
+
 	/* only override assigned encoding if it might need upgrading */
 	if((*b)->type == TYPETEXT && (*b)->encoding == ENC7BIT)
 	  (*b)->encoding = ENCOTHER;
 
-	set_mime_type_by_grope(*b, NULL);
+	set_mime_type_by_grope(*b,
+			    (pbf && pbf->hibit_entered && *pbf->hibit_entered)
+			      ? NULL : charset);
 	set_body_size(*b);
 	TIME_STAMP("create_body end.", 1);
         return;
@@ -7129,7 +7584,7 @@ create_message_body(b, attach)
 	if((file_contents = (void *)so_get(FileStar, pa->filename,
 					   READ_ACCESS)) == NULL){
             q_status_message2(SM_ORDER | SM_DING, 3, 4,
-                              "Error \"%s\", couldn't attach file \"%s\"",
+			  "Error \"%.200s\", couldn't attach file \"%.200s\"",
                               error_description(errno), pa->filename);
             display_message('x');
             continue;
@@ -7276,129 +7731,7 @@ free_attachment_list(alist)
 	*alist = leading;
     }
 }
-
-
-
-/*----------------------------------------------------------------------
-  Insert the addition into the message id before first "@"
- 
- This may be called twice on the same message-ID, but it won't do anything
- the second time. This will cause the status in the message-ID to be wrong
- if an attempt to send the message is made, an error occurs, and then the
- size or MIME parts changed and it is sent again.
-  ----*/
-void 
-update_message_id(e, addition)
-    ENVELOPE *e;
-    char     *addition;
-{
-    char *p, *new;
-    int   plen, alen;
-
-    if((p = strchr(e->message_id, '@'))
-       && (alen = strlen(addition))
-       && ++alen < (plen = p - e->message_id)
-       && *(p - alen) != '-'){		/* already updated? */
-	new = fs_get(plen + alen + strlen(p) + 1);
-	sprintf(new, "%.*s-%s%s", plen, e->message_id, addition, p);
-	fs_give((void **) &e->message_id);
-	e->message_id = new;
-    }
-}
-
-
-
-
-static struct mime_count {
-    int text_parts;
-    int image_parts;
-    int message_parts;
-    int application_parts;
-    int audio_parts;
-    int  video_parts;
-} mc;
-
-char *
-mime_stats(body)
-    BODY *body;
-{
-    static char id[10];
-    mc.text_parts = 0;
-    mc.image_parts = 0;
-    mc.message_parts = 0;
-    mc.application_parts = 0;
-    mc.audio_parts = 0;
-    mc.video_parts = 0;
-
-    mime_recur(body);
-
-    mc.text_parts        = min(8, mc.text_parts );
-    mc.image_parts       = min(8, mc.image_parts );
-    mc.message_parts     = min(8, mc.message_parts );
-    mc.application_parts = min(8, mc.application_parts );
-    mc.audio_parts       = min(8, mc.audio_parts );
-    mc.video_parts       = min(8, mc.video_parts );
-
-
-    id[0] = encode_bits(mc.text_parts);
-    id[1] = encode_bits(mc.message_parts);
-    id[2] = encode_bits(mc.application_parts);
-    id[3] = encode_bits(mc.video_parts);
-    id[4] = encode_bits(mc.audio_parts);
-    id[5] = encode_bits(mc.image_parts);
-    id[6] = '\0';
-    return(id);
-}
     
-
-
-/*----------------------------------------------------------------------
-   ----*/
-void
-mime_recur(body)
-    BODY *body;
-{
-    PART *part;
-    switch (body->type) {
-      case TYPETEXT:
-        mc.text_parts++;
-        break;
-      case TYPEIMAGE:
-        mc.image_parts++;
-        break;
-      case TYPEMESSAGE:
-        mc.message_parts++;
-        break;
-      case TYPEAUDIO:
-        mc.audio_parts++;
-        break;
-      case TYPEAPPLICATION:
-        mc.application_parts++;
-        break;
-      case TYPEVIDEO:
-        mc.video_parts++;
-        break;
-      case TYPEMULTIPART:
-        for(part = body->nested.part; part != NULL; part = part->next) 
-          mime_recur(&(part->body));
-        break;
-    }
-}
-        
-int        
-encode_bits(bits)
-    int bits;
-{
-    if(bits < 10)
-      return(bits + '0');
-    else if(bits < 36)
-      return(bits - 10 + 'a');
-    else if (bits < 62)
-      return(bits - 36 + 'A');
-    else
-      return('.');
-}
-
 
 /*
  * set_mime_type_by_grope - sniff the given storage object to determine its 
@@ -7745,7 +8078,6 @@ set_mime_charset(pm, ascii_ok, cs)
     char	**excl;
     static char  *us_ascii = "US-ASCII";
     static char  *non_ascii[] = {"UTF-7", "UNICODE-1-1-UTF-7", NULL};
-    int           already_set = 0;
 
     if(!pm || strucmp(pm->attribute, "charset") != 0)
       panic("set_mime_charset: no charset parameter");
@@ -7932,7 +8264,7 @@ encode_header_value(d, len, s, charset, encode_all)
     int            encode_all;
 {
     char *p, *q, *r, *start_of_comment = NULL, *value = NULL;
-    int   in_comment = 0, some_encoding_done = 0;
+    int   in_comment = 0;
 
     if(!s)
       return((char *)s);
@@ -8050,7 +8382,7 @@ pine_address_line(field, header, alist, f, s, writehdr, localcopy)
 {
     char     tmp[MAX_SINGLE_ADDR], *tmpptr = NULL;
     size_t   alloced = 0;
-    char    *p, *delim, *ptmp, ch, buftmp[MAILTMPLEN];
+    char    *p, *delim, *ptmp, buftmp[MAILTMPLEN];
     ADDRESS *atmp;
     int      i, count;
     int      in_group = 0, was_start_of_group = 0, fix_lcc = 0, failed = 0;
@@ -8067,10 +8399,14 @@ pine_address_line(field, header, alist, f, s, writehdr, localcopy)
     }
 
     ptmp	    = alist->personal;	/* remember personal name */
-    sprintf(buftmp, "%.200s", ptmp ? ptmp : "");
-    alist->personal = rfc1522_encode(tmp_20k_buf, SIZEOF_20KBUF,
-				     (unsigned char *) buftmp,
-				     ps_global->VAR_CHAR_SET);
+    /* make sure personal name is encoded */
+    if(ptmp){
+	sprintf(buftmp, "%.200s", ptmp);
+	alist->personal = rfc1522_encode(tmp_20k_buf, SIZEOF_20KBUF,
+					 (unsigned char *) buftmp,
+					 ps_global->VAR_CHAR_SET);
+    }
+
     atmp            = alist->next;
     alist->next	    = NULL;		/* digest only first address! */
 
@@ -8311,7 +8647,8 @@ pine_rfc822_header(header, body, f, s)
 	    break;
 
 	  default:
-	    q_status_message1(SM_ORDER,3,7,"Unknown header type: %s",pf->name);
+	    q_status_message1(SM_ORDER,3,7,"Unknown header type: %.200s",
+			      pf->name);
 	    break;
 	}
     }
@@ -8322,7 +8659,7 @@ pine_rfc822_header(header, body, f, s)
      * Add comforting "X-" header line indicating what sort of 
      * authenticity the receiver can expect...
      */
-    {
+    if(F_OFF(F_DISABLE_SENDER, ps_global)){
 	 NETMBX	     netmbox;
 	 char	     sstring[MAILTMPLEN], *label;	/* place to write  */
 	 MAILSTREAM *stream;
@@ -8559,10 +8896,8 @@ pine_rfc822_output_body(body, f, s)
     PARAMETER *param;
     char *t, *cookie = NIL, *encode_error;
     char tmp[MAILTMPLEN];
+    int                add_trailing_crlf;
     gf_io_t            gc;
-#if defined(DOS) || defined(OS2)
-    extern unsigned char  *xlate_from_codepage;
-#endif
 
     dprint(4, (debugfile, "-- pine_rfc822_output_body: %d\n",
 	       body ? body->type : 0));
@@ -8612,6 +8947,13 @@ pine_rfc822_output_body(body, f, s)
     else
       return(1);
 
+    /*
+     * Don't add trailing line if it is PicoText, which already guarantees
+     * a trailing newline.
+     */
+    add_trailing_crlf = !(body->contents.text.data
+		 && ((STORE_S *) body->contents.text.data)->src == PicoText);
+
     so_seek((STORE_S *) body->contents.text.data, 0L, 0);
 
     if(body->type != TYPEMESSAGE){ 	/* NOT encapsulated message */
@@ -8621,13 +8963,6 @@ pine_rfc822_output_body(body, f, s)
 	 */
 	if(body->type == TYPETEXT){
 	    gf_link_filter(gf_local_nvtnl, NULL);
-
-#if defined(DOS) || defined(OS2)
-	    if(xlate_from_codepage){
-		gf_translate_opt(xlate_from_codepage, 256);
-		gf_link_filter(gf_translate, NULL);
-	    }
-#endif
 	}
 
 	switch (body->encoding) {	/* all else needs filtering */
@@ -8646,7 +8981,7 @@ pine_rfc822_output_body(body, f, s)
 
     if(encode_error = gf_pipe(gc, l_putc)){ /* shove body part down pipe */
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
-			  "Encoding Error \"%s\"", encode_error);
+			  "Encoding Error \"%.200s\"", encode_error);
 	display_message('x');
     }
 
@@ -8661,15 +8996,24 @@ pine_rfc822_output_body(body, f, s)
     if(lmc.so && !lmc.all_written && lmc.text_only){
 	if(lmc.text_written){	/* we have some splainin' to do */
 	    char tmp[MAILTMPLEN];
+	    char *name = NULL;
 
 	    if(!(so_puts(lmc.so,"The following attachment was sent,\015\012")
 		 && so_puts(lmc.so,"but NOT saved in the Fcc copy:\015\012")))
 	      return(0);
 
-	    sprintf(tmp, "    A %s/%.100s segment of about %s bytes.\015\012",
+	    name = rfc2231_get_param(body->parameter, "name", NULL, NULL);
+	    sprintf(tmp,
+    "    A %.20s/%.100s%.10s%.100s%.10s segment of about %.20s bytes.\015\012",
 		    body_type_names(body->type), 
 		    body->subtype ? body->subtype : "Unknown",
+		    name ? " (Name=\"" : "",
+		    name ? name : "",
+		    name ? "\")" : "",
 		    comatose(body->size.bytes));
+	    if(name)
+	      fs_give((void **)&name);
+
 	    if(!so_puts(lmc.so, tmp))
 	      return(0);
 	}
@@ -8679,8 +9023,11 @@ pine_rfc822_output_body(body, f, s)
 				  || !strucmp(body->subtype, "plain")));
     }
 
-    return((f ? (*f)(s, "\015\012") : 1)	/* output final stuff */
+    if(add_trailing_crlf)
+      return((f ? (*f)(s, "\015\012") : 1)	/* output final stuff */
 	   && ((lmc.so && !lmc.all_written) ? so_puts(lmc.so,"\015\012") : 1));
+    else
+      return(1);
 }
 
 
@@ -8705,6 +9052,15 @@ pine_write_body_header(body, f, s)
     PARAMETER *param = body->parameter;
     STORE_S   *so;
     extern const char *tspecials;
+
+    /*
+     * If requested, strip Content-ID headers that don't look like they
+     * are needed. Microsoft's Outlook XP has a bug that causes it to
+     * not show that there is an attachment when there is a Content-ID
+     * header present on that attachment.
+     */
+    if(F_ON(F_QUELL_CONTENT_ID, ps_global))
+      strip_content_id(body);
 
     if(so = so_get(CharStar, NULL, WRITE_ACCESS)){
 	if(!(so_puts(so, "Content-Type: ")
@@ -8817,6 +9173,49 @@ pine_write_body_header(body, f, s)
     }
 
     return(0);
+}
+
+
+/*
+ * Strip id's so that Content-ID headers won't be included.
+ * We leave the id's as they are inside attached messages, in
+ * message/external-body, and 
+ * in multipart/alternative parts. This routine exists because
+ * Microsoft's Outlook XP has a bug that causes it to
+ * not show that there is an attachment when there is a Content-ID
+ * header present on that attachment (as of 2001-10-19).
+ *
+ * This is ad hoc and will probably break something if the feature is
+ * set.
+ */
+void
+strip_content_id(body)
+    BODY *body;
+{
+    PART *part;
+
+    if(body && body->type == TYPEMULTIPART){
+	/*
+	 * Unless multipart/alternative, look through parts of the
+	 * multipart to remove id's. Stop recursing if multi/alt but
+	 * do remove the top-level id.
+	 */
+	if(!(body->subtype && !strucmp(body->subtype, "alternative"))){
+	    for(part = body->nested.part; part; part = part->next)
+	      strip_content_id(&part->body);
+	}
+    }
+
+    /*
+     * We don't look inside TYPEMESSAGE body's at all, but we do leave
+     * id's for message/external-body.
+     */
+    
+    if(body && body->id){
+	if(!(body->type == TYPEMESSAGE && body->subtype &&
+	     !strucmp(body->subtype, "external-body")))
+          fs_give((void **)&body->id);
+    }
 }
 
 
@@ -9013,7 +9412,7 @@ news_poster(header, body)
      METAENV *header;
      BODY    *body;
 {
-    char *error_mess, error_buf[100], **news_servers;
+    char *error_mess, error_buf[200], **news_servers;
     int	  we_cancel = 0, server_no = 0, done_posting = 0;
     void *orig_822_output;
     BODY *bp = NULL;
@@ -9108,7 +9507,7 @@ news_poster(header, body)
 	(void) mail_parameters (NULL, SET_RFC822OUTPUT, orig_822_output);
     } else {
         /*----- Post via local mechanism -------*/
-        error_mess = post_handoff(header, body, error_buf);
+        error_mess = post_handoff(header, body, error_buf, sizeof(error_buf));
     }
 
     if(we_cancel)
@@ -9378,7 +9777,7 @@ customized_hdr_setup(head, list, cstmtype)
 		/* if there is a space in the field-name, skip it */
 		if(isspace((unsigned char)*t)){
 		    q_status_message1(SM_ORDER, 3, 3,
-				      "Space not allowed in header name (%s)",
+				    "Space not allowed in header name (%.200s)",
 				      name);
 		    continue;
 		}
@@ -9388,59 +9787,64 @@ customized_hdr_setup(head, list, cstmtype)
 
 		/* Don't allow any of the forbidden headers. */
 		if(pine_header_forbidden(name)){
-		    q_status_message1(SM_ORDER, 3, 3,
-				      "Not allowed to change header \"%s\"",
+		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				      "Not allowed to change header \"%.200s\"",
 				      name);
 
 		    *t = save;
 		    continue;
 		}
 
-		if(pine_header_standard(name) != TypeUnknown)
-		  pf->standard = 1;
+		if(pf){
+		    if(pine_header_standard(name) != TypeUnknown)
+		      pf->standard = 1;
 
-		pf->name     = cpystr(name);
-		pf->type     = FreeText;
-		pf->cstmtype = cstmtype;
-		pf->next     = pf+1;
+		    pf->name     = cpystr(name);
+		    pf->type     = FreeText;
+		    pf->cstmtype = cstmtype;
+		    pf->next     = pf+1;
 
 #ifdef OLDWAY
-		/*
-		 * Some mailers apparently break if we change
-		 * user@domain into Fred <user@domain> for return-receipt-to,
-		 * so we'll just call this a FreeText field, too.
-		 */
-		/*
-		 * For now, all custom headers are FreeText except for
-		 * this one that we happen to know about.  We might
-		 * have to add some syntax to the config option so that
-		 * people can tell us their custom header takes addresses.
-		 */
-		if(!strucmp(pf->name, "Return-Receipt-to")){
-		    pf->type = Address;
- 		    pf->addr = (ADDRESS **)fs_get(sizeof(ADDRESS *));
-		    *pf->addr = (ADDRESS *)NULL;
-		}
+		    /*
+		     * Some mailers apparently break if we change
+		     * user@domain into Fred <user@domain> for
+		     * return-receipt-to,
+		     * so we'll just call this a FreeText field, too.
+		     */
+		    /*
+		     * For now, all custom headers are FreeText except for
+		     * this one that we happen to know about.  We might
+		     * have to add some syntax to the config option so that
+		     * people can tell us their custom header takes addresses.
+		     */
+		    if(!strucmp(pf->name, "Return-Receipt-to")){
+			pf->type = Address;
+			pf->addr = (ADDRESS **)fs_get(sizeof(ADDRESS *));
+			*pf->addr = (ADDRESS *)NULL;
+		    }
 #endif /* OLDWAY */
 
-		*t = save;
+		    *t = save;
 
-		/* remove space between name and colon */
-		value = skip_white_space(t);
+		    /* remove space between name and colon */
+		    value = skip_white_space(t);
 
-		/* give them an alloc'd default, even if empty */
-		pf->textbuf = cpystr((*value == ':')
-				       ? skip_white_space(++value) : "");
-		if(pf->textbuf && pf->textbuf[0])
-		  pf->val = cpystr(pf->textbuf);
+		    /* give them an alloc'd default, even if empty */
+		    pf->textbuf = cpystr((*value == ':')
+					   ? skip_white_space(++value) : "");
+		    if(pf->textbuf && pf->textbuf[0])
+		      pf->val = cpystr(pf->textbuf);
 
-		pf++;
+		    pf++;
+		}
+		else
+		  *t = save;
 	    }
 	}
     }
 
     /* fix last next pointer */
-    if(pf != head)
+    if(head && pf != head)
       (pf-1)->next = NULL;
 }
 

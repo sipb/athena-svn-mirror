@@ -59,7 +59,7 @@ os-nto.c: header raw.ios read.sel spell.unx term.cap unix os-nto.ic
 os-nxt.c: getcwd header raw.brk read.sel spell.unx term.cap unix os-nxt.ic
 os-os2.c: header os2 spell.os2 term.dos os-os2.ic
 os-osf.c: header raw.ios read.sel spell.unx term.cap unix os-osf.ic
-os-osx.c: getcwd header raw.brk read.sel spell.unx term.cap unix os-osx.ic
+os-osx.c: header raw.brk read.sel spell.unx term.cap unix os-osx.ic
 os-pt1.c: header raw.io read.pol spell.unx term.inf unix os-pt1.ic
 os-ptx.c: header raw.io read.pol spell.unx term.inf unix os-ptx.ic
 os-s40.c: header raw.brk read.sel spell.unx term.cap unix os-s40.ic

@@ -1,4 +1,4 @@
-# $Id: makefile.hpp,v 1.1.1.1 2001-02-19 07:02:00 ghudson Exp $
+# $Id: makefile.hpp,v 1.1.1.2 2003-02-12 07:58:29 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -42,7 +42,7 @@ LIBCMD=		ar
 LIBARGS=	ru
 RANLIB=		:
 
-LIBS=		$(EXTRALIBES) -ltermcap -lV3
+LIBS=		$(EXTRALDFLAGS) -ltermcap -lV3
 
 OFILES=		attach.o basic.o bind.o browse.o buffer.o \
 		composer.o display.o file.o fileio.o line.o pico_os.o \

@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	10 February 1992
- * Last Edited:	24 October 2000
+ * Last Edited:	5 April 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -22,6 +22,7 @@
 
 #define MAXLOGINTRIALS 3	/* maximum number of login trials */
 #define NNTPTCPPORT (long) 119	/* assigned TCP contact port */
+#define NNTPSSLPORT (long) 563	/* assigned(?) SSL TCP contact port */
 #define NNTPGREET (long) 200	/* NNTP successful greeting */
 #define NNTPGREETNOPOST (long) 201
 #define NNTPGOK (long) 211	/* NNTP group selection OK */
@@ -44,8 +45,11 @@
 typedef struct nntp_local {
   SENDSTREAM *nntpstream;	/* NNTP stream for I/O */
   unsigned int dirty : 1;	/* disk copy of .newsrc needs updating */
-  char *host;			/* local host name */
-  char *name;			/* local newsgroup name */
+  unsigned int tlsflag : 1;	/* TLS session */
+  unsigned int notlsflag : 1;	/* TLS not used in session */
+  unsigned int sslflag : 1;	/* SSL session */
+  unsigned int novalidate : 1;	/* certificate not validated */
+  char *name;			/* remote newsgroup name */
   char *user;			/* mailbox user */
   char *newsrc;			/* newsrc file */
   unsigned long msgno;		/* current text message number */
@@ -88,15 +92,15 @@ MAILSTREAM *nntp_mopen (MAILSTREAM *stream);
 void nntp_mclose (MAILSTREAM *stream,long options);
 void nntp_fetchfast (MAILSTREAM *stream,char *sequence,long flags);
 void nntp_flags (MAILSTREAM *stream,char *sequence,long flags);
-long nntp_overview (MAILSTREAM *stream,char *sequence,overview_t ofn);
-long nntp_parse_overview (OVERVIEW *ov,char *text);
+long nntp_overview (MAILSTREAM *stream,overview_t ofn);
+long nntp_parse_overview (OVERVIEW *ov,char *text,MESSAGECACHE *elt);
 char *nntp_header (MAILSTREAM *stream,unsigned long msgno,unsigned long *size,
 		   long flags);
 long nntp_text (MAILSTREAM *stream,unsigned long msgno,STRING *bs,long flags);
 FILE *nntp_article (MAILSTREAM *stream,char *msgid,unsigned long *size,
 		    unsigned long *hsiz);
 void nntp_flagmsg (MAILSTREAM *stream,MESSAGECACHE *elt);
-void nntp_search (MAILSTREAM *stream,char *charset,SEARCHPGM *pgm,long flags);
+long nntp_search (MAILSTREAM *stream,char *charset,SEARCHPGM *pgm,long flags);
 long nntp_search_msg (MAILSTREAM *stream,unsigned long msgno,SEARCHPGM *pgm,
 		      OVERVIEW *ov);
 unsigned long *nntp_sort (MAILSTREAM *stream,char *charset,SEARCHPGM *spg,
@@ -120,7 +124,7 @@ long nntp_mail (SENDSTREAM *stream,ENVELOPE *msg,BODY *body);
 long nntp_send (SENDSTREAM *stream,char *command,char *args);
 long nntp_send_work (SENDSTREAM *stream,char *command,char *args);
 long nntp_send_auth (SENDSTREAM *stream);
-long nntp_send_auth_work (SENDSTREAM *stream,NETMBX *mb,char *tmp);
+long nntp_send_auth_work (SENDSTREAM *stream,NETMBX *mb,char *pwd);
 long nntp_reply (SENDSTREAM *stream);
-long nntp_fake (SENDSTREAM *stream,long code,char *text);
+long nntp_fake (SENDSTREAM *stream,char *text);
 long nntp_soutr (void *stream,char *s);

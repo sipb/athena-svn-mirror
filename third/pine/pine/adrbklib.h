@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: adrbklib.h,v 1.1.1.1 2001-02-19 07:12:01 ghudson Exp $
+  $Id: adrbklib.h,v 1.1.1.2 2003-02-12 08:01:11 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -20,7 +20,7 @@
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -254,7 +254,7 @@ typedef unsigned a_c_arg_t;          /* type of arg passed for addrbk_cntr_t */
 typedef long adrbk_uid_t;   /* the UID of a name or address */
 
 typedef enum {NotSet, Single, List} Tag;
-typedef enum {Normal, Delete, SaveDelete, Lock, Unlock} Handling;
+typedef enum {Normal, Internal, Delete, SaveDelete, Lock, Unlock} Handling;
 
 /* This is what is actually used by the routines that manipulate things */
 typedef struct adrbk_entry {
@@ -281,6 +281,7 @@ typedef struct entry_ref {
     long         offset;    /* offset into file where this entry starts    */
     adrbk_cntr_t next_nick; /* index of next nickname with same hash value */
     adrbk_cntr_t next_addr;
+    int          is_deleted;
     AdrBk_Entry *ae;        /* cached ae */
 } EntryRef;
 
@@ -324,7 +325,7 @@ typedef enum {Local, Imap} AdrbkType;
 
 #define IMAP_IDLE_TIMEOUT	(10L * 60L)	/* seconds */
 #define FILE_VALID_CHK_INTERVAL (      15L)	/* seconds */
-#define LOW_FREQ_CHK_INTERVAL	(30L)		/* minutes */
+#define LOW_FREQ_CHK_INTERVAL	(240)		/* minutes */
 
 typedef struct adrbk {
     AdrbkType	  type;                /* type of address book               */
@@ -1086,6 +1087,7 @@ int            abes_are_equal PROTO((AdrBk_Entry *, AdrBk_Entry *));
 char          *addr_book_selnick PROTO((void));
 char          *addr_book_takeaddr PROTO((void));
 char          *addr_lookup PROTO((char *, int *, int));
+AccessType     adrbk_access PROTO((PerAddrBook *));
 int            adrbk_add PROTO((AdrBk *, a_c_arg_t, char *, char *, char *, \
 		    char *, char *, Tag, adrbk_cntr_t *, int *, int, int, int));
 int            adrbk_append PROTO((AdrBk *, char *, char *, char *, \

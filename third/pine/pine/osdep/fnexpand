@@ -19,7 +19,11 @@ fnexpand(buf, len)
     char name[20];
     
     if(*buf == '~') {
-        for(x = buf+1, y = name; *x != '/' && *x != '\0'; *y++ = *x++);
+        for(x = buf+1, y = name;
+	    *x != '/' && *x != '\0' && y < name + sizeof(name)-1;
+	    *y++ = *x++)
+	  ;
+
         *y = '\0';
         if(x == buf + 1) 
           pw = getpwuid(getuid());

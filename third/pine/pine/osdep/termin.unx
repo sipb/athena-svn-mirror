@@ -190,7 +190,7 @@ int
 check_for_timeout(time_out)
     int time_out;
 {
-    int res;
+    int res = NO_OP_COMMAND;
 
     fflush(stdout);
 
@@ -238,6 +238,9 @@ check_for_timeout(time_out)
 #endif
 	return(res);
     }
+
+    /* not reachable */
+    return(res);
 }
 
 
@@ -436,10 +439,21 @@ read_char(time_out)
 
 
       done:
-        dprint(9, (debugfile, "Read char returning: %d %s\n",
-                   ch, pretty_command(ch)));
+#ifdef	DEBUG
+	if(ps_global->conceal_sensitive_debugging && debug < 10){
+	    dprint(9, (debugfile, "Read char returning: <hidden char>\n"));
+	}
+	else{
+	    dprint(9, (debugfile, "Read char returning: %d %s\n",
+		       ch, pretty_command(ch)));
+	}
+#endif
+
         return(ch);
     }
+
+    /* not reachable */
+    return(KEY_JUNK);
 }
 
 
@@ -454,18 +468,56 @@ read_char(time_out)
 void
 read_bail()
 {
+    dprint(1, (debugfile, "read_bail: cleaning up\n"));
     end_signals(1);
+
+    /*
+     * This gets rid of temporary cache files for remote addrbooks.
+     */
+    completely_done_with_adrbks();
+
+    /*
+     * This flushes out deferred changes and gets rid of temporary cache
+     * files for remote config files.
+     */
+    if(ps_global->prc){
+	if(ps_global->prc->outstanding_pinerc_changes)
+	  write_pinerc(ps_global, Main);
+
+	if(ps_global->prc->rd)
+	  rd_close_remdata(&ps_global->prc->rd);
+	
+	free_pinerc_s(&ps_global->prc);
+    }
+
+    /* as does this */
+    if(ps_global->post_prc){
+	if(ps_global->post_prc->outstanding_pinerc_changes)
+	  write_pinerc(ps_global, Post);
+
+	if(ps_global->post_prc->rd)
+	  rd_close_remdata(&ps_global->post_prc->rd);
+	
+	free_pinerc_s(&ps_global->post_prc);
+    }
+
     if(ps_global->inbox_stream){
-	if(ps_global->inbox_stream == ps_global->mail_stream)
-	  ps_global->mail_stream = NULL;
+	int cur_is_inbox = (ps_global->inbox_stream == ps_global->mail_stream);
 
 	if(!ps_global->inbox_stream->lock)		/* shouldn't be... */
-	  pine_close_stream(ps_global->inbox_stream);
+	  pine_mail_close(ps_global->inbox_stream);
+
+	/* this comes after pine_mail_close because of stream caching */
+	if(cur_is_inbox)
+	  ps_global->mail_stream = NULL;
     }
 
     if(ps_global->mail_stream && !ps_global->mail_stream->lock)
-      pine_close_stream(ps_global->mail_stream);
+      pine_mail_close(ps_global->mail_stream);
 
+    dprint(1, (debugfile, "done with read_bail clean up\n"));
+
+    imap_flush_passwd_cache();
     end_keyboard(F_ON(F_USE_FK,ps_global));
     end_tty_driver(ps_global);
     if(filter_data_file(0))

@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: window.c,v 1.1.1.1 2001-02-19 07:01:26 ghudson Exp $";
+static char rcsid[] = "$Id: window.c,v 1.1.1.2 2003-02-12 08:01:42 ghudson Exp $";
 #endif
 /*
  * Program:	Window management routines
@@ -39,7 +39,7 @@ static char rcsid[] = "$Id: window.c,v 1.1.1.1 2001-02-19 07:01:26 ghudson Exp $
  * Refresh the screen. With no argument, it just does the refresh. With an
  * argument it recenters "." in the current window. Bound to "C-L".
  */
-refresh(f, n)
+pico_refresh(f, n)
   int f, n;
 {
     /*

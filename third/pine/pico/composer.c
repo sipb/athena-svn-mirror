@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: composer.c,v 1.1.1.1 2001-02-19 07:04:48 ghudson Exp $";
+static char rcsid[] = "$Id: composer.c,v 1.1.1.2 2003-02-12 08:01:35 ghudson Exp $";
 #endif
 /*
  * Program:	Pine composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: composer.c,v 1.1.1.1 2001-02-19 07:04:48 ghudson Exp
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -476,12 +476,14 @@ int f, n;
 {
     register  int	i;
     register  int	ch;
-    register  int	status;			/* return status of something*/
     register  char	*bufp;
     struct headerentry *h;
-    int                 cur_e, count, mangled, retval = -1,
+    int                 cur_e, mangled, retval = -1,
 		        hdr_only = (gmode & MDHDRONLY) ? 1 : 0;
     char               *errmss, *err;
+#ifdef	ATTACHMENTS
+    register  int	status;			/* return status of something*/
+#endif
 #ifdef MOUSE
     MOUSEPRESS		mp;
 #endif
@@ -3103,7 +3105,7 @@ char              **err;
     register    struct  hdr_line  *line;
     int          quoted = 0;
     char	*sbuf;
-    char	*s = NULL, *fcc = NULL;
+    char	*s = NULL;
     struct headerentry *e;
     BUILDER_ARG *nextarg, *arg = NULL, *headarg = NULL;
     VARS_TO_SAVE *saved_state;
@@ -3779,8 +3781,6 @@ int row, col, n;
 void
 ShowPrompt()
 {
-    int new_e = ods.cur_e;
-
     if(headents[ods.cur_e].key_label){
 	menu_header[TO_KEY].name  = "^T";
 	menu_header[TO_KEY].label = headents[ods.cur_e].key_label;
@@ -4029,6 +4029,7 @@ save_pico_state()
     ret->ComposerEditing = ComposerEditing;
     ret->gmode = gmode;
     ret->alt_speller = alt_speller;
+    ret->quote_str = glo_quote_str;
     ret->currow = currow;
     ret->curcol = curcol;
     ret->thisflag = thisflag;
@@ -4092,6 +4093,7 @@ VARS_TO_SAVE *state;
     ComposerEditing = state->ComposerEditing;
     gmode = state->gmode;
     alt_speller = state->alt_speller;
+    glo_quote_str = state->quote_str;
     currow = state->currow;
     curcol = state->curcol;
     thisflag = state->thisflag;

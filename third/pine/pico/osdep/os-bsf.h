@@ -21,11 +21,12 @@
 /* #define void char */  /* no void in compiler */
 
 
-#define  USE_DIRENT
 #include <sys/types.h>
-#include <sys/dir.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define  USE_DIRENT
+#include <dirent.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: status.c,v 1.1.1.1 2001-02-19 07:05:25 ghudson Exp $";
+static char rcsid[] = "$Id: status.c,v 1.1.1.2 2003-02-12 08:01:29 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: status.c,v 1.1.1.1 2001-02-19 07:05:25 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -64,7 +64,7 @@ typedef struct message {
 
 #define	LAST_MESSAGE(X)	((X) == (X)->next)
 #define	RAD_BUT_COL	0
-#define WANT_TO_BUF     256
+#define WANT_TO_BUF     2500
 
 
 /*
@@ -98,6 +98,7 @@ void pause_for_current_message PROTO(());
 int  messages_in_queue PROTO(());
 void delay_cmd_cue PROTO((int));
 int  modal_bogus_input PROTO((int));
+ESCKEY_S *construct_combined_esclist PROTO((ESCKEY_S *, ESCKEY_S *));
 
 
 
@@ -138,6 +139,17 @@ q_status_message(flags, min_time, max_time, message)
     char *message;
 {
     SMQ_T *new;
+    char  *clean_msg;
+    size_t mlen;
+
+    /*
+     * The 41 is room for 40 escaped control characters plus a
+     * terminating null.
+     */
+    mlen = strlen(message) + 40;
+    clean_msg = (char *)fs_get(mlen + 1);
+    istrncpy(clean_msg, message, mlen);		/* does the cleaning */
+    clean_msg[mlen] = '\0';
 
     /* Hunt to last message -- if same already queued, move on... */
     if(new = message_queue){
@@ -153,15 +165,22 @@ q_status_message(flags, min_time, max_time, message)
 	    if(new->max_display_time < max_time)
 	      new->max_display_time = max_time;
 
+	    if(clean_msg)
+	      fs_give((void **)&clean_msg);
+
 	    return;
 	}
-	else if(flags & SM_INFO)
-	  return;
+	else if(flags & SM_INFO){
+	    if(clean_msg)
+	      fs_give((void **)&clean_msg);
+
+	    return;
+	}
     }
 
     new = (SMQ_T *)fs_get(sizeof(SMQ_T));
     memset(new, 0, sizeof(SMQ_T));
-    new->text = cpystr(message);
+    new->text = clean_msg;
     new->min_display_time = min_time;
     new->max_display_time = max_time;
     new->flags            = flags;
@@ -173,7 +192,7 @@ q_status_message(flags, min_time, max_time, message)
     else
       message_queue = new->next = new->prev = new;
 
-    dprint(9, (debugfile, "q_status_message(%.40s)\n", message));
+    dprint(9, (debugfile, "q_status_message(%s)\n", clean_msg));
 }
 
 
@@ -278,6 +297,19 @@ q_status_message4(flags, min_t, max_t, s, a1, a2, a3, a4)
     void *a1, *a2, *a3, *a4;
 {
     sprintf(tmp_20k_buf, s, a1, a2, a3, a4);
+    q_status_message(flags, min_t, max_t, tmp_20k_buf);
+}
+
+
+/*VARARGS1*/
+void
+q_status_message5(flags, min_t, max_t, s, a1, a2, a3, a4, a5)
+    int   flags;
+    int   min_t, max_t;
+    char *s;
+    void *a1, *a2, *a3, *a4, *a5;
+{
+    sprintf(tmp_20k_buf, s, a1, a2, a3, a4, a5);
     q_status_message(flags, min_t, max_t, tmp_20k_buf);
 }
 
@@ -682,7 +714,7 @@ status_message_write(message, from_alarm_handler)
     COLOR_PAIR *lastc = NULL, *newc;
 
     if(!from_alarm_handler)
-      add_review_message(message);
+      add_review_message(message, -1);
 
     invert = !InverseState();	/* already in inverse? */
     row = max(0, ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global));
@@ -899,7 +931,7 @@ output_message(mq_entry)
 		    break;
 		}
 		
-		add_review_message(m->text);
+		add_review_message(m->text, -1);
 		
 		if (p = strstr(m->text, "[ALERT]")){
 		    sprintf(t, "%*.*s\n", indent + p - m->text, p - m->text, m->text);
@@ -1217,15 +1249,15 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 
 #ifdef _WINDOWS
     if (mswin_usedialog ()) {
-	MDlgButton		button_list[12];
+	MDlgButton		button_list[24];
 	int			b;
 	int			i;
 	int			ret;
 	char			**help;
 
-	memset (&button_list, 0, sizeof (MDlgButton) * 12);
+	memset (&button_list, 0, sizeof (MDlgButton) * 24);
 	b = 0;
-	for (i = 0; esc_list && esc_list[i].ch != -1 && i < 11; ++i) {
+	for (i = 0; esc_list && esc_list[i].ch != -1 && i < 23; ++i) {
 	  if(esc_list[i].ch != -2){
 	    button_list[b].ch = esc_list[i].ch;
 	    button_list[b].rval = esc_list[i].rval;
@@ -1288,7 +1320,7 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 	start++;
     }
 
-    if(on_ctrl_C){			/* if shown, always at position 1 */
+    if(on_ctrl_C){
 	rb_keymenu.keys[1].name  = "^C";
 	rb_keymenu.keys[1].label = "Cancel";
 	setbitn(1, bitmap);
@@ -1296,7 +1328,7 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 	start++;
     }
 
-    start = (start) ? 2 : 0;
+    start = start ? 2 : 0;
     /*---- Show the usual possible keys ----*/
     for(i=start; esc_list && esc_list[i-start].ch != -1; i++){
 	/*
@@ -1588,6 +1620,150 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
     }
 
     return(ch);
+}
+
+
+#define OTHER_RETURN_VAL 1300
+
+/*
+ * This should really be part of radio_buttons itself, I suppose. It was
+ * easier to do it this way. This is for when there are more than 12
+ * possible commands. We could have all the radio_buttons calls call this
+ * instead of radio_buttons, or rename this to radio_buttons.
+ */
+int
+double_radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text,
+		     flags)
+    char     *prompt;
+    int	      line;
+    ESCKEY_S *esc_list;
+    int       dflt;
+    int       on_ctrl_C;
+    HelpType  help_text;
+    int	      flags;
+{
+    ESCKEY_S *list = NULL, *list1 = NULL, *list2 = NULL;
+    int       count, i = 0, j;
+    int       v = OTHER_RETURN_VAL, listnum = 0;
+
+#ifdef _WINDOWS
+    if(mswin_usedialog())
+      return(radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C,
+			   help_text, flags));
+#endif
+
+    /* check to see if it will all fit in one */
+    while(esc_list && esc_list[i].ch != -1)
+      i++;
+
+    i++;		/* for ^C */
+    if(help_text != NO_HELP)
+      i++;
+    
+    if(i <= 12)
+      return(radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C,
+			   help_text, flags));
+
+    /*
+     * Won't fit, split it into two lists.
+     *
+     * We can fit at most 9 items in the visible list. The rest of
+     * the commands have to be invisible. Each of list1 and list2 should
+     * have no more than 9 visible (name != "" || label != "") items.
+     */
+    list1 = (ESCKEY_S *)fs_get(10 * sizeof(*list1));
+    memset(list1, 0, 10 * sizeof(*list1));
+    list2 = (ESCKEY_S *)fs_get(10 * sizeof(*list2));
+    memset(list2, 0, 10 * sizeof(*list2));
+
+    for(j=0,i=0; esc_list[i].ch != -1 && j < 9; j++,i++)
+      list1[j] = esc_list[i];
+    
+    list1[j].ch = -1;
+
+    for(j=0; esc_list[i].ch != -1 && j < 9; j++,i++)
+      list2[j] = esc_list[i];
+
+    list2[j].ch = -1;
+
+    list = construct_combined_esclist(list1, list2);
+
+    while(v == OTHER_RETURN_VAL){
+	v = radio_buttons(prompt,line,list,dflt,on_ctrl_C,help_text,flags);
+	if(v == OTHER_RETURN_VAL){
+	    fs_give((void **)&list);
+	    listnum = 1 - listnum;
+	    list = construct_combined_esclist(listnum ? list2 : list1,
+					      listnum ? list1 : list2);
+	}
+    }
+
+    if(list)
+      fs_give((void **)&list);
+    if(list1)
+      fs_give((void **)&list1);
+    if(list2)
+      fs_give((void **)&list2);
+
+    return(v);
+}
+
+
+ESCKEY_S *
+construct_combined_esclist(list1, list2)
+    ESCKEY_S *list1, *list2;
+{
+    ESCKEY_S *list;
+    int       i, j=0, count;
+    
+    count = 1;	/* for OTHER key */
+    for(i=0; list1 && list1[i].ch != -1; i++)
+      count++;
+    for(i=0; list2 && list2[i].ch != -1; i++)
+      count++;
+    
+    list = (ESCKEY_S *)fs_get((count + 1) * sizeof(*list));
+    memset(list, 0, (count + 1) * sizeof(*list));
+
+    list[j].ch    = 'o';
+    list[j].rval  = OTHER_RETURN_VAL;
+    list[j].name  = "O";
+    list[j].label = "OTHER CMDS";
+
+    /* just checking */
+    for(i=0; list1 && list1[i].ch != -1; i++){
+	if(list1[i].rval == list[j].rval)
+	  panic("1bad rval in d_r");
+	if(list1[i].ch == list[j].ch)
+	  panic("1bad ch in ccl");
+    }
+
+    for(i=0; list2 && list2[i].ch != -1; i++){
+	if(list2[i].rval == list[j].rval)
+	  panic("2bad rval in d_r");
+	if(list2[i].ch == list[j].ch)
+	  panic("2bad ch in ccl");
+    }
+
+    j++;
+
+    /* the visible set */
+    for(i=0; list1 && list1[i].ch != -1; i++){
+	list[j++] = list1[i];
+	if(i > 9 && list1[i].label[0] != '\0')
+	  panic("too many visible keys in ccl");
+    }
+
+    /* the rest are invisible */
+    for(i=0; list2 && list2[i].ch != -1; i++){
+	list[j] = list2[i];
+	list[j].label = "";
+	list[j++].name  = "";
+    }
+
+    list[j].ch = -1;
+
+    return(list);
 }
 
 

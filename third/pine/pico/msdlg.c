@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: msdlg.c,v 1.1.1.1 2001-02-19 07:01:25 ghudson Exp $";
+static char rcsid[] = "$Id: msdlg.c,v 1.1.1.2 2003-02-12 08:10:58 ghudson Exp $";
 #endif
 /*---------------------------------------------------------------------------
  *
@@ -436,7 +436,8 @@ mswin_yesno (char *prompt)
     
     mswin_flush ();
     
-    
+    mswin_killsplash();
+
     ret = MessageBox (ghTTYWnd, prompt, gszAppName, 
 		MB_APPLMODAL | MB_ICONQUESTION | MB_YESNOCANCEL);
 	

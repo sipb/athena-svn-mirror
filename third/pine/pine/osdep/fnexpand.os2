@@ -20,8 +20,15 @@ fnexpand(buf, len)
     
     if(*buf == '~') {
 	    home=gethomedir();
-        for(x = buf+1, y = name; *x != '/' && *x != '\0'; *y++ = *x++);
+        for(x = buf+1, y = name;
+	    *x != '/' && *x != '\0' && y < name + sizeof(name)-1;
+	    *y++ = *x++)
+	  ;
+
         *y = '\0';
+	if(y == name + sizeof(name)-1)
+	  return((char *)NULL);
+	  
         if(strlen(home) + strlen(buf) > len) {
           return((char *)NULL);
         }

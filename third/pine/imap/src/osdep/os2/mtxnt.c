@@ -10,14 +10,21 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	22 May 1990
- * Last Edited:	17 November 2000
+ * Last Edited:	21 October 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
 
+
+/*				FILE TIME SEMANTICS
+ *
+ * The atime is the last read time of the file.
+ * The mtime is the last flags update time of the file.
+ * The ctime is the last write time of the file.
+ */
 
 #include <stdio.h>
 #include <ctype.h>
@@ -53,7 +60,7 @@ DRIVER mtxdriver = {
   mtx_create,			/* create mailbox */
   mtx_delete,			/* delete mailbox */
   mtx_rename,			/* rename mailbox */
-  NIL,				/* status of mailbox */
+  mail_status_default,		/* status of mailbox */
   mtx_open,			/* open mailbox */
   mtx_close,			/* close mailbox */
   mtx_flags,			/* fetch message "fast" attributes */
@@ -249,7 +256,7 @@ long mtx_rename (MAILSTREAM *stream,char *old,char *newname)
       ret = NIL;		/* set failure */
     }
 				/* found superior to destination name? */
-    if (s && (s != tmp) && ((tmp[1] != ':') || (s != tmp + 2))) {
+    else if (s && (s != tmp) && ((tmp[1] != ':') || (s != tmp + 2))) {
       c = s[1];			/* remember character after delimiter */
       *s = s[1] = '\0';		/* tie off name at delimiter */
 				/* name doesn't exist, create it */
@@ -312,7 +319,7 @@ MAILSTREAM *mtx_open (MAILSTREAM *stream)
   LOCAL->buf = (char *) fs_get (MAXMESSAGESIZE + 1);
   LOCAL->buflen = MAXMESSAGESIZE;
 				/* note if an INBOX or not */
-  stream->inbox = !strcmp(ucase (strcpy (LOCAL->buf,stream->mailbox)),"INBOX");
+  stream->inbox = !compare_cstring (stream->mailbox,"INBOX");
   fs_give ((void **) &stream->mailbox);
   stream->mailbox = cpystr (tmp);
 				/* get shared parse permission */
@@ -452,11 +459,14 @@ long mtx_text (MAILSTREAM *stream,unsigned long msgno,STRING *bs,long flags)
 
 void mtx_flag (MAILSTREAM *stream,char *sequence,char *flag,long flags)
 {
+  struct utimbuf times;
   struct stat sbuf;
   if (!stream->rdonly) {	/* make sure the update takes */
     fsync (LOCAL->fd);
     fstat (LOCAL->fd,&sbuf);	/* get current write time */
-    LOCAL->filetime = sbuf.st_mtime;
+    times.modtime = LOCAL->filetime = sbuf.st_mtime;
+    times.actime = time (0);		/* make sure read comes after all that */
+    utime (stream->mailbox,&times);
   }
 }
 
@@ -509,11 +519,6 @@ long mtx_ping (MAILSTREAM *stream)
       r = (mtx_parse (stream)) ? T : NIL;
       unlockfd (ld,lock);	/* release shared parse/append permission */
     }
-    else if ((sbuf.st_ctime > sbuf.st_atime)||(sbuf.st_ctime > sbuf.st_mtime)){
-      struct utimbuf times;	/* whack the times if necessary */
-      LOCAL->filetime = times.actime = times.modtime = time (0);
-      utime (stream->mailbox,&times);
-    }
   }
   return r;			/* return result of the parse */
 }
@@ -536,6 +541,7 @@ void mtx_check (MAILSTREAM *stream)
 
 void mtx_expunge (MAILSTREAM *stream)
 {
+  struct utimbuf times;
   struct stat sbuf;
   off_t pos = 0;
   int ld;
@@ -560,6 +566,8 @@ void mtx_expunge (MAILSTREAM *stream)
     mm_log ("Unable to lock expunge mailbox",ERROR);
     return;
   }
+				/* make sure see any newly-arrived messages */
+  if (!mtx_parse (stream)) return;
 				/* get exclusive access */
   if (flock (LOCAL->fd,LOCK_EX|LOCK_NB)) {
     flock (LOCAL->fd,LOCK_SH);	/* recover previous lock */
@@ -618,7 +626,9 @@ void mtx_expunge (MAILSTREAM *stream)
   else mm_log ("No messages deleted, so no update needed",(long) NIL);
   fsync (LOCAL->fd);		/* force disk update */
   fstat (LOCAL->fd,&sbuf);	/* get new write time */
-  LOCAL->filetime = sbuf.st_mtime;
+  times.modtime = LOCAL->filetime = sbuf.st_mtime;
+  times.actime = time (0);		/* reset atime to now */
+  utime (stream->mailbox,&times);
   mm_nocritical (stream);	/* release critical */
 				/* notify upper level of new mailbox size */
   mail_exists (stream,stream->nmsgs);
@@ -677,6 +687,7 @@ long mtx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
 				/* get exclusive parse/append permission */
   if ((ld = lockname (lock,mailbox,LOCK_EX)) < 0) {
     mm_log ("Unable to lock copy mailbox",ERROR);
+    mm_nocritical (stream);
     return NIL;
   }
   fstat (fd,&sbuf);		/* get current file size */
@@ -717,7 +728,9 @@ long mtx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
     if (!stream->rdonly) {	/* make sure the update takes */
       fsync (LOCAL->fd);
       fstat (LOCAL->fd,&sbuf);	/* get current write time */
-      LOCAL->filetime = sbuf.st_mtime;
+      times.modtime = LOCAL->filetime = sbuf.st_mtime;
+      times.actime = time (0);		/* make sure atime remains greater */
+      utime (stream->mailbox,&times);
     }
   }
   return ret;
@@ -853,6 +866,7 @@ long mtx_parse (MAILSTREAM *stream)
   long curpos = LOCAL->filesize;
   long nmsgs = stream->nmsgs;
   long recent = stream->recent;
+  short added = NIL;
   short silent = stream->silent;
   fstat (LOCAL->fd,&sbuf);	/* get status */
   if (sbuf.st_size < curpos) {	/* sanity check */
@@ -892,6 +906,7 @@ long mtx_parse (MAILSTREAM *stream)
     }
     *s++ = '\0'; *t++ = '\0';	/* tie off fields */
 
+    added = T;			/* note that a new message was added */
 				/* swell the cache */
     mail_exists (stream,++nmsgs);
 				/* instantiate an elt for this message */
@@ -955,6 +970,12 @@ long mtx_parse (MAILSTREAM *stream)
   LOCAL->filesize = sbuf.st_size;
   fstat (LOCAL->fd,&sbuf);	/* get status again to ensure time is right */
   LOCAL->filetime = sbuf.st_mtime;
+  if (added) {			/* make sure atime updated */
+    struct utimbuf times;
+    times.actime = time (0);
+    times.modtime = LOCAL->filetime;
+    utime (stream->mailbox,&times);
+  }
   stream->silent = silent;	/* can pass up events now */
   mail_exists (stream,nmsgs);	/* notify upper level of new mailbox size */
   mail_recent (stream,recent);	/* and of change in recent messages */
@@ -1028,8 +1049,9 @@ void mtx_read_flags (MAILSTREAM *stream,MESSAGECACHE *elt)
 
 void mtx_update_status (MAILSTREAM *stream,unsigned long msgno,long syncflag)
 {
-  MESSAGECACHE *elt = mail_elt (stream,msgno);
+  struct utimbuf times;
   struct stat sbuf;
+  MESSAGECACHE *elt = mail_elt (stream,msgno);
   unsigned long j,k = 0;
 				/* readonly */
   if (stream->rdonly || !elt->valid) mtx_read_flags (stream,elt);
@@ -1053,7 +1075,9 @@ void mtx_update_status (MAILSTREAM *stream,unsigned long msgno,long syncflag)
     if (syncflag) {		/* sync if requested */
       fsync (LOCAL->fd);
       fstat (LOCAL->fd,&sbuf);	/* get new write time */
-      LOCAL->filetime = sbuf.st_mtime;
+      times.modtime = LOCAL->filetime = sbuf.st_mtime;
+      times.actime = time (0);		/* make sure read is later */
+      utime (stream->mailbox,&times);
     }
   }
 }

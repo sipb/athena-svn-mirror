@@ -1,12 +1,12 @@
 
                              Pine Technical Notes
                                        
-   Version 4.33, February 2001
+   Version 4.53, January 2003
    
    _Pine_ and _Pico_ are trademarks of the University of Washington.
    No commercial use of these trademarks may be made without prior
    written permission of the University of Washington.
-   Pine, Pico and Pilot Copyright 1989-2001 University of Washington.
+   Pine, Pico and Pilot Copyright 1989-2003 University of Washington.
    Additional legal notices are at the web URL
    http://www.washington.edu/pine/legal.
    
@@ -64,6 +64,7 @@ Table of Contents
      * Role Configuration
      * Filtering Configuration
      * Scoring Configuration
+     * Other Rules Configuration
      * Patterns
        
     Configuration Notes
@@ -537,7 +538,7 @@ Compile-time Options
    
    Set up a symlink called ldap in the top-level pine directory (the
    directory where the _Pine_ build script is located). The build script
-   will call contrib/ldap-setup to help if figure out how to use the LDAP
+   will call contrib/ldap-setup to help figure out how to use the LDAP
    libraries. It expects to find directories ldap, ldap/include,
    ldap/libraries, and file ldap/include/ldap.h.
    
@@ -569,6 +570,12 @@ Compile-time Options
    work with the libraries you are using. If you find that a change to
    contrib/ldap-setup works for you, you might think about sending that
    to us for inclusion in the next _Pine_ release.
+   
+   If there is no ldap symlink, there is still an attempt to
+   automatically include LDAP support if certain conditions exist. At
+   this point, the check includes a check for Solaris 8, otherwise the
+   automatic inclusion is not done. You may override the automatic
+   inclusion of LDAP with the build argument NOLDAP.
    
    _Pine_ uses LDAPv2 protocol. When using LDAPv3 protocol, the results
    are returned in the utf8 character set. _Pine_ is not yet ready to
@@ -628,7 +635,8 @@ Compile-time Options
           _WARNING!_ Turning this on is very dangerous and should
           probably not be done, except on single user systems! For
           _PC-Pine_, this is turned on by default and set to the filename
-          PINE.PWD. You may enable it for Unix systems by defining
+          PINE.PWD. It may be overridden by the -passfile command-line
+          argument. You may enable it for Unix systems by defining
           PASSFILE to be a filename which will be located in the same
           directory as the pinerc file, usually the home directory.
           The file is used to save passwords from one session to the
@@ -756,29 +764,44 @@ Building the Pine Programs
     4. Give the command ./build _xxx_ where _xxx_ is the three letter
        code you picked in step 1. The compiler should grind away for a
        few minutes.
-    5. When the compilation is complete the sizes of the four binaries
-       built (pine, mtest, imapd, pico) will be displayed. The actual
-       binaries are in the various source directories. In addition, the
-       bin directory contains a link to each program compiled. You can
-       just copy them out of bin or try them from there.
+    5. When the compilation is complete the sizes of the binaries built
+       will be displayed. The actual binaries are in the various source
+       directories. In addition, the bin directory contains a link to
+       each program compiled. You can just copy them out of bin or try
+       them from there.
        
    The build command can be given some options which it passes on to the
-   subordinate makes. Some that may be useful are EXTRACFLAGS, OPTIMIZE,
-   DEBUG, EXTRALIBES, and EXTRALDFLAGS. Build is more closely integrated
-   with the _Pico_ and _Pine_ makefiles than it is with the _c-client_
-   makefile, so you may find that some things don't work correctly there.
+   subordinate makes. Some that may be useful are EXTRACFLAGS, DEBUG, and
+   EXTRALDFLAGS. There are also some SSL-related arguments: SSLDIR,
+   SSLCERTS, SSLINCLUDE, and SSLLIB. You should also read the comments in
+   the build script itself, which are possibly more up-to-date than this
+   text.
    
    Here are some examples of options you may want to pass to build. This
    will turn off the debugging files that _Pine_ produces, while leaving
    the symbol table information. We believe a better way to do this is to
    have an alias for pine which executes pine -d0 instead. This turns off
    debugging at runtime while preserving the possibility of using the
-   debugging if a problem turns up.
-                DEBUG=-g
-
-   To also leave out the symbol table information you could pass:
-                DEBUG=
-
+   debugging if a problem turns up. But if you wanted to turn it off
+   unconditionally you could use the build argument
+   
+                                  DEBUG=-g
+                                      
+   In other words, the command to build a _Pine_ with no debugging would
+   be
+   
+                          ./build DEBUG=-g target
+                                      
+   where target is one of the 3-letter port names found in
+   doc/pine-ports. To also leave out the symbol table information you
+   could pass:
+   
+                                   DEBUG=
+                                      
+   To turn on the optimizer
+   
+                                  DEBUG=-O
+                                      
    It should be ok to move string constants into a read-only area. We
    don't think there are any instances where _Pine_ modifies a string
    constant. So you could pass a flag to your compiler that tells it to
@@ -787,7 +810,55 @@ Building the Pine Programs
    and that should allow that text to be shared among all instances of
    _Pine_. To do this, for example, with the AIX _a41_ port, you could
    pass this to build:
-                EXTRACFLAGS=-qro
+   
+                              EXTRACFLAGS=-qro
+                                      
+   If you are using OpenSSL but have decided to use a non-standard
+   directory (standard one is /usr/local/ssl) for the location then you
+   can cause _Pine_ to use that directory with
+   
+                           SSLDIR=/some/other/dir
+                                      
+   The assumption is that the certs directory is in SSLDIR/certs, the
+   include directory is SSLDIR/include, and the library directory is
+   SSLDIR/lib. You can change those assumptions with
+   
+                          SSLCERTS=certs_directory
+                                      
+                      SSLINCLUDE=include_directory and
+                                      
+                        SSLLIB=ssl_library_directory
+                                      
+   If you are having trouble with the SSL compilation you may explicitly
+   exclude SSL code with NOSSL.
+   
+                                   NOSSL
+                                      
+   Similarly,
+   
+                                   NOLDAP
+                                      
+   The argument
+   
+                               EXTRASPECIALS
+                                      
+   can be used to pass arguments to the c-client make which aren't
+   provided for in the _Pine_ build script. For example, if you want to
+   change the FRIZZLE parameter (a made up argument which the c-client
+   make uses) you might be tempted to type something like
+   
+                        ./build FRIZZLE=cruft target
+                                      
+   This does work with make on some platforms, but not on others. Some
+   makes seem to pass the arguments on to sub-makes, others don't. If
+   that doesn't work, then EXTRASPECIALS is for you.
+   
+                ./build EXTRASPECIALS="FRIZZLE=cruft" target
+                                      
+   An additional warning. There are some arguments which are overridden
+   unconditionally in the sub-makes. Hopefully none of the arguments
+   mentioned above falls in this category, but it is something to look
+   out for if you are having trouble.
      _________________________________________________________________
    
 Installing Pine and Pico on UNIX Platforms
@@ -1125,10 +1196,13 @@ Pine
           Go directly into composer with given file attached, delete when
           finished.
    -aux _local_directory_
-          _PC-Pine_ only. When using a remote configuration (-p
-          <remote_config>) this tells _PC-Pine_ the local directory to
-          use for storing auxiliary files, like debug files, address
-          books, and signature files.
+          _PC-Pine_ only. This tells _PC-Pine_ the local directory to use
+          for storing auxiliary files, like debug files, address books,
+          and signature files. The pinerc may be local or remote.
+   -nosplash
+          _PC-Pine_ only. This tells _PC-Pine_ to not display the splash
+          screen upon startup. This may be helpful for certain
+          troubleshooting or terminal server scenarios.
    -bail
           If the personal configuration file doesn't already exist, exit.
           This might be useful if the configuration file is accessed
@@ -1148,6 +1222,9 @@ Pine
           old system configuration file, execute
                 pine -P old-pine.conf -conf > /usr/local/lib/pine.conf
           A system configuration file is not required.
+   -convert_sigs _-p pinerc_
+          Convert signatures contained in signature files into literal
+          signatures.
    -copy_abook _<local_abook_file> <remote_abook_folder>_
           Copy an address book file to a remote address book folder. If
           the remote folder doesn't exist, it will be created. If it
@@ -1177,24 +1254,28 @@ Pine
           book after creating the lookup file.
    -d _debug-level_
           Debug Level: Sets the level of debugging information written by
-          _Pine_. _debug-level_ can be set to any integer 0-9. A debug
+          _Pine_. _Debug-level_ can be set to any integer 0-9. A debug
           level of 0 turns off debugging for the session. (Actually there
           are some levels higher than 9, but you probably don't want to
-          see them.)
+          see them. Sensitive authentication information is hidden at
+          levels less than 10.)
    -d _keywords_
           You may use a more detailed version of the debugging flag to
           set the debug level in separate parts of _Pine_. The
-          possibilities are flush, timestamp, imap=0..4, numfiles=0..31,
-          and verbose=0..9. _Flush_ causes debugging information to be
-          flushed immediately to the debug file as it is written.
-          _Verbose_ is the general debugging verbosity level. _Timestamp_
-          causes timestamps to be added to the debug file, which is
-          useful when you are trying to figure out what is responsible
-          for delays. _Numfiles_ sets the number of debug files saved.
-          _Imap_ sets the debug level for the debugging statements
-          related to the conversation with the IMAP server, and more
-          generally, for the debugging related to _Pine_'s interaction
-          with the C-Client library.
+          possibilities are flush, timestamp, imap=0..4, tcp,
+          numfiles=0..31, and verbose=0..9. _Flush_ causes debugging
+          information to be flushed immediately to the debug file as it
+          is written. _Verbose_ is the general debugging verbosity level.
+          _Timestamp_ causes timestamps to be added to the debug file,
+          which is useful when you are trying to figure out what is
+          responsible for delays. _Numfiles_ sets the number of debug
+          files saved. _Imap_ sets the debug level for the debugging
+          statements related to the conversation with the IMAP server,
+          and more generally, for the debugging related to _Pine_'s
+          interaction with the C-Client library. If _imap_ is set higher
+          than 4, sensitive authentication information will be included
+          in the debug file. _Tcp_ adds more TCP/IP debugging
+          information.
    -f _folder_
           Startup folder: _Pine_ will open this folder in place of the
           standard INBOX.
@@ -1249,6 +1330,10 @@ Pine
           instead of _/usr/local/lib/pine.conf_ on UNIX, or nothing on
           _PC-Pine_. Pinerc may be either a local file or a remote
           configuration folder.
+   -passfile _passfile_
+          _PC-Pine_ only. This tells _PC-Pine_ what file should be used
+          as the password file. This should be a fully-qualified
+          filename.
    -pinerc _file_
           Output fresh pinerc configuration to _file_, preserving the
           settings of variables that the user has made. Use _file_ set to
@@ -1277,9 +1362,15 @@ Pine
           default value is "arrival". The _key_ value reverse is
           equivalent to arrival/reverse.
           Configuration equivalent: _sort-key_.
+   -supported
+          Some options may or may not be supported depending on how _Pine_
+          was compiled. This is a way to determine which options are
+          supported in the particular copy of _Pine_ you are using.
    -url _url_
           Open the given URL.
    -v
+          Version: Print version information to the screen.
+   -version
           Version: Print version information to the screen.
    -x _exceptions_config_
           Configuration settings in the exceptions config override your
@@ -1350,9 +1441,20 @@ Pico
           accessible. Likewise, the file browser is limited to the
           specified directory subtree.
           
+   -p
+          Preserve the "start" and "stop" characters, typically Ctrl-Q
+          and Ctrl-S, which are sometimes used in communications paths to
+          control data flow between devices that operate at different
+          speeds.
+          
    -q
           TermdefWins. Termcap or terminfo escape sequences are used in
           preference to default escape sequences.
+          
+   -Q _quotestr_
+          Set the quote string. Especially useful when composing email,
+          setting this allows the quote string to be checked for when
+          Justifying paragraphs. A common quote string is "> ".
           
    -r_n_
           Sets column used to limit the "Justify" command's right margin.
@@ -1365,6 +1467,9 @@ Pico
           
    -v
           View the file only, disallowing any editing.
+          
+   -version
+          Print version information.
           
    -w
           Disable word wrap (thus allow editing of long lines).
@@ -1619,6 +1724,12 @@ General Configuration Variables
           of the _Reply_ command and the _+_ symbol in the "Folder
           Index", which denotes that a message has been addressed
           specifically to you.
+          In the default INDEX display the personal name (or email
+          address) of the person listed in the message's "From:" header
+          field is usually displayed except when that address is yours or
+          one of your alternate addresses. In that case you will usually
+          see the name of the first person specified in the message's
+          "To:" header field with the prefix "To: " prepended.
           With respect to _Reply_, the _Reply to All_ option will exclude
           addresses listed here.
    _bugs-additional-data_
@@ -1686,6 +1797,12 @@ General Configuration Variables
                 are the same as for the foreground colors except a "4"
                 replaces the "3".
                 
+                Note: With the Tera Term terminal emulator this setting
+                works well. You should also have the Tera Term "Full
+                color" option turned OFF. You may find the "Full color"
+                option in Tera Term's "Setup" menu, in the "Window"
+                submenu.
+                
         force-ansi-16color
                 Many terminal emulators know about the same eight colors
                 above plus eight more. This option attempts to use all 16
@@ -1709,6 +1826,37 @@ General Configuration Variables
           configuration screen (Kolor instead of Color because C means
           Config). Most categories of color which _Pine_ supports are
           configurable there. Index line color is configured separately.
+          Beginning with _Pine_ 4.41, the default names of some colors
+          were changed in order to have better interoperability between
+          _PC-Pine_ and Unix _Pine_ with both eight and 16-color
+          terminals. Both _PC-Pine_ and 8-color Unix _Pine_ will
+          interpret the colors named color008, color009, ..., color015 as
+          black, red, ..., white. When changing a configuration color
+          they will put the colors black, color009, color010, ...,
+          color015 into the config file. That is, the colors red, green,
+          ..., white will only appear in the config file if put there
+          manually or if they were already there from an older version of
+          _Pine_. The reason for this is because with 16-color xterm the
+          colors red, green, ..., white are actually two-thirds intensity
+          colors, and the colors color009, color010, ..., color015 (in
+          pine terminology) are full intensity colors which better match
+          the default eight of _PC-Pine_ or 8-color Unix terminal
+          emulators. The idea is that you can use the eight colors of an
+          8-color terminal on a 16-color terminal and with _PC-Pine_.
+          Those eight colors will be about the same in all three
+          situations.
+          In pre-4.41 _PC-Pine_ the three default grays offered were
+          called color008, color009, and color010. Since this conflicts
+          with three of the colors on 16-color terminals these three
+          colors have been renamed colorlgr, colormgr, and colordgr.
+          _PC-Pine_ will attempt to automatically change those color
+          names the first time you run a version higher than 4.40. If
+          that fails for some reason, you will see your old light grays
+          displayed as black, your old medium grays displayed as red, and
+          your old dark grays displayed as green. You may fix these from
+          within the _PC-Pine_ color config screens. If you then go back
+          to running a pre-4.41 version of _PC-Pine_ the colors with the
+          new names (colorlgr...) will show up as Normally colored text.
    _composer-wrap-column_
           This option specifies an aspect of _Pine_'s Composer. This
           gives the maximum width that auto-wrapped lines will have. It's
@@ -1717,6 +1865,8 @@ General Configuration Variables
           setting is normally _80_ in order to prevent very long lines
           from being sent in outgoing mail. When the mail is actually
           sent, trailing spaces will be stripped off of each line.
+   _current-indexline-style_
+          current-indexline-style.
    _customized-hdrs_
           Add these custom headers when composing. Also possible to add
           default values to these custom headers or to any of the
@@ -1938,7 +2088,7 @@ General Configuration Variables
    _empty-header-message_
           When sending, if all of the To, Cc, and Newsgroups fields are
           empty, _Pine_ will put a special address in the To line. The
-          default value is "Undisclosed recipients: ;". The reason for
+          default value is "undisclosed-recipients: ;". The reason for
           this is to avoid embarrassment caused by some Internet mail
           transfer software that interprets a "missing" To: header as an
           error and replaces it with an Apparently-to: header that may
@@ -2214,10 +2364,10 @@ General Configuration Variables
           you use fixed column widths (like 13) you should remember to
           take that into account. Several of the fields are virtually
           fixed-width, so it doesn't make much sense to specify the width
-          for them. The fields STATUS, FULLSTATUS, MSGNO, the DATE
-          fields, SIZE, and DESCRIPSIZE all fall into that category. You
-          _may_ specify widths for those if you wish, but you're probably
-          better off letting the system pick those widths.
+          for them. The fields STATUS, FULLSTATUS, IMAPSTATUS, MSGNO, the
+          DATE fields, SIZE, and DESCRIPSIZE all fall into that category.
+          You _may_ specify widths for those if you wish, but you're
+          probably better off letting the system pick those widths.
           The default is equivalent to:
           
        index-format=STATUS MSGNO DATE FROMORTO(33%) SIZE SUBJECT(67%)
@@ -2318,11 +2468,12 @@ General Configuration Variables
           the signature work the same way they do with the regular
           signature-file.
           The Setup/Signature command in _Pine_'s Main Menu will edit the
-          _literal-signature_ if defined, otherwise it will edit the file
-          named in the _signature-file_ option. Likewise, Compose (Reply,
-          Forward, ...) will default to using the _literal-signature_ if
-          defined, otherwise it will use the contents of the file named
-          in _signature-file_.
+          _literal-signature_ by default. However, if no
+          _literal-signature_ is defined and the file named in the
+          _signature-file_ option exists, then the latter will be used
+          instead. Compose (Reply, Forward, ...) will default to using
+          the _literal-signature_ if defined, otherwise it will use the
+          contents of the file named in _signature-file_.
           The _Pine_ composer is used to edit the literal-signature. The
           result of that edit is first converted to a C-style string
           before it is stored in the configuration file. In particular,
@@ -2334,11 +2485,31 @@ General Configuration Variables
    _mail-check-interval_
           This option specifies, in seconds, how often _Pine_ will check
           for new mail. If set to zero, new-mail checking is disabled.
-          There is a minimum value, normally 15 seconds. A side effect of
-          disabling mail checking is that there will be situations in
-          which the user's IMAP connection will be broken due to
-          inactivity timers on the server. Another side effect is that
-          the user-input-timeout option won't work.
+          There is a minimum value, normally 15 seconds.
+          There are some situations where new-mail checking does not
+          work. For example, if a mail folder is opened using the POP
+          protocol or a newsgroup is being read using the NNTP protocol,
+          then new-mail checking is disabled.
+          It may be possible to check for new mail in these cases by
+          reopening the folder. There is an experimental method for doing
+          this. You reopen by going back to the folder list screen from
+          the message index screen with the "<" command, and then going
+          back into the message index screen with the ">" command. If
+          _Pine_ knows that reopening the folder would be a way to
+          discover new mail, it offers to do the reopen. If you don't
+          agree to reopen (you answer No) then you are just back in the
+          message index with no change. However, if you agree to reopen
+          the folder by answering Yes, the folder is closed and then
+          reopened. In this case, the current state of the open folder is
+          lost. The New status, Important and Answered flags, selected
+          state, Zoom state, collapsed or expanded state of threads,
+          current message number, and any other temporary state is all
+          lost when the reopen happens. For POP folders (but not NNTP
+          newsgroups) the Deleted flags are also lost.
+          A side effect of disabling mail checking is that there will be
+          situations in which the user's IMAP connection will be broken
+          due to inactivity timers on the server. Another side effect is
+          that the user-input-timeout option won't work.
    _mail-directory_
           This variable was more important in previous versions of
           _Pine_. Now it is used only as the default for storing personal
@@ -2420,6 +2591,19 @@ General Configuration Variables
           isn't very convenient but it isn't thought that many users will
           need this functionality. The purpose of indexcolor files is for
           sharing indexcolors.
+   _patterns-other_
+          Matching patterns and their corresponding actions are stored in
+          this variable. These patterns are used with Miscellaneous Rules
+          configuration. This variable is normally maintained through the
+          Setup/Rules/Other configuration screen. It is a list variable.
+          Each member of the list is a single pattern/action pair, or it
+          can be a file which contains zero or more lines of
+          pattern/action pairs. The only way to create a rules file is to
+          use the InsertFile command in the Setup/Rules/Other screen with
+          a filename which doesn't yet exist. Then use the Shuffle
+          command to move existing rules into the file. This isn't very
+          convenient but it isn't thought that many users will need this
+          functionality.
    _patterns-roles_
           Matching patterns and their corresponding actions are stored in
           this variable. These patterns are used with Roles. This
@@ -2560,13 +2744,13 @@ General Configuration Variables
           
         _FROM_
                 This token gets replaced with the message sender's
-                "username".
+                "username". At most six characters are used.
                 
         _NICK_
                 This token gets replaced with the nickname of the message
                 sender's address as found in your addressbook. If no
                 addressbook entry is found, Pine replaces the characters
-                "_NICK_" with nothing.
+                "_NICK_" with nothing. At most six characters are used.
                 
         _INIT_
                 This token gets replaced with the initials of the sender
@@ -2634,11 +2818,12 @@ General Configuration Variables
           will offer the folder "saved-messages" (UNIX) or "SAVEMAIL"
           (PC) for _Sav_ing messages. The default folder offered in this
           way may be changed by using the configuration variable
-          default-saved-msg-folder. If this rule is set to
-          _last-folder-used_, _Pine_ offers to _Save_ to the folder you
-          last successfully _Saved_ a message to (this session). The
-          first time you _Save_ a message in a session, _Pine_ offers to
-          _Save_ the message to the default folder.
+          default-saved-msg-folder.
+          If this rule is set to _last-folder-used_, _Pine_ offers to
+          _Save_ to the folder you last successfully _Saved_ a message to
+          (this session). The first time you _Save_ a message in a
+          session, _Pine_ offers to _Save_ the message to the default
+          folder.
           Choosing any of the _by-_ options causes _Pine_ to attempt to
           get the chosen option's value for the message being _Saved_.
           For example, if _by-from_ is chosen, _Pine_ attempts to get the
@@ -2649,19 +2834,48 @@ General Configuration Variables
           _by-recipient_ was chosen and the message was posted to a
           newsgroup, _Pine_ will use the newsgroup name. If _by-replyto_
           is chosen and no value is obtained, _Pine_ uses _by-from_.
-          If any of the _by-nick-_ options are chosen, the resulting
-          address is looked up in the user's address books and if found,
-          the nickname for that entry is used. Only simple address book
+          If any of the "by-realname" options are chosen, _Pine_ will
+          attempt to use the personal name part of the address instead of
+          the mailbox part. If any of the "by-nick" options are chosen,
+          the address is looked up in your address book and if found, the
+          nickname for that entry is used. Only simple address book
           entries are checked, not distribution lists. Similarly, if any
-          of the _by-fcc-_ options are chosen, the fcc from the
-          corresponding address book entry is used. If no value is found
-          in the address book, then if the chosen option ends with the
-          "-then-from", "-then-sender", "-then-replyto", or "-then-recip"
-          suffix, _Pine_ reverts to the same behavior as _by-from_,
-          _by-sender_, _by-replyto_, or _by-recipient_ depending on which
-          option was specified. If the chosen option doesn't end with one
-          of the "then-" suffixes, then _Pine_ reverts to the default
-          folder when no match is found in the address book.
+          of the "by-fcc" options are chosen, the fcc from the
+          corresponding address book entry is used. If by-realname, or
+          the by-nick or by-fcc lookups result in no value, then if the
+          chosen option ends with the "then-from", "then-sender",
+          "then-replyto", or "then-recip" suffix, _Pine_ reverts to the
+          same behavior as "by-from", "by-sender", "by-replyto", or
+          "by-recip" depending on which option was specified. If the
+          chosen option doesn't end with one of the "then-" suffixes,
+          then _Pine_ reverts to the default folder when no match is
+          found in the address book.
+          Here is an example to make some of the options clearer. If the
+          message is From
+          
+                    Fred Flintstone <flint@bedrock.org>
+          and this rule is set to "by-from", then the default folder
+          offered in the save dialog would be "flint".
+          If this rule is set to "by-realname-of-from" then the default
+          would be "Fred Flintstone".
+          If this rule is set to "by-nick-of-from" then _Pine_ will
+          search for the address "flint@bedrock.org" in your address
+          book. If an entry is found and it has a nickname associated
+          with it, that nickname will be offered as the default folder.
+          If not, the default saved message folder will be offered as the
+          default.
+          If this rule is set to "by-fcc-of-from" then _Pine_ will search
+          for the address "flint@bedrock.org" in your address book. If an
+          entry is found and it has an Fcc associated with it, that Fcc
+          will be offered as the default folder. If not, the default
+          saved message folder will be offered as the default.
+          If this rule is set to "by-nick-of-from-then-from" then _Pine_
+          will search for the address "flint@bedrock.org" in your address
+          book. If an entry is found and it has a nickname associated
+          with it, that nickname will be offered as the default folder.
+          If it is not found (or has no nickname) then the default
+          offered will be the same as it would be for the "by-from" rule.
+          That is, it would be "flint"
    _scroll-margin_
           This option controls when _Pine_'s line-by-line scrolling
           occurs. Typically, when a selected item is at the top or bottom
@@ -2837,9 +3051,25 @@ General Configuration Variables
           will use for outgoing mail. If not set, _Pine_ passes outgoing
           email to the _sendmail_ program on the local machine. _PC-Pine_
           users must have this variable set in order to send mail as they
-          have no _sendmail_ program. An alternate port may be specified
-          by appending :port to the host name or IP address. See the SMTP
-          Servers section for details.
+          have no _sendmail_ program.
+          If the SMTP server offers SMTP AUTH authentication you may
+          specify a user name parameter to cause _Pine_ to attempt to
+          authenticate. This parameter requires an associated value, the
+          username identifier with which to establish the server
+          connection. An example might be:
+          
+                     smtpserver.example.com/user=katie
+          If AUTH authentication is offered by the server, this will
+          cause _Pine_ to attempt to use it. If AUTH authentication is
+          not offered by the server, this will cause _Pine_ to fail
+          sending with an error similar to:
+          
+                  Error: SMTP authentication not available
+          To use a non-standard port number on the SMTP server, follow
+          the hostname with colon portnumber.
+          
+                        smtpserver.example.com:12345
+          See the SMTP Servers section for some more details.
    _sort-key_
           This variable sets up the default Message Index sorting. The
           default is to sort by arrival order (the order the messages
@@ -2918,6 +3148,173 @@ General Configuration Variables
           possibly giving you the option to break the connection. The
           default is 15 seconds. The minimum is 5 seconds and the
           maximumn is 1000 seconds.
+   _threading-display-style_
+          When a folder is sorted by Threads or OrderedSubject, this
+          option will affect the MESSAGE INDEX display. By default, _Pine_
+          will display the MESSAGE INDEX in the "show-thread-structure"
+          style if a folder is sorted by Threads or OrderedSubject. The
+          possible values are:
+          
+        _none_
+                Regular index display. The same index line as would be
+                displayed without threading is used. The only difference
+                will be in the order of the messages.
+                
+        _show-thread-structure_
+                Threaded Subjects will be indented and vertical bars and
+                horizontal lines will be added to make it easier to see
+                the relationships among the messages in a thread (a
+                conversation).
+                
+        _mutt-like_
+                This is the same as the option above except that the
+                Subject is suppressed (is blank) if it matches the
+                previous Subject in the thread. The name comes from the
+                email client Mutt.
+                
+        _indent-subject-1_
+                Threaded Subjects will be indented one space per level of
+                the conversation. The bars and lines that show up in the
+                show-thread-structure display will not be there with this
+                style.
+                
+        _indent-subject-2_
+                Same as above but indent two spaces per level instead of
+                one space.
+                
+        _indent-from-1_
+                Similar to indent-subject-1, except that instead of
+                indenting the Subject field one space the From field of a
+                thread will be indented one space per level of the
+                conversation.
+                
+        _indent-from-2_
+                Same as above but indent two spaces per level instead of
+                one space.
+                
+        _show-structure-in-from_
+                The structure of the thread is illustrated with
+                indenting, vertical bars, and horizontal lines just like
+                with the show-thread-structure option, but the From field
+                is used to show the relationships instead of the Subject
+                field.
+                
+   _threading-expanded-character_
+          The Threading-Expanded-Character option has a small effect on
+          the MESSAGE INDEX display when using a threading-display-style
+          other than _none_. The value of this option is a single
+          character. This character is used to indicate that part of a
+          thread has been expanded and could be collapsed if desired with
+          the "/" Collapse/Expand command. By default, the value of this
+          option is a dot (.).
+          If this option is set to the Empty Value, then the column (and
+          the following blank column) will be deleted from the display.
+          This option is closely related to the
+          threading-indicator-character option. Another similar option
+          which affects the thread display is the
+          threading-lastreply-character option.
+   _threading-index-style_
+          When a folder is sorted by Threads or OrderedSubject, this
+          option will affect the INDEX displays. The possible values are:
+          
+        _regular-index-with-expanded-threads_
+                This is the default display. If the configuration option
+                threading-display-style is set to something other than
+                "none", then this setting will cause _Pine_ to start off
+                with a MESSAGE INDEX with all of the threads expanded.
+                That is, each message will have a line in the MESSAGE
+                INDEX display. The Collapse/Expand command (/) may be
+                used to manually collapse or expand a thread or subthread
+                (see also slash-collapses-entire-thread).
+                
+                This setting affects the display when the folder is first
+                threaded. The collapsed state may also be re-initialized
+                by re-sorting the folder manually using the SortIndex
+                command ($). After re-sorting the threads will once again
+                all be expanded, even if you have previously collapsed
+                some of them.
+                
+                If "threading-display-style" is set to "none", then the
+                display will be the regular default Pine MESSAGE INDEX,
+                but sorted in a different order.
+                
+        _regular-index-with-collapsed-threads_
+                If the configuration option threading-display-style is
+                set to something other than "none", then this setting
+                will cause _Pine_ to start out with all of the threads
+                collapsed instead of starting out with all of the threads
+                expanded. The Collapse/Expand command (/) may be used to
+                manually collapse or expand a thread or subthread (see
+                also slash-collapses-entire-thread).
+                
+                This setting affects the display when the folder is first
+                threaded. The collapsed state may also be re-initialized
+                by re-sorting the folder manually using the SortIndex
+                command ($). After re-sorting the threads will once again
+                all be collapsed, even if you have previously expanded
+                some of them.
+                
+        _separate-index-screen-always_
+                With this setting and the next, you will see an index of
+                threads instead of an index of messages, provided you
+                have sorted by Threads or OrderedSubject.
+                
+                The THREAD INDEX contains a '*' in the first column if
+                any message in the thread is marked Important. If not, it
+                contains a '+' if any message in the thread is to you.
+                The second column is blank. The third column contains a
+                'D' if all of the messages in the thread are deleted.
+                Otherwise, it contains an 'N' if any of the messages in
+                the thread are New.
+                
+                When you view a particular thread from the THREAD INDEX
+                you will be in the MESSAGE INDEX display but the index
+                will only contain messages from the thread you are
+                viewing.
+                
+        _separate-index-screen-except-for-single-messages_
+                This is very similar to the option above. When you are in
+                the THREAD INDEX, one of the available commands is
+                "ViewThd". With the setting
+                "separate-index-screen-always" (the option above) when
+                you view a particular thread you will be in the MESSAGE
+                INDEX display and the index will only contain messages
+                from the thread you are viewing. If the thread you are
+                viewing consists of a single message, the MESSAGE INDEX
+                will be an index with only one message in it. If you use
+                this "separate-index-screen-except-for-single-messages"
+                setting instead, then that index which contains a single
+                message will be skipped and you will go directly from the
+                THREAD INDEX into the MESSAGE VIEW screen.
+                
+   _threading-indicator-character_
+          The Threading-Indicator-Character option has a small effect on
+          the MESSAGE INDEX display when using a threading-display-style
+          other than _none_ and sorting by Threads or OrderedSubject. The
+          value of this option is a single character. This character is
+          used to indicate that part of a thread (a conversation) is
+          hidden beneath a message. The message could be expanded if
+          desired with the "/" Collapse/Expand command. By default, the
+          value of this option is the greater than sign (>).
+          If this option is set to the Empty Value, then the column (and
+          the following blank column) will be deleted from the display.
+          This option is closely related to the
+          threading-expanded-character option. Another similar option
+          which affects the thread display is the
+          threading-lastreply-character option.
+   _threading-lastreply-character_
+          The Threading-Lastreply-Character option has a small effect on
+          the MESSAGE INDEX display when using a threading-display-style
+          of _show-thread-structure_, _mutt-like_, or
+          _show-structure-in-from_; and sorting by Threads or
+          OrderedSubject. The value of this option is a single character.
+          This character is used instead of the vertical line character
+          when there are no more replies directly to the parent of the
+          current message. It can be used to "round-off" the bottom of
+          the vertical line by setting it to a character such as a
+          backslash. By default, the value of this option is the vertical
+          bar character (|). This option may not be set to the Empty
+          Value. In that case, the default will be used instead.
    _tcp-write-warning-timeout_
           Sets the time in seconds that _Pine_ will wait for a network
           write before warning you that things are moving slowly and
@@ -2927,6 +3324,8 @@ General Configuration Variables
    _title-background-color_
    _title-foreground-color_
           Title Color.
+   _titlebar-color-style_
+          titlebar-color-style.
    _upload-command_
           This option affects the behavior of the Composer's _^R_ (Read
           File) and _^J_ (Attach File, in the header) commands. It
@@ -3072,6 +3471,30 @@ Configuration Features
           _Pine_, you should enable this feature.
           If you do enable this feature and see a _talk_ message, you
           must suspend or quit _Pine_ before you can respond.
+   _alternate-compose-menu_
+          This feature controls the menu that is displayed when Compose
+          is selected. If set, a list of options will be presented, with
+          each option representing the type of composition that could be
+          used. This feature is most useful for users who want to avoid
+          being prompted with each option separately, or who want to
+          avoid the checking of remote postponed or form letter folders.
+          The possible types of composition are:
+          New, for starting a new composition. Note that if New is
+          selected and roles are set, roles are checked for matches and
+          applied according to the setting of the matching role.
+          Interrupted, for continuing an interrupted composition. This
+          option is only offered if an interrupted message folder is
+          detected.
+          Postponed, for continuing postponed compositions. This option
+          is offered if a postponed-folder is set in the config
+          _REGARDLESS OF_ whether or not the postponed folder actually
+          exists. This option is especially handy for avoiding having to
+          check for the existence of a remote postponed folder.
+          Form, for using form letters. This option is offered if the
+          form-letter-folder is set in the config, and is not checked for
+          existence for reasons similar to those explained by the
+          postponed option.
+          setRole, for selecting a role to apply to a composition.
    _assume-slow-link_
           This feature affects _Pine_'s display routines. If set, the
           normal inverse-video cursor (used to highlight the current item
@@ -3217,12 +3640,42 @@ Configuration Features
           past other messages that are marked deleted. In other words,
           pressing _D_ will both mark the current message deleted and
           advance to the next message that is not marked deleted.
+   _disable-2022-jp-conversions_
+          By default, UNIX _Pine_ will convert ISO-2022-JP data into EUC
+          and _PC-Pine_ will convert ISO-2022-JP data into Shift-JIS
+          before displaying it. Conversely, when sending mail UNIX _Pine_
+          will convert EUC into ISO-2022-JP and _PC-Pine_ will convert
+          Shift-JIS into ISO-2022-JP. If this feature is set, those
+          conversions are turned off.
+          Most of _Pine_ is not set up to handle multi-byte characters or
+          variable width characters. From time to time, your display will
+          be garbled because _Pine_'s word wrapping code, which is not
+          aware of the possibility that characters may be multi-byte, may
+          wrap a line in the middle of a character. _Pico_ is also not
+          able to edit Japanese data so you will need to use an alternate
+          editor when composing or replying to mail.
    _disable-busy-alarm_
           If set, the spinning bar that sometimes appears in the status
           line will not appear when _Pine_ is busy. This might be useful
           if it is suspected that the alarm(2) system calls that _Pine_
           uses to implement the busy spinner are suspected of causing a
           problem.
+   _disable-charset-conversions_
+          By default, if your "character-set" configuration option is
+          different from the character set of the message you are
+          viewing, then _Pine_ will attempt to convert the characters to
+          the character set you have set in the "character-set"
+          configuration option before sending them to your display. This
+          does not work for multi-byte or variable width character sets.
+          If this feature is set, the conversions are turned off.
+          Conversion is only possible if the character being converted is
+          present in both character sets. Many pairs of character sets
+          have no characters in common. In that case, _Pine_ will not
+          attempt any conversion. If there are some characters in common
+          then _Pine_ will attempt to convert those and will display the
+          unknown characters as question marks.
+          Japanese character set conversions are controlled separately
+          with the disable-2022-jp-conversions feature.
    _disable-config-cmd_
           If set, the configuration screen _Setup/Config_ will not be
           available at all.
@@ -3239,6 +3692,22 @@ Configuration Features
           show it to you. After the key menu has popped up with the help
           key it will remain there for an _O Other_ command but will
           disappear if any other command is typed.
+   _disable-password-caching_
+          Normally, loginname/password combinations are cached in _Pine_
+          so that the user does not have to enter the same password more
+          than once in a session. A disadvantage to this approach is that
+          the password must be stored in the memory image of the running
+          _Pine_ in order that it can be reused. In the event that _Pine_
+          crashes and produces a core dump, and that core dump is
+          readable by others, the loginname and password could possibly
+          be read from the core dump.
+          If this hidden feature is set, then the passwords will not be
+          cached and the user will have to retype the password whenever
+          _Pine_ needs it. Even with this feature set there is still some
+          chance that the core file will contain a password, so care
+          should be taken to make the core files unreadable.
+          NOTE: If PASSFILE caching is enabled, this does not disable it.
+          That is a separate and independent feature.
    _disable-password-cmd_
           If set the _Newpassword_ command usually available under the
           _Setup_ command will not be available.
@@ -3261,6 +3730,20 @@ Configuration Features
    _disable-roles-template-edit_
           If set the roles editor in the _Setup/Roles_ command will not
           allow editing of template files with the F subcommand.
+   _disable-sender_
+          If set, _Pine_ will not generate a "Sender:" or "X-X-Sender"
+          header. This may be desirable on a system which is virtually
+          hosting many domains, and the sysadmin has other methods
+          available for tracking a message to its originator.
+   _disable-shared-namespaces_
+          If this hidden feature is set the automatic search for
+          namespaces "ftp", "imapshared", and "imappublic" by the
+          underlying library will be disabled. The reason this feature
+          exists is because there are some implementations of system
+          password lookup routines which are very slow when presented
+          with a long loginname which does not exist. This feature could
+          be set to prevent the delay at startup time when the names
+          above are searched for in the password file.
    _disable-signature-edit-cmd_
           If set the _Signature_ editing command usually available under
           the _Setup_ command will not be available.
@@ -3477,6 +3960,13 @@ Configuration Features
           _Print_, _Forward_, and _Reply_ functions. (For _Reply_, the
           _Full Header_ mode will respect the _include-headers-in-reply_
           feature setting.)
+   _enable-full-header-and-text_
+          This feature affects how the _H Full Headers_ command displays
+          message text. If set, the raw message text will be displayed.
+          This especially affects MIME formatted email, where the entire
+          MIME format will be displayed. This feature similarly affects
+          how messages are included for the _Export_, _Pipe_, _Print_,
+          _Forward_, and _Reply_ functions.
    _enable-goto-in-file-browser_
           Setting this causes _Pine_ to offer the _G Goto_ command in the
           file browser. This command allows you to explicitly set the
@@ -3660,6 +4150,13 @@ John: on a job well done!
           filename. In this case, _TAB_ will cause the partial name
           already entered to be automatically completed, provided the
           partial name is unambiguous.
+   _enable-take-export_
+          Normally, the Take command takes addresses from a message and
+          helps you put them into your Address Book. When this feature is
+          set, you will be given an extra prompt which gives you the
+          choice to Take addresses into a file instead of your Address
+          Book. Only the user@domain_name part of the address is put in
+          the file.
    _enable-tray-icon_
           _PC-Pine_ only.
    _enable-unix-pipe-cmd_
@@ -3693,7 +4190,7 @@ John: on a job well done!
           The purpose of this feature is to allow you to change
           configuration features and variables which are normally hidden.
           This is particularly useful if you are using a remote
-          configuration file, where it is impossible to edit the file
+          configuration file, where it is difficult to edit the file
           manually, but it may also be used on a local pinerc
           configuration file.
           If set, most configuration variables and features which are
@@ -3701,15 +4198,6 @@ John: on a job well done!
           Setup/Configuration screen. They will be at the bottom of the
           configuration screen. You can find them by searching for the
           word "hidden".
-          This feature will usually be used by setting it on the command
-          line. Any feature may be turned on temporarily for a particular
-          _Pine_ session from the command line. For example, this feature
-          may be temporarily set with the syntax
-          
-     pine -feature-list=expose-hidden-config
-          You could also set this feature in your configuration file (it
-          is one of the hidden features which can be set) so that the
-          hidden configuration always shows up.
           Note that this is an advanced feature which should be used with
           care. The reason that this part of the configuration is
           normally hidden is because there is a significant potential for
@@ -3793,6 +4281,14 @@ John: on a job well done!
           then when an implicit directory lookup is done from the
           composer you will automatically be prompted to add the result
           of the directory lookup to your address book.
+   _mark-fcc-seen_
+          This features controls the way FCCs (File Carbon Copies) are
+          made of the messages you send. Normally, when _Pine_ saves a
+          copy of a message you sent as an Fcc, that copy will be marked
+          as Unseen. When you look at the folder it was saved in the
+          message will appear to be a New message until you read it. When
+          this feature is enabled, the message will be marked as having
+          been Seen.
    _mark-for-cc_
           This feature affects Pine's MESSAGE INDEX display. By default,
           a '+' is displayed in the first column if the message is
@@ -3856,11 +4352,44 @@ John: on a job well done!
           presented. If set, they will be presented in the same order as
           they occur in your _newsrc_ file. If not set, the newsgroups
           will be presented in alphabetical order.
+   _next-thread-without-confirm_
+          This feature controls an aspect of _Pine_'s Next and Prev
+          commands in the case where you are using one of the
+          "separate-index-screen" styles for the configuration option
+          threading-index-style and currently have the folder sorted by a
+          Threaded or OrderedSubject sort. When you are Viewing a
+          particular thread you have a MESSAGE INDEX of only the messages
+          in that thread. If you press the Next command with the last
+          message in the thread highlighted you will normally be asked if
+          you want to "View next thread?", assuming there is a next
+          thread to view. If this feature is set it will be assumed that
+          you always want to view the next thread and you won't be asked
+          to confirm that. Similarly, if the first message of the thread
+          is highlighted and you press the Prev command, this feature
+          will prevent the question "View previous thread".
+          This feature only has an effect in the MESSAGE INDEX screen. If
+          you then view a particular message from that screen and press
+          the Next command, you will be sent to the next thread without
+          being asked, independent of the setting of this feature.
    _pass-control-characters-as-is_
-          If set, all characters in a message will be sent to the screen.
-          Normally, control characters are automatically suppressed in
-          order to avoid inadvertently changing terminal setup
-          parameters.
+          UNIX _Pine_ only (this feature is automatically on with
+          _PC-Pine_). If set, all characters in a message will be sent to
+          the screen. Normally, control characters are automatically
+          suppressed in order to avoid inadvertently changing terminal
+          setup parameters. Control characters are usually displayed as
+          two character sequences like
+          
+                                     ^C
+          for Control-C or
+          
+                                     ^[
+          for ESCAPE (the three high-order bits are masked off of the
+          control character to get the 2nd character to display).
+          Sometimes, in cases where changing a single control character
+          into a two-character sequence would confuse _Pine_'s display
+          routines, a question mark is substituted for the control
+          character. This feature is not available in _PC-Pine_ where
+          control characters are never suppressed.
    _prefer-plain-text_
           A message being viewed may contain alternate versions of the
           same content. Those alternate versions are ordered by the
@@ -3914,12 +4443,47 @@ John: on a job well done!
           will have the opportunity to enter any system print command,
           instead of being restricted to using those that have been
           previously configured in the _Setup/Printer_ screen.
+   _quell-attachment-extra-prompt_
+          By default, when you attempt to view an attachment externally
+          from the "Attachment View" screen, you are asked if you really
+          want to view the selected attachment.
+          If this feature is set, you will _not_ be prompted to confirm
+          your selection. Prior to _Pine_ 4.50, the default behavior was
+          to not prompt. This feature was added for those wanting to
+          preserve that behavior.
    _quell-berkeley-format-timezone_
           POSIX mandates a timezone in UNIX mailbox format folder
           delimiters (the line which begins with From ). Some versions of
           Berkeley mail have trouble with this, and don't recognize the
           line as a message delimiter. If this feature is set, the
           timezone will be left off the delimiter line.
+   _quell-content-id_
+          This feature changes the behavior of _Pine_ when sending
+          messages. It is intended to work around a bug in Microsoft's
+          Outlook XP mail user agent. As of this writing, Microsoft has
+          acknowledged the bug but has not added it to the Knowledge
+          Base. We have been told that there will be a post-SP1 hotfix
+          for Outlook XP. This particular bug has bug fix number
+          OfficeQFE:4781. The nature of the bug is that messages with
+          attachments which contain a Content-ID header (which standard
+          _Pine_ attachments do) do not show the attachment indicator (a
+          paperclip) when viewed with Outlook XP. So the user has no
+          indication that the message contains an attachment.
+          If this feature is set then _Pine_ will remove most Content-ID
+          headers before sending a message. If an attachment is of type
+          MESSAGE, then the existing Content-ID headers inside the
+          message will be left intact. This would only happen with _Pine_
+          if a message was forwarded as an attachment or if a message
+          with a message attached was forwarded. Similarly if an
+          attachment of type MULTIPART/ALTERNATIVE is forwarded, the
+          Content-ID headers of the alternative parts will not be
+          removed.
+          Because the Content-ID header is a standard part of MIME it is
+          possible that setting this feature will break something. For
+          example, if an attachment has a Content-ID header which is
+          necessary for the correct functioning of that attachment, it is
+          possible that _Pine_ may remove that header when the attachment
+          is forwarded. However, it seems fairly safe at this time.
    _quell-dead-letter-on-cancel_
           This feature affects _Pine_'s behavior when you cancel a
           message being composed. _Pine_'s usual behavior is to write the
@@ -3996,6 +4560,14 @@ John: on a job well done!
           when more than one program attempts to modify the mail folder.
           This is most likely to occur to one's _INBOX_ or other
           "Incoming Message Folder".
+   _quell-maildomain-warning_
+          When your configuration is set up so that your domain name
+          contains no dots, it is usually a configuration error. By
+          default, _Pine_ will warn you about this when you start it up.
+          You will see a warning message that looks like
+          
+                     Incomplete maildomain "<domain>".
+          If this feature is set, the warning is turned off.
    _quell-news-envelope-update_
           In the MESSAGE INDEX screen, if the open folder is being
           accessed using NNTP (News), _Pine_ normally tries to paint the
@@ -4021,8 +4593,32 @@ John: on a job well done!
           a performance problem so that the fetching of data takes
           significantly longer when partial fetching is used. Turning on
           this feature will turn off partial fetching.
+   _quell-ssl-largeblocks_
+          This feature (_PC-Pine_ only) changes the behavior of fetching
+          messages and attachments so that the message data is fetched in
+          chunks no larger than 12K bytes. This works around a bug in
+          Microsoft's SSL/TLS support. Some versions of Microsoft SSL are
+          not able to read full-sized (16K) SSL/TLS packets. Some servers
+          will send such packets and this will cause _PC-Pine_ to crash
+          with the error
+          
+              incomplete SecBuffer exceeds maximum buffer size
+          Microsoft is aware of the problem and has developed a hotfix
+          for it, but as of this writing the hotfix has not yet been
+          added to the Knowledge Base.
    _quell-status-message-beeping_
           If set status messages will never emit a beep.
+   _quell-timezone-comment-when-sending_
+          Normally, when _Pine_ generates a Date header for outgoing
+          mail, it will try to include the symbolic timezone at the end
+          of the header inside parentheses. The symbolic timezone is
+          often three characters long, but on some operating systems, it
+          may be longer. Apparently there are some SMTP servers in the
+          world which will reject an incoming message if it has a Date
+          header longer than about 80 characters. If this feature is set,
+          the symbolic timezone normally generated by _Pine_ will not be
+          included. You probably don't need to worry about this feature
+          unless you run into the problem described above.
    _quell-user-lookup-in-passwd-file_
           This feature controls an aspect of _Pine_'s Composer, and if
           needed, will usually be set by the system manager in _Pine_'s
@@ -4097,6 +4693,27 @@ John: on a job well done!
           ". If _Pine_ has been configured to use a different mailbox
           format (possibly incompatible with other mail programs), then
           this issue does not arise, and the feature is irrelevant.
+   _scramble-message-id_
+          Normally the Message-ID header that _Pine_ generates when
+          sending a message contains the name of the computer from which
+          the message is being sent. Some believe that this hostname
+          could be used by spammers or could be used by others for
+          nefarious purposes. If this feature is set, that name will be
+          transformed with a simple Rot13 transformation. The result will
+          still have the correct syntax for a Message-ID but the part of
+          the MessageID that is often a domain name will not be an actual
+          domain name because the letters will be scrambled.
+          It is possible (but unlikely?) that some spam detection
+          software will use that as a reason to reject the mail as spam.
+          It has also been reported that some spam detection software
+          uses the fact that there are no dots after the "@" as a reason
+          to reject messages. If your _PC-Pine_ Message-ID is using a
+          name without a dot that is because that is what Windows thinks
+          is your "Full computer name". The method used to set this
+          varies from one type of Windows to another but check under
+          Settings -> Control Panel -> System and look for Network
+          Identification or Computer Name or something similar. How to
+          set it is beyond the scope of _Pine_.
    _select-without-confirm_
           This feature controls an aspect of _Pine_'s _Save_, _Export_,
           and _Goto_ commands. These commands all take text input to
@@ -4152,6 +4769,23 @@ John: on a job well done!
    _single-column-folder-list_
           If set, the "Folder List" screen will list one folder per line
           instead of several per line.
+   _slash-collapses-entire-thread_
+          Normally, the Collapse/Expand Thread command Collapses or
+          Expands the subthread which starts at the currently highlighted
+          message, if any. If this feature is set, then the slash command
+          Collapses or Expands the _entire_ current thread instead of
+          just the subthread.
+   _spell-check-before-sending_
+          When this feature is set, every composed message will be
+          spell-checked before being sent.
+   _store-window-position-in-config_
+          Normally, _PC-Pine_ will store its window size and position in
+          the Windows Registry. This is convenient if you want to use the
+          same remote configuration from more than one PC. If you use
+          multiple configuration files to start _PC-Pine_, you may want
+          to store the window size and position in the configuration file
+          instead of in the Registry. Setting this feature causes that to
+          happen.
    _strip-from-sigdashes-on-reply_
           This feature doesn't do anything if the feature
           enable-sigdashes is turned on. However, if the
@@ -4178,16 +4812,68 @@ John: on a job well done!
           _termcap_ or _terminfo_ definitions to be used instead of the
           built in definitions. Beginning with 4.00 this hidden runtime
           feature can be turned on to accomplish the same thing.
+   _thread-index-shows-important-color_
+          This option affects only the THREAD INDEX screen. Whether or
+          not you ever see a THREAD INDEX screen depends on the setting
+          of the configuration option threading-index-style and on the
+          sort order of the index. If a message within a thread is
+          flagged as Important and this option is set, then the entire
+          line in the THREAD INDEX will be colored the color of the
+          Index-important Symbol, which can be set using the Setup Kolor
+          screen.
    _try-alternative-authentication-driver-first_
-          This feature controls how _Pine_ provides authentication
-          credentials to the IMAP server you are connecting to. Normally,
-          _Pine_ and the server negotiate the most secure method to
-          exchange such information.
-          However, some methods aren't available for negotiation, and
-          thus require pre-configuration (typically, per server) on
-          _Pine_'s part. This feature allows _Pine_ to implicitly try an
-          alternative to the default methods that may have been added to
-          _Pine_ when it was built.
+          This feature affects how _Pine_ connects to IMAP servers. It's
+          utility has largely been overtaken by events, but it may still
+          be useful in some circumstances. If you only connect to modern
+          IMAP servers that support "TLS" you can ignore this feature.
+          Details:
+          By default, _Pine_ will attempt to connect to an IMAP server on
+          the normal IMAP service port (143), and if the server offers
+          "Transport Layer Security" (TLS) and _Pine_ has been compiled
+          with encryption capability, then a secure (encrypted) session
+          will be negotiated.
+          With this feature enabled, before connecting on the normal IMAP
+          port, _Pine_ will first attempt to connect to an alternate IMAP
+          service port (993) used specifically for encrypted IMAP
+          sessions via the Secure Sockets Layer (SSL) method. If the SSL
+          attempt fails, _Pine_ will then try the default behavior
+          described in the previous paragraph.
+          TLS negotiation on the normal port is preferred, and supersedes
+          the use of SSL on port 993, but older servers may not provide
+          TLS support. This feature may be convenient when accessing IMAP
+          servers that do not support TLS, but do support SSL connections
+          on port 993. However, it is important to understand that with
+          this feature enabled, _Pine_ will _attempt_ to make a secure
+          connection if that is possible, but it will proceed to make an
+          insecure connection if that is the only option offered by the
+          server, or if the _Pine_ in question has been built without
+          encryption capability.
+          Note that this feature specifies a per-user (or system-wide)
+          default behavior, but host/folder specification flags may be
+          used to control the behavior of any specific connection. This
+          feature interacts with some of the possible host/folder path
+          specification flags as follows:
+          The /tls host flag, for example,
+          
+                           {foo.bar.com/tls}INBOX
+          will over-ride this feature for the specified host by bypassing
+          the SSL connection attempt. Moreover, with /tls specified, the
+          connection attempt will fail if the service on port 143 does
+          not offer TLS support.
+          The /ssl host flag, for example,
+          
+                           {foo.bar.com/ssl}INBOX
+          will insist on an SSL connection for the specified host, and
+          will fail if the SSL service on port 993 is not available.
+          _Pine_ will not subsequently retry a connection on port 143 if
+          /ssl is specified.
+   _unselect-will-not-advance_
+          Normally, when the Unselect current message command (:) is
+          typed when the current message is selected, the message will be
+          unselected and the next message will become the current
+          message. If this feature is set, the cursor will not advance to
+          the next message. Instead, the current message will remain the
+          current message after unselecting.
    _use-current-dir_
           This feature controls an aspect of several commands. If set,
           your "current working directory" will be used instead of your
@@ -4215,9 +4901,9 @@ John: on a job well done!
           _X-Sender_ fields as being equivalent to the _Sender_ field,
           and use it if present. This is why Pine defaults to
           _X-X-Sender_.
-          Note, PC-Pine always adds either an _X-X-Sender_ line if there
-          is an open, remote mailbox, or an _X-Warning: UNAuthenticated
-          User_ otherwise
+          Note, _PC-Pine_ always adds either an _X-X-Sender_ line if
+          there is an open, remote mailbox, or an _X-Warning:
+          UNAuthenticated User_ otherwise
    _use-subshell-for-suspend_
           This feature affects _Pine_'s behavior when process suspension
           is enabled and then activated via the _^Z_ key. _Pine_
@@ -4323,15 +5009,16 @@ Hidden Config Variables and Features
      * disable-busy-alarm
      * disable-config-cmd
      * disable-keyboard-lock-cmd
+     * disable-password-caching
      * disable-password-cmd
      * disable-pipes-in-sigs
      * disable-pipes-in-templates
      * disable-roles-setup-cmd
      * disable-roles-sig-edit
      * disable-roles-template-edit
+     * disable-shared-namespaces
      * disable-signature-edit-cmd
      * enable-mailcap-param-substitution
-     * expose-hidden-config
      * quell-berkeley-format-timezone
      * quell-imap-envelope-update
      * quell-news-envelope-update
@@ -4383,73 +5070,6 @@ Tokens for Index and Replying
    
   _Tokens Available for all Cases_
   
-   DATE
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format MMM DD.
-          For example, "Oct 23".
-          
-   SMARTDATE
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It is "Today" if the
-          message was sent today, "Yesterday" for yesterday, "Wednesday"
-          if it was last Wednesday, and so on. If the message is from
-          more than six months ago it includes the year, as well. There
-          is no adjustment made for different time zones, so you'll get
-          the day the message was sent according to the time zone the
-          sender was in.
-          
-   LONGDATE
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format MMM DD,
-          YYYY. For example, "Oct 23, 1998".
-          
-   DATEISO
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format
-          YYYY-MM-DD. For example, "1998-10-23".
-          
-   SHORTDATEISO
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format
-          YY-MM-DD. For example, "98-10-23".
-          
-   SHORTDATE1
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format
-          MM/DD/YY. For example, "10/23/98".
-          
-   SHORTDATE2
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format
-          DD/MM/YY. For example, "23/10/98".
-          
-   SHORTDATE3
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format
-          DD.MM.YY. For example, "23.10.98".
-          
-   SHORTDATE4
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It has the format
-          YY.MM.DD. For example, "98.10.23".
-          
-   TIME24
-          This token represents the time at which the message was sent,
-          according to the "Date" header field. There is no adjustment
-          made for different time zones, so you'll get the time the
-          message was sent according to the time zone the sender was in.
-          It has the format HH:MM. For example, "17:28".
-          
-   TIME12
-          This token represents the time at which the message was sent,
-          according to the "Date" header field. This time is for a 12
-          hour clock. It has the format HH:MMpm. For example, "5:28pm" or
-          "11:13am".
-          
-   TIMEZONE
-          This token represents the numeric timezone from the "Date"
-          header field. It has the format [+-]HHMM. For example, "-0800".
-          
    SUBJECT
           This token represents the Subject the sender gave the message.
           
@@ -4457,6 +5077,15 @@ Tokens for Index and Replying
           This token represents the personal name (or email address if
           the name is unavailable) of the person specified in the
           message's "From:" header field.
+          
+   ADDRESS
+          This is similar to the "FROM" token, only it is always the
+          email address, never the personal name. For example,
+          "mailbox@domain".
+          
+   MAILBOX
+          This is the same as the "ADDRESS" except that the domain part
+          of the address is left off. For example, "mailbox".
           
    SENDER
           This token represents the personal name (or email address) of
@@ -4500,9 +5129,150 @@ Tokens for Index and Replying
    RECIPSANDNEWS
           Same as "NEWSANDRECIPS" except in the opposite order.
           
+   INIT
+          This token represents the initials from the personal name of
+          the person specified in the message's "From:" header field. If
+          there is no personal name, it is blank.
+          
+   DATE
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format MMM DD.
+          For example, "Oct 23".
+          
+   SMARTDATE
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It is "Today" if the
+          message was sent today, "Yesterday" for yesterday, "Wednesday"
+          if it was last Wednesday, and so on. If the message is from
+          more than six months ago it includes the year, as well. There
+          is no adjustment made for different time zones, so you'll get
+          the day the message was sent according to the time zone the
+          sender was in.
+          
+   SMARTTIME
+          This token represents the most relevant elements of the date on
+          which the message was sent (according to the "Date" header
+          field), in a compact form. If the message was sent today, only
+          the time is used (e.g. "9:22am", "10:07pm"); if it was sent
+          during the past week, the day of the week and the hour are used
+          (e.g. "Wed09am", "Thu10pm"); other dates are given as date,
+          month, and year (e.g. "23Aug00", "9Apr98"). There is no
+          adjustment made for different time zones, so you'll get the
+          day/time the message was sent according to the time zone the
+          sender was in.
+          
+   SMARTDATETIME
+          This is a combination of SMARTDATE and SMARTTIME. It is
+          SMARTDATE unless the SMARTDATE value is "Today", in which case
+          it is SMARTTIME.
+          
+   DATEISO
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format
+          YYYY-MM-DD. For example, "1998-10-23".
+          
+   SHORTDATEISO
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format
+          YY-MM-DD. For example, "98-10-23".
+          
+   SHORTDATE1
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format
+          MM/DD/YY. For example, "10/23/98".
+          
+   SHORTDATE2
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format
+          DD/MM/YY. For example, "23/10/98".
+          
+   SHORTDATE3
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format
+          DD.MM.YY. For example, "23.10.98".
+          
+   SHORTDATE4
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format
+          YY.MM.DD. For example, "98.10.23".
+          
+   LONGDATE
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It has the format MMM DD,
+          YYYY. For example, "Oct 23, 1998".
+          
+   DAYDATE
+          This token represents the date on which the message was sent,
+          according to the "Date" header field. It looks like "Sat, 23
+          Oct 1998".
+          
+   DAY
+          This token represents the day of the month on which the message
+          was sent, according to the "Date" header field. For example,
+          "23" or "9".
+          
+   DAY2DIGIT
+          This token represents the day of the month on which the message
+          was sent, according to the "Date" header field. For example,
+          "23" or "09". It is always 2 digits.
+          
+   DAYORDINAL
+          This token represents the ordinal number which is the day of
+          the month on which the message was sent, according to the
+          "Date" header field. For example, "23rd" or "9th".
+          
+   DAYOFWEEK
+          This token represents the day of the week on which the message
+          was sent, according to the "Date" header field. For example,
+          "Sun" or "Wed".
+          
+   DAYOFWEEKLONG
+          This token represents the day of the week on which the message
+          was sent, according to the "Date" header field. For example,
+          "Sunday" or "Wednesday".
+          
    MONTHABBREV
           This token represents the month the message was sent, according
           to the "Date" header field. For example, "Oct".
+          
+   MONTHLONG
+          This token represents the month in which the message was sent,
+          according to the "Date" header field. For example, "October".
+          
+   MONTH
+          This token represents the month in which the message was sent,
+          according to the "Date" header field. For example, "10" or "9".
+          
+   MONTH2DIGIT
+          This token represents the month in which the message was sent,
+          according to the "Date" header field. For example, "10" or
+          "09". It is always 2 digits.
+          
+   YEAR
+          This token represents the year the message was sent, according
+          to the "Date" header field. For example, "1998" or "2001".
+          
+   YEAR2DIGIT
+          This token represents the year the message was sent, according
+          to the "Date" header field. For example, "98" or "01". It is
+          always 2 digits.
+          
+   TIME24
+          This token represents the time at which the message was sent,
+          according to the "Date" header field. There is no adjustment
+          made for different time zones, so you'll get the time the
+          message was sent according to the time zone the sender was in.
+          It has the format HH:MM. For example, "17:28".
+          
+   TIME12
+          This token represents the time at which the message was sent,
+          according to the "Date" header field. This time is for a 12
+          hour clock. It has the format HH:MMpm. For example, "5:28pm" or
+          "11:13am".
+          
+   TIMEZONE
+          This token represents the numeric timezone from the "Date"
+          header field. It has the format [+-]HHMM. For example, "-0800".
           
   _Tokens Available Only for Index-Format_
   
@@ -4527,27 +5297,107 @@ Tokens for Index and Replying
           deleted or answered), or blank if it is neither deleted,
           answered nor new.
           
+          If you are using a threaded view of the index and this message
+          is at the top of a collapsed portion of a thread, then this
+          token refers to all of the messages in the collapsed portion of
+          the thread instead of just the top message. The first character
+          will be a '*' if _any_ of the messages in the thread are marked
+          Important, else a '+' if any of the messages are addressed to
+          you, else a '-' if any of the messages are cc'd to you. The
+          third character will be a 'D' if _all_ of the messages in the
+          collapsed thread are marked deleted, else it will be 'N' if any
+          of the messages are undeleted and unseen, and it will be blank
+          otherwise.
+          
    FULLSTATUS
           This token represents a less abbreviated alternative to the
-          "STATUS" field. It is six characters wide. The first character
+          "STATUS" token. It is six characters wide. The first character
           is '+', '-', or blank, the second blank, the third either '*'
           or blank, the fourth 'N' or blank, the fifth 'A' or blank, and
           the sixth character is either 'D' or blank.
           
+          If you are using a threaded view of the index and this message
+          is at the top of a collapsed portion of a thread, then this
+          token refers to all of the messages in the collapsed portion of
+          the thread instead of just the top message. The first character
+          is '+', '-', or blank depending on whether _any_ of the
+          messages in the collapsed thread are addressed to you or cc'd
+          to you. The third character will be '*' if any of the messages
+          are marked Important. The fourth character will be 'N' if all
+          of the messages in the thread are New, else 'n' if some of the
+          messages in the thread are New, else blank. The fifth character
+          will be 'A' or 'a' or blank, and the sixth character will be
+          'D' or 'd' or blank.
+          
    IMAPSTATUS
           This token represents an even less abbreviated alternative to
-          the "FULLSTATUS" field. It differs in only the fourth character
-          which is either an 'N' if the message is new to this folder
-          since the last time it was opened _and_ it has not been viewed,
-          an 'R' if the message is new to the folder and has been viewed
-          (Recent), a 'U' if the message is not new to the folder since
-          it was last opened _but_ has not been viewed (Unseen), or a
-          blank if the message has been in the folder since it was last
-          opened and has been viewed.
+          the "STATUS" token. It differs from "FULLSTATUS" in only the
+          fourth character which is an 'N' if the message is new to this
+          folder since the last time it was opened _and_ it has not been
+          viewed, an 'R' (Recent) if the message is new to the folder and
+          has been viewed, a 'U' (Unseen) if the message is not new to
+          the folder since it was last opened _but_ has not been viewed,
+          or a blank if the message has been in the folder since it was
+          last opened and has been viewed.
+          
+          If you are using a threaded view of the index and this message
+          is at the top of a collapsed portion of a thread, then the
+          fourth character will be 'N' if all of the messages in the
+          thread are unseen and recent; else 'n' if some of the messages
+          in the thread are unseen and recent; else 'U' if all of the
+          messages in the thread are unseen and not recent; else 'u' if
+          some of the messages in the thread are unseen and not recent;
+          else 'R' if all of the messages in the thread are seen and
+          recent; else 'r' if some of the messages in the thread are seen
+          and recent; else blank.
           
    SIZE
           This token represents the total size, in bytes, of the message.
+          If a "K" (Kilobyte) follows the number, the size is
+          approximately 1,000 times that many bytes (rounded to the
+          nearest 1,000). If an "M" (Megabyte) follows the number, the
+          size is approximately 1,000,000 times that many bytes. Commas
+          are not used in this field. This field is seven characters
+          wide, including the enclosing parentheses. Sizes are rounded
+          when "K" or "M" is present. The progression of sizes used looks
+          like:
           
+          0 1 ... 9999 10K ... 999K 1.0M ... 99.9M 100M ... 2000M
+                                      
+   SIZECOMMA
+          This token represents the total size, in bytes, of the message.
+          If a "K" (Kilobyte) follows the number, the size is
+          approximately 1,000 times that many bytes (rounded to the
+          nearest 1,000). If an "M" (Megabyte) follows the number, the
+          size is approximately 1,000,000 times that many bytes. Commas
+          are used if the number shown is 1,000 or greater. The SIZECOMMA
+          field is one character wider than the SIZE field. Sizes are
+          rounded when "K" or "M" is present. The progression of sizes
+          used looks like:
+          
+     0 1 ... 99,999 100K ... 9,999K 10.0M ... 999.9M 1,000M ... 2,000M
+                                      
+   KSIZE
+          This token represents the total size of the message, expressed
+          in kilobytes or megabytes, as most appropriate. These are 1,024
+          byte kilobytes and 1,024 x 1,024 byte megabytes. The
+          progression of sizes used looks like:
+          
+               0K 1K ... 1023K 1.0M ... 99.9M 100M ... 2047M
+                                      
+   SIZENARROW
+          This token represents the total size, in bytes, of the message.
+          If a "K" (Kilobyte) follows the number, the size is
+          approximately 1,000 times that many bytes. If an "M" (Megabyte)
+          follows the number, the size is approximately 1,000,000 times
+          that many bytes. If a "G" (Gigabyte) follows the number, the
+          size is approximately 1,000,000,000 times that many bytes. This
+          field uses only five characters of screen width, including the
+          enclosing parentheses. The progression of sizes used looks
+          like:
+          
+      0 1 ... 999 1K ... 99K .1M ... .9M 1M ... 99M .1G ... .9G 1G 2G
+                                      
    DESCRIPSIZE
           This token is intended to represent a more useful description
           of the message than just its size, but it isn't very useful at
@@ -4582,60 +5432,19 @@ Tokens for Index and Replying
           this token will be your name instead of the name of the
           newsgroup (like it would be with FROMORTO).
           
+   SCORE
+          This gives the score of each message. This will be six columns
+          wide to accomodate the widest possible score. You will probably
+          want to use the index-format fixed-field width feature to limit
+          the width of the field to the widest score that you use (e.g.
+          SCORE(3) if your scores are always between 0 and 999). If you
+          have not defined any score rules the scores will all be zero.
+          If any of your score rules contain AllText or BodyText patterns
+          then including SCORE in the index-format may slow down the
+          display of the MESSAGE INDEX screen.
+          
   _Tokens Available for all but Index-Format_
   
-   ADDRESS
-          This is similar to the "FROM" token, only it is always the
-          email address, never the personal name. For example,
-          "mailbox@domain".
-          
-   MAILBOX
-          This is the same as the "ADDRESS" except that the domain part
-          of the address is left off. For example, "mailbox".
-          
-   DAYDATE
-          This token represents the date on which the message was sent,
-          according to the "Date" header field. It looks like "Sat, 23
-          Oct 1998" unless the day of the week is not available, in which
-          case it looks like "23 Oct 1998".
-          
-   DAY
-          This token represents the day of the month on which the message
-          was sent, according to the "Date" header field. For example,
-          "23" or "9".
-          
-   DAY2DIGIT
-          This token represents the day of the month on which the message
-          was sent, according to the "Date" header field. For example,
-          "23" or "09". It is always 2 digits.
-          
-   DAYORDINAL
-          This token represents the ordinal number which is the day of
-          the month on which the message was sent, according to the
-          "Date" header field. For example, "23rd" or "9th".
-          
-   MONTHLONG
-          This token represents the month in which the message was sent,
-          according to the "Date" header field. For example, "October".
-          
-   MONTH
-          This token represents the month in which the message was sent,
-          according to the "Date" header field. For example, "10" or "9".
-          
-   MONTH2DIGIT
-          This token represents the month in which the message was sent,
-          according to the "Date" header field. For example, "10" or
-          "09". It is always 2 digits.
-          
-   YEAR
-          This token represents the year the message was sent, according
-          to the "Date" header field. For example, "1998" or "2001".
-          
-   YEAR2DIGIT
-          This token represents the year the message was sent, according
-          to the "Date" header field. For example, "98" or "01". It is
-          always 2 digits.
-          
    MSGID
           This token represents the message ID of the message.
           
@@ -4993,14 +5802,129 @@ Color Configuration
    color (see color-style option), or if you are using _PC-Pine_, then it
    is possible to set up _Pine_ so that various parts of the display will
    be shown in colors you configure. This is done using the Setup Color
-   screen. The Setup Color screen is divided into three broad sections,
-   General Colors, Index Colors, and Header Colors. In addition to these
-   three categories you may also color lines in the MESSAGE INDEX screen
-   by configuring the Index Line Color.
+   screen. The Setup Color screen is divided into four broad sections:
+   Options, General Colors, Index Colors, and Header Colors. In addition
+   to these four categories you may also color lines in the MESSAGE INDEX
+   screen by configuring the Index Line Color.
    
    Each color is defined as a foreground color (the color of the actual
    text) and a background color (the color of the area behind the text).
    
+  Color Options
+  
+   _current-indexline-style_
+          This option affects the colors used to display the current line
+          in the MESSAGE INDEX screen. If you do not have Index Line
+          Colors defined, then this option will have no effect.
+          
+          The available options include:
+          
+        flip-colors
+                This is the default. If an index line is colored because
+                it matches one of your Index Color Rules, then its colors
+                will be reversed when it is the currently highlighted
+                line. For example, if the line is normally red text on a
+                blue background, then when it is the current line it will
+                be drawn as blue text on a red background.
+                
+                The rest of the option values all revert to this
+                flip-colors behavior if there is no Reverse Color
+                defined.
+                
+        reverse
+                With this option the Reverse color is always used to
+                highlight the current line.
+                
+        reverse-fg
+                The foreground part of the Reverse Color is used to
+                highlight the current line. If this would cause the text
+                to be unreadable (because the foreground and background
+                colors are the same) or if it would cause no change in
+                the color of the index line, then the colors are flipped
+                instead.
+                
+                Some people think this works particularly well if you use
+                different background colors to emphasize "interesting"
+                lines, but always with the same Normal foreground color,
+                and you use a different foreground color for the Reverse
+                Color.
+                
+        reverse-fg-no-ambiguity
+                With the "reverse-fg" rule above, it is possible that the
+                resulting color will be exactly the same as the regular
+                Reverse Color. That can lead to some possible confusion
+                because an "interesting" line which is the current line
+                will be displayed exactly the same as a non-interesting
+                line which is current. You can't tell whether the line is
+                just a regular current line or if it is an "interesting"
+                current line by looking at the color. Setting the option
+                to this value removes that ambiguity. It is the same as
+                the "reverse-fg" setting unless the resulting interesting
+                current line would look just like a non-interesting
+                current line. In that case, the interesting line's colors
+                are simply flipped (like in the default behavior).
+                
+                As an alternative way to preserve the line's
+                interestingness in this case, you may find that using
+                both a different foreground and a different background
+                color for the interesting line will help.
+                
+        reverse-bg
+                The background part of the Reverse Color is used to
+                highlight the current line. If this would cause the text
+                to be unreadable (because the foreground and background
+                colors are the same) or if it would cause no change in
+                the color of the index line, then the colors are flipped
+                instead.
+                
+                Some people think this works particularly well if you use
+                different foreground colors to emphasize "interesting"
+                lines, but always with the same Normal background color,
+                and you use a different background color for the Reverse
+                Color.
+                
+        reverse-bg-no-ambiguity
+                As with the "reverse-fg" case, the "reverse-bg" rule may
+                also result in a color which is exactly the same as the
+                regular Reverse Color. Setting the option to this value
+                removes that ambiguity. It is the same as the
+                "reverse-bg" setting unless the resulting current line
+                has the same color as the Reverse Color. In that case,
+                the interesting line's colors are simply flipped (like in
+                the default behavior).
+                
+   _titlebar-color-style_
+          This option affects the colors used to display the titlebar
+          (the top line on the screen) when viewing a message.
+          
+          The available options include:
+          
+        default
+                The color of the titlebar will be the color you set for
+                the Title Color. The Title Color may be set by using the
+                
+        indexline
+                The color of the titlebar will be the same as the color
+                of the index line corresponding to the message being
+                viewed. The rules which determine what color the index
+                line will be may be set up by going to the
+                Setup/Rules/Indexcolor screen. If the index line for a
+                message is not colored explicitly by the Indexcolor
+                rules, then the titlebar will be colored the same as for
+                the "default" option above (which is not the same color
+                that the index line itself will have).
+                
+        reverse-indexline
+                This is similar to the "indexline" option except the
+                foreground and background colors from the corresponding
+                index line will be reversed. For example, if the index
+                line color is red letters on a white background, then the
+                titlebar will be white letters on a red background. If
+                the index line for a message is not colored explicitly by
+                the Indexcolor rules, then the titlebar will be colored
+                the same as for the "default" option above (which is not
+                the same color that the index line itself will have).
+                
   General Colors
   
    _Normal Color_
@@ -5013,7 +5937,9 @@ Color Configuration
    _Title Color_
           The color _Pine_ uses for the titlebar (the top line on the
           screen). By default, the Title Color is the same as the Reverse
-          Color.
+          Color. The actual titlebar color may be different from the
+          Title Color if the option titlebar-color-style is set to some
+          value other than default.
    _Status Color_
           The color _Pine_ uses for messages written to the status
           message line near the bottom of the screen. By default, the
@@ -5023,6 +5949,17 @@ Color Configuration
           two-line menu at the bottom of the screen. The label is the
           long name, for example, "PrevMsg". By default, the KeyLabel
           Color is the same as the Normal Color.
+          WARNING: Some terminal emulators have the property that the
+          screen will scroll down one line whenever a character is
+          written to the character cell in the lower right corner of the
+          screen. _Pine_ can usually avoid writing a character in that
+          corner of the screen. However, if you have defined a KeyLabel
+          Color then _Pine_ does have to write a character in that cell
+          in order to color the cell correctly. If you find that your
+          display sometimes scrolls up a line this could be the problem.
+          The most obvious symptom is probably that the titlebar at the
+          top of the screen scrolls off the screen. Try setting KeyLabel
+          Color to Default to see if that fixes the problem.
    _KeyName Color_
           The color _Pine_ uses for the names of the commands in the
           two-line menu at the bottom of the screen. The KeyName is the
@@ -5190,13 +6127,12 @@ Role Configuration
    message being forwarded. For Compose Use, there is no message, so the
    parts of the Pattern which depend on a message (everything other than
    Current Folder Type) are ignored. In all cases, the Current Folder is
-   checked if defined, and the Score Interval is checked if defined. If
-   there is a match then this role will either be used without
-   confirmation or will be the default when confirmation is asked for,
-   depending on which of the two options is selected. If confirmation is
-   requested, you will have a chance to choose No Role instead of the
-   offered role, or to change the role to any one of your other roles
-   (with the ^T command).
+   checked if defined. If there is a match then this role will either be
+   used without confirmation or will be the default when confirmation is
+   asked for, depending on which of the two options is selected. If
+   confirmation is requested, you will have a chance to choose No Role
+   instead of the offered role, or to change the role to any one of your
+   other roles (with the ^T command).
    
   Role Patterns
   
@@ -5205,16 +6141,16 @@ Role Configuration
    for use with Roles, Filtering, Index Coloring, and Scoring, so are
    described in only one place, "here".
    
-   Since header patterns and AllText patterns which are unset are
-   ignored, a role which has all header patterns unset, the AllText
-   pattern unset, the Score Interval unset, and the Current Folder Type
-   set to "Any" may be used as a default role. It should be put last in
-   the list of roles since the matching starts at the beginning and
-   proceeds until one of the roles is a match. If no roles at all match,
-   then _Pine_ will use its regular methods of defining the role. If you
-   wanted to, you could define a different "default" role for Replying,
-   Forwarding, Composing, and Index Line Color by setting the "Use"
-   fields appropriately.
+   Since header patterns, AllText patterns, and BodyText patterns which
+   are unset are ignored, a role which has all header patterns unset, the
+   AllText pattern unset, the BodyText pattern unset, the Score Interval
+   unset, and the Current Folder Type set to "Any" may be used as a
+   default role. It should be put last in the list of roles since the
+   matching starts at the beginning and proceeds until one of the roles
+   is a match. If no roles at all match, then _Pine_ will use its regular
+   methods of defining the role. If you wanted to, you could define a
+   different "default" role for Replying, Forwarding, and Composing by
+   setting the "Use" fields appropriately.
    
   Role Actions
   
@@ -5233,7 +6169,7 @@ Role Configuration
    was in the corresponding field of the initializer role. The fields
    affected by this field are the fields labeled "Set From", "Set
    Reply-To", "Set Other Headers", "Set Fcc", "Set LiteralSig", "Set
-   Signature", and "Set Template".
+   Signature", "Set Template", and "Use SMTP Server".
    
    You might use this field if the "action" part of one of your roles is
    something you want to use in more than one role. Instead of filling in
@@ -5482,6 +6418,18 @@ Role Configuration
    A blank field here means that _Pine_ will not use a template file when
    this role is being used.
    
+    Use SMTP Server
+    
+   If this field has a value, then it will be used as the SMTP server to
+   send mail when this role is being used (unless the SMTP server
+   variable is set in the system-wide fixed configuration file). It has
+   the same semantics as the smtp-server variable in the Setup/Config
+   screen. When you postpone the composition this SMTP server list will
+   be saved with the postponed composition and it cannot be changed
+   later. Because of that, you may want to make this a list of SMTP
+   servers with the preferred server at the front of the list and
+   alternate servers later in the list.
+   
    If any of the actions are left unset, then the action depends on what
    is present in the "Initialize settings using role" field. If you've
    listed the nickname of another one of your roles there, then the
@@ -5500,47 +6448,71 @@ Filtering Configuration
    help with this, _Pine_'s filtering is for you.
    
    Filtering is a way to automatically move certain messages from one
-   folder to another or to delete messages. _Pine_ doesn't have the
-   ability to forward mail to another address.
+   folder to another or to delete messages. It can also be used to set
+   message status bits (Important, Deleted, New, Answered). _Pine_
+   doesn't have the ability to forward mail to another address.
    
-   Each filtering rule has a "Pattern" and possibly a "Folder". When a
-   folder is opened, or when new mail arrives in an open folder, each
-   message is compared with the Patterns of your filtering rules. The
-   comparisons start with the first rule and keep going until there is a
-   match. If a match is found, the message is copied to the folders
-   you've listed in the "Folder" field and then it is deleted. If the
-   Folder field is _not set_, then the matching message is simply
-   _deleted_.
+   Each filtering rule has a "Pattern" and a "Filter Action". When a
+   folder is opened, when new mail arrives in an open folder, or when
+   mail is Expunged from a folder; each message is compared with the
+   Patterns of your filtering rules. The comparisons start with the first
+   rule and keep going until there is a match. If a match is found, the
+   message may be deleted or moved, depending on the setting of the
+   Filter Action. If the message is not deleted, it may have its status
+   altered.
    
-   _NOTE:_ When setting up a pattern used to only delete messages, it is
-   recommended that you test the pattern first with a folder specified in
-   case unintended matches occur. Messages that are deleted will be
-   removed from the folder and _unrecoverable_ from within _Pine_ after
-   the next Expunge command or once the folder being filtered has been
-   closed.
+   For efficiency, each message is usually only checked once. When new
+   mail arrives, the new messages are checked but not the old. There are
+   some exceptions to this rule. The expunge command will cause all
+   messages to be rechecked, as will editing of the filtering rules.
+   
+   _NOTE:_ When setting up a Pattern used to delete messages, it is
+   recommended that you test the Pattern first with a "Move" folder
+   specified in case unintended matches occur. Messages that are deleted
+   will be removed from the folder and _unrecoverable_ from within _Pine_
+   after the next Expunge command or once the folder being filtered has
+   been closed.
    
   Filter Patterns
   
    In order to determine whether or not a message matches a filter the
    message is compared with the Filter's Pattern. These Patterns are the
-   same for use with Roles, Filtering, Index Coloring, and Scoring, so
-   are described in only one place, "here".
+   same for use with Roles, Filtering, Index Coloring, Scoring, and Other
+   Rules, so are described in only one place, "here".
    
    Since filtering is a potentially destructive action, if you have a
    filtering Pattern with nothing other than Current Folder Type set,
    that filtering rule is ignored.
    
-  Move to Folder
+  Filter Actions
   
-   Once a filter match is found for a particular message, that message is
-   moved into these folders. Folder may be left unset. In that case, the
-   message is simply deleted if it matches. Folder may be set to more
-   than one folder name by listing the folders separated with commas. The
-   message will be saved to each of the folders listed and then deleted
-   from the current folder.
+   Once a filter match is found for a particular message, there are some
+   actions which may be taken. First, the message may have its status
+   changed. This is the same message status that you can manipulate
+   manually using the Flag Command. There are four elements of message
+   status that you can control. You can set or clear the Important
+   status, the New status, the Deleted status, and the Answered status.
+   Of course, if the filter is going to delete the message, then there is
+   no point in setting message status.
    
-  Move-only-if-deleted option
-  
+   Second, the filter may delete or move the message. Deleting the
+   message marks it Deleted and removes it from view. It is effectively
+   gone forever (though it technically is still there until the next
+   expunge command, which may happen implicitly). Moving the message
+   moves it from the open folder into the folder listed on the "to
+   Folder" line of the filter configuration. If you list more than one
+   folder name (separated by commas) then the message will be copied to
+   each of those folders. In any case, if "Delete" or "Move" is set then
+   the message is removed from the current folder. If you just want to
+   set the messages status without deleting it from the folder, then set
+   the filter action to "Just Set Message Status".
+   
+   (There is no way to do a Copy instead of a Move, due to the
+   difficulties involved in keeping track of whether or not a message has
+   already been copied.)
+   
+    Move-only-if-not-deleted option
+    
    If you have specified a Move to Folder to filter messages into, then
    this option has an effect. If this option is set then messages will
    only be moved into the specified folder if they aren't already marked
@@ -5551,8 +6523,39 @@ Filtering Configuration
    into the folder. For example, if you deleted it in another _Pine_ or
    another mail program that didn't know about the filtering rule.
    
-   This option has no effect if the Filter Action is set to Delete
-   instead of Move.
+   This option has no effect if the Filter Action is not set to Move.
+   
+    Dont-quit-even-if-rule-matches option
+    
+   If this option is set then this is a non-terminating rule. Usually,
+   for each message, _Pine_ searches through the filter rules until a
+   match is found and then it performs the action associated with that
+   rule. Rules following the match are not considered. If this option is
+   set then the search for matches will continue at the next rule.
+   
+   If a non-terminating rule matches then the actions associated with
+   that rule, except for any implied deletion of the message, are
+   performed before the match for the next rule is checked. For example,
+   if the non-terminating rule sets the Important status, then that
+   status will be set when the next rule is considered. However, if the
+   non-terminating rule Moves the message, the message will actually be
+   copied instead of copied and deleted so that it is still there for the
+   next rule. A moved message is deleted after all the relevant rules
+   have been checked. The name of the "Move" action is confusing in this
+   case because a single message can be moved to more than one folder. It
+   turns the Move into a Copy instead, but it is still followed by a
+   deletion at the end.
+   
+   This option may be useful if you want to have a single message
+   filtered to two different folders because it matches two different
+   Patterns. For example, suppose you normally filter messages to a
+   particular mailing list into one folder, and messages addressed
+   directly to you into a second folder. If a message is sent to both you
+   and the list (and you can tell that by looking at the headers of the
+   message) this option may give you a convenient way to capture a copy
+   to each folder. (It may also cause you to capture two copies to each
+   folder, depending on whether your mail system delivers one or two
+   copies of the message to you and on how the list works.)
    
 Scoring Configuration
 
@@ -5597,14 +6600,76 @@ Scoring Configuration
    between -100 and 100, and the values from matching rules are added
    together to get a message's score.
    
+Other Rules Configuration
+
+   Using this screen, you may define configuration Rules which don't fit
+   nicely into the other Rules categories.
+   
+  Other Rule Patterns
+  
+   Other Rules are a little different from the rest of the Rules because
+   they depend only on the current folder, and not on a particular
+   message. In order to determine whether or not a rule's actions should
+   be applied the current folder is compared with the rule's Pattern,
+   which consists of only the Current Folder Type. Current Folder Type
+   works the same for Other Rules as it does for Roles, Filtering, Index
+   Coloring, and Scoring. Keep in mind that the only part of the Pattern
+   which applies to Other Rules is the Current Folder Type when looking
+   at the description of Patterns given "here".
+   
+  Other Rule Actions
+  
+   Once a pattern match is found, the rule's Actions are taken. Neither
+   of the following two rule's depends on a message for its match. That
+   means that all the parts of the Pattern which depend on matching an
+   attribute of a message are ignored. So the only part of the Pattern
+   that matters for these Actions is the Current Folder Type.
+   
+    Set Sort Order
+    
+   When you enter a new folder, these rules will be checked to see if you
+   have set a sort order which is different from your default sort order.
+   The default is set in the Setup/Config screen with the Sort-Key
+   option. If the Sort Order action is set, then the folder will be
+   displayed sorted in that sort order instead of in the default order.
+   
+   A possible point of confusion arises when you change the configuration
+   of the Sort Order for the currently open folder. The folder will
+   normally be re-sorted when you go back to viewing the index. However,
+   if you have manually sorted the folder with the Sort command, it will
+   not be re-sorted.
+   
+    Set Index Format
+    
+   When you enter a new folder, these rules will be checked to see if you
+   have set an Index Format which is different from your default Index
+   Format, which is set with the Index-Format option. If so, the index
+   will be displayed with this format instead of the default.
+   
+    Set Startup Rule
+    
+   When you enter a new folder, these rules will be checked to see if you
+   have set a startup rule which is different from the default startup
+   rule. The default for incoming folders is set in the Setup/Config
+   screen with the "incoming-startup-rule" option. The default for
+   folders other than INBOX that are not part of your incoming collection
+   (see enable-incoming-folders feature) is to start with the last
+   message in the folder. If the Startup Rule is set to something other
+   than "default", then the rule will determine which message will be the
+   current message when the folder is first opened.
+   
+   The various startup rule possibilities work the same here as they do
+   in the incoming collection, except that the folder can be any specific
+   folder or any folder type.
+   
 Patterns
 
-   Patterns are used with Roles, Filtering, Index Coloring, and Scoring.
-   Patterns are compared with a message to see if there is a match. For
-   Filtering, the messages being checked are all the messages in the
-   folder, one at a time. For Index Line Coloring, each message which is
-   visible on the screen is checked for matches with the Index Coloring
-   Patterns. Roles are used with the Reply, Forward, and Compose
+   Patterns are used with Roles, Filtering, Index Coloring, Scoring, and
+   Other Rules. Patterns are compared with a message to see if there is a
+   match. For Filtering, the messages being checked are all the messages
+   in the folder, one at a time. For Index Line Coloring, each message
+   which is visible on the screen is checked for matches with the Index
+   Coloring Patterns. Roles are used with the Reply, Forward, and Compose
    commands. For Reply, the message used to compare the Pattern with is
    the message being replied to; for Forward, the message used to compare
    the Pattern with is the message being forwarded; and for Compose,
@@ -5613,7 +6678,8 @@ Patterns
    the Current Folder Type matters for Compose. For Scoring, the message
    being scored is compared with all of the Score Patterns, and the Score
    Values from the ones that match are added together to get the
-   message's score.
+   message's score. For Other Rules, there is no message. Only the
+   Current Folder Type is checked for Other Rules.
    
    Each Pattern has several possible parts, all of which are optional. In
    order for there to be a match, _ALL_ of the _defined_ parts of the
@@ -5643,33 +6709,58 @@ Patterns
    header pattern which stands for Participant (From OR To OR Cc).
    (Defining the Recip pattern does not have the same effect as defining
    both the To and Cc patterns. Recip is To _OR_ Cc, not To _AND_ Cc.)
-   Similar to the header patterns is the AllText pattern. Instead of
-   comparing this pattern's text against only the contents of a
-   particular header field, the text for the AllText pattern is compared
-   with text anywhere in the message's header or body.
+   Similar to the header patterns are the AllText pattern and the
+   BodyText pattern. Instead of comparing this pattern's text against
+   only the contents of a particular header field, the text for the
+   AllText pattern is compared with text anywhere in the message's header
+   or body, and the text for the BodyText pattern is compared with text
+   anywhere in the message's body.
    
-   The contents of each of these header patterns (or the AllText pattern)
-   may be a complete email address, part of an address, or a random set
-   of characters to match against. It may also be a comma-separated list
-   of such patterns, which means you are looking for a match against the
-   first pattern in the list _OR_ the second pattern _OR_ the third and
-   so on. For example, a Subject pattern equal to
+   Any of the header patterns, the AllText pattern, or the BodyText
+   pattern may be negated with the "!" "toggle NOT" command. You can tell
+   that _NOT_ has been turned on by looking for the character "!" at the
+   beginning of the pattern line. When the "!" is present, it reverses
+   the meaning of the match. That is, if the pattern matches then it is
+   considered to NOT be a match, and if it does not match it is
+   considered to be a match.
+   
+   The contents of each of these header patterns (or the AllText or
+   BodyText patterns) may be a complete email address, part of an
+   address, or a random set of characters to match against. It may also
+   be a comma-separated list of such patterns, which means you are
+   looking for a match against the first pattern in the list _OR_ the
+   second pattern _OR_ the third and so on. For example, a Subject
+   pattern equal to
    
  Subject pattern = urgent, emergency, alert
 
    would match all messages with a subject which contained at least one
    of those words. It would also match subjects containing the words
-   "alerts" or "Urgently". (It is not possible to specify two patterns
-   which must _BOTH_ be present for a match. It is only possible to
-   specify that _EITHER_ pattern1 _OR_ pattern2 must be present, and that
-   is exactly what the comma-separated list does.)
+   "alerts" or "Urgently".
+   
+   The same example with "NOT" turned on would be
+   
+ ! Subject pattern = urgent, emergency, alert
+
+   which would match all messages with a subject which did NOT contain
+   any of those words.
+   
+   (It is not possible to specify two patterns which must _BOTH_ be
+   present for a match. It is only possible to specify that _EITHER_
+   pattern1 _OR_ pattern2 must be present, and that is exactly what the
+   comma-separated list does.)
    
    The "Current Folder Type" and the "Score Interval" are also part of
    the Pattern, although the "Score Interval" is not used when checking
-   for matches for Scoring. There are also four similar settings which
-   relate to the status of the message. These settings rely on the
-   message being New or not, Deleted or not, Answered or not, and
-   Important or not.
+   for matches for Scoring. There are five similar settings which relate
+   to the status of the message. These settings rely on the message being
+   New or not, Deleted or not, Answered or not, Important or not, and
+   Recent or not. There are also three more specialized settings. The
+   first is the Age of the message in days. The second is a setting which
+   detects whether or not the Subject of a message contains raw 8-bit
+   characters (unencoded characters with the most significant bit set) .
+   And the third is a setting which detects whether or not the From
+   address of a message appears in your address book.
    
   Parts of a Pattern
   
@@ -5693,6 +6784,11 @@ Patterns
    Resent-cc and Resent-From headers are never used unless you add them
    with the eXtraHdrs command.
    
+   The meaning of a header pattern may be negated with the "!" "toggle
+   NOT" command. You can tell that _NOT_ has been turned on by looking
+   for the character "!" at the beginning of the pattern line. When the
+   "!" is present, it reverses the meaning of the match.
+   
    If you want to check for the presence of a header field but don't care
    about its value, then the empty pattern which you get by entering a
    pair of double quotes ("") should match any message which has the
@@ -5704,14 +6800,20 @@ Patterns
    searched for anywhere in the message's headers or body, not just in
    the contents of a particular header field.
    
-   If there is more than one header pattern or AllText pattern for which
-   you want to take the same action there is a shorthand notation which
-   may be used. Any of these patterns may be a comma-separated list of
-   patterns instead of just a single pattern. If any one of the patterns
-   in the list matches the message then it is considered a match. For
-   example, if "company1" and "company2" both required you to use the
-   same role when replying to messages, you might have a To pattern which
-   looks like
+  BodyText patterns
+  
+   BodyText patterns are just like header patterns except that the text
+   is searched for anywhere in the message's body, not just in the
+   contents of a particular header field.
+   
+   If there is more than one header pattern or AllText pattern or
+   BodyText pattern for which you want to take the same action there is a
+   shorthand notation which may be used. Any of these patterns may be a
+   comma-separated list of patterns instead of just a single pattern. If
+   any one of the patterns in the list matches the message then it is
+   considered a match. For example, if "company1" and "company2" both
+   required you to use the same role when replying to messages, you might
+   have a To pattern which looks like
    
                          company1.com,company2.com
                                       
@@ -5719,13 +6821,18 @@ Patterns
    either "anything@company1.com" or "anything@company2.com", then this
    Pattern is a match and the same actions will be taken.
    
+   The meaning of an AllText or BodyText pattern may be negated with the
+   "!" "toggle NOT" command. You can tell that _NOT_ has been turned on
+   by looking for the character "!" at the beginning of the pattern line.
+   When the "!" is present, it reverses the meaning of the match.
+   
    A technicality: Since comma is the character used to separate multiple
-   values in a header or AllText pattern field, you have to escape comma
-   with a backslash (\) if you want to include a literal comma in one of
-   those fields. The same is true for the backslash character itself,
-   which must be escaped with another backslash to make it literal. It's
-   unlikely you'll ever need to enter a literal comma or backslash in any
-   of the patterns.
+   values in a header, AllText, or BodyText pattern field, you have to
+   escape comma with a backslash (\) if you want to include a literal
+   comma in one of those fields. The same is true for the backslash
+   character itself, which must be escaped with another backslash to make
+   it literal. It's unlikely you'll ever need to enter a literal comma or
+   backslash in any of the patterns.
    
     Current Folder Type
     
@@ -5743,12 +6850,14 @@ Patterns
    list. The name of each folder in the list may be either "INBOX", the
    technical specification of the folder (like what appears in your
    configuration file) or, if the folder is one of your incoming folders,
-   it may be the nickname you've given the folder. Here are a couple
-   samples of specific folder names:
+   it may be the nickname you've given the folder. Here are some samples
+   of specific folder names:
    
                    {monet.art.nowhere.edu}mail/art-class
                                       
                  {news.myisp.com/nntp}#news.comp.mail.pine
+                                      
+                             mail/local-folder
                                       
    The easiest way to fill in the "Folder" field is to use the "T"
    command which is available when the "Folder" line is hilighted, or to
@@ -5762,6 +6871,37 @@ Patterns
    Type of either "Any" or "News" and those Patterns are used for Index
    Line Coloring or Scoring, you may experience slower screen redrawing
    in the MESSAGE INDEX screen when in a newsgroup.
+   
+    Age Interval
+    
+   The "Age Interval" may be set to an interval of message ages which
+   should be considered a match. Like the other parts of the Pattern, if
+   it is unset it will be ignored. The Age Interval looks like
+   
+                             (min_age,max_age)
+                                      
+   where "min_age" and "max_age" are integers greater than or equal to
+   zero. The special value "INF" may be used for the max value. It
+   represents infinity.
+   
+   When there is an Age Interval defined, it is a match if the age, in
+   days, of the message is contained in the interval. The interval
+   includes both endpoints.
+   
+   Even though this option is called Age, it isn't actually the _age_ of
+   the message. Instead, it is how many days ago the message arrived in
+   one of your folders. If the current time is a little past midnight,
+   then a message that arrived just before midnight arrived yesterday,
+   even though the message is only a few minutes old. By default, the
+   date being used is not the date in the Date header of the message. It
+   is the date that the message arrived in one of your folders. When you
+   Save a message from one folder to another that arrival date is
+   preserved. If you would like to use the date in the Date header that
+   is possible. Turn on the option _use-date-header-for-age_ near the
+   bottom of the rule definition.
+   
+   A value of 0 is today, 1 is yesterday, 2 is the day before yesterday,
+   and so on.
    
     Score Interval
     
@@ -5785,17 +6925,42 @@ Patterns
    
     Message Status
     
-   There are four separate message status settings. By default, all four
+   There are five separate message status settings. By default, all five
    are set to the value "Don't care", which will match any message. The
    value "Yes" means that the particular status must be true for a match,
    and the value "No" means that the particular status must not be true
-   for a match. For example, one of the four Message Status settings is
+   for a match. For example, one of the five Message Status settings is
    whether a message is marked Important or not. A "Yes" means that the
    message must be Important to be considered a match and "No" means that
    the message must not be Important to be considered a match. The same
-   is true of the other three message status settings which depend on
+   is true of the other four message status settings which depend on
    whether or not the message is New; whether the message has been
-   Answered or not; and whether the message has been Deleted or not.
+   Answered or not; whether the message has been Deleted or not, and
+   whether the message is Recent or not. The nomenclature is a bit
+   confusing. New means that the message is Unseen. It could have been in
+   your mailbox for a long time but if you haven't looked at it, it is
+   still considered New. That matches the default _Pine_ index display
+   which shows an N for such a message. Recent means that the message was
+   added to this folder since the last time you opened the folder.
+   
+    Raw 8-bit in Subject
+    
+   It seems that lots of unwanted email contains unencoded 8-bit
+   characters in the Subject. Normally, characters with the 8th bit set
+   are not allowed in the Subject header unless they are MIME-encoded.
+   This option gives you a way to match messages which have Subjects
+   which contain unencoded 8-bit characters. Setting this option will
+   affect performance in large folders because the subject of each
+   message in the folder has to be checked.
+   
+    From or Reply-To address in Address Books
+    
+   This option gives you a way to match messages which have a From or a
+   Reply-To address which is in one of your address books. Only the
+   simple entries in your address books are searched. Address book
+   distribution lists are ignored! Setting this option will affect
+   performance in large folders because the From and Reply-To of each
+   message in the folder have to be checked.
    
   Help Configuring Pattern Fields
   
@@ -5817,9 +6982,14 @@ Patterns
           and the other header patterns are ignored. If this pattern is a
           comma-separated list of patterns, then at least one of the
           recipients must match at least one of the patterns. (Any other
-          non-blank parts of the Pattern must match, too.) If the message
-          being replied to or forwarded has a Resent-To header line, then
-          that is used in place of the To line.
+          non-blank parts of the Pattern must match, too.) It is possible
+          to add a _NOT_ to the To Pattern meaning with the "!" "toggle
+          NOT" command. This changes the meaning of the To pattern so
+          that it has the opposite meaning. It will be considered a match
+          if there are no matches between the addresses in the To: line
+          and the list of To patterns. If the message being replied to or
+          forwarded has a Resent-To header line, then that is used in
+          place of the To line.
    _From pattern_
           This is just like the To pattern except that it is compared
           with the address from the From header of the message being
@@ -5892,6 +7062,50 @@ Patterns
           "character-set" configuration variable. (The truly
           sophisticated may use an alternate character set for a search
           by entering the MIME encoding of the header string here.)
+   _BodyText pattern_
+          Just like AllText, except it is compared only with the body of
+          the message, not the body and header.
+          If you enter non-ascii characters in this field then the search
+          will be done using the character set you have defined with the
+          "character-set" configuration variable. (The truly
+          sophisticated may use an alternate character set for a search
+          by entering the MIME encoding of the header string here.)
+   _Age Interval_
+          The Age Interval, if defined, is part of the Pattern. If you
+          use this, it should be set to something like:
+          
+                             (min_age,max_age)
+          where "min_age" and "max_age" are non-negative integers. The
+          special value "INF" may be used for the max value. It
+          represents infinity.
+          When there is an Age Interval defined, it is a match if the
+          age, in days, of the message is contained in the interval. The
+          interval includes both endpoints.
+          Even though this option is called Age, it isn't actually the
+          _age_ of the message. Instead, it is how many days ago the
+          message arrived in one of your folders. If the current time is
+          a little past midnight, then a message that arrived just before
+          midnight arrived yesterday, even though the message is only a
+          few minutes old. By default, the date being used is not the
+          date in the Date header of the message. It is the date that the
+          message arrived in one of your folders. When you Save a message
+          from one folder to another that arrival date is preserved. If
+          you would like to use the date in the Date header that is
+          possible. Turn on the option _use-date-header-for-age_ near the
+          bottom of the rule definition.
+          A value of 0 is today, 1 is yesterday, 2 is the day before
+          yesterday, and so on. The age interval
+          
+                                   (2,2)
+          matches all messages that arrived on the day before yesterday.
+          The interval
+          
+                                 (180,INF)
+          matches all messages that arrived at least 180 days before
+          today. The interval
+          
+                                   (0,1)
+          matches all messages that arrived today or yesterday.
    _Score Interval_
           The Score Interval, if defined, is part of the Pattern. If you
           use this, it should be set to something like:
@@ -5959,6 +7173,28 @@ Patterns
           "New" in order to be a match; or "No", which means the message
           must _not_ be "New" in order to be a match. "New" is the same
           as _Unseen_ and not "New" is the same as _Seen_.
+          The nomenclature is a bit confusing. New means that the message
+          is Unseen. It could have been in your mailbox for a long time
+          but if you haven't looked at it, it is still considered New.
+          That matches the default _Pine_ index display which shows an N
+          for such a message. Recent means that the message was added to
+          this folder since the last time you opened the folder.
+   _Message Status Recent_
+          This part of the Pattern may have one of three possible values.
+          The default value is "Don't care", which matches any message.
+          The other two values are "Yes", which means the message must be
+          "Recent" in order to be a match; or "No", which means the
+          message must _not_ be "Recent" in order to be a match. "Recent"
+          means that the message was added to the folder since the last
+          time the folder was opened. If more than one mail client has
+          the folder opened, the message will appear to be "Recent" to
+          only one of the clients.
+          The nomenclature is a bit confusing. New means that the message
+          is Unseen. It could have been in your mailbox for a long time
+          but if you haven't looked at it, it is still considered New.
+          That matches the default _Pine_ index display which shows an N
+          for such a message. Recent means that the message was added to
+          this folder since the last time you opened the folder.
    _Message Status Deleted_
           This part of the Pattern may have one of three possible values.
           The default value is "Don't care", which matches any message.
@@ -5979,6 +7215,37 @@ Patterns
           marked "Answered" in order to be a match; or "No", which means
           the message must _not_ be marked "Answered" in order to be a
           match.
+   _Subject Contains Raw 8-bit_
+          This part of the Pattern may have one of three possible values.
+          The default value is "Don't care", which matches any message.
+          The other two values are "Yes", which means the Subject of the
+          message must contain unencoded 8-bit characters (characters
+          with the most significant bit set) in order to be a match; or
+          "No", which means the Subject must _not_ contain unencoded
+          8-bit characters in order to be a match.
+   _From or Reply-To in Address Book_
+          This part of the Pattern may have one of five possible values.
+          The default value is "Don't care", which matches any message.
+          The value "Yes, in any address book" means either the From
+          address or the Reply-To address of the message must be in at
+          least one of your address books in order to be a match. The
+          value "No, not in any address book" means neither the From nor
+          the Reply-To addresses may be in any of your address books in
+          order to be a match.
+          The values "Yes, in specific address books" and "No, not in any
+          of specific address books" are similar but instead of depending
+          on all address books you are allowed to give a list of address
+          books to look in. Usually this would be a single address book
+          but it may be a comma-separated list of address books as well.
+          For each of these "specific" address book options you Select
+          which of the Specific options you want (Yes or No) _AND_ fill
+          in the name (or comma-separated list of names) of the address
+          book in the "Abook List" field. The names to be used are those
+          that appear in the ADDRESS BOOK LIST screen. The easiest way to
+          fill in the Abook List field it to use the "T" command which is
+          available when the "Abook List" line is highlighted. Note that
+          you won't be able to edit the "Abook List" line unless the
+          option is set to one of the two "Specific", values.
      _________________________________________________________________
 
                     Notes on Configuration and Preferences
@@ -7361,7 +8628,7 @@ International Character Sets
    re-labeled as US-ASCII. If the outgoing message is not all US-ASCII
    text, then it will be labeled with the _character-set_ variable set by
    the user. If the user has not set the _character-set_ variable then it
-   will be labeled as _X-UNKNOWN-CHARSET_.
+   will be labeled as _X-UNKNOWN_.
    
    _BUG_: If you prepare a UNICODE-1-1 document and read it into the
    composer with _^R_, _Pine_ may mistreat it. If your document, when
@@ -7405,47 +8672,34 @@ International Character Sets
    displays _all_ messages of type text and makes no attempt to filter
    out characters that may be in the wrong character set. If the text is
    tagged as something other than US-ASCII and the tag does not match the
-   character set that the _character-set_ variable is set to, then a
-   warning is printed at the start of the message. In that case, it is
-   possible that the text will be displayed incorrectly. For example, if
-   the text is one variant of ISO-8859 and the display device is another
-   variant, some of the characters may show up on the screen as the wrong
-   character. Or if the text is Japanese and the display device is not,
-   some parts of the message may be total gibberish (which will look like
-   ASCII gibberish). On the other hand, the parts of the Japanese message
-   that really are US-ASCII will be readable in the midst of the
-   gibberish.
+   character set that the _character-set_ variable is set to, then an
+   attempt is made to convert the incoming characters into the character
+   set given in the _character-set_ variable. Characters which are not
+   representable in the character set of the display will be converted to
+   question marks. The feature disable-charset-conversions may be used to
+   turn off this automatic conversion. A warning is printed at the start
+   of the message and the characters are sent to the display. It is
+   possible that the text will be displayed incorrectly.
    
-   In the case of _PC-Pine_, the character values cannot be passed
-   through to the display device unaltered since MS-DOS uses various
-   non-standard character sets called "Code Pages".
+   There is special-case code which attempts to handle Japanese text
+   (ISO-2022-JP). Incoming ISO-2022-JP text will be converted to EUC in
+   UNIX _Pine_ and to Shift-JIS in _PC-Pine_ before it is sent to the
+   display. Conversely, when sending mail UNIX _Pine_ will convert EUC
+   into ISO-2022-JP and _PC-Pine_ will convert Shift-JIS into
+   ISO-2022-JP. The feature disable-2022-jp-conversions may be used to
+   turn off this automatic conversion.
    
-   The mapping between DOS Code Page and standard character set is
-   controlled by the _character-set_ variable in the PINERC file and the
-   PC's installed Code Page. _PC-Pine_ will automatically map common
-   characters in IBM Code Pages 437, 850, 860, 863, and 865 to ISO-8859-1
-   and back when the PINERC has _character-set=ISO-8859-1_. _Pine_ will
-   also map common characters for IBM Code Page 866 to ISO-8859-5 and
-   back when _character-set=ISO-8859-5_. The mappings are bi-directional,
-   and applied to all saved text attachments in the defined character
-   set, messages exported, etc.
-   
-   Alternatively, the translation tables can be configured externally and
-   applied at run time whenever the _character-set_ variable is set to
-   something other then "US-ASCII" (the default). _PC-Pine_ looks in the
-   text file pointed to by the environment variable ISO_TO_CP for the
-   table to use for mapping text matching the type defined by the
-   _character-set_ variable into the local Code Page value. _PC-Pine_
-   looks in the text file pointed to by the environment variable
-   CP_TO_ISO for the table to use for mapping text in the local Code Page
-   into outbound text tagged with the _character-set_ variable's value.
-   
-   A text file containing a character set mapping table is expected to
-   contain 256 elements where each element is a decimal number separated
-   from the next element by white-space (space, tab or newline, but no
-   commas!). The index of the element is the character's value in the
-   source character set, and the element's value is the corresponding
-   character's value in the destination character set.
+   There used to be a facility in _PC-Pine_ to map between various DOS
+   Code Pages and standard character sets. That facility, including the
+   _CP_TO_ISO_ and _ISO_TO_CP_ hooks, was broken for several versions of
+   _Pine_ and is now entirely removed. We hope that the character set
+   conversion that happens automatically before displaying a message will
+   handle most of what the Code Page code used to do. For example, a
+   Russian user would probably set the _character-set_ variable in the
+   PINERC file to the value KOI8-R. That would cause outgoing messages to
+   be labeled as KOI8-R. If an incoming message was labeled with the
+   Windows-1251 character set, _Pine_ should be able to convert the
+   Windows-1251 characters to KOI8-R before sending them to the display.
      _________________________________________________________________
    
 Interrupted and Postponed Messages
@@ -7695,6 +8949,11 @@ Printers and Printing
    the telnet provided with PC-NFS. There is also a closely related
    method called _attached-to-ansi-no-formfeed_ which is the same except
    for the lack of formfeed character at the end of the print job.
+   
+   _Attached-to-wyse_ and _attached-to-wyse-no-formfeed_ are very similar
+   to "attached-to-ansi". The only difference is in the control
+   characters sent to turn the printer on and off. The Wyse version uses
+   Ctrl-R for on, and Ctrl-T for off.
    
    The second selection is the standard UNIX print command. The default
    is _lpr_, but it can be changed on a system basis to anything so

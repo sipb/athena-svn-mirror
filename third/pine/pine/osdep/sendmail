@@ -13,7 +13,7 @@
 /*
  * Protos for "sendmail" internal functions
  */
-static char *mta_parse_post PROTO((METAENV *, BODY *, char *, char *));
+static char *mta_parse_post PROTO((METAENV *, BODY *, char *, char *, size_t));
 static long  pine_pipe_soutr_nl PROTO((void *, char *));
 
 
@@ -50,15 +50,20 @@ smtp_command(errbuf)
   Args: envelope -- The envelope for the BCC and debugging
         header   -- The text of the message header
         errbuf   -- buffer for reporting errors (assumed non-NULL)
+	len      -- Length of errbuf
      
    ----*/
 int
-mta_handoff(header, body, errbuf)
+mta_handoff(header, body, errbuf, len)
     METAENV    *header;
     BODY       *body;
     char       *errbuf;
+    size_t      len;
 {
-    char cmd_buf[256], *cmd = NULL;
+#ifdef	DF_SENDMAIL_PATH
+    char  cmd_buf[256];
+#endif
+    char *cmd = NULL;
 
     /*
      * A bit of complicated policy implemented here.
@@ -122,7 +127,7 @@ mta_handoff(header, body, errbuf)
     if(cmd){
 	dprint(4, (debugfile, "call_mailer via cmd: %s\n", cmd));
 
-	(void) mta_parse_post(header, body, cmd, errbuf);
+	(void) mta_parse_post(header, body, cmd, errbuf, len);
 	return(1);
     }
     else
@@ -137,32 +142,40 @@ mta_handoff(header, body, errbuf)
   Args: envelope -- The envelope for the BCC and debugging
         header   -- The text of the message header
         errbuf   -- buffer for reporting errors (assumed non-NULL)
+	len      -- Length of errbuf
      
   Fork off mailer process and pipe the message into it
   Called to post news via Inews when NNTP is unavailable
   
    ----*/
 char *
-post_handoff(header, body, errbuf)
+post_handoff(header, body, errbuf, len)
     METAENV    *header;
     BODY       *body;
     char       *errbuf;
+    size_t      len;
 {
     char *err = NULL;
 #ifdef	SENDNEWS
     char *s;
+    char  tmp[200];
 
     if(s = strstr(header->env->date," (")) /* fix the date format for news */
       *s = '\0';
 
-    if(err = mta_parse_post(header, body, SENDNEWS, errbuf))
-      sprintf(err = errbuf, "News not posted: \"%s\": %s", SENDNEWS, err);
+    if(err = mta_parse_post(header, body, SENDNEWS, errbuf, len)){
+	strncpy(tmp, err, sizeof(tmp)-1);
+	tmp[sizeof(tmp)-1] = '\0';
+	sprintf(err = errbuf, "News not posted: \"%.*s\": %.*s",
+		(len-30)/2, SENDNEWS, (len-30)/2, tmp);
+    }
 
     if(s)
       *s = ' ';				/* restore the date */
 
 #else /* !SENDNEWS */  /* this is the default case */
-    sprintf(err = errbuf, "Can't post, NNTP-server must be defined!");
+    strncpy(err = errbuf, "Can't post, NNTP-server must be defined!", len-1);
+    err[len-1] = '\0';
 #endif /* !SENDNEWS */
     return(err);
 }
@@ -179,11 +192,12 @@ post_handoff(header, body, errbuf)
 
    ----*/
 static char *
-mta_parse_post(header, body, cmd, errs)
+mta_parse_post(header, body, cmd, errs, len)
     METAENV *header;
     BODY    *body;
     char    *cmd;
     char    *errs;
+    size_t   len;
 {
     char   *result = NULL;
     PIPE_S *pipe;
@@ -194,16 +208,16 @@ mta_parse_post(header, body, cmd, errs)
 		 PIPE_STDERR|PIPE_WRITE|PIPE_PROT|PIPE_NOSHELL|PIPE_DESC, 0)){
 	if(!pine_rfc822_output(header, body, pine_pipe_soutr_nl,
 			       (TCPSTREAM *) pipe))
-	  strcpy(errs, "Error posting.");
+	  strncpy(errs, "Error posting.", len-1);
 
 	if(close_system_pipe(&pipe) && !*errs){
-	    sprintf(errs, "Posting program %s returned error", cmd);
+	    sprintf(errs, "Posting program %.*s returned error", len-40, cmd);
 	    if(result)
 	      display_output_file(result, "POSTING ERRORS", errs, 1);
 	}
     }
     else
-      sprintf(errs, "Error running \"%s\"", cmd);
+      sprintf(errs, "Error running \"%.*s\"", len-20, cmd);
 
     if(result){
 	unlink(result);

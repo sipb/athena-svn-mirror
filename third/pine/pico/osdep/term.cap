@@ -18,7 +18,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1999 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -44,6 +44,8 @@ static int      tcapopen PROTO((void));
 static int      tcapterminalinfo PROTO((int));
 static int      tcapclose PROTO((void));
 static void     setup_dflt_esc_seq PROTO((void));
+static void     tcapinsert PROTO((int));
+static void     tcapdelete PROTO((void));
 
 extern int      tput();
 extern char     *tgoto();
@@ -142,6 +144,14 @@ setup_dflt_esc_seq()
     kpinsert("\033[2J", KEY_HOME, 1);
     kpinsert("\033[N",  KEY_END, 1);
 
+    /*
+     * vt220?
+     */
+    kpinsert("\033[5~", KEY_PGUP, 1);
+    kpinsert("\033[6~", KEY_PGDN, 1);
+    kpinsert("\033[1~", KEY_HOME, 1);
+    kpinsert("\033[4~", KEY_END, 1);
+
     /* 
      * ANSI mode.
      */
@@ -212,7 +222,7 @@ tcapterminalinfo(termcap_wins)
     int termcap_wins;
 {
     char   *p, *tgetstr();
-    char    tcbuf[1024];
+    char    tcbuf[2*1024];
     char   *tv_stype;
     char    err_str[72];
     int     err;
@@ -401,7 +411,6 @@ tcapterminalinfo(termcap_wins)
 static int
 tcapopen()
 {
-    char    tcbuf[1024];
     int     row, col;
 
     /*
@@ -449,6 +458,9 @@ tcapopen()
      */
     if(gmode&MDFKEY && Pmaster == NULL)
       puts("\033[99h");
+    
+    /* return ignored */
+    return(0);
 }
 
 
@@ -464,6 +476,9 @@ tcapclose()
     }
 
     ttclose();
+    
+    /* return ignored */
+    return(0);
 }
 
 
@@ -472,8 +487,9 @@ tcapclose()
  * tcapinsert - insert a character at the current character position.
  *              _insertchar takes precedence.
  */
+static void
 tcapinsert(ch)
-register char	ch;
+register int	ch;
 {
     if(_insertchar != NULL){
 	putpad(_insertchar);
@@ -490,6 +506,7 @@ register char	ch;
 /*
  * tcapdelete - delete a character at the current character position.
  */
+static void
 tcapdelete()
 {
     if(_startdelete == NULL && _enddelete == NULL)
@@ -544,6 +561,9 @@ register int n;
 	  putpad(_insertline);
 #endif
     }
+    
+    /* return ignored */
+    return(0);
 }
 
 
@@ -585,6 +605,9 @@ register int n;
 	  putpad(_insertline);
 #endif
     }
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -624,6 +647,9 @@ tcapmove(row, col)
 register int row, col;
 {
     putpad(tgoto(_moveto, col, row));
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -682,6 +708,9 @@ tcapeeop()
     }
     else if(_cleartoeos)
       putpad(_cleartoeos);
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -702,6 +731,9 @@ static int
 tcapbeep()
 {
     ttputc(BELL);
+
+    /* return ignored */
+    return(0);
 }
 
 

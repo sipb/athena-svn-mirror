@@ -10,14 +10,21 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	3 October 1995
- * Last Edited:	19 December 2000
+ * Last Edited:	26 December 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
 
+
+/*				FILE TIME SEMANTICS
+ *
+ * The atime is the last read time of the file.
+ * The mtime is the last flags update time of the file.
+ * The ctime is the last write time of the file.
+ */
 
 #include <stdio.h>
 #include <ctype.h>
@@ -39,7 +46,8 @@ extern int errno;		/* just in case */
 
 DRIVER mbxdriver = {
   "mbx",			/* driver name */
-  DR_LOCAL|DR_MAIL|DR_CRLF,	/* driver flags */
+  DR_LOCAL|DR_MAIL|DR_CRLF|DR_LOCKING,
+				/* driver flags */
   (DRIVER *) NIL,		/* next driver */
   mbx_valid,			/* mailbox is valid for us */
   mbx_parameters,		/* manipulate parameters */
@@ -87,21 +95,23 @@ MAILSTREAM mbxproto = {&mbxdriver};
 DRIVER *mbx_valid (char *name)
 {
   char tmp[MAILTMPLEN];
-  return mbx_isvalid (name,tmp) ? &mbxdriver : NIL;
+  return mbx_isvalid (NIL,name,tmp) ? &mbxdriver : NIL;
 }
 
 
 /* MBX mail test for valid mailbox
- * Accepts: mailbox name
+ * Accepts: returned stream with valid mailbox keywords
+ *	    mailbox name
  *	    scratch buffer
  * Returns: T if valid, NIL otherwise
  */
 
-int mbx_isvalid (char *name,char *tmp)
+int mbx_isvalid (MAILSTREAM **stream,char *name,char *tmp)
 {
   int fd;
   int ret = NIL;
-  char *s,hdr[HDRSIZE];
+  unsigned long i;
+  char *s,*t,hdr[HDRSIZE];
   struct stat sbuf;
   time_t tp[2];
   errno = EINVAL;		/* assume invalid argument */
@@ -120,6 +130,16 @@ int mbx_isvalid (char *name,char *tmp)
 	      isxdigit (hdr[19]) && isxdigit (hdr[20]) &&
 	      isxdigit (hdr[21]) && isxdigit (hdr[22]) &&
 	      (hdr[23] == '\015') && (hdr[24] == '\012')) ret = T;
+    if (stream) {		/* stream specified? */
+      *stream = (MAILSTREAM *) memset (fs_get (sizeof (MAILSTREAM)),0,
+				       sizeof (MAILSTREAM));
+      for (i = 0, s = hdr + 25;	/* parse user flags */
+	   (i < NUSERFLAGS) && (t = strchr (s,'\015')) && (t - s);
+	   i++, s = t + 2) {
+	*t = '\0';		/* tie off flag */
+	if (strlen (s) <= MAXUSERFLAG) (*stream)->user_flags[i] = cpystr (s);
+      }
+    }
     close (fd);			/* close the file */
     tp[0] = sbuf.st_atime;	/* preserve atime and mtime */
     tp[1] = sbuf.st_mtime;
@@ -149,7 +169,7 @@ void *mbx_parameters (long function,void *value)
       ((MBXLOCAL *) ((MAILSTREAM *) value)->local)->fullcheck = T;
   case GET_ONETIMEEXPUNGEATPING:
     if (value) ret = (void *)
-      ((MBXLOCAL *) ((MAILSTREAM *) value)->local)->fullcheck;
+      (((MBXLOCAL *) ((MAILSTREAM *) value)->local)->fullcheck ? VOIDT : NIL);
     break;
   }
   return ret;
@@ -205,7 +225,7 @@ long mbx_create (MAILSTREAM *stream,char *mailbox)
   int i,fd;
   if (!(s = mbx_file (mbx,mailbox))) {
     sprintf (mbx,"Can't create %.80s: invalid name",mailbox);
-    mm_log (mbx,ERROR);
+    MM_LOG (mbx,ERROR);
   }
 				/* create underlying file */
   else if (dummy_create_path (stream,s,get_dir_protection (mailbox))) {
@@ -214,20 +234,22 @@ long mbx_create (MAILSTREAM *stream,char *mailbox)
     if ((fd = open (mbx,O_WRONLY,
 		    (int) mail_parameters (NIL,GET_MBXPROTECTION,NIL))) < 0) {
       sprintf (tmp,"Can't reopen mailbox node %.80s: %s",mbx,strerror (errno));
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       unlink (mbx);		/* delete the file */
     }
     else {			/* initialize header */
       memset (tmp,'\0',HDRSIZE);
       sprintf (s = tmp,"*mbx*\015\012%08lx00000000\015\012",
 	       (unsigned long) time (0));
-      for (i = 0; i < NUSERFLAGS; ++i)
-	sprintf (s += strlen (s),"%s\015\012",(t = default_user_flag (i)) ?
-		 t : "");
+      for (i = 0; i < NUSERFLAGS; ++i) {
+	t = (stream && stream->user_flags[i]) ? stream->user_flags[i] :
+	  ((t = default_user_flag (i)) ? t : "");
+	sprintf (s += strlen (s),"%s\015\012",t);
+      }
       if (write (fd,tmp,HDRSIZE) != HDRSIZE) {
 	sprintf (tmp,"Can't initialize mailbox node %.80s: %s",
 		 mbx,strerror (errno));
-	mm_log (tmp,ERROR);
+	MM_LOG (tmp,ERROR);
 	unlink (mbx);		/* delete the file */
       }
       else ret = T;		/* success */
@@ -265,19 +287,19 @@ long mbx_rename (MAILSTREAM *stream,char *old,char *newname)
   struct stat sbuf;
   if (fd < 0) {			/* open mailbox */
     sprintf (tmp,"Can't open mailbox %.80s: %s",old,strerror (errno));
-    mm_log (tmp,ERROR);
+    MM_LOG (tmp,ERROR);
     return NIL;
   }
 				/* get parse/append permission */
   if ((ld = lockfd (fd,lock,LOCK_EX)) < 0) {
-    mm_log ("Unable to lock rename mailbox",ERROR);
+    MM_LOG ("Unable to lock rename mailbox",ERROR);
     return NIL;
   }
 				/* lock out other users */
   if (flock (fd,LOCK_EX|LOCK_NB)) {
     close (fd);			/* couldn't lock, give up on it then */
     sprintf (tmp,"Mailbox %.80s is in use by another process",old);
-    mm_log (tmp,ERROR);
+    MM_LOG (tmp,ERROR);
     unlockfd (ld,lock);		/* release exclusive parse/append permission */
     return NIL;
   }
@@ -285,36 +307,37 @@ long mbx_rename (MAILSTREAM *stream,char *old,char *newname)
     if (!((s = mbx_file (tmp,newname)) && *s)) {
       sprintf (tmp,"Can't rename mailbox %.80s to %.80s: invalid name",
 	       old,newname);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       ret = NIL;		/* set failure */
     }
-    if (s = strrchr (s,'/')) {	/* found superior to destination name? */
+				/* found superior to destination name? */
+    else if (s = strrchr (s,'/')) {
       c = *++s;			/* remember first character of inferior */
       *s = '\0';		/* tie off to get just superior */
-				/* name doesn't exist, create it */
+				/* superior name doesn't exist, create it */
       if ((stat (tmp,&sbuf) || ((sbuf.st_mode & S_IFMT) != S_IFDIR)) &&
-	  !dummy_create (stream,tmp)) ret = NIL;
+	  !dummy_create_path (stream,tmp,get_dir_protection (newname)))
+	ret = NIL;
       else *s = c;		/* restore full name */
     }
 				/* rename the file */
     if (ret && rename (file,tmp)) {
       sprintf (tmp,"Can't rename mailbox %.80s to %.80s: %s",old,newname,
 	       strerror (errno));
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       ret = NIL;		/* set failure */
     }
   }
   else if (unlink (file)) {
     sprintf (tmp,"Can't delete mailbox %.80s: %s",old,strerror (errno));
-    mm_log (tmp,ERROR);
+    MM_LOG (tmp,ERROR);
     ret = NIL;			/* set failure */
   }
   flock (fd,LOCK_UN);		/* release lock on the file */
   unlockfd (ld,lock);		/* release exclusive parse/append permission */
   close (fd);			/* close the file */
 				/* recreate file if renamed INBOX */
-  if (ret && !strcmp (ucase (strcpy (tmp,old)),"INBOX"))
-    mbx_create (NIL,"INBOX");
+  if (ret && !compare_cstring (old,"INBOX")) mbx_create (NIL,"INBOX");
   return ret;			/* return success */
 }
 
@@ -353,8 +376,7 @@ long mbx_status (MAILSTREAM *stream,char *mbx,long flags)
 				/* kludge but probably good enough */
     status.uidnext += systream->nmsgs;
   }
-				/* pass status to main program */
-  mm_status (stream,mbx,&status);
+  MM_STATUS(stream,mbx,&status);/* pass status to main program */
   if (tstream) mail_close (tstream);
   if (systream) mail_close (systream);
   return T;			/* success */
@@ -378,11 +400,11 @@ MAILSTREAM *mbx_open (MAILSTREAM *stream)
       (fd = open (mbx_file (tmp,stream->mailbox),O_RDWR,NIL)) < 0) {
     if ((fd = open (mbx_file (tmp,stream->mailbox),O_RDONLY,NIL)) < 0) {
       sprintf (tmp,"Can't open mailbox: %s",strerror (errno));
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       return NIL;
     }
     else if (!stream->rdonly) {	/* got it, but readonly */
-      mm_log ("Can't get write access to mailbox, access is readonly",WARN);
+      MM_LOG ("Can't get write access to mailbox, access is readonly",WARN);
       stream->rdonly = T;
     }
   }
@@ -392,12 +414,12 @@ MAILSTREAM *mbx_open (MAILSTREAM *stream)
   LOCAL->buf = (char *) fs_get (MAXMESSAGESIZE + 1);
   LOCAL->buflen = MAXMESSAGESIZE;
 				/* note if an INBOX or not */
-  stream->inbox = !strcmp(ucase (strcpy (LOCAL->buf,stream->mailbox)),"INBOX");
+  stream->inbox = !compare_cstring (stream->mailbox,"INBOX");
   fs_give ((void **) &stream->mailbox);
   stream->mailbox = cpystr (tmp);
 				/* get parse/append permission */
   if ((ld = lockfd (LOCAL->fd,tmp,LOCK_EX)) < 0) {
-    mm_log ("Unable to lock open mailbox",ERROR);
+    MM_LOG ("Unable to lock open mailbox",ERROR);
     return NIL;
   }
   (*bn) (BLOCK_FILELOCK,NIL);
@@ -414,7 +436,7 @@ MAILSTREAM *mbx_open (MAILSTREAM *stream)
   silent = stream->silent;	/* defer events */
   stream->silent = T;
   if (mbx_ping (stream) && !stream->nmsgs)
-    mm_log ("Mailbox is empty",(long) NIL);
+    MM_LOG ("Mailbox is empty",(long) NIL);
   stream->silent = silent;	/* now notify upper level */
   mail_exists (stream,stream->nmsgs);
   mail_recent (stream,stream->recent);
@@ -536,7 +558,7 @@ long mbx_text (MAILSTREAM *stream,unsigned long msgno,STRING *bs,long flags)
     elt->seen = T;		/* mark message as seen */
 				/* recalculate status */
     mbx_update_status (stream,msgno,mus_SYNC);
-    mm_flags (stream,msgno);
+    MM_FLAGS (stream,msgno);
   }
 				/* find header position */
   i = mbx_hdrpos (stream,msgno,&j,NIL);
@@ -563,14 +585,18 @@ long mbx_text (MAILSTREAM *stream,unsigned long msgno,STRING *bs,long flags)
 
 void mbx_flag (MAILSTREAM *stream,char *sequence,char *flag,long flags)
 {
+  time_t tp[2];
   struct stat sbuf;
   if (!stream->rdonly) {	/* make sure the update takes */
     fsync (LOCAL->fd);
     fstat (LOCAL->fd,&sbuf);	/* get current write time */
-    LOCAL->filetime = sbuf.st_mtime;
+    tp[1] = LOCAL->filetime = sbuf.st_mtime;
+				/* update header */
+    if ((LOCAL->ffuserflag < NUSERFLAGS) &&
+	stream->user_flags[LOCAL->ffuserflag]) mbx_update_header (stream);
+    tp[0] = time (0);		/* make sure read comes after all that */
+    utime (stream->mailbox,tp);
   }
-  if ((LOCAL->ffuserflag < NUSERFLAGS)&&stream->user_flags[LOCAL->ffuserflag])
-    mbx_update_header (stream);	/* update header */
 }
 
 
@@ -628,11 +654,6 @@ long mbx_ping (MAILSTREAM *stream)
       }
       unlockfd (ld,lock);	/* release shared parse/append permission */
     }
-    else if ((sbuf.st_ctime > sbuf.st_atime)||(sbuf.st_ctime > sbuf.st_mtime)){
-      time_t tp[2];		/* whack the times if necessary */
-      LOCAL->filetime = tp[0] = tp[1] = time (0);
-      utime (stream->mailbox,tp);
-    }
     if (r && LOCAL->fullcheck) {/* full check requested? */
 				/* no more full check or pending expunge */
       LOCAL->fullcheck = LOCAL->expunged = NIL;
@@ -640,7 +661,7 @@ long mbx_ping (MAILSTREAM *stream)
 	if (mbx_rewrite (stream,&i,NIL)) fatal ("expunge on check");
 	if (i) {
 	  sprintf (LOCAL->buf,"Reclaimed %lu bytes of expunged space",i);
-	  mm_log (LOCAL->buf,(long) NIL);
+	  MM_LOG (LOCAL->buf,(long) NIL);
 	}
       }
     }
@@ -656,7 +677,7 @@ void mbx_check (MAILSTREAM *stream)
 {
 				/* mark that a check is desired */
   if (LOCAL) LOCAL->fullcheck = T;
-  if (mbx_ping (stream)) mm_log ("Check completed",(long) NIL);
+  if (mbx_ping (stream)) MM_LOG ("Check completed",(long) NIL);
 }
 
 
@@ -670,7 +691,7 @@ void mbx_expunge (MAILSTREAM *stream)
   unsigned long nexp,reclaimed;
   if (!mbx_ping (stream));	/* do nothing if stream dead */
   else if (stream->rdonly)	/* won't do on readonly files! */
-    mm_log ("Expunge ignored on readonly mailbox",WARN);
+    MM_LOG ("Expunge ignored on readonly mailbox",WARN);
   else {			/* see if will need a flagcheck after this */
     if (LOCAL->filetime && !LOCAL->flagcheck) {
       fstat (LOCAL->fd,&sbuf);	/* get current write time */
@@ -679,13 +700,13 @@ void mbx_expunge (MAILSTREAM *stream)
 				/* if expunged any messages */
     if (nexp = mbx_rewrite (stream,&reclaimed,T)) {
       sprintf (LOCAL->buf,"Expunged %lu messages",nexp);
-      mm_log (LOCAL->buf,(long) NIL);
+      MM_LOG (LOCAL->buf,(long) NIL);
     }
     else if (reclaimed) {	/* or if any prior expunged space reclaimed */
       sprintf (LOCAL->buf,"Reclaimed %lu bytes of expunged space",reclaimed);
-      mm_log (LOCAL->buf,(long) NIL);
+      MM_LOG (LOCAL->buf,(long) NIL);
     }
-    else mm_log ("No messages deleted, so no update needed",(long) NIL);
+    else MM_LOG ("No messages deleted, so no update needed",(long) NIL);
   }
 }
 
@@ -704,7 +725,7 @@ void mbx_snarf (MAILSTREAM *stream)
 				/* give up if can't get exclusive permission */
   if ((time (0) < (LOCAL->lastsnarf + 30)) ||
       !strcmp (sysinbox (),stream->mailbox)) return;
-  mm_critical (stream);		/* go critical */
+  MM_CRITICAL (stream);	/* go critical */
 				/* see if anything there */
   if (!stat (sysinbox (),&sbuf) && sbuf.st_size) {
     fstat (LOCAL->fd,&sbuf);	/* yes, get current file size */
@@ -745,7 +766,7 @@ void mbx_snarf (MAILSTREAM *stream)
       }
       else {
 	sprintf (LOCAL->buf,"Can't copy new mail: %s",strerror (errno));
-	mm_log (LOCAL->buf,ERROR);
+	MM_LOG (LOCAL->buf,ERROR);
 	ftruncate (LOCAL->fd,sbuf.st_size);
       }
       fstat (LOCAL->fd,&sbuf);	/* yes, get current file size */
@@ -753,7 +774,7 @@ void mbx_snarf (MAILSTREAM *stream)
     }
     if (sysibx) mail_close (sysibx);
   }
-  mm_nocritical (stream);	/* release critical */
+  MM_NOCRITICAL (stream);	/* release critical */
   LOCAL->lastsnarf = time (0);	/* note time of last snarf */
 }
 
@@ -770,26 +791,27 @@ long mbx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
   struct stat sbuf;
   time_t tp[2];
   MESSAGECACHE *elt;
-  unsigned long i,j,k;
+  unsigned long i,j,k,m;
   long ret = LONGT;
   int fd,ld;
-  char file[MAILTMPLEN],lock[MAILTMPLEN];
+  char *s,*t,file[MAILTMPLEN],lock[MAILTMPLEN];
   mailproxycopy_t pc =
     (mailproxycopy_t) mail_parameters (stream,GET_MAILPROXYCOPY,NIL);
+  MAILSTREAM *dstream = NIL;
 				/* make sure valid mailbox */
-  if (!mbx_isvalid (mailbox,LOCAL->buf)) switch (errno) {
+  if (!mbx_isvalid (&dstream,mailbox,LOCAL->buf)) switch (errno) {
   case ENOENT:			/* no such file? */
-    mm_notify (stream,"[TRYCREATE] Must create mailbox before copy",NIL);
+    MM_NOTIFY (stream,"[TRYCREATE] Must create mailbox before copy",NIL);
     return NIL;
   case EINVAL:
     if (pc) return (*pc) (stream,sequence,mailbox,options);
     sprintf (LOCAL->buf,"Invalid MBX-format mailbox name: %.80s",mailbox);
-    mm_log (LOCAL->buf,ERROR);
+    MM_LOG (LOCAL->buf,ERROR);
     return NIL;
   default:
     if (pc) return (*pc) (stream,sequence,mailbox,options);
     sprintf (LOCAL->buf,"Not a MBX-format mailbox: %.80s",mailbox);
-    mm_log (LOCAL->buf,ERROR);
+    MM_LOG (LOCAL->buf,ERROR);
     return NIL;
   }
   if (!((options & CP_UID) ? mail_uid_sequence (stream,sequence) :
@@ -797,13 +819,14 @@ long mbx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
 				/* got file? */  
   if ((fd=open(mbx_file(file,mailbox),O_RDWR|O_CREAT,S_IREAD|S_IWRITE))<0) {
     sprintf (LOCAL->buf,"Unable to open copy mailbox: %s",strerror (errno));
-    mm_log (LOCAL->buf,ERROR);
+    MM_LOG (LOCAL->buf,ERROR);
     return NIL;
   }
-  mm_critical (stream);		/* go critical */
+  MM_CRITICAL (stream);		/* go critical */
 				/* get parse/append permission */
   if ((ld = lockfd (fd,lock,LOCK_EX)) < 0) {
-    mm_log ("Unable to lock copy mailbox",ERROR);
+    MM_LOG ("Unable to lock copy mailbox",ERROR);
+    MM_NOCRITICAL (stream);
     return NIL;
   }
   fstat (fd,&sbuf);		/* get current file size */
@@ -815,8 +838,13 @@ long mbx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
       lseek (LOCAL->fd,elt->private.special.offset +
 	     elt->private.special.text.size,L_SET);
       mail_date(LOCAL->buf,elt);/* build target header */
+				/* get target keyword mask */
+      for (j = elt->user_flags, k = 0; j; )
+	if (s = stream->user_flags[find_rightmost_bit (&j)])
+	  for (m = 0; (m < NUSERFLAGS) && (t = dstream->user_flags[m]); m++)
+	    if (!compare_cstring (s,t) && (k |= 1 << m)) break;
       sprintf (LOCAL->buf+strlen(LOCAL->buf),",%lu;%08lx%04x-00000000\015\012",
-	       elt->rfc822_size,elt->user_flags,(unsigned)
+	       elt->rfc822_size,k,(unsigned)
 	       ((fSEEN * elt->seen) + (fDELETED * elt->deleted) +
 		(fFLAGGED * elt->flagged) + (fANSWERED * elt->answered) +
 		(fDRAFT * elt->draft)));
@@ -830,7 +858,7 @@ long mbx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
 				/* make sure all the updates take */
   if (!(ret && (ret = !fsync (fd)))) {
     sprintf (LOCAL->buf,"Unable to write message: %s",strerror (errno));
-    mm_log (LOCAL->buf,ERROR);
+    MM_LOG (LOCAL->buf,ERROR);
     ftruncate (fd,sbuf.st_size);
   }
   tp[0] = sbuf.st_atime;	/* preserve atime and mtime */
@@ -838,7 +866,7 @@ long mbx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
   utime (file,tp);		/* set the times */
   close (fd);			/* close the file */
   unlockfd (ld,lock);		/* release exclusive parse/append permission */
-  mm_nocritical (stream);	/* release critical */
+  MM_NOCRITICAL (stream);	/* release critical */
 				/* delete all requested messages */
   if (ret && (options & CP_MOVE)) {
     for (i = 1; i <= stream->nmsgs; ) if (elt = mbx_elt (stream,i,T)) {
@@ -852,7 +880,9 @@ long mbx_copy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
     if (!stream->rdonly) {	/* make sure the update takes */
       fsync (LOCAL->fd);
       fstat (LOCAL->fd,&sbuf);	/* get current write time */
-      LOCAL->filetime = sbuf.st_mtime;
+      tp[1] = LOCAL->filetime = sbuf.st_mtime;
+      tp[0] = time (0);		/* make sure atime remains greater */
+      utime (stream->mailbox,tp);
     }
   }
   return ret;
@@ -877,20 +907,20 @@ long mbx_append (MAILSTREAM *stream,char *mailbox,append_t af,void *data)
   long f;
   unsigned long i,uf;
   STRING *message;
-  long ret = LONGT;
-				/* default stream to prototype */
-  if (!stream) stream = user_flags (&mbxproto);
+  long ret = NIL;
+  MAILSTREAM *dstream = NIL;
 				/* make sure valid mailbox */
-  if (!mbx_isvalid (mailbox,tmp)) switch (errno) {
+  if (!mbx_isvalid (&dstream,mailbox,tmp)) switch (errno) {
   case ENOENT:			/* no such file? */
     if (((mailbox[0] == 'I') || (mailbox[0] == 'i')) &&
 	((mailbox[1] == 'N') || (mailbox[1] == 'n')) &&
 	((mailbox[2] == 'B') || (mailbox[2] == 'b')) &&
 	((mailbox[3] == 'O') || (mailbox[3] == 'o')) &&
-	((mailbox[4] == 'X') || (mailbox[4] == 'x')) && !mailbox[5])
-      mbx_create (NIL,"INBOX");
+	((mailbox[4] == 'X') || (mailbox[4] == 'x')) && !mailbox[5]) {
+      mbx_create (dstream = stream ? stream : user_flags (&mbxproto),"INBOX");
+    }
     else {
-      mm_notify (stream,"[TRYCREATE] Must create mailbox before append",NIL);
+      MM_NOTIFY (stream,"[TRYCREATE] Must create mailbox before append",NIL);
       return NIL;
     }
 				/* falls through */
@@ -898,72 +928,76 @@ long mbx_append (MAILSTREAM *stream,char *mailbox,append_t af,void *data)
     break;
   case EINVAL:
     sprintf (tmp,"Invalid MBX-format mailbox name: %.80s",mailbox);
-    mm_log (tmp,ERROR);
+    MM_LOG (tmp,ERROR);
     return NIL;
   default:
     sprintf (tmp,"Not a MBX-format mailbox: %.80s",mailbox);
-    mm_log (tmp,ERROR);
+    MM_LOG (tmp,ERROR);
     return NIL;
   }
-				/* get first message */
-  if (!(*af) (stream,data,&flags,&date,&message)) return NIL;
 
+				/* get first message */
+  if (!MM_APPEND (af) (dstream,data,&flags,&date,&message));
 				/* open destination mailbox */
-  if (((fd = open (mbx_file (file,mailbox),O_WRONLY|O_APPEND|O_CREAT,
-		   S_IREAD|S_IWRITE)) < 0) || !(df = fdopen (fd,"ab"))) {
+  else if (((fd = open (mbx_file (file,mailbox),O_WRONLY|O_APPEND|O_CREAT,
+			S_IREAD|S_IWRITE)) < 0) || !(df = fdopen (fd,"ab"))) {
     sprintf (tmp,"Can't open append mailbox: %s",strerror (errno));
-    mm_log (tmp,ERROR);
-    return NIL;
+    MM_LOG (tmp,ERROR);
   }
 				/* get parse/append permission */
-  if ((ld = lockfd (fd,lock,LOCK_EX)) < 0) {
-    mm_log ("Unable to lock append mailbox",ERROR);
+  else if ((ld = lockfd (fd,lock,LOCK_EX)) < 0) {
+    MM_LOG ("Unable to lock append mailbox",ERROR);
     close (fd);
-    return NIL;
   }
-  mm_critical (stream);		/* go critical */
-  fstat (fd,&sbuf);		/* get current file size */
-  do {				/* parse flags */
-    if (!SIZE (message)) {	/* guard against zero-length */
-      mm_log ("Append of zero-length message",ERROR);
-      ret = NIL;
-      break;
-    }
-    f = mail_parse_flags (stream,flags,&uf);
-    if (date) {			/* parse date if given */
-      if (!mail_parse_date (&elt,date)) {
-	sprintf (tmp,"Bad date in append: %.80s",date);
-	mm_log (tmp,ERROR);
-	ret = NIL;		/* mark failure */
+  else {
+    MM_CRITICAL (dstream);	/* go critical */
+    fstat (fd,&sbuf);		/* get current file size */
+    for (ret = LONGT; ret && message; ) {
+      if (!SIZE (message)) {	/* guard against zero-length */
+	MM_LOG ("Append of zero-length message",ERROR);
+	ret = NIL;
 	break;
       }
-      mail_date (tmp,&elt);	/* write preseved date */
-    }
-    else internal_date (tmp);	/* get current date in IMAP format */
+      f = mail_parse_flags (dstream,flags,&uf);
+      if (date) {		/* parse date if given */
+	if (!mail_parse_date (&elt,date)) {
+	  sprintf (tmp,"Bad date in append: %.80s",date);
+	  MM_LOG (tmp,ERROR);
+	  ret = NIL;		/* mark failure */
+	  break;
+	}
+	mail_date (tmp,&elt);	/* write preseved date */
+      }
+      else internal_date (tmp);	/* get current date in IMAP format */
 				/* write header */
-    if (fprintf (df,"%s,%lu;%08lx%04lx-00000000\015\012",tmp,
-		 i = SIZE (message),uf,(unsigned long) f) < 0) ret = NIL;
-    else {			/* write message */
-      if (i) do c = 0xff & SNX (message);
-      while ((putc (c,df) != EOF) && --i);
+      if (fprintf (df,"%s,%lu;%08lx%04lx-00000000\015\012",tmp,
+		   i = SIZE (message),uf,(unsigned long) f) < 0) ret = NIL;
+      else {			/* write message */
+	if (i) do c = 0xff & SNX (message);
+	       while ((putc (c,df) != EOF) && --i);
 				/* get next message */
-      if (i || !(*af) (stream,data,&flags,&date,&message)) ret = NIL;
+	if (i || !MM_APPEND (af) (dstream,data,&flags,&date,&message))
+	  ret = NIL;
+      }
     }
-  } while (ret && message);
+
 				/* if error... */
-  if (!ret || (fflush (df) == EOF)) {
-    ftruncate (fd,sbuf.st_size);/* revert file */
-    close (fd);			/* make sure fclose() doesn't corrupt us */
-    sprintf (tmp,"Message append failed: %s",strerror (errno));
-    mm_log (tmp,ERROR);
-    ret = NIL;
+    if (!ret || (fflush (df) == EOF)) {
+				/* revert file */
+      ftruncate (fd,sbuf.st_size);
+      close (fd);		/* make sure fclose() doesn't corrupt us */
+      sprintf (tmp,"Message append failed: %s",strerror (errno));
+      MM_LOG (tmp,ERROR);
+      ret = NIL;
+    }
+    tp[0] = sbuf.st_atime;	/* preserve atime and mtime */
+    tp[1] = sbuf.st_mtime;
+    utime (file,tp);		/* set the times */
+    fclose (df);		/* close the file */
+    unlockfd (ld,lock);		/* release exclusive parse/append permission */
+    MM_NOCRITICAL (dstream);	/* release critical */
   }
-  tp[0] = sbuf.st_atime;	/* preserve atime and mtime */
-  tp[1] = sbuf.st_mtime;
-  utime (file,tp);		/* set the times */
-  fclose (df);			/* close the file */
-  unlockfd (ld,lock);		/* release exclusive parse/append permission */
-  mm_nocritical (stream);	/* release critical */
+  if (dstream != stream) mail_close (dstream);
   return ret;
 }
 
@@ -999,12 +1033,14 @@ long mbx_parse (MAILSTREAM *stream)
   unsigned long nmsgs = stream->nmsgs;
   unsigned long recent = stream->recent;
   unsigned long lastuid = 0;
+  short dirty = NIL;
+  short added = NIL;
   short silent = stream->silent;
   fstat (LOCAL->fd,&sbuf);	/* get status */
   if (sbuf.st_size < curpos) {	/* sanity check */
     sprintf (tmp,"Mailbox shrank from %lu to %lu!",
 	     (unsigned long) curpos,(unsigned long) sbuf.st_size);
-    mm_log (tmp,ERROR);
+    MM_LOG (tmp,ERROR);
     mbx_abort (stream);
     return NIL;
   }
@@ -1038,7 +1074,7 @@ long mbx_parse (MAILSTREAM *stream)
       sprintf (tmp,"Unable to read internal header at %lu, size = %lu: %s",
 	       (unsigned long) curpos,(unsigned long) sbuf.st_size,
 	       i ? strerror (errno) : "no data read");
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1046,7 +1082,7 @@ long mbx_parse (MAILSTREAM *stream)
     if (!((s = strchr (LOCAL->buf,'\015')) && (s[1] == '\012'))) {
       sprintf (tmp,"Unable to find CRLF at %lu in %lu bytes, text: %.80s",
 	       (unsigned long) curpos,i,LOCAL->buf);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1055,7 +1091,7 @@ long mbx_parse (MAILSTREAM *stream)
     if (!((s = strchr (LOCAL->buf,',')) && (t = strchr (s+1,';')))) {
       sprintf (tmp,"Unable to parse internal header at %lu: %.80s",
 	       (unsigned long) curpos,LOCAL->buf);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1065,7 +1101,7 @@ long mbx_parse (MAILSTREAM *stream)
 	  isxdigit (t[10]) && isxdigit (t[11]) && isxdigit (t[12]))) {
       sprintf (tmp,"Unable to parse message flags at %lu: %.80s",
 	       (unsigned long) curpos,LOCAL->buf);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1075,7 +1111,7 @@ long mbx_parse (MAILSTREAM *stream)
 	  isxdigit (t[20]) && isxdigit (t[21]))) {
       sprintf (tmp,"Unable to parse message UID at %lu: %.80s",
 	       (unsigned long) curpos,LOCAL->buf);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1085,7 +1121,7 @@ long mbx_parse (MAILSTREAM *stream)
     if (!(j = strtoul (s,&x,10)) && (!(x && *x))) {
       sprintf (tmp,"Unable to parse message size at %lu: %.80s,%.80s;%.80s",
 	       (unsigned long) curpos,LOCAL->buf,s,t);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1094,7 +1130,7 @@ long mbx_parse (MAILSTREAM *stream)
       sprintf (tmp,"Last message (at %lu) runs past end of file (%lu > %lu)",
 	       (unsigned long) curpos,(unsigned long) (curpos + i + j),
 	       (unsigned long) sbuf.st_size);
-      mm_log (tmp,ERROR);
+      MM_LOG (tmp,ERROR);
       mbx_abort (stream);
       return NIL;
     }
@@ -1103,18 +1139,23 @@ long mbx_parse (MAILSTREAM *stream)
 	((m <= lastuid) || (m > stream->uid_last))) {
       sprintf (tmp,"Invalid UID %08lx in message %lu, rebuilding UIDs",
 		 m,nmsgs+1);
-      mm_log (tmp,WARN);
+      MM_LOG (tmp,WARN);
       m = 0;			/* lose this UID */
-				/* restart UID validity and last UID */
+      dirty = T;		/* restart UID validity and last UID */
       stream->uid_validity = time (0);
       stream->uid_last = lastuid;
     }
 
     t[12] = '\0';		/* parse system flags */
-    if ((k = strtoul (t+8,NIL,16)) & fEXPUNGED)
-				/* expunged message, update last UID */
-      lastuid = m ? m : ++stream->uid_last;
+    if ((k = strtoul (t+8,NIL,16)) & fEXPUNGED) {
+      if (m) lastuid = m;	/* expunge message, update last UID seen */
+      else {			/* no UID assigned? */
+	lastuid = ++stream->uid_last;
+	dirty = T;
+      }
+    }
     else {			/* not expunged, swell the cache */
+      added = T;		/* note that a new message was added */
       mail_exists (stream,++nmsgs);
 				/* instantiate an elt for this message */
       (elt = mail_elt (stream,nmsgs))->valid = T;
@@ -1122,7 +1163,7 @@ long mbx_parse (MAILSTREAM *stream)
       if (!mail_parse_date (elt,LOCAL->buf)) {
 	sprintf (tmp,"Unable to parse message date at %lu: %.80s",
 		 (unsigned long) curpos,LOCAL->buf);
-	mm_log (tmp,ERROR);
+	MM_LOG (tmp,ERROR);
 	mbx_abort (stream);
 	return NIL;
       }
@@ -1145,6 +1186,7 @@ long mbx_parse (MAILSTREAM *stream)
       if (!(elt->private.uid = m)) {
 	elt->recent = T;	/* no, mark as recent */
 	++recent;		/* count up a new recent message */
+	dirty = T;		/* and must rewrite header */
 				/* assign new UID */
 	elt->private.uid = ++stream->uid_last;
 	mbx_update_status (stream,elt->msgno,NIL);
@@ -1155,13 +1197,20 @@ long mbx_parse (MAILSTREAM *stream)
     curpos += i + j;		/* update position */
   }
 
-				/* update header */
-  if (!stream->rdonly) mbx_update_header (stream);
-  fsync (LOCAL->fd);		/* make sure all the UID updates take */
+  if (dirty && !stream->rdonly){/* update header */
+    mbx_update_header (stream);
+    fsync (LOCAL->fd);		/* make sure all the UID updates take */
+  }
 				/* update parsed file size and time */
   LOCAL->filesize = sbuf.st_size;
   fstat (LOCAL->fd,&sbuf);	/* get status again to ensure time is right */
   LOCAL->filetime = sbuf.st_mtime;
+  if (added) {			/* make sure atime updated */
+    time_t tp[2];
+    tp[0] = time (0);
+    tp[1] = LOCAL->filetime;
+    utime (stream->mailbox,tp);
+  }
   stream->silent = silent;	/* can pass up events now */
   mail_exists (stream,nmsgs);	/* notify upper level of new mailbox size */
   mail_recent (stream,recent);	/* and of change in recent messages */
@@ -1197,7 +1246,7 @@ MESSAGECACHE *mbx_elt (MAILSTREAM *stream,unsigned long msgno,long expok)
   if ((old.seen != elt->seen) || (old.deleted != elt->deleted) ||
       (old.flagged != elt->flagged) || (old.answered != elt->answered) ||
       (old.draft != elt->draft) || (old.user_flags != elt->user_flags))
-    mm_flags (stream,msgno);	/* let top level know */
+    MM_FLAGS (stream,msgno);	/* let top level know */
   return elt;
 }
 
@@ -1258,8 +1307,8 @@ void mbx_update_header (MAILSTREAM *stream)
     lseek (LOCAL->fd,0,L_SET);	/* rewind file */
 				/* write new header */
     if (write (LOCAL->fd,LOCAL->buf,HDRSIZE) > 0) break;
-    mm_notify (stream,strerror (errno),WARN);
-    mm_diskerror (stream,errno,T);
+    MM_NOTIFY (stream,strerror (errno),WARN);
+    MM_DISKERROR (stream,errno,T);
   }
 }
 
@@ -1271,9 +1320,10 @@ void mbx_update_header (MAILSTREAM *stream)
 
 void mbx_update_status (MAILSTREAM *stream,unsigned long msgno,long flags)
 {
-  MESSAGECACHE *elt = mail_elt (stream,msgno);
+  time_t tp[2];
   struct stat sbuf;
   int expflag;
+  MESSAGECACHE *elt = mail_elt (stream,msgno);
 				/* readonly */
   if (stream->rdonly || !elt->valid) mbx_read_flags (stream,elt);
   else {			/* readwrite */
@@ -1302,13 +1352,15 @@ void mbx_update_status (MAILSTREAM *stream,unsigned long msgno,long flags)
 	     elt->private.special.text.size - 23,L_SET);
 				/* write new flags and UID */
       if (write (LOCAL->fd,LOCAL->buf,21) > 0) break;
-      mm_notify (stream,strerror (errno),WARN);
-      mm_diskerror (stream,errno,T);
+      MM_NOTIFY (stream,strerror (errno),WARN);
+      MM_DISKERROR (stream,errno,T);
     }
     if (flags & mus_SYNC) {	/* sync if requested */
       fsync (LOCAL->fd);
       fstat (LOCAL->fd,&sbuf);	/* get new write time */
-      LOCAL->filetime = sbuf.st_mtime;
+      tp[1] = LOCAL->filetime = sbuf.st_mtime;
+      tp[0] = time (0);		/* make sure read is later */
+      utime (stream->mailbox,tp);
     }
   }
 }
@@ -1402,6 +1454,7 @@ unsigned long mbx_hdrpos (MAILSTREAM *stream,unsigned long msgno,
 unsigned long mbx_rewrite (MAILSTREAM *stream,unsigned long *reclaimed,
 			   long flags)
 {
+  time_t tp[2];
   struct stat sbuf;
   off_t pos,ppos;
   int ld;
@@ -1421,13 +1474,15 @@ unsigned long mbx_rewrite (MAILSTREAM *stream,unsigned long *reclaimed,
    */
 				/* get parse/append permission */
   if ((ld = lockfd (LOCAL->fd,lock,LOCK_EX)) < 0) {
-    mm_log ("Unable to lock mailbox for rewrite",ERROR);
+    MM_LOG ("Unable to lock mailbox for rewrite",ERROR);
     return *reclaimed = 0;
   }
+				/* make sure see any newly-arrived messages */
+  if (!mbx_parse (stream)) return NIL;
 
 				/* get exclusive access */
   if (!flock (LOCAL->fd,LOCK_EX|LOCK_NB)) {
-    mm_critical (stream);	/* go critical */
+    MM_CRITICAL (stream);	/* go critical */
     for (i = 1,n = delta = *reclaimed = 0,pos = ppos = HDRSIZE;
 	 i <= stream->nmsgs; ) {
       elt = mbx_elt (stream,i,NIL);
@@ -1457,8 +1512,8 @@ unsigned long mbx_rewrite (MAILSTREAM *stream,unsigned long *reclaimed,
 	  while (T) {
 	    lseek (LOCAL->fd,pos,L_SET);
 	    if (write (LOCAL->fd,LOCAL->buf,m) > 0) break;
-	    mm_notify (stream,strerror (errno),WARN);
-	    mm_diskerror (stream,errno,T);
+	    MM_NOTIFY (stream,strerror (errno),WARN);
+	    MM_DISKERROR (stream,errno,T);
 	  }
 	  pos += m;		/* new position */
 	  j += m;		/* next chunk, perhaps */
@@ -1477,7 +1532,7 @@ unsigned long mbx_rewrite (MAILSTREAM *stream,unsigned long *reclaimed,
 				/* truncate file after last message */
     ftruncate (LOCAL->fd,LOCAL->filesize);
     fsync (LOCAL->fd);		/* force disk update */
-    mm_nocritical (stream);	/* release critical */
+    MM_NOCRITICAL (stream);	/* release critical */
     (*bn) (BLOCK_FILELOCK,NIL);
     flock (LOCAL->fd,LOCK_SH);	/* allow sharers again */
     (*bn) (BLOCK_NONE,NIL);
@@ -1510,7 +1565,9 @@ unsigned long mbx_rewrite (MAILSTREAM *stream,unsigned long *reclaimed,
     fsync (LOCAL->fd);		/* force disk update */
   }
   fstat (LOCAL->fd,&sbuf);	/* get new write time */
-  LOCAL->filetime = sbuf.st_mtime;
+  tp[1] = LOCAL->filetime = sbuf.st_mtime;
+  tp[0] = time (0);		/* reset atime to now */
+  utime (stream->mailbox,tp);
 				/* notify upper level of new mailbox size */
   mail_exists (stream,stream->nmsgs);
   mail_recent (stream,recent);

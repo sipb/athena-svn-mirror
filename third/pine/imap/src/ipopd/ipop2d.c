@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	28 October 1990
- * Last Edited:	24 October 2000
+ * Last Edited:	2 December 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -51,7 +51,7 @@ extern int errno;		/* just in case */
 
 /* Global storage */
 
-char *version = "2000.59";	/* server version */
+char *version = "2002.65";	/* server version */
 short state = LISN;		/* server state */
 short critical = NIL;		/* non-zero if in critical code */
 MAILSTREAM *stream = NIL;	/* mailbox stream */
@@ -86,15 +86,19 @@ int main (int argc,char *argv[])
 {
   char *s,*t;
   char cmdbuf[TMPLEN];
-#ifdef PLAINTEXT_DISABLED
-  printf ("- POP2 server disabled on this system\015\012");
-  fflush (stdout);
-  _exit (1);
-#endif
+  char *pgmname = (argc && argv[0]) ?
+    (((s = strrchr (argv[0],'/')) || (s = strrchr (argv[0],'\\'))) ?
+     s+1 : argv[0]) : "ipop2d";
+				/* set service name before linkage */
+  mail_parameters (NIL,SET_SERVICENAME,(void *) "pop");
 #include "linkage.c"
+  if (mail_parameters (NIL,GET_DISABLEPLAINTEXT,NIL)) {
+    printf ("- POP2 server disabled on this system\015\012");
+    fflush (stdout);
+    _exit (1);
+  }
 				/* initialize server */
-  server_init ((s = strrchr (argv[0],'/')) ? s + 1 : argv[0],
-	       "pop",NIL,"pop",clkint,kodint,hupint,trmint);
+  server_init (pgmname,"pop",NIL,clkint,kodint,hupint,trmint);
   /* There are reports of POP2 clients which get upset if anything appears
    * between the "+" and the "POP2" in the greeting.
    */
@@ -111,7 +115,7 @@ int main (int argc,char *argv[])
 	char *e = ferror (stdin) ?
 	  strerror (errno) : "Command stream end of file";
 	alarm (0);		/* disable all interrupts */
-	server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+	server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
 	syslog (LOG_INFO,"%s while reading line user=%.80s host=%.80s",
 		e,user ? user : "???",tcp_clienthost ());
 	state = DONE;
@@ -124,12 +128,12 @@ int main (int argc,char *argv[])
     idletime = 0;		/* no longer idle */
 				/* find end of line */
     if (!strchr (cmdbuf,'\012')) {
-      server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+      server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
       fputs ("- Command line too long\015\012",stdout);
       state = DONE;
     }
     else if (!(s = strtok (cmdbuf," \015\012"))) {
-      server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+      server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
       fputs ("- Missing or null command\015\012",stdout);
       state = DONE;
     }
@@ -148,7 +152,7 @@ int main (int argc,char *argv[])
       else if ((state == NEXT) && !strcmp (s,"NACK")) state = c_nack (t);
       else if ((state == AUTH || state == MBOX || state == ITEM) &&
 	       !strcmp (s,"QUIT")) {
-	server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+	server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
 	state = DONE;		/* done in either case */
 	if (t) fputs ("- Bogus argument given to QUIT\015\012",stdout);
 	else {			/* expunge the stream */
@@ -159,7 +163,7 @@ int main (int argc,char *argv[])
 	}
       }
       else {			/* some other or inappropriate command */
-	server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+	server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
 	printf ("- Bogus or out of sequence command - %s\015\012",s);
 	state = DONE;
       }
@@ -179,7 +183,7 @@ int main (int argc,char *argv[])
 void clkint ()
 {
   alarm (0);		/* disable all interrupts */
-  server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+  server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
   fputs ("- Autologout; idle for too long\015\012",stdout);
   syslog (LOG_INFO,"Autologout user=%.80s host=%.80s",user ? user : "???",
 	  tcp_clienthost ());
@@ -201,7 +205,7 @@ void kodint ()
 				/* only if in command wait */
   if (idletime && ((time (0) - idletime) > KODTIMEOUT)) {
     alarm (0);		/* disable all interrupts */
-    server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+    server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
     fputs ("- Received Kiss of Death\015\012",stdout);
     syslog (LOG_INFO,"Killed (lost mailbox lock) user=%.80s host=%.80s",
 	    user ? user : "???",tcp_clienthost ());
@@ -222,7 +226,7 @@ void kodint ()
 void hupint ()
 {
   alarm (0);		/* disable all interrupts */
-  server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+  server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
   syslog (LOG_INFO,"Hangup user=%.80s host=%.80s",user ? user : "???",
 	  tcp_clienthost ());
   state = DONE;			/* mark state done in either case */
@@ -240,7 +244,7 @@ void hupint ()
 void trmint ()
 {
   alarm (0);		/* disable all interrupts */
-  server_init (NIL,NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
+  server_init (NIL,NIL,NIL,SIG_IGN,SIG_IGN,SIG_IGN,SIG_IGN);
   fputs ("- Killed\015\012",stdout);
   syslog (LOG_INFO,"Killed user=%.80s host=%.80s",user ? user : "???",
 	  tcp_clienthost ());
@@ -614,7 +618,7 @@ void mm_login (NETMBX *mb,char *username,char *password,long trial)
 
 void mm_critical (MAILSTREAM *stream)
 {
-  critical = T;
+  ++critical;
 }
 
 
@@ -624,7 +628,7 @@ void mm_critical (MAILSTREAM *stream)
 
 void mm_nocritical (MAILSTREAM *stream)
 {
-  critical = NIL;
+  --critical;
 }
 
 

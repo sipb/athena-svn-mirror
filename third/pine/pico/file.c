@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: file.c,v 1.1.1.1 2001-02-19 07:05:28 ghudson Exp $";
+static char rcsid[] = "$Id: file.c,v 1.1.1.2 2003-02-12 08:01:40 ghudson Exp $";
 #endif
 /*
  * Program:	High level file input and output routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: file.c,v 1.1.1.1 2001-02-19 07:05:28 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -295,7 +295,7 @@ int f, n;
 		    else
 		      fname[0] = '\0';
 
-		    refresh(FALSE, 1);
+		    pico_refresh(FALSE, 1);
 		    if(s != 1){
 			update(); 		/* redraw on return */
 			continue;
@@ -319,7 +319,7 @@ int f, n;
 		    tfname[0] = '\0';
 		    retval = (*Pmaster->upload)(tfname, NULL);
 
-		    refresh(FALSE, 1);
+		    pico_refresh(FALSE, 1);
 		    update();
 
 		    if(retval){
@@ -353,7 +353,7 @@ int f, n;
 		else
 		  pico_help(inshelptext, "Help for Insert File", 1);
 	      case (CTRL|'L'):
-		refresh(FALSE, 1);
+		pico_refresh(FALSE, 1);
 		update();
 		continue;
 	      default:
@@ -376,7 +376,7 @@ insmsgchar(c)
 	char *p;
 
 	lnewline();
-	for(p = Pmaster->quote_str; p && *p; p++)
+	for(p = glo_quote_str; p && *p; p++)
 	  if(!linsert(1, *p))
 	    return(0);
     }
@@ -418,11 +418,13 @@ int     rename;         /* don't rename if reading from, say, alt speller */
 	      fioperr(s, fname);
 	}
 	else{
+	    int charsread = 0;
+
 	    emlwrite("Reading file", NULL);
 	    nline = 0L;
 	    done  = newline = 0;
 	    while(!done)
-	      if((s = ffgetline(line, NLINE, 1)) == FIOEOF){
+	      if((s = ffgetline(line, NLINE, &charsread, 1)) == FIOEOF){
 		  curbp->b_flag &= ~(BFTEMP|BFCHG);
 		  gotobob(FALSE, 1);
 		  sprintf(line,"Read %d line%s",
@@ -442,7 +444,7 @@ int     rename;         /* don't rename if reading from, say, alt speller */
 		      newline = 1;
 
 		    case FIOLNG :
-		      for(linep = line; *linep; linep++)
+		      for(linep = line; charsread-- > 0; linep++)
 			linsert(1, (unsigned char) *linep);
 
 		      break;
@@ -475,7 +477,7 @@ int f, n;
         register WINDOW *wp;
         register int    s;
         char            fname[NFILEN];
-	char		shows[NLINE], *bufp;
+	char		shows[NLINE], origshows[NLINE], *bufp;
 	EXTRAKEYS	menu_write[3];
 
 	if(curbp->b_fname[0] != 0)
@@ -587,6 +589,7 @@ int f, n;
 		  strcpy(shows, ((gmode & MDTREE) || opertree[0])
 				   ? opertree : gethomedir(NULL));
 
+		strcpy(origshows, shows);
 		if ((s = FileBrowse(shows, NLINE, fname, NFILEN, NULL, FB_SAVE)) == 1) {
 		  if (strlen(shows)+strlen(S_FILESEP)+strlen(fname) < NLINE){
 		    strcat(shows, S_FILESEP);
@@ -598,11 +601,16 @@ int f, n;
 		    sleep(3);
 		  }
 		}
+		else if (s == 0 && strcmp(shows, origshows)){
+		    strcat(shows, S_FILESEP);
+		    strcat(shows, fname);
+		    strcpy(fname, shows);
+		}
 		else if (s == -1){
 		  emlwrite("Cannot write. File name too long!!",NULL);
 		  sleep(3);
 		}
-		refresh(FALSE, 1);
+		pico_refresh(FALSE, 1);
 		update();
 		if(s == 1)
 		  break;
@@ -611,7 +619,7 @@ int f, n;
 	      case HELPCH:
 		pico_help(writehelp, "", 1);
 	      case (CTRL|'L'):
-		refresh(FALSE, 1);
+		pico_refresh(FALSE, 1);
 		update();
 		continue;
 	      default:
@@ -728,7 +736,6 @@ int     readonly;
         register int    t;
         register LINE   *lp;
         register int    nline;
-	char     line[80];
 
         if (!((s = ffwopen(fn, readonly)) == FIOSUC && ffelbowroom()))
 	  return (-1);				/* Open writes message. */
@@ -812,7 +819,7 @@ char    fname[];
 {
         char line[NLINE], *linep;
 	long nline;
-	int  s, done, newline;
+	int  s, done, newline, charsread = 0;
 
         if ((s=ffropen(fname)) != FIOSUC){      /* Hard file open.      */
 	    fioperr(s, fname);
@@ -829,7 +836,7 @@ char    fname[];
 	done = newline = 0;
 	nline = 0L;
 	while(!done)
-	  if((s = ffgetline(line, NLINE, 1)) == FIOEOF){
+	  if((s = ffgetline(line, NLINE, &charsread, 1)) == FIOEOF){
 	      if(llength(curwp->w_dotp) > curwp->w_doto)
 		lnewline();
 	      else
@@ -851,7 +858,7 @@ char    fname[];
 		  newline = 1;
 
 		case FIOLNG :
-		  for(linep = line; *linep; linep++)
+		  for(linep = line; charsread-- > 0; linep++)
 		    linsert(1, (unsigned char) *linep);
 
 		  break;

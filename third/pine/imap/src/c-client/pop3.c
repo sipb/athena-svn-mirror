@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	6 June 1994
- * Last Edited:	24 October 2000
+ * Last Edited:	7 January 2003
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 1988-2003 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -41,7 +41,7 @@ DRIVER pop3driver = {
 #ifdef INADEQUATE_MEMORY
   DR_LOWMEM |
 #endif
-  DR_MAIL|DR_NOFAST|DR_CRLF|DR_NOSTICKY,
+  DR_MAIL|DR_NOFAST|DR_CRLF|DR_NOSTICKY|DR_NOINTDATE|DR_NONEWMAIL,
   (DRIVER *) NIL,		/* next driver */
   pop3_valid,			/* mailbox is valid for us */
   pop3_parameters,		/* manipulate parameters */
@@ -84,8 +84,7 @@ MAILSTREAM pop3proto = {&pop3driver};
 				/* driver parameters */
 static unsigned long pop3_maxlogintrials = MAXLOGINTRIALS;
 static long pop3_port = 0;
-static long pop3_altport = 0;
-static char *pop3_altname = NIL;
+static long pop3_sslport = 0;
 
 /* POP3 mail validate mailbox
  * Accepts: mailbox name
@@ -124,17 +123,11 @@ void *pop3_parameters (long function,void *value)
   case GET_POP3PORT:
     value = (void *) pop3_port;
     break;
-  case SET_ALTPOPPORT:
-    pop3_altport = (long) value;
+  case SET_SSLPOPPORT:
+    pop3_sslport = (long) value;
     break;
-  case GET_ALTPOPPORT:
-    value = (void *) pop3_altport;
-    break;
-  case SET_ALTPOPNAME:
-    pop3_altname = (char *) value;
-    break;
-  case GET_ALTPOPNAME:
-    value = (void *) pop3_altname;
+  case GET_SSLPOPPORT:
+    value = (void *) pop3_sslport;
     break;
   default:
     value = NIL;		/* error case */
@@ -318,36 +311,39 @@ MAILSTREAM *pop3_open (MAILSTREAM *stream)
     mm_log ("Anonymous POP3 login not available",ERROR);
     return NIL;
   }
+				/* /readonly not supported either */
+  if (mb.readonlyflag || stream->rdonly) {
+    mm_log ("Read-only POP3 access not available",ERROR);
+    return NIL;
+  }
 				/* copy other switches */
   if (mb.dbgflag) stream->debug = T;
   if (mb.secflag) stream->secure = T;
-  mb.tryaltflag = stream->tryalt;
-  stream->local = fs_get (sizeof (POP3LOCAL));
+  mb.trysslflag = stream->tryssl = (mb.trysslflag || stream->tryssl) ? T : NIL;
+  stream->local =		/* instantiate localdata */
+    (void *) memset (fs_get (sizeof (POP3LOCAL)),0,sizeof (POP3LOCAL));
   stream->sequence++;		/* bump sequence number */
   stream->perm_deleted = T;	/* deleted is only valid flag */
-  LOCAL->response = LOCAL->reply = NIL;
-				/* currently no message */
-  LOCAL->msgno = LOCAL->hdrsize = 0;
-  LOCAL->txt = NIL;		/* no file initially */
 
   if ((LOCAL->netstream =	/* try to open connection */
        net_open (&mb,NIL,pop3_port ? pop3_port : POP3TCPPORT,
-		 (NETDRIVER *) mail_parameters (NIL,GET_ALTDRIVER,NIL),
-		 (char *) mail_parameters (NIL,GET_ALTPOPNAME,NIL),
-		 (unsigned long) mail_parameters (NIL,GET_ALTPOPPORT,NIL))) &&
+		 (NETDRIVER *) mail_parameters (NIL,GET_SSLDRIVER,NIL),
+		 "*pop3s",pop3_sslport ? pop3_sslport : POP3SSLPORT)) &&
       pop3_reply (stream)) {
     mm_log (LOCAL->reply,NIL);	/* give greeting */
     if (!pop3_auth (stream,&mb,tmp,usr)) pop3_close (stream,NIL);
     else if (pop3_send (stream,"STAT",NIL)) {
       int silent = stream->silent;
       stream->silent = T;
-      sprintf (tmp,"{%.200s:%lu/pop3",net_host (LOCAL->netstream),
+      sprintf (tmp,"{%.200s:%lu/pop3",
+	       (int) mail_parameters (NIL,GET_TRUSTDNS,NIL) ?
+	       net_host (LOCAL->netstream) : mb.host,
 	       net_port (LOCAL->netstream));
-      if (mb.altflag) sprintf (tmp + strlen (tmp),"/%.200s",(char *)
-			       mail_parameters (NIL,GET_ALTDRIVERNAME,NIL));
-      if (mb.altopt) sprintf (tmp + strlen (tmp),"/%.200s",(char *)
-			      mail_parameters (NIL,GET_ALTOPTIONNAME,NIL));
-      if (mb.secflag) strcat (tmp,"/secure");
+      if (mb.tlsflag) strcat (tmp,"/tls");
+      if (mb.notlsflag) strcat (tmp,"/notls");
+      if (mb.sslflag) strcat (tmp,"/ssl");
+      if (mb.novalidate) strcat (tmp,"/novalidate-cert");
+      if (stream->secure) strcat (tmp,"/secure");
       sprintf (tmp + strlen (tmp),"/user=\"%s\"}%s",usr,mb.mailbox);
       stream->inbox = T;	/* always INBOX */
       fs_give ((void **) &stream->mailbox);
@@ -378,27 +374,119 @@ MAILSTREAM *pop3_open (MAILSTREAM *stream)
   return LOCAL ? stream : NIL;	/* if stream is alive, return to caller */
 }
 
+/* POP3 capabilities
+ * Accepts: stream
+ *	    authenticator flags
+ * Returns: T on success, NIL on failure
+ */
+
+long pop3_capa (MAILSTREAM *stream,long flags)
+{
+  unsigned long i;
+  char *s,*t,*args;
+  if (LOCAL->cap.implementation)/* zap all old capabilities */
+    fs_give ((void **) &LOCAL->cap.implementation);
+  memset (&LOCAL->cap,0,sizeof (LOCAL->cap));
+				/* get server capabilities */
+  if (!pop3_send (stream,"CAPA",NIL)) {
+				/* guess at them */
+    LOCAL->cap.top = LOCAL->cap.uidl = LOCAL->cap.user = T;
+    return NIL;			/* no CAPA on this server */
+  }
+  while ((t = net_getline (LOCAL->netstream)) && (t[1] || (*t != '.'))) {
+    if (stream->debug) mm_dlog (t);
+				/* get optional capability arguments */
+    if (args = strchr (t,' ')) *args++ = '\0';
+    if (!compare_cstring (t,"STLS")) LOCAL->cap.stls = T;
+    else if (!compare_cstring (t,"PIPELINING")) LOCAL->cap.pipelining = T;
+    else if (!compare_cstring (t,"RESP-CODES")) LOCAL->cap.respcodes = T;
+    else if (!compare_cstring (t,"TOP")) LOCAL->cap.top = T;
+    else if (!compare_cstring (t,"UIDL")) LOCAL->cap.uidl = T;
+    else if (!compare_cstring (t,"USER")) LOCAL->cap.user = T;
+    else if (!compare_cstring (t,"IMPLEMENTATION") && args)
+      LOCAL->cap.implementation = cpystr (args);
+    else if (!compare_cstring (t,"EXPIRE") && args) {
+      LOCAL->cap.expire = T;	/* note that it is present */
+      if (s = strchr(args,' ')){/* separate time from possible USER */
+	*s++ = '\0';
+				/* in case they add something after USER */
+	if ((strlen (s) > 4) && (s[4] == ' ')) s[4] = '\0';
+      }
+      LOCAL->cap.expire =	/* get expiration time */
+	(!compare_cstring (args,"NEVER")) ? 65535 :
+	  ((s && !compare_cstring (s,"USER")) ? -atoi (args) : atoi (args));
+    }
+    else if (!compare_cstring (t,"LOGIN-DELAY") && args) {
+      LOCAL->cap.logindelay = T;/* note that it is present */
+      if (s = strchr(args,' ')){/* separate time from possible USER */
+	*s++ = '\0';
+				/* in case they add something after USER */
+	if ((strlen (s) > 4) && (s[4] == ' ')) s[4] = '\0';
+      }
+				/* get delay time */
+      LOCAL->cap.delaysecs = (s && !compare_cstring (s,"USER")) ?
+	-atoi (args) : atoi (args);
+    }
+    else if (!compare_cstring (t,"SASL") && args)
+      for (args = strtok (args," "); args; args = strtok (NIL," "))
+	if ((i = mail_lookup_auth_name (args,flags)) &&
+	    (--i < MAXAUTHENTICATORS))
+	  LOCAL->cap.sasl |= (1 << i);
+    fs_give ((void **) &t);
+  }
+  if (t) {			/* flush end of text indicator */
+    if (stream->debug) mm_dlog (t);
+    fs_give ((void **) &t);
+  }
+  return LONGT;
+}
+
 /* POP3 authenticate
  * Accepts: stream to login
  *	    parsed network mailbox structure
- *	    scratch buffer
+ *	    scratch buffer of length MAILTMPLEN
  *	    place to return user name
  * Returns: T on success, NIL on failure
  */
 
-long pop3_auth (MAILSTREAM *stream,NETMBX *mb,char *tmp,char *usr)
+long pop3_auth (MAILSTREAM *stream,NETMBX *mb,char *pwd,char *usr)
 {
   unsigned long i,trial,auths = 0;
   char *t;
   AUTHENTICATOR *at;
+  long ret = NIL;
   long flags = (stream->secure ? AU_SECURE : NIL) |
     (mb->authuser[0] ? AU_AUTHUSER : NIL);
+  long capaok = pop3_capa (stream,flags);
+  NETDRIVER *ssld = (NETDRIVER *) mail_parameters (NIL,GET_SSLDRIVER,NIL);
+  sslstart_t stls = (sslstart_t) mail_parameters (NIL,GET_SSLSTART,NIL);
+				/* server has TLS? */
+  if (stls && LOCAL->cap.stls && !mb->sslflag && !mb->notlsflag &&
+      pop3_send (stream,"STLS",NIL)) {
+    mb->tlsflag = T;		/* TLS OK, get into TLS at this end */
+    LOCAL->netstream->dtb = ssld;
+    if (!(LOCAL->netstream->stream =
+	  (*stls) (LOCAL->netstream->stream,mb->host,NET_TLSCLIENT |
+		   (mb->novalidate ? NET_NOVALIDATECERT : NIL)))) {
+				/* drat, drop this connection */
+      if (LOCAL->netstream) net_close (LOCAL->netstream);
+      LOCAL->netstream= NIL;
+      return NIL;		/* TLS negotiation failed */
+    }
+    pop3_capa (stream,flags);	/* get capabilities now that TLS in effect */
+  }
+  else if (mb->tlsflag) {	/* user specified /tls but can't do it */
+    mm_log ("Unable to negotiate TLS with this server",ERROR);
+    return NIL;
+  }
+  				/* get authenticators from capabilities */
+  if (capaok) auths = LOCAL->cap.sasl;
 				/* get list of authenticators */
-  if (pop3_send (stream,"AUTH",NIL)) {
+  else if (pop3_send (stream,"AUTH",NIL)) {
     while ((t = net_getline (LOCAL->netstream)) && (t[1] || (*t != '.'))) {
       if (stream->debug) mm_dlog (t);
-      if ((i = mail_lookup_auth_name (t,flags)) &&
-	  (--i < (8*sizeof (unsigned long)))) auths |= (1 << i);
+      if ((i = mail_lookup_auth_name (t,flags)) && (--i < MAXAUTHENTICATORS))
+	auths |= (1 << i);
       fs_give ((void **) &t);
     }
     if (t) {			/* flush end of text indicator */
@@ -406,60 +494,89 @@ long pop3_auth (MAILSTREAM *stream,NETMBX *mb,char *tmp,char *usr)
       fs_give ((void **) &t);
     }
   }
+				/* disable LOGIN if PLAIN also advertised */
+  if ((i = mail_lookup_auth_name ("PLAIN",NIL)) && (--i < MAXAUTHENTICATORS) &&
+      (auths & (1 << i)) &&
+      (i = mail_lookup_auth_name ("LOGIN",NIL)) && (--i < MAXAUTHENTICATORS))
+    auths &= ~(1 << i);
 
   if (auths) {			/* got any authenticators? */
-    for (t = NIL; LOCAL->netstream && auths &&
+    if ((int) mail_parameters (NIL,GET_TRUSTDNS,NIL)) {
+				/* remote name for authentication */
+      strncpy (mb->host,(int) mail_parameters (NIL,GET_SASLUSESPTRNAME,NIL) ?
+	       net_remotehost (LOCAL->netstream) : net_host (LOCAL->netstream),
+	       NETMAXHOST-1);
+      mb->host[NETMAXHOST-1] = '\0';
+    }
+    for (t = NIL; !ret && LOCAL->netstream && auths &&
 	 (at = mail_lookup_auth (find_rightmost_bit (&auths)+1)); ) {
       if (t) {			/* previous authenticator failed? */
-	sprintf (tmp,"Retrying using %.80s authentication after %.80s",
+	sprintf (pwd,"Retrying using %.80s authentication after %.80s",
 		 at->name,t);
-	mm_log (tmp,NIL);
+	mm_log (pwd,NIL);
 	fs_give ((void **) &t);
       }
       trial = 0;		/* initial trial count */
-      tmp[0] = '\0';		/* empty buffer */
-      if (LOCAL->netstream) do {
-	if (tmp[0]) mm_log (tmp,WARN);
-	if (pop3_send (stream,"AUTH",at->name) &&
-	    (*at->client) (pop3_challenge,pop3_response,mb,stream,&trial,usr)&&
-	    LOCAL->response) {
-	  if (*LOCAL->response == '+') return LONGT;
-	  if (!trial) {		/* if main program requested cancellation */
-	    mm_log ("POP3 Authentication cancelled",ERROR);
-	    return NIL;
-	  }
+      do {
+	if (t) {
+	  sprintf (pwd,"Retrying %s authentication after %s",at->name,t);
+	  mm_log (pwd,WARN);
+	  fs_give ((void **) &t);
 	}
-	t = cpystr (LOCAL->reply);
-	sprintf (tmp,"Retrying %s authentication after %s",at->name,t);
-      } while (LOCAL->netstream && trial && (trial < pop3_maxlogintrials));
+	if (pop3_send (stream,"AUTH",at->name)) {
+				/* hide client authentication responses */
+	  if (!(at->flags & AU_SECURE)) LOCAL->sensitive = T;
+	  if ((*at->client) (pop3_challenge,pop3_response,"pop",mb,stream,
+			     &trial,usr) && LOCAL->response) {
+	    if (*LOCAL->response == '+') ret = LONGT;
+				/* if main program requested cancellation */
+	    else if (!trial) mm_log ("POP3 Authentication cancelled",ERROR);
+	  }
+	  LOCAL->sensitive=NIL;	/* unhide */
+	}
+				/* remember response if error and no cancel */
+	if (!ret && trial) t = cpystr (LOCAL->reply);
+      } while (!ret && trial && (trial < pop3_maxlogintrials) &&
+	       LOCAL->netstream);
     }
     if (t) {			/* previous authenticator failed? */
-      sprintf (tmp,"Can not authenticate to POP3 server: %.80s",t);
-      mm_log (tmp,ERROR);
+      sprintf (pwd,"Can not authenticate to POP3 server: %.80s",t);
+      mm_log (pwd,ERROR);
       fs_give ((void **) &t);
     }
   }
+
   else if (stream->secure)
     mm_log ("Can't do secure authentication with this server",ERROR);
   else if (mb->authuser[0])
     mm_log ("Can't do /authuser with this server",ERROR);
+  else if (!LOCAL->cap.user) mm_log ("Can't login to this server",ERROR);
   else {			/* traditional login */
-    for (i = 0; LOCAL->netstream && (i < pop3_maxlogintrials); ++i) {
-      tmp[0] = '\0';		/* prompt user for password */
-      mm_login (mb,usr,tmp,i);
-      if (tmp[0]) {		/* send login sequence */
-	if (pop3_send (stream,"USER",usr) && pop3_send (stream,"PASS",tmp))
-	  return LONGT;		/* success */
-	mm_log (LOCAL->reply,WARN);
+    trial = 0;			/* initial trial count */
+    do {
+      pwd[0] = 0;		/* prompt user for password */
+      mm_login (mb,usr,pwd,trial++);
+      if (pwd[0]) {		/* send login sequence if have password */
+	if (pop3_send (stream,"USER",usr)) {
+	  LOCAL->sensitive = T;	/* hide this command */
+	  if (pop3_send (stream,"PASS",pwd)) ret = LONGT;
+	  LOCAL->sensitive=NIL;	/* unhide */
+	}
+	if (!ret) {		/* failure */
+	  mm_log (LOCAL->reply,WARN);
+	  if (trial == pop3_maxlogintrials)
+	    mm_log ("Too many login failures",ERROR);
+	}
       }
-      else {			/* user refused to give a password */
-	mm_log ("Login aborted",ERROR);
-	return NIL;
-      }
-    }
-    mm_log ("Too many login failures",ERROR);
+				/* user refused to give password */
+      else mm_log ("Login aborted",ERROR);
+    } while (!ret && pwd[0] && (trial < pop3_maxlogintrials) &&
+	     LOCAL->netstream);
   }
-  return NIL;			/* ran out of authenticators */
+  memset (pwd,0,MAILTMPLEN);	/* erase password */
+				/* get capabilities if logged in */
+  if (ret && capaok) pop3_capa (stream,flags);
+  return ret;
 }
 
 /* Get challenge to authenticator in binary
@@ -494,7 +611,7 @@ long pop3_response (void *s,char *response,unsigned long size)
       for (t = (char *) rfc822_binary ((void *) response,size,&i),u = t,j = 0;
 	   j < i; j++) if (t[j] > ' ') *u++ = t[j];
       *u = '\0';		/* tie off string for mm_dlog() */
-      if (stream->debug) mm_dlog (t);
+      if (stream->debug) mail_dlog (t,LOCAL->sensitive);
 				/* append CRLF */
       *u++ = '\015'; *u++ = '\012'; *u = '\0';
       ret = net_sout (LOCAL->netstream,t,u - t);
@@ -504,8 +621,7 @@ long pop3_response (void *s,char *response,unsigned long size)
   }
 				/* abort requested */
   else ret = net_sout (LOCAL->netstream,"*\015\012",3);
-				/* get response */
-  if (!pop3_reply (stream)) ret = NIL;
+  pop3_reply (stream);		/* get response */
   return ret;
 }
 
@@ -527,6 +643,9 @@ void pop3_close (MAILSTREAM *stream,long options)
     }
 				/* close POP3 connection */
     if (LOCAL->netstream) net_close (LOCAL->netstream);
+				/* clean up */
+    if (LOCAL->cap.implementation)
+      fs_give ((void **) &LOCAL->cap.implementation);
     if (LOCAL->txt) fclose (LOCAL->txt);
     LOCAL->txt = NIL;
     if (LOCAL->response) fs_give ((void **) &LOCAL->response);
@@ -576,7 +695,7 @@ void pop3_fetchfast (MAILSTREAM *stream,char *sequence,long flags)
 	if (!elt->day && *env && (*env)->date)
 	  mail_parse_date (elt,(*env)->date);
 				/* sigh, fill in bogus default */
-	if (!elt->day) mail_parse_date (elt,"01-JAN-1969 00:00:00 +0000");
+	if (!elt->day) elt->day = elt->month = 1;
 	mail_free_envelope (&e);
       }
 }
@@ -593,11 +712,12 @@ char *pop3_header (MAILSTREAM *stream,unsigned long msgno,unsigned long *size,
 		   long flags)
 {
   MESSAGECACHE *elt;
-  if ((flags & FT_UID) && !(msgno = mail_msgno (stream,msgno))) return NIL;
+  *size = 0;			/* initially no header size */
+  if ((flags & FT_UID) && !(msgno = mail_msgno (stream,msgno))) return "";
 				/* have header text? */
-  if (!(elt = mail_elt (stream,msgno))->private.msg.header.text.data) {
-    elt->private.msg.header.text.size = pop3_cache (stream,elt);
-				/* read the header */
+  if (!(elt = mail_elt (stream,msgno))->private.msg.header.text.data &&
+      (elt->private.msg.header.text.size = pop3_cache (stream,elt)) &&
+      LOCAL->txt) {		/* read the header */
     fread (elt->private.msg.header.text.data = (unsigned char *)
 	   fs_get ((size_t) elt->private.msg.header.text.size + 1),
 	   (size_t) 1,(size_t) elt->private.msg.header.text.size,LOCAL->txt);
@@ -605,7 +725,8 @@ char *pop3_header (MAILSTREAM *stream,unsigned long msgno,unsigned long *size,
   }
 				/* return size of text */
   if (size) *size = elt->private.msg.header.text.size;
-  return (char *) elt->private.msg.header.text.data;
+  return elt->private.msg.header.text.data ?
+    (char *) elt->private.msg.header.text.data : "";
 }
 
 /* POP3 fetch body
@@ -647,12 +768,10 @@ unsigned long pop3_cache (MAILSTREAM *stream,MESSAGECACHE *elt)
     if (LOCAL->txt) fclose (LOCAL->txt);
     LOCAL->txt = NIL;
     LOCAL->msgno = LOCAL->hdrsize = 0;
-    if (pop3_send_num (stream,"RETR",elt->msgno)) {
+    if (pop3_send_num (stream,"RETR",elt->msgno) &&
+	(LOCAL->txt = netmsg_slurp (LOCAL->netstream,&elt->rfc822_size,
+				    &LOCAL->hdrsize)))
       LOCAL->msgno = elt->msgno;/* set as current message number */
-				/* load the cache */
-      LOCAL->txt = netmsg_slurp (LOCAL->netstream,&elt->rfc822_size,
-				 &LOCAL->hdrsize);
-    }
     else elt->deleted = T;
   }
   return LOCAL->hdrsize;
@@ -766,11 +885,11 @@ long pop3_send (MAILSTREAM *stream,char *command,char *args)
   char *s = (char *) fs_get (strlen (command) + (args ? strlen (args) + 1: 0)
 			     + 3);
   mail_lock (stream);		/* lock up the stream */
-  if (!LOCAL->netstream) ret = pop3_fake (stream,"No-op dead stream");
+  if (!LOCAL->netstream) ret = pop3_fake (stream,"POP3 connection lost");
   else {			/* build the complete command */
     if (args) sprintf (s,"%s %s",command,args);
     else strcpy (s,command);
-    if (stream->debug) mm_dlog (s);
+    if (stream->debug) mail_dlog (s,LOCAL->sensitive);
     strcat (s,"\015\012");
 				/* send the command */
     ret = net_soutr (LOCAL->netstream,s) ? pop3_reply (stream) :

@@ -28,6 +28,11 @@ Here is the full list of Pine ports:
     Convex
 	cvx	Convex
 
+    Cygwin
+	cyg	Cygwin environment under Windows (use buildcyg script),
+		  with SSLDIR=/usr/ssl, SSLINCLUDE=/usr/share/ssl,
+		  and SSLLIB=/usr/lib
+
     Data General
 	d54	Data General DG/UX 5.4
 	d41	Data General DG/UX 4.11 or earlier
@@ -72,6 +77,10 @@ Here is the full list of Pine ports:
 	slx	Linux using -lcrypt to get the crypt function
 	sl4	Linux using -lshadow to get the crypt() function
 	sl5	Linux using shadow passwords, no extra libraries
+	lrh	RedHat 7.2 or later. Same as lnp but with SSLDIR=/usr/share/ssl,
+		  SSLINCLUDE=/usr/include/openssl, SSLLIB=/usr/lib, GSSDIR=/usr/kerberos
+	lsu     SuSE Linux.  Same as lnp but with SSLDIR=/usr/ssl,
+		  SSLINCLUDE=/usr/include/openssl, SSLLIB=/usr/lib
 
     Lynx
 	lyn	Lynx Real-Time System (Lynxos)
@@ -80,7 +89,10 @@ Here is the full list of Pine ports:
 	mct	Tenon MachTen (Mac)
 
     Macintosh
-	osx     Macintosh OS X
+	osx     Macintosh OS X.  With SSLDIR=/System/Library/OpenSSL,
+		  SSLINCLUDE=/usr/include/openssl, and SSLLIB=/usr/lib.
+		(For OS X 10.1.5 or earlier try removing -lncurses from
+		 pico/makefile.osx and from pine/makefile.osx.)
 
     NetBSD
 	neb	NetBSD

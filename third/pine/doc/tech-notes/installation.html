@@ -36,7 +36,7 @@ Set up a symlink called <CODE>ldap</CODE> in the top-level
 <CODE>pine</CODE> directory (the directory where the <EM>Pine</EM>
 <CODE>build</CODE> script is located).
 The <CODE>build</CODE> script will call <CODE>contrib/ldap-setup</CODE> to
-help if figure out how to use the LDAP libraries.
+help figure out how to use the LDAP libraries.
 It expects to find directories
 <CODE>ldap</CODE>, <CODE>ldap/include</CODE>, <CODE>ldap/libraries</CODE>,
 and file <CODE>ldap/include/ldap.h</CODE>.
@@ -80,6 +80,14 @@ libraries you are using.
 If you find that a change to <CODE>contrib/ldap-setup</CODE> works for you,
 you might think about sending that to us for inclusion in the next
 <EM>Pine</EM> release.
+<P>
+
+If there is no <CODE>ldap</CODE> symlink, there is still an attempt to
+automatically include LDAP support if certain conditions exist.
+At this point, the check includes a check for Solaris 8, otherwise the
+automatic inclusion is not done.
+You may override the automatic inclusion of LDAP with the <CODE>build</CODE>
+argument <CODE>NOLDAP</CODE>.
 <P>
 
 <EM>Pine</EM> uses LDAPv2 protocol.
@@ -172,7 +180,8 @@ configuration file by setting the variable
 <DD> <EM>WARNING!</EM> Turning this on is very dangerous and should probably not
 be done, except on single user systems!
 For <EM>PC-Pine</EM>, this is turned on by default and set to the
-filename <CODE>PINE.PWD</CODE>.
+filename <CODE>PINE.PWD</CODE>.  It may be overridden by the
+-passfile command-line argument.
 You may enable it for Unix systems by defining PASSFILE to be a filename
 which will be located in the same directory as the pinerc file, usually the
 home directory.
@@ -350,8 +359,8 @@ something close to it):
 is the three letter code you picked in step 1.  The compiler should grind
 away for a few minutes.  <P>
 
-<LI> When the compilation is complete the sizes of the four binaries built
-(pine, mtest, imapd, pico) will be displayed.  The actual binaries are in
+<LI> When the compilation is complete the sizes of the binaries built
+will be displayed.  The actual binaries are in
 the various source directories.  In addition, the <CODE>bin</CODE>
 directory contains a link to each program compiled.  You can just copy
 them out of <CODE>bin</CODE> or try them from there.  <P>
@@ -362,11 +371,12 @@ them out of <CODE>bin</CODE> or try them from there.  <P>
 The <CODE>build</CODE> command can be given some options which it passes
 on to the subordinate makes.
 Some that may be useful are <CODE>EXTRACFLAGS</CODE>,
-<CODE>OPTIMIZE</CODE>, <CODE>DEBUG</CODE>, <CODE>EXTRALIBES</CODE>,
-and <CODE>EXTRALDFLAGS</CODE>.
-<CODE>Build</CODE> is more closely integrated with the <EM>Pico</EM> and
-<EM>Pine</EM> makefiles than it is with the <EM>c-client</EM> makefile, so
-you may find that some things don't work correctly there.
+<CODE>DEBUG</CODE>, and
+<CODE>EXTRALDFLAGS</CODE>.
+There are also some SSL-related arguments: <CODE>SSLDIR</CODE>,
+<CODE>SSLCERTS</CODE>, <CODE>SSLINCLUDE</CODE>, and <CODE>SSLLIB</CODE>.
+You should also read the comments in the <CODE>build</CODE> script itself,
+which are possibly more up-to-date than this text.
 
 <P>
 Here are some examples of options you may want to pass to <CODE>build</CODE>.
@@ -377,17 +387,39 @@ have an alias for <CODE>pine</CODE> which
 executes <CODE>pine -d0</CODE> instead.
 This turns off debugging at runtime while preserving the possibility of using
 the debugging if a problem turns up.
-
-<PRE>
-		DEBUG=-g
-</PRE>
+But if you wanted to turn it off unconditionally you could use the
+build argument
 
 <P>
+<CENTER><SAMP>
+                 DEBUG=-g
+</SAMP></CENTER>
+
+<P>
+In other words, the command to build a <EM>Pine</EM> with no debugging
+would be
+
+<P>
+<CENTER><SAMP>
+                ./build DEBUG=-g target
+</SAMP></CENTER>
+
+<P>
+where target is one of the 3-letter port names found in doc/pine-ports.
 To also leave out the symbol table information you could pass:
 
-<PRE>
-		DEBUG=
-</PRE>
+<P>
+<CENTER><SAMP>
+                DEBUG=
+</SAMP></CENTER>
+
+<P>
+To turn on the optimizer
+
+<P>
+<CENTER><SAMP>
+                DEBUG=-O
+</SAMP></CENTER>
 
 <P>
 It should be ok to move string constants into a read-only area.
@@ -399,9 +431,91 @@ should allow that text to be shared among all instances of <EM>Pine</EM>.
 To do this, for example, with the AIX <EM>a41</EM> port, you could
 pass this to <CODE>build</CODE>:
 
-<PRE>
-		EXTRACFLAGS=-qro
-</PRE>
+<P>
+<CENTER><SAMP>
+                EXTRACFLAGS=-qro
+</SAMP></CENTER>
+
+<P>
+If you are using OpenSSL but have decided to use a non-standard directory
+(standard one is <CODE>/usr/local/ssl</CODE>) for the location
+then you can cause <EM>Pine</EM>
+to use that directory with
+
+<P>
+<CENTER><SAMP>
+                SSLDIR=/some/other/dir
+</SAMP></CENTER>
+
+<P>
+The assumption is that the certs directory is in SSLDIR/certs, the include
+directory is SSLDIR/include, and the library directory is SSLDIR/lib.
+You can change those assumptions with
+
+<P>
+<CENTER><SAMP>
+                SSLCERTS=certs_directory
+</SAMP></CENTER>
+<CENTER><SAMP>
+                SSLINCLUDE=include_directory and
+</SAMP></CENTER>
+<CENTER><SAMP>
+                SSLLIB=ssl_library_directory
+</SAMP></CENTER>
+
+<P>
+If you are having trouble with the SSL compilation you may explicitly exclude
+SSL code with <CODE>NOSSL</CODE>.
+
+<P>
+<CENTER><SAMP>
+                NOSSL
+</SAMP></CENTER>
+
+<P>
+Similarly,
+
+<P>
+<CENTER><SAMP>
+                NOLDAP
+</SAMP></CENTER>
+
+<P>
+The argument
+
+<P>
+<CENTER><SAMP>
+                EXTRASPECIALS
+</SAMP></CENTER>
+
+<P>
+can be used to pass arguments to the c-client make which aren't provided
+for in the <EM>Pine</EM> build script.
+For example, if you want to change the <CODE>FRIZZLE</CODE>
+parameter (a made up argument which the c-client make uses) you might be
+tempted to type something like
+
+<P>
+<CENTER><SAMP>
+                ./build FRIZZLE=cruft target
+</SAMP></CENTER>
+
+<P>
+This does work with make on some platforms, but not on others.
+Some makes seem to pass the arguments on to sub-makes, others don't.
+If that doesn't work, then EXTRASPECIALS is for you.
+
+<P>
+<CENTER><SAMP>
+                ./build EXTRASPECIALS="FRIZZLE=cruft" target
+</SAMP></CENTER>
+
+<P>
+An additional warning. There are some arguments which are overridden
+unconditionally in the sub-makes. Hopefully none of the arguments mentioned
+above falls in this category, but it is something to look out for if you
+are having trouble.
+<P>
 
 <HR>
 

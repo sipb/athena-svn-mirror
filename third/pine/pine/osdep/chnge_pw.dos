@@ -7,9 +7,9 @@ and responses from the passwd program to be regular so we just let the user
 type at the passwd program with some screen space, hope he doesn't scroll 
 off the top and repaint when he's done.
  ----*/        
+void
 change_passwd()
 {
-    return(1);		/* gotta keep compiler happy */
 }
 
 

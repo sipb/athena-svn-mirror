@@ -1,4 +1,4 @@
-# $Id: makefile.sco,v 1.1.1.1 2001-02-19 07:03:45 ghudson Exp $
+# $Id: makefile.sco,v 1.1.1.2 2003-02-12 07:58:32 ghudson Exp $
 #
 #   Michael Seibel
 #   Networks and Distributed Computing
@@ -45,7 +45,7 @@ LIBARGS=	ru
 RANLIB=		true
 
 # When USE_TERMINFO is defined link with library tinfo.
-LIBS=		$(EXTRALIBES) -lc -lc_s -lx -lm -ltinfo
+LIBS=		$(EXTRALDFLAGS) -lc -lc_s -lx -lm -ltinfo
 # When USE_TERMCAP is defined link with library termcap.
 #LIBS=		$(EXTRALIBES) -lc -lc_s -lx -lm -ltermcap
 

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.1 2001-02-19 07:12:02 ghudson Exp $";
+static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.2 2003-02-12 08:02:05 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.1 2001-02-19 07:12:02 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2000 by the University of Washington.
+   1989-2002 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -75,8 +75,8 @@ static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.1 2001-02-19 07:12:02 ghudson Exp
 
 #define SLOP 3
 
-static forced_rebuilds = 0;  /* forced rebuild even though mtime looks right */
-static trouble_rebuilds = 0; /* all rebuilds caused by goto trouble;         */
+static int forced_rebuilds = 0;  /* forced even though mtime looks right  */
+static int trouble_rebuilds = 0; /* all rebuilds caused by goto trouble   */
 #define MAX_FORCED_REBUILDS 3
 #define MAX_TROUBLE_REBUILDS 10
 static int writing; /* so we can give understandable error message */
@@ -274,6 +274,14 @@ adrbk_open(pab, homedir, warning, sort_rule, just_create_lu, lu_not_valid)
 	      pab->access = ab->rd->access = ReadOnly;
 	    else
 	      pab->access = ab->rd->access = ReadWrite;
+	}
+	else if(pab->access == ReadOnly){
+	    /*
+	     * Pass on readonly-ness from being a global addrbook.
+	     * This should cause us to open the remote folder readonly,
+	     * avoiding error messages about readonly-ness.
+	     */
+	    ab->rd->access = ReadOnly;
 	}
 
 	/*
@@ -639,7 +647,7 @@ copy_abook_to_tempfile(ab, just_create_lu, lu_not_valid, warning)
 	}
 
 	q_status_message1(SM_INFO, 0, 3,
-	                  "Address book %s doesn't exist, creating",
+	                  "Address book %.200s doesn't exist, creating",
 	                  (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
 	dprint(2, (debugfile, "Address book %s doesn't exist, creating\n",
 	       ab->filename));
@@ -695,7 +703,7 @@ try_again:
 	int fd;
 
 	q_status_message1(SM_INFO, 0, 3,
-	    "Index file \"%s\" doesn't exist, creating",
+	    "Index file \"%.200s\" doesn't exist, creating",
 	    (lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
 	display_message('x');
 	dprint(5, (debugfile, "Index file %s doesn't exist, creating\n",
@@ -731,7 +739,7 @@ try_again:
 		 *p++ = 'l';
 		 *p   = '\0';
 		 q_status_message1(SM_INFO, 0, 3,
-		     "filename too long, using \"%s\"",
+		     "filename too long, using \"%.200s\"",
 		     (lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
 		 dprint(2, (debugfile, "name too long, trying %s\n",
 		     ab->hashfile));
@@ -800,7 +808,7 @@ try_tempfile:
 
 	ab->flags |= DEL_HASHFILE;
 	q_status_message1(SM_ORDER, 3, 3,
-		"Can't create \"%s\", using temp file",
+		"Can't create \"%.200s\", using temp file",
 		(lc=last_cmpnt(savename)) ? lc : savename);
 
 	goto try_again;
@@ -937,7 +945,7 @@ try_tempfile:
 	rewind(fp_read);
 	if(fstat(fileno(fp_read), &sbuf)){
 	    q_status_message1(SM_INFO, 0, 3,
-		 "Error: can't stat addrbook \"%s\"",
+		 "Error: can't stat addrbook \"%.200s\"",
 		 (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
 	    dprint(2, (debugfile, "Error: can't stat addrbook \"%s\"\n",
 		   ab->filename));
@@ -956,7 +964,7 @@ try_tempfile:
 	fp_write = (FILE *)NULL;
 	if(valid_stat && utime(ab->our_filecopy, tp)){
 	    q_status_message1(SM_INFO, 0, 3,
-		 "Error: can't set mtime for \"%s\"",
+		 "Error: can't set mtime for \"%.200s\"",
 		 (lc=last_cmpnt(ab->filename)) ? lc : ab->our_filecopy);
 	    dprint(2, (debugfile, "Error: can't set mtime for \"%s\"\n",
 		   ab->our_filecopy));
@@ -1051,7 +1059,7 @@ try_tempfile:
 	dprint(5, (debugfile, "%s is not valid, rebuilding\n",
 	     ab->our_hashcopy));
 	q_status_message1(SM_INFO, 0,1,
-			"Updating address book index (%s)",
+			"Updating address book index (%.200s)",
 			(lc=last_cmpnt(ab->hashfile)) ? lc : ab->hashfile);
 
 	if(!just_create_lu){
@@ -1885,7 +1893,7 @@ build_ondisk_hash_from_abook(ab, warning)
 	ALARM_BLIP();
 	if((long)used > MAX_ADRBK_SIZE){
 	    q_status_message2(SM_ORDER | SM_DING, 4, 5,
-			    "Max addrbook size is %s, %s too large, giving up",
+		    "Max addrbook size is %.200s, %.200s too large, giving up",
 			    long2string(MAX_ADRBK_SIZE),
 			    (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
 	    dprint(1, (debugfile, "build_ondisk: used=%ld > %s\n",
@@ -2014,7 +2022,6 @@ build_ondisk_hash_from_abook(ab, warning)
        ab->fp_hash &&
        ab->hashfile_access == ReadWrite){
 	int   c, err = 0;
-	char *dir1, *dir2;
 
 	if(!(ab->hashfile && ab->hashfile[0])
 	   || !(temp_hashfile=tempfile_in_same_dir(ab->hashfile,"a2",NULL))
@@ -2151,7 +2158,7 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
 		    p[c] = SPACE;
 		p[c] = '\0';
 		q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %s...", p);
+				   "Addrbook line too long:  %.200s...", p);
 		dprint(2, (debugfile,
 		    "line too long in skip_to_next_nick(1): %s...\n",
 		    p));
@@ -2205,7 +2212,7 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
 			p[c] = SPACE;
 		    p[c] = '\0';
 		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %s...", p);
+				   "Addrbook line too long:  %.200s...", p);
 		    dprint(2, (debugfile,
 		    "line too long in skip_to_next_nick(2): %s...\n",
 		    p));
@@ -2251,7 +2258,7 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
 			p[c] = SPACE;
 		    p[c] = '\0';
 		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %s...", p);
+				   "Addrbook line too long:  %.200s...", p);
 		    dprint(2, (debugfile,
 		    "line too long in skip_to_next_nick(3): %s...\n",
 		    p));
@@ -2304,7 +2311,7 @@ no_address_initially:
 		p[c] = SPACE;
 	    p[c] = '\0';
 	    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-			   "Addrbook line too long:  %s...", p);
+			   "Addrbook line too long:  %.200s...", p);
 	    dprint(2, (debugfile,
 		"line too long in skip_to_next_nick(4): %s...\n",p));
 	    if(longline)
@@ -2358,7 +2365,7 @@ no_address_initially:
 			p[c] = SPACE;
 		    p[c] = '\0';
 		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %s...", p);
+				   "Addrbook line too long:  %.200s...", p);
 		    dprint(2, (debugfile,
 		    "line too long in skip_to_next_nick(5): %s...\n",
 		    p));
@@ -2404,7 +2411,7 @@ no_address_initially:
 			p[c] = SPACE;
 		    p[c] = '\0';
 		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %s...", p);
+				   "Addrbook line too long:  %.200s...", p);
 		    dprint(2, (debugfile,
 		    "line too long in skip_to_next_nick(6): %s...\n",
 		    p));
@@ -2460,6 +2467,7 @@ new_entryref(uid_nickname, uid_address, offset)
     e->next_nick =  NO_NEXT;
     e->next_addr =  NO_NEXT;
     e->ae        =  (AdrBk_Entry *)NULL;
+    e->is_deleted = 0;
 
     return(e);
 }
@@ -2891,13 +2899,25 @@ init_ae_entry(ab, entry)
 		     * Pretty much a hack since we thought of it a long
 		     * time after designing it, but it eliminates the limit
 		     * on length of comments. Here we are looking for
-		     * <SP> <SP> : <SP> and replacing it with <SP>.
+		     * <SP> <SP> : <SP> or
+		     * <SP> <SP> <SP> : <SP> and replacing it with <SP>.
+		     * There could have been a single \n or \r\n, so that
+		     * is why we check for 2 or 3 spaces before the colon.
+		     * (This was another mistake.)
 		     */
 		    dst = src = extra;
 		    while(*src != '\0'){
 			if(*src == SPACE && *(src+1) == SPACE &&
 			   *(src+2) == ':' && *(src+3) == SPACE){
-			    *dst++ = *src;
+			    /*
+			     * If there was an extra space because of the
+			     * CRLF (instead of LF) then we already put
+			     * a SP in dst last time through the loop
+			     * and don't need to add another.
+			     */
+			    if(src == extra || *(src-1) != SPACE)
+			      *dst++ = *src;
+
 			    src += 4;
 			}
 			else
@@ -3033,7 +3053,7 @@ trouble:
 	(ab && ab->hashfile) ? ab->hashfile : "?"));
     if(trouble_rebuilds++ < MAX_TROUBLE_REBUILDS + 3)
       q_status_message1(SM_ORDER, 3, 10,
-	"Index file %s inconsistent...remove it and restart Pine",
+	"Index file %.200s inconsistent...remove it and restart Pine",
 	(ab && ab->hashfile) ? ((lc=last_cmpnt(ab->hashfile))
 				     ? lc : ab->hashfile)
 			     : "?");
@@ -3250,7 +3270,7 @@ adrbk_get_ae(ab, entry_num, handling)
 	     (debugfile, "   : got back NULL entry from adrbk_get_entryref\n"));
 	}
 	else{
-	    dprint(2, (debugfile, "   : uid_nick %ld uid_addr %ld offset\n",
+	    dprint(2, (debugfile, "   : uid_nick %ld uid_addr %ld offset %ld\n",
 		(long)entry->uid_nick, (long)entry->uid_addr, entry->offset));
 	}
     }
@@ -3310,21 +3330,28 @@ adrbk_lookup_by_nick(ab, nickname, entry_num)
 
     last_one = (EntryRef *)NULL;
 
-    for(ind = ab->hash_by_nick->harray[hash];
-	ind != NO_NEXT &&
-		    (entry = adrbk_get_entryref(ab, (a_c_arg_t)ind, Normal));
-	ind = entry->next_nick){
+    ind = ab->hash_by_nick->harray[hash];
+    while(ind != NO_NEXT &&
+	  (entry = adrbk_get_entryref(ab, (a_c_arg_t)ind, Internal))){
 
-	if(entry->uid_nick == uid){
-	    ae = adrbk_get_ae(ab, (a_c_arg_t)ind, Normal);
-	    /*
-	     * Guard against the unlikely case where two nicknames have the
-	     * same hash and uid, but are actually different.
-	     */
-	    if(strucmp(ae->nickname, nickname) == 0){
-		last_one = entry;
-		last_ind = ind;
+	if(entry->is_deleted){
+	    ind = entry->next_nick;
+	    free_ab_entryref(entry);
+	}
+	else{
+	    if(entry->uid_nick == uid){
+		ae = adrbk_get_ae(ab, (a_c_arg_t)ind, Internal);
+		/*
+		 * Guard against the unlikely case where two nicknames have the
+		 * same hash and uid, but are actually different.
+		 */
+		if(strucmp(ae->nickname, nickname) == 0){
+		    last_one = entry;
+		    last_ind = ind;
+		}
 	    }
+
+	    ind = entry->next_nick;
 	}
     }
 
@@ -3335,7 +3362,7 @@ adrbk_lookup_by_nick(ab, nickname, entry_num)
     if(entry_num)
       *entry_num = last_ind;
 
-    return(adrbk_get_ae(ab, (a_c_arg_t)last_ind, Normal));
+    return(adrbk_get_ae(ab, (a_c_arg_t)last_ind, Internal));
 }
 
 
@@ -3377,14 +3404,21 @@ adrbk_lookup_by_addr(ab, address, entry_num)
 
     last_one = (EntryRef *)NULL;
 
-    for(ind = ab->hash_by_addr->harray[hash];
-	ind != NO_NEXT &&
-		    (entry = adrbk_get_entryref(ab, (a_c_arg_t)ind, Normal));
-	ind = entry->next_addr){
+    ind = ab->hash_by_addr->harray[hash];
+    while(ind != NO_NEXT &&
+	  (entry = adrbk_get_entryref(ab, (a_c_arg_t)ind, Internal))){
 
-	if(entry->uid_addr == uid){
-	    last_one = entry;
-	    last_ind = ind;
+	if(entry->is_deleted){
+	    ind = entry->next_addr;
+	    free_ab_entryref(entry);
+	}
+	else{
+	    if(entry->uid_addr == uid){
+		last_one = entry;
+		last_ind = ind;
+	    }
+
+	    ind = entry->next_addr;
 	}
     }
 
@@ -3395,7 +3429,7 @@ adrbk_lookup_by_addr(ab, address, entry_num)
     if(entry_num)
       *entry_num = last_ind;
 
-    return(adrbk_get_ae(ab, (a_c_arg_t)last_ind, Normal));
+    return(adrbk_get_ae(ab, (a_c_arg_t)last_ind, Internal));
 }
 
 
@@ -4690,12 +4724,6 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	}
     }
 
-    if(!be_quiet){
-	tot_for_percent = max(ab->count, 1);
-	entry_num_for_percent = 0;
-	we_cancel = busy_alarm(1, "Saving address book",percent_abook_saved,1);
-    }
-
 #define TABWIDTH 8
 #define INDENTSTR "   "
 #define INDENTXTRA " : "
@@ -4761,6 +4789,12 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
     /* accept keyboard interrupts */
     if(enable_intr_handling)
       intr_handling_on();
+
+    if(!be_quiet){
+	tot_for_percent = max(ab->count, 1);
+	entry_num_for_percent = 0;
+	we_cancel = busy_alarm(1, "Saving address book",percent_abook_saved,1);
+    }
 
     if(write_hash_header(fp_for_hash, (a_c_arg_t)ab->htable_size)){
 	dprint(1,
@@ -5064,6 +5098,11 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	}
     }
 
+    if(we_cancel){
+	cancel_busy_alarm(-1);
+	we_cancel = 0;
+    }
+
     if(enable_intr_handling)
       intr_handling_off();
 
@@ -5087,7 +5126,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 #ifdef	_WINDOWS
 	if(i == -5){
 	    q_status_message2(SM_ORDER | SM_DING, 5, 7,
-			      "Can't replace address book %sfile \"%s\"",
+			  "Can't replace address book %.200sfile \"%.200s\"",
 			      (ab->type == Imap) ? "cache " : "",
 			      ab->filename);
 	    q_status_message(SM_ORDER | SM_DING, 5, 7,
@@ -5150,7 +5189,9 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	  err++;
 
 	if(!err){
+#ifdef	_WINDOWS
 	    int tries = 3;
+#endif
 
 	    file_attrib_copy(temp_filename, ab->filename);
 	    /*
@@ -5165,7 +5206,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
 		    if(!err){
 			q_status_message2(SM_ORDER, 0, 3,
-			      "Replace of \"%s\" failed, trying %s",
+			      "Replace of \"%.200s\" failed, trying %.200s",
 			      (lc=last_cmpnt(ab->filename)) ? lc : ab->filename,
 			      (tries > 1) ? "again" : "one more time");
 			display_message('x');
@@ -5180,7 +5221,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
 	if(err){
 	    q_status_message1(SM_ORDER | SM_DING, 5, 5,
-	       "Copy of addrbook to \"%s\" failed, changes NOT saved!",
+	       "Copy of addrbook to \"%.200s\" failed, changes NOT saved!",
 	       (lc=last_cmpnt(ab->filename)) ? lc : ab->filename);
 	    dprint(2, (debugfile, "adrbk_write: failed copying our_filecopy (%s)back to filename (%s): %s, continuing without a net\n", ab->our_filecopy, ab->filename, error_description(errno)));
 	}
@@ -5308,10 +5349,17 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	  cancel_busy_alarm(-1);
 
 	we_cancel = busy_alarm(1, "Copying to remote addressbook", NULL, 0);
+	/*
+	 * We don't want a cookie upgrade to blast our data in rd->lf by
+	 * copying back the remote data before doing the upgrade, and then
+	 * proceeding to finish with that data. So we tell rd_upgrade_cookie
+	 * about that here.
+	 */
+	ab->rd->flags |= BELIEVE_CACHE;
 	if((e = rd_update_remote(ab->rd, datebuf)) != 0){
 	    if(e == -1){
 		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"Error opening temporary addrbook file %s: %s",
+			"Error opening temporary addrbook file %.200s: %.200s",
 				ab->rd->lf, error_description(errno));
 		dprint(1, (debugfile,
 		       "adrbk_write: error opening temp file %s\n",
@@ -5319,7 +5367,7 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    }
 	    else{
 		q_status_message2(SM_ORDER | SM_DING, 3, 5,
-				"Error copying to %s: %s",
+				"Error copying to %.200s: %.200s",
 				ab->rd->rn, error_description(errno));
 		dprint(1, (debugfile,
 		       "adrbk_write: error copying from %s to %s\n",
@@ -5336,6 +5384,8 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 		   "%s: copied local to remote in adrbk_write (%ld)\n",
 		   ab->rd->rn, (long)ab->rd->last_use));
 	}
+
+	ab->rd->flags &= ~BELIEVE_CACHE;
     }
 
     /* this clears the Locked state as well as making the cache correct */
@@ -5385,6 +5435,9 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 
 
 io_error:
+    if(we_cancel)
+      cancel_busy_alarm(-1);
+
     if(enable_intr_handling)
       intr_handling_off();
 
@@ -5403,8 +5456,6 @@ io_error:
 	ab->filename, ab->our_filecopy));
 
     writing = 0;
-    if(we_cancel)
-      cancel_busy_alarm(-1);
 
     if(ae)
       free_ae(&ae);
@@ -5656,11 +5707,25 @@ write_single_abook_entry(ae, fp, ret_nick_width, ret_full_width,
 
 	putc(TAB, fp);
 	if(ae->extra && ae->extra[0]){
-	    int left_on_line;
 	    int space;
 	    char *cur, *end;
+	    char *extra_copy;
 	    
-	    tmplen = strlen(ae->extra);
+	    /*
+	     * Copy ae->extra and replace newlines with spaces.
+	     * The reason we do this is because the continuation lines
+	     * produced by rfc1522_encode may interact with the
+	     * continuation lines produced below in a bad way.
+	     * In particular, what can happen is that the 1522 continuation
+	     * newline can be followed immediately by a newline produced
+	     * below. That breaks the continuation since that is a
+	     * line with nothing on it. Just turn 1522 continuations into
+	     * spaces, which work fine with 1522_decode.
+	     */
+	    extra_copy = cpystr(ae->extra);
+	    REPLACE_NEWLINES_WITH_SPACE(extra_copy);
+	   
+	    tmplen = strlen(extra_copy);
 	    if(len+tmplen > 80){
 		if(fprintf(fp, "\n%s", INDENTSTR) == EOF){
 		    dprint(1, (debugfile,
@@ -5672,7 +5737,7 @@ write_single_abook_entry(ae, fp, ret_nick_width, ret_full_width,
 	    }
 
 	    space = max(70 - len, 5);
-	    cur = ae->extra;
+	    cur = extra_copy;
 	    end = cur + tmplen;
 	    while(cur < end){
 		if(end-cur > space){
@@ -5711,6 +5776,9 @@ write_single_abook_entry(ae, fp, ret_nick_width, ret_full_width,
 		    cur = end;
 		}
 	    }
+
+	    if(extra_copy)
+	      fs_give((void **)&extra_copy);
 	}
     }
     else
@@ -6012,6 +6080,12 @@ hashtable_size(count)
  *
  * Handling: Normal - Will be cached by the cache mgr (this function) and may
  *                    disappear when subsequent calls to the mgr are made.
+ *         Internal - This is similar to Normal, but deleted entries are not
+ *                    ignored like they are with Normal. We need this because
+ *                    the hash entries and next_nick and next_addr still point
+ *                    to the old entry numbers, not the adjusted numbers after
+ *                    the Delete has happened. Adrbk_lookup_by_nick needs to
+ *                    be able to walk those lists past the deleted entries.
  *           Delete - Will be removed from cache if there, and will be marked
  *                    as deleted so adrbk_write will skip it.
  *       SaveDelete - Will be removed from cache if there, and will be marked
@@ -6056,7 +6130,8 @@ adrbk_get_entryref(ab, elem_arg, handling)
 	 handling==Delete ? "Delete" :
 	  handling==SaveDelete ? "SaveDelete" :
 	   handling==Lock ? "Lock" :
-	    handling==Unlock ? "Unlock" :
+	    handling==Internal ? "Internal" :
+	     handling==Unlock ? "Unlock" :
 				"Unknown"));
 
     if(!ab || !ab->fp_hash)
@@ -6122,7 +6197,8 @@ adrbk_get_entryref(ab, elem_arg, handling)
 	  elem--;
     }
 
-    if(ab == edited_abook && deleted_elems && deleted_elems->next){
+    if(ab == edited_abook && deleted_elems && deleted_elems->next &&
+       handling != Internal){
 	adrbk_cntr_t nextnum;
 	EXPANDED_S *next_one;
 
@@ -6133,6 +6209,10 @@ adrbk_get_entryref(ab, elem_arg, handling)
 	while((nextnum = entry_get_next(&next_one)) != NO_NEXT &&
 	      nextnum <= elem)
 	  elem++;
+
+	/* this should not happen */
+	if(elem >= ab->orig_count)
+	  return((EntryRef *)NULL);
     }
 
     if(moved_elem != NO_NEXT){
@@ -6294,6 +6374,19 @@ adrbk_get_entryref(ab, elem_arg, handling)
 	    new_e->offset    = atol(p);
 	    new_e->ae        = (AdrBk_Entry *)NULL;
 
+	    if(handling == Internal && ab == edited_abook &&
+	       deleted_elems && deleted_elems->next){
+		adrbk_cntr_t nextnum;
+		EXPANDED_S  *next_one;
+
+		next_one = deleted_elems;
+		while((nextnum = entry_get_next(&next_one)) != NO_NEXT)
+		  if(elem == nextnum){
+		      new_e->is_deleted = 1;
+		      return(new_e);	/* have to free this in caller! */
+		  }
+	    }
+
 	    new_cache_element = (ER_CACHE_ELEM_S *)NULL;
 
 	    /* Remove some old cache entries */
@@ -6364,7 +6457,7 @@ adrbk_get_entryref(ab, elem_arg, handling)
 	     * a Normal.
 	     */
 	    new_cache_element->lock_ref_count = 0;
-	    if(handling == Normal || handling == Unlock)
+	    if(handling == Normal || handling == Internal || handling == Unlock)
 	      new_cache_element->handling = Normal;
 	    else if(handling == Lock){
 		new_cache_element->handling = Lock;
@@ -6436,7 +6529,7 @@ big_trouble:
 	dprint(1, (debugfile,
 	  "There must have been a problem opening or closing or something.\n"));
 
-	q_status_message1(SM_ORDER | SM_DING, 5, 5, "Addrbook problems%s",
+	q_status_message1(SM_ORDER | SM_DING, 5, 5, "Addrbook problems%.200s",
 			  (trouble_rebuilds<MAX_TROUBLE_REBUILDS)
 			    ? ", will attempt to resync..." : "");
 
@@ -7197,7 +7290,7 @@ cmp_addr(a1, a2)
     }
     
     s = (char *)rfc1522_decode((unsigned char *)tmp_20k_buf+10000,
-			       SIZEOF_20KBUF, y, &dummy);
+			       SIZEOF_20KBUF-10000, y, &dummy);
     if(dummy)
       fs_give((void **)&dummy);
 
@@ -7270,9 +7363,6 @@ adrbk_sort(ab, current_entry_num, new_entry_num, be_quiet)
     if(count < 2)
       return 0;
 
-    if(!be_quiet)
-      we_cancel = busy_alarm(1, "Sorting address book", NULL, 1);
-
     sort_array = (adrbk_cntr_t *)fs_get((size_t)count * sizeof(adrbk_cntr_t));
     
     for(i = 0L; i < count; i++)
@@ -7286,6 +7376,9 @@ adrbk_sort(ab, current_entry_num, new_entry_num, be_quiet)
 
     if(!skip_the_sort){
 	intr_handling_on();
+	if(!be_quiet)
+	  we_cancel = busy_alarm(1, "Sorting address book", NULL, 1);
+
 	qsort((QSType *)sort_array,
 	    (size_t)count,
 	    sizeof(adrbk_cntr_t),
@@ -7299,9 +7392,10 @@ adrbk_sort(ab, current_entry_num, new_entry_num, be_quiet)
 						cmp_cntr_by_nick);
     }
 
-    intr_handling_off();
     if(we_cancel)
       cancel_busy_alarm(0);
+
+    intr_handling_off();
 
     if(skip_the_sort){
 	q_status_message(SM_ORDER, 3, 3,

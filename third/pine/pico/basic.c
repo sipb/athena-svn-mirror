@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: basic.c,v 1.1.1.1 2001-02-19 07:04:45 ghudson Exp $";
+static char rcsid[] = "$Id: basic.c,v 1.1.1.2 2003-02-12 08:01:34 ghudson Exp $";
 #endif
 /*
  * Program:	Cursor manipulation functions
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: basic.c,v 1.1.1.1 2001-02-19 07:04:45 ghudson Exp $"
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -226,7 +226,6 @@ backline(f, n)
 int f, n;
 {
     register LINE   *dlp;
-    register int    status = 0;
 
     if (n < 0)
       return (forwline(f, -n));
@@ -268,6 +267,7 @@ gotobop(f, n)
 int f, n;	/* default Flag & Numeric argument */
 {
     int quoted, qlen;
+    char qstr[NLINE], qstr2[NLINE];
 
     if (n < 0)	/* the other way...*/
       return(gotoeop(f, -n));
@@ -286,15 +286,16 @@ int f, n;	/* default Flag & Numeric argument */
 	 * PLUS: if there's a quote string, a quoted-to-non-quoted
 	 *	 line transition.
 	 */
-	quoted = (Pmaster && Pmaster->quote_str
-		  && quote_match(Pmaster->quote_str, curwp->w_dotp));
-	qlen   = quoted ? strlen(Pmaster->quote_str) : 0;
+	quoted = glo_quote_str
+	  ? quote_match(glo_quote_str, curwp->w_dotp, qstr, NLINE) : 0;
+	qlen   = quoted ? strlen(qstr) : 0;
 	while(lback(curwp->w_dotp) != curbp->b_linep
 	      && llength(lback(curwp->w_dotp)) > qlen
-	      && ((Pmaster && Pmaster->quote_str)
-		    ? quoted == quote_match(Pmaster->quote_str,
-					    lback(curwp->w_dotp))
-		    : 1)
+	      && (glo_quote_str
+		  ? (quoted == quote_match(glo_quote_str, lback(curwp->w_dotp),
+					   qstr2, NLINE)
+		     && !strcmp(qstr, qstr2))
+		  : 1)
 	      && lgetc(curwp->w_dotp, qlen).c != TAB
 	      && lgetc(curwp->w_dotp, qlen).c != ' ')
 	  curwp->w_dotp = lback(curwp->w_dotp);
@@ -336,6 +337,7 @@ int f, n;	/* default Flag & Numeric argument */
 
 {
     int quoted, qlen;
+    char qstr[NLINE], qstr2[NLINE];
 
     if (n < 0)	/* the other way...*/
       return(gotobop(f, -n));
@@ -354,16 +356,17 @@ int f, n;	/* default Flag & Numeric argument */
 	 * PLUS: if there's a quote string, a quoted-to-non-quoted
 	 *	 line transition.
 	 */
-	quoted = (Pmaster && Pmaster->quote_str
-		  && quote_match(Pmaster->quote_str, curwp->w_dotp));
-	qlen   = quoted ? strlen(Pmaster->quote_str) : 0;
+	quoted = glo_quote_str
+	  ? quote_match(glo_quote_str, curwp->w_dotp, qstr, NLINE) : 0;
+	qlen   = quoted ? strlen(qstr) : 0;
 	
 	while(curwp->w_dotp != curbp->b_linep
 	      && llength(lforw(curwp->w_dotp)) > qlen
-	      && ((Pmaster && Pmaster->quote_str)
-		   ? quoted == quote_match(Pmaster->quote_str,
-					   lforw(curwp->w_dotp))
-		   : 1)
+	      && (glo_quote_str
+		  ? (quoted == quote_match(glo_quote_str, lforw(curwp->w_dotp),
+					   qstr2, NLINE)
+		     && !strcmp(qstr, qstr2))
+		  : 1)
 	      && lgetc(lforw(curwp->w_dotp), qlen).c != TAB
 	      && lgetc(lforw(curwp->w_dotp), qlen).c != ' ')
 	  curwp->w_dotp = lforw(curwp->w_dotp);
@@ -524,7 +527,6 @@ int		movedot;
 {
     register LINE   *lp, *tp;
     register int    nl;
-    int             status = 0;
     int		    i;
 
     if(Pmaster && Pmaster->headents){
@@ -712,9 +714,9 @@ int f, n;
 	   ToggleHeader (0);
         }
     }
+#endif
 
     return (TRUE);
-#endif
 }
 
 

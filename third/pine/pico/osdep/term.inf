@@ -18,7 +18,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1999 by the University of Washington.
+ * 1989-2001 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -46,6 +46,8 @@ static int      tinfoopen PROTO((void));
 static int      tinfoterminalinfo PROTO((int));
 static int      tinfoclose PROTO((void));
 static void     setup_dflt_esc_seq PROTO((void));
+static void     tinfoinsert PROTO((int));
+static void     tinfodelete PROTO((void));
 
 extern int      tput();
 
@@ -139,6 +141,14 @@ setup_dflt_esc_seq()
     kpinsert("\033[3J", KEY_PGDN, 1);
     kpinsert("\033[2J", KEY_HOME, 1);
     kpinsert("\033[N",  KEY_END, 1);
+
+    /*
+     * vt220?
+     */
+    kpinsert("\033[5~", KEY_PGUP, 1);
+    kpinsert("\033[6~", KEY_PGDN, 1);
+    kpinsert("\033[1~", KEY_HOME, 1);
+    kpinsert("\033[4~", KEY_END, 1);
 
     /* 
      * ANSI mode.
@@ -382,7 +392,6 @@ tinfoterminalinfo(termcap_wins)
 static int
 tinfoopen()
 {
-    char   *t;
     int     row, col;
 
     /*
@@ -430,6 +439,9 @@ tinfoopen()
      */
     if(gmode&MDFKEY && Pmaster == NULL)
       puts("\033[99h");
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -444,6 +456,9 @@ static tinfoclose()
     }
 
     ttclose();
+    
+    /* return ignored */
+    return(0);
 }
 
 
@@ -451,8 +466,9 @@ static tinfoclose()
  * tinfoinsert - insert a character at the current character position.
  *               _insertchar takes precedence.
  */
+static void
 tinfoinsert(ch)
-register char	ch;
+register int	ch;
 {
     if(_insertchar != NULL){
 	putpad(_insertchar);
@@ -469,6 +485,7 @@ register char	ch;
 /*
  * tinfodelete - delete a character at the current character position.
  */
+static void
 tinfodelete()
 {
     if(_startdelete == NULL && _enddelete == NULL)
@@ -522,6 +539,9 @@ register int n;
 	  putpad(_insertline);
 #endif
     }
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -563,6 +583,9 @@ register int n;
 	  putpad(_insertline);
 #endif
     }
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -602,6 +625,9 @@ static tinfomove(row, col)
 register int row, col;
 {
     putpad(tgoto(_moveto, col, row));
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -632,6 +658,9 @@ static tinfoeeol()
     }
     else if(_cleartoeoln)
       putpad(_cleartoeoln);
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -658,6 +687,9 @@ static tinfoeeop()
     }
     else if(_cleartoeos)
       putpad(_cleartoeos);
+
+    /* return ignored */
+    return(0);
 }
 
 
@@ -676,6 +708,9 @@ int state;			/* FALSE = normal video, TRUE = rev video */
 static tinfobeep()
 {
     ttputc(BELL);
+
+    /* return ignored */
+    return(0);
 }
 
 

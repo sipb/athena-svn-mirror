@@ -10,16 +10,14 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	1 August 1988
- * Last Edited:	24 October 2000
+ * Last Edited:	22 February 2002
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2000 University of Washington.
+ * Copyright 2002 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
 
-#define SUBSCRIPTIONFILE(t) sprintf (t,"%s/.mailboxlist",myhomedir ())
-#define SUBSCRIPTIONTEMP(t) sprintf (t,"%s/.mlbxlsttmp",myhomedir ())
 
 typedef struct dotlock_base {
   char lock[MAILTMPLEN];
@@ -28,6 +26,38 @@ typedef struct dotlock_base {
 } DOTLOCK;
 
 
+/* Bits that can be set in restrictBox */
+
+#define RESTRICTROOT 0x1	/* restricted box doesn't allow root */
+#define RESTRICTOTHERUSER 0x2	/* restricted box doesn't allow other user */
+
+/* Subscription definitions for UNIX */
+
+#define SUBSCRIPTIONFILE(t) sprintf (t,"%s/.mailboxlist",myhomedir ())
+#define SUBSCRIPTIONTEMP(t) sprintf (t,"%s/.mlbxlsttmp",myhomedir ())
+
+
+/* dorc() options */
+
+#define RISKPHRASE "I accept the risk"
+#define SYSCONFIG "/etc/c-client.cf"
+
+
+/* Special users */
+
+#define ANONYMOUSUSER "nobody"	/* anonymous user */
+#define UNLOGGEDUSER "root"	/* unlogged-in user */
+#define ADMINGROUP "mailadm"	/* mail administrator group */
+
+
+/*
+ * Attention: all sorcerer's apprentices who think that 0666 is a mistake.
+ * You are wrong.  Read the FAQ.  Do not meddle in the affairs of wizards,
+ * for they are subtle and quick to anger.
+ */
+
+#define MANDATORYLOCKPROT 0666	/* don't change this */
+
 /* Function prototypes */
 
 #include "env.h"
@@ -62,6 +92,6 @@ long safe_write (int fd,char *buf,long nbytes);
 void *arm_signal (int sig,void *action);
 struct passwd *checkpw (struct passwd *pw,char *pass,int argc,char *argv[]);
 long loginpw (struct passwd *pw,int argc,char *argv[]);
-long pw_login (struct passwd *pw,char *authuser,char *user,char *home,int argc,
+long pw_login (struct passwd *pw,char *auser,char *user,char *home,int argc,
 	       char *argv[]);
 void *mm_blocknotify (int reason,void *data);

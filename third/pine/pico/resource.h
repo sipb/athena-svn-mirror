@@ -4,7 +4,7 @@
 //
 #define IDD_OK                          1
 #define ABOUTDLGBOX                     100
-#define	SPLASHDLGBOX			101
+#define SPLASHDLGBOX                    101
 #define IDM_OPT_SETFONT                 103
 #define IDM_ABOUT                       104
 #define IDM_EDIT_CUT                    105
@@ -116,18 +116,9 @@
 #define IDC_RESPONCE                    1002
 #define IDC_PROMPT                      1003
 #define IDC_GETHELP                     1004
-#define IDC_SORTARRIVAL                 1005
-#define IDC_SORTORDERSUB                1006
-#define IDC_SORTSUBJECT                 1007
-#define IDC_SORTSIZE                    1008
-#define IDC_SORTCC                      1009
-#define IDC_SORTTO                      1010
-#define IDC_SORTFROM                    1011
-#define IDC_SORTDATE                    1012
-#define IDC_SORTREVERSE                 1013
-#define IDC_FLAGCOL1                    1014
-#define IDC_FLAGCOL2                    1015
-#define IDC_BUTTON2                     1017
+#define IDC_FLAGCOL1                    1016
+#define IDC_FLAGCOL2                    1017
+#define IDC_BUTTON2                     1018
 
 // Next default values for new objects
 // 

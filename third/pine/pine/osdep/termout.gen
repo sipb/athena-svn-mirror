@@ -125,6 +125,9 @@ PutLine0n8b(x, y, line, length, handles)
 		length -= RGBLEN;
 		line += RGBLEN;
 		break;
+	      case TAG_EMBED:
+		Writechar(TAG_EMBED, 0);
+		break;
 	      default :		/* literal "embed" char? */
 		Writechar(TAG_EMBED, 0);
 		Writechar(*(line-1), 0);

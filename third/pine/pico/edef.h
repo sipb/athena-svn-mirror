@@ -1,5 +1,5 @@
 /*
- * $Id: edef.h,v 1.1.1.1 2001-02-19 07:01:33 ghudson Exp $
+ * $Id: edef.h,v 1.1.1.2 2003-02-12 08:01:35 ghudson Exp $
  *
  * Program:	Global definitions and initializations
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2002 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -64,6 +64,8 @@ int     sgarbf  = TRUE;                 /* TRUE if screen is garbage	*/
 int     mpresf  = FALSE;                /* TRUE if message in last line */
 int	clexec	= FALSE;		/* command line execution flag	*/
 char   *alt_speller = NULL;		/* alt spell checking command   */
+int     preserve_start_stop = FALSE;    /* TRUE if pass ^S/^Q to term   */
+char   *glo_quote_str = NULL;           /* points to quote string if set*/
 
 /* uninitialized global definitions */
 int     currow;                 /* Cursor row                   */
@@ -72,6 +74,7 @@ int     thisflag;               /* Flags, this command          */
 int     lastflag;               /* Flags, last command          */
 int     curgoal;                /* Goal for C-P, C-N            */
 char	opertree[NLINE+1];	/* operate within this tree     */
+char    glo_quote_str_buf[NLINE+1]; /* Indent string (for justify)  */
 WINDOW  *curwp;                 /* Current window               */
 BUFFER  *curbp;                 /* Current buffer               */
 WINDOW  *wheadp;                /* Head of list of windows      */
@@ -115,6 +118,8 @@ extern  int     sgarbf;                 /* State of screen unknown      */
 extern  int     mpresf;                 /* Stuff in message line        */
 extern	int	clexec;			/* command line execution flag	*/
 extern	char   *alt_speller;		/* alt spell checking command   */
+extern  int     preserve_start_stop;    /* TRUE if pass ^S/^Q to term   */
+extern  char   *glo_quote_str;          /* points to quote string if set*/
 /* initialized global external declarations */
 extern  int     currow;                 /* Cursor row                   */
 extern  int     curcol;                 /* Cursor column                */
@@ -122,6 +127,7 @@ extern  int     thisflag;               /* Flags, this command          */
 extern  int     lastflag;               /* Flags, last command          */
 extern  int     curgoal;                /* Goal for C-P, C-N            */
 extern  char	opertree[];		/* operate within this tree     */
+extern  char	glo_quote_str_buf[];    /* Indent string (for justify)  */
 extern  WINDOW  *curwp;                 /* Current window               */
 extern  BUFFER  *curbp;                 /* Current buffer               */
 extern  WINDOW  *wheadp;                /* Head of list of windows      */

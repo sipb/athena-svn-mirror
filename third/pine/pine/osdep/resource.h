@@ -26,7 +26,9 @@
 #define IDR_ACCEL_PINE                  115
 #define IDD_SELECTFLAG                  115
 #define IDM_FILE_PRINT                  116
+#define IDD_LOGINDLG                    116
 #define IDM_OPT_TOOLBAR                 117
+#define IDD_CONFIGDLG                   117
 #define IDM_OPT_TOOLBARPOS              118
 #define IDM_OPT_USEDIALOGS              119
 #define IDM_OPT_USEACCEL                120
@@ -118,6 +120,7 @@
 #define IDC_PROMPT                      1003
 #define IDC_GETHELP                     1004
 #define IDC_SORTARRIVAL                 1005
+#define IDC_SORTFIRSTBUTTON             IDC_SORTARRIVAL
 #define IDC_SORTORDERSUB                1006
 #define IDC_SORTSUBJECT                 1007
 #define IDC_SORTSIZE                    1008
@@ -125,11 +128,30 @@
 #define IDC_SORTTO                      1010
 #define IDC_SORTFROM                    1011
 #define IDC_SORTDATE                    1012
-#define IDC_SORTREVERSE                 1013
-#define IDC_FLAGCOL1                    1014
-#define IDC_FLAGCOL2                    1015
-#define IDC_BUTTON2                     1017
-#define	IDC_ARGTEXT			1018
+#define IDC_SORTTHREAD                  1013
+#define IDC_SORTSCORE                   1014
+#define IDC_SORTLASTBUTTON              IDC_SORTSCORE
+#define IDC_SORTREVERSE                 1015
+#define IDC_FLAGCOL1                    1016
+#define IDC_FLAGCOL2                    1017
+#define IDC_BUTTON2                     1018
+#define	IDC_ARGTEXT			1019
+#define	IDC_RLOGINE			1020
+#define	IDC_RPASSWORD			1021
+#define	IDC_RPWTEXT               	1022
+#define	IDC_CONFRRADIO               	1023
+#define	IDC_CONFLRADIO               	1024
+#define	IDC_CONFSRVRTXT               	1025
+#define	IDC_CONFESERVER               	1026
+#define	IDC_CONFUNTXT               	1027
+#define	IDC_CONFEUSERNAME             	1028
+#define	IDC_CONFDFLTFLDR               	1029
+#define	IDC_CONFFLDRTXT               	1030
+#define	IDC_CONFEFLDRNAME              	1031
+#define	IDC_CONFFNTXT             	1032
+#define	IDC_CONFEFN              	1033
+#define	IDC_CONFBROWSE              	1034
+#define	IDC_CONFDFLTSET              	1035
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
