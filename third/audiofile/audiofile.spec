@@ -1,4 +1,4 @@
-%define  ver     0.2.2
+%define  ver     0.2.3
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr

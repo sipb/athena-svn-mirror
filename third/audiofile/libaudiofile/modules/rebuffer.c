@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <math.h>
 
 #include <assert.h>
@@ -24,8 +23,13 @@
 #define CHNK(X)
 #define DEBG(X)
 
+#ifndef min
 #define min(a,b) ((a)<(b) ? (a) : (b))
+#endif
+
+#ifndef max
 #define max(a,b) ((a)>(b) ? (a) : (b))
+#endif
 
 /* ===== REBUFFERING modules (use templates) */
 
