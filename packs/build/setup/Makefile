@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:15:39 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-10-02 07:11:20 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -19,6 +19,7 @@ check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 install:
+	cd platform/${HOSTTYPE} && ${MAKE} $@
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
 	-mkdir -p ${DESTDIR}${ATHETCDIR}
 	-mkdir -p ${DESTDIR}${ATHRBINDIR}
@@ -41,7 +42,6 @@ install:
 	ln -s bin/emacs ${DESTDIR}/usr/athena/emacs
 	rm -f ${DESTDIR}/usr/athena/zmailnotify
 	ln -s bin/zmailnotify ${DESTDIR}/usr/athena/zmailnotify
-	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 clean:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
