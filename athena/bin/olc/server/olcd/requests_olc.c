@@ -22,7 +22,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.17 1990-03-01 22:00:16 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.18 1990-04-17 13:50:38 raeburn Exp $";
 #endif
 
 
@@ -571,7 +571,10 @@ olc_done(fd, request, auth)
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
 #endif LOG
-	  sprintf(target->question->title,"No consultant present.");
+	  sprintf(target->question->title,
+		  target->question->note[0]
+		  ? target->question->note
+		  : "No consultant present.");
 	  log_daemon(target, "User is done with question.");
 	  terminate_log_answered(target);
 	  free((char *) target->question);
@@ -596,7 +599,10 @@ olc_done(fd, request, auth)
 				NULL_FLAG)
 	      != SUCCESS)
 	    {
-	      sprintf(target->question->title,"No consultant present.");
+	      sprintf(target->question->title,
+		      target->question->note[0]
+		      ? target->question->note
+		      : "No consultant present.");
 	      log_daemon(target, "User is done with question.");
 	      terminate_log_answered(target);
 	      free_new_messages(target);
@@ -731,7 +737,9 @@ olc_cancel(fd, request, auth)
 	  log_status(msgbuf);
 #endif LOG
 	  (void) strcpy(target->question->title,
-			"Cancelled question/No consultant present.");
+			target->question->note[0]
+			? target->question->note
+			: "Cancelled question/No consultant present.");
 	  log_daemon(target,"User cancelled question.");
 	  terminate_log_answered(target);
 	  free((char *) target->question);
@@ -758,7 +766,9 @@ olc_cancel(fd, request, auth)
 	  if (write_message_to_user(consultant,msgbuf, NULL_FLAG) != SUCCESS)
 	    {
 	      (void) strcpy(target->question->title,
-			    "Cancelled question/No consultant present.");
+			    target->question->note[0]
+			    ? target->question->note
+			    : "Cancelled question/No consultant present.");
 	      log_daemon(target,"User cancelled question.");
 	      terminate_log_answered(target);
 	      free_new_messages(target);
@@ -778,7 +788,10 @@ olc_cancel(fd, request, auth)
     target = requester->connected;
   consultant = target->connected;
 
-  (void) strcpy(target->question->title, "Cancelled question.");
+  (void) strcpy(target->question->title,
+		target->question->note[0]
+		? target->question->note
+		: "Cancelled question.");
 #ifdef LOG
 	  sprintf(msgbuf,"%s [%d] cancels %s [%d]'s question",
 		  requester->user->username,requester->instance,
@@ -1059,7 +1072,9 @@ olc_forward(fd, request,auth)
 				     "You will receive a reply by mail.\n",
 				     NULL_FLAG);
 	(void) sprintf(target->question->title, "%s (unanswered)",
-		       target->question->topic);
+		       target->question->note[0]
+		       ? target->question->note
+		       : target->question->topic);
 	(void) sprintf(target->question->topic, "oga");
 	terminate_log_unanswered(target);
 	free_new_messages(target);
