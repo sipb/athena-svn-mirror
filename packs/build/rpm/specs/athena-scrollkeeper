@@ -14,12 +14,14 @@ which are not on the local system.
 %post
 PATH=/usr/athena/bin:$PATH
 vers=`scrollkeeper-config --version`
-log=/usr/athena/var/log/scrollkeeper.log
+logdir=/usr/athena/var/log
+log=$logdir/scrollkeeper.log
 if [ $1 = 1 ] ; then
   action=Installing
 else
   action="Upgrading to"
 fi
+mkdir -p -m 755 $logdir
 echo "`date +"%b %d %X"` $action ScrollKeeper $vers..." >> $log
 scrollkeeper-rebuilddb -p %{_localstatedir}/lib/scrollkeeper >> $log 2>&1
 /sbin/ldconfig
