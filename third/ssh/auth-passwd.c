@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.5 1997-11-19 20:52:24 danw Exp $
+ * $Id: auth-passwd.c,v 1.6 1998-01-09 22:57:55 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1997/11/19 20:52:24  danw
+ * small security fix (originally from Matt Power)
+ *
  * Revision 1.4  1997/11/19 20:44:43  danw
  * do chown later
  *
@@ -597,7 +600,7 @@ int auth_password(const char *server_user, const char *password)
 				  krb5_princ_realm(ssh_context, client)->data,
 				  "krbtgt",
 				  krb5_princ_realm(ssh_context, client)->data,
-				  60*60*10,   /* 10 hours */
+				  12*10,  /* 10 hours in 5-minute increments */
 				  password);
 	      if (status)
 		goto errout;
