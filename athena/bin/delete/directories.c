@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.10 1989-02-01 03:41:47 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.11 1989-03-08 09:58:32 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -442,21 +442,21 @@ filerec *leaf;
 	       leaf->previous->next = leaf->next;
 	  if (leaf->next)
 	       leaf->next->previous = leaf->previous;
-	  if ((leaf->specs.st_mode & S_IFMT) == S_IFDIR) {
-	       if (leaf->parent->dirs == leaf) {
-		    leaf->parent->dirs = leaf->next;
-		    if (leaf->parent->freed)
-			 free_leaf(leaf->parent);
+	  if (leaf->parent) {
+	       if ((leaf->specs.st_mode & S_IFMT) == S_IFDIR) {
+		    if (leaf->parent->dirs == leaf) {
+			 leaf->parent->dirs = leaf->next;
+			 if (leaf->parent->freed)
+			      free_leaf(leaf->parent);
+		    }
 	       }
-	  }
-	  else {
-	       if (leaf->parent->files == leaf) {
-		    leaf->parent->files = leaf->next;
-		    if (leaf->parent->freed)
-			 free_leaf(leaf->parent);
+	       else {
+		    if (leaf->parent->files == leaf) {
+			 leaf->parent->files = leaf->next;
+			 if (leaf->parent->freed)
+			      free_leaf(leaf->parent);
+		    }
 	       }
-	  }
-	  if (leaf->parent) { /* we don't want to call this on a tree root! */
 	       free(leaf);
 	  }
      }
