@@ -1,0 +1,9 @@
+Name: athena-gnome-keyring
+Summary: GNOME secret-keeping agent, for Athena
+License: LGPL
+Group: User Interface/Desktops
+
+%description
+A program to keep passwords and other secrets for users so that they
+don't need to be entered each time they are used, but are not stored
+in the filesystem.
