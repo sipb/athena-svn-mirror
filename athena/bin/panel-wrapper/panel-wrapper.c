@@ -141,11 +141,7 @@ static gboolean
 display_gui(void)
 {
   GtkWidget *box;
-  GtkWidget *toggle_button = NULL;
   gint result;
-  gchar *s;
-  GtkWidget *halt = NULL;
-  GtkWidget *reboot = NULL;
   GtkWidget *invisible;
 
 
@@ -226,7 +222,6 @@ static void confirm_logout(void)
 
 int main(int argc, char **argv)
 {
-  int c;
   pid_t pid, wpid;
   int status;
 
