@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.2 1996-09-20 04:40:27 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.3 1997-11-14 22:30:13 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.2 1996-09-20 04:40:27 ghudson Exp $";
+static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.3 1997-11-14 22:30:13 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -274,7 +274,7 @@ multi_open_connection(num)
     }
     else {
       clnt_control(servers[num].cl, CLSET_TIMEOUT, &TIMEOUT);
-      res = (quorum_res*)_server_quorum_1(&qs, servers[num].cl);
+      res = server_quorum_1(&qs, servers[num].cl);
       if (!res) {
 	clnt_destroy(servers[num].cl);
 	servers[num].cl = (CLIENT*)NULL;
@@ -351,7 +351,7 @@ multi_ask_votes()
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
       qs.sync = WANT_SYNC;
-      res = (quorum_res*)_server_quorum_1(&qs, servers[i].cl);
+      res = server_quorum_1(&qs, servers[i].cl);
       if (!res) {
 	/*
 	 * Oops! We got an RPC error - kill the connection and
@@ -382,7 +382,7 @@ multi_ask_votes()
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
       qs.sync = AM_SYNC;
-      res = (quorum_res*)_server_quorum_1(&qs, servers[i].cl);
+      res = server_quorum_1(&qs, servers[i].cl);
       if (!res) {
 	/*
 	 * Sigh...someone went down in the middle of this.
@@ -430,8 +430,7 @@ multi_ask_votes()
 		servers[uptodate_server].name));
     log_info("Requesting database update from %s",
 	     servers[uptodate_server].name);
-    commitres = (long*)_server_requpdate_1(&dummy,
-					   servers[uptodate_server].cl);
+    commitres = server_requpdate_1(&dummy, servers[uptodate_server].cl);
     return;
   }
   DebugMulti(("I have the most up-to-date database!\n"));
@@ -463,7 +462,7 @@ multi_update_everyone()
       multi_update_server(i);
     else
       if (servers[i].cl) {
-	commitres = (long*)_server_end_upd_1(&db_vers, servers[i].cl);
+	commitres = server_end_upd_1(&db_vers, servers[i].cl);
 	if (!commitres)
 	  multi_conn_dropped(i);
       }
@@ -506,7 +505,7 @@ multi_update_server(num)
 	exit(1);
     }
 
-    res = (long*)_server_start_upd_1(&dummy, servers[num].cl);
+    res = server_start_upd_1(&dummy, servers[num].cl);
     if (!res || *res) {
       DebugMulti(("ERROR starting %s update: %s\n",
 		  servers[num].name, res ? error_message(*res)
@@ -519,13 +518,13 @@ multi_update_server(num)
 		  coursename));
       init.course = coursename;
       memset(&init.auth, 0, sizeof(init.auth));
-      init_r = (init_res*)_init_1(&init, servers[num].cl);
+      init_r = init_1(&init, servers[num].cl);
       if (!init_r) {
 	exit(1);
       }
       if (init_r->errno == ERR_COURSE_NOT_FOUND) {
 	ptr = coursename;
-	res = (long*)_create_course_1(&ptr, servers[num].cl);
+	res = create_course_1(&ptr, servers[num].cl);
 	if (!res || *res) {
 	  if (res)
 	    DebugMulti(("ERROR creating %s on %s: %s\n",
@@ -533,7 +532,7 @@ multi_update_server(num)
 			error_message(*res)));
 	  exit(1);
 	}
-	init_r = (init_res*)_init_1(&init, servers[num].cl);
+	init_r = init_1(&init, servers[num].cl);
 	if (!init_r || init_r->errno) {
 	  DebugMulti(("ERROR initializing %s on %s: %s\n",
 		      ptr, servers[num].name, init_r ?
@@ -551,7 +550,7 @@ multi_update_server(num)
 	  aclbuf[strlen(aclbuf)-1] = '\0';
 	  acl_params.aclname = multi_acls[i];
 	  acl_params.aclparam = aclbuf;
-	  res = (long*)_add_acl_1(&acl_params, servers[num].cl);
+	  res = add_acl_1(&acl_params, servers[num].cl);
 	  if (!res /* || *res */) { /* XXX Bleh - bug in acl */
 	    exit(1);
 	  }
@@ -562,7 +561,7 @@ multi_update_server(num)
       curconn = &connfoo;
       connfoo.index = dbidx = db_open(fnbuf); /* XXX */
       for (cont = db_firstcontents(); cont; cont = db_nextcontents()) {
-	res = (long*)_server_store_1(cont, servers[num].cl);
+	res = server_store_1(cont, servers[num].cl);
 	if (!res || *res) {
 	  if (res)
 	    DebugMulti(("Error %ld\n", *res));
@@ -570,7 +569,7 @@ multi_update_server(num)
 	}
       }
       db_close(dbidx);
-      res = (long*)_server_end_course_1(&dummy, servers[num].cl);
+      res = server_end_course_1(&dummy, servers[num].cl);
       if (!res || *res) {
 	if (res)
 	  DebugMulti(("Error %ld\n", *res));
@@ -578,7 +577,7 @@ multi_update_server(num)
       }
     }
     fclose(fpcourse);
-    res = (long*)_server_end_upd_1(&new_db_vers, servers[num].cl);
+    res = server_end_upd_1(&new_db_vers, servers[num].cl);
     if (!res || *res)
       exit(1);
     exit(0);
@@ -644,7 +643,7 @@ multi_set_course()
   memset(&params.auth, 0, sizeof(params.auth));
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
-      res = (init_res *)_init_1(&params, servers[i].cl);
+      res = init_1(&params, servers[i].cl);
       if (!res || res->errno)
 	multi_conn_dropped(i);
     }
@@ -663,7 +662,7 @@ multi_commit()
   db_inc_vers();
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
-      res = (init_res *)_server_commit_1(&db_vers, servers[i].cl);
+      res = server_commit_1(&db_vers, servers[i].cl);
       if (!res || res->errno) /* XXX */
 	multi_conn_dropped(i);
     }
@@ -675,7 +674,7 @@ multi_commit()
  * server, etc.
  */
 
-quorum_res *server_quorum_1(quorum, rqstp)
+quorum_res *server_quorum_1_svc(quorum, rqstp)
      quorumstat *quorum;
      struct svc_req *rqstp;
 {
@@ -725,7 +724,7 @@ quorum_res *server_quorum_1(quorum, rqstp)
   return &ret;
 }
 
-long *server_store_1(contents, rqstp)
+long *server_store_1_svc(contents, rqstp)
      Contents *contents;
      struct svc_req *rqstp;
 {
@@ -749,7 +748,7 @@ long *server_store_1(contents, rqstp)
   return &res;
 }
 
-long *server_delete_1(contents, rqstp)
+long *server_delete_1_svc(contents, rqstp)
      Contents *contents;
      struct svc_req *rqstp;
 {
@@ -773,7 +772,7 @@ long *server_delete_1(contents, rqstp)
   return &res;
 }
 
-long *server_commit_1(vers, rqstp)
+long *server_commit_1_svc(vers, rqstp)
      DBVers *vers;
      struct svc_req *rqstp;
 {
@@ -801,8 +800,8 @@ long *server_commit_1(vers, rqstp)
   return &res;
 }
 
-long *server_end_course_1(param, rqstp)
-     int param;
+long *server_end_course_1_svc(param, rqstp)
+     int *param;
      struct svc_req *rqstp;
 {
   static long res;
@@ -845,7 +844,7 @@ long *server_end_course_1(param, rqstp)
   return &res;
 }
 
-long *server_requpdate_1(dummy, rqstp)
+long *server_requpdate_1_svc(dummy, rqstp)
      int *dummy;
      struct svc_req *rqstp;
 {
@@ -870,7 +869,7 @@ long *server_requpdate_1(dummy, rqstp)
   return &res;
 }
 
-long *server_start_upd_1(dummy, rqstp)
+long *server_start_upd_1_svc(dummy, rqstp)
      int *dummy;
      struct svc_req *rqstp;
 {
@@ -912,7 +911,7 @@ long *server_start_upd_1(dummy, rqstp)
   return &res;
 }
 
-long *server_end_upd_1(vers, rqstp)
+long *server_end_upd_1_svc(vers, rqstp)
      DBVers *vers;
      struct svc_req *rqstp;
 {
@@ -947,7 +946,7 @@ long *server_end_upd_1(vers, rqstp)
 
 #else
 
-quorum_res *server_quorum_1(quorum, rqstp)
+quorum_res *server_quorum_1_svc(quorum, rqstp)
      quorumstat *quorum;
      struct svc_req *rqstp;
 {
@@ -963,7 +962,7 @@ quorum_res *server_quorum_1(quorum, rqstp)
   return &ret;
 }
 
-long *server_store_1(contents, rqstp)
+long *server_store_1_svc(contents, rqstp)
      Contents *contents;
      struct svc_req *rqstp;
 {
@@ -977,7 +976,7 @@ long *server_store_1(contents, rqstp)
   return &res;
 }
 
-long *server_delete_1(contents, rqstp)
+long *server_delete_1_svc(contents, rqstp)
      Contents *contents;
      struct svc_req *rqstp;
 {
@@ -991,7 +990,7 @@ long *server_delete_1(contents, rqstp)
   return &res;
 }
 
-long *server_commit_1(contents, rqstp)
+long *server_commit_1_svc(contents, rqstp)
      Contents *contents;
      struct svc_req *rqstp;
 {
