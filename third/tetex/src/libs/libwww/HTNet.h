@@ -27,9 +27,9 @@ sockets are ready. In practise this is of course transparent to the application
 - this is just to explain the difference.
 
 When a Request object is passed to the Library ,
-the core creates a new HTNet object pr channel
+the core creates a new HTNet object per channel
 used by the request. In many cases a request only uses a single
-channel object but for example FTP requests use
+channel object but, for example, FTP requests use
 at least two - one for the control connection and one for the data connection.
 
 You can find more information about the libwww pseudo thread model in the
@@ -67,7 +67,7 @@ typedef struct _HTNet HTNet;
 
 Filter functions can be registered to be called before and
 after a request has either been started or has terminated. The
-conditions for BEFORE and AFTER filters are not the same so
+conditions for BEFORE and AFTER filters are not the same, and so
 we maintain them independently. Filters can be registered globally or locally.
 The global filters are registered directly by the Net Object (this module)
 and the local filters are registered by the
@@ -147,7 +147,7 @@ extern BOOL HTNetCall_deleteBefore (HTList * list, HTNetBefore * before);
 
 /*
 
-You get rid of all BEFORE filters usign this function
+You get rid of all BEFORE filters using this function
 */
 
 extern BOOL HTNetCall_deleteBeforeAll (HTList * list);
@@ -208,15 +208,15 @@ of the codes.
   
     HT_TEMP_REDIRECT
   
-    The request has been temporaryly redirected and we send back the new URL
+    The request has been temporarily redirected and we send back the new URL
   
     HT_ALL
   
     All of above
 
 
-A Protocol module can also in certain cases return a HT_IGNORE in
-which case no filters are called
+A Protocol module can also, in certain cases, return a HT_IGNORE
+in which case no filters are called
 */
 
 typedef int HTNetAfter (HTRequest * request, HTResponse * response,
@@ -468,7 +468,7 @@ extern BOOL HTNet_newServer (HTRequest * request);
 And you can create a plain new HTNet object using the following method:
 */
 
-extern HTNet * HTNet_new (HTRequest * request);
+extern HTNet * HTNet_new (HTHost * host);
 
 /*
 (
@@ -779,6 +779,6 @@ extern BOOL HTNet_rawBytesCount (HTNet * net);
 
   
 
-  @(#) $Id: HTNet.h,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+  @(#) $Id: HTNet.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

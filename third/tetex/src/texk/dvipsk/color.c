@@ -27,7 +27,7 @@ extern FILE *dvifile ;
  */
 #define COLORHASH (89)
 #define MAXCOLORLEN (120)     /* maximum color length for background */
-#define TOTALCOLORLEN (3000)  /* sum of lengths of pending colors */
+#define INITCOLORLEN (3000)   /* initial stack size in chars */
 /*
  *   This is where we store the color information for a particular page.
  *   If we free all of these, we free all of the allocated color
@@ -40,7 +40,7 @@ static struct colorpage {
    char *bg ;
    char colordat[2] ;
 } *colorhash[COLORHASH] ;
-static char cstack[TOTALCOLORLEN], *csp, *cend, *bg ;
+static char *cstack, *csp, *cend, *bg ;
 /*
  *   This routine sends a color command out.  If the command is a
  *   single `word' or starts with a double quote, we send it out
@@ -53,7 +53,7 @@ void colorcmdout P1C(char *, s)
    char *p ;
    char tempword[100] ;
 
-   while (*s <= ' ')
+   while (*s && *s <= ' ')
       s++ ;
    if (*s == '"') {
       cmdout(s+1) ;
@@ -88,10 +88,11 @@ void initcolor() {
       }
       colorhash[i] = 0 ;
    }
+   cstack = (char *)mymalloc(INITCOLORLEN) ;
    strcpy(cstack, "\n") ;
    strcat(cstack, DEFAULTCOLOR) ;
    csp = cstack + strlen(cstack) ;
-   cend = cstack + TOTALCOLORLEN - 3 ; /* for conservativeness */
+   cend = cstack + INITCOLORLEN - 3 ; /* for conservativeness */
    bg = 0 ;
 }
 /*
@@ -116,8 +117,14 @@ background P1C(char *, bkgrnd)
 void
 pushcolor P2C(char *, p, Boolean, outtops)
 {
-   if (strlen(p) + csp > cend)
-      error("! out of color stack space") ;
+   while (strlen(p) + csp > cend) {
+      int newlen = 3 * (cend - cstack) ;
+      char *newcs = (char *)mymalloc(newlen) ;
+      strcpy(newcs, cstack) ;
+      csp = newcs + (csp - cstack) ;
+      cend = newcs + newlen - 3 ;
+      cstack = newcs ;
+   }
    *csp++ = '\n' ;
    strcpy(csp, p) ;
    csp += strlen(p) ;

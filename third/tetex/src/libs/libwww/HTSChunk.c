@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTSChunk.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTSChunk.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 **	This stream converts a stream to a chunk object.
 */
@@ -41,7 +41,7 @@ PRIVATE int HTSC_flush (HTStream * me)
 */
 PRIVATE int HTSC_free (HTStream * me)
 {
-    if (STREAM_TRACE) HTTrace("Chunkstream. FREEING...\n");
+    HTTRACE(STREAM_TRACE, "Chunkstream. FREEING...\n");
     HT_FREE(me);
     return HT_OK;
 }
@@ -51,7 +51,7 @@ PRIVATE int HTSC_free (HTStream * me)
 */
 PRIVATE int HTSC_abort (HTStream * me, HTList * errorlist)
 {
-    if (STREAM_TRACE) HTTrace("Chunkstream. ABORTING...\n");
+    HTTRACE(STREAM_TRACE, "Chunkstream. ABORTING...\n");
     HT_FREE(me);
     return HT_ERROR;
 }
@@ -126,9 +126,8 @@ PUBLIC HTStream * HTStreamToChunk (HTRequest * 	request,
 	me->chunk = *chunk = HTChunk_new(me->max_size > 0 ?
 					 HTMIN(me->max_size, HT_MAXGROWSIZE) :
 					 HT_MAXGROWSIZE);
-	if (STREAM_TRACE)
-	    HTTrace("ChunkStream. Chunk %p created with max size %d\n",
-		    me->chunk, me->max_size);
+	HTTRACE(STREAM_TRACE, "ChunkStream. Chunk %p created with max size %d\n" _ 
+		    me->chunk _ me->max_size);
 	return me;
     }
     return HTErrorStream();

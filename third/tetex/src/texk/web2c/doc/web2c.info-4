@@ -1,5 +1,4 @@
-This is Info file web2c.info, produced by Makeinfo version 1.68 from
-the input file web2c.texi.
+This is web2c.info, produced by makeinfo version 4.3 from web2c.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -41,7 +40,7 @@ END-INFO-DIR-ENTRY
   This file documents the installation and use of the programs in Web2c,
 an implementation of Donald Knuth's TeX system.
 
-  Copyright (C) 1996, 97 K. Berry & O. Weber.
+  Copyright (C) 1996-2002 K. Berry & O. Weber.
 
   Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -70,27 +69,48 @@ Index
 * %& magic number:                       Determining the memory dump to use.
 * - starting a filename:                 Option conventions.
 * - starts option names:                 Option conventions.
+* -- starts option names:                Option conventions.
+* --disable-dump-share configure option: Hardware and memory dumps.
+* --enable-auto-core configure option:   Preloaded executables.
+* --enable-ipc configure option:         tex invocation.
+* --help common option:                  Common options.
+* --verbose common option:               Common options.
+* --version common option:               Common options.
+* --with-editor=CMD:                     Editor invocation.
+* --with-epsfwin:                        Online Metafont graphics.
+* --with-hp2627win:                      Online Metafont graphics.
+* --with-mftalkwin:                      Online Metafont graphics.
+* --with-next:                           Online Metafont graphics.
+* --with-regiswin:                       Online Metafont graphics.
+* --with-suntoolswin:                    Online Metafont graphics.
+* --with-tektronixwin:                   Online Metafont graphics.
+* --with-unitermwin:                     Online Metafont graphics.
+* --with-x:                              Online Metafont graphics.
+* --with-x-toolkit=KIT:                  Online Metafont graphics.
+* --with-x11:                            Online Metafont graphics.
+* --with-x11win:                         Online Metafont graphics.
 * -base=BASE:                            Determining the memory dump to use.
 * -base=DUMPNAME:                        Common options.
 * -change=CHFILE:                        mft invocation.
 * -charcode-format=TYPE <1>:             vftovp invocation.
 * -charcode-format=TYPE:                 tftopl invocation.
 * -D compiler options:                   Compile-time options.
-* -disable-dump-share configure option:  Hardware and memory dumps.
 * -dpi=REAL:                             dvitype invocation.
-* -enable-auto-core configure option:    Preloaded executables.
-* -enable-ipc configure option:          tex invocation.
+* -file-line-error-style:                Common options.
 * -fmt=DUMPNAME:                         Common options.
 * -fmt=FMT:                              Determining the memory dump to use.
 * -geometry, supported with Xt:          Online Metafont graphics.
-* -help common option:                   Common options.
 * -images:                               gftype invocation.
 * -ini <1>:                              Initial and virgin.
 * -ini:                                  Common options.
 * -interaction=STRING:                   Common options.
 * -ipc:                                  tex invocation.
 * -ipc-start:                            tex invocation.
+* -jobname=STRING:                       Common options.
 * -kpathsea-debug=NUMBER:                Common options.
+* -length=NUMBER:                        tangle invocation.
+* -loose:                                tangle invocation.
+* -lowercase:                            tangle invocation.
 * -magnification=INTEGER <1>:            dvitype invocation.
 * -magnification=INTEGER:                dvicopy invocation.
 * -max-pages=N <1>:                      dvitype invocation.
@@ -98,44 +118,37 @@ Index
 * -mem=DUMPNAME:                         Common options.
 * -mem=MEM:                              Determining the memory dump to use.
 * -min-crossrefs=N:                      bibtex invocation.
+* -mixedcase:                            tangle invocation.
 * -mktex=FILETYPE <1>:                   mf invocation.
 * -mktex=FILETYPE:                       tex invocation.
 * -mltex:                                tex invocation.
 * -mnemonics:                            gftype invocation.
 * -no-mktex=FILETYPE <1>:                mf invocation.
 * -no-mktex=FILETYPE:                    tex invocation.
+* -oem:                                  Common options.
 * -output-comment=STRING:                tex invocation.
 * -output-level=N:                       dvitype invocation.
 * -overflow-label-offset=POINTS:         gftodvi invocation.
 * -page-start=PAGE-SPEC <1>:             dvitype invocation.
 * -page-start=PAGE-SPEC:                 dvicopy invocation.
+* -parse-first-line:                     Common options.
 * -progname=STRING <1>:                  Determining the memory dump to use.
 * -progname=STRING:                      Common options.
+* -recorder:                             Common options.
 * -shell-escape:                         tex invocation.
 * -show-opcodes:                         dvitype invocation.
+* -strict:                               tangle invocation.
 * -style=MFTFILE:                        mft invocation.
 * -T:                                    mpost invocation.
 * -terse:                                bibtex invocation.
 * -tex:                                  mpto invocation.
+* -tex=TEXPROGRAM:                       mpost invocation.
 * -translate-file=TCXFILE:               Common options.
 * -troff <1>:                            mpto invocation.
 * -troff <2>:                            makempx invocation.
 * -troff:                                mpost invocation.
-* -verbose common option:                Common options.
-* -version common option:                Common options.
-* -with-editor=CMD:                      Editor invocation.
-* -with-epsfwin:                         Online Metafont graphics.
-* -with-hp2627win:                       Online Metafont graphics.
-* -with-mftalkwin:                       Online Metafont graphics.
-* -with-next:                            Online Metafont graphics.
-* -with-regiswin:                        Online Metafont graphics.
-* -with-suntoolswin:                     Online Metafont graphics.
-* -with-tektronixwin:                    Online Metafont graphics.
-* -with-unitermwin:                      Online Metafont graphics.
-* -with-x:                               Online Metafont graphics.
-* -with-x-toolkit=KIT:                   Online Metafont graphics.
-* -with-x11:                             Online Metafont graphics.
-* -with-x11win:                          Online Metafont graphics.
+* -underline:                            tangle invocation.
+* -uppercase:                            tangle invocation.
 * -x:                                    weave invocation.
 * ., used for output:                    Output file location.
 * .2602gf:                               mf invocation.
@@ -242,6 +255,7 @@ Index
 * change files, and MFT:                 mft invocation.
 * change files, and Tangle:              tangle invocation.
 * change files, and Weave:               weave invocation.
+* changing error messages style:         Common options.
 * character codes, in GFtype output:     gftype invocation.
 * character codes, in PKtype output:     pktype invocation.
 * character codes, in TCX files:         TCX files.
@@ -272,7 +286,7 @@ Index
 * configuration file reading:            Path searching.
 * configuration file values:             Runtime options.
 * configuration, compile-time:           configure options.
-* configure -with/-enable options:       configure options.
+* configure --with/--enable options:     configure options.
 * CONTENTS.tex:                          weave invocation.
 * control sequence names, space for:     Runtime options.
 * conventions for options,:              Option conventions.
@@ -318,6 +332,7 @@ Index
 * dpost:                                 dmp invocation.
 * DrawingServant:                        Online Metafont graphics.
 * DrawPath ditroff command:              dmp invocation.
+* dump file:                             Common options.
 * dumping memory:                        Memory dumps.
 * DVI comment, specifying:               tex invocation.
 * DVI files, converting to MPX:          dvitomp invocation.
@@ -367,6 +382,7 @@ Index
 * Ferguson, Michael:                     MLTeX.
 * file formats for fonts:                Font file formats.
 * file mtimes, comparing:                newer invocation.
+* file recorder:                         Common options.
 * File-handling TeX:                     TeX extensions.
 * filename conventions, in input files:  \input filenames.
 * filenames starting with -:             Option conventions.
@@ -398,6 +414,7 @@ Index
 * Free Software Foundation documentation system: Formats.
 * freedom of Web2c:                      Introduction.
 * ftp.math.utah.edu:                     bibtex invocation.
+* generating source specials:            tex invocation.
 * geometric designs:                     Metafont.
 * geometric font scaling:                Font file formats.
 * geometry for Metafont:                 Online Metafont graphics.
@@ -445,6 +462,10 @@ Index
 * hyphenation and languages:             Languages and hyphenation.
 * hyphenation patterns, creating:        patgen invocation.
 * ice cream:                             Introduction.
+* identifier case:                       tangle invocation.
+* identifier collisions:                 tangle invocation.
+* identifier length:                     tangle invocation.
+* identifiers with underlines:           tangle invocation.
 * ieeetr.bst:                            Basic BibTeX style files.
 * il1-t1.tcx:                            TCX files.
 * il2-t1.tcx:                            TCX files.
@@ -467,6 +488,7 @@ Index
 * IPC:                                   IPC and TeX.
 * IPC_DEBUG <1>:                         IPC and TeX.
 * IPC_DEBUG:                             Compile-time options.
+* job name:                              Common options.
 * kerning table, in TFM files:           tftopl invocation.
 * keyboard character code, translating:  TCX files.
 * Knuth, Donald E. <1>:                  mft invocation.
@@ -615,6 +637,7 @@ Index
 * packet length:                         pktype invocation.
 * page, starting <1>:                    dvitype invocation.
 * page, starting:                        dvicopy invocation.
+* parsing the first line:                Common options.
 * Pascal, creating from WEB:             tangle invocation.
 * patgen:                                patgen invocation.
 * path searching:                        Path searching.
@@ -771,7 +794,7 @@ Index
 * TeX, Metafont, and MetaPost:           Three programs.
 * TeX, virgin:                           virtex invocation.
 * TeX, Web2c implementation of:          Introduction.
-* TeX-XeT:                               TeX extensions.
+* TeX--XeT:                              TeX extensions.
 * tex.fmt:                               initex invocation.
 * TEXBIB, search path for bib files:     bibtex invocation.
 * TEXEDIT:                               Editor invocation.
@@ -825,6 +848,7 @@ Index
 * Unicode:                               TeX extensions.
 * uniterm:                               Online Metafont graphics.
 * unsrt.bst:                             Basic BibTeX style files.
+* using local codepage to display messages: Common options.
 * validation, of DVI files:              dvitype invocation.
 * validation, of GF files:               gftype invocation.
 * validation, of PK files:               pktype invocation.

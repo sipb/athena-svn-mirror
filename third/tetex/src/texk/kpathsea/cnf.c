@@ -69,7 +69,7 @@ do_line P1C(string, line)
 
   /* `line' is now one character past the end of the variable name.  */
   len = line - start;
-  var = xmalloc (len + 1);
+  var = (string)xmalloc (len + 1);
   strncpy (var, start, len);
   var[len] = 0;
   
@@ -88,7 +88,7 @@ do_line P1C(string, line)
     /* It's annoying to repeat all this, but making a tokenizing
        subroutine would be just as long and annoying.  */
     len = line - start;
-    prog = xmalloc (len + 1);
+    prog = (string)xmalloc (len + 1);
     strncpy (prog, start, len);
     prog[len] = 0;
   }
@@ -105,10 +105,10 @@ do_line P1C(string, line)
   /* The value is whatever remains.  Remove trailing whitespace.  */
   start = line;
   len = strlen (start);
-  while (ISSPACE (start[len - 1]) && len > 0)
+  while (len > 0 && ISSPACE (start[len - 1]))
     len--;
   
-  value = xmalloc (len + 1);
+  value = (string)xmalloc (len + 1);
   strncpy (value, start, len);
   value[len] = 0;
 
@@ -133,6 +133,8 @@ do_line P1C(string, line)
 #if defined (__unix__) || defined (_AIX) || defined (_HPUX_SOURCE)
 #define unix
 #elif defined (__APPLE__) && defined (__MACH__)
+#define unix
+#elif defined (__NetBSD__)
 #define unix
 #endif
 #endif
@@ -218,7 +220,7 @@ read_all_cnf P1H(void)
 string
 kpse_cnf_get P1C(const_string, name)
 {
-  string ret, try;
+  string ret, ctry;
   string *ret_list;
   static boolean doing_cnf_init = false;
 
@@ -242,9 +244,9 @@ kpse_cnf_get P1C(const_string, name)
   
   /* First look up NAME.`kpse_program_name', then NAME.  */
   assert (kpse_program_name);
-  try = concat3 (name, ".", kpse_program_name);
-  ret_list = hash_lookup (cnf_hash, try);
-  free (try);
+  ctry = concat3 (name, ".", kpse_program_name);
+  ret_list = hash_lookup (cnf_hash, ctry);
+  free (ctry);
   if (ret_list) {
     ret = *ret_list;
     free (ret_list);

@@ -1,3 +1,5 @@
+% com16bit.ch: Omega version of file tex.ch
+%
 % tex.ch for C compilation with web2c, derived from various other change files.
 % By Tim Morgan, UC Irvine ICS Department, and many others.
 %
@@ -37,6 +39,13 @@
 \let\maybe=\iffalse
 @z
 
+@x
+@d banner=='This is Omega, Version 3.14159--1.23.2.1' {printed when \TeX\ starts}
+@y
+@d banner=='This is Omega, Version 3.14159--1.23.2.1' {printed when \TeX\ starts}
+@d banner_k=='This is Omegak, Version 3.14159--1.23.2.1' {printed when \TeX\ starts}
+@z
+
 @x [1.4] l.233 - program header
 Actually the heading shown here is not quite normal: The |program| line
 does not mention any |output| file, because \ph\ would ask the \TeX\ user
@@ -46,10 +55,10 @@ to specify a file name if |output| were specified here.
 @z
 
 @x [1.4] l.243 - labels in outer block not needed
-program TEX; {all file names are defined dynamically}
+program OMEGA; {all file names are defined dynamically}
 label @<Labels in the outer block@>@/
 @y
-program TEX; {all file names are defined dynamically}
+program OMEGA; {all file names are defined dynamically}
 @z
 
 @x [1.6] l.267 - labels in outer block not needed
@@ -126,9 +135,25 @@ if ini_version then
 @!stack_size=200; {maximum number of simultaneous input sources}
 @!max_in_open=6; {maximum number of input files and error insertions that
   can be going on simultaneously}
+@y
+@d file_name_size == maxint
+@d ssup_error_line = 255
+@d ssup_max_strings ==200000
+{Larger values may be used, but then the arrays consume much more memory.}
+@d ssup_trie_opcode == 65535
+@d ssup_trie_size == 262143
+
+@d ssup_hyph_size == 65535 {Changing this requires changing (un)dumping!}
+@d iinf_hyphen_size == 610 {Must be not less than |hyph_prime|!}
+
+@<Constants...@>=
+@!mem_bot=0; {smallest index in the |mem| array dumped by \.{INITEX};
+  must not be less than |mem_min|}
+  {Use |mem_bot=0| for compilers which cannot decrement pointers.}
+@z
+
+@x
 @!font_max=65535; {maximum internal font number; must be at most |font_biggest|}
-@!font_sort_max=65535;
-  {maximum font sort number; must be at most |font_sort_biggest|}
 @!param_size=60; {maximum number of simultaneous macro parameters}
 @!nest_size=40; {maximum number of semantic levels simultaneously active}
 @!max_strings=3000; {maximum number of strings; must not exceed |max_halfword|}
@@ -149,36 +174,20 @@ if ini_version then
 @!pool_name='TeXformats:OMEGA.POOL                   ';
   {string of length |file_name_size|; tells where the string pool appears}
 @y
-@d file_name_size == maxint
-@d ssup_error_line = 255
-@d ssup_max_strings ==200000
-{Larger values may be used, but then the arrays consume much more memory.}
-@d ssup_trie_opcode == 65535
-@d ssup_trie_size == 100000
-
-@d ssup_hyph_size == 65535 {Changing this requires changing (un)dumping!}
-@d iinf_hyphen_size == 610 {Must be not less than |hyph_prime|!}
-
-@<Constants...@>=
-@!mem_bot=0; {smallest index in the |mem| array dumped by \.{INITEX};
-  must not be less than |mem_min|}
-  {Use |mem_bot=0| for compilers which cannot decrement pointers.}
 @!font_max=65535; {maximum internal font number; must be at most |font_biggest|}
-@!font_sort_max=65535;
-  {maximum font sort number; must be at most |font_sort_biggest|}
 @!hash_offset=514; {smallest index in hash array, i.e., |hash_base| }
   {Use |hash_offset=0| for compilers which cannot decrement pointers.}
-@!trie_op_size=1501; {space for ``opcodes'' in the hyphenation patterns;
+@!trie_op_size=15011; {space for ``opcodes'' in the hyphenation patterns;
   best if relatively prime to 313, 361, and 1009.}
-@!neg_trie_op_size=-1501; {for lower |trie_op_hash| array bound;
+@!neg_trie_op_size=-15011; {for lower |trie_op_hash| array bound;
   must be equal to |-trie_op_size|.}
 @!min_trie_op=0; {first possible trie op code for any language}
 @!max_trie_op=ssup_trie_opcode; {largest possible trie opcode for any language}
 @!pool_name=TEX_POOL_NAME; {this is configurable, for the sake of ML-\TeX}
   {string of length |file_name_size|; tells where the string pool appears}
 @#
-@!inf_main_memory = 2999;
-@!sup_main_memory = 8000000;
+@!inf_main_memory = 2000000;
+@!sup_main_memory = 16000000;
 
 @!inf_trie_size = 80000;
 @!sup_trie_size = ssup_trie_size;
@@ -566,7 +575,8 @@ name_of_file:=pool_name; {we needn't set |name_length|}
 if a_open_in(pool_file) then
 @y
 name_length := strlen (pool_name);
-name_of_file := xmalloc (1 + name_length + 1);
+
+name_of_file := xmalloc_array (char, 1 + name_length);
 strcpy (name_of_file+1, pool_name); {copy the string}
 if a_open_in (pool_file, kpse_texpool_format) then
 @z
@@ -836,15 +846,11 @@ are debugging.)
 @z
 
 @x [12.176] l.3563 - Eliminate unsigned comparisons to zero.
-@p procedure print_font_and_char(@!p:integer); {prints |char_node| data}
-var fsort:integer;
 begin if p>mem_end then print_esc("CLOBBERED.")
 else  begin if (font(p)<font_base)or(font(p)>font_max) then print_char("*")
 @.*\relax@>
   else @<Print the font identifier for |font(p)|@>;
 @y
-@p procedure print_font_and_char(@!p:integer); {prints |char_node| data}
-var fsort:integer;
 begin if p>mem_end then print_esc("CLOBBERED.")
 else  begin @<Print the font identifier for |font(p)|@>;
 @z
@@ -931,12 +937,16 @@ else if (newtext(p)>=str_ptr) then print_esc("NONEXISTENT.")
 @!input_file_translation : array[1..max_in_open] of halfword;
 @!line : integer; {current line number in the current source file}
 @!line_stack : array[1..max_in_open] of integer;
+@!line_numbers : array[1..max_in_open] of integer;
+@!file_names : array[1..max_in_open] of integer;
 @y
 @!input_file : ^alpha_file;
 @!input_file_mode : ^halfword;
 @!input_file_translation : ^halfword;
 @!line : integer; {current line number in the current source file}
 @!line_stack : ^integer;
+@!line_numbers : ^integer;
+@!file_names : ^integer;
 @z
 
 @x [22.308] l.6701 - texarray
@@ -1060,7 +1070,7 @@ else  begin cur_name:=str_ptr;
 for j:=str_start(a) to str_start(a+1)-1 do append_to_name(so(str_pool[j]));
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file:= xmalloc(1 + length(a) + length(n) + length(e) + 1);
+name_of_file:= xmalloc_array(char, 1 + length(a) + length(n) + length(e));
 for j:=str_start(a) to str_start(a+1)-1 do append_to_name(so(str_pool[j]));
 @z
 
@@ -1074,13 +1084,15 @@ name_of_file[name_length+1]:=0;
 @d format_default_length=20 {length of the |TEX_format_default| string}
 @d format_area_length=11 {length of its area part}
 @d format_ext_length=4 {length of its `\.{.fmt}' part}
+@d format_extension=".fmt" {the extension, as a \.{WEB} constant}
 @y
 Under {\mc UNIX} we don't give the area part, instead depending
 on the path searching that will happen during file opening.  Also, the
 length will be set in the main program.
 
 @d format_area_length=0 {length of its area part}
-@d format_ext_length=4 {length of its `\.{.fmt}' part}
+@d format_ext_length=4 {length of its `\.{.oft}' part}
+@d format_extension=".oft" {the extension, as a \.{WEB} constant}
 @z
 
 @x [29.521] l.10066 - filenames: default format, where `plain.fmt' is.
@@ -1101,7 +1113,7 @@ program.
 for j:=1 to n do append_to_name(TEX_format_default[j]);
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file := xmalloc (1 + n + (b - a + 1) + format_ext_length + 1);
+name_of_file := xmalloc_array (char, 1 + n + (b - a + 1) + format_ext_length);
 for j:=1 to n do append_to_name(TEX_format_default[j]);
 @z
 
@@ -1142,17 +1154,38 @@ name_of_file[name_length+1]:=0;
 @.I can't find the format...@>
 @z
 
-@x [29.532] l.10263 - avoid conflict, `logname' in <unistd.h> on some systems.
-@d ensure_dvi_open==begin
+@x [29.530] l.10239 - prompt_file_name: No default extension is TeX input file.
+if e=".tex" then show_context;
 @y
+if (e=".tex") or (e="") then show_context;
+@z
+
+@x [29.532] l.10263 - avoid conflict, `logname' in <unistd.h> on some systems.
+@ Here's an example of how these conventions are used. Whenever it is time to
+ship out a box of stuff, we shall use the macro |ensure_dvi_open|.
+
+@y
+@ Here's an example of how these conventions are used. Whenever it is time to
+ship out a box of stuff, we shall use the macro |ensure_dvi_open|.
+
 @d log_name == texmf_log_name
-@d ensure_dvi_open==begin
 @z
 
 @x [29.534] l.10285 - Adjust for C string conventions.
 @!months:packed array [1..36] of char; {abbreviations of month names}
 @y
 @!months:^char;
+j:integer;
+@z
+
+@x [29.534] l. - Send the job_name to the file recorder.
+begin old_setting:=selector;
+if job_name=0 then job_name:="texput";
+@y
+begin old_setting:=selector;
+if job_name=0 then job_name:="texput";
+pack_job_name(".ofl");
+recorder_change_filename(stringcast(name_of_file+1));
 @z
 
 @x [29.536] l.10324 - Print rest of banner.
@@ -1186,15 +1219,9 @@ loop@+  begin begin_file_reading; {set up |cur_file| and new level of input}
 var temp_str: str_number; k: integer;
 begin scan_file_name; {set |cur_name| to desired file name}
 pack_cur_name;
-loop@+  begin begin_file_reading; {set up |cur_file| and new level of input}
+loop@+begin
+  begin_file_reading; {set up |cur_file| and new level of input}
   tex_input_type := 1; {Tell |open_input| we are \.{\\input}.}
-  if cur_ext = ".tex" then begin
-    {|prompt_file_name| packed the \.{.tex} in, so if the user says
-     \.{foo.bar} in response to `type another input file name:', we'd
-     end up looking for \.{foo.bar.tex} only, and never find \.{foo.bar}.}
-    cur_ext := "";
-    pack_cur_name;
-  end;
   {Kpathsea tries all the various ways to get the file.}
   if open_in_name_ok(name_of_file+1)
      and a_open_in(cur_file, kpse_tex_format) then
@@ -1209,6 +1236,12 @@ loop@+  begin begin_file_reading; {set up |cur_file| and new level of input}
     name_in_progress:=false;
     goto done;
     end;
+@z
+
+@x [29.537] l.10348 - start_input: don't force ".tex" extension.
+  prompt_file_name("input file name",".tex");
+@y
+  prompt_file_name("input file name","");
 @z
 
 @x [29.537] l.10350 - start_input: string recycling
@@ -1226,16 +1259,7 @@ if name=str_ptr-1 then {we can try to conserve string pool space now}
 @x [29.537] l.10352 - start_input: use different heuristic for initex.
   begin job_name:=cur_name; open_log_file;
 @y
-  begin job_name:=cur_name;
-    init
-      if ini_version and dump_option then begin
-        str_room(format_default_length);
-        for k:=1 to format_default_length - format_ext_length do
-          append_char(TEX_format_default[k]);
-        job_name:=make_string;
-      end;
-    tini
-    open_log_file;
+  begin job_name:=get_job_name; open_log_file;
 @z
 
 @x [29.537] l.10359 - start_input: don't return filename to string pool.
@@ -1482,6 +1506,13 @@ if length(k)=hn then
 done:
 @z
 
+% The GNU C compiler complains of unused variables.
+@x
+@!s,@!t:str_number; {strings being compared or stored}
+@y
+@!s:str_number; {strings being compared or stored}
+@z
+
 %%%%%%%% dynamic hyph_size
 @x 18274 m.939
   begin h:=(h+h+hc[j]) mod hyph_size;
@@ -1663,6 +1694,11 @@ hyph_data: if cur_chr=1 then
       begin new_patterns; goto done; end; @;@+tini@/
 @z
 
+@x
+@!flushable_string:str_number; {string not yet referenced}
+@y
+@z
+
 % undo Knuth's change because
 %   a) the string is already replaced in |scan_file_name| and therefore
 %   b) the wrong string will get flushed!!!
@@ -1730,9 +1766,16 @@ format_ident:=" (INIOMEGA)";
 if ini_version then format_ident:=" (INIOMEGA)";
 @z
 
+% The GNU C compiler complains of unused variables.
 @x [50.1302] l.23690 - Eliminate now-unused variable `w' in `store_fmt_file'.
+var j,@!k,@!l:integer; {all-purpose indices}
+@!p,@!q: pointer; {all-purpose pointers}
+@!x: integer; {something to dump}
 @!w: four_quarters; {four ASCII codes}
 @y
+var @!k:integer; {all-purpose indices}
+@!p,@!q: pointer; {all-purpose pointers}
+@!x: integer; {something to dump}
 @z
 
 @x [50.1303] l.23722 - Ditto, for `load_fmt_file'.
@@ -1813,7 +1856,7 @@ head:=contrib_head; tail:=contrib_head;
 mem_min := mem_bot - extra_mem_bot;
 mem_max := mem_top + extra_mem_top;
 
-xmalloc_array (yzmem, mem_max - mem_min);
+yzmem:=xmalloc_array (memory_word, mem_max - mem_min);
 zmem := yzmem - mem_min;   {this pointer arithmetic fails with some compilers}
 mem := zmem;
 @z
@@ -1855,9 +1898,9 @@ if pool_size<pool_ptr+pool_free then
 undump_size(0)(sup_max_strings-strings_free)('sup strings')(str_ptr);@/
 if max_strings<str_ptr+strings_free then
   max_strings:=str_ptr+strings_free;
-xmalloc_array(str_start_ar, max_strings-biggest_char);
+str_start_ar:=xmalloc_array(pool_pointer, max_strings-biggest_char);
 undump_things(str_start(too_big_char), str_ptr-too_big_char+1);
-xmalloc_array(str_pool, pool_size);
+str_pool:=xmalloc_array(packed_ASCII_code, pool_size);
 undump_things(str_pool[0], pool_ptr);
 @z
 
@@ -1938,7 +1981,7 @@ dump_things(hyf_next[1], trie_op_ptr);
 {This is only used for the hyphenation tries below, and the size is
  always |j+1|.}
 @d xmalloc_and_undump(#) ==
-  if not # then xmalloc_array(#, j+1);
+  if not # then #:=xmalloc_array(two_halves, j+1);
   undump_things(#[0], j+1);
 
 @<Undump the hyphenation tables@>=
@@ -2033,6 +2076,9 @@ print(" (format="); print(job_name); print_char(" ");
 @p procedure main_body;
 begin @!{|start_here|}
 
+{Always start the file recorder?}
+  recorder_enabled:=true;
+
 {Bounds that may be set from the configuration file. We want the user to
  be able to specify the names with underscores, but \.{TANGLE} removes
  underscores, so we're stuck giving the names twice, once as a string,
@@ -2092,26 +2138,28 @@ begin @!{|start_here|}
   if error_line > ssup_error_line then error_line := ssup_error_line;
 
   {array memory allocation}
-  xmalloc_array (buffer, buf_size);
-  xmalloc_array (nest, nest_size);
-  xmalloc_array (save_stack, save_size);
-  xmalloc_array (input_stack, stack_size);
-  xmalloc_array (input_file, max_in_open);
-  xmalloc_array (input_file_mode, max_in_open);
-  xmalloc_array (input_file_translation, max_in_open);
-  xmalloc_array (line_stack, max_in_open);
-  xmalloc_array (param_stack, param_size);
-  xmalloc_array (dvi_buf, dvi_buf_size);
-  xmalloc_array (hyph_word , hyph_size);
-  xmalloc_array (hyph_list , hyph_size);
-  xmalloc_array (hyph_link , hyph_size);
+  buffer:=xmalloc_array (ASCII_code, buf_size);
+  nest:=xmalloc_array (list_state_record, nest_size);
+  save_stack:=xmalloc_array (memory_word, save_size);
+  input_stack:=xmalloc_array (in_state_record, stack_size);
+  input_file:=xmalloc_array (alpha_file, max_in_open);
+  input_file_mode:=xmalloc_array (halfword, max_in_open);
+  input_file_translation:=xmalloc_array (halfword, max_in_open);
+  line_stack:=xmalloc_array (integer, max_in_open);
+  line_numbers:=xmalloc_array (integer, max_in_open);
+  file_names:=xmalloc_array (integer, max_in_open);
+  param_stack:=xmalloc_array (halfword, param_size);
+  dvi_buf:=xmalloc_array (real_eight_bits, dvi_buf_size);
+  hyph_word:=xmalloc_array (str_number, hyph_size);
+  hyph_list:=xmalloc_array (halfword, hyph_size);
+  hyph_link:=xmalloc_array (hyph_pointer, hyph_size);
 @+init
 if ini_version then begin
-  xmalloc_array (yzmem, mem_top - mem_bot);
+  yzmem:=xmalloc_array (memory_word, mem_top - mem_bot);
   zmem := yzmem - mem_bot;   {Some compilers require |mem_bot=0|}
 
-  xmalloc_array (str_start_ar, max_strings-biggest_char);
-  xmalloc_array (str_pool, pool_size);
+  str_start_ar:=xmalloc_array (pool_pointer, max_strings-biggest_char);
+  str_pool:=xmalloc_array (packed_ASCII_code, pool_size);
 end;
 @+tini
 @z
@@ -2183,15 +2231,15 @@ fix_date_and_time;@/
 
 @!init
 if trie_not_ready then begin {initex without format loaded}
-  xmalloc_array (trie, trie_size);
+  trie:=xmalloc_array (two_halves, trie_size);
 
-  xmalloc_array (trie_c, trie_size);
-  xmalloc_array (trie_o, trie_size);
-  xmalloc_array (trie_l, trie_size);
-  xmalloc_array (trie_r, trie_size);
-  xmalloc_array (trie_hash, trie_size);
-  xmalloc_array (trie_taken, trie_size);
-  xmalloc_array (trie_min, too_big_char);
+  trie_c:=xmalloc_array (ASCII_code, trie_size);
+  trie_o:=xmalloc_array (quarterword, trie_size);
+  trie_l:=xmalloc_array (trie_pointer, trie_size);
+  trie_r:=xmalloc_array (trie_pointer, trie_size);
+  trie_hash:=xmalloc_array (trie_pointer, trie_size);
+  trie_taken:=xmalloc_array (boolean, trie_size);
+  trie_min:=xmalloc_array (trie_pointer, too_big_char);
 
   trie_root:=0; trie_c[0]:=si(0); trie_ptr:=0;
   end;
@@ -2209,6 +2257,17 @@ if trie_not_ready then begin {initex without format loaded}
     end
 @y
     dump_core {do something to cause a core dump}
+@z
+
+% The GNU C compiler complains of unused variables.
+@x
+procedure do_extension;
+var i,@!j,@!k:integer; {all-purpose integers}
+@!p,@!q,@!r:pointer; {all-purpose pointers}
+@y
+procedure do_extension;
+var @!k:integer; {all-purpose integers}
+@!p:pointer; {all-purpose pointers}
 @z
 
 % [53.1350] (new_write_whatsit) Allow 18 as a \write stream. We never
@@ -2265,7 +2324,12 @@ if j=18 then
     if clobbered then print("clobbered")
     else begin {We have the string; run system(3). We don't have anything
             reasonable to do with the return status, unfortunately discard it.}
-      system(address_of(str_pool[str_start(str_ptr)]));
+      for d:=0 to cur_length-1 do {Convert to external character set.}
+        begin
+        outside_string_array[d]:=xchr[str_pool[str_start(str_ptr)+d]];
+        end;
+      outside_string_array[cur_length]:=null_code;
+      system(stringcast(outside_string_array));
       print("executed");
       end;
     pool_ptr:=str_start(str_ptr);  {erase the string}
@@ -2321,7 +2385,7 @@ system-dependent section allows easy integration of Web2c and e-\TeX, etc.)
 @<Glob...@>=
 @!edit_name_start: pool_pointer; {where the filename to switch to starts}
 @!edit_name_length,@!edit_line: integer; {what line to start editing at}
-@!ipc_on: integer; {level of IPC action, 0 for none [default]}
+@!ipc_on: c_int_type; {level of IPC action, 0 for none [default]}
 
 @ The |edit_name_start| will be set to point into |str_pool| somewhere after
 its beginning if \TeX\ is supposed to switch to an editor on exit.
@@ -2347,7 +2411,7 @@ that's a convenient module in which to put it.)
 
 @<Basic printing procedures@> =
 procedure print_csnames (hstart:integer; hfinish:integer);
-var c,h,where:integer;
+var c,h:integer;
 begin
   write_ln(stderr, 'fmtdebug:csnames from ', hstart, ' to ', hfinish, ':');
   for h := hstart to hfinish do begin

@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# This script is based on the original script by Mark A. Wicks for
+# dvipdfm-0.13.2. The following fixes / improvements have been made
+# by Thomas Esser:
+#   - security fix (secure use of a temp. directory)
+#   - portability fix (don't use shell functions)
+#   - exit with proper return code
+
+# Process command line args
+# This script isn't very smart.  It assumes
+# the last thing is the file name and ignores
+# everything else.
+
+# Must have at least one argumen (the DVI filename)
+if [ $# -eq 0 ]
+then
+  echo "No file name specified." >&2
+  exit 1
+fi
+
+# Loop over all arguments except the last one
+USERARGS=$@
+ARGS=
+PDFFILENAME=
+while [ $# -ne 1 ]
+do
+  ARGS="$ARGS $1"
+  if [ "x$1" = "x-o" ]
+  then
+    PDFFILENAME=`echo $2 | sed -e's/\.pdf//g'`
+    ARGS="$ARGS $2"
+    shift
+  fi
+  shift
+done
+
+FILENAME=$1
+test -z "$PDFFILENAME" && PDFFILENAME=$FILENAME
+
+# Run dvipdfm with the fastest options for the first pass
+if dvipdfm $ARGS -e -z0 $FILENAME; then
+
+  TMP=/tmp/dvipdft.$$
+  export TMP
+  trap 'rm -f "$TMP"/*rmdir "$TMP"
+        echo "Interrupted!" >&2; exit 1' 1 2 3 7 13 15
+  (umask 077; mkdir "$TMP") \
+    || { echo "$0: could not create directory $TMP" >&2; exit 1; }
+
+  if gs -r10 -dNOPAUSE -dBATCH -sDEVICE=png256 \
+        -sOutputFile=$TMP/$PDFFILENAME.%d $PDFFILENAME.pdf
+  then
+    #  Run dvipdfm with the users specified options for the last pass
+    echo "dvipdfm -dt $USERARGS"
+    dvipdfm -dt $USERARGS
+    rc=$?
+  else
+    echo "Execution of gs failed." >&2
+    rc=1
+  fi   
+
+  rm -f "$TMP"/$PDFFILENAME.*; rmdir "$TMP"
+else
+  echo "Execution of dvipdfm failed." >&2
+  rc=1
+fi
+
+exit $rc

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTConLen.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTConLen.c,v 1.1.1.2 2003-02-25 22:27:02 amb Exp $
 **
 **	This stream counts the number of bytes in a stream until it reaches
 **	max number of bytes it can occupy. If this happens then	it gives up.
@@ -115,8 +115,7 @@ PRIVATE void append_buf (HTStream * me)
 PRIVATE BOOL alloc_new (HTStream * me, int size)
 {
     if (me->conlen >= me->max_size) {
-	if (STREAM_TRACE)
-	    HTTrace("Buffer...... size %d reached, going transparent\n",
+	HTTRACE(STREAM_TRACE, "Buffer...... size %d reached, going transparent\n" _ 
 		    me->max_size);
 	return NO;
     } else if (size) {
@@ -124,8 +123,7 @@ PRIVATE BOOL alloc_new (HTStream * me, int size)
 	me->tmp_max = size;
 	if ((me->tmp_buf = (char  *) HT_MALLOC(size)) == NULL)
 	    HT_OUTOFMEM("buf_put_char");
-	if (STREAM_TRACE)
-	    HTTrace("Buffer...... created with len %d\n", size);
+	HTTRACE(STREAM_TRACE, "Buffer...... created with len %d\n" _ size);
 	return YES;
     }
     return NO;
@@ -151,7 +149,7 @@ PRIVATE int buf_flush (HTStream * me)
 	}
 
 	/* If we are not a pipe then do no more buffering */
-	if (!(me->mode & HT_BM_PIPE)) me->state = HT_BS_TRANSPARENT;
+	if ((me->mode & HT_BM_PIPE)) me->state = HT_BS_TRANSPARENT;
     }
     return (*me->target->isa->flush)(me->target);
 }
@@ -207,7 +205,7 @@ PRIVATE int buf_put_block (HTStream * me, const char * b, int l)
 	    } else if (me->mode & HT_BM_DELAY) {
 		/* Buffer ran full and we pause */
 		me->state = HT_BS_PAUSE;
-		if (STREAM_TRACE) HTTrace("Buffer....... Paused\n");
+		HTTRACE(STREAM_TRACE, "Buffer....... Paused\n");
 		return HT_PAUSE;
 	    } else {
 		/* Buffer ran full and we flush and go transparent */
@@ -245,7 +243,7 @@ PRIVATE int buf_free (HTStream * me)
     **  then we don't free it.
     */ 
     if (me->mode & HT_BM_PIPE && me->state != HT_BS_TRANSPARENT) {
-	if (STREAM_TRACE) HTTrace("PipeBuffer Waiting to be flushed\n");
+	HTTRACE(STREAM_TRACE, "PipeBuffer Waiting to be flushed\n");
 	return HT_OK;
     }
 
@@ -255,8 +253,7 @@ PRIVATE int buf_free (HTStream * me)
     */
     if (me->mode & HT_BM_COUNT && me->request) {
 	HTParentAnchor * anchor = HTRequest_anchor(me->request);
-	if (STREAM_TRACE)
-	    HTTrace("Buffer........ Calculated content-length: %d\n", me->conlen);
+	HTTRACE(STREAM_TRACE, "Buffer........ Calculated content-length: %d\n" _ me->conlen);
 	HTAnchor_setLength(anchor, me->conlen);
     }
 
@@ -280,7 +277,7 @@ PRIVATE int buf_abort (HTStream * me, HTList * e)
     if (me->target) (*me->target->isa->abort)(me->target,e);
     free_buf_all(me);
     HT_FREE(me);
-    if (PROT_TRACE) HTTrace("Buffer...... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "Buffer...... ABORTING...\n");
     return HT_ERROR;
 }
 
@@ -306,7 +303,7 @@ PUBLIC HTStream * HTBuffer_new (HTStream *	target,
     me->request = request;
     me->max_size = (max_size > 0) ? max_size : HT_MAX_SIZE;
     me->mode = HT_BM_PLAIN;
-    if (STREAM_TRACE) HTTrace("Buffer...... Created with size %d\n", me->max_size);
+    HTTRACE(STREAM_TRACE, "Buffer...... Created with size %d\n" _ me->max_size);
     return me;
 }
 

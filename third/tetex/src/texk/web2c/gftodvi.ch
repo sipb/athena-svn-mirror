@@ -198,17 +198,17 @@ unreasonable).
 
 @p procedure open_gf_file; {prepares to read packed bytes in |gf_file|}
 begin
-  gf_file := kpse_open_file (name_of_file, kpse_gf_format);
+  gf_file := kpse_open_file (stringcast(name_of_file), kpse_gf_format);
   cur_loc := 0;
 end;
 @#
 procedure open_tfm_file; {prepares to read packed bytes in |tfm_file|}
 begin
-   tfm_file := kpse_open_file (name_of_file, kpse_tfm_format);
+   tfm_file := kpse_open_file (stringcast(name_of_file), kpse_tfm_format);
 end;
 @#
 procedure open_dvi_file; {prepares to write packed bytes in |dvi_file|}
-begin rewritebin(dvi_file,name_of_file);
+begin rewritebin(dvi_file,stringcast(name_of_file));
 end;
 @z
 
@@ -378,7 +378,7 @@ for k:=name_length+1 to file_name_size do name_of_file[k]:=' ';
 @!name_length: integer;
 begin
   name_length := length (a) + length (n) + length (e);
-  name_of_file := xmalloc (name_length + 1);
+  name_of_file := xmalloc_array (ASCII_code, name_length);
   k := -1; {C strings start at position zero.}
 for j:=str_start[a] to str_start[a+1]-1 do append_to_name(str_pool[j]);
 for j:=str_start[n] to str_start[n+1]-1 do append_to_name(str_pool[j]);
@@ -620,10 +620,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'gftodvi');
+      usage ('gftodvi');
     
     end else if argument_is ('help') then begin
-      usage (0, GFTODVI_HELP);
+      usage_help (GFTODVI_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
@@ -639,7 +639,7 @@ begin
    We must have one remaining argument.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'gftodvi: Need exactly one file argument.');
-    usage (1, 'gftodvi');
+    usage ('gftodvi');
   end;
 end;
 

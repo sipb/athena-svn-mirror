@@ -40,6 +40,7 @@ web2c_options=-c$basefile
 precmd=
 midcmd=
 fixwrites_options=
+splitup_options="-i -l 10000"
 postcmd=
 output="> $cfile"
 output_files="$cfile $basefile.h"
@@ -53,7 +54,7 @@ case $basefile in
     web2c_options="-m -c${basefile}coerce"
     hfile=texmfmp.h
     midcmd="| sed -f $srcdir/web2c/cvtmf2.sed"
-    postcmd="| ./web2c/splitup $basefile"
+    postcmd="| ./web2c/splitup $splitup_options $basefile"
     cfile=${basefile}2.c # last output file, or thereabouts
     output=
     output_files="$basefile[0-9]*.c ${basefile}ini.c ${basefile}d.h \
@@ -68,7 +69,7 @@ ${basefile}coerce.h"
     web2c_options="-t -c${basefile}coerce"
     hfile=texmfmp.h
     fixwrites_options=-t
-    postcmd="| ./web2c/splitup ${basefile}"
+    postcmd="| ./web2c/splitup $splitup_options ${basefile}"
     cfile=${basefile}2.c # last output file, or thereabouts
     output=
     output_files="$basefile[0-9]*.c ${basefile}ini.c ${basefile}d.h \

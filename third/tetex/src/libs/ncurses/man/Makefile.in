@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.1.1.1 2000-03-10 17:52:42 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2003-02-25 22:03:37 amb Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.           #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -36,40 +36,44 @@
 
 SHELL		= /bin/sh
 
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 datadir		= @datadir@
 mandir		= @mandir@
 
-ticdir		= $(datadir)/terminfo
-
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
 all \
-sources:	terminfo.5
+sources :	terminfo.5
+depend :
 
-$(INSTALL_PREFIX)$(mandir) :
-	$(srcdir)/../mkinstalldirs $@
+$(DESTDIR)$(mandir) :
+	sh $(srcdir)/../mkinstalldirs $@
 
-install install.man : terminfo.5 $(INSTALL_PREFIX)$(mandir)
-	sh ./edit_man.sh installing $(INSTALL_PREFIX)$(mandir) terminfo.5 $(srcdir)/*.[0-9]*
+EDITARGS = $(DESTDIR)$(mandir) $(srcdir) terminfo.5 $(srcdir)/*.[0-9]*
+
+install install.man : terminfo.5 $(DESTDIR)$(mandir)
+	sh ./edit_man.sh installing $(EDITARGS)
 
 uninstall uninstall.man :
-	-sh ./edit_man.sh removing $(INSTALL_PREFIX)$(mandir) terminfo.5 $(srcdir)/*.[0-9]*
+	-sh ./edit_man.sh removing $(EDITARGS)
 
 # We compose terminfo.5 from the real sources...
-CAPLIST=$(srcdir)/../include/Caps
+CAPLIST=$(srcdir)/../include/@TERMINFO_CAPS@
 terminfo.5: $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail Makefile $(srcdir)/MKterminfo.sh
 	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
 
 mostlyclean :
-	-rm -f core tags TAGS *~ *.ln *.atac trace
+	-rm -f core tags TAGS *~ *.bak *.ln *.atac trace
 
 clean:	mostlyclean
 	rm -f terminfo.5
+
+edit_man.sed : make_sed.sh @MANPAGE_RENAMES@
+	sh $srcdir/make_sed.sh @MANPAGE_RENAMES@ >edit_man.sed
 
 distclean realclean: clean
 	rm -f Makefile edit_man.*

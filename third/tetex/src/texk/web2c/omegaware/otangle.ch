@@ -1,3 +1,4 @@
+% otangle.ch: web2c changes to file tangle.ch
 % 
 % This file is part of the Omega project, which
 % is based in the web2c distribution of TeX.
@@ -71,13 +72,13 @@ procedure initialize;
 @!buf_size=3000; {maximum length of input line}
 @z
 @x
-@!max_names=4000; {number of identifiers, strings, module names;
+@!max_names=10239; {number of identifiers, strings, module names;
   must be less than 10240}
-@!max_texts=2000; {number of replacement texts, must be less than 10240}
+@!max_texts=10239; {number of replacement texts, must be less than 10240}
 @y
-@!max_names=10000; {number of identifiers, strings, module names;
+@!max_names=10239; {number of identifiers, strings, module names;
   must be less than 10240}
-@!max_texts=10000; {number of replacement texts, must be less than 10240}
+@!max_texts=10239; {number of replacement texts, must be less than 10240}
 @z
 
 @x
@@ -409,10 +410,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'otangle');
+      usage ('otangle');
 
     end else if argument_is ('help') then begin
-      usage (0, OTANGLE_HELP);
+      usage_help (OTANGLE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -424,7 +425,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'otangle: Need one or two file arguments.');
-    usage (1, 'otangle');
+    usage ('otangle');
   end;
   
   {Supply |".web"| and |".ch"| extensions if necessary.}

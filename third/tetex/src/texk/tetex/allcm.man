@@ -21,4 +21,4 @@ fontimport(1),
 fontexport(1).
 
 .SH AUTHOR
-Thomas Esser (te@informatik.uni\-hannover.de)
+Thomas Esser (te@dbs.uni\-hannover.de)

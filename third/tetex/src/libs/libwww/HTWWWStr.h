@@ -35,8 +35,13 @@ Library.
 
 /*
 .
-  Next word or quoted string
+  MIME Parsing and other String Based Utilities
 .
+
+A bunch of "finding the next whatever" functions.
+(
+  Next word or quoted string
+)
 
 This function returns a RFC822 word separated by space, comma, or semi-colons.
 pstr points to a string containing a word separated by white
@@ -50,9 +55,9 @@ to the first word or NULL on error
 extern char * HTNextField (char** pstr);
 
 /*
-.
+(
   Next Name-value Pair
-.
+)
 
 This is the same as HTNextField but it does not look for '='
 as a separator so if there is a name-value pair then both parts are returned.
@@ -62,36 +67,54 @@ Returns a pointer to the first word or NULL on error
 extern char * HTNextPair (char ** pstr);
 
 /*
+(
+  Next Name-value Parameter
+)
 
+This is the same as HTNextPair but it does not look for ','
+as a separator so if there is a name-value pair then both parts are returned.
+Returns a pointer to the first word or NULL on error
+*/
+
+extern char * HTNextParam (char ** pstr);
+
+/*
 (
   Next LWS Delimited Token
 )
 
-A simpler version of the above that only looks for linear white space
-as the delimiter.
-
+A simpler version of the above that only looks for linear white space as
+the delimiter.
 */
 
 extern char * HTNextLWSToken (char ** pstr);
 
 /*
-
 (
   Find next "/" Delimited Segment
 )
 
-This is the same as HTNextField but it includes "/" as a delimiter.
-Returns	a pointer to the first segment or NULL on error
-
+This is the same as HTNextField but it includes "/" as a delimiter. Returns
+a pointer to the first segment or NULL on error
 */
 
 extern char * HTNextSegment (char ** pstr);
 
 /*
+(
+  Next Comma Separated String (or Element)
+)
 
-.
+This is the same as HTNextPair but it does not look for anything else than
+',' as separator Returns a pointer to the first word or NULL on error
+*/
+
+extern char * HTNextElement (char ** pstr);
+
+/*
+(
   Next S-expression
-.
+)
 
 Find the next s-expression token from a string of characters. We return the
 name of this expression and the param points to
@@ -228,10 +251,12 @@ extern char * HTWWWToLocal (const char * url, const char * base,
 )
 
 Generates a WWW URL name from a local file name or NULL if error. Returns
-URL (that must be freed by caller) if OK, else NULL.
+URL (that must be freed by caller) if OK, else NULL. The access parameter
+can be used to indicate any special scheme used for local file access. If
+NULL then "file:" is used.
 */
 
-extern char * HTLocalToWWW (const char * local);
+extern char * HTLocalToWWW (const char * local, const char * access);
 
 /*
 */
@@ -242,6 +267,6 @@ extern char * HTLocalToWWW (const char * local);
 
   
 
-  @(#) $Id: HTWWWStr.h,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+  @(#) $Id: HTWWWStr.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -18,8 +18,8 @@
 
 The Atom Class defines strings which are given representative
 pointer values so that they can be stored more efficiently, and comparisons
-for equality done more efficiently. The list of atoms are stored
-in a has table, so when asking for a new atom you might infact get back an
+for equality done more efficiently. The list of atoms is stored
+in a hash table, so when asking for a new atom you might in fact get back an
 existing one.
 
 Note: There are a whole bunch of
@@ -96,6 +96,6 @@ extern void HTAtom_deleteAll (void);
 
   
 
-  @(#) $Id: HTAtom.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+  @(#) $Id: HTAtom.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

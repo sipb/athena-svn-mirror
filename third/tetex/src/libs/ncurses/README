@@ -1,4 +1,4 @@
--- $Id: README,v 1.1.1.1 2000-03-10 17:52:40 ghudson Exp $
+-- $Id: README,v 1.1.1.2 2003-02-25 22:27:30 amb Exp $
 -------------------------------------------------------------------------------
 		README file for the ncurses package
 
@@ -10,7 +10,7 @@ See the file TO-DO for things that still need doing, including known bugs.
 Browse the file misc/ncurses-intro.html for narrative descriptions of how
 to use ncurses and the panel, menu, and form libraries.
  
-Browse the file misc/hackguide.html for a tour of the package internals.
+Browse the file doc/html/hackguide.html for a tour of the package internals.
 
 ROADMAP AND PACKAGE OVERVIEW:
 
@@ -18,7 +18,7 @@ You should be reading this file in a directory called:  ncurses-d.d, where d.d
 is the current version number (see the dist.mk file in this directory for
 that).  There should be a number of subdirectories, including `c++', `form',
 `man', `menu', `misc', `ncurses', `panel', `progs', `test', 'tack' and `Ada95'. 
-(The 'tack' program is distributed separately).
+(The 'tack' program may be distributed separately).
 
 A full build/install of this package typically installs several libraries, a
 handful of utilities, and a database hierarchy.  Here is an inventory of the
@@ -96,10 +96,10 @@ descriptions; the next two (clear and tput) are for use in shell scripts.  The
 last (tset) is provided for 4.4BSD compatibility.  The source code for all of
 these lives in the `progs' directory.
 
-Detailed documentation for all libraries and utilities can be found in
-the `man' directory.  An HTML introduction to ncurses, panels, and
-menus programming lives in the `misc' directory.  Manpages in HTML format
-are under `Ada95/html'.
+Detailed documentation for all libraries and utilities can be found in the
+`man' and `doc' directories.  An HTML introduction to ncurses, panels, and
+menus programming lives in the `doc/html' directory.  Manpages in HTML format
+are under `doc/html/man'.
 
 The `test' directory contains programs that can be used to verify or
 demonstrate the functions of the ncurses libraries.  See test/README for
@@ -114,7 +114,7 @@ Pavel Curtis:
 Zeyd M. Ben-Halim:
 	port of original to Linux and many enhancements.
 
-Thomas Dickey (maintainer since 1.9.9e):
+Thomas Dickey (maintainer for 1.9.9g through 4.1, resuming with FSF's 5.0):
 	configuration scripts, porting, mods to adhere to XSI Curses in the
 	areas of background color, terminal modes.  Also memory leak testing,
 	the wresize, default colors and key definition extensions and numerous
@@ -171,5 +171,5 @@ suggesting improvements, and generally whining about ncurses :-)
 
 BUGS:
 	See the INSTALL file for bug and developer-list addresses.
-	The Hacker's Guide in the misc directory includes some guidelines
+	The Hacker's Guide in the doc directory includes some guidelines
 	on how to report bugs in ways that will get them fixed most quickly.

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTAtom.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTAtom.c,v 1.1.1.2 2003-02-25 22:25:19 amb Exp $
 **
 **	Atoms are names which are given representative pointer values
 **	so that they can be stored more efficiently, and comparisons
@@ -23,9 +23,7 @@
 #include "HTList.h"
 #include "HTAtom.h"
 
-#define HASH_SIZE	599		/* Tunable */
-
-PRIVATE HTAtom * hash_table[HASH_SIZE];
+PRIVATE HTAtom * hash_table[HT_XL_HASH_SIZE];
 PRIVATE BOOL initialised = NO;
 
 /*
@@ -43,22 +41,21 @@ PUBLIC HTAtom * HTAtom_for (const char * string)
     /*		First time around, clear hash table
     */
     if (!initialised) {
-        memset((void *) hash_table, '\0', sizeof(HTAtom *) * HASH_SIZE);
+        memset((void *) hash_table, '\0', sizeof(HTAtom *) * HT_XL_HASH_SIZE);
 	initialised = YES;
     }
     
     /*		Generate hash function
     */
     for (p=string, hash=0; *p; p++) {
-        hash = (hash * 3 + tolower(*p)) % HASH_SIZE;
+        hash = (hash * 3 + TOLOWER(*p)) % HT_XL_HASH_SIZE;
     }
     
     /*		Search for the string in the list
     */
     for (a=hash_table[hash]; a; a=a->next) {
 	if (0==strcmp(a->name, string)) {
-    	    /* if (WWWTRACE) HTTrace(
-	    	"HTAtom: Old atom %p for `%s'\n", a, string); */
+    	    /* HTTRACE(UTIL_TRACE, "HTAtom: Old atom %p for `%s'\n" _ a _ string); */
 	    return a;				/* Found: return it */
 	}
     }
@@ -72,7 +69,7 @@ PUBLIC HTAtom * HTAtom_for (const char * string)
     strcpy(a->name, string);
     a->next = hash_table[hash];		/* Put onto the head of list */
     hash_table[hash] = a;
-/*    if (WWWTRACE) HTTrace("HTAtom: New atom %p for `%s'\n", a, string); */
+/*    HTTRACE(UTIL_TRACE, "HTAtom: New atom %p for `%s'\n" _ a _ string); */
     return a;
 }
 
@@ -93,14 +90,14 @@ PUBLIC HTAtom * HTAtom_caseFor (const char * string)
     /*		First time around, clear hash table
     */
     if (!initialised) {
-        memset((void *) hash_table, '\0', sizeof(HTAtom *) * HASH_SIZE);
+        memset((void *) hash_table, '\0', sizeof(HTAtom *) * HT_XL_HASH_SIZE);
 	initialised = YES;
     }
     
     /*		Generate hash function
     */
     for(p=string, hash=0; *p; p++) {
-        hash = (hash * 3 + tolower(*p)) % HASH_SIZE;
+        hash = (hash * 3 + TOLOWER(*p)) % HT_XL_HASH_SIZE;
     }
     
     /*		Search for the string in the list
@@ -134,7 +131,7 @@ PUBLIC void HTAtom_deleteAll (void)
     HTAtom *cur;
     HTAtom *next;
     
-    for (i=0; i<HASH_SIZE; i++) {
+    for (i=0; i<HT_XL_HASH_SIZE; i++) {
 	if (hash_table[i]) {
 	    cur = hash_table[i];
 	    while (cur) {
@@ -182,7 +179,7 @@ PUBLIC HTList *HTAtom_templateMatches (const char * templ)
 	int i;
 	HTAtom *cur;
 
-	for (i=0; i<HASH_SIZE; i++) {
+	for (i=0; i<HT_XL_HASH_SIZE; i++) {
 	    for (cur = hash_table[i];  cur;  cur=cur->next) {
 		if (mime_match(cur->name, templ))
 		    HTList_addObject(matches, (void*)cur);

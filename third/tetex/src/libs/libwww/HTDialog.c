@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTDialog.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTDialog.c,v 1.1.1.2 2003-02-25 22:25:22 amb Exp $
 **
 **	This module provides a default implementation of the application part
 **	of the Message and Dialog part or the Library. You do not have to do
@@ -253,7 +253,7 @@ PUBLIC BOOL HTProgress (HTRequest * request, HTAlertOpcode op,
 {
     char * msg = HTDialog_progressMessage(request, op, msgnum, dfault, input);
     if (msg) {
-	HTTrace("%s\n", msg);
+	HTPrint("%s\n", msg);
 	HT_FREE(msg);
     }
     return YES;
@@ -264,13 +264,10 @@ PUBLIC BOOL HTConfirm (HTRequest * request, HTAlertOpcode op,
 		       HTAlertPar * reply)
 {
     char response[4];	/* One more for terminating NULL -- AL */
-    HTTrace("%s", HTDialogs[msgnum]);
-    if (input) HTTrace(" (%s)", (char *) input);
-    HTTrace(" (y/n) ");
-#ifndef NO_STDIO
-    if (fgets(response, 4, stdin)) 		   /* get reply, max 3 chars */
-#endif
-    {
+    HTPrint("%s", HTDialogs[msgnum]);
+    if (input) HTPrint(" (%s)", (char *) input);
+    HTPrint(" (y/n) ");
+    if (fgets(response, 4, stdin)) { 		   /* get reply, max 3 chars */
 	char *ptr = response;
 	while (*ptr) {
 	    if (*ptr == '\n') {
@@ -292,11 +289,10 @@ PUBLIC BOOL HTPrompt (HTRequest * request, HTAlertOpcode op,
 		      int msgnum, const char * dfault, void * input,
 		      HTAlertPar * reply)
 {
-    HTTrace("%s ", HTDialogs[msgnum]);
-    if (input) HTTrace(" (%s) ", (char *) input);
-    if (dfault) HTTrace("(RETURN for [%s]) ", (char *) dfault);
+    HTPrint("%s ", HTDialogs[msgnum]);
+    if (input) HTPrint(" (%s) ", (char *) input);
+    if (dfault) HTPrint("(RETURN for [%s]) ", (char *) dfault);
     if (reply && msgnum>=0) {
-#ifndef NO_STDIO
         char buffer[200];
 	if (!fgets(buffer, 200, stdin)) return NO;
 	buffer[strlen(buffer)-1] = '\0';	        /* Overwrite newline */
@@ -307,7 +303,6 @@ PUBLIC BOOL HTPrompt (HTRequest * request, HTAlertOpcode op,
 	else
 	    return NO;
 	return YES;
-#endif
     }
     return NO;
 }
@@ -331,7 +326,7 @@ PUBLIC BOOL HTPromptPassword (HTRequest * request, HTAlertOpcode op,
 	*/
         char buffer[100];
 	memset(buffer, '\0', 100);
-        HTTrace("%s ", HTDialogs[msgnum]);
+        HTPrint("%s ", HTDialogs[msgnum]);
 	if (!fgets(buffer, 99, stdin)) return NO;
 	buffer[strlen(buffer)-1] = '\0';	        /* Overwrite newline */
         if (*buffer) {
@@ -370,7 +365,7 @@ PUBLIC BOOL HTError_print (HTRequest * request, HTAlertOpcode op,
 {
     char * msg = HTDialog_errorMessage(request, op, msgnum, dfault, input);
     if (msg) {
-	HTTrace("%s\n", msg);
+	HTPrint("%s\n", msg);
 	HT_FREE(msg);
     }
     return YES;

@@ -111,6 +111,9 @@ extern int  HTMuxSession_fragment (HTMuxSession * session);
 extern BOOL HTMuxSession_setFragment (HTMuxChannel * muxch,
 				      HTMuxSessionId sid, int fragment);
 
+extern int HTMuxSession_disposeData (HTMuxSession * me,
+				     const char * buf, int len);
+
 /*
 .
   Mux Protocol
@@ -131,6 +134,6 @@ extern BOOL HTMuxProtocol_delete (HTMuxChannel * muxch, HTProtocolId pid);
 
   
 
-  @(#) $Id: HTMuxCh.h,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+  @(#) $Id: HTMuxCh.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

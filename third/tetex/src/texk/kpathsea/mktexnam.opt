@@ -1,8 +1,8 @@
 # mktexnam.opt to determine various manipulations of the filenames.
 # Sourced from mktexnam.
 # 
-# te@informatik.uni-hannover.de and kb@mail.tug.org. Public domain.
-# $Id: mktexnam.opt,v 1.1.1.1 2000-03-10 17:51:27 ghudson Exp $
+# te@dbs.uni-hannover.de and kb@mail.tug.org. Public domain.
+# $Id: mktexnam.opt,v 1.1.1.2 2003-02-25 22:10:56 amb Exp $
 
 # Get 8.3 filenames like dpiNNN/NAME.pk.
 case "$MT_FEATURES" in
@@ -37,12 +37,14 @@ case "$MT_FEATURES" in
     
       if test -z "$SUPPLIER"; then
         # Try the normal case. Source first.
-        s_abbrev=`echo $NAME | sed 's/^\(.\).*$/\1/'`
+        # $NAME might be raw.
+        name=`echo $NAME | sed 's/^r//'`
+        s_abbrev=`echo $name | sed 's/^\(.\).*$/\1/'`
         SUPPLIER=`awk '{ if ($1 == s_abbrev) { print $2; exit; }}' \
                    s_abbrev=$s_abbrev "$SUPPLIERMAP"`
         if test -n "$SUPPLIER"; then
           # We found the source. Try for the typeface.
-          t_abbrev=`echo $NAME | sed 's/^.//;s/\(..\).*$/\1/'`
+          t_abbrev=`echo $name | sed 's/^.//;s/\(..\).*$/\1/'`
           TYPEFACE=`awk '{ if ($1 == t_abbrev) { print $2; exit; }}' \
                        t_abbrev=$t_abbrev "$TYPEFACEMAP"`
         fi
@@ -52,14 +54,11 @@ case "$MT_FEATURES" in
     if test -z "$SUPPLIER"; then
       echo "$0: Could not map source abbreviation $s_abbrev for $NAME." >&2
       echo "$0: Need to update $SPECIALMAP?" >&2
-      MT_SUPPLIER="$MT_DEFAULT_SUPPLIER"
-      MT_TYPEFACE="$MT_DEFAULT_TYPEFACE"
     else
       MT_SUPPLIER="$SUPPLIER"
       if test -z "$TYPEFACE"; then
         echo "$0: Could not map typeface abbreviation $t_abbrev for $NAME." >&2
         echo "$0: Need to update $SPECIALMAP?" >&2
-        MT_TYPEFACE="$MT_DEFAULT_TYPEFACE"
       else
         MT_TYPEFACE="$TYPEFACE"
       fi

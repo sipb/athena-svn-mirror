@@ -56,10 +56,10 @@ everything is to be installed.
      *Note Disk space::.
 
   2. Retrieve these distribution archives:
-    `ftp://ftp.tug.org/tex/texk.tar.gz'
+    <ftp://ftp.tug.org/tex/texk.tar.gz>
           These are the sources, which you will be compiling.
 
-    `ftp://ftp.tug.org/tex/texklib.tar.gz'
+    <ftp://ftp.tug.org/tex/texklib.tar.gz>
           This is a basic set of input files.  You should unpack it in
           the directory `/usr/local/share'; doing so will create a
           `texmf' subdirectory there.
@@ -146,20 +146,20 @@ Disk space
 don't enter into it.  Sizes are in megabytes.  All numbers are
 approximate.
 
-Distribution  .tar.gz  Unpacked  Compiled  Installed  
-dviljk        .9       3.8                            
-dvipsk        .9       3.2                            
-xdvik         .7       2.5                            
-web2c         1.3      5.0                            
-web           1.9      6.5       -         -          
-texk          3.8      14.1      43.1      23.5       
-texklib       3.8      15.0      -         15.0       
-(totals)      7.6      29.1      43.1      38.5       
+Distribution   .tar.gz   Unpacked   Compiled   Installed
+dviljk         .9        3.8                   
+dvipsk         .9        3.2                   
+xdvik          .7        2.5                   
+web2c          1.3       5.0                   
+web            1.9       6.5        -          -
+texk           7.5       32.1       95.3       33.5
+texklib        6.3       15.0       -          15.0
+(totals)       14.6      47.1       95.3       48.5
 
 Kpathsea application distributions
 ----------------------------------
 
-  The archive `ftp://ftp.tug.org/tex/texk.tar.gz' contains all of the
+  The archive <ftp://ftp.tug.org/tex/texk.tar.gz> contains all of the
 Kpathsea applications I maintain, and the library itself.  For example,
 since NeXT does not generally support X11, you'd probably want to skip
 `xdvik' (or simply remove it after unpacking `texk.tar.gz'.  If you are
@@ -197,7 +197,7 @@ after installation, to control various aspects of `mktexpk' and
 friends.  *Note mktex configuration::.
 
   You do not need to edit `texmf.in' to change the default top-level or
-other installation *directories* (only the paths).  You can and should
+other installation _directories_ (only the paths).  You can and should
 do that when you run `configure' (next step).
 
   You also do not need to edit `texmf.in' if you are willing to rely on
@@ -284,7 +284,7 @@ Running `configure'
 
   Run `sh configure OPTIONS' (in the top-level directory, the one
 containing `kpathsea/'), possibly using a shell other than `sh' (*note
-configure shells::.).
+configure shells::).
 
   `configure' adapts the source distribution to the present system via
 `#define''s in `*/c-auto.h', which are created from the corresponding
@@ -473,7 +473,7 @@ example, `make default_texsizes=600' changes the list of fallback
 resolutions.
 
   You can also override each of `configure''s environment variables
-(*note configure environment::.).  The Make variables have the same
+(*note configure environment::).  The Make variables have the same
 names.
 
   Finally, you can supply additional options via the following
@@ -516,7 +516,7 @@ Installing files
 ----------------
 
   The basic command is the usual `make install'.  For security issues,
-*note Security::..
+*note Security::.
 
   The first time you install any manual in the GNU Info system, you
 should add a line (you choose where) to the file `dir' in your
@@ -524,7 +524,7 @@ should add a line (you choose where) to the file `dir' in your
 the Texinfo source files (`kpathsea/kpathsea.texi',
 `dvipsk/dvips.texi', and `web2c/doc/web2c.texi').  If you have a recent
 version of the GNU Texinfo distribution installed
-(`ftp://prep.ai.mit.edu/pub/gnu/texinfo-3.9.tar.gz' or later), this
+(<ftp://prep.ai.mit.edu/pub/gnu/texinfo-3.9.tar.gz> or later), this
 should happen automatically.
 
   On the offchance that this is your first Info installation, the `dir'
@@ -550,7 +550,7 @@ something like this:
      make
      make install prefix=/afs/.SYSTEM.NAME/system/1.3/@sys/whatever
    With AFS, you will definitely want to use relative filenames in
-`ls-R' (*note Filename database::.), not absolute filenames.  This is
+`ls-R' (*note Filename database::), not absolute filenames.  This is
 done by default, but check anyway.
 
 Cleaning up
@@ -594,7 +594,7 @@ every so often.
 
   If Kpathsea cannot otherwise find a file, for some file types it is
 configured by default to invoke an external program to create it
-dynamically (*note mktex configuration::.).  This is most useful for
+dynamically (*note mktex configuration::).  This is most useful for
 fonts (bitmaps, TFM's, and arbitrarily-sizable Metafont sources such as
 the Sauter and EC fonts), since any given document can use fonts never
 before referenced.  Trying to build all fonts in advance is therefore
@@ -623,7 +623,7 @@ options to change the defaults are:
 
   The `configure' setting is overridden if the environment variable or
 configuration file value named for the script is set; e.g., `MKTEXPK'
-(*note mktex script arguments::.).
+(*note mktex script arguments::).
 
   As distributed, all the scripts source a file `texmf/web2c/mktex.cnf'
 if it exists, so you can override various defaults.  See `mktex.opt',

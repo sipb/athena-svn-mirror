@@ -314,10 +314,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'gftype');
+      usage ('gftype');
 
     end else if argument_is ('help') then begin
-      usage (0, GFTYPE_HELP);
+      usage_help (GFTYPE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.R. Fuchs');
@@ -329,7 +329,7 @@ begin
    We must have one remaining argument.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'gftype: Need exactly one file argument.');
-    usage (1, 'gftype');
+    usage ('gftype');
   end;
 end;
 

@@ -45,4 +45,4 @@ if test -n "$xdviappfile"; then
   XFILESEARCHPATH="$xdviapppath:${XFILESEARCHPATH-%D}"; export XFILESEARCHPATH
 fi
 
-exec xdvi.bin $NAMEOPT ${1+"$@"}
+xdvi.bin $NAMEOPT ${1+"$@"}

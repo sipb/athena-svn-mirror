@@ -1,125 +1,79 @@
-#include "libpdftex.h"
+/*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: epdf.c,v 1.1.1.2 2003-02-25 22:09:34 amb Exp $
+*/
+
+#include "ptexlib.h"
 #include <kpathsea/c-vararg.h>
 #include <kpathsea/c-proto.h>
 
-typedef char *res_name_entry;
+integer pdfbufmax = pdfbufsize;
 
-extern void epdf_check_mem();
+extern void epdf_check_mem(void);
 
-char *extra_fonts = 0;
-char *extra_xobjects = 0;
-char *other_resources = 0;
-res_name_entry *res_name_ptr, *res_name_tab = 0;
-int res_name_max;
-
-void writeEPDF(char *fmt,...) {
-    va_list args;
-
-    va_start(args, fmt);
-    vsprintf(print_buf, fmt, args);
-    flush_print_buf();                                    
-    va_end(args);
+int is_subsetable(int i)
+{
+    fm_entry *fm = fm_tab + i;
+    return is_included(fm) && is_subsetted(fm);
 }
 
-void add_resources_name(char *s)
+int is_type1(int i)
 {
-    res_name_entry *e;
-    if (res_name_tab != 0) {
-        for (e = res_name_tab; e < res_name_ptr; e++)
-            if (strcmp(*e, s) == 0)
-                pdftex_warn("duplicate of resource name `%s'", s);
-    }
-    ENTRY_ROOM(res_name, 256);
-    *res_name_ptr++ = xstrdup(s);
+    fm_entry *fm = fm_tab + i;
+    return is_t1fontfile(fm);
 }
 
-void appendresourcesname(integer prefix, integer i)
+void mark_glyphs(int i, char *charset)
 {
-    static char buf[1024];
-    sprintf(buf, "%s%i",  makecstring(prefix), (int)i);
-    add_resources_name(buf);
-}
-
-void deleteresourcesnames()
-{
-    res_name_entry *p;
-    if (res_name_tab == 0)
+    char *new_charset = fm_tab[i].charset;
+    if (charset == 0)
         return;
-    for (p = res_name_tab; p < res_name_ptr; p++)
-        XFREE(*p);
-    XFREE(res_name_tab);
-    res_name_tab = 0;
-}
-
-void add_extra_fonts()
-{
-    int l = strlen(print_buf) + 1;
-    if (extra_fonts == 0) {
-        extra_fonts = XTALLOC(l, char);
-        *extra_fonts = 0;
+    if (new_charset == 0)
+        new_charset = xstrdup(charset);
+    else {
+        new_charset = xretalloc(new_charset, 
+                                strlen(new_charset) + strlen(charset) + 1,
+                                char);
+        strcat(new_charset, charset);
     }
-    else
-        extra_fonts = 
-            XRETALLOC(extra_fonts, strlen(extra_fonts) + l, char);
-    strcat(extra_fonts, print_buf);
+    fm_tab[i].charset = new_charset;
 }
 
-void printextrafonts()
+void embed_whole_font(int i)
 {
-    pdf_printf(extra_fonts);
-    XFREE(extra_fonts);
-    extra_fonts = 0;
+    fm_tab[i].all_glyphs = true;
 }
 
-void add_extra_xobjects()
+integer get_fontfile(int i)
 {
-    int l = strlen(print_buf) + 1;
-    if (extra_xobjects == 0) {
-        extra_xobjects = XTALLOC(l, char);
-        *extra_xobjects = 0;
-    }
-    else
-        extra_xobjects = 
-            XRETALLOC(extra_xobjects, strlen(extra_xobjects) + l, char);
-    strcat(extra_xobjects, print_buf);
+    return fm_tab[i].ff_objnum;
 }
 
-void printextraxobjects()
+integer get_fontname(int i)
 {
-    if (extra_xobjects != 0) {
-        pdf_printf(extra_xobjects);
-        XFREE(extra_xobjects);
-    }
-    extra_xobjects = 0;
+    if (fm_tab[i].fn_objnum == 0)
+        fm_tab[i].fn_objnum = pdfnewobjnum();
+    return fm_tab[i].fn_objnum;
 }
 
-void add_other_resources()
-{
-    int l = strlen(print_buf) + 1;
-    if (other_resources == 0) {
-        other_resources = XTALLOC(l, char);
-        *other_resources = 0;
-    }
-    else
-        other_resources = 
-            XRETALLOC(other_resources, strlen(other_resources) + l, char);
-    strcat(other_resources, print_buf);
-}
-
-void printotherresources()
-{
-    if (other_resources != 0) {
-        pdf_printf(other_resources);
-        XFREE(other_resources);
-    }
-    other_resources = 0;
-}
-
-void epdf_free()
+void epdf_free(void)
 {
     epdf_check_mem();
-    XFREE(extra_fonts);
-    XFREE(extra_xobjects);
-    XFREE(other_resources);
-    deleteresourcesnames();
 }

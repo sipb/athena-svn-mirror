@@ -1,4 +1,11 @@
-if test "${enable_multiplatform+set}" != set \
+: ${with_mktexfmt_default=yes}
+export with_mktexfmt_default
+
+: ${with_cxx_runtime_hack=yes}
+export with_cxx_runtime_hack
+
+: ${enable_multiplatform=yes}
+if test "x$enable_multiplatform" = xyes \
   && test "x$bindir" = 'x${exec_prefix}/bin'
 then
   enable_multiplatform=yes; export enable_multiplatform
@@ -12,13 +19,25 @@ if test "x$prefix" = xNONE; then
   ac_configure_args="$ac_configure_args --prefix=$ac_default_prefix"
 fi
 
+enable_ipc=yes
 case "$target" in
   *nextstep3*|*NEXTSTEP*)
-     with_xdvik=no; with_oxdvik=no; enable_ipc=yes
+     with_xdvik=no; with_oxdvik=no
      with_nextwin=yes; with_ps=dps; with_mfw=no
      export with_xdvik with_oxdvik enable_ipc with_nextwin with_ps;;
 esac
 
-: ${with_mfw=yes}
-: ${with_x=yes}
-export with_mfw with_x
+test "$no_x" = yes || {
+  : ${with_mfw=yes}
+  : ${with_x=yes}
+  export with_mfw with_x
+}
+
+# for libwww, does not compile otherwise
+: ${with_expat=no}
+: ${with_wais=no}
+: ${with_socks5=no}
+: ${with_socks4=no}
+: ${with_ssl=no}
+: ${with_regex=no}
+export with_expat with_wais with_socks5 with_socks4 with_ssl with_regex

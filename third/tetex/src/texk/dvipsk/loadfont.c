@@ -345,6 +345,7 @@ loadfont P1C(register fontdesctype *, curfnt)
          curfnt->chardesc[i].packptr = NULL ;
          curfnt->chardesc[i].pixelwidth = 0 ;
          curfnt->chardesc[i].flags &= EXISTS ;
+         curfnt->chardesc[i].flags2 = 0 ;
       }
    } else {
       for (i=0; i<256; i++) {
@@ -352,6 +353,7 @@ loadfont P1C(register fontdesctype *, curfnt)
          curfnt->chardesc[i].packptr = NULL ;
          curfnt->chardesc[i].pixelwidth = 0 ;
          curfnt->chardesc[i].flags = 0 ;
+         curfnt->chardesc[i].flags2 = 0 ;
       }
    }
    curfnt->maxchars = 256 ; /* just in case we return before the end */
@@ -467,6 +469,7 @@ case 7:
             for (length--; length>0; length--)
                *tempr++ = pkbyte() ;
          }
+         cd->flags2 |= EXISTS ;
       } else {
          k = 0 ;
          switch (cmd) {

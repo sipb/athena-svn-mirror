@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTPRes.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTTPRes.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 **	This module implements the output stream for HTTP used for sending
 **	responces with or without a entity body. It is the server equivalent
@@ -73,7 +73,7 @@ PRIVATE int HTTPMakeResponse (HTStream * me, HTRequest * request)
     if (response_mask & HT_S_WWW_AUTH) {		/* @@@ */
 
     }
-    if(PROT_TRACE)HTTrace("HTTP........ Generating Response Headers\n");
+    HTTRACE(PROT_TRACE, "HTTP........ Generating Response Headers\n");
     return HT_OK;
 }
 
@@ -132,7 +132,7 @@ PRIVATE int HTTPResponse_free (HTStream * me)
 PRIVATE int HTTPResponse_abort (HTStream * me, HTList * e)
 {
     if (me->target) (*me->target->isa->abort)(me->target, e);
-    if (PROT_TRACE) HTTrace("HTTPResponse ABORTING...\n");
+    HTTRACE(PROT_TRACE, "HTTPResponse ABORTING...\n");
     return HT_ERROR;
 }
 

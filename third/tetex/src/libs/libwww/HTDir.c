@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTDir.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTDir.c,v 1.1.1.2 2003-02-25 22:12:35 amb Exp $
 **
 **	This is unix-specific code in general
 **	The module is intended for use in HTFile.c and HTFTP.c where
@@ -23,6 +23,7 @@
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "WWWCore.h"
+#include "WWWFile.h"
 #include "WWWHTML.h"
 #include "HTIcons.h"
 #include "HTDescpt.h"
@@ -302,8 +303,9 @@ PRIVATE BOOL HTDir_headLine (HTDir *dir)
 	}
 	*tp = '\0';
 	PUTS(dir->lnbuf);
+	END(HTML_PRE);
 	START(HTML_HR);
-	PUTC('\n');
+	START(HTML_PRE);
 	return YES;
     }
     return NO;
@@ -378,8 +380,7 @@ PUBLIC HTDir * HTDir_new (HTRequest * request, HTDirShow show, HTDirKey key)
 	    StrAllocCopy(dir->base, ++ptr);
 	    StrAllocCat(dir->base, "/");
 	}
-	if (PROT_TRACE)
-	    HTTrace("HTDir_new... base is `%s\'\n", dir->base ? dir->base : "");
+	HTTRACE(PROT_TRACE, "HTDir_new... base is `%s\'\n" _ dir->base ? dir->base : "");
 	HT_FREE(addr);
 	HT_FREE(path);
     }
@@ -446,7 +447,7 @@ PUBLIC BOOL HTDir_addElement (HTDir *dir, char *name, char *date, char *size,
     return YES;
 }
 
-PRIVATE int DirSort (const void *a, const void *b)
+PRIVATE int CDECL DirSort (const void *a, const void *b)
 {
 #if 0
     HTDirNode *aa = *(HTDirNode **) a;
@@ -458,7 +459,7 @@ PRIVATE int DirSort (const void *a, const void *b)
 #endif
 }
 
-PRIVATE int DirCaseSort (const void *a, const void *b)
+PRIVATE int CDECL DirCaseSort (const void *a, const void *b)
 {
 #if 0
     HTDirNode *aa = *(HTDirNode **) a;
@@ -497,7 +498,9 @@ PUBLIC BOOL HTDir_free (HTDir * dir)
     /* Put out the end of the HTML stuff */
     {
 	HTStructured *target = dir->target;
+	END(HTML_PRE);
 	START(HTML_HR);
+	START(HTML_PRE);
 	if (!dir->size)
 	    PUTS("Empty directory");
 	else if (dir->size == 1)

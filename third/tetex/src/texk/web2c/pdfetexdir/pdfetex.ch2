@@ -1,3 +1,24 @@
+%
+% Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+%
+% This file is part of pdfTeX.
+%
+% pdfTeX is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% pdfTeX is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with pdfTeX; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+%
+% $Id: pdfetex.ch2,v 1.1.1.2 2003-02-25 22:09:37 amb Exp $
+%
 @x limbo
 \def\pdfTeX{pdf\TeX}
 @y
@@ -5,99 +26,113 @@
 \def\pdfeTeX{pdf\eTeX}
 @z
 
-@x [1]
+@x [2]
 @d banner=='This is pdfTeX, Version 3.14159','-',pdftex_version_string 
-{printed when \pdfTeX\ starts}
+   {printed when \pdfTeX\ starts}
 @y
 @d banner=='This is pdfeTeX, Version 3.14159','-',pdftex_version_string,'-',eTeX_version_string
-{printed when \pdfeTeX\ starts}
+   {printed when \pdfTeX\ starts}
 @z
 
-@x [1]
+@x [2]
 @d eTeX_version_string=='3.14159-2.1' {current \eTeX\ version}
 @y
 @d eTeX_version_string=='2.1' {current \eTeX\ version}
 @z
 
-@x [17]
-@d pdf_font_prefix_loc=local_base+9 {points to token list for \.{\\pdffontprefix}}
-@d pdf_form_prefix_loc=local_base+10 {points to token list for \.{\\pdfformprefix}}
-@d pdf_image_prefix_loc=local_base+11 {points to token list for \.{\\pdfimageprefix}}
-@d pdf_page_attr_loc=local_base+12 {points to token list for \.{\\pdfpageattr}}
-@d pdf_pages_attr_loc=local_base+13 {points to token list for \.{\\pdfpagesattr}}
-@d pdf_form_attr_loc=local_base+14 {points to token list for \.{\\pdfformattr}}
-@d pdf_image_attr_loc=local_base+15 {points to token list for \.{\\pdfimageattr}}
-@d err_help_loc=local_base+16 {points to token list for \.{\\errhelp}}
-@d toks_base=local_base+17 {table of 256 token list registers}
+@x [230]
+@d pdf_pages_attr_loc=local_base+9 {points to token list for \.{\\pdfpagesattr}}
+@d pdf_page_attr_loc=local_base+10 {points to token list for \.{\\pdfpageattr}}
+@d pdf_page_resources_loc=local_base+11 {points to token list for \.{\\pdfpageresources}}
+@d err_help_loc=local_base+12 {points to token list for \.{\\errhelp}}
+@d toks_base=local_base+13 {table of 256 token list registers}
 @y
-@d pdf_font_prefix_loc=token_base+9 {points to token list for \.{\\pdffontprefix}}
-@d pdf_form_prefix_loc=token_base+10 {points to token list for \.{\\pdfformprefix}}
-@d pdf_image_prefix_loc=token_base+11 {points to token list for \.{\\pdfimageprefix}}
-@d pdf_page_attr_loc=token_base+12 {points to token list for \.{\\pdfpageattr}}
-@d pdf_pages_attr_loc=token_base+13 {points to token list for \.{\\pdfpagesattr}}
-@d pdf_form_attr_loc=token_base+14 {points to token list for \.{\\pdfformattr}}
-@d pdf_image_attr_loc=token_base+15 {points to token list for \.{\\pdfimageattr}}
-@d err_help_loc=token_base+16 {points to token list for \.{\\errhelp}}
-@d toks_base=token_base+17 {table of 256 token list registers}
+@d pdf_pages_attr_loc=token_base+9 {points to token list for \.{\\pdfpagesattr}}
+@d pdf_page_attr_loc=token_base+10 {points to token list for \.{\\pdfpageattr}}
+@d pdf_page_resources_loc=token_base+11 {points to token list for \.{\\pdfpageresources}}
+@d err_help_loc=token_base+12 {points to token list for \.{\\errhelp}}
+@d toks_base=token_base+13 {table of 256 token list registers}
 @z
 
-@x [22]
+@x [307]
 @d write_text=15 {|token_type| code for \.{\\write}}
-@d pdf_font_prefix_text=16 {|token_type| code for \.{\\pdffontprefix}}
-@d pdf_form_prefix_text=17 {|token_type| code for \.{\\pdfformprefix}}
-@d pdf_image_prefix_text=18 {|token_type| code for \.{\\pdfimageprefix}}
-@d pdf_page_attr_text=19 {|token_type| code for \.{\\pdfpageattr}}
-@d pdf_pages_attr_text=20 {|token_type| code for \.{\\pdfpagesattr}}
-@d pdf_form_attr_text=21 {|token_type| code for \.{\\pdfformattr}}
-@d pdf_image_attr_text=22 {|token_type| code for \.{\\pdfimageattr}}
+@d pdf_pages_attr_text  = 16 {|token_type| code for \.{\\pdfpagesattr}}
+@d pdf_page_attr_text  = 17 {|token_type| code for \.{\\pdfpageattr}}
+@d pdf_page_resources_text = 18 {|token_type| code for \.{\\pdfpageresources}}
 @y
 @d write_text=16 {|token_type| code for \.{\\write}}
-@d pdf_font_prefix_text=17 {|token_type| code for \.{\\pdffontprefix}}
-@d pdf_form_prefix_text=18 {|token_type| code for \.{\\pdfformprefix}}
-@d pdf_image_prefix_text=19 {|token_type| code for \.{\\pdfimageprefix}}
-@d pdf_page_attr_text=20 {|token_type| code for \.{\\pdfpageattr}}
-@d pdf_pages_attr_text=21 {|token_type| code for \.{\\pdfpagesattr}}
-@d pdf_form_attr_text=22 {|token_type| code for \.{\\pdfformattr}}
-@d pdf_image_attr_text=23 {|token_type| code for \.{\\pdfimageattr}}
+@d pdf_pages_attr_text  = 17 {|token_type| code for \.{\\pdfpagesattr}}
+@d pdf_page_attr_text  = 18 {|token_type| code for \.{\\pdfpageattr}}
+@d pdf_page_resources_text = 19 {|token_type| code for \.{\\pdfpageresources}}
 @z
 
-@x
-@d pdftex_revision_code=6 {command code for \.{\\pdftexrevision}}
-@d pdf_fontname_code=7 {command code for \.{\\pdffontname}}
-@y
-{|@d eTeX_revision_code=6| already defined by eTeX}
-@d pdftex_revision_code=7 {command code for \.{\\pdftexrevision}}
-@d pdf_fontname_code=8 {command code for \.{\\pdffontname}}
+@x [410]
+@d pdftex_revision_code   = 6  {command code for \.{\\pdftexrevision}}
+@d pdf_font_name_code     = 7  {command code for \.{\\pdffontname}}
+@d pdf_font_objnum_code   = 8  {command code for \.{\\pdffontobjnum}}
+@d pdf_font_size_code     = 9  {command code for \.{\\pdffontsize}}
+@y eTeX_revision_code = 6 has been already defined by eTeX
+@d pdftex_revision_code   = 7  {command code for \.{\\pdftexrevision}}
+@d pdf_font_name_code     = 8  {command code for \.{\\pdffontname}}
+@d pdf_font_objnum_code   = 9  {command code for \.{\\pdffontobjnum}}
+@d pdf_font_size_code     = 10  {command code for \.{\\pdffontsize}}
 @z
 
-@x [26]
-|glue_val|, |input_line_no_code|, |badness_code|, or |pdftex_version_code|.
+@x [416]
+|glue_val|, |input_line_no_code|, |badness_code|, or one of the other codes for
+\pdfTeX{} extensions.
 
 @d input_line_no_code=glue_val+1 {code for \.{\\inputlineno}}
 @d badness_code=glue_val+2 {code for \.{\\badness}}
-@d pdftex_version_code=glue_val+3 {code for \.{\\pdftexversion}}
+@d pdftex_version_code     = glue_val + 3 {code for \.{\\pdftexversion}}
+@d pdf_last_obj_code       = glue_val + 4 {code for \.{\\pdflastobj}}
+@d pdf_last_xform_code     = glue_val + 5 {code for \.{\\pdflastxform}}
+@d pdf_last_ximage_code    = glue_val + 6 {code for \.{\\pdflastximage}}
+@d pdf_last_ximage_pages_code = glue_val + 7 {code for \.{\\pdflastximagepages}}
+@d pdf_last_annot_code     = glue_val + 8 {code for \.{\\pdflastannot}}
+@d pdf_last_x_pos_code     = glue_val + 9 {code for \.{\\pdflastxpos}}
+@d pdf_last_y_pos_code     = glue_val + 10 {code for \.{\\pdflastypos}}
+@d pdf_last_demerits_code  = glue_val + 11 {code for \.{\\pdflastdemerits}}
+@d pdf_last_vbreak_penalty_code = glue_val + 12 {code for \.{\\pdflastvbreakpenalty}}
 @y
-|glue_val|, |last_node_type_code|, |input_line_no_code|, |badness_code|,
-|eTeX_version_code|, one of the other codes for \eTeX\ extensions, 
-or |pdftex_version_code|.
+|glue_val|, |input_line_no_code|, |badness_code|, or one of the other codes for
+\pdfTeX\ or \eTeX\ extensions.
 
 @d last_node_type_code=glue_val+1 {code for \.{\\lastnodetype}}
 @d input_line_no_code=glue_val+2 {code for \.{\\inputlineno}}
 @d badness_code=glue_val+3 {code for \.{\\badness}}
-@d pdftex_version_code=glue_val+4 {code for \.{\\pdftexversion}}
-@d eTeX_int=glue_val+5 {first of \eTeX\ codes for integers}
+@d pdftex_version_code     = glue_val + 4 {code for \.{\\pdftexversion}}
+@d pdf_last_obj_code       = glue_val + 5 {code for \.{\\pdflastobj}}
+@d pdf_last_xform_code     = glue_val + 6 {code for \.{\\pdflastxform}}
+@d pdf_last_ximage_code    = glue_val + 7 {code for \.{\\pdflastximage}}
+@d pdf_last_ximage_pages_code = glue_val + 8 {code for \.{\\pdflastximagepages}}
+@d pdf_last_annot_code     = glue_val + 9 {code for \.{\\pdflastannot}}
+@d pdf_last_x_pos_code     = glue_val + 10 {code for \.{\\pdflastxpos}}
+@d pdf_last_y_pos_code     = glue_val + 11 {code for \.{\\pdflastypos}}
+@d pdf_last_demerits_code  = glue_val + 12 {code for \.{\\pdflastdemerits}}
+@d pdf_last_vbreak_penalty_code  = glue_val + 13 {code for \.{\\pdflastvbreakpenalty}}
+@d eTeX_int=glue_val+14 {first of \eTeX\ codes for integers}
 @d eTeX_dim=eTeX_int+8 {first of \eTeX\ codes for dimensions}
 @d eTeX_glue=eTeX_dim+9 {first of \eTeX\ codes for glue}
 @d eTeX_mu=eTeX_glue+1 {first of \eTeX\ codes for muglue}
 @d eTeX_expr=eTeX_mu+1 {first of \eTeX\ codes for expressions}
 @z
 
-@x [26]
+@x [424]
 if cur_chr>glue_val then
   begin case cur_chr of
   input_line_no_code: cur_val:=line;
   badness_code: cur_val:=last_badness;
-  pdftex_version_code: cur_val:=pdftex_version;
+  pdftex_version_code:  cur_val := pdftex_version;
+  pdf_last_obj_code:    cur_val := pdf_last_obj;
+  pdf_last_xform_code:  cur_val := pdf_last_xform;
+  pdf_last_ximage_code: cur_val := pdf_last_ximage;
+  pdf_last_ximage_pages_code: cur_val := pdf_last_ximage_pages;
+  pdf_last_annot_code:  cur_val := pdf_last_annot;
+  pdf_last_x_pos_code:  cur_val := pdf_last_x_pos;
+  pdf_last_y_pos_code:  cur_val := pdf_last_y_pos;
+  pdf_last_demerits_code:  cur_val := fewest_demerits;
+  pdf_last_vbreak_penalty_code:  cur_val := last_vbreak_penalty;
   endcases;
 @y
 if m>last_node_type_code then
@@ -111,7 +146,16 @@ if m>last_node_type_code then
  else begin case m of
   input_line_no_code: cur_val:=line;
   badness_code: cur_val:=last_badness;
-  pdftex_version_code: cur_val:=pdftex_version;
+  pdftex_version_code:  cur_val := pdftex_version;
+  pdf_last_obj_code:    cur_val := pdf_last_obj;
+  pdf_last_xform_code:  cur_val := pdf_last_xform;
+  pdf_last_ximage_code: cur_val := pdf_last_ximage;
+  pdf_last_ximage_pages_code: cur_val := pdf_last_ximage_pages;
+  pdf_last_annot_code:  cur_val := pdf_last_annot;
+  pdf_last_x_pos_code:  cur_val := pdf_last_x_pos;
+  pdf_last_y_pos_code:  cur_val := pdf_last_y_pos;
+  pdf_last_demerits_code:  cur_val := fewest_demerits;
+  pdf_last_vbreak_penalty_code:  cur_val := last_vbreak_penalty;
   @/@<Cases for fetching an integer value@>@/
   end; {there are no other cases}
 @z
@@ -294,34 +338,43 @@ begin if cur_dir=right_to_left then
 @z
 
 @x [32f]
-@<(in |pdf_ship_out|)Ship box |p| out@>;
+@<(\pdfTeX) Ship box |p| out@>;
 @y
-@<(in |pdf_ship_out|)Ship box |p| out@>;
+@<(\pdfTeX) Ship box |p| out@>;
 if eTeX_ex then @<Check for LR anomalies at the end of |ship_out|@>;
 @z
 
 @x [33]
-exit: 
-if ((m = cal_expand_ratio) or (m = adjust_expand_ratio)) and (expand_ratio <> 0) then begin
-    if abs(expand_ratio) > 1000 then
-        if expand_ratio > 0 then
-            expand_ratio := 1000
-        else
-            expand_ratio := -1000;
+exit:
+if (m = cal_expand_ratio) and (font_expand_ratio <> 0) then begin
+    font_expand_ratio := fix_int(font_expand_ratio, -1000, 1000);
+    q := list_ptr(r);
     free_node(r, box_node_size);
-    r := hpack(save_p, save_w, subst_font);
+    r := hpack(q, w, subst_ex_font);
 end;
 hpack:=r;
 @y
 exit: if TeXXeT_en then @<Check for LR anomalies at the end of |hpack|@>;
-if ((m = cal_expand_ratio) or (m = adjust_expand_ratio)) and (expand_ratio <> 0) then begin
-    if abs(expand_ratio) > 1000 then
-        if expand_ratio > 0 then
-            expand_ratio := 1000
-        else
-            expand_ratio := -1000;
+if (m = cal_expand_ratio) and (font_expand_ratio <> 0) then begin
+    font_expand_ratio := fix_int(font_expand_ratio, -1000, 1000);
+    q := list_ptr(r);
     free_node(r, box_node_size);
-    r := hpack(save_p, save_w, subst_font);
+    r := hpack(q, w, subst_ex_font);
 end;
 hpack:=r;
+@z
+
+@x [651] 
+  math_node: x:=x+width(p);
+@y
+  math_node: begin x:=x+width(p);
+    if TeXXeT_en then @<Adjust \(t)the LR stack for the |hpack| routine@>;
+    end;
+@z
+
+@x [1147] 
+kern_node,math_node: d:=width(p);
+@y
+kern_node: d:=width(p);
+@t\4@>@<Cases of `Let |d| be the natural width' that need special treatment@>@;
 @z

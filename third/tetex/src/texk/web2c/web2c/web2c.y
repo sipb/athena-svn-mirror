@@ -36,7 +36,7 @@ static int last_type = -1, ids_typed;
 char my_routine[100];	/* Name of routine being parsed, if any */
 static char array_bounds[80], array_offset[80];
 static int uses_mem, uses_eqtb, lower_sym, upper_sym;
-static FILE *orig_std;
+static FILE *orig_out;
 boolean doing_statements = false;
 static boolean var_formals = false;
 static int param_id_list[MAX_ARGS], ids_paramed=0;
@@ -135,6 +135,7 @@ DEF:
 /* program statement.  Ignore any files.  */
 PROGRAM_HEAD:
 	  program_tok undef_id_tok PROGRAM_FILE_PART ';'
+	;
 
 PROGRAM_FILE_PART:
 	  '(' PROGRAM_FILE_LIST ')'
@@ -711,8 +712,8 @@ PROCEDURE_HEAD:
 	      uses_eqtb = uses_mem = false;
 	      my_output ("void");
 	      new_line ();
-	      orig_std = std;
-	      std = 0;
+	      orig_out = out;
+	      out = 0;
 	    }
 	  PARAM ';'
 	    { strcpy(fn_return_type, "void");
@@ -787,8 +788,8 @@ FUNCTION_DEC: FUNCTION_HEAD BLOCK ;
 FUNCTION_HEAD:
 	  function_tok undef_id_tok 
 	    { 
-              orig_std = std;
-              std = 0;
+              orig_out = out;
+              out = 0;
               ii = add_to_table(last_id);
               if (debug)
                 fprintf(stderr, "%3d Function %s\n", pf_count++, last_id);
@@ -811,8 +812,8 @@ FUNCTION_HEAD:
           ';'
 	| function_tok DECLARED_FUN 
             { 
-              orig_std = std;
-              std = 0;
+              orig_out = out;
+              out = 0;
               ii = l_s;
               if (debug)
                 fprintf(stderr, "%3d Function %s\n", pf_count++, last_id);
@@ -1287,7 +1288,7 @@ fixup_var_list ()
         ;
       if (*array_offset)
         {
-          fprintf (std, "\n#define %s (%s %s)\n  ",
+          fprintf (out, "\n#define %s (%s %s)\n  ",
                           real_symbol, next_temp, array_offset);
           strcpy (real_symbol, next_temp);
           /* Add the temp to the symbol table, so that change files can
@@ -1386,14 +1387,14 @@ gen_function_head P1H(void)
 	}
 	fprintf(coerce, ")\n");
     }
-    std = orig_std;
+    out = orig_out;
     new_line ();
     /* We can't use our P?C macros here, since there might be an arbitrary
        number of function arguments.  We have to include the #ifdef in the
        generated code, or we'd generate different code with and without
        prototypes, which might cause splitup to create different numbers
        of files in each case. */
-    fputs ("#ifdef HAVE_PROTOTYPES\n", std);
+    fputs ("#ifdef HAVE_PROTOTYPES\n", out);
     my_output (z_id);
     my_output ("(");
     if (ids_paramed == 0) my_output ("void");
@@ -1404,7 +1405,7 @@ gen_function_head P1H(void)
     }
     my_output (")");
     new_line ();
-    fputs ("#else\n", std);
+    fputs ("#else\n", out);
     my_output (z_id);
     my_output ("(");
     for (i=0; i<ids_paramed; i++) {
@@ -1420,5 +1421,5 @@ gen_function_head P1H(void)
         semicolon ();
     }
     indent--;
-    fputs ("#endif\n", std);
+    fputs ("#endif\n", out);
 }

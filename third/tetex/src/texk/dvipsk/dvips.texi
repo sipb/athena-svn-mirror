@@ -778,6 +778,13 @@ directly instead of working through a spooler, as is common on personal
 systems.  On systems shared by more than one person, this is not
 recommended.
 
+@item -G*
+@opindex -G
+@cindex low characters, shifting
+@cindex non-printing characters, shifting
+Shift non-printing characters (ASCII 0-32, 127) to higher-numbered positions.
+This may be useful sometimes.
+
 @item -h @var{name}
 @opindex -h @var{name}
 @cindex header file, downloading
@@ -1053,6 +1060,17 @@ Set the paper size to (@var{hsize},@var{vsize}), a comma-separated pair
 of dimensions such as @samp{.1in,-.3cm} (@pxref{papersize special}).  It
 overrides any paper size special in the DVI file.
 
+@item -u @var{psmapfile}
+@opindex -u @var{psmapfile}
+@cindex PostScript font alias file
+@cindex resident fonts, different in different printers
+Set @var{psmapfile} to be the file that dvips uses for looking up 
+PostScript font aliases.  If @var{psmapfile} begins with a @samp{+}
+character, then the rest of the name is used as the name of the map file,
+and the map file is appended to the list of map files (instead of replacing
+the list).  In either case, if the name has no extension, then @samp{.map}
+is added at the end.
+
 @item -U*
 @opindex -U
 @cindex Xerox 4045
@@ -1062,6 +1080,10 @@ the bitmap information.  This is only necessary when driving the Xerox
 4045 PostScript interpreter, which has a bug that puts garbage on the
 bottom of each character.  Not recommended unless you must drive this
 printer.
+
+@item -v
+@opindex -v
+Print the dvips version number and exit.
 
 @item -V*
 @opindex -V
@@ -1541,6 +1563,10 @@ Vertical resolution.  Same as @samp{-Y}, @pxref{Option details}.
 @item Z*
 @opindex Z @r{config command (compression)}
 Compress bitmap fonts.  Same as @samp{-Z}, @pxref{Option details}.
+
+@item z*
+@opindex z @r{config command (secure mode)}
+Disables execuation of system commands.  Same as @samp{-R}, @pxref{Option details}.
 
 @end table
 

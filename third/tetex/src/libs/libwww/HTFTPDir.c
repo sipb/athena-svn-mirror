@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTFTPDir.c,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+**	@(#) $Id: HTFTPDir.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 ** Authors
 **	HF	Henrik Frystyk <frystyk@w3.org>
@@ -221,8 +221,7 @@ PRIVATE int FTPDir_put_block (HTStream * me, const char * b, int l)
 	} else {
 	    *(me->buffer+me->buflen++) = *b;
 	    if (me->buflen >= MAX_FTP_LINE) {
-		if (PROT_TRACE)
-		    HTTrace("FTP Dir..... Line too long - ignored\n");
+		HTTRACE(PROT_TRACE, "FTP Dir..... Line too long - ignored\n");
 		me->buflen = 0;
 		me->junk = YES;
 	    }
@@ -256,7 +255,7 @@ PRIVATE int FTPDir_free (HTStream * me)
 
 PRIVATE int FTPDir_abort (HTStream * me, HTList * e)
 {
-    if (PROT_TRACE) HTTrace("FTPDir...... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "FTPDir...... ABORTING...\n");
     FTPDir_free(me);
     return HT_ERROR;
 }

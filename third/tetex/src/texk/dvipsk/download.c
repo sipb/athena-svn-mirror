@@ -4,7 +4,12 @@
  *
  */
 #include "dvips.h" /* The copyright notice in that file is included too! */
+#ifndef DOWNLOAD_USING_PDFTEX
+#define DOWNLOAD_USING_PDFTEX
+#endif
+#ifndef DOWNLOAD_USING_PDFTEX
 #include "t1part.h"
+#endif
 #define DVIPS
 /*
  *   These are the external routines we call.
@@ -28,6 +33,7 @@ static unsigned char dummyend[8] = { 252 } ;
 extern int prettycolumn ;
 extern int quiet ;
 extern Boolean disablecomments ;
+extern real conv ;
 
 /*
  *   We have a routine that downloads an individual character.
@@ -216,11 +222,13 @@ void download P2C(charusetype *, p, int, psfont)
    curfnt->psname = psfont ;
    if (curfnt->resfont) {
       struct resfont *rf = curfnt->resfont ;
+#ifndef Omega /* from ASCII jpatch */
       for (b=0; b<16; b++)
         if(p->bitmap[b] !=0)
             non_empty =1;
       if(non_empty==0)
         return;
+#endif
       cmdout(name) ;
 /* following code re-arranged - Rob Hutchings 1992Apr02 */
       c = curfnt->chardesc + 255 ;
@@ -255,10 +263,17 @@ void download P2C(charusetype *, p, int, psfont)
          cmdout(rf->specialinstructions) ;
       specialout ('}') ;
       numout((integer)numcc) ;
-      fontscale = ((double)(curfnt->scaledsize)) / 655360.0 ;
-/*   A long-standing bug here; was 7200.  Caught by Sergey Lesenko. */
-      fontscale *= (mag/7227.0) ;
-      fontscale *= actualdpi ;
+      /*
+       *   This code has been bogus for a long time.  The fix is
+       *   straightforward.  The input, curfnt->scaledsize, is the
+       *   desired size of the font in dvi units.  The output is the
+       *   fontscale, which is the height of the font in output units
+       *   which are simply pixels.  Thus, all we need to do is multiply
+       *   by the default generic conv, which properly takes into
+       *   account magnification, num/den, output resolution, and so on.
+       *   Sorry this bug has been in here so long.   -tgr
+       */
+      fontscale = curfnt->scaledsize * conv ;
       (void)sprintf(nextstring, "%g", fontscale) ;
       cmdout(nextstring) ;
       (void)strcpy(nextstring, "/") ;
@@ -329,9 +344,102 @@ void download P2C(charusetype *, p, int, psfont)
    newline() ;
    fprintf(bitfile, "%%EndDVIPSBitmapFont\n") ;
 }
-
+/*
+ *   Magic code to deal with PostScript font partial downloading.
+ *   We track the encodings we've seen so far and keep them in these
+ *   structures.  We rely on writet1 to load the encodings for us.
+ */
+static struct seenEncodings {
+   struct seenEncodings *next ;
+   char *name ;
+   char **glyphs ;
+} *seenEncodings ;
+#define MAX_CHAR_CODE 256
+/*
+ *   Load a new encoding and return the array of glyphs as a vector.
+ *   Linear search.
+ */
+static char **getEncoding(char *encoding) {
+   struct seenEncodings *p = seenEncodings ;
+   while (p != 0)
+      if (strcmp(encoding, p->name) == 0)
+         break ;
+      else
+         p = p->next ;
+   if (p == 0) {
+      int i ;
+      p = (struct seenEncodings *)mymalloc(sizeof(struct seenEncodings)) ;
+      p->next = seenEncodings ;
+      seenEncodings = p ;
+      p->name = xstrdup(encoding) ;
+      p->glyphs = (char **)mymalloc((MAX_CHAR_CODE+1) * sizeof(char *)) ;
+      for (i=0; i<MAX_CHAR_CODE; i++)
+         p->glyphs[i] = ".notdef" ;
+      load_enc(encoding, p->glyphs) ;
+   }
+   return p->glyphs ;
+}
+/*
+ *   When partially downloading a type 1 font, sometimes the font uses
+ *   the built-in encoding (which we don't know at this point) so we want
+ *   to subset it by character code.  Sometimes the font uses a different
+ *   encoding, so we want to subset it by glyph.  These routines manage
+ *   accumulating all the glyph names for a particular font from all
+ *   the various uses into a single, slash-delimited string for writet1().
+ *
+ *   If no glyphs have been added, extraGlyphs is null.  In all cases,
+ *   the memory allocated for this is in extraGlyphSpace.
+ */
+static char *extraGlyphs = 0 ;
+#ifdef DOWNLOAD_USING_PDFTEX
+static char *extraGlyphSpace = 0 ;
+static int extraGlyphSize = 0 ;
+static int glyphSizeUsed = 0 ;
+/*
+ *   We want to make sure we pass in null or "/" but never "".  
+ */
+static void clearExtraGlyphList() {
+   glyphSizeUsed = 0 ;
+   extraGlyphs = 0 ;
+}
+/*
+ *   Add the glyph name; make sure it hasn't been added already.
+ *   We do this by adding it, so we can get the // around it,
+ *   and *then* see if it's already there and if it is un-add it.
+ */
+static void addGlyph(char *glyphName) {
+   int len = strlen(glyphName) ;
+   char *startOfAdd = 0 ;
+   if (len + glyphSizeUsed + 3 > extraGlyphSize) {
+      extraGlyphSize = 2 * (extraGlyphSize + len + 100) ;
+      extraGlyphSpace = (char *) xrealloc(extraGlyphSpace, extraGlyphSize) ;
+   }
+   extraGlyphs = extraGlyphSpace ;
+   if (glyphSizeUsed == 0) {
+      startOfAdd = extraGlyphs + glyphSizeUsed ;
+      extraGlyphs[glyphSizeUsed++] = '/' ; /* leading / */
+   } else {
+      startOfAdd = extraGlyphs + glyphSizeUsed - 1 ;
+   }
+   strcpy(extraGlyphs + glyphSizeUsed, glyphName) ;
+   glyphSizeUsed += len ;
+   extraGlyphs[glyphSizeUsed++] = '/' ;    /* trailing / */
+   extraGlyphs[glyphSizeUsed] = 0 ;
+   if (strstr(extraGlyphs, startOfAdd) != startOfAdd) { /* already there! */
+      glyphSizeUsed = startOfAdd - extraGlyphs + 1 ; /* kill the second copy */
+      extraGlyphs[glyphSizeUsed] = 0 ;
+   }
+}
+#endif
+/*
+ *   Download a PostScript font, using partial font downloading if
+ *   necessary.
+ */
 void downpsfont P2C(charusetype *, p, charusetype *, all)
 {
+#ifdef DOWNLOAD_USING_PDFTEX
+    static unsigned char grid[256];
+#endif
     int GridCount ;
     register int b;
     register halfword bit ;
@@ -358,27 +466,45 @@ void downpsfont P2C(charusetype *, p, charusetype *, all)
 	return;
     }
     for (cc=0; cc<256; cc++)
-#ifdef SHIFTLOWCHARS
-      grid[T1Char(cc)] = 0 ;
-#else
-    grid[cc] = 0 ;
+       grid[cc] = 0 ;
+#ifdef DOWNLOAD_USING_PDFTEX
+    clearExtraGlyphList() ;
 #endif
     for (; all->fd; all++) {
         if (all->fd->resfont == 0 ||
             strcmp(rf->PSname, all->fd->resfont->PSname))
            continue ;
         curfnt = all->fd ;
-        c = curfnt->chardesc + 255 ;
-        cc = 255 ;
-        for (b=15; b>=0; b--) {
-            for (bit=1; bit; bit<<=1) {
-                if (all->bitmap[b] & bit) {
-                    grid[cc]=1;
-                }
-                c-- ;
-                cc-- ;
+#ifdef DOWNLOAD_USING_PDFTEX
+        if (curfnt->resfont->Vectfile) {
+	   char **glyphs = getEncoding(curfnt->resfont->Vectfile) ;
+           c = curfnt->chardesc + 255 ;
+           cc = 255 ;
+           for (b=15; b>=0; b--) {
+               for (bit=1; bit; bit<<=1) {
+                   if (all->bitmap[b] & bit) {
+		      addGlyph(glyphs[cc]) ;
+                   }
+                   c-- ;
+                   cc-- ;
+               }
             }
+        } else {
+#endif
+           c = curfnt->chardesc + 255 ;
+           cc = 255 ;
+           for (b=15; b>=0; b--) {
+               for (bit=1; bit; bit<<=1) {
+                   if (all->bitmap[b] & bit) {
+                       grid[cc]=1;
+                   }
+                   c-- ;
+                   cc-- ;
+               }
+            }
+#ifdef DOWNLOAD_USING_PDFTEX
         }
+#endif
     }
 
     for (GridCount=0,cc=0; cc<256; cc++) {
@@ -387,7 +513,7 @@ void downpsfont P2C(charusetype *, p, charusetype *, all)
             GridCount++;
         }
     }
-    if(GridCount!=0) {
+    if(GridCount!=0 || extraGlyphs) {
         if (!quiet) {
            if (strlen(rf->Fontfile) + prettycolumn > STDOUTSIZE) {
               fprintf(stderr, "\n") ;
@@ -399,7 +525,11 @@ void downpsfont P2C(charusetype *, p, charusetype *, all)
         newline() ;
         if (! disablecomments)
            (void)fprintf(bitfile, "%%%%BeginFont: %s\n",  rf->PSname);
+#ifdef DOWNLOAD_USING_PDFTEX
+        if (!t1_subset_2(rf->Fontfile, grid, extraGlyphs))
+#else
         if(FontPart(bitfile, rf->Fontfile, rf->Vectfile) < 0)
+#endif
             exit(1);
         if (! disablecomments)
            (void)fprintf(bitfile, "%%%%EndFont \n");
@@ -411,6 +541,13 @@ void dopsfont P1C(sectiontype *, fs)
     charusetype *cu ;
 
     cu = (charusetype *) (fs + 1) ;
+#ifdef DOWNLOAD_USING_PDFTEX
+    while (cu->fd) {
+       if (cu->psfused)
+          cu->fd->psflag = EXISTS ;
+       downpsfont(cu++, (charusetype *)(fs + 1)) ;
+    }
+#else
     line = getmem(BUFSIZ);
     tmpline=line;
     while (cu->fd) {
@@ -421,4 +558,5 @@ void dopsfont P1C(sectiontype *, fs)
     loadbase = ~FLG_LOAD_BASE;
     FirstCharB=UnDefineChars(FirstCharB);
     free(tmpline);
+#endif
 }

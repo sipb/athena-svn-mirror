@@ -1,5 +1,5 @@
 /* kpsestat -- show file permissions of a file in octal form.
-   Copyright (C) 1997 Olaf Weber.
+   Copyright (C) 1997, 2000 Olaf Weber.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -20,18 +20,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef WIN32
-#include <string.h>
-#endif
-
 /*
  *      kpsestat mode x
  *      Print stat bits of file x on stdout, as modified by mode.
  */
 
-int main (argc, argv)
-     int argc;
-     char *argv[];
+int
+main P2C(int, argc, char **, argv)
 {
     char * mode_string;
     int to_set, to_keep, to_clear;

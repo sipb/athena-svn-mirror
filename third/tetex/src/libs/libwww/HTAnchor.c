@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTAnchor.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTAnchor.c,v 1.1.1.2 2003-02-25 22:28:28 amb Exp $
 **
 **	An anchor represents a region of a hypertext document which is
 **	linked to another anchor in the same or a different document.
@@ -25,8 +25,8 @@
 #include "HTWWWStr.h"
 #include "HTAncMan.h"					 /* Implemented here */
 
-#define HASH_SIZE	599	   /* Arbitrary prime. Memory/speed tradeoff */
-#define CHILD_HASH_SIZE	 97	       /* Often smaller than hash of parents */
+#define PARENT_HASH_SIZE	HT_XL_HASH_SIZE
+#define CHILD_HASH_SIZE		HT_L_HASH_SIZE
 
 PRIVATE HTList **adult_table=0;  /* Point to table of lists of all parents */
 
@@ -80,7 +80,7 @@ PUBLIC HTChildAnchor * HTAnchor_findChild (HTParentAnchor *	parent,
     HTChildAnchor * child = NULL;
     HTList * kids = NULL;
     if (!parent) {
-	if (ANCH_TRACE) HTTrace("Child Anchor Bad argument\n");
+	HTTRACE(ANCH_TRACE, "Child Anchor Bad argument\n");
 	return NULL;
     }
 
@@ -109,9 +109,8 @@ PUBLIC HTChildAnchor * HTAnchor_findChild (HTParentAnchor *	parent,
 	HTList * cur = kids;
 	while ((child = (HTChildAnchor *) HTList_nextObject(cur))) {
 	    if (child->tag && !strcmp(child->tag, tag)) {
-		if (ANCH_TRACE)
-		    HTTrace("Child Anchor %p of parent %p with name `%s' already exists.\n",
-			    (void *) child, (void *) parent, tag);
+		HTTRACE(ANCH_TRACE, "Child Anchor %p of parent %p with name `%s' already exists.\n" _ 
+			    (void *) child _ (void *) parent _ tag);
 		return child;
 	    }
 	}
@@ -122,9 +121,8 @@ PUBLIC HTChildAnchor * HTAnchor_findChild (HTParentAnchor *	parent,
     HTList_addObject(kids, (void *) child);
     child->parent = parent;
     if (tag) StrAllocCopy(child->tag, tag);
-    if (ANCH_TRACE)
-	HTTrace("Child Anchor New Anchor %p named `%s' is child of %p\n",
-		(void *) child, tag ? tag : (const char *) "", (void *)parent);
+    HTTRACE(ANCH_TRACE, "Child Anchor New Anchor %p named `%s' is child of %p\n" _ 
+		(void *) child _ tag ? tag : (const char *) "" _ (void *)parent);
     return child;
 }
 
@@ -164,9 +162,9 @@ PUBLIC HTAnchor * HTAnchor_findAddress (const char * address)
 
 	/* Select list from hash table */
 	for(p=newaddr, hash=0; *p; p++)
-	    hash = (int) ((hash * 3 + (*(unsigned char*)p)) % HASH_SIZE);
+	    hash = (int) ((hash * 3 + (*(unsigned char*)p)) % PARENT_HASH_SIZE);
 	if (!adult_table) {
-	    if ((adult_table = (HTList* *) HT_CALLOC(HASH_SIZE, sizeof(HTList*))) == NULL)
+	    if ((adult_table = (HTList* *) HT_CALLOC(PARENT_HASH_SIZE, sizeof(HTList*))) == NULL)
 	        HT_OUTOFMEM("HTAnchor_findAddress");
 	}
 	if (!adult_table[hash]) adult_table[hash] = HTList_new();
@@ -176,9 +174,8 @@ PUBLIC HTAnchor * HTAnchor_findAddress (const char * address)
 	grownups = adults;
 	while ((foundAnchor = (HTParentAnchor *) HTList_nextObject(grownups))){
 	    if (!strcmp(foundAnchor->address, newaddr)) {
-		if (ANCH_TRACE)
-		    HTTrace("Find Parent. %p with address `%s' already exists.\n",
-			    (void*) foundAnchor, newaddr);
+		HTTRACE(ANCH_TRACE, "Find Parent. %p with address `%s' already exists.\n" _ 
+			    (void*) foundAnchor _ newaddr);
 		HT_FREE(newaddr);		       /* We already have it */
 		return (HTAnchor *) foundAnchor;
 	    }
@@ -188,7 +185,7 @@ PUBLIC HTAnchor * HTAnchor_findAddress (const char * address)
 	foundAnchor = HTParentAnchor_new();
 	foundAnchor->address = newaddr;			/* Remember our copy */
 	HTList_addObject (adults, foundAnchor);
-	if (ANCH_TRACE) HTTrace("Find Parent. %p with hash %d and address `%s' created\n", (void*)foundAnchor, hash, newaddr);
+	HTTRACE(ANCH_TRACE, "Find Parent. %p with hash %d and address `%s' created\n" _ (void*)foundAnchor _ hash _ newaddr);
 	return (HTAnchor *) foundAnchor;
     }
 }
@@ -350,12 +347,11 @@ PRIVATE void * delete_family (HTAnchor * me)
 {
     HTParentAnchor * parent = NULL;
     if (!me) {
-	if (ANCH_TRACE) HTTrace("AnchorDelete No anchor found\n");
+	HTTRACE(ANCH_TRACE, "AnchorDelete No anchor found\n");
 	return NULL;
     }
     parent = me->parent;
-    if (ANCH_TRACE)
-	HTTrace("AnchorDelete Remove parent %p and children\n", parent);
+    HTTRACE(ANCH_TRACE, "AnchorDelete Remove parent %p and children\n" _ parent);
 
     /* Delete children */
     if (parent->children) {
@@ -397,7 +393,7 @@ PUBLIC BOOL HTAnchor_deleteAll (HTList * documents)
     HTList *cur;
     if (!adult_table)
 	return NO;
-    for (cnt=0; cnt<HASH_SIZE; cnt++) {
+    for (cnt=0; cnt<PARENT_HASH_SIZE; cnt++) {
 	if ((cur = adult_table[cnt])) { 
 	    HTParentAnchor *pres;
 	    while ((pres = (HTParentAnchor *) HTList_nextObject(cur)) != NULL){
@@ -422,7 +418,7 @@ PUBLIC BOOL HTAnchor_clearAll (HTList * documents)
     int cnt;
     HTList * cur;
     if (!adult_table) return NO;
-    for (cnt=0; cnt<HASH_SIZE; cnt++) {
+    for (cnt=0; cnt<PARENT_HASH_SIZE; cnt++) {
 	if ((cur = adult_table[cnt])) { 
 	    HTParentAnchor * pres;
 	    while ((pres = (HTParentAnchor *) HTList_nextObject(cur))) {
@@ -469,7 +465,7 @@ PUBLIC BOOL HTAnchor_delete (HTParentAnchor * me)
 {
     /* Don't delete if document is loaded */
     if (!me || me->document) {
-	if (ANCH_TRACE) HTTrace("Anchor...... Not deleted\n");
+	HTTRACE(ANCH_TRACE, "Anchor...... Not deleted\n");
 	return NO;
     }
 
@@ -511,6 +507,38 @@ PUBLIC BOOL HTAnchor_delete (HTParentAnchor * me)
 		}
 	    }
 	}
+    }
+
+    /* 2001/03/06: Bug fix by Serge Adda <sAdda@infovista.com>
+       HTAnchor_delete wasn't removing the reference to the deleted
+       anchor. This caused a bug whenever requesting another anchor
+       for the same URL.
+    */
+    if (adult_table) {
+      int hash;
+      const char *p;
+      HTList * adults;
+      HTList * grownups;
+      HTList * last;
+      HTParentAnchor * foundAnchor;
+
+      /* Select list from hash table */
+      for(p=me->address, hash=0; *p; p++)
+	hash = (int) ((hash * 3 + (*(unsigned char*)p)) %
+		      PARENT_HASH_SIZE);
+      adults = adult_table[hash];
+
+      /* Search list for anchor */
+      grownups = adults;
+      last = grownups;
+      while ((foundAnchor = (HTParentAnchor *)
+	      HTList_nextObject(grownups))){
+	if (!strcmp(foundAnchor->address, me->address)) {
+	  HTList_quickRemoveElement (grownups, last);
+	  break;
+	}
+	last = grownups;
+      }
     }
 
     /* Now kill myself */
@@ -555,18 +583,17 @@ PUBLIC HTArray * HTAnchor_getArray (int growby)
     if (!adult_table) return NULL;
 
     /* Allocate an array for the anchors */
-    if (!growby) growby = HASH_SIZE;
+    if (growby <= 0) growby = PARENT_HASH_SIZE;
     array = HTArray_new(growby);
 
     /* Traverse anchor structure */
-    for (cnt=0; cnt<HASH_SIZE; cnt++) {
+    for (cnt=0; cnt<PARENT_HASH_SIZE; cnt++) {
 	if ((cur = adult_table[cnt])) { 
 	    HTParentAnchor * pres = NULL;
 	    while ((pres = (HTParentAnchor *) HTList_nextObject(cur)) != NULL) {
                 if (HTArray_addObject(array, pres) == NO) {
-                    if (ANCH_TRACE)
-                        HTTrace("Anchor...... Can't add object %p to array %p\n",
-				pres, array);
+                    HTTRACE(ANCH_TRACE, "Anchor...... Can't add object %p to array %p\n" _ 
+				pres _ array);
                     break;
                 }
 	    }
@@ -646,8 +673,7 @@ PUBLIC char * HTAnchor_physical (HTParentAnchor * me)
 PUBLIC void HTAnchor_setPhysical (HTParentAnchor * me, char * physical)
 {
     if (!me || !physical) {
-	if (ANCH_TRACE)
-	    HTTrace("HTAnchor.... setPhysical, called with null argument\n");
+	HTTRACE(ANCH_TRACE, "HTAnchor.... setPhysical, called with null argument\n");
 	return;
     }
     StrAllocCopy(me->physical, physical);
@@ -695,18 +721,23 @@ PUBLIC char * HTAnchor_view (HTAnchor * me)
 PUBLIC BOOL HTAnchor_update (HTParentAnchor * me, HTResponse * response)
 {
     if (me && response) {
+	HTCachable cachable = HTResponse_isCachable(response);
 
-	if (HTResponse_isCachable(response) == HT_CACHE_ETAG) {
+	if (cachable == HT_CACHE_ETAG) {
 	    char * etag = HTResponse_etag(response);
-	    if (ANCH_TRACE) HTTrace("HTAnchor.... Updating etag for %p\n", me);
+	    HTTRACE(ANCH_TRACE, "HTAnchor.... Updating etag for %p\n" _ me);
 	    if (etag) {
 		HTAnchor_setEtag(me, etag);
 		return YES;
 	    }
-	} else if (HTResponse_isCachable(response) == HT_CACHE_ALL) {
+
+	} else if (cachable == HT_CACHE_NOT_MODIFIED) {
+	    HTTRACE(ANCH_TRACE, "HTAnchor.... Information is up to date for %p\n" _ me);
+	    return YES;
+
+	} else if (cachable == HT_CACHE_ALL) {
 	    char * etag = HTResponse_etag(response);
-	    if (ANCH_TRACE)
-		HTTrace("HTAnchor.... Updating metainformation for %p\n", me);
+	    HTTRACE(ANCH_TRACE, "HTAnchor.... Updating metainformation for %p\n" _ me);
 
 	    /*
 	    **  The content length and type is already parsed at this point
@@ -724,6 +755,7 @@ PUBLIC BOOL HTAnchor_update (HTParentAnchor * me, HTResponse * response)
 	    /*
 	    **  Inherit all the unparsed headers - we may need them later!
 	    */
+	    if (me->headers) HTAssocList_delete(me->headers);
 	    me->headers = HTResponse_handOverHeader(response);
 
 	    /*
@@ -731,6 +763,13 @@ PUBLIC BOOL HTAnchor_update (HTParentAnchor * me, HTResponse * response)
 	    **  have inherited in the anchor object
 	    */
 	    HTResponse_isCached(response, YES);
+
+	    /*
+	    **  Set the datestamp of when the anchor was updated if we didn't
+	    **  get any in the response
+	    */
+	    if (!HTAssocList_findObject(me->headers, "date"))
+		HTAnchor_setDate(me, time(NULL));
 
 	    return YES;
 	}
@@ -1302,7 +1341,9 @@ PUBLIC char * HTAnchor_etag (HTParentAnchor * me)
 
 PUBLIC void HTAnchor_setEtag (HTParentAnchor * me, const char * etag)
 {
-    if (me && etag && me->etag != etag) StrAllocCopy(me->etag, etag);
+  /* JK: add a new etag if it doesn't exist or if the value has changed */
+    if (me && etag && ((me->etag == NULL) || strcmp (me->etag, etag)))
+	StrAllocCopy(me->etag, etag);
 }
 
 PUBLIC BOOL HTAnchor_isEtagWeak (HTParentAnchor * me)
@@ -1333,16 +1374,7 @@ PUBLIC BOOL HTAnchor_setHeader (HTParentAnchor * me, HTAssocList * headers)
 PUBLIC void HTAnchor_setHeaderParsed (HTParentAnchor * me)
 {
     if (me) {
-
-	/*
-	**  If the server did not send a date then use the current time
-	*/
-	if (me->date < 0) me->date = time(NULL);
-
-	/*
-	**  If we don't get a Last-Modified header then set it to date
-	*/
-	if (ANCH_TRACE) HTTrace("HTAnchor.... Anchor is parsed\n");
+	HTTRACE(ANCH_TRACE, "HTAnchor.... Anchor is parsed\n");
 	me->header_parsed = YES;
     }
 }
@@ -1357,7 +1389,7 @@ PUBLIC BOOL HTAnchor_headerParsed (HTParentAnchor * me)
 */
 PUBLIC void HTAnchor_clearHeader (HTParentAnchor * me)
 {
-    if (ANCH_TRACE) HTTrace("HTAnchor.... Clear all header information\n");
+    HTTRACE(ANCH_TRACE, "HTAnchor.... Clear all header information\n");
     me->allow = METHOD_INVALID;
     if (me->content_encoding) {
 	HTList_delete(me->content_encoding);
@@ -1400,7 +1432,4 @@ PUBLIC void HTAnchor_clearHeader (HTParentAnchor * me)
     /* Delete any original headers */
     if (me->headers) HTAssocList_delete(me->headers);
     me->headers = NULL;
-
-    /* Anchor is cleared */
-    me->header_parsed = NO;
 }

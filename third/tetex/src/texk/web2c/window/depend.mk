@@ -5,10 +5,12 @@ amiga.o: amiga.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -21,10 +23,12 @@ epsf.o: epsf.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -37,10 +41,12 @@ hp2627.o: hp2627.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -53,10 +59,12 @@ mftalk.o: mftalk.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -69,10 +77,12 @@ next.o: next.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -85,10 +95,12 @@ regis.o: regis.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -101,10 +113,12 @@ suntools.o: suntools.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -117,10 +131,12 @@ tek.o: tek.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -133,10 +149,12 @@ trap.o: trap.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -149,10 +167,12 @@ uniterm.o: uniterm.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -165,10 +185,12 @@ win32.o: win32.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -181,10 +203,12 @@ x11-Xlib.o: x11-Xlib.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -197,10 +221,12 @@ x11-Xt.o: x11-Xt.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \
@@ -213,10 +239,12 @@ x11.o: x11.c ../mfd.h ../texmfmp.h ../cpascal.h ../config.h \
  $(kpathsea_srcdir)/systypes.h \
  $(kpathsea_srcdir)/c-memstr.h \
  $(kpathsea_srcdir)/c-errno.h \
- $(kpathsea_srcdir)/c-minmax.h $(kpathsea_srcdir)/c-limits.h \
+ $(kpathsea_srcdir)/c-minmax.h \
+ $(kpathsea_srcdir)/c-limits.h \
  $(kpathsea_srcdir)/c-proto.h $(kpathsea_srcdir)/debug.h \
  $(kpathsea_srcdir)/types.h $(kpathsea_srcdir)/lib.h $(kpathsea_srcdir)/progname.h \
- ../c-auto.h $(kpathsea_srcdir)/c-fopen.h \
+ ../../web2c/c-auto.h $(kpathsea_srcdir)/c-vararg.h \
+ $(kpathsea_srcdir)/c-fopen.h \
  $(kpathsea_srcdir)/getopt.h \
  $(kpathsea_srcdir)/proginit.h $(kpathsea_srcdir)/tex-file.h ../help.h \
  $(kpathsea_srcdir)/c-pathch.h $(kpathsea_srcdir)/c-ctype.h \

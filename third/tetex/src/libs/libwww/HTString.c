@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTString.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTString.c,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 **
 **	Original version came with listserv implementation.
 **	Version TBL Oct 91 replaces one which modified the strings.
@@ -57,9 +57,9 @@ PUBLIC int strncasecomp (const char * a, const char * b, int n)
 
 
 /*
-** ht_strcasestr(s1,s2) -- like strstr(s1,s2) but case-insensitive.
+** strcasestr(s1,s2) -- like strstr(s1,s2) but case-insensitive.
 */
-PUBLIC char * ht_strcasestr (char * s1, char * s2)
+PUBLIC char * HTStrCaseStr (char * s1, char * s2)
 {
     char * ptr = s1;
 
@@ -80,7 +80,31 @@ PUBLIC char * ht_strcasestr (char * s1, char * s2)
     return NULL;
 }
 
+/*
+** tailcomp(s1,s2) -- like strcmp(s1,s2) but match s1 with the tail of s2
+**                    (used for cookie domain comparison)
+*/
+PUBLIC int tailcomp(const char * s1, const char * s2)
+{
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
 
+    if (l1 < l2)
+        s2 += (l2 - l1);
+
+    return strcmp(s1, s2);
+}
+
+PUBLIC int tailcasecomp(const char * s1, const char * s2)
+{
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+
+    if (l1 < l2)
+        s2 += (l2 - l1);
+
+    return strcasecomp(s1, s2);
+}
 
 /*	Allocate a new copy of a string, and returns it
 */
@@ -116,7 +140,7 @@ PUBLIC char * HTSACat (char ** dest, const char * src)
   return *dest;
 }
 
-PUBLIC char * StrAllocMCopy (char ** dest, ...)
+PUBLIC char * CDECL StrAllocMCopy (char ** dest, ...)
 {
     va_list pArgs;
     char * p, * argp;
@@ -147,7 +171,7 @@ PUBLIC char * StrAllocMCopy (char ** dest, ...)
     return *dest;
 }
 
-PUBLIC char * StrAllocMCat (char ** dest, ...)
+PUBLIC char * CDECL StrAllocMCat (char ** dest, ...)
 {
     va_list pArgs;
     char * p, * argp;

@@ -63,7 +63,7 @@ kpse_expand_kpse_dot P1C(string, path)
   
   if (kpse_dot == NULL)
     return path;
-  ret = xmalloc(1);
+  ret = (string)xmalloc(1);
   *ret = 0;
 
 #ifdef MSDOS
@@ -83,7 +83,7 @@ kpse_expand_kpse_dot P1C(string, path)
   for (elt = kpse_path_element (path); elt; elt = kpse_path_element (NULL)) {
     string save_ret = ret;
     /* We assume that the !! magic is only used on absolute components.
-       Single "." get special treatment, as does "./" or its equivalent. */
+       Single "." gets special treatment, as does "./" or its equivalent. */
     if (kpse_absolute_p (elt, false) || (elt[0] == '!' && elt[1] == '!')) {
       ret = concat3(ret, elt, ENV_SEP_STRING);
     } else if (elt[0] == '.' && elt[1] == 0) {
@@ -116,7 +116,7 @@ kpse_brace_expand_element P1C(const_string, elt)
 {
   unsigned i;
   str_list_type expansions = brace_expand (&elt);
-  string ret = xmalloc (1);
+  string ret = (string)xmalloc (1);
   *ret = 0;
 
   for (i = 0; i != STR_LIST_LENGTH(expansions); i++) {
@@ -159,7 +159,7 @@ kpse_brace_expand P1C(const_string, path)
      Since kpse_path_element is not reentrant, we must get all
      the path elements before we start the loop.  */
   string xpath = kpse_var_expand (path);
-  string ret = xmalloc (1);
+  string ret = (string)xmalloc (1);
   *ret = 0;
 
   for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
@@ -195,7 +195,7 @@ kpse_path_expand P1C(const_string, path)
   unsigned len;
 
   /* Initialise ret to the empty string. */
-  ret = xmalloc (1);
+  ret = (string)xmalloc (1);
   *ret = 0;
   len = 0;
   
@@ -210,19 +210,6 @@ kpse_path_expand P1C(const_string, path)
     if (*elt == '!' && *(elt + 1) == '!')
       elt += 2;
 
-    /* Do not touch the device if present */
-    if (NAME_BEGINS_WITH_DEVICE (elt)) {
-      while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3))) {
-        *(elt + 2) = *(elt + 1);
-        *(elt + 1) = *elt;
-        elt++;
-      }
-    } else {
-      /* We never want to search the whole disk.  */
-      while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-        elt++;
-    }
-
     /* Search the disk for all dirs in the component specified.
        Be faster to check the database, but this is more reliable.  */
     dirs = kpse_element_dirs (elt); 
@@ -233,7 +220,12 @@ kpse_path_expand P1C(const_string, path)
         string thedir = STR_LLIST (*dir);
         unsigned dirlen = strlen (thedir);
         string save_ret = ret;
-        /* Retain trailing slash if that's the root directory.  */
+        /* We need to retain trailing slash if that's the root directory.
+         * On unix, "/" is root dir, "" often taken to be current dir.
+         * On windows, "C:/" is root dir of drive C, and "C:" is current
+         * on drive C.  There's no need to look at other cases, like UNC
+         * names.
+         */
         if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
                             && IS_DIR_SEP (thedir[2]))) {
           ret = concat3 (ret, thedir, ENV_SEP_STRING);
@@ -263,7 +255,7 @@ static void expand_append P3C(str_list_type*, partial,
     str_list_type tmp;
     tmp = str_list_init();
     len = p - text;
-    new_string = xmalloc(len+1);
+    new_string = (string)xmalloc(len+1);
     strncpy(new_string, text, len);
     new_string[len]=0;
     str_list_add(&tmp, new_string);

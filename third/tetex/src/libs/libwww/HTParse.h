@@ -23,7 +23,7 @@ This module contains code to parse URIs and various related things such as:
   o 
 	     Canonicalization of URIs
   o 
-	     Search a URI for illigal characters in order to prevent
+	     Search a URI for illegal characters in order to prevent
     security holes
 
 	 
@@ -200,6 +200,6 @@ extern BOOL HTCleanTelnetString (char * str);
 
   
 
-  @(#) $Id: HTParse.h,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+  @(#) $Id: HTParse.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

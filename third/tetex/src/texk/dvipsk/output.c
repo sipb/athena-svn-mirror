@@ -108,17 +108,19 @@ static time_t jobtime;
 static char *hxdata = "0123456789ABCDEF" ;
 static int infigure ;
 extern char *infont ;
-static char *begbinary = "\n%%BeginBinary:" ;
+static char possibleDSCLine[81],
+       *dscLinePointer = possibleDSCLine, *dscLineEnd = possibleDSCLine + 80 ;
 void
 copyfile P1C(char *, s)
 {
    FILE *f = NULL ;
    int c, prevc = '\n' ;
    long len ;
-   char *bbmatch = begbinary ;
    /* begin DOS EPS code */
    int doseps = 0;
    unsigned long dosepsbegin, dosepsend = 0;
+   int removingBytes = 0 ;
+   char *scanForEnd = 0 ;
    /* end DOS EPS code */
 #ifdef VMCMS
    register char *lastdirsep ;
@@ -130,6 +132,7 @@ copyfile P1C(char *, s)
    register char *trunc_s ;
    trunc_s = s ;
 #endif
+   dscLinePointer = possibleDSCLine ;
 
    switch (infigure) {
    case 1:
@@ -152,13 +155,9 @@ copyfile P1C(char *, s)
       (void)sprintf(errbuf,
     "Couldn't find figure file %s with MVS name %s; continuing", s, trunc_s) ;
 #else
-      (void)sprintf(errbuf, "Couldn't find figure file %s; continuing", s) ;
+      (void)sprintf(errbuf, "Could not find figure file %s; continuing", s) ;
 #endif
 #endif
-      break ;
-   default:
-      f = search(headerpath, s, READBIN) ;
-      (void)sprintf(errbuf, "! Couldn't find header file %s", s) ;
       break ;
 #ifndef VMCMS
 #ifndef MVSXA
@@ -173,12 +172,18 @@ copyfile P1C(char *, s)
 #ifdef OS2
       if (_osmode == OS2_MODE) {
 #endif
-      if (secure == 0)
-         f = popen(s, FOPEN_RBIN_MODE) ;
+      if (secure == 0) {
+         (void)sprintf(errbuf, "Execution of  <%s> failed ", s) ;
+         f = popen(s, "r") ;
+         if (f != 0)
+            SET_BINARY(fileno(f)) ;
+	}
+	else {
+      (void)sprintf(errbuf,"Secure mode is %d so execute <%s> will not run", secure,s) ;
+	}
 #ifdef OS2
       }
 #endif
-      (void)sprintf(errbuf, "Failure to execute %s; continuing", s) ;
 #endif
       break;
 #endif
@@ -187,6 +192,10 @@ copyfile P1C(char *, s)
 #endif
 #endif
 #endif
+   default:
+      f = search(headerpath, s, READBIN) ;
+      (void)sprintf(errbuf, "! Could not find header file %s", s) ;
+      break ;
    }
    if (f==NULL)
       error(errbuf) ;
@@ -210,7 +219,7 @@ copyfile P1C(char *, s)
       }
       if (linepos != 0)
 #ifdef HPS
-        if (!HPS_FLAG && (strcmp(s, "head.tmp") != 0)) /* no initial newline */
+        if (!HPS_FLAG || (strcmp(s, "head.tmp") != 0)) /* no initial newline */
 #endif
          (void)putc('\n', bitfile) ;
 /*
@@ -321,35 +330,49 @@ msdosdone:
 /* end DOS EPS code */
          if (c != EOF) {
             while (1) {
-               if (c == *bbmatch) {
-                  bbmatch++ ;
-                  if (*bbmatch == '\0') {
+               if (c == '\n') { /* end or beginning of line; check DSC */
+                  *dscLinePointer = 0 ; /* make sure we terminate!
+                                         * might be a new empty line! */
+                  if (strncmp(possibleDSCLine, "%%BeginBinary:", 14) == 0 ||
+                      strncmp(possibleDSCLine, "%%BeginData:", 12) == 0) {
                      integer size = 0 ;
-
-                     if (removecomments)
-                        (void)fputs(begbinary, bitfile) ;
-                     (void)putc(c, bitfile) ;
-                     while (1) {
-                        c = getc(f) ;
-                        dosepsend-- ;
-                        if (c == ' ')
-                           (void)putc(c, bitfile) ;
-                        else
-                           break ;
+                     char *p = possibleDSCLine ;
+                     *dscLinePointer = 0 ;
+                     *dscLineEnd = 0 ;
+                     if (scanForEnd == 0 && removecomments)
+                        (void)fputs(possibleDSCLine, bitfile) ;
+                     scanForEnd = 0 ;
+                     while (*p != ':')
+                        p++ ;
+                     p++ ;
+                     while (*p && *p <= ' ')
+                        p++ ;
+                     if ('0' > *p || *p > '9') {
+                        /*
+                         *   No byte count!  We need to scan for end binary
+                         *   or end data, and hope we get it right.  Really
+                         *   the file is malformed.
+                         */
+                        scanForEnd = "Yes" ;
                      }
-                     while ('0' <= c && c <= '9') {
-                        size = size * 10 + c - '0' ;
-                        (void)putc(c, bitfile) ;
-                        c = getc(f) ;
-                        dosepsend-- ;
+                     while ('0' <= *p && *p <= '9') {
+                        size = size * 10 + *p - '0' ;
+                        p++ ;
                      }
-                     while (c != '\r' && c != '\n') {
-                        if (c == EOF)
-                           error("! bad BeginBinary line in epsf") ;
-                        (void)putc(c, bitfile) ;
-                        c = getc(f) ;
-                        dosepsend-- ;
-                     }
+                     while (*p && *p <= ' ')
+                        p++ ;
+                     if (*p == 'h' || *p == 'H')
+                        /*
+                         *   Illustrator 8 and 9 have bogus byte counts
+                         *   for hex data.  But if it is hex, we assume
+                         *   that it is safe to use ASCII scanning, so
+                         *   we do so.
+                         */
+                        scanForEnd = "Yes" ;
+                     while (*p > ' ') /* ignore Hex/Binary/ASCII */
+                        p++ ;
+                     while (*p && *p <= ' ')
+                        p++ ;
                      (void)putc(c, bitfile) ;
                      if (c == '\r') { /* maybe we have a DOS-style text file */
                         c = getc(f);
@@ -359,89 +382,123 @@ msdosdone:
                         } else
                            ungetc(c, f);
                      }
-                     for (; size>0; size--) {
-                        c = getc(f) ;
-                        dosepsend-- ;
-                        if (c == EOF)
-                           error("! premature end of file in binary section") ;
-                        (void)putc(c, bitfile) ;
+                     if (scanForEnd != 0) {
+                        if (strncmp(possibleDSCLine, "%%BeginBinary", 13) == 0)
+                           scanForEnd = "%%EndBinary" ;
+                        else
+                           scanForEnd = "%%EndData" ;
                      }
-                     c = getc(f) ;
-                     dosepsend-- ;
-                     if (c == '\n' || c == '\r') {
-                        (void)putc(c, bitfile) ;
-			if (c == '\r') { /* DOS-style text file? */
-			   c = getc(f);
-                           dosepsend-- ;
-			   if (c == '\n') {
-			      putc(c, bitfile);
-			      c = getc(f);
+                     if (scanForEnd == 0) {
+                        if (strncmp(p, "lines", 5) != 0 &&
+                            strncmp(p, "Lines", 5) != 0) {
+                           for (; size>0; size--) {
+                              c = getc(f) ;
                               dosepsend-- ;
-			   }
-			} else {
-			   c = getc(f) ;
-                           dosepsend-- ;
-                        }
-                     }
-                     if (c != '%')
-                        error("! expected to see %%EndBinary at end of data") ;
-                     while (1) {
-                        (void)putc(c, bitfile) ;
-                        if (c == '\r' || c == '\n') {
-			   if (c == '\r') { /* DOS-style text file? */
-			      c = getc(f);
-			      if (c != '\n')
-				 ungetc(c, f);
-                              else
+                              if (c == EOF)
+                                 error(
+                                 "! premature end of file in binary section") ;
+                              (void)putc(c, bitfile) ;
+                           }
+                        } else {
+                           /*
+                            *  Count both newlines and returns, and when either
+                            *  goes over the count, we are done.
+                            */
+                           int newlines=0, returns=0 ;
+                           while (newlines < size && returns < size) {
+                              c = getc(f) ;
+                              dosepsend-- ;
+                              if (c == EOF)
+                                 error(
+                                    "! premature end of file in binary section") ;
+                              (void)putc(c, bitfile) ;
+                              if (c == '\n')
+                                 newlines++ ;
+                              else if (c == '\r')
+                                 returns++ ;
+                           }
+                           /*
+                            *   If we've seen precisely one too few newlines,
+                            *   and the next char is a newline, include it too.
+                            */
+                           if (returns == newlines + 1) {
+                              if ((c = getc(f)) == '\n') {
+                                 putc(c, bitfile) ;
                                  dosepsend-- ;
-			   }
-                           break ;
-			}
+                              } else {
+                                 ungetc(c, f);
+                              }
+                           }
+                        }
                         c = getc(f) ;
-                        dosepsend-- ;
-                        if (c == EOF)
-                           error("! premature end of file in binary section") ;
-                     }
-                     c = getc(f) ;
-                     dosepsend-- ;
-                  }
-               } else
-                  bbmatch = begbinary ;
-               if (removecomments && c == '%' && prevc == '\n') {
-                         /* skip comments */
-		         /* revised:  only skip %% and %! comments */
-                  c = getc(f) ;
-                  dosepsend-- ;
-                  if (c == '%' || c == '!') {
-                     while ((c=getc(f))!=EOF) {
                         dosepsend-- ;
                         if (c == '\n' || c == '\r') {
+                           (void)putc(c, bitfile) ;
 			   if (c == '\r') { /* DOS-style text file? */
 			      c = getc(f);
-			      if (c != '\n')
-				 ungetc(c, f);
-                              else
+                              dosepsend-- ;
+			      if (c == '\n') {
+			         putc(c, bitfile);
+			         c = getc(f);
                                  dosepsend-- ;
-			   }
-                           c = '\n' ;
-                           break ;
+			      }
+			   } else {
+			      c = getc(f) ;
+                              dosepsend-- ;
+                           }
                         }
+                        if (c != '%')
+                           error("! expected to see %%EndBinary at end of data") ;
+                        while (1) {
+                           (void)putc(c, bitfile) ;
+                           if (c == '\r' || c == '\n') {
+			      if (c == '\r') { /* DOS-style text file? */
+			         c = getc(f);
+			         if (c != '\n')
+				    ungetc(c, f);
+                                 else
+                                    dosepsend-- ;
+			      }
+                              break ;
+			   }
+                           c = getc(f) ;
+                           dosepsend-- ;
+                           if (c == EOF)
+                              error(
+                                 "! premature end of file in binary section") ;
+                        }
+                        c = getc(f) ;
+                        dosepsend-- ;
                      }
-		  } else {
-		     (void)putc('%', bitfile) ;
-		     if (c != EOF)
-                        (void)putc(c, bitfile) ;
-		  }
+                  } else if (scanForEnd && strncmp(possibleDSCLine, scanForEnd,
+                                                   strlen(scanForEnd))==0) {
+                     scanForEnd = 0 ;
+                  }
+                  dscLinePointer = possibleDSCLine ;
+               } else if (dscLinePointer < dscLineEnd) {
+                  *dscLinePointer++ = c ;
+                  if (removecomments && scanForEnd == 0 &&
+                      c == '%' && dscLinePointer == possibleDSCLine + 1) {
+                     /* % is first char */
+                     c = getc(f) ;
+                     if (c == '%' || c == '!')
+                        removingBytes = 1 ;
+                     if (c != EOF)
+                        ungetc(c, f) ;
+                     c = '%' ;
+                  }
+               }
 #ifdef VMCMS
-               } else if (c != 0x37 ) {
+               if (c != 0x37 ) {
 #else
 #ifdef MVSXA
-               } else if (c != 0x37 ) {
+               if (c != 0x37 ) {
 #else
-               } else if (c != 4) {
+               if (c != 4) {
 #endif
 #endif
-                  (void)putc(c, bitfile) ;
+                  if (!removingBytes)
+                     (void)putc(c, bitfile) ;
                }
                prevc = c ;
 /* begin DOS EPS code */
@@ -455,12 +512,14 @@ msdosdone:
                else if (c == '\r') {
 		  c = getc(f);
 		  if (c == '\n') { /* DOS-style text file? */
-		     (void)putc('\r', bitfile);
+		     if (!removingBytes) (void)putc('\r', bitfile);
                      dosepsend-- ;
 		  } else
 		     ungetc(c, f);
                   c = '\n' ;
 	       }
+               if (prevc == '\n')
+                  removingBytes = 0 ;
             }
          }
       }
@@ -568,15 +627,14 @@ int T1Char P1C(int, c)
       tmpchr = 0xC4;
     }
   }
-  if (curfnt->chardesc[tmpchr].flags & EXISTS)
-    return c;
-  else
-    return tmpchr;
+  if (curfnt->chardesc[tmpchr].flags2 & EXISTS)
+    tmpchr = c ;
+  return tmpchr;
 }
 #endif
 
 void
-scout P1C(char, c)   /* string character out */
+scout P1C(unsigned char, c)   /* string character out */
 {
 /*
  *   Is there room in the buffer?  LINELENGTH-6 is used because we
@@ -617,6 +675,17 @@ scout P1C(char, c)   /* string character out */
      }
    }
 }
+
+#ifdef Omega
+void
+scout2 P1C(int, c)
+{
+   char s[64] ;
+
+   sprintf(s, "<%04x>p", c) ;
+   cmdout(s) ;
+}
+#endif
 
 void
 cmdout P1C(char *, s)
@@ -1083,7 +1152,7 @@ void open_output P1H(void) {
 	       pf = fopen("PRN", "w") ;
 	 }
 #endif
-	 if (!secure && pf == NULL && (pf = popen(oname+1, "w")) != NULL)
+	 if (pf == NULL && (pf = popen(oname+1, "w")) != NULL)
 	    popened = 1;
          if (pf == NULL)
             error("! couldn't open output pipe") ;
@@ -1268,6 +1337,7 @@ void setup P1H(void) {
       numout((integer)numcopies) ;
       cmdout("@copies") ;
    }
+   cmdout("end") ;
    if (endprologsent == 0 && !disablecomments) {
       newline() ;
       endprologsent = 1 ;
@@ -1350,6 +1420,15 @@ pageinit P1H(void)
          (void)fprintf(bitfile, "%%%%Page: %d %d\n", pagenum, thispage) ;
 #endif
    linepos = 0 ;
+   cmdout("TeXDict") ;
+   cmdout("begin") ;
+#ifdef HPS
+   if (HPS_FLAG) {
+      cmdout("HPSdict") ;
+      cmdout("begin") ;
+   }
+#endif
+   if (landscape) cmdout("@landscape") ;
    numout((integer)pagenum) ;
    numout((integer)thispage-1) ;
    cmdout("bop") ;
@@ -1369,6 +1448,11 @@ pageend P1H(void)
       chrcmd('p') ;
    }
    cmdout("eop") ;
+   cmdout("end") ;
+#ifdef HPS
+   if (HPS_FLAG)
+      cmdout("end") ;
+#endif
 }
 
 /*
@@ -1405,7 +1489,12 @@ drawchar P2C(chardesctype *, c, int, cc)
       fontout((int)curfnt->psname) ;
       lastfont = curfnt->psname ;
    }
-   scout(cc) ;
+#ifdef Omega
+   if (curfnt->codewidth==1) scout((unsigned char)cc) ;
+   else scout2(cc) ;
+#else
+   scout((unsigned char)cc) ;
+#endif
    rhh = hh + c->pixelwidth ; /* rvv = rv */
 }
 /*

@@ -1,4 +1,4 @@
-if test "$needs_libpng" = no; then
+if test "$needs_pnglib" = no; then
   LIBPNGCPPFLAGS=
   LDLIBPNG=
   LIBPNGDEP=

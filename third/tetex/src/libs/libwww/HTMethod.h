@@ -27,6 +27,7 @@ This module is implemented by HTMethod.c, and it
 is a part of the  W3C Sample Code
 Library.
 */
+
 #ifndef HTMETHOD_H
 #define HTMETHOD_H
 
@@ -47,6 +48,28 @@ typedef enum {
     METHOD_TRACE	= 0x40,
     METHOD_OPTIONS	= 0x80,
     METHOD_LINK		= 0x100,
+
+#ifdef HT_DAV
+    METHOD_LOCK         = 0x400,              /* WebDAV Methods */
+    METHOD_UNLOCK       = 0x800,
+
+    METHOD_PROPFIND     = 0x1000,
+    METHOD_PROPPATCH    = 0x2000,
+    METHOD_MKCOL        = 0x4000,
+    METHOD_COPY         = 0x8000,
+    METHOD_MOVE         = 0x10000,
+#endif
+
+#ifdef HT_EXT
+    METHOD_EXT_0        = 0x20000,            /* Extension methods */
+    METHOD_EXT_1        = 0x40000,    
+    METHOD_EXT_2        = 0x80000,
+    METHOD_EXT_3        = 0x100000,
+    METHOD_EXT_4        = 0x200000,
+    METHOD_EXT_5        = 0x400000,
+    METHOD_EXT_6        = 0x800000,
+#endif
+
     METHOD_UNLINK	= 0x200
 } HTMethod;
 
@@ -98,11 +121,35 @@ add to the anchor metainformation. We have a small macro to make the distinction
 )
 
 Does a method include an entity to be sent from the client to the server?
+
+If not using WebDAV functions, neither extension methods, the
+HTMethod_hasEntity is not changed, because a macro is much more performant
+than a function. The function is interesting only when using WebDAV (many
+methods) or extension methods (in this case, a dynamic structure is
+needed).
 */
 
-#define HTMethod_hasEntity(me)	((me) & (METHOD_PUT | METHOD_POST))
+extern BOOL HTMethod_hasEntity(HTMethod me);
 
 /*
+(
+Extension Methods
+)
+
+
+These methods have been introduced in Libwww for extension purposes.
+Through these methods, application may register new methods, even libwww
+unknown methods, and use them. It's recomended for applications that need
+only a few new methods, that aren't yet in the libwww. The application should
+register the desired methos, an before finish, it must unregister these
+methods.
+*/
+
+extern BOOL HTMethod_setExtensionMethod (HTMethod method, const char * name, BOOL hasEntity);
+extern BOOL HTMethod_deleteExtensionMethod (HTMethod method);
+
+/*
+
 */
 
 #endif /* HTMETHOD_H */
@@ -111,6 +158,6 @@ Does a method include an entity to be sent from the client to the server?
 
   
 
-  @(#) $Id: HTMethod.h,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+  @(#) $Id: HTMethod.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -125,6 +125,18 @@ extern BOOL HTNoProxy_deleteAll	(void);
 
 The remove function removes all entries in the list. This is automatically
 done in  HTLibTerminate()
+(
+  Inverse the meaning of the NoProxy list
+)
+
+Allows to change the value of a flag so that the NoProxy list is interpreted
+as if it were an OnlyProxy list.
+*/
+
+extern int  HTProxy_NoProxyIsOnlyProxy (void);
+extern void HTProxy_setNoProxyIsOnlyProxy (int value);
+
+/*
 .
   Look for a Proxy server
 .
@@ -188,6 +200,6 @@ extern void HTProxy_getEnvVar	(void);
 
   
 
-  @(#) $Id: HTProxy.h,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+  @(#) $Id: HTProxy.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

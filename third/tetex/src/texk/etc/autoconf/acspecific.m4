@@ -1754,7 +1754,7 @@ AC_DEFUN(AC_FUNC_SELECT_ARGTYPES,
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
-extern select ($ac_cv_func_select_arg1,$ac_cv_func_select_arg234,$ac_cv_func_select_arg234,$ac_cv_func_select_arg234,$ac_cv_func_select_arg5);],,dnl
+extern int select ($ac_cv_func_select_arg1,$ac_cv_func_select_arg234,$ac_cv_func_select_arg234,$ac_cv_func_select_arg234,$ac_cv_func_select_arg5);],,dnl
         [ac_not_found=no ; break 3],ac_not_found=yes)
       done
      done
@@ -2519,7 +2519,7 @@ if test "$ac_x_libraries" = NO; then
   # Don't add to $LIBS permanently.
   ac_save_LIBS="$LIBS"
   LIBS="-l$x_direct_test_library $LIBS"
-AC_TRY_LINK(, [${x_direct_test_function}()],
+AC_TRY_LINK([#include <X11/Intrinsic.h>], [${x_direct_test_function}()],
 [LIBS="$ac_save_LIBS"
 # We can link X programs with no special library path.
 ac_x_libraries=],
@@ -2716,6 +2716,32 @@ rm -f conftest*])
 MINGW32=
 test "$ac_cv_mingw32" = yes && MINGW32=yes])
 
+dnl Check for djgpp.
+AC_DEFUN(AC_DJGPP,
+[AC_CACHE_CHECK(for djgpp environment, ac_cv_djgpp,
+[AC_TRY_COMPILE(,[
+#if defined (DJGPP) || defined (__DJGPP__)
+#define __HAVE_DJGPP__        1
+#endif
+return __HAVE_DJGPP__;],
+ac_cv_djgpp=yes, ac_cv_djgpp=no)
+rm -f conftest*])
+HAVE_DJGPP=
+test "$ac_cv_djgpp" = yes && HAVE_DJGPP=yes])
+
+dnl Check for win32.
+AC_DEFUN(AC_WIN32,
+[AC_CACHE_CHECK(for win32 environment, ac_cv_win32,
+[AC_TRY_COMPILE(,[
+#if defined(WIN32) || defined(__WIN32__) || defined(_WIN32)
+#define __HAVE_WIN32__        1
+#endif
+return __HAVE_WIN32__;],
+ac_cv_win32=yes, ac_cv_win32=no)
+rm -f conftest*])
+HAVE_WIN32=
+test "$ac_cv_win32" = yes && HAVE_WIN32=yes])
+
 dnl Check for the extension used for executables.  This knows that we
 dnl add .exe for Cygwin or mingw32.  Otherwise, it compiles a test
 dnl executable.  If this is called, the executable extensions will be
@@ -2750,6 +2776,25 @@ AC_MSG_RESULT(${ac_cv_exeext})
 dnl Setting ac_exeext will implicitly change the ac_link command.
 ac_exeext=$EXEEXT
 AC_SUBST(EXEEXT)])
+
+dnl Unset CC to run configure with cross compiler.
+AC_DEFUN(AC_UNSET_CC, [
+ZZ=
+if test "$cross_compiling" = yes &&
+   (test "x$CC" = "xdos-gcc" || test "x$CC" = "xi386-mingw32-gcc" || test "x$CC" = "xgnuwin32gcc") ; then
+ZZ=$CC
+unset CC
+cross_compiling=no
+fi
+])
+
+dnl Restore CC that has been unset by AC_UNSET_CC
+AC_DEFUN(AC_RESET_CC, [
+if test "x$ZZ" = "xdos-gcc" || test "x$ZZ" = "xi386-mingw32-gcc" || test "x$ZZ" = "xgnuwin32gcc" ; then
+CC=$ZZ
+cross_compiling=yes
+fi
+])
 
 
 dnl ### Checks for UNIX variants

@@ -69,6 +69,7 @@ extern HTChannel * HTChannel_new (SOCKET sockfd, FILE * fp, BOOL active);
 
 extern BOOL HTChannel_delete (HTChannel * channel, int status);
 extern BOOL HTChannel_deleteAll (void);
+extern BOOL HTChannel_safeDeleteAll (void);
 
 /*
 (
@@ -139,9 +140,11 @@ and output streams and the Channel object contains the actualy stream objects.
 
 extern BOOL HTChannel_setInput (HTChannel * ch, HTInputStream * input);
 extern HTInputStream * HTChannel_input (HTChannel * ch);
+extern BOOL HTChannel_deleteInput (HTChannel * channel, int status);
 
 extern BOOL HTChannel_setOutput (HTChannel * ch, HTOutputStream * output);
 extern HTOutputStream * HTChannel_output (HTChannel * ch);
+extern BOOL HTChannel_deleteOutput (HTChannel * channel, int status);
 
 extern HTInputStream * HTChannel_getChannelIStream (HTChannel * ch);
 extern HTOutputStream * HTChannel_getChannelOStream (HTChannel * ch);
@@ -155,6 +158,6 @@ extern HTOutputStream * HTChannel_getChannelOStream (HTChannel * ch);
 
   
 
-  @(#) $Id: HTChannl.h,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+  @(#) $Id: HTChannl.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

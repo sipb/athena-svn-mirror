@@ -29,4 +29,4 @@ fontimport(1),
 fontexport(1).
 
 .SH AUTHOR
-Dirk Hillbrecht (dh@informatik.uni\-hannover.de)
+Dirk Hillbrecht (te@dbs.uni\-hannover.de)

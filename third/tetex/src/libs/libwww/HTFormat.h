@@ -98,6 +98,14 @@ They are internal representations used in the Library but they can't be exported
 to other apps!
 */
 
+#define WWW_INTERNAL	HTAtom_for("www/*")          /* All internal formats */
+
+/*
+
+WWW_INTERNAL represent all internal formats. This can for example
+be used to match using the HTMIMEMatch(...).
+*/
+
 #define WWW_RAW		HTAtom_for("www/void")   /* Raw output from Protocol */
 
 /*
@@ -171,6 +179,9 @@ These are regular MIME types defined. Others can be added!
 #define WWW_MIME_FOOT	HTAtom_for("message/x-rfc822-foot")
 #define WWW_MIME_PART   HTAtom_for("message/x-rfc822-partial")
 #define WWW_MIME_CONT   HTAtom_for("message/x-rfc822-cont")
+#define WWW_MIME_UPGRADE	HTAtom_for("message/x-rfc822-upgrade")
+
+#define WWW_MIME_COPYHEADERS HTAtom_for("www/x-rfc822-headers")
 
 #define WWW_AUDIO       HTAtom_for("audio/basic")
 
@@ -278,16 +289,24 @@ A presenter is a module (possibly an external program) which
 can present a graphic object of a certain MIME type to the user. That is,
 presenters are normally used to present objects that the
 converters are not able to handle. Data is transferred to the
-external program using for example the
-HTSaveAndExecute stream which writes to a local
-file. Both presenters and converters are of the type
+external program using a special "presenter stream" which for example can
+use the local disk to transfer the data from libwww to the external program.
+
+Libwww provides a default HTSaveAndExecute
+stream which you may want to use for this purpose. However, any stream
+that is of type HTConverter will do. You can manage the
+special presenter stream using the following methods:
+*/
+
+extern void HTPresentation_setConverter (HTConverter * pconv);
+extern HTConverter * HTPresentation_converter (void);
+
+/*
+Both presenters and converters are of the type
 HTConverter.
 */
 
 extern void HTPresentation_add (HTList *	conversions,
-
-/*
-*/
 				const char * 	representation,
 				const char * 	command,
 				const char * 	test_command,
@@ -513,8 +532,8 @@ extern BOOL HTFormat_addCoding ( char *		encoding,
 
 /*
 
-We also define a macro to find out whether a content encoding is really
-an encoding or whether it is a unity encoder.
+We also define a macro to find out whether a content encoding is really an
+encoding or whether it is a unity encoder.
 */
 
 #define HTFormat_isUnityContent(me) \
@@ -743,6 +762,6 @@ typedef struct _HTPresentation {
 
   
 
-  @(#) $Id: HTFormat.h,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+  @(#) $Id: HTFormat.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

@@ -55,8 +55,8 @@ the only argument is char *. One day we should turn this into
 a real dynamic sprintf().
 */
 
-extern char * StrAllocMCopy (char ** dest, ...);
-extern char * StrAllocMCat (char ** dest, ...);
+extern char * CDECL StrAllocMCopy (char ** dest, ...);
+extern char * CDECL StrAllocMCat (char ** dest, ...);
 
 /*
 
@@ -71,6 +71,17 @@ The usual routines (comp instead of cmp) had some problem.
 
 extern int strcasecomp  (const char *a, const char *b);
 extern int strncasecomp (const char *a, const char *b, int n);
+
+/*
+.
+  Tail String Comparison
+.
+
+Like strcmp, but match the tail of s2 (used for cookie domain comparison)
+*/
+
+extern int tailcomp(const char * s1, const char * s2);
+extern int tailcasecomp(const char * s1, const char * s2);
 
 /*
 .
@@ -107,7 +118,7 @@ extern char * HTStrCaseMatch	(const char * tmpl, const char * name);
 This works like strstr() but is not case-sensitive.
 */
 
-extern char * ht_strcasestr (char * s1, char * s2);
+extern char * HTStrCaseStr (char * s1, char * s2);
 
 /*
 .
@@ -129,6 +140,6 @@ extern char * HTStrip (char * s);
 
   
 
-  @(#) $Id: HTString.h,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+  @(#) $Id: HTString.h,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 
 */

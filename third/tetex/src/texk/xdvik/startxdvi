@@ -1,0 +1,20 @@
+#!/bin/sh
+# Purpose: wrapper script for starting xdvi in forward search mode,
+# saving its output to a log file.
+#
+# This file is available from: http://xdvi.sourceforge.net/xdvi-search.el
+#
+
+### customizable variables
+###
+### name of xdvi executable
+XDVI_EXEC="xdvi"
+### set this to /dev/null if you don't want to see the xdvi output:
+XDVI_LOG="$HOME/xdvi-log"
+### end of customizable variables
+
+XDVI_CALL="$XDVI_EXEC -name xdvi -sourceposition"
+echo "calling $XDVI_CALL \"$1\" $2" > $XDVI_LOG
+$XDVI_CALL "$1" $2 >> $XDVI_LOG 2>&1 &
+exit 0
+

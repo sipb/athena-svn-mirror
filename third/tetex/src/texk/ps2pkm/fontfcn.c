@@ -124,7 +124,6 @@ int readFont(env)
 char *env;
 {
   int rcode;
-  int memscale = 2; /* initially, try twice just like we used to ... */
  
   /* restore the virtual memory and eliminate old font */
   resetFont(env);
@@ -144,7 +143,6 @@ int  *mode;
 #endif 
   psobj *charnameP; /* points to psobj that is name of character*/
   int   N;
-  unsigned char *s;          /* used to search the name for '|' */
   psdict *CharStringsDictP; /* dictionary with char strings     */
   psobj   CodeName;   /* used to store the translation of the name*/
   psobj  *SubrsArrayP;

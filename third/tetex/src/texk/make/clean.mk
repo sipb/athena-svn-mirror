@@ -9,7 +9,7 @@ clean:: mostlyclean
 distclean:: extraclean clean
 	rm -f Makefile
 	rm -f config.status config.log config.cache c-auto.h
-	rm -f stamp-auto stamp-tangle stamp-otangle
+	rm -f stamp-auto stamp-tangle stamp-ctangle
 
 # Although we can remake configure and c-auto.in, we don't remove
 # them, since many people may lack Autoconf.  Use configclean for that.

@@ -1,0 +1,5 @@
+1.23.2
+
+The first release of Omega that attempts to clarify the relationship
+between the TeX Live development sources and the Omega CVS tree.
+Prepared by Roozbeh Pournader and Behdad Esfahbod.

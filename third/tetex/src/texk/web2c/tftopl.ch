@@ -136,6 +136,15 @@ tfm_file_array
   := cast_to_byte_pointer (xrealloc (tfm_file_array, 4 * lf - 1 + 1002));
 @z
 
+% [20] Both nl and lig_size are in words, so the multiplication is not
+% needed.  Found by "C.M. Connelly" <c@eskimo.com> and
+% Melissa O'Neill <oneill@cs.sfu.ca>
+@x
+if nl>4*lig_size then
+@y
+if nl>lig_size then
+@z
+
 % [27, 28] Change strings to C char pointers. The Pascal strings are
 % indexed starting at 1, so we pad with a blank.
 @x
@@ -317,10 +326,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'tftopl');
+      usage ('tftopl');
 
     end else if argument_is ('help') then begin
-      usage (0, TFTOPL_HELP);
+      usage_help (TFTOPL_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
@@ -339,7 +348,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     print_ln ('tftopl: Need one or two file arguments.');
-    usage (1, 'tftopl');
+    usage ('tftopl');
   end;
 
   tfm_name := cmdline (optind);

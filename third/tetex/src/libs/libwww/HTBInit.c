@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTBInit.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTBInit.c,v 1.1.1.2 2003-02-25 22:25:57 amb Exp $
 **
 **	Define a basic set of suffixes and presentations
 */
@@ -98,6 +98,7 @@ PUBLIC void HTFileInit (void)
     HTBind_add("ps",	"application/postscript",	NULL,		"8bit",		NULL,	0.8);
     HTBind_add("qt",	"video/quicktime",		NULL,		"binary",	NULL,	1.0);	/* QuickTime		*/
     HTBind_add("ras",	"image/cmu-raster",		NULL,		"binary",	NULL,	1.0);
+    HTBind_add("rdf",	"text/rdf",			NULL,		"binary",	NULL,	1.0);	/* rdf	*/
     HTBind_add("rgb",	"image/x-rgb",			NULL,		"binary",	NULL,	1.0);
     HTBind_add("roff",	"application/x-troff",		NULL,		"7bit",		NULL,	0.5);
     HTBind_add("rtf",	"text/rtf",			NULL,		"7bit",		NULL,	1.0);	/* RTF			*/
@@ -130,7 +131,6 @@ PUBLIC void HTFileInit (void)
 
     HTBind_add("zip",	"application/zip",		NULL,		"binary",	NULL,	1.0);	/* PKZIP		*/
     HTBind_add("Z",	 NULL,				"compress", 	"binary",	NULL,	1.0);	/* Compressed data	*/
-    HTBind_add("Z",	 NULL,				"x-compress", 	"binary",	NULL,	1.0);	/* Compressed data	*/
     HTBind_add("gz",	 NULL,				"gzip",		"binary",	NULL,	1.0);	/* Gnu Compressed data	*/
 
     HTBind_add("*.*",	"www/unknown",			NULL,		"binary",	NULL,	0.1);	/* Unknown suffix */

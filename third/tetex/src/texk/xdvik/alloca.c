@@ -27,8 +27,10 @@
 	your main control loop, etc. to force garbage collection.
 */
 #if 0
-static char	SCCSid[] = "@(#)alloca.c	1.1";
+static char SCCSid[] = "@(#)alloca.c	1.1";
 #endif
+
+#include "c-auto.h"
 
 #ifdef emacs
 #include "xdvi-config.h"
@@ -38,25 +40,26 @@ static char	SCCSid[] = "@(#)alloca.c	1.1";
    in order to make unexec workable
    */
 #ifndef STACK_DIRECTION
-you
-lose
--- must know STACK_DIRECTION at compile-time
+you lose-- must know STACK_DIRECTION at compile - time
 #endif /* STACK_DIRECTION undefined */
 #endif /* static */
 #endif /* emacs */
-
-#ifndef alloca  /* If compiling with GCC, this file's not needed.  */
-
+/* SU 2001/01/08: was:
+ * #ifndef alloca
+ * but that wasn't properly initialized by ./configure;
+ * use HAVE_ALLOCA instead, like the top-level Makefile.
+ */
+#ifndef HAVE_ALLOCA	/* If compiling with GCC, this file's not needed.  */
 #ifdef __STDC__
-typedef void	*pointer;		/* generic pointer type */
+typedef void *pointer;	/* generic pointer type */
 #else
-typedef char	*pointer;		/* generic pointer type */
+typedef char *pointer;	/* generic pointer type */
 #endif
 
-#define	NULL	0			/* null pointer constant */
+#define	NULL	0	/* null pointer constant */
 
-extern void	free();
-extern pointer	xmalloc();
+extern void free();
+extern pointer xmalloc();
 
 /*
 	Define STACK_DIRECTION if you know the direction of stack
@@ -69,39 +72,37 @@ extern pointer	xmalloc();
 */
 
 #ifndef STACK_DIRECTION
-#define	STACK_DIRECTION	0		/* direction unknown */
+#define	STACK_DIRECTION	0	/* direction unknown */
 #endif
 
 #if STACK_DIRECTION != 0
 
 #define	STACK_DIR	STACK_DIRECTION	/* known at compile-time */
 
-#else	/* STACK_DIRECTION == 0; need run-time code */
+#else /* STACK_DIRECTION == 0; need run-time code */
 
-static int	stack_dir;		/* 1 or -1 once known */
+static int stack_dir;	/* 1 or -1 once known */
 #define	STACK_DIR	stack_dir
 
 static void
-find_stack_direction (/* void */)
+find_stack_direction(void)
 {
-  static char	*addr = NULL;	/* address of first
+    static char *addr = NULL;	/* address of first
 				   `dummy', once known */
-  auto char	dummy;		/* to get stack address */
+    auto char dummy;	/* to get stack address */
 
-  if (addr == NULL)
-    {				/* initial entry */
-      addr = &dummy;
+    if (addr == NULL) {	/* initial entry */
+	addr = &dummy;
 
-      find_stack_direction ();	/* recurse once */
+	find_stack_direction();	/* recurse once */
     }
-  else				/* second entry */
-    if (&dummy > addr)
-      stack_dir = 1;		/* stack grew upward */
+    else /* second entry */ if (&dummy > addr)
+	stack_dir = 1;	/* stack grew upward */
     else
-      stack_dir = -1;		/* stack grew downward */
+	stack_dir = -1;	/* stack grew downward */
 }
 
-#endif	/* STACK_DIRECTION == 0 */
+#endif /* STACK_DIRECTION == 0 */
 
 /*
 	An "alloca header" is used to:
@@ -116,13 +117,11 @@ find_stack_direction (/* void */)
 #define	ALIGN_SIZE	sizeof(double)
 #endif
 
-typedef union hdr
-{
-  char	align[ALIGN_SIZE];	/* to force sizeof(header) */
-  struct
-    {
-      union hdr *next;		/* for chaining headers */
-      char *deep;		/* for stack depth measure */
+typedef union hdr {
+    char align[ALIGN_SIZE];	/* to force sizeof(header) */
+    struct {
+	union hdr *next;	/* for chaining headers */
+	char *deep;	/* for stack depth measure */
     } h;
 } header;
 
@@ -135,60 +134,60 @@ typedef union hdr
 	implementations of C, for example under Gould's UTX/32.
 */
 
-static header *last_alloca_header = NULL; /* -> last alloca header */
+static header *last_alloca_header = NULL;	/* -> last alloca header */
 
-pointer
-alloca (size)			/* returns pointer to storage */
-     unsigned	size;		/* # bytes to allocate */
+pointer alloca(size)	/* returns pointer to storage */
+    unsigned size;	/* # bytes to allocate */
 {
-  auto char	probe;		/* probes stack depth: */
-  register char	*depth = &probe;
+    auto char probe;	/* probes stack depth: */
+    char *depth = &probe;
 
 #if STACK_DIRECTION == 0
-  if (STACK_DIR == 0)		/* unknown growth direction */
-    find_stack_direction ();
+    if (STACK_DIR == 0)	/* unknown growth direction */
+	find_stack_direction();
 #endif
 
-				/* Reclaim garbage, defined as all alloca()ed storage that
-				   was allocated from deeper in the stack than currently. */
+    /* Reclaim garbage, defined as all alloca()ed storage that
+       was allocated from deeper in the stack than currently. */
 
-  {
-    register header	*hp;	/* traverses linked list */
+    {
+	header *hp;	/* traverses linked list */
 
-    for (hp = last_alloca_header; hp != NULL;)
-      if ((STACK_DIR > 0 && hp->h.deep > depth)
-	  || (STACK_DIR < 0 && hp->h.deep < depth))
-	{
-	  register header	*np = hp->h.next;
+	for (hp = last_alloca_header; hp != NULL;)
+	    if ((STACK_DIR > 0 && hp->h.deep > depth)
+		|| (STACK_DIR < 0 && hp->h.deep < depth)) {
+		header *np = hp->h.next;
 
-	  free ((pointer) hp);	/* collect garbage */
+		free((pointer) hp);	/* collect garbage */
 
-	  hp = np;		/* -> next header */
-	}
-      else
-	break;			/* rest are not deeper */
+		hp = np;	/* -> next header */
+	    }
+	    else
+		break;	/* rest are not deeper */
 
-    last_alloca_header = hp;	/* -> last valid storage */
-  }
+	last_alloca_header = hp;	/* -> last valid storage */
+    }
 
-  if (size == 0)
-    return NULL;		/* no allocation required */
+    if (size == 0)
+	return NULL;	/* no allocation required */
 
-  /* Allocate combined header + user data storage. */
+    /* Allocate combined header + user data storage. */
 
-  {
-    register pointer	new = xmalloc (sizeof (header) + size);
-    /* address of header */
+    {
+	pointer new = xmalloc(sizeof(header) + size);
+	/* address of header */
 
-    ((header *)new)->h.next = last_alloca_header;
-    ((header *)new)->h.deep = depth;
+	((header *) new)->h.next = last_alloca_header;
+	((header *) new)->h.deep = depth;
 
-    last_alloca_header = (header *)new;
+	last_alloca_header = (header *) new;
 
-    /* User storage begins just after header. */
+	/* User storage begins just after header. */
 
-    return (pointer)((char *)new + sizeof(header));
-  }
+	return (pointer) ((char *)new + sizeof(header));
+    }
 }
 
-#endif /* no alloca */
+#else /* avoid empty compilation unit warning */
+int ___alloca;
+#endif /* not HAVE_ALLOCA  */

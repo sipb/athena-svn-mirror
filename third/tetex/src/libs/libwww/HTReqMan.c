@@ -3,13 +3,15 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTReqMan.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTReqMan.c,v 1.1.1.2 2003-02-25 22:05:46 amb Exp $
 **
 ** Authors
 **	TBL	Tim Berners-Lee timbl@w3.org
 **	JFG	Jean-Francois Groff jfg@dxcern.cern.ch
 **	DD	Denis DeLaRoca (310) 825-4580  <CSP1DWD@mvs.oac.ucla.edu>
 **	HFN	Henrik Frystyk, frystyk@w3.org
+** Contribution
+**      MKP     Manuele Kirsch, Manuele.Kirsch_Pinheiro@inrialpes.fr or manuele@inf.ufrgs.br
 ** History
 **       8 Jun 92 Telnet hopping prohibited as telnet is not secure TBL
 **	26 Jun 92 When over DECnet, suppressed FTP, Gopher and News. JFG
@@ -22,6 +24,7 @@
 **	09 May 94 logfile renamed to HTlogfile to avoid clash with WAIS
 **	 8 Jul 94 Insulate free() from _free structure element.
 **	02 Sep 95 Rewritten and spawned from HTAccess.c, HFN
+**      14 Fev 02 Message body added to HTRequest
 */
 
 #if !defined(HT_DIRECT_WAIS) && !defined(HT_DEFAULT_WAIS_GATEWAY)
@@ -32,6 +35,7 @@
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "HTParse.h"
+#include "HTNoFree.h"
 #include "HTAlert.h"
 #include "HTError.h"
 #include "HTNetMan.h"
@@ -65,6 +69,9 @@ PUBLIC HTRequest * HTRequest_new (void)
    /* Force Reload */
     me->reload = HT_CACHE_OK;
 
+    /* no default PUT name */
+    me->default_put_name = NULL;
+
     /* Set the default user profile */
     me->userprofile = HTLib_userProfile();
 
@@ -87,7 +94,15 @@ PUBLIC HTRequest * HTRequest_new (void)
     /* Content negotiation */
     me->ContentNegotiation = YES;		       /* Do this by default */
 
-    if (CORE_TRACE) HTTrace("Request..... Created %p\n", me);
+#ifdef HT_EXT
+    /* Message Body */
+    me->messageBody = NULL;             /* MKP: default value is NULL - no message body set */
+    me->messageBodyLength = -1;         /* MKP: default value is -1 */
+    me->messageBodyFormat = NULL;       /* MKP: default value is NULL */
+#endif
+
+    
+    HTTRACE(CORE_TRACE, "Request..... Created %p\n" _ me);
 
     return me;
 }
@@ -106,10 +121,20 @@ PUBLIC BOOL HTRequest_clear (HTRequest * me)
 	me->realm = NULL;
 	me->credentials = NULL;
 	me->connected = NO;
+        if (me->default_put_name)
+          HTRequest_deleteDefaultPutName (me);
 	if (me->response) {
 	    HTResponse_delete(me->response);
 	    me->response = NULL;
 	}
+        
+#ifdef HT_EXT
+        if (me->messageBody)                    /* MKP: clear message body */
+            HTRequest_deleteMessageBody(me);    
+        me->messageBodyFormat = NULL;
+        me->messageBodyLength = -1;     
+#endif
+        
 	return YES;
     }
     return NO;
@@ -127,7 +152,7 @@ PUBLIC HTRequest * HTRequest_dup (HTRequest * src)
     if ((me = (HTRequest  *) HT_MALLOC(sizeof(HTRequest))) == NULL)
         HT_OUTOFMEM("HTRequest_dup");
     memcpy(me, src, sizeof(HTRequest));
-    if (CORE_TRACE) HTTrace("Request..... Duplicated %p to %p\n", src, me);
+    HTTRACE(CORE_TRACE, "Request..... Duplicated %p to %p\n" _ src _ me);
     return me;
 }
 
@@ -153,15 +178,34 @@ PUBLIC HTRequest * HTRequest_dupInternal (HTRequest * src)
 PUBLIC void HTRequest_delete (HTRequest * me)
 {
     if (me) {
-	if (CORE_TRACE) HTTrace("Request..... Delete %p\n", me);
+	HTTRACE(CORE_TRACE, "Request..... Delete %p\n" _ me);
 	if (me->net) HTNet_setRequest(me->net, NULL);
 
+	/*
+	** Make sure we don't delete the same stream twice, when the output
+	** stream and the debug stream are the same.
+	*/
+	if (me->orig_output_stream == me->orig_debug_stream)
+	{
+	    me->orig_debug_stream = NULL;
+	}
+
 	/* Should we delete the output stream? */
-	if (!me->connected && me->output_stream) {
-	    if (CORE_TRACE)
-		HTTrace("Request..... Deleting dangling output stream\n");
-	    (*me->output_stream->isa->_free)(me->output_stream);
+	if (me->orig_output_stream) {
+	    HTTRACE(CORE_TRACE, "Request..... Deleting dangling output stream\n");
+	    (*me->orig_output_stream->isa->_free)(me->orig_output_stream);
+	    me->orig_output_stream = NULL;
+	    HTNoFreeStream_delete(me->output_stream);
 	    me->output_stream = NULL;
+	}
+
+	/* Should we delete the debug stream? */
+	if (me->orig_debug_stream) {
+	    HTTRACE(CORE_TRACE, "Request..... Deleting dangling debug stream\n");
+	    (*me->orig_debug_stream->isa->_free)(me->orig_debug_stream);
+	    me->orig_debug_stream = NULL;
+	    HTNoFreeStream_delete(me->debug_stream);
+	    me->debug_stream = NULL;
 	}
 
 	/* Clean up the error stack */
@@ -170,6 +214,10 @@ PUBLIC void HTRequest_delete (HTRequest * me)
 	/* Before and After Filters */
 	if (me->afters) HTNetCall_deleteAfterAll(me->afters);
 	if (me->befores) HTNetCall_deleteBeforeAll(me->befores);
+
+        /* default PUT name */
+        if (me->default_put_name)
+          HTRequest_deleteDefaultPutName (me);
 
 	/* Access Authentication */
 	HT_FREE(me->realm);
@@ -191,14 +239,22 @@ PUBLIC void HTRequest_delete (HTRequest * me)
 	/* Proxy information */
 	HT_FREE(me->proxy);
 
-	/* PEP Information */
-	if (me->protocol) HTAssocList_delete(me->protocol);
-	if (me->protocol_request) HTAssocList_delete(me->protocol_request);
-	if (me->protocol_info) HTAssocList_delete(me->protocol_info);
+	/* Extra header fields */
+	if (me->extra_headers) HTAssocList_delete(me->extra_headers);
+
+	/* HTTP Extension Information */
+	if (me->optional) HTAssocList_delete(me->optional);
+	if (me->mandatory) HTAssocList_delete(me->mandatory);
 
 	/* Any response object */
 	if (me->response) HTResponse_delete(me->response);
 
+#ifdef HT_EXT
+        if (me->messageBody) HTRequest_deleteMessageBody(me); /* MKP: clear message body*/      
+        me->messageBodyFormat = NULL;
+        me->messageBodyLength = -1;     
+#endif
+        
 	HT_FREE(me);
     }
 }
@@ -349,6 +405,7 @@ PUBLIC HTResponse * HTRequest_response (HTRequest * me)
 PUBLIC BOOL HTRequest_setResponse (HTRequest * me, HTResponse * response)
 {
     if (me) {
+	if (me->response) HTResponse_delete(me->response);
 	me->response = response;
 	return YES;
     }
@@ -753,6 +810,39 @@ PUBLIC HTReload HTRequest_reloadMode (HTRequest * me)
     return me ? me->reload : HT_CACHE_OK;
 }
 
+/*      Default name to use when publishing to a "/" URL
+**      ----------------------------
+*/
+PUBLIC char * HTRequest_defaultPutName (HTRequest * me)
+{
+    if (me)
+      return (me->default_put_name);
+    return NULL;
+}
+
+
+PUBLIC BOOL HTRequest_setDefaultPutName (HTRequest * me, char * name)
+{
+    if (me && name) {
+      if (me->default_put_name)
+        HTRequest_deleteDefaultPutName (me);
+      StrAllocCopy (me->default_put_name, name);
+      return YES;
+    }
+    return NO;
+}
+
+PUBLIC BOOL HTRequest_deleteDefaultPutName (HTRequest * me)
+{
+    if (me && me->default_put_name) {
+      HT_FREE (me->default_put_name);
+      me->default_put_name = NULL;
+      return YES;
+    }
+    return NO;
+}
+
+
 /*
 **	Cache control directives. The cache control can be initiated by both
 **	the server and the client which is the reason for keeping two lists
@@ -813,7 +903,7 @@ PUBLIC HTAssocList * HTRequest_range (HTRequest * me)
 }
 
 /*
-**	Connection directives. The connection directies can be initiated by
+**	Connection directives. The connection directives can be initiated by
 **	both the server and the client which is the reason for keeping two
 **	lists
 */
@@ -925,87 +1015,84 @@ PUBLIC BOOL HTRequest_deleteRealm (HTRequest * me)
 }
 
 /*
-**  PEP Protocol header
+**  New header fields as association list
 */
-PUBLIC BOOL HTRequest_addProtocol (HTRequest * me,
+PUBLIC BOOL HTRequest_addExtraHeader (HTRequest * me,
+				      char * token, char * value)
+{
+    if (me && token) {
+	if (!me->extra_headers) me->extra_headers = HTAssocList_new();
+	return HTAssocList_addObject(me->extra_headers, token, value);
+    }
+    return NO;
+}
+
+PUBLIC HTAssocList * HTRequest_extraHeader (HTRequest * me)
+{
+    return (me ? me->extra_headers : NULL);
+}
+
+PUBLIC BOOL HTRequest_deleteExtraHeaderAll (HTRequest * me)
+{
+    if (me && me->extra_headers) {
+	HTAssocList_delete(me->extra_headers);
+	me->extra_headers = NULL;
+	return YES;
+    }
+    return NO;
+}
+
+/*
+**  HTTP Extension Framework
+*/
+PUBLIC BOOL HTRequest_addOptional (HTRequest * me,
 				   char * token, char * value)
 {
     if (me) {
-	if (!me->protocol) me->protocol = HTAssocList_new();
-	return HTAssocList_addObject(me->protocol, token,value);
+	if (!me->optional) me->optional = HTAssocList_new();
+	return HTAssocList_addObject(me->optional, token,value);
     }
     return NO;
 }
 
-PUBLIC BOOL HTRequest_deleteProtocolAll (HTRequest * me)
+PUBLIC HTAssocList * HTRequest_optional (HTRequest * me)
 {
-    if (me && me->protocol) {
-	HTAssocList_delete(me->protocol);
-	me->protocol = NULL;
+    return (me ? me->optional : NULL);
+}
+
+PUBLIC BOOL HTRequest_deleteOptionalAll (HTRequest * me)
+{
+    if (me && me->optional) {
+	HTAssocList_delete(me->optional);
+	me->optional = NULL;
 	return YES;
     }
     return NO;
 }
 
-PUBLIC HTAssocList * HTRequest_protocol (HTRequest * me)
-{
-    return (me ? me->protocol : NULL);
-}
-
-/*
-**  PEP Protocol Info header
-*/
-PUBLIC BOOL HTRequest_addProtocolInfo (HTRequest * me,
-				       char * token, char * value)
+PUBLIC BOOL HTRequest_addMandatory (HTRequest * me,
+				    char * token, char * value)
 {
     if (me) {
-	if (!me->protocol_info) me->protocol_info = HTAssocList_new();
-	return HTAssocList_addObject(me->protocol_info, token,value);
+	if (!me->mandatory) me->mandatory = HTAssocList_new();
+	return HTAssocList_addObject(me->mandatory, token,value);
     }
     return NO;
 }
 
-PUBLIC BOOL HTRequest_deleteProtocolInfoAll (HTRequest * me)
+PUBLIC HTAssocList * HTRequest_mandatory (HTRequest * me)
 {
-    if (me && me->protocol_info) {
-	HTAssocList_delete(me->protocol_info);
-	me->protocol_info = NULL;
+    return (me ? me->mandatory : NULL);
+}
+
+PUBLIC BOOL HTRequest_deleteMandatoryAll (HTRequest * me)
+{
+    if (me && me->mandatory) {
+	HTAssocList_delete(me->mandatory);
+	me->mandatory = NULL;
 	return YES;
     }
     return NO;
-}
-
-PUBLIC HTAssocList * HTRequest_protocolInfo (HTRequest * me)
-{
-    return (me ? me->protocol_info : NULL);
-}
-
-/*
-**  PEP Protocol request header
-*/
-PUBLIC BOOL HTRequest_addProtocolRequest (HTRequest * me,
-					  char * token, char * value)
-{
-    if (me) {
-	if (!me->protocol_request) me->protocol_request = HTAssocList_new();
-	return HTAssocList_addObject(me->protocol_request, token,value);
-    }
-    return NO;
-}
-
-PUBLIC BOOL HTRequest_deleteProtocolRequestAll (HTRequest * me)
-{
-    if (me && me->protocol_request) {
-	HTAssocList_delete(me->protocol_request);
-	me->protocol_request = NULL;
-	return YES;
-    }
-    return NO;
-}
-
-PUBLIC HTAssocList * HTRequest_protocolRequest (HTRequest * me)
-{
-    return (me ? me->protocol_request : NULL);
 }
 
 /*
@@ -1048,7 +1135,14 @@ PUBLIC HTParentAnchor * HTRequest_parent (HTRequest * me)
 */
 PUBLIC void HTRequest_setOutputStream (HTRequest * me, HTStream *output)
 {
-    if (me) me->output_stream = output;
+    if (me) {
+	if (output) {
+	    me->output_stream = HTNoFreeStream_new(output);
+	    me->orig_output_stream = output;
+	} else {
+	    me->output_stream = output;
+	}
+    }
 }
 
 PUBLIC HTStream *HTRequest_outputStream (HTRequest * me)
@@ -1074,7 +1168,12 @@ PUBLIC HTFormat HTRequest_outputFormat (HTRequest * me)
 */
 PUBLIC void HTRequest_setDebugStream (HTRequest * me, HTStream *debug)
 {
-    if (me) me->debug_stream = debug;
+	if (debug) {
+	    me->debug_stream = HTNoFreeStream_new(debug);
+	    me->orig_debug_stream = debug;
+	} else {
+	    me->debug_stream = debug;
+	}
 }
 
 PUBLIC HTStream *HTRequest_debugStream (HTRequest * me)
@@ -1363,17 +1462,15 @@ PUBLIC BOOL HTRequest_addDestination (HTRequest * src, HTRequest * dest)
 	if (!src->mainDestination) {
 	    src->mainDestination = dest;
 	    src->destRequests = 1;
-	    if (CORE_TRACE)
-		HTTrace("POSTWeb..... Adding dest %p to src %p\n",
-			 dest, src);
+	    HTTRACE(CORE_TRACE, "POSTWeb..... Adding dest %p to src %p\n" _ 
+			 dest _ src);
 	    return YES;
 	} else {
 	    if (!src->destinations) src->destinations = HTList_new();
 	    if (HTList_addObject(src->destinations, (void *) dest)==YES) {
 		src->destRequests++;
-		if (CORE_TRACE)
-		    HTTrace("POSTWeb..... Adding dest %p to src %p\n",
-			     dest, src);
+		HTTRACE(CORE_TRACE, "POSTWeb..... Adding dest %p to src %p\n" _ 
+			     dest _ src);
 		return YES;
 	    }
 	}
@@ -1405,13 +1502,11 @@ PUBLIC BOOL HTRequest_removeDestination (HTRequest * dest)
 	}
 	if (found) {
 	    if (dest->internal) HTRequest_delete(dest);
-	    if (CORE_TRACE)
-	    	HTTrace("POSTWeb..... Deleting dest %p from src %p\n",
-			 dest, src);
+	    HTTRACE(CORE_TRACE, "POSTWeb..... Deleting dest %p from src %p\n" _ 
+			 dest _ src);
 	}
 	if (src->destRequests <= 0) {
-	    if (CORE_TRACE)
-		HTTrace("POSTWeb..... terminated\n");
+	    HTTRACE(CORE_TRACE, "POSTWeb..... terminated\n");
 	    if (src->internal) HTRequest_delete(src);
 	}
     }
@@ -1429,8 +1524,7 @@ PUBLIC BOOL HTRequest_destinationsReady (HTRequest * me)
     if (source) {
 	if (source->destStreams == source->destRequests) {
 	    HTNet * net = source->net;
-	    if (CORE_TRACE)
-		HTTrace("POSTWeb..... All destinations are ready!\n");
+	    HTTRACE(CORE_TRACE, "POSTWeb..... All destinations are ready!\n");
 	    if (net)			      /* Might already have finished */
 		HTEvent_register(HTNet_socket(net), HTEvent_READ, &net->event);
 	    return YES;
@@ -1462,13 +1556,11 @@ PUBLIC BOOL HTRequest_linkDestination (HTRequest *dest)
 	    (*source->output_stream->isa->_free)(source->output_stream);
 	source->output_stream = pipe ? pipe : dest->input_stream;
 
-	if (CORE_TRACE)
-	    HTTrace("POSTWeb..... Linking dest %p to src %p\n",
-		     dest, source);
+	HTTRACE(CORE_TRACE, "POSTWeb..... Linking dest %p to src %p\n" _ 
+		     dest _ source);
 	if (++source->destStreams == source->destRequests) {
 	    HTNet *net = source->net;
-	    if (CORE_TRACE)
-		HTTrace("POSTWeb..... All destinations ready!\n");
+	    HTTRACE(CORE_TRACE, "POSTWeb..... All destinations ready!\n");
 	    if (net)			      /* Might already have finished */
 		HTEvent_register(HTNet_socket(net), HTEvent_READ, &net->event);
 	    return YES;
@@ -1500,9 +1592,8 @@ PUBLIC BOOL HTRequest_unlinkDestination (HTRequest *dest)
 	}	
 	if (found) {
 	    src->destStreams--;
-	    if (CORE_TRACE)
-		HTTrace("POSTWeb..... Unlinking dest %p from src %p\n",
-			 dest, src);
+	    HTTRACE(CORE_TRACE, "POSTWeb..... Unlinking dest %p from src %p\n" _ 
+			 dest _ src);
 	    return YES;
 	}
     }
@@ -1547,7 +1638,7 @@ PUBLIC BOOL HTRequest_killPostWeb (HTRequest *me)
 {
     if (me && me->source) {
 	HTRequest *source = me->source;
-	if (CORE_TRACE) HTTrace("POSTWeb..... Killing\n");
+	HTTRACE(CORE_TRACE, "POSTWeb..... Killing\n");
 
 	/*
 	** Kill source. The stream tree is now freed so we have to build
@@ -1596,7 +1687,7 @@ PUBLIC int HTRequest_forceFlush (HTRequest * request)
 PUBLIC BOOL HTLoad (HTRequest * me, BOOL recursive)
 {
     if (!me || !me->anchor) {
-        if (CORE_TRACE) HTTrace("Load Start.. Bad argument\n");
+        HTTRACE(CORE_TRACE, "Load Start.. Bad argument\n");
         return NO;
     }
 
@@ -1631,7 +1722,7 @@ PUBLIC BOOL HTLoad (HTRequest * me, BOOL recursive)
 PUBLIC BOOL HTServe (HTRequest * me, BOOL recursive)
 {
     if (!me || !me->anchor) {
-        if (CORE_TRACE) HTTrace("Serve Start. Bad argument\n");
+        HTTRACE(CORE_TRACE, "Serve Start. Bad argument\n");
         return NO;
     }
 
@@ -1653,3 +1744,117 @@ PUBLIC BOOL HTServe (HTRequest * me, BOOL recursive)
     /* Now start the Net Manager */
     return HTNet_newServer(me);
 }
+
+
+
+/* --------------------------------------------------------------------------*/
+/*                              Message Body                                 */
+/* --------------------------------------------------------------------------*/
+
+/*
+** This function sets the request's message body
+*/
+PUBLIC BOOL HTRequest_setMessageBody (HTRequest * request, const char * body) {
+#ifdef HT_EXT
+
+    if (request && body && *body){          
+        StrAllocCopy (request->messageBody,body);
+        return YES;
+    }
+#endif /* HT_EXT */    
+    return NO;  
+}
+
+/*
+** This function deletes the message body, freeing the string and
+** setting it to NULL.
+*/
+PUBLIC BOOL HTRequest_deleteMessageBody (HTRequest * request) {
+#ifdef HT_EXT
+    if (request && request->messageBody) {
+        HT_FREE (request->messageBody);
+        request->messageBody = NULL;
+        return YES;
+    }           
+#endif /* HT_EXT */    
+    return NO;
+}
+
+/*
+** This function creates a copy of the message body
+*/
+PUBLIC char * HTRequest_messageBody (HTRequest * request) {
+    char * bodycopy = NULL;     
+
+#ifdef HT_EXT    
+    if (request && request->messageBody && *(request->messageBody)) 
+        StrAllocCopy(bodycopy,request->messageBody);    
+#endif /* HT_EXT */    
+    
+    return bodycopy;
+}
+
+
+/*
+** This function sets the length of the body. This length will be
+** used to set Content-Length header.
+** Note: length should be greater than 0, and the Content-Length
+** header will be created only if there is a message Body.
+*/
+PUBLIC BOOL HTRequest_setMessageBodyLength (HTRequest * request, long int length) {
+#ifdef HT_EXT    
+    if (request && length > 0) {
+        request->messageBodyLength = length;
+        return YES;
+    }
+#endif /* HT_EXT */    
+
+    return NO;
+}
+
+
+/*
+** This function returns the message body length,
+** or -1 if it is not set.
+*/
+PUBLIC long int HTRequest_messageBodyLength (HTRequest * request) {
+#ifdef HT_EXT    
+    return (request && (request->messageBody && request->messageBodyLength))?
+                        request->messageBodyLength:-1;
+#else
+    return -1;
+#endif
+}
+
+
+/*
+** This function sets the format of the message body to be used
+** in the Content-Type header.
+** Note: the Content-Type header will be created only if there is a
+** message body set.
+*/
+PUBLIC BOOL HTRequest_setMessageBodyFormat (HTRequest * request, HTFormat format) {
+        
+#ifdef HT_EXT    
+    if (request && format) {
+        request->messageBodyFormat = format;
+        return YES;
+    }
+#endif /*HT_EXT*/
+    return NO;
+}
+
+
+/*
+** This function returns the format of the message body, or
+** NULL if it is not set.
+*/
+PUBLIC HTFormat HTRequest_messageBodyFormat (HTRequest * request) {
+#ifdef HT_EXT    
+    if (request && request->messageBodyFormat) 
+        return request->messageBodyFormat;
+    else 
+#endif /*HT_EXT*/	    
+	return NULL;
+}
+

@@ -24,8 +24,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 /* For kpse_reset_progname */
 #include <kpathsea/tex-file.h>
 
-#ifdef WIN32
+#if defined (WIN32) || defined (DJGPP)
 #include <kpathsea/c-pathmx.h>
+#endif
+
+#if defined(__i386_pc_gnu__)
+#ifndef _S_ISUID
+#define _S_ISUID    04000  /* Set user ID on execution.  */
+#endif
+#ifndef _S_ISGID
+#define _S_ISGID    02000  /* Set group ID on execution.  */
+#endif
+#ifndef _S_ISVTX
+#define _S_ISVTX    01000  /* Save swapped text after use (sticky).  */
+#endif
+#ifndef _S_IREAD
+#define _S_IREAD    0400   /* Read by owner.  */
+#endif
+#ifndef _S_IWRITE
+#define _S_IWRITE   0200   /* Write by owner.  */
+#endif
+#ifndef _S_IEXEC
+#define _S_IEXEC    0100   /* Execute by owner.  */
+#endif
 #endif
 
 /* NeXT does not define the standard macros, but has the equivalent.
@@ -73,8 +94,7 @@ static int ll_loop = 0;
 /* Read link FN into SYM.  */
 
 static void
-ReadSymLink (fn, sym)
-     char *fn, *sym;
+ReadSymLink P2C(char *, fn, char *, sym)
 {
   register int n = readlink (fn, sym, BSIZE);
   if (n < 0) {
@@ -88,8 +108,7 @@ ReadSymLink (fn, sym)
 /* Strip first component from S, and also return it in a static buffer.  */
 
 static char *
-StripFirst (s)
-     register char *s;
+StripFirst P1C(register char *, s)
 {
   static char buf[BSIZE];
   register char *s1;
@@ -117,8 +136,7 @@ StripFirst (s)
 /* Strip last component from S, and also return it in a static buffer.  */
 
 static char *
-StripLast (s)
-     register char *s;
+StripLast P1C(register char *, s)
 {
   static char buf[BSIZE];
   register char *s1;
@@ -135,9 +153,7 @@ StripLast (s)
 /* Copy first path element from B to A, removing it from B.  */
 
 static void 
-CopyFirst (a, b)
-     register char *a;
-     char *b;
+CopyFirst P2C(register char *, a, char *, b)
 {
   register int length = strlen (a);
 
@@ -156,8 +172,7 @@ CopyFirst (a, b)
 #define EXPRE		EX(pre)
 
 static char *
-expand_symlinks (s)
-     char *s;
+expand_symlinks P1C(char *, s)
 {
   static char pre[BSIZE];	/* return value */
   char post[BSIZE], sym[BSIZE], tmp[BSIZE], before[BSIZE];
@@ -289,7 +304,7 @@ remove_dots P1C(string, dir)
           if (IS_DIR_SEP (ret[last - 1])) {
             /* If we have `/../', that's the same as `/'.  */
             if (last > 1) {
-              ret[last] = 0;
+              ret[last - 1] = 0;
             }
             break;
           }
@@ -405,6 +420,7 @@ kpse_set_program_name P2C(const_string, argv0, const_string, progname)
   string s = getenv ("KPATHSEA_DEBUG");
 #ifdef WIN32
   string debug_output = getenv("KPATHSEA_DEBUG_OUTPUT");
+  string append_debug_output = getenv("KPATHSEA_DEBUG_APPEND");
   int err, olderr;
 #endif
   
@@ -416,10 +432,33 @@ kpse_set_program_name P2C(const_string, argv0, const_string, progname)
 
 #ifndef HAVE_PROGRAM_INVOCATION_NAME
 #if defined(WIN32)
+  /* Set various info about user. Among many things,
+     ensure that HOME is set. If debug_paths is on, 
+     turn on some message if $HOME is not found. */
+  if (KPSE_DEBUG_P(KPSE_DEBUG_PATHS)) {
+    set_home_warning();
+  }
+  init_user_info();
+
   /* redirect stderr to debug_output. Easier to send logfiles. */
   if (debug_output) {
-    if ((err = _open(debug_output, _O_CREAT | _O_TRUNC | _O_RDWR,
-                     _S_IREAD | _S_IWRITE)) == -1) {
+    int flags =  _O_CREAT | _O_TRUNC | _O_RDWR;
+    err = -1;
+    if (_stricmp(debug_output, "con") == 0
+       || _stricmp(debug_output, "con:") == 0) {
+      err = _fileno(stdout);
+    } else {
+      if (append_debug_output) {
+        flags =  _O_CREAT | _O_APPEND | _O_WRONLY;
+      } else {
+        flags =  _O_CREAT | _O_TRUNC | _O_WRONLY;
+        xputenv("KPATHSEA_DEBUG_APPEND", "yes");
+      }
+    }
+
+    if ((err < 0)
+        && (err = _open(debug_output, flags, _S_IREAD | _S_IWRITE)) == -1)
+    {
       WARNING1("Can't open %s for stderr redirection!\n", debug_output);
       perror(debug_output);
     } else if ((olderr = _dup(fileno(stderr))) == -1) {
@@ -437,22 +476,20 @@ kpse_set_program_name P2C(const_string, argv0, const_string, progname)
      There is only this way to catch it. It makes all the selfdir stuff
      useless for win32. */
   {
-    char path[PATH_MAX], *fp;
-    HANDLE hnd;
-    WIN32_FIND_DATA ffd;
-
+    char short_path[PATH_MAX], path[PATH_MAX], *fp;
+      
     /* SearchPath() always gives back an absolute directory */
-    if (SearchPath(NULL, argv0, ".exe", PATH_MAX, path, &fp) == 0)
+    if (SearchPath(NULL, argv0, ".exe", PATH_MAX, short_path, &fp) == 0)
         FATAL1("Can't determine where the executable %s is.\n", argv0);
-    if ((hnd = FindFirstFile(path, &ffd)) == NULL)
-        FATAL1("The following path points to an invalid file : %s\n", path);
-    FindClose(hnd);
+    if (!win32_get_long_filename(short_path, path, sizeof(path))) {
+        FATAL1("This path points to an invalid file : %s\n", short_path);
+    }
     /* slashify the dirname */
     for (fp = path; fp && *fp; fp++)
         if (IS_DIR_SEP(*fp)) *fp = DIR_SEP;
-    /* sdir will be the directory where the executable resides, ie: c:/TeX/bin */
+    /* sdir will be the directory of the executable, ie: c:/TeX/bin */
     sdir = xdirname(path);
-    program_invocation_name = xstrdup(ffd.cFileName);
+    program_invocation_name = xstrdup(xbasename(path));
   }
 
 #elif defined(__DJGPP__)
@@ -578,8 +615,10 @@ main (int argc, char **argv)
   puts (remove_dots ("./"));
   puts (remove_dots ("./."));
   puts (remove_dots ("../kpathsea"));
+  puts (remove_dots ("/kpathsea/../foo"));
   puts (remove_dots ("/../w/kpathsea"));
   puts (remove_dots ("/../w/kpathsea/."));
+  puts (remove_dots ("/te/share/texmf/../../../../bin/gnu"));
 }
 /*
 Local variables:

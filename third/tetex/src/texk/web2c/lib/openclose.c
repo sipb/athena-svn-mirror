@@ -6,10 +6,21 @@
 #include <kpathsea/c-pathch.h>
 #include <kpathsea/tex-file.h>
 #include <kpathsea/variable.h>
+#include <kpathsea/absolute.h>
 
 /* The globals we use to communicate.  */
 extern string nameoffile;
 extern unsigned namelength;
+/* For "file:line:error style error messages. */
+extern string fullnameoffile;
+/* For the filename recorder. */
+extern boolean recorder_enabled;
+
+/* Define some variables. */
+string fullnameoffile = NULL;
+static string recorder_name = NULL;
+static FILE *recorder_file; /* Defaults to NULL. */
+boolean recorder_enabled;   /* Defaults to false. */
 
 /* For TeX and MetaPost.  See below.  Always defined so we don't have to
    #ifdef, and thus this file can be compiled once and go in lib.a.  */
@@ -17,14 +28,41 @@ int tfmtemp;
 int ocptemp;
 int texinputtype;
 
+/* Helpers for the filename recorder... */
+/* Start the recorder */
+static void
+recorder_start()
+{
+    /* Alas, while we might want to use mkstemp it is not portable.
+       So we have to be content with using a default name... */
+    string cwd;
+    recorder_name = (string)xmalloc(strlen(kpse_program_name)+5);
+    strcpy(recorder_name, kpse_program_name);
+    strcat(recorder_name, ".fls");
+    recorder_file = xfopen(recorder_name, FOPEN_W_MODE);
+    cwd = xgetcwd();
+    fprintf(recorder_file, "PWD %s\n", cwd);
+    free(cwd);
+}
+
+/* Change the name of the recorder file. */
+void
+recorder_change_filename P1C(string, new_name)
+{
+   if (!recorder_file)
+     return;
+   rename(recorder_name, new_name);
+   free(recorder_name);
+   recorder_name = xstrdup(new_name);
+}
+
 /* Open an input file F, using the kpathsea format FILEFMT and passing
    FOPEN_MODE to fopen.  The filename is in `nameoffile+1'.  We return
    whether or not the open succeeded.  If it did, `nameoffile' is set to
    the full filename opened, and `namelength' to its length.  */
 
 boolean
-open_input P3C(FILE **, f_ptr,  kpse_file_format_type, filefmt,
-               const_string, fopen_mode)
+open_input P3C(FILE **, f_ptr,  int, filefmt,  const_string, fopen_mode)
 {
 #ifdef FUNNY_CORE_DUMP
   /* This only applies if a preloaded TeX/Metafont is being made;
@@ -37,7 +75,7 @@ open_input P3C(FILE **, f_ptr,  kpse_file_format_type, filefmt,
 #endif
 
   /* A negative FILEFMT means don't use a path.  */
-  if ((int) filefmt < 0)
+  if (filefmt < 0)
     { /* no_file_path, for BibTeX .aux files and MetaPost things.  */
       *f_ptr = fopen (nameoffile + 1, fopen_mode);
     }
@@ -45,11 +83,28 @@ open_input P3C(FILE **, f_ptr,  kpse_file_format_type, filefmt,
     {
       /* The only exception to `must_exist' being true is \openin, for
          which we set `tex_input_type' to 0 in the change file.  */
-      boolean must_exist = filefmt != kpse_tex_format || texinputtype;
-      string fname = kpse_find_file (nameoffile + 1, filefmt, must_exist);
+      /* According to the pdfTeX people, pounding the disk for .vf files
+         is overkill as well.  A more general solution would be nice. */
+      boolean must_exist = (filefmt != kpse_tex_format || texinputtype)
+              && (filefmt != kpse_vf_format);
+      string fname = kpse_find_file (nameoffile + 1,
+                                     (kpse_file_format_type)filefmt,
+                                     must_exist);
+
+      if (fullnameoffile) {
+          free(fullnameoffile);
+          fullnameoffile = NULL;
+      }
       
       if (fname)
         {
+          if (recorder_enabled) {
+              if (!recorder_file)
+                  recorder_start();
+              fprintf(recorder_file, "INPUT %s\n", fname);
+          }
+
+          fullnameoffile = xstrdup(fname);
           /* If we found the file in the current directory, don't leave
              the `./' at the beginning of `nameoffile', since it looks
              dumb when `tex foo' says `(./foo.tex ... )'.  On the other
@@ -72,7 +127,7 @@ open_input P3C(FILE **, f_ptr,  kpse_file_format_type, filefmt,
             {
               free (nameoffile);
               namelength = strlen (fname);
-              nameoffile = xmalloc (namelength + 2);
+              nameoffile = (string)xmalloc (namelength + 2);
               strcpy (nameoffile + 1, fname);
               free (fname);
             }
@@ -118,7 +173,7 @@ open_output P2C(FILE **, f_ptr,  const_string, fopen_mode)
     { /* Can't open as given.  Try the envvar.  */
       string texmfoutput = kpse_var_value ("TEXMFOUTPUT");
 
-      if (texmfoutput && *texmfoutput)
+      if (texmfoutput && *texmfoutput && !kpse_absolute_p(nameoffile+1, false))
         {
           string fname = concat3 (texmfoutput, DIR_SEP_STRING, nameoffile + 1);
           *f_ptr = fopen (fname, fopen_mode);
@@ -128,14 +183,23 @@ open_output P2C(FILE **, f_ptr,  const_string, fopen_mode)
             {
               free (nameoffile);
               namelength = strlen (fname);
-              nameoffile = xmalloc (namelength + 2);
+              nameoffile = (string)xmalloc (namelength + 2);
               strcpy (nameoffile + 1, fname);
             }
 
           free (fname);
         }
     }
-
+  else
+    {
+        /* FIXME: Shouldn't we be doing this always if we opened a file? */
+        if (recorder_enabled) {
+            if (!recorder_file)
+                recorder_start();
+            fprintf(recorder_file, "OUTPUT %s\n", nameoffile + 1);
+        }
+    }
+        
   return *f_ptr != NULL;
 }
 

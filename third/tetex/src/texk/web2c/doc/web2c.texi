@@ -11,8 +11,8 @@ The latest version is available from ftp://ftp.tug.org/tex/texinfo.tex.}
 \fi
 @end tex
 
-@set version 7.3.1
-@set month-year May 1999
+@set version 7.4.5
+@set month-year January 2003
 
 @c Define new indices for commands in auxiliary files, filenames, and options.
 @defcodeindex cm
@@ -69,7 +69,7 @@ The latest version is available from ftp://ftp.tug.org/tex/texinfo.tex.}
 This file documents the installation and use of the programs in Web2c,
 an implementation of Donald Knuth's TeX system.
 
-Copyright (C) 1996, 97 K. Berry & O. Weber.
+Copyright (C) 1996-2002 K. Berry & O. Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -104,7 +104,7 @@ except that this permission notice may be stated in a translation
 @page
 
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996, 97 K. Berry & O. Weber.
+Copyright @copyright{} 1996-2002 K. Berry & O. Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -189,8 +189,8 @@ kpathsea, Kpathsea}, for the practical details of how to obtain Web2c.)
 Different parts of the Web2c distribution have different licensing
 terms, however, reflecting the different circumstances of their
 creation; consult each source file for exact details.  The main
-practical implication for redistributors of Web2c is that the
-executables are covered by the GNU Public License, and therefore anyone
+practical implication for redistributors of Web2c is that the executables
+are covered by the GNU General Public License, and therefore anyone
 who gets a binary distribution must also get the sources, as explained
 by the terms of the GPL (@pxref{Copying, , , kpathsea, Kpathsea}). The
 GPL covers the Web2c executables, including @code{tex}, because the Free
@@ -366,12 +366,25 @@ be one of @samp{batchmode}, @samp{nonstopmode}, @samp{scrollmode}, or
 @opindex -fmt=@var{dumpname}
 @opindex -base=@var{dumpname}
 @opindex -mem=@var{dumpname}
+@cindex dump file
 Use @var{dumpname} instead of the program name or a @samp{%&} line to
 determine the name of the memory dump file read (@samp{fmt} for @TeX{},
 @samp{base} for Metafont, @samp{mem} for MetaPost).  @xref{Memory
 dumps}.  Also sets the program name to @var{dumpname} if no
-@samp{-progname} option was given.  When creating a dump, this option
-will also set the name of the dump file.
+@samp{-progname} option was given.
+
+@item -jobname=@var{string}
+@opindex -jobname=@var{string}
+@cindex job name
+Set the job name to @var{string}, instead of deriving it from the name
+of the input file.
+
+@item -parse-first-line
+@opindex -parse-first-line
+@cindex parsing the first line
+Check whether the first line of the main input file starts with
+@samp{%&}, and parse it if it does.  This line can be used specify the
+format and/or a TCX file.
 
 @item -progname=@var{string}
 @opindex -progname=@var{string}
@@ -384,6 +397,13 @@ Kpathsea}).  Using this option is equivalent to making a link named
 @var{string} to the binary and then invoking the binary under that
 name.  @xref{Memory dumps}.
 
+@item -recorder
+@opindex -recorder
+@cindex file recorder
+Enable the filename recorder.  This makes the program save a list of the
+files opened into a file with extension @samp{.fls}.  For Omega, this
+option is always on, and the file has extension @samp{.ofl}.
+
 @item -translate-file=@var{tcxfile}
 @opindex -translate-file=@var{tcxfile}
 @cindex translation file for @TeX{}, specifying
@@ -395,6 +415,20 @@ between the internal and external character sets.   Moreover,
 input file @samp{%& -translate-file=@var{tcxfile}}.
 This is the recommended method for portability reasons.
 @xref{TCX files}.
+
+@item -file-line-error-style
+@opindex -file-line-error-style
+@cindex changing error messages style
+Change the way error messages are printed. The alternate style looks
+like error messages from many compilers and is easier to parse for some
+editors that drive @TeX{} compilers.
+
+@item -oem
+@opindex -oem
+@cindex using local codepage to display messages
+This option is specific to win32. When used, @TeX{} engines will use the
+OEM code page rather than the ANSI one to display their messages.
+
 @end table
 
 
@@ -1053,6 +1087,42 @@ right away, according to the absence or presence of the
 @TeX{} administrator wish to implement more stringent rules on what can
 be executed, you will need to modify @file{tex.ch}.)
 
+@item -src-specials
+@itemx -src-specials=@var{string}
+@cindex generating source specials
+This option makes @TeX{} output specific source information using
+@samp{\special} commands in the DVI file. These @samp{\special} track
+the current file name and line number.
+
+Using the first form of this option, the @samp{\special} are inserted
+automatically.
+
+In the second form of the option, @var{string} is
+a comma separated list of the following values: @samp{cr},
+@samp{display}, @samp{hbox}, @samp{math}, @samp{par}, @samp{parend},
+@samp{vbox}. You can use this list to specify where you want  @TeX{} to
+output such commands. By example, @samp{-src-specials=cr,math} will
+output source information every line and every math formula.
+
+These commands  can  be used with  the  appropriate DVI viewer and  text
+editor to switch from the current position in the editor to the same
+position in the viewer and back from the viewer
+to the editor.
+
+Note that this option works by inserting @samp{\special} commands into
+the token stream, and that these additional tokens can in principle be
+recovered by the right macros.  If you run across a case, let us know,
+because this counts as a bug.  However, these bugs are very hard to fix
+without making significant changes to @TeX{}, so please don't count on
+them being fixed.
+
+Redefining @samp{\special} will not affect the functioning of this
+option.  The commands we insert into the token stream have been
+hard-coded to always be the @samp{\special} primitive.
+
+Also note that @TeX{} does not pass the trip test when this option is
+enabled.
+
 @end table
 
 
@@ -1380,9 +1450,9 @@ Specifying TCX files:
 @item
 You can specify a TCX file to be used for a particular @TeX{} run by
 specifying the command-line option
-@samp{-translation-file=@var{tcxfile}} or (preferably) specifying it
+@samp{-translate-file=@var{tcxfile}} or (preferably) specifying it
 explicitly in the first line of the main document @samp{%&
--translation-file=@var{tcxfile}}.
+-translate-file=@var{tcxfile}}.
 @item
 TCX files are searched for along the @code{WEB2C} path.
 @item
@@ -2354,6 +2424,11 @@ These options are common to @TeX{}, Metafont, and MetaPost.
 Set the @code{prologues} internal variable to @code{1}, and use
 @code{makempx -troff} to generate MPX files.  
 
+@item -tex=@var{texprogram}
+@opindex -tex=@var{texprogram}
+When this option is given, the program @var{texprogram} is used to
+typeset the labels.
+
 @end table
 
 
@@ -2969,9 +3044,49 @@ The Pascal output is packed into lines of 72 characters or less, with
 the only concession to readability being the termination of lines at
 semicolons when this can be done conveniently.
 
-The only options are @samp{--help} and @samp{--version}
-(@pxref{Common options}).
+The program accepts the following options, as well as the standard
+@samp{--help} and @samp{--version} (@pxref{Common options}):
 
+@table @samp
+@item -length=@var{number}
+@opindex -length=@var{number}
+@cindex identifier length
+The number of characters that are considered significant in an
+identifier.  Whether underline characters are counted depends on the
+@samp{-underline} option.  The default value is 32, the original tangle
+used 7, but this proved too restrictive for use by Web2c.
+
+@item -lowercase
+@itemx -mixedcase
+@itemx -uppercase
+@opindex -lowercase
+@opindex -mixedcase
+@opindex -uppercase
+@cindex identifier case
+These options specify the case of identifiers in the output of tangle.
+If @samp{-uppercase} (@samp{-lowercase}) is specified, tangle will
+convert all identfiers to uppercase (lowercase).  The default is
+@samp{-mixedcase}, which specifies that the case will not be changed.
+
+@item -underline
+@opindex -underline
+@cindex identifiers with underlines
+When this option is given, tangle does not strip underline characters
+from identifiers.
+
+@item -loose
+@itemx -strict
+@opindex -loose
+@opindex -strict
+@cindex identifier collisions
+These options specify how strict tangle must be when checking
+identifiers for equality.  The default is @samp{-loose}, which means
+that tangle will follow the rules set by the case-smashing and underline
+options above.  If @samp{-strict} is set, then identifiers will always
+be stripped of underlines and converted to uppercase before checking
+whether they collide.
+
+@end table
 
 @node weave invocation
 @section Weave: Translate WEB to @TeX{}
@@ -3416,9 +3531,9 @@ resolution and type of mapping used by your device.
 @flindex virtual-fonts.knuth
 @flindex virtualfonts.txt
 The suffix @samp{.vf} identifies ``virtual font'' files, for which
-@samp{.vpl} is the human-readable analog.  @xref{vftovp invocation} and
-@ref{vptovf invocation}.  For further discussion of virtual fonts, see
-@file{@var{CTAN:}/doc/virtual-fonts.knuth},
+@samp{.vpl} is the human-readable analog.  See @xref{vftovp invocation},
+and @ref{vptovf invocation}.  For further discussion of virtual fonts,
+see @file{@var{CTAN:}/doc/virtual-fonts.knuth},
 @file{@var{CTAN:}/help/virtualfonts.txt}, and @ref{Virtual fonts,,,
 dvips, Dvips}.
 

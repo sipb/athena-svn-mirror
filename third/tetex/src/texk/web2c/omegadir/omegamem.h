@@ -1,8 +1,32 @@
+/* omegamem.h: C declarations for types and accessing routines in omega.c
 
-extern boolean new_input_line ();
-extern boolean newinputln ();
+This file is part of the Omega project, which
+is based on the web2c distribution of TeX.
+
+Copyright (c) 1994--2000 John Plaice and Yannis Haralambous
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+
+
+/* argument(s) added to function, by team 18 */
+extern boolean new_input_line (FILE *, halfword); 
+/* argument(s) added to function, by team 18 */
+extern boolean newinputln (FILE*, halfword, halfword, boolean); 
 extern int getc_two ();
-extern int getfilemode ();
+/* argument(s) added to function, by team 18 */
+extern int getfilemode (FILE*, int);
 extern void ungetc_two ();
 extern int ocptemp;
 
@@ -20,22 +44,37 @@ typedef struct hashw
 } hashword;
 
 extern hashword hashtable[];
-extern hashword *createhashpos();
-extern hashword *createeqtbpos();
-extern hashword *createxeqlevel();
+/* argument(s) added to function, by team 18 */
+extern hashword *createhashpos(int); 
+/* argument(s) added to function, by team 18 */
+extern hashword *createeqtbpos(int); 
+/* argument(s) added to function, by team 18 */
+extern hashword *createxeqlevel(int); 
 extern void inithhashtable();
 extern void dumphhashtable();
 extern void undumphhashtable();
-extern void allocatefonttable();
-extern void dumpfonttable();
-extern void undumpfonttable();
-extern void allocatefontsorttable();
-extern void dumpfontsorttable();
-extern void undumpfontsorttable();
-extern void allocateocptable();
-extern void dumpocptable();
-extern void undumpocptable();
-extern void odateandtime();
+/* argument(s) added to function, by team 18 */
+extern void allocatefonttable(int,int); 
+/* argument(s) added to function, by team 18 */
+extern void dumpfonttable(int,int); 
+/* argument(s) added to function, by team 18 */
+extern void undumpfonttable(int); 
+/* argument(s) added to function, by team 18 */
+extern void allocatefontsorttable(int,int); 
+/* argument(s) added to function, by team 18 */
+extern void dumpfontsorttable(int , int); 
+/* argument(s) added to function, by team 18 */
+extern void undumpfontsorttable(int); 
+/* argument(s) added to function, by team 18 */
+extern void allocateocptable(int,int); 
+/* argument(s) added to function, by team 18 */
+extern void dumpocptable(int);  
+/* argument(s) added to function, by team 18 */
+extern void undumpocptable(int); 
+/* argument(s) added to function, by team 18 */
+extern void odateandtime(int, int, int, int ); 
+extern void btestin();
+extern void runexternalocp(char *);
 
 #define initeqtbtable()		inithhashtable();
 #define dumpeqtbtable()		dumphhashtable();

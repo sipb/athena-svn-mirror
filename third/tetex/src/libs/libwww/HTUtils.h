@@ -1,10 +1,11 @@
 /*
 
-	W3C Sample Code Library libwww General Purpose Macros
+  					W3C Sample Code Library libwww Debug Information and General Purpose
+  Macros
 
 
 !
-  General Purpose Macros
+  Debug Information and General Purpose Macros
 !
 */
 
@@ -15,8 +16,8 @@
 
 /*
 
-This module is a part of the 
-W3C Sample Code Library. See also the system dependent file
+This module is a part of the  W3C Sample
+Code Library. See also the system dependent file
 sysdep module for system specific information.
 */
 
@@ -25,19 +26,58 @@ sysdep module for system specific information.
 
 /*
 .
+  Destination for User Print Messages
+.
+
+You can send print messages to the user to various destinations
+depending on the type of your application. By default, on Unix the
+messages are sent to stdout using
+fprintf. If we are on MSWindows and have a windows
+applications then register a HTPrintCallback
+function. This is done with HTPrint_setCallback. It tells
+HTPrint to call a HTPrintCallback. If
+HTDEBUG
+is not defined then don't do any of the above.
+*/
+
+typedef int HTPrintCallback(const char * fmt, va_list pArgs);
+extern void HTPrint_setCallback(HTPrintCallback * pCall);
+extern HTPrintCallback * HTPrint_getCallback(void);
+
+extern int HTPrint(const char * fmt, ...);
+
+/*
+.
   Debug Message Control
 .
 
-This is the global flag for setting the WWWTRACE options. The
-verbose mode is no longer a simple boolean but a bit field so that it is
-possible to see parts of the output messages.
+This is the global flag for setting the WWWTRACE options.
+The verbose mode is no longer a simple boolean but a bit field so that it
+is possible to see parts of the output messages.
 */
 
-#ifndef DEBUG
-#define DEBUG	/* No one ever turns this off as trace is too important */
+#if defined(NODEBUG) || defined(NDEBUG) || defined(_NDEBUG)
+#undef HTDEBUG
+#else
+#ifndef HTDEBUG
+#define HTDEBUG		1
+#endif /* HTDEBUG */
+#endif
 
-/* Call this function and the program halts */
-extern void HTDebugBreak (char * file, unsigned long line, const char * fmt, ...);
+/*
+(
+  C Preprocessor defines
+)
+
+Make sure that the following macros are defined
+*/
+
+#ifndef __FILE__
+#define __FILE__	""
+#endif
+
+#ifndef __LINE__
+#define __LINE__	0L
 #endif
 
 /*
@@ -48,7 +88,7 @@ extern void HTDebugBreak (char * file, unsigned long line, const char * fmt, ...
 The global trace flag variable is available everywhere.
 */
 
-#ifdef DEBUG
+#ifdef HTDEBUG
 #ifdef WWW_WIN_DLL
 extern int *		WWW_TraceFlag;	 /* In DLLs, we need the indirection */
 #define WWWTRACE	(*WWW_TraceFlag) 
@@ -58,12 +98,19 @@ extern unsigned int	WWW_TraceFlag;	     /* Global flag for all W3 trace */
 #endif /* WWW_WIN_DLL */
 #else
 #define WWWTRACE	0
-#endif /* DEBUG */
+#endif /* HTDEBUG */
 
 /*
+(
+  Select which Trace Messages to show
+)
 
-The WWWTRACE define outputs messages if verbose mode
-is active according to the following rules:
+Libwww has a huge set of trace messages and it is therefor a good idea to
+be able to select which ones to see for any particular trace. An easy way
+to set this is using the funtion
+HTSetTraceMessageMask. The WWWTRACE
+define outputs messages if verbose mode is active according to the following
+rules:
 */
 
 typedef enum _HTTraceFlags {
@@ -83,7 +130,8 @@ typedef enum _HTTraceFlags {
     SHOW_CORE_TRACE	= 0x2000,
     SHOW_MUX_TRACE      = 0x4000,
     SHOW_SQL_TRACE      = 0x8000,
-    SHOW_ALL_TRACE	= -1
+    SHOW_XML_TRACE      = 0x10000,
+    SHOW_ALL_TRACE	= (int) 0xFFFFFFFF
 } HTTraceFlags;
 
 /*
@@ -108,6 +156,8 @@ trace messages, e.g. showing messages for SGML and HTML at the same time.
 #define CORE_TRACE	(WWWTRACE & SHOW_CORE_TRACE)
 #define MUX_TRACE	(WWWTRACE & SHOW_MUX_TRACE)
 #define SQL_TRACE	(WWWTRACE & SHOW_SQL_TRACE)
+#define XML_TRACE	(WWWTRACE & SHOW_XML_TRACE)
+#define ALL_TRACE	(WWWTRACE & SHOW_ALL_TRACE)
 
 /*
 (
@@ -115,61 +165,94 @@ trace messages, e.g. showing messages for SGML and HTML at the same time.
 )
 
 You can send trace messages to various destinations depending on the type
-of your application. By default, on Unix the messages are sent to stderr
-using fprintf() and if we are on Windows and have a windows applications
-then register a HTTraceCallback function. This is done with HTTrace_setCallback.
-It tells HTTrace to call a HTTraceCallback. If your compiler has problems
-with va_list, then you may forget about registering the callback and instead
-macro HTTrace as follows: #define HTTrace MyAppSpecificTrace
-
+of your application. By default, on Unix the messages are sent to
+stderr using fprintf. If we are on MSWindows and
+have a windows applications then register a HTTraceCallback
+function. This is done with HTTrace_setCallback. It tells
+HTTrace to call a HTTraceCallback. If 
+HTDEBUG is not defined then don't do any of the above.
 */
 
-#if TRACECALLBACK
 typedef int HTTraceCallback(const char * fmt, va_list pArgs);
 extern void HTTrace_setCallback(HTTraceCallback * pCall);
 extern HTTraceCallback * HTTrace_getCallback(void);
-#endif
 
+/*
+
+The HTTRACE macro uses "_" as parameter separater
+instead of ",". This enables us to use a single macro instead
+of a macro for each number of arguments which we consider a more elegant
+and flexible solution. The implication is, however, that we can't have variables
+that start or end with an "_" if they are to be used in a trace
+message.
+*/
+
+#ifdef HTDEBUG
+#undef _
+#define _ ,
+#define HTTRACE(TYPE, FMT) \
+	do { if (TYPE) HTTrace(FMT); } while (0);
 extern int HTTrace(const char * fmt, ...);
+#else
+#define HTTRACE(TYPE, FMT)		/* empty */
+#endif /* HTDEBUG */
 
 /*
 (
-  Trace Data Logging
+  Data Trace Logging
 )
 
-A similare mechanism exists for logging data, except that is adds a
-data and length argument to the trace call.
+A similar mechanism exists for logging data, except that is adds a data and
+length argument to the trace call. Again, you can register your own callbacks
+if need be.
 */
 
-typedef int HTTraceDataCallback(char * data, size_t len, 
-				char * fmt, va_list pArgs);
-
+typedef int HTTraceDataCallback(char * data, size_t len, char * fmt, va_list pArgs);
 extern void HTTraceData_setCallback(HTTraceDataCallback * pCall);
 extern HTTraceDataCallback * HTTraceData_getCallback(void);
 
+/*
+
+Again we use the same macro expansion mechanism as for HTTrace
+*/
+
+#ifdef HTDEBUG
+#define HTTRACEDATA(DATA, LEN, FMT) HTTraceData((DATA), (LEN), FMT)
 extern int HTTraceData(char * data, size_t len, char * fmt, ...);
+#else
+#define HTTRACEDATA(DATA, LEN, FMT)	/* empty */
+#endif /* HTDEBUG */
 
 /*
 (
-  Hiding Extraneous Logging Messages
+  Debug Breaks
 )
 
-Many of the long logging strings are wrapped with the HTHIDE
-macro. This is usually defined to pass its parameter to the loggin
-functions. However, if your application doesn't use the logging, you
-may define HTHIDE to pass only a 0 to eliminate the strings from the
-executable image.
+Call this function and the program halts. We use the same macro expansion
+mechanism as for HTTrace
 */
 
-#define HTHIDE(A)	A
+extern void HTDebugBreak(char * file, unsigned long line, const char * fmt, ...);
+
+#ifdef HTDEBUG
+#define HTDEBUGBREAK(FMT) HTDebugBreak(__FILE__, __LINE__, FMT)
+#else
+#define HTDEBUGBREAK(FMT)		/* empty */
+#endif /* HTDEBUG */
 
 /*
 .
   Macros for Function Declarations
 .
+
+These function prefixes are used by scripts and other tools and helps figuring
+out which functions are exported and which are not. See also the
+libwww style guide.
 */
 
-#define PUBLIC			/* Accessible outside this module     */
+#ifndef PUBLIC
+# define PUBLIC			/* Accessible outside this module     */
+#endif
 #define PRIVATE static		/* Accessible only within this module */
 
 /*
@@ -255,12 +338,22 @@ Success are (>=0) and failure are (<0)
 #define HT_RETRY		-503	/* If service isn't available */
 #define HT_BAD_VERSION		-505	/* Bad protocol version */
 
+#ifdef HT_DAV                           /* WebDAV Status codes */
+#define HT_PROCESSING            102    /* Processing  */
+#define HT_MULTI_STATUS          207    /* Multi-Status */
+#define HT_UNPROCESSABLE        -422    /* Unprocessable Entity */  
+#define HT_LOCKED               -423    /* Locked */
+#define HT_FAILED_DEPENDENCY    -424    /* Failed Dependency */
+#define HT_INSUFFICIENT_STORAGE -507    /* Insufficient Storage */
+#endif
+
 #define HT_INTERNAL		-900    /* Weird -- should never happen. */
 #define HT_WOULD_BLOCK		-901    /* If we are in a select */
 #define HT_INTERRUPTED 		-902    /* Note the negative value! */
 #define HT_PAUSE                -903    /* If we want to pause a stream */
 #define HT_RECOVER_PIPE         -904    /* Recover pipe line */
 #define HT_TIMEOUT              -905    /* Connection timeout */
+#define HT_NO_HOST              -906    /* Can't locate host */
 
 /*
 .
@@ -273,29 +366,11 @@ or BDSI platforms. For safefy, we make them mandatory.
 */
 
 #ifndef TOLOWER
-#define TOLOWER(c) tolower(c)
-#define TOUPPER(c) toupper(c)
+#define TOLOWER(c) tolower((int) (c))
+#define TOUPPER(c) toupper((int) (c))
 #endif
 
 /*
-.
-  C Preprocessor defines
-.
-
-Make sure that the following macros are defined
-
-*/
-
-#ifndef __FILE__
-#define __FILE__ ""
-#endif
-
-#ifndef __LINE__
-#define __LINE__ 0L
-#endif
-
-/*
-
 .
   Max and Min values for Integers and Floating Point
 .
@@ -340,6 +415,6 @@ memory management module.
 
   
 
-  @(#) $Id: HTUtils.h,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+  @(#) $Id: HTUtils.h,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 
 */

@@ -17,10 +17,22 @@
 
 The response object is created as a placeholder for the response received
 by the remote server. All filters can then use the information passed in
-the response and act appropriately. The response objetc is deleted automatically
+the response and act appropriately. The response object is deleted automatically
 when the corresponding request object is deleted. We try and do some fancy
 tricks in order to do lazy parsing and reusing parsed values so that we can
 optimize the code.
+
+The Response object is created automatically when we start to receive
+metainformation (for example MIME headers) and is
+linked to the Request object. The
+Response object is also deleted automatically when the corresponding request
+object is deleted but it can of course be deleted before if this is
+desired.
+
+Note that if you are using non-blocking sockets then libwww
+behaves asynchronously as you may issue multiple requests and get back the
+responses in the order they appear on the net interface.
+
 
 This module is implemented by HTResponse.c, and
 it is a part of the  W3C Sample Code
@@ -225,9 +237,10 @@ an object is cachable or not. Check these methods before starting caching!
 */
 
 typedef enum _HTCachable {
-    HT_NO_CACHE  = 0,
-    HT_CACHE_ALL = 1,
-    HT_CACHE_ETAG= 2
+    HT_NO_CACHE            = 0,
+    HT_CACHE_ALL           = 1,
+    HT_CACHE_ETAG          = 2,
+    HT_CACHE_NOT_MODIFIED  = 3
 } HTCachable; 
 
 extern HTCachable HTResponse_isCachable  (HTResponse * me);
@@ -420,6 +433,19 @@ extern HTAssocList * HTResponse_header (HTResponse * response);
 extern HTAssocList * HTResponse_handOverHeader (HTResponse * me);
 
 /*
+
+(
+  The HTTP reason string
+)
+The string returned in the HTTP status line. Some servers send custom
+info in this string and applications may want to show it.
+*/
+
+extern char * HTResponse_reason (HTResponse * me);
+extern BOOL HTResponse_setReason (HTResponse * me, char * reason);
+
+/*
+
 */
 
 #endif /* HTRESPONSE_H */
@@ -428,6 +454,6 @@ extern HTAssocList * HTResponse_handOverHeader (HTResponse * me);
 
   
 
-  @(#) $Id: HTResponse.h,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+  @(#) $Id: HTResponse.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

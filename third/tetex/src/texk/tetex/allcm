@@ -10,6 +10,9 @@ test -f /bin/bsh && test -z "$RUNNING_BSH" \
   && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
 unset RUNNING_BSH
 
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
+
 progname=`basename $0`
 
 case "$progname" in
@@ -72,8 +75,9 @@ head()
 }
 
 cd /tmp
-mkdir tmp$$ && cd tmp$$ || exit
-trap "cd / ; rm -rf /tmp/tmp$$; trap '' 0; exit 0" 0 1 2 15
+(umask 077; mkdir tmp$$) || exit 1
+cd tmp$$ || exit 1
+trap "rc=$?; cd /; rm -f /tmp/tmp$$/*; rmdir /tmp/tmp$$; trap '' 0; exit $rc" 0 1 2 3 7 13 15
 
 echo >&2
 echo "---------------------------------------------------------------------" >&2
@@ -103,4 +107,5 @@ $DVIPS ${1+"$@"} -f allcm11 > /dev/null
 $DVIPS ${1+"$@"} -f allcm12 > /dev/null
 
 cd /
-rm -rf /tmp/tmp$$
+rm -f /tmp/tmp$$/*
+rmdir /tmp/tmp$$

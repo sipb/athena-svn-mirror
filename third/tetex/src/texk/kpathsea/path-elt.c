@@ -74,7 +74,7 @@ element P2C(const_string, passed_path,  boolean, env_p)
   if (len + 1 > elt_alloc)
     {
       elt_alloc = len + 1;
-      elt = xrealloc (elt, elt_alloc);
+      elt = (string)xrealloc (elt, elt_alloc);
     }
 
   strncpy (elt, path, len);

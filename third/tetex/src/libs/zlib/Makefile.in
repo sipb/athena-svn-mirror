@@ -1,9 +1,4 @@
-# Makefile for zlib
-
-# Modified for use with teTeX. Thomas Esser, 1998.
-
-# Copyright (C) 1995-1998 Jean-loup Gailly.
-# For conditions of distribution and use, see copyright notice in zlib.h 
+# Thomas Esser, Makefile.in for zlib / teTeX. (C) 2002, public domain.
 
 ac_include ../texk/make/common.mk
 ac_include ../texk/make/programs.mk
@@ -13,17 +8,17 @@ OBJS = adler32.o compress.o crc32.o gzio.o uncompr.o deflate.o trees.o \
        zutil.o inflate.o infblock.o inftrees.o infcodes.o infutil.o inffast.o
 
 libz.a: $(OBJS)
+	rm -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJS) $(OBJA)
-	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+	$(RANLIB) $@
 
 all: libz.a
 uninstall:
 clean:
-	rm -f *.o *~ example minigzip libz.a libz.so* foo.gz so_locations \
-	   _match.s maketree
+	rm -f *.o *~ libz.a
 
 extraclean maintainer-clean distclean:	clean
-	rm -f Makefile config.status config.log
+	rm -f Makefile
 
 depend:
 	makedepend -- $(CFLAGS) -- *.[ch]

@@ -506,7 +506,7 @@ it:
                        break;
                    }
                    default:
-                       abort("xiFill: unknown format");
+                       t1_abort("xiFill: unknown format");
                }
        }
  

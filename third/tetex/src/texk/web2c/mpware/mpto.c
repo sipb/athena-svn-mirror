@@ -31,16 +31,22 @@ connection with the use or performance of this software.
 /* Or we translate to troff.  Just a matter of different boilerplate.  */
 
 #include "c-auto.h"	/* For WEB2CVERSION */
+#include "cpascal.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <kpathsea/config.h>
+#include <kpathsea/variable.h>
 
 #ifdef WIN32
 #include <string.h>
 #endif
 
-#define bufsize 1000
-/* Since MetaPost itself has a max line length, it hardly seems worth allowing
-   arbitrary input lines here.  */
+
+/* MetaPost itself has a configurable max line length, copy the limits
+   from mp.ch */
+#define INF_BUF_SIZE  500
+#define SUP_BUF_SIZE  300000
+#define BUF_SIZE_NAME "buf_size"
 
 char*	tex_predoc = "";
 char*	tex_postdoc = "\\end{document}\n";
@@ -74,11 +80,11 @@ FILE *mpfile;
 int lnno = 0;		/* current line number */
 int texcnt = 0;		/* btex..etex blocks so far */
 int verbcnt = 0;	/* verbatimtex..etex blocks so far */
-char buf[bufsize];	/* the input line */
+char *buf;		/* the input line */
+long bufsize = 0;       /* the buffer size */
 char *bb, *tt, *aa;	/* start of before, token, and after strings */
 
-void err(msg)
-	char *msg;
+void err P1C(char *, msg)
 {
 	fprintf(stderr, "mpto: %s:%d: %s\n",
 		mpname, lnno, msg);
@@ -108,8 +114,7 @@ char *getline()	/* returns NULL on EOF or error, otherwise buf */
 /* Return nonzero if a prefix of string s matches the null-terminated string t
  * and the next character is not a letter of an underscore.
  */
-int match_str(s, t)
-	char *s, *t;
+int match_str P2C(char*, s, char *, t)
 {
 	while (*t!=0) {
 		if (*s!=*t) return 0;
@@ -140,8 +145,7 @@ int match_str(s, t)
  * several possible substrings t, we choose the leftmost one.  If there is
  * no such t, we set b=s and return 0.
  */
-int getbta(s)
-	char *s;
+int getbta P1C(char *, s)
 {
 	int ok=1;	/* zero if last character was a-z, A-Z, or _ */
 
@@ -241,40 +245,32 @@ void do_line()
 		} else err("unmatched etex");
 }
 
-
-void usage(name, status)
-        char *name;
-        int status;
-{
-        FILE *f = status == 0 ? stdout : stderr;
-        fprintf(f, "Usage: mpto [-tex|-troff] %sMPFILE\n\
-  Strip btex..etex and verbatimtex...etex parts from MetaPost input\n\
-  file MPFILE, converting to either TeX or troff (TeX by default).\n\
-\n\
---help      display this help and exit\n\
---version   output version information and exit\n\n",
+static const_string MPTOHELP[] = {
+    "Usage: mpto [-tex|-troff] MPFILE",
+    "  Strip btex..etex and verbatimtex...etex parts from MetaPost input",
+    "  file MPFILE, converting to either TeX or troff (TeX by default).",
+    "",
+    "--help      display this help and exit",
+    "--version   output version information and exit",
 #ifdef AMIGA
-        "[-E <errlog-file>] "
-#else
-        ""
+    "-E <errlog-file>",
 #endif
-);
-        fputs ("Email bug reports to tex-k@mail.tug.org.\n", f);
-        exit(status);
-}
+    NULL
+};
   
-int main(argc, argv)
-	int argc;
-        char *argv[];
+int main P2C(int, argc, char **, argv)
 {
-	int mode;
+        int mode;
+        char *buf_size_str;
+        
+        kpse_set_program_name(argv[0], NULL);
 	
 	if (argc == 1) {
 	  fputs ("mpto: Need exactly one file argument.\n", stderr);
 	  fputs ("Try `mpto --help' for more information.\n", stderr);
 	  exit(1);
 	} else if (argc > 1 && strcmp (argv[1], "--help") == 0) {
-	  usage (argv[0], 0);
+	  usagehelp (MPTOHELP);
 	} else if (argc > 1 && strcmp (argv[1], "--version") == 0) {
           printf ("mpto%s 0.63\n\
 Copyright (C) 1996 AT&T Bell Laboratories.\n\
@@ -298,7 +294,7 @@ WEB2CVERSION);
 	    mpname = argv[2];
 	    mode = 1;
 	  } else if (strncmp(argv[2], "-E", 2) || (argv[2]+2 == NULL)) {
-	    usage(argv[0], 1);
+	    usage(argv[0]);
 	  } else {
 	    mpname = argv[1];
 	    freopen(argv[2]+2, "w", stderr);
@@ -309,16 +305,16 @@ WEB2CVERSION);
 	  } else if (strcmp (argv[1], "-troff") == 0) {
 	    mode = 1;
 	  } else {
-	    usage(argv[0], 1);
+	    usage(argv[0]);
 	  }
 	  if (strncmp(argv[3], "-E", 2) || (argv[3]+2 == NULL)) {
-	    usage(argv[0], 1);
+	    usage(argv[0]);
 	  } else {
 	    mpname = argv[2];
 	    freopen(argv[3]+2, "w", stderr);
 	  }
 	} else {
-	  usage(argv[0], 1);
+	  usage(argv[0]);
 	}
 #else /* not AMIGA */
 	} else if (argc == 3) {
@@ -327,11 +323,11 @@ WEB2CVERSION);
 	  } else if (strcmp (argv[1], "-troff") == 0) {
 	    mode = 1;
 	  } else {
-	    usage (argv[0], 1);
+	    usage (argv[0]);
 	  }
 	  mpname = argv[2];
 	} else {
-	  usage(argv[0], 1);
+	  usage(argv[0]);
 	}
 #endif /* not AMIGA */
 	mpfile = fopen(mpname, "r");
@@ -340,6 +336,17 @@ WEB2CVERSION);
 	  perror (mpname);
 	  exit (1);
 	}
+
+        buf_size_str = kpse_var_value(BUF_SIZE_NAME);
+        if (buf_size_str)
+           bufsize = atoi(buf_size_str);
+        if (bufsize < INF_BUF_SIZE)
+           bufsize = INF_BUF_SIZE;
+        if (bufsize > SUP_BUF_SIZE)
+           bufsize = SUP_BUF_SIZE;
+        buf = (char*)xmalloc(bufsize);
+        if (buf_size_str) free(buf_size_str);
+
 	/* This is far from elegant, but life is short.  */
 	if (mode == 0) {
           predoc = tex_predoc;
@@ -364,5 +371,6 @@ WEB2CVERSION);
 	while (getline()!=NULL)
 		do_line();
 	printf("%s",postdoc);
+        free(buf);
 	exit(0);
 }

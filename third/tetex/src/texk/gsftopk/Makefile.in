@@ -1,5 +1,5 @@
 # Makefile for gsftopkk --kb@cs.umb.edu. Modified Yves.Arrouye@imag.fr
-version = 1.17
+version = 1.19
 
 program = gsftopk
 default all: $(program) gsftopk.1
@@ -40,11 +40,11 @@ uninstall-exec:
 	rm -f $(bindir)/$(program)
 
 install-data: gsftopk.1
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir) $(gsftopkpsheaderdir)
-	$(INSTALL_DATA) gsftopk.1 $(mandir)/gsftopk.$(manext)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(man1dir) $(gsftopkpsheaderdir)
+	$(INSTALL_DATA) gsftopk.1 $(man1dir)/gsftopk.$(manext)
 	$(INSTALL_DATA) $(srcdir)/render.ps $(gsftopkpsheaderdir)/render.ps
 uninstall-data:
-	rm -f $(mandir)/gsftopk.$(manext)
+	rm -f $(man1dir)/gsftopk.$(manext)
 	rm -f $(gsftopkpsheaderdir)/render.ps
 
 ac_include ../make/clean.mk

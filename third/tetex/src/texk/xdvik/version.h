@@ -1,6 +1,6 @@
-#define XDVIVERSION "22.05d-k"
+#define XDVERSION "22.40v"
 #ifdef Omega
-#define TVERSION XDVIVERSION" for Omega"
+#define TVERSION XDVERSION" for Omega"
 #else
-#define	TVERSION XDVIVERSION
+#define	TVERSION XDVERSION
 #endif

@@ -427,10 +427,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'pktogf');
+      usage ('pktogf');
 
     end else if argument_is ('help') then begin
-      usage (0, PKTOGF_HELP);
+      usage_help (PKTOGF_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'Tomas Rokicki');
@@ -442,7 +442,7 @@ begin
    We must have one or two remaining arguments.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'pktogf: Need one or two file arguments.');
-    usage (1, 'pktogf');
+    usage ('pktogf');
   end;
 end;
 

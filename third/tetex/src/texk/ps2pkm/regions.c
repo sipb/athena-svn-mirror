@@ -242,7 +242,7 @@ void KillRegion(area)
         register struct edgelist *next;  /* loop variable                    */
  
         if (area->references < 0)
-               abort("KillRegion:  negative reference count");
+               t1_abort("KillRegion:  negative reference count");
         if ( (--(area->references) > 1) ||
            ( (area->references == 1) && !ISPERMANENT(area->flag) ) )
             return;
@@ -308,7 +308,7 @@ static struct edgelist *NewEdge(xmin, xmax, ymin, ymax, xvalues, isdown)
        IfTrace2((RegionDebug),"....new edge: ymin=%d, ymax=%d ",
                                               (LONG)ymin, (LONG) ymax);
        if (ymin >= ymax)
-               abort("newedge: height not positive");
+               t1_abort("newedge: height not positive");
 /*
 We are going to copy the xvalues into a newly allocated area.  It
 helps performance if the values are all "long" aligned.  We can test
@@ -567,7 +567,7 @@ MOVETYPE at the end of the path, if it isn't closed:
                        break;
  
                    default:
-                       abort("Interior: path type error");
+                       t1_abort("Interior: path type error");
                }
 /*
 We're done with this segment.  Advance to the next path segment in
@@ -633,7 +633,7 @@ static int Unwind(area)
                } while (area != NULL && area->ymin == y);
  
                if (count != 0)
-                       abort("Unwind:  uneven edges");
+                       t1_abort("Unwind:  uneven edges");
        }
 }
 /*
@@ -691,7 +691,7 @@ void ChangeDirection(type, R, x, y, dy)
                }
  
                if (ymax < ymin)
-                       abort("negative sized edge?");
+                       t1_abort("negative sized edge?");
  
  
 	       /* FIXME: there are not as much parameters as here. */
@@ -942,9 +942,9 @@ static struct edgelist *splitedge(list, y)
                if (y < list->ymin)
                        break;
                if (y >= list->ymax)
-                       abort("splitedge: above top of list");
+                       t1_abort("splitedge: above top of list");
                if (y == list->ymin)
-                       abort("splitedge: would be null");
+                       t1_abort("splitedge: would be null");
  
                r = (struct edgelist *)Allocate(sizeof(struct edgelist), list, 0);
 /*
@@ -984,7 +984,7 @@ list at 'lastlist', and add the broken off part to the end of 'new'.
 Then, we return the caller a pointer to 'new':
 */
        if (new == NULL)
-               abort("null splitedge");
+               t1_abort("null splitedge");
        lastlist->link = NULL;
        last->link = list;
        IfTrace1((RegionDebug > 1),"yields %x\n", new);
@@ -1006,7 +1006,7 @@ static int vertjoin(top, bottom)
 #endif
 {
        if (BOTTOM(top) > TOP(bottom))
-               abort("vertjoin not disjoint");
+               t1_abort("vertjoin not disjoint");
  
        for (; top->link != NULL; top=top->link) { ; }
  
@@ -1114,7 +1114,7 @@ struct edgelist *SwathUnion(before0, edge)
  
        h0 = h = edge->ymax - edge->ymin;
        if (h <= 0)
-               abort("SwathUnion:  0 height swath?");
+               t1_abort("SwathUnion:  0 height swath?");
  
        before = before0;
        after = before->link;
@@ -1378,7 +1378,7 @@ static discard(left, right)
  
        for (p = beg; p != right; p = p->link) {
                if (p->link == NULL && right != NULL)
-                       abort("discard():  ran off end");
+                       t1_abort("discard():  ran off end");
                IfTrace1((RegionDebug > 0),"discarding %x\n", p);
                p->ymin = p->ymax = 32767;
                end = p;
@@ -1466,7 +1466,7 @@ void UnJumble(region)
  
        for (edge=region->anchor; VALIDEDGE(edge); edge=next) {
                if (edge->link == NULL)
-                       abort("UnJumble:  unpaired edge?");
+                       t1_abort("UnJumble:  unpaired edge?");
                next = edge->link->link;
                edge->link->link = NULL;
                anchor = SortSwath(anchor, edge, t1_SwathUnion);
@@ -1504,9 +1504,9 @@ static OptimizeRegion(R)
                if (xmin != xmax || (xmin != R->xmin && xmax != R->xmax))
                        R->flag &= ~ISRECTANGULAR(ON);
                if (xmin < e->xmin || xmax > e->xmax)
-                       abort("Tighten: existing edge bound was bad");
+                       t1_abort("Tighten: existing edge bound was bad");
                if (xmin < R->xmin || xmax > R->xmax)
-                       abort("Tighten: existing region bound was bad");
+                       t1_abort("Tighten: existing region bound was bad");
                e->xmin = xmin;
                e->xmax = xmax;
        }
@@ -1755,11 +1755,11 @@ static int edgecheck(edge, oldmin, oldmax)
        int oldmin,oldmax;
 {
        if (edge->type != EDGETYPE)
-               abort("EDGE ERROR: non EDGETYPE in list");
+               t1_abort("EDGE ERROR: non EDGETYPE in list");
 /*
 The following check is not valid if the region is jumbled so I took it
 out:
 */
 /*     if (edge->ymin < oldmax && edge->ymin != oldmin)
-               abort("EDGE ERROR: overlapping swaths"); */
+               t1_abort("EDGE ERROR: overlapping swaths"); */
 }

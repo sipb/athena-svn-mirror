@@ -123,8 +123,8 @@ stamp-paths: texmf.cnf
 	sed -e 's/%.*//' -e 's/^[ 	]*//' -e 's/[ 	]*$$//' texmf.cnf \
 	| grep '^[ 	]*[A-Z0-9_]*[ 	=]' \
 	| sed '/^$$/d' \
-	| sed 's/^\([^ 	=]*\)[ 	]*=*[ 	]*\(.*\)/#ifndef DEFAULT_\1@#define DEFAULT_\1 "\2"@#endif/' \
-	| tr '@' '\012' \
+	| sed 's/^\([^ 	=]*\)[ 	]*=*[ 	]*\(.*\)/#ifndef DEFAULT_\1%#define DEFAULT_\1 "\2"%#endif/' \
+	| tr '%' '\012' \
 	| sed -e 's%\$$TEXMFMAIN%$(texmf)%g' \
 	      -e 's%\$$TEXMF%$(texmf)%g' \
 	      -e 's%\$$VARTEXFONTS%$(vartexfonts)%g' \
@@ -170,18 +170,21 @@ install-exec: kpsewhich
 	   || test ! -r $(scriptdir)/mktexlsr; then \
 	  $(INSTALL_SCRIPT) $(srcdir)/mktexlsr $(scriptdir)/mktexlsr; \
 	else true; fi
+#	if grep 'original mktexfmt --' $(scriptdir)/mktexfmt > /dev/null 2>&1\
+#	   || test ! -r $(scriptdir)/mktexfmt; then \
+#	  $(INSTALL_SCRIPT) $(srcdir)/mktexfmt $(scriptdir)/mktexfmt; \
+#	else true; fi
+	$(INSTALL_DATA) $(srcdir)/mktex.opt $(web2cdir)/mktex.opt
+	$(INSTALL_SCRIPT) $(srcdir)/mktexdir $(web2cdir)/mktexdir
+	$(INSTALL_DATA) $(srcdir)/mktexdir.opt $(web2cdir)/mktexdir.opt
+	$(INSTALL_SCRIPT) $(srcdir)/mktexnam $(web2cdir)/mktexnam
+	$(INSTALL_DATA) $(srcdir)/mktexnam.opt $(web2cdir)/mktexnam.opt
+	$(INSTALL_SCRIPT) $(srcdir)/mktexupd $(web2cdir)/mktexupd
 	$(INSTALL_LIBTOOL_LIBS) $(libdir) lib$(library).la
 	$(INSTALL_LIBTOOL_PROG) $(bindir) kpsewhich
 	$(INSTALL_PROGRAM) kpsestat $(bindir)
 	$(INSTALL_PROGRAM) access $(bindir)
 	$(INSTALL_PROGRAM) readlink $(bindir)
-# Should we install the headers?  They are not just system-dependent,
-# which is bad enough, but even compiler-dependent.
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(includedir)/kpathsea
-	for f in $(install_headers); do \
-	  $(INSTALL_DATA) $$f $(includedir)/kpathsea/; done
-	rm -f $(includedir)/kpathsea/acconfig.h
-	$(POSTINSTALL)
 uninstall-exec:
 	rm -f $(bindir)/kpsewhich
 
@@ -191,18 +194,19 @@ install-data: texmf.cnf kpathsea.info install-man
 	   || test ! -r $(web2cdir)/texmf.cnf; then \
 	  $(INSTALL_DATA) texmf.cnf $(web2cdir)/texmf.cnf; \
 	else true; fi
-	test -r kpathsea.info || cd $(srcdir) && for i in kpathsea.i*; do \
+	test -r ./kpathsea.info || cd $(srcdir) && for i in kpathsea.i*; do \
 	  $(INSTALL_DATA) $$i $(infodir)/$$i; done
+# Should we install the headers?  They are not just system-dependent,
+# which is bad enough, but even compiler-dependent.
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(includedir)/kpathsea
+	for f in $(install_headers); do \
+	  $(INSTALL_DATA) $$f $(includedir)/kpathsea/; done
+	rm -f $(includedir)/kpathsea/acconfig.h
+	$(POSTINSTALL)
 	test -r $(infodir)/dir || $(INSTALL_DATA) $(top_srcdir)/../dir $(infodir)
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
 	  install-info --info-dir=$(infodir) $(infodir)/kpathsea.info; \
 	else true; fi
-	$(INSTALL_DATA) $(srcdir)/mktex.opt $(web2cdir)/mktex.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexdir $(web2cdir)/mktexdir
-	$(INSTALL_DATA) $(srcdir)/mktexdir.opt $(web2cdir)/mktexdir.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexnam $(web2cdir)/mktexnam
-	$(INSTALL_DATA) $(srcdir)/mktexnam.opt $(web2cdir)/mktexnam.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexupd $(web2cdir)/mktexupd
 
 uninstall-data:
 	rm -f $(infodir)/kpathsea.i*
@@ -214,7 +218,7 @@ distdir: doc $(library).dvi $(library).h
 	mkdir -p $(distdir)
 	ln $(ln_files) kpathsea.version $(distdir)
 	touch *.info*
-	ln mktex* *.info* *.texi $(library).aux $(library).cps $(distdir)
+	ln mktex* *.info* *.texi *.ftp $(library).aux $(library).cps $(distdir)
 	rm -f $(distdir)/*.1 $(distdir)/*.man
 	ln *.man $(distdir)
 	ln BUGS README.CONFIGURE HIER PROJECTS *.ac $(distdir)

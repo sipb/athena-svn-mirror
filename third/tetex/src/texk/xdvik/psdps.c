@@ -28,7 +28,7 @@ NOTES:
 
 \*========================================================================*/
 
-#ifdef PS_DPS /* whole file */
+#ifdef PS_DPS	/* whole file */
 
 #include "xdvi-config.h"
 #include <signal.h>
@@ -47,7 +47,7 @@ NOTES:
 		 * header; i.e., no save/restore.
 		 */
 #ifndef	SUNHACK
-static	char	preamble[]	= "\
+static char preamble[] = "\
 /xdvi$line 81 string def \
 /xdvi$run {{$error null ne {$error /newerror false put}if \
  currentfile cvx stopped \
@@ -63,8 +63,8 @@ static	char	preamble[]	= "\
   {clear} {pop eq {exit} if} ifelse }loop \
  (xdvi$Ack\n) print flush \
 }loop\nH";
-#else	/* SUNHACK */
-static	char	preamble[]	= "\
+#else /* SUNHACK */
+static char preamble[] = "\
 /xdvi$line 81 string def \
 /xdvi$run {{$error null ne {$error /newerror false put}if \
  currentfile cvx stopped \
@@ -85,134 +85,133 @@ end \
  }loop \
 xdvi$ack \
 }loop\nH";
-#endif	/* SUNHACK */
+#endif /* SUNHACK */
 
-extern	char	psheader[];
-extern	int	psheaderlen;
+extern char psheader[];
+extern int psheaderlen;
 
 #define	postscript	resource._postscript
 
 
 /* global procedures (besides initDPS) */
 
-static	void	toggleDPS ARGS((void));
-static	void	destroyDPS ARGS((void));
-static	void	interruptDPS ARGS((void));
-static	void	endpageDPS ARGS((void));
-static	void	drawbeginDPS ARGS((int, int, _Xconst char *));
-static	void	drawrawDPS ARGS((_Xconst char *));
-static	void	drawfileDPS ARGS((_Xconst char *, FILE *));
-static	void	drawendDPS ARGS((_Xconst char *));
-static	void	beginheaderDPS ARGS((void));
-static	void	endheaderDPS ARGS((void));
-static	void	newdocDPS ARGS((void));
+static void toggleDPS ARGS((void));
+static void destroyDPS ARGS((void));
+static void interruptDPS ARGS((void));
+static void endpageDPS ARGS((void));
+static void drawbeginDPS ARGS((int, int, _Xconst char *));
+static void drawrawDPS ARGS((_Xconst char *));
+static void drawfileDPS ARGS((_Xconst char *, FILE *));
+static void drawendDPS ARGS((_Xconst char *));
+static void beginheaderDPS ARGS((void));
+static void endheaderDPS ARGS((void));
+static void newdocDPS ARGS((void));
 
-static	struct psprocs	dps_procs = {
-	/* toggle */		toggleDPS,
-	/* destroy */		destroyDPS,
-	/* interrupt */		interruptDPS,
-	/* endpage */		endpageDPS,
-	/* drawbegin */		drawbeginDPS,
-	/* drawraw */		drawrawDPS,
-	/* drawfile */		drawfileDPS,
-	/* drawend */		drawendDPS,
-	/* beginheader */	beginheaderDPS,
-	/* endheader */		endheaderDPS,
-	/* newdoc */		newdocDPS};
+static struct psprocs dps_procs = {
+    /* toggle */ toggleDPS,
+    /* destroy */ destroyDPS,
+    /* interrupt */ interruptDPS,
+    /* endpage */ endpageDPS,
+    /* drawbegin */ drawbeginDPS,
+    /* drawraw */ drawrawDPS,
+    /* drawfile */ drawfileDPS,
+    /* drawend */ drawendDPS,
+    /* beginheader */ beginheaderDPS,
+    /* endheader */ endheaderDPS,
+    /* newdoc */ newdocDPS
+};
 
-static	DPSContext DPS_ctx = NULL;
-static	DPSSpace DPS_space = NULL;
-static	int	DPS_mag;		/* magnification currently in use */
-static	int	DPS_shrink;		/* shrink factor currently in use */
-static	Boolean	DPS_active;		/* if we've started a page */
-static	int	DPS_pending;		/* number of ack's we're expecting */
-static	Boolean	DPS_in_header;		/* if we're sending a header */
-static	Boolean	DPS_in_doc;		/* if we've sent header information */
+static DPSContext DPS_ctx = NULL;
+static DPSSpace DPS_space = NULL;
+static int DPS_mag;	/* magnification currently in use */
+static int DPS_shrink;	/* shrink factor currently in use */
+static Boolean DPS_active;	/* if we've started a page */
+static int DPS_pending;	/* number of ack's we're expecting */
+static Boolean DPS_in_header;	/* if we're sending a header */
+static Boolean DPS_in_doc;	/* if we've sent header information */
 
 
 #if	0
-static	void	DPSErrorProcHandler();
+static void DPSErrorProcHandler();
 #else
 #define	DPSErrorProcHandler	DPSDefaultErrorProc
 #endif
 
 
-static	char	ackstr[]	= "xdvi$Ack\n";
+static char ackstr[] = "xdvi$Ack\n";
 #ifdef	SUNHACK
-static	char	intstr[]	= "xdvi$Int\n";
+static char intstr[] = "xdvi$Int\n";
 #endif
 
 #define	LINELEN	81
 #define	BUFLEN	(LINELEN + sizeof(ackstr))
-static	char	line[BUFLEN + 1];
-static	char	*linepos	= line;
+static char line[BUFLEN + 1];
+static char *linepos = line;
 
-static	void
-TextProc(ctxt, buf, count)
-	DPSContext	ctxt;
-	char		*buf;
-	unsigned long	count;
+static void
+TextProc(DPSContext ctxt, char *buf, unsigned long count)
 {
-	int	i;
-	char	*p;
-	char	*p0;
+    int i;
+    char *p;
+    char *p0;
 
-	while (count > 0) {
-	    i = line + BUFLEN - linepos;
-	    if (i > count) i = count;
-	    (void) bcopy(buf, linepos, i);
-	    linepos += i;
-	    buf += i;
-	    count -= i;
-	    p0 = line;
-	    for (;;) {
-		if (p0 >= linepos) {
-		    linepos = line;
-		    break;
-		}
-		p = memchr(p0, '\n', linepos - p0);
-		if (p == NULL) {
-		    if (p0 != line) {
-			(void) bcopy(p0, line, linepos - p0);
-			linepos -= p0 - line;
-		    }
-		    else if (linepos == line + BUFLEN) {
-			char	c;
-
-			c = line[LINELEN];
-			line[LINELEN] = '\0';
-			Printf("DPS: %s\n", line);
-			line[LINELEN] = c;
-			linepos -= LINELEN;
-			(void) bcopy(line + LINELEN, line, linepos - line);
-		    }
-		    break;
-		}
-		if (p >= p0 + 8 && memcmp(p - 8, ackstr, 9) == 0) {
-		    --DPS_pending;
-		    if (debug & DBG_PS)
-			Printf("Got DPS ack; %d pending.\n", DPS_pending);
-		    ++p;
-		    (void) bcopy(p, p - 9, linepos - p);
-		    linepos -= 9;
-		    continue;
-		}
-#ifdef	SUNHACK
-		if (p >= p0 + 8 && memcmp(p - 8, intstr, 9) == 0) {
-		    DPS_pending = 1;
-		    if (debug & DBG_PS)
-			Puts("Got DPS int.");
-		    ++p;
-		    (void) bcopy(p, p - 9, linepos - p);
-		    linepos -= 9;
-		    continue;
-		}
-#endif	/* SUNHACK */
-		*p = '\0';
-		Printf("DPS: %s\n", p0);
-		p0 = p + 1;
+    while (count > 0) {
+	i = line + BUFLEN - linepos;
+	if (i > count)
+	    i = count;
+	(void)bcopy(buf, linepos, i);
+	linepos += i;
+	buf += i;
+	count -= i;
+	p0 = line;
+	for (;;) {
+	    if (p0 >= linepos) {
+		linepos = line;
+		break;
 	    }
+	    p = memchr(p0, '\n', linepos - p0);
+	    if (p == NULL) {
+		if (p0 != line) {
+		    (void)bcopy(p0, line, linepos - p0);
+		    linepos -= p0 - line;
+		}
+		else if (linepos == line + BUFLEN) {
+		    char c;
+
+		    c = line[LINELEN];
+		    line[LINELEN] = '\0';
+		    Printf("DPS: %s\n", line);
+		    line[LINELEN] = c;
+		    linepos -= LINELEN;
+		    (void)bcopy(line + LINELEN, line, linepos - line);
+		}
+		break;
+	    }
+	    if (p >= p0 + 8 && memcmp(p - 8, ackstr, 9) == 0) {
+		--DPS_pending;
+		if (debug & DBG_PS)
+		    Printf("Got DPS ack; %d pending.\n", DPS_pending);
+		++p;
+		(void)bcopy(p, p - 9, linepos - p);
+		linepos -= 9;
+		continue;
+	    }
+#ifdef	SUNHACK
+	    if (p >= p0 + 8 && memcmp(p - 8, intstr, 9) == 0) {
+		DPS_pending = 1;
+		if (debug & DBG_PS)
+		    Puts("Got DPS int.");
+		++p;
+		(void)bcopy(p, p - 9, linepos - p);
+		linepos -= 9;
+		continue;
+	    }
+#endif /* SUNHACK */
+	    *p = '\0';
+	    Printf("DPS: %s\n", p0);
+	    p0 = p + 1;
 	}
+    }
 }
 
 
@@ -229,14 +228,15 @@ TextProc(ctxt, buf, count)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-waitack()
+static void
+waitack(void)
 {
-	while (DPS_pending > 0) {
-	    (void) XEventsQueued(DISP, QueuedAfterFlush);
-	    ps_read_events(False, False);
-	    if (DPS_ctx == NULL) break;	/* if interrupt occurred */
-	}
+    while (DPS_pending > 0) {
+	(void)XEventsQueued(DISP, QueuedAfterFlush);
+	ps_read_events(False, False);
+	if (DPS_ctx == NULL)
+	    break;	/* if interrupt occurred */
+    }
 }
 
 
@@ -253,101 +253,100 @@ waitack()
 
 +----------------------------------------------------------------------------*/
 
-static	int
-get_shift(mask)
-	Pixel	mask;
+static int
+get_shift(Pixel mask)
 {
-	int	k;
+    int k;
 
-	for (k = 0; (mask & 1) == 0; ++k)
-	    mask >>= 1;
-	return k;
+    for (k = 0; (mask & 1) == 0; ++k)
+	mask >>= 1;
+    return k;
 }
 
-Boolean
-initDPS()
+Boolean initDPS()
 {
 
-	/* Try to create a context */
+    /* Try to create a context */
 
 #if GREY
 
-	if (our_colormap == DefaultColormapOfScreen(SCRN))
-	    DPS_ctx = XDPSCreateSimpleContext(DISP, mane.win, ruleGC, 0, 0,
-	      TextProc, DPSDefaultErrorProc, NULL);
-	else {
-	    static XStandardColormap	*ccube	= NULL;
-	    static XStandardColormap	*grayramp = NULL;
-	    int	shift;
+    if (our_colormap == DefaultColormapOfScreen(SCRN))
+	DPS_ctx = XDPSCreateSimpleContext(DISP, mane.win, ruleGC, 0, 0,
+					  TextProc, DPSDefaultErrorProc, NULL);
+    else {
+	static XStandardColormap *ccube = NULL;
+	static XStandardColormap *grayramp = NULL;
+	int shift;
 
-	    if (grayramp == NULL) {
-		grayramp = XAllocStandardColormap();
-		if (grayramp == NULL)
-		    return False;
-	    }
-
-	    if (ccube == NULL) {
-		ccube = XAllocStandardColormap();
-		if (ccube == NULL)
-		    return False;
-	    }
-
-	    shift = get_shift(our_visual->red_mask);
-	    ccube->red_max = our_visual->red_mask >> shift;
-	    ccube->red_mult = 1 << shift;
-
-	    shift = get_shift(our_visual->green_mask);
-	    ccube->green_max = our_visual->green_mask >> shift;
-	    ccube->green_mult = 1 << shift;
-
-	    shift = get_shift(our_visual->blue_mask);
-	    ccube->blue_max = our_visual->blue_mask >> shift;
-	    ccube->blue_mult = 1 << shift;
-
-	    grayramp->red_max = ccube->red_max & ccube->green_max
-	      & ccube->blue_max;
-	    grayramp->red_mult = ccube->red_mult + ccube->green_mult
-	      + ccube->blue_mult;
-
-	    ccube->colormap = grayramp->colormap = our_colormap;
-	    ccube->visualid = grayramp->visualid = our_visual->visualid;
-
-	    DPS_ctx = XDPSCreateContext(DISP, mane.win, ruleGC, 0, 0,
-	      0, grayramp, ccube,
-	      /* actual */ (ccube->red_max + 1) * (ccube->green_max + 1)
-		* (ccube->blue_max + 1),
-	      TextProc, DPSDefaultErrorProc, NULL);
+	if (grayramp == NULL) {
+	    grayramp = XAllocStandardColormap();
+	    if (grayramp == NULL)
+		return False;
 	}
 
-#else	/* not GREY */
+	if (ccube == NULL) {
+	    ccube = XAllocStandardColormap();
+	    if (ccube == NULL)
+		return False;
+	}
 
-	DPS_ctx = XDPSCreateSimpleContext(DISP, mane.win, ruleGC, 0, 0,
-	  TextProc, DPSDefaultErrorProc, NULL);
+	shift = get_shift(our_visual->red_mask);
+	ccube->red_max = our_visual->red_mask >> shift;
+	ccube->red_mult = 1 << shift;
 
-#endif	/* not GREY */
+	shift = get_shift(our_visual->green_mask);
+	ccube->green_max = our_visual->green_mask >> shift;
+	ccube->green_mult = 1 << shift;
 
-	if (DPS_ctx == NULL)
-	    return False;
+	shift = get_shift(our_visual->blue_mask);
+	ccube->blue_max = our_visual->blue_mask >> shift;
+	ccube->blue_mult = 1 << shift;
 
-	DPS_mag = DPS_shrink = -1;
-	DPS_active = False;
-	DPS_pending = 1;
+	grayramp->red_max = ccube->red_max & ccube->green_max & ccube->blue_max;
+	grayramp->red_mult = ccube->red_mult + ccube->green_mult
+	    + ccube->blue_mult;
 
-	DPS_space = DPSSpaceFromContext(DPS_ctx);
-	DPSWritePostScript(DPS_ctx, preamble, sizeof(preamble) - 1);
-	DPSWritePostScript(DPS_ctx, psheader, psheaderlen);
-	DPSPrintf(DPS_ctx, "matrix setmatrix stop\n%%%%xdvimark\n");
-	DPSFlushContext(DPS_ctx);
+	ccube->colormap = grayramp->colormap = our_colormap;
+	ccube->visualid = grayramp->visualid = our_visual->visualid;
 
-	psp = dps_procs;
-	return True;
+	DPS_ctx = XDPSCreateContext(DISP, mane.win, ruleGC, 0, 0,
+				    0, grayramp, ccube,
+				    /* actual */ 
+				    (ccube->red_max + 1) * (ccube->green_max +
+							    1) *
+				    (ccube->blue_max + 1), TextProc,
+				    DPSDefaultErrorProc, NULL);
+    }
+
+#else /* not GREY */
+
+    DPS_ctx = XDPSCreateSimpleContext(DISP, mane.win, ruleGC, 0, 0,
+				      TextProc, DPSDefaultErrorProc, NULL);
+
+#endif /* not GREY */
+
+    if (DPS_ctx == NULL)
+	return False;
+
+    DPS_mag = DPS_shrink = -1;
+    DPS_active = False;
+    DPS_pending = 1;
+
+    DPS_space = DPSSpaceFromContext(DPS_ctx);
+    DPSWritePostScript(DPS_ctx, preamble, sizeof(preamble) - 1);
+    DPSWritePostScript(DPS_ctx, psheader, psheaderlen);
+    DPSPrintf(DPS_ctx, "matrix setmatrix stop\n%%%%xdvimark\n");
+    DPSFlushContext(DPS_ctx);
+
+    psp = dps_procs;
+    return True;
 }
 
 
 /*---------------------------------------------------------------------------*
-  toggleDPS()
+  toggleDPS(void)
 
-  Arguments: none
+  Arguments: flag for toggling PostScript
   Returns: (void)
   Side-Effects: psp.drawbegin is changed.
 
@@ -356,15 +355,18 @@ initDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-toggleDPS()
+static void
+toggleDPS(void)
 {
-  if (debug & DBG_PS) Puts("Toggling DPS on or off");
-  if (postscript) psp.drawbegin = drawbeginDPS;
-  else {
-    interruptDPS();
-    psp.drawbegin = drawbegin_none;
-  }
+    if (debug & DBG_PS)
+	Puts("Toggling DPS on or off");
+
+    if (postscript)
+	psp.drawbegin = drawbeginDPS;
+    else {
+	interruptDPS();
+	psp.drawbegin = drawbegin_none;
+    }
 }
 
 
@@ -381,18 +383,18 @@ toggleDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-destroyDPS()
+static void
+destroyDPS(void)
 {
-  if (debug & DBG_PS)
-    Puts("Calling destroyDPS()");
-  if (linepos > line) {
-    *linepos = '\0';
-    Printf("DPS: %s\n", line);
-  }
-  DPSDestroySpace(DPS_space);
-  psp = no_ps_procs;
-  scanned_page = scanned_page_bak = scanned_page_reset;
+    if (debug & DBG_PS)
+	Puts("Calling destroyDPS()");
+    if (linepos > line) {
+	*linepos = '\0';
+	Printf("DPS: %s\n", line);
+    }
+    DPSDestroySpace(DPS_space);
+    psp = no_ps_procs;
+    scanned_page = scanned_page_bak = scanned_page_reset;
 }
 
 
@@ -409,51 +411,52 @@ destroyDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-interruptDPS()
+static void
+interruptDPS(void)
 {
 #ifdef	SUNHACK
-  static Boolean interrupting = False;
+    static Boolean interrupting = False;
 #endif
 
-  if (debug & DBG_PS)
-    Puts("Running interruptDPS()");
+    if (debug & DBG_PS)
+	Puts("Running interruptDPS()");
 
 #ifndef	SUNHACK
-  if (DPS_pending > 0)
-#else	/* SUNHACK */
-  if (DPS_pending > 0 && !interrupting)
-#endif	/* SUNHACK */
-  {
-    if (debug & DBG_PS)
-      Printf("interruptDPS: code is now %d\n", XDPSGetContextStatus(DPS_ctx));
+    if (DPS_pending > 0)
+#else /* SUNHACK */
+    if (DPS_pending > 0 && !interrupting)
+#endif /* SUNHACK */
+    {
+	if (debug & DBG_PS)
+	    Printf("interruptDPS: code is now %d\n",
+		   XDPSGetContextStatus(DPS_ctx));
 
-    /*
-     * I would really like to use DPSInterruptContext() here, but (at least
-     * on an RS6000) I can't get it to work.
-     */
+	/*
+	 * I would really like to use DPSInterruptContext() here, but (at least
+	 * on an RS6000) I can't get it to work.
+	 */
 
 #ifdef	SUNHACK
-    /*
-     * On the other hand, under OpenWindows 3.3 (at least), destroying and
-     * re-creating contexts has a nasty habit of crashing the server.
-     */
+	/*
+	 * On the other hand, under OpenWindows 3.3 (at least), destroying and
+	 * re-creating contexts has a nasty habit of crashing the server.
+	 */
 
-    interrupting = True;
-    DPSInterruptContext(DPS_ctx);
-    DPS_pending = 32767;
-    DPSPrintf(DPS_ctx, "%%%%xdvimark\n");
-    DPSFlushContext(DPS_ctx);
-    DPS_active = False;
-    waitack();
-    interrupting = False;
-#else	/* SUNHACK */
-    DPSDestroyContext(DPS_ctx);
-    DPS_ctx = NULL;
-    DPS_active = False;
-    DPS_pending = 0;
-#endif	/* SUNHACK */
-  }
+	interrupting = True;
+	DPSInterruptContext(DPS_ctx);
+	DPS_pending = 32767;
+	DPSPrintf(DPS_ctx, "%%%%xdvimark\n");
+	DPSFlushContext(DPS_ctx);
+	DPS_active = False;
+	waitack();
+	interrupting = False;
+#else /* SUNHACK */
+	DPSDestroyContext(DPS_ctx);
+	DPS_ctx = NULL;
+	DPS_active = False;
+	DPS_pending = 0;
+#endif /* SUNHACK */
+    }
 }
 
 
@@ -469,17 +472,17 @@ interruptDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-endpageDPS()
+static void
+endpageDPS(void)
 {
-  if (DPS_active) {
-    if (debug & DBG_PS)
-      Puts("Endpage sent to context");
-    DPSPrintf(DPS_ctx, "stop\n%%%%xdvimark\n");
-    DPSFlushContext(DPS_ctx);
-    DPS_active = False;
-    waitack();
-  }
+    if (DPS_active) {
+	if (debug & DBG_PS)
+	    Puts("Endpage sent to context");
+	DPSPrintf(DPS_ctx, "stop\n%%%%xdvimark\n");
+	DPSFlushContext(DPS_ctx);
+	DPS_active = False;
+	waitack();
+    }
 }
 
 
@@ -500,59 +503,55 @@ endpageDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawbeginDPS(xul, yul, cp)
-  int xul, yul;
-  _Xconst char *cp;
+static void
+drawbeginDPS(int xul, int yul, _Xconst char *cp)
 {
-  /* static char faulty_display_vs[]
-   * ="DECWINDOWS DigitalEquipmentCorporation UWS4.2LA"; */
+    /* static char faulty_display_vs[]
+     * ="DECWINDOWS DigitalEquipmentCorporation UWS4.2LA"; */
 
-  if (debug & DBG_PS)
-    Printf("Begin drawing at xul= %d, yul= %d.\n", xul, yul);
+    if (debug & DBG_PS)
+	Printf("Begin drawing at xul= %d, yul= %d.\n", xul, yul);
 
-  /* we assume that I cannot write the file to the postscript context */
-  if (DPS_ctx == NULL) {
-    DPS_ctx = XDPSCreateSimpleContext(DISP, mane.win, ruleGC, 0, 0,
-				     TextProc, DPSErrorProcHandler, DPS_space);
+    /* we assume that I cannot write the file to the postscript context */
     if (DPS_ctx == NULL) {
-      psp = no_ps_procs;
-      draw_bbox();
-      return;
+	DPS_ctx = XDPSCreateSimpleContext(DISP, mane.win, ruleGC, 0, 0,
+					  TextProc, DPSErrorProcHandler,
+					  DPS_space);
+	if (DPS_ctx == NULL) {
+	    psp = no_ps_procs;
+	    draw_bbox();
+	    return;
+	}
+	DPSWritePostScript(DPS_ctx, preamble, sizeof(preamble) - 1);
+	/* it already has psheader */
+	DPSPrintf(DPS_ctx, "matrix setmatrix stop\n%%%%xdvimark\n");
+	DPS_mag = DPS_shrink = -1;
+	DPS_active = False;
+	DPS_pending = 1;
     }
-    DPSWritePostScript(DPS_ctx, preamble, sizeof(preamble) - 1);
-    /* it already has psheader */
-    DPSPrintf(DPS_ctx, "matrix setmatrix stop\n%%%%xdvimark\n");
-    DPS_mag = DPS_shrink = -1;
-    DPS_active = False;
-    DPS_pending = 1;
-  }
 
-  if (!DPS_active) {
-    /* send initialization to context */
-    if (magnification != DPS_mag) {
-	DPSPrintf(DPS_ctx, "H TeXDict begin /DVImag %d 1000 div def \
-end stop\n%%%%xdvimark\n",
-	    DPS_mag = magnification);
-	++DPS_pending;
-    }
-    if (mane.shrinkfactor != DPS_shrink) {
-	DPSPrintf(DPS_ctx, "H TeXDict begin %d %d div dup \
+    if (!DPS_active) {
+	/* send initialization to context */
+	if (magnification != DPS_mag) {
+	    DPSPrintf(DPS_ctx, "H TeXDict begin /DVImag %d 1000 div def \
+end stop\n%%%%xdvimark\n", DPS_mag = magnification);
+	    ++DPS_pending;
+	}
+	if (mane.shrinkfactor != DPS_shrink) {
+	    DPSPrintf(DPS_ctx, "H TeXDict begin %d %d div dup \
 /Resolution X /VResolution X \
-end stop\n%%%%xdvimark\n",
-	    pixels_per_inch, DPS_shrink = mane.shrinkfactor);
+end stop\n%%%%xdvimark\n", pixels_per_inch, DPS_shrink = mane.shrinkfactor);
+	    ++DPS_pending;
+	}
+	DPSPrintf(DPS_ctx, " TeXDict begin\n");
+	DPS_active = True;
 	++DPS_pending;
     }
-    DPSPrintf(DPS_ctx, " TeXDict begin\n");
-    DPS_active = True;
-    ++DPS_pending;
-  }
 
-  DPSPrintf(DPS_ctx, "%d %d moveto\n", xul, yul);
-  DPSPrintf(DPS_ctx, "%s\n", cp);
+    DPSPrintf(DPS_ctx, "%d %d moveto\n", xul, yul);
+    DPSPrintf(DPS_ctx, "%s\n", cp);
 }
-
-
+    
 /*---------------------------------------------------------------------------*
 
   drawrawDPS()
@@ -567,18 +566,17 @@ end stop\n%%%%xdvimark\n",
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawrawDPS(cp)
-  _Xconst char *cp;
+static void
+drawrawDPS(_Xconst char *cp)
 {
-  if (!DPS_active)
-    return;
+    if (!DPS_active)
+	return;
 
-  if (debug & DBG_PS)
-    Printf("Sending raw PS to context: %s\n", cp);
+    if (debug & DBG_PS)
+	Printf("Sending raw PS to context: %s\n", cp);
 
-  read_events(False);
-  DPSPrintf(DPS_ctx,"%s\n", cp);
+    read_events(False);
+    DPSPrintf(DPS_ctx, "%s\n", cp);
 }
 
 
@@ -595,35 +593,35 @@ drawrawDPS(cp)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawfileDPS(cp, psfile)
-  _Xconst char *cp;
-  FILE *psfile;
+static void
+drawfileDPS(_Xconst char *cp, FILE *psfile)
 {
-  char buffer[1025];
-  int blen;
+    char buffer[1025];
+    int blen;
 
-  if (!DPS_active) {
+    if (!DPS_active) {
+	Fclose(psfile);
+	++n_files_left;
+	return;
+    }
+
+    if (debug & DBG_PS)
+	Printf("sending file %s\n", cp);
+    for (;;) {
+	ps_read_events(False, False);
+	if (canit || !DPS_active)
+	    break;	/* alt_canit is not a factor here */
+	blen = fread(buffer, sizeof(char), 1024, psfile);
+	if (blen == 0)
+	    break;
+	DPSWritePostScript(DPS_ctx, buffer, blen);
+    }
     Fclose(psfile);
     ++n_files_left;
-    return;
-  }
-
-  if (debug & DBG_PS)
-    Printf("sending file %s\n", cp);
-  for (;;) {
-    ps_read_events(False, False);
-    if (canit || !DPS_active) break;	/* alt_canit is not a factor here */
-    blen = fread(buffer, sizeof(char), 1024, psfile);
-    if (blen == 0) break;
-    DPSWritePostScript(DPS_ctx, buffer, blen);
-  }
-  Fclose(psfile);
-  ++n_files_left;
-  if (canit) {
-    interruptDPS();
-    longjmp(canit_env, 1);
-  }
+    if (canit) {
+	interruptDPS();
+	longjmp(canit_env, 1);
+    }
 }
 
 
@@ -639,17 +637,16 @@ drawfileDPS(cp, psfile)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-drawendDPS(cp)
-  _Xconst char *cp;
+static void
+drawendDPS(_Xconst char *cp)
 {
-  if (!DPS_active)
-    return;
+    if (!DPS_active)
+	return;
 
-  if (debug & DBG_PS)
-    Printf("End PS: %s\n", cp);
-  read_events(False);
-  DPSPrintf(DPS_ctx,"%s\n", cp);
+    if (debug & DBG_PS)
+	Printf("End PS: %s\n", cp);
+    read_events(False);
+    DPSPrintf(DPS_ctx, "%s\n", cp);
 }
 
 
@@ -664,26 +661,27 @@ drawendDPS(cp)
 
 +----------------------------------------------------------------------------*/
 
-static	void
-beginheaderDPS()
+static void
+beginheaderDPS(void)
 {
-  if (debug & DBG_PS) Puts("Running beginheaderDPS()");
+    if (debug & DBG_PS)
+	Puts("Running beginheaderDPS()");
 
-  if (DPS_active) {
-    if (!DPS_in_header)
-      oops("Internal error in beginheaderDPS().\n");
-    return;
-  }
+    if (DPS_active) {
+	if (!DPS_in_header)
+	    oops("Internal error in beginheaderDPS().\n");
+	return;
+    }
 
-  DPS_in_header = True;
-  if (DPS_in_doc)
-    DPSPrintf(DPS_ctx, "H");
-  else {
-    DPSPrintf(DPS_ctx, "Hsave /xdvi$doc exch def\n");
-    DPS_in_doc = True;
-  }
-  DPS_active = True;
-  ++DPS_pending;
+    DPS_in_header = True;
+    if (DPS_in_doc)
+	DPSPrintf(DPS_ctx, "H");
+    else {
+	DPSPrintf(DPS_ctx, "Hsave /xdvi$doc exch def\n");
+	DPS_in_doc = True;
+    }
+    DPS_active = True;
+    ++DPS_pending;
 }
 
 
@@ -698,18 +696,19 @@ beginheaderDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-endheaderDPS()
+static void
+endheaderDPS(void)
 {
-  if (debug & DBG_PS) Puts("Running endheaderDPS()");
+    if (debug & DBG_PS)
+	Puts("Running endheaderDPS()");
 
-  if (DPS_active) {
-    DPSPrintf(DPS_ctx, "stop\n%%%%xdvimark\n");
-    DPS_active = False;
-    DPS_in_header = False;
-    DPSFlushContext(DPS_ctx);
-    waitack();
-  }
+    if (DPS_active) {
+	DPSPrintf(DPS_ctx, "stop\n%%%%xdvimark\n");
+	DPS_active = False;
+	DPS_in_header = False;
+	DPSFlushContext(DPS_ctx);
+	waitack();
+    }
 }
 
 
@@ -724,17 +723,20 @@ endheaderDPS()
 
 +----------------------------------------------------------------------------*/
 
-static	void
-newdocDPS()
+static void
+newdocDPS(void)
 {
-  if (debug & DBG_PS) Puts("Running newdocDPS()");
+    if (debug & DBG_PS)
+	Puts("Running newdocDPS()");
 
-  if (DPS_in_doc) {
-    DPSPrintf(DPS_ctx, "H xdvi$doc restore stop\n%%%%xdvimark\n");
-    ++DPS_pending;
-    DPS_mag = DPS_shrink = -1;
-    DPS_in_doc = False;
-  }
+    if (DPS_in_doc) {
+	DPSPrintf(DPS_ctx, "H xdvi$doc restore stop\n%%%%xdvimark\n");
+	++DPS_pending;
+	DPS_mag = DPS_shrink = -1;
+	DPS_in_doc = False;
+    }
 }
 
+#else /* avoid empty compilation unit warning */
+int ___ps_dps;
 #endif /* PS_DPS */

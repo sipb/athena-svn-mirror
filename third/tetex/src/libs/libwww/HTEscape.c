@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTEscape.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTEscape.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 ** history:
 **	Nov 13 94	Spawned from HTParse, as it then can be used in utility
@@ -104,8 +104,7 @@ PUBLIC char * HTUnEscape (char * str)
     char * q = str;
 
     if (!str) {					      /* Just for safety ;-) */
-	if (URI_TRACE)
-	    HTTrace("HTUnEscape.. Called with NULL argument.\n");
+	HTTRACE(URI_TRACE, "HTUnEscape.. Called with NULL argument.\n");
 	return NULL;
     }
     while(*p) {

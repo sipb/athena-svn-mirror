@@ -1,6 +1,7 @@
 /* elt-dirs.c: Translate a path element to its corresponding director{y,ies}.
 
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry.
+Copyright (C) 1997, 1998, 99, 2000, Olaf Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -125,6 +126,7 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
   WIN32_FIND_DATA find_file_data;
   HANDLE hnd;
   int proceed;
+  int nlinks = 2;
 #else
   DIR *dir;
   struct dirent *e;
@@ -161,11 +163,21 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
   proceed = 1;
   while (proceed) {
     if (find_file_data.cFileName[0] != '.') {
+      int links;
+
       /* Construct the potential subdirectory name.  */
       fn_str_grow (&name, find_file_data.cFileName);
+
+      /* Maybe we have cached the leafness of this directory.
+		 The function will return 0 if unknown, 
+		 else the actual (Unix-like) value. */
+      links = dir_links (FN_STRING (name), 0);
+
       if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 	unsigned potential_len = FN_LENGTH (name);
-	
+	/* in any case, compute the leafness */
+	nlinks++;
+
 	/* It's a directory, so append the separator.  */
 	fn_str_grow (&name, DIR_SEP_STRING);
         if (*post != 0) { 
@@ -178,14 +190,28 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
           expand_elt (str_list_ptr, FN_STRING (name), potential_len);
           fn_shrink_to (&name, potential_len);
         }
-
-	do_subdir (str_list_ptr, FN_STRING (name),
-		   potential_len, post);
+	/* Should we recurse?  To see if the subdirectory is a
+	   leaf, check if it has two links (one for . and one for
+	   ..).  This means that symbolic links to directories do
+	   not affect the leaf-ness.  This is arguably wrong, but
+	   the only alternative I know of is to stat every entry
+	   in the directory, and that is unacceptably slow. */
+	   
+	if (links == 0 || links > 2)
+	  /* All criteria are met; find subdirectories.  */
+	  do_subdir (str_list_ptr, FN_STRING (name),
+		     potential_len, post);
+	else if (*post == 0)
+	  /* Nothing to match, no recursive subdirectories to
+	     look for: we're done with this branch.  Add it.  */
+	  dir_list_add (str_list_ptr, FN_STRING (name));
       }
       fn_shrink_to (&name, elt_length);
     }
     proceed = FindNextFile (hnd, &find_file_data);
   }
+  /* Update the leafness of name. */
+  dir_links(FN_STRING(name), nlinks);
   fn_free (&name);
   FindClose(hnd);
 
@@ -222,7 +248,7 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
           fn_str_grow (&name, e->d_name);
           
           /* If we can't stat it, or if it isn't a directory, continue.  */
-          links = dir_links (FN_STRING (name));
+          links = dir_links (FN_STRING (name), 0);
 
           if (links >= 0)
             { 
@@ -317,32 +343,59 @@ expand_elt P3C(str_llist_type *, str_list_ptr,  const_string, elt,
   checked_dir_list_add (str_list_ptr, elt);
 }
 
-/* Handle UNC paths under Win32 */
-static unsigned
-safe_beg_of_path P1C(const_string, elt)
+/* The first bits of a path element can be problematic because they
+   look like a request to expand a whole disk, rather than a subtree.
+   - It can contain a drive specification.
+   - It can be a UNC path (win32, but they are part of the single
+     UNIX specification as well).
+   The argument is a string as the function can diddle into the argument
+   to canonicalize it, which tends to matter on windows platforms.
+   - Always lower-case drive letters a-z, even those filesystem that
+     preserve case in filenames do not care about the case of the drive
+     letters.
+   - Remove unneeded double slashes. The problem is Windows does not 
+     handle well filenames like c://dir/foo. So canonicalize the names.
+     The resulting name will always be shorter than the one passed, so no
+     problem.
+   - If possible, we merely skip multiple leading slashes to prevent
+     expanding from the root of a UNIX filesystem tree.
+*/
+unsigned
+kpse_normalize_path P1C(string, elt)
 {
   unsigned ret;
-#ifdef WIN32
-  /* if it is a UNC PATH, begin at the first meaningful char */
-  if (IS_UNC_NAME(elt)) {
-    return 2;
+  unsigned i;
+
+  if (NAME_BEGINS_WITH_DEVICE(elt)) {
+      if (*elt >= 'A' && *elt <= 'Z')
+          *elt += 'a' - 'A';
+      for (i = 2; IS_DIR_SEP(elt[i]); ++i)
+          ;
+      if (i > 3)
+          memmove(elt+3, elt+i, strlen(elt+i) + 1);
+      ret = 2;
+  } else if (IS_UNC_NAME(elt)) {
+      for (ret = 2; elt[ret] && !IS_DIR_SEP(elt[ret]); ++ret)
+          ;
+      for (i = ret; elt[i] && IS_DIR_SEP(elt[i]); ++i)
+          ;
+      if (i > ret+1)
+          memmove(elt+ret+1, elt+i, strlen(elt+i) + 1);
   } else {
-    /* This is not a UNC PATH, start at first non DIR_SEP char 
-     (after a potential drive name) */
-    for (ret = (NAME_BEGINS_WITH_DEVICE(elt) ? 2 : 0); 
-        IS_DIR_SEP(*(elt+ret)); ret++);
-    return ret;
+      for (ret = 0; IS_DIR_SEP(elt[ret]); ++ret)
+          ;
   }
-#else
-    for (ret = 0; IS_DIR_SEP(*(elt+ret)); ret++);
-    return ret;
-#endif
+  
+  if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
+	DEBUGF2 ("kpse_normalize_path (%s) => %u\n", elt, ret);
+
+  return ret;
 }
 
 /* Here is the entry point.  Returns directory list for ELT.  */
 
 str_llist_type *
-kpse_element_dirs P1C(const_string, elt)
+kpse_element_dirs P1C(string, elt)
 {
   str_llist_type *ret;
 
@@ -360,7 +413,7 @@ kpse_element_dirs P1C(const_string, elt)
   *ret = NULL;
 
   /* We handle the hard case in a subroutine.  */
-  expand_elt (ret, elt, safe_beg_of_path (elt));
+  expand_elt (ret, elt, kpse_normalize_path (elt));
 
   /* Remember the directory list we just found, in case future calls are
      made with the same ELT.  */

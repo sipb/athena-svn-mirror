@@ -1,3 +1,4 @@
+% odvitype.ch: web2c changes for file odvitype.web
 % 
 % This file is part of the Omega project, which
 % is based in the web2c distribution of TeX.
@@ -523,7 +524,7 @@ filenames, but it doesn't seem worth reprogramming all that.
 
 @<Move font name into the |cur_name| string@>=
 r := name_end - name_start;
-cur_name := xmalloc (r + 1);
+cur_name := xmalloc_array (char, r);
 {|strncpy| might be faster, but it's probably a good idea to keep the
  |xchr| translation.}
 for k := name_start to name_end do begin
@@ -599,10 +600,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'odvitype');
+      usage ('odvitype');
 
     end else if argument_is ('help') then begin
-      usage (0, ODVITYPE_HELP);
+      usage_help (ODVITYPE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -633,7 +634,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'odvitype: Need exactly one file argument.');
-    usage (1, 'odvitype');
+    usage ('odvitype');
   end;
 end;
 

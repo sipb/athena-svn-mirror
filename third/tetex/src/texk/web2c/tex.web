@@ -43,9 +43,9 @@
 % Version 3.141 more of same; reconstituted ligatures better (March 1992).
 % Version 3.1415 preserved nonexplicit kerns, tidied up (February 1993).
 % Version 3.14159 allowed fontmemsize to change; bulletproofing (March 1995).
+% Minor corrections to the documentation (only) were made in July 2001.
 
-% A reward of $327.68 will be paid to the first finder of any remaining bug,
-% not counting changes introduced after August 1989.
+% A reward of $327.68 will be paid to the first finder of any remaining bug.
 
 % Although considerable effort has been expended to make the TeX program
 % correct and reliable, no warranty is implied; the author disclaims any
@@ -56,6 +56,7 @@
 
 % Here is TeX material that gets inserted after \input webmac
 \def\hang{\hangindent 3em\noindent\ignorespaces}
+\def\hangg#1 {\hang\hbox{#1 }}
 \def\textindent#1{\hangindent2.5em\noindent\hbox to2.5em{\hss#1 }\ignorespaces}
 \font\ninerm=cmr9
 \let\mc=\ninerm % medium caps for names like SAIL
@@ -143,7 +144,7 @@ available. Preliminary plans to convert the {\mc SAIL} code into a form
 somewhat like the present ``web'' were developed by Luis Trabb~Pardo and
 the author at the beginning of 1979, and a complete implementation was
 created by Ignacio~A. Zabala in 1979 and 1980. The \TeX82 program, which
-@^Zabala Salelles, Ignacio Andres@>
+@^Zabala Salelles, Ignacio Andr\'es@>
 was written by the author during the latter part of 1981 and the early
 part of 1982, also incorporates ideas from the 1979 implementation of
 @^Guibas, Leonidas Ioannis@>
@@ -461,7 +462,7 @@ if mem_top<256+11 then bad:=7; {we will want |null_list>255|}
 
 @ Labels are given symbolic names by the following definitions, so that
 occasional |goto| statements will be meaningful. We insert the label
-`|exit|:' just before the `\ignorespaces|end|\unskip' of a procedure in
+`|exit|' just before the `\ignorespaces|end|\unskip' of a procedure in
 which we have used the `|return|' statement defined below; the label
 `|restart|' is occasionally used at the very beginning of a procedure; and
 the label `|reswitch|' is occasionally used just prior to a |case|
@@ -1691,7 +1692,7 @@ This procedure is never called when |interaction<scroll_mode|.
 
 @p procedure term_input; {gets a line from the terminal}
 var k:0..buf_size; {index into |buffer|}
-begin update_terminal; {Now the user sees the prompt for sure}
+begin update_terminal; {now the user sees the prompt for sure}
 if not input_ln(term_in,true) then fatal_error("End of file on the terminal!");
 @.End of file on the terminal@>
 term_offset:=0; {the user's line ended with \<\rm return>}
@@ -4051,12 +4052,12 @@ ordinary commands when the catcode cannot emerge from \TeX's scanning routine.
 @d mac_param=6 {macro parameter symbol ( \.\# )}
 @d sup_mark=7 {superscript ( \.{\char'136} )}
 @d sub_mark=8 {subscript ( \.{\char'137} )}
-@d ignore=9 {characters to ignore ( \.{\^\^J} )}
+@d ignore=9 {characters to ignore ( \.{\^\^@@} )}
 @d endv=9 {end of \<v_j> list in alignment template}
 @d spacer=10 {characters equivalent to blank space ( \.{\ } )}
 @d letter=11 {characters regarded as letters ( \.{A..Z}, \.{a..z} )}
 @d other_char=12 {none of the special character types}
-@d active_char=13 {characters that invoke macros ( \.{\^\^[} )}
+@d active_char=13 {characters that invoke macros ( \.{\char`\~} )}
 @d par_end=13 {end of paragraph ( \.{\\par} )}
 @d match=13 {match a macro parameter}
 @d comment=14 {characters that introduce comments ( \.\% )}
@@ -4433,25 +4434,25 @@ or what their current values are, for all quantities that are subject to
 the nesting structure provided by \TeX's grouping mechanism. There are six
 parts to |eqtb|:
 
-\yskip\hang 1) |eqtb[active_base..(hash_base-1)]| holds the current
+\yskip\hangg 1) |eqtb[active_base..(hash_base-1)]| holds the current
 equivalents of single-character control sequences.
 
-\yskip\hang 2) |eqtb[hash_base..(glue_base-1)]| holds the current
+\yskip\hangg 2) |eqtb[hash_base..(glue_base-1)]| holds the current
 equivalents of multiletter control sequences.
 
-\yskip\hang 3) |eqtb[glue_base..(local_base-1)]| holds the current
+\yskip\hangg 3) |eqtb[glue_base..(local_base-1)]| holds the current
 equivalents of glue parameters like the current baselineskip.
 
-\yskip\hang 4) |eqtb[local_base..(int_base-1)]| holds the current
+\yskip\hangg 4) |eqtb[local_base..(int_base-1)]| holds the current
 equivalents of local halfword quantities like the current box registers,
 the current ``catcodes,'' the current font, and a pointer to the current
 paragraph shape.
 
-\yskip\hang 5) |eqtb[int_base..(dimen_base-1)]| holds the current
+\yskip\hangg 5) |eqtb[int_base..(dimen_base-1)]| holds the current
 equivalents of fullword integer parameters like the current hyphenation
 penalty.
 
-\yskip\hang 6) |eqtb[dimen_base..eqtb_size]| holds the current equivalents
+\yskip\hangg 6) |eqtb[dimen_base..eqtb_size]| holds the current equivalents
 of fullword dimension parameters like the current hsize or amount of
 hanging indentation.
 
@@ -4464,19 +4465,19 @@ in region~3 of |eqtb|, while the current meaning of the control sequence
 @ Each entry in |eqtb| is a |memory_word|. Most of these words are of type
 |two_halves|, and subdivided into three fields:
 
-\yskip\hang 1) The |eq_level| (a quarterword) is the level of grouping at
+\yskip\hangg 1) The |eq_level| (a quarterword) is the level of grouping at
 which this equivalent was defined. If the level is |level_zero|, the
 equivalent has never been defined; |level_one| refers to the outer level
 (outside of all groups), and this level is also used for global
 definitions that never go away. Higher levels are for equivalents that
 will disappear at the end of their group.  @^global definitions@>
 
-\yskip\hang 2) The |eq_type| (another quarterword) specifies what kind of
+\yskip\hangg 2) The |eq_type| (another quarterword) specifies what kind of
 entry this is. There are many types, since each \TeX\ primitive like
 \.{\\hbox}, \.{\\def}, etc., has its own special code. The list of
 command codes above includes all possible settings of the |eq_type| field.
 
-\yskip\hang 3) The |equiv| (a halfword) is the current equivalent value.
+\yskip\hangg 3) The |equiv| (a halfword) is the current equivalent value.
 This may be a font number, a pointer into |mem|, or a variety of other
 things.
 
@@ -5799,22 +5800,22 @@ this stack is |save_stack[p]|, where |p=save_ptr-1|; it contains three
 fields called |save_type|, |save_level|, and |save_index|, and it is
 interpreted in one of four ways:
 
-\yskip\hang 1) If |save_type(p)=restore_old_value|, then
+\yskip\hangg 1) If |save_type(p)=restore_old_value|, then
 |save_index(p)| is a location in |eqtb| whose current value should
 be destroyed at the end of the current group and replaced by |save_stack[p-1]|.
 Furthermore if |save_index(p)>=int_base|, then |save_level(p)|
 should replace the corresponding entry in |xeq_level|.
 
-\yskip\hang 2) If |save_type(p)=restore_zero|, then |save_index(p)|
+\yskip\hangg 2) If |save_type(p)=restore_zero|, then |save_index(p)|
 is a location in |eqtb| whose current value should be destroyed at the end
 of the current group, when it should be
 replaced by the current value of |eqtb[undefined_control_sequence]|.
 
-\yskip\hang 3) If |save_type(p)=insert_token|, then |save_index(p)|
+\yskip\hangg 3) If |save_type(p)=insert_token|, then |save_index(p)|
 is a token that should be inserted into \TeX's input when the current
 group ends.
 
-\yskip\hang 4) If |save_type(p)=level_boundary|, then |save_level(p)|
+\yskip\hangg 4) If |save_type(p)=level_boundary|, then |save_level(p)|
 is a code explaining what kind of group we were previously in, and
 |save_index(p)| points to the level boundary word at the bottom of
 the entries for that group.
@@ -6405,14 +6406,14 @@ This implementation of
 \TeX\ uses two different conventions for representing sequential stacks.
 @^stack conventions@>@^conventions for representing stacks@>
 
-\yskip\hang 1) If there is frequent access to the top entry, and if the
+\yskip\hangg 1) If there is frequent access to the top entry, and if the
 stack is essentially never empty, then the top entry is kept in a global
 variable (even better would be a machine register), and the other entries
 appear in the array $\\{stack}[0\to(\\{ptr}-1)]$. For example, the
 semantic stack described above is handled this way, and so is the input
 stack that we are about to study.
 
-\yskip\hang 2) If there is infrequent top access, the entire stack contents
+\yskip\hangg 2) If there is infrequent top access, the entire stack contents
 are in the array $\\{stack}[0\to(\\{ptr}-1)]$. For example, the |save_stack|
 is treated this way, as we have seen.
 
@@ -10522,13 +10523,13 @@ only if it lies between |bc| and |ec| and has a nonzero |width_index|.
 @ The |tag| field in a |char_info_word| has four values that explain how to
 interpret the |remainder| field.
 
-\yskip\hang|tag=0| (|no_tag|) means that |remainder| is unused.\par
-\hang|tag=1| (|lig_tag|) means that this character has a ligature/kerning
+\yskip\hangg|tag=0| (|no_tag|) means that |remainder| is unused.\par
+\hangg|tag=1| (|lig_tag|) means that this character has a ligature/kerning
 program starting at position |remainder| in the |lig_kern| array.\par
-\hang|tag=2| (|list_tag|) means that this character is part of a chain of
+\hangg|tag=2| (|list_tag|) means that this character is part of a chain of
 characters of ascending sizes, and not the largest in the chain.  The
 |remainder| field gives the character code of the next larger character.\par
-\hang|tag=3| (|ext_tag|) means that this character code represents an
+\hangg|tag=3| (|ext_tag|) means that this character code represents an
 extensible character, i.e., a character that is built up of smaller pieces
 so that it can be made arbitrarily large. The pieces are specified in
 |@!exten[remainder]|.\par
@@ -13309,7 +13310,7 @@ similar ``nodes'' in hlists and vlists. Certain kinds of ordinary nodes are
 allowed to appear in mlists together with the noads; \TeX\ tells the difference
 by means of the |type| field, since a noad's |type| is always greater than
 that of a node. An mlist does not contain character nodes, hlist nodes, vlist
-nodes, math nodes, ligature nodes, mark nodes, insert nodes, adjust nodes,
+nodes, math nodes, ligature nodes,
 or unset nodes; in particular, each mlist item appears in the
 variable-size part of |mem|, so the |type| field is always present.
 
@@ -16680,7 +16681,7 @@ end
 
 @ When we come to the following code, we have just encountered the first
 active node~|r| whose |line_number| field contains |l|. Thus we want to
-compute the length of the $l\,$th line of the current paragraph. Furthermore,
+compute the length of the $l\mskip1mu$th line of the current paragraph. Furthermore,
 we want to set |old_l| to the last number in the class of line numbers
 equivalent to~|l|.
 
@@ -17697,7 +17698,7 @@ has the form $y_1\ldots y_t$ followed by the translation of $x_{m+1}\ldots x_n$,
 where $y_1\ldots y_t$ is some nonempty sequence of character, ligature, and
 kern nodes. We call $x_j\ldots x_m$ a ``cut prefix'' of $x_j\ldots x_n$.
 For example, if $x_1x_2x_3=\.{fly}$, and if the font contains `fl' as a
-ligature and a kern between `fl' and `y', then $m=2$, $y=2$, and $y_1$ will
+ligature and a kern between `fl' and `y', then $m=2$, $t=2$, and $y_1$ will
 be a ligature node for `fl' followed by an appropriate kern node~$y_2$.
 In the most common case, $x_j$~forms no ligature with $x_{j+1}$ and we
 simply have $m=j$, $y_1=x_j$. If $m<n$ we can repeat the procedure on
@@ -17867,7 +17868,7 @@ case op_byte(q) of
 qi(1),qi(5):begin cur_l:=rem_byte(q); {\.{=:\?}, \.{=:\?>}}
   ligature_present:=true;
   end;
-qi(2),qi(6):begin cur_r:=rem_byte(q); {\.{\?=:}. \.{\?=:>}}
+qi(2),qi(6):begin cur_r:=rem_byte(q); {\.{\?=:}, \.{\?=:>}}
   if lig_stack>null then character(lig_stack):=cur_r
   else begin lig_stack:=new_lig_item(cur_r);
     if j=n then bchar:=non_char
@@ -21694,7 +21695,7 @@ else  begin line_break(display_widow_penalty);@/
     plus two ems; or set |w:=max_dimen| if the non-blank information
     on that line is affected by stretching or shrinking@>;
   end;
-{Now we are in vertical mode, working on the list that will contain the display}
+{now we are in vertical mode, working on the list that will contain the display}
 @<Calculate the length, |l|, and the shift amount, |s|, of the display lines@>;
 push_math(math_shift_group); mode:=mmode;
 eq_word_define(int_base+cur_fam_code,-1);@/
@@ -24108,7 +24109,7 @@ while j>0 do
 @!init trie_not_ready:=false @+tini
 
 @ We have already printed a lot of statistics, so we set |tracing_stats:=0|
-to prevent them appearing again.
+to prevent them from appearing again.
 
 @<Dump a couple more things and the closing check word@>=
 dump_int(interaction); dump_int(format_ident); dump_int(69069);
@@ -24123,7 +24124,7 @@ if (x<>69069)or eof(fmt_file) then goto bad_fmt
 @ @<Create the |format_ident|...@>=
 selector:=new_string;
 print(" (preloaded format="); print(job_name); print_char(" ");
-print_int(year mod 100); print_char(".");
+print_int(year); print_char(".");
 print_int(month); print_char("."); print_int(day); print_char(")");
 if interaction=batch_mode then selector:=log_only
 else selector:=term_and_log;

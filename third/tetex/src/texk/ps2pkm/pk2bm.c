@@ -33,12 +33,11 @@
 #include <stdio.h>
 #include "pkin.h"
 
-main(argc, argv)
-int argc; char *argv[];
+int main(int argc, char *argv[])
 {
-   int done, C = 0, c, h = 0, w = 0, wordwidth, row, col;
+   int done, C = 0, c, h = 0, w = 0, row, col;
    unsigned int bitmap = 0, hexmap = 0;
-   halfword *word, temp;
+   halfword *word;
    quarterword lsbf();
    void dots();
    chardesc cd;
@@ -166,6 +165,7 @@ int argc; char *argv[];
       if ((!bitmap) && (!hexmap)) printf("};\n");
       else putchar('\n');
    }
+   return 0;
 }
 
 /*

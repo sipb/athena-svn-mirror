@@ -2,7 +2,7 @@
 
 Copyright (C) 1997 Fabrice POPINEAU.
 
-Time-stamp: <99/02/06 11:29:24 popineau>
+Time-stamp: <02/05/27 11:15:05 popineau>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -28,29 +28,57 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
   */
 
 /* The symbol table */
-hash_table_type symtab;
+hash_table_type *symtab = NULL;
+
+static string current_instance = "";
+static string previous_instance = "";
+
+void __cdecl terminate_vars(void)
+{
+  if (! previous_instance
+      || ! *previous_instance)
+    previous_instance = "0";
+
+  if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
+    fprintf(stderr, "Exiting... previous_instance = %s\n", previous_instance);
+  }
+  setval("LIBMKTEX_INSTANCE", previous_instance);
+}
 
 /* Initialize a symbol table to store all the vars used by 
    the various shell scripts. */
 void init_vars()
 {
-  symtab = hash_create(719);
+  int instance = 0;
+  char buf[32];
+
+  symtab = hash_create(719, hashtable_symtab);
+
+  if (previous_instance = getval("LIBMKTEX_INSTANCE")) {
+    instance = atoi(getval("LIBMKTEX_INSTANCE")) + 1;
+  }
+  sprintf(buf, "%d", instance);
+  setval("LIBMKTEX_INSTANCE", buf);
+  current_instance = concat("_", buf);
+  atexit(terminate_vars);
 }
 
 void
 hash_remove_all (hash_table_type *table, string key)
 {
   string *val;
-  while ((val = hash_lookup(*table, key))) {
+  while ((val = hash_lookup(table, key))) {
     hash_remove(table, key, *val);
     free (val);
   }
 }
 
-string getval(string name)
+string getval(string vname)
 {
   string *lookup = NULL;
   string res = NULL;
+
+  string name = concat(vname, current_instance);
   /*
     Either the name is already in the symbol table ...
     */
@@ -59,17 +87,29 @@ string getval(string name)
     res = lookup[0];
     free(lookup);
   }
+#if 0
+  else if ((lookup = hash_lookup(symtab, vname)) != NULL) {
+    /* FIXME: we return the first value ... */
+    res = lookup[0];
+    free(lookup);
+  }
+  else {
+    string dollar_name = concat("$", vname);
+    res = kpse_cnf_get(vname);
+    free(dollar_name);
+  }
+#endif
   if (!res) {
 #if 0
     /*
       ... Either it is known from kpathsea, in which case we put it 
       in the symbol table.
       */
-    string dollar_name = concat("$", name);
+    string dollar_name = concat("$", vname);
     res = expand_var(dollar_name);
 
     if (test_file('n', res)) {
-      setval(name, res);
+      setval(vname, res);
     }
     else {
       /* res = "", so return NULL */
@@ -77,34 +117,44 @@ string getval(string name)
     }
     free (dollar_name);
 #endif
-    res = getenv(name);
+    res = getenv(vname);
   }
 
   if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
     fprintf(stderr, "GetVal %s => %s\n", name, res);
   }
 
+  free(name);
+
   /* In any case ... */
   return res;
 }
 
-string setval(string name, string value)
+string setval(string vname, string value)
 {
+  string name = concat(vname, current_instance);
   /* Be safe ... */
   if (!value) value = "";
-  hash_remove_all(&symtab, name);
-  hash_insert(&symtab, name, value);
+  hash_remove_all(symtab, name);
+  hash_insert(symtab, name, value);
   if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
     fprintf(stderr, "SetVal %s <= %s\n", name, value);
   }
+  free(name);
   return value;
 }
 
-string setval_default(string name, string value)
+string setval_default(string vname, string value)
 {
+  string name = concat(vname, current_instance);
   string old_value;
   /* Be safe ... */
-  if (!value) value = "";
+  if (!value) {
+    if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
+      fprintf(stderr, "setval_default: inserting NULL value for %s!\n", name);
+    }
+    value = "";
+  }
 
   if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
     fprintf(stderr, "SetVal default %s ... ", name);
@@ -112,14 +162,15 @@ string setval_default(string name, string value)
 
   /* The mktex... scripts NEVER use ${foo:=bar}, always ${foo=bar}.
      So we only need to set NAME=VALUE if $NAME is unset.  */
-  if ((old_value = getval(name)) == NULL) {
-    hash_insert(&symtab, name, value);
+  if ((old_value = getval(vname)) == NULL) {
+    hash_insert(symtab, name, value);
     if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
       fprintf(stderr, "SetVal %s <= %s\n", name, value);
     }
   }
   else
     value = old_value;
+  free(name);
   return value;
 }
 
@@ -142,11 +193,13 @@ string *grep(char *regexp, char *line, int num_vars)
   /* This will retrieve the precompiled regexp or compile it and
      remember it. vars contains the strings matched, num_vars the number
      of these strings. */
+#if 0
   if ((lookup = hash_lookup(symtab, regexp)))
     rc = (struct re_pattern_buffer *)lookup[0];
   else
     rc = NULL;
   if (rc == NULL) {
+#endif
     /* Compile the regexp and stores the result */
 
     if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
@@ -158,12 +211,14 @@ string *grep(char *regexp, char *line, int num_vars)
     rc->regs_allocated = REGS_UNALLOCATED;
     if ((ok = re_compile_pattern(regexp, strlen(regexp), rc)) != 0)
       FATAL1("Can't compile regex %s\n", regexp);
-    hash_remove_all(&symtab, regexp);
-    hash_insert(&symtab, regexp, (char *)rc);
+#if 0
+    hash_remove_all(symtab, regexp);
+    hash_insert(symtab, regexp, (char *)rc);
   }
   else   if (KPSE_DEBUG_P(MKTEX_FINE_DEBUG)) {
     fprintf(stderr, "\tAlready compiled\n");
   }
+#endif
 
   p = (struct re_registers *) calloc(1, sizeof(struct re_registers));
   p->num_regs = num_vars;

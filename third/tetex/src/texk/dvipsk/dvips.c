@@ -272,6 +272,7 @@ static char *helparr[] = {
 "k*  Print crop marks               K*  Pull comments from inclusions   ",
 "l # Last page                                                          ",
 "m*  Manual feed                    M*  Don't make fonts                ",
+"mode s Metafont device name                                            ",
 "n # Maximum number of pages        N*  No structured comments          ",
 "o f Output file                    O c Set/change paper offset         ",
 #if defined(MSDOS) || defined(OS2)
@@ -279,18 +280,24 @@ static char *helparr[] = {
 #else
 "p # First page                     P s Load config.$s                  ",
 #endif
+"pp l Print only pages listed                                           ",
 "q*  Run quietly                                                        ",
-"r*  Reverse order of pages         R   Run securely                    ",
+"r*  Reverse order of pages         R*  Run securely                    ",
 "s*  Enclose output in save/restore S # Max section size in pages       ",
 "t s Paper format                   T c Specify desired page size       ",  
 "u s PS mapfile                     U*  Disable string param trick      ",
-"                                   V*  Send downloadable PS fonts as PK",
+"v   Print version number and quit  V*  Send downloadable PS fonts as PK",
 "x # Override dvi magnification     X # Horizontal resolution           ",
 "y # Multiply by dvi magnification  Y # Vertical resolution             ",  
+#ifdef HPS
+"z*  Hyper PS                       Z*  Compress bitmap fonts           ",
+#else
 "                                   Z*  Compress bitmap fonts           ",
+#endif
 /* "-   Interactive query of options", */
 "    # = number   f = file   s = string  * = suffix, `0' to turn off    ",
-"    c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)           ", 0} ;
+"    c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)           ",
+"    l = comma-separated list of page ranges (e.g., 1-4,7-9)            ", 0} ;
 
 void
 help P1C(int, status)
@@ -407,7 +414,7 @@ char *mymalloc P1C(integer, n)
 #endif
    }
 #endif
-   p = malloc(n) ;
+   p = (char *) malloc(n) ;
    if (p == NULL)
       error("! no memory") ;
    return p ;
@@ -481,7 +488,7 @@ newstring P1C(char *, s)
 void newoutname P1H(void) {
    static int seq = 0 ;
    static char *seqptr = 0 ;
-   char *p ;
+   char *p, *seqslash = 0 ;
 
    if (oname == 0 || *oname == 0)
       error("! need an output file name to specify separate files") ;
@@ -489,9 +496,15 @@ void newoutname P1H(void) {
       if (seqptr == 0) {
          oname = newstring(oname) ;
          seqptr = 0 ;
-         for (p = oname; *p; p++)
+         for (p = oname; *p; p++)    /* find last dot after last slash */
             if (*p == '.')
                seqptr = p + 1 ;
+            else if (*p == '/')
+               seqptr = 0 ;
+#ifdef DOSISH
+            else if (*p == '\\')
+               seqptr = 0 ;
+#endif
          if (seqptr == 0)
             seqptr = p ;
          nextstring += 5 ; /* make room for the number, up to five digits */
@@ -602,15 +615,15 @@ main P2C(int, argc, char **, argv)
         exit (0);
       } else if (strcmp (argv[1], "--version") == 0) {
         extern KPSEDLL char *kpathsea_version_string;
-        puts ("dvips(k) 5.86");
+        puts ("dvips(k) 5.92b");
         puts (kpathsea_version_string);
-        puts ("Copyright (C) 1999 Radical Eye Software.\n\
+        puts ("Copyright (C) 2001 Radical Eye Software.\n\
 There is NO warranty.  You may redistribute this software\n\
 under the terms of the GNU General Public License\n\
 and the Dvips copyright.\n\
 For more information about these matters, see the files\n\
 named COPYING and dvips.h.\n\
-Primary author of Dvips: T. Rokicki; -k maintainer: K. Berry.");
+Primary author of Dvips: T. Rokicki; -k maintainer: T. Kacvinsky/ S. Rahtz.");
         exit (0);
       }
       if (argc == 2 && strncmp(argv[1], "-?", 2) == 0) {
@@ -740,7 +753,7 @@ case 'k':
                cropmarks = (*p != '0') ;
                break ;
 case 'R':
-               secure = 1 ;
+               secure = (*p != '0') ;
                break ;
 case 'S':
                if (*p == 0 && argv[i+1])
@@ -1196,7 +1209,7 @@ default:
    if (!quiet && warningmsg)
       error(warningmsg) ;
    headersready = 1 ;
-   headerfile = (compressed? CHEADERFILE : HEADERFILE) ;
+   headerfile = (char *) (compressed? CHEADERFILE : HEADERFILE) ;
    (void)add_header(headerfile) ;
    if (*iname != 0) {
       fulliname = nextstring ;

@@ -3,9 +3,9 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTP.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTTP.c,v 1.1.1.2 2003-02-25 22:05:45 amb Exp $
 **
-**	This module implments the HTTP protocol as a state machine
+**	This module implements the HTTP protocol as a state machine
 **
 ** History:
 **    < May 24 94 ??	Unknown - but obviously written
@@ -13,6 +13,11 @@
 **			Forward, redirection, error handling and referer field
 **	 8 Jul 94  FM	Insulate free() from _free structure element.
 **	Jul 94 HFN	Written on top of HTTP.c, Henrik Frystyk
+**      Fev 02 MKP      WebDAV status codes, Manuele Kirsch Pinheiro
+**                      (Manuele.Kirsch_Pinheiro@inrialpes.fr)
+**      Mar 29 MKP      Correcting WebDAV's 207 Multi-Status status code, that
+**                      was returning HT_LOADED (200), and the right code is
+**                      HT_MULTI_STATUS (207).
 **
 */
 
@@ -20,10 +25,10 @@
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "WWWCore.h"
-#include "WWWMIME.h"
-#include "WWWStream.h"
-#include "WWWTrans.h"
+#include "HTHeader.h"
+#include "HTMIMERq.h"
 #include "HTReqMan.h"
+#include "HTNetMan.h"
 #include "HTTPUtil.h"
 #include "HTTPReq.h"
 #include "HTTP.h"					       /* Implements */
@@ -39,8 +44,8 @@
 #define FREE_TARGET	(*me->target->isa->_free)(me->target)
 #define ABORT_TARGET	(*me->target->isa->abort)(me->target, e)
 
-#define HTTP_DUMP
-#ifdef HTTP_DUMP
+#ifdef HTDEBUG
+#include "WWWStream.h"
 #define HTTP_OUTPUT     "w3chttp.out"
 PRIVATE FILE * htfp = NULL;
 #endif
@@ -68,6 +73,7 @@ typedef struct _http_info {
     HTRequest *		request;
     HTTimer *		timer;
     BOOL		usedTimer;
+    BOOL		repetitive_writing;
 } http_info;
 
 #define MAX_STATUS_LEN		100   /* Max nb of chars to check StatusLine */
@@ -96,9 +102,11 @@ struct _HTInputStream {
 /* How long to wait before writing the body in PUT and POST requests */
 #define DEFAULT_FIRST_WRITE_DELAY	2000
 #define DEFAULT_SECOND_WRITE_DELAY	3000
+#define DEFAULT_REPEAT_WRITE		30
 
 PRIVATE ms_t HTFirstWriteDelay = DEFAULT_FIRST_WRITE_DELAY;
 PRIVATE ms_t HTSecondWriteDelay = DEFAULT_SECOND_WRITE_DELAY;
+PRIVATE ms_t HTRepeatWrite = DEFAULT_REPEAT_WRITE;
 
 #ifdef HT_NO_PIPELINING
 PRIVATE HTTPConnectionMode ConnectionMode = HTTP_11_NO_PIPELINING;
@@ -129,8 +137,7 @@ PRIVATE int HTTPCleanup (HTRequest *req, int status)
     http_info * http = (http_info *) HTNet_context(net);
     HTStream * input = HTRequest_inputStream(req);
 
-    if (PROT_TRACE)
-	HTTrace("HTTP Clean.. Called with status %d, net %p\n", status, net);
+    HTTRACE(PROT_TRACE, "HTTP Clean.. Called with status %d, net %p\n" _ status _ net);
 
     if (status == HT_INTERRUPTED) {
     	HTAlertCallback * cbf = HTAlert_find(HT_PROG_INTERRUPT);
@@ -144,19 +151,22 @@ PRIVATE int HTTPCleanup (HTRequest *req, int status)
 
     /* Free stream with data TO network */
     if (input) {
-	if (status==HT_INTERRUPTED || status==HT_RECOVER_PIPE || status==HT_TIMEOUT)
-	    (*input->isa->abort)(input, NULL);
-	else
-	    (*input->isa->_free)(input);
+	if (input->isa) {
+	    if (status==HT_INTERRUPTED || status==HT_RECOVER_PIPE || status==HT_TIMEOUT)
+		(*input->isa->abort)(input, NULL);
+	    else
+		(*input->isa->_free)(input);
+	}
 	HTRequest_setInputStream(req, NULL);
     }
 
     /*
     **  Remove if we have registered an upload function as a callback
     */
-    if (http->timer) {
+    if (http && http->timer) {
 	HTTimer_delete(http->timer);
 	http->timer = NULL;
+	http->lock = NO;
     }
 
     /*
@@ -184,6 +194,7 @@ PRIVATE BOOL HTTPInformation (HTStream * me)
 			   me->reason, (int) strlen(me->reason),
 			   "HTTPInformation");
 #endif
+	http->result = HT_CONTINUE;
 	return YES;
 	break;
 
@@ -196,8 +207,24 @@ PRIVATE BOOL HTTPInformation (HTStream * me)
 			   "HTTPInformation");
 	http->next = HTTP_OK;
 	http->result = HT_UPGRADE;
+	return YES;
 	break;
 
+#ifdef HT_DAV
+   case 102:            /* 102 Processing */
+        /*
+        ** MKP: 102 Processing indicates that the server is processing the
+        **      request, and a final response will be sent later. So the client
+        **      should wait for this final response.
+        ** MKP: I'm not sure that it will work. Any suggestion??
+        */      
+        http->result = HT_CONTINUE;
+        http->next = HTTP_CONNECTED;
+        return YES;
+        break;
+#endif
+
+        
     default:
 	HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_BAD_REPLY,
 		   (void *) me->buffer, me->buflen, "HTTPNextState");
@@ -279,7 +306,11 @@ PRIVATE void HTTPNextState (HTStream * me)
 			       me->reason, (int) strlen(me->reason),
 			       "HTTPNextState");
 	    http->next = HTTP_OK;
+#ifdef HT_DAV                                   /* WebDAV : Multistatus status code */
+            http->result = HT_MULTI_STATUS;
+#else 
 	    http->result = HT_PARTIAL_CONTENT;
+#endif
 	    break;
 
 	default:
@@ -500,6 +531,29 @@ PRIVATE void HTTPNextState (HTStream * me)
 	    http->result = -419;
 	    break;
 
+#ifdef HT_DAV
+        case 422:                       /* WebDAV Unprocessable Entity */
+            HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_UNPROCESSABLE,
+                               me->reason, (int) strlen(me->reason), "HTTPNextState");
+            http->next = HTTP_ERROR;
+            http->result = HT_UNPROCESSABLE;
+            break;
+
+        case 423:                       /* WebDAV Locked */
+            HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_LOCKED,
+                               me->reason, (int) strlen(me->reason), "HTTPNextState");
+            http->next = HTTP_ERROR;
+            http->result = HT_LOCKED;
+            break;
+
+        case 424:                       /* WebDAV Failed Dependency */
+            HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_FAILED_DEPENDENCY,
+                               me->reason, (int) strlen(me->reason), "HTTPNextState");
+            http->next = HTTP_ERROR;
+            http->result = HT_FAILED_DEPENDENCY;
+            break;
+#endif
+            
 	default:
 	    HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_BAD_REQUEST,
 			       me->reason, (int) strlen(me->reason), "HTTPNextState");
@@ -564,6 +618,15 @@ PRIVATE void HTTPNextState (HTStream * me)
 	    http->next = HTTP_ERROR;
 	    http->result = HT_BAD_VERSION;
 	    break;
+
+#ifdef HT_DAV
+        case 507:                       /* WebDAV Insufficient Storage */
+            HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_INSUFFICIENT_STORAGE,
+                               me->reason, (int) strlen(me->reason), "HTTPNextState");
+            http->next = HTTP_ERROR;
+            http->result = HT_INSUFFICIENT_STORAGE;
+            break;
+#endif
 
 	default:						       /* bad number */
 	    HTRequest_addError(me->request, ERR_FATAL, NO, HTERR_INTERNAL,
@@ -630,9 +693,15 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 	me->http->next = HTTP_OK;
 	if ((status = PUTBLOCK(me->buffer, me->buflen)) == HT_OK)
 	    me->transparent = YES;
-	HTHost_setVersion(host, HTTP_09);
+        /* JK: in 2000, we don't expect many HTTP/0.9 servers to remain.
+           I removed this line which made the backward change as most of
+           the time we fall here more due to a network or server problem,
+           rather than because we are accessing an old server. */
+	/* HTHost_setVersion(host, HTTP_09); */
 	if (length > 0) HTHost_setConsumed(host, length);
-	return status;
+	HTTRACE(PROT_TRACE, "HTTP Status. `%s\' is probably a broken 1.0 server that doesn't understand HEAD\n" _ 
+		    HTHost_name(host));
+	return HT_ERROR;
     } else {
 	HTResponse * response = HTRequest_response(request);
 	char * ptr = me->buffer+5;		       /* Skip the HTTP part */
@@ -646,34 +715,38 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 	}
 
 	/* Here we want to find out when to use persistent connection */
-	if (major > 1) {
-	    if (PROT_TRACE)HTTrace("HTTP Status. Major version number is %d\n", major);
+	if (major > 1 && major < 100) {
+	    HTTRACE(PROT_TRACE, "HTTP Status. Major version number is %d\n" _ major);
 	    me->target = HTErrorStream();
 	    me->status = 9999;
 	    HTTPNextState(me);					   /* Get next state */
 	    return HT_ERROR;
 	} else if (minor <= 0) {
-	    if (PROT_TRACE)HTTrace("HTTP Status. This is an HTTP/1.0 server\n");
+	    if (major > 100) {
+		HTTRACE(PROT_TRACE, "HTTP Status. This is a *BROKEN* HTTP/1.0 server\n");
+		me->status = 200;
+	    } else {
+		HTTRACE(PROT_TRACE, "HTTP Status. This is an HTTP/1.0 server\n");
+		me->status = atoi(HTNextField(&ptr));
+	    }
 	    HTHost_setVersion(host, HTTP_10);
 	} else {					/* 1.x, x>0 family */
 	    HTHost_setVersion(host, HTTP_11);		/* Best we can do */
 	    if (ConnectionMode & HTTP_11_NO_PIPELINING) {
-		if (PROT_TRACE)
-		    HTTrace("HTTP........ Mode is HTTP/1.1 with NO PIPELINING\n");
+		HTTRACE(PROT_TRACE, "HTTP........ Mode is HTTP/1.1 with NO PIPELINING\n");
 		HTNet_setPersistent(net, YES, HT_TP_SINGLE);
 	    } else if (ConnectionMode & HTTP_11_MUX) {
-		if (PROT_TRACE)
-		    HTTrace("HTTP........ Mode is HTTP/1.1 with MUXING\n");
+		HTTRACE(PROT_TRACE, "HTTP........ Mode is HTTP/1.1 with MUXING\n");
 		HTNet_setPersistent(net, YES, HT_TP_INTERLEAVE);
 	    } else if (ConnectionMode & HTTP_FORCE_10) {
-		if (PROT_TRACE) HTTrace("HTTP........ Mode is FORCE HTTP/1.0\n");
+		HTTRACE(PROT_TRACE, "HTTP........ Mode is FORCE HTTP/1.0\n");
 		HTHost_setVersion(host, HTTP_10);
 		HTNet_setPersistent(net, NO, HT_TP_SINGLE);
 	    } else
 		HTNet_setPersistent(net, YES, HT_TP_PIPELINE);
+	    me->status = atoi(HTNextField(&ptr));
 	}
 
-	me->status = atoi(HTNextField(&ptr));
 	me->reason = ptr;
 	if ((ptr = strchr(me->reason, '\r')) != NULL)	  /* Strip \r and \n */
 	    *ptr = '\0';
@@ -687,17 +760,32 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 	*/
 	if (me->status/100 == 1) {
 	    if (HTTPInformation(me) == YES) {
-		me->buflen = 0;
-		me->state = EOL_BEGIN;
-		if (me->info_target) (*me->info_target->isa->_free)(me->info_target);
-		me->info_target = HTStreamStack(WWW_MIME_CONT,
-						HTRequest_debugFormat(request),
-						HTRequest_debugStream(request),
-						request, NO);
-		if (length > 0) HTHost_setConsumed(host, length);
-		return HT_OK;
+		if (me->status==100) {
+		    me->buflen = 0;
+		    me->state = EOL_BEGIN;
+		    if (me->info_target) (*me->info_target->isa->_free)(me->info_target);
+		    me->info_target = HTStreamStack(WWW_MIME_CONT,
+						    HTRequest_debugFormat(request),
+						    HTRequest_debugStream(request),
+						    request, NO);
+		    if (length > 0) HTHost_setConsumed(host, length);
+		    return HT_OK;
+		} else if (me->status==101) {
+		    if (me->info_target) (*me->info_target->isa->_free)(me->info_target);
+		    me->target = HTStreamStack(WWW_MIME_UPGRADE,
+					       HTRequest_outputFormat(request),
+					       HTRequest_outputStream(request),
+					       request, NO);
+		    if (length > 0) HTHost_setConsumed(host, length);
+		    me->transparent = YES;
+		    return HT_OK;
+		}
 	    }
 	}
+
+	/* 2000/Oct/27 JK: copying the current reason info into the 
+	   response object.  */
+	HTResponse_setReason (response, me->reason);
 
 	/*
 	**  As we are getting fresh metainformation in the HTTP response,
@@ -706,7 +794,12 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 	**  like. The TRACE and OPTIONS method just adds to the current 
 	**  metainformation so in that case we don't clear the anchor.
 	*/
+#ifdef HT_DAV
+        if (me->status==200 || me->status==203 ||
+            me->status==207 ||  me->status==300) {
+#else
 	if (me->status==200 || me->status==203 || me->status==300) {
+#endif
 	    /*
 	    **  200, 203 and 300 are all fully cacheable responses. No byte 
 	    **  ranges or anything else make life hard in this case.
@@ -716,6 +809,12 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 	    me->target = HTStreamStack(WWW_MIME,
 				       HTRequest_outputFormat(request),
 				       HTRequest_outputStream(request),
+				       request, NO);
+	} else if (me->status==204) {
+	    HTResponse_setCachable(response, HT_CACHE_ALL);
+	    me->target = HTStreamStack(WWW_MIME_HEAD,
+				       HTRequest_debugFormat(request),
+				       HTRequest_debugStream(request),
 				       request, NO);
 	} else if (me->status==206) {
 	    /*
@@ -739,14 +838,15 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 					   HTRequest_outputStream(request),
 					   request, NO);
 	    }
-	} else if (me->status==204 || me->status==304) {
-	    HTResponse_setCachable(response, HT_CACHE_ALL);
+	} else if (me->status==304) {
+	    HTResponse_setCachable(response, HT_CACHE_NOT_MODIFIED);
 	    me->target = HTStreamStack(WWW_MIME_HEAD,
 				       HTRequest_debugFormat(request),
 				       HTRequest_debugStream(request),
 				       request, NO);
 	} else if (HTRequest_debugStream(request)) {
-	    if (me->status == 201) HTResponse_setCachable(response, HT_CACHE_ETAG);
+	    HTResponse_setCachable(response,
+				   (me->status == 201) ? HT_CACHE_ETAG : HT_NO_CACHE);
 	    me->target = HTStreamStack(WWW_MIME,
 				       HTRequest_debugFormat(request),
 				       HTRequest_debugStream(request),
@@ -756,7 +856,8 @@ PRIVATE int stream_pipe (HTStream * me, int length)
 	    **  We still need to parse the MIME part in order to find any
 	    **  valuable meta information which is needed from the response.
 	    */
-	    if (me->status == 201) HTResponse_setCachable(response, HT_CACHE_ETAG);
+	    HTResponse_setCachable(response,
+				   (me->status == 201) ? HT_CACHE_ETAG : HT_NO_CACHE);
 	    me->target = HTStreamStack(WWW_MIME,
 				       HTRequest_debugFormat(request),
 				       HTRequest_debugStream(request),
@@ -855,8 +956,7 @@ PRIVATE int HTTPStatus_abort (HTStream * me, HTList * e)
     if (me->target)
 	ABORT_TARGET;
     HT_FREE(me);
-    if (PROT_TRACE)
-	HTTrace("HTTPStatus.. ABORTING...\n");
+    HTTRACE(PROT_TRACE, "HTTPStatus.. ABORTING...\n");
     return HT_ERROR;
 }
 
@@ -922,7 +1022,7 @@ PUBLIC int HTLoadHTTP (SOCKET soc, HTRequest * request)
     ** This is actually state HTTP_BEGIN, but it can't be in the state
     ** machine as we need the structure first.
     */
-    if (PROT_TRACE) HTTrace("HTTP........ Looking for `%s\'\n",
+    HTTRACE(PROT_TRACE, "HTTP........ Looking for `%s\'\n" _ 
 			    HTAnchor_physical(anchor));
     if ((http = (http_info *) HT_CALLOC(1, sizeof(http_info))) == NULL)
       HT_OUTOFMEM("HTLoadHTTP");
@@ -940,22 +1040,35 @@ PRIVATE int FlushPutEvent (HTTimer * timer, void * param, HTEventType type)
     http_info * http = (http_info *) param;
     HTStream * input = HTRequest_inputStream(http->request);
     HTPostCallback * pcbf = HTRequest_postCallback(http->request);
+    int status = HT_ERROR;
 
     http->usedTimer = YES;
     if (timer != http->timer)
-	HTDebugBreak(__FILE__, __LINE__, "HTTP timer %p not in sync\n", timer);
-    if (PROT_TRACE) HTTrace("Uploading... Flushing %p with timer %p\n", http, timer);
+	HTDEBUGBREAK("HTTP timer %p not in sync\n" _ timer);
+    HTTRACE(PROT_TRACE, "Uploading... Flushing %p with timer %p\n" _ http _ timer);
 
     /*
-    **  We ignore the return code here which we shouldn't!!!
+    **  Call the callback that will provide the data to save
+    **  If the callback returns HT_OK then call it again until
+    **  it returns something else than HT_OK.
     */
-    if (http && input && pcbf) (*pcbf)(http->request, input);
+    if (http && input && pcbf) {
+	status = (*pcbf)(http->request, input);
+	HTTRACE(PROT_TRACE, "Uploading... Callback returned %d\n" _ status);	
+    }
 
     /*
-    **  Delete the timer but remember that we have used it
+    **  If the callback returned something else than HT_OK then delete
+    **  the timer, otherwise update it to a much shorter expiration
+    **  time so that we can write some more data to the net.
     */
-    http->timer = NULL;
-
+    if (status != HT_OK) {
+	HTTimer_delete(http->timer);
+	http->timer = NULL;
+    } else if (!http->repetitive_writing) {
+	http->timer = HTTimer_new(NULL, FlushPutEvent, http, HTRepeatWrite, YES, YES);
+	http->repetitive_writing = YES;
+    }
     return HT_OK;
 }
 
@@ -975,9 +1088,23 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 	http->next = HTTP_OK;
 	http->result = HT_ERROR;
     } else if (type == HTEvent_CLOSE) {
-	HTRequest_addError(request, ERR_FATAL, NO, HTERR_INTERRUPTED,
-			   NULL, 0, "HTLoadHTTP");
-	HTTPCleanup(request, HT_INTERRUPTED);
+        long read_len = HTNet_bytesRead(net);
+        long doc_len = HTAnchor_length(anchor);
+
+        /*
+        ** It is OK to get a close if a) we don't pipeline and b)
+        ** we have the expected amount of data, and c) we haven't
+	** recieved a 100 Continue code. In case we don't
+        ** know how much data to expect, we must accept it asis.
+        */
+        if (HTHost_numberOfOutstandingNetObjects(host) == 1 &&
+	    http->result != HT_CONTINUE && (doc_len<0 || doc_len==read_len)) {
+	    HTTPCleanup(request, http->result);		/* Raffaele Sena: was HT_LOADED */
+        } else {
+            HTRequest_addError(request, ERR_FATAL, NO, HTERR_INTERRUPTED,
+			       NULL, 0, "HTLoadHTTP");
+	    HTTPCleanup(request, HT_INTERRUPTED);
+        }
 	return HT_OK;
     } else if (type == HTEvent_TIMEOUT) {
 	HTRequest_addError(request, ERR_FATAL, NO, HTERR_TIME_OUT,
@@ -997,7 +1124,7 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
     while (1) {
 	switch (http->state) {
 	case HTTP_BEGIN:
-	    status = HTHost_connect(host, net, HTAnchor_physical(anchor), HTTP_PORT);
+	    status = HTHost_connect(host, net, HTAnchor_physical(anchor));
 	    host = HTNet_host(net);
             if (status == HT_OK) {
 
@@ -1009,8 +1136,11 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 		{
 		    char * s_class = HTHost_class(host);
 		    if (!s_class) {
-			if (HTRequest_proxy(request) == NULL)
-			    HTRequest_addConnection(request, "Keep-Alive", "");
+			if (HTRequest_proxy(request) == NULL) {
+			    HTAssocList * alist = HTRequest_connection(request);
+			    if (!(alist && HTAssocList_findObject(alist, "close")))
+				HTRequest_addConnection(request, "Keep-Alive", "");
+			}
 			HTHost_setClass(host, "http");
 		    } else if (strcasecomp(s_class, "http")) {
 			HTRequest_addError(request, ERR_FATAL, NO, HTERR_CLASS,
@@ -1021,15 +1151,15 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 		}
 
 		if (ConnectionMode & HTTP_11_NO_PIPELINING) {
-		    if (PROT_TRACE) HTTrace("HTTP........ Mode is HTTP/1.1 WITH NO PIPELINING\n");
+		    HTTRACE(PROT_TRACE, "HTTP........ Mode is HTTP/1.1 WITH NO PIPELINING\n");
 		    HTRequest_setFlush(request, YES);
 		} else if (ConnectionMode & HTTP_FORCE_10) {
-		    if (PROT_TRACE) HTTrace("HTTP........ Mode is FORCE HTTP/1.0\n");
+		    HTTRACE(PROT_TRACE, "HTTP........ Mode is FORCE HTTP/1.0\n");
 		    HTHost_setVersion(host, HTTP_10);
 		}
 
 		if (HTNet_preemptive(net)) {
-		    if (PROT_TRACE) HTTrace("HTTP........ Force flush on preemptive load\n");
+		    HTTRACE(PROT_TRACE, "HTTP........ Force flush on preemptive load\n");
 		    HTRequest_setFlush(request, YES);
 		}
 
@@ -1037,6 +1167,9 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 		http->state = HTTP_NEED_STREAM;
 	    } else if (status == HT_WOULD_BLOCK || status == HT_PENDING) {
 		return HT_OK;
+	    } else if (status == HT_NO_HOST) {
+		http->result = HT_NO_HOST;
+		http->state = HTTP_ERROR;
 	    } else	
 		http->state = HTTP_ERROR;	       /* Error or interrupt */
 	    break;
@@ -1053,13 +1186,23 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
             **  during a recovery, we might keep the same HTNet object.
             **  if so, reuse it's read stream 
             */
-            HTStream * me = HTNet_readStream( net );
+	    HTStream * me = HTNet_readStream( net );
             if ( me == NULL ) {
-                me=HTStreamStack(WWW_HTTP,
-				                 HTRequest_outputFormat(request),
-				                 HTRequest_outputStream(request),
-				                 request, YES);
-				HTNet_setReadStream(net, me);
+                me = HTStreamStack(WWW_HTTP,
+				   HTRequest_outputFormat(request),
+				   HTRequest_outputStream(request),
+				   request, YES);
+#ifdef HTDEBUG
+		if (PROT_TRACE) {
+		    if (!htfp) htfp = fopen(HTTP_OUTPUT, "ab");
+		    if (htfp) {
+			me = HTTee(me, HTFWriter_new(request, htfp, YES), NULL);
+			HTTRACE(PROT_TRACE, "HTTP........ Dumping response to `%s\'\n" _ HTTP_OUTPUT);
+		    }
+		}
+#endif /* HTDEBUG */
+
+		HTNet_setReadStream(net, me);
             }
             HTRequest_setOutputConnected(request, YES);
 	    }
@@ -1074,16 +1217,16 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 		int version = HTHost_version(host);
 		HTStream * app = NULL;
 		
-#ifdef HTTP_DUMP
+#ifdef HTDEBUG
 		if (PROT_TRACE) {
 		    if (!htfp) htfp = fopen(HTTP_OUTPUT, "ab");
 		    if (htfp) {
 			output = (HTOutputStream *)
 			    HTTee((HTStream *) output, HTFWriter_new(request, htfp, YES), NULL);
-			HTTrace("HTTP........ Dumping request to `%s\'\n", HTTP_OUTPUT);
+			HTTRACE(PROT_TRACE, "HTTP........ Dumping request to `%s\'\n" _ HTTP_OUTPUT);
 		    }
 		}	
-#endif /* HTTP_DUMP */
+#endif /* HTDEBUG */
 		app = HTMethod_hasEntity(HTRequest_method(request)) ?
 		    HTMIMERequest_new(request,
 				      HTTPRequest_new(request, (HTStream *) output, NO,
@@ -1119,29 +1262,36 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 		  **  Check to see if we are uploading something or just a normal
 		  **  GET kind of thing.
 		  */
-		  if (pcbf) {
-		      if (http->lock == NO) {
-			  int retrys = HTRequest_retrys(request);
-			  ms_t delay = retrys > 3 ? HTSecondWriteDelay : HTFirstWriteDelay;
-			  if (!http->timer && !http->usedTimer) {
-			      http->timer = HTTimer_new(NULL, FlushPutEvent,
+		  
+		  /*
+		  ** JK: don't continue sending things thru the network
+		  ** if the flush resulted in an error or if the connection
+		  ** is closed 
+		  */
+		  if ((status != HT_ERROR) && status != HT_CLOSED) {
+		      if (pcbf) {
+		          if (http->lock == NO) {
+			      int retrys = HTRequest_retrys(request);
+			      ms_t delay = retrys > 3 ? HTSecondWriteDelay : HTFirstWriteDelay;
+			      if (!http->timer && !http->usedTimer) {
+				  http->timer = HTTimer_new(NULL, FlushPutEvent,
 							http, delay, YES, NO);
-			      if (PROT_TRACE)
-				  HTTrace("Uploading... Holding %p for %lu ms using time %p\n",
-					  http, delay, http->timer);
-			      HTHost_register(host, net, HTEvent_READ);
+				  HTTRACE(PROT_TRACE, "Uploading... Holding %p for %lu ms using time %p\n" _ 
+					  http _ delay _ http->timer);
+				  HTHost_register(host, net, HTEvent_READ);
+			      }
+			      http->lock = YES;
 			  }
-			  http->lock = YES;
-		      }
-		      type = HTEvent_READ;
-		  } else {
+			  type = HTEvent_READ;
+		      } else {
 
-		      /*
-		      **  Check to see if we can start a new request
-		      **  pending in the host object.
-		      */
-		      HTHost_launchPending(host);
-		      type = HTEvent_READ;
+			/*
+			**  Check to see if we can start a new request
+			**  pending in the host object.
+			*/
+			HTHost_launchPending(host);
+			type = HTEvent_READ;
+		      }
 		  }
 
 		  /* Now check the status code */
@@ -1161,7 +1311,7 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 		  if (status == HT_WOULD_BLOCK)
 		      return HT_OK;
 		  else if (status == HT_CONTINUE) {
-		      if (PROT_TRACE) HTTrace("HTTP........ Continuing\n");
+		      HTTRACE(PROT_TRACE, "HTTP........ Continuing\n");
 		      http->lock = NO;
 		      continue;
 		  } else if (status==HT_LOADED)
@@ -1192,7 +1342,18 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 	      if (HTHost_isPersistent(host) && !HTHost_closeNotification(host)) {
 		  if (host == NULL) return HT_ERROR;
 		  HTRequest_setFlush(request, YES);
-		  HTHost_recoverPipe(host);
+
+		  /*
+		  **  If we already have recovered more than we want and
+		  **  this call returns NO then simply kill the pipe.
+		  **  Otherwise we may loop forever.
+		  */
+		  if (HTHost_recoverPipe(host) != YES) {
+		      HTRequest_addError(request, ERR_FATAL, NO, HTERR_BAD_REPLY,
+					 NULL, 0, "HTTPEvent");
+		      http->state = HTTP_KILL_PIPE;
+		      break;
+		  }
 		  return HT_OK;
 	      } else
 		  http->state = HTTP_OK;
@@ -1211,7 +1372,7 @@ PRIVATE int HTTPEvent (SOCKET soc, void * pVoid, HTEventType type)
 	      break;
 
 	default:
-	    HTDebugBreak(__FILE__, __LINE__, "Bad http state %d\n", http->state);
+	    HTDEBUGBREAK("Bad http state %d\n" _ http->state);
 	}
     } /* End of while(1) */
 }    

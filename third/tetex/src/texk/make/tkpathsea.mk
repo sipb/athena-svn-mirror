@@ -6,4 +6,7 @@ makeargs = $(MFLAGS) CC='$(CC)' CFLAGS='$(CFLAGS)' $(XMAKEARGS)
 $(kpathsea): $(kpathsea_srcdir)/*.c $(kpathsea_srcdir)/*.h \
 	     $(kpathsea_srcdir)/texmf.in $(top_srcdir)/../make/paths.mk
 	cd $(kpathsea_dir) && $(MAKE) $(makeargs)
+
+$(kpathsea_dir)/paths.h: $(kpathsea_srcdir)/texmf.in
+	cd $(kpathsea_dir) && $(MAKE) $(makeargs)
 # End of tkpathsea.mk.

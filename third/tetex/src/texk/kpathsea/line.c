@@ -23,13 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define BLOCK_SIZE 75
 
 char *
-read_line (f)
-    FILE *f;
+read_line P1C(FILE*, f)
 {
   int c;
   unsigned limit = BLOCK_SIZE;
   unsigned loc = 0;
-  char *line = xmalloc (limit);
+  char *line = (char*)xmalloc (limit);
   
   while ((c = getc (f)) != EOF && c != '\n' && c != '\r')
     {
@@ -42,7 +41,7 @@ read_line (f)
       if (loc == limit)
         {
           limit += BLOCK_SIZE;
-          line = xrealloc (line, limit);
+          line = (char*)xrealloc (line, limit);
         }
     }
   

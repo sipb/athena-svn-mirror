@@ -200,9 +200,9 @@ are approximate.
 @item xdvik    @tab   .7 @tab  2.5 @tab
 @item web2c    @tab  1.3 @tab  5.0 @tab
 @item web      @tab  1.9 @tab  6.5 @tab    - @tab -
-@item texk     @tab  3.8 @tab 14.1 @tab 43.1 @tab 23.5
-@item texklib  @tab  3.8 @tab 15.0 @tab    - @tab 15.0
-@item (totals) @tab  7.6 @tab 29.1 @tab 43.1 @tab 38.5
+@item texk     @tab  7.5 @tab 32.1 @tab 95.3 @tab 33.5
+@item texklib  @tab  6.3 @tab 15.0 @tab    - @tab 15.0
+@item (totals) @tab 14.6 @tab 47.1 @tab 95.3 @tab 48.5
 @end multitable
 
 

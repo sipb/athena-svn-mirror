@@ -13,10 +13,10 @@
 
 #ifdef Omega
 #define BANNER \
-"This is (Omega) odvips(k) 5.86 Copyright 1999 Radical Eye Software"
+"This is (Omega) odvips(k) 5.92b Copyright 2002 Radical Eye Software"
 #else
 #define BANNER \
-"This is dvips(k) 5.86 Copyright 1999 Radical Eye Software"
+"This is dvips(k) 5.92b Copyright 2002 Radical Eye Software"
 #endif
 #define BANNER2 "(www.radicaleye.com)"
 #ifdef KPATHSEA
@@ -69,7 +69,7 @@ extern char *sprintf() ;
 #endif
 #define RASTERCHUNK (8192)  /* size of chunk of raster */
 #define MINCHUNK (240)      /* minimum size char to get own raster */
-#define STACKSIZE (100)     /* maximum stack size for dvi files */
+#define STACKSIZE (350)     /* maximum stack size for dvi files */
 #define MAXFRAME (10)       /* maximum depth of virtual font recursion */
 #define MAXFONTHD (100)     /* number of unique names of included fonts */
 #define STDOUTSIZE (75)     /* width of a standard output line */
@@ -152,7 +152,7 @@ typedef struct tcd {
    integer TFMwidth ;
    quarterword *packptr ;
    shalfword pixelwidth ;
-   quarterword flags, dmy ;
+   quarterword flags, flags2 ;
 } chardesctype ;
 #define EXISTS (1)
 #define PREVPAGE (2)
@@ -161,6 +161,11 @@ typedef struct tcd {
 #define REPACKED (16)
 #define BIGCHAR (32)
 #define STATUSFLAGS (EXISTS|REPACKED|BIGCHAR)
+/*
+ *   The new field flags2 above is now an immutable field (once a font is
+ *   loaded); for now it only indicates whether a character EXISTS or not.
+ *   This fixes a problem with -G.
+ */
 /*
  *   A fontdesc describes a font.  The name, area, and scalename are located in
  *   the string pool. The nextsize pointer is used to link fonts that are used
@@ -189,6 +194,7 @@ typedef struct tfd {
    quarterword psflag;
 #ifdef Omega
    chardesctype *chardesc ;
+   quarterword codewidth ;
 #else
    chardesctype chardesc[256] ;
 #endif
@@ -346,7 +352,7 @@ struct papsiz {
 #else
 #define IS_DEVICE_SEP(c) 0
 #endif
-#define STREQ(s1, s2) (!strcmp((s1), (s2)))
+#define STREQ(s1, s2) (((s1) != NULL) && ((s2) != NULL) && !strcmp((s1), (s2)))
 
 #if defined(MSDOS) || defined(OS2) || defined(WIN32)
 #define NAME_BEGINS_WITH_DEVICE(name) (*(name) && IS_DEVICE_SEP((name)[1]))

@@ -84,18 +84,6 @@ extern HTNetBefore HTMemoryCacheFilter;
 
 /*
 (
-  Persistent Cache Validation BEFORE Filter
-)
-
-Check the cache mode to see if we can use an already loaded version of this
-document. If so and our copy is valid then we don't have to go out and get
-it unless we are forced to
-*/
-
-extern HTNetBefore HTCacheFilter;
-
-/*
-(
   Client side authentication BEFORE filter
 )
 
@@ -115,19 +103,6 @@ Like BEFORE filters we provide a default set of typical AFTER
 filters that may be initialized by the application. Again, an easy way of
 doing this is to call the HTAfterInit() function in the
 Initialization interface.
-(
-  Persistent Cache Update AFTER filter
-)
-
-On our way out we catch the metainformation and stores it in our persistent
-store. If we have a cache validation (a 304 response then we use the new
-metainformation and merges it with the existing information already captured
-in the cache.
-*/
-
-extern HTNetAfter HTCacheUpdateFilter;
-
-/*
 (
   Error and Information filter
 )
@@ -175,6 +150,20 @@ extern HTNetAfter HTAuthFilter;
 
 /*
 (
+  Client side authentication information filter
+)
+
+This filter updates the client's local authentication information database 
+with new information sent by the server via the authentication-info header.
+This header is currently used only by the Digest authentication scheme.
+This filter is initialized by default, but you can just register something
+else.
+*/
+
+extern HTNetAfter HTAuthInfoFilter;
+
+/*
+(
   Request Common Log File Filter
 )
 
@@ -206,6 +195,6 @@ extern HTNetAfter HTRefererFilter;
 
   
 
-  @(#) $Id: HTFilter.h,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+  @(#) $Id: HTFilter.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

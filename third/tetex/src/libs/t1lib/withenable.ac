@@ -1,0 +1,10 @@
+AC_ARG_WITH(system-t1lib,
+	[  --with-system-t1lib       use installed t1 library])
+
+AC_ARG_WITH(t1lib_libdir,
+[  --with-t1lib-libdir=DIR
+                          Specify directory where the t1 library (libt1.a) resides.])
+
+AC_ARG_WITH(t1lib_include,
+[  --with-t1lib-include=DIR
+                          Specify the t1lib header files location.])

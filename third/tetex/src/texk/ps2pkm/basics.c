@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>   /* stat() */
 #ifdef WIN32
-#include <kpathsea/win32lib.h>
+#include <win32lib.h>
 #endif
 
 /* Give up ... */
@@ -31,40 +31,4 @@ void msg(char *fmt, ...)
    vfprintf(stderr, fmt, args);
    fflush(stderr);
    va_end(args);
-}
-
-/* default FILE opener */
-#ifdef WIN32
-FILE* (__cdecl * pfopen) (const char *, const char *) = fopen;
-#else
-FILE * (*pfopen)(const char *, const char *) = fopen;
-#endif
-
-/* A verbose fopen() function */
-FILE *my_fopen(const char *path, const char *mode)
-{
-   FILE *F ;
-   msg("Opening <%s> ", path) ;
-   F = fopen(path, mode) ;
-   if (F == 0) msg("failed\n") ;
-   else msg("succeeded\n") ;
-   return F ;
-}
-
-/* default stat-ter */
-#ifdef WIN32
-int (__cdecl * pstat)(const char *, struct stat *) = stat;
-#else
-int (*pstat)(const char *, struct stat *) = stat;
-#endif
-
-/* verbose stat function */
-int my_stat(const char *path, struct stat *buf)
-{
-   int s;
-   msg("stat <%s> ", path);
-   s = stat(path, buf) ;
-   if (s == 0) msg("succeeded\n");
-   else msg("failed\n");
-   return s ;
 }

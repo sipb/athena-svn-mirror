@@ -1,9 +1,25 @@
-/*
- * This file is part of the Omega project, which
- * is based in the web2c distribution of TeX.
- *
- * Copyright (c) 1994--1998 John Plaice and Yannis Haralambous
- */
+/* routines.h: Generating the finite state automaton
+
+This file is part of Omega,
+which is based on the web2c distribution of TeX,
+
+Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+
+Omega is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Omega is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Omega; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -63,28 +79,28 @@ extern list append();
 extern list append1();
 
 extern llist lcons();
-extern llist llist1();
+extern llist llist1 P1H(left);
 extern llist llist2();
-extern llist lappend();
-extern llist lappend1();
+extern llist lappend P2H(llist,llist);
+extern llist lappend1 P2H(llist,left);
 
 extern left WildCard();
-extern left SingleLeft();
-extern left StringLeft();
-extern left DoubleLeft();
-extern left ChoiceLeft();
-extern left NotChoiceLeft();
-extern left PlusLeft();
-extern left CompleteLeft();
+extern left SingleLeft P1H(int);
+extern left StringLeft P1H(char *);
+extern left DoubleLeft P2H(int,int);
+extern left ChoiceLeft P1H(llist);
+extern left NotChoiceLeft P1H(llist);
+extern left PlusLeft P2H(left,int);
+extern left CompleteLeft P3H(left,int,int);
 extern left BeginningLeft();
 extern left EndLeft();
 extern list gen_left();
 extern void fill_in_left();
-extern void out_left();
+extern void out_left P1H(llist);
 extern int no_lefts;
 
-extern void store_alias();
-extern left lookup_alias();
+extern void store_alias P2H(string, left);
+extern left lookup_alias P1H(string);
 
 typedef struct {
 	int length;
@@ -96,7 +112,7 @@ extern int no_tables;
 extern int cur_table;
 extern int room_for_tables;
 extern table_type tables[];
-extern void add_to_table();
+extern void add_to_table P1H(int);
 
 typedef struct {
 	int length;
@@ -109,17 +125,17 @@ extern int no_states;
 extern int cur_state;
 extern int room_for_states;
 extern state_type states[];
-extern void add_to_state();
+extern void add_to_state P1H(int);
 
-extern void fill_in();
+extern void fill_in P1H(list);
 extern void right_int();
-extern void out_int();
-extern void out_right();
+extern void out_int P2H(int,int);
+extern void out_right P2H(int,int);
 
-extern void store_state();
-extern int lookup_state();
-extern void store_table();
-extern int lookup_table();
+extern void store_state P1H(string);
+extern int lookup_state P1H(string);
+extern void store_table P2H(string, int);
+extern int lookup_table P1H(string);
 
 typedef struct { char * str; left left_val; } alias_pair;
 

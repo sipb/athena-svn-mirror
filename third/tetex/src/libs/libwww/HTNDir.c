@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTNDir.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTNDir.c,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 **
 **	Creates listings for all kind of News output.
 **
@@ -717,35 +717,35 @@ PRIVATE void HTNewsDir_setGroupInfo (HTNewsDir * dir)
     }
 }
 
-PRIVATE int NDirIndexSort (const void *a, const void *b)
+PRIVATE int CDECL NDirIndexSort (const void *a, const void *b)
 {
     int aa = (*((HTNewsNode **)a))->index;
     int bb = (*((HTNewsNode **)b))->index;
     return aa-bb;
 }
 
-PRIVATE int NDirSubjectSort (const void *a, const void *b)
+PRIVATE int CDECL NDirSubjectSort (const void *a, const void *b)
 {
     char *aa = (*((HTNewsNode **)a))->subject;
     char *bb = (*((HTNewsNode **)b))->subject;
     return strcasecomp(aa?aa:"", bb?bb:"");
 }
 
-PRIVATE int NDirFromSort (const void *a, const void *b)
+PRIVATE int CDECL NDirFromSort (const void *a, const void *b)
 {
     char *aa = (*((HTNewsNode **)a))->from;
     char *bb = (*((HTNewsNode **)b))->from;
     return strcasecomp(aa?aa:"", bb?bb:"");
 }
 
-PRIVATE int NDirDateSort (const void *a, const void *b)
+PRIVATE int CDECL NDirDateSort (const void *a, const void *b)
 {
     time_t aa = (*((HTNewsNode **)a))->date;
     time_t bb = (*((HTNewsNode **)b))->date;
     return bb-aa;
 }
 
-PRIVATE int NDirGroupSort (const void *a, const void *b)
+PRIVATE int CDECL NDirGroupSort (const void *a, const void *b)
 {
     char *aa = (*((HTNewsNode **)a))->name;
     char *bb = (*((HTNewsNode **)b))->name;
@@ -755,7 +755,7 @@ PRIVATE int NDirGroupSort (const void *a, const void *b)
 }
 
 /* Added by MP. */
-PRIVATE int NDirRefThreadSort (const void* a, const void* b)
+PRIVATE int CDECL NDirRefThreadSort (const void* a, const void* b)
 {
     HTNewsNode* aa = *((HTNewsNode**)a);
     HTNewsNode* bb = *((HTNewsNode**)b);
@@ -793,7 +793,7 @@ PUBLIC BOOL HTNewsDir_free (HTNewsDir * dir)
             HTNewsDir_setRefInfo (dir);
             comp = NDirRefThreadSort;
         } else {
-    	    if (STREAM_TRACE) HTTrace("NewsListing. Invalid sortkey\n");
+    	    HTTRACE(STREAM_TRACE, "NewsListing. Invalid sortkey\n");
     	    return NO;
     	}
 

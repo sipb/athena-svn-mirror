@@ -1,11 +1,13 @@
 #!/bin/sh
 
-# Copyright Thomas Esser, 1999. public domain.
+# Copyright Thomas Esser, 1999, 2002. public domain.
 
 # texlinks: script to maintain symlinks from format to engine. Interprets
 # the lines given in fmtutil.cnf.
 
-# TODO: add a --help option
+# History:
+#   Tue Apr  9 22:46:34 CEST 2002, te:
+#       do not create symlinks for cont-??, metafun and mptopdf
 
 test -f /bin/sh5 && test -z "$RUNNING_SH5" \
   && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
@@ -16,6 +18,9 @@ test -f /bin/bsh && test -z "$RUNNING_BSH" \
   && { UNAMES=`uname -s`; test "x$UNAMES" = xAIX; } 2>/dev/null \
   && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
 unset RUNNING_BSH
+
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
 
 cnf=fmtutil.cnf   # name of the config file
 usage='texlinks [options] [directories]
@@ -45,7 +50,7 @@ If no directories are specified the list of directories depends on the
 # abort(errmsg)
 #   print `errmsg' to stderr and exit with error code 1
 ###############################################################################
-abort() { errmsg "texlinks: $1."; exit 1; }
+abort() { errmsg "texlinks: $1."; false; cleanup; }
 
 # error message to stderr:
 errmsg() { echo "$@" >&2; }
@@ -55,6 +60,33 @@ verbose_echo() { $verbose && errmsg "$@"; }
 
 # in verbose mode: show command that is executed:
 verbose_do() { verbose_echo "$@"; "$@"; }
+
+###############################################################################
+# cleanup()
+#   clean up the temp area and exit with proper exit status
+###############################################################################
+cleanup()
+{
+  rc=$?
+  $needsCleanup && test -n "$tmpdir" && test -d "$tmpdir" \
+    && { rm -f "$tmpdir"/*; cd /; rmdir "$tmpdir"; }
+  exit $rc
+}
+
+###############################################################################
+# setupTmpDir()
+#   set up a temp directory and a trap to remove it
+###############################################################################
+setupTmpDir()
+{
+  $needsCleanup && return
+
+  trap 'cleanup' 1 2 3 7 13 15
+  needsCleanup=true
+  (umask 077; mkdir "$tmpdir") \
+    || abort "could not create directory \`$tmpdir'"
+}
+
 
 # search a binary along $PATH:
 check_for_binary()
@@ -82,20 +114,61 @@ install_link()
   # make symlink    src -> dest
   dest=$1; src=$2
 
-  test "x$src" != "x`(ls -ld $src | awk '{print $NF}') 2>/dev/null`" &&
-    verbose_do rm -f "$src";
+  case $src in
+    */mf)
+      if test $dest = "mf-nowin" && test -f $selfautoloc/mfw; then
+        dest="mfw"
+        verbose_echo "both mfw and mf-nowin exists, $src linked to $dest"
+      fi
+      ;;
+  esac
+
+  case $src in
+    */cont-??|*/metafun|*/mptopdf)
+      verbose_echo "symlink $2 -> $dest skipped (special case)"
+      ;;
+    */csplain|*/cslatex|*/pdfcslatex|*/pdfcsplain)
+      verbose_do rm -f "$src"
+      cat > $src <<'eof'
+#!/bin/sh
+
+test -f /bin/sh5 && test -z "$RUNNING_SH5" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
+  && { RUNNING_SH5=true; export RUNNING_SH5; exec /bin/sh5 $0 ${1+"$@"}; }
+unset RUNNING_SH5
+
+test -f /bin/bsh && test -z "$RUNNING_BSH" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xAIX; } 2>/dev/null \
+  && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
+unset RUNNING_BSH
+
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
+
+eof
+      cat >> $src <<eof
+$dest -progname=`basename $src` -default-translate-file=il2-cs \${1+"\$@"}
+eof
+      chmod 755 $src
+      verbose_echo "wrapper file $src created."
+      ;;
+    *)
+      test "x$src" != "x`(ls -ld $src | awk '{print $NF}') 2>/dev/null`" &&
+        verbose_do rm -f "$src"
   
-  if test -f "$src"; then
-    case $silent in
-      true)
-        ;;
-      *)
-        errmsg "install_link failed for $src. File already exists."
-        ;;
-    esac
-  else
-    verbose_do ln -s "$dest" "$src"
-  fi
+      if test -f "$src"; then
+        case $silent in
+          true)
+            ;;
+          *)
+            errmsg "install_link failed for $src. File already exists."
+            ;;
+        esac
+      else
+        verbose_do ln -s "$dest" "$src"
+      fi
+      ;;
+   esac
 }
 
 ###############################################################################
@@ -126,7 +199,7 @@ search_symlinkdir()
 ###############################################################################
 upd_symlinkdir()
 {
-  search_symlinkdir || return
+  search_symlinkdir || return 0
   for i in `sed 's@ .*@@' cnf_file_ln.$$`; do
     install_link "$selfautoloc/$i" "$symlinkdir/$i"
   done
@@ -141,6 +214,8 @@ main()
 {
   cnf_file=    # global variable: full name of the config file
   dirs=
+  needsCleanup=false
+
   multiplatform=false
   verbose=false
   silent=false
@@ -150,7 +225,7 @@ main()
   while 
     case $1 in
       --h*|-h)
-          echo "$usage"; exit;;
+          echo "$usage"; exit 0;;
       --cnffile|-f)
           shift; cnf_file=$1;;
       --v*|-v) verbose=true;;
@@ -166,10 +241,13 @@ main()
   test -z "$cnf_file" && cnf_file=`kpsewhich --format='web2c files' $cnf`
   test -f "$cnf_file" || abort "config file \`$cnf' not found"
 
-  tmpdir=${TMP-/tmp}/fmtutil.$$
-  trap 'cd /; cd "$thisdir"; rm -rf "$tmpdir"; exit 0' 0 1 2 3 7 13 15
-  mkdir "$tmpdir" || abort "could not create directory \`$tmpdir'"
-  cd "$tmpdir" || exit 1
+
+  tmpdir=${TMP-/tmp}/texlinks.$$
+  setupTmpDir
+  cd "$tmpdir" || {
+    false  # some systems need this to set nonzero $?
+    cleanup
+  }
 
   sed '/^[ 	]*#/d; /^[ 	]*$/d' $cnf_file \
     | awk '{print $1, $2}' > cnf_file_ln.$$
@@ -215,4 +293,8 @@ main()
   upd_symlinkdir
 }
 
-main "$@"
+main ${1+"$@"}
+
+# set successful return code
+true
+cleanup

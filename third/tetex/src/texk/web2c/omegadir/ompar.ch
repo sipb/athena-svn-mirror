@@ -1,82 +1,448 @@
+% ompar.ch: Local paragraph information
 %
-% This file is part of the Omega project, which
-% is based on the web2c distribution of TeX.
+% This file is part of Omega,
+% which is based on the web2c distribution of TeX,
 % 
-% Copyright (c) 1995--1999 John Plaice and Yannis Haralambous
+% Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+%
+% Omega is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
 % 
+% Omega is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Omega; if not, write to the Free Software Foundation, Inc.,
+% 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+% 
+%-------------------------
+@x [10] m.134
+@d is_char_node(#) == (#>=hi_mem_min)
+  {does the argument point to a |char_node|?}
+@d font == type {the font code in a |char_node|}
+@d character == subtype {the character code in a |char_node|}
+@y
+@d is_char_node(#) == (#>=hi_mem_min)
+  {does the argument point to a |char_node|?}
+@d font==type {the font code in a |char_node|}
+@d character==subtype {the character code in a |char_node|}
+@d file_col(#)==mem[#-1].hh.b1 {the column in which this character appeared}
+@z
+%-------------------------
+@x [10] m.136
+@p function new_null_box:pointer; {creates a new box node}
+var p:pointer; {the new node}
+begin p:=get_node(box_node_size); type(p):=hlist_node;
+subtype(p):=min_quarterword;
+width(p):=0; depth(p):=0; height(p):=0; shift_amount(p):=0; list_ptr(p):=null;
+glue_sign(p):=normal; glue_order(p):=normal; set_glue_ratio_zero(glue_set(p));
+new_null_box:=p;
+end;
+@y
+@p function new_null_box:pointer; {creates a new box node}
+var p:pointer; {the new node}
+begin p:=get_node(box_node_size); type(p):=hlist_node;
+subtype(p):=min_quarterword;
+width(p):=0; depth(p):=0; height(p):=0; shift_amount(p):=0; list_ptr(p):=null;
+glue_sign(p):=normal; glue_order(p):=normal; set_glue_ratio_zero(glue_set(p));
+@<LOCAL: Add info node pointer@>;
+new_null_box:=p;
+end;
+@z
+%-------------------------
+@x [10] m.139
+@p function new_rule:pointer;
+var p:pointer; {the new node}
+begin p:=get_node(rule_node_size); type(p):=rule_node;
+subtype(p):=0; {the |subtype| is not used}
+width(p):=null_flag; depth(p):=null_flag; height(p):=null_flag;
+new_rule:=p;
+end;
+@y
+@p function new_rule:pointer;
+var p:pointer; {the new node}
+begin p:=get_node(rule_node_size); type(p):=rule_node;
+subtype(p):=0; {the |subtype| is not used}
+width(p):=null_flag; depth(p):=null_flag; height(p):=null_flag;
+@<LOCAL: Add info node pointer@>;
+new_rule:=p;
+end;
+@z
+%-------------------------
+@x [10] m.144
+@p function new_ligature(@!f,@!c:quarterword; @!q:pointer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=ligature_node;
+font(lig_char(p)):=f; character(lig_char(p)):=c; lig_ptr(p):=q;
+subtype(p):=0; new_ligature:=p;
+end;
+@#
+function new_lig_item(@!c:quarterword):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); character(p):=c; lig_ptr(p):=null;
+new_lig_item:=p;
+end;
+@y
+@d add_file_col(#)==if state>0 then file_col(#):=loc-start
+                    else file_col(#):=stack_col
+
+@p
+function stack_col:integer;
+label done;
+var i:integer;
+    col:integer;
+begin
+col:=0;
+i:=input_ptr;
+while (i>=0) do begin
+  if input_stack[i].state_field>0 then begin
+    col:=input_stack[i].loc_field-input_stack[i].start_field;
+    goto done;
+    end;
+  decr(i);
+  end;
+done: stack_col:=col;
+end;
+
+function new_ligature(@!f,@!c:quarterword; @!q:pointer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=ligature_node;
+font(lig_char(p)):=f; character(lig_char(p)):=c; lig_ptr(p):=q;
+@<LOCAL: Add info node pointer@>;
+add_file_col(p);
+subtype(p):=0; new_ligature:=p;
+end;
+@#
+function new_lig_item(@!c:quarterword):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); character(p):=c; lig_ptr(p):=null;
+@<LOCAL: Add info node pointer@>;
+new_lig_item:=p;
+end;
+@z
+%-------------------------
+@x [10] m.145
+@p function new_disc:pointer; {creates an empty |disc_node|}
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=disc_node;
+replace_count(p):=0; pre_break(p):=null; post_break(p):=null;
+new_disc:=p;
+end;
+@y
+@p function new_disc:pointer; {creates an empty |disc_node|}
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=disc_node;
+replace_count(p):=0; pre_break(p):=null; post_break(p):=null;
+@<LOCAL: Add info node pointer@>;
+new_disc:=p;
+end;
+@z
+%-------------------------
+@x [10] m.147
+@p function new_math(@!w:scaled;@!s:small_number):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=math_node;
+subtype(p):=s; width(p):=w; new_math:=p;
+end;
+@y
+@p function new_math(@!w:scaled;@!s:small_number):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=math_node;
+@<LOCAL: Add info node pointer@>;
+subtype(p):=s; width(p):=w; new_math:=p;
+end;
+@z
+%-------------------------
+@x [10] m.151
+@p function new_spec(@!p:pointer):pointer; {duplicates a glue specification}
+var q:pointer; {the new spec}
+begin q:=get_node(glue_spec_size);@/
+mem[q]:=mem[p]; glue_ref_count(q):=null;@/
+width(q):=width(p); stretch(q):=stretch(p); shrink(q):=shrink(p);
+new_spec:=q;
+end;
+@y
+@p function new_spec(@!p:pointer):pointer; {duplicates a glue specification}
+var q:pointer; {the new spec}
+begin q:=get_node(glue_spec_size);@/
+mem[q]:=mem[p]; glue_ref_count(q):=null;@/
+width(q):=width(p); stretch(q):=stretch(p); shrink(q):=shrink(p);
+new_spec:=q;
+end;
+@z
+%-------------------------
+@x [10] m.152
+@p function new_param_glue(@!n:small_number):pointer;
+var p:pointer; {the new node}
+@!q:pointer; {the glue specification}
+begin p:=get_node(small_node_size); type(p):=glue_node; subtype(p):=n+1;
+leader_ptr(p):=null;@/
+q:=@<Current |mem| equivalent of glue parameter number |n|@>@t@>;
+glue_ptr(p):=q; incr(glue_ref_count(q));
+new_param_glue:=p;
+end;
+@y
+@p function new_param_glue(@!n:small_number):pointer;
+var p:pointer; {the new node}
+@!q:pointer; {the glue specification}
+begin p:=get_node(small_node_size); type(p):=glue_node; subtype(p):=n+1;
+leader_ptr(p):=null;@/
+q:=@<Current |mem| equivalent of glue parameter number |n|@>@t@>;
+glue_ptr(p):=q; incr(glue_ref_count(q));
+@<LOCAL: Add info node pointer@>;
+new_param_glue:=p;
+end;
+@z
+%-------------------------
+@x [10] m.153
+@p function new_glue(@!q:pointer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=glue_node; subtype(p):=normal;
+leader_ptr(p):=null; glue_ptr(p):=q; incr(glue_ref_count(q));
+new_glue:=p;
+end;
+@y
+@p function new_glue(@!q:pointer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=glue_node; subtype(p):=normal;
+leader_ptr(p):=null; glue_ptr(p):=q; incr(glue_ref_count(q));
+@<LOCAL: Add info node pointer@>;
+new_glue:=p;
+end;
+@z
+%-------------------------
+@x [10] m.154
+@p function new_skip_param(@!n:small_number):pointer;
+var p:pointer; {the new node}
+begin temp_ptr:=new_spec(@<Current |mem| equivalent of glue parameter...@>);
+p:=new_glue(temp_ptr); glue_ref_count(temp_ptr):=null; subtype(p):=n+1;
+new_skip_param:=p;
+end;
+@y
+@p function new_skip_param(@!n:small_number):pointer;
+var p:pointer; {the new node}
+begin temp_ptr:=new_spec(@<Current |mem| equivalent of glue parameter...@>);
+p:=new_glue(temp_ptr); glue_ref_count(temp_ptr):=null; subtype(p):=n+1;
+@<LOCAL: Add info node pointer@>;
+new_skip_param:=p;
+end;
+@z
+%-------------------------
+@x [10] m.156
+@p function new_kern(@!w:scaled):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=kern_node;
+subtype(p):=normal;
+width(p):=w;
+new_kern:=p;
+end;
+@y
+@p function new_kern(@!w:scaled):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=kern_node;
+subtype(p):=normal;
+width(p):=w;
+@<LOCAL: Add info node pointer@>;
+new_kern:=p;
+end;
+@z
+%-------------------------
+@x [10] m.158
+@p function new_penalty(@!m:integer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=penalty_node;
+subtype(p):=0; {the |subtype| is not used}
+penalty(p):=m; new_penalty:=p;
+end;
+@y
+@p function new_penalty(@!m:integer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=penalty_node;
+subtype(p):=0; {the |subtype| is not used}
+@<LOCAL: Add info node pointer@>;
+penalty(p):=m; new_penalty:=p;
+end;
+@z
+%-------------------------
+@x [10] m.160 l.3270
+@ In fact, there are still more types coming. When we get to math formula
+processing we will see that a |style_node| has |type=14|; and a number
+of larger type codes will also be defined, for use in math mode only.
+@y
+@ In fact, there are still more types coming. When we get to math formula
+processing we will see that a |style_node| has |type=14|; and a number
+of larger type codes will also be defined, for use in math mode only.
+
+@d file_node=unset_node+1 {|type| to hold file names and line numbers}
+
+@d file_size=3
+@d file_no(#) == info(#+1) {number of open files}
+@d file_ref_count(#) == link(#+1) {reference count to this node}
+
+@d file_incr_ref_count(#)==begin
+  if (#)<>null then incr(file_ref_count(#));
+  end
+@d file_decr_ref_count(#)==begin
+  if (#)<>null then begin
+    decr(file_ref_count(#));
+    if file_ref_count(#) = 0 then begin
+      free_node(#,file_size+2*file_no(#));
+      end;
+    end;
+  end
+
+@d info_node=unset_node+2 {|type| to hold local information}
+
+@d ptr_info(#)        == link(#-1) {pointer to the local info node}
+
+@d info_size=5
+@d info_ref_count(#)  == link(#+1) {reference count to this node}
+@d info_pen_inter(#)  == info(#+2) {\.{\\localinterlinepenalty}}
+@d info_pen_broken(#) == link(#+2) {\.{\\localbrokenpenalty}}
+@d info_left_box(#)   == info(#+3) {\.{\\localleftbox}}
+@d info_right_box(#)  == link(#+3) {\.{\\localrightbox}}
+@d info_file(#)       == info(#+4) {file names and line numbers}
+
+@d info_incr_ref_count(#)==begin
+  if (#)<>null then incr(info_ref_count(#));
+  end
+@d info_decr_ref_count(#)==begin
+  if (#)<>null then begin
+    decr(info_ref_count(#));
+    if info_ref_count(#) = 0 then begin
+      if info_left_box(#)<>null then
+        flush_node_list(info_left_box(#));
+      if info_right_box(#)<>null then
+        flush_node_list(info_right_box(#));
+      if info_file(#)<>null then
+        file_decr_ref_count(info_file(#));
+      free_node(#,info_size);
+      #:=null;
+      end;
+    end;
+  end
+
+@d biggest_ordinary_node=info_node
+
+@z
+%-------------------------
+@x [10] m.162
+@d zero_glue==mem_bot {specification for \.{0pt plus 0pt minus 0pt}}
+@d sfi_glue==zero_glue+glue_spec_size {\.{0pt plus 1fi minus 0pt}}
+@d fil_glue==sfi_glue+glue_spec_size {\.{0pt plus 1fil minus 0pt}}
+@d fill_glue==fil_glue+glue_spec_size {\.{0pt plus 1fill minus 0pt}}
+@d ss_glue==fill_glue+glue_spec_size {\.{0pt plus 1fil minus 1fil}}
+@d fil_neg_glue==ss_glue+glue_spec_size {\.{0pt plus -1fil minus 0pt}}
+@d lo_mem_stat_max==fil_neg_glue+glue_spec_size-1 {largest statically
+  allocated word in the variable-size |mem|}
+@#
+@d page_ins_head==mem_top {list of insertion data for current page}
+@d contrib_head==mem_top-1 {vlist of items not yet on current page}
+@d page_head==mem_top-2 {vlist for current page}
+@d temp_head==mem_top-3 {head of a temporary list of some kind}
+@d hold_head==mem_top-4 {head of a temporary list of another kind}
+@d adjust_head==mem_top-5 {head of adjustment list returned by |hpack|}
+@d active==mem_top-7 {head of active list in |line_break|, needs two words}
+@d align_head==mem_top-8 {head of preamble list for alignments}
+@d end_span==mem_top-9 {tail of spanned-width lists}
+@d omit_template==mem_top-10 {a constant token list}
+@d null_list==mem_top-11 {permanently empty list}
+@d lig_trick==mem_top-12 {a ligature masquerading as a |char_node|}
+@d garbage==mem_top-12 {used for scrap information}
+@d backup_head==mem_top-13 {head of token list built by |scan_keyword|}
+@d hi_mem_stat_min==mem_top-13 {smallest statically allocated word in
+  the one-word |mem|}
+@d hi_mem_stat_usage=14 {the number of one-word nodes always present}
+@y
+@d zero_glue==mem_bot+1 {specification for \.{0pt plus 0pt minus 0pt}}
+@d sfi_glue==zero_glue+glue_spec_size+1 {\.{0pt plus 1fi minus 0pt}}
+@d fil_glue==sfi_glue+glue_spec_size+1 {\.{0pt plus 1fil minus 0pt}}
+@d fill_glue==fil_glue+glue_spec_size+1 {\.{0pt plus 1fill minus 0pt}}
+@d ss_glue==fill_glue+glue_spec_size+1 {\.{0pt plus 1fil minus 1fil}}
+@d fil_neg_glue==ss_glue+glue_spec_size+1 {\.{0pt plus -1fil minus 0pt}}
+@d lo_mem_stat_max==fil_neg_glue+glue_spec_size+1 {largest statically
+  allocated word in the variable-size |mem|}
+@#
+@d page_ins_head==mem_top {list of insertion data for current page}
+@d contrib_head==mem_top-2 {vlist of items not yet on current page}
+@d page_head==mem_top-4 {vlist for current page}
+@d temp_head==mem_top-6 {head of a temporary list of some kind}
+@d hold_head==mem_top-8 {head of a temporary list of another kind}
+@d adjust_head==mem_top-10 {head of adjustment list returned by |hpack|}
+@d active==mem_top-14 {head of active list in |line_break|, needs two words}
+@d align_head==mem_top-16 {head of preamble list for alignments}
+@d end_span==mem_top-18 {tail of spanned-width lists}
+@d omit_template==mem_top-20 {a constant token list}
+@d null_list==mem_top-22 {permanently empty list}
+@d lig_trick==mem_top-24 {a ligature masquerading as a |char_node|}
+@d garbage==mem_top-24 {used for scrap information}
+@d backup_head==mem_top-26 {head of token list built by |scan_keyword|}
+@d hi_mem_stat_min==mem_top-28 {smallest statically allocated word in
+  the one-word |mem|}
+@d hi_mem_stat_usage=14 {the number of one-word nodes always present}
+@z
+%-------------------------
+@x [13] m.202
+@p procedure flush_node_list(@!p:pointer); {erase list of nodes starting at |p|}
+label done; {go here when node |p| has been freed}
+var q:pointer; {successor to node |p|}
+begin while p<>null do
+@^inner loop@>
+  begin q:=link(p);
+@y
+@p procedure flush_node_list(@!p:pointer); {erase list of nodes starting at |p|}
+label done; {go here when node |p| has been freed}
+var q:pointer; {successor to node |p|}
+begin while p<>null do
+@^inner loop@>
+  begin q:=link(p); @<LOCAL: Remove info node pointer@>;
+@z
+%-------------------------
+@x [13] m.202
+    othercases confusion("flushing")
+@:this can't happen flushing}{\quad flushing@>
+    endcases;@/
+@y
+    info_node: begin
+               @<LOCAL: Delete info node@>;
+               goto done; end; {do not delete node at this time}
+    othercases confusion("flushing")
+@:this can't happen flushing}{\quad flushing@>
+    endcases;@/
+@z
+%-------------------------
+@x [15] m.205
+@ @<Make a copy of node |p|...@>=
+words:=1; {this setting occurs in more branches than any other}
+if is_char_node(p) then r:=get_avail
+else @<Case statement to copy different types and set |words| to the number
+  of initial words not yet copied@>;
+while words>0 do
+  begin decr(words); mem[r+words]:=mem[p+words];
+  end
+@y
+@ @<Make a copy of node |p|...@>=
+words:=1; {this setting occurs in more branches than any other}
+if is_char_node(p) then r:=get_avail
+else @<Case statement to copy different types and set |words| to the number
+  of initial words not yet copied@>;
+@<LOCAL: Copy info node pointer@>;
+file_col(r):=file_col(p);
+while words>0 do
+  begin decr(words); mem[r+words]:=mem[p+words];
+  end
+@z
 %-------------------------
 @x [15] m.208 l.4170
-@d min_internal=69 {the smallest code that can follow \.{\\the}}
+@d min_internal=char_ghost+1 {the smallest code that can follow \.{\\the}}
 @y
-@d assign_local_box=69
+@d assign_local_box=char_ghost+1
    {box for guillemets \.{\\localleftbox} or \.{\\localrightbox}}
-@d min_internal=70 {the smallest code that can follow \.{\\the}}
-@z
-%-------------------------
-@x [16] m.212 l.4306
-  @!aux_field: memory_word;
-@y
-  @!aux_field: memory_word;
-  @!local_par_field: pointer;
-  @!local_par_bool_field: boolean;
-@z
-%-------------------------
-@x [16] m.213 l.4318
-@d mode_line==cur_list.ml_field {source file line number at beginning of list}
-@y
-@d mode_line==cur_list.ml_field {source file line number at beginning of list}
-@d local_par==cur_list.local_par_field
-   {pointer to whatsit for local stuff}
-@d local_par_bool==cur_list.local_par_bool_field
-   {has local stuff been changed in this group?}
-@z
-%-------------------------
-@x [16] m.215 l.4344
-prev_graf:=0; shown_mode:=0;
-@y
-prev_graf:=0; shown_mode:=0;
-local_par:=null; local_par_bool:=false;
-@z
-%-------------------------
-@x [16] m.216 l.4351
-@ When \TeX's work on one level is interrupted, the state is saved by
-calling |push_nest|. This routine changes |head| and |tail| so that
-a new (empty) list is begun; it does not change |mode| or |aux|.
-
-@p procedure push_nest; {enter a new semantic level, save the old}
-begin if nest_ptr>max_nest_stack then
-  begin max_nest_stack:=nest_ptr;
-  if nest_ptr=nest_size then overflow("semantic nest size",nest_size);
-@:TeX capacity exceeded semantic nest size}{\quad semantic nest size@>
-  end;
-nest[nest_ptr]:=cur_list; {stack the record}
-incr(nest_ptr); head:=get_avail; tail:=head; prev_graf:=0; mode_line:=line;
-@y
-@ @p @<LOCAL: Declare |make_local_par_node|@>;
-
-@ When \TeX's work on one level is interrupted, the state is saved by
-calling |push_nest|. This routine changes |head| and |tail| so that
-a new (empty) list is begun; it does not change |mode| or |aux|.
-
-@p procedure push_nest; {enter a new semantic level, save the old}
-begin if nest_ptr>max_nest_stack then
-  begin max_nest_stack:=nest_ptr;
-  if nest_ptr=nest_size then overflow("semantic nest size",nest_size);
-@:TeX capacity exceeded semantic nest size}{\quad semantic nest size@>
-  end;
-nest[nest_ptr]:=cur_list; {stack the record}
-incr(nest_ptr); head:=get_avail; tail:=head; prev_graf:=0; mode_line:=line;
-local_par:=make_local_par_node; local_par_bool:=false;
-@z
-%-------------------------
-@x [16] m.217 l.4366
-free_avail(head); decr(nest_ptr); cur_list:=nest[nest_ptr];
-@y
-if local_par<>null then begin
-  if local_par_bool then tail_append(local_par)
-  else free_node(local_par,local_par_size);
-  end;
-free_avail(head); decr(nest_ptr); cur_list:=nest[nest_ptr];
+@d min_internal=assign_local_box+1 {the smallest code that can follow \.{\\the}}
 @z
 %-------------------------
 @x [17] m.230 l.4860
@@ -84,7 +450,8 @@ free_avail(head); decr(nest_ptr); cur_list:=nest[nest_ptr];
 @y
 @d local_left_box_base=toks_base+number_regs
 @d local_right_box_base=local_left_box_base+1
-@d box_base=local_right_box_base+1 {table of |number_regs| box registers}
+@d local_par_info_base=local_right_box_base+1
+@d box_base=local_par_info_base+1 {table of |number_regs| box registers}
 @z
 %-------------------------
 @x [17] m.230 l.4888
@@ -92,6 +459,7 @@ free_avail(head); decr(nest_ptr); cur_list:=nest[nest_ptr];
 @y
 @d local_left_box==equiv(local_left_box_base)
 @d local_right_box==equiv(local_right_box_base)
+@d local_par_info==equiv(local_par_info_base)
 @d box(#)==equiv(box_base+#)
 @z
 %-------------------------
@@ -100,7 +468,9 @@ free_avail(head); decr(nest_ptr); cur_list:=nest[nest_ptr];
 @y
 @d local_inter_line_penalty_code=55 {local \.{\\interlinepenalty}}
 @d local_broken_penalty_code=56 {local \.{\\brokenpenalty}}
-@d int_pars=57 {total number of integer parameters}
+@d char_specials_code=57
+   {number of characters between column marker specials in dvi file}
+@d int_pars=58 {total number of integer parameters}
 @z
 %-------------------------
 @x [17] m.236 l.5011
@@ -109,81 +479,414 @@ free_avail(head); decr(nest_ptr); cur_list:=nest[nest_ptr];
 @d new_line_char==int_par(new_line_char_code)
 @d local_inter_line_penalty==int_par(local_inter_line_penalty_code)
 @d local_broken_penalty==int_par(local_broken_penalty_code)
+@d char_specials==int_par(char_specials_code)
 @z
 %-------------------------
 @x [19] m.269 l.5860
-@d max_group_code=21
+@d max_group_code=16
 @y
-@d local_box_group=22
-@d max_group_code=22
+@d local_box_group=17 {code for `\.{\\localleftbox...\\localrightbox}'}
+@d max_group_code=17
 @z
 %-------------------------
+@x [22] m.304
+@!line : integer; {current line number in the current source file}
+@!line_stack : array[1..max_in_open] of integer;
+@y
+@!line : integer; {current line number in the current source file}
+@!line_stack : array[1..max_in_open] of integer;
+@!line_numbers : array[1..max_in_open] of integer;
+@!file_names : array[1..max_in_open] of integer;
+@!no_of_files : integer; {number of currently open files}
+
+@ @<Set init...@>=
+no_of_files:=0;
+@z
+%-------------------------
+@x [23] m.327
+@p procedure begin_file_reading;
+begin if in_open=max_in_open then overflow("text input levels",max_in_open);
+@:TeX capacity exceeded text input levels}{\quad text input levels@>
+if first=buf_size then overflow("buffer size",buf_size);
+@:TeX capacity exceeded buffer size}{\quad buffer size@>
+incr(in_open); push_input; index:=in_open;
+line_stack[index]:=line; start:=first; state:=mid_line;
+name:=0; {|terminal_input| is now |true|}
+end;
+@y
+@p procedure begin_file_reading;
+begin if in_open=max_in_open then overflow("text input levels",max_in_open);
+@:TeX capacity exceeded text input levels}{\quad text input levels@>
+if first=buf_size then overflow("buffer size",buf_size);
+@:TeX capacity exceeded buffer size}{\quad buffer size@>
+incr(in_open); push_input; index:=in_open;
+line_stack[index]:=line; start:=first; state:=mid_line;
+name:=0; {|terminal_input| is now |true|}
+@<LOCAL: Change file node@>;
+end;
+@z
+%-------------------------
+@x [24] m.362
+@ @<Read next line of file into |buffer|, or
+  |goto restart| if the file has ended@>=
+begin incr(line); first:=start;
+if not force_eof then
+  begin if input_ln(cur_file,true) then {not end of file}
+    firm_up_the_line {this sets |limit|}
+  else force_eof:=true;
+  end;
+if force_eof then
+  begin print_char(")"); decr(open_parens);
+  update_terminal; {show user that file has been read}
+  force_eof:=false;
+  end_file_reading; {resume previous level}
+  check_outer_validity; goto restart;
+  end;
+if end_line_char_inactive then decr(limit)
+else  buffer[limit]:=end_line_char;
+first:=limit+1; loc:=start; {ready to read}
+end
+@y
+@ @<Read next line of file into |buffer|, or
+  |goto restart| if the file has ended@>=
+begin incr(line); first:=start;
+if not force_eof then
+  begin if input_ln(cur_file,true) then {not end of file}
+    firm_up_the_line {this sets |limit|}
+  else force_eof:=true;
+  end;
+if force_eof then
+  begin print_char(")"); decr(open_parens);
+  update_terminal; {show user that file has been read}
+  force_eof:=false;
+  end_file_reading; {resume previous level}
+  check_outer_validity;
+  if no_of_files>0 then decr(no_of_files);
+  @<LOCAL: Change file node@>;
+  goto restart;
+  end;
+if end_line_char_inactive then decr(limit)
+else  buffer[limit]:=end_line_char;
+first:=limit+1; loc:=start; {ready to read}
+line_numbers[no_of_files]:=line;
+@<LOCAL: Change file node@>;
+end
+@z
+%-------------------------
+@x [29] m.537
+done: name:=a_make_name_string(cur_file);
+if job_name=0 then
+  begin job_name:=cur_name; open_log_file;
+  end; {|open_log_file| doesn't |show_context|, so |limit|
+    and |loc| needn't be set to meaningful values yet}
+if term_offset+length(name)>max_print_line-2 then print_ln
+else if (term_offset>0)or(file_offset>0) then print_char(" ");
+print_char("("); incr(open_parens); slow_print(name); update_terminal;
+state:=new_line;
+if name=str_ptr-1 then {we can conserve string pool space now}
+  begin flush_string; name:=cur_name;
+  end;
+@<Read the first line of the new file@>;
+@y
+done: name:=a_make_name_string(cur_file);
+if job_name=0 then
+  begin job_name:=cur_name; open_log_file;
+  end; {|open_log_file| doesn't |show_context|, so |limit|
+    and |loc| needn't be set to meaningful values yet}
+if term_offset+length(name)>max_print_line-2 then print_ln
+else if (term_offset>0)or(file_offset>0) then print_char(" ");
+print_char("("); incr(open_parens); slow_print(name); update_terminal;
+state:=new_line;
+if name=str_ptr-1 then {we can conserve string pool space now}
+  begin flush_string; name:=cur_name;
+  end;
+incr(no_of_files);
+file_names[no_of_files]:=name; {keep track of file names for output specials}
+line_numbers[no_of_files]:=0; {keep track of file names for output specials}
+@<Read the first line of the new file@>;
+@z
+%-------------------------
+@x [29] m.538
+@<Read the first line...@>=
+begin line:=1;
+if input_ln(cur_file,false) then do_nothing;
+firm_up_the_line;
+if end_line_char_inactive then decr(limit)
+else  buffer[limit]:=end_line_char;
+first:=limit+1; loc:=start;
+end
+@y
+@<Read the first line...@>=
+begin line:=1;
+if input_ln(cur_file,false) then do_nothing;
+firm_up_the_line;
+if end_line_char_inactive then decr(limit)
+else  buffer[limit]:=end_line_char;
+first:=limit+1; loc:=start;
+line_numbers[no_of_files]:=1; {keep track of file names for output specials}
+@<LOCAL: Change file node@>;
+end
+@z
+%-------------------------
+@x [30] m.582
+@p function new_character(@!f:internal_font_number;@!c:eight_bits):pointer;
+label exit;
+var p:pointer; {newly allocated node}
+begin if font_bc(f)<=c then if font_ec(f)>=c then
+  if char_exists(char_info(f)(qi(c))) then
+    begin p:=get_avail; font(p):=f; character(p):=qi(c);
+    new_character:=p; return;
+    end;
+char_warning(f,c);
+new_character:=null;
+exit:end;
+@y
+@p function new_character(@!f:internal_font_number;@!c:eight_bits):pointer;
+label exit;
+var p:pointer; {newly allocated node}
+begin if font_bc(f)<=c then if font_ec(f)>=c then
+  if char_exists(char_info(f)(qi(c))) then
+    begin p:=get_avail; font(p):=f; character(p):=qi(c);
+    ptr_info(p):=local_par_info; info_incr_ref_count(local_par_info);
+    new_character:=p; return;
+    end;
+char_warning(f,c);
+new_character:=null;
+exit:end;
+@z
+%-------------------------
+@x [32] m.617
+@ @<Initialize variables as |ship_out| begins@>=
+dvi_h:=0; dvi_v:=0; cur_h:=h_offset; dvi_f:=null_font;
+ensure_dvi_open;
+if total_pages=0 then
+  begin dvi_out(pre); dvi_out(id_byte); {output the preamble}
+@^preamble of \.{DVI} file@>
+@y
+@ @<Initialize variables as |ship_out| begins@>=
+dvi_h:=0; dvi_v:=0; cur_h:=h_offset; dvi_f:=null_font;
+ensure_dvi_open;
+if total_pages=0 then
+  begin dvi_out(pre); dvi_out(id_byte); {output the preamble}
+@^preamble of \.{DVI} file@>
+  ptr_info(lig_trick):=null;
+@z
+%-------------------------
+@x [32] m.619
+@!p:pointer; {current position in the hlist}
+@y
+@!p:pointer; {current position in the hlist}
+@!fff:pointer; {current file position}
+@!ffi:integer; {for iterations}
+@!g:integer; {new string}
+@!newk:integer;
+@!should_create_special:boolean;
+@!chars_since_last_special:integer;
+@z
+%-------------------------
+@x [32] m.619
+while p<>null do @<Output node |p| for |hlist_out| and move to the next node,
+  maintaining the condition |cur_v=base_line|@>;
+@y
+if char_specials>0 then begin
+  should_create_special:=true;
+  chars_since_last_special:=char_specials;
+  end
+else begin
+  should_create_special:=false;
+  chars_since_last_special:=-1000000;
+  end;
+while p<>null do @<Output node |p| for |hlist_out| and move to the next node,
+  maintaining the condition |cur_v=base_line|@>;
+@z
+%-------------------------
+@x [32] m.620
+@<Output node |p| for |hlist_out|...@>=
+reswitch: if is_char_node(p) then
+  begin synch_h; synch_v;
+  repeat f:=font(p); c:=character(p);
+@y
+@<Output node |p| for |hlist_out|...@>=
+reswitch: if is_char_node(p) then
+  begin synch_h; synch_v;
+  if should_create_special then begin
+    should_create_special:=false;
+    if chars_since_last_special>=char_specials then
+      if ptr_info(p)<>null then
+        if info_file(ptr_info(p))<>null then begin
+          @<LOCAL: Create special node@>;
+          chars_since_last_special:=0;
+          end;
+    end;
+  repeat f:=font(p); c:=character(p);
+  incr(chars_since_last_special);
+@z
+%-------------------------
+@x [32] m.622
+move_past: cur_h:=cur_h+rule_wd;
+next_p:p:=link(p);
+end
+@y
+move_past: cur_h:=cur_h+rule_wd;
+next_p:
+if type(p)<>kern_node then should_create_special:=true;
+p:=link(p);
+end
+@z
+%-------------------------
+@x [33] m.645
+@p procedure scan_spec(@!c:group_code;@!three_codes:boolean);
+@y
+@p
+@<LOCAL: Declare |make_info_node|@>;
+procedure scan_spec(@!c:group_code;@!three_codes:boolean);
+@z
+%-------------------------
+@x [34] m.652
+@ @<Make node |p| look like a |char_node| and |goto reswitch|@>=
+begin mem[lig_trick]:=mem[lig_char(p)]; link(lig_trick):=link(p);
+p:=lig_trick; goto reswitch;
+end
+@y
+@ @<Make node |p| look like a |char_node| and |goto reswitch|@>=
+begin
+info_decr_ref_count(ptr_info(lig_trick));
+mem[lig_trick]:=mem[lig_char(p)];
+ptr_info(lig_trick):=ptr_info(p);
+info_incr_ref_count(ptr_info(p));
+file_col(lig_trick):=file_col(p);
+link(lig_trick):=link(p);
+p:=lig_trick; goto reswitch;
+end
+@z
+%-------------------------
+@x [34] m.682 l.13395 - Omega
+@d ord_noad=unset_node+3 {|type| of a noad classified Ord}
+@y
+@d ord_noad=biggest_ordinary_node+3 {|type| of a noad classified Ord}
+@z
+%-------------------------
+@x [34] m.686
+@p function new_noad:pointer;
+var p:pointer;
+begin p:=get_node(noad_size);
+type(p):=ord_noad; subtype(p):=normal;
+mem[nucleus(p)].hh:=empty_field;
+mem[subscr(p)].hh:=empty_field;
+mem[supscr(p)].hh:=empty_field;
+new_noad:=p;
+end;
+@y
+@p function new_noad:pointer;
+var p:pointer;
+begin p:=get_node(noad_size);
+type(p):=ord_noad; subtype(p):=normal;
+mem[nucleus(p)].hh:=empty_field;
+mem[subscr(p)].hh:=empty_field;
+mem[supscr(p)].hh:=empty_field;
+@<LOCAL: Add info node pointer@>;
+add_file_col(p);
+new_noad:=p;
+end;
+@z
+%---------------------------------------
+@x [34] m.688
+@d style_node=unset_node+1 {|type| of a style node}
+@y
+@d style_node=biggest_ordinary_node+1 {|type| of a style node}
+@z
+%---------------------------------------
+@x [34] m.688
+@p function new_style(@!s:small_number):pointer; {create a style node}
+var p:pointer; {the new node}
+begin p:=get_node(style_node_size); type(p):=style_node;
+subtype(p):=s; width(p):=0; depth(p):=0; {the |width| and |depth| are not used}
+new_style:=p;
+end;
+@y
+@p function new_style(@!s:small_number):pointer; {create a style node}
+var p:pointer; {the new node}
+begin p:=get_node(style_node_size); type(p):=style_node;
+subtype(p):=s; width(p):=0; depth(p):=0; {the |width| and |depth| are not used}
+@<LOCAL: Add info node pointer@>;
+add_file_col(p);
+new_style:=p;
+end;
+@z
+%---------------------------------------
+@x [34] m.689
+@d choice_node=unset_node+2 {|type| of a choice node}
+@y
+@d choice_node=biggest_ordinary_node+2 {|type| of a choice node}
+@z
+%---------------------------------------
+@x [34] m.689
+@p function new_choice:pointer; {create a choice node}
+var p:pointer; {the new node}
+begin p:=get_node(style_node_size); type(p):=choice_node;
+subtype(p):=0; {the |subtype| is not used}
+display_mlist(p):=null; text_mlist(p):=null; script_mlist(p):=null;
+script_script_mlist(p):=null;
+new_choice:=p;
+end;
+@y
+@p function new_choice:pointer; {create a choice node}
+var p:pointer; {the new node}
+begin p:=get_node(style_node_size); type(p):=choice_node;
+subtype(p):=0; {the |subtype| is not used}
+display_mlist(p):=null; text_mlist(p):=null; script_mlist(p):=null;
+script_script_mlist(p):=null;
+@<LOCAL: Add info node pointer@>;
+add_file_col(p);
+new_choice:=p;
+end;
+@z
+%---------------------------------------
+@x [36] m.755
+@ @<Create a character node |p| for |nucleus(q)|...@>=
+begin fetch(nucleus(q));
+if char_exists(cur_i) then
+  begin delta:=char_italic(cur_f)(cur_i); p:=new_character(cur_f,qo(cur_c));
+  if (math_type(nucleus(q))=math_text_char)and(space(cur_f)<>0) then
+    delta:=0; {no italic correction in mid-word of text font}
+  if (math_type(subscr(q))=empty)and(delta<>0) then
+    begin link(p):=new_kern(delta); delta:=0;
+    end;
+  end
+else p:=null;
+end
+@y
+@ @<Create a character node |p| for |nucleus(q)|...@>=
+begin fetch(nucleus(q));
+if char_exists(cur_i) then
+  begin delta:=char_italic(cur_f)(cur_i); p:=new_character(cur_f,qo(cur_c));
+  info_decr_ref_count(ptr_info(p));
+  ptr_info(p):=ptr_info(q);
+  info_incr_ref_count(ptr_info(q));
+  file_col(p):=file_col(q);
+  if (math_type(nucleus(q))=math_text_char)and(space(cur_f)<>0) then
+    delta:=0; {no italic correction in mid-word of text font}
+  if (math_type(subscr(q))=empty)and(delta<>0) then
+    begin link(p):=new_kern(delta); delta:=0;
+    end;
+  end
+else p:=null;
+end
+@z
+%---------------------------------------
 @x [38] m.814 l.15994
 @!just_box:pointer; {the |hlist_node| for the last line of the new paragraph}
 @y
 @!just_box:pointer; {the |hlist_node| for the last line of the new paragraph}
-@!internal_pen_inter:integer; {running \.{\\localinterlinepenalty}}
-@!internal_pen_broken:integer; {running \.{\\localbrokenpenalty}}
-@!internal_left_box:pointer; {running \.{\\localleftbox}}
-@!internal_left_box_width:integer; {running \.{\\localleftbox} width}
-@!init_internal_left_box:pointer; {running \.{\\localleftbox}}
-@!init_internal_left_box_width:integer; {running \.{\\localleftbox} width}
-@!internal_right_box:pointer; {running \.{\\localrightbox}}
-@!internal_right_box_width:integer; {running \.{\\localrightbox} width}
-@!no_local_whatsits:integer;
+@!init_local_par_info:pointer;
+@!last_local_par_info:pointer;
+@!current_file_node:pointer;
 
-@ @<Set init...@>=
-no_local_whatsits:=0;
-@z
-%-------------------------
-@x [38] m.815 l.16002
-procedure line_break(@!final_widow_penalty:integer);
-label done,done1,done2,done3,done4,done5,continue;
-var @<Local variables for line breaking@>@;
-@y
-function get_natural_width(first_ptr:pointer):scaled;
-label reswitch, common_ending, exit;
-var
-@!p:pointer;
-@!x:scaled; {height, depth, and natural width}
-@!g:pointer; {points to a glue specification}
-@!f:internal_font_number; {the font in a |char_node|}
-@!i:four_quarters; {font information about a |char_node|}
-begin 
-x:=0;
-p:=first_ptr;
-while p<>null do begin
-  while is_char_node(p) do begin
-    f:=font(p); i:=char_info(f)(character(p));
-    x:=x+char_width(f)(i);
-    p:=link(p);
-    end;
-  if p<>null then
-    begin case type(p) of
-    hlist_node,vlist_node,rule_node,unset_node:
-      x:=x+width(p);
-    ins_node,mark_node,adjust_node: do_nothing;
-    whatsit_node: do_nothing;
-    glue_node: begin
-      g:=glue_ptr(p); x:=x+width(g);
-      end;
-    kern_node,math_node: x:=x+width(p);
-    ligature_node: begin
-      f:=font(p); i:=char_info(f)(character(lig_char(p)));
-      x:=x+char_width(f)(i);
-      end;
-    othercases do_nothing
-    endcases;
-    p:=link(p);
-    end;
-  end;
-get_natural_width:=x;
-end;
+@ @<Set initial...@>=
+init_local_par_info:=null;
+last_local_par_info:=null;
+current_file_node:=null;
 
-procedure line_break(@!final_widow_penalty:integer);
-label done,done1,done2,done3,done4,done5,continue;
-var new_hsize: scaled;
-@<Local variables for line breaking@>@;
 @z
 %-------------------------
 @x [38] m.821 l.16110
@@ -238,30 +941,12 @@ recently created passive node. Another global variable, |printed_node|,
 is used to help print out the paragraph when detailed information about
 the line-breaking computation is being displayed.
 
-@d passive_node_size=10 {number of words in passive nodes}
+@d passive_node_size=4 {number of words in passive nodes}
 @d cur_break==rlink {in passive node, points to position of this breakpoint}
 @d prev_break==llink {points to passive node that should precede this one}
 @d serial==info {serial number for symbolic identification}
-@d passive_pen_inter(#)==mem[#+2].int
-@d passive_pen_broken(#)==mem[#+3].int
-@d passive_left_box(#)==mem[#+4].int
-@d passive_left_box_width(#)==mem[#+5].int
-@d passive_last_left_box(#)==mem[#+6].int
-@d passive_last_left_box_width(#)==mem[#+7].int
-@d passive_right_box(#)==mem[#+8].int
-@d passive_right_box_width(#)==mem[#+9].int
-@z
-%-------------------------
-@x [38] m.835 l.16407
-@<If a line number class...@>=
-begin l:=line_number(r);
-if l>old_l then
-  begin {now we are no longer in the inner loop}
-@y
-@<If a line number class...@>=
-begin l:=line_number(r);
-if l>old_l then
-  begin {now we are no longer in the inner loop}
+@d passive_local(#)==mem[#+2].int
+@d passive_prev_local(#)==mem[#+3].int
 @z
 %-------------------------
 @x [38] m.844 l.16595
@@ -277,50 +962,13 @@ link(q):=passive; passive:=q; cur_break(q):=cur_p;
 @!stat incr(pass_number); serial(q):=pass_number;@+tats@;@/
 prev_break(q):=best_place[fit_class];@/
 {Here we keep track of the subparagraph penalties in the break nodes}
-passive_pen_inter(q):=internal_pen_inter;
-passive_pen_broken(q):=internal_pen_broken;
-passive_last_left_box(q):=internal_left_box;
-passive_last_left_box_width(q):=internal_left_box_width;
-if prev_break(q)<>null then begin
-  passive_left_box(q):=passive_last_left_box(prev_break(q));
-  passive_left_box_width(q):=passive_last_left_box_width(prev_break(q));
-  end
-else begin
-  passive_left_box(q):=init_internal_left_box;
-  passive_left_box_width(q):=init_internal_left_box_width;
-  end;
-passive_right_box(q):=internal_right_box;
-passive_right_box_width(q):=internal_right_box_width;
-@z
-%-------------------------
-@x [38] m.848 l.16595
-if par_shape_ptr=null then
-  if hang_indent=0 then
-    begin last_special_line:=0; second_width:=hsize;
-@y
-new_hsize := get_natural_width(link(temp_head)) div 7;
-if new_hsize>hsize then new_hsize:=hsize;
-if new_hsize<(hsize div 4) then new_hsize:=(hsize div 4);
-new_hsize := hsize;
-if par_shape_ptr=null then
-  if hang_indent=0 then
-    begin last_special_line:=0; second_width:=new_hsize;
-@z
-%-------------------------
-@x [38] m.849 l.16595
-  begin first_width:=hsize-abs(hang_indent);
-  if hang_indent>=0 then first_indent:=hang_indent
-  else first_indent:=0;
-  second_width:=hsize; second_indent:=0;
-  end
-else  begin first_width:=hsize; first_indent:=0;
-@y
-  begin first_width:=new_hsize-abs(hang_indent);
-  if hang_indent>=0 then first_indent:=hang_indent
-  else first_indent:=0;
-  second_width:=new_hsize; second_indent:=0;
-  end
-else  begin first_width:=new_hsize; first_indent:=0;
+passive_local(q):=last_local_par_info;
+info_incr_ref_count(last_local_par_info);
+if prev_break(q)=null then
+  passive_prev_local(q):=init_local_par_info
+else
+  passive_prev_local(q):=passive_local(prev_break(q));
+info_incr_ref_count(passive_prev_local(q));
 @z
 %-------------------------
 @x [38] m.851 l.16706
@@ -333,10 +981,17 @@ shortfall:=line_width-cur_active_width[1]; {we're this much too short}
 begin artificial_demerits:=false;@/
 @^inner loop@>
 shortfall:=line_width-cur_active_width[1]; {we're this much too short}
-if break_node(r)=null then
-  shortfall:=shortfall-init_internal_left_box_width
-else shortfall:=shortfall-passive_last_left_box_width(break_node(r));
-shortfall:=shortfall-internal_right_box_width;
+if break_node(r)=null then begin
+  if init_local_par_info<>null then
+    if info_left_box(init_local_par_info)<>null then
+      shortfall:=shortfall-width(info_left_box(init_local_par_info));
+  end
+else if passive_local(break_node(r))<>null then
+  if info_left_box(passive_local(break_node(r)))<>null then
+    shortfall:=shortfall-width(info_left_box(passive_local(break_node(r))));
+if last_local_par_info<>null then
+  if info_right_box(last_local_par_info)<>null then
+    shortfall:=shortfall-width(info_right_box(last_local_par_info));
 @z
 %-------------------------
 @x [39] m.863 l.16932
@@ -351,26 +1006,56 @@ loop@+  begin if threshold>inf_bad then threshold:=inf_bad;
   @<Create an active breakpoint representing the beginning of the paragraph@>;
   cur_p:=link(temp_head); auto_breaking:=true;@/
   prev_p:=cur_p; {glue at beginning is not a legal breakpoint}
-  @<LOCAL: Initialize with first |local_paragraph| node@>;
+  @<LOCAL: Initialize local paragraph information@>;
 @z
 %-------------------------
-@x [39] m.877 l.17206
-procedure post_line_break(@!final_widow_penalty:integer);
-label done,done1;
+@x [39] m.865
+@ @<Clean...@>=
+q:=link(active);
+while q<>last_active do
+  begin cur_p:=link(q);
+  if type(q)=delta_node then free_node(q,delta_node_size)
+  else free_node(q,active_node_size);
+  q:=cur_p;
+  end;
+q:=passive;
+while q<>null do
+  begin cur_p:=link(q);
+  free_node(q,passive_node_size);
+  q:=cur_p;
+  end
 @y
-procedure post_line_break(@!final_widow_penalty:integer);
-label done,done1,continue;
+@ @<Clean...@>=
+q:=link(active);
+while q<>last_active do
+  begin cur_p:=link(q);
+  if type(q)=delta_node then free_node(q,delta_node_size)
+  else free_node(q,active_node_size);
+  q:=cur_p;
+  end;
+q:=passive;
+while q<>null do
+  begin cur_p:=link(q);
+  info_decr_ref_count(passive_local(q));
+  info_decr_ref_count(passive_prev_local(q));
+  free_node(q,passive_node_size);
+  q:=cur_p;
+  end
 @z
 %-------------------------
-@x [39] m.879 l.17257
-  if non_discardable(q) then goto done1;
-  if type(q)=kern_node then if subtype(q)<>explicit then goto done1;
+@x [39] m.866
+@<Call |try_break| if |cur_p| is a legal breakpoint...@>=
+begin if is_char_node(cur_p) then
+  @<Advance \(c)|cur_p| to the node following the present
+    string of characters@>;
 @y
-  if @<LOCAL: local paragraph node@> then begin end
-  else begin
-    if non_discardable(q) then goto done1;
-    if type(q)=kern_node then if subtype(q)<>explicit then goto done1;
-    end;
+@<Call |try_break| if |cur_p| is a legal breakpoint...@>=
+begin
+@<LOCAL: Update local paragraph information@>;
+if is_char_node(cur_p) then
+  @<Advance \(c)|cur_p| to the node following the present
+    string of characters@>;
+@<LOCAL: Update local paragraph information@>;
 @z
 %-------------------------
 @x [39] m.881 l.17289
@@ -393,23 +1078,16 @@ else  begin q:=temp_head;
 @<Put the \(r)\.{\\rightskip} glue after node |q|@>;
 @y
 q:=cur_break(cur_p); disc_break:=false; post_disc_break:=false;
-continue:
 if q<>null then {|q| cannot be a |char_node|}
-  if @<LOCAL: local paragraph node@> then begin
-    r:=q;
-    q:=temp_head;
-    while link(q)<>r do q:=link(q);
-    link(q):=link(r);
-    goto continue;
-    end
-  else if type(q)=glue_node then begin
-     if passive_right_box(cur_p)<>null then begin
-      r:=temp_head;
-      while link(r)<>q do r:=link(r);
-      s:=copy_node_list(passive_right_box(cur_p));
-      link(r):=s;
-      link(s):=q;
-      end;
+  if type(q)=glue_node then begin
+    if passive_local(cur_p)<>null then 
+      if info_right_box(passive_local(cur_p))<>null then begin
+        r:=temp_head;
+        while link(r)<>q do r:=link(r);
+        s:=copy_node_list(info_right_box(passive_local(cur_p)));
+        link(r):=s;
+        link(s):=q;
+        end;
     delete_glue_ref(glue_ptr(q));
     glue_ptr(q):=right_skip;
     subtype(q):=right_skip_code+1; add_glue_ref(right_skip);
@@ -423,12 +1101,13 @@ if q<>null then {|q| cannot be a |char_node|}
 else  begin q:=temp_head;
   while link(q)<>null do q:=link(q);
   end;
-if passive_right_box(cur_p)<>null then begin
-  r:=copy_node_list(passive_right_box(cur_p));
-  link(r):=link(q);
-  link(q):=r;
-  q:=r;
-  end;
+if passive_local(cur_p)<>null then 
+  if info_right_box(passive_local(cur_p))<>null then begin
+    r:=copy_node_list(info_right_box(passive_local(cur_p)));
+    link(r):=link(q);
+    link(q):=r;
+    q:=r;
+    end;
 @<Put the \(r)\.{\\rightskip} glue after node |q|@>;
 @z
 %-------------------------
@@ -442,19 +1121,21 @@ if left_skip<>zero_glue then
 @y
 @<Put the \(l)\.{\\leftskip} glue at the left...@>=
 r:=link(q); link(q):=null; q:=link(temp_head); link(temp_head):=r;
-if passive_left_box(cur_p)<>null then begin
-  r:=copy_node_list(passive_left_box(cur_p));
-  s:=link(q);
-  link(r):=q;
-  q:=r;
-  if (cur_line=prev_graf+1) and (s<>null) then
-    if type(s)=hlist_node then
-      if list_ptr(s)=null then begin
-        q:=link(q);
-        link(r):=link(s);
-        link(s):=r;
-        end;
-  end;
+if passive_prev_local(cur_p)<>null then
+  if info_left_box(passive_prev_local(cur_p))<>null then begin
+    r:=copy_node_list(info_left_box(passive_prev_local(cur_p)));
+    s:=link(q);
+    link(r):=q;
+    q:=r;
+    {adjustment for the indent node}
+    if (cur_line=prev_graf+1) and (s<>null) then
+      if type(s)=hlist_node then
+        if list_ptr(s)=null then begin
+          q:=link(q);
+          link(r):=link(s);
+          link(s):=r;
+          end;
+    end;
 if left_skip<>zero_glue then
   begin r:=new_param_glue(left_skip_code);
   link(r):=q; q:=r;
@@ -471,90 +1152,41 @@ if cur_line+1<>best_line then
 @y
 @<Append a penalty node, if a nonzero penalty is appropriate@>=
 if cur_line+1<>best_line then begin
-  if passive_pen_inter(cur_p)<>0 then
-      pen:=passive_pen_inter(cur_p)
+  if passive_local(cur_p)<>null then begin
+    if info_pen_inter(passive_local(cur_p))<>0 then
+      pen:=info_pen_inter(passive_local(cur_p))
+    else pen:=inter_line_penalty;
+    end
   else pen:=inter_line_penalty;
   if cur_line=prev_graf+1 then pen:=pen+club_penalty;
   if cur_line+2=best_line then pen:=pen+final_widow_penalty;
   if disc_break then
-    if passive_pen_broken(cur_p)<>0 then
-      pen:=pen+passive_pen_broken(cur_p)
+    if passive_local(cur_p)<>null then begin
+      if info_pen_broken(passive_local(cur_p))<>0 then
+        pen:=pen+info_pen_broken(passive_local(cur_p))
+      else pen:=pen+broken_penalty;
+      end
     else pen:=pen+broken_penalty;
 @z
 %-------------------------
-@x [47] m.1063 l.20580
-non_math(left_brace): new_save_level(simple_group);
-any_mode(begin_group): new_save_level(semi_simple_group);
-any_mode(end_group): if cur_group=semi_simple_group then unsave
-  else off_save;
+@x [46] m.1034
+fast_get_avail(lig_stack); font(lig_stack):=main_f; cur_l:=qi(cur_chr);
+character(lig_stack):=cur_l;@/
 @y
-non_math(left_brace): begin
-  incr(save_ptr);
-  saved(-1):=no_local_whatsits;
-  new_save_level(simple_group);
-  end;
-any_mode(begin_group): begin
-  incr(save_ptr);
-  saved(-1):=no_local_whatsits;
-  new_save_level(semi_simple_group);
-  end;
-any_mode(end_group):
-  if cur_group=semi_simple_group then begin
-    unsave;
-    if no_local_whatsits<>saved(-1) then
-      if abs(mode)=hmode then @<LOCAL: Add local paragraph node@>;
-    decr(save_ptr);
-    end
-  else off_save;
+fast_get_avail(lig_stack); font(lig_stack):=main_f; cur_l:=qi(cur_chr);
+ptr_info(lig_stack):=local_par_info; info_incr_ref_count(local_par_info);
+add_file_col(lig_stack);
+character(lig_stack):=cur_l;@/
 @z
 %-------------------------
-@x [47] m.1068 l.20653
-procedure handle_right_brace;
-var p,@!q:pointer; {for short-term use}
-@!d:scaled; {holds |split_max_depth| in |insert_group|}
-@!f:integer; {holds |floating_penalty| in |insert_group|}
-begin case cur_group of
-simple_group: unsave;
+@x [46] m.1038
+fast_get_avail(lig_stack); font(lig_stack):=main_f;
+cur_r:=qi(cur_chr); character(lig_stack):=cur_r;
 @y
-procedure handle_right_brace;
-var p,@!q:pointer; {for short-term use}
-@!d:scaled; {holds |split_max_depth| in |insert_group|}
-@!f:integer; {holds |floating_penalty| in |insert_group|}
-begin case cur_group of
-simple_group: begin
-  unsave;
-  if no_local_whatsits<>saved(-1) then
-    if abs(mode)=hmode then @<LOCAL: Add local paragraph node@>;
-  decr(save_ptr);
-  end;
-@z
-%-------------------------
-@x [47] m.1091 l.21055
-push_nest; mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
-prev_graf:=(norm_min(left_hyphen_min)*@'100+norm_min(right_hyphen_min))
-             *@'200000+cur_lang;
-if indented then
-  begin tail:=new_null_box; link(head):=tail; width(tail):=par_indent;@+
-  end;
-@y
-push_nest; mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
-prev_graf:=(norm_min(left_hyphen_min)*@'100+norm_min(right_hyphen_min))
-             *@'200000+cur_lang;
-@<LOCAL: Add local paragraph node@>;
-if indented then begin
-  tail:=new_null_box; link(link(head)):=tail; width(tail):=par_indent;@+
-  end;
-@z
-%-------------------------
-@x [47] m.1096 l.21116
-procedure end_graf;
-begin if mode=hmode then
-  begin if head=tail then pop_nest {null paragraphs are ignored}
-@y
-procedure end_graf;
-begin if mode=hmode then
-  begin if (head=tail) or (link(head)=tail) then pop_nest
-        {null paragraphs are ignored, all contain a |local_paragraph| node}
+fast_get_avail(lig_stack); font(lig_stack):=main_f;
+ptr_info(lig_stack):=local_par_info; info_incr_ref_count(local_par_info);
+add_file_col(lig_stack);
+cur_r:=qi(cur_chr); character(lig_stack):=cur_r;
 @z
 %-------------------------
 @x [47] m.1114 l.21322
@@ -592,6 +1224,17 @@ any_mode(assign_local_box): append_local_box(cur_chr);
 %-------------------------
 @x [47] m.1117 l.21338
 procedure append_discretionary;
+var c:integer; {hyphen character}
+begin tail_append(new_disc);
+if cur_chr=1 then
+  begin c:=hyphen_char(cur_font);
+  if c>=0 then if c<=biggest_char then
+     pre_break(tail):=new_character(cur_font,c);
+  end
+else  begin incr(save_ptr); saved(-1):=0; new_save_level(disc_group);
+  scan_left_brace; push_nest; mode:=-hmode; space_factor:=1000;
+  end;
+end;
 @y
 procedure append_local_box(kind:integer);
 begin 
@@ -600,6 +1243,22 @@ scan_left_brace; push_nest; mode:=-hmode; space_factor:=1000;
 end;
 
 procedure append_discretionary;
+var c:integer; {hyphen character}
+begin tail_append(new_disc);
+if cur_chr=1 then
+  begin c:=hyphen_char(cur_font);
+  if c>=0 then if c<=biggest_char then begin
+     pre_break(tail):=new_character(cur_font,c);
+     info_decr_ref_count(ptr_info(pre_break(tail)));
+     ptr_info(pre_break(tail)):=local_par_info;
+     info_incr_ref_count(local_par_info);
+     add_file_col(pre_break(tail));
+     end
+  end
+else  begin incr(save_ptr); saved(-1):=0; new_save_level(disc_group);
+  scan_left_brace; push_nest; mode:=-hmode; space_factor:=1000;
+  end;
+end;
 @z
 %-------------------------
 @x [47] m.1118 l.21355
@@ -625,31 +1284,83 @@ if kind=0 then
   eq_define(local_left_box_base,box_ref,p)
 else
   eq_define(local_right_box_base,box_ref,p);
-if abs(mode)=hmode then
-  @<LOCAL: Add local paragraph node@>;
-incr(no_local_whatsits);
+@<LOCAL: Change info node@>;
 end;
 
 procedure build_discretionary;
 @z
 %-------------------------
-@x [47] m.1200 l.22453
-procedure resume_after_display;
-begin if cur_group<>math_shift_group then confusion("display");
-@:this can't happen display}{\quad display@>
-unsave; prev_graf:=prev_graf+3;
-push_nest; mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
-prev_graf:=(norm_min(left_hyphen_min)*@'100+norm_min(right_hyphen_min))
-             *@'200000+cur_lang;
+@x [47] m.1123
+procedure make_accent;
+var s,@!t: real; {amount of slant}
+@!p,@!q,@!r:pointer; {character, box, and kern nodes}
+@!f:internal_font_number; {relevant font}
+@!a,@!h,@!x,@!w,@!delta:scaled; {heights and widths, as explained above}
+@!i:four_quarters; {character information}
+begin scan_char_num; f:=cur_font; p:=new_character(f,cur_val);
+if p<>null then
+  begin x:=x_height(f); s:=slant(f)/float_constant(65536);
+@^real division@>
+  a:=char_width(f)(char_info(f)(character(p)));@/
+  do_assignments;@/
+  @<Create a character node |q| for the next character,
+    but set |q:=null| if problems arise@>;
+  if q<>null then @<Append the accent with appropriate kerns,
+      then set |p:=q|@>;
+  link(tail):=p; tail:=p; space_factor:=1000;
+  end;
+end;
 @y
-procedure resume_after_display;
-begin if cur_group<>math_shift_group then confusion("display");
-@:this can't happen display}{\quad display@>
-unsave; prev_graf:=prev_graf+3;
-push_nest; mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
-prev_graf:=(norm_min(left_hyphen_min)*@'100+norm_min(right_hyphen_min))
-             *@'200000+cur_lang;
-@<LOCAL: Add local paragraph node@>;
+procedure make_accent;
+var s,@!t: real; {amount of slant}
+@!p,@!q,@!r:pointer; {character, box, and kern nodes}
+@!f:internal_font_number; {relevant font}
+@!a,@!h,@!x,@!w,@!delta:scaled; {heights and widths, as explained above}
+@!i:four_quarters; {character information}
+begin scan_char_num; f:=cur_font; p:=new_character(f,cur_val);
+@<LOCAL: Add info node pointer@>;
+add_file_col(p);
+if p<>null then
+  begin x:=x_height(f); s:=slant(f)/float_constant(65536);
+@^real division@>
+  a:=char_width(f)(char_info(f)(character(p)));@/
+  do_assignments;@/
+  @<Create a character node |q| for the next character,
+    but set |q:=null| if problems arise@>;
+  if q<>null then @<Append the accent with appropriate kerns,
+      then set |p:=q|@>;
+  link(tail):=p; tail:=p; space_factor:=1000;
+  end;
+end;
+@z
+%-------------------------
+@x [47] m.1124
+@ @<Create a character node |q| for the next...@>=
+q:=null; f:=cur_font;
+if (cur_cmd=letter)or(cur_cmd=other_char)or(cur_cmd=char_given) then
+  q:=new_character(f,cur_chr)
+else if cur_cmd=char_num then
+  begin scan_char_num; q:=new_character(f,cur_val);
+  end
+else back_input
+@y
+@ @<Create a character node |q| for the next...@>=
+q:=null; f:=cur_font;
+if (cur_cmd=letter)or(cur_cmd=other_char)or(cur_cmd=char_given) then begin
+  q:=new_character(f,cur_chr);
+  info_decr_ref_count(ptr_info(q));
+  ptr_info(q):=local_par_info;
+  info_incr_ref_count(local_par_info);
+  add_file_col(q);
+  end
+else if cur_cmd=char_num then
+  begin scan_char_num; q:=new_character(f,cur_val);
+  info_decr_ref_count(ptr_info(q));
+  ptr_info(q):=local_par_info;
+  info_incr_ref_count(local_par_info);
+  add_file_col(q);
+  end
+else back_input
 @z
 %-------------------------
 @x [49] m.1228 l.22908
@@ -658,25 +1369,11 @@ assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
 @y
 assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
   word_define(p,cur_val);
-{If we are defining subparagraph penalty levels while we are
-in hmode, then we put out a whatsit immediately, otherwise
-we leave it alone.  This mechanism might not be sufficiently
-powerful, and some other algorithm, searching down the stack,
-might be necessary.  Good first step.}
-  if (abs(mode)=hmode) and
-     ((p=(int_base+local_inter_line_penalty_code)) or
-      (p=(int_base+local_broken_penalty_code))) then begin
-    @<LOCAL: Add local paragraph node@>;
-    incr(no_local_whatsits);
-    local_par_bool:=true;
-    end;
-@z
-%-------------------------
-@x [53] m.1344 l.24533
-@d set_language_code=5 {command modifier for \.{\\setlanguage}}
-@y
-@d set_language_code=5 {command modifier for \.{\\setlanguage}}
-@d local_par_node=6 {|subtype| in whatsits for local paragraph node}
+{If we are defining subparagraph penalty levels, then we
+ must change the local paragraph node.}
+  if ((p=(int_base+local_inter_line_penalty_code)) or
+      (p=(int_base+local_broken_penalty_code))) then
+    @<LOCAL: Change info node@>;
 @z
 %-------------------------
 @x [53] m.1344 l.24546
@@ -685,68 +1382,78 @@ primitive("setlanguage",extension,set_language_code);@/
 @y
 primitive("setlanguage",extension,set_language_code);@/
 @!@:set_language_}{\.{\\setlanguage} primitive@>
-primitive("localinterlinepenalty",assign_int,local_inter_line_penalty_code);@/
-primitive("localbrokenpenalty",assign_int,local_broken_penalty_code);@/
+primitive("localinterlinepenalty",assign_int,
+          int_base+local_inter_line_penalty_code);@/
+primitive("localbrokenpenalty",assign_int,
+          int_base+local_broken_penalty_code);@/
+primitive("charspecials",assign_int,
+          int_base+char_specials_code);@/
 @z
 %-------------------------
-@x [53] m.1356 l.24660
-language_node:begin print_esc("setlanguage");
-  print_int(what_lang(p)); print(" (hyphenmin ");
-  print_int(what_lhm(p)); print_char(",");
-  print_int(what_rhm(p)); print_char(")");
+@x [53] m.1354
+@<Implement \.{\\special}@>=
+begin new_whatsit(special_node,write_node_size); write_stream(tail):=null;
+p:=scan_toks(false,true); write_tokens(tail):=def_ref;
+end
+@y
+@<Implement \.{\\special}@>=
+begin new_whatsit(special_node,write_node_size); write_stream(tail):=null;
+ptr_info(tail):=local_par_info;
+info_incr_ref_count(local_par_info);
+add_file_col(tail);
+p:=scan_toks(false,true); write_tokens(tail):=def_ref;
+end
+@z
+%-------------------------
+@x [53] m.1368
+@<Declare procedures needed in |hlist_out|, |vlist_out|@>=
+procedure special_out(@!p:pointer);
+var old_setting:0..max_selector; {holds print |selector|}
+@!k:pool_pointer; {index into |str_pool|}
+begin synch_h; synch_v;@/
+@y
+@<Declare procedures needed in |hlist_out|, |vlist_out|@>=
+procedure append_string(s:integer);
+var p:pointer;
+    i:integer;
+begin
+if (s<@"10000) then append_char(s)
+else begin
+  i:=str_start(s);
+  while i<str_start(s+1) do begin
+    append_char(str_pool[i]);
+    incr(i);
+    end;
   end;
-@y4
-language_node:begin print_esc("setlanguage");
-  print_int(what_lang(p)); print(" (hyphenmin ");
-  print_int(what_lhm(p)); print_char(",");
-  print_int(what_rhm(p)); print_char(")");
+end;
+
+procedure append_int(n:integer);
+var p:pointer;
+    k:integer;
+begin
+k:=0;
+repeat
+  dig[k] := n mod 10;
+  n := n div 10;
+  incr(k);
+until n=0;
+while k>0 do begin
+  decr(k);
+  append_char("0"+dig[k]);
   end;
-@<LOCAL: print out |local_paragraph| node@>;
-@z
-%-------------------------
-@x [53] m.1357 l.24685
-othercases confusion("ext2")
-@y
-local_par_node: begin r:=get_node(local_par_size);
-  words:=local_par_size;
-  end;
-othercases confusion("ext2")
-@z
-%-------------------------
-@x [53] m.1358 l.24696
-othercases confusion("ext3")
-@y
-local_par_node: free_node(p,local_par_size);
-othercases confusion("ext3")
-@z
-%-------------------------
-@x [53] m.1362 l.24711
-@<Advance \(p)past a whatsit node in the \(l)|line_break| loop@>=@+
-adv_past(cur_p)
-@y
-@<Advance \(p)past a whatsit node in the \(l)|line_break| loop@>=@+
-adv_past(cur_p) else @<LOCAL: Advance past a |local_paragraph| node@>
-@z
-%-------------------------
-@x [53] m.1373 l.24820
-procedure out_what(@!p:pointer);
-var j:small_number; {write stream number}
-begin case subtype(p) of
-open_node,write_node,close_node:@<Do some work that has been queued up
-  for \.{\\write}@>;
-special_node:special_out(p);
-language_node:do_nothing;
-othercases confusion("ext4")
-@y
-procedure out_what(@!p:pointer);
-var j:small_number; {write stream number}
-begin case subtype(p) of
-open_node,write_node,close_node:@<Do some work that has been queued up
-  for \.{\\write}@>;
-special_node:special_out(p);
-language_node:do_nothing;
-local_par_node:do_nothing;
-othercases confusion("ext4")
+end;
+
+procedure special_out(@!p:pointer);
+var old_setting:0..max_selector; {holds print |selector|}
+@!k:pool_pointer; {index into |str_pool|}
+@!fff:pointer; {current file position}
+@!ffi:integer; {for iterations}
+@!g:integer; {new string}
+@!newk:integer;
+begin synch_h; synch_v;@/
+if ptr_info(p)<>null then 
+  if info_file(ptr_info(p))<>null then 
+    @<LOCAL: Create special node@>;
 @z
 %-------------------------
 @x [53] m.1378 l.24900
@@ -756,101 +1463,167 @@ for k:=0 to 15 do if write_open[k] then a_close(write_file[k])
 @ @<Finish the extensions@>=
 for k:=0 to 15 do if write_open[k] then a_close(write_file[k])
 
-@ 
-@d local_pen_inter(#)==mem[#+1].int {\.{\\localinterlinepenalty}}
-@d local_pen_broken(#)==mem[#+2].int {\.{\\localbrokenpenalty}}
-@d local_box_left(#)==mem[#+3].int {\.{\\localleftbox}}
-@d local_box_left_width(#)==mem[#+4].int
-@d local_box_right(#)==mem[#+5].int {\.{\\localleftbox}}
-@d local_box_right_width(#)==mem[#+6].int
-@d local_par_size==7
-
-@<LOCAL: Declare |make_local_par_node|@>=
-function make_local_par_node:pointer;
-{This function creates a |local_paragraph| node}
+@ @<LOCAL: Declare |make_info_node|@>=
+procedure make_info_node;
+{This function creates an |info_node|}
 var p:pointer;
 begin
-p:=get_node(local_par_size); type(p):=whatsit_node;
-subtype(p):=local_par_node; link(p):=null;
-local_pen_inter(p):=local_inter_line_penalty;
-local_pen_broken(p):=local_broken_penalty;
-if local_left_box=null then begin
-  local_box_left(p):=null;
-  local_box_left_width(p):=0;
+p:=get_node(info_size); type(p):=info_node;
+link(p):=null;
+info_ref_count(p):=1;
+info_pen_inter(p):=local_inter_line_penalty;
+info_pen_broken(p):=local_broken_penalty;
+if local_left_box=null then
+  info_left_box(p):=null
+else
+  info_left_box(p):=copy_node_list(local_left_box);
+if local_right_box=null then
+  info_right_box(p):=null
+else
+  info_right_box(p):=copy_node_list(local_right_box);
+if current_file_node=null then begin
+  info_file(p):=null;
   end
 else begin
-  local_box_left(p):=copy_node_list(local_left_box);
-  local_box_left_width(p):=width(local_left_box);
+  info_file(p):=current_file_node;
+  file_incr_ref_count(current_file_node);
   end;
-if local_right_box=null then begin
-  local_box_right(p):=null;
-  local_box_right_width(p):=0;
-  end
-else begin
-  local_box_right(p):=copy_node_list(local_right_box);
-  local_box_right_width(p):=width(local_right_box);
+eq_define(local_par_info_base,data,p);
+end;
+
+procedure make_file_node;
+var p:pointer;
+    i:integer;
+begin
+p:=get_node(file_size+2*no_of_files); type(p):=file_node;
+file_no(p):=no_of_files;
+file_ref_count(p):=1;
+for i := 1 to no_of_files do begin
+  mem[p+(i*2)].int := file_names[i];
+  mem[p+(i*2)+1].int := line_numbers[i];
   end;
-make_local_par_node:=p;
+file_decr_ref_count(current_file_node);
+current_file_node:=p;
+make_info_node;
 end
 
-@ @<LOCAL: Initialize with first |local_paragraph| node@>=
-if subtype(cur_p)=local_par_node then begin
-  internal_pen_inter:=local_pen_inter(cur_p);
-  internal_pen_broken:=local_pen_broken(cur_p);
-  init_internal_left_box:=local_box_left(cur_p);
-  init_internal_left_box_width:=local_box_left_width(cur_p);
-  internal_left_box:=init_internal_left_box;
-  internal_left_box_width:=init_internal_left_box_width;
-  internal_right_box:=local_box_right(cur_p);
-  internal_right_box_width:=local_box_right_width(cur_p);
-  end
+@ @<LOCAL: Initialize local paragraph information@>=
+begin
+info_decr_ref_count(init_local_par_info);
+init_local_par_info:=ptr_info(cur_p);
+info_incr_ref_count(init_local_par_info);
+info_decr_ref_count(last_local_par_info);
+last_local_par_info:=ptr_info(cur_p);
+info_incr_ref_count(last_local_par_info);
+end
 
-@ @<LOCAL: Advance past a |local_paragraph| node@>=
-if subtype(cur_p)=local_par_node then begin
-  internal_pen_inter:=local_pen_inter(cur_p);
-  internal_pen_broken:=local_pen_broken(cur_p);
-  internal_left_box:=local_box_left(cur_p);
-  internal_left_box_width:=local_box_left_width(cur_p);
-  internal_right_box:=local_box_right(cur_p);
-  internal_right_box_width:=local_box_right_width(cur_p);
-  end
+@ @<LOCAL: Update local paragraph information@>=
+begin
+if last_local_par_info<>ptr_info(cur_p) then begin
+  info_decr_ref_count(last_local_par_info);
+  last_local_par_info:=ptr_info(cur_p);
+  info_incr_ref_count(last_local_par_info);
+  end;
+end
 
 @ @<LOCAL: print out |local_paragraph| node@>=
-local_par_node: begin
-  print_esc("whatsit");
+info_node: begin
+  print_esc("info");
   append_char(".");
   print_ln; print_current_string;
   print_esc("localinterlinepenalty"); print("=");
-  print_int(local_pen_inter(p));
+  print_int(info_pen_inter(p));
   print_ln; print_current_string;
   print_esc("localbrokenpenalty"); print("=");
-  print_int(local_pen_broken(p));
+  print_int(info_pen_broken(p));
   print_ln; print_current_string;
   print_esc("localleftbox");
-  if local_box_left(p)=null then print("=null")
+  if info_left_box(p)=null then print("=null")
   else begin
     append_char(".");
-    show_node_list(local_box_left(p));
+    show_node_list(info_left_box(p));
     decr(pool_ptr);
     end;
   print_ln; print_current_string;
   print_esc("localrightbox");
-  if local_box_right(p)=null then print("=null")
+  if info_right_box(p)=null then print("=null")
   else begin
     append_char(".");
-    show_node_list(local_box_right(p));
+    show_node_list(info_right_box(p));
     decr(pool_ptr);
     end;
   decr(pool_ptr);
   end
 
-@ @<LOCAL: Add local paragraph node@>=
-begin tail_append(make_local_par_node) end
+@ @<LOCAL: Change file node@>=
+begin
+make_file_node;
+end
 
-@ @<LOCAL: local paragraph node@>=
-((type(q)=whatsit_node) and (subtype(q)=local_par_node))
+@ @<LOCAL: Change info node@>=
+begin
+make_info_node;
+end
 
-@ @<LOCAL: One local paragraph node@>=
-make_local_par_node
+@ @<LOCAL: Delete info node@>=
+begin
+info_decr_ref_count(p);
+end
+
+@ @<LOCAL: Add info node pointer@>=
+begin
+ptr_info(p):=local_par_info;
+info_incr_ref_count(local_par_info);
+end
+
+@ @<LOCAL: Copy info node pointer@>=
+begin
+ptr_info(r):=ptr_info(p);
+info_incr_ref_count(ptr_info(p));
+end
+
+@ @<LOCAL: Remove info node pointer@>=
+begin
+info_decr_ref_count(ptr_info(p));
+ptr_info(p):=null;
+end
+
+@ @<LOCAL: Create special node@>=
+begin
+fff:=info_file(ptr_info(p));
+append_string("om:");
+append_string("lines=");
+for ffi:=1 to file_no(fff) do begin
+  if mem[fff+ffi*2].int <> 0 then begin
+    append_char("""");
+    append_string(mem[fff+ffi*2].int);
+    append_char("""");
+    append_char(",");
+    append_int(mem[fff+ffi*2+1].int);
+    append_char(";");
+    end;
+  end;
+g:=make_string;
+if length(g)<256 then
+  begin dvi_out(xxx1); dvi_out(length(g));
+  end
+else  begin dvi_out(xxx4); dvi_four(length(g));
+  end;
+for newk:=str_start(g) to pool_ptr-1 do dvi_out(so(str_pool[newk]));
+flush_string; {erase the string}
+append_string("om:");
+append_string("col=");
+append_int(file_col(p));
+append_char(";");
+g:=make_string;
+if length(g)<256 then
+  begin dvi_out(xxx1); dvi_out(length(g));
+  end
+else  begin dvi_out(xxx4); dvi_four(length(g));
+  end;
+for newk:=str_start(g) to pool_ptr-1 do dvi_out(so(str_pool[newk]));
+flush_string; {erase the string}
+end
+
 @z
 %-------------------------

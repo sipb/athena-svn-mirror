@@ -62,6 +62,21 @@ struct _HTRequest {
 
 /*
 (
+Message body
+)
+
+A request message body indicated for XML bodies. It is used for extension
+methods. See HTReq.html for details.
+*/
+
+#ifdef HT_EXT
+    char *             messageBody;
+    long int           messageBodyLength;
+    HTFormat           messageBodyFormat;
+#endif
+
+/*
+(
   User Profile
 )
 
@@ -157,9 +172,6 @@ These are the masks that decides what headers to send.
     HTRqHd		RequestMask;
     HTEnHd		EntityMask;
 
-    HTList *		generators;
-    BOOL		gens_local;
-
 /*
 (
   Local MIME Header Parsers
@@ -225,6 +237,16 @@ to be sent as part of the Cache-Control header.
 
 /*
 (
+  Default PUT name
+)
+
+Stores the default name when publishing to a "/" URL.
+*/
+
+   char *               default_put_name;
+
+/*
+(
   Byte Ranges
 )
 
@@ -273,16 +295,43 @@ already know that we need to generate credentials for a specific realm.
 
 /*
 (
-  Protocol Extension Protocol (PEP) Information
+  Request Header Extensibility
 )
 
-These association lists contain the information that we are to send as PEP
-headers in the request.
+  
+
+  1) Simple Association List
+
+
+Add the (name, value) and it will be converted into MIME header format as
+name: value. DO NOT ADD CRLF line termination - this is done
+by the HTTP header generator stream
 */
 
-    HTAssocList *	protocol;
-    HTAssocList *	protocol_info;
-    HTAssocList *	protocol_request;
+    HTAssocList	*	extra_headers;
+
+/*
+
+  2) Stream Oriented Header Generators
+
+
+A generator is a stream with direct access to the output stream
+*/
+
+    HTList *		generators;
+    BOOL		gens_local;
+
+/*
+
+  4) HTTP Extension Framework
+
+
+These association lists contain the information that we are to send as
+HTTP Extension Framework.
+*/
+
+    HTAssocList *	mandatory;
+    HTAssocList *	optional;
 
 /*
 (
@@ -302,10 +351,12 @@ headers in the request.
 */
 
     HTStream *		output_stream; 
+    HTStream *		orig_output_stream; 
     HTFormat		output_format;
     BOOL		connected;
 
-    HTStream*		debug_stream;
+    HTStream *		debug_stream;
+    HTStream *		orig_debug_stream;
     HTFormat		debug_format;
 
 /*
@@ -336,7 +387,7 @@ headers in the request.
 
 /*
 (
-  PostWeb Information
+  PostWeb Information (Not used anymore - don't use!)
 )
 */
 
@@ -393,6 +444,6 @@ End of Declaration
 
   
 
-  @(#) $Id: HTReqMan.h,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+  @(#) $Id: HTReqMan.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTMulti.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTMulti.c,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 **
 ** History:
 **	March 94  AL	Separated from HTFile.c because
@@ -15,6 +15,7 @@
 #include "WWWUtil.h"
 #include "WWWCore.h"
 #include "HTMulti.h"
+#include "HTBind.h"
 #include "HTFile.h"
 
 #define MULTI_SUFFIX	".multi"/* Extension for scanning formats */
@@ -38,7 +39,7 @@ PRIVATE HTList * welcome_names = NULL;	/* Welcome.html, index.html etc. */
 /*
 **  Sort the q values in descending order
 */
-PRIVATE int VariantSort (const void * a, const void * b)
+PRIVATE int CDECL VariantSort (const void * a, const void * b)
 {
     HTContentDescription * aa = *(HTContentDescription **) a;
     HTContentDescription * bb = *(HTContentDescription **) b;
@@ -150,7 +151,7 @@ PRIVATE BOOL HTRank (HTRequest * request, HTArray * variants)
     HTContentDescription * cd;
     void ** data;
     if (!variants) {
-	if (PROT_TRACE) HTTrace("Ranking..... No variants\n");
+	HTTRACE(PROT_TRACE, "Ranking..... No variants\n");
 	return NO;
     }
     /* 
@@ -165,10 +166,9 @@ PRIVATE BOOL HTRank (HTRequest * request, HTArray * variants)
 	double clq_global = lang_value(cd->content_language, HTFormat_language());
 	double ceq_local  = encoding_value(cd->content_encoding, HTRequest_encoding(request));
 	double ceq_global = encoding_value(cd->content_encoding, HTFormat_contentCoding());
-	if (PROT_TRACE)
-	    HTTrace("Qualities... Content type: %.3f, Content language: %.3f, Content encoding: %.3f\n",
-		    HTMAX(ctq_local, ctq_global),
-		    HTMAX(clq_local, clq_global),
+	HTTRACE(PROT_TRACE, "Qualities... Content type: %.3f, Content language: %.3f, Content encoding: %.3f\n" _ 
+		    HTMAX(ctq_local, ctq_global) _ 
+		    HTMAX(clq_local, clq_global) _ 
 		    HTMAX(ceq_local, ceq_global));
 	cd->quality *= (HTMAX(ctq_local, ctq_global) *
 			HTMAX(clq_local, clq_global) *
@@ -180,22 +180,24 @@ PRIVATE BOOL HTRank (HTRequest * request, HTArray * variants)
     HTArray_sort(variants, VariantSort);
 
     /* Write out the result */
+#ifdef HTDEBUG 
     if (PROT_TRACE) {
 	int cnt = 1;
 	cd = (HTContentDescription *) HTArray_firstObject(variants, data);
-	HTTrace("Ranking.....\n");
-	HTTrace("RANK QUALITY CONTENT-TYPE         LANGUAGE ENCODING  FILE\n");
+	HTTRACE(PROT_TRACE, "Ranking.....\n");
+	HTTRACE(PROT_TRACE, "RANK QUALITY CONTENT-TYPE         LANGUAGE ENCODING  FILE\n");
 	while (cd) {
-	    HTTrace("%d.   %.4f  %-20.20s %-8.8s %-10.10s %s\n",
-		    cnt++,
-		    cd->quality,
-		    cd->content_type ? HTAtom_name(cd->content_type) : "-",
-		    cd->content_language?HTAtom_name(cd->content_language):"-",
-		    cd->content_encoding?HTAtom_name(cd->content_encoding):"-",
+	    HTTRACE(PROT_TRACE, "%d.   %.4f  %-20.20s %-8.8s %-10.10s %s\n" _
+		    cnt++ _
+		    cd->quality _
+		    cd->content_type ? HTAtom_name(cd->content_type) : "-" _
+		    cd->content_language?HTAtom_name(cd->content_language):"-" _
+		    cd->content_encoding?HTAtom_name(cd->content_encoding):"-" _
 		    cd->filename ? cd->filename :"-");
 	    cd = (HTContentDescription *) HTArray_nextObject(variants, data);
 	}
     }
+#endif /* HTDEBUG */
     return YES;
 }
 
@@ -326,17 +328,18 @@ PRIVATE HTArray * dir_matches (char * path)
 
     dp = opendir(dirname);
     if (!dp) {
-	if (PROT_TRACE)
-	    HTTrace("Warning..... Can't open directory %s\n", dirname);
+	HTTRACE(PROT_TRACE, "Warning..... Can't open directory %s\n" _ dirname);
 	goto dir_match_failed;
     }
 
     matches = HTArray_new(VARIANTS);
-#ifdef HT_REENTRANT
+#ifdef HAVE_READDIR_R_2
 	while ((dirbuf = (struct dirent *) readdir_r(dp, &result))) {
+#elif defined(HAVE_READDIR_R_3)
+        while (readdir_r(dp, &result, &dirbuf) == 0) {
 #else
 	while ((dirbuf = readdir(dp))) {
-#endif /* HT_REENTRANT */
+#endif /* HAVE_READDIR_R_2 */
 	if (!dirbuf->d_ino) continue;	/* Not in use */
 	if (!strcmp(dirbuf->d_name,".") ||
 	    !strcmp(dirbuf->d_name,"..") ||
@@ -401,25 +404,27 @@ PRIVATE char * HTGetBest (HTRequest * req, char * path)
     if (!path || !*path) return NULL;
 
     if ((variants = dir_matches(path)) == NULL) {
-	if (PROT_TRACE) HTTrace("No matches.. for \"%s\"\n", path);
+	HTTRACE(PROT_TRACE, "No matches.. for \"%s\"\n" _ path);
 	return NULL;
     }
 
+#ifdef HTDEBUG
     if (PROT_TRACE) {
 	void ** data;
 	HTContentDescription * cd = HTArray_firstObject(variants, data);
-	HTTrace("Multi....... Possibilities for \"%s\"\n", path);
-	HTTrace("     QUALITY CONTENT-TYPE         LANGUAGE ENCODING  FILE\n");
+	HTTRACE(PROT_TRACE, "Multi....... Possibilities for \"%s\"\n" _ path);
+	HTTRACE(PROT_TRACE, "     QUALITY CONTENT-TYPE         LANGUAGE ENCODING  FILE\n");
 	while (cd) {
-	    HTTrace("     %.4f  %-20.20s %-8.8s %-10.10s %s\n",
-		    cd->quality,
-		    cd->content_type    ?HTAtom_name(cd->content_type)  :"-\t",
-		    cd->content_language?HTAtom_name(cd->content_language):"-",
-		    cd->content_encoding?HTAtom_name(cd->content_encoding):"-",
+	    HTTRACE(PROT_TRACE, "     %.4f  %-20.20s %-8.8s %-10.10s %s\n" _
+		    cd->quality _
+		    cd->content_type    ?HTAtom_name(cd->content_type)  :"-\t" _
+		    cd->content_language?HTAtom_name(cd->content_language):"-" _
+		    cd->content_encoding?HTAtom_name(cd->content_encoding):"-" _
 		    cd->filename        ?cd->filename                    :"-");
 	    cd = (HTContentDescription *) HTArray_nextObject(variants, data);
 	}
     }
+#endif /* HTDEBUG */
 
     /*
     ** Finally get the best variant which is readable
@@ -431,8 +436,7 @@ PRIVATE char * HTGetBest (HTRequest * req, char * path)
 	    if (cd->filename) {
 		if (access(cd->filename, R_OK) != -1)
 		    StrAllocCopy(representation, cd->filename);
-		else if (PROT_TRACE)
-		    HTTrace("Multi....... `%s\' is not readable\n",
+		else HTTRACE(PROT_TRACE, "Multi....... `%s\' is not readable\n" _ 
 			    cd->filename);
 	    }
 	    HT_FREE(cd->filename);
@@ -482,8 +486,7 @@ PRIVATE char * get_best_welcome (char * path)
     dp = opendir(path);
     if (last && last!=path) *last='/';
     if (!dp) {
-	if (PROT_TRACE)
-	    HTTrace("Warning..... Can't open directory %s\n",path);
+	HTTRACE(PROT_TRACE, "Warning..... Can't open directory %s\n" _ path);
 	return NULL;
     }
     while ((dirbuf = readdir(dp))) {
@@ -508,8 +511,7 @@ PRIVATE char * get_best_welcome (char * path)
 	    HT_OUTOFMEM("get_best_welcome");
 	sprintf(welcome, "%s%s%s", path, last ? "" : "/", best_welcome);
 	HT_FREE(best_welcome);
-	if (PROT_TRACE)
-	    HTTrace("Welcome..... \"%s\"\n",welcome);
+	HTTRACE(PROT_TRACE, "Welcome..... \"%s\"\n" _ welcome);
 	return welcome;
     }
     return NULL;
@@ -552,23 +554,19 @@ PUBLIC char * HTMulti (HTRequest *	req,
     } else{
 	char * multi = strrchr(path, MULTI_SUFFIX[0]);
 	if (multi && !strcasecomp(multi, MULTI_SUFFIX)) {
-	    if (PROT_TRACE)
-		HTTrace("Multi....... by %s suffix\n", MULTI_SUFFIX);
+	    HTTRACE(PROT_TRACE, "Multi....... by %s suffix\n" _ MULTI_SUFFIX);
 	    if (!(new_path = HTGetBest(req, path))) {
-		if (PROT_TRACE)
-		    HTTrace("Multi....... failed -- giving up\n");
+		HTTRACE(PROT_TRACE, "Multi....... failed -- giving up\n");
 		return NULL;
 	    }
 	    path = new_path;
 	} else {
 	    stat_status = HT_STAT(path, stat_info);
 	    if (stat_status == -1) {
-		if (PROT_TRACE)
-		    HTTrace("AutoMulti... can't stat \"%s\"(errno %d)\n",
-			    path, errno);
+		HTTRACE(PROT_TRACE, "AutoMulti... can't stat \"%s\"(errno %d)\n" _ 
+			    path _ errno);
 		if (!(new_path = HTGetBest(req, path))) {
-		    if (PROT_TRACE)
-			HTTrace("AutoMulti... failed -- giving up\n");
+		    HTTRACE(PROT_TRACE, "AutoMulti... failed -- giving up\n");
 		    return NULL;
 		}
 		path = new_path;
@@ -580,9 +578,8 @@ PUBLIC char * HTMulti (HTRequest *	req,
     if (stat_status == -1)
 	stat_status = HT_STAT(path, stat_info);
     if (stat_status == -1) {
-	if (PROT_TRACE)
-	    HTTrace("Stat fails.. on \"%s\" -- giving up (errno %d)\n",
-		    path, errno);
+	HTTRACE(PROT_TRACE, "Stat fails.. on \"%s\" -- giving up (errno %d)\n" _ 
+		    path _ errno);
 	return NULL;
     } else {
 	if (!new_path) {

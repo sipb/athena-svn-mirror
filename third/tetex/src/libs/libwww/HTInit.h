@@ -133,11 +133,16 @@ The Converters are used to convert a media type to another media
 type, or to present it on screen. This is a part of the stream stack algorithm.
 The Presenters are also used in the stream stack, but are initialized separately.
 */
+
 #include "WWWMIME.h"
 #include "WWWHTML.h"
 #include "WWWStream.h"
 #include "WWWDir.h"
 #include "WWWCache.h"
+
+#ifdef HT_EXPAT
+#include "WWWXML.h"
+#endif
 
 extern void HTConverterInit	(HTList * conversions);
 
@@ -146,8 +151,8 @@ extern void HTConverterInit	(HTList * conversions);
   Presenters
 )
 
-The Presenters are used to present a media type to the use by calling
-an external program, for example a post script viewer. This is a part of
+The Presenters are used to present media types by calling
+external programs, for example,  a Postscript viewer. This is a part of
 the stream stack algorithm. The Converters are also used in the stream
 stack, but are initialized separately. The Presenters use the same
 include files as the Converters.
@@ -238,9 +243,9 @@ extern void HTNetInit (void);
 
 The Access Manager which is implemented as a
 BEFORE and an AFTER filter (automatically registered in
-HTNetInit()) does not by default know of any access authentication
-schemes. As everything else, this must be registered! This function does
-the job and should be all you need.
+HTNetInit()) does not, by default, know of any access 
+authentication schemes. As everything else, this must be registered! This 
+function does the job and should be all you need.
 */
 extern void HTAAInit (void);
 
@@ -281,6 +286,6 @@ extern void HTIconInit (const char * url_prefix);
 
   
 
-  @(#) $Id: HTInit.h,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+  @(#) $Id: HTInit.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

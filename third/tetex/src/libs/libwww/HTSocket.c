@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTSocket.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTSocket.c,v 1.1.1.2 2003-02-25 22:26:15 amb Exp $
 **
 **
 ** HISTORY:
@@ -34,8 +34,7 @@ typedef enum _RAWState {
 /* This is the context structure for the this module */
 typedef struct _raw_info {
     RawState		state;		  /* Current State of the connection */
-    HTNet *		listen;
-    HTNet *		accepted;
+    HTNet *		net;
     HTRequest *		request;
 } raw_info;
 
@@ -51,11 +50,10 @@ struct _HTInputStream {
 
 PRIVATE int RawCleanup (HTRequest * request, int status)
 {
-    HTNet * listen = HTRequest_net(request);
-    raw_info * raw = (raw_info *) HTNet_context(listen);
+    HTNet * net = HTRequest_net(request);
+    raw_info * raw = (raw_info *) HTNet_context(net);
 
-    if (PROT_TRACE)
-	HTTrace("Raw clean... Called with status %d, net %p\n", status, raw->accepted);
+    HTTRACE(PROT_TRACE, "Raw clean... Called with status %d, net %p\n" _ status _ net);
 
     if (status == HT_INTERRUPTED) {
     	HTAlertCallback * cbf = HTAlert_find(HT_PROG_INTERRUPT);
@@ -67,13 +65,8 @@ PRIVATE int RawCleanup (HTRequest * request, int status)
 	    HT_MSG_NULL, NULL, NULL, NULL);
     }	
 
-    /* Delete both of the Net objects */
-    if (raw->accepted) {
-	HTNet_deleteDup(listen);
-	HTNet_delete(raw->accepted, status);
-    } else {
-	HTNet_delete(listen, HT_ERROR);
-    }
+    /* Delete the Net object */
+    HTNet_delete(net, HT_ERROR);
 
     HT_FREE(raw);
     return YES;
@@ -95,15 +88,19 @@ PUBLIC int HTLoadSocket (SOCKET soc, HTRequest * request)
 {
     raw_info * raw;			    /* Specific protocol information */
     HTNet * net = HTRequest_net(request);
-    if (PROT_TRACE) HTTrace("Load socket. Setting up socket for accept\n");
+    HTTRACE(PROT_TRACE, "Load socket. Setting up socket for accept\n");
     if ((raw = (raw_info *) HT_CALLOC(1, sizeof(raw_info))) == NULL)
       HT_OUTOFMEM("HTLoadSocket");
     raw->state = RAW_BEGIN;
-    raw->listen = net;
+    raw->net = net;
     raw->request = request;
     HTNet_setContext(net, raw);
     HTNet_setEventCallback(net, SocketEvent);
     HTNet_setEventParam(net, raw);
+
+    /* Start listening on a socket */
+    if (HTHost_listen(NULL, net, HTAnchor_physical(HTRequest_anchor(request))) == HT_ERROR)
+	return SocketEvent(soc, raw, HTEvent_CLOSE);
 
     /* Get it started - ops is ignored */
     return SocketEvent(soc, raw, HTEvent_BEGIN);
@@ -111,12 +108,11 @@ PUBLIC int HTLoadSocket (SOCKET soc, HTRequest * request)
 
 PRIVATE int SocketEvent (SOCKET soc, void * pVoid, HTEventType type)
 {
-    raw_info * raw = (raw_info *)pVoid;
+    raw_info * raw = (raw_info *) pVoid;
     int status = HT_ERROR;
-    HTNet * listen = raw->listen;
-    HTRequest * request = HTNet_request(listen);
-    HTParentAnchor * anchor = HTRequest_anchor(request);
-    HTHost * host = HTNet_host(listen);
+    HTNet * net = raw->net;
+    HTRequest * request = raw->request;
+    HTHost * host = HTNet_host(net);
 
     /*
     **  Check whether we have been interrupted or timed out
@@ -140,8 +136,8 @@ PRIVATE int SocketEvent (SOCKET soc, void * pVoid, HTEventType type)
     while (1) {
 	switch(raw->state) {
 	case RAW_BEGIN:
-	    status = HTHost_accept(host, listen, &raw->accepted, HTAnchor_physical(anchor), RAW_PORT);
-	    host = HTNet_host(listen);
+	    status = HTHost_accept(host, net, NULL);
+	    host = HTNet_host(net);
             if (status == HT_OK) {
 		raw->state = RAW_NEED_STREAM;
 	    } else if (status == HT_WOULD_BLOCK || status == HT_PENDING) {
@@ -162,7 +158,7 @@ PRIVATE int SocketEvent (SOCKET soc, void * pVoid, HTEventType type)
 			      HTRequest_outputFormat(request),
 			      HTRequest_outputStream(request),
 			      request, YES);
-	    HTNet_setReadStream(raw->accepted, in_stream);
+	    HTNet_setReadStream(net, in_stream);
             HTRequest_setOutputConnected(request, YES);
 
 	    raw->state = RAW_READ;
@@ -170,7 +166,7 @@ PRIVATE int SocketEvent (SOCKET soc, void * pVoid, HTEventType type)
 	}
 
 	case RAW_READ:
-	    status = HTHost_read(host, raw->accepted);
+	    status = HTHost_read(host, net);
 	    if (status == HT_WOULD_BLOCK)
 		return HT_OK;
 	    else if (status==HT_CLOSED)
@@ -190,7 +186,7 @@ PRIVATE int SocketEvent (SOCKET soc, void * pVoid, HTEventType type)
 	    break;
 
 	default:
-	    HTDebugBreak(__FILE__, __LINE__, "Bad raw state %d\n", raw->state);
+	    HTDEBUGBREAK("Bad raw state %d\n" _ raw->state);
 	}
     }
     return HT_OK;

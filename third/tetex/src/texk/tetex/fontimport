@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # Thomas Esser, 1999. public domain.
+# ChangeLog:
+#    * Mon Dec 27 12:57:02 CET 1999 te
+#    Added "-s" option to restrict destroot to $TEXMFMAIN.
 
 test -f /bin/sh5 && test -z "$RUNNING_SH5" \
   && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
@@ -17,13 +20,14 @@ mt_max_args=10000
 usage="Usage: $progname [ -d ] [ -t ] [ -f ] [ -m mode ] path ...
 
 Copy tfm and pk fonts from path into the proper place in teTeX.
+   -s force destination to the main (system) texmf tree
    -m default MetaFont mode for pk files if autodetection fails
    -d delete files after copying
    -t (test) echo the destination (if any) instead of move or copy
    -f (force) overwrite existing fonts"
 
 # Common code for all scripts.
-: ${MT_TEXMFMAIN=`kpsewhich --expand-path='$TEXMFMAIN'`}
+: ${MT_TEXMFMAIN=`kpsewhich --expand-var='$TEXMFMAIN'`}
 : ${MT_MKTEX_OPT=`kpsewhich --format='web2c files' mktex.opt`}
 test -n "$MT_MKTEX_OPT" || MT_MKTEX_OPT="$MT_TEXMFMAIN/web2c/mktex.opt"
 if test ! -f "$MT_MKTEX_OPT"; then
@@ -42,6 +46,7 @@ here=`pwd`
 OIFS=$IFS
 TEST=false
 FORCE=false
+RESTRICT_DESTROOT=false
 
 progname="`basename $0`"
 
@@ -75,14 +80,20 @@ while true ; do
     -d)  OP=mv; shift;;
     -t)  TEST=true; shift;;
     -f)  FORCE=true; shift;;
+    -s)  RESTRICT_DESTROOT=true; shift;;
     *)   break;;
   esac
 done
-ARGS=${1+"$@"}
+ARGS="$@"
 
 if [ $# = 0 ]; then
   echo "$usage"
   exit
+fi
+
+if $RESTRICT_DESTROOT; then
+  MT_DESTROOT=$MT_TEXMFMAIN
+  export MT_DESTROOT
 fi
 
 for i in `(find $ARGS \( -name '*.*[0-9]pk' -o -name '*.pk' \) -print) 2>/dev/null`

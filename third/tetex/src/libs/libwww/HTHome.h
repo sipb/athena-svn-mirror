@@ -98,6 +98,9 @@ create a new anchor which can contain the document while it is created. This
 can also be the location for backups and for security "auto-save" functionality.
 This functions creates a new anchor with a URL pointing to the temporary
 location defined by this user profile and returns that anchor.
+Andy Levine: I additionally found that calling HTTmpAnchor repeatedly without
+freeing the newly allocated anchor will cause the anchor hash table to
+continue to grow.
 */
 
 extern HTParentAnchor * HTTmpAnchor (HTUserProfile * up);
@@ -119,11 +122,28 @@ extern char *  HTGetCurrentDirectoryURL (void);
 
 /*
 .
+  Handle HTML Form Input fields
+.
+
+Takes a string of the form "a=b" containing HTML form data,
+escapes it accordingly and puts it into the association list so that it readily
+can be passed to any of the HTAccess function that handles HTML form data.
+The string should not be encoded in any way - this function encodes it according
+to the HTML form encoding rules.
+
+Examples are "foo=bar", "baz=foo and bar", "a= b ", " a = b ", "toto=", "four
+= two + two", "six three + three", and "a=b=c"
+*/
+
+extern BOOL HTParseFormInput (HTAssocList * list, const char * str);
+
+/*
+.
   Handle Library Trace Messages
 .
 
 Standard interface to libwww TRACE messages.
-Pass this function a string of characters and it will set up the appropriate
+Pass this function a string of characters.  It will set up the appropriate
 TRACE flags. The following characters are used as follows:
 
   
@@ -190,6 +210,10 @@ TRACE flags. The following characters are used as follows:
     x
   
     Show MUX Trace Messages
+  
+    *
+  
+    Show ALL Trace Messages
 
 
 The string must be null terminated, an example is "sop".
@@ -206,6 +230,6 @@ extern int HTSetTraceMessageMask (const char * shortnames);
 
   
 
-  @(#) $Id: HTHome.h,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+  @(#) $Id: HTHome.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

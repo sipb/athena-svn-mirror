@@ -2,7 +2,7 @@
 .SH NAME
 fontimport \- import fonts into the teTeX directory structure
 .SH SYNOPSIS
-.B fontimport [\-d] [\-f] [\-t] [\-m MF\-mode] path ...
+.B fontimport [\-d] [\-f] [\-s] [\-t] [\-m MF\-mode] path ...
 .SH DESCRIPTION
 .I fontimport
 imports TFM and PK font files into appropriate places in the teTeX directory
@@ -51,14 +51,17 @@ Options:
 .BI \-m " MF-MODE"
 default Metafont mode for PK files if autodetection fails
 .TP
-.BI \-d " delete"
+.BI \-d
 delete font files after copying (i.e., move them)
 .TP
-.BI \-f " force"
-overwrite existing fonts
+.BI \-f
+force overwrite existing fonts
 .TP
-.BI \-t " test"
-just echo each font's destination (if any); don't move or copy
+.BI \-s
+do not use other destinations than the system's main texmf tree
+.TP
+.BI \-t
+test mode: just echo each font's destination (if any); don't move or copy
 .PD
 .SH "SEE ALSO"
 .BR allec (1),
@@ -66,4 +69,4 @@ just echo each font's destination (if any); don't move or copy
 .BR fontexport (1),
 .B Fontname:  Filenames for TeX Fonts (http://tug.org/fontname).
 .SH AUTHOR
-Thomas Esser (te@informatik.uni\-hannover.de)
+Thomas Esser (te@dbs.uni\-hannover.de)

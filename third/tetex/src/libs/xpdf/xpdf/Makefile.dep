@@ -1,0 +1,4 @@
+FTFont.o: ./FTFont.cc
+FontEncodingTables.o: ./FontEncodingTables.cc FontEncodingTables.h
+T1Font.o: ./T1Font.cc
+TTFont.o: ./TTFont.cc

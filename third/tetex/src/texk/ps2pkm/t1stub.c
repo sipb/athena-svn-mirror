@@ -28,12 +28,12 @@
  * SOFTWARE.
  */
 
-#include "objects.h"	/* get #define for abort() */
+#include "objects.h"	/* get #define for t1_abort() */
  
 xiStub()
 {
        printf("xiStub called\n");
-       abort("xiStub called");
+       t1_abort("xiStub called");
 }
  
 #ifdef WIN32

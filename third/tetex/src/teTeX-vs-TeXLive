@@ -1,0 +1,10 @@
+What's different in TeX Live?
+=============================
+
+Makefile.in
+  -> do not generate formats etc. (texmf setup) on "make install"
+
+texk/tetex/texconfig
+  -> version='TeX Live'
+
+reautoconf

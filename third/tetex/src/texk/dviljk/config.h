@@ -1,10 +1,14 @@
-/* $Id: config.h,v 1.1.1.1 2000-03-10 17:51:51 ghudson Exp $ */
+/* $Id: config.h,v 1.1.1.2 2003-02-25 22:03:25 amb Exp $ */
 
-/* gcc -ansi doesn't predefine `unix', since ANSI forbids it.  And AIX,
-   Solaris 2 and HP-UX generally don't predefine unix in ANSI/ISO mode
-   but __unix instead.  */
+/* gcc -ansi doesn't predefine `unix', since ANSI forbids it.  And AIX
+   generally doesn't predefine unix, who knows why.  HP-UX is, of course,
+   also different.  Apple's MacOsX is also unix-like.  */
 #ifndef unix
-#if defined (__unix__) || defined (_AIX) || defined (__unix) || (defined(__APPLE__) && defined(__MACH__))
+#if defined (__unix__) || defined (_AIX) || defined (_HPUX_SOURCE)
+#define unix
+#elif defined (__APPLE__) && defined (__MACH__)
+#define unix
+#elif defined (__NetBSD__)
 #define unix
 #endif
 #endif

@@ -161,7 +161,19 @@ Help provided by Eric Prud'hommeaux, Susan C. Weber
 #include <process.h>
 #include <winsock.h>
 
+#define getcwd _getcwd
+#define stat _stat
+#define access _access
+#define mkdir _mkdir
+#define daylight _daylight
+#define timezone _timezone
+#define S_IFMT _S_IFMT
+#define S_IFDIR _S_IFDIR
+
 #include "windows/config.h"
+
+#undef CDECL
+#define CDECL __cdecl
 
 #define NETREAD(s,b,l)  recv((s),(b),(l),0)
 #define NETWRITE(s,b,l) send((s),(b),(l),0)
@@ -270,6 +282,10 @@ These next defintions are because the UNIX stuff is not supplied with BC4
 
 #define	S_ISREG(m)	(((m)&_IFMT) == _IFREG)
 
+#define DIR_SEPARATOR
+#define DIR_SEPARATOR_CHAR	'\\'
+#define DIR_SEPARATOR_STR	"\\"
+
 /*
 (
   Errno and Return Codes
@@ -298,6 +314,9 @@ Return code for socket functions. We can't use -1 as return value
 #define EHOSTDOWN       WSAEHOSTDOWN
 #define EISCONN         WSAEISCONN
 #define EINVAL          WSAEINVAL
+#define ECONNRESET      WSAECONNRESET
+#define ECONNABORTED    WSAECONNABORTED
+#define ESHUTDOWN       WSAESHUTDOWN
 
 /* Some compilers do only define WIN32 and NOT _WINDOWS */
 #define NO_GROUPS
@@ -310,6 +329,79 @@ Return code for socket functions. We can't use -1 as return value
 #endif /* WIN32 */
 
 #endif /* WWW_MSWINDOWS */
+
+/*
+.
+  Macintosh
+.
+(
+  mingw32 - Minimalist GNU for Windows
+)
+
+A bit like Cygwin, except it uses the native Windows API, which means
+the programs do not need the huge Cygwin DLL to run.
+
+Patch by Richard Atterer <richard@atterer.net>, October 2001
+*/
+
+#ifdef __MINGW32__
+
+#include <winsock2.h>
+
+#define WWW_MSWINDOWS
+/* #define WWW_WIN_CONSOLE */
+#define WWW_WIN_WINDOW
+/* #define WWW_WIN_ASYNC */
+/* #define WWW_WIN_DLL */
+
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+
+#define NETREAD(s,b,l)  recv((s),(b),(l),0)
+#define NETWRITE(s,b,l) send((s),(b),(l),0)
+#define NETCLOSE(s)     closesocket(s)
+#define IOCTL(s,c,a)	ioctlsocket(s,c, (long *) a)
+
+#define MKDIR(a,b)      mkdir(a)
+#define REMOVE(a)	remove((a))
+#define DEFAULT_SUFFIXES	"."
+
+#define SOCKET SOCKET			/* WinSocks socket descriptor */
+#define INVSOC INVALID_SOCKET		/* WinSocks invalid socket */
+
+#define DESIRED_WINSOCK_VERSION 0x0101  /* we'd like winsock ver 1.1... */
+#define MINIMUM_WINSOCK_VERSION 0x0101  /* ...but we'll take ver 1.1 :) */
+
+#define DIR_SEPARATOR
+#define DIR_SEPARATOR_CHAR     '\\'
+#define DIR_SEPARATOR_STR      "\\"
+
+#define socerrno WSAGetLastError()
+#define ERRNO_DONE
+
+/* Taken from the WIN32 stuff above. */
+#define EWOULDBLOCK     WSAEWOULDBLOCK
+#define EINPROGRESS     WSAEINPROGRESS
+#define ECONNREFUSED    WSAECONNREFUSED
+#define ETIMEDOUT       WSAETIMEDOUT
+#define ENETUNREACH     WSAENETUNREACH
+#define EHOSTUNREACH    WSAEHOSTUNREACH
+#define EHOSTDOWN       WSAEHOSTDOWN
+#define EISCONN         WSAEISCONN
+/*#define EINVAL          WSAEINVAL*/
+#define ECONNRESET      WSAECONNRESET
+#define ECONNABORTED    WSAECONNABORTED
+#define ESHUTDOWN       WSAESHUTDOWN
+
+/* The configure.in script is wrong to default to #define GETGROUPS_T int */
+#ifdef GETGROUPS_T
+#undef GETGROUPS_T
+#endif
+
+#define HT_LSTAT stat
+
+#endif /* __MINGW32__ */
 
 /*
 .
@@ -597,8 +689,9 @@ normal C storage types.
 
 /*
 
-On non-VMS machines STAT should be stat...On VMS machines STAT is a function
-that converts directories and devices so that you can stat them.
+On non-VMS machines STAT should be stat, unless that was overridden
+somewhere above. On VMS machines STAT is a function that converts
+directories and devices so that you can stat them.
 */
 
 #ifdef VMS
@@ -606,8 +699,12 @@ typedef unsigned long mode_t;
 #define HT_STAT		HTStat
 #define HT_LSTAT	HTStat
 #else
+#ifndef HT_STAT
 #define HT_STAT		stat
+#endif
+#ifndef HT_LSTAT
 #define HT_LSTAT	lstat
+#endif
 #endif /* non VMS */
 
 /*
@@ -1056,8 +1153,10 @@ Their existance is discovered by configure.
 .
 */
 
+#ifndef __MINGW32__ /* has a typedef for BOOLEAN */
 #ifndef BOOLEAN
 typedef char	BOOLEAN;				    /* Logical value */
+#endif
 #endif
 
 #ifndef CURSES
@@ -1085,6 +1184,11 @@ If we don't have these (for some mysterious reason) then define them. This
 should (is?) be handled by the configure script already.
 */
 
+/* Richard Atterer  
+   Disabled - caused problems because mingw32 has typedefs for these. 
+   They seem useless now. */
+
+/* 
 #ifndef u_short
 #define u_short unsigned short
 #endif
@@ -1092,6 +1196,8 @@ should (is?) be handled by the configure script already.
 #ifndef u_long
 #define u_long unsigned long
 #endif
+
+*/
 
 /*
 .
@@ -1295,6 +1401,44 @@ This is necessary in order to support Windows NT...
 
 /*
 .
+  Hash Table Sizes
+.
+
+The size of the hash tables used by the various libwww classes like the
+HTNet class, the HTHost
+class etc. is a speed-size compromize. Here you can set the sizes depending
+on whether you have a lot of memory or not. The values must be prime numbers,
+of course.
+*/
+
+#ifdef LIBWWW_SMALL
+#define HT_XL_HASH_SIZE		101
+#define HT_L_HASH_SIZE		67
+#define HT_M_HASH_SIZE		31
+#define HT_S_HASH_SIZE		5
+#else
+#ifdef LIBWWW_LARGE
+#define HT_XL_HASH_SIZE		1499
+#define HT_L_HASH_SIZE		599
+#define HT_M_HASH_SIZE		101
+#define HT_S_HASH_SIZE		67
+#else
+#ifdef LIBWWW_EXTRA_LARGE
+#define HT_XL_HASH_SIZE		9973
+#define HT_L_HASH_SIZE		1499
+#define HT_M_HASH_SIZE		599
+#define HT_S_HASH_SIZE		101
+#else
+#define HT_XL_HASH_SIZE		599
+#define HT_L_HASH_SIZE		101
+#define HT_M_HASH_SIZE		67
+#define HT_S_HASH_SIZE		11
+#endif
+#endif
+#endif
+
+/*
+.
   Definition of NGROUPS
 .
 */
@@ -1339,6 +1483,11 @@ This is necessary in order to support Windows NT...
 
 #ifndef DEFAULT_SUFFIXES
 #define DEFAULT_SUFFIXES	".,_"
+#endif
+
+#ifndef DIR_SEPARATOR
+#define DIR_SEPARATOR_CHAR	'/'
+#define DIR_SEPARATOR_STR	"/"
 #endif
 
 #ifndef F_OK
@@ -1418,7 +1567,7 @@ versions of some system calls.
 #endif
 #endif
 
-#define HOSTENT_MAX	128
+#define HOSTENT_MAX	1024
 #define CTIME_MAX	26
 #endif /* HT_REENTRANT */
 
@@ -1432,6 +1581,10 @@ We define some types here so we son't have to worry about it later
 
 typedef unsigned long ms_t;
 
+#ifndef CDECL
+#define CDECL
+#endif
+
 /*
 */
 
@@ -1441,6 +1594,6 @@ typedef unsigned long ms_t;
 
   
 
-  @(#) $Id: wwwsys.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: wwwsys.h,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 
 */

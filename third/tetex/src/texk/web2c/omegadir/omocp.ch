@@ -1,9 +1,24 @@
+% omocp.ch: Reading an OCP file
 %
-% This file is part of the Omega project, which
-% is based on the web2c distribution of TeX.
-%
-% Copyright (c) 1995--1999 John Plaice and Yannis Haralambous
+% This file is part of Omega,
+% which is based on the web2c distribution of TeX,
 % 
+% Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+%
+% Omega is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+% 
+% Omega is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Omega; if not, write to the Free Software Foundation, Inc.,
+% 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+%
 %---------------------------------------
 @x [1] m.11 l.412 - Omega OCP
   {string of length |file_name_size|; tells where the string pool appears}
@@ -57,15 +72,12 @@
 %---------------------------------------
 @x [17] m.222 l.4523 - Omega OCP
 @d font_id_base=frozen_null_font-font_base
-   {begins table of |number_fonts| permanent font identifiers}
-@d frozen_null_font_sort=frozen_null_font+number_fonts {permanent null sort}
-@d undefined_control_sequence=frozen_null_font_sort+number_font_sorts
-   {dummy location}
+  {begins table of |number_fonts| permanent font identifiers}
+@d undefined_control_sequence=frozen_null_font+number_fonts
 @y
 @d font_id_base=frozen_null_font-font_base
-   {begins table of |number_fonts| permanent font identifiers}
-@d frozen_null_font_sort=frozen_null_font+number_fonts {permanent null sort}
-@d frozen_null_ocp=frozen_null_font_sort+number_font_sorts
+  {begins table of |number_fonts| permanent font identifiers}
+@d frozen_null_ocp=frozen_null_font+number_fonts
   {permanent `\.{\\nullocp}'}
 @d ocp_id_base=frozen_null_ocp-ocp_base
   {begins table of |number_ocps| permanent ocp identifiers}
@@ -193,34 +205,47 @@ added to |i|, |j| and |k|, since $\Omega$ stores its quarterwords that way.)
 @d offset_ocp_file_size=0
 @d offset_ocp_name=1
 @d offset_ocp_area=offset_ocp_name+1
-@d offset_ocp_input=offset_ocp_area+1
+@d offset_ocp_external=offset_ocp_area+1
+@d offset_ocp_external_arg=offset_ocp_external+1
+@d offset_ocp_input=offset_ocp_external_arg+1
 @d offset_ocp_output=offset_ocp_input+1
-@d offset_ocp_no_states=offset_ocp_output+1
-@d offset_ocp_no_tables=offset_ocp_no_states+1
-@d offset_ocp_state_base=offset_ocp_no_tables+1
-@d offset_ocp_table_base=offset_ocp_state_base+1
-@d offset_ocp_info=offset_ocp_table_base+1
+@d offset_ocp_no_tables=offset_ocp_output+1
+@d offset_ocp_no_states=offset_ocp_no_tables+1
+@d offset_ocp_table_base=offset_ocp_no_states+1
+@d offset_ocp_state_base=offset_ocp_table_base+1
+@d offset_ocp_info=offset_ocp_state_base+1
 @d ocp_file_size(#)==ocp_info(#)(offset_ocp_file_size)
 @d ocp_name(#)==ocp_info(#)(offset_ocp_name)
 @d ocp_area(#)==ocp_info(#)(offset_ocp_area)
+@d ocp_external(#)==ocp_info(#)(offset_ocp_external)
+@d ocp_external_arg(#)==ocp_info(#)(offset_ocp_external_arg)
 @d ocp_input(#)==ocp_info(#)(offset_ocp_input)
 @d ocp_output(#)==ocp_info(#)(offset_ocp_output)
-@d ocp_no_states(#)==ocp_info(#)(offset_ocp_no_states)
 @d ocp_no_tables(#)==ocp_info(#)(offset_ocp_no_tables)
-@d ocp_state_base(#)==ocp_info(#)(offset_ocp_state_base)
+@d ocp_no_states(#)==ocp_info(#)(offset_ocp_no_states)
 @d ocp_table_base(#)==ocp_info(#)(offset_ocp_table_base)
+@d ocp_state_base(#)==ocp_info(#)(offset_ocp_state_base)
 
 @ $\Omega$ always knows at least one ocp, namely the null ocp.
 It does nothing.
 
 @<Initialize table...@>=
 ocp_ptr:=null_ocp; 
-allocate_ocp_table(null_ocp,12);
-ocp_file_size(null_ocp):=12;
+allocate_ocp_table(null_ocp,17);
+ocp_file_size(null_ocp):=17;
 ocp_name(null_ocp):="nullocp"; ocp_area(null_ocp):="";
-ocp_state_base(null_ocp):=0; ocp_table_base(null_ocp):=0;
+ocp_external(null_ocp):=0; ocp_external_arg(null_ocp):=0;
 ocp_input(null_ocp):=1; ocp_output(null_ocp):=1;
-ocp_info(null_ocp)(offset_ocp_info):=0;
+ocp_no_tables(null_ocp):=0;
+ocp_no_states(null_ocp):=1;
+ocp_table_base(f):=offset_ocp_info;
+ocp_state_base(f):=offset_ocp_info;
+ocp_info(null_ocp)(offset_ocp_info) := offset_ocp_info+2;  {number of entries}
+ocp_info(null_ocp)(offset_ocp_info+1) := offset_ocp_info+5;  {number of entries}
+ocp_info(null_ocp)(offset_ocp_info+2) := 23;  {|OTP_LEFT_START|}
+ocp_info(null_ocp)(offset_ocp_info+3) := 3;  {|OTP_RIGHT_CHAR|}
+ocp_info(null_ocp)(offset_ocp_info+4) := 36;  {|OTP_STOP|}
+
 
 @ @<Put each...@>=
 primitive("nullocp", set_ocp, null_ocp);
@@ -264,13 +289,15 @@ If an error is detected, an error message is issued and no ocp
 information is stored; |null_ocp| is returned in this case.
 
 @d bad_ocp=11 {label for |read_ocp_info|}
-@d ocp_abort(#)==begin print_nl(#); goto bad_ocp end
+@d ocp_abort(#)==begin print("OCP file error (");
+ print(#); print(")"); print_ln; goto bad_ocp end
  {do this when the \.{OCP} data is wrong}
 
-@p function read_ocp_info(@!u:pointer;@!nom,@!aire:str_number)
+@p function read_ocp_info(@!u:pointer;@!nom,@!aire,@!ext:str_number;
+                          @!external_ocp:boolean)
   :internal_ocp_number; {input a \.{OCP} file}
 label done,bad_ocp,not_found;
-var k:ocp_index; {index into |ocp_info|}
+var 
 @!file_opened:boolean; {was |ocp_file| successfully opened?}
 @!f:internal_ocp_number; {the new ocp's number}
 @!g:internal_ocp_number; {the number to return}
@@ -278,7 +305,6 @@ var k:ocp_index; {index into |ocp_info|}
 @!ocpmem_run_ptr:ocp_index;
 @!ocp_length,real_ocp_length:integer; {length of ocp file}
 @!previous_address:ocp_index;
-@!temp_ocp_file_size:integer;
 @!temp_ocp_input:integer;
 @!temp_ocp_output:integer;
 @!temp_ocp_no_tables:integer;
@@ -310,8 +336,35 @@ help2("I wasn't able to read the data for this ocp,")@/
 error
 
 @ @<Read and check the ocp data...@>=
-@<Open |ocp_file| for input@>;
-@<Read the {\.{OCP}} file@>;
+if external_ocp then 
+  @<Check |ocp_file| exists@>
+else begin
+  @<Open |ocp_file| for input@>;
+  @<Read the {\.{OCP}} file@>;
+  end;
+
+@ @<Check |ocp_file| exists@>=
+begin
+file_opened:=false;
+pack_file_name(nom,aire,ext);
+b_test_in;
+if name_length=0 then ocp_abort("opening file");
+f :=ocp_ptr+1;
+allocate_ocp_table(f,13);
+ocp_file_size(f):=13;
+for i:=1 to name_length do begin
+  append_char(name_of_file[i]);
+  end;
+ocp_external(f):=make_string;
+scan_string_argument;
+ocp_external_arg(f):=cur_val;
+ocp_name(f):=""; ocp_area(f):="";
+ocp_state_base(f):=0; ocp_table_base(f):=0;
+ocp_input(f):=1; ocp_output(f):=1;
+ocp_info(f)(offset_ocp_info):=0;
+ocp_ptr:=f; g:=f;
+goto done;
+end
 
 @ @<Open |ocp_file| for input@>=
 file_opened:=false;
@@ -360,48 +413,46 @@ if real_ocp_length <>
    (temp_ocp_no_tables + room_for_tables +
     temp_ocp_no_states + room_for_states) then
   ocp_abort("checking size");
-real_ocp_length:=real_ocp_length+11+
+real_ocp_length:=real_ocp_length+12+
    temp_ocp_no_states+temp_ocp_no_tables;
 allocate_ocp_table(f,real_ocp_length);
+ocp_external(f):=0;
+ocp_external_arg(f):=0;
 ocp_file_size(f):=real_ocp_length;
 ocp_input(f):=temp_ocp_input;
 ocp_output(f):=temp_ocp_output;
 ocp_no_tables(f):=temp_ocp_no_tables;
 ocp_no_states(f):=temp_ocp_no_states;
 ocp_table_base(f):=ocpmem_run_ptr;
-if ocp_no_tables(f) <> 0 then
-begin
-   previous_address:=ocpmem_run_ptr+2*(ocp_no_tables(f));
-   for i:=1 to ocp_no_tables(f) do begin
-       add_to_ocp_info(previous_address);
-       ocp_read_all(new_offset);
-       add_to_ocp_info(new_offset);
-       previous_address:=previous_address+new_offset;
-   end
-end;
-if room_for_tables <> 0 then
-begin
-   for i:=1 to room_for_tables do begin
-       ocp_read_info;
-   end
-end;
+if ocp_no_tables(f) <> 0 then begin
+  previous_address:=ocpmem_run_ptr+2*(ocp_no_tables(f));
+  for i:=1 to ocp_no_tables(f) do begin
+    add_to_ocp_info(previous_address);
+    ocp_read_all(new_offset);
+    add_to_ocp_info(new_offset);
+    previous_address:=previous_address+new_offset;
+    end
+  end;
+if room_for_tables <> 0 then begin
+  for i:=1 to room_for_tables do begin
+    ocp_read_info;
+    end
+  end;
 ocp_state_base(f):=ocpmem_run_ptr;
-if ocp_no_states(f) <> 0 then
-begin
-   previous_address:=ocpmem_run_ptr+2*(ocp_no_states(f));
-   for i:=1 to ocp_no_states(f) do begin
-       add_to_ocp_info(previous_address);
-       ocp_read_all(new_offset);
-       add_to_ocp_info(new_offset);
-       previous_address:=previous_address+new_offset;
-   end;
-end;
-if room_for_states <> 0 then
-begin
-   for i:=1 to room_for_states do begin
-       ocp_read_info;
-   end
-end;
+if ocp_no_states(f) <> 0 then begin
+  previous_address:=ocpmem_run_ptr+2*(ocp_no_states(f));
+  for i:=1 to ocp_no_states(f) do begin
+    add_to_ocp_info(previous_address);
+    ocp_read_all(new_offset);
+    add_to_ocp_info(new_offset);
+    previous_address:=previous_address+new_offset;
+    end;
+  end;
+if room_for_states <> 0 then begin
+  for i:=1 to room_for_states do begin
+    ocp_read_info;
+    end
+  end;
 ocp_ptr:=f; g:=f;
 goto done;
 end
@@ -412,7 +463,6 @@ $\Omega$'s basic scanning routine related to ocp information.
 @<Declare procedures that scan ocp-related stuff@>=
 procedure scan_ocp_ident;
 var f:internal_ocp_number;
-@!m:halfword;
 begin @<Get the next non-blank non-call...@>;
 if cur_cmd=set_ocp then f:=cur_chr
 else  begin print_err("Missing ocp identifier");
@@ -482,45 +532,46 @@ set_new_eqtb(frozen_null_ocp_list,new_eqtb(cur_val));
                                  llnext:ocp_list_index):ocp_list_index;
 var p:ocp_list_index;
 begin 
-   p:=ocp_listmem_run_ptr;
-   ocp_list_lstack(p):=llstack;
-   ocp_list_lstack_no(p):=llstack_no;
-   ocp_list_lnext(p):=llnext;
-   ocp_listmem_run_ptr:=ocp_listmem_run_ptr+2;
-   make_ocp_list_node:=p;
+p:=ocp_listmem_run_ptr;
+ocp_list_lstack(p):=llstack;
+ocp_list_lstack_no(p):=llstack_no;
+ocp_list_lnext(p):=llnext;
+ocp_listmem_run_ptr:=ocp_listmem_run_ptr+2;
+make_ocp_list_node:=p;
 end;
 
-function make_ocp_lstack_node(locp:internal_ocp_number; llnext:ocp_lstack_index):
-         ocp_lstack_index;
+function make_ocp_lstack_node(locp:internal_ocp_number;
+                              llnext:ocp_lstack_index) : ocp_lstack_index;
 var p:ocp_lstack_index;
 begin 
-   p:=ocp_lstackmem_run_ptr;
-   ocp_lstack_ocp(p):=locp;
-   ocp_lstack_lnext(p):=llnext;
-   incr(ocp_lstackmem_run_ptr);
-   make_ocp_lstack_node:=p;
+p:=ocp_lstackmem_run_ptr;
+ocp_lstack_ocp(p):=locp;
+ocp_lstack_lnext(p):=llnext;
+incr(ocp_lstackmem_run_ptr);
+make_ocp_lstack_node:=p;
 end;
 
 function copy_ocp_lstack(llstack:ocp_lstack_index):ocp_lstack_index;
 var result:ocp_lstack_index;
 begin
-   if is_null_ocp_lstack(llstack)
-   then result:=make_null_ocp_lstack
-   else result:=
-        make_ocp_lstack_node(ocp_lstack_ocp(llstack),
-                             copy_ocp_lstack(ocp_lstack_lnext(llstack)));
-   copy_ocp_lstack:=result;
+if is_null_ocp_lstack(llstack) then
+  result:=make_null_ocp_lstack
+else
+  result:=make_ocp_lstack_node(ocp_lstack_ocp(llstack),
+                               copy_ocp_lstack(ocp_lstack_lnext(llstack)));
+copy_ocp_lstack:=result;
 end;
 
 function copy_ocp_list(list:ocp_list_index):ocp_list_index;
 var result:ocp_list_index;
 begin
-   if is_null_ocp_list(list)
-   then result:=make_null_ocp_list
-   else result:=make_ocp_list_node(copy_ocp_lstack(ocp_list_lstack(list)),
-                                   ocp_list_lstack_no(list),
-                                   copy_ocp_list(ocp_list_lnext(list)));
-   copy_ocp_list:=result;
+if is_null_ocp_list(list) then
+  result:=make_null_ocp_list
+else
+  result:=make_ocp_list_node(copy_ocp_lstack(ocp_list_lstack(list)),
+                             ocp_list_lstack_no(list),
+                             copy_ocp_list(ocp_list_lnext(list)));
+copy_ocp_list:=result;
 end;
 
 function ocp_ensure_lstack(list:ocp_list_index; llstack_no:scaled):
@@ -528,36 +579,31 @@ function ocp_ensure_lstack(list:ocp_list_index; llstack_no:scaled):
 var p:ocp_list_index;
     q:ocp_list_index;
 begin
-   p:=list;
-   if is_null_ocp_list(p) then
-   begin
-      ocp_list_lstack_no(p) := llstack_no;
-      ocp_list_lnext(p) := make_null_ocp_list;
-   end
-   else if ocp_list_lstack_no(p) > llstack_no then
-   begin
-      ocp_list_lnext(p) := 
-         make_ocp_list_node(ocp_list_lstack(p),
-                            ocp_list_lstack_no(p),
-                            ocp_list_lnext(p));
-      ocp_list_lstack(p):=0;
-      ocp_list_lstack_no(p):=llstack_no;
-   end
-   else
-   begin
-      q:=ocp_list_lnext(p);
-      while (not (is_null_ocp_list(q))) and 
-            ocp_list_lstack_no(q) <= llstack_no do
-      begin
-         p:=q; q:=ocp_list_lnext(q);
-      end;
-      if ocp_list_lstack_no(p) < llstack_no then
-      begin
-         ocp_list_lnext(p) := make_ocp_list_node(0, llstack_no, q);
-         p := ocp_list_lnext(p);
-      end;
-   end;
-   ocp_ensure_lstack := p;
+p:=list;
+if is_null_ocp_list(p) then begin
+  ocp_list_lstack_no(p) := llstack_no;
+  ocp_list_lnext(p) := make_null_ocp_list;
+  end
+else if ocp_list_lstack_no(p) > llstack_no then begin
+  ocp_list_lnext(p):= 
+    make_ocp_list_node(ocp_list_lstack(p),
+                       ocp_list_lstack_no(p),
+                       ocp_list_lnext(p));
+  ocp_list_lstack(p):=0;
+  ocp_list_lstack_no(p):=llstack_no;
+  end
+else begin
+  q:=ocp_list_lnext(p);
+  while (not (is_null_ocp_list(q))) and 
+         ocp_list_lstack_no(q) <= llstack_no do begin
+    p:=q; q:=ocp_list_lnext(q);
+    end;
+  if ocp_list_lstack_no(p) < llstack_no then begin
+    ocp_list_lnext(p) := make_ocp_list_node(0, llstack_no, q);
+    p := ocp_list_lnext(p);
+    end;
+  end;
+ocp_ensure_lstack := p;
 end;
 
 procedure ocp_apply_add(list_entry:ocp_list_index;
@@ -566,20 +612,17 @@ procedure ocp_apply_add(list_entry:ocp_list_index;
 var p:ocp_lstack_index;
     q:ocp_lstack_index;
 begin
-   p := ocp_list_lstack(list_entry);
-   if lbefore or (p=0) then
-   begin
-      ocp_list_lstack(list_entry) := make_ocp_lstack_node(locp, p);
-   end
-   else
-   begin
-      q:=ocp_lstack_lnext(p);
-      while q<>0 do
-      begin
-         p:=q; q:=ocp_lstack_lnext(q);
-      end;
-      ocp_lstack_lnext(p):=make_ocp_lstack_node(locp, null);
-   end;
+p := ocp_list_lstack(list_entry);
+if lbefore or (p=0) then begin
+  ocp_list_lstack(list_entry) := make_ocp_lstack_node(locp, p);
+  end
+else begin
+  q:=ocp_lstack_lnext(p);
+  while q<>0 do begin
+    p:=q; q:=ocp_lstack_lnext(q);
+    end;
+  ocp_lstack_lnext(p):=make_ocp_lstack_node(locp, null);
+  end;
 end;
 
 procedure ocp_apply_remove(list_entry:ocp_list_index;
@@ -588,49 +631,45 @@ var p:ocp_lstack_index;
     q:ocp_lstack_index;
     r:ocp_lstack_index;
 begin
-    p := ocp_list_lstack(list_entry);
-    if p=0 then
-    begin
-       print_err("warning: stack entry already empty"); print_ln
+p := ocp_list_lstack(list_entry);
+if p=0 then begin
+  print_err("warning: stack entry already empty"); print_ln
+  end
+else begin
+  q := ocp_lstack_lnext(p);
+  if lbefore or (q=0) then
+    ocp_list_lstack(list_entry) := q
+  else begin
+    r:=ocp_lstack_lnext(q);
+    while r <> 0 do begin
+      p:=q; q:=r; r:=ocp_lstack_lnext(r);
+      end;
+    ocp_lstack_lnext(p) := null;
     end
-    else 
-    begin
-       q := ocp_lstack_lnext(p);
-       if lbefore or (q=0) then
-          ocp_list_lstack(list_entry) := q
-       else
-       begin
-          r:=ocp_lstack_lnext(q);
-          while r <> 0 do
-          begin
-             p:=q; q:=r; r:=ocp_lstack_lnext(r);
-          end;
-          ocp_lstack_lnext(p) := null;
-       end
-    end;
+  end;
 end;
 
 procedure scan_scaled; {sets |cur_val| to a scaled value}
-label done, done1, done2, found, not_found, attach_fraction,
-attach_sign;
+label done, done1, done2, found, not_found, attach_fraction;
 var negative:boolean; {should the answer be negated?}
 @!f:integer; {numerator of a fraction whose denominator is $2^{16}$}
-@<Local variables for dimension calculations@>@;
+@!k,@!kk:small_number; {number of digits in a decimal fraction}
+@!p,@!q:pointer; {top of decimal digit stack}
 begin f:=0; arith_error:=false; negative:=false;
-  @<Get the next non-blank non-sign...@>;
-  back_input;
-  if cur_tok=continental_point_token then cur_tok:=point_token;
-  if cur_tok<>point_token then scan_int
-  else  begin radix:=10; cur_val:=0;
-    end;
-  if cur_tok=continental_point_token then cur_tok:=point_token;
-  if (radix=10)and(cur_tok=point_token) then @<Scan decimal fraction@>;
+@<Get the next non-blank non-sign...@>;
+back_input;
+if cur_tok=continental_point_token then cur_tok:=point_token;
+if cur_tok<>point_token then scan_int
+else  begin radix:=10; cur_val:=0;
+  end;
+if cur_tok=continental_point_token then cur_tok:=point_token;
+if (radix=10)and(cur_tok=point_token) then @<Scan decimal fraction@>;
 if cur_val<0 then {in this case |f=0|}
   begin negative := not negative; negate(cur_val);
   end;
 if cur_val>@'40000 then arith_error:=true
 else cur_val := cur_val*unity +f;
-attach_sign: if arith_error or(abs(cur_val)>=@'10000000000) then
+if arith_error or(abs(cur_val)>=@'10000000000) then
 begin print_err("Stack number too large");
 end;
 if negative then negate(cur_val);
@@ -639,30 +678,28 @@ end;
 procedure print_ocp_lstack(lstack_entry:ocp_lstack_index);
 var p:ocp_lstack_index;
 begin
-   p:=lstack_entry;
-   while (p<>0) do
-   begin
-      print_esc(ocp_id_text(ocp_lstack_ocp(p)));
-      p:=ocp_lstack_lnext(p);
-      if (p<>0) then print(",");
-   end;
+p:=lstack_entry;
+while (p<>0) do begin
+  print_esc(ocp_id_text(ocp_lstack_ocp(p)));
+  p:=ocp_lstack_lnext(p);
+  if (p<>0) then print(",");
+  end;
 end;
 
 procedure print_ocp_list(list_entry:ocp_list_index);
 var p:ocp_list_index;
 begin
-   print("["); p:=list_entry;
-   while not (is_null_ocp_list(p)) do
-   begin
-      print("(");
-      print_scaled(ocp_list_lstack_no(p));
-      print(" : ");
-      print_ocp_lstack(ocp_list_lstack(p));
-      print(")");
-      p:=ocp_list_lnext(p);
-      if not (is_null_ocp_list(p)) then print(", ");
-   end;
-   print("]");
+print("["); p:=list_entry;
+while not (is_null_ocp_list(p)) do begin
+  print("(");
+  print_scaled(ocp_list_lstack_no(p));
+  print(" : ");
+  print_ocp_lstack(ocp_list_lstack(p));
+  print(")");
+  p:=ocp_list_lnext(p);
+  if not (is_null_ocp_list(p)) then print(", ");
+  end;
+print("]");
 end;
 
 function scan_ocp_list: ocp_list_index;
@@ -675,38 +712,33 @@ var llstack_no:scaled;
 begin
 get_r_token; 
 if cur_cmd = set_ocp_list then
-   result := copy_ocp_list(ocp_list_list[cur_chr])
-else if cur_cmd <> ocp_list_op then
-begin
-   print_err("Bad ocp list specification");
+  result := copy_ocp_list(ocp_list_list[cur_chr])
+else if cur_cmd <> ocp_list_op then begin
+  print_err("Bad ocp list specification");
 @.Bad ocp list specification@>
-   help1("I was looking for a ocp list specification.");
-   result := make_null_ocp_list;
-end
-else
-begin
-   lop:=cur_chr;
-   scan_scaled; llstack_no:=cur_val;
-   if (llstack_no<=0) or (llstack_no>=ocp_maxint) then
-   begin
-      print_err("Stack numbers must be between 0 and 4096 (exclusive)");
-      result := make_null_ocp_list;
-   end
-   else
-   begin
-      if lop <= add_after_op then
-      begin
-         scan_ocp_ident; ocp_ident:=cur_val;
+  help1("I was looking for a ocp list specification.");
+  result := make_null_ocp_list;
+  end
+else begin
+  lop:=cur_chr;
+  scan_scaled; llstack_no:=cur_val;
+  if (llstack_no<=0) or (llstack_no>=ocp_maxint) then begin
+    print_err("Stack numbers must be between 0 and 4096 (exclusive)");
+    result := make_null_ocp_list;
+    end
+  else begin
+    if lop <= add_after_op then begin
+      scan_ocp_ident; ocp_ident:=cur_val;
       end;
-      other_list:=scan_ocp_list;
-      lstack_entry:=ocp_ensure_lstack(other_list, llstack_no);
-      if lop <= add_after_op then
-         ocp_apply_add(lstack_entry, (lop=add_before_op), ocp_ident)
-      else
-         ocp_apply_remove(lstack_entry, (lop=remove_before_op));
-      result:=other_list;
-   end;
-end;
+    other_list:=scan_ocp_list;
+    lstack_entry:=ocp_ensure_lstack(other_list, llstack_no);
+    if lop <= add_after_op then
+      ocp_apply_add(lstack_entry, (lop=add_before_op), ocp_ident)
+    else
+      ocp_apply_remove(lstack_entry, (lop=remove_before_op));
+    result:=other_list;
+    end;
+  end;
 scan_ocp_list:=result;
 end;
 
@@ -806,14 +838,13 @@ end
 dump_int(ocp_listmem_ptr);
 for k:=0 to ocp_listmem_ptr-1 do dump_wd(ocp_list_info[k]);
 dump_int(ocp_list_ptr);
-for k:=null_ocp_list to ocp_list_ptr do
-begin
-   dump_int(ocp_list_list[k]);
-   print_nl("\ocplist"); 
-   print_esc(ocp_list_id_text(k)); 
-   print_char("=");
-   print_ocp_list(ocp_list_list[k]);
-end;
+for k:=null_ocp_list to ocp_list_ptr do begin
+  dump_int(ocp_list_list[k]);
+  print_nl("\ocplist"); 
+  print_esc(ocp_list_id_text(k)); 
+  print_char("=");
+  print_ocp_list(ocp_list_list[k]);
+  end;
 dump_int(ocp_lstackmem_ptr);
 for k:=0 to ocp_lstackmem_ptr-1 do dump_wd(ocp_lstack_info[k])
 
@@ -822,7 +853,7 @@ undump_size(1)(1000000)('ocp list mem size')(ocp_listmem_ptr);
 for k:=0 to ocp_listmem_ptr-1 do undump_wd(ocp_list_info[k]);
 undump_size(ocp_list_base)(ocp_list_biggest)('ocp list max')(ocp_list_ptr);
 for k:=null_ocp_list to ocp_list_ptr do
-    undump_int(ocp_list_list[k]);
+  undump_int(ocp_list_list[k]);
 undump_size(1)(1000000)('ocp lstack mem size')(ocp_lstackmem_ptr);
 for k:=0 to ocp_lstackmem_ptr-1 do undump_wd(ocp_lstack_info[k])
 
@@ -839,6 +870,7 @@ for k:=0 to ocp_lstackmem_ptr-1 do undump_wd(ocp_lstack_info[k])
 
 @ @<Put each...@>=
 primitive("ocp", def_ocp, 0);
+primitive("externalocp", def_ocp, 1);
 primitive("ocplist", def_ocp_list, 0);
 primitive("pushocplist", push_ocp_list, 0);
 primitive("popocplist", pop_ocp_list, 0);
@@ -851,40 +883,42 @@ primitive("ocptracelevel", ocp_trace_level, 0);
 set_equiv(ocp_trace_level_base,0);
 
 @ @<Cases of |print_cmd_chr|...@>=
-set_ocp: begin print("select ocp "); 
-               slow_print(ocp_name(chr_code)); 
-         end;
-def_ocp: print_esc("ocp");
-set_ocp_list: begin
-                print("select ocp list "); 
-              end;
+set_ocp: begin
+  print("select ocp "); 
+  slow_print(ocp_name(chr_code)); 
+  end;
+def_ocp: if cur_chr=0 then print_esc("ocp")
+  else print_esc("externalocp");
+set_ocp_list: print("select ocp list "); 
 def_ocp_list:  print_esc("ocplist");
 push_ocp_list: print_esc("pushocplist");
 pop_ocp_list:  print_esc("popocplist");
 clear_ocp_lists: print_esc("clearocplists");
-ocp_list_op:     if chr_code=add_before_op then print_esc("addbeforeocplist")
-            else if chr_code=add_after_op then print_esc("addafterocplist")
-            else if chr_code=remove_before_op 
-                 then print_esc("removebeforeocplist")
-            else {|chr_code|=|remove_after_op|} print_esc("removeafterocplist");
-ocp_trace_level: begin print_esc("ocptracelevel");
-                 end;
+ocp_list_op:
+  if chr_code=add_before_op then print_esc("addbeforeocplist")
+  else if chr_code=add_after_op then print_esc("addafterocplist")
+  else if chr_code=remove_before_op then print_esc("removebeforeocplist")
+  else {|chr_code|=|remove_after_op|} print_esc("removeafterocplist");
+ocp_trace_level: print_esc("ocptracelevel");
 
 @ @<Assignments@>=
-set_ocp: begin print_err("To use ocps, use the "); print_esc("pushocplist"); 
-               print(" primitive");print_ln
-         end;
+set_ocp: begin
+  print_err("To use ocps, use the "); print_esc("pushocplist"); 
+  print(" primitive");print_ln
+  end;
 def_ocp: new_ocp(a);
-set_ocp_list: begin print_err("To use ocp lists, use the "); 
-                    print_esc("pushocplist"); print(" primitive");print_ln
-              end;
+set_ocp_list: begin
+  print_err("To use ocp lists, use the "); 
+  print_esc("pushocplist"); print(" primitive");print_ln
+  end;
 def_ocp_list: new_ocp_list(a);
 push_ocp_list: do_push_ocp_list(a);
 pop_ocp_list: do_pop_ocp_list(a);
 clear_ocp_lists: do_clear_ocp_lists(a);
-ocp_list_op: begin print_err("To build ocp lists, use the ");
-                   print_esc("ocplist"); print(" primitive"); print_ln
-             end;
+ocp_list_op: begin
+  print_err("To build ocp lists, use the ");
+  print_esc("ocplist"); print(" primitive"); print_ln
+  end;
 ocp_trace_level: begin scan_optional_equals; scan_int;
   if cur_val<>0 then cur_val:=1;
   define(ocp_trace_level_base, data, cur_val);
@@ -898,9 +932,12 @@ var u:pointer; {user's ocp identifier}
 @!t:str_number; {name for the frozen ocp identifier}
 @!old_setting:0..max_selector; {holds |selector| setting}
 @!flushable_string:str_number; {string not yet referenced}
+@!external_ocp:boolean; {external binary file}
 begin if job_name=0 then open_log_file;
   {avoid confusing \.{texput} with the ocp name}
 @.texput@>
+if cur_chr=1 then external_ocp:=true
+else external_ocp:=false;
 get_r_token; u:=cur_cs;
 if u>=hash_base then t:=newtext(u)
 else if u>=single_base then
@@ -913,9 +950,10 @@ else  begin old_setting:=selector; selector:=new_string;
 define(u,set_ocp,null_ocp); scan_optional_equals; scan_file_name;
 @<If this ocp has already been loaded, set |f| to the internal
   ocp number and |goto common_ending|@>;
-f:=read_ocp_info(u,cur_name,cur_area);
+f:=read_ocp_info(u,cur_name,cur_area,cur_ext,external_ocp);
 common_ending: 
-    set_equiv(u,f); set_new_eqtb(ocp_id_base+f,new_eqtb(u)); settext(ocp_id_base+f,t);
+set_equiv(u,f); set_new_eqtb(ocp_id_base+f,new_eqtb(u));
+settext(ocp_id_base+f,t);
 if equiv(ocp_trace_level_base)=1 then begin
   print_nl(""); print_esc("ocp"); print_esc(t); print("="); print(cur_name);
   end;
@@ -928,21 +966,20 @@ the new name becomes the ocp identifier of record. OCP names `\.{xyz}' and
 @<If this ocp has already been loaded...@>=
 flushable_string:=str_ptr-1;
 for f:=ocp_base+1 to ocp_ptr do
-  if str_eq_str(ocp_name(f),cur_name)and str_eq_str(ocp_area(f),cur_area)
-then begin if cur_name=flushable_string then
-              begin flush_string; cur_name:=ocp_name(f);
-              end;
-           goto common_ending
-     end
+  if str_eq_str(ocp_name(f),cur_name)and str_eq_str(ocp_area(f),cur_area) then
+    begin
+    if cur_name=flushable_string then begin
+      flush_string; cur_name:=ocp_name(f);
+      end;
+    goto common_ending
+    end
 
 @ @<Declare subprocedures for |prefixed_command|@>=
 procedure new_ocp_list(@!a:small_number);
-label common_ending;
 var u:pointer; {user's ocp list identifier}
 @!f:internal_ocp_list_number; {runs through existing ocp lists}
 @!t:str_number; {name for the frozen ocp list identifier}
 @!old_setting:0..max_selector; {holds |selector| setting}
-@!flushable_string:str_number; {string not yet referenced}
 begin if job_name=0 then open_log_file;
   {avoid confusing \.{texput} with the ocp list name}
 @.texput@>
@@ -957,8 +994,8 @@ else  begin old_setting:=selector; selector:=new_string;
   end;
 define(u,set_ocp_list,null_ocp_list); scan_optional_equals; 
 f:=read_ocp_list;
-common_ending: 
-    set_equiv(u,f); set_new_eqtb(ocp_list_id_base+f,new_eqtb(u)); settext(ocp_list_id_base+f,t);
+    set_equiv(u,f); set_new_eqtb(ocp_list_id_base+f,new_eqtb(u));
+    settext(ocp_list_id_base+f,t);
 if equiv(ocp_trace_level_base)=1 then begin
   print_nl(""); print_esc("ocplist"); print_esc(t); print("=");
   print_ocp_list(ocp_list_list[f]);
@@ -971,25 +1008,24 @@ var ocp_list_no:halfword;
     old_number:halfword;
     i:integer;
 begin
-   scan_ocp_list_ident; ocp_list_no:=cur_val;
-   old_number:=equiv(ocp_active_number_base);
-   define(ocp_active_base+old_number, data, ocp_list_no);
-   define(ocp_active_number_base, data, (old_number+1));
+scan_ocp_list_ident; ocp_list_no:=cur_val;
+old_number:=equiv(ocp_active_number_base);
+define(ocp_active_base+old_number, data, ocp_list_no);
+define(ocp_active_number_base, data, (old_number+1));
 
 if equiv(ocp_trace_level_base)=1 then begin
-     print_nl("New active ocp list: {");
-     for i:=old_number downto 0 do
-     begin
-        print_esc(ocp_list_id_text(equiv(ocp_active_base+i)));
-        print("="); print_ocp_list(ocp_list_list[equiv(ocp_active_base+i)]);
-        if i<>0 then print(",");
-     end;
-     print("}");
-     end;
+  print_nl("New active ocp list: {");
+  for i:=old_number downto 0 do begin
+    print_esc(ocp_list_id_text(equiv(ocp_active_base+i)));
+    print("="); print_ocp_list(ocp_list_list[equiv(ocp_active_base+i)]);
+    if i<>0 then print(",");
+    end;
+  print("}");
+  end;
 
-   active_compile;
-   define(ocp_active_min_ptr_base, data, active_min_ptr);
-   define(ocp_active_max_ptr_base, data, active_max_ptr);
+active_compile;
+define(ocp_active_min_ptr_base, data, active_min_ptr);
+define(ocp_active_max_ptr_base, data, active_max_ptr);
 end;
 
 @ @<Declare subprocedures for |prefixed_command|@>=
@@ -997,37 +1033,35 @@ procedure do_pop_ocp_list(@!a:small_number);
 var old_number:halfword;
     i:integer;
 begin
-   old_number:=equiv(ocp_active_number_base);
-   if old_number=0 then
-   begin
-      print_err("No active ocp lists to be popped");
-   end
-   else
-      define(ocp_active_number_base, data, (old_number-1));
+old_number:=equiv(ocp_active_number_base);
+if old_number=0 then begin
+  print_err("No active ocp lists to be popped");
+  end
+else
+  define(ocp_active_number_base, data, (old_number-1));
 
 if equiv(ocp_trace_level_base)=1 then begin
-     print_nl("New active ocp list: {");
-     for i:=(old_number-2) downto 0 do
-     begin
-        print_esc(ocp_list_id_text(equiv(ocp_active_base+i)));
-        print("="); print_ocp_list(ocp_list_list[equiv(ocp_active_base+i)]);
-        if i<>0 then print(",");
-     end;
-     print("}");
+  print_nl("New active ocp list: {");
+  for i:=(old_number-2) downto 0 do begin
+    print_esc(ocp_list_id_text(equiv(ocp_active_base+i)));
+    print("="); print_ocp_list(ocp_list_list[equiv(ocp_active_base+i)]);
+    if i<>0 then print(",");
+    end;
+  print("}");
   end;
 
-   active_compile;
-   define(ocp_active_min_ptr_base, data, active_min_ptr);
-   define(ocp_active_max_ptr_base, data, active_max_ptr);
+active_compile;
+define(ocp_active_min_ptr_base, data, active_min_ptr);
+define(ocp_active_max_ptr_base, data, active_max_ptr);
 end;
 
 @ @<Declare subprocedures for |prefixed_command|@>=
 procedure do_clear_ocp_lists(@!a:small_number);
 begin
-   define(ocp_active_number_base, data, 0);
-   active_compile;
-   define(ocp_active_min_ptr_base, data, active_min_ptr);
-   define(ocp_active_max_ptr_base, data, active_max_ptr);
+define(ocp_active_number_base, data, 0);
+active_compile;
+define(ocp_active_min_ptr_base, data, active_min_ptr);
+define(ocp_active_max_ptr_base, data, active_max_ptr);
 end;
 
 @z

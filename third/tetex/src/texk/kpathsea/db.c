@@ -78,7 +78,7 @@ db_build P2C(hash_table_type *, table,  const_string, db_filename)
   string line;
   unsigned dir_count = 0, file_count = 0, ignore_dir_count = 0;
   unsigned len = strlen (db_filename) - sizeof (DB_NAME) + 1; /* Keep the /. */
-  string top_dir = xmalloc (len + 1);
+  string top_dir = (string)xmalloc (len + 1);
   string cur_dir = NULL; /* First thing in ls-R might be a filename.  */
   FILE *db_file = fopen (db_filename, FOPEN_R_MODE);
   
@@ -112,11 +112,16 @@ db_build P2C(hash_table_type *, table,  const_string, db_filename)
       } else if (*line != 0 && cur_dir   /* a file line? */
                  && !(*line == '.'
                       && (line[1] == 0 || (line[1] == '.' && line[2] == 0))))
-       {/* Make a new hash table entry with a key of `line' and a data
+      {
+        /* Make a new hash table entry with a key of `line' and a data
            of `cur_dir'.  An already-existing identical key is ok, since
            a file named `foo' can be in more than one directory.  Share
-           `cur_dir' among all its files (and hence never free it). */
-        hash_insert (table, xstrdup (line), cur_dir);
+           `cur_dir' among all its files (and hence never free it).
+
+           Note that we assume that all names in the ls-R file have already
+           been case-smashed to lowercase where appropriate.
+        */
+        hash_insert_normalized (table, xstrdup (line), cur_dir);
         file_count++;
 
       } /* else ignore blank lines or top-level files
@@ -176,6 +181,7 @@ kpse_db_insert P1C(const_string, passed_fname)
     *baseptr = '\0';  /* Chop off the filename.  */
     dir_part = fname; /* That leaves the dir, with the trailing /.  */
 
+    /* Note that we do not assuse that these names have been normalized. */
     hash_insert (&db, file_part, dir_part);
   }
 }
@@ -298,7 +304,8 @@ alias_build P2C(hash_table_type *, table,  const_string, alias_filename)
         /* Is the check for errors strong enough?  Should we warn the user
            for potential errors?  */
         if (strlen (real) != 0 && strlen (alias) != 0) {
-          hash_insert (table, xstrdup (alias), xstrdup (real));
+          /* Stuff in the alias file should be normalized. */
+          hash_insert_normalized (table, xstrdup (alias), xstrdup (real));
           count++;
         }
       }
@@ -406,7 +413,7 @@ kpse_db_search P3C(const_string, name,  const_string, orig_path_elt,
   last_slash = strrchr (name, '/');
   if (last_slash && last_slash != name) {
     unsigned len = last_slash - name + 1;
-    string dir_part = xmalloc (len);
+    string dir_part = (string)xmalloc (len);
     strncpy (dir_part, name, len - 1);
     dir_part[len - 1] = 0;
     path_elt = concat3 (orig_path_elt, "/", dir_part);
@@ -447,10 +454,10 @@ kpse_db_search P3C(const_string, name,  const_string, orig_path_elt,
 
   done = false;
   for (r = aliases; !done && *r; r++) {
-    string try = *r;
+    string ctry = *r;
 
     /* We have an ls-R db.  Look up `try'.  */
-    orig_dirs = db_dirs = hash_lookup (db, try);
+    orig_dirs = db_dirs = hash_lookup (db, ctry);
 
     ret = XTALLOC1 (str_list_type);
     *ret = str_list_init ();
@@ -459,7 +466,7 @@ kpse_db_search P3C(const_string, name,  const_string, orig_path_elt,
        example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
        and the path looks like .../cx, we don't want the ricoh file.  */
     while (!done && db_dirs && *db_dirs) {
-      string db_file = concat (*db_dirs, try);
+      string db_file = concat (*db_dirs, ctry);
       boolean matched = match (db_file, path_elt);
 
 #ifdef KPSE_DEBUG

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTProfil.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTProfil.c,v 1.1.1.2 2003-02-25 22:29:23 amb Exp $
 **
 **	Defines a set of application profiles
 */
@@ -13,6 +13,8 @@
 #include "WWWUtil.h"
 #include "WWWCore.h"
 #include "WWWCache.h"
+#include "WWWStream.h"
+#include "HTInit.h"
 #include "HTProfil.h"				         /* Implemented here */
 
 PRIVATE HTList * converters = NULL;
@@ -32,6 +34,14 @@ PUBLIC void HTProfile_delete (void)
 
 	/* Clean up all the global preferences */
 	HTFormat_deleteAll();
+
+	/* The following lists have been cleaned up by HTFormat_deleteAll */
+	transfer_encodings = 0;
+	content_encodings = 0;
+	converters = 0;
+
+	/* Remove bindings between suffixes, media types */
+	HTBind_deleteAll();
 
 	/* Terminate libwww */
 	HTLibTerminate();
@@ -61,8 +71,11 @@ PRIVATE void client_profile (const char * AppName, const char * AppVersion,
     else
 	HTProtocolInit();
 
+    /* Initialize suffix bindings for local files */
+    HTBind_init();
+
     /* Set max number of sockets we want open simultanously */ 
-    HTNet_setMaxSocket(64);
+    HTNet_setMaxSocket(32);
 
     /* The persistent cache does not work in preemptive mode */
     if (cache) HTCacheInit(NULL, 20);
@@ -132,6 +145,8 @@ PUBLIC void HTProfile_newPreemptiveClient (const char * AppName,
     /* Do the default setup */
     client_profile(AppName, AppVersion, YES, NO, NO);
 
+    /* Set up default event loop */
+    HTEventInit();
     /* Remember that we are loading preemptively */
     preemptive = YES;
 }
@@ -171,8 +186,11 @@ PRIVATE void robot_profile (const char * AppName, const char * AppVersion)
     /* Register the default set of application protocol modules */
     HTProtocolInit();
 
+    /* Initialize suffix bindings for local files */
+    HTBind_init();
+
     /* Set max number of sockets we want open simultanously */ 
-    HTNet_setMaxSocket(64);
+    HTNet_setMaxSocket(32);
 
     /* Register some default set of BEFORE and AFTER filters */
     HTNet_addBefore(HTRuleFilter, NULL, NULL, HT_FILTER_MIDDLE); 

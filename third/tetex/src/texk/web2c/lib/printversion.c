@@ -29,7 +29,7 @@ printversionandexit P3C(const_string, banner,
   prog_version++;
   
   len = prog_name_end - banner - sizeof ("This is");
-  prog_name = xmalloc (len + 1);
+  prog_name = (string)xmalloc (len + 1);
   strncpy (prog_name, banner + sizeof ("This is"), len);
   prog_name[len] = 0;
 
@@ -38,12 +38,12 @@ printversionandexit P3C(const_string, banner,
   puts (kpathsea_version_string);
 
   if (copyright_holder) {
-    printf ("Copyright (C) 1999 %s.\n", copyright_holder);
+    printf ("Copyright (C) 1997-2003 %s.\n", copyright_holder);
     if (!author)
       author = copyright_holder;
   }
 
-  puts ("Kpathsea is copyright (C) 1999 Free Software Foundation, Inc.");
+  puts ("Kpathsea is copyright (C) 1997-2003 Free Software Foundation, Inc.");
 
   puts ("There is NO warranty.  Redistribution of this software is");
   fputs ("covered by the terms of ", stdout);

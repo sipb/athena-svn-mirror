@@ -66,6 +66,14 @@ of 0, we take the default size.
 extern HTOutput_new HTBufferWriter_new;
 
 /*
+.
+  Buffered Write Converter Stream
+.
+*/
+
+extern HTOutputConverter_new HTBufferConverter_new;
+
+/*
 */
 
 #endif
@@ -74,6 +82,6 @@ extern HTOutput_new HTBufferWriter_new;
 
   
 
-  @(#) $Id: HTBufWrt.h,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+  @(#) $Id: HTBufWrt.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

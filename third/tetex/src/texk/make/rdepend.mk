@@ -18,8 +18,8 @@
 @MAINT@	  | sed -e 's,\(\.\./\)\+kpathsea/,$$(kpathsea_srcdir)/,g' \
 @MAINT@	        -e 's,$$(kpathsea_srcdir)/c-auto.h,$$(kpathsea_dir)/c-auto.h,g' \
 @MAINT@	        -e 's,$$(kpathsea_srcdir)/paths.h,$$(kpathsea_dir)/paths.h,g' \
-@MAINT@	        -e 's,/usr[^ ]* ,,g' \
-@MAINT@	        -e 's,/usr[^ ]*$$,,g' \
+@MAINT@	        -e 's, /[^ ]*,,g' \
+@MAINT@	        -e 's, [^ ]*/\.\./libs/[^ ]*,,g' \
 @MAINT@	        -e 's,dvi2xx.o,dvilj.o dvilj2p.o dvilj4.o dvilj4l.o,' \
 @MAINT@	        -e 's,lex.yy,$$(LEX_OUTPUT_ROOT),g' \
 @MAINT@	  | $(top_srcdir)/../unbackslsh.awk \

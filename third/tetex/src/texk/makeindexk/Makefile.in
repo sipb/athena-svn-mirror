@@ -1,4 +1,4 @@
-# Makefile for makeindexk --te@informatik.uni-hannover.de. Public domain.
+# Makefile for makeindexk --te@dbs.uni-hannover.de. Public domain.
 version = 2.13
 
 ac_include ../make/paths.mk
@@ -27,8 +27,9 @@ uninstall-exec:
 	cd $(scriptdir) && rm -f mkindex
 
 install-data: makeindex.1
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir)
-	$(INSTALL_DATA) $(srcdir)/makeindex.1 $(mandir)/makeindex.$(manext)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(man1dir)
+	$(INSTALL_DATA) $(srcdir)/makeindex.1 $(man1dir)/makeindex.$(manext)
+	$(INSTALL_DATA) $(srcdir)/mkindex.1 $(man1dir)/mkindex.$(manext)
 
 uninstall-data:
 

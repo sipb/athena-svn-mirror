@@ -9,10 +9,14 @@ mk_PS_GS=
 mk_GS_PATH='gs'
 mk_PS_DPS=
 mk_PS_NEWS=
+mk_NOGRID=
 mk_A4=
 
 # HyperTeX: There appears to be no (easy) way to disable this
 mk_HTEX=1
+
+# HyperTeX: There appears to be no (easy) way to disable this
+mk_T1=1
 
 # Kpathsea defaults, they are #if'ed in the source but there is no
 # config option to disable them.
@@ -51,12 +55,14 @@ eval "`awk '/^#define/ { print "mk_"$2"="$3 }' c-auto.h`"
 
 # Process simple boolean arguments.  Their values are empty or nonempty
 
-if test -n "$mk_NOTOOL";	then mk_BUTTONS=;			fi
+if test -n "$mk_NOTOOL";	then echo '/^#iftool/,/^#/d'; mk_BUTTONS=;
+				else echo 's/^#tool//';	fi
 if test -z "$mk_GREY";		then echo '/^#ifgrey/,/^#/d';		fi
 if test -z "$mk_BUTTONS";	then echo '/^#ifbuttons/,/^#/d';	fi
 if test -z "$mk_PS_DPS";	then echo '/^#ifdps/,/^#/d';		fi
 if test -z "$mk_PS_NEWS";	then echo '/^#ifnews/,/^#/d';		fi
 if test -z "$mk_HTEX";		then echo '/^#ifhyper/,/^#/d';		fi
+if test -z "$mk_T1";		then echo '/^#ift1/,/^#/d';		fi
 if test -n "$mk_NOGRID";	then echo '/^#ifgrid/,/^#/d';		fi
 
 if test -z "$mk_KPATHSEA"; then	echo	'/^#ifkpathsea/,/^#/d';

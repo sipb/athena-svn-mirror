@@ -55,11 +55,9 @@ This is the set of callback functions for handling digest authentication.
 
 extern HTNetBefore	HTDigest_generate;
 extern HTNetAfter 	HTDigest_parse;
+extern HTNetAfter       HTDigest_updateInfo;
 extern HTUTree_gc	HTDigest_delete;
-extern int	        HTDigest_refresh (HTRequest *request, 
-					  HTResponse *response,
-					  BOOL proxy,
-					  char *auth_info);
+
 
 /*
 */
@@ -70,7 +68,7 @@ extern int	        HTDigest_refresh (HTRequest *request,
 
   
 
-  @(#) $Id: HTAABrow.h,v 1.1.1.1 2000-03-10 17:52:54 ghudson Exp $
+  @(#) $Id: HTAABrow.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */
 

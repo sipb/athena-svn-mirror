@@ -1,0 +1,20 @@
+The files within this directory are all free software. Most of these
+files are copyright by some author(s), but I have taken care that
+the following conditions are true:
+  - all files can be distributed: no license fee is required.
+  - using these files (even for commercial purpose) is not restricted.
+  - modification of files is allowed or an existing translation scheme
+    effectively makes modification unnecessary. E.g. Knuth's WEB files
+    must not be changed, but the build process allows you to change
+    the generated .c files by "change files". Please, check the license
+    of a file before you do modifications; you might need to mark those
+    modifications or to rename the program.
+  - the distribution of modified files and subsets of these files is
+    allowed, but please check the licenses if you do that.
+
+If you find any file that violates any of these conditions, please report
+that to me.
+
+February, 2003, Thomas Esser
+
+te@dbs.uni-hannover.de

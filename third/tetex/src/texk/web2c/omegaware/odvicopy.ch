@@ -1,3 +1,4 @@
+% odvicopy.ch: web2c changes for odvicopy.web
 %
 % This file is part of the Omega project, which
 % is based in the web2c distribution of TeX.
@@ -191,7 +192,7 @@ to |make_font_name|.
 @x
 cur_loc:=pckt_start[n]; cur_limit:=pckt_start[n+1];
 @y
-cur_name := xmalloc (pckt_length (n) + pckt_length (e) + 1);
+cur_name := xmalloc_array (char, pckt_length (n) + pckt_length (e));
 cur_loc:=pckt_start[n]; cur_limit:=pckt_start[n+1];
 @z
 
@@ -570,10 +571,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'odvicopy');
+      usage ('odvicopy');
 
     end else if argument_is ('help') then begin
-      usage (0, ODVICOPY_HELP);
+      usage_help (ODVICOPY_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -610,7 +611,7 @@ begin
   
   end else begin
     write_ln (stderr, 'odvicopy: Need at most two file arguments.');
-    usage (1, 'odvicopy');
+    usage ('odvicopy');
   end;
 end;
 

@@ -71,14 +71,23 @@
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
 
-/* Define to enable linking libwww as shared library. */
-#undef LIBWWW_SHARED
-
 /* Define to enable direct WAIS access. */
 #undef HT_DIRECT_WAIS
 
 /* Define to enable mysql access. */
 #undef HT_MYSQL
+
+/* Define to enable MD5 for HTTP access authentication. */
+#undef HT_MD5
+
+/* Define to enable WebDAV protocol. */
+#undef HT_DAV
+
+/* Define to enable extension methods. */
+#undef HT_EXT
+
+/* Define to enable expat XML parser. */
+#undef HT_EXPAT
 
 /* Define to enable Zlib compression / decompression support. */
 #undef HT_ZLIB
@@ -103,6 +112,42 @@
 /* Define to build using reentrant system calls. */
 #undef HT_REENTRANT
 
+/* Define to use the two-argument variant of ctime_r */
+#undef HAVE_CTIME_R_2
+
+/* Define to use the three-argument variant of ctime_r */
+#undef HAVE_CTIME_R_3
+
+/* Define to use the two-argument variant of readdir_r */
+#undef HAVE_READDIR_R_2
+
+/* Define to use the three-argument variant of readdir_r */
+#undef HAVE_READDIR_R_3
+
+/* Define to use the three-argument variant of gethostbyname_r */
+#undef HAVE_GETHOSTBYNAME_R_3
+
+/* Define to use the five-argument variant of gethostbyname_r */
+#undef HAVE_GETHOSTBYNAME_R_5
+
+/* Define to use the six-argument variant of gethostbyname_r */
+#undef HAVE_GETHOSTBYNAME_R_6
+
+/* Define to use the five-argument variant of gethostbyaddr_r */
+#undef HAVE_GETHOSTBYADDR_R_5
+
+/* Define to use the seven-argument variant of gethostbyaddr_r */
+#undef HAVE_GETHOSTBYADDR_R_7
+
+/* Define to use the eight-argument variant of gethostbyaddr_r */
+#undef HAVE_GETHOSTBYADDR_R_8
+
+/* Define if getlogin_r returns an integer */
+#undef GETLOGIN_R_RETURNS_INT
+
+/* Define if getlogin_r returns a pointer */
+#undef GETLOGIN_R_RETURNS_POINTER
+
 /* Define to be the package name. */
 #undef W3C_PACKAGE
 
@@ -111,9 +156,6 @@
 
 /* Define this to be the prefix for cache files. */
 #undef CACHE_FILE_PREFIX
-
-/* Define this if we can select on stdin. */
-#undef TTY_IS_SELECTABLE
 
 /* Define to disable Nagle's algorithm */
 #undef HT_NO_NAGLE
@@ -247,11 +289,8 @@
 /* Define if you have the timegm function.  */
 #undef HAVE_TIMEGM
 
-/* Define if you have the <appkit.h> header file.  */
-#undef HAVE_APPKIT_H
-
-/* Define if you have the <appkit/appkit.h> header file.  */
-#undef HAVE_APPKIT_APPKIT_H
+/* Define if you have the tzset function.  */
+#undef HAVE_TZSET
 
 /* Define if you have the <arpa/inet.h> header file.  */
 #undef HAVE_ARPA_INET_H
@@ -448,9 +487,6 @@
 /* Define if you have the <wais/wais.h> header file.  */
 #undef HAVE_WAIS_WAIS_H
 
-/* Define if you have the ICE library (-lICE).  */
-#undef HAVE_LIBICE
-
 /* Define if you have the dl library (-ldl).  */
 #undef HAVE_LIBDL
 
@@ -462,6 +498,13 @@
 
 /* Define if you have the socket library (-lsocket).  */
 #undef HAVE_LIBSOCKET
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
 
 /* Define this if you have the external variable 'socket_errno'. */
 #undef HAVE_SOCKET_ERRNO

@@ -4,10 +4,10 @@
 # (If you change or delete the word `original' on the previous line,
 # installation won't write this script over yours.)
 # 
-# te@informatik.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
+# te@dbs.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
 # Public domain.
 
-version='$Id: mktexpk,v 1.1.1.1 2000-03-10 17:51:27 ghudson Exp $'
+version='$Id: mktexpk,v 1.1.1.2 2003-02-25 22:11:57 amb Exp $'
 progname=`echo $0 | sed 's%.*/%%'`
 usage="Usage: $progname [OPTIONS] NAME [REDIRECT],
   Create a PK font.
@@ -86,65 +86,19 @@ esac
 
 NAME=$1
 
-# ps_to_pk is set in mktex.opt
-case $ps_to_pk in
-  gsftopk)
-    if $ps_to_pk -t "$NAME"; then
-      cmd="$ps_to_pk $NAME $DPI"
-    fi;;
-  ps2pk)
-    # grep for the font in $PSMAPFILE.  These are base font names, such as
-    # rpplr (the original) or pplr0 (an interim step) or pplr8r (current).
-    : ${PSMAPFILE=`kpsewhich --format='dvips config' ps2pk.map psfonts.map`}
-    pattern="^$NAME"'([ 	]|$)' 
-    psline=`egrep "$pattern" $PSMAPFILE`
-    if test -n "$psline"; then
-      set x `echo "$psline" | sed 's%[<["]%%g'`
-      shift; shift; shift;
-      encoding=; psname=; slant=; extend=
-      while test ! -z "$1"; do
-        case "$1" in
-          *.enc)       encoding="-e $1";;
-          *.pf[ab])    psname="$1";;
-          *SlantFont)  slant="-S $lastopt";;
-          *ExtendFont) extend="-E $lastopt";;
-        esac
-        lastopt="$1"
-        shift
-      done
-      # Guessing the name of the type1 font file as fallback:
-      ANAME=`echo $NAME | sed 's/8r$/8a/'`
-      for i in $NAME.pfa $NAME.pfb $ANAME.pfa $ANAME.pfb; do
-        if kpsewhich $i >/dev/null 2>&1; then
-          psname=$i
-          break
-        fi
-      done
-      if [ -z "$psname" ]; then
-        echo "$progname: cannot find $NAME.pfa or $NAME.pfb. Trying gsftopk." >&2
-        cmd="gsftopk $NAME $DPI"
-      else
-        cmd="ps2pk -v -X$DPI -R$BDPI $slant $extend $encoding $psname $NAME.${DPI}pk"
-      fi
-    fi;;
-esac
-
-if test -z "$cmd"; then
-  if (ttf2pk -t -q $NAME) >/dev/null 2>&1; then
-    cmd="ttf2pk -q $NAME $DPI"
-  elif (hbf2gf -t -q $NAME) >/dev/null 2>&1; then
-    cmd="hbf2gf -q -p $NAME $DPI"
+if kpsewhich $NAME.mf >/dev/null 2>&1 || mktexmf $NAME >/dev/null 2>&1; then
+  # determine the progname of metafont to use; prefer mf-nowin.
+  if (mf-nowin --version) >/dev/null 2>&1; then
+    MF="mf-nowin -progname=mf"
+  else
+    MF=mf
   fi
-fi
 
-if test -n "$cmd"; then
-  MODE=modeless
-else
   # Check that $BDPI and $MODE are consistent; if not, ignore the mode and
   # hope we can correctly guess it from bdpi.  (People like to specify the
   # resolution on the command line, not the mode so much.)
   if test -n "$MODE"; then
-    mf_bdpi=`mf \
+    mf_bdpi=`$MF \
 '\mode:='$MODE';mode_setup;message"BDPI= "&decimal round pixels_per_inch;end.'\
              </dev/null \
              | awk '/DPI=/ {print $2}'`
@@ -173,7 +127,66 @@ else
 
   # Run Metafont. Always use plain Metafont, since reading cmbase.mf
   # does not noticeably slow things down.
-  cmd="mf \mode:=$MODE; mag:=$MAG; nonstopmode; input $NAME"
+  cmd="$MF \mode:=$MODE; mag:=$MAG; nonstopmode; input $NAME"
+else
+  MODE=modeless
+  # ps_to_pk is set in mktex.opt
+  case $ps_to_pk in
+    gsftopk)
+      if $ps_to_pk -t "$NAME"; then
+        cmd="$ps_to_pk $NAME $DPI"
+      fi;;
+    ps2pk)
+      # grep for the font in $PSMAPFILE.  These are base font names, such as
+      # rpplr (the original) or pplr0 (an interim step) or pplr8r (current).
+      : ${PSMAPFILE=`kpsewhich --format='dvips config' psfonts.map ps2pk.map`}
+      pattern="^$NAME"'([ 	]|$)' 
+      psline=`egrep "$pattern" $PSMAPFILE | tail -1`
+      if test -n "$psline"; then
+        set x `echo "$psline" | sed 's%[<["]%%g'`
+        shift; shift; shift;
+        encoding=; psname=; slant=; extend=
+        while test ! -z "$1"; do
+          case "$1" in
+            *.enc)       encoding="-e $1";;
+            *.pf[ab])    psname="$1";;
+            *SlantFont)  slant="-S $lastopt";;
+            *ExtendFont) extend="-E $lastopt";;
+          esac
+          lastopt="$1"
+          shift
+        done
+        # Guessing the name of the type1 font file as fallback:
+        ANAME=`echo $NAME | sed 's/8r$/8a/'`
+        for i in $NAME.pfa $NAME.pfb $ANAME.pfa $ANAME.pfb; do
+          if kpsewhich $i >/dev/null 2>&1; then
+            psname=$i
+            break
+          fi
+        done
+
+        if [ -n "$psname" ]; then
+          cmd="ps2pk -v -X$DPI -R$BDPI $slant $extend $encoding $psname $NAME.${DPI}pk"
+        else
+          if gsftopk -t "$NAME"; then
+            echo "$progname: cannot find $NAME.pfa or $NAME.pfb. Trying gsftopk." >&2
+            cmd="gsftopk $NAME $DPI"
+          fi
+        fi
+      fi;;
+  esac
+
+  # unsupported by $ps_to_pk, try other conversions:
+  if test -z "$cmd"; then
+    if (ttf2pk -t -q $NAME) >/dev/null 2>&1; then
+      cmd="ttf2pk -q $NAME $DPI"
+    elif (hbf2gf -t -q $NAME) >/dev/null 2>&1; then
+      cmd="hbf2gf -q -p $NAME $DPI"
+    else
+      echo "$progname: don't know how to create bitmap font for $NAME." >&2
+      exit 1
+    fi
+  fi
 fi
 
 OIFS=$IFS; IFS=$SEP

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTee.c,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+**	@(#) $Id: HTTee.c,v 1.1.1.2 2003-02-25 22:12:36 amb Exp $
 **
 **	The Tee class just writes to two streams.  Easy.
 **	See also the Black Hole stream which is even easier.
@@ -32,7 +32,7 @@ struct _HTStream {
 /*
 **	Algorithm produced by H&kon
 */
-PRIVATE int default_resolver (const void *a, const void *b)
+PRIVATE int CDECL default_resolver (const void *a, const void *b)
 {
     if (*(int *) a < 0)
         return *(int *) a;
@@ -133,9 +133,8 @@ PUBLIC HTStream * HTTee(HTStream * s1, HTStream * s2, HTComparer * resolver)
     me->s1 = s1 ? s1 : HTBlackHole();
     me->s2 = s2 ? s2 : HTBlackHole();
     me->resolver = resolver ? resolver : default_resolver;
-    if (STREAM_TRACE)
-	HTTrace("Tee......... Created stream %p with resolver %p\n",
-		me, me->resolver);
+    HTTRACE(STREAM_TRACE, "Tee......... Created stream %p with resolver %p\n" _ 
+		me _ me->resolver);
     return me;
 }
 

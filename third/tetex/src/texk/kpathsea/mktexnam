@@ -1,9 +1,9 @@
 #!/bin/sh
 # maketexnam -- find PK and TFM names.
-# te@informatik.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
+# te@dbs.uni-hannover.de, kb@mail.tug.org, and infovore@xs4all.nl.
 # Public domain.
 
-version='$Id: mktexnam,v 1.1.1.1 2000-03-10 17:51:27 ghudson Exp $'
+version='$Id: mktexnam,v 1.1.1.2 2003-02-25 22:10:55 amb Exp $'
 usage="Usage: $0 NAME [DPI MODE] [DESTDIR].
   Output the PK, TFM, and MF names for a font NAME."
 mt_max_args=4
@@ -54,7 +54,7 @@ if test -z "$fullname"; then
            fullname=`kpsewhich cscode.mf`
            ;;
       # LH fonts get special treatment:
-      wn[bcdfirstuv]*|rx[bcdfiorstuvx][bcfhilmostx]|l[abchl][bcdfiorstuvx]*)
+      wn[bcdfirstuv]*|rx[bcdfiorstuvx][bcfhilmostx]|l[abcdhl][bcdfiorstuvx]*)
            lhprefix=`echo $NAME | sed 's/^\(..\).*/\1/'`
            fullname=`kpsewhich "${lhprefix}codes.mf" 2>/dev/null`;;
       *)   fullname=`kpsewhich "$rootname.mf" 2>/dev/null`
@@ -152,6 +152,13 @@ if test -n "${MT_DESTROOT}"; then
   esac
 fi
 
+if test -z "$MT_DESTROOT"; then
+  MT_DESTROOT=$MT_DEFAULT_DESTROOT
+  MT_PKDESTDIR=$MT_DEFAULT_DESTROOT
+  MT_TFMDESTDIR=$MT_DEFAULT_DESTROOT
+  MT_MFDESTDIR=$MT_DEFAULT_DESTROOT
+fi
+
 case "$DEST" in
   "") ;;
   /* | [A-z]:/*) # Absolute, explicit destdir => use it.
@@ -162,13 +169,6 @@ case "$DEST" in
    *) # Relative destdir => append to the default.
       MT_NAMEPART=$DEST;;
 esac
-
-if test -z "$MT_DESTROOT"; then
-  MT_DESTROOT=$MT_DEFAULT_DESTROOT
-  MT_PKDESTDIR=$MT_DEFAULT_DESTROOT
-  MT_TFMDESTDIR=$MT_DEFAULT_DESTROOT
-  MT_MFDESTDIR=$MT_DEFAULT_DESTROOT
-fi
 
 eval MT_MODE=\"$MODE\"
 eval MT_NAMEPART=\"$MT_NAMEPART\"

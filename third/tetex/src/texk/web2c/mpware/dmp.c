@@ -46,6 +46,7 @@ char *term_banner="This is DMP, Version 0.64";
 #include <kpathsea/tex-file.h>
 #include <kpathsea/c-ctype.h>
 #include <kpathsea/c-pathch.h>
+#include <math.h>
 
 /* From ../cpascal.h */
 extern void printversionandexit P3H(const_string, const_string, const_string);
@@ -99,23 +100,20 @@ char *adjname = "trchars.adj";	/* file for character shift amounts */
 int lnno = 0;			/* line num. in troff output file (our input) */
 
 
-void quit(msg1,msg2,msg3)
-    char *msg1, *msg2, *msg3;
+void quit P3C(char*,msg1,char*,msg2,char*,msg3)
 {
     fprintf(stderr,"DMP abort at troff output line %d:\n%s%s%s\n",
 	lnno, msg1, msg2, msg3);
     exit(1);
 }
 
-void warn(msg1,msg2,msg3)
-    char *msg1, *msg2, *msg3;
+void warn P3C(char*,msg1,char*,msg2,char*,msg3)
 {
     fprintf(stderr,"DMP warning at troff output line %d:\n%s%s%s\n",
 	lnno, msg1, msg2, msg3);
 }
 
-void add_to_pool(c)
-    char c;
+void add_to_pool P1C(char,c)
 {
     if (poolsize==POOLMAX) quit("Need to increase POOLMAX","","");
     else strpool[poolsize++] = c;
@@ -136,10 +134,9 @@ typedef struct hcell {
 #define new_htab   (Hcell*) calloc((unsigned)Hprime, (unsigned)sizeof(Hcell))
 
 
-int hash(s)
-    register char *s;
+int hash P1C(char*,s)
 {
-    register r;
+    register int r;
     for(r=0; *s!=0; s++) {
 	r = (r<<1) + *s;
 	while (r>=Hprime) r-=Hprime;
@@ -153,12 +150,10 @@ int hash(s)
 */
 Hcell *failure;			/* null unless last hfind failed (used below) */
 
-int *hfind(s,htab)
-    char *s;
-    Hcell* htab;
+int *hfind P2C(char*,s,Hcell*,htab)
 {
     register Hcell *p;
-    register cnt = Hprime;
+    register int cnt = Hprime;
     failure = (Hcell *) 0;
     p = &htab[hash(s)];
     do {
@@ -194,9 +189,7 @@ int hfound()
 			Search Paths
 ***************************************************************/
 
-FILE *fsearch(nam, ext, format)
-    char *nam, *ext;
-    kpse_file_format_type format;
+FILE *fsearch P3C(char*,nam, char*,ext, kpse_file_format_type,format)
 {
     FILE *f = NULL;
     
@@ -224,10 +217,9 @@ FILE *fsearch(nam, ext, format)
 char *arg_tail;		/* char after the number just gotten; NULL on failure */
 
 
-int get_int(s)
-    register char *s;
+int get_int P1C(char *,s)
 {
-    register i, d, neg;
+    register int i, d, neg;
     if (s==NULL) goto bad;
     for (neg=0;; s++)
 	if (*s=='-') neg=!neg;
@@ -247,10 +239,9 @@ bad:arg_tail = NULL;
    number is not being used for character positioning.  (For non-PostScript
    applications h and v are usually in pixels and should be integers.)
 */
-float get_float(s)
-    register char *s;
+float get_float P1C(char *,s)
 {
-    register d, neg, digits;
+    register int d, neg, digits;
     register float x, y;
 
     digits = 0;
@@ -293,8 +284,7 @@ float get_float(s)
    PostScript name. ("\t" means one or more tabs.)
 */
 
-void read_fmap(dbase)
-    char *dbase;
+void read_fmap P1C(char*,dbase)
 {
     FILE *fin;
     int c;			/* last character read */
@@ -338,8 +328,7 @@ void read_fmap(dbase)
    becomes redundant.  Simply keeping an empty "trchars.adj" file
    around will do fine without requiring any changes to this program.
 */
-void read_char_adj(adjfile)
-    char *adjfile;
+void read_char_adj P1C(char*,adjfile)
 {
     FILE* fin;
     char buf[200];
@@ -380,7 +369,7 @@ void read_char_adj(adjfile)
    because the latter source reflects alterations made only by dpost (the
    troff output driver that is bypassed when using MetaPost).
 */
-void read_tfm(f)
+void read_tfm P1C(int, f)
 {
     FILE* tf;
     long a = 0;
@@ -434,10 +423,9 @@ void read_tfm(f)
    2. The `charcode' field parsed by "lastcode = get_int(arg_tail);"
       may be given either in decimal, octal, or hexadecimal format.
 */
-int scan_desc_line(f, lin)
-    char *lin;
+int scan_desc_line P2C(int,f, char*,lin)
 {
-    static lastcode;
+    static int lastcode;
     char *s;
 
     s = &strpool[poolsize];
@@ -461,8 +449,7 @@ int scan_desc_line(f, lin)
 /* Read the font description file for the font with the given troff name
    and update the data structures.  The result is the internal font number.
 */
-int read_fontdesc(nam)
-    char *nam;			/* troff name */
+int read_fontdesc P1C(char*,nam)
 {
     char buf[200];
     FILE* fin;			/* input file */
@@ -524,8 +511,7 @@ int print_col = 0;	/* there are at most this many characters on the current line
 /* To print a string on the MPX file, initialize print_col, ensure that
    state=initial, and pass the characters one-at-a-time to print_char.
 */
-void print_char(cc)
-    char cc;
+void print_char P1C(char,cc)
 {
     int printable;	/* nonzero if it is safe to print c */
     int l;		/* number of chars in c or the `char' expression */
@@ -570,7 +556,7 @@ void print_char(cc)
 /* The end_char_string procedure gets the string ended properly and ensures
    that there is room for |l| more characters on the output line.
 */
-void end_char_string(l)
+void end_char_string P1C(int, l)
 {
     while (state>special) {
 	putc('"',mpxf);
@@ -617,7 +603,7 @@ void prepare_font_use()
 /* Do what is necessary when the font with internal number f is used for the
    first time on a page.
 */
-void first_use(f)
+void first_use P1C(int,f)
 {
     font_used[f] = 1;
     fprintf(mpxf, "n%d=\"%s\";\n", font_num[f], texname[f]);
@@ -669,7 +655,7 @@ void finish_last_char()
 
 /* Output character number c in the font with internal number f.
 */
-void set_num_char(f,c)
+void set_num_char P2C(int,f,int,c)
 {
     float hh, vv;		/* corrected versions of h, v */
     int i;
@@ -732,8 +718,7 @@ void stop_picture()
 char specintro[] = "vardef ";		/* MetaPost name follows this */
 #define speci 7				/* length of the above string */
 
-int copy_spec_char(cname)
-    char *cname;
+int copy_spec_char P1C(char*,cname)
 {
     int k = 0;				/* how much of specintro so far */
     FILE *deff;
@@ -768,8 +753,7 @@ int copy_spec_char(cname)
 */
 Hcell *spec_tab = (Hcell*)0;
 
-void set_char(cname)
-    char *cname;
+void set_char P1C(char*,cname)
 {
     int f, c, *flagp;
 
@@ -809,8 +793,7 @@ out:if (!is_specchar(c)) set_num_char(f,c);
 /* Mount the font with troff name nam at external font number n and read any
    necessary font files.
 */
-void do_font_def(n, nam)
-    char *nam;
+void do_font_def P2C(int,n, char*,nam)
 {
     int f, k;
 
@@ -837,11 +820,10 @@ void do_font_def(n, nam)
 /* Given the control points of a cubic Bernstein polynomial, evaluate
    it at t.
 */
-float Beval(xx, t)
-    float *xx, t;
+float Beval P2C(float*,xx, float, t)
 {
     float zz[4];
-    register i, j;
+    register int i, j;
     for (i=0; i<=3; i++) zz[i]=xx[i];
     for (i=3; i>0; i--)
 	for (j=0; j<i; j++)
@@ -857,8 +839,7 @@ float Beval(xx, t)
 float xx[4] = {1.0, 1.0, 0.8946431597, 0.7071067812};
 float yy[4] = {0.0, 0.2652164899, 0.5195704026, 0.7071067812};
 
-float circangle(t)
-    float t;
+float circangle P1C(float,t)
 {
     float ti;
 
@@ -871,8 +852,7 @@ float circangle(t)
 /* Find the spline parameter where `makepath pencircle' comes closest to
    (cos(a)/2,sin(a)/2).
 */
-float circtime(a)
-    float a;
+float circtime P1C(float,a)
 {
     int i;
     float t;
@@ -903,8 +883,7 @@ void prepare_graphics()
    of the string s or NULL if nothing could be read from s, it provides the
    argument for the next iteration.
 */
-char *do_line(s)
-    char *s;
+char *do_line P1C(char*,s)
 {
     float dh, dv;
 
@@ -926,8 +905,7 @@ char *do_line(s)
    terminate the iteration by printing last time's ending point and returning
    NULL.
 */
-char * spline_seg(s)
-    char *s;
+char * spline_seg P1C(char*,s)
 {
     float dh1, dv1, dh2, dv2;
 
@@ -950,8 +928,7 @@ char * spline_seg(s)
 
 /* Draw an ellipse with the given major and minor axes.
 */
-void do_ellipse(a, b)
-    float a, b;
+void do_ellipse P2C(float,a, float,b)
 {
     fprintf(mpxf, "makepath(pencircle xscaled %.3f\n yscaled %.3f",
 	a*unit, b*unit);
@@ -963,8 +940,7 @@ void do_ellipse(a, b)
 /* Draw a counter-clockwise arc centered at (cx,cy) with initial and final radii
    (ax,ay) and (bx,by) respectively.
 */
-void do_arc(cx, cy, ax, ay, bx, by)
-    float cx, cy, ax, ay, bx, by;
+void do_arc P6C(float,cx, float,cy, float,ax, float,ay, float,bx, float,by)
 {
     float t1, t2;
 
@@ -982,8 +958,7 @@ void do_arc(cx, cy, ax, ay, bx, by)
 
 /* string s is everything following the initial `D' in a troff graphics command.
 */
-void do_graphic(s)
-    char *s;
+void do_graphic P1C(char*,s)
 {
     float h1, v1, h2, v2;
     finish_last_char();
@@ -1041,7 +1016,7 @@ void do_graphic(s)
 		Interpreting Troff Output
 ***************************************************************/
 
-void change_font(f)
+void change_font P1C(int,f)
 {
     for (curfont=0; curfont<nfonts; curfont++)
 	if (font_num[curfont]==f) return;
@@ -1052,8 +1027,7 @@ void change_font(f)
 /* String s0 is everything following the initial `x' in a troff device control
    command.  A zero result indicates a stop command.
 */
-int do_x_cmd(s0)
-    char *s0;
+int do_x_cmd P1C(char *,s0)
 {
     float x;
     int n;
@@ -1199,9 +1173,7 @@ int do_page()
 			Main Program
 ***************************************************************/
 
-void dmp_usage(name, status)
-    char *name;
-    int status;
+void dmp_usage P2C(char*,name, int,status)
 {
     extern KPSEDLL char *kpse_bug_address;
     FILE *f = status == 0 ? stdout : stderr;
@@ -1215,9 +1187,7 @@ void dmp_usage(name, status)
     exit(status);
 }
 
-int main(argc, argv)
-    int argc;
-    char *argv[];
+int main P2C(int, argc, char**, argv)
 {
     int more;
 

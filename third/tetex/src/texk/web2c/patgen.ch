@@ -118,8 +118,10 @@ reset (dictionary, f_name);
 % that we're going to write into.
 @x
     begin filnam:='pattmp. ';
+    filnam[8]:=xdig[hyph_level];
 @y
-    begin strcpy (filnam, 'pattmp');
+    begin strcpy (filnam, 'pattmp. ');
+    filnam[7]:=xdig[hyph_level];
 @z
 
 @x Work around floating point I/O deficiency.
@@ -198,10 +200,10 @@ begin
       do_nothing;
     
     end else if getopt_return_val = '?' then begin
-      usage (1, 'patgen');
+      usage ('patgen');
     
     end else if argument_is ('help') then begin
-      usage (0, PATGEN_HELP);
+      usage_help (PATGEN_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil,
@@ -213,7 +215,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 4 <> argc) then begin
     write_ln (stderr, 'patgen: Need exactly four arguments.');
-    usage (1, 'patgen');
+    usage ('patgen');
   end;
 end;
 

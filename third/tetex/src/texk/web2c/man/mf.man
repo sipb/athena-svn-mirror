@@ -1,4 +1,4 @@
-.TH MF 1 "29 March 1999" "Web2C @VERSION@"
+.TH MF 1 "10 November 2001" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -17,7 +17,7 @@
 .if t .ds WB W\s-2EB\s0
 .\"=====================================================================
 .SH NAME
-mf, inimf, virmf \- Metafont, a language for font and logo design
+mf, mfw, inimf, virmf \- Metafont, a language for font and logo design
 .SH SYNOPSIS
 .B mf
 .RI [ options ]
@@ -143,7 +143,6 @@ A listing of
 numbers for 118-dpi, 240-dpi and 300-dpi fonts
 is shown below.
 .ds f. mf.tbl \" tbl output inserted here
-.TS
 .if \n+(b.=1 .nr d. \n(.c-\n(c.-1
 .de 35
 .ps \n(.s
@@ -301,8 +300,8 @@ is shown below.
 .T# 1
 .in \n(#Iu
 .35
-.TE
 .if \n-(b.=0 .nr c. \n(.c-\n(d.-12
+.\" end of tbl output.
 .PP
 Magnification can also be specified not as a magstep but as an
 arbitrary value, such as 1.315, to create special character sizes.
@@ -349,7 +348,7 @@ editor can be set with the
 .B csh
 command
 .RS
-\fIsetenv MFEDIT "/usr/ucb/vi +%d %s"\fP
+\fIsetenv MFEDIT "vi +%d %s"\fP
 .RE
 .PP
 A convenient file in the library is
@@ -380,6 +379,16 @@ of the variable determines the device to use:
 (for either X10 or X11).
 Some of these devices may not be supported in all \*(MF
 executables; the choice is made at compilation time.
+.PP
+On some systems, there are two \*(MF binaries,
+.B mf
+and
+.BR mfw .
+On those systems the
+.B mfw
+binary supports graphics, while the
+.B mf
+binary does not.
 .\"=====================================================================
 .SH OPTIONS
 This version of \*(MF understands the following command line options.
@@ -392,6 +401,12 @@ as the name of the base to be used, instead of the name by which
 \*(MF was called or a
 .I %&
 line.
+.TP
+.B --file-line-error-style
+.rb
+Print error messages in the form
+.I file:line:error
+which is similar to the way many compilers format them.
 .TP
 .B --help
 .rb
@@ -415,6 +430,12 @@ and
 .IR errorstopmode .
 The meaning of these modes is the same as that of the corresponding
 commands.
+.TP
+.BI --jobname \ name
+.rb
+Use
+.I name
+for the job name, instead of deriving it from the name of the input file.
 .TP
 .BI --kpathsea-debug \ bitmask
 .rb
@@ -440,11 +461,25 @@ where
 must be
 .IR mf .
 .TP
+.B --parse-first-line
+.rb
+If the first line of the main input file begins with
+.I %&
+parse it to look for a dump name or a
+.B --translate-file
+option.
+.TP
 .BI --progname \ name
 .rb
 Pretend to be program
 .IR name .
 This affects both the format used and the search paths.
+.TP
+.B --recorder
+.rb
+Enable the filename recorder.  This leaves a trace of the files opened
+for input and output in a file with extension
+.IR .fls .
 .TP
 .BI --translate-file \ tcxname
 .rb

@@ -11,8 +11,6 @@
 #ifdef WIN32WIN
 #include <windows.h>
 
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#define max(a,b) ((a) < (b) ? (b) : (a))
 /* 
    The following constant enables some hack that should allow the
    window to process its messages. Basically, the principle is to 
@@ -47,7 +45,6 @@ static int yCurrentScroll;
 static BOOL fScroll;
 static BOOL fSize;
 
-void Win32Error(char *);
 #ifdef LOOPMSG
 void __cdecl InitGui(void*);
 #endif
@@ -115,7 +112,7 @@ void __cdecl InitGui(void *param)
 #endif
   
 #ifdef LOOPMSG
-  /* Acquiting for UpdateWindow() (WM_PAINT message generated) */
+  /* Acknowledge for UpdateWindow() (WM_PAINT message generated) */
   hMutex = CreateMutex(NULL, FALSE, "DrawingMutex");
   my_dc = GetDC(my_window);
   /* Device context for drawing and the associated bitmap. */
@@ -211,6 +208,7 @@ mf_win32_paintrow P4C(screenrow, row,
     ReleaseMutex(hMutex);
 }
 
+#if 0
 void Win32Error(char *caller)
 {
   LPVOID lpMsgBuf;
@@ -228,16 +226,6 @@ void Win32Error(char *caller)
   MessageBox( NULL, lpMsgBuf, caller, MB_OK|MB_ICONINFORMATION );
   /* Free the buffer. */
   LocalFree( lpMsgBuf );
-}
-
-#if 0
-void LoopMsg(void* p)
-{
-  fprintf(stderr, "Entering thread ...\n");
-  while (GetMessage(&msg, my_window, 0, 0)) {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-  }
 }
 #endif
 
@@ -297,46 +285,18 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
       }
   case WM_PAINT:
     {
-#if 0
-      PRECT prect;
-#endif
 #ifdef DEBUG
       fprintf(stderr, "WM_PAINT message hbm = %x\n", hbm);
 #endif
       BeginPaint(my_window, &ps);
+      /* Shouldn't repaint all the screen, but so easy! */
       if (!BitBlt(my_dc,
 		    0, 0, 
 		    screenwidth, screendepth,
 		    drawing_dc, 
 		    xCurrentScroll, 
 		    yCurrentScroll, SRCCOPY))
-	  Win32Error("Bitblt");
-	
-#if 0
-      /* Shouldn't repaint all the screen, but not so trivial! */
-      if (fSize) {
-	if (!BitBlt(my_dc,
-		    0, 0, 
-		    screenwidth, screendepth,
-		    drawing_dc, 
-		    xCurrentScroll, 
-		    yCurrentScroll, SRCCOPY))
-	  Win32Error("Bitblt");
-	fSize = FALSE;
-      }
-    
-      if (fScroll) {
-	if (!BitBlt(my_dc,
-		    prect->left, prect->top, 
-		    prect->right - prect->left,
-		    prect->bottom - prect->top, 
-		    drawing_dc, 
-		    prect->left+xCurrentScroll, 
-		    prect->top+ yCurrentScroll, SRCCOPY))
-	  Win32Error("Bitblt");
-	fScroll = FALSE;
-      }
-#endif
+		Win32Error("Bitblt");
       EndPaint(my_window, &ps);
       retval = 0;
       break;

@@ -209,10 +209,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'vptovf'); {|getopt| has already given an error message.}
+      usage ('vptovf'); {|getopt| has already given an error message.}
 
     end else if argument_is ('help') then begin
-      usage (0, VPTOVF_HELP);
+      usage_help (VPTOVF_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
@@ -225,7 +225,7 @@ begin
   if (optind + 1 <> argc) and (optind + 2 <> argc) 
      and (optind + 3 <> argc) then begin
     write_ln (stderr, 'vptovf: Need one to three file arguments.');
-    usage (1, 'vptovf');
+    usage ('vptovf');
   end;
 
   vpl_name := extend_filename (cmdline (optind), 'vpl');

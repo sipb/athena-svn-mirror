@@ -28,6 +28,7 @@
 @define const kpsebibformat;
 @define const kpsebstformat;
 @define const kpsedvipsconfigformat;
+@define const kpselastformat;
 @define const kpsegfformat;
 @define const kpsemfformat;
 @define const kpsemfpoolformat;
@@ -45,6 +46,7 @@
 @define const kpsetexpoolformat;
 @define const kpsetfmformat;
 @define const kpsevfformat;
+@define const kpsewebformat;
 @define const maxint;
 @define const nil;
 @define const output;
@@ -126,11 +128,13 @@
 @define function removesuffix ();
 @define function round ();
 @define function strcmp ();
+@define function stringcast ();
 @define function strlen ();
 @define function strtol ();
 @define function trunc ();
 @define function xftell ();
 @define function xmalloc ();
+@define function xmallocarray ();
 @define function xrealloc ();
 @define function xstrdup ();
 @define function XTALLOC ();
@@ -147,12 +151,15 @@
 @define procedure input3ints ();
 @define procedure kpseinitprog ();
 @define procedure kpsesetprogname ();
+@define procedure kpsesetprogramname ();
+@define procedure kpseresetprogramname ();
 @define procedure libcfree ();
 @define procedure printreal ();
 @define procedure printversionandexit ();
 @define procedure putbyte ();
 @define procedure read ();
 @define procedure readln ();
+@define procedure recorderchangefilename ();
 @define procedure reset ();
 @define procedure resetbin ();
 @define procedure rewrite ();
@@ -161,6 +168,7 @@
 @define procedure strcat ();
 @define procedure strcpy ();
 @define procedure usage ();
+@define procedure usagehelp ();
 @define procedure uexit ();
 @define procedure vgetc ();
 @define procedure write ();
@@ -184,6 +192,7 @@
 @define var argv;
 @define var kpathseaversionstring;
 @define var versionstring;
+@define var recorderenabled;
 
 {These are all set by getopt.  optiontable is really _getopt_long_options.}
 @define var optarg;

@@ -11,7 +11,10 @@ test -f /bin/bsh && test -z "$RUNNING_BSH" \
   && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
 unset RUNNING_BSH
 
-progname=`basename $0`
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
+
+progname=`basename "$0"`
 help()
 {
   echo "Usage: $progname [-hi|-lo] file[.dvi] [options for dvips]"
@@ -21,17 +24,18 @@ help()
   echo "Example: $progname foo -l 2"
 }
 
-dvipsconf=dfaxhigh; res=204x196
+dvipsconf=dfaxhigh; gsdev=dfaxhigh
 case $1 in
-  -hi) dvipsconf=dfaxhigh; res=204x196; shift;;
-  -lo) dvipsconf=dfaxlo; res=204x98; shift;;
+  -hi) gsdev=dfaxhigh; shift;;
+  -lo) gsdev=dfaxlow; shift;;
 esac
 
 case $# in
-0)	help >&2
-	exit 1 ;;
+  0) help >&2
+     exit 1
+     ;;
 esac
 
-NAME=`basename $1 .dvi`
+NAME=`basename "$1" .dvi`
 dvips "$@" -P$dvipsconf -f |
-  gs -q -dSAFER -sDEVICE=faxg3 -r$res -sOutputFile=$NAME-%03d.fax -sNOPAUSE -
+  gs -q -dSAFER -sDEVICE=$gsdev -sOutputFile="$NAME-%03d.fax" -sNOPAUSE -

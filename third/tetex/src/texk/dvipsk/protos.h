@@ -200,7 +200,7 @@ extern void stringend P1H(void);
 #ifdef SHIFTLOWCHARS
 extern int T1Char P1H(int c);
 #endif
-extern void scout P1H(char c);
+extern void scout P1H(unsigned char c);
 extern void cmdout P1H(char *s);
 extern void floatout P1H(float n);
 extern void doubleout P1H(double n);
@@ -362,5 +362,9 @@ extern int vftrio P1H(void);
 extern Boolean vfopen P1H(fontdesctype *fd);
 extern struct tft *vfontdef P2H(int s, int siz);
 extern Boolean virtualfont P1H(fontdesctype *curfnt);
+
+/* prototypes for functions from writet1.c */
+extern void load_enc P2H(char *, char **);
+extern boolean t1_subset_2 P3H(char *, unsigned char *, char *);
 
 #endif

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTAABrow.c,v 1.1.1.1 2000-03-10 17:52:54 ghudson Exp $
+**	@(#) $Id: HTAABrow.c,v 1.1.1.2 2003-02-25 22:28:30 amb Exp $
 **
 **	Contains code for parsing challenges and creating credentials for 
 **	basic authentication schemes. See also the HTAAUtil module
@@ -26,6 +26,15 @@
 **	Feb 96 HFN	Rewritten to make it scheme independent and based on
 **			callback functions and an info structure
 **      Nov 98 JKO      Added support for message digest authentication
+**    Jun 2000 JKO      Changed the buffer size for HTUU_encode in order
+**                      to avoid a potential SIGSEV when calling that 
+**                      function (as advised by Heiner Kallweit).
+**    Mar 2001 JKO      When doing pipelining digest requests, the stale
+**                      nonce reply appears only for one of such requests,
+**                      all the following ones in the pipe will receive a 
+**                      401. I added some code to take into account these cases
+**                      by trying to infer if a nonce is stale. 
+**
 */
 
 /* Portions of this code (as indicated) are derived from the Internet Draft
@@ -67,6 +76,8 @@
 
 #define BASIC_AUTH	"basic"
 #define DIGEST_AUTH	"digest"
+#define DIGEST_AI       "authentication-info"
+#define PROXY_DIGEST_AI "proxy-authentication-info"
 
 typedef struct _HTBasic {		  /* Basic challenge and credentials */
     char *	uid;
@@ -141,9 +152,8 @@ PRIVATE char * make_template (const char * docname)
 	tmplate = host;
     } else
 	StrAllocCopy(tmplate, "*");
-    if (AUTH_TRACE)
-	HTTrace("Template.... Made template `%s' for file `%s'\n",
-		tmplate, docname ? docname : "<null>");
+    HTTRACE(AUTH_TRACE, "Template.... Made template `%s' for file `%s'\n" _ 
+		tmplate _ docname ? docname : "<null>");
     return tmplate;
 }
 
@@ -159,7 +169,12 @@ PRIVATE int prompt_user (HTRequest * request, const char * realm,
 			 HTBasic * basic)
 {
     HTAlertCallback * cbf = HTAlert_find(HT_A_USER_PW);
-    if (request && cbf) {
+
+    /* If no method for prompting the user then we might as well give up */
+    if (!cbf) return HT_ERROR;
+
+    /* Otherwise go ahead and ask the user */
+    if (request) {
 	HTAlertPar * reply = HTAlert_newReply();
 	int msg = basic->proxy ? HT_MSG_PROXY_UID : HT_MSG_UID;
 	BOOL res = (*cbf)(request, HT_A_USER_PW, msg,
@@ -218,7 +233,7 @@ PRIVATE BOOL basic_credentials (HTRequest * request, HTBasic * basic)
 	char * cipher = NULL;
 	int cl_len = strlen(basic->uid ? basic->uid : "") +
 	    strlen(basic->pw ? basic->pw : "") + 5;
-	int ci_len = 4 * (((cl_len+2)/3) + 1);
+	int ci_len = 5 + 4 * (cl_len/3);
 	if ((cleartext = (char *) HT_CALLOC(1, cl_len)) == NULL)
 	    HT_OUTOFMEM("basic_credentials");
 	*cleartext = '\0';
@@ -236,7 +251,7 @@ PRIVATE BOOL basic_credentials (HTRequest * request, HTBasic * basic)
 	    if (!cookie) HT_OUTOFMEM("basic_credentials");
 	    strcpy(cookie, "Basic ");
 	    strcat(cookie, cipher);
-	    if (AUTH_TRACE) HTTrace("Basic Cookie `%s\'\n", cookie);
+	    HTTRACE(AUTH_TRACE, "Basic Cookie `%s\'\n" _ cookie);
 
 	    /* Check whether it is proxy or normal credentials */
 	    if (basic->proxy)
@@ -332,7 +347,7 @@ PUBLIC int HTBasic_parse (HTRequest * request, HTResponse * response,
 	** store this information in our authentication URL Tree
 	*/
 	if (realm && !strcasecomp(realm, "realm") && rm) {
-	    if (AUTH_TRACE) HTTrace("Basic Parse. Realm `%s\' found\n", rm);
+	    HTTRACE(AUTH_TRACE, "Basic Parse. Realm `%s\' found\n" _ rm);
 	    HTRequest_setRealm(request, rm);
 
 	    /*
@@ -340,7 +355,7 @@ PUBLIC int HTBasic_parse (HTRequest * request, HTResponse * response,
 	    */
 	    if (proxy) {
 		char * url = HTRequest_proxy(request);
-		if (AUTH_TRACE) HTTrace("Basic Parse. Proxy authentication\n");
+		HTTRACE(AUTH_TRACE, "Basic Parse. Proxy authentication\n");
 		basic = (HTBasic *) HTAA_updateNode(proxy, BASIC_AUTH, rm,
 						    url, NULL);
 		/* if the previous authentication failed, then try again */
@@ -384,7 +399,7 @@ PUBLIC int HTBasic_parse (HTRequest * request, HTResponse * response,
 	}
 	return HT_OK;
     }
-    if (AUTH_TRACE) HTTrace("Auth........ No challenges found\n");
+    HTTRACE(AUTH_TRACE, "Auth........ No challenges found\n");
     return HT_ERROR;
 }
 
@@ -400,7 +415,12 @@ PRIVATE int prompt_digest_user (HTRequest * request, const char * realm,
 				HTDigest * digest)
 {
     HTAlertCallback * cbf = HTAlert_find(HT_A_USER_PW);
-    if (request && cbf) {
+
+    /* If no method for prompting the user then we might as well give up */
+    if (!cbf) return HT_ERROR;
+
+    /* Otherwise go ahead and ask the user */
+    if (request) {
 	HTAlertPar * reply = HTAlert_newReply();
 	int msg = digest->proxy ? HT_MSG_PROXY_UID : HT_MSG_UID;
 	BOOL res = (*cbf)(request, HT_A_USER_PW, msg,
@@ -479,29 +499,41 @@ PRIVATE int HTDigest_reset (HTDigest *digest)
 	return NO;
 }
 
-/*	HTDigest_refresh
+/*	HTDigest_updateInfo
 **	--------------
 **      This function updates the digest with whatever new 
 ** 	authentification information the server sent back.
-**      In theory, it should be called by an authentication after
-** 	filter responsible for the mutual authenticati.
 */
 
-PUBLIC int HTDigest_refresh (HTRequest *request, HTResponse *response,
-			     BOOL proxy, char *auth_info)
+PUBLIC int HTDigest_updateInfo (HTRequest *request, HTResponse *response,
+				void * context, int status)
 {
-    char * realm = NULL;
-    char * value = NULL;
-    char * token = NULL;
-    
-    if (request && auth_info) {
+    HTAssocList * challenge = HTResponse_challenge(response);
+    const char * realm =  HTRequest_realm (request);
+
+    if (request && challenge && realm) {
+        BOOL proxy = 0;
+	char * value = NULL;
+	char * token = NULL;
+	char * auth_info = NULL;
+	
 	HTDigest *digest;
 	char *url;
-	const char * realm = HTRequest_realm(request);
 
-	if (AUTH_TRACE) HTTrace("Digest Update.. "
-				"processing authentication-info");
-
+	/*
+	** try to find the magic string in the challenge 
+	*/
+	HTTRACE(AUTH_TRACE, "Digest Update.. Processing authentication-info\n");
+	if ((auth_info = HTAssocList_findObject(challenge, DIGEST_AI)))
+	    proxy = 0;
+	else if ((auth_info = HTAssocList_findObject(challenge, 
+						     PROXY_DIGEST_AI)))
+	    proxy = 1;
+	else {
+	    HTTRACE(AUTH_TRACE, "Digest Update.. Didn't find any authentication-info\n");
+	    return HT_OK;
+	}
+    
 	/* 
 	** find the digest credentials 
 	*/
@@ -514,11 +546,10 @@ PUBLIC int HTDigest_refresh (HTRequest *request, HTResponse *response,
 				   HTRequest_anchor(request));
 	    digest = (HTDigest *) HTAA_updateNode (proxy, DIGEST_AUTH, realm, 
 						   url, NULL);
+	    HT_FREE(url);
 	}
 	if (!digest) {
-	    if (AUTH_TRACE) HTTrace("Digest Update.. "
-				    "Error: received authentication-info "
-				    "without having a local digest");	
+	    HTTRACE(AUTH_TRACE, "Digest Update.. Error: received authentication-info without having a local digest\n");	
 	    return HT_ERROR;
 	}
 
@@ -549,6 +580,7 @@ PUBLIC int HTDigest_refresh (HTRequest *request, HTResponse *response,
 	    }	
 	}
     }
+    return HT_OK;
 }
     
 /*
@@ -622,7 +654,7 @@ PRIVATE void DigestCalcHA1 (int algorithm, char * pszAlg, char * pszUserName,
     HTDigest_update (&MdCtx, ":", 1);
     HTDigest_update (&MdCtx, pszPassword, strlen(pszPassword));
     HTDigest_final (HA1, &MdCtx);
-    if (strcasecmp (pszAlg, "md5-sess") == 0) {
+    if (strcasecomp (pszAlg, "md5-sess") == 0) {
 	HTDigest_init (&MdCtx, algorithm);
 	HTDigest_update (&MdCtx, HA1, strlen (HA1));
 	HTDigest_update (&MdCtx, ":", 1);
@@ -659,7 +691,7 @@ PRIVATE void DigestCalcResponse (
     HTDigest_update (&MdCtx, pszMethod, strlen(pszMethod));
     HTDigest_update (&MdCtx, ":", 1);
     HTDigest_update (&MdCtx, pszDigestUri, strlen(pszDigestUri));
-    if (pszQop && strcasecmp (pszQop, "auth-int") == 0) {
+    if (pszQop && strcasecomp (pszQop, "auth-int") == 0) {
 	HTDigest_update (&MdCtx, ":", 1);
 	HTDigest_update (&MdCtx, HEntity, HASHHEXLEN);
     }
@@ -717,8 +749,15 @@ PRIVATE BOOL digest_credentials (HTRequest * request, HTDigest * digest)
 
 	if (digest->proxy)
 	    uri = HTRequest_proxy(request);
-	else
-	    uri = HTAnchor_address( (HTAnchor*)HTRequest_anchor(request));
+	else {
+	     char * tmp;
+	     /* we get the absolute URL */
+	     tmp = HTAnchor_address( (HTAnchor*)HTRequest_anchor(request));
+	     /* and then remove what makes it absolute, to be backwards
+		compatible */
+	     uri = HTParse (tmp, "", PARSE_PATH | PARSE_PUNCTUATION);
+	     HT_FREE(tmp);
+	}
 
 	/* increment the nonce counter */
 	digest->nc++;
@@ -750,7 +789,7 @@ PRIVATE BOOL digest_credentials (HTRequest * request, HTDigest * digest)
 	    if (!cookie) HT_OUTOFMEM("digest_credentials");
 	    strcpy(cookie, "Digest ");
 	    strcat (cookie, cleartext);
-	    if (AUTH_TRACE) HTTrace("Digest Cookie `%s\'\n", cookie);
+	    HTTRACE(AUTH_TRACE, "Digest Cookie `%s\'\n" _ cookie);
 
 	    /* Check whether it is proxy or normal credentials */
 	    if (digest->proxy)
@@ -761,6 +800,8 @@ PRIVATE BOOL digest_credentials (HTRequest * request, HTDigest * digest)
 
 	    HT_FREE(cookie);
 	}
+	if (!digest->proxy)
+	  HT_FREE(uri);
 	HT_FREE(cleartext);
 	return HT_OK;
     }
@@ -812,7 +853,7 @@ PUBLIC int HTDigest_generate (HTRequest * request, void * context, int mode)
 	     prompt_digest_user(request, realm, digest) == HT_OK) ||
 	    (!digest->retry && digest->uid)) {
 	/* @@@ here we should generate a new cnonce value */
-	    digest->cnonce = "012345678";
+	    HTSACopy (&(digest->cnonce), "012345678");
 	    digest->retry = NO;
 	    return digest_credentials(request, digest);
 	} else {
@@ -826,6 +867,27 @@ PUBLIC int HTDigest_generate (HTRequest * request, void * context, int mode)
 	}
     }
     return HT_OK;
+}
+
+/*
+**	Evaluates the existing authentication info (nonce, uid, pwd) and
+**      returns TRUE if we evaluate that the nonce is stale, FALSE
+**      otherwise.
+*/
+PRIVATE BOOL nonce_is_stale (HTRequest *request, HTDigest * digest, char * old_nonce)
+{
+  if (!digest->uid || !digest->pw)
+      return FALSE;
+  if (!digest->nonce || !old_nonce)
+     return FALSE;
+  if (strcmp (digest->nonce, old_nonce))
+     return TRUE;
+  /* because of a pipelining implementation bug, we don't send any good
+     credentials on requests following the first one in the pipeline  */
+  if (!HTRequest_credentials (request) && HTRequest_AAretrys (request) == 1)
+     return TRUE;
+  
+  return FALSE;
 }
 
 /*	HTDigest_parse
@@ -849,13 +911,16 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 	char * value = NULL;
 	char * token = NULL;
 	char * uris = NULL;
+	/* the value of the previous nonce in case the server has changed its
+	   challenge */
+	char * old_nonce = NULL;
 
 	/*
 	** If valid challenge then make a template for the resource and
 	** store this information in our authentication URL Tree
 	*/
 	if (realm && !strcasecomp(realm, "realm") && rm) {
-	    if (AUTH_TRACE) HTTrace("Digest Parse. Realm `%s\' found\n", rm);
+	    HTTRACE(AUTH_TRACE, "Digest Parse. Realm `%s\' found\n" _ rm);
 	    HTRequest_setRealm(request, rm);
 
 	    /*
@@ -863,7 +928,7 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 	    */
 	    if (proxy) {
 		char * url = HTRequest_proxy(request);
-		if (AUTH_TRACE) HTTrace("Digest Parse. Proxy authentication\n");
+		HTTRACE(AUTH_TRACE, "Digest Parse. Proxy authentication\n");
 		digest = (HTDigest *) HTAA_updateNode(proxy, DIGEST_AUTH, rm,
 						      url, NULL);
 		/* if the previous authentication failed, then try again */
@@ -884,7 +949,7 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 		HT_FREE(url);
 	    }
 	} else {
-	    if (AUTH_TRACE) HTTrace("Digest Parse. Missing or incomplete realm\n");
+	    HTTRACE(AUTH_TRACE, "Digest Parse. Missing or incomplete realm\n");
 	    return HT_ERROR;
 	}
 
@@ -896,6 +961,8 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 	    /* it's an old digest, so we clean all in it except for the
 	       uid and the password, hoping that the server send back
 	       that data */
+	    old_nonce = digest->nonce;
+	    digest->nonce = NULL;
 	    HTDigest_reset (digest);
 	} else {
 	    /* it's a brand new digest */
@@ -927,7 +994,6 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 		    /* only true if we already had a digest with uid and pw info */
 		    if (digest->uid && digest->pw) {
 			digest->stale = YES;		
-			digest->retry = NO;
 		    }
 		}
 	    } else if (!strcasecomp(token, "algorithm")) {
@@ -935,17 +1001,35 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 		    /*
 		    **  We only support MD5 for the moment
 		    */
-		    if (AUTH_TRACE) HTTrace("Digest Parse Unknown "
-					    "algorithm `%s\'\n", value);
+		    HTTRACE(AUTH_TRACE, "Digest Parse Unknown algorithm `%s\'\n" _ value);
 		    HTDigest_delete(digest);
+		    if (old_nonce)
+		      HT_FREE (old_nonce);
 		    return HT_ERROR;
 		} else
 		    digest->algorithm = HTDaMD5;
 	    }
 	}
-	
-	if (digest->stale)
+
+	/* Pipelining support. If a nonce becomes stale When sending 
+	** several requests thru the pipeline, we may miss the stale
+	** reply in the server's answer. To avoid this, we keep a copy
+	** of the nonce in each request. If the nonce wasn't explicitly
+	** marked stale and if it's the same that we sent, then we 
+	** consider that the uid/pwd pairs were false. Otherwise, we
+	** assume the stole went stale before 
+	*/
+	if (!digest->stale && nonce_is_stale (request, digest, old_nonce))
+	    digest->stale = YES;
+
+	if (old_nonce)
+	  HT_FREE (old_nonce);
+
+	if (digest->stale) {
+	    digest->stale = NO;
+	    digest->retry = NO;
 	    return HT_OK;
+	}
 	else if (digest->uid || digest->pw) {
 	    /*
 	    ** For some reason there was no stale nonce header and the
@@ -978,7 +1062,7 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 	    if (proxy) {
 		/* we ignore the domain */
 		char * location = HTRequest_proxy(request);
-		if (AUTH_TRACE) HTTrace("Digest Parse Proxy authentication\n");
+		HTTRACE(AUTH_TRACE, "Digest Parse Proxy authentication\n");
 		HTAA_updateNode(proxy, DIGEST_AUTH, rm, location, digest);
 	    } else {
 		char * url = HTAnchor_address((HTAnchor *) HTRequest_anchor(request));
@@ -998,7 +1082,7 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 		full_url = HTParse (domain_url, base_url, PARSE_ALL);
 		digest->references++;
 		if (proxy) {
-		    if (AUTH_TRACE) HTTrace("Digest Parse Proxy authentication\n");
+		    HTTRACE(AUTH_TRACE, "Digest Parse Proxy authentication\n");
 		    HTAA_updateNode(proxy, DIGEST_AUTH, rm, full_url, digest);
 		} else {
 		    char * tmplate = make_template(full_url);
@@ -1008,24 +1092,9 @@ PUBLIC int HTDigest_parse (HTRequest * request, HTResponse * response,
 		HT_FREE (full_url);
 	    }
 	    HT_FREE (base_url);
-	    HT_FREE (uris);
 	}
 	return HT_OK;
     }	
-    if (AUTH_TRACE) HTTrace("Auth........ No challenges found\n");
+    HTTRACE(AUTH_TRACE, "Auth........ No challenges found\n");
     return HT_ERROR;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

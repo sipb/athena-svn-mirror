@@ -1,58 +1,50 @@
+/*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: pdftex.h,v 1.1.1.2 2003-02-25 22:09:31 amb Exp $
+*/
+
 /* Additions to texmfmp.h for pdfTeX */
 
-#define pdfischarused(f, c) ((boolean)(pdfcharused[f][c/8] & (1<<(c%8))))
-#define pdfsetcharused(f, c) pdfcharused[f][c/8] |= (1<<(c%8))
+/* mark a char in font */
+#define pdfmarkchar(f, c) pdfcharused[f][c/8] |= (1<<(c%8))
+
+/* test whether a char in font is marked */
+#define pdfcharmarked(f, c) (boolean)(pdfcharused[f][c/8] & (1<<(c%8)))
 
 /* writepdf() always writes by fwrite() */
 #define       writepdf(a, b) \
   (void) fwrite ((char *) &pdfbuf[a], sizeof (pdfbuf[a]), \
                  (int) ((b) - (a) + 1), pdffile)
 
-/* web2c input/output routines */
+#define getlpcode(f, c) \
+    (pdffontlpbase[f] < 0 ? 0 : pdfmem[pdffontlpbase[f] + c])
+
+#define getrpcode(f, c) \
+    (pdffontrpbase[f] < 0 ? 0 : pdfmem[pdffontrpbase[f] + c])
+
+#define getefcode(f, c) \
+    (pdffontefbase[f] < 0 ? 0 : pdfmem[pdffontefbase[f] + c])
+
+#define texbopenin(f) \
+    open_input (&(f), kpse_tex_format, FOPEN_RBIN_MODE)
 #define vfbopenin(f) \
     open_input (&(f), kpse_vf_format, FOPEN_RBIN_MODE)
-#define typeonebopenin(f) \
-    open_input (&(f), kpse_type1_format, FOPEN_RBIN_MODE)
-#define truetypebopenin(f) \
-    open_input (&(f), kpse_truetype_format, FOPEN_RBIN_MODE)
-#define texpsheaderbopenin(f) \
-    open_input (&(f), kpse_tex_ps_header_format, FOPEN_RBIN_MODE)
 
-void writezip(boolean, integer);
-extern void writeimg(integer, integer);
-extern void dopdffont(integer, integer);
-extern void readconfig();
-extern void adjustcfgdimens(scaled);
-extern integer readimg();
-extern void addimageref(integer);
-extern void deleteimageref(integer);
-extern void libpdffinish();
-extern integer imagewidth(integer);
-extern integer imageheight(integer);
-extern integer imagexres(integer);
-extern integer imageyres(integer);
-extern boolean ispdfimage(integer);
-extern integer epdforigx(integer);
-extern integer epdforigy(integer);
-extern integer cfgoutput();
-extern integer cfgcompresslevel();
-extern integer cfgdecimaldigits();
-extern integer cfgpkresolution();
-extern integer cfgimageresolution();
-extern integer cfgincludeformresources();
-extern integer cfgpagewidth();
-extern integer cfgpageheight();
-extern integer cfghorigin();
-extern integer cfgvorigin();
-extern integer newvfpacket(internalfontnumber);
-extern eightbits packetbyte();
-extern void pushpacketstate();
-extern void poppacketstate();
-extern void startpacket(internalfontnumber, integer);
-extern integer fmlookup();
-extern void storepacket(integer, integer, integer);
-extern void printextraxobjects();
-extern void printextrafonts();
-extern void printotherresources();
-extern void appendresourcesname(integer, integer);
-extern void deleteresourcesnames();
+#include <pdftexdir/ptexlib.h>

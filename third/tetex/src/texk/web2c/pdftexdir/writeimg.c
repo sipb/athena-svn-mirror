@@ -1,241 +1,219 @@
-#include "libpdftex.h"
+/*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: writeimg.c,v 1.1.1.2 2003-02-25 22:15:37 amb Exp $
+*/
+
+#include "ptexlib.h"
 #include "image.h"
+#include <kpathsea/c-auto.h>
+#include <kpathsea/c-memstr.h>
+
+#define bp2int(p)    round(p*(onehundredbp/100.0))
 
 image_entry *image_ptr, *image_tab = 0;
 integer image_max;
 
-int epdf_width;
-int epdf_height;
-int epdf_orig_x;
-int epdf_orig_y;
+float epdf_width;
+float epdf_height;
+float epdf_orig_x;
+float epdf_orig_y;
+integer epdf_selected_page;
+integer epdf_num_pages;
+integer epdf_page_box;
+integer epdf_always_use_pdf_pagebox;
 void *epdf_doc;
-void *epdf_xref;
 
-integer new_image_entry()
+static integer new_image_entry(void)
 {
-    ENTRY_ROOM(image, 256);
-    image_ptr->ref_count = 0;
+    entry_room(image, 1, 256);
+    image_ptr->image_type = IMAGE_TYPE_NONE;
+    image_ptr->color_type = 0;
+    image_ptr->num_pages = 0;
+    image_ptr->x_res = 0;
+    image_ptr->y_res = 0;
+    image_ptr->width = 0;
+    image_ptr->height = 0;
     return image_ptr++ - image_tab;
 }
 
-void img_free() 
+integer imagecolor(integer img)
 {
-    image_entry *p;
-    if (image_tab == 0)
-        return;
-    for (p = image_tab; p < image_ptr; p++) {
-        if (p->ref_count > 0) {
-            pdftex_warn("pending image (%i references)", p->ref_count);
-            while (p->ref_count > 0)
-                deleteimageref(p - image_tab);
-        }
-    }
-    XFREE(image_tab);
-}
-
-void addimageref(integer img)
-{
-    IMG_REFCOUNT(img)++;
-}
-
-void deleteimageref(integer img)
-{
-    if (IMG_REFCOUNT(img) == 0) {
-        switch (IMG_TYPE(img)) {
-        case IMAGE_TYPE_PNG:
-            xfclose(PNG_PTR(img)->io_ptr, filename);
-            png_destroy_read_struct(&(PNG_PTR(img)), &(PNG_INFO(img)), NULL);
-            break;
-        case IMAGE_TYPE_JPG:
-            xfclose(JPG_INFO(img)->file, filename);
-            break;
-#ifdef HAVE_TIFF
-        case IMAGE_TYPE_TIFF:
-            TIFFClose((TIFF *) TIFF_INFO(img)->file);
-            break;
-#endif
-        case IMAGE_TYPE_PDF:
-            epdf_xref = PDF_INFO(img)->xref;
-            epdf_doc = PDF_INFO(img)->doc;
-            epdf_delete();
-            break;
-        default:
-            pdftex_fail("unknown type of image");
-        }
-        XFREE(IMG_NAME(img));
-        return;
-    }
-    IMG_REFCOUNT(img)--;
+    return img_color(img);
 }
 
 integer imagewidth(integer img)
 {
-    switch (IMG_TYPE(img)) {
-    case IMAGE_TYPE_PNG:
-        return PNG_INFO(img)->width;
-    case IMAGE_TYPE_JPG:
-        return JPG_INFO(img)->width;
-#ifdef HAVE_TIFF
-    case IMAGE_TYPE_TIFF:
-        return TIFF_INFO(img)->width;
-#endif
-    case IMAGE_TYPE_PDF:
-        return PDF_INFO(img)->width;
-    default:
-        pdftex_fail("unknown type of image");
-    }
+    return img_width(img);
 }
 
 integer imageheight(integer img)
 {
-    switch (IMG_TYPE(img)) {
-    case IMAGE_TYPE_PNG:
-        return PNG_INFO(img)->height;
-    case IMAGE_TYPE_JPG:
-        return JPG_INFO(img)->height;
-#ifdef HAVE_TIFF
-    case IMAGE_TYPE_TIFF:
-        return TIFF_INFO(img)->height;
-#endif
-    case IMAGE_TYPE_PDF:
-        return PDF_INFO(img)->height;
-    default:
-        pdftex_fail("unknown type of image");
-    }
+    return img_height(img);
 }
 
 integer imagexres(integer img)
 {
-    switch (IMG_TYPE(img)) {
-    case IMAGE_TYPE_PNG:
-        if (PNG_INFO(img)->valid & PNG_INFO_pHYs)
-            return 0.0254*png_get_x_pixels_per_meter(PNG_PTR(img), 
-                                                     PNG_INFO(img)) + 0.5;
-        return 0;
-    case IMAGE_TYPE_JPG:
-        return JPG_INFO(img)->x_res;
-#ifdef HAVE_TIFF
-    case IMAGE_TYPE_TIFF:
-        return TIFF_INFO(img)->x_res;
-#endif
-    case IMAGE_TYPE_PDF:
-        return 0;
-    default:
-        pdftex_fail("unknown type of image");
-    }
+    return img_xres(img);
 }
 
 integer imageyres(integer img)
 {
-    switch (IMG_TYPE(img)) {
-    case IMAGE_TYPE_PNG:
-        if (PNG_INFO(img)->valid & PNG_INFO_pHYs)
-            return 0.0254*png_get_y_pixels_per_meter(PNG_PTR(img),
-                                                     PNG_INFO(img)) + 0.5;
-        return 0;
-    case IMAGE_TYPE_JPG:
-        return JPG_INFO(img)->y_res;
-#ifdef HAVE_TIFF
-    case IMAGE_TYPE_TIFF:
-        return TIFF_INFO(img)->y_res;
-#endif
-    case IMAGE_TYPE_PDF:
-        return 0;
-    default:
-        pdftex_fail("unknown type of image");
-    }
+    return img_yres(img);
 }
 
 boolean ispdfimage(integer img)
 {
-    return IMG_TYPE(img) == IMAGE_TYPE_PDF;
+    return img_type(img) == IMAGE_TYPE_PDF;
+}
+
+boolean checkimageb(integer procset)
+{
+    return procset & IMAGE_COLOR_B;
+}
+
+boolean checkimagec(integer procset)
+{
+    return procset & IMAGE_COLOR_C;
+}
+
+boolean checkimagei(integer procset)
+{
+    return procset & IMAGE_COLOR_I;
+}
+
+void updateimageprocset(integer img)
+{
+    pdfimageprocset |= img_color(img);
 }
 
 integer epdforigx(integer img)
 {
-    return  PDF_INFO(img)->orig_x;
+    return pdf_ptr(img)->orig_x;
 }
 
 integer epdforigy(integer img)
 {
-    return  PDF_INFO(img)->orig_y;
+    return pdf_ptr(img)->orig_y;
 }
 
-integer readimg()
+integer imagepages(integer img)
 {
+    return img_pages(img);
+}
+
+integer readimage(strnumber s, integer page_num, strnumber page_name,
+                  integer pdfversion, integer pdfoptionalwaysusepdfpagebox)
+{
+    char *image_suffix;
+    char *dest = 0;
     integer img = new_image_entry();
-    filename = makecstring(makenamestring());
-    flushstring();
-    IMG_NAME(img) = kpse_find_file(filename, kpse_tex_ps_header_format, true);
-    if (IMG_NAME(img) == 0)
-        pdftex_fail("cannot open image file");
-    if (strcasecmp(strend(filename) - 4, ".pdf") == 0) {
-        PDF_INFO(img) = XTALLOC(1, pdf_image_struct);
-        read_pdf_info(IMG_NAME(img));
-        PDF_INFO(img)->width = epdf_width;
-        PDF_INFO(img)->height = epdf_height;
-        PDF_INFO(img)->orig_x = epdf_orig_x;
-        PDF_INFO(img)->orig_y = epdf_orig_y;
-        PDF_INFO(img)->xref = epdf_xref;
-        PDF_INFO(img)->doc = epdf_doc;
-        IMG_TYPE(img) = IMAGE_TYPE_PDF;
+    /* need to allocate new string as makecstring's buffer is 
+       already used by cur_file_name */
+    if (page_name != 0)
+      dest = xstrdup(makecstring(page_name));
+    cur_file_name = makecstring(s);
+    img_name(img) = kpse_find_file(cur_file_name, kpse_tex_format, true);
+    if (img_name(img) == 0)
+        pdftex_fail("cannot find image file");
+    if ((image_suffix = strrchr(cur_file_name, '.')) == 0)
+        pdftex_fail("cannot find image file name extension");
+    if (strcasecmp(image_suffix, ".pdf") == 0) {
+        img_type(img) = IMAGE_TYPE_PDF;
+        pdf_ptr(img) = xtalloc(1, pdf_image_struct);
+        pdf_ptr(img)->page_box = pdflastpdfboxspec;
+        pdf_ptr(img)->always_use_pdfpagebox = pdfoptionalwaysusepdfpagebox;
+	    page_num = read_pdf_info(img_name(img), dest, page_num, pdfversion, pdfoptionalwaysusepdfpagebox);
+        img_width(img) = bp2int(epdf_width);
+        img_height(img) = bp2int(epdf_height);
+        img_pages(img) = epdf_num_pages;
+        pdf_ptr(img)->orig_x = bp2int(epdf_orig_x);
+        pdf_ptr(img)->orig_y = bp2int(epdf_orig_y);
+        pdf_ptr(img)->selected_page = page_num;
+        pdf_ptr(img)->doc = epdf_doc;
     }
-    else if (strcasecmp(strend(filename) - 4, ".png") == 0) {
+    else if (strcasecmp(image_suffix, ".png") == 0) {
+        img_type(img) = IMAGE_TYPE_PNG;
+        img_pages(img) = 1;
         read_png_info(img);
-        IMG_TYPE(img) = IMAGE_TYPE_PNG;
     }
-    else if (strcasecmp(strend(filename) - 4, ".jpg") == 0) {
-        JPG_INFO(img) = XTALLOC(1, JPG_IMAGE_INFO);
-        switch (read_jpg_info(img)) {
-        case 0:
-            break;
-        case 4:
-            pdftex_fail("unsupported type of compression");
-        default: 
-            pdftex_fail("reading JPG image failed");
-        }
-        IMG_TYPE(img) = IMAGE_TYPE_JPG;
+    else if (strcasecmp(image_suffix, ".jpg") == 0 ||
+             strcasecmp(image_suffix, ".jpeg") == 0) {
+        jpg_ptr(img) = xtalloc(1, JPG_IMAGE_INFO);
+        img_type(img) = IMAGE_TYPE_JPG;
+        img_pages(img) = 1;
+        read_jpg_info(img);
     }
-#ifdef HAVE_TIFF
-    else if (strcasecmp(strend(filename) - 4, ".tif") == 0
-	     || strcasecmp(strend(filename) - 5, ".tiff") == 0) {
-        TIFF_INFO(img) = XTALLOC(1, TIFF_IMAGE_INFO);
-        switch (read_tiff_info(img)) {
-        case 0:
-            break;
-        default:
-	    pdftex_fail("reading TIFF image failed");
-        }
-        IMG_TYPE(img) = IMAGE_TYPE_TIFF;
-    }
-#endif
-    else pdftex_fail("unknown type of image");
-    filename = 0;
+    else 
+        pdftex_fail("unknown type of image");
+    xfree(dest);
+    cur_file_name = 0;
     return img;
 }
 
-void writeimg(integer n, integer img)
+void writeimage(integer img)
 {
-    tex_printf(" <%s", IMG_NAME(img));
-    switch (IMG_TYPE(img)) {
+    cur_file_name = img_name(img);
+    tex_printf(" <%s", img_name(img));
+    switch (img_type(img)) {
     case IMAGE_TYPE_PNG:
-        write_png(n, img);
+        write_png(img);
         break;
     case IMAGE_TYPE_JPG:
-        write_jpg(n, img);
+        write_jpg(img);
         break;
-#ifdef HAVE_TIFF
-    case IMAGE_TYPE_TIFF:
-        write_tiff(n, img);
-        break;
-#endif
     case IMAGE_TYPE_PDF:
-        epdf_xref = PDF_INFO(img)->xref;
-        epdf_doc = PDF_INFO(img)->doc;
-        write_epdf(n, img);
+        epdf_doc = pdf_ptr(img)->doc;
+        epdf_selected_page = pdf_ptr(img)->selected_page;
+        epdf_page_box = pdf_ptr(img)->page_box;
+        epdf_always_use_pdf_pagebox = pdf_ptr(img)->always_use_pdfpagebox;
+        write_epdf();
         break;
     default:
         pdftex_fail("unknown type of image");
     }
     tex_printf(">");
+    cur_file_name = 0;
+}
+
+void deleteimage(integer img)
+{
+    switch (img_type(img)) {
+    case IMAGE_TYPE_PDF:
+        epdf_doc = pdf_ptr(img)->doc;
+        epdf_delete();
+        break;
+    case IMAGE_TYPE_PNG:
+        xfclose(png_ptr(img)->io_ptr, cur_file_name);
+        png_destroy_read_struct(&(png_ptr(img)), &(png_info(img)), NULL);
+        break;
+    case IMAGE_TYPE_JPG:
+        xfclose(jpg_ptr(img)->file, cur_file_name);
+        break;
+    default:
+        pdftex_fail("unknown type of image");
+    }
+    xfree(img_name(img));
+    return;
+}
+
+void img_free() 
+{
+    xfree(image_tab);
 }

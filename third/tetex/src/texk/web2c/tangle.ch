@@ -44,7 +44,7 @@
 \def\title{TANGLE changes for C}
 @z
 
-@x [?] Define and call parse_arguments.
+@x [2] Define and call parse_arguments.
 procedure initialize;
   var @<Local variables for initialization@>@/
   begin @<Set initial values@>@/
@@ -72,9 +72,9 @@ procedure initialize;
 @y
 @!max_toks=60000; {|1/zz| times the number of bytes in compressed \PASCAL\ code;
   must be less than 65536}
-@!max_names=6000; {number of identifiers, strings, module names;
+@!max_names=10000; {number of identifiers, strings, module names;
   must be less than 10240}
-@!max_texts=5000; {number of replacement texts, must be less than 10240}
+@!max_texts=10000; {number of replacement texts, must be less than 10240}
 @z
 
 @x
@@ -87,7 +87,7 @@ procedure initialize;
 @!stack_size=100; {number of simultaneous levels of macro expansion}
 @!max_id_length=50; {long identifiers are chopped to this length, which must
   not exceed |line_length|}
-@!unambig_length=32; {identifiers must be unique if chopped to this length}
+@!def_unambig_length=32; {identifiers must be unique if chopped to this length}
 @z
 
 % [??] The text_char type is used as an array index into xord.  The
@@ -147,8 +147,8 @@ certain file will appear on the user's terminal.
 @x [24] open input files
 begin reset(web_file); reset(change_file);
 @y
-begin reset(web_file, web_name);
-if chg_name then reset(change_file, chg_name);
+begin web_file := kpse_open_file(web_name, kpse_web_format);
+if chg_name then change_file := kpse_open_file(chg_name, kpse_web_format);
 @z
 
 @x [26] Open output files (except for the pool file).
@@ -191,23 +191,78 @@ end;
 @d zz=3 {we multiply the token capacity by approximately this amount}
 @y
 @d ww=3 {we multiply the byte capacity by approximately this amount}
-@d zz=4 {we multiply the token capacity by approximately this amount}
+@d zz=5 {we multiply the token capacity by approximately this amount}
 @z
 
-@x [58] Remove conversion to uppercase
-    begin if buffer[i]>="a" then chopped_id[s]:=buffer[i]-@'40
-    else chopped_id[s]:=buffer[i];
+@x [38] Provide for larger than 16bit numeric macros.
+@!equiv: array [0..max_names] of sixteen_bits; {info corresponding to names}
 @y
-    begin chopped_id[s]:=buffer[i];
+@!equiv: array [0..max_names] of integer; {info corresponding to names}
 @z
 
-@x [63] Remove conversion to uppercase
+@x [47] Provide for larger than 16bit numeric macros.
+their |equiv| value contains the corresponding numeric value plus $2^{15}$.
+@y
+their |equiv| value contains the corresponding numeric value plus $2^{30}$.
+@z
+
+@x [47] Add parametric2 macros (macros that use [] to delimit arguments).
+\yskip\hang |parametric| identifiers have been defined to be parametric macros;
+like simple identifiers, their |equiv| value points to the replacement text.
+@y
+\yskip\hang |parametric| and |parametric2| identifiers have been defined to
+be parametric macros; like simple identifiers, their |equiv| value points to
+the replacement text.
+@z
+@x
+@d parametric=3 {parametric macros have |parametric| ilk}
+@y
+@d parametric=3 {parametric macros have |parametric| ilk}
+@d parametric2=4 {second type of parametric macros have this |ilk|}
+@z
+
+@x [50] unambig_length is a variabe now
+@!chopped_id:array [0..unambig_length] of ASCII_code; {chopped identifier}
+@y
+@!chopped_id:array [0..max_id_length] of ASCII_code; {chopped identifier}
+@z
+
+@x [53] Add parametric2 macros (macros that use [] to delimit arguments).
+|numeric|, |simple|, or |parametric|.
+@y
+|numeric|, |simple|, |parametric|, or |parametric2|.
+@z
+
+@x [53] unambig_length is a variable.
+@!s:0..unambig_length; {index into |chopped_id|}
+@y
+@!s:0..max_id_length; {index into |chopped_id|}
+@z
+
+@x [58] Case smashing options/strict checking.
+  begin if buffer[i]<>"_" then
+    begin if buffer[i]>="a" then chopped_id[s]:=buffer[i]-@'40
+@y
+  begin if (buffer[i]<>"_") or (allow_underlines and not strict_mode) then
+    begin if (strict_mode or force_uppercase) and (buffer[i]>="a") then
+      chopped_id[s]:=buffer[i]-@'40
+    else if (not strict_mode and force_lowercase)
+           and (buffer[i]>="A") and (buffer[i]<="Z") then
+      chopped_id[s]:=buffer[i]+@'40
+@z
+
+@x [63] Case smashing options/strict checking.
+  if c<>"_" then
     begin if c>="a" then c:=c-@'40; {merge lowercase with uppercase}
 @y
-    begin 
+  if c<>"_" or (allow_underlines and not strict_mode) then
+    begin if (strict_mode or force_uppercase) and (c>="a") then c:=c-@'40
+    else if (not strict_mode and force_lowercase)
+           and (c>="A") and (c<="Z") then
+      c:=c+@'40;
 @z
 
-@x [64] Delayed pool file opening.
+@x [64] Delayed pool file opening / larger numerics.
 @<Define and output a new string...@>=
 begin ilk[p]:=numeric; {strings are like numeric macros}
 if l-double_chars=2 then {this string is for a single character}
@@ -218,7 +273,7 @@ else  begin equiv[p]:=string_ptr+@'100000;
 @<Define and output a new string...@>=
 begin ilk[p]:=numeric; {strings are like numeric macros}
 if l-double_chars=2 then {this string is for a single character}
-  equiv[p]:=buffer[id_first+1]+@'100000
+  equiv[p]:=buffer[id_first+1]+@'10000000000
 else  begin
   {Avoid creating empty pool files.}
   if string_ptr = 256 then begin
@@ -226,8 +281,50 @@ else  begin
     pool_name := basename_change_suffix (web_name, '.web', '.pool');
     rewrite (pool, pool_name);
   end;
-  equiv[p]:=string_ptr+@'100000;
+  equiv[p]:=string_ptr+@'10000000000;
   l:=l-double_chars-1;
+@z
+
+@x [85] Add parametric2 macros (macros that use [] to delimit arguments).
+  begin if ilk[cur_name]=parametric then
+@y
+  begin if (ilk[cur_name]=parametric) or (ilk[cur_name]=parametric2) then
+@z
+
+@x [89] Larger numerics.
+numeric: begin cur_val:=equiv[a]-@'100000; a:=number;
+@y
+numeric: begin cur_val:=equiv[a]-@'10000000000; a:=number;
+@z
+
+@x [89] Add parametric2 macros (macros that use [] to delimit arguments).
+parametric: begin @<Put a parameter on the parameter stack,
+@y
+parametric,parametric2: begin @<Put a parameter on the parameter stack,
+@z
+
+@x [90] Add parametric2 macros (macros that use [] to delimit arguments).
+if (stack_ptr=0)or(tok_mem[zo,cur_byte]<>"(") then
+@y
+if (stack_ptr=0)or((ilk[a]=parametric)and(tok_mem[zo,cur_byte]<>"("))
+    or((ilk[a]=parametric2)and(tok_mem[zo,cur_byte]<>"[")) then
+@z
+
+@x [93] Add parametric2 macros (macros that use [] to delimit arguments).
+bal:=1; incr(cur_byte); {skip the opening `\.('}
+@y
+bal:=1; incr(cur_byte); {skip the opening `\.(' or `['}
+@z
+@x
+      "(": incr(bal);
+      ")":  begin decr(bal);
+@y
+      "(": if ilk[a]=parametric then incr(bal);
+      ")": if ilk[a]=parametric then begin decr(bal);
+        if bal=0 then goto done;
+        end;
+      "[": if ilk[a]=parametric2 then incr(bal);
+      "]": if ilk[a]=parametric2 then begin decr(bal);
 @z
 
 @x [105] Accept DIV, div, MOD, and mod
@@ -283,7 +380,7 @@ set_element_sign: begin out_contrib[1]:="i"; out_contrib[2]:="n";
 or_sign: begin out_contrib[1]:="o"; out_contrib[2]:="r"; send_out(ident,2);
 @z
 
-@x [116] Remove conversion to uppercase
+@x [116] Case smashing options.
 @ Single-character identifiers represent themselves, while longer ones
 appear in |byte_mem|. All must be converted to uppercase,
 with underlines removed. Extremely long identifiers must be chopped.
@@ -321,23 +418,173 @@ with underlines removed. Extremely long identifiers must be chopped.
   #-13,#-12,#-11,#-10,#-9,#-8,#-7,#-6,#-5,#-4,#-3,#-2,#-1,#
 
 @<Cases related to identifiers@>=
-"A",up_to("Z"),
-"a",up_to("z"): begin out_contrib[1]:=cur_char; send_out(ident,1);
+"A",up_to("Z"): begin if force_lowercase then out_contrib[1]:=cur_char+@'40
+    else out_contrib[1]:=cur_char;
+    send_out(ident,1);
+  end;
+"a",up_to("z"): begin if force_uppercase then out_contrib[1]:=cur_char-@'40
+    else out_contrib[1]:=cur_char;
+    send_out(ident,1);
   end;
 identifier: begin k:=0; j:=byte_start[cur_val]; w:=cur_val mod ww;
   while (k<max_id_length)and(j<byte_start[cur_val+ww]) do
     begin incr(k); out_contrib[k]:=byte_mem[w,j]; incr(j);
-    if out_contrib[k]="_" then decr(k);
+    if force_uppercase and (out_contrib[k]>="a") then
+      out_contrib[k]:=out_contrib[k]-@'40
+    else if force_lowercase and (out_contrib[k]<="Z") then
+      out_contrib[k]:=out_contrib[k]+@'40
+    else if not allow_underlines and (out_contrib[k]="_") then decr(k);
     end;
   send_out(ident,k);
   end;
 @z
 
-@x [??] Fix casting bug
+@x [119] Stretch limits of constants to match what we set for expressions.
+  if n>=@'2000000000 then err_print('! Constant too big')
+@y
+  if n>=@'10000000000 then err_print('! Constant too big')
+@z
+@x
+  if n>=@"8000000 then err_print('! Constant too big')
+@y
+  if n>=@"40000000 then err_print('! Constant too big')
+@z
+
+@x [157] Fix casting bug
 @d add_in(#)==begin accumulator:=accumulator+next_sign*(#); next_sign:=+1;
   end
 @y
 @d add_in(#)==begin accumulator:=accumulator+next_sign*intcast(#); next_sign:=+1;
+  end
+@z
+
+@x [157] Larger numerics.
+if abs(accumulator)>=@'100000 then
+@y
+if abs(accumulator)>=@'10000000000 then
+@z
+
+@x [157] Larger numerics.
+equiv[p]:=accumulator+@'100000; {name |p| now is defined to equal |accumulator|}
+@y
+equiv[p]:=accumulator+@'10000000000; {name |p| now is defined to equal |accumulator|}
+@z
+
+@x [158] Larger numerics.
+    add_in(equiv[q]-@'100000);
+@y
+    add_in(equiv[q]-@'10000000000);
+@z
+
+@x [165] Add parametric2 macros (macros that use [] to delimit arguments).
+  "(": incr(bal);
+  ")": if bal=0 then err_print('! Extra )')
+@.Extra )@>
+    else decr(bal);
+  "'": @<Copy a string from the buffer to |tok_mem|@>;
+  "#": if t=parametric then a:=param;
+@y
+  "(": if t=parametric then incr(bal);
+  ")": if t=parametric then if bal=0 then err_print('! Extra )')
+@.Extra )@>
+    else decr(bal);
+  "[": if t=parametric2 then incr(bal);
+  "]": if t=parametric2 then if bal=0 then err_print('! Extra ]')
+@.Extra ]@>
+    else decr(bal);
+  "'": @<Copy a string from the buffer to |tok_mem|@>;
+  "#": if (t=parametric)or(t=parametric2) then a:=param;
+@z
+
+@x [166] Add parametric2 macros (macros that use [] to delimit arguments).
+  begin if bal=1 then err_print('! Missing )')
+  else err_print('! Missing ',bal:1,' )''s');
+@.Missing n )@>
+  while bal>0 do
+    begin app_repl(")"); decr(bal);
+    end;
+  end
+@y
+  if t=parametric then begin
+    if bal=1 then err_print('! Missing )')
+    else err_print('! Missing ',bal:1,' )''s');
+@.Missing n )@>
+    while bal>0 do
+      begin app_repl(")"); decr(bal);
+      end;
+    end
+  else begin
+    if bal=1 then err_print('! Missing ]')
+    else err_print('! Missing ',bal:1,' ]''s');
+@.Missing n ]@>
+    while bal>0 do
+      begin app_repl("]"); decr(bal);
+      end;
+    end
+@z
+
+@x [173] Add parametric2 macros (macros that use [] to delimit arguments).
+  else @<If the next text is `|(#)==|', call |define_macro|
+    and |goto continue|@>;
+@y
+  else @<If the next text is `|(#)==|' or |[#]==|, call |define_macro|
+    and |goto continue|@>;
+@z
+
+@x [174] Add parametric2 macros (macros that use [] to delimit arguments).
+@ @<If the next text is `|(#)==|'...@>=
+if next_control="(" then
+  begin next_control:=get_next;
+  if next_control="#" then
+    begin next_control:=get_next;
+    if next_control=")" then
+      begin next_control:=get_next;
+      if next_control="=" then
+        begin err_print('! Use == for macros');
+@.Use == for macros@>
+        next_control:=equivalence_sign;
+        end;
+      if next_control=equivalence_sign then
+        begin define_macro(parametric); goto continue;
+        end;
+      end;
+    end;
+  end;
+@y
+@ @<If the next text is `|(#)==|'...@>=
+if next_control="(" then
+  begin next_control:=get_next;
+  if next_control="#" then
+    begin next_control:=get_next;
+    if next_control=")" then
+      begin next_control:=get_next;
+      if next_control="=" then
+        begin err_print('! Use == for macros');
+@.Use == for macros@>
+        next_control:=equivalence_sign;
+        end;
+      if next_control=equivalence_sign then
+        begin define_macro(parametric); goto continue;
+        end;
+      end;
+    end;
+  end
+else if next_control="[" then
+  begin next_control:=get_next;
+  if next_control="#" then
+    begin next_control:=get_next;
+    if next_control="]" then
+      begin next_control:=get_next;
+      if next_control="=" then
+        begin err_print('! Use == for macros');
+@.Use == for macros@>
+        next_control:=equivalence_sign;
+        end;
+      if next_control=equivalence_sign then
+        begin define_macro(parametric2); goto continue;
+        end;
+      end;
+    end;
   end
 @z
 
@@ -392,13 +639,15 @@ Parse a Unix-style command line.
 
 @<Define |parse_arguments|@> =
 procedure parse_arguments;
-const n_options = 3; {Pascal won't count array lengths for us.}
+const n_options = 10; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;
     @!getopt_return_val: integer;
     @!option_index: c_int_type;
     @!current_option: 0..n_options;
+    @!len: integer;
 begin
   @<Define the option table@>;
+  unambig_length := def_unambig_length;
   repeat
     getopt_return_val := getopt_long_only (argc, argv, '', long_options,
                                            address_of (option_index));
@@ -406,13 +655,39 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'tangle');
+      usage ('tangle');
 
     end else if argument_is ('help') then begin
-      usage (0, TANGLE_HELP);
+      usage_help (TANGLE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
+
+    end else if argument_is ('mixedcase') then begin
+      force_uppercase := false;
+      force_lowercase := false;
+
+    end else if argument_is ('uppercase') then begin
+      force_uppercase := true;
+      force_lowercase := false;
+
+    end else if argument_is ('lowercase') then begin
+      force_uppercase := false;
+      force_lowercase := true;
+
+    end else if argument_is ('underlines') then begin
+      allow_underlines := true;
+
+    end else if argument_is ('strict') then begin
+      strict_mode := true;
+
+    end else if argument_is ('loose') then begin
+      strict_mode := false;
+
+    end else if argument_is ('length') then begin
+      len := atoi(optarg);
+      if (len<=0) or (len>max_id_length) then len := max_id_length;
+      unambig_length := len;
 
     end; {Else it was a flag; |getopt| has already done the assignment.}
   until getopt_return_val = -1;
@@ -420,7 +695,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'tangle: Need one or two file arguments.');
-    usage (1, 'tangle');
+    usage ('tangle');
   end;
   
   {Supply |".web"| and |".ch"| extensions if necessary.}
@@ -454,6 +729,76 @@ long_options[current_option].flag := 0;
 long_options[current_option].val := 0;
 incr (current_option);
 
+@ Use all mixed case.
+@.-mixedcase@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'mixedcase';
+long_options[current_option].has_arg := 0;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
+@ Use all uppercase.
+@.-uppercase@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'uppercase';
+long_options[current_option].has_arg := 0;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
+@ Use all lowercase.
+@.-lowercase@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'lowercase';
+long_options[current_option].has_arg := 0;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
+@ Allow underlines.
+@.-underlines@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'underlines';
+long_options[current_option].has_arg := 0;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
+@ Strict comparisions.
+@.-strict@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'strict';
+long_options[current_option].has_arg := 0;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
+@ Loose comparisions.
+@.-loose@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'loose';
+long_options[current_option].has_arg := 0;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
+@ Loose comparisions.
+@.-length@>
+
+@<Define the option...@> =
+long_options[current_option].name := 'length';
+long_options[current_option].has_arg := 1;
+long_options[current_option].flag := 0;
+long_options[current_option].val := 0;
+incr (current_option);
+
 @ An element with all zeros always ends the list.
 
 @<Define the option...@> =
@@ -466,4 +811,6 @@ long_options[current_option].val := 0;
 
 @<Globals...@>=
 @!web_name,@!chg_name,@!pascal_name,@!pool_name:c_string;
+@!force_uppercase,@!force_lowercase,@!allow_underlines,@!strict_mode:boolean;
+@!unambig_length:0..max_id_length;
 @z

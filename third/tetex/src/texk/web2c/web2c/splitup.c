@@ -5,6 +5,7 @@
    Tim Morgan  September 19, 1987.  */
 
 #include "config.h"
+#include <kpathsea/getopt.h>
 
 #ifdef VMS
 #define unlink delete
@@ -12,21 +13,22 @@
 
 int filenumber = 0, ifdef_nesting = 0, lines_in_file = 0;
 char *output_name = NULL;
-int has_ini;
+boolean has_ini;
 
-#define	TEMPFILE "splitemp.c"
-
-/* This used to be 2000, but since bibtex.c is almost 10000 lines
+/* This used to be a fixed 2000, but since bibtex.c is almost 10000 lines
    (200+K), we may as well decrease the number of split files we create.
    Probably faster for the compiler, definitely faster for the linker,
-   simpler for the Makefiles, and generally better.  */
-#define	MAXLINES 10000
+   simpler for the Makefiles, and generally better.  Now we specify this
+   in 'convert'. */
+long int max_lines;
+
+/* Do we split out a separate *ini.c file? */
+boolean do_ini;
 
 /* Don't need long filenames, since we generate them all.  */
-char buffer[1024], filename[100], ini_name[100];
+char buffer[1024], tempfile[100], filename[100], ini_name[100];
 
 FILE *out, *ini, *temp;
-
 
 /*
  * Read a line of input into the buffer, returning `false' on EOF.
@@ -56,13 +58,31 @@ main P2C(int, argc, string *, argv)
 {
   string coerce;
   unsigned coerce_len;
+  int option;
   
   kpse_set_progname (argv[0]); /* In case we use FATAL.  */
 
-  if (argc > 1)
-    output_name = argv[1];
+  while ((option = getopt(argc, argv, "+il:")) != -1) {
+    switch (option) {
+    case 'i':
+      do_ini = true;
+      break;
+    case 'l':
+      max_lines = atoi(optarg);
+      if (max_lines <= 0)
+        FATAL("[-i] [-l lines] name");
+      break;
+    default:
+      FATAL("[-i] [-l lines] name");
+      break;
+    }
+  }
+  if (optind + 1 != argc)
+    FATAL("[-i] [-l lines] name");
+  output_name = argv[optind];
 
   sprintf (filename, "%sd.h", output_name);
+  sprintf (tempfile, "%s.tmp", output_name);
   out = xfopen (filename, FOPEN_W_MODE);
   fputs ("#undef TRIP\n#undef TRAP\n", out);
   /* We have only one binary that can do both ini stuff and vir stuff.  */
@@ -116,10 +136,12 @@ main P2C(int, argc, string *, argv)
   fputs (buffer, out);
   xfclose (out, filename);
 
-  sprintf (ini_name, "%sini.c", output_name);
-  ini = xfopen (ini_name, FOPEN_W_MODE);
-  fputs ("#define EXTERN extern\n", ini);
-  fprintf (ini, "#include \"%sd.h\"\n\n", output_name);
+  if (do_ini) {
+    sprintf (ini_name, "%sini.c", output_name);
+    ini = xfopen (ini_name, FOPEN_W_MODE);
+    fputs ("#define EXTERN extern\n", ini);
+    fprintf (ini, "#include \"%sd.h\"\n\n", output_name);
+  }
 
   sprintf (filename, "%s0.c", output_name);
   out = xfopen (filename, FOPEN_W_MODE);
@@ -130,7 +152,7 @@ main P2C(int, argc, string *, argv)
     {
       /* Read one routine into a temp file */
       has_ini = false;
-      temp = xfopen (TEMPFILE, "w+");
+      temp = xfopen (tempfile, "w+");
 
       while (read_line ())
 	{
@@ -142,7 +164,7 @@ main P2C(int, argc, string *, argv)
 	fputs (buffer, temp);
       rewind (temp);
 
-      if (has_ini)
+      if (do_ini && has_ini)
 	{			/* Contained "#ifdef INI..." */
 	  while (fgets (buffer, sizeof (buffer), temp))
 	    fputs (buffer, ini);
@@ -155,10 +177,10 @@ main P2C(int, argc, string *, argv)
 	      lines_in_file++;
 	    }
 	}
-      xfclose (temp, TEMPFILE);
+      xfclose (temp, tempfile);
 
       /* Switch to new output file.  */
-      if (lines_in_file > MAXLINES)
+      if (max_lines && lines_in_file > max_lines)
 	{
 	  xfclose (out, filename);
 	  sprintf (filename, "%s%d.c", output_name, ++filenumber);
@@ -174,10 +196,11 @@ main P2C(int, argc, string *, argv)
   if (lines_in_file == 0)
     unlink (filename);
 
-  xfclose (ini, ini_name);
+  if (do_ini)
+    xfclose (ini, ini_name);
 
-  if (unlink (TEMPFILE))
-    perror (TEMPFILE), uexit (1);
+  if (unlink (tempfile))
+    perror (tempfile), uexit (1);
 
   return EXIT_SUCCESS;
 }

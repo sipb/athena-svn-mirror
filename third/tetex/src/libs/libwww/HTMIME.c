@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTMIME.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTMIME.c,v 1.1.1.2 2003-02-25 22:28:13 amb Exp $
 **
 **	This is RFC 1341-specific code.
 **	The input stream pushed into this parser is assumed to be
@@ -22,21 +22,26 @@
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "WWWCore.h"
-#include "WWWCache.h"
-#include "WWWStream.h"
 #include "HTReqMan.h"
 #include "HTNetMan.h"
 #include "HTHeader.h"
 #include "HTWWWStr.h"
-#include "HTMIME.h"					 /* Implemented here */
 
-#define MIME_HASH_SIZE 101
+#ifndef NO_CACHE
+#include "HTTee.h"
+#include "HTConLen.h"
+#include "HTMerge.h"
+#include "WWWCache.h"
+#endif
+
+#include "HTMIME.h"					 /* Implemented here */
 
 typedef enum _HTMIMEMode {
     HT_MIME_HEADER	= 0x1,
     HT_MIME_FOOTER	= 0x2,
     HT_MIME_PARTIAL	= 0x4,
-    HT_MIME_CONT	= 0x8
+    HT_MIME_CONT	= 0x8,
+    HT_MIME_UPGRADE	= 0x10
 } HTMIMEMode;
 
 struct _HTStream {
@@ -45,6 +50,7 @@ struct _HTStream {
     HTResponse *		response;
     HTNet *			net;
     HTStream *			target;
+    HTConverter *		save_stream;
     HTFormat			target_format;
     HTChunk *			token;
     HTChunk *			value;
@@ -55,6 +61,8 @@ struct _HTStream {
     BOOL			haveToken;
     BOOL			hasBody;
 };
+
+PRIVATE HTConverter * LocalSaveStream = NULL; /* Where to save unknown stuff */
 
 /* ------------------------------------------------------------------------- */
 
@@ -69,9 +77,6 @@ PRIVATE int pumpData (HTStream * me)
     HTStream * BlackHole = HTBlackHole();
     BOOL savestream = NO;
     me->transparent = YES;		  /* Pump rest of data right through */
-
-    /*  If this request is a source in PostWeb then pause here */
-    if (HTRequest_isSource(request)) return HT_PAUSE;
 
     /*
     **  Cache the metainformation in the anchor object by copying
@@ -103,6 +108,16 @@ PRIVATE int pumpData (HTStream * me)
 	return HT_CONTINUE;
 
     /*
+    **  If we get a 101 Protocol Switch then we are done here
+    **  but not done with the response (which we don't know
+    **  how to go about parsing
+    */
+    if (me->mode & HT_MIME_UPGRADE) {
+	me->hasBody = YES;
+	return HT_OK;
+    }
+
+    /*
     **  If there is no content-length, no transfer encoding and no
     **  content type then we assume that there is no body part in
     **  the message and we can return HT_LOADED
@@ -112,12 +127,12 @@ PRIVATE int pumpData (HTStream * me)
 	if (length<0 && te==NULL &&
 	    HTHost_isPersistent(host) && !HTHost_closeNotification(host)) {
 	    if (format != WWW_UNKNOWN) {
-		if (STREAM_TRACE) HTTrace("MIME Parser. BAD - there seems to be a body but no length. This must be an HTTP/1.0 server pretending that it is HTTP/1.1\n");
+		HTTRACE(STREAM_TRACE, "MIME Parser. BAD - there seems to be a body but no length. This must be an HTTP/1.0 server pretending that it is HTTP/1.1\n");
 		HTHost_setCloseNotification(host, YES);
 	    } else {
                 HTAlertCallback * cbf = HTAlert_find(HT_PROG_DONE);
                 if (cbf) (*cbf)(request, HT_PROG_DONE, HT_MSG_NULL, NULL, NULL, NULL);
-		if (STREAM_TRACE) HTTrace("MIME Parser. No body in this messsage\n");
+		HTTRACE(STREAM_TRACE, "MIME Parser. No body in this message\n");
 		return HT_LOADED;
 	    }
 	}
@@ -134,14 +149,15 @@ PRIVATE int pumpData (HTStream * me)
     if (!(me->mode & HT_MIME_PARTIAL) &&
 	(format != WWW_UNKNOWN || length > 0 || te)) {
 	HTStream * target;
-	if (STREAM_TRACE) HTTrace("Building.... C-T stack from %s to %s\n",
-				  HTAtom_name(format),
+	HTTRACE(STREAM_TRACE, "Building.... C-T stack from %s to %s\n" _ 
+				  HTAtom_name(format) _ 
 				  HTAtom_name(me->target_format));
 	if ((target = HTStreamStack(format, me->target_format,
 				    me->target, request, YES))==BlackHole) {
 	    if (!savestream) {
                 if (me->target) (*me->target->isa->abort)(me->target, NULL);
-                me->target = HTSaveLocally(request, NULL, NULL, NULL, NULL);
+                me->target = me->save_stream(request, NULL,
+					     format, me->target_format, me->target);
 		savestream = YES;
 	    }
 	} else
@@ -151,13 +167,14 @@ PRIVATE int pumpData (HTStream * me)
     /*
     **  Handle any Content Encodings
     */
-    if (STREAM_TRACE) HTTrace("Building.... Content-Decoding stack\n");
+    HTTRACE(STREAM_TRACE, "Building.... Content-Decoding stack\n");
     if (ce) {
 	HTStream * target = HTContentDecodingStack(ce, me->target, request, NULL);
 	if (target == BlackHole) {
 	    if (!savestream) {
 		if (me->target) (*me->target->isa->abort)(me->target, NULL);
-		me->target = HTSaveLocally(request, NULL, NULL, NULL, NULL);
+                me->target = me->save_stream(request, NULL,
+					     format, me->target_format, me->target);
 		savestream = YES;
 	    }
 	} else
@@ -171,29 +188,36 @@ PRIVATE int pumpData (HTStream * me)
     **  If we are appending to a cache entry then use a different stream than
     **  if creating a new entry.
     */
+#ifndef NO_CACHE
     if (HTCacheMode_enabled()) {
 	if (me->mode & HT_MIME_PARTIAL) {
 	    HTStream * append = HTStreamStack(WWW_CACHE_APPEND,
 					      me->target_format,
 					      me->target, request, NO);
-            me->target = append;
+	    if (append) me->target = HTTee(me->target, append, NULL);
+#if 0
+	    /* @@ JK: change */
+	    if (append) me->target = append;
+#endif
 	} else if (HTResponse_isCachable(me->response) == HT_CACHE_ALL) {
 	    HTStream * cache = HTStreamStack(WWW_CACHE, me->target_format,
 					     me->target, request, NO);
 	    if (cache) me->target = HTTee(me->target, cache, NULL);
 	}
     }
+#endif
     
     /*
     **  Handle any Transfer Encodings
     */
-    if (STREAM_TRACE) HTTrace("Building.... Transfer-Decoding stack\n");
+    HTTRACE(STREAM_TRACE, "Building.... Transfer-Decoding stack\n");
     if (te) {
 	HTStream * target = HTTransferDecodingStack(te, me->target, request, NULL);
 	if (target == BlackHole) {
 	    if (!savestream) {
 		if (me->target) (*me->target->isa->abort)(me->target, NULL);
-		me->target = HTSaveLocally(request, NULL, NULL, NULL, NULL);
+                me->target = me->save_stream(request, NULL,
+					     format, me->target_format, me->target);
 		savestream = YES;
 	    }
 	} else
@@ -208,34 +232,28 @@ PRIVATE int pumpData (HTStream * me)
     return HT_OK;
 }
 
-/* _dispatchParsers - call request's MIME header parser.
-** Use global parser if no appropriate one is found for request.
+/* _dispatchParsers
+ * call request's MIME header parser. Use global parser if no 
+ * appropriate one is found for request.
 */
-PRIVATE int _dispatchParsers (HTStream * me)
+PRIVATE int _dispatchParsers (HTRequest * req, char * token, char * value)
 {
     int status;
-    char * token = HTChunk_data(me->token);
-    char * value = HTChunk_data(me->value);
     BOOL found = NO;
     BOOL local = NO;
     HTMIMEParseSet * parseSet;
 
     /* In case we get an empty header consisting of a CRLF, we fall thru */
-    if (STREAM_TRACE) HTTrace("MIME header. %s: %s\n",
-			      token ? token : "<null>",
+    HTTRACE(STREAM_TRACE, "MIME header. %s: %s\n" _ 
+			      token ? token : "<null>" _ 
 			      value ? value : "<null>");
     if (!token) return HT_OK;			    /* Ignore noop token */
 
     /*
-    ** Remember the original header
-    */
-    HTResponse_addHeader(me->response, token, value);
-
-    /*
     ** Search the local set of MIME parsers
     */
-    if ((parseSet = HTRequest_MIMEParseSet(me->request, &local)) != NULL) {
-        status = HTMIMEParseSet_dispatch(parseSet, me->request, 
+    if ((parseSet = HTRequest_MIMEParseSet(req, &local)) != NULL) {
+        status = HTMIMEParseSet_dispatch(parseSet, req, 
 					 token, value, &found);
 	if (found) return status;
     }
@@ -244,12 +262,36 @@ PRIVATE int _dispatchParsers (HTStream * me)
     ** Search the global set of MIME parsers
     */
     if (local==NO && (parseSet = HTHeader_MIMEParseSet()) != NULL) {
-	status = HTMIMEParseSet_dispatch(parseSet, me->request, 
+	status = HTMIMEParseSet_dispatch(parseSet, req, 
 					 token, value, &found);
 	if (found) return status;
     }
 
     return HT_OK;
+}
+
+/* _stream2dispatchParsers - extracts the arguments from a
+ * MIME stream before calling the generic _dispatchParser
+ * function.
+ */
+PRIVATE int _stream2dispatchParsers (HTStream * me)
+{
+    char * token = HTChunk_data(me->token);
+    char * value = HTChunk_data(me->value);
+
+    /* In case we get an empty header consisting of a CRLF, we fall thru */
+    HTTRACE(STREAM_TRACE, "MIME header. %s: %s\n" _ 
+			      token ? token : "<null>" _ 
+			      value ? value : "<null>");
+    if (!token) return HT_OK;			    /* Ignore noop token */
+
+    /*
+    ** Remember the original header
+    */
+    HTResponse_addHeader(me->response, token, value);
+
+    /* call the parsers to set the headers */
+    return (_dispatchParsers (me->request, token, value));
 }
 
 /*
@@ -260,7 +302,7 @@ PRIVATE int HTMIME_put_block (HTStream * me, const char * b, int l)
 {
     const char * start = b;
     const char * end = start;
-    const char * value = me->value->size ? b : NULL;
+    const char * value = HTChunk_size(me->value) > 0 ? b : NULL;
     int length = l;
     int status;
 
@@ -302,7 +344,7 @@ PRIVATE int HTMIME_put_block (HTStream * me, const char * b, int l)
 		    me->haveToken = YES;
 		} else {
 		    unsigned char ch = *(unsigned char *) b;
-		    ch = tolower(ch);
+		    ch = TOLOWER(ch);
 		    me->hash = (me->hash * 3 + ch) % MIME_HASH_SIZE;
 		}
 	    } else if (value == NULL && *b != ':' && !isspace((int) *b))
@@ -316,7 +358,7 @@ PRIVATE int HTMIME_put_block (HTStream * me, const char * b, int l)
 		int ret = HT_ERROR;
 		HTChunk_putb(me->value, value, end-value);
 		HTChunk_putc(me->value, '\0');
-		ret = _dispatchParsers(me);
+		ret =  _stream2dispatchParsers(me);
 		HTNet_addBytesRead(me->net, b-start);
 		start=b, end=b;
 		if (me->EOLstate == EOL_END) {		/* EOL_END */
@@ -332,8 +374,8 @@ PRIVATE int HTMIME_put_block (HTStream * me, const char * b, int l)
                         }
 		    }
 	        } else {				/* EOL_LINE */
-		    HTChunk_clear(me->token);
-		    HTChunk_clear(me->value);
+		    HTChunk_truncate(me->token,0);
+		    HTChunk_truncate(me->value,0);
 		    me->haveToken = NO;
 		    me->hash = 0;
 		    value = NULL;
@@ -450,14 +492,13 @@ PRIVATE int HTMIME_free (HTStream * me)
 {
     int status = HT_OK;
     if (!me->transparent)
-        if (_dispatchParsers(me) == HT_OK)
+        if (_stream2dispatchParsers(me) == HT_OK)
 	    pumpData(me);
     if (me->target) {
 	if ((status = (*me->target->isa->_free)(me->target))==HT_WOULD_BLOCK)
 	    return HT_WOULD_BLOCK;
     }
-    if (PROT_TRACE)
-	HTTrace("MIME........ FREEING....\n");
+    HTTRACE(PROT_TRACE, "MIME........ FREEING....\n");
     HTChunk_delete(me->token);
     HTChunk_delete(me->value);
     HT_FREE(me);
@@ -470,8 +511,7 @@ PRIVATE int HTMIME_abort (HTStream * me, HTList * e)
 {
     int status = HT_ERROR;
     if (me->target) status = (*me->target->isa->abort)(me->target, e);
-    if (PROT_TRACE)
-	HTTrace("MIME........ ABORTING...\n");
+    HTTRACE(PROT_TRACE, "MIME........ ABORTING...\n");
     HTChunk_delete(me->token);
     HTChunk_delete(me->value);
     HT_FREE(me);
@@ -516,6 +556,7 @@ PUBLIC HTStream* HTMIMEConvert (HTRequest *	request,
     me->net = HTRequest_net(request);
     me->target = output_stream;
     me->target_format = output_format;
+    me->save_stream = LocalSaveStream ? LocalSaveStream : HTBlackHoleConverter;
     me->token = HTChunk_new(256);
     me->value = HTChunk_new(256);
     me->hash = 0;
@@ -555,6 +596,18 @@ PUBLIC HTStream * HTMIMEContinue (HTRequest *	request,
     return me;
 }
 
+PUBLIC HTStream * HTMIMEUpgrade  (HTRequest *	request,
+				  void *	param,
+				  HTFormat	input_format,
+				  HTFormat	output_format,
+				  HTStream *	output_stream)
+{
+    HTStream * me = HTMIMEConvert(request, param, input_format,
+				  output_format, output_stream);
+    me->mode |= HT_MIME_UPGRADE;
+    return me;
+}
+
 /*	MIME footer ONLY parser stream
 **	------------------------------
 **	Parse only a footer, for example after a chunked encoding.
@@ -571,6 +624,7 @@ PUBLIC HTStream * HTMIMEFooter (HTRequest *	request,
     return me;
 }
 
+#ifndef NO_CACHE
 /*
 **	A small BEFORE filter that just finds a cache entry unconditionally
 **	and loads the entry. All freshness and any other constraints are 
@@ -579,8 +633,13 @@ PUBLIC HTStream * HTMIMEFooter (HTRequest *	request,
 PRIVATE int HTCacheLoadFilter (HTRequest * request, void * param, int mode)
 {
     HTParentAnchor * anchor = HTRequest_anchor(request);
-    HTCache * cache = HTCache_find(anchor);
-    if (STREAM_TRACE) HTTrace("Cache Load.. loading partial cache entry\n");
+    char * default_name;
+    HTCache * cache;
+
+    default_name = HTRequest_defaultPutName (request);
+    cache = HTCache_find(anchor, default_name);
+
+    HTTRACE(STREAM_TRACE, "Cache Load.. loading partial cache entry\n");
     if (cache) {
 	char * name = HTCache_name(cache);
 	HTAnchor_setPhysical(anchor, name);
@@ -599,9 +658,13 @@ PRIVATE int HTCacheFlushFilter (HTRequest * request, HTResponse * response,
 {
     HTStream * pipe = (HTStream *) param;    
     if (pipe) {
-	if (STREAM_TRACE) HTTrace("Cache Flush. Flushing and freeing PIPE buffer\n");
+	HTTRACE(STREAM_TRACE, "Cache Flush. Flushing and freeing PIPE buffer\n");
 	(*pipe->isa->flush)(pipe);
+#if 0
+	/* @@ JK: flush converts the pipe to an open one, we shouldn't
+	   free it as we'll loose our references */
 	(*pipe->isa->_free)(pipe);
+#endif
     }
 
     /*
@@ -611,6 +674,7 @@ PRIVATE int HTCacheFlushFilter (HTRequest * request, HTResponse * response,
     HTRequest_delete(request);
     return HT_ERROR;
 }
+#endif
 
 /*	Partial Response MIME parser stream
 **	-----------------------------------
@@ -628,6 +692,7 @@ PUBLIC HTStream * HTMIMEPartial (HTRequest *	request,
 				 HTFormat	output_format,
 				 HTStream *	output_stream)
 {
+#ifndef NO_CACHE
     HTParentAnchor * anchor = HTRequest_anchor(request);
     HTFormat format = HTAnchor_format(anchor);
     HTStream * pipe = NULL;
@@ -652,6 +717,8 @@ PUBLIC HTStream * HTMIMEPartial (HTRequest *	request,
     me->mode |= HT_MIME_PARTIAL;
     me->target = merge;
 
+#if 0
+    /* JK: this doesn't work because this work is repeated before */
     /*
     **  Create the cache append stream, and a Tee stream
     */
@@ -660,6 +727,7 @@ PUBLIC HTStream * HTMIMEPartial (HTRequest *	request,
 					  output_stream, request, NO);
 	if (append) me->target = HTTee(me->target, append, NULL);
     }
+#endif
 
     /*
     **  Create the pipe buffer stream to buffer the data that we read
@@ -693,9 +761,76 @@ PUBLIC HTStream * HTMIMEPartial (HTRequest *	request,
 	HTRequest_addAfter(cache_request, HTCacheFlushFilter, NULL, pipe,
 			   HT_ALL, HT_FILTER_FIRST, YES);
 
-	if (STREAM_TRACE) HTTrace("Partial..... Starting cache load\n");
+	HTTRACE(STREAM_TRACE, "Partial..... Starting cache load\n");
 	HTLoad(cache_request, NO);
     }
     return me;
+#else
+    return NULL;
+#endif
 }
 
+PUBLIC void HTMIME_setSaveStream (HTConverter * save_stream)
+{
+    LocalSaveStream = save_stream;
+}
+
+PUBLIC HTConverter * HTMIME_saveStream (void)
+{
+    return LocalSaveStream;
+}
+
+#ifndef NO_CACHE
+/* HTMIME_anchor2response
+ * Copies the anchor HTTP headers into a response object by means
+ * of the generic _dispatchParsers function. Written so that we can
+ * copy the HTTP headers stored in the cache to the response object.
+ */
+PRIVATE void HTMIME_anchor2response (HTRequest * req)
+{
+  char * token;
+  char * value;
+  HTAssocList * header;
+  HTAssoc * pres;
+  HTResponse * res;
+  HTParentAnchor * anchor;
+
+  if (!req)
+    return;
+  
+  anchor = HTRequest_anchor (req);
+  header = HTAnchor_header (anchor);
+  if (!anchor || !header)
+    return;
+
+  while ((pres = (HTAssoc *) HTAssocList_nextObject (header)))
+    {
+      token = HTAssoc_name (pres);
+      value = HTAssoc_value (pres);
+      _dispatchParsers (req, token, value);
+    }
+  
+  /*
+  **  Notify the response object not to delete the lists that we
+  **  have inherited from the anchor object
+  */
+  res = HTRequest_response (req);
+  HTResponse_isCached (res, YES);  
+}
+
+/*
+**	A small AFTER filter that is a frontend to the 
+**      HTMIME_anchor2headers function.
+*/
+
+PUBLIC HTStream * HTCacheCopyHeaders   (HTRequest *	request,
+					void *		param,
+					HTFormat	input_format,
+					HTFormat	output_format,
+					HTStream *	output_stream)
+{
+    HTTRACE(STREAM_TRACE, "Cache Copy Headers.. Copying headers into the response object\n");
+    HTMIME_anchor2response (request);
+    return HT_OK;
+}
+#endif /* NO_CACHE */

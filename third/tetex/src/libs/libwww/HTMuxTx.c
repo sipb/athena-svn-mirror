@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTMuxTx.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTMuxTx.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	A buffered output MUX stream.
 **
@@ -122,7 +122,7 @@ PRIVATE int HTMuxBuffer_free (HTOutputStream * me)
 PRIVATE int HTMuxBuffer_abort (HTOutputStream * me, HTList * e)
 {
     if (me->target) (*me->target->isa->abort)(me->target, e);
-    if (PROT_TRACE) HTTrace("MUX Tx...... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "MUX Tx...... ABORTING...\n");
     return HT_ERROR;
 }
 

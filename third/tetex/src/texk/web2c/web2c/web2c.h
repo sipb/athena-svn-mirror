@@ -25,7 +25,7 @@ extern char next_temp[];
 extern long last_i_num;
 extern int ii, l_s;
 extern long lower_bound, upper_bound;
-extern FILE *std;
+extern FILE *out;
 extern int pf_count;
 
 /* A symbol table entry.  */

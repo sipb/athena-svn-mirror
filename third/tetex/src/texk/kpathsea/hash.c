@@ -1,6 +1,6 @@
 /* hash.c: hash table operations.
 
-Copyright (C) 1994, 95, 96, 97 Karl Berry & Olaf Weber.
+Copyright (C) 1994, 95, 96, 97, 98, 99, 2000 Karl Berry & Olaf Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -27,11 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* All our hash tables are related to filenames.  */
 #ifdef MONOCASE_FILENAMES
-#ifdef WIN32
+#if defined(WIN32) && !defined(__i386_pc_gnu__)
 /* This is way faster under Win32. */
-#define TRANSFORM(x) ((unsigned)CharUpper((char*)(x)))
+#define TRANSFORM(x) ((unsigned)CharLower((LPTSTR)(BYTE)(x)))
 #else
-#define TRANSFORM(x) (toupper(x))
+#define TRANSFORM(x) (tolower(x))
 #endif
 #else
 #define TRANSFORM(x) (x)
@@ -46,6 +46,20 @@ hash P2C(hash_table_type, table,  const_string, key)
      weighting the characters.  */
   while (*key != 0)
     n = (n + n + TRANSFORM (*key++)) % table.size;
+  
+  return n;
+}
+
+/* Identical has function as above, but does not normalize keys. */
+static unsigned
+hash_normalized P2C(hash_table_type, table,  const_string, key)
+{
+  unsigned n = 0;
+  
+  /* Our keys aren't often anagrams of each other, so no point in
+     weighting the characters.  */
+  while (*key != 0)
+    n = (n + n + (*key++)) % table.size;
   
   return n;
 }
@@ -71,10 +85,37 @@ hash_create P1C(unsigned, size)
    duplicate the strings, in case they're being purposefully shared.  */
 
 void
-hash_insert P3C(hash_table_type *, table,  const_string, key,
+hash_insert P3C(hash_table_type *, table,
+                const_string, key,
                 const_string, value)
 {
   unsigned n = hash (*table, key);
+  hash_element_type *new_elt = XTALLOC1 (hash_element_type);
+
+  new_elt->key = key;
+  new_elt->value = value;
+  new_elt->next = NULL;
+  
+  /* Insert the new element at the end of the list.  */
+  if (!table->buckets[n])
+    /* first element in bucket is a special case.  */
+    table->buckets[n] = new_elt;
+  else
+    {
+      hash_element_type *loc = table->buckets[n];
+      while (loc->next)		/* Find the last element.  */
+        loc = loc->next;
+      loc->next = new_elt;	/* Insert the new one after.  */
+    }
+}
+
+/* Same as above, for normalized keys. */
+void
+hash_insert_normalized P3C(hash_table_type *, table,
+                           const_string, key,
+                           const_string, value)
+{
+  unsigned n = hash_normalized (*table, key);
   hash_element_type *new_elt = XTALLOC1 (hash_element_type);
 
   new_elt->key = key;

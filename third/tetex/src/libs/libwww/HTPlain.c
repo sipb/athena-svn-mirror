@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTPlain.c,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
+**	@(#) $Id: HTPlain.c,v 1.1.1.2 2003-02-25 22:27:29 amb Exp $
 **
 **	This version of the stream object just writes to a socket.
 **	The socket is assumed open and left open.
@@ -51,6 +51,7 @@ PRIVATE int HTPlain_free (HTStream * me)
 {
     if (me) {
 	HTextImp_build(me->text, HTEXT_END);
+	HTextImp_delete(me->text);
 	HT_FREE(me);
     }
     return HT_OK;
@@ -60,6 +61,7 @@ PRIVATE int HTPlain_abort (HTStream * me, HTList * e)
 {
     if (me) {
 	HTextImp_build(me->text, HTEXT_ABORT);
+	HTextImp_delete(me->text);
 	HT_FREE(me);
     }
     return HT_ERROR;

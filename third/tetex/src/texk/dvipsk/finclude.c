@@ -275,7 +275,7 @@ scan_fontnames P2C(char *, str, char *, psfile)
 
      i = add_name(p,&ps_fonts_used);
 
-     if(i) {
+     if (i) {
 #ifdef DEBUG
        if (dd(D_FONTS))
          (void)fprintf(stderr,
@@ -410,12 +410,13 @@ scanfontcomments P1C(char *, filename)
 /*
  *   Allow scanning of ` commands.  Better return same results both times.
  */
-      f = popen(filename+1, FOPEN_RBIN_MODE) ;
+      f = popen(filename+1, "r") ;
       to_close = USE_PCLOSE ;
    } else {
       f = search(figpath, filename, READ) ;
    }
    if (f) {
+     SET_BINARY(fileno(f)) ;
      fc_state = 0;
      check_atend = 0;
      while (fgets(p,500,f) && p[0]=='%' &&
@@ -517,12 +518,13 @@ fonttableout P1H(void)
       if (f!=NULL) {
          nameout(f->area, f->name);
          k = 0;
-         do {   if (f->psflag==EXISTS) {
+         do {
+            if (f->psflag==EXISTS) {
                cmdout(f->scalename);
                lfontout((int)f->psname);
+               k++;
             }
             f = f->nextsize;
-            k++;
          } while (f!=NULL);
          numout((integer)k);
          cmdout("fstore");

@@ -82,6 +82,8 @@ kpse_format_info_type kpse_format_info[kpse_last_format];
 #define TYPE42_ENVS "T42FONTS"
 #define WEB2C_ENVS "WEB2C"
 #define MISCFONTS_ENVS "MISCFONTS"
+#define WEB_ENVS "WEBINPUTS"
+#define CWEB_ENVS "CWEBINPUTS"
 
 /* The compiled-in default list, DEFAULT_FONT_SIZES, is intended to be
    set from the command line (presumably via the Makefile).  */
@@ -216,19 +218,27 @@ init_path PVAR2C(kpse_format_info_type *, info, const_string, default_path, ap)
      to create a str_list and then use it twice.  Yuck.  */
   while ((env_name = va_arg (ap, string)) != NULL) {
     /* Since sh doesn't like envvar names with `.', check PATH_prog
-       rather than PATH.prog.  */
+       as well as PATH.prog.  */
     if (!var) {
-      string evar = concat3 (env_name, "_", kpse_program_name);
+      /* Try PATH.prog. */
+      string evar = concat3 (env_name, ".", kpse_program_name);
       string env_value = getenv (evar);
       if (env_value && *env_value) {
         var = evar;
       } else {
         free (evar);
-
-        /* Try simply PATH.  */
-        env_value = getenv (env_name);
+        /* Try PATH_prog. */
+        evar = concat3 (env_name, "_", kpse_program_name);
+        env_value = getenv (evar);
         if (env_value && *env_value) {
-          var = env_name;        
+          var = evar;
+        } else {
+          free (evar);
+          /* Try simply PATH.  */
+          env_value = getenv (env_name);
+          if (env_value && *env_value) {
+            var = env_name;        
+          }
         }
       }
     }
@@ -263,13 +273,24 @@ init_path PVAR2C(kpse_format_info_type *, info, const_string, default_path, ap)
 
 
 /* Some file types have more than one suffix.  */
-
-static void
-add_suffixes PVAR1C(const_string **, list,  ap)
+/* Some times it is convenient to modify the list of searched suffixes.
+   *** Don't complain if this function goes away. ***
+ */
+void
+kpse_set_suffixes PVAR2C(kpse_file_format_type, format,
+  boolean, alternate,  ap)
 {
+  const_string **list;
   const_string s;
-  unsigned count = 0;
-  
+  int count = 0;
+
+  if (alternate) {
+    list = &kpse_format_info[format].alt_suffix;
+  } 
+  else {
+    list = &kpse_format_info[format].suffix;
+  }
+
   while ((s = va_arg (ap, string)) != NULL) {
     count++;
     XRETALLOC (*list, count + 1, const_string);
@@ -277,14 +298,14 @@ add_suffixes PVAR1C(const_string **, list,  ap)
   }
   va_end (ap);
   (*list)[count] = NULL;
-}}
 
+}}
 
 /* The path spec we are defining, one element of the global array.  */
 #define FMT_INFO kpse_format_info[format]
-/* Call add_suffixes.  */
-#define SUFFIXES(args) add_suffixes(&FMT_INFO.suffix, args, NULL)
-#define ALT_SUFFIXES(args) add_suffixes (&FMT_INFO.alt_suffix, args, NULL)
+/* Call kpse_set_add_suffixes.  */
+#define SUFFIXES(args) kpse_set_suffixes(format, false, args, NULL)
+#define ALT_SUFFIXES(args) kpse_set_suffixes(format, true, args, NULL)
 
 /* Call `init_path', including appending the trailing NULL to the envvar
    list. Also initialize the fields not needed in setting the path.  */
@@ -300,17 +321,27 @@ add_suffixes PVAR1C(const_string **, list,  ap)
    name to 0 or 1.  */
 
 static void
-init_maketex P3C(kpse_file_format_type, fmt,  const_string, dflt_prog,
-                 const_string, args)
+init_maketex PVAR2C(kpse_file_format_type, fmt,  const_string, dflt_prog, ap)
 {
   kpse_format_info_type *f = &kpse_format_info[fmt];
   const_string prog = f->program ? f->program : dflt_prog; /* mktexpk */
   string PROG = uppercasify (prog);             /* MKTEXPK */
   string progval = kpse_var_value (PROG);       /* ENV/cnf{"MKTEXPK"} */
+  const_string arg;
 
   /* Doesn't hurt to always set this info.  */
   f->program = prog;
-  f->program_args = args;
+
+  /* Set up the argument vector. */
+  f->argc = 0;
+  f->argv = XTALLOC(2, const_string);
+  f->argv[f->argc++] = dflt_prog;
+  while ((arg = va_arg (ap, string)) != NULL) {
+    f->argc++;
+    XRETALLOC (f->argv, f->argc + 1, const_string);
+    f->argv[f->argc - 1] = arg;
+  }
+  f->argv[f->argc] = NULL;
 
   if (progval && *progval) {
     /* This might actually be from an environment variable value, but in
@@ -319,11 +350,15 @@ init_maketex P3C(kpse_file_format_type, fmt,  const_string, dflt_prog,
   }
   
   free (PROG);
-}
+}}
 
 /* We need this twice, so ... */
 #define MKTEXPK_ARGS \
-  "--mfmode $MAKETEX_MODE --bdpi $MAKETEX_BASE_DPI --mag $MAKETEX_MAG --dpi $KPATHSEA_DPI"
+  "--mfmode","$MAKETEX_MODE",\
+  "--bdpi","$MAKETEX_BASE_DPI",\
+  "--mag","$MAKETEX_MAG",\
+  "--dpi","$KPATHSEA_DPI",\
+  NULL
 
 static string
 remove_dbonly P1C(const_string, path)
@@ -388,6 +423,7 @@ kpse_init_format P1C(kpse_file_format_type, format)
       SUFFIXES (".afm");
       break;
     case kpse_base_format:
+      init_maketex (format, "mktexfmt", NULL);
       INIT_FORMAT ("base", DEFAULT_MFBASES, BASE_ENVS);
       SUFFIXES (".base");
       FMT_INFO.binmode = true;
@@ -395,6 +431,7 @@ kpse_init_format P1C(kpse_file_format_type, format)
     case kpse_bib_format:
       INIT_FORMAT ("bib", DEFAULT_BIBINPUTS, BIB_ENVS);
       SUFFIXES (".bib");
+      FMT_INFO.suffix_search_only = true;
       break;
     case kpse_bst_format:
       INIT_FORMAT ("bst", DEFAULT_BSTINPUTS, BST_ENVS);
@@ -410,9 +447,10 @@ kpse_init_format P1C(kpse_file_format_type, format)
       FMT_INFO.path = remove_dbonly (FMT_INFO.path);
       break;
     case kpse_fmt_format:
+      init_maketex (format, "mktexfmt", NULL);
       INIT_FORMAT ("fmt", DEFAULT_TEXFORMATS, FMT_ENVS);
       SUFFIXES (".fmt");
-#define FMT_SUFFIXES ".efmt", ".efm"
+#define FMT_SUFFIXES ".efmt", ".efm", ".oft"
       ALT_SUFFIXES (FMT_SUFFIXES);
       FMT_INFO.binmode = true;
       break;
@@ -421,6 +459,7 @@ kpse_init_format P1C(kpse_file_format_type, format)
       SUFFIXES (".map");
       break;
     case kpse_mem_format:
+      init_maketex (format, "mktexfmt", NULL);
       INIT_FORMAT ("mem", DEFAULT_MPMEMS, MEM_ENVS);
       SUFFIXES (".mem");
       FMT_INFO.binmode = true;
@@ -570,6 +609,17 @@ kpse_init_format P1C(kpse_file_format_type, format)
       INIT_FORMAT ("misc fonts", DEFAULT_MISCFONTS, MISCFONTS_ENVS);
       FMT_INFO.binmode = true;
       break;
+    case kpse_web_format:
+      INIT_FORMAT ("web", DEFAULT_WEBINPUTS, WEB_ENVS);
+      SUFFIXES (".web");
+      ALT_SUFFIXES (".ch");
+      break;
+    case kpse_cweb_format:
+      INIT_FORMAT ("cweb", DEFAULT_CWEBINPUTS, CWEB_ENVS);
+#define CWEB_SUFFIXES ".w", ".web"
+      SUFFIXES (CWEB_SUFFIXES);
+      ALT_SUFFIXES (".ch");
+      break;
     default:
       FATAL1 ("kpse_init_format: Unknown format %d", format);
     }
@@ -611,7 +661,16 @@ kpse_init_format P1C(kpse_file_format_type, format)
       DEBUGF1 ("  search only with suffix = %d\n",FMT_INFO.suffix_search_only);
       DEBUGF1 ("  numeric format value = %d\n", format);
       DEBUGF1 ("  runtime generation program = %s\n", MAYBE (program));
-      DEBUGF1 ("  extra program args = %s\n", MAYBE (program_args));
+      DEBUGF  ("  runtime generation command =");
+      if (FMT_INFO.argv) {
+        const_string *arg;
+        for (arg = FMT_INFO.argv; *arg; arg++) {
+          fprintf (stderr, " %s", *arg);
+        }
+        putc ('\n', stderr);
+      } else {
+          fputs(" (none)\n", stderr);
+      }
       DEBUGF1 ("  program enabled = %d\n", FMT_INFO.program_enabled_p);
       DEBUGF1 ("  program enable level = %d\n", FMT_INFO.program_enable_level);
     }

@@ -49,6 +49,7 @@ static	void	flush_line ARGS((int print));
 static	void	insert_page ARGS((void));
 static	int	make_entry ARGS((int n));
 static	void	make_item ARGS((char* term));
+static  unsigned char first_letter ARGS((char* term));
 static	void	new_entry ARGS((void));
 static	void	old_entry ARGS((void));
 static	int	page_diff ARGS((struct KFIELD *a,struct KFIELD *b));
@@ -199,6 +200,19 @@ char   *term;
     SAVE;
 }
 
+static unsigned char
+#if STDC
+first_letter(char *term)
+#else
+first_letter(term)
+char   *term;
+#endif
+{
+    if (thai_sort)
+        return strchr("אבגדה", term[0]) ? term[1] : term[0];
+
+    return TOLOWER(term[0]);
+}
 
 static void
 new_entry(VOID_ARG)
@@ -220,8 +234,8 @@ new_entry(VOID_ARG)
     if (((curr->group != ALPHA) && (curr->group != prev->group) &&
 	 (prev->group == SYMBOL)) ||
 	((curr->group == ALPHA) &&
-	 ((unsigned char)(let = TOLOWER(curr->sf[0][0])) 
-	  != (TOLOWER(prev->sf[0][0])))) ||
+	 ((unsigned char)(let = first_letter(curr->sf[0])) 
+	  != first_letter(prev->sf[0]))) ||
 	(german_sort &&
 	 (curr->group != ALPHA) && (prev->group == ALPHA))) {
 	PUT(delim_t);

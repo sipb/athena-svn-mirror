@@ -11,8 +11,6 @@ extern int main(int argc,char **argv );
 basics.c 
 extern void fatal(char *fmt,...);
 extern void msg(char *fmt,...);
-extern struct _iobuf *my_fopen(const char *path,const char *mode);
-extern int my_stat(const char *path,struct stat *buf);
 bstring.c 
 extern int memset(void *s,int c,int length);
 curves.c 

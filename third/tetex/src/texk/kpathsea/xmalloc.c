@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 void *
 xmalloc P1C(unsigned, size)
 {
-  void *new_mem = (void *) malloc (size);
+  void *new_mem = (void *) malloc (size ? size : 1);
 
   if (new_mem == NULL)
     {

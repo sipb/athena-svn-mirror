@@ -126,8 +126,6 @@
 
 @<Constants...@>=
 @!max_internal=300; {maximum number of internal quantities}
-@!buf_size=3000; {maximum number of characters simultaneously present in
-  current lines of open files; must not exceed |max_halfword|}
 @!emergency_line_length=255;
   {\ps\ output lines can be this long in unusual circumstances}
 @!stack_size=300; {maximum number of simultaneous input sources}
@@ -140,7 +138,6 @@
 @.MPlib@>
 @!ps_tab_name='psfonts.map';
   {string of length |file_name_size|; locates font name translation table}
-@!path_size=1000; {maximum number of knots between breakpoints of a path}
 @!bistack_size=1500; {size of stack for bisection algorithms;
   should probably be left at this value}
 @!header_size=100; {maximum number of \.{TFM} header words, times~4}
@@ -154,6 +151,12 @@
 
 @!inf_max_strings = 2500;
 @!sup_max_strings = ssup_max_strings;
+
+@!inf_buf_size = 500;
+@!sup_buf_size = 300000;
+
+@!inf_path_size = 1000;
+@!sup_path_size = 300000;
 
 @!inf_pool_size = 32000;
 @!sup_pool_size = 10000000;
@@ -208,6 +211,7 @@ tini@/
 @!mem_top:integer; {largest index in the |mem| array dumped by \.{INIMP};
   must be substantially larger than |mem_min|
   and not greater than |mem_max|}
+@!extra_mem_top:integer; {|mem_max:=mem_top+extra_mem_top| except in \.{INIMP}}
 @!mem_max:integer; {greatest index in \MP's internal |mem| array;
   must be strictly less than |max_halfword|;
   must be equal to |mem_top| in \.{INIMP}, otherwise |>=mem_top|}
@@ -223,8 +227,14 @@ tini@/
 @!string_vacancies:integer; {the minimum number of characters that should be
   available for the user's identifier names and strings,
   after \MP's own error messages are stored}
+@!buf_size:integer; {maximum number of characters simultaneously present in
+  current lines of open files and in control sequences between
+  \.{\\csname} and \.{\\endcsname}; must not exceed |max_halfword|}
+@!path_size:integer; {maximum number of knots between breakpoints of a path}
 @!pool_free:integer;{minimum pool space free after format loaded}
 @!max_strings:integer; {maximum number of strings; must not exceed |max_halfword|}
+@!parse_first_line_p:boolean; {parse the first line for options}
+@!file_line_error_style_p:boolean; {file:line:error style messages.}
 @z
 
 @x [1.16] Use C macros for `incr' and `decr'.
@@ -367,6 +377,12 @@ end;
 @ And all the file closing routines as well.
 @z
 
+@x [3.29] l.888 - Array size of input buffer is determined at runtime.
+@!buffer:array[0..buf_size] of ASCII_code; {lines of characters being read}
+@y
+@!buffer:^ASCII_code; {lines of characters being read}
+@z
+
 @x [3.30] Do `input_ln' in C.
 Standard \PASCAL\ says that a file should have |eoln| immediately
 before |eof|, but \MP\ needs only a weaker restriction: If |eof|
@@ -493,7 +509,7 @@ begin
 @.**@>
         if not input_ln(term_in,true) then begin {this shouldn't happen}
             write_ln(term_out);
-            write(term_out, '! End of file on the terminal... why?');
+            write_ln(term_out, '! End of file on the terminal... why?');
 @.End of file on the terminal@>
             init_terminal:=false;
 	    return;
@@ -544,8 +560,8 @@ name_of_file:=pool_name; {we needn't set |name_length|}
 if a_open_in(pool_file) then
 @y
 name_length := strlen (pool_name);
-name_of_file := xmalloc (1 + name_length + 1);
-strcpy (name_of_file+1, pool_name); {copy the string}
+name_of_file := xmalloc_array (ASCII_code, 1 + name_length);
+strcpy (stringcast(name_of_file+1), pool_name); {copy the string}
 if a_open_in (pool_file, kpse_mppool_format) then
 @z
 
@@ -636,6 +652,19 @@ update_terminal;
 @d unspecified_mode=4 {extra value for command-line switch}
 @z
 
+@x [6.83] l.1825 - file:line:error style messages.
+  print_nl("! "); print(#);
+@y
+  if (file_line_error_style_p and not terminal_input) then
+  begin 
+    print_nl ("");
+    print (full_source_filename_stack[in_open]);
+    print (":"); print_int (line); print (": ");
+    print (#); 
+  end  
+  else begin print_nl("! "); print(#) end;
+@z
+
 @x [6.83] l.1822 - Add interaction_option.
 @!interaction:batch_mode..error_stop_mode; {current level of interaction}
 @y
@@ -672,6 +701,13 @@ begin
 close_files_and_terminate;
 do_final_end;
 end;
+@z
+
+@x [6.92] l.1956 - file:line:error style forces scroll_mode.
+print_char("."); show_context;
+@y
+if file_line_error_style_p then interaction:=scroll_mode
+else begin print_char("."); show_context end;
 @z
 
 @x [6.93] Handle the switch-to-editor option.
@@ -950,12 +986,75 @@ begin
 end;
 @z
 
+@x Replace class with c_class to avoid C++ keyword.
+@d max_class=20 {the largest class number}
+@y
+@d max_class=20 {the largest class number}
+@d class==c_class
+@z
+
 @x [12.217] Allow tab and form feed as input.
 for k:=127 to 255 do char_class[k]:=invalid_class;
 @y
 for k:=127 to 255 do char_class[k]:=invalid_class;
 char_class[tab]:=space_class;
 char_class[form_feed]:=space_class;
+@z
+
+@x [18.300,301] l.6451 - Make path_size a configuration option.
+@!delta_x,@!delta_y,@!delta:array[0..path_size] of scaled; {knot differences}
+@!psi:array[1..path_size] of angle; {turning angles}
+
+@ @<Other local variables for |make_choices|@>=
+@!k,@!n:0..path_size; {current and final knot numbers}
+@y
+@!delta_x:^scaled; {knot differences}
+@!delta_y:^scaled; {knot differences}
+@!delta:^scaled; {knot differences}
+@!psi:^angle; {turning angles}
+
+@ @<Other local variables for |make_choices|@>=
+@!k,@!n:0..sup_path_size; {current and final knot numbers}
+@z
+
+@x [18.304] l.6544 - Make path_size a configuration option.
+@!theta:array[0..path_size] of angle; {values of $\theta_k$}
+@!uu:array[0..path_size] of fraction; {values of $u_k$}
+@!vv:array[0..path_size] of angle; {values of $v_k$}
+@!ww:array[0..path_size] of fraction; {values of $w_k$}
+
+@ Our immediate problem is to get the ball rolling by setting up the
+first equation or by realizing that no equations are needed, and to fit
+this initialization into a framework suitable for the overall computation.
+
+@<Declare the procedure called |solve_choices|@>=
+@t\4@>@<Declare subroutines needed by |solve_choices|@>@;
+procedure solve_choices(@!p,@!q:pointer;@!n:halfword);
+label found,exit;
+var @!k:0..path_size; {current knot number}
+@y
+@!theta:^angle; {values of $\theta_k$}
+@!uu:^fraction; {values of $u_k$}
+@!vv:^angle; {values of $v_k$}
+@!ww:^fraction; {values of $w_k$}
+
+@ Our immediate problem is to get the ball rolling by setting up the
+first equation or by realizing that no equations are needed, and to fit
+this initialization into a framework suitable for the overall computation.
+
+@<Declare the procedure called |solve_choices|@>=
+@t\4@>@<Declare subroutines needed by |solve_choices|@>@;
+procedure solve_choices(@!p,@!q:pointer;@!n:halfword);
+label found,exit;
+var @!k:0..sup_path_size; {current knot number}
+@z
+
+@x [27.585] l.11443 - data for file:line:error style.
+@!mpx_name : array[0..max_in_open] of halfword;
+@y
+@!mpx_name : array[0..max_in_open] of halfword;
+@!source_filename_stack : ^str_number;
+@!full_source_filename_stack : ^str_number;
 @z
 
 @x [35.745] area and extension rules.
@@ -1010,7 +1109,7 @@ In C, the default paths are specified separately.
 begin if c=" " then more_name:=false
 else  begin if (c=">")or(c=":") then
 @y
-begin if (c=" ")or(c=tab) then more_name:=false
+begin if stop_at_space and ((c=" ")or(c=tab)) then more_name:=false
 else  begin if IS_DIR_SEP (c) then
 @z
 @x [still 35.748] Last (not first) . is extension.
@@ -1023,7 +1122,7 @@ else  begin if IS_DIR_SEP (c) then
 for j:=str_start[a] to str_stop(a)-1 do append_to_name(so(str_pool[j]));
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file := xmalloc (1 + length (a) + length (n) + length (e) + 1);
+name_of_file := xmalloc_array (ASCII_code, length(a)+length(n)+length(e)+1);
 for j:=str_start[a] to str_stop(a)-1 do append_to_name(so(str_pool[j]));
 @z
 @x
@@ -1061,10 +1160,17 @@ program.
 for j:=1 to n do append_to_name(xord[MP_mem_default[j]]);
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file := xmalloc (1 + n + (b - a + 1) + mem_ext_length + 1);
+name_of_file := xmalloc_array (ASCII_code, n+(b-a+1)+mem_ext_length+1);
 for j:=1 to n do append_to_name(xord[MP_mem_default[j]]);
 @z
-@x
+% @x [35.755] Set program name to match format.
+% for j:=a to b do append_to_name(buffer[j]);
+% @y
+% for j:=a to b do append_to_name(buffer[j]);
+% name_of_file[k+1]:=0;
+% kpse_reset_program_name(name_of_file+1);{set search path to match format}
+% @z
+@x [35.755] Change to pack_buffered_name as with pack_file_name.
 for k:=name_length+1 to file_name_size do name_of_file[k]:=' ';
 @y
 name_of_file[name_length + 1] := 0;
@@ -1085,7 +1191,7 @@ name_of_file[name_length + 1] := 0;
   wterm_ln('Sorry, I can''t find that mem file;',' will try PLAIN.');
 @y
   wterm ('Sorry, I can''t find the mem file `');
-  fputs (name_of_file + 1, stdout);
+  fputs (stringcast(name_of_file + 1), stdout);
   wterm ('''; will try `');
   fputs (MP_mem_default + 1, stdout);
   wterm_ln ('''.');
@@ -1135,6 +1241,14 @@ while ((buffer[k]=" ")or(buffer[k]=tab))and(k<last) do incr(k);
 @!months:^char;
 @z
 
+@x [35.765] Change name of recorder file.
+pack_job_name(".log");
+@y
+pack_job_name(".fls");
+recorder_change_filename(stringcast(name_of_file+1));
+pack_job_name(".log");
+@z
+
 @x [35.767]
 begin wlog(banner);
 print(mem_ident); print("  ");
@@ -1175,7 +1289,7 @@ begin pack_file_name(cur_name,cur_area,cur_ext);
 in_name:=cur_name; in_area:=cur_area;
 {The extension is not relevant for determining whether we're allowed to
  open the file.}
-if not open_in_name_ok(name_of_file+1) then try_extension:=false
+if not open_in_name_ok(stringcast(name_of_file+1)) then try_extension:=false
 else if str_vs_str(ext,".mf")=0 then
   try_extension:=a_open_in(cur_file, kpse_mf_format)
 else try_extension:=a_open_in(cur_file, kpse_mp_format);
@@ -1209,20 +1323,13 @@ var j:integer;
   begin
     j:=1;
     begin_name;
+    stop_at_space:=false;
     while (j<=name_length)and(more_name(name_of_file[j])) do
       incr(j);
+    stop_at_space:=true;
     end_name;
-    job_name:=cur_name;
+    job_name:=get_job_name;
     str_ref[job_name] := max_str_ref;
-    init
-      if ini_version and dump_option then begin
-        str_room(mem_default_length);
-        for j:=1 to mem_default_length - mem_ext_length do
-          append_char(xord[MP_mem_default[j]]);
-        job_name:=make_string;
-        str_ref[job_name] := max_str_ref;
-      end;
-    tini
 @z
 
 @x [35.771] Cannot return name to string pool, for the e option?
@@ -1234,7 +1341,7 @@ flush_string(name); name:=cur_name; cur_name:=0
 for j:=str_start[s] to str_stop(s)-1 do
 @y
 if old_file_name then libc_free (old_file_name);
-old_file_name := xmalloc (1 + length (s) + 1);
+old_file_name := xmalloc_array (ASCII_code, length(s)+1);
 for j:=str_start[s] to str_stop(s)-1 do
 @z
 @x [still 35.774] Avoid blanking rest of nonexistent array.
@@ -1246,7 +1353,7 @@ old_file_name[old_name_length + 1] := 0;
 @x [35.775] Declare old_file_name as a regular C string.
 @!old_file_name : packed array[1..file_name_size] of char;
 @y
-@!old_file_name : ^char;
+@!old_file_name : ^text_char;
 @z
 
 @x [35.776] [Unique to MP] Path selector for |a_open_in| of mpx file.
@@ -1262,7 +1369,8 @@ copy_old_name(name)
 {System-dependent code should be added here}
 @y
 copy_old_name (name);
-if not call_make_mpx (old_file_name + 1, name_of_file + 1) then goto not_found
+if not call_make_mpx (stringcast(old_file_name+1), stringcast(name_of_file+1))
+  then goto not_found
 @z
 
 @x [35.778] [Unique to MP] Fix help message for our implementation.
@@ -1274,8 +1382,8 @@ if not call_make_mpx (old_file_name + 1, name_of_file + 1) then goto not_found
 @x [35.782] [Unique to MP] Path selector for |a_open_in| of readfrom file.
 if not a_open_in(rd_file[n]) then goto not_found;
 @y
-if not open_in_name_ok(name_of_file+1)
-   or not a_open_in(rd_file[n],no_file_path) then goto not_found;
+if not open_in_name_ok(stringcast(name_of_file+1))
+   or not a_open_in(rd_file[n],kpse_mp_format) then goto not_found;
 @z
 
 @x [35.783] The Amiga needs a different open_write_file.
@@ -1322,7 +1430,8 @@ amiga@;
   end;
 done: do_nothing;
 agima@;
-while not open_out_name_ok(name_of_file+1) or not a_open_out(wr_file[n]) do
+while not open_out_name_ok(stringcast(name_of_file+1))
+      or not a_open_out(wr_file[n]) do
   prompt_file_name("file name for write output","");
 wr_fname[n]:=s;
 add_str_ref(s);
@@ -1446,8 +1555,8 @@ if a_open_in(ps_tab_file) then
 @y
 begin
 name_length := strlen (ps_tab_name);
-name_of_file := xmalloc (1 + name_length + 1);
-strcpy (name_of_file+1, ps_tab_name); {copy the string}
+name_of_file := xmalloc_array (ASCII_code, name_length+1);
+strcpy (stringcast(name_of_file+1), ps_tab_name); {copy the string}
 if a_open_in(ps_tab_file, kpse_dvips_config_format) then
 @z
 
@@ -1500,6 +1609,15 @@ repeat decr(j);
   append_char(xord[c]);
   if eoln(ps_tab_file) then c:=' ' @+else read(ps_tab_file,c);
 until ((c=' ')or(c=tab));
+@z
+
+@x [44.1208] l.21341 - i18n fix
+  print(" output file");
+  if total_shipped>1 then print_char("s");
+@y
+  print(" output ");
+  if total_shipped>1 then print("files")
+  else print("file");
 @z
 
 @x [44.1238] l.21887 Expand original @<Character |k| cannot be printed@>.
@@ -1556,7 +1674,8 @@ end;
 undump_int(mem_top);
 if mem_max < mem_top then mem_max:=mem_top; {Use at least what we dumped.}
 if mem_min+1100>mem_top then goto off_base;
-xmalloc_array (mem, mem_max - mem_min);
+mem_max := mem_top + extra_mem_top;
+mem:=xmalloc_array (memory_word, mem_max - mem_min);
 @z
 
 @x [45.1287] String pool undumping is dynamic.
@@ -1568,10 +1687,10 @@ if pool_size < pool_ptr + pool_free then
   pool_size := pool_ptr+pool_free;
 undump_size(0)(sup_max_strings)('max strings')(max_str_ptr);
 @/
-xmalloc_array (str_ref, max_strings);
-xmalloc_array (next_str, max_strings);
-xmalloc_array (str_start, max_strings);
-xmalloc_array (str_pool, pool_size);
+str_ref:=xmalloc_array (str_ref_type, max_strings);
+next_str:=xmalloc_array (str_number, max_strings);
+str_start:=xmalloc_array (pool_pointer, max_strings);
+str_pool:=xmalloc_array (pool_ASCII_code, pool_size);
 @z
 
 @x [45.1293] l.22667 - Allow command line to override dumped value.
@@ -1610,8 +1729,12 @@ print_int(round_unscaled(internal[year])); print_char(".");
   {See comments in \.{tex.ch} for why the name has to be duplicated.}
   setup_bound_var (250000)('main_memory')(main_memory);
     {|memory_word|s for |mem| in \.{INIMP}}
+  setup_bound_var (0)('extra_mem_top')(extra_mem_top);
+    {increase high mem in \.{VIRMP}}
   setup_bound_var (100000)('pool_size')(pool_size);
   setup_bound_var (75000)('string_vacancies')(string_vacancies);
+  setup_bound_var (3000)('buf_size')(buf_size);
+  setup_bound_var (2000)('path_size')(path_size);
   setup_bound_var (5000)('pool_free')(pool_free); {min pool avail after fmt}
   setup_bound_var (15000)('max_strings')(max_strings);
   setup_bound_var (79)('error_line')(error_line);
@@ -1620,22 +1743,41 @@ print_int(round_unscaled(internal[year])); print_char(".");
   if error_line > ssup_error_line then error_line := ssup_error_line;
   
   const_chk (main_memory);
+@+init
+  if ini_version then
+    extra_mem_top := 0;
+@+tini
+  if extra_mem_top>sup_main_memory then extra_mem_top:=sup_main_memory;
   mem_top := mem_min + main_memory;
   mem_max := mem_top;
 
   const_chk (pool_size);
   const_chk (string_vacancies);
+  const_chk (buf_size);
+  const_chk (path_size);
   const_chk (pool_free);
   const_chk (max_strings);
 
+  buffer:=xmalloc_array (ASCII_code, buf_size);
+  delta_x:=xmalloc_array (scaled, path_size);
+  delta_y:=xmalloc_array (scaled, path_size);
+  delta:=xmalloc_array (scaled, path_size);
+  psi:=xmalloc_array (angle, path_size);
+  theta:=xmalloc_array (angle, path_size);
+  uu:=xmalloc_array (fraction, path_size);
+  vv:=xmalloc_array (angle, path_size);
+  ww:=xmalloc_array (fraction, path_size);
+  source_filename_stack:=xmalloc_array (str_number, max_in_open);
+  full_source_filename_stack:=xmalloc_array (str_number, max_in_open);
+
 @+init
 if ini_version then begin
-  xmalloc_array (mem, mem_top - mem_min);
+  mem:=xmalloc_array (memory_word, mem_top - mem_min);
 
-  xmalloc_array (str_ref, max_strings);
-  xmalloc_array (next_str, max_strings);
-  xmalloc_array (str_start, max_strings);
-  xmalloc_array (str_pool, pool_size);
+  str_ref:=xmalloc_array (str_ref_type, max_strings);
+  next_str:=xmalloc_array (str_number, max_strings);
+  str_start:=xmalloc_array (pool_pointer, max_strings);
+  str_pool:=xmalloc_array (pool_ASCII_code, pool_size);
 end;
 @+tini
 @z
@@ -1701,7 +1843,7 @@ if (mem_ident=0)or(buffer[loc]="&")or dump_line then
 @x [46.1307] l.23004
 fix_date_and_time; init_randoms((internal[time] div unity)+internal[day]);@/
 @y
-init_randoms(get_random_seed);@/
+fix_date_and_time; init_randoms(get_random_seed);@/
 @z
 
 @x [47.1307] Change read of integer.
@@ -1746,12 +1888,14 @@ Here are the variables used to hold ``switch-to-editor'' information.
 @!edit_name_start: pool_pointer;
 @!edit_name_length,@!edit_line: integer;
 @!is_printable: array[ASCII_code] of boolean; {use \.{\^\^} notation?}
+@!stop_at_space: boolean; {whether |more_name| returns false for space}
 
 @ The |edit_name_start| will be set to point into |str_pool| somewhere after
 its beginning if \MP\ is supposed to switch to an editor on exit.
 
 @<Set init...@>=
 edit_name_start:=0;
+stop_at_space:=true;
 
 @ Web2c is deficient, and can only translate pointers to a type
 identifier, not a general type. Easier, if more annoying, to introduce

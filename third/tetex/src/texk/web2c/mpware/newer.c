@@ -21,15 +21,12 @@ connection with the use or performance of this software.
 ****************************************************************/
 
 #include "c-auto.h"     /* In case we need, e.g., _POSIX_SOURCE */
-
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef WIN32
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#ifdef WIN32
-#include <string.h>
-#define stat _stat
 #endif
 
 /*
@@ -43,15 +40,13 @@ connection with the use or performance of this software.
  *      files with the same mtime couldn't be handled right ...
  */
 
-int main (argc, argv)
-        int argc;
-        char *argv[];
+int main P2C(int,argc, char**,argv)
 {
         struct stat x, y;
 
         if (argc > 1 && strcmp (argv[1], "--help") == 0) {
           fputs ("Usage: newer [OPTION]... FILE1 FILE2\n\
-  Exit successfully if FILE1 exists and is at least as old as FILE2.\n\
+  Exit successfully if FILE1 exists and is at least as recent as FILE2.\n\
 \n\
 --help      display this help and exit\n\
 --version   output version information and exit\n\n", stdout);

@@ -78,7 +78,7 @@ void StepLine(R, x1, y1, x2, y2)
 {
        register fractpel dy;
  
-       IfTrace4((LineDebug > 0), ".....StepLine: (%p,%p) to (%p,%p)\n",
+       IfTrace4((LineDebug > 0), ".....StepLine: (%dl,%dl) to (%dl,%dl)\n",
                                             x1, y1, x2, y2);
  
        dy = y2 - y1;

@@ -2,8 +2,8 @@
 @setfilename kpathsea.info
 @settitle Kpathsea: A library for path searching
 
-@set version 3.3.1
-@set month-year May 1999
+@set version 3.4.5
+@set month-year January 2003
 
 @c Define new indices for commands, filenames, and options.
 @defcodeindex cm
@@ -34,7 +34,7 @@
 @ifinfo
 This file documents the Kpathsea library for path searching.
 
-Copyright (C) 1993, 94, 95, 96, 97 K. Berry & O. Weber.
+Copyright (C) 1993-2001 K. Berry & O. Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -727,7 +727,7 @@ Braces can be nested; for example, @samp{x@{A,B@{1,2@}@}y} expands to
 
 Multiple non-nested braces are expanded from right to left; for example,
 @samp{x@{A,B@}@{1,2@}y} expands to @samp{x@{A,B@}1y:x@{A,B@}2y}, which
-expands to @samp{xA1y:xB1y:xA2y:xB2:y}.
+expands to @samp{xA1y:xB1y:xA2y:xB2y}.
 
 @cindex multiple @TeX{} hierarchies
 This feature can be used to implement multiple @TeX{} hierarchies, by
@@ -1640,7 +1640,7 @@ before @samp{foo.sty}.  This is unfortunate, but allows us to find
 @samp{foo.bar}.
 
 @item
-Search for @var{name}, and if necssary for alternative names found in
+Search for @var{name}, and if necessary for alternative names found in
 the fontmaps.  Again we avoid searching the disk if possible.  Example:
 given @samp{foo}, we look for @samp{foo}.
 
@@ -1865,6 +1865,9 @@ Suppress mismatched font checksum warnings.
 @cindex missing character warnings
 Suppress warnings when a character is missing from a font that a DVI or
 VF file tries to typeset.
+
+@item none
+Don't suppress any warnings.
 
 @item readable
 @cindex unreadable file warnings

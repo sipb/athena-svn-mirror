@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define WEB2C_CONFIG_H
 
 #if defined(WIN32)
-#ifdef _DLL
+#ifdef TEX_DLL
 #ifdef MAKE_TEX_DLL
 #define TEXDLL __declspec( dllexport)
 #else
@@ -35,7 +35,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /* The stuff from the path searching library.  */
 #include <kpathsea/config.h>
-#include <c-auto.h>
+#include <web2c/c-auto.h>
+
+#include <kpathsea/c-vararg.h>
 
 /* How to open a binary file.  */
 #include <kpathsea/c-fopen.h>
@@ -66,7 +68,7 @@ typedef SCHAR_TYPE schar;
    INTEGER_MAX and INTEGER_MIN, too. */
 #ifndef INTEGER_TYPE
 
-#if SIZEOF_LONG > 4 && !defined (NO_FMTBASE_SHARE)
+#if SIZEOF_LONG > 4 && !defined (NO_DUMP_SHARE)
 /* If we have 64-bit longs and want to share format files (with 32-bit
    machines), use `int'.  */
 #define INTEGER_IS_INT
@@ -113,6 +115,7 @@ extern long strtol P3H(const char *, char **, int);
 extern void uexit P1H(int status);
 
 /* usage.c */
-extern void usage P2H(int status, const_string help_msg);
+extern void usage P1H(const_string progname);
+extern void usagehelp P1H(const_string *message);
 
 #endif /* not CONFIG_H */

@@ -91,16 +91,6 @@ pkspair()
   return (i);
 }
 
-static integer
-pklong()
-{
-   register integer i ;
-
-   i = pkquad() ;
-   i = i * 65536 + pkquad() ;
-   return(i) ;
-}
-
 static char errbuf[80] ;
 /*
  *   pkopen opens the pk file.  This is system dependent.
@@ -215,7 +205,9 @@ static halfword rest ()
    } else {
       error("! shouldn't happen") ;
    }
+
    /*NOTREACHED*/
+   return 0;
 }
 
 static halfword handlehuge ( i , k )
@@ -349,7 +341,7 @@ chardesc *cd;
 {
    register shalfword i ;
    register integer k ;
-   register integer length ;
+   register integer length = 0;
 
    if (!pkopen(name)) return(0);
 /*

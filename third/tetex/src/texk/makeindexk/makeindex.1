@@ -26,6 +26,8 @@ makeindex \- a general purpose, formatter-independent index processor
 .IR sfile ]
 .BR [ \-t
 .IR log ]
+.BR [ \-L ]
+.BR [ \-T ]
 .BI [ idx0
 .I idx1
 .IR idx2 .\|.\|.]
@@ -197,6 +199,12 @@ created by appending the extension
 to the base name of the
 first input file
 .RI ( idx0 ).
+.TP 10
+.BR \-L
+sort based on locale settings. Not available on all systems.
+.TP 10
+.BR \-T
+special support for Thai documents. Not available on all systems.
 .\"=====================================================================
 .SH "STYLE FILE"
 The style file informs

@@ -11,8 +11,8 @@ AC_PROG_LN_S
 sinclude(../kpathsea/withenable.ac)
 
 AC_ARG_PROGRAM
-AC_HAVE_HEADERS(ctype.h types.h)
-AC_CHECK_FUNCS(strchr strrchr)
+AC_HAVE_HEADERS(ctype.h types.h locale.h)
+AC_CHECK_FUNCS(strchr strrchr setlocale)
 
 AC_OUTPUT(Makefile)
 

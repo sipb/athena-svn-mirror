@@ -43,7 +43,7 @@ Library.
 .
 
 All transport interfaces are registered dynamically in libwww. This means
-that libwww is independent of the transport being used (for example TCP)
+that libwww is independent of the transport being used (TCP, for example),
 and you can therefore use libwww in any context you like. You have to specify
 a set of parameters in order for libwww to be able to use it. The transport
 class is defined as follows:
@@ -148,6 +148,6 @@ struct _HTTransport {
 
   
 
-  @(#) $Id: HTTrans.h,v 1.1.1.1 2000-03-10 17:53:02 ghudson Exp $
+  @(#) $Id: HTTrans.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -1,3 +1,133 @@
+2002-12-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.man: Clarify notes of first-line parsing.
+
+2002-11-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mpost.man: Replace references to 'mp' with references to
+	'mpost'.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.man: Document -parse-first-line; document TeX vs TeXk.
+
+	* pdftex.man: Document -parse-first-line; document pdfTeX vs
+	pdfTeXk.
+
+	* pdfetex.man: Document -parse-first-line; document pdfeTeX vs
+	pdfeTeXk.
+
+	* omega.man: Document -parse-first-line; document Omega vs Omegak.
+
+	* mpost.man: Document -parse-first-line.
+
+	* mf.man: Document -parse-first-line.
+
+	* etex.man: Document -parse-first-line; document e-TeX vs e-TeXk.
+
+2002-10-23  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* omega.man: Updated mailing list info (badly of out date now) --
+	replaced with a reference to the web site.
+
+2002-10-22  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* omega.man: Document oft extension instead of fmt.
+
+2002-10-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.man: Document -jobname option.
+
+	* pdfetex.man: Document -jobname option.
+
+	* pdftex.man: Document -jobname option.
+
+	* mpost.man: Document -jobname option.
+
+	* mf.man: Document -jobname option.
+
+	* etex.man: Document -jobname option.
+
+	* tangle.man: Document new options.
+
+2002-07-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mpost.man: No such thing as .F macro...  Found by "Eric
+	S. Raymond" <esr@golux.thyrsus.com>.
+
+2001-11-27  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mf.man: Mention mfw.
+
+2001-11-18  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.man: Document --recorder option.
+
+	* pdftex.man: Document --recorder option.
+
+	* omega.man: Document --recorder option.
+
+	* mpost.man: Document --recorder option.
+
+	* mf.man: Document --recorder option.
+
+	* etex.man: Document --recorder option.
+
+2001-11-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.man: Document -file-line-error-style.
+
+	* pdftex.man: Document -file-line-error-style.
+
+	* pdfetex.man: Document -file-line-error-style.
+
+	* mpost.man: Document -file-line-error-style.
+
+	* mf.man: Document -file-line-error-style.
+
+	* etex.man: Document -file-line-error-style.
+
+2001-10-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex.man: Typos.
+
+	* pdftex.man: Typo.
+
+	* etex.man: Typo.
+
+	* Makefile.in: Add pdfetex manual page.
+
+2001-10-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mf.man: Change /usr/ucb/vi to vi in example, as the path given
+	is system-dependent.
+
+2001-09-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* newer.man: Correct description of the exit conditions.  After
+	Oliver Moeller <omoeller@csd.uu.se>.
+
+2000-04-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* etex.man, omega.man, pdftex.man, tex.man:
+	Remove references to undump.
+
+2000-04-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dvitomp.man: New file by Jim Van Zandt <jrv@vanzandt.mv.com>.
+
+	* Makefile.in: Add dvitomp manual page.
+
+1999-06-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* omega.man: Mention the empty-path-component trick.
+
+	* tex.man: Mention the empty-path-component trick.
+
+	* pdftex.man: Mention the empty-path-component trick.
+
+	* etex.man: Mention the empty-path-component trick.
+
 1999-05-29  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* tex.man, pdftex.man, mpost.man, mf.man, latex.man, etex.man:

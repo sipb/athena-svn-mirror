@@ -238,21 +238,6 @@ HTTP request.
 
 /*
 (
-  File Suffix Binding
-)
-
-This module sets up the binding between a file suffix and a media type, language,
-encoding etc. In a client application the suffixes are used in protocols
-that does not directly support media types etc., like FTP, and in server
-applications they are used to make the bindings between the server and the
-local file store that the server can serve to the rest of the world (well
-almost)
-*/
-
-#include "HTBind.h"
-
-/*
-(
   The Generic Stream Class
 )
 
@@ -280,6 +265,19 @@ SGML parser which outputs to a Structured Object.
 
 /*
 (
+  No Free Stream
+)
+
+This stream is a throughline for all methods except FREE and
+ABORT. This means that it can be use to put ahead of streams that you
+don't want to be freed or aborted until you are redy to do it
+yourself.
+*/
+
+#include "HTNoFree.h"
+
+/*
+(
   The Input/output Stream Classes
 )
 
@@ -289,19 +287,6 @@ transport
 */
 
 #include "HTIOStream.h"
-
-/*
-(
-  File Writer Streams
-)
-
-This module contains a set of basic file writer streams that are used to
-dump data objects to disk at various places within the Library core. Most
-notably, we use these streams in the Format Manager
-in order to handle external presenters, for example post script viewers etc.
-These streams can of course also be used in other contexts by the application.
-*/
-#include "HTFWrite.h"
 
 /*
 (
@@ -394,6 +379,6 @@ End of Core modules
 
   
 
-  @(#) $Id: WWWCore.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: WWWCore.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

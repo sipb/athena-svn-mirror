@@ -3,21 +3,25 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTPGen.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTTPGen.c,v 1.1.1.2 2003-02-25 22:04:47 amb Exp $
 **
 **	This module implements the output stream for General HTTP headers
 **
 ** History:
 **	Jan 96 HFN	Written
+**      Fev 02 MKP      Added message body and Content-Type/Content-Length
+**                      headers only if this message body is set.
+**      Mar 08 MKP      Bug fix: avoid overflow in linebuf array (at method
+**                      HTTPGenMake, line 218.
 */
 
 /* Library Includes */
 #include "wwwsys.h"
 #include "WWWUtil.h"
 #include "WWWCore.h"
-#include "WWWMIME.h"
-#include "WWWTrans.h"
+#include "HTHeader.h"
 #include "HTTPUtil.h"
+#include "HTFormat.h"
 #include "HTTPReq.h"					       /* Implements */
 
 #define MIME_VERSION	"MIME/1.0"
@@ -25,6 +29,8 @@
 #define PUTC(c)		(*me->target->isa->put_character)(me->target, c)
 #define PUTS(s)		(*me->target->isa->put_string)(me->target, s)
 #define PUTBLOCK(b, l)	(*me->target->isa->put_block)(me->target, b, l)
+
+#define LINEBUF_LENGTH 256
 
 struct _HTStream {
     const HTStreamClass *	isa;
@@ -45,7 +51,7 @@ struct _HTStream {
 */
 PRIVATE int HTTPGenMake (HTStream * me, HTRequest * request)
 {
-    char linebuf[256];				/* @@@ */
+    char linebuf[LINEBUF_LENGTH];                               /* @@@ */
     char crlf[3];
     HTGnHd gen_mask = HTRequest_gnHd(request);
     *crlf = CR; *(crlf+1) = LF; *(crlf+2) = '\0';
@@ -123,29 +129,109 @@ PRIVATE int HTTPGenMake (HTStream * me, HTRequest * request)
 	PUTBLOCK(linebuf, (int) strlen(linebuf));
     }
 
-    /* Put out extra information if any */
+    /* Put out any extra association values as headers (if any) */
+    if (gen_mask & HT_G_EXTRA_HEADERS) {
+	HTAssocList * cur = HTRequest_extraHeader(request);
+	if (cur) {
+	    HTAssoc * pres;
+	    while ((pres = (HTAssoc *) HTAssocList_nextObject(cur))) {
+		char * name = HTAssoc_name(pres);
+		char * value = HTAssoc_value(pres);
+		if (name && *name) {
+		    char * ptr = name;
+		    while (*ptr) {
+			if (isspace(*ptr)) *ptr='_';
+			ptr++;
+		    }
+		    PUTS(name);
+		    PUTS(": ");
+		    if (value) {
+			ptr = value;
+			while (*ptr) {
+			    if (isspace(*ptr)) *ptr=' ';
+			    ptr++;
+			}
+			PUTS(value);
+		    }
+		    PUTBLOCK(crlf, 2);
+		}
+	    }
+	}
+    }
+
+    /* Put out extra information based on streams (if any) */
     {
 	HTList * list;
 	BOOL override;
 	if ((list = HTRequest_generator(request, &override))) {
 	    HTList *local = list;
 	    HTPostCallback *pres;
-	    if (STREAM_TRACE) HTTrace("HTTPGen..... Extra local\n");
+	    HTTRACE(STREAM_TRACE, "HTTPGen..... Extra local\n");
 	    while ((pres = (HTPostCallback *) HTList_nextObject(local)))
 		(*pres)(request, me->target);
 	} else if (!override && (list = HTHeader_generator())) {
 	    HTList *global = list;
 	    HTPostCallback *pres;
-	    if (STREAM_TRACE) HTTrace("HTTPGen..... Extra global\n");
+	    HTTRACE(STREAM_TRACE, "HTTPGen..... Extra global\n");
 	    while ((pres = (HTPostCallback *) HTList_nextObject(global)))
 		(*pres)(request, me->target);
 	}
     }
+
+/* @@@ MKP: set here Content-Type and Content-Length only if : 
+** @@@      - the method has not an entity 
+** @@@      - the message body is set 
+*/
+#ifdef HT_EXT
+    if (!HTMethod_hasEntity(HTRequest_method(request)))
+    {
+        char * body = HTRequest_messageBody (request);
+        HTFormat bodyFormat = HTRequest_messageBodyFormat(request);
+        long int bodyLength = HTRequest_messageBodyLength(request);
+
+
+        if (body && *body) {
+            if ( bodyLength>0 ) {
+                HTTRACE(STREAM_TRACE, "HTTPGen..... Adding Content-Length  \n");
+                sprintf (linebuf,"Content-Length: %ld%c%c", bodyLength, CR,LF);
+                PUTBLOCK(linebuf, (int) strlen(linebuf));
+            }
+            if ( bodyFormat != NULL ) {
+                HTTRACE(STREAM_TRACE, "HTTPGen..... Adding Content-Type  \n");
+                PUTS ("Content-Type: ");
+                PUTS (HTAtom_name(bodyFormat));
+                PUTBLOCK(crlf,2);
+            }
+            HT_FREE (body);
+        }
+    }
+#endif
+   
+    
+    /* Check to see if we are done */
     if (me->endHeader) {
 	sprintf(linebuf, "%c%c", CR, LF);	   /* Blank line means "end" */
 	PUTBLOCK(linebuf, (int) strlen(linebuf));
     }
-    if (PROT_TRACE)HTTrace("HTTP........ Generating General Headers\n");
+
+    
+/* @@@ MKP: copy message body to the stream only if :
+** @@@      - the method has not an entity 
+** @@@      - the message body is set 
+*/
+#ifdef HT_EXT
+    if (!HTMethod_hasEntity(HTRequest_method(request)))
+    {
+       char * body = HTRequest_messageBody (request);
+       if (body && *body) {
+           HTTRACE(STREAM_TRACE, "HTTPGen..... Adding message body  \n");
+           PUTBLOCK (body, (int) strlen (body));
+           HT_FREE (body);         
+       }
+    }
+#endif
+    
+    HTTRACE(PROT_TRACE, "HTTP........ Generating General Headers\n");
     return HT_OK;
 }
 
@@ -195,7 +281,7 @@ PRIVATE int HTTPGen_free (HTStream * me)
 
 PRIVATE int HTTPGen_abort (HTStream * me, HTList * e)
 {
-    if (PROT_TRACE) HTTrace("HTTPGen..... ABORTING...\n");
+    HTTRACE(PROT_TRACE, "HTTPGen..... ABORTING...\n");
     if (me) {
 	if (me->target) (*me->target->isa->abort)(me->target, e);
 	HT_FREE(me);
@@ -232,11 +318,15 @@ PUBLIC HTStream * HTTPGen_new (HTRequest * request, HTStream * target,
     /*
     **  For backwards compatibility with HTTP applications that understand
     **  Connection: Keep-Alive, we send it along. However, we do NOT send
-    **  it to a proxy as it may confuse HTTP/1.0 proxies
+    **  it to a proxy as it may confuse HTTP/1.0 proxies. Also we do not
+    **  send it if the app has set Connection: close
     */
     me->version = version;
-    if (me->version == HTTP_10 && HTRequest_proxy(request) == NULL)
-	HTRequest_addConnection(request, "Keep-Alive", "");
+    if (me->version == HTTP_10 && HTRequest_proxy(request) == NULL) {
+	HTAssocList * alist = HTRequest_connection(request);
+	if (!(alist && HTAssocList_findObject(alist, "close")))
+	    HTRequest_addConnection(request, "Keep-Alive", "");
+    }
 
     /*
     **  Check for any TE headers that are also hop-by-hop

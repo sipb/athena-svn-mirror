@@ -1,5 +1,4 @@
-eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}' && eval 'exec perl -S $0 $argv:q'
-        if 0;
+#!/usr/bin/env perl
 'di ';
 'ig 00 ';
 #+##############################################################################
@@ -11,7 +10,7 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}' && eval 'exec perl -S $0 $
 #-##############################################################################
 
 # From @(#)texi2html	1.52 01/05/98	Written (mainly) by Lionel Cons, Lionel.Cons@cern.ch
-# $Id: texi2html,v 1.1.1.1 2000-03-10 17:52:10 ghudson Exp $
+# $Id: texi2html,v 1.1.1.2 2003-02-25 22:05:08 amb Exp $
 # This version of texi2html is currently maintained at
 # ftp://ftp.cs.umb.edu/pub/tex/texi2html by kb@cs.umb.edu.
 

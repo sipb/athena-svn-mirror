@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# This is the oxdvi wrapper script for teTeX, version 0.2.
+# This is the xdvi wrapper script for teTeX, version 0.2.
 # Copyright Thomas Esser, 1998. Permission to distribute under the terms
 # of the GNU general public license version 2 or later.
 
@@ -13,14 +13,17 @@
 # files.
 
 test -f /bin/sh5 && test -z "$RUNNING_SH5" \
-  && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
+  && test x"`(uname -s) 2>&1`" = xULTRIX \
   && { RUNNING_SH5=true; export RUNNING_SH5; exec /bin/sh5 $0 ${1+"$@"}; }
-unset RUNNING_SH5
+RUNNING_SH5=
 
 test -f /bin/bsh && test -z "$RUNNING_BSH" \
-  && { UNAMES=`uname -s`; test "x$UNAMES" = xAIX; } 2>/dev/null \
+  && test x"`(uname -s) 2>&1`" = xAIX \
   && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
-unset RUNNING_BSH
+RUNNING_BSH=
+
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
 
 # -help and -version only work if they are the only options. Therefore,
 # we cannot give the "-name xdvi" parameter in that case.
@@ -45,4 +48,4 @@ if test -n "$xdviappfile"; then
   XFILESEARCHPATH="$xdviapppath:${XFILESEARCHPATH-%D}"; export XFILESEARCHPATH
 fi
 
-exec oxdvi.bin $NAMEOPT ${1+"$@"}
+oxdvi.bin $NAMEOPT ${1+"$@"}

@@ -1,5 +1,10 @@
 # Makefile for TeX-project WEB sources to C conversion programs.
 
+# This makefile uses static rules with many targets (to be compatible to
+# non-gnu make) and will not work correctly when parallelized.
+# So we switch off parallel makes with gnu make.
+.NOTPARALLEL:
+
 # These get expanded from the parent directory, not this one.
 ac_include ../make/common.mk
 ac_include ../make/programs.mk

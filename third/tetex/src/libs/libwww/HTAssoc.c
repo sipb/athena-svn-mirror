@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTAssoc.c,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+**	@(#) $Id: HTAssoc.c,v 1.1.1.2 2003-02-25 22:26:23 amb Exp $
 **
 **	NAMES NOT CASE SENSITIVE, AND ONLY COMMON LENGTH
 **	IS CHECKED (allows abbreviations; well, length is
@@ -58,8 +58,7 @@ PUBLIC BOOL HTAssocList_addObject (HTAssocList * list,
 	if (value) StrAllocCopy(assoc->value, value);
 	return HTList_addObject(list, (void *) assoc);
     } else {
-	if (WWWTRACE)
-	    HTTrace("HTAssoc_add: ERROR: assoc list NULL!!\n");
+	HTTRACE(UTIL_TRACE, "HTAssoc_add: ERROR: assoc list NULL!!\n");
     }
     return NO;
 }
@@ -97,6 +96,46 @@ PUBLIC char * HTAssocList_findObject (HTAssocList * list, const char * name)
     return NULL;
 }
 
+PUBLIC char * HTAssocList_findObjectExact (HTAssocList * list, const char * name)
+{
+    if (list && name) {
+	HTAssocList * cur = list;
+	HTAssoc * assoc;
+	while ((assoc = (HTAssoc *) HTList_nextObject(cur))) {
+	    if (!strcasecomp(assoc->name, name))
+		return assoc->value;
+	}
+    }
+    return NULL;
+}
+
+PUBLIC char * HTAssocList_findObjectCaseSensitive (HTAssocList * list, const char * name)
+{
+    if (list && name) {
+	HTAssocList * cur = list;
+	HTAssoc * assoc;
+	int len = strlen(name);
+	while ((assoc = (HTAssoc *) HTList_nextObject(cur))) {
+	    if (!strncmp(assoc->name, name, len))
+		return assoc->value;
+	}
+    }
+    return NULL;
+}
+
+PUBLIC char * HTAssocList_findObjectCaseSensitiveExact (HTAssocList * list, const char * name)
+{
+    if (list && name) {
+	HTAssocList * cur = list;
+	HTAssoc * assoc;
+	while ((assoc = (HTAssoc *) HTAssocList_nextObject(cur))) {
+	    if (!strcmp(HTAssoc_name(assoc), name))
+		return HTAssoc_value(assoc);
+	}
+    }
+    return NULL;
+}
+
 /*
 **  Searches the whole list and removes all elements with this name
 */
@@ -112,6 +151,7 @@ PUBLIC BOOL HTAssocList_removeObject (HTAssocList * list, const char * name)
 		HTList_removeObject(list, assoc);
 		HT_FREE(assoc);
 		found = YES;
+		cur = list;
 	    }
 	}
     }

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTChunk.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTChunk.c,v 1.1.1.2 2003-02-25 22:27:36 amb Exp $
 **
 ** history:	AL, HF	28 Apr 94, Now chunk->data is filled by '\0' so
 **			that the string is terminated at any time. That makes
@@ -16,6 +16,15 @@
 #include "wwwsys.h"
 #include "HTUtils.h"
 #include "HTChunk.h"				         /* Implemented here */
+
+struct _HTChunk {
+    int		size;		/* In bytes			*/
+    int		growby;		/* Allocation unit in bytes	*/
+    int		allocated;	/* Current size of *data	*/
+    char *	data;		/* Pointer to malloced area or 0 */
+};	
+
+/* --------------------------------------------------------------------------*/
 
 /*	Create a chunk with a certain allocation unit
 **	--------------
@@ -55,6 +64,44 @@ PUBLIC void HTChunk_delete (HTChunk * ch)
     }
 }
 
+PUBLIC char * HTChunk_data (HTChunk * ch)
+{
+    return ch ? ch->data : NULL;
+}
+
+PUBLIC int HTChunk_size (HTChunk * ch)
+{
+    return ch ? ch->size : -1;
+}
+
+PUBLIC BOOL HTChunk_truncate (HTChunk * ch, int length)
+{
+    if (ch && length >= 0 && length < ch->size) {
+	memset(ch->data+length, '\0', ch->size-length);
+	ch->size = length;
+	return YES;
+    }
+    return NO;
+}
+
+/*      Set the "size" of the Chunk's data
+**      -----------------------------------
+** The actual allocated length must  be at least 1 byte longer to hold the
+** mandatory null terminator. 
+*/
+PUBLIC BOOL HTChunk_setSize (HTChunk * ch, int length)
+{
+    if (ch && length >= 0) {
+	if (length < ch->size)
+	    memset(ch->data+length, '\0', ch->size-length);
+	else if (length >= ch->allocated)
+	    HTChunk_ensure(ch, length - ch->size);
+	ch->size = length;
+	return YES;
+    }
+    return NO;
+}
+
 /*	Create a chunk from an allocated string
 **	---------------------------------------
 */
@@ -66,6 +113,22 @@ PUBLIC HTChunk * HTChunk_fromCString (char * str, int grow)
 	ch->data = str;			/* can't handle non-allocated str */
 	ch->size = strlen(str);
 	ch->allocated = ch->size + 1; /* [SIC] bobr */
+    }
+    return ch;
+}
+
+/*	Create a chunk from an allocated buffer
+**	---------------------------------------
+*/
+PUBLIC HTChunk * HTChunk_fromBuffer (char * buf, int buflen, int size, int grow)
+{
+    HTChunk * ch;
+    ch = HTChunk_new(grow);
+    if (buf) {
+	ch->data = buf;
+	ch->size = ch->allocated = buflen;
+	if (size < buflen)
+	    HTChunk_setSize(ch, size);	/* This ensures the end is 0-filled */
     }
     return ch;
 }
@@ -136,23 +199,27 @@ PUBLIC void HTChunk_putb (HTChunk * ch, const char * block, int len)
     }
 }
 
+PUBLIC void HTChunk_terminate (HTChunk * ch)
+{
+    HTChunk_putc(ch, '\0');
+}
 
 /*	Ensure a certain size
 **	---------------------
 */
 PUBLIC void HTChunk_ensure (HTChunk * ch, int len)
 {
-    if (ch && len) {
+    if (ch && len > 0) {
 	int needed = ch->size+len;
 	if (needed >= ch->allocated) {
 	    ch->allocated = needed - needed%ch->growby + ch->growby;
 	    if (ch->data) {
 		if ((ch->data = (char  *) HT_REALLOC(ch->data, ch->allocated)) == NULL)
-		    HT_OUTOFMEM("HTChunk_putb");
+		    HT_OUTOFMEM("HTChunk_ensure");
 	        memset((void *) (ch->data + ch->size), '\0', ch->allocated-ch->size);
 	    } else {
 		if ((ch->data = (char  *) HT_CALLOC(1, ch->allocated)) == NULL)
-		    HT_OUTOFMEM("ch->data ");
+		    HT_OUTOFMEM("HTChunk_ensure");
 	    }
 	}
     }

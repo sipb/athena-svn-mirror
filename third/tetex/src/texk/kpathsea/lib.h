@@ -1,6 +1,6 @@
 /* lib.h: declarations for common, low-level routines in kpathsea.
 
-Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
+Copyright (C) 1992, 93, 94, 95, 96, 2000 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_LIB_H
 #define KPATHSEA_LIB_H
 
+#include <kpathsea/c-proto.h>
 #include <kpathsea/types.h>
 
 /* Define common sorts of messages.  */
@@ -66,14 +67,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 
 /* I find this easier to read.  */
-#define STREQ(s1, s2) (strcmp (s1, s2) == 0)
-#define STRNEQ(s1, s2, n) (strncmp (s1, s2, n) == 0)
+#define STREQ(s1, s2) ((s1) && (s2) && (strcmp (s1, s2) == 0))
+#define STRNEQ(s1, s2, n) ((s1) && (s2) && (strncmp (s1, s2, n) == 0))
       
 /* Support for FAT/ISO-9660 filesystems.  Theoretically this should be
    done at runtime, per filesystem, but that's painful to program.  */
 #ifdef MONOCASE_FILENAMES
-#define FILESTRCASEEQ(s1, s2) (strcasecmp (s1, s2) == 0)
-#define FILESTRNCASEEQ(s1, s2, l) (strncasecmp (s1, s2, l) == 0)
+#define FILESTRCASEEQ(s1, s2) ((s1) && (s2) && (strcasecmp (s1, s2) == 0))
+#define FILESTRNCASEEQ(s1, s2, l) ((s1) && (s2) && (strncasecmp (s1, s2, l) == 0))
 #define FILECHARCASEEQ(c1, c2) (toupper (c1) == toupper (c2))
 #else
 #define FILESTRCASEEQ STREQ
@@ -155,8 +156,8 @@ extern KPSEDLL string xgetcwd P1H(void);
 extern KPSEDLL boolean dir_p P1H(const_string fn);
 
 /* If FN is a readable directory, return the number of links it has.
-   Otherwise, return -1.  */
-extern KPSEDLL int dir_links P1H(const_string fn);
+   Otherwise, return -1.  The nlinks parameter is a dummy on UNIX. */
+extern KPSEDLL int dir_links P2H(const_string fn, long nlinks);
 
 /* Like their stdio counterparts, but abort on error, after calling
    perror(3) with FILENAME as its argument.  */

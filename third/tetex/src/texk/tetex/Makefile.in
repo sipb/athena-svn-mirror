@@ -1,14 +1,19 @@
-# Makefile for teTeX's extra scripts - te@informatik.uni-hannover.de.
+# Makefile for teTeX's extra scripts - te@dbs.uni-hannover.de.
 # Public domain.
 
 ac_include ../make/paths.mk
 ac_include ../make/common.mk
 ac_include ../make/programs.mk
 
-SCRIPTS= dvi2fax ps2frag texconfig dvired pslatex texi2html allcm allneeded fontexport fontimport kpsetool mkfontdesc MakeTeXPK fontinst rubibtex rumakeindex fmtutil texdoc texlinks texutil texexec texshow
+man5dir = $(mandir)/man5
+man8dir = $(mandir)/man8
+
+SCRIPTS= dvi2fax ps2frag texconfig dvired pslatex texi2html allcm allneeded fontexport fontimport kpsetool mkfontdesc MakeTeXPK fontinst rubibtex rumakeindex fmtutil texdoc texlinks texexec texdoctk updmap
 PDFSCRIPTS=e2pall epstopdf texi2pdf thumbpdf
-manpgs=texi2html texconfig ps2frag allcm allneeded dvired fontexport fontimport allec
+manpgs= allcm allec allneeded dvi2fax dvired e2pall epstopdf fontexport fontimport fontinst kpsepath kpsetool kpsexpand ps2frag pslatex rubibtex rumakeindex texconfig texdoc texexec texi2html texi2pdf texshow texutil thumbpdf texdoctk updmap
+
 INFOFILES= latex.info latex.info-1 latex.info-2 latex.info-3
+POOLFILES = etex-pl.pool pdfetex-pl.pool pdftex-pl.pool tex-pl.pool
 all: $(SCRIPTS) $(PDFSCRIPTS)
 default: all
 
@@ -17,11 +22,15 @@ check:
 
 # Auxiliary files.
 install-data:: $(INFOFILES)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(man1dir) $(man5dir) $(man8dir) $(texpooldir) $(texmf)/doc/tetex
 	for p in $(manpgs); do \
-	  $(INSTALL_DATA) $(srcdir)/$$p.man $(mandir)/$$p.$(manext); \
+	  $(INSTALL_DATA) $(srcdir)/$$p.man $(man1dir)/$$p.$(manext); \
 	done
-	cd $(mandir); rm -f allec.$(manext) einitex.$(manext) \
+	$(INSTALL_DATA) $(srcdir)/fmtutil.8 $(man8dir)/fmtutil.8
+	$(INSTALL_DATA) $(srcdir)/mkfontdesc.8 $(man8dir)/mkfontdesc.8
+	$(INSTALL_DATA) $(srcdir)/texlinks.8 $(man8dir)/texlinks.8
+	$(INSTALL_DATA) $(srcdir)/fmtutil.cnf.5 $(man5dir)/fmtutil.cnf.5
+	cd $(man1dir); rm -f allec.$(manext) einitex.$(manext) \
 	  elatex.$(manext) evirtex.$(manext) \
 	  inimf.$(manext) inimpost.$(manext) iniomega.$(manext) \
 	  initex.$(manext) kpsepath.$(manext) kpsexpand.$(manext) \
@@ -30,33 +39,44 @@ install-data:: $(INFOFILES)
 	  viromega.$(manext) virtex.$(manext) pdflatex.$(manext) \
 	  MakeTeXPK.$(manext) \
 	  cont-de.$(manext) cont-nl.$(manext) cont-en.$(manext)
-	ln -s allcm.$(manext) $(mandir)/allec.$(manext)
-	ln -s mktexlsr.$(manext) $(mandir)/texhash.$(manext)
-	ln -s tex.$(manext) $(mandir)/initex.$(manext)
-	ln -s tex.$(manext) $(mandir)/virtex.$(manext)
-	ln -s etex.$(manext) $(mandir)/einitex.$(manext)
-	ln -s etex.$(manext) $(mandir)/evirtex.$(manext)
-	ln -s etex.$(manext) $(mandir)/elatex.$(manext)
-	ln -s mf.$(manext) $(mandir)/inimf.$(manext)
-	ln -s mf.$(manext) $(mandir)/virmf.$(manext)
-	ln -s mpost.$(manext) $(mandir)/inimpost.$(manext)
-	ln -s mpost.$(manext) $(mandir)/virmpost.$(manext)
-	ln -s omega.$(manext) $(mandir)/iniomega.$(manext)
-	ln -s omega.$(manext) $(mandir)/viromega.$(manext)
-	ln -s omega.$(manext) $(mandir)/lambda.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/pdfinitex.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/pdfvirtex.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/pdflatex.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/cont-de.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/cont-nl.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/cont-en.$(manext)
-	ln -s mktexpk.$(manext) $(mandir)/MakeTeXPK.$(manext)
-	test -r latex.info || cd $(srcdir) && for i in latex.info*; do \
+	ln -s allcm.$(manext) $(man1dir)/allec.$(manext)
+	ln -s mktexlsr.$(manext) $(man1dir)/texhash.$(manext)
+	ln -s tex.$(manext) $(man1dir)/initex.$(manext)
+	ln -s tex.$(manext) $(man1dir)/virtex.$(manext)
+	ln -s etex.$(manext) $(man1dir)/einitex.$(manext)
+	ln -s etex.$(manext) $(man1dir)/evirtex.$(manext)
+	ln -s etex.$(manext) $(man1dir)/elatex.$(manext)
+	ln -s mf.$(manext) $(man1dir)/inimf.$(manext)
+	ln -s mf.$(manext) $(man1dir)/virmf.$(manext)
+	ln -s mpost.$(manext) $(man1dir)/inimpost.$(manext)
+	ln -s mpost.$(manext) $(man1dir)/virmpost.$(manext)
+	ln -s omega.$(manext) $(man1dir)/iniomega.$(manext)
+	ln -s omega.$(manext) $(man1dir)/viromega.$(manext)
+	ln -s omega.$(manext) $(man1dir)/lambda.$(manext)
+	ln -s pdftex.$(manext) $(man1dir)/pdfinitex.$(manext)
+	ln -s pdftex.$(manext) $(man1dir)/pdfvirtex.$(manext)
+	ln -s pdftex.$(manext) $(man1dir)/pdflatex.$(manext)
+	ln -s pdftex.$(manext) $(man1dir)/cont-de.$(manext)
+	ln -s pdftex.$(manext) $(man1dir)/cont-nl.$(manext)
+	ln -s pdftex.$(manext) $(man1dir)/cont-en.$(manext)
+	ln -s mktexpk.$(manext) $(man1dir)/MakeTeXPK.$(manext)
+	test -r ./latex.info || cd $(srcdir) && for i in latex.info*; do \
 	  $(INSTALL_DATA) $$i $(infodir)/$$i; done
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
 	  install-info --info-dir=$(infodir) $(infodir)/latex.info; \
 	else true; fi
-
+	for p in $(POOLFILES); do \
+	  $(INSTALL_DATA) $(srcdir)/$$p $(texpooldir)/$$p; \
+	done
+	for p in TETEXDOC.pdf TETEXDOC.ps TETEXDOC.dvi teTeX-FAQ; do \
+	  $(INSTALL_DATA) $(srcdir)/doc/$$p $(texmf)/doc/tetex; \
+	done
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(texmf)/texconfig $(texmf)/texconfig/g $(texmf)/texconfig/v $(texmf)/texconfig/x
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/g/generic $(texmf)/texconfig/g
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/v/vt100 $(texmf)/texconfig/v
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/x/xterm $(texmf)/texconfig/x
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/README $(texmf)/texconfig
+	$(INSTALL_DATA) $(srcdir)/texmf/texconfig/generic $(texmf)/texconfig
 
 install-exec:
 	-$(SHELL) $(srcdir)/../mkinstalldirs $(scriptdir)
@@ -67,6 +87,7 @@ install-exec:
 	  for s in $(PDFSCRIPTS); do \
 	    $(INSTALL_SCRIPT) $(srcdir)/$$s $(scriptdir)/$$s; \
 	  done; \
+	  cd $(scriptdir); rm -f mptopdf; ln -s texexec mptopdf; \
 	else \
 	  true; \
 	fi
@@ -75,6 +96,11 @@ install-exec:
 	  ln -s kpsetool kpsepath; \
 	  ln -s kpsetool kpsexpand; \
 	  ln -s mktexlsr texhash
+	cd $(scriptdir); rm -f fdf2tan makempy texfind texfont texshow texutil; \
+	  for f in fdf2tan makempy texfind texfont texshow texutil; do \
+  	    ln -s texexec $$f; \
+	  done
+	cd $(scriptdir); rm -f mktexfmt; ln -s fmtutil mktexfmt
 
 ac_include ../make/clean.mk
 
@@ -83,3 +109,6 @@ config.status: $(srcdir)/configure
 
 Makefile: $(srcdir)/Makefile.in config.status
 	$(SHELL) config.status
+
+depend:
+

@@ -3,7 +3,7 @@
 Copyright (C) 1997 Fabrice POPINEAU.
 Adapted to MS-DOS/DJGPP by Eli Zaretskii <eliz@is.elta.co.il>.
 
-Time-stamp: <99/02/14 18:45:04 popineau>
+Time-stamp: <02/12/23 00:33:08 popineau>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -36,6 +36,12 @@ typedef struct _program_description {
 
 extern MKTEXDLL int program_number;
 extern MKTEXDLL string progname;
+extern MKTEXDLL char empty_str[];
+extern MKTEXDLL FILE *fout;
+extern MKTEXDLL FILE *fnul;
+extern MKTEXDLL string output;
+extern MKTEXDLL string progname;
+extern MKTEXDLL char tmpdir[];
 extern MKTEXDLL void mktexinit(int, char**);
 extern MKTEXDLL int mktexpk(int, char**);
 extern MKTEXDLL int mktextfm(int, char**);
@@ -46,7 +52,6 @@ extern MKTEXDLL int mktexupdate(int, char**);
 extern MKTEXDLL int mktexmkdir(int, char**);
 extern MKTEXDLL int mktexrmdir(int, char**);
 extern MKTEXDLL int mktexnames(int, char**);
-extern MKTEXDLL int mktexfmt(int, char**);
 extern MKTEXDLL int mktex_opt(int, char**, program_description *);
 extern MKTEXDLL program_description makedesc[];
 #endif /* _MKTEX_H_ */

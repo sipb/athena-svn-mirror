@@ -1,163 +1,210 @@
-#include "libpdftex.h"
+/*
+Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
 
-#define CFG_BUF_SIZE     1024
+This file is part of pdfTeX.
+
+pdfTeX is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+pdfTeX is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pdfTeX; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+$Id: config.c,v 1.1.1.2 2003-02-25 22:12:53 amb Exp $
+*/
+
+#include "ptexlib.h"
 
 static FILE *cfg_file;
 static char config_name[] = "pdftex.cfg";
-char *mapfiles;
 boolean true_dimen;
 
-#define CFG_OPEN()       texpsheaderbopenin(cfg_file)
-#define CFG_CLOSE()      xfclose(cfg_file, filename)
-#define CFG_GETCHAR()    xgetc(cfg_file)
-#define CFG_EOF()        feof(cfg_file)
+#define cfg_open()       \
+    open_input(&cfg_file, kpse_tex_format, FOPEN_RBIN_MODE)
+#define cfg_close()      xfclose(cfg_file, cur_file_name)
+#define cfg_getchar()    xgetc(cfg_file)
+#define cfg_eof()        feof(cfg_file)
 
 typedef struct {
+    int code;
     char *name;
     integer value;
     boolean is_true_dimen;
 } cfg_entry;
 
-#define CFG_FONT_MAP           0
-#define CFG_OUTPUT_FORMAT      1
-#define CFG_COMPRESS_LEVEL     2
-#define CFG_DECIMAL_DIGITS     3
-#define CFG_PK_RESOLUTION      4
-#define CFG_IMAGE_RESOLUTION   5
-#define CFG_INC_FORM_RESOURCES 6
-#define CFG_PAGE_WIDTH         7
-#define CFG_PAGE_HEIGHT        8
-#define CFG_HORIGIN            9
-#define CFG_VORIGIN            10
-#define CFG_MAX                (CFG_VORIGIN + 1)
+#define CFG_BUF_SIZE     1024
+#define CFG_FONTMAP_CODE 0
 
-cfg_entry cfg_tab[CFG_MAX] = {
-    {"map",                    0, false},
-    {"output_format",          0, false},
-    {"compress_level",         0, false},
-    {"decimal_digits",         0, false},
-    {"pk_resolution",          0, false},
-    {"image_resolution",       0, false},
-    {"include_form_resources", 0, false},
-    {"page_width",             0, false},
-    {"page_height",            0, false},
-    {"horigin",                0, false},
-    {"vorigin",                0, false}
+cfg_entry cfg_tab[] = {
+    {CFG_FONTMAP_CODE,       "map",                  0, false},
+    {cfgoutputcode,          "output_format",        0, false},
+    {cfgadjustspacingcode,   "adjust_spacing"      , 0, false},
+    {cfgcompresslevelcode,   "compress_level",       0, false},
+    {cfgdecimaldigitscode,   "decimal_digits",       0, false},
+    {cfgmovecharscode,       "move_chars",           0, false},
+    {cfgimageresolutioncode, "image_resolution",     0, false},
+    {cfgpkresolutioncode,    "pk_resolution",        0, false},
+    {cfguniqueresnamecode,   "unique_resname",       0, false},
+    {cfgprotrudecharscode,   "protrude_chars",       0, false},
+    {cfghorigincode,         "horigin",              0, false},
+    {cfgvorigincode,         "vorigin",              0, false},
+    {cfgpageheightcode,      "page_height",          0, false},
+    {cfgpagewidthcode,       "page_width",           0, false},
+    {cfglinkmargincode,      "link_margin",          0, false},
+    {cfgdestmargincode,      "dest_margin",          0, false},
+    {cfgthreadmargincode,    "thread_margin",        0, false},
+    {cfgpdf12compliantcode,  "pdf12_compliant",      0, false},
+    {cfgpdf13compliantcode,  "pdf13_compliant",      0, false},
+    {cfgpdfminorversioncode, "pdf_minorversion",    -1, false},
+    {cfgalwaysusepdfpageboxcode,    "always_use_pdfpagebox",  0, false},
+    {0,                      0,                      0, false}
 };
-                               
-#define CFG_VALUE(F, V) integer F() { return cfg_tab[V].value; }
 
 #define is_cfg_comment(c) (c == '*' || c == '#' || c == ';' || c == '%')
 
-CFG_VALUE(cfgoutput,               CFG_OUTPUT_FORMAT)
-CFG_VALUE(cfgcompresslevel,        CFG_COMPRESS_LEVEL)
-CFG_VALUE(cfgdecimaldigits,        CFG_DECIMAL_DIGITS)
-CFG_VALUE(cfgpkresolution,         CFG_PK_RESOLUTION)
-CFG_VALUE(cfgimageresolution,      CFG_IMAGE_RESOLUTION)
-CFG_VALUE(cfgincludeformresources, CFG_INC_FORM_RESOURCES)
-CFG_VALUE(cfgpagewidth,            CFG_PAGE_WIDTH)
-CFG_VALUE(cfgpageheight,           CFG_PAGE_HEIGHT)
-CFG_VALUE(cfghorigin,              CFG_HORIGIN)
-CFG_VALUE(cfgvorigin,              CFG_VORIGIN)
-
-void readconfig()
+static char *add_map_file(char *s)
 {
-    int c, res;
+    char *p = s, *q = s;
+    for (; *p != 0 && *p != ' ' && *p != 10; p++);
+    if (*q != '+') {
+        xfree(mapfiles);
+        mapfiles = 0;
+    }
+    else
+        q++;
+    if (mapfiles == 0) {
+        mapfiles = xtalloc(p - q + 2, char);
+        *mapfiles = 0;
+    }
+    else
+        mapfiles = 
+            xretalloc(mapfiles, strlen(mapfiles) + p - q + 2, char);
+    strncat(mapfiles, q, (unsigned)(p - q));
+    strcat(mapfiles, "\n");
+    return p;
+}
+
+void pdfmapfile(integer t)
+{
+    add_map_file(makecstring(tokenstostring(t)));
+}
+
+void readconfigfile()
+{
+    int c, res, sign;
     cfg_entry *ce;
     char cfg_line[CFG_BUF_SIZE], *p, *r;
-    filename = config_name;
-    packfilename(maketexstring(filename), getnullstr(), getnullstr());
-    if (!CFG_OPEN())
+    set_cur_file_name(config_name);
+    if (!cfg_open())
         pdftex_fail("cannot open config file");
-    tex_printf("[%s", (nameoffile+1));
-    mapfiles = 0;
+    cur_file_name = nameoffile + 1;
+    tex_printf("{%s", cur_file_name);
     for (;;) {
-        if (CFG_EOF()) {
-            CFG_CLOSE();
-            tex_printf("]");
+        if (cfg_eof()) {
+            cfg_close();
+            tex_printf("}");
+            cur_file_name = 0;
             break;
         }
         p = cfg_line;
         do {
-            c = CFG_GETCHAR();
-            APPEND_CHAR_TO_BUF(c, p, cfg_line, CFG_BUF_SIZE);
+            c = cfg_getchar();
+            append_char_to_buf(c, p, cfg_line, CFG_BUF_SIZE);
         } while (c != 10);
-        APPEND_EOL(p, cfg_line, CFG_BUF_SIZE);
+        append_eol(p, cfg_line, CFG_BUF_SIZE);
         c = *cfg_line;
         if (p - cfg_line == 1 || is_cfg_comment(c))
             continue;
         p = cfg_line;
-        for (ce = cfg_tab; ce - cfg_tab  < CFG_MAX; ce++)
-            if (!strncmp(cfg_line, ce->name, strlen(ce->name)))
+        for (ce = cfg_tab; ce->name != 0; ce++)
+            if (!strncmp(cfg_line, ce->name, strlen(ce->name))) {
                 break;
-        if (ce - cfg_tab == CFG_MAX) {
+                }
+        if (ce->name == 0) {
+            remove_eol(p, cfg_line);
             pdftex_warn("invalid parameter name in config file: `%s'", cfg_line);
             continue;
         }
         p = cfg_line + strlen(ce->name);
-        if (*p == ' ')
-            p++;
-        if (*p == '=')
-            p++;
-        if (*p == ' ')
-            p++;
-        switch (ce - cfg_tab) {
-        case CFG_FONT_MAP:
-            if (*p != '+') {
-                XFREE(mapfiles);
-                mapfiles = 0;
-            }
-            else
-                p++;
-            for (r = p; *r != ' ' && *r != 10; r++);
-            if (mapfiles == 0) {
-                mapfiles = XTALLOC(r - p + 2, char);
-                *mapfiles = 0;
-            }
-            else
-                mapfiles = 
-                    XRETALLOC(mapfiles, strlen(mapfiles) + r - p + 2, char);
-            strncat(mapfiles, p, r - p);
-            strcat(mapfiles, "\n");
-            p = r;
+        skip(p, ' ');
+        skip(p, '=');
+        skip(p, ' ');
+        switch (ce->code) {
+        case CFG_FONTMAP_CODE:
+            p = add_map_file(p);
             break;
-        case CFG_OUTPUT_FORMAT:
-        case CFG_COMPRESS_LEVEL:
-        case CFG_DECIMAL_DIGITS:
-        case CFG_PK_RESOLUTION:
-        case CFG_IMAGE_RESOLUTION:
-        case CFG_INC_FORM_RESOURCES:
+        case cfgoutputcode:
+        case cfgadjustspacingcode:
+        case cfgcompresslevelcode:
+        case cfgdecimaldigitscode:
+        case cfgmovecharscode:
+        case cfgimageresolutioncode:
+        case cfgpkresolutioncode:
+        case cfguniqueresnamecode:
+        case cfgprotrudecharscode:
+        case cfgpdf12compliantcode:
+        case cfgpdf13compliantcode:
+        case cfgpdfminorversioncode:
+        case cfgalwaysusepdfpageboxcode:
+            if (*p == '-') {
+                p++;
+                sign = -1;
+            }
+            else
+                sign = 1;
             ce->value = myatol(&p);
             if (ce->value == -1) {
-                pdftex_warn("invalid parameter value in config file: `%s'", cfg_line);
+                remove_eol(p, cfg_line);
+                pdftex_warn("invalid parameter value in config filecode: `%s'", cfg_line);
                 ce->value = 0;
             }
+            else
+                ce->value *= sign;
             break;
-        case CFG_PAGE_WIDTH:
-        case CFG_PAGE_HEIGHT:
-        case CFG_HORIGIN:
-        case CFG_VORIGIN:
+        case cfghorigincode:
+        case cfgvorigincode:
+        case cfgpageheightcode:
+        case cfgpagewidthcode:
+        case cfglinkmargincode:
+        case cfgthreadmargincode:
             ce->value = myatodim(&p);
             ce->is_true_dimen = true_dimen;
             break;
         }
-        for (; *p == ' '; p++);
-        if (*p != 10 && !is_cfg_comment(*p))
+        skip(p, ' ');
+        if (*p != 10 && !is_cfg_comment(*p)) {
+            remove_eol(p, cfg_line);
             pdftex_warn("invalid line in config file: `%s'", cfg_line);
+        }
     }
-    res = cfgpkresolution();
+    res = cfgpar(cfgpkresolutioncode);
     if (res == 0)
         res = 600;
-    kpse_init_prog("PDFTEX", res, NULL, NULL);
+    kpse_init_prog("pdfTeX", (unsigned)res, NULL, NULL);
     if (mapfiles == 0)
         mapfiles = xstrdup("psfonts.map\n");
 }
 
-void adjustcfgdimens(scaled m)
+boolean iscfgtruedimen(integer code)
 {
     cfg_entry *ce;
-    for (ce = cfg_tab; ce - cfg_tab  < CFG_MAX; ce++)
-        if (ce->is_true_dimen) {
-            ce->value = xnoverd(ce->value, 1000, m);
-        }
+    for (ce = cfg_tab; ce->name != 0; ce++)
+        if (ce->code == code)
+            return ce->is_true_dimen;
+}
+
+integer cfgpar(integer code)
+{
+    cfg_entry *ce;
+    for (ce = cfg_tab; ce->name != 0; ce++)
+        if (ce->code == code)
+           return ce->value;
+    return 0;
 }

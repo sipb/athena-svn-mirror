@@ -110,7 +110,7 @@ extern char * HTTag_attributeName (HTTag * tag, int attribute_number);
 Not the whole DTD, but all this parser uses of it.
 */
 
-#define MAX_ATTRIBUTES 20	     /* Max number of attributes per element */
+#define MAX_ATTRIBUTES 32	     /* Max number of attributes per element */
 
 typedef struct {
     HTTag *		tags;		/* Must be in strcmp order by name */ 
@@ -122,6 +122,7 @@ typedef struct {
 extern HTTag * SGML_findTag (SGML_dtd * dtd, int element_number);
 extern char * SGML_findTagName (SGML_dtd * dtd, int element_number);
 extern SGMLContent SGML_findTagContents (SGML_dtd * dtd, int element_number);
+extern int SGML_findElementNumber(SGML_dtd *dtd, char *name_element);
 
 /*
 .
@@ -143,6 +144,6 @@ extern HTStream * SGML_new (const SGML_dtd * 	dtd,
 
   
 
-  @(#) $Id: SGML.h,v 1.1.1.1 2000-03-10 17:53:03 ghudson Exp $
+  @(#) $Id: SGML.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

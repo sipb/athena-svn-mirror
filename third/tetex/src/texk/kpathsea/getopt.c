@@ -3,7 +3,7 @@
    "Keep this file name-space clean" means, talk to roland@gnu.ai.mit.edu
    before changing it!
 
-   Copyright (C) 1987, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97
+   Copyright (C) 1987, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 2000
    	Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.  Its master source is NOT part of
@@ -83,6 +83,9 @@
 /* It's not Unix, really.  See?  Capital letters.  */
 #include <stdlib.h>
 #include <windows.h>
+#ifdef getpid
+#undef getpid
+#endif
 #define getpid() GetCurrentProcessId()
 #endif
 

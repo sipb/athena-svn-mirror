@@ -1,21 +1,21 @@
 #!/bin/sh
-# '$Id: makempx.in,v 1.1.1.1 2000-03-10 17:51:00 ghudson Exp $'
+# '$Id: makempx.in,v 1.1.1.2 2003-02-25 22:17:36 amb Exp $'
 # Make an MPX file from the labels in a MetaPost source file,
 # using mpto and either dvitomp (TeX) or dmp (troff).
 # From John Hobby's original (though there's not much of it left by now).
 # Public domain.
 
-rcs_revision='$Revision: 1.1.1.1 $'
+rcs_revision='$Revision: 1.1.1.2 $'
 version=`set - $rcs_revision; echo $2`
 
 : ${DMP=dmp}
 : ${DVITOMP=dvitomp}
 : ${MAKEMPX_BINDIR=`echo $0 | sed 's%/[^/]*$%%'`}
 : ${MPTEXPRE=mptexpre.tex}
-: ${MPTOTEX="mpto -tex"}
-: ${MPTOTR="mpto -troff"}
+: ${MPTOTEX='mpto -tex'}
+: ${MPTOTR='mpto -troff'}
 : ${NEWER=newer}
-: ${TEX=tex}
+: ${TEX='tex --parse-first-line'}
 : ${TROFF='eqn -d\$\$ | troff -Tpost'}
 
 # convert relative path to absolute in $MAKEMPX_BINDIR:
@@ -35,7 +35,7 @@ TROFF_INERR=mpxerr		# file for erroneous troff input, if any
 TROFF_OUTERR=mpxerr.t		# file for troublesome troff output, if any
 
 
-usage="Usage: $0 [-tex|-troff] MPFILE MPXFILE.
+usage="Usage: $0 [-tex|-tex=<program>|-troff] MPFILE MPXFILE.
   If MPXFILE is older than MPFILE, translate the labels from the MetaPost
   input file MPFIle to low-level commands in MPXFILE, by running
     $MPTOTEX, $TEX, and $DVITOMP
@@ -64,6 +64,7 @@ Primary author: John Hobby."
       exit 0;;
     -troff|--troff) mode=troff;;
     -tex|--tex) mode=tex;;
+    -tex=*|--tex=*) mode=tex; TEX=`echo "$1" | sed 's/^-*tex=//'`;;
     -*) 
       echo "$0: Invalid option: $1." >&2
       echo "Try \``basename $0` --help' for more information." >&2 

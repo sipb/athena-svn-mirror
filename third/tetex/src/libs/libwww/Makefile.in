@@ -1,4 +1,4 @@
-# Makefile for libwww - te@informatik.uni-hannover.de
+# Makefile for libwww - te@dbs.uni-hannover.de
 
 ac_include ../../texk/make/common.mk
 ac_include ../../texk/make/programs.mk
@@ -24,12 +24,13 @@ OBJS = HTEscape.o HTTrace.o HTMemory.o HTList.o HTParse.o HTString.o \
 	HTFTP.o HTBufWrt.o HTWriter.o HTFTPDir.o HTNewsLs.o HTNDir.o \
 	HTReader.o HTConLen.o HTDialog.o HTPEP.o HTNewsRq.o HTTChunk.o \
 	HTGuess.o HTMIME.o HTMerge.o HTBound.o HTBInit.o HTHInit.o \
-	HTTeXGen.o HTML.o SGML.o HText.o HTPlain.o
+	HTTeXGen.o HTML.o SGML.o HText.o HTPlain.o HTNoFree.o HTFSave.o
 
 # We'd like to disable telnet, news and probably some other protocols and
 # their support routines.
 
 libwww.a: $(OBJS)
+	rm -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 

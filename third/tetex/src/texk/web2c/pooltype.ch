@@ -115,10 +115,10 @@ begin
       do_nothing;
     
     end else if getopt_return_val = '?' then begin
-      usage (1, 'pooltype');
+      usage ('pooltype');
     
     end else if argument_is ('help') then begin
-      usage (0, POOLTYPE_HELP);
+      usage_help (POOLTYPE_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit ('This is POOLtype, Version 3.0', nil,
@@ -130,7 +130,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'pooltype: Need exactly one file argument.');
-    usage (1, 'pooltype');
+    usage ('pooltype');
   end;
 
   pool_name := extend_filename (cmdline (optind), 'pool');

@@ -27,6 +27,10 @@
 
 #include    "mkind.h"
 
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 static	long	idx_gc;
 
 static	int	check_mixsym ARGS((char *x,char *y));
@@ -40,11 +44,21 @@ static	int	new_strcmp ARGS((unsigned char *a, unsigned char *b,
 void
 sort_idx(VOID_ARG)
 {
+#ifdef HAVE_SETLOCALE
+    char *prev_locale;
+#endif
+
     MESSAGE("Sorting entries...", "");
+#ifdef HAVE_SETLOCALE
+    prev_locale = setlocale(LC_COLLATE, "");
+#endif
     idx_dc = 0;
     idx_gc = 0L;
     qqsort((char *) idx_key, (int) idx_gt, (int) sizeof(FIELD_PTR), 
 	(int (*) ARGS((char*,char*)))compare);
+#ifdef HAVE_SETLOCALE
+    setlocale(LC_COLLATE, prev_locale);
+#endif
     MESSAGE("done (%ld comparisons).\n", idx_gc);
 }
 
@@ -158,7 +172,7 @@ char   *y;
     if (!m && n)
 	return (-1);
 
-    return (strcmp(x, y));
+    return (locale_sort ? strcoll(x, y) : strcmp(x, y));
 }
 
 
@@ -175,6 +189,8 @@ unsigned char   *b;
     int     j = 0;
     int     al;
     int     bl;
+
+    if (locale_sort) return strcoll(a, b);
 
     while ((a[i] != NUL) || (b[j] != NUL)) {
 	if (a[i] == NUL)

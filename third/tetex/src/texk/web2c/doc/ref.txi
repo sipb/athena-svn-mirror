@@ -3,7 +3,7 @@
 @item [Bil87]
 Neenie Billawala.
 Write-white printing engines and tuning fonts with Metafont.
-@cite{TUGboat}, 8(1):29, April 1987.
+@cite{TUGboat}, 8(1):29--32, April 1987.
 
 @item [GMS94]
 Michel Goossens, Frank Mittelbach, and Alexander Samarin.
@@ -12,7 +12,7 @@ Addison-Wesley, Reading, MA, USA, 1994.
 
 @item [Hob89]
 John D. Hobby.
-A Metafont-like System with PostScript Output.
+A Metafont-like system with PS output.
 @cite{TUGboat}, 10(4):505--512, December 1989.
 
 @item [Hob92]
@@ -28,9 +28,9 @@ Technical Report CSTR-164, AT&T Bell Laboratories, 1993.
 @item [HS91]
 Samuel P. Harbison and Guy L. Steele Jr.
 @cite{C---A Reference Manual}.
-Prentice-Hall, Englewood Cliffs, NJ 07632, USA, third edition, 1991.
-An authoritative reference to C programming language, and a good companion to
-  Kernighan and Ritchie.
+Prentice-Hall, Upper Saddle River, NJ 07458, USA, third edition, 1991.
+An authoritative reference to the C programming language, and a good
+  companion to Kernighan and Ritchie.
 
 @item [KL93]
 Donald E. Knuth and Silvio Levy.
@@ -39,7 +39,7 @@ Addison-Wesley, Reading, MA, USA, 1993.
 
 @item [Knu84]
 Donald E. Knuth.
-A Torture Test for @TeX{}.
+A torture test for @TeX{}.
 Report No. STAN-CS-84-1027, Stanford University, Department of Computer
   Science, 1984.
 
@@ -99,6 +99,7 @@ Leslie Lamport.
 @cite{La@TeX{}: A Document Preparation System: User's Guide and Reference
   Manual}.
 Addison-Wesley, Reading, MA, USA, second edition, 1994.
+Reprinted with corrections in 1996.
 
 @item [Lia83]
 Franklin Mark Liang.

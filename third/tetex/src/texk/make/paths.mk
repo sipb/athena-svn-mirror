@@ -32,7 +32,8 @@ infodir = @infodir@
 
 # Unix man pages.
 manext = 1
-mandir = @mandir@/man$(manext)
+mandir = @mandir@
+man1dir = $(mandir)/man$(manext)
 
 # TeX system-specific directories. Not all of the following are relevant
 # for all programs, but it seems cleaner to collect everything in one place.

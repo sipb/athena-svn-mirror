@@ -24,6 +24,7 @@
 % Version 2.718 fixed bug in <Choose a dependent...> (March 1995).
 % Version 2.7182 fixed bugs related to "<unprintable char>" (August 1996).
 % A few "harmless" optimizations have been made without changing versions.
+% Minor corrections to the documentation (only) were made in July 2001.
 
 % A reward of $327.68 will be paid to the first finder of any remaining bug.
 
@@ -423,7 +424,7 @@ if(lig_table_size<255)or(lig_table_size>32510)then bad:=7;
 
 @ Labels are given symbolic names by the following definitions, so that
 occasional |goto| statements will be meaningful. We insert the label
-`|exit|:' just before the `\ignorespaces|end|\unskip' of a procedure in
+`|exit|' just before the `\ignorespaces|end|\unskip' of a procedure in
 which we have used the `|return|' statement defined below; the label
 `|restart|' is occasionally used at the very beginning of a procedure; and
 the label `|reswitch|' is occasionally used just prior to a |case|
@@ -1562,7 +1563,7 @@ This procedure is never called when |interaction<scroll_mode|.
 
 @p procedure term_input; {gets a line from the terminal}
 var @!k:0..buf_size; {index into |buffer|}
-begin update_terminal; {Now the user sees the prompt for sure}
+begin update_terminal; {now the user sees the prompt for sure}
 if not input_ln(term_in,true) then fatal_error("End of file on the terminal!");
 @.End of file on the terminal@>
 term_offset:=0; {the user's line ended with \<\rm return>}
@@ -3569,7 +3570,7 @@ are debugging.)
 @t\hskip1em@>@!was_free: packed array [mem_min..mem_max] of boolean;
   {previously free cells}
 @t\hskip1em@>@!was_mem_end,@!was_lo_max,@!was_hi_min: pointer;
-  {previous |mem_end|, |lo_mem_max|,and |hi_mem_min|}
+  {previous |mem_end|, |lo_mem_max|, and |hi_mem_min|}
 @t\hskip1em@>@!panicking:boolean; {do we want to check memory constantly?}
 gubed
 
@@ -6372,7 +6373,7 @@ were no cycle.
 The idea in the following code is to observe that
 $$\eqalign{\theta_n&=v_n+w_n\theta_0-u_n\theta_1=\cdots\cr
 &=v_n+w_n\theta_0-u_n\bigl(v_1+w_1\theta_0-u_1(v_2+\cdots
-  -u_{n-2}(v_{n-1}+w_{n-1}\theta_0-u_{n-1}\theta_0))\bigr),\cr}$$
+  -u_{n-2}(v_{n-1}+w_{n-1}\theta_0-u_{n-1}\theta_0)\ldots{})\bigr),\cr}$$
 so we can solve for $\theta_n=\theta_0$.
 
 @<Adjust $\theta_n$ to equal $\theta_0$ and |goto found|@>=
@@ -8429,9 +8430,9 @@ transition occurs when moving between octants 1~\AM~2, 3~\AM~4, 5~\AM~6, or
 but convenient.) Fields |x_coord(p)| and |y_coord(p)| will contain
 coordinates of the transition point after rotation from third octant
 to first octant; i.e., if the true coordinates are $(x,y)$, the
-coordinates $(y,\bar x)$ will appear in node~|p|. Similarly, a fourth-octant
+coordinates $(y,-x)$ will appear in node~|p|. Similarly, a fourth-octant
 transformation will have been applied after the transition, so
-we will have |x_coord(q)=@t$\bar x$@>| and |y_coord(q)=y|.
+we will have |x_coord(q)=@t$-x$@>| and |y_coord(q)=y|.
 
 The cubic between |p| and |q| will contain positive numbers in the
 fields |right_type(p)| and |left_type(q)|; this makes cubics
@@ -9144,8 +9145,8 @@ The given cyclic path contains regions where $x'(t)\G0$ and regions
 where $x'(t)\L0$. The |quadrant_subdivide| routine is called into action
 before any of the path coordinates have been skewed, but some of them
 may have been negated. In regions where $x'(t)\G0$ we have |right_type=
-first_octant| or |right_type=fourth_octant|; in regions where $x'(t)\L0$,
-we have |right_type=fifth_octant| or |right_type=eighth_octant|.
+first_octant| or |right_type=eighth_octant|; in regions where $x'(t)\L0$,
+we have |right_type=fifth_octant| or |right_type=fourth_octant|.
 
 Within any such region the transformed $x$ values increase monotonically
 from, say, $x_0$ to~$x_1$. We want to modify things by applying a linear
@@ -9840,8 +9841,8 @@ rounding conventions must be made so that consistent values will be
 obtained. For example, suppose that we're working with coordinates that
 have been transformed so that a third-octant curve travels in first-octant
 directions. The skewed coordinates $(x,y)$ in our data structure represent
-unskewed coordinates $(-y,x+y)$, which are actually $-y+\epsilon,
-x+y+\epsilon\delta$. We should therefore round as if our skewed coordinates
+unskewed coordinates $(-y,x+y)$, which are actually $(-y+\epsilon,
+x+y+\epsilon\delta)$. We should therefore round as if our skewed coordinates
 were $(x+\epsilon+\epsilon\delta,y-\epsilon)$ instead of $(x,y)$. The following
 table shows how the skewed coordinates should be perturbed when rounding
 decisions are made:
@@ -15790,8 +15791,8 @@ and |cur_ext|.
 
 @d pack_cur_name==pack_file_name(cur_name,cur_area,cur_ext)
 
-@p procedure pack_job_name(@!s:str_number); {|s = ".log"|, |".gf"|, or
-  |base_extension|}
+@p procedure pack_job_name(@!s:str_number); {|s = ".log"|, |".gf"|,
+  |".tfm"|, or |base_extension|}
 begin cur_area:=""; cur_ext:=s;
 cur_name:=job_name; pack_cur_name;
 end;
@@ -20028,7 +20029,7 @@ show_command: case m of
 show_command:do_show_whatever;
 
 @ The value of |cur_mod| controls the |verbosity| in the |print_exp| routine:
-if it's |show_code|, complicated structures are abbreviated, otherwise
+If it's |show_code|, complicated structures are abbreviated, otherwise
 they aren't.
 
 @<Declare action procedures for use by |do_statement|@>=
@@ -20620,7 +20621,7 @@ end
 give a verbose explanation only once.
 
 @<Glob...@>=
-@!long_help_seen:boolean; {has the long \.{\\errmessage} help been used?}
+@!long_help_seen:boolean; {has the long \&{errmessage} help been used?}
 
 @ @<Set init...@>=long_help_seen:=false;
 
@@ -20773,13 +20774,14 @@ only if it lies between |bc| and |ec| and has a nonzero |width_index|.
 @ The |tag| field in a |char_info_word| has four values that explain how to
 interpret the |remainder| field.
 
-\yskip\hang|tag=0| (|no_tag|) means that |remainder| is unused.\par
-\hang|tag=1| (|lig_tag|) means that this character has a ligature/kerning
+\def\hangg#1 {\hang\hbox{#1 }}
+\yskip\hangg|tag=0| (|no_tag|) means that |remainder| is unused.\par
+\hangg|tag=1| (|lig_tag|) means that this character has a ligature/kerning
 program starting at location |remainder| in the |lig_kern| array.\par
-\hang|tag=2| (|list_tag|) means that this character is part of a chain of
+\hangg|tag=2| (|list_tag|) means that this character is part of a chain of
 characters of ascending sizes, and not the largest in the chain.  The
 |remainder| field gives the character code of the next larger character.\par
-\hang|tag=3| (|ext_tag|) means that this character code represents an
+\hangg|tag=3| (|ext_tag|) means that this character code represents an
 extensible character, i.e., a character that is built up of smaller pieces
 so that it can be made arbitrarily large. The pieces are specified in
 |@!exten[remainder]|.\par
@@ -22704,7 +22706,7 @@ for p:=hash_used+1 to hash_end do
 undump_int(st_count)
 
 @ We have already printed a lot of statistics, so we set |tracing_stats:=0|
-to prevent them appearing again.
+to prevent them from appearing again.
 
 @<Dump a few more things and the closing check word@>=
 dump_int(int_ptr);
@@ -22732,7 +22734,7 @@ undump_int(x);@+if (x<>69069)or eof(base_file) then goto off_base
 @ @<Create the |base_ident|...@>=
 selector:=new_string;
 print(" (preloaded base="); print(job_name); print_char(" ");
-print_int(round_unscaled(internal[year]) mod 100); print_char(".");
+print_int(round_unscaled(internal[year])); print_char(".");
 print_int(round_unscaled(internal[month])); print_char(".");
 print_int(round_unscaled(internal[day])); print_char(")");
 if interaction=batch_mode then selector:=log_only

@@ -123,6 +123,15 @@ end;
   end
 @z
 
+% [25] Both nl and lig_size are in words, so the multiplication is not
+% needed.  Found by "C.M. Connelly" <c@eskimo.com> and
+% Melissa O'Neill <oneill@cs.sfu.ca>
+@x 
+if nl>4*lig_size then
+@y
+if nl>lig_size then
+@z
+
 % [31] Ditto for vf_abort.
 @x
 @d vf_abort(#)==
@@ -235,7 +244,7 @@ on the filename length.
 
 @<Move font name into the |cur_name| string@>=
 r := name_end - name_start;
-cur_name := xmalloc (r + 1);
+cur_name := xmalloc_array (char, r);
 {|strncpy| might be faster, but it's probably a good idea to keep the
  |xchr| translation.}
 for k := name_start to name_end do begin
@@ -500,10 +509,10 @@ begin
     if getopt_return_val = -1 then begin
       {End of arguments; we exit the loop below.} ;
     end else if getopt_return_val = "?" then begin
-      usage (1, 'vftovp');
+      usage ('vftovp');
 
     end else if argument_is ('help') then begin
-      usage (0, VFTOVP_HELP);
+      usage_help (VFTOVP_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, nil, 'D.E. Knuth');
@@ -524,7 +533,7 @@ begin
   if (optind + 1 <> argc) and (optind + 2 <> argc) 
      and (optind + 3 <> argc) then begin
     print_ln ('vftovp: Need one to three file arguments.');
-    usage (1, 'vftovp');
+    usage ('vftovp');
   end;
 
   vf_name := cmdline (optind);

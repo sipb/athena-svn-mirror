@@ -1,6 +1,8 @@
 # Makefile for dviljk -- kb@mail.tug.org.  Public domain.
 version = 2.6
 
+.NOTPARALLEL:
+
 ac_include ../make/paths.mk
 ac_include ../make/common.mk
 ac_include ../make/programs.mk
@@ -69,8 +71,9 @@ uninstall-exec:
 	cd $(bindir); rm -f $(programs)
 
 install-data:
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir) $(dvilj_latex2e_macrodir) $(fontdir)
-	$(INSTALL_DATA) $(srcdir)/dvilj.man $(mandir)/dvilj.$(manext)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(man1dir)
+	$(INSTALL_DATA) $(srcdir)/dvilj.man $(man1dir)/dvilj.$(manext)
+	$(INSTALL_DATA) $(srcdir)/dvihp.man $(man1dir)/dvihp.$(manext)
 
 # It seems simplest to keep this separate. Use find and cpio instead of
 # just cp -r in case the source hierarchy is cvs- or rcs-ified.
@@ -80,7 +83,7 @@ install-fonts:
 	find fonts -name \( "*.tfm" -o -name "*.vf" \) -print | cpio -pld $(texmf)
 
 uninstall-data:
-	rm -f $(mandir)/dvilj.$(manext)
+	rm -f $(man1dir)/dvilj.$(manext)
 
 
 distname = dviljk

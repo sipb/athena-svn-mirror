@@ -60,6 +60,12 @@ procedure initialize; {this procedure gets things started properly}
     @<Set initial values@>@/
 @z
 
+@x [5] Increase parameter(s).
+@!virtual_space=10000;
+@y
+@!virtual_space=100000;
+@z
+
 @x [7] Remove non-local goto.
 @d abort(#)==begin err_print_ln('DVItoMP abort: ',#);
     history:=fatal_error; jump_out;
@@ -276,7 +282,7 @@ for k:=font_name[f] to font_name[f+1]-1 do
 cur_name[l+1]:='.'; cur_name[l+2]:='V'; cur_name[l+3]:='F'
 @y
 {This amounts to a string copy. }
-cur_name := xmalloc ((font_name[f+1] - font_name[f]) + 1);
+cur_name := xmalloc_array (char, font_name[f+1] - font_name[f]);
 for k:=font_name[f] to font_name[f+1]-1 do begin
   cur_name[k - font_name[f]] := xchr[names[k]];
 end;
@@ -394,10 +400,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'dvitomp');
+      usage ('dvitomp');
 
     end else if argument_is ('help') then begin
-      usage (0, DVITOMP_HELP);
+      usage_help (DVITOMP_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (term_banner, 'AT&T Bell Laboraties', 'John Hobby');
@@ -409,7 +415,7 @@ begin
    We must have one or two remaining arguments.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'dvitomp: Need one or two file arguments.');
-    usage (1, 'dvitomp');
+    usage ('dvitomp');
   end;
 
   dvi_name := cmdline (optind);

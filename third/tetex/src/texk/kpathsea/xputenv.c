@@ -68,7 +68,7 @@ xputenv P2C(const_string, var_name,  const_string, value)
             {
               found = true;
               old_item = getenv (var_name);
-#ifdef WIN32
+#if defined (WIN32) || defined (DJGPP)
 	      /* win32 putenv() removes the variable if called with
 		 "VAR=". So we have to cope with this case. Distinction
 		 is not made between the value being "" or the variable

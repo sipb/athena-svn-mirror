@@ -1,13 +1,13 @@
 /*
 
-					W3C Sample Code Library libwww CRLF STRIPPER STREAM
+  
+  
+  					W3C Sample Code Library libwww CRLF Stripper Stream
 
 
-
-
-
-!Network Telnet To Internal Character Text!
-
+!
+  Network Telnet To Internal Character Text
+!
 */
 
 /*
@@ -17,15 +17,14 @@
 
 /*
 
-This is a filter stream suitable for taking text from a socket and
-passing it into a stream which expects text in the local C
-representation.  It does newline conversion.  As usual, pass its
-output stream to it when creating it. 
+This is a filter stream suitable for taking text from a socket and passing
+it into a stream which expects text in the local C representation. It does
+newline conversion. As usual, pass its output stream to it when creating
+it.
 
-This module is implemented by HTNetTxt.c, and
-it is a part of the  W3C
-Sample Code Library.
-
+This module is implemented by HTNetTxt.c, and it
+is a part of the  W3C Sample Code
+Library.
 */
 
 #ifndef HTNETTXT_H
@@ -37,9 +36,8 @@ extern HTStream * HTNetToText (HTStream * target);
 
 /*
 
+  
 
-
-@(#) $Id: HTNetTxt.h,v 1.1.1.1 2000-03-10 17:53:00 ghudson Exp $
-
+  @(#) $Id: HTNetTxt.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */

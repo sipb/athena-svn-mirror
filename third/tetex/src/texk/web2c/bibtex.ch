@@ -271,6 +271,13 @@ for i:=1 to @'176 do xord[xchr[i]]:=i;
 for i:=first_text_char to last_text_char do xord[xchr[i]]:=i;
 @z
 
+@x [32] Put the [128..255] range into lex_class alpha.
+for i:=0 to @'177 do lex_class[i] := other_lex;
+@y
+for i:=0 to @'177 do lex_class[i] := other_lex;
+for i:=@'200 to @'377 do lex_class[i] := alpha;
+@z
+
 % [32] Make RET a `white_space' character, so we won't choke on DOS
 % files, which use CR/LF for line endings.
 @x
@@ -278,6 +285,12 @@ lex_class[tab] := white_space;
 @y
 lex_class[tab] := white_space;
 lex_class[13] := white_space;
+@z
+
+@x [33] Allow the [128..255] range in legal_id_char.
+for i:=0 to @'177 do id_class[i] := legal_id_char;
+@y
+for i:=0 to @'377 do id_class[i] := legal_id_char;
 @z
 
 % [37] file_name_size no longer exists.  See comments in tex.ch for why
@@ -394,7 +407,7 @@ name_ptr := 1;
 @y
 name_ptr := 1;
 free (name_of_file);
-name_of_file := xmalloc (length (file_name) + 2);
+name_of_file := xmalloc_array (ASCII_code, length (file_name) + 1);
 @z
 
 @x
@@ -516,9 +529,9 @@ begin
   @<Process a possible command line@>
   {Leave room for the \.., the extension, the junk byte at the
    beginning, and the null byte at the end.}
-  name_of_file := xmalloc (strlen (cmdline (optind)) + 4 + 2);
-  strcpy (name_of_file + 1, cmdline (optind));
-  aux_name_length := strlen (name_of_file + 1);
+  name_of_file := xmalloc_array (ASCII_code, strlen (cmdline (optind)) + 5);
+  strcpy (stringcast(name_of_file + 1), cmdline (optind));
+  aux_name_length := strlen (stringcast(name_of_file + 1));
   @<Handle this \.{.aux} name@>;
 aux_not_found:  uexit (1);
 aux_found:                      {now we're ready to read the \.{.aux} file}
@@ -552,8 +565,12 @@ aux_ptr := 0;                           {initialize the \.{.aux} file stack}
 if (not a_open_in(cur_aux_file)) then
     sam_you_made_the_file_name_wrong;
 @y
-if strcmp (name_of_file + 1 + name_length - 3, 'aux') <> 0 then
-  add_extension (s_aux_extension);        {this also sets |name_length|}
+if (name_length < 4) or
+   (strcmp (stringcast(name_of_file + 1 + name_length - 4), '.aux') <> 0)
+then
+  add_extension (s_aux_extension)        {this also sets |name_length|}
+else
+  aux_name_length := aux_name_length - 4; {set to length without \.{.aux}}
 aux_ptr := 0;                           {initialize the \.{.aux} file stack}
 if (not a_open_in(cur_aux_file,no_file_path)) then
     sam_you_made_the_file_name_wrong;
@@ -979,6 +996,30 @@ end;
     char2 := x_entry_strs(ptr2)(char_ptr);
 @z
 
+% We shouldn't try to split a \% combo, as the result is an escaped % at
+% end-of-line, and a line beginning with a %, which leads to rest being
+% ignored.  This is a special case of the general problem that we shouldn't
+% split macro invocations either -- however, the best way to avoid that is
+% not to split lines at all.
+@x [324] Check whether we're trying to break a \% combo.
+out_buf[end_ptr] := out_buf[max_print_line-1];  {save this character}
+out_buf[max_print_line-1] := comment;           {so \TeX\ does the thing right}
+out_buf_length := max_print_line;
+break_ptr := out_buf_length - 1;        {the `|-1|' allows for the restoration}
+output_bbl_line;                                {output what we can,}
+out_buf[max_print_line-1] := out_buf[end_ptr];  {restore this character}
+@y
+if out_buf[max_print_line-1] = comment then {assume \% combo here}
+  out_buf_length := max_print_line - 1
+else
+  out_buf_length := max_print_line;
+break_ptr := out_buf_length - 1;        {the `|-1|' allows for the restoration}
+out_buf[end_ptr] := out_buf[break_ptr];  {save this character}
+out_buf[break_ptr] := comment;           {so \TeX\ does the thing right}
+output_bbl_line;                                {output what we can,}
+out_buf[break_ptr] := out_buf[end_ptr];  {restore this character}
+@z
+
 @x [327] Add check for fieldinfo[] overflow.
     field_ptr := cite_ptr*num_fields + fn_info[ex_fn_loc];
 @y
@@ -1096,13 +1137,13 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'bibtex');
+      usage ('bibtex');
 
     end else if argument_is ('min-crossrefs') then begin
       min_crossrefs := atoi (optarg);
       
     end else if argument_is ('help') then begin
-      usage (0, BIBTEX_HELP);
+      usage_help (BIBTEX_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, 'Oren Patashnik', nil);
@@ -1114,7 +1155,7 @@ begin
    We must have one remaining argument.}
   if (optind + 1 <> argc) then begin
     write_ln (stderr, 'bibtex: Need exactly one file argument.');
-    usage (1, 'bibtex');
+    usage ('bibtex');
   end;
 end;
 

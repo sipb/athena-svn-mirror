@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTMLGen.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTMLGen.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	This version of the HTML object sends HTML markup to the output stream.
 **
@@ -404,8 +404,7 @@ PUBLIC HTStructured* HTMLGenerator (HTRequest *	request,
     me->dtd = HTML_dtd();
     if ((me->target = HTStreamStack(WWW_HTML, output_format, output_stream,
 				    request, YES)) == NULL) {
-	if (STREAM_TRACE)
-	    HTTrace("HTMLGen..... Can't convert to media type\n");
+	HTTRACE(STREAM_TRACE, "HTMLGen..... Can't convert to media type\n");
 	HT_FREE(me);
 	me->target = HTErrorStream();
     }

@@ -30,11 +30,12 @@
 
 #define HEX_PER_LINE 30
 
-main (int argc, char *argv[])
-{  int t, l, len, i;
+int main (int argc, char *argv[])
+{  unsigned int t, l, i;
+ unsigned int l1, l2, l3, l4; 
    short c, done, verbose = 0;
    FILE *pfb, *pfa;
-   char *pfbname, *pfaname, *myname = "pfb2pfa";
+   char *pfbname, *pfaname = NULL, *myname = "pfb2pfa";
 
    /* prototypes */
    void fatal(char *fmt, ...);
@@ -70,7 +71,13 @@ main (int argc, char *argv[])
       if (verbose) printf("Type: %d, ", t);
       switch (t) {
       case 1:
-         l = getc(pfb) | getc(pfb)<<8 | getc(pfb)<<16 | getc(pfb)<<24;
+#if 1
+	l1 = getc(pfb); l2 = getc(pfb); l3 = getc(pfb); l4 = getc(pfb); 
+	l = l1 | l2 << 8 | l3 << 16 | l4 << 24;
+	/* printf("%2x %2x %2x %2x -> %x\n", l1, l2, l3, l4, l); */
+#else
+	l = (getc(pfb)) | (getc(pfb)<<8) | (getc(pfb)<<16) | (getc(pfb)<<24);
+#endif
          if (verbose) printf(" plain text, length %d\n", l);
 	 for (i=0; i < l ; i++) {
             c = getc(pfb);
@@ -79,7 +86,13 @@ main (int argc, char *argv[])
 	  }
          break;
       case 2:
-         l = getc(pfb) | getc(pfb)<<8 | getc(pfb)<<16 | getc(pfb)<<24;
+#if 1
+	l1 = getc(pfb); l2 = getc(pfb); l3 = getc(pfb); l4 = getc(pfb); 
+	l = l1 | l2 << 8 | l3 << 16 | l4 << 24;
+	/* printf("%2x %2x %2x %2x -> %x\n", l1, l2, l3, l4, l); */
+#else
+	l = (getc(pfb)) | (getc(pfb)<<8) | (getc(pfb)<<16) | (getc(pfb)<<24);
+#endif
          if (verbose) printf(" binary data, length %d\n", l);
          for(i = 0; i < l ;i++) {
 	    fprintf(pfa, "%02x", getc(pfb));
@@ -96,4 +109,5 @@ main (int argc, char *argv[])
       }
    }
    fclose(pfa); fclose(pfb);
+   return 0;
 }

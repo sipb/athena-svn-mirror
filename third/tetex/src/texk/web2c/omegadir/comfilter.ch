@@ -1,9 +1,24 @@
+% comfilter.ch: Local adaptations for file omfilter.ch
 %
-% This file is part of the Omega project, which
-% is based on the web2c distribution of TeX.
+% This file is part of Omega,
+% which is based on the web2c distribution of TeX,
 % 
-% Copyright (c) 1995--1998 John Plaice and Yannis Haralambous
+% Copyright (c) 1994--2001 John Plaice and Yannis Haralambous
+%
+% Omega is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
 % 
+% Omega is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Omega; if not, write to the Free Software Foundation, Inc.,
+% 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+%
 %---------------------------------------
 @x
 @!inf_ocp_list_size = 1000;
@@ -50,15 +65,15 @@ undump_things(active_info[0], active_max_ptr);
 @z
 %---------------------------------------
 @x
-  xmalloc_array (ocp_list_list , ocp_list_size);
+  ocp_list_list:=xmalloc_array (ocp_list_index, ocp_list_size);
 @y
-  xmalloc_array (ocp_list_list , ocp_list_size);
-  xmalloc_array (otp_init_input_buf , ocp_buf_size);
-  xmalloc_array (otp_input_buf , ocp_buf_size);
-  xmalloc_array (otp_output_buf , ocp_buf_size);
-  xmalloc_array (otp_stack_buf , ocp_stack_size);
-  xmalloc_array (otp_calcs , ocp_stack_size);
-  xmalloc_array (otp_states , ocp_stack_size);
+  ocp_list_list:=xmalloc_array (ocp_list_index, ocp_list_size);
+  otp_init_input_buf:=xmalloc_array (quarterword, ocp_buf_size);
+  otp_input_buf:=xmalloc_array (quarterword, ocp_buf_size);
+  otp_output_buf:=xmalloc_array (quarterword, ocp_buf_size);
+  otp_stack_buf:=xmalloc_array (quarterword, ocp_stack_size);
+  otp_calcs:=xmalloc_array (halfword, ocp_stack_size);
+  otp_states:=xmalloc_array (halfword, ocp_stack_size);
 @z
 %---------------------------------------
 @x

@@ -31,9 +31,8 @@
  *      of the link are printed on standard output.
  */
 
-int main (argc, argv)
-    int argc;
-    char *argv[];
+int
+main P2C(int, argc, char **, argv)
 {
 #ifdef S_ISLNK
     int status;

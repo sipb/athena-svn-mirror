@@ -150,8 +150,8 @@ endif('notdef')
 @p procedure out_scaled(x:fix_word); {outputs a scaled |fix_word|}
 var @!n:byte; {the first byte after the sign}
 @!m:0..65535; {the two least significant bytes}
-begin if abs(x/design_units)>=16.0 then
-  begin print_ln('The relative dimension ',x/@'4000000:1:3,
+begin if abs(x/design_units)>=16.0 then begin
+  print_ln('The relative dimension ',x/@'4000000:1:3,
     ' is too large.');
 @.The relative dimension...@>
   print('  (Must be less than 16*designsize');
@@ -161,8 +161,8 @@ begin if abs(x/design_units)>=16.0 then
 @p procedure out_scaled(x:fix_word); {outputs a scaled |fix_word|}
 var @!n:byte; {the first byte after the sign}
 @!m:0..65535; {the two least significant bytes}
-begin if fabs(x/design_units)>=16.0 then
-  begin print('The relative dimension ');
+begin if fabs(x/design_units)>=16.0 then begin
+  print('The relative dimension ');
     print_real(x/@'4000000,1,3);
     print_ln(' is too large.');
 @.The relative dimension...@>
@@ -178,9 +178,9 @@ begin if fabs(x/design_units)>=16.0 then
 % than anything else.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 @x
-  while label_table[sort_ptr].rr>char_remainder[c] do
+  while label_table[sort_ptr].rr>char_remainder[c] do begin
 @y
-  while label_table[sort_ptr].rr>intcast(char_remainder[c]) do
+  while label_table[sort_ptr].rr>intcast(char_remainder[c]) do begin
 @z
 
 @x [175] Change VF-byte output to fix ranges.
@@ -227,10 +227,10 @@ begin
       {End of arguments; we exit the loop below.} ;
     
     end else if getopt_return_val = "?" then begin
-      usage (1, 'ovp2ovf'); {|getopt| has already given an error message.}
+      usage ('ovp2ovf'); {|getopt| has already given an error message.}
 
     end else if argument_is ('help') then begin
-      usage (0, OVP2OVF_HELP);
+      usage_help (OVP2OVF_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -244,7 +244,7 @@ begin
   if (optind + 1 <> argc) and (optind + 2 <> argc) 
      and (optind + 3 <> argc) then begin
     write_ln (stderr, 'ovp2ovf: Need one to three file arguments.');
-    usage (1, 'ovp2ovf');
+    usage ('ovp2ovf');
   end;
 
   vpl_name := extend_filename (cmdline (optind), 'ovp');

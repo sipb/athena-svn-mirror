@@ -14,7 +14,7 @@ all: $(programs)
 dmp: dmp.o $(kpathsea)
 	$(kpathsea_link) dmp.o $(LOADLIBES)
 mpto: mpto.o
-	$(link_command) mpto.o $(proglib) $(LIBS) $(XLOADLIBES)
+	$(kpathsea_link) mpto.o $(LOADLIBES)
 newer: newer.o
 	$(link_command) newer.o $(proglib) $(LIBS) $(XLOADLIBES)
 makempx: makempx.in Makefile.in
@@ -46,8 +46,9 @@ Makefile: Makefile.in ../config.status
 install: install-exec install-data
 install-exec: $(programs)
 	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(scriptdir)
-	for p in mpto newer; do $(INSTALL_PROGRAM) $$p $(bindir)/$$p; done
+	$(INSTALL_PROGRAM) newer $(bindir)/newer
 	$(INSTALL_LIBTOOL_PROG) $(bindir) dmp
+	$(INSTALL_LIBTOOL_PROG) $(bindir) mpto
 	$(INSTALL_SCRIPT) makempx $(scriptdir)/makempx
 install-data:
 

@@ -7,7 +7,7 @@ LDFLAGS = @LDFLAGS@ $(XLDFLAGS)
 # proglib is for web2c; 
 # XLOADLIBES is for the installer.
 LIBS = @LIBS@
-LOADLIBES = $(proglib) $(kpathsea) $(LIBS) -lm $(XLOADLIBES)
+LOADLIBES = $(proglib) $(kpathsea) $(LIBS) $(XLOADLIBES)
 
 # May as well separate linking from compiling, just in case.
 CCLD = $(CC)

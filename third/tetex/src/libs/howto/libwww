@@ -1,0 +1,22 @@
+Downloading:
+  http://www.w3.org/Library/
+
+Files in libwww:
+  from the original distribution:
+    Library/src/* wwwconf.h.in COPYRIGH modules/md5/md5.[ch]
+    configure.in (modified!)
+    aclocal.m4 (modified!)
+
+  Added for teTeX:
+    withenable.ac libwww.ac Makefile.in (replace existing one with teTeX's)
+
+  Added to libwww/config (GNU files):
+    config.guess config.sub install.sh klibtool ltconfig ltmain.sh
+    missing mkinstalldirs
+
+  Removed after copying files:
+    *.html SSL vms Makefile.am
+
+Note, that by tetex.ac, the following features are disabled:
+  expat wais socks5 socks4 ssl regex
+libwww does not compile if any of these is not disabled.

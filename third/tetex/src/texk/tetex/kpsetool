@@ -3,7 +3,7 @@
 # kpsetool. Script to make teTeX-style kpsetool, kpsexpand and kpsepath
 # available. Uses web2c's (new) kpsexpand binary, so the systax for
 # kpsexpand is now incompatible with teTeX's (as of version 0.4).
-# Thomas Esser <te@informatik.uni-hannover.de>, Mar 1997, public domain.
+# Thomas Esser <te@dbs.uni-hannover.de>, Mar 1997, public domain.
 
 usage="
 Usage: kpsexpand: [options] string

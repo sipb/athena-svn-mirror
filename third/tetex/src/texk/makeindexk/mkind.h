@@ -304,7 +304,7 @@ violations are possible, with core dumps, or worse, incorrect output,
 ensuing.
 ======================================================================*/
 
-#define ARABIC_MAX    5		/* maximum digits in an Arabic page */
+#define ARABIC_MAX    10	/* maximum digits in an Arabic page */
 				/* number field */
 
 #define ARGUMENT_MAX  1024	/* maximum length of sort or actual key */
@@ -342,9 +342,9 @@ ensuing.
 /*====================================================================*/
 
 #if USE_KPATHSEA
-#define VERSION       "version 2.13 [07-Mar-1997] (using kpathsea)"
+#define VERSION       "version 2.14 [02-Oct-2002] (kpathsea + Thai support)"
 #else
-#define VERSION       "version 2.13 [07-Mar-1997]"
+#define VERSION       "version 2.14 [02-Oct-2002] (with Thai support)"
 #endif
 
 #define PUT_VERSION { \
@@ -353,8 +353,13 @@ ensuing.
     need_version = FALSE; \
 }
 
+#ifdef HAVE_SETLOCALE
 #define USAGE \
    "Usage: %s [-ilqrcg] [-s sty] [-o ind] [-t log] [-p num] [idx0 idx1 ...]\n"
+#else
+#define USAGE \
+   "Usage: %s [-ilqrcgLT] [-s sty] [-o ind] [-t log] [-p num] [idx0 idx1 ...]\n"
+#endif
 
 #define STYLE_PATH "INDEXSTYLE"	/* environment variable defining search */
 				/* path for style files */
@@ -384,7 +389,7 @@ typedef struct KFIELD
     char    *af[FIELD_MAX];		/* actual key */
     int     group;			/* key group */
     char    lpg[NUMBER_MAX];		/* literal page */
-    short   npg[PAGEFIELD_MAX];		/* page field array */
+    int     npg[PAGEFIELD_MAX];		/* page field array */
     short   count;			/* page field count */
     short   type;			/* page number type */
     char    *encap;			/* encapsulator */
@@ -405,6 +410,8 @@ extern int merge_page;
 extern int even_odd;
 extern int verbose;
 extern int german_sort;
+extern int thai_sort;
+extern int locale_sort;
 
 extern char idx_keyword[ARRAY_MAX];
 extern char idx_aopen;

@@ -293,7 +293,7 @@ P1C(unsigned char *,name)
 
     for(i=0;*TypeFonts[i].extension;i++)
     {
-        if(strstr(name,TypeFonts[i].extension)!=0)
+        if(strstr((char *)name,TypeFonts[i].extension)!=0)
             return(TypeFonts[i].num);
     }
     return -1;
@@ -430,7 +430,7 @@ int GetNum P1H(void)
             while(isdigit(*temp))
                 *tmp++= *temp++;
             *tmp = '\0';
-            return(atoi(token));
+            return(atoi((char *)token));
         }
         temp++;
     }
@@ -503,10 +503,10 @@ CHAR *AddChar P3C(CHAR *, TmpChar, unsigned char *, CharName, int, num)
 {
     int length;
 
-    CHAR *ThisChar = getmem(sizeof(CHAR));
-    length         = strlen(CharName);
-    ThisChar->name = getmem(length+1);
-    strcpy(ThisChar->name, CharName);
+    CHAR *ThisChar = (CHAR*) getmem(sizeof(CHAR));
+    length         = strlen((char *) CharName);
+    ThisChar->name = (unsigned char *) getmem(length+1);
+    strcpy((char *) ThisChar->name, (char *) CharName);
     ThisChar->length= length;
     ThisChar->num=num;
     ThisChar->NextChar = TmpChar;
@@ -519,10 +519,10 @@ void AddStr P2C(unsigned char *, name, int, num)
 {
     int length;
 
-    STRING *ThisStr = getmem(sizeof(STRING));
-    length         = strlen(name);
-    ThisStr->name = getmem(length+1);
-    strcpy(ThisStr->name, name);
+    STRING *ThisStr = (STRING *) getmem(sizeof(STRING));
+    length         = strlen((char *) name);
+    ThisStr->name = (unsigned char *) getmem(length+1);
+    strcpy((char *) ThisStr->name, (char *) name);
     ThisStr->num=num;
 
     ThisStr->NextStr = FirstStr;
@@ -545,7 +545,7 @@ void RevChar P1C(CHAR *, TmpChar)
                  {
                     if (label[i].select==FLG_BINARY)
                     {
-                        CHAR *Rev_Char     = getmem(sizeof(CHAR));
+                        CHAR *Rev_Char     = (CHAR *) getmem(sizeof(CHAR));
                         Rev_Char->name     = ThisChar->name;
                         Rev_Char->num      = ThisChar->num;
 
@@ -604,7 +604,7 @@ void Reeverse P1C(STRING *, TmpStr)
 
         if(TmpStr->num < tmp)
         {
-            STRING *ThisStr   = getmem(sizeof(STRING));
+            STRING *ThisStr   = (STRING *) getmem(sizeof(STRING));
             ThisStr->name     = TmpStr->name;
 
             ThisStr->NextStr = RevStr;
@@ -673,13 +673,13 @@ P2C(unsigned char *, name, CHAR *, TmpChar)
 {
     int length;
     CHAR *ThisChar = TmpChar;
-    length=strlen(name);
+    length=strlen((char *) name);
     while (ThisChar != NULL)
     {
         CHAR *NextChar = ThisChar->NextChar;
         if(ThisChar->length==length)
         {
-            if (strcmp(name, ThisChar->name) == 0)
+            if (strcmp((char *) name, (char *) ThisChar->name) == 0)
             {
                 ThisChar->choose=1;
                 return  1;
@@ -691,9 +691,9 @@ P2C(unsigned char *, name, CHAR *, TmpChar)
  *   O'Neill; bugs in application of fix due to me.
  */
         if (NextChar == 0) {
-           NextChar = getmem(sizeof(CHAR)) ;
-           NextChar->name = getmem(length + 1) ;
-           strcpy(NextChar->name, name) ;
+           NextChar = (CHAR *) getmem(sizeof(CHAR)) ;
+           NextChar->name = (unsigned char *) getmem(length + 1) ;
+           strcpy((char *) NextChar->name, (char *) name) ;
            NextChar->length = length ;
            NextChar->num = -1 ;
            NextChar->NextChar = 0 ;
@@ -754,7 +754,7 @@ int FindCharW P2C(unsigned char *, name, int, length)
 
         if(ThisChar->length==length)
         {
-            if (strcmp(name, ThisChar->name) == 0)
+            if (strcmp((char *) name, (char *) ThisChar->name) == 0)
             {
                 if(ThisChar->choose==1)
                 {
@@ -828,7 +828,7 @@ P1C(CHAR *, TmpChar)
 {
     while (TmpChar != NULL) {
         {
-            CHAR *ThisChar     = getmem(sizeof(CHAR));
+            CHAR *ThisChar     = (CHAR *) getmem(sizeof(CHAR));
             ThisChar->name     = TmpChar->name;
             ThisChar->length   = TmpChar->length;
             ThisChar->num      = TmpChar->num;
@@ -908,7 +908,7 @@ void ScanSubrs P1C(int, i)
         {
             if(word_type==2)
             {
-                if(!strcmp(token,Dup))
+                if(!strcmp((char *) token,Dup))
                 {
                     if(test==0)
                         test=1;
@@ -1319,8 +1319,8 @@ void ScanChars P1C(int, i)
         {
             if(word_type>=3)
             {
-                strcpy(tmp_token, token);
-                str_len = strlen(token);
+                strcpy((char *) tmp_token, (char *) token);
+                str_len = strlen((char *) token);
 
 
                 if(CharCount!=0)
@@ -1347,7 +1347,7 @@ void ScanChars P1C(int, i)
 #endif
                         if(word_type>3)
                         {
-                            if(strstr(token, notdef)!=NULL)
+                            if(strstr((char *) token, (char *) notdef)!=NULL)
                             {
                                 CharCount--;
                                 label[number].num = -2;
@@ -1487,7 +1487,7 @@ int FindKeyWord P2C(int, First_Key, int, lastkey)
             {
                 for(i=First_Key; i<=lastkey; i++)
                 {
-                    if(!strcmp(token, Key[i].name))
+                    if(!strcmp((char *) token, Key[i].name))
                     {
                         tmp_num = GetNum();
                         if(tmp_num<0)
@@ -1498,7 +1498,7 @@ int FindKeyWord P2C(int, First_Key, int, lastkey)
                             exit(1);
                         }
                         keyword[current].oldnum = tmp_num;
-                        keyword[current].length=strlen(token);
+                        keyword[current].length=strlen((char *) token);
                         keyword[current].begin=temp - keyword[current].length;
                         return i;
                     }
@@ -1676,12 +1676,12 @@ P1C(int, err_num)
             return -1;
 
         if(err_num==5)
-            refer[ind_ref].num[i++]=atoi(token);
+            refer[ind_ref].num[i++]=atoi((char *) token);
         else
         {
             for(j=0; *RefKey[j]; j++)
             {
-                 if(strcmp(token, RefKey[j]) ==0)
+                 if(strcmp((char *) token, RefKey[j]) ==0)
                         break;
             }
             switch(j)
@@ -1705,7 +1705,7 @@ P1C(int, err_num)
                         refer[ind_ref].num[1] = 1;
                         refer[ind_ref].num[2] = refer[ind_ref].num[0];
                         GetWord(token);
-                        refer[ind_ref].num[0]= atoi(token);
+                        refer[ind_ref].num[0]= atoi((char *) token);
                     }
                     i=0;
                     refer[ind_ref].select=1;
@@ -1757,7 +1757,7 @@ int CharEncoding P1H(void)
 
     if(err_token==2)
     {
-        if(strcmp(token, Dup) ==0)
+        if(strcmp((char *) token, Dup) ==0)
         {
             err_token=GetWord(token);
             if(err_token<0)
@@ -1765,7 +1765,7 @@ int CharEncoding P1H(void)
 
             if(err_token!=2)       /* define "dup word" */
             {
-                num=atoi(token);
+                num=atoi((char *) token);
 
                 err_token=GetWord(token);
                 if(err_token<0)
@@ -1811,7 +1811,7 @@ void FindEncoding P1H(void)
         {
             if(num_err==3)
             {
-                if (strcmp(token,"/Encoding") == 0)
+                if (strcmp((char *) token,"/Encoding") == 0)
                 {
 
                     tmpnum=GetWord(token);
@@ -1962,7 +1962,7 @@ void OutASCII P3C(FILE *, fout, ub1 *, buff, ub4, len)
                 FindEncoding();
             }
 
-            line=KillUnique(tmpline);
+            line=(unsigned char *) KillUnique((char *) tmpline);
 
             if(keep_flg==0)
                 fprintf(fout,"%s", line);
@@ -2046,17 +2046,17 @@ int PartialPFA P2C(FILE *, fin, FILE *, fout)
     memory = BASE_MEM;
     addmemory= ADD_MEM;
     length=0;
-    temp=UniGetMem(memory);
+    temp=(typetemp *) UniGetMem(memory);
     begin_of_scan=temp;
 
     for(;;)
     {
-        if(fgets(buf,BUFSIZ,fin)==NULL)
+        if(fgets((char *)buf,BUFSIZ,fin)==NULL)
             break;
         switch (type)
         {
             case FLG_ASCII:
-                if(strstr(buf,"currentfile eexec") != NULL)
+                if(strstr((char *)buf,"currentfile eexec") != NULL)
                 {
                     type=FLG_BINARY;
                 }
@@ -2067,7 +2067,7 @@ int PartialPFA P2C(FILE *, fin, FILE *, fout)
                 }
 
                 if(keep_flg==0)
-                    fprintf(fout,"%s", KillUnique(buf));
+                    fprintf(fout,"%s", KillUnique((char *)buf));
                 else
                 {
                     AddStr(buf,keep_num);
@@ -2108,11 +2108,11 @@ int PartialPFA P2C(FILE *, fin, FILE *, fout)
 
                     OutHEX(fout);
                     UniFree(begin_of_scan);
-                    fprintf(fout, "%s", KillUnique(buf));
+                    fprintf(fout, "%s", KillUnique((char*) buf));
                     break;
                 }
 
-                add_of_len=strlen(buf)/2;
+                add_of_len=strlen((char *) buf)/2;
                 length=length + add_of_len;
 
                 if(length>memory)
@@ -2120,7 +2120,7 @@ int PartialPFA P2C(FILE *, fin, FILE *, fout)
                     memory = memory + addmemory;
 /* Using "memory = length;" retains minimum */
 /* of memory  but it will be more slowly    */
-                    begin_of_scan = UniRealloc(begin_of_scan, memory);
+                    begin_of_scan = (typetemp*) UniRealloc(begin_of_scan, memory);
                     temp = begin_of_scan + length - add_of_len;
                 }
                 HexEDeCrypt(buf);
@@ -2217,7 +2217,7 @@ P2C(FILE *, fin, FILE *, fout)
             if(sub_type == FIRST_BINARY)
             {
                 sub_type = NEXT_BINARY;
-                temp=UniGetMem(t_length);
+                temp=(typetemp*) UniGetMem(t_length);
                 begin_of_scan=temp;
             }
         }
@@ -2362,13 +2362,13 @@ int Afm P1H(void)
     }
 
     afmfile[i]='\0';
-    strcat(afmfile,".afm");
+    strcat((char *) afmfile,".afm");
     fprintf(stderr, "<%s>", afmfile);
 
-    if ((fafm = psfopen(afmfile, "r")) == NULL)
+    if ((fafm = psfopen((char *) afmfile, "r")) == NULL)
     {
         NameOfProgram();
-        perror(afmfile);
+        perror((char *) afmfile);
         return -1;
     }
 
@@ -2376,10 +2376,10 @@ int Afm P1H(void)
     {
         line = tmpline;
 
-        if(fgets(line,BUFSIZ,fafm)==NULL)
+        if(fgets((char *) line,BUFSIZ,fafm)==NULL)
             break;
 
-        if(strstr(line, AfmKey[j])!=NULL)
+        if(strstr((char *) line, AfmKey[j])!=NULL)
         {
             if(j==0)
             {
@@ -2400,12 +2400,12 @@ int Afm P1H(void)
                 err_num=GetWord(token);
                 if(err_num==2)
                 {
-                    if(strcmp(token,InfoKey[k])==0)
+                    if(strcmp((char *) token,InfoKey[k])==0)
                     {
                         if(k==0)
                         {
                             err_num=GetWord(token);
-                            num=atoi(token);
+                            num=atoi((char *) token);
                             k=1;
                             continue;
                         }
@@ -2414,7 +2414,7 @@ int Afm P1H(void)
                             err_num=GetWord(token);
                             name[0]='/';
                             name[1]='\0';
-                            strcat(name,token);
+                            strcat((char *) name, (char *) token);
                             if(num>=0)
                                 FirstCharA=AddChar(FirstCharA, name, num);
                             break;
@@ -2442,7 +2442,7 @@ int FontPart P3C(FILE *, fout, unsigned char *, fontfile,
     lastpart=0;
     keep_flg=0;
     flg_seac=0;
-    strcpy(psfontfile,fontfile);
+    strcpy((char *) psfontfile, (char *) fontfile);
     find_encod=0;
     CharCount=0;
 
@@ -2452,7 +2452,7 @@ int FontPart P3C(FILE *, fout, unsigned char *, fontfile,
               label[i].num=CHAR_NOT_DEF;
 
 
-        strcpy(psvectfile, basevect);
+        strcpy((char *) psvectfile, (char *) basevect);
 
 #ifdef DEBUG
         if(dd(D_VIEW_VECTOR))
@@ -2471,7 +2471,7 @@ int FontPart P3C(FILE *, fout, unsigned char *, fontfile,
     if(vectfile)
     {
         reencode=FLG_REENCODE;
-        strcpy(psvectfile,vectfile);
+        strcpy((char *) psvectfile, (char *) vectfile);
     }
 
     for(num=0;num<NUM_LABEL;num++)
@@ -2480,10 +2480,10 @@ int FontPart P3C(FILE *, fout, unsigned char *, fontfile,
     switch(DefTypeFont(fontfile))
     {
         case PFA:
-            if ((fin = psfopen(fontfile, "r"))==NULL)
+            if ((fin = psfopen((char *) fontfile, "r"))==NULL)
             {
                 NameOfProgram();
-                perror(fontfile);
+                perror((char *) fontfile);
                 return -1;
             }
             rc = PartialPFA(fin,fout);
@@ -2497,10 +2497,10 @@ int FontPart P3C(FILE *, fout, unsigned char *, fontfile,
 
             break;
         case PFB:
-            if ((fin = psfopen(fontfile, OPEN_READ_BINARY))==NULL)
+            if ((fin = psfopen((char *) fontfile, OPEN_READ_BINARY))==NULL)
             {
                 NameOfProgram();
-                perror(fontfile);
+                perror((char *) fontfile);
                 return -1;
             }
             rc = PartialPFB(fin,fout);
@@ -2553,10 +2553,10 @@ int LoadVector P2C(int, num, CHAR *, TmpChar)
 
     CharCount = 0;
 
-    if ((fvect = psfopen(psvectfile, "r")) == NULL)
+    if ((fvect = psfopen((char *) psvectfile, "r")) == NULL)
     {
         NameOfProgram();
-        perror(psvectfile);
+        perror((char *) psvectfile);
         return -1;
     }
 
@@ -2564,7 +2564,7 @@ int LoadVector P2C(int, num, CHAR *, TmpChar)
     {
         line = tmpline;
 
-        if((fgets(line,BUFSIZ,fvect)==NULL)||(end_vect!=0))
+        if((fgets((char*)line,BUFSIZ,fvect)==NULL)||(end_vect!=0))
             break;
 
         for(;;)

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1996.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**      @(#) $Id: HTEvent.c,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+**      @(#) $Id: HTEvent.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 **	The event dispatcher allows applications to register their own event
 **	models. They may register the standard HTEventrg methods from 
@@ -27,13 +27,13 @@ PRIVATE HTEvent_unregisterCallback * UnregisterCBF = NULL;
 
 PUBLIC void HTEvent_setRegisterCallback(HTEvent_registerCallback * registerCBF)
 {
-    if (CORE_TRACE) HTTrace("Event....... registering %p\n", registerCBF);
+    HTTRACE(CORE_TRACE, "Event....... registering %p\n" _ registerCBF);
     RegisterCBF = registerCBF;
 }
 
 PUBLIC void HTEvent_setUnregisterCallback(HTEvent_unregisterCallback * unregisterCBF)
 {
-    if (CORE_TRACE) HTTrace("Event....... registering %p\n", unregisterCBF);
+    HTTRACE(CORE_TRACE, "Event....... registering %p\n" _ unregisterCBF);
     UnregisterCBF = unregisterCBF;
 }
 
@@ -45,7 +45,7 @@ PUBLIC BOOL HTEvent_isCallbacksRegistered (void)
 PUBLIC int HTEvent_unregister (SOCKET s, HTEventType type)
 {
     if (!UnregisterCBF) {
-	if (CORE_TRACE) HTTrace("Event....... No handler registered\n");
+	HTTRACE(CORE_TRACE, "Event....... No handler registered\n");
         return -1;
     }
     return (*UnregisterCBF)(s, type);
@@ -54,7 +54,7 @@ PUBLIC int HTEvent_unregister (SOCKET s, HTEventType type)
 PUBLIC int HTEvent_register(SOCKET s, HTEventType type, HTEvent * event)
 {
     if (!RegisterCBF) {
-	if (CORE_TRACE) HTTrace("Event....... No handler registered\n");
+	HTTRACE(CORE_TRACE, "Event....... No handler registered\n");
         return -1;
     }
     return (*RegisterCBF)(s, type, event);
@@ -78,9 +78,8 @@ PUBLIC HTEvent * HTEvent_new (HTEventCallback * cbf, void * context,
 	me->param = context;
 	me->priority = priority;
 	me->millis = millis;
-	if (CORE_TRACE)
-	    HTTrace("Event....... Created event %p with context %p, priority %d, and timeout %d\n",
-		    me, context, priority, millis);
+	HTTRACE(CORE_TRACE, "Event....... Created event %p with context %p, priority %d, and timeout %d\n" _ 
+		    me _ context _ priority _ millis);
 	return me;
     }
     return NULL;
@@ -90,7 +89,7 @@ PUBLIC BOOL HTEvent_delete (HTEvent * me)
 {
     if (me) {
 	HT_FREE(me);
-	if (CORE_TRACE) HTTrace("Event....... Deleted event %p\n", me);
+	HTTRACE(CORE_TRACE, "Event....... Deleted event %p\n" _ me);
 	return YES;
     }
     return NO;

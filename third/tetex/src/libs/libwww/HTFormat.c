@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTFormat.c,v 1.1.1.1 2000-03-10 17:52:57 ghudson Exp $
+**	@(#) $Id: HTFormat.c,v 1.1.1.2 2003-02-25 22:25:20 amb Exp $
 **
 ** Bugs:
 **	Assumes the incoming stream is ASCII, rather than a local file
@@ -33,6 +33,8 @@ PRIVATE HTList * HTCharsets = NULL;
 PRIVATE HTList * HTLanguages = NULL;
 
 PRIVATE double HTMaxSecs = 1e10;		/* No effective limit */
+
+PRIVATE HTConverter * presentation_converter = NULL;
 
 struct _HTStream {
     const HTStreamClass *	isa;
@@ -99,7 +101,7 @@ PUBLIC HTStream * HTBlackHoleConverter (HTRequest *	request,
 					HTFormat	output_format,
 					HTStream *	output_stream)
 {
-    if (STREAM_TRACE) HTTrace("BlackHole... Converter Created\n");
+    HTTRACE(STREAM_TRACE, "BlackHole... Converter Created\n");
     HTBaseConverterStreamInstance.isa = &HTBlackHoleConverterClass;
     return &HTBaseConverterStreamInstance;
 }
@@ -152,6 +154,16 @@ PUBLIC HTStream * HTIdentityCoding (HTRequest *	request,
 /* 	  			CONTENT TYPES				     */
 /* ------------------------------------------------------------------------- */
 
+PUBLIC void HTPresentation_setConverter (HTConverter * pconv)
+{
+    presentation_converter = pconv;
+}
+
+PUBLIC HTConverter * HTPresentation_converter (void)
+{
+    return presentation_converter;
+}
+
 /*	Define a presentation system command for a content-type
 **	-------------------------------------------------------
 ** INPUT:
@@ -171,24 +183,24 @@ PUBLIC void HTPresentation_add (HTList *	conversions,
 				double		secs_per_byte)
 {
     HTPresentation * pres;
-    if ((pres = (HTPresentation  *) HT_CALLOC(1,sizeof(HTPresentation))) == NULL)
-        HT_OUTOFMEM("HTSetPresentation");
-    
-    pres->rep = HTAtom_for(representation);
-    pres->rep_out = WWW_PRESENT;		/* Fixed for now ... :-) */
-    pres->converter = HTSaveAndExecute;		/* Fixed for now ...     */
-    pres->quality = quality;
-    pres->secs = secs;
-    pres->secs_per_byte = secs_per_byte;
-    pres->rep = HTAtom_for(representation);
-    pres->command = NULL;
-    StrAllocCopy(pres->command, command);
-    pres->test_command = NULL;
-    StrAllocCopy(pres->test_command, test_command);
-    if (CORE_TRACE)
-	HTTrace("Presentation Adding `%s\' with quality %.2f\n",
-		command, quality);
-    HTList_addObject(conversions, pres);
+    if (presentation_converter) {
+	if ((pres = (HTPresentation  *) HT_CALLOC(1,sizeof(HTPresentation))) == NULL)
+	    HT_OUTOFMEM("HTSetPresentation");
+        pres->rep = HTAtom_for(representation);
+	pres->rep_out = WWW_PRESENT;		/* Fixed for now ... :-) */
+	pres->converter = presentation_converter;
+	pres->quality = quality;
+	pres->secs = secs;
+	pres->secs_per_byte = secs_per_byte;
+	pres->rep = HTAtom_for(representation);
+	pres->command = NULL;
+	StrAllocCopy(pres->command, command);
+	pres->test_command = NULL;
+	StrAllocCopy(pres->test_command, test_command);
+	HTTRACE(CORE_TRACE, "Presentation Adding `%s\' with quality %.2f\n" _ 
+		    command _ quality);
+	HTList_addObject(conversions, pres);
+    }
 }
 
 PUBLIC void HTPresentation_deleteAll (HTList * list)
@@ -226,9 +238,8 @@ PUBLIC void HTConversion_add (HTList *		conversions,
     pres->quality = quality;
     pres->secs = secs;
     pres->secs_per_byte = secs_per_byte;
-    if (CORE_TRACE)
-	HTTrace("Conversions. Adding %p with quality %.2f\n",
-		converter, quality);
+    HTTRACE(CORE_TRACE, "Conversions. Adding %p with quality %.2f\n" _ 
+		converter _ quality);
     HTList_addObject(conversions, pres);
 }
 
@@ -255,12 +266,11 @@ PUBLIC BOOL HTCoding_add (HTList * 	list,
 	me->encoder = encoder;
 	me->decoder = decoder;
 	me->quality = quality;
-	if (CORE_TRACE)
-	    HTTrace("Codings..... Adding %s with quality %.2f\n",
-		    encoding, quality);
+	HTTRACE(CORE_TRACE, "Codings..... Adding %s with quality %.2f\n" _ 
+		    encoding _ quality);
 	return HTList_addObject(list, (void *) me);
     }
-    if (CORE_TRACE) HTTrace("Codings..... Bad argument\n");
+    HTTRACE(CORE_TRACE, "Codings..... Bad argument\n");
     return NO;
 }
 
@@ -295,8 +305,7 @@ PUBLIC void HTLanguage_add (HTList *		list,
 {
     HTAcceptNode * node;
     if (!list || !lang || !*lang)  {
-	if (CORE_TRACE)
-	    HTTrace("Languages... Bad argument\n");
+	HTTRACE(CORE_TRACE, "Languages... Bad argument\n");
 	return;
     }
     if ((node = (HTAcceptNode *) HT_CALLOC(1, sizeof(HTAcceptNode))) == NULL)
@@ -329,8 +338,7 @@ PUBLIC void HTCharset_add (HTList *		list,
 {
     HTAcceptNode * node;
     if (!list || !charset || !*charset)  {
-	if (CORE_TRACE)
-	    HTTrace("Charset..... Bad argument\n");
+	HTTRACE(CORE_TRACE, "Charset..... Bad argument\n");
 	return;
     }
     if ((node = (HTAcceptNode *) HT_CALLOC(1, sizeof(HTAcceptNode))) == NULL)
@@ -523,22 +531,24 @@ PUBLIC HTStream * HTStreamStack (HTFormat	rep_in,
     double best_quality = -1e30;		/* Pretty bad! */
     HTPresentation *pres, *best_match=NULL;
     if (rep_out == WWW_RAW) {
-	if (CORE_TRACE) HTTrace("StreamStack. Raw output...\n");
+	HTTRACE(CORE_TRACE, "StreamStack. Raw output...\n");
 	return output_stream ? output_stream : HTErrorStream();
     }
 
     if (rep_out == rep_in) {
-	if (CORE_TRACE)
-	    HTTrace("StreamStack. Identical input/output format (%s)\n",
+	HTTRACE(CORE_TRACE, "StreamStack. Identical input/output format (%s)\n" _ 
 		     HTAtom_name(rep_out));
 	return output_stream ? output_stream : HTErrorStream();
     }
+
+#ifdef HTDEBUG
     if (CORE_TRACE) {
 	const char *p = HTAtom_name(rep_in);
 	const char *q = HTAtom_name(rep_out); 
-	HTTrace("StreamStack. Constructing stream stack for %s to %s\n",
-		 p ? p : "<NULL>", q ? q : "<NULL>");
+	HTTRACE(CORE_TRACE, "StreamStack. Constructing stream stack for %s to %s\n" _
+		p ? p : "<NULL>" _ q ? q : "<NULL>");
     }
+#endif /* HTDEBUG */
 
     conversion[0] = HTRequest_conversion(request);
     conversion[1] = HTConversions;
@@ -555,8 +565,7 @@ PUBLIC HTStream * HTStreamStack (HTFormat	rep_in,
 		    int result=0;
 		    if (pres->test_command) {
 			result = system(pres->test_command);
-			if (CORE_TRACE) 
-			    HTTrace("StreamStack. system(%s) returns %d\n", pres->test_command, result);
+			HTTRACE(CORE_TRACE, "StreamStack. system(%s) returns %d\n" _ pres->test_command _ result);
 		    }
 		    if (!result) {
 			best_match = pres;
@@ -573,18 +582,18 @@ PUBLIC HTStream * HTStreamStack (HTFormat	rep_in,
 
     if (best_match) {
  	if (rep_out == WWW_SOURCE && best_match->rep_out != WWW_SOURCE) {
-	    if (CORE_TRACE) HTTrace("StreamStack. Source output\n");
+	    HTTRACE(CORE_TRACE, "StreamStack. Source output\n");
 	    return output_stream ? output_stream : HTErrorStream();
 	}
 	return (*best_match->converter)(request, best_match->command,
 					rep_in, rep_out, output_stream);
     }
     if (rep_out == WWW_SOURCE) {
-	if (CORE_TRACE) HTTrace("StreamStack. Source output\n");
+	HTTRACE(CORE_TRACE, "StreamStack. Source output\n");
 	return output_stream ? output_stream : HTErrorStream();
     }
 
-    if (CORE_TRACE) HTTrace("StreamStack. NOT FOUND - error!\n");
+    HTTRACE(CORE_TRACE, "StreamStack. NOT FOUND - error!\n");
     return HTBlackHole();
 }
 	
@@ -606,13 +615,10 @@ PUBLIC double HTStackValue (HTList *	theseConversions,
     int which_list;
     HTList* conversion[2];
     
-    if (CORE_TRACE) {
-	HTTrace("StackValue.. Evaluating stream stack for %s worth %.3f to %s\n",
-		HTAtom_name(rep_in),	initial_value,
-		HTAtom_name(rep_out));
-    }
-    if (rep_out == WWW_SOURCE ||
-    	rep_out == rep_in) return 0.0;
+    HTTRACE(CORE_TRACE, "StackValue.. Evaluating stream stack for %s worth %.3f to %s\n" _
+	    HTAtom_name(rep_in) _ initial_value _ HTAtom_name(rep_out));
+
+    if (rep_out == WWW_SOURCE || rep_out == rep_in) return 0.0;
 
     conversion[0] = theseConversions;
     conversion[1] = HTConversions;
@@ -654,13 +660,12 @@ PUBLIC HTStream * HTContentCodingStack (HTEncoding	encoding,
     double best_quality = -1e30;		/* Pretty bad! */
     int cnt;
     if (!encoding || !request) {
-	if (CORE_TRACE) HTTrace("Codings... Nothing applied...\n");
+	HTTRACE(CORE_TRACE, "Codings... Nothing applied...\n");
 	return target ? target : HTErrorStream();
     }
     coders[0] = HTRequest_encoding(request);
     coders[1] = HTContentCoders;
-    if (CORE_TRACE)
-	HTTrace("C-E......... Looking for `%s\'\n", HTAtom_name(encoding));
+    HTTRACE(CORE_TRACE, "C-E......... Looking for `%s\'\n" _ HTAtom_name(encoding));
     for (cnt=0; cnt < 2; cnt++) {
 	HTList * cur = coders[cnt];
 	while ((pres = (HTCoding *) HTList_nextObject(cur))) {
@@ -673,8 +678,7 @@ PUBLIC HTStream * HTContentCodingStack (HTEncoding	encoding,
     }
 
     if (best_match) {
-	if (CORE_TRACE)
-	    HTTrace("C-E......... Found `%s\'\n", HTAtom_name(best_match->encoding));
+	HTTRACE(CORE_TRACE, "C-E......... Found `%s\'\n" _ HTAtom_name(best_match->encoding));
 	if (encode) {
 	    if (best_match->encoder)
 		top = (*best_match->encoder)(request, param, encoding, top);
@@ -690,9 +694,9 @@ PUBLIC HTStream * HTContentCodingStack (HTEncoding	encoding,
 	**  instead of the stream that we got.
 	*/
 	if (encode) {
-	    if (CORE_TRACE) HTTrace("C-E......... NOT FOUND - can't encode stream!\n");
+	    HTTRACE(CORE_TRACE, "C-E......... NOT FOUND - can't encode stream!\n");
 	} else {
-	    if (CORE_TRACE) HTTrace("C-E......... NOT FOUND - error!\n");
+	    HTTRACE(CORE_TRACE, "C-E......... NOT FOUND - error!\n");
 	    top = HTBlackHole();
 	}
     }
@@ -763,18 +767,17 @@ PUBLIC HTStream * HTTransferCodingStack (HTEncoding	encoding,
     HTCoding * pres = NULL;
     int cnt;
     if (!encoding || !request) {
-	if (CORE_TRACE) HTTrace("Codings... Nothing applied...\n");
+	HTTRACE(CORE_TRACE, "Codings... Nothing applied...\n");
 	return target ? target : HTErrorStream();
     }
     coders[0] = HTRequest_transfer(request);
     coders[1] = HTTransferCoders;
-    if (CORE_TRACE)
-	HTTrace("C-E......... Looking for `%s\'\n", HTAtom_name(encoding));
+    HTTRACE(CORE_TRACE, "C-E......... Looking for `%s\'\n" _ HTAtom_name(encoding));
     for (cnt=0; cnt < 2; cnt++) {
 	HTList * cur = coders[cnt];
 	while ((pres = (HTCoding *) HTList_nextObject(cur))) {
 	    if (pres->encoding == encoding || HTMIMEMatch(pres->encoding, encoding)) {
-		if (CORE_TRACE) HTTrace("C-E......... Found...\n");
+		HTTRACE(CORE_TRACE, "C-E......... Found...\n");
 		if (encode) {
 		    if (pres->encoder)
 			top = (*pres->encoder)(request, param, encoding, top);
@@ -794,9 +797,9 @@ PUBLIC HTStream * HTTransferCodingStack (HTEncoding	encoding,
     */
     if (!HTFormat_isUnityContent(encoding) && target==top) {
 	if (encode) {
-	    if (CORE_TRACE) HTTrace("C-E......... NOT FOUND - can't encode stream!\n");
+	    HTTRACE(CORE_TRACE, "C-E......... NOT FOUND - can't encode stream!\n");
 	} else {
-	    if (CORE_TRACE) HTTrace("C-E......... NOT FOUND - error!\n");
+	    HTTRACE(CORE_TRACE, "C-E......... NOT FOUND - error!\n");
 	    top = HTBlackHole();
 	}
     }
@@ -867,7 +870,7 @@ PUBLIC HTStream * HTContentTransferCodingStack (HTEncoding	encoding,
     HTCoding * pres = NULL;
     int cnt;
     if (!encoding || !request) {
-	if (CORE_TRACE) HTTrace("C-T-E..... Nothing applied...\n");
+	HTTRACE(CORE_TRACE, "C-T-E..... Nothing applied...\n");
 	return target ? target : HTErrorStream();
     }
 
@@ -876,13 +879,12 @@ PUBLIC HTStream * HTContentTransferCodingStack (HTEncoding	encoding,
     */
     coders[0] = HTRequest_transfer(request);
     coders[1] = HTTransferCoders;
-    if (CORE_TRACE)
-	HTTrace("C-T-E....... Looking for %s\n", HTAtom_name(encoding));
+    HTTRACE(CORE_TRACE, "C-T-E....... Looking for %s\n" _ HTAtom_name(encoding));
     for (cnt=0; cnt < 2; cnt++) {
 	HTList * cur = coders[cnt];
 	while ((pres = (HTCoding *) HTList_nextObject(cur))) {
 	    if (pres->encoding == encoding) {
-		if (CORE_TRACE) HTTrace("C-T-E....... Found...\n");
+		HTTRACE(CORE_TRACE, "C-T-E....... Found...\n");
 		if (encode) {
 		    if (pres->encoder)
 			top = (*pres->encoder)(request, param, encoding, top);
@@ -902,10 +904,10 @@ PUBLIC HTStream * HTContentTransferCodingStack (HTEncoding	encoding,
     */
     if (!HTFormat_isUnityTransfer(encoding) && target==top) {
 	if (encode) {	    
-	    if (CORE_TRACE) HTTrace("C-T-E....... NOT FOUND - removing encoding!\n");
+	    HTTRACE(CORE_TRACE, "C-T-E....... NOT FOUND - removing encoding!\n");
 	    HTAnchor_setContentTransferEncoding(HTRequest_anchor(request), NULL);
 	} else {
-	    if (CORE_TRACE) HTTrace("C-T-E....... NOT FOUND - error!\n");
+	    HTTRACE(CORE_TRACE, "C-T-E....... NOT FOUND - error!\n");
 	    top = HTBlackHole();
 	}
     }

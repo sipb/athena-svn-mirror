@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTList.c,v 1.1.1.1 2000-03-10 17:52:59 ghudson Exp $
+**	@(#) $Id: HTList.c,v 1.1.1.2 2003-02-25 22:26:59 amb Exp $
 **
 **	A list is represented as a sequence of linked nodes of type HTList.
 **	The first node is a header which contains no object.
@@ -49,8 +49,7 @@ PUBLIC BOOL HTList_addObject (HTList * me, void * newObject)
 	me->next = newNode;
 	return YES;
     } else {
-	if (CORE_TRACE)
-	    HTTrace("HTList...... Can not add object %p to nonexisting list\n",
+	HTTRACE(CORE_TRACE, "HTList...... Can not add object %p to nonexisting list\n" _ 
 		    newObject);
     }
     return NO;
@@ -81,6 +80,33 @@ PUBLIC BOOL HTList_removeObject (HTList * me, void * oldObject)
     }
     return NO;			/* object not found or NULL list */
 }
+
+PUBLIC HTList * HTList_addList (HTList * me, void * newObject)
+{
+    if (me) {
+	HTList *newNode;
+	if ((newNode = (HTList  *) HT_CALLOC(1, sizeof(HTList))) == NULL)
+	    HT_OUTOFMEM("HTList_addObject");
+	newNode->object = newObject;
+	newNode->next = me->next;
+	me->next = newNode;
+	return newNode;
+    } else {
+	HTTRACE(CORE_TRACE, "HTList...... Can not add object %p to nonexisting List\n" _ newObject);
+    }
+    return (HTList *) NULL;
+}
+
+PUBLIC HTList * HTList_appendList (HTList * me, void *newObject)
+{
+    if (me) {
+	while (me->next) 
+	    me = me->next;
+	return HTList_addList(me, newObject);
+    }
+    return (HTList *) NULL;
+}
+
 
 PUBLIC BOOL HTList_quickRemoveElement (HTList * me, HTList * last)
 {
@@ -296,7 +322,7 @@ PUBLIC BOOL HTList_insertionSort (HTList * head, HTComparer * comp)
 	}
 	return YES;
     } else {
-	if (CORE_TRACE) HTTrace("List........ Empty list or no sort algorithm\n");
+	HTTRACE(CORE_TRACE, "List........ Empty list or no sort algorithm\n");
     }
     return NO;
 }

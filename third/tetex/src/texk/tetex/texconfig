@@ -1,5 +1,18 @@
 #!/bin/sh
 
+# TeX-Config version 2.0 for teTeX and TeX Live. I hope, you will love
+# this script :-)
+
+# Any comments, improvements, ... please via Email to:
+# Thomas Esser, te@dbs.uni-hannover.de
+# Copyright: Thomas Esser, 1994, 1995, 1996, 1997, 1999, 2002. Public domain.
+
+# You may override DIALOG_TERMINFO and DIALOG_TERM in your environment.
+
+version=teTeX
+#version='TeX Live'
+
+# invoke the right shell:
 test -f /bin/sh5 && test -z "$RUNNING_SH5" \
   && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
   && { RUNNING_SH5=true; export RUNNING_SH5; exec /bin/sh5 $0 ${1+"$@"}; }
@@ -10,33 +23,49 @@ test -f /bin/bsh && test -z "$RUNNING_BSH" \
   && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
 unset RUNNING_BSH
 
-SAVE_ARGS=${1+"$@"}
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
 
-version=teTeX
-#version='TeX Live'
+usage()
+{
+cat >&2 <<'eof'
+Usage: texconfig conf
+       texconfig confall
+       texconfig rehash
+       texconfig formats
+       texconfig localsetup
+       texconfig hyphen FORMAT
+       texconfig mode    [options]
+       texconfig xdvi    [options] ...
+       texconfig dvips   [options] ...
+       texconfig dvipdfm [options] ...
+       texconfig pdftex  [options] ...
+       texconfig font    [options] ...
+       texconfig faq
+       texconfig init    [format]
 
-case $version in
-  "TeX Live")
-    SILENT_TEXLINKS=true;;
-esac
+Get help with:
+       texconfig help
+       texconfig hyphen
+       texconfig mode
+       texconfig xdvi
+       texconfig dvips
+       texconfig dvipdfm
+       texconfig pdftex
+       texconfig font
+eof
+}
 
-# TeX-Config version 0.9 for teTeX and TeX Live. I hope, you will love
-# this script :-)
+SAVE_ARGS="$@"
 
-# More comments, more verbose messages, and better error handling are needed.
-# It sould give more help (e.g on ls-R and localfont) and ask a bit more
-# for confirmations.
-
-# Any comments, improvements, ... please via Email to:
-# Thomas Esser, te@informatik.uni-hannover.de
-# Copyright: Thomas Esser, 1994, 1995, 1996, 1997, 1999. Public domain.
-
-# You may override DIALOG_TERMINFO and DIALOG_TERM in your environment.
+# make sure that files relative to `pwd` are found
+: ${KPSE_DOT=`pwd`}
+export KPSE_DOT
 
 progname=`basename $0`
 tmpdir=${TMP-/tmp}/texconf$$
-tmpmenu=$tmpdir/menu.out
-tmpans=$tmpdir/answer.out
+tmpmenu="$tmpdir"/menu.out
+tmpans="$tmpdir"/answer.out
 std_pager=more
 xdvi_shrink_scale=75
 std_editor=vi
@@ -95,7 +124,7 @@ web2c files'
 umask 022
 
 PATH=$PATH:`pwd`; export PATH
-log=$tmpdir/logfile
+log="$tmpdir"/logfile
 unset mode || true
 
 echo_a() { echo -n "$@"; }
@@ -104,6 +133,12 @@ echo_c() { echo -e "$@\c"; }
 echo_d() { /bin/echo -n "$@"; }
 echo_e() { /bin/echo "$@\c"; }
 echo_f() { /bin/echo -e "$@\c"; }
+
+
+# exit xyz does not set $? to xyz on all systems. We work around by using
+# exit_return instead of exit.
+exit_return() { setreturn ${1+"$@"}; cleanup; };
+setreturn() { return ${1+"$@"}; }
 
 find_echo()
 {
@@ -120,28 +155,65 @@ find_fmt()
     { test -x /bin/adjust || test -x /usr/bin/adjust; } && FMT=adjust
 }
 
-cls() { test -z "$NO_CLEAR" && clear; }
+###############################################################################
+# cleanup()
+#   clean up the temp area and exit with proper exit status
+###############################################################################
+cleanup()
+{
+  rc=$?
+  $needsCleanup && test -n "$tmpdir" && test -d "$tmpdir" \
+    && { rm -f "$tmpdir"/*; cd /; rmdir "$tmpdir"; }
+  exit $rc
+}
+
+###############################################################################
+# setupTmpDir()
+#   set up a temp directory and a trap to remove it
+###############################################################################
+setupTmpDir()
+{
+  $needsCleanup && return
+
+  trap 'cleanup' 1 2 3 7 13 15
+  needsCleanup=true
+  (umask 077; mkdir "$tmpdir") \
+    || abort "could not create directory \`$tmpdir'"
+}
+
+###############################################################################
+# abort(errmsg)
+#   print `errmsg' to stderr and exit with error code 1
+###############################################################################
+abort()
+{
+  echo "$progname: $1." >&2
+  false  # some systems need this to set nonzero $?
+  cleanup
+  exit 1
+}
 
 # Some systems have their own dialog. Use it then and do not use
 # faked TERM and TERMINFO variables when calling that dialog.
 find_dialogtype()
 {
-  own_dialog=false
   { u=`uname -s`; } 2>/dev/null
   case "$u" in
     FreeBSD|Linux)
-      DIALOG_PROG=/usr/bin/dialog
-      test -x "$DIALOG_PROG" && own_dialog=true;;
+      test -f /usr/bin/whiptail && DIALOG_PROG=/usr/bin/whiptail
+      test -f /usr/bin/dialog && DIALOG_PROG=/usr/bin/dialog
+      test -f /bin/dialog && DIALOG_PROG=/bin/dialog
+      ;;
   esac
 }
  
 run_dialog()
 {
-  test -z "$NO_CLEAR" && clear
-  if $own_dialog; then
-    $DIALOG_PROG --title "$version setup utility" "$@"
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
+  if test -n "$DIALOG_PROG"; then
+    $DIALOG_PROG --title "$version setup utility" ${1+"$@"}
   else
-    TERM=$DIALOG_TERM TERMINFO=$DIALOG_TERMINFO dialog --title "$version setup utility" "$@"
+    TERM=$DIALOG_TERM TERMINFO=$DIALOG_TERMINFO tcdialog --title "$version setup utility" ${1+"$@"}
   fi
 }
 
@@ -159,7 +231,7 @@ check_environ()
     fi
   done
   test -z "$found" && return
-  clear
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
   cat <<eof
 $progname has found the following environment variables set:
 
@@ -169,9 +241,11 @@ eof
   done
   cat <<eof
 
-Please make sure, their values are ok, and otherwise change or unset them.
-If you continue with wrong values for the above variables, $progname
-might run into trouble when locating files on the disk.
+This path prohibits a default expansion. as it contains no : at either
+end, nor :: somewhere in the middle.  Please make sure, that these paths
+are ok, and otherwise change or unset them.  If you continue with wrong
+values for the above variables, $progname might run into trouble when
+locating files on the disk.
 
 Note that you can refer to the default path by giving an "empty" path
 component (i.e. a colon in front or in the end, or a doubled colon
@@ -190,32 +264,32 @@ eof
 
 fonts_ro()
 {
-  clear
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
   echo "Removing global write permissions in fonts tree:" >&2
-  find $TC_TEXMFMAIN/fonts -perm -2 -type d -exec sh -c '
-    chmod -t $1 || exit;
-    chmod go-w $1 || exit;
-    echo $1 >&2;
+  find "$TC_TEXMFMAIN"/fonts -perm -2 -type d -exec sh -c '
+    chmod -t "$1" || exit_return 1;
+    chmod go-w "$1" || exit_return 1;
+    echo "$1" >&2;
   ' sh '{}' \;
-  chmod go-w $TC_TEXMFMAIN/ls-R && echo $TC_TEXMFMAIN/ls-R >&2
+  chmod go-w "$TC_TEXMFMAIN"/ls-R && echo "$TC_TEXMFMAIN"/ls-R >&2
   echo "Done." >&2
 }
 
 fonts_rw()
 {
-  clear
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
   echo "Adding global write permissions in fonts tree:" >&2
-  find $TC_TEXMFMAIN/fonts/tfm $TC_TEXMFMAIN/fonts/pk $TC_TEXMFMAIN/fonts/source/jknappen $TC_TEXMFMAIN/fonts/source/lh $TC_TEXMFMAIN/fonts/source/public/cs \
+  find "$TC_TEXMFMAIN"/fonts/tfm "$TC_TEXMFMAIN"/fonts/pk "$TC_TEXMFMAIN"/fonts/source/jknappen "$TC_TEXMFMAIN"/fonts/source/lh "$TC_TEXMFMAIN"/fonts/source/public/cs \
   -type d -exec sh -c '
     case $1 in
       */adobe*|*/bitstrea*)	exit;;
     esac
-    chmod 1777 $1 || exit;
-    echo $1 >&2;
+    chmod 1777 "$1" || exit;
+    echo "$1" >&2;
   ' sh '{}' \;
-  chmod 1777 $TC_TEXMFMAIN/fonts || exit
-  echo $TC_TEXMFMAIN/fonts >&2
-  chmod 666 $TC_TEXMFMAIN/ls-R && echo $TC_TEXMFMAIN/ls-R >&2
+  chmod 1777 "$TC_TEXMFMAIN"/fonts || exit_return 1
+  echo "$TC_TEXMFMAIN"/fonts >&2
+  chmod 666 "$TC_TEXMFMAIN"/ls-R && echo "$TC_TEXMFMAIN"/ls-R >&2
   echo "Done." >&2
 }
 
@@ -232,7 +306,7 @@ See terminfo(5), tic(1m) and term(5) for help.
 
 $progname failed. Program aborted.
 eof
-  exit 1
+  exit_return 1
 }
 
 fix_pager_more()
@@ -246,14 +320,21 @@ fix_pager_more()
 
 exist_test()
 {
-  type=$1 ; name=$2
-  if [ ! "$type" "$name" ] && [ -n "$name" ]; then
-    run_dialog --msgbox \
-      "'$name' does not exist.\\n\\nThe programm will show you the error-log and then exit." 23 80
-    clear
-    <$log eval $PAGER
-    fix_pager_more
-    exit 1
+  type=$1 ; name=$2; what=$3
+  if [ ! "$type" "$name" ]; then
+    msg="Could not find $what."
+    if test -f "$log"; then
+      msg="$msg\\n\\nThe program will show you the error-log and then exit."
+    else
+      msg="$msg\\n\\nThe program will exit now."
+    fi
+    run_dialog --msgbox "$msg" 23 80
+    test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
+    if test -f "$log"; then
+      <"$log" eval $PAGER
+      fix_pager_more
+    fi
+    exit_return 1
   fi
 }
 
@@ -261,8 +342,8 @@ choose_editor()
 {
   run_dialog --inputbox \
     "Your editor for changing config-files currently\\nis set to $EDIT.\\n\\nPress RETURN to accept this default or enter\\nthe name of the editor of your choice.\\n\\n" \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
   test -z "$x" || EDIT=$x
 }
 
@@ -270,8 +351,8 @@ choose_pager()
 {
   run_dialog --inputbox \
     "Your pager to view the logfile currently\\nis set to $PAGER.\\n\\nPress RETURN to accept this default or enter\\nthe name of the pager of your choice.\\n\\n" \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
   test -z "$x" || PAGER=$x
 }
 
@@ -286,13 +367,13 @@ setup_preferences()
       EDITOR 'set up editor for changing config-files' \
       PAGER 'set up pager to view the logfile' \
       LOG 'view logfile' \
-      2>$tmpmenu || return
+      2>"$tmpmenu" || return
     ans=`cat $tmpmenu`
     test -z "$ans" && return
     case "$ans" in
       EDITOR)       choose_editor ;;
       PAGER)      choose_pager ;;
-      LOG)	clear; <$log eval $PAGER; fix_pager_more ;;
+      LOG)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more ;;
       RETURN)     return ;;
     esac
   done
@@ -300,9 +381,7 @@ setup_preferences()
 
 config_tex()
 {
-  exist_test -d $formats
-
-  clear
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear
   edit_hyphen
 }
 
@@ -311,12 +390,12 @@ choose_mode()
   out=$1
   choose_mode_msg="$2"
   mode=$default_mode
-  exist_test -f $modes
+  exist_test -f "$modes" "modes.mf file"
   if [ ! -z "$mode" ] ; then
     if yesno "\\n\\nUse mode $mode as default $3?\\n\\n" 23 80 ; then
       : # nothing
     else
-      mode=""
+      mode=
     fi
   fi
   if [ -z "$mode" ] ; then
@@ -324,20 +403,20 @@ choose_mode()
       eval run_dialog \
     --menu \"\$choose_mode_msg\" \
     23 80 14 `list_mf_modes $modes` \
-    2>$out
+    2>"$out"
   else
-    echo $mode >$out
+    echo $mode >"$out"
   fi
 }
 
 get_default_mode()
 {
-  choose_mode $tmpans 'Choose a default mode for xdvi, dvips and metafont. As a rule\nof thumb, choose the most commonly mode used for printing at your site.'
-  default_mode=`cat $tmpans`
+  choose_mode "$tmpans" 'Choose a default mode for xdvi, dvips, pdftex and metafont. As a rule\nof thumb, choose the most commonly mode used for printing at your site.'
+  default_mode=`cat "$tmpans"`
   test -z "$default_mode" && return
 
-  clear
-  do_set_default_mode "$default_mode" 2>&1 | tee -a $log
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear
+  do_set_default_mode "$default_mode" 2>&1 | tee -a "$log"
 
 }
 
@@ -353,6 +432,8 @@ do_set_default_mode()
   run_xdvi_setup_mode "$mode" "$res_x"
   config_replace "$maketex_site_file" '^: ..MODE' ": \${MODE=$mode}"
   config_replace "$maketex_site_file" '^: ..BDPI' ": \${BDPI=$res_x}"
+  config_replace "$maketex_site_file" '^: ..DPI' ": \${DPI=$res_x}"
+  config_replace "$pdftex_conf" '^pk_resolution' "pk_resolution $res_x"
 
   run_config_mf
 
@@ -360,13 +441,9 @@ do_set_default_mode()
 
 run_config_mf()
 {
-  test -d "$TC_TEXMFMAIN/metafont" || return
-
-  exist_test -d $bases
-  exist_test -f $modes
-
   echo "Running mf to create plain base ..."
-  run_create_mf_base
+  fmtutil --byfmt mf
+  fmtutil --byfmt mfw
   echo "Done."; echo
 }
 
@@ -383,41 +460,6 @@ q
 eof
 }
 
-run_create_mf_base()
-{
-  rm -f *.log *.base
-  mf -ini mf.mf </dev/null || return
-  for i in *.log *.base; do rm -f "$bases/$i"; \mv "$i" "$bases/$i"; done
-  rm -f $bases/plain.base $bases/mfw.base
-  ln -s mf.base $bases/plain.base
-  ln -s mf.base $bases/mfw.base
-  $TC_MKTEXUPD $bases mf.base 2>/dev/null
-  $TC_MKTEXUPD $bases mfw.base 2>/dev/null
-  $TC_MKTEXUPD $bases plain.base 2>/dev/null
-}
-
-run_config_mp()
-{
-  test -d "$TC_TEXMFMAIN/metapost" || return
-
-  exist_test -d $mems
-
-  echo "Running mpost to create plain mem ..."
-  run_create_mp_mem
-  echo "Done."; echo
-}
-
-run_create_mp_mem()
-{
-  rm -f *.log *.mem
-  mpost -ini mpost.mp </dev/null || return
-  for i in *.log *.mem; do rm -f "$mems/$i"; \mv "$i" "$mems/$i"; done
-  rm -f $mems/plain.mem
-  ln -s mpost.mem $mems/plain.mem
-  $TC_MKTEXUPD $mems plain.mem
-  $TC_MKTEXUPD $mems mpost.mem
-}
-
 select_format()
 {
   a=`list_formats`
@@ -432,8 +474,8 @@ select_format()
   eval run_dialog \
     --menu \'\\n\\nChoose format to set up hyphenation for.\\n\\n\' \
     23 80 8 $a \
-    2>$tmpmenu || return
-  formatname=`cat $tmpmenu`
+    2>"$tmpmenu" || return
+  formatname=`cat "$tmpmenu"`
 }
 
 config_dvips_paper()
@@ -441,18 +483,18 @@ config_dvips_paper()
   eval run_dialog \
     --menu \'\\n\\nChoose the default papersize definition for dvips.\\n\\n\' \
     23 80 8 `list_dvips_papers $dvips_conf` \
-    2>$tmpmenu || return
-  paper=`cat $tmpmenu`
+    2>"$tmpmenu" || return
+  paper=`cat "$tmpmenu"`
   test -z "$paper" && return ;
-  setup_dvips_paper "$paper" 2>&1 | tee -a $log
+  setup_dvips_paper "$paper" 2>&1 | tee -a "$log"
 }
 
 dvips_choose_printcmd()
 {
   run_dialog --inputbox \
     "\\n\\nEnter the command to print to the printer '$printer'.\\nIn general, you need a command like 'lpr' or 'lpr -Pfoo'.\\n\\nNOTE: If you just press return, printing will be disabled\\nand the output saved to a file by default.\\n\\n" \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
   if [ -z "$x" ] ; then
     echo save-to-file >&2
   else
@@ -472,24 +514,40 @@ has_latex()
 dvips_test_print()
 {
   has_latex || return
-  cd $tmpdir          
-  clear
-  latex testpage          2>&1 | tee -a $log
+  cd "$tmpdir"          
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear
+  latex testpage          2>&1 | tee -a "$log"
   case $printer in
       default)	dvips testpage ;;
       *)	dvips -P$printer testpage ;;
-  esac 2>&1 | tee -a $log
+  esac 2>&1 | tee -a "$log"
   
 }
 
-yesno() { run_dialog --yesno "$@"; }
+yesno() { run_dialog --yesno ${1+"$@"}; }
 
 dvips_setup_mode()
 {
-  choose_mode $tmpans "Choose the metafont mode for printer '$printer'" "for printer $printer"
-  mode=`cat $tmpans`
+  choose_mode "$tmpans" "Choose the metafont mode for printer '$printer'" "for printer $printer"
+  mode=`cat "$tmpans"`
   test -z "$mode" && return
-  run_dvips_setup_mode "$mode" 2>&1 | tee -a $log
+  run_dvips_setup_mode "$mode" 2>&1 | tee -a "$log"
+}
+
+pdftex_setup_mode()
+{
+  choose_mode "$tmpans" "Choose the metafont mode for pdftex" "for pdftex"
+  mode=`cat "$tmpans"`
+  test -z "$mode" && return
+  run_pdftex_setup_mode "$mode" 2>&1 | tee -a "$log"
+}
+
+xdvi_setup_mode()
+{
+  choose_mode "$tmpans" "Choose the metafont mode for xdvi" "for xdvi"
+  mode=`cat "$tmpans"`
+  test -z "$mode" && return
+  run_xdvi_setup_mode "$mode" 2>&1 | tee -a "$log"
 }
 
 run_dvips_setup_mode()
@@ -508,12 +566,25 @@ run_dvips_setup_mode()
   config_replace "$dvips_conf" '^Y' "Y $res_y"
 }
 
+run_pdftex_setup_mode()
+{
+  mode="$1"
+  if test -z "$2"; then
+    set x `find_res $mode`; shift
+    res_x=$1; res_y=$2
+  else
+    res_x=$2
+    res_y=${3-$2}
+  fi
+  config_replace "$pdftex_conf" '^pk_resolution' "pk_resolution $res_x"
+}
+
 dvips_setup_printcmd()
 {
-  dvips_choose_printcmd 2>$tmpans
-  printcmd=`cat $tmpans`
+  dvips_choose_printcmd 2>"$tmpans"
+  printcmd=`cat "$tmpans"`
   test -z "$printcmd" && return
-  do_dvips_setup_printcmd "$printcmd" 2>&1 | tee -a $log
+  do_dvips_setup_printcmd "$printcmd" 2>&1 | tee -a "$log"
 }
 
 do_dvips_setup_printcmd()
@@ -535,9 +606,9 @@ Enter a dimension pair (A rightwards offset and a downwards
 offset), e.g. 2mm,-0.5in (right 2mm and up .5in):
 
 " \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
-  test -z "$x" || run_dvips_setup_offset "$x" 2>&1 | tee -a $log
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
+  test -z "$x" || run_dvips_setup_offset "$x" 2>&1 | tee -a "$log"
 }
 
 do_dvips_setup_offset()
@@ -558,7 +629,7 @@ run_dvips_setup_offset()
 
 dvips_config_local()
 {
-  exist_test -d $dvips_conf_dir
+  exist_test -d "$dvips_conf_dir" "config file for dvips (config.ps)"
 
   while true ; do
     run_dialog \
@@ -569,8 +640,8 @@ dvips_config_local()
       CMD 'Set up the command to print on this printer' \
       OFFSETS 'Set up offsets for printing' \
       TEST 'Print a testpage' \
-      2>$tmpmenu || return
-    ans=`cat $tmpmenu`
+      2>"$tmpmenu" || return
+    ans=`cat "$tmpmenu"`
     test -z "$ans" && return
     case "$ans" in
       MODE)	dvips_setup_mode ;;
@@ -593,8 +664,8 @@ dvips_get_printername()
 {
   run_dialog --inputbox \
     "Printer name" \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
   test -z "$x" || echo $x >&2
 }
 
@@ -620,13 +691,13 @@ configuration file config.PRINTER in the $TC_VARTEXMF/dvips directory.
       DEL 'remove a printer definition' \
       CHANGE 'change an existing printer definition' \
       "LOG"	'view logfile' \
-      2>$tmpmenu || return
-    ans=`cat $tmpmenu`
+      2>"$tmpmenu" || return
+    ans=`cat "$tmpmenu"`
     test -z "$ans" && return
     case "$ans" in
       ADD|DEL|CHANGE)
-        dvips_get_printername 2>$tmpans
-        printer=`cat $tmpans`
+        dvips_get_printername 2>"$tmpans"
+        printer=`cat "$tmpans"`
         test -z "$printer" && continue
         dvips_conf=$dvips_conf_dir/config.$printer
         ;;
@@ -649,7 +720,7 @@ configuration file config.PRINTER in the $TC_VARTEXMF/dvips directory.
         continue
       fi
       dvips_config_local ;;
-      LOG)	clear; <$log eval $PAGER; fix_pager_more;;
+      LOG)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more;;
       RETURN)	return ;;
     esac
   done
@@ -663,6 +734,25 @@ do_dvips_setup_paper()
     setup_dvips_paper "$paper"
   fi
 }
+
+do_dvipdfm_setup_paper()
+{
+  paper=$1
+  setup_dvipdfm_paper "$paper"
+}
+
+do_pdftex_setup_paper()
+{
+  paper="$1"
+  dvips_conf="$dvips_conf_dir/config.ps"
+  list=`list_dvips_papers $dvips_conf | awk '{print $1}'`
+  if test_in_list "$paper" $list; then
+    width=`list_dvips_papers $dvips_conf | grep "^$paper "| sed "s/'//g"| awk '{print $2}'`
+    height=`list_dvips_papers $dvips_conf | grep "^$paper "| sed "s/'//g"| awk '{print $3}'`
+    setup_pdftex_paper "$width" "$height"
+  fi
+}
+
 
 do_xdvi_setup_paper()
 {
@@ -685,10 +775,34 @@ xdvi_setup_paper()
   eval run_dialog \
     --menu \"Choose the default papersize definition for xdvi.\" \
     23 80 15 `list_xdvi_papers` \
-    2>$tmpmenu || return
-  paper=`cat $tmpmenu`
+    2>"$tmpmenu" || return
+  paper=`cat "$tmpmenu"`
   test -z "$paper" && return
-  run_xdvi_setup_paper "$paper" 2>&1 | tee -a $log
+  run_xdvi_setup_paper "$paper" 2>&1 | tee -a "$log"
+}
+
+dvipdfm_setup_paper()
+{
+  eval run_dialog \
+    --menu \'\\n\\nChoose the default papersize definition for dvipdfm.\\n\\n\' \
+    23 80 8 letter letter legal legal ledger ledger tabloid tabloid a4 a4 a3 a3 \
+    2>"$tmpmenu" || return
+  paper=`cat "$tmpmenu"`
+  test -z "$paper" && return ;
+  setup_dvipdfm_paper "$paper" 2>&1 | tee -a "$log"
+}
+
+pdftex_setup_paper()
+{
+  dvips_conf="$dvips_conf_dir/config.ps"
+  #--title \"TeX-Config: xdvi default paper\" \
+  eval run_dialog \
+    --menu \"Choose the default papersize definition for pdftex.\" \
+    23 80 15 `list_dvips_papers $dvips_conf` \
+    2>"$tmpmenu" || return
+  paper=`cat "$tmpmenu"`
+  test -z "$paper" && return
+  do_pdftex_setup_paper "$paper" 2>&1 | tee -a "$log"
 }
 
 do_dvips_setup_mode()
@@ -728,7 +842,7 @@ cmd_mode_maketex()
       if test "$*" = -; then
         set_mt_options
       else
-        set_mt_options "$@"
+        set_mt_options ${1+"$@"}
       fi
       ;;
     *)
@@ -766,23 +880,28 @@ cmd_mode_set_default_mode()
 run_xdvi_setup_mode()
 {
   mode="$1"
-  res=${2-`find_res $mode 2>>$log | awk '{ print $1 }'`}
+  if test -z "$2"; then
+    set x `find_res $mode`; shift
+    res_x=$1; res_y=$2
+  else
+    res_x=$2
+    res_y=${3-$2}
+  fi
+  res=$res_x
   shrink=`expr $res / $xdvi_shrink_scale`
   if test $res -lt 300; then
-    b1=1; b2=2; b3=3; b4=4
+    b1=2; b2=3; b3=4
   else
-    b1=`expr 1 \* $res / 300`
-    b2=`expr 2 \* $res / 300`
-    b3=`expr 3 \* $res / 300`
-    b4=`expr 4 \* $res / 300`
+    b1=`expr 2 \* $res / \( 4 \* $xdvi_shrink_scale \)`
+    b2=`expr 3 \* $res / \( 4 \* $xdvi_shrink_scale \)`
+    b3=`expr 4 \* $res / \( 4 \* $xdvi_shrink_scale \)`
   fi
-  config_replace "$xdvi_app_file" 'mfMode:' "XDvi*mfMode: $mode"                    2>&1 | tee -a $log
-  config_replace "$xdvi_app_file" 'pixelsPerInch:' "XDvi*pixelsPerInch: $res"       2>&1 | tee -a $log
-  config_replace "$xdvi_app_file" 'shrinkFactor:' "XDvi*shrinkFactor: $shrink"      2>&1 | tee -a $log
-  config_replace "$xdvi_app_file" 'shrinkButton1:' "XDvi*shrinkButton1: $b1"      2>&1 | tee -a $log
-  config_replace "$xdvi_app_file" 'shrinkButton2:' "XDvi*shrinkButton2: $b2"      2>&1 | tee -a $log
-  config_replace "$xdvi_app_file" 'shrinkButton3:' "XDvi*shrinkButton3: $b3"      2>&1 | tee -a $log
-  config_replace "$xdvi_app_file" 'shrinkButton4:' "XDvi*shrinkButton4: $b4"      2>&1 | tee -a $log
+  config_replace "$xdvi_app_file" 'mfMode:' "XDvi*mfMode: $mode"                    2>&1 | tee -a "$log"
+  config_replace "$xdvi_app_file" 'pixelsPerInch:' "XDvi*pixelsPerInch: $res"       2>&1 | tee -a "$log"
+  config_replace "$xdvi_app_file" 'shrinkFactor:' "XDvi*shrinkFactor: $shrink"      2>&1 | tee -a "$log"
+  config_replace "$xdvi_app_file" 'shrinkButton1:' "XDvi*shrinkButton1: $b1"      2>&1 | tee -a "$log"
+  config_replace "$xdvi_app_file" 'shrinkButton2:' "XDvi*shrinkButton2: $b2"      2>&1 | tee -a "$log"
+  config_replace "$xdvi_app_file" 'shrinkButton3:' "XDvi*shrinkButton3: $b3"      2>&1 | tee -a "$log"
 }
 
 xdvi_make_test()
@@ -790,11 +909,11 @@ xdvi_make_test()
   if [ -z "$DISPLAY" ] ; then
     :
   fi
-  cd $tmpdir 2>&1 | tee -a $log
-  clear
-  tex '\input story\end' 2>&1 | tee -a $log
-  clear
-  xdvi story 2>&1 | tee -a $log
+  cd "$tmpdir" 2>&1 | tee -a "$log"
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
+  tex '\input story\end' 2>&1 | tee -a "$log"
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
+  xdvi story 2>&1 | tee -a "$log"
 }
 
 
@@ -802,23 +921,68 @@ config_xdvi()
 {
   test -d "$xdvi_app_dir" || $TC_MKTEXDIR "$xdvi_app_dir"
   test -f "$xdvi_app_file" || touch "$xdvi_app_file"
-  exist_test -f "$xdvi_app_file"
+  exist_test -f "$xdvi_app_file" "app-default file for xdvi"
 
   while true ; do
     run_dialog \
       --menu '\n\nSet up xdvi via application ressources.\n\nNote 1: set the mode from the main menu.\nNote 2: a symbolic Link for the app-default file is no longer necessary.\n\n' \
+      23 80 5 \
+      RETURN 'back to main menu' \
+      PAPER 'default papertype' \
+      MODE 'default metafont mode' \
+      TEST 'view a testfile' \
+      LOG 'view logfile' \
+      2>"$tmpmenu" || return
+    ans=`cat "$tmpmenu"`
+    test -z "$ans" && return
+    case "$ans" in
+      PAPER)    xdvi_setup_paper ;;
+      MODE)     xdvi_setup_mode ;;
+      TEST)     xdvi_make_test ;;
+      LOG)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more;;
+      RETURN)     return ;;
+    esac
+  done
+}
+
+
+config_dvipdfm()
+{
+  while true ; do
+    run_dialog \
+      --menu '\n\nSet up for dvipdfm.\n\n' \
       23 80 4 \
       RETURN 'back to main menu' \
       PAPER 'default papertype' \
-      TEST 'view a testfile' \
       LOG 'view logfile' \
-      2>$tmpmenu || return
-    ans=`cat $tmpmenu`
+      2>"$tmpmenu" || return
+    ans=`cat "$tmpmenu"`
     test -z "$ans" && return
     case "$ans" in
-      PAPER)        xdvi_setup_paper ;;
-      TEST)       xdvi_make_test ;;
-      LOG)	clear; <$log eval $PAGER; fix_pager_more;;
+      PAPER)    dvipdfm_setup_paper ;;
+      LOG)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more;;
+      RETURN)     return ;;
+    esac
+  done
+}
+
+config_pdftex()
+{
+  while true ; do
+    run_dialog \
+      --menu '\n\nSet up for pdftex.\n\n' \
+      23 80 4 \
+      RETURN 'back to main menu' \
+      PAPER 'default papertype' \
+      MODE  'metafont mode' \
+      LOG 'view logfile' \
+      2>"$tmpmenu" || return
+    ans=`cat "$tmpmenu"`
+    test -z "$ans" && return
+    case "$ans" in
+      PAPER)    pdftex_setup_paper ;;
+      MODE)     pdftex_setup_mode ;;
+      LOG)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more;;
       RETURN)     return ;;
     esac
   done
@@ -889,7 +1053,7 @@ mode_name()
 
 list_formats()
 {
-  exist_test -f "$fmtutilcnf"
+  exist_test -f "$fmtutilcnf" "fmtutil.cnf file"
 
   awk '$3 != "-"' "$fmtutilcnf" |
   sed 's@[%#].*@@; s@^[ 	]*@@; /^$/d' \
@@ -1003,46 +1167,60 @@ eof
   fi
 }
 
+setup_pdftex_paper()
+{
+  config=$pdftex_conf
+
+  width=$1
+  height=$2
+
+  width_true=`echo $width | sed 's@[    ]@@g; s@\([^0-9.]*\)$@ true \1@'`
+  height_true=`echo $height | sed 's@[  ]@@g; s@\([^0-9.]*\)$@ true \1@'`
+
+  config_replace "$config" '^page_width'  "page_width $width_true"
+  config_replace "$config" '^page_height' "page_height $height_true"
+}
+
+setup_dvipdfm_paper()
+{
+  config=$dvipdfm_conf
+
+  # valid: letter, legal, ledger, tabloid, a4, or a3
+  paper=$1
+
+  config_replace "$config" '^p' "p $paper"
+}
+
 cmd_mode()
 {
   case "$1" in
-    faq)	clear; test -f $FAQ && <$FAQ eval $PAGER; fix_pager_more;;
+    faq)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; test -f $FAQ && <$FAQ eval $PAGER; fix_pager_more;;
     conf)	do_print_setup;;
     formats)	config_formats;;
     hyphen)	shift; do_edit_hyphen ${1+"$@"} ;;
     mode)	shift; cmd_mode_set_default_mode ${1+"$@"} ;;
     xdvi)	shift; cmd_mode_xdvi ${1+"$@"};;
     dvips)	shift; cmd_mode_dvips ${1+"$@"};;
+    dvipdfm)	shift; cmd_mode_dvipdfm ${1+"$@"};;
+    pdftex)	shift; cmd_mode_pdftex ${1+"$@"};;
     font) shift; cmd_mode_maketex ${1+"$@"};;
     confall) do_print_all_setup;;
-    init)	init_all;;
-    *)	echo "Usage: texconfig conf" >&2
-      echo "       texconfig confall" >&2
-      echo "       texconfig rehash" >&2
-      echo "       texconfig formats" >&2
-      echo "       texconfig hyphen FORMAT" >&2
-      echo "       texconfig mode    [options]" >&2
-      echo "       texconfig xdvi    [options] ..." >&2
-      echo "       texconfig dvips   [options] ..." >&2
-      echo "       texconfig font    [options] ..." >&2
-      echo "       texconfig faq" >&2
-      echo "       texconfig init" >&2
-      echo >&2
-      echo "Get help with:" >&2
-      echo "       texconfig help" >&2
-      echo "       texconfig hyphen" >&2
-      echo "       texconfig mode" >&2
-      echo "       texconfig xdvi" >&2
-      echo "       texconfig dvips" >&2
-      echo "       texconfig font" >&2
-      exit 1;;
+    init)       if test -z "$2"; then
+                   init_all;
+                else
+                   fmtutil --byfmt "$2";
+                   texlinks --multiplatform
+                fi;;
+    *)
+      usage
+      exit_return 1;;
   esac
-  exit
+  exit_return 0
 }
 
 cmd_mode_dvips()
 {
-  printer=""
+  printer=
   dvips_conf="$dvips_conf_dir/config.ps"
   case "$1" in
     -P)	printer=$2; shift; shift;;
@@ -1111,6 +1289,43 @@ eof
   esac
 }
 
+cmd_mode_dvipdfm()
+{
+  case "$1" in
+    paper)
+      if test -z "$2"; then
+        echo "Usage: texconfig dvipdfm paper PAPER" >&2
+        echo "       Valid papertypes:" >&2
+        echo >&2
+        echo letter legal ledger tabloid a4 a3 | $FMT >&2
+      else
+        do_dvipdfm_setup_paper "$2"
+      fi;;
+    *) cat<<'eof'
+Usage: texconfig dvipdfm paper PAPER
+eof
+  esac
+}
+
+cmd_mode_pdftex()
+{
+  dvips_conf="$dvips_conf_dir/config.ps"
+  case "$1" in
+    paper)
+      if test -z "$2"; then
+        echo "Usage: texconfig pdftex paper PAPER" >&2
+        echo "       Valid papertypes:" >&2
+        echo >&2
+        list_dvips_papers $dvips_conf | awk '{print $1}' | $FMT >&2
+      else
+        do_pdftex_setup_paper "$2"
+      fi;;
+    *) cat<<'eof'
+Usage: texconfig pdftex paper PAPER
+eof
+  esac
+}
+
 cmd_mode_xdvi()
 {
   case $# in
@@ -1137,21 +1352,19 @@ test_in_list()
 init_tex_formats()
 {
   fmtutil --all
-  texlinks ${SILENT_TEXLINKS+-s}
+  texlinks --multiplatform
 }
 
 init_all()
 {
   init_tex_formats
-  run_config_mf
-  check_for_binary mpost >/dev/null && run_config_mp
 }
 
 
 edit_hyphen()
 {
   select_format
-  clear
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
   test -z "$formatname" && return
 
   do_edit_hyphen "$formatname"
@@ -1177,7 +1390,7 @@ do_edit_hyphen()
   sed 's@[%].*@@; s@^[ 	]*@@; /^$/d' $language | sort > $tmpfile-2
 
   cmp $tmpfile-1 $tmpfile-2 >/dev/null 2>&1 && return
-  fmtutil --byhyphen $language 2>&1 | tee -a $log
+  fmtutil --byhyphen $language 2>&1 | tee -a "$log"
 }
 
 check_for_binary()
@@ -1201,7 +1414,7 @@ require_binary()
     check_for_binary $this_binary >/dev/null
     if [ $? != 0 ]; then
       echo "texconfig: binary $this_binary not found. Please set up your PATH correctly" >&2
-      exit 1
+      exit_return 1
     fi
   done
 }
@@ -1241,7 +1454,7 @@ echo_file_location()
 do_print_setup()
 {
   echo '==================== binaries found by searching $PATH ==================='
-  echo_locate_binary tex etex pdftex omega mf mpost dialog dvips xdvi kpsewhich mktexpk mktextfm
+  echo_locate_binary tex etex dvipdfm pdftex omega mf mpost tcdialog dvips xdvi kpsewhich mktexpk mktextfm
   echo
   echo '=========================== Kpathsea variables ==========================='
   echo_show_variable TEXMF TEXMFMAIN VARTEXMF
@@ -1293,7 +1506,7 @@ get_mt_options()
 set_mt_options()
 {
   args="$*"
-  exist_test -f $texmfcnf
+  exist_test -f "$texmfcnf" "texmf.cnf file"
 
   for feature in $all_mt_features; do
     eval $feature=off
@@ -1322,15 +1535,15 @@ setup_mt_options()
   get_mt_options
   run_dialog --checklist '\nSelect options for mktex scripts. Use the spacebar for enable/disable.\n\n' \
     23 80 7 \
-    appendonlydir "set stick bit on new directories (recommended)" $appendonlydir \
+    appendonlydir "set sticky bit on new directories (recommended)" $appendonlydir \
     dosnames "dpiNNN/NAME.pk instead of NAME.NNNpk" $dosnames \
     nomode "leave out MODE (e.g. ljfour)" $nomode \
     stripsupplier "leave out SUPPLIER (e.g. ams)" $stripsupplier \
     striptypeface "leave out TYPEFACE (e.g. euler)" $striptypeface \
     varfonts "use \$VARTEXFONTS instead of \$TEXMFMAIN/fonts" $varfonts \
     nomfdrivers "remove metafont driver after mktex{tfm,pk} run" $nomfdrivers \
-      2>$tmpmenu || return
-  eval set_mt_options `cat $tmpmenu`
+      2>"$tmpmenu" || return
+  eval set_mt_options `cat "$tmpmenu"`
 }
 
 setup_query_mkdir() { yesno "\\n\\nCreate directory $1?\\n\\n" 23 80; }
@@ -1340,11 +1553,11 @@ setup_mt_vardir()
   VARTEXFONTS=`kpsewhich -expand-var '$VARTEXFONTS'`
   run_dialog --inputbox \
     "Your \$VARTEXFONTS directory currently\\nis set to $VARTEXFONTS.\\n\\nPress RETURN to accept this default or enter\\nthe name of an other directory.\\n\\n" \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
   test -z "$x" && return
   test -d "$x" || setup_query_mkdir "$x" || return
-  do_setup_mt_vardir "$x" 2>&1 | tee -a $log
+  do_setup_mt_vardir "$x" 2>&1 | tee -a "$log"
 }
 
 do_setup_mt_vardir()
@@ -1381,8 +1594,8 @@ setup_mt()
       OPTIONS 'set up options for mktex scripts' \
       VARDIR 'directory for new fonts (if varfonts option active)' \
       LOG   'view logfile' \
-      2>$tmpmenu || return
-    ans=`cat $tmpmenu`
+      2>"$tmpmenu" || return
+    ans=`cat "$tmpmenu"`
     test -z "$ans" && return
     case "$ans" in
       VARDIR)
@@ -1414,7 +1627,7 @@ setup_mt()
       FONTRW)
         fonts_rw;;
       LOG)
-        clear; <$log eval $PAGER; fix_pager_more;;
+        test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more;;
       RETURN)
         return ;;
     esac
@@ -1426,27 +1639,37 @@ locate_files()
   fmtutilcnf=`kpsewhich --format='web2c files' fmtutil.cnf`
   if test -z "$fmtutilcnf" || test ! -f "$fmtutilcnf"; then
     echo "Error: kpsewhich cannot find file fmtutil.cnf" >&2
-    exit 1
+    exit_return 1
   fi
   modes=`kpsewhich modes.mf`
   if test -z "$modes" || test ! -f "$modes"; then
     echo "Error: kpsewhich cannot find file modes.mf" >&2
-    exit 1
+    exit_return 1
   fi
   texmfcnf=`kpsewhich texmf.cnf`
   if test -z "$texmfcnf" || test ! -f "$texmfcnf"; then
     echo "Error: kpsewhich cannot find file texmf.cnf" >&2
-    exit 1
+    exit_return 1
   fi
   maketex_site_file=`kpsewhich --format='web2c files' mktex.cnf`
   if test -z "$maketex_site_file" || test ! -f "$maketex_site_file"; then
     echo "Error: kpsewhich cannot find file mktex.cnf" >&2
-    exit 1
+    exit_return 1
   fi
   xdvi_app_file=`XDVIINPUTS="$XDVIINPUTS":'$TEXMF/{xdvi,web2c}' kpsewhich -progname=xdvi --format='other text files' XDvi`
   if test -z "$xdvi_app_file" || test ! -f "$xdvi_app_file"; then
     echo "Error: kpsewhich cannot find file XDvi" >&2
-    exit 1
+    exit_return 1
+  fi
+  dvipdfm_conf=`kpsewhich -progname=dvipdfm -format='other text files' config`
+  if test -z "$dvipdfm_conf" || test ! -f "$dvipdfm_conf"; then
+    echo "Error: kpsewhich cannot find config file of dvipdfm (config)" >&2
+    exit_return 1
+  fi
+  pdftex_conf=`kpsewhich -progname=pdftex --format=tex pdftex.cfg`
+  if test -z "$pdftex_conf" || test ! -f "$pdftex_conf"; then
+    echo "Error: kpsewhich cannot find config file of pdftex (pdftex.cfg)" >&2
+    exit_return 1
   fi
 }
 
@@ -1456,8 +1679,8 @@ rebuild_doc()
 {
   run_dialog --inputbox \
     "I assume the local TeX documentation is in\\n$doc\\n\\nPress RETURN if this is true or enter the name of the directory.\\n\\n" \
-    23 80 2>$tmpmenu || return
-  x=`cat $tmpmenu`
+    23 80 2>"$tmpmenu" || return
+  x=`cat "$tmpmenu"`
   test -z "$x" || doc=$x
   if  test -d $doc 
   # Did I get a meaningful directory?
@@ -1475,12 +1698,12 @@ rebuild_doc()
     run_dialog --infobox \
       "This could take some time, please wait." \
       3 80
-    ./mkhtml > $helpindex  2>> $log
+    ./mkhtml > $helpindex  2>> "$log"
      )
   else
-    clear
+    test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
     echo -e '\n\n\n\n'
-    echo "$doc doesn't exist!" | tee -a $log
+    echo "$doc doesn't exist!" | tee -a "$log"
     echo "Press a key to continue"
     read foo
   fi
@@ -1488,23 +1711,30 @@ rebuild_doc()
 
 config_formats()
 {
-  exist_test -f "$fmtutilcnf"
+  exist_test -f "$fmtutilcnf" "fmtutil.cnf file"
 
   tmpfile=fmt$$
   sed 's@[%#].*@@; s@^[ 	]*@@; /^$/d' $fmtutilcnf | sort > $tmpfile-1
   
-  clear
+  test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear;
   $EDIT $fmtutilcnf
 
   sed 's@[%#].*@@; s@^[         ]*@@; /^$/d' $fmtutilcnf | sort > $tmpfile-2
   comm -13 $tmpfile-1 $tmpfile-2 > $tmpfile-3
   for i in `awk '{print $1}' $tmpfile-3`; do
-    fmtutil --byfmt "$i" 2>&1 | tee -a $log
+    fmtutil --byfmt "$i" 2>&1 | tee -a "$log"
   done
-  texlinks ${SILENT_TEXLINKS+-s} 2>&1 | tee -a $log
+  { texlinks --multiplatform 2>&1 | tee -a "$log"; }
 }
 
 #------------------ begin: initialisation -----------------------------------
+case $1 in
+  help|-help|--help|-h)
+    usage
+    exit_return 0;;
+esac
+
+needsCleanup=false
 find_echo
 find_fmt
 find_dialogtype
@@ -1517,20 +1747,20 @@ TEXMFMAIN_environ=${TEXMFMAIN+yes}
 if test -z "$TC_TEXMFMAIN"; then
   echo "$0: No \$TEXMFMAIN in texmf.cnf file." >&2
   echo "$0: set TEXMFCNF variable to the directory where teTeX's texmf.cnf file is in." >&2
-  exit 1
+  exit_return 1
 fi
 
 if test x${TEXMFMAIN_environ} = xyes; then
   if test ! -f "$TC_TEXMFMAIN/web2c/texmf.cnf"; then
     echo "Error: file texmf.cnf not found in \`\`$TC_TEXMFMAIN/web2c''."
     echo "Your environment variable TEXMFMAIN \`\`$TC_TEXMFMAIN'' seems to have the wrong value."
-    exit 1
+    exit_return 1
   fi
 else
   if test ! -f "$TC_TEXMFMAIN/web2c/texmf.cnf"; then
     echo "Error: file texmf.cnf not found in \`\`$TC_TEXMFMAIN/web2c''."
     echo "TEXMFMAIN \`\`$TC_TEXMFMAIN'' seems to have the wrong value from a texmf.cnf file."
-    exit 1
+    exit_return 1
   fi
 fi
 
@@ -1560,6 +1790,12 @@ test -z "$TC_DFT_MKTEX_CNF" && test -f "$TC_TEXMFMAIN/web2c/mktex.cnf" &&
 : ${TC_DFT_CONFIG_PS=`kpsewhich -format='dvips config' config.ps`}
 test -z "$TC_DFT_CONFIG_PS" && TC_DFT_CONFIG_PS=$TC_TEXMFMAIN/dvips/config/config.ps
 
+: ${TC_DFT_DVIPDFM_CFG=`kpsewhich -progname=dvipdfm -format='other text files' config`}
+test -z "$TC_DFT_DVIPDFM_CFG" && TC_DFT_DVIPDFM_CFG=$TC_TEXMFMAIN/dvipdfm/config
+
+: ${TC_DFT_PDFTEX_CFG=`kpsewhich -progname=pdftex --format=tex pdftex.cfg`}
+test -z "$TC_DFT_PDFTEX_CFG" && TC_DFT_PDFTEX_CFG=$TC_TEXMFMAIN/pdftex/config/pdftex.cfg
+
 : ${TC_DFT_LANGUAGE_DAT=`kpsewhich -format=.tex language.dat`}
 test -z "$TC_DFT_LANGUAGE_DAT" && TC_DFT_LANGUAGE_DAT=$TC_TEXMFMAIN/tex/generic/config/language.dat
 
@@ -1572,18 +1808,20 @@ test -z "$TC_DFT_CONT_USR" && TC_DFT_CONT_USR=$TC_TEXMFMAIN/tex/context/config/c
 : ${TC_DFT_FMTUTIL_CNF=`kpsewhich --format='web2c files' fmtutil.cnf`}
 test -z "$TC_DFT_FMTUTIL_CNF" && TC_DFT_FMTUTIL_CNF=$TC_TEXMFMAIN/web2c/fmtutil.cnf
 
+: ${TC_DFT_UPDMAP_CFG=`kpsewhich --format='web2c files' updmap.cfg`}
+test -z "$TC_DFT_UPDMAP_CFG" && TC_DFT_UPDMAP_CFG=$TC_TEXMFMAIN/web2c/updmap.cfg
+
 # The fallback directory for private scripts and config files.
 : ${TEXMF=`kpsewhich -expand-var '$TEXMF'`}
 : ${DIALOG_TERMINFO=$TC_TEXMFMAIN/texconfig}
 : ${DIALOG_TERM=generic}
 
 formats=$TC_VARTEXMF/web2c
-bases=$TC_VARTEXMF/web2c
-mems=$TC_VARTEXMF/web2c
 xdvi_app_dir=$TC_VARTEXMF/xdvi
 xdvi_app_file=$xdvi_app_dir/XDvi
 dvips_conf_dir=$TC_VARTEXMF/dvips/config
-pdftex_cnf_dir=$TC_VARTEXMF/pdftex/config
+dvipdfm_conf_dir=$TC_VARTEXMF/dvipdfm
+pdftex_conf_dir=$TC_VARTEXMF/pdftex/config
 maketex_site_dir=$TC_VARTEXMF/web2c
 maketex_site_file=$maketex_site_dir/mktex.cnf
 language_dat_dir=$TC_VARTEXMF/tex/generic/config
@@ -1594,6 +1832,8 @@ cont_usr_dir=$TC_VARTEXMF/tex/context/config
 cont_usr_file=$cont_usr_dir/cont-usr.tex
 fmtutil_cnf_dir=$TC_VARTEXMF/web2c
 fmtutil_cnf_file=$fmtutil_cnf_dir/fmtutil.cnf
+updmap_cfg_dir=$TC_VARTEXMF/web2c
+updmap_cfg_file=$updmap_cfg_dir/updmap.cfg
 doc=$TC_TEXMFMAIN/doc
 
 FAQ=$doc/tetex/teTeX-FAQ
@@ -1601,7 +1841,7 @@ FAQ=$doc/tetex/teTeX-FAQ
 # don't make ls-R files twice, so we check for a rehash option first:
 set x $SAVE_ARGS; shift
 case "$1" in
-  rehash) mktexlsr; exit;;
+  rehash) mktexlsr; exit_return 0;;
 esac
 
 # no rehash option, so make sure we have all necessary ls-R files:
@@ -1612,7 +1852,7 @@ for dir in $TC_TEXMFMAIN $TC_VARTEXMF; do
   fi
 done
 
-for i in "$dvips_conf_dir" "$pdftex_cnf_dir" "$formats" "$bases" "$mems" \
+for i in "$dvips_conf_dir" "$dvipdfm_conf_dir" "$pdftex_conf_dir" \
   "$xdvi_app_dir" "$language_dat_dir" "$language_def_dir" "$cont_usr_dir" \
   "$fmtutil_cnf_dir"; do
     test -d $i || $TC_MKTEXDIR "$i"
@@ -1629,7 +1869,7 @@ test -f $maketex_site_file || {
 }
 
 test -f $xdvi_app_file || {
-  exist_test -f "$TC_DFT_XDVI_APP"
+  exist_test -f "$TC_DFT_XDVI_APP" "app-default file for xdvi"
 
   cp $TC_DFT_XDVI_APP $xdvi_app_file
   chmod u+w $xdvi_app_file
@@ -1637,15 +1877,31 @@ test -f $xdvi_app_file || {
 }
 
 test -f $dvips_conf_dir/config.ps || {
-  exist_test -f "$TC_DFT_CONFIG_PS"
+  exist_test -f "$TC_DFT_CONFIG_PS" "default config file for dvips (config.ps)"
 
   cp $TC_DFT_CONFIG_PS $dvips_conf_dir/config.ps
   chmod u+w $dvips_conf_dir/config.ps
   $TC_MKTEXUPD $dvips_conf_dir config.ps
 }
 
+test -f $dvipdfm_conf_dir/config || {
+  exist_test -f "$TC_DFT_DVIPDFM_CFG" "default config file for dvipdfm (config)"
+
+  cp $TC_DFT_DVIPDFM_CFG $dvipdfm_conf_dir/config
+  chmod u+w $dvipdfm_conf_dir/config
+  $TC_MKTEXUPD $dvipdfm_conf_dir config
+}
+
+test -f $pdftex_conf_dir/pdftex.cfg || {
+  exist_test -f "$TC_DFT_PDFTEX_CFG" "default config file for pdftex (pdftex.cfg)"
+
+  cp $TC_DFT_PDFTEX_CFG $pdftex_conf_dir/pdftex.cfg
+  chmod u+w $pdftex_conf_dir/pdftex.cfg
+  $TC_MKTEXUPD $pdftex_conf_dir pdftex.cfg
+}
+
 if test ! -f $language_dat_file; then
-  exist_test -f "$TC_DFT_LANGUAGE_DAT"
+  exist_test -f "$TC_DFT_LANGUAGE_DAT" "language.dat file"
 
   cp $TC_DFT_LANGUAGE_DAT $language_dat_file
   chmod u+w $language_dat_file
@@ -1669,25 +1925,37 @@ if test ! -f $cont_usr_file; then
 fi
 
 if test ! -f $fmtutil_cnf_file; then
-  exist_test -f "$TC_DFT_FMTUTIL_CNF"
+  exist_test -f "$TC_DFT_FMTUTIL_CNF" "fmtutil.cnf file"
 
   cp $TC_DFT_FMTUTIL_CNF $fmtutil_cnf_file
   chmod u+w $fmtutil_cnf_file
   $TC_MKTEXUPD $fmtutil_cnf_dir fmtutil.cnf
 fi
 
+if test ! -f $updmap_cfg_file; then
+  exist_test -f "$TC_DFT_UPDMAP_CFG" "updmap.cfg file"
+
+  cp $TC_DFT_UPDMAP_CFG $updmap_cfg_file
+  chmod u+w $updmap_cfg_file
+  $TC_MKTEXUPD $updmap_cfg_dir updmap.cfg
+fi
+
+case "$1" in
+  localsetup)
+    test "x$TC_VARTEXMF" != "x$TC_TEXMFMAIN" && mktexlsr "$TC_VARTEXMF"
+    exit_return 0
+    ;;
+esac
+
 locate_files
 
-test -d $tmpdir && { echo "$tmpdir: directory already exists."; exit; }
-trap 'cd / ; rm -rf $tmpdir; trap '' 0; exit 0' 0 1 2 6 13 15
-mkdir $tmpdir || exit
-cd $tmpdir || exit
-exist_test -d $tmpdir
+setupTmpDir
+cd "$tmpdir" || exit_return 1
 
 EDIT=${VISUAL-${EDITOR-$std_editor}}
 PAGER=${PAGER-$std_pager}
 
-check_for_binary dialog >/dev/null
+check_for_binary tcdialog >/dev/null || test -n "$DIALOG_PROG"
 dialogok=$?
 
 # we have called some shellfunctions, so for HP-UX's shell, we need
@@ -1703,14 +1971,9 @@ if test $# -ge 1; then
   cmd_mode ${1+"$@"}
 fi
 
-test -f $mems/mpost.mem ||
-  run_config_mp
-
-test -f $bases/mf.base ||
-  run_config_mf
-
-fmtutil --missing
-texlinks ${SILENT_TEXLINKS+-s}
+# don't do this automatically at startup
+# fmtutil --missing
+# texlinks --multiplatform
 
 check_terminal
 cat <<eof
@@ -1720,6 +1983,9 @@ screen has at least 24 rows and 80 columns. If texconfig crashes now,
 you can still set up your $version system using the batch mode of texconfig.
 Try 'texconfig help' to get a list of options.
 
+The interactive mode works best with a real vt100 terminal or inside an
+xterm window.
+
 eof
 $echon "Starting dialog utility... "
 
@@ -1728,46 +1994,61 @@ $echon "Starting dialog utility... "
 # something goes wrong.
 sleep 4
 
-echo "TeX-Config. Start on `date`" >$log
+echo "TeX-Config. Start on `date`" >"$log"
 
+skipto=1
 while true ; do
+
+  viewlog_message='View logfile'
+  last_error_line=`sed -ne "1,${skipto}d; /^!\|error:/=" $log |tail -1`
+  if [ "$last_error_line" != "" ]; then
+    skipto=$last_error_line # we don't want to see these error again
+    viewlog_message='View logfile: THERE WERE ERRORS!!'
+  fi
+
     #--title "TeX-Config main menu" \
   run_dialog \
     --menu "
 Hint: all output of external commands (e.g. tex) is logged into
 a file. You can look at this file using "LOG". If cursor keys make
 trouble, you may have more luck with +/- and TAB.
-
-" 23 80 12 \
+" 23 80 14 \
     "EXIT"	'exit' \
     "CONF"	'show configuration' \
+    "PREF"	'select editor and pager preferences' \
     "REHASH"	'rebuild ls-R database' \
     "FORMATS"	'formats' \
     "HYPHEN"	'hyphenation' \
-    "MODE"	'default mode (xdvi/dvips/mf)' \
+    "MODE"	'default mode (xdvi/dvips/pdftex/mf)' \
     "XDVI"	'xdvi configuration' \
     "DVIPS"	'dvips configuration' \
+    "DVIPDFM"	'dvipdfm configuration' \
+    "PDFTEX"	'pdftex configuration' \
     "FONT"	'directories for font creation' \
     "DOC"	'rebuild html documentation' \
-                "FAQ"   'frequently asked questions + answers' \
-    "LOG"	'view logfile' \
-    2>$tmpmenu
+    "FAQ"	'frequently asked questions + answers' \
+    "LOG"	"$viewlog_message" \
+    2>"$tmpmenu"
 
   
-  case "`cat $tmpmenu`" in
-  FAQ)	clear; test -f $FAQ && <$FAQ eval $PAGER; fix_pager_more;;
-  CONF)	clear; print_setup;;
+  case `cat "$tmpmenu"` in
+  FAQ)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; test -f $FAQ && <$FAQ eval $PAGER; fix_pager_more;;
+  CONF)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; print_setup;;
   PREF)	setup_preferences ;;
-  REHASH)	clear; mktexlsr; locate_files ;;
+  REHASH)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; mktexlsr; locate_files ;;
   FORMATS)	config_formats;;
   HYPHEN)	config_tex;;
   MODE)	get_default_mode;;
   XDVI)	config_xdvi ;;
   DVIPS)	config_dvips ;;
+  DVIPDFM)	config_dvipdfm ;;
+  PDFTEX)	config_pdftex ;;
   FONT)	setup_mt;;
   DOC)	rebuild_doc;;
-  LOG)	clear; <$log eval $PAGER; fix_pager_more;;
+  LOG)	test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; <"$log" eval $PAGER; fix_pager_more;;
   *)	reset 2>/dev/null; stty sane 2>/dev/null;
-    reset 2>/dev/null; clear; exit 0;;
+    reset 2>/dev/null; test -z "$NO_CLEAR" && tty >/dev/null 2>&1 && clear; exit_return 0;;
   esac
 done
+
+exit_return 0

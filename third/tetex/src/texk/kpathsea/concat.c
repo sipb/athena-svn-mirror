@@ -25,9 +25,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 string
 concat P2C(const_string, s1,  const_string, s2)
 {
-  string answer = (string) xmalloc (strlen (s1) + strlen (s2) + 1);
+  unsigned s1len = strlen(s1);
+  unsigned s2len = strlen(s2);
+  string answer = (string) xmalloc (s1len + s2len + 1);
   strcpy (answer, s1);
-  strcat (answer, s2);
+  strcat (answer + s1len, s2);
 
   return answer;
 }

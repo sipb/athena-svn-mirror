@@ -68,6 +68,7 @@ AC_CACHE_VAL(kb_cv_func_putenv_malloc,
 #define STRING1 "GabbaGabbaHey"
 #define STRING2 "Yow!!"		/* should be shorter than STRING1 */
 extern char *getenv (); /* in case char* and int don't mix gracefully */
+extern char *malloc (); /* ditto */
 main ()
 {
   char *str1, *rstr1, *str2, *rstr2;
@@ -152,6 +153,9 @@ fi
 if test "x$with_mktextex_default" = xyes; then
   AC_DEFINE(MAKE_TEX_TEX_BY_DEFAULT)
 fi
+if test "x$with_mktexfmt_default" = xyes; then
+  AC_DEFINE(MAKE_TEX_FMT_BY_DEFAULT)
+fi
 if test "x$with_mktextfm_default" = xyes; then
   AC_DEFINE(MAKE_TEX_TFM_BY_DEFAULT)
 fi
@@ -161,3 +165,6 @@ fi
 if test "x$with_mkofm_default" = xyes; then
   AC_DEFINE(MAKE_OMEGA_OFM_BY_DEFAULT)
 fi
+
+# Is libm present.  FIXME: do we need it at all?
+AC_CHECK_LIB(m, main)

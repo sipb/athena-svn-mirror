@@ -51,10 +51,9 @@ dosection P2C(sectiontype *, s, int, c)
 
    if (multiplesects) {
      setup() ;
-   } else {
-      cmdout("TeXDict") ;
-      cmdout("begin") ;
    }
+   cmdout("TeXDict") ;
+   cmdout("begin") ;
    numout(hpapersize) ;
    numout(vpapersize) ;
    doubleout(mag) ;
@@ -175,8 +174,8 @@ dosection P2C(sectiontype *, s, int, c)
          (void)fprintf(bitfile, "%%DVIPSSectionTrailer\n") ;
       }
       cmdout("eos") ;
+      cmdout("end") ;
    }
-   cmdout("end") ;
 #ifdef HPS
    if (HPS_FLAG) cmdout("\nend") ; /* close off HPSDict */
 #endif

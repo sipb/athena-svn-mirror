@@ -53,7 +53,7 @@ procedure initialize; {this procedure gets things started properly}
     kpse_init_prog ('OFM2OPL', 0, nil, nil);
     {We |xrealloc| when we know how big the file is.  The 1000 comes
      from the negative lower bound.}
-    tfm_file_array := cast_to_byte_pointer (xmalloc (500000));
+    tfm_file_array := cast_to_byte_pointer (xmalloc (2000000));
     parse_arguments;
 @z
 
@@ -234,31 +234,27 @@ f:=((tfm[k+1] mod 16)*intcast(@'400)+tfm[k+2])*@'400+tfm[k+3];
 @x
     incr(chars_on_line);
     end;
-  if no_repeats(c)>0 then
-  begin
+  if no_repeats(c)>0 then begin
     print_hex(c); print('-'); print_hex(c+no_repeats(c));
     left; out('CHARREPEAT'); out_char(c); out_char(no_repeats(c)); out_ln;
-  end
-  else
-  begin
+    end
+  else begin
     print_hex(c); {progress report}
     left; out('CHARACTER'); out_char(c); out_ln;
-  end;
+    end;
 @y
     if verbose then incr(chars_on_line);
     end;
-  if no_repeats(c)>0 then
-  begin
+  if no_repeats(c)>0 then begin
     if verbose then begin
       print_hex(c); print('-'); print_hex(c+no_repeats(c));
       end;
     left; out('CHARREPEAT'); out_char(c); out_char(no_repeats(c)); out_ln;
-  end
-  else
-  begin
+    end
+  else begin
     if verbose then print_hex(c); {progress report}
     left; out('CHARACTER'); out_char(c); out_ln;
-  end;
+    end;
 @z
 
 % [89] Change the name of the variable `class', since AIX 3.1's <math.h>
@@ -352,10 +348,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'ofm2opl');
+      usage ('ofm2opl');
 
     end else if argument_is ('help') then begin
-      usage (0, OFM2OPL_HELP);
+      usage_help (OFM2OPL_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit
@@ -375,7 +371,7 @@ begin
   {Now |optind| is the index of first non-option on the command line.}
   if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
     write_ln (stderr, 'ofm2opl: Need one or two file arguments.');
-    usage (1, 'ofm2opl');
+    usage ('ofm2opl');
   end;
 
   tfm_name := cmdline (optind);

@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTStyle.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTStyle.c,v 1.1.1.2 2003-02-25 22:25:21 amb Exp $
 **
 **	Styles allow the translation between a logical property
 **	of a piece of text and its physical representation.
@@ -105,9 +105,8 @@ PUBLIC HTStyle * HTStyleSheet_findStyleWithName (HTStyleSheet * me, const char *
 	while ((pres = (HTStyle *) HTList_nextObject(cur))) {
 	    if (!strcasecomp(pres->name, name)) return pres;
 	}
-	if (SGML_TRACE)
-	    HTTrace("StyleSheet.. No style named `%s' in stylesheet `%s'\n",
-		    name, me->name);
+	HTTRACE(SGML_TRACE, "StyleSheet.. No style named `%s' in stylesheet `%s'\n" _ 
+		    name _ me->name);
     }
     return NULL;
 }
@@ -120,9 +119,8 @@ PUBLIC HTStyle * HTStyleSheet_findStyleForElement (HTStyleSheet * me, int elemen
 	while ((pres = (HTStyle *) HTList_nextObject(cur))) {
 	    if (pres->element==element) return pres;
 	}
-	if (SGML_TRACE)
-	    HTTrace("StyleSheet.. No style for element %d in stylesheet `%s'\n",
-		    element, me->name);
+	HTTRACE(SGML_TRACE, "StyleSheet.. No style for element %d in stylesheet `%s'\n" _ 
+		    element _ me->name);
     }
     return NULL;
 }

@@ -103,8 +103,6 @@
 
 @<Constants...@>=
 @!max_internal=300; {maximum number of internal quantities}
-@!buf_size=3000; {maximum number of characters simultaneously present in
-  current lines of open files; must not exceed |max_halfword|}
 @!screen_width=1664; {number of pixels in each row of screen display}
 @!screen_depth=1200; {number of pixels in each column of screen display}
 @!stack_size=300; {maximum number of simultaneous input sources}
@@ -131,6 +129,9 @@
 @#
 @!inf_main_memory = 2999;
 @!sup_main_memory = 8000000;
+
+@!inf_buf_size = 500;
+@!sup_buf_size = 300000;
 @z
 
 @x [1.12] Constants defined as WEB macros.
@@ -179,12 +180,16 @@ tini@/
 @!mem_max:integer; {greatest index in \MF's internal |mem| array;
   must be strictly less than |max_halfword|;
   must be equal to |mem_top| in \.{INIMF}, otherwise |>=mem_top|}
+@!buf_size:integer; {maximum number of characters simultaneously present in
+  current lines of open files; must not exceed |max_halfword|}
 @!error_line:integer; {width of context lines on terminal error messages}
 @!half_error_line:integer; {width of first lines of contexts in terminal
   error messages; should be between 30 and |error_line-15|}
 @!max_print_line:integer; {width of longest text lines output;
   should be at least 60}
 @!gf_buf_size:integer; {size of the output buffer, must be a multiple of 8}
+@!parse_first_line_p:boolean; {parse the first line for options}
+@!file_line_error_style_p:boolean; {output file:line:error style errors.}
 @z
 
 @x [1.16] Use C macros for `incr' and `decr'.
@@ -321,6 +326,12 @@ end;
 @ And all the file closing routines as well.
 @z
 
+@x [3.29] Array size of input buffer is determined at runtime.
+@!buffer:array[0..buf_size] of ASCII_code; {lines of characters being read}
+@y
+@!buffer:^ASCII_code; {lines of characters being read}
+@z
+
 @x [3.30] Do `input_ln' in C.
 Standard \PASCAL\ says that a file should have |eoln| immediately
 before |eof|, but \MF\ needs only a weaker restriction: If |eof|
@@ -447,7 +458,7 @@ begin
 @.**@>
         if not input_ln(term_in,true) then begin {this shouldn't happen}
             write_ln(term_out);
-            write(term_out, '! End of file on the terminal... why?');
+            write_ln(term_out, '! End of file on the terminal... why?');
 @.End of file on the terminal@>
             init_terminal:=false;
 	    return;
@@ -510,8 +521,8 @@ name_of_file:=pool_name; {we needn't set |name_length|}
 if a_open_in(pool_file) then
 @y
 name_length := strlen (pool_name);
-name_of_file := xmalloc (1 + name_length + 1);
-strcpy (name_of_file+1, pool_name); {copy the string}
+name_of_file := xmalloc_array (ASCII_code, 1 + name_length);
+strcpy (stringcast(name_of_file+1), pool_name); {copy the string}
 if a_open_in (pool_file, kpse_mfpool_format) then
 @z
 
@@ -666,6 +677,19 @@ end;
 @d unspecified_mode=4 {extra value for command-line switch}
 @z
 
+@x [6.68] l.1605 - file:line:error style messages.
+  print_nl("! "); print(#);
+@y
+  if (file_line_error_style_p and not terminal_input) then
+  begin 
+    print_nl ("");
+    print (full_source_filename_stack[in_open]);
+    print (":"); print_int (line); print (": ");
+    print (#); 
+  end  
+  else begin print_nl("! "); print(#) end;
+@z
+
 @x [6.68] l.1610 - Add interaction_option.
 @!interaction:batch_mode..error_stop_mode; {current level of interaction}
 @y
@@ -702,6 +726,13 @@ begin
 close_files_and_terminate;
 do_final_end;
 end;
+@z
+
+@x [6.77] l.1736 -- file:line:error style forces scroll_mode.
+print_char("."); show_context;
+@y
+if file_line_error_style_p then interaction:=scroll_mode
+else begin print_char("."); show_context end;
 @z
 
 @x [6.79] Handle the switch-to-editor option.
@@ -1155,6 +1186,13 @@ begin
 end;
 @z
 
+@x [12.198] Change class to c_class to avoid C++ keyword.
+@d max_class=20 {the largest class number}
+@y
+@d max_class=20 {the largest class number}
+@d class==c_class
+@z
+
 @x [12.199] Allow tab and form feed as input.
 for k:=127 to 255 do char_class[k]:=invalid_class;
 @y
@@ -1225,6 +1263,15 @@ else pen_edge:=-diag_offset(right_type(q));
 if odd(right_type(q)) then a:=good_val(b,pen_edge+halfp(cur_gran))
 else a:=good_val(b-1,pen_edge+halfp(cur_gran));
 end
+@z
+
+@x [24.509] i18n fix
+print(" ("); print_int(info(h)); print(" offset");
+if info(h)<>1 then print_char("s");
+@y
+print(" ("); print_int(info(h));
+if info(h)<>1 then print(" offsets")
+else print(" offset");
 @z
 
 % [25.530] |make_fraction| and |take_fraction| arguments are too long for
@@ -1403,6 +1450,14 @@ q:=link(q); qq:=info(q);
 end
 @z
 
+@x [31.631] l.13346 - Add datastructures for file:line:error.
+@!line_stack : array[1..max_in_open] of integer;
+@y
+@!line_stack : array[1..max_in_open] of integer;
+@!source_filename_stack : ^str_number;
+@!full_source_filename_stack : ^str_number;
+@z
+
 @x [38.768] Area and extension rules.
 @ The file names we shall deal with for illustrative purposes have the
 following structure:  If the name contains `\.>' or `\.:', the file area
@@ -1446,7 +1501,7 @@ In C, the default paths are specified separately.
 begin if c=" " then more_name:=false
 else  begin if (c=">")or(c=":") then
 @y
-begin if (c=" ")or(c=tab) then more_name:=false
+begin if stop_at_space and ((c=" ")or(c=tab)) then more_name:=false
 else  begin if IS_DIR_SEP (c) then
 @z
 
@@ -1460,7 +1515,7 @@ else  begin if IS_DIR_SEP (c) then
 for j:=str_start[a] to str_start[a+1]-1 do append_to_name(so(str_pool[j]));
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file := xmalloc (1 + length (a) + length (n) + length (e) + 1);
+name_of_file := xmalloc_array (ASCII_code, length(a)+length(n)+length(e)+1);
 for j:=str_start[a] to str_start[a+1]-1 do append_to_name(so(str_pool[j]));
 @z
 @x
@@ -1494,10 +1549,17 @@ program.
 for j:=1 to n do append_to_name(xord[MF_base_default[j]]);
 @y
 if name_of_file then libc_free (name_of_file);
-name_of_file := xmalloc (1 + n + (b - a + 1) + base_ext_length + 1);
+name_of_file := xmalloc_array (ASCII_code,  n + (b-a+1) + base_ext_length + 1);
 for j:=1 to n do append_to_name(xord[MF_base_default[j]]);
 @z
-@x
+% @x [38.778] Set program name to match format.
+% for j:=a to b do append_to_name(buffer[j]);
+% @y
+% for j:=a to b do append_to_name(buffer[j]);
+% name_of_file[k+1]:=0;
+% kpse_reset_program_name(name_of_file+1);
+% @z
+@x [38.778] Change to pack_buffered_name as with pack_file_name.
 for k:=name_length+1 to file_name_size do name_of_file[k]:=' ';
 @y
 name_of_file[name_length + 1] := 0;
@@ -1517,7 +1579,7 @@ name_of_file[name_length + 1] := 0;
   wterm_ln('Sorry, I can''t find that base;',' will try PLAIN.');
 @y
   wterm ('Sorry, I can''t find the base `');
-  fputs (name_of_file + 1, stdout);
+  fputs (stringcast(name_of_file + 1), stdout);
   wterm ('''; will try `');
   fputs (MF_base_default + 1, stdout);
   wterm_ln ('''.');
@@ -1555,6 +1617,14 @@ while ((buffer[k]=" ")or(buffer[k]=tab))and(k<last) do incr(k);
 @!months:packed array [1..36] of char; {abbreviations of month names}
 @y
 @!months:^char;
+@z
+
+@x [38.788] Set correct filename for recorder.
+pack_job_name(".log");
+@y
+pack_job_name(".fls");
+recorder_change_filename(stringcast(name_of_file+1));
+pack_job_name(".log");
 @z
 
 @x [38.790]
@@ -1603,31 +1673,24 @@ loop@+begin
     pack_cur_name;
     end;
   {Kpathsea tries all the various ways to get the file.}
-  if open_in_name_ok(name_of_file+1)
+  if open_in_name_ok(stringcast(name_of_file+1))
     and a_open_in(cur_file, kpse_mf_format) then
     {See \.{tex.ch} for an explanation.}
     begin k:=1;
     begin_name;
+    stop_at_space:=false;
     while (k<=name_length)and(more_name(name_of_file[k])) do
       incr(k);
+    stop_at_space:=true;
     end_name;
     goto done;
     end;
 @z
 
-@x [38.793] l.15938 - Different job_name heuristic for ini version.
+@x [38.793] l.15938 - The job name may have been given on the command line.
   begin job_name:=cur_name; open_log_file;
 @y
-  begin job_name:=cur_name;
-    init
-      if ini_version and dump_option then begin
-        str_room(base_default_length);
-        for k:=1 to base_default_length - base_ext_length do
-          append_char(xord[MF_base_default[k]]);
-        job_name:=make_string;
-      end;
-    tini
-    open_log_file;
+  begin job_name:=get_job_name; open_log_file;
 @z
 
 @x [38.793] Can't return name to sring pool because of editor option?
@@ -1815,6 +1878,15 @@ if prev_m-intcast(m_offset(cur_edges))+x_off>gf_max_m then
   gf_max_m:=prev_m-m_offset(cur_edges)+x_off
 @z
 
+@x [47.1182] i18n fix
+print(" ("); print_int(total_chars); print(" character");
+if total_chars<>1 then print_char("s");
+@y
+print(" ("); print_int(total_chars);
+if total_chars<>1 then print(" characters")
+else print(" character");
+@z
+
 @x [48.1185] INI = VIR.
 base_ident:=" (INIMF)";
 @y
@@ -1861,7 +1933,7 @@ end;
 undump_int (mem_top); {Overwrite whatever we had.}
 if mem_max < mem_top then mem_max:=mem_top; {Use at least what we dumped.}
 if mem_min+1100>mem_top then goto off_base;
-xmalloc_array (mem, mem_max - mem_min);
+mem:=xmalloc_array (memory_word, mem_max - mem_min);
 @z
 
 @x [48.1199] l.22725 -  - Allow command line to override dumped value.
@@ -1879,10 +1951,8 @@ undump_int(x);@+if (x<>69069)or feof(base_file) then goto off_base
 
 @x [48.1200] Eliminate probably-wrong word `preloaded' from base_idents.
 print(" (preloaded base="); print(job_name); print_char(" ");
-print_int(round_unscaled(internal[year]) mod 100); print_char(".");
 @y
 print(" (base="); print(job_name); print_char(" ");
-print_int(round_unscaled(internal[year])); print_char(".");
 @z
 
 @x [49.1204] Dynamic allocation.
@@ -1900,6 +1970,7 @@ print_int(round_unscaled(internal[year])); print_char(".");
   {See comments in \.{tex.ch} for why the name has to be duplicated.}
   setup_bound_var (250000)('main_memory')(main_memory);
     {|memory_word|s for |mem| in \.{INIMF}}
+  setup_bound_var (3000)('buf_size')(buf_size);
   setup_bound_var (79)('error_line')(error_line);
   setup_bound_var (50)('half_error_line')(half_error_line);
   setup_bound_var (79)('max_print_line')(max_print_line);
@@ -1909,12 +1980,16 @@ print_int(round_unscaled(internal[year])); print_char(".");
   const_chk (main_memory);
   mem_top := mem_min + main_memory;
   mem_max := mem_top;
+  const_chk (buf_size);
 
-  xmalloc_array (gf_buf, gf_buf_size);
+  buffer:=xmalloc_array (ASCII_code, buf_size);
+  gf_buf:=xmalloc_array (eight_bits, gf_buf_size);
+  source_filename_stack:=xmalloc_array (str_number, max_in_open);
+  full_source_filename_stack:=xmalloc_array (str_number, max_in_open);
 
 @+init
 if ini_version then begin
-  xmalloc_array (mem, mem_top - mem_min);
+  mem:=xmalloc_array (memory_word, mem_top - mem_min);
 end;
 @+tini
 @z
@@ -1992,10 +2067,12 @@ Here are the variables used to hold ``switch-to-editor'' information.
 @!edit_name_start: pool_pointer;
 @!edit_name_length,@!edit_line: integer;
 @!is_printable: array[ASCII_code] of boolean; {use \.{\^\^} notation?}
+@!stop_at_space: boolean; {whether |more_name| returns false for space}
 
 @ The |edit_name_start| will be set to point into |str_pool| somewhere after
 its beginning if \MF\ is supposed to switch to an editor on exit.
 
 @<Set init...@>=
 edit_name_start:=0;
+stop_at_space:=true;
 @z

@@ -234,6 +234,7 @@ residentfont P1C(register fontdesctype *, curfnt)
       curfnt->chardesc[i].packptr = NULL ;
       curfnt->chardesc[i].pixelwidth = 0 ;
       curfnt->chardesc[i].flags = 0 ;
+      curfnt->chardesc[i].flags2 = 0 ;
    }
    add_name(p->PSname, &ps_fonts_used) ;
 /*
@@ -408,7 +409,9 @@ getdefaults P1C(char *, s)
 	   *q = '\0';
 	 }
 #else
-         strcpy(PSname, dvipsrc ? dvipsrc : DVIPSRC) ;
+         if(!dvipsrc) dvipsrc = kpse_var_expand(DVIPSRC) ;
+         strcpy(PSname, dvipsrc ? dvipsrc : "~/.dvipsrc") ;
+         if(dvipsrc) free(dvipsrc) ;
 #endif /* WIN32 */
 	 
 #else /* ! KPATHSEA */
@@ -744,6 +747,9 @@ case 'e' :
            bad_config("missing arg to e") ;
          if (maxdrift < 0) bad_config("bad argument to e") ;
 	 vmaxdrift = maxdrift;
+         break ;
+case 'z' : 
+         secure = (was_inline[1] != '0') ;
          break ;
 case 'q' : case 'Q' :
          quiet = (was_inline[1] != '0') ;

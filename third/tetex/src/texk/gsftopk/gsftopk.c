@@ -1,6 +1,6 @@
 /*========================================================================*\
 
-Copyright (c) 1993-1998  Paul Vojta
+Copyright (c) 1993-2000  Paul Vojta
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 \*========================================================================*/
 
-#ifndef lint
+#if !lint
 static	char	copyright[] =
 "@(#) Copyright (c) 1993-1998 Paul Vojta.\n";
 #endif
@@ -43,11 +43,11 @@ static	char	copyright[] =
 #include "config.h"
 
 /* Some O/S dependent kludges.  */
-#ifdef _AIX
+#if _AIX
 #define _ALL_SOURCE 1
 #endif
 
-#ifdef __hpux
+#if __hpux
 #define _HPUX_SOURCE 1
 #endif
 
@@ -55,12 +55,12 @@ static	char	copyright[] =
 # include <stdlib.h>
 # include <string.h>
 #else
-# ifndef HAVE_STRCHR
+# if !HAVE_STRCHR
 #  define strchr index
 #  define strrchr rindex
 # endif
 char *strchr(), *strrchr();
-# ifndef HAVE_MEMCPY
+# if !HAVE_MEMCPY
 #  define memcpy(d, s, n)	bcopy((s), (d), (n))
 #  define memmove(d, s, n)	bcopy((s), (d), (n))
 #  define memcmp(s1, s2, n)	bcmp((s1), (s2), (n))
@@ -106,7 +106,7 @@ extern	int	errno;
 # include <sys/time.h>
 # include <time.h>
 #else
-# if HAVE_SYS_TIME_H 
+# if HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <time.h>
@@ -150,33 +150,27 @@ char	*getenv();
 
 /* How to open a binary file for reading:  */
 #ifndef FOPEN_RBIN_MODE
-#ifdef DOS
+#if DOS
 #define	FOPEN_RBIN_MODE "r+b"
-#else
-#if defined (VMS) || defined (VMCMS) || defined (OS2) || defined (WIN32)
+#elif VMS || VMCMS || OS2 || WIN32
 #define	FOPEN_RBIN_MODE	"rb"
 #else
 #define	FOPEN_RBIN_MODE	"r"
-#endif /* not (VM/CMS or VMS or OS2 or WIN32) */
-#endif /* not DOS */
-#endif /* not FOPEN_RBIN_MODE */
+#endif
+#endif /* undef FOPEN_RBIN_MODE */
 
 /* How to open a binary file for writing:  */
 #ifndef FOPEN_WBIN_MODE
-#ifdef DOS
+#if DOS
 #define	FOPEN_WBIN_MODE "w+b"
-#else
-#if defined (OS2) || defined (WIN32)
+#elif OS2 || WIN32
 #define	FOPEN_WBIN_MODE "wb"
-#else
-#ifdef VMCMS
+#elif VMCMS
 #define	FOPEN_WBIN_MODE "wb, lrecl=1024, recfm=f"
 #else
 #define	FOPEN_WBIN_MODE	"w"
-#endif /* not VM/CMS */
-#endif /* not (OS2 or WIN32) */
-#endif /* not DOS */
-#endif /* not FOPEN_WBIN_MODE */
+#endif
+#endif /* undef FOPEN_WBIN_MODE */
 
 
 /* These macros munge function declarations to make them work in both
@@ -243,22 +237,22 @@ char	*getenv();
 # include <sys/time.h>
 # include <time.h>
 #else
-# if HAVE_SYS_TIME_H 
+# if HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <time.h>
 # endif
 #endif
 
-#ifndef HAVE_STRCHR
+#if !HAVE_STRCHR
 #define	strchr	index
 #endif
 
-#ifndef HAVE_STRRCHR
+#if !HAVE_STRRCHR
 #define	strrchr	rindex
 #endif
 
-#if defined(HAVE_POLL) && !defined(HAVE_POLL_H)
+#if HAVE_POLL && !HAVE_POLL_H
 #undef HAVE_POLL
 #endif
 
@@ -273,13 +267,28 @@ char	*getenv();
 # include <sys/wait.h>
 #endif
 
-#ifdef WIN32
+#if WIN32
 
-#include <process.h>
-#define	spawnlp	_spawnlp
-#define	sleep	Sleep
-#define	WIFSIGNALED(stat_val)	(((stat_val) & ((DWORD)0x0F0000000L)) != 0)
-#define	WEXITSTATUS(stat_val)	(((stat_val) >> 8) & 0x0FF)
+#include <win32lib.h>
+#include <gs32lib.h>
+HANDLE hGsThread = NULL;
+unsigned char *gs_device = NULL;
+HANDLE hGsDataIn = 0, hGsDataOut = 0; /* Events to synchronize threads */
+/* Arguments to gs dll */
+char *gs_argv[] = { "gswin32c.exe",
+		    "-dNOGC",
+		    "-dNODISPLAY",
+		    NULL, /* 3, substarg */
+		    "-q",
+		    "--",
+		    NULL, /* 6, searchpath */
+		    NULL, /* 7, PSname */
+		    NULL, /* 8, dlstring != NULL ? dlstring : "" */
+		    NULL, /* 9, specinfo */
+		    NULL, /* 10, dpistr */
+		    NULL
+  };
+char *buffer_stdin; /* This is the buffer from where data are taken. */
 
 #else /* not WIN32 */
 
@@ -319,7 +328,7 @@ char	*getenv();
 #include <vfork.h>
 #endif
 
-#ifdef _AMIGA
+#if _AMIGA
 #include <proto/dos.h>
 #include <dos/dostags.h>
 #endif
@@ -341,7 +350,7 @@ char	*getenv();
 #define	GS_PATH	"gs"
 #endif
 
-#ifdef __GNUC__
+#if __GNUC__
 #define	NORETURN	volatile
 #else
 #define	NORETURN	/* nothing */
@@ -461,7 +470,7 @@ struct p_list	**p_tail		= &psfonts_map.next;
 
 Boolean		data_eof	= False;
 
-#ifndef _AMIGA
+#if !_AMIGA
 
 #define		BUFSIZE		512
 
@@ -512,7 +521,8 @@ byte		*bitmap_end;
 int		pk_len;
 
 
-#ifndef _AMIGA
+#if !_AMIGA
+
 /*
  *	Exit, and kill the child process, too.
  */
@@ -520,21 +530,56 @@ int		pk_len;
 NORETURN void
 exit_toto_too P1H(void)
 {
+#if !WIN32
 	if (gs_pid != 0)
-#ifdef WIN32
-	    TerminateProcess((HANDLE) gs_pid, 1);
-#else
 	    kill(gs_pid, SIGKILL);
+#else
+	if (hGsThread) {
+	  switch (WaitForSingleObject(hGsThread, 2000)) {
+	  case WAIT_OBJECT_0:
+	    CloseHandle(hGsThread);
+	    hGsThread = NULL;
+	    break;
+	  case WAIT_TIMEOUT:
+	    fprintf(stderr, "Timeout waiting for Gs thread.\n");
+	    break;
+	  case WAIT_FAILED:
+	    fprintf(stderr, "WaitForSingleObject failed on Gs thread (Error code %d).\n",
+		    GetLastError());
+	    break;
+	  default:
+	    break;
+	  }
+
+	  if (hGsThread) {
+	    if (TerminateThread(hGsThread, 1) == 0) {
+	      fprintf(stderr, "... couldn't terminate gs thread\n");
+	    }
+	    CloseHandle(hGsThread);
+	    /* FIXME : is it right to call this ? */
+	    gs_dll_release();
+	  }	  
+	}
+
+	if (hGsDataIn)
+	  CloseHandle(hGsDataIn);
+	if (hGsDataOut)
+	  CloseHandle(hGsDataOut);
+
 #endif
 	if (pk_file != NULL) {
 	    fclose(pk_file);
 	    if (unlink(xfilename) != 0) perror("unlink");
 	}
+
 	_exit(1);
 }
-#else
+
+#else /* _AMIGA */
+
 #define	exit_toto_too()	exit(1)
-#endif
+
+#endif /* _AMIGA */
 
 /*
  *	Print error message and quit.
@@ -645,7 +690,6 @@ char *
 get_one_arg P1C(const char *, src)
 {
 	char		*dest;
-	const char	*arg_end;
 	const char	*p;
 	unsigned int	len;
 
@@ -662,7 +706,7 @@ get_one_arg P1C(const char *, src)
 	return dest;
 }
 
-#ifndef _AMIGA
+#if !_AMIGA
 
 /*
  *	Signal handlers.
@@ -670,7 +714,8 @@ get_one_arg P1C(const char *, src)
 
 static	Boolean	got_sigchld	= False;
 
-#ifdef WIN32
+#if WIN32
+
 BOOL WINAPI
 handle_sigterm(DWORD dwCtrlType)
 {
@@ -695,7 +740,7 @@ handle_sigterm(DWORD dwCtrlType)
         }
 }
 
-#else /* ! WIN32 */
+#else /* not WIN32 */
 
 /* ARGSUSED */
 static RETSIGTYPE
@@ -717,35 +762,137 @@ handle_sigterm P1C(int, signo)
 
 typedef	int		gsf_wait_t;
 
+#if WIN32
+
+/* This is the callback function for gs. It is mainly used to read and
+  write  data on   gs   stdin/stdout. Data exchanges   happen  through
+  buffers.  */
+int __cdecl
+gsdll_callback(int message, char *str, unsigned long count)
+{
+  int n;
+  static char **pin = &buffer_stdin; /* not yet allocated, so used a pointer on it. */
+
+  switch (message) {
+
+  case GSDLL_STDIN:
+    /* Put count chars on gs stdin */
+#if DEBUG
+    fprintf(stderr, "gs wants %d chars\n", count);
+#endif
+    strncpy(str, *pin, count);
+    *pin += count;
+    return strlen(str);
+
+  case GSDLL_STDOUT:
+    /* Fill the buffer in, wait for gsftopk to ask for data. */
+    WaitForSingleObject(hGsDataOut, INFINITE);
+#if DEBUG
+    fprintf(stderr, "gs gives %d chars\n", count);
+#endif
+    data_out = buffer;
+
+    n = (count >= BUFSIZE ? BUFSIZE : count);
+    memcpy(data_out, str, n);
+    data_end = data_out + n;
+    /* Tell data_fillbuf() that data are available */
+    if (SetEvent(hGsDataIn) == FALSE)
+      Win32Error("gsdll_callback/SetEvent");
+    /* return the number of chars read */
+    return n;
+
+  case GSDLL_DEVICE:
+    gs_device = str;
+#if DEBUG
+    fprintf(stdout,"Callback: DEVICE %p %s\n", str,
+	    count ? "open" : "close");
+#endif
+    break;
+
+  case GSDLL_SYNC:
+#if DEBUG
+    fprintf(stdout,"Callback: SYNC %p\n", str);
+#endif
+    break;
+
+  case GSDLL_PAGE:
+    fprintf(stdout,"Callback: PAGE %p\n", str);
+    break;
+
+  case GSDLL_SIZE:
+#if DEBUG
+    fprintf(stdout,"Callback: SIZE %p width=%d height=%d\n", str,
+	    (int)(count & 0xffff), (int)((count>>16) & 0xffff) );
+#endif
+    break;
+
+  case GSDLL_POLL:
+#if 0
+    fprintf(stderr, "GS: Poll sent (%d)!\n", 0);
+#endif
+    return 0; /* no error ? */
+  default:
+    fprintf(stdout,"%s: gs callback: unknown message=%d\n",progname, message);
+    break;
+  }
+  return 0;
+}
+
+/*
+  This is the thread function that will load the gs dll and
+  send it the data.
+*/
+DWORD WINAPI Win32GsSendData(LPVOID lpParam)
+{
+  int ret;
+
+  gs_dll_initialize();
+
+  ret = (*pgsdll_init)(gsdll_callback,
+		       NULL,
+		       sizeof(gs_argv) / sizeof(char *) - 1,
+		       gs_argv);
+
+  switch (ret) {
+  case 0:
+    /* Should not happen : gs should quit
+       right after being initialized. */
+    (*pgsdll_exit)();
+    /* FIXME: this is working, but we could expect something cleaner ! */
+    /*  GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, 0); */
+    break;
+  case GSDLL_INIT_QUIT:
+    break;
+  default:
+    (*pgsdll_exit)();
+    break;
+  }
+#if DEBUG  
+  fprintf(stderr, "%s: gsdll_init returned %d\n", progname, ret);
+#endif
+  WaitForSingleObject(hGsDataOut, INFINITE);
+  data_eof = True;
+  data_end = data_out;
+  /* Tell data_fillbuf() */
+  SetEvent(hGsDataIn);
+
+  gs_dll_release();
+
+  return 0;
+}
+
+#else /* not WIN32 */
+
 static void
 wait_for_gs P1H(void)
 {
 	gsf_wait_t	status;
 
-#ifdef _AMIGA
+#if _AMIGA
 
 	/* Do nothing */
 
-#elif defined(WIN32)
-
-	if (_cwait( &status, gs_pid, _WAIT_CHILD ) == -1) {
-	    perror("_cwait");
-	    exit_toto_too();
-	}
-
-	/* FIXME: how to test if gs is stopped ? */
-
-	gs_pid = 0;
-
-	if (WIFSIGNALED(status))
-	    oops("gs died due to signal %d\n", status);
-
-	/* otherwise, it exited */
-	if (WEXITSTATUS(status) != 0)
-	    oops("gs terminated abnormally with status %d\n",
-	      WEXITSTATUS(status));
-
-#else /* neither _AMIGA nor WIN32 */
+#else /* not _AMIGA */
 
 	got_sigchld = False;
 
@@ -771,24 +918,53 @@ wait_for_gs P1H(void)
 	    oops("gs terminated abnormally with status %d\n",
 	      WEXITSTATUS(status));
 
-#endif /* neither _AMIGA nor WIN32 */
+#endif /* not _AMIGA */
 
 }
 
-#endif /* ! _AMIGA */
+#endif /* not WIN32 */
 
+#endif /* not _AMIGA */
 
 /*
  *	Routines to read from the data file.
  */
 
-#ifdef _AMIGA
+#if _AMIGA
 
 #define	data_getc()	getc(data_file)
 #define	data_ungetc(c)	ungetc(c, data_file)
 #define	data_read(p, l)	fread(p, 1, l, data_file)
 
 #else /* not _AMIGA */
+
+#if WIN32
+
+static void
+data_fillbuf P1H(void)
+{
+  if (data_eof)
+    return;
+
+  /* wait until data are available. First tell gs it can fill the buffer in. */
+  SetEvent(hGsDataOut);
+  /* wait for the data. */
+  switch (WaitForSingleObject(hGsDataIn, INFINITE)) {
+  case WAIT_OBJECT_0:
+    /* normal case */
+    break;
+  case WAIT_TIMEOUT:
+    /* should not happen */
+    fprintf(stderr, "Gs did not return on time from callback.\n");
+    break;
+  case WAIT_FAILED:
+    break;
+  default:
+    fprintf(stderr, "WaitForSingleObject failed for unknown reason.\n");
+  }
+}
+
+#else /* not WIN32 */
 
 #if HAVE_POLL
 #define	ISSET(a, b)		(poll_fd.revents & POLLIN != 0)
@@ -801,19 +977,16 @@ data_fillbuf P1H(void)
 {
 	int			n;
 
-#ifndef WIN32
 #if HAVE_POLL
 	static	struct pollfd	poll_fd	= {0, POLLIN, 0};
 #else
 	fd_set			read_fds;
 	struct timeval		timeout;
 #endif
-#endif /* ! WIN32 */
 
 	if (data_eof)
 	    return;
 
-#ifndef WIN32	/* Win32 doesn't recognize fd's as sockets */
 	/* wait for readable data */
 	if (!gs_is_done) {
 	    for (;;) {
@@ -852,8 +1025,6 @@ data_fillbuf P1H(void)
 	    }
 	}
 
-#endif /* ! WIN32 */
-
 	/* read the data */
 	for (;;) {
 	    n = read(data_fd, (void *) (data_out = buffer), BUFSIZE);
@@ -873,6 +1044,8 @@ data_fillbuf P1H(void)
 	if (n == 0)
 	    data_eof = True;
 }
+
+#endif /* not WIN32 */
 
 static byte
 data_fgetc P1H(void)
@@ -951,7 +1124,6 @@ data_gets P2C(byte *, buf, int, n)
 }
 
 #endif /* not _AMIGA */
-
 
 /*
  *	Here's the patch searching stuff.  First the typedefs and variables.
@@ -1125,7 +1297,7 @@ search P3C(const char *, path, const char *, path_var, const char *, name)
 	}
 }
 
-#endif /* ! KPATHSEA */
+#endif /* not KPATHSEA */
 
 /*
  *	Reading configuration and map files.
@@ -1275,7 +1447,7 @@ void
 expect P1C(const char *, waitingfor)
 {
 	for (;;) {
-#ifndef _AMIGA
+#if !_AMIGA
 	    data_gets((byte *) line, sizeof(line));
 #else
 	    if (fgets(line, sizeof(line), data_file) == NULL)
@@ -1286,7 +1458,7 @@ expect P1C(const char *, waitingfor)
 	    for (;;) {
 		fputs(line, stdout);
 		if (*line == '\0' || line[strlen(line) - 1] == '\n') break;
-#ifndef _AMIGA
+#if !_AMIGA
 		data_gets((byte *) line, sizeof(line));
 #else
 		if (fgets(line, sizeof(line), data_file) == NULL)
@@ -1432,13 +1604,13 @@ trim_bitmap P1H(void)
 	}
 	height -= skip;
 	voff -= skip;
-#ifdef DEBUG
+#if DEBUG
 #ifdef KPATHSEA
      if (KPSE_DEBUG_P (GSPK_DEBUG_PK))
 #endif
 	if (skip < 2 || skip > 3)
 	    printf("Character has %d empty rows at top\n", skip);
-#endif
+#endif /* DEBUG */
 
 	/* trim bottom */
 	skip = 0;
@@ -1451,13 +1623,13 @@ trim_bitmap P1H(void)
 	    bitmap_end -= bytes_wide;
 	}
 	height -= skip;
-#ifdef DEBUG
+#if DEBUG
 #ifdef KPATHSEA
      if (KPSE_DEBUG_P (GSPK_DEBUG_PK))
 #endif
 	if (skip < 2 || skip > 3)
 	    printf("Character has %d empty rows at bottom\n", skip);
-#endif
+#endif /* DEBUG */
 
 	/* trim right */
 	skip = 0;
@@ -1471,13 +1643,13 @@ trim_bitmap P1H(void)
 	    ++skip;
 	}
 	++width;
-#ifdef DEBUG
+#if DEBUG
 #ifdef KPATHSEA
      if (KPSE_DEBUG_P (GSPK_DEBUG_PK))
 #endif
 	if (skip < 2 || skip > 3)
 	    printf("Character has %d empty columns at right\n", skip);
-#endif
+#endif /* DEBUG */
 
 	/* trim left */
 	skip = 0;
@@ -1490,13 +1662,13 @@ trim_bitmap P1H(void)
 	}
 	width -= skip;
 	hoff -= skip;
-#ifdef DEBUG
+#if DEBUG
 #ifdef KPATHSEA
      if (KPSE_DEBUG_P (GSPK_DEBUG_PK))
 #endif
 	if (skip < 2 || skip > 3)
 	    printf("Character has %d empty columns at left\n", skip);
-#endif
+#endif /* DEBUG */
 	bitmap += skip / 8;
 	skip = skip % 8;
 }
@@ -1599,7 +1771,7 @@ pk_rll_cvt P1H(void)
 	    paint_switch = ~paint_switch;
 	}
 
-#ifdef DEBUG
+#if DEBUG
 #ifdef KPATHSEA
 	if (KPSE_DEBUG_P (GSPK_DEBUG_BITMAP))
 #endif
@@ -1621,7 +1793,7 @@ pk_rll_cvt P1H(void)
 	    }
 	    putchar('\n');
 	}
-#endif
+#endif /* DEBUG */
 
 	/*
 	 *	Determine the best pk_dyn_f
@@ -1885,38 +2057,6 @@ putspecl P2C(const char *, str1, const char *, str2)
 	if (len2 != 0) fwrite(str2, 1, len2, pk_file);
 }
 
-#ifdef WIN32
-char *
-quotearg(char *s)
-{
-	char	*p;
-	int	len;
-
-	/* Remove leading blanks */
-	while (ISSPACE(*s)) s++;
-
-	/* remove trailing blanks */
-	for(len = strlen(s); len > 0 && ISSPACE(s[len-1]); len--);
-
-	/* Is there some space between s and s+len ? */
-	if (strchr(s, ' ') < s + len) {
-	    p = xmalloc(len + 3);
-	    strcpy(p + 1, s);
-	    *p = '"';
-	    p[strlen(s) + 1] = '"';
-	    p[strlen(s) + 2] = '\0';
-	}
-	else {
-	    /* just in case we have removed blank chars */
-	    p = xmalloc(len+1);
-	    strncpy(p, s, len);
-	    p[len] = '\0';
-	}
-	return p;
-}
-#endif /* WIN32 */
-
-
 int
 main P2C(int, argc, char **, argv)
 {
@@ -1933,29 +2073,28 @@ main P2C(int, argc, char **, argv)
 	char		charlist[10*2 + 90*3 + 156*4 + 1];
 	char		designstr[20];
 	char		dpistr[20];
-#ifdef HAVE_SIGACTION
+#if HAVE_SIGACTION
 	struct sigaction sigact;
 #endif
-#ifdef _AMIGA
+#if _AMIGA
 	char		fngs[50];
 	char		fngsf[50];
 	char		tfm_path[256];
 	BPTR		in, out;
 #else
+	char		*substarg;
+#endif
+#if WIN32
+	DWORD idGsThread;
+#else /* not WIN32 */
+#if !_AMIGA
 	int		std_out[2];
 #endif
 	int		std_in[2];
-#ifdef WIN32
-	int		status;
-#endif
+#endif /* not WIN32 */
 	int		cc;
 	int		ppp;
 	int		i;
-#ifdef WIN32
-	int		oldin, oldout;
-	char		gs_absolute_path[PATH_MAX];
-	char		*gs_relative_path;
-#endif
 
 	argp = argv;
 	while (++argp < argv + argc && (*argp)[0] == '-') {
@@ -2038,6 +2177,7 @@ main P2C(int, argc, char **, argv)
 #ifdef KPATHSEA
 	    case OPT_DBG:
 		kpathsea_debug |= atoi(arg);
+		break;
 #endif
 	    case 'h':
 #ifndef KPATHSEA
@@ -2122,7 +2262,7 @@ Author of gsftopk: Paul Vojta.");
 	    xputenv_int("KPATHSEA_DPI", (int) (dpi + 0.5));
 #endif
 
-#ifdef _AMIGA
+#if _AMIGA
 	/* [CL] 21-Jun-97
 	   This is quite silly but it really helps things when determining the
 	   font supplier and family.
@@ -2188,7 +2328,14 @@ Author of gsftopk: Paul Vojta.");
 	    Boolean font_found;
 
 	    if (mapfile != NULL) {
-		config_file = fopen(mapfile, FOPEN_R_MODE);
+#ifndef KPATHSEA
+		config_file = search(CONFIGPATH, "TEXCONFIG",
+				     mapfile);
+#else
+		config_file = kpse_open_file(mapfile,
+					     kpse_dvips_config_format);
+#endif
+
 		if (config_file == NULL) {
 		    perror(mapfile);
 		    exit(1);
@@ -2256,6 +2403,10 @@ Author of gsftopk: Paul Vojta.");
 		*p = '\0';
 #ifdef KPATHSEA
 		searchpath = kpse_find_file(q, kpse_tex_ps_header_format,true);
+#ifdef WIN32
+		/* Be safe for Ghostscript's sake */
+		dostounix_filename(searchpath);
+#endif /* WIN32 */
 		f = searchpath ? fopen(searchpath, FOPEN_R_MODE) : NULL;
 #else
 		f = search(config_file_header_path, "DVIPSHEADERS", q);
@@ -2296,7 +2447,7 @@ Author of gsftopk: Paul Vojta.");
 	    *p = '\0';
 	}
 
-#ifdef OLD_DVIPS
+#if OLD_DVIPS
 	/* Parse lines like `Symbol-Slanted "/Symbol .167 SlantFont"'. */
 	if (*(p = specinf) == '/') {
 	    PSname = ++p;
@@ -2310,6 +2461,9 @@ Author of gsftopk: Paul Vojta.");
 	    *specp = '\0';
 	    specinfo = specinf;
 	}
+
+	if (PSname == NULL)
+	    PSname = fontname;
 
 	/*
 	 *	Start up Ghostscript.
@@ -2327,9 +2481,14 @@ Author of gsftopk: Paul Vojta.");
 	    oops("Cannot find PS driver file \"render.ps\".");
 	fclose(render_ps);
 
+#if !_AMIGA
+	substarg = xmalloc(strlen(PSname) + 13);
+	sprintf(substarg, "-sSUBSTFONT=%s", PSname);
+#endif
+
 	sprintf(dpistr, "%f", dpi);
 
-#ifdef _AMIGA
+#if _AMIGA
 
 	mktemp(tmpname);
 
@@ -2349,17 +2508,16 @@ Author of gsftopk: Paul Vojta.");
 	if (in && out) {
 	    int error;
 	    char *cmd;
-	    char formatstr[] = "%s -dNODISPLAY -dNOGC -q -- \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"";
-	    char *psfontname = (PSname != NULL ? PSname : fontname);
+	    char formatstr[] = "%s -dNODISPLAY -dNOGC -sSUBSTFONT=\"%s\" -q -- \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"";
 	    unsigned int len;
 
 	    len = sizeof formatstr + strlen(gspath) + strlen(searchpath)
-	      + strlen(psfontname) + (dlstring != NULL ? strlen(dlstring) : 0)
+	      + 2 * strlen(PSname) + (dlstring != NULL ? strlen(dlstring) : 0)
 	      + strlen(specinfo) + strlen(dpistr);
 
 	    cmd = xmalloc(len);
 
-	    sprintf(cmd, formatstr, gspath, searchpath, psfontname,
+	    sprintf(cmd, formatstr, PSname, gspath, searchpath, PSname,
 	      dlstring != NULL ? dlstring : "", specinfo, dpistr);
 
 	    error = SystemTags(cmd, SYS_Input, in,
@@ -2383,61 +2541,9 @@ Author of gsftopk: Paul Vojta.");
 	    exit(1);
 	}
 
-#elif defined(WIN32)
+#elif WIN32
 
-	SetConsoleCtrlHandler(handle_sigterm, TRUE);
-	if (pipe(std_in, 0, _O_TEXT | _O_NOINHERIT) != 0
-	    || pipe(std_out, 0, _O_BINARY | _O_NOINHERIT) != 0) {
-	    perror("pipe");
-	    return 1;
-	}
-	_flushall();
-
-	/* Put this into configuration, and next into registry */
-	/* putenv("GS_LIB=i:\\gstools\\gs4.03;i:\\gstools\\fonts"); */
-
-	oldin = dup(fileno(stdin));
-	oldout = dup(fileno(stdout));
-
-	if (_dup2(std_in[0], fileno(stdin)) != 0)
-		perror("dup2 std_in");
-	if (_dup2(std_out[1], fileno(stdout)) != 0)
-		perror("dup2 std_out");
-	_flushall();
-
-	close(std_in[0]);
-	close(std_out[1]);
-	/*	fprintf(stderr, "Args : %s|%s|%s|%s|%s\n",
-		searchpath,  PSname != NULL ? PSname : fontname,
-		quotearg(dlstring != NULL ? dlstring : ""),
-		quotearg(specinfo),
-		dpistr ); */
-	if ((gs_relative_path = getenv("GS_PATH")) != NULL)
-	    strcpy(gs_absolute_path, gs_relative_path);
-	else if (SearchPath(NULL, "gswin32c.exe",
-		       ".exe", PATH_MAX, gs_absolute_path,
-		       &gs_relative_path) == 0)
-	    oops("Can't locate gswin32c.exe!\n");
-
-	/* Fix Me : doesn't work when GS is not absolute. */
-	if ((gs_pid = spawnlp(_P_NOWAIT,
-			   gs_absolute_path,
-			   "gswin32c.exe", "-dNOGC",
-			   "-dNODISPLAY", "-q", "--", searchpath,
-			   PSname != NULL ? PSname : fontname,
-			   quotearg(dlstring != NULL ? dlstring : ""),
-			   quotearg(specinfo),
-			   dpistr, NULL)) == -1) {
-	    perror("Spawn");
-	    return 1;
-	}
-	Sleep(50); /* Don't know why, but emacs is doing it too ... */
-
-	_dup2(oldin, fileno(stdin));
-	_dup2(oldout, fileno(stdout));
-
-	close(oldin);
-	close(oldout);
+	/* (later) */
 
 #else /* neither _AMIGA nor WIN32 */
 
@@ -2448,7 +2554,7 @@ Author of gsftopk: Paul Vojta.");
 
 	/* Catch the signal for death of the child process. */
 
-#ifdef HAVE_SIGACTION
+#if HAVE_SIGACTION
 	sigact.sa_handler = handle_sigchild;
 	(void) sigemptyset(&sigact.sa_mask);
 	sigact.sa_flags = SA_NOCLDSTOP;
@@ -2476,9 +2582,9 @@ Author of gsftopk: Paul Vojta.");
 	    close(std_out[0]);
 	    dup2(std_out[1], 1);
 	    close(std_out[1]);
-	    execlp(gspath, "gs", "-dNODISPLAY", "-dNOGC", "-q", "--",
+	    execlp(gspath, "gs", "-dNODISPLAY", "-dNOGC", substarg, "-q", "--",
 		/* render.ps */ searchpath,
-		PSname != NULL ? PSname : fontname,
+		PSname,
 		dlstring != NULL ? dlstring : "", specinfo, dpistr, NULL);
 	    if (col != 0) {
 		putc('\n', stderr);
@@ -2502,7 +2608,7 @@ Author of gsftopk: Paul Vojta.");
 	xfilename = xmalloc(fontlen + 10);
 	strcpy(xfilename, fontname);
 #ifdef KPATHSEA
-#ifdef _AMIGA
+#if _AMIGA
 	strcpy(tfm_path, kpse_find_file(xfilename, kpse_tfm_format, true));
 	tfm_file = fopen(tfm_path, "r");
 #else
@@ -2513,6 +2619,7 @@ Author of gsftopk: Paul Vojta.");
 	tfm_file = search(TFMPATH, "TEXFONTS", xfilename);
 #endif /* not KPATHSEA */
 	if (tfm_file == NULL) oops("Cannot find tfm file.");
+
 	for (i = 0; i < 12; ++i) {
 	    int j;
 
@@ -2537,34 +2644,72 @@ Author of gsftopk: Paul Vojta.");
 	fclose(tfm_file);
 	p[-1] = '\n';
 
-	/* write the design size and character list to the file */
 	sprintf(designstr, "%f\n", (float) design / (1 << 20));
+
+#if !WIN32
+
+	/* write the design size and character list to the file */
 	write(std_in[1], designstr, strlen(designstr));
 	write(std_in[1], charlist, p - charlist);
+
 	close(std_in[1]);
+
+#else /* WIN32 */
+
+	if (gs_locate() == NULL) {
+	  fprintf(stderr, "\nCan't locate Ghostscript ! Exiting ...\n");
+	  return EXIT_FAILURE;
+	}
+
+	SetConsoleCtrlHandler(handle_sigterm, TRUE);
+
+	hGsDataIn = CreateEvent(NULL, FALSE, FALSE, "gsDataIn");
+	hGsDataOut = CreateEvent(NULL, FALSE, FALSE, "gsDataOut");
+
+	gs_argv[3] = substarg;
+	gs_argv[6] = searchpath;
+	gs_argv[7] = PSname;
+	gs_argv[8] = dlstring != NULL ? dlstring : "";
+	gs_argv[9] = specinfo;
+	gs_argv[10] = dpistr;
+
+	buffer_stdin = concat(designstr, charlist);
+
+	if ((hGsThread = CreateThread(NULL,            /* security attributes */
+				      0,               /* default stack size */
+				      Win32GsSendData, /* start address of thread */
+				      0,               /* parameter */
+				      0,               /* creation flags */
+				      &idGsThread      /* thread id */
+				      )) == NULL)
+	  Win32Error("CreateThread");
+
+#endif /* WIN32 */
 
 /*
  *	Read the output from Ghostscript.
  */
 
-#ifdef _AMIGA
+#if _AMIGA
+
 	if ((data_file = fopen(fngsf, "r")) == NULL) {
 	    perror("GS_out");
 	    exit(1);
 	}
-#else
-	data_fd = std_out[0];
-#endif
 
-#ifdef _AMIGA
-	/* No equivalent for the amiga, apparently */
-#elif defined(WIN32)
-	/* FIXME : is there something equivalent under Win32 ? */
+#elif WIN32
+
+	/* Nothing */
+
 #else /* neither _AMIGA nor WIN32 */
+
+	data_fd = std_out[0];
+
 	/* Set data_fd for non-blocking I/O */
 	if (fcntl(data_fd, F_SETFL, fcntl(data_fd, F_GETFL, 0) | O_NONBLOCK)
 	  == -1)
 	    perror("fcntl");
+
 #endif /* neither _AMIGA nor WIN32 */
 
 /*
@@ -2610,27 +2755,57 @@ Author of gsftopk: Paul Vojta.");
 	for (cc = bc; cc <= ec; ++cc)
 	    if (width_index[cc] != 0)
 		putglyph(cc);
-#ifndef _AMIGA
-	close(data_fd);
-#else
-	fclose(data_file);
-#endif
 
-#ifdef _AMIGA
-	/* do nothing */
-#elif defined(WIN32)
-	if (_cwait(&status, gs_pid, 0) == -1) {
-	    perror("wait");
-	    exit_toto_too();
+#if _AMIGA
+
+	fclose(data_file);
+
+#elif WIN32
+
+	/* Release data buffer, enable thread to terminate */
+	SetEvent(hGsDataOut);
+
+#ifdef DEBUG
+	fprintf(stderr, "Waiting for thread ... \n");
+#endif
+	if (hGsThread) {
+	  switch (WaitForSingleObject(hGsThread, 2000)) {
+	  case WAIT_OBJECT_0:
+	    CloseHandle(hGsThread);
+	    hGsThread = NULL;
+	    break;
+	  case WAIT_TIMEOUT:
+	    fprintf(stderr, "Timeout waiting for Gs thread.\n");
+	    break;
+	  case WAIT_FAILED:
+	    fprintf(stderr, "WaitForSingleObject failed on Gs thread (Error code %d).\n",
+		    GetLastError());
+	    break;
+	  default:
+	    break;
+	  }
 	}
-	if (status != 0)
-	    if (status & 0377)
-		oops("Call to gs stopped by signal %d", status & 0177);
-	    else oops("Call to gs returned nonzero status %d", status >> 8);
+
+	if (hGsThread) {
+	  if (TerminateThread(hGsThread, 1) == 0) {
+	    fprintf(stderr, "... couldn't terminate gs thread\n");
+	  }
+	  CloseHandle(hGsThread);
+	  /* FIXME : is it right to call this ? */
+	  gs_dll_release();
+	}
+	if (hGsDataIn)
+	  CloseHandle(hGsDataIn);
+	if (hGsDataOut)
+	  CloseHandle(hGsDataOut);
+
 #else /* neither _AMIGA nor WIN32 */
+
+	close(data_fd);
 	if (!gs_is_done)
 	    wait_for_gs();
-#endif
+
+#endif /* neither _AMIGA nor WIN32 */
 
 /*
  *	Write out identifying specials:
@@ -2656,7 +2831,7 @@ Author of gsftopk: Paul Vojta.");
 	if (!quiet) putchar('\n');
 	col = 0;
 
-#ifdef _AMIGA
+#if _AMIGA
 	/* [CL] 21-Jun-97
 	   The same silly thing to indicate the path of the tfm file
 	*/

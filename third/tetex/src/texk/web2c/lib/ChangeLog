@@ -1,3 +1,178 @@
+2003-01-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (setupcharset): Do not adapt the isprintable array to
+	the locale.
+
+2003-01-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* printversion.c (printversionandexit): Update copyright notice
+	years.
+
+2002-12-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Remove some unsused variables.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Implement a -parse-first-line option.  With the
+	current code it is possible to switch %&-line parsing on from the
+	command line.  To switch it off when it is enabled in texmf.cnf
+	requires the use of an environment variable.
+
+2002-10-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Add support for -jobname option.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (maybe_parse_first_line): Split
+	maybe_parse_first_line: maybe_parse_first_line is called to set
+	parse_first_line_p for TeX, MF, MP, and parse_first_line is called
+	to do the actual parsing.
+
+	* texmfmp.c: Add support for mktexfmt; from Fabrice Popineau.
+
+2002-06-04  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Do not allow texmf.cnf to set the src_specials
+	option.
+
+2002-06-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Change handling of source specials so that there is a
+	single flag, src_specials_p, which can be used to see if any
+	source specials are generated.
+
+	* win32main.c: From Fabrice.
+
+2002-04-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c [Omega] (ipcpage,gettexstring): Correction of the way
+	the strstartar array is handled.  Reported by Akira Kakuto
+	<kakuto@fsci.fuk.kindai.ac.jp>
+
+2001-11-27  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (initscreen): Clarify message generated when an X
+	window cannot be opened.
+
+2001-11-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Remove unnecessary casts to (int*).  If C++ ->
+	NO_MF_ASM.
+
+	* alloca.c: Changes to allow this file to compile with C++.
+
+2001-11-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Changes to keep C++ compilers from choking.
+
+	* openclose.c: Remove double declaration of recorder_name, make
+	prototype of open_input consistent with cpascal.h.
+
+2001-11-18  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* uexit.c: Changes to keep C++ compilers from choking.
+
+	* texmfmp.c: Changes to keep C++ compilers from choking.  Changes
+	to support the filename recorder.
+
+	* printversion.c: Changes to keep C++ compilers from choking.
+
+	* openclose.c: Changes to keep C++ compilers from choking.
+	(recorder_start): New function, starts filename recorder.
+	(recorder_change_filename): New function, change the name of the file
+	used by the filename recorder.
+	(open_input,open_output): Record filename, starting recorder if
+	necessary.
+
+	* chartostring.c: Changes to keep C++ compilers from choking.
+
+	* basechsuffix.c: Changes to keep C++ compilers from choking.
+
+2001-11-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (getrandomseed): If available use gettimeofday or
+	ftime to obtain a random seed number.  These functions have a
+	higher resolution, so fix the problem that subsequent MF or MP
+	runs could have the same seed.
+
+2001-10-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Add support for source specials.
+
+	* openclose.c: Add support for file:line:style messages.
+
+2001-10-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c: Implement -tex=program option for mp.
+
+2001-10-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* usage.c (usage): Remove first argument, should now only be
+	called on abnormal exit.
+	(usage_help): Print help message, implies a normal exit.
+
+	* texmfmp.c: Modify usage/usage_help invocation.
+
+	* eofeoln.c (readln): New function, read a line and accept CRNL,
+	CR, and NL as end-of-line delimiters.
+
+2001-04-23  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* eofeoln.c (eoln): Accept both CR and LF as end-of-line
+	characters.
+
+2000-08-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (setupboundvariable): Add parentheses for clarity, and
+	to silence stupid compilers.
+
+2000-05-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (calledit): The first argument should be a pointer to
+	packedASCIIcode.  This matters for Omega.  From "C.M. Connelly"
+	<c@eskimo.com>.
+
+2000-04-21  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c [WIN32]: Add support for -oem option.  From Fabrice.
+
+2000-04-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* openclose.c: Disabled the supporting code for remembering the
+	full name while the code for C style error messages and source
+	specials is under review.
+
+2000-04-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* openclose.c (open_input): Save full name of found file in
+	full_name_of_file variable.  For "C-style" error messages and
+	source-file specials.  After Stefan Ulrich
+	<ulrich@cis.uni-muenchen.de> and Fabrice Popineau
+	<Fabrice.Popineau@supelec.fr>.
+
+2000-01-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (parse_options): Stop option-processing at the first
+	non-option, so that a command line like 'tex \&sgmlbase
+	-lhtmlbase.tex -ousing.html using.html' feeds the '-lhtmlbase.tex'
+	and '-ousing.html' to the format.  Reported by Jonathan Fine
+	<fine@active-tex.demon.co.uk>.
+
+1999-07-12  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmfmp.c (maininit): Add a --default-translate-file option, to
+ 	facilitate CSTeX.  Suggestion (relayed?) by Petr Olsak
+ 	<olsak@math.feld.cvut.cz>.
+	(input_line): Make sure that catching a SIGINT won't be seen as a EOF
+	on the terminal.  Problem noticed by DEK.
+
+1999-06-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* openclose.c (open_input): The pdfTeX people asked that the disk
+ 	not be pounded for .vf files.
+
 1999-05-29  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* texmfmp.c (opennameok): Allow ./ or its equivalent.  Use
@@ -52,7 +227,7 @@
 
 	* texmfmp.c: Support for pdfeTeX.  From Thomas Esser.
 
-	* texmfmp.c (maybe_parse_first_line): Default to parsing is
+	* texmfmp.c (maybe_parse_first_line): Default to parsing if
  	maybe_parse_first_line is not defined in texmf.cnf.
 	(opennameok): Add an argument to specify default.
 	(openinok): Default to "a" if no openin_any found.
@@ -69,7 +244,9 @@
 1999-01-13  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* texmfmp.c: Rename maybe_set_dump_default_from_input to
- 	maybe_parse_first_line.  Add TCX support.
+ 	maybe_parse_first_line.  Add TCX support in the form of allowing a
+ 	--translate-file pseudo-option, as proposed by Wlodzimierz Bzyl
+ 	<matwb@monika.univ.gda.pl>.
 
 	* printversion.c: Correct --version output.
 

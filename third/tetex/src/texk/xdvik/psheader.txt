@@ -186,7 +186,7 @@ end % of SDict
 %
 %
 % psfigTeX PostScript Prolog
-% $Header: /afs/dev.mit.edu/source/repository/third/tetex/src/texk/xdvik/psheader.txt,v 1.1.1.1 2000-03-10 17:52:35 ghudson Exp $
+% $Header: /afs/dev.mit.edu/source/repository/third/tetex/src/texk/xdvik/psheader.txt,v 1.1.1.2 2003-02-25 22:28:45 amb Exp $
 %
 /psfts { S 65781.76 div N } N
 

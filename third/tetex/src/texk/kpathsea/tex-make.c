@@ -77,13 +77,17 @@ set_maketex_mag P1H(void)
    to a file missfont.log in the current directory.  */
 
 static void
-misstex P2C(kpse_file_format_type, format,  const_string, cmd)
+misstex P2C(kpse_file_format_type, format,  string *, args)
 {
   static FILE *missfont = NULL;
-
+  string *s;
+  
   /* If we weren't trying to make a font, do nothing.  Maybe should
      allow people to specify what they want recorded?  */
-  if (format > kpse_any_glyph_format && format != kpse_tfm_format
+  if (format != kpse_gf_format
+      && format != kpse_pk_format
+      && format != kpse_any_glyph_format
+      && format != kpse_tfm_format
       && format != kpse_vf_format)
     return;
 
@@ -112,7 +116,11 @@ misstex P2C(kpse_file_format_type, format,  const_string, cmd)
   
   /* Write the command if we have a log file.  */
   if (missfont) {
-    fputs (cmd, missfont);
+    fputs (args[0], missfont);
+    for (s = &args[1]; *s != NULL; s++) {
+      putc(' ', missfont);
+      fputs (*s, missfont);
+    }
     putc ('\n', missfont);
   }
 }  
@@ -122,119 +130,325 @@ misstex P2C(kpse_file_format_type, format,  const_string, cmd)
    else) on standard output; hence, we run the script with `popen'.  */
 
 static string
-maketex P2C(kpse_file_format_type, format,  const_string, passed_cmd)
+maketex P2C(kpse_file_format_type, format, string*, args)
 {
+  /* New implementation, use fork/exec pair instead of popen, since
+   * the latter is virtually impossible to make safe.
+   */
+  int i;
+  unsigned len;
+  string *s;
   string ret;
-  unsigned i;
-  FILE *f;
-  string cmd = xstrdup (passed_cmd);
-
-#if defined (MSDOS) || defined (WIN32)
-  /* For discarding stderr.  This is so we don't require an MSDOS user
-     to istall a unixy shell (see kpse_make_tex below): they might
-     devise their own ingenious ways of running mktex... even though
-     they don't have such a shell.  */
-  int temp_stderr = -1;
-  int save_stderr = -1;
-#endif
-
-  /* If the user snuck `backquotes` or $(command) substitutions into the
-     name, foil them.  */
-  for (i = 0; i < strlen (cmd); i++) {
-    if (cmd[i] == '`' || (cmd[i] == '$' && cmd[i+1] == '(')) {
-      cmd[i] = '#';
-    }
-  }
-
-  /* Tell the user we are running the script, so they have a clue as to
-     what's going on if something messes up.  But if they asked to
-     discard output, they probably don't want to see this, either.  */
-  if (!kpse_make_tex_discard_errors) {
-    fprintf (stderr, "kpathsea: Running %s\n", cmd);
-  }
-#if defined (MSDOS) || defined (WIN32)
-  else {
-    temp_stderr = open ("NUL", O_WRONLY);
-    if (temp_stderr >= 0) {
-      save_stderr = dup (2);
-      if (save_stderr >= 0)
-        dup2 (temp_stderr, 2);
-    }
-    /* Else they lose: the errors WILL be shown.  However, open/dup
-       aren't supposed to fail in this case, it's just my paranoia. */
-  }
-#endif
+  string fn;
   
-  /* Run the script.  The Amiga has a different interface.  */
-#ifdef AMIGA
-  ret = system (cmd) == 0 ? getenv ("LAST_FONT_CREATED") : NULL;
-#else /* not AMIGA */
-  f = popen (cmd, FOPEN_R_MODE);
+  if (!kpse_make_tex_discard_errors) {
+    fprintf (stderr, "kpathsea: Running");
+    for (s = &args[0]; *s != NULL; s++)
+      fprintf (stderr, " %s", *s);
+    fputc('\n', stderr);
+  }
 
-#if defined (MSDOS) || defined (WIN32)
-  if (kpse_make_tex_discard_errors) {
-    /* Close /dev/null and revert stderr.  */
-    if (save_stderr >= 0) {
-      dup2 (save_stderr, 2);
-      close (save_stderr);
+#if defined (AMIGA)
+  /* Amiga has a different interface. */
+  {
+    string cmd;
+    string newcmd;
+    cmd = xstrdup(args[0]);
+    for (s = &args[1];  *s != NULL; s++) {
+      newcmd = concat(cmd, *s);
+      free (cmd);
+      cmd = newcmd;
     }
-    if (temp_stderr >= 0)
-      close (temp_stderr);
+    ret = system(cmd) == 0 ? getenv ("LAST_FONT_CREATED"): NULL;
+    free (cmd);
+  }
+#elif defined (MSDOS)
+#error Implement new MSDOS mktex call interface here
+#elif defined (WIN32)
+  /* We would vastly prefer to link directly with mktex.c here.
+     Unfortunately, it is not quite possible because kpathsea
+     is not reentrant. The progname is expected to be set in mktex.c
+     and various initialisations occur. So to be safe, we implement
+     a call sequence equivalent to the Unix one. */
+  {
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    DWORD dwCode;
+
+    HANDLE child_in, child_out, child_err;
+    HANDLE father_in, father_out;
+    HANDLE father_in_dup, father_out_dup;
+    HANDLE current_pid;
+    SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
+    string new_cmd = NULL, app_name = NULL;
+
+    char buf[1024+1];
+    int num;
+    extern char *quote_args(char **argv);
+
+    if (look_for_cmd(args[0], &app_name) == FALSE) {
+      ret = NULL;
+      goto error_exit;
+    }
+
+    /* Compute the command line */
+    new_cmd = quote_args(args);
+
+    /* We need this handle to duplicate other handles */
+    current_pid = GetCurrentProcess();
+
+    ZeroMemory( &si, sizeof(STARTUPINFO) );
+    si.cb = sizeof(STARTUPINFO);
+    si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW ;
+    si.wShowWindow = /* 0 */ SW_HIDE ;
+
+    /* Child stdin */
+    child_in = CreateFile("nul",
+                          GENERIC_READ,
+                          FILE_SHARE_READ | FILE_SHARE_WRITE,
+                          &sa,  /* non inheritable */
+                          OPEN_EXISTING,
+                          FILE_ATTRIBUTE_NORMAL,
+                          NULL);
+    si.hStdInput = child_in;
+
+    if (CreatePipe(&father_in, &child_out, NULL, 0) == FALSE) {
+      fprintf(stderr, "popen: error CreatePipe\n");
+      goto error_exit;
+    }
+    if (DuplicateHandle(current_pid, child_out,
+                        current_pid, &father_out_dup,
+                        0, TRUE, DUPLICATE_SAME_ACCESS) == FALSE) {
+      fprintf(stderr, "popen: error DuplicateHandle father_in\n");
+      CloseHandle(father_in);
+      CloseHandle(child_out);
+      goto error_exit;
+    }
+    CloseHandle(child_out);
+    si.hStdOutput = father_out_dup;
+
+    /* Child stderr */
+    if (kpse_make_tex_discard_errors) {
+      child_err = CreateFile("nul",
+                             GENERIC_WRITE,
+                             FILE_SHARE_READ | FILE_SHARE_WRITE,
+                             &sa,       /* non inheritable */
+                             OPEN_EXISTING,
+                             FILE_ATTRIBUTE_NORMAL,
+                             NULL);
+    }
+    else {
+      DuplicateHandle(current_pid, GetStdHandle(STD_ERROR_HANDLE),
+                      current_pid, &child_err,
+                      0, TRUE,
+                      DUPLICATE_SAME_ACCESS);
+    }
+    si.hStdError = child_err;
+
+    /* creating child process */
+    if (CreateProcess(app_name, /* pointer to name of executable module */
+                      new_cmd,  /* pointer to command line string */
+                      NULL,     /* pointer to process security attributes */
+                      NULL,     /* pointer to thread security attributes */
+                      TRUE,     /* handle inheritance flag */
+                      0,                /* creation flags */
+                      NULL,     /* pointer to environment */
+                      NULL,     /* pointer to current directory */
+                      &si,      /* pointer to STARTUPINFO */
+                      &pi               /* pointer to PROCESS_INFORMATION */
+                      ) == 0) {
+      FATAL2("kpathsea: CreateProcess() failed for `%s' (Error %x)\n", new_cmd, GetLastError());
+    }
+
+    CloseHandle(child_in);
+    CloseHandle(father_out_dup);
+    CloseHandle(child_err);
+
+    /* Only the process handle is needed */
+    CloseHandle(pi.hThread);
+
+    /* Get stdout of child from the pipe. */
+    fn = xstrdup("");
+    while (ReadFile(father_in,buf,sizeof(buf)-1, &num, NULL) != 0
+           && num > 0) {
+      if (num <= 0) {
+        if (GetLastError() != ERROR_BROKEN_PIPE) {
+          FATAL1("kpathsea: read() error code for `%s' (Error %d)", GetLastError());
+          break;
+        }
+      } else {
+        string newfn;
+        buf[num] = '\0';
+        newfn = concat(fn, buf);
+        free(fn);
+        fn = newfn;
+      }
+    }
+    /* End of file on pipe, child should have exited at this point. */
+    CloseHandle(father_in);
+
+    if (WaitForSingleObject(pi.hProcess, INFINITE) != WAIT_OBJECT_0) {
+      WARNING2("kpathsea: failed to wait for process termination: %s (Error %d)\n",
+               new_cmd, GetLastError());
+    }
+
+    CloseHandle(pi.hProcess);
+
+    if (new_cmd) free(new_cmd);
+    if (app_name) free(app_name);
+
+    if (fn) {
+      len = strlen(fn);
+
+      /* Remove trailing newlines and returns.  */
+      while (len && (fn[len - 1] == '\n' || fn[len - 1] == '\r')) {
+        fn[len - 1] = '\0';
+        len--;
+      }
+
+      ret = len == 0 ? NULL : kpse_readable_file (fn);
+      if (!ret && len > 1) {
+        WARNING1 ("kpathsea: mktexpk output `%s' instead of a filename", fn);
+      }
+
+      /* Free the name if we're not returning it.  */
+      if (fn != ret)
+        free (fn);
+    }
+  error_exit:
+    ;
+  }
+#else
+  {
+    /* Standard input for the child.  Set to /dev/null */
+    int childin;
+    /* Standard output for the child, what we're interested in. */
+    int childout[2];
+    /* Standard error for the child, same as parent or /dev/null */
+    int childerr;
+    /* Child pid. */
+    pid_t childpid;
+
+    /* Open the channels that the child will use. */
+    /* A fairly horrible uses of gotos for here for the error case. */
+    if ((childin = open("/dev/null", O_RDONLY)) < 0) {
+      perror("kpathsea: open(\"/dev/null\", O_RDONLY)");
+      goto error_childin;
+    }
+    if (pipe(childout) < 0) {
+      perror("kpathsea: pipe()");
+      goto error_childout;
+    }
+    if ((childerr = open("/dev/null", O_WRONLY)) < 0) {
+      perror("kpathsea: open(\"/dev/null\", O_WRONLY)");
+      goto error_childerr;
+    }
+    if ((childpid = fork()) < 0) {
+      perror("kpathsea: fork()");
+      close(childerr);
+     error_childerr:
+      close(childout[0]);
+      close(childout[1]);
+     error_childout:
+      close(childin);
+     error_childin:
+      fn = NULL;
+    } else if (childpid == 0) {
+      /* Child
+       *
+       * We can use vfork, provided we're careful about what we
+       * do here: do not return from this function, do not modify
+       * variables, call _exit if there is a problem.
+       *
+       * Complete setting up the file descriptors.
+       * We use dup(2) so the order in which we do this matters.
+       */
+      close(childout[0]);
+      /* stdin -- the child will not receive input from this */
+      if (childin != 0) {
+        close(0);
+        dup(childin);
+        close(childin);
+      }
+      /* stdout -- the output of the child's action */
+      if (childout[1] != 1) {
+        close(1);
+        dup(childout[1]);
+        close(childout[1]);
+      }
+      /* stderr -- use /dev/null if we discard errors */
+      if (childerr != 2) {
+        if (kpse_make_tex_discard_errors) {
+          close(2);
+          dup(childerr);
+        }
+        close(childerr);
+      }
+      /* FIXME: We could/should close all other file descriptors as well. */
+      /* exec -- on failure a call of _exit(2) it is the only option */
+      if (execvp(args[0], args))
+        perror(args[0]);
+      _exit(1);
+    } else {
+      /* Parent */
+      char buf[1024+1];
+      int num;
+      int status;
+
+      /* Clean up child file descriptors that we won't use anyway. */
+      close(childin);
+      close(childout[1]);
+      close(childerr);
+      /* Get stdout of child from the pipe. */
+      fn = xstrdup("");
+      while ((num = read(childout[0],buf,sizeof(buf)-1)) != 0) {
+        if (num == -1) {
+          if (errno != EINTR) {
+            perror("kpathsea: read()");
+            break;
+          }
+        } else {
+          string newfn;
+          buf[num] = '\0';
+          newfn = concat(fn, buf);
+          free(fn);
+          fn = newfn;
+        }
+      }
+      /* End of file on pipe, child should have exited at this point. */
+      close(childout[0]);
+      /* We don't really care about the exit status at this point. */
+      wait(NULL);
+    }
+
+    if (fn) {
+      len = strlen(fn);
+
+      /* Remove trailing newlines and returns.  */
+      while (len && (fn[len - 1] == '\n' || fn[len - 1] == '\r')) {
+        fn[len - 1] = '\0';
+        len--;
+      }
+
+      ret = len == 0 ? NULL : kpse_readable_file (fn);
+      if (!ret && len > 1) {
+        WARNING1 ("kpathsea: mktexpk output `%s' instead of a filename", fn);
+      }
+
+      /* Free the name if we're not returning it.  */
+      if (fn != ret)
+        free (fn);
+    } else {
+      ret = NULL;
+    }
   }
 #endif
-
-  if (f) {
-    int c;
-    string fn;             /* The final filename.  */
-    unsigned len;          /* And its length.  */
-    fn_type output;
-    output = fn_init ();   /* Collect the script output.  */
-
-    /* Read all the output and terminate with a null.  */
-    while ((c = getc (f)) != EOF)
-      fn_1grow (&output, (char)c); /* Yet another cast to shut up compilers. */
-    fn_1grow (&output, 0);
-
-    /* Maybe should check for `EXIT_SUCCESS' status before even
-       looking at the output?  In some versions of Linux, pclose fails
-       with ECHILD (No child processes), maybe only if we're being run
-       by lpd.  So don't make this a fatal error.  */
-    if (pclose (f) == -1) {
-      perror ("pclose(mktexpk)");
-      WARNING ("kpathsea: This is probably the Linux pclose bug; continuing");
-    }
-
-    len = FN_LENGTH (output);
-    fn = FN_STRING (output);
-
-    /* Remove trailing newlines and returns.  */
-    while (len > 1 && (fn[len - 2] == '\n' || fn[len - 2] == '\r')) {
-      fn[len - 2] = 0;
-      len--;
-    }
-
-    /* If no output from script, return NULL.  Otherwise check
-       what it output.  */
-    ret = len == 1 ? NULL : kpse_readable_file (fn);
-    if (!ret && len > 1) {
-      WARNING1 ("kpathsea: mktexpk output `%s' instead of a filename", fn);
-    }
-
-    /* Free the name if we're not returning it.  */
-    if (fn != ret)
-      free (fn);
-  } else {
-    /* popen failed.  */
-    perror ("kpathsea");
-    ret = NULL;
-  }
-#endif /* not AMIGA */
 
   if (ret == NULL)
-    misstex (format, cmd);
+    misstex (format, args);
   else
     kpse_db_insert (ret);
-    
+  
   return ret;
 }
 
@@ -253,14 +467,44 @@ kpse_make_tex P2C(kpse_file_format_type, format,  const_string, base)
     kpse_init_format (format);
     spec = kpse_format_info[format];
   }
-  
+
   if (spec.program && spec.program_enabled_p) {
     /* See the documentation for the envvars we're dealing with here.  */
-    string args, cmd;
-    const_string prog = spec.program;
-    const_string arg_spec = spec.program_args;
+    /* Number of arguments is spec.argc + 1, plus the trailing NULL. */
+    string *args = XTALLOC (spec.argc + 2, string);
+    /* Helpers */
+    int argnum;
+    int i;
+    
+    /* FIXME
+     * Check whether the name we were given is likely to be a problem.
+     * Right now we err on the side of strictness:
+     * - may not start with a hyphen (fixable in the scripts).
+     * - allowed are: alphanumeric, underscore, hyphen, period
+     * ? also allowed DIRSEP, as we can be fed that when creating pk fonts
+     * No doubt some possibilities were overlooked.
+     */
+    if (base[0] == '-' /* || IS_DIR_SEP(base[0])  */) {
+      fprintf(stderr, "kpathsea: Illegal fontname `%s': starts with '%c'\n",
+              base, base[0]);
+      return NULL;
+    }
+    for (i = 0; base[i]; i++) {
+      if (!ISALNUM(base[i])
+          && base[i] != '-'
+          && base[i] != '_'
+          && base[i] != '.'
+          && !IS_DIR_SEP(base[i]))
+      {
+        fprintf(stderr, "kpathsea: Illegal fontname `%s': contains '%c'\n",
+                base, base[i]);
+        return NULL;
+      }
+    }
 
-    if (format <= kpse_any_glyph_format)
+    if (format == kpse_gf_format
+        || format == kpse_pk_format
+        || format == kpse_any_glyph_format)
       set_maketex_mag ();
 
     /* Here's an awful kludge: if the mode is `/', mktexpk recognizes
@@ -275,35 +519,17 @@ kpse_make_tex P2C(kpse_file_format_type, format,  const_string, base)
        devices with the same resolution can find the right fonts; but
        such sites are uncommon, so they shouldn't make things harder
        for everyone else.  */
-    args = arg_spec ? kpse_var_expand (arg_spec) : (string) "";
-
-    /* The command is the program name plus the arguments.  */
-    cmd = concatn (prog, " ", args, " ", base, NULL);
-
-    /* Only way to discard errors is redirect stderr inside another
-       shell; otherwise, if the mktex... script doesn't exist, we
-       will see the `sh: mktex...: not found' error.  No point in
-       doing this if we're not actually going to run anything.  */
-#if !defined(MSDOS) && !defined(WIN32) && !defined(AMIGA)
-    /* We don't want to require that a Unix-like shell be installed
-       on MS-DOS or WIN32 systems, so we will redirect stderr by hand
-       (in maketex).  */
-    if (kpse_make_tex_discard_errors) {
-      string old_cmd = cmd;
-#ifdef OS2
-      cmd = concat3 ("cmd /c \"", cmd, "\" 2>/dev/nul");
-#else
-      cmd = concat3 ("sh -c \"", cmd, "\" 2>/dev/null");
-#endif
-      free (old_cmd);
+    for (argnum = 0; argnum < spec.argc; argnum++) {
+      args[argnum] = kpse_var_expand (spec.argv[argnum]);
     }
-#endif
-    
-    ret = maketex (format, cmd);
+    args[argnum++] = xstrdup(base);
+    args[argnum] = NULL;
 
-    free (cmd);
-    if (*args)
-      free (args);
+    ret = maketex (format, args);
+
+    for (argnum = 0; args[argnum] != NULL; argnum++)
+      free (args[argnum]);
+    free (args);
   }
 
   return ret;

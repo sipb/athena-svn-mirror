@@ -44,16 +44,35 @@ procedure initialize; {this procedure gets things started properly}
 @!name_length=50; {a file name shouldn't be longer than this}
 @y
 @<Constants...@>=
-@!max_fonts=300; {maximum number of distinct fonts}
+@!max_fonts=400; {maximum number of distinct fonts}
 @!max_chars=750000; {maximum number of different characters among all fonts}
-@!max_widths=10000; {maximum number of different characters widths}
-@!max_packets=20000; {maximum number of different characters packets;
+@!max_widths=16000; {maximum number of different characters widths}
+@!max_packets=65530; {maximum number of different characters packets;
   must be less than 65536}
-@!max_bytes=100000; {maximum number of bytes for characters packets}
+@!max_bytes=250000; {maximum number of bytes for characters packets}
 @!max_recursion=10; {\.{VF} files shouldn't recurse beyond this level}
 @!stack_size=100; {\.{DVI} files shouldn't |push| beyond this depth}
 @!terminal_line_length=256; {maximum number of characters input in a single
   line of input from the terminal}
+@z
+
+% [7] Rename the integer types, as they collide with names used by C99.
+% Rather than change the code all over the place, we use macros to do
+% the renaming.  This could also be done at C preprocessor level.
+@x
+@d int_32 == integer {signed 32~bit integers}
+@y
+@d int_32 == integer {signed 32~bit integers}
+@d int_31 == int_31_t
+@d int_24u == int_24u_t
+@d int_24 == int_24_t
+@d int_23 == int_23_t
+@d int_16u == int_16u_t
+@d int_16 == int_16_t
+@d int_15 == int_15_t
+@d int_8u == int_8u_t
+@d int_8 == int_8_t
+@d int_7 == int_7_t
 @z
 
 % [14] Redirect output, so it can go to either stdout or stderr,
@@ -184,7 +203,7 @@ to |make_font_name|.
 @x
 cur_loc:=pckt_start[n]; cur_limit:=pckt_start[n+1];
 @y
-cur_name := xmalloc (pckt_length (n) + pckt_length (e) + 1);
+cur_name := xmalloc_array (char, pckt_length (n) + pckt_length (e));
 cur_loc:=pckt_start[n]; cur_limit:=pckt_start[n+1];
 @z
 
@@ -492,10 +511,10 @@ begin
       {End of arguments; we exit the loop below.} ;
 
     end else if getopt_return_val = "?" then begin
-      usage (1, 'dvicopy');
+      usage ('dvicopy');
 
     end else if argument_is ('help') then begin
-      usage (0, DVICOPY_HELP);
+      usage_help (DVICOPY_HELP);
 
     end else if argument_is ('version') then begin
       print_version_and_exit (banner, 'Peter Breitenlohner', nil);
@@ -532,7 +551,7 @@ begin
   
   end else begin
     write_ln (stderr, 'dvicopy: Need at most two file arguments.');
-    usage (1, 'dvicopy');
+    usage ('dvicopy');
   end;
 end;
 

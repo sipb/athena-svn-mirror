@@ -28,9 +28,13 @@ kpse_tex_hush P1C(const_string, what)
   string h;
   string hush = kpse_var_value ("TEX_HUSH");
   if (hush) {
+    if (STREQ (hush, "all"))
+        return true;
+    if (STREQ (hush, "none"))
+        return false;
     for (h = kpse_path_element (hush); h; h = kpse_path_element (NULL)) {
       /* Don't do anything special with empty elements.  */
-      if (STREQ (h, what) || STREQ (h, "all"))
+      if (STREQ (h, what))
         return true;
     }
   }

@@ -4,12 +4,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#ifndef KPATHSEA
 #define KPATHSEA 1
-
-/* The stuff from the path searching library.  */
-#include <kpathsea/config.h>
-
-#include <setjmp.h>
+#endif
 
 #ifndef HAVE_VPRINTF
 #ifdef HAVE_DOPRNT
@@ -32,9 +29,6 @@
 #ifndef NOTEXXET
 #define TEXXET
 #endif
-#if defined (HAVE_LIBWWW) && defined (HAVE_WWWLIB_H)
-#define HTEX
-#endif
 
 /* On the other hand, NOTOOL means we lose practically everything.  */
 #ifdef NOTOOL
@@ -46,5 +40,8 @@
 
 /* xdvi's definitions.  */
 #include "xdvi.h"
+#include "c-auto.h"
+
+#define register
 
 #endif /* not CONFIG_H */

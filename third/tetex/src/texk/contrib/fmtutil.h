@@ -2,7 +2,7 @@
 
 Copyright (C) 1998 Fabrice POPINEAU.
 
-Time-stamp: <99/01/11 14:54:38 popineau>
+Time-stamp: <02/04/03 15:15:00 popineau>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -30,6 +30,7 @@ typedef void (* process_fn )(string);
 
 void move_log(string fname);
 void move_fmt(string fname);
+void remove_file(string fname);
 void process_multiple_files(string pattern, process_fn);
 void cache_vars();
 int recreate_all();
@@ -37,5 +38,6 @@ int create_missing();
 int create_one_format(string);
 int recreate_by_hyphenfile(string);
 int show_hyphen_file(string);
+int edit_fmtutil_cnf();
 
 #endif /* _FMTUTIL_H_ */

@@ -15,7 +15,7 @@ Written in 1994 by Karl Berry.  Public domain.  */
 string
 chartostring P1C(char, ch)
 {
-  string str = xmalloc (2);
+  string str = (string)xmalloc (2);
   str[0] = ch;
   str[1] = 0;
   return str;

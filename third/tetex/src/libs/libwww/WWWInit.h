@@ -1,6 +1,6 @@
 /*
 
-
+  
   					W3C Sample Code Library libwww Default Initialization
 
 
@@ -24,10 +24,9 @@ functionality must be registered by the application. This way, the core of
 libwww is kept application independent and can be used as the basic building
 block for any kind of Web application. The Library comes with a large set
 of default functions, for example for accessing HTTP and FTP servers, parsing
-RFC
-822 headers etc. This module helps the application programmer setting
-up all this functionality, but it is important to note that none of it is
-required in order to use the Library.
+MIME headers etc. This module helps the application programmer setting up
+all this functionality, but it is important to note that none of it is
+required in order to use libwww.
 */
 
 #ifndef WWWINIT_H
@@ -39,6 +38,17 @@ required in order to use the Library.
 #ifdef __cplusplus
 extern "C" { 
 #endif
+
+/*
+.
+  Default Protocols, Transports, MIME Headers, Dialogs etc.
+.
+
+This module contains a large set of default initialization functions for
+protocol modules, stream converters, event managers etc.
+*/
+
+#include "HTInit.h"
 
 /*
 .
@@ -54,38 +64,8 @@ anything else than the profiles, but if you have more specific requirements
 then you can always fall back on using the initialization functions below
 or even werite your own extensions.
 */
+
 #include "HTProfil.h"
-
-/*
-.
-  Default Protocols, Transports, MIME Headers, Dialogs etc.
-.
-
-This module contains a large set of default initialization functions for
-protocol modules, stream converters, event managers etc.
-*/
-#include "HTInit.h"
-
-/*
-.
-  Default HTML Parsers
-.
-
-This file contains the initialization for the HTML parsers in libwww. The
-parsers are used for presenting HTML objects as well as clear text documents.
-*/
-#include "HTHInit.h"
-
-/*
-.
-  Default File Suffix Binding
-.
-
-Register the default set of bindings between file suffixes and media types.
-This is used for example to guess the media type of a FTP URL of a local
-file URL.
-*/
-#include "HTBInit.h"
 
 /*
 */
@@ -100,6 +80,6 @@ file URL.
 
   
 
-  @(#) $Id: WWWInit.h,v 1.1.1.1 2000-03-10 17:53:04 ghudson Exp $
+  @(#) $Id: WWWInit.h,v 1.1.1.2 2003-02-25 22:05:59 amb Exp $
 
 */

@@ -203,7 +203,7 @@ void DLdiv(quotient, divisor)
        divisor >>= 1;
  
        if ((u1u2 >> (LONGSIZE - shift)) != 0 && shift != 0)
-               abort("DLdiv:  dividend too large");
+               t1_abort("DLdiv:  dividend too large");
        u1u2 = (u1u2 << shift) + ((shift == 0) ? 0 : u3u4 >> (LONGSIZE - shift));
        u3u4 <<= shift;
  
@@ -266,7 +266,7 @@ void DLdiv(quotient, divisor)
                */
                u1u2 = t;
                if (HIGHDIGIT(u1u2) != 0)
-                       abort("divide algorithm error");
+                       t1_abort("divide algorithm error");
                u1u2 = ASSEMBLE(u1u2, LOWDIGIT(u3));
                u3 = LOWDIGIT(u3u4);
                q3q4 = ASSEMBLE(q3q4, qhat);
@@ -353,7 +353,7 @@ fractpel FPmult(u, v)
   DLmult(&w, u, v);
   DLrightshift(w, FRACTBITS);
   if (w.high != 0 || SIGNBITON(w.low)) {
-        IfTrace2(TRUE,"FPmult: overflow, %px%p\n", u, v);
+        IfTrace2(TRUE,"FPmult: overflow, %dlx%dl\n", u, v);
         w.low = TOFRACTPEL(MAXSHORT);
   }
  
@@ -385,7 +385,7 @@ fractpel FPdiv(dividend, divisor)
        w.high = dividend >> (LONGSIZE - FRACTBITS);
        DLdiv(&w, divisor);
        if (w.high != 0 || SIGNBITON(w.low)) {
-               IfTrace2(TRUE,"FPdiv: overflow, %p/%p\n", dividend, divisor);
+               IfTrace2(TRUE,"FPdiv: overflow, %dl/%dl\n", dividend, divisor);
                w.low = TOFRACTPEL(MAXSHORT);
        }
        return( (negative) ? -w.low : w.low);
@@ -412,7 +412,7 @@ fractpel FPstarslash(a, b, c)
        DLmult(&w, a, b);
        DLdiv(&w, c);
        if (w.high != 0 || SIGNBITON(w.low)) {
-               IfTrace3(TRUE,"FPstarslash: overflow, %p*%p/%p\n", a, b, c);
+               IfTrace3(TRUE,"FPstarslash: overflow, %dl*%dl/%dl\n", a, b, c);
                w.low = TOFRACTPEL(MAXSHORT);
        }
        return((negative) ? -w.low : w.low);

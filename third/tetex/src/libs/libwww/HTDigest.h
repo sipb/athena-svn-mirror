@@ -23,7 +23,7 @@ SHA and other algorithms could be added later on. This code is only
 used during message digest authentication.
 
 AUTHORS:
-   JKO	Jose Kahan       jose@w3.org
+   JK	Jose Kahan       jose@w3.org
 
 HISTORY:
         Dec 98 JK	Created the module from scratch
@@ -82,7 +82,7 @@ extern BOOL HTDigest_final (unsigned char *digest, HTDigestContext *context);
 
   
 
-  @(#) $Id: HTDigest.h,v 1.1.1.1 2000-03-10 17:52:55 ghudson Exp $
+  @(#) $Id: HTDigest.h,v 1.1.1.2 2003-02-25 22:05:58 amb Exp $
 
 */
 

@@ -27,6 +27,7 @@ extern MKTEXDLL void mt_exit(int);
 #endif
 extern MKTEXDLL void pushd(char *);
 extern MKTEXDLL void popd(void);
+extern MKTEXDLL void popenv(void);
 extern char *peek_dir(int);
 extern MKTEXDLL void push_fd(int [3]);
 extern MKTEXDLL void pop_fd(void);
@@ -38,4 +39,8 @@ extern MKTEXDLL BOOL sigint_handler(DWORD);
 extern void sigint_handler(int);
 #endif
 
+typedef void (__cdecl * pfnOutputAndCleanup)(int);
+extern MKTEXDLL pfnOutputAndCleanup output_and_cleanup_function;
+
+extern MKTEXDLL int redirect_stdout;
 #endif /* _STACKENV_H_ */

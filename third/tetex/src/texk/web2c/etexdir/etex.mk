@@ -9,14 +9,21 @@ etex_c = etexini.c etex0.c etex1.c etex2.c
 etex_o = etexini.o etex0.o etex1.o etex2.o etexextra.o
 
 # Generation of the web and ch file.
-etex.web: tie tex.web etexdir/etex.ch
-	./tie -m etex.web $(srcdir)/tex.web $(srcdir)/etexdir/etex.ch
-etex.ch: tie etex.web tex.ch etexdir/tex.ech
-	./tie -c etex.ch etex.web $(srcdir)/tex.ch $(srcdir)/etexdir/tex.ech
+etex.web: tie tex.web etexdir/etex.ch etexdir/etex.fix
+	./tie -m etex.web $(srcdir)/tex.web \
+	$(srcdir)/etexdir/etex.ch $(srcdir)/etexdir/etex.fix
+etex.ch: tie etex.web etexdir/tex.ch0 tex.ch etexdir/tex.ch1 etexdir/tex.ech \
+         etexdir/tex.ch2
+	./tie -c etex.ch etex.web \
+	$(srcdir)/etexdir/tex.ch0 \
+	$(srcdir)/tex.ch \
+	$(srcdir)/etexdir/tex.ch1 \
+	$(srcdir)/etexdir/tex.ech \
+	$(srcdir)/etexdir/tex.ch2
 
 # Tests...
 etestdir = $(srcdir)/etexdir/etrip
-etestenv = TEXMFCNF=$(etestdir)
+etestenv = LC_ALL=C TEXMFCNF=$(etestdir)
 
 etrip: pltotf tftopl etex dvitype
 	@echo ">>> See $(etestdir)/etrip.diffs for example of acceptable diffs." >&2

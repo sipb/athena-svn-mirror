@@ -1,17 +1,50 @@
-Information about the teTeX distribution:
+This is the README file for the teTeX distribution.
 
-The texinfo package does not contain the stand-alone info reader. If
-you need it, get the texinfo package (from ftp://ftp.gnu.org/pub/gnu/
-or a mirror site) and install it separately. You can then use the
-  --without-texinfo
-option to configure when building teTeX.
+  Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+  2001, 2002, 2003 Free Software Foundation, Inc.
 
-Three of the afm files in cmps-unix.tar.gz on CTAN are broken. Fixed
-version from http://www.YandY.com/download/cmtex10.afm, cmtex9.afm
-and cmtex8.afm are included in teTeX.
+  Copying and distribution of this file, with or without modification,
+  are permitted in any medium without royalty provided the copyright
+  notice and this notice are preserved.
 
-This release of TeX allows you to use tcx files to get full 8bit
-input/output (terminal + logfiles). Use a line like
-  %& --translate-file=il1-t1.tcx
-in the first line of your document (without the spaces at the beginning).
-You can find all default tcx files in $TEXMFMAIN/web2c.
+See ./INSTALL or ./QuickInstall for installation instructions.
+
+Primary distribution points:
+  ftp://sunsite.informatik.rwth-aachen.de:/pub/comp/tex/teTeX/
+  ftp://cam.ctan.org/tex-archive/systems/unix/teTeX/
+  ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/
+  ftp://tug.ctan.org/tex-archive/systems/unix/teTeX/
+
+List of mirrors available at:
+  ftp://cam.ctan.org/tex-archive/CTAN.sites
+
+Home page: http://tug.org/teTeX/
+
+Mailing lists:
+  for discussion:    tetex@dbs.uni-hannover.de
+  for announcements: tetex-announce@dbs.uni-hannover.de
+There are no corresponding newsgroups.
+
+Bug reports:
+ please include enough information for the maintainers to reproduce the
+ problem.  Generally speaking, that means:
+- the contents of any input files necessary to reproduce the bug (crucial!).
+- a description of the problem and any samples of the erroneous output.
+- the version number of teTeX and the program(s) involved (use --version).
+- hardware, operating system, and compiler versions (uname -a).
+- unusual options you gave to configure, if any (see config.status).
+- anything else that you think would be helpful.
+
+Patches are most welcome; if possible, please make them with diff -c and
+include ChangeLog entries.
+
+When sending email, please do not encode or split the messages in any
+way if at all possible; it's easier to deal with one large message than
+many small ones.
+
+To get started after installation, look at the documentation in the
+installed texmf tree, most notably
+  texmf/doc/index.html
+  texmf/doc/tetex/TETEXDOC.pdf
+
+Thomas Esser, February 2003

@@ -1,3 +1,105 @@
+2003-01-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* etc/texinfo.tex: Update to 2003-01-24.17
+
+	* config.sub: Update to 2003-01-22.
+
+	* config.guess: Update to 2003-01-10.
+
+2003-01-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* etc/texinfo.tex: Update to 2002-12-26.16.
+
+	* configure.in (PKGS): Add cjkutils.
+
+2003-01-08  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* withenable.ac: Add --without-cjkutils switch.  (Sync with
+	TeX-live.)
+
+2002-12-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* etc/texinfo.tex: Update to 2002-11-25.11.
+
+	* config.sub: Update to 2002-11-30.
+
+	* config.guess: Update to 2002-11-30.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* etc/texinfo.tex: Update to 2002-10-13.14.
+
+	* withenable.ac: Add --with-* switches for detex and ttf2pk.
+
+	* klibtool: On MacOS X run ranlib on a library after installing
+	it.  Apparently required.
+
+	* configure.in: Sync with texlive.  Adds detex and ttf2pk to the
+	packages.
+
+2002-10-22  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* config.sub: Update to 2002-08-22.
+
+	* config.guess: Update to 2002-09-03.
+
+	* Makefile.in: Include common.ac so more variables are
+	communicated to submakes.
+
+2002-10-15  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* README: Corrected my email address (oops).  Spotted by Roozbeh
+	Pournader <roozbeh@sharif.edu>.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in [PKGS]: Add devnag.  TeXlive merge.
+
+	* config.sub: New version.  TeXlive merge.
+
+	* config.guess: New version.  TeXlive merge.
+
+2001-11-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* withenable.ac: Correct helpstring for --without-bibtex8.
+
+2001-11-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* withenable.ac: Add --without-dvi2tty option.
+
+	* config.sub: Updated.
+
+	* config.guess: Updated.
+
+2001-10-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* Makefile.in [makeargs]: Add LDFLAGS.
+
+2000-04-21  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* withenable.ac: Add help for bibtex8.
+
+2000-04-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* etc/texinfo.tex: Update to version 1999-08-19.17.
+
+	* Makefile.in: Remove contrib from all_dirs.
+
+	* configure.in: Add bibtex8 and dvi2tty to PKGS.
+
+2000-04-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* config.guess: New version of config.guess from ftp.gnu.org.
+
+	* config.sub: New version of config.sub from ftp.gnu.org.
+
+	* etc/autoconf/acspecific.m4: Changes for cross-compilation with
+	dos-gcc, i386-mingw32-gcc, or gnuwin32gcc.  From Han The Thanh
+	<thanh@informatics.muni.cz>.
+
+	* etc/autoconf/acspecific.m4: Add checks for djgpp and win32, from
+	Han The Thanh <thanh@informatics.muni.cz>.
+
 1999-05-30  Olaf Weber  <olaf@infovore.xs4all.nl>
 
  	* etc/texinfo.tex: Update to version 1999-04-25.15 from Thomas.

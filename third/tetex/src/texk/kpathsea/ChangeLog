@@ -1,3 +1,672 @@
+2003-01-29  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.version: Version 3.4.5.
+
+	* kpathsea.texi: Version 3.4.5.
+
+	* configure.in: Version 3.4.5.
+
+2003-01-24  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* config.h [KPATHSEA]: 33 -> 34.
+	[DEV_NULL]: Added, "/dev/null" on unix, "NUL" on DOSISH.
+
+	* texmf.in [TEXCONFIG]: Remove "." from path for security reasons.
+
+2003-01-16  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.texi: Version 3.4.4.
+
+	* configure.in: Version 3.4.4.
+
+	* kpathsea.version: Version 3.4.4.
+
+	* unixtex.texi: Updates.
+
+2003-01-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.in: Uncomment definitions for VARTEXMF, HOMETEXMF.  Change
+	TEXMF itself to be same as teTeX.  Move '//' outside braces in
+	XDVIINPUTS and DVIPDFMINPUTS -- not strictly needed, but
+	consistent with how we do it everywhere else.  Comment out (but
+	otherwise retain) KPSE_DOT.
+
+2003-01-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.version: Version 3.4.3.
+
+	* kpathsea.texi: Version 3.4.3.
+
+	* configure.in: Version 3.4.3.
+
+2003-01-08  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.in: Add TEXPSHEADERS.dvipdfm, from Thomas.
+
+2002-12-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex-file.c (kpse_init_format): Add ".web" to the suffixes
+	recognized for cweb.
+
+2002-12-23  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dir.c (dir_links): Argh.  Error while merging stuff from
+	Fabrice.
+
+	* kpathsea.version: Version 3.4.2.
+
+	* configure.in: Version 3.4.2.
+
+	* kpathsea.texi: Version 3.4.2.
+
+	* tex-make.c (maketex) [WIN32]: Add program calling
+	implementation.  From Fabrice Popineau
+	<Fabrice.Popineau@supelec.fr>.
+
+	* Makefile.in: Test for kpathsea.info explicitly in current
+	directory. Some makes prepend the source dir path otherwise, which
+	would cause installation of the info files to fail.  From Thomas
+	Esser <te@dbs.uni-hannover.de>.
+
+2002-12-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Version 3.4.1.
+
+	* kpathsea.texi: Version 3.4.1.
+
+	* kpathsea.version: Version 3.4.1.
+
+	* tex-file.c (add_suffixes): Removed function.
+	(SUFFIXES, ALT_SUFFIXES): Use kpse_set_suffixes instead of
+	add_suffixes.
+
+	* tex-make.c (kpse_make_tex): On second thought, we should not get
+	dirseps in these names, ever.
+
+2002-12-17  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex-make.c (maketex): Be sure to set ret to NULL if there's
+	nothing to return.  From Akira Kakuto
+	<kakuto@fsci.fuk.kindai.ac.jp>.
+
+2002-12-15  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex-file.c: Properly terminate MKTEXPK_ARGS with a NULL.
+	Spotted by Akira Kakuto <kakuto@fsci.fuk.kindai.ac.jp>.
+
+2002-12-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.texi: Version 3.4.0.
+
+	* kpathsea.version: Version 3.4.0.
+
+	* configure.in: Version 3.4.0.
+
+	* texmf.in: Typo in TEXINPUTS.pdfemex-pl.
+
+	* xbasename.c (xbasename): Remove redundant call to strlen.  From
+	Fabrice.
+
+	* tex-make.c (misstex): Update to print command line correctly.
+	(maketex): Handle argv style array for command.  For unix case, call
+	fork and exec directly instead of using popen.
+	(kpse_make_tex): Handle argv style array for defining a command.  Be
+	very restrictive about what a name passed may contain -- this may
+	well break somethings.
+
+	* tex-file.h (kpse_format_info): Instead of having programs args
+	be a single string, use an argv style array.
+
+	* tex-file.c (init_maketex): Change to store command line as an
+	array of arguments.
+	[MKTEXPK_ARGS]: Define list of strings instead of single string.
+	(kpse_init_format): Update debugging code to match new
+	kpse_format_info structure.
+
+	* progname.c [WIN32]: Updates from Fabrice.
+
+	* pathsearch.h: Typo in comment.
+
+	* pathsearch.c: Typo in comment.
+
+	* kpsewhich.c: Correct copyright notice.
+
+	* hash.c (hash_normalized): New function.
+	(hash_insert_normalized): New function.
+	[MONOCASE_FILENAMES]: Normalize to lower case, not upper case, because
+	that's what in the ls-R files we distribute.
+
+	* fontmap.c (map_file_parse): Use hash_insert_normalized.  Again,
+	we assume the contents of font maps are already normalized.
+
+	* expand.c (kpse_expand_kpse_dot): Typo in comment.
+	(brace_expand): Clarify the comment.
+
+	* dir.c (dir_p) [WIN32]: safe_beg_of_path -> kpse_normalize_path.
+	From Fabrice.
+	(dir_links) [WIN32]: Changes to code that stores and retrieves
+	integers from pointers.
+
+	* db.c (db_build): Call hash_insert_normalized -- names from the
+	ls-R file should be normalized already.
+	(alias_build): Call hash_insert_normalized -- names from the alias
+	file should be normalized already.
+	(kpse_db_insert): Note that we call hash_insert here deliberately.
+
+	* hash.h (hash_insert_normalized): New function.
+
+	* concat.c (concat): Start strcat at the end of the previous
+	strcpy.
+
+	* absolute.c (kpse_absolute_p) [WIN32]: Remove explicit test for
+	UNC names, they're already covered by the test for names starting
+	with IS_DIR_SEP.
+	[TEST] (main): Added, from Fabrice.
+
+2002-11-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.version: To 3.3.11.
+
+	* kpathsea.texi: To 3.3.11.
+
+	* configure.in: To 3.3.11.
+
+2002-11-12  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* cnf.c (do_line): First check whether len-1 exists, then access
+	it, rather than the other way round.  Spotted by Joern Clausen
+	<joern@techfak.uni-bielefeld.de>.
+
+	* texmf.in: obj_tab_size.context is now redundant.  From Thomas.
+
+	* mktextfm: Use the same detection mechanism for mf-nowin as
+	mktexpk.  From Thomas.
+
+2002-11-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.version: Version 3.3.10.
+
+	* kpathsea.texi: Version 3.3.10.
+
+	* configure.in: Version 3.3.10.
+
+	* texmf.in: Disable parse_first_line by default (sorry).  Enlarge
+	a number of constants in general, as opposed to defining lots of
+	context-specific versions.
+
+	* progname.c (remove_dots): We did not correctly handle paths with
+	../.. in them.  There is still one corner case left, if the path
+	would try to go to the "parent" of the root directory.
+
+	* mktextfm: Test for mf-nowin in a shubshell.  Otherwise error
+	messages could end up being printed if mf-nowin does not exist.
+
+	* mktexpk: Test for mf-nowin in a subshell.
+
+2002-10-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kdefault.c (kpse_expand_default): Simplify the life of the
+	callers by always returning allocated memory, so the returned
+	string can be freed.  John W. Eaton <jwe@bevo.che.wisc.edu>
+	requested this.
+
+2002-10-22  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* withenable.ac: Correct handling of mktexfmt option.
+
+	* tex-file.c: Add .oft to regcognized suffixes for tex_format.
+
+	* mktexupd: Correct Thomas' email address.
+
+	* mktextfm: Correct Thomas' email address.
+
+	* mktexpk: Correct Thomas' email address.
+
+	* mktexnam.opt: Correct Thomas' email address.
+
+	* mktexnam: Correct Thomas' email address.
+
+	* mktexmf: Correct Thomas' email address.
+
+	* mktexlsr: Correct Thomas' email address.
+
+	* mktexdir.opt: Correct Thomas' email address.
+
+	* mktexdir: Correct Thomas' email address.
+
+	* mktex.opt: Correct Thomas' email address.
+
+	* kpathsea.version: Update to 3.3.9.
+
+	* kpathsea.texi: Update to 3.3.9.
+
+	* configure.in: Update to 3.3.9.
+
+	* common.ac: Correct handling of mktexmft option.
+
+2002-10-16  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex-make.c (kpse_make_tex): Move the test for problematic
+	filenames so we only do this when we're actually willing to make a
+	new file.
+
+2002-10-11  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.texi: Update date/version to 3.3.8.
+
+	* NEWS: Update for 3.3.8.
+
+	* configure.in: Version 3.3.8.
+
+	* kpathsea.version: Version 3.3.8.
+
+	* Makefile.in: Remove install rules for mktexfmt, as it is not a
+	separate file.
+
+2002-10-06  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.in: Expand main_memory (again).
+
+	* xstat.c: Remove lstat() declaration.
+
+	* variable.c (kpse_var_value): Check for NAME.progname in the
+	environment before checking for NAME_progname.  Both can occur,
+	even on UNIX systems.
+
+	* tex-file.c (init_path): We need to check PATH.progname,
+	PATH_programe, and PATH in the environment.  PATH.progname is the
+	"logical" way to set the name on Windows systems, and can even
+	occur on UNIX systems if env(1) is used to set the environment
+	variables.
+
+	* withenable.ac: Add --with-mktexfmt-default option.  After
+	Fabrice Popineau.  He used --with-mkfmt-default, but this was
+	changed to match the other options.
+
+	* texmf.in: Add XDVIINPUTS, TEXINPUTS.pdfamstex.  Modiy definition
+	of TEXMFLOCAL to match Thomas', add MKTEXFMT.  All part of the
+	TeXlive merge.
+
+	* tex-make.c (kpse_make_tex): Complain if a number of problematic
+	characters are found in the requested font name -- this works in
+	combination with a check in maketex() to prevent misuse of the
+	system() call that starts the mktex* scripts.
+
+	* tex-file.c (kpse_init_format): Support for mktexfmt, from
+	Fabrice Popineau.
+
+	* mktexupd: Delete CR characters at the end-of-line before doing
+	the compare.  Yet another hack for windows/unix cross-platform
+	support.
+
+	* mktextfm: TeXlive merge: support for mf-nowin.
+
+	* mktexpk: TeXlive merge: considerably reorganized to support use
+	of mf-nowin.
+
+	* mktexnam: Additional definitions for the LH fonts.  TeXlive
+	merge.
+
+	* mktexmf: Additional definitions for the LH fonts.  TeXlive
+	merge.
+
+	* common.ac: Add support for MAKE_TEX_FMT.  From Fabrice Popineau.
+
+	* acconfig.h [MAKE_TEX_FMT_BY_DEFAULT] Added. After Fabrice
+	Popineau.
+
+2002-07-16  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpsewhich.c (find_format): Remove special case for pdftex.cfg.
+	Not needed.
+
+	* kpsewhich.c (find_format): Hard-code format types for pdftex.cnf
+	and pdftex.map.
+
+2002-07-08  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktex.opt: Limit permissions on $TEMPDIR.
+
+	* mktexlsr: Limit permissions on tmp directory.
+
+2002-06-04  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.in: Remove setting of src_specials: it will be ignored
+	anyway as we'll only allow it to be set from the command line.
+
+2002-05-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktexdir: Guard $KPSE_DOT with quotes.  From Emmanuel_Thomé
+	<thome@lix.polytechnique.fr>.
+
+2002-04-01  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktexlsr: Strip a trailing CR before testing the first line of
+	an ls-R file.  Needed for interoperability with Windows (sigh).
+
+	* tex-make.c (maketex): Use a literal "r" in the popen command, as
+	(under UNIX) it tends not to understand "rb", and we're generating
+	text anyway.
+
+2001-11-27  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.texi: Version 3.3.7.
+
+	* configure.in: Version 3.3.7.
+
+2001-11-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* types.h: Define boolean as int whenever we can.  This makes the
+	option-handling code correct (where pointer to int and pointer to
+	boolean need to be the same type).
+
+	* install.texi: Update totals to (hopefully) more accurate values.
+
+2001-11-19  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* line.c (read_line): Add prototype.
+
+2001-11-18  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.version: Version 3.3.6.
+
+	* kpathsea.texi: Version 3.3.6.
+
+	* configure.in: Version 3.3.6.
+
+	* xgetcwd.c: Changes to keep C++ compilers from choking.
+
+	* xdirname.c: Changes to keep C++ compilers from choking.
+
+	* variable.c: Changes to keep C++ compilers from choking.
+
+	* str-list.c: Changes to keep C++ compilers from choking.
+
+	* readable.c: Add pathsearch.h to included headers, for
+	kpse_normalize_path.
+
+	* pathsearch.c: Changes to keep C++ compilers from choking.
+
+	* path-elt.c: Changes to keep C++ compilers from choking.
+
+	* make-suffix.c: Changes to keep C++ compilers from choking.
+
+	* line.c: Changes to keep C++ compilers from choking.
+
+	* kpsewhich.c: Changes to keep C++ compilers from choking.
+
+	* kdefault.c: Changes to keep C++ compilers from choking.
+
+	* fontmap.c: Changes to keep C++ compilers from choking.
+
+	* fn.h (fn_grow): Second argument is a const_string, not a generic
+	address.
+
+	* fn.c (fn_grow): Second argument is a const_string, not generic
+	address.
+
+	* expand.c: Add a few casts to ensure a C++ compiler wouldn't
+	choke.
+
+	* dir.c (dir_links): Replace a conditional expression with an
+	if-then version.
+
+	* db.c: Add a few casts, rename 'try', all to ensure a C++
+	compiler wouldn't choke.
+
+	* cnf.c: Add a few casts, rename 'try', all to ensure a C++
+	compiler wouldn't choke.
+
+	* c-proto.h: Addtional P*H and P*C macros for functions with up to
+	17 arguments.
+
+2001-11-14  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* readlink.c (main): Add prototype.
+
+	* kpsewhich.c (main): Add prototype.
+
+	* kpsestat.c (main): Add protype.
+
+	* c-pathch.h [WIN32] (IS_UNC_NAME): An unc name can be //<digit>
+	as well as //<letter>.
+
+	* access.c (main): Prototype.
+
+2001-11-10  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.version: Version 3.3.5.
+
+	* kpathsea.texi: Version, date.
+
+	* configure.in: Version 3.3.5.
+
+	* texmf.in: Additional entries for mex-pl, platex-pl, pdfplatex,
+	pdfmex-pl, pdfemex, pdfemex-pl.  As usual, ConTeXt wants more
+	space.
+
+	* mktexnam: First set defaults, then modify for explicit
+	destination, not the reverse.  From Thomas.
+
+	* mktex.opt: Preserve return code over trap.  From Thomas.
+
+	* kpsewhich.man: Typo.
+
+2001-10-30  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: To 3.3.4.
+
+	* kpathsea.version: To 3.3.4.
+
+	* mktexnam.opt: Robustness fix for handling of NAME.  Minor
+	changes in the handling of the defaults when a name isn't found in
+	the supplier or typeface maps.
+
+	* tex-file.c: Add ".ch" as alternate suffix for kpse_web_format
+	and kpse_cweb_format.
+
+	* readable.c [main]: Call kpse_normalize_path.
+
+	* progname.c [WIN32]: Update from Fabrice.
+
+	* pathsearch.h [WIN32]: Remove prototype for safe_beg_of_path.
+	Add prototype for kpse_normalize_path.
+
+	* pathsearch.c (path_search) [WIN32]: Remove call to
+	safe_beg_of_path.
+	(path_search): Add call to kpse_normalize_path.
+
+	* expand.c (kpse_path_expand): Don't strip devices and such here,
+	as we're doing that in kpse_element_dirs anyway.
+
+	* elt-dirs.c [WIN32]: Remove safe_beg_of_path.
+	(kpse_normalize_path): Replaces safe_beg_of_path, but is defined on
+	all architectures.
+
+	* dir.c [WIN32]: Remove safe_beg_of_path prototype here.
+
+	* common.ac: Test whether libm exists.  If it does, we
+	unconditionally link with it, which is probably wrong.
+
+	* cnf.c [__NetBSD__]: Define unix.
+
+	* c-pathch.h [IS_UNC_NAME]: Define on all architectures.
+
+	* Makefile.in (distdir): Add *.ftp to destination directory.
+
+2001-09-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.in: Add support for Web and Cweb files (kpse_web_format,
+	kpse_cweb_format).  Requested by Wlodek Bzyl.
+
+	* tex-file.h, tex-file.c: Add support for Web and Cweb files
+	(kpse_web_format, kpse_cweb_format).  Requested by Wlodek Bzyl.
+
+2001-07-23  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* common.ac [kb_cv_func_putenv_malloc]: Add declaration for
+	malloc, which testing on IA64 revealed to be missing.
+
+2000-08-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktexlsr: Changed the fix for NeXT.
+
+2000-08-05  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* kpathsea.texi: Bump version, date.
+
+	* kpathsea.version: Bump version.
+
+	* configure.in: Update for 3.3.3.
+
+	* NEWS: Update for 3.3.3.
+
+	* mktexlsr: On NeXT, 'rm -rf ' will recursively remove the current
+	directory.  This is bad if you're in / and are root.
+
+2000-05-25  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* lib.h [MONOCASE_FILENAMES]: Parenthesis was omitted in
+	FILESTRNCASEEQ.  Found by Fabrice.
+
+2000-04-26  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* unixtex.texi: Added notes that web2c is bare-bones, and that the
+	texk/texklib packages may contain older components.
+
+2000-04-21  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* progname.c: Add P?C macros to functions that lacked them.
+
+	* lib.h [STREQ,STRNEQ,FILESTRCASEEQ,FILESTRNCASEEQ]: If any
+	argument is NULL, compare unequal.
+
+2000-04-13  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* tex-hush.c (kpse_tex_hush): Check for "all" and "none" first,
+	then look for more specific switches.  This fixes the most common
+	case of problems due to non-reentrancy of kpse_path_element.
+
+	* kpathsea.texi: Correct example of brace expansion.  Document
+	TEX_HUSH = none.  Found by Tijs Michels <M.H.M.Michels@kub.nl>.
+
+	* texmf.in: Document the use of TEX_HUSH = none.
+
+2000-04-03  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* texmf.in: Add variable for src_specials.  Increase arrays for
+	context (again).
+
+	* xopendir.c [WIN32]: Only define xclosedir.
+
+	* kpsewhich.man: Spelling correction.
+
+	* getopt.h [WIN32]: For definition of __STDC__ to 1.
+
+2000-04-02  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* xopendir.c [WIN32]: Define neither xopendir nor xclosedir.  From
+	Han The Thanh <thanh@informatics.muni.cz>.
+
+	* xputenv.c (xputenv): The WIN32 conditional code is also valid
+	for DJGPP.  From Fabrice.
+
+	* xmalloc.c (xmalloc): Allocate 1 byte if passed size 0.
+
+	* xdirname.c (xdirname): Changes for Win32 from Fabrice.
+
+	* tex-file.h: Prototype for kpse_set_suffixes.  From Fabrice.
+
+	* tex-file.c (kpse_set_suffixes): New function, added by Fabrice.
+
+	* readable.c: Win32-related changes from Fabrice.
+
+	* progname.c [WIN32]: Various changes from Fabrice.
+
+	* pathsearch.h [WIN32]: Declare safe_beg_of_path.  From Fabrice.
+
+	* pathsearch.c (path_search [WIN32]): Use safe_beg_of_path.  From
+	Fabrice.
+
+	* kpsestat.c: Remove WIN32 define.  From Fabrice.
+
+	* hash.c [MONOCASE_FILENAMES]: Change for the WIN32 case from
+	Fabrice.
+
+	* getopt.h [WIN32]: Changes from Fabrice.
+
+	* getopt.c [WIN32 && ! __CYGWIN32__]: Ensure getpid is not defined
+	before defining it.  From Fabrice.
+
+	* lib.h: Update dir_links prototype, from Fabrice.
+
+	* elt-dirs.c: Win32 related changes from Fabrice.
+
+	* dir.c: Various Win32-related changes from Fabrice.
+
+	* config.h: Various changes for the DOS famility of systems.  From
+	Fabrice.
+
+	* c-stat.h [WIN32]: Use oldnames.h instead of kpathsea/win32lib.h.
+	From Fabrice.
+
+	* c-proto.h [WIN32]: _DLL -> KPSE_DLL, from Fabrice Popineau.
+
+	* c-memstr.h: Move closer to just the ANSI string functions, if
+	necessary defined in terms of the BSD functions.  After Thomas
+	Esser <te@informatik.uni-hannover.de>.
+
+	[FOPEN_RBIN_MODE, FOPEN_WBIN_MODE, FOPEN_ABIN_MODE]: Specify
+	binary I/O mode on all systems, not just those where it makes a
+	difference.
+	[VMCMS]: Remove as it isn't used.
+	[SET_BINARY]: Change defines which select it.  From Fabrice
+	Popineau. <popineau@esemetz.ese-metz.fr>
+
+	* c-ctype.h [WIN32]: On Windows, get isascii from oldnames.h.
+	After Fabrice Popineau <popineau@esemetz.ese-metz.fr>.
+
+	* access.c: Replace WIN32 code with generic code.
+
+2000-01-31  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktexlsr: Fix possible symlink exploit.  By Thomas Esser
+	<te@informatik.uni-hannover.de>.
+
+1999-06-28  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mktextfm: Get rid of error message if hbf2gf cannot be found.
+	From Thomas.
+
+	* tex-glyph.c: Test whether glyph_file is NULL before
+ 	dereferencing it.  Suggested by Julian Gilbey
+ 	<J.D.Gilbey@qmw.ac.uk>.
+
+	* texmf.in: Improved comments about VARTEXMF, along lines
+ 	suggested by Thomas Esser.
+  	Increased font_mem_size, as requested by Thomas.
+
+	* pathsearch.c (path_search): Print a message if we're debugging
+ 	the search and we're not pounding the disk because an ls-R file
+ 	exists but must_exist=0.  This to highlight the most confusing
+ 	case where disk searches do not happen.
+
+	* mktextfm.man: Cleanup of synopsis.
+
+	* mktex.opt: More robust handling of TEMPDIR, after Luc Van Eycken
+ 	<Luc.VanEycken@esat.kuleuven.ac.be>.
+
+	* kpsestat.man: Remove comment about unclear message.
+
+	* kpsestat.c (main): Print a more understandable message when the
+ 	stat call fails.
+
+1999-06-20  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* pathsearch.c (log_search): If TEXMFLOG is defined, then the
+ 	kpathsea library would write a space to stderr for every file
+ 	logged.  Fix from Charles Karney <karney@pppl.gov>.
+
 1999-05-29  Olaf Weber  <olaf@infovore.xs4all.nl>
 
 	* configure.in: Update version number to 3.3.1.
@@ -7,7 +676,7 @@
 	* kpathsea.texi: Update version info.
 
 	* mktexnam, mktexmf: Fix the LH patterns to be more specific.
-	From Thomas.
+        From Thomas.
 
 	* unixtex.texi: Remove node on tape distributions.
 

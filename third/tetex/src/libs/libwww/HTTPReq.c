@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTTPReq.c,v 1.1.1.1 2000-03-10 17:53:01 ghudson Exp $
+**	@(#) $Id: HTTPReq.c,v 1.1.1.2 2003-02-25 22:29:26 amb Exp $
 **
 **	This module implements the output stream for HTTP used for sending
 **	requests with or without a entity body.
@@ -61,7 +61,7 @@ PRIVATE int HTTP09Request (HTStream * me, HTRequest * request)
     }
     PUTC(CR);
     PUTC(LF);
-    if (PROT_TRACE)HTTrace("HTTP........ Generating HTTP/0.9 Request\n");
+    HTTRACE(PROT_TRACE, "HTTP........ Generating HTTP/0.9 Request\n");
     return HT_OK;
 }
 
@@ -99,6 +99,33 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
     if (me->state == 1) {
 	char * abs_location = NULL;
 	char * addr = HTAnchor_physical(anchor);
+	char * location;
+
+        /* JK: If the application specified a content-location (which is
+           stored in the request in default put-name!), we use it instead
+           of the URL that's being saved to. This is like having a user
+           defined Content-Location */
+        location = HTRequest_defaultPutName (request);
+        if (location)
+	  {
+	    if (HTURL_isAbsolute (location))
+	      {
+		char * relative;
+		relative = HTRelative (location, location);
+		abs_location = HTParse (relative + 2, addr, PARSE_ALL);
+		HT_FREE (relative);
+	      }
+	    else
+	      abs_location = HTParse (location, addr, PARSE_ALL);
+	    addr = abs_location;
+	  }
+
+#if 0
+	/*
+	**  We don't use the content-location any more as it is superseeded
+	**  by etags and the combination of the two might do more harm than
+	**  good (The etag is not guaranteed to be unique over multiple URIs)
+	*/
 
 	/*
 	**  If we are using a method different from HEAD and GET then use
@@ -121,6 +148,7 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
 		}
 	    }
 	}
+#endif
 
 	/*
 	**  If we are using a proxy or newer versions of HTTP then we can
@@ -172,12 +200,14 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
 
     /* Request Headers */
     if (request_mask & HT_C_ACCEPT_TYPE) {
+	HTFormat format = HTRequest_outputFormat(request);
+	
 	/*
 	** If caller has specified a specific output format then use this.
 	** Otherwise use all the registered converters to generate the 
 	** accept header
 	*/
-	if (HTRequest_outputFormat(request) == WWW_PRESENT) {
+	if (format == WWW_PRESENT) {
 	    int list;
 	    HTList *cur;
 	    BOOL first=YES;
@@ -203,9 +233,17 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
 	    }
 	    if (!first) PUTBLOCK(crlf, 2);
 	} else {
-	    PUTS("Accept: ");
-	    PUTS(HTAtom_name(HTRequest_outputFormat(request)));
-	    PUTBLOCK(crlf, 2);
+
+	    /*
+	    **  If we have an explicit output format then only send
+	    **  this one if not this is an internal libwww format
+	    **	of type www/<star>
+	    */
+	    if (!HTMIMEMatch(WWW_INTERNAL, format)) {
+		PUTS("Accept: ");
+		PUTS(HTAtom_name(format));
+		PUTBLOCK(crlf, 2);
+	    }
 	}	
     }
     if (request_mask & HT_C_ACCEPT_CHAR) {
@@ -384,24 +422,24 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
 	PUTS(etag);
 	PUTC('"');
 	PUTBLOCK(crlf, 2);
-	if (PROT_TRACE) HTTrace("HTTP........ If-Range using etag `%s\'\n", etag);
+	HTTRACE(PROT_TRACE, "HTTP........ If-Range using etag `%s\'\n" _ etag);
     } else if (request_mask & HT_C_IF_MATCH_ANY) {
 	PUTS("If-Match: *");
 	PUTBLOCK(crlf, 2);
-	if (PROT_TRACE) HTTrace("HTTP........ If-Match using `*\'\n");
+	HTTRACE(PROT_TRACE, "HTTP........ If-Match using `*\'\n");
     } else if (request_mask & HT_C_IF_MATCH && etag) {
 	PUTS("If-Match: \"");
 	PUTS(etag);
 	PUTC('"');
 	PUTBLOCK(crlf, 2);
-	if (PROT_TRACE) HTTrace("HTTP........ If-Match using etag `%s\'\n", etag);
+	HTTRACE(PROT_TRACE, "HTTP........ If-Match using etag `%s\'\n" _ etag);
     } else if (request_mask & HT_C_IF_UNMOD_SINCE) {
 	time_t lm = HTAnchor_lastModified(anchor);
 	if (lm > 0) {
 	    PUTS("If-Unmodified-Since: ");
 	    PUTS(HTDateTimeStr(&lm, NO));
 	    PUTBLOCK(crlf, 2);
-	    if (PROT_TRACE) HTTrace("HTTP........ If-Unmodified-Since\n");
+	    HTTRACE(PROT_TRACE, "HTTP........ If-Unmodified-Since `%s\'\n" _ HTDateTimeStr(&lm, NO));
 	}
     }
 
@@ -413,13 +451,13 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
     if (request_mask & HT_C_IF_NONE_MATCH_ANY) {
 	PUTS("If-None-Match: *");
 	PUTBLOCK(crlf, 2);
-	if (PROT_TRACE) HTTrace("HTTP........ If-None-Match using `*\'\n");
+	HTTRACE(PROT_TRACE, "HTTP........ If-None-Match using `*\'\n");
     } else if (request_mask & HT_C_IF_NONE_MATCH && etag) {
 	PUTS("If-None-Match: \"");
 	PUTS(etag);
 	PUTC('"');
 	PUTBLOCK(crlf, 2);
-	if (PROT_TRACE) HTTrace("HTTP........ If-None-Match `%s\'\n", etag);
+	HTTRACE(PROT_TRACE, "HTTP........ If-None-Match `%s\'\n" _ etag);
     }
     if (request_mask & HT_C_IMS) {
 	time_t lm = HTAnchor_lastModified(anchor);
@@ -427,7 +465,7 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
 	    PUTS("If-Modified-Since: ");
 	    PUTS(HTDateTimeStr(&lm, NO));
 	    PUTBLOCK(crlf, 2);
-	    if (PROT_TRACE) HTTrace("HTTP........ If-Modified-Since\n");
+	    HTTRACE(PROT_TRACE, "HTTP........ If-Modified-Since `%s\'\n" _ HTDateTimeStr(&lm, NO));
 	}
     }
 
@@ -496,7 +534,7 @@ PRIVATE int HTTPMakeRequest (HTStream * me, HTRequest * request)
 	PUTS(HTLib_version());
 	PUTBLOCK(crlf, 2);
     }
-    if (PROT_TRACE) HTTrace("HTTP........ Generating HTTP/1.x Request Headers\n");
+    HTTRACE(PROT_TRACE, "HTTP........ Generating HTTP/1.x Request Headers\n");
     return HT_OK;
 }
 
@@ -557,7 +595,7 @@ PRIVATE int HTTPRequest_free (HTStream * me)
 
 PRIVATE int HTTPRequest_abort (HTStream * me, HTList * e)
 {
-    if (PROT_TRACE) HTTrace("HTTPRequest. ABORTING...\n");
+    HTTRACE(PROT_TRACE, "HTTPRequest. ABORTING...\n");
     /* JK: Added protection against NULL pointers */
     if (me) {
 	if (me->target && me->target->isa)

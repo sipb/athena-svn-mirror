@@ -3,7 +3,7 @@
 **
 **	(c) COPYRIGHT MIT 1995.
 **	Please first read the full copyright statement in the file COPYRIGH.
-**	@(#) $Id: HTDNS.c,v 1.1.1.1 2000-03-10 17:52:56 ghudson Exp $
+**	@(#) $Id: HTDNS.c,v 1.1.1.2 2003-02-25 22:04:46 amb Exp $
 **
 **	This object manages a cache of hosts we have looked up vis DNS.
 **	The object contains the necessary parts from hostent. For Internet host
@@ -24,7 +24,6 @@
 #include "HTDNS.h"					 /* Implemented here */
 
 #define DNS_TIMEOUT		1800L	     /* Default DNS timeout is 30 mn */
-#define HASH_SIZE		67
 
 /* Type definitions and global variables etc. local to this module */
 struct _HTdns {
@@ -55,8 +54,7 @@ PRIVATE void free_object (HTdns * me)
 
 PRIVATE BOOL delete_object (HTList * list, HTdns * me)
 {
-    if (PROT_TRACE)
-	HTTrace("DNS Delete.. object %p from list %p\n", me, list);
+    HTTRACE(PROT_TRACE, "DNS Delete.. object %p from list %p\n" _ me _ list);
     HTList_removeObject(list, (void *) me);
     free_object(me);
     return YES;
@@ -114,9 +112,8 @@ PUBLIC HTdns * HTDNS_add (HTList * list, struct hostent * element,
     if ((me->weight = (double *) HT_CALLOC(me->homes, sizeof(double))) == NULL)
         HT_OUTOFMEM("HTDNS_add");
     me->addrlength = element->h_length;
-    if (PROT_TRACE)
-	HTTrace("DNS Add..... `%s\' with %d home(s) to %p\n",
-		host, *homes, list);
+    HTTRACE(PROT_TRACE, "DNS Add..... `%s\' with %d home(s) to %p\n" _ 
+		host _ *homes _ list);
     HTList_addObject(list, (void *) me);
     return me;
 }
@@ -154,14 +151,12 @@ PUBLIC BOOL HTDNS_updateWeigths(HTdns *dns, int current, ms_t deltatime)
 	    } else {
 		*(dns->weight+cnt) = *(dns->weight+cnt) * passive;
 	    }
-	    if (PROT_TRACE)
-		HTTrace("DNS Weigths. Home %d has weight %4.2f\n", cnt,
+	    HTTRACE(PROT_TRACE, "DNS weight.. Home %d has weight %4.2f\n" _ cnt _ 
 			*(dns->weight+cnt));
 	}
 	return YES;
     }
-    if (PROT_TRACE)
-	HTTrace("DNS Weigths. Object %p not found'\n", dns);
+    HTTRACE(PROT_TRACE, "DNS weight.. Object %p not found'\n" _ dns);
     return NO;
 }
 
@@ -176,7 +171,7 @@ PUBLIC BOOL HTDNS_delete (const char * host)
     const char *ptr;
     if (!host || !CacheTable) return NO;
     for(ptr=host; *ptr; ptr++)
-	hash = (int) ((hash * 3 + (*(unsigned char *) ptr)) % HASH_SIZE);
+	hash = (int) ((hash * 3 + (*(unsigned char *) ptr)) % HT_M_HASH_SIZE);
     if ((list = CacheTable[hash])) {	 /* We have the list, find the entry */
 	HTdns *pres;
 	while ((pres = (HTdns *) HTList_nextObject(list))) {
@@ -198,7 +193,7 @@ PUBLIC BOOL HTDNS_deleteAll (void)
     int cnt;
     HTList *cur;
     if (!CacheTable) return NO;
-    for (cnt=0; cnt<HASH_SIZE; cnt++) {
+    for (cnt=0; cnt<HT_M_HASH_SIZE; cnt++) {
 	if ((cur = CacheTable[cnt])) { 
 	    HTdns *pres;
 	    while ((pres = (HTdns *) HTList_nextObject(cur)) != NULL)
@@ -227,8 +222,7 @@ PUBLIC int HTGetHostByName (HTHost * host, char *hostname, HTRequest* request)
     HTList *list;				    /* Current list in cache */
     HTdns *pres = NULL;
     if (!host || !hostname) {
-	if (PROT_TRACE)
-	    HTTrace("HostByName.. Bad argument\n");
+	HTTRACE(PROT_TRACE, "HostByName.. Bad argument\n");
 	return -1;
     }
     HTHost_setHome(host, 0);
@@ -238,9 +232,9 @@ PUBLIC int HTGetHostByName (HTHost * host, char *hostname, HTRequest* request)
 	int hash = 0;
 	char *ptr;
 	for(ptr=hostname; *ptr; ptr++)
-	    hash = (int) ((hash * 3 + (*(unsigned char *) ptr)) % HASH_SIZE);
+	    hash = (int) ((hash * 3 + (*(unsigned char *) ptr)) % HT_M_HASH_SIZE);
 	if (!CacheTable) {
-	    if ((CacheTable = (HTList* *) HT_CALLOC(HASH_SIZE, sizeof(HTList *))) == NULL)
+	    if ((CacheTable = (HTList* *) HT_CALLOC(HT_M_HASH_SIZE, sizeof(HTList *))) == NULL)
 	        HT_OUTOFMEM("HTDNS_init");
 	}
 	if (!CacheTable[hash]) CacheTable[hash] = HTList_new();
@@ -253,8 +247,7 @@ PUBLIC int HTGetHostByName (HTHost * host, char *hostname, HTRequest* request)
 	while ((pres = (HTdns *) HTList_nextObject(cur))) {
 	    if (!strcmp(pres->hostname, hostname)) {
 		if (time(NULL) > pres->ntime + DNSTimeout) {
-		    if (PROT_TRACE)
-			HTTrace("HostByName.. Refreshing cache\n");
+		    HTTRACE(PROT_TRACE, "HostByName.. Refreshing cache\n");
 		    delete_object(list, pres);
 		    pres = NULL;
 		}
@@ -270,7 +263,7 @@ PUBLIC int HTGetHostByName (HTHost * host, char *hostname, HTRequest* request)
 	homes = pres->homes;
 	if (pres->homes > 1) {
 	    int cnt = 0;
-	    double best_weight = 1e30;			      /* Pretty good */
+	    double best_weight = 1e30;			      /* Pretty bad */
 	    while (cnt < pres->homes) {
 		if (*(pres->weight+cnt) < best_weight) {
 		    best_weight = *(pres->weight+cnt);
@@ -289,9 +282,26 @@ PUBLIC int HTGetHostByName (HTHost * host, char *hostname, HTRequest* request)
 	int thd_errno;
 	char buffer[HOSTENT_MAX];
 	struct hostent result;			      /* For gethostbyname_r */
+#endif
+#ifdef HAVE_GETHOSTBYNAME_R_3
+        struct hostent_data hdata;
+#endif
+
 	if (cbf) (*cbf)(request, HT_PROG_DNS, HT_MSG_NULL,NULL,hostname,NULL);
+#ifdef HAVE_GETHOSTBYNAME_R_5
 	hostelement = gethostbyname_r(hostname, &result, buffer,
 				      HOSTENT_MAX, &thd_errno);
+#elif defined(HAVE_GETHOSTBYNAME_R_6)
+	gethostbyname_r(hostname, &result, buffer,
+		        HOSTENT_MAX, &hostelement, &thd_errno);
+
+#elif defined(HAVE_GETHOSTBYNAME_R_3)
+        if (gethostbyname_r(hostname, &result, &hdata) == 0) {
+	    hostelement = &result;
+	}
+	else {
+	    hostelement = NULL;
+	}
 #else
 	if (cbf) (*cbf)(request, HT_PROG_DNS, HT_MSG_NULL,NULL,hostname,NULL);
 	hostelement = gethostbyname(hostname);
@@ -325,6 +335,9 @@ PUBLIC char * HTGetHostBySock (int soc)
     char buffer[HOSTENT_MAX];
     struct hostent result;		      	      /* For gethostbyaddr_r */
 #endif
+#ifdef HAVE_GETHOSTBYADDR_R_5
+    struct hostent_data hdata;
+#endif
 
 #ifdef DECNET  /* Decnet ain't got no damn name server 8#OO */
     return NULL;
@@ -333,19 +346,29 @@ PUBLIC char * HTGetHostBySock (int soc)
 	return NULL;
     iaddr = &(((struct sockaddr_in *)&addr)->sin_addr);
 
-#ifdef HT_REENTRANT
+#ifdef HAVE_GETHOSTBYADDR_R_7
     phost = gethostbyaddr_r((char *) iaddr, sizeof(struct in_addr), AF_INET,
 			    &result, buffer, HOSTENT_MAX, &thd_errno);
+#elif defined(HAVE_GETHOSTBYADDR_R_8)
+    gethostbyaddr_r((char *) iaddr, sizeof(struct in_addr), AF_INET,
+		    &result, buffer, HOSTENT_MAX, &phost, &thd_errno);
+#elif defined(HAVE_GETHOSTBYADDR_R_5)
+    if(gethostbyaddr_r((char *) iaddr, sizeof(struct in_addr), AF_INET,
+		       &result, &hdata)==0) {
+	phost=&result;
+    }
+    else {
+	phost = NULL;
+    }
 #else
     phost = gethostbyaddr((char *) iaddr, sizeof(struct in_addr), AF_INET);
 #endif
     if (!phost) {
-	if (PROT_TRACE)
-	    HTTrace("TCP......... Can't find internet node name for peer!!\n");
+	HTTRACE(PROT_TRACE, "TCP......... Can't find internet node name for peer!!\n");
 	return NULL;
     }
     StrAllocCopy(name, phost->h_name);
-    if (PROT_TRACE) HTTrace("TCP......... Peer name is `%s'\n", name);
+    HTTRACE(PROT_TRACE, "TCP......... Peer name is `%s'\n" _ name);
     return name;
 
 #endif	/* not DECNET */

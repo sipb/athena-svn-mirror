@@ -2,7 +2,7 @@
 
 Copyright (C) 1998 Fabrice POPINEAU.
 
-Time-stamp: <99/05/10 17:59:51 popineau>
+Time-stamp: <02/11/11 11:08:44 popineau>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* Maximum number of lines per usage message. */
-#define MAX_LINES 16
+#define MAX_LINES 32
 
 #define SEPARATORS " \t\n\""
 
@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/kpathsea.h>
 extern KPSEDLL char* kpathsea_version_string;
 
+#include "mktex.h"
 #include "fileutils.h"
 #include "stackenv.h"
 #include "variables.h"
@@ -53,18 +54,15 @@ static string mode, bdpi;
 
 /* fmtutil.cnf */
 
-char tmpdir[PATH_MAX]; /* Working temporary directory */
-string output = "astdout";
-FILE *fout = NULL;
-FILE *fnul = NULL;
 static boolean downcase_names;
-char cmd_buf[1024];			/* Hope it is enough for handling for command */
-char empty_str[] = "(empty)";
+char cmd_buf[1024];		/* Hope it is enough for handling command */
 char cmd_sys[1024];		/* system() calls */
+char msg_buf[1024];
 
 static int errstatus;
+static string log_failure_msg = NULL;
 
-void usage(void);
+static void usage(void);
 
 /* Test whether getopt found an option ``A''.
    Assumes the option index is in the variable `option_index', and the
@@ -80,7 +78,11 @@ static struct option long_options [] = {
     { "missing",           0, 0, 0},
     { "byfmt",             1, 0, 0},
     { "byhyphen",          1, 0, 0},
+    { "enablefmt",         1, 0, 0},
+    { "disablefmt",        1, 0, 0},
+    { "listcfg",           1, 0, 0},
     { "showhyphen",        1, 0, 0},
+    { "edit",              0, 0, 0},
     { "help",              0, 0, 0},
     { "cnffile",           1, 0, 0},
     { "fmtdir",            1, 0, 0},
@@ -89,36 +91,45 @@ static struct option long_options [] = {
 };
 
 enum {
-  NONE, ALL, MISSING, BYFMT, BYHYPHEN, SHOWHYPHEN
+  NONE, ALL, MISSING, BYFMT, BYHYPHEN, 
+  ENABLEFMT, DISABLEFMT, LISTCFG, SHOWHYPHEN, EDIT
 };
 
 #define MAX_FMTS 128
 
 typedef struct fmtdesc {
   string format;		/* e.g.: latex.fmt */
+  string shortformat;		/* e.g.: latex */
   string engine;		/* e.g.: tex */
   string progname;		/* e.g.: latex */
   string hyphenation;		/* e.g.: - */
   string texargs;
   string inifile;
+  string inifile_short;		/* remember it */
+  string pool;
+  string poolbase;
+  string tcx;
+  string tcxoption;
 } fmtdesc;
 
 static fmtdesc fmts[MAX_FMTS];
 static int nb_formats = 0;
 
 string unrmable_engines[] = {
-  "tex", "pdftex", "etex", "pdfetex", "omega", NULL
+  "tex", "pdftex", "etex", "pdfetex", "omega", "mf", "mpost", NULL
 };
 
 /*
   First  argument takes progname;
   Other arguments take no arguments.
   */
-static string usage_msg[MAX_LINES] = { 
-	"Usage: fmtutil [option] ... cmd [argument]\n\n",
+static string usage_msg[][MAX_LINES] = { 
+  {
+	"Usage: fmtutil [option] ... command\n\n",
 	"Valid options:\n",
 	"  --cnffile file\n",
 	"  --fmtdir directory\n",
+	"  --debug=<n>                set debug level to n\n",
 	"  --quiet                    no output except error messages\n",
 	"  --test                     only print what would be done\n",
 	"  --dolinks                  link engine to format\n\n",
@@ -128,12 +139,31 @@ static string usage_msg[MAX_LINES] = {
 	"  --missing                  create all missing format files\n",
 	"  --byfmt formatname         (re)create format for `formatname'\n",
 	"  --byhyphen hyphenfile      (re)create formats that depend on `hyphenfile'\n",
+	"  --enablefmt formatname     enable `formatname' in config file\n",
+	"  --disablefmt formatname    disable formatname in config file\n",
+	"  --listcfg                  list (enabled and disabled) configurations\n",
 	"  --showhyphen formatname    print name of hyphenfile for format `formatname'\n",
+	"  --edit                     edit fmtutil.cnf file\n",
+	"  --version                  display version information\n",
 	"  --help                     show this message\n",
+	0
+  },
+  {
+	"Usage: mktexfmt [[option] format.ext | command]\n\n",
+	"Valid options:\n",
+	"  --debug=<n>                set debug level to n\n",
+	"  --quiet                    no output except error messages\n",
+	"  --test                     only print what would be done\n",
+	"  --dolinks                  link engine to format\n\n",
+	"  --force                    force links even if target exists\n\n",
+	"Valid commands:\n",
+	"  --version                  display version information\n",
+	"  --help                     show this message\n",
+	0
+  }
 };
 
-string progname = NULL;
-static string fmtutil_version_string = "Revision: 0.2";
+static string fmtutil_version_string = "Revision: 0.40";
 
 static string cnf_default = "fmtutil.cnf";
 static string cnf_file = NULL;
@@ -144,6 +174,7 @@ static boolean quiet = false;
 static boolean norebuild = false;
 static boolean dolinks = false;
 static boolean force = false;
+static enum { FMTUTIL, MKTEXFMT, LAST_PROGRAM } incarnation = FMTUTIL;
 
 #define MAX_LINKS 128
 
@@ -154,6 +185,18 @@ struct _links {
 int nb_links = 0;
 
 void link_formats();
+
+void log_failure(string msg)
+{
+  if (log_failure_msg == NULL) {
+    log_failure_msg = xstrdup(msg);
+  }
+  else {
+    string tmp = log_failure_msg;
+    log_failure_msg = concat(log_failure_msg, msg);
+    free(tmp);
+  }
+}
 
 /*
   First part: fmtutil.opt
@@ -195,34 +238,67 @@ int fmtutil_opt(int argc, char *argv[])
       exit(0);
     }
     else if (ARGUMENT_IS ("version")) {
-      fprintf(stderr, "%s (version %s) of %s.\n", progname, 
-	      fmtutil_version_string,
-	      kpathsea_version_string);
-      exit(0);
+	fprintf(stderr, "%s (version %s) of %s.\n", progname, 
+		fmtutil_version_string,
+		kpathsea_version_string);
+	exit(0);
+      }
+    else if (incarnation == MKTEXFMT) {
+      /* no othe options */
     }
-    else if (ARGUMENT_IS("all")) {
-      cmd = ALL;
+    else if (incarnation == FMTUTIL) {
+      if (ARGUMENT_IS("all")) {
+	cmd = ALL;
+      }
+      else if (ARGUMENT_IS("missing")) {
+	cmd = MISSING;
+      }
+      else if (ARGUMENT_IS("byfmt")) {
+	cmd = BYFMT;
+	arg = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("byhyphen")) {
+	cmd = BYHYPHEN;
+	arg = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("enablefmt")) {
+	cmd = ENABLEFMT;
+	arg = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("disablefmt")) {
+	cmd = DISABLEFMT;
+	arg = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("listcfg")) {
+	cmd = LISTCFG;
+	arg = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("showhyphen")) {
+	cmd = SHOWHYPHEN;
+	arg = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("edit")) {
+	cmd = EDIT;
+      }
+      else if (ARGUMENT_IS("cnffile")) {
+	cnf_file = xstrdup(optarg);
+      }
+      else if (ARGUMENT_IS("fmtdir")) {
+	destdir = xstrdup(optarg);
+      }
     }
-    else if (ARGUMENT_IS("missing")) {
-      cmd = MISSING;
-    }
-    else if (ARGUMENT_IS("byfmt")) {
+  }
+
+  if (incarnation == MKTEXFMT) {
+    cmd = BYFMT;
+    if (optind < argc) {
+      string ext = NULL;
+      /* Make `mktexfmt <format.ext>' equivalent to `fmtutil --byfmt=<format>' */
       cmd = BYFMT;
-      arg = xstrdup(optarg);
-    }
-    else if (ARGUMENT_IS("byhyphen")) {
-      cmd = BYHYPHEN;
-      arg = xstrdup(optarg);
-    }
-    else if (ARGUMENT_IS("showhyphen")) {
-      cmd=SHOWHYPHEN;
-      arg = xstrdup(optarg);
-    }
-    else if (ARGUMENT_IS("cnffile")) {
-      cnf_file = xstrdup(optarg);
-    }
-    else if (ARGUMENT_IS("fmtdir")) {
-      destdir = xstrdup(optarg);
+      arg = xstrdup(xbasename(argv[optind++]));
+      /* remove any extension */
+      ext = strrchr(arg, '.');
+      if (ext) *ext = '\0';
     }
   }
 
@@ -232,18 +308,16 @@ int fmtutil_opt(int argc, char *argv[])
   argv[i] = NULL;
 
   argc = i;
-#if 0
-  fprintf(stderr, "New args [%d] : ", argc);
-  for (i = 0; i < argc; i++)
-    fprintf(stderr, "%s ", argv[i]);
-  fprintf(stderr, "\n");
-  if (argc < program->arg_min) {
-    fprintf (stderr, "%s: Missing argument(s).\nTry `%s --help' for more information.\n", progname, kpse_program_name);
-    exit(1);
-  }
-#endif
+
   if (argc > 1) {
     fprintf(stderr, "%s: Extra arguments", progname);
+    fprintf (stderr, "\nTry `%s --help' for more information.\n",
+	     kpse_program_name);
+    exit(1);
+  }
+
+  if (argc == 0 || cmd == NONE) {
+    fprintf(stderr, "%s: Missing arguments", progname);
     fprintf (stderr, "\nTry `%s --help' for more information.\n",
 	     kpse_program_name);
     exit(1);
@@ -255,8 +329,16 @@ int fmtutil_opt(int argc, char *argv[])
 /* Reading fmtutil.cnf */
 boolean parse_line(string line)
 {
-  string format, engine, hyphenation, texargs, inifile;
-  string p;
+  string format = NULL, 
+    engine = NULL,
+    hyphenation = NULL,
+    texargs = NULL, 
+    inifile = NULL, 
+    pool = NULL, 
+    tcx = NULL;
+  string p, end;
+
+  end = line + strlen(line);
 
   format = strtok(line, "\t ");
   if (!format || !*format)
@@ -267,46 +349,103 @@ boolean parse_line(string line)
   hyphenation = strtok(NULL, "\t ");
   if (!hyphenation || !*hyphenation)
     return false;
-  texargs = strtok(NULL, "\n\0");
+  texargs = strtok(NULL, " \t");
   if (!texargs || !*texargs) 
     return false;
-  for (p = texargs+strlen(texargs) - 1; 
-       !isspace(*p) && (*p != '*') && (p>=texargs); p--);
-  inifile = ++p;
+  if (strncasecmp(texargs, "nls=", 4) == 0) {
+    pool = texargs+4;
+    if (tcx = strchr(pool, ',')) {
+      *tcx = '\0';
+    }
+    texargs = strtok(NULL, " \t");
+  }
+
+  p = texargs + strlen(texargs);
+  if (p < end && *p == '\0') 
+    *p = ' ';
+
+  /* Get last argument */
+  for (inifile = texargs + strlen(texargs) - 1;
+       isspace(*inifile) && inifile > texargs;
+       inifile--)
+    *inifile = '\0';
+  for ( ; !isspace(*(inifile - 1)) && inifile > texargs; inifile--);
+
+  inifile = (*inifile == '*' ? inifile+1 : inifile);
+
+  fmts[nb_formats].inifile_short = (inifile ? xstrdup(inifile) : NULL);
 
 #if 0
-  if (strcmp(inifile, "pdflatex.ini")== 0) {
-        kpathsea_debug=-1; 
-  }
+  fprintf(stderr, "parse_line : pool = %s, hyphen = %s, tcx = %s, inifile = %s\n", pool, hyphenation, tcx, inifile);
 #endif
   kpse_reset_program_name(format);
-#if 0
-  /* kpathsea 3.3beta5 should correct this */
-  kpse_format_info[kpse_tex_format].cnf_path = kpse_cnf_get("TEXINPUTS");
-#endif
-  if (!kpse_find_file(inifile, kpse_tex_format, false)) {
-    fprintf(stderr, "%s: ini file %s not found\n", cnf_file, inifile);
-    return false;
+  if (STREQ(engine, "mf") || STREQ(engine, "mfw")) {
+    if (!kpse_find_file(inifile, kpse_mf_format, false)) {
+      /* Do not log it : we don't know if it has been requested or not ! */
+      /* sprintf(msg_buf, "%s: ini file %s not found\n", cnf_file, inifile); */
+      /* log_failure(msg_buf); */
+      inifile = NULL;
+    } 
+    fmts[nb_formats].progname = xstrdup(engine);
+    fmts[nb_formats].shortformat = xstrdup(format);
+    fmts[nb_formats].format = concat(format, ".base");
   }
-  kpse_reset_program_name("fmtutil");
-#if 0
-  /* kpathsea 3.3beta5 should correct this */
-  kpse_format_info[kpse_tex_format].cnf_path = kpse_cnf_get("TEXINPUTS");
-  kpathsea_debug=0;
-#endif
-  fmts[nb_formats].progname = xstrdup(format);
-
-  if (STREQ(engine, "etex")
-      || STREQ(engine, "pdfetex")) {
-    fmts[nb_formats].format = concat(format, ".efmt");
+  else if (STREQ(engine, "mpost")) {
+    if (!kpse_find_file(inifile, kpse_mp_format, false)) {
+/*        sprintf(msg_buf, "%s: ini file %s not found\n", cnf_file, inifile); */
+/*        log_failure(msg_buf); */
+      inifile = NULL;
+    } 
+    fmts[nb_formats].progname = xstrdup(engine);
+    fmts[nb_formats].shortformat = xstrdup(format);
+    fmts[nb_formats].format = concat(format, ".mem");
   }
   else {
-    fmts[nb_formats].format = concat(format, ".fmt");
+    if (!kpse_find_file(inifile, kpse_tex_format, false)) {
+/*        sprintf(msg_buf, "%s: ini file %s not found\n", cnf_file, inifile); */
+/*        log_failure(msg_buf); */
+      inifile = NULL;
+    } 
+    fmts[nb_formats].progname = xstrdup(format);
+    fmts[nb_formats].shortformat = xstrdup(format);
+    
+    if (STREQ(engine, "etex")
+	|| STREQ(engine, "pdfetex")) {
+      fmts[nb_formats].format = concat(format, ".efmt");
+    }
+    if (STREQ(engine, "eomega")
+	|| STREQ(engine, "pdfeomega")) {
+      fmts[nb_formats].format = concat(format, ".eoft");
+    }
+    if (STREQ(engine, "omega")
+	|| STREQ(engine, "pdfetex")) {
+      fmts[nb_formats].format = concat(format, ".oft");
+    }
+    else {
+      fmts[nb_formats].format = concat(format, ".fmt");
+    }
   }
+  kpse_reset_program_name(progname);
   fmts[nb_formats].engine = xstrdup(engine);
   fmts[nb_formats].hyphenation = xstrdup(hyphenation);
   fmts[nb_formats].texargs = xstrdup(texargs);
-  fmts[nb_formats].inifile = xstrdup(inifile);
+  fmts[nb_formats].inifile = (inifile ? xstrdup(inifile) : NULL);
+  if (pool == NULL) {
+    fmts[nb_formats].poolbase = NULL;
+    fmts[nb_formats].pool = NULL;
+  }
+  else {
+    fmts[nb_formats].poolbase = xstrdup(pool);
+    fmts[nb_formats].pool = concat(pool, ".pool");
+  }
+  if (tcx == NULL) {
+    fmts[nb_formats].tcx = xstrdup("");
+    fmts[nb_formats].tcxoption = xstrdup("");
+  }
+  else {
+    fmts[nb_formats].tcx = xstrdup(tcx);
+    fmts[nb_formats].tcxoption = concat("-translate-file=",tcx);
+  }
   nb_formats++;
 
   return true;
@@ -316,9 +455,7 @@ void read_fmtutilcnf()
 {
   FILE *f;
   string line;
-#if 0
-  __asm int 3;
-#endif
+
   if (test_file('n', cnf_file) && test_file('r', cnf_file)) {
     f = fopen(cnf_file, "r");
     if (KPSE_DEBUG_P(FMTUTIL_DEBUG)) {
@@ -347,39 +484,44 @@ void read_fmtutilcnf()
   }
 }
 
-/* If non-negative, records the handle to redirect STDOUT
-   in `output_and_cleanup'.  */
-static int redirect_stdout = -1;
-
-/* Record the handle where STDOUT is to be redirected
-   for printing the names of the generated files before we exit.  */
-void record_output_handle(int fd)
-{
-  redirect_stdout = fd;	/* FIXME: cannot be nested! */
-}
-
-void output_and_cleanup(int code)
+void __cdecl output_and_cleanup(int code)
 {
   /* FIXME : what cleanup ? */
+  int count = 0;
+
   if (test_file('d', tmpdir))
     rec_rmdir(tmpdir);
+
+  if (code != 0 && log_failure_msg && *log_failure_msg) {
+    fprintf(stderr, "\
+###############################################################################\n\
+%s: Error! Not all formats have been built successfully.\n\
+Visit the log files in directory\n\
+  %s\n\
+for details.\n\
+###############################################################################\n\
+\n\
+This is a summary of all `failed' messages and warnings:\n\
+%s\n",
+	    kpse_program_name, destdir, log_failure_msg);
+  }
 }
 
-void usage()
+static void usage()
 {
   int i;
   fprintf(stderr, "%s of %s\n", progname, kpathsea_version_string);
   fprintf(stderr, "Fmtutil version %s\n", fmtutil_version_string);
-  fprintf(stderr,usage_msg[0], progname );
+  fprintf(stderr,usage_msg[incarnation][0], progname );
   fputs("\n", stderr);
-  for(i = 1; usage_msg[i]; ++i)
-    fputs(usage_msg[i], stderr);
+  for(i = 1; usage_msg[incarnation][i] != NULL; ++i)
+    fputs(usage_msg[incarnation][i], stderr);
 }
 
 
 int main(int argc, char* argv[])
 {
-  string texinputs;
+  string texinputs, texformats;
 
 #if defined(WIN32)
   /* if _DEBUG is not defined, these macros will result in nothing. */
@@ -388,10 +530,25 @@ int main(int argc, char* argv[])
     linked list, to catch any inadvertent use of freed memory */
    SET_CRT_DEBUG_FIELD( _CRTDBG_DELAY_FREE_MEM_DF );
 #endif
-
-  if (!progname)
-    progname = argv[0];
-  kpse_set_program_name (progname, NULL);
+   output_and_cleanup_function = output_and_cleanup;
+   
+   if (!progname)
+     progname = argv[0];
+   kpse_set_program_name (progname, NULL);
+   
+   if (FILESTRCASEEQ(kpse_program_name, "fmtutil")) {
+     incarnation = FMTUTIL;
+     progname = "fmtutil";
+   }
+   else if (FILESTRCASEEQ(kpse_program_name, "mktexfmt")) {
+     incarnation = MKTEXFMT;
+     progname = "mktexfmt";
+   }
+   else {
+     fprintf(stderr, "This program was incorrectly copied to the name %s\n", 
+	     argv[0]);
+     return 1;
+   }
 
   /* initialize the symbol table */
   init_vars();
@@ -431,6 +588,9 @@ int main(int argc, char* argv[])
   if (cmd == SHOWHYPHEN) {
     exit(show_hyphen_file(arg));
   }
+  else if (cmd == EDIT) {
+    exit(edit_fmtutil_cnf());
+  }
 
   cache_vars();
 
@@ -448,9 +608,28 @@ int main(int argc, char* argv[])
     destdir = concat(getval("VARTEXMF"), "/web2c");
   }
   if (!test_file('d', destdir)) {
-    fprintf(stderr, "%s: format directory `%s' does not exist.\n",
-	    progname, destdir);
-    exit(1);
+    do_makedir(destdir);
+    if (!test_file('d', destdir)) {
+      fprintf(stderr, "%s: format directory `%s' does not exist.\n",
+	      progname, destdir);
+      exit(1);
+    }
+  }
+
+  cwd = xgetcwd();
+  if (test_file('n', cwd)) {
+    /* Fixme : is it enough ? */
+    if (getenv("KPSE_DOT") == NULL) {
+      xputenv("KPSE_DOT", cwd);
+    }
+    texinputs = getval("TEXINPUTS");
+    if (test_file('z', texinputs)) {
+      xputenv("TEXINPUTS", concat(cwd, ENV_SEP_STRING));
+    }
+    else {
+      xputenv("TEXINPUTS", concatn(cwd, ENV_SEP_STRING, 
+				   texinputs, ENV_SEP_STRING, NULL));
+    }
   }
 
   /* Catch signals, so we clean up if the child is interrupted.
@@ -489,26 +668,25 @@ int main(int argc, char* argv[])
   }
   setval("TEMPDIR", tmpdir);
   setval("STDOUT", concat_pathes(tmpdir, "astdout"));
-  setval("KPSE_DOT", cwd = xgetcwd());
-  /* export KPSE_DOT */
-  xputenv("KPSE_DOT", cwd);
-
-#if 0
-  texinputs = getval("TEXINPUTS");
-  if (test_file('z', texinputs)) {
-    xputenv("TEXINPUTS", concat(cwd, ENV_SEP_STRING));
-  }
-  else {
-    xputenv("TEXINPUTS", concatn(cwd, ENV_SEP_STRING, 
-				 texinputs, ENV_SEP_STRING, NULL));
-  }
-#endif
   pushd(tmpdir);
+
+  /* Kludge to get dependency between formats working 
+     in one pass : formats are build in tmpdir before
+     being sent to their final destination. */
+  texformats = concatn(tmpdir, 
+		       ENV_SEP_STRING, 
+		       kpse_var_expand("$TEXFORMATS"), 
+		       ENV_SEP_STRING, 
+		       NULL);
+  xputenv("TEXFORMATS", texformats);
+
   
+#if 0
   if ((fout = fopen(getval("STDOUT"), "w")) == NULL) {
     perror(output);
     mt_exit(1);
   }
+#endif
   
   /* make local pathes absolute */
   if (! kpse_absolute_p(destdir, FALSE) ) {
@@ -538,18 +716,20 @@ int main(int argc, char* argv[])
     errstatus = recreate_by_hyphenfile(arg);
     break;
   }
-#if 0
-  __asm int 3;
-#endif
+
   /* Install the log files and format files */
   process_multiple_files("*.log", move_log);
+  process_multiple_files("*.base", move_fmt);
+  process_multiple_files("*.mem", move_fmt);
   process_multiple_files("*.fmt", move_fmt);
   process_multiple_files("*.efmt", move_fmt);
+  process_multiple_files("*.oft", move_fmt);
+  process_multiple_files("*.eoft", move_fmt);
 
   if (dolinks)
     link_formats();
 
-  mt_exit(errstatus);
+  mt_exit(errstatus != true);
 
 }
 
@@ -564,13 +744,6 @@ void cache_vars()
 {
   setval_default("MT_VARTEXFONTS", expand_var("$VARTEXFONTS"));
   setval_default("MT_TEXMFMAIN", kpse_path_expand("$TEXMFMAIN"));
-#if 0
-  setval_default("MT_MKTEXNAM", kpse_find_file("mktexnam.exe", kpse_web2c_format, false));
-  setval_default("MT_MKTEXNAM_OPT", kpse_find_file("mktexnam.opt", kpse_web2c_format, false));
-  setval_default("MT_MKTEXDIR", kpse_find_file("mktexdir.exe", kpse_web2c_format, false));
-  setval_default("MT_MKTEXDIR_OPT", kpse_find_file("mktexnam.opt", kpse_web2c_format, false));
-  setval_default("MT_MKTEXUPD", kpse_find_file("mktexupd.exe", kpse_web2c_format, false));
-#endif
   setval_default("MT_MKTEX_CNF", kpse_find_file("mktex.cnf", kpse_web2c_format, false));
   setval_default("MT_MKTEX_OPT", kpse_find_file("mktex.opt", kpse_web2c_format, false));
   /* This should give us the ls-R default path */
@@ -579,33 +752,100 @@ void cache_vars()
   setval_default("MT_LSR_PATH", kpse_format_info[kpse_db_format].path);
 }
 
-void do_format(int f)
+int do_format(int f)
 {
-  string cmdfmt = "%s -ini %s=%s -progname=%s %s <nul";
+  string cmdfmt = "%s -ini %s %s=%s -progname=%s %s <nul";
   string fmtswitch;
+  string prgswitch;
+  int ret = 0;
+  
+  /* Do nothing if inifile has not been found */
+  if (fmts[f].inifile == NULL) {
+    sprintf(msg_buf, "%s: ini file %s not found\n", cnf_file, fmts[f].inifile_short);
+    log_failure(msg_buf);
+    return -1;
+  }
 
-  if (FILESTRCASEEQ(fmts[f].engine, "etex")
-      || FILESTRCASEEQ(fmts[f].engine, "pdfetex")) {
+#if 0
+  /* Since we changed the DUMP_OPTION behaviour, we need 
+     to change also the switch to '-jobname'. */
+  if (FILESTRCASEEQ(fmts[f].engine, "mf") 
+      || FILESTRCASEEQ(fmts[f].engine, "mfw")) {
+    fmtswitch = "-base";
+  }
+  else if (FILESTRCASEEQ(fmts[f].engine, "mpost")) {
+    fmtswitch = "-mem";
+  }
+  else if (FILESTRCASEEQ(fmts[f].engine, "etex")
+	   || FILESTRCASEEQ(fmts[f].engine, "pdfetex")) {
     fmtswitch = "-efmt";
   }
   else {
     fmtswitch = "-fmt";
   }
-  if (sprintf(cmd_sys, cmdfmt, fmts[f].engine, fmtswitch, fmts[f].progname,
-	      fmts[f].progname, fmts[f].texargs) > 1023) {
+#else
+  fmtswitch = "-jobname";
+#endif
+
+  prgswitch = fmts[f].progname;
+  /* Kludge for context : avoid to set texmf.cnf parameters for
+	 every cont-?? format. */
+  if (strlen(prgswitch) == strlen("cont-??")
+	  && FILESTRNCASEEQ(prgswitch, "cont-", 5)) {
+	prgswitch = "context";
+  }
+  else if (strlen(prgswitch) == strlen("metafun")
+	  && FILESTRCASEEQ(prgswitch, "metafun")) {
+	prgswitch = "mpost";
+  }
+
+  if (sprintf(cmd_sys, cmdfmt, fmts[f].engine, fmts[f].tcxoption, fmtswitch, fmts[f].shortformat,
+	      prgswitch, fmts[f].texargs) > 1023) {
     fprintf(stderr, "Warning: do_format buffer overrun!\n");
     fprintf(stderr, "no command run.\n");
-    return;
+    return -1;
   }
-  
+
+  if (fmts[f].pool != NULL) {
+    string poolfile;
+    string local_poolfile = concat(fmts[f].engine, ".pool");
+
+    kpse_reset_program_name(fmts[f].engine);
+
+    if (STREQ(fmts[f].engine, "mf") || STREQ(fmts[f].engine, "mfw")) {
+      poolfile = kpse_find_file(fmts[f].pool, kpse_mfpool_format, true);
+    }
+    else if (STREQ(fmts[f].engine, "mpost")) {
+      poolfile = kpse_find_file(fmts[f].pool, kpse_mppool_format, true);
+    }
+    else {
+      poolfile = kpse_find_file(fmts[f].pool, kpse_texpool_format, true);
+    }
+
+    process_multiple_files("*.pool", remove_file);
+    if (test_file('n', poolfile) && test_file('f', poolfile)) {
+      fprintf(stderr, "%s: attempting to create localized format using pool=$pool and tcx=$tcx.\n",
+	      kpse_program_name, fmts[f].poolbase, fmts[f].tcx);
+      catfile(poolfile, local_poolfile, false);
+      xputenv("TEXPOOL", ".");
+    } 
+    kpse_reset_program_name(progname);
+  }
+
   /* run discarding stdout */
   start_redirection(quiet);
 
-  fprintf(stderr, "Running: %s\n", cmd_sys);
+  if (!quiet)
+    fprintf(stdout, "running `%s' ...\n", cmd_sys);
 
-  if (!norebuild && system(cmd_sys) == -1) {
-    fprintf(stderr, "%s: command `%s' failed.\n", progname, cmd_sys);
+  if (!norebuild) {
     unlink(fmts[f].format);
+    ret = system(cmd_sys);
+    if (ret == -1 || !test_file('f', fmts[f].format)) {
+      sprintf(msg_buf, "%s: command `%s' failed.\n", progname, cmd_sys);
+      log_failure(msg_buf);
+      unlink(fmts[f].format);
+    }
   }
 
   pop_fd();
@@ -615,69 +855,172 @@ void do_format(int f)
     to_link[nb_links].dst = fmts[f].progname;
     nb_links++;
   }
+  return ret;
 }
 
 int recreate_all()
 {
-  int i;
+  int i, ret = true;
 
   for (i = 0; i < nb_formats; i++) {
-    do_format(i);
+    if (do_format(i) != 0)
+      ret = false;
   }
 
-  return 0;
+  return ret;
 }
 
 int create_missing()
 {
-  int i;
+  int i, ret = true;
   string destfmt;
 
   for (i = 0; i < nb_formats; i++) {
     destfmt = concat_pathes(destdir, fmts[i].format);
     if (! test_file('f', destfmt)) {
-      do_format(i);
+      if (do_format(i) != 0)
+	ret = false;
     }
     free(destfmt);
   }
-  return 0;
+  return ret;
 }
 
 int create_one_format(string fmtname)
 {
-  int i;
+  int i, ret = true;
+  boolean created = false;
 
   for (i = 0; i < nb_formats; i++) {
-    if (FILESTRCASEEQ(fmtname, fmts[i].progname)) {
-      do_format(i);
-      return 0;
+    if (FILESTRCASEEQ(fmtname, fmts[i].shortformat)) {
+      if (do_format(i) != 0)
+	ret = false;
+      created = true;
+      break;
     }
   }
-  fprintf(stderr, "%s: format %s not found in fmtutil.cnf.\n",
-	  progname, fmtname);
-  return 0;
+
+  if (! created) {
+    fprintf(stderr, "%s: format file %s not found in fmtutil.cnf.\n",
+	    progname, fmtname);
+    ret = false;
+  }
+
+  return ret;
 }
 
 int recreate_by_hyphenfile(string hyphenfile)
 {
-  int i;
+  int i, ret = true;
+  boolean created = false;
 
   for (i = 0; i < nb_formats; i++) {
     if (FILESTRCASEEQ(hyphenfile, fmts[i].hyphenation)) {
-      do_format(i);
-      return 0;
+      if (do_format(i) != 0)
+	ret = false;
+      created = true;
+      break;
     }
   }
-  return 0;
+
+  if (! created) {
+    fprintf(stderr, "%s: hyphen file %s not found in fmtutil.cnf.\n",
+	    progname, hyphenfile);
+    ret = false;
+  }
+
+  return ret;
+}
+
+int enable_format_file(string format)
+{
+  FILE *fin, *fout;
+  char line[256];
+  string bak_file = concat(cnf_file, ".bak");
+
+  fin = fopen(cnf_file, "r");
+  if (! fin) {
+    perror(cnf_file);
+    return false;
+  }
+  fout = fopen (bak_file, "w");
+  if (! fout) {
+    perror(bak_file);
+    return false;
+  }
+  while (fgets(line, sizeof(line), fin)) {
+    if (strncmp(line, "#! ", 3) == 0
+	&& strncmp(line+3, format, strlen(format)) == 0
+	&& isspace(line+3+strlen(format))) {
+      fputs(line + 3, fout);
+    }
+    else {
+      fputs(line, fout);
+    }
+  }
+  fclose(fin);
+  fclose(fout);
+  mvfile(bak_file, cnf_file);
+  free(bak_file);
+  return true;
+}
+
+int disable_format_file(string format)
+{
+  FILE *fin, *fout;
+  char line[256];
+  string bak_file = concat(cnf_file, ".bak");
+
+  fin = fopen(cnf_file, "r");
+  if (! fin) {
+    perror(cnf_file);
+    return false;
+  }
+  fout = fopen (bak_file, "w");
+  if (! fout) {
+    perror(bak_file);
+    return false;
+  }
+  while (fgets(line, sizeof(line), fin)) {
+    if (strncmp(line, format, strlen(format)) == 0
+	&& isspace(line + strlen(format))) {
+      fputs("#! ", fout);
+    }
+    fputs(line, fout);
+  }
+  fclose(fin);
+  fclose(fout);
+  mvfile(bak_file, cnf_file);
+  free(bak_file);
+  return true;
+}
+
+int list_config_file()
+{
+  FILE *fin;
+  char line[256];
+
+  fin = fopen(cnf_file, "r");
+  if (! fin) {
+    perror(cnf_file);
+    return false;
+  }
+  while (fgets(line, sizeof(line), fin)) {
+    if (isalpha(line[0])
+	|| strncmp(line, "#! ", 3) == 0)
+      fputs(line, stdout);
+  }
+  fclose(fin);
+  return true;
 }
 
 int show_hyphen_file(string format)
 {
-  int i;
+  int i, ret;
   string hyphenfile;
 
   for (i = 0; i < nb_formats; i++) {
-    if (FILESTRCASEEQ(format, fmts[i].progname)) {
+    if (FILESTRCASEEQ(format, fmts[i].shortformat)) {
       if (STREQ(fmts[i].hyphenation, "-")) {
 	printf("%s\n", fmts[i].hyphenation);
 	return 0;
@@ -688,15 +1031,70 @@ int show_hyphen_file(string format)
 	    = kpse_find_file(fmts[i].hyphenation, kpse_tex_format, false))) {
 	fprintf(stderr, "%s: hyphen file %s not found\n", progname, 
 		fmts[i].hyphenation);
-	return -1;
+	ret = -1;
       }
-      printf("%s\n", hyphenfile);
-      free(hyphenfile);
-      return 0;
+      else {
+	printf("%s\n", hyphenfile);
+	free(hyphenfile);
+	ret = 0;
+      }
+      kpse_reset_program_name(progname);
+      return ret;
     }
   }
   fprintf(stderr, "no info for format %s\n", format);
   return 0;
+}
+
+int edit_fmtutil_cnf()
+{
+  string editor = kpse_var_expand("$EDITOR");
+  string command, p;
+  int ret;
+
+  if (test_file('z', editor)) {
+    editor = kpse_var_expand("$VISUAL");
+    if (test_file('z', editor)) {
+      editor = kpse_var_expand("$TEXEDIT");
+      if (test_file('z', editor)) {
+	editor = "wordpad";
+      }
+    }
+  }
+   
+  p = editor;
+
+  while (isspace(*p++));
+  if (*p == '\"') {
+    do {
+      p++;
+    } while (*p != '\"' && *p != '\0');
+    if (*p == '\"') {
+      *(p+1) = '\0';
+    }
+    else {
+      fprintf(stderr, "%s: unterminated quoted string for editor specification.\n",
+	      progname);
+      exit(1);
+    }
+  }
+  else {
+    do {
+      p++;
+    } while (!isspace(*p) && *p != '\0');
+    *p = '\0';
+  }
+  
+  command = concat3(editor, " ", cnf_file);
+#ifdef WIN32
+  ret = win32_system(command, true);
+#else
+  ret = system (command);
+#endif
+  if (ret != 0)
+    fprintf (stderr, "! Trouble executing `%s'.\n", command);
+
+  return ret;
 }
 
 /*
@@ -718,7 +1116,8 @@ void process_multiple_files(string filespec, process_fn fn)
   strcpy(path, filespec);
 
   /* If it is a directory, then get all the files there */
-  if (test_file('d', path)) {
+  if (!(strrchr(path, '*') || strrchr(path, '?'))
+      && test_file('d', path)) {
     path_len = strlen(path);
     strcat(path, "/*");
   }
@@ -767,6 +1166,11 @@ void process_multiple_files(string filespec, process_fn fn)
 
 }
 
+void remove_file(string filename)
+{
+  unlink(filename);
+}
+
 void move_log(string logname)
 {
   string logdest;
@@ -780,25 +1184,68 @@ void move_fmt(string fmtname)
 {
   string fmtdest;
   string texfmt, plainfmt;
+  char cmd[4096];
+  string cmdfmt = "mktexupd \"%s\" %s";
+
   fmtdest = concat3(destdir, DIR_SEP_STRING, fmtname);
   unlink(fmtdest);
   if (KPSE_DEBUG_P(FMTUTIL_DEBUG)) {
     fprintf(stderr, "Moving %s to %s\n", fmtname, fmtdest);
   }
   mvfile(fmtname, fmtdest);
+  fprintf(stderr, "%s: %s successfully generated.\n", progname, fmtdest);
+  sprintf(cmd, cmdfmt, destdir, fmtname);
+#if 1
+  if (KPSE_DEBUG_P(FMTUTIL_DEBUG)) {
+    fprintf(stderr, "Calling system(%s)\n", cmd);
+  }
+#endif
+  system(cmd);
+  /* if we have been called to build a format at runtime */
+  if (incarnation == MKTEXFMT) {
+    fputs(fmtdest, stdout);
+  }
   free(fmtdest);
+
   texfmt = concat3(destdir, DIR_SEP_STRING, "tex.fmt");
   plainfmt = concat3(destdir, DIR_SEP_STRING, "plain.fmt");
   if (test_file('f', texfmt) && !test_file('f', plainfmt)) {
     catfile(texfmt, plainfmt, FALSE);
+    sprintf(cmd, cmdfmt, destdir, "plain.fmt");
+    system(cmd);
   }
   free(texfmt);
+  free(plainfmt);
+
   texfmt = concat3(destdir, DIR_SEP_STRING, "tex.efmt");
   plainfmt = concat3(destdir, DIR_SEP_STRING, "plain.efmt");
   if (test_file('f', texfmt) && !test_file('f', plainfmt)) {
     catfile(texfmt, plainfmt, FALSE);
+    sprintf(cmd, cmdfmt, destdir, "plain.efmt");
+    system(cmd);
   }
   free(texfmt);
+  free(plainfmt);
+
+  texfmt = concat3(destdir, DIR_SEP_STRING, "mf.base");
+  plainfmt = concat3(destdir, DIR_SEP_STRING, "plain.base");
+  if (test_file('f', texfmt) && !test_file('f', plainfmt)) {
+    catfile(texfmt, plainfmt, FALSE);
+    sprintf(cmd, cmdfmt, destdir, "plain.base");
+    system(cmd);
+  }
+  free(texfmt);
+  free(plainfmt);
+
+  texfmt = concat3(destdir, DIR_SEP_STRING, "mpost.mem");
+  plainfmt = concat3(destdir, DIR_SEP_STRING, "plain.mem");
+  if (test_file('f', texfmt) && !test_file('f', plainfmt)) {
+    catfile(texfmt, plainfmt, FALSE);
+    sprintf(cmd, cmdfmt, destdir, "plain.mem");
+    system(cmd);
+  }
+  free(texfmt);
+  free(plainfmt);
 }
 
 void link_formats()

@@ -1,5 +1,4 @@
-This is Info file web2c.info, produced by Makeinfo version 1.68 from
-the input file web2c.texi.
+This is web2c.info, produced by makeinfo version 4.3 from web2c.texi.
 
 INFO-DIR-SECTION TeX
 START-INFO-DIR-ENTRY
@@ -41,7 +40,7 @@ END-INFO-DIR-ENTRY
   This file documents the installation and use of the programs in Web2c,
 an implementation of Donald Knuth's TeX system.
 
-  Copyright (C) 1996, 97 K. Berry & O. Weber.
+  Copyright (C) 1996-2002 K. Berry & O. Weber.
 
   Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -65,7 +64,7 @@ Web2c
 
   This document describes how to install and use the programs in the
 Web2c implementation of the TeX system, especially for Unix systems.  It
-corresponds to Web2c version 7.3.1, released in May 1999.
+corresponds to Web2c version 7.4.5, released in January 2003.
 
 * Menu:
 
@@ -89,8 +88,8 @@ File: web2c.info,  Node: Introduction,  Next: Installation,  Prev: Top,  Up: Top
 Introduction
 ************
 
-  This manual corresponds to version 7.3.1 of Web2c, released in
-May 1999.
+  This manual corresponds to version 7.4.5 of Web2c, released in
+January 2003.
 
   "Web2c" is the name of a TeX implementation, originally for Unix, but
 now also running under DOS, Amiga, and other operating systems. By "TeX
@@ -114,14 +113,14 @@ Web2c.)  Different parts of the Web2c distribution have different
 licensing terms, however, reflecting the different circumstances of
 their creation; consult each source file for exact details.  The main
 practical implication for redistributors of Web2c is that the
-executables are covered by the GNU Public License, and therefore anyone
-who gets a binary distribution must also get the sources, as explained
-by the terms of the GPL (*note Copying: (kpathsea)Copying.). The GPL
-covers the Web2c executables, including `tex', because the Free
-Software Foundation sponsored the initial development of the Kpathsea
-library that Web2c uses.  The basic source files from Stanford, however,
-have their own copyright terms or are in the public domain, and are not
-covered by the GPL.
+executables are covered by the GNU General Public License, and
+therefore anyone who gets a binary distribution must also get the
+sources, as explained by the terms of the GPL (*note Copying:
+(kpathsea)Copying.). The GPL covers the Web2c executables, including
+`tex', because the Free Software Foundation sponsored the initial
+development of the Kpathsea library that Web2c uses.  The basic source
+files from Stanford, however, have their own copyright terms or are in
+the public domain, and are not covered by the GPL.
 
   History: Tomas Rokicki originated the TeX-to-C system in 1987,
 working from the first change files for TeX under Unix, which were done
@@ -173,7 +172,7 @@ such yourself.  And of course individual users can do the same.
   For solutions to common installation problems and information on how
 to report a bug, see the file `kpathsea/BUGS' (*note Bugs:
 (kpathsea)Bugs.).  See also the Web2c home page,
-`http://www.tug.org/web2c'.
+<http://www.tug.org/web2c>.
 
   Points worth repeating:
 
@@ -187,9 +186,10 @@ to report a bug, see the file `kpathsea/BUGS' (*note Bugs:
    * Some Web2c features are enabled or disabled at `configure' time,
      as described in the first section below.
 
+
 * Menu:
 
-* configure options::           Especially -with and -enable.
+* configure options::           Especially --with and --enable.
 * Compile-time options::        Unusual -D's.
 * Additional targets::		Breaking down the task.
 * Triptrap::                    Running the torture tests.
@@ -311,7 +311,7 @@ distribution (the one containing `kpathsea/' and `web2c/'), or in the
 
 `formats'
 `install-formats'
-     Make or install all the memory dumps (*note Memory dumps::.).  By
+     Make or install all the memory dumps (*note Memory dumps::).  By
      default, the standard plain formats plus `latex.fmt' are made.  You
      can add other formats by redefining the `fmts', `bases', and
      `mems' variables.  See the top of `web2c/Makefile' for the
@@ -435,8 +435,8 @@ program, so we describe all those pieces together, here.
 
 * Menu:
 
-* Option conventions::   Order doesn't matter, - or -, = or ` ' for values.
-* Common options::       -help -version -verbose, and TeX/MF/MP options.
+* Option conventions::   Order doesn't matter, -- or -, = or ` ' for values.
+* Common options::       --help --version --verbose, and TeX/MF/MP options.
 * Path searching::       Features of the common path searching library.
 * Output file location:: TEXMFOUTPUT allows output in places other than `.'.
 * Three programs::       TeX, Metafont, and MetaPost have a lot in common.
@@ -510,7 +510,7 @@ here.
 
 `-ini'
      Enable the "initial" form of the program (*note Initial and
-     virgin::.).  This is implicitly set if the program name is `initex'
+     virgin::).  This is implicitly set if the program name is `initex'
      resp. `inimf' resp. `inimpost'.
 
 `-interaction=STRING'
@@ -525,8 +525,16 @@ here.
      determine the name of the memory dump file read (`fmt' for TeX,
      `base' for Metafont, `mem' for MetaPost).  *Note Memory dumps::.
      Also sets the program name to DUMPNAME if no `-progname' option
-     was given.  When creating a dump, this option will also set the
-     name of the dump file.
+     was given.
+
+`-jobname=STRING'
+     Set the job name to STRING, instead of deriving it from the name
+     of the input file.
+
+`-parse-first-line'
+     Check whether the first line of the main input file starts with
+     `%&', and parse it if it does.  This line can be used specify the
+     format and/or a TCX file.
 
 `-progname=STRING'
      Set program (and memory dump) name to STRING.  This may affect the
@@ -535,12 +543,27 @@ here.
      making a link named STRING to the binary and then invoking the
      binary under that name.  *Note Memory dumps::.
 
+`-recorder'
+     Enable the filename recorder.  This makes the program save a list
+     of the files opened into a file with extension `.fls'.  For Omega,
+     this option is always on, and the file has extension `.ofl'.
+
 `-translate-file=TCXFILE'
      Use TCXFILE to define which characters are printable and
      translations between the internal and external character sets.
      Moreover, TCXFILE can be explicitly declared in  the first line of
      the main input file `%& -translate-file=TCXFILE'.  This is the
      recommended method for portability reasons.  *Note TCX files::.
+
+`-file-line-error-style'
+     Change the way error messages are printed. The alternate style
+     looks like error messages from many compilers and is easier to
+     parse for some editors that drive TeX compilers.
+
+`-oem'
+     This option is specific to win32. When used, TeX engines will use
+     the OEM code page rather than the ANSI one to display their
+     messages.
 
 
 File: web2c.info,  Node: Path searching,  Next: Output file location,  Prev: Common options,  Up: Commonalities
@@ -625,7 +648,7 @@ otherwise, the virgin form is used.
 
   The "virgin" form is the one generally invoked for production use.
 The first thing it does is read a memory dump (*note Determining the
-memory dump to use::.), and then proceeds on with the main job.
+memory dump to use::), and then proceeds on with the main job.
 
   The "initial" form is generally used only to create memory dumps (see
 the next section).  It starts up more slowly than the virgin form,
@@ -655,7 +678,7 @@ and MetaPost to suicide with a `SIGQUIT' on an input filename of
 `HackyInputFileNameForCoreDump.tex' (all three programs use the `.tex'
 suffix). This produces a memory dump of the running executable in a
 file `core'.  (This is unrelated to the standard memory dump feature in
-these programs; *note Memory dumps::.).
+these programs; *note Memory dumps::).
 
   You don't actually need to do this to produce a core dump.  Just
 typing your quit character (usually <CTRL-\>) when the program is
@@ -701,7 +724,7 @@ Creating memory dumps
   The programs all create memory dumps in slightly idiosyncratic
 (thought substantially similar) way, so we describe the details in
 separate sections (references below).  The basic idea is to run the
-initial version of the program (*note Initial and virgin::.), read the
+initial version of the program (*note Initial and virgin::), read the
 source file to define the macros, and then execute the `\dump'
 primitive.
 
@@ -733,7 +756,7 @@ File: web2c.info,  Node: Determining the memory dump to use,  Next: Hardware and
 Determining the memory dump to use
 ..................................
 
-  The virgin form (*note Initial and virgin::.) of each program always
+  The virgin form (*note Initial and virgin::) of each program always
 reads a memory dump before processing normal source input.  All three
 programs determine the memory dump to use in the same way:
 
@@ -754,7 +777,7 @@ programs determine the memory dump to use in the same way:
 
      The first line of the main input file can also specify which
      character translation file is to be used:
-     `%&-translate-file=TCXFILE' (*note TCX files::.).
+     `%&-translate-file=TCXFILE' (*note TCX files::).
 
      These two roles can be combined: `%&DUMP -translate-file=TCXFILE'.
      If this is done, the name of the dump must be given first.
@@ -803,7 +826,7 @@ time. So don't be alarmed by just a few bytes difference.
 here is a little C program to tell you. (The `configure' script
 contains a similar program.)  This is from the book `C: A Reference
 Manual', by Samuel P. Harbison and Guy L. Steele Jr. (*note
-References::.).
+References::).
 
      main ()
      {
@@ -909,7 +932,7 @@ device-independent (DVI) file (and then translate the DVI file to the
 commands for a particular output device).  This approach has both
 considerable disadvantages and considerable advantages.  For a complete
 description of the TeX language, see `The TeXbook' (*note
-References::.).  Many other books on TeX, introductory and otherwise,
+References::).  Many other books on TeX, introductory and otherwise,
 are available.
 
 * Menu:
@@ -932,11 +955,11 @@ File: web2c.info,  Node: tex invocation,  Next: initex invocation,  Up: TeX
 and outputs a corresponding device-independent representation of the
 typeset document.  This section merely describes the options available
 in the Web2c implementation.  For a complete description of the TeX
-typesetting language, see `The TeXbook' (*note References::.).
+typesetting language, see `The TeXbook' (*note References::).
 
   TeX, Metafont, and MetaPost process the command line (described here)
 and determine their memory dump (fmt) file in the same way (*note
-Memory dumps::.).  Synopses:
+Memory dumps::).  Synopses:
 
      tex [OPTION]... [TEXNAME[.tex]] [TEX-COMMANDS]
      tex [OPTION]... \FIRST-LINE
@@ -996,7 +1019,7 @@ function `openoutnameok' in `web2c/lib/texmfmp.c' is intended to
 suffice.)
 
   The program accepts the following options, as well as the standard
-`-help' and `-version' (*note Common options::.):
+`-help' and `-version' (*note Common options::):
 `-kpathsea-debug=NUMBER'
 `-ini'
 `-fmt=FMTNAME'
@@ -1021,7 +1044,7 @@ suffice.)
      only values that make sense for FILETYPE are `tex' and `tfm',
 
 `-mltex'
-     If `INITEX' (*note Initial and virgin::.), enable MLTeX extensions
+     If `INITEX' (*note Initial and virgin::), enable MLTeX extensions
      such as `\charsubdef'.  Implicitly set if the program name is
      `mltex'.  *Note MLTeX: MLTeX.
 
@@ -1048,6 +1071,40 @@ suffice.)
      administrator wish to implement more stringent rules on what can
      be executed, you will need to modify `tex.ch'.)
 
+`-src-specials'
+`-src-specials=STRING'
+     This option makes TeX output specific source information using
+     `\special' commands in the DVI file. These `\special' track the
+     current file name and line number.
+
+     Using the first form of this option, the `\special' are inserted
+     automatically.
+
+     In the second form of the option, STRING is a comma separated list
+     of the following values: `cr', `display', `hbox', `math', `par',
+     `parend', `vbox'. You can use this list to specify where you want
+     TeX to output such commands. By example, `-src-specials=cr,math'
+     will output source information every line and every math formula.
+
+     These commands  can  be used with  the  appropriate DVI viewer and
+     text editor to switch from the current position in the editor to
+     the same position in the viewer and back from the viewer to the
+     editor.
+
+     Note that this option works by inserting `\special' commands into
+     the token stream, and that these additional tokens can in
+     principle be recovered by the right macros.  If you run across a
+     case, let us know, because this counts as a bug.  However, these
+     bugs are very hard to fix without making significant changes to
+     TeX, so please don't count on them being fixed.
+
+     Redefining `\special' will not affect the functioning of this
+     option.  The commands we insert into the token stream have been
+     hard-coded to always be the `\special' primitive.
+
+     Also note that TeX does not pass the trip test when this option is
+     enabled.
+
 
 File: web2c.info,  Node: initex invocation,  Next: virtex invocation,  Prev: tex invocation,  Up: TeX
 
@@ -1056,16 +1113,15 @@ File: web2c.info,  Node: initex invocation,  Next: virtex invocation,  Prev: tex
 
   `initex' is the "initial" form of TeX, which does lengthy
 initializations avoided by the "virgin" (`vir') form, so as to be
-capable of dumping `.fmt' files (*note Memory dumps::.).  For a
-detailed comparison of virgin and initial forms, *note Initial and
-virgin::..
+capable of dumping `.fmt' files (*note Memory dumps::).  For a detailed
+comparison of virgin and initial forms, *note Initial and virgin::.
 
-  For a list of options and other information, *note tex invocation::..
+  For a list of options and other information, *note tex invocation::.
 
   Unlike Metafont and MetaPost, many format files are commonly used with
 TeX.  The standard one implementing the features described in the
 `TeXbook' is `plain.fmt', also known as `tex.fmt' (again, *note Memory
-dumps::.).  It is created by default during installation, but you can
+dumps::).  It is created by default during installation, but you can
 also do so by hand if necessary (e.g., if an update to `plain.tex' is
 issued):
      initex '\input plain \dump'
@@ -1089,7 +1145,7 @@ File: web2c.info,  Node: virtex invocation,  Next: Formats,  Prev: initex invoca
   `virtex' is the "virgin" form of TeX, which avoids the lengthy
 initializations done by the "initial" (`ini') form, and is thus what is
 generally used for production work.  For a detailed comparison of
-virgin and initial forms, *note Initial and virgin::..
+virgin and initial forms, *note Initial and virgin::.
 
   For a list of options and other information, see *Note tex
 invocation::.
@@ -1101,8 +1157,8 @@ Formats
 =======
 
   TeX "formats" are large collections of macros, possibly dumped into a
-`.fmt' file (*note Memory dumps::.) by `initex' (*note initex
-invocation::.).  A number of formats are in reasonably widespread use,
+`.fmt' file (*note Memory dumps::) by `initex' (*note initex
+invocation::).  A number of formats are in reasonably widespread use,
 and the Web2c Makefile has targets to make the versions current at the
 time of release.  You can change which formats are automatically built
 by setting the `fmts' Make variable; by default, only the `plain' and
@@ -1111,7 +1167,7 @@ by setting the `fmts' Make variable; by default, only the `plain' and
   You can get the latest versions of most of these formats from the CTAN
 archives in subdirectories of `CTAN:/macros' (for CTAN info, *note
 unixtex.ftp: (kpathsea)unixtex.ftp.).  The archive
-`ftp://ftp.tug.org/tex/lib.tar.gz' (also available from CTAN) contains
+<ftp://ftp.tug.org/tex/lib.tar.gz> (also available from CTAN) contains
 most of these formats (although perhaps not the absolute latest
 version), among other things.
 
@@ -1195,7 +1251,7 @@ described below will be enabled.
   Generally, you use special macro files to create an MLTeX `.fmt'
 file.  See:
      CTAN:/systems/generic/mltex
-     `ftp://ftp.univ-rennes1.fr/pub/GUTenberg/french/'
+     <ftp://ftp.univ-rennes1.fr/pub/GUTenberg/french/>
 
   The sections below describe the two new primitives that MLTeX defines.
 Aside from these, MLTeX is completely compatible with standard TeX.
@@ -1204,70 +1260,4 @@ Aside from these, MLTeX is completely compatible with standard TeX.
 
 * \charsubdef::                 Character substitution definitions.
 * \tracingcharsubdef::          Tracing substitutions.
-
-
-File: web2c.info,  Node: \charsubdef,  Next: \tracingcharsubdef,  Up: MLTeX
-
-`\charsubdef': Character substitutions
-......................................
-
-  The most important primitive MLTeX adds is `\charsubdef', used in a
-way reminiscent of `\chardef':
-     \charsubdef COMPOSITE [=] ACCENT BASE
-
-  Each of COMPOSITE, ACCENT, and BASE are font glyph numbers, expressed
-in the usual TeX syntax: `\e symbolically, '145 for octal, "65 for hex,
-101 for decimal.
-
-  MLTeX's `\charsubdef' declares how to construct an accented character
-glyph (not necessarily existing in the current font) using two
-character glyphs (that do exist).  Thus it defines whether a character
-glyph code, either typed as a single character or using the `\char'
-primitive, will be mapped to a font glyph or to an `\accent' glyph
-construction.
-
-  For example, if you assume glyph code 138 (decimal) for an
-e-circumflex and you are using the Computer Modern fonts, which have
-the circumflex accent in position 18 and lowercase `e' in the usual
-ASCII position 101 decimal, you would use `\charsubdef' as follows:
-
-     \charsubdef 138 = 18 101
-
-  For the plain TeX format to make use of this substitution, you have
-to redefine the circumflex accent macro `\^' in such a way that if its
-argument is character `e' the expansion `\char138 ' is used instead of
-`\accent18 e'.  Similar `\charsubdef' declaration and macro
-redefinitions have to be done for all other accented characters.
-
-  To disable a previous `\charsubdef C', redefine C as a pair of zeros.
-For example:
-     \charsubdef '321 = 0 0  % disable N tilde
-
-(Octal '321 is the ISO Latin-1 value for the Spanish N tilde.)
-
-  `\charsubdef' commands should only be given once.  Although in
-principle you can use `\charsubdef' at any time, the result is
-unspecified.  If `\charsubdef' declarations are changed, usually either
-incorrect character dimensions will be used or MLTeX will output
-missing character warnings.  (The substitution of a `\charsubdef' is
-used by TeX when appending the character node to the current horizontal
-list, to compute the width of a horizontal box when the box gets
-packed, and when building the `\accent' construction at
-`\shipout'-time.  In summary, the substitution is accessed often, so
-changing it is not desirable, nor generally useful.)
-
-
-File: web2c.info,  Node: \tracingcharsubdef,  Prev: \charsubdef,  Up: MLTeX
-
-`\tracingcharsubdef': Substitution diagnostics
-..............................................
-
-  To help diagnose problems with `\charsubdef', MLTeX provides a new
-primitive parameter, `\tracingcharsubdef'.  If positive, every use of
-`\charsubdef' will be reported.  This can help track down when a
-character is redefined.
-
-  In addition, if the TeX parameter `\tracinglostchars' is 100 or more,
-the character substitutions actually performed at `\shipout'-time will
-be recorded.
 
