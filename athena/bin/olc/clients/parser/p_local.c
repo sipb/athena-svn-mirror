@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *	$Id: p_local.c,v 1.12 1991-09-10 11:29:40 lwvanels Exp $
+ *	$Id: p_local.c,v 1.13 1992-02-06 16:49:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.12 1991-09-10 11:29:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.13 1992-02-06 16:49:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -82,7 +82,8 @@ do_quit(arguments)
 	    }
 	  if (status)
 #endif
-	    printf("Warning: you are still active in OLC.  You may be signed on,\nconnected to someone, or have a question of your own in the queue.\n");
+	    printf("Warning: you are still active in %s.  You may be signed on,\n", OLC_SERVICE_NAME);
+            printf("connected to someone, or have a question of your own in the queue.\n");
 	}
 
       free(list);

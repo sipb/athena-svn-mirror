@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *	$Id: t_connect.c,v 1.15 1991-01-03 15:36:45 lwvanels Exp $
+ *	$Id: t_connect.c,v 1.16 1992-02-06 16:50:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.15 1991-01-03 15:36:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.16 1992-02-06 16:50:33 lwvanels Exp $";
 #endif
 #endif
 
@@ -51,7 +51,7 @@ t_grab(Request,flag,hold)
   switch (status)
     {
     case GRAB_ME:
-      fprintf(stderr, "You cannot grab yourself in OLC.\n");
+      fprintf(stderr, "You cannot grab yourself in %s.\n",OLC_SERVICE_NAME);
       status = NO_ACTION;
       break;
 
