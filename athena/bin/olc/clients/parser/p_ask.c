@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v $
- *	$Id: p_ask.c,v 1.12 1992-02-06 16:23:00 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_ask.c,v 1.13 1997-04-30 17:59:16 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.12 1992-02-06 16:23:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.13 1997-04-30 17:59:16 ghudson Exp $";
 #endif
 #endif
 
@@ -81,7 +81,7 @@ do_olc_ask(arguments)
 	    return(ERROR);
 	  if(arguments == (char **) NULL) 
 	    {
-	      if(OLC)
+	      if(client_is_user_client())
 		printf("Usage is: \task [-topic <topic>]\n");
 	      else
 		{
@@ -102,15 +102,16 @@ do_olc_ask(arguments)
     t_input_topic(&Request,topic,TRUE);
 
   status = t_ask(&Request,topic,file);
-  if(OLC)
+  if(client_is_user_client())
     {
-      printf("\nSome other useful %s commands are: \n\n", OLC_SERVICE_NAME);
+      printf("\nSome other useful %s commands are: \n\n", client_service_name());
       printf("\tsend  - send a message\n");
       printf("\tshow  - show new messages\n");
       printf("\tdone  - mark your question resolved\n");
       printf("\tquit  - exit %s, leaving your question active\n",
-	     OLC_SERVICE_NAME);
-      printf("\thours - Find hours %s is staffed\n", OLC_SERVICE_NAME);
+	     client_service_name());
+      if (client_has_hours())
+	printf("\thours - Find hours %s is staffed\n", client_service_name());
       printf("\t?     - see entire listing of commands\n");
     }
   return(status);
