@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.6 1991-07-23 15:13:57 lwvanels Exp $
+# $Id: sendbug.sh,v 1.7 1991-07-23 15:58:59 probe Exp $
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
 bugs_address=bugs@Athena.MIT.EDU
@@ -30,7 +30,7 @@ machtype=`machtype`
 cpu=`machtype -c`
 hostname=`hostname`
 dpy=`machtype -d`
-/usr/ucb/fmt << EOF
+fmt << EOF
 Please enter the subject for this bug report.  (Generally, this means the
 name of the program or locker with which you are having problems.)
 EOF
@@ -70,8 +70,8 @@ if [ -r $HOME/.mh_profile ]; then
 	exit 0
 fi
 # not using MH; run the editor, and send, ourselves.
-if [ "x$EDITOR" = "x" ]; then
-	EDITOR=/usr/athena/bin/emacs ; export EDITOR
+if [ "${EDITOR}" = "" ]; then
+	EDITOR=emacs ; export EDITOR
 fi
 
 $EDITOR $report_file
