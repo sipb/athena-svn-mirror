@@ -1,5 +1,5 @@
 /* 
- * $Id: rk_krb.c,v 1.2 1990-07-16 14:15:16 qjb Exp $
+ * $Id: rk_krb.c,v 1.3 1990-07-17 13:22:12 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
  * $Author: qjb $
  *
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.2 1990-07-16 14:15:16 qjb Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.3 1990-07-17 13:22:12 qjb Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -19,6 +19,11 @@ static char *rcsid = "$Id: rk_krb.c,v 1.2 1990-07-16 14:15:16 qjb Exp $";
 #include <netinet/in.h>
 #include <krb.h>
 #include <des.h>
+
+#ifdef _SYSV_SOURCE
+#include <sys/termio.h>
+#include <sys/ttychars.h>
+#endif /* SYSV */
 
 #include <rkinit.h>
 #include <rkinit_err.h>
@@ -48,7 +53,11 @@ int rki_key_proc(user, instance, realm, arg, key)
 
 {
     rkinit_intkt_info *rii = (rkinit_intkt_info *)arg;
+#ifdef _SYSV_SOURCE
+    struct termio ttyb;
+#else
     struct sgttyb ttyb;		/* For turning off echo */
+#endif /* SYSV */
     char password[BUFSIZ];
 
     SBCLEAR(ttyb);
@@ -68,9 +77,15 @@ int rki_key_proc(user, instance, realm, arg, key)
 
     fflush(stdout);
 
+#ifndef _SYSV_SOURCE
     ioctl(0, TIOCGETP, &ttyb);
     ttyb.sg_flags &= ~ECHO;
     ioctl(0, TIOCSETP, &ttyb);
+#else
+    ioctl(0, TCGETA, &ttyb);
+    ttyb.c_lflag &= ~ECHO;
+    ioctl(0, TCSETA, &ttyb);
+#endif /* SYSV */
 
     bzero(password, sizeof(password));
     if (read(0, password, sizeof(password)) == -1) {
@@ -82,8 +97,13 @@ int rki_key_proc(user, instance, realm, arg, key)
 	exit(1);
     }
 
+#ifndef _SYSV_SOURCE
     ttyb.sg_flags |= ECHO;
     ioctl(0, TIOCSETP, &ttyb);
+#else
+    ttyb.c_lflag |= ECHO;
+    ioctl(0, TCSETA, &ttyb);
+#endif /* SYSV */
 
     printf("\n");
 
