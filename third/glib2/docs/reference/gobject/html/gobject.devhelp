@@ -610,12 +610,12 @@
     <function name="g_value_array_remove ()" link="gobject-Value-arrays.html#g-value-array-remove"/>
     <function name="g_value_array_sort ()" link="gobject-Value-arrays.html#g-value-array-sort"/>
     <function name="g_value_array_sort_with_data ()" link="gobject-Value-arrays.html#g-value-array-sort-with-data"/>
-    <function name="Options" link="glib-mkenums.html#id2741962"/>
-    <function name="Production text substitutions" link="glib-mkenums.html#id2742231"/>
-    <function name="Trigraph extensions" link="glib-mkenums.html#id2742400"/>
-    <function name="Options" link="glib-genmarshal.html#id2743260"/>
-    <function name="Marshaller list format" link="glib-genmarshal.html#id2743396"/>
-    <function name="Parameter types" link="glib-genmarshal.html#id2743468"/>
-    <function name="Options" link="gobject-query.html#id2744768"/>
+    <function name="Options" link="glib-mkenums.html#id3022966"/>
+    <function name="Production text substitutions" link="glib-mkenums.html#id3023234"/>
+    <function name="Trigraph extensions" link="glib-mkenums.html#id3023403"/>
+    <function name="Options" link="glib-genmarshal.html#id3024263"/>
+    <function name="Marshaller list format" link="glib-genmarshal.html#id3024399"/>
+    <function name="Parameter types" link="glib-genmarshal.html#id3024471"/>
+    <function name="Options" link="gobject-query.html#id3025771"/>
   </functions>
 </book>

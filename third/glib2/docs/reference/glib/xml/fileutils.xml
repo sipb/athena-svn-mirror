@@ -291,7 +291,7 @@ error domains.
 } GFileTest;
 </programlisting>
 <para>
-A test to perform an a file using <link linkend="g-file-test"><function>g_file_test()</function></link>.
+A test to perform on a file using <link linkend="g-file-test"><function>g_file_test()</function></link>.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>G_FILE_TEST_IS_REGULAR</literal></term>

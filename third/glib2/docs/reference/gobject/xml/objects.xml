@@ -1389,11 +1389,11 @@ Gets a property of an object.
 </para>
 <para>
 In general, a copy is made of the property contents and the caller is
-responsible for freeing the memory in the appropriate manner for the type, 
-for instance by calling <link linkend="g-free"><function>g_free()</function></link> or <link linkend="g-object-unref"><function>g_object_unref()</function></link>. 
+responsible for freeing the memory by calling <link linkend="g-value-unset"><function>g_value_unset()</function></link>.
 </para>
 <para>
-See <link linkend="g-object-get"><function>g_object_get()</function></link>.
+Note that <link linkend="g-object-get-property"><function>g_object_get_property()</function></link> is really intended for language
+bindings, <link linkend="g-object-get"><function>g_object_get()</function></link> is much more convenient for C programming.
 </para><variablelist role="params">
 <varlistentry><term><parameter>object</parameter>&nbsp;:</term>
 <listitem><simpara>a <link linkend="GObject"><type>GObject</type></link>

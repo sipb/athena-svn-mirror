@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GType</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GObject Reference Manual"><link rel="up" href="rn01.html" title="API Reference"><link rel="previous" href="rn01.html" title="API Reference"><link rel="next" href="GTypePlugin.html" title="GTypePlugin"><link rel="preface" href="pr01.html" title="Introduction"><link rel="reference" href="rn01.html" title="API Reference"><link rel="refentry" href="gobject-Type-Information.html" title="GType"><link rel="refentry" href="GTypePlugin.html" title="GTypePlugin"><link rel="refentry" href="GTypeModule.html" title="GTypeModule"><link rel="refentry" href="gobject-The-Base-Object-Type.html" title="GObject"><link rel="refentry" href="gobject-Enumeration-and-Flag-Types.html" title="Enums and Flags"><link rel="refentry" href="gobject-Boxed-Types.html" title="GBoxed"><link rel="refentry" href="gobject-Generic-values.html" title="Generic Values"><link rel="refentry" href="gobject-Standard-Parameter-and-Value-Types.html" title="Parameters and Values"><link rel="refentry" href="gobject-Varargs-Value-Collection.html" title="Varargs Value Collection"><link rel="refentry" href="gobject-GParamSpec.html" title="GParamSpec"><link rel="refentry" href="gobject-Signals.html" title="Signals"><link rel="refentry" href="gobject-Closures.html" title="Closures"><link rel="refentry" href="gobject-Value-arrays.html" title="Value arrays"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="refentry" href="glib-mkenums.html" title="glib-mkenums"><link rel="refentry" href="glib-genmarshal.html" title="glib-genmarshal"><link rel="refentry" href="gobject-query.html" title="gobject-query"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gobject-Type-Information.html#id2573772" title="Description"><link rel="section" href="gobject-Type-Information.html#id2573896" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="rn01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GObject Reference Manual</th><td><a accesskey="n" href="GTypePlugin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gobject-Type-Information"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GType</span></h2><p>GType &#8212; The GLib Runtime type identification and management system</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GType</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GObject Reference Manual"><link rel="up" href="rn01.html" title="API Reference"><link rel="prev" href="rn01.html" title="API Reference"><link rel="next" href="GTypePlugin.html" title="GTypePlugin"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="preface" href="pr01.html" title="Introduction"><link rel="reference" href="rn01.html" title="API Reference"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="rn01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GObject Reference Manual</th><td><a accesskey="n" href="GTypePlugin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gobject-Type-Information"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">GType</span></h2><p>GType &#8212; The GLib Runtime type identification and management system</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;glib-object.h&gt;
 
@@ -226,10 +226,10 @@ href="../glib/glib-Basic-Types.html#gpointer"
 void        <a href="gobject-Type-Information.html#g-type-remove-interface-check">g_type_remove_interface_check</a>   (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> check_data,
-                                             <a href="gobject-Type-Information.html#GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</a> chec_func);
+                                             <a href="gobject-Type-Information.html#GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</a> check_func);
 void        (<a href="gobject-Type-Information.html#GTypeInterfaceCheckFunc">*GTypeInterfaceCheckFunc</a>)      (<a
 href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> func_data,
+>gpointer</a> check_data,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_iface);
@@ -270,7 +270,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 #define     <a href="gobject-Type-Information.html#G-TYPE-RESERVED-BSE-LAST-CAPS">G_TYPE_RESERVED_BSE_LAST</a>
 #define     <a href="gobject-Type-Information.html#G-TYPE-RESERVED-USER-FIRST-CAPS">G_TYPE_RESERVED_USER_FIRST</a>
 
-</pre></div><div class="refsect1" lang="en"><a name="id2573772"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2854758"></a><h2>Description</h2><p>
 The GType API is the foundation of the GObject system.  It provides the
 facilities for registering and managing all fundamental data types,
 user-defined object and interface types.  Before using any GType
@@ -295,10 +295,10 @@ There is also a third registration function for registering fundamental
 types called <a href="gobject-Type-Information.html#g-type-register-fundamental"><tt class="function">g_type_register_fundamental()</tt></a> which requires both a <a href="gobject-Type-Information.html#GTypeInfo"><span class="type">GTypeInfo</span></a>
 structure and a <a href="gobject-Type-Information.html#GTypeFundamentalInfo"><span class="type">GTypeFundamentalInfo</span></a> structure but it is seldom used
 since most fundamental types are predefined rather than user-defined.
-</p></div><div class="refsect1" lang="en"><a name="id2573896"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2573901"></a><h3><a name="GType"></a>GType</h3><a class="indexterm" name="id2573911"></a><p>
+</p></div><div class="refsect1" lang="en"><a name="id2854882"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2854887"></a><h3><a name="GType"></a>GType</h3><a class="indexterm" name="id2854897"></a><p>
 A numerical value which represents the unique identifier of a registered
 type.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2573922"></a><h3><a name="G-TYPE-FUNDAMENTAL-CAPS"></a>G_TYPE_FUNDAMENTAL()</h3><a class="indexterm" name="id2573933"></a><pre class="programlisting">#define G_TYPE_FUNDAMENTAL(type)	(g_type_fundamental (type))
+</p></div><hr><div class="refsect2" lang="en"><a name="id2854908"></a><h3><a name="G-TYPE-FUNDAMENTAL-CAPS"></a>G_TYPE_FUNDAMENTAL()</h3><a class="indexterm" name="id2854919"></a><pre class="programlisting">#define G_TYPE_FUNDAMENTAL(type)	(g_type_fundamental (type))
 </pre><p>
 Returns the fundamental type which is the ancestor of <i class="parameter"><tt>type</tt></i>.
 Fundamental types are types that serve as fundaments for the derived types, 
@@ -306,11 +306,11 @@ thus they are the roots of distinct inheritance hierarchies.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2573984"></a><h3><a name="G-TYPE-FUNDAMENTAL-MAX-CAPS"></a>G_TYPE_FUNDAMENTAL_MAX</h3><a class="indexterm" name="id2573995"></a><pre class="programlisting">#define	G_TYPE_FUNDAMENTAL_MAX		(255 &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2854970"></a><h3><a name="G-TYPE-FUNDAMENTAL-MAX-CAPS"></a>G_TYPE_FUNDAMENTAL_MAX</h3><a class="indexterm" name="id2854981"></a><pre class="programlisting">#define	G_TYPE_FUNDAMENTAL_MAX		(255 &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT)
 </pre><p>
 An integer constant that represents the number of identifiers reserved
 for types that are assigned at compile-time.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2574018"></a><h3><a name="G-TYPE-MAKE-FUNDAMENTAL-CAPS"></a>G_TYPE_MAKE_FUNDAMENTAL()</h3><a class="indexterm" name="id2574029"></a><pre class="programlisting">#define	G_TYPE_MAKE_FUNDAMENTAL(x)	((GType) ((x) &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT))
+</p></div><hr><div class="refsect2" lang="en"><a name="id2855004"></a><h3><a name="G-TYPE-MAKE-FUNDAMENTAL-CAPS"></a>G_TYPE_MAKE_FUNDAMENTAL()</h3><a class="indexterm" name="id2855015"></a><pre class="programlisting">#define	G_TYPE_MAKE_FUNDAMENTAL(x)	((GType) ((x) &lt;&lt; G_TYPE_FUNDAMENTAL_SHIFT))
 </pre><p>
 Returns the type ID for the fundamental type number <i class="parameter"><tt>x</tt></i>.
 Use <a href="gobject-Type-Information.html#g-type-fundamental-next"><tt class="function">g_type_fundamental_next()</tt></a> instead of this macro to create new fundamental 
@@ -318,7 +318,7 @@ types.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td>the fundamental type number.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574082"></a><h3><a name="G-TYPE-IS-ABSTRACT-CAPS"></a>G_TYPE_IS_ABSTRACT()</h3><a class="indexterm" name="id2574093"></a><pre class="programlisting">#define G_TYPE_IS_ABSTRACT(type)                (g_type_test_flags ((type), G_TYPE_FLAG_ABSTRACT))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855068"></a><h3><a name="G-TYPE-IS-ABSTRACT-CAPS"></a>G_TYPE_IS_ABSTRACT()</h3><a class="indexterm" name="id2855079"></a><pre class="programlisting">#define G_TYPE_IS_ABSTRACT(type)                (g_type_test_flags ((type), G_TYPE_FLAG_ABSTRACT))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is an abstract type.  An abstract type can not be
 instantiated and is normally used as an abstract base class for
@@ -326,7 +326,7 @@ derived classes.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574150"></a><h3><a name="G-TYPE-IS-DERIVED-CAPS"></a>G_TYPE_IS_DERIVED()</h3><a class="indexterm" name="id2574162"></a><pre class="programlisting">#define G_TYPE_IS_DERIVED(type)                 ((type) &gt; G_TYPE_FUNDAMENTAL_MAX)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855136"></a><h3><a name="G-TYPE-IS-DERIVED-CAPS"></a>G_TYPE_IS_DERIVED()</h3><a class="indexterm" name="id2855148"></a><pre class="programlisting">#define G_TYPE_IS_DERIVED(type)                 ((type) &gt; G_TYPE_FUNDAMENTAL_MAX)
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is derived (or in object-oriented terminology:
 inherited) from another type (this holds true for all non-fundamental
@@ -334,53 +334,53 @@ types).
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574218"></a><h3><a name="G-TYPE-IS-FUNDAMENTAL-CAPS"></a>G_TYPE_IS_FUNDAMENTAL()</h3><a class="indexterm" name="id2574229"></a><pre class="programlisting">#define G_TYPE_IS_FUNDAMENTAL(type)             ((type) &lt;= G_TYPE_FUNDAMENTAL_MAX)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855204"></a><h3><a name="G-TYPE-IS-FUNDAMENTAL-CAPS"></a>G_TYPE_IS_FUNDAMENTAL()</h3><a class="indexterm" name="id2855215"></a><pre class="programlisting">#define G_TYPE_IS_FUNDAMENTAL(type)             ((type) &lt;= G_TYPE_FUNDAMENTAL_MAX)
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is a fundamental type.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574284"></a><h3><a name="G-TYPE-IS-VALUE-TYPE-CAPS"></a>G_TYPE_IS_VALUE_TYPE()</h3><a class="indexterm" name="id2574295"></a><pre class="programlisting">#define G_TYPE_IS_VALUE_TYPE(type)              (g_type_check_is_value_type (type))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855270"></a><h3><a name="G-TYPE-IS-VALUE-TYPE-CAPS"></a>G_TYPE_IS_VALUE_TYPE()</h3><a class="indexterm" name="id2855281"></a><pre class="programlisting">#define G_TYPE_IS_VALUE_TYPE(type)              (g_type_check_is_value_type (type))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is a value type which can be used for
 <a href="gobject-Generic-values.html#g-value-init"><tt class="function">g_value_init()</tt></a>. 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574361"></a><h3><a name="G-TYPE-HAS-VALUE-TABLE-CAPS"></a>G_TYPE_HAS_VALUE_TABLE()</h3><a class="indexterm" name="id2574372"></a><pre class="programlisting">#define G_TYPE_HAS_VALUE_TABLE(type)            (g_type_value_table_peek (type) != NULL)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855345"></a><h3><a name="G-TYPE-HAS-VALUE-TABLE-CAPS"></a>G_TYPE_HAS_VALUE_TABLE()</h3><a class="indexterm" name="id2855356"></a><pre class="programlisting">#define G_TYPE_HAS_VALUE_TABLE(type)            (g_type_value_table_peek (type) != NULL)
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> has a <a href="gobject-Type-Information.html#GTypeValueTable"><span class="type">GTypeValueTable</span></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574434"></a><h3><a name="G-TYPE-IS-CLASSED-CAPS"></a>G_TYPE_IS_CLASSED()</h3><a class="indexterm" name="id2574446"></a><pre class="programlisting">#define G_TYPE_IS_CLASSED(type)                 (g_type_test_flags ((type), G_TYPE_FLAG_CLASSED))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855419"></a><h3><a name="G-TYPE-IS-CLASSED-CAPS"></a>G_TYPE_IS_CLASSED()</h3><a class="indexterm" name="id2855430"></a><pre class="programlisting">#define G_TYPE_IS_CLASSED(type)                 (g_type_test_flags ((type), G_TYPE_FLAG_CLASSED))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is a classed type.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574500"></a><h3><a name="G-TYPE-IS-INSTANTIATABLE-CAPS"></a>G_TYPE_IS_INSTANTIATABLE()</h3><a class="indexterm" name="id2574512"></a><pre class="programlisting">#define G_TYPE_IS_INSTANTIATABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_INSTANTIATABLE))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855485"></a><h3><a name="G-TYPE-IS-INSTANTIATABLE-CAPS"></a>G_TYPE_IS_INSTANTIATABLE()</h3><a class="indexterm" name="id2855497"></a><pre class="programlisting">#define G_TYPE_IS_INSTANTIATABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_INSTANTIATABLE))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> can be instantiated.  Instantiation is the
 process of creating an instance (object) of this type.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574568"></a><h3><a name="G-TYPE-IS-DERIVABLE-CAPS"></a>G_TYPE_IS_DERIVABLE()</h3><a class="indexterm" name="id2574580"></a><pre class="programlisting">#define G_TYPE_IS_DERIVABLE(type)               (g_type_test_flags ((type), G_TYPE_FLAG_DERIVABLE))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855553"></a><h3><a name="G-TYPE-IS-DERIVABLE-CAPS"></a>G_TYPE_IS_DERIVABLE()</h3><a class="indexterm" name="id2855564"></a><pre class="programlisting">#define G_TYPE_IS_DERIVABLE(type)               (g_type_test_flags ((type), G_TYPE_FLAG_DERIVABLE))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is a derivable type.  A derivable type can
 be used as the base class of a flat (single-level) class hierarchy.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574636"></a><h3><a name="G-TYPE-IS-DEEP-DERIVABLE-CAPS"></a>G_TYPE_IS_DEEP_DERIVABLE()</h3><a class="indexterm" name="id2574647"></a><pre class="programlisting">#define G_TYPE_IS_DEEP_DERIVABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_DEEP_DERIVABLE))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855621"></a><h3><a name="G-TYPE-IS-DEEP-DERIVABLE-CAPS"></a>G_TYPE_IS_DEEP_DERIVABLE()</h3><a class="indexterm" name="id2855632"></a><pre class="programlisting">#define G_TYPE_IS_DEEP_DERIVABLE(type)          (g_type_test_flags ((type), G_TYPE_FLAG_DEEP_DERIVABLE))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is a deep derivable type.  A deep derivable type
 can be used as the base class of a deep (multi-level) class hierarchy.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574704"></a><h3><a name="G-TYPE-IS-INTERFACE-CAPS"></a>G_TYPE_IS_INTERFACE()</h3><a class="indexterm" name="id2574715"></a><pre class="programlisting">#define G_TYPE_IS_INTERFACE(type)               (G_TYPE_FUNDAMENTAL (type) == G_TYPE_INTERFACE)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855689"></a><h3><a name="G-TYPE-IS-INTERFACE-CAPS"></a>G_TYPE_IS_INTERFACE()</h3><a class="indexterm" name="id2855700"></a><pre class="programlisting">#define G_TYPE_IS_INTERFACE(type)               (G_TYPE_FUNDAMENTAL (type) == G_TYPE_INTERFACE)
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is an interface type.
 Interface types are types that provide pure APIs, the implementation
@@ -392,22 +392,22 @@ with the difference that GType interfaces are not derivable (but see
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>A <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2574787"></a><h3><a name="GTypeInterface"></a>struct GTypeInterface</h3><a class="indexterm" name="id2574798"></a><pre class="programlisting">struct GTypeInterface {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2855771"></a><h3><a name="GTypeInterface"></a>struct GTypeInterface</h3><a class="indexterm" name="id2855783"></a><pre class="programlisting">struct GTypeInterface {
 
 };
 </pre><p>
 An opaque structure used as the base of all interface types.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2574814"></a><h3><a name="GTypeInstance"></a>struct GTypeInstance</h3><a class="indexterm" name="id2574826"></a><pre class="programlisting">struct GTypeInstance {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2855799"></a><h3><a name="GTypeInstance"></a>struct GTypeInstance</h3><a class="indexterm" name="id2855810"></a><pre class="programlisting">struct GTypeInstance {
 
 };
 </pre><p>
 An opaque structure used as the base of all type instances.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2574842"></a><h3><a name="GTypeClass"></a>struct GTypeClass</h3><a class="indexterm" name="id2574852"></a><pre class="programlisting">struct GTypeClass {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2855826"></a><h3><a name="GTypeClass"></a>struct GTypeClass</h3><a class="indexterm" name="id2855837"></a><pre class="programlisting">struct GTypeClass {
 
 };
 </pre><p>
 An opaque structure used as the base of all classes.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2574868"></a><h3><a name="GTypeInfo"></a>struct GTypeInfo</h3><a class="indexterm" name="id2574878"></a><pre class="programlisting">struct GTypeInfo {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2855852"></a><h3><a name="GTypeInfo"></a>struct GTypeInfo</h3><a class="indexterm" name="id2855863"></a><pre class="programlisting">struct GTypeInfo {
 
   /* interface types, classed types, instantiated types */
   guint16                class_size;
@@ -464,14 +464,14 @@ href="../glib/glib-Basic-Types.html#guint16"
 </td></tr><tr><td><span class="term">const <a href="gobject-Type-Information.html#GTypeValueTable">GTypeValueTable</a> *<i class="structfield"><tt>value_table</tt></i></span></td><td>	 A <a href="gobject-Type-Information.html#GTypeValueTable"><span class="type">GTypeValueTable</span></a> function table for generic handling of GValues of this type (usually only
 		 useful for fundamental types).
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2575187"></a><h3><a name="GTypeFundamentalInfo"></a>struct GTypeFundamentalInfo</h3><a class="indexterm" name="id2575198"></a><pre class="programlisting">struct GTypeFundamentalInfo {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2856173"></a><h3><a name="GTypeFundamentalInfo"></a>struct GTypeFundamentalInfo</h3><a class="indexterm" name="id2856184"></a><pre class="programlisting">struct GTypeFundamentalInfo {
 
   GTypeFundamentalFlags  type_flags;
 };
 </pre><p>
 A structure that provides information to the type system which is
 used specifically for managing fundamental types.  
-</p></div><hr><div class="refsect2" lang="en"><a name="id2575217"></a><h3><a name="GInterfaceInfo"></a>struct GInterfaceInfo</h3><a class="indexterm" name="id2575228"></a><pre class="programlisting">struct GInterfaceInfo {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2856202"></a><h3><a name="GInterfaceInfo"></a>struct GInterfaceInfo</h3><a class="indexterm" name="id2856213"></a><pre class="programlisting">struct GInterfaceInfo {
 
   GInterfaceInitFunc     interface_init;
   GInterfaceFinalizeFunc interface_finalize;
@@ -487,7 +487,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> <i class="structfield"><tt>interface_data</tt></i></span></td><td>	Location of user data passed to the <i class="parameter"><tt>interface_init</tt></i> and
 	 		<i class="parameter"><tt>interface_finalize</tt></i> functions (optional).
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2575323"></a><h3><a name="GTypeValueTable"></a>struct GTypeValueTable</h3><a class="indexterm" name="id2575334"></a><pre class="programlisting">struct GTypeValueTable {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2856310"></a><h3><a name="GTypeValueTable"></a>struct GTypeValueTable</h3><a class="indexterm" name="id2856321"></a><pre class="programlisting">struct GTypeValueTable {
 
   void     (*value_init)         (GValue       *value);
   void     (*value_free)         (GValue       *value);
@@ -704,7 +704,7 @@ href="../glib/glib-Basic-Types.html#gchar"
 }
 </pre>
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576244"></a><h3><a name="G-TYPE-FROM-INSTANCE-CAPS"></a>G_TYPE_FROM_INSTANCE()</h3><a class="indexterm" name="id2576255"></a><pre class="programlisting">#define G_TYPE_FROM_INSTANCE(instance)                          (G_TYPE_FROM_CLASS (((GTypeInstance*) (instance))-&gt;g_class))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857230"></a><h3><a name="G-TYPE-FROM-INSTANCE-CAPS"></a>G_TYPE_FROM_INSTANCE()</h3><a class="indexterm" name="id2857241"></a><pre class="programlisting">#define G_TYPE_FROM_INSTANCE(instance)                          (G_TYPE_FROM_CLASS (((GTypeInstance*) (instance))-&gt;g_class))
 </pre><p>
 Returns the type identifier from a given <i class="parameter"><tt>instance</tt></i> structure. 
 </p><p>
@@ -713,7 +713,7 @@ This macro should only be used in type implementations.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>instance</tt></i> :</span></td><td>Location of a valid <a href="gobject-Type-Information.html#GTypeInstance"><span class="type">GTypeInstance</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576312"></a><h3><a name="G-TYPE-FROM-CLASS-CAPS"></a>G_TYPE_FROM_CLASS()</h3><a class="indexterm" name="id2576324"></a><pre class="programlisting">#define G_TYPE_FROM_CLASS(g_class)                              (((GTypeClass*) (g_class))-&gt;g_type)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857298"></a><h3><a name="G-TYPE-FROM-CLASS-CAPS"></a>G_TYPE_FROM_CLASS()</h3><a class="indexterm" name="id2857310"></a><pre class="programlisting">#define G_TYPE_FROM_CLASS(g_class)                              (((GTypeClass*) (g_class))-&gt;g_type)
 </pre><p>
 Returns the type identifier from a given <i class="parameter"><tt>class</tt></i> structure.
 </p><p>
@@ -722,7 +722,7 @@ This macro should only be used in type implementations.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>g_class</tt></i> :</span></td><td>Location of a valid <a href="gobject-Type-Information.html#GTypeClass"><span class="type">GTypeClass</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576379"></a><h3><a name="G-TYPE-FROM-INTERFACE-CAPS"></a>G_TYPE_FROM_INTERFACE()</h3><a class="indexterm" name="id2576390"></a><pre class="programlisting">#define G_TYPE_FROM_INTERFACE(g_iface)                          (((GTypeInterface*) (g_iface))-&gt;g_type)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857365"></a><h3><a name="G-TYPE-FROM-INTERFACE-CAPS"></a>G_TYPE_FROM_INTERFACE()</h3><a class="indexterm" name="id2857376"></a><pre class="programlisting">#define G_TYPE_FROM_INTERFACE(g_iface)                          (((GTypeInterface*) (g_iface))-&gt;g_type)
 </pre><p>
 Returns the type identifier from a given <i class="parameter"><tt>interface</tt></i> structure.
 </p><p>
@@ -731,7 +731,7 @@ This macro should only be used in type implementations.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>g_iface</tt></i> :</span></td><td>Location of a valid <a href="gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576447"></a><h3><a name="G-TYPE-INSTANCE-GET-CLASS-CAPS"></a>G_TYPE_INSTANCE_GET_CLASS()</h3><a class="indexterm" name="id2576459"></a><pre class="programlisting">#define G_TYPE_INSTANCE_GET_CLASS(instance, g_type, c_type)     (_G_TYPE_IGC ((instance), (g_type), c_type))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857433"></a><h3><a name="G-TYPE-INSTANCE-GET-CLASS-CAPS"></a>G_TYPE_INSTANCE_GET_CLASS()</h3><a class="indexterm" name="id2857445"></a><pre class="programlisting">#define G_TYPE_INSTANCE_GET_CLASS(instance, g_type, c_type)     (_G_TYPE_IGC ((instance), (g_type), c_type))
 </pre><p>
 Returns the class structure of a given <i class="parameter"><tt>instance</tt></i>, casted
 to a specified anchestor type <i class="parameter"><tt>g_type</tt></i> of the instance.
@@ -743,7 +743,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>c_type</tt></i> :</span></td><td>	The corresponding C type of <i class="parameter"><tt>g_type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576554"></a><h3><a name="G-TYPE-INSTANCE-GET-INTERFACE-CAPS"></a>G_TYPE_INSTANCE_GET_INTERFACE()</h3><a class="indexterm" name="id2576566"></a><pre class="programlisting">#define G_TYPE_INSTANCE_GET_INTERFACE(instance, g_type, c_type) (_G_TYPE_IGI ((instance), (g_type), c_type))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857541"></a><h3><a name="G-TYPE-INSTANCE-GET-INTERFACE-CAPS"></a>G_TYPE_INSTANCE_GET_INTERFACE()</h3><a class="indexterm" name="id2857552"></a><pre class="programlisting">#define G_TYPE_INSTANCE_GET_INTERFACE(instance, g_type, c_type) (_G_TYPE_IGI ((instance), (g_type), c_type))
 </pre><p>
 Returns the interface structure for interface <i class="parameter"><tt>g_type</tt></i> of a given <i class="parameter"><tt>instance</tt></i>.
 </p><p>
@@ -754,7 +754,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>c_type</tt></i> :</span></td><td>The corresponding C type of <i class="parameter"><tt>g_type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576661"></a><h3><a name="G-TYPE-INSTANCE-GET-PRIVATE-CAPS"></a>G_TYPE_INSTANCE_GET_PRIVATE()</h3><a class="indexterm" name="id2576673"></a><pre class="programlisting">#define G_TYPE_INSTANCE_GET_PRIVATE(instance, g_type, c_type)   ((c_type*) g_type_instance_get_private ((GTypeInstance*) (instance), (g_type)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857647"></a><h3><a name="G-TYPE-INSTANCE-GET-PRIVATE-CAPS"></a>G_TYPE_INSTANCE_GET_PRIVATE()</h3><a class="indexterm" name="id2857659"></a><pre class="programlisting">#define G_TYPE_INSTANCE_GET_PRIVATE(instance, g_type, c_type)   ((c_type*) g_type_instance_get_private ((GTypeInstance*) (instance), (g_type)))
 </pre><p>
 Gets the private structure for a particular type.
 The private structure must have been registered in the
@@ -766,7 +766,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>c_type</tt></i> :</span></td><td>The C type for the private structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576761"></a><h3><a name="G-TYPE-CHECK-INSTANCE-CAPS"></a>G_TYPE_CHECK_INSTANCE()</h3><a class="indexterm" name="id2576772"></a><pre class="programlisting">#define G_TYPE_CHECK_INSTANCE(instance)				(_G_TYPE_CHI ((GTypeInstance*) (instance)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857747"></a><h3><a name="G-TYPE-CHECK-INSTANCE-CAPS"></a>G_TYPE_CHECK_INSTANCE()</h3><a class="indexterm" name="id2857758"></a><pre class="programlisting">#define G_TYPE_CHECK_INSTANCE(instance)				(_G_TYPE_CHI ((GTypeInstance*) (instance)))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>instance</tt></i> is a valid <a href="gobject-Type-Information.html#GTypeInstance"><span class="type">GTypeInstance</span></a> structure,
 otherwise emits a warning and returns <tt class="literal">FALSE</tt>.
@@ -776,7 +776,7 @@ This macro should only be used in type implementations.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>instance</tt></i> :</span></td><td>Location of a <a href="gobject-Type-Information.html#GTypeInstance"><span class="type">GTypeInstance</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576846"></a><h3><a name="G-TYPE-CHECK-INSTANCE-CAST-CAPS"></a>G_TYPE_CHECK_INSTANCE_CAST()</h3><a class="indexterm" name="id2576858"></a><pre class="programlisting">#define G_TYPE_CHECK_INSTANCE_CAST(instance, g_type, c_type)    (_G_TYPE_CIC ((instance), (g_type), c_type))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857833"></a><h3><a name="G-TYPE-CHECK-INSTANCE-CAST-CAPS"></a>G_TYPE_CHECK_INSTANCE_CAST()</h3><a class="indexterm" name="id2857844"></a><pre class="programlisting">#define G_TYPE_CHECK_INSTANCE_CAST(instance, g_type, c_type)    (_G_TYPE_CIC ((instance), (g_type), c_type))
 </pre><p>
 Checks that <i class="parameter"><tt>instance</tt></i> is an instance of the type identified by <i class="parameter"><tt>g_type</tt></i>
 and emits a warning if this is not the case. Returns <i class="parameter"><tt>instance</tt></i> casted 
@@ -788,7 +788,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>c_type</tt></i> :</span></td><td>The corresponding C type of <i class="parameter"><tt>g_type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2576966"></a><h3><a name="G-TYPE-CHECK-INSTANCE-TYPE-CAPS"></a>G_TYPE_CHECK_INSTANCE_TYPE()</h3><a class="indexterm" name="id2576977"></a><pre class="programlisting">#define G_TYPE_CHECK_INSTANCE_TYPE(instance, g_type)            (_G_TYPE_CIT ((instance), (g_type)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857952"></a><h3><a name="G-TYPE-CHECK-INSTANCE-TYPE-CAPS"></a>G_TYPE_CHECK_INSTANCE_TYPE()</h3><a class="indexterm" name="id2857964"></a><pre class="programlisting">#define G_TYPE_CHECK_INSTANCE_TYPE(instance, g_type)            (_G_TYPE_CIT ((instance), (g_type)))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>instance</tt></i> is an instance of the type identified by <i class="parameter"><tt>g_type</tt></i>.
 Otherwise emits a warning and returns <tt class="literal">FALSE</tt>.
@@ -798,7 +798,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>g_type</tt></i> :</span></td><td>The type to be checked
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577064"></a><h3><a name="G-TYPE-CHECK-CLASS-CAST-CAPS"></a>G_TYPE_CHECK_CLASS_CAST()</h3><a class="indexterm" name="id2577076"></a><pre class="programlisting">#define G_TYPE_CHECK_CLASS_CAST(g_class, g_type, c_type)        (_G_TYPE_CCC ((g_class), (g_type), c_type))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858050"></a><h3><a name="G-TYPE-CHECK-CLASS-CAST-CAPS"></a>G_TYPE_CHECK_CLASS_CAST()</h3><a class="indexterm" name="id2858062"></a><pre class="programlisting">#define G_TYPE_CHECK_CLASS_CAST(g_class, g_type, c_type)        (_G_TYPE_CCC ((g_class), (g_type), c_type))
 </pre><p>
 Checks that <i class="parameter"><tt>g_class</tt></i> is a class structure of the type identified by <i class="parameter"><tt>g_type</tt></i>
 and emits a warning if this is not the case. Returns <i class="parameter"><tt>g_class</tt></i> casted 
@@ -810,7 +810,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>c_type</tt></i> :</span></td><td>The corresponding C type of class structure of <i class="parameter"><tt>g_type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577184"></a><h3><a name="G-TYPE-CHECK-CLASS-TYPE-CAPS"></a>G_TYPE_CHECK_CLASS_TYPE()</h3><a class="indexterm" name="id2577196"></a><pre class="programlisting">#define G_TYPE_CHECK_CLASS_TYPE(g_class, g_type)                (_G_TYPE_CCT ((g_class), (g_type)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858170"></a><h3><a name="G-TYPE-CHECK-CLASS-TYPE-CAPS"></a>G_TYPE_CHECK_CLASS_TYPE()</h3><a class="indexterm" name="id2858182"></a><pre class="programlisting">#define G_TYPE_CHECK_CLASS_TYPE(g_class, g_type)                (_G_TYPE_CCT ((g_class), (g_type)))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>g_class</tt></i> is a class structure of the type identified by 
 <i class="parameter"><tt>g_type</tt></i>. Otherwise emits a warning and returns <tt class="literal">FALSE</tt>.
@@ -820,7 +820,7 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>g_type</tt></i> :</span></td><td>The type to be checked.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577282"></a><h3><a name="G-TYPE-CHECK-VALUE-CAPS"></a>G_TYPE_CHECK_VALUE()</h3><a class="indexterm" name="id2577293"></a><pre class="programlisting">#define G_TYPE_CHECK_VALUE(value)				(_G_TYPE_CHV ((value)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858268"></a><h3><a name="G-TYPE-CHECK-VALUE-CAPS"></a>G_TYPE_CHECK_VALUE()</h3><a class="indexterm" name="id2858279"></a><pre class="programlisting">#define G_TYPE_CHECK_VALUE(value)				(_G_TYPE_CHV ((value)))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>value</tt></i> has been initialized to hold values
 of a value type.
@@ -829,7 +829,7 @@ This macro should only be used in type implementations.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>a <a href="gobject-Generic-values.html#GValue"><span class="type">GValue</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577352"></a><h3><a name="G-TYPE-CHECK-VALUE-TYPE-CAPS"></a>G_TYPE_CHECK_VALUE_TYPE()</h3><a class="indexterm" name="id2577363"></a><pre class="programlisting">#define G_TYPE_CHECK_VALUE_TYPE(value, g_type)			(_G_TYPE_CVH ((value), (g_type)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858338"></a><h3><a name="G-TYPE-CHECK-VALUE-TYPE-CAPS"></a>G_TYPE_CHECK_VALUE_TYPE()</h3><a class="indexterm" name="id2858350"></a><pre class="programlisting">#define G_TYPE_CHECK_VALUE_TYPE(value, g_type)			(_G_TYPE_CVH ((value), (g_type)))
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if <i class="parameter"><tt>value</tt></i> has been initialized to hold values
 of type <i class="parameter"><tt>g_type</tt></i>. 
@@ -839,14 +839,14 @@ This macro should only be used in type implementations.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>g_type</tt></i> :</span></td><td>The type to be checked.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577442"></a><h3><a name="G-TYPE-FLAG-RESERVED-ID-BIT-CAPS"></a>G_TYPE_FLAG_RESERVED_ID_BIT</h3><a class="indexterm" name="id2577454"></a><pre class="programlisting">#define	G_TYPE_FLAG_RESERVED_ID_BIT	((GType) (1 &lt;&lt; 0))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858428"></a><h3><a name="G-TYPE-FLAG-RESERVED-ID-BIT-CAPS"></a>G_TYPE_FLAG_RESERVED_ID_BIT</h3><a class="indexterm" name="id2858440"></a><pre class="programlisting">#define	G_TYPE_FLAG_RESERVED_ID_BIT	((GType) (1 &lt;&lt; 0))
 </pre><p>
 A bit in the type number that's supposed to be left untouched.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2577471"></a><h3><a name="g-type-init"></a>g_type_init ()</h3><a class="indexterm" name="id2577482"></a><pre class="programlisting">void        g_type_init                     (void);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2858458"></a><h3><a name="g-type-init"></a>g_type_init ()</h3><a class="indexterm" name="id2858468"></a><pre class="programlisting">void        g_type_init                     (void);</pre><p>
 Prior to any use of the type system, <a href="gobject-Type-Information.html#g-type-init"><tt class="function">g_type_init()</tt></a> has to be called to initialize
 the type system and assorted other code portions (such as the various fundamental
 type implementations or the signal system).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2577516"></a><h3><a name="GTypeDebugFlags"></a>enum GTypeDebugFlags</h3><a class="indexterm" name="id2577527"></a><pre class="programlisting">typedef enum	/*&lt; skip &gt;*/
+</p></div><hr><div class="refsect2" lang="en"><a name="id2858502"></a><h3><a name="GTypeDebugFlags"></a>enum GTypeDebugFlags</h3><a class="indexterm" name="id2858514"></a><pre class="programlisting">typedef enum	/*&lt; skip &gt;*/
 {
   G_TYPE_DEBUG_NONE	= 0,
   G_TYPE_DEBUG_OBJECTS	= 1 &lt;&lt; 0,
@@ -865,12 +865,12 @@ Note that the messages can also be triggered by setting the
 </td></tr><tr><td><span class="term"><tt class="literal">G_TYPE_DEBUG_SIGNALS</tt></span></td><td>Print messages about signal emissions.
 </td></tr><tr><td><span class="term"><tt class="literal">G_TYPE_DEBUG_MASK</tt></span></td><td>
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577631"></a><h3><a name="g-type-init-with-debug-flags"></a>g_type_init_with_debug_flags ()</h3><a class="indexterm" name="id2577643"></a><pre class="programlisting">void        g_type_init_with_debug_flags    (<a href="gobject-Type-Information.html#GTypeDebugFlags">GTypeDebugFlags</a> debug_flags);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858617"></a><h3><a name="g-type-init-with-debug-flags"></a>g_type_init_with_debug_flags ()</h3><a class="indexterm" name="id2858629"></a><pre class="programlisting">void        g_type_init_with_debug_flags    (<a href="gobject-Type-Information.html#GTypeDebugFlags">GTypeDebugFlags</a> debug_flags);</pre><p>
 Similar to <a href="gobject-Type-Information.html#g-type-init"><tt class="function">g_type_init()</tt></a>, but additionally sets debug flags.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>debug_flags</tt></i> :</span></td><td>Bitwise combination of <a href="gobject-Type-Information.html#GTypeDebugFlags"><span class="type">GTypeDebugFlags</span></a> values for debugging purposes.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577710"></a><h3><a name="g-type-name"></a>g_type_name ()</h3><a class="indexterm" name="id2577721"></a><pre class="programlisting">G_CONST_RETURN <a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858696"></a><h3><a name="g-type-name"></a>g_type_name ()</h3><a class="indexterm" name="id2858707"></a><pre class="programlisting">G_CONST_RETURN <a
 href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a>* g_type_name           (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Returns the unique name that is assigned to a type ID (this is the preferred method
@@ -879,7 +879,7 @@ to find out whether a specific type has been registered for the passed in ID yet
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>	Static type name or <tt class="literal">NULL</tt>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577787"></a><h3><a name="g-type-qname"></a>g_type_qname ()</h3><a class="indexterm" name="id2577798"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858773"></a><h3><a name="g-type-qname"></a>g_type_qname ()</h3><a class="indexterm" name="id2858784"></a><pre class="programlisting"><a
 href="../glib/glib-Quarks.html#GQuark"
 >GQuark</a>      g_type_qname                    (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Return the corresponding quark of the type IDs name.
@@ -887,7 +887,7 @@ Return the corresponding quark of the type IDs name.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The type names quark or 0.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577856"></a><h3><a name="g-type-from-name"></a>g_type_from_name ()</h3><a class="indexterm" name="id2577867"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_from_name                (const <a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858843"></a><h3><a name="g-type-from-name"></a>g_type_from_name ()</h3><a class="indexterm" name="id2858853"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_from_name                (const <a
 href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *name);</pre><p>
 Lookup the type ID from a given type name, returns 0 if no type has been registered under this name
@@ -896,14 +896,14 @@ Lookup the type ID from a given type name, returns 0 if no type has been registe
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>Corresponding type ID or 0.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577928"></a><h3><a name="g-type-parent"></a>g_type_parent ()</h3><a class="indexterm" name="id2577938"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_parent                   (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858914"></a><h3><a name="g-type-parent"></a>g_type_parent ()</h3><a class="indexterm" name="id2858924"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_parent                   (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Return the direct parent type of the passed in type.
 If the passed in type has no parent, i.e. is a fundamental type, 0 is returned.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>   The derived type.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The parent type.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2577997"></a><h3><a name="g-type-depth"></a>g_type_depth ()</h3><a class="indexterm" name="id2578008"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858983"></a><h3><a name="g-type-depth"></a>g_type_depth ()</h3><a class="indexterm" name="id2858994"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a>       g_type_depth                    (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Returns the length of the ancestry of the passed in type. This includes the
@@ -912,7 +912,7 @@ type itself, so that e.g. a fundamental type has depth 1.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The depth of <i class="parameter"><tt>type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578081"></a><h3><a name="g-type-next-base"></a>g_type_next_base ()</h3><a class="indexterm" name="id2578092"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_next_base                (<a href="gobject-Type-Information.html#GType">GType</a> leaf_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859067"></a><h3><a name="g-type-next-base"></a>g_type_next_base ()</h3><a class="indexterm" name="id2859078"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_next_base                (<a href="gobject-Type-Information.html#GType">GType</a> leaf_type,
                                              <a href="gobject-Type-Information.html#GType">GType</a> root_type);</pre><p>
 Given a <i class="parameter"><tt>leaf_type</tt></i> and a <i class="parameter"><tt>root_type</tt></i> which is contained in its anchestry, return
 the type that <i class="parameter"><tt>root_type</tt></i> is the immediate parent of.
@@ -925,7 +925,7 @@ the leaf type is descended from the root type.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>	Immediate child of <i class="parameter"><tt>root_type</tt></i> and anchestor of <i class="parameter"><tt>leaf_type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578224"></a><h3><a name="g-type-is-a"></a>g_type_is_a ()</h3><a class="indexterm" name="id2578235"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859211"></a><h3><a name="g-type-is-a"></a>g_type_is_a ()</h3><a class="indexterm" name="id2859221"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>    g_type_is_a                     (<a href="gobject-Type-Information.html#GType">GType</a> type,
                                              <a href="gobject-Type-Information.html#GType">GType</a> is_a_type);</pre><p>
@@ -936,7 +936,7 @@ If <i class="parameter"><tt>is_a_type</tt></i> is an interface, check whether <i
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  <tt class="literal">TRUE</tt> if <i class="parameter"><tt>type</tt></i> is_a <i class="parameter"><tt>is_a_type</tt></i> holds true.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578375"></a><h3><a name="g-type-class-ref"></a>g_type_class_ref ()</h3><a class="indexterm" name="id2578385"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859361"></a><h3><a name="g-type-class-ref"></a>g_type_class_ref ()</h3><a class="indexterm" name="id2859371"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_class_ref                (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Increments the reference count of the class structure belonging to
@@ -946,7 +946,7 @@ exist already.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The <a href="gobject-Type-Information.html#GTypeClass"><span class="type">GTypeClass</span></a> structure for the given type ID.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578459"></a><h3><a name="g-type-class-peek"></a>g_type_class_peek ()</h3><a class="indexterm" name="id2578470"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859445"></a><h3><a name="g-type-class-peek"></a>g_type_class_peek ()</h3><a class="indexterm" name="id2859457"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_class_peek               (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 This function is essentially the same as <a href="gobject-Type-Information.html#g-type-class-ref"><tt class="function">g_type_class_ref()</tt></a>, except that
@@ -958,7 +958,7 @@ exist (hasn't been referenced before).
 		if the class does not currently exist.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578562"></a><h3><a name="g-type-class-peek-static"></a>g_type_class_peek_static ()</h3><a class="indexterm" name="id2578573"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859548"></a><h3><a name="g-type-class-peek-static"></a>g_type_class_peek_static ()</h3><a class="indexterm" name="id2859560"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_class_peek_static        (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 A more efficient version of <a href="gobject-Type-Information.html#g-type-class-peek"><tt class="function">g_type_class_peek()</tt></a> which works only for
@@ -969,7 +969,7 @@ static types.
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2578662"></a><h3><a name="g-type-class-unref"></a>g_type_class_unref ()</h3><a class="indexterm" name="id2578673"></a><pre class="programlisting">void        g_type_class_unref              (<a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2859648"></a><h3><a name="g-type-class-unref"></a>g_type_class_unref ()</h3><a class="indexterm" name="id2859659"></a><pre class="programlisting">void        g_type_class_unref              (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class);</pre><p>
 Decrements the reference count of the class structure being passed in.
@@ -979,7 +979,7 @@ class pointer after <a href="gobject-Type-Information.html#g-type-class-unref"><
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>g_class</tt></i> :</span></td><td>	The <a href="gobject-Type-Information.html#GTypeClass"><span class="type">GTypeClass</span></a> structure to unreference.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578742"></a><h3><a name="g-type-class-peek-parent"></a>g_type_class_peek_parent ()</h3><a class="indexterm" name="id2578753"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859728"></a><h3><a name="g-type-class-peek-parent"></a>g_type_class_peek_parent ()</h3><a class="indexterm" name="id2859739"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_class_peek_parent        (<a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -999,7 +999,7 @@ g_type_class_peek (g_type_parent (G_TYPE_FROM_CLASS (g_class)));
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The parent class of <i class="parameter"><tt>g_class</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578838"></a><h3><a name="g-type-class-add-private"></a>g_type_class_add_private ()</h3><a class="indexterm" name="id2578849"></a><pre class="programlisting">void        g_type_class_add_private        (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859824"></a><h3><a name="g-type-class-add-private"></a>g_type_class_add_private ()</h3><a class="indexterm" name="id2859835"></a><pre class="programlisting">void        g_type_class_add_private        (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class,
                                              <a
@@ -1043,7 +1043,7 @@ my_object_get_some_field (MyObject *my_object)
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>private_size</tt></i> :</span></td><td>size of private structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2578968"></a><h3><a name="g-type-interface-peek"></a>g_type_interface_peek ()</h3><a class="indexterm" name="id2578984"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859954"></a><h3><a name="g-type-interface-peek"></a>g_type_interface_peek ()</h3><a class="indexterm" name="id2859969"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_interface_peek           (<a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -1057,7 +1057,7 @@ class conforms.
                  class is not instantiated.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579100"></a><h3><a name="g-type-interface-peek-parent"></a>g_type_interface_peek_parent ()</h3><a class="indexterm" name="id2579112"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860086"></a><h3><a name="g-type-interface-peek-parent"></a>g_type_interface_peek_parent ()</h3><a class="indexterm" name="id2860097"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_interface_peek_parent    (<a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -1072,7 +1072,7 @@ then possibly overriding some methods.
    doesn't conform to the interface.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579217"></a><h3><a name="g-type-default-interface-ref"></a>g_type_default_interface_ref ()</h3><a class="indexterm" name="id2579228"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860203"></a><h3><a name="g-type-default-interface-ref"></a>g_type_default_interface_ref ()</h3><a class="indexterm" name="id2860214"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_default_interface_ref    (<a href="gobject-Type-Information.html#GType">GType</a> g_type);</pre><p>
 Increments the reference count for the interface type <i class="parameter"><tt>g_type</tt></i>,
@@ -1093,7 +1093,7 @@ have been installed.
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2579346"></a><h3><a name="g-type-default-interface-peek"></a>g_type_default_interface_peek ()</h3><a class="indexterm" name="id2579358"></a><pre class="programlisting"><a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2860331"></a><h3><a name="g-type-default-interface-peek"></a>g_type_default_interface_peek ()</h3><a class="indexterm" name="id2860344"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_default_interface_peek   (<a href="gobject-Type-Information.html#GType">GType</a> g_type);</pre><p>
 If the interface type <i class="parameter"><tt>g_type</tt></i> is currently in use, returns
@@ -1104,7 +1104,7 @@ its default interface vtable.
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2579433"></a><h3><a name="g-type-default-interface-unref"></a>g_type_default_interface_unref ()</h3><a class="indexterm" name="id2579445"></a><pre class="programlisting">void        g_type_default_interface_unref  (<a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2860419"></a><h3><a name="g-type-default-interface-unref"></a>g_type_default_interface_unref ()</h3><a class="indexterm" name="id2860431"></a><pre class="programlisting">void        g_type_default_interface_unref  (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_iface);</pre><p>
 Decrements the reference count for the type corresponding to the
@@ -1118,7 +1118,7 @@ vtable (the <i class="structfield"><tt>class_finalize</tt></i> member of
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2579530"></a><h3><a name="g-type-children"></a>g_type_children ()</h3><a class="indexterm" name="id2579541"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>*      g_type_children                 (<a href="gobject-Type-Information.html#GType">GType</a> type,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2860516"></a><h3><a name="g-type-children"></a>g_type_children ()</h3><a class="indexterm" name="id2860527"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>*      g_type_children                 (<a href="gobject-Type-Information.html#GType">GType</a> type,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *n_children);</pre><p>
@@ -1133,7 +1133,7 @@ href="../glib/glib-Basic-Types.html#guint"
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>   Newly allocated and 0-terminated array of child types.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579648"></a><h3><a name="g-type-interfaces"></a>g_type_interfaces ()</h3><a class="indexterm" name="id2579659"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>*      g_type_interfaces               (<a href="gobject-Type-Information.html#GType">GType</a> type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860634"></a><h3><a name="g-type-interfaces"></a>g_type_interfaces ()</h3><a class="indexterm" name="id2860645"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>*      g_type_interfaces               (<a href="gobject-Type-Information.html#GType">GType</a> type,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *n_interfaces);</pre><p>
@@ -1149,7 +1149,7 @@ href="../glib/glib-Basic-Types.html#guint"
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>     Newly allocated and 0-terminated array of interface types.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579766"></a><h3><a name="g-type-interface-prerequisites"></a>g_type_interface_prerequisites ()</h3><a class="indexterm" name="id2579778"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>*      g_type_interface_prerequisites  (<a href="gobject-Type-Information.html#GType">GType</a> interface_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860752"></a><h3><a name="g-type-interface-prerequisites"></a>g_type_interface_prerequisites ()</h3><a class="indexterm" name="id2860763"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>*      g_type_interface_prerequisites  (<a href="gobject-Type-Information.html#GType">GType</a> interface_type,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *n_prerequisites);</pre><p>
@@ -1161,7 +1161,7 @@ Returns the prerequisites of an interfaces type.
 </td></tr></tbody></table></div><p>Since 2.2
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2579883"></a><h3><a name="g-type-set-qdata"></a>g_type_set_qdata ()</h3><a class="indexterm" name="id2579894"></a><pre class="programlisting">void        g_type_set_qdata                (<a href="gobject-Type-Information.html#GType">GType</a> type,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2860869"></a><h3><a name="g-type-set-qdata"></a>g_type_set_qdata ()</h3><a class="indexterm" name="id2860879"></a><pre class="programlisting">void        g_type_set_qdata                (<a href="gobject-Type-Information.html#GType">GType</a> type,
                                              <a
 href="../glib/glib-Quarks.html#GQuark"
 >GQuark</a> quark,
@@ -1176,7 +1176,7 @@ href="../glib/glib-Quarks.html#GQuark"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>the data
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579999"></a><h3><a name="g-type-get-qdata"></a>g_type_get_qdata ()</h3><a class="indexterm" name="id2580009"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860985"></a><h3><a name="g-type-get-qdata"></a>g_type_get_qdata ()</h3><a class="indexterm" name="id2860995"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a>    g_type_get_qdata                (<a href="gobject-Type-Information.html#GType">GType</a> type,
                                              <a
@@ -1191,7 +1191,7 @@ href="../glib/glib-Quarks.html#GQuark"
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the data, or <tt class="literal">NULL</tt> if no data was found
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580126"></a><h3><a name="g-type-query"></a>g_type_query ()</h3><a class="indexterm" name="id2580137"></a><pre class="programlisting">void        g_type_query                    (<a href="gobject-Type-Information.html#GType">GType</a> type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861112"></a><h3><a name="g-type-query"></a>g_type_query ()</h3><a class="indexterm" name="id2861123"></a><pre class="programlisting">void        g_type_query                    (<a href="gobject-Type-Information.html#GType">GType</a> type,
                                              <a href="gobject-Type-Information.html#GTypeQuery">GTypeQuery</a> *query);</pre><p>
 Queries the type system for information about a specific type. 
 This function will fill in a user-provided structure to hold type-specific 
@@ -1203,7 +1203,7 @@ be considered constant and have to be left untouched.
         upon success.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580249"></a><h3><a name="GTypeQuery"></a>struct GTypeQuery</h3><a class="indexterm" name="id2580259"></a><pre class="programlisting">struct GTypeQuery {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861235"></a><h3><a name="GTypeQuery"></a>struct GTypeQuery</h3><a class="indexterm" name="id2861245"></a><pre class="programlisting">struct GTypeQuery {
 
   GType		type;
   const gchar  *type_name;
@@ -1224,7 +1224,7 @@ href="../glib/glib-Basic-Types.html#guint"
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> <i class="structfield"><tt>instance_size</tt></i></span></td><td>the size of the instance structure.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580379"></a><h3><a name="GBaseInitFunc"></a>GBaseInitFunc ()</h3><a class="indexterm" name="id2580389"></a><pre class="programlisting">void        (*GBaseInitFunc)                (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861365"></a><h3><a name="GBaseInitFunc"></a>GBaseInitFunc ()</h3><a class="indexterm" name="id2861375"></a><pre class="programlisting">void        (*GBaseInitFunc)                (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class);</pre><p>
 A callback function used by the type system to do base initialization
@@ -1238,7 +1238,7 @@ intialization process.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>g_class</tt></i> :</span></td><td>The <a href="gobject-Type-Information.html#GTypeClass"><span class="type">GTypeClass</span></a> structure to initialize.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513762"></a><h3><a name="GBaseFinalizeFunc"></a>GBaseFinalizeFunc ()</h3><a class="indexterm" name="id2513773"></a><pre class="programlisting">void        (*GBaseFinalizeFunc)            (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2794850"></a><h3><a name="GBaseFinalizeFunc"></a>GBaseFinalizeFunc ()</h3><a class="indexterm" name="id2794861"></a><pre class="programlisting">void        (*GBaseFinalizeFunc)            (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class);</pre><p>
 A callback function used by the type system to finalize those portions
@@ -1249,7 +1249,7 @@ See <a href="gobject-Type-Information.html#GClassInitFunc"><tt class="function">
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>g_class</tt></i> :</span></td><td>The <a href="gobject-Type-Information.html#GTypeClass"><span class="type">GTypeClass</span></a> structure to finalize.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513853"></a><h3><a name="GClassInitFunc"></a>GClassInitFunc ()</h3><a class="indexterm" name="id2580702"></a><pre class="programlisting">void        (*GClassInitFunc)               (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2794941"></a><h3><a name="GClassInitFunc"></a>GClassInitFunc ()</h3><a class="indexterm" name="id2861688"></a><pre class="programlisting">void        (*GClassInitFunc)               (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class,
                                              <a
@@ -1352,7 +1352,7 @@ time.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>class_data</tt></i> :</span></td><td>	The <i class="parameter"><tt>class_data</tt></i> member supplied via the <a href="gobject-Type-Information.html#GTypeInfo"><span class="type">GTypeInfo</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581085"></a><h3><a name="GClassFinalizeFunc"></a>GClassFinalizeFunc ()</h3><a class="indexterm" name="id2581096"></a><pre class="programlisting">void        (*GClassFinalizeFunc)           (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862070"></a><h3><a name="GClassFinalizeFunc"></a>GClassFinalizeFunc ()</h3><a class="indexterm" name="id2862082"></a><pre class="programlisting">void        (*GClassFinalizeFunc)           (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class,
                                              <a
@@ -1369,7 +1369,7 @@ reference count drops to zero).
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>class_data</tt></i> :</span></td><td>	The <i class="parameter"><tt>class_data</tt></i> member supplied via the <a href="gobject-Type-Information.html#GTypeInfo"><span class="type">GTypeInfo</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581232"></a><h3><a name="GInstanceInitFunc"></a>GInstanceInitFunc ()</h3><a class="indexterm" name="id2581243"></a><pre class="programlisting">void        (*GInstanceInitFunc)            (<a href="gobject-Type-Information.html#GTypeInstance">GTypeInstance</a> *instance,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862218"></a><h3><a name="GInstanceInitFunc"></a>GInstanceInitFunc ()</h3><a class="indexterm" name="id2862229"></a><pre class="programlisting">void        (*GInstanceInitFunc)            (<a href="gobject-Type-Information.html#GTypeInstance">GTypeInstance</a> *instance,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class);</pre><p>
@@ -1384,7 +1384,7 @@ belongs to the type the current initializer was introduced for.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>g_class</tt></i> :</span></td><td>	The class of the type the instance is created for.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581319"></a><h3><a name="GInterfaceInitFunc"></a>GInterfaceInitFunc ()</h3><a class="indexterm" name="id2581330"></a><pre class="programlisting">void        (*GInterfaceInitFunc)           (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862305"></a><h3><a name="GInterfaceInitFunc"></a>GInterfaceInitFunc ()</h3><a class="indexterm" name="id2862316"></a><pre class="programlisting">void        (*GInterfaceInitFunc)           (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_iface,
                                              <a
@@ -1397,7 +1397,7 @@ allocate any resources required by the interface.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>iface_data</tt></i> :</span></td><td>	The <i class="parameter"><tt>class_data</tt></i> supplied via the <a href="gobject-Type-Information.html#GTypeInfo"><span class="type">GTypeInfo</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581416"></a><h3><a name="GInterfaceFinalizeFunc"></a>GInterfaceFinalizeFunc ()</h3><a class="indexterm" name="id2581427"></a><pre class="programlisting">void        (*GInterfaceFinalizeFunc)       (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862402"></a><h3><a name="GInterfaceFinalizeFunc"></a>GInterfaceFinalizeFunc ()</h3><a class="indexterm" name="id2862413"></a><pre class="programlisting">void        (*GInterfaceFinalizeFunc)       (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_iface,
                                              <a
@@ -1410,7 +1410,7 @@ allocated by the corresponding <a href="gobject-Type-Information.html#GInterface
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>iface_data</tt></i> :</span></td><td>	The <i class="parameter"><tt>class_data</tt></i> supplied via the <a href="gobject-Type-Information.html#GTypeInfo"><span class="type">GTypeInfo</span></a> structure.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581523"></a><h3><a name="GTypeClassCacheFunc"></a>GTypeClassCacheFunc ()</h3><a class="indexterm" name="id2581534"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862509"></a><h3><a name="GTypeClassCacheFunc"></a>GTypeClassCacheFunc ()</h3><a class="indexterm" name="id2862520"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>    (*GTypeClassCacheFunc)          (<a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -1431,7 +1431,7 @@ classes are routed through the same <a href="gobject-Type-Information.html#GType
 called, <tt class="literal">FALSE</tt> to continue.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581712"></a><h3><a name="GTypeFlags"></a>enum GTypeFlags</h3><a class="indexterm" name="id2581722"></a><pre class="programlisting">typedef enum    /*&lt; skip &gt;*/
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862698"></a><h3><a name="GTypeFlags"></a>enum GTypeFlags</h3><a class="indexterm" name="id2862708"></a><pre class="programlisting">typedef enum    /*&lt; skip &gt;*/
 {
   G_TYPE_FLAG_ABSTRACT		= (1 &lt;&lt; 4),
   G_TYPE_FLAG_VALUE_ABSTRACT	= (1 &lt;&lt; 5)
@@ -1444,7 +1444,7 @@ Bit masks used to check or determine characteristics of a type.
                         that introduces a value table, but can't be used for
                         <a href="gobject-Generic-values.html#g-value-init"><tt class="function">g_value_init()</tt></a>.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581788"></a><h3><a name="GTypeFundamentalFlags"></a>enum GTypeFundamentalFlags</h3><a class="indexterm" name="id2581799"></a><pre class="programlisting">typedef enum    /*&lt; skip &gt;*/
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862774"></a><h3><a name="GTypeFundamentalFlags"></a>enum GTypeFundamentalFlags</h3><a class="indexterm" name="id2862785"></a><pre class="programlisting">typedef enum    /*&lt; skip &gt;*/
 {
   G_TYPE_FLAG_CLASSED           = (1 &lt;&lt; 0),
   G_TYPE_FLAG_INSTANTIATABLE    = (1 &lt;&lt; 1),
@@ -1459,7 +1459,7 @@ fundamental type.
 </td></tr><tr><td><span class="term"><tt class="literal">G_TYPE_FLAG_DERIVABLE</tt></span></td><td>		Indicates a flat derivable type.
 </td></tr><tr><td><span class="term"><tt class="literal">G_TYPE_FLAG_DEEP_DERIVABLE</tt></span></td><td>	Indicates a deep derivable type (implies derivable).
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581888"></a><h3><a name="g-type-register-static"></a>g_type_register_static ()</h3><a class="indexterm" name="id2581899"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_register_static          (<a href="gobject-Type-Information.html#GType">GType</a> parent_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862874"></a><h3><a name="g-type-register-static"></a>g_type_register_static ()</h3><a class="indexterm" name="id2862885"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_register_static          (<a href="gobject-Type-Information.html#GType">GType</a> parent_type,
                                              const <a
 href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *type_name,
@@ -1477,7 +1477,7 @@ instances (if not abstract).  The value of <i class="parameter"><tt>flags</tt></
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>	The new type identifier.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582074"></a><h3><a name="g-type-register-dynamic"></a>g_type_register_dynamic ()</h3><a class="indexterm" name="id2582086"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_register_dynamic         (<a href="gobject-Type-Information.html#GType">GType</a> parent_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863060"></a><h3><a name="g-type-register-dynamic"></a>g_type_register_dynamic ()</h3><a class="indexterm" name="id2863072"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_register_dynamic         (<a href="gobject-Type-Information.html#GType">GType</a> parent_type,
                                              const <a
 href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *type_name,
@@ -1495,7 +1495,7 @@ instances (if not abstract).  The value of <i class="parameter"><tt>flags</tt></
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>	The new type identifier or <a href="gobject-Type-Information.html#G-TYPE-INVALID-CAPS"><span class="type">G_TYPE_INVALID</span></a> if registration failed.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582278"></a><h3><a name="g-type-register-fundamental"></a>g_type_register_fundamental ()</h3><a class="indexterm" name="id2582290"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_register_fundamental     (<a href="gobject-Type-Information.html#GType">GType</a> type_id,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863264"></a><h3><a name="g-type-register-fundamental"></a>g_type_register_fundamental ()</h3><a class="indexterm" name="id2863276"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_register_fundamental     (<a href="gobject-Type-Information.html#GType">GType</a> type_id,
                                              const <a
 href="../glib/glib-Basic-Types.html#gchar"
 >gchar</a> *type_name,
@@ -1516,7 +1516,7 @@ characteristics of the fundamental type.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>	The predefined type identifier.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582520"></a><h3><a name="g-type-add-interface-static"></a>g_type_add_interface_static ()</h3><a class="indexterm" name="id2582532"></a><pre class="programlisting">void        g_type_add_interface_static     (<a href="gobject-Type-Information.html#GType">GType</a> instance_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863506"></a><h3><a name="g-type-add-interface-static"></a>g_type_add_interface_static ()</h3><a class="indexterm" name="id2863518"></a><pre class="programlisting">void        g_type_add_interface_static     (<a href="gobject-Type-Information.html#GType">GType</a> instance_type,
                                              <a href="gobject-Type-Information.html#GType">GType</a> interface_type,
                                              const <a href="gobject-Type-Information.html#GInterfaceInfo">GInterfaceInfo</a> *info);</pre><p>
 Adds the static <i class="parameter"><tt>interface_type</tt></i> to <i class="parameter"><tt>instantiable_type</tt></i>.  The information
@@ -1528,7 +1528,7 @@ is used to manage the relationship.
 		 (<i class="parameter"><tt>instance_type</tt></i>, <i class="parameter"><tt>interface_type</tt></i>) combination.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582687"></a><h3><a name="g-type-add-interface-dynamic"></a>g_type_add_interface_dynamic ()</h3><a class="indexterm" name="id2582699"></a><pre class="programlisting">void        g_type_add_interface_dynamic    (<a href="gobject-Type-Information.html#GType">GType</a> instance_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863673"></a><h3><a name="g-type-add-interface-dynamic"></a>g_type_add_interface_dynamic ()</h3><a class="indexterm" name="id2863685"></a><pre class="programlisting">void        g_type_add_interface_dynamic    (<a href="gobject-Type-Information.html#GType">GType</a> instance_type,
                                              <a href="gobject-Type-Information.html#GType">GType</a> interface_type,
                                              <a href="GTypePlugin.html" title="GTypePlugin">GTypePlugin</a> *plugin);</pre><p>
 Adds the dynamic <i class="parameter"><tt>interface_type</tt></i> to <i class="parameter"><tt>instantiable_type</tt></i>. The information
@@ -1539,7 +1539,7 @@ is used to manage the relationship.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td>the <a href="GTypePlugin.html" title="GTypePlugin"><span class="type">GTypePlugin</span></a> structure to retrieve the <a href="gobject-Type-Information.html#GInterfaceInfo"><span class="type">GInterfaceInfo</span></a> from.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582850"></a><h3><a name="g-type-interface-add-prerequisite"></a>g_type_interface_add_prerequisite ()</h3><a class="indexterm" name="id2582863"></a><pre class="programlisting">void        g_type_interface_add_prerequisite
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863836"></a><h3><a name="g-type-interface-add-prerequisite"></a>g_type_interface_add_prerequisite ()</h3><a class="indexterm" name="id2863849"></a><pre class="programlisting">void        g_type_interface_add_prerequisite
                                             (<a href="gobject-Type-Information.html#GType">GType</a> interface_type,
                                              <a href="gobject-Type-Information.html#GType">GType</a> prerequisite_type);</pre><p>
 Adds <i class="parameter"><tt>prerequisite_type</tt></i> to the list of prerequisites of <i class="parameter"><tt>interface_type</tt></i>.
@@ -1551,7 +1551,7 @@ at most one instantiatable prerequisite type.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>prerequisite_type</tt></i> :</span></td><td><a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> value of an interface or instantiatable type.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582975"></a><h3><a name="g-type-get-plugin"></a>g_type_get_plugin ()</h3><a class="indexterm" name="id2582986"></a><pre class="programlisting"><a href="GTypePlugin.html" title="GTypePlugin">GTypePlugin</a>* g_type_get_plugin              (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863961"></a><h3><a name="g-type-get-plugin"></a>g_type_get_plugin ()</h3><a class="indexterm" name="id2863972"></a><pre class="programlisting"><a href="GTypePlugin.html" title="GTypePlugin">GTypePlugin</a>* g_type_get_plugin              (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Returns the <a href="GTypePlugin.html" title="GTypePlugin"><span class="type">GTypePlugin</span></a> structure for <i class="parameter"><tt>type</tt></i> or
 <tt class="literal">NULL</tt> if <i class="parameter"><tt>type</tt></i> does not have a <a href="GTypePlugin.html" title="GTypePlugin"><span class="type">GTypePlugin</span></a> structure.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>		The <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> to retrieve the plugin for.
@@ -1559,7 +1559,7 @@ Returns the <a href="GTypePlugin.html" title="GTypePlugin"><span class="type">GT
 		<tt class="literal">NULL</tt> otherwise.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583098"></a><h3><a name="g-type-interface-get-plugin"></a>g_type_interface_get_plugin ()</h3><a class="indexterm" name="id2583110"></a><pre class="programlisting"><a href="GTypePlugin.html" title="GTypePlugin">GTypePlugin</a>* g_type_interface_get_plugin    (<a href="gobject-Type-Information.html#GType">GType</a> instance_type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864084"></a><h3><a name="g-type-interface-get-plugin"></a>g_type_interface_get_plugin ()</h3><a class="indexterm" name="id2864096"></a><pre class="programlisting"><a href="GTypePlugin.html" title="GTypePlugin">GTypePlugin</a>* g_type_interface_get_plugin    (<a href="gobject-Type-Information.html#GType">GType</a> instance_type,
                                              <a href="gobject-Type-Information.html#GType">GType</a> interface_type);</pre><p>
 Returns the <a href="GTypePlugin.html" title="GTypePlugin"><span class="type">GTypePlugin</span></a> structure for the dynamic interface 
 <i class="parameter"><tt>interface_type</tt></i> which has been added to <i class="parameter"><tt>instance_type</tt></i>, or 
@@ -1571,7 +1571,7 @@ not have a <a href="GTypePlugin.html" title="GTypePlugin"><span class="type">GTy
    of <i class="parameter"><tt>instance_type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583284"></a><h3><a name="g-type-fundamental-next"></a>g_type_fundamental_next ()</h3><a class="indexterm" name="id2583296"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_fundamental_next         (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864270"></a><h3><a name="g-type-fundamental-next"></a>g_type_fundamental_next ()</h3><a class="indexterm" name="id2864282"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_fundamental_next         (void);</pre><p>
 Returns the next free fundamental type id which can be used to
 register a new fundamental type with <a href="gobject-Type-Information.html#g-type-register-fundamental"><tt class="function">g_type_register_fundamental()</tt></a>.
 The returned type ID represents the highest currently registered
@@ -1581,14 +1581,14 @@ fundamental type identifier.
           or 0 if the type system ran out of fundamental type IDs.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583349"></a><h3><a name="g-type-fundamental"></a>g_type_fundamental ()</h3><a class="indexterm" name="id2583360"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_fundamental              (<a href="gobject-Type-Information.html#GType">GType</a> type_id);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864335"></a><h3><a name="g-type-fundamental"></a>g_type_fundamental ()</h3><a class="indexterm" name="id2864346"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GType">GType</a>       g_type_fundamental              (<a href="gobject-Type-Information.html#GType">GType</a> type_id);</pre><p>
 Internal function, used to extract the fundamental type ID portion.
 use <a href="gobject-Type-Information.html#G-TYPE-FUNDAMENTAL-CAPS"><tt class="function">G_TYPE_FUNDAMENTAL()</tt></a> instead.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type_id</tt></i> :</span></td><td>valid type ID
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>fundamental type ID
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583428"></a><h3><a name="g-type-create-instance"></a>g_type_create_instance ()</h3><a class="indexterm" name="id2583440"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GTypeInstance">GTypeInstance</a>* g_type_create_instance       (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864415"></a><h3><a name="g-type-create-instance"></a>g_type_create_instance ()</h3><a class="indexterm" name="id2864426"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GTypeInstance">GTypeInstance</a>* g_type_create_instance       (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Creates and initializes an instance of <i class="parameter"><tt>type</tt></i> if <i class="parameter"><tt>type</tt></i> is valid and can
 be instantiated. The type system only performs basic allocation and
 structure setups for instances, actual instance creation should happen
@@ -1606,7 +1606,7 @@ use this function but <a href="gobject-The-Base-Object-Type.html#g-object-new"><
 	  treatment by the fundamental type implementation.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583584"></a><h3><a name="g-type-free-instance"></a>g_type_free_instance ()</h3><a class="indexterm" name="id2583595"></a><pre class="programlisting">void        g_type_free_instance            (<a href="gobject-Type-Information.html#GTypeInstance">GTypeInstance</a> *instance);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864570"></a><h3><a name="g-type-free-instance"></a>g_type_free_instance ()</h3><a class="indexterm" name="id2864581"></a><pre class="programlisting">void        g_type_free_instance            (<a href="gobject-Type-Information.html#GTypeInstance">GTypeInstance</a> *instance);</pre><p>
 Frees an instance of a type, returning it to the instance pool for the type,
 if there is one.
 </p><p>
@@ -1615,7 +1615,7 @@ fundamental types.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>instance</tt></i> :</span></td><td>an instance of a type.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583659"></a><h3><a name="g-type-add-class-cache-func"></a>g_type_add_class_cache_func ()</h3><a class="indexterm" name="id2583671"></a><pre class="programlisting">void        g_type_add_class_cache_func     (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864645"></a><h3><a name="g-type-add-class-cache-func"></a>g_type_add_class_cache_func ()</h3><a class="indexterm" name="id2864657"></a><pre class="programlisting">void        g_type_add_class_cache_func     (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> cache_data,
                                              <a href="gobject-Type-Information.html#GTypeClassCacheFunc">GTypeClassCacheFunc</a> cache_func);</pre><p>
@@ -1629,7 +1629,7 @@ are routed through the same <a href="gobject-Type-Information.html#GTypeClassCac
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>cache_func</tt></i> :</span></td><td>a <a href="gobject-Type-Information.html#GTypeClassCacheFunc"><span class="type">GTypeClassCacheFunc</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583790"></a><h3><a name="g-type-remove-class-cache-func"></a>g_type_remove_class_cache_func ()</h3><a class="indexterm" name="id2583802"></a><pre class="programlisting">void        g_type_remove_class_cache_func  (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864776"></a><h3><a name="g-type-remove-class-cache-func"></a>g_type_remove_class_cache_func ()</h3><a class="indexterm" name="id2864788"></a><pre class="programlisting">void        g_type_remove_class_cache_func  (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> cache_data,
                                              <a href="gobject-Type-Information.html#GTypeClassCacheFunc">GTypeClassCacheFunc</a> cache_func);</pre><p>
@@ -1640,7 +1640,7 @@ to avoid leaks.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>cache_func</tt></i> :</span></td><td>a <a href="gobject-Type-Information.html#GTypeClassCacheFunc"><span class="type">GTypeClassCacheFunc</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583912"></a><h3><a name="g-type-class-unref-uncached"></a>g_type_class_unref_uncached ()</h3><a class="indexterm" name="id2583923"></a><pre class="programlisting">void        g_type_class_unref_uncached     (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864898"></a><h3><a name="g-type-class-unref-uncached"></a>g_type_class_unref_uncached ()</h3><a class="indexterm" name="id2864910"></a><pre class="programlisting">void        g_type_class_unref_uncached     (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_class);</pre><p>
 A variant of <a href="gobject-Type-Information.html#g-type-class-unref"><tt class="function">g_type_class_unref()</tt></a> for use in <a href="gobject-Type-Information.html#GTypeClassCacheFunc"><span class="type">GTypeClassCacheFunc</span></a>
@@ -1650,7 +1650,7 @@ otherwise.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>g_class</tt></i> :</span></td><td>The <a href="gobject-Type-Information.html#GTypeClass"><span class="type">GTypeClass</span></a> structure to unreference.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584009"></a><h3><a name="g-type-add-interface-check"></a>g_type_add_interface_check ()</h3><a class="indexterm" name="id2584021"></a><pre class="programlisting">void        g_type_add_interface_check      (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2864995"></a><h3><a name="g-type-add-interface-check"></a>g_type_add_interface_check ()</h3><a class="indexterm" name="id2865007"></a><pre class="programlisting">void        g_type_add_interface_check      (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> check_data,
                                              <a href="gobject-Type-Information.html#GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</a> check_func);</pre><p>
@@ -1669,31 +1669,31 @@ defined on its interfaces.
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2584132"></a><h3><a name="g-type-remove-interface-check"></a>g_type_remove_interface_check ()</h3><a class="indexterm" name="id2584144"></a><pre class="programlisting">void        g_type_remove_interface_check   (<a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2865118"></a><h3><a name="g-type-remove-interface-check"></a>g_type_remove_interface_check ()</h3><a class="indexterm" name="id2865130"></a><pre class="programlisting">void        g_type_remove_interface_check   (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> check_data,
-                                             <a href="gobject-Type-Information.html#GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</a> chec_func);</pre><p>
+                                             <a href="gobject-Type-Information.html#GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</a> check_func);</pre><p>
 Removes an interface check function added with
 <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>check_data</tt></i> :</span></td><td>callback data passed to <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>chec_func</tt></i> :</span></td><td>callback function passed to <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>check_func</tt></i> :</span></td><td>callback function passed to <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2584252"></a><h3><a name="GTypeInterfaceCheckFunc"></a>GTypeInterfaceCheckFunc ()</h3><a class="indexterm" name="id2584263"></a><pre class="programlisting">void        (*GTypeInterfaceCheckFunc)      (<a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2865238"></a><h3><a name="GTypeInterfaceCheckFunc"></a>GTypeInterfaceCheckFunc ()</h3><a class="indexterm" name="id2865249"></a><pre class="programlisting">void        (*GTypeInterfaceCheckFunc)      (<a
 href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> func_data,
+>gpointer</a> check_data,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> g_iface);</pre><p>
 A callback called after an interface vtable is initialized.
 See <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>.
-</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>func_data</tt></i> :</span></td><td>data passed to <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>check_data</tt></i> :</span></td><td>data passed to <a href="gobject-Type-Information.html#g-type-add-interface-check"><tt class="function">g_type_add_interface_check()</tt></a>.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>g_iface</tt></i> :</span></td><td>the interface that has been initialized
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2584360"></a><h3><a name="g-type-value-table-peek"></a>g_type_value_table_peek ()</h3><a class="indexterm" name="id2584371"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GTypeValueTable">GTypeValueTable</a>* g_type_value_table_peek    (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2865346"></a><h3><a name="g-type-value-table-peek"></a>g_type_value_table_peek ()</h3><a class="indexterm" name="id2865357"></a><pre class="programlisting"><a href="gobject-Type-Information.html#GTypeValueTable">GTypeValueTable</a>* g_type_value_table_peek    (<a href="gobject-Type-Information.html#GType">GType</a> type);</pre><p>
 Returns the location of the <a href="gobject-Type-Information.html#GTypeValueTable"><span class="type">GTypeValueTable</span></a> associated with <i class="parameter"><tt>type</tt></i>.
 <span class="emphasis"><em>Note, this function should only be used from source code
 that implements or has internal knowledge of the implementation of
@@ -1703,7 +1703,7 @@ that implements or has internal knowledge of the implementation of
           <tt class="literal">NULL</tt> if there is no <a href="gobject-Type-Information.html#GTypeValueTable"><span class="type">GTypeValueTable</span></a> associated with <i class="parameter"><tt>type</tt></i>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584497"></a><h3><a name="G-DEFINE-TYPE-CAPS"></a>G_DEFINE_TYPE()</h3><a class="indexterm" name="id2584508"></a><pre class="programlisting">#define G_DEFINE_TYPE(TN, t_n, T_P)                         G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, {})
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2865483"></a><h3><a name="G-DEFINE-TYPE-CAPS"></a>G_DEFINE_TYPE()</h3><a class="indexterm" name="id2865494"></a><pre class="programlisting">#define G_DEFINE_TYPE(TN, t_n, T_P)                         G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, {})
 </pre><p>
 A convenience macro for type implementations, which declares a 
 class initialization function, an instance initialization function (see <a href="gobject-Type-Information.html#GTypeInfo"><span class="type">GTypeInfo</span></a> for information about 
@@ -1716,7 +1716,7 @@ a *<tt class="function">_get_type()</tt> function. See <a href="gobject-Type-Inf
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2584626"></a><h3><a name="G-DEFINE-TYPE-WITH-CODE-CAPS"></a>G_DEFINE_TYPE_WITH_CODE()</h3><a class="indexterm" name="id2584639"></a><pre class="programlisting">#define G_DEFINE_TYPE_WITH_CODE(TN, t_n, T_P, _C_)          G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, _C_)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2865612"></a><h3><a name="G-DEFINE-TYPE-WITH-CODE-CAPS"></a>G_DEFINE_TYPE_WITH_CODE()</h3><a class="indexterm" name="id2865625"></a><pre class="programlisting">#define G_DEFINE_TYPE_WITH_CODE(TN, t_n, T_P, _C_)          G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, _C_)
 </pre><p>
 A convenience macro for type implementations.  
 Similar to <a href="gobject-Type-Information.html#G-DEFINE-TYPE-CAPS"><tt class="function">G_DEFINE_TYPE()</tt></a>, but allows to insert custom code into the 
@@ -1729,7 +1729,7 @@ See <a href="gobject-Type-Information.html#G-DEFINE-TYPE-EXTENDED-CAPS"><tt clas
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2584785"></a><h3><a name="G-DEFINE-ABSTRACT-TYPE-CAPS"></a>G_DEFINE_ABSTRACT_TYPE()</h3><a class="indexterm" name="id2584796"></a><pre class="programlisting">#define G_DEFINE_ABSTRACT_TYPE(TN, t_n, T_P)                G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT, {})
+</p></div><hr><div class="refsect2" lang="en"><a name="id2865771"></a><h3><a name="G-DEFINE-ABSTRACT-TYPE-CAPS"></a>G_DEFINE_ABSTRACT_TYPE()</h3><a class="indexterm" name="id2865782"></a><pre class="programlisting">#define G_DEFINE_ABSTRACT_TYPE(TN, t_n, T_P)                G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT, {})
 </pre><p>
 A convenience macro for type implementations. 
 Similar to <a href="gobject-Type-Information.html#G-DEFINE-TYPE-CAPS"><tt class="function">G_DEFINE_TYPE()</tt></a>, but defines an abstract type. 
@@ -1741,7 +1741,7 @@ See <a href="gobject-Type-Information.html#G-DEFINE-TYPE-EXTENDED-CAPS"><tt clas
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2584896"></a><h3><a name="G-DEFINE-ABSTRACT-TYPE-WITH-CODE-CAPS"></a>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</h3><a class="indexterm" name="id2584909"></a><pre class="programlisting">#define G_DEFINE_ABSTRACT_TYPE_WITH_CODE(TN, t_n, T_P, _C_) G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT, _C_)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2865882"></a><h3><a name="G-DEFINE-ABSTRACT-TYPE-WITH-CODE-CAPS"></a>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</h3><a class="indexterm" name="id2865895"></a><pre class="programlisting">#define G_DEFINE_ABSTRACT_TYPE_WITH_CODE(TN, t_n, T_P, _C_) G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, G_TYPE_FLAG_ABSTRACT, _C_)
 </pre><p>
 A convenience macro for type implementations.
 Similar to <a href="gobject-Type-Information.html#G-DEFINE-TYPE-WITH-CODE-CAPS"><tt class="function">G_DEFINE_TYPE_WITH_CODE()</tt></a>, but defines an abstract type and allows to 
@@ -1755,7 +1755,7 @@ via <a href="gobject-Type-Information.html#G-IMPLEMENT-INTERFACE-CAPS"><tt class
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585057"></a><h3><a name="G-IMPLEMENT-INTERFACE-CAPS"></a>G_IMPLEMENT_INTERFACE()</h3><a class="indexterm" name="id2585068"></a><pre class="programlisting">#define     G_IMPLEMENT_INTERFACE(TYPE_IFACE, iface_init)</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866043"></a><h3><a name="G-IMPLEMENT-INTERFACE-CAPS"></a>G_IMPLEMENT_INTERFACE()</h3><a class="indexterm" name="id2866054"></a><pre class="programlisting">#define     G_IMPLEMENT_INTERFACE(TYPE_IFACE, iface_init)</pre><p>
 A convenience macro to ease interface addition in the <i class="parameter"><tt>_C_</tt></i> section
 of <a href="gobject-Type-Information.html#G-DEFINE-TYPE-WITH-CODE-CAPS"><tt class="function">G_DEFINE_TYPE_WITH_CODE()</tt></a> or <a href="gobject-Type-Information.html#G-DEFINE-ABSTRACT-TYPE-WITH-CODE-CAPS"><tt class="function">G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</tt></a>. 
 See <a href="gobject-Type-Information.html#G-DEFINE-TYPE-EXTENDED-CAPS"><tt class="function">G_DEFINE_TYPE_EXTENDED()</tt></a> for an example.
@@ -1767,7 +1767,7 @@ macros, since it depends on variable names from those macros.
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585176"></a><h3><a name="G-DEFINE-TYPE-EXTENDED-CAPS"></a>G_DEFINE_TYPE_EXTENDED()</h3><a class="indexterm" name="id2585187"></a><pre class="programlisting">#define     G_DEFINE_TYPE_EXTENDED(TypeName, type_name, TYPE_PARENT, flags, CODE)</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866162"></a><h3><a name="G-DEFINE-TYPE-EXTENDED-CAPS"></a>G_DEFINE_TYPE_EXTENDED()</h3><a class="indexterm" name="id2866173"></a><pre class="programlisting">#define     G_DEFINE_TYPE_EXTENDED(TypeName, type_name, TYPE_PARENT, flags, CODE)</pre><p>
 The most general convenience macro for type implementations, on which 
 <a href="gobject-Type-Information.html#G-DEFINE-TYPE-CAPS"><tt class="function">G_DEFINE_TYPE()</tt></a>, etc are based. 
 </p><div class="informalexample"><pre class="programlisting">
@@ -1829,110 +1829,110 @@ init functions.
 </td></tr></tbody></table></div><p>Since 2.4
 
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585381"></a><h3><a name="G-TYPE-INVALID-CAPS"></a>G_TYPE_INVALID</h3><a class="indexterm" name="id2585392"></a><pre class="programlisting">#define G_TYPE_INVALID			G_TYPE_MAKE_FUNDAMENTAL (0)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866367"></a><h3><a name="G-TYPE-INVALID-CAPS"></a>G_TYPE_INVALID</h3><a class="indexterm" name="id2866378"></a><pre class="programlisting">#define G_TYPE_INVALID			G_TYPE_MAKE_FUNDAMENTAL (0)
 </pre><p>
 An invalid <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a>, used as error return value in some functions which return
 a <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a>. 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585425"></a><h3><a name="G-TYPE-NONE-CAPS"></a>G_TYPE_NONE</h3><a class="indexterm" name="id2585436"></a><pre class="programlisting">#define G_TYPE_NONE			G_TYPE_MAKE_FUNDAMENTAL (1)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866411"></a><h3><a name="G-TYPE-NONE-CAPS"></a>G_TYPE_NONE</h3><a class="indexterm" name="id2866422"></a><pre class="programlisting">#define G_TYPE_NONE			G_TYPE_MAKE_FUNDAMENTAL (1)
 </pre><p>
 A fundamental type which is used as a replacement for the C
 <tt class="literal">void</tt> return type.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585458"></a><h3><a name="G-TYPE-INTERFACE-CAPS"></a>G_TYPE_INTERFACE</h3><a class="indexterm" name="id2585470"></a><pre class="programlisting">#define G_TYPE_INTERFACE		G_TYPE_MAKE_FUNDAMENTAL (2)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866444"></a><h3><a name="G-TYPE-INTERFACE-CAPS"></a>G_TYPE_INTERFACE</h3><a class="indexterm" name="id2866456"></a><pre class="programlisting">#define G_TYPE_INTERFACE		G_TYPE_MAKE_FUNDAMENTAL (2)
 </pre><p>
 The fundamental type from which all interfaces are derived.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585486"></a><h3><a name="G-TYPE-CHAR-CAPS"></a>G_TYPE_CHAR</h3><a class="indexterm" name="id2585497"></a><pre class="programlisting">#define G_TYPE_CHAR			G_TYPE_MAKE_FUNDAMENTAL (3)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866473"></a><h3><a name="G-TYPE-CHAR-CAPS"></a>G_TYPE_CHAR</h3><a class="indexterm" name="id2866483"></a><pre class="programlisting">#define G_TYPE_CHAR			G_TYPE_MAKE_FUNDAMENTAL (3)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gchar"
 ><span class="type">gchar</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585520"></a><h3><a name="G-TYPE-UCHAR-CAPS"></a>G_TYPE_UCHAR</h3><a class="indexterm" name="id2585531"></a><pre class="programlisting">#define G_TYPE_UCHAR			G_TYPE_MAKE_FUNDAMENTAL (4)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866506"></a><h3><a name="G-TYPE-UCHAR-CAPS"></a>G_TYPE_UCHAR</h3><a class="indexterm" name="id2866517"></a><pre class="programlisting">#define G_TYPE_UCHAR			G_TYPE_MAKE_FUNDAMENTAL (4)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#guchar"
 ><span class="type">guchar</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585556"></a><h3><a name="G-TYPE-BOOLEAN-CAPS"></a>G_TYPE_BOOLEAN</h3><a class="indexterm" name="id2585566"></a><pre class="programlisting">#define G_TYPE_BOOLEAN			G_TYPE_MAKE_FUNDAMENTAL (5)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866542"></a><h3><a name="G-TYPE-BOOLEAN-CAPS"></a>G_TYPE_BOOLEAN</h3><a class="indexterm" name="id2866552"></a><pre class="programlisting">#define G_TYPE_BOOLEAN			G_TYPE_MAKE_FUNDAMENTAL (5)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gboolean"
 ><span class="type">gboolean</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585591"></a><h3><a name="G-TYPE-INT-CAPS"></a>G_TYPE_INT</h3><a class="indexterm" name="id2585601"></a><pre class="programlisting">#define G_TYPE_INT			G_TYPE_MAKE_FUNDAMENTAL (6)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866577"></a><h3><a name="G-TYPE-INT-CAPS"></a>G_TYPE_INT</h3><a class="indexterm" name="id2866588"></a><pre class="programlisting">#define G_TYPE_INT			G_TYPE_MAKE_FUNDAMENTAL (6)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gint"
 ><span class="type">gint</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585626"></a><h3><a name="G-TYPE-UINT-CAPS"></a>G_TYPE_UINT</h3><a class="indexterm" name="id2585637"></a><pre class="programlisting">#define G_TYPE_UINT			G_TYPE_MAKE_FUNDAMENTAL (7)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866612"></a><h3><a name="G-TYPE-UINT-CAPS"></a>G_TYPE_UINT</h3><a class="indexterm" name="id2866623"></a><pre class="programlisting">#define G_TYPE_UINT			G_TYPE_MAKE_FUNDAMENTAL (7)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#guint"
 ><span class="type">guint</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585660"></a><h3><a name="G-TYPE-LONG-CAPS"></a>G_TYPE_LONG</h3><a class="indexterm" name="id2585671"></a><pre class="programlisting">#define G_TYPE_LONG			G_TYPE_MAKE_FUNDAMENTAL (8)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866646"></a><h3><a name="G-TYPE-LONG-CAPS"></a>G_TYPE_LONG</h3><a class="indexterm" name="id2866657"></a><pre class="programlisting">#define G_TYPE_LONG			G_TYPE_MAKE_FUNDAMENTAL (8)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#glong"
 ><span class="type">glong</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585696"></a><h3><a name="G-TYPE-ULONG-CAPS"></a>G_TYPE_ULONG</h3><a class="indexterm" name="id2585707"></a><pre class="programlisting">#define G_TYPE_ULONG			G_TYPE_MAKE_FUNDAMENTAL (9)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866682"></a><h3><a name="G-TYPE-ULONG-CAPS"></a>G_TYPE_ULONG</h3><a class="indexterm" name="id2866693"></a><pre class="programlisting">#define G_TYPE_ULONG			G_TYPE_MAKE_FUNDAMENTAL (9)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gulong"
 ><span class="type">gulong</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585732"></a><h3><a name="G-TYPE-INT64-CAPS"></a>G_TYPE_INT64</h3><a class="indexterm" name="id2585742"></a><pre class="programlisting">#define G_TYPE_INT64			G_TYPE_MAKE_FUNDAMENTAL (10)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866718"></a><h3><a name="G-TYPE-INT64-CAPS"></a>G_TYPE_INT64</h3><a class="indexterm" name="id2866729"></a><pre class="programlisting">#define G_TYPE_INT64			G_TYPE_MAKE_FUNDAMENTAL (10)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gint64"
 ><span class="type">gint64</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585768"></a><h3><a name="G-TYPE-UINT64-CAPS"></a>G_TYPE_UINT64</h3><a class="indexterm" name="id2585778"></a><pre class="programlisting">#define G_TYPE_UINT64			G_TYPE_MAKE_FUNDAMENTAL (11)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866754"></a><h3><a name="G-TYPE-UINT64-CAPS"></a>G_TYPE_UINT64</h3><a class="indexterm" name="id2866764"></a><pre class="programlisting">#define G_TYPE_UINT64			G_TYPE_MAKE_FUNDAMENTAL (11)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#guint64"
 ><span class="type">guint64</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585804"></a><h3><a name="G-TYPE-ENUM-CAPS"></a>G_TYPE_ENUM</h3><a class="indexterm" name="id2585814"></a><pre class="programlisting">#define G_TYPE_ENUM			G_TYPE_MAKE_FUNDAMENTAL (12)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866790"></a><h3><a name="G-TYPE-ENUM-CAPS"></a>G_TYPE_ENUM</h3><a class="indexterm" name="id2866801"></a><pre class="programlisting">#define G_TYPE_ENUM			G_TYPE_MAKE_FUNDAMENTAL (12)
 </pre><p>
 The fundamental type from which all enumeration types are derived.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585831"></a><h3><a name="G-TYPE-FLAGS-CAPS"></a>G_TYPE_FLAGS</h3><a class="indexterm" name="id2585841"></a><pre class="programlisting">#define G_TYPE_FLAGS			G_TYPE_MAKE_FUNDAMENTAL (13)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866817"></a><h3><a name="G-TYPE-FLAGS-CAPS"></a>G_TYPE_FLAGS</h3><a class="indexterm" name="id2866828"></a><pre class="programlisting">#define G_TYPE_FLAGS			G_TYPE_MAKE_FUNDAMENTAL (13)
 </pre><p>
 The fundamental type from which all flags types are derived.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585858"></a><h3><a name="G-TYPE-FLOAT-CAPS"></a>G_TYPE_FLOAT</h3><a class="indexterm" name="id2585869"></a><pre class="programlisting">#define G_TYPE_FLOAT			G_TYPE_MAKE_FUNDAMENTAL (14)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866844"></a><h3><a name="G-TYPE-FLOAT-CAPS"></a>G_TYPE_FLOAT</h3><a class="indexterm" name="id2866855"></a><pre class="programlisting">#define G_TYPE_FLOAT			G_TYPE_MAKE_FUNDAMENTAL (14)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gfloat"
 ><span class="type">gfloat</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585894"></a><h3><a name="G-TYPE-DOUBLE-CAPS"></a>G_TYPE_DOUBLE</h3><a class="indexterm" name="id2585905"></a><pre class="programlisting">#define G_TYPE_DOUBLE			G_TYPE_MAKE_FUNDAMENTAL (15)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866881"></a><h3><a name="G-TYPE-DOUBLE-CAPS"></a>G_TYPE_DOUBLE</h3><a class="indexterm" name="id2866891"></a><pre class="programlisting">#define G_TYPE_DOUBLE			G_TYPE_MAKE_FUNDAMENTAL (15)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gdouble"
 ><span class="type">gdouble</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585930"></a><h3><a name="G-TYPE-STRING-CAPS"></a>G_TYPE_STRING</h3><a class="indexterm" name="id2585941"></a><pre class="programlisting">#define G_TYPE_STRING			G_TYPE_MAKE_FUNDAMENTAL (16)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866916"></a><h3><a name="G-TYPE-STRING-CAPS"></a>G_TYPE_STRING</h3><a class="indexterm" name="id2866927"></a><pre class="programlisting">#define G_TYPE_STRING			G_TYPE_MAKE_FUNDAMENTAL (16)
 </pre><p>
 The fundamental type corresponding to nul-terminated C strings.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585958"></a><h3><a name="G-TYPE-POINTER-CAPS"></a>G_TYPE_POINTER</h3><a class="indexterm" name="id2585969"></a><pre class="programlisting">#define G_TYPE_POINTER			G_TYPE_MAKE_FUNDAMENTAL (17)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866944"></a><h3><a name="G-TYPE-POINTER-CAPS"></a>G_TYPE_POINTER</h3><a class="indexterm" name="id2866955"></a><pre class="programlisting">#define G_TYPE_POINTER			G_TYPE_MAKE_FUNDAMENTAL (17)
 </pre><p>
 The fundamental type corresponding to <a
 href="../glib/glib-Basic-Types.html#gpointer"
 ><span class="type">gpointer</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2585993"></a><h3><a name="G-TYPE-BOXED-CAPS"></a>G_TYPE_BOXED</h3><a class="indexterm" name="id2586003"></a><pre class="programlisting">#define G_TYPE_BOXED			G_TYPE_MAKE_FUNDAMENTAL (18)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866979"></a><h3><a name="G-TYPE-BOXED-CAPS"></a>G_TYPE_BOXED</h3><a class="indexterm" name="id2866990"></a><pre class="programlisting">#define G_TYPE_BOXED			G_TYPE_MAKE_FUNDAMENTAL (18)
 </pre><p>
 The fundamental type from which all boxed types are derived.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586020"></a><h3><a name="G-TYPE-PARAM-CAPS"></a>G_TYPE_PARAM</h3><a class="indexterm" name="id2586031"></a><pre class="programlisting">#define G_TYPE_PARAM			G_TYPE_MAKE_FUNDAMENTAL (19)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867006"></a><h3><a name="G-TYPE-PARAM-CAPS"></a>G_TYPE_PARAM</h3><a class="indexterm" name="id2867017"></a><pre class="programlisting">#define G_TYPE_PARAM			G_TYPE_MAKE_FUNDAMENTAL (19)
 </pre><p>
 The fundamental type from which all <a href="gobject-GParamSpec.html#GParamSpec"><span class="type">GParamSpec</span></a> types are derived.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586056"></a><h3><a name="G-TYPE-OBJECT-CAPS"></a>G_TYPE_OBJECT</h3><a class="indexterm" name="id2586068"></a><pre class="programlisting">#define G_TYPE_OBJECT			G_TYPE_MAKE_FUNDAMENTAL (20)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867043"></a><h3><a name="G-TYPE-OBJECT-CAPS"></a>G_TYPE_OBJECT</h3><a class="indexterm" name="id2867054"></a><pre class="programlisting">#define G_TYPE_OBJECT			G_TYPE_MAKE_FUNDAMENTAL (20)
 </pre><p>
 The fundamental type for <a href="gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586092"></a><h3><a name="G-TYPE-RESERVED-GLIB-FIRST-CAPS"></a>G_TYPE_RESERVED_GLIB_FIRST</h3><a class="indexterm" name="id2586104"></a><pre class="programlisting">#define G_TYPE_RESERVED_GLIB_FIRST	(21)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867078"></a><h3><a name="G-TYPE-RESERVED-GLIB-FIRST-CAPS"></a>G_TYPE_RESERVED_GLIB_FIRST</h3><a class="indexterm" name="id2867090"></a><pre class="programlisting">#define G_TYPE_RESERVED_GLIB_FIRST	(21)
 </pre><p>
 First fundamental type number to create a new fundamental type id with
 <a href="gobject-Type-Information.html#G-TYPE-MAKE-FUNDAMENTAL-CAPS"><tt class="function">G_TYPE_MAKE_FUNDAMENTAL()</tt></a> reserved for GLib.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586132"></a><h3><a name="G-TYPE-RESERVED-GLIB-LAST-CAPS"></a>G_TYPE_RESERVED_GLIB_LAST</h3><a class="indexterm" name="id2586144"></a><pre class="programlisting">#define G_TYPE_RESERVED_GLIB_LAST	(31)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867118"></a><h3><a name="G-TYPE-RESERVED-GLIB-LAST-CAPS"></a>G_TYPE_RESERVED_GLIB_LAST</h3><a class="indexterm" name="id2867130"></a><pre class="programlisting">#define G_TYPE_RESERVED_GLIB_LAST	(31)
 </pre><p>
 Last fundamental type number reserved for GLib.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586160"></a><h3><a name="G-TYPE-RESERVED-BSE-FIRST-CAPS"></a>G_TYPE_RESERVED_BSE_FIRST</h3><a class="indexterm" name="id2586172"></a><pre class="programlisting">#define G_TYPE_RESERVED_BSE_FIRST	(32)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867146"></a><h3><a name="G-TYPE-RESERVED-BSE-FIRST-CAPS"></a>G_TYPE_RESERVED_BSE_FIRST</h3><a class="indexterm" name="id2867158"></a><pre class="programlisting">#define G_TYPE_RESERVED_BSE_FIRST	(32)
 </pre><p>
 First fundamental type number to create a new fundamental type id with
 <a href="gobject-Type-Information.html#G-TYPE-MAKE-FUNDAMENTAL-CAPS"><tt class="function">G_TYPE_MAKE_FUNDAMENTAL()</tt></a> reserved for BSE.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586200"></a><h3><a name="G-TYPE-RESERVED-BSE-LAST-CAPS"></a>G_TYPE_RESERVED_BSE_LAST</h3><a class="indexterm" name="id2586212"></a><pre class="programlisting">#define G_TYPE_RESERVED_BSE_LAST	(48)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867186"></a><h3><a name="G-TYPE-RESERVED-BSE-LAST-CAPS"></a>G_TYPE_RESERVED_BSE_LAST</h3><a class="indexterm" name="id2867198"></a><pre class="programlisting">#define G_TYPE_RESERVED_BSE_LAST	(48)
 </pre><p>
 Last fundamental type number reserved for BSE.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2586228"></a><h3><a name="G-TYPE-RESERVED-USER-FIRST-CAPS"></a>G_TYPE_RESERVED_USER_FIRST</h3><a class="indexterm" name="id2586240"></a><pre class="programlisting">#define G_TYPE_RESERVED_USER_FIRST	(49)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867214"></a><h3><a name="G-TYPE-RESERVED-USER-FIRST-CAPS"></a>G_TYPE_RESERVED_USER_FIRST</h3><a class="indexterm" name="id2867226"></a><pre class="programlisting">#define G_TYPE_RESERVED_USER_FIRST	(49)
 </pre><p>
 First available fundamental type number to create new fundamental 
 type id with <a href="gobject-Type-Information.html#G-TYPE-MAKE-FUNDAMENTAL-CAPS"><tt class="function">G_TYPE_MAKE_FUNDAMENTAL()</tt></a>.

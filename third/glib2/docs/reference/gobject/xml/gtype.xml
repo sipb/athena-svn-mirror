@@ -143,8 +143,8 @@ enum        <link linkend="GTypeFundamentalFlags">GTypeFundamentalFlags</link>;
 <link linkend="void">void</link>        <link linkend="g-type-add-interface-check">g_type_add_interface_check</link>      (<link linkend="gpointer">gpointer</link> check_data,
                                              <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> check_func);
 <link linkend="void">void</link>        <link linkend="g-type-remove-interface-check">g_type_remove_interface_check</link>   (<link linkend="gpointer">gpointer</link> check_data,
-                                             <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> chec_func);
-<link linkend="void">void</link>        (<link linkend="GTypeInterfaceCheckFunc">*GTypeInterfaceCheckFunc</link>)      (<link linkend="gpointer">gpointer</link> func_data,
+                                             <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> check_func);
+<link linkend="void">void</link>        (<link linkend="GTypeInterfaceCheckFunc">*GTypeInterfaceCheckFunc</link>)      (<link linkend="gpointer">gpointer</link> check_data,
                                              <link linkend="gpointer">gpointer</link> g_iface);
 <link linkend="GTypeValueTable">GTypeValueTable</link>* <link linkend="g-type-value-table-peek">g_type_value_table_peek</link>    (<link linkend="GType">GType</link> type);
 #define     <link linkend="G-DEFINE-TYPE-CAPS">G_DEFINE_TYPE</link>                   (TN, t_n, T_P)
@@ -2342,7 +2342,7 @@ defined on its interfaces.
 <refsect2>
 <title><anchor id="g-type-remove-interface-check"/>g_type_remove_interface_check ()</title>
 <indexterm role="2.4"><primary>g_type_remove_interface_check</primary></indexterm><programlisting><link linkend="void">void</link>        g_type_remove_interface_check   (<link linkend="gpointer">gpointer</link> check_data,
-                                             <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> chec_func);</programlisting>
+                                             <link linkend="GTypeInterfaceCheckFunc">GTypeInterfaceCheckFunc</link> check_func);</programlisting>
 <para>
 Removes an interface check function added with
 <link linkend="g-type-add-interface-check"><function>g_type_add_interface_check()</function></link>.
@@ -2350,7 +2350,7 @@ Removes an interface check function added with
 <varlistentry><term><parameter>check_data</parameter>&nbsp;:</term>
 <listitem><simpara>callback data passed to <link linkend="g-type-add-interface-check"><function>g_type_add_interface_check()</function></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>chec_func</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>check_func</parameter>&nbsp;:</term>
 <listitem><simpara>callback function passed to <link linkend="g-type-add-interface-check"><function>g_type_add_interface_check()</function></link>
 </simpara></listitem></varlistentry>
 </variablelist><para>Since 2.4
@@ -2359,13 +2359,13 @@ Removes an interface check function added with
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTypeInterfaceCheckFunc"/>GTypeInterfaceCheckFunc ()</title>
-<indexterm role="2.4"><primary>GTypeInterfaceCheckFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GTypeInterfaceCheckFunc)      (<link linkend="gpointer">gpointer</link> func_data,
+<indexterm role="2.4"><primary>GTypeInterfaceCheckFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GTypeInterfaceCheckFunc)      (<link linkend="gpointer">gpointer</link> check_data,
                                              <link linkend="gpointer">gpointer</link> g_iface);</programlisting>
 <para>
 A callback called after an interface vtable is initialized.
 See <link linkend="g-type-add-interface-check"><function>g_type_add_interface_check()</function></link>.
 </para><variablelist role="params">
-<varlistentry><term><parameter>func_data</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>check_data</parameter>&nbsp;:</term>
 <listitem><simpara>data passed to <link linkend="g-type-add-interface-check"><function>g_type_add_interface_check()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>g_iface</parameter>&nbsp;:</term>

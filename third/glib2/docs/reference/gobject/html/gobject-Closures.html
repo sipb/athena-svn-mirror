@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Closures</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GObject Reference Manual"><link rel="up" href="rn01.html" title="API Reference"><link rel="previous" href="gobject-Signals.html" title="Signals"><link rel="next" href="gobject-Value-arrays.html" title="Value arrays"><link rel="preface" href="pr01.html" title="Introduction"><link rel="reference" href="rn01.html" title="API Reference"><link rel="refentry" href="gobject-Type-Information.html" title="GType"><link rel="refentry" href="GTypePlugin.html" title="GTypePlugin"><link rel="refentry" href="GTypeModule.html" title="GTypeModule"><link rel="refentry" href="gobject-The-Base-Object-Type.html" title="GObject"><link rel="refentry" href="gobject-Enumeration-and-Flag-Types.html" title="Enums and Flags"><link rel="refentry" href="gobject-Boxed-Types.html" title="GBoxed"><link rel="refentry" href="gobject-Generic-values.html" title="Generic Values"><link rel="refentry" href="gobject-Standard-Parameter-and-Value-Types.html" title="Parameters and Values"><link rel="refentry" href="gobject-Varargs-Value-Collection.html" title="Varargs Value Collection"><link rel="refentry" href="gobject-GParamSpec.html" title="GParamSpec"><link rel="refentry" href="gobject-Signals.html" title="Signals"><link rel="refentry" href="gobject-Closures.html" title="Closures"><link rel="refentry" href="gobject-Value-arrays.html" title="Value arrays"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="refentry" href="glib-mkenums.html" title="glib-mkenums"><link rel="refentry" href="glib-genmarshal.html" title="glib-genmarshal"><link rel="refentry" href="gobject-query.html" title="gobject-query"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gobject-Closures.html#id2718909" title="Description"><link rel="section" href="gobject-Closures.html#id2719084" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gobject-Signals.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GObject Reference Manual</th><td><a accesskey="n" href="gobject-Value-arrays.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gobject-Closures"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Closures</span></h2><p>Closures &#8212; Functions as first-class objects</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Closures</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GObject Reference Manual"><link rel="up" href="rn01.html" title="API Reference"><link rel="prev" href="gobject-Signals.html" title="Signals"><link rel="next" href="gobject-Value-arrays.html" title="Value arrays"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="preface" href="pr01.html" title="Introduction"><link rel="reference" href="rn01.html" title="API Reference"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gobject-Signals.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GObject Reference Manual</th><td><a accesskey="n" href="gobject-Value-arrays.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gobject-Closures"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">Closures</span></h2><p>Closures &#8212; Functions as first-class objects</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;glib-object.h&gt;
 
@@ -357,7 +357,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> marshal_data);
 #define     <a href="gobject-Closures.html#g-cclosure-marshal-BOOL--FLAGS">g_cclosure_marshal_BOOL__FLAGS</a>
 
-</pre></div><div class="refsect1" lang="en"><a name="id2718909"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2999912"></a><h2>Description</h2><p>
 A <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> represents a callback supplied by the programmer. It will generally
 comprise a function of some kind and a marshaller used to call it. It is the 
 reponsibility of the marshaller to convert the arguments for the invocation 
@@ -397,14 +397,14 @@ and it's parameters won't be freed until the invocation finishes.
 <a href="gobject-Closures.html#g-closure-invalidate"><tt class="function">g_closure_invalidate()</tt></a> and invalidation notifiers allow callbacks to be
 automatically removed when the objects they point to go away.
 </p></li></ul></div><p>
-</p></div><div class="refsect1" lang="en"><a name="id2719084"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2719090"></a><h3><a name="G-CLOSURE-NEEDS-MARSHAL-CAPS"></a>G_CLOSURE_NEEDS_MARSHAL()</h3><a class="indexterm" name="id2719103"></a><pre class="programlisting">#define	G_CLOSURE_NEEDS_MARSHAL(closure) (((GClosure*) (closure))-&gt;marshal == NULL)
+</p></div><div class="refsect1" lang="en"><a name="id3000087"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3000093"></a><h3><a name="G-CLOSURE-NEEDS-MARSHAL-CAPS"></a>G_CLOSURE_NEEDS_MARSHAL()</h3><a class="indexterm" name="id3000106"></a><pre class="programlisting">#define	G_CLOSURE_NEEDS_MARSHAL(closure) (((GClosure*) (closure))-&gt;marshal == NULL)
 </pre><p>
 Returns <tt class="literal">TRUE</tt> if a <a href="gobject-Closures.html#GClosureMarshal"><span class="type">GClosureMarshal</span></a> marshaller has not yet been set on 
 <i class="parameter"><tt>closure</tt></i>. See <a href="gobject-Closures.html#g-closure-set-marshal"><tt class="function">g_closure_set_marshal()</tt></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>a <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719177"></a><h3><a name="G-CLOSURE-N-NOTIFIERS-CAPS"></a>G_CLOSURE_N_NOTIFIERS()</h3><a class="indexterm" name="id2719189"></a><pre class="programlisting">#define     G_CLOSURE_N_NOTIFIERS(cl)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000180"></a><h3><a name="G-CLOSURE-N-NOTIFIERS-CAPS"></a>G_CLOSURE_N_NOTIFIERS()</h3><a class="indexterm" name="id3000192"></a><pre class="programlisting">#define     G_CLOSURE_N_NOTIFIERS(cl)</pre><p>
 Returns the total number of notifiers connected with the closure <i class="parameter"><tt>cl</tt></i>. 
 The count includes the meta marshaller, the finalize and invalidate notifiers 
 and the marshal guards. Note that each guard counts as two notifiers. 
@@ -413,26 +413,26 @@ See <a href="gobject-Closures.html#g-closure-set-meta-marshal"><tt class="functi
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cl</tt></i> :</span></td><td>a <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719284"></a><h3><a name="G-CCLOSURE-SWAP-DATA-CAPS"></a>G_CCLOSURE_SWAP_DATA()</h3><a class="indexterm" name="id2719295"></a><pre class="programlisting">#define	G_CCLOSURE_SWAP_DATA(cclosure)	 (((GClosure*) (closure))-&gt;derivative_flag)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000288"></a><h3><a name="G-CCLOSURE-SWAP-DATA-CAPS"></a>G_CCLOSURE_SWAP_DATA()</h3><a class="indexterm" name="id3000298"></a><pre class="programlisting">#define	G_CCLOSURE_SWAP_DATA(cclosure)	 (((GClosure*) (closure))-&gt;derivative_flag)
 </pre><p>
 Returns whether the user data of the <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span></a> should be passed as the
 first parameter to the callback. See <a href="gobject-Closures.html#g-cclosure-new-swap"><tt class="function">g_cclosure_new_swap()</tt></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cclosure</tt></i> :</span></td><td>a <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719358"></a><h3><a name="G-CALLBACK-CAPS"></a>G_CALLBACK()</h3><a class="indexterm" name="id2719369"></a><pre class="programlisting">#define	G_CALLBACK(f)			 ((GCallback) (f))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000361"></a><h3><a name="G-CALLBACK-CAPS"></a>G_CALLBACK()</h3><a class="indexterm" name="id3000372"></a><pre class="programlisting">#define	G_CALLBACK(f)			 ((GCallback) (f))
 </pre><p>
 Cast a function pointer to a <a href="gobject-Closures.html#GCallback"><span class="type">GCallback</span></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>f</tt></i> :</span></td><td>a function pointer.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719411"></a><h3><a name="GCallback"></a>GCallback ()</h3><a class="indexterm" name="id2719422"></a><pre class="programlisting">void        (*GCallback)                    (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000414"></a><h3><a name="GCallback"></a>GCallback ()</h3><a class="indexterm" name="id3000425"></a><pre class="programlisting">void        (*GCallback)                    (void);</pre><p>
 The type used for callback functions in structure definitions and function 
 signatures. This doesn't mean that all callback functions must take no 
 parameters and return void. The required signature of a callback function 
 is determined by the context in which is used (e.g. the signal to which it 
 is connected). Use <a href="gobject-Closures.html#G-CALLBACK-CAPS"><tt class="function">G_CALLBACK()</tt></a> to cast the callback function to a <a href="gobject-Closures.html#GCallback"><span class="type">GCallback</span></a>. 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2719467"></a><h3><a name="GClosure"></a>struct GClosure</h3><a class="indexterm" name="id2719478"></a><pre class="programlisting">struct GClosure {
+</p></div><hr><div class="refsect2" lang="en"><a name="id3000470"></a><h3><a name="GClosure"></a>struct GClosure</h3><a class="indexterm" name="id3000481"></a><pre class="programlisting">struct GClosure {
 
 
 };
@@ -447,10 +447,10 @@ href="../glib/glib-Basic-Types.html#guint"
 >guint</a> <i class="structfield"><tt>is_invalid</tt></i> : 1</span></td><td>Indicates whether the closure has been invalidated by 
   <a href="gobject-Closures.html#g-closure-invalidate"><tt class="function">g_closure_invalidate()</tt></a>
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719569"></a><h3><a name="G-TYPE-CLOSURE-CAPS"></a>G_TYPE_CLOSURE</h3><a class="indexterm" name="id2719580"></a><pre class="programlisting">#define	G_TYPE_CLOSURE		(g_closure_get_type ())
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000572"></a><h3><a name="G-TYPE-CLOSURE-CAPS"></a>G_TYPE_CLOSURE</h3><a class="indexterm" name="id3000584"></a><pre class="programlisting">#define	G_TYPE_CLOSURE		(g_closure_get_type ())
 </pre><p>
 The <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> for <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2719612"></a><h3><a name="GCClosure"></a>struct GCClosure</h3><a class="indexterm" name="id2719622"></a><pre class="programlisting">struct GCClosure {
+</p></div><hr><div class="refsect2" lang="en"><a name="id3000615"></a><h3><a name="GCClosure"></a>struct GCClosure</h3><a class="indexterm" name="id3000626"></a><pre class="programlisting">struct GCClosure {
 
   GClosure	closure;
   gpointer	callback;
@@ -462,7 +462,7 @@ A <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span><
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> <i class="structfield"><tt>callback</tt></i></span></td><td>the callback function
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719705"></a><h3><a name="GClosureMarshal"></a>GClosureMarshal ()</h3><a class="indexterm" name="id2719716"></a><pre class="programlisting">void        (*GClosureMarshal)              (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000708"></a><h3><a name="GClosureMarshal"></a>GClosureMarshal ()</h3><a class="indexterm" name="id3000719"></a><pre class="programlisting">void        (*GClosureMarshal)              (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -487,7 +487,7 @@ The type used for marshaller functions.
   see <a href="gobject-Closures.html#g-closure-set-marshal"><tt class="function">g_closure_set_marshal()</tt></a> and <a href="gobject-Closures.html#g-closure-set-meta-marshal"><tt class="function">g_closure_set_meta_marshal()</tt></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2719958"></a><h3><a name="GClosureNotify"></a>GClosureNotify ()</h3><a class="indexterm" name="id2719968"></a><pre class="programlisting">void        (*GClosureNotify)               (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000961"></a><h3><a name="GClosureNotify"></a>GClosureNotify ()</h3><a class="indexterm" name="id3000971"></a><pre class="programlisting">void        (*GClosureNotify)               (<a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> data,
                                              <a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
@@ -497,7 +497,7 @@ on closures.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>the <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> on which the notification is emitted
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720047"></a><h3><a name="g-cclosure-new"></a>g_cclosure_new ()</h3><a class="indexterm" name="id2720058"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new                  (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001050"></a><h3><a name="g-cclosure-new"></a>g_cclosure_new ()</h3><a class="indexterm" name="id3001061"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new                  (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> user_data,
@@ -510,7 +510,7 @@ the last parameter.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a new <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720192"></a><h3><a name="g-cclosure-new-swap"></a>g_cclosure_new_swap ()</h3><a class="indexterm" name="id2720204"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new_swap             (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001195"></a><h3><a name="g-cclosure-new-swap"></a>g_cclosure_new_swap ()</h3><a class="indexterm" name="id3001207"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new_swap             (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> user_data,
@@ -523,7 +523,7 @@ the first parameter.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a new <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720337"></a><h3><a name="g-cclosure-new-object"></a>g_cclosure_new_object ()</h3><a class="indexterm" name="id2720349"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new_object           (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001340"></a><h3><a name="g-cclosure-new-object"></a>g_cclosure_new_object ()</h3><a class="indexterm" name="id3001352"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new_object           (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
                                              <a href="gobject-The-Base-Object-Type.html#GObject">GObject</a> *object);</pre><p>
 A variant of <a href="gobject-Closures.html#g-cclosure-new"><tt class="function">g_cclosure_new()</tt></a> which uses <i class="parameter"><tt>object</tt></i> as <i class="parameter"><tt>user_data</tt></i> and calls 
 <a href="gobject-The-Base-Object-Type.html#g-object-watch-closure"><tt class="function">g_object_watch_closure()</tt></a> on <i class="parameter"><tt>object</tt></i> and the created closure. This function 
@@ -534,7 +534,7 @@ and want the callback to no longer run after the object is is freed.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a new <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720500"></a><h3><a name="g-cclosure-new-object-swap"></a>g_cclosure_new_object_swap ()</h3><a class="indexterm" name="id2720512"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new_object_swap      (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001503"></a><h3><a name="g-cclosure-new-object-swap"></a>g_cclosure_new_object_swap ()</h3><a class="indexterm" name="id3001515"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_cclosure_new_object_swap      (<a href="gobject-Closures.html#GCallback">GCallback</a> callback_func,
                                              <a href="gobject-The-Base-Object-Type.html#GObject">GObject</a> *object);</pre><p>
 A variant of <a href="gobject-Closures.html#g-cclosure-new-swap"><tt class="function">g_cclosure_new_swap()</tt></a> which uses <i class="parameter"><tt>object</tt></i> as <i class="parameter"><tt>user_data</tt></i> and calls 
 <a href="gobject-The-Base-Object-Type.html#g-object-watch-closure"><tt class="function">g_object_watch_closure()</tt></a> on <i class="parameter"><tt>object</tt></i> and the created closure. This function 
@@ -545,7 +545,7 @@ and want the callback to no longer run after the object is is freed.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a new <a href="gobject-Closures.html#GCClosure"><span class="type">GCClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720663"></a><h3><a name="g-closure-new-object"></a>g_closure_new_object ()</h3><a class="indexterm" name="id2720674"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_closure_new_object            (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001666"></a><h3><a name="g-closure-new-object"></a>g_closure_new_object ()</h3><a class="indexterm" name="id3001677"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_closure_new_object            (<a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> sizeof_closure,
                                              <a href="gobject-The-Base-Object-Type.html#GObject">GObject</a> *object);</pre><p>
@@ -560,14 +560,14 @@ of closures.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a newly allocated <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720832"></a><h3><a name="g-closure-ref"></a>g_closure_ref ()</h3><a class="indexterm" name="id2720843"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_closure_ref                   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001835"></a><h3><a name="g-closure-ref"></a>g_closure_ref ()</h3><a class="indexterm" name="id3001846"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_closure_ref                   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
 Increments the reference count on a closure to force it staying
 alive while the caller holds a pointer to it.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td><a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> to increment the reference count on
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The <i class="parameter"><tt>closure</tt></i> passed in, for convenience
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2720915"></a><h3><a name="g-closure-sink"></a>g_closure_sink ()</h3><a class="indexterm" name="id2720926"></a><pre class="programlisting">void        g_closure_sink                  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001918"></a><h3><a name="g-closure-sink"></a>g_closure_sink ()</h3><a class="indexterm" name="id3001929"></a><pre class="programlisting">void        g_closure_sink                  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
 Takes over the initial ownership of a closure.
 Each closure is initially created in a<i class="firstterm">floating</i> state, 
 which means that the initial reference count is not owned by any caller. 
@@ -611,14 +611,14 @@ Because <a href="gobject-Closures.html#g-closure-sink"><tt class="function">g_cl
           still being held
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721111"></a><h3><a name="g-closure-unref"></a>g_closure_unref ()</h3><a class="indexterm" name="id2721122"></a><pre class="programlisting">void        g_closure_unref                 (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002114"></a><h3><a name="g-closure-unref"></a>g_closure_unref ()</h3><a class="indexterm" name="id3002125"></a><pre class="programlisting">void        g_closure_unref                 (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
 Decrements the reference count of a closure after it was previously 
 incremented by the same caller. If no other callers are using the closure,
 then the closure will be destroyed and freed.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td><a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a> to decrement the reference count on
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721178"></a><h3><a name="g-closure-invoke"></a>g_closure_invoke ()</h3><a class="indexterm" name="id2721190"></a><pre class="programlisting">void        g_closure_invoke                (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002182"></a><h3><a name="g-closure-invoke"></a>g_closure_invoke ()</h3><a class="indexterm" name="id3002193"></a><pre class="programlisting">void        g_closure_invoke                (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -637,7 +637,7 @@ Invokes the closure, i.e. executes the callback represented by the <i class="par
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>invocation_hint</tt></i> :</span></td><td>a context-dependent invocation hint
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721381"></a><h3><a name="g-closure-invalidate"></a>g_closure_invalidate ()</h3><a class="indexterm" name="id2721392"></a><pre class="programlisting">void        g_closure_invalidate            (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002384"></a><h3><a name="g-closure-invalidate"></a>g_closure_invalidate ()</h3><a class="indexterm" name="id3002395"></a><pre class="programlisting">void        g_closure_invalidate            (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
 Sets a flag on the closure to indicate that it's calling environment has 
 become invalid, and thus causes any future invocations of <a href="gobject-Closures.html#g-closure-invoke"><tt class="function">g_closure_invoke()</tt></a> 
 on this <i class="parameter"><tt>closure</tt></i> to be ignored. Also, invalidation notifiers installed on 
@@ -652,7 +652,7 @@ of a closure drops to zero (unless it has already been invalidated before).
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>GClosure to invalidate
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721501"></a><h3><a name="g-closure-add-finalize-notifier"></a>g_closure_add_finalize_notifier ()</h3><a class="indexterm" name="id2721513"></a><pre class="programlisting">void        g_closure_add_finalize_notifier (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002504"></a><h3><a name="g-closure-add-finalize-notifier"></a>g_closure_add_finalize_notifier ()</h3><a class="indexterm" name="id3002516"></a><pre class="programlisting">void        g_closure_add_finalize_notifier (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> notify_data,
@@ -668,7 +668,7 @@ notifiers.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>notify_func</tt></i> :</span></td><td>the callback function to register
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721639"></a><h3><a name="g-closure-add-invalidate-notifier"></a>g_closure_add_invalidate_notifier ()</h3><a class="indexterm" name="id2721652"></a><pre class="programlisting">void        g_closure_add_invalidate_notifier
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002642"></a><h3><a name="g-closure-add-invalidate-notifier"></a>g_closure_add_invalidate_notifier ()</h3><a class="indexterm" name="id3002655"></a><pre class="programlisting">void        g_closure_add_invalidate_notifier
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -682,7 +682,7 @@ invoked before finalization notifiers, in an unspecified order.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>notify_func</tt></i> :</span></td><td>the callback function to register
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721776"></a><h3><a name="g-closure-remove-finalize-notifier"></a>g_closure_remove_finalize_notifier ()</h3><a class="indexterm" name="id2721789"></a><pre class="programlisting">void        g_closure_remove_finalize_notifier
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002779"></a><h3><a name="g-closure-remove-finalize-notifier"></a>g_closure_remove_finalize_notifier ()</h3><a class="indexterm" name="id3002792"></a><pre class="programlisting">void        g_closure_remove_finalize_notifier
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -696,7 +696,7 @@ they are run.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>notify_func</tt></i> :</span></td><td>the callback function to remove
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2721906"></a><h3><a name="g-closure-remove-invalidate-notifier"></a>g_closure_remove_invalidate_notifier ()</h3><a class="indexterm" name="id2721919"></a><pre class="programlisting">void        g_closure_remove_invalidate_notifier
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002909"></a><h3><a name="g-closure-remove-invalidate-notifier"></a>g_closure_remove_invalidate_notifier ()</h3><a class="indexterm" name="id3002922"></a><pre class="programlisting">void        g_closure_remove_invalidate_notifier
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
@@ -710,7 +710,7 @@ they are run.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>notify_func</tt></i> :</span></td><td>the callback function to remove
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722037"></a><h3><a name="g-closure-new-simple"></a>g_closure_new_simple ()</h3><a class="indexterm" name="id2722048"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_closure_new_simple            (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003040"></a><h3><a name="g-closure-new-simple"></a>g_closure_new_simple ()</h3><a class="indexterm" name="id3003051"></a><pre class="programlisting"><a href="gobject-Closures.html#GClosure">GClosure</a>*   g_closure_new_simple            (<a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> sizeof_closure,
                                              <a
@@ -757,7 +757,7 @@ MyClosure *my_closure_new (gpointer data)
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a newly allocated <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722186"></a><h3><a name="g-closure-set-marshal"></a>g_closure_set_marshal ()</h3><a class="indexterm" name="id2722197"></a><pre class="programlisting">void        g_closure_set_marshal           (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003189"></a><h3><a name="g-closure-set-marshal"></a>g_closure_set_marshal ()</h3><a class="indexterm" name="id3003200"></a><pre class="programlisting">void        g_closure_set_marshal           (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Closures.html#GClosureMarshal">GClosureMarshal</a> marshal);</pre><p>
 Sets the marshaller of <i class="parameter"><tt>closure</tt></i>. The <i class="parameter"><tt>marshal_data</tt></i> provides a way for a 
 meta marshaller to provide additional information to the marshaller. 
@@ -768,7 +768,7 @@ function to use instead of <i class="parameter"><tt>closure-&gt;callback</tt></i
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal</tt></i> :</span></td><td>a <a href="gobject-Closures.html#GClosureMarshal"><span class="type">GClosureMarshal</span></a> function
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722315"></a><h3><a name="g-closure-add-marshal-guards"></a>g_closure_add_marshal_guards ()</h3><a class="indexterm" name="id2722327"></a><pre class="programlisting">void        g_closure_add_marshal_guards    (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003318"></a><h3><a name="g-closure-add-marshal-guards"></a>g_closure_add_marshal_guards ()</h3><a class="indexterm" name="id3003330"></a><pre class="programlisting">void        g_closure_add_marshal_guards    (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> pre_marshal_data,
@@ -788,7 +788,7 @@ example of marshal guards.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>post_marshal_notify</tt></i> :</span></td><td>a function to call after the closure callback
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722497"></a><h3><a name="g-closure-set-meta-marshal"></a>g_closure_set_meta_marshal ()</h3><a class="indexterm" name="id2722509"></a><pre class="programlisting">void        g_closure_set_meta_marshal      (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003500"></a><h3><a name="g-closure-set-meta-marshal"></a>g_closure_set_meta_marshal ()</h3><a class="indexterm" name="id3003512"></a><pre class="programlisting">void        g_closure_set_meta_marshal      (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a
 href="../glib/glib-Basic-Types.html#gpointer"
 >gpointer</a> marshal_data,
@@ -811,7 +811,7 @@ marshaller as the <i class="parameter"><tt>marshal_data</tt></i> argument.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>meta_marshal</tt></i> :</span></td><td>a <a href="gobject-Closures.html#GClosureMarshal"><span class="type">GClosureMarshal</span></a> function
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722677"></a><h3><a name="g-source-set-closure"></a>g_source_set_closure ()</h3><a class="indexterm" name="id2722688"></a><pre class="programlisting">void        g_source_set_closure            (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003680"></a><h3><a name="g-source-set-closure"></a>g_source_set_closure ()</h3><a class="indexterm" name="id3003692"></a><pre class="programlisting">void        g_source_set_closure            (<a
 href="../glib/glib-The-Main-Event-Loop.html#GSource"
 >GSource</a> *source,
                                              <a href="gobject-Closures.html#GClosure">GClosure</a> *closure);</pre><p>
@@ -824,17 +824,17 @@ filled in with pointers to appropriate functions.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>a <a href="gobject-Closures.html#GClosure"><span class="type">GClosure</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2722790"></a><h3><a name="G-TYPE-IO-CHANNEL-CAPS"></a>G_TYPE_IO_CHANNEL</h3><a class="indexterm" name="id2722802"></a><pre class="programlisting">#define G_TYPE_IO_CHANNEL (g_io_channel_get_type ())
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003793"></a><h3><a name="G-TYPE-IO-CHANNEL-CAPS"></a>G_TYPE_IO_CHANNEL</h3><a class="indexterm" name="id3003805"></a><pre class="programlisting">#define G_TYPE_IO_CHANNEL (g_io_channel_get_type ())
 </pre><p>
 The <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> for <a
 href="../glib/glib-IO-Channels.html#GIOChannel"
 ><span class="type">GIOChannel</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2722835"></a><h3><a name="G-TYPE-IO-CONDITION-CAPS"></a>G_TYPE_IO_CONDITION</h3><a class="indexterm" name="id2722847"></a><pre class="programlisting">#define G_TYPE_IO_CONDITION (g_io_condition_get_type ())
+</p></div><hr><div class="refsect2" lang="en"><a name="id3003838"></a><h3><a name="G-TYPE-IO-CONDITION-CAPS"></a>G_TYPE_IO_CONDITION</h3><a class="indexterm" name="id3003850"></a><pre class="programlisting">#define G_TYPE_IO_CONDITION (g_io_condition_get_type ())
 </pre><p>
 The <a href="gobject-Type-Information.html#GType"><span class="type">GType</span></a> for <a
 href="../glib/glib-IO-Channels.html#GIOCondition"
 ><span class="type">GIOCondition</span></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2722880"></a><h3><a name="g-cclosure-marshal-VOID--VOID"></a>g_cclosure_marshal_VOID__VOID ()</h3><a class="indexterm" name="id2722892"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__VOID   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</p></div><hr><div class="refsect2" lang="en"><a name="id3003883"></a><h3><a name="g-cclosure-marshal-VOID--VOID"></a>g_cclosure_marshal_VOID__VOID ()</h3><a class="indexterm" name="id3003895"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__VOID   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -857,7 +857,7 @@ A marshaller for a <a href="gobject-Closures.html#GCClosure"><span class="type">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2723091"></a><h3><a name="g-cclosure-marshal-VOID--BOOLEAN"></a>g_cclosure_marshal_VOID__BOOLEAN ()</h3><a class="indexterm" name="id2723103"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__BOOLEAN
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3004094"></a><h3><a name="g-cclosure-marshal-VOID--BOOLEAN"></a>g_cclosure_marshal_VOID__BOOLEAN ()</h3><a class="indexterm" name="id3004106"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__BOOLEAN
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
@@ -883,7 +883,7 @@ href="../glib/glib-Basic-Types.html#gboolean"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2723311"></a><h3><a name="g-cclosure-marshal-VOID--CHAR"></a>g_cclosure_marshal_VOID__CHAR ()</h3><a class="indexterm" name="id2723323"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__CHAR   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3004314"></a><h3><a name="g-cclosure-marshal-VOID--CHAR"></a>g_cclosure_marshal_VOID__CHAR ()</h3><a class="indexterm" name="id3004326"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__CHAR   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -908,7 +908,7 @@ href="../glib/glib-Basic-Types.html#gchar"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2723531"></a><h3><a name="g-cclosure-marshal-VOID--UCHAR"></a>g_cclosure_marshal_VOID__UCHAR ()</h3><a class="indexterm" name="id2723543"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__UCHAR  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3004534"></a><h3><a name="g-cclosure-marshal-VOID--UCHAR"></a>g_cclosure_marshal_VOID__UCHAR ()</h3><a class="indexterm" name="id3004546"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__UCHAR  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -933,7 +933,7 @@ href="../glib/glib-Basic-Types.html#guchar"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2723750"></a><h3><a name="g-cclosure-marshal-VOID--INT"></a>g_cclosure_marshal_VOID__INT ()</h3><a class="indexterm" name="id2723762"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__INT    (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3004753"></a><h3><a name="g-cclosure-marshal-VOID--INT"></a>g_cclosure_marshal_VOID__INT ()</h3><a class="indexterm" name="id3004765"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__INT    (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -958,7 +958,7 @@ href="../glib/glib-Basic-Types.html#gint"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2723970"></a><h3><a name="g-cclosure-marshal-VOID--UINT"></a>g_cclosure_marshal_VOID__UINT ()</h3><a class="indexterm" name="id2723982"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__UINT   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3004973"></a><h3><a name="g-cclosure-marshal-VOID--UINT"></a>g_cclosure_marshal_VOID__UINT ()</h3><a class="indexterm" name="id3004985"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__UINT   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -983,7 +983,7 @@ href="../glib/glib-Basic-Types.html#guint"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2724189"></a><h3><a name="g-cclosure-marshal-VOID--LONG"></a>g_cclosure_marshal_VOID__LONG ()</h3><a class="indexterm" name="id2724201"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__LONG   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3005192"></a><h3><a name="g-cclosure-marshal-VOID--LONG"></a>g_cclosure_marshal_VOID__LONG ()</h3><a class="indexterm" name="id3005204"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__LONG   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1008,7 +1008,7 @@ href="../glib/glib-Basic-Types.html#glong"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2724408"></a><h3><a name="g-cclosure-marshal-VOID--ULONG"></a>g_cclosure_marshal_VOID__ULONG ()</h3><a class="indexterm" name="id2724420"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__ULONG  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3005411"></a><h3><a name="g-cclosure-marshal-VOID--ULONG"></a>g_cclosure_marshal_VOID__ULONG ()</h3><a class="indexterm" name="id3005423"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__ULONG  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1033,7 +1033,7 @@ href="../glib/glib-Basic-Types.html#gulong"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2724627"></a><h3><a name="g-cclosure-marshal-VOID--ENUM"></a>g_cclosure_marshal_VOID__ENUM ()</h3><a class="indexterm" name="id2724640"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__ENUM   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3005630"></a><h3><a name="g-cclosure-marshal-VOID--ENUM"></a>g_cclosure_marshal_VOID__ENUM ()</h3><a class="indexterm" name="id3005643"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__ENUM   (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1058,7 +1058,7 @@ href="../glib/glib-Basic-Types.html#gint"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2724848"></a><h3><a name="g-cclosure-marshal-VOID--FLAGS"></a>g_cclosure_marshal_VOID__FLAGS ()</h3><a class="indexterm" name="id2724860"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__FLAGS  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3005851"></a><h3><a name="g-cclosure-marshal-VOID--FLAGS"></a>g_cclosure_marshal_VOID__FLAGS ()</h3><a class="indexterm" name="id3005863"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__FLAGS  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1084,7 +1084,7 @@ denotes a flags type.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725068"></a><h3><a name="g-cclosure-marshal-VOID--FLOAT"></a>g_cclosure_marshal_VOID__FLOAT ()</h3><a class="indexterm" name="id2725081"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__FLOAT  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006072"></a><h3><a name="g-cclosure-marshal-VOID--FLOAT"></a>g_cclosure_marshal_VOID__FLOAT ()</h3><a class="indexterm" name="id3006084"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__FLOAT  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1109,7 +1109,7 @@ href="../glib/glib-Basic-Types.html#gfloat"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725288"></a><h3><a name="g-cclosure-marshal-VOID--DOUBLE"></a>g_cclosure_marshal_VOID__DOUBLE ()</h3><a class="indexterm" name="id2725300"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__DOUBLE (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006291"></a><h3><a name="g-cclosure-marshal-VOID--DOUBLE"></a>g_cclosure_marshal_VOID__DOUBLE ()</h3><a class="indexterm" name="id3006303"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__DOUBLE (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1134,7 +1134,7 @@ href="../glib/glib-Basic-Types.html#gdouble"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725507"></a><h3><a name="g-cclosure-marshal-VOID--STRING"></a>g_cclosure_marshal_VOID__STRING ()</h3><a class="indexterm" name="id2725520"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__STRING (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006510"></a><h3><a name="g-cclosure-marshal-VOID--STRING"></a>g_cclosure_marshal_VOID__STRING ()</h3><a class="indexterm" name="id3006523"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__STRING (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1159,7 +1159,7 @@ href="../glib/glib-Basic-Types.html#gchar"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725727"></a><h3><a name="g-cclosure-marshal-VOID--PARAM"></a>g_cclosure_marshal_VOID__PARAM ()</h3><a class="indexterm" name="id2725739"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__PARAM  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006730"></a><h3><a name="g-cclosure-marshal-VOID--PARAM"></a>g_cclosure_marshal_VOID__PARAM ()</h3><a class="indexterm" name="id3006742"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__PARAM  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1182,7 +1182,7 @@ A marshaller for a <a href="gobject-Closures.html#GCClosure"><span class="type">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2725947"></a><h3><a name="g-cclosure-marshal-VOID--BOXED"></a>g_cclosure_marshal_VOID__BOXED ()</h3><a class="indexterm" name="id2725959"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__BOXED  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006950"></a><h3><a name="g-cclosure-marshal-VOID--BOXED"></a>g_cclosure_marshal_VOID__BOXED ()</h3><a class="indexterm" name="id3006962"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__BOXED  (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1205,7 +1205,7 @@ A marshaller for a <a href="gobject-Closures.html#GCClosure"><span class="type">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726168"></a><h3><a name="g-cclosure-marshal-VOID--POINTER"></a>g_cclosure_marshal_VOID__POINTER ()</h3><a class="indexterm" name="id2726180"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__POINTER
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007171"></a><h3><a name="g-cclosure-marshal-VOID--POINTER"></a>g_cclosure_marshal_VOID__POINTER ()</h3><a class="indexterm" name="id3007183"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__POINTER
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
@@ -1231,7 +1231,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726388"></a><h3><a name="g-cclosure-marshal-VOID--OBJECT"></a>g_cclosure_marshal_VOID__OBJECT ()</h3><a class="indexterm" name="id2726400"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__OBJECT (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007391"></a><h3><a name="g-cclosure-marshal-VOID--OBJECT"></a>g_cclosure_marshal_VOID__OBJECT ()</h3><a class="indexterm" name="id3007403"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__OBJECT (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -1254,7 +1254,7 @@ A marshaller for a <a href="gobject-Closures.html#GCClosure"><span class="type">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726607"></a><h3><a name="g-cclosure-marshal-STRING--OBJECT-POINTER"></a>g_cclosure_marshal_STRING__OBJECT_POINTER ()</h3><a class="indexterm" name="id2726621"></a><pre class="programlisting">void        g_cclosure_marshal_STRING__OBJECT_POINTER
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007610"></a><h3><a name="g-cclosure-marshal-STRING--OBJECT-POINTER"></a>g_cclosure_marshal_STRING__OBJECT_POINTER ()</h3><a class="indexterm" name="id3007624"></a><pre class="programlisting">void        g_cclosure_marshal_STRING__OBJECT_POINTER
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
@@ -1278,7 +1278,7 @@ A marshaller for a <a href="gobject-Closures.html#GCClosure"><span class="type">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2726821"></a><h3><a name="g-cclosure-marshal-VOID--UINT-POINTER"></a>g_cclosure_marshal_VOID__UINT_POINTER ()</h3><a class="indexterm" name="id2726834"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__UINT_POINTER
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007824"></a><h3><a name="g-cclosure-marshal-VOID--UINT-POINTER"></a>g_cclosure_marshal_VOID__UINT_POINTER ()</h3><a class="indexterm" name="id3007837"></a><pre class="programlisting">void        g_cclosure_marshal_VOID__UINT_POINTER
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
@@ -1302,7 +1302,7 @@ A marshaller for a <a href="gobject-Closures.html#GCClosure"><span class="type">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2727034"></a><h3><a name="g-cclosure-marshal-BOOLEAN--FLAGS"></a>g_cclosure_marshal_BOOLEAN__FLAGS ()</h3><a class="indexterm" name="id2727047"></a><pre class="programlisting">void        g_cclosure_marshal_BOOLEAN__FLAGS
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008037"></a><h3><a name="g-cclosure-marshal-BOOLEAN--FLAGS"></a>g_cclosure_marshal_BOOLEAN__FLAGS ()</h3><a class="indexterm" name="id3008050"></a><pre class="programlisting">void        g_cclosure_marshal_BOOLEAN__FLAGS
                                             (<a href="gobject-Closures.html#GClosure">GClosure</a> *closure,
                                              <a href="gobject-Generic-values.html#GValue">GValue</a> *return_value,
                                              <a
@@ -1331,6 +1331,6 @@ href="../glib/glib-Basic-Types.html#gboolean"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal_data</tt></i> :</span></td><td>additional data specified when registering the marshaller
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2727271"></a><h3><a name="g-cclosure-marshal-BOOL--FLAGS"></a>g_cclosure_marshal_BOOL__FLAGS</h3><a class="indexterm" name="id2727283"></a><pre class="programlisting">#define     g_cclosure_marshal_BOOL__FLAGS</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008274"></a><h3><a name="g-cclosure-marshal-BOOL--FLAGS"></a>g_cclosure_marshal_BOOL__FLAGS</h3><a class="indexterm" name="id3008286"></a><pre class="programlisting">#define     g_cclosure_marshal_BOOL__FLAGS</pre><p>
 Another name for <a href="gobject-Closures.html#g-cclosure-marshal-BOOLEAN--FLAGS"><tt class="function">g_cclosure_marshal_BOOLEAN__FLAGS()</tt></a>.
 </p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gobject-Signals.html"><b>&lt;&lt; Signals</b></a></td><td align="right"><a accesskey="n" href="gobject-Value-arrays.html"><b>Value arrays &gt;&gt;</b></a></td></tr></table></body></html>
