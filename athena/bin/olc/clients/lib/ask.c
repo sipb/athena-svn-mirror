@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *	$Id: ask.c,v 1.9 1990-07-16 09:23:50 vanharen Exp $
+ *	$Id: ask.c,v 1.10 1990-07-16 09:26:40 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.9 1990-07-16 09:23:50 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.10 1990-07-16 09:26:40 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
