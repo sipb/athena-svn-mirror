@@ -21,9 +21,9 @@ echo  "MIT configuration..." > /dev/console
 
 # Clean up the password file.
 
-echo -n "Cleaning up passwd file: "				>/dev/console
+echo "Cleaning up passwd file: "				>/dev/console
 if [ -f /etc/passwd.local -a -f /etc/shadow.local ]; then
-	echo -n "recovered from passwd.local..."		>/dev/console
+	echo "recovered from passwd.local..."			>/dev/console
 	/bin/cp /etc/passwd.local /etc/passwd
 	/bin/cp /etc/shadow.local /etc/shadow
 fi
@@ -32,7 +32,7 @@ echo "done."							>/dev/console
 # Clean up the group file.
 
 if [ -f /etc/group.local ]; then
-	echo -n "Recovering group file..."			>/dev/console
+	echo "Recovering group file..."				>/dev/console
 	/bin/cp /etc/group.local /etc/group
 	echo "done."						>/dev/console
 fi
@@ -202,7 +202,7 @@ if [ "${PUBLIC}" = "true" ]; then
 		fi
 	    fi
 	fi
-        echo "done."                                    >/dev/console
+        echo "done."						>/dev/console
 fi
 
 # Dealing with sendmail.cf
