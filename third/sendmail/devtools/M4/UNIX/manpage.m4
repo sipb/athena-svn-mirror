@@ -10,7 +10,7 @@ divert(-1)
 #
 #  Definitions for Makefile construction for sendmail
 #
-#	$Id: manpage.m4,v 1.1.1.1 2003-04-08 15:12:23 zacheiss Exp $
+#	$Id: manpage.m4,v 1.2 2003-04-08 18:18:05 zacheiss Exp $
 #
 divert(0)dnl
 
@@ -66,6 +66,9 @@ bldFOREACH(`bldMAN_BUILD_CMD(', `bldMAN_PAGES')
 
 install-docs: ${MANPAGES}
 ifdef(`confNO_MAN_INSTALL', `divert(-1)', `dnl')
+	mkdir -p ${DESTDIR}/${MANROOT}1
+	mkdir -p ${DESTDIR}/${MANROOT}5
+	mkdir -p ${DESTDIR}/${MANROOT}8
 define(`bldMAN_INSTALL_CMD', 
 `ifdef(`confDONT_INSTALL_CATMAN', `dnl', 
 `	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} bldGET_MAN_BASE_NAME($1).`${MAN'bldGET_MAN_SOURCE_NUM($1)`SRC}' `${DESTDIR}${MAN'bldGET_MAN_SOURCE_NUM($1)}/bldGET_MAN_BASE_NAME($1)`.${MAN'bldGET_MAN_SOURCE_NUM($1)`EXT}'')

@@ -1,12 +1,12 @@
-# $Id: Makefile.athena,v 1.8 2000-03-29 19:55:55 ghudson Exp $
+# $Id: Makefile.athena,v 1.9 2003-04-08 18:18:04 zacheiss Exp $
 
 SHELL=/bin/sh
-BUILD=`pwd`/BuildTools/bin/Build
+BUILD=`pwd`/devtools/bin/Build
 
 dist:
 
 prepare:
-	rm -rf */obj.*
+	rm -rf obj.*
 
 clean:
 	${MAKE} BUILD=$(BUILD) clean

@@ -8,6 +8,9 @@ APPENDDEF(`confLIBS', `-lhesiod')
 dnl We don't want NIS support
 APPENDDEF(`confMAPDEF', `-UNIS')
 
+dnl Install the old-fashioned way, i.e. setuid root rather than setgid smmsp.
+define(`confSETUSERID_INSTALL', 1)
+
 dnl Debugging, not optimizing
 define(`confOPTIMIZE', `-g')
 
@@ -18,8 +21,8 @@ define(`confMAN5SRC', 5)
 define(`confMAN8SRC', 8)
 
 dnl Install random binaries in /usr/athena to save local disk space
-define(`athEBINDIR', `/usr/athena/libexec')
-define(`athSBINDIR', `/usr/athena/etc')
+define(`confEBINDIR', `/usr/athena/libexec')
+define(`confSBINDIR', `/usr/athena/etc')
 
-dnl Use Athena install; the BuildTools one can't handle non-writable files.
+dnl Use Athena install; the devtools one can't handle non-writable files.
 define(`confINSTALL', `install')

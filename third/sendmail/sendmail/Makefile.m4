@@ -1,4 +1,4 @@
-dnl $Id: Makefile.m4,v 1.1.1.1 2003-04-08 15:08:07 zacheiss Exp $
+dnl $Id: Makefile.m4,v 1.2 2003-04-08 18:18:07 zacheiss Exp $
 include(confBUILDTOOLSDIR`/M4/switch.m4')
 
 define(`confREQUIRE_LIBSM', `true')
@@ -9,6 +9,8 @@ define(`bldSOURCES', `main.c alias.c arpadate.c bf.c collect.c conf.c control.c 
 PREPENDDEF(`confENVDEF', `confMAPDEF')
 bldPUSH_SMLIB(`sm')
 bldPUSH_SMLIB(`smutil')
+
+APPENDDEF(`confLIBS', `-lwrap')
 
 dnl hack: /etc/mail is not defined as "location of .cf" in the build system
 define(`bldTARGET_INST_DEP', ifdef(`confINST_DEP', `confINST_DEP',
@@ -66,6 +68,8 @@ ifdef(`confNO_STATISTICS_INSTALL',, `bldPUSH_INSTALL_TARGET(`install-st')')
 divert(bldTARGETS_SECTION)
 
 install-set-user-id: bldCURRENT_PRODUCT ifdef(`confNO_HELPFILE_INSTALL',, `install-hf') ifdef(`confNO_STATISTICS_INSTALL',, `install-st') ifdef(`confNO_MAN_BUILD',, `install-docs')
+	mkdir -p ${DESTDIR}${M`'BINDIR}
+	mkdir -p ${DESTDIR}${U`'BINDIR}
 	${INSTALL} -c -o ${S`'BINOWN} -g ${S`'BINGRP} -m ${S`'BINMODE} bldCURRENT_PRODUCT ${DESTDIR}${M`'BINDIR}
 	for i in ${sendmailTARGET_LINKS}; do \
 		rm -f $$i; \

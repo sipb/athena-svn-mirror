@@ -1,8 +1,8 @@
-#       $Id: Makefile,v 1.1.1.2 2003-04-08 15:12:28 zacheiss Exp $
+#       $Id: Makefile,v 1.2 2003-04-08 18:18:04 zacheiss Exp $
 
 SHELL= /bin/sh
 SUBDIRS= libsm libsmutil libsmdb sendmail editmap mail.local \
-	 mailstats makemap praliases rmail smrsh vacation
+	 mailstats makemap praliases rmail smrsh
 # libmilter: requires pthread
 BUILD=   ./Build
 OPTIONS= $(CONFIG) $(FLAGS)
