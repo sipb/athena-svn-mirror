@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.1 1997-10-06 16:17:56 ghudson Exp $
+# $Id: lp.sh,v 1.2 1998-09-17 23:13:34 ghudson Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
@@ -21,6 +21,7 @@
 
 # Parse command-line flags.
 opts=""
+title=""
 suppress_s=no
 usage="lp [-c] [-d dest] [-m] [-n number] [-t title] [-w] files"
 while getopts cd:mn:o:st:w opt; do
@@ -47,7 +48,7 @@ while getopts cd:mn:o:st:w opt; do
 	s)
 		;;
 	t)
-		opts="$opts -J $OPTARG"
+		title="$OPTARG"
 		;;
 	w)
 		opts="$opts -z"
@@ -69,4 +70,4 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-exec /usr/athena/bin/lpr $opts "$@"
+exec /usr/athena/bin/lpr -J "${title:-$@}" $opts "$@"

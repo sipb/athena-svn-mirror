@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.2 1998-07-23 16:27:41 danw Exp $
+# $Id: lp.sh,v 1.3 1998-09-17 23:13:08 ghudson Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
@@ -24,6 +24,7 @@ opts=""
 suppress_s=no
 content=""
 pages=""
+title=""
 usage="lp [-P pagerange] [-T content-type] [-c] [-d dest] [-m] [-n number]
    [-o option] [-t title] [-w] [file ...]"
 while getopts H:P:S:T:cd:fmn:o:pq:rst:wy: opt; do
@@ -67,7 +68,7 @@ while getopts H:P:S:T:cd:fmn:o:pq:rst:wy: opt; do
 	p|q|r|s)
 		;;
 	t)
-		opts="$opts -J $OPTARG"
+		title="$OPTARG"
 		;;
 	w)
 		opts="$opts -z"
@@ -136,14 +137,11 @@ esac
 
 shift `expr $OPTIND - 1`
 
-case "$filter" in
-	"")
-		exec /usr/athena/bin/lpr $opts "$@"
-		;;
-	*)
-		# This option may not work with all lpr options.
-		for file in "${@:--}"; do
-			$filter $file | lpr $opts
-		done
-		;;
-esac
+if [-n "$filter" ]; then
+	# This option may not work with all lpr options.
+	for file in "${@:--}"; do
+		$filter $file | lpr -J "${title:-$file}" $opts
+	done
+else
+	exec /usr/athena/bin/lpr -J "${title:-$@}" $opts "$@"
+fi
