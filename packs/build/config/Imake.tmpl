@@ -14,8 +14,11 @@
 
 /* 
  * WARNING - HACK HACK HACK
- * To allow xmkmf to work with our setup, if TOPDIR is set, then NEWTOP 
- * is set to TOPDIR.
+ * To allow xmkmf to work with our setup: set CONFDIR to be TOPDIR/config.
+ *
+ * NEWTOP is still set to . since this is being run from the top of the
+ * developer's project tree.  However, TOPDIR is simply the top of the
+ * Athena source tree, which contains the Imake configuration files.
  */
 #ifdef TOPDIR
 #define UseInstalled
