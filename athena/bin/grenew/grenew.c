@@ -1,7 +1,7 @@
 /* Renew a credentials cache using a graphical interface. Much of the source
  * is modified from that of kinit.
  *
- * $Id: grenew.c,v 1.1 2001-07-11 18:36:58 ghudson Exp $
+ * $Id: grenew.c,v 1.1.2.1 2001-07-11 18:37:47 ghudson Exp $
  */
 
 #include <gtk/gtk.h>

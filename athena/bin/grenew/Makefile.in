@@ -1,5 +1,5 @@
 # modified from /mit/source/athena/bin/panel-wrapper
-# $Id: Makefile.in,v 1.1 2001-07-11 18:36:58 ghudson Exp $
+# $Id: Makefile.in,v 1.1.2.1 2001-07-11 18:37:44 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
