@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *	$Id: ask.c,v 1.18 1993-09-15 14:38:50 thorne Exp $
- *	$Author: thorne $
+ *	$Id: ask.c,v 1.19 1997-04-30 17:34:16 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.18 1993-09-15 14:38:50 thorne Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.19 1997-04-30 17:34:16 ghudson Exp $";
 #endif
 #endif
 
@@ -128,7 +128,8 @@ OAsk_file(Request,topic,file)
   ERRCODE status;
 
   if (! (is_option(Request->options,VERIFY))) {
-    if ((status = read_file_into_text(file,&buf)) != SUCCESS)
+    status = read_file_into_text(file,&buf);
+    if (status != SUCCESS)
       return(status);
   }
 
