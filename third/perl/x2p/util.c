@@ -1,47 +1,40 @@
-/* $RCSfile: util.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:21 $
+/* $RCSfile: util.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:12 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  12:20:35  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:58:25  lwall
- * 4.0 baseline.
- * 
  */
 
-#include <stdio.h>
-
-#include "handy.h"
 #include "EXTERN.h"
 #include "a2p.h"
 #include "INTERN.h"
 #include "util.h"
 
+#ifdef I_STDARG
+#  include <stdarg.h>
+#endif
 #define FLUSH
-#define MEM_SIZE unsigned int
 
 static char nomem[] = "Out of memory!\n";
 
 /* paranoid version of malloc */
 
-static int an = 0;
 
-char *
+Malloc_t
 safemalloc(size)
 MEM_SIZE size;
 {
-    char *ptr;
-    char *malloc();
+    Malloc_t ptr;
 
-    ptr = malloc(size?size:1);	/* malloc(0) is NASTY on our system */
+    /* malloc(0) is NASTY on some systems */
+    ptr = malloc(size ? size : 1);
 #ifdef DEBUGGING
     if (debug & 128)
-	fprintf(stderr,"0x%x: (%05d) malloc %d bytes\n",ptr,an++,size);
+	fprintf(stderr,"0x%lx: (%05d) malloc %ld bytes\n",(unsigned long)ptr,
+    	    	an++,(long)size);
 #endif
     if (ptr != Nullch)
 	return ptr;
@@ -54,19 +47,19 @@ MEM_SIZE size;
 
 /* paranoid version of realloc */
 
-char *
+Malloc_t
 saferealloc(where,size)
-char *where;
+Malloc_t where;
 MEM_SIZE size;
 {
-    char *ptr;
-    char *realloc();
+    Malloc_t ptr;
 
-    ptr = realloc(where,size?size:1);	/* realloc(0) is NASTY on our system */
+    /* realloc(0) is NASTY on some systems */
+    ptr = realloc(where, size ? size : 1);
 #ifdef DEBUGGING
     if (debug & 128) {
-	fprintf(stderr,"0x%x: (%05d) rfree\n",where,an++);
-	fprintf(stderr,"0x%x: (%05d) realloc %d bytes\n",ptr,an++,size);
+	fprintf(stderr,"0x%lx: (%05d) rfree\n",(unsigned long)where,an++);
+	fprintf(stderr,"0x%lx: (%05d) realloc %ld bytes\n",(unsigned long)ptr,an++,(long)size);
     }
 #endif
     if (ptr != Nullch)
@@ -80,12 +73,13 @@ MEM_SIZE size;
 
 /* safe version of free */
 
+Free_t
 safefree(where)
-char *where;
+Malloc_t where;
 {
 #ifdef DEBUGGING
     if (debug & 128)
-	fprintf(stderr,"0x%x: (%05d) free\n",where,an++);
+	fprintf(stderr,"0x%lx: (%05d) free\n",(unsigned long)where,an++);
 #endif
     free(where);
 }
@@ -198,68 +192,65 @@ int newlen;
     }
 }
 
+void
+#if defined(I_STDARG) && defined(HAS_VPRINTF)
+croak(char *pat,...)
+#else /* I_STDARG */
 /*VARARGS1*/
-fatal(pat,a1,a2,a3,a4)
-char *pat;
+croak(pat,a1,a2,a3,a4)
+    char *pat;
+    int a1,a2,a3,a4;
+#endif /* I_STDARG */
 {
+#if defined(I_STDARG) && defined(HAS_VPRINTF)
+    va_list args;
+
+    va_start(args, pat);
+    vfprintf(stderr,pat,args);
+#else
     fprintf(stderr,pat,a1,a2,a3,a4);
+#endif
     exit(1);
 }
 
+void
+#if defined(I_STDARG) && defined(HAS_VPRINTF)
+fatal(char *pat,...)
+#else /* I_STDARG */
 /*VARARGS1*/
-warn(pat,a1,a2,a3,a4)
-char *pat;
+fatal(pat,a1,a2,a3,a4)
+    char *pat;
+    int a1,a2,a3,a4;
+#endif /* I_STDARG */
 {
-    fprintf(stderr,pat,a1,a2,a3,a4);
-}
+#if defined(I_STDARG) && defined(HAS_VPRINTF)
+    va_list args;
 
-static bool firstsetenv = TRUE;
-extern char **environ;
+    va_start(args, pat);
+    vfprintf(stderr,pat,args);
+#else
+    fprintf(stderr,pat,a1,a2,a3,a4);
+#endif
+    exit(1);
+}
 
 void
-setenv(nam,val)
-char *nam, *val;
+#if defined(I_STDARG) && defined(HAS_VPRINTF)
+warn(char *pat,...)
+#else /* I_STDARG */
+/*VARARGS1*/
+warn(pat,a1,a2,a3,a4)
+    char *pat;
+    int a1,a2,a3,a4;
+#endif /* I_STDARG */
 {
-    register int i=envix(nam);		/* where does it go? */
+#if defined(I_STDARG) && defined(HAS_VPRINTF)
+    va_list args;
 
-    if (!environ[i]) {			/* does not exist yet */
-	if (firstsetenv) {		/* need we copy environment? */
-	    int j;
-#ifndef lint
-	    char **tmpenv = (char**)	/* point our wand at memory */
-		safemalloc((i+2) * sizeof(char*));
+    va_start(args, pat);
+    vfprintf(stderr,pat,args);
 #else
-	    char **tmpenv = Null(char **);
-#endif /* lint */
-    
-	    firstsetenv = FALSE;
-	    for (j=0; j<i; j++)		/* copy environment */
-		tmpenv[j] = environ[j];
-	    environ = tmpenv;		/* tell exec where it is now */
-	}
-#ifndef lint
-	else
-	    environ = (char**) saferealloc((char*) environ,
-		(i+2) * sizeof(char*));
-					/* just expand it a bit */
-#endif /* lint */
-	environ[i+1] = Nullch;	/* make sure it's null terminated */
-    }
-    environ[i] = safemalloc(strlen(nam) + strlen(val) + 2);
-					/* this may or may not be in */
-					/* the old environ structure */
-    sprintf(environ[i],"%s=%s",nam,val);/* all that work just for this */
+    fprintf(stderr,pat,a1,a2,a3,a4);
+#endif
 }
 
-int
-envix(nam)
-char *nam;
-{
-    register int i, len = strlen(nam);
-
-    for (i = 0; environ[i]; i++) {
-	if (strnEQ(environ[i],nam,len) && environ[i][len] == '=')
-	    break;			/* strnEQ must come first to avoid */
-    }					/* potential SEGV's */
-    return i;
-}

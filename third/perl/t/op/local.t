@@ -1,8 +1,8 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/local.t,v 1.1.1.1 1996-10-02 06:40:14 ghudson Exp $
+# $RCSfile: local.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:01 $
 
-print "1..20\n";
+print "1..23\n";
 
 sub foo {
     local($a, $b) = @_;
@@ -19,7 +19,7 @@ $b = "ok 6\n";
 $c = "ok 7\n";
 $d = "ok 8\n";
 
-print do foo("ok 1\n","ok 2\n");
+print &foo("ok 1\n","ok 2\n");
 
 print $a,$b,$c,$d,$x,$y;
 
@@ -40,6 +40,15 @@ $a = "ok 15\n";
 @c = "ok 17\n";
 $d{''} = "ok 18\n";
 
-print do foo2("ok 11\n","ok 12\n");
+print &foo2("ok 11\n","ok 12\n");
 
 print $a,@b,@c,%d,$x,$y;
+
+eval 'local($$e)';
+print +($@ =~ /Can't localize through a reference/) ? "" : "not ", "ok 21\n";
+
+eval 'local(@$e)';
+print +($@ =~ /Can't localize through a reference/) ? "" : "not ", "ok 22\n";
+
+eval 'local(%$e)';
+print +($@ =~ /Can't localize through a reference/) ? "" : "not ", "ok 23\n";

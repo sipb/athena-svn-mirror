@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/read.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: read.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:05 $
 
 print "1..4\n";
 
@@ -12,7 +12,7 @@ $got = read(FOO,$buf,4);
 print ($got == 4 ? "ok 1\n" : "not ok 1\n");
 print ($buf eq "perl" ? "ok 2\n" : "not ok 2 :$buf:\n");
 
-seek(FOO,20000,0);
+seek (FOO,0,2) || seek(FOO,20000,0);
 $got = read(FOO,$buf,4);
 
 print ($got == 0 ? "ok 3\n" : "not ok 3\n");

@@ -1,33 +1,16 @@
-/* $RCSfile: walk.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:22 $
+/* $RCSfile: walk.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:07 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.3  92/06/08  17:33:46  lwall
- * patch20: in a2p, simplified the filehandle model
- * patch20: in a2p, made RS="" translate to $/ = "\n\n"
- * patch20: in a2p, do {...} while ... was missing some reconstruction code
- * patch20: in a2p, getline should allow variable to be array element
- * 
- * Revision 4.0.1.2  91/11/05  19:25:09  lwall
- * patch11: in a2p, split on whitespace produced extra null field
- * 
- * Revision 4.0.1.1  91/06/07  12:22:04  lwall
- * patch4: new copyright notice
- * patch4: a2p didn't correctly implement -n switch
- * 
- * Revision 4.0  91/03/20  01:58:36  lwall
- * 4.0 baseline.
- * 
  */
 
-#include "handy.h"
 #include "EXTERN.h"
-#include "util.h"
 #include "a2p.h"
+#include "util.h"
 
 bool exitval = FALSE;
 bool realexit = FALSE;
@@ -42,6 +25,16 @@ char *rparen;
 char *limit;
 STR *subs;
 STR *curargs = Nullstr;
+
+static void addsemi _(( STR *str ));
+static void emit_split _(( STR *str, int level ));
+static void fixtab _(( STR *str, int lvl ));
+static void numericize _(( int node ));
+static void tab _(( STR *str, int lvl ));
+
+int prewalk _(( int numit, int level, int node, int *numericptr ));
+STR * walk _(( int useval, int level, int node, int *numericptr, int minprec ));
+
 
 STR *
 walk(useval,level,node,numericptr,minprec)
@@ -64,7 +57,6 @@ int minprec;			/* minimum precedence without parens */
     int numeric = FALSE;
     STR *fstr;
     int prec = P_MAX;		/* assume no parens needed */
-    char *index();
 
     if (!node) {
 	*numericptr = 0;
@@ -107,7 +99,7 @@ int minprec;			/* minimum precedence without parens */
 	    do_chop = TRUE;
 	if (fswitch) {
 	    str_cat(str,"$FS = '");
-	    if (index("*+?.[]()|^$\\",fswitch))
+	    if (strchr("*+?.[]()|^$\\",fswitch))
 		str_cat(str,"\\");
 	    sprintf(tokenbuf,"%c",fswitch);
 	    str_cat(str,tokenbuf);
@@ -153,7 +145,7 @@ int minprec;			/* minimum precedence without parens */
 	    if (saw_FNR)
 		str_cat(str,"continue {\n    $FNRbase = $. if eof;\n}\n");
 	}
-	else
+	else if (old_awk)
 	    str_cat(str,"while (<>) { }		# (no line actions)\n");
 	if (ops[node+4].ival) {
 	    realexit = TRUE;
@@ -395,8 +387,8 @@ sub Pick {\n\
 		str_set(tmpstr,"gt");
 	    else if (strEQ(t,">="))
 		str_set(tmpstr,"ge");
-	    if (!index(tmpstr->str_ptr,'\'') && !index(tmpstr->str_ptr,'"') &&
-	      !index(tmp2str->str_ptr,'\'') && !index(tmp2str->str_ptr,'"') )
+	    if (!strchr(tmpstr->str_ptr,'\'') && !strchr(tmpstr->str_ptr,'"') &&
+	      !strchr(tmp2str->str_ptr,'\'') && !strchr(tmp2str->str_ptr,'"') )
 		numeric |= 2;
 	}
 	if (numeric & 2) {
@@ -602,7 +594,7 @@ sub Pick {\n\
 		    if (!isalpha(*t) && !isdigit(*t))
 			*t = '_';
 		}
-		if (!index(tokenbuf,'_'))
+		if (!strchr(tokenbuf,'_'))
 		    strcpy(t,"_FH");
 		tmp3str = hfetch(symtab,tokenbuf);
 		if (!tmp3str) {
@@ -691,7 +683,7 @@ sub Pick {\n\
 	    fstr = walk(1,level,ops[node+3].ival,&numarg,P_COMMA+1);
 	    if (str_len(fstr) == 3 && *fstr->str_ptr == '\'') {
 		i = fstr->str_ptr[1] & 127;
-		if (index("*+?.[]()|^$\\",i))
+		if (strchr("*+?.[]()|^$\\",i))
 		    sprintf(tokenbuf,"/\\%c/",i);
 		else if (i == ' ')
 		    sprintf(tokenbuf,"' '");
@@ -1133,7 +1125,7 @@ sub Pick {\n\
 		if (!isalpha(*t) && !isdigit(*t))
 		    *t = '_';
 	    }
-	    if (!index(tokenbuf,'_'))
+	    if (!strchr(tokenbuf,'_'))
 		strcpy(t,"_FH");
 	    str_free(tmpstr);
 	    safefree(s);
@@ -1170,7 +1162,7 @@ sub Pick {\n\
 		    if (!isalpha(*t) && !isdigit(*t))
 			*t = '_';
 		}
-		if (!index(tokenbuf,'_'))
+		if (!strchr(tokenbuf,'_'))
 		    strcpy(t,"_FH");
 		tmp3str = hfetch(symtab,tokenbuf);
 		if (!tmp3str) {
@@ -1446,7 +1438,7 @@ sub Pick {\n\
 	}
 	str_cat(str,"; ");
 	fstr=walk(1,level,ops[node+2].ival,&numarg,P_MIN);
-	if (i && (t = index(fstr->str_ptr,0377))) {
+	if (i && (t = strchr(fstr->str_ptr,0377))) {
 	    if (strnEQ(fstr->str_ptr,s,i))
 		*t = ' ';
 	}
@@ -1462,12 +1454,12 @@ sub Pick {\n\
 	break;
     case OFORIN:
 	tmpstr = walk(0,level,ops[node+1].ival,&numarg,P_MIN);
-	d = index(tmpstr->str_ptr,'$');
+	d = strchr(tmpstr->str_ptr,'$');
 	if (!d)
 	    fatal("Illegal for loop: %s",tmpstr->str_ptr);
-	s = index(d,'{');
+	s = strchr(d,'{');
 	if (!s)
-	    s = index(d,'[');
+	    s = strchr(d,'[');
 	if (!s)
 	    fatal("Illegal for loop: %s",d);
 	*s++ = '\0';
@@ -1563,6 +1555,7 @@ sub Pick {\n\
     return str;
 }
 
+static void
 tab(str,lvl)
 register STR *str;
 register int lvl;
@@ -1575,6 +1568,7 @@ register int lvl;
 	str_cat(str,"    ");
 }
 
+static void
 fixtab(str,lvl)
 register STR *str;
 register int lvl;
@@ -1594,6 +1588,7 @@ register int lvl;
     tab(str,lvl);
 }
 
+static void
 addsemi(str)
 register STR *str;
 {
@@ -1606,6 +1601,7 @@ register STR *str;
 	str_cat(str,";");
 }
 
+static void
 emit_split(str,level)
 register STR *str;
 int level;
@@ -1640,6 +1636,7 @@ int level;
     tab(str,level);
 }
 
+int
 prewalk(numit,level,node,numericptr)
 int numit;
 int level;
@@ -1649,8 +1646,6 @@ int *numericptr;
     register int len;
     register int type;
     register int i;
-    char *t;
-    char *d, *s;
     int numarg;
     int numeric = FALSE;
     STR *tmpstr;
@@ -1770,7 +1765,7 @@ int *numericptr;
 	prewalk(0,level,ops[node+2].ival,&numarg);
 	prewalk(0,level,ops[node+1].ival,&numarg);
 	prewalk(0,level,ops[node+3].ival,&numarg);
-	if (numarg || strlen(ops[ops[node+1].ival+1].cval) > 1) {
+	if (numarg || strlen(ops[ops[node+1].ival+1].cval) > (Size_t)1) {
 	    numericize(ops[node+2].ival);
 	    if (!numarg)
 		numericize(ops[node+3].ival);
@@ -2062,12 +2057,12 @@ int *numericptr;
     return 1;
 }
 
+static void
 numericize(node)
 register int node;
 {
     register int len;
     register int type;
-    register int i;
     STR *tmpstr;
     STR *tmp2str;
     int numarg;

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/van/vanish,v 1.1.1.1 1996-10-02 06:40:07 ghudson Exp $
+# $RCSfile: vanish,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:50 $
 
 sub it {
     if ($olddir ne '.') {

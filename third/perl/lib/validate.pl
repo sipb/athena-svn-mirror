@@ -1,4 +1,4 @@
-;# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/validate.pl,v 1.1.1.1 1996-10-02 06:40:23 ghudson Exp $
+;# $RCSfile: validate.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:16 $
 
 ;# The validate routine takes a single multiline string consisting of
 ;# lines containing a filename plus a file test to try on it.  (The
@@ -91,11 +91,11 @@ sub valmess {
 	    $mess =~ s/ does not / should not / ||
 	    $mess =~ s/ not / /;
 	}
-	print stderr $mess,"\n";
+	print STDERR $mess,"\n";
     }
     else {
 	$this =~ s/\$file/'$file'/g;
-	print stderr "Can't do $this.\n";
+	print STDERR "Can't do $this.\n";
     }
     if ($disposition eq 'die') { exit 1; }
     ++$warnings;

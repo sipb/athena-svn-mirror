@@ -1,4 +1,4 @@
-;# $RCSfile: termcap.pl,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:23 $
+;# $RCSfile: termcap.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:13 $
 ;#
 ;# Usage:
 ;#	require 'ioctl.pl';
@@ -14,10 +14,11 @@ sub Tgetent {
     local($TERMCAP,$_,$entry,$loop,$field);
 
     warn "Tgetent: no ospeed set" unless $ospeed;
-    foreach $key (keys(TC)) {
+    foreach $key (keys %TC) {
 	delete $TC{$key};
     }
     $TERM = $ENV{'TERM'} unless $TERM;
+    $TERM =~ s/(\W)/\\$1/g;
     $TERMCAP = $ENV{'TERMCAP'};
     $TERMCAP = '/etc/termcap' unless $TERMCAP;
     if ($TERMCAP !~ m:^/:) {
@@ -33,7 +34,7 @@ sub Tgetent {
 	    while (<TERMCAP>) {
 		next if /^#/;
 		next if /^\t/;
-		if (/(^|\\|)$TERM[:\\|]/) {
+		if (/(^|\\|)${TERM}[:\\|]/) {
 		    chop;
 		    while (chop eq '\\\\') {
 			\$_ .= <TERMCAP>;
@@ -62,6 +63,9 @@ sub Tgetent {
 	    $entry = $1;
 	    $_ = $2;
 	    s/\\E/\033/g;
+	    s/\\(200)/pack('c',0)/eg;			# NUL character
+	    s/\\(0\d\d)/pack('c',oct($1))/eg;	# octal
+	    s/\\(0x[0-9A-Fa-f][0-9A-Fa-f])/pack('c',hex($1))/eg;	# hex
 	    s/\\(\d\d\d)/pack('c',$1 & 0177)/eg;
 	    s/\\n/\n/g;
 	    s/\\r/\r/g;

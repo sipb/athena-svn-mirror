@@ -1,6 +1,16 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/fork.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: fork.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:23 $
+
+BEGIN {
+    chdir 't' if -d 't';
+    @INC = '../lib';
+    require Config; import Config;
+    unless ($Config{'d_fork'}) {
+	print "1..0\n";
+	exit 0;
+    }
+}
 
 $| = 1;
 print "1..2\n";

@@ -1,13 +1,13 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/base/term.t,v 1.1.1.1 1996-10-02 06:40:16 ghudson Exp $
+# $RCSfile: term.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:31 $
 
-print "1..6\n";
+print "1..7\n";
 
 # check "" interpretation
 
 $x = "\n";
-if ($x lt ' ') {print "ok 1\n";} else {print "not ok 1\n";}
+if ($x eq chr(10)) {print "ok 1\n";} else {print "not ok 1\n";}
 
 # check `` processing
 
@@ -27,16 +27,19 @@ if ($#x == '1') {print "ok 3\n";} else {print "not ok 3\n";}
 $x = 1;
 if ($x == '1') {print "ok 4\n";} else {print "not ok 4\n";}
 
+$x = '1E2';
+if (($x | 1) == 101) {print "ok 5\n";} else {print "not ok 5\n";}
+
 # check <> pseudoliteral
 
-open(try, "/dev/null") || (die "Can't open /dev/null.");
+open(try, "/dev/null") || open(try,"nla0:") || (die "Can't open /dev/null.");
 if (<try> eq '') {
-    print "ok 5\n";
+    print "ok 6\n";
 }
 else {
-    print "not ok 5\n";
+    print "not ok 6\n";
     die "/dev/null IS NOT A CHARACTER SPECIAL FILE!!!!\n" unless -c '/dev/null';
 }
 
-open(try, "../Makefile") || (die "Can't open ../Makefile.");
-if (<try> ne '') {print "ok 6\n";} else {print "not ok 6\n";}
+open(try, "../Configure") || (die "Can't open ../Configure.");
+if (<try> ne '') {print "ok 7\n";} else {print "not ok 7\n";}

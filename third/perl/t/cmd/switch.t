@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/cmd/switch.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: switch.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:24 $
 
 print "1..18\n";
 
@@ -40,7 +40,7 @@ sub foo2 {
     return $_;
 }
 
-print do foo2(0) == 20 ? "ok 7\n" : "not ok 1\n";
+print do foo2(0) == 20 ? "ok 7\n" : "not ok 7\n";
 print do foo2(1) == 1 ? "ok 8\n" : "not ok 8\n";
 print do foo2(2) == 2 ? "ok 9\n" : "not ok 9\n";
 print do foo2(3) == 3 ? "ok 10\n" : "not ok 10\n";

@@ -1,8 +1,8 @@
 #!./perl
 
-# $RCSfile: pat.t,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:13 $
+# $RCSfile: pat.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:46:59 $
 
-print "1..51\n";
+print "1..62\n";
 
 $x = "abc\ndef\n";
 
@@ -73,7 +73,7 @@ while ($_ = shift(XXX)) {
     /not ok 26/ && reset 'X';
 }
 
-while (($key,$val) = each(XXX)) {
+while (($key,$val) = each(%XXX)) {
     print "not ok 27\n";
     exit;
 }
@@ -134,17 +134,19 @@ print join(':',@words) eq "now:is:the:time:for:all:good:men:to:come:to"
     : "not ok 45\n";
 
 @words = ();
+pos = 0;
 while (/to/g) {
     push(@words, $&);
 }
 print join(':',@words) eq "to:to"
     ? "ok 46\n"
-    : "not ok 46 @words\n";
+    : "not ok 46 `@words'\n";
 
+pos $_ = 0;
 @words = /to/g;
 print join(':',@words) eq "to:to"
     ? "ok 47\n"
-    : "not ok 47 @words\n";
+    : "not ok 47 `@words'\n";
 
 $_ = "abcdefghi";
 
@@ -182,3 +184,36 @@ print "abc" =~ /^abc$|$xyz/ ? "ok 49\n" : "not ok 49\n";
 eval '"abc" =~ /a(bc$)|$xyz/; $result = "$&:$1"';
 print $@ eq "" ? "ok 50\n" : "not ok 50\n";
 print $result eq "abc:bc" ? "ok 51\n" : "not ok 51\n";
+
+
+$_="abcfooabcbar";
+$x=/abc/g;
+print $` eq "" ? "ok 52\n" : "not ok 52\n" if $x;
+$x=/abc/g;
+print $` eq "abcfoo" ? "ok 53\n" : "not ok 53\n" if $x;
+$x=/abc/g;
+print $x == 0 ? "ok 54\n" : "not ok 54\n";
+pos = 0;
+$x=/ABC/gi;
+print $` eq "" ? "ok 55\n" : "not ok 55\n" if $x;
+$x=/ABC/gi;
+print $` eq "abcfoo" ? "ok 56\n" : "not ok 56\n" if $x;
+$x=/ABC/gi;
+print $x == 0 ? "ok 57\n" : "not ok 57\n";
+pos = 0;
+$x=/abc/g;
+print $' eq "fooabcbar" ? "ok 58\n" : "not ok 58\n" if $x;
+$x=/abc/g;
+print $' eq "bar" ? "ok 59\n" : "not ok 59\n" if $x;
+$_ .= '';
+@x=/abc/g;
+print scalar @x == 2 ? "ok 60\n" : "not ok 60\n";
+
+$_ = "abdc";
+pos $_ = 2;
+/\Gc/gc;
+print "not " if (pos $_) != 2;
+print "ok 61\n";
+/\Gc/g;
+print "not " if defined pos $_;
+print "ok 62\n";

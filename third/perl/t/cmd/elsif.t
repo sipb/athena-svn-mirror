@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/cmd/elsif.t,v 1.1.1.1 1996-10-02 06:40:16 ghudson Exp $
+# $RCSfile: elsif.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:24 $
 
 sub foo {
     if ($_[0] == 1) {
@@ -19,7 +19,7 @@ sub foo {
 
 print "1..4\n";
 
-if (($x = do foo(1)) == 1) {print "ok 1\n";} else {print "not ok 1 '$x'\n";}
-if (($x = do foo(2)) == 2) {print "ok 2\n";} else {print "not ok 2 '$x'\n";}
-if (($x = do foo(3)) == 3) {print "ok 3\n";} else {print "not ok 3 '$x'\n";}
-if (($x = do foo(4)) == 4) {print "ok 4\n";} else {print "not ok 4 '$x'\n";}
+if (($x = &foo(1)) == 1) {print "ok 1\n";} else {print "not ok 1 '$x'\n";}
+if (($x = &foo(2)) == 2) {print "ok 2\n";} else {print "not ok 2 '$x'\n";}
+if (($x = &foo(3)) == 3) {print "ok 3\n";} else {print "not ok 3 '$x'\n";}
+if (($x = &foo(4)) == 4) {print "ok 4\n";} else {print "not ok 4 '$x'\n";}

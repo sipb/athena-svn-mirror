@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/ADB,v 1.1.1.1 1996-10-02 06:40:04 ghudson Exp $
+# $RCSfile: ADB,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:38 $
 
 # This script is only useful when used in your crash directory.
 

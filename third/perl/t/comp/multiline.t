@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/comp/multiline.t,v 1.1.1.1 1996-10-02 06:40:17 ghudson Exp $
+# $RCSfile: multiline.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:36 $
 
 print "1..5\n";
 
@@ -32,9 +32,11 @@ if ($z eq $y) {print "ok 2\n";} else {print "not ok 2\n";}
 
 if ($count == 3) {print "ok 3\n";} else {print "not ok 3\n";}
 
-$_ = `cat Comp.try`;
+$_ = ($^O eq 'MSWin32') ? `type Comp.try` : `cat Comp.try`;
 
 if (/.*\n.*\n.*\n$/) {print "ok 4\n";} else {print "not ok 4\n";}
-`/bin/rm -f Comp.try`;
+
+close(try) || (die "Can't close temp file.");
+unlink 'Comp.try' || `/bin/rm -f Comp.try`;
 
 if ($_ eq $y) {print "ok 5\n";} else {print "not ok 5\n";}

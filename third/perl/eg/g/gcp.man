@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/g/gcp.man,v 1.1.1.1 1996-10-02 06:40:06 ghudson Exp $
+.\" $RCSfile: gcp.man,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:48 $
 .TH GCP 1C "13 May 1988"
 .SH NAME
 gcp \- global file copy

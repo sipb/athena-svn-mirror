@@ -1,12 +1,4 @@
-/* $RCSfile: regcomp.h,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:00 $
- *
- * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  11:49:40  lwall
- * patch4: no change
- * 
- * Revision 4.0  91/03/20  01:39:09  lwall
- * 4.0 baseline.
- * 
+/*    regcomp.h
  */
 
 /*
@@ -14,20 +6,20 @@
  * compile to execute that permits the execute phase to run lots faster on
  * simple cases.  They are:
  *
- * regstart	str that must begin a match; Nullch if none obvious
+ * regstart	sv that must begin a match; Nullch if none obvious
  * reganch	is the match anchored (at beginning-of-line only)?
  * regmust	string (pointer into program) that match must include, or NULL
- *  [regmust changed to STR* for bminstr()--law]
+ *  [regmust changed to SV* for bminstr()--law]
  * regmlen	length of regmust string
  *  [regmlen not used currently]
  *
  * Regstart and reganch permit very fast decisions on suitable starting points
  * for a match, cutting down the work a lot.  Regmust permits fast rejection
  * of lines that cannot possibly match.  The regmust tests are costly enough
- * that regcomp() supplies a regmust only if the r.e. contains something
+ * that pregcomp() supplies a regmust only if the r.e. contains something
  * potentially expensive (at present, the only such thing detected is * or +
  * at the start of the r.e., which can involve a lot of backup).  Regmlen is
- * supplied because the test in regexec() needs it and regcomp() is computing
+ * supplied because the test in pregexec() needs it and pregcomp() is computing
  * it anyway.
  * [regmust is now supplied always.  The tests that use regmust have a
  * heuristic that disables the test if it usually matches.]
@@ -56,29 +48,51 @@
  */
 
 /* definition	number	opnd?	meaning */
-#define	END	0	/* no	End of program. */
-#define	BOL	1	/* no	Match "" at beginning of line. */
-#define	EOL	2	/* no	Match "" at end of line. */
-#define	ANY	3	/* no	Match any one character. */
-#define	ANYOF	4	/* str	Match character in (or not in) this class. */
-#define	CURLY	5	/* str	Match this simple thing {n,m} times. */
-#define	BRANCH	6	/* node	Match this alternative, or the next... */
-#define	BACK	7	/* no	Match "", "next" ptr points backward. */
-#define	EXACTLY	8	/* str	Match this string (preceded by length). */
-#define	NOTHING	9	/* no	Match empty string. */
-#define	STAR	10	/* node	Match this (simple) thing 0 or more times. */
-#define	PLUS	11	/* node	Match this (simple) thing 1 or more times. */
-#define ALNUM	12	/* no	Match any alphanumeric character */
-#define NALNUM	13	/* no	Match any non-alphanumeric character */
-#define BOUND	14	/* no	Match "" at any word boundary */
-#define NBOUND	15	/* no	Match "" at any word non-boundary */
-#define SPACE	16	/* no	Match any whitespace character */
-#define NSPACE	17	/* no	Match any non-whitespace character */
-#define DIGIT	18	/* no	Match any numeric character */
-#define NDIGIT	19	/* no	Match any non-numeric character */
-#define REF	20	/* num	Match some already matched string */
-#define	OPEN	21	/* num	Mark this point in input as start of #n. */
-#define	CLOSE	22	/* num	Analogous to OPEN. */
+#define	END	 0	/* no	End of program. */
+#define	BOL	 1	/* no	Match "" at beginning of line. */
+#define MBOL	 2	/* no	Same, assuming multiline. */
+#define SBOL	 3	/* no	Same, assuming singleline. */
+#define	EOL	 4	/* no	Match "" at end of line. */
+#define MEOL	 5	/* no	Same, assuming multiline. */
+#define SEOL	 6	/* no	Same, assuming singleline. */
+#define	ANY	 7	/* no	Match any one character (except newline). */
+#define	SANY	 8	/* no	Match any one character. */
+#define	ANYOF	 9	/* sv	Match character in (or not in) this class. */
+#define	CURLY	10	/* sv	Match this simple thing {n,m} times. */
+#define	CURLYX	11	/* sv	Match this complex thing {n,m} times. */
+#define	BRANCH	12	/* node	Match this alternative, or the next... */
+#define	BACK	13	/* no	Match "", "next" ptr points backward. */
+#define	EXACT	14	/* sv	Match this string (preceded by length). */
+#define	EXACTF	15	/* sv	Match this string, folded (prec. by length). */
+#define	EXACTFL	16	/* sv	Match this string, folded in locale (w/len). */
+#define	NOTHING	17	/* no	Match empty string. */
+#define	STAR	18	/* node	Match this (simple) thing 0 or more times. */
+#define	PLUS	19	/* node	Match this (simple) thing 1 or more times. */
+#define BOUND	20	/* no	Match "" at any word boundary */
+#define BOUNDL	21	/* no	Match "" at any word boundary */
+#define NBOUND	22	/* no	Match "" at any word non-boundary */
+#define NBOUNDL	23	/* no	Match "" at any word non-boundary */
+#define REF	24	/* num	Match already matched string */
+#define REFF	25	/* num	Match already matched string, folded */
+#define REFFL	26	/* num	Match already matched string, folded in loc. */
+#define	OPEN	27	/* num	Mark this point in input as start of #n. */
+#define	CLOSE	28	/* num	Analogous to OPEN. */
+#define MINMOD	29	/* no	Next operator is not greedy. */
+#define GPOS	30	/* no	Matches where last m//g left off. */
+#define IFMATCH	31	/* no	Succeeds if the following matches. */
+#define UNLESSM	32	/* no	Fails if the following matches. */
+#define SUCCEED	33	/* no	Return from a subroutine, basically. */
+#define WHILEM	34	/* no	Do curly processing and see if rest matches. */
+#define ALNUM	35	/* no	Match any alphanumeric character */
+#define ALNUML	36 	/* no	Match any alphanumeric char in locale */
+#define NALNUM	37	/* no	Match any non-alphanumeric character */
+#define NALNUML	38	/* no	Match any non-alphanumeric char in locale */
+#define SPACE	39	/* no	Match any whitespace character */
+#define SPACEL	40	/* no	Match any whitespace char in locale */
+#define NSPACE	41	/* no	Match any non-whitespace character */
+#define NSPACEL	42	/* no	Match any non-whitespace char in locale */
+#define DIGIT	43	/* no	Match any numeric character */
+#define NDIGIT	44	/* no	Match any non-numeric character */
 
 /*
  * Opcode notes:
@@ -103,23 +117,88 @@
  */
 
 #ifndef DOINIT
-extern char regarglen[];
+EXT char regarglen[];
 #else
-char regarglen[] = {0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2};
+EXT char regarglen[] = {
+    0,0,0,0,0,0,0,0,0,0,
+    /*CURLY*/ 4, /*CURLYX*/ 4,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    /*REF*/ 2, 2, 2, /*OPEN*/ 2, /*CLOSE*/ 2,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+#endif
+
+#ifndef DOINIT
+EXT char regkind[];
+#else
+EXT char regkind[] = {
+	END,
+	BOL,
+	BOL,
+	BOL,
+	EOL,
+	EOL,
+	EOL,
+	ANY,
+	ANY,
+	ANYOF,
+	CURLY,
+	CURLY,
+	BRANCH,
+	BACK,
+	EXACT,
+	EXACT,
+	EXACT,
+	NOTHING,
+	STAR,
+	PLUS,
+	BOUND,
+	BOUND,
+	NBOUND,
+	NBOUND,
+	REF,
+	REF,
+	REF,
+	OPEN,
+	CLOSE,
+	MINMOD,
+	GPOS,
+	BRANCH,
+	BRANCH,
+	END,
+	WHILEM,
+	ALNUM,
+	ALNUM,
+	NALNUM,
+	NALNUM,
+	SPACE,
+	SPACE,
+	NSPACE,
+	NSPACE,
+	DIGIT,
+	NDIGIT,
+};
 #endif
 
 /* The following have no fixed length. */
 #ifndef DOINIT
-extern char varies[];
+EXT char varies[];
 #else
-char varies[] = {BRANCH,BACK,STAR,PLUS,CURLY,REF,0};
+EXT char varies[] = {
+    BRANCH, BACK, STAR, PLUS, CURLY, CURLYX, REF, REFF, REFFL, WHILEM, 0
+};
 #endif
 
 /* The following always have a length of 1. */
 #ifndef DOINIT
-extern char simple[];
+EXT char simple[];
 #else
-char simple[] = {ANY,ANYOF,ALNUM,NALNUM,SPACE,NSPACE,DIGIT,NDIGIT,0};
+EXT char simple[] = {
+    ANY, SANY, ANYOF,
+    ALNUM, ALNUML, NALNUM, NALNUML,
+    SPACE, SPACEL, NSPACE, NSPACEL,
+    DIGIT, NDIGIT, 0
+};
 #endif
 
 EXT char regdummy;
@@ -168,30 +247,35 @@ EXT char regdummy;
 
 #ifdef REGALIGN
 #define	NEXTOPER(p)	((p) + 4)
+#define	PREVOPER(p)	((p) - 4)
 #else
 #define	NEXTOPER(p)	((p) + 3)
+#define	PREVOPER(p)	((p) - 3)
 #endif
 
 #define MAGIC 0234
+
+/* Flags for first parameter byte of ANYOF */
+#define ANYOF_INVERT	0x40
+#define ANYOF_FOLD	0x20
+#define ANYOF_LOCALE	0x10
+#define ANYOF_ISA	0x0F
+#define ANYOF_ALNUML	 0x08
+#define ANYOF_NALNUML	 0x04
+#define ANYOF_SPACEL	 0x02
+#define ANYOF_NSPACEL	 0x01
 
 /*
  * Utility definitions.
  */
 #ifndef lint
-#ifndef CHARBITS
+#ifndef CHARMASK
 #define	UCHARAT(p)	((int)*(unsigned char *)(p))
 #else
-#define	UCHARAT(p)	((int)*(p)&CHARBITS)
+#define	UCHARAT(p)	((int)*(p)&CHARMASK)
 #endif
 #else /* lint */
 #define UCHARAT(p)	regdummy
 #endif /* lint */
 
-#define	FAIL(m)	fatal("/%s/: %s",regprecomp,m)
-
-char *regnext();
-#ifdef DEBUGGING
-void regdump();
-char *regprop();
-#endif
-
+#define	FAIL(m)	croak("/%.127s/: %s",regprecomp,m)

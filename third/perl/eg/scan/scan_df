@@ -1,6 +1,6 @@
 #!/usr/bin/perl -P
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/scan/scan_df,v 1.1.1.1 1996-10-02 06:40:06 ghudson Exp $
+# $RCSfile: scan_df,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:52 $
 
 # This report points out filesystems that are in danger of overflowing.
 

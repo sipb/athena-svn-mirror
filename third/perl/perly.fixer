@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# Fix up yacc output to allow dynamic allocation.  Since perly.c
+# is now provided with the perl source, this should not be necessary.
+#  
+# However, if the user wishes to use byacc, or wishes to try another 
+# compiler compiler (e.g. bison or yacc), this script will get run.
+# See makefile run_byacc target for more details.
+#
+# Currently, only byacc version 1.8 is fully supported.
+#
 #  Hacks to make it work with Interactive's SysVr3 Version 2.2
 #   doughera@lafvax.lafayette.edu (Andy Dougherty)   3/23/91
 #
@@ -10,7 +19,41 @@ input=$1
 output=$2
 tmp=/tmp/f$$
 
+if grep 'yaccpar 1.8 (Berkeley)' $input >/dev/null 2>&1; then
+    cp $input $output
+    if test -f perly.c.diff; then
+	patch -F3 $output <perly.c.diff
+	rm -rf $input
+    fi
+    exit
+elif grep 'yaccpar	1.9 (Berkeley)' $input >/dev/null 2>&1; then
+    if test -f perly.c.dif9; then
+	patch -F3 $output <perly.c.dif9
+	rm -rf $input
+	exit 0
+    else
+	echo "Diffs from byacc-1.9 are not available."
+	echo "If you wish to proceed anyway, do"
+	echo "cp $input $output"
+	echo "cp y.tab.h perly.h"
+	echo "and re-run make. Otherwise, I will use the old perly.c"
+	touch perly.c
+	# Exit with error status to stop make.
+	exit 1
+    fi
+fi
+
 plan="unknown"
+
+echo ""
+echo "Warning: the yacc you have used is not directly supported by perl."
+echo "The perly.fixer script will attempt to make some changes to the generated"
+echo "file. The changes may be incomplete and that might lead to problems later"
+echo "(especially with complex scripts). You may need to apply the changes"
+echo "embedded in perl.fixer (and/or perly.c.dif*) by hand."
+echo ""
+
+# Below, we check for various characteristic yaccpar outputs.
 
 #  Test for BSD 4.3 version.
 #  Also tests for the SunOS 4.0.2 version
@@ -18,7 +61,7 @@ egrep 'YYSTYPE[ 	]*yyv\[ *YYMAXDEPTH *\];
 short[  ]*yys\[ *YYMAXDEPTH *\] *;
 yyps *= *&yys\[ *-1 *\];
 yypv *= *&yyv\[ *-1 *\];
-if *\( *\+\+yyps *>=* *&yys\[ *YYMAXDEPTH *\] *\)' $input >$tmp
+if *\( *\+\+yyps *>=* *&yys\[ *YYMAXDEPTH *\] *\)' $input >$tmp 2>/dev/null
 
 set `wc -l $tmp`
 if test "$1" = "5"; then
@@ -26,12 +69,12 @@ if test "$1" = "5"; then
 fi
 
 if test "$plan" = "unknown"; then
-    #   Test for ISC 2.2 version.
+    #   Test for ISC 2.2 version (probably generic SysVr3).
 egrep 'YYSTYPE[ 	]*yyv\[ *YYMAXDEPTH *\];
 int[    ]*yys\[ *YYMAXDEPTH *\] *;
 yyps *= *&yys\[ *-1 *\];
 yypv *= *&yyv\[ *-1 *\];
-if *\( *\+\+yy_ps *>= *&yys\[ *YYMAXDEPTH *\] *\)' $input >$tmp
+if *\( *\+\+yy_ps *>= *&yys\[ *YYMAXDEPTH *\] *\)' $input >$tmp 2>/dev/null
 
     set `wc -l $tmp`
     if test "$1" = "5"; then
@@ -39,13 +82,15 @@ if *\( *\+\+yy_ps *>= *&yys\[ *YYMAXDEPTH *\] *\)' $input >$tmp
     fi
 fi
 
+# ------
+
 case "$plan" in
     ##################################################################
     # The SunOS 4.0.2 version has the comparison fixed already.
     # Also added are out of memory checks (makes porting the generated
     # code easier) For most systems, it can't hurt. -- TD
     "bsd43")
-	echo "Patching perly.c to allow dynamic yacc stack allocation"
+	echo "Attempting to path perly.c to allow dynamic yacc stack allocation"
 	echo "Assuming bsd4.3 yaccpar"
 	cat >$tmp <<'END'
 /YYSTYPE[ 	]*yyv\[ *YYMAXDEPTH *\];/c\
@@ -60,8 +105,8 @@ short *maxyyps;
 
 /yypv *= *&yyv\[ *-1 *\];/c\
 \	if (!yyv) {\
-\	    yyv = (YYSTYPE*) malloc(yymaxdepth * sizeof(YYSTYPE));\
-\	    yys = (short*) malloc(yymaxdepth * sizeof(short));\
+\	    yyv = (YYSTYPE*) safemalloc(yymaxdepth * sizeof(YYSTYPE));\
+\	    yys = (short*) safemalloc(yymaxdepth * sizeof(short));\
 \	    if ( !yyv || !yys ) {\
 \		yyerror( "out of memory" );\
 \		return(1);\
@@ -94,11 +139,15 @@ short *maxyyps;
 /yacc stack overflow.*}/d
 /yacc stack overflow/,/}/d
 END
-	sed -f $tmp <$input >$output ;;
+	if sed -f $tmp <$input >$output
+	then echo "The edit seems to have been applied okay."
+	else echo "The edit seems to have failed!"
+	fi
+	;;
 
     #######################################################
     "isc") # Interactive Systems 2.2  version
-	echo "Patching perly.c to allow dynamic yacc stack allocation"
+	echo "Attempting to path perly.c to allow dynamic yacc stack allocation"
 	echo "Assuming Interactive SysVr3 2.2 yaccpar"
 	# Easier to simply put whole script here than to modify the
 	# bsd script with sed.
@@ -121,8 +170,8 @@ int *maxyyps;
 
 /yypv *= *&yyv\[ *-1 *\];/c\
 \	if (!yyv) {\
-\	    yyv = (YYSTYPE*) malloc(yymaxdepth * sizeof(YYSTYPE));\
-\	    yys = (int*) malloc(yymaxdepth * sizeof(int));\
+\	    yyv = (YYSTYPE*) safemalloc(yymaxdepth * sizeof(YYSTYPE));\
+\	    yys = (int*) safemalloc(yymaxdepth * sizeof(int));\
 \	    maxyyps = &yys[yymaxdepth];\
 \	}\
 \	yyps = &yys[-1];\
@@ -144,11 +193,20 @@ int *maxyyps;
 \		}\
 \		if (yyv == NULL || yys == NULL)
 END
-	sed -f $tmp < $input > $output ;;
+	if sed -f $tmp < $input > $output
+	then echo "The edit seems to have been applied okay."
+	else echo "The edit seems to have failed!"
+	fi
+	;;
 
     ######################################################
     # Plan still unknown
-    *) mv $input $output;
+    *)
+	echo "Unable to patch perly.c to allow dynamic yacc stack allocation (plan=$plan)"
+	# just do minimal change to write $output from $input
+	sed -e 's/Received token/ *** Received token/' $input >$output
+	;;
 esac
 
+echo ""
 rm -rf $tmp $input

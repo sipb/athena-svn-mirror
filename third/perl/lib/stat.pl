@@ -1,4 +1,4 @@
-;# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/stat.pl,v 1.1.1.1 1996-10-02 06:40:27 ghudson Exp $
+;# $RCSfile: stat.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:07 $
 
 ;# Usage:
 ;#	require 'stat.pl';

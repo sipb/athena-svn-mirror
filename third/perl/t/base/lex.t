@@ -1,14 +1,13 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/base/lex.t,v 1.1.1.1 1996-10-02 06:40:16 ghudson Exp $
+# $RCSfile: lex.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:31 $
 
-print "1..18\n";
+print "1..27\n";
 
-$ # this is the register <space>
-= 'x';
+$x = 'x';
 
-print "#1	:$ : eq :x:\n";
-if ($  eq 'x') {print "ok 1\n";} else {print "not ok 1\n";}
+print "#1	:$x: eq :x:\n";
+if ($x eq 'x') {print "ok 1\n";} else {print "not ok 1\n";}
 
 $x = $#;	# this is the register $#
 
@@ -29,7 +28,7 @@ eval 'while (0) {
 ';
 
 eval '$foo{1} / 1;';
-if (!$@) {print "ok 6\n";} else {print "not ok 6\n";}
+if (!$@) {print "ok 6\n";} else {print "not ok 6 $@\n";}
 
 eval '$foo = 123+123.4+123e4+123.4E5+123.4e+5+.12;';
 
@@ -66,7 +65,7 @@ print qq/ok 14\n/;
 print qq(ok 15\n);
 
 print qq
-ok 16\n
+[ok 16\n]
 ;
 
 print q<ok 17
@@ -76,3 +75,33 @@ print <<;   # Yow!
 ok 18
 
 # previous line intentionally left blank.
+
+print <<E1 eq "foo\n\n" ? "ok 19\n" : "not ok 19\n";
+@{[ <<E2 ]}
+foo
+E2
+E1
+
+print <<E1 eq "foo\n\n" ? "ok 20\n" : "not ok 20\n";
+@{[
+  <<E2
+foo
+E2
+]}
+E1
+
+$foo = FOO;
+$bar = BAR;
+$foo{$bar} = BAZ;
+$ary[0] = ABC;
+
+print "$foo{$bar}" eq "BAZ" ? "ok 21\n" : "not ok 21\n";
+
+print "${foo}{$bar}" eq "FOO{BAR}" ? "ok 22\n" : "not ok 22\n";
+print "${foo{$bar}}" eq "BAZ" ? "ok 23\n" : "not ok 23\n";
+
+print "FOO:" =~ /$foo[:]/ ? "ok 24\n" : "not ok 24\n";
+print "ABC" =~ /^$ary[$A]$/ ? "ok 25\n" : "not ok 25\n";
+print "FOOZ" =~ /^$foo[$A-Z]$/ ? "ok 26\n" : "not ok 26\n";
+
+print (((q{{\{\(}} . q{{\)\}}}) eq '{{\(}{\)}}') ? "ok 27\n" : "not ok 27\n");

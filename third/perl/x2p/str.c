@@ -1,24 +1,18 @@
-/* $RCSfile: str.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:20 $
+/* $RCSfile: str.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:10 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  12:20:08  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:58:15  lwall
- * 4.0 baseline.
- * 
  */
 
-#include "handy.h"
 #include "EXTERN.h"
-#include "util.h"
 #include "a2p.h"
+#include "util.h"
 
+void
 str_numset(str,num)
 register STR *str;
 double num;
@@ -47,7 +41,7 @@ register STR *str;
     str->str_pok = 1;
 #ifdef DEBUGGING
     if (debug & 32)
-	fprintf(stderr,"0x%lx ptr(%s)\n",str,str->str_ptr);
+	fprintf(stderr,"0x%lx ptr(%s)\n",(unsigned long)str,str->str_ptr);
 #endif
     return str->str_ptr;
 }
@@ -65,11 +59,12 @@ register STR *str;
     str->str_nok = 1;
 #ifdef DEBUGGING
     if (debug & 32)
-	fprintf(stderr,"0x%lx num(%g)\n",str,str->str_nval);
+	fprintf(stderr,"0x%lx num(%g)\n",(unsigned long)str,str->str_nval);
 #endif
     return str->str_nval;
 }
 
+void
 str_sset(dstr,sstr)
 STR *dstr;
 register STR *sstr;
@@ -84,6 +79,7 @@ register STR *sstr;
 	str_nset(dstr,"",0);
 }
 
+void
 str_nset(str,ptr,len)
 register STR *str;
 register char *ptr;
@@ -97,6 +93,7 @@ register int len;
     str->str_pok = 1;		/* validate pointer */
 }
 
+void
 str_set(str,ptr)
 register STR *str;
 register char *ptr;
@@ -113,6 +110,7 @@ register char *ptr;
     str->str_pok = 1;		/* validate pointer */
 }
 
+void
 str_chop(str,ptr)	/* like set but assuming ptr is in str */
 register STR *str;
 register char *ptr;
@@ -125,6 +123,7 @@ register char *ptr;
     str->str_pok = 1;		/* validate pointer */
 }
 
+void
 str_ncat(str,ptr,len)
 register STR *str;
 register char *ptr;
@@ -140,6 +139,7 @@ register int len;
     str->str_pok = 1;		/* validate pointer */
 }
 
+void
 str_scat(dstr,sstr)
 STR *dstr;
 register STR *sstr;
@@ -150,6 +150,7 @@ register STR *sstr;
 	str_ncat(dstr,sstr->str_ptr,sstr->str_cur);
 }
 
+void
 str_cat(str,ptr)
 register STR *str;
 register char *ptr;
@@ -193,7 +194,7 @@ char *keeplist;
 		else
 		    *to++ = *from++;
 	    }
-	    else if (index(keeplist,from[1]))
+	    else if (strchr(keeplist,from[1]))
 		*to++ = *from++;
 	    else
 		from++;
@@ -242,7 +243,7 @@ str_replace(str,nstr)
 register STR *str;
 register STR *nstr;
 {
-    safefree(str->str_ptr);
+    Safefree(str->str_ptr);
     str->str_ptr = nstr->str_ptr;
     str->str_len = nstr->str_len;
     str->str_cur = nstr->str_cur;
@@ -267,6 +268,7 @@ register STR *str;
     freestrroot = str;
 }
 
+int
 str_len(str)
 register STR *str;
 {
@@ -285,7 +287,8 @@ str_gets(str,fp)
 register STR *str;
 register FILE *fp;
 {
-#ifdef STDSTDIO		/* Here is some breathtakingly efficient cheating */
+#if defined(USE_STDIO_PTR) && defined(STDIO_PTR_LVALUE) && defined(STDIO_CNT_LVALUE)
+    /* Here is some breathtakingly efficient cheating */
 
     register char *bp;		/* we're going to steal some values */
     register int cnt;		/*  from the stdio struct and put EVERYTHING */
@@ -294,13 +297,23 @@ register FILE *fp;
     int i;
     int bpx;
 
-    cnt = fp->_cnt;			/* get count into register */
+#if defined(VMS)
+    /* An ungetc()d char is handled separately from the regular
+     * buffer, so we getc() it back out and stuff it in the buffer.
+     */
+    i = getc(fp);
+    if (i == EOF) return Nullch;
+    *(--((*fp)->_ptr)) = (unsigned char) i;
+    (*fp)->_cnt++;
+#endif
+
+    cnt = FILE_cnt(fp);			/* get count into register */
     str->str_nok = 0;			/* invalidate number */
     str->str_pok = 1;			/* validate pointer */
     if (str->str_len <= cnt)		/* make sure we have the room */
 	GROWSTR(&(str->str_ptr), &(str->str_len), cnt+1);
     bp = str->str_ptr;			/* move these two too to registers */
-    ptr = fp->_ptr;
+    ptr = FILE_ptr(fp);
     for (;;) {
 	while (--cnt >= 0) {
 	    if ((*bp++ = *ptr++) == newline)
@@ -312,11 +325,11 @@ register FILE *fp;
 		}
 	}
 	
-	fp->_cnt = cnt;			/* deregisterize cnt and ptr */
-	fp->_ptr = ptr;
-	i = _filbuf(fp);		/* get more characters */
-	cnt = fp->_cnt;
-	ptr = fp->_ptr;			/* reregisterize cnt and ptr */
+	FILE_cnt(fp) = cnt;		/* deregisterize cnt and ptr */
+	FILE_ptr(fp) = ptr;
+	i = getc(fp);		/* get more characters */
+	cnt = FILE_cnt(fp);
+	ptr = FILE_ptr(fp);		/* reregisterize cnt and ptr */
 
 	bpx = bp - str->str_ptr;	/* prepare for possible relocation */
 	GROWSTR(&(str->str_ptr), &(str->str_len), str->str_cur + cnt + 1);
@@ -332,12 +345,13 @@ register FILE *fp;
     }
 
 thats_all_folks:
-    fp->_cnt = cnt;			/* put these back or we're in trouble */
-    fp->_ptr = ptr;
+    FILE_cnt(fp) = cnt;			/* put these back or we're in trouble */
+    FILE_ptr(fp) = ptr;
     *bp = '\0';
     str->str_cur = bp - str->str_ptr;	/* set length */
 
-#else /* !STDSTDIO */	/* The big, slow, and stupid way */
+#else /* USE_STDIO_PTR && STDIO_PTR_LVALUE && STDIO_CNT_LVALUE */
+    /* The big, slow, and stupid way */
 
     static char buf[4192];
 
@@ -346,7 +360,7 @@ thats_all_folks:
     else
 	str_set(str, No);
 
-#endif /* STDSTDIO */
+#endif /* USE_STDIO_PTR && STDIO_PTR_LVALUE && STDIO_CNT_LVALUE */
 
     return str->str_cur ? str->str_ptr : Nullch;
 }

@@ -1,8 +1,8 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/comp/cmdopt.t,v 1.1.1.1 1996-10-02 06:40:17 ghudson Exp $
+# $RCSfile: cmdopt.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:37 $
 
-print "1..40\n";
+print "1..44\n";
 
 # test the optimization of constants
 
@@ -33,7 +33,7 @@ if (1 || $x) { print "ok 15\n";} else { print "not ok 15\n";}
 if (0 || $x) { print "not ok 16\n";} else { print "ok 16\n";}
 
 
-# test the optimization of registers
+# test the optimization of variables
 
 $x = 1;
 if ($x) { print "ok 17\n";} else { print "not ok 17\n";}
@@ -55,25 +55,25 @@ if ($a !~ /a/) { print "not ok 24\n";} else { print "ok 24\n";}
 
 $a = 'a';
 $x = 1;
-if ($a eq 'a' && $x) { print "ok 25\n";} else { print "not ok 25\n";}
-if ($a ne 'a' && $x) { print "not ok 26\n";} else { print "ok 26\n";}
+if ($a eq 'a' and $x) { print "ok 25\n";} else { print "not ok 25\n";}
+if ($a ne 'a' and $x) { print "not ok 26\n";} else { print "ok 26\n";}
 $x = '';
-if ($a eq 'a' && $x) { print "not ok 27\n";} else { print "ok 27\n";}
-if ($a ne 'a' && $x) { print "not ok 28\n";} else { print "ok 28\n";}
+if ($a eq 'a' and $x) { print "not ok 27\n";} else { print "ok 27\n";}
+if ($a ne 'a' and $x) { print "not ok 28\n";} else { print "ok 28\n";}
 
 $x = 1;
-if ($a eq 'a' || $x) { print "ok 29\n";} else { print "not ok 29\n";}
-if ($a ne 'a' || $x) { print "ok 30\n";} else { print "not ok 30\n";}
+if ($a eq 'a' or $x) { print "ok 29\n";} else { print "not ok 29\n";}
+if ($a ne 'a' or $x) { print "ok 30\n";} else { print "not ok 30\n";}
 $x = '';
-if ($a eq 'a' || $x) { print "ok 31\n";} else { print "not ok 31\n";}
-if ($a ne 'a' || $x) { print "not ok 32\n";} else { print "ok 32\n";}
+if ($a eq 'a' or $x) { print "ok 31\n";} else { print "not ok 31\n";}
+if ($a ne 'a' or $x) { print "not ok 32\n";} else { print "ok 32\n";}
 
 $x = 1;
 if ($a =~ /a/ && $x) { print "ok 33\n";} else { print "not ok 33\n";}
 if ($a !~ /a/ && $x) { print "not ok 34\n";} else { print "ok 34\n";}
 $x = '';
 if ($a =~ /a/ && $x) { print "not ok 35\n";} else { print "ok 35\n";}
-    if ($a !~ /a/ && $x) { print "not ok 36\n";} else { print "ok 36\n";}
+if ($a !~ /a/ && $x) { print "not ok 36\n";} else { print "ok 36\n";}
 
 $x = 1;
 if ($a =~ /a/ || $x) { print "ok 37\n";} else { print "not ok 37\n";}
@@ -81,3 +81,10 @@ if ($a !~ /a/ || $x) { print "ok 38\n";} else { print "not ok 38\n";}
 $x = '';
 if ($a =~ /a/ || $x) { print "ok 39\n";} else { print "not ok 39\n";}
 if ($a !~ /a/ || $x) { print "not ok 40\n";} else { print "ok 40\n";}
+
+$x = 1;
+if ($a eq 'a' xor $x) { print "not ok 41\n";} else { print "ok 41\n";}
+if ($a ne 'a' xor $x) { print "ok 42\n";} else { print "not ok 42\n";}
+$x = '';
+if ($a eq 'a' xor $x) { print "ok 43\n";} else { print "not ok 43\n";}
+if ($a ne 'a' xor $x) { print "not ok 44\n";} else { print "ok 44\n";}

@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/io/dup.t,v 1.1.1.1 1996-10-02 06:40:16 ghudson Exp $
+# $RCSfile: dup.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:46:57 $
 
 print "1..6\n";
 
@@ -17,8 +17,14 @@ select(STDOUT); $| = 1;
 
 print STDOUT "ok 2\n";
 print STDERR "ok 3\n";
-system 'echo ok 4';
-system 'echo ok 5 1>&2';
+if ($^O eq 'MSWin32') {
+    print `echo ok 4`;
+    print `echo ok 5 1>&2`; # does this work?
+}
+else {
+    system 'echo ok 4';
+    system 'echo ok 5 1>&2';
+}
 
 close(STDOUT);
 close(STDERR);
@@ -26,7 +32,8 @@ close(STDERR);
 open(STDOUT,">&dupout");
 open(STDERR,">&duperr");
 
-system 'cat Io.dup';
+if ($^O eq 'MSWin32') { print `type Io.dup` }
+else                  { system 'cat Io.dup' }
 unlink 'Io.dup';
 
 print STDOUT "ok 6\n";

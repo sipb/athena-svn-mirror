@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/findcp,v 1.1.1.1 1996-10-02 06:40:05 ghudson Exp $
+# $RCSfile: findcp,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:43 $
 
 # This is a wrapper around the find command that pretends find has a switch
 # of the form -cp host:destination.  It presumes your find implements -ls.

@@ -1,10 +1,12 @@
 #!./perl
 
-# $RCSfile: goto.t,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:15 $
+# $RCSfile: goto.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:23 $
 
-print "1..3\n";
+# "This IS structured code.  It's just randomly structured."
 
-while (0) {
+print "1..9\n";
+
+while ($?) {
     $foo = 1;
   label1:
     $foo = 2;
@@ -29,5 +31,60 @@ label4:
 print "#2\t:$foo: == 4\n";
 if ($foo == 4) {print "ok 2\n";} else {print "not ok 2\n";}
 
-$x = `./perl -e 'goto foo;' 2>&1`;
+$PERL = ($^O eq 'MSWin32') ? '.\perl' : './perl';
+$x = `$PERL -e "goto foo;" 2>&1`;
+if ($x =~ /DCL-W-NOCOMD/) { $x = `\$ mcr sys\$disk:[]perl. -e "goto foo;"`; }
+
 if ($x =~ /label/) {print "ok 3\n";} else {print "not ok 3\n";}
+
+sub foo {
+    goto bar;
+    print "not ok 4\n";
+    return;
+bar:
+    print "ok 4\n";
+}
+
+&foo;
+
+sub bar {
+    $x = 'bypass';
+    eval "goto $x";
+}
+
+&bar;
+exit;
+
+FINALE:
+print "ok 9\n";
+exit;
+
+bypass:
+print "ok 5\n";
+
+# Test autoloading mechanism.
+
+sub two {
+    ($pack, $file, $line) = caller;	# Should indicate original call stats.
+    print "@_ $pack $file $line" eq "1 2 3 main $FILE $LINE"
+	? "ok 7\n"
+	: "not ok 7\n";
+}
+
+sub one {
+    eval <<'END';
+    sub one { print "ok 6\n"; goto &two; print "not ok 6\n"; }
+END
+    goto &one;
+}
+
+$FILE = __FILE__;
+$LINE = __LINE__ + 1;
+&one(1,2,3);
+
+$wherever = NOWHERE;
+eval { goto $wherever };
+print $@ =~ /Can't find label NOWHERE/ ? "ok 8\n" : "not ok 8\n";
+
+$wherever = FINALE;
+goto $wherever;
