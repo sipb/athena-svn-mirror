@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.3 1997-11-13 22:11:29 ghudson Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.4 1997-11-13 23:26:04 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,9 +44,8 @@ struct hesgroup {
   int present;
 };
 
-static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
-					   int *have_primary,
-					   gid_t *primary_gid);
+static int retrieve_hesgroups(const char *username, struct hesgroup **groups,
+			      int *ngroups, gid_t *primary_gid);
 static void free_hesgroups(struct hesgroup *hesgroups, int ngroups);
 static gid_t *retrieve_local_gids(int *nlocal);
 static int in_local_gids(gid_t *local, int nlocal, gid_t gid);
@@ -60,14 +59,12 @@ int al__add_to_group(const char *username, struct al_record *record)
   FILE *in, *out;
   char *line, *p;
   int len = strlen(username), linesize = 0, nentries, i, nhesgroups;
-  int have_primary, lockfd, status, ngroups;
+  int lockfd, status, ngroups;
   gid_t gid, primary_gid, *groups;
   struct hesgroup *hesgroups;
 
   /* Retrieve the hesiod groups. */
-  hesgroups = retrieve_hesgroups(username, &nhesgroups, &have_primary,
-				 &primary_gid);
-  if (!hesgroups)
+  if (retrieve_hesgroups(username, &hesgroups, &nhesgroups, &primary_gid) != 0)
     return AL_WGROUP;
 
   /* Open the input and output files. */
@@ -105,7 +102,7 @@ int al__add_to_group(const char *username, struct al_record *record)
 	continue;
 
       /* Don't include the primary gid in the count. */
-      if (have_primary && gid == primary_gid)
+      if (gid == primary_gid)
 	continue;
 
       /* Look for username in the group's user list. */
@@ -180,12 +177,12 @@ int al__add_to_group(const char *username, struct al_record *record)
 
 	  /* Add the user to the group if it's the primary group or if
 	   * the user isn't already in MAX_GROUPS other groups. */
-	  if (nentries < MAX_GROUPS || (have_primary && gid == primary_gid))
+	  if (nentries < MAX_GROUPS || gid == primary_gid)
 	    {
 	      if (line[strlen(line) - 1] != ':')
 		putc(',', out);
 	      fputs(username, out);
-	      if (!have_primary || gid != primary_gid)
+	      if (gid != primary_gid)
 		nentries++;
 	      groups[ngroups++] = gid;
 	    }
@@ -209,11 +206,11 @@ int al__add_to_group(const char *username, struct al_record *record)
       gid = hesgroups[i].gid;
       if (hesgroups[i].present)
 	continue;
-      if (nentries < MAX_GROUPS || (have_primary && gid == primary_gid))
+      if (nentries < MAX_GROUPS || gid == primary_gid)
 	{
 	  fprintf(out, "%s:*:%lu:%s\n", hesgroups[i].name,
 		  (unsigned long) gid, username);
-	  if (!have_primary || gid != primary_gid)
+	  if (gid != primary_gid)
 	    nentries++;
 	  groups[ngroups++] = gid;
 	}
@@ -319,83 +316,110 @@ int al__remove_from_group(const char *username, struct al_record *record)
   return AL_SUCCESS;
 }
 
-static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
-					   int *have_primary,
-					   gid_t *primary_gid)
+/* Retrieve the user's hesiod groups and stuff them into *groups, with a
+ * count in *ngroups.  Also put the user's primary gid into *primary_gid.
+ * Return 0 on success and -1 on failure.
+ */
+static int retrieve_hesgroups(const char *username, struct hesgroup **groups,
+			      int *ngroups, gid_t *primary_gid)
 {
-  char **grplistvec, **primarygidvec, buf[64], *p, *q;
+  char **grplistvec, **primarygidvec, *primary_name, buf[64], *p, *q;
   int n, len;
   struct hesgroup *hesgroups;
   struct passwd *pwd;
   void *hescontext;
 
-  if (hesiod_init(&hescontext) != 0)
-    return NULL;
+  /* Look up the user's primary group in hesiod to retrieve the primary
+   * group name.  Start by finding the gid. */
+  pwd = al__getpwnam(username);
+  if (!pwd)
+    {
+      hesiod_end(hescontext);
+      return -1;
+    }
+  *primary_gid = pwd->pw_gid;
+  al__free_passwd(pwd);
 
-  /* Look up the Hesiod group list. */
+  /* Initialize the hesiod context. */
+  if (hesiod_init(&hescontext) != 0)
+    return -1;
+
+  /* Now do the hesiod resolve.  If it fails with ENOENT, assume the user
+   * has a local account and return no groups. */
+  sprintf(buf, "%lu", (unsigned long) *primary_gid);
+  primarygidvec = hesiod_resolve(hescontext, buf, "gid");
+  if (!primarygidvec && errno == ENOENT)
+    {
+      *groups = NULL;
+      *ngroups = 0;
+      hesiod_end(hescontext);
+      return 0;
+    }
+  if (!primarygidvec || !*primarygidvec || **primarygidvec == ':')
+    {
+      if (primarygidvec)
+	hesiod_free_list(hescontext, primarygidvec);
+      hesiod_end(hescontext);
+      return -1;
+    }
+
+  /* Copy the name part into primary_name. */
+  p = strchr(*primarygidvec, ':');
+  len = (p) ? p - *primarygidvec : strlen(*primarygidvec);
+  primary_name = malloc(len + 1);
+  if (!primary_name)
+    {
+      hesiod_free_list(hescontext, primarygidvec);
+      hesiod_end(hescontext);
+      return -1;
+    }
+  memcpy(primary_name, *primarygidvec, len);
+  primary_name[len] = 0;
+  hesiod_free_list(hescontext, primarygidvec);
+
+  /* Look up the Hesiod group list.  It's okay if there isn't one. */
   grplistvec = hesiod_resolve(hescontext, username, "grplist");
-  if (!grplistvec || !*grplistvec)
+  if ((!grplistvec && errno != ENOENT) || (grplistvec && !*grplistvec))
     {
       if (grplistvec)
 	hesiod_free_list(hescontext, grplistvec);
       hesiod_end(hescontext);
-      return NULL;
+      free(primary_name);
+      return -1;
     }
 
   /* Get a close upper bound on the number of group entries we'll need. */
-  n = 0;
-  for (p = *grplistvec; *p; p++)
+  if (grplistvec)
     {
-      if (*p == ':')
-	n++;
+      n = 0;
+      for (p = *grplistvec; *p; p++)
+	{
+	  if (*p == ':')
+	    n++;
+	}
+      n = (n + 1) / 2 + 1;
     }
-  n = (n + 1) / 2 + 1;
+  else
+    n = 1;
 
   /* Allocate memory. */
   hesgroups = malloc(n * sizeof(struct hesgroup));
   if (!hesgroups)
     {
-      hesiod_free_list(hescontext, grplistvec);
+      if (grplistvec)
+	hesiod_free_list(hescontext, grplistvec);
       hesiod_end(hescontext);
-      return NULL;
+      free(primary_name);
+      return -1;
     }
 
-  /* Start counting group entries again from 0. */
-  n = 0;
-
-  /* Try to get the primary group, but don't lose if we fail. */
-  *have_primary = 0;
-  pwd = al__getpwnam(username);
-  if (pwd)
-    {
-      sprintf(buf, "%lu", (unsigned long) pwd->pw_gid);
-      primarygidvec = hesiod_resolve(hescontext, buf, "gid");
-      if (primarygidvec && *primarygidvec)
-	{
-	  p = strchr(*primarygidvec, ':');
-	  len = (p) ? p - *primarygidvec : strlen(*primarygidvec);
-	  if (len > 0)
-	    {
-	      hesgroups[n].name = malloc(len + 1);
-	      if (hesgroups[n].name)
-		{
-		  memcpy(hesgroups[n].name, *primarygidvec, len);
-		  hesgroups[n].name[len] = 0;
-		  hesgroups[n].gid = pwd->pw_gid;
-		  hesgroups[n].present = 0;
-		  n++;
-		  *have_primary = 1;
-		  *primary_gid = pwd->pw_gid;
-		}
-	    }
-	}
-      if (primarygidvec)
-	hesiod_free_list(hescontext, primarygidvec);
-      al__free_passwd(pwd);
-    }
-
-  /* Now get the entries from grplistvec. */
-  p = *grplistvec;
+  /* Start off the list with the primary gid. */
+  hesgroups[0].name = primary_name;
+  hesgroups[0].gid = *primary_gid;
+  n = 1;
+  
+  /* Now get the entries from grplistvec, if we got one. */
+  p = (grplistvec) ? *grplistvec : NULL;
   while (p)
     {
       /* Find the end of the group name.  Stop if we hit the end, if we
@@ -410,7 +434,7 @@ static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
 	  free_hesgroups(hesgroups, n);
 	  hesiod_free_list(hescontext, grplistvec);
 	  hesiod_end(hescontext);
-	  return NULL;
+	  return -1;
 	}
       memcpy(hesgroups[n].name, p, q - p);
       hesgroups[n].name[q - p] = 0;
@@ -423,10 +447,12 @@ static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
     }
 
   /* Clean up allocated memory and return. */
-  hesiod_free_list(hescontext, grplistvec);
+  if (grplistvec)
+    hesiod_free_list(hescontext, grplistvec);
   hesiod_end(hescontext);
   *ngroups = n;
-  return hesgroups;
+  *groups = hesgroups;
+  return 0;
 }
 
 static void free_hesgroups(struct hesgroup *hesgroups, int ngroups)
@@ -435,7 +461,8 @@ static void free_hesgroups(struct hesgroup *hesgroups, int ngroups)
 
   for (i = 0; i < ngroups; i++)
     free(hesgroups[i].name);
-  free(hesgroups);
+  if (ngroups)
+    free(hesgroups);
 }
 
 static gid_t *retrieve_local_gids(int *nlocal)
