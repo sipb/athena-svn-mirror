@@ -1,3 +1,17 @@
+2003-03-23  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (remove_font_style): always make sure that if there
+	is no size mask we specify one to avoid the case where we have a
+	style attribute but no size.
+
+	* htmlfontmanager.c (get_font_num): make sure that we always have
+	a size setting.
+
+2003-03-03  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_thaw_idle_reset): always call
+	thaw_idle.
+
 2003-01-23  Larry Ewing  <lewing@ximian.com>
 
 	* gtkhtml.c: Use the correct UCS-2 character set to fix a problem

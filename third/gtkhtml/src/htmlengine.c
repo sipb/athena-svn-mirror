@@ -271,6 +271,9 @@ remove_font_style (HTMLEngine *e, GtkHTMLFontStyle old_attrs)
 		} else
 			g_warning ("unknown style");
 	}
+	if (!(e->font_style & GTK_HTML_FONT_STYLE_SIZE_MASK))
+		e->font_style |= GTK_HTML_FONT_STYLE_SIZE_3;
+
 	if (e->font_style == GTK_HTML_FONT_STYLE_SIZE_3)
 		e->font_style = GTK_HTML_FONT_STYLE_DEFAULT;
 
@@ -4967,11 +4970,8 @@ html_engine_thaw (HTMLEngine *engine)
 void
 html_engine_thaw_idle_reset (HTMLEngine *e)
 {
-	if (e->thaw_idle_id) {
-		gtk_idle_remove (e->thaw_idle_id);
-		e->thaw_idle_id = 0;
-		html_engine_show_cursor (e);
-	}
+	if (e->thaw_idle_id)
+		thaw_idle (e);
 }
 
 

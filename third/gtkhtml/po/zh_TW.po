@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2003-02-04 16:16-0600\n"
+"POT-Creation-Date: 2003-03-26 13:38-0500\n"
 "PO-Revision-Date: 2001-09-20 10:38+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -34,44 +34,48 @@ msgstr "<無>"
 # components/html-editor/cell.c:305
 # components/html-editor/table.c:286
 #: capplet/gnome-bindings-prop.c:216 capplet/main.c:253
-#: components/html-editor/cell.c:391 components/html-editor/image.c:543
+#: components/html-editor/cell.c:391 components/html-editor/image.c:542
 #: components/html-editor/rule.c:315 components/html-editor/table.c:528
 #: components/html-editor/table.c:619 components/html-editor/template.c:249
 msgid "Could not load glade file."
 msgstr "無法載入 glade 檔案。"
 
 #: capplet/gtkhtml-capplet.glade.h:1
+msgid "\n"
+msgstr ""
+
+#: capplet/gtkhtml-capplet.glade.h:3
 msgid "*********************"
 msgstr "*********************"
 
-#: capplet/gtkhtml-capplet.glade.h:2
+#: capplet/gtkhtml-capplet.glade.h:4
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 
 # capplet/gtkhtml-capplet.glade.h:7
 # capplet/gtkhtml-capplet.glade.h:7
-#: capplet/gtkhtml-capplet.glade.h:3
+#: capplet/gtkhtml-capplet.glade.h:5
 msgid "Add Keyboard Shortcuts"
 msgstr "新增快捷鍵"
 
-#: capplet/gtkhtml-capplet.glade.h:4
+#: capplet/gtkhtml-capplet.glade.h:6
 msgid "Automatically detect links"
 msgstr "自動偵測連結"
 
-#: capplet/gtkhtml-capplet.glade.h:5
+#: capplet/gtkhtml-capplet.glade.h:7
 #, fuzzy
 msgid "Automatically insert smiley images"
 msgstr "自動偵測連結"
 
 # capplet/gtkhtml-capplet.glade.h:2
 # capplet/gtkhtml-capplet.glade.h:2
-#: capplet/gtkhtml-capplet.glade.h:6
+#: capplet/gtkhtml-capplet.glade.h:8
 msgid "Behavior"
 msgstr "進階選項"
 
 # capplet/gnome-bindings-prop.c:525
 # capplet/gnome-bindings-prop.c:525
-#: capplet/gtkhtml-capplet.glade.h:7
+#: capplet/gtkhtml-capplet.glade.h:9
 msgid "Command"
 msgstr "指令"
 
@@ -79,139 +83,139 @@ msgstr "指令"
 # components/html-editor/popup.c:85
 # components/html-editor/editor-control-factory.c:146
 # components/html-editor/popup.c:85
-#: capplet/gtkhtml-capplet.glade.h:8
+#: capplet/gtkhtml-capplet.glade.h:10
 msgid "Composer Properties"
 msgstr "編輯器內容"
 
-#: capplet/gtkhtml-capplet.glade.h:9
+#: capplet/gtkhtml-capplet.glade.h:11
 msgid "Composer Properties planned"
 msgstr "編輯器內容"
 
 # capplet/gtkhtml-capplet.glade.h:18
 # capplet/gtkhtml-capplet.glade.h:18
-#: capplet/gtkhtml-capplet.glade.h:10
+#: capplet/gtkhtml-capplet.glade.h:12
 #, fuzzy
 msgid "Configure spell checking"
 msgstr "啟動拼字檢查"
 
 # capplet/gtkhtml-capplet.glade.h:18
 # capplet/gtkhtml-capplet.glade.h:18
-#: capplet/gtkhtml-capplet.glade.h:11
+#: capplet/gtkhtml-capplet.glade.h:13
 msgid "Enable spell checking"
 msgstr "啟動拼字檢查"
 
 # capplet/gtkhtml-capplet.glade.h:4
 # capplet/gtkhtml-capplet.glade.h:4
-#: capplet/gtkhtml-capplet.glade.h:12
+#: capplet/gtkhtml-capplet.glade.h:14
 msgid "Fixed width"
 msgstr "固定寬度"
 
 # capplet/gtkhtml-capplet.glade.h:5
 # capplet/gtkhtml-capplet.glade.h:5
-#: capplet/gtkhtml-capplet.glade.h:13
+#: capplet/gtkhtml-capplet.glade.h:15
 msgid "Fonts"
 msgstr "字型"
 
 # capplet/gtkhtml-capplet.glade.h:6
 # capplet/gtkhtml-capplet.glade.h:6
-#: capplet/gtkhtml-capplet.glade.h:14
+#: capplet/gtkhtml-capplet.glade.h:16
 msgid "For printing"
 msgstr "列印"
 
 # capplet/gnome-bindings-prop.c:582
 # capplet/gnome-bindings-prop.c:582
-#: capplet/gtkhtml-capplet.glade.h:15
+#: capplet/gtkhtml-capplet.glade.h:17
 msgid "Grab keys"
 msgstr "擷取按鍵"
 
 # components/html-editor/toolbar.c:51
 # components/html-editor/toolbar.c:51
-#: capplet/gtkhtml-capplet.glade.h:16
+#: capplet/gtkhtml-capplet.glade.h:18
 msgid "Information"
 msgstr "資訊"
 
 # capplet/gtkhtml-capplet.glade.h:7
 # capplet/gtkhtml-capplet.glade.h:7
-#: capplet/gtkhtml-capplet.glade.h:17
+#: capplet/gtkhtml-capplet.glade.h:19
 msgid "Keyboard Shortcuts"
 msgstr "快捷鍵"
 
 # capplet/gtkhtml-capplet.glade.h:10
 # capplet/gtkhtml-capplet.glade.h:10
-#: capplet/gtkhtml-capplet.glade.h:18
+#: capplet/gtkhtml-capplet.glade.h:20
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 msgid "Miscellaneous"
 msgstr "其它"
 
-#: capplet/gtkhtml-capplet.glade.h:19
+#: capplet/gtkhtml-capplet.glade.h:21
 msgid "New shortcut:"
 msgstr "新增快捷鍵："
 
 # capplet/gtkhtml-capplet.glade.h:11
 # capplet/gtkhtml-capplet.glade.h:11
-#: capplet/gtkhtml-capplet.glade.h:20
+#: capplet/gtkhtml-capplet.glade.h:22
 msgid "On screen"
 msgstr "螢幕"
 
 # capplet/gtkhtml-capplet.glade.h:13
 # capplet/gtkhtml-capplet.glade.h:13
-#: capplet/gtkhtml-capplet.glade.h:21
+#: capplet/gtkhtml-capplet.glade.h:23
 msgid "Select HTML fixed width font"
 msgstr "選擇 HTML 的固定寬度字型"
 
 # capplet/gtkhtml-capplet.glade.h:14
 # capplet/gtkhtml-capplet.glade.h:14
-#: capplet/gtkhtml-capplet.glade.h:22
+#: capplet/gtkhtml-capplet.glade.h:24
 msgid "Select HTML fixed width font for printing"
 msgstr "選擇供列印用的固定寬度字型"
 
 # capplet/gtkhtml-capplet.glade.h:15
 # capplet/gtkhtml-capplet.glade.h:15
-#: capplet/gtkhtml-capplet.glade.h:23
+#: capplet/gtkhtml-capplet.glade.h:25
 msgid "Select HTML variable width font"
 msgstr "選擇 HTML 的可變寬度字型"
 
 # capplet/gtkhtml-capplet.glade.h:16
 # capplet/gtkhtml-capplet.glade.h:16
-#: capplet/gtkhtml-capplet.glade.h:24
+#: capplet/gtkhtml-capplet.glade.h:26
 msgid "Select HTML variable width font for printing"
 msgstr "選擇供列印用的可變寬度字型"
 
-#: capplet/gtkhtml-capplet.glade.h:25
+#: capplet/gtkhtml-capplet.glade.h:27
 msgid "Select command "
 msgstr "選擇指令"
 
 # capplet/gtkhtml-capplet.glade.h:7
 # capplet/gtkhtml-capplet.glade.h:7
-#: capplet/gtkhtml-capplet.glade.h:26
+#: capplet/gtkhtml-capplet.glade.h:28
 msgid "Shortcut"
 msgstr "快捷鍵"
 
-#: capplet/gtkhtml-capplet.glade.h:27
+#: capplet/gtkhtml-capplet.glade.h:29
 msgid "Shortcuts _type:"
 msgstr "快捷鍵類別 (_T)："
 
 # capplet/gtkhtml-capplet.glade.h:1
 # capplet/gtkhtml-capplet.glade.h:1
-#: capplet/gtkhtml-capplet.glade.h:28
+#: capplet/gtkhtml-capplet.glade.h:30
 msgid "Show animated images"
 msgstr "顯示動畫影像"
 
 # capplet/gtkhtml-capplet.glade.h:19
 # capplet/gtkhtml-capplet.glade.h:19
-#: capplet/gtkhtml-capplet.glade.h:29
+#: capplet/gtkhtml-capplet.glade.h:31
 msgid "Variable width"
 msgstr "可變寬度"
 
 # capplet/gnome-bindings-prop.c:545
 # capplet/gnome-bindings-prop.c:545
-#: capplet/gtkhtml-capplet.glade.h:30
+#: capplet/gtkhtml-capplet.glade.h:32
 msgid "_Add"
 msgstr "新增 (_A)"
 
 # capplet/gnome-bindings-prop.c:551
 # capplet/gnome-bindings-prop.c:551
-#: capplet/gtkhtml-capplet.glade.h:31
+#: capplet/gtkhtml-capplet.glade.h:33
 msgid "_Delete"
 msgstr "刪除 (_D)"
 
@@ -2282,6 +2286,13 @@ msgstr "使用正規表示式尋找"
 msgid "No misspelled word found"
 msgstr "找不到錯誤的併字"
 
+# capplet/gtkhtml-capplet.glade.h:17
+# capplet/gtkhtml-capplet.glade.h:17
+#: components/html-editor/spell.c:493
+#, fuzzy
+msgid "Current _Languages"
+msgstr "拼字檢查"
+
 #: components/html-editor/table.c:198
 msgid "Flat gray"
 msgstr "平面灰色"
@@ -2433,12 +2444,6 @@ msgstr "預覽列印 (_V)"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "預覽列印"
-
-# capplet/gtkhtml-capplet.glade.h:17
-# capplet/gtkhtml-capplet.glade.h:17
-#, fuzzy
-#~ msgid "Spell Checking _Languages"
-#~ msgstr "拼字檢查"
 
 # components/html-editor/body.c:180
 # components/html-editor/editor-control-factory.c:166

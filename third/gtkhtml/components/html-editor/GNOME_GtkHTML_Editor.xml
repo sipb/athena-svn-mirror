@@ -110,18 +110,18 @@
 		<submenu name="Edit" _label="_Edit">
 			<placeholder name="EditUndoRedo">
 				     <menuitem name="EditUndo" verb="" accel="*Ctrl*Z"
-			             pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/undo-16.png"/>
+			             pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/undo-16.png"/>
 				     <menuitem name="EditRedo" verb="" accel="*Ctrl*R"
-			             pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/redo-16.png"/>
+			             pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/redo-16.png"/>
 			</placeholder>
 
 			<placeholder name="EditCutCopyPaste">
 				     <menuitem name="EditCut" verb="" accel="*Ctrl*X"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/16_cut.png"/>
+                                     pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/16_cut.png"/>
 				     <menuitem name="EditCopy" verb="" accel="*Ctrl*C"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/16_copy.png"/>
+                                     pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/16_copy.png"/>
 				     <menuitem name="EditPaste" verb="" accel="*Ctrl*V"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/16_paste.png"/>
+                                     pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/16_paste.png"/>
 				     <menuitem name="EditPasteQuotation" verb=""/>
 				     <separator/>
 				     <menuitem name="EditSelectAll" verb="" accel="*Ctrl*A"/>
@@ -129,15 +129,17 @@
 
 			<placeholder name="EditFindReplace">
 				     <menuitem name="EditFind" verb="" accel="*Ctrl*F"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/search-16.png"/>
+                                     pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/search-16.png"/>
 				     <menuitem name="EditFindRegex" verb="" accel="*Ctrl*E"/>
 				     <menuitem name="EditFindAgain" verb="" accel="*Ctrl*G"/>
 				     <menuitem name="EditReplace" verb="" accel="*Ctrl**Shift*F"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/search-and-replace-16.png"/>
+                                     pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/search-and-replace-16.png"/>
 			</placeholder>
 
 			<placeholder name="EditMisc">
 				     <menuitem name="EditSpellCheck" verb=""/>
+				     <placeholder name="EditSpellLanguages">
+				     </placeholder>
 			</placeholder>
 		</submenu>
 
@@ -145,39 +147,39 @@
 		<submenu name="Insert" _label="_Insert">
 			<placeholder name="Component">
 				<menuitem name="InsertImage" verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-image-16.png"/>
+                                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-image-16.png"/>
 				<menuitem name="InsertLink"  verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-link-16.png"/>
+                                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-link-16.png"/>
 				<menuitem name="InsertRule"  verb=""
-				pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-rule-16.png"/>
+				pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-rule-16.png"/>
 				<menuitem name="InsertTable" verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-table-16.png"/>
+                                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-table-16.png"/>
 				<menuitem name="InsertTemplate" verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-object-16.png"/>
+                                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-object-16.png"/>
 				<menuitem name="InsertTextFile" verb=""/>
 				<menuitem name="InsertHTMLFile" verb=""/>
 				<submenu name="Smiley" _label="_Smiley"
-                                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-3.png">
+                                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-3.png">
 					<menuitem name="InsertSmiley3" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-3.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-3.png"/>
 					<menuitem name="InsertSmiley4" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-4.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-4.png"/>
 					<menuitem name="InsertSmiley5" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-5.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-5.png"/>
 					<menuitem name="InsertSmiley1" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-1.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-1.png"/>
 					<menuitem name="InsertSmiley2" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-2.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-2.png"/>
 					<menuitem name="InsertSmiley6" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-6.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-6.png"/>
 					<menuitem name="InsertSmiley8" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-8.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-8.png"/>
 					<menuitem name="InsertSmiley9" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-9.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-9.png"/>
 					<menuitem name="InsertSmiley10" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-10.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-10.png"/>
 					<menuitem name="InsertSmiley11" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/smiley-11.png"/>
+        	                        pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/smiley-11.png"/>
 				</submenu>
 			</placeholder>
 		</submenu>
@@ -270,38 +272,38 @@
 
 	<dockitem name="Toolbar">
 		<toolitem name="EditUndo" verb="" _label="Undo" _tip="Undo previous changes"
-		pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/undo-24.png"/>
+		pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/undo-24.png"/>
 		<toolitem name="EditRedo" verb="" _label="Redo"
-		_tip="Redo previously undone change" pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/redo-24.png"/>
+		_tip="Redo previously undone change" pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/redo-24.png"/>
 
 		<separator/>
 
 		<toolitem name="EditCut" verb=""  _label="Cut" _tip="Cut selection to clipboard"
-		pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/24_cut.png"/>
+		pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/24_cut.png"/>
                 <toolitem name="EditCopy" verb=""  _label="Copy" _tip="Copy selection to clipboard"
-		pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/24_copy.png"/>
+		pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/24_copy.png"/>
 		<toolitem name="EditPaste" verb=""  _label="Paste" _tip="Paste from clipboard"
-		pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/24_paste.png"/>
+		pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/24_paste.png"/>
 
 		<separator/>
 
 		<toolitem name="EditFind" verb=""  _label="Find" _tip="Find"
-		pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/search-24.png"/>
+		pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/search-24.png"/>
 		<toolitem name="EditReplace" verb=""  _label="Replace" _tip="Find And Replace"
-		pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/search-and-replace-24.png"/>
+		pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/search-and-replace-24.png"/>
 
 		<separator/>
 
 		<toolitem name="InsertImage" verb="" _label="Image"
-                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-image-24.png"/>
+                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-image-24.png"/>
 		<toolitem name="InsertLink" verb="" _label="Link"
-                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-link-24.png"/>
+                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-link-24.png"/>
 		<toolitem name="InsertRule" verb="" _label="Rule"
-                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-rule-24.png"/>
+                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-rule-24.png"/>
 		<toolitem name="InsertTable" verb="" _label="Table"
-                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-table-24.png"/>
+                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-table-24.png"/>
 		<toolitem name="InsertTemplate" verb="" _label="Template"
-                pixtype="filename" pixname="/usr/share/gtkhtml-1.1//icons/insert-object-24.png"/>
+                pixtype="filename" pixname="/opt/gnome/share/gtkhtml-1.1//icons/insert-object-24.png"/>
 	</dockitem>
 
 </Root> 

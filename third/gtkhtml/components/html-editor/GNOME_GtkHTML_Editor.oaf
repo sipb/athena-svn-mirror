@@ -12,7 +12,7 @@
 	<oaf_attribute name="name-ca" type="string" value="Factoria de l&#39;Editor HTML de GNOME"/>
 	<oaf_attribute name="name-da" type="string" value="Gnome HTML-redigeringsfabrik"/>
 	<oaf_attribute name="name-de" type="string" value="GNOME HTML-Editor-Fabrik"/>
-	<oaf_attribute name="name-es" type="string" value="Factor&#237;a del editor HTML de GNOME"/>
+	<oaf_attribute name="name-es" type="string" value="F&#225;brica del editor HTML de GNOME"/>
 	<oaf_attribute name="name-eu" type="string" value="GNOME HTML Editorearen fabrika"/>
 	<oaf_attribute name="name-fi" type="string" value="GNOME HTML-muokkaintehdas"/>
 	<oaf_attribute name="name-fr" type="string" value="Usine de l&#39;&#233;diteur HTML GNOME"/>
@@ -26,6 +26,7 @@
 	<oaf_attribute name="name-pl" type="string" value="Generator edytora HTML-a dla GNOME"/>
 	<oaf_attribute name="name-pt" type="string" value="F&#195;&#161;brica do Editor HTML do GNOME"/>
 	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica do editor HTML do GNOME"/>
+	<oaf_attribute name="name-ru" type="string" value="&#208;&#164;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176; &#209;&#128;&#208;&#181;&#208;&#180;&#208;&#176;&#208;&#186;&#209;&#130;&#208;&#190;&#209;&#128;&#208;&#176; HTML &#209;&#129;&#209;&#128;&#208;&#181;&#208;&#180;&#209;&#139; GNOME"/>
 	<oaf_attribute name="name-sk" type="string" value="Vytv&#195;&#161;racie rozhranie pre GNOME HTML editor"/>
 	<oaf_attribute name="name-sl" type="string" value="Tovarna urejevalnika HTML GNOME"/>
 	<oaf_attribute name="name-sv" type="string" value="HTML-redigerarfabrik f&#195;&#182;r GNOME"/>
@@ -65,7 +66,7 @@
 	<oaf_attribute name="name-pl" type="string" value="Edytor HTML-a dla GNOME"/>
 	<oaf_attribute name="name-pt" type="string" value="Editor HTML do GNOME"/>
 	<oaf_attribute name="name-pt_BR" type="string" value="Editor HTML do GNOME"/>
-	<oaf_attribute name="name-ru" type="string" value="&#242;&#197;&#196;&#193;&#203;&#212;&#207;&#210; HTML &#196;&#204;&#209; GNOME"/>
+	<oaf_attribute name="name-ru" type="string" value="&#208;&#160;&#208;&#181;&#208;&#180;&#208;&#176;&#208;&#186;&#209;&#130;&#208;&#190;&#209;&#128; HTML &#208;&#180;&#208;&#187;&#209;&#143; GNOME"/>
 	<oaf_attribute name="name-sk" type="string" value="GNOME HTML editor"/>
 	<oaf_attribute name="name-sl" type="string" value="Urejevalnik HTML GNOME"/>
 	<oaf_attribute name="name-sv" type="string" value="HTML-redigerare f&#195;&#182;r GNOME"/>
@@ -92,6 +93,7 @@
 	<oaf_attribute name="description-pl" type="string" value="Komponent edytora HTML-a dla GNOME"/>
 	<oaf_attribute name="description-pt" type="string" value="Controlo de Editor HTML do GNOME"/>
 	<oaf_attribute name="description-pt_BR" type="string" value="Controle do editor HTML do GNOME"/>
+	<oaf_attribute name="description-ru" type="string" value="&#208;&#163;&#208;&#191;&#209;&#128;&#208;&#176;&#208;&#178;&#208;&#187;&#208;&#181;&#208;&#189;&#208;&#184;&#208;&#181; &#209;&#128;&#208;&#181;&#208;&#180;&#208;&#176;&#208;&#186;&#209;&#130;&#208;&#190;&#209;&#128;&#208;&#190;&#208;&#188; HTML &#209;&#129;&#209;&#128;&#208;&#181;&#208;&#180;&#209;&#139; GNOME"/>
 	<oaf_attribute name="description-sk" type="string" value="Ovl&#195;&#161;dac&#195;&#173; prvok GNOME HTML editor"/>
 	<oaf_attribute name="description-sl" type="string" value="Kontrola urejevalnika HTML GNOME"/>
 	<oaf_attribute name="description-sv" type="string" value="HTML-redigerarkontroll f&#195;&#182;r GNOME"/>
