@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: checkcode.c,v 1.2 1999-05-12 18:29:01 danw Exp $";
+static char *const _id = "$Id: checkcode.c,v 1.3 2000-03-01 21:49:19 ghudson Exp $";
 
 #include "ifhp.h"
 #include <zephyr/zephyr.h>
@@ -214,6 +214,8 @@ static	code_t	pjlmsg[] = {
 
 	/* 41xxx (Background Paper Loading) handled by pjl_message() */
 
+	{ 42014, "13.14 paper jam, clear all pages" },
+	{ 42114, "13.14 paper jam, clear 1 page" },
 	{ 42202, "13.2 paper jam, remove 2 pages" },
 	{ 0, 0 },
 };
@@ -293,8 +295,17 @@ char *Check_code( char *code_str )
 		"Unknown status code %s", code_str );
 	}
 
-	if (PJLC_GROUP(code) >= 40)
-		send_zephyr(s);
+	if (PJLC_GROUP(code) >= 40) {
+		if (s != NULL) {
+			send_zephyr(s);
+		} else {
+			char error_code_buf[SMALLBUFFER];
+
+			plp_snprintf(error_code_buf, sizeof(error_code_buf),
+				     "PJL error code %d", code);
+			send_zephyr(error_code_buf);
+		}
+	}
 
 	return(s);
 }
