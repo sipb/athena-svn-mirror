@@ -1,9 +1,9 @@
 /*
- * $Id: except.c,v 4.7 1995-05-14 00:56:07 cfields Exp $
+ * $Id: except.c,v 4.8 1997-11-11 19:31:57 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.7 1995-05-14 00:56:07 cfields Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.8 1997-11-11 19:31:57 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -230,30 +230,6 @@ next_def_except() {
 	else return( NULL);
 }
 
-/*
-**	if there is a match, then return(1) else return(0)
-*/
-match( p, fname) char *p; char *fname;
-{
-	/* all our regexp's begin with ^,
-	 * because re_conv() makes them.
-	 */
-	if ( *p != '^') return( 0);
-	if ( re_comp( p)) {
-		sprintf(errmsg, "%s bad regular expression\n", re_comp( p));
-		do_panic();
-	}
-	switch( re_exec( fname)) {
-	case 0: return( 0);		/* most frequent case */
-	case 1: return( 1);
-	case -1: sprintf( errmsg, "%s bad regexp\n", p);
-		 do_panic();
-	}
-	sprintf( errmsg, "bad value from re_exec\n");
-	do_panic();
-	return( -1);
-}
-
 file_pat( ptr)
 char *ptr;
 {
@@ -279,76 +255,126 @@ duplicate( word, entnum) char *word; int entnum; {
 	return( 0);
 }
 
-/*
-**	convert shell type regular expressions to ex style form
-*/
-char *re_conv(from)
-char *from;
+/*-
+ * Copyright (c) 1991, 1993
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * Kenneth Almquist.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+int match(pattern, string)
+	char *pattern;
+	char *string;
 {
-	static char tmp[LINELEN];
-	char *to;
+	char *p, *q, c;
 
-	to = tmp;
-	*to++ = '^';
-	while(*from) {
-		switch (*from) {
-		case '.':
-			*to++ = '\\';
-			*to++ = '.';
-			from++;
+	q = string;
+	for (; *p;) {
+		c = *p++;
+		switch (c) {
+		case '\\':
+			if (*q++ != *p++)
+				return 0;
 			break;
-
-		case '*':
-			*to++ = '.';
-			*to++ = '*';
-			from++;
-			break;
-
 		case '?':
-			*to++ = '.';
-			from++;
+			if (*q++ == '\0')
+				return 0;
 			break;
-			
-		default:
-			*to++ = *from++;
+		case '*':
+			c = *p;
+			if (c != '\\' && c != '?' && c != '*' && c != '[') {
+				while (*q != c) {
+					if (*q == '\0')
+						return 0;
+					q++;
+				}
+			}
+			do {
+				if (match(p, q))
+					return 1;
+			} while (*q++ != '\0');
+			return 0;
+		case '[': {
+			char *endp;
+			int invert, found;
+			char chr;
+
+			endp = p;
+			if (*endp == '!')
+				endp++;
+			for (;;) {
+				if (*endp == '\0')
+					goto dft;	/* no matching ] */
+				if (*endp == '\\')
+					endp++;
+				if (*++endp == ']')
+					break;
+			}
+			invert = 0;
+			if (*p == '!') {
+				invert++;
+				p++;
+			}
+			found = 0;
+			chr = *q++;
+			if (chr == '\0')
+				return 0;
+			c = *p++;
+			do {
+				if (c == '\\')
+					c = *p++;
+				if (*p == '-' && p[1] != ']') {
+					p++;
+					if (*p == '\\')
+						p++;
+					if (chr >= c && chr <= *p)
+						found = 1;
+					p++;
+				} else {
+					if (chr == c)
+						found = 1;
+				}
+			} while ((c = *p++) != ']');
+			if (found == invert)
+				return 0;
+			break;
+		}
+dft:	        default:
+			if (*q++ != c)
+				return 0;
 			break;
 		}
 	}
-
-	*to++ = '$';
-	*to++ = '\0';
-	return(tmp);
+	if (*q != '\0')
+		return 0;
+	return 1;
 }
-
-/*
- * This is for A/UX.  It is a wrapper around the C library regex functions.
- *
- * $Id: except.c,v 4.7 1995-05-14 00:56:07 cfields Exp $
- */
-
-#ifdef _AUX_SOURCE
-
-static char *re;
-int Error;
-
-char *re_comp(s)
-    char *s;
-{
-    if (!s)
-	return 0;
-    if (re)
-	free(re);
-
-    if (!(re = regcmp(s, (char *)0)))
-	return "Bad argument to re_comp";
-
-    return 0;
-}
-
-int re_exec(s)
-    char *s;
-{
-    return regex(re, s) != 0;
-}
-
-#endif
