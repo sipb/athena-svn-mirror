@@ -22,7 +22,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-static char rcsid[] = "$Id: gettime.c,v 1.12 1997-12-13 23:07:06 cfields Exp $";
+static char rcsid[] = "$Id: gettime.c,v 1.13 1997-12-15 00:34:34 cfields Exp $";
 
 #define UNIX_OFFSET_TO_1900 ((70 * 365UL + 17) * 24 * 60 * 60)
 #define TIME_SERVICE "time"
@@ -49,6 +49,7 @@ int main(int argc, char **argv)
   struct timezone current_timezone;
   time_t now;
   int c, setflag = 0, errflag = 0;
+  int granularity = 0;
 
   /* Set up our program name. */
   if (argv[0] != NULL)
@@ -63,12 +64,15 @@ int main(int argc, char **argv)
     program_name = "gettime";
 
   /* Parse arguments. */
-  while ((c = getopt(argc, argv, "s")) != EOF)
+  while ((c = getopt(argc, argv, "sg:")) != EOF)
     {
       switch (c)
 	{
 	case 's':
 	  setflag = 1;
+	  break;
+	case 'g':
+	  granularity = atoi(optarg);
 	  break;
 	case '?':
 	  errflag = 1;
@@ -78,7 +82,8 @@ int main(int argc, char **argv)
 
   if (errflag || optind + 1 != argc)
     {
-      fprintf(stderr, "usage: %s [-s] hostname\n", program_name);
+      fprintf(stderr, "usage: %s [-g granularity] [-s] hostname\n",
+	      program_name);
       exit(1);
     }
 
@@ -185,10 +190,15 @@ int main(int argc, char **argv)
   if (setflag)
     {
       gettimeofday(&current_time, &current_timezone);
-      current_time.tv_sec = now;
 
-      if (settimeofday(&current_time, &current_timezone) < 0)
-	myperror("settimeofday", errno);
+      if (current_time.tv_sec < now - granularity
+	  || current_time.tv_sec >= now + granularity)
+	{
+	  current_time.tv_sec = now;
+	  current_time.tv_usec = 0;
+	  if (settimeofday(&current_time, &current_timezone) < 0)
+	    myperror("settimeofday", errno);
+	}
     }
 
   exit(0);
