@@ -20,9 +20,9 @@ sun4)
 	cat "$LIBDIR/solaris27-ptchs"			>> $OLDPTCHS
 
 	# Create the lists of packages and patches to install.
-	cat "$LIBDIR/solaris8-local-$SUNPLATFORM"	>> $LOCALPACKAGES
-	cat "$LIBDIR/solaris8-nolocal-$SUNPLATFORM"	>> $LINKPACKAGES
-	cat "$LIBDIR/solaris8-patches.9.0.0"		>> $PATCHES
+	cat "$LIBDIR/solaris8-local-$SUNPLATFORM"	> $LOCALPACKAGES
+	cat "$LIBDIR/solaris8-nolocal-$SUNPLATFORM"	> $LINKPACKAGES
+	cat "$LIBDIR/solaris8-patches.9.0.0"		> $PATCHES
 
 	# /etc/netmasks has changed format.
 	. /etc/athena/rc.conf
