@@ -6,16 +6,19 @@ OBJS= synctree.o rules.o glob_match.o bool_exp.o vtable.o err.o \
 	util.o y.tab.o version.o
 
 #ifdef ibm032
-CCDEF= -ma
+CCDEF= -ma -DYYDEBUG -DLEXDEBUG
+#endif
+#ifdef vax
+CCDEF= -DYYDEBUG -DLEXDEBUG
 #endif
 #if defined(mips) && defined(ultrix)
-CCDEF= -Wf,-XNh1200
+CCDEF= -Wf,-XNh1200 -DYYDEBUG -DLEXDEBUG
 #endif
 #if defined(_AUX_SOURCE)
 #define CcCmd gcc -traditional
 #endif
 
-DEFINES= $(CCDEF) -DYYDEBUG -DLEXDEBUG
+DEFINES= $(CCDEF)
 
 SimpleProgram(synctree, $(OBJS), -ly -ll,$(BINDIR))
 install_man(synctree.man,synctree.8)
