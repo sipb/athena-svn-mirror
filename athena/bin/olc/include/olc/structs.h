@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *	$Id: structs.h,v 1.7 1991-02-24 11:46:34 lwvanels Exp $
+ *	$Id: structs.h,v 1.8 1991-02-24 15:18:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -40,12 +40,12 @@ typedef struct tPERSON
   int     uid;                       /* Person's user ID. */
   int     instance;                  /* the user's instance id */
   char    username[LOGIN_SIZE+1];    /* Person's username. */
-  char    realname[LABEL_SIZE];      /* Person's real name. */
+  char    realname[TITLE_SIZE];      /* Person's real name. */
   char    realm[REALM_SZ];           /* current realm */
   char    inst[INST_SZ];             /* oh well */
   char    nickname[STRING_SIZE];     /* Person's first name. */
-  char    title[LABEL_SIZE];         /* Person's title */
-  char    machine[LABEL_SIZE];       /* Person's current machine. */
+  char    title[TITLE_SIZE];         /* Person's title */
+  char    machine[TITLE_SIZE];       /* Person's current machine. */
 #ifdef m68k
   char    pad[2];
 #endif  
@@ -89,6 +89,6 @@ typedef struct tDBINFO
 {
   int max_ask;
   int max_answer;
-  char title1[LABEL_SIZE];
-  char title2[LABEL_SIZE];
+  char title1[TITLE_SIZE];
+  char title2[TITLE_SIZE];
 } DBINFO ;

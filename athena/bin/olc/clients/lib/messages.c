@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v $
- *	$Id: messages.c,v 1.9 1990-11-13 14:28:49 lwvanels Exp $
+ *	$Id: messages.c,v 1.10 1991-02-24 15:19:17 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.9 1990-11-13 14:28:49 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.10 1991-02-24 15:19:17 lwvanels Exp $";
 #endif
 #endif
 
@@ -110,7 +110,7 @@ OWaitForMessage(Request,file, sender)
 	return(ERROR);
       if(!strncmp(message,"olc",3))
 	{
-	  strncpy(sender,message+4,LABEL_SIZE);
+	  strncpy(sender,message+4,TITLE_SIZE);
 	  free(message);
 	  unsetenv("MORE");
 	  return(OShowMessageIntoFile(Request,file));

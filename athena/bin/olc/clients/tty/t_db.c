@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v $
- *	$Id: t_db.c,v 1.4 1990-11-14 14:44:47 lwvanels Exp $
+ *	$Id: t_db.c,v 1.5 1991-02-24 15:19:57 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.4 1990-11-14 14:44:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.5 1991-02-24 15:19:57 lwvanels Exp $";
 #endif
 #endif
 
@@ -91,8 +91,8 @@ t_change_dbinfo(Request)
   get_prompted_input(mesg,buf);
   if(buf[0] != '\0')
     {
-      strncpy(dbinfo.title1, buf,LABEL_SIZE);
-      dbinfo.title1[LABEL_SIZE-1] = '\0';
+      strncpy(dbinfo.title1, buf,TITLE_SIZE);
+      dbinfo.title1[TITLE_SIZE-1] = '\0';
     }
   
   sprintf(mesg, "# questions allowed to ask [%d]: ",dbinfo.max_ask);
@@ -109,8 +109,8 @@ t_change_dbinfo(Request)
   get_prompted_input(mesg,buf);
   if(buf[0] != '\0')
     {
-      strncpy(dbinfo.title2, buf,LABEL_SIZE);
-      dbinfo.title2[LABEL_SIZE-1] = '\0';
+      strncpy(dbinfo.title2, buf,TITLE_SIZE);
+      dbinfo.title2[TITLE_SIZE-1] = '\0';
     }
 
   sprintf(mesg, "# questions allowed to answer [%d]: ",dbinfo.max_answer);

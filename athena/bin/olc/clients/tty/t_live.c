@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v $
- *	$Id: t_live.c,v 1.7 1990-11-14 14:58:14 lwvanels Exp $
+ *	$Id: t_live.c,v 1.8 1991-02-24 15:19:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.7 1990-11-14 14:58:14 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.8 1991-02-24 15:19:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -44,7 +44,7 @@ t_live(Request,file)
      char *file;
 {
   int status;
-  char sender[LABEL_SIZE];
+  char sender[TITLE_SIZE];
   int port;
 
   set_option(Request->options, VERIFY);
