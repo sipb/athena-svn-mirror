@@ -20,40 +20,37 @@ The
 .I reactivate
 script performs several tasks:
 .TP
-* it flushes all filesystem authentication from the workstation 
+* It flushes all filesystem authentication from the workstation.
 .TP
-* it resets the zephyr hostmanager (\fIzhm\fR)
+* It resets the zephyr hostmanager (\fIzhm\fR).
 .TP
-+ it cleans out /tmp
+* It destroys any ticket files remaining in /tmp.
 .TP
-* it resets the password and group files to their default
-contents
++ It cleans out /tmp.
 .TP
-+ it reconfigures some AFS state (including running config_afs)
+* It resets the password and group files to their default
+contents.
 .TP
-* it runs cleanup
++ It reconfigures some AFS state (including running config_afs).
 .TP
-+ it detaches all attached filesystems
+* It runs cleanup.
 .TP
-+ it attaches the appropriate system packs
++ It detaches all attached filesystems.
 .TP
-+ it invokes an automatic software update if available
++ It attaches the appropriate system packs.
 .TP
-* it turns off remote network access to the workstation.
-.PP
-
-This last step closes the workstation from unexpected and possibly
-hostile remote connections.  After logging in, you can use the
++ It invokes an automatic software update if available.
+.TP
+* It turns off remote network access to the workstation,
+preventing unexpected and possibly hostile remote connections.
+After logging in, you can use the
 .I access_on
 command to allow remote access.
-
-If the file
-.I /etc/athena/reactivate.local
-is present, it will be executed as the last thing
-.I reactivate
-does.  This allows local customization to a workstation's
-configuration.
-
+.TP
++ It executes the local customizations in the file
+.I /etc/athena/reactivate.local,
+if it exists.
+.PP
 .SH OPTIONS
 .TP
 .B \-detach
