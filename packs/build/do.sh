@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.9 1996-12-26 19:01:13 ghudson Exp $
+# $Id: do.sh,v 1.10 1997-01-28 22:14:45 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -72,7 +72,7 @@ elif [ -r Imakefile ]; then
 	case "$operation" in
 		prepare)
 			imake "-I$source/packs/build/config" -DUseInstalled \
-				"-DTOPDIR=$source"
+				"-DTOPDIR=$source/packs/build"
 			make Makefiles
 			;;
 		clean)		make clean ;;
