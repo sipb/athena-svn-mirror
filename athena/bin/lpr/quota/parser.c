@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.4 1990-07-10 21:42:56 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.5 1990-11-14 17:24:47 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v $ */
 /* $Author: epeisach $ */
 /*
@@ -284,18 +284,17 @@ char *buf;
 
     char *ret, *tmp;
     char buf1[128];
-    int is_group = 0;
 
     buf[0]='\0';
 
 #define ADDSTRING(f,n) if((n) != 0) { \
                          if(!(ret = logger_num_to_string(n))) return -1; \
-                         sprintf(buf1,"%s=%s ", f, ret); strcat(buf, buf1); \
+                         (void) sprintf(buf1,"%s=%s ", f, ret); (void) strcat(buf, buf1); \
                          }
 
-#define ADDNUM(f,n) if((n) != 0) {sprintf(buf1,"%s=%d ",f,n); strcat(buf, buf1);}
+#define ADDNUM(f,n) if((n) != 0) {(void) sprintf(buf1,"%s=%d ",f,n); (void) strcat(buf, buf1);}
 
-#define ADDTIME(f,n) if ((n) != -1) {sprintf(buf1,"%s=%d ",f,n); strcat(buf, buf1);}
+#define ADDTIME(f,n) if ((n) != -1) {(void) sprintf(buf1,"%s=%d ",f,n); (void) strcat(buf, buf1);}
 
     ADDTIME("t",line->time);
 
@@ -307,47 +306,46 @@ char *buf;
 	ADDSTRING("i", line->user.instance);
 	ADDSTRING("r", line->user.realm);
     } else {
-	sprintf(buf1,"g=%s ", &tmp[1]); 
-	strcat(buf, buf1);
-	is_group++;
+	(void) sprintf(buf1,"g=%s ", &tmp[1]); 
+	(void) strcat(buf, buf1);
     }
     ADDSTRING("s", line->service);
     switch(line->func) {
     case LO_ADD:
-	strcat(buf, "f=add ");
+	(void) strcat(buf, "f=add ");
 	break;
     case LO_CHARGE:
-	strcat(buf, "f=charge ");
+	(void) strcat(buf, "f=charge ");
 	break;
     case LO_SET:
-	strcat(buf, "f=set ");
+	(void) strcat(buf, "f=set ");
 	break;
     case LO_SUBTRACT:
-	strcat(buf, "f=subtract ");
+	(void) strcat(buf, "f=subtract ");
 	break;
     case LO_DELETEUSER:
-	strcat(buf, "f=delete ");
+	(void) strcat(buf, "f=delete ");
 	break;
     case LO_ALLOW:
-	strcat(buf, "f=allow ");
+	(void) strcat(buf, "f=allow ");
 	break;
     case LO_DISALLOW:
-	strcat(buf, "f=disallow ");
+	(void) strcat(buf, "f=disallow ");
 	break;
     case LO_ADJUST:
-	strcat(buf, "f=adjust ");
+	(void) strcat(buf, "f=adjust ");
 	break;
     case LO_ADD_ADMIN:
-	strcat(buf, "f=add_admin ");
+	(void) strcat(buf, "f=add_admin ");
 	break;
     case LO_DELETE_ADMIN:
-	strcat(buf, "f=delete_admin ");
+	(void) strcat(buf, "f=delete_admin ");
 	break;
     case LO_ADD_USER:
-	strcat(buf, "f=add_user ");
+	(void) strcat(buf, "f=add_user ");
 	break;
     case LO_DELETE_USER:
-	strcat(buf, "f=delete_user ");
+	(void) strcat(buf, "f=delete_user ");
 	break;
     default: 
 	return -1;

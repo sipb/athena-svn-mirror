@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.3 1990-07-10 17:42:12 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.4 1990-11-14 17:29:15 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.3 1990-07-10 17:42:12 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/server_krb.c,v 1.4 1990-11-14 17:29:15 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -27,7 +27,11 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 /* Returns non-zero on error */
 
 check_krb_auth(h, ticket, ad)
+#if 0
 KTEXT ticket;
+#else
+krb_ktext *ticket;
+#endif
 AUTH_DAT *ad;
 handle_t h;
 {
@@ -44,7 +48,7 @@ handle_t h;
     if (st.all !=0)
 	pfm_$signal(st); /* "Can't happen" */
 
-    strcpy(instance, "*");
+    (void) strcpy(instance, "*");
     ret = krb_rd_req(ticket, KLPQUOTA_SERVICE, instance,
 		     sin->sin_addr.s_addr, ad, "");
     return((ret == RD_AP_OK) ? 0 : ret);
@@ -57,15 +61,15 @@ make_kname(principal, instance, realm, out_name)
 char *principal, *instance, *realm, *out_name;
 {
     if ((instance[0] == '\0') && (realm[0] == '\0'))
-	strcpy(out_name, principal);
+	(void) strcpy(out_name, principal);
     else {
 	if (realm[0] == '\0')
-	    sprintf(out_name, "%s.%s", principal, instance);
+	    (void) sprintf(out_name, "%s.%s", principal, instance);
 	else {
 	    if (instance[0] == '\0')
-		sprintf(out_name, "%s@%s", principal, realm);
+		(void) sprintf(out_name, "%s@%s", principal, realm);
 	    else
-		sprintf(out_name, "%s.%s@%s", principal,
+		(void) sprintf(out_name, "%s.%s@%s", principal,
 			instance, realm);
 	}
     }
@@ -85,7 +89,7 @@ char *qservice;
     extern char saclname[];
     char aclkey[MAX_K_NAME_SZ + SERV_SZ + 1];
 
-    sprintf(aclkey, "%s:%s", principal, qservice);
+    (void) sprintf(aclkey, "%s:%s", principal, qservice);
     return(acl_check(saclname, aclkey));
 }
 
@@ -104,10 +108,10 @@ char *name, *qprincipal, *qinstance, *qrealm;
     }
 
     if(qrealm[0] == (char) 0)
-	strcpy(qrealm, my_realm);
+	(void) strcpy(qrealm, my_realm);
 
 #else !(KERBEROS)
-    strcpy(qprincipal, name);
+    (void) strcpy(qprincipal, name);
     qinstance[0] = '\0';
     qrealm[0] = '\0';
 #endif !(KERBEROS)
