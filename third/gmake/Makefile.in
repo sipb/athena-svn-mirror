@@ -128,7 +128,7 @@ aliaspath = $(localedir):.
 # On many systems, the getloadavg function (used to implement the `-l'
 # switch) will not work unless make is installed setgid kmem.
 #
-inst_setgid = @NEED_SETGID@
+inst_setgid = false
 
 # Install make setgid to this group so it can get the load average.
 #
