@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.16 1998-05-08 15:28:17 ghudson Exp $
+# $Id: Makefile,v 1.17 1998-08-18 17:30:39 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -52,7 +52,7 @@ install:
 	. ../build/version; \
 		vers=$$major.$$minor; \
 		ln -s ${CONFIG}/dash/Dash.menus-$$vers \
-			${DESTDIR}${ATHLIBDIR}/Dash.menus; \
+			${DESTDIR}${ATHLIBDIR}/Dash.menus;
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
