@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
 # address, the software is configured for loopback (standalone) mode.
@@ -582,7 +582,9 @@ case "$1" in
 	    # NFS server daemons
 	    if test -x $NFS/nfsd; then
 		NNFSD=`cat $CONFIG/nfsd.options 2> /dev/null`
-		$NFS/nfsd ${NNFSD:=4};			$ECHO " nfsd\c"
+		if test $NNFSD -ne 0; then
+			$NFS/nfsd ${NNFSD:=4};			$ECHO " nfsd\c"
+		fi
 	    fi
 
 	    # NFS client bio daemons
