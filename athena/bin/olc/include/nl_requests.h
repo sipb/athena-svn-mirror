@@ -1,6 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/nl_requests.h,v 1.2 1991-04-08 23:36:35 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/nl_requests.h,v 1.3 1991-04-18 22:02:16 lwvanels Exp $
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
+
+#include <mit-copyright.h>
 
 /* Current version number */
 #define VERSION 1

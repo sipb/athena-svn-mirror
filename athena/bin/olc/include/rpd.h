@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.12 1991-04-11 09:52:08 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.13 1991-04-18 22:02:21 lwvanels Exp $
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
 
+#include <mit-copyright.h>
 #include "nl_requests.h"
 #include "system.h"
 

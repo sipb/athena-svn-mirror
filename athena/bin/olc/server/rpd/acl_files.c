@@ -1,10 +1,15 @@
+/*
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ */
+
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.4 1991-04-11 09:40:37 lwvanels Exp $";
+  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.5 1991-04-18 22:25:07 lwvanels Exp $";
 #endif
 #endif
 
-
+#include <mit-copyright.h>
 #include "rpd.h"
 
 #ifndef KERBEROS

@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/oclient.h,v 1.2 1991-01-08 14:44:00 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/oclient.h,v 1.3 1991-04-18 22:01:59 lwvanels Exp $
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
 
+#include <mit-copyright.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>

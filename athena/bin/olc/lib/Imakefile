@@ -1,7 +1,11 @@
 #
-# $Id: Imakefile,v 1.3 1991-04-09 02:06:27 lwvanels Exp $
+# $Id: Imakefile,v 1.4 1991-04-18 22:17:04 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/Imakefile,v $
 #
+# Copyright (C) 1991 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+#
+
 
 #define IHaveSubdirs
 #if HaveMotif

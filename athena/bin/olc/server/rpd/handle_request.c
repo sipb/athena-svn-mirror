@@ -2,14 +2,17 @@
  * Log Replayer Daemon
  *
  * This replays question logs
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.13 1991-04-10 14:20:25 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.14 1991-04-18 22:25:15 lwvanels Exp $";
 #endif
 #endif
 
+#include <mit-copyright.h>
 #include "rpd.h"
 
 #ifndef KERBEROS

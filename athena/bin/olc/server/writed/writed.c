@@ -15,7 +15,8 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 /*
- * Copyright (c) 1985 Massachusetts Institute of Technology
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  * Note:  This is mostly fingerd.c with all occurances of
  * "finger" changed to "write".
  */
@@ -29,6 +30,8 @@ static char *rcsid_writed_c = "$Header: /afs/rel-eng.athena.mit.edu/project/rele
 /*
  * Write server.
  */
+#include <mit-copyright.h>
+
 #include <sys/types.h>
 #include <netinet/in.h>
 

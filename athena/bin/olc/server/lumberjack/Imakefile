@@ -1,6 +1,8 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/Imakefile,v $
- * $Id: Imakefile,v 1.3 1991-03-24 18:19:21 lwvanels Exp $
+ * $Id: Imakefile,v 1.4 1991-04-18 22:20:17 lwvanels Exp $
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
 
 /*#define Profiling*/

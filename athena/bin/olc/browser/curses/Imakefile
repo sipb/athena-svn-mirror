@@ -3,11 +3,12 @@
 #	Lucien Van Elsen
 #	MIT Project Athena
 #
-#	Copyright (c) 1991 by the Massachusetts Institute of Technology
+#    Copyright (c) 1991 by the Massachusetts Institute of Technology
+#    For copying and distribution information, see the file "mit-copyright.h".
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v $
 #	$Author: lwvanels $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.4 1991-04-08 21:23:41 lwvanels Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.5 1991-04-18 22:29:31 lwvanels Exp $
 #
 
 SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c \

@@ -1,6 +1,9 @@
 #
-# $Id: Imakefile,v 1.2 1991-04-08 21:30:20 lwvanels Exp $
+# $Id: Imakefile,v 1.3 1991-04-18 22:03:35 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/motif_help/Imakefile,v $
+# For copying and distribution information,
+# please see the file <mit-copyright.h>.
+#
 #
 
 SRCS=	olc.ask olc.init.contq olc.init.newq olc.replay

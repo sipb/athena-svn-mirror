@@ -1,13 +1,16 @@
 /*
  * File descriptor Cache
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.10 1991-04-11 09:30:43 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.11 1991-04-18 22:25:11 lwvanels Exp $";
 #endif
 #endif
 
+#include <mit-copyright.h>
 #include "rpd.h"
 
 /* Note: cachesize must be a power of two.  Also, the maximum limit on open */

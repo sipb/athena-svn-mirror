@@ -1,8 +1,15 @@
+/*
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ */
+
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.8 1991-04-11 09:46:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.9 1991-04-18 22:25:20 lwvanels Exp $";
 #endif
 #endif
+
+#include <mit-copyright.h>
 
 #define SELECT_TIMEOUT	10     /* timeout after 10 seconds */
 

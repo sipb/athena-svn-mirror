@@ -1,6 +1,9 @@
 #
-# $Id: Imakefile,v 1.4 1991-01-21 01:44:55 lwvanels Exp $
+# $Id: Imakefile,v 1.5 1991-04-18 22:07:39 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/olc_help/Imakefile,v $
+#
+# For copying and distribution information,
+# please see the file <mit-copyright.h>.
 #
 
 .SUFFIXES: .nroff .help

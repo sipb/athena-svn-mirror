@@ -1,9 +1,15 @@
+/*
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ */
+
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/get_nm.c,v 1.3 1991-04-11 09:41:27 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/get_nm.c,v 1.4 1991-04-18 22:25:23 lwvanels Exp $";
 #endif
 #endif
 
+#include <mit-copyright.h>
 #include "rpd.h"
 
 char *
