@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.5  90/06/05  15:24:20  tom
+ * lbuf is static
+ * 
  * Revision 1.4  90/05/26  13:34:28  tom
  * release 7.0e
  * 
@@ -25,7 +28,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.5 1990-06-05 15:24:20 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.6 1990-07-17 14:16:53 tom Exp $";
 #endif
 
 #include "include.h"
@@ -116,7 +119,7 @@ crock_cachesize()
   fclose(fp);
 
   cp = rindex(lbuf, ':');
-  if(cp++ == (char) NULL)
+  if(cp++ == (char *) NULL)
     return(0);
     
   return(atoi(cp));
