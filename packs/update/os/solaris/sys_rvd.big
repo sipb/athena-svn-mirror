@@ -1,0 +1,156 @@
+GLOBAL : *.CKP *.local *.pid *.unstripped :
+## Subscription list for workstations with large unified partition
+## $Id: sys_rvd.big,v 1.1 2001-08-16 14:46:53 ghudson Exp $
+##
+##	MIT Project Athena
+##
+	/core::::
+	/etc:::			# These are specific to each machine.
+		.login
+		crontab.root.add
+		default/sulogin
+		driver_aliases.*
+		driver_classes.*
+		ftpusers
+		group
+		ifhp.conf
+		lpd.conf
+		lpd.perms
+		mail
+		inet/inetd.conf
+		inet/netmasks	
+		inet/services
+		minor_perm.*
+		name_to_major.*
+		named.conf
+		netspy
+		ntp.conf
+		passwd
+		passwd.fallback
+		profile
+		shells
+		system
+		shadow
+		shadow.fallback
+		sshd_config
+		syslog.conf
+		:
+	/etc/mail:::
+		aliases
+		sendmail.cf
+		:
+	/etc/athena:::
+		athinfo.access
+		athinfo.defs
+		attach.conf
+                inetd.conf
+		newsyslog.conf
+		rc.conf
+		version
+		-> zephyr.desc
+		-> zephyr.vars
+		-> shutdown_notify
+		:
+	/usr::: 
+		athena
+		-> gcc
+		-> prototype_user
+		-> afsws
+		-> openwin/lib/app-defaults/XTerm
+		:
+	/usr/athena:::
+		! bin
+		! lib
+		! libexec
+		! share
+
+		! lib/gdk-pixbuf
+		! lib/gdk-pixbuf/*
+		! lib/init
+		! lib/init/*
+		! libexec/rep
+		! libexec/rep/*
+		! libexec/sawfish
+		! libexec/sawfish/*
+		! share/applets
+		! share/applets/*
+		! share/gtkrc
+		! share/gtkrc/*
+		! share/pixmaps
+		! share/pixmaps/*
+		! share/rep
+		! share/rep/*
+		! share/sawfish
+		! share/sawfish/*
+		! share/zephyr
+		! share/zephyr/*
+
+		! bin/access_off
+		! bin/access_on
+		! bin/athdir
+		! bin/bugme
+		! bin/background-properties-capplet
+		! bin/emacs
+		! bin/esd
+		! bin/from
+		! bin/get_message
+		! bin/gnome-name-service
+		! bin/gnome-terminal
+		! bin/keyboard-properties
+		! bin/kdestroy
+		! bin/lert
+		! bin/mouse-properties-capplet
+		! bin/olc
+		! bin/panel-wrapper
+		! bin/panel
+		! bin/quota
+		! bin/rep
+		! bin/sawfish
+		! bin/session_gate
+		! bin/sound-properties
+		! bin/tasklist_applet
+		! bin/xalf
+		! bin/xmh
+		! bin/xss
+		! bin/zwgc
+		! lib/libIIOP.so*
+		! lib/libImlib.so*
+		! lib/libORBit.so*
+		! lib/libORBitCosNaming.so*
+		! lib/libORBitutil.so*
+		! lib/libart_lgpl.so*
+		! lib/libaudiofile.so*
+		! lib/libcapplet.so*
+		! lib/libesd.so*
+		! lib/libgdk-1.2.so*
+		! lib/libgdk_imlib.so*
+		! lib/libgdk_pixbuf.so*
+		! lib/libgen_util_applet.so*
+		! lib/libglade-gnome.so*
+		! lib/libglade.so*
+		! lib/libglib-1.2.so*
+		! lib/libgmodule-1.2.so*
+		! lib/libgmp.so*
+		! lib/libgnome.so*
+		! lib/libgnomesupport.so*
+		! lib/libgnomeui.so*
+		! lib/libpanel_applet.so*
+		! lib/libgnorba.so*
+		! lib/libgnorbagtk.so*
+		! lib/libgtk-1.2.so*
+		! lib/libhistory.so*
+		! lib/libimlib-png.so*
+		! lib/libjpeg.so*
+		! lib/libpng.so*
+		! lib/libreadline.so*
+		! lib/librep.so*
+		! lib/libungif.so*
+		! lib/libxalflaunch.so*
+		! lib/libxml.so*
+		! lib/libz.so*
+		! lib/libzvt.so*
+		-> *
+		:
+	/var:::
+		spool
+		:
