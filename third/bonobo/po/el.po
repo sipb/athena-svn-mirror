@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.34\n"
-"POT-Creation-Date: 2001-11-01 10:51+0000\n"
+"POT-Creation-Date: 2001-11-15 09:16+1100\n"
 "PO-Revision-Date: 2001-06-04 16:27:38+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <el@li.org>\n"

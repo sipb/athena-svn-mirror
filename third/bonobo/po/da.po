@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2001-11-01 10:51+0000\n"
+"POT-Creation-Date: 2001-11-15 09:16+1100\n"
 "PO-Revision-Date: 2001-08-31 14:11+02:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"

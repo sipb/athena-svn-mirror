@@ -339,9 +339,9 @@ bonobo_running_context_init (GtkObject *object)
 }
 
 BONOBO_X_TYPE_FUNC_FULL (BonoboRunningContext, 
-			   Bonobo_RunningContext,
-			   PARENT_TYPE,
-			   bonobo_running_context);
+			 Bonobo_RunningContext,
+			 PARENT_TYPE,
+			 bonobo_running_context);
 
 BonoboObject *
 bonobo_running_context_new (void)

@@ -1358,23 +1358,26 @@ bonobo_ui_component_set_status (BonoboUIComponent *component,
 void
 bonobo_ui_component_unset_container (BonoboUIComponent *component)
 {
+	Bonobo_UIContainer container;
+
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (component));
 	g_return_if_fail (component->priv != NULL);
 
 	bonobo_object_ref (BONOBO_OBJECT (component));
 
-	if (component->priv->container != CORBA_OBJECT_NIL) {
+	container = component->priv->container;
+	component->priv->container = CORBA_OBJECT_NIL;
+
+	if (container != CORBA_OBJECT_NIL) {
 		CORBA_Environment  ev;
 		char              *name;
-
-		bonobo_ui_component_rm (component, "/", NULL);
 
 		CORBA_exception_init (&ev);
 
 		name = component->priv->name ? component->priv->name : "";
 
-		Bonobo_UIContainer_deregisterComponent (
-			component->priv->container, name, &ev);
+		Bonobo_UIContainer_removeNode (container, "/", name, &ev);
+		Bonobo_UIContainer_deregisterComponent (container, name, &ev);
 		
 		if (BONOBO_EX (&ev))
 			g_warning ("Serious exception deregistering component '%s'",
@@ -1382,11 +1385,8 @@ bonobo_ui_component_unset_container (BonoboUIComponent *component)
 
 		CORBA_exception_free (&ev);
 
-		bonobo_object_release_unref (component->priv->container, NULL);
-
+		bonobo_object_release_unref (container, NULL);
 	}
-
-	component->priv->container = CORBA_OBJECT_NIL;
 
 	bonobo_object_unref (BONOBO_OBJECT (component));
 }
