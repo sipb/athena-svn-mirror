@@ -26,3 +26,5 @@ sgi)
   ;;
 
 esac
+
+echo "/etc/athena/attach.conf"				>> $CONFCHG
