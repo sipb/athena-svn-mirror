@@ -8,8 +8,8 @@ There is no simple synopsis, yet.
 
 =head1 DESCRIPTION
 
-This document attempts to begin to describe some of the
-considerations involved in patching and maintaining perl.
+This document attempts to begin to describe some of the considerations
+involved in patching, porting, and maintaining perl.
 
 This document is still under construction, and still subject to
 significant changes.  Still, I hope parts of it will be useful,
@@ -47,91 +47,68 @@ Archives of the list are held at:
 
 =head1 How are Perl Releases Numbered?
 
-Perl version numbers are floating point numbers, such as 5.004.
-(Observations about the imprecision of floating point numbers for
-representing reality probably have more relevance than you might
-imagine :-) The major version number is 5 and the '004' is the
-patchlevel.  (Questions such as whether or not '004' is really a minor
-version number can safely be ignored.:)
+Beginning with v5.6.0, even versions will stand for maintenance releases
+and odd versions for development releases, i.e., v5.6.x for maintenance
+releases, and v5.7.x for development releases.  Before v5.6.0, subversions
+_01 through _49 were reserved for bug-fix maintenance releases, and
+subversions _50 through _99 for unstable development versions.
 
-The version number is available as the magic variable $],
-and can be used in comparisons, e.g.
+For example, in v5.6.1, the revision number is 5, the version is 6,
+and 1 is the subversion.
 
-	print "You've got an old perl\n" if $] < 5.002;
+For compatibility with the older numbering scheme the composite floating
+point version number continues to be available as the magic variable $],
+and amounts to C<$revision + $version/1000 + $subversion/1000000>.  This
+can still be used in comparisons.
 
-You can also require particular version (or later) with
+	print "You've got an old perl\n" if $] < 5.005_03;
 
-	use 5.002;
+In addition, the version is also available as a string in $^V.
+
+	print "You've got a new perl\n" if $^V and $^V ge v5.6.0;
+
+You can also require particular version (or later) with:
+
+        use 5.006;
+
+or using the new syntax available only from v5.6 onward:
+
+	use v5.6.0;
 
 At some point in the future, we may need to decide what to call the
 next big revision.  In the .package file used by metaconfig to
 generate Configure, there are two variables that might be relevant:
-$baserev=5.0 and $package=perl5.   At various times, I have suggested
-we might change them to $baserev=5.1 and $package=perl5.1 if want
-to signify a fairly major update.  Or, we might want to jump to perl6.
-Let's worry about that problem when we get there.
+$baserev=5 and $package=perl5.
 
-=head2 Subversions
-
-In addition, there may be "developer" sub-versions available.  These
-are not official releases.  They may contain unstable experimental
-features, and are subject to rapid change.  Such developer
-sub-versions are numbered with sub-version numbers.  For example,
-version 5.003_04 is the 4'th developer version built on top of
-5.003.  It might include the _01, _02, and _03 changes, but it
-also might not.  Sub-versions are allowed to be subversive. (But see
-the next section for recent changes.)
-
-These sub-versions can also be used as floating point numbers, so
-you can do things such as
-
-	print "You've got an unstable perl\n" if $] == 5.00303;
-
-You can also require particular version (or later) with
-
-	use 5.003_03;    # the "_" is optional
-
-Sub-versions produced by the members of perl5-porters are usually
-available on CPAN in the F<src/5.0/unsupported> directory.
+Perl releases produced by the members of perl5-porters are usually
+available on CPAN in the F<src/5.0/maint> and F<src/5.0/devel>
+directories.
 
 =head2 Maintenance and Development Subversions
 
-As an experiment, starting with version 5.004, subversions _01 through
-_49 will be reserved for bug-fix maintenance releases, and subversions
-_50 through _99 will be available for unstable development versions.
-
-The separate bug-fix track is being established to allow us an easy
-way to distribute important bug fixes without waiting for the
-developers to untangle all the other problems in the current
-developer's release.
+The first rule of maintenance work is "First, do no harm."
 
 Trial releases of bug-fix maintenance releases are announced on
 perl5-porters. Trial releases use the new subversion number (to avoid
 testers installing it over the previous release) and include a 'local
-patch' entry in patchlevel.h.
+patch' entry in patchlevel.h. The distribution file contains the
+string C<MAINT_TRIAL> to make clear that the file is not meant for
+public consumption.
 
-Watch for announcements of maintenance subversions in
-comp.lang.perl.announce.
+In general, the names of official distribution files for the public
+always match the regular expression:
 
-=head2 Why such a complicated scheme?
+    ^perl\d+\.(\d+)\.\d+(-MAINT_TRIAL_\d+)\.tar\.gz$
 
-Two reasons, really.  At least.
+C<$1> in the pattern is always an even number for maintenance
+versions, and odd for developer releases.
 
-First, we need some way to identify and release collections of patches
-that are known to have new features that need testing and exploration.  The
-subversion scheme does that nicely while fitting into the
-C<use 5.004;> mold.
-
-Second, since most of the folks who help maintain perl do so on a
-free-time voluntary basis, perl development does not proceed at a
-precise pace, though it always seems to be moving ahead quickly.
-We needed some way to pass around the "patch pumpkin" to allow
-different people chances to work on different aspects of the
-distribution without getting in each other's way.  It wouldn't be
-constructive to have multiple people working on incompatible
-implementations of the same idea.  Instead what was needed was
-some kind of "baton" or "token" to pass around so everyone knew
-whose turn was next.
+In the past it has been observed that pumkings tend to invent new
+naming conventions on the fly. If you are a pumpking, before you
+invent a new name for any of the three types of perl distributions,
+please inform the guys from the CPAN who are doing indexing and
+provide the trees of symlinks and the like. They will have to know
+I<in advance> what you decide.
 
 =head2 Why is it called the patch pumpkin?
 
@@ -153,7 +130,7 @@ No one was allowed to make backups unless they had the "backup pumpkin".
 
 The name has stuck.
 
-=head1 Philosophical Issues in Patching Perl
+=head1 Philosophical Issues in Patching and Porting Perl
 
 There are no absolute rules, but there are some general guidelines I
 have tried to follow as I apply patches to the perl sources.
@@ -171,6 +148,16 @@ than continuing to build a contorted nest of special cases, I
 generalized the process of building libperl so that NeXT and SVR4 users
 could still get their work done, but others could build a shared
 libperl if they wanted to as well.
+
+Contain your changes carefully.  Assume nothing about other operating
+systems, not even closely related ones.  Your changes must not affect
+other platforms.
+
+Spy shamelessly on how similar patching or porting issues have been
+settled elsewhere.
+
+If feasible, try to keep filenames 8.3-compliant to humor those poor
+souls that get joy from running Perl under such dire limitations.
 
 =head2 Seek consensus on major changes
 
@@ -194,6 +181,88 @@ that the machine-specific #ifdef's may not be valid across major
 releases of the operating system.  Further, the feature-specific tests
 may help out folks on another platform who have the same problem.
 
+=head2 Machine-specific files
+
+=over 4
+
+=item source code
+
+If you have many machine-specific #defines or #includes, consider
+creating an "osish.h" (os2ish.h, vmsish.h, and so on) and including
+that in perl.h.  If you have several machine-specific files (function
+emulations, function stubs, build utility wrappers) you may create a
+separate subdirectory (djgpp, win32) and put the files in there.
+Remember to update C<MANIFEST> when you add files.
+
+If your system supports dynamic loading but none of the existing
+methods at F<ext/DynaLoader/dl_*.xs> work for you, you must write
+a new one.  Study the existing ones to see what kind of interface
+you must supply.
+
+=item build hints
+
+There are two kinds of hints: hints for building Perl and hints for
+extensions.   The former live in the C<hints> subdirectory, the latter
+in C<ext/*/hints> subdirectories.
+
+The top level hints are Bourne-shell scripts that set, modify and
+unset appropriate Configure variables, based on the Configure command
+line options and possibly existing config.sh and Policy.sh files from
+previous Configure runs.
+
+The extension hints are written Perl (by the time they are used
+miniperl has been built) and control the building of their respective
+extensions.  They can be used to for example manipulate compilation
+and linking flags.
+
+=item build and installation Makefiles, scripts, and so forth
+
+Sometimes you will also need to tweak the Perl build and installation
+procedure itself, like for example F<Makefile.SH> and F<installperl>.
+Tread very carefully, even more than usual.  Contain your changes
+with utmost care.
+
+=item test suite
+
+Many of the tests in C<t> subdirectory assume machine-specific things
+like existence of certain functions, something about filesystem
+semantics, certain external utilities and their error messages.  Use
+the C<$^O> and the C<Config> module (which contains the results of the
+Configure run, in effect the C<config.sh> converted to Perl) to either
+skip (preferably not) or customize (preferable) the tests for your
+platform.
+
+=item modules
+
+Certain standard modules may need updating if your operating system
+sports for example a native filesystem naming.  You may want to update
+some or all of the modules File::Basename, File::Spec, File::Path, and
+File::Copy to become aware of your native filesystem syntax and
+peculiarities.
+
+=item documentation
+
+If your operating system comes from outside UNIX you almost certainly
+will have differences in the available operating system functionality
+(missing system calls, different semantics, whatever).  Please
+document these at F<pod/perlport.pod>.  If your operating system is
+the first B<not> to have a system call also update the list of
+"portability-bewares" at the beginning of F<pod/perlfunc.pod>.
+
+A file called F<README.youros> at the top level that explains things
+like how to install perl at this platform, where to get any possibly
+required additional software, and for example what test suite errors
+to expect, is nice too.
+
+You may also want to write a separate F<.pod> file for your operating
+system to tell about existing mailing lists, os-specific modules,
+documentation, whatever.  Please name these along the lines of
+F<perl>I<youros>.pod.  [unfinished: where to put this file (the pod/
+subdirectory, of course: but more importantly, which/what index files
+should be updated?)]
+
+=back
+
 =head2 Allow for lots of testing
 
 We should never release a main version without testing it as a
@@ -209,7 +278,7 @@ that some of those things will be just plain broken and need to be fixed,
 but, in general, we ought to try to avoid breaking widely-installed
 things.
 
-=head2 Automate generation of derivative files
+=head2 Automated generation of derivative files
 
 The F<embed.h>, F<keywords.h>, F<opcode.h>, and F<perltoc.pod> files
 are all automatically generated by perl scripts.  In general, don't
@@ -217,9 +286,19 @@ patch these directly; patch the data files instead.
 
 F<Configure> and F<config_h.SH> are also automatically generated by
 B<metaconfig>.  In general, you should patch the metaconfig units
-instead of patching these files directly.  However, minor changes to
-F<Configure> may be made in between major sync-ups with the metaconfig
-units, which tends to be complicated operations.
+instead of patching these files directly.  However, very minor changes
+to F<Configure> may be made in between major sync-ups with the
+metaconfig units, which tends to be complicated operations.  But be
+careful, this can quickly spiral out of control.  Running metaconfig
+is not really hard.
+
+Also F<Makefile> is automatically produced from F<Makefile.SH>.
+In general, look out for all F<*.SH> files.
+
+Finally, the sample files in the F<Porting/> subdirectory are
+generated automatically by the script F<U/mksample> included 
+with the metaconfig units.  See L<"run metaconfig"> below for
+information on obtaining the metaconfig units.
 
 =head1 How to Make a Distribution
 
@@ -273,16 +352,16 @@ change the appropriate metaconfig units instead, and regenerate Configure.
 
 	metaconfig -m
 
-will regenerate Configure and config_h.SH.  More information on
-obtaining and running metaconfig is in the F<U/README> file that comes
-with Perl's metaconfig units.  Perl's metaconfig units should be
-available the same place you found this file.  On CPAN, look under my
-directory F<authors/id/ANDYD/> for a file such as F<5.003_07-02.U.tar.gz>.
-That file should be unpacked in your main perl source directory.  It
-contains the files needed to run B<metaconfig> to reproduce Perl's
-Configure script.  (Those units are for 5.003_07.  There have been
-changes since then; please contact me if you want more recent
-versions, and I will try to point you in the right direction.)
+will regenerate Configure and config_h.SH.  Much more information
+on obtaining and running metaconfig is in the F<U/README> file
+that comes with Perl's metaconfig units.  Perl's metaconfig units
+should be available on CPAN.  A set of units that will work with
+perl5.005 is in the file F<mc_units-5.005_00-01.tar.gz> under
+http://www.perl.com/CPAN/authors/id/ANDYD/ .  The mc_units tar file
+should be unpacked in your main perl source directory.  Note: those
+units were for use with 5.005.  There may have been changes since then.
+Check for later versions or contact perl5-porters@perl.org to obtain a
+pointer to the current version.
 
 Alternatively, do consider if the F<*ish.h> files might be a better
 place for your changes.
@@ -297,17 +376,7 @@ program for this.  You can also use
 Both commands will also list extra files in the directory that are not
 listed in MANIFEST.
 
-The MANIFEST is normally sorted, with one exception.  Perl includes
-both a F<Configure> script and a F<configure> script.  The
-F<configure> script is a front-end to the main F<Configure>, but
-is there to aid folks who use autoconf-generated F<configure> files
-for other software.  The problem is that F<Configure> and F<configure>
-are the same on case-insensitive file systems, so I deliberately put
-F<configure> first in the MANIFEST so that the extraction of
-F<Configure> will overwrite F<configure> and leave you with the
-correct script.  (The F<configure> script must also have write
-permission for this to work, so it's the only file in the distribution
-I normally have with write permission.)
+The MANIFEST is normally sorted.
 
 If you are using metaconfig to regenerate Configure, then you should note
 that metaconfig actually uses MANIFEST.new, so you want to be sure
@@ -320,14 +389,15 @@ learned how to use the full suite of tools in the dist distribution.
 All the tests in the t/ directory ought to be executable.  The
 main makefile used to do a 'chmod t/*/*.t', but that resulted in
 a self-modifying distribution--something some users would strongly
-prefer to avoid.  Probably, the F<t/TEST> script should check for this
-and do the chmod if needed, but it doesn't currently.
+prefer to avoid.  The F<t/TEST> script will check for this
+and do the chmod if needed, but the tests still ought to be
+executable.
 
 In all, the following files should probably be executable:
 
     Configure
     configpm
-    configure
+    configure.gnu
     embed.pl
     installperl
     installman
@@ -340,7 +410,6 @@ In all, the following files should probably be executable:
     *.SH
     vms/ext/Stdio/test.pl
     vms/ext/filespec.t
-    vms/fndvers.com
     x2p/*.SH
 
 Other things ought to be readable, at least :-).
@@ -355,18 +424,43 @@ permissions for system files; something like that might be appropriate.
 =head2 Run Configure
 
 This will build a config.sh and config.h.  You can skip this if you haven't
-changed Configure or config_h.SH at all.
+changed Configure or config_h.SH at all.  I use the following command
 
-=head2 Update config_H
+    sh Configure -Dprefix=/opt/perl -Doptimize=-O -Dusethreads \
+	-Dcf_by='yourname' \
+	-Dcf_email='yourname@yourhost.yourplace.com' \
+	-Dperladmin='yourname@yourhost.yourplace.com' \
+	-Dmydomain='.yourplace.com' \
+	-Dmyhostname='yourhost' \
+	-des
 
-The config_H file is provided to help those folks who can't run Configure.
-It is important to keep it up-to-date.  If you have changed config_h.SH,
-those changes must be reflected in config_H as well.  (The name config_H was
-chosen to distinguish the file from config.h even on case-insensitive file
-systems.)  Simply edit the existing config_H file; keep the first few
-explanatory lines and then copy your new config.h below.
+=head2 Update Porting/config.sh and Porting/config_H
 
-It may also be necessary to update vms/config.vms and
+[XXX 
+This section needs revision.  We're currently working on easing
+the task of keeping the vms, win32, and plan9 config.sh info
+up-to-date.  The plan is to use keep up-to-date 'canned' config.sh
+files in the appropriate subdirectories and then generate 'canned'
+config.h files for vms, win32, etc. from the generic config.sh file.
+This is to ease maintenance.  When Configure gets updated, the parts
+sometimes get scrambled around, and the changes in config_H can
+sometimes be very hard to follow.  config.sh, on the other hand, can
+safely be sorted, so it's easy to track (typically very small) changes
+to config.sh and then propoagate them to a canned 'config.h' by any
+number of means, including a perl script in win32/ or carrying 
+config.sh and config_h.SH to a Unix system and running sh
+config_h.SH.)
+XXX]
+
+The Porting/config.sh and Porting/config_H files are provided to
+help those folks who can't run Configure.  It is important to keep
+them up-to-date.  If you have changed config_h.SH, those changes must
+be reflected in config_H as well.  (The name config_H was chosen to
+distinguish the file from config.h even on case-insensitive file systems.)
+Simply edit the existing config_H file; keep the first few explanatory
+lines and then copy your new config.h below.
+
+It may also be necessary to update win32/config.?c, vms/config.vms and
 plan9/config.plan9, though you should be quite careful in doing so if
 you are not familiar with those systems.  You might want to issue your
 patch with a promise to quickly issue a follow-up that handles those
@@ -387,15 +481,18 @@ output statements mean the patch won't apply cleanly.  Long ago I
 started to fix F<perly.fixer> to detect this, but I never completed the
 task.
 
+If C<perly.c> changes, make sure you run C<perl vms/vms_yfix.pl> to
+update the corresponding VMS files.  See L<VMS-specific updates>.
+
 Some additional notes from Larry on this:
 
-Don't forget to regenerate perly.c.diff.
+Don't forget to regenerate perly_c.diff.
 
     byacc -d perly.y
     mv y.tab.c perly.c
-    patch perly.c <perly.c.diff
+    patch perly.c <perly_c.diff
     # manually apply any failed hunks
-    diff -c2 perly.c.orig perly.c >perly.c.diff
+    diff -c2 perly.c.orig perly.c >perly_c.diff
 
 One chunk of lines that often fails begins with
 
@@ -467,6 +564,23 @@ ought to go in the Changes file or whether they ought to be available
 separately in the patch file (or both).  There is no disagreement that
 detailed descriptions ought to be easily available somewhere.
 
+=head2 Todo
+
+The F<Todo> file contains a roughly-catgorized unordered list of
+aspects of Perl that could use enhancement, features that could be
+added, areas that could be cleaned up, and so on.  During your term as
+pumpkin-holder, you will probably address some of these issues, and
+perhaps identify others which, while you decide not to address them
+this time around, may be tackled in the future.  Update the file
+reflect the situation as it stands when you hand over the pumpkin.
+
+You might like, early in your pumpkin-holding career, to see if you
+can find champions for partiticular issues on the to-do list: an issue
+owned is an issue more likely to be resolved.
+
+There are also some more porting-specific L<Todo> items later in this
+file.
+
 =head2 OS/2-specific updates
 
 In the os2 directory is F<diff.configure>, a set of OS/2-specific
@@ -479,8 +593,8 @@ things that need to be fixed in Configure.
 
 =head2 VMS-specific updates
 
-If you have changed F<perly.y>, then you may want to update
-F<vms/perly_{h,c}.vms> by running C<perl vms/vms_yfix.pl>.
+If you have changed F<perly.y> or F<perly.c>, then you most probably want
+to update F<vms/perly_{h,c}.vms> by running C<perl vms/vms_yfix.pl>.
 
 The Perl version number appears in several places under F<vms>.
 It is courteous to update these versions.  For example, if you are
@@ -586,6 +700,42 @@ supports dynamic loading, you can also test static loading with
 
 You can also hand-tweak your config.h to try out different #ifdef
 branches.
+
+=head1 Running Purify
+
+Purify is a commercial tool that is helpful in identifying memory
+overruns, wild pointers, memory leaks and other such badness.  Perl
+must be compiled in a specific way for optimal testing with Purify.
+
+Use the following commands to test perl with Purify:
+
+	sh Configure -des -Doptimize=-g -Uusemymalloc -Dusemultiplicity \
+	    -Accflags=-DPURIFY
+	setenv PURIFYOPTIONS "-chain-length=25"
+	make all pureperl
+	cd t
+	ln -s ../pureperl perl
+	setenv PERL_DESTRUCT_LEVEL 5
+	./perl TEST
+
+Disabling Perl's malloc allows Purify to monitor allocations and leaks
+more closely; using Perl's malloc will make Purify report most leaks
+in the "potential" leaks category.  Enabling the multiplicity option
+allows perl to clean up thoroughly when the interpreter shuts down, which
+reduces the number of bogus leak reports from Purify.  The -DPURIFY
+enables any Purify-specific debugging code in the sources.
+
+Purify outputs messages in "Viewer" windows by default.  If you don't have
+a windowing environment or if you simply want the Purify output to
+unobtrusively go to a log file instead of to the interactive window,
+use the following options instead:
+
+	setenv PURIFYOPTIONS "-chain-length=25 -windows=no -log-file=perl.log \
+	    -append-logfile=yes"
+
+The only currently known leaks happen when there are compile-time errors
+within eval or require.  (Fixing these is non-trivial, unfortunately, but
+they must be fixed eventually.)
 
 =head1 Common Gotcha's
 
@@ -967,33 +1117,6 @@ may find metaconfig's units clumsy to work with.
 
 =back
 
-=head2 @INC search order
-
-By default, the list of perl library directories in @INC is the
-following:
-
-    $archlib
-    $privlib
-    $sitearch
-    $sitelib
-
-Specifically, on my Solaris/x86 system, I run
-B<sh Configure -Dprefix=/opt/perl> and I have the following
-directories:
-
-    /opt/perl/lib/i86pc-solaris/5.00307
-    /opt/perl/lib
-    /opt/perl/lib/site_perl/i86pc-solaris
-    /opt/perl/lib/site_perl
-
-That is, perl's directories come first, followed by the site-specific
-directories.
-
-The site libraries come second to support the usage of extensions
-across perl versions.  Read the relevant section in F<INSTALL> for
-more information.  If we ever make $sitearch version-specific, this
-topic could be revisited.
-
 =head2 Why isn't there a directory to override Perl's library?
 
 Mainly because no one's gotten around to making one.  Note that
@@ -1030,6 +1153,62 @@ distribution modules.  If you do
 
 then perl.c will put /my/override ahead of ARCHLIB and PRIVLIB.
 
+=head2 Shared libperl.so location
+
+Why isn't the shared libperl.so installed in /usr/lib/ along
+with "all the other" shared libraries?  Instead, it is installed
+in $archlib, which is typically something like
+
+	/usr/local/lib/perl5/archname/5.00404
+
+and is architecture- and version-specific.
+
+The basic reason why a shared libperl.so gets put in $archlib is so that
+you can have more than one version of perl on the system at the same time,
+and have each refer to its own libperl.so.
+
+Three examples might help.  All of these work now; none would work if you
+put libperl.so in /usr/lib.
+
+=over
+
+=item 1.
+
+Suppose you want to have both threaded and non-threaded perl versions
+around.  Configure will name both perl libraries "libperl.so" (so that
+you can link to them with -lperl).  The perl binaries tell them apart
+by having looking in the appropriate $archlib directories.
+
+=item 2.
+
+Suppose you have perl5.004_04 installed and you want to try to compile
+it again, perhaps with different options or after applying a patch.
+If you already have libperl.so installed in /usr/lib/, then it may be
+either difficult or impossible to get ld.so to find the new libperl.so
+that you're trying to build.  If, instead, libperl.so is tucked away in
+$archlib, then you can always just change $archlib in the current perl
+you're trying to build so that ld.so won't find your old libperl.so.
+(The INSTALL file suggests you do this when building a debugging perl.)
+
+=item 3.
+
+The shared perl library is not a "well-behaved" shared library with
+proper major and minor version numbers, so you can't necessarily
+have perl5.004_04 and perl5.004_05 installed simultaneously.  Suppose
+perl5.004_04 were to install /usr/lib/libperl.so.4.4, and perl5.004_05
+were to install /usr/lib/libperl.so.4.5.  Now, when you try to run
+perl5.004_04, ld.so might try to load libperl.so.4.5, since it has
+the right "major version" number.  If this works at all, it almost
+certainly defeats the reason for keeping perl5.004_04 around.  Worse,
+with development subversions, you certaily can't guarantee that
+libperl.so.4.4 and libperl.so.4.55 will be compatible.
+
+Anyway, all this leads to quite obscure failures that are sure to drive
+casual users crazy.  Even experienced users will get confused :-).  Upon
+reflection, I'd say leave libperl.so in $archlib.
+
+=back
+
 =head1 Upload Your Work to CPAN
 
 You can upload your work to CPAN if you have a CPAN id.  Check out
@@ -1061,24 +1240,13 @@ what I came up with off the top of my head.
 
 =over 4
 
-=item installprefix
-
-I think we ought to support
-
-    Configure -Dinstallprefix=/blah/blah
-
-Currently, we support B<-Dprefix=/blah/blah>, but the changing the install
-location has to be handled by something like the F<config.over> trick
-described in F<INSTALL>.  AFS users also are treated specially.
-We should probably duplicate the metaconfig prefix stuff for an
-install prefix.
-
-=item Configure -Dsrcdir=/blah/blah
+=item Configure -Dsrc=/blah/blah
 
 We should be able to emulate B<configure --srcdir>.  Tom Tromey
 tromey@creche.cygnus.com has submitted some patches to
-the dist-users mailing list along these lines.  Eventually, they ought
-to get folded back into the main distribution.
+the dist-users mailing list along these lines.  They have been folded
+back into the main distribution, but various parts of the perl
+Configure/build/install process still assume src='.'.
 
 =item Hint file fixes
 
@@ -1135,12 +1303,6 @@ Get some of the Macintosh stuff folded back into the main distribution.
 Maybe include a replacement function that doesn't lose data in rare
 cases of coercion between string and numerical values.
 
-=item long long
-
-Can we support C<long long> on systems where C<long long> is larger
-than what we've been using for C<IV>?  What if you can't C<sprintf>
-a C<long long>?
-
 =item Improve makedepend
 
 The current makedepend process is clunky and annoyingly slow, but it
@@ -1177,4 +1339,4 @@ All opinions expressed herein are those of the authorZ<>(s).
 
 =head1 LAST MODIFIED
 
-$Id: pumpkin.pod,v 1.1.1.1 1997-11-13 01:50:19 ghudson Exp $
+$Id: pumpkin.pod,v 1.1.1.2 2000-04-07 20:37:18 ghudson Exp $

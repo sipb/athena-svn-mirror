@@ -1,12 +1,13 @@
 #!./perl
 
 BEGIN {
-    $^W = 1;
     $| = 1;
     chdir 't' if -d 't';
-    @INC = '../lib';
+    unshift @INC, '../lib';
     $SIG{__WARN__} = sub { die "Dying on warning: ", @_ };
 }
+
+use warnings;
 
 sub ok {
     my ($n, $result, $info) = @_;
@@ -21,13 +22,16 @@ sub ok {
 
 $Is_MSWin32 = $^O eq 'MSWin32';
 $Is_VMS     = $^O eq 'VMS';
+$Is_Dos   = $^O eq 'dos';
+$Is_os2   = $^O eq 'os2';
+$Is_Cygwin   = $^O eq 'cygwin';
 $PERL = ($Is_MSWin32 ? '.\perl' : './perl');
 
-print "1..30\n";
+print "1..35\n";
 
-eval '$ENV{"foo"} = "hi there";';	# check that ENV is inited inside eval
-if ($Is_MSWin32) { ok 1, `cmd /x /c set foo` eq "foo=hi there\n"; }
-else             { ok 1, `echo \$foo` eq "hi there\n"; }
+eval '$ENV{"FOO"} = "hi there";';	# check that ENV is inited inside eval
+if ($Is_MSWin32) { ok 1, `cmd /x /c set FOO` eq "FOO=hi there\n"; }
+else             { ok 1, `echo \$FOO` eq "hi there\n"; }
 
 unlink 'ajslkdfpqjsjfk';
 $! = 0;
@@ -35,9 +39,9 @@ open(FOO,'ajslkdfpqjsjfk');
 ok 2, $!, $!;
 close FOO; # just mention it, squelch used-only-once
 
-if ($Is_MSWin32) {
-    ok 3,1;
-    ok 4,1;
+if ($Is_MSWin32 || $Is_Dos) {
+    ok "3 # skipped",1;
+    ok "4 # skipped",1;
 }
 else {
   # the next tests are embedded inside system simply because sh spits out
@@ -46,9 +50,9 @@ else {
 
     $| = 1;		# command buffering
 
-    $SIG{"INT"} = "ok3";     kill "INT",$$;
-    $SIG{"INT"} = "IGNORE";  kill "INT",$$; print "ok 4\n";
-    $SIG{"INT"} = "DEFAULT"; kill "INT",$$; print "not ok\n";
+    $SIG{"INT"} = "ok3";     kill "INT",$$; sleep 1;
+    $SIG{"INT"} = "IGNORE";  kill "INT",$$; sleep 1; print "ok 4\n";
+    $SIG{"INT"} = "DEFAULT"; kill "INT",$$; sleep 1; print "not ok\n";
 
     sub ok3 {
 	if (($x = pop(@_)) eq "INT") {
@@ -108,7 +112,15 @@ ok 18, $$ > 0, $$;
 # $^X and $0
 {
     if ($^O eq 'qnx') {
-	chomp($wd = `pwd`);
+	chomp($wd = `/usr/bin/fullpath -t`);
+    }
+    elsif($Is_Cygwin) {
+       # Cygwin turns the symlink into the real file
+       chomp($wd = `pwd`);
+       $wd =~ s#/t$##;
+    }
+    elsif($Is_os2) {
+       $wd = Cwd::sys_cwd();
     }
     else {
 	$wd = '.';
@@ -119,8 +131,9 @@ ok 18, $$ > 0, $$;
     $script = "$wd/show-shebang";
     if ($Is_MSWin32) {
 	chomp($wd = `cd`);
-	$perl = "$wd\\perl.exe";
-	$script = "$wd\\show-shebang.bat";
+	$wd =~ s|\\|/|g;
+	$perl = "$wd/perl.exe";
+	$script = "$wd/show-shebang.bat";
 	$headmaybe = <<EOH ;
 \@rem ='
 \@echo off
@@ -134,11 +147,16 @@ __END__
 :endofperl
 EOT
     }
-    $s1 = $s2 = "\$^X is $perl, \$0 is $script\n";
-    if ($^O eq 'os2') {
-	# Started by ksh, which adds suffixes '.exe' and '.' to perl and script
-	$s2 = "\$^X is $wd/perl.exe, \$0 is $script.\n";
+    elsif ($Is_os2) {
+      $script = "./show-shebang";
     }
+    if ($^O eq 'os390' or $^O eq 'posix-bc' or $^O eq 'vmesa') {  # no shebang
+	$headmaybe = <<EOH ;
+    eval 'exec ./perl -S \$0 \${1+"\$\@"}'
+        if 0;
+EOH
+    }
+    $s1 = "\$^X is $perl, \$0 is $script\n";
     ok 19, open(SCRIPT, ">$script"), $!;
     ok 20, print(SCRIPT $headmaybe . <<EOB . <<'EOF' . $tailmaybe), $!;
 #!$wd/perl
@@ -148,11 +166,15 @@ EOF
     ok 21, close(SCRIPT), $!;
     ok 22, chmod(0755, $script), $!;
     $_ = `$script`;
+    s/\.exe//i if $Is_Dos or $Is_Cygwin or $Is_os2;
     s{\bminiperl\b}{perl}; # so that test doesn't fail with miniperl
     s{is perl}{is $perl}; # for systems where $^X is only a basename
-    ok 23, ($Is_MSWin32 ? uc($_) eq uc($s2) : $_ eq $s2), ":$_:!=:$s2:";
+    s{\\}{/}g;
+    ok 23, (($Is_MSWin32 || $Is_os2) ? uc($_) eq uc($s1) : $_ eq $s1), " :$_:!=:$s1:";
     $_ = `$perl $script`;
-    ok 24, ($Is_MSWin32 ? uc($_) eq uc($s1) : $_ eq $s1), ":$_:!=:$s1: after `$perl $script`";
+    s/\.exe//i if $Is_Dos or $Is_os2;
+    s{\\}{/}g;
+    ok 24, (($Is_MSWin32 || $Is_os2) ? uc($_) eq uc($s1) : $_ eq $s1), " :$_:!=:$s1: after `$perl $script`";
     ok 25, unlink($script), $!;
 }
 
@@ -161,9 +183,9 @@ ok 26, $] >= 5.00319, $];
 ok 27, $^O;
 ok 28, $^T > 850000000, $^T;
 
-if ($Is_VMS) {
-	ok 29, 1;
-	ok 30, 1;
+if ($Is_VMS || $Is_Dos) {
+	ok "29 # skipped", 1;
+	ok "30 # skipped", 1;
 }
 else {
 	$PATH = $ENV{PATH};
@@ -179,3 +201,26 @@ else {
 						: (`echo \$NoNeSuCh` eq "foo\n") );
 }
 
+{
+    local $SIG{'__WARN__'} = sub { print "# @_\nnot " };
+    $! = undef;
+    print "ok 31\n";
+}
+
+# test case-insignificance of %ENV (these tests must be enabled only
+# when perl is compiled with -DENV_IS_CASELESS)
+if ($Is_MSWin32) {
+    %ENV = ();
+    $ENV{'Foo'} = 'bar';
+    $ENV{'fOo'} = 'baz';
+    ok 32, (scalar(keys(%ENV)) == 1);
+    ok 33, exists($ENV{'FOo'});
+    ok 34, (delete($ENV{'foO'}) eq 'baz');
+    ok 35, (scalar(keys(%ENV)) == 0);
+}
+else {
+    ok "32 # skipped: no caseless %ENV support",1;
+    ok "33 # skipped: no caseless %ENV support",1;
+    ok "34 # skipped: no caseless %ENV support",1;
+    ok "35 # skipped: no caseless %ENV support",1;
+}

@@ -1,5 +1,5 @@
 %{
-/* $RCSfile: a2p.y,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:06 $
+/* $RCSfile: a2p.y,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:47:56 $
  *
  *    Copyright (c) 1991-1997, Larry Wall
  *
@@ -21,7 +21,7 @@ int ends = Nullop;
 %token REGEX
 %token SEMINEW NEWLINE COMMENT
 %token FUN1 FUNN GRGR
-%token PRINT PRINTF SPRINTF SPLIT
+%token PRINT PRINTF SPRINTF_OLD SPRINTF_NEW SPLIT
 %token IF ELSE WHILE FOR IN
 %token EXIT NEXT BREAK CONTINUE RET
 %token GETLINE DO SUB GSUB MATCH
@@ -144,6 +144,9 @@ expr	: term
 		}
 	;
 
+sprintf	: SPRINTF_NEW
+	| SPRINTF_OLD ;
+
 term	: variable
 		{ $$ = $1; }
 	| NUMBER
@@ -204,7 +207,9 @@ term	: variable
 		{ $$ = oper1($1,$3); }
 	| USERFUN '(' expr_list ')'
 		{ $$ = oper2(OUSERFUN,$1,$3); }
-	| SPRINTF expr_list
+	| SPRINTF_NEW '(' expr_list ')'
+		{ $$ = oper1(OSPRINTF,$3); }
+	| sprintf expr_list
 		{ $$ = oper1(OSPRINTF,$2); }
 	| SUBSTR '(' expr ',' expr ',' expr ')'
 		{ $$ = oper3(OSUBSTR,$3,$5,$7); }
@@ -394,6 +399,6 @@ compound
 
 %%
 
-int yyparse _((void));
+int yyparse (void);
 
 #include "a2py.c"

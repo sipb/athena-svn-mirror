@@ -1,6 +1,15 @@
 ;# pwd.pl - keeps track of current working directory in PWD environment var
 ;#
-;# $RCSfile: pwd.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:14 $
+#
+# This library is no longer being maintained, and is included for backward
+# compatibility with Perl 4 programs which may require it.
+#
+# In particular, this should not be used as an example of modern Perl
+# programming techniques.
+#
+# Suggested alternative: Cwd
+#
+;# $RCSfile: pwd.pl,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:41:26 $
 ;#
 ;# $Log: not supported by cvs2svn $
 ;#
@@ -16,7 +25,7 @@ sub main'initpwd {
     if ($ENV{'PWD'}) {
 	local($dd,$di) = stat('.');
 	local($pd,$pi) = stat($ENV{'PWD'});
-	if ($di != $pi || $dd != $pd) {
+	if (!defined $dd or !defined $pd or $di != $pi or $dd != $pd) {
 	    chop($ENV{'PWD'} = `pwd`);
 	}
     }
@@ -26,7 +35,7 @@ sub main'initpwd {
     if ($ENV{'PWD'} =~ m|(/[^/]+(/[^/]+/[^/]+))(.*)|) {
 	local($pd,$pi) = stat($2);
 	local($dd,$di) = stat($1);
-	if ($di == $pi && $dd == $pd) {
+	if (defined $pd and defined $dd and $di == $pi and $dd == $pd) {
 	    $ENV{'PWD'}="$2$3";
 	}
     }

@@ -22,15 +22,20 @@ libpth="$prefix/lib /local/lib"
 glibpth="$libpth"
 xlibpth="$libpth"
 
+# This should remove unwanted libraries instead of limiting the set
+# to just these few.  E.g. what about Berkeley DB?
 libswanted='gdbm m dld'
 so=' '
 
 # compiler & linker flags
+# Respect command-line values.
 
-ccflags='-DAMIGAOS -mstackextend'
-ldflags=''
-optimize='-O2 -fomit-frame-pointer'
+ccflags="$ccflags -DAMIGAOS -mstackextend"
+case "$optimize" in
+'') optimize='-O2 -fomit-frame-pointer';;
+esac
 dlext='o'
+# Are these two different from the defaults?
 cccdlflags='none'
 ccdlflags='none'
 lddlflags='-oformat a.out-amiga -r'
@@ -41,10 +46,6 @@ lddlflags='-oformat a.out-amiga -r'
 # usedl='n'
 # ccflags='-DAMIGAOS -mstackextend -m68020 -resident32'
 # ldflags='-m68020 -resident32'
-
-# Avoid telldir prototype conflict in pp_sys.c  (AmigaOS uses const DIR *)
-# Configure should test for this.  Volunteers?
-pp_sys_cflags='ccflags="$ccflags -DHAS_TELLDIR_PROTOTYPE"'
 
 # AmigaOS always reports only two links to directories, even if they
 # contain subdirectories.  Consequently, we use this variable to stop

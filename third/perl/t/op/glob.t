@@ -1,6 +1,9 @@
 #!./perl
 
-# $RCSfile: glob.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:18 $
+BEGIN {
+    chdir 't' if -d 't';
+    unshift @INC, '../lib';
+}
 
 print "1..6\n";
 

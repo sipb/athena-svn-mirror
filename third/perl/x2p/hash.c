@@ -1,4 +1,4 @@
-/* $RCSfile: hash.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:08 $
+/* $RCSfile: hash.c,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:47:57 $
  *
  *    Copyright (c) 1991-1997, Larry Wall
  *
@@ -14,9 +14,7 @@
 #include "util.h"
 
 STR *
-hfetch(tb,key)
-register HASH *tb;
-char *key;
+hfetch(register HASH *tb, char *key)
 {
     register char *s;
     register int i;
@@ -42,10 +40,7 @@ char *key;
 }
 
 bool
-hstore(tb,key,val)
-register HASH *tb;
-char *key;
-STR *val;
+hstore(register HASH *tb, char *key, STR *val)
 {
     register char *s;
     register int i;
@@ -70,7 +65,7 @@ STR *val;
 	if (strNE(entry->hent_key,key))	/* is this it? */
 	    continue;
 	/*NOSTRICT*/
-	Safefree(entry->hent_val);
+	safefree(entry->hent_val);
 	entry->hent_val = val;
 	return TRUE;
     }
@@ -94,9 +89,7 @@ STR *val;
 
 #ifdef NOTUSED
 bool
-hdelete(tb,key)
-register HASH *tb;
-char *key;
+hdelete(register HASH *tb, char *key)
 {
     register char *s;
     register int i;
@@ -133,8 +126,7 @@ char *key;
 #endif
 
 void
-hsplit(tb)
-HASH *tb;
+hsplit(HASH *tb)
 {
     int oldsize = tb->tbl_max + 1;
     register int newsize = oldsize * 2;
@@ -171,7 +163,7 @@ HASH *tb;
 }
 
 HASH *
-hnew()
+hnew(void)
 {
     register HASH *tb = (HASH*)safemalloc(sizeof(HASH));
 
@@ -184,8 +176,7 @@ hnew()
 }
 
 #ifdef NOTUSED
-hshow(tb)
-register HASH *tb;
+hshow(register HASH *tb)
 {
     fprintf(stderr,"%5d %4d (%2d%%)\n",
 	tb->tbl_max+1,
@@ -195,8 +186,7 @@ register HASH *tb;
 #endif
 
 int
-hiterinit(tb)
-register HASH *tb;
+hiterinit(register HASH *tb)
 {
     tb->tbl_riter = -1;
     tb->tbl_eiter = Null(HENT*);
@@ -204,8 +194,7 @@ register HASH *tb;
 }
 
 HENT *
-hiternext(tb)
-register HASH *tb;
+hiternext(register HASH *tb)
 {
     register HENT *entry;
 
@@ -228,15 +217,13 @@ register HASH *tb;
 }
 
 char *
-hiterkey(entry)
-register HENT *entry;
+hiterkey(register HENT *entry)
 {
     return entry->hent_key;
 }
 
 STR *
-hiterval(entry)
-register HENT *entry;
+hiterval(register HENT *entry)
 {
     return entry->hent_val;
 }

@@ -1,5 +1,5 @@
 #! /bin/sh
-case $CONFIG in
+case $CONFIGDOTSH in
 '')
 	if test -f config.sh; then TOP=.;
 	elif test -f ../config.sh; then TOP=..;
@@ -25,6 +25,7 @@ $startsh
 # makedepend.SH
 #
 MAKE=$make
+trnl='$trnl'
 !GROK!THIS!
 $spitshell >>makedepend <<'!NO!SUBS!'
 
@@ -36,7 +37,7 @@ esac
 
 export PATH || (echo "OOPS, this isn't sh.  Desperation time.  I will feed myself to sh."; sh \$0; kill \$\$)
 
-case $CONFIG in
+case $CONFIGDOTSH in
 '')
 	if test -f config.sh; then TOP=.;
 	elif test -f ../config.sh; then TOP=..;
@@ -54,7 +55,7 @@ esac
 # cppstdin wrapper script.
 # Put .. and . first so that we pick up the present cppstdin, not
 # an older one lying about in /usr/local/bin.
-PATH=".:..:$PATH"
+PATH=".$path_sep..$path_sep$PATH"
 export PATH
 
 $cat /dev/null >.deptmp
@@ -66,6 +67,7 @@ if test -f Makefile; then
     # to be out of date.  I don't know if OS/2 has touch, so do this:
     case "$osname" in
     os2) ;;
+    netbsd) ;;
     *) $touch $firstmakefile ;;
     esac
 fi
@@ -94,9 +96,22 @@ esac
 $test -d UU || mkdir UU
 
 $MAKE clist || ($echo "Searching for .c files..."; \
-	$echo *.c | $tr ' ' '\012' | $egrep -v '\*' >.clist)
+	$echo *.c | $tr ' ' $trnl | $egrep -v '\*' >.clist)
 for file in `$cat .clist`; do
 # for file in `cat /dev/null`; do
+	if [ "$osname" = uwin ]; then
+		uwinfix="-e s,\\\\\\\\,/,g -e s,\\([a-zA-Z]\\):/,/\\1/,g"
+	else
+		if [ "$osname" = os2 ]; then
+			uwinfix="-e s,\\\\\\\\,/,g"
+		else
+			if [ "$archname" = cygwin ]; then
+				uwinfix="-e s,\\\\\\\\,/,g"
+			else
+				uwinfix=
+			fi
+		fi
+	fi
     case "$file" in
     *.c) filebase=`basename $file .c` ;;
     *.y) filebase=`basename $file .y` ;;
@@ -105,7 +120,7 @@ for file in `$cat .clist`; do
     */*) finc="-I`echo $file | sed 's#/[^/]*$##`" ;;
     *)   finc= ;;
     esac
-    $echo "Finding dependencies for $filebase$obj_ext."
+    $echo "Finding dependencies for $filebase$_o."
     ( $echo "#line 1 \"$file\""; \
       $sed -n <$file \
 	-e "/^${filebase}_init(/q" \
@@ -115,8 +130,12 @@ for file in `$cat .clist`; do
 	-e 's|\\$||' \
 	-e p \
 	-e '}' ) >UU/$file.c
-    $cppstdin $finc -I/usr/local/include -I. $cppflags $cppminus <UU/$file.c |
+    if [ "$osname" = os390 -a "$file" = perly.c ]; then
+        $echo '#endif' >>UU/$file.c
+    fi
+    $cppstdin $finc -I. $cppflags $cppminus <UU/$file.c |
     $sed \
+	-e '1d' \
 	-e '/^#.*<stdin>/d' \
 	-e '/^#.*"-"/d' \
 	-e 's#\.[0-9][0-9]*\.c#'"$file.c#" \
@@ -125,23 +144,27 @@ for file in `$cat .clist`; do
 	-e 's/^.*"\(.*\)".*$/'$filebase'\$(OBJ_EXT): \1/' \
 	-e 's/^# *[0-9][0-9]* \(.*\)$/'$filebase'\$(OBJ_EXT): \1/' \
 	-e 's|: \./|: |' \
-	-e 's|\.c\.c|.c|' | \
+	-e 's|\.c\.c|.c|' $uwinfix | \
     $uniq | $sort | $uniq >> .deptmp
 done
 
 $sed <$mf >$mf.new -e '1,/^# AUTOMATICALLY/!d'
 
 $MAKE shlist || ($echo "Searching for .SH files..."; \
-	$echo *.SH | $tr ' ' '\012' | $egrep -v '\*' >.shlist)
+	$echo *.SH | $tr ' ' $trnl | $egrep -v '\*' >.shlist)
 
 # Now extract the dependencies on makedepend.SH and Makefile.SH
 # (they should reside in the main Makefile):
+rm -f .shlist.old
 mv .shlist .shlist.old
 $egrep -v '^makedepend\.SH' <.shlist.old >.shlist
+rm -f .shlist.old
 mv .shlist .shlist.old
 $egrep -v '^Makefile\.SH' <.shlist.old >.shlist
+rm -f .shlist.old
 mv .shlist .shlist.old
 $egrep -v '^perl_exp\.SH' <.shlist.old >.shlist
+rm -f .shlist.old
 mv .shlist .shlist.old
 $egrep -v '^config_h\.SH' <.shlist.old >.shlist
 rm .shlist.old
@@ -158,7 +181,7 @@ if $test -s .deptmp; then
        >>$mf.new
 else
     $MAKE hlist || ($echo "Searching for .h files..."; \
-	$echo *.h | $tr ' ' '\012' | $egrep -v '\*' >.hlist)
+	$echo *.h | $tr ' ' $trnl | $egrep -v '\*' >.hlist)
     $echo "You don't seem to have a proper C preprocessor.  Using grep instead."
     $egrep '^#include ' `cat .clist` `cat .hlist`  >.deptmp
     $echo "Updating $mf..."

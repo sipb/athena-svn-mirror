@@ -1,4 +1,4 @@
-/* $RCSfile: walk.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:07 $
+/* $RCSfile: walk.c,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:48:01 $
  *
  *    Copyright (c) 1991-1997, Larry Wall
  *
@@ -26,23 +26,23 @@ char *limit;
 STR *subs;
 STR *curargs = Nullstr;
 
-static void addsemi _(( STR *str ));
-static void emit_split _(( STR *str, int level ));
-static void fixtab _(( STR *str, int lvl ));
-static void numericize _(( int node ));
-static void tab _(( STR *str, int lvl ));
+static void addsemi ( STR *str );
+static void emit_split ( STR *str, int level );
+static void fixtab ( STR *str, int lvl );
+static void numericize ( int node );
+static void tab ( STR *str, int lvl );
 
-int prewalk _(( int numit, int level, int node, int *numericptr ));
-STR * walk _(( int useval, int level, int node, int *numericptr, int minprec ));
+int prewalk ( int numit, int level, int node, int *numericptr );
+STR * walk ( int useval, int level, int node, int *numericptr, int minprec );
 
 
 STR *
-walk(useval,level,node,numericptr,minprec)
-int useval;
-int level;
-register int node;
-int *numericptr;
-int minprec;			/* minimum precedence without parens */
+walk(int useval, int level, register int node, int *numericptr, int minprec)
+           
+          
+                  
+                
+            			/* minimum precedence without parens */
 {
     register int len;
     register STR *str;
@@ -133,7 +133,7 @@ int minprec;			/* minimum precedence without parens */
 	    if (saw_FS && !const_FS)
 		do_chop = TRUE;
 	    if (do_chop) {
-		str_cat(str,"chop;\t# strip record separator\n");
+		str_cat(str,"chomp;\t# strip record separator\n");
 		tab(str,level);
 	    }
 	    if (do_split)
@@ -190,7 +190,7 @@ int minprec;			/* minimum precedence without parens */
 		    i = 0;
 		    if (do_chop) {
 			i++;
-			str_cat(str,"chop;\t# strip record separator\n");
+			str_cat(str,"chomp;\t# strip record separator\n");
 			tab(str,level);
 		    }
 		    if (do_split && !(len & 1)) {
@@ -863,7 +863,7 @@ sub Pick {\n\
 	    str_scat(tmp3str,tmp2str);
 	    str_cat(tmp3str,").'\"') =~ s/&/\\$&/g, ");
 	    str_set(tmp2str,"eval $s_");
-	    s = (*s == 'g' ? "ge" : "e");
+	    s = (char*)(*s == 'g' ? "ge" : "e");
 	    i++;
 	}
 	type = ops[ops[node+1].ival].ival;
@@ -1219,7 +1219,7 @@ sub Pick {\n\
 	}
 	tmpstr = walk(1+(type==OPRINT),level,ops[node+1].ival,&numarg,P_MIN);
 	if (!*tmpstr->str_ptr && lval_field) {
-	    t = saw_OFS ? "$," : "' '";
+	    t = (char*)(saw_OFS ? "$," : "' '");
 	    if (split_to_array) {
 		sprintf(tokenbuf,"join(%s,@Fld)",t);
 		str_cat(tmpstr,tokenbuf);
@@ -1292,10 +1292,10 @@ sub Pick {\n\
 	if (len > 0)
 	    tmpstr = walk(1,level,ops[node+1].ival,&numarg,P_MIN);
 	else
-	    tmpstr = str_new(0);;
+	    tmpstr = str_new(0);
 	if (!tmpstr->str_ptr || !*tmpstr->str_ptr) {
 	    if (lval_field) {
-		t = saw_OFS ? "$," : "' '";
+		t = (char*)(saw_OFS ? "$," : "' '");
 		if (split_to_array) {
 		    sprintf(tokenbuf,"join(%s,@Fld)",t);
 		    str_cat(tmpstr,tokenbuf);
@@ -1417,7 +1417,7 @@ sub Pick {\n\
 	str_scat(str,fstr=walk(1,level,ops[node+1].ival,&numarg,P_MIN));
 	str_free(fstr);
 	if (str->str_ptr[str->str_cur - 1] == '\n')
-	    --str->str_cur;;
+	    --str->str_cur;
 	str_cat(str," while (");
 	str_scat(str,fstr=walk(0,level,ops[node+2].ival,&numarg,P_MIN));
 	str_free(fstr);
@@ -1556,9 +1556,7 @@ sub Pick {\n\
 }
 
 static void
-tab(str,lvl)
-register STR *str;
-register int lvl;
+tab(register STR *str, register int lvl)
 {
     while (lvl > 1) {
 	str_cat(str,"\t");
@@ -1569,9 +1567,7 @@ register int lvl;
 }
 
 static void
-fixtab(str,lvl)
-register STR *str;
-register int lvl;
+fixtab(register STR *str, register int lvl)
 {
     register char *s;
 
@@ -1589,8 +1585,7 @@ register int lvl;
 }
 
 static void
-addsemi(str)
-register STR *str;
+addsemi(register STR *str)
 {
     register char *s;
 
@@ -1602,9 +1597,7 @@ register STR *str;
 }
 
 static void
-emit_split(str,level)
-register STR *str;
-int level;
+emit_split(register STR *str, int level)
 {
     register int i;
 
@@ -1637,11 +1630,7 @@ int level;
 }
 
 int
-prewalk(numit,level,node,numericptr)
-int numit;
-int level;
-register int node;
-int *numericptr;
+prewalk(int numit, int level, register int node, int *numericptr)
 {
     register int len;
     register int type;
@@ -2058,8 +2047,7 @@ int *numericptr;
 }
 
 static void
-numericize(node)
-register int node;
+numericize(register int node)
 {
     register int len;
     register int type;

@@ -6,7 +6,7 @@
 # If it finds that the input files are already patches for VMS,
 # it just copies the input to the output.
 #
-# Revised 20-Dec-1996 by Charles Bailey  bailey@genetics.upenn.edu
+# Revised 20-Dec-1996 by Charles Bailey  bailey@newman.upenn.edu
 
 $VERSION = '1.11';
 
@@ -26,6 +26,11 @@ while (<C>) {
   elsif (/char \*getenv/) {
     # accomodate old VAXC's macro susbstitution pecularities
     $_ = "#   ifndef getenv\n$_#   endif\n";
+  }
+  elsif ( /getenv\("YYDEBUG"\)/ ) {
+    # Reset the "error" status if an optional lookup fails
+    while (not /^\s+\}/) { print COUT; $_ = <C>; }
+    $_ .= "\telse SETERRNO(0,SS\$_NORMAL);\n";
   }
   else {
     # add the dEXT tag to definitions of global vars, so we'll insert

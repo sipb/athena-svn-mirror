@@ -23,7 +23,7 @@ Now you can.
 The tie() function binds a variable to a class (package) that will provide
 the implementation for access methods for that variable.  Once this magic
 has been performed, accessing a tied variable automatically triggers
-method calls in the proper class.  All of the complexity of the class is
+method calls in the proper class.  The complexity of the class is
 hidden behind magic methods calls.  The method names are in ALL CAPS,
 which is a convention that Perl uses to indicate that they're called
 implicitly rather than explicitly--just like the BEGIN() and END()
@@ -180,17 +180,28 @@ TIESCALAR classes are certainly possible.
 =head2 Tying Arrays
 
 A class implementing a tied ordinary array should define the following
-methods: TIEARRAY, FETCH, STORE, and perhaps DESTROY.
+methods: TIEARRAY, FETCH, STORE, FETCHSIZE, STORESIZE and perhaps DESTROY. 
 
-B<WARNING>: Tied arrays are I<incomplete>.  They are also distinctly lacking
-something for the C<$#ARRAY> access (which is hard, as it's an lvalue), as
-well as the other obvious array functions, like push(), pop(), shift(),
-unshift(), and splice().
+FETCHSIZE and STORESIZE are used to provide C<$#array> and
+equivalent C<scalar(@array)> access.
+
+The methods POP, PUSH, SHIFT, UNSHIFT, SPLICE, DELETE, and EXISTS are
+required if the perl operator with the corresponding (but lowercase) name
+is to operate on the tied array. The B<Tie::Array> class can be used as a
+base class to implement the first five of these in terms of the basic
+methods above.  The default implementations of DELETE and EXISTS in
+B<Tie::Array> simply C<croak>.
+
+In addition EXTEND will be called when perl would have pre-extended 
+allocation in a real array.
+
+This means that tied arrays are now I<complete>. The example below needs
+upgrading to illustrate this. (The documentation in B<Tie::Array> is more
+complete.)
 
 For this discussion, we'll implement an array whose indices are fixed at
 its creation.  If you try to access anything beyond those bounds, you'll
-take an exception.  (Well, if you access an individual element; an
-aggregate assignment would be missed.) For example:
+take an exception.  For example:
 
     require Bounded_Array;
     tie @ary, 'Bounded_Array', 2;
@@ -594,9 +605,9 @@ or have auxiliary state to clean up.  Here's a very simple function:
 
 =back
 
-Note that functions such as keys() and values() may return huge array
-values when used on large objects, like DBM files.  You may prefer to
-use the each() function to iterate over such.  Example:
+Note that functions such as keys() and values() may return huge lists
+when used on large objects, like DBM files.  You may prefer to use the
+each() function to iterate over such.  Example:
 
     # print out history file offsets
     use NDBM_File;
@@ -611,8 +622,10 @@ use the each() function to iterate over such.  Example:
 This is partially implemented now.
 
 A class implementing a tied filehandle should define the following
-methods: TIEHANDLE, at least one of PRINT, PRINTF, READLINE, GETC, or READ,
-and possibly DESTROY.
+methods: TIEHANDLE, at least one of PRINT, PRINTF, WRITE, READLINE, GETC,
+READ, and possibly CLOSE and DESTROY.  The class can also provide: BINMODE, 
+OPEN, EOF, FILENO, SEEK, TELL - if the corresponding perl operators are
+used on the handle.
 
 It is especially useful when perl is embedded in some other program,
 where output to STDOUT and STDERR may have to be redirected in some
@@ -631,6 +644,17 @@ return a blessed reference of some sort. The reference can be used to
 hold some internal information.
 
     sub TIEHANDLE { print "<shout>\n"; my $i; bless \$i, shift }
+
+=item WRITE this, LIST
+
+This method will be called when the handle is written to via the
+C<syswrite> function.
+
+    sub WRITE {
+	$r = shift;
+	my($buf,$len,$offset) = @_;
+	print "WRITE called, \$buf=$buf, \$len=$len, \$offset=$offset";
+    }
 
 =item PRINT this, LIST
 
@@ -654,15 +678,18 @@ passed to the printf function.
         print sprintf($fmt, @_)."\n";
     }
 
-=item READ this LIST
+=item READ this, LIST
 
 This method will be called when the handle is read from via the C<read>
 or C<sysread> functions.
 
     sub READ {
-	$r = shift;
-	my($buf,$len,$offset) = @_;
-	print "READ called, \$buf=$buf, \$len=$len, \$offset=$offset";
+	my $self = shift;
+	my $$bufref = \$_[0];
+	my(undef,$len,$offset) = @_;
+	print "READ called, \$buf=$bufref, \$len=$len, \$offset=$offset";
+	# add to $$bufref, set $len to number of characters read
+	$len;
     }
 
 =item READLINE this
@@ -670,13 +697,20 @@ or C<sysread> functions.
 This method will be called when the handle is read from via <HANDLE>.
 The method should return undef when there is no more data.
 
-    sub READLINE { $r = shift; "PRINT called $$r times\n"; }
+    sub READLINE { $r = shift; "READLINE called $$r times\n"; }
 
 =item GETC this
 
 This method will be called when the C<getc> function is called.
 
     sub GETC { print "Don't GETC, Get Perl"; return "a"; }
+
+=item CLOSE this
+
+This method will be called when the handle is closed via the C<close>
+function.
+
+    sub CLOSE { print "CLOSE called.\n" }
 
 =item DESTROY this
 
@@ -709,6 +743,7 @@ a scalar.
     package Remember;
 
     use strict;
+    use warnings;
     use IO::File;
 
     sub TIESCALAR {
@@ -802,7 +837,7 @@ destructor (DESTROY) is called, which is normal for objects that have
 no more valid references; and thus the file is closed.
 
 In the second example, however, we have stored another reference to
-the tied object in C<$x>.  That means that when untie() gets called
+the tied object in $x.  That means that when untie() gets called
 there will still be a valid reference to the object in existence, so
 the destructor is not called at that time, and thus the file is not
 closed.  The reason there is no output is because the file buffers
@@ -811,7 +846,8 @@ have not been flushed to disk.
 Now that you know what the problem is, what can you do to avoid it?
 Well, the good old C<-w> flag will spot any instances where you call
 untie() and there are still valid references to the tied object.  If
-the second script above is run with the C<-w> flag, Perl prints this
+the second script above this near the top C<use warnings 'untie'>
+or was run with the C<-w> flag, Perl prints this
 warning message:
 
     untie attempted while 1 inner references still exist

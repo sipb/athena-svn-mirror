@@ -1,10 +1,15 @@
 #!./perl
 
-# $RCSfile: sprintf.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:15 $
+# $RCSfile: sprintf.t,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:46:40 $
+
+BEGIN {
+    chdir 't' if -d 't';
+    unshift @INC, '../lib';
+}   
+use warnings;
 
 print "1..4\n";
 
-$^W = 1;
 $SIG{__WARN__} = sub {
     if ($_[0] =~ /^Invalid conversion/) {
 	$w++;
@@ -14,8 +19,8 @@ $SIG{__WARN__} = sub {
 };
 
 $w = 0;
-$x = sprintf("%3s %-4s%%foo %5d%c%3.1f","hi",123,456,65,3.0999);
-if ($x eq ' hi 123 %foo   456A3.1' && $w == 0) {
+$x = sprintf("%3s %-4s%%foo %.0d%5d %#x%c%3.1f %b %x %X %#b %#x %#X","hi",123,0,456,0,ord('A'),3.0999,11,171,171,11,171,171);
+if ($x eq ' hi 123 %foo   456 0A3.1 1011 ab AB 0b1011 0xab 0XAB' && $w == 0) {
     print "ok 1\n";
 } else {
     print "not ok 1 '$x'\n";

@@ -15,25 +15,25 @@ extern "C" {
 #define Prf_Close(hini) (!CheckWinError(PrfCloseProfile(hini)))
 
 SV *
-Prf_Get(HINI hini, PSZ app, PSZ key) {
+Prf_Get(pTHX_ HINI hini, PSZ app, PSZ key) {
     ULONG len;
     BOOL rc;
     SV *sv;
 
-    if (CheckWinError(PrfQueryProfileSize(hini, app, key, &len))) return &sv_undef;
+    if (CheckWinError(PrfQueryProfileSize(hini, app, key, &len))) return &PL_sv_undef;
     sv = newSVpv("", 0);
-    SvGROW(sv, len);
+    SvGROW(sv, len + 1);
     if (CheckWinError(PrfQueryProfileData(hini, app, key, SvPVX(sv), &len))
 	|| (len == 0 && (app == NULL || key == NULL))) { /* Somewhy needed. */
 	SvREFCNT_dec(sv);
-	return &sv_undef;
+	return &PL_sv_undef;
     }
     SvCUR_set(sv, len);
     *SvEND(sv) = 0;
     return sv;
 }
 
-U32
+I32
 Prf_GetLength(HINI hini, PSZ app, PSZ key) {
     U32 len;
 
@@ -51,7 +51,7 @@ Prf_GetLength(HINI hini, PSZ app, PSZ key) {
 	  : HINI_PROFILE)
 
 SV*
-Prf_Profiles()
+Prf_Profiles(pTHX)
 {
     AV *av = newAV();
     SV *rv;
@@ -59,7 +59,7 @@ Prf_Profiles()
     char system[257];
     PRFPROFILE info = { 257, user, 257, system};
     
-    if (CheckWinError(PrfQueryProfile(Perl_hab, &info))) return &sv_undef;
+    if (CheckWinError(PrfQueryProfile(Perl_hab, &info))) return &PL_sv_undef;
     if (info.cchUserName > 257 || info.cchSysName > 257)
 	die("Panic: Profile names too long");
     av_push(av, newSVpv(user, info.cchUserName - 1));
@@ -70,7 +70,7 @@ Prf_Profiles()
 }
 
 BOOL
-Prf_SetUser(SV *sv)
+Prf_SetUser(pTHX_ SV *sv)
 {
     char user[257];
     char system[257];
@@ -101,6 +101,10 @@ Prf_Get(hini, app, key)
  HINI hini;
  PSZ app;
  PSZ key;
+CODE:
+    RETVAL = Prf_Get(aTHX_ hini, app, key);
+OUTPUT:
+    RETVAL
 
 int
 Prf_Set(hini, app, key, s, l = (SvPOK(ST(3)) ? SvCUR(ST(3)): -1))
@@ -110,7 +114,7 @@ Prf_Set(hini, app, key, s, l = (SvPOK(ST(3)) ? SvCUR(ST(3)): -1))
  PSZ s;
  ULONG l;
 
-U32
+I32
 Prf_GetLength(hini, app, key)
  HINI hini;
  PSZ app;
@@ -122,10 +126,18 @@ Prf_System(key)
 
 SV*
 Prf_Profiles()
+CODE:
+    RETVAL = Prf_Profiles(aTHX);
+OUTPUT:
+    RETVAL
 
 BOOL
 Prf_SetUser(sv)
  SV *sv
+CODE:
+    RETVAL = Prf_SetUser(aTHX_ sv);
+OUTPUT:
+    RETVAL
 
 BOOT:
 	Acquire_hab();

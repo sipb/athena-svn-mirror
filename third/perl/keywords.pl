@@ -38,9 +38,11 @@ END
 EQ
 GE
 GT
+INIT
 LE
 LT
 NE
+CHECK
 abs
 accept
 alarm
@@ -144,6 +146,7 @@ link
 listen
 local
 localtime
+lock
 log
 lstat
 lt
@@ -164,6 +167,7 @@ open
 opendir
 or
 ord
+our
 pack
 package
 pipe
@@ -175,6 +179,7 @@ prototype
 push
 q
 qq
+qr
 quotemeta
 qw
 qx

@@ -19,11 +19,19 @@
 
 /* USEMYBINMODE
  *	This symbol, if defined, indicates that the program should
- *	use the routine my_binmode(FILE *fp, char iotype) to insure
+ *	use the routine my_binmode(FILE *fp, char iotype, int mode) to insure
  *	that a file is in "binary" mode -- that is, that no translation
  *	of bytes occurs on read or write operations.
  */
 #undef USEMYBINMODE
+
+/* Stat_t:
+ *	This symbol holds the type used to declare buffers for information
+ *	returned by stat().  It's usually just struct stat.  It may be necessary
+ *	to include <sys/stat.h> and <sys/types.h> to get any typedef'ed
+ *	information.
+ */
+#define Stat_t struct stat
 
 /* USE_STAT_RDEV:
  *	This symbol is defined if this system has a stat structure declaring
@@ -56,25 +64,146 @@
 #ifndef SIGILL
 #    define SIGILL 6         /* blech */
 #endif
-#define ABORT() kill(getpid(),SIGABRT);
+#define ABORT() kill(PerlProc_getpid(),SIGABRT);
 
 #define BIT_BUCKET "/dev/nul"  /* Will this work? */
+
+/* Apparently TCPIPV4 defines may be included even with only IAK present */
+
+#if !defined(NO_TCPIPV4) && !defined(TCPIPV4)
+#  define TCPIPV4
+#  define TCPIPV4_FORCED		/* Just in case */
+#endif
 
 #if defined(I_SYS_UN) && !defined(TCPIPV4)
 /* It is not working without TCPIPV4 defined. */
 # undef I_SYS_UN
+#endif 
+
+#ifdef USE_THREADS
+
+#define OS2_ERROR_ALREADY_POSTED 299	/* Avoid os2.h */
+
+extern int rc;
+
+#define MUTEX_INIT(m) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = _rmutex_create(m,0)))				\
+	    croak("panic: MUTEX_INIT: rc=%i", rc);		\
+    } STMT_END
+#define MUTEX_LOCK(m) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = _rmutex_request(m,_FMR_IGNINT)))		\
+	    croak("panic: MUTEX_LOCK: rc=%i", rc);		\
+    } STMT_END
+#define MUTEX_UNLOCK(m) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = _rmutex_release(m)))				\
+	    croak("panic: MUTEX_UNLOCK: rc=%i", rc);		\
+    } STMT_END
+#define MUTEX_DESTROY(m) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = _rmutex_close(m)))				\
+	    croak("panic: MUTEX_DESTROY: rc=%i", rc);		\
+    } STMT_END
+
+#define COND_INIT(c) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = DosCreateEventSem(NULL,c,0,0)))		\
+	    croak("panic: COND_INIT: rc=%i", rc);		\
+    } STMT_END
+#define COND_SIGNAL(c) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = DosPostEventSem(*(c))) && rc != OS2_ERROR_ALREADY_POSTED)		\
+	    croak("panic: COND_SIGNAL, rc=%ld", rc);		\
+    } STMT_END
+#define COND_BROADCAST(c) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = DosPostEventSem(*(c))) && rc != OS2_ERROR_ALREADY_POSTED)\
+	    croak("panic: COND_BROADCAST, rc=%i", rc);		\
+    } STMT_END
+/* #define COND_WAIT(c, m) \
+    STMT_START {						\
+	if (WaitForSingleObject(*(c),INFINITE) == WAIT_FAILED)	\
+	    croak("panic: COND_WAIT");				\
+    } STMT_END
+*/
+#define COND_WAIT(c, m) os2_cond_wait(c,m)
+
+#define COND_WAIT_win32(c, m) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = SignalObjectAndWait(*(m),*(c),INFINITE,FALSE)))\
+	    croak("panic: COND_WAIT");				\
+	else							\
+	    MUTEX_LOCK(m);					\
+    } STMT_END
+#define COND_DESTROY(c) \
+    STMT_START {						\
+	int rc;							\
+	if ((rc = DosCloseEventSem(*(c))))			\
+	    croak("panic: COND_DESTROY, rc=%i", rc);		\
+    } STMT_END
+/*#define THR ((struct thread *) TlsGetValue(PL_thr_key))
+#define dTHR struct thread *thr = THR
+*/
+
+#ifdef USE_SLOW_THREAD_SPECIFIC
+#  define pthread_getspecific(k)	(*_threadstore())
+#  define pthread_setspecific(k,v)	(*_threadstore()=v,0)
+#  define pthread_key_create(keyp,flag)	(*keyp=_gettid(),0)
+#else
+#  define pthread_getspecific(k)	(*(k))
+#  define pthread_setspecific(k,v)	(*(k)=(v),0)
+#  define pthread_key_create(keyp,flag)	(DosAllocThreadLocalMemory(1,(U32*)keyp) ? croak("LocalMemory"),1 : 0)
+#endif
+#define pthread_key_delete(keyp)
+#define pthread_self()			_gettid()
+#define YIELD				DosSleep(0)
+
+#ifdef PTHREADS_INCLUDED		/* For ./x2p stuff. */
+int pthread_join(pthread_t tid, void **status);
+int pthread_detach(pthread_t tid);
+int pthread_create(pthread_t *tid, const pthread_attr_t *attr,
+		   void *(*start_routine)(void*), void *arg);
+#endif 
+
+#define THREADS_ELSEWHERE
+
 #endif 
  
 void Perl_OS2_init(char **);
 
 /* XXX This code hideously puts env inside: */
 
-#define PERL_SYS_INIT(argcp, argvp) STMT_START {	\
+#ifdef PERL_CORE
+#  define PERL_SYS_INIT3(argcp, argvp, envp) STMT_START {	\
     _response(argcp, argvp);			\
     _wildcard(argcp, argvp);			\
-    Perl_OS2_init(env);	} STMT_END
+    Perl_OS2_init(*envp);	} STMT_END
+#  define PERL_SYS_INIT(argcp, argvp) STMT_START {	\
+    _response(argcp, argvp);			\
+    _wildcard(argcp, argvp);			\
+    Perl_OS2_init(NULL);	} STMT_END
+#else  /* Compiling embedded Perl or Perl extension */
+#  define PERL_SYS_INIT3(argcp, argvp, envp) STMT_START {	\
+    Perl_OS2_init(*envp);	} STMT_END
+#  define PERL_SYS_INIT(argcp, argvp) STMT_START {	\
+    Perl_OS2_init(NULL);	} STMT_END
+#endif
 
-#define PERL_SYS_TERM()
+#ifndef __EMX__
+#  define PERL_CALLCONV _System
+#endif
+
+#define PERL_SYS_TERM()		MALLOC_TERM
 
 /* #define PERL_SYS_TERM() STMT_START {	\
     if (Perl_HAB_set) WinTerminate(Perl_hab);	} STMT_END */
@@ -102,7 +231,6 @@ void *sys_alloc(int size);
 #  define PerlIO FILE
 #endif 
 
-#define TMPPATH tmppath
 #define TMPPATH1 "plXXXXXX"
 extern char *tmppath;
 PerlIO *my_syspopen(char *cmd, char *mode);
@@ -110,6 +238,9 @@ PerlIO *my_syspopen(char *cmd, char *mode);
 int my_syspclose(PerlIO *f);
 FILE *my_tmpfile (void);
 char *my_tmpnam (char *);
+
+#undef L_tmpnam
+#define L_tmpnam MAXPATHLEN
 
 #define tmpfile	my_tmpfile
 #define tmpnam	my_tmpnam
@@ -187,6 +318,10 @@ typedef struct OS2_Perl_data {
   int (*xs_init)();
   unsigned long rc;
   unsigned long severity;
+  unsigned long	phmq;			/* Handle to message queue */
+  unsigned long	phmq_refcnt;
+  unsigned long	phmq_servers;
+  unsigned long	initial_mode;		/* VIO etc. mode we were started in */
 } OS2_Perl_data_t;
 
 extern OS2_Perl_data_t OS2_Perl_data;
@@ -195,30 +330,69 @@ extern OS2_Perl_data_t OS2_Perl_data;
 #define Perl_rc			(OS2_Perl_data.rc)
 #define Perl_severity		(OS2_Perl_data.severity)
 #define errno_isOS2		12345678
+#define errno_isOS2_set		12345679
 #define OS2_Perl_flags	(OS2_Perl_data.flags)
 #define Perl_HAB_set_f	1
 #define Perl_HAB_set	(OS2_Perl_flags & Perl_HAB_set_f)
 #define set_Perl_HAB_f	(OS2_Perl_flags |= Perl_HAB_set_f)
 #define set_Perl_HAB(h) (set_Perl_HAB_f, Perl_hab = h)
+#define _obtain_Perl_HAB (init_PMWIN_entries(),				\
+			  Perl_hab = (*PMWIN_entries.Initialize)(0),	\
+			  set_Perl_HAB_f, Perl_hab)
+#define perl_hab_GET()	(Perl_HAB_set ? Perl_hab : _obtain_Perl_HAB)
+#define Acquire_hab()	perl_hab_GET()
+#define Perl_hmq	((HMQ)OS2_Perl_data.phmq)
+#define Perl_hmq_refcnt	(OS2_Perl_data.phmq_refcnt)
+#define Perl_hmq_servers	(OS2_Perl_data.phmq_servers)
+#define Perl_os2_initial_mode	(OS2_Perl_data.initial_mode)
+
+unsigned long Perl_hab_GET();
+unsigned long Perl_Register_MQ(int serve);
+void	Perl_Deregister_MQ(int serve);
+int	Perl_Serve_Messages(int force);
+/* Cannot prototype with I32 at this point. */
+int	Perl_Process_Messages(int force, long *cntp);
+char	*os2_execname(void);
+
+struct _QMSG;
+struct PMWIN_entries_t {
+    unsigned long (*Initialize)( unsigned long fsOptions );
+    unsigned long (*CreateMsgQueue)(unsigned long hab, long cmsg);
+    int (*DestroyMsgQueue)(unsigned long hmq);
+    int (*PeekMsg)(unsigned long hab, struct _QMSG *pqmsg,
+		   unsigned long hwndFilter, unsigned long msgFilterFirst,
+		   unsigned long msgFilterLast, unsigned long fl);
+    int (*GetMsg)(unsigned long hab, struct _QMSG *pqmsg,
+		  unsigned long hwndFilter, unsigned long msgFilterFirst,
+		  unsigned long msgFilterLast);
+    void * (*DispatchMsg)(unsigned long hab, struct _QMSG *pqmsg);
+};
+extern struct PMWIN_entries_t PMWIN_entries;
+void init_PMWIN_entries(void);
+
+#define perl_hmq_GET(serve)	Perl_Register_MQ(serve)
+#define perl_hmq_UNSET(serve)	Perl_Deregister_MQ(serve)
+
 #define OS2_XS_init() (*OS2_Perl_data.xs_init)()
+
+#if _EMX_CRT_REV_ >= 60
+# define os2_setsyserrno(rc)	(Perl_rc = rc, errno = errno_isOS2_set, \
+				_setsyserrno(rc))
+#else
+# define os2_setsyserrno(rc)	(Perl_rc = rc, errno = errno_isOS2)
+#endif
+
 /* The expressions below return true on error. */
 /* INCL_DOSERRORS needed. rc should be declared outside. */
 #define CheckOSError(expr) (!(rc = (expr)) ? 0 : (FillOSError(rc), 1))
 /* INCL_WINERRORS needed. */
 #define SaveWinError(expr) ((expr) ? : (FillWinError, 0))
 #define CheckWinError(expr) ((expr) ? 0: (FillWinError, 1))
-#define FillOSError(rc) (Perl_rc = rc,					\
-			errno = errno_isOS2,				\
+#define FillOSError(rc) (os2_setsyserrno(rc),				\
 			Perl_severity = SEVERITY_ERROR) 
-#define FillWinError (Perl_rc = WinGetLastError(Perl_hab),		\
-			errno = errno_isOS2,				\
-			Perl_severity = ERRORIDSEV(Perl_rc),		\
-			Perl_rc = ERRORIDERROR(Perl_rc)) 
-#define Acquire_hab() if (!Perl_HAB_set) {				\
-	   Perl_hab = WinInitialize(0);					\
-	   if (!Perl_hab) die("WinInitialize failed");			\
-	   set_Perl_HAB_f;						\
-	}
+#define FillWinError (Perl_severity = ERRORIDSEV(Perl_rc),		\
+			Perl_rc = ERRORIDERROR(Perl_rc)),		\
+			os2_setsyserrno(Perl_rc)
 
 #define STATIC_FILE_LENGTH 127
 
@@ -238,7 +412,7 @@ char *os2error(int rc);
 #define QSS_FILE	8		/* Buggy until fixpack18 */
 #define QSS_SHARED	16
 
-#ifdef _OS2EMX_H
+#ifdef _OS2_H
 
 APIRET APIENTRY Dos32QuerySysState(ULONG func,ULONG arg1,ULONG pid,
 			ULONG _res_,PVOID buf,ULONG bufsz);
@@ -396,5 +570,5 @@ typedef struct {
 
 PQTOPLEVEL get_sysinfo(ULONG pid, ULONG flags);
 
-#endif /* _OS2EMX_H */
+#endif /* _OS2_H */
 

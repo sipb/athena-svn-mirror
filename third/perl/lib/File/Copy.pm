@@ -7,17 +7,21 @@
 
 package File::Copy;
 
+use 5.005_64;
 use strict;
 use Carp;
-use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION $Too_Big
-	    &copy &syscopy &cp &mv);
+our(@ISA, @EXPORT, @EXPORT_OK, $VERSION, $Too_Big, $Syscopy_is_copy);
+sub copy;
+sub syscopy;
+sub cp;
+sub mv;
 
 # Note that this module implements only *part* of the API defined by
 # the File/Copy.pm module of the File-Tools-2.0 package.  However, that
 # package has not yet been updated to work with Perl 5.004, and so it
 # would be a Bad Thing for the CPAN module to grab it and replace this
 # module.  Therefore, we set this module's version higher than 2.0.
-$VERSION = '2.02';
+$VERSION = '2.03';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -60,9 +64,12 @@ sub copy {
 	$to = _catname($from, $to);
     }
 
-    if (defined &syscopy && \&syscopy != \&copy
+    if (defined &syscopy && !$Syscopy_is_copy
 	&& !$to_a_handle
-	&& !($from_a_handle && $^O eq 'os2'))	# OS/2 cannot handle handles
+	&& !($from_a_handle && $^O eq 'os2' )	# OS/2 cannot handle handles
+	&& !($from_a_handle && $^O eq 'mpeix')	# and neither can MPE/iX.
+	&& !($from_a_handle && $^O eq 'MSWin32')
+       )
     {
 	return syscopy($from, $to);
     }
@@ -76,20 +83,20 @@ sub copy {
     if ($from_a_handle) {
 	*FROM = *$from{FILEHANDLE};
     } else {
-	$from = "./$from" if $from =~ /^\s/;
+	$from = "./$from" if $from =~ /^\s/s;
 	open(FROM, "< $from\0") or goto fail_open1;
 	binmode FROM or die "($!,$^E)";
 	$closefrom = 1;
-    } 
- 
+    }
+
     if ($to_a_handle) {
 	*TO = *$to{FILEHANDLE};
-    } else {        
-	$to = "./$to" if $to =~ /^\s/;
+    } else {
+	$to = "./$to" if $to =~ /^\s/s;
 	open(TO,"> $to\0") or goto fail_open2;
 	binmode TO or die "($!,$^E)";
 	$closeto = 1;
-    }  
+    }
 
     if (@_) {
 	$size = shift(@_) + 0;
@@ -117,7 +124,7 @@ sub copy {
 
     # Use this idiom to avoid uninitialized value warning.
     return 1;
-    
+
     # All of these contortions try to preserve error messages...
   fail_inner:
     if ($closeto) {
@@ -160,10 +167,10 @@ sub move {
                 (($tosz2,$tomt2) = (stat($to))[7,9]) &&    # $to's there
                 ($tosz1 != $tosz2 or $tomt1 != $tomt2) &&  #   and changed
                 $tosz2 == $fromsz;                         # it's all there
- 
+
     ($tosz1,$tomt1) = (stat($to))[7,9];  # just in case rename did something
     return 1 if ($copied = copy($from,$to)) && unlink($from);
-  
+
     ($tosz2,$tomt2) = ((stat($to))[7,9],0,0) if defined $tomt1;
     unlink($to) if !defined($tomt1) or $tomt1 != $tomt2 or $tosz1 != $tosz2;
     ($!,$^E) = ($sts,$ossts);
@@ -174,7 +181,26 @@ sub move {
 *mv = \&move;
 
 # &syscopy is an XSUB under OS/2
-*syscopy = ($^O eq 'VMS' ? \&rmscopy : \&copy) unless defined &syscopy;
+unless (defined &syscopy) {
+    if ($^O eq 'VMS') {
+	*syscopy = \&rmscopy;
+    } elsif ($^O eq 'mpeix') {
+	*syscopy = sub {
+	    return 0 unless @_ == 2;
+	    # Use the MPE cp program in order to
+	    # preserve MPE file attributes.
+	    return system('/bin/cp', '-f', $_[0], $_[1]) == 0;
+	};
+    } elsif ($^O eq 'MSWin32') {
+	*syscopy = sub {
+	    return 0 unless @_ == 2;
+	    return Win32::CopyFile(@_, 1);
+	};
+    } else {
+	$Syscopy_is_copy = 1;
+	*syscopy = \&copy;
+    }
+}
 
 1;
 
@@ -220,7 +246,7 @@ B<Note that passing in
 files as handles instead of names may lead to loss of information
 on some operating systems; it is recommended that you use file
 names whenever possible.>  Files are opened in binary mode where
-applicable.  To get a consistent behavour when copying from a
+applicable.  To get a consistent behaviour when copying from a
 filehandle to a file, use C<binmode> on the filehandle.
 
 An optional third parameter can be used to specify the buffer
@@ -257,9 +283,9 @@ second parameter, preserving OS-specific attributes and file
 structure.  For Unix systems, this is equivalent to the simple
 C<copy> routine.  For VMS systems, this calls the C<rmscopy>
 routine (see below).  For OS/2 systems, this calls the C<syscopy>
-XSUB directly.
+XSUB directly. For Win32 systems, this calls C<Win32::CopyFile>.
 
-=head2 Special behavior if C<syscopy> is defined (VMS and OS/2)
+=head2 Special behaviour if C<syscopy> is defined (OS/2, VMS and Win32)
 
 If both arguments to C<copy> are not file handles,
 then C<copy> will perform a "system copy" of
@@ -321,7 +347,7 @@ $! will be set if an error was encountered.
 =head1 AUTHOR
 
 File::Copy was written by Aaron Sherman I<E<lt>ajs@ajs.comE<gt>> in 1995,
-and updated by Charles Bailey I<E<lt>bailey@genetics.upenn.eduE<gt>> in 1996.
+and updated by Charles Bailey I<E<lt>bailey@newman.upenn.eduE<gt>> in 1996.
 
 =cut
 

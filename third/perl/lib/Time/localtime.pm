@@ -2,9 +2,10 @@ package Time::localtime;
 use strict;
 use Time::tm;
 
-BEGIN { 
+use 5.005_64;
+our(@ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS, $VERSION);
+BEGIN {
     use Exporter   ();
-    use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
     @ISA         = qw(Exporter Time::tm);
     @EXPORT      = qw(localtime ctime);
     @EXPORT_OK   = qw(  
@@ -65,7 +66,7 @@ variables named with a preceding C<tm_> in front their method names.
 Thus, C<$tm_obj-E<gt>mday()> corresponds to $tm_mday if you import
 the fields.
 
-The ctime() funtion provides a way of getting at the 
+The ctime() function provides a way of getting at the 
 scalar sense of the original CORE::localtime() function.
 
 To access this functionality without the core overrides,

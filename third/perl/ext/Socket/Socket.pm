@@ -1,7 +1,7 @@
 package Socket;
 
-use vars qw($VERSION @ISA @EXPORT);
-$VERSION = "1.6";
+our($VERSION, @ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS);
+$VERSION = "1.72";
 
 =head1 NAME
 
@@ -20,7 +20,7 @@ Socket, sockaddr_in, sockaddr_un, inet_aton, inet_ntoa - load the C socket.h def
 
     $proto = getprotobyname('tcp');
     socket(Socket_Handle, PF_INET, SOCK_STREAM, $proto);
-    $port = getservbyname('smtp');
+    $port = getservbyname('smtp', 'tcp');
     $sin = sockaddr_in($port,inet_aton("127.1"));
     $sin = sockaddr_in(7,inet_aton("localhost"));
     $sin = sockaddr_in(7,INADDR_LOOPBACK);
@@ -44,6 +44,15 @@ file, this uses the B<h2xs> program (see the Perl source distribution)
 and your native C compiler.  This means that it has a 
 far more likely chance of getting the numbers right.  This includes
 all of the commonly used pound-defines like AF_INET, SOCK_STREAM, etc.
+
+Also, some common socket "newline" constants are provided: the
+constants C<CR>, C<LF>, and C<CRLF>, as well as C<$CR>, C<$LF>, and
+C<$CRLF>, which map to C<\015>, C<\012>, and C<\015\012>.  If you do
+not want to use the literal characters in your programs, then use
+the constants provided here.  They are not exported by default, but can
+be imported individually, and with the C<:crlf> export tag:
+
+    use Socket qw(:DEFAULT :crlf);
 
 In addition, some structure manipulation functions are available:
 
@@ -151,10 +160,11 @@ have AF_UNIX in the right place.
 =cut
 
 use Carp;
+use warnings::register;
 
 require Exporter;
-require DynaLoader;
-@ISA = qw(Exporter DynaLoader);
+use XSLoader ();
+@ISA = qw(Exporter);
 @EXPORT = qw(
 	inet_aton inet_ntoa pack_sockaddr_in unpack_sockaddr_in
 	pack_sockaddr_un unpack_sockaddr_un
@@ -184,10 +194,28 @@ require DynaLoader;
 	AF_UNIX
 	AF_UNSPEC
 	AF_X25
+	IOV_MAX
+	MSG_BCAST
+	MSG_CTLFLAGS
+	MSG_CTLIGNORE
+	MSG_CTRUNC
 	MSG_DONTROUTE
+	MSG_DONTWAIT
+	MSG_EOF
+	MSG_EOR
+	MSG_ERRQUEUE
+	MSG_FIN
 	MSG_MAXIOVLEN
+	MSG_MCAST
+	MSG_NOSIGNAL
 	MSG_OOB
 	MSG_PEEK
+	MSG_PROXY
+	MSG_RST
+	MSG_SYN
+	MSG_TRUNC
+	MSG_URG
+	MSG_WAITALL
 	PF_802
 	PF_APPLETALK
 	PF_CCITT
@@ -212,6 +240,14 @@ require DynaLoader;
 	PF_UNIX
 	PF_UNSPEC
 	PF_X25
+	SCM_CONNECT
+	SCM_CREDENTIALS
+	SCM_CREDS
+	SCM_RIGHTS
+	SCM_TIMESTAMP
+	SHUT_RD
+	SHUT_RDWR
+	SHUT_WR
 	SOCK_DGRAM
 	SOCK_RAW
 	SOCK_RDM
@@ -237,12 +273,38 @@ require DynaLoader;
 	SO_SNDTIMEO
 	SO_TYPE
 	SO_USELOOPBACK
+	UIO_MAXIOV
 );
+
+@EXPORT_OK = qw(CR LF CRLF $CR $LF $CRLF
+
+	       IPPROTO_TCP
+	       TCP_KEEPALIVE
+	       TCP_MAXRT
+	       TCP_MAXSEG
+	       TCP_NODELAY
+	       TCP_STDURG);
+
+%EXPORT_TAGS = (
+    crlf    => [qw(CR LF CRLF $CR $LF $CRLF)],
+    all     => [@EXPORT, @EXPORT_OK],
+);
+
+BEGIN {
+    sub CR   () {"\015"}
+    sub LF   () {"\012"}
+    sub CRLF () {"\015\012"}
+}
+
+*CR   = \CR();
+*LF   = \LF();
+*CRLF = \CRLF();
 
 sub sockaddr_in {
     if (@_ == 6 && !wantarray) { # perl5.001m compat; use this && die
 	my($af, $port, @quad) = @_;
-	carp "6-ARG sockaddr_in call is deprecated" if $^W;
+	warnings::warn "6-ARG sockaddr_in call is deprecated" 
+	    if warnings::enabled();
 	pack_sockaddr_in($port, inet_aton(join('.', @quad)));
     } elsif (wantarray) {
 	croak "usage:   (port,iaddr) = sockaddr_in(sin_sv)" unless @_ == 1;
@@ -263,6 +325,115 @@ sub sockaddr_un {
     }
 }
 
+sub INADDR_ANY 		();
+sub INADDR_BROADCAST	();
+sub INADDR_LOOPBACK	();
+sub INADDR_LOOPBACK	();
+
+sub AF_802		();
+sub AF_APPLETALK	();
+sub AF_CCITT		();
+sub AF_CHAOS		();
+sub AF_DATAKIT		();
+sub AF_DECnet		();
+sub AF_DLI		();
+sub AF_ECMA		();
+sub AF_GOSIP		();
+sub AF_HYLINK		();
+sub AF_IMPLINK		();
+sub AF_INET		();
+sub AF_LAT		();
+sub AF_MAX		();
+sub AF_NBS		();
+sub AF_NIT		();
+sub AF_NS		();
+sub AF_OSI		();
+sub AF_OSINET		();
+sub AF_PUP		();
+sub AF_SNA		();
+sub AF_UNIX		();
+sub AF_UNSPEC		();
+sub AF_X25		();
+sub IOV_MAX		();
+sub MSG_BCAST		();
+sub MSG_CTLFLAGS	();
+sub MSG_CTLIGNORE	();
+sub MSG_CTRUNC		();
+sub MSG_DONTROUTE	();
+sub MSG_DONTWAIT	();
+sub MSG_EOF		();
+sub MSG_EOR		();
+sub MSG_ERRQUEUE	();
+sub MSG_FIN		();
+sub MSG_MAXIOVLEN	();
+sub MSG_MCAST		();
+sub MSG_NOSIGNAL	();
+sub MSG_OOB		();
+sub MSG_PEEK		();
+sub MSG_PROXY		();
+sub MSG_RST		();
+sub MSG_SYN		();
+sub MSG_TRUNC		();
+sub MSG_URG		();
+sub MSG_WAITALL		();
+sub PF_802		();
+sub PF_APPLETALK	();
+sub PF_CCITT		();
+sub PF_CHAOS		();
+sub PF_DATAKIT		();
+sub PF_DECnet		();
+sub PF_DLI		();
+sub PF_ECMA		();
+sub PF_GOSIP		();
+sub PF_HYLINK		();
+sub PF_IMPLINK		();
+sub PF_INET		();
+sub PF_LAT		();
+sub PF_MAX		();
+sub PF_NBS		();
+sub PF_NIT		();
+sub PF_NS		();
+sub PF_OSI		();
+sub PF_OSINET		();
+sub PF_PUP		();
+sub PF_SNA		();
+sub PF_UNIX		();
+sub PF_UNSPEC		();
+sub PF_X25		();
+sub SCM_CONNECT		();
+sub SCM_CREDENTIALS	();
+sub SCM_CREDS		();
+sub SCM_RIGHTS		();
+sub SCM_TIMESTAMP	();
+sub SHUT_RD		();
+sub SHUT_RDWR		();
+sub SHUT_WR		();
+sub SOCK_DGRAM		();
+sub SOCK_RAW		();
+sub SOCK_RDM		();
+sub SOCK_SEQPACKET	();
+sub SOCK_STREAM		();
+sub SOL_SOCKET		();
+sub SOMAXCONN		();
+sub SO_ACCEPTCONN	();
+sub SO_BROADCAST	();
+sub SO_DEBUG		();
+sub SO_DONTLINGER	();
+sub SO_DONTROUTE	();
+sub SO_ERROR		();
+sub SO_KEEPALIVE	();
+sub SO_LINGER		();
+sub SO_OOBINLINE	();
+sub SO_RCVBUF		();
+sub SO_RCVLOWAT		();
+sub SO_RCVTIMEO		();
+sub SO_REUSEADDR	();
+sub SO_SNDBUF		();
+sub SO_SNDLOWAT		();
+sub SO_SNDTIMEO		();
+sub SO_TYPE		();
+sub SO_USELOOPBACK	();
+sub UIO_MAXIOV		();
 
 sub AUTOLOAD {
     my($constname);
@@ -272,10 +443,10 @@ sub AUTOLOAD {
 	my ($pack,$file,$line) = caller;
 	croak "Your vendor has not defined Socket macro $constname, used";
     }
-    eval "sub $AUTOLOAD { $val }";
+    eval "sub $AUTOLOAD () { $val }";
     goto &$AUTOLOAD;
 }
 
-bootstrap Socket $VERSION;
+XSLoader::load 'Socket', $VERSION;
 
 1;

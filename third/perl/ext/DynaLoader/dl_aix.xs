@@ -20,6 +20,15 @@
 #include "perl.h"
 #include "XSUB.h"
 
+/* When building as a 64-bit binary on AIX, define this to get the
+ * correct structure definitions.  Also determines the field-name
+ * macros and gates some logic in readEntries().  -- Steven N. Hirsch
+ * <hirschs@btv.ibm.com> */
+#ifdef USE_64_BIT_ALL
+#   define __XCOFF64__
+#   define __XCOFF32__
+#endif
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -28,6 +37,53 @@
 #include <sys/ldr.h>
 #include <a.out.h>
 #include <ldfcn.h>
+
+#ifdef USE_64_BIT_ALL
+#   define AIX_SCNHDR SCNHDR_64
+#   define AIX_LDHDR LDHDR_64
+#   define AIX_LDSYM LDSYM_64
+#   define AIX_LDHDRSZ LDHDRSZ_64
+#else
+#   define AIX_SCNHDR SCNHDR
+#   define AIX_LDHDR LDHDR
+#   define AIX_LDSYM LDSYM
+#   define AIX_LDHDRSZ LDHDRSZ
+#endif
+
+/* When using Perl extensions written in C++ the longer versions
+ * of load() and unload() from libC and libC_r need to be used,
+ * otherwise statics in the extensions won't get initialized right.
+ * -- Stephanie Beals <bealzy@us.ibm.com> */
+
+/* Older AIX C compilers cannot deal with C++ double-slash comments in
+   the ibmcxx and/or xlC includes.  Since we only need a single file,
+   be more fine-grained about what's included <hirschs@btv.ibm.com> */
+#ifdef USE_libC /* The define comes, when it comes, from hints/aix.pl. */
+#   define LOAD   loadAndInit
+#   define UNLOAD terminateAndUnload
+#   if defined(USE_xlC_load_h)
+#       include "/usr/lpp/xlC/include/load.h"
+#   elif defined(USE_ibmcxx_load_h)
+#       include "/usr/ibmcxx/include/load.h"
+#   endif
+#else
+#   define LOAD   load
+#   define UNLOAD unload
+#endif
+
+/*
+ * AIX 4.3 does remove some useful definitions from ldfcn.h. Define
+ * these here to compensate for that lossage.
+ */
+#ifndef BEGINNING
+# define BEGINNING SEEK_SET
+#endif
+#ifndef FSEEK
+# define FSEEK(ldptr,o,p)	fseek(IOPTR(ldptr),(p==BEGINNING)?(OFFSET(ldptr) +o):o,p)
+#endif
+#ifndef FREAD
+# define FREAD(p,s,n,ldptr)	fread(p,s,n,IOPTR(ldptr))
+#endif
 
 /* If using PerlIO, redefine these macros from <ldfcn.h> */
 #ifdef USE_PERLIO
@@ -63,35 +119,92 @@ typedef struct Module {
  * We keep a list of all loaded modules to be able to call the fini
  * handlers at atexit() time.
  */
-static ModulePtr modList;
+static ModulePtr modList;		/* XXX threaded */
 
 /*
  * The last error from one of the dl* routines is kept in static
  * variables here. Each error is returned only once to the caller.
  */
-static char errbuf[BUFSIZ];
-static int errvalid;
+static char errbuf[BUFSIZ];		/* XXX threaded */
+static int errvalid;			/* XXX threaded */
 
 static void caterr(char *);
 static int readExports(ModulePtr);
 static void terminate(void);
-static void *findMain(void);
 
+static char *strerror_failed   = "(strerror failed)";
+static char *strerror_r_failed = "(strerror_r failed)";
+
+char *strerrorcat(char *str, int err) {
+    int strsiz = strlen(str);
+    int msgsiz;
+    char *msg;
+
+#ifdef USE_THREADS
+    char *buf = malloc(BUFSIZ);
+
+    if (buf == 0)
+      return 0;
+    if (strerror_r(err, buf, BUFSIZ) == 0)
+      msg = buf;
+    else
+      msg = strerror_r_failed;
+    msgsiz = strlen(msg);
+    if (strsiz + msgsiz < BUFSIZ)
+      strcat(str, msg);
+    free(buf);
+#else
+    if ((msg = strerror(err)) == 0)
+      msg = strerror_failed;
+    msgsiz = strlen(msg);		/* Note msg = buf and free() above. */
+    if (strsiz + msgsiz < BUFSIZ)	/* Do not move this after #endif. */
+      strcat(str, msg);
+#endif
+
+    return str;
+}
+
+char *strerrorcpy(char *str, int err) {
+    int msgsiz;
+    char *msg;
+
+#ifdef USE_THREADS
+    char *buf = malloc(BUFSIZ);
+
+    if (buf == 0)
+      return 0;
+    if (strerror_r(err, buf, BUFSIZ) == 0)
+      msg = buf;
+    else
+      msg = strerror_r_failed;
+    msgsiz = strlen(msg);
+    if (msgsiz < BUFSIZ)
+      strcpy(str, msg);
+    free(buf);
+#else
+    if ((msg = strerror(err)) == 0)
+      msg = strerror_failed;
+    msgsiz = strlen(msg);	/* Note msg = buf and free() above. */
+    if (msgsiz < BUFSIZ)	/* Do not move this after #endif. */
+      strcpy(str, msg);
+#endif
+
+    return str;
+}
   
 /* ARGSUSED */
 void *dlopen(char *path, int mode)
 {
+	dTHX;
 	register ModulePtr mp;
-	static void *mainModule;
+	static int inited;			/* XXX threaded */
 
 	/*
 	 * Upon the first call register a terminate handler that will
-	 * close all libraries. Also get a reference to the main module
-	 * for use with loadbind.
+	 * close all libraries.
 	 */
-	if (!mainModule) {
-		if ((mainModule = findMain()) == NULL)
-			return NULL;
+	if (!inited) {
+		inited++;
 		atexit(terminate);
 	}
 	/*
@@ -106,22 +219,30 @@ void *dlopen(char *path, int mode)
 	if (mp == NULL) {
 		errvalid++;
 		strcpy(errbuf, "Newz: ");
-		strcat(errbuf, strerror(errno));
+		strerrorcat(errbuf, errno);
 		return NULL;
 	}
 	
 	if ((mp->name = savepv(path)) == NULL) {
 		errvalid++;
 		strcpy(errbuf, "savepv: ");
-		strcat(errbuf, strerror(errno));
+		strerrorcat(errbuf, errno);
 		safefree(mp);
 		return NULL;
 	}
+
 	/*
 	 * load should be declared load(const char *...). Thus we
 	 * cast the path to a normal char *. Ugly.
 	 */
-	if ((mp->entry = (void *)load((char *)path, L_NOAUTODEFER, NULL)) == NULL) {
+	if ((mp->entry = (void *)LOAD((char *)path,
+#ifdef L_LIBPATH_EXEC
+				      L_LIBPATH_EXEC |
+#endif
+				      L_NOAUTODEFER,
+				      NULL)) == NULL) {
+	        int saverrno = errno;
+		
 		safefree(mp->name);
 		safefree(mp);
 		errvalid++;
@@ -133,27 +254,34 @@ void *dlopen(char *path, int mode)
 		 * can be further described by querying the loader about
 		 * the last error.
 		 */
-		if (errno == ENOEXEC) {
-			char *tmp[BUFSIZ/sizeof(char *)];
-			if (loadquery(L_GETMESSAGES, tmp, sizeof(tmp)) == -1)
-				strcpy(errbuf, strerror(errno));
+		if (saverrno == ENOEXEC) {
+			char *moreinfo[BUFSIZ/sizeof(char *)];
+			if (loadquery(L_GETMESSAGES, moreinfo, sizeof(moreinfo)) == -1)
+				strerrorcpy(errbuf, saverrno);
 			else {
 				char **p;
-				for (p = tmp; *p; p++)
+				for (p = moreinfo; *p; p++)
 					caterr(*p);
 			}
 		} else
-			strcat(errbuf, strerror(errno));
+			strerrorcat(errbuf, saverrno);
 		return NULL;
 	}
 	mp->refCnt = 1;
 	mp->next = modList;
 	modList = mp;
-	if (loadbind(0, mainModule, mp->entry) == -1) {
+	/*
+	 * Assume anonymous exports come from the module this dlopen
+	 * is linked into, that holds true as long as dlopen and all
+	 * of the perl core are in the same shared object.
+	 */
+	if (loadbind(0, (void *)dlopen, mp->entry) == -1) {
+	        int saverrno = errno;
+
 		dlclose(mp);
 		errvalid++;
 		strcpy(errbuf, "loadbind: ");
-		strcat(errbuf, strerror(errno));
+		strerrorcat(errbuf, saverrno);
 		return NULL;
 	}
 	if (readExports(mp) == -1) {
@@ -194,7 +322,7 @@ static void caterr(char *s)
 		strcat(errbuf, p);
 		break;
 	case L_ERROR_ERRNO:
-		strcat(errbuf, strerror(atoi(++p)));
+		strerrorcat(errbuf, atoi(++p));
 		break;
 	default:
 		strcat(errbuf, s);
@@ -238,10 +366,10 @@ int dlclose(void *handle)
 
 	if (--mp->refCnt > 0)
 		return 0;
-	result = unload(mp->entry);
+	result = UNLOAD(mp->entry);
 	if (result == -1) {
 		errvalid++;
-		strcpy(errbuf, strerror(errno));
+		strerrorcpy(errbuf, errno);
 	}
 	if (mp->exports) {
 		register ExportPtr ep;
@@ -291,11 +419,12 @@ void *calloc(size_t ne, size_t sz)
  */
 static int readExports(ModulePtr mp)
 {
+	dTHX;
 	LDFILE *ldp = NULL;
-	SCNHDR sh;
-	LDHDR *lhp;
+	AIX_SCNHDR sh;
+	AIX_LDHDR *lhp;
 	char *ldbuf;
-	LDSYM *ls;
+	AIX_LDSYM *ls;
 	int i;
 	ExportPtr ep;
 
@@ -306,7 +435,7 @@ static int readExports(ModulePtr mp)
 		if (errno != ENOENT) {
 			errvalid++;
 			strcpy(errbuf, "readExports: ");
-			strcat(errbuf, strerror(errno));
+			strerrorcat(errbuf, errno);
 			return -1;
 		}
 		/*
@@ -317,7 +446,7 @@ static int readExports(ModulePtr mp)
 		if ((buf = safemalloc(size)) == NULL) {
 			errvalid++;
 			strcpy(errbuf, "readExports: ");
-			strcat(errbuf, strerror(errno));
+			strerrorcat(errbuf, errno);
 			return -1;
 		}
 		while ((i = loadquery(L_GETINFO, buf, size)) == -1 && errno == ENOMEM) {
@@ -326,20 +455,20 @@ static int readExports(ModulePtr mp)
 			if ((buf = safemalloc(size)) == NULL) {
 				errvalid++;
 				strcpy(errbuf, "readExports: ");
-				strcat(errbuf, strerror(errno));
+				strerrorcat(errbuf, errno);
 				return -1;
 			}
 		}
 		if (i == -1) {
 			errvalid++;
 			strcpy(errbuf, "readExports: ");
-			strcat(errbuf, strerror(errno));
+			strerrorcat(errbuf, errno);
 			safefree(buf);
 			return -1;
 		}
 		/*
 		 * Traverse the list of loaded modules. The entry point
-		 * returned by load() does actually point to the data
+		 * returned by LOAD() does actually point to the data
 		 * segment origin.
 		 */
 		lp = (struct ld_info *)buf;
@@ -357,11 +486,15 @@ static int readExports(ModulePtr mp)
 		if (!ldp) {
 			errvalid++;
 			strcpy(errbuf, "readExports: ");
-			strcat(errbuf, strerror(errno));
+			strerrorcat(errbuf, errno);
 			return -1;
 		}
 	}
+#ifdef USE_64_BIT_ALL
+	if (TYPE(ldp) != U803XTOCMAGIC) {
+#else
 	if (TYPE(ldp) != U802TOCMAGIC) {
+#endif
 		errvalid++;
 		strcpy(errbuf, "readExports: bad magic");
 		while(ldclose(ldp) == FAILURE)
@@ -382,7 +515,7 @@ static int readExports(ModulePtr mp)
 	if ((ldbuf = (char *)safemalloc(sh.s_size)) == NULL) {
 		errvalid++;
 		strcpy(errbuf, "readExports: ");
-		strcat(errbuf, strerror(errno));
+		strerrorcat(errbuf, errno);
 		while(ldclose(ldp) == FAILURE)
 			;
 		return -1;
@@ -409,8 +542,8 @@ static int readExports(ModulePtr mp)
 			;
 		return -1;
 	}
-	lhp = (LDHDR *)ldbuf;
-	ls = (LDSYM *)(ldbuf+LDHDRSZ);
+	lhp = (AIX_LDHDR *)ldbuf;
+	ls = (AIX_LDSYM *)(ldbuf+AIX_LDHDRSZ);
 	/*
 	 * Count the number of exports to include in our export table.
 	 */
@@ -423,7 +556,7 @@ static int readExports(ModulePtr mp)
 	if (mp->exports == NULL) {
 		errvalid++;
 		strcpy(errbuf, "readExports: ");
-		strcat(errbuf, strerror(errno));
+		strerrorcat(errbuf, errno);
 		safefree(ldbuf);
 		while(ldclose(ldp) == FAILURE)
 			;
@@ -434,15 +567,19 @@ static int readExports(ModulePtr mp)
 	 * the entry point we got from load.
 	 */
 	ep = mp->exports;
-	ls = (LDSYM *)(ldbuf+LDHDRSZ);
+	ls = (AIX_LDSYM *)(ldbuf+AIX_LDHDRSZ);
 	for (i = lhp->l_nsyms; i; i--, ls++) {
 		char *symname;
 		if (!LDR_EXPORT(*ls))
 			continue;
+#ifndef USE_64_BIT_ALL
 		if (ls->l_zeroes == 0)
+#endif
 			symname = ls->l_offset+lhp->l_stoff+ldbuf;
+#ifndef USE_64_BIT_ALL
 		else
 			symname = ls->l_name;
+#endif
 		ep->name = savepv(symname);
 		ep->addr = (void *)((unsigned long)mp->entry + ls->l_value);
 		ep++;
@@ -453,56 +590,10 @@ static int readExports(ModulePtr mp)
 	return 0;
 }
 
-/*
- * Find the main modules entry point. This is used as export pointer
- * for loadbind() to be able to resolve references to the main part.
- */
-static void * findMain(void)
-{
-	struct ld_info *lp;
-	char *buf;
-	int size = 4*1024;
-	int i;
-	void *ret;
-
-	if ((buf = safemalloc(size)) == NULL) {
-		errvalid++;
-		strcpy(errbuf, "findMain: ");
-		strcat(errbuf, strerror(errno));
-		return NULL;
-	}
-	while ((i = loadquery(L_GETINFO, buf, size)) == -1 && errno == ENOMEM) {
-		safefree(buf);
-		size += 4*1024;
-		if ((buf = safemalloc(size)) == NULL) {
-			errvalid++;
-			strcpy(errbuf, "findMain: ");
-			strcat(errbuf, strerror(errno));
-			return NULL;
-		}
-	}
-	if (i == -1) {
-		errvalid++;
-		strcpy(errbuf, "findMain: ");
-		strcat(errbuf, strerror(errno));
-		safefree(buf);
-		return NULL;
-	}
-	/*
-	 * The first entry is the main module. The entry point
-	 * returned by load() does actually point to the data
-	 * segment origin.
-	 */
-	lp = (struct ld_info *)buf;
-	ret = lp->ldinfo_dataorg;
-	safefree(buf);
-	return ret;
-}
-
 /* dl_dlopen.xs
  * 
  * Platform:	SunOS/Solaris, possibly others which use dlopen.
- * Author:	Paul Marquess (pmarquess@bfsec.bt.co.uk)
+ * Author:	Paul Marquess (Paul.Marquess@btinternet.com)
  * Created:	10th July 1994
  *
  * Modified:
@@ -524,15 +615,15 @@ static void * findMain(void)
 
 
 static void
-dl_private_init()
+dl_private_init(pTHX)
 {
-    (void)dl_generic_private_init();
+    (void)dl_generic_private_init(aTHX);
 }
  
 MODULE = DynaLoader     PACKAGE = DynaLoader
 
 BOOT:
-    (void)dl_private_init();
+    (void)dl_private_init(aTHX);
 
 
 void *
@@ -540,16 +631,16 @@ dl_load_file(filename, flags=0)
 	char *	filename
 	int	flags
 	CODE:
-	DLDEBUG(1,PerlIO_printf(PerlIO_stderr(), "dl_load_file(%s,%x):\n", filename,flags));
+	DLDEBUG(1,PerlIO_printf(Perl_debug_log, "dl_load_file(%s,%x):\n", filename,flags));
 	if (flags & 0x01)
-	    warn("Can't make loaded symbols global on this platform while loading %s",filename);
+	    Perl_warn(aTHX_ "Can't make loaded symbols global on this platform while loading %s",filename);
 	RETVAL = dlopen(filename, 1) ;
-	DLDEBUG(2,PerlIO_printf(PerlIO_stderr(), " libref=%x\n", RETVAL));
+	DLDEBUG(2,PerlIO_printf(Perl_debug_log, " libref=%x\n", RETVAL));
 	ST(0) = sv_newmortal() ;
 	if (RETVAL == NULL)
-	    SaveError("%s",dlerror()) ;
+	    SaveError(aTHX_ "%s",dlerror()) ;
 	else
-	    sv_setiv( ST(0), (IV)RETVAL);
+	    sv_setiv( ST(0), PTR2IV(RETVAL) );
 
 
 void *
@@ -557,15 +648,15 @@ dl_find_symbol(libhandle, symbolname)
 	void *		libhandle
 	char *		symbolname
 	CODE:
-	DLDEBUG(2,PerlIO_printf(PerlIO_stderr(), "dl_find_symbol(handle=%x, symbol=%s)\n",
+	DLDEBUG(2,PerlIO_printf(Perl_debug_log, "dl_find_symbol(handle=%x, symbol=%s)\n",
 		libhandle, symbolname));
 	RETVAL = dlsym(libhandle, symbolname);
-	DLDEBUG(2,PerlIO_printf(PerlIO_stderr(), "  symbolref = %x\n", RETVAL));
+	DLDEBUG(2,PerlIO_printf(Perl_debug_log, "  symbolref = %x\n", RETVAL));
 	ST(0) = sv_newmortal() ;
 	if (RETVAL == NULL)
-	    SaveError("%s",dlerror()) ;
+	    SaveError(aTHX_ "%s",dlerror()) ;
 	else
-	    sv_setiv( ST(0), (IV)RETVAL);
+	    sv_setiv( ST(0), PTR2IV(RETVAL));
 
 
 void
@@ -582,9 +673,11 @@ dl_install_xsub(perl_name, symref, filename="$Package")
     void *	symref 
     char *	filename
     CODE:
-    DLDEBUG(2,PerlIO_printf(PerlIO_stderr(), "dl_install_xsub(name=%s, symref=%x)\n",
+    DLDEBUG(2,PerlIO_printf(Perl_debug_log, "dl_install_xsub(name=%s, symref=%x)\n",
 	perl_name, symref));
-    ST(0)=sv_2mortal(newRV((SV*)newXS(perl_name, (void(*)())symref, filename)));
+    ST(0) = sv_2mortal(newRV((SV*)newXS(perl_name,
+					(void(*)(pTHX_ CV *))symref,
+					filename)));
 
 
 char *

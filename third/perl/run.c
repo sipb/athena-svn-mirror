@@ -1,6 +1,6 @@
 /*    run.c
  *
- *    Copyright (c) 1991-1997, Larry Wall
+ *    Copyright (c) 1991-2000, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -8,6 +8,7 @@
  */
 
 #include "EXTERN.h"
+#define PERL_IN_RUN_C
 #include "perl.h"
 
 /*
@@ -16,67 +17,68 @@
  * know.  Run now!  Hope is in speed!"  --Gandalf
  */
 
-dEXT char **watchaddr = 0;
-dEXT char *watchok;
-
-#ifndef DEBUGGING
-
 int
-runops() {
-    SAVEI32(runlevel);
-    runlevel++;
+Perl_runops_standard(pTHX)
+{
+    dTHR;
 
-    while ( op = (*op->op_ppaddr)() ) ;
+    while ((PL_op = CALL_FPTR(PL_op->op_ppaddr)(aTHX))) {
+	PERL_ASYNC_CHECK();
+    }
 
     TAINT_NOT;
     return 0;
 }
 
-#else
-
-static void debprof _((OP*op));
-
 int
-runops() {
-    if (!op) {
-	warn("NULL OP IN RUN");
+Perl_runops_debug(pTHX)
+{
+#ifdef DEBUGGING
+    dTHR;
+    if (!PL_op) {
+	if (ckWARN_d(WARN_DEBUGGING))
+	    Perl_warner(aTHX_ WARN_DEBUGGING, "NULL OP IN RUN");
 	return 0;
     }
 
-    SAVEI32(runlevel);
-    runlevel++;
-
     do {
-	if (debug) {
-	    if (watchaddr != 0 && *watchaddr != watchok)
-		PerlIO_printf(Perl_debug_log, "WARNING: %lx changed from %lx to %lx\n",
-		    (long)watchaddr, (long)watchok, (long)*watchaddr);
+	PERL_ASYNC_CHECK();
+	if (PL_debug) {
+	    if (PL_watchaddr != 0 && *PL_watchaddr != PL_watchok)
+		PerlIO_printf(Perl_debug_log,
+			      "WARNING: %"UVxf" changed from %"UVxf" to %"UVxf"\n",
+			      PTR2UV(PL_watchaddr), PTR2UV(PL_watchok),
+			      PTR2UV(*PL_watchaddr));
 	    DEBUG_s(debstack());
-	    DEBUG_t(debop(op));
-	    DEBUG_P(debprof(op));
+	    DEBUG_t(debop(PL_op));
+	    DEBUG_P(debprof(PL_op));
 	}
-    } while ( op = (*op->op_ppaddr)() );
+    } while ((PL_op = CALL_FPTR(PL_op->op_ppaddr)(aTHX)));
 
     TAINT_NOT;
     return 0;
+#else
+    return runops_standard();
+#endif	/* DEBUGGING */
 }
 
 I32
-debop(op)
-OP *op;
+Perl_debop(pTHX_ OP *o)
 {
+#ifdef DEBUGGING
     SV *sv;
-    deb("%s", op_name[op->op_type]);
-    switch (op->op_type) {
+    STRLEN n_a;
+    Perl_deb(aTHX_ "%s", PL_op_name[o->op_type]);
+    switch (o->op_type) {
     case OP_CONST:
-	PerlIO_printf(Perl_debug_log, "(%s)", SvPEEK(cSVOP->op_sv));
+	PerlIO_printf(Perl_debug_log, "(%s)", SvPEEK(cSVOPo_sv));
 	break;
     case OP_GVSV:
     case OP_GV:
-	if (cGVOP->op_gv) {
+	if (cGVOPo_gv) {
 	    sv = NEWSV(0,0);
-	    gv_fullname3(sv, cGVOP->op_gv, Nullch);
-	    PerlIO_printf(Perl_debug_log, "(%s)", SvPV(sv, na));
+	    gv_fullname3(sv, cGVOPo_gv, Nullch);
+	    PerlIO_printf(Perl_debug_log, "(%s)", SvPV(sv, n_a));
 	    SvREFCNT_dec(sv);
 	}
 	else
@@ -86,40 +88,44 @@ OP *op;
 	break;
     }
     PerlIO_printf(Perl_debug_log, "\n");
+#endif	/* DEBUGGING */
     return 0;
 }
 
 void
-watch(addr)
-char **addr;
+Perl_watch(pTHX_ char **addr)
 {
-    watchaddr = addr;
-    watchok = *addr;
-    PerlIO_printf(Perl_debug_log, "WATCHING, %lx is currently %lx\n",
-	(long)watchaddr, (long)watchok);
+#ifdef DEBUGGING
+    dTHR;
+    PL_watchaddr = addr;
+    PL_watchok = *addr;
+    PerlIO_printf(Perl_debug_log, "WATCHING, %"UVxf" is currently %"UVxf"\n",
+	PTR2UV(PL_watchaddr), PTR2UV(PL_watchok));
+#endif	/* DEBUGGING */
 }
 
-static void
-debprof(op)
-OP* op;
+STATIC void
+S_debprof(pTHX_ OP *o)
 {
-    if (!profiledata)
-	New(000, profiledata, MAXO, U32);
-    ++profiledata[op->op_type];
+#ifdef DEBUGGING
+    if (!PL_profiledata)
+	Newz(000, PL_profiledata, MAXO, U32);
+    ++PL_profiledata[o->op_type];
+#endif /* DEBUGGING */
 }
 
 void
-debprofdump()
+Perl_debprofdump(pTHX)
 {
+#ifdef DEBUGGING
     unsigned i;
-    if (!profiledata)
+    if (!PL_profiledata)
 	return;
     for (i = 0; i < MAXO; i++) {
-	if (profiledata[i])
+	if (PL_profiledata[i])
 	    PerlIO_printf(Perl_debug_log,
-			  "%u\t%lu\n", i, (unsigned long)profiledata[i]);
+			  "%5lu %s\n", (unsigned long)PL_profiledata[i],
+                                       PL_op_name[i]);
     }
+#endif	/* DEBUGGING */
 }
-
-#endif
-

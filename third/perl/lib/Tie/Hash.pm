@@ -67,11 +67,13 @@ Return the (key, value) pair for the first key in the hash.
 
 =item NEXTKEY this, lastkey
 
-Return the next (key, value) pair for the hash.
+Return the next key for the hash.
 
 =item EXISTS this, key
 
 Verify that I<key> exists with the tied hash I<this>.
+
+The B<Tie::Hash> implementation is a stub that simply croaks.
 
 =item DELETE this, key
 
@@ -92,7 +94,7 @@ but may be omitted in favor of a simple default.
 
 =head1 MORE INFORMATION
 
-The packages relating to various DBM-related implemetations (F<DB_File>,
+The packages relating to various DBM-related implementations (F<DB_File>,
 F<NDBM_File>, etc.) show examples of general tied hashes, as does the
 L<Config> module. While these do not utilize B<Tie::Hash>, they serve as
 good working examples.
@@ -100,6 +102,7 @@ good working examples.
 =cut
 
 use Carp;
+use warnings::register;
 
 sub new {
     my $pkg = shift;
@@ -110,9 +113,9 @@ sub new {
 
 sub TIEHASH {
     my $pkg = shift;
-    if (defined &{"{$pkg}::new"}) {
-	carp "WARNING: calling ${pkg}->new since ${pkg}->TIEHASH is missing"
-	    if $^W;
+    if (defined &{"${pkg}::new"}) {
+	warnings::warn "WARNING: calling ${pkg}->new since ${pkg}->TIEHASH is missing"
+	    if warnings::enabled();
 	$pkg->new(@_);
     }
     else {

@@ -847,31 +847,35 @@ setjmp() is C-specific: use eval {} instead.
 
 =item setlocale
 
-Modifies and queries program's locale.
+Modifies and queries program's locale.  The following examples assume
+
+	use POSIX qw(setlocale LC_ALL LC_CTYPE);
+
+has been issued.
 
 The following will set the traditional UNIX system locale behavior
 (the second argument C<"C">).
 
-	$loc = POSIX::setlocale( &POSIX::LC_ALL, "C" );
+	$loc = setlocale( LC_ALL, "C" );
 
-The following will query (the missing second argument) the current
-LC_CTYPE category.
+The following will query the current LC_CTYPE category.  (No second
+argument means 'query'.)
 
-	$loc = POSIX::setlocale( &POSIX::LC_CTYPE);
+	$loc = setlocale( LC_CTYPE );
 
 The following will set the LC_CTYPE behaviour according to the locale
 environment variables (the second argument C<"">).
 Please see your systems L<setlocale(3)> documentation for the locale
 environment variables' meaning or consult L<perllocale>.
 
-	$loc = POSIX::setlocale( &POSIX::LC_CTYPE, "");
+	$loc = setlocale( LC_CTYPE, "" );
 
 The following will set the LC_COLLATE behaviour to Argentinian
 Spanish. B<NOTE>: The naming and availability of locales depends on
 your operating system. Please consult L<perllocale> for how to find
 out which locales are available in your system.
 
-	$loc = POSIX::setlocale( &POSIX::LC_ALL, "es_AR.ISO8859-1" );
+	$loc = setlocale( LC_ALL, "es_AR.ISO8859-1" );
 
 =item setpgid
 
@@ -1009,13 +1013,19 @@ Convert date and time information to string.  Returns the string.
 
 Synopsis:
 
-	strftime(fmt, sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
+	strftime(fmt, sec, min, hour, mday, mon, year, wday = -1, yday = -1, isdst = -1)
 
 The month (C<mon>), weekday (C<wday>), and yearday (C<yday>) begin at zero.
 I.e. January is 0, not 1; Sunday is 0, not 1; January 1st is 0, not 1.  The
-year (C<year>) is given in years since 1900.  I.e. The year 1995 is 95; the
+year (C<year>) is given in years since 1900.  I.e., the year 1995 is 95; the
 year 2001 is 101.  Consult your system's C<strftime()> manpage for details
 about these and the other arguments.
+If you want your code to be portable, your format (C<fmt>) argument
+should use only the conversion specifiers defined by the ANSI C
+standard.  These are C<aAbBcdHIjmMpSUwWxXyYZ%>.
+The given arguments are made consistent
+as though by calling C<mktime()> before calling your system's
+C<strftime()> function, except that the C<isdst> value is not affected.
 
 The string for Tuesday, December 12, 1995.
 
@@ -1392,7 +1402,9 @@ Tests the SigSet object to see if it contains a specific signal.
 =item new
 
 Create a new Termios object.  This object will be destroyed automatically
-when it is no longer needed.
+when it is no longer needed.  A Termios object corresponds to the termios
+C struct.  new() mallocs a new one, getattr() fills it from a file descriptor,
+and setattr() sets a file descriptor's parameters to match Termios' contents.
 
 	$termios = POSIX::Termios->new;
 
@@ -1474,13 +1486,13 @@ array so an index must be specified.
 
 Set the c_cflag field of a termios object.
 
-	$termios->setcflag( &POSIX::CLOCAL );
+	$termios->setcflag( $c_cflag | &POSIX::CLOCAL );
 
 =item setiflag
 
 Set the c_iflag field of a termios object.
 
-	$termios->setiflag( &POSIX::BRKINT );
+	$termios->setiflag( $c_iflag | &POSIX::BRKINT );
 
 =item setispeed
 
@@ -1494,13 +1506,13 @@ Returns C<undef> on failure.
 
 Set the c_lflag field of a termios object.
 
-	$termios->setlflag( &POSIX::ECHO );
+	$termios->setlflag( $c_lflag | &POSIX::ECHO );
 
 =item setoflag
 
 Set the c_oflag field of a termios object.
 
-	$termios->setoflag( &POSIX::OPOST );
+	$termios->setoflag( $c_oflag | &POSIX::OPOST );
 
 =item setospeed
 

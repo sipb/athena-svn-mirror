@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: configure.gnu,v 1.1.1.1 1997-11-13 01:46:29 ghudson Exp $
+# $Id: configure.gnu,v 1.1.1.2 2000-04-07 20:36:07 ghudson Exp $
 #
 # GNU configure-like front end to metaconfig's Configure.
 #
@@ -110,6 +110,14 @@ esac
 case "$ccflags" in
 '') ;;
 *) opts="$opts -Dccflags='$ccflags'";;
+esac
+case "$LDFLAGS" in
+'') ;;
+*) ldflags="$ldflags $LDFLAGS";;
+esac
+case "$ldflags" in
+'') ;;
+*) opts="$opts -Dldflags='$ldflags'";;
 esac
 
 # Don't use -s if they want verbose mode

@@ -1,6 +1,8 @@
 /*    regcomp.h
  */
 
+typedef OP OP_4tree;			/* Will be redefined later. */
+
 /*
  * The "internal use only" fields in regexp.h are present to pass info from
  * compile to execute that permits the execute phase to run lots faster on
@@ -47,162 +49,6 @@
  * to the thing following the set of BRANCHes.)  The opcodes are:
  */
 
-/* definition	number	opnd?	meaning */
-#define	END	 0	/* no	End of program. */
-#define	BOL	 1	/* no	Match "" at beginning of line. */
-#define MBOL	 2	/* no	Same, assuming multiline. */
-#define SBOL	 3	/* no	Same, assuming singleline. */
-#define	EOL	 4	/* no	Match "" at end of line. */
-#define MEOL	 5	/* no	Same, assuming multiline. */
-#define SEOL	 6	/* no	Same, assuming singleline. */
-#define	ANY	 7	/* no	Match any one character (except newline). */
-#define	SANY	 8	/* no	Match any one character. */
-#define	ANYOF	 9	/* sv	Match character in (or not in) this class. */
-#define	CURLY	10	/* sv	Match this simple thing {n,m} times. */
-#define	CURLYX	11	/* sv	Match this complex thing {n,m} times. */
-#define	BRANCH	12	/* node	Match this alternative, or the next... */
-#define	BACK	13	/* no	Match "", "next" ptr points backward. */
-#define	EXACT	14	/* sv	Match this string (preceded by length). */
-#define	EXACTF	15	/* sv	Match this string, folded (prec. by length). */
-#define	EXACTFL	16	/* sv	Match this string, folded in locale (w/len). */
-#define	NOTHING	17	/* no	Match empty string. */
-#define	STAR	18	/* node	Match this (simple) thing 0 or more times. */
-#define	PLUS	19	/* node	Match this (simple) thing 1 or more times. */
-#define BOUND	20	/* no	Match "" at any word boundary */
-#define BOUNDL	21	/* no	Match "" at any word boundary */
-#define NBOUND	22	/* no	Match "" at any word non-boundary */
-#define NBOUNDL	23	/* no	Match "" at any word non-boundary */
-#define REF	24	/* num	Match already matched string */
-#define REFF	25	/* num	Match already matched string, folded */
-#define REFFL	26	/* num	Match already matched string, folded in loc. */
-#define	OPEN	27	/* num	Mark this point in input as start of #n. */
-#define	CLOSE	28	/* num	Analogous to OPEN. */
-#define MINMOD	29	/* no	Next operator is not greedy. */
-#define GPOS	30	/* no	Matches where last m//g left off. */
-#define IFMATCH	31	/* no	Succeeds if the following matches. */
-#define UNLESSM	32	/* no	Fails if the following matches. */
-#define SUCCEED	33	/* no	Return from a subroutine, basically. */
-#define WHILEM	34	/* no	Do curly processing and see if rest matches. */
-#define ALNUM	35	/* no	Match any alphanumeric character */
-#define ALNUML	36 	/* no	Match any alphanumeric char in locale */
-#define NALNUM	37	/* no	Match any non-alphanumeric character */
-#define NALNUML	38	/* no	Match any non-alphanumeric char in locale */
-#define SPACE	39	/* no	Match any whitespace character */
-#define SPACEL	40	/* no	Match any whitespace char in locale */
-#define NSPACE	41	/* no	Match any non-whitespace character */
-#define NSPACEL	42	/* no	Match any non-whitespace char in locale */
-#define DIGIT	43	/* no	Match any numeric character */
-#define NDIGIT	44	/* no	Match any non-numeric character */
-
-/*
- * Opcode notes:
- *
- * BRANCH	The set of branches constituting a single choice are hooked
- *		together with their "next" pointers, since precedence prevents
- *		anything being concatenated to any individual branch.  The
- *		"next" pointer of the last BRANCH in a choice points to the
- *		thing following the whole choice.  This is also where the
- *		final "next" pointer of each individual branch points; each
- *		branch starts with the operand node of a BRANCH node.
- *
- * BACK		Normal "next" pointers all implicitly point forward; BACK
- *		exists to make loop structures possible.
- *
- * STAR,PLUS	'?', and complex '*' and '+', are implemented as circular
- *		BRANCH structures using BACK.  Simple cases (one character
- *		per match) are implemented with STAR and PLUS for speed
- *		and to minimize recursive plunges.
- *
- * OPEN,CLOSE	...are numbered at compile time.
- */
-
-#ifndef DOINIT
-EXT char regarglen[];
-#else
-EXT char regarglen[] = {
-    0,0,0,0,0,0,0,0,0,0,
-    /*CURLY*/ 4, /*CURLYX*/ 4,
-    0,0,0,0,0,0,0,0,0,0,0,0,
-    /*REF*/ 2, 2, 2, /*OPEN*/ 2, /*CLOSE*/ 2,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-};
-#endif
-
-#ifndef DOINIT
-EXT char regkind[];
-#else
-EXT char regkind[] = {
-	END,
-	BOL,
-	BOL,
-	BOL,
-	EOL,
-	EOL,
-	EOL,
-	ANY,
-	ANY,
-	ANYOF,
-	CURLY,
-	CURLY,
-	BRANCH,
-	BACK,
-	EXACT,
-	EXACT,
-	EXACT,
-	NOTHING,
-	STAR,
-	PLUS,
-	BOUND,
-	BOUND,
-	NBOUND,
-	NBOUND,
-	REF,
-	REF,
-	REF,
-	OPEN,
-	CLOSE,
-	MINMOD,
-	GPOS,
-	BRANCH,
-	BRANCH,
-	END,
-	WHILEM,
-	ALNUM,
-	ALNUM,
-	NALNUM,
-	NALNUM,
-	SPACE,
-	SPACE,
-	NSPACE,
-	NSPACE,
-	DIGIT,
-	NDIGIT,
-};
-#endif
-
-/* The following have no fixed length. */
-#ifndef DOINIT
-EXT char varies[];
-#else
-EXT char varies[] = {
-    BRANCH, BACK, STAR, PLUS, CURLY, CURLYX, REF, REFF, REFFL, WHILEM, 0
-};
-#endif
-
-/* The following always have a length of 1. */
-#ifndef DOINIT
-EXT char simple[];
-#else
-EXT char simple[] = {
-    ANY, SANY, ANYOF,
-    ALNUM, ALNUML, NALNUM, NALNUML,
-    SPACE, SPACEL, NSPACE, NSPACEL,
-    DIGIT, NDIGIT, 0
-};
-#endif
-
-EXT char regdummy;
-
 /*
  * A node is one char of opcode followed by two chars of "next" pointer.
  * "Next" pointers are stored as two 8-bit pieces, high order first.  The
@@ -213,69 +59,295 @@ EXT char regdummy;
  * Using two bytes for the "next" pointer is vast overkill for most things,
  * but allows patterns to get big without disasters.
  *
- * [If REGALIGN is defined, the "next" pointer is always aligned on an even
+ * [The "next" pointer is always aligned on an even
  * boundary, and reads the offset directly as a short.  Also, there is no
  * special test to reverse the sign of BACK pointers since the offset is
  * stored negative.]
  */
 
-#ifndef gould
-#ifndef cray
-#ifndef eta10
-#define REGALIGN
-#endif
-#endif
+struct regnode_string {
+    U8	str_len;
+    U8  type;
+    U16 next_off;
+    char string[1];
+};
+
+struct regnode_1 {
+    U8	flags;
+    U8  type;
+    U16 next_off;
+    U32 arg1;
+};
+
+struct regnode_2 {
+    U8	flags;
+    U8  type;
+    U16 next_off;
+    U16 arg1;
+    U16 arg2;
+};
+
+#define ANYOF_BITMAP_SIZE	32	/* 256 b/(8 b/B) */
+#define ANYOF_CLASSBITMAP_SIZE	 4
+
+struct regnode_charclass {
+    U8	flags;
+    U8  type;
+    U16 next_off;
+    char bitmap[ANYOF_BITMAP_SIZE];
+};
+
+struct regnode_charclass_class {
+    U8	flags;
+    U8  type;
+    U16 next_off;
+    char bitmap[ANYOF_BITMAP_SIZE];
+    char classflags[ANYOF_CLASSBITMAP_SIZE];
+};
+
+/* XXX fix this description.
+   Impose a limit of REG_INFTY on various pattern matching operations
+   to limit stack growth and to avoid "infinite" recursions.
+*/
+/* The default size for REG_INFTY is I16_MAX, which is the same as
+   SHORT_MAX (see perl.h).  Unfortunately I16 isn't necessarily 16 bits
+   (see handy.h).  On the Cray C90, sizeof(short)==4 and hence I16_MAX is
+   ((1<<31)-1), while on the Cray T90, sizeof(short)==8 and I16_MAX is
+   ((1<<63)-1).  To limit stack growth to reasonable sizes, supply a
+   smaller default.
+	--Andy Dougherty  11 June 1998
+*/
+#if SHORTSIZE > 2
+#  ifndef REG_INFTY
+#    define REG_INFTY ((1<<15)-1)
+#  endif
 #endif
 
-#define	OP(p)	(*(p))
+#ifndef REG_INFTY
+#  define REG_INFTY I16_MAX
+#endif
+
+#define ARG_VALUE(arg) (arg)
+#define ARG__SET(arg,val) ((arg) = (val))
+
+#define ARG(p) ARG_VALUE(ARG_LOC(p))
+#define ARG1(p) ARG_VALUE(ARG1_LOC(p))
+#define ARG2(p) ARG_VALUE(ARG2_LOC(p))
+#define ARG_SET(p, val) ARG__SET(ARG_LOC(p), (val))
+#define ARG1_SET(p, val) ARG__SET(ARG1_LOC(p), (val))
+#define ARG2_SET(p, val) ARG__SET(ARG2_LOC(p), (val))
 
 #ifndef lint
-#ifdef REGALIGN
-#define NEXT(p) (*(short*)(p+1))
-#define ARG1(p) (*(unsigned short*)(p+3))
-#define ARG2(p) (*(unsigned short*)(p+5))
-#else
-#define	NEXT(p)	(((*((p)+1)&0377)<<8) + (*((p)+2)&0377))
-#define	ARG1(p)	(((*((p)+3)&0377)<<8) + (*((p)+4)&0377))
-#define	ARG2(p)	(((*((p)+5)&0377)<<8) + (*((p)+6)&0377))
-#endif
+#  define NEXT_OFF(p) ((p)->next_off)
+#  define NODE_ALIGN(node)
+#  define NODE_ALIGN_FILL(node) ((node)->flags = 0xde) /* deadbeef */
 #else /* lint */
-#define NEXT(p) 0
+#  define NEXT_OFF(p) 0
+#  define NODE_ALIGN(node)
+#  define NODE_ALIGN_FILL(node)
 #endif /* lint */
 
-#define	OPERAND(p)	((p) + 3)
+#define SIZE_ALIGN NODE_ALIGN
 
-#ifdef REGALIGN
-#define	NEXTOPER(p)	((p) + 4)
-#define	PREVOPER(p)	((p) - 4)
-#else
-#define	NEXTOPER(p)	((p) + 3)
-#define	PREVOPER(p)	((p) - 3)
-#endif
+#define	OP(p)		((p)->type)
+#define	OPERAND(p)	(((struct regnode_string *)p)->string)
+#define MASK(p)		((char*)OPERAND(p))
+#define	STR_LEN(p)	(((struct regnode_string *)p)->str_len)
+#define	STRING(p)	(((struct regnode_string *)p)->string)
+#define STR_SZ(l)	((l + sizeof(regnode) - 1) / sizeof(regnode))
+#define NODE_SZ_STR(p)	(STR_SZ(STR_LEN(p))+1)
 
-#define MAGIC 0234
+#define	NODE_ALIGN(node)
+#define	ARG_LOC(p)	(((struct regnode_1 *)p)->arg1)
+#define	ARG1_LOC(p)	(((struct regnode_2 *)p)->arg1)
+#define	ARG2_LOC(p)	(((struct regnode_2 *)p)->arg2)
+#define NODE_STEP_REGNODE	1	/* sizeof(regnode)/sizeof(regnode) */
+#define EXTRA_STEP_2ARGS	EXTRA_SIZE(struct regnode_2)
 
-/* Flags for first parameter byte of ANYOF */
-#define ANYOF_INVERT	0x40
-#define ANYOF_FOLD	0x20
-#define ANYOF_LOCALE	0x10
-#define ANYOF_ISA	0x0F
-#define ANYOF_ALNUML	 0x08
-#define ANYOF_NALNUML	 0x04
-#define ANYOF_SPACEL	 0x02
-#define ANYOF_NSPACEL	 0x01
+#define NODE_STEP_B	4
+
+#define	NEXTOPER(p)	((p) + NODE_STEP_REGNODE)
+#define	PREVOPER(p)	((p) - NODE_STEP_REGNODE)
+
+#define FILL_ADVANCE_NODE(ptr, op) STMT_START { \
+    (ptr)->type = op;    (ptr)->next_off = 0;   (ptr)++; } STMT_END
+#define FILL_ADVANCE_NODE_ARG(ptr, op, arg) STMT_START { \
+    ARG_SET(ptr, arg);  FILL_ADVANCE_NODE(ptr, op); (ptr) += 1; } STMT_END
+
+#define REG_MAGIC 0234
+
+#define SIZE_ONLY (PL_regcode == &PL_regdummy)
+
+/* Flags for node->flags of ANYOF */
+
+#define ANYOF_CLASS	0x08
+#define ANYOF_INVERT	0x04
+#define ANYOF_FOLD	0x02
+#define ANYOF_LOCALE	0x01
+
+/* Used for regstclass only */
+#define ANYOF_EOS	0x10		/* Can match an empty string too */
+
+/* Character classes for node->classflags of ANYOF */
+/* Should be synchronized with a table in regprop() */
+/* 2n should pair with 2n+1 */
+
+#define ANYOF_ALNUM	 0	/* \w, utf8::IsWord, isALNUM() */
+#define ANYOF_NALNUM	 1
+#define ANYOF_SPACE	 2
+#define ANYOF_NSPACE	 3
+#define ANYOF_DIGIT	 4
+#define ANYOF_NDIGIT	 5
+#define ANYOF_ALNUMC	 6	/* isalnum(3), utf8::IsAlnum, isALNUMC() */
+#define ANYOF_NALNUMC	 7
+#define ANYOF_ALPHA	 8
+#define ANYOF_NALPHA	 9
+#define ANYOF_ASCII	10
+#define ANYOF_NASCII	11
+#define ANYOF_CNTRL	12
+#define ANYOF_NCNTRL	13
+#define ANYOF_GRAPH	14
+#define ANYOF_NGRAPH	15
+#define ANYOF_LOWER	16
+#define ANYOF_NLOWER	17
+#define ANYOF_PRINT	18
+#define ANYOF_NPRINT	19
+#define ANYOF_PUNCT	20
+#define ANYOF_NPUNCT	21
+#define ANYOF_UPPER	22
+#define ANYOF_NUPPER	23
+#define ANYOF_XDIGIT	24
+#define ANYOF_NXDIGIT	25
+
+#define ANYOF_MAX	31
+
+/* Backward source code compatibility. */
+
+#define ANYOF_ALNUML	 ANYOF_ALNUM
+#define ANYOF_NALNUML	 ANYOF_NALNUM
+#define ANYOF_SPACEL	 ANYOF_SPACE
+#define ANYOF_NSPACEL	 ANYOF_NSPACE
+
+/* Utility macros for the bitmap and classes of ANYOF */
+
+#define ANYOF_SIZE		(sizeof(struct regnode_charclass))
+#define ANYOF_CLASS_SIZE	(sizeof(struct regnode_charclass_class))
+
+#define ANYOF_FLAGS(p)		((p)->flags)
+#define ANYOF_FLAGS_ALL		0xff
+
+#define ANYOF_BIT(c)		(1 << ((c) & 7))
+
+#define ANYOF_CLASS_BYTE(p, c)	(((struct regnode_charclass_class*)(p))->classflags[((c) >> 3) & 3])
+#define ANYOF_CLASS_SET(p, c)	(ANYOF_CLASS_BYTE(p, c) |=  ANYOF_BIT(c))
+#define ANYOF_CLASS_CLEAR(p, c)	(ANYOF_CLASS_BYTE(p, c) &= ~ANYOF_BIT(c))
+#define ANYOF_CLASS_TEST(p, c)	(ANYOF_CLASS_BYTE(p, c) &   ANYOF_BIT(c))
+
+#define ANYOF_CLASS_ZERO(ret)	Zero(((struct regnode_charclass_class*)(ret))->classflags, ANYOF_CLASSBITMAP_SIZE, char)
+#define ANYOF_BITMAP_ZERO(ret)	Zero(((struct regnode_charclass*)(ret))->bitmap, ANYOF_BITMAP_SIZE, char)
+
+#define ANYOF_BITMAP(p)		(((struct regnode_charclass*)(p))->bitmap)
+#define ANYOF_BITMAP_BYTE(p, c)	(ANYOF_BITMAP(p)[((c) >> 3) & 31])
+#define ANYOF_BITMAP_SET(p, c)	(ANYOF_BITMAP_BYTE(p, c) |=  ANYOF_BIT(c))
+#define ANYOF_BITMAP_CLEAR(p,c)	(ANYOF_BITMAP_BYTE(p, c) &= ~ANYOF_BIT(c))
+#define ANYOF_BITMAP_TEST(p, c)	(ANYOF_BITMAP_BYTE(p, c) &   ANYOF_BIT(c))
+
+#define ANYOF_SKIP		((ANYOF_SIZE - 1)/sizeof(regnode))
+#define ANYOF_CLASS_SKIP	((ANYOF_CLASS_SIZE - 1)/sizeof(regnode))
+#define ANYOF_CLASS_ADD_SKIP	(ANYOF_CLASS_SKIP - ANYOF_SKIP)
 
 /*
  * Utility definitions.
  */
 #ifndef lint
 #ifndef CHARMASK
-#define	UCHARAT(p)	((int)*(unsigned char *)(p))
+#define	UCHARAT(p)	((int)*(U8*)(p))
 #else
 #define	UCHARAT(p)	((int)*(p)&CHARMASK)
 #endif
 #else /* lint */
-#define UCHARAT(p)	regdummy
+#define UCHARAT(p)	PL_regdummy
 #endif /* lint */
 
-#define	FAIL(m)	croak("/%.127s/: %s",regprecomp,m)
+#define	FAIL(m) \
+    STMT_START {							\
+	if (!SIZE_ONLY)							\
+	    SAVEDESTRUCTOR_X(clear_re,(void*)PL_regcomp_rx);		\
+	Perl_croak(aTHX_ "/%.127s/: %s",  PL_regprecomp,m);		\
+    } STMT_END
+
+#define	FAIL2(pat,m) \
+    STMT_START {							\
+	if (!SIZE_ONLY)							\
+	    SAVEDESTRUCTOR_X(clear_re,(void*)PL_regcomp_rx);		\
+	S_re_croak2(aTHX_ "/%.127s/: ",pat,PL_regprecomp,m);		\
+    } STMT_END
+
+#define EXTRA_SIZE(guy) ((sizeof(guy)-1)/sizeof(struct regnode))
+
+#define REG_SEEN_ZERO_LEN	1
+#define REG_SEEN_LOOKBEHIND	2
+#define REG_SEEN_GPOS		4
+#define REG_SEEN_EVAL		8
+
+START_EXTERN_C
+
+#include "regnodes.h"
+
+/* The following have no fixed length. U8 so we can do strchr() on it. */
+#ifndef DOINIT
+EXTCONST U8 PL_varies[];
+#else
+EXTCONST U8 PL_varies[] = {
+    BRANCH, BACK, STAR, PLUS, CURLY, CURLYX, REF, REFF, REFFL, 
+    WHILEM, CURLYM, CURLYN, BRANCHJ, IFTHEN, SUSPEND, CLUMP, 0
+};
+#endif
+
+/* The following always have a length of 1. U8 we can do strchr() on it. */
+/* (Note that length 1 means "one character" under UTF8, not "one octet".) */
+#ifndef DOINIT
+EXTCONST U8 PL_simple[];
+#else
+EXTCONST U8 PL_simple[] = {
+    REG_ANY, ANYUTF8, SANY, SANYUTF8, ANYOF, ANYOFUTF8,
+    ALNUM, ALNUMUTF8, ALNUML, ALNUMLUTF8,
+    NALNUM, NALNUMUTF8, NALNUML, NALNUMLUTF8,
+    SPACE, SPACEUTF8, SPACEL, SPACELUTF8,
+    NSPACE, NSPACEUTF8, NSPACEL, NSPACELUTF8,
+    DIGIT, DIGITUTF8, NDIGIT, NDIGITUTF8, 0
+};
+#endif
+
+END_EXTERN_C
+
+typedef struct re_scream_pos_data_s
+{
+    char **scream_olds;		/* match pos */
+    I32 *scream_pos;		/* Internal iterator of scream. */
+} re_scream_pos_data;
+
+struct reg_data {
+    U32 count;
+    U8 *what;
+    void* data[1];
+};
+
+struct reg_substr_datum {
+    I32 min_offset;
+    I32 max_offset;
+    SV *substr;
+};
+
+struct reg_substr_data {
+    struct reg_substr_datum data[3];	/* Actual array */
+};
+
+#define anchored_substr substrs->data[0].substr
+#define anchored_offset substrs->data[0].min_offset
+#define float_substr substrs->data[1].substr
+#define float_min_offset substrs->data[1].min_offset
+#define float_max_offset substrs->data[1].max_offset
+#define check_substr substrs->data[2].substr
+#define check_offset_min substrs->data[2].min_offset
+#define check_offset_max substrs->data[2].max_offset

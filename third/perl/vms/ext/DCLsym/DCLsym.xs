@@ -1,13 +1,13 @@
 /* VMS::DCLsym - manipulate DCL symbols
  *
  * Version:  1.0
- * Author:   Charles Bailey  bailey@genetics.upenn.edu
+ * Author:   Charles Bailey  bailey@newman.upenn.edu
  * Revised:  17-Aug-1995
  *
  *
  * Revision History:
  * 
- * 1.0  17-Aug-1995  Charles Bailey  bailey@genetics.upenn.edu
+ * 1.0  17-Aug-1995  Charles Bailey  bailey@newman.upenn.edu
  *      original production version
  */
 
@@ -54,7 +54,7 @@ _getsym(name)
       _ckvmssts(lib$sfree1_dd(&valdsc));
     }
     else {
-      ST(0) = &sv_undef;  /* error - we're returning undef, if anything */
+      ST(0) = &PL_sv_undef;  /* error - we're returning undef, if anything */
       switch (retsts) {
         case LIB$_NOSUCHSYM:
           break;   /* nobody home */;
