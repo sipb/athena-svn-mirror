@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 2003-06-08 18:52:18 zacheiss Exp $
+# $Id: Makefile,v 1.14 2003-07-20 06:32:59 zacheiss Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -78,7 +78,6 @@ install:
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 system ${DESTDIR}${ETCDIR}
 	install -c -m 0644 vfstab.std ${DESTDIR}${ETCDIR}
-	install -c -m 0644 vold.conf ${DESTDIR}${ETCDIR}
 	rm -f ${DESTDIR}${ETCDIR}/sendmail.cf
 	ln -s mail/sendmail.cf ${DESTDIR}${ETCDIR}/sendmail.cf
 	rm -f ${DESTDIR}${ETCDIR}/shadow
