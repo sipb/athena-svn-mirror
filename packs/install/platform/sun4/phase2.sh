@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.26 1997-10-24 20:54:26 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.27 1998-01-06 21:35:43 jweiss Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -131,7 +131,7 @@ echo $DISK
 
 case $CUSTOM in
 Y)
-   echo "Partitioning the disk yourself? [n]"
+   echo "Partition the disk yourself? [n]"
    read partition
    case "x$partition" in
    xn|xN|x)
