@@ -5,7 +5,7 @@
  * Copyright (c) 1987 by Sun Microsystems, Inc.
  *
  */ 
-#if defined(sun
+#if defined(sun)
 CHOWN=chown
 #else
 CHOWN=/etc/chown
