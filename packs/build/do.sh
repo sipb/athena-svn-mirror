@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.45 1999-11-01 19:33:51 danw Exp $
+# $Id: do.sh,v 1.46 1999-12-20 18:49:01 danw Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -164,11 +164,10 @@ fi
 export WARN_CFLAGS ERROR_CFLAGS CC MAKE
 
 if [ -r Makefile.athena ]; then
-	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR ATHTOOLROOT
+	export SRVD SOURCE COMPILER XCONFIGDIR ATHTOOLROOT
 	SRVD=$srvd
 	SOURCE=$source
 	COMPILER=$CC
-	CONFIGDIR=$source/packs/build/config
 	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
 	$MAKE $n -f Makefile.athena "$operation"
@@ -216,17 +215,15 @@ elif [ -f configure.in ]; then
 elif [ -r Imakefile ]; then
 	case $operation in
 	prepare)
-		$maybe imake "-I$source/packs/build/config" \
-			-DUseInstalled "-DTOPDIR=$source/packs/build" \
-			"-DTOOLROOT=$athtoolroot"
+		$maybe imake "-I$source/packs/build/xconfig" -DUseInstalled \
+			"-DCONFIGDIR=$source/packs/build/xconfig"
 		$maybe $MAKE Makefiles
-		$maybe $MAKE depend
 		;;
 	clean)
 		$MAKE $n clean
 		;;
 	all)
-		$MAKE $n all
+		$MAKE $n includes depend all
 		;;
 	check)
 		;;
