@@ -35,7 +35,7 @@ install: $(PROJECT_LIBRARY)
 	-for P in $(CACHE_H) ; do                                      \
           $(INSTALL_DATA) $$P $(DESTDIR)$(includedir)/freetype2/freetype/cache ; \
         done
-	$(INSTALL_DATA) $(BUILD)/ft2unix.h $(includedir)/ft2build.h
+	$(INSTALL_DATA) $(BUILD)/ft2unix.h $(DESTDIR)$(includedir)/ft2build.h
 	$(INSTALL_SCRIPT) -m 755 $(BUILD)/freetype-config \
           $(DESTDIR)$(bindir)/freetype-config
 
