@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.11 1991-02-25 16:31:09 lwvanels Exp $
+ *	$Id: io.c,v 1.12 1991-03-11 13:40:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.11 1991-02-25 16:31:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.12 1991-03-11 13:40:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -167,7 +167,6 @@ read_list(fd, list)
   int size;
   int len;
   IO_LIST net_req;
-  long *i;
 
   bzero((char *)list, sizeof(LIST));
 
@@ -231,6 +230,10 @@ read_list(fd, list)
   return(SUCCESS);
 }
 
+
+/* Note; both these functions assume that you will only be talking to one */
+/* daemon.  This may need to be changed in the future (but for now it makes */
+/* caching easy */
 
 /*
  * Function:	open_connection_to_daemon() opens a socket connected to the
@@ -300,6 +303,43 @@ open_connection_to_daemon(request, fd)
   return(SUCCESS);
 }
 
+ERRCODE
+open_connection_to_nl_daemon(fd)
+     int *fd;
+{
+  struct hostent *hp = (struct hostent *)NULL;
+  struct servent *service = (struct servent *)NULL;
+  static struct sockaddr_in sin;
+  static int init = 0;
 
+  if (init == 0) {
+    hp = gethostbyname(DaemonHost);
+    if (hp == (struct hostent *)NULL) {
+      fprintf(stderr,"Couldn't resolve address of %s\n",DaemonHost);
+      return(ERROR);
+    }
 
+    if ((service = getservbyname("ols","tcp")) == NULL) {
+      fprintf(stderr,"ols/tcp unknown service\n");
+      return(ERROR);
+    }
 
+    bzero(&sin,sizeof(sin));
+    bcopy(hp->h_addr,(char *)&sin.sin_addr,hp->h_length);
+    sin.sin_family = AF_INET;
+    sin.sin_port = service->s_port;
+    init = 1;
+  }
+
+  if ((*fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+    perror("socket");
+    return(ERROR);
+  }
+  
+  if (connect(*fd,(struct sockaddr *)&sin,sizeof(sin)) < 0) {
+    perror("connect");
+    close(*fd);
+    return(ERROR);
+  }
+  return(SUCCESS);
+}
