@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.2 1990-11-18 21:07:25 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.3 1990-11-27 11:49:51 lwvanels Exp $";
 #endif
 #endif
 
@@ -16,8 +16,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #define CACHESIZE 16
 #define inc_hand (clock_hand = (++clock_hand)&(CACHESIZE-1));
 
-/* #define LOG_DIRECTORY "/usr/spool/olc" */
-#define LOG_DIRECTORY "/usr/tmp/olc"
+#define LOG_DIRECTORY "/usr/spool/olc"
 
 extern int errno;
 
@@ -100,6 +99,7 @@ get_log(username,instance,result)
     /* copy infomration over */
     cache[new].fd = fd;
     strcpy(cache[new].username,username);
+    strcpy(cache[new].filename,filename);
     cache[new].instance = instance;
 
     /* Stat the file to get size and last mod time */
@@ -152,7 +152,7 @@ get_log(username,instance,result)
     ptr->use = 0;
     
     /* Check to see that it's a recent copy */
-    if (fstat(ptr->fd,&file_stat) < 0) {
+    if (stat(ptr->filename,&file_stat) < 0) {
       delete_entry(ptr);
       if (errno == ENOENT) /* Question gone; not an error */
 	*result = 0;
@@ -248,7 +248,8 @@ delete_entry(ent)
   struct entry *ent;
 {
 
-  close(ent->fd);
+  if (ent->fd > 0) 
+    close(ent->fd);
   ent->fd = -1;
   if (ent->question != NULL) {
     free(ent->question);
