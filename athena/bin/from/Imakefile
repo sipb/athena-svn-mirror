@@ -1,14 +1,21 @@
 /* 
- * $Id: Imakefile,v 1.5 1991-05-31 10:50:57 akajerry Exp $
+ * $Id: Imakefile,v 1.6 1991-06-30 22:39:59 akajerry Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/Imakefile,v $
  * $Author: akajerry $
  */
 
 DEFINES = -DHESIOD -DKPOP
+#ifdef _AUX_SOURCE
+LIBS = -lhesiod -lkrb -ldes -lPW -lc
+
+OBJS= from.o popmail.o emul_re.o
+SRCS= from.c popmail.c emul_re.c
+#else
 LIBS = -lhesiod -lkrb -ldes
 
 OBJS=	from.o popmail.o
 SRCS=	from.c popmail.c
+#endif
 
 SimpleProgram(from, ${OBJS}, ${LIBS},$(ATHBINDIR))
 
