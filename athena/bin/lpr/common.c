@@ -13,6 +13,19 @@ static char sccsid[] = "@(#)common.c	5.2 (Berkeley) 5/6/86";
  */
 
 #include "lp.h"
+#ifdef POSIX
+#include <stdlib.h>
+#endif
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/param.h>
+#ifdef SOLARIS
+#include "dirent.h"
+#else
+#include <dirent.h>
+#endif
+#include <string.h>
+
 
 int	DU;		/* daeomon user-id */
 int	MX;		/* maximum number of blocks to copy */
@@ -37,6 +50,7 @@ char	*CF;		/* name of cifplot filter (per job) */
 char	*PF;		/* name of vrast filter (per job) */
 char	*FF;		/* form feed string */
 char	*TR;		/* trailer string to be output when Q empties */
+char	*MS;            /* list of tty modes to set or clear */
 short	SC;		/* suppress multiple copies */
 short	SF;		/* suppress FF on each print job */
 short	SH;		/* suppress header page */
@@ -74,6 +88,165 @@ char	*from = host;	/* client's machine name */
 #ifdef HESIOD
 char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 #endif
+#if defined(POSIX) && !defined(ultrix) && !defined(_AIX)
+/*
+ * The DIRSIZ macro is the minimum record length which will hold the directory
+ * entry.  This requires the amount of space in struct dirent without the
+ * d_name field, plus enough space for the name and a terminating nul byte
+ * (dp->d_namlen + 1), rounded up to a 4 byte boundary.
+ */
+#undef DIRSIZ
+#define DIRSIZ(dp)							\
+	((sizeof(struct dirent) - sizeof(dp)->d_name) +			\
+	    ((MAXNAMELEN+1 + 1 + 3) &~ 3))
+
+int
+scandir(dirname, namelist, select, dcomp)
+	char *dirname;
+	struct dirent ***namelist;
+        int (*select)(), (*dcomp)();
+{
+	register struct dirent *d, *p, **names;
+	register size_t nitems;
+	struct stat stb;
+	long arraysz;
+	DIR *dirp;
+
+	if ((dirp = opendir(dirname)) == NULL)
+		return(-1);
+	if (fstat(dirp->dd_fd, &stb) < 0)
+		return(-1);
+
+	/*
+	 * estimate the array size by taking the size of the directory file
+	 * and dividing it by a multiple of the minimum size entry. 
+	 */
+	arraysz = (stb.st_size / 24);
+	names = (struct dirent **)malloc(arraysz * sizeof(struct dirent *));
+	if (names == NULL)
+		return(-1);
+
+	nitems = 0;
+	while ((d = readdir(dirp)) != NULL) {
+		if (select != NULL && !(*select)(d))
+			continue;	/* just selected names */
+		/*
+		 * Make a minimum size copy of the data
+		 */
+		p = (struct dirent *)malloc(DIRSIZ(d));
+		if (p == NULL)
+			return(-1);
+		p->d_ino = d->d_ino;
+		p->d_reclen = d->d_reclen;
+/*		p->d_namlen = d->d_namlen; */
+		memcpy(p->d_name, d->d_name,MAXNAMELEN+1 );
+		/*
+		 * Check to make sure the array has space left and
+		 * realloc the maximum size.
+		 */
+		if (++nitems >= arraysz) {
+			if (fstat(dirp->dd_fd, &stb) < 0)
+				return(-1);	/* just might have grown */
+			arraysz = stb.st_size / 12;
+			names = (struct dirent **)realloc((char *)names,
+				arraysz * sizeof(struct dirent *));
+			if (names == NULL)
+				return(-1);
+		}
+		names[nitems-1] = p;
+	}
+	closedir(dirp);
+	if (nitems && dcomp != NULL)
+		qsort(names, nitems, sizeof(struct dirent *), dcomp);
+	*namelist = names;
+	return(nitems);
+}
+
+
+/*
+ * Alphabetic order comparison routine for those who want it.
+ */
+int
+alphasort(d1, d2)
+	void *d1;
+	void *d2;
+{
+	return(strcmp((*(struct dirent **)d1)->d_name,
+	    (*(struct dirent **)d2)->d_name));
+}
+/*
+ * File locking is not available via flock() but we can make one
+ */
+#define   LOCK_SH   1    /* shared lock */
+#define   LOCK_EX   2    /* exclusive lock */
+#define   LOCK_NB   4    /* don't block when locking */
+#define   LOCK_UN   8    /* unlock */
+
+#include <fcntl.h>
+#include <stdio.h>	/* SEEK_SET */
+
+int
+flock(int fd, int operation)
+{
+   struct flock lock;
+
+   lock.l_type = F_RDLCK;
+   if (operation & LOCK_EX) lock.l_type = F_WRLCK;
+   else if (operation & LOCK_UN) lock.l_type = F_UNLCK;
+
+   lock.l_start = lock.l_len = 0;
+   lock.l_whence = SEEK_SET;
+   return fcntl(fd, operation & LOCK_NB? F_SETLK: F_SETLKW, &lock);
+}
+#endif /* POSIX !ultrix !AIX */
+#if defined(POSIX) && !defined(ultrix) 
+#include <signal.h>
+typedef void    Sigfunc(int);   /* for signal handlers */
+
+		/* 4.3BSD Reno <signal.h> doesn't define SIG_ERR */
+#if     defined(SIG_IGN) && !defined(SIG_ERR)
+#define SIG_ERR ((Sigfunc *)-1)
+#endif
+
+/* Reliable signal()s (Stevens: Advanced UNIX PRG, pp. 298) */
+
+Sigfunc *
+signal(int signo, Sigfunc *func)
+{
+   struct sigaction act, oact;
+
+   act.sa_handler = func;
+   sigemptyset(&act.sa_mask);
+   act.sa_flags = 0;
+   if (signo == SIGALRM) {
+#ifdef SA_INTERRUPT
+      act.sa_flags |= SA_INTERRUPT;	/* SunOS */
+#endif
+   }
+   else {
+#ifdef SA_RESTART
+      act.sa_flags |= SA_RESTART;	/* SVR4, 4.3+BSD */
+#endif
+   }
+   if (sigaction(signo, &act, &oact) < 0)
+      return SIG_ERR;
+   return oact.sa_handler;
+}
+
+#endif /* POSIX !ultrix  */
+/*
+ * Compare modification times.
+ */
+static
+compar(p1, p2)
+	register struct queue_ **p1, **p2;
+{
+	if ((*p1)->q_time < (*p2)->q_time)
+		return(-1);
+	if ((*p1)->q_time > (*p2)->q_time)
+		return(1);
+	return(0);
+}
 
 /*
  * Create a connection to the remote printer server.
@@ -99,8 +272,8 @@ getport(rhost)
 	sp = getservbyname("printer", "tcp");
 	if (sp == NULL)
 		fatal("printer/tcp: unknown service");
-	bzero((char *)&sin, sizeof(sin));
-	bcopy(hp->h_addr, (caddr_t)&sin.sin_addr, hp->h_length);
+	memset((char *)&sin, 0, sizeof(sin));
+	memcpy((caddr_t)&sin.sin_addr, hp->h_addr, hp->h_length);
 	sin.sin_family = hp->h_addrtype;
 	sin.sin_port = sp->s_port;
 
@@ -109,9 +282,11 @@ getport(rhost)
 	 */
 retry:
 	s = rresvport(&lport);
+
 	if (s < 0)
 		return(-1);
-	if (connect(s, (caddr_t)&sin, sizeof(sin)) < 0) {
+	if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+
 		err = errno;
 		(void) close(s);
 		errno = err;
@@ -177,9 +352,10 @@ getq_(namelist)
 	int arraysz, compar();
 	DIR *dirp;
 
-	if ((dirp = opendir(SD)) == NULL)
+	if ((dirp = opendir(SD)) == NULL) 
 		return(-1);
-	if (fstat(dirp->dd_fd, &stbuf) < 0)
+
+	if (fstat(dirp->dd_fd, &stbuf) < 0) 
 		goto errdone;
 
 	/*
@@ -192,23 +368,29 @@ getq_(namelist)
 		goto errdone;
 
 	nitems = 0;
+
 	while ((d = readdir(dirp)) != NULL) {
-		if (d->d_name[0] != 'c' || d->d_name[1] != 'f')
+
+		if (d->d_name[0] != 'c' || d->d_name[1] != 'f') 
 			continue;	/* daemon control files only */
-		if (stat(d->d_name, &stbuf) < 0)
+
+		if (stat(d->d_name, &stbuf) < 0) 
 			continue;	/* Doesn't exist */
+
+
 		q = (struct queue_ *)malloc(sizeof(time_t)+strlen(d->d_name)+1);
 		if (q == NULL)
 			goto errdone;
 		q->q_time = stbuf.st_mtime;
 		strcpy(q->q_name, d->d_name);
+
 		/*
 		 * Check to make sure the array has space left and
 		 * realloc the maximum size.
 		 */
 		if (++nitems > arraysz) {
-			queue = (struct queue **)realloc((char *)queue,
-				(stbuf.st_size/12) * sizeof(struct queue *));
+			queue = (struct queue_ **)realloc((char *)queue,
+				(stbuf.st_size/12) * sizeof(struct queue_ *));
 			if (queue == NULL)
 				goto errdone;
 		}
@@ -225,19 +407,6 @@ errdone:
 	return(-1);
 }
 
-/*
- * Compare modification times.
- */
-static
-compar(p1, p2)
-	register struct queue_ **p1, **p2;
-{
-	if ((*p1)->q_time < (*p2)->q_time)
-		return(-1);
-	if ((*p1)->q_time > (*p2)->q_time)
-		return(1);
-	return(0);
-}
 
 /*VARARGS1*/
 fatal(msg, a1, a2, a3)
