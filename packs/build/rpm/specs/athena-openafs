@@ -26,6 +26,7 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/athena
 cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
 chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
+cp CellAlias $RPM_BUILD_ROOT/usr/vice/etc/CellAlias
 cp CellServDB $RPM_BUILD_ROOT/usr/vice/etc/CellServDB
 cp ThisCell $RPM_BUILD_ROOT/usr/vice/etc/ThisCell
 cp cacheinfo $RPM_BUILD_ROOT/usr/vice/etc/cacheinfo
