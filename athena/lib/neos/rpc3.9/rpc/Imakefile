@@ -52,7 +52,7 @@ build_library(fxrpc,${OBJS})
 
 all:: $(HDRS) libfxrpc.a
 	@echo "Creating RPC header directory"
-	-mkdir ../usr/include/rpc && \
+	-mkdir -p ../usr/include/rpc && \
 		$(CHOWN) bin ../usr/include/rpc && \
 		chmod 755 ../usr/include/rpc
 #ifdef BUILD_RPC
@@ -61,6 +61,7 @@ all:: $(HDRS) libfxrpc.a
 		($(INSTALL) -m 644 $$i ../usr/include/rpc) done
 #endif
 	@echo "Installing RPC library"
+	-mkdir -p ../usr/lib
 	$(INSTALL) -m 644 libfxrpc.a ../usr/lib
 	$(RANLIB) ../usr/lib/libfxrpc.a
 

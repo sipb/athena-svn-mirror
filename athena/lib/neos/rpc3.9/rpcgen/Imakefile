@@ -19,6 +19,7 @@ build_program($(GOAL),$(OBJS),-L../usr/lib,)
 
 all:: $(GOAL)
 	@echo "Installing the RPC Protocol Compiler"
+	-mkdir -p ../usr/bin
 	$(INSTALL) -s $(GOAL) ../usr/bin
 
 lint: $(SRCS) $(HDRS)
