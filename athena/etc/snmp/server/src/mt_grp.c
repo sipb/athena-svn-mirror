@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.4  90/05/26  13:39:52  tom
+ * athena release 7.0e - fixed get-next
+ * 
  * Revision 1.3  90/04/26  17:36:00  tom
  * closed ifdefs
  * 
@@ -25,7 +28,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 1.4 1990-05-26 13:39:52 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 1.5 1990-07-17 14:18:57 tom Exp $";
 #endif
 
 
@@ -95,9 +98,6 @@ lu_machtype(varnode, repl, instptr, reqflg)
      int reqflg;
 {
   int num = 0;
-  char *ch;
-  int len;
-  int cnt;
 
   if (varnode->flags & NOT_AVAIL ||
       varnode->offset <= 0)
@@ -264,6 +264,8 @@ lu_machtype(varnode, repl, instptr, reqflg)
 static void
 mt_machtype()
 {
+  char *c;
+
   bzero(databuf, sizeof(databuf));
   call_program(MACH_PROGRAM, MACH_MACHOPT, databuf, sizeof(databuf)-1);
   type = (char *) malloc((strlen(databuf) + 1) * sizeof(char));
@@ -271,6 +273,9 @@ mt_machtype()
     syslog(LOG_ERR, "mt_machtype: unable to allocate teensie string");
   else
     strcpy(type, databuf);
+  if((c = rindex(type, '\n')) != (char *) NULL)
+    *c = '\0';
+  return;
 }
 
 
