@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.16 2001-07-25 15:01:17 ghudson Exp $
+;; $Id: site-init.jl,v 1.17 2001-07-25 16:20:35 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -27,7 +27,6 @@
 ;; Focus mode customizations
 (require 'auto-raise)
 (setq focus-windows-on-uniconify t)
-(setq raise-windows-on-focus t)
 (setq raise-window-timeout 0)
 
 ;; Key bindings
