@@ -1,0 +1,17 @@
+#!/bin/sh -
+# Version-specific update script for 7.6A
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+VS2*)	;;
+DS*)
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	;;
+RSAIX)
+	;;
+SUN*)
+	echo "Copying in new /etc/init.d/athena..."
+	cp -p /srvd/etc/init.d/athena /etc/init.d/athena
+	echo "Done."
+esac
