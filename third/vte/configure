@@ -21579,9 +21579,6 @@ fi
 
 
 
-# On some OSs, AC_PATH_XTRA doesn't work right(?), so let the user specify
-# X_PRE_LIBS and X_EXTRA_LIBS to add even more libraries, and add -lX11 to
-# the list of libraries for grins.
 echo "$as_me:$LINENO: checking for X" >&5
 echo $ECHO_N "checking for X... $ECHO_C" >&6
 
@@ -22970,17 +22967,6 @@ fi
 
 fi
 
-X_CFLAGS=
-X_LIBS=
-if test "$have_x" = yes ; then
-	if test -d "$ac_x_includes" ; then
-		X_CFLAGS="-I$ac_x_includes $X_CFLAGS"
-	fi
-	X_LIBS="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
-	if test -d "$ac_x_libraries" ; then
-		X_LIBS="-L$ac_x_libraries $X_LIBS"
-	fi
-fi
 CFLAGS="$X_CFLAGS $CFLAGS"
 LIBS="$X_LIBS $LIBS"
 
