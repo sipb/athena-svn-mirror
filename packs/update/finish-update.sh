@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.2 1997-01-11 19:27:01 ghudson Exp $
+# $Id: finish-update.sh,v 1.3 1997-04-04 18:03:53 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -21,9 +21,16 @@ LIBDIR=/srvd/usr/athena/lib/update
 SERVERDIR=/var/server
 PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
 HOSTTYPE=`/srvd/bin/athena/machtype`
+CONFCHG=/var/athena/update.confchg
+CONFVARS=/var/athena/update.confvars
+AUXDEVS=/var/athena/update.auxdevs
+OLDBINS=/var/athena/update.oldbins
+DEADFILES=/var/athena/update.deadfiles
 
 . $CONFDIR/rc.conf
+newvers=`awk '{a=$7} END {print a}' $CONFDIR/version`
 
+# On the SGI, un-suppress network daemons.
 case "$HOSTTYPE" in
 sgi)
 	echo "Un-suppressing network daemons for next reboot"
@@ -31,8 +38,16 @@ sgi)
 	;;
 esac
 
-method=`awk '{a=$6}; END{print a}' $CONFDIR/version`
-newvers=`awk '{a=$7}; END{print a}' $CONFDIR/version`
+# Do auxiliary device installs.
+if [ -s "$AUXDEVS" ]; then
+	drvrs=`cat "$AUXDEVS"`
+	for i in $drvrs; do
+		/srvd/install/aux.devs/$i
+	done
+fi
+
+# Remove the version script state files.
+rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$DEADFILES"
 
 echo "Updating version"
 echo "Athena Workstation ($HOSTTYPE) Version $newvers `date`" >> \
@@ -46,14 +61,4 @@ fi
 if [ -d "$SERVERDIR" ]; then
 	echo "Running mkserv."
 	/srvd/usr/athena/bin/mkserv -v update
-fi
-
-if [ "$method" = "Manual" ]; then
-	echo "The update to version $newvers is complete.  You may now examine"
-	echo "the system before rebooting it under $newvers.  When you are"
-	echo "finished, type 'exit' and the system will reboot.  The shell"
-	echo "prompt below is for a /bin/athena/tcsh process, regardless of"
-	echo "what root's shell normally is."
-	echo ""
-	/bin/athena/tcsh
 fi
