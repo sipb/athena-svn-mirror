@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_client_c[] =
-    "$Id: client.c,v 1.23 1992-01-17 07:45:10 lwvanels Exp $";
+    "$Id: client.c,v 1.24 1992-08-10 13:21:11 lwvanels Exp $";
 #endif
 
 /*
@@ -172,6 +172,7 @@ client_deregister(client, host, flush)
 			if (clients->zclt_client == client) {
 				xremque(clients);
 				free_zstring(client->zct_principal);
+				xfree(client);
 				client = NULLZCNT;
 				xfree(clients);
 				clients = NULLZCLT;
