@@ -1,4 +1,4 @@
-.\" $Id: detach.1,v 1.9 1999-02-26 23:13:03 danw Exp $
+.\" $Id: detach.1,v 1.10 1999-07-26 17:21:27 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -20,7 +20,7 @@ detach \- detach a remote file system from your workstation
 .SH SYNOPSIS
 .nf
 detach [-v | -q] [-y | -n] [-z | -h] [-x | -e] [-O] filesystem ...
-detach [options] -m mountpoint ...
+detach [options] mountpoint ...
 detach [options] [-t type] [-C] [-a | -H host ...]
 .fi
 .SH DESCRIPTION
@@ -78,11 +78,6 @@ Type --type option can be used to specify the filesystem type.
 .I --noexplicit (-x)
 Tell \fIdetach\fP to interpret the \fIfilesystem\fP as a Hesiod name.
 This is the default.
-.TP 8
-.I --mountpoint (-m)
-Specify the locker to be detach by its mountpoint, instead of its
-filesystem name. This can be used to detach a locker that was attached
-in a non-standard location.
 .TP 8
 .I --override (-O)
 This option allows the trusted users to force a filesystem to be

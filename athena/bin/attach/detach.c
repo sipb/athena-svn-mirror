@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.21 1999-04-20 20:06:09 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.22 1999-07-26 17:21:28 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -264,7 +264,7 @@ static void detach_all(locker_context context, int options)
 static void usage(void)
 {
   fprintf(stderr, "Usage: detach [options] filesystem ... [options] filesystem ...\n");
-  fprintf(stderr, "       detach [options] -m mountpoint ...\n");
+  fprintf(stderr, "       detach [options] mountpoint ...\n");
   fprintf(stderr, "       detach [options] -H host ...\n");
   fprintf(stderr, "       detach [options] -a\n");
   exit(1);
