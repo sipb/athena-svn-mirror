@@ -1030,7 +1030,7 @@ test "$program_suffix" != NONE &&
 # sed with no file args requires a program.
 test "$program_transform_name" = "" && program_transform_name="s,x,x,"
  
-subdirs="export import cli dbutil passwd ktutil server v4server v5passwdd"
+subdirs="cli dbutil passwd ktutil server v4server v5passwdd"
 
 RECURSE_TARGETS="all-unix clean-unix install-unix check-unix Makefiles"
 
@@ -1342,7 +1342,7 @@ if test "$no_recursion" != yes; then
     esac
   done
 
-  for ac_config_dir in export import cli dbutil passwd ktutil server v4server v5passwdd; do
+  for ac_config_dir in cli dbutil passwd ktutil server v4server v5passwdd; do
 
     # Do not complain, so a configure script can configure whichever
     # parts of a large source tree are present.
