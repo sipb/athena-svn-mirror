@@ -819,6 +819,7 @@ config(signo)
 				unregister_rpc(sep);
 			sep->se_rpcversl = cp->se_rpcversl;
 			sep->se_rpcversh = cp->se_rpcversh;
+			sep->se_switched = cp->se_switched;
 			sigprocmask(SIG_SETMASK, &omask, NULL);
 			freeconfig(cp);
 			if (debug)
@@ -832,8 +833,14 @@ config(signo)
 
 		switch (sep->se_family) {
 		case AF_UNIX:
-			if (sep->se_fd != -1)
+			if (sep->se_fd != -1) {
+				if (!ISMUX(sep) &&
+				    (sep->se_switched && !access_on)) {
+					close_sep(sep);
+					(void)unlink(sep->se_service);
+				}
 				break;
+			}
 			n = strlen(sep->se_service);
 			if (n > sizeof(sep->se_ctrladdr_un.sun_path)) {
 				syslog(LOG_ERR, "%s: address too long",
@@ -908,6 +915,11 @@ config(signo)
 				if (sep->se_fd == -1 && !ISMUX(sep) &&
 				    (!sep->se_switched || access_on))
 					setup(sep);
+				else if (sep->se_fd != -1 && !ISMUX(sep) &&
+					 (sep->se_switched && !access_on)) {
+					close_sep(sep);
+					unregister_rpc(sep);
+				}
 				if (sep->se_fd != -1)
 					register_rpc(sep);
 			} else {
@@ -934,6 +946,9 @@ config(signo)
 				if (sep->se_fd == -1 && !ISMUX(sep) &&
 				    (!sep->se_switched || access_on))
 					setup(sep);
+				else if (sep->se_fd != -1 && !ISMUX(sep) &&
+					 (sep->se_switched && !access_on))
+					close_sep(sep);
 			}
 		}
 	}
