@@ -40,8 +40,16 @@
 #include "config.h"
 #include <libgnomeprint/gnome-print-i18n.h>
 
-#include <gnome.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtkaccelgroup.h>
+#include <gtk/gtkmenushell.h>
+#include <libgnomeui/gnome-app.h>
+#include <libgnomeui/gnome-app-helper.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <libgnomeui/gnome-stock.h>
+
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-meta.h>
@@ -51,6 +59,10 @@
 #include <libgnomeprint/gnome-print-master-private.h>
 #include "gnome-print-master-preview.h"
 #include "gnome-print-preview-icons.h"
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 #define TOOLBAR_BUTTON_BASE 5
 #define MOVE_INDEX          5
@@ -195,12 +207,15 @@ do_zoom (GnomePrintMasterPreview *pmp, int factor)
 	double zoom;
 	Private *pp = pmp->priv;
 	
-	if (factor > 0)
-		zoom = pp->canvas->pixels_per_unit * 1.25;
-	else if (factor < 0)
-		zoom = pp->canvas->pixels_per_unit / 1.25;
-	else
+	if (factor > 0) {
+		zoom = pp->canvas->pixels_per_unit * M_SQRT2;
+	} else if (factor < 0) {
+		zoom = pp->canvas->pixels_per_unit / M_SQRT2;
+	} else {
 		zoom = 1.0;
+	}
+
+	zoom = CLAMP (zoom, 0.0625, 16.0);
 
 	gnome_canvas_set_pixels_per_unit (pp->canvas, zoom);
 }

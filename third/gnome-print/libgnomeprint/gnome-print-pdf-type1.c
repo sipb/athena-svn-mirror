@@ -31,7 +31,9 @@
 
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-pdf-type1.h>
+#if 0
 #include <libgnomeprint/gnome-font-private.h>
+#endif
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/text-utils.h>
 
@@ -431,6 +433,7 @@ decrypt_eexec (char *plaintext, const char *ciphertext, int ciphertext_size)
   return ciphertext_size - 4;
 }
 
+#if FEAUTRE_NOT_IMPLEMENTED
 /**
  * charstring_decrypt:
  * @plaintext: encrypted charstring
@@ -471,6 +474,7 @@ charstring_decrypt (gchar *plaintext, gint plaintext_size,
   plaintext_size = ciphertext_size - 4;
 }
 
+#if FEAUTRE_NOT_IMPLEMENTED
 /**
  * print_glyph_code:
  * @plaintext: 
@@ -572,7 +576,7 @@ print_glyph_code (guchar *plaintext, gint plaintext_size)
     }
   printf ("\n");
 }
-
+#endif
 
 /**
  * gp_t1_read_glyph:
@@ -753,10 +757,10 @@ gp_t1_load_subs_from_glyph (T1Glyph *glyph, GnomePrintPdfSubFont *sub_font)
 			
 	return TRUE;
 }
-
+#endif
 
 #define PDF_INITIAL_BUFFER_SIZE 1024
-
+#if FEAUTRE_NOT_IMPLEMENTED
 static gboolean
 gp_t1_write_buffer (guchar **buffer_, gint *offset_, gint *max_, const char *format, ...)
 {
@@ -876,6 +880,7 @@ gp_t1_create_subrutines (GnomePrintPdfSubFont *sub_font)
 	return TRUE;
 }
 
+
 #define UNIQUE_ID_TAG "/UniqueID "
 static gboolean
 gp_t1_clean_header (GnomePrintPdfSubFont *sub_font, gint in_size)
@@ -917,11 +922,10 @@ gp_t1_clean_header (GnomePrintPdfSubFont *sub_font, gint in_size)
 	return TRUE;
 }
 
-
-
 #define PDF_SUB_TAG "/Subrs"
 #define PDF_ARRAY_TAG "array"
 #define PDF_TAG_DUP_0 "dup 0 "
+
 
 static gboolean
 gp_t1_get_delimiters_method_two (guchar *buffer, gint buffer_length,
@@ -1116,7 +1120,6 @@ gp_t1_get_delimiters (GnomePrintPdfSubFont *sub_font, gint header_size)
 	return TRUE;
 }
 
-
 #define PDF_SUB_TAG "/Subrs"
 #define PDF_CHARSTRING_TAG "/CharString"
 /**
@@ -1227,6 +1230,7 @@ gnome_print_pdf_font_create_subfont (GnomePrintPdfFont *font,
 	
 	return TRUE;
 }
+#endif
 
 /**
  * gnome_print_pdf_font_type1_embed:
@@ -1243,7 +1247,7 @@ gnome_print_pdf_font_type1_embed (GnomePrintContext *pc,
 {
 	GnomePrintPdf *pdf;
 	const GnomeFontFace *face;
-	const gchar *file_name;
+	gchar *file_name;
 	gchar *body;
 #if 0 /* kill warning */
 	gchar *subfont;
@@ -1267,16 +1271,21 @@ gnome_print_pdf_font_type1_embed (GnomePrintContext *pc,
 	pdf = GNOME_PRINT_PDF (pc);
 	g_return_val_if_fail (GNOME_IS_PRINT_PDF (pdf), -1);
 
-	file_name = face->private->pfb_fn;
+	gtk_object_get (GTK_OBJECT (face), "pfb", &file_name, NULL);
 
+	if (!file_name) return -1;
 	if (!gp_t1_font_parse (file_name,
 												 &body,
 												 &length,
 												 &length1,
 												 &length2,
 												 &length3,
-												 &body_length))
+												 &body_length)) {
+		g_free (file_name);
 		return -1;
+	} else {
+		g_free (file_name);
+	}
 
 #if 0	/* Disable subfont creation, we need to stabilize this for
 			 Gnome 1.4. Chema */
@@ -1427,7 +1436,7 @@ gp_t1_get_number_from_brackets (gchar *buffer, gint *number)
 gint
 gnome_print_pdf_type1_get_stems (const GnomeFontFace *face, gint *stemv, gint*stemh)
 {
-	const gchar *file_name;
+	gchar *file_name;
 	gchar *body;
 	gint body_size;
 	gint pos;
@@ -1438,11 +1447,15 @@ gnome_print_pdf_type1_get_stems (const GnomeFontFace *face, gint *stemv, gint*st
 	
 	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), FALSE);
 
-	file_name = face->private->pfb_fn;
+	gtk_object_get (GTK_OBJECT (face), "pfb", &file_name, NULL);
+	if (!file_name) return FALSE;
 
 	if (!gp_t1_get_body_from_pfb (file_name, &body, &body_size)) {
 		g_warning ("Cant get body from pfb");
+		g_free (file_name);
 		return FALSE;
+	} else {
+		g_free (file_name);
 	}
 
 	/* Get the stemv */

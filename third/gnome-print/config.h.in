@@ -25,9 +25,6 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
@@ -52,6 +49,9 @@
 #undef VERSION
 #undef HAVE_LIBSM
 #undef HAVE_LIBZ
+#undef ENABLE_LIBGPA
+#undef USE_GNOME_FONT
+#undef LIBGPA
 
 /* Define if you have the __argz_count function.  */
 #undef HAVE___ARGZ_COUNT

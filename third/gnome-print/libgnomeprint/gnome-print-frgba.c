@@ -51,6 +51,7 @@ static void gpf_destroy (GtkObject *object);
 
 static gint gpf_fill (GnomePrintContext * pc, ArtWindRule rule);
 static gint gpf_stroke (GnomePrintContext * pc);
+static gint gpf_glyphlist (GnomePrintContext * pc, GnomeGlyphList *gl);
 static gint gpf_show_sized (GnomePrintContext * pc, const char *text, int bytes);
 static gint gpf_textline (GnomePrintContext * pc, GnomeTextLine * line);
 
@@ -136,6 +137,7 @@ gpf_class_init (GnomePrintFRGBAClass *class)
 	
 	pc_class->fill = gpf_fill;
 	pc_class->stroke = gpf_stroke;
+	pc_class->glyphlist = gpf_glyphlist;
 	pc_class->show_sized = gpf_show_sized;
 	pc_class->textline = gpf_textline;
 	pc_class->grayimage = gpf_grayimage;
@@ -258,6 +260,19 @@ gpf_stroke (GnomePrintContext * pc)
 
 	gnome_print_stroke (GNOME_PRINT_CONTEXT (fp->meta));
 	return gnome_print_stroke (fp->context);
+}
+
+static gint
+gpf_glyphlist (GnomePrintContext * pc, GnomeGlyphList *gl)
+{
+	GnomePrintFRGBA * frgba;
+	GnomePrintFRGBAPrivate * fp;
+
+	frgba = GNOME_PRINT_FRGBA (pc);
+	fp = frgba->private;
+
+	gnome_print_glyphlist (GNOME_PRINT_CONTEXT (fp->meta), gl);
+	return gnome_print_glyphlist (fp->context, gl);
 }
 
 static gint

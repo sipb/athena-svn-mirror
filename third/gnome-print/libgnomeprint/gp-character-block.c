@@ -178,4 +178,93 @@ gp_unicode_get_char_block (gint unival)
 	return NULL;
 }
 
+GPUCMap *
+gp_uc_map_new (void)
+{
+	GPUCMap * map;
+
+	map = g_new0 (GPUCMap, 1);
+	map->refcount = 1;
+
+	return map;
+}
+
+void
+gp_uc_map_ref (GPUCMap * map)
+{
+	g_return_if_fail (map != NULL);
+
+	map->refcount++;
+}
+
+void
+gp_uc_map_unref (GPUCMap * map)
+{
+	g_return_if_fail (map != NULL);
+
+	if (--map->refcount < 1) {
+		gint i;
+		for (i = 0; i < GP_CB_END; i++) {
+			if (map->entry[i]) {
+				if (map->entry[i]->glyphs) g_free (map->entry[i]->glyphs);
+				g_free (map->entry[i]);
+			}
+		}
+		g_free (map);
+	}
+}
+
+void
+gp_uc_map_insert (GPUCMap * map, gint unicode, gint glyph)
+{
+	const GPCharBlock * block;
+	GPUCMapEntry * entry;
+	gint pos;
+
+	g_return_if_fail (map != NULL);
+	g_return_if_fail (unicode > 0);
+	g_return_if_fail (glyph > 0);
+
+	block = gp_unicode_get_char_block (unicode);
+	g_return_if_fail (block != NULL);
+
+	entry = map->entry[block->code];
+
+	if (!entry) {
+		map->entry[block->code] = g_new0 (GPUCMapEntry, 1);
+		entry = map->entry[block->code];
+		entry->block = block;
+	}
+
+	if (!entry->glyphs) {
+		entry->glyphs = g_new0 (gint, block->last - block->first + 1);
+	}
+
+	pos = unicode - block->first;
+
+	if (!entry->glyphs[pos]) entry->mapped++;
+
+	entry->glyphs[pos] = glyph;
+}
+
+gint
+gp_uc_map_lookup (GPUCMap * map, gint unicode)
+{
+	const GPCharBlock * block;
+	GPUCMapEntry * entry;
+
+	g_return_val_if_fail (map != NULL, 0);
+	g_return_val_if_fail (unicode > 0, 0);
+
+	block = gp_unicode_get_char_block (unicode);
+	g_return_val_if_fail (block != NULL, 0);
+
+	entry = map->entry[block->code];
+
+	if (entry && entry->glyphs) return entry->glyphs[unicode - block->first];
+
+	return 0;
+}
+
+
 

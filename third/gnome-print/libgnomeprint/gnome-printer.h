@@ -34,7 +34,10 @@ typedef enum {
 } GnomePrinterStatus;
 
 GnomePrinterStatus  gnome_printer_get_status (GnomePrinter *printer);
-const char         *gnome_printer_str_status (GnomePrinterStatus status);       
+const char         *gnome_printer_str_status (GnomePrinterStatus status);
+
+void gnome_printer_set_print_to_file (GnomePrinter *printer, gboolean print_to_file);
+gchar * gnome_printer_dup_command (GnomePrinter *printer);
 
 END_GNOME_DECLS
 

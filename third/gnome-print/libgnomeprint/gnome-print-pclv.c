@@ -47,10 +47,11 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
+#include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-printer-private.h>
 #include <libgnomeprint/gnome-print-pclv.h>
 #include <libgnomeprint/gnome-print-pclc.h>
-#include <libgnomeprint/gnome-print-encode.h>
+#include <libgnomeprint/gnome-print-encode-private.h>
 
 PCLJobData * jobdata;
 static GnomePrintRGBPClass *pclv_parent_class;
@@ -471,7 +472,7 @@ pclv_job_start (GnomePrintContext *pc)
 
 #ifdef DEBUG
 	pclc_dump_structure_values_to_console();
-#endif DEBUG
+#endif
 
 	/* Here we start the print job */
 	status = 0;

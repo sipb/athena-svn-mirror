@@ -24,7 +24,13 @@
 #include "config.h"
 #include <libgnomeprint/gnome-print-i18n.h>
 
-#include <gnome.h>
+#include <gtk/gtkobject.h>
+#include <gtk/gtkwidget.h>
+#include <gtk/gtkcontainer.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-pixmap.h>
+
 #include <libgnomeprint/gnome-print-copies.h>
 
 enum {COPIES_SET, LAST_SIGNAL};

@@ -175,16 +175,20 @@ char * gnome_font_get_full_name (const GnomeFont *font);
  * We keep these at moment, but in future better go with Pango/glyphlists
  */
 
-/* these routines are fast; go ahead and use them */
-double
-gnome_font_get_width_string (const GnomeFont *font, const char *s);
-double
-gnome_font_get_width_string_n (const GnomeFont *font, const char *s, int n);
-
-
-const ArtDRect * gnome_font_face_get_stdbbox (const GnomeFontFace * face);
-
-
+double gnome_font_get_width_utf8 (const GnomeFont *font, const char *s);
+double gnome_font_get_width_utf8_sized (const GnomeFont *font, const char *s, int n);
+/*
+ * WARNING WARNING WARNING
+ *
+ * These functions do expect string to be 8-but iso-8859-1!
+ * NOT utf-8 as most other gnome-print methods!
+ * So they are COMPLETELY unusable for non-latin scripts!
+ *
+ * WARNING WARNING WARNING
+ *
+ */
+double gnome_font_get_width_string (const GnomeFont *font, const char *s);
+double gnome_font_get_width_string_n (const GnomeFont *font, const char *s, int n);
 
 END_GNOME_DECLS
 

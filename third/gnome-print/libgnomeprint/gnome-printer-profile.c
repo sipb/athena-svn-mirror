@@ -113,6 +113,26 @@ gnome_printer_stock_profile (void)
 	return pp;
 }
 
+static gint
+gpp_compare_profiles (GnomePrinterProfile *a, GnomePrinterProfile *b)
+{
+	/*
+	 *now that is silly ;) - but it works for stock profiles
+	 * and that is all we need
+	 */
+
+	if (!strcmp (a->driver, "gnome-print-ps2")) {
+		if (!strcmp (b->driver, "gnome-print-ps2")) {
+			return strcmp (a->output, b->output);
+		}
+		return -1;
+	} else {
+		if (!strcmp (b->driver, "gnome-print-ps2")) return 1;
+	}
+
+	return 0;
+}
+
 /**
  * gnome_printer_get_profiles:
  *
@@ -133,11 +153,13 @@ gnome_printer_get_profiles (void)
 	gnome_printer_load_profiles_from_dir (user_dir, &list);
 	g_free (user_dir);
 
-	if (list == NULL)
+	if (list == NULL) {
 		list = g_list_prepend (list, gnome_printer_stock_profile ());
+	}
+
+	list = g_list_sort (list, (GCompareFunc) gpp_compare_profiles);
 
 	return list;
-	return g_list_reverse (list);
 }
 
 static void
@@ -179,6 +201,80 @@ gnome_printer_profile_free_profiles (GnomePrinterProfileList *pl)
 	g_list_free (pl);
 }
 
+static GnomePrinter *
+gnome_printer_create (const char *file, const char *driver)
+{
+	GnomePrinter *printer;
+	
+	printer = gtk_type_new (gnome_printer_get_type ());
+#ifndef ENABLE_LIBGPA	
+	printer->driver = g_strdup (driver);
+#endif
+	printer->filename = g_strdup (file);
+	return printer;
+}
+
+
+
+/** 
+ * gnome_printer_profile_get_printer:
+ * @pp: A printer profile
+ * @optional_file: an optional output file name.
+ * @optional_command: an optioanl command for printing.
+ *
+ * Returns a GnomePrinter object based on the @pp GnomePrinterProfile
+ * and if one of @optional_file or @optional_command are non-NULL
+ * they modify the printer profile's default setting for output.
+ */
+GnomePrinter *
+gnome_printer_profile_get_printer (GnomePrinterProfile *pp,
+				   const char *optional_file,
+				   const char *optional_command)
+{
+	GnomePrinter *printer = NULL;
+	char *output = NULL;
+
+	g_return_val_if_fail (pp != NULL, printer);
+
+	if (optional_file != NULL && optional_command != NULL){
+		g_warning ("Only one of optional_file or optional_command must be set\n");
+		return NULL;
+	}
+
+	if (optional_file){
+		/*
+		 * FIXME: do something about funny filenames?  Like one
+		 * starting with a '|'.
+		 */
+		output = g_strdup (optional_file);
+	} else if (optional_command) {
+		if (strstr (optional_command, "%s")) {
+			output = g_strdup_printf ("*%s", optional_command);
+		} else {
+			output = g_strdup_printf ("|%s", optional_command);
+		}
+	} else if (strncmp (pp->output, "file", 4) == 0) {
+		output = g_strdup (pp->output + 5);
+	} else if (strncmp (pp->output, "command", 7) == 0) {
+		if (strstr (pp->output + 8, "%s")) {
+			output = g_strdup_printf ("*%s", pp->output + 8);
+		} else {
+			output = g_strdup_printf ("|%s", pp->output + 8);
+		}
+	}
+
+	if (!output) output = g_strdup ("gnome-printer-output");
+
+	printer = gnome_printer_create (output, pp->driver);
+
+	g_free (output);
+
+	return printer;
+}
+
+
+
+/* -------------------------------------------------  Access to the struct ----------------------------------*/
 /**
  * gnome_printer_profile_get_printer_name:
  * @pp: a printer profile
@@ -263,68 +359,3 @@ gnome_printer_profile_get_output (GnomePrinterProfile *pp)
 	return pp->output;
 }
 
-static GnomePrinter *
-gnome_printer_create (const char *file, const char *driver)
-{
-	GnomePrinter *printer;
-	
-	printer = gtk_type_new (gnome_printer_get_type ());
-	printer->driver = g_strdup (driver);
-	printer->filename = g_strdup (file);
-	return printer;
-}
-
-/** 
- * gnome_printer_profile_get_printer:
- * @pp: A printer profile
- * @optional_file: an optional output file name.
- * @optional_command: an optioanl command for printing.
- *
- * Returns a GnomePrinter object based on the @pp GnomePrinterProfile
- * and if one of @optional_file or @optional_command are non-NULL
- * they modify the printer profile's default setting for output.
- */
-GnomePrinter *
-gnome_printer_profile_get_printer (GnomePrinterProfile *pp,
-				   const char *optional_file,
-				   const char *optional_command)
-{
-	GnomePrinter *printer = NULL;
-	char *output = NULL;
-
-	g_return_val_if_fail (pp != NULL, printer);
-
-	if (optional_file != NULL && optional_command != NULL){
-		g_warning ("Only one of optional_file or optional_command must be set\n");
-		return NULL;
-	}
-
-	if (optional_file){
-		/*
-		 * FIXME: do something about funny filenames?  Like one
-		 * starting with a '|'.
-		 */
-		output = g_strdup (optional_file);
-	} else if (optional_command) {
-		output = g_malloc (strlen (optional_command) + 2);
-		output[0] = '|';
-		strcpy (&output[1], optional_command);
-	} else if (strncmp (pp->output, "file", 4) == 0){
-		output = g_strdup (pp->output + 5);
-	} else if (strncmp (pp->output, "command", 7) == 0){
-		const char *cmd = pp->output + 8;
-
-		output = g_malloc (strlen (cmd) + 2);
-		output[0] = '|';
-		strcpy (&output[1], cmd);
-	}
-
-	if (!output)
-		output = g_strdup ("gnome-printer-output");
-
-	printer = gnome_printer_create (output, pp->driver);
-
-	g_free (output);
-
-	return printer;
-}

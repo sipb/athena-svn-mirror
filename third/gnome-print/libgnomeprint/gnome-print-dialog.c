@@ -1,7 +1,9 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Helix Code Inc.
  *
  *  Authors: Michael Zucchi <notzed@helixcode.com>
+ *           Chema Celorio <chema@celorio.com>
  *
  *  A system print dialogue.
  *
@@ -24,7 +26,14 @@
 #include "config.h"
 #include <libgnomeprint/gnome-print-i18n.h>
 
-#include <gnome.h>
+#include <time.h>
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtkobject.h>
+#include <gtk/gtkwidget.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-dateedit.h>
+
 #include <libgnome/gnome-defs.h>
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-printer-dialog.h>
@@ -130,19 +139,26 @@ static void
 gnome_print_dialog_init (GnomePrintDialog *gpd)
 {
 	gpd->printer = gnome_printer_widget_new ();
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG (gpd)->vbox), GTK_WIDGET (gpd->printer), FALSE, FALSE, 3);
-	gtk_widget_show(gpd->printer);
+
+	if (gpd->printer) {
+		gtk_box_pack_start (GTK_BOX(GNOME_DIALOG (gpd)->vbox), GTK_WIDGET (gpd->printer), FALSE, FALSE, 3);
+		gtk_widget_show (gpd->printer);
+	} else
+		g_warning ("There aren't any printers installed\n");
+
+	
 	gpd->range_type = GNOME_PRINT_RANGETYPE_NONE;
 	gpd->priv = g_malloc0(sizeof(Private));
 	gpd->range_accel_group = NULL;
 }
 
 #define PAD 4
-static void init_body(GnomePrintDialog *gpd, int flags)
+static void
+init_body (GnomePrintDialog *gpd, int flags)
 {
 	GtkWidget *hbox;
 	GnomePrinterWidget *gpw = GNOME_PRINTER_WIDGET (gpd->printer);
-	
+
 	if (gpd->copies || gpd->range_container)
 		return;
 
@@ -210,6 +226,8 @@ gnome_print_dialog_new (const char *title, int flags)
 	GtkWidget *w;
 
 	w = GTK_WIDGET ( gtk_type_new (gnome_print_dialog_get_type ()));
+	if (GNOME_PRINT_DIALOG (w)->printer == NULL)
+		return NULL;
 	gnome_dialog_constructv(GNOME_DIALOG(w), title, print_buttons());
 	init_body(GNOME_PRINT_DIALOG(w), flags);
 	return w;
@@ -239,7 +257,7 @@ gnome_print_dialog_construct (GtkWidget *gpd, const char *title, int flags)
  * Install a custom range specification widget.
  **/
 void
-gnome_print_dialog_construct_range_custom(GnomePrintDialog *gpd, GtkWidget *custom)
+gnome_print_dialog_construct_range_custom (GnomePrintDialog *gpd, GtkWidget *custom)
 {
 	g_return_if_fail(gpd != NULL);
 	g_return_if_fail(GNOME_IS_PRINT_DIALOG(gpd));
@@ -257,10 +275,10 @@ gnome_print_dialog_construct_range_custom(GnomePrintDialog *gpd, GtkWidget *cust
 
 
 static void
-replace(GtkWidget **o, GtkWidget *n)
+replace (GtkWidget **o, GtkWidget *n)
 {
 	if (*o) {
-		gtk_object_unref((GtkObject *)*o);
+		gtk_object_unref ((GtkObject *)*o);
 	}
 	*o=n;
 }
@@ -284,19 +302,21 @@ replace(GtkWidget **o, GtkWidget *n)
  * 
  **/
 void
-gnome_print_dialog_construct_range_any(GnomePrintDialog *gpd, int flags, GtkWidget *range_widget, char *currentlabel, char *rangelabel)
+gnome_print_dialog_construct_range_any (GnomePrintDialog *gpd, int flags,
+								GtkWidget *range_widget,
+								gchar *currentlabel, gchar *rangelabel)
 {
 	GtkWidget *table;
 	GtkWidget *current = NULL, *all = NULL, *range = NULL, *selection = NULL;
 	int row;
 	guint accel_key;
 	Private *p;
-	GSList *group= NULL;
+	GSList *group = NULL;
 
-	g_return_if_fail(gpd != NULL);
-	g_return_if_fail(GNOME_IS_PRINT_DIALOG(gpd));
-	g_return_if_fail(gpd->range_container != NULL);
-	g_return_if_fail(!(flags&GNOME_PRINT_RANGE_SELECTION && flags&GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE));
+	g_return_if_fail (gpd != NULL);
+	g_return_if_fail (GNOME_IS_PRINT_DIALOG(gpd));
+	g_return_if_fail (gpd->range_container != NULL);
+	g_return_if_fail (!(flags&GNOME_PRINT_RANGE_SELECTION && flags&GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE));
 	p = gpd->priv;
 
 	row=0;
@@ -414,7 +434,9 @@ gnome_print_dialog_construct_range_any(GnomePrintDialog *gpd, int flags, GtkWidg
  * because it makes no sense!
  **/
 void
-gnome_print_dialog_construct_range_date(GnomePrintDialog *gpd, int flags, time_t start, time_t end, char *currentlabel, char *rangelabel)
+gnome_print_dialog_construct_range_date (GnomePrintDialog *gpd, int flags,
+					 time_t start, time_t end,
+					 char *currentlabel, char *rangelabel)
 {
 	GtkWidget *table = NULL, *label;
 	GtkWidget *range_start = NULL, *range_end = NULL;
@@ -473,7 +495,8 @@ gnome_print_dialog_construct_range_date(GnomePrintDialog *gpd, int flags, time_t
  * Construct a generic page/sheet range area.
  **/
 void
-gnome_print_dialog_construct_range_page(GnomePrintDialog *gpd, int flags, int start, int end, char *currentlabel, char *rangelabel)
+gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, int flags, int start, int end,
+					 char *currentlabel, char *rangelabel)
 {
 	GtkWidget *hbox = NULL, *label;
 	GtkWidget *range_start = NULL, *range_end = NULL;
@@ -548,7 +571,7 @@ gnome_print_dialog_construct_range_page(GnomePrintDialog *gpd, int flags, int st
  * Return value: A bitmask with one option set.
  **/
 GnomePrintRangeType
-gnome_print_dialog_get_range(GnomePrintDialog *gpd)
+gnome_print_dialog_get_range (GnomePrintDialog *gpd)
 {
 	Private *p;
 
@@ -586,7 +609,7 @@ gnome_print_dialog_get_range(GnomePrintDialog *gpd)
  * gnome_print_dialog_get_range().
  **/
 int
-gnome_print_dialog_get_range_page(GnomePrintDialog *gpd, int *start, int *end)
+gnome_print_dialog_get_range_page (GnomePrintDialog *gpd, int *start, int *end)
 {
 	int mask;
 	Private *p;
@@ -620,7 +643,7 @@ gnome_print_dialog_get_range_page(GnomePrintDialog *gpd, int *start, int *end)
  * gnome_print_dialog_get_range().
  **/
 int
-gnome_print_dialog_get_range_date(GnomePrintDialog *gpd, time_t *start, time_t *end)
+gnome_print_dialog_get_range_date (GnomePrintDialog *gpd, time_t *start, time_t *end)
 {
 	int mask;
 	Private *p;
@@ -651,7 +674,7 @@ gnome_print_dialog_get_range_date(GnomePrintDialog *gpd, time_t *start, time_t *
  * copies indicator, then a default of 1 copy is returned.
  **/
 void
-gnome_print_dialog_get_copies(GnomePrintDialog *gpd, int *copies, int *collate)
+gnome_print_dialog_get_copies (GnomePrintDialog *gpd, int *copies, int *collate)
 {
 	if (gpd->copies) {
 		if (copies) *copies = gnome_print_copies_get_copies((GnomePrintCopies *) gpd->copies);
@@ -671,7 +694,7 @@ gnome_print_dialog_get_copies(GnomePrintDialog *gpd, int *copies, int *collate)
  * Sets the print copies and collation status in the print dialogue.
  **/
 void
-gnome_print_dialog_set_copies(GnomePrintDialog *gpd, int copies, int collate)
+gnome_print_dialog_set_copies (GnomePrintDialog *gpd, int copies, int collate)
 {
 	if (gpd->copies)
 		gnome_print_copies_set_copies((GnomePrintCopies *)gpd->copies, copies, collate);
@@ -687,7 +710,7 @@ gnome_print_dialog_set_copies(GnomePrintDialog *gpd, int copies, int collate)
  * Return value: The user-selected printer.
  **/
 GnomePrinter *
-gnome_print_dialog_get_printer(GnomePrintDialog *gpd)
+gnome_print_dialog_get_printer (GnomePrintDialog *gpd)
 {
 	return gnome_printer_widget_get_printer((GnomePrinterWidget *)gpd->printer);
 }

@@ -18,14 +18,14 @@ BEGIN_GNOME_DECLS
  * feel free to add more, if those make sense
  */
 
-enum {
+typedef enum {
 	GNOME_PRINT_OK = 0,
 	GNOME_PRINT_ERROR_UNKNOWN = -1,
 	GNOME_PRINT_ERROR_BADVALUE = -2,
 	GNOME_PRINT_ERROR_NOCURRENTPOINT = -3,
 	GNOME_PRINT_ERROR_NOCURRENTPATH = -4,
-	GNOME_PRINT_ERROR_TEXTCORRUPT = -5
-};
+	GNOME_PRINT_ERROR_TEXTCORRUPT = -5,
+}GnomePrintReturnCode;
 
 #define GNOME_TYPE_PRINT_CONTEXT         (gnome_print_context_get_type ())
 #define GNOME_PRINT_CONTEXT(obj)         (GTK_CHECK_CAST ((obj), GNOME_TYPE_PRINT_CONTEXT, GnomePrintContext))

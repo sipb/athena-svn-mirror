@@ -1,55 +1,142 @@
-# Note that this is NOT a relocatable package
-%define ver      0.25
-%define  RELEASE 1
-%define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define prefix   /usr
+# *** NOTE ****
+# This gnome-print.spec file is not beeing maintaned by the gnome-print
+# team. Patches are welcomed, but the only "official" gnome-print release
+# is the tarball.
 
-Summary: Gnome Print - Printing libraries for GNOME.
+%define localstatedir /var/lib
+
+Summary:        Gnome Print - Printing libraries for GNOME.
 Name: 		gnome-print
-Version: 	%ver
-Release: 	%rel
+Version: 	0.31
+Release: 	0.1
 Copyright: 	LGPL
 Group: 		System Environment/Base
-Source: ftp://ftp.gnome.org/pub/GNOME/sources/gnome-print/gnome-print-%{ver}.tar.gz
-BuildRoot: 	/var/tmp/gnome-print-%{ver}-root
-Requires: 	gnome-libs >= 1.0
-Requires:       urw-fonts
-Requires:       ghostscript-fonts >= 4.03
-DocDir:		%{prefix}/doc
-Prereq:	/sbin/ldconfig libxml
+Source:         ftp://ftp.gnome.org/pub/GNOME/stable/sources/%{name}/%{name}-%{version}.tar.gz
+BuildRoot: 	%{_tmpdir}/gnome-print-%{version}-root
+PreReq:         ghostscript, urw-fonts, perl
+PreReq:         ghostscript-fonts >= 4.03
+Requires:       gtk+ >= 1.2.8
+Requires:       gnome-libs >= 1.0
+Requires:       libxml >= 1.8.5
+BuildRequires:  gnome-libs-devel
+BuildRequires:  gdk-pixbuf-devel >= 0.7.0
+BuildRequires:  libxml-devel >= 1.8.5
 
 %description
-GNOME (GNU Network Object Model Environment) is a user-friendly set of
-applications and desktop tools to be used in conjunction with a window
-manager for the X Window System.  GNOME is similar in purpose and scope
-to CDE and KDE, but GNOME is based completely on free software.
-The gnome-print package contains libraries and fonts that are needed by
-GNOME applications wanting to print.
-
 You should install the gnome-print package if you intend on using any of
 the GNOME applications that can print. If you would like to develop GNOME
 applications that can print you will also need to install the gnome-print
 devel package.
 
 %package devel
-Summary: Libraries and include files for developing GNOME applications.
-Group: 		Development/Libraries
+Summary:    Libraries and include files for developing GNOME applications.
+Group: 	    Development/Libraries
+Requires:   %{name} = %{version}
 
 %description devel
-GNOME (GNU Network Object Model Environment) is a user-friendly set of
-applications and desktop tools to be used in conjunction with a window
-manager for the X Window System.  GNOME is similar in purpose and scope
-to CDE and KDE, but GNOME is based completely on free software.
-The gnome-print-devel package includes the libraries and include files that
-you will need when developing applications that use the GNOME printing 
-facilities.
-
 You should install the gnome-print-devel package if you would like to 
 develop GNOME applications that will use the GNOME printing facilities.
 You don't need to install the gnome-print-devel package if you just want 
 to use the GNOME desktop enviornment.
 
+%prep
+%setup -q
+
+%build
+# Needed for snapshot releases.
+%ifarch alpha
+  MYARCH_FLAGS="--host=alpha-redhat-linux"
+%endif
+
+if [ ! -f configure ]; then
+    CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh $MYARCH_FLAGS \
+	--prefix=%{_prefix} --localstatedir=%{localstatedir} \
+	--bindir=%{_bindir} --datadir=%{_datadir} --libdir=%{_libdir} \
+	--includedir=%{_includedir} 
+fi
+
+CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{_prefix} \
+    --localstatedir=%{localstatedir} --bindir=%{_bindir} \
+    --datadir=%{_datadir} --libdir=%{_libdir} \
+    --includedir=%{_includedir}
+
+
+if [ "$SMP" != "" ]; then
+    (make "MAKE=make -k -j $SMP"; exit 0)
+    make
+else
+    make
+fi
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT/%{_prefix} \
+    localstatedir=$RPM_BUILD_ROOT/%{localstatedir} \
+    bindir=$RPM_BUILD_ROOT/%{_bindir} \
+    datadir=$RPM_BUILD_ROOT/%{_datadir} \
+    libdir=$RPM_BUILD_ROOT/%{_libdir} \
+    includedir=$RPM_BUILD_ROOT/%{_includedir} install 
+
+# This is ugly
+#
+
+install -m 644 run-gnome-font-install $RPM_BUILD_ROOT%{_datadir}/fonts
+cd fonts
+install -m 644 *.font $RPM_BUILD_ROOT%{_datadir}/fonts
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/ldconfig
+
+perl %{_datadir}/fonts/run-gnome-font-install \
+	%{_bindir}/gnome-font-install %{_datadir} %{_datadir}
+
+%postun 
+/sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+
+%doc AUTHORS COPYING ChangeLog NEWS README
+%{_bindir}/*
+%{_libdir}/lib*.so.*
+%{_datadir}/fonts/afms/adobe/*
+%{_datadir}/fonts/fontmap2
+%{_datadir}/fonts/*.font
+%{_datadir}/fonts/run-gnome-font-install
+%{_datadir}/locale/*/*/*
+%config %{_datadir}/gnome-print/%{version}/profiles/PostscriptOptimized.profile
+%config %{_datadir}/gnome-print/%{version}/profiles/pdf.profile
+%config %{_datadir}/gnome-print/%{version}/profiles/fax-g3.profile
+ 
+%files devel
+%defattr(-, root, root)
+
+%{_libdir}/lib*.so
+%{_libdir}/*.a
+%{_libdir}/*.la
+%{_libdir}/*.sh
+%{_includedir}/libgnomeprint
+
+
 %changelog
+* Fri Jun 22 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- reformatted the header with nicer indenting
+- fixed all paths to use macros if possible
+- added the rest of the option relocation options to configure and make install
+- added localstatdir as a define
+- added a PreReq: on perl
+- used %{_tmpdir} in the BuildRoot line
+- removed unnecessary defines
+- used %name and %version in the Source line
+
+* Mon Dec 11 2000 Chema Celorio <chema@celorio.com>
+- Added note about this file not beeing maintaned and updated
+  the old description.
+
 * Sun Aug 01 1999 Gregory McLean <gregm@comstar.net>
 - Undo my draconian uninstall stuff.
 
@@ -64,67 +151,3 @@ to use the GNOME desktop enviornment.
 
 * Mon Jul 05 1999 Gregory McLean <gregm@comstar.net>
 - Fleshed out the descriptions.
-
-%prep
-%setup -q
-
-%build
-# Needed for snapshot releases.
-%ifarch alpha
-  MYARCH_FLAGS="--host=alpha-redhat-linux"
-%endif
-
-if [ ! -f configure ]; then
-  CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib
-else
-  CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib
-fi
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-
-%install
-rm -rf $RPM_BUILD_ROOT
-
-make prefix=$RPM_BUILD_ROOT%{prefix} install
-# This is ugly
-#
-cd fonts
-install -c *.font $RPM_BUILD_ROOT%{prefix}/share/fonts
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%post
-if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
-  echo "%{prefix}/lib" >> /etc/ld.so.conf
-fi
-/sbin/ldconfig
-perl $RPM_BUILD_ROOT/run-gnome-font-install %{prefix}/bin/gnome-font-install \
-	%{prefix}/share/ $RPM_BUILD_ROOT
-
-%postun 
-/sbin/ldconfig
-
-%files
-%defattr(-, root, root)
-
-%doc AUTHORS COPYING ChangeLog NEWS README
-%{prefix}/lib/lib*.so.*
-%{prefix}/bin/*
-%{prefix}/share/fonts/afms/adobe/*
-%{prefix}/share/fonts/*.font
-%config %{prefix}/share/gnome-print/profiles/Postscript.profile
-
-%files devel
-%defattr(-, root, root)
-
-%{prefix}/lib/lib*.so
-%{prefix}/lib/*.a
-%{prefix}/lib/*.la
-%{prefix}/lib/*.sh
-%{prefix}/include/*/*

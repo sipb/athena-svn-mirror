@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -71,11 +72,15 @@ GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GENCAT = @GENCAT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_CONFIG = @GLIB_CONFIG@
+GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
 GNOMEPRINT_AGE = @GNOMEPRINT_AGE@
 GNOMEPRINT_CURRENT = @GNOMEPRINT_CURRENT@
+GNOMEPRINT_LIBS = @GNOMEPRINT_LIBS@
 GNOMEPRINT_REVISION = @GNOMEPRINT_REVISION@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
@@ -89,6 +94,9 @@ GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
+GPA_AGE = @GPA_AGE@
+GPA_CURRENT = @GPA_CURRENT@
+GPA_REVISION = @GPA_REVISION@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
@@ -102,6 +110,10 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
+LIBGPA_CFLAGS = @LIBGPA_CFLAGS@
+LIBGPA_INCLUDEDIR = @LIBGPA_INCLUDEDIR@
+LIBGPA_LIBDIR = @LIBGPA_LIBDIR@
+LIBGPA_LIBS = @LIBGPA_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -135,16 +147,20 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-noinst_PROGRAMS = testprint  			testtext   			testprint2 			testprint3 			testprint4 			testprint5 			testprint6 			testpdf    			testmetrics 			testembed  			testzip
+noinst_PROGRAMS = testprint  				testtext   				testprint2 				testprint3 				testprint4 				testprint5 				testprint6 				testfax	 				testpdf    				testmetrics 				testembed  				testzip
+
+@LIBGPA_TRUE@LIBGPA_TEST_CFLAGS = -I$(top_srcdir)/libgpa
+@LIBGPA_FALSE@LIBGPA_TEST_CFLAGS = 
+@LIBGPA_TRUE@LIBGPA_TEST_LIBS = $(top_builddir)/libgpa/libgpa.la
+@LIBGPA_FALSE@LIBGPA_TEST_LIBS = 
+
+INCLUDES =  	$(GTK_CFLAGS)					-I$(top_srcdir)/intl 			-I$(top_builddir)/intl			-I$(top_srcdir)				-I$(top_srcdir)/libgnomeprint		$(GNOME_INCLUDEDIR)				$(PRINT_TEST_CFLAGS)			$(LIBGPA_TEST_CFLAGS)			-DPROFILEDIR=\""$(profilesdir)"\" 
 
 
-INCLUDES =  	$(GTK_CFLAGS)				-I$(top_srcdir)/intl 			-I$(top_builddir)/intl			-I$(top_srcdir)				-I$(top_srcdir)/libgnomeprint		$(GNOME_INCLUDEDIR)			$(PRINT_TEST_CFLAGS)			-DPROFILEDIR=\""$(profilesdir)"\"
+CPPFLAGS = @CPPFLAGS@ 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		-DBINDIR=\""$(bindir)"\"		-DDATADIR=\""$(datadir)"\"
 
 
-CPPFLAGS =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		-DBINDIR=\""$(bindir)"\"		-DDATADIR=\""$(datadir)"\"
-
-
-print_libs =  	$(top_builddir)/libgnomeprint/libgnomeprint.la		$(PRINT_TEST_LIBS)					$(INTLLIBS)
+print_libs =  	$(top_builddir)/libgnomeprint/libgnomeprint.la		$(PRINT_TEST_LIBS)								$(LIBGPA_TEST_LIBS)								$(INTLLIBS)
 
 
 testprint_SOURCES = testprint.c
@@ -181,6 +197,12 @@ testprint6_SOURCES = testprint6.c
 testprint6_LDFLAGS = 
 testprint6_DEPENDENCIES = $(DEPS)
 testprint6_LDADD =  	$(print_libs)
+
+
+testfax_SOURCES = testfax.c
+testfax_LDFLAGS = 
+testfax_DEPENDENCIES = $(DEPS)
+testfax_LDADD =  	$(print_libs)
 
 
 testpdf_SOURCES = testpdf.c
@@ -227,6 +249,7 @@ testprint3_OBJECTS =  testprint3.o
 testprint4_OBJECTS =  testprint4.o
 testprint5_OBJECTS =  testprint5.o
 testprint6_OBJECTS =  testprint6.o
+testfax_OBJECTS =  testfax.o
 testpdf_OBJECTS =  testpdf.o
 testmetrics_OBJECTS =  testmetrics.o
 testembed_OBJECTS =  testembed.o
@@ -242,8 +265,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(testprint_SOURCES) $(testtext_SOURCES) $(testprint2_SOURCES) $(testprint3_SOURCES) $(testprint4_SOURCES) $(testprint5_SOURCES) $(testprint6_SOURCES) $(testpdf_SOURCES) $(testmetrics_SOURCES) $(testembed_SOURCES) $(testzip_SOURCES)
-OBJECTS = $(testprint_OBJECTS) $(testtext_OBJECTS) $(testprint2_OBJECTS) $(testprint3_OBJECTS) $(testprint4_OBJECTS) $(testprint5_OBJECTS) $(testprint6_OBJECTS) $(testpdf_OBJECTS) $(testmetrics_OBJECTS) $(testembed_OBJECTS) $(testzip_OBJECTS)
+SOURCES = $(testprint_SOURCES) $(testtext_SOURCES) $(testprint2_SOURCES) $(testprint3_SOURCES) $(testprint4_SOURCES) $(testprint5_SOURCES) $(testprint6_SOURCES) $(testfax_SOURCES) $(testpdf_SOURCES) $(testmetrics_SOURCES) $(testembed_SOURCES) $(testzip_SOURCES)
+OBJECTS = $(testprint_OBJECTS) $(testtext_OBJECTS) $(testprint2_OBJECTS) $(testprint3_OBJECTS) $(testprint4_OBJECTS) $(testprint5_OBJECTS) $(testprint6_OBJECTS) $(testfax_OBJECTS) $(testpdf_OBJECTS) $(testmetrics_OBJECTS) $(testembed_OBJECTS) $(testzip_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -331,6 +354,10 @@ testprint6: $(testprint6_OBJECTS) $(testprint6_DEPENDENCIES)
 	@rm -f testprint6
 	$(LINK) $(testprint6_LDFLAGS) $(testprint6_OBJECTS) $(testprint6_LDADD) $(LIBS)
 
+testfax: $(testfax_OBJECTS) $(testfax_DEPENDENCIES)
+	@rm -f testfax
+	$(LINK) $(testfax_LDFLAGS) $(testfax_OBJECTS) $(testfax_LDADD) $(LIBS)
+
 testpdf: $(testpdf_OBJECTS) $(testpdf_DEPENDENCIES)
 	@rm -f testpdf
 	$(LINK) $(testpdf_LDFLAGS) $(testpdf_OBJECTS) $(testpdf_LDADD) $(LIBS)
@@ -384,13 +411,20 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gpa-test.o: gpa-test.c ../libgnomeprint/gnome-print.h \
+	../libgnomeprint/gnome-printer.h ../libgnomeprint/gnome-font.h \
+	../libgnomeprint/gnome-font-face.h \
+	../libgnomeprint/gnome-font-compat.h \
+	../libgnomeprint/gnome-text.h \
+	../libgnomeprint/gnome-glyphlist.h ../libgnomeprint/gpa-node.h \
+	../libgnomeprint/gnome-printer-dialog.h
 testembed.o: testembed.c ../libgnomeprint/gnome-print-pdf.h \
 	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-printer.h \
 	../libgnomeprint/gnome-font.h \
@@ -399,6 +433,20 @@ testembed.o: testembed.c ../libgnomeprint/gnome-print-pdf.h \
 	../libgnomeprint/gnome-glyphlist.h ../libgnomeprint/gp-path.h \
 	../libgnomeprint/gnome-print-ps.h \
 	../libgnomeprint/gnome-print-preview.h \
+	../libgnomeprint/gnome-printer-dialog.h
+testfax.o: testfax.c ../config.h ../libgnomeprint/gnome-printer.h \
+	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-font.h \
+	../libgnomeprint/gnome-font-face.h \
+	../libgnomeprint/gnome-text.h \
+	../libgnomeprint/gnome-glyphlist.h \
+	../libgnomeprint/gnome-print-meta.h \
+	../libgnomeprint/gnome-print-preview.h \
+	../libgnomeprint/gnome-print-pixbuf.h \
+	../libgnomeprint/gnome-print-fax.h \
+	../libgnomeprint/gnome-print-rgbp.h \
+	../libgnomeprint/gnome-print-preview-private.h \
+	../libgnomeprint/gnome-print-private.h ../libgnomeprint/gp-gc.h \
+	../libgnomeprint/gp-path.h \
 	../libgnomeprint/gnome-printer-dialog.h
 testmetrics.o: testmetrics.c ../libgnomeprint/gnome-printer.h \
 	../libgnomeprint/gnome-printer-dialog.h \
@@ -419,6 +467,18 @@ testpdf.o: testpdf.c ../libgnomeprint/gnome-print-pdf.h \
 	../libgnomeprint/gnome-print-ps.h \
 	../libgnomeprint/gnome-print-preview.h \
 	../libgnomeprint/gnome-printer-dialog.h
+testprint.o: testprint.c ../config.h ../libgnomeprint/gnome-printer.h \
+	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-font.h \
+	../libgnomeprint/gnome-font-face.h \
+	../libgnomeprint/gnome-text.h \
+	../libgnomeprint/gnome-glyphlist.h \
+	../libgnomeprint/gnome-print-meta.h \
+	../libgnomeprint/gnome-print-preview.h \
+	../libgnomeprint/gnome-print-pixbuf.h \
+	../libgnomeprint/gnome-printer-dialog.h \
+	../libgnomeprint/gnome-print-master.h \
+	../libgnomeprint/gnome-print-dialog.h \
+	../libgnomeprint/gnome-print-master-preview.h
 testprint2.o: testprint2.c ../config.h ../libgnomeprint/gnome-printer.h \
 	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-font.h \
 	../libgnomeprint/gnome-font-face.h \
@@ -475,25 +535,14 @@ testprint6.o: testprint6.c ../config.h ../libgnomeprint/gnome-printer.h \
 	../libgnomeprint/gnome-print-master.h \
 	../libgnomeprint/gnome-print-dialog.h \
 	../libgnomeprint/gnome-print-master-preview.h
-testprint.o: testprint.c ../config.h ../libgnomeprint/gnome-printer.h \
-	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-font.h \
-	../libgnomeprint/gnome-font-face.h \
-	../libgnomeprint/gnome-text.h \
-	../libgnomeprint/gnome-glyphlist.h \
-	../libgnomeprint/gnome-print-meta.h \
-	../libgnomeprint/gnome-print-preview.h \
-	../libgnomeprint/gnome-print-pixbuf.h \
-	../libgnomeprint/gnome-printer-dialog.h \
-	../libgnomeprint/gnome-print-master.h \
-	../libgnomeprint/gnome-print-dialog.h \
-	../libgnomeprint/gnome-print-master-preview.h
 testtext.o: testtext.c ../config.h ../libgnomeprint/gnome-printer.h \
 	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-font.h \
 	../libgnomeprint/gnome-font-face.h \
 	../libgnomeprint/gnome-text.h \
 	../libgnomeprint/gnome-glyphlist.h \
 	../libgnomeprint/gnome-printer-dialog.h
-testzip.o: testzip.c ../config.h ../libgnomeprint/gnome-print-encode.h
+testzip.o: testzip.c ../config.h ../libgnomeprint/gnome-print-encode.h \
+	../libgnomeprint/gnome-print-encode-private.h
 
 info-am:
 info: info-am

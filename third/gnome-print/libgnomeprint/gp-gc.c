@@ -30,6 +30,9 @@
 
 #include <gp-gc.h>
 
+#define GP_GC_EPSILON 1e-18
+#define GP_GC_EQ(a,b) (fabs (a - b) < GP_GC_EPSILON)
+
 struct _GPGC {
 	gint refcount;
 	GSList * ctx;
@@ -39,17 +42,22 @@ typedef struct _GPCtx GPCtx;
 
 struct _GPCtx {
 	gdouble ctm[6];
+	gint ctm_flag;
 
 	guint32 currentcolor;
 	gdouble r, g, b, opacity;
+	gint currentcolor_flag;
 
 	gdouble linewidth, miterlimit;
 	ArtPathStrokeJoinType linejoin;
 	ArtPathStrokeCapType linecap;
+	gint line_flag;
 	ArtVpathDash dash;
+	gint dash_flag;
 	gboolean privatedash;
 
 	GnomeFont * font;
+	gint font_flag;
 
 	ArtPoint currentpoint;
 	GPPath * currentpath;
@@ -66,6 +74,7 @@ static void gp_ctx_destroy (GPCtx * ctx);
 static gint gp_ctx_clip (GPCtx * ctx, ArtWindRule wind);
 
 static ArtBpath * art_bpath_from_vpath (const ArtVpath * vpath);
+static gboolean gp_gc_matrix_equal (const gdouble * a, const gdouble * b);
 
 GPGC *
 gp_gc_new (void)
@@ -73,9 +82,11 @@ gp_gc_new (void)
 	GPGC * gc;
 	GPCtx * ctx;
 
+	ctx = gp_ctx_new ();
+	g_return_val_if_fail (ctx != NULL, NULL);
+
 	gc = g_new (GPGC, 1);
 	gc->refcount = 1;
-	ctx = gp_ctx_new ();
 	gc->ctx = g_slist_prepend (NULL, ctx);
 
 	return gc;
@@ -95,10 +106,10 @@ gp_gc_unref (GPGC * gc)
 	g_return_if_fail (gc != NULL);
 
 	if (--gc->refcount < 1) {
-		GSList *tmp;
-		for (tmp = gc->ctx; tmp; tmp = tmp->next)
-			gp_ctx_destroy (tmp->data);
-		g_slist_free (gc->ctx);
+		while (gc->ctx != NULL) {
+			gp_ctx_destroy (gc->ctx->data);
+			gc->ctx = g_slist_remove (gc->ctx, gc->ctx->data);
+		}
 		g_free (gc);
 	}
 }
@@ -107,15 +118,16 @@ void
 gp_gc_reset (GPGC * gc)
 {
 	GPCtx * ctx;
-	GSList *tmp;
 
 	g_return_if_fail (gc != NULL);
 
-	for (tmp = gc->ctx; tmp; tmp = tmp->next)
-		gp_ctx_destroy (tmp->data);
-	g_slist_free (gc->ctx);
+	while (gc->ctx != NULL) {
+		gp_ctx_destroy (gc->ctx->data);
+		gc->ctx = g_slist_remove (gc->ctx, gc->ctx->data);
+	}
 
 	ctx = gp_ctx_new ();
+	g_return_if_fail (ctx != NULL);
 
 	gc->ctx = g_slist_prepend (NULL, ctx);
 }
@@ -127,7 +139,7 @@ gp_gc_gsave (GPGC * gc)
 {
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
+	g_return_val_if_fail (gc != NULL, -1);
 
 	ctx = gp_ctx_duplicate ((GPCtx *) gc->ctx->data);
 	gc->ctx = g_slist_prepend (gc->ctx, ctx);
@@ -140,13 +152,11 @@ gp_gc_grestore (GPGC * gc)
 {
 	GSList *tmp;
 
-	g_return_val_if_fail (gc != NULL, 1);
-	g_return_val_if_fail (gc->ctx->next != NULL, 1);
+	g_return_val_if_fail (gc != NULL, -1);
+	g_return_val_if_fail (gc->ctx->next != NULL, -1);
 
-	tmp = gc->ctx;
-	gp_ctx_destroy (tmp->data);
-	gc->ctx = tmp->next;
-	g_slist_free_1 (tmp);
+	gp_ctx_destroy ((GPCtx *) gc->ctx->data);
+	gc->ctx = g_slist_remove (gc->ctx, gc->ctx->data);
 
 	return 0;
 }
@@ -159,12 +169,15 @@ gp_gc_setmatrix (GPGC * gc, const gdouble * matrix)
 {
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
-	g_return_val_if_fail (matrix != NULL, 1);
+	g_return_val_if_fail (gc != NULL, -1);
+	g_return_val_if_fail (matrix != NULL, -1);
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	memcpy (ctx->ctm, matrix, 6 * sizeof (double));
+	if (!gp_gc_matrix_equal (ctx->ctm, matrix)) {
+		memcpy (ctx->ctm, matrix, 6 * sizeof (double));
+		ctx->ctm_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -172,14 +185,18 @@ gp_gc_setmatrix (GPGC * gc, const gdouble * matrix)
 gint
 gp_gc_concat (GPGC * gc, const gdouble * matrix)
 {
+	static gdouble id[] = {1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
-	g_return_val_if_fail (matrix != NULL, 1);
+	g_return_val_if_fail (gc != NULL, -1);
+	g_return_val_if_fail (matrix != NULL, -1);
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	art_affine_multiply (ctx->ctm, matrix, ctx->ctm);
+	if (!gp_gc_matrix_equal (matrix, id)) {
+		art_affine_multiply (ctx->ctm, matrix, ctx->ctm);
+		ctx->ctm_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -196,6 +213,32 @@ gp_gc_get_ctm (GPGC * gc)
 	return ctx->ctm;
 }
 
+gint
+gp_gc_set_ctm_flag (GPGC * gc, gint flag)
+{
+	GPCtx * ctx;
+
+	g_return_val_if_fail (gc != NULL, -1);
+
+	ctx = (GPCtx *) gc->ctx->data;
+
+	ctx->ctm_flag = flag;
+
+	return 0;
+}
+
+gint
+gp_gc_get_ctm_flag (GPGC * gc)
+{
+	GPCtx * ctx;
+
+	g_return_val_if_fail (gc != NULL, -1);
+
+	ctx = (GPCtx *) gc->ctx->data;
+
+	return ctx->ctm_flag;
+}
+
 /* Color */
 
 gint
@@ -203,18 +246,20 @@ gp_gc_set_rgbcolor (GPGC * gc, gdouble r, gdouble g, gdouble b)
 {
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
+	g_return_val_if_fail (gc != NULL, -1);
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	ctx->currentcolor = (ctx->currentcolor & 0x000000ff) |
-		((gint) (CLAMP (r, 0.0, 1.0) * 255.999) << 24) |
-		((gint) (CLAMP (g, 0.0, 1.0) * 255.999) << 16) |
-		((gint) (CLAMP (b, 0.0, 1.0) * 255.999) << 8);
-
-	ctx->r = r;
-	ctx->g = g;
-	ctx->b = b;
+	if (!GP_GC_EQ (r, ctx->r) || !GP_GC_EQ (g, ctx->g) || !GP_GC_EQ (b, ctx->b)) {
+		ctx->currentcolor = (ctx->currentcolor & 0x000000ff) |
+			((gint) (CLAMP (r, 0.0, 1.0) * 255.999) << 24) |
+			((gint) (CLAMP (g, 0.0, 1.0) * 255.999) << 16) |
+			((gint) (CLAMP (b, 0.0, 1.0) * 255.999) << 8);
+		ctx->r = r;
+		ctx->g = g;
+		ctx->b = b;
+		ctx->currentcolor_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -224,14 +269,15 @@ gp_gc_set_opacity (GPGC * gc, gdouble opacity)
 {
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
+	g_return_val_if_fail (gc != NULL, -1);
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	ctx->currentcolor = (ctx->currentcolor & 0xffffff00) |
-		((gint) (CLAMP (opacity, 0.0, 1.0) * 255.999));
-
-	ctx->opacity = opacity;
+	if (!GP_GC_EQ (opacity, ctx->opacity)) {
+		ctx->currentcolor = (ctx->currentcolor & 0xffffff00) | ((gint) (CLAMP (opacity, 0.0, 1.0) * 255.999));
+		ctx->opacity = opacity;
+		ctx->currentcolor_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -240,7 +286,7 @@ gp_gc_set_opacity (GPGC * gc, gdouble opacity)
 guint32
 gp_gc_get_rgba (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 0x000000ff);
+	g_return_val_if_fail (gc != NULL, 0x0);
 
 	return ((GPCtx *) gc->ctx->data)->currentcolor;
 }
@@ -248,7 +294,7 @@ gp_gc_get_rgba (GPGC * gc)
 gdouble
 gp_gc_get_red (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 0.0);
+	g_return_val_if_fail (gc != NULL, -1.0);
 
 	return ((GPCtx *) gc->ctx->data)->r;
 }
@@ -256,7 +302,7 @@ gp_gc_get_red (GPGC * gc)
 gdouble
 gp_gc_get_green (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 0.0);
+	g_return_val_if_fail (gc != NULL, -1.0);
 
 	return ((GPCtx *) gc->ctx->data)->g;
 }
@@ -264,7 +310,7 @@ gp_gc_get_green (GPGC * gc)
 gdouble
 gp_gc_get_blue (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 0.0);
+	g_return_val_if_fail (gc != NULL, -1.0);
 
 	return ((GPCtx *) gc->ctx->data)->b;
 }
@@ -272,11 +318,28 @@ gp_gc_get_blue (GPGC * gc)
 gdouble
 gp_gc_get_opacity (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 1.0);
+	g_return_val_if_fail (gc != NULL, -1.0);
 
 	return ((GPCtx *) gc->ctx->data)->opacity;
 }
 
+gint
+gp_gc_set_color_flag (GPGC * gc, gint flag)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	((GPCtx *) gc->ctx->data)->currentcolor_flag = flag;
+
+	return 0;
+}
+
+gint
+gp_gc_get_color_flag (GPGC * gc)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	return ((GPCtx *) gc->ctx->data)->currentcolor_flag;
+}
 
 /* Line attributes */
 
@@ -289,20 +352,11 @@ gp_gc_set_linewidth (GPGC * gc, gdouble width)
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	/* Fixme: Currently we calculate average of pen size in both directions */
-#if 0
-	ctx->linewidth = (fabs (width * ctx->ctm[0]) + fabs (width * ctx->ctm[3])) / 2;
-#else
-	/* If we are in landscape mode the CTM is : 0 1 -1 0 0 0,
-	   so we need to take into account 0 thru 3. This is still not right.
-	   FIXME.
-	   see : ( run in "gs" ) http://www.gnome.org/~chema/line_width_problem
-	*/
-	ctx->linewidth = (fabs (width * ctx->ctm[0]) +
-				   fabs (width * ctx->ctm[1]) +
-				   fabs (width * ctx->ctm[2]) +
-				   fabs (width * ctx->ctm[3])) / 2;
-#endif
+	if (!GP_GC_EQ (width, ctx->linewidth)) {
+		ctx->linewidth = (fabs (width * ctx->ctm[0]) + fabs (width * ctx->ctm[1]) +
+				  fabs (width * ctx->ctm[2]) + fabs (width * ctx->ctm[3])) / 2;
+		ctx->line_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -310,9 +364,16 @@ gp_gc_set_linewidth (GPGC * gc, gdouble width)
 gint
 gp_gc_set_miterlimit (GPGC * gc, gdouble limit)
 {
-	g_return_val_if_fail (gc != NULL, 1);
+	GPCtx * ctx;
 
-	((GPCtx *) gc->ctx->data)->miterlimit = limit;
+	g_return_val_if_fail (gc != NULL, -1);
+
+	ctx = (GPCtx *) gc->ctx->data;
+
+	if (!GP_GC_EQ (limit, ctx->miterlimit)) {
+		ctx->miterlimit = limit;
+		ctx->line_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -320,9 +381,16 @@ gp_gc_set_miterlimit (GPGC * gc, gdouble limit)
 gint
 gp_gc_set_linejoin (GPGC * gc, ArtPathStrokeJoinType join)
 {
-	g_return_val_if_fail (gc != NULL, 1);
+	GPCtx * ctx;
 
-	((GPCtx *) gc->ctx->data)->linejoin = join;
+	g_return_val_if_fail (gc != NULL, -1);
+
+	ctx = (GPCtx *) gc->ctx->data;
+
+	if (join != ctx->linejoin) {
+		ctx->linejoin = join;
+		ctx->line_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -330,33 +398,15 @@ gp_gc_set_linejoin (GPGC * gc, ArtPathStrokeJoinType join)
 gint
 gp_gc_set_linecap (GPGC * gc, ArtPathStrokeCapType cap)
 {
-	g_return_val_if_fail (gc != NULL, 1);
-
-	((GPCtx *) gc->ctx->data)->linecap = cap;
-
-	return 0;
-}
-
-gint
-gp_gc_set_dash (GPGC * gc, int num_values, const gdouble * values, gdouble offset)
-{
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
-	g_return_val_if_fail ((num_values == 0) || (values != NULL), 1);
+	g_return_val_if_fail (gc != NULL, -1);
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	if ((ctx->dash.dash) && (ctx->privatedash)) g_free (ctx->dash.dash);
-
-	ctx->dash.n_dash = num_values;
-	ctx->dash.offset = offset;
-
-	if (values != NULL) {
-		ctx->dash.dash = g_new (gdouble, num_values);
-		memcpy (ctx->dash.dash, values, num_values * sizeof (gdouble));
-	} else {
-		ctx->dash.dash = NULL;
+	if (cap != ctx->linecap) {
+		ctx->linecap = cap;
+		ctx->line_flag = GP_GC_FLAG_CHANGED;
 	}
 
 	return 0;
@@ -365,7 +415,7 @@ gp_gc_set_dash (GPGC * gc, int num_values, const gdouble * values, gdouble offse
 gdouble
 gp_gc_get_linewidth (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 1.0);
+	g_return_val_if_fail (gc != NULL, -1.0);
 
 	return ((GPCtx *) gc->ctx->data)->linewidth;
 }
@@ -373,7 +423,7 @@ gp_gc_get_linewidth (GPGC * gc)
 gdouble
 gp_gc_get_miterlimit (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, 11.0);
+	g_return_val_if_fail (gc != NULL, -1.0);
 
 	return ((GPCtx *) gc->ctx->data)->miterlimit;
 }
@@ -381,7 +431,7 @@ gp_gc_get_miterlimit (GPGC * gc)
 ArtPathStrokeJoinType
 gp_gc_get_linejoin (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, ART_PATH_STROKE_JOIN_MITER);
+	g_return_val_if_fail (gc != NULL, -1);
 
 	return ((GPCtx *) gc->ctx->data)->linejoin;
 }
@@ -389,9 +439,51 @@ gp_gc_get_linejoin (GPGC * gc)
 ArtPathStrokeCapType
 gp_gc_get_linecap (GPGC * gc)
 {
-	g_return_val_if_fail (gc != NULL, ART_PATH_STROKE_CAP_BUTT);
+	g_return_val_if_fail (gc != NULL, -1);
 
 	return ((GPCtx *) gc->ctx->data)->linejoin;
+}
+
+gint
+gp_gc_set_line_flag (GPGC * gc, gint flag)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	((GPCtx *) gc->ctx->data)->line_flag = flag;
+
+	return 0;
+}
+
+gint
+gp_gc_get_line_flag (GPGC * gc)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	return ((GPCtx *) gc->ctx->data)->line_flag;
+}
+
+gint
+gp_gc_set_dash (GPGC * gc, int num_values, const gdouble * values, gdouble offset)
+{
+	GPCtx * ctx;
+
+	g_return_val_if_fail (gc != NULL, -1);
+	g_return_val_if_fail ((num_values == 0) || (values != NULL), -1);
+
+	ctx = (GPCtx *) gc->ctx->data;
+
+	if ((ctx->dash.dash) && (ctx->privatedash)) g_free (ctx->dash.dash);
+	ctx->dash.n_dash = num_values;
+	ctx->dash.offset = offset;
+	if (values != NULL) {
+		ctx->dash.dash = g_new (gdouble, num_values);
+		memcpy (ctx->dash.dash, values, num_values * sizeof (gdouble));
+	} else {
+		ctx->dash.dash = NULL;
+	}
+	ctx->dash_flag = GP_GC_FLAG_CHANGED;
+
+	return 0;
 }
 
 const ArtVpathDash *
@@ -402,6 +494,23 @@ gp_gc_get_dash (GPGC * gc)
 	return &((GPCtx *) gc->ctx->data)->dash;
 }
 
+gint
+gp_gc_set_dash_flag (GPGC * gc, gint flag)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	((GPCtx *) gc->ctx->data)->dash_flag = flag;
+
+	return 0;
+}
+
+gint
+gp_gc_get_dash_flag (GPGC * gc)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	return ((GPCtx *) gc->ctx->data)->dash_flag;
+}
 
 /* Font */
 
@@ -410,15 +519,18 @@ gp_gc_set_font (GPGC * gc, GnomeFont * font)
 {
 	GPCtx * ctx;
 
-	g_return_val_if_fail (gc != NULL, 1);
-	g_return_val_if_fail (font != NULL, 1);
-	g_return_val_if_fail (GNOME_IS_FONT (font), 1);
+	g_return_val_if_fail (gc != NULL, -1);
+	g_return_val_if_fail (font != NULL, -1);
+	g_return_val_if_fail (GNOME_IS_FONT (font), -1);
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	gtk_object_ref (GTK_OBJECT (font));
-	gtk_object_unref (GTK_OBJECT (ctx->font));
-	ctx->font = font;
+	if (font != ctx->font) {
+		gtk_object_ref (GTK_OBJECT (font));
+		gtk_object_unref (GTK_OBJECT (ctx->font));
+		ctx->font = font;
+		ctx->font_flag = GP_GC_FLAG_CHANGED;
+	}
 
 	return 0;
 }
@@ -429,6 +541,24 @@ gp_gc_get_font (GPGC * gc)
 	g_return_val_if_fail (gc != NULL, NULL);
 
 	return ((GPCtx *) gc->ctx->data)->font;
+}
+
+gint
+gp_gc_set_font_flag (GPGC * gc, gint flag)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	((GPCtx *) gc->ctx->data)->font_flag = flag;
+
+	return 0;
+}
+
+gint
+gp_gc_get_font_flag (GPGC * gc)
+{
+	g_return_val_if_fail (gc != NULL, -1);
+
+	return ((GPCtx *) gc->ctx->data)->font_flag;
 }
 
 /* Currentpath */
@@ -740,20 +870,25 @@ gp_ctx_new (void)
 	ctx = g_new (GPCtx, 1);
 
 	art_affine_identity (ctx->ctm);
+	ctx->ctm_flag = GP_GC_FLAG_UNSET;
 
 	ctx->currentcolor = 0x000000ff;
 	ctx->r = ctx->g = ctx->b = 0.0;
 	ctx->opacity = 1.0;
+	ctx->currentcolor_flag = GP_GC_FLAG_UNSET;
 
 	ctx->linewidth = 1.0;
 	ctx->miterlimit = 11.0;
 	ctx->linejoin = ART_PATH_STROKE_JOIN_MITER;
 	ctx->linecap = ART_PATH_STROKE_CAP_BUTT;
+	ctx->line_flag = GP_GC_FLAG_UNSET;
 	ctx->dash.n_dash = 0;
 	ctx->dash.dash = NULL;
+	ctx->dash_flag = GP_GC_FLAG_UNSET;
 	ctx->privatedash = FALSE;
 
 	ctx->font = gnome_font_new_closest ("Helvetica", GNOME_FONT_BOOK, FALSE, 12.0);
+	ctx->font_flag = GP_GC_FLAG_UNSET;
 
 	g_return_val_if_fail (ctx->font != NULL, NULL);
 
@@ -777,24 +912,29 @@ gp_ctx_duplicate (const GPCtx * src)
 	ctx = g_new (GPCtx, 1);
 
 	memcpy (ctx->ctm, src->ctm, 6 * sizeof (gdouble));
+	ctx->ctm_flag = src->ctm_flag;
 
 	ctx->currentcolor = src->currentcolor;
 	ctx->r = src->r;
 	ctx->g = src->g;
 	ctx->b = src->b;
 	ctx->opacity = src->opacity;
+	ctx->currentcolor_flag = src->currentcolor_flag;
 
 	ctx->linewidth = src->linewidth;
 	ctx->miterlimit = src->miterlimit;
 	ctx->linejoin = src->linejoin;
 	ctx->linecap = src->linecap;
+	ctx->line_flag = src->line_flag;
 	ctx->dash.n_dash = src->dash.n_dash;
 	ctx->dash.dash = src->dash.dash;
 	ctx->dash.offset = src->dash.offset;
+	ctx->dash_flag = src->dash_flag;
 	ctx->privatedash = FALSE;
 
 	gtk_object_ref (GTK_OBJECT (src->font));
 	ctx->font = src->font;
+	ctx->font_flag = src->font_flag;
 
 	ctx->currentpoint = src->currentpoint;
 	ctx->currentpath = gp_path_duplicate (src->currentpath);
@@ -897,6 +1037,18 @@ art_bpath_from_vpath (const ArtVpath * vpath)
 	}
 
 	return bpath;
+}
+
+static gboolean
+gp_gc_matrix_equal (const gdouble * a, const gdouble * b)
+{
+	gint i;
+
+	for (i = 0; i < 6; i++) {
+		if (fabs (a[i] - b[i]) > GP_GC_EPSILON) return FALSE;
+	}
+
+	return TRUE;
 }
 
 

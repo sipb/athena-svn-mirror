@@ -295,6 +295,21 @@ gnome_rfont_get_glyph_stdbbox (const GnomeRFont * rfont, gint glyph, ArtDRect * 
 	return bbox;
 }
 
+ArtPoint *
+gnome_rfont_get_glyph_stdkerning (const GnomeRFont * rfont, gint glyph0, gint glyph1, ArtPoint * kerning)
+{
+	g_return_val_if_fail (rfont != NULL, NULL);
+	g_return_val_if_fail (GNOME_IS_RFONT (rfont), NULL);
+	g_return_val_if_fail (glyph0 > 0, NULL);
+	g_return_val_if_fail (glyph1 > 0, NULL);
+	g_return_val_if_fail (kerning != NULL, NULL);
+
+	kerning->x = 0.0;
+	kerning->y = 0.0;
+
+	return kerning;
+}
+
 const ArtBpath *
 gnome_rfont_get_glyph_bpath (const GnomeRFont * rfont, gint glyph)
 {
@@ -582,19 +597,19 @@ void gnome_rfont_render_pgl_rgb8 (const GnomePosGlyphList * pgl,
 				    gint width, gint height, gint rowstride,
 				    guint flags)
 {
-	GSList * l;
+	gint s;
 	gint i;
 
 	g_return_if_fail (pgl != NULL);
 	g_return_if_fail (buf != NULL);
 
-	for (l = pgl->strings; l != NULL; l = l->next) {
+	for (s = 0; s < pgl->num_strings; s++) {
 		GnomePosString * string;
-		string = (GnomePosString *) l->data;
-		for (i = 0; i < string->length; i++) {
-			gnome_rfont_render_glyph_rgb8 (string->rfont, string->glyphs[i].glyph,
-						       string->glyphs[i].color,
-						       x + string->glyphs[i].x, y + string->glyphs[i].y,
+		string = pgl->strings + s;
+		for (i = string->start; i < string->start + string->length; i++) {
+			gnome_rfont_render_glyph_rgb8 (string->rfont, pgl->glyphs[i].glyph,
+						       string->color,
+						       x + pgl->glyphs[i].x, y + pgl->glyphs[i].y,
 						       buf,
 						       width, height, rowstride,
 						       flags);
@@ -648,19 +663,19 @@ void gnome_rfont_render_pgl_gdk_drawable (const GnomePosGlyphList * pgl,
 				guint32 background,
 				guint flags)
 {
-	GSList * l;
+	gint s;
 	gint i;
 
 	g_return_if_fail (pgl != NULL);
 	g_return_if_fail (drawable != NULL);
 
-	for (l = pgl->strings; l != NULL; l = l->next) {
+	for (s = 0; s < pgl->num_strings; s++) {
 		GnomePosString * string;
-		string = (GnomePosString *) l->data;
-		for (i = 0; i < string->length; i++) {
-			gnome_rfont_render_glyph_gdk_drawable (string->rfont, string->glyphs[i].glyph,
-							       string->glyphs[i].color,
-							       x + string->glyphs[i].x, y + string->glyphs[i].y,
+		string = pgl->strings + s;
+		for (i = string->start; i < string->start + string->length; i++) {
+			gnome_rfont_render_glyph_gdk_drawable (string->rfont, pgl->glyphs[i].glyph,
+							       string->color,
+							       x + pgl->glyphs[i].x, y + pgl->glyphs[i].y,
 							       drawable,
 							       background,
 							       flags);
@@ -981,7 +996,7 @@ gnome_display_font_height (GnomeDisplayFont * gdf)
 
 GnomeDisplayFont * gnome_font_get_display_font (GnomeFont * font)
 {
-  return gnome_get_display_font( font->private->fontmap_entry->private->familyname,
+  return gnome_get_display_font( font->private->fontmap_entry->private->entry->familyname,
 				 font->private->fontmap_entry->private->weight_code,
 				 font->private->fontmap_entry->private->italic,
 				 font->private->size,
@@ -1156,7 +1171,7 @@ gdf_find_gdk_font (GnomeRFont * rfont)
 	if (!gdkfont) {
 		/* No useful font found, so load 'fixed' */
 		
-		gdkfont = gdk_font_load ("fixed");
+		gdkfont = gdk_fontset_load ("fixed");
 		gdkname = g_strdup ("fixed");
 	}
 
@@ -1238,18 +1253,18 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 
 		/* Clear unimportant fields */
 		g_snprintf (xname, 1024, "-*-%s-%s-%s-%s-*-%d-*-*-*-*-*-%s",
-			    c[2], c[3], c[4], c[5], pxsize, "*" /* c[13] */);
+			    c[2], c[3], c[4], c[5], pxsize, "*-*" /* c[13] */);
 #ifdef VERBOSE
 		g_print ("Trying: %s\n", xname);
 #endif
-		f = gdk_font_load (xname);
+		f = gdk_fontset_load (xname);
 		if (!f) {
 			g_snprintf (xname, 1024, "-*-%s-%s-%s-%s-*-%d-*-*-*-*-*-%s",
 				    c[2], c[3], c[4], c[5], pxsize, c[13]);
 #ifdef VERBOSE
 			g_print ("Trying: %s\n", xname);
 #endif
-			f = gdk_font_load (xname);
+			f = gdk_fontset_load (xname);
 		}
 
 		if (f) {

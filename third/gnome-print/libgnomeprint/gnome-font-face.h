@@ -94,6 +94,13 @@ const gchar * gnome_font_face_get_species_name (const GnomeFontFace * face);
 const gchar * gnome_font_face_get_ps_name (const GnomeFontFace * face);
 
 /*
+ * General information
+ *
+ */
+
+gint gnome_font_face_get_num_glyphs (const GnomeFontFace * face);
+
+/*
  * Get glyph number from unicode char
  *
  * In future there can probably be several different unicode to glyph
@@ -112,6 +119,8 @@ gint gnome_font_face_lookup_default (const GnomeFontFace * face, gint unicode);
  * be defined as "default"
  * All face metrics are given in 0.001 em units
  */
+
+const ArtDRect * gnome_font_face_get_stdbbox (const GnomeFontFace * face);
 
 ArtPoint * gnome_font_face_get_glyph_stdadvance (const GnomeFontFace * face, gint glyph, ArtPoint * advance);
 ArtDRect * gnome_font_face_get_glyph_stdbbox (const GnomeFontFace * face, gint glyph, ArtDRect * bbox);

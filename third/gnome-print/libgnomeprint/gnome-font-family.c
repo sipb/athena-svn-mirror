@@ -1,14 +1,18 @@
 #define _GNOME_FONT_FAMILY_C_
 
+#include "config.h"
+
+#include <libgnomeprint/gp-fontmap.h>
 #include <libgnomeprint/gnome-font-family.h>
-#include <libgnomeprint/gnome-font-private.h>
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 struct _GnomeFontFamily {
 	GtkObject object;
 
 	gchar * name;
-	GList * stylelist;
-	GHashTable * faces;
 };
 
 struct _GnomeFontFamilyClass {
@@ -19,11 +23,6 @@ static void gnome_font_family_class_init (GnomeFontFamilyClass * klass);
 static void gnome_font_family_init (GnomeFontFamily * family);
 
 static void gnome_font_family_destroy (GtkObject * object);
-
-static void gnome_font_family_generate_list (void);
-static void gnome_font_family_add_font (const gchar * name);
-
-static GHashTable * families = NULL;
 
 static GtkObjectClass * parent_class = NULL;
 
@@ -60,6 +59,7 @@ gnome_font_family_class_init (GnomeFontFamilyClass * klass)
 static void
 gnome_font_family_init (GnomeFontFamily * family)
 {
+	family->name = NULL;
 }
 
 static void
@@ -69,16 +69,9 @@ gnome_font_family_destroy (GtkObject * object)
 
 	family = (GnomeFontFamily *) object;
 
-	g_hash_table_remove (families, family->name);
-
 	if (family->name) {
 		g_free (family->name);
 		family->name = NULL;
-	}
-
-	while (family->stylelist) {
-		g_free (family->stylelist->data);
-		family->stylelist = g_list_remove (family->stylelist, family->stylelist->data);
 	}
 
 	if (((GtkObjectClass *) parent_class)->destroy)
@@ -89,15 +82,23 @@ GnomeFontFamily *
 gnome_font_family_new (const gchar * name)
 {
 	GnomeFontFamily * family;
+	GPFontMap * map;
+	GPFamilyEntry * f;
 
 	g_return_val_if_fail (name != NULL, NULL);
 
-	if (!families) gnome_font_family_generate_list ();
-	g_assert (families);
+	family = NULL;
 
-	family = g_hash_table_lookup (families, name);
+	map = gp_fontmap_get ();
 
-	if (family) gnome_font_family_ref (family);
+	f = g_hash_table_lookup (map->familydict, name);
+
+	if (f) {
+		family = gtk_type_new (GNOME_TYPE_FONT_FAMILY);
+		family->name = g_strdup (name);
+	}
+
+	gp_fontmap_release (map);
 
 	return family;
 }
@@ -105,81 +106,76 @@ gnome_font_family_new (const gchar * name)
 GList *
 gnome_font_family_style_list (GnomeFontFamily * family)
 {
+	GPFontMap * map;
+	GPFamilyEntry * f;
+	GList * list;
+
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_FAMILY (family), NULL);
 
-	return family->stylelist;
+	list = NULL;
+
+	map = gp_fontmap_get ();
+
+	f = g_hash_table_lookup (map->familydict, family->name);
+
+	if (f) {
+		GSList * l;
+		for (l = f->fonts; l != NULL; l = l->next) {
+			GPFontEntry * e;
+			e = (GPFontEntry *) l->data;
+			list = g_list_prepend (list, g_strdup (e->speciesname));
+		}
+		list = g_list_reverse (list);
+	}
+
+	gp_fontmap_release (map);
+
+	return list;
 }
 
 void
 gnome_font_family_style_list_free (GList * list)
 {
+	while (list) {
+		g_free (list->data);
+		list = g_list_remove (list, list->data);
+	}
 }
 
 GnomeFontFace *
 gnome_font_family_get_face_by_stylename (GnomeFontFamily * family, const gchar * style)
 {
 	GnomeFontFace * face;
+	GPFontMap * map;
+	GPFamilyEntry * f;
 
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_FAMILY (family), NULL);
 	g_return_val_if_fail (style != NULL, NULL);
 
-	face = g_hash_table_lookup (family->faces, style);
+	face = NULL;
 
-	if (face) gnome_font_face_ref (face);
+	map = gp_fontmap_get ();
+
+	f = g_hash_table_lookup (map->familydict, family->name);
+
+	if (f) {
+		GSList * l;
+		for (l = f->fonts; l != NULL; l = l->next) {
+			GPFontEntry * e;
+			e = (GPFontEntry *) l->data;
+			if (!strcmp (style, e->speciesname)) {
+				face = gnome_font_face_new (e->name);
+			}
+		}
+	}
+
+	gp_fontmap_release (map);
 
 	return face;
 }
 
-/* This is crap */
-
-static void
-gnome_font_family_generate_list (void)
-{
-	GList * fontlist, * l;
-
-	g_assert (!families);
-
-	families = g_hash_table_new (g_str_hash, g_str_equal);
-
-	fontlist = gnome_font_list ();
-
-	for (l = fontlist; l != NULL; l = l->next) {
-		gnome_font_family_add_font ((const gchar *) l->data);
-	}
-
-	gnome_font_list_free (fontlist);
-}
-
-static void
-gnome_font_family_add_font (const gchar * name)
-{
-	GnomeFontFace * face;
-	GnomeFontFamily * family;
-	const gchar * stylename;
-
-	face = gnome_font_face_new (name);
-	g_return_if_fail (face != NULL);
-
-	family = g_hash_table_lookup (families, face->private->familyname);
-
-	if (!family) {
-		family = gtk_type_new (GNOME_TYPE_FONT_FAMILY);
-		family->name = g_strdup (face->private->familyname);
-		family->faces = g_hash_table_new (g_str_hash, g_str_equal);
-		g_hash_table_insert (families, family->name, family);
-	}
-
-	stylename = gnome_font_face_get_species_name (face);
-
-	if (!g_hash_table_lookup (family->faces, stylename)) {
-		g_hash_table_insert (family->faces, g_strdup (stylename), face);
-		family->stylelist = g_list_prepend (family->stylelist, g_strdup (stylename));
-	} else {
-		gnome_font_face_unref (face);
-	}
-}
 
 
 

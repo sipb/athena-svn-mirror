@@ -26,6 +26,10 @@
 #include <libgnomeprint/gnome-canvas-hacktext.h>
 #include <libgnomeprint/gnome-font-family.h>
 
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+
 struct _GnomeFontSelection
 {
 	GtkHBox hbox;
@@ -118,7 +122,7 @@ gnome_font_selection_class_init (GnomeFontSelectionClass *klass)
 						GTK_SIGNAL_OFFSET (GnomeFontSelectionClass, font_set),
 						gtk_marshal_NONE__POINTER,
 						GTK_TYPE_NONE,
-						1, GTK_TYPE_POINTER);
+						1, GTK_TYPE_OBJECT);
 	gtk_object_class_add_signals (object_class, gfs_signals, LAST_SIGNAL);
 
 	object_class->destroy = gnome_font_selection_destroy;

@@ -21,9 +21,15 @@
  *
  */
 
+#include "config.h"
+
 #include <glib.h>
 #include <text-utils.h>
 #include <stdio.h>
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 /* Tokens Stuff */
 #define is_spacer(x) (((x == ' ')  || \

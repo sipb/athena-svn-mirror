@@ -15,19 +15,19 @@ typedef struct _GnomePosString GnomePosString;
 
 struct _GnomePosGlyph {
 	gint glyph;
-	guint32 color;
-	gfloat x, y;
+	gdouble x, y;
 };
 
 struct _GnomePosString {
+	gint start, length;
 	GnomeRFont * rfont;
-	GnomePosGlyph * glyphs;
-	gint length;
+	guint32 color;
 };
 
 struct _GnomePosGlyphList {
 	GnomePosGlyph * glyphs;
-	GSList * strings;
+	GnomePosString * strings;
+	gint num_strings;
 };
 
 END_GNOME_DECLS

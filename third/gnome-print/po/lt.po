@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.24\n"
-"POT-Creation-Date: 2000-11-07 22:54+0200\n"
+"POT-Creation-Date: 2001-10-11 20:16-0600\n"
 "PO-Revision-Date: 2000-11-07 22:30+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -13,300 +13,381 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-13\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnome-font-install.c:574
+#: installer/gnome-font-install.c:119
 msgid "Print out debugging information"
 msgstr "Spausdinti derinimo informacijà"
 
-#: gnome-font-install.c:576 gnome-font-install.c:578 gnome-font-install.c:580
-msgid "Does nothing yet."
-msgstr "Kol kas nieko nedaro."
-
-#: gnome-font-install.c:585
-msgid "Use this path to write the fontmap file."
+#: installer/gnome-font-install.c:121
+#, fuzzy
+msgid "Search directories recursively for font files"
 msgstr "Naudoti ðá kelià raðyti fontmap bylai."
 
-#: gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
-#: gnome-font-install.c:592 gnome-font-install.c:594
+#: installer/gnome-font-install.c:123
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr ""
+
+#: installer/gnome-font-install.c:125
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:127
+msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:129
+msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:131
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
+msgid "File describing known aliases"
+msgstr ""
+
+#: installer/gnome-font-install.c:134
 msgid "PATH"
 msgstr "KELIAS"
 
-#: gnome-font-install.c:587
-msgid "Use this path to search for relative afm files."
-msgstr "Naudoti ðá kelià susijusiø afm bylø paieðkai"
-
-#: gnome-font-install.c:589
-msgid "Use this path to search for relative pfb files."
-msgstr "Naudoti ðá kelià susijusiø pfb bylø paieðkai"
-
-#: gnome-font-install.c:592
-msgid "Use this to set up a key/value pair for afm files."
-msgstr "Naudoti tai nustatant rakto/reikðmës porà afm byloms."
-
-#: gnome-font-install.c:594
-msgid "Use this to set up a key/value pair for pfb files."
-msgstr "Naudoti tai nustatant rakto/reikðmës porà pfb byloms."
-
 #. Family frame
-#: libgnomeprint/gnome-font-dialog.c:138
+#: libgnomeprint/gnome-font-dialog.c:142
 msgid "Font family"
 msgstr "Ðriftø ðeima"
 
 #. Style frame
-#: libgnomeprint/gnome-font-dialog.c:171
+#: libgnomeprint/gnome-font-dialog.c:175
 msgid "Style"
 msgstr "Stilius"
 
-#: libgnomeprint/gnome-font-dialog.c:233
+#: libgnomeprint/gnome-font-dialog.c:237
 msgid "Font size:"
 msgstr "Ðrifto dydis:"
 
-#: libgnomeprint/gnome-font-dialog.c:754
+#: libgnomeprint/gnome-font-dialog.c:758
 msgid "Font Selection"
 msgstr "Ðrifto pasirinkimas"
 
-#. We have latin encoding
-#: libgnomeprint/gnome-font-face.c:459
+#: libgnomeprint/gnome-font-face.c:605
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Greita ruda laputë ðoka per tingø ðuná."
 
-#: libgnomeprint/gnome-font-face.c:697
-#, c-format
-msgid "Couldn't open font file %s\n"
+#. Encode empty font
+#: libgnomeprint/gnome-font-face.c:808
+#, fuzzy, c-format
+msgid "Couldn't generate pfa for face %s\n"
 msgstr "Negaliu atidaryti ðrifto bylos %s\n"
 
-#: libgnomeprint/gnome-font-face.c:1012
+#: libgnomeprint/gnome-font-face.c:925
 #, c-format
 msgid "status loading %s = %d\n"
 msgstr "bûsenos ákëlimas %s = %d\n"
 
-#: libgnomeprint/gnome-print-copies.c:232
+#: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
 msgstr "Kopijos"
 
-#: libgnomeprint/gnome-print-copies.c:243
+#: libgnomeprint/gnome-print-copies.c:249
 msgid "N_umber of copies:"
 msgstr "Kopijø _skaièius:"
 
-#: libgnomeprint/gnome-print-copies.c:264
+#: libgnomeprint/gnome-print-copies.c:270
 msgid "_Collate"
 msgstr "_Rûðiuoti"
 
-#: libgnomeprint/gnome-print-dialog.c:164
+#: libgnomeprint/gnome-print-dialog.c:180
 msgid "Print Range"
 msgstr "Spausdinimo ribos"
 
-#: libgnomeprint/gnome-print-dialog.c:185
-#: libgnomeprint/gnome-print-master-preview.c:681
+#: libgnomeprint/gnome-print-dialog.c:201
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Print"
 msgstr "Spausdinti"
 
-#: libgnomeprint/gnome-print-dialog.c:186
+#: libgnomeprint/gnome-print-dialog.c:202
 msgid "Preview"
 msgstr "Perþiûra"
 
-#: libgnomeprint/gnome-print-dialog.c:333
+#: libgnomeprint/gnome-print-dialog.c:353
 msgid "_All"
 msgstr "_Visus"
 
-#: libgnomeprint/gnome-print-dialog.c:363
-#: libgnomeprint/gnome-print-dialog.c:377
+#: libgnomeprint/gnome-print-dialog.c:383
+#: libgnomeprint/gnome-print-dialog.c:397
 msgid "_Selection"
 msgstr "_Pasirinkimas"
 
-#: libgnomeprint/gnome-print-dialog.c:436
+#: libgnomeprint/gnome-print-dialog.c:458
 msgid "from:"
 msgstr "nuo:"
 
-#: libgnomeprint/gnome-print-dialog.c:450
+#: libgnomeprint/gnome-print-dialog.c:472
 msgid "to:"
 msgstr "iki:"
 
-#: libgnomeprint/gnome-print-dialog.c:495
+#: libgnomeprint/gnome-print-dialog.c:518
 msgid "f_rom:"
 msgstr "_nuo:"
 
-#: libgnomeprint/gnome-print-dialog.c:512
+#: libgnomeprint/gnome-print-dialog.c:535
 msgid "_to:"
 msgstr "_iki:"
 
-#: libgnomeprint/gnome-print-master-preview.c:626
+#: libgnomeprint/gnome-print-file.c:72
+#, c-format
+msgid ""
+"'%s' is about to be overwritten.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+
+#: libgnomeprint/gnome-print-file.c:169
+#, fuzzy
+msgid "Select output file"
+msgstr "Pasirink spausdintuvà"
+
+#: libgnomeprint/gnome-print-master-preview.c:641
 msgid "Page: "
 msgstr "Puslapis: "
 
-#: libgnomeprint/gnome-print-master-preview.c:653
+#: libgnomeprint/gnome-print-master-preview.c:668
 msgid "_First page"
 msgstr "P_irmas puslapis"
 
-#: libgnomeprint/gnome-print-master-preview.c:653
-#: libgnomeprint/gnome-print-master-preview.c:684
+#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "Shows the first page"
 msgstr "Parodo pirmà puslapá"
 
-#: libgnomeprint/gnome-print-master-preview.c:656
+#: libgnomeprint/gnome-print-master-preview.c:671
 msgid "_Previous page"
 msgstr "_Praeitas puslapis"
 
-#: libgnomeprint/gnome-print-master-preview.c:656
-#: libgnomeprint/gnome-print-master-preview.c:687
+#: libgnomeprint/gnome-print-master-preview.c:671
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Shows the previous page"
 msgstr "Parodo ankstesná puslapá"
 
-#: libgnomeprint/gnome-print-master-preview.c:659
+#: libgnomeprint/gnome-print-master-preview.c:674
 msgid "_Next page"
 msgstr "_Kitas puslapis"
 
-#: libgnomeprint/gnome-print-master-preview.c:659
-#: libgnomeprint/gnome-print-master-preview.c:690
+#: libgnomeprint/gnome-print-master-preview.c:674
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Shows the next page"
 msgstr "Parodo tolesná puslapá"
 
-#: libgnomeprint/gnome-print-master-preview.c:662
+#: libgnomeprint/gnome-print-master-preview.c:677
 msgid "_Last page"
 msgstr "P_askutinis puslapis"
 
-#: libgnomeprint/gnome-print-master-preview.c:662
-#: libgnomeprint/gnome-print-master-preview.c:693
+#: libgnomeprint/gnome-print-master-preview.c:677
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Shows the last page"
 msgstr "Parodo paskutiná puslapá"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zoom _in"
 msgstr "Pri_traukti"
 
-#: libgnomeprint/gnome-print-master-preview.c:667
+#: libgnomeprint/gnome-print-master-preview.c:682
 msgid "Zooms in"
 msgstr "Pritraukia vaizdà"
 
-#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zoom _out"
 msgstr "A_titraukti"
 
-#: libgnomeprint/gnome-print-master-preview.c:668
+#: libgnomeprint/gnome-print-master-preview.c:683
 msgid "Zooms out"
 msgstr "Atitraukia vaizdà"
 
-#: libgnomeprint/gnome-print-master-preview.c:675
+#: libgnomeprint/gnome-print-master-preview.c:690
 msgid "_View"
 msgstr "_Þiûrëti"
 
-#: libgnomeprint/gnome-print-master-preview.c:681
+#: libgnomeprint/gnome-print-master-preview.c:696
 msgid "Prints the current file"
 msgstr "Atspausdina esamà bylà"
 
-#: libgnomeprint/gnome-print-master-preview.c:684
+#: libgnomeprint/gnome-print-master-preview.c:699
 msgid "First"
 msgstr "Pradþia"
 
-#: libgnomeprint/gnome-print-master-preview.c:687
+#: libgnomeprint/gnome-print-master-preview.c:702
 msgid "Back"
 msgstr "Atgal"
 
-#: libgnomeprint/gnome-print-master-preview.c:690
+#: libgnomeprint/gnome-print-master-preview.c:705
 msgid "Next"
 msgstr "Pirmyn"
 
-#: libgnomeprint/gnome-print-master-preview.c:693
+#: libgnomeprint/gnome-print-master-preview.c:708
 msgid "Last"
 msgstr "Galas"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zoom in"
 msgstr "Pritraukti"
 
-#: libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprint/gnome-print-master-preview.c:711
 msgid "Zooms the page in"
 msgstr "Pritraukia puslapá artyn"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zoom out"
 msgstr "Atitraukti"
 
-#: libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprint/gnome-print-master-preview.c:712
 msgid "Zooms the page out"
 msgstr "Atitraukia puslapá tolyn"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Fit"
 msgstr "Tilpti"
 
-#: libgnomeprint/gnome-print-master-preview.c:698
+#: libgnomeprint/gnome-print-master-preview.c:713
 msgid "Zooms to fit the whole page"
 msgstr "Sutalpina á langà visà puslapá"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Fit Wide"
 msgstr "Platyn"
 
-#: libgnomeprint/gnome-print-master-preview.c:699
+#: libgnomeprint/gnome-print-master-preview.c:714
 msgid "Zooms to fit the width of the page"
 msgstr "Sutalpina puslapá, kad bûtø matomas visas jo plotis"
 
-#: libgnomeprint/gnome-print-master-preview.c:700
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Fit Tall"
 msgstr "Ilgyn"
 
-#: libgnomeprint/gnome-print-master-preview.c:700
+#: libgnomeprint/gnome-print-master-preview.c:715
 msgid "Zooms to fit the height of the page"
 msgstr "Sutalpina puslapá, kad bûtø matomas jo visas ilgis"
 
-#: libgnomeprint/gnome-printer-dialog.c:180
+#: libgnomeprint/gnome-printer-dialog.c:293
+msgid ""
+"gnome-print-admin was not found.\n"
+"\n"
+"Please install gnome-print-admin to configure this printer"
+msgstr ""
+
+#: libgnomeprint/gnome-printer-dialog.c:375
+#, fuzzy
+msgid "Print to file"
+msgstr "Atspausdina esamà bylà"
+
+#: libgnomeprint/gnome-printer-dialog.c:392
+#, fuzzy
+msgid "Properties"
+msgstr "Kopijos"
+
+#: libgnomeprint/gnome-printer-dialog.c:500
 msgid "Select printer"
 msgstr "Pasirink spausdintuvà"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:189
+#: libgnomeprint/gnome-printer-dialog.c:508
 msgid "State:"
 msgstr "Bûsena:"
 
-#: libgnomeprint/gnome-printer-dialog.c:190
+#: libgnomeprint/gnome-printer-dialog.c:509
 msgid "Type:"
 msgstr "Tipas:"
 
-#: libgnomeprint/gnome-printer-dialog.c:191
+#: libgnomeprint/gnome-printer-dialog.c:510
 msgid "Location:"
 msgstr "Vieta:"
 
-#: libgnomeprint/gnome-printer-dialog.c:192
+#: libgnomeprint/gnome-printer-dialog.c:511
 msgid "Comment:"
 msgstr "Komentaras:"
 
-#: libgnomeprint/gnome-printer-dialog.c:226
+#: libgnomeprint/gnome-printer-dialog.c:537
 msgid "_Name:"
 msgstr "_Vardas:"
 
-#: libgnomeprint/gnome-printer-dialog.c:235
+#: libgnomeprint/gnome-printer-dialog.c:553
 msgid "_Printer"
 msgstr "_Spausdintuvas"
 
-#: libgnomeprint/gnome-printer-dialog.c:248
+#: libgnomeprint/gnome-printer-dialog.c:570
 msgid "_File"
 msgstr "_Byla"
 
-#: libgnomeprint/gnome-printer-dialog.c:489
+#: libgnomeprint/gnome-printer-dialog.c:907
 msgid "Select Printer"
 msgstr "Pasirink spausdintuvà"
 
-#: libgnomeprint/gnome-printer.c:117
+#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgpa/gpa-generic-ps.c:200
+msgid "Generic Postscript"
+msgstr ""
+
+#: libgnomeprint/gnome-printer.c:136 libgpa/gpa-printer.c:169
 msgid "Printer is active"
 msgstr "Spausdintuvas aktyvus"
 
-#: libgnomeprint/gnome-printer.c:120
+#: libgnomeprint/gnome-printer.c:139 libgpa/gpa-printer.c:172
 msgid "Printer is ready to print"
 msgstr "Spausdintuvas pasiruoðæs spausdinti"
 
-#: libgnomeprint/gnome-printer.c:123
+#: libgnomeprint/gnome-printer.c:142 libgpa/gpa-printer.c:175
 msgid "Printer is off-line"
 msgstr "Spausdintuvas iðjungtas"
 
-#: libgnomeprint/gnome-printer.c:126
+#: libgnomeprint/gnome-printer.c:145 libgpa/gpa-printer.c:178
 msgid "Can not communicate with printer"
 msgstr "Negaliu susisiekti su spausdintuvu"
 
-#: libgnomeprint/gnome-printer.c:129
+#: libgnomeprint/gnome-printer.c:148 libgpa/gpa-printer.c:181
 msgid "Unknown status"
 msgstr "Neþinoma bûsena"
+
+#: libgpa/gpa-generic-ps.c:64
+msgid "Generic Postscript (Hardcoded)"
+msgstr ""
+
+#: libgpa/gpa-generic-ps.c:65
+msgid "GENERIC-POSTSCRIPT-HARDCODED"
+msgstr ""
+
+#: libgpa/gpa-generic-ps.c:66
+msgid "0"
+msgstr ""
+
+#: libgpa/gpa-generic-ps.c:67
+msgid "GNOME"
+msgstr ""
+
+#: libgpa/gpa-generic-ps.c:68
+msgid "0.0.0"
+msgstr ""
+
+#: libgpa/gpa-generic-ps.c:69
+#, fuzzy
+msgid "Unknown"
+msgstr "Neþinoma bûsena"
+
+#: libgpa/gpa-generic-ps.c:70
+#, fuzzy
+msgid "GnomePrint"
+msgstr "Spausdinti"
+
+#: libgpa/gpa-generic-ps.c:86
+msgid "gnome-print-ps2"
+msgstr ""
+
+#: libgpa/gpa-ppd-options.c:431
+msgid "Options"
+msgstr ""
+
+#: libgpa/gpa-settings.c:222
+msgid "Default Settings"
+msgstr ""
 
 #: tests/testembed.c:18
 msgid "extracts the first font from output.pdf and places it in font.dump."
@@ -324,14 +405,36 @@ msgstr "iðtraukia ðrifto kûnà"
 msgid "decrypts the font body "
 msgstr "iððifruoja ðrifto kûnà"
 
-#: tests/testprint.c:116 tests/testprint.c:124
+#: tests/testprint.c:118 tests/testprint.c:126
 msgid "Gnome-print test page, rotated"
 msgstr "Gnome-print testinis lapas, pasuktas"
 
-#: tests/testprint.c:131
+#: tests/testprint.c:133
 msgid "Gnome-print test page, slanted"
 msgstr "Gnome-print testinis lapas, pasviræs"
 
-#: tests/testprint.c:139
+#: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "gnome-print testinis lapas, pasviræs. Maþas"
+
+#, fuzzy
+#~ msgid "Base for relative afm file names."
+#~ msgstr "Naudoti ðá kelià susijusiø afm bylø paieðkai"
+
+#, fuzzy
+#~ msgid "Base for relative pfb file names."
+#~ msgstr "Naudoti ðá kelià susijusiø pfb bylø paieðkai"
+
+#, fuzzy
+#~ msgid "Use this to set up a key/value pair for font files."
+#~ msgstr "Naudoti tai nustatant rakto/reikðmës porà afm byloms."
+
+#, fuzzy
+#~ msgid "KEY,PATH"
+#~ msgstr "KELIAS"
+
+#~ msgid "Does nothing yet."
+#~ msgstr "Kol kas nieko nedaro."
+
+#~ msgid "Use this to set up a key/value pair for pfb files."
+#~ msgstr "Naudoti tai nustatant rakto/reikðmës porà pfb byloms."

@@ -1,4 +1,646 @@
-2000-11-13  root  <chema@celorio.com>
+2001-10-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print.c (gnome_print_showpage): Print empty page on
+	single showpage, instead of returning error
+
+	* gp-fontmap.c (gp_fontmap_load_file): Check "test" field
+
+2001-10-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gp-fontmap.c (gp_fontmap_load): Parse old fontmap2 files, if < 24
+	fonts found (i.e. problems with new installer)
+
+2001-10-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gp-path.c (gp_path_duplicate): Check and fail, if cannot duplicate
+	(gp_path_close_all): Close paths the right way
+
+	* gnome-print-preview.c (gpp_image): Fixed image copying madness
+
+	* gnome-font-face.c (gnome_font_unsized_closest): Quick hack to move
+	narrow style after normal in match
+	(gff_load_afm): If afm is really messed up, still allocate single glyph slot
+
+	* gnome-print.c (gnome_print_newpath): Check ctx corruption (gc == NULL),
+	user enumerated error codes, Check for page
+	(gnome_print_moveto): Ditto
+	(gnome_print_lineto): Ditto
+	(gnome_print_curveto): Ditto
+	(gnome_print_closepath): Ditto, check that points > 1
+	(gnome_print_setrgbcolor): Ditto
+	(gnome_print_fill): Ditto, check points > 1
+	(gnome_print_eofill): Ditto
+	(gnome_print_setlinewidth): Ditto
+	(gnome_print_setmiterlimit): Ditto
+	(gnome_print_setlinejoin): Ditto
+	(gnome_print_setlinecap): Ditto
+	(gnome_print_setdash): Ditto
+	(gnome_print_strokepath): Ditto, check points > 1
+	(gnome_print_stroke): Ditto
+	(gnome_print_setfont): Ditto
+	(gnome_print_show): Ditto
+	(gnome_print_show_sized): Ditto
+	(gnome_print_show_ucs4): Ditto
+	(gnome_print_concat): Ditto
+	(gnome_print_gsave): Ditto
+	(gnome_print_grestore): Ditto
+	(gnome_print_clip): Ditto, check points > 1, clear path
+	(gnome_print_eoclip): Ditto
+	(gnome_print_grayimage): Ditto, check width and height
+	(gnome_print_rgbimage): Ditto
+	(gnome_print_rgbaimage): Ditto
+	(gnome_print_pixbuf): Ditto
+	(gnome_print_textline): Ditto
+	(gnome_print_showpage): Ditto
+	(gnome_print_beginpage): Ditto
+	(gnome_print_setopacity): Ditto
+	(gnome_print_context_close): Ditto
+	(gnome_print_scale): Ditto
+	(gnome_print_rotate): Ditto
+	(gnome_print_translate): Ditto
+	(gnome_print_context_open_file): Ditto
+	(gnome_print_glyphlist): Ditto
+
+2001-10-02  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gp-fontmap.c (gp_fontmap_load): Set dynamic mtime, instead of 2x static
+	(gp_fm_is_changed): Rearranged, so we check other mtimes too
+
+2001-09-25  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_destroy): unlink bufname
+	(gnome_print_ps2_close): Ditto
+	(gnome_print_ps2_new): Save buffer name for unlinking it later
+
+2001-09-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gp-fontmap.c (gp_fontmap_compare_names): New method, push
+	'gnome-print.fontmap' to first on search
+	(gp_fontmap_load_dir): Use gp_fontmap_compare_names for search
+
+2001-09-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* Makefile.am (CPPFLAGS): Added FONTMAPDIR_STATIC and FONTMAPDIR_DYNAMIC
+
+	* gp-fontmap.c (gp_fm_is_changed): Check timestamps of all 3 directories
+
+2001-09-13  Lauris Kaplinski  <lauris@ximian.com>
+
+	* Makefile.am (CPPFLAGS): Pass environment
+
+	* gp-fontmap.c (gp_fontmap_load): Use g_get_home_dir
+	(gp_fm_is_changed): Ditto
+
+	* gnome-print-master-preview.c (do_zoom): Limited zooming factor
+	to 0.0625 ... 16 (fixes bug 57512)
+
+	* gp-gc.c (gp_gc_new): Check ctx == NULL case
+	(gp_gc_reset): Ditto
+
+2001-07-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-canvas-bpath.c (gnome_canvas_bpath_draw): Use gdk_draw_lines
+	for open paths
+	(gnome_canvas_shape_ensure_gdk_points): New function
+	(gnome_canvas_bpath_update_gdk): Fixed bug assuming there is the same
+	amount of Gdk points, as there is bpaths. Grow array dynamically
+	instead
+
+	* gnome-canvas-bpath-private.h: Added len_points member
+
+	* gp-path.c (gp_path_closepath): Fixed ugly closepath bug (Thanks to Michael)
+
+2001-07-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_close): gnome not pnome ;-)
+
+2001-06-01  Art Haas  <ahaas@neosoft.com>
+
+        *text-utils.c: include "config.h" and conditionally
+        include <string.h>.
+
+        *gt1-region.c: Same.
+
+        *gt1-namecontext.c: Same.
+
+        *gnome-font-family.c: Same.
+
+        *gnome-print.c: Include <time.h>, not <sys/time.h>, for
+        time() prototype.
+
+        *gnome-print-master-preview.c: Conditionally include
+        <string.h>
+
+        *gnome-font-dialog.c: Same.
+
+        *gnome-print-encode.c: Same, and conditionalize the
+        inclusion of "zlib.h"
+
+        *gnome-print-ps.c: Include <stdlib.h> for abs().
+
+2001-05-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* Makefile.am: Removed USE_GNOME_FONT
+
+	* gnome-printer.c (gnome_printer_new_generic_ps): Use ps2
+
+	* gnome-print-meta.c (do_render): Removed CLOSE operator
+	(meta_close): Do not encode CLOSE
+
+2001-05-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_glyphlist): Clear font and color
+	flags if we do gsave/grestore
+
+2001-05-29  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-preview.c (gpp_image): Use straight implied transform
+	of GnomeCanvasItem and set explicit transform to correct value (canvas bug?)
+
+	* gnome-print-ps2.c (gnome_print_ps2_image): Fixed missed context writes,
+	replaced these with buffered ones
+
+2001-05-28  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_new): Prefixed temporary
+	filename with /tmp/
+
+2001-05-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-pclr.c: Applied patch from ahaas@neosoft.com, removing
+	gcc 3.0 compiler warning (comment after #endif)
+	* gnome-print-pclv.c: Ditto
+
+	* gnome-font-face.c (gnome_font_face_init): Initialize zero glyph
+	values
+	(gnome_font_face_get_pfa): Create empty font, if pfa cannot be loaded
+	(gff_load_afm): Create empty font, if metrics cannot be loaded
+	(gnome_font_face_gt1_load): Set num_glyphs to 1, if font cannot be loaded
+
+2001-05-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gp_ps2_fprintf): New function
+	(gnome_print_ps2_image): Use Michaels better encoding
+	(gnome_print_ps2_new): Initialize bbox
+	(gnome_print_ps2_beginpage): Clip to page
+
+	* gnome-font-face.c (gnome_font_face_get_arg): Use entry psname
+
+2001-05-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_close): Set buf to NULL
+
+	* gnome-font.c (gnome_font_get_width_string_n): Forced char to
+	be unsigned ;) Closes bug 54285 
+
+	* gnome-font-face.c: Removed GFF_METRICS and GFF_LOADEDFONT
+	assertions, replaced with if {...} constructs
+
+2001-05-13  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c: Removed internal fonts at all
+	Made context buffered, so we can include all fonts into
+	header, instead of downloading them on-demand (DSC requirement)
+	(gnome_print_ps2_init): Initialize buffer
+	(gnome_print_ps2_destroy): Close buffer
+	(gnome_print_ps2_gsave): Emit warning and start new page, if
+	beginpage is omitted
+	(gnome_print_ps2_grestore): Ditto
+	(gnome_print_ps2_fill): Ditto
+	(gnome_print_ps2_clip): Ditto
+	(gnome_print_ps2_stroke): Ditto
+	(gnome_print_ps2_glyphlist): Ditto
+	(gnome_print_ps2_beginpage): Clear fontnames, write %%Page
+	(gnome_print_ps2_showpage): Do beginpage if omitted, write
+	%%PageTrailer and %%PageResources, clear state
+	(gnome_print_ps2_close): Write header, copy and close buffer
+	(gp_ps2_set_font_private): Add font name to use list
+	(gp_ps2_download_and_encode_font): Create only GPPS2Font here
+	(gnome_print_ps2_new): Remove header generation
+
+2001-03-18  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer.c (gnome_printer_finalize): remove a g_print
+
+2001-03-18  Vlad Harchev <hvv@hippo.ru>
+
+	* gnome-print-ps2.c (gnome_print_ps2_beginpage): Replace pages->shown test with
+	the opposite, so well-behaving programs can print more than 1 page.
+
+2001-03-14  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gp_ps2_set_color_private): Use COLOR not FONT flag
+
+	* gnome-print.c (gnome_print_show_sized): Use _show_sized or we ruin PDF generation
+
+	* gnome-print-pdf.c (gnome_print_pdf_page_write_contents): Added header
+	(many thanks to Vlad Harchev)
+
+2001-03-11  Vlad Harchev  <hvv@hippo.ru>
+
+	* gnome-print-pdf.c: use "C" for LC_NUMERIC for each *printf call as in
+	gnome_print_context_fprintf()
+
+2001-03-10  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_get_level): enable gp_ps2_get_level
+	for libgpa compilation ONLY
+
+2001-03-10  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-rfont.c (gdf_find_measured_gdk_font): Added Vlad's patch for
+	retrieving more locales
+
+	* gnome-font.c (gnome_font_get_width_utf8): New function
+	(gnome_font_get_width_utf8_sized): New function
+
+	* gnome-font.h: Add big warning to gnome_print_get_width_string, as
+	they expect string to be 8-bit iso-8859-1, not utf-8
+	Added declarations of utf-8 variants of string width
+
+	* gnome-font-face.c (gnome_font_unsized_closest): Delete #ifdef 0 block
+	Replace srcmp with strcasecmp for comparing font names
+	(gff_face_from_entry): Remove #ifdef 0 block
+	(gff_load_afm): Remove #ifdef 0 block
+
+2001-03-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_image): Encode row-by-row in case
+	rowstride != row length
+
+	* gnome-printer-profile.c (gpp_compare_profiles): Add silly compare function
+	to ensure that ps2 is always first in list
+	(gnome_printer_get_profiles): Sor profile list here
+
+	* gnome-print-ps2.c (gnome_print_ps2_beginpage): Clear page->shown too
+
+2001-03-02  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-font-face.c (gnome_font_unsized_closest): Test italicangle for
+	both positive and negative angles - sorry, but some fonts are messed up :(
+
+	* gp-fontmap.c (gp_fontmap_load): Use fontmap2 as file name by default
+	(gp_fm_is_changed): Ditto
+
+2001-02-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-printer-dialog.c (gnome_printer_widget_init): Use GnomeFileEntry
+	for specifying filename
+	(set_profile): Ditto
+	(gnome_printer_dialog_new): Ditto
+	(gnome_printer_widget_bind_editable_enters): Don't bind enter, as we may be using browser
+	(gnome_printer_dialog_new): Ditto
+
+2001-02-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print.c (gnome_print_context_init): Add more information about
+	printer file destination to print context
+	(gnome_print_context_new_with_paper_size): Recognize fax driver
+	(gnome_print_context_finalize): Free strings and close file
+	(gnome_print_context_close): Free strings and close file
+	(gnome_print_context_open_file): Interpret '*' as alternate command prefix
+	(gnome_print_context_close_file): If using program, execute it with tempfile
+	as argument and delete tempfile afterwards
+
+	* gnome-printer-profile.c (gnome_printer_profile_get_printer): Interpret
+	commands containing '%s' as proper
+
+	* gnome-print.c (gnome_print_context_open_file): Interpret relative path as
+	home directory, './' for current directory
+
+	* gnome-print-ps2.c (gnome_print_ps2_init): Initialize private font & color
+	(gnome_print_ps2_destroy): Unref private font, is set
+	(gnome_print_ps2_grestore): Dirtyfy private font & color flags
+	(gnome_print_ps2_glyphlist): Use more intelligence for determining whether
+	setting transformation/font/color is needed
+	(gnome_print_ps2_showpage): Dirtyfy private font & color
+	(gp_ps2_set_color): Use set_color_private
+	(gp_ps2_set_color_private): Renamed from set_rgba_private, use double channel
+	values and set private flag
+	(gp_ps2_set_font_private): Set private font flag
+
+2001-02-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print.c (gnome_print_show_sized): Implemented plain show API
+	via glyphlists
+
+	* gnome-print-frgba.c (gpf_glyphlist): Implemented it
+
+	* gnome-rfont.c (gnome_rfont_get_glyph_stdkerning): New function
+
+	* gnome-canvas-hacktext.c (get_bounds): Use meaningful new hacktext API
+	(gnome_canvas_hacktext_update): Ditto
+	(gnome_canvas_hacktext_point): Ditto
+	(gnome_canvas_hacktext_req_repaint): Ditto
+
+	* gnome-print-ps2.c: Almost everything is changed
+
+2001-02-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c: Started migration to meaningful imaging process, i.e.
+	Let GPGC to hold all graphic state information and only do fills + strokes
+	in actual driver
+
+	* gnome-print.c (gnome_print_context_new): Use gnome_paper_name_default ()
+	instead of hardcoding US-Letter
+
+2001-02-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-meta.c (meta_glyphlist): Implemented that
+	(do_render): GlyphList decoding
+
+	* gnome-glyphlist-private.h: Changed glyphlist internals
+
+2001-02-15  Roberto Majadas <phoenix@nova.es>
+
+	* gnome-print-private.h: change in gnome_print_context_write_file
+	prototipe const char *buf => const void *buf
+
+	* gnome-print.c (gnome_print_context_write_file): change
+	const char *buf => const void *buf 
+
+	* gnome-print-fax.c
+	(gnome_print_fax_get_type): new function
+	(gnome_print_fax_new):  new function
+	(gnome_print_fax_construct):  new function
+	(fax_class_init):  new function
+	(fax_close):  new function
+	(fax_beginpage):  new function
+	(fax_page_begin):  new function
+	(fax_page_end):  new function
+	(fax_print_band):  new function
+	(fax_encode):  new function
+	(fax_encode_rules_apply):  new function
+	(fax_encode_finish_of_row): new function
+	(fax_ditering): new function 
+	(fax_code):  new function
+	(fax_code_eof):  new function 
+	(fax_code_eol):  new function
+	(fax_code_write): new function
+
+	* gnome-print-fax.h
+	* gnomr-print-fax-g3.h
+
+	* Makefile.am (libgnomeprint_la_SOURCES): add gnome-print-fax(.c,.h,-g3.h)
+
+2001-02-12  Thomas Hudson  <thudson@gobe.com>
+
+	* gnome-print-meta.c (gnome_print_meta_access_buffer): Fixed offset for
+	writing size into buffer.
+
+2001-01-31  Karl Eichwalder  <ke@suse.de>
+
+	* gnome-print-file.c (gnome_print_file_ok_selected): Fix message
+	string.
+
+2001-01-28  Karl Eichwalder  <ke@suse.de>
+
+	* gnome-printer-dialog.c: Fix two message strings: Add missing dots.
+
+2001-01-18  Michael Meeks  <michael@helixcode.com>
+
+	* gp-fontmap.c (gnome_font_list): fix reference counting cockup.
+
+2001-01-11  Paolo Molaro  <lupus@ximian.com>
+
+	* gnome-canvas-hacktext.c (gnome_canvas_hacktext_class_init): Change
+	font argument type to GTK_TYPE_OBJECT
+
+	* gnome-font-dialog.c (gnome_font_selection_class_init): Ditto
+
+2001-01-06  Miguel de Icaza  <miguel@gnu.org>
+
+	* gnome-printer.c (gnome_printer_init): Someone should have tested
+	this without the GPA stuff.
+
+2000-12-27  Morten Welinder  <terra@diku.dk>
+
+	* gnome-print-dialog.h: #include <sys/types.h> for time_t.
+
+2000-12-24  Miguel de Icaza  <miguel@helixcode.com>
+
+	* gp-unicode.c (g_utf8_validate): Fix inline docs.
+
+	* gnome-print-encode.c (gnome_print_encode_blank): Fix inline docs.
+
+	* gnome-print-rgbp.c (gnome_print_rgbp_construct): Write inline docs.
+
+	* gnome-printer-dialog.c (gnome_printer_dialog_get_printer): Fix
+	inline api docs.
+
+	* gnome-print-meta.c (gnome_print_meta_new): Fixed inline api docs.
+
+	* gnome-print-encode.c (gnome_print_encode_tiff): Fix inline docs.
+
+	* gp-fontmap.h (_GPFontEntryT1): Make parseable by GtkDoc.
+
+	* gnome-print-dialog.h: Make GnomePrintRangeType parseable by GtkDoc.
+
+	* parseAFM.h (struct _t_ligature): ditto
+
+2000-12-18  Chema Celorio  <chema@celorio.com>
+
+	* gnome-font-private.h: add prototype for
+	gnome_font_unsized_get_glyph_name.
+
+	* gnome-print-pclr.c: include the gnome-print-encode-private header.
+
+	* gnome-printer-dialog.c (gnome_printer_widget_finalize): don't unref
+	the printers, users don't want their settings to get lost every time
+	the dialog is destroyed.
+	(gnome_printer_widget_init): make the printers lists static.
+	(set_printer): handle print to file userfriendlyer
+	(gnome_printer_dialog_print_to_file_toggled): implement.
+	(gnome_printer_dialog_create_print_to_file): use p2f_toggled
+	(set_printer): save the printer that was last used for the next
+	time we pop up the dialog.
+
+2000-12-10  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-ps2.c: add the gnome-print-encode-private header.
+
+	* gnome-print-dialog.c (gnome_print_dialog_get_printer): cosmetic fixes
+	to be consistent across gnome-print.
+
+	* gnome-printer-dialog.c (gnome_printer_widget_init): if gpa_printer_list_load
+	failed, get a generic_postscript printer.
+
+2000-12-09  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am (INCLUDES): define GNOMEPRINT_LIBDIR
+
+	* gnome-printer-dialog.c: add the gmodule header
+	(gnome_printer_dialog_properties_clicked): when the Properties button
+	in clicked, open libgpaui.so and look for gpa_config_printer.
+
+2000-11-30  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-encode.h: remove protype from here
+	* gnome-print-encode-private.h: into here
+
+	* gnome-print-ps2.c: include libgpa headers
+	add GpaPrinter * and GpaSettings to the ps2 struct
+	(gnome_print_ps2_new): get ps level from gpa_printer
+	(gnome_print_ps2_init): init ps level to 2 (this is our default)
+	(gnome_print_ps2_get_level): new funct.
+
+2000-11-28  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer-dialog.c (gnome_printer_widget_init): use
+	gpa_generic_ps_printer to always have a printer installed.
+
+2000-11-28  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-pdf.c: fix compilation.
+
+2000-11-27  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-pdf.c : Add a note on what we plan to rewrite within
+	this driver.
+
+	* gnome-print-pdf.c (gnome_print_pdf_page_write_contents): use the
+	real length value for the stream for each page. 
+	(gnome_print_pdf_compr_from_string): added hex encoded.
+	(gnome_print_pdf_write_stream): implement. We can now use the
+	configuration from gnome-print-admin for compression/encoding types.
+	 add ascii_format to the GnomePrintPdf stuct
+	(gnome_print_pdf_write_compression_filters): add Ascii format
+
+2000-11-25  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am: fix for LIBGPA on/off compilation
+
+2000-11-24  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer-dialog.c (gnome_printer_dialog_create_properties_button):
+	fix typo
+
+2000-11-23  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-pdf.c: hook to libgpa
+	(gnome_print_pdf_write_compression_filters): new function.
+	(gnome_print_pdf_compr_from_string): new funct.
+	(gnome_print_pdf_page_write_contents): take compression
+	parameter from libgpa
+	(gnome_print_pdf_image_compressed): take compression parameter
+	from libgpa.
+
+2000-11-22  Chema Celorio  <chema@celorio.com>
+
+	* gnome-print-file.c (gnome_print_file_dialog): plug a leak
+
+2000-11-21  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer-dialog.c (gnome_printer_widget_init): do not
+	expand & fill the properties button.
+
+2000-11-21  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer-dialog.c (gnome_printer_widget_init): set the printer
+	only if it exists
+
+	* gnome-print-dialog.c (gnome_print_dialog_init): emit a g_warning if
+	there aren't any printers installed.
+
+2000-11-21  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer-dialog.c (gnome_printer_dialog_properties_clicked): update
+	error message.
+
+	* gnome-print-file.c (gnome_print_file_ok_selected): test if the user
+	is trying to print to a directory.
+
+	* gnome-print-master.c (gnome_print_master_print): don't emit a g_warning
+	if the context could not be creted.
+
+	* gnome-print-file.c (gnome_print_file_ok_selected): If the file
+	is about to be overwritten, warn the user and query for a confirmation
+
+2000-11-21  Chema Celorio  <chema@celorio.com>
+
+	* gnome-printer-dialog.c:
+	* gnome-print.c:
+	* gnome-printer-private.h: 
+	* gnome-printer-profile.c: 
+	* gnome-printer.c: 
+	Added #ifdef'ed support for libgpa. Libgpa is the a new printer
+	profiling library. It repleaces gnome-printer-profile.c. To
+	configure printers the gnome-print-admin module is used. The
+	--with-admin tag needs to be specified on the configure script.
+	All the changes in this files are delimited with #ifdef ENABLE_LIBGPA
+	
+	* gnome-printer-dialog.c: ditto
+	* gnome-print-ps.c: ditto
+	* gnome-print-pclv.c: ditto
+	* gnome-print-pclr.c: ditto
+	* gnome-print-master.c: ditto
+	* gnome-print-master-preview.c: ditto
+	* gnome-print-encode.c: ditto
+	* gnome-print-dialog.c: ditto
+	* gnome-print-copies.c: ditto
+	* gnome-canvas-clipgroup.c : ditto
+	* gnome-canvas-bpath.c: use individual headers v.s. <gnome.h>
+
+	* gnome-print-file.h: ditto
+	* gnome-print-file.c: new file to handle the print to file dialog
+
+2000-11-19  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* Makefile.am: Make compiling font support faculatative
+
+	* gnome-canvas-hacktext.c (gnome_canvas_hacktext_point): Do not
+	crash, if font does not give us SVP
+	* gnome-font-face.c: Implement attributes ItalicAngle...
+	* gnome-font-family.c: Remove #ifdefs
+	* gnome-font-private.h: Remove #ifdefs
+	Removed format-specific methods
+	* gnome-print-pdf-type1.c: Use font face attributes, not methods
+	* gnome-print-ps.c: Ditto
+	* gnome-print-ps2.c: Ditto
+
+2000-11-16  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* parseAFM.h: Added #ifdef _PARSE_AFM_H_
+
+	* gp-fontmap.h: made ItalicAngle double (as it should be)
+
+	* gp-fontmap.c: Added fontmap version 2.0 parser (no aliases yet)
+	(gp_fm_is_changed): Test for file appearing/disappearing
+
+2000-11-16  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* gnome-font-family.c: Cleaned up almost to so thin thing, that
+	I strongly think about removing it at all
+
+	* gp-fontmap.*: We support fontmap reloading at last. Cool!
+
+2000-11-15  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* gp-fontmap.*: Lot of added functionality. Fontmap is
+	now verified, and reloaded if files have been changed.
+	Also added family dictionary and 2-level lists. Moved
+	font and family lists code here.
+
+	* gnome-font-private.h: Use referenced FontEntry for
+	relevant typeface data
+
+	* gnome-font-face.c: Migration to new fontmap
+	* gnome-font.c: Ditto
+	* gnome-rfont.c: Ditto
+	* gnome-print-pdf-type1.c: Ditto
+	* gnome-font-family.c: Ditto (well, with problems)
+
+2000-11-14  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* gp-fontmap.*: Move fontmap functionality to separate files
+
+	* gp-character-block.*: Add unicode->glyph map management
+
+	* gnome-font-private.h: Use GPUCMap
+
+	* gnome-font-face.c: Remove fontmap, use GPUCMap
+
+2000-11-13  Chema Celorio <chema@celorio.com>
 
 	* gnome-print-pdf.c (gnome_print_pdf_gsave): grow the array of graphic
 	states after we reach the allocated limit.

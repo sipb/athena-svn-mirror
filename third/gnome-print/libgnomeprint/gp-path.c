@@ -201,6 +201,8 @@ gp_path_duplicate (const GPPath * path)
 	g_return_val_if_fail (path != NULL, NULL);
 
 	new = gp_path_new_from_foreign_bpath (path->bpath);
+	g_return_val_if_fail (new != NULL, NULL);
+
 	new->x = path->x;
 	new->y = path->y;
 	new->hascpt = path->hascpt;
@@ -435,8 +437,6 @@ gp_path_close_all (const GPPath * path)
 	for (p = path->bpath; p->code != ART_END; p++) {
 		switch (p->code) {
 		case ART_MOVETO_OPEN:
-			start = p;
-			closed = FALSE;
 		case ART_MOVETO:
 			if ((!closed) && ((start->x3 != p->x3) || (start->y3 != p->y3))) {
 				d->code = ART_LINETO;
@@ -444,11 +444,12 @@ gp_path_close_all (const GPPath * path)
 				d->y3 = start->y3;
 				d++;
 			}
-			if (p->code == ART_MOVETO) closed = TRUE;
+			closed = (p->code == ART_MOVETO);
 			d->code = ART_MOVETO;
 			d->x3 = p->x3;
 			d->y3 = p->y3;
 			d++;
+			start = p;
 			break;
 		case ART_LINETO:
 		case ART_CURVETO:
@@ -701,6 +702,8 @@ gp_path_closepath (GPPath * path)
 	if ((bs->x3 != be->x3) || (bs->y3 != be->y3)) {
 		gp_path_lineto (path, bs->x3, bs->y3);
 	}
+
+	bs = path->bpath + path->substart; /* NB. def_lineto can realloc bpath */
 
 	bs->code = ART_MOVETO;
 

@@ -41,12 +41,17 @@ struct _GnomePrintRGBPPrivate {
 
 /**
  * gnome_print_rgbp_construct:
+ * @rgbp: The GnomePrintRGBP object to be constructed.
+ * @paper_info: GnomePaper object.
+ * @dpi: resolution (in dots per inch) for the this RGBP object.
  *
+ * Returns: a constructed GnomePrintRGBP object or NULL if there
+ * is an error during initialization.
  */
 GnomePrintRGBP *
-gnome_print_rgbp_construct (GnomePrintRGBP *rgbp,
+gnome_print_rgbp_construct (GnomePrintRGBP   *rgbp,
 			    const GnomePaper *paper_info,
-			    int dpi)
+			    int               dpi)
 {
 	g_return_val_if_fail (paper_info != NULL, NULL);
 
@@ -90,8 +95,11 @@ gnome_print_rgbp_construct (GnomePrintRGBP *rgbp,
 
 /**
  * gnome_print_rgbp_new:
- * @paper_size:
- * @dpi:
+ * @paper_size: Initial paper size.
+ * @dpi: resolution (in dots per inch) for the this RGBP object.
+ *
+ * Returns: a new GnomePrintRGBP object or NULL if there is an error
+ * during initialization.
  */
 GnomePrintContext *
 gnome_print_rgbp_new (const char *paper_size, int dpi)

@@ -107,6 +107,8 @@ print_test_page (GnomePrinter *printer)
 
   pc = gnome_print_context_new_with_paper_size (printer, "US-Letter");
 
+  gnome_print_beginpage (pc, "testtext demo page");
+
   line = get_line ("Times", "\302\241hello, world firefly TOYOTA!", 36);
 
   x = 72;

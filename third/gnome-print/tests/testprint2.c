@@ -40,6 +40,8 @@ print_test_page (GnomePrintContext *pc)
 	GnomeFont *font;
 	int i;
 
+	gnome_print_beginpage (pc, "testprint2 demo page");
+
 	font = gnome_font_new ("Courier", 14);
 	gnome_print_setfont (pc, font);
 
