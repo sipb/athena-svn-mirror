@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.1 1987-06-12 16:58:47 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkIfNot.c,v 1.2 1987-06-20 19:20:47 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -33,7 +33,7 @@ Code_t ZCheckIfNotice(buffer,buffer_len,notice,auth,predicate,args)
 	
 	qptr = __Q_Head;
 	qcount = __Q_Length;
-
+	
 	for (;qcount;qcount--) {
 		if ((retval = ZParseNotice(qptr->packet,qptr->packet_len,
 					   &tmpnotice,&tmpauth)) != ZERR_NONE)
