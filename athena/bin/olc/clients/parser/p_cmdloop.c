@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.14 1991-04-02 13:58:09 lwvanels Exp $
+ *	$Id: p_cmdloop.c,v 1.15 1991-04-08 20:50:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.14 1991-04-02 13:58:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.15 1991-04-08 20:50:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,7 +34,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc_parser.h>
 #include <signal.h>
 #include <ctype.h>
-#ifdef m68k
+#ifdef _AUX_SOURCE
 #include <time.h>
 #endif
 
@@ -72,72 +72,48 @@ command_loop(Command_Table, prompt)
   char arglist[MAX_ARGS][MAX_ARG_LENGTH];	
   int i,ls=0;
   char buf[BUF_SIZE];
-#ifdef CSH
-  struct stat statbuf;
-  char configfile[128];
-#endif /* CSH */
-  
   subsystem = 1;
   
-#ifdef CSH
-  strcpy(configfile,(char *) getenv("HOME"));
-  strcat(configfile,"/");
-  strcat(configfile,".olc.cshrc");
-  if(stat(configfile, &statbuf) == 0) 
+  while(1) 
     {
-      arguments[0] = arglist[0];
-      arguments[1] = (char *) NULL;
-      strcpy(arglist[0],"csh");
-      sh_main(1,arguments);
-    } 
-  else 
-    {
-#endif /* CSH */
-
-      while(1) 
+      ls = 0;
+      fill_request(&Request);
+      comm_ptr = command_line;
+      set_prompt(&Request,buf,prompt);
+      get_prompted_input(buf, command_line);
+      while (isspace(*comm_ptr) && (*comm_ptr != '\0'))
+	comm_ptr++;
+      if (*comm_ptr == '\0')
+	continue;
+      if(*comm_ptr == '!')
 	{
-	  ls = 0;
-	  fill_request(&Request);
-	  comm_ptr = command_line;
-	  set_prompt(&Request,buf,prompt);
-	  get_prompted_input(buf, command_line);
-	  while (isspace(*comm_ptr) && (*comm_ptr != '\0'))
-	    comm_ptr++;
-	  if (*comm_ptr == '\0')
-	    continue;
-	  if(*comm_ptr == '!')
-	    {
-	      comm_ptr++;
-	      ls = TRUE;
-	    }
-	  parse_command_line(comm_ptr, arglist);
+	  comm_ptr++;
+	  ls = TRUE;
+	}
+      parse_command_line(comm_ptr, arglist);
+      i = 0;
+      while (*arglist[i] != '\0') 
+	{
+	  arguments[i] = arglist[i];
+	  i++;
+	}
+      arguments[i] = (char *) NULL;
+      expand_arguments(&Request,arguments);
+      if(ls)
+	{
 	  i = 0;
-	  while (*arglist[i] != '\0') 
+	  *command_line = '\0';
+	  while(*arglist[i] != '\0') 
 	    {
-	      arguments[i] = arglist[i];
+	      strcat(command_line,arglist[i]);
+	      strcat(command_line," ");
 	      i++;
 	    }
-	  arguments[i] = (char *) NULL;
-	  expand_arguments(&Request,arguments);
-	  if(ls)
-	    {
-	      i = 0;
-	      *command_line = '\0';
-	      while(*arglist[i] != '\0') 
-		{
-		  strcat(command_line,arglist[i]);
-		  strcat(command_line," ");
-		  i++;
-		}
-	      system(command_line);
-	    }
-	  else
-	    (void) do_command(Command_Table, arguments);
+	  system(command_line);
 	}
-
-#ifdef CSH
-   }
-#endif /* CSH */
+      else
+	(void) do_command(Command_Table, arguments);
+    }
 }
 
 /*
@@ -163,11 +139,6 @@ do_command(Command_Table, arguments)
   int ind;		    /* Index in the command table. */
   int status;
 
-#ifdef CSH
-  if(*arguments[0] == '\\') /* want to escape olc command */
-    return(-1);
-#endif /* CSH */
-
   ind = command_index(Command_Table, arguments[0]);
   
   if (ind == NOT_UNIQUE)
@@ -177,12 +148,7 @@ do_command(Command_Table, arguments)
       {
 	printf("The command '%s' is not defined.  ", arguments[0]);
 	printf("Please use the 'help' request if\nyou need help.\n");
-
-#ifdef CSH
-	return(-1);
-#else  /* CSH */
 	return(ERROR);
-#endif /* CSH */
       }
     else 
       {
