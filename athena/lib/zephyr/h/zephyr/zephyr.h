@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.22 1988-06-15 17:54:07 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.23 1988-06-17 17:19:07 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -124,7 +124,7 @@ extern C_Block __Zephyr_session;
 #endif
 
 	/* ZCompareUIDPred definition */
-extern int ZCompareUIDPred();
+extern int ZCompareUIDPred(), ZCompareMultiUIDPred();
 
 	/* ZGetSession() macro */
 #define ZGetSession() (__Zephyr_session)
