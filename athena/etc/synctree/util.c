@@ -7,12 +7,12 @@
 #include <sys/param.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 #ifndef MAXBSIZE
 #define MAXBSIZE 20480
 #endif
 
-extern int errno;
 extern int verbosef;
 
 int copyfile(from,to,mode)
