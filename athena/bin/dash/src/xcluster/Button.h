@@ -11,6 +11,8 @@
 
 #include "Jets.h"
 
+#ifndef __BUTTON_H__
+#define __BUTTON_H__
 extern void SetToggleState();
 extern Boolean GetToggleState();
 
@@ -62,3 +64,5 @@ typedef struct _ButtonClassRec *ButtonJetClass;
 #define XjNstate "state"
 #define XjCDeactivateProc "DeactivateProc"
 #define XjNdeactivateProc "deactivateProc"
+
+#endif /* __BUTTON_H__ */
