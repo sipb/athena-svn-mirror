@@ -1,0 +1,216 @@
+# Lithuanian translation of gnome-spell.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Gediminas Paulauskas <menesis@delfi.lt>, 2001.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-spell 0.4\n"
+"POT-Creation-Date: 2003-05-19 18:03+0200\n"
+"PO-Revision-Date: 2001-10-08 22:50+0200\n"
+"Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
+"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-13\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: capplet/gnome-spell-capplet.glade.h:1
+msgid "Choose color"
+msgstr ""
+
+#: capplet/gnome-spell-capplet.glade.h:2
+msgid "Colors"
+msgstr ""
+
+#: capplet/gnome-spell-capplet.glade.h:3
+msgid "Language"
+msgstr ""
+
+#: capplet/gnome-spell-capplet.glade.h:4
+msgid "misspelling underline color"
+msgstr ""
+
+#: capplet/main.c:171
+msgid "en"
+msgstr ""
+
+#: capplet/main.c:238 gnome-spell/control.c:413
+msgid "Could not load glade file."
+msgstr "Nepavyko ákelti glade bylos."
+
+#: capplet/main.c:248
+msgid "Languages"
+msgstr ""
+
+#: gnome-spell/control.c:231
+#, c-format
+msgid "Suggestions for '%s'"
+msgstr "Pasiûlymai vietoj '%s'"
+
+#: gnome-spell/control.c:334 gnome-spell/spell-checker.glade.h:9
+msgid "Suggestions"
+msgstr "Pasiûlymai"
+
+#: gnome-spell/dictionary.c:148
+msgid "Breton"
+msgstr ""
+
+#: gnome-spell/dictionary.c:149
+msgid "Catalan"
+msgstr ""
+
+#: gnome-spell/dictionary.c:150
+msgid "Czech"
+msgstr ""
+
+#: gnome-spell/dictionary.c:151
+msgid "Danish"
+msgstr ""
+
+#: gnome-spell/dictionary.c:152
+msgid "German (Germany)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:153
+msgid "German (Swiss)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:154
+msgid "Greek"
+msgstr ""
+
+#: gnome-spell/dictionary.c:155
+msgid "English (American)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:156
+msgid "English (British)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:157
+msgid "English (Canadian)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:158
+msgid "Esperanto"
+msgstr ""
+
+#: gnome-spell/dictionary.c:159
+msgid "Spanish"
+msgstr ""
+
+#: gnome-spell/dictionary.c:160
+msgid "Faroese"
+msgstr ""
+
+#: gnome-spell/dictionary.c:161
+msgid "French (France)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:162
+msgid "French (Swiss)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:163
+msgid "Italian"
+msgstr ""
+
+#: gnome-spell/dictionary.c:164
+msgid "Dutch"
+msgstr ""
+
+#: gnome-spell/dictionary.c:165
+msgid "Norwegian"
+msgstr ""
+
+#: gnome-spell/dictionary.c:166
+msgid "Polish"
+msgstr ""
+
+#: gnome-spell/dictionary.c:167
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:168
+msgid "Portuguese (Brazilian)"
+msgstr ""
+
+#: gnome-spell/dictionary.c:169
+msgid "Russian"
+msgstr ""
+
+#: gnome-spell/dictionary.c:170
+msgid "Slovak"
+msgstr ""
+
+#: gnome-spell/dictionary.c:171
+msgid "Swedish"
+msgstr ""
+
+#: gnome-spell/dictionary.c:172
+msgid "Ukrainian"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:1
+msgid "*"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:2
+#, fuzzy
+msgid "Add to dictionary"
+msgstr "_Pridëti á þodynà"
+
+#: gnome-spell/spell-checker.glade.h:3
+msgid "Checked word"
+msgstr "Patikrintas þodis"
+
+#: gnome-spell/spell-checker.glade.h:4
+msgid "D_ictionaries"
+msgstr "Þodyna_i"
+
+#: gnome-spell/spell-checker.glade.h:5
+msgid "Describe _all"
+msgstr "Apraðyti _visus"
+
+#: gnome-spell/spell-checker.glade.h:6
+msgid "Ignore"
+msgstr "Ignoruoti"
+
+#: gnome-spell/spell-checker.glade.h:7
+msgid "Remember"
+msgstr "Prisiminti"
+
+#: gnome-spell/spell-checker.glade.h:8
+msgid "Replace"
+msgstr "Pakeisti"
+
+#: gnome-spell/spell-checker.glade.h:10
+msgid "_Add word"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:11
+msgid "_Back"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:12
+msgid "_Describe"
+msgstr "_Apraðyti"
+
+#: gnome-spell/spell-checker.glade.h:13
+msgid "_Help"
+msgstr "_Pagalba"
+
+#: gnome-spell/spell-checker.glade.h:14
+msgid "_Ignore"
+msgstr "_Ignoruoti"
+
+#: gnome-spell/spell-checker.glade.h:15
+msgid "_Replace"
+msgstr "Pa_keisti"
+
+#: gnome-spell/spell-checker.glade.h:16
+msgid "_Skip"
+msgstr "Pra_leisti"
+
+#: gnome-spell/test-spell.c:39
+msgid "I could not initialize Bonobo"
+msgstr "Negalëjau inicializuoti Bonobo"

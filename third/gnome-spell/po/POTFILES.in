@@ -1,0 +1,6 @@
+gnome-spell/GNOME_Spell.server.in.in
+gnome-spell/control.c
+gnome-spell/dictionary.c
+gnome-spell/spell-checker.glade
+gnome-spell/spell-factory.c
+gnome-spell/test-spell.c

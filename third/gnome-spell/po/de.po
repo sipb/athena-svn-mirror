@@ -1,0 +1,216 @@
+# German translation for gnome-spell
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Manuel Borchers <webmaster@matronix.de>, 2001.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-spell\n"
+"POT-Creation-Date: 2003-05-19 18:03+0200\n"
+"PO-Revision-Date: 2002-07-01 14:54+0100\n"
+"Last-Translator: Christian Neumair <christian-neumair@web.de>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: capplet/gnome-spell-capplet.glade.h:1
+msgid "Choose color"
+msgstr "Farbe wählen"
+
+#: capplet/gnome-spell-capplet.glade.h:2
+msgid "Colors"
+msgstr "Farben"
+
+#: capplet/gnome-spell-capplet.glade.h:3
+msgid "Language"
+msgstr "Sprache"
+
+#: capplet/gnome-spell-capplet.glade.h:4
+msgid "misspelling underline color"
+msgstr "Unterstreichungsfarbe der Rechtschreibfehler"
+
+#: capplet/main.c:171
+msgid "en"
+msgstr "en"
+
+#: capplet/main.c:238 gnome-spell/control.c:413
+msgid "Could not load glade file."
+msgstr "Glade-Datei konnte nicht geladen werden."
+
+#: capplet/main.c:248
+msgid "Languages"
+msgstr "Sprachen"
+
+#: gnome-spell/control.c:231
+#, c-format
+msgid "Suggestions for '%s'"
+msgstr "Vorschläge für »%s«"
+
+#: gnome-spell/control.c:334 gnome-spell/spell-checker.glade.h:9
+msgid "Suggestions"
+msgstr "Vorschläge"
+
+#: gnome-spell/dictionary.c:148
+msgid "Breton"
+msgstr "Bretonisch"
+
+#: gnome-spell/dictionary.c:149
+msgid "Catalan"
+msgstr "Katalan"
+
+#: gnome-spell/dictionary.c:150
+msgid "Czech"
+msgstr "Tschechisch"
+
+#: gnome-spell/dictionary.c:151
+msgid "Danish"
+msgstr "Dänisch"
+
+#: gnome-spell/dictionary.c:152
+msgid "German (Germany)"
+msgstr "Deutsch (Deutschland)"
+
+#: gnome-spell/dictionary.c:153
+msgid "German (Swiss)"
+msgstr "Deutsch (Schweiz)"
+
+#: gnome-spell/dictionary.c:154
+msgid "Greek"
+msgstr ""
+
+#: gnome-spell/dictionary.c:155
+msgid "English (American)"
+msgstr "Englisch (Amerikanisch)"
+
+#: gnome-spell/dictionary.c:156
+msgid "English (British)"
+msgstr "Englisch (Britisch)"
+
+#: gnome-spell/dictionary.c:157
+msgid "English (Canadian)"
+msgstr "Englisch (Kanadisch)"
+
+#: gnome-spell/dictionary.c:158
+msgid "Esperanto"
+msgstr "Esperanto"
+
+#: gnome-spell/dictionary.c:159
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: gnome-spell/dictionary.c:160
+msgid "Faroese"
+msgstr "Faroesisch"
+
+#: gnome-spell/dictionary.c:161
+msgid "French (France)"
+msgstr "Französisch (Frankreich)"
+
+#: gnome-spell/dictionary.c:162
+msgid "French (Swiss)"
+msgstr "Französisch (Schweiz)"
+
+#: gnome-spell/dictionary.c:163
+msgid "Italian"
+msgstr "Italienisch"
+
+#: gnome-spell/dictionary.c:164
+msgid "Dutch"
+msgstr "Niederländisch"
+
+#: gnome-spell/dictionary.c:165
+msgid "Norwegian"
+msgstr "Norwegisch"
+
+#: gnome-spell/dictionary.c:166
+msgid "Polish"
+msgstr "Polnisch"
+
+#: gnome-spell/dictionary.c:167
+msgid "Portuguese (Portugal)"
+msgstr "Portugiesisch (Portugal)"
+
+#: gnome-spell/dictionary.c:168
+msgid "Portuguese (Brazilian)"
+msgstr "Portugiesisch (Brasilianisch)"
+
+#: gnome-spell/dictionary.c:169
+msgid "Russian"
+msgstr "Russisch"
+
+#: gnome-spell/dictionary.c:170
+msgid "Slovak"
+msgstr ""
+
+#: gnome-spell/dictionary.c:171
+msgid "Swedish"
+msgstr "Schwedisch"
+
+#: gnome-spell/dictionary.c:172
+msgid "Ukrainian"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gnome-spell/spell-checker.glade.h:2
+#, fuzzy
+msgid "Add to dictionary"
+msgstr "Zum Wörterbuch _hinzufügen"
+
+#: gnome-spell/spell-checker.glade.h:3
+msgid "Checked word"
+msgstr "Überprüftes Wort"
+
+#: gnome-spell/spell-checker.glade.h:4
+msgid "D_ictionaries"
+msgstr "_Wörterbücher"
+
+#: gnome-spell/spell-checker.glade.h:5
+msgid "Describe _all"
+msgstr "_Alles beschreiben"
+
+#: gnome-spell/spell-checker.glade.h:6
+msgid "Ignore"
+msgstr "Ignorieren"
+
+#: gnome-spell/spell-checker.glade.h:7
+msgid "Remember"
+msgstr "Merken"
+
+#: gnome-spell/spell-checker.glade.h:8
+msgid "Replace"
+msgstr "Ersetzen"
+
+#: gnome-spell/spell-checker.glade.h:10
+msgid "_Add word"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:11
+msgid "_Back"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:12
+msgid "_Describe"
+msgstr "_Beschreiben"
+
+#: gnome-spell/spell-checker.glade.h:13
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: gnome-spell/spell-checker.glade.h:14
+msgid "_Ignore"
+msgstr "_Ignorieren"
+
+#: gnome-spell/spell-checker.glade.h:15
+msgid "_Replace"
+msgstr "_Ersetzen"
+
+#: gnome-spell/spell-checker.glade.h:16
+msgid "_Skip"
+msgstr "Über_springen"
+
+#: gnome-spell/test-spell.c:39
+msgid "I could not initialize Bonobo"
+msgstr "Bonobo konnte nicht initialisiert werden"

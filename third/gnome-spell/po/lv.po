@@ -1,0 +1,217 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-spell for Latvian\n"
+"POT-Creation-Date: 2003-05-19 18:03+0200\n"
+"PO-Revision-Date: 2003-02-02 22:20--300\n"
+"Last-Translator: Artis Trops <hornet@navigator.lv>\n"
+"Language-Team: Latvian <ll10nt@os.lv>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: capplet/gnome-spell-capplet.glade.h:1
+msgid "Choose color"
+msgstr "Izvēlieties krāsu"
+
+#: capplet/gnome-spell-capplet.glade.h:2
+msgid "Colors"
+msgstr "Krāsas"
+
+#: capplet/gnome-spell-capplet.glade.h:3
+msgid "Language"
+msgstr "Valoda"
+
+#: capplet/gnome-spell-capplet.glade.h:4
+msgid "misspelling underline color"
+msgstr "kļūdu pasvītrošanas krāsa"
+
+#: capplet/main.c:171
+msgid "en"
+msgstr "en"
+
+#: capplet/main.c:238 gnome-spell/control.c:413
+msgid "Could not load glade file."
+msgstr "Nevarēju ielādēt glade failu."
+
+#: capplet/main.c:248
+msgid "Languages"
+msgstr "Valodas"
+
+#: gnome-spell/control.c:231
+#, c-format
+msgid "Suggestions for '%s'"
+msgstr "Ieteikumi '%s'"
+
+#: gnome-spell/control.c:334 gnome-spell/spell-checker.glade.h:9
+msgid "Suggestions"
+msgstr "Ieteikumi"
+
+#: gnome-spell/dictionary.c:148
+msgid "Breton"
+msgstr "Bretoņu"
+
+#: gnome-spell/dictionary.c:149
+msgid "Catalan"
+msgstr "Katalāniešu"
+
+#: gnome-spell/dictionary.c:150
+msgid "Czech"
+msgstr "Čehu"
+
+#: gnome-spell/dictionary.c:151
+msgid "Danish"
+msgstr "Dāņu"
+
+#: gnome-spell/dictionary.c:152
+msgid "German (Germany)"
+msgstr "Vāciešu (Vācijas)"
+
+#: gnome-spell/dictionary.c:153
+msgid "German (Swiss)"
+msgstr "Vāciešu (Šveices)"
+
+#: gnome-spell/dictionary.c:154
+msgid "Greek"
+msgstr "Grieķu"
+
+#: gnome-spell/dictionary.c:155
+msgid "English (American)"
+msgstr "Angļu (Amerikāņu)"
+
+#: gnome-spell/dictionary.c:156
+msgid "English (British)"
+msgstr "Angļu (Britu)"
+
+#: gnome-spell/dictionary.c:157
+msgid "English (Canadian)"
+msgstr "Angļu (Kanādiešu)"
+
+#: gnome-spell/dictionary.c:158
+msgid "Esperanto"
+msgstr "Esperanto"
+
+#: gnome-spell/dictionary.c:159
+msgid "Spanish"
+msgstr "Spāņu"
+
+#: gnome-spell/dictionary.c:160
+msgid "Faroese"
+msgstr "Faroiešu"
+
+#: gnome-spell/dictionary.c:161
+msgid "French (France)"
+msgstr "Franču (Francijas)"
+
+#: gnome-spell/dictionary.c:162
+msgid "French (Swiss)"
+msgstr "Franču (Šveices)"
+
+#: gnome-spell/dictionary.c:163
+msgid "Italian"
+msgstr "Itāļu"
+
+#: gnome-spell/dictionary.c:164
+msgid "Dutch"
+msgstr "Holandiešu"
+
+#: gnome-spell/dictionary.c:165
+msgid "Norwegian"
+msgstr "Norvēģu"
+
+#: gnome-spell/dictionary.c:166
+msgid "Polish"
+msgstr "Poļu"
+
+#: gnome-spell/dictionary.c:167
+msgid "Portuguese (Portugal)"
+msgstr "Portugāliešu (Portugāļu)"
+
+#: gnome-spell/dictionary.c:168
+msgid "Portuguese (Brazilian)"
+msgstr "Portugāliešu (Brazīļu)"
+
+#: gnome-spell/dictionary.c:169
+msgid "Russian"
+msgstr "Krievu"
+
+#: gnome-spell/dictionary.c:170
+msgid "Slovak"
+msgstr "Slovāku"
+
+#: gnome-spell/dictionary.c:171
+msgid "Swedish"
+msgstr "Zviedru"
+
+#: gnome-spell/dictionary.c:172
+msgid "Ukrainian"
+msgstr "Ukraiņu"
+
+#: gnome-spell/spell-checker.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gnome-spell/spell-checker.glade.h:2
+#, fuzzy
+msgid "Add to dictionary"
+msgstr "_Pievienot vārdnīcai"
+
+#: gnome-spell/spell-checker.glade.h:3
+msgid "Checked word"
+msgstr "Pārbaudīts vārds"
+
+#: gnome-spell/spell-checker.glade.h:4
+msgid "D_ictionaries"
+msgstr "Vā_rdnīcas"
+
+#: gnome-spell/spell-checker.glade.h:5
+msgid "Describe _all"
+msgstr "Aprakstīt _visu"
+
+#: gnome-spell/spell-checker.glade.h:6
+msgid "Ignore"
+msgstr "Ignorēt"
+
+#: gnome-spell/spell-checker.glade.h:7
+msgid "Remember"
+msgstr "Atcerēties"
+
+#: gnome-spell/spell-checker.glade.h:8
+msgid "Replace"
+msgstr "Aizvietot"
+
+#: gnome-spell/spell-checker.glade.h:10
+msgid "_Add word"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:11
+msgid "_Back"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:12
+msgid "_Describe"
+msgstr "_Aprakstīt"
+
+#: gnome-spell/spell-checker.glade.h:13
+msgid "_Help"
+msgstr "_Palīdzība"
+
+#: gnome-spell/spell-checker.glade.h:14
+msgid "_Ignore"
+msgstr "_Ignorēt"
+
+#: gnome-spell/spell-checker.glade.h:15
+msgid "_Replace"
+msgstr "_Aizvietot"
+
+#: gnome-spell/spell-checker.glade.h:16
+msgid "_Skip"
+msgstr "_Izlaist"
+
+#: gnome-spell/test-spell.c:39
+msgid "I could not initialize Bonobo"
+msgstr "Es nevarēju inicializēt Bonobo"

@@ -1,0 +1,197 @@
+2003-05-16  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-07  Jeremy Katz  <katzj@redhat.com>
+
+	* gnome-spell/Makefile.am: Set component location so that it
+	follows normal automake practices
+	* configure.in: No need to set component location here now
+
+2003-04-14  Rodney Dawes  <dobey@ximian.com>
+
+	* configure.in: Put the component in a privlibdir, Fix AC_DEFINE errors
+	* gnome-spell/Makefile.am: Put component in privlibdir, Fix automake errors
+	
+2003-03-21  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added "wa" (Walloon) to ALL_LINGUAS
+
+2003-03-15  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added "ja" into ALL_LINGUAS.
+
+2003-03-10  Gil "Dolfin" Osher <dolfin@rpg.org.il>
+
+	* configure.in: Added "he" (Hebrew) to ALL_LINGUAS.
+
+2003-02-28  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
+
+2003-02-20  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-01-27  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* configure.in (ALL_LINGUAS): Added "fi" (Finnish).
+
+2003-01-24  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian).
+
+2003-01-02  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Removed zh_TW from ALL_LINGUAS. My translation was
+	really crap.
+
+2002-11-05  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Adding "ta" (Tamil) to ALL_LINGUAS.
+
+2002-10-02  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
+
+2002-08-02  Christophe Merlet  <christophe@merlet.net>
+
+	* configure.in: Removed an ALL_LINGUAS line.
+
+2002-05-14  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Vietnamese (vi) to ALL_LINGUAS
+
+2002-05-06  Radek Doulik  <rodo@ximian.com>
+
+	* capplet/main.c (save_values): suggest sync
+
+2002-04-27  Simos Xenitellis  <simos@hellug.gr>
+
+	* configure.in: Added Greek (el) to ALL_LINGUAS.
+
+2002-04-16  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Avoid variables in GETTEXT_PACKAGE, intltool
+	can't recognise them. Synced ALL_LINGUAS with po files.
+	* capplet/main.c: Use GETTEXT_PACKAGE in textdomain()
+	and bindtextdomain().
+
+2002-03-25  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added Portuguese (pt) to ALL_LINGUAS
+
+2002-02-08  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am: added capplet to SUBDIRS
+
+2002-01-25  Fatih Demir <kabalak@gtranslator.org>
+
+	* .cvsignore: Added "gnome-spell.spec".
+
+2002-01-21  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2001-12-26  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added "az" to ALL_LINGUAS.
+
+2001-11-23  Matthias Warkus  <mawarkus@gnome.org>
+
+	* configure.in: Added "de" to ALL_LINGUAS.
+
+2001-10-21  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "tr" to the languages list.
+
+2001-10-19  Gustavo Maciel Dias Vieira  <gdvieira@bigbross.com>
+
+	* configure.in (ALL_LINGUAS): Added pt_BR.
+
+2001-10-11  Christophe Merlet  <redfox@eikonex.org>
+
+	* configure.in: Added "fr" to ALL_LINGUAS
+
+2001-10-10  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in: Added "lt" to ALL_LINGUAS
+
+2001-10-09  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added "sk" to ALL_LINGUAS.
+
+2001-10-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "sv" to ALL_LINGUAS.
+
+2001-10-08  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in (ALL_LINGUAS): Added pl.
+
+2001-10-08  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in (EXTRA_GNOME_CFLAGS): added gal check, copied from
+	gtkhtml and added gal to extra gnome libs and flags
+	version 0.4
+	(ALL_LINGUAS): added cs
+	added AM_PROG_XML_I18N_TOOLS
+
+2001-10-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "no" to ALL_LINGUAS
+
+2001-10-01  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: version 0.3
+
+2001-09-29  Carlos Perell=F3 Mar=EDn <carlos@gnome-db.org>
+
+	* configure.in: Added es to ALL_LINGUAS
+
+2001-09-26  Abel Cheung <maddog@linux.org.hk>
+
+	* configure.in: Added zh_TW to ALL_LINGAS (I have too much time :> )
+
+2001-04-25  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: fixed check for pspell, it allows pspell version
+	>= .12 now
+
+2001-02-07  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: check for .12 pspell version
+
+2001-02-02  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: libglade check
+
+	* acconfig.h: add API_VERSION
+
+	* configure.in (API_VERSION): define API_VERSION
+
+2000-12-14  Radek Doulik  <rodo@helixcode.com>
+
+	* README: updated info about pspell
+
+	* configure.in: new tests for pspell modules
+	fixed pspell test - we really require pspell :)
+
+2000-12-13  Radek Doulik  <rodo@helixcode.com>
+
+	* README: added note about pspell/aspell build
+
+	* configure.in: require bonobo >= 0.28
+
+2000-10-12  Radek Doulik  <rodo@helixcode.com>
+
+	* NEWS: added note about 0.1 version
+
+	* README: written simple text
+
+	* configure.in: set 0.1 version
+

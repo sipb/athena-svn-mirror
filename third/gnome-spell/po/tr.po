@@ -1,0 +1,219 @@
+# Turkish translation of gnome-spell.
+# Copyright (C) 2001/2002 Free Software Foundation, Inc.
+# Fatih Demir <kabalak@gtranslator.org>, 2001/2002.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-spell 1.0\n"
+"POT-Creation-Date: 2003-05-19 18:03+0200\n"
+"PO-Revision-Date: 2002-05-09 18:12+0200\n"
+"Last-Translator: Fatih Demir <kabalak@gtranslator.org>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: capplet/gnome-spell-capplet.glade.h:1
+msgid "Choose color"
+msgstr "Rengi seçin"
+
+#: capplet/gnome-spell-capplet.glade.h:2
+msgid "Colors"
+msgstr "Renkler"
+
+#: capplet/gnome-spell-capplet.glade.h:3
+msgid "Language"
+msgstr "Dil"
+
+#: capplet/gnome-spell-capplet.glade.h:4
+msgid "misspelling underline color"
+msgstr "hatalý imla kelimelerinin rengi"
+
+#: capplet/main.c:171
+msgid "en"
+msgstr "tr"
+
+#: capplet/main.c:238 gnome-spell/control.c:413
+msgid "Could not load glade file."
+msgstr "Glade dosyasý yüklenemedi."
+
+#: capplet/main.c:248
+msgid "Languages"
+msgstr "Diller"
+
+#: gnome-spell/control.c:231
+#, c-format
+msgid "Suggestions for '%s'"
+msgstr "'%s' için öneriler"
+
+#: gnome-spell/control.c:334 gnome-spell/spell-checker.glade.h:9
+msgid "Suggestions"
+msgstr "Öneriler"
+
+#: gnome-spell/dictionary.c:148
+msgid "Breton"
+msgstr "Breaton"
+
+#: gnome-spell/dictionary.c:149
+msgid "Catalan"
+msgstr "Catalan"
+
+#: gnome-spell/dictionary.c:150
+msgid "Czech"
+msgstr "Çekçe"
+
+#: gnome-spell/dictionary.c:151
+msgid "Danish"
+msgstr "Danirmarkaca"
+
+#: gnome-spell/dictionary.c:152
+msgid "German (Germany)"
+msgstr "Almanca"
+
+#: gnome-spell/dictionary.c:153
+msgid "German (Swiss)"
+msgstr "Isviçre Almancasý"
+
+#: gnome-spell/dictionary.c:154
+msgid "Greek"
+msgstr ""
+
+#: gnome-spell/dictionary.c:155
+msgid "English (American)"
+msgstr "Amerikan Ingilizcesi"
+
+#: gnome-spell/dictionary.c:156
+msgid "English (British)"
+msgstr "Britanya Ingilizcesi"
+
+#: gnome-spell/dictionary.c:157
+msgid "English (Canadian)"
+msgstr "Kanada Ingilizcesi"
+
+#: gnome-spell/dictionary.c:158
+msgid "Esperanto"
+msgstr "Esperanto"
+
+#: gnome-spell/dictionary.c:159
+msgid "Spanish"
+msgstr "Ýspanyolca"
+
+#: gnome-spell/dictionary.c:160
+msgid "Faroese"
+msgstr "Farörce"
+
+#: gnome-spell/dictionary.c:161
+msgid "French (France)"
+msgstr "Fransýzca"
+
+#: gnome-spell/dictionary.c:162
+msgid "French (Swiss)"
+msgstr "Isviçre Fransýzcasý"
+
+#: gnome-spell/dictionary.c:163
+msgid "Italian"
+msgstr "Ýtalyanca"
+
+#: gnome-spell/dictionary.c:164
+msgid "Dutch"
+msgstr "Almanca"
+
+#: gnome-spell/dictionary.c:165
+msgid "Norwegian"
+msgstr "Norveççe"
+
+#: gnome-spell/dictionary.c:166
+msgid "Polish"
+msgstr "Polonyaca"
+
+#: gnome-spell/dictionary.c:167
+msgid "Portuguese (Portugal)"
+msgstr "Portekizce"
+
+#: gnome-spell/dictionary.c:168
+msgid "Portuguese (Brazilian)"
+msgstr "Brezilya Portekizcesi"
+
+#: gnome-spell/dictionary.c:169
+msgid "Russian"
+msgstr "Rusça"
+
+#: gnome-spell/dictionary.c:170
+msgid "Slovak"
+msgstr ""
+
+#: gnome-spell/dictionary.c:171
+msgid "Swedish"
+msgstr "Ýsveççe"
+
+#: gnome-spell/dictionary.c:172
+msgid "Ukrainian"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gnome-spell/spell-checker.glade.h:2
+#, fuzzy
+msgid "Add to dictionary"
+msgstr "Lugata _ekle"
+
+#: gnome-spell/spell-checker.glade.h:3
+msgid "Checked word"
+msgstr "Kelime kontrol edildi"
+
+#: gnome-spell/spell-checker.glade.h:4
+msgid "D_ictionaries"
+msgstr "_Lugatlar"
+
+#: gnome-spell/spell-checker.glade.h:5
+msgid "Describe _all"
+msgstr "Hepsini _anlat"
+
+#: gnome-spell/spell-checker.glade.h:6
+msgid "Ignore"
+msgstr "Atla"
+
+#: gnome-spell/spell-checker.glade.h:7
+msgid "Remember"
+msgstr "Hatýrla"
+
+#: gnome-spell/spell-checker.glade.h:8
+msgid "Replace"
+msgstr "Yerleþtir"
+
+#: gnome-spell/spell-checker.glade.h:10
+msgid "_Add word"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:11
+msgid "_Back"
+msgstr ""
+
+#: gnome-spell/spell-checker.glade.h:12
+msgid "_Describe"
+msgstr "A_nlat"
+
+#: gnome-spell/spell-checker.glade.h:13
+msgid "_Help"
+msgstr "_Yardým"
+
+#: gnome-spell/spell-checker.glade.h:14
+msgid "_Ignore"
+msgstr "A_tla"
+
+#: gnome-spell/spell-checker.glade.h:15
+msgid "_Replace"
+msgstr "_Yerleþtir"
+
+#: gnome-spell/spell-checker.glade.h:16
+msgid "_Skip"
+msgstr "_Atla"
+
+#: gnome-spell/test-spell.c:39
+msgid "I could not initialize Bonobo"
+msgstr "Bonobo baþlatýlamadý"
+
+#~ msgid "English"
+#~ msgstr "Ýngilizce"

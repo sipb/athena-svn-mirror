@@ -1,0 +1,37 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:GNOME_Spell_DictionaryFactory:0.3" type="shlib" location="/gnome/head/INSTALL/lib/gnome-spell/libgnome-spell-component-0.3.so">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/ObjectFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Spell dictionary component factory"/>
+<oaf_attribute name="description" type="string" value="GNOME Spell dictionary component factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_Spell_Dictionary:0.3" type="factory" location="OAFIID:GNOME_Spell_DictionaryFactory:0.3">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Unknown:1.0"/>
+<item value="IDL:GNOME/Spell/Dictionary:0.3"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Spell dictionary component"/>
+<oaf_attribute name="description" type="string" value="GNOME Spell dictionary component"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_Spell_ControlFactory:0.3" type="shlib" location="/gnome/head/INSTALL/lib/gnome-spell/libgnome-spell-component-0.3.so">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/ObjectFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Spell Control component factory"/>
+<oaf_attribute name="description" type="string" value="GNOME Spell Control component factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_Spell_Control:0.3" type="factory" location="OAFIID:GNOME_Spell_ControlFactory:0.3">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Bonobo/Unknown:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Spell Control component"/>
+<oaf_attribute name="description" type="string" value="GNOME Spell Control component"/>
+</oaf_server>
+
+</oaf_info>
