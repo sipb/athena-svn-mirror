@@ -492,10 +492,10 @@ machine names listed in parentheses:
 				Sun		SGI
 
 Wash				whirlpool	snuggle
-Crash and burn			sourcery	crash
-Current release build		downy		pyramids
+Crash and burn			sourcery	pyramids
+Current release build		downy		kenmore
 New release build		(whirlpool)	(snuggle)
-Current release developer	(downy)		(pyramids)
+Current release developer	(downy)		(kenmore)
 New release developer		(whirlpool)	(snuggle)
 
 Clusters
