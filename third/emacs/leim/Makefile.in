@@ -26,7 +26,7 @@ SHELL = /bin/sh
 # Here are the things that we expect ../configure to edit.
 version=@version@
 prefix=@prefix@
-datadir=@datadir@
+datadir=$(prefix)/share
 srcdir=@srcdir@
 
 # Where to install LEIM files.
@@ -156,7 +156,6 @@ leim-list.el: ${SUBDIRS} ${WORLD}
 	fi
 
 install: all
-	$(srcdir)/../mkinstalldirs ${INSTALLDIR}
 	if [ x`(cd ${INSTALLDIR}; /bin/pwd)` != x`(/bin/pwd)` ] ; then \
 	  rm -rf ${INSTALLDIR}/leim-list.el; \
 	  rm -rf ${INSTALLDIR}/quail ${INSTALLDIR}/skk ; \
