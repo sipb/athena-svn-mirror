@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.65 1995-01-08 22:46:43 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.66 1995-01-10 06:15:09 cfields Exp $
  */
 
 #include <stdio.h>
@@ -686,6 +686,9 @@ struct passwd *pwd;
 {
     /* must also detach homedir, clean passwd file */
     dest_tkt();
+#ifdef KRB5
+    do_v5_kdestroy(0);
+#endif
     if (pwd && homedir_status == HD_ATTACHED) {
 	attach_state = -1;
 	switch (attach_pid = fork()) {
@@ -1465,8 +1468,8 @@ char *add_to_group(user, grplist)
 
     enduserdb();
 
-    if (toomany)
-/*	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n"); */
+/*  if (toomany)
+	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n"); */
 
     return 0;
 }
