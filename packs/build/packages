@@ -1,4 +1,4 @@
-# $Id: packages,v 1.93 1999-11-11 18:40:55 ghudson Exp $
+# $Id: packages,v 1.94 1999-11-16 18:33:29 mwhitson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -72,7 +72,6 @@ athena/bin/voldump		requires afsbin,hesiod
 athena/bin/write
 athena/bin/xcluster		requires Xj,hesiod
 athena/bin/xdsc			requires discuss
-athena/bin/xmore
 
 athena/etc/athinfod
 athena/etc/busyd		requires larv
