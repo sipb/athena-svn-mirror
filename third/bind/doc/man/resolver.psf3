@@ -1,0 +1,330 @@
+%!PS-Adobe-3.0
+%%Creator: groff version 1.10
+%%CreationDate: Mon Jun 23 20:09:02 1997
+%%DocumentNeededResources: font Times-Roman
+%%DocumentSuppliedResources: procset grops 1.10 0
+%%Pages: 1
+%%PageOrder: Ascend
+%%Orientation: Portrait
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset grops 1.10 0
+/setpacking where{
+pop
+currentpacking
+true setpacking
+}if
+/grops 120 dict dup begin
+/SC 32 def
+/A/show load def
+/B{0 SC 3 -1 roll widthshow}bind def
+/C{0 exch ashow}bind def
+/D{0 exch 0 SC 5 2 roll awidthshow}bind def
+/E{0 rmoveto show}bind def
+/F{0 rmoveto 0 SC 3 -1 roll widthshow}bind def
+/G{0 rmoveto 0 exch ashow}bind def
+/H{0 rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/I{0 exch rmoveto show}bind def
+/J{0 exch rmoveto 0 SC 3 -1 roll widthshow}bind def
+/K{0 exch rmoveto 0 exch ashow}bind def
+/L{0 exch rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/M{rmoveto show}bind def
+/N{rmoveto 0 SC 3 -1 roll widthshow}bind def
+/O{rmoveto 0 exch ashow}bind def
+/P{rmoveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/Q{moveto show}bind def
+/R{moveto 0 SC 3 -1 roll widthshow}bind def
+/S{moveto 0 exch ashow}bind def
+/T{moveto 0 exch 0 SC 5 2 roll awidthshow}bind def
+/SF{
+findfont exch
+[exch dup 0 exch 0 exch neg 0 0]makefont
+dup setfont
+[exch/setfont cvx]cvx bind def
+}bind def
+/MF{
+findfont
+[5 2 roll
+0 3 1 roll
+neg 0 0]makefont
+dup setfont
+[exch/setfont cvx]cvx bind def
+}bind def
+/level0 0 def
+/RES 0 def
+/PL 0 def
+/LS 0 def
+/MANUAL{
+statusdict begin/manualfeed true store end
+}bind def
+/PLG{
+gsave newpath clippath pathbbox grestore
+exch pop add exch pop
+}bind def
+/BP{
+/level0 save def
+1 setlinecap
+1 setlinejoin
+72 RES div dup scale
+LS{
+90 rotate
+}{
+0 PL translate
+}ifelse
+1 -1 scale
+}bind def
+/EP{
+level0 restore
+showpage
+}bind def
+/DA{
+newpath arcn stroke
+}bind def
+/SN{
+transform
+.25 sub exch .25 sub exch
+round .25 add exch round .25 add exch
+itransform
+}bind def
+/DL{
+SN
+moveto
+SN
+lineto stroke
+}bind def
+/DC{
+newpath 0 360 arc closepath
+}bind def
+/TM matrix def
+/DE{
+TM currentmatrix pop
+translate scale newpath 0 0 .5 0 360 arc closepath
+TM setmatrix
+}bind def
+/RC/rcurveto load def
+/RL/rlineto load def
+/ST/stroke load def
+/MT/moveto load def
+/CL/closepath load def
+/FL{
+currentgray exch setgray fill setgray
+}bind def
+/BL/fill load def
+/LW/setlinewidth load def
+/RE{
+findfont
+dup maxlength 1 index/FontName known not{1 add}if dict begin
+{
+1 index/FID ne{def}{pop pop}ifelse
+}forall
+/Encoding exch def
+dup/FontName exch def
+currentdict end definefont pop
+}bind def
+/DEFS 0 def
+/EBEGIN{
+moveto
+DEFS begin
+}bind def
+/EEND/end load def
+/CNT 0 def
+/level1 0 def
+/PBEGIN{
+/level1 save def
+translate
+div 3 1 roll div exch scale
+neg exch neg exch translate
+0 setgray
+0 setlinecap
+1 setlinewidth
+0 setlinejoin
+10 setmiterlimit
+[]0 setdash
+/setstrokeadjust where{
+pop
+false setstrokeadjust
+}if
+/setoverprint where{
+pop
+false setoverprint
+}if
+newpath
+/CNT countdictstack def
+userdict begin
+/showpage{}def
+}bind def
+/PEND{
+clear
+countdictstack CNT sub{end}repeat
+level1 restore
+}bind def
+end def
+/setpacking where{
+pop
+setpacking
+}if
+%%EndResource
+%%IncludeResource: font Times-Roman
+grops begin/DEFS 1 dict def DEFS begin/u{.001 mul}bind def end/RES 72
+def/PL 792 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron
+/scaron/zcaron/Ydieresis/trademark/quotesingle/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/space/exclam/quotedbl/numbersign/dollar/percent
+/ampersand/quoteright/parenleft/parenright/asterisk/plus/comma/hyphen
+/period/slash/zero/one/two/three/four/five/six/seven/eight/nine/colon
+/semicolon/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O
+/P/Q/R/S/T/U/V/W/X/Y/Z/bracketleft/backslash/bracketright/circumflex
+/underscore/quoteleft/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y
+/z/braceleft/bar/braceright/tilde/.notdef/quotesinglbase/guillemotleft
+/guillemotright/bullet/florin/fraction/perthousand/dagger/daggerdbl
+/endash/emdash/ff/fi/fl/ffi/ffl/dotlessi/dotlessj/grave/hungarumlaut
+/dotaccent/breve/caron/ring/ogonek/quotedblleft/quotedblright/oe/lslash
+/quotedblbase/OE/Lslash/.notdef/exclamdown/cent/sterling/currency/yen
+/brokenbar/section/dieresis/copyright/ordfeminine/guilsinglleft
+/logicalnot/minus/registered/macron/degree/plusminus/twosuperior
+/threesuperior/acute/mu/paragraph/periodcentered/cedilla/onesuperior
+/ordmasculine/guilsinglright/onequarter/onehalf/threequarters
+/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE
+/Ccedilla/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex
+/Idieresis/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis
+/multiply/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn
+/germandbls/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedilla
+/egrave/eacute/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis
+/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis/divide/oslash
+/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis]def
+/Times-Roman@0 ENC0/Times-Roman RE
+%%EndProlog
+%%Page: 1 1
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Roman@0 SF .558(These routines are used for making, sending and interpreting query and reply messages with Internet domain name)
+72 12 R(serv)72 24 Q 2.691(ers. Global)-.15 F .192
+(con\214guration and state information that is used by the resolv)2.691
+F .192(er routines is k)-.15 F .192(ept in the structure Most)-.1 F .37
+(of the v)72 36 R .37(alues ha)-.25 F .67 -.15(ve r)-.2 H .37
+(easonable def).15 F .37(aults and can be ignored.)-.1 F .369
+(Options stored in are de\214ned in and are as follo)5.37 F 2.869
+(ws. Op-)-.25 F .761(tions are stored as a simple bit mask containing the bitwise of the options enabled.)
+72 48 R -.35(Tr)5.761 G .761(ue if the initial name serv).35 F(er)-.15 E
+.042(address and def)72 60 R .041
+(ault domain name are initialized \(i.e., has been called\).)-.1 F .041
+(Print deb)5.041 F .041(ugging messages.)-.2 F .041(Accept authorita-)
+5.041 F(ti)72 72 Q .308 -.15(ve a)-.25 H .008(nswers only).15 F 5.008
+(.W)-.65 G .008
+(ith this option, should continue until it \214nds an authoritati)-5.408
+F .309 -.15(ve a)-.25 H .009(nswer or \214nds an error).15 F 5.009(.C)
+-.55 G(urrently)-5.009 E .638(this is not implemented.)72 84 R .637
+(Use TCP connections for queries instead of UDP datagrams.)5.638 F .637
+(Used with to k)5.637 F .637(eep the TCP)-.1 F .573
+(connection open between queries.)72 96 R .573
+(This is useful only in programs that re)5.573 F .574(gularly do man)
+-.15 F 3.074(yq)-.15 G 3.074(ueries. UDP)-3.074 F .574(should be)3.074 F
+.17(the normal mode used.)72 108 R .169
+(Unused currently \(ignore truncation errors, i.e., don')5.17 F 2.669
+(tr)-.18 G .169(etry with TCP\).)-2.669 F .169(Set the recursion-de-)
+5.169 F .538(sired bit in queries.)72 120 R .538(This is the def)5.538 F
+3.038(ault. \(does)-.1 F .538(not do iterati)3.038 F .838 -.15(ve q)-.25
+H .538(ueries and e).15 F .538(xpects the name serv)-.15 F .538
+(er to handle recur)-.15 F(-)-.2 E 3.725(sion.\) If)72 132 R 1.225
+(set, will append the def)3.725 F 1.224(ault domain name to single-component names \(those that do not contain a dot\).)
+-.1 F .08(This option is enabled by def)72 144 R 2.58(ault. If)-.1 F .08
+(this option is set, will search for host names in the current domain and in parent)
+2.58 F .646(domains; see This is used by the standard host lookup routine This option is enabled by def)
+72 156 R 3.146(ault. This)-.1 F .646(option turns)3.146 F(of)72 168 Q
+3.074(ft)-.25 G .574(he user le)-3.074 F -.15(ve)-.25 G 3.074(la).15 G
+.574(liasing feature controlled by the en)-3.074 F .574(vironment v)-.4
+F 3.075(ariable. Netw)-.25 F .575(ork daemons should set this option.)
+-.1 F .653(The routine reads the con\214guration \214le \(if an)72 180 R
+.653(y; see to get the def)-.15 F .653
+(ault domain name, search list and the Internet ad-)-.1 F .58
+(dress of the local name serv)72 192 R 3.08(er\(s\). If)-.15 F .58
+(no serv)3.08 F .581(er is con\214gured, the host running the resolv)
+-.15 F .581(er is tried.)-.15 F .581(The current do-)5.581 F .438(main name is de\214ned by the hostname if not speci\214ed in the con\214guration \214le; it can be o)
+72 204 R -.15(ve)-.15 G .437(rridden by the en).15 F(viron-)-.4 E .134
+(ment v)72 216 R .134(ariable This en)-.25 F .134(vironment v)-.4 F .135
+(ariable may contain se)-.25 F -.15(ve)-.25 G .135
+(ral blank-separated tok).15 F .135(ens if you wish to o)-.1 F -.15(ve)
+-.15 G .135(rride the on a).15 F(per)72 228 Q .149(-process basis.)-.2 F
+.148(This is similar to the command in the con\214guration \214le.)5.149
+F .148(Another en)5.148 F .148(vironment v)-.4 F .148
+(ariable can be set)-.25 F .166(to o)72 240 R -.15(ve)-.15 G .166
+(rride certain internal resolv).15 F .166(er options which are otherwise set by changing \214elds in the structure or are inherit-)
+-.15 F .289(ed from the con\214guration \214le')72 252 R 2.788(sc)-.55 G
+2.788(ommand. The)-2.788 F .288(syntax of the en)2.788 F .288
+(vironment v)-.4 F .288(ariable is e)-.25 F .288
+(xplained in Initialization nor)-.15 F(-)-.2 E .626
+(mally occurs on the \214rst call to one of the other resolv)72 264 R
+.627(er routines.)-.15 F .627(The function pro)5.627 F .627
+(vides an interf)-.15 F .627(ace to the serv)-.1 F(er)-.15 E 1.711
+(query mechanism.)72 276 R 1.711(It constructs a query)6.711 F 4.211(,s)
+-.65 G 1.711(ends it to the local serv)-4.211 F(er)-.15 E 4.21(,a)-.4 G
+-.1(wa)-4.36 G 1.71(its a response, and mak).1 F 1.71(es preliminary)-.1
+F 1.135(checks on the reply)72 288 R 6.135(.T)-.65 G 1.136(he query requests information of the speci\214ed and for the speci\214ed fully-quali\214ed domain)
+-6.135 F 1.293(name The reply message is left in the b)72 300 R(uf)-.2 E
+1.292(fer with length supplied by the caller)-.25 F 6.292(.T)-.55 G
+1.292(he routine mak)-6.292 F 1.292(es a query and)-.1 F -2.3 -.15(aw a)
+72 312 T .116(its a response lik).15 F 2.616(eb)-.1 G .116
+(ut in addition, it implements the def)-2.816 F .116
+(ault and search rules controlled by the and options.)-.1 F .116(It re-)
+5.116 F .912(turns the \214rst successful reply)72 324 R 5.911(.T)-.65 G
+.911(he remaining routines are lo)-5.911 F(wer)-.25 E(-le)-.2 E -.15(ve)
+-.25 G 3.411(lr).15 G .911(outines used by The function constructs a)
+-3.411 F .65(standard query message and places it in It returns the size of the query)
+72 336 R 3.151(,o)-.65 G 3.151<72ad>-3.151 G 3.151(1i)-3.151 G 3.151(ft)
+-3.151 G .651(he query is lar)-3.151 F .651(ger than The query)-.18 F
+.468(type is usually b)72 348 R .468(ut can be an)-.2 F 2.968(yo)-.15 G
+2.968(ft)-2.968 G .468
+(he query types de\214ned in The domain name for the query is gi)-2.968
+F -.15(ve)-.25 G 2.967(nb).15 G 2.967(yi)-2.967 G 2.967(sc)-2.967 G
+(urrently)-2.967 E .128(unused b)72 360 R .128
+(ut is intended for making update messages.)-.2 F .128
+(The routine sends a pre-formatted query and returns an answer)5.128 F
+(.)-.55 E .58
+(It will call if is not set, send the query to the local name serv)72
+372 R(er)-.15 E 3.08(,a)-.4 G .58(nd handle timeouts and retries.)-3.08
+F .58(The length of the)5.58 F .137
+(reply message is returned, or \2551 if there were errors.)72 384 R .137
+(The function compresses the domain name and stores it in The)5.137 F
+.62
+(size of the compressed name is returned or \2551 if there were errors.)
+72 396 R .62(The size of the array pointed to by is gi)5.62 F -.15(ve)
+-.25 G 3.12(nb).15 G(y)-3.12 E .104
+(The compression uses an array of pointers to pre)72 408 R .105
+(viously-compressed names in the current message.)-.25 F .105
+(The \214rst pointer)5.105 F .213(points to to the be)72 420 R .213(ginning of the message and the list ends with The limit to the array is speci\214ed by A side ef)
+-.15 F .212(fect of)-.25 F .619(is to update the list of pointers for labels inserted into the message as the name is compressed.)
+72 432 R .619(If is names are not)5.619 F 2.716(compressed. If)72 444 R
+.216(is the list of labels is not updated.)2.716 F .216(The entry e)
+5.216 F .216(xpands the compressed domain name to a full domain)-.15 F
+2.731(name. The)72 456 R .231(compressed name is contained in a query or reply message; is a pointer to the be)
+2.731 F .231(ginning of the message.)-.15 F .956
+(The uncompressed name is placed in the b)72 468 R(uf)-.2 E .955
+(fer indicated by which is of size The size of compressed name is re-)
+-.25 F .625(turned or \2551 if there w)72 480 R .625(as an error)-.1 F
+5.625(.T)-.55 G .625(he e)-5.625 F .625(xternal v)-.15 F .625
+(ariable is set whene)-.25 F -.15(ve)-.25 G 3.125(ra).15 G 3.126(ne)
+-3.125 G .626(rror occurs during resolv)-3.126 F .626(er operation.)-.15
+F .428(The follo)72 492 R .427(wing de\214nitions are gi)-.25 F -.15(ve)
+-.25 G 2.927(ni).15 G 2.927(n#)-2.927 G .427(de\214ne NETDB_INTERN)
+-2.927 F .427(AL -1)-.35 F .427(/* see errno */ #de\214ne NETDB_SUCCESS)
+5.427 F 10.662(0/)72 504 S 5.662(*n)-10.662 G 5.662(op)-5.662 G 3.162
+(roblem */ #de\214ne HOST_NO)-5.662 F 3.163(T_FOUND 1)-.4 F 3.163
+(/* Authoritati)10.663 F 3.463 -.15(ve A)-.25 H 3.163
+(nswer Host not found */ #de\214ne).15 F(TR)72 516 Q(Y_A)-.65 E 12.878
+(GAIN 2)-.4 F .378(/* Non-Authoriti)7.878 F .678 -.15(ve n)-.25 H .378
+(ot found, or SER).15 F(VF)-.8 E .378(AIL */ #de\214ne NO_RECO)-.74 F
+(VER)-.5 E 10.377(Y3)-.65 G .377(/* Nonreco)-2.5 F -.15(ve)-.15 G -.2
+(r-).15 G .575(able: FORMERR, REFUSED, NO)72 528 R .575
+(TIMP */ #de\214ne NO_D)-.4 F -1.21 -1.11(AT A)-.4 H 8.076(4/)21.686 G
+3.076(*V)-8.076 G .576(alid name, no data for requested type */)-4.186 F
+.111(The function writes a message to the diagnostic output consisting of the string parameter the constant string ": ", and)
+72 540 R 2.61(am)72 552 S .11(essage corresponding to the v)-2.61 F .11
+(alue of The function returns a string which is the message te)-.25 F
+.11(xt corresponding to the)-.15 F -.25(va)72 564 S
+(lue of the parameter).25 E 5(.S)-.55 G
+(ee RFC1032, RFC1033, RFC1034, RFC1035, RFC974; SMM:11,)-5 E EP
+%%Trailer
+end
+%%EOF

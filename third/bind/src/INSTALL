@@ -1,0 +1,191 @@
+Supported Systems
+
+	AIX 4
+	A/UX 3.1.1
+	BSD/OS 2.1, 3.0
+	Digital ULTRIX 4.5
+	Digital UNIX 3.2C, 4.0A, 4.0B
+	FreeBSD 2.x
+	HP-UX 10.20
+	IRIX 5.3, 6.2, 6.4
+	NetBSD 1.2
+	OpenBSD 2.1
+	Red Hat Linux 4.0, 4.1
+	SCO UNIX 3.2v4.2, SCO OSE 5.0.2, UnixWare 2.0.x, 2.1.2
+	SunOS 4.1.4
+	SunOS 5.5 (Solaris 2.5)
+
+	See port/README for information on porting BIND 8 to other systems.
+
+
+Building
+
+	If you do not have an ANSI/ISO C compiler, give up or get GCC.  The
+	one exception is the ULTRIX compiler, which isn't full ANSI C but it
+	has function prototypes and BIND works around the rest.  BIND 8 also
+	wants a C library that's ANSI/ISO standard, although it can work
+	around some common failings.
+
+	If you do not have yacc, get byacc or GNU bison.  If you do not have
+	lex, get GNU flex.  For information on where to get GNU software, see
+	http://www.fsf.org/order/ftp.html.
+
+	If you want to build outside the source pool, then
+
+		make DST=/your/destination/here SRC=`pwd` links
+		cd /your/destination/here
+
+	If you want to use DST=/var/obj/bind, you can simply type
+
+		make stdlinks
+
+	Next, make sure you have no stale trash laying about
+
+		make clean
+
+	Then, update the Makefile dependencies:
+
+		make depend
+
+	Finally,
+
+		make
+
+	
+Installation
+
+	To install, type
+
+		make install
+
+	This will copy binaries to the appropriate locations for your system,
+	will install the BIND 8 library and header files under /usr/local/bind.
+
+	The following variables can be used to change where things get
+	installed:
+
+		DESTDIR			prefix used in front of all other
+					DEST variables.  The default is the
+					empty prefix.
+		DESTLIB			libraries
+		DESTINC			include files
+		DESTBIN			ordinary binaries (e.g. dig, nslookup)
+		DESTSBIN		system binaries (e.g. named)
+		DESTEXEC		system binaries (e.g. named-xfer)
+		DESTHELP		place to put nslookup's help file
+
+	These variables may be specified on the command line of the 'make'
+	or in the Makefile.set for your port (e.g. if you use Solaris, in
+	src/port/solaris/Makefile.set).
+
+	Before doing 'make install' using either method, you must
+
+		rm .settings
+
+	in the top level source directory because the build system caches
+	these variables.
+
+
+Using BIND 8 Library Routines
+
+	Until a method to update the system's libraries is available,
+	applications wishing to use BIND 8 library routines must include
+	BIND 8 .h files, and must link with libbind.a.  E.g.
+
+		cc -I/usr/local/bind/include -c sample.c 
+		cc -o sample -L/usr/local/bind/lib sample.o -lbind
+
+	The default locations for libbind.a and .h files in BIND 8.1.1
+	are different from those used in BIND 8.1-REL.  If you did a
+	'make install' for BIND 8.1-REL, then you should delete the
+	files it installed.  They are:
+
+		/usr/local/lib/libbind.a
+		/usr/local/include/arpa/inet.h
+		/usr/local/include/arpa/nameser.h
+		/usr/local/include/arpa/nameser_compat.h
+		/usr/local/include/netdb.h
+		/usr/local/include/resolv.h
+		/usr/local/include/sys/bitypes.h	(if it exists)
+		/usr/local/include/sys/cdefs.h		(if it exists)
+
+
+Operating System Notes
+
+	SunOS 4.1.4
+
+		An ANSI/ISO C compiler is required; we used gcc 2.7.2.1.
+
+	SunOS 5.5 (Solaris 2.5)
+
+		We used gcc, byacc, and flex.  Sun's compilers, yacc, and
+		lex should work too.  Edit port/solaris/Makefile.set,
+		changing CC to "cc", CDEBUG to "-g", LEX to "lex",
+		YACC to "yacc -d".  Edit port/solaris/bin/mkdep, changing
+		"gcc -M" to "cc -xM".
+
+	Certain older versions of FreeBSD, NetBSD and BSD/OS have a
+	/bin/sh based on "ash", which doesn't handle POSIX-style quoting
+	correctly.  Using "bash" will fix the problem.  Either run make
+	with "SH=bash" on the command line, or edit src/Makefile and change
+	"SH=sh" to "SH=bash".
+
+
+Using the Server
+
+	Note that /etc/named.boot is long gone.  You need to make yourself an
+	/etc/named.conf (note, that ends in "conf" rather than "boot") file.
+	This file looks a lot like a C program or a modern gated.conf file;
+	there are lots of {curly braces} and it takes some getting used to.
+	You may get a lot more help from the example file (which is
+	bin/named/named.conf) than from the documentation (see ../doc/html).
+	You can convert your named.boot file to a named.conf file if you have
+	Perl; see bin/named/named-bootconf.pl.
+
+	All the files that used to be created in /var/tmp, e.g. named.run,
+	will now be created in the directory specified in the options
+	statement.  If debugging is turned on using the "-d" flag on server
+	startup, then named.run will be created in the current directory.
+
+
+Known Dynamic DNS Bugs
+
+	If the server is master for a zone and authoritative for a child of
+	that zone, then a dynamic update to the parent will destroy the
+	delegation to the child when the parent zone is written to disk.
+	This problem will be fixed in a future release.  The only workaround
+	is to not be authoritative for child zones of a dynamic zone.
+
+	Slave servers do not forward update requests to the primary master
+	correctly.  This will be fixed in a future release.  In the meantime,
+	slaves will refuse dynamic updates.
+
+
+Shared Libraries
+
+	Note that absolutely no support exists yet for editing the system's
+	shared libraries to update the resolver.  If you want to do that you
+	probably want to look at BIND Version 4 (see http://www.isc.org/isc/)
+	or wait a while or help out a lot.  This means you probably do not
+	want to install the library or include files into /usr/lib or
+	/usr/include, and this kit helpfully puts everything into
+	/usr/local/lib and /usr/local/include for that reason among others.
+
+
+Notes about contrib and doc
+
+	The BIND 8 "doc" package includes HTML documentation as	well as all
+	the RFC's, Internet Drafts, and "man" pages we can think of.  You may
+	need to install the doc/tmac files in your nroff/troff support
+	directory since we use the newer BSD "mandoc" system for our "man"
+	pages.
+
+	The BIND 8 "contrib" package is full of junk that you may want to
+	take a look at.  Feel free to send us more junk for future releases.
+
+
+Bugs
+
+	Please report bugs to
+
+		bind-bugs@isc.org

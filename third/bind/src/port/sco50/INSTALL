@@ -1,0 +1,106 @@
+First, you must understand that you are going to do everything
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+with this port on your own risk. There is absolutely no warranty.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The procedure described below seems to work on my copy of SCO OSE
+5.0.2; it may or may not work on your system.
+
+===========================================================================
+
+			NOTICE
+			======
+
+	REPLACING THE RESOLVER CODE in /usr/lib/libsocket.so
+
+GOOD IDEA, because of this replaces the resolver code in all programs
+linked with libsocket.so w/o need to relink them. IMHO the new resolver
+is fairly better than the one that comes with OSE5.
+
+CAN BE done on SOME systems.
+
+IMPOSSIBLE (or close to) with SCO OSE 5.0.0/5.0.2 distribution.
+Fully functional /usr/lib/libsocket.so cannot be rebuilt from
+/usr/lib/libsocket.a for various good reasons.
+
+MAYBE POSSIBLE if you have libsocket.so build kit for SCO OSE 5, but
+this is not a part of the SCO OSE 5 distribution. Please feel free to
+ask SCO to do something in this area.
+
+===========================================================================
+
+		INSTALLATION PROCEDURE FOR SCO OSE 5	
+		====================================
+
+Compared to SCO 3.2v4.2 / ODT 3.0, BIND's build and installation
+procedure on SCO OSE 5 is fortunately much easier.
+
+1) Save all files listed in "files-to-save".
+	tar Lcvf /some/where/saved-files.tar `cat files-to-save`
+   is an example how this can be done. Please feel free to use your
+   favorite archiving program.
+   Note that not all files listed in "files-to-save" must necessarily
+   exist on your system; the "files-to-save" list is also not guaranteed
+   to be complete.
+
+   Better than the above, backup the whole system and data.
+
+2) cd to the "src" directory of BIND distribution.
+   Now the tricky part of the installation. For the time being, I did
+   not find any good automated way around this.
+	make CDEBUG=-O3			#We only need libbind.a from
+	cd port/sco50			# this build
+	sh tools/libbind.sh
+	cp libbind.a /tmp/libbind.a	#Save libbind.a somewhere
+	cd ../..			#Back to BIND's src directory
+	make clean			#This is IMPORTANT !!!
+   It may be good idea to use more permanent directory than /tmp
+   for backup copy of libbind.a. Please see REMEMBER in 4) below.
+
+3) Make sure that you did not forget "make clean" in 2).
+	make clean
+	make
+	make install	#22-Apr-97, still untested
+   should do almost everything for you.
+
+4) With the current state of the port, one additional step is required.
+   You must copy libbind.a (saved in step 2 above) to /usr/lib:
+	cp /tmp/libbind.a /usr/lib/libbind.a
+   REMEMBER: Each time you do "make install", you must copy libbind.a
+   saved in step 2 above to /usr/lib/libbind.a. Otherwise, you are 
+   running into problems.
+   
+
+
+		COMPILING AND LINKING WITH THE NEW RESOLVER
+		===========================================
+
+	You need "-I/usr/local/include" and each instance of "-lsocket"
+	replaced with "-lbind -lsocket". I have tried to compile sendmail
+	8.8.5 plus some other packages w/o experiencing problems.
+
+
+				IMPORTANT
+				=========
+
+	To link with the new BIND's resolver, you always need
+	to recompile with -I/usr/local/include and link with
+	"-lbind -lsocket".
+
+	The only other way is to compile w/o the above -I and
+	then link w/o libbind.a; this gives you the old resolver
+	from SCO's libsocket.
+
+	By trying any other combination of the above options/libraries,
+	you are probably getting into trouble.
+
+	Please always consider the following: the new BIND's .h files
+	are under /usr/local/include and libbind.a is in /usr/local/lib.
+	The old (SCO supplied) BIND's .h files and libsocket.a are
+	left untouched in their usual locations.
+
+
+Be your CMOS battery
+with you and your SCO OSE 5,
+
+Eduard Vopicka
