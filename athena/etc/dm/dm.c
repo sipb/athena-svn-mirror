@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.2 1999-10-15 23:11:47 kcr Exp $
+/* $Id: dm.c,v 1.3 1999-10-16 01:39:08 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -41,7 +41,7 @@
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.2 1999-10-15 23:11:47 kcr Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.3 1999-10-16 01:39:08 kcr Exp $";
 #endif
 
 /* Process states */
@@ -107,7 +107,6 @@ static void writepid(char *file, pid_t pid);
 #define DAEMON 1
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
-#define X_STOP_WAIT	4	/* seconds to wait for graceful shutdown */
 #define LOGIN_START_WAIT 60	/* wait up to 1 minute for Xlogin */
 #ifndef BUFSIZ
 #define BUFSIZ		1024
@@ -598,7 +597,7 @@ static void console_login(char *conf, char *msg)
 }
 
 
-/* start the console program.  It will have stdin set to the controling
+/* Start the console program.  It will have stdin set to the controling
  * side of the console pty, and stdout set to /dev/console inherited 
  * from the display manager.
  */
@@ -984,15 +983,13 @@ static void x_stop_wait(void)
 {
     sigset_t mask, omask;
 
-    /* Wait X_STOP_WAIT seconds for an X server to exit and for the
-     * graphics device to recover.  Be paranoid about other signals
-     * interrupting the sleep and about prior alarms.
-     */
     sigfillset(&mask);
     sigdelset(&mask, SIGALRM);
     sigprocmask(SIG_BLOCK, &mask, &omask);
     alarm(0);
-    sleep(X_STOP_WAIT);
+    while (waitpid(xpid, NULL, 0) == -1 && errno == EINTR)
+      ;
+    x_running=NONEXISTENT;
     sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
