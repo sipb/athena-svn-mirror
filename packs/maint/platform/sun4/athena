@@ -163,8 +163,8 @@ echo ""								>/dev/console
 # The audio driver on the Sparcstation 5 has a habit of disappearing.
 # So we put it back periodically...
 if [ -f /kernel/drv/audiocs ]; then
-	case `/usr/athena/bin/sysinfo -show model +terse` in
-	  SPARCstation*)
+	case `/bin/athena/machtype -c` in
+	  SPARC/5)
 	      /bin/echo "Adding audio dev for Sparc 5... \c"	>/dev/console
 	      /usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
 	      /usr/sbin/audlinks
