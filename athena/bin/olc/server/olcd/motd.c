@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.6 1991-01-15 17:55:56 lwvanels Exp $
+ *	$Id: motd.c,v 1.7 1991-03-28 15:02:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.6 1991-01-15 17:55:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.7 1991-03-28 15:02:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -30,7 +30,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>
 #include <sys/stat.h>
 
+#ifdef DISCUSS
 #include <lumberjack.h>
+#endif
 
 #ifdef __STDC__
 # define        P(s) s
@@ -284,6 +286,7 @@ char *buf;
   return(when);
 }
 
+#ifdef DISCUSS
 void
 log_motd(username)
      char *username;
@@ -337,3 +340,4 @@ log_motd(username)
     }
   return;
 }
+#endif
