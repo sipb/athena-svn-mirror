@@ -1,6 +1,6 @@
 #!/bin/sh
 
-case `/srvd/bin/athena/machtype -c` in
+case "$CPUTYPE" in
 	SPARC/Classic)
 		;;
 	SPARC/*)
