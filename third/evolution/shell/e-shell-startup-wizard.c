@@ -392,6 +392,19 @@ finish_func (GnomeDruidPage *page,
 	return TRUE;
 }
 
+static gboolean
+back_finish_func (GnomeDruidPage *page,
+	     GnomeDruid *druid,
+	     SWData *data)
+{
+	if (data->import_page->running == 0)
+		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (data->timezone_page->page));
+	else
+		return FALSE;
+
+	return TRUE;
+}
+
 static void
 connect_page (GtkWidget *page,
 	      SWData *data)
@@ -528,6 +541,8 @@ prepare_importer_page (GnomeDruidPage *page,
 	int running = 0;
 
 	if (data->import_page->prepared == TRUE) {
+		if (data->import_page->running == 0)
+			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (data->finish));
 		return TRUE;
 	}
 
@@ -734,6 +749,15 @@ startup_wizard_cancel (GnomeDruid *druid,
 	gtk_main_quit ();
 }
 
+static gboolean
+startup_wizard_delete (GnomeDruid *druid,
+		       GdkEventAny *ev,
+	       	       SWData *data)
+{
+	startup_wizard_cancel(druid, data);
+	return FALSE;
+}
+
 gboolean
 e_shell_startup_wizard_create (void)
 {
@@ -770,6 +794,9 @@ e_shell_startup_wizard_create (void)
 	gtk_window_set_wmclass (GTK_WINDOW (data->dialog), "startup-wizard",
 				"Evolution:shell");
 
+	g_signal_connect_after (data->dialog, "delete_event",
+			  G_CALLBACK (startup_wizard_delete), data);
+
 	page_hash = g_hash_table_new (NULL, NULL);
 	data->druid = glade_xml_get_widget (data->wizard, "startup-druid");
 	g_return_val_if_fail (data->druid != NULL, FALSE);
@@ -784,6 +811,7 @@ e_shell_startup_wizard_create (void)
 	g_return_val_if_fail (data->start != NULL, FALSE);
 	g_return_val_if_fail (data->finish != NULL, FALSE);
 	g_signal_connect (data->finish, "finish", G_CALLBACK (finish_func), data);
+	g_signal_connect (data->finish, "back", G_CALLBACK (back_finish_func), data);
 
 	make_corba_dialog_pages (data);
 	g_return_val_if_fail (data->corba_wizard != CORBA_OBJECT_NIL, TRUE);

@@ -25,6 +25,8 @@
                        value="Evolution Címjegyzék helyi fájl háttér"/>
 	<oaf_attribute name="name-it" type="string"
                        value="Backend dei file locali della rubrica di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+                       value="Evolution アドレス帳ローカル・ファイル・バックエンド"/>
 	<oaf_attribute name="name-mk" type="string"
                        value="Систем за адресар во локални датотеки"/>
 	<oaf_attribute name="name-nl" type="string"
@@ -74,6 +76,8 @@
                        value="Evolution Naptár helyi fájl háttér"/>
 	<oaf_attribute name="name-it" type="string"
                        value="Backend dei file del calendario locale di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+                       value="Evolution カレンダ・ローカル・ファイル・バックエンド"/>
 	<oaf_attribute name="name-mk" type="string"
                        value="Систем за календар во локални датотеки"/>
 	<oaf_attribute name="name-nl" type="string"

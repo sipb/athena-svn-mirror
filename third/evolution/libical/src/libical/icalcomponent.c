@@ -2,7 +2,7 @@
   FILE: icalcomponent.c
   CREATOR: eric 28 April 1999
   
-  $Id: icalcomponent.c,v 1.1.1.1.4.1 2003-07-14 17:21:53 ghudson Exp $
+  $Id: icalcomponent.c,v 1.1.1.1.4.2 2003-08-13 23:39:28 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org

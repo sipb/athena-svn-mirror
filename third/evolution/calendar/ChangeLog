@@ -1,8 +1,120 @@
+2003-07-16  Andrew Wu <Yang.Wu@sun.com>
+
+      Fixes #45774
+
+      * gui/e-day-view.c (e_day_view_goto_start_of_work_day):
+      implemented select the time that begins a work day.
+      (e_day_view_goto_end_of_work_day):
+      implemented select the time that ends a work day.
+
+2003-07-16  Andrew Wu <Yang.Wu@sun.com>
+	
+	Fixes #45772
+	
+	* gui/gnome-cal.c(gnome_calendar_goto_date): implemented Alt+Left/Right
+	  to go to the same day of the previous/next week.
+	* gui/gnome-cal.h:add two element in GnomeCalendarGotoDateType.
+
+2003-07-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	* cal-client/cal-client.c (cal_client_finalize): uncomment the call
+	to destroy_factories, needed to unref all factories activated by
+	the CalClient.
+
+2003-07-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #41676
+
+	* gui/dialogs/alarm-options.c (palarm_options_changed_cb,
+	  repeat_spin_button_changed_cb, repeat_unit_changed_cb): new callbacks for
+	managing modifications in the 'Run a program' alarm case.
+	(repeat_toggle_toggled_cb): if the alarm being edited has a
+	procedure action, call palarm_options_changed_cb.
+	(init_widgets): connect new callbacks.
+	(alarm_to_dialog): disable 'OK' button if a procedure alarm.
+
+2003-07-10  Harry Lu <harry.lu@sun.com>
+
+	Fixes #46075.
+
+	* gui/e-date-time-list.c (compare_datetime): new function to compare
+	two CalComponentDateTime instances.
+	(e_date_time_list_append): check whether the date already exists
+	before adding it to the list.
+
+2003-07-07  Antonio Xu <antonio.xu@sun.com>
+
+	Fixes #45767
+	
+	* conduits/todo/Makefile.am: don't link against libwombat-static.la.
+
+2003-07-07  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #45910
+
+	* gui/dialogs/task-editor.c (task_editor_class_init): set up the
+	handler for the set_cal_client virtual method.
+	(task_editor_set_cal_client): added missing virtual method.
+
+2003-07-07  Jack Jia <jack.jia@sun.com>
+
+	* cal-client/cal-client.c (cal_client_get_static_capability): add
+	g_return_val_if_fail to check the input param.
+
 2003-07-02  Rodrigo Moya <rodrigo@ximian.com>
 
 	* gui/alarm-notify/alarm-notify-dialog.c (alarm_notify_dialog): use
 	gtk_window_set_icon instead of gtk_window_set_icon_from_file, which
 	is 2.2.
+
+2003-07-02  Harry Lu <harry.lu@sun.com>
+
+	Fixes #44485
+
+	* gui/e-timezone-entry.c (e_timezone_entry_set_entry): pass a 
+	new allocated string to gtk_entry_set_text instead of the one
+	that might come from gettext.
+
+2003-07-02  Dan Winship  <danw@ximian.com>
+
+	* cal-client/cal-client.c (real_open_calendar): Don't leak
+	exceptions
+	(load_static_capabilities): free the capability string
+
+	* gui/dialogs/task-page.c (task_page_fill_component): Free the
+	description text if it *was* set, rather than if it wasn't.
+
+	* gui/dialogs/task-editor.c (task_editor_finalize): Free the priv
+	struct.
+
+2003-07-02  Bolian Yin <bolian.yin@sun.com>
+                                                                                
+        Fixes #45328, #45329
+                                                                                
+        * gui/e-day-view.c (e_day_view_do_key_press): Do not process
+        PageUp/PageDown, .. when the Alt key is pressed (give key binding
+        set the chance).
+        * gui/gnome-cal.h : define new enum type, GNOME_CAL_GOTO_DATE_TYPE.
+        * gui/gnome-cal.c (gnome_calendar_class_init): define new signal
+         "goto_date".  Add key bindings for "Alt+PageUp/PageDown",
+         "Alt+Home/End".
+        (gnome_calendar_goto_date): Impl. signal handler for "goto_date".
+                                                                                
+2003-07-01  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #45524
+
+	* gui/calendar-commands.c: use stock icons where approppriate.
+
+	* gui/tasks-control.c: removed EPixmaps structure, since we only use
+	stock icons now.
+	(tasks_control_activate): no need to call e_pixmaps_update.
+
+2003-07-01  Bolian Yin <bolian.yin@sun.com>
+
+	Fixes #45274
+
+	* gui/e-week-view.c: implemented tabbing though events in week view.
 
 2003-06-27  Rodrigo Moya <rodrigo@ximian.com>
 

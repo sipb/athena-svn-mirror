@@ -26,10 +26,14 @@
 		       value="Evolution Netscape Mail-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore della posta di Netscape di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Netscape メール・インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Netscape mail-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import av Netscape e-post for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Druid importu poczty Netscape dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Correio Netscape do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -70,10 +74,14 @@
 		       value="Evolution Netscape Mail-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore della posta di Netscape di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Netscape メール・インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Netscape mail-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import av Netscape e-post for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Druid importu poczty Netscape dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Correio Netscape do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"

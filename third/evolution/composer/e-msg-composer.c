@@ -1335,7 +1335,10 @@ autosave_load_draft (const char *filename)
 		autosave_save_draft (composer);
 		
 		g_signal_connect (GTK_OBJECT (composer), "send",
-				    G_CALLBACK (composer_send_cb), NULL);
+				  G_CALLBACK (composer_send_cb), NULL);
+		
+		g_signal_connect (GTK_OBJECT (composer), "save-draft",
+				  G_CALLBACK (composer_save_draft_cb), NULL);
 		
 		gtk_widget_show (GTK_WIDGET (composer));
 	}
@@ -1394,6 +1397,7 @@ autosave_manager_query_load_orphans (AutosaveManager *am, GtkWindow *parent)
 						GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
 						_("Ximian Evolution has found unsaved files from a previous session.\n"
 						  "Would you like to try to recover them?"));
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 		load = gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES;
 		gtk_widget_destroy(dialog);
 	}
@@ -3824,6 +3828,7 @@ handle_mailto (EMsgComposer *composer, const char *mailto)
 	size_t nread, nwritten;
 	char *content;
 	int len, clen;
+	CamelURL *url;
 	
 	/* Parse recipients (everything after ':' until '?' or eos). */
 	p = mailto + 7;
@@ -3887,7 +3892,16 @@ handle_mailto (EMsgComposer *composer, const char *mailto)
 					}
 				}
 			} else if (!strncasecmp (header, "attach", len)) {
-				e_msg_composer_attachment_bar_attach (E_MSG_COMPOSER_ATTACHMENT_BAR (composer->attachment_bar), content);
+				/*Change file url to absolute path*/
+				if (!strncasecmp (content, "file:", 5)) {
+					url = camel_url_new (content, NULL);
+					e_msg_composer_attachment_bar_attach (E_MSG_COMPOSER_ATTACHMENT_BAR (composer->attachment_bar),
+									      url->path);
+					camel_url_free (url);
+				} else {
+					e_msg_composer_attachment_bar_attach (E_MSG_COMPOSER_ATTACHMENT_BAR (composer->attachment_bar),
+									      content);
+				}
 			} else {
 				/* add an arbitrary header? */
 				e_msg_composer_add_header (composer, header, content);

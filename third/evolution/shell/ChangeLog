@@ -1,3 +1,34 @@
+2003-07-24  Yuedong Du  <yuedong.du@sun.com>
+                                                                                             
+        * e-shell-offline-handler.c: (dialog_response_cb): fix crash when user escape the
+        dialog. see bug #46700.
+                                                                                             
+2003-07-22  Antonio Xu  <antonio.xu@sun.com>
+
+	* e-shell-startup-wizard.c (e_shell_startup_wizard_create): connect
+	to "delete_event" signal with startup_wizard_delete. [#46284]
+
+2003-07-10  Antonio Xu <antonio.xu@sun.com>
+
+	* e-shell-importer.c: (show_import_wizard): use
+	g_signal_connect_after to connect "prepare" signal.
+	(prepare_intelligent_page): Display some error log and disable
+	forward button rather than jump to finish page.  [#46017]
+
+2003-07-15  Antonio Xu  <antonio.xu@sun.com>
+
+	* e-shell-startup-wizard.c (e_shell_startup_wizard_create): connect
+	"back" signal to back_finish_func in finish page.
+	(back_finish_func): handle "back" signal.
+	(prepare_importer_page): Jump to finish page when running equal zero.
+	[#46026]
+
+2003-07-09  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-folder-commands.c (e_shell_command_rename_folder): Do
+	not overwrite an existing folder.  Also, cleaned up the code a
+	bit.  [#45982]
+
 2003-06-25  Chris Toshok  <toshok@ximian.com>
 
 	* e-config-upgrade.c: add general_map and a reference to it in
