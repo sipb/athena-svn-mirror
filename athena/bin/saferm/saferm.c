@@ -21,7 +21,7 @@
  * resulting in security problems.
  */
 
-static char rcsid[] = "$Id: saferm.c,v 1.3 1998-06-17 17:53:11 ghudson Exp $";
+static char rcsid[] = "$Id: saferm.c,v 1.4 1998-09-30 21:10:38 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -165,7 +165,7 @@ int safe_to_unlink(char *name)
 {
   struct stat st;
   
-  if (stat(name, &st) < 0)
+  if (lstat(name, &st) < 0)
     {
       fprintf(stderr, "%s: %s: %s\n", program_name, name, strerror(errno));
       return 0;
