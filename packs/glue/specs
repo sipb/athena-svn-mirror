@@ -8,7 +8,6 @@ dcmmaint	moira
 help		help
 klog		afsuser
 listmaint	moira
-mkserv		mkserv
 mailmaint	moira
 moira		moira
 mrcheck		moira

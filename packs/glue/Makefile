@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.24 1998-04-08 22:11:21 cfields Exp $
+# $Id: Makefile,v 1.25 1998-04-14 17:51:15 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,8 +6,8 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
-	listmaint mkserv mailmaint moira mrcheck namespace olc_answers \
-	olh olh_ascii olh_motif pts usermaint userreg vos xinfo
+	listmaint mailmaint moira mrcheck namespace olc_answers olh \
+	olh_ascii olh_motif pts usermaint userreg vos xinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
@@ -86,10 +86,9 @@ install:
 	install -c -m 555 chpobox ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 emacs19.sh ${DESTDIR}${ATHBINDIR}/emacs19
 	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
-	install -c -m 555 mkserv ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
