@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.18 1997-10-23 15:59:15 ghudson Exp $
+# $Id: phase3.sh,v 1.19 1997-10-23 16:18:48 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -184,13 +184,13 @@ echo "Unmounting filesystems and checking them"
 cd /
 
 umount /var/usr/vice > /dev/null 2>&1
-fsck -F ufs $rcachedrive
+fsck -y -F ufs $rcachedrive
 umount /root/var > /dev/null 2>&1
-fsck -F ufs $rvardrive
+fsck -y -F ufs $rvardrive
 umount /root/usr
-fsck -F ufs $rusrdrive
+fsck -y -F ufs $rusrdrive
 /sbin/umount /root > /dev/null 2>&1
-/usr/sbin/fsck -F ufs $rrootdrive
+/usr/sbin/fsck -y -F ufs $rrootdrive
 sleep 5
 
 echo "rebooting now"
