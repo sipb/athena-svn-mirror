@@ -1,0 +1,118 @@
+<refentry id="gsf-GsfInput">
+<refmeta>
+<refentrytitle>GsfInput</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GSF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GsfInput</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GSF-INPUT-CLASS-CAPS">GSF_INPUT_CLASS</link>                 (k)
+<link linkend="gboolean">gboolean</link>    <link linkend="gsf-input-set-name">gsf_input_set_name</link>              (<link linkend="GsfInput">GsfInput</link> *input,
+                                             <link linkend="char">char</link> const *name);
+<link linkend="gboolean">gboolean</link>    <link linkend="gsf-input-set-container">gsf_input_set_container</link>         (<link linkend="GsfInput">GsfInput</link> *input,
+                                             <link linkend="GsfInfile">GsfInfile</link> *container);
+<link linkend="gboolean">gboolean</link>    <link linkend="gsf-input-set-size">gsf_input_set_size</link>              (<link linkend="GsfInput">GsfInput</link> *input,
+                                             <link linkend="gsf-off-t">gsf_off_t</link> size);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GSF-INPUT-CLASS-CAPS">GSF_INPUT_CLASS()</title>
+<indexterm><primary>GSF_INPUT_CLASS</primary></indexterm><programlisting>#define GSF_INPUT_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), GSF_INPUT_TYPE, GsfInputClass))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-input-set-name">gsf_input_set_name ()</title>
+<indexterm><primary>gsf_input_set_name</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gsf_input_set_name              (<link linkend="GsfInput">GsfInput</link> *input,
+                                             <link linkend="char">char</link> const *name);</programlisting>
+<para>
+protected.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>input</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>: TRUE if the assignment was ok.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-input-set-container">gsf_input_set_container ()</title>
+<indexterm><primary>gsf_input_set_container</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gsf_input_set_container         (<link linkend="GsfInput">GsfInput</link> *input,
+                                             <link linkend="GsfInfile">GsfInfile</link> *container);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>input</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>container</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>: TRUE if the assignment was ok.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-input-set-size">gsf_input_set_size ()</title>
+<indexterm><primary>gsf_input_set_size</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gsf_input_set_size              (<link linkend="GsfInput">GsfInput</link> *input,
+                                             <link linkend="gsf-off-t">gsf_off_t</link> size);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>input</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>: TRUE if the assignment was ok.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,106 @@
+<refentry id="gsf-gsf-infile-msole">
+<refmeta>
+<refentrytitle>gsf-infile-msole</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GSF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gsf-infile-msole</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GsfInfileMSOle">GsfInfileMSOle</link>;
+#define     <link linkend="GSF-INFILE-MSOLE-TYPE-CAPS">GSF_INFILE_MSOLE_TYPE</link>
+#define     <link linkend="GSF-INFILE-MSOLE-CAPS">GSF_INFILE_MSOLE</link>                (o)
+<link linkend="GType">GType</link>       <link linkend="gsf-infile-msole-get-type">gsf_infile_msole_get_type</link>       (void);
+<link linkend="GsfInfileMSOle">GsfInfileMSOle</link>* <link linkend="gsf-infile-msole-new">gsf_infile_msole_new</link>        (<link linkend="GsfInput">GsfInput</link> *source,
+                                             <link linkend="GError">GError</link> **err);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GsfInfileMSOle">struct GsfInfileMSOle</title>
+<indexterm><primary>GsfInfileMSOle</primary></indexterm><programlisting>struct GsfInfileMSOle;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GSF-INFILE-MSOLE-TYPE-CAPS">GSF_INFILE_MSOLE_TYPE</title>
+<indexterm><primary>GSF_INFILE_MSOLE_TYPE</primary></indexterm><programlisting>#define GSF_INFILE_MSOLE_TYPE        (gsf_infile_msole_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GSF-INFILE-MSOLE-CAPS">GSF_INFILE_MSOLE()</title>
+<indexterm><primary>GSF_INFILE_MSOLE</primary></indexterm><programlisting>#define GSF_INFILE_MSOLE(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), GSF_INFILE_MSOLE_TYPE, GsfInfileMSOle))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-infile-msole-get-type">gsf_infile_msole_get_type ()</title>
+<indexterm><primary>gsf_infile_msole_get_type</primary></indexterm><programlisting><link linkend="GType">GType</link>       gsf_infile_msole_get_type       (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-infile-msole-new">gsf_infile_msole_new ()</title>
+<indexterm><primary>gsf_infile_msole_new</primary></indexterm><programlisting><link linkend="GsfInfileMSOle">GsfInfileMSOle</link>* gsf_infile_msole_new        (<link linkend="GsfInput">GsfInput</link> *source,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Opens the root directory of an MS OLE file.
+NOTE : adds a reference to <parameter>source</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>source</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>: the new ole file handler
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

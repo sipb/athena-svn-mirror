@@ -1,0 +1,192 @@
+<refentry id="gsf-gsf-impl-utils">
+<refmeta>
+<refentrytitle>gsf-impl-utils</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GSF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gsf-impl-utils</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GSF-CLASS-FULL-CAPS">GSF_CLASS_FULL</link>                  (name, prefix, class_init, instance_init, parent_type, \
+		       abstract, interface_decl)
+#define     <link linkend="GSF-CLASS-CAPS">GSF_CLASS</link>                       (name, prefix, class_init, instance_init, parent)
+#define     <link linkend="GSF-CLASS-ABSTRACT-CAPS">GSF_CLASS_ABSTRACT</link>              (name, prefix, class_init, instance_init, parent)
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GSF-CLASS-FULL-CAPS">GSF_CLASS_FULL()</title>
+<indexterm><primary>GSF_CLASS_FULL</primary></indexterm><programlisting>#define     GSF_CLASS_FULL(name, prefix, class_init, instance_init, parent_type, \
+		       abstract, interface_decl)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>class_init</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>instance_init</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract:
+@\
+		       abstract: 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>interface_decl</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GSF-CLASS-CAPS">GSF_CLASS()</title>
+<indexterm><primary>GSF_CLASS</primary></indexterm><programlisting>#define     GSF_CLASS(name, prefix, class_init, instance_init, parent)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>class_init</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>instance_init</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GSF-CLASS-ABSTRACT-CAPS">GSF_CLASS_ABSTRACT()</title>
+<indexterm><primary>GSF_CLASS_ABSTRACT</primary></indexterm><programlisting>#define     GSF_CLASS_ABSTRACT(name, prefix, class_init, instance_init, parent)</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>class_init</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>instance_init</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

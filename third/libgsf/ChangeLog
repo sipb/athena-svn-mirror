@@ -1,0 +1,2201 @@
+2003-09-12  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.8.2
+
+2003-09-12  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : libole2 depends
+	  on all entries having names.  Hard code 'Root Entry' for the root.
+
+2003-08-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* win/libgsf.ds*: Add win32 project files, from Jeremy Davis
+	* gsf/*: Some casts and ifdefs to let this puppy build on win32 using
+	MSVC. Also from Jeremy Davis, with some touch-up work by myself.
+	* configure.in: check for <io.h>
+	
+2003-08-03  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c : some initial work to define an interface
+	  for using non-default block sizes.  We're just managing these values
+	  not using them yet.
+
+2003-08-02  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_make_bat) : weaken the post condition
+	  from error -> warning in the event that a BAT is missing a valid
+	  terminator.  We've already loaded a BAT, and we're sure that it is
+	  not too big.  Hopefully this will allow some of the data to be
+	  restored.
+
+2003-08-01  Jody Goldberg <jody@gnome.org>
+
+	For Stuart Cunningham <stuartc@rd.bbc.co.uk>
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_read) : another patch to
+	  fix non-default sector size support.
+
+2003-07-17  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-zip.c (zip_dup) : take an error arg.
+	(zip_child_init) : ditto.
+	(gsf_infile_zip_dup) : use the error from zip_dup and zip_child_init.
+
+	* gsf/gsf-infile-impl.h : Take GError args for child_by_* virtuals.
+	  We can not expose them yet.
+	* gsf/gsf-structured-blob.c (blob_child_by_index) : fix here.
+	(blob_child_by_name) : and here.
+	* gsf/gsf-infile-ar.c : and here.
+	* gsf/gsf-infile-msvba.c : and here.
+
+	* gsf/gsf-infile-msole.c (ole_dup) : catch gsf_input_dup failures
+	  for the underlying source, and take a GError arg.
+	(gsf_infile_msole_dup) : pass the new err arg to ole_dup and use error
+	  from ole_dup directly.  No need to cruft another one up.
+	(gsf_infile_msole_new_child) : Take a GError arg to pass to ole_dup.
+
+2003-07-15  Jody Goldberg <jody@gnome.org>
+
+	For Stuart Cunningham <stuartc@rd.bbc.co.uk>
+	* gsf/gsf-infile-msole.c (ole_get_block) : fix ole block seeking in
+	  4k-sector files
+
+2003-07-03  Jody Goldberg <jody@gnome.org>
+
+	For : Stuart Cunningham <stuartc@rd.bbc.co.uk>
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : store the directory's CLSID
+	(gsf_infile_msole_get_class_id) : new.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : store the CLSID
+	(gsf_outfile_msole_set_class_id) : new.
+	(gsf_outfile_msole_init) : be really anal and ensure the CLSID is 0.
+
+2003-07-02  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_new_child) : Even if a
+	  directory claims to have a size set it to 0.  Thanks to the AAF
+	  people for the test case.
+
+2003-06-28  Jody Goldberg <jody@gnome.org>
+
+	* doc/Makefile.am : fix the case when gtk-doc is not available
+
+2003-06-20  Morten Welinder  <welinder@rentec.com>
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_read): Handle premature end
+	of stream.
+
+2003-06-21  Jody Goldberg <jody@gnome.org>
+
+	As per ryang@bway.org :
+	* README : s/automake/autoconf/ and add automake details.
+
+2003-06-15  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Remove test for obsolete orbit-python module.
+
+2003-06-09  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* debian/*: Updated debianisation.
+
+2003-06-07  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-06-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.8.1
+
+2003-06-06  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_out_simple_int_element) : new util.
+	(gsf_xml_out_simple_float_element) : ditto.
+
+2003-05-14  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gsf/Makefile.am: Added $(LIBGSF_LIBS) to libgsf_1_la_LIBADD to get
+	complete inter-library dependency information.
+
+2003-05-13  Dom Lachowicz <cinamod@hotmail.com>
+
+	* COPYING.LIB: update the the version of the LGPL license we're 
+	actually licensed under
+	
+2003-05-13  Dom Lachowicz <cinamod@hotmail.com>
+
+	* libgsf-1.spec.in: Updates from Rui
+	
+2003-05-12  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-output-gzip.c (gsf_output_gzip_finalize): Plug
+	truck-sized leak.
+
+2003-05-12  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-05-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.8.0
+
+2003-04-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-win32/gsf-input-istream.[ch]: IStream based input. Untested
+	* gsf-win32/gsf-output-istream.[ch]: IStream based output. Untested
+	
+2003-04-29  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-msole-utils.c
+	(gsf_msole_iconv_open_codepage_for_import): Try MACROMAN as alias
+	for 10000.
+
+2003-04-28  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-msole-utils.c
+	(gsf_msole_iconv_open_codepage_for_import): Remove code
+	duplication.
+
+2003-04-21  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : terminate the name before
+	  conversion.
+
+2003-04-15  Morten Welinder  <terra@gnome.org>
+
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new): FREEBSD have broken
+	mmap -- we must keep the file descriptor around.
+
+2003-04-09  Jody Goldberg <jody@gnome.org>
+
+	From Xavier Roche <roche@exalead.com>
+	* gsf/gsf-msole-utils.c (msole_prop_parse) : gsize is not always
+	  guinit32.  Fixes sparc-64 problem.
+	* gsf/gsf-infile-msvba.c (vba3_dir_read) : ditto.
+
+2003-04-01  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-impl-utils.h : Add utils for objects in plugins
+
+2003-03-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Better checks for bz2
+	
+2003-03-20  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-bzip.c (gsf_input_memory_new_from_bzip): Warning
+	killer.
+
+	* gsf/gsf-libxml.c (gsf_xml_in_doc_new): Kill warning.
+
+2003-03-09  Jody Goldberg <jody@gnome.org>
+
+	* Relicense from GPL -> LGPL
+
+2003-03-05  Dom Lachowicz <cinamod@hotmail.com>
+
+	* NEWS: update for correctness and mention AR infile
+	* README: typo police
+	
+2003-03-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c : More morten  warnings
+
+2003-03-05  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-memory.c (gsf_input_memory_seek): Fix return type.
+
+	* gsf/gsf-input.c (gsf_input_seek): Fix failure return.
+
+2003-03-05  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-infile.c (gsf_infile_num_children): Fix failure return
+	value.
+	(gsf_infile_name_by_index): Ditto.
+	(gsf_infile_child_by_index): Ditto.
+	(gsf_infile_child_by_name): Ditto.
+	* gsf/gsf-outfile.c (gsf_outfile_new_child): Ditto.
+
+2003-03-04  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-zip-impl.h: s/off_t/gsf_off_t
+	* gsf/gsf-infile-ar.[ch]: AR infile. DOES NOT YET WORK
+	
+2003-02-23  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input.c (gsf_input_copy): remove == TRUE for Morten
+	
+2003-02-22  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input.c (gsf_input_uncompress): Support uncompressing BZ2
+	streams as well, optionally
+	
+2003-02-22  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-bzip.c: Restructure things so that it's possible to
+	build without bzip2 support
+	
+2003-02-22  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input-textline.c: Replace g_realloc with g_renew
+	* gsf/gsf-output-memory.c: Ditto
+	
+2003-02-21  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input-bzip.c: Implement this
+	* gsf/gsf-input-memory.[ch]: New function: gsf_input_memory_new_clone
+	* gsf/Makefile.am: Build bz2 importer, distribute header
+	* tests/test-bzip.c: New test
+	* tests/Makefile.am: Add new test
+	
+2003-02-20  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input-bzip.[ch]: Stubs for a BZ2 input I'm working on
+	
+2003-02-18  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input.c (gsf_input_class_init): Install GObject properties
+	(gsf_input_get_property): Ditto
+	(gsf_input_set_property): Ditto
+
+	* gsf/gsf-output.c (gsf_output_class_init): Install GObject properties
+	(gsf_output_get_property): Ditto
+	(gsf_output_set_property): Ditto
+	
+2003-02-14  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Emit a warning instead of breaking if VFS and Bonobo
+	aren't found, but --without-gnome wasn't specified. Makes the KDE folk
+	happy.
+	
+2003-02-11  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : compartmentalize the bzip config tests, and trust
+	  libtool for the dependent libraries enough to not mention them in
+	  the pkg-config file
+
+	* gsf/gsf-output-bzip.c : improve the conditionalization.
+
+	* gsf/gsf-input-iochannel.c (gsf_input_memory_new_from_iochannel) :
+	  warning suppression.
+
+2003-02-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Changes to (optionally) compile bz2 functionality
+	* Makefile.am: Ditto
+	* gsf/Makefile.am: Ditto
+	* tests/Makefile.am: Ditto
+	* gsf/gsf-output-bzip2.c: Changes to optionally compile parts of this
+	
+2003-02-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* tests/test-out-bzip.c: Tester for new BZip2 output
+	* gsf/gsf-impl-utils.h: Correct typo
+	* gsf/gsf-output-gzip.c: Fix memory leak (leaked buffer)
+	* gsf/gsf-output-bzip.[ch]: New output class, not currently built
+	
+2003-02-09  Dom Lachoiwcz <cinamod@hotmail.com>
+
+	* gsf/gsf-input-iochannel.[ch]: Rework as per Jody's suggestions. Now
+	it is a utility constructor.
+	
+2003-02-09  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input-iochannel.c: Fixed iochannel. Unfortunately uses memory
+	backend because there's no way to query the size of an IOChannel
+	
+2003-02-07  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* gsf/gsf-input-iochannel.[ch]: new GIOChannel based input.
+
+2003-02-07  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-doc-metadata.[ch]: Clean API a bit to include consts, gsize
+	
+2003-02-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : clip long names,
+	  and do not output a name for the root file.
+
+2003-02-04  Dom Lachowicz <cinamod@hotmail.com>
+
+	* Changed below commit to use g_new instead of g_malloc + typecast, at 
+	Jody's and Morten's request
+	
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-infile-msole.c
+	* gsf/gsf-infile-zip.c
+	* gsf/gsf-input-gzip.c
+	* gsf/gsf-input-stdio.c
+	* gsf/gsf-input-textline.c
+	* gsf/gsf-outfile-msole.c
+	* gsf/gsf-output-gzip.c
+	* gsf/gsf-output-memory.c
+	* gsf/gsf-utils.c
+	* gsf-gnome/gsf-input-bonobo.c
+	* gsf-gnome/gsf-input-gnomevfs.c: More castings needed
+	
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-infile-msole.c: Some castings to help things build using
+	MSVC++
+	* gsf/gsf-msole-utils.c: Ditto
+	
+2003-01-31  Dom Lachowicz <cinamod@hotmail.com>
+
+	* test/*.c: Correctness fixes in the testcases. No need to unref a null
+	object
+	
+2003-01-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* *: With Jody's permission, change all _new() calls to return the
+	derived/subclassed type, instead of the mix we had before
+	* tests/*: Updated to conform with above
+	
+2003-01-28  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2003-01-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.7.2
+
+2003-01-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xml_in_start_element) : be a touch more anal.
+
+2003-01-24  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : remove -Wunreachable-code it was damn irritating and
+	  mostly wrong.
+
+	* gsf/gsf-msole-utils.c : warning suppression.
+
+	* gsf/gsf-libxml.c (gsf_xml_in_start_element) : support default
+	  namespaces.
+	(gsf_xml_in_end_element) : ditto.
+	(gsf_xml_in_start_document) : ditto.
+
+2003-01-23  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: Calculate MAJOR_VERSION_PLUS_MINOR_VERSION.
+
+2003-01-22  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c : Rename everything (again) and add namespace
+	  support for the import wrappers.
+
+	* configure.in : bump version to 1.7.1 to reflect the major changes in
+	  the xml import/export api.
+
+2003-01-22  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gsf/gsf-utils.h, gsf/gsf-utils.c (gsf_base64_encode_close,
+	gsf_base64_encode_step), gsf/gsf-input.c (gsf_input_copy,
+	gsf_input_uncompress),
+	gsf-input-textline.c (gsf_input_textline_utf8_gets): Fixed signedness.
+
+2003-01-21  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gsf/gsf-msole-utils.c: Mark the 11644473600 constant as ULL.
+
+2003-01-21  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gsf/gsf-input.c: The gzip signature consists of unsigned chars.
+
+2003-01-21  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gsf/gsf-libxml.c, gsf/gsf-output-memory.c, gsf/gsf-output.c,
+	gsf/gsf-structured-blob.c, gsf/gsf-zip-utils.c: #include <string.h> for
+	strcmp(), strlen() and memcpy().
+
+2003-01-21  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: Redirect grep output to /dev/null instead of using -q
+	which Morten pointed out doesn't work on Solaris.
+
+2003-01-20  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: Check if -D_POSIX_SOURCE is needed for the fdopen() 
+	prototype in a cleaner fashion; might fix problems on Mac OS X.
+
+2003-01-09  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_read): Handle eof.
+
+2003-01-08  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-iochannel.c (gsf_output_iochannel_write): ensure
+	large writes happen
+
+	* gsf-gnome/gsf-output-gnomevfs.c (gsf_output_gnomevfs_write):
+	Ditto
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_read): Ensure that large
+	reads happen
+
+	* gsf-gnome/gsf-output-gnomevfs.c (gsf_input_gnomevfs_read) :
+	Ditto
+
+2003-01-08  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : fix off by 1 in
+	  calculation of how many meta bats are required.  Store correct
+	  position of initial xbat, the original code did not take small
+	  blocks into account.
+
+	* gsf/gsf-infile-msole.c (ole_make_bat) : add protection against
+	  cycles.
+
+2003-01-07  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_output_xml_add_attr_cstr_safe) : clone over
+	  logic for escaping strings from libxml and revamp it to be more
+	  libgsf-ish.
+
+	* gsf/gsf-utils.c : rename the base64 utilities and clean up the types
+	  and const to match gsf conventions.
+
+2003-01-06  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-transaction.c : New capability - transacted
+	outputs. Not thoroughly tested.
+
+	* tests/test-trans.c : Transaction testsuite for above
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_write) : Put write
+	inside of a loop to ensure that large writes are carried out
+	properly and feof is properly detected
+
+	* TODO: remove the "try to support canceling a write" item since
+	such functionality is supported via transactions
+
+2003-01-05  Tor Lillqvist  <tml@iki.fi>
+
+	* configure.in: Check for lstat() and readlink().  Check for
+	native Win32 and for Win32 in general (including Cygwin).  Set
+	automake conditionals OS_WIN32 and PLATFORM_WIN32 accordingly.
+	Add AC_LIBTOOL_WIN32_DLL.
+
+	* gsf/Makefile.am: On Win32, use -no-undefined, and install (and
+	uninstall) import libraries.
+
+	* gsf/gsf-output-stdio.c: Add workaround #defines for various Unix
+	stuff on Win32. Bypass follow_symlinks() unless HAVE_READLINK.
+
+2003-01-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-utils.c : Pull in the bas64 utilites from evolution.  Unused
+	  for now.
+
+2003-01-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-output.c (cb_output_unwrap) : renamed from
+	  cb_output_wrap_screwup and weaken restrictions.  The weak ref
+	  handler is called before the wrappers finalize, so we can not always
+	  unwrap in such a way as to avoid a warning.  Just handle it silently
+	  now.
+	(gsf_output_wrap) : ditto.  Weaken the requirement of the wrapper to
+	  be a GObject, no need for a full fledged GsfOutput.
+	(gsf_output_unwrap) : ditto.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : fix reversal of
+	  arguments for the wrapping.
+	(gsf_outfile_msole_write) : ditto.
+	* gsf/gsf-outfile-zip.c (zip_init_write) : ditto.
+	(zip_close_stream) : ditto.
+
+	* gsf/gsf-libxml.c : rename xml_sax -> GsfInputXML
+	(GsfOutputXML) : new
+
+2003-01-03  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-impl-utils.h : add hooks for interfaces
+
+2002-12-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (gsf_msole_metadata_read) : patch some warnings.
+
+2003-01-01  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* debian/changelog, debian/control, debian/libgsf-1-dev.dirs,
+	debian/libgsf-1-dev.files, debian/rules: Updated.
+
+2002-12-30  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-msole-utils.c (msole_prop_parse): Check if res is a GValue.
+	(gsf_msole_metadata_read): Check if v is a GValue and holds an int
+	before reading codepage. Check if v is a GValue before unsetting.
+
+2002-12-23  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-libxml.c (gsf_xml_output_buffer_new): Fix comment and
+	ref output to match gsf_libxml_close.
+
+2002-12-20  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-libxml.c (gsf_libxml_close): Plug leak.
+
+2002-12-19  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new_uri) : Able to
+	open URI objects as well as strings
+
+	* gsf-gnome/gsf-output-gnomevfs.c (gsf_output_gnomevfs_new_uri) : ditto
+
+2002-12-11  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump.
+
+2002-12-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.6.0
+
+2002-12-10  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (gsf_msole_lid_for_language) : Suggestion from
+	Nicolas Peninguy <peninguy.nicolas@wanadoo.fr>
+
+2002-12-10  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_finalize) : do not unref
+	  the info for the magic internal small block file it was already
+	  removed.
+	(ole_info_get_sb_file) : do not create a reference loop from the info
+	  to the small block file and back.  Remove the default reference from
+	  the magic internal small block file to the info.
+
+2002-12-10  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-structured-blob.c (blob_finalize): Link to the right
+	parent type.
+
+	* gsf/gsf-outfile-zip.c (zip_dirent_new_out): Don't allocate and
+	throw away memory.
+
+2002-12-09  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-msole-utils.c (msole_prop_parse): Fix typo.
+
+2002-12-09  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-outfile-zip.c (disconnect_children): Factor out from
+	zip_close_root.
+	(gsf_outfile_zip_finalize): Use here too.  (This closes a leak if
+	closing fails.)
+
+	* gsf/gsf-msole-utils.c (msole_prop_parse): Free the property
+	values until we figure out what to do with them.
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_finalize): Plug leak.
+
+	* gsf/gsf-timestamp.c (gsf_timestamp_as_string): 64-bit fix.
+
+2002-12-04  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-input.c (gsf_input_copy): Copies a GsfInput to a GsfOutput.
+	Will probably be useful for some abiword stuff I'll be doing
+
+	* tests/test-cp.c: New test program exercising gsf_input_copy
+
+2002-12-04  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-output-stdio.c (follow_symlinks): Fix error return
+	conventions.
+	(gsf_output_stdio_new): Clean up error messages.
+
+2002-12-03  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_close): Try much harder
+	restoring owner and permissions.  Still not good.
+	(gsf_output_stdio_new): Simplify using g_path_get_dirname.
+	Respect non-writable files!
+	(follow_symlinks): Simplify using g_path_is_absolute and
+	g_path_get_dirname.  Eliminate some race conditions.
+
+2002-11-29  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-output-gzip.c (init_gzip): Return set error if
+	deflateInit2 fails.
+	(gzip_output_header): Add missing argument to time().
+
+2002-11-27  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-libxml.c (gsf_libxml_close): Change to do nothing. We
+	expect higher layers to close.
+	(gsf_xmlDocFormatDump): Use encoding argument. Don't call
+	xmlOutputBufferClose - libxml calls it for us via the callback we
+	supply.
+
+	* gsf/gsf-libxml.[ch] (gsf_xmlDocFormatDump: Add encoding parameter.
+
+2002-11-27  Jon K Hellan  <hellan@acm.org>
+
+	* tests/Makefile.am (check_PROGRAMS): Add test-out-gzip.c
+
+	* gsf/gsf-output-gzip.[ch]: New files. Gzip output.
+
+	* gsf/Makefile.am (libgsf_1_la_SOURCES): Add gsf-output-gzip.c.
+	(libgsf_1_include_HEADERS): Add gsf-output-gzip.h.
+
+2002-11-25  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-outmem-printf.c (test): Adjust to new
+	gsf_output_memory_get_bytes API.
+
+	* gsf/gsf-outfile-zip.c (root_register_child): Don't ref children
+	which are directories.
+
+	* tests/test-zip-out-subdirs.c (test): Make close/unref strategy
+	the same as in test-cp-zip/test-cp-ole (with change above, this
+	works!). Test closing subdirs at different times in the lifecycle.
+
+2002-11-25  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-outfile-zip.c (zip_init_write): Fail if already writing
+	to another stream in archive. Set "writing" flag in zip root to
+	indicate that we're writing to a stream.
+	(zip_close_stream): Unset "writing" flag in zip root to indicate
+	that we're now free to write to a new stream.
+	 (zip_close_root): s/g_message/g_warning/.
+
+	* tests/test-zip-out-subdirs.c (test): Close each substream before
+	starting to write to the next.
+
+2002-11-24  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-outfile-zip.c (stream_name_len,
+	stream_name_write_to_buf): Stop recursing at root of zip archive,
+	i.e. don't append name of archive file to stream names. Take zip
+	rather than outfile argument.
+	(stream_name_build): Take zip rather than outfile argument.
+	(zip_dirent_new_out): Call stream_name_build with new signature.
+
+2002-11-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-ouput-iochannel.c (): New output sink. No IOChannel
+	input sink possible due to API limitations
+
+	* gsf/gsf-input-stdio.c (_new): Open files with "rb" status
+
+2002-11-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-memory.c (gsf_output_memory_get_bytes): WARNING:
+	changed prototype
+	(gsf_output_memory_seek): Re-implement seek() in a saner fashion
+	(gsf_output_memory_write): ditto
+	(gsf_output_memory_vprintf): ditto
+	(gsf_output_memory_init): ditto
+
+2002-11-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_seek): Code
+	cleanup
+
+2002-11-24  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-memory.c (gsf_output_memory_seek): Implement
+	seek() by implementing a cursor as well as the existing nwritten
+	and capacity fields
+	(gsf_output_memory_write): ditto
+	(gsf_output_memory_vprintf): ditto
+	(gsf_output_memory_init): ditto
+
+2002-11-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_vprintf) : rename from
+	  gsf_output_msole_vprintf to conform to naming convention.
+	(gsf_outfile_msole_class_init) : hook up the vprintf method and fix
+	  some old cut-n-paste errors.
+
+	* gsf/gsf-output.c (gsf_output_finalize) : free the new printf buf.
+	(gsf_output_init) : init the new printf buf.
+	(gsf_output_vprintf) :  use a stream local buffer and handle older
+	  version of glibc that did not return the required number of
+	  characters.
+
+2002-11-23  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-zip-out-subdirs.c: New test program. Add.
+
+	* tests/Makefile.am (check_PROGRAMS): Add test-zip-out-subdirs.
+
+2002-11-23  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-zip-out.c: New test program. Add.
+
+	* tests/Makefile.am (check_PROGRAMS): Add test-zip-out.
+
+	* gsf/gsf-outfile-zip.c (gsf_outfile_zip_finalize): Only free
+	vdirs from the root down.
+	(zip_trailer_write): Take no. of entries as a parameter, so that
+	the root_order array doesn't have to be live when we call this
+	function.
+	(zip_close_root): Slight tweak of Dom's fix.
+
+2002-11-23  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-outfile-zip.c (zip_close_root): Free the root_array and
+	unref the child outputs when closing the root directory
+
+2002-11-22  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_new): Disable creating
+	backup copies of files, open files with "wb" status instead of
+	just "w"
+
+2002-11-22  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-output.c (gsf_output_puts): Check for null input
+	(gsf_output_vprintf): Don't use static internal buffer, will lead
+	to nasty race conditions and a memory-leak on shutdown
+
+2002-11-22  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-outmem-printf.c: New test program. Add.
+
+	* tests/Makefile.am (check_PROGRAMS): Add test-outmem-printf.
+
+	* gsf/gsf-output-memory.c (gsf_output_memory_vprintf):
+	New. vprintf implementation which uses g_vsnprintf directly
+	into buffer if there is space.
+	(gsf_output_memory_class_init):  Initialize vprintf virtual.
+
+2002-11-22  Jody Goldberg <jody@gnome.org>
+
+	* doc/Makefile.am : pull in newer magic from gtk.
+	* configure.in : ditto.
+
+2002-11-22  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_output_msole_vprintf): New. vprintf
+	implementation which falls through to the sink's implementation if
+	possible.
+	(gsf_outfile_msole_class_init):  Initialize vprintf virtual.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_vprintf): New. vprintf
+	implementation which just falls through to vfprintf.
+	(gsf_output_stdio_class_init): Initialize vprintf virtual.
+
+2002-11-22  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-msole-printf.c: New test program. Add.
+
+	* tests/Makefile.am (check_PROGRAMS): Add test-msole-printf.
+
+2002-11-21  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-output.c (gsf_output_puts): Remove unused variable.
+
+2002-11-21  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-libxml.c (gsf_libxml_write): Fix inverted
+	success/failure test.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_new): Set name
+
+2002-11-21  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-output.[ch] (gsf_output_printf): New function. printf
+	for GsfOutput.
+	(gsf_output_puts): New function. fputs for GsfOutput.
+
+	* gsf/gsf-output-impl.h (struct GsfOutputClass): Add Vprintf virtual.
+
+	* gsf/gsf-output.c (gsf_output_class_init): Initialize to default
+	vprintf method.
+	(gsf_output_vprintf): New function: Default vprintf method.
+
+	* tests/test-out-printf.c: New test program. Add.
+
+	* tests/Makefile.am (check_PROGRAMS): Add test-out-printf.
+
+2002-10-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : be more careful about
+	  invalid stream names.
+
+2002-10-30  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* debian/changelog, debian/control, debian/rules: updated.
+	* debian/shlibs.local: dropped.
+
+2002-10-26  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-10-26  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.5.0
+
+2002-10-26  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (gsf_msole_lid_to_codepage) : remove warning.
+
+2002-10-14  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-output-memory.c (gsf_output_memory_finalize) : close != exit.
+	  Chain to the parent, and keep the content around until detruction.
+
+2002-10-22  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-msole-utils.c
+	(gsf_msole_iconv_open_codepage_for_export): Fix bug where we used
+	UTF-8 regardless of the 'from' codepage
+
+2002-10-21  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/gsf-msole-utils.c (*): Large rewrite of the codepage handling
+	code. More functions, more complete, more flexible, etc...
+
+2002-10-18  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-textline.c (gsf_input_textline_ascii_gets): Handle
+	end-of-buffer case without asserting.
+
+2002-10-08  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-utils.c (gsf_filename_to_utf8): New function.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_new): Ensure sane
+	filenames before putting them into error messages.
+	* gsf/gsf-output-stdio.c (follow_symlinks): Ditto.
+	(gsf_output_stdio_new): Ditto.
+	(gsf_output_stdio_close): Ditto.
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new): Ditto.
+
+2002-10-01  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xmlSAX_prep_dtd) : support recursive
+	  structures.
+
+2002-09-30  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
+2002-09-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.4.0
+
+2002-09-27  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-structured-blob.c (gsf_structured_blob_read) : fix.
+	(gsf_structured_blob_write) : fix.
+
+2002-09-26  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-output-memory.c: Remove debug printouts.
+
+2002-09-26  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-output-memory.[ch] (gsf_output_memory_get_bytes): Take
+	1st argument GsfOutputMemory instead of GsfOutput.
+
+	* gsf/gsf-output-memory.c (struct _GsfOutputMemory): Add
+	'capacity' member.
+	(gsf_output_memory_new): Don't duplicate work done in
+	gsf_output_memory_init.
+	(gsf_output_memory_expand): Encapsulate expansion and make it more
+	intelligent.
+	(gsf_output_memory_write): Use gsf_output_memory_expand.
+	(gsf_output_memory_init): Initialize capacity.
+
+2002-09-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (msole_prop_read) : remove some debug spew
+	  that snuck in.
+
+2002-09-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c :  support unicode property names and values,
+	  including some ugly heuristics to add the documented padding only
+	  when using unicode (? what where they smoking ?)
+
+2002-09-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xmlSAX_prep_dtd) : typo
+	  and make the errors more verbose.
+
+2002-09-20  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-structured-blob.c (gsf_structured_blob_read) : handle out of
+	  memory.
+
+2002-09-20  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-libxml.c (gsf_xmlSAX_parse) : some initial work on utility
+	  structures and routines to make building a sax parser easy.
+
+	* gsf/gsf-structured-blob.c : new utility to read/write trees of
+	  unparsed data.
+
+2002-09-19  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-outfile-zip.h (enum GsfZipCompressionMethod): Define.
+
+	* gsf/gsf-outfile-zip.[ch]
+	(gsf_outfile_zip_set_compression_method): New function. Set
+	compression method.
+
+	* gsf/gsf-outfile-zip.c (struct _GsfOutfileZip): Add
+	compression_mehod member.
+	(zip_dirent_new_out): Set compression method.
+	(zip_header_write): Write current compression method.
+	(zip_init_write, zip_close_stream, gsf_outfile_zip_write): Handle
+	noncompressed streams.
+	(zip_header_write_sizes): New function. Write crc and sizes to
+	local file header.
+	(gsf_outfile_zip_init): Initialize compression method to deflated.
+	(gsf_outfile_zip_set_compression_method): New function. Set
+	compression method.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek): Fix typo.
+
+2002-09-19  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (zip_read_dirents): Don't expect a file
+	header at the start of the archive. It's not required by the
+	specification, and e.g. self-extracting zips do not have one.
+	With this change, we can read self-extracting zips.
+
+2002-09-16  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-output.c (gsf_output_close) : always close even if the
+	  implementation failed.
+	(gsf_output_finalize) : free the error.
+	(gsf_output_init) : init the error.
+	(gsf_output_seek) : inver the return flag to be consistent with write.
+	(gsf_output_error) : new.
+	(gsf_output_set_error) : new.
+
+	* gsf/gsf-output-stdio.c : borrow the temp file handling from gedit so
+	  that we can handle setgid directories correctly.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_seek) :
+	  invert the return type.
+	* gsf/gsf-outfile-zip.c (gsf_outfile_zip_seek) : ditto.
+	* gsf/gsf-output-memory.c (gsf_output_memory_seek) : ditto.
+
+	* gsf/gsf-msole-utils.c (gsf_msole_metadata_write) : add some error
+	  checking.
+
+2002-09-15  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (gsf_msole_iconv_win_codepage) : fix warning.
+
+	* configure.in : reorder the _BSD_SOURCE and _POSIX_SOURCE tests
+	  because POSIX changes things under linux.
+	  Add an lstat test
+
+2002-09-15  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-zip2.c: Add.
+
+2002-09-14  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* gsf/gsf-command-context.[ch]: added support for warnings.
+	(gsf_command_context_has_warnings, gsf_command_context_push_warning,
+	 gsf_command_context_pop_warning): new functions.
+
+2002-09-14  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* gsf/gsf-command-context.[ch]: new class for command contexts,
+	stealing some implementation from GsfIOContext.
+
+	* gsf/gsf-io-context.[ch]: base this class on GsfCommandContext.
+
+2002-09-14  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (gsf_infile_zip_read): Fix reading
+	non compressed streams.
+
+2002-09-13  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (msole_prop_read) : tweak boundary case
+	  to match reality
+
+2002-09-14  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-outfile-zip.[ch]: Really add this time.
+
+	* gsf/gsf-infile-zip.c: gsf-zip-utils.h doesn't exist - don't
+	include it!
+
+	* gsf/gsf-zip-utils.c: Ditto.
+
+2002-09-14  Jon K Hellan  <hellan@acm.org>
+
+	* tests/Makefile.am: Add test-cp-zip.c
+
+2002-09-13  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-cp-zip.c: Add a test program for zip export.
+
+2002-09-13  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-zip-util.c: Add.
+
+	* gsf/gsf-infile-zip.c (enum ZipCompressionMethod, struct
+	ZipDirent, struct ZipDir): Move to gsf-zip-impl.h.
+	(vdir_new, vdir_free, vdir_compare, vdir_add_child,
+	zip_dirent_free): Move to gsf-zip-utils.c.
+	(zip_dirent_new): Rename to zip_dirent_new_in.
+	(vdir_free, zip_info_unref): Add free_dirent parameter to
+	vdir_free.
+	(zip_child_init): Move before first use.
+	(gsf_infile_zip_finalize): Free zlib stream.
+
+	* gsf/Makefile.am: Add gsf-zip-utils.c, gsf-outfile-zip.[ch]
+
+2002-09-12  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf/Makefile.am: add gsf-output-memory
+
+	* gsf/gsf-output-memory.c (_seek): fix seek type, compiles
+
+	* gsf-gnome/Makefile.am: add gsf-output-bonobo
+
+	* gsf-gnome/gsf-output-bonobo.c (): make compile
+
+2002-09-06  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-input-gzip.c (init_zip): Factored out of gsf_input_gzip_new.
+	(gsf_input_gzip_new): See init_zip.
+	(gsf_input_gzip_dup): Dup source instead of sharing it, and
+	initialize zip context.
+
+	* gsf/gsf-infile-zip.c (gsf_infile_zip_dup): Call zip_child_init.
+
+2002-09-04  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (struct ZipDirent, struct _GsfInfileZip,
+	zip_dirent_new, zip_dirent_free, zip_update_stream_in,
+	gsf_infile_zip_read, zip_child_init, gsf_infile_zip_seek,
+	gsf_infile_zip_init): Move zlib context to GsfInfile object. It is
+	per opened stream, not per subfile.
+	(gsf_infile_zip_init, gsf_infile_zip_new): Initialize all fields
+	in gsf_infile_zip_init.
+
+2002-09-03  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-input-gzip.c (check_header): Fix typo.
+
+2002-09-03  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-libxml.c (gsf_libxml_read): Don't signal error when
+	reading len = 0.
+
+	* gsf/gsf-input-gzip.c (check_header): Check signature before
+	seeking to end. Seeking to end is *expensive* if seek is slow in
+	underlying stream.
+	Add check that there's room for payload.
+
+2002-09-02  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (struct _GsfInfileZip): Add seek_skipped.
+	(gsf_infile_zip_seek): Implement. As slow as gzip.
+	(zip_child_init): Initialize dirent->restlen,
+	dirent->crestlen. Don't call zip_update_stream_in.
+	(gsf_infile_zip_new): Initialize seek_skipped.
+
+2002-09-01  Jody Goldberg <jody@gnome.org>
+
+	* tests/test-cat-zip.c : replace the old test with test-msole2.c
+	  with s/msole/zip/ so that we get the end of file right.
+
+2002-08-31  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-zip.c (gsf_infile_zip_num_children) : return -1 for
+	  non directories.
+
+2002-08-31  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-timestamp.c : dummy up a quick implementation.
+	* gsf/gsf-msole-utils.c (msole_prop_parse) : support FILETIME.
+
+2002-08-30  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : remove -Wconversion because it was pissing me off.
+
+2002-08-30  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (msole_prop_parse) : add some basic
+	  implementation.
+	(msole_prop_id_to_gsf) : new.
+
+2002-08-29  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (gsf_msole_prop_read) : conditionalize the
+	  debug spew.
+
+2002-08-29  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-utils.c (gsf_msole_prop_parse) : new.
+	(gsf_msole_prop_read) : new.
+	(gsf_msole_metadata_read) : prepare to parse the actual properties.
+
+2002-08-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_new) : restore the current file
+	  position when sniffing for gzip fails.
+
+2002-08-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-metadata.c (gsf_msole_iconv_open_for_export) : moved
+	  from gnumeric.
+	(gsf_msole_iconv_open_for_import) : ditto.
+	(gsf_msole_iconv_win_codepage) : ditto.
+	* gsf/gsf-utils.c (gsf_iconv_close) : ditto.
+	(gsf_extension_pointer) : moved from gnumeric, originally from libgnome.
+
+2002-08-26  Jon K Hellan  <hellan@acm.org>
+
+	* gsf-gnome/gsf-input-bonobo.[ch],
+	gsf-gnome/gsf-output-bonobo.[ch],
+	gsf-gnome/gsf-input-gnomevfs.[ch],
+	gsf-gnome/gsf-output-gnomevfs.c, gsf/gsf-infile-msvba.c,
+	gsf/gsf-input-gzip.h, gsf/gsf-input-impl.h,
+	gsf/gsf-input-memory.h, gsf/gsf-msole-impl.h,
+	gsf/gsf-output-impl.h, gsf/gsf-output-memory.h,
+	gsf/gsf-output-stdio.h, gsf/gsf-output.c, gsf/gsf-shared-memory.h,
+	gsf/gsf-zip-impl.h, gsf/gsf.h: Fix file headers - file name was
+	wrong.
+
+2002-08-26  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (struct ZipVDir): Define struct to
+	represent a directory entry in a tree of contained files.
+	(struct ZipInfo): Add vdir. Move dirent_list here from
+	_GsfInfileZip.
+	(struct _GsfInfileZip): Add vdir. Remove dirent_list and dirent.
+	(vdir_new, vdir_free, vdir_child_by_name, vdir_child_by_index,
+	vdir_compare, vdir_add_child, vdir_insert): New
+	functions. Operations on file tree directories.
+	(zip_info_unref): Free dirent_list and vdir.
+	(zip_read_dirents): Renamed from zip_init_info. dirent_list now in
+	ZipInfo.
+	(zip_build_vdirs): New function. Build directory tree of contained
+	files.
+	(zip_init_info): New function, old name. Wraps zip_read_dirents
+	and zip_build_vdirs.
+	(gsf_infile_zip_dup): Copy vdir, not dirent.
+	(zip_update_stream_in,
+	(gsf_infile_zip_read): dirent now in vdir.
+	(zip_child_init): New function. Contains the parts of
+	gsf_infile_zip_new_child which operated on the zip file.
+	(gsf_infile_zip_new_child): Simplify and call zip_child_init.
+	(gsf_infile_zip_child_by_index, gsf_infile_zip_name_by_index): Use
+	vdir_child_by_index.
+	(gsf_infile_zip_child_by_name): Use vdir_child_by_name
+	(gsf_infile_zip_num_children): Count children in vdir.
+	(gsf_infile_zip_finalize): dirent_list is no longer freed here.
+	(gsf_infile_zip_init, gsf_infile_zip_new): Initialize vdir.
+
+	* gsf/gsf-zip-impl.h (ZIP_NAME_SEPARATOR): Define path name
+	component separator for zip archives.
+
+2002-08-26  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf.h: Don't include <glib-object.h> here.
+	* gsf/gsf-input.h: Do it here.
+	* gsf/gsf-output.h: And here.
+
+	* configure.in: Take out -Wcast-align until someone fixes the
+	hundreds of things that violates it.
+
+2002-08-25  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-08-25  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.3.0
+
+2002-08-22  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (zip_find_trailer): Fix case when no match
+	is found first time round.
+
+2002-08-21  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (zip_find_trailer): Don't try to read
+	beyond EOF.
+
+2002-08-21  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-infile-zip.c (struct _GsfInfileZip): Add buf and
+	buf_size for inflating.
+	(zip_init_info, gsf_infile_zip_dup): Use g_error_new rather than
+	g_set_error.
+	(gsf_infile_zip_read): Fix segfaulting bug. Make inflate buffer a
+	private member of the class rather than a static.
+	(gsf_infile_zip_finalize): Free inflate buffer.
+	(gsf_infile_zip_new): Initialize inflate buffer.
+
+	* tests/test-cp-msole.c: Revert 2nd arg to
+	gsf_input_read/write from gsf_off_t to size_t.
+
+2002-08-21  Mikael Hallendal  <micke@codefactory.se>
+
+	* tests/test-textline.c (test): output argv[0] when printing
+	  Usage.
+
+2002-08-20  Jody Goldberg <jody@gnome.org>
+
+	* gsf-gnome/Makefile.am : depend on libgsf
+
+2002-08-20  Jon K Hellan  <hellan@acm.org>
+
+	* gsf-gnome/.cvsignore: Add.
+
+2002-08-19  Jon K Hellan  <hellan@acm.org>
+
+	* tests/test-cp-msole.c (clone): Cast 2nd arg to
+	gsf_input_read/write to gsf_off_t.
+
+2002-08-19  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf.h: Remove GsfSeekType.
+
+	* gsf/gsf-input.[ch]: s/GsfSeekType/GSeekType/ in gsf_input_seek
+	signature.
+
+	* gsf/gsf-output.[ch]: s/GsfSeekType/GSeekType/ in gsf_output_seek
+	signature.
+
+	* gsf/gsf-input-impl.h (GsfInputClass) s/GsfSeekType/GSeekType/ in
+	Seek method.
+
+	* gsf/gsf-output-impl.h (GsfOutputClass) Ditto.
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_seek):
+	s/GsfSeekType/GSeekType/ in signature.
+
+	* gsf/gsf-infile-msvba.c (gsf_infile_msvba_seek): Ditto.
+
+	* gsf/gsf-infile-zip.c (gsf_infile_zip_seek): Ditto.
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_seek): Ditto.
+
+	* gsf/gsf-input-memory.c (gsf_input_memory_seek): Ditto.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek): Ditto.
+
+	* gsf/gsf-input-textline.c (gsf_input_textline_seek): Ditto.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_seek): Ditto.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek): Ditto.
+
+	* gsf-gnome/gsf-input-bonobo.c (gsf_input_bonobo_seek): Ditto.
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_seek): Ditto.
+
+	* gsf-gnome/gsf-output-bonobo.c (gsf_output_bonobo_seek): Ditto.
+
+	* gsf-gnome/gsf-output-gnomevfs.c (gsf_output_gnomevfs_seek): Ditto.
+
+	* gsf/gsf-input.c (gsf_input_seek): Replace GSF_SEEK_SET, CUR, END
+	with G_SEEK_SET, CUR, END.
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_seek): Ditto.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek): Ditto.
+
+	* gsf/gsf-output.c (gsf_output_seek): Ditto.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_seek): Ditto.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek): Ditto.
+
+	* gsf-gnome/gsf-input-bonobo.c (gsf_input_bonobo_seek): Ditto.
+
+	* gsf-gnome/gsf-input-gnomevfs.c (gsf_input_gnomevfs_seek): Ditto.
+
+	* gsf-gnome/gsf-output-bonobo.c (gsf_output_bonobo_seek): Ditto.
+
+	* gsf-gnome/gsf-output-gnomevfs.c (gsf_output_gnomevfs_seek): Ditto.
+
+	* gsf/gsf-infile-msole.c (ole_get_block, ole_init_info,
+	gsf_infile_msole_read, gsf_infile_msole_new_child):
+	s/GSF_SEEK_SET/G_SEEK_SET/.
+
+	* gsf/gsf-infile-msvba.c (vba_inflate, vba56_dir_read,
+	gsf_infile_msvba_seek, gsf_infile_msvba_seek): Ditto.
+
+	* gsf/gsf-infile-zip.c (zip_find_trailer, zip_dirent_new)
+	(zip_init_info, zip_init_info, zip_update_stream_in)
+	(gsf_infile_zip_new_child): Ditto.
+
+	* gsf/gsf-input-gzip.c (check_header, check_header): Ditto.
+
+	* gsf/gsf-input.c (gsf_input_dup, gsf_input_uncompress): Ditto.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_seek,
+	gsf_outfile_msole_close): Ditto.
+
+2002-08-18  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Revert today's first change to the file, but keep
+	the second.
+
+2002-08-18  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: See below. Hope it's true this time.
+
+2002-08-18  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Make --without-gnome work.
+
+2002-08-18  Jon K Hellan  <hellan@acm.org>
+
+	* acinclude.m4: Change it to just a comment referring to
+	python/README-python.
+
+	* acinclude.m4.am15: Added. A copy of the previous version, but no
+	longer commented out. See python/README-python.
+
+2002-08-17  Jody Goldberg <jody@gnome.org>
+
+	* gsf/Makefile.am : install the xml header
+
+2002-08-17  Jon K Hellan  <hellan@acm.org>
+
+	* libgsf-gnome-1.pc.in (Cflags): Fix Libs line.
+
+2002-08-17  Jon K Hellan  <hellan@acm.org>
+
+	* Makefile.am (pkgconfig_DATA): Add libgsf-gnome-1.pc when
+	--with-gnome is selected.
+	(EXTRA_DIST): Add libgsf-gnome-1.spec, libgsf-gnome-1.spec.in and
+	libgsf-gnome-1.pc.in
+
+2002-08-16  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : pad the last bat
+	  and sbat block with unused rather than 0.
+	(ole_pad_bat_unused) : New.
+
+2002-08-16  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : clean up the
+	  iteration to calculate the number of bat blocks required to hold the
+	  bat and metabat.  Fill in the bat flags for the metabat.
+
+2002-08-16  Jody Goldberg <jody@gnome.org>
+
+	* configure.in  : move bonobo and gnome-vfs into a standalone library.
+
+	* gsf/gsf-infile-msole.c (ole_init_info) : add a warning about invalid
+	  state.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_new) : Fill with 0xff
+	  instead of 0 to be more compatible with MS.
+	(gsf_outfile_msole_close) : If there is no small block data don't
+	  pretend there is an allocation chain for it.  Write BAT entries for
+	  the bat itself.  TODO : BAT entries for the metabat.
+
+2002-08-16  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-io-context.c (gsf_io_context_update_progress): Don't
+	zero out memory only to overwrite it.
+
+2002-08-16  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Require autoconf 2.52
+
+2002-08-16  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-metadata-bag.c (gsf_metadata_bag_new): Fix prototype.
+	* gsf/gsf-output-memory.c (gsf_output_memory_new): Ditto.
+	(gsf_output_memory_write): Fix brown-bag.
+
+2002-08-15  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Test for orbit-python.
+
+2002-08-15  Jon K Hellan  <hellan@acm.org>
+
+	*  gsf/gsf-input-memory.c  (gsf_input_mmap_new):  Stop warnings on
+	Solaris.
+
+2002-08-15  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-shared-memory.c (gsf_shared_memory_finalize): Cast to
+	gsf_off_t when checing for overflow.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close,
+	gsf_outfile_msole_write): Ditto.
+
+	* gsf/gsf-input-bonobo.c (gsf_input_bonobo_seek): Ditto.
+
+	* gsf/gsf-infile-zip.c (zip_find_trailer): Ditto.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek): Use long, not
+	off_t for offset arg. to fseek.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek): Ditto.
+
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new): Add forgotten
+	argument to g_error_new.
+
+2002-08-15  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Bump minor verision to 1.3. Add AC_SYS_LARGEFILE.
+
+	* gsf/gsf.h: Rename GsfOff_t enum to GsfSeekType. Define gsf_off_t
+	type to use instead of off_t. We have to do this because we do not
+	know what idea the application has of the size of off_t, this can
+	be defined with #define _FILE_OFFS_BITS xx.
+
+	* gsf/gsf-shared-memory.h (struct _GsfSharedMemory): Change type
+	of size to gsf_off_t.
+
+	* gsf/gsf-output-stdio.c (gsf_output_stdio_seek): Change type of
+	offset parameter to gsf_off_t, type of 'whence' parameter to
+	GsfSeekType. Check for overflow copying from gsf_off_t to off_t.
+
+	* gsf/gsf-output-impl.h (struct _GsfOutput): Change type of
+	cur_size, cur_offset to gsf_off_t.
+	(GsfOutputClass): Change type of offset parameter of Seek method
+	to gsf_off_t, type of 'whence' parameter to GsfSeekType.
+
+	* gsf/gsf-output-gnomevfs.c (gsf_output_gnomevfs_new): Various
+	fixes.
+	(gsf_output_gnomevfs_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.  Cast
+	'whence' argument to gnome_vfs_seek to GnomeVFSFileOffset to shut
+	up warning.
+	(gsf_output_gnomevfs_write): Cast 'bytes' argument to
+	gnome_vfs_write to GnomeVFSFileSize to shut up warning.
+
+	* gsf/gsf-output-bonobo.c (gsf_output_bonobo_seek): Change type of
+	offset parameter to gsf_off_t, type of 'whence' parameter to
+	GsfSeekType.
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_seek): Change type of
+	offset parameter to gsf_off_t, type of 'whence' parameter to
+	GsfSeekType. Type of offset argument to gsf_input_seek has changed
+	to gsf_off_t. Use.
+	(gsf_outfile_msole_close): Return type of gsf_output_tell is
+	changed to gsf_off_t. Introduce gsf_off_t typed variable data_size
+	to detect overflow. Type of size argument to gsf_output_set_size
+	has changed to gsf_off_t. Use. Type of offset argument to
+	gsf_output_seek has changed to gsf_off_t. Use.
+	(gsf_outfile_msole_write): Return type of gsf_output_tell is
+	changed to gsf_off_t. Introduce gsf_off_t typed variables wsize
+	and start_offset to detect overflow.
+
+	* gsf/gsf-libxml.c (gsf_libxml_read): Return type of
+	gsf_input_remaining has changed to gsf_off_t. Use.
+
+	* gsf/gsf-io-context.c (GSF_CLASS): G_TYPE_GLIB is the parent
+	class, not the io-context class itself.
+
+	* gsf/gsf-input.h: (gsf_input_size, gsf_input_remaining,
+	gsf_input_tell): Change return type to gsf_off_t.
+	(gsf_input_seek): Change type of offset parameter to gsf_off_t,
+	type of 'whence' parameter to GsfSeekType.
+
+	* gsf/gsf-input.c (gsf_input_dup): Type of offset argument to
+	gsf_input_seek has changed to gsf_off_t. Use.
+	(gsf_input_size, gsf_input_remaining, gsf_input_tell): Change
+	return type to gsf_off_t.
+	(gsf_input_seek): Change type of offset parameter to gsf_off_t,
+	type of 'whence' parameter to GsfSeekType.
+	(gsf_input_set_size): Change type of size parameter to gsf_off_t.
+	(gsf_input_seek_emulate): Change type of pos parameter to
+	gsf_off_t.
+	(gsf_input_uncompress): Change type of cur_offset variable to
+	gsf_off_t. Type of offset argument to gsf_input_seek has changed
+	to gsf_off_t. Use.
+
+	* gsf/gsf-input-textline.c (gsf_input_textline_new): Remove cast
+	of size argument to gsf_input_set_size.
+	(gsf_input_textline_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.
+	(gsf_input_textline_ascii_gets, gsf_input_textline_utf8_gets ):
+	Add 'remain' variable, and make sure that overflows don't occur.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_new): Change type of size
+	variable to gsf_off_t.
+	(gsf_input_stdio_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType. Check for
+	overflow copying from gsf_off_t to off_t.
+
+        * gsf/gsf-input-memory.h: Change type of length parameter to
+	gsf_off_t.
+
+	* gsf/gsf-input-memory.c (gsf_input_memory_new): Change type of
+	length parameter to gsf_off_t.
+	(gsf_input_memory_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.
+	(gsf_input_mmap_new): Check for overflow copying from st.st_size
+	to ssize_t. Type of size argument to gsf_shared_memory_mmapped_new
+	and gsf_input_set_size has changed to gsf_off_t. Use.
+
+	* gsf/gsf-input-impl.h (struct _GsfInput): Change type of size,
+	cur_offset to gsf_off_t.
+	(GsfInputClass): Change type of offset parameter of Seek method to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.
+	(gsf_input_set_size): Change type of size parameter to gsf_off_t.
+	(gsf_input_seek_emulate): Change type of pos parameter to
+	gsf_off_t.
+
+	* gsf/gsf-input-gzip.c (struct _GsfInputGZip): Change type of
+	seek_skipped to gsf_off_t.
+	(check_header): Type of offset argument to gsf_input_seek is
+	changed to gsf_off_t. Use. Type of size argument to
+	gsf_input_set_size has changed to gsf_off_t. Use.
+	(gsf_input_gzip_read): Return type of gsf_input_remaing has
+	changed to gsf_off_t. Use.
+	(gsf_input_gzip_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.
+
+	* gsf/gsf-input-gnomevfs.c (gsf_input_gnomevfs_new): Change type
+	of size variable to gsf_off_t. Cast 'code' argument to g_set_error
+	to gint to shut up warning.
+	(gsf_input_gnomevfs_read): Cast 'bytes' argument to gnome_vfs_read
+	to GnomeVFSFileSize to shut up warning.
+	(gsf_input_gnomevfs_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.  Cast
+	'whence' argument to gnome_vfs_seek to GnomeVFSFileOffset to shut
+	up warning.
+
+	* gsf/gsf-input-bonobo.c (struct _GsfInputBonobo): Change type of
+	'pos' to gsf_off_t.
+	(gib_synch_shared_ptr): Cast to gsf_off_t when assigning pos.
+	(gsf_input_bonobo_new): Change type of size variable to
+	CORBA_long.  Type of size argument to gsf_input_set_size is
+	changed to gsf_off_t. Use.
+	(gsf_input_bonobo_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType. Check for
+	overflow copying from gsf_off_t to CORBA_long.
+
+	* gsf/gsf-infile-zip.c (zip_find_trailer): Change return type to
+	gsf_off_t. Check for overflow copying from gsf_off_t to size_t.
+	(zip_dirent_new, gsf_infile_zip_new_child): Change type of offset
+	parameter to gsf_off_t. Type of size argument to
+	gsf_input_set_size has changed to gsf_off_t. Use.
+	(gsf_infile_zip_new): Type of size argument to gsf_input_set_size
+	has changed to gsf_off_t. Use.
+
+	* gsf/gsf-infile-msvba.c (vba_inflate): Change type of offset
+	parameter to gsf_off_t.
+	(vba3_dir_read): Cast 2nd argument to vba_inflate to gsf_off_t.
+	(gsf_infile_msvba_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.
+	(gsf_infile_msvba_new): Type of size argument to
+	gsf_input_set_size has changed to gsf_off_t. Use.
+
+	* gsf/gsf-infile-msole.c (ole_get_block, ole_init_info,
+	gsf_infile_msole_read, gsf_infile_msole_new_child): Type of offset
+	argument to gsf_input_seek has changed to gsf_off_t. Use.
+	(gsf_infile_msole_seek): Change type of offset parameter to
+	gsf_off_t, type of 'whence' parameter to GsfSeekType.
+	(gsf_infile_msole_new_child, gsf_infile_msole_new): Type of size
+	argument to gsf_input_set_size has changed to gsf_off_t. Use.
+
+2002-08-12  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.2.0
+
+2002-08-06  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-utils.c (gsf_le_get_double, gsf_le_set_double): New
+	functions (from gnumeric).
+	* gsf/gsf-utils.h: Add macros for signed types.
+
+2002-08-05  Jody Goldberg <jody@gnome.org>
+
+	* tests/test-msole1.c (test) : why did I add that limitation ?
+
+2002-08-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-output.c (gsf_output_is_closed) : forgot to implement.
+
+2002-08-02  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : bump version
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_finalize) : add a safety
+	  to close the file before finalizing.
+
+	* gsf/gsf-output.c (gsf_output_finalize) : add a warning when
+	  finalizing an unclosed stream.
+	(gsf_output_init) : init the new is_closed flag.
+
+2002-08-02  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* gsf/gsf-io-context.c: removed progress_min and progress_max, since
+	they don't seem too useful right now (ie, let's keep it simple).
+	(gsf_io_context_clear): free progress_ranges list and initialize
+	progress-related internal values.
+	(gsf_io_context_update_progress): implemented.
+	(gsf_io_context_class_init): added "progress" signal to class.
+
+2002-08-01  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* doc/Makefile.am (HTML_DIR) : conditionally define.
+	* doc/gsf-docs.sgml : tidy up.
+
+2002-07-27  Dom Lachowicz <cinamod@hotmail.com>
+
+	* MAINTAINERS : add myself
+	* gsf-metadata-bag.[ch] : add cardinatliy (size) method
+
+2002-07-26  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-output-bonobo.[ch]: implement output stream (untested)
+
+2002-07-26  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-meta-keys.h: list of default/builtin keys that we will want
+	to support
+
+	* gsf-metadata-bag.[ch]: add key creation and manipulation
+	functions, update TODO list
+
+2002-07-26  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gsf-metadata-bag.c: implement (untested)
+
+2002-07-25  Dom Lachowicz <cinamod@hotmail.com>
+
+        * gsf-input-gnomevfs.[ch]: implement (untested)
+        * gsf-output-gnomevfs.[ch]: implement (untested)
+        * gsf-output-memory.[ch]: implement (untested)
+
+2002-07-22  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* gsf-input-gnomevfs.c (struct _GsfInputGnomeVFS):
+	Added missing semicolon at the end of struct.
+
+2002-07-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.1.0
+
+2002-07-17  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-utils.c (gsf_mem_dump) : tweak.
+
+2002-07-15  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_dup): Don't ignore err
+	-- that will crash the caller.
+
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new): Plug file
+	descriptor leaks.
+
+2002-07-09  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input.c (gsf_input_dup) : avoid leak if derived dup has
+	  already assigned a name.
+
+2002-07-08  Jody Goldberg <jody@gnome.org>
+
+	* tests/test-cp-msole.c (test) : simplify.
+
+2002-07-08  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_new) : doh!
+	  fix the header to include the correct small block shift.
+
+2002-07-08  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c (ole_name_cmp) : new.
+	(gsf_outfile_msole_new_child) : order the names correctly.
+	(gsf_outfile_msole_close) : write meta bats.
+
+	* gsf/gsf-msole-impl.h : add OLE_HEADER_METABAT_SIZE.
+	* gsf/gsf-infile-msole.c (ole_init_info) : use it here.
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_close) : and here.
+
+2002-07-07  Jody Goldberg <jody@gnome.org>
+
+	* gsf/Makefile.am : Make gsf-impl-utils.h public
+
+2002-07-06  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-msole-impl.h : pull in more information.  We may not need it
+	  but it makes for better documentation than 'unknown'
+
+2002-07-06  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c : initial implementation.
+	* gsf/gsf-outfile.c : initial implementation.
+	* gsf/gsf-output.c : initial implementation.
+
+2002-07-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : be more anal in case the
+	  input file has a cycle.
+
+2002-07-03  Jody Goldberg <jody@gnome.org>
+
+	* tests/test-textline.c (test) : make the compiler shut up.
+
+2002-06-27  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-gzip.c (check_header): Set header_size here.
+	(gsf_input_gzip_read): When allocating a buffer, allocate at least
+	256 bytes so we don't have to realloc all the time.
+	(gsf_input_gzip_read): Handle truncated streams.
+
+	* gsf/gsf-input.c (gsf_input_seek): Handle seeks that go to same
+	position here.
+	(gsf_input_uncompress): Reorganise a bit.
+
+	* gsf/gsf-infile-msole.c (ole_dirent_free): Actually free the
+	dirent.  And the list of children.
+
+2002-06-27  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_read): Exit on error.
+
+	* gsf/gsf-infile-msole.c (ole_init_info): Always set error info.
+
+	* configure.in (LIBGSF_LIBS): Include the Bonobo libs.
+
+	* tests/test-msole2.c (test): Plug leak.  Uncompress source.
+
+	* gsf/gsf-input.c (gsf_input_uncompress): New function.
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_finalize): Plug leak.
+
+2002-06-27  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-input-bonobo.c: Actually check in the stuff mentioned
+	yesterday.
+
+2002-06-27  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-gzip.c (gsf_input_gzip_seek): Attempt
+	implementation.
+
+	* gsf/gsf-input.c (gsf_input_seek): Make pos an off_t.
+
+2002-06-26  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-input-bonobo.c (struct _GsfInputBonobo): Replace stream
+	attribute with GsfSharedBonoboStream * 'shared'. Add 'pos'
+	attribute.
+	(gib_synch_shared_ptr): New helper function. Seek the shared
+	stream if necessary.
+	(gsf_input_bonobo_new): Probably better to free the exceptions
+	*after* retrieving the exception texts.  Initialize 'shared'.
+	(gsf_input_bonobo_finalize): unref 'shared'.
+	(gsf_input_bonobo_dup): Implement.
+	(gsf_input_bonobo_read): Use shared stream. Use
+	gib_synch_shared_ptr to seek first if necessary.
+	(gsf_input_bonobo_seek): Ditto.
+	(gsf_input_bonobo_init): Initialize 'shared'.
+
+	* gsf/gsf-shared-bonobo-stream.[ch]: new helper class for bonobo
+	stream IO. Lets us dup the streams.
+	* gsf/Makefile.am: added new files.
+
+2002-06-26  Morten Welinder  <terra@diku.dk>
+
+	* configure.in: If needed, define __EXTENSIONS__.
+
+2002-06-26  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/gsf-input-bonobo.c: Include bonobo-persist-stream.h
+	(gsf_input_bonobo_read): Silence warning.
+
+2002-06-25  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: New flag --with-bonobo
+
+	* gsf/Makefile.am (INCLUDES): added new files.
+
+	* gsf/gsf-input-bonobo.[ch]: new class for bonobo stream IO.
+
+2002-06-25  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* gsf/gsf-io-context.[ch]: new class for managing IO contexts.
+
+	* gsf/Makefile.am: added new files.
+
+2002-06-24  Jody Goldberg <jody@gnome.org>
+
+	* python/Makefile.am : pyexec is not available in automake-1.4.
+	nor is nodist_.
+
+	* acinclude.m4 : something was still interpretting the AC_REQUIRE even
+	  though ti was commented out.  change case and comment for now to
+	  avoid problems.
+
+2002-06-23  Jon K Hellan  <hellan@acm.org>
+
+	* acinclude.m4: Comment out everything.
+
+2002-06-21  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : uncomment the AM_CONDITIONAL for WITH_PYTHON
+
+2002-06-21  Jon K Hellan  <hellan@acm.org>
+
+	* acinclude.m4: Add it. It provides AM_CHECK_PYTHON_HEADERS.
+
+2002-06-20  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-outfile-msole.c (gsf_outfile_msole_new_child): Add
+	missing arg.
+
+2002-06-20  Jon K Hellan  <hellan@acm.org>
+
+	* configure.in: Add support for building Python bindings, but
+	comment it out because it requires automake1.5.
+
+	* Makefile.am: Build python subdir if WITH_PYTHON is set.
+
+2002-06-18  Rui M. Seabra <rms@1407.org>
+
+	* libgsf-1.spec.in : set permission correctly
+	    fix common mistake of Copyright flag into License flag.
+
+2002-06-18  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : lower the libxml version req
+
+2002-06-17  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile.c (gsf_outfile_new_child) : adjust signature to
+	  include 'is_dir'
+
+2002-06-15  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input.c (gsf_input_eof) : fix docs.
+
+	* gsf/gsf-utils.c (gsf_mem_dump) : use size_t.
+
+2002-06-13  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-textline.c (gsf_input_textline_ascii_gets) : implement.
+	(gsf_input_textline_utf8_gets) : pretend to implement.
+
+2002-06-13  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am : move the tests into a standalone dir because they are
+	  getting irritating to build for every single library rebuild.
+
+2002-06-13  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-infile-msvba.c (vba_inflate): Make offset an off_t.
+
+2002-06-13  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-outfile-msole.c : initial stub implementation.
+	* gsf/gsf-outfile.c : initial stub implementation.
+	* gsf/gsf-output-stdio.c : initial stub implementation.
+	* gsf/gsf-output.c : initial stub implementation.
+
+2002-06-13  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msvba.c (vba_inflate) : cleanup.
+
+2002-06-13  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.h (GSF_OLE_GET_GUINT{8,16,32}) : move to
+	  gsf-utils and rename.
+
+	* gsf/gsf-input-memory.c (gsf_input_memory_dup) : silence warning.
+	(gsf_input_mmap_new) : fix the no mmap case.
+
+2002-06-12  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msvba.c (vba_inflate) : store the uncompressed
+	  result.
+	(vba_dirent_read) : new.  We can now lookup the correct offsets for
+	  the compressed source.  The question remaining is how to fin the
+	  start of the dir table ...
+
+2002-06-12  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* gsf/*: s/IS_GSF/GSF_IS.
+
+2002-06-12  Jon K Hellan  <hellan@acm.org>
+
+	* libgsf-1.pc.in (Requires): Add libxml-2.0
+
+2002-06-11  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_read) : fix reading into an
+	  assigned buffer for small block files.
+
+2002-06-10  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile.c (gsf_infile_child_by_name) : typo.
+
+2002-06-09  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* gsf/test-msole1.c (read_types): Casts to suppress signedness
+	  warnings.
+	* gsf/gsf-input-memory.c (gsf_input_memory_read): Changed src type to
+	  guchar.
+	* gsf/gsf-input-textline.c (gsf_input_textline_ascii_gets): Cast
+	  return value.
+	* gsf/gsf-infile-msole.c (ole_dirent_new): Signedness fixes.
+	* debian/*: updated; include pkgconfig file.
+
+2002-06-09  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msvba.c : new.
+	* gsf/test-msvba.c : new.
+
+	* gsf/gsf-infile.c (gsf_infile_child_by_vname) : new utility routine.
+
+2002-06-07  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input.c (gsf_input_dup) : Add an err parameter.
+
+2002-06-07  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_new): Plug FILE* leak.
+	(gsf_input_stdio_dup): Go via filename.
+
+2002-06-07  Jody Goldberg <jody@gnome.org>
+
+	* doc/Makefile.am : fix the type init function for gtk-doc.
+	* gsf/* : fix docs a bit.
+
+2002-06-07  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-utils.c (gsf_input_dump) : new utility split out of.
+	* gsf/test-gzip1.c (test) : here.
+
+	* gsf/test-msole2.c (test) : spruce this up a might so that it can be
+	  used as a general utility to dump streams and storages.
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_dup) : dup the descriptor
+	  before creating a new file handle.
+
+2002-06-06  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : remove -Wmissing-noreturn
+
+	* gsf/test-msole1.c (test) : remove the --use-memory bit.  Just use
+	  mmap.  We can test the other input types in another program.
+
+	* gsf/*.c : change the convention for wrappers.  They all add their
+	       own references to the source rather than absorbing the ref that
+	       was passed in.
+
+2002-06-06  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : add zlib.
+	* libgsf-1.pc.in (Cflags) : ditto.
+
+	* gsf/gsf-input-gzip.c : wrapper to uncompress things.
+
+	* gsf/gsf-libxml.c : some convenience routines for dealing with libxml.
+
+	* gsf/test-gzip1.c :  add some tests for gzip.
+
+2002-06-05  Morten Welinder  <terra@diku.dk>
+
+	* gsf/*.[ch]: switch to using system types.
+
+2002-06-05  Jon K Hellan  <hellan@acm.org>
+
+	* gsf/Makefile.am: Fix typo - libgsf_1_includedir didn't get defined.
+
+2002-06-05  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new) : set the filename.
+
+2002-06-04  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input.c (gsf_input_eof) : do this internally.
+	* gsf/gsf-input* : remove the _eof methods.
+
+2002-06-04  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-input-impl.h (GsfInputClass): Change structure members
+	from "read" to "Read", etc.  This avoids names reserved by the
+	system libraries.
+
+2002-06-04  Morten Welinder  <terra@diku.dk>
+
+	* gsf/test-msole1.c (test): Add --memory option.
+
+	* gsf/gsf-shared-memory.c: New class.
+
+	* gsf/gsf-input-memory.c (gsf_input_memory_new): Use new
+	GsfSharedMemory class.
+	(gsf_input_memory_read): Add missing parameter.
+
+2002-06-01  Jody Goldberg <jody@gnome.org>
+
+	* gsf/Makefile.am : Add gsf-input-textline.[ch]
+	  Add gsf-libxml.[ch]
+
+2002-05-30  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-stdio.h : fix the name mismatch.
+
+2002-05-28  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input.c (gsf_input_seek) : doh!
+
+2002-05-28  Morten Welinder  <terra@diku.dk>
+
+	* gsf/gsf-infile-msole.c (ole_make_bat): Cast via gconstpointer to
+	please gcc.
+
+	* gsf/gsf-infile-msole.h (GSF_OLE_GET_GUINT8, GSF_OLE_GET_GUINT16,
+	GSF_OLE_GET_GUINT32): fix alignment problems.
+
+	* gsf/test-msole1.c (read_types): Fix isspace usage.
+
+2002-05-27  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c : add some prepoc constants to prep for
+	  export support.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* README : add more details
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/test-msole1.c (get_biff_opcode_name) : suppress warning.
+
+	* gsf/gsf-input-memory.c (gsf_input_mmap_new) : ensure it is a regular
+	  file.
+
+	* configure.in : remove -Wundef to shut it up about glib.
+	  remove -Wcast-qual because we sometimes need to explicitly cast away
+	  const.  C does not have const_cast<>().
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-impl-utils.h (GSF_CLASS_FULL) : suppress warning.
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : disable debug spew.
+	(ole_init_info) : suppress bogus compile warning.
+	  Use gsf_ole_get_guint32s to convert the data to normal endianness.
+	(gsf_ole_get_guint32s) : new.
+	(ole_info_read_metabat) : assume the metabat is already uses native
+	  byte ordering.
+
+	* gsf/gsf-input.c (gsf_input_seek) : suppress warning.
+	(gsf_input_dup) : ditto.
+	(gsf_input_init) : ditto.
+
+2002-05-25  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in:
+	  Actually use warning flags from GNOME_COMPILE_WARNINGS, so
+	  "--enable-warnings=maximum" and "--with-iso-c" are honoured.
+	  Test whether defining _BSD_SOURCE is needed for caddr_t.
+	  (e.g. on Debian with -ansi for gcc3.0 and 3.1)
+	  Test whether defining _POSIX_SOURCE is needed for fdopen().
+	  Enable a lot more warnings.
+	* debian/rules: minor tweaks.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input.c (gsf_input_seek) : more error checking.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/test-msole1.c (test) : dump head of odd records.
+
+	* gsf/gsf-input.c (gsf_input_seek) : do more of the work up here.
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_seek) : adjust here.
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_seek) : and here.
+	* gsf/gsf-input-memory.c (gsf_input_memory_seek) : and here.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : fix off by 1 error in
+	  handling broken ascii stream names.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_init_info) : libole2 knew about a smidge
+	  more of the ole header, use the sbat counter.
+
+	* gsf/test-msole1.c (test) : even more sanity checking.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/test-msole1.c (test) : add more safety checks to automate
+	  validation of imported biff records.
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : Based on char-width2.xls
+	  it looks like directory sizes are periodically screwed.
+
+2002-05-25  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c : fix small block support.
+	  Handle the bogus use of ascii stream names in some case.
+
+2002-05-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_new) : merge the size
+	  checking in here and do more error reporting.
+	(gsf_input_stdio_class_init) : delete gsf_input_stdio_size
+	(gsf_input_stdio_size) : delete.
+
+	* gsf/gsf-input.c (gsf_input_read) : put the bound check here.
+
+2002-05-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_new) : make buf_size unsigned.
+	(gsf_input_stdio_finalize) : and here.
+	(gsf_input_stdio_read) : and here.
+
+	* gsf/gsf-input.c (gsf_input_seek) : As morten suggested this is
+	  better as > size rather than >= size.
+
+2002-05-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (gsf_infile_msole_read) : only seek if we
+	  need to.
+
+2002-05-24  Jody Goldberg <jody@gnome.org>
+
+	* gsf/test-msole1.c (test) : more debug info, and less content spew.
+
+2002-05-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-input-stdio.c (gsf_input_stdio_size) : be more careful about
+	  people who open devices.
+
+2002-05-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_dirent_new) : more error handling.
+	(ole_info_get_sb_file) : make things more readable and split this out.
+	(gsf_infile_msole_new_child) : fix reading small blocks.
+
+2002-05-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.h (GSF_OLE_GET_GUINT8) : move here.
+	(GSF_OLE_GET_GUINT16) : ditto.
+	(GSF_OLE_GET_GUINT32) : ditto.
+
+2002-05-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-utils.h : Use the glib type macros instead of defining our
+	  own.
+
+2002-05-23  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+ 	* doc/Makefile.am: Introduced DOC_DIR so the location can be easily
+ 	overridden when building packages.
+ 	* debian/*: Preliminary Debian packaging.
+
+2002-05-23  Jody Goldberg <jody@gnome.org>
+
+	* gsf/gsf-infile-msole.c (ole_info_read_xbat) : DOH!
+	  We need to check endianness when reading the bat elements.
+	(gsf_infile_msole_read) : slow but effective work around for
+	  breaking at block boundaries.  I'll work up something faster this
+	  evening.
+
+2002-05-19  Jody Goldberg <jody@gnome.org>
+
+	* Start making this into a real package.

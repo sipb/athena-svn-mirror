@@ -1,0 +1,158 @@
+<refentry id="gsf-gsf-output">
+<refmeta>
+<refentrytitle>gsf-output</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GSF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gsf-output</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GSF-OUTPUT-TYPE-CAPS">GSF_OUTPUT_TYPE</link>
+#define     <link linkend="GSF-OUTPUT-CAPS">GSF_OUTPUT</link>                      (o)
+<link linkend="GType">GType</link>       <link linkend="gsf-output-get-type">gsf_output_get_type</link>             (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gsf-output-close">gsf_output_close</link>                (<link linkend="GsfOutput">GsfOutput</link> *output);
+<link linkend="gsf-off-t">gsf_off_t</link>   <link linkend="gsf-output-tell">gsf_output_tell</link>                 (<link linkend="GsfOutput">GsfOutput</link> *output);
+<link linkend="gboolean">gboolean</link>    <link linkend="gsf-output-seek">gsf_output_seek</link>                 (<link linkend="GsfOutput">GsfOutput</link> *output,
+                                             <link linkend="gsf-off-t">gsf_off_t</link> offset,
+                                             <link linkend="GSeekType">GSeekType</link> whence);
+<link linkend="gboolean">gboolean</link>    <link linkend="gsf-output-write">gsf_output_write</link>                (<link linkend="GsfOutput">GsfOutput</link> *output,
+                                             <link linkend="size-t">size_t</link> num_bytes,
+                                             <link linkend="guint8">guint8</link> const *data);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GSF-OUTPUT-TYPE-CAPS">GSF_OUTPUT_TYPE</title>
+<indexterm><primary>GSF_OUTPUT_TYPE</primary></indexterm><programlisting>#define GSF_OUTPUT_TYPE        (gsf_output_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GSF-OUTPUT-CAPS">GSF_OUTPUT()</title>
+<indexterm><primary>GSF_OUTPUT</primary></indexterm><programlisting>#define GSF_OUTPUT(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), GSF_OUTPUT_TYPE, GsfOutput))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-output-get-type">gsf_output_get_type ()</title>
+<indexterm><primary>gsf_output_get_type</primary></indexterm><programlisting><link linkend="GType">GType</link>       gsf_output_get_type             (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-output-close">gsf_output_close ()</title>
+<indexterm><primary>gsf_output_close</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gsf_output_close                (<link linkend="GsfOutput">GsfOutput</link> *output);</programlisting>
+<para>
+Close a stream.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>FALSE on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-output-tell">gsf_output_tell ()</title>
+<indexterm><primary>gsf_output_tell</primary></indexterm><programlisting><link linkend="gsf-off-t">gsf_off_t</link>   gsf_output_tell                 (<link linkend="GsfOutput">GsfOutput</link> *output);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the current position in the file
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-output-seek">gsf_output_seek ()</title>
+<indexterm><primary>gsf_output_seek</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gsf_output_seek                 (<link linkend="GsfOutput">GsfOutput</link> *output,
+                                             <link linkend="gsf-off-t">gsf_off_t</link> offset,
+                                             <link linkend="GSeekType">GSeekType</link> whence);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>whence</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>FALSE on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-output-write">gsf_output_write ()</title>
+<indexterm><primary>gsf_output_write</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gsf_output_write                (<link linkend="GsfOutput">GsfOutput</link> *output,
+                                             <link linkend="size-t">size_t</link> num_bytes,
+                                             <link linkend="guint8">guint8</link> const *data);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num_bytes</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>FALSE on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
