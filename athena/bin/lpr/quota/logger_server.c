@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.5 1990-11-14 17:07:25 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.6 1990-11-16 15:34:20 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.5 1990-11-14 17:07:25 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.6 1990-11-16 15:34:20 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -27,6 +27,14 @@ static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository
 char *set_service();
 
 
+#ifdef __STDC__
+quota_error_code LoggerJournal(handle_t h, krb_ktext *auth, 
+				  quota_identifier *qid, 
+				  startingpoint start, maxtotransfer maxnum, 
+				  loggerflags flags, ndr_$long_int *numtrans,
+				  LogEnt LogEnts[LOGMAXRETURN], 
+				  quota_currency currency)
+#else
 quota_error_code LoggerJournal(h,auth,qid,start,maxnum,flags,numtrans,LogEnts,currency)
 handle_t h;
 krb_ktext *auth;
@@ -37,6 +45,7 @@ loggerflags flags;
 ndr_$long_int *numtrans;
 LogEnt LogEnts[LOGMAXRETURN];
 quota_currency currency;
+#endif
 {
 
 /* This is the meat of this whole user interface - we handle the world... */
