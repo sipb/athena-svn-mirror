@@ -21,18 +21,15 @@
 
 #include <libgnome/libgnome.h>
 
-#include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-directory.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 
 #include "menu-fentry.h"
 #include "quick-desktop-reader.h"
 
 #include "panel-util.h"
 #include "panel-config-global.h"
-#include "session.h"
+#include "panel-globals.h"
 
 #undef MENU_FENTRY_DEBUG
 
@@ -40,8 +37,6 @@
 #define STAT_EVERY 3
 
 static GSList *dir_list = NULL;
-
-extern GlobalConfig global_config;
 
 static GSList *
 prepend_mfile (GSList *list,
@@ -88,9 +83,7 @@ get_presorted_from (const char *dir_uri)
 	QuickDesktopItem *qitem;
 	
 	uri = g_build_path ("/", dir_uri, ".directory", NULL);
-	qitem = quick_desktop_item_load_uri (uri,
-					     NULL /* expected_type */,
-					     FALSE /* run_tryexec */);
+	qitem = quick_desktop_item_load_uri (uri, FALSE /* run_tryexec */);
 
 	g_free (uri);
 
@@ -229,11 +222,6 @@ fr_free (FileRec *fr, gboolean free_fr)
 	g_free (fr->tryexec_path);
 	fr->tryexec_path = NULL;
 
-	if (fr->parent != NULL &&
-	    free_fr)
-		fr->parent->recs = g_slist_remove (fr->parent->recs, fr);
-	fr->parent = NULL;
-
 	if (fr->type == FILE_REC_DIR) {
 		DirRec *dr = (DirRec *)fr;
 		GSList *li;
@@ -263,9 +251,14 @@ fr_free (FileRec *fr, gboolean free_fr)
 	}
 
 	if (free_fr) {
+		if (fr->parent != NULL) {
+			fr->parent->recs = g_slist_remove (fr->parent->recs, fr);
+			fr->parent = NULL;
+		}
 		g_free (fr);
 	} else  {
 		int type = fr->type;
+		DirRec *parent = fr->parent;
 		if (fr->type == FILE_REC_DIR)
 			memset (fr, 0, sizeof(DirRec));
 		else
@@ -273,6 +266,7 @@ fr_free (FileRec *fr, gboolean free_fr)
 		/* we must reset the type so that we don't crash
 		 * if we call fr_free on this again */
 		fr->type = type;
+		fr->parent = parent;
 	}
 }
 
@@ -310,12 +304,14 @@ fr_fill_dir (FileRec *fr, int sublevels)
 			FileRec *ffr = fr_read_dir (NULL, name, mfile->mtime,
 						     sublevels - 1);
 			if (ffr != NULL) {
+				ffr->parent = dr;
 				dr->recs = g_slist_prepend (dr->recs, ffr);
 			}
 		} else {
 			QuickDesktopItem *qitem;
 			char *tryexec_path;
-			if ( ! is_ext2 (mfile->name, ".desktop", ".kdelnk")) {
+			if (!g_str_has_suffix (mfile->name, ".desktop") &&
+			    !g_str_has_suffix (mfile->name, ".kdelnk")) {
 				g_free (name);
 				free_mfile (mfile);
 #ifdef MENU_FENTRY_DEBUG
@@ -327,7 +323,6 @@ fr_fill_dir (FileRec *fr, int sublevels)
 			tryexec_path = NULL;
 
 			qitem = quick_desktop_item_load_uri (name /* uri */,
-							     NULL /* expected_type */,
 							     FALSE /* run_tryexec */);
 			if (qitem != NULL &&
 			    qitem->tryexec != NULL) {
@@ -448,7 +443,6 @@ fr_read_dir (DirRec *dr, const char *muri, time_t mtime, int sublevels)
 		g_free (fr->comment);          fr->comment = NULL;
 
 		qitem = quick_desktop_item_load_uri (furi /* uri */,
-						     NULL /* expected_type */,
 						     TRUE /* run_tryexec */);
 		if (qitem) {
 			fr->fullname = g_strdup (qitem->name);
@@ -487,12 +481,10 @@ FileRec *
 fr_replace (FileRec *fr)
 {
 	char *name = fr->name;
-	DirRec *par = fr->parent;
 	
 	g_assert (fr->type == FILE_REC_DIR);
 
 	/* null these so they don't get freed */
-	fr->parent = NULL;
 	fr->name = NULL;
 
 	/* don't free the actual structure */
@@ -502,8 +494,7 @@ fr_replace (FileRec *fr)
 	fr->type = FILE_REC_DIR;
 
 	fr = fr_read_dir ((DirRec *)fr, name, 0, 1);
-	if (fr != NULL)
-		fr->parent = par;
+
 	g_free (name);
 
 	return fr;
@@ -564,7 +555,6 @@ fr_check_and_reread (FileRec *fr)
 			DirRec *ddr;
 			GnomeVFSResult result;
 			char *p;
-			struct stat s;
 
 			switch(ffr->type) {
 			case FILE_REC_DIR:
@@ -617,8 +607,7 @@ fr_check_and_reread (FileRec *fr)
 				if (ddr->ditemmtime != info->mtime) {
 					QuickDesktopItem *qitem;
 					qitem = quick_desktop_item_load_uri (p /* file */,
-									      NULL /* expected_type */,
-									      TRUE /* run_tryexec */);
+									     TRUE /* run_tryexec */);
 					if (qitem != NULL) {
 						g_free (ffr->icon);
 						ffr->icon = g_strdup (qitem->icon);
@@ -665,7 +654,6 @@ fr_check_and_reread (FileRec *fr)
 				if (ffr->mtime != info->mtime) {
 					QuickDesktopItem *qitem;
 					qitem = quick_desktop_item_load_uri (ffr->name /* file */,
-									     NULL /* expected_type */,
 									     TRUE /* run_tryexec */);
 					if (qitem != NULL) {
 						g_free (ffr->exec);
@@ -688,7 +676,7 @@ fr_check_and_reread (FileRec *fr)
 						reread = TRUE;
 						break;
 					}
-					ffr->mtime = s.st_mtime;
+					ffr->mtime = info->mtime;
 					any_change = TRUE;
 				}
 				if (ffr->tryexec_path != NULL &&

@@ -1,29 +1,369 @@
-# Irish translations for gnome-core 
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Irish translations for gnome-panel 
+# Copyright (C) 2000, 2004 Free Software Foundation, Inc.
 # Seán Ó Ceallaigh <s_oceallaigh@yahoo.com>, 2000.
-#
+# Paul Duffy <dubhthach@frink.nuigalway.ie>, 2003.
+# David O'Callaghan <david.ocallaghan@cs.tcd.ie>, 2003.
+# Alastair McKinstry <mckinstry@computer.org>, 2004.
+# 
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-core CVS\n"
-"POT-Creation-Date: 2003-02-04 12:29+1300\n"
-"PO-Revision-Date: 2000-08-26 19:11+0000\n"
-"Last-Translator:  Seán Ó Ceallaigh <s_oceallaigh@yahoo.com>\n"
-"Language-Team: Gaeilge <gaeilge-a@listserv.heanet.ie>\n"
+"Project-Id-Version: gnome-panel HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-31 09:29+0100\n"
+"PO-Revision-Date: 2004-03-21 21:24+0000\n"
+"Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
+"Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: applets/fish/fish.c:128 applets/gen_util/clock.c:909
-#: applets/gen_util/clock.c:1149 applets/gen_util/mailcheck.c:1623
-#: applets/gen_util/mailcheck.c:1831 applets/gen_util/pager.c:187
-#: applets/gen_util/pager.c:501 applets/gen_util/showdesktop.c:412
-#: applets/gen_util/tasklist.c:123 applets/gen_util/tasklist.c:762
-#: applets/notification_area/main.c:80
-#, c-format
-msgid "There was an error displaying help: %s"
+#: applets/clock/GNOME_ClockApplet.xml.h:1
+#, fuzzy
+msgid "Ad_just Date & Time"
+msgstr "_Ceartaigh Dáta agus Am..."
+
+#: applets/clock/GNOME_ClockApplet.xml.h:2
+msgid "Copy _Date"
+msgstr "Cóip _Dáta"
+
+#: applets/clock/GNOME_ClockApplet.xml.h:3
+msgid "Copy _Time"
+msgstr "Cóip _Am"
+
+#: applets/clock/GNOME_ClockApplet.xml.h:4
+#: applets/fish/GNOME_FishApplet.xml.h:1
+#: applets/notification_area/GNOME_NotificationAreaApplet.xml.h:1
+#: applets/wncklet/GNOME_ShowDesktopApplet.xml.h:1
+#: applets/wncklet/GNOME_WindowListApplet.xml.h:1
+#: applets/wncklet/GNOME_WindowMenuApplet.xml.h:1
+#: applets/wncklet/GNOME_WorkspaceSwitcherApplet.xml.h:1
+#, fuzzy
+msgid "_About"
+msgstr "_Faoi..."
+
+#: applets/clock/GNOME_ClockApplet.xml.h:5
+#: applets/fish/GNOME_FishApplet.xml.h:2
+#: applets/notification_area/GNOME_NotificationAreaApplet.xml.h:2
+#: applets/wncklet/GNOME_ShowDesktopApplet.xml.h:2
+#: applets/wncklet/GNOME_WindowListApplet.xml.h:2
+#: applets/wncklet/GNOME_WindowMenuApplet.xml.h:2
+#: applets/wncklet/GNOME_WorkspaceSwitcherApplet.xml.h:2
+#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2370
+#: gnome-panel/panel-action-button.c:678 gnome-panel/panel-menu-bar.c:325
+#: gnome-panel/panel-menu-button.c:620
+msgid "_Help"
+msgstr "Cab_hair"
+
+#: applets/clock/GNOME_ClockApplet.xml.h:6
+#: applets/fish/GNOME_FishApplet.xml.h:3
+#: applets/wncklet/GNOME_WindowListApplet.xml.h:3
+#: applets/wncklet/GNOME_WorkspaceSwitcherApplet.xml.h:3
+#, fuzzy
+msgid "_Preferences"
+msgstr "_Airíonna..."
+
+#: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:1
+#: applets/clock/clock.c:2544
+msgid "Clock"
+msgstr "Clog"
+
+#: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:2
+msgid "Clock Applet Factory"
 msgstr ""
 
-#: applets/fish/fish.c:194
+#: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:3
+msgid "Factory for creating clock applets."
+msgstr ""
+
+#: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:4
+msgid "Get the current time and date"
+msgstr "Faigh an am agus dáta anois"
+
+#: applets/clock/clock.c:277
+msgid "%l:%M:%S %p"
+msgstr "%l:%M:%S %p"
+
+#: applets/clock/clock.c:277 applets/clock/clock.c:608
+msgid "%l:%M %p"
+msgstr "%l:%M %p"
+
+#: applets/clock/clock.c:279 applets/clock/clock.c:1655
+msgid "%H:%M:%S"
+msgstr "%H:%M:%S"
+
+#: applets/clock/clock.c:279 applets/clock/clock.c:610
+#: applets/clock/clock.c:1657
+msgid "%H:%M"
+msgstr "%H:%M"
+
+#. translators: replace %e with %d if, when the day of the
+#. *              month as a decimal number is a single digit, it
+#. *              should begin with a 0 in your locale (e.g. "May
+#. *              01" instead of "May  1").
+#.
+#: applets/clock/clock.c:290
+msgid "%a %b %e"
+msgstr "%a %b %e"
+
+#. translators: reverse the order of these arguments
+#. *              if the time should come before the
+#. *              date on a clock in your locale.
+#.
+#: applets/clock/clock.c:297
+#, c-format
+msgid ""
+"%1$s\n"
+"%2$s"
+msgstr ""
+"%1$s\n"
+"%2$s"
+
+#. translators: reverse the order of these arguments
+#. *              if the time should come before the
+#. *              date on a clock in your locale.
+#.
+#: applets/clock/clock.c:304
+#, c-format
+msgid "%1$s, %2$s"
+msgstr "%1$s, %2$s"
+
+#. Show date in tooltip
+#: applets/clock/clock.c:388
+msgid "%A %B %d"
+msgstr "%A %B %d"
+
+#. Translators: If the event did not start on the current day
+#. we will display the start date in the most abbreviated way possible.
+#: applets/clock/clock.c:615
+#, fuzzy
+msgid "%b %d"
+msgstr "%a %b %e"
+
+#: applets/clock/clock.c:911
+msgid "Tasks"
+msgstr "Tascanna"
+
+#: applets/clock/clock.c:1055
+msgid "All Day"
+msgstr ""
+
+#: applets/clock/clock.c:1096
+msgid "Appointments"
+msgstr ""
+
+#: applets/clock/clock.c:1328
+msgid "Calendar"
+msgstr "Féilire"
+
+#: applets/clock/clock.c:1566
+msgid "Computer Clock"
+msgstr "Cloig an Ríomhaire"
+
+#: applets/clock/clock.c:1650
+msgid "%I:%M:%S %p"
+msgstr "%I:%M:%S %p"
+
+#: applets/clock/clock.c:1652
+msgid "%I:%M %p"
+msgstr "%I:%M %p"
+
+#: applets/clock/clock.c:1694
+msgid "%A, %B %d %Y"
+msgstr "%A, %B %d %Y"
+
+#: applets/clock/clock.c:1738
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "Níorbh fhéidir uirlis cumraíocht ama a lainseáil: %s"
+
+#: applets/clock/clock.c:1777
+#, fuzzy
+msgid ""
+"Failed to locate a program for configuring the date and time. Perhaps none "
+"is installed?"
+msgstr ""
+"Níl aon fháil ar clár /for configuring the date and time/. B'fhéidir nach "
+"bhfuil ceann insealbhaithe?"
+
+#: applets/clock/clock.c:2179
+msgid "Custom format"
+msgstr "Formóid féindheanamh"
+
+#: applets/clock/clock.c:2300 applets/clock/clock.c:2490
+#: applets/fish/fish.c:127 applets/notification_area/main.c:84
+#: applets/wncklet/showdesktop.c:426 applets/wncklet/window-list.c:115
+#: applets/wncklet/window-list.c:772 applets/wncklet/window-menu.c:100
+#: applets/wncklet/workspace-switcher.c:170
+#: applets/wncklet/workspace-switcher.c:472
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Ní fhéadadh cabhair a thaispeáint: %s"
+
+#: applets/clock/clock.c:2336
+msgid "Clock Preferences"
+msgstr "Airíonna an Chloig"
+
+#: applets/clock/clock.c:2372
+msgid "Clock _type:"
+msgstr "_Saghas an Cloig:"
+
+#: applets/clock/clock.c:2382
+msgid "12 hour"
+msgstr "12 uair"
+
+#: applets/clock/clock.c:2383
+msgid "24 hour"
+msgstr "24 uair"
+
+#: applets/clock/clock.c:2384
+msgid "UNIX time"
+msgstr "Am Unix"
+
+#: applets/clock/clock.c:2385
+msgid "Internet time"
+msgstr "Am Idirlín"
+
+#: applets/clock/clock.c:2393
+msgid "Custom _format:"
+msgstr "Formóid _féindheanamh:"
+
+#: applets/clock/clock.c:2412
+msgid "Show _seconds"
+msgstr "Taispeáin na _soicind"
+
+#: applets/clock/clock.c:2421
+msgid "Show _date"
+msgstr "Taispeáin an _dáta"
+
+#: applets/clock/clock.c:2430
+msgid "Use _UTC"
+msgstr "Baint úsáid as _UTC"
+
+#. Translator credits
+#: applets/clock/clock.c:2525 applets/notification_area/main.c:120
+#: applets/wncklet/showdesktop.c:456 applets/wncklet/window-list.c:804
+#: applets/wncklet/window-menu.c:130 applets/wncklet/workspace-switcher.c:506
+#: gnome-panel/menu.c:201
+msgid "translator_credits"
+msgstr "Seán Ó Ceallaigh, Paul Duffy, David O'Callaghan"
+
+#: applets/clock/clock.c:2546
+msgid "The Clock displays the current time and date"
+msgstr "Taispeáin an clog an t-am agus an dáta anois"
+
+#. Translators: the only valid values for this are "12" and "24"
+#: applets/clock/clock.schemas.in.h:2
+msgid "24"
+msgstr "24"
+
+#. Translators: the only valid values for this are "12-hour" and "24-hour"
+#: applets/clock/clock.schemas.in.h:4
+msgid "24-hour"
+msgstr "24-hour"
+
+#: applets/clock/clock.schemas.in.h:5
+msgid "Custom format of the clock"
+msgstr ""
+
+#: applets/clock/clock.schemas.in.h:6
+msgid "Hour format"
+msgstr "Formáid uaire"
+
+#: applets/clock/clock.schemas.in.h:7
+msgid "If true, display date in the clock, in addition to time."
+msgstr "Má tá fíor, taispeáin an dáta, chomh maith leis an am."
+
+#: applets/clock/clock.schemas.in.h:8
+msgid "If true, display seconds in time."
+msgstr "Má tá fíor, taispeáin soicind leis an t-am"
+
+#: applets/clock/clock.schemas.in.h:9
+msgid "If true, display time in Universal Coordinated Time zone."
+msgstr "Má tá fíor, taispeáin as UTC."
+
+#: applets/clock/clock.schemas.in.h:10
+msgid "If true, show date in a tooltip when the pointer is over the clock."
+msgstr ""
+"Má tá fíor, taispeáin an dáta i /tooltip/ nuair a bhíonn an snáthaid thar an "
+"cloig."
+
+#: applets/clock/clock.schemas.in.h:11
+msgid "Show date in clock"
+msgstr "Taispeáin dáta sa chlog"
+
+#: applets/clock/clock.schemas.in.h:12
+msgid "Show date in tooltip"
+msgstr "Taispeáin dáta sa leathfhocal"
+
+#: applets/clock/clock.schemas.in.h:13
+msgid "Show time with seconds"
+msgstr "Taispeáin am mar soicind"
+
+#: applets/clock/clock.schemas.in.h:14
+msgid ""
+"The use of this key was deprecated in GNOME 2.6 in favour of the 'format' "
+"key. The schema is retained for compatibility with older versions."
+msgstr ""
+
+#: applets/clock/clock.schemas.in.h:15
+msgid ""
+"This key specifies the format used by the clock applet when the format key "
+"is set to \"custom\". You can use conversion specifiers understood by "
+"strftime() to obtain a specific format."
+msgstr ""
+
+#: applets/clock/clock.schemas.in.h:16
+msgid ""
+"This key specifies the hour format used by the clock applet. Possible values "
+"are \"12-hour\", \"24-hour\", \"internet\", \"unix\" and \"custom\". If set "
+"to \"internet\", the clock will display Internet time. The Internet time "
+"system divides the day into 1000 \".beats\". There are no time zones in this "
+"system, so time is the same all over the world. If set to \"unix\", the "
+"clock will display time in seconds since Epoch, i.e. 1970-01-01. If set to "
+"\"custom\", the clock will display time according to the format specified in "
+"the custom_format key."
+msgstr ""
+
+#: applets/clock/clock.schemas.in.h:17
+msgid "This key specifies the program to run in order to configure the time."
+msgstr ""
+
+#: applets/clock/clock.schemas.in.h:18
+msgid "Time configuration tool"
+msgstr "Uirlis cumraíocht ama"
+
+#: applets/clock/clock.schemas.in.h:19
+#, fuzzy
+msgid "Use Internet time"
+msgstr "Baint úsáid as am Idirlín"
+
+#: applets/clock/clock.schemas.in.h:20
+msgid "Use UNIX time"
+msgstr "Baint úsáid as am Unix"
+
+#: applets/clock/clock.schemas.in.h:21
+msgid "Use UTC"
+msgstr "Baint úsáid as UTC"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:1
+msgid "Display a swimming fish or another animated creature"
+msgstr "Taispeáin iasc ag snámh no créatúr anamúil eile"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:2
+#: applets/fish/fish.c:501
+msgid "Fish"
+msgstr "Iasc"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:3
+msgid "From Whence That Stupid Fish Came"
+msgstr "An Áit Ó Tháinig An t-Iasc Amaideach Seo"
+
+#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:4
+msgid "Wanda Factory"
+msgstr ""
+
+#: applets/fish/fish.c:197
 #, c-format
 msgid ""
 "Warning:  The command appears to be something actually useful.\n"
@@ -32,12 +372,12 @@ msgid ""
 "which would make the applet \"practical\" or useful."
 msgstr ""
 
-#: applets/fish/fish.c:378 applets/fish/fish.c:536
+#: applets/fish/fish.c:458 applets/fish/fish.c:533 applets/fish/fish.c:621
 #, no-c-format
 msgid "%s the Fish"
 msgstr "An t-Iasc %s"
 
-#: applets/fish/fish.c:379
+#: applets/fish/fish.c:459
 #, c-format
 msgid ""
 "%s has no use what-so-ever. It only takes up disk space and compilation "
@@ -46,47 +386,41 @@ msgid ""
 "evaluation."
 msgstr ""
 
-#: applets/fish/fish.c:400
+#: applets/fish/fish.c:485
 msgid "(with minor help from George)"
-msgstr ""
+msgstr "(le beagán cúnamh de George)"
 
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:3
-#: applets/fish/fish.c:416
-msgid "Fish"
-msgstr "Iasc"
+#: applets/fish/fish.c:534
+#, c-format
+msgid "%s the Fish, a contemporary oracle"
+msgstr "An t-Iasc %s, aitheascal comhaimseartha"
 
-#: applets/fish/fish.c:448
-#, fuzzy, c-format
-msgid "%s the GNOME Fish"
-msgstr "Dúirt an Iasc GNOME  %s:"
-
-#: applets/fish/fish.c:449
-#, fuzzy, c-format
-msgid "%s the GNOME Fish, a contemporary oracle"
-msgstr "Dúirt an Iasc GNOME  %s:"
-
-#: applets/fish/fish.c:496
+#: applets/fish/fish.c:581
 msgid "Unable to get the name of the command to execute"
-msgstr ""
+msgstr "Níl ainm an ordú a chur i gcrích ar fáil"
 
-#: applets/fish/fish.c:513
+#: applets/fish/fish.c:598
 msgid "Unable to locate the command to execute"
-msgstr ""
+msgstr "Níl an ordú a chur i gcrích ar fáil"
 
-#: applets/fish/fish.c:541
-#, fuzzy, no-c-format
-msgid "%s the GNOME Fish Says:"
-msgstr "Dúirt an Iasc GNOME  %s:"
+# no-c-format
+#: applets/fish/fish.c:626
+#, no-c-format
+msgid "%s the Fish Says:"
+msgstr "Dúirt an t-Iasc %s:"
 
-#: applets/fish/fish.c:666
+#: applets/fish/fish.c:755
 #, c-format
 msgid ""
 "Unable to execute '%s'\n"
 "\n"
 "Details: %s"
 msgstr ""
+"Ní féidir '%s' a chur i gcrích\n"
+"\n"
+"Sonraí: %s"
 
-#: applets/fish/fish.c:687
+#: applets/fish/fish.c:776
 msgid ""
 "You do not have fortune installed or you have not specified a program to "
 "run.\n"
@@ -94,984 +428,134 @@ msgid ""
 "Please refer to fish properties dialog."
 msgstr ""
 
-#: applets/fish/fish.c:1289
+#: applets/fish/fish.c:1380
 msgid ""
 "The water needs changing!\n"
 "(Look at today's date)"
 msgstr ""
 
-#: applets/fish/fish.c:1358
-msgid "GNOME Fish, the fortune teller"
+#: applets/fish/fish.c:1440
+#, c-format
+msgid "%s the Fish, the fortune teller"
 msgstr ""
 
-#: applets/fish/fish.glade.h:1 gnome-panel/gnome-panel-screenshot.glade.h:1
+#: applets/fish/fish.glade.h:1 applets/wncklet/window-list.glade.h:1
+#: applets/wncklet/workspace-switcher.glade.h:1
+#: gnome-panel/gnome-panel-screenshot.glade.h:1
+#: gnome-panel/panel-properties-dialog.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: applets/fish/fish.glade.h:2 gnome-panel/gnome-panel-screenshot.glade.h:2
+#: gnome-panel/panel-properties-dialog.glade.h:2
+#: gnome-panel/panel-run-dialog.glade.h:1
 msgid "*"
-msgstr ""
-
-#: applets/fish/fish.glade.h:2 applets/gen_util/mailcheck.c:1319
-#: gnome-panel/panel-config.c:1498 gnome-panel/panel-util.c:287
-msgid "Browse"
-msgstr "Dearchadh"
+msgstr "*"
 
 #: applets/fish/fish.glade.h:3
-msgid "Command to _execute when fish is clicked:"
-msgstr ""
+msgid "<b>Animation</b>"
+msgstr "<b>Beochan</b>"
 
 #: applets/fish/fish.glade.h:4
-#, fuzzy
-msgid "Frame_s in animation:"
-msgstr "Úsáid beochain"
+msgid "<b>General</b>"
+msgstr "<b>Ginearálta</b>"
 
 #: applets/fish/fish.glade.h:5
-#, fuzzy
-msgid "GNOME Fish Preferences"
-msgstr "Ábaltachtaí Iasc GNOME"
+msgid "Browse"
+msgstr "Brabhsáil"
 
 #: applets/fish/fish.glade.h:6
-msgid "Pause _per frame (s):"
-msgstr ""
+msgid "Co_mmand to run when clicked:"
+msgstr "Ordú a chur i gcrích le cniog:"
 
 #: applets/fish/fish.glade.h:7
-#, fuzzy
-msgid "_Animation filename:"
-msgstr "An Comhadainm Beochan:"
+msgid "Fish Preferences"
+msgstr "Airíonna an Éisc"
 
 #: applets/fish/fish.glade.h:8
-#, fuzzy
-msgid "_Name of GNOME fish:"
-msgstr "Dúirt an Iasc GNOME  %s:"
+msgid "_File:"
+msgstr "_Comhad:"
 
 #: applets/fish/fish.glade.h:9
-#, fuzzy
+msgid "_Name of fish:"
+msgstr "_Ainm an éisc:"
+
+#: applets/fish/fish.glade.h:10
+msgid "_Pause per frame:"
+msgstr "_Sos de réir na frámaí:"
+
+#: applets/fish/fish.glade.h:11
 msgid "_Rotate on vertical panels"
-msgstr "Scríos an paineál seo"
+msgstr "_Cas timpeall ar painéail ingearaigh"
+
+#: applets/fish/fish.glade.h:12
+msgid "_Total frames in animation:"
+msgstr "_Iomlán frámai sa bheochan:"
+
+#: applets/fish/fish.glade.h:13
+msgid "frames"
+msgstr "frámaí"
+
+#: applets/fish/fish.glade.h:14
+msgid "seconds"
+msgstr "soicind"
 
 #: applets/fish/fish.schemas.in.h:1
 msgid ""
 "A fish without a name is a pretty dull fish. Bring your fish to life by "
 "naming him."
-msgstr ""
+msgstr "Ni hé iasc gan ainm iasc suimiúil. Ainmnigh do chuid iasc."
 
 #: applets/fish/fish.schemas.in.h:2
-msgid "Command to execute when the fish is clicked"
-msgstr ""
+msgid "Command to execute on click"
+msgstr "Ordú a chur i gcrích le cniog"
 
 #: applets/fish/fish.schemas.in.h:3
-msgid "Pause per frame"
-msgstr ""
+msgid "Frames in fish's animation"
+msgstr "Frámaí sa bheochan an éisc"
 
 #: applets/fish/fish.schemas.in.h:4
-#, fuzzy
-msgid "Rotate on vertical panels"
-msgstr "Scríos an paineál seo"
+msgid ""
+"If true, the fish's animation will be displayed rotated on vertical panels."
+msgstr "Má tá fíor, casfadh timpeall beochan an éisc ar painéail ingearaigh."
 
 #: applets/fish/fish.schemas.in.h:5
-msgid "The fish's animation pixmap"
-msgstr ""
+msgid "Pause per frame"
+msgstr "Sos de réir na frámaí"
 
 #: applets/fish/fish.schemas.in.h:6
-msgid "The fish's name"
-msgstr ""
+msgid "Rotate on vertical panels"
+msgstr "Cas timpeall ar painéail ingearaigh"
 
 #: applets/fish/fish.schemas.in.h:7
-msgid "The number of frames in the fish's animation"
-msgstr ""
+msgid "The fish's animation pixmap"
+msgstr "Íomhá beochana an éisc"
 
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:1
-msgid "Amusements"
-msgstr ""
+#: applets/fish/fish.schemas.in.h:8
+msgid "The fish's name"
+msgstr "Ainm an éisc"
 
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:2
-msgid "Display a swimming fish or another animated creature"
-msgstr ""
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:4
-msgid "From Whence That Stupid Fish Came"
-msgstr ""
-
-#: applets/fish/GNOME_FishApplet_Factory.server.in.in.h:5
-msgid "Wanda Factory"
-msgstr ""
-
-#: applets/fish/GNOME_FishApplet.xml.h:1
-#: applets/gen_util/GNOME_ClockApplet.xml.h:3
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:1
-#: applets/gen_util/GNOME_PagerApplet.xml.h:1
-#: applets/gen_util/GNOME_ShowDesktopApplet.xml.h:1
-#: applets/gen_util/GNOME_TasklistApplet.xml.h:1
-#: applets/notification_area/GNOME_NotificationAreaApplet.xml.h:1
-#, fuzzy
-msgid "_About..."
-msgstr "Faoi..."
-
-#: applets/fish/GNOME_FishApplet.xml.h:2
-#: applets/gen_util/GNOME_ClockApplet.xml.h:4
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:3
-#: applets/gen_util/GNOME_PagerApplet.xml.h:2
-#: applets/gen_util/GNOME_ShowDesktopApplet.xml.h:2
-#: applets/gen_util/GNOME_TasklistApplet.xml.h:2
-#: applets/notification_area/GNOME_NotificationAreaApplet.xml.h:2
-#: gnome-panel/drawer.c:768 gnome-panel/launcher.c:804 gnome-panel/menu.c:3521
-#: gnome-panel/menu.c:4243 gnome-panel/panel-action-button.c:510
-#, fuzzy
-msgid "_Help"
-msgstr "Cabhair"
-
-#: applets/fish/GNOME_FishApplet.xml.h:3
-#: applets/gen_util/GNOME_ClockApplet.xml.h:5
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:4
-#: applets/gen_util/GNOME_PagerApplet.xml.h:3
-#: applets/gen_util/GNOME_TasklistApplet.xml.h:3
-#, fuzzy
-msgid "_Preferences..."
-msgstr "Roghnachais..."
-
-#: applets/gen_util/clock.c:178
-#, fuzzy
-msgid "%l:%M:%S %p"
-msgstr "%I:%M %p"
-
-#: applets/gen_util/clock.c:178
-#, fuzzy
-msgid "%l:%M %p"
-msgstr "%I:%M %p"
-
-#: applets/gen_util/clock.c:180 applets/gen_util/clock.c:499
-#, fuzzy
-msgid "%H:%M:%S"
-msgstr "%U:%N"
-
-#: applets/gen_util/clock.c:180 applets/gen_util/clock.c:501
-msgid "%H:%M"
-msgstr "%U:%N"
-
-#: applets/gen_util/clock.c:186
-msgid "%a %b %d"
-msgstr "%a %b %d"
-
-#. translators: reverse the order of these arguments
-#. *              if the time should come before the
-#. *              date on a clock in your locale.
-#.
-#: applets/gen_util/clock.c:193
-#, c-format
+#: applets/fish/fish.schemas.in.h:9
 msgid ""
-"%s\n"
-"%s"
+"This key specifies the command that will be tried to execute when the fish "
+"is clicked."
 msgstr ""
 
-#. translators: reverse the order of these arguments
-#. *              if the time should come before the
-#. *              date on a clock in your locale.
-#.
-#: applets/gen_util/clock.c:200
-#, c-format
-msgid "%s, %s"
-msgstr ""
-
-#. Show date in tooltip
-#: applets/gen_util/clock.c:303
-#, fuzzy
-msgid "%A %B %d"
-msgstr "%a, %b %d"
-
-#: applets/gen_util/clock.c:409
-msgid "Computer Clock"
-msgstr ""
-
-#: applets/gen_util/clock.c:494
-#, fuzzy
-msgid "%I:%M:%S %p"
-msgstr "%I:%M %p"
-
-#: applets/gen_util/clock.c:496
-msgid "%I:%M %p"
-msgstr "%I:%M %p"
-
-#: applets/gen_util/clock.c:535
-#, fuzzy
-msgid "%A, %B %d %Y"
-msgstr "%a, %b %d"
-
-#: applets/gen_util/clock.c:957
-#, fuzzy
-msgid "Clock Preferences"
-msgstr "Roghnachais..."
-
-#: applets/gen_util/clock.c:986
-#, fuzzy
-msgid "Clock type"
-msgstr "Feidhmchláirín Chlog Eile"
-
-#: applets/gen_util/clock.c:996
-#, fuzzy
-msgid "_12 hour"
-msgstr "12 uair"
-
-#: applets/gen_util/clock.c:1002
-#, fuzzy
-msgid "_24 hour"
-msgstr "24 uair"
-
-#: applets/gen_util/clock.c:1007
-#, fuzzy
-msgid "UNI_X time"
-msgstr "An t-Ám Unix"
-
-#: applets/gen_util/clock.c:1011
-#, fuzzy
-msgid "_Internet time"
-msgstr "Idirlíon"
-
-#: applets/gen_util/clock.c:1048
-#, fuzzy
-msgid "Show _seconds"
-msgstr "Ordaithe Us"
-
-#: applets/gen_util/clock.c:1058
-#, fuzzy
-msgid "Show _date"
-msgstr "Taispeán data"
-
-#: applets/gen_util/clock.c:1068
-#, fuzzy
-msgid "Use _UTC"
-msgstr " (IST)"
-
-#. Translator credits
-#: applets/gen_util/clock.c:1185 applets/gen_util/mailcheck.c:1753
-#: applets/gen_util/pager.c:534 applets/gen_util/showdesktop.c:443
-#: applets/gen_util/tasklist.c:794 applets/notification_area/main.c:112
-#: gnome-panel/menu.c:252
-msgid "translator_credits"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:4
-#: applets/gen_util/clock.c:1204
-msgid "Clock"
-msgstr "Clog"
-
-#: applets/gen_util/clock.c:1206
-msgid "The Clock displays the current time and date"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:1
-msgid "24"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:2
-msgid "Display Internet time, which is same all over the world"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:3
-msgid "Display date in the Clock, in addition to time"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:4
-msgid "Display seconds in time"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:5
-msgid "Display time in Universal Coordinated Time zone"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:6
-msgid "Display time in seconds since Epoch, i.e. 1970-01-01"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:7
-msgid "Hour format"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:8
-msgid "Sets the hour format, may be either 12 or 24"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:9
-#, fuzzy
-msgid "Show date in Clock"
-msgstr "Taispeán data"
-
-#: applets/gen_util/clock.schemas.in.h:10
-msgid "Show date in a tooltip when a mouse is over the Clock"
-msgstr ""
-
-#: applets/gen_util/clock.schemas.in.h:11
-#, fuzzy
-msgid "Show date in tooltip"
-msgstr "Taispeán data"
-
-#: applets/gen_util/clock.schemas.in.h:12
-#, fuzzy
-msgid "Show time with seconds"
-msgstr "Ordaithe Us"
-
-#: applets/gen_util/clock.schemas.in.h:13
-#, fuzzy
-msgid "Use Internet time"
-msgstr "Idirlíon"
-
-#: applets/gen_util/clock.schemas.in.h:14
-#, fuzzy
-msgid "Use UNIX time"
-msgstr "An t-Ám Unix"
-
-#: applets/gen_util/clock.schemas.in.h:15
-#, fuzzy
-msgid "Use UTC"
-msgstr " (IST)"
-
-#: applets/gen_util/GNOME_ClockApplet.xml.h:1
-#, fuzzy
-msgid "Copy _date"
-msgstr "Taispeán data"
-
-#: applets/gen_util/GNOME_ClockApplet.xml.h:2
-msgid "Copy _time"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:1
-msgid "Accessories"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:2
-msgid "Alert you when new mail arrives"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:3
-msgid "Button to hide application windows and show the desktop"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:5
-msgid "GenUtil Applet Factory"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:6
-msgid "Get the current time and date"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:7
-#: applets/gen_util/mailcheck.c:322 applets/gen_util/mailcheck.c:1766
-msgid "Inbox Monitor"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:8
-msgid "Internet"
-msgstr "Idirlíon"
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:9
-#: applets/gen_util/showdesktop.c:452
-#, fuzzy
-msgid "Show Desktop Button"
-msgstr "Taispeáin ... cnaipí"
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:10
-msgid "Switch between open windows"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:11
-msgid "Switch between workspaces"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:12
-#: applets/notification_area/GNOME_NotificationAreaApplet.server.in.in.h:4
-msgid "Utility"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:13
-#: applets/gen_util/tasklist.c:808
-#, fuzzy
-msgid "Window List"
-msgstr "_Fuinneog"
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:14
-#: applets/gen_util/pager.c:547 applets/gen_util/pager.c:840
-#: applets/gen_util/pager.glade.h:7
-msgid "Workspace Switcher"
-msgstr ""
-
-#: applets/gen_util/GNOME_GenUtilApplet_Factory.server.in.in.h:15
-msgid "factory for creating some general applets"
-msgstr ""
-
-#: applets/gen_util/GNOME_MailCheckApplet.xml.h:2
-msgid "_Check for mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:200
-#, c-format
-msgid "There was an error executing %s: %s"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:328
+#: applets/fish/fish.schemas.in.h:10
 msgid ""
-"You didn't set a password in the preferences for the Inbox Monitor,\n"
-"so you have to enter it each time it starts up."
+"This key specifies the filename of the pixmap which will be used for the "
+"animation displayed in the fish applet relative to the pixmap directory."
 msgstr ""
 
-#: applets/gen_util/mailcheck.c:336
-msgid "Please enter your mailserver's _password:"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:341 applets/gen_util/mailcheck.c:1379
-msgid "Password Entry box"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:382
+#: applets/fish/fish.schemas.in.h:11
 msgid ""
-"The Inbox Monitor failed to check your mails and thus automatic updating has "
-"been deactivated for now.\n"
-"Maybe you used a wrong server, username or password?"
+"This key specifies the number of frames that will be displayed in the fish's "
+"animation."
 msgstr ""
 
-#: applets/gen_util/mailcheck.c:558
-msgid "You have new mail."
-msgstr "Tá ríomhphost nua agat."
-
-#: applets/gen_util/mailcheck.c:560
-msgid "You have mail."
-msgstr "Ta ríomhphost agat."
-
-#: applets/gen_util/mailcheck.c:564
-#, c-format
-msgid "%d/%d messages"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:566
-#, c-format
-msgid "%d messages"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:570
-msgid "No mail."
-msgstr "Níl ríomhphost agat."
-
-#: applets/gen_util/mailcheck.c:1090 applets/gen_util/mailcheck.c:1091
-#: applets/gen_util/mailcheck.c:1957 applets/gen_util/mailcheck.c:1958
-msgid "Status not updated"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1263
-msgid "Mailbox _resides on:"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1271
-msgid "Local mailspool"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1279
-msgid "Local maildir"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1287
-msgid "Remote POP3-server"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1295
-msgid "Remote IMAP-server"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1315
-#, fuzzy
-msgid "Mail _spool file:"
-msgstr "Comhad phoist:"
-
-#: applets/gen_util/mailcheck.c:1334
-#, fuzzy
-msgid "Mail s_erver:"
-msgstr "Freastalaí phoist:"
-
-#: applets/gen_util/mailcheck.c:1340
-msgid "Mail Server Entry box"
-msgstr ""
-
-# FIXME Check
-#: applets/gen_util/mailcheck.c:1354
-#, fuzzy
-msgid "_Username:"
-msgstr "Úsáidtheoir:"
-
-#: applets/gen_util/mailcheck.c:1362
-msgid "Username Entry box"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1371
-#, fuzzy
-msgid "_Password:"
-msgstr "Pasfhocal:"
-
-#: applets/gen_util/mailcheck.c:1392
-#, fuzzy
-msgid "_Folder:"
-msgstr " Fillteán"
-
-#: applets/gen_util/mailcheck.c:1400
-msgid "Folder Entry box"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1412
-msgid "C_ommand to run before checking for mail:"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1420
-#, fuzzy
-msgid "Command Entry box"
-msgstr "Ordú (roghnach)"
-
-#: applets/gen_util/mailcheck.c:1445
-msgid "Execute"
-msgstr "Deán"
-
-#: applets/gen_util/mailcheck.c:1456
-#, fuzzy
-msgid "Before each _update:"
-msgstr "riomh gach FIXME"
-
-#: applets/gen_util/mailcheck.c:1471
-#, fuzzy
-msgid "Command to execute before each update"
-msgstr "Ordú (roghnach)"
-
-#: applets/gen_util/mailcheck.c:1481
-msgid "When new mail _arrives:"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1494 applets/gen_util/mailcheck.schemas.in.h:2
-#, fuzzy
-msgid "Command to execute when new mail arrives"
-msgstr "Ordú (roghnach)"
-
-#: applets/gen_util/mailcheck.c:1504
-msgid "When clicke_d:"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1517
-#, fuzzy
-msgid "Command to execute when clicked"
-msgstr "Ordú (roghnach)"
-
-#: applets/gen_util/mailcheck.c:1527
-msgid "Set the number of unread mails to _zero"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1538
-msgid "Check for mail _every"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1550 applets/gen_util/mailcheck.c:1554
-#, fuzzy
-msgid "minutes"
-msgstr "noimeáid"
-
-#: applets/gen_util/mailcheck.c:1550
-msgid "Choose time interval in minutes to check mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1564 applets/gen_util/mailcheck.c:1568
-#, fuzzy
-msgid "seconds"
-msgstr "Ordaithe Us"
-
-#: applets/gen_util/mailcheck.c:1564
-msgid "Choose time interval in seconds to check mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1576
-msgid "Play a _sound when new mail arrives"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1587
-#, fuzzy
-msgid "Select a_nimation"
-msgstr "Úsáid beochain"
-
-#: applets/gen_util/mailcheck.c:1664
-#, fuzzy
-msgid "Inbox Monitor Preferences"
-msgstr "Ábaltachtaí iontráil deasc"
-
-#: applets/gen_util/mailcheck.c:1684
-#, fuzzy
-msgid "_Mail check"
-msgstr "Coisc phoist"
-
-#: applets/gen_util/mailcheck.c:1688
-#, fuzzy
-msgid "Mail_box"
-msgstr "Bosca Phoist"
-
-#: applets/gen_util/mailcheck.c:1768
-msgid "Inbox Monitor notifies you when new mail arrives in your mailbox"
-msgstr ""
-
-#: applets/gen_util/mailcheck.c:1933
-msgid "Text only"
-msgstr "Teacs amhain"
-
-#: applets/gen_util/mailcheck.c:1959
-#, fuzzy
-msgid "Mail check"
-msgstr "Coisc phoist"
-
-#: applets/gen_util/mailcheck.c:1960
-msgid "Mail check notifies you when new mail arrives in your mailbox"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:1
-#, fuzzy
-msgid "Command to execute when checking mail"
-msgstr "Ordú (roghnach)"
-
-#: applets/gen_util/mailcheck.schemas.in.h:3
-#, fuzzy
-msgid "Command to execute when you click on the Inbox Monitor"
-msgstr "Ordú (roghnach)"
-
-#: applets/gen_util/mailcheck.schemas.in.h:4
-msgid "Command to run before checking mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:5
-msgid "Do we run the exec-command"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:6
-msgid "Do we run the newmail-command"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:7
-msgid "How often (in milliseconds) we check the mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:8
-msgid "If mail should be checked automatically"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:9
-msgid "If this is set mail will be checked every update-freq milliseconds"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:10
-msgid "If this is set, we should run the exec-command"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:11
-msgid "If this is set, we should run the newmail-command"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:12
-msgid "Interval for checking mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:13
-msgid "Path to the animation file"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:14
-msgid "Play a sound when mail is recieved"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:15
-msgid "Remote folder for mail retrieval"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:16
-msgid "Remote server to connect to for our mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:17
-msgid "Run this command before we check the mail"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:18
-#, fuzzy
-msgid "The mail server"
-msgstr "Freastalaí phoist:"
-
-#: applets/gen_util/mailcheck.schemas.in.h:19
-msgid "The user's password"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:20
-msgid "The user's password for the remote server"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:21
-msgid "This is how we check the mail, check the mail, check the mail..."
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:22
-msgid "This is how we process the mail, process the mail, process the mail..."
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:23
-msgid ""
-"This is the animation that will be displayed during normal Inbox Monitor "
-"usage"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:24
-msgid "Username on the remote server"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:25
-msgid "We run this command when the user clicks on Inbox Monitor"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:26
-msgid "Whether to reset mail status when you click on Inbox Monitor"
-msgstr ""
-
-#: applets/gen_util/mailcheck.schemas.in.h:27
-#, fuzzy
-msgid "You've got mail!"
-msgstr "Ta ríomhphost agat."
-
-#: applets/gen_util/mailcheck.soundlist.in.h:1
-#, fuzzy
-msgid "Mailcheck"
-msgstr "Coisc phoist"
-
-#: applets/gen_util/mailcheck.soundlist.in.h:2
-#, fuzzy
-msgid "New Mail"
-msgstr "Níl ríomhphost agat."
-
-#: applets/gen_util/pager.c:157 applets/gen_util/pager.c:761
-#: applets/gen_util/pager.glade.h:2
-#, fuzzy
-msgid "Rows"
-msgstr "Dearchadh"
-
-#: applets/gen_util/pager.c:157 applets/gen_util/pager.c:761
-#, fuzzy
-msgid "Columns"
-msgstr "Uimhir"
-
-#: applets/gen_util/pager.c:378
-#, c-format
-msgid "Error loading num_rows value for Workspace Switcher: %s\n"
-msgstr ""
-
-#: applets/gen_util/pager.c:389
-#, c-format
-msgid ""
-"Error loading display_workspace_names value for Workspace Switcher: %s\n"
-msgstr ""
-
-#: applets/gen_util/pager.c:404
-#, c-format
-msgid "Error loading display_all_workspaces value for Workspace Switcher: %s\n"
-msgstr ""
-
-#: applets/gen_util/pager.c:549
-msgid ""
-"The Workspace Switcher shows you a small version of your workspaces that "
-"lets you manage your windows."
-msgstr ""
-
-#: applets/gen_util/pager.glade.h:1
-msgid "Number of _workspaces:"
-msgstr ""
-
-#: applets/gen_util/pager.glade.h:3
-msgid "Show _all workspaces"
-msgstr ""
-
-#: applets/gen_util/pager.glade.h:4
-msgid "Show only the _current workspace"
-msgstr ""
-
-#: applets/gen_util/pager.glade.h:5
-msgid "Show workspace _names in the switcher"
-msgstr ""
-
-#: applets/gen_util/pager.glade.h:6
-msgid "Workspace Names"
-msgstr ""
-
-#: applets/gen_util/pager.glade.h:8
-#, fuzzy
-msgid "Workspace Switcher Preferences"
-msgstr "Ábaltachtaí Printéir"
-
-#: applets/gen_util/pager.glade.h:9
-msgid "Workspaces"
-msgstr ""
-
-#: applets/gen_util/pager.schemas.in.h:1
-msgid ""
-"If this is true, the Workspace Switcher will show all workspaces, otherwise "
-"it will only show the current workspace."
-msgstr ""
-
-#: applets/gen_util/pager.schemas.in.h:2
-msgid ""
-"If this is true, the workspaces in the Workspace Switcher will display the "
-"names of the workspaces, otherwise they will display the contents of the "
-"workspace."
-msgstr ""
-
-#: applets/gen_util/pager.schemas.in.h:3
-msgid "Number of rows in the Workspace Switcher."
-msgstr ""
-
-#: applets/gen_util/pager.schemas.in.h:4
-msgid ""
-"When showing all the workspaces this determines how many rows (for "
-"horizontal layout) or columns (for vertical layout) the Workspace Switcher "
-"shows the workspaces in."
-msgstr ""
-
-#: applets/gen_util/pager.schemas.in.h:5
-msgid "Whether to display the all workspaces in the Workspace Switcher."
-msgstr ""
-
-#: applets/gen_util/pager.schemas.in.h:6
-msgid ""
-"Whether to display the names of the workspaces in the Workspace Switcher."
-msgstr ""
-
-#: applets/gen_util/showdesktop.c:217
-msgid "Click here to restore hidden windows."
-msgstr ""
-
-#: applets/gen_util/showdesktop.c:220
-msgid "Click here to hide all windows and show the desktop."
-msgstr ""
-
-#: applets/gen_util/showdesktop.c:290
-#, c-format
-msgid "Failed to load %s: %s\n"
-msgstr ""
-
-#: applets/gen_util/showdesktop.c:291
-msgid "File not found"
-msgstr ""
-
-#: applets/gen_util/showdesktop.c:454
-msgid "This button lets you hide all windows and show the desktop"
-msgstr ""
-
-#: applets/gen_util/tasklist.c:810
-msgid ""
-"The Window List shows a list of all visible windows and lets you browse them."
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:1
-msgid "Group windows when _space is limited"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:2
-msgid "M_inimum size:"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:3
-msgid "Ma_ximum size:"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:4
-msgid "Restore to current _workspace"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:5
-msgid "Restore to na_tive workspace"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:6
-msgid "Show windows from _current workspace"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:7
-msgid "Show windows from a_ll workspaces"
-msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:8
-msgid "When restoring minimized windows"
+#: applets/fish/fish.schemas.in.h:12
+msgid "This key specifies the number of seconds each frame will be displayed."
 msgstr ""
-
-#: applets/gen_util/tasklist.glade.h:9
-#, fuzzy
-msgid "Window List Preferences"
-msgstr "_Fuinneog"
-
-#: applets/gen_util/tasklist.glade.h:10
-#, fuzzy
-msgid "Window List content"
-msgstr "_Fuinneog"
-
-#: applets/gen_util/tasklist.glade.h:11
-#, fuzzy
-msgid "Window List size"
-msgstr "_Fuinneog"
-
-#: applets/gen_util/tasklist.glade.h:12
-#, fuzzy
-msgid "Window grouping"
-msgstr "_Fuinneog"
-
-#: applets/gen_util/tasklist.glade.h:13
-#, fuzzy
-msgid "_Always group windows"
-msgstr "Dûn fhuinneog"
-
-#: applets/gen_util/tasklist.glade.h:14
-#, fuzzy
-msgid "_Never group windows"
-msgstr "Tóg an tidéal fhuinneoga"
-
-#: applets/gen_util/tasklist.schemas.in.h:1
-msgid ""
-"Decides when to group windows from the same application on the Window List. "
-"Valid values are \"never\", \"auto\" and \"always\"."
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:2
-msgid ""
-"If this is true, the Window List will show windows from all workspaces, "
-"otherwise it will display windows from the current workspace only."
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:3
-msgid ""
-"If true, then when unminimizing a window, bring it to the current workspace. "
-"Otherwise, change to the workspace of the window."
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:4
-msgid "Maximum size that Window List requests"
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:5
-msgid "Minimum size that Window List requests"
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:6
-msgid "Move windows to the current workspace when unminimized"
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:7
-msgid "Show windows from all workspaces"
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:8
-msgid ""
-"This value is the maximum width that Window List requests. The maximum width "
-"setting is useful to limit the size of Window List in large panels such as "
-"edge panels, where Window List could fill the entire space available."
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:9
-msgid ""
-"To be usable, Window List requires a minimum width. Window List requests "
-"this minimum width. The minimum width setting is useful for sliding and edge "
-"panels, which usually request a small default width."
-msgstr ""
-
-#: applets/gen_util/tasklist.schemas.in.h:10
-#, fuzzy
-msgid "When to group windows"
-msgstr "Tóg an tidéal fhuinneoga"
 
 #: applets/notification_area/GNOME_NotificationAreaApplet.server.in.in.h:1
 msgid "Area where notification icons appear"
@@ -1085,431 +569,448 @@ msgstr ""
 msgid "Notification Area Factory"
 msgstr ""
 
-#: applets/notification_area/main.c:125
+#: applets/notification_area/main.c:138 applets/notification_area/main.c:364
 msgid "Panel Notification Area"
 msgstr ""
 
-#. Translators: Task with no name, should not really happen, so
-#. * this should signal that the panel is confused by this task
-#. * (thus question marks)
-#: gnome-panel/applet.c:428 gnome-panel/foobar-widget.c:393
-msgid "???"
-msgstr "???"
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:1
+msgid "Factory for the window navigation related applets"
+msgstr ""
 
-#: gnome-panel/GNOME_Panel_Popup.xml.h:2 gnome-panel/applet.c:492
-#, fuzzy
-msgid "_Remove From Panel"
-msgstr "Cuir as Painéal"
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:2
+msgid "Hide application windows and show the desktop"
+msgstr "Folaigh fuinneoga feidhmchláir agus taispeáin an deasc"
 
-#: gnome-panel/GNOME_Panel_Popup.xml.h:1 gnome-panel/applet.c:504
-#, fuzzy
-msgid "_Move"
-msgstr "Bog suas"
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:3
+msgid "Show Desktop"
+msgstr "Taispeáin an Deasc"
 
-#: gnome-panel/applet.c:793
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:4
+msgid "Switch between open windows"
+msgstr "Aistrigh idir fuinneoga oscailte"
+
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:5
+msgid "Switch between workspaces"
+msgstr "Aistrigh idir spáiseanna obair"
+
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:6
+#: applets/wncklet/window-list.c:820
+msgid "Window List"
+msgstr "Liosta na Fuinneoga"
+
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:7
+msgid "Window Navigation Applet Factory"
+msgstr ""
+
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:8
+#: applets/wncklet/window-menu.c:148 applets/wncklet/window-menu.c:749
+#: applets/wncklet/window-menu.c:751
+msgid "Window Selector"
+msgstr "Roghnóir Fhuinneoga"
+
+#: applets/wncklet/GNOME_Wncklet_Factory.server.in.in.h:9
+#: applets/wncklet/workspace-switcher.c:519
+#: applets/wncklet/workspace-switcher.c:928
+msgid "Workspace Switcher"
+msgstr "Aistreathóir Spáis Oibre"
+
+#: applets/wncklet/showdesktop.c:230
+msgid "Click here to restore hidden windows."
+msgstr "Cliceáil anseo chun na fuinneoga folaithe a athchóiriú."
+
+#: applets/wncklet/showdesktop.c:233
+msgid "Click here to hide all windows and show the desktop."
+msgstr "Cliceáil anseo chun na fuinneoga a folaigh agus an deasc a taispeáint."
+
+#: applets/wncklet/showdesktop.c:315
 #, c-format
-msgid "No object_type set for panel object with ID %s\n"
+msgid "Failed to load %s: %s\n"
+msgstr "Níorbh fhéidir %s a lódáil: %s\n"
+
+#: applets/wncklet/showdesktop.c:316
+msgid "File not found"
+msgstr "Níl comhad ar fáil"
+
+#: applets/wncklet/showdesktop.c:346 applets/wncklet/showdesktop.c:465
+msgid "Show Desktop Button"
+msgstr "Taispeáin Cnaipe Deisce"
+
+#: applets/wncklet/showdesktop.c:467
+msgid "This button lets you hide all windows and show the desktop"
 msgstr ""
+"Ligeann an cnaipe seo duit na fuinneoga a folaigh agus an deasc a taispeáint"
 
-#: gnome-panel/applet.c:813 gnome-panel/applet.c:921
-#, c-format
-msgid "No panel_id set for panel object with ID %s\n"
-msgstr ""
-
-#: gnome-panel/applet.c:1258
-msgid "Can't find an empty spot"
-msgstr ""
-
-#: gnome-panel/basep-widget.c:159
-#, fuzzy
-msgid "Mode"
-msgstr "Bog suas"
-
-#: gnome-panel/basep-widget.c:160
-#, fuzzy
-msgid "Mode of this panel"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/basep-widget.c:167
-#, fuzzy
-msgid "State"
-msgstr "Sabháil"
-
-#: gnome-panel/basep-widget.c:168
-#, fuzzy
-msgid "Current state of this panel"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/basep-widget.c:176
-#, fuzzy
-msgid "Hidebuttons enabled"
-msgstr "Folaigh cnaipí"
-
-#: gnome-panel/basep-widget.c:177
-msgid "Are hidebuttons (buttons that hide or show the panel) enabled?"
-msgstr ""
-
-#: gnome-panel/basep-widget.c:184
-#, fuzzy
-msgid "Hidebutton pixmaps enabled"
-msgstr "Folaigh cnaipí"
-
-#: gnome-panel/basep-widget.c:185
-msgid "Hidebuttons have pixmaps"
-msgstr ""
-
-#: gnome-panel/basep-widget.c:584
-#, fuzzy
-msgid "Hide this panel"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/basep-widget.c:587
-#, fuzzy
-msgid "Show this panel"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/button-widget.c:322
-#, c-format
+#: applets/wncklet/showdesktop.c:507
 msgid ""
-"Failed to load image %s\n"
-"\n"
-"Details: %s"
+"Your window manager does not support the show desktop button, or you are not "
+"running a window manager."
 msgstr ""
 
-#: gnome-panel/button-widget.c:537
-#, fuzzy
-msgid "none"
-msgstr "rinneadh"
-
-#: gnome-panel/button-widget.c:542
-msgid "file not found"
+#: applets/wncklet/window-list.c:822
+msgid "The Window List shows a list of all windows and lets you browse them."
 msgstr ""
+"Taispeáineann Liosta na Fuinneoga liosta do gach fuinneog le feiceáil agus "
+"ligeann duit iad a brabhsáil."
 
-#: gnome-panel/button-widget.c:868
-#, fuzzy
+#: applets/wncklet/window-list.glade.h:2
+msgid "<b>Restoring Minimized Windows</b>"
+msgstr "<b>Ag Athchóiriú Fuinneoga Laghdaithe</b>"
+
+#: applets/wncklet/window-list.glade.h:3
+msgid "<b>Window Grouping</b>"
+msgstr "<b>Grúpa Fuinneoige</b>"
+
+#: applets/wncklet/window-list.glade.h:4
+msgid "<b>Window List Content</b>"
+msgstr "<b>Ábhar Liosta na Fuinneoga</b>"
+
+#: applets/wncklet/window-list.glade.h:5
+msgid "<b>Window List Size</b>"
+msgstr "<b>Méid Liosta na Fuinneoga</b>"
+
+#: applets/wncklet/window-list.glade.h:6
+msgid "Behavior"
+msgstr "Iompar"
+
+#: applets/wncklet/window-list.glade.h:7
+msgid "Group windows when _space is limited"
+msgstr "Cuir fuinneoga i ngrúpaí nuair nach bhfuil mórán _spáis"
+
+#: applets/wncklet/window-list.glade.h:8
+msgid "M_inimum size:"
+msgstr "Íosmhé_id:"
+
+#: applets/wncklet/window-list.glade.h:9
+msgid "Ma_ximum size:"
+msgstr "_Uasmhéid:"
+
+#: applets/wncklet/window-list.glade.h:10
+msgid "Restore to current _workspace"
+msgstr "Athchóirigh ar spás oibre _reatha"
+
+#: applets/wncklet/window-list.glade.h:11
+msgid "Restore to na_tive workspace"
+msgstr "Athchóirigh ar spás oibre _tionscantach"
+
+#: applets/wncklet/window-list.glade.h:12
+msgid "Sh_ow windows from current workspace"
+msgstr "_Taispeáin fuinneoga do spás oibre reatha"
+
+#: applets/wncklet/window-list.glade.h:13
+msgid "Show windows from a_ll workspaces"
+msgstr "Taispeáin fuinneoga do _gach spáiseanna obair"
+
+#: applets/wncklet/window-list.glade.h:14
 msgid "Size"
 msgstr "Méid"
 
-#: gnome-panel/button-widget.c:869
-msgid "The desired ButtonWidget size"
+#: applets/wncklet/window-list.glade.h:15
+msgid "Window List Preferences"
+msgstr "Airíonna Liosta na Fuinneoga"
+
+#: applets/wncklet/window-list.glade.h:16
+msgid "_Always group windows"
+msgstr "Cuir fuinneoga i ngrúpaí i _gcónaí"
+
+#: applets/wncklet/window-list.glade.h:17
+msgid "_Never group windows"
+msgstr "Ná cuir fuinneoga i ngrúpaí _choíche"
+
+#: applets/wncklet/window-list.glade.h:18
+#: gnome-panel/panel-properties-dialog.glade.h:32
+msgid "pixels"
+msgstr "picsil"
+
+#: applets/wncklet/window-list.schemas.in.h:1
+msgid ""
+"Decides when to group windows from the same application on the window list. "
+"Possible values are \"never\", \"auto\" and \"always\"."
+msgstr ""
+"Cathain a cuir fuinneoga don fheidhmchlár chéanna i ngrúpaí ar liosta na "
+"fuinneoga. Is féidir \"never\", \"auto\" nó \"always\" mar luachanna."
+
+#: applets/wncklet/window-list.schemas.in.h:2
+msgid ""
+"If true, the window list will show windows from all workspaces. Otherwise it "
+"will only display windows from the current workspace."
+msgstr ""
+"Má tá fíor, taispeáineann liosta na fuinneoga fuinneoga do gach spáiseanna "
+"obair. Ar dhóigh eile ní thaispeáineann sé ach fuinneoga do spás oibre "
+"reatha."
+
+#: applets/wncklet/window-list.schemas.in.h:3
+msgid ""
+"If true, then when unminimizing a window, move it to the current workspace. "
+"Otherwise, switch to the workspace of the window."
 msgstr ""
 
-#: gnome-panel/button-widget.c:877
-msgid "Has Arrow"
+#: applets/wncklet/window-list.schemas.in.h:4
+msgid "Maximum window list size"
+msgstr "Uasmhéid liosta na fuinneoga"
+
+#: applets/wncklet/window-list.schemas.in.h:5
+msgid "Minimum window list size"
+msgstr "Íosmhéid liosta na fuinneoga"
+
+#: applets/wncklet/window-list.schemas.in.h:6
+msgid "Move windows to current workspace when unminimized"
+msgstr "Athchóirigh fuinneoga ar spás oibre reatha"
+
+#: applets/wncklet/window-list.schemas.in.h:7
+msgid "Show windows from all workspaces"
+msgstr "Taispeáin fuinneoga do gach spáiseanna obair"
+
+#: applets/wncklet/window-list.schemas.in.h:8
+msgid ""
+"This key specifies the maximum width that the window list requests. The "
+"maximum width setting is useful to limit the size of the window list in "
+"large panels, where the window list could fill the entire space available."
 msgstr ""
 
-#: gnome-panel/button-widget.c:878
-msgid "Whether or not to draw an arrow indicator"
+#: applets/wncklet/window-list.schemas.in.h:9
+msgid "This key specifies the minimum width that the window list requests."
 msgstr ""
 
-#: gnome-panel/button-widget.c:886
-#, fuzzy
-msgid "Orientation"
-msgstr "Treoshuíomh"
+#: applets/wncklet/window-list.schemas.in.h:10
+msgid "When to group windows"
+msgstr "Cathain na fuinneoga a chur i ngrúpaí"
 
-#: gnome-panel/button-widget.c:887
-msgid "The ButtonWidget orientation"
+#: applets/wncklet/window-menu.c:152
+msgid ""
+"The Window Selector shows a list of all windows and lets you browse them."
+msgstr ""
+"Taispeáineann Liosta na Fuinneoga liosta do gach fuinneog le feiceáil agus "
+"ligeann duit iad a brabhsáil."
+
+#: applets/wncklet/window-menu.c:435
+msgid "Unknown Window"
+msgstr "Fuinneog Anaithnid"
+
+#: applets/wncklet/window-menu.c:643
+msgid "No Windows Open"
+msgstr "Níl aon fhuinneog oscailte"
+
+#: applets/wncklet/window-menu.c:750
+msgid "Tool to switch between windows"
+msgstr "Aistrigh idir fuinneoga oscailte"
+
+#: applets/wncklet/workspace-switcher.c:147
+#: applets/wncklet/workspace-switcher.c:832
+#: applets/wncklet/workspace-switcher.glade.h:11
+msgid "rows"
+msgstr "línte"
+
+#: applets/wncklet/workspace-switcher.c:147
+#: applets/wncklet/workspace-switcher.c:832
+msgid "columns"
+msgstr "colúin"
+
+#: applets/wncklet/workspace-switcher.c:358
+#, c-format
+msgid "Error loading num_rows value for Workspace Switcher: %s\n"
+msgstr "Earráid ag lódáil luach num_rows don Aistreathóir Spáis Oibre: %s\n"
+
+#: applets/wncklet/workspace-switcher.c:369
+#, c-format
+msgid ""
+"Error loading display_workspace_names value for Workspace Switcher: %s\n"
+msgstr ""
+"Earráid ag lódáil luach display_workspace_names don Aistreathóir Spáis "
+"Oibre: %s\n"
+
+#: applets/wncklet/workspace-switcher.c:384
+#, c-format
+msgid "Error loading display_all_workspaces value for Workspace Switcher: %s\n"
+msgstr ""
+"Earráid ag lódáil luach display_all_names don Aistreathóir Spáis Oibre: %s\n"
+
+#: applets/wncklet/workspace-switcher.c:521
+msgid ""
+"The Workspace Switcher shows you a small version of your workspaces that "
+"lets you manage your windows."
+msgstr ""
+"Taispeáineann an Aistreathóir Spáis Oibre leagan beag do do spáiseanna obair "
+"agusligeann duit do fhuinneoga a stiúir."
+
+#: applets/wncklet/workspace-switcher.glade.h:2
+msgid "<b>Switcher</b>"
+msgstr "<b>Aistreathóir</b>"
+
+#: applets/wncklet/workspace-switcher.glade.h:3
+msgid "<b>Workspaces</b>"
+msgstr "<b>Spáiseanna Obair</b>"
+
+#: applets/wncklet/workspace-switcher.glade.h:4
+msgid "Number of _workspaces:"
 msgstr ""
 
-#: gnome-panel/button-widget.c:896
-#, fuzzy
-msgid "Icon Name"
-msgstr "Seisiún"
-
-#: gnome-panel/button-widget.c:897
-msgid "The desired icon for the ButtonWidget"
+#: applets/wncklet/workspace-switcher.glade.h:5
+msgid "Show _all workspaces in:"
 msgstr ""
 
-#: gnome-panel/button-widget.c:905
-msgid "Stock Icon ID"
+#: applets/wncklet/workspace-switcher.glade.h:6
+msgid "Show _only the current workspace"
 msgstr ""
 
-#: gnome-panel/button-widget.c:906
-msgid "The desired stock icon for the ButtonWidget"
+#: applets/wncklet/workspace-switcher.glade.h:7
+msgid "Show workspace _names in switcher"
 msgstr ""
 
-#: gnome-panel/disclosure-widget.c:259
-msgid "Expander Size"
+#: applets/wncklet/workspace-switcher.glade.h:8
+msgid "Workspace Names"
+msgstr "Ainmneacha Spáiseanna Obair"
+
+#: applets/wncklet/workspace-switcher.glade.h:9
+msgid "Workspace Switcher Preferences"
 msgstr ""
 
-#: gnome-panel/disclosure-widget.c:260
-msgid "Size of the expander arrow"
+#: applets/wncklet/workspace-switcher.glade.h:10
+msgid "Workspace na_mes:"
+msgstr "Ain_mneacha spáiseanna obair:"
+
+#: applets/wncklet/workspace-switcher.schemas.in.h:1
+msgid "Display all workspaces"
+msgstr ""
+
+#: applets/wncklet/workspace-switcher.schemas.in.h:2
+msgid "Display workspace names"
+msgstr ""
+
+#: applets/wncklet/workspace-switcher.schemas.in.h:3
+msgid ""
+"If true, the workspace switcher will show all workspaces. Otherwise it will "
+"only show the current workspace."
+msgstr ""
+
+#: applets/wncklet/workspace-switcher.schemas.in.h:4
+msgid ""
+"If true, the workspaces in the workspace switcher will display the names of "
+"the workspaces. Otherwise they will display the windows on the workspace."
+msgstr ""
+
+#: applets/wncklet/workspace-switcher.schemas.in.h:5
+msgid "Rows in workspace switcher"
+msgstr ""
+
+#: applets/wncklet/workspace-switcher.schemas.in.h:6
+msgid ""
+"This key specifies how many rows (for horizontal layout) or columns (for "
+"vertical layout) the workspace switcher shows the workspaces in. This key is "
+"only relevant if the display_all_workspaces key is true."
+msgstr ""
+
+#: gnome-panel/GNOME_Panel.server.in.h:1
+msgid "GNOME Panel Shell"
+msgstr "Blasocacha Chláir GNOME"
+
+#: gnome-panel/GNOME_Panel_Popup.xml.h:1 gnome-panel/applet.c:103
+#: gnome-panel/applet.c:462 gnome-panel/panel-applet-frame.c:113
+msgid "_Lock"
+msgstr "G_lasáil"
+
+#: gnome-panel/GNOME_Panel_Popup.xml.h:2 gnome-panel/applet.c:470
+msgid "_Move"
+msgstr "_Bog"
+
+#: gnome-panel/GNOME_Panel_Popup.xml.h:3 gnome-panel/applet.c:454
+msgid "_Remove From Panel"
+msgstr "_Cuir as Painéal"
+
+#: gnome-panel/applet.c:103 gnome-panel/applet.c:462
+#: gnome-panel/panel-applet-frame.c:113
+msgid "Un_lock"
+msgstr ""
+
+#: gnome-panel/applet.c:375
+msgid "???"
+msgstr "???"
+
+#: gnome-panel/applet.c:1089
+msgid "Can't find an empty spot"
+msgstr ""
+
+#: gnome-panel/button-widget.c:199
+#, c-format
+msgid "Failed to load image %s"
+msgstr ""
+
+#: gnome-panel/button-widget.c:403
+msgid "none"
+msgstr "tada"
+
+#: gnome-panel/button-widget.c:408
+msgid "file not found"
 msgstr ""
 
 #: gnome-panel/distribution.c:27
-#, fuzzy
 msgid "Debian GNU/Linux"
-msgstr "Cláranna Debian"
+msgstr "Debian GNU/Linux"
 
 #: gnome-panel/distribution.c:27
-#, fuzzy
 msgid "Debian Menu"
-msgstr "Cláranna Debian"
+msgstr "Roghchlár Debian"
 
 #: gnome-panel/distribution.c:32
 msgid "SuSE Linux"
-msgstr ""
+msgstr "SuSE Linux"
 
 #: gnome-panel/distribution.c:32
-#, fuzzy
 msgid "SuSE Menu"
-msgstr "Cláranna KDE"
+msgstr "Roghchlár SuSE"
 
 #: gnome-panel/distribution.c:37
-#, fuzzy
 msgid "Solaris"
-msgstr "Dathanna"
+msgstr "Solaris"
 
 #: gnome-panel/distribution.c:37
-#, fuzzy
 msgid "CDE Menu"
-msgstr "Cláranna KDE"
+msgstr "Roghchlár CDE"
 
-#: gnome-panel/drawer.c:126
-#, fuzzy
-msgid "Size and Position"
-msgstr "Áit agus Méid"
-
-#: gnome-panel/drawer.c:134
-msgid "Tooltip/Name"
-msgstr "Leathfhocal/Ainm"
-
-#: gnome-panel/drawer.c:140
-msgid "Icon"
-msgstr "Dealbh"
-
-#: gnome-panel/drawer.c:146
-msgid "Applet appearance"
-msgstr "Gné feidhmchlárín"
-
-#: gnome-panel/drawer.c:151
-msgid "Drawer handle"
-msgstr "Cuir isteach Taisceadan"
-
-#. we store this in w for later use!, so don't use w as temp from now
-#. on
-#: gnome-panel/drawer.c:156
-msgid "Enable hidebutton"
-msgstr ""
-
-#: gnome-panel/drawer.c:165
-msgid "Enable hidebutton arrow"
-msgstr ""
-
-#: gnome-panel/drawer.c:183 gnome-panel/menu.c:3620
+#: gnome-panel/drawer.c:322 gnome-panel/drawer.c:356
+#: gnome-panel/panel-addto.c:147
 msgid "Drawer"
-msgstr "Taisceadán"
+msgstr "Tarraiceán"
 
-#: gnome-panel/drawer.c:765 gnome-panel/launcher.c:802 gnome-panel/menu.c:1533
-#: gnome-panel/menu.c:3475 gnome-panel/panel-action-button.c:89
-#, fuzzy
+#: gnome-panel/drawer.c:614 gnome-panel/launcher.c:824 gnome-panel/menu.c:1376
+#: gnome-panel/menu.c:2320 gnome-panel/panel-action-button.c:132
 msgid "_Properties"
-msgstr "Ábaltachtaí"
+msgstr "Áb_altachtaí"
 
-#: gnome-panel/foobar-widget.c:176 gnome-panel/menu.c:3818
-#, fuzzy
-msgid "Run Program..."
-msgstr "Ríomhchlar"
-
-#: gnome-panel/foobar-widget.c:180
-msgid "Run applications, if you know the correct command to type in"
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:193 gnome-panel/menu.c:3834
-msgid "Search for Files..."
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:198 gnome-panel/menu.c:3837
-msgid "Find files, folders, and documents on your computer"
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:213 gnome-panel/menu.c:3853
-msgid "Screenshot..."
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:217 gnome-panel/menu.c:3856
-msgid "Take a screenshot of your desktop"
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:229 gnome-panel/menu.c:3642
-#, fuzzy
-msgid "Lock Screen"
-msgstr "Glasál an scathán"
-
-#: gnome-panel/foobar-widget.c:233
-msgid "Protect your computer from unauthorized use"
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:242 gnome-panel/menu.c:3224
-#: gnome-panel/menu.c:3654
-#, fuzzy
-msgid "Log Out"
-msgstr "Éirigh as"
-
-#: gnome-panel/foobar-widget.c:246
-msgid "Quit from the GNOME desktop"
-msgstr ""
-
-#. FIXME: shutdown or reboot
-#: gnome-panel/foobar-widget.c:255
-#, fuzzy
-msgid "Actions"
-msgstr "Beochan"
-
-#: gnome-panel/foobar-widget.c:477
-msgid "No windows open"
-msgstr ""
-
-#: gnome-panel/foobar-widget.c:716 gnome-panel/menu.c:2984
-#, fuzzy
-msgid "Menu Panel"
-msgstr "Rang Chlar"
-
-#: gnome-panel/foobar-widget.c:716
-#, fuzzy
-msgid "GNOME Menu Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/foobar-widget.c:736 gnome-panel/menu.c:3122
-#: gnome-panel/menu.c:3127 gnome-panel/menu.c:3793
-#, fuzzy
-msgid "Applications"
-msgstr "Beochan"
-
-#: gnome-panel/global-keys.c:328 gnome-panel/global-keys.c:357
-msgid "Can't find the screenshot program"
-msgstr ""
-
-#: gnome-panel/global-keys.c:337 gnome-panel/global-keys.c:367
-#, fuzzy
-msgid "Can't execute the screenshot program"
-msgstr "ag cruthaigh fillteán 'sáidtheoir: %s\n"
-
-#: gnome-panel/gnome-desktop-item-edit.c:27
+#: gnome-panel/gnome-desktop-item-edit.c:26
 msgid "Create new file in the given directory"
 msgstr ""
 
-#: gnome-panel/gnome-panel-add-launcher.c:34
-#, fuzzy
-msgid "Panel to add the launcher to"
-msgstr "Cuir le Painial"
-
-#: gnome-panel/gnome-panel-add-launcher.c:34
-#: gnome-panel/gnome-panel-add-launcher.c:35
-msgid "NUMBER"
-msgstr ""
-
-#: gnome-panel/gnome-panel-add-launcher.c:35
-#, fuzzy
-msgid "Position to add the launcher to"
-msgstr "Cuir le Painial"
-
-#: gnome-panel/gnome-panel-add-launcher.c:36
-msgid "The argument is a url to add, not a .desktop file"
-msgstr ""
-
-#: gnome-panel/gnome-panel-add-launcher.c:67
-msgid ""
-"You must supply a single argument with the .desktop file or url to use\n"
-msgstr ""
-
-#: gnome-panel/gnome-panel-add-launcher.c:81
-msgid "No panel found\n"
-msgstr ""
-
-#: gnome-panel/gnome-panel-preferences.c:259
-#: gnome-panel/gnome-panel-screenshot.c:862
-#, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr ""
-
-#: gnome-panel/gnome-panel-preferences.c:307
-msgid ""
-"The system administrator has disallowed\n"
-"modification of the panel configuration"
-msgstr ""
-
-#: gnome-panel/gnome-panel-preferences.c:337
-#, c-format
-msgid "Error loading glade file %s"
-msgstr ""
-
-#: gnome-panel/gnome-panel-preferences.desktop.in.h:1
-msgid "Panel"
-msgstr "Painéal"
-
-#: gnome-panel/gnome-panel-preferences.desktop.in.h:2
-msgid "Select preferences for all your panels"
-msgstr ""
-
-#: gnome-panel/gnome-panel-preferences.glade.h:1
-#, fuzzy
-msgid "Animation _speed:"
-msgstr "Beochan"
-
-#: gnome-panel/gnome-panel-preferences.glade.h:2
-msgid "Close _drawer when launcher is clicked"
-msgstr ""
-
-#: gnome-panel/gnome-panel-preferences.glade.h:3
-#, fuzzy
-msgid "Drawer and Panel _Animation"
-msgstr "Úsáid beochain"
-
-#: gnome-panel/gnome-panel-preferences.glade.h:4
-#, fuzzy
-msgid "Fast"
-msgstr "Deireadh"
-
-#: gnome-panel/gnome-panel-preferences.glade.h:5
-#: gnome-panel/panel-config.c:1221
-#: libpanel-applet/panel-test-applets.glade.h:5
-#, fuzzy
-msgid "Medium"
-msgstr "Clár"
-
-#: gnome-panel/gnome-panel-preferences.glade.h:6
-#, fuzzy
-msgid "Panel Preferences"
-msgstr "Roghnachais..."
-
-#: gnome-panel/gnome-panel-preferences.glade.h:7
-msgid "Slow"
-msgstr ""
-
-#: gnome-panel/gnome-panel-screenshot.c:135
+#: gnome-panel/gnome-panel-screenshot.c:121
 msgid ""
 "Unable to initialize png structure.\n"
 "You probably have a bad version of libpng on your system"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:143
+#: gnome-panel/gnome-panel-screenshot.c:129
 msgid ""
 "Unable to create png info.\n"
 "You probably have a bad version of libpng on your system"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:150
+#: gnome-panel/gnome-panel-screenshot.c:136
 msgid ""
 "Unable to set png info.\n"
 "You probably have a bad version of libpng on your system"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:168
+#: gnome-panel/gnome-panel-screenshot.c:154
 msgid ""
 "Insufficient memory to save the screenshot.\n"
 "Please free up some resources and try again."
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:220
+#: gnome-panel/gnome-panel-screenshot.c:212
 #, c-format
 msgid "File %s already exists. Overwrite?"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:237
-#: gnome-panel/gnome-panel-screenshot.c:743
+#: gnome-panel/gnome-panel-screenshot.c:233
+#: gnome-panel/gnome-panel-screenshot.c:584
 #, c-format
 msgid ""
 "Unable to create the file:\n"
@@ -1517,87 +1018,92 @@ msgid ""
 "Please check your permissions of the parent directory"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:509
-msgid "Print Screenshot"
-msgstr ""
-
-#: gnome-panel/gnome-panel-screenshot.c:557
-msgid "Screenshot Print Preview"
-msgstr ""
-
-#. translators: this is the file that gets made up with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:584
+#. translators: this is the name of the file that gets made up
+#. * with the screenshot if a specific window is taken
+#: gnome-panel/gnome-panel-screenshot.c:420
 #, c-format
-msgid "%s%cScreenshot-%s.png"
-msgstr ""
+msgid "Screenshot-%s.png"
+msgstr "Pictiúr-an-Scáileán-%s.png"
 
-#. translators: this is the file that gets made up with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:591
+#. translators: this is the name of the file that gets made up
+#. * with the screenshot if the entire screen is taken
+#: gnome-panel/gnome-panel-screenshot.c:424
+msgid "Screenshot.png"
+msgstr "Pictiúr-an-Scáileán.png"
+
+#. translators: this is the name of the file that gets
+#. * made up with the screenshot if a specific window is
+#. * taken
+#: gnome-panel/gnome-panel-screenshot.c:445
 #, c-format
-msgid "%s%cScreenshot.png"
-msgstr ""
+msgid "Screenshot-%s-%d.png"
+msgstr "Scáthán-%s-%d.png"
 
-#. translators: this is the file that gets made up with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:608
+#. translators: this is the name of the file that gets
+#. * made up with the screenshot if the entire screen is
+#. * taken
+#: gnome-panel/gnome-panel-screenshot.c:452
 #, c-format
-msgid "%s%cScreenshot-%s-%d.png"
-msgstr ""
+msgid "Screenshot-%d.png"
+msgstr "Pictiúr-an-Scáileán-%d.png"
 
-#. translators: this is the file that gets made up with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:615
-#, c-format
-msgid "%s%cScreenshot-%d.png"
-msgstr ""
-
-#: gnome-panel/gnome-panel-screenshot.c:764
+#: gnome-panel/gnome-panel-screenshot.c:607
 #, c-format
 msgid "Not enough room to write file %s"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:1213
-msgid "Grab a window instead of the entire screen"
+#: gnome-panel/gnome-panel-screenshot.c:708
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:1214
-msgid "Take screenshot after specified delay [in seconds]"
-msgstr ""
-
-#: gnome-panel/gnome-panel-screenshot.c:1266
+#: gnome-panel/gnome-panel-screenshot.c:1189
 msgid ""
 "Glade file for the screenshot program is missing.\n"
 "Please check your installation of gnome-panel"
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.c:1290
+#: gnome-panel/gnome-panel-screenshot.c:1205
 msgid "Unable to take a screenshot of the current desktop."
 msgstr ""
 
-#: gnome-panel/gnome-panel-screenshot.glade.h:2
-msgid "<b>Options</b>"
+#: gnome-panel/gnome-panel-screenshot.c:1265
+#, c-format
+msgid "Save screenshot to _web page (save in %s)"
+msgstr ""
+
+#: gnome-panel/gnome-panel-screenshot.c:1321
+msgid "Grab a window instead of the entire screen"
+msgstr ""
+
+#: gnome-panel/gnome-panel-screenshot.c:1322
+msgid "Take screenshot after specified delay [in seconds]"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:3
-msgid "<b>Preview</b>"
+msgid "<b>Options</b>"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:4
-msgid "Save Screenshot"
+msgid "<b>Preview</b>"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:5
-msgid "Save screenshot to _desktop"
+msgid "Save Screenshot"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:6
-msgid "Save screenshot to _web page (save in ~/public__html)"
+msgid "Save screenshot to _desktop"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:7
-msgid "_Print screenshot..."
+msgid "Save screenshot to _file:"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.glade.h:8
-msgid "_Save screenshot to file:"
+msgid "Save screenshot to _web page (save in ~/public__html)"
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.schemas.in.h:1
@@ -1607,906 +1113,1017 @@ msgid ""
 msgstr ""
 
 #: gnome-panel/gnome-panel-screenshot.schemas.in.h:2
-msgid "Web directory."
+msgid "Web directory"
+msgstr "Eolaire Idirlíon"
+
+#: gnome-panel/launcher.c:139
+msgid "Cannot save launcher to disk"
+msgstr "Ní féidir lainseoir a sábháil go diosca"
+
+#: gnome-panel/launcher.c:169 gnome-panel/launcher.c:217
+#: gnome-panel/launcher.c:262
+msgid "Cannot launch icon"
+msgstr "Ní féidir dealbh a lainseáil"
+
+#: gnome-panel/launcher.c:170
+msgid "This launch icon does not specify a url to show."
 msgstr ""
 
-#: gnome-panel/GNOME_Panel.server.in.h:1
-#, fuzzy
-msgid "GNOME Panel Shell"
-msgstr "Eagathóir Chláir GNOME"
-
-#: gnome-panel/gnome-run.c:244 gnome-panel/gnome-run.c:265
+#: gnome-panel/launcher.c:181
 #, c-format
-msgid ""
-"<b>Failed to run this program</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
+msgid "Cannot show %s"
+msgstr "Ní féidir %s a thaispeáint"
 
-#: gnome-panel/gnome-run.c:388 gnome-panel/gnome-run.c:468
-#, c-format
-msgid ""
-"<b>Failed to execute command:</b> '%s'\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/gnome-run.c:495
-#, c-format
-msgid ""
-"<b>Failed to open file:</b> '%s'\n"
-"\n"
-"Details: no application available to open file"
-msgstr ""
-
-#: gnome-panel/gnome-run.c:510
-#, c-format
-msgid ""
-"<b>Failed to open file:</b> '%s'\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/gnome-run.c:599
-#, fuzzy
-msgid "Choose a file"
-msgstr "Comhad Taisce"
-
-#: gnome-panel/gnome-run.c:838 gnome-panel/gnome-run.c:839
-#, fuzzy
-msgid "Known Applications"
-msgstr "Beochan"
-
-#: gnome-panel/gnome-run.c:970
-#, fuzzy
-msgid "Command to run"
-msgstr "Ordú (roghnach)"
-
-#: gnome-panel/gnome-run.c:1005
-#, fuzzy
-msgid "Run in _terminal"
-msgstr "Teirminéal _Nua"
-
-#: gnome-panel/gnome-run.c:1010
-msgid "_Append File..."
-msgstr ""
-
-#: gnome-panel/gnome-run.c:1393
-#, fuzzy, c-format
-msgid "Will run command: '%s'"
-msgstr "Ordú Printéir:"
-
-#: gnome-panel/gnome-run.c:1402
-#, fuzzy
-msgid "No application selected"
-msgstr "Tóg na Dathanna"
-
-#: gnome-panel/gnome-run.c:1522
-#, fuzzy
-msgid "List of known applications"
-msgstr "Beochan"
-
-#: gnome-panel/gnome-run.c:1523
-msgid "Choose an application to run from the list"
-msgstr ""
-
-#: gnome-panel/gnome-run.c:1649 gnome-panel/panel-action-button.c:203
-#, fuzzy
-msgid "Run Program"
-msgstr "Ríomhchlar"
-
-#: gnome-panel/launcher.c:100
-msgid "This launch icon does not specify a url to show"
-msgstr ""
-
-#: gnome-panel/launcher.c:109
-#, c-format
-msgid ""
-"Cannot show %s\n"
-"%s"
-msgstr ""
-
-#: gnome-panel/launcher.c:141
-#, c-format
-msgid ""
-"<b>Cannot launch icon</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/launcher.c:194
-#, c-format
-msgid ""
-"Cannot launch icon\n"
-"%s"
-msgstr ""
-
-#: gnome-panel/launcher.c:391
+#: gnome-panel/launcher.c:456
 msgid "No URI provided for panel launcher desktop file\n"
 msgstr ""
 
-#: gnome-panel/launcher.c:411
+#: gnome-panel/launcher.c:470
 #, c-format
 msgid "Unable to open desktop file %s for panel launcher%s%s\n"
 msgstr ""
 
-#: gnome-panel/launcher.c:525
-#, fuzzy, c-format
-msgid "Help on %s _Application"
-msgstr "Cabhair le Cabhair"
-
-#: gnome-panel/launcher.c:647 gnome-panel/menu-ditem.c:180
-#: gnome-panel/menu-ditem.c:257
-#, fuzzy
+#: gnome-panel/launcher.c:712 gnome-panel/menu-ditem.c:182
+#: gnome-panel/menu-ditem.c:265
 msgid "Launcher Properties"
-msgstr "Ábaltachtaí seoltóra"
+msgstr "Ábaltachtaí lainseoir"
 
-#: gnome-panel/launcher.c:758
+#: gnome-panel/launcher.c:899
 #, c-format
 msgid "Key %s is not set, can't load launcher\n"
 msgstr ""
 
-#: gnome-panel/launcher.c:854 gnome-panel/menu-ditem.c:526
-#, fuzzy
-msgid "Create Launcher"
-msgstr "Cruthaigh seoltóra feidhmchlárín"
+#: gnome-panel/launcher.c:953 gnome-panel/launcher.c:970
+#: gnome-panel/menu-ditem.c:463 gnome-panel/menu-ditem.c:480
+#: gnome-panel/menu-ditem.c:536
+msgid "Cannot create launcher"
+msgstr "Ní féidir lainseoir a cruthaigh"
 
-#: gnome-panel/launcher.c:1076
-#, c-format
-msgid ""
-"Cannot save launcher to disk, the following error occured:\n"
-"\n"
-"%s"
+#: gnome-panel/launcher.c:954 gnome-panel/menu-ditem.c:464
+msgid "You have to specify a name."
 msgstr ""
 
-#: gnome-panel/launcher.c:1163 gnome-panel/menu.c:1188
-#: gnome-panel/panel-util.c:96
-#, c-format
-msgid ""
-"<b>Cannot display help document</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/main.c:149
-msgid "Specify a profile name to load"
-msgstr ""
-
-#: gnome-panel/menu.c:240
-msgid "Many, many others..."
-msgstr ""
-
-#. ... from the Monty Pythons show...
-#: gnome-panel/menu.c:242
-#, fuzzy
-msgid "and finally, The Knights Who Say... NI!"
-msgstr "agus ansin, Na Fianna a deireann .. NI!"
-
-#: gnome-panel/menu.c:277
-msgid ""
-"This program is responsible for launching other applications, embedding "
-"small applets within itself, world peace, and random X crashes."
-msgstr ""
-
-#: gnome-panel/menu.c:283
-msgid ""
-"\n"
-"\n"
-"Running in \"Lockdown\" mode.  This means your system administrator has "
-"prohibited any changes to the panel's configuration to take place."
-msgstr ""
-
-#: gnome-panel/menu.c:289
-msgid "The GNOME Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:311
-msgid "End world hunger"
-msgstr ""
-
-#: gnome-panel/menu.c:329
-#, c-format
-msgid ""
-"<b>Can't execute 'About GNOME'</b>\n"
-"\n"
-"Details: %s probably does not exist"
-msgstr ""
-
-#: gnome-panel/menu.c:353
-#, c-format
-msgid ""
-"<b>Can't launch entry</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/menu.c:363 gnome-panel/menu.c:1162 gnome-panel/menu.c:1199
-#, c-format
-msgid ""
-"<b>Can't load entry</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/menu.c:1066
-#, c-format
-msgid ""
-"<b>Could not remove the menu item %s</b>\n"
-"\n"
-"Details: %s\n"
-msgstr ""
-
-#: gnome-panel/menu.c:1076
-#, c-format
-msgid "Could not get file name from path: %s"
-msgstr ""
-
-#: gnome-panel/menu.c:1083
-#, c-format
-msgid "Could not get directory name from path: %s"
-msgstr ""
-
-#: gnome-panel/menu.c:1153
-msgid ""
-"<b>Can't add to run box</b>\n"
-"\n"
-"Details: No 'Exec' or 'URL' field in entry"
-msgstr ""
-
-#: gnome-panel/menu.c:1463
-msgid "Add this launcher to panel"
-msgstr "Cuir le Painial"
-
-#: gnome-panel/menu.c:1471
-msgid "Remove this item"
-msgstr "Cuir as Painial"
-
-#: gnome-panel/menu.c:1487
-msgid "Put into run dialog"
-msgstr ""
-
-#: gnome-panel/menu.c:1505
-#, fuzzy, c-format
-msgid "Help on %s"
-msgstr "Cabhair le Cabhair"
-
-#: gnome-panel/menu.c:1506
-#, fuzzy
-msgid "Application"
-msgstr "Beochan"
-
-#: gnome-panel/menu.c:1552
-#, fuzzy
-msgid "Entire menu"
-msgstr "san fóchlár"
-
-#: gnome-panel/menu.c:1561
-msgid "Add this as drawer to panel"
-msgstr ""
-
-#: gnome-panel/menu.c:1569
-msgid "Add this as menu to panel"
-msgstr ""
-
-#: gnome-panel/menu.c:1577
-msgid "Add new item to this menu"
-msgstr ""
-
-#: gnome-panel/menu.c:1603
-msgid "Properties"
-msgstr "Ábaltachtaí"
-
-#: gnome-panel/menu.c:2532 gnome-panel/menu.c:2587 gnome-panel/menu.c:2623
-#: libpanel-applet/panel-test-applets.c:102
-#, c-format
-msgid "query returned exception %s\n"
-msgstr ""
-
-#: gnome-panel/menu.c:2894 gnome-panel/menu.c:2899
-#, fuzzy
-msgid "Aligned Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:2900
-#, fuzzy
-msgid "GNOME Aligned Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:2917 gnome-panel/menu.c:2921
-#: gnome-panel/panel-config.c:1727
-#, fuzzy
-msgid "Edge Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:2922
-#, fuzzy
-msgid "GNOME Edge Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:2943 gnome-panel/menu.c:2947
-#: gnome-panel/panel-config.c:1749
-msgid "Sliding Panel"
-msgstr ""
-
-#: gnome-panel/menu.c:2948
-#, fuzzy
-msgid "GNOME Sliding Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:2966 gnome-panel/menu.c:2971
-#: gnome-panel/panel-config.c:1760
-msgid "Floating Panel"
-msgstr ""
-
-#: gnome-panel/menu.c:2972
-#, fuzzy
-msgid "GNOME Floating Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:2992
-msgid "You can only have one menu panel at a time."
-msgstr ""
-
-#: gnome-panel/menu.c:3037
-#, fuzzy
-msgid "C_orner Panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/menu.c:3039
-#, fuzzy
-msgid "Create corner panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/menu.c:3047
-#, fuzzy
-msgid "_Edge Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:3049
-#, fuzzy
-msgid "Create edge panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/menu.c:3057
-#, fuzzy
-msgid "_Floating Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:3059
-#, fuzzy
-msgid "Create floating panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/menu.c:3067
-#, fuzzy
-msgid "_Sliding Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:3069
-#, fuzzy
-msgid "Create sliding panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/menu.c:3079
-#, fuzzy
-msgid "_Menu Panel"
-msgstr "Rang Chlar"
-
-#: gnome-panel/menu.c:3081
-#, fuzzy
-msgid "Create menu panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/menu.c:3170 gnome-panel/menu.c:3176 gnome-panel/menu.c:3717
-#, fuzzy
-msgid "KDE Menu"
-msgstr "Cláranna KDE"
-
-#: gnome-panel/menu.c:3233
-#, fuzzy
-msgid "Lock"
-msgstr "Clog"
-
-#: gnome-panel/menu.c:3242 gnome-panel/panel-action-button.c:213
-msgid "Screenshot"
-msgstr ""
-
-#: gnome-panel/menu.c:3251
-msgid "Search"
-msgstr ""
-
-#: gnome-panel/menu.c:3260
-#, fuzzy
-msgid "Run"
-msgstr "Ag Rith"
-
-#: gnome-panel/menu.c:3332
-msgid "You cannot remove your last panel."
-msgstr ""
-
-#: gnome-panel/menu.c:3345
-msgid ""
-"When a panel is deleted, the panel and its\n"
-" settings are lost. Delete this panel?"
-msgstr ""
-
-#: gnome-panel/menu.c:3353
-#, fuzzy
-msgid "Delete Panel"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/menu.c:3419
-#, fuzzy
-msgid "_Delete This Panel..."
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/menu.c:3422 gnome-panel/menu.c:3460
-#, fuzzy
-msgid "_Delete This Panel"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/menu.c:3444
-#, fuzzy
-msgid "_Add to Panel"
-msgstr "Cuir le Painial"
-
-#: gnome-panel/menu.c:3489
-#, fuzzy
-msgid "_New Panel"
-msgstr "An Painéal GNOME"
-
-#: gnome-panel/menu.c:3531
-#, fuzzy
-msgid "_About Panels"
-msgstr "Faoi..."
-
-#: gnome-panel/menu.c:3544
-#, fuzzy
-msgid "About _GNOME"
-msgstr "Faoi GNOME..."
-
-#: gnome-panel/menu.c:3584
-#, fuzzy
-msgid "Launcher..."
-msgstr "Dealbh Seoltóra"
-
-#: gnome-panel/menu.c:3592
-#, fuzzy
-msgid "Launcher from menu"
-msgstr "Dealbh Seoltóra"
-
-#: gnome-panel/menu.c:3601
-#, fuzzy
-msgid "Button"
-msgstr "Folaigh cnaipí"
-
-#: gnome-panel/menu.c:3611 gnome-panel/menu.c:3941 gnome-panel/menu.c:3969
-#: gnome-panel/menu.c:4165
-#, fuzzy
-msgid "Main Menu"
-msgstr "Príomhchlair"
-
-#: gnome-panel/menu.c:3648
-msgid "Lock the screen so that you can temporarily leave your computer"
-msgstr ""
-
-#: gnome-panel/menu.c:3660
-msgid ""
-"Log out of this session to log in as a different user or to shut down your "
-"computer"
-msgstr ""
-
-#: gnome-panel/menu.c:3825
-#, fuzzy
-msgid "Run a command"
-msgstr "Ordú Printéir:"
-
-#: gnome-panel/menu.c:3871
-msgid "Desktop"
-msgstr ""
-
-#: gnome-panel/menu-ditem.c:290 gnome-panel/menu.c:3889
-msgid "Menu"
-msgstr "Clár"
-
-#: gnome-panel/menu.c:3891
-#, fuzzy
-msgid "Menu:"
-msgstr "Clár"
-
-#: gnome-panel/menu.c:3963
-msgid "Can't create menu, using main menu!"
-msgstr ""
-
-#: gnome-panel/menu.c:4400
-#, c-format
-msgid "No path set at %s for panel menu object\n"
-msgstr ""
-
-#: gnome-panel/menu-ditem.c:123
-#, c-format
-msgid ""
-"<b>Cannot save changes to launcher</b>\n"
-"\n"
-"Details: %s"
-msgstr ""
-
-#: gnome-panel/menu-ditem.c:447
-msgid "You have to specify a name for the launcher."
-msgstr ""
-
-#: gnome-panel/menu-ditem.c:463
+#: gnome-panel/launcher.c:971 gnome-panel/menu-ditem.c:481
 msgid "You have to specify a valid URL or command."
 msgstr ""
 
-#. class
-#: gnome-panel/menu-ditem.c:494
-#, c-format
-msgid ""
-"<b>Cannot save menu item to disk</b>\n"
-"\n"
-"Details: %s"
+#: gnome-panel/launcher.c:1014 gnome-panel/menu-ditem.c:544
+msgid "Create Launcher"
+msgstr "Cruthaigh Lainseoir"
+
+#: gnome-panel/main.c:49
+msgid "Specify a profile name to load"
 msgstr ""
 
-#: gnome-panel/menu-ditem.c:519
+#: gnome-panel/menu-ditem.c:127
+msgid "Cannot save changes to launcher"
+msgstr ""
+
+#: gnome-panel/menu-ditem.c:309 gnome-panel/menu.c:1198
+msgid "Menu"
+msgstr "Roghchlár"
+
+#. class
+#: gnome-panel/menu-ditem.c:511
+msgid "Cannot save menu item to disk"
+msgstr ""
+
+#: gnome-panel/menu-ditem.c:537
 msgid ""
 "You can not create a new launcher at this location since the location is not "
 "writable."
 msgstr ""
 
-#: gnome-panel/panel-action-button.c:83
+#: gnome-panel/menu.c:191
+msgid "And many, many others..."
+msgstr ""
+
+#: gnome-panel/menu.c:214
+msgid "The GNOME Panel"
+msgstr "An Painéal GNOME"
+
+#: gnome-panel/menu.c:217
+msgid ""
+"This program is responsible for launching other applications and embedding "
+"small applets within itself."
+msgstr ""
+
+#: gnome-panel/menu.c:246 gnome-panel/panel-action-button.c:201
+#: gnome-panel/panel-action-button.c:225 gnome-panel/panel-util.c:702
+#, c-format
+msgid "Cannot execute '%s'"
+msgstr "Ní féidir '%s' a chur i gcrích"
+
+#: gnome-panel/menu.c:247
+#, c-format
+msgid "%s: %s"
+msgstr "%s: %s"
+
+#: gnome-panel/menu.c:248
+msgid "About GNOME"
+msgstr "Faoi GNOME"
+
+#: gnome-panel/menu.c:272
+msgid "Cannot launch entry"
+msgstr "Ní féidir iontráil a lainseáil"
+
+#: gnome-panel/menu.c:284
+msgid "Cannot load entry"
+msgstr "Ní féidir iontráil a lódáil"
+
+#: gnome-panel/menu.c:991
+#, c-format
+msgid "Cannot remove menu item %s"
+msgstr ""
+
+#: gnome-panel/menu.c:1002
+#, c-format
+msgid "Could not get file name from path: %s"
+msgstr ""
+
+#: gnome-panel/menu.c:1009
+#, c-format
+msgid "Could not get directory name from path: %s"
+msgstr ""
+
+#: gnome-panel/menu.c:1193 gnome-panel/panel-addto.c:125
+msgid "Main Menu"
+msgstr "Príomhroghchlár"
+
+#: gnome-panel/menu.c:1340
+msgid "Add this launcher to panel"
+msgstr "Cuir le Painial"
+
+#: gnome-panel/menu.c:1349
+msgid "Remove this item"
+msgstr "Cuir as Painial"
+
+#: gnome-panel/menu.c:1398
+msgid "Entire menu"
+msgstr "Roghchlár iomlán"
+
+#: gnome-panel/menu.c:1406
+msgid "Add this as drawer to panel"
+msgstr ""
+
+#: gnome-panel/menu.c:1417
+msgid "Add this as menu to panel"
+msgstr ""
+
+#: gnome-panel/menu.c:1429
+msgid "Add new item to this menu"
+msgstr ""
+
+#: gnome-panel/menu.c:1456
+msgid "Properties"
+msgstr "Ábaltachtaí"
+
+#: gnome-panel/menu.c:2169 gnome-panel/menu.c:2173 gnome-panel/menu.c:2561
+#: gnome-panel/panel-menu-bar.c:202
+msgid "Applications"
+msgstr "Feidhmcláranna"
+
+#: gnome-panel/menu.c:2213
+msgid "You cannot remove your last panel."
+msgstr "Ní féidir leat do phainéal deireanach a scrios."
+
+#: gnome-panel/menu.c:2273
+msgid "_Delete This Panel..."
+msgstr "_Scríos an paineál seo..."
+
+#: gnome-panel/menu.c:2276 gnome-panel/menu.c:2305
+msgid "_Delete This Panel"
+msgstr "_Scríos an paineál seo"
+
+#: gnome-panel/menu.c:2289
+#, fuzzy
+msgid "_Add to Panel..."
+msgstr "_Cuir le Painial"
+
+#: gnome-panel/menu.c:2334
+msgid "_New Panel"
+msgstr "Painéal _Nua"
+
+#: gnome-panel/menu.c:2381
+#, fuzzy
+msgid "A_bout Panels"
+msgstr "_Faoi na Painséalaí"
+
+#: gnome-panel/menu.c:2395
+msgid "About _GNOME"
+msgstr "Faoi _GNOME"
+
+#: gnome-panel/menu.c:2642
+msgid "Desktop"
+msgstr "Deasc"
+
+#: gnome-panel/panel-action-button.c:108
 msgid "_Activate Screensaver"
 msgstr ""
 
-#: gnome-panel/panel-action-button.c:84
-#, fuzzy
+#: gnome-panel/panel-action-button.c:114
 msgid "_Lock Screen"
-msgstr "Glasál an scathán"
+msgstr "G_lasáil an scathán"
 
-#: gnome-panel/panel-action-button.c:85
+#: gnome-panel/panel-action-button.c:120
 msgid "_Kill Screensaver Daemon"
 msgstr ""
 
-#: gnome-panel/panel-action-button.c:86
+#: gnome-panel/panel-action-button.c:126
 msgid "Restart _Screensaver Daemon"
 msgstr ""
 
-#: gnome-panel/panel-action-button.c:155
-#, fuzzy
-msgid "Cannot execute gnome-search-tool"
-msgstr "ag cruthaigh fillteán 'sáidtheoir: %s\n"
-
-#: gnome-panel/panel-action-button.c:171
-#, fuzzy
-msgid "Cannot execute gnome-panel-screenshot"
-msgstr "ag cruthaigh fillteán 'sáidtheoir: %s\n"
-
-#: gnome-panel/panel-action-button.c:191
+#: gnome-panel/panel-action-button.c:266
 msgid "Lock screen"
-msgstr "Glasál an scathán"
+msgstr "Glasáil an scathán"
 
-#: gnome-panel/panel-action-button.c:198
-msgid "Log out of GNOME"
-msgstr "Éirigh as an GNOME"
-
-#: gnome-panel/panel-action-button.c:208
-#, fuzzy
-msgid "Search for Files"
-msgstr "Comhad Speisialta"
-
-#: gnome-panel/panel-action-button.c:364
-#, fuzzy
-msgid "Action Type"
-msgstr "Beochan"
-
-#: gnome-panel/panel-action-button.c:365
-msgid "The type of action this button implements"
+#: gnome-panel/panel-action-button.c:267
+msgid "Protect your computer from unauthorized use"
 msgstr ""
 
-#: gnome-panel/panel-applet-frame.c:185
-msgid "Cannot register control widget\n"
+#: gnome-panel/panel-action-button.c:278
+msgid "Log Out"
+msgstr "Éirigh as"
+
+#: gnome-panel/panel-action-button.c:279
+msgid ""
+"Log out of this session to log in as a different user or to shut down the "
+"computer"
 msgstr ""
 
-#: gnome-panel/panel-applet-frame.c:602
+#: gnome-panel/panel-action-button.c:288
+msgid "Run Application..."
+msgstr "Rith Feidhmchlár..."
+
+#: gnome-panel/panel-action-button.c:289
+msgid "Run an Application by entering a command"
+msgstr ""
+
+#: gnome-panel/panel-action-button.c:298
+msgid "Search for Files..."
+msgstr "Cuardaigh Comhad..."
+
+#: gnome-panel/panel-action-button.c:299
+msgid "Find files, folders, and documents on your computer"
+msgstr ""
+"Cuardaigh le haighaidh comhad, comhadlann agus doiciméad ar do ríomhaire"
+
+#: gnome-panel/panel-action-button.c:307
+msgid "Take Screenshot..."
+msgstr ""
+
+#: gnome-panel/panel-action-button.c:308
+msgid "Take a screenshot of your desktop"
+msgstr "Tóg pictiúr Scáileán"
+
+#: gnome-panel/panel-action-button.c:316
+msgid "Force Quit"
+msgstr ""
+
+#: gnome-panel/panel-action-button.c:317
+msgid "Force a misbehaving application to quit"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:103
+msgid "Custom Application Launcher"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:104
+#, fuzzy
+msgid "Create a new launcher"
+msgstr "Cruthaigh Lainseoir"
+
+#: gnome-panel/panel-addto.c:114
+#, fuzzy
+msgid "Application Launcher..."
+msgstr "Rith Feidhmchlár..."
+
+#: gnome-panel/panel-addto.c:115
+msgid "Launch a program that is already in the GNOME menu"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:126
+#, fuzzy
+msgid "The main GNOME menu"
+msgstr "An Painéal GNOME"
+
+#: gnome-panel/panel-addto.c:136
+msgid "Menu Bar"
+msgstr "Barra Roghchláir"
+
+#: gnome-panel/panel-addto.c:137
+msgid "A custom menu bar"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:148
+msgid "A pop out drawer to store other items in"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:236
+msgid "(empty)"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:352 libpanel-applet/panel-test-applets.c:156
+#, c-format
+msgid "query returned exception %s\n"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:766
+#, fuzzy, c-format
+msgid "Add to %s"
+msgstr "_Cuir le Painial"
+
+#: gnome-panel/panel-addto.c:768
+#, fuzzy
+msgid "Add to the panel"
+msgstr "_Cuir le Painial"
+
+#: gnome-panel/panel-addto.c:774
+#, c-format
+msgid "Select an _item to add to %s:"
+msgstr ""
+
+#: gnome-panel/panel-addto.c:777
+msgid "Select an _item to add to the panel:"
+msgstr ""
+
+#: gnome-panel/panel-applet-frame.c:757
 #, c-format
 msgid "Exception from popup_menu '%s'\n"
 msgstr ""
 
-#: gnome-panel/panel-applet-frame.c:711
+#: gnome-panel/panel-applet-frame.c:879
 #, c-format
 msgid ""
-"The %s applet appears to have died unexpectedly\n"
+"The \"%s\" applet appears to have died unexpectedly.\n"
 "\n"
-"Reload this applet?\n"
+"Do you want to reload this applet?"
+msgstr ""
+
+#: gnome-panel/panel-applet-frame.c:885
+msgid ""
+"\n"
 "\n"
 "(If you choose not to reload it at this time you can always add it by right "
 "clicking on the panel and clicking on the \"Add to Panel\" submenu)"
 msgstr ""
 
-#: gnome-panel/panel-applet-frame.c:746
-#, fuzzy
+#: gnome-panel/panel-applet-frame.c:925
 msgid "D_on't Delete"
-msgstr "Dealaigh"
+msgstr "Ná Scri_os"
 
-#: gnome-panel/panel-applet-frame.c:780
+#: gnome-panel/panel-applet-frame.c:961
 #, c-format
+msgid "The panel encountered a problem while loading \"%s\"."
+msgstr ""
+
+#: gnome-panel/panel-applet-frame.c:966 gnome-panel/panel-util.c:260
+#, c-format
+msgid "Details: %s"
+msgstr "Sonraí: %s"
+
+#: gnome-panel/panel-applet-frame.c:976 gnome-panel/panel-applet-frame.c:989
 msgid ""
-"The panel encountered a problem while loading \"%s\"\n"
-"Details: %s\n"
+"\n"
 "\n"
 "Do you want to delete the applet from your configuration?"
 msgstr ""
 
-#: gnome-panel/panel-applet-frame.c:878
+#: gnome-panel/panel-applet-frame.c:1097
 msgid "Unable to obtain AppletShell interface from control\n"
 msgstr ""
 
-#: gnome-panel/panel.c:876
+#: gnome-panel/panel-bindings.c:167
 #, c-format
-msgid "Open URL: %s"
+msgid "Error watching gconf key '%s': %s"
 msgstr ""
 
-#: gnome-panel/panel.c:2594
+#: gnome-panel/panel-bindings.c:185
+#, c-format
+msgid "Error loading gconf directory '%s': %s"
+msgstr ""
+
+#: gnome-panel/panel-bindings.c:199
+#, c-format
+msgid "Error getting value for '%s': %s"
+msgstr ""
+
+#: gnome-panel/panel-force-quit.c:74
 msgid ""
-"No panels were found in your configuration.  I will create a menu panel for "
-"you"
+"Click on a window to force the application to quit. To cancel press <ESC>."
 msgstr ""
 
-#. Auto-hide
-#: gnome-panel/panel-config.c:546
-#, fuzzy
-msgid "_Autohide"
-msgstr "Cuir ar súil Auto-hide"
-
-#. Hidebuttons enable
-#: gnome-panel/panel-config.c:557
-#, fuzzy
-msgid "Show hide _buttons"
-msgstr "Taispeáin ... cnaipí"
-
-#. Arrow enable
-#: gnome-panel/panel-config.c:569
-#, fuzzy
-msgid "Arro_ws on hide buttons"
-msgstr "Taispeáin ... cnaipí"
-
-#: gnome-panel/panel-config.c:624
-#, fuzzy
-msgid "Miscellaneous:"
-msgstr "Teibi."
-
-#: gnome-panel/panel-config.c:642
-msgid "Current screen:"
+#: gnome-panel/panel-force-quit.c:186
+msgid ""
+"Force this application to exit?\n"
+"(Any open documents will be lost.)"
 msgstr ""
 
-#: gnome-panel/panel-config.c:658
-msgid "Current monitor:"
+#: gnome-panel/panel-general.schemas.in.h:1
+msgid ""
+"A list of panel IDs. Each ID identifies an individual toplevel panel. The "
+"settings for each of these panels are stored in /apps/panel/general/"
+"$(profile)/toplevels/$(id)."
 msgstr ""
 
-#: gnome-panel/panel-config.c:750
-msgid "Indicates the panel position and orientation on screen"
+#: gnome-panel/panel-general.schemas.in.h:2
+msgid ""
+"A list of panel applet IDs. Each ID identifies an individual panel applet. "
+"The settings for each of these applets are stored in /apps/panel/general/"
+"$(profiles)/applets/$(id)."
 msgstr ""
 
-#: gnome-panel/panel-config.c:768
-#, fuzzy
-msgid "_Position:"
-msgstr "Áit Paineál"
-
-#: gnome-panel/panel-config.c:993 libpanel-applet/panel-test-applets.glade.h:6
-#, fuzzy
-msgid "Orientation:"
-msgstr "Treoshuíomh"
-
-#: gnome-panel/panel-config.c:1008
-#, fuzzy
-msgid "Hori_zontal"
-msgstr "Cothrománach"
-
-#: gnome-panel/panel-config.c:1020
-#, fuzzy
-msgid "_Vertical"
-msgstr "Ingearach"
-
-#: gnome-panel/panel-config.c:1030
-#, fuzzy
-msgid "Position:"
-msgstr "Áit Paineál"
-
-#: gnome-panel/panel-config.c:1045
-#, fuzzy
-msgid "H_orizontal:"
-msgstr "Cothrománach"
-
-#: gnome-panel/panel-config.c:1065
-#, fuzzy
-msgid "Ver_tical:"
-msgstr "Ingearach"
-
-#: gnome-panel/panel-config.c:1130
-msgid "_Distance from edge:"
+#: gnome-panel/panel-general.schemas.in.h:3
+msgid ""
+"A list of panel object IDs. Each ID identifies an individual panel object (e."
+"g. a launcher, action button or menu button/bar). The settings for each of "
+"these objects are stored in /apps/panel/general/$(profiles)/objects/$(id)."
 msgstr ""
 
-#: gnome-panel/panel-config.c:1189
+#: gnome-panel/panel-general.schemas.in.h:4
+msgid "Enable program list in \"Run Application\" dialog"
+msgstr ""
+
+#: gnome-panel/panel-general.schemas.in.h:5
+msgid "Expand program list in \"Run Application\" dialog"
+msgstr ""
+
+#: gnome-panel/panel-general.schemas.in.h:6
+msgid ""
+"If true, the \"Known Applications\" listing in the \"Run Application\" "
+"dialog is expanded when the dialog is opened. This key is only relevant if "
+"the enable_program_list key is true."
+msgstr ""
+
+#: gnome-panel/panel-general.schemas.in.h:7
+msgid ""
+"If true, the \"Known Applications\" listing in the \"Run Application\" "
+"dialog is made available. Whether or not the listing is expanded when the "
+"dialog is shown is controlled by the show_program_list key."
+msgstr ""
+
+#: gnome-panel/panel-general.schemas.in.h:8
+msgid "Panel ID list"
+msgstr ""
+
+#: gnome-panel/panel-general.schemas.in.h:9
+msgid "Panel applet ID list"
+msgstr "Liosta CA feidhmchláirín painéil"
+
+#: gnome-panel/panel-general.schemas.in.h:10
+msgid "Panel object ID list"
+msgstr "Liosta CA ruda painéil"
+
+#: gnome-panel/panel-global.schemas.in.h:1
+msgid ""
+"A list of applet IIDs that the panel will ignore. This way you can disable "
+"certain applets from loading or showing up in the menu. For example to "
+"disable the mini-commander applet add 'OAFIID:GNOME_MiniCommanderApplet' to "
+"this list. The panel must be restarted for this to take effect."
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:2
+#: gnome-panel/panel-toplevel.schemas.in.h:1
+msgid "Animation speed"
+msgstr "Luas beochana"
+
+#: gnome-panel/panel-global.schemas.in.h:3
+msgid "Applet IIDs to disable from loading"
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:4
+msgid "Autoclose drawer"
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:5
+msgid "Complete panel lockdown"
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:6
+msgid "Confirm panel removal"
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:7
+msgid "Disable Force Quit"
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:8
 #, fuzzy
-msgid "_Size:"
-msgstr "Méid"
+msgid "Disable Lock Screen"
+msgstr "Glasáil an scathán"
 
-#: gnome-panel/panel-config.c:1197
-#: libpanel-applet/panel-test-applets.glade.h:15
-msgid "XX Small"
+#: gnome-panel/panel-global.schemas.in.h:9
+msgid "Disable Logging Out"
 msgstr ""
 
-#: gnome-panel/panel-config.c:1205
-#: libpanel-applet/panel-test-applets.glade.h:13
-msgid "X Small"
+#: gnome-panel/panel-global.schemas.in.h:10
+msgid "Display \"Run Application\" dialog keybinding"
 msgstr ""
 
-#: gnome-panel/panel-config.c:1213
-#: libpanel-applet/panel-test-applets.glade.h:10
-msgid "Small"
+#: gnome-panel/panel-global.schemas.in.h:11
+#: gnome-panel/panel-toplevel.schemas.in.h:9
+msgid "Enable animations"
+msgstr "Úsáid beochain"
+
+#: gnome-panel/panel-global.schemas.in.h:12
+msgid "Enable keybindings"
 msgstr ""
 
-#: gnome-panel/panel-config.c:1229
-#: libpanel-applet/panel-test-applets.glade.h:3
-#, fuzzy
-msgid "Large"
-msgstr "Íomha"
+#: gnome-panel/panel-global.schemas.in.h:13
+msgid "Enable tooltips"
+msgstr "Úsáid leathfhocail"
 
-#: gnome-panel/panel-config.c:1237
-#: libpanel-applet/panel-test-applets.glade.h:12
-msgid "X Large"
+#: gnome-panel/panel-global.schemas.in.h:14
+msgid "FIXME - is this resolved with the new menu stuff"
 msgstr ""
 
-#: gnome-panel/panel-config.c:1245
-#: libpanel-applet/panel-test-applets.glade.h:14
-msgid "XX Large"
-msgstr ""
-
-#: gnome-panel/panel-config.c:1420
-#, fuzzy
-msgid "_Type:"
-msgstr "Saghas"
-
-#: gnome-panel/panel-config.c:1429
-msgid "Default"
-msgstr "Gnáth"
-
-#: gnome-panel/panel-config.c:1431
-msgid "Color"
-msgstr "Dath"
-
-#: gnome-panel/panel-config.c:1433
-msgid "Image"
-msgstr "Íomha"
-
-#: gnome-panel/panel-config.c:1435
-msgid "Transparent"
-msgstr ""
-
-#: gnome-panel/panel-config.c:1450
-#, fuzzy
-msgid "_Color:"
-msgstr "Dath"
-
-#. image frame
-#: gnome-panel/panel-config.c:1480
-#, fuzzy
-msgid "Image:"
-msgstr "Íomha"
-
-#: gnome-panel/panel-config.c:1512
-#, fuzzy
-msgid "T_ile"
-msgstr "_Comhad"
-
-#: gnome-panel/panel-config.c:1517
-#, fuzzy
-msgid "_Scale"
-msgstr "Comhad Speisialta"
-
-#: gnome-panel/panel-config.c:1521
-msgid "St_retch"
-msgstr ""
-
-#: gnome-panel/panel-config.c:1535
-#, fuzzy
-msgid "Rotate image when panel is _vertical"
-msgstr "Scríos an paineál seo"
-
-#: gnome-panel/panel-config.c:1596
-msgid "Edge panel"
-msgstr ""
-
-#: gnome-panel/panel-config.c:1603
-#, fuzzy
-msgid "Corner panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/panel-config.c:1609
-msgid "Sliding panel"
-msgstr ""
-
-#: gnome-panel/panel-config.c:1615
-msgid "Floating panel"
-msgstr ""
-
-#: gnome-panel/panel-config.c:1693
-#, fuzzy
-msgid "Panel Properties"
-msgstr "Ábaltachtaí Paineál"
-
-#: gnome-panel/panel-config.c:1738
-#, fuzzy
-msgid "Corner Panel"
-msgstr "Cruthaigh Painéal"
-
-#: gnome-panel/panel-config.c:1779
-msgid "Background"
-msgstr "Cúlra"
-
-#: gnome-panel/panel-global-config.schemas.in.h:1
-msgid "Display \"Run\" dialog"
-msgstr ""
-
-#: gnome-panel/panel-global-config.schemas.in.h:2
-msgid "FIXME - is this resolved with the new menu stuff?"
-msgstr ""
-
-#: gnome-panel/panel-global-config.schemas.in.h:3
+#: gnome-panel/panel-global.schemas.in.h:15
 msgid "FIXME - need to define limits"
 msgstr ""
 
-#: gnome-panel/panel-global-config.schemas.in.h:4
-#, fuzzy
-msgid "Popup the panel menu"
-msgstr "Faoi..."
-
-#: gnome-panel/panel-global-config.schemas.in.h:5
-msgid "Take a screen shot"
+#: gnome-panel/panel-global.schemas.in.h:16
+msgid "Highlight launchers on mouseover"
 msgstr ""
 
-#: gnome-panel/panel-global-config.schemas.in.h:6
-msgid "Take a screen shot of a window"
+#: gnome-panel/panel-global.schemas.in.h:17
+msgid ""
+"If true, a dialog is shown asking for confirmation if the user wants to "
+"remove a panel."
 msgstr ""
 
-#: gnome-panel/panel-per-panel-config.schemas.in.h:1
-msgid "Enable the program listing in the run box"
+#: gnome-panel/panel-global.schemas.in.h:18
+msgid ""
+"If true, a drawer will automatically be closed when the user clicks a "
+"launcher in it."
 msgstr ""
 
-#: gnome-panel/panel-per-panel-config.schemas.in.h:2
-msgid "Show the program listing by default when opening the Run box"
+#: gnome-panel/panel-global.schemas.in.h:19
+msgid ""
+"If true, a launcher is highlighted when the user moves the pointer over it."
 msgstr ""
 
-#: gnome-panel/panel-per-panel-config.schemas.in.h:3
-msgid "Show the program listing in the Run box"
+#: gnome-panel/panel-global.schemas.in.h:20
+msgid "If true, panel-specific keybindings are enabled."
 msgstr ""
 
-#: gnome-panel/panel-recent.c:56
-#, fuzzy
+#: gnome-panel/panel-global.schemas.in.h:21
+msgid ""
+"If true, the panel will not allow a user to force an application to quit by "
+"removing access to the force quit button."
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:22
+msgid ""
+"If true, the panel will not allow a user to lock their screen, by removing "
+"access to the lock screen menu entries."
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:23
+msgid ""
+"If true, the panel will not allow a user to log out, by removing access to "
+"the log out menu entries."
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:24
+msgid ""
+"If true, the panel will not allow any changes to the configuration of the "
+"panel. Individual applets may need to be locked down separately however. The "
+"panel must be restarted for this to take effect."
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:25
+msgid "If true, tooltips are shown for objects in panels."
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:26
+msgid "Popup panel menu keybinding"
+msgstr ""
+
+#: gnome-panel/panel-global.schemas.in.h:27
+msgid "Take screenshot"
+msgstr "Glasál an scathán"
+
+#: gnome-panel/panel-global.schemas.in.h:28
+msgid "Take window screenshot"
+msgstr ""
+
+#: gnome-panel/panel-menu-bar.c:184
+msgid "Actions"
+msgstr "Gníomhartha"
+
+#: gnome-panel/panel-object.schemas.in.h:1
+msgid "Action button type"
+msgstr "Saghas cnaipe gníomh"
+
+#: gnome-panel/panel-object.schemas.in.h:2
+msgid "Applet Bonobo IID"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:3
+msgid "Icon used for object's button"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:4
+msgid ""
+"If true, the custom_icon key is used as a custom icon for the button. If "
+"false, the custom_icon key is ignored. This key is only relevant if the "
+"object_type key is \"menu-object\" or \"drawer-object\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:5
+msgid ""
+"If true, the menu_path key is used as the path from which the menu contents "
+"should be constructed. If false, the menu_path key is ignored. This key is "
+"only relevant if the object_type key is \"menu-object\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:6
+msgid ""
+"If true, the position of the object is interpreted relative to the right (or "
+"bottom if vertical) edge of the panel."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:7
+msgid ""
+"If true, the user may not move the applet without first unlocking the object "
+"using the \"Unlock\" menuitem."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:8
+msgid "Interpret position relative to bottom/right edge"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:9
+msgid "Launcher location"
+msgstr "Áit lainseoir"
+
+#: gnome-panel/panel-object.schemas.in.h:10
+msgid "Lock the object to the panel"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:11
+msgid "Menu content path"
+msgstr "Slí méid chláir"
+
+#: gnome-panel/panel-object.schemas.in.h:12
+msgid "Object's position on the panel"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:13
+msgid "Panel attached to drawer"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:14
+msgid "Panel object type"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:15
+msgid ""
+"The Bonobo implementation ID of the applet - e.g. \"OAFIID:GNOME_ClockApplet"
+"\". This key is only relevant if the object_type key is \"bonobo-applet\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:16
+msgid ""
+"The action type this button represents. Possible values are \"lock\", "
+"\"logout\", \"run\", \"search\" and \"screenshot\". This key is only "
+"relevant if the object_type key is \"action-applet\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:17
+msgid ""
+"The identifier of the panel attached to this drawer. This key is only "
+"relevant if the object_type key is \"drawer-object\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:18
+msgid "The identifier of the toplevel panel which contains this object."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:19
+msgid ""
+"The location of the .desktop file describing the launcher. This key is only "
+"relevant if the object_type key is \"launcher-object\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:20
+msgid ""
+"The location of the image file used as the icon for the object's button. "
+"This key is only relevant if the object_type key is \"drawer-object\" or "
+"\"menu-object\" and the use_custom_icon key is true."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:21
+msgid ""
+"The path from which the menu contents is contructed. This key is only "
+"relevant if the use_menu_path key is true and the object_type key is \"menu-"
+"object\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:22
+msgid ""
+"The position of this panel object. The position is specified by the number "
+"of pixels from the left (or top if vertical) panel edge."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:23
+msgid ""
+"The text to display in a tooltip for this drawer or this menu. This key is "
+"only relevant if the object_type key is \"drawer-object\" or \"menu-object\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:24
+msgid ""
+"The type of this panel object. Possible values are \"drawer-object\", \"menu-"
+"object\", \"launcher-object\", \"bonobo-applet\", \"action-applet\" and "
+"\"menu-bar\"."
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:25
+msgid "Tooltip displayed for drawer or menu"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:26
+msgid "Toplevel panel containing object"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:27
+msgid "Use custom icon for object's button"
+msgstr ""
+
+#: gnome-panel/panel-object.schemas.in.h:28
+msgid "Use custom path for menu contents"
+msgstr ""
+
+#: gnome-panel/panel-profile.c:768 gnome-panel/panel-profile.c:799
+#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1606
+#, c-format
+msgid "Error reading GConf string value '%s': %s"
+msgstr ""
+
+#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1504
+#: gnome-panel/panel-profile.c:1575 gnome-panel/panel-profile.c:1638
+#, c-format
+msgid "Error reading GConf integer value '%s': %s"
+msgstr ""
+
+#: gnome-panel/panel-profile.c:1514
+#, c-format
+msgid ""
+"Panel '%s' is set to be displayed on screen %d which is not currently "
+"available. Not loading this panel."
+msgstr ""
+
+#: gnome-panel/panel-profile.c:1590
+#, c-format
+msgid "Error reading GConf boolean value '%s': %s"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:3
+msgid "<small>Opaque</small>"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:4
+msgid "<small>Transparent</small>"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:5
+msgid "Arro_ws on hide buttons"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:6
+msgid "Background"
+msgstr "Cúlra"
+
+#: gnome-panel/panel-properties-dialog.glade.h:7
+msgid "Background _image:"
+msgstr "Í_omhá cúlra:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:8
+#: libpanel-applet/panel-test-applets.glade.h:2
+msgid "Bottom"
+msgstr "Bun"
+
+#: gnome-panel/panel-properties-dialog.glade.h:9
+msgid "Co_lor:"
+msgstr "Da_th:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:10
+msgid "E_xpand"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:11
+msgid "General"
+msgstr "Gnáth"
+
+#: gnome-panel/panel-properties-dialog.glade.h:12
+msgid "Image Background Details"
+msgstr "Sonraí Íomhá Cúlra"
+
+#: gnome-panel/panel-properties-dialog.glade.h:13
+#: libpanel-applet/panel-test-applets.glade.h:4
+msgid "Left"
+msgstr "Clé"
+
+#: gnome-panel/panel-properties-dialog.glade.h:14
+msgid "Panel Properties"
+msgstr "Ábaltachtaí Painéal"
+
+#: gnome-panel/panel-properties-dialog.glade.h:15
+msgid "Pick a color"
+msgstr "Roghnaigh dath"
+
+#: gnome-panel/panel-properties-dialog.glade.h:16
+#: libpanel-applet/panel-test-applets.glade.h:8
+msgid "Right"
+msgstr "Deis"
+
+#: gnome-panel/panel-properties-dialog.glade.h:17
+msgid "Rotate image when panel is _vertical"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:18
+msgid "S_tyle:"
+msgstr "S_tíl:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:19
+msgid "Show hide _buttons"
+msgstr "Taispeáin cnaipí folaigh"
+
+#: gnome-panel/panel-properties-dialog.glade.h:20
+msgid "Solid c_olor"
+msgstr "D_ath teimhneach"
+
+#: gnome-panel/panel-properties-dialog.glade.h:21
+msgid "Some of these properties are locked down"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:22
+msgid "St_retch"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:23
+#: libpanel-applet/panel-test-applets.glade.h:11
+msgid "Top"
+msgstr "Mullach"
+
+#: gnome-panel/panel-properties-dialog.glade.h:24
+msgid "_Autohide"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:25
+msgid "_Icon:"
+msgstr "_Dealbh:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:26
+msgid "_Name:"
+msgstr "_Ainm:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:27
+msgid "_None (use system theme)"
+msgstr "_Tada (baint úsáid as téama an córas)"
+
+#: gnome-panel/panel-properties-dialog.glade.h:28
+msgid "_Orientation:"
+msgstr "_Treoshuíomh:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:29
+msgid "_Scale"
+msgstr ""
+
+#: gnome-panel/panel-properties-dialog.glade.h:30
+msgid "_Size:"
+msgstr "_Méid:"
+
+#: gnome-panel/panel-properties-dialog.glade.h:31
+msgid "_Tile"
+msgstr "_Leacán"
+
+#: gnome-panel/panel-recent.c:61
 msgid "Couldn't find a suitable application"
-msgstr "Suim le príomhchláir"
+msgstr "Níorbh feidhmchlár oiriúnach ar fháil"
 
-#: gnome-panel/panel-recent.c:79
+#: gnome-panel/panel-recent.c:87
 msgid ""
 "The default application for this type of file cannot handle remote files"
 msgstr ""
 
-#: gnome-panel/panel-recent.c:136
+#: gnome-panel/panel-recent.c:150 gnome-panel/panel-recent.c:157
+msgid "Cannot open recently used document"
+msgstr ""
+
+#: gnome-panel/panel-recent.c:158
 #, c-format
 msgid "An unknown error occurred while trying to open %s"
 msgstr ""
 
-#: gnome-panel/panel-recent.c:154
-msgid "Open Recent"
+#: gnome-panel/panel-recent.c:212
+msgid "Clear the Recent Documents list?"
 msgstr ""
 
-#: gnome-panel/panel-shell.c:43
+#: gnome-panel/panel-recent.c:213
+msgid ""
+"If you clear the Recent Documents list, you clear the following:\n"
+"\n"
+"• All items from the Actions → Recent Documents menu item.\n"
+"• All items from the recent documents list in all applications."
+msgstr ""
+
+#: gnome-panel/panel-recent.c:249
+msgid "Recent Documents"
+msgstr ""
+
+#: gnome-panel/panel-recent.c:275
+msgid "Clear Recent Documents"
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.c:289
+#, c-format
+msgid "Cannot launch command '%s'"
+msgstr "Ní féidir an t-ordú '%s' a lainseáil"
+
+#: gnome-panel/panel-run-dialog.c:315
+#, c-format
+msgid "Cannot display location '%s'"
+msgstr "Ní féidir áit '%s' a thaispeáint"
+
+#: gnome-panel/panel-run-dialog.c:367
+#, c-format
+msgid "Cannot convert '%s' from UTF-8"
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.c:1046
+msgid "Choose a file to append to the command..."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.c:1324
+#, c-format
+msgid "Will run command: '%s'"
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.c:1330 gnome-panel/panel-run-dialog.glade.h:10
+msgid "Select an application to view its description."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:2
+msgid ""
+"Click this button to browse for a file whose name to append to the command "
+"string."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:3
+msgid ""
+"Click this button to run the selected application or the command in the "
+"command entry field."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:4
+msgid "Command entry"
+msgstr "Iontráil ordú"
+
+#: gnome-panel/panel-run-dialog.glade.h:5
+msgid "Command icon"
+msgstr "Dealbh ordú"
+
+#: gnome-panel/panel-run-dialog.glade.h:6
+msgid "Enter a command string here to run it."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:7
+msgid "Run Application"
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:8
+msgid "Run in _terminal"
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:9
+msgid "Run with _file..."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:11
+msgid "Select this box to run the command in a terminal window."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:12
+msgid "Show list of known _applications"
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:13
+msgid "The icon of the command to be run."
+msgstr ""
+
+#: gnome-panel/panel-run-dialog.glade.h:14 gnome-panel/panel-stock-icons.c:145
+msgid "_Run"
+msgstr "_Rith"
+
+#: gnome-panel/panel-shell.c:74
 msgid ""
 "I've detected a panel already running,\n"
 "and will now exit."
 msgstr ""
 
-#: gnome-panel/panel-shell.c:47
+#: gnome-panel/panel-shell.c:78
 #, c-format
 msgid ""
 "There was a problem registering the panel with the bonobo-activation "
@@ -2515,1669 +2132,679 @@ msgid ""
 "The panel will now exit."
 msgstr ""
 
-#: gnome-panel/panel-stock-icons.c:113
+#: gnome-panel/panel-stock-icons.c:116
 #, c-format
 msgid "Unable to load panel stock icon '%s'\n"
 msgstr ""
 
-#: gnome-panel/panel-stock-icons.c:142
+#: gnome-panel/panel-stock-icons.c:146
+msgid "_Force quit"
+msgstr ""
+
+#: gnome-panel/panel-stock-icons.c:147
 #, fuzzy
-msgid "_Run"
-msgstr "Ag Rith"
+msgid "C_lear"
+msgstr "Féilire"
 
-#. XXX: Not really a correct error,
-#. * but just somewhat correct
-#: gnome-panel/panel-util.c:122 gnome-panel/panel-util.c:152
-#: gnome-panel/panel-util.c:177
-msgid "Help document not found"
+#: gnome-panel/panel-toplevel.c:1111
+msgid "Hide Panel"
+msgstr "Folaitheach Painéil"
+
+#. translators: these string will be shown in MetaCity's switch window
+#. * popup when you pass the focus to a panel
+#: gnome-panel/panel-toplevel.c:1472
+msgid "Top Expanded Edge Panel"
 msgstr ""
 
-#: gnome-panel/panel-util.c:191
-msgid "No document to show"
+#: gnome-panel/panel-toplevel.c:1473
+msgid "Top Centered Panel"
 msgstr ""
 
-#: gnome-panel/panel-util.c:639 gnome-panel/panel-util.c:655
-msgid "Disabled"
+#: gnome-panel/panel-toplevel.c:1474
+msgid "Top Floating Panel"
 msgstr ""
 
-#: gnome-panel/panel-util.c:1485
+#: gnome-panel/panel-toplevel.c:1475
+msgid "Top Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1479
+msgid "Bottom Expanded Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1480
+msgid "Bottom Centered Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1481
+msgid "Bottom Floating Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1482
+msgid "Bottom Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1486
+msgid "Left Expanded Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1487
+msgid "Left Centered Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1488
+msgid "Left Floating Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1489
+msgid "Left Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1493
+msgid "Right Expanded Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1494
+msgid "Right Centered Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1495
+msgid "Right Floating Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.c:1496
+msgid "Right Edge Panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:2
+msgid "Automatically hide panel into corner"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:3
+msgid "Background color"
+msgstr "Dath cúlra"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:4
+msgid "Background color opacity"
+msgstr "Teimhneacht dath cúlra"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:5
+msgid "Background image"
+msgstr "Íomhá cúlra"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:6
+msgid "Background type"
+msgstr "Saghas Cúlra"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:7
+msgid "Center panel on x-axis"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:8
+msgid "Center panel on y-axis"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:10
+msgid "Enable arrows on hide buttons"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:11
+msgid "Enable hide buttons"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:12
+msgid "Expand to occupy entire screen width"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:13
+msgid "Fit image to panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:14
 msgid ""
-"<b>Cannot execute xscreensaver</b>\n"
-"\n"
-"Details: xscreensaver-command not found"
+"If true, arrows will be placed on the hide buttons. This key is only "
+"relevant if the enable_buttons key is true."
 msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:15
+msgid ""
+"If true, buttons will be placed on each side of the panel which may be used "
+"to move the panel to edge of the screen, leaving only a button showing."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:16
+msgid ""
+"If true, hiding and un-hiding of this panel will be animated rather than "
+"happening instantly."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:17
+msgid ""
+"If true, the background image will be rotated when the panel is oriented "
+"vertically."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:18
+msgid ""
+"If true, the image will be scaled (retaining the aspect ratio of the image) "
+"to the panel height (if horizontal)."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:19
+msgid ""
+"If true, the image will be scaled to the panel dimensions. The aspect ratio "
+"of the image will not be maintained."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:20
+msgid ""
+"If true, the panel is automatically hidden into a corner of the screen when "
+"the pointer leaves the panel area. Moving the pointer to that corner again "
+"will cause the panel to re-appear."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:21
+msgid ""
+"If true, the panel will occupy the entire screen width (height if this is a "
+"vertical panel). In this mode the panel can only be placed at a screen edge. "
+"If false, the panel will only be large enough to accommodate the applets, "
+"launchers and buttons on the panel."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:22
+msgid ""
+"If true, the x key is ignored and the panel is placed at the center of the x-"
+"axis of the screen. If the panel is resized it will remain at that position "
+"- i.e. the panel will grow on both sides. If false, the x key specifies the "
+"location of the panel."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:23
+msgid ""
+"If true, the y key is ignored and the panel is placed at the center of the y-"
+"axis of the screen. If the panel is resized it will remain at that position "
+"- i.e. the panel will grow on both sides. If false, the y key specifies the "
+"location of the panel."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:24
+msgid ""
+"In a Xinerama setup, you may have panels on each individual monitor. This "
+"key identifies the current monitor the panel is displayed on."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:25
+msgid "Name to identify panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:26
+msgid "Panel autohide delay"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:27
+msgid "Panel autounhide delay"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:28
+msgid "Panel orientation"
+msgstr "Treoshuíomh painéil"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:29
+msgid "Panel size"
+msgstr "Méid painéil"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:30
+msgid "Rotate image on vertical panels"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:31
+msgid "Specifies the background color for the panel in #RGB format."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:32
+msgid ""
+"Specifies the file to be used for the background image. If the image "
+"contains an alpha channel it will be composited onto the desktop background "
+"image."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:33
+msgid ""
+"Specifies the number of milliseconds delay after the pointer enters the "
+"panel area before the panel is automatically re-shown. This key is only "
+"relevant if the auto_hide key is true."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:34
+msgid ""
+"Specifies the number of milliseconds delay after the pointer leaves the "
+"panel area before the panel is automatically hidden. This key is only "
+"relevant if the auto_hide key is true."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:35
+msgid ""
+"Specifies the number of pixels visible when the panel is automatically "
+"hidden into a corner. This key is only relevant if the auto_hide key is true."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:36
+msgid ""
+"Specifies the opacity of the background color format. If the color is not "
+"completely opaque (a value of less than 65535), the color will be composited "
+"onto the desktop background image."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:37
+msgid "Stretch image to panel"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:38
+msgid ""
+"The height (width for a vertical panel) of the panel. The panel will "
+"determine at runtime a minimum size based on the font size and other "
+"indicators. The maximum size is fixed at one quarter of the screen height "
+"(or width)."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:39
+msgid ""
+"The location of the panel along the x-axis. This key is only relevant in un-"
+"expanded mode. In expanded mode this key is ignored and the panel is placed "
+"at the screen edge specified by the orientation key."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:40
+msgid ""
+"The location of the panel along the y-axis. This key is only relevant in un-"
+"expanded mode. In expanded mode this key is ignored and the panel is placed "
+"at the screen edge specified by the orientation key."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:41
+msgid ""
+"The orientation of the panel. Possible values are \"top\", \"bottom\", \"left"
+"\", \"right\". In expanded mode the key specifies which screen edge the "
+"panel is on. In un-expanded mode the difference between \"top\" and \"bottom"
+"\" is less important - both indicate that this is a horizontal panel - but "
+"still give a useful hint as to how some panel objects should behave. For "
+"example, on a \"top\" panel a menu button will pop up its menu below the "
+"panel, whereas on a \"bottom\" panel the menu will be popped up above the "
+"panel."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:42
+msgid ""
+"The speed in which panel animations should occur. Possible values are \"slow"
+"\", \"medium\" and \"fast\". This key is only relevant if the "
+"enable_animations key is true."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:43
+msgid ""
+"This is a human readable name which you can use to identify a panel. Its "
+"main purpose is to serve as the panel's window title which is useful when "
+"navigating between panels."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:44
+msgid "Visible pixels when hidden"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:45
+msgid ""
+"Which type of background should be used for this panel. Possible values are "
+"\"gtk\" - the default GTK+ widget background will be used, \"color\" - the "
+"color key will be used as background color or \"image\" - the image "
+"specified by the image key will be used as background."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:46
+msgid ""
+"With a multi-screen setup, you may have panels on each individual screen. "
+"This key identifies the current screen the panel is displayed on."
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:47
+msgid "X co-ordinate of panel"
+msgstr "X comhordanáid an painéil"
+
+#: gnome-panel/panel-toplevel.schemas.in.h:48
+msgid "X screen where the panel is displayed"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:49
+msgid "Xinerama monitor where the panel is displayed"
+msgstr ""
+
+#: gnome-panel/panel-toplevel.schemas.in.h:50
+msgid "Y co-ordinate of panel"
+msgstr "Y comhordanáid an painéil"
+
+#: gnome-panel/panel-util.c:70
+msgid "Cannot display help document"
+msgstr ""
+
+#: gnome-panel/panel.c:446
+#, c-format
+msgid "Open URL: %s"
+msgstr "Oscail URL: %s"
+
+#: gnome-panel/panel.c:1245
+msgid ""
+"When a panel is deleted, the panel and its\n"
+" settings are lost. Delete this panel?"
+msgstr ""
+
+#: gnome-panel/panel.c:1254
+msgid "Delete Panel"
+msgstr "Scríos an Paineál seo"
 
 #: libpanel-applet/GNOME_Panel_TestApplet.server.in.h:1
 msgid "A simple applet for testing the GNOME-2.0 panel"
 msgstr ""
 
 #: libpanel-applet/GNOME_Panel_TestApplet.server.in.h:2
-#, fuzzy
 msgid "Test Bonobo Applet"
-msgstr "Feidhmchláirín"
+msgstr ""
 
 #: libpanel-applet/GNOME_Panel_TestApplet.server.in.h:3
 msgid "Test Bonobo Applet Factory"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:862
+#: libpanel-applet/panel-applet.c:848
 #, c-format
 msgid "Incomplete '%s' background type received"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:876
+#: libpanel-applet/panel-applet.c:862
 #, c-format
 msgid "Incomplete '%s' background type received: %s"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:885
+#: libpanel-applet/panel-applet.c:871
 #, c-format
 msgid "Failed to get pixmap %s"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:892
+#: libpanel-applet/panel-applet.c:878
 msgid "Unknown background type received"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:1073
+#: libpanel-applet/panel-applet.c:1063
 msgid "The Applet's containing Panel's orientation"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:1081
+#: libpanel-applet/panel-applet.c:1071
 msgid "The Applet's containing Panel's size in pixels"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:1089
+#: libpanel-applet/panel-applet.c:1079
 msgid "The Applet's containing Panel's background color or pixmap"
 msgstr ""
 
-#: libpanel-applet/panel-applet.c:1097
+#: libpanel-applet/panel-applet.c:1087
 msgid "The Applet's flags"
-msgstr ""
+msgstr "Breatach le haighaidh an Feidhmchláirín"
 
-#: libpanel-applet/panel-applet.c:1105
+#: libpanel-applet/panel-applet.c:1095
 msgid "Ranges that hint what sizes are acceptable for the applet"
 msgstr ""
 
+#: libpanel-applet/panel-applet.c:1103
+msgid "The Applet's containing Panel is locked down"
+msgstr ""
+
+#: libpanel-applet/panel-test-applets.c:33
+msgid "Specify an applet IID to load"
+msgstr ""
+
+#: libpanel-applet/panel-test-applets.c:34
+msgid ""
+"Specify a gconf location in which the applet preferences should be stored"
+msgstr ""
+
+#: libpanel-applet/panel-test-applets.c:35
+msgid "Specify the initial size of the applet (xx-small, medium, large etc.)"
+msgstr ""
+
+#: libpanel-applet/panel-test-applets.c:37
+msgid ""
+"Specify the initial orientation of the applet (top, bottom, left or right)"
+msgstr ""
+
 #: libpanel-applet/panel-test-applets.glade.h:1
-#, fuzzy
 msgid "Applet:"
-msgstr "Feidhmchláirín"
+msgstr "Feidhmchláirín:"
 
-#: libpanel-applet/panel-test-applets.glade.h:2
-#, fuzzy
-msgid "Bottom"
-msgstr "Folaigh cnaipí"
+#: libpanel-applet/panel-test-applets.glade.h:3
+msgid "Large"
+msgstr "Mór"
 
-#: libpanel-applet/panel-test-applets.glade.h:4
-msgid "Left"
-msgstr "Clé"
+#: libpanel-applet/panel-test-applets.glade.h:5
+msgid "Medium"
+msgstr "Meán"
+
+#: libpanel-applet/panel-test-applets.glade.h:6
+msgid "Orientation:"
+msgstr "Treoshuíomh:"
 
 #: libpanel-applet/panel-test-applets.glade.h:7
 msgid "Prefs Dir:"
 msgstr ""
 
-#: libpanel-applet/panel-test-applets.glade.h:8
-msgid "Right"
-msgstr "Deis"
-
 #: libpanel-applet/panel-test-applets.glade.h:9
-#, fuzzy
 msgid "Size:"
-msgstr "Méid"
+msgstr "Méid:"
 
-#: libpanel-applet/panel-test-applets.glade.h:11
-msgid "Top"
-msgstr ""
+#: libpanel-applet/panel-test-applets.glade.h:10
+msgid "Small"
+msgstr "Beag"
 
-#, fuzzy
-#~ msgid "(C) 1998-2002 the Free Software Foundation"
-#~ msgstr "(c) 1998 the Free Software Foundation"
+#: libpanel-applet/panel-test-applets.glade.h:12
+msgid "X Large"
+msgstr "X Mór"
 
-#, fuzzy
-#~ msgid "(c) 1998-2000 the Free Software Foundation"
-#~ msgstr "(c) 1998 the Free Software Foundation"
+#: libpanel-applet/panel-test-applets.glade.h:13
+msgid "X Small"
+msgstr "X Beag"
 
-#, fuzzy
-#~ msgid "(c) 2001 Red Hat, Inc."
-#~ msgstr "Cóipcheart (c) 1998 Red Hat Software, Inc."
+#: libpanel-applet/panel-test-applets.glade.h:14
+msgid "XX Large"
+msgstr "XX Mór"
 
-#, fuzzy
-#~ msgid "Can't execute printer command"
-#~ msgstr "ag cruthaigh fillteán 'sáidtheoir: %s\n"
+#: libpanel-applet/panel-test-applets.glade.h:15
+msgid "XX Small"
+msgstr "XX Beag"
 
-#~ msgid "Printer properties"
-#~ msgstr "Ábaltachtaí Printéir"
-
-#~ msgid "Printer name:"
-#~ msgstr "Ainm Printéir:"
-
-#, fuzzy
-#~ msgid "Print command:"
-#~ msgstr "Ordú Printéir:"
-
-#~ msgid "Printer"
-#~ msgstr "Printéir"
-
-#, fuzzy
-#~ msgid "Printer Applet"
-#~ msgstr "Ábaltachtaí Printéir"
-
-#~ msgid "(c) 1998 the Free Software Foundation"
-#~ msgstr "(c) 1998 the Free Software Foundation"
-
-#, fuzzy
-#~ msgid "Can't create applet!\n"
-#~ msgstr "Suim le príomhchláir"
-
-#~ msgid "Properties..."
-#~ msgstr "Ábaltachtaí..."
-
-#~ msgid "Help"
-#~ msgstr "Cabhair"
-
-#, fuzzy
-#~ msgid "About..."
-#~ msgstr "Faoi..."
-
-#, fuzzy
-#~ msgid "(C) 2002 Red Hat, Inc."
-#~ msgstr "Cóipcheart (c) 1998 Red Hat Software, Inc."
-
-#, fuzzy
-#~ msgid "Copyright 2002 Red Hat Inc."
-#~ msgstr "Cóipcheart (c) 1998 Red Hat Software, Inc."
-
-#, fuzzy
-#~ msgid "(C) 1997-2002 the Free Software Foundation"
-#~ msgstr "(c) 1998 the Free Software Foundation"
-
-#~ msgid "Applets"
-#~ msgstr "Feidhmchláríní"
-
-#, fuzzy
-#~ msgid "<big><big>%s the GNOME Fish Says:</big></big>"
-#~ msgstr "Dúirt an Iasc GNOME  %s:"
-
-#, fuzzy
-#~ msgid "_Animation"
-#~ msgstr "Beochan"
-
-#, fuzzy
-#~ msgid "GNOME Menu"
-#~ msgstr "Cabhair GNOME"
-
-#, fuzzy
-#~ msgid "Log Out Button"
-#~ msgstr "Éirigh as"
-
-#, fuzzy
-#~ msgid "Lock Button"
-#~ msgstr "Éirigh as"
-
-#, fuzzy
-#~ msgid "Ver_tical offset:"
-#~ msgstr "Ingearach"
-
-#, fuzzy
-#~ msgid "XX Small (12 pixels)"
-#~ msgstr "Beag (64 pixelanna)"
-
-#, fuzzy
-#~ msgid "X Small (24 pixels)"
-#~ msgstr "Beag (64 pixelanna)"
-
-#~ msgid "Small (36 pixels)"
-#~ msgstr "Beag (64 pixelanna)"
-
-#, fuzzy
-#~ msgid "Medium (48 pixels)"
-#~ msgstr "An-Bheag (24 pixelanna)"
-
-#~ msgid "Large (64 pixels)"
-#~ msgstr "Mór (64 pixelanna)"
-
-#, fuzzy
-#~ msgid "X Large (80 pixels)"
-#~ msgstr "Mór (64 pixelanna)"
-
-#, fuzzy
-#~ msgid "XX Large (128 pixels)"
-#~ msgstr "Mór (64 pixelanna)"
-
-#, fuzzy
-#~ msgid "Background _type:"
-#~ msgstr "Saghas Cúlra"
-
-#, fuzzy
-#~ msgid "Background co_lor:"
-#~ msgstr "Dath Cúlra:"
-
-#, fuzzy
-#~ msgid "Wanda"
-#~ msgstr "Gnáth"
-
-#, fuzzy
-#~ msgid "false"
-#~ msgstr "Dún"
-
-#, fuzzy
-#~ msgid "mail"
-#~ msgstr "Níl ríomhphost agat."
-
-#, fuzzy
-#~ msgid "auto"
-#~ msgstr "Ealu as"
-
-#, fuzzy
-#~ msgid "Print"
-#~ msgstr "Printéir"
-
-#, fuzzy
-#~ msgid "OAFIID:GNOME_ClockApplet"
-#~ msgstr "Feidhmchláirín Chlog Eile"
-
-#, fuzzy
-#~ msgid "OAFIID:GNOME_PagerApplet"
-#~ msgstr "Ábaltachtaí Printéir"
-
-#, fuzzy
-#~ msgid "OAFIID:GNOME_TasklistApplet"
-#~ msgstr "Feidhmchláirín"
-
-#, fuzzy
-#~ msgid "bonobo-applet"
-#~ msgstr "Feidhmchláirín"
-
-#, fuzzy
-#~ msgid "edge-panel"
-#~ msgstr "An Painéal GNOME"
-
-#, fuzzy
-#~ msgid "menu-panel"
-#~ msgstr "Rang Chlar"
-
-#, fuzzy
-#~ msgid "no-background"
-#~ msgstr "Cúlra"
-
-#~ msgid "Log out"
-#~ msgstr "Éirigh as"
-
-#, fuzzy
-#~ msgid "Use GMT"
-#~ msgstr " (IST)"
-
-#, fuzzy
-#~ msgid "Command to execute"
-#~ msgstr "Ordú (roghnach)"
-
-#, fuzzy
-#~ msgid "Tasklist size"
-#~ msgstr "Bruscar"
-
-#, fuzzy
-#~ msgid "Modify the global panel preferences"
-#~ msgstr "Cumraigh Painéal"
-
-#~ msgid "General"
-#~ msgstr "Gnáth"
-
-#~ msgid "Global Preferences..."
-#~ msgstr "Roghnachais..."
-
-#, fuzzy
-#~ msgid "Panel Manual..."
-#~ msgstr "Paineál.."
-
-#~ msgid "About GNOME..."
-#~ msgstr "Faoi GNOME..."
-
-#~ msgid "Edit menus..."
-#~ msgstr "Eagar chláranna..."
-
-#~ msgid "Off"
-#~ msgstr "As"
-
-#~ msgid "In a submenu"
-#~ msgstr "san fóchlár"
-
-#~ msgid "Menu properties"
-#~ msgstr "Ábaltachtaí chláir"
-
-#~ msgid "Menu type"
-#~ msgstr "Rang Chlar"
-
-#, fuzzy
-#~ msgid "Global main menu"
-#~ msgstr "Chlar gnáth"
-
-#~ msgid "Main menu"
-#~ msgstr "Príomhchlair"
-
-#~ msgid "Normal menu"
-#~ msgstr "Chlar gnáth"
-
-#~ msgid "Programs: "
-#~ msgstr "Ríomhchlaranna:"
-
-#, fuzzy
-#~ msgid "Applets: "
-#~ msgstr "Feidhmchláríní"
-
-#, fuzzy
-#~ msgid "Panel menu: "
-#~ msgstr "Clár úsáideoir: "
-
-#, fuzzy
-#~ msgid "Desktop menu: "
-#~ msgstr "Clár Corás: "
-
-#~ msgid "Menu path"
-#~ msgstr "Slí Chlar"
-
-#, fuzzy
-#~ msgid "Hiding"
-#~ msgstr "Folaitheach"
-
-#~ msgid "Y"
-#~ msgstr "Y"
-
-#~ msgid "Panel size:"
-#~ msgstr "Méid Painéall:"
-
-#~ msgid "Background Type: "
-#~ msgstr "Saghas Cúlra: "
-
-#~ msgid "Standard"
-#~ msgstr "Gnáth"
-
-#~ msgid "Pixmap"
-#~ msgstr "Dealbh"
-
-#~ msgid "Color to use:"
-#~ msgstr "Dath a úsáid:"
-
-#, fuzzy
-#~ msgid "mode"
-#~ msgstr "Scríos"
-
-#~ msgid "The GNOME Fish Applet"
-#~ msgstr "An Feidhmchlárín Iasc Gnome"
-
-#~ msgid "Mail check Applet"
-#~ msgstr "Feidhmchlárín Coisc Phoist"
-
-#, fuzzy
-#~ msgid "_Browse..."
-#~ msgstr " Dearcadh.."
-
-#, fuzzy
-#~ msgid "_Known Applications <<"
-#~ msgstr "Beochan"
-
-#, fuzzy
-#~ msgid "Hide the list of known applications"
-#~ msgstr "Beochan"
-
-#, fuzzy
-#~ msgid "_Known Applications >>"
-#~ msgstr "Beochan"
-
-#~ msgid "Password:"
-#~ msgstr "Pasfhocal:"
-
-#, fuzzy
-#~ msgid "CDE Applications"
-#~ msgstr "Beochan"
-
-#, fuzzy
-#~ msgid "_Advanced <<"
-#~ msgstr "Ardmód"
-
-#, fuzzy
-#~ msgid "_Advanced >>"
-#~ msgstr "Ardmód"
-
-#~ msgid "Desktop entry properties"
-#~ msgstr "Ábaltachtaí iontráil deasc"
-
-#, fuzzy
-#~ msgid "Global Panel Properties"
-#~ msgstr "Cumraigh Painéal"
-
-#, fuzzy
-#~ msgid "Panel Settings"
-#~ msgstr "Albachtaí"
-
-#~ msgid "Your GNOME Fish's Name:"
-#~ msgstr "An t-Ainm Iasc GNOME:"
-
-#~ msgid ""
-#~ "%I:%M\n"
-#~ "%p"
-#~ msgstr ""
-#~ "%I:%M\n"
-#~ "%p"
-
-#~ msgid ""
-#~ "%a\n"
-#~ "%b %d"
-#~ msgstr ""
-#~ "%a\n"
-#~ "%b %d"
-
-#~ msgid "Time Format"
-#~ msgstr "Formóid Am"
-
-#~ msgid "Remove from panel"
-#~ msgstr "Cuir as Painéal"
-
-#, fuzzy
-#~ msgid "GNOME Menu:"
-#~ msgstr "Cabhair GNOME"
-
-#, fuzzy
-#~ msgid "Keep panels above other windows"
-#~ msgstr "Oscail Fuinneog Dearchadóir Nua"
-
-#, fuzzy
-#~ msgid "Keep panels below other windows"
-#~ msgstr "Oscail Fuinneog Dearchadóir Nua"
-
-#, fuzzy
-#~ msgid "Keep panels on same level as other windows"
-#~ msgstr "Oscail Fuinneog Dearchadóir Nua"
-
-#, fuzzy
-#~ msgid "Run Program dialog:"
-#~ msgstr "Ríomhchlar"
-
-#, fuzzy
-#~ msgid "XX Small Tiny (12 pixels)"
-#~ msgstr "An-Bheag (24 pixelanna)"
-
-#, fuzzy
-#~ msgid "Clock Properties"
-#~ msgstr "Ábaltachtaí Chlog"
-
-#, fuzzy
-#~ msgid "Format"
-#~ msgstr "Formóid Am"
-
-#, fuzzy
-#~ msgid "Lock Screen Now"
-#~ msgstr "Glasál an scathán"
-
-#, fuzzy
-#~ msgid "%I: %M: %S: %p"
-#~ msgstr "%I:%M %p"
-
-#~ msgid "Reload"
-#~ msgstr "Athchur"
-
-#~ msgid "Create swallow applet"
-#~ msgstr "Cruthaigh feidhmchlárín slog"
-
-#~ msgid "Title of application to swallow"
-#~ msgstr "Tidéal an riomhchlar a slogadh"
-
-#~ msgid "Width"
-#~ msgstr "Leitheid"
-
-#~ msgid "Height"
-#~ msgstr "Ard."
-
-#, fuzzy
-#~ msgid "%A, %B %d"
-#~ msgstr "%a, %b %d"
-
-#, fuzzy
-#~ msgid "(c) 1998-2001 the Free Software Foundation"
-#~ msgstr "(c) 1998 the Free Software Foundation"
-
-#, fuzzy
-#~ msgid "Run..."
-#~ msgstr "Rith gtcd..."
-
-#~ msgid "Programs"
-#~ msgstr "Ríomhcláireanna"
-
-#, fuzzy
-#~ msgid "Panel Global Properties"
-#~ msgstr "Ábaltachtaí Paineál"
-
-#, fuzzy
-#~ msgid "Key bindings"
-#~ msgstr "Albachtaí"
-
-#, fuzzy
-#~ msgid "_Enable key bindings"
-#~ msgstr "Úsáid beochain"
-
-#, fuzzy
-#~ msgid "Add this applet as a launcher to panel"
-#~ msgstr "Cuir le Painial"
-
-#, fuzzy
-#~ msgid "Programs menu"
-#~ msgstr "Ríomhchlaranna:"
-
-#~ msgid "Mail check properties"
-#~ msgstr "Ábaltachtaí coisc phoist"
-
-#, fuzzy
-#~ msgid "Mailcheck Applet"
-#~ msgstr "Feidhmchlárín Coisc Phoist"
-
-#, fuzzy
-#~ msgid "Hide advanced options"
-#~ msgstr "Áit agus Méid"
-
-#, fuzzy
-#~ msgid "Advanced..."
-#~ msgstr "Ardmód"
-
-#, fuzzy
-#~ msgid "_Run ..."
-#~ msgstr "Rith gtcd..."
-
-#, fuzzy
-#~ msgid "No name"
-#~ msgstr "Tada"
-
-#, fuzzy
-#~ msgid "URL:"
-#~ msgstr "URL"
-
-#, fuzzy
-#~ msgid "Command:"
-#~ msgstr "Ordaithe Us"
-
-#, fuzzy
-#~ msgid "Name:"
-#~ msgstr "Cluchí"
-
-#, fuzzy
-#~ msgid "Comment:"
-#~ msgstr "Ordaithe Us"
-
-#, fuzzy
-#~ msgid "Icon:"
-#~ msgstr "Dealbh"
-
-#, fuzzy
-#~ msgid "Browse icons"
-#~ msgstr "Dealbh Taisceadán"
-
-#, fuzzy
-#~ msgid "Run in Terminal"
-#~ msgstr "Teirminéal _Nua"
-
-#, fuzzy
-#~ msgid "Documentation:"
-#~ msgstr "Taispeán Inneacs Cáipéis"
-
-#, fuzzy
-#~ msgid "Name"
-#~ msgstr "Cluchí"
-
-#, fuzzy
-#~ msgid "Comment"
-#~ msgstr "Ordaithe Us"
-
-#~ msgid "Remove"
-#~ msgstr "Scríos"
-
-#, fuzzy
-#~ msgid "Basic"
-#~ msgstr "Cúlaigh"
-
-#~ msgid "GNOME Terminal"
-#~ msgstr "Teirminéal GNOME"
-
-#~ msgid "Linux console"
-#~ msgstr "Consóil Linux"
-
-#~ msgid "Color Xterm"
-#~ msgstr "Xterm Dath"
-
-#~ msgid "rxvt"
-#~ msgstr "rxvt"
-
-#~ msgid "Custom"
-#~ msgstr "Féindheanamh"
-
-#~ msgid "Custom colors"
-#~ msgstr "Dathanna feíndeánamh"
-
-#~ msgid "Hidden"
-#~ msgstr "Folaitheach"
-
-#~ msgid "Color selector"
-#~ msgstr "Tóg na Dathanna"
-
-#, fuzzy
-#~ msgid "Terminal"
-#~ msgstr "Teirminéal GNOME"
-
-#~ msgid "Terminal class name"
-#~ msgstr "Ainm rangú terimineál"
-
-#~ msgid "TCLASS"
-#~ msgstr "TCLASS"
-
-#~ msgid "FONT"
-#~ msgstr "CLÓFHOIREANN"
-
-#~ msgid "GEOMETRY"
-#~ msgstr "CÉIMSEATA"
-
-#~ msgid "COMMAND"
-#~ msgstr "ORDU"
-
-#~ msgid "Foreground color"
-#~ msgstr "Dath Tulra"
-
-#~ msgid "COLOR"
-#~ msgstr "DATH"
-
-#~ msgid "Background color"
-#~ msgstr "Dath Cúlra"
-
-#, fuzzy
-#~ msgid "Solid background"
-#~ msgstr "Cúlra"
-
-#~ msgid "Background pixmap"
-#~ msgstr "Pixmap Cúlra "
-
-#, fuzzy
-#~ msgid "Background pixmap does not scroll"
-#~ msgstr "Pixmap Cúlra "
-
-#, fuzzy
-#~ msgid "Shade background"
-#~ msgstr "Cúlra"
-
-#~ msgid "UTMP"
-#~ msgstr "UTMP"
-
-#~ msgid "NOUTMP"
-#~ msgstr "NOUTMP"
-
-#~ msgid "WTMP"
-#~ msgstr "WTMP"
-
-#~ msgid "NOWTMP"
-#~ msgstr "NOWTMP"
-
-#~ msgid "Set the window title"
-#~ msgstr "Tóg an tidéal fhuinneoga"
-
-#~ msgid "TITLE"
-#~ msgstr "TIDEÁL"
-
-#, fuzzy
-#~ msgid "Set the window icon"
-#~ msgstr "Tóg an tidéal fhuinneoga"
-
-#~ msgid "Enter UNIX commands"
-#~ msgstr "Aithriseoir teirminéal GNOME"
-
-#, fuzzy
-#~ msgid "Background should be shaded"
-#~ msgstr "Dath Cúlra"
-
-#~ msgid "Blinking cursor"
-#~ msgstr "Cúrsóir sméideamh"
-
-#~ msgid "Color palette:"
-#~ msgstr "Paileád Dath:"
-
-#~ msgid "Color scheme:"
-#~ msgstr "Scéim Dathanna"
-
-#~ msgid "Colors"
-#~ msgstr "Dathanna"
-
-#, fuzzy
-#~ msgid "Enable bold text"
-#~ msgstr "Cuir ar súil Auto-hide"
-
-#, fuzzy
-#~ msgid "Font:"
-#~ msgstr "Dealbh:"
-
-#, fuzzy
-#~ msgid "Fore/Background Color:"
-#~ msgstr "Dath Tulra/Cúlra"
-
-#~ msgid "Foreground color:"
-#~ msgstr "Dath Tulra:"
-
-#~ msgid "Hide menu bar"
-#~ msgstr "Folaigh barra chlar"
-
-#~ msgid "Pixmap file:"
-#~ msgstr "Comhad Pictiúr:"
-
-#, fuzzy
-#~ msgid "Silence terminal bell"
-#~ msgstr "Teirminéal _Nua"
-
-#, fuzzy
-#~ msgid "Terminal Class:"
-#~ msgstr "Rangú Terimineál"
-
-#, fuzzy
-#~ msgid "C_olor selector"
-#~ msgstr "Tóg na Dathanna"
-
-#, fuzzy
-#~ msgid "Copy _link location"
-#~ msgstr "Beochan"
-
-#, fuzzy
-#~ msgid "Edit"
-#~ msgstr "Eagar chláranna..."
-
-#, fuzzy
-#~ msgid "GNOME terminal users guide"
-#~ msgstr "Teirminéal GNOME"
-
-#~ msgid "Settings"
-#~ msgstr "Albachtaí"
-
-#~ msgid "_Close terminal"
-#~ msgstr "_Dún Teirminéal"
-
-#~ msgid "_Hide menubar"
-#~ msgstr "_Folaigh "
-
-#~ msgid "_New terminal"
-#~ msgstr "Teirminéal _Nua"
-
-#, fuzzy
-#~ msgid "_Open in browser"
-#~ msgstr "Oscail Fuinneog Dearchadóir Nua"
-
-#, fuzzy
-#~ msgid "_Paste"
-#~ msgstr "Deireadh"
-
-#, fuzzy
-#~ msgid "_Preferences"
-#~ msgstr "Roghnachais..."
-
-#, fuzzy
-#~ msgid "_Reset terminal"
-#~ msgstr "_Dún Teirminéal"
-
-#, fuzzy
-#~ msgid "Foundry:"
-#~ msgstr " Fillteán"
-
-#, fuzzy
-#~ msgid "Weight:"
-#~ msgstr "Ard."
-
-#, fuzzy
-#~ msgid "Set Width:"
-#~ msgstr "Leitheid"
-
-#, fuzzy
-#~ msgid "Add Style:"
-#~ msgstr "Stíl"
-
-#, fuzzy
-#~ msgid "Pixel Size:"
-#~ msgstr "Méid Painéall:"
-
-#, fuzzy
-#~ msgid "Point Size:"
-#~ msgstr "Méid Painéall:"
-
-#, fuzzy
-#~ msgid "Spacing:"
-#~ msgstr "Ag Sábháil"
-
-#, fuzzy
-#~ msgid "Font Property"
-#~ msgstr "Ábaltachtaí chláir"
-
-#, fuzzy
-#~ msgid "Font"
-#~ msgstr "Dealbh:"
-
-#, fuzzy
-#~ msgid "Font Style:"
-#~ msgstr "Stíl"
-
-#, fuzzy
-#~ msgid "Points"
-#~ msgstr "noimeáid"
-
-#, fuzzy
-#~ msgid "Filter"
-#~ msgstr "_Comhad"
-
-#, fuzzy
-#~ msgid "Font Types:"
-#~ msgstr "Dealbh:"
-
-#, fuzzy
-#~ msgid "Bitmap"
-#~ msgstr "Dealbh"
-
-#, fuzzy
-#~ msgid "(unknown)"
-#~ msgstr "Gan aithne"
-
-#, fuzzy
-#~ msgid "roman"
-#~ msgstr "manx"
-
-#, fuzzy
-#~ msgid "proportional"
-#~ msgstr "Cothrománach"
-
-#, fuzzy
-#~ msgid "Font Selection"
-#~ msgstr "Tóg na Dathanna"
-
-#, fuzzy
-#~ msgid "Select a font"
-#~ msgstr "Tóg beochán"
-
-#, fuzzy
-#~ msgid "GNOME News Site"
-#~ msgstr "Eagathóir Chláir GNOME"
-
-#, fuzzy
-#~ msgid "GNOME Main Site"
-#~ msgstr "Eagathóir Chláir GNOME"
-
-#~ msgid "Szabolcs 'Shooby' Ban"
-#~ msgstr "Szabolcs 'Shooby' Ban"
-
-#~ msgid "Frederic Devernay"
-#~ msgstr "Frédéric Devernay"
-
-#~ msgid "Gergo Erdi"
-#~ msgstr "Gergo Érdi"
-
-#~ msgid "Alexandre Muniz"
-#~ msgstr "Alexandre Muñiz"
-
-#~ msgid "Martin Norbaeck"
-#~ msgstr "Martin Norbäck"
-
-#~ msgid "Tomas Oegren"
-#~ msgstr "Tomas Ögren"
-
-#~ msgid "Inigo Serna"
-#~ msgstr "Iñigo Serna"
-
-#~ msgid "GNOME Login"
-#~ msgstr "Logann GNOME"
-
-#~ msgid "Login"
-#~ msgstr "Logann"
-
-#~ msgid "Style: "
-#~ msgstr "Stíl"
-
-#~ msgid "Style"
-#~ msgstr "Stíl"
-
-#~ msgid "Program"
-#~ msgstr "Ríomhchlar"
-
-#~ msgid "Starting"
-#~ msgstr "Ag Luchtú."
-
-#~ msgid "Running"
-#~ msgstr "Ag Rith"
-
-#~ msgid "Saving"
-#~ msgstr "Ag Sábháil"
-
-#~ msgid "Unknown"
-#~ msgstr "Gan aithne"
-
-#~ msgid "Normal"
-#~ msgstr "Gnáth"
-
-#~ msgid "Trash"
-#~ msgstr "Bruscar"
-
-#~ msgid "Remove Program"
-#~ msgstr "Scríos Paineál"
-
-#~ msgid "Really log out?"
-#~ msgstr "An bhfuil ealu uait go firinne?"
-
-#~ msgid "Logout"
-#~ msgstr "Ealu as"
-
-#~ msgid "Reboot"
-#~ msgstr "Athosnaigh"
-
-#, fuzzy
-#~ msgid "Save Current Session"
-#~ msgstr "Tosaigh Seisiún"
-
-#~ msgid "Try"
-#~ msgstr "Tástáil"
-
-#~ msgid "Revert"
-#~ msgstr "Iompaigh"
-
-#~ msgid "OK"
-#~ msgstr "Ceart go leor"
-
-#~ msgid "Cancel"
-#~ msgstr "Cealaigh"
-
-#, fuzzy
-#~ msgid "Session Properties"
-#~ msgstr "Ábaltachtaí chláir"
-
-#~ msgid "Session"
-#~ msgstr "Seisiún"
-
-#~ msgid "Session Chooser"
-#~ msgstr "Roghnóir Seisiún"
-
-#~ msgid "Start Session"
-#~ msgstr "Tosaigh Seisiún"
-
-#~ msgid "Cancel Login"
-#~ msgstr "Cealaigh Logan"
-
-#, fuzzy
-#~ msgid "Session Properties & Startup Programs"
-#~ msgstr "Ábaltachtaí chláir"
-
-#~ msgid "Current session managed programs"
-#~ msgstr "Cumasaí Bainisteoir Seisiún"
-
-#, fuzzy
-#~ msgid "Audio Settings"
-#~ msgstr "Albachtaí"
-
-#, fuzzy
-#~ msgid "Background Settings"
-#~ msgstr "Saghas Cúlra"
-
-#, fuzzy
-#~ msgid "Mouse Settings"
-#~ msgstr "Albachtaí"
-
-#, fuzzy
-#~ msgid "Keyboard Settings"
-#~ msgstr "Albachtaí"
-
-#, fuzzy
-#~ msgid "Starting GNOME: %s"
-#~ msgstr "Ag Luchtú.."
-
-#, fuzzy
-#~ msgid "Starting GNOME: done"
-#~ msgstr "Ag Luchtú.."
-
-#, fuzzy
-#~ msgid "GNOME"
-#~ msgstr "Cabhair GNOME"
-
-#, fuzzy
-#~ msgid "Starting GNOME"
-#~ msgstr "Ag Luchtú."
-
-#~ msgid "Applications menu"
-#~ msgstr "Clár Feidhhmchláir"
-
-#~ msgid "Programming"
-#~ msgstr "Forbairt"
-
-#~ msgid "Tools for software development"
-#~ msgstr "Bogearraí Fhorbairt"
-
-#~ msgid "Emacs Text Editor"
-#~ msgstr "Emacs"
-
-#~ msgid "Create and edit images or photographs"
-#~ msgstr "Ríomhchlár láimhsiú íomhá GNU"
-
-#~ msgid "GIMP Image Editor"
-#~ msgstr "An GIMP"
-
-#~ msgid "Games"
-#~ msgstr "Cluichí"
-
-#~ msgid "Games menu"
-#~ msgstr "Chlár Chluichí"
-
-#~ msgid "Graphics"
-#~ msgstr "Graphice"
-
-#~ msgid "Graphics menu"
-#~ msgstr "Clár Graphice"
-
-#~ msgid "Programs for Internet and networks"
-#~ msgstr "Bogearraí Idirlíon"
-
-#~ msgid "Multimedia menu"
-#~ msgstr "Clár Ilmheánach"
-
-#~ msgid "Sound & Video"
-#~ msgstr "Ilmheánach"
-
-#~ msgid "Browse the world wide web"
-#~ msgstr "Líonléitheoir Netscape"
-
-#~ msgid "Netscape Web Browser"
-#~ msgstr "Netscape"
-
-#, fuzzy
-#~ msgid "Office"
-#~ msgstr "As"
-
-#, fuzzy
-#~ msgid "Office Applications"
-#~ msgstr "Beochan"
-
-#~ msgid "Desktop Settings"
-#~ msgstr "Cumraíocht Barr Deisce"
-
-#~ msgid "System Tools"
-#~ msgstr "Corás"
-
-#~ msgid "System menu"
-#~ msgstr "Clár Coráis"
-
-#, fuzzy
-#~ msgid "XEmacs Text Editor"
-#~ msgstr "Emacs"
-
-#, fuzzy
-#~ msgid "xemacs text editor"
-#~ msgstr "Emacs"
-
-#, fuzzy
-#~ msgid "rxvt terminal"
-#~ msgstr "_Dún Teirminéal"
-
-#~ msgid "Enter UNIX commands with the standard X Terminal"
-#~ msgstr "XTerm Gnáth"
-
-#~ msgid "X Terminal"
-#~ msgstr "XTerm Gnáth"
-
-#~ msgid "Hide"
-#~ msgstr "Folaigh"
-
-#, fuzzy
-#~ msgid "Add..."
-#~ msgstr "..."
-
-#, fuzzy
-#~ msgid "Session Options"
-#~ msgstr "Ábaltachtaí chláir"
-
-#, fuzzy
-#~ msgid "Command"
-#~ msgstr "Ordaithe Us"
-
-#, fuzzy
-#~ msgid "Startup Programs"
-#~ msgstr "Ríomhcláireanna"
-
-#, fuzzy
-#~ msgid "Startup Command"
-#~ msgstr "Ordaithe Us"
-
-#, fuzzy
-#~ msgid "Add Startup Program"
-#~ msgstr "Ríomhchlar"
-
-#, fuzzy
-#~ msgid "(c) 2001 the Free Software Foundation"
-#~ msgstr "(c) 1998 the Free Software Foundation"
-
-#, fuzzy
-#~ msgid "level"
-#~ msgstr "Cothrom Debug"
-
-#, fuzzy
-#~ msgid "By Type"
-#~ msgstr "Saghas"
-
-#, fuzzy
-#~ msgid "By Size"
-#~ msgstr "Méid"
-
-#, fuzzy
-#~ msgid " Desktop "
-#~ msgstr "Deasc %d"
-
-#, fuzzy
-#~ msgid "Available Programs"
-#~ msgstr "Scríos Paineál"
-
-#, fuzzy
-#~ msgid "Description"
-#~ msgstr "Ábaltachtaí chláir"
-
-#, fuzzy
-#~ msgid "Add from menu"
-#~ msgstr "Dealbh Seoltóra"
-
-#~ msgid " (empty)"
-#~ msgstr "(folamh)"
-
-#, fuzzy
-#~ msgid "Favorites menu"
-#~ msgstr "Sortáil fóchlar"
-
-#, fuzzy
-#~ msgid "Panel window level:"
-#~ msgstr "Méid Painéall:"
-
-#~ msgid ""
-#~ "An applet is not responding to a save request.\n"
-#~ "Remove the applet or continue waiting?"
-#~ msgstr ""
-#~ "Níl applet ag tabhair freagra ar iarratas sábháil.\n"
-#~ "Bain amach an applet nó lean ar fánacht?"
-
-#~ msgid "Remove applet"
-#~ msgstr "Bain amach applet"
-
-#~ msgid "Continue waiting"
-#~ msgstr "Lean ar fánacht"
-
-#~ msgid "Timed out on sending session save to an applet"
-#~ msgstr "Chuaidh sé iarratas sábháil applet as feidhm"
-
-#, fuzzy
-#~ msgid "Show tasklist arrow"
-#~ msgstr "Taispeain Iomhanna beag"
-
-#~ msgid "Tooltips"
-#~ msgstr "Leathfhocail"
-
-#, fuzzy
-#~ msgid "Tasks"
-#~ msgstr "Bruscar"
-
-#, fuzzy
-#~ msgid "Show shaded tasks (SHADED)"
-#~ msgstr "Taispeain Iomhanna beag"
-
-#~ msgid "Geometry"
-#~ msgstr "Céimseata"
-
-#, fuzzy
-#~ msgid "Desktop Height [pixels]"
-#~ msgstr "Ábaltachtaí iontráil deasc"
-
-#, fuzzy
-#~ msgid "Desktop Width [pixels]"
-#~ msgstr "Ábaltachtaí iontráil deasc"
-
-#, fuzzy
-#~ msgid "Desk Guide Alert"
-#~ msgstr "Feidhmchlárín Súiladóir Deasc"
-
-#, fuzzy
-#~ msgid "Desk Guide Task View"
-#~ msgstr "Feidhmchlárín Súiladóir Deasc"
-
-#, fuzzy
-#~ msgid "Desk Guide Settings"
-#~ msgstr "Roghnachais úsáid diosca"
-
-# fuxxy
-#~ msgid "Iconify"
-#~ msgstr "Dealbh"
-
-#~ msgid "Close window"
-#~ msgstr "Dûn fhuinneog"
-
-# fuxxy
-#, fuzzy
-#~ msgid "Iconify All"
-#~ msgstr "Dealbh"
-
-#, fuzzy
-#~ msgid "Close All"
-#~ msgstr "Dún"
-
-#, fuzzy
-#~ msgid "Follow panel size"
-#~ msgstr "Méid Painial"
-
-#, fuzzy
-#~ msgid "Rows of tasks:"
-#~ msgstr "Taispeain Iomhanna beag"
-
-#, fuzzy
-#~ msgid "Tasklist height:"
-#~ msgstr "Ábaltachtaí Paineál"
-
-#, fuzzy
-#~ msgid "Show normal applications"
-#~ msgstr "Taispeáin Iomhanna beag"
-
-#, fuzzy
-#~ msgid "Show mini icons"
-#~ msgstr "Taispeáin Iomhanna beag"
-
-#, fuzzy
-#~ msgid "Tasklist properties"
-#~ msgstr "Ábaltachtaí Paineál"
-
-# FIXME Check
-#, fuzzy
-#~ msgid "Programs (system menus)"
-#~ msgstr "Claireanna Coráis"
-
-# FIXME Check
-#, fuzzy
-#~ msgid "Applets (system menus)"
-#~ msgstr "Claireanna Coráis"
-
-# FIXME Check
-#, fuzzy
-#~ msgid "Programs to be merged in (system menus)"
-#~ msgstr "Claireanna Coráis"
-
-#~ msgid "_New Submenu..."
-#~ msgstr "Fóchlar _Nua..."
-
-#~ msgid "Create a new submenu"
-#~ msgstr "Cruthaigh fóchlar nua..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Dealaigh..."
-
-#~ msgid "_Sort Submenu"
-#~ msgstr "_Sortáil fóchlar"
-
-#~ msgid "_Sort"
-#~ msgstr "_Sort"
-
-#~ msgid "New Submenu"
-#~ msgstr "Fóchlar nua"
-
-#~ msgid "Delete selected menu item"
-#~ msgstr "Dealaigh an rud tógtha"
-
-#~ msgid "Move up"
-#~ msgstr "Bog suas"
-
-#~ msgid "Move selected menu up"
-#~ msgstr "Bog an rud tógtha suas"
-
-#~ msgid "Move down"
-#~ msgstr "Bog síos"
-
-#~ msgid "Move selected menu down"
-#~ msgstr "Bog an rud tóghtha síos"
-
-#~ msgid "Sort Submenu"
-#~ msgstr "Sortáil fóchlar"
-
-#~ msgid "GNOME menu editor"
-#~ msgstr "Eagathóir Chláir GNOME"
-
-#~ msgid "One moment, reading menus..."
-#~ msgstr "Fan noímeád, ag leámh chlaranna..."
-
-#~ msgid "Delete this menu item?"
-#~ msgstr "Dealaigh an clár pointe seo?"
-
-#~ msgid "New Folder"
-#~ msgstr "Fillteán Nua"
-
-#~ msgid "untitled.desktop"
-#~ msgstr "gantidéal.desktop"
-
-#~ msgid "untitled"
-#~ msgstr "gan tideál"
-
-#~ msgid "creating user directory: %s\n"
-#~ msgstr "ag cruthaigh fillteán 'sáidtheoir: %s\n"
-
-#, fuzzy
-#~ msgid "GNOME Hints"
-#~ msgstr "Logann GNOME"
-
-#, fuzzy
-#~ msgid "Gnome hint"
-#~ msgstr "Leathfhocal Painial"
-
-#, fuzzy
-#~ msgid "Enable login hints"
-#~ msgstr "Úsáid beochain"
-
-#~ msgid "Bookmark"
-#~ msgstr "Marc Leabhar"
-
-#~ msgid "Page Title"
-#~ msgstr "Tidéal leathanach"
-
-#~ msgid "Gnome Help Bookmarks"
-#~ msgstr "Mairc Leabhar Cabhair Gnome"
-
-#~ msgid "X"
-#~ msgstr "X"
-
-#~ msgid "Width of window"
-#~ msgstr "Leitheid an bhfuinneog"
-
-#~ msgid "WIDTH"
-#~ msgstr "LEITHEID"
-
-#~ msgid "Height of window"
-#~ msgstr "Airde an bhfuinneog"
-
-#~ msgid "HEIGHT"
-#~ msgstr "AIRDE"
-
-#~ msgid "Debug level"
-#~ msgstr "Cothrom Debug"
-
-#~ msgid "Gnome Help Browser"
-#~ msgstr "Dearchadóir Cabhair Gnome"
-
-#~ msgid "History size"
-#~ msgstr "Méid Stair"
-
-#~ msgid "History file"
-#~ msgstr "Comhad Stair"
-
-#~ msgid "Cache size"
-#~ msgstr "Toirt Taisce"
-
-#~ msgid "Bookmark file"
-#~ msgstr "Comhad Marc Leabhair"
-
-#~ msgid "Man Path"
-#~ msgstr "Slí Labhleabhar"
-
-#~ msgid "Info Path"
-#~ msgstr "Slí `Eolas'"
-
-#~ msgid "GNOME Help Path"
-#~ msgstr "Cosán `Cabhair GNOME'"
-
-#~ msgid "Gnome Help Configure"
-#~ msgstr "Ábaltachtaí Cabhair GNOME"
-
-#~ msgid "History and cache"
-#~ msgstr "Stáir agus taisce"
-
-#~ msgid "Paths"
-#~ msgstr "Slí"
-
-#~ msgid "Gnome Help History"
-#~ msgstr "Stair Cabhair Gnome"
-
-#~ msgid "<h2>Man Pages</h2>\n"
-#~ msgstr "<h2>Leathanaigh Lámhleabhar</h2>\n"
-
-#, fuzzy
-#~ msgid "<h2>Info Pages</h2>\n"
-#~ msgstr "<h2>Leathanaigh Lámhleabhar</h2>\n"
-
-#, fuzzy
-#~ msgid "<h2>GNOME Help</h2>\n"
-#~ msgstr "<br><br><h2>Cabhair GNOME>/h2>\n"
-
-#~ msgid ""
-#~ "<p>\n"
-#~ "<br>\n"
-#~ "<H3>Manual Pages</H3>\n"
-#~ "<p>\n"
-#~ "<UL>\n"
-#~ msgstr ""
-#~ "<p>\n"
-#~ "<br>\n"
-#~ "<H3>Leathanaigh Lámhleabhar</H3>\n"
-#~ "<p>\n"
-#~ "<UL>\n"
-
-#~ msgid "User Commands"
-#~ msgstr "Ordaithe Us"
-
-#~ msgid "System Calls"
-#~ msgstr "Glaói Coráis"
-
-#~ msgid "Library Functions"
-#~ msgstr "Feidhmeanna Leabharlainne"
-
-#~ msgid "File Formats"
-#~ msgstr "Formáide Comhaid"
-
-#~ msgid "Administration"
-#~ msgstr "Bainisteoir"
-
-#~ msgid "man9"
-#~ msgstr "man9"
-
-#~ msgid "mann"
-#~ msgstr "mann"
-
-#~ msgid "Man Pages"
-#~ msgstr "Leathanaí Labhleamhar"
-
-#~ msgid "Info Pages"
-#~ msgstr "Leathanaí Eolas"
-
-#~ msgid "<BODY>Unknown TOC argument</BODY>"
-#~ msgstr "<BODY>Argoint TOC Anathnid</BODY>"
-
-#~ msgid "Open new browser window"
-#~ msgstr "Oscail Fuinneog Dearchadóir Nua"
-
-#~ msgid "_Add Bookmark"
-#~ msgstr "_Suimigh Leabharmarc"
-
-#, fuzzy
-#~ msgid "Add bookmark"
-#~ msgstr "_Suimigh Leabharmarc"
-
-#, fuzzy
-#~ msgid "_Back"
-#~ msgstr "Cúlaigh"
-
-#, fuzzy
-#~ msgid "_Forward"
-#~ msgstr "Tosaigh"
-
-#, fuzzy
-#~ msgid "_Reload"
-#~ msgstr "Athchur"
-
-#, fuzzy
-#~ msgid "_Index"
-#~ msgstr "Innéacs"
-
-#~ msgid "_History"
-#~ msgstr "S_tair"
-
-#~ msgid "Show History Window"
-#~ msgstr "Taispeán Fhuinneog Stair"
-
-#~ msgid "_Bookmarks"
-#~ msgstr "_Leabharmarcanna"
-
-#~ msgid "Show Bookmarks Window"
-#~ msgstr "Taispéain Fuinneoig Marc Leabhair"
-
-#, fuzzy
-#~ msgid "_View"
-#~ msgstr "_Comhad"
-
-#~ msgid "Forward"
-#~ msgstr "Tosaigh"
-
-#~ msgid "Index"
-#~ msgstr "Innéacs"
-
-#~ msgid "History"
-#~ msgstr "Stair"
-
-#~ msgid "BMarks"
-#~ msgstr "Marcannaí"
-
-#~ msgid "Help on Help"
-#~ msgstr "Cabhair le Cabhair"
-
-#~ msgid "Location: "
-#~ msgstr "Áit: "
-
-#, fuzzy
-#~ msgid "Panel: "
+#~ msgid "Panel"
 #~ msgstr "Painéal"
 
-#, fuzzy
-#~ msgid "Desktop: "
-#~ msgstr "Deasc %d"
+#~ msgid "Animation _speed:"
+#~ msgstr "_Luas beochana:"
+
+#~ msgid "Drawer and panel _animation"
+#~ msgstr "_Beochan tarraiceán agus painéal"
+
+#~ msgid "Fast"
+#~ msgstr "Tapa"
+
+#~ msgid "Panel Preferences"
+#~ msgstr "Airíonna Painéal"
+
+#~ msgid "Slow"
+#~ msgstr "go Mall"
+
+#~ msgid "Lock Screen"
+#~ msgstr "Glasáil an scathán"
+
+#~ msgid "Log out of GNOME"
+#~ msgstr "Éirigh as an GNOME"
+
+#~ msgid "Screenshot"
+#~ msgstr "Pictiúr Scáileán"
+
+#~ msgid "Lock"
+#~ msgstr "Glasáil"
+
+#~ msgid "Search"
+#~ msgstr "Cuardaigh"
+
+#~ msgid "Run"
+#~ msgstr "Rith"
+
+#~ msgid "Run a command"
+#~ msgstr "Rith Órdu"
+
+#~ msgid "Accessories"
+#~ msgstr "Oiriúintí"
+
+#~ msgid "Amusements"
+#~ msgstr "Siamsaí"
+
+#~ msgid "Launcher..."
+#~ msgstr "Lainseoir..."
+
+#~ msgid "Launcher from menu"
+#~ msgstr "Lainseoir ó roghchlár"
+
+#~ msgid "Log Out %s"
+#~ msgstr "Éirigh as %s"
 
 #, fuzzy
-#~ msgid "Size (pixels)"
-#~ msgstr "Beag (24 pixelanna)"
+#~ msgid "Quit from %s's desktop"
+#~ msgstr "Ealu as an deasc GNOME"
+
+#~ msgid "Day"
+#~ msgstr "Lá"
+
+#~ msgid "Month"
+#~ msgstr "Mí"
+
+#~ msgid "Year"
+#~ msgstr "Blian"
+
+#~ msgid "Orientation"
+#~ msgstr "Treoshuíomh"
+
+#~ msgid "Icon Name"
+#~ msgstr "Ainm Dealbh"
+
+#~ msgid "Action Type"
+#~ msgstr "Saghas Gníomh"
+
+#~ msgid "Menu Path"
+#~ msgstr "Slí Roghchláir"
+
+#~ msgid "Custom Icon"
+#~ msgstr "Saindealbh"
+
+#~ msgid "Tooltip"
+#~ msgstr "Leasfhocal"
+
+#~ msgid "Use Menu Path"
+#~ msgstr "Úsáid Slí chlâr"
+
+#~ msgid "Name"
+#~ msgstr "Ainm"
+
+#~ msgid "X position"
+#~ msgstr "Áit X"
+
+#~ msgid "X centered"
+#~ msgstr "Curtha i lár X"
+
+#~ msgid "Y position"
+#~ msgstr "Áit Y"
+
+#~ msgid "Y centered"
+#~ msgstr "Curtha i lár Y"
+
+#~ msgid "Xinerama monitor"
+#~ msgstr "Monatóir Xinerama"
+
+#~ msgid "Animate"
+#~ msgstr "Beoigh"
+
+#~ msgid "Animation Speed"
+#~ msgstr "Luas Beochana"
+
+#~ msgid "Background color name"
+#~ msgstr "Ainm an dath cúlra"
+
+#~ msgid "Foreground color name"
+#~ msgstr "Ainm an dath dulra"
+
+#~ msgid "Foreground color"
+#~ msgstr "Dath dulra"
+
+#~ msgid "Font"
+#~ msgstr "Clófhoireann"
+
+#~ msgid "Font size"
+#~ msgstr "Méid Chlófhoireann"
+
+#~ msgid "Cannot execute %s"
+#~ msgstr "Ní féidir %s a chur i gcrích"
+
+#~ msgid "If true, display time in seconds since Epoch, i.e. 1970-01-01."
+#~ msgstr "Má tá fíor, taispeáin mar soicind ón ré, 1970-01-01."
+
+#~ msgid "Window Menu"
+#~ msgstr "Roghchlár Fuinneoige"
+
+#~ msgid "If true, display internet time, which is same all over the world."
+#~ msgstr ""
+#~ "Má tá fíor, taispeáin am Idirlín, /which is same all over the world/."
+
+#~ msgid "%s the GNOME Fish"
+#~ msgstr "%s an t-Iasc GNOME"
+
+#~ msgid "Help on %s _Application"
+#~ msgstr "Cabhair le haighaidh Cl_áir %s"
+
+#~ msgid "Help on %s"
+#~ msgstr "Cabhair le haighaidh %s"
+
+#~ msgid "Application"
+#~ msgstr "Feidhmchlár"
+
+#~ msgid "<b>_Icon:</b>"
+#~ msgstr "<b>_Dealbh:</b>"
+
+#~ msgid "<b>_Name:</b>"
+#~ msgstr "<b>Ai_nm:</b>"
+
+#~ msgid "<b>_Orientation:</b>"
+#~ msgstr "<b>Tre_oshuíomh:</b>"
+
+#~ msgid "<b>_Size:</b>"
+#~ msgstr "<b>_Méid:</b>"
+
+#~ msgid "Application description"
+#~ msgstr "Cur síos feidhmchláir"
+
+#~ msgid "List of known applications"
+#~ msgstr "Liosta feidhmchláranna"
+
+#~ msgid "KDE Menu"
+#~ msgstr "Cláranna KDE"
+
+#~ msgid "_Drawer"
+#~ msgstr "_Taisceadá¡n"
+
+#~ msgid "_Run Application..."
+#~ msgstr "_Rith Feidhmclár..."
+
+#~ msgid "_Search for Files..."
+#~ msgstr "_Curdaigh le haighaidh Comhad..."
+
+#~ msgid "_Log Out"
+#~ msgstr "Éirigh as"
+
+#~ msgid "Text"
+#~ msgstr "Teacs"
 
 #, fuzzy
-#~ msgid "In the menu"
-#~ msgstr "san fóchlár"
-
-#~ msgid "Menus"
-#~ msgstr "Cláireanna"
-
-#, fuzzy
-#~ msgid "Use large icons"
-#~ msgstr "Dealbh Teibi."
-
-#, fuzzy
-#~ msgid "Show [...] buttons"
-#~ msgstr "Taispeáin ... cnaipí"
-
-# FIXME Check
-#, fuzzy
-#~ msgid "Merge in system menus"
-#~ msgstr "Claireanna Coráis"
-
-#, fuzzy
-#~ msgid "Show menu titles"
-#~ msgstr "Taispeáin Iomhanna beag"
-
-#, fuzzy
-#~ msgid "Global menu"
-#~ msgstr "Chlar gnáth"
-
-#~ msgid "Tooltips enabled"
-#~ msgstr "Usáid Leathfhocail"
-
-#, fuzzy
-#~ msgid "Red Hat menus"
-#~ msgstr "Cláranna Debian"
-
-#, fuzzy
-#~ msgid "Copy date to selection"
-#~ msgstr "Tóg na Dathanna"
-
-#~ msgid "C_olor selector..."
-#~ msgstr "Roghnóir Daite..."
-
-#~ msgid "The error was: %s"
-#~ msgstr "Earraíd: %s"
-
-#~ msgid "Halt"
-#~ msgstr "Stad Ríomhaire"
-
-#, fuzzy
-#~ msgid "Drawer sliding"
-#~ msgstr "Dealbh Taisceadán"
-
-#~ msgid "Launcher icon"
-#~ msgstr "Dealbh Seoltóra"
-
-#~ msgid "Menu icon"
-#~ msgstr "Dealbh chlar"
-
-#, fuzzy
-#~ msgid "Special icon"
-#~ msgstr "Comhad Speisialta"
-
-#, fuzzy
-#~ msgid "Normal tile"
-#~ msgstr "Chlar gnáth"
-
-#, fuzzy
-#~ msgid "Clicked tile"
-#~ msgstr "Comhad Taisce"
-
-#~ msgid "Border width (tile only)"
-#~ msgstr "Leitheid Imeall (leacán amhain)"
-
-#, fuzzy
-#~ msgid "Panel Objects"
-#~ msgstr "Ábaltachtaí Paineál"
-
-#~ msgid "App"
-#~ msgstr "Feidhm"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-# FIXME Check
-#, fuzzy
-#~ msgid "No system menus found!"
-#~ msgstr "Claireanna Coráis"
-
-#~ msgid "Standard (48 pixels)"
-#~ msgstr "Gnáth (48 pixelanna)"
-
-#~ msgid "Huge (80 pixels)"
-#~ msgstr "An-Mhór (80 pixelanna)"
-
-#, fuzzy
-#~ msgid "Ridiculous (128 pixels)"
-#~ msgstr "An-Bheag (24 pixelanna)"
-
-#, fuzzy
-#~ msgid "Above"
-#~ msgstr "Bog suas"
-
-#, fuzzy
-#~ msgid "All properties..."
-#~ msgstr "A;blachtaí iomlan..."
-
-#, fuzzy
-#~ msgid "Debian: "
-#~ msgstr "Cláranna Debian"
-
-#, fuzzy
-#~ msgid "Padding"
-#~ msgstr "Ag Sábháil"
-
-#, fuzzy
-#~ msgid "Drawing"
-#~ msgstr "Dealbh Taisceadán"
-
-#~ msgid "Help system"
-#~ msgstr "Coráis Cúnamh"
-
-#~ msgid "Integrated help system (Info, man, HTML)"
-#~ msgstr "Coráis Cúnamh Gnome (Info, man, HTML)"
-
-#~ msgid "Menu editor"
-#~ msgstr "Eagarthóir Chláracha"
-
-#~ msgid "the GNOME menu editor"
-#~ msgstr "Eagarthóir Chláracha GNOME"
+#~ msgid "Font style"
+#~ msgstr "Méid Chlófhoireann"

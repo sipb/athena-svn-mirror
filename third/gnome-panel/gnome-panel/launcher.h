@@ -28,68 +28,54 @@ typedef struct {
 	GnomeDesktopItem *revert_ditem;
 
 	GtkWidget         *prop_dialog;
+	GSList 		  *error_dialogs;
 
-	gulong             icon_changed_signal;
 	gulong             destroy_handler;
+
+	/* If we can't hoard, and it's not hoarded
+	   already, then we can't write this launcher */
+	gboolean           non_writable;
 } Launcher;
 
-/* If launchers are loaded from ANYWHERE but the normal panel
- * launcher location, do HOARD the file (with launcher_hoard),
- * otherwise things may be removed from disk when they shouldn't
- * etc.  Also always hoard if an applet which owns a desktop already
- * exists.*/
-Launcher *	load_launcher_applet_full	(const char       *params,
-						 GnomeDesktopItem *ditem,
-						 PanelWidget      *panel,
-						 int               pos,
-						 gboolean          exactpos,
-						 const char       *gconf_key);
-
-Launcher *	load_launcher_applet		(const char       *params,
-						 PanelWidget      *panel,
-						 int              pos,
-						 gboolean         exactpos,
-						 const char      *gconf_key);
-
-Launcher *	load_launcher_applet_from_info	(const char *name,
-						 const char *comment,
-						 const char *exec,
-						 const char *icon,
-						 PanelWidget *panel,
-						 int pos,
-						 gboolean exactpos);
-Launcher *	load_launcher_applet_from_info_url(const char *name,
-						   const char *comment,
-						   const char *url,
-						   const char *icon,
-						   PanelWidget *panel,
-						   int pos,
-						   gboolean exactpos);
+void panel_launcher_create           (PanelToplevel *toplevel,
+				      int            position,
+				      const char    *location);
+void panel_launcher_create_with_id   (const char    *toplevel_id,
+				      int            position,
+				      const char    *location);
+void panel_launcher_create_copy      (PanelToplevel *toplevel,
+				      int            position,
+				      const char    *location);
+void panel_launcher_create_from_info (PanelToplevel *toplevel,
+				      int            position,
+				      gboolean       exec_info,
+				      const char    *exec_or_uri,
+				      const char    *name,
+				      const char    *comment,
+				      const char    *icon);
 
 void		launcher_properties		(Launcher  *launcher,
 						 GdkScreen *screen);
 
-void            launcher_save_to_gconf          (Launcher   *launcher,
-						 const char *gconf_key);
-
 void            launcher_load_from_gconf        (PanelWidget *panel_widget,
+						 gboolean     locked,
 						 gint         position,
-						 const char  *gconf_key);
+						 const char  *id);
+
+void            panel_launcher_delete           (Launcher *launcher);
 
 void		ask_about_launcher		(const char *file,
 						 PanelWidget *panel,
 						 int pos,
 						 gboolean exactpos);
 
-/* always make a new unique filename, useful for converting OLD configs */
-void		launcher_hoard			(Launcher *launcher);
-
 Launcher *	find_launcher			(const char *path);
 
-void            launcher_show_help              (Launcher  *launcher,
-						 GdkScreen *screen);
-
 void            launcher_properties_destroy     (Launcher *launcher);
+
+void            panel_launcher_set_dnd_enabled  (Launcher *launcher,
+						 gboolean  dnd_enabled);
+
 
 G_END_DECLS
 

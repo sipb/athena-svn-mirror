@@ -15,20 +15,15 @@
 #include "menu-util.h"
 #include "quick-desktop-reader.h"
 
-#include "basep-widget.h"
-#include "foobar-widget.h"
-#include "multiscreen-stuff.h"
 #include "distribution.h"
 #include "panel-config-global.h"
-#include "panel-main.h"
 #include "panel-util.h"
 #include "menu.h"
+#include "panel-stock-icons.h"
+#include "panel-multiscreen.h"
+#include "panel-globals.h"
 
 #undef MENU_UTIL_DEBUG
-
-extern char *kde_menudir;
-
-extern GlobalConfig global_config;
 
 GtkWidget *
 add_menu_separator (GtkWidget *menu)
@@ -46,25 +41,24 @@ add_menu_separator (GtkWidget *menu)
 static void
 panel_standard_menu_pos (GtkMenu *menu, gint *x, gint *y)
 {
-	GtkRequisition requisition;
-	int            screen;
-	int            monitor;
-	int            monitor_basex;
-	int            monitor_basey;
-	int            monitor_width;
-	int            monitor_height;
+	GtkRequisition  requisition;
+	GdkScreen      *screen;
+	int             monitor;
+	int             monitor_basex;
+	int             monitor_basey;
+	int             monitor_width;
+	int             monitor_height;
 
 	gtk_widget_get_child_requisition (GTK_WIDGET (menu),
 					  &requisition);
 
-	screen = gdk_screen_get_number (
-			gtk_widget_get_screen (GTK_WIDGET (menu)));
-	monitor = multiscreen_locate_coords (screen, *x, *y);
+	screen  = gtk_widget_get_screen (GTK_WIDGET (menu));
+	monitor = gdk_screen_get_monitor_at_point (screen, *x, *y);
 
-	monitor_basex  = multiscreen_x (screen, monitor);
-	monitor_basey  = multiscreen_y (screen, monitor);
-	monitor_width  = multiscreen_width (screen, monitor);
-	monitor_height = multiscreen_height (screen, monitor);
+	monitor_basex  = panel_multiscreen_x (screen, monitor);
+	monitor_basey  = panel_multiscreen_y (screen, monitor);
+	monitor_width  = panel_multiscreen_width (screen, monitor);
+	monitor_height = panel_multiscreen_height (screen, monitor);
 
 	*x -= monitor_basex;
 	*y -= monitor_basey;
@@ -165,8 +159,10 @@ panel_position_applet_menu (GtkMenu   *menu,
 
 	gdk_window_get_origin (widget->window, &menu_x, &menu_y);
 
-	menu_x += widget->allocation.x;
-	menu_y += widget->allocation.y;
+	if (GTK_WIDGET_NO_WINDOW (widget)) {
+		menu_x += widget->allocation.x;
+		menu_y += widget->allocation.y;
+	}
 
 	if (PANEL_WIDGET (widget->parent)->orient == GTK_ORIENTATION_HORIZONTAL) {
 		if (menu_y > gdk_screen_get_height (screen) / 2)
@@ -197,21 +193,7 @@ get_default_menu_flags (void)
 	if (distribution != DISTRIBUTION_UNKNOWN)
 		flags |= MAIN_MENU_DISTRIBUTION_SUB;
 
-	/*guess KDE menus*/
-	if (g_file_test (kde_menudir, G_FILE_TEST_IS_DIR))
-		flags |= MAIN_MENU_KDE_SUB;
-
 	return flags;
-}
-
-gboolean
-got_kde_menus (void)
-{
-	/*guess KDE menus*/
-	if (g_file_test (kde_menudir, G_FILE_TEST_IS_DIR))
-		return TRUE;
-	else
-		return FALSE;
 }
 
 gboolean
@@ -222,77 +204,4 @@ got_distro_menus (void)
 		return TRUE;
 	else
 		return FALSE;
-}
-
-GtkWidget *
-stock_menu_item_new (const char *text,
-		     const char *stock_id,
-		     gboolean    force_image)
-{
-        GtkWidget *item;
-        GtkWidget *label;
-
-        item = gtk_image_menu_item_new ();
-
-        panel_load_menu_image_deferred (
-		item, panel_menu_icon_get_size (), stock_id, NULL, NULL, force_image);
-
-        if (text) {
-                label = gtk_label_new (text);
-                gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-                gtk_container_add (GTK_CONTAINER (item), label);
-        }
-
-        return item;
-}
-
-char *
-get_real_menu_path (const char *arguments, gboolean main_menu)
-{
-        if (main_menu || !arguments)
-                return g_strdup ("applications:");
-
-        if (arguments [0] == '~')
-                /* FIXME: this needs to be a URI */
-                return g_build_filename (g_get_home_dir(),
-                                              &arguments[1], NULL);
-        else
-                return g_strdup (arguments);
-}
-
-char *
-get_pixmap (const char *menudir, gboolean main_menu)
-{
-        char *pixmap_name = NULL;
-
-        if (main_menu) {
-                pixmap_name = panel_pixmap_discovery ("gnome-logo-icon-transparent.png",
-                                                      TRUE /* fallback */);
-        } else {
-                char *dentry_name;
-                QuickDesktopItem *qitem;
-
-                dentry_name = g_build_path ("/",
-                                            menudir,
-                                            ".directory",
-                                            NULL);
-                qitem = quick_desktop_item_load_uri (dentry_name,
-                                                     NULL /* expected_type */,
-                                                     FALSE /* run_tryexec */);
-                g_free (dentry_name);
-
-                if (qitem != NULL)
-			pixmap_name = gnome_desktop_item_find_icon (panel_icon_theme,
-								    qitem->icon,
-                                                                    20 /* desired size */,
-                                                                    0 /* flags */);
-
-                if (pixmap_name == NULL)
-                        pixmap_name = panel_pixmap_discovery ("gnome-folder.png",
-                                                              TRUE /* fallback */);
-
-                if (qitem != NULL)
-                        quick_desktop_item_destroy (qitem);
-        }
-        return pixmap_name;
 }

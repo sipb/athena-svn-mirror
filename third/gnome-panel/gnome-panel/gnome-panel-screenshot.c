@@ -17,9 +17,6 @@
  * USA
  */
 
-/* FIXME: currently undone things */
-#undef HAVE_PAPER_WIDTH
-
 /* THERE ARE NO FEATURE REQUESTS ALLOWED */
 /* IF YOU WANT YOUR OWN FEATURE -- WRITE THE DAMN THING YOURSELF (-:*/
 
@@ -39,13 +36,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <locale.h>
-#ifdef HAVE_GNOME_PRINT
-#include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-preview.h>
-#include <libgnomeprint/gnome-print-dialog.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
-#endif
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/Xmu/WinUtil.h>
@@ -55,11 +46,6 @@
 #endif
 
 #include <libart_lgpl/art_rgb_affine.h>
-
-#ifdef HAVE_PAPER_WIDTH
-#include <stdio.h>
-#include <langinfo.h>
-#endif
 
 /* How far down the window tree will we search when looking for top-level
  * windows? Some window managers doubly-reparent the client, so account
@@ -211,24 +197,34 @@ nibble_on_file (const char *file)
 	FILE *fp;
 	mode_t old_mask;
 
+	if (file == NULL)
+		return NULL;
+
 	if (access (file, F_OK) == 0) {
+		int response;
+		char *utf8_name = g_filename_to_utf8 (file, -1, NULL, NULL, NULL);
+
 		dialog = gtk_message_dialog_new
 			(GTK_WINDOW (toplevel),
 			 0 /* flags */,
 			 GTK_MESSAGE_QUESTION,
 			 GTK_BUTTONS_YES_NO,
 			 _("File %s already exists. Overwrite?"),
-			 file);
-		if (gtk_dialog_run (GTK_DIALOG (dialog)) != GTK_RESPONSE_YES) {
-			gtk_widget_destroy (dialog);
+			 utf8_name);
+		g_free (utf8_name);
+
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		if (response != GTK_RESPONSE_YES)
 			return NULL;
-		}
 	}
 
 	old_mask = umask(022);
 
 	fp = fopen (file, "w");
 	if (fp == NULL) {
+		char *utf8_name = g_filename_to_utf8 (file, -1, NULL, NULL, NULL);
 		dialog = gtk_message_dialog_new
 			(GTK_WINDOW (toplevel),
 			 0 /* flags */,
@@ -237,7 +233,8 @@ nibble_on_file (const char *file)
 			 _("Unable to create the file:\n"
 			   "\"%s\"\n"
 			   "Please check your permissions of "
-			   "the parent directory"), file ? file : "(null)");
+			   "the parent directory"), utf8_name);
+		g_free (utf8_name);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 
@@ -405,218 +402,59 @@ cleanup_temporary (void)
 	g_free (file);
 }
 
-#ifdef HAVE_GNOME_PRINT
-static GdkPixbuf *
-rotate_image (GdkPixbuf *image)
-{
-	GdkPixbuf *retval;
-	double affine[6];
-	gint width, height;
-
-	width = gdk_pixbuf_get_width (image);
-	height = gdk_pixbuf_get_height (image);
-
-	retval = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, height, width);
-	affine[0] = 0.0;    /* = cos(90) */
-	affine[2] = 1.0;    /* = sin(90) */
-	affine[3] = 0.0;    /* = cos(90) */
-	affine[1] = -1.0;   /* = -sin(90) */
-	affine[4] = 0;      /* x translation */
-	affine[5] = width;  /* y translation */
-
-	art_rgb_affine (gdk_pixbuf_get_pixels (retval),
-			0, 0,
-			height, width,
-			gdk_pixbuf_get_rowstride (retval),
-			gdk_pixbuf_get_pixels (image),
-			width, height,
-			gdk_pixbuf_get_rowstride (image),
-			affine,
-			ART_FILTER_NEAREST,
-			NULL);
-
-	return retval;
-}
-#endif
-
-#ifdef HAVE_GNOME_PRINT
-static void
-print_page (GnomePrintContext *context, const GnomePaper *paper)
-{
-	GdkPixbuf *printed_image;
-	gint real_width = gnome_paper_pswidth (paper);
-	gint real_height = gnome_paper_psheight (paper);
-	gint pix_width;
-	gint pix_height;
-	gint width, height;
-
-	/* always make sure that it is taller then wide, under the potentially
-	 * mistaken assumption that all paper is this way too. */
-	if (gdk_pixbuf_get_width (screenshot) > gdk_pixbuf_get_height (screenshot)) {
-		printed_image = rotate_image (screenshot);
-	} else {
-		gdk_pixbuf_ref (screenshot);
-		printed_image = screenshot;
-	}
-
-	pix_width = gdk_pixbuf_get_width (printed_image);
-	pix_height = gdk_pixbuf_get_height (printed_image);
-
-	width = real_width - 2 * gnome_paper_tmargin (paper);
-	height = real_height - 2 * gnome_paper_rmargin (paper);
-
-	if (((gdouble) pix_height/pix_width) >
-	    ((gdouble)width/height)) {
-		/* We scale to the top */
-		width = height * (gdouble)pix_width/pix_height;
-	} else {
-		/* We scale to the sides of the page */
-		height = width * (gdouble)pix_height/pix_width;
-	}
-
-	gnome_print_beginpage (context, "1");
-
-	gnome_print_gsave (context);
-	gnome_print_translate (context, (real_width-width)/2.0, (real_height - height)/2.0);
-	gnome_print_scale (context, width, height);
-	gnome_print_pixbuf (context, printed_image);
-	gnome_print_grestore (context);
-  
-	gnome_print_showpage (context);
-	gnome_print_context_close (context);
-	g_object_unref (G_OBJECT (printed_image));
-}
-#endif
-
-#ifdef HAVE_GNOME_PRINT
-static gboolean
-print_pixbuf (void)
-{
-	GnomePrintDialog *print_dialog;
-	GnomePrintContext *context;
-	GnomePrintMaster *gpm = NULL;
-	GnomePrintMasterPreview *gpmp;
-	const GnomePaper *paper;
-	gint do_preview = FALSE;
-	gint copies, collate;
-	gint result;
-	GdkCursor *cursor;
-#ifdef HAVE_PAPER_WIDTH
-	GnomeUnit *unit;
-	guint width, height;
-#endif
-
-	print_dialog = GNOME_PRINT_DIALOG (gnome_print_dialog_new (_("Print Screenshot"), GNOME_PRINT_DIALOG_COPIES));
-	gnome_dialog_set_parent (GNOME_DIALOG (print_dialog), GTK_WINDOW (toplevel));
-	do {
-		result = gnome_dialog_run (GNOME_DIALOG (print_dialog)); 
-		switch (result) {
-		case GNOME_PRINT_CANCEL:
-			gnome_dialog_close (GNOME_DIALOG (print_dialog));
-		case -1:
-			return FALSE;
-		case GNOME_PRINT_PREVIEW:
-			do_preview = TRUE;
-			break;
-		default:
-			do_preview = FALSE;
-			break;
-		}
-
-		/* set up the gnome_print_master */
-		gpm = gnome_print_master_new ();
-		gnome_print_dialog_get_copies (print_dialog, &copies, &collate);
-		gnome_print_master_set_copies (gpm, copies, collate);
-		gnome_print_master_set_printer (gpm, gnome_print_dialog_get_printer (print_dialog));
-
-#ifdef HAVE_PAPER_WIDTH
-		unit = gnome_unit_with_name ("Millimeter");
-
-		width = (unsigned int)(size_t)nl_langinfo (_NL_PAPER_WIDTH);
-		height = (unsigned int)(size_t)nl_langinfo (_NL_PAPER_HEIGHT);
-
-		g_print ("%f %f\n", gnome_paper_convert_to_points (width, unit),
-			 gnome_paper_convert_to_points (height, unit));
-		paper = gnome_paper_with_size (gnome_paper_convert_to_points (width, unit),
-					       gnome_paper_convert_to_points (height, unit));
-#else
-		paper = gnome_paper_with_name (gnome_paper_name_default ());
-#endif
-
-		gnome_print_master_set_paper (gpm, paper);
-		context = gnome_print_master_get_context (gpm);
-
-		print_page (context, paper);
-
-		if (do_preview == FALSE) {
-			gnome_dialog_close (GNOME_DIALOG (print_dialog));
-			gnome_print_master_print (gpm);
-			gnome_print_master_close (gpm);
-			return TRUE;
-		}
-		gpmp = gnome_print_master_preview_new (gpm, _("Screenshot Print Preview"));
-		g_signal_connect (G_OBJECT (gpmp), "destroy", 
-				  G_CALLBACK (gtk_main_quit), NULL);
-		gtk_widget_set_sensitive (GTK_WIDGET (print_dialog), FALSE);
-		cursor = gdk_cursor_new (GDK_WATCH);
-		gdk_window_set_cursor (GTK_WIDGET (print_dialog)->window, cursor);
-		gdk_cursor_unref (cursor);
-
-		gtk_widget_show (GTK_WIDGET (gpmp));
-		gtk_window_set_modal (GTK_WINDOW (gpmp), TRUE);
-		gtk_window_set_transient_for (GTK_WINDOW (gpmp), GTK_WINDOW (print_dialog));
-		gtk_main ();
-		gtk_widget_set_sensitive (GTK_WIDGET (print_dialog), TRUE);
-		gdk_window_set_cursor (GTK_WIDGET (print_dialog)->window, NULL);
-	} while (TRUE);
-}
-#endif
-
 static gchar *
 add_file_to_path (const gchar *path)
 {
+	char *expanded_path;
 	char *retval;
 	char *tmp;
+	char *file_name;
 	int   i = 1;
 
+	expanded_path = gnome_vfs_expand_initial_tilde (path);
+	g_strstrip (expanded_path);
+
 	if (class_name) {
-		/* translators: this is the file that gets made up with the screenshot if a specific window is taken */
-		tmp = g_strdup_printf (_("%s%cScreenshot-%s.png"), path,
-				       G_DIR_SEPARATOR, class_name);
-		retval = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
-		g_free (tmp);
+		/* translators: this is the name of the file that gets made up
+		 * with the screenshot if a specific window is taken */
+		file_name = g_strdup_printf (_("Screenshot-%s.png"), class_name);
+	} else {
+		/* translators: this is the name of the file that gets made up
+		 * with the screenshot if the entire screen is taken */
+		file_name = g_strdup (_("Screenshot.png"));
 	}
-	else {
-		/* translators: this is the file that gets made up with the screenshot if the entire screen is taken */
-		tmp = g_strdup_printf (_("%s%cScreenshot.png"), path,
-				       G_DIR_SEPARATOR);
-		retval = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
-		g_free (tmp);
-	}
+	tmp = g_strdup_printf ("%s%c%s", expanded_path, G_DIR_SEPARATOR, file_name);
+	retval = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
+	g_free (file_name);
+	g_free (tmp);
 	
 	do {
 		struct stat s;
 
-		if (stat (retval, &s) &&
-		    errno == ENOENT)
+		if (stat (retval, &s) && errno == ENOENT) {
+			g_free (expanded_path);
 			return retval;
+		}
 
 		g_free (retval);
 
 		if (class_name) {
-			/* translators: this is the file that gets made up with the screenshot if a specific window is taken */
-			tmp = g_strdup_printf (_("%s%cScreenshot-%s-%d.png"), path,
-					       G_DIR_SEPARATOR, class_name, i);
-			retval = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
-			g_free (tmp);
+			/* translators: this is the name of the file that gets
+			 * made up with the screenshot if a specific window is
+			 * taken */
+			file_name = g_strdup_printf (_("Screenshot-%s-%d.png"),
+						     class_name, i);
 		}
 		else {
-			/* translators: this is the file that gets made up with the screenshot if the entire screen is taken */
-			tmp = g_strdup_printf (_("%s%cScreenshot-%d.png"), path,
-					       G_DIR_SEPARATOR, i);
-			retval = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
-			g_free (tmp);
+			/* translators: this is the name of the file that gets
+			 * made up with the screenshot if the entire screen is
+			 * taken */
+			file_name = g_strdup_printf (_("Screenshot-%d.png"), i);
 		}
+		tmp = g_strdup_printf ("%s%c%s", expanded_path, G_DIR_SEPARATOR, file_name);
+		retval = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
+		g_free (file_name);
+		g_free (tmp);
 		
 		i++;
 	} while (TRUE);
@@ -639,17 +477,17 @@ on_preview_expose_event (GtkWidget      *drawing_area,
 			 GdkEventExpose *event,
 			 gpointer        data)
 {
-	gdk_pixbuf_render_to_drawable (preview_image,
-				       drawing_area->window,
-				       drawing_area->style->white_gc,
-				       event->area.x,
-				       event->area.y,
-				       event->area.x,
-				       event->area.y,
-				       event->area.width,
-				       event->area.height,
-				       GDK_RGB_DITHER_NORMAL,
-				       0, 0);
+	gdk_draw_pixbuf (drawing_area->window,
+			 drawing_area->style->white_gc,
+			 preview_image,
+			 event->area.x,
+			 event->area.y,
+			 event->area.x,
+			 event->area.y,
+			 event->area.width,
+			 event->area.height,
+			 GDK_RGB_DITHER_NORMAL,
+			 0, 0);
 }
 
 void
@@ -700,13 +538,15 @@ setup_busy (gboolean busy)
 }
 
 static gboolean
-gimme_file (const char *filename)
+gimme_file (char *filename)
 {
 	FILE *fp;
 
+	g_strstrip (filename);
 	fp = nibble_on_file (filename);
-	if (fp == NULL)
+	if (fp == NULL) {
 		return FALSE;
+	}
 
 	/* if there is a temporary in the works
 	 * gimme it */
@@ -735,6 +575,7 @@ gimme_file (const char *filename)
 		outfd = open (filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
 		if (outfd < 0) {
 			GtkWidget *dialog;
+			char *utf8_name = g_filename_to_utf8 (filename, -1, NULL, NULL, NULL);
 			dialog = gtk_message_dialog_new
 				(GTK_WINDOW (toplevel),
 				 0 /* flags */,
@@ -743,7 +584,8 @@ gimme_file (const char *filename)
 				 _("Unable to create the file:\n"
 				   "\"%s\"\n"
 				   "Please check your permissions of "
-				   "the parent directory"), filename ? filename : "(null)");
+				   "the parent directory"), utf8_name);
+			g_free (utf8_name);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
 			close (infd);
@@ -753,6 +595,7 @@ gimme_file (const char *filename)
 		while ((bytes = read (infd, buf, sizeof (buf))) > 0) {
 			if (write (outfd, buf, bytes) != bytes) {
 				GtkWidget *dialog;
+				char *utf8_name = g_filename_to_utf8 (filename, -1, NULL, NULL, NULL);
 				close (infd);
 				close (outfd);
 				unlink (filename);
@@ -762,7 +605,8 @@ gimme_file (const char *filename)
 					 GTK_MESSAGE_ERROR,
 					 GTK_BUTTONS_OK,
 					 _("Not enough room to write file %s"),
-					 filename ? filename : "(null)");
+					 utf8_name);
+				g_free (utf8_name);
 				gtk_dialog_run (GTK_DIALOG (dialog));
 				gtk_widget_destroy (dialog);
 				return FALSE;
@@ -789,16 +633,28 @@ on_ok_button_clicked (GtkWidget *widget,
 
 	button = glade_xml_get_widget (xml, "save_rbutton");
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
-		GtkWidget *entry;
-		GtkWidget *fileentry;
+		GtkWidget  *entry;
+		GtkWidget  *fileentry;
+		const char *tmp;
+		char       *expanded_filename;
+
 		entry = glade_xml_get_widget (xml, "save_entry");
 		fileentry = glade_xml_get_widget (xml, "save_fileentry");
-		if (gimme_file (gtk_entry_get_text (GTK_ENTRY (entry)))) {
+ 		tmp = gtk_entry_get_text (GTK_ENTRY (entry));
+ 		file = g_filename_from_utf8 (tmp, -1, NULL, NULL, NULL);
+		g_strstrip (file);
+		expanded_filename = gnome_vfs_expand_initial_tilde (file);
+		g_free (file);
+
+ 		if (gimme_file (expanded_filename)) {
 			gnome_entry_prepend_history (GNOME_ENTRY (gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (fileentry))),
 						     TRUE, gtk_entry_get_text (GTK_ENTRY (entry)));
+
 			gtk_main_quit ();
 		}
+		g_free (expanded_filename);
 		setup_busy (FALSE);
+
 		return;
 	}
 
@@ -812,16 +668,6 @@ on_ok_button_clicked (GtkWidget *widget,
 		setup_busy (FALSE);
 		return;
 	}
-#ifdef HAVE_GNOME_PRINT
-	button = glade_xml_get_widget (xml, "print_rbutton");
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
-		if (print_pixbuf ()) {
-			gtk_main_quit ();
-		}
-		setup_busy (FALSE);
-		return;
-	}
-#endif
 
 	file = add_file_to_path (web_dir);
 	if ( ! gimme_file (file)) {
@@ -849,7 +695,7 @@ on_help_button_clicked (GtkWidget *widget, gpointer data)
 	GError *error = NULL;
 
         gnome_help_display_desktop (NULL, "user-guide", 
-				    "wgoseditmainmenu.xml", "goseditmainmenu-53", 
+				    "user-guide.xml", "goseditmainmenu-53", 
 				    &error);
 	
 	if (error) {
@@ -858,7 +704,7 @@ on_help_button_clicked (GtkWidget *widget, gpointer data)
                 dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
                         GTK_DIALOG_DESTROY_WITH_PARENT,
                         GTK_MESSAGE_ERROR,
-                        GTK_BUTTONS_CLOSE,
+                        GTK_BUTTONS_OK,
                         _("There was an error displaying help: \n%s"),
                         error->message);
 
@@ -918,7 +764,7 @@ find_toplevel_window (int depth, Window xid, gboolean *keep_going)
 	if (XGetWindowProperty (GDK_DISPLAY (), xid, wm_state, 0, 1,
 				False, AnyPropertyType, &actual_type,
 				&actual_format, &nitems, &bytes_after,
-				(guchar **) &prop) == Success
+				(gpointer) &prop) == Success
 	    && prop != NULL && actual_format == 32 && prop[0] == NormalState)
 	{
 		/* Found a top-level window */
@@ -961,16 +807,19 @@ find_toplevel_window (int depth, Window xid, gboolean *keep_going)
 static gboolean
 take_window_shot (void)
 {
-	GdkWindow *window;
+	GdkWindow *window, *toplevel_window;
 	Display *disp;
 	Window w, root, child, toplevel;
 	int unused;
 	guint mask;
+	gint x_real_orig, y_real_orig;
 	gint x_orig, y_orig;
 	gint x = 0, y = 0;
+	gint real_width, real_height;
 	gint width, height;
 	XClassHint class_hint;
 	gchar *result = NULL;
+	gchar *name   = NULL;
 	gboolean keep_going;
 
 #ifdef HAVE_X11_EXTENSIONS_SHAPE_H
@@ -1002,18 +851,35 @@ take_window_shot (void)
 
 		toplevel = find_toplevel_window (0, child, &keep_going);
 
-		/* Get the Class Hint */
-		if (toplevel && (XGetClassHint (GDK_DISPLAY (), toplevel, &class_hint) != 0)) {
-			if (class_hint.res_class)
-				result = class_hint.res_class;
-
-			XFree (class_hint.res_name);
+		/* Get the Window Name (WM_NAME) */
+		if (toplevel && (XFetchName (GDK_DISPLAY (), toplevel, &name))) {
+			if (name) {
+				result = g_strdup (name);
+				XFree (name);
+			}	
+			else { 
+				/* Get the Class Hint, note res_name is not == WM_NAME */
+				if (toplevel && (XGetClassHint (GDK_DISPLAY (), toplevel, &class_hint) != 0)) {
+					if (class_hint.res_class) {
+						result = g_strdup (class_hint.res_class);
+						XFree (class_hint.res_class);
+						XFree (class_hint.res_name);
+					}
+				}
+			}
 		}
+		/* Force window to be shown */
+		toplevel_window	 = gdk_window_foreign_new (toplevel);
+		gdk_window_show (toplevel_window);
 	}
 
-	gdk_drawable_get_size (window, &width, &height);
-	gdk_window_get_origin (window, &x_orig, &y_orig);
+	gdk_drawable_get_size (window, &real_width, &real_height);
+	gdk_window_get_origin (window, &x_real_orig, &y_real_orig);
 
+	x_orig = x_real_orig;
+	y_orig = y_real_orig;
+	width = real_width;
+	height = real_height;
 	
 	if (x_orig < 0) {
 		x = - x_orig;
@@ -1040,25 +906,54 @@ take_window_shot (void)
 	rectangles = XShapeGetRectangles (GDK_DISPLAY (), GDK_WINDOW_XWINDOW (window),
 					  ShapeBounding, &rectangle_count, &rectangle_order);
 	if (rectangle_count > 0) {
-		screenshot = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
+		gboolean has_alpha = gdk_pixbuf_get_has_alpha (tmp);
+
+		screenshot = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
+					     width, height);
 		gdk_pixbuf_fill (screenshot, 0);
 	
 		for (i = 0; i < rectangle_count; i++) {
-			for (y = rectangles[i].y; y < rectangles[i].y + rectangles[i].height; y++) {
+			gint rec_x, rec_y;
+			gint rec_width, rec_height;
+
+			rec_x = rectangles[i].x;
+			rec_y = rectangles[i].y;
+			rec_width = rectangles[i].width;
+			rec_height = rectangles[i].height;
+
+			if (x_real_orig < 0) {
+				rec_x += x_real_orig;
+				rec_x = MAX(rec_x, 0);
+				rec_width += x_real_orig;
+			}
+			if (y_real_orig < 0) {
+				rec_y += y_real_orig;
+				rec_y = MAX(rec_y, 0);
+				rec_height += y_real_orig;
+			}
+
+			if (x_orig + rec_x + rec_width > gdk_screen_width ())
+				rec_width = gdk_screen_width () - x_orig - rec_x;
+			if (y_orig + rec_y + rec_height > gdk_screen_height ())
+				rec_height = gdk_screen_height () - y_orig - rec_y;
+
+			for (y = rec_y; y < rec_y + rec_height; y++) {
 				guchar *src_pixels, *dest_pixels;
 				
 				src_pixels = gdk_pixbuf_get_pixels (tmp) +
 					y * gdk_pixbuf_get_rowstride(tmp) +
-					rectangles[i].x * (gdk_pixbuf_get_has_alpha (tmp) ? 4 : 3);
+					rec_x * (has_alpha ? 4 : 3);
 				dest_pixels = gdk_pixbuf_get_pixels (screenshot) +
 					y * gdk_pixbuf_get_rowstride (screenshot) +
-					rectangles[i].x * 4;
+					rec_x * 4;
 				
-				for (x = rectangles[i].x; x < rectangles[i].x + rectangles[i].width; x++) {
+				for (x = 0; x < rec_width; x++) {
 					*dest_pixels++ = *src_pixels ++;
 					*dest_pixels++ = *src_pixels ++;
 					*dest_pixels++ = *src_pixels ++;
 					*dest_pixels++ = 255;
+					if (has_alpha)
+						src_pixels++;
 				}
 			}
 		}
@@ -1139,6 +1034,48 @@ drag_begin (GtkWidget *widget, GdkDragContext *context)
 	start_temporary ();
 }
 
+static void
+update_window_icon (GtkWindow    *window,
+		    GtkIconTheme *theme,
+		    const char   *icon_name)
+{
+	GtkIconInfo *icon;
+	const char  *filename;
+
+	icon = gtk_icon_theme_lookup_icon (theme, icon_name, 48, 0);
+	if (!icon)
+		return;
+
+	if ((filename = gtk_icon_info_get_filename (icon)))
+		gtk_window_set_icon_from_file (window, filename, NULL);
+
+	gtk_icon_info_free (icon);
+}
+
+static void
+icon_theme_changed (GtkWindow    *window,
+		    GtkIconTheme *theme)
+{
+	update_window_icon (window, theme, "gnome-screenshot");
+}
+
+static void
+set_window_icon (GtkWindow *window)
+{
+	GdkScreen    *screen;
+	GtkIconTheme *theme;
+
+	screen = gtk_window_get_screen (window);
+	theme  = gtk_icon_theme_get_for_screen (screen);
+
+	g_signal_connect_object (theme, "changed",
+				 G_CALLBACK (icon_theme_changed),
+				 window,
+				 G_CONNECT_SWAPPED);
+
+	update_window_icon (window, theme, "gnome-screenshot");
+}
+
 /* To make sure there is only one screenshot taken at a time,
  * (Imagine key repeat for the print screen key) we hold a selection
  * until we are done taking the screenshot
@@ -1194,45 +1131,36 @@ release_lock (void)
 	gdk_flush ();
 }
 
-/* main */
-int
-main (int argc, char *argv[])
+static char *
+escape_underscores (const char *name)
+{
+	GString *escaped;
+	int      i;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	escaped = g_string_new (name);
+
+	for (i = 0; escaped->str [i]; i++) {
+		if (escaped->str [i] != '_')
+			continue;
+
+		escaped = g_string_insert_c (escaped, ++i, '_');
+	}
+
+	return g_string_free (escaped, FALSE);
+}
+
+static void
+do_screenshot (gboolean window)
 {
 	GtkWidget *save_entry;
 	GtkWidget *frame;
 	GConfClient *gconf_client;
-	GnomeClient *client;
 	struct stat s;
-	gchar *file, *window_icon;
-	gboolean window = FALSE;
+	gchar *file;
 	gint width, height; 
-	guint delay = 0;
-	gboolean normal_web_dir = TRUE;
-	
-	struct poptOption opts[] = {
-		{"window", '\0', POPT_ARG_NONE, &window, 0, N_("Grab a window instead of the entire screen"), NULL},
-		{"delay", '\0', POPT_ARG_INT, &delay, 0, N_("Take screenshot after specified delay [in seconds]"), NULL},
-		{NULL, '\0', 0, NULL, 0, NULL, NULL}
-	};
-
-	setlocale (LC_ALL, "");
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
-
-	gnome_program_init ("gnome-panel-screenshot", VERSION,
-			    LIBGNOMEUI_MODULE,
-			    argc, argv,
-			    GNOME_PARAM_POPT_TABLE, opts,
-			    GNOME_PROGRAM_STANDARD_PROPERTIES,
-			    NULL);
-	glade_gnome_init();
-	client = gnome_master_client ();
-	gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
-	
-	if (delay > 0) {
-		sleep (delay);	
-	}
+	gchar *utf8_name;
 
 	if (!get_lock ()) {
 		g_printerr ("gnome-panel-screenshot is already running\n");
@@ -1248,13 +1176,8 @@ main (int argc, char *argv[])
 		take_screen_shot ();
 	}
 
-	if (g_file_test ("gnome-panel-screenshot.glade", G_FILE_TEST_EXISTS)) {
-		xml = glade_xml_new ("gnome-panel-screenshot.glade", NULL, NULL);
-	}
-	if (xml == NULL) {
-		xml = glade_xml_new (GLADEDIR "/gnome-panel-screenshot.glade",
-				     NULL, NULL);
-	}
+	xml = glade_xml_new (GLADEDIR "/gnome-panel-screenshot.glade",
+			     NULL, NULL);
 	if (xml == NULL) {
 		GtkWidget *dialog;
 		release_lock ();
@@ -1270,14 +1193,6 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 	glade_xml_signal_autoconnect (xml);
-
-#ifndef HAVE_GNOME_PRINT
-	{
-		GtkWidget *button = glade_xml_get_widget (xml, "print_rbutton");
-		if (button != NULL)
-			gtk_widget_hide (button);
-	}
-#endif
 
 	if (screenshot == NULL) {
 		GtkWidget *dialog;
@@ -1305,14 +1220,8 @@ main (int argc, char *argv[])
 	preview = glade_xml_get_widget (xml, "preview");
 	save_entry = glade_xml_get_widget (xml, "save_entry");
 
-	window_icon = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, 
-						 "gnome-screenshot.png", TRUE, NULL);
-	if (window_icon) {
-		gnome_window_icon_set_from_file (GTK_WINDOW (toplevel), window_icon);
-		g_free (window_icon);
-	}
+	set_window_icon (GTK_WINDOW (toplevel));
 
-	
 	gtk_window_set_default_size (GTK_WINDOW (toplevel), width * 2, -1);
 	gtk_widget_set_size_request (preview, width, height);
 	gtk_aspect_frame_set (GTK_ASPECT_FRAME (frame), 0.0, 0.5,
@@ -1329,32 +1238,35 @@ main (int argc, char *argv[])
 	if (!web_dir || !web_dir[0]) {
 		g_free (web_dir);
 		web_dir = g_strconcat (home_dir, G_DIR_SEPARATOR_S, "public_html", NULL);
-	} else
-		normal_web_dir = FALSE;
+	}
 
 	if (gconf_client_get_bool (gconf_client, "/apps/nautilus/preferences/desktop_is_home_dir", NULL))
 		desktop_dir = g_strdup (home_dir);
 	else
 		desktop_dir = g_strconcat (home_dir, G_DIR_SEPARATOR_S,
-					   ".gnome-desktop", NULL);
+					   "Desktop", NULL);
 	g_object_unref (gconf_client);
-	
+
 	file = add_file_to_path (home_dir);
-	gtk_entry_set_text (GTK_ENTRY (save_entry), file);
+	utf8_name = g_filename_to_utf8 (file, -1, NULL, NULL, NULL);
+	gtk_entry_set_text (GTK_ENTRY (save_entry), utf8_name);
 	g_free (file);
+	g_free (utf8_name);
 
 	if (!stat (web_dir, &s) && S_ISDIR (s.st_mode)) {
 		GtkWidget *cbutton;
-		char      *str = NULL;		
+		char      *str;
+                char      *escaped;
 
 		cbutton = glade_xml_get_widget (xml, "web_rbutton");
 		gtk_widget_show (cbutton);
 
-		if (!normal_web_dir)
-			str = g_strdup_printf ("Save screenshot to _web page (save in %s)",
-					       web_dir);
+                escaped = escape_underscores (web_dir);
+		str = g_strdup_printf (_("Save screenshot to _web page (save in %s)"),
+				       escaped);
 		gtk_button_set_label (GTK_BUTTON (cbutton), str);
 		g_free (str);
+		g_free (escaped);
 	}
 
 	/* setup dnd */
@@ -1380,11 +1292,62 @@ main (int argc, char *argv[])
 	/*
 	 * Start working on the temporary file in a fork, now this is
 	 * a little evil since we might save a file the user might cancel
-	 * and we'll jsut end up deleting it and/or killing the forked
+	 * and we'll just end up deleting it and/or killing the forked
 	 * process.  But it makes it snappy and makes dnd not hang.  Go
 	 * figure.
 	 */
 	start_temporary ();
+}
+
+static gboolean
+do_screenshot_timeout (gpointer data)
+{
+	gboolean window = GPOINTER_TO_INT (data);
+
+	do_screenshot (window);
+
+	return FALSE;
+}
+
+/* main */
+int
+main (int argc, char *argv[])
+{
+	GnomeClient *client;
+	gboolean window = FALSE;
+	guint delay = 0;
+	
+	struct poptOption opts[] = {
+		{"window", '\0', POPT_ARG_NONE, NULL, 0, N_("Grab a window instead of the entire screen"), NULL},
+		{"delay", '\0', POPT_ARG_INT, NULL, 0, N_("Take screenshot after specified delay [in seconds]"), NULL},
+		{NULL, '\0', 0, NULL, 0, NULL, NULL}
+	};
+
+	opts[0].arg = &window;
+	opts[1].arg = &delay;
+
+	setlocale (LC_ALL, "");
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+
+	gnome_program_init ("gnome-panel-screenshot", VERSION,
+			    LIBGNOMEUI_MODULE,
+			    argc, argv,
+			    GNOME_PARAM_POPT_TABLE, opts,
+			    GNOME_PROGRAM_STANDARD_PROPERTIES,
+			    NULL);
+	glade_gnome_init();
+	client = gnome_master_client ();
+	gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
+	
+	if (delay > 0) {
+		g_timeout_add (delay * 1000, 
+			       do_screenshot_timeout,
+			       GINT_TO_POINTER (window));
+	} else {
+		do_screenshot (window);
+	}
 
 	signal (SIGINT, got_signal);
 	signal (SIGTERM, got_signal);

@@ -62,8 +62,7 @@
 
 QuickDesktopItem *
 quick_desktop_item_load_file (const char *file,
-			      const char *expected_type,
-			      gboolean    run_tryexec)
+                              gboolean    run_tryexec)
 {
         QuickDesktopItem *retval;
 	char *uri;
@@ -79,7 +78,7 @@ quick_desktop_item_load_file (const char *file,
 		uri = gnome_vfs_get_uri_from_local_path (full);
 		g_free (full);
 	}
-	retval = quick_desktop_item_load_uri (uri, expected_type, run_tryexec);
+	retval = quick_desktop_item_load_uri (uri, run_tryexec);
 
 	g_free (uri);
 
@@ -180,7 +179,7 @@ enum {
 	ENCODING_LEGACY_MIXED
 };
 
-static const int
+static int
 guess_encoding (const char *uri,
 		const char *name,
 		const char *comment,
@@ -319,8 +318,7 @@ exec_exists (const char *exec)
 
 QuickDesktopItem *
 quick_desktop_item_load_uri (const char *uri,
-			     const char *expected_type,
-			     gboolean run_tryexec)
+                             gboolean run_tryexec)
 {
 	QuickDesktopItem *retval = NULL;
 	ReadBuf *rb;
@@ -330,6 +328,7 @@ quick_desktop_item_load_uri (const char *uri,
 	char *comment_lang = NULL;
 	int comment_level = G_MAXINT;
 	int encoding = ENCODING_UNKNOWN;
+	gboolean encoding_guessed = TRUE;
 	gboolean old_kde = FALSE;
 
 	g_return_val_if_fail (uri != NULL, NULL);
@@ -386,16 +385,6 @@ quick_desktop_item_load_uri (const char *uri,
 				g_free (lang);
 			}
 		} else if ((val = IS_KEY ("Type", buf)) != NULL) {
-			if (expected_type != NULL &&
-			    strcmp (val, expected_type) != 0) {
-#ifdef QUICK_DESKTOP_READER_DEBUG
-				g_print ("bad type '%s' != '%s': %s\n", val,
-					 expected_type, uri);
-#endif
-				quick_desktop_item_destroy (retval);
-				retval = NULL;
-				break;
-			}
 			g_free (retval->type);
 			retval->type = g_strdup (val);
 		} else if ((val = IS_KEY ("Icon", buf)) != NULL) {
@@ -405,6 +394,7 @@ quick_desktop_item_load_uri (const char *uri,
 			g_free (retval->exec);
 			retval->exec = g_strdup (val);
 		} else if ((val = IS_KEY ("Encoding", buf)) != NULL) {
+			encoding_guessed = FALSE;
 			if (strcmp (val, "UTF-8") == 0) {
 				encoding = ENCODING_UTF8;
 			} else if (strcmp (val, "Legacy-Mixed") == 0) {
@@ -464,7 +454,9 @@ quick_desktop_item_load_uri (const char *uri,
 	}
 
 	if (retval != NULL &&
-	    name_lang != NULL) {
+	    name_lang != NULL &&
+	    (encoding_guessed ||
+	     encoding == ENCODING_LEGACY_MIXED)) {
 		const char *enc = get_encoding (encoding, name_lang);
 		if (enc != NULL) {
 			char *utf8_string = g_convert (retval->name, -1,
@@ -489,7 +481,9 @@ quick_desktop_item_load_uri (const char *uri,
 
 	if (retval != NULL &&
 	    retval->comment != NULL &&
-	    comment_lang != NULL) {
+	    comment_lang != NULL &&
+	    (encoding_guessed ||
+	     encoding == ENCODING_LEGACY_MIXED)) {
 		const char *enc = get_encoding (encoding, comment_lang);
 		if (enc != NULL) {
 			char *utf8_string = g_convert (retval->comment, -1,

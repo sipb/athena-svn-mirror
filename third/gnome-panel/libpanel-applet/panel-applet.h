@@ -29,6 +29,7 @@
 #include <gtk/gtkenums.h>
 #include <gtk/gtkeventbox.h>
 #include <libgnomeui/gnome-ui-init.h>
+#include <libgnomeui/gnome-client.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-generic-factory.h>
@@ -62,7 +63,7 @@ typedef enum {
 	PANEL_APPLET_FLAGS_NONE   = 0,
 	PANEL_APPLET_EXPAND_MAJOR = 1 << 0,
 	PANEL_APPLET_EXPAND_MINOR = 1 << 1,
-	PANEL_APPLET_HAS_HANDLE   = 1 << 2,
+	PANEL_APPLET_HAS_HANDLE   = 1 << 2
 } PanelAppletFlags;
 
 typedef struct _PanelApplet        PanelApplet;
@@ -125,6 +126,8 @@ void      	   panel_applet_set_size_hints       (PanelApplet      *applet,
 						      int               n_elements,
 						      int               base_size);
 
+gboolean           panel_applet_get_locked_down      (PanelApplet  *applet);
+
 BonoboControl     *panel_applet_get_control          (PanelApplet  *applet);
 BonoboUIComponent *panel_applet_get_popup_component  (PanelApplet  *applet);
 
@@ -182,6 +185,7 @@ int main (int argc, char *argv [])						\
 	gnome_program_init (name, version,					\
 			    LIBGNOMEUI_MODULE,					\
 			    argc, argv,						\
+			    GNOME_CLIENT_PARAM_SM_CONNECT, FALSE,               \
 			    GNOME_PROGRAM_STANDARD_PROPERTIES,			\
 			    NULL);						\
         return panel_applet_factory_main (iid, type, callback, data);		\
@@ -193,6 +197,7 @@ int main (int argc, char *argv [])						\
 	gnome_program_init (name, version,					\
 			    LIBGNOMEUI_MODULE,					\
 			    argc, argv,						\
+			    GNOME_CLIENT_PARAM_SM_CONNECT, FALSE,               \
 			    GNOME_PARAM_NONE);					\
         return panel_applet_factory_main (iid, type, callback, data);		\
 }
@@ -209,6 +214,7 @@ int main (int argc, char *argv [])						\
 	gnome_program_init (name, version,					\
 			    LIBGNOMEUI_MODULE,					\
 			    argc, argv,						\
+			    GNOME_CLIENT_PARAM_SM_CONNECT, FALSE,               \
 			    GNOME_PROGRAM_STANDARD_PROPERTIES,			\
 			    NULL);						\
         return panel_applet_factory_main (iid, type, callback, data);		\
@@ -223,6 +229,7 @@ int main (int argc, char *argv [])						\
 	gnome_program_init (name, version,					\
 			    LIBGNOMEUI_MODULE,					\
 			    argc, argv,						\
+			    GNOME_CLIENT_PARAM_SM_CONNECT, FALSE,               \
 			    GNOME_PARAM_NONE);					\
         return panel_applet_factory_main (iid, type, callback, data);		\
 }

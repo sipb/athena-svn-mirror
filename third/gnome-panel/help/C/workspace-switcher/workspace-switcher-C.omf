@@ -2,23 +2,18 @@
 <omf>
   <resource>
     <creator>
-      gdocteam@sun.com (Sun Microsystems)
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </creator>
     <maintainer>
-      gdocteam@sun.com (Sun Microsystems)
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </maintainer>
-<!--
     <title>
-      Workspace Switcher Applet Manual V2.2
+      Workspace Switcher Applet Manual V2.6
     </title>
--->
-    <title>
-      Workspace Switcher
-    </title>    
     <date>
-      2002-08-01
+      2004-08-25
     </date>
-    <version identifier="2.2" date="2002-08-01" description="Updated for GNOME 2.0, program version 1.0"/>
+    <version identifier="2.6" date="2004-08-25" description="Updated for GNOME 2.8, program version 2.7.92"/>
     <subject category="GNOME|Applets|Utility"/>
     <description>
       User manual for Workspace Switcher. 

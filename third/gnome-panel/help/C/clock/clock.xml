@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appletversion "2.1.2">
-  <!ENTITY manrevision "2.3">
-  <!ENTITY date "January 2003">
+  <!ENTITY appletversion "2.5.3.1">
+  <!ENTITY manrevision "2.5">
+  <!ENTITY date "February 2004">
   <!ENTITY applet "Clock">
 ]>
 <!-- 
@@ -22,7 +22,9 @@
   <articleinfo> 
 	 <title>&applet; Applet Manual V&manrevision;</title> 
 	 <copyright> 
+		<year>2002</year>
 		<year>2003</year>  
+		<year>2004</year>  
 		<holder>Sun Microsystems</holder> 
 	 </copyright> 
 	 <copyright> 
@@ -55,7 +57,7 @@
 		  <surname>Microsystems</surname> 
 		  <affiliation> 
 			 <orgname>GNOME Documentation Project</orgname> 
-			 <address> <email>gdocteam@sun.com</email> </address> 
+			 <address></address> 
 		  </affiliation> 
 		</author> 
 		<author> 
@@ -85,8 +87,23 @@
 		  <revnumber>&applet; Applet Manual V&manrevision;</revnumber> 
 		  <date>&date;</date> 
 		  <revdescription> 
-			 <para role="author">Sun Microsystems
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>Clock Applet Manual V2.4</revnumber> 
+		  <date>September 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>Clock Applet Manual V2.3</revnumber> 
+		  <date>January 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun Microsystems</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision>
@@ -94,8 +111,7 @@
 		  <revnumber>Clock Applet Manual V2.2</revnumber> 
 		  <date>August 2002</date> 
 		  <revdescription> 
-			 <para role="author">Sun Microsystems
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun Microsystems</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision>
@@ -103,8 +119,7 @@
 		  <revnumber>Clock Applet Manual V2.1</revnumber> 
 		  <date>June 2002</date> 
 		  <revdescription> 
-			 <para role="author">Sun Microsystems
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun Microsystems</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision>
@@ -112,8 +127,7 @@
 		  <revnumber>Clock Applet Manual V2.0</revnumber> 
 		  <date>March 2002</date> 
 		  <revdescription> 
-			 <para role="author">Sun Microsystems
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun Microsystems</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision> 
@@ -131,9 +145,7 @@
 		</releaseinfo> 
 	 <legalnotice> 
 		<title>Feedback</title> 
-		<para> To report a bug or make a suggestion regarding the &applet; applet or this
-		  manual, follow the directions in the 
-		  <ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>. </para>
+		<para> To report a bug or make a suggestion regarding the &applet; applet or this manual, follow the directions in the <ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>. </para>
 		
 	 </legalnotice> 
   </articleinfo> 
@@ -163,49 +175,33 @@
 	 </figure> 
     <!-- ==== End of Figure ======================================= -->
 <para>
-The <application>&applet;</application> applet displays the time and the 
-date in a panel. 
+The <application>&applet;</application> applet displays the time and the date in a panel. 
 </para>
 
+<sect2 id="clock-introduction-add">       
+<title>To Add &applet; to a Panel</title> 
 <para>
-To add the <application>&applet;</application> applet to a panel, right-click 
-on the panel, then choose
+To add the <application>&applet;</application> applet to a panel, right-click on the panel, then choose
    <menuchoice>
     <guimenu>Add to Panel</guimenu>
     <guisubmenu>Accessories</guisubmenu>
     <guimenuitem>Clock</guimenuitem>
    </menuchoice>.
 </para>
-<para>
-The applet popup menu for the <application>&applet;</application> applet 
-contains the standard applet menu items plus the following additional menu items:
-		<itemizedlist>
-			<listitem>
-				<para>
-				Copy time
-				</para>
-			</listitem>
-			<listitem>
-				<para>
-				Copy date
-				</para>
-			</listitem>
-		</itemizedlist>
+</sect2>
 
- You can use these menu items to insert the time or date into an application, 
- such as a text editor. 
-</para>
 </sect1>
 <!-- ================ Usage ================================ -->
 
   <sect1 id="clock-usage"> 
 	 <title>Usage</title> 
-<para>The <application>&applet;</application> applet takes the time from the
-system clock.
+
+	<sect2 id="clock-usage-copy">
+	<title>To Insert the Date or Time Into an Application</title>	
+<para>The <application>&applet;</application> applet takes the time from the system clock.
 </para>
 <para>
-	To insert the time or date from the <application>&applet;</application> 
-	applet into an application perform the following steps:</para>
+	To insert the date or time from the <application>&applet;</application> applet into an application, perform the following steps:</para>
 	<orderedlist>
 		<listitem>
 			<para>Right-click on the <application>&applet;</application> applet.
@@ -213,35 +209,53 @@ system clock.
 		</listitem>
 		<listitem>
 			<para>
-				Choose one of the following menu items from the applet popup
-				menu:
+				Choose one of the following menu items from the applet popup menu:
 			</para>
 			<itemizedlist>
 				<listitem>
 					<para>
-					<guilabel>Copy time</guilabel>
+					<guimenuitem>Copy Time</guimenuitem>
 					</para>
 				</listitem>
 				<listitem>
 					<para>
-					<guilabel>Copy date</guilabel>
+					<guimenuitem>Copy Date</guimenuitem>
 					</para>
 				</listitem>
 			</itemizedlist>
 		</listitem>
 		<listitem>
 			<para>
-			Point to the location in your application where you want to
-			insert the item.
+			Point to the location in your application where you want to insert the item.
 			</para>
 		</listitem>
 		<listitem>
 			<para>
-			Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Paste</guimenuitem>
-			</menuchoice> or middle-click to insert the item.
+			Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Paste</guimenuitem> </menuchoice> or middle-click to insert the item.
 			</para>
 		</listitem>
 		</orderedlist>
+	</sect2>
+
+	<sect2 id="clock-usage-adjust">
+	<title>To Adjust the System Date or Time</title>
+	<para>To adjust the system date or time that the <application>&applet;</application> applet displays, perform the following steps:	</para>
+	<orderedlist>
+	<listitem>
+			<para>Right-click on the applet, then choose <guimenuitem>Adjust Date &amp; Time</guimenuitem>.
+			</para>
+	</listitem>
+	<listitem>
+			<para>Type the <literal>root</literal> password, then click <guibutton>OK</guibutton>.
+			</para>
+	</listitem>
+	<listitem>
+			<para>The <application>&applet;</application> applet starts the system tool that sets the system date and time. Use the tool to adjust the date and time.
+			</para>
+	</listitem>
+	</orderedlist>
+	</sect2>
+
 </sect1>
 
 <!-- ============= Preferences ============================= -->
@@ -249,8 +263,7 @@ system clock.
 <sect1 id="clock-settings"> 
 <title>Preferences</title> 
 	<para>
-	To configure <application>&applet;</application>, right-click
-	on the applet, then choose <guimenuitem>Preferences</guimenuitem>. </para>
+	To configure <application>&applet;</application>, right-click on the applet, then choose <guimenuitem>Preferences</guimenuitem>. </para>
 	
 	
 	<variablelist> 
@@ -269,14 +282,11 @@ system clock.
 			 </listitem>
 			 <listitem>
 			 <para><guilabel>UNIX time</guilabel></para>
-			 <para>Display the time in seconds elapsed since January 1, 1970. 
-			 Developers are the primary users of UNIX time. </para>
+			 <para>Display the time in seconds elapsed since January 1, 1970. Developers are the primary users of UNIX time. </para>
 			 </listitem>
 			 <listitem>
 			 <para><guilabel>Internet time</guilabel></para>
-			 <para>Display Internet time in the applet. Internet time is based on 
-			 Biel Mean Time (BMT) as a universal reference, and is the same all over the world. 
-			 Internet time enables Internet users to synchronize to a common time.</para>
+			 <para>Display Internet time in the applet. Internet time is based on Biel Mean Time (BMT) as a universal reference, and is the same all over the world. Internet time enables Internet users to synchronize to a common time.</para>
 			 </listitem>
 			 </itemizedlist>
 			 </listitem> 
@@ -296,8 +306,7 @@ system clock.
 		  <varlistentry> 
 			 <term><guilabel>Use UTC</guilabel></term>
 			 <listitem> 
-			 <para>Select this option to display Universal Coordinated Time, also known as Greenwich 
-			 Mean Time, in the applet.</para> 
+			 <para>Select this option to display Universal Coordinated Time, also known as Greenwich Mean Time, in the applet.</para> 
 			 </listitem> 
 		  </varlistentry>
 	</variablelist>		  

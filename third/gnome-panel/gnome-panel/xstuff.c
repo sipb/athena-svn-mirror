@@ -24,8 +24,6 @@
 
 #include "xstuff.h"
 
-#include "global-keys.h"
-
 static Atom
 panel_atom_get (const char *atom_name)
 {
@@ -186,7 +184,7 @@ xstuff_net_wm_supports (const char *hint)
 }
 
 void
-xstuff_set_no_group_and_no_input (GdkWindow *win)
+xstuff_set_no_group (GdkWindow *win)
 {
 	XWMHints *old_wmhints;
 	XWMHints wmhints = {0};
@@ -203,14 +201,11 @@ xstuff_set_no_group_and_no_input (GdkWindow *win)
 		XFree (old_wmhints);
 
 		wmhints.flags &= ~WindowGroupHint;
-		wmhints.flags |= InputHint;
-		wmhints.input = False;
 		wmhints.window_group = 0;
 	} else {
 		/* General paranoia */
-		wmhints.flags = InputHint | StateHint;
+		wmhints.flags = StateHint;
 		wmhints.window_group = 0;
-		wmhints.input = False;
 		wmhints.initial_state = NormalState;
 	}
 
@@ -312,29 +307,6 @@ xstuff_delete_property (GdkWindow *window, const char *name)
 
         XDeleteProperty (xdisplay, xwindow,
 			 panel_atom_get (name));
-}
-
-void
-xstuff_init (void)
-{
-	GdkDisplay *display;
-	int         screens, i;
-
-	display = gdk_display_get_default ();
-	screens = gdk_display_get_n_screens (display);
-
-	for (i = 0; i < screens; i++) {
-		GdkScreen *screen;
-		GdkWindow *root_window;
-
-		screen = gdk_display_get_screen (display, i);
-		root_window = gdk_screen_get_root_window (screen);
-
-		gdk_window_add_filter (
-			root_window,
-			(GdkFilterFunc) panel_global_keys_filter,
-			screen);
-	}
 }
 
 /* Zoom animation */
@@ -476,5 +448,72 @@ xstuff_zoom_animate (GtkWidget *widget, GdkRectangle *opt_rect)
 	draw_zoom_animation (gscreen,
 			     rect.x, rect.y, rect.width, rect.height,
 			     dest.x, dest.y, dest.width, dest.height,
-			     MINIATURIZE_ANIMATION_DELAY_Z);
+			     MINIATURIZE_ANIMATION_STEPS_Z);
+}
+
+int
+xstuff_get_current_workspace (GdkScreen *screen)
+{
+	Window  root_window;
+	Atom    type = None;
+	gulong  nitems;
+	gulong  bytes_after;
+	gulong *num;
+	int     format;
+	int     result;
+	int     retval;
+
+	root_window = gdk_x11_drawable_get_xid (
+				gdk_screen_get_root_window (screen));
+
+	gdk_error_trap_push ();
+	result = XGetWindowProperty (gdk_display,
+				     root_window,
+				     panel_atom_get ("_NET_CURRENT_DESKTOP"),
+				     0, G_MAXLONG,
+				     False, XA_CARDINAL, &type, &format, &nitems,
+				     &bytes_after, (gpointer) &num);
+	if (gdk_error_trap_pop () || result != Success)
+		return -1;
+ 
+	if (type != XA_CARDINAL) {
+		XFree (num);
+		return -1;
+	}
+
+	retval = *num;
+ 
+	XFree (num);
+
+	return retval;
+}
+
+void
+xstuff_grab_key_on_all_screens (int      keycode,
+				guint    modifiers,
+				gboolean grab)
+{
+	GdkDisplay *display;
+	int         n_screens;
+	int         i;
+
+	display   = gdk_display_get_default ();
+	n_screens = gdk_display_get_n_screens (display);
+
+	for (i = 0; i < n_screens; i++) {
+		GdkWindow *root;
+
+		root = gdk_screen_get_root_window (
+				gdk_display_get_screen (display, i));
+
+		if (grab)
+			XGrabKey (gdk_x11_display_get_xdisplay (display),
+				  keycode, modifiers,
+				  gdk_x11_drawable_get_xid (root),
+				  True, GrabModeAsync, GrabModeAsync);
+		else
+			XUngrabKey (gdk_x11_display_get_xdisplay (display),
+				    keycode, modifiers,
+				    gdk_x11_drawable_get_xid (root));
+	}
 }

@@ -34,8 +34,6 @@
 #include <libart_lgpl/libart.h>
 #include <glade/glade-xml.h>
 
-#include "egg-screen-help.h"
-
 #define FISH_APPLET(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), \
 			fish_applet_get_type(),          \
 			FishApplet))
@@ -97,6 +95,7 @@ static gboolean load_fish_image          (FishApplet *fish);
 static void     update_pixmap            (FishApplet *fish);
 static void     something_fishy_going_on (FishApplet *fish,
 					  const char *message);
+static void     set_tooltip              (FishApplet *fish);
 
 static GType fish_applet_get_type (void);
 
@@ -112,7 +111,7 @@ show_help (FishApplet *fish, const char *link_id)
 {
 	GError *error = NULL;
 
-	egg_help_display_desktop_on_screen (
+	gnome_help_display_desktop_on_screen (
 		NULL, "fish-applet-2", "fish-applet-2", link_id,
 		gtk_widget_get_screen (GTK_WIDGET (fish)),
 		&error);
@@ -124,7 +123,7 @@ show_help (FishApplet *fish, const char *link_id)
 				NULL,
 				GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_CLOSE,
+				GTK_BUTTONS_OK,
 				_("There was an error displaying help: %s"),
 				error->message);
 
@@ -180,8 +179,11 @@ command_value_changed (GtkEntry   *entry,
 
 	text = gtk_entry_get_text (entry);
 
-	if (!text || !text [0])
+	if (!text || !text [0]) {
+		panel_applet_gconf_set_string (PANEL_APPLET (fish), 
+					       "command", "", NULL);
 		return;
+	}
 
 	if (!strncmp (text, "ps ", 3)  ||
 	    !strcmp  (text, "ps")      ||
@@ -189,6 +191,7 @@ command_value_changed (GtkEntry   *entry,
 	    !strcmp  (text, "who")     ||
 	    !strcmp  (text, "uptime")  ||
 	    !strncmp (text, "tail ", 5)) {
+		static gboolean message_given = FALSE;
 		char       *message;
 		const char *warning_format =
 				_("Warning:  The command "
@@ -200,13 +203,15 @@ command_value_changed (GtkEntry   *entry,
 				   "which would make the applet "
 				   "\"practical\" or useful.");
 
-		message = g_strdup_printf (warning_format, fish->name);
+		if ( ! message_given) {
+			message = g_strdup_printf (warning_format, fish->name);
 
-		something_fishy_going_on (fish, message);
+			something_fishy_going_on (fish, message);
 
-		g_free (message);
+			g_free (message);
 
-		return;
+			message_given = TRUE;
+		}
 	}
 
 	panel_applet_gconf_set_string (
@@ -245,13 +250,8 @@ delete_event (GtkWidget  *widget,
 	      FishApplet *fish)
 {
 	gtk_widget_hide (widget);
-}
 
-static gboolean
-close_dialog (GtkWidget  *widget,
-	      FishApplet *fish)
-{
-	gtk_widget_hide (fish->preferences_dialog);
+	return TRUE;
 }
 
 static void
@@ -267,6 +267,43 @@ handle_response (GtkWidget  *widget,
 	gtk_widget_hide (fish->preferences_dialog);
 }
 
+static void
+setup_sensitivity (FishApplet *fish,
+		   GladeXML *xml,
+		   const char *wid,
+		   const char *label,
+		   const char *label_post,
+		   const char *key)
+{
+	PanelApplet *applet = (PanelApplet *) fish;
+	char *fullkey;
+	GtkWidget *w;
+
+	fullkey = panel_applet_gconf_get_full_key (applet, key);
+
+	if (gconf_client_key_is_writable (fish->client, fullkey, NULL)) {
+		g_free (fullkey);
+		return;
+	}
+	g_free (fullkey);
+
+	w = glade_xml_get_widget (xml, wid);
+	g_assert (w != NULL);
+	gtk_widget_set_sensitive (w, FALSE);
+
+	if (label != NULL) {
+		w = glade_xml_get_widget (xml, label);
+		g_assert (w != NULL);
+		gtk_widget_set_sensitive (w, FALSE);
+	}
+	if (label_post != NULL) {
+		w = glade_xml_get_widget (xml, label_post);
+		g_assert (w != NULL);
+		gtk_widget_set_sensitive (w, FALSE);
+	}
+
+}
+
 static void 
 display_preferences_dialog (BonoboUIComponent *uic,
 			    FishApplet        *fish,
@@ -274,6 +311,7 @@ display_preferences_dialog (BonoboUIComponent *uic,
 {
 	GladeXML  *xml;
 	GtkWidget *button;
+	GConfClient *client;
 
 	if (fish->preferences_dialog) {
 		gtk_window_set_screen (GTK_WINDOW (fish->preferences_dialog),
@@ -303,6 +341,11 @@ display_preferences_dialog (BonoboUIComponent *uic,
 	g_signal_connect (fish->name_entry, "changed",
 			  G_CALLBACK (name_value_changed), fish);
 
+	setup_sensitivity (fish, xml,
+			   "name_entry" /* wid */,
+			   "name_label" /* label */,
+			   NULL /* label_post */,
+			   "name" /* key */);
 
 	fish->pixmap_entry = glade_xml_get_widget (xml, "image_entry");
 	fish->image_entry = gnome_file_entry_gtk_entry (
@@ -312,6 +355,11 @@ display_preferences_dialog (BonoboUIComponent *uic,
 	g_signal_connect (fish->image_entry, "changed",
 			  G_CALLBACK (image_value_changed), fish);
 
+	setup_sensitivity (fish, xml,
+			   "image_entry" /* wid */,
+			   "image_label" /* label */,
+			   NULL /* label_post */,
+			   "image" /* key */);
 
 	fish->command_entry = glade_xml_get_widget (xml, "command_entry");
 	gtk_entry_set_text (GTK_ENTRY (fish->command_entry), fish->command);
@@ -319,6 +367,24 @@ display_preferences_dialog (BonoboUIComponent *uic,
 	g_signal_connect (fish->command_entry, "changed",
 			  G_CALLBACK (command_value_changed), fish);
 
+	setup_sensitivity (fish, xml,
+			   "command_entry" /* wid */,
+			   "command_label" /* label */,
+			   NULL /* label_post */,
+			   "command" /* key */);
+
+	client = gconf_client_get_default ();
+	if (gconf_client_get_bool (client, "/desktop/gnome/lockdown/inhibit_command_line", NULL)) {
+		GtkWidget *w;
+
+		w = glade_xml_get_widget (xml, "command_entry");
+		g_assert (w != NULL);
+		gtk_widget_set_sensitive (w, FALSE);
+
+		w = glade_xml_get_widget (xml, "command_label");
+		g_assert (w != NULL);
+		gtk_widget_set_sensitive (w, FALSE);
+	}
 
 	fish->frames_spin = glade_xml_get_widget (xml, "frames_spin");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (fish->frames_spin),
@@ -327,6 +393,11 @@ display_preferences_dialog (BonoboUIComponent *uic,
 	g_signal_connect (fish->frames_spin, "value_changed",
 			  G_CALLBACK (n_frames_value_changed), fish);
 
+	setup_sensitivity (fish, xml,
+			   "frames_spin" /* wid */,
+			   "frames_label" /* label */,
+			   "frames_post_label" /* label_post */,
+			   "frames" /* key */);
 
 	fish->speed_spin = glade_xml_get_widget (xml, "speed_spin");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (fish->speed_spin), fish->speed);
@@ -334,6 +405,11 @@ display_preferences_dialog (BonoboUIComponent *uic,
 	g_signal_connect (fish->speed_spin, "value_changed",
 			  G_CALLBACK (speed_value_changed), fish);
 
+	setup_sensitivity (fish, xml,
+			   "speed_spin" /* wid */,
+			   "speed_label" /* label */,
+			   "speed_post_label" /* label_post */,
+			   "speed" /* key */);
 
 	fish->rotate_toggle = glade_xml_get_widget (xml, "rotate_toggle");
 	gtk_toggle_button_set_active (
@@ -342,6 +418,11 @@ display_preferences_dialog (BonoboUIComponent *uic,
 	g_signal_connect (fish->rotate_toggle, "toggled",
 			  G_CALLBACK (rotate_value_changed), fish);
 
+	setup_sensitivity (fish, xml,
+			   "rotate_toggle" /* wid */,
+			   NULL /* label */,
+			   NULL /* label_post */,
+			   "rotate" /* key */);
 
 	g_signal_connect (fish->preferences_dialog, "delete_event",
 			  G_CALLBACK (delete_event), fish);
@@ -349,14 +430,13 @@ display_preferences_dialog (BonoboUIComponent *uic,
 			  G_CALLBACK (handle_response), fish);
 
 	button = glade_xml_get_widget (xml, "done_button");
-        g_signal_connect (button, "clicked",
-			  (GCallback) close_dialog, fish);
-
-	g_signal_connect (fish->preferences_dialog, "response",
-			  G_CALLBACK (handle_response), fish);
+        g_signal_connect_swapped (button, "clicked",
+				  (GCallback) gtk_widget_hide, 
+				  fish->preferences_dialog);
 
 	gtk_window_set_screen (GTK_WINDOW (fish->preferences_dialog),
 			       gtk_widget_get_screen (GTK_WIDGET (fish)));
+	gtk_window_set_resizable (GTK_WINDOW (fish->preferences_dialog), FALSE);
 	gtk_window_present (GTK_WINDOW (fish->preferences_dialog));
 
 	g_object_unref (xml);
@@ -383,6 +463,11 @@ display_about_dialog (BonoboUIComponent *uic,
 				     "If anyone is found using it, he "
 				     "should be promptly sent for a psychiatric "
 				     "evaluation.");
+	const char  *documenters [] = {
+		"Telsa Gwynne <hobbit@aloss.ukuu.org.uk>",
+		"Sun GNOME Documentation Team <gdocteam@sun.com>",
+          	NULL
+	};
 	char        *authors [3];
 	GdkPixbuf   *pixbuf;
 	GError      *error = NULL;
@@ -418,7 +503,7 @@ display_about_dialog (BonoboUIComponent *uic,
 				 "Copyright \xc2\xa9 1998-2002 Free Software Foundation, Inc.",
 				 descr,
 				 (const char **) authors,
-				 NULL,
+				 documenters,
 				 NULL,
 				 pixbuf);
 
@@ -426,14 +511,14 @@ display_about_dialog (BonoboUIComponent *uic,
 	g_free (authors [0]);
 
 	if (pixbuf)
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 
 	gtk_window_set_wmclass (
 		GTK_WINDOW (fish->about_dialog), "fish", "Fish");
 	gtk_window_set_screen (GTK_WINDOW (fish->about_dialog),
 			       gtk_widget_get_screen (GTK_WIDGET (fish)));
 	gnome_window_icon_set_from_file (GTK_WINDOW (fish->about_dialog),
-					 GNOME_ICONDIR " /gnome-fish.png");
+					 GNOME_ICONDIR "/gnome-fish.png");
 
 	g_signal_connect (fish->about_dialog, "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
@@ -445,8 +530,8 @@ static void
 set_ally_name_desc (GtkWidget  *widget,
 		    FishApplet *fish)
 {
-	const char *name_format = _("%s the GNOME Fish");
-	const char *desc_format = _("%s the GNOME Fish, a contemporary oracle");
+	const char *name_format = _("%s the Fish");
+	const char *desc_format = _("%s the Fish, a contemporary oracle");
 	AtkObject  *obj;
 	char       *desc, *name;
 
@@ -473,7 +558,7 @@ something_fishy_going_on (FishApplet *fish,
 	dialog = gtk_message_dialog_new (NULL,
 					 GTK_DIALOG_DESTROY_WITH_PARENT,
 					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
+					 GTK_BUTTONS_OK,
 					 message);
 
 	g_signal_connect (dialog, "response",
@@ -538,13 +623,15 @@ update_fortune_dialog (FishApplet *fish)
 	g_free (text);
 
 	/* xgettext:no-c-format */
-	label_text = g_strdup_printf (_("%s the GNOME Fish Says:"), fish->name);
+	label_text = g_strdup_printf (_("%s the Fish Says:"), fish->name);
 
 	text = g_strdup_printf ("<big><big>%s</big></big>", label_text);
 	gtk_label_set_markup (GTK_LABEL (fish->fortune_label), text);
 	g_free (text);
 
 	g_free (label_text);
+
+	set_ally_name_desc (fish->fortune_view, fish);
 }
 
 static void
@@ -596,6 +683,9 @@ display_fortune_dialog (FishApplet *fish)
 				"", NULL, 0,
 				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 				NULL);
+
+		gtk_dialog_set_has_separator (
+			GTK_DIALOG (fish->fortune_dialog), FALSE);
 
 		gtk_dialog_set_default_response (
 			GTK_DIALOG (fish->fortune_dialog), GTK_RESPONSE_CLOSE);
@@ -652,7 +742,6 @@ display_fortune_dialog (FishApplet *fish)
 		gtk_widget_show_all (fish->fortune_dialog);
 	}
 
-	set_ally_name_desc (fish->fortune_view, fish);
 	gtk_window_set_screen (GTK_WINDOW (fish->fortune_dialog),
 			       gtk_widget_get_screen (GTK_WIDGET (fish)));
 	gtk_window_present (GTK_WINDOW (fish->fortune_dialog));
@@ -714,6 +803,8 @@ name_changed_notify (GConfClient *client,
 	fish->name = g_strdup (value);
 
 	update_fortune_dialog (fish);
+	set_tooltip (fish);
+	set_ally_name_desc (GTK_WIDGET (fish), fish);
 
 	if (fish->name_entry &&
 	    strcmp (gtk_entry_get_text (GTK_ENTRY (fish->name_entry)), fish->name))
@@ -859,7 +950,7 @@ init_fools_day (void)
 	fools_hour_end   = 12; /* Apparently jokes should stop at midday */
 	
 	for (i = 0; spanish_timezones [i]; i++)
-		if (!g_strcasecmp (spanish_timezones [i], location)) {
+		if (!g_ascii_strcasecmp (spanish_timezones [i], location)) {
 			/* Hah!, We are in Spain or Mexico
 			 * Spanish fool's day is 28th December
 			 */
@@ -1224,12 +1315,12 @@ fish_applet_expose_event (GtkWidget      *widget,
 	else
 		src_x += ((width * fish->current_frame) / fish->n_frames);
 
-	gdk_draw_pixmap (widget->window,
-			 widget->style->fg_gc [GTK_WIDGET_STATE (widget)],
-			 fish->pixmap,
-			 src_x, src_y,
-			 event->area.x, event->area.y,
-			 event->area.width, event->area.height);
+	gdk_draw_drawable (widget->window,
+			   widget->style->fg_gc [GTK_WIDGET_STATE (widget)],
+			   fish->pixmap,
+			   src_x, src_y,
+			   event->area.x, event->area.y,
+			   event->area.width, event->area.height);
 
         return FALSE;
 }
@@ -1326,9 +1417,8 @@ handle_keypress (GtkWidget   *widget,
 }
 
 static gboolean 
-handle_button_press (GtkWidget      *widget,
-		     GdkEventButton *event,
-		     FishApplet     *fish)
+handle_button_press (FishApplet     *fish,
+		     GdkEventButton *event)
 {
 	if (event->button != 1)
 		return FALSE; 
@@ -1347,6 +1437,8 @@ static void
 set_tooltip (FishApplet *fish)
 {
 	GtkTooltips *tooltips;
+	const char  *desc_format = _("%s the Fish, the fortune teller");
+	char        *desc;
 
 	tooltips = gtk_tooltips_new ();
 	g_object_ref (tooltips);
@@ -1354,8 +1446,9 @@ set_tooltip (FishApplet *fish)
 
 	g_object_set_data (G_OBJECT (fish), "tooltips", tooltips);
 
-	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (fish),
-			      _("GNOME Fish, the fortune teller"), NULL);
+	desc = g_strdup_printf (desc_format, fish->name);
+	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (fish), desc, NULL);
+	g_free (desc);
 }
 
 static void
@@ -1391,11 +1484,13 @@ setup_fish_widget (FishApplet *fish)
 	g_signal_connect (fish->drawing_area, "expose-event",
 			  G_CALLBACK (fish_applet_expose_event), fish);
 
-	gtk_widget_set_events (
-		fish->drawing_area,
-		gtk_widget_get_events (fish->drawing_area) | GDK_BUTTON_PRESS_MASK);
-	g_signal_connect (fish->drawing_area, "button_press_event",
-			  G_CALLBACK (handle_button_press), fish);
+	gtk_widget_add_events (widget, GDK_BUTTON_PRESS_MASK);
+	g_signal_connect_swapped (widget, "button_press_event",
+				  G_CALLBACK (handle_button_press), fish);
+
+	gtk_widget_add_events (fish->drawing_area, GDK_BUTTON_PRESS_MASK);
+	g_signal_connect_swapped (fish->drawing_area, "button_press_event",
+				  G_CALLBACK (handle_button_press), fish);
 
 	load_fish_image (fish);
 
@@ -1404,6 +1499,7 @@ setup_fish_widget (FishApplet *fish)
 	setup_timeout (fish);
 
 	set_tooltip (fish);
+	set_ally_name_desc (GTK_WIDGET (fish), fish);
 
 	g_signal_connect (fish, "key_press_event",
 			  G_CALLBACK (handle_keypress), fish);
@@ -1480,18 +1576,28 @@ fish_applet_fill (FishApplet *fish)
 	}
 
 	fish->rotate = panel_applet_gconf_get_bool (applet, "rotate", &error);
-	fish->rotate = FALSE;
 	if (error) {
 		g_warning ("Error getting 'rotate' preference: %s", error->message);
 		g_error_free (error);
 		error = NULL;
 
-		fish->rotate = TRUE; /* Fallback */
+		fish->rotate = FALSE; /* Fallback */
 	}
 
 	panel_applet_setup_menu_from_file (
 		applet, NULL, "GNOME_FishApplet.xml",
 		NULL, fish_menu_verbs, fish);
+
+	if (panel_applet_get_locked_down (applet)) {
+		BonoboUIComponent *popup_component;
+
+		popup_component = panel_applet_get_popup_component (applet);
+
+		bonobo_ui_component_set_prop (popup_component,
+					      "/commands/FishPreferences",
+					      "hidden", "1",
+					      NULL);
+	}
 
 	setup_fish_widget (fish);
 

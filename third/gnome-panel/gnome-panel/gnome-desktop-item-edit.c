@@ -5,10 +5,8 @@
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-directory.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 #include "menu-ditem.h"
@@ -16,8 +14,9 @@
 
 #include "nothing.cP"
 
-/* Just so we can link with panel-util.c for the convert keys stuff*/
-GSList *applets;
+/* Symbol needed by panel-util.c - sucky */
+#include "applet.h"
+GSList *panel_applet_list_applets (void) { return NULL; }
 
 static int dialogs = 0;
 static gboolean create_new = FALSE;
@@ -79,6 +78,10 @@ main (int argc, char * argv[])
 	int i;
 	GnomeVFSFileInfo *info;
 
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+
 	program = gnome_program_init ("gnome-desktop-item-edit", VERSION,
 				      LIBGNOMEUI_MODULE,
 				      argc, argv,
@@ -124,7 +127,7 @@ main (int argc, char * argv[])
 				continue;
 
 			} else if (info->type == GNOME_VFS_FILE_TYPE_REGULAR
-				   && is_ext (desktops[i], ".directory")
+				   && g_str_has_suffix (desktops [i], ".directory")
 				   && !create_new) {
 				char *dirname = g_path_get_dirname (uri);
 				dlg = panel_edit_direntry (dirname, NULL,
@@ -132,7 +135,7 @@ main (int argc, char * argv[])
 				g_free (dirname);
 			
 			} else if (info->type == GNOME_VFS_FILE_TYPE_REGULAR
-				   && is_ext (desktops[i], ".desktop")
+				   && g_str_has_suffix (desktops [i], ".desktop")
 				   && !create_new) {
 				char *dirname = g_path_get_dirname (uri);
 				dlg = panel_edit_dentry (uri, dirname,
@@ -145,7 +148,7 @@ main (int argc, char * argv[])
 					 uri);
 			}
 
-		} else if (is_ext (desktops[i], ".directory")
+		} else if (g_str_has_suffix (desktops [i], ".directory")
 			   && !create_new) {
 			/* a non-existant file.  Well we can still edit that sort
 			 * of.  We will just create it new */
@@ -154,7 +157,7 @@ main (int argc, char * argv[])
 						   gdk_screen_get_default ());
 			g_free (dirname);
 		
-		} else if (is_ext (desktops[i], ".desktop")
+		} else if (g_str_has_suffix (desktops [i], ".desktop")
 			   && !create_new) {
 			/* a non-existant file.  Well we can still edit that sort
 			 * of.  We will just create it new */

@@ -52,11 +52,14 @@
 #include "panel-applet-marshal.h"
 #include "panel-applet-enums.h"
 
+#define PANEL_APPLET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PANEL_TYPE_APPLET, PanelAppletPrivate))
+
 struct _PanelAppletPrivate {
 	PanelAppletShell           *shell;
 	BonoboControl              *control;
 	BonoboPropertyBag          *prop_sack;
 	BonoboItemHandler          *item_handler;
+	GConfClient                *client;
 
 	char                       *iid;
 	GClosure                   *closure;
@@ -68,14 +71,12 @@ struct _PanelAppletPrivate {
 	guint                       size;
 	char                       *background;
 
-	GdkPixmap                  *bg_pixmap;
-
         int                        *size_hints;
         int                         size_hints_len;
 
 	gboolean                    moving_focus_out;
-	int                         focusable_child;
-	guint                       hierarchy_changed_id;
+
+	gboolean                    locked_down;
 };
 
 static GObjectClass *parent_class;
@@ -96,6 +97,7 @@ static guint panel_applet_signals [LAST_SIGNAL];
 #define PROPERTY_BACKGROUND "panel-applet-background"
 #define PROPERTY_FLAGS      "panel-applet-flags"
 #define PROPERTY_SIZE_HINTS "panel-applet-size-hints"
+#define PROPERTY_LOCKED_DOWN "panel-applet-locked-down"
 
 enum {
 	PROPERTY_ORIENT_IDX,
@@ -103,6 +105,7 @@ enum {
 	PROPERTY_BACKGROUND_IDX,
 	PROPERTY_FLAGS_IDX,
 	PROPERTY_SIZE_HINTS_IDX,
+	PROPERTY_LOCKED_DOWN_IDX
 };
 
 static void
@@ -153,9 +156,12 @@ panel_applet_associate_schemas_in_dir (GConfClient  *client,
 		gchar *subdir = l->data;
 		gchar *prefs_subdir;
 		gchar *schema_subdir;
+		gchar *tmp;
 
-		prefs_subdir  = g_strdup_printf ("%s/%s", prefs_key, subdir);
-		schema_subdir = g_strdup_printf ("%s/%s", schema_dir, subdir);
+		tmp = g_path_get_basename (subdir);
+
+		prefs_subdir  = g_strdup_printf ("%s/%s", prefs_key, tmp);
+		schema_subdir = g_strdup_printf ("%s/%s", schema_dir, tmp);
 
 		panel_applet_associate_schemas_in_dir (
 			client, prefs_subdir, schema_subdir, error);
@@ -163,6 +169,7 @@ panel_applet_associate_schemas_in_dir (GConfClient  *client,
 		g_free (prefs_subdir);
 		g_free (schema_subdir);
 		g_free (subdir);
+		g_free (tmp);
 
 		if (*error) {
 			g_slist_free (list);
@@ -178,34 +185,31 @@ panel_applet_add_preferences (PanelApplet  *applet,
 			      const gchar  *schema_dir,
 			      GError      **opt_error)
 {
-	GConfClient  *client;
-	GError      **error = NULL;
-	GError       *our_error = NULL;
+	GError **error = NULL;
+	GError  *our_error = NULL;
 
 	g_return_if_fail (PANEL_IS_APPLET (applet));
-	g_return_if_fail (applet->priv->prefs_key != NULL);
+	g_return_if_fail (schema_dir != NULL);
+
+	if (!applet->priv->prefs_key)
+		return;
 
 	if (opt_error)
 		error = opt_error;
 	else
 		error = &our_error;
 
-	client = gconf_client_get_default ();
-
 	panel_applet_associate_schemas_in_dir (
-		client, applet->priv->prefs_key, schema_dir, error);
+		applet->priv->client, applet->priv->prefs_key, schema_dir, error);
 
 	if (!opt_error && our_error) {
 		g_warning (G_STRLOC ": failed to add preferences from '%s' : '%s'",
 			   schema_dir, our_error->message);
 		g_error_free (our_error);
 	}
-
-	gconf_client_add_dir (
-		client, applet->priv->prefs_key, GCONF_CLIENT_PRELOAD_NONE, NULL);
 }
 
-gchar *
+char *
 panel_applet_get_preferences_key (PanelApplet *applet)
 {
 	g_return_val_if_fail (PANEL_IS_APPLET (applet), NULL);
@@ -214,6 +218,31 @@ panel_applet_get_preferences_key (PanelApplet *applet)
 		return NULL;
 
 	return g_strdup (applet->priv->prefs_key);
+}
+
+static void
+panel_applet_set_preferences_key (PanelApplet *applet,
+				  const char  *prefs_key)
+{
+	g_return_if_fail (PANEL_IS_APPLET (applet));
+
+	if (applet->priv->prefs_key) {
+		gconf_client_remove_dir (applet->priv->client,
+					 applet->priv->prefs_key,
+					 NULL);
+
+		g_free (applet->priv->prefs_key);
+		applet->priv->prefs_key = NULL;
+	}
+
+	if (prefs_key) {
+		applet->priv->prefs_key = g_strdup (prefs_key);
+
+		gconf_client_add_dir (applet->priv->client,
+				      applet->priv->prefs_key,
+				      GCONF_CLIENT_PRELOAD_RECURSIVE,
+				      NULL);
+	}
 }
 
 PanelAppletFlags
@@ -230,7 +259,10 @@ panel_applet_set_flags (PanelApplet      *applet,
 {
 	g_return_if_fail (PANEL_IS_APPLET (applet));
 
-	applet->priv->flags = flags;
+	if (applet->priv->prop_sack != NULL)
+		bonobo_pbclient_set_short (BONOBO_OBJREF (applet->priv->prop_sack), PROPERTY_FLAGS, flags, NULL);
+	else
+		applet->priv->flags = flags;
 }
 
 void
@@ -239,24 +271,35 @@ panel_applet_set_size_hints (PanelApplet      *applet,
 			     int               n_elements,
 			     int               base_size)
 {
-	int i;
-	applet->priv->size_hints = g_realloc (applet->priv->size_hints, n_elements * sizeof (int));
-	memcpy (applet->priv->size_hints, size_hints, n_elements * sizeof (int));
-	applet->priv->size_hints_len = n_elements;
+	CORBA_sequence_CORBA_long *seq;
+	CORBA_Environment          env;
+	CORBA_any                  any;
+	int                        i;
+
+	CORBA_exception_init (&env);
+
+	seq = CORBA_sequence_CORBA_long__alloc ();
+	seq->_length = seq->_maximum = n_elements;
+	seq->_release = CORBA_TRUE;
+	seq->_buffer  = CORBA_sequence_CORBA_long_allocbuf (seq->_length);
 
 	for (i = 0; i < n_elements; i++)
-		applet->priv->size_hints[i] += base_size;
+		seq->_buffer [i] = size_hints [i] + base_size;
+
+	any._type    = TC_CORBA_sequence_CORBA_long;
+	any._release = CORBA_FALSE;
+	any._value   = seq;
+
+	Bonobo_PropertyBag_setValue (BONOBO_OBJREF (applet->priv->prop_sack),
+				     PROPERTY_SIZE_HINTS,
+				     &any,
+				     &env);
+
+	CORBA_free (seq);
+
+	CORBA_exception_free (&env);
 }
 
-/**
- * panel_applet_get_size:
- * @applet: A #PanelApplet.
- *
- * Returns the current size of the panel which
- * the applet is contained in.
- *
- * Return value: a #guint value.
- */
 guint
 panel_applet_get_size (PanelApplet *applet)
 {
@@ -265,15 +308,6 @@ panel_applet_get_size (PanelApplet *applet)
 	return applet->priv->size;
 }
 
-/**
- * panel_applet_get_orient
- * @applet: A #PanelApplet.
- *
- * Returns the current orientation of the panel which
- * the applet is contained in.
- *
- * Return value: a #PanelAppletOrient value.
- */
 PanelAppletOrient
 panel_applet_get_orient (PanelApplet *applet)
 {
@@ -282,17 +316,14 @@ panel_applet_get_orient (PanelApplet *applet)
 	return applet->priv->orient;
 }
 
-/**
- * panel_applet_setup_menu:
- * @applet: A #PanelApplet.
- * @xml: The xml character string describing the popup menu.
- * @verb_list: The list of #BonoboUIVerbs for the menu.
- * @user_data: The user data pointer for the menu.
- *
- * Sets up a popup menu for @applet described by the xml 
- * string, @xml. See <link linkend="applet-writing">Applet Writing
- * </link> section for a description of the format of the xml.
- */
+gboolean
+panel_applet_get_locked_down (PanelApplet *applet)
+{
+	g_return_val_if_fail (PANEL_IS_APPLET (applet), FALSE);
+
+	return applet->priv->locked_down;
+}
+
 void
 panel_applet_setup_menu (PanelApplet        *applet,
 			 const gchar        *xml,
@@ -313,19 +344,6 @@ panel_applet_setup_menu (PanelApplet        *applet,
 	bonobo_ui_component_add_verb_list_with_data (popup_component, verb_list, user_data);
 }
 
-/**
- * panel_applet_setup_menu_from_file:
- * @applet: A #PanelApplet.
- * @opt_datadir: The data directory - i.e. ${prefix}/share (optional).
- * @file: The file's name.
- * @opt_app_name: The application's name (optional).
- * @verb_list: The list of #BonoboUIVerbs for the menu.
- * @user_data: The user data pointer for the menu.
- *
- * Sets up a popup menu for @applet described by the xml 
- * file, @file. See &applet-writing for a description of
- * the format of the xml.
- */
 void
 panel_applet_setup_menu_from_file (PanelApplet        *applet, 
 				   const gchar        *opt_datadir,
@@ -344,7 +362,8 @@ panel_applet_setup_menu_from_file (PanelApplet        *applet,
 		opt_datadir = PANEL_APPLET_DATADIR;
 
 	if (!opt_app_name)
-		opt_app_name = app_name = g_strdup_printf ("%d", getpid ());
+		opt_app_name = app_name = g_strdup_printf ("%lu",
+							   (unsigned long) getpid ());
 
 	popup_component = panel_applet_get_popup_component (applet);
 
@@ -356,14 +375,6 @@ panel_applet_setup_menu_from_file (PanelApplet        *applet,
 		g_free (app_name);
 }
 
-/**
- * panel_applet_get_control:
- * @applet: A #PanelApplet.
- *
- * Retrieves the #BonoboControl associated with @applet.
- *
- * Return value: A #BonobControl on success, %NULL on failure.
- */
 BonoboControl *
 panel_applet_get_control (PanelApplet *applet)
 {
@@ -372,15 +383,6 @@ panel_applet_get_control (PanelApplet *applet)
 	return applet->priv->control;
 }
 
-/**
- * panel_applet_get_popup_component:
- * @applet: A #PanelApplet.
- *
- * Retrieves the #BonoboUIComponent used for popup menus associated
- * with @applet. 
- *
- * Return value: A #BonoboUIComponent on success, or %NULL on failure.
- */
 BonoboUIComponent *
 panel_applet_get_popup_component (PanelApplet *applet)
 {
@@ -394,72 +396,52 @@ panel_applet_finalize (GObject *object)
 {
 	PanelApplet *applet = PANEL_APPLET (object);
 
+	panel_applet_set_preferences_key (applet, NULL);
+
+	if (applet->priv->client)
+		g_object_unref (applet->priv->client);
+	applet->priv->client = NULL;
+
 	if (applet->priv->prop_sack)
 		bonobo_object_unref (
 			BONOBO_OBJECT (applet->priv->prop_sack));
+	applet->priv->prop_sack = NULL;
 
 	g_free (applet->priv->size_hints);
 	g_free (applet->priv->prefs_key);
 	g_free (applet->priv->background);
 	g_free (applet->priv->iid);
 
-	g_free (applet->priv);
-	applet->priv = NULL;
+	if (applet->priv->closure)
+		g_closure_unref (applet->priv->closure);
+	applet->priv->closure = NULL;
 
 	parent_class->finalize (object);
 }
 
-static GtkWidget*
-panel_applet_container_has_focusable_child (GtkWidget *widget)
+static gboolean
+container_has_focusable_child (GtkContainer *container)
 {
-	GtkContainer *container;
 	GtkWidget *child;
 	GList *list;
 	GList *t;
-	GtkWidget *retval = NULL;
+	gboolean retval = FALSE;
 
-	container = GTK_CONTAINER (widget);
 	list = gtk_container_get_children (container);
 
 	for (t = list; t; t = t->next) {
 		child = GTK_WIDGET (t->data);
 		if (GTK_WIDGET_CAN_FOCUS (child)) {
-			retval = child;
+			retval = TRUE;
 			break;
 		} else if (GTK_IS_CONTAINER (child)) {
-			retval = panel_applet_container_has_focusable_child (child);
+			retval = container_has_focusable_child (GTK_CONTAINER (child));
 			if (retval)
 				break;
 		}
 	}
 	g_list_free (list);
 	return retval;	
-}
-
-static void
-panel_applet_hierarchy_changed_cb (GtkWidget *widget)
-{
-	PanelApplet *applet = PANEL_APPLET (widget);
-
-	applet->priv->focusable_child = -1;
-}
-
-static gboolean
-panel_applet_has_focusable_child (PanelApplet *applet)
-{
-	if (applet->priv->focusable_child == -1) {
-		GtkWidget *focusable_child;
-
-		if (!applet->priv->hierarchy_changed_id)
-			applet->priv->hierarchy_changed_id = 
-				g_signal_connect (applet, "hierarchy-changed", 
-				  		  G_CALLBACK (panel_applet_hierarchy_changed_cb),
-				  		  NULL);
-
-		focusable_child = panel_applet_container_has_focusable_child (GTK_WIDGET (applet));
-		applet->priv->focusable_child = (focusable_child != NULL);
-	}
-	return  (applet->priv->focusable_child != 0);
 }
 
 static void
@@ -520,7 +502,7 @@ panel_applet_can_focus (GtkWidget *widget)
 	if (!PANEL_IS_APPLET (widget))
 		return FALSE;
 
-	return !panel_applet_has_focusable_child (PANEL_APPLET (widget));
+	return !container_has_focusable_child (GTK_CONTAINER (widget));
 }
 
 static gboolean
@@ -529,7 +511,7 @@ panel_applet_button_press (GtkWidget      *widget,
 {
 	PanelApplet *applet = PANEL_APPLET (widget);
 
-	if (!panel_applet_has_focusable_child (applet)) {
+	if (!container_has_focusable_child (GTK_CONTAINER (applet))) {
 		if (!GTK_WIDGET_HAS_FOCUS (widget)) {
 			GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_FOCUS);
 			gtk_widget_grab_focus (widget);
@@ -720,6 +702,7 @@ panel_applet_focus (GtkWidget        *widget,
 			 */ 
 			GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_FOCUS);
 			gtk_widget_grab_focus (widget);
+			GTK_WIDGET_UNSET_FLAGS (widget, GTK_CAN_FOCUS);
 			ret = TRUE;
 		}
 	}
@@ -795,24 +778,27 @@ panel_applet_get_pixmap (PanelApplet     *applet,
 			 int              x,
 			 int              y)
 {
-	GdkWindow *window;
-	GdkPixmap *retval;
-	GdkGC     *gc;
-	int        width;
-	int        height;
+	GdkPixmap  *pixmap;
+	GdkDisplay *display;
+	GdkPixmap  *retval;
+	GdkGC      *gc;
+	int         width;
+	int         height;
 
 	g_return_val_if_fail (PANEL_IS_APPLET (applet), NULL);
 
 	if (!GTK_WIDGET_REALIZED (applet))
 		return NULL;
 
-	window = gdk_window_lookup (xid);
-	if (window)
-		g_object_ref (window);
+	display = gdk_display_get_default ();
+	
+	pixmap = gdk_pixmap_lookup_for_display (display, xid);
+	if (pixmap)
+		g_object_ref (pixmap);
 	else
-		window = gdk_window_foreign_new (xid);
+		pixmap = gdk_pixmap_foreign_new_for_display (display, xid);
 
-	g_return_val_if_fail (window != NULL, NULL);
+	g_return_val_if_fail (pixmap != NULL, NULL);
 
 	gdk_drawable_get_size (GDK_DRAWABLE (GTK_WIDGET (applet)->window),
 			       &width, &height);
@@ -825,13 +811,13 @@ panel_applet_get_pixmap (PanelApplet     *applet,
 
 	gdk_draw_drawable (GDK_DRAWABLE (retval),
 			   gc, 
-			   GDK_DRAWABLE (window),
+			   GDK_DRAWABLE (pixmap),
 			   x, y,
 			   0, 0,
 			   width, height);
 
 	g_object_unref (gc);
-	g_object_unref (window);
+	g_object_unref (pixmap);
 
 	return retval;
 }
@@ -896,23 +882,6 @@ panel_applet_handle_background_string (PanelApplet  *applet,
 	return retval;
 }
 
-
-/**
- * panel_applet_get_background
- * @applet: A #PanelApplet.
- * @color: A #GdkColor to be filled in.
- * @pixmap: Returned #GdkPixmap
- *
- * Returns the current background type. If the background
- * type is %PANEL_NO_BACKGROUND both @color and @pixmap will
- * be unaffected. If the background type is %PANEL_COLOR_BACKGROUND
- * then @color will contain the current panel background colour.
- * If the background type is %PANEL_PIXMAP_BACKGROUND, @pixmap will
- * contain a pointer to a #GdkPixmap which is a copy of the applet's
- * portion of the panel's background pixmap.
- * 
- * Return value: a #PanelAppletOrient value.
- */
 PanelAppletBackgroundType
 panel_applet_get_background (PanelApplet *applet,
 			     GdkColor *color,
@@ -962,8 +931,11 @@ panel_applet_get_prop (BonoboPropertyBag *sack,
 		seq->_release = CORBA_TRUE;
 		
 		for (i = 0; i < applet->priv->size_hints_len; i++)
-			seq->_buffer [i] = applet->priv->size_hints[i];
-		}
+			seq->_buffer [i] = applet->priv->size_hints [i];
+	}
+		break;
+	case PROPERTY_LOCKED_DOWN_IDX:
+		BONOBO_ARG_SET_BOOLEAN (arg, applet->priv->locked_down);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -1026,7 +998,7 @@ panel_applet_set_prop (BonoboPropertyBag *sack,
 				       panel_applet_signals [CHANGE_ORIENT],
 				       0, orient);
 		}
-		}
+	}
 		break;
 	case PROPERTY_SIZE_IDX: {
 		guint size;
@@ -1040,7 +1012,7 @@ panel_applet_set_prop (BonoboPropertyBag *sack,
                                        panel_applet_signals [CHANGE_SIZE],
                                        0, size);
 		}
-		}
+	}
 		break;
 	case PROPERTY_BACKGROUND_IDX:
 		if (applet->priv->background)
@@ -1049,6 +1021,24 @@ panel_applet_set_prop (BonoboPropertyBag *sack,
 		applet->priv->background = g_strdup (BONOBO_ARG_GET_STRING (arg));
 
 		panel_applet_handle_background (applet);
+		break;
+	case PROPERTY_FLAGS_IDX:
+		applet->priv->flags = BONOBO_ARG_GET_SHORT (arg);
+		break;
+	case PROPERTY_SIZE_HINTS_IDX: {
+		CORBA_sequence_CORBA_long *seq = arg->_value;
+		int                        i;
+
+		applet->priv->size_hints = g_realloc (applet->priv->size_hints,
+						      seq->_length * sizeof (int));
+		for (i = 0; i < seq->_length; i++)
+			applet->priv->size_hints [i] = seq->_buffer [i];
+		
+		applet->priv->size_hints_len = seq->_length;;
+	}
+		break;
+	case PROPERTY_LOCKED_DOWN_IDX:
+		applet->priv->locked_down = BONOBO_ARG_GET_BOOLEAN (arg);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -1105,6 +1095,14 @@ panel_applet_property_bag (PanelApplet *applet)
 				 _("Ranges that hint what sizes are acceptable for the applet"),
 				 Bonobo_PROPERTY_READABLE);
 
+	bonobo_property_bag_add (sack,
+				 PROPERTY_LOCKED_DOWN,
+				 PROPERTY_LOCKED_DOWN_IDX,
+				 BONOBO_ARG_BOOLEAN,
+				 NULL,
+				 _("The Applet's containing Panel is locked down"),
+				 Bonobo_PROPERTY_READABLE | Bonobo_PROPERTY_WRITEABLE);
+
 	return sack;
 }
 
@@ -1134,7 +1132,7 @@ panel_applet_control_bound (BonoboControl *control,
 			       G_TYPE_BOOLEAN, &ret,
 			       PANEL_TYPE_APPLET, applet,
 			       G_TYPE_STRING, applet->priv->iid,
-			       0);
+			       NULL);
 
 
 	if (!ret) { /* FIXME */
@@ -1168,7 +1166,7 @@ panel_applet_item_handler_get_object (BonoboItemHandler *handler,
 			continue;
 
 		if (!strcmp (option->key, "prefs_key") && !applet->priv->prefs_key)
-			applet->priv->prefs_key = g_strdup (option->value);
+			panel_applet_set_preferences_key (applet, option->value);
 
 		else if (!strcmp (option->key, "background"))
 			bonobo_pbclient_set_string (BONOBO_OBJREF (applet->priv->prop_sack),
@@ -1230,6 +1228,16 @@ panel_applet_item_handler_get_object (BonoboItemHandler *handler,
 				bonobo_pbclient_set_short (
 					BONOBO_OBJREF (applet->priv->prop_sack), PROPERTY_SIZE,
 					GNOME_Vertigo_PANEL_XX_LARGE, NULL);
+		} else if (!strcmp (option->key, "locked_down")) {
+			gboolean val = FALSE;
+			if (option->value[0] == 'T' ||
+			    option->value[0] == 't' ||
+			    option->value[0] == 'Y' ||
+			    option->value[0] == 'y' ||
+			    atoi (option->value) != 0)
+				val = TRUE;
+			bonobo_pbclient_set_boolean (BONOBO_OBJREF (applet->priv->prop_sack),
+						     PROPERTY_LOCKED_DOWN, val, NULL);
 		}
 	}
 
@@ -1266,8 +1274,7 @@ add_tab_bindings (GtkBindingSet   *binding_set,
 }
 
 static void
-panel_applet_class_init (PanelAppletClass *klass,
-			 gpointer          dummy)
+panel_applet_class_init (PanelAppletClass *klass)
 {
 	GObjectClass   *gobject_class = (GObjectClass *) klass;
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
@@ -1287,6 +1294,8 @@ panel_applet_class_init (PanelAppletClass *klass,
 
 	gobject_class->finalize = panel_applet_finalize;
 
+	g_type_class_add_private (klass, sizeof (PanelAppletPrivate));
+
 	panel_applet_signals [CHANGE_ORIENT] =
                 g_signal_new ("change_orient",
                               G_TYPE_FROM_CLASS (klass),
@@ -1294,10 +1303,10 @@ panel_applet_class_init (PanelAppletClass *klass,
                               G_STRUCT_OFFSET (PanelAppletClass, change_orient),
                               NULL,
 			      NULL,
-                              panel_applet_marshal_VOID__INT,
+                              panel_applet_marshal_VOID__UINT,
                               G_TYPE_NONE,
 			      1,
-			      G_TYPE_INT);
+			      G_TYPE_UINT);
 
 	panel_applet_signals [CHANGE_SIZE] =
                 g_signal_new ("change_size",
@@ -1318,11 +1327,11 @@ panel_applet_class_init (PanelAppletClass *klass,
                               G_STRUCT_OFFSET (PanelAppletClass, change_background),
                               NULL,
 			      NULL,
-                              panel_applet_marshal_VOID__ENUM_POINTER_OBJECT,
+                              panel_applet_marshal_VOID__ENUM_BOXED_OBJECT,
                               G_TYPE_NONE,
 			      3,
 			      PANEL_TYPE_PANEL_APPLET_BACKGROUND_TYPE,
-			      G_TYPE_POINTER,
+			      GDK_TYPE_COLOR,
 			      GDK_TYPE_PIXMAP);
 
 	panel_applet_signals [MOVE_FOCUS_OUT_OF_APPLET] =
@@ -1348,13 +1357,14 @@ static void
 panel_applet_instance_init (PanelApplet      *applet,
 			    PanelAppletClass *klass)
 {
-	applet->priv = g_new0 (PanelAppletPrivate, 1);
+	applet->priv = PANEL_APPLET_GET_PRIVATE (applet);
 
-	applet->priv->bound        = FALSE;
+	applet->priv->client = gconf_client_get_default ();
 
-	applet->priv->flags        = PANEL_APPLET_FLAGS_NONE;
-	applet->priv->orient       = PANEL_APPLET_ORIENT_UP;
-	applet->priv->size         = GNOME_Vertigo_PANEL_MEDIUM;
+	applet->priv->bound  = FALSE;
+	applet->priv->flags  = PANEL_APPLET_FLAGS_NONE;
+	applet->priv->orient = PANEL_APPLET_ORIENT_UP;
+	applet->priv->size   = GNOME_Vertigo_PANEL_MEDIUM;
 
 	applet->priv->moving_focus_out = FALSE;
 
@@ -1420,18 +1430,8 @@ panel_applet_setup (PanelApplet *applet)
 
 	g_signal_connect (applet, "popup_menu",
 			  G_CALLBACK (panel_applet_popup_menu), NULL);
-
-	priv->focusable_child = -1;
-	priv->hierarchy_changed_id  = 0;
 }
 
-/**
- * panel_applet_new:
- *
- * Creates a new #PanelApplet.
- *
- * Return value: A #GtkWidget on success, %NULL on failure.
- */
 GtkWidget *
 panel_applet_new (void)
 {
@@ -1496,16 +1496,6 @@ panel_applet_all_controls_dead (void)
 		bonobo_main_quit ();
 }
 
-/**
- * panel_applet_factory_main_closure:
- * @iid: The bonobo-activation iid of the factory.
- * @closure: The factory callback closure.
- *
- * A generic 'main' routine for applets. This should not normally be
- * used directly because it is invoked by #PANEL_APPLET_BONOBO_FACTORY.
- *
- * Return value: 0 on success, 1 on failure.
- */
 int
 panel_applet_factory_main_closure (const gchar *iid,
 				   GType        applet_type,
@@ -1542,17 +1532,6 @@ panel_applet_factory_main_closure (const gchar *iid,
 	return retval;
 }
 
-/**
- * panel_applet_factory_main:
- * @iid: The bonobo-activation iid of the factory.
- * @callback: The factory callback.
- * @data: The factory user data pointer.
- *
- * A generic 'main' routine for applets. This should not normally be
- * used directly because it is invoked by #PANEL_APPLET_BONOBO_FACTORY.
- *
- * Return value: 0 on success, 1 on failure.
- */
 int
 panel_applet_factory_main (const gchar                 *iid,
 			   GType                        applet_type,

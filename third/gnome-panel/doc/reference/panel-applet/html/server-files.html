@@ -1,37 +1,9 @@
-<HTML><HEAD><TITLE>Bonobo Activation .server Files For Applets</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK REL="HOME" TITLE="Panel Applet Writer's Reference Manual" HREF="libpanel-applet.html"><LINK REL="UP" TITLE="Writing Applets" HREF="applet-writing.html"><LINK REL="PREVIOUS" TITLE="Writing Applets" HREF="applet-writing.html"><LINK REL="NEXT" TITLE="Defining a Popup Context Menu" HREF="applet-popups.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE></HEAD><BODY CLASS="SECT1" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="applet-writing.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="applet-writing.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="libpanel-applet.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">Panel Applet Writer's Reference Manual</TH><TD><A ACCESSKEY="n" HREF="applet-popups.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><BR CLEAR="all"><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="SERVER-FILES">Bonobo Activation .server Files For Applets</A></H1><P>Since an applet is a bonobo component, you must write
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Bonobo Activation .server Files For Applets</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Panel Applet Library Reference Manual"><link rel="up" href="applet-writing.html" title="Writing Applets"><link rel="previous" href="applet-writing.html" title="Writing Applets"><link rel="next" href="applet-popups.html" title="Defining a Popup Context Menu"><link rel="chapter" href="applet-writing.html" title="Writing Applets"><link rel="chapter" href="applet-porting.html" title="Porting Applets from the GNOME 1.x interfaces"><link rel="chapter" href="panel-applet.html" title="The Panel Applet Library"><link rel="refentry" href="PanelApplet.html" title="PanelApplet"><link rel="refentry" href="panel-applet-Panel-Applet-GConf-Utilities.html" title="Panel Applet GConf Utilities"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="applet-writing.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="applet-writing.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Panel Applet Library Reference Manual</th><td><a accesskey="n" href="applet-popups.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="server-files"></a>Bonobo Activation .server Files For Applets</h2></div></div><div></div></div><p>Since an applet is a bonobo component, you must write
 a .server file so that the bonobo activation daemon is aware that
 your component exists and how to activate it. Copy and paste is
 your friend here ...
-      </P><PRE CLASS="PROGRAMLISTING">&lt;oaf_info&gt;
+      </p><pre class="programlisting">
+&lt;oaf_info&gt;
 &lt;oaf_server iid="OAFIID:My_HelloApplet_Factory" type="exe"
             location="test-bonobo-applet"&gt;
 
@@ -52,13 +24,12 @@ your friend here ...
                 &lt;item value="IDL:Bonobo/Unknown:1.0"/&gt;
         &lt;/oaf_attribute&gt;
         &lt;oaf_attribute name="name" type="string" value="Hello World Applet"/&gt;
-        &lt;oaf_attribute name="description" type="string" value="My fist applet for the GNOME2 panel"/&gt;
-        &lt;oaf_attribute name="panel:category" type="string" value="Amusements"/&gt;
+        &lt;oaf_attribute name="description" type="string" value="My first applet for the GNOME2 panel"/&gt;
         &lt;oaf_attribute name="panel:icon" type="string" value="gnome-applets.png"/&gt;
 &lt;/oaf_server&gt;
 &lt;/oaf_info&gt;
-      </PRE><P>Probably the most important thing to note here is that, unlike
+      </pre><p>Probably the most important thing to note here is that, unlike
 .server files for other bonobo components, applet .server files contain
-two special attributes - 'panel:category' and 'panel:icon'. Both are used
-by the panel to display an entry for the applet in the 'Add to Panel' menu.
-      </P></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="applet-writing.html"><B>&lt;&lt;&lt;&nbsp;Writing Applets</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="applet-popups.html"><B>Defining a Popup Context Menu&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
+a special attribute called 'panel:icon'. This is used by the panel to display
+an entry for the applet in the 'Add to Panel' dialog.
+      </p></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="applet-writing.html"><b>&lt;&lt; Writing Applets</b></a></td><td align="right"><a accesskey="n" href="applet-popups.html"><b>Defining a Popup Context Menu &gt;&gt;</b></a></td></tr></table></body></html>

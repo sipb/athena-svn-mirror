@@ -1,16 +1,35 @@
+/*
+ * panel-shell.c: panel shell interface implementation
+ *
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * Authors:
+ *      Jacob Berkman <jacob@ximian.com>
+ */
+
 #include <config.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <string.h>
 #include <gtk/gtk.h>
 
 #include "panel-shell.h"
 #include "panel-util.h"
-
-struct _PanelShellPrivate {
-	int dummy;
-};
-
-static GObjectClass *panel_shell_parent_class = NULL;
 
 /*
  * PanelShell is a singleton.
@@ -24,17 +43,29 @@ panel_shell_register (void)
 		Bonobo_RegistrationResult  reg_res;
 		char                      *message = NULL;
 		char                      *iid;
+		char			  *display;
+		char			  *p;
 
 		panel_shell = g_object_new (PANEL_SHELL_TYPE, NULL);
 		bonobo_object_set_immortal (BONOBO_OBJECT (panel_shell), TRUE);
 
+		/* Strip off the screen portion of the display */
+		display = g_strdup (g_getenv ("DISPLAY"));
+		p = strrchr (display, ':');
+		if (p) {
+			p = strchr (p, '.');
+			if (p)
+				p [0] = '\0';
+		}
+
 		iid = bonobo_activation_make_registration_id (
-				"OAFIID:GNOME_PanelShell", g_getenv ("DISPLAY"));
+				"OAFIID:GNOME_PanelShell", display);
 
 		reg_res = bonobo_activation_active_server_register (
 				iid, BONOBO_OBJREF (panel_shell));
 
 		g_free (iid);
+		g_free (display);
 
 		switch (reg_res) {
 		case Bonobo_ACTIVATION_REG_SUCCESS:
@@ -55,7 +86,7 @@ panel_shell_register (void)
 			GtkWidget *dlg = panel_error_dialog (
 						gdk_screen_get_default (),
 						"panel_shell_register_error",
-						"%s", message);
+						"%s", NULL, message);
 
 			/* FIXME: quick hack */
 			g_signal_handlers_disconnect_by_func
@@ -89,34 +120,14 @@ impl_displayRunDialog (PortableServer_Servant  servant,
 }
 
 static void
-panel_shell_finalize (GObject *object)
-{
-	PanelShell *shell = PANEL_SHELL (object);
-
-	if (shell->priv) {
-		g_free (shell->priv);
-		shell->priv = NULL;
-	}
-
-	panel_shell_parent_class->finalize (object);
-}
-
-static void
 panel_shell_class_init (PanelShellClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
 	klass->epv.displayRunDialog = impl_displayRunDialog;
-
-	object_class->finalize = panel_shell_finalize;
-
-	panel_shell_parent_class = g_type_class_peek_parent (klass);
 }
 
 static void
 panel_shell_init (PanelShell *shell)
 {
-	shell->priv = g_new0 (PanelShellPrivate, 1);
 }
 
 BONOBO_TYPE_FUNC_FULL (PanelShell,

@@ -6,19 +6,12 @@ INCLUDES =							\
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps\""		\
 	-DFISH_GLADEDIR=\""$(gladedir)"\"			\
 	$(WARN_CFLAGS)						\
+	$(DISABLE_DEPRECATED_CFLAGS)				\
 	$(FISH_CFLAGS)
 
 libexec_PROGRAMS = fish-applet-2
 
-EGGFILES =                      \
-	egg-screen-exec.h       \
-	egg-screen-exec.c       \
-	egg-screen-help.h       \
-	egg-screen-help.c       \
-	egg-screen-url.h        \
-	egg-screen-url.c
-
-fish_applet_2_SOURCES = fish.c $(EGGFILES)
+fish_applet_2_SOURCES = fish.c
 
 fish_applet_2_LDADD =					\
 	../../libpanel-applet/libpanel-applet-2.la	\
@@ -38,7 +31,7 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	$(glade_DATA)
 
-gladedir   = $(datadir)/fish
+gladedir   = $(datadir)/gnome-panel/glade
 glade_DATA = fish.glade
 
 fishbitmapsdir = $(datadir)/pixmaps/fish
@@ -57,14 +50,17 @@ server_DATA     = $(server_in_files:.server.in=.server)
 $(server_in_files): $(server_in_files).in
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 
+CLEANFILES = $(server_DATA) $(server_DATA).in $(schemas_DATA)
+
 @INTLTOOL_SERVER_RULE@
 
-schemasdir       = $(sysconfdir)/gconf/schemas
+schemasdir       = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_files = fish.schemas.in
 schemas_DATA     = $(schemas_in_files:.schemas.in=.schemas)
 
 @INTLTOOL_SCHEMAS_RULE@
 
+if GCONF_SCHEMAS_INSTALL
 # don't do this if we are building in eg. rpm
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
@@ -72,8 +68,6 @@ install-data-local:
 			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/applets/fish/$$p ; \
 	done \
 	fi
-
-EGGDIR = $(srcdir)/../../../libegg/libegg/screen-exec
-
-regenerate-built-sources:
-	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
+else
+install-data-local:
+endif

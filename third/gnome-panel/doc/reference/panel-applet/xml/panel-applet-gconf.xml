@@ -1,0 +1,467 @@
+<refentry id="panel-applet-Panel-Applet-GConf-Utilities">
+<refmeta>
+<refentrytitle>Panel Applet GConf Utilities</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>PANEL-APPLET Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Panel Applet GConf Utilities</refname><refpurpose>Utility methods for manipulating per-applet GConf preferences.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;panel-applet-gconf.h&gt;
+
+
+<link linkend="gchar">gchar</link>*      <link linkend="panel-applet-gconf-get-full-key">panel_applet_gconf_get_full_key</link> (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key);
+<link linkend="gboolean">gboolean</link>    <link linkend="panel-applet-gconf-get-bool">panel_applet_gconf_get_bool</link>     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="gint">gint</link>        <link linkend="panel-applet-gconf-get-int">panel_applet_gconf_get_int</link>      (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="gchar">gchar</link>*      <link linkend="panel-applet-gconf-get-string">panel_applet_gconf_get_string</link>   (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="gdouble">gdouble</link>     <link linkend="panel-applet-gconf-get-float">panel_applet_gconf_get_float</link>    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="GSList">GSList</link>*     <link linkend="panel-applet-gconf-get-list">panel_applet_gconf_get_list</link>     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="panel-applet-gconf-get-value">panel_applet_gconf_get_value</link>    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="void">void</link>        <link linkend="panel-applet-gconf-set-bool">panel_applet_gconf_set_bool</link>     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> the_bool,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="void">void</link>        <link linkend="panel-applet-gconf-set-int">panel_applet_gconf_set_int</link>      (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> the_int,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="void">void</link>        <link linkend="panel-applet-gconf-set-string">panel_applet_gconf_set_string</link>   (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *the_string,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="void">void</link>        <link linkend="panel-applet-gconf-set-float">panel_applet_gconf_set_float</link>    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> the_float,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="void">void</link>        <link linkend="panel-applet-gconf-set-list">panel_applet_gconf_set_list</link>     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **opt_error);
+<link linkend="void">void</link>        <link linkend="panel-applet-gconf-set-value">panel_applet_gconf_set_value</link>    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GError">GError</link> **opt_error);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Applets typically define a set of preferences using a schemas
+file and <link linkend="panel-applet-add-preferences"><function>panel_applet_add_preferences()</function></link>. Such preferences apply
+only to an individual applet instance. For example, you may add
+two clock applets to the panel and configure them differently.
+</para>
+
+<para>
+In order for the preferences to only apply to a single applet,
+each applet must have a seperate GConf key for each of these
+preferences. The methods described below provide convient wrappers
+around the usual <link linkend="GConfClient"><type>GConfClient</type></link> functions and operate on these
+per-applet keys.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-full-key"/>panel_applet_gconf_get_full_key ()</title>
+<indexterm><primary>panel_applet_gconf_get_full_key</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      panel_applet_gconf_get_full_key (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+Access the full path for an individual per-applet GConf key. Using
+the returned path you may directly modify the preference using
+the usual GConf functions without using any of the convenience
+wrappers described below.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The full GConf key - free using <link linkend="g-free"><function>g_free()</function></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-bool"/>panel_applet_gconf_get_bool ()</title>
+<indexterm><primary>panel_applet_gconf_get_bool</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    panel_applet_gconf_get_bool     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-get-bool"><function>gconf_client_get_bool()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-get-bool"><function>gconf_client_get_bool()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The bool value of the key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-int"/>panel_applet_gconf_get_int ()</title>
+<indexterm><primary>panel_applet_gconf_get_int</primary></indexterm><programlisting><link linkend="gint">gint</link>        panel_applet_gconf_get_int      (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-get-int"><function>gconf_client_get_int()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-get-int"><function>gconf_client_get_int()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The integer value of the key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-string"/>panel_applet_gconf_get_string ()</title>
+<indexterm><primary>panel_applet_gconf_get_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      panel_applet_gconf_get_string   (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-get-string"><function>gconf_client_get_string()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-get-string"><function>gconf_client_get_string()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The string value of the key, or <literal>NULL</literal> if unset.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-float"/>panel_applet_gconf_get_float ()</title>
+<indexterm><primary>panel_applet_gconf_get_float</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     panel_applet_gconf_get_float    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-get-float"><function>gconf_client_get_float()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-get-float"><function>gconf_client_get_float()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The floating point value of the key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-list"/>panel_applet_gconf_get_list ()</title>
+<indexterm><primary>panel_applet_gconf_get_list</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     panel_applet_gconf_get_list     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-get-list"><function>gconf_client_get_list()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-get-list"><function>gconf_client_get_list()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>The GConf value type of the list elements.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The list of values set for the key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-get-value"/>panel_applet_gconf_get_value ()</title>
+<indexterm><primary>panel_applet_gconf_get_value</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* panel_applet_gconf_get_value    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-get-value"><function>gconf_client_get_value()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-get-value"><function>gconf_client_get_value()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The GConf value set for the key.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-set-bool"/>panel_applet_gconf_set_bool ()</title>
+<indexterm><primary>panel_applet_gconf_set_bool</primary></indexterm><programlisting><link linkend="void">void</link>        panel_applet_gconf_set_bool     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> the_bool,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-set-bool"><function>gconf_client_set_bool()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-set-bool"><function>gconf_client_set_bool()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_bool</parameter>&nbsp;:</term>
+<listitem><simpara>The boolean value to set the key with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-set-int"/>panel_applet_gconf_set_int ()</title>
+<indexterm><primary>panel_applet_gconf_set_int</primary></indexterm><programlisting><link linkend="void">void</link>        panel_applet_gconf_set_int      (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> the_int,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-set-int"><function>gconf_client_set_int()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-set-int"><function>gconf_client_set_int()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_int</parameter>&nbsp;:</term>
+<listitem><simpara>The integer value to set the key with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-set-string"/>panel_applet_gconf_set_string ()</title>
+<indexterm><primary>panel_applet_gconf_set_string</primary></indexterm><programlisting><link linkend="void">void</link>        panel_applet_gconf_set_string   (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *the_string,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-set-string"><function>gconf_client_set_string()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-set-string"><function>gconf_client_set_string()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_string</parameter>&nbsp;:</term>
+<listitem><simpara>The string value to set the key with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-set-float"/>panel_applet_gconf_set_float ()</title>
+<indexterm><primary>panel_applet_gconf_set_float</primary></indexterm><programlisting><link linkend="void">void</link>        panel_applet_gconf_set_float    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> the_float,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-set-float"><function>gconf_client_set_float()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-set-float"><function>gconf_client_set_float()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_float</parameter>&nbsp;:</term>
+<listitem><simpara>The floating point value to set the key with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-set-list"/>panel_applet_gconf_set_list ()</title>
+<indexterm><primary>panel_applet_gconf_set_list</primary></indexterm><programlisting><link linkend="void">void</link>        panel_applet_gconf_set_list     (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-set-list"><function>gconf_client_set_list()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-set-list"><function>gconf_client_set_list()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>The GConf value type of the list items.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>The list of values to set the key with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="panel-applet-gconf-set-value"/>panel_applet_gconf_set_value ()</title>
+<indexterm><primary>panel_applet_gconf_set_value</primary></indexterm><programlisting><link linkend="void">void</link>        panel_applet_gconf_set_value    (<link linkend="PanelApplet">PanelApplet</link> *applet,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="GError">GError</link> **opt_error);</programlisting>
+<para>
+Convience wrapper for <link linkend="gconf-client-set-value"><function>gconf_client_set_value()</function></link> which operates
+on the individual per-applet key.
+</para>
+
+<para>
+If you pass <literal>NULL</literal> for <parameter>opt_error</parameter>, this function will print
+a warning message from any <link linkend="GError"><type>GError</type></link> which <link linkend="gconf-client-set-value"><function>gconf_client_set_value()</function></link>
+returns.
+</para><variablelist role="params">
+<varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>The key name of the preference.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>The GConf value to set the key with.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_error</parameter>&nbsp;:</term>
+<listitem><simpara>Optional <link linkend="GError"><type>GError</type></link>**.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
