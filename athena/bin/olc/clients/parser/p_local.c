@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *	$Id: p_local.c,v 1.7 1990-07-16 08:21:14 lwvanels Exp $
+ *	$Id: p_local.c,v 1.8 1990-10-18 06:14:36 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.7 1990-07-16 08:21:14 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.8 1990-10-18 06:14:36 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -45,7 +45,7 @@ do_quit(arguments)
      char *arguments[];
 {
   REQUEST Request;
-  LIST *list, *l;
+  LIST *list;
   int status;
 #ifdef lint
   *arguments = (char *) NULL;
