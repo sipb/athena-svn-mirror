@@ -611,7 +611,7 @@ XCOMM the platform-specific parameters - edit site.def to change
 #ifndef InstallCmd		/* hack should be in project */
 #if SystemV || SystemV4
 #ifdef UseInstalled
-#define InstallCmd $(BINDIR)/bsdinst
+#define InstallCmd install
 #else
 #define InstallCmd $(SHELL) $(SCRIPTSRC)/bsdinst.sh
 #endif
@@ -771,6 +771,12 @@ XCOMM the platform-specific parameters - edit site.def to change
 #ifndef FilesToClean
 #define FilesToClean *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut 
 #endif
+#ifndef SiteIncludes
+#define SiteIncludes /**/
+#endif
+#ifndef SiteLdLibs
+#define SiteLdLibs /**/
+#endif
 
             SHELL = BourneShell
 
@@ -826,6 +832,8 @@ XCOMM the platform-specific parameters - edit site.def to change
 #if !HasVoidSignalReturn
    SIGNAL_DEFINES = -DSIGNALRETURNSINT
 #endif
+     SITEINCLUDES = SiteIncludes
+       SITELDLIBS = SiteLdLibs
 /*
  * The following supports forcing of function prototypes
  */
@@ -899,14 +907,14 @@ XCOMM the platform-specific parameters - edit site.def to change
  * INCLUDES contains client-specific includes set in Imakefile
  * LOCAL_LDFLAGS contains client-specific ld flags flags set in Imakefile
  */
-      ALLINCLUDES = $(INCLUDES) $(EXTRA_INCLUDES) $(TOP_INCLUDES) $(STD_INCLUDES)
+      ALLINCLUDES = $(INCLUDES) $(EXTRA_INCLUDES) $(SITEINCLUDES) $(TOP_INCLUDES) $(STD_INCLUDES)
        ALLDEFINES = $(ALLINCLUDES) $(STD_DEFINES) $(EXTRA_DEFINES) $(PROTO_DEFINES) $(DEFINES)
            CFLAGS = $(CDEBUGFLAGS) $(CCOPTIONS) $(ALLDEFINES)
         LINTFLAGS = $(LINTOPTS) -DLINT $(ALLDEFINES)
 #if AlternateUsrLibDir && !defined(UseInstalled)
-           LDLIBS = -L$(USRLIBDIR) $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
+           LDLIBS = $(SITELDLIBS) -L$(USRLIBDIR) $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
 #else
-           LDLIBS = $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
+           LDLIBS = $(SITELDLIBS) $(SYS_LIBRARIES) $(EXTRA_LIBRARIES)
 #endif
 #if AlternateUsrLibDir && defined(UseInstalled)
         LDOPTIONS = $(CDEBUGFLAGS) $(CCOPTIONS) $(EXTRA_LDOPTIONS) $(LOCAL_LDFLAGS) -L$(USRLIBDIR)
