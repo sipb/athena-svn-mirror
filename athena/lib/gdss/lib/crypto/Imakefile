@@ -1,0 +1,16 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/crypto/Imakefile,v 1.1 1993-05-25 15:54:45 mar Exp $ */
+
+#define ISUBDIRS algorithm bignum
+
+OBJS =  hashes.o \
+	read_password.o \
+	crypto_util.o \
+	dumphex.o \
+	read_privkey.o \
+	read_pubkey.o \
+	write_pubkey.o \
+	KeyFromPQ.o
+
+DEFINES = -I. -I../../include -Ibignum/h
+
+build_library(crypto,$(OBJS))
