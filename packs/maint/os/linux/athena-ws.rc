@@ -115,7 +115,7 @@ case "$1" in
 	if [ "$NOCREATE" = true ]; then
 		touch /etc/nocreate
 	else
-		rm -f /etc/noattach
+		rm -f /etc/nocreate
 	fi && success nocreate || failure nocreate
 	echo
 
