@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.10 1999-09-15 20:32:26 mwhitson Exp $
+# $Id: Makefile.athena,v 1.11 1999-11-03 20:05:48 tb Exp $
 
 SHELL=/bin/sh
 
@@ -20,10 +20,10 @@ check:
 
 install:
 	${MAKE} install "DESTDIR=$$SRVD"
-	dir=`pwd`; \
 	sed -e '/^chdir/d' -e "s:/usr:$$SRVD/usr:" \
 	 -e "s:\$$Config{install:\"$$SRVD\"\.\$$Config{install:" \
-	 utils/h2ph > h2phsrvd; \
-	chmod 755 h2phsrvd; \
-	(cd /os/usr/include && find . -type f -print | xargs \
-	 "$$dir/perl" "-I$$SRVD/usr/athena/lib/perl5" "$$dir/h2phsrvd"); \
+	 utils/h2ph > h2phsrvd
+	chmod 755 h2phsrvd
+	dir=`pwd`; (cd /usr/include && find . -type f -print | xargs \
+  	 "$$dir/perl" "-I$$SRVD/usr/athena/lib/perl5" "$$dir/h2phsrvd"); \
+
