@@ -4,9 +4,12 @@
  * "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.13 1991-07-01 10:17:51 probe Exp $
+ *	$Author: lwvanels $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.14 1991-07-10 11:17:39 lwvanels Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.13  91/07/01  10:17:51  probe
+ * AUX integration
+ * 
  * Revision 1.12  91/05/27  13:17:16  probe
  * RIOS integration
  * 
@@ -50,7 +53,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.13 1991-07-01 10:17:51 probe Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.14 1991-07-10 11:17:39 lwvanels Exp $";
 
 #endif lint
 
@@ -519,7 +522,7 @@ initialization");
 			(void) strcat(curname, "@");
 			(void) strcat(curname, ZGetRealm());
 
-			if ((state = ZLocateUser(curname, &znloc)) != ZERR_NONE) {
+			if ((state = ZLocateUser(curname, &znloc,ZAUTH)) != ZERR_NONE) {
 				com_err("finger", state, "\nFailure in \
 ZLocateUser");
 				break;
