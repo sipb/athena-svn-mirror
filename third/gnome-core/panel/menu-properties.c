@@ -404,7 +404,7 @@ create_properties_dialog(Menu *menu)
 	gtk_container_set_border_width(GTK_CONTAINER(box),GNOME_PAD_SMALL);
 	gtk_container_add(GTK_CONTAINER(f),box);
 	
-	w = gtk_radio_button_new_with_label (NULL, _("Global main menu"));
+	w = gtk_radio_button_new_with_label (NULL, _("Panel context menu"));
 	global_main = w;
 	gtk_object_set_data(GTK_OBJECT(dialog), "global_main", w);
 	if((menu->path == NULL ||
