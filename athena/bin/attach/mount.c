@@ -14,13 +14,16 @@
  */
 
 #ifndef lint
-static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.1 1990-04-19 12:09:39 jfc Exp $";
+static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.2 1990-04-19 12:09:45 jfc Exp $";
 #endif lint
 
 #include "attach.h"
 #include <sys/param.h>
 #ifndef ultrix
 #include <mntent.h>
+#endif
+#ifdef AIX
+#include <sys/dstat.h>
 #endif
 #include <rpcsvc/mount.h>
 
@@ -38,7 +41,9 @@ mountfs(at, fsname, mopt, errorout)
 {
 	struct	mntent	mnt;
 	union data {
+#if defined(UFS) || defined(RVD)
 		struct ufs_args	ufs_args;
+#endif
 #ifdef NFS
 		struct nfs_args nfs_args;
 #endif
@@ -64,15 +69,40 @@ mountfs(at, fsname, mopt, errorout)
 			at->flags |= FLAG_PERMANENT;
 		return (SUCCESS);
 	}
-    
+#if defined(UFS) || defined(RVD)
 	if (at->fs->mount_type == MOUNT_UFS)
 		if (mount_42(&mnt, &data.ufs_args) == FAILURE)
 			return (FAILURE);
+#endif
 #ifdef NFS
-	if (at->fs->mount_type == MOUNT_NFS)
+	if (at->fs->mount_type == MOUNT_NFS) {
 		if (mount_nfs(at, mopt, &data.nfs_args,
 			      errorout) == FAILURE)
 			return (FAILURE);
+#ifdef AIX
+		if (nfs_mount(mnt.mnt_dir, &data.nfs_args, mopt->flags) != 0) {
+			if (errorout)
+				fprintf(stderr,
+					"%s: Can't mount %s on %s - %s\n",
+					at->hesiodname, fsname, mnt.mnt_dir,
+					sys_errlist[errno]);
+			return (FAILURE);
+		} else {
+		  /* We need to get the filesystem's gfs for mtab */
+		  struct dstat st_buf;
+		  if(dstat(mnt.mnt_dir, &st_buf, sizeof(st_buf)) != 0) {
+		    if (errorout)
+		      fprintf(stderr,
+			      "%s: Can't stat %s to verify mount: %s\n",
+			      at->hesiodname, mnt.mnt_dir, sys_errlist[errno]);
+		    return (FAILURE);
+		  } else {
+		    mnt.mnt_gfs = st_buf.dst_gfs;
+		    goto done;
+		  }
+		}
+#endif
+	}
 #endif /* NFS */
 
 #ifdef ultrix
@@ -81,20 +111,24 @@ mountfs(at, fsname, mopt, errorout)
 #else /* !ultrix */
 	if (mount(at->fs->mount_type, mnt.mnt_dir, mopt->flags, &data) < 0) {
 #endif /* ultrix */
-		if (errorout)
+		if (errorout) {
 			fprintf(stderr,
 				"%s: Can't mount %s on %s - %s\n",
 				at->hesiodname, fsname, mnt.mnt_dir,
 				sys_errlist[errno]);
+			error_status = ERR_SOMETHING;
+		}
 		return (FAILURE);
 	} 
 
 #ifndef ultrix
+      done:
 	addtomtab(&mnt);
 #endif /* !ultrix */
 	return (SUCCESS);
 }
 
+#if defined(UFS) || defined(RVD)
 /*
  * Prepare to mount a 4.2 style file system
  */
@@ -108,6 +142,8 @@ mount_42(mnt, args)
 #endif
     return (SUCCESS);
 }
+
+#endif /* UFS || RVD */
 
 #ifdef NFS
 /*
@@ -141,7 +177,7 @@ mount_nfs(at, mopt, args, errorout)
 		return (FAILURE);
 	}
     
-	client->cl_auth = spoofunix_create_default(spoofhost);
+	client->cl_auth = spoofunix_create_default(spoofhost, real_uid);
 
 	timeout.tv_usec = 0;
 	timeout.tv_sec = 20;
@@ -184,19 +220,24 @@ mount_nfs(at, mopt, args, errorout)
 
 	if (errno = fhs.fhs_status) {
 		if (errorout) {
-			if (errno == EACCES)
+			if (errno == EACCES) {
 				fprintf(stderr,
 				"%s: Mount access denied by server %s\n",
 					at->hesiodname, at->host);
-			else if (errno < sys_nerr)
+				error_status = ERR_ATTACHNOTALLOWED;
+			} else if (errno < sys_nerr) {
+				error_status = (errno == ENOENT) ? 
+				  ERR_ATTACHNOFILSYS : ERR_ATTACHNOTALLOWED;
 				fprintf(stderr,
 			"%s: Error message returned from server %s: %s\n",
 					at->hesiodname, at->host,
 					sys_errlist[errno]);
-			else
+			} else {
+				error_status = ERR_ATTACHNOTALLOWED;
 				fprintf(stderr,
 			"%s: Error status %d returned from server %s\n",
 					at->hesiodname, errno, at->host);
+			}
 		}
 		return (FAILURE);
 	}
