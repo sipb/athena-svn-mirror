@@ -6,7 +6,7 @@
 
 /**/###########################################################################
 /**/# Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.tmpl,v 1.3 1997-04-30 18:10:57 ghudson Exp $
+/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.tmpl,v 1.4 1997-09-24 07:03:32 ghudson Exp $
 /**/#
 /**/# Platform-specific parameters may be set in the appropriate .cf
 /**/# configuration files.  Site-wide parameters may be set in the file
@@ -327,7 +327,7 @@
 #endif
 
 #if UseSharedLibs
-LDFLAGS = -L/usr/athena/lib/shared
+LDFLAGS = -L$(ATHTOOLROOT)/usr/athena/lib/shared
 #endif
 
 #define OptionDefines TermIODef PutenvDef ErrnoDef SelectMDef \
@@ -490,6 +490,9 @@ AnsiIDef VforkDef SigRetDef PosixDef
 #ifndef CURDIR
 #define CURDIR .
 #endif
+#ifndef TOOLROOT
+#define TOOLROOT
+#endif
 #ifndef CONFDIR
 #define CONFDIR ${TOP}/config
 #endif
@@ -547,6 +550,7 @@ AnsiIDef VforkDef SigRetDef PosixDef
     INSTKMEMFLAGS = InstKmemFlags	/* install flags for /dev/kmem progs */
 
           DESTDIR = DestDir		/* root of install */
+      ATHTOOLROOT = TOOLROOT
 
          INCLUDES = 
 
@@ -569,7 +573,7 @@ AnsiIDef VforkDef SigRetDef PosixDef
             IMAKE = imake
          IRULESRC = $(CONFIGDIR)
         IMAKE_CMD = $(IMAKE) -I$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES) \
-			-s Makefile
+			-s Makefile -DTOOLROOT=TOOLROOT
      ICONFIGFILES = $(IRULESRC)/Imake.tmpl $(IRULESRC)/Imake.rules \
 			$(IRULESRC)/Project.tmpl $(IRULESRC)/site.def \
 			$(IRULESRC)/$(MACROFILE)

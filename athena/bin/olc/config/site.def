@@ -92,21 +92,22 @@
 
 #if HaveZephyr
 #define ZephyrDef	-DZEPHYR
-ZephyrLib	=	-L/usr/athena/lib -lzephyr$(LIBSUFFIX)
+ZephyrLib	=	-L$(ATHTOOLROOT)/usr/athena/lib -lzephyr$(LIBSUFFIX)
 #else
 #define ZephyrDef
 #endif
 
 #if HaveKerberos
 #define	KerberosDef	-DKERBEROS
-KerberosLib	=	-L/usr/athena/lib -lkrb$(LIBSUFFIX) -ldes$(LIBSUFFIX)
+KerberosLib	=	-L$(ATHTOOLROOT)/usr/athena/lib -lkrb$(LIBSUFFIX) \
+			-ldes$(LIBSUFFIX)
 #else
 #define	KerberosDef
 #endif
 
 #if HaveHesiod
 #define	HesiodDef	-DHESIOD
-HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
+HesiodLib	=	-L$(ATHTOOLROOT)/usr/athena/lib -lhesiod$(LIBSUFFIX)
 #else
 #define	HesiodDef
 #endif

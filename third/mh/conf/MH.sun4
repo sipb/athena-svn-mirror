@@ -51,8 +51,8 @@ curses		-lcurses
 oldload		none
 ranlib		off
 sharedlib	off
-ccoptions	-O -I/usr/athena/include
-ldoptions	-L/usr/athena/lib
+ccoptions	-O -I@TOOLROOT@/usr/athena/include
+ldoptions	-L@TOOLROOT@/usr/athena/lib
 sprintf		int
 signal		void
 ldoptlibs	-lsocket -lresolv -lnsl -lc -lbsd -lelf -ldl
