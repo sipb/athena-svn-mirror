@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,9 +17,10 @@
 #include <netdb.h>
 #include <string.h>
 #include <sys/param.h>			/* for MAXHOSTNAMELEN */
+#include <com_err.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.6 1989-11-08 15:42:11 jtkohl Exp $";
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.7 1990-07-12 14:01:53 raeburn Exp $";
 #endif lint
 
 #define MAIL_CLASS "MAIL"
@@ -29,13 +30,11 @@ main(argc,argv)
 	int argc;
 	char *argv[];
 {
-	char *rindex();
-	
 	ZNotice_t notice;
 	struct hostent *hent;
 	int retval;
 	register int i;
-	char *whoami,*ptr,myhost[MAXHOSTNAMELEN],mysender[BUFSIZ];
+	char *whoami,myhost[MAXHOSTNAMELEN],mysender[BUFSIZ];
 	char *lines[2];
 	
 	whoami = argv[0];
