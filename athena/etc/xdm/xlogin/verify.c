@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.90 1998-04-08 02:25:59 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.91 1998-05-31 15:44:15 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,6 +82,7 @@ extern FILE *xdmstream;
 pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
+extern void set_busy();
 char *get_tickets(), *strsave();
 int abort_verify();
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
@@ -147,9 +148,9 @@ char *dologin(user, passwd, option, script, tty, session, display)
 
   /* 4.2 vs 4.3 style syslog */
 #ifndef  LOG_ODELAY
-  openlog("login", LOG_NOTICE);
+  openlog("xlogin", LOG_NOTICE);
 #else
-  openlog("login", LOG_ODELAY, LOG_AUTH);
+  openlog("xlogin", LOG_ODELAY, LOG_AUTH);
 #endif
 
   /* Check to make sure a username was entered. */
@@ -527,6 +528,8 @@ char *dologin(user, passwd, option, script, tty, session, display)
 #endif
   if (pwd->pw_uid == ROOT)
     syslog(LOG_CRIT, "ROOT LOGIN on tty %s", tty ? tty : "X");
+  else
+    syslog(LOG_INFO, "%s LOGIN on tty %s", user, tty ? tty : "X");
 
 #ifndef sgi /* nanny/xdm does all this on SGI too... */
   /* Set the owner and modtime on the tty. */
@@ -597,8 +600,14 @@ char *dologin(user, passwd, option, script, tty, session, display)
   if (nanny_setupUser(pwd->pw_name, environment, newargv))
     return lose("failed to setup for login");
 
+#ifndef XDM
+  set_busy(1);
+#endif
   exit(0);
 #else
+#ifndef XDM
+  set_busy(1);
+#endif
   execle(session, "sh", errbuf, script, NULL, environment);
 #endif /* sgi */
 
