@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.3 1996-10-12 22:44:15 ghudson Exp $
+# $Id: do.sh,v 1.4 1996-10-13 07:12:10 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -46,10 +46,11 @@ esac
 compiler=`. $CONFIG_SITE; echo $CC`
 
 if [ -r Makefile.athena ]; then
-	export SRVD SOURCE COMPILER XCONFIGDIR
+	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR
 	SRVD="$srvd"
 	SOURCE="$source"
 	COMPILER="$compiler"
+	CONFIGDIR="$source/packs/build/config"
 	XCONFIGDIR="$source/packs/build/xconfig"
 	make -f Makefile.athena "$operation"
 elif [ -x ./configure ]; then
