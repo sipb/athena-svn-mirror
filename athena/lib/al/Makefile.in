@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1998-04-08 02:15:29 ghudson Exp $
+# $Id: Makefile.in,v 1.3 1998-05-07 17:13:36 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -20,7 +20,7 @@ DEFS=@DEFS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
-OBJS=acct.o allowed.o group.o homedir.o passwd.o session.o util.o
+OBJS=access.o acct.o allowed.o group.o homedir.o passwd.o session.o util.o
 
 all: libal.a
 
@@ -49,6 +49,8 @@ install:
 	${INSTALL} -m 444 ${srcdir}/al_acct_create.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/al_acct_revert.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/al_free_errmem.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_get_access.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_is_local_acct.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/al_login_allowed.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/al_strerror.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/sessions.5 ${DESTDIR}${mandir}/man5
