@@ -1,5 +1,10 @@
 #!/bin/sh
 date=`date`;
+AWK=awk
+XX=` gawk --version 2>&1 >/dev/null ` ;
+if [ $? = 0 ] ; then
+  AWK=gawk
+fi;
 cat <<EOF
 # lpd.conf generated from $1 on $date
 #   The values in this file are the default values.
@@ -12,11 +17,11 @@ cat <<EOF
 
 EOF
 
-awk '
+${AWK} '
 /XXSTART/,/END/{
 	if ( $0 ~ /XXSTARTXX/ ) next;
 	if ( $0 ~ /END/ ) next;
-	if ( $0 ~ /{/ ){
+	if ( $0 ~ /\{/ ) {
 		print "XXX" $0;
 	} else {
 		print "YYY" $0;
@@ -24,10 +29,10 @@ awk '
 }' | sed -e '/XXX/s/[{}"]//g' -e '/XXX/s/,$//' \
 	-e '/XXX/s/[ 	][ 	]*/ /g' \
 	-e '/YYY/s/ *\*\///' -e '/YYY/s/.*\/\* *//' \
-| awk '
+| ${AWK} '
 { 
 	# print "LINE" $0;
-	if ( $0 ~ /XXX/ ){
+	if ( $0 ~ /XXX/ ) {
 		# print $0;
 		i = index($0," ");
 		l = substr($0,i);

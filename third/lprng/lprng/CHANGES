@@ -32,15 +32,8 @@ Release LPRng 3.6.1 Mon Mar 22 09:42:07 PST 1999
   License
 
     Due to various technical legal reasons,  the License for this
-  release of LPRng has been changed from the GNU to the slightly
-  different but similar in intent Public.license.
-
-    The main intent of this license was to allow several different
-  versions of LPRng to exist,  some with proprietary software,
-  that could be distributed and not have the proprietary software
-  fall under terms of the GNU license.   Note that distributing
-  LPRng with other operating systems,  binary distributions,  etc.,
-  is still permitted, and in fact encouraged.
+  release of LPRng has been changed from the GNU Copyleft to the slightly
+  different but similar in intent Artistic License.
 
   Load Balance Queues and Class types
 
@@ -235,15 +228,41 @@ Release LPRng 3.6.1 Mon Mar 22 09:42:07 PST 1999
   The files that have this done are the log file, status file,
   and accounting file.
 
-  PCLBANNER - new banner printing program using PERL produces
-   pcl banner page.
+  PCLBANNER and PSBANNER - new banner printing programs using PERL produces
+   pcl or PostScript banner page.
+
    lp:bp=/usr/local/.../pclbanner
      :of=....
      :if=....
+   OR
 
+   lp:bp=/usr/local/.../psbanner
+     :of=....
+     :if=....
+
+  
   Bug fixes:
     Gadzillions.  Many.  Some were not bugs but simply inconsistencies with
   documentation.  Sometimes documentation changed, sometimes the code.
+
+  Default Server Print Queue:
+
+   The default_printer_when_unknown configuration option
+   allows you to specify a print queue that the server will use when
+   it cannot find one in the printcap.  This print queue should have
+   the format:
+
+   /etc/lpd.conf:
+    default_printer_when_unknown=fallback
+
+   /etc/printcap:
+   fallback:server
+    :sd=/usr/spool/lpd/%P
+    :router=/..../router_for_misdirected_jobs
+
+    The router should output the correct destination (see router documentation
+    in LPRng-HOWTO),  and exit with 0, or exit with JREMOVE to cause the job
+    to be dropped in the bit bucket.
 
 Release LPRng 3.5.4 Mon Nov  9 10:07:42 PST 1998
   Bug fixes:

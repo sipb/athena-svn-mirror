@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: printjob.c,v 1.1.1.2 1999-05-04 18:06:47 danw Exp $";
+"$Id: printjob.c,v 1.1.1.3 1999-05-24 18:29:32 danw Exp $";
 
 
 #include "lp.h"
@@ -18,6 +18,11 @@
 #include "child.h"
 #include "fileopen.h"
 /**** ENDINCLUDE ****/
+#if defined(HAVE_TCDRAIN)
+#  if defined(HAVE_TERMIOS_H)
+#    include <termios.h>
+#  endif
+#endif
 
 /***************************************************************************
  * Commentary:
@@ -566,6 +571,11 @@ void Print_job( int output, struct job *job, int timeout )
 	} else {
 		Write_fd_len( output, Outbuf, Outlen );
 	}
+#ifdef HAVE_TCDRAIN
+	if( isatty( output ) && tcdrain( output ) == -1 ){
+		logerr_die( LOG_INFO,"Print_job: tcdrain failed");
+	}
+#endif
 	if(DEBUGL3){
 		logDebug("Print_job: at end open fd's");
 		for( i = 0; i < 20; ++i ){
@@ -639,7 +649,7 @@ void Print_banner( char *name, char *pgm, struct job *job )
 	int len, pid, n;
 	struct line_list l;
 	char *bl = 0, *s;
-	int i, tempfd, of_error[2], of_fd[2], nullfd;
+	int i, tempfd, of_error[2], nullfd;
 	struct stat statb;
 	struct line_list files;
 	plp_status_t status;
@@ -682,8 +692,8 @@ void Print_banner( char *name, char *pgm, struct job *job )
 			Errorcode = JFAIL;
 			logerr_die( LOG_INFO,"Print_banner: pipe() failed");
 		}
-		DEBUG3("Print_banner: fd of_fd[%d,%d], of_error[%d,%d]",
-			of_fd[0], of_fd[1], of_error[0], of_error[1] );
+		DEBUG3("Print_banner: fd of_error[%d,%d]",
+			of_error[0], of_error[1] );
 
 		Free_line_list(&files);
 		Check_max(&files, 10 );

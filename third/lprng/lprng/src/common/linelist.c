@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linelist.c,v 1.1.1.1 1999-05-04 18:06:51 danw Exp $";
+"$Id: linelist.c,v 1.1.1.2 1999-05-24 18:29:34 danw Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -408,8 +408,8 @@ void Split( struct line_list *l, char *str, const char *sep,
 		int n;
 		plp_snprintf( b,sizeof(b)-8,"%s",str );
 		if( (n = strlen(b)) > sizeof(b)-10 ) strcpy( b+n,"..." );
-		logDebug("Split: str 0x%lx '%s', sort %d, keysep '%s', uniq %d, trim %d",
-			Cast_ptr_to_long(str), b, sort, keysep, uniq, trim );
+		logDebug("Split: str 0x%lx '%s', sep '%s', sort %d, keysep '%s', uniq %d, trim %d",
+			Cast_ptr_to_long(str), b, sep, sort, keysep, uniq, trim );
 	}
 	if( str == 0 || *str == 0 ) return;
 	for( ; str && *str; str = end ){
@@ -486,9 +486,9 @@ char *Join_line_list_with_sep( struct line_list *l, char *sep )
 void Dump_line_list( const char *title, struct line_list *l )
 {
 	int i;
-	logDebug("Dump_line_list: %s - count %d, max %d, list 0x%lx",
-		title, l->count, l->max, Cast_ptr_to_long(l->list) );
-	for( i = 0; i < l->count; ++i ){
+	logDebug("Dump_line_list: %s - 0x%x, count %d, max %d, list 0x%lx",
+		title, l, l?l->count:0, l?l->max:0, l?Cast_ptr_to_long(l->list):(long)0 );
+	if(l)for( i = 0; i < l->count; ++i ){
 		logDebug( "  [%2d] 0x%lx ='%s'", i, Cast_ptr_to_long(l->list[i]), l->list[i] );
 	}
 }
@@ -498,7 +498,7 @@ void Dump_line_list_sub( const char *title, struct line_list *l )
 	int i;
 	logDebug(" %s - 0x%x, count %d, max %d, list 0x%lx",
 		title, l, l?l->count:0, l?l->max:0, l?Cast_ptr_to_long(l->list):(long)0 );
-	for( i = 0; l && i < l->count; ++i ){
+	if(l)for( i = 0; i < l->count; ++i ){
 		logDebug( "  [%2d] 0x%lx ='%s'", i, Cast_ptr_to_long(l->list[i]), l->list[i] );
 	}
 }
@@ -1088,9 +1088,9 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 	DEBUG4("Build_pc_names: '%s'", str);
 	if( (s = strpbrk(str, ":")) ){
 		c = *s; *s = 0;
-		Split(&opts,s+1,Printcap_sep,1,Value_sep,0,1,0);
+		Split(&opts,s+1,":",1,Value_sep,0,1,0);
 	}
-	Split(&l,str,Printcap_sep,0,0,0,1,0);
+	Split(&l,str,"|",0,0,0,1,0);
 	if( s ) *s = c;
 	if(DEBUGL4)Dump_line_list("Build_pc_names- names", &l);
 	if(DEBUGL4)Dump_line_list("Build_pc_names- options", &l);
@@ -1126,7 +1126,7 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 				"bad printcap name '%s', has '%s' character",
 				l.list[0], Value_sep );
 			}
-		} else {
+		} else if( ok ){
 			if(DEBUGL4)Dump_line_list("Build_pc_names: adding ", &l);
 			if(DEBUGL4)Dump_line_list("Build_pc_names- before names", names );
 			if(DEBUGL4)Dump_line_list("Build_pc_names- before order", order );

@@ -3312,12 +3312,14 @@ and the clients will simply talk to the <tt/localhost/.
 <label id="PRINTER">
 <label id="defaulthost">
 <label id="defaultprinter">
+<label id="defaultprinterwhenunknown">
 <label id="forcelocalhost">
 <p>
 Options used:
 <itemize>
 <item> <tt>PRINTER</tt><em>&nbsp;&nbsp;Environment variable </em>
 <item> <tt>force_localhost</tt><em>&nbsp;&nbsp;force clients to send requests to localhost </em>
+<item> <tt>default_printer_when_unknown</tt>&nbsp;&nbsp; <em>used by LPD when printer name not in printcap </em>
 </itemize>
 <p>
 When an LPRng client such as
@@ -3412,6 +3414,15 @@ values set in the <tt>/etc/lpd.conf</tt> file or by the compile time defaults.
 Using the fallback values is usually not a desirable event and may indicate
 that you have a misconfigured host, so the fallback values are usually set
 by administrators to <tt/missingprinter@localhost/ to provoke an annonying message for users.
+<sect2>LPD Default Printer
+<p>
+For completeness,
+there is even a <tt>default_printer_when_unknown</tt> configuration
+entry for use by LPD when it is given a printer name not in its printcap
+database.
+By default,
+it will look up this name in the database and treat the job as though it was
+sent to this printer.
 <sect1> LPD Server Runnning on Localhost
 <p>
 Workstations for personal use or in extremely simple configurations
@@ -3929,8 +3940,12 @@ and use the <tt/tc/ include facility.
 By convention,
 all printer names start with an alphanumeric character and contain only
 alphanumeric values, underscore (<tt/_/) or hyphen (<tt/-/).
-A printcap entry starting with punctuation such as
-period (<tt/./) or at (<tt/@/)  is processed by LPRng
+A printcap entry starting with
+period (<tt/./),
+question mark (<tt/?/),
+or
+exclamation mark (<tt/!/),
+is processed by LPRng
 but can only be used with the <tt/tc/ include facility.
 For example:
 <tscreen>
@@ -3940,9 +3955,9 @@ For example:
   :mx#0:sf:sh
 hp1:tc=.hp,.filter
   :lp=lp@10.0.0.1
-hp2:tc=.hp,@filter
+hp2:tc=.hp,.filter
   :lp=lp@10.0.0.2
-@filter
+.filter
   :if=/usr/local/bin/ifhp
   :lpd_bounce
 </verb>
@@ -4587,12 +4602,12 @@ hpl5bounce|for PLP/LPRng software - network based HP Jetdirect card:
         :router=/usr/local/admscripts/bouncer.pl
 hpl5a|for PLP/LPRng software - network based HP Jetdirect card:
         :lp=hpl5a%9100
-        :tc=@hplcommon
+        :tc=.hplcommon
 hpl5b|for PLP/LPRng software - network based HP Jetdirect card:
         :lp=hpl5b%9100
-        :tc=@hplcommon
+        :tc=.hplcommon
 # Common settings
-@hplcommon:
+.hplcommon:
         :sd=/var/spool/lpd/%P
         :rw:sh:ps=status
         :fx=flp
@@ -4686,7 +4701,7 @@ laser|pi|Room 1359 LaserWriters
     :lf=/usr/adm/laser-log
     :sv=laser1,laser2,laser3,laser4,laser5,laser6
     :sd=/usr/spool/laser
-@commonlaser
+.commonlaser
     :sd=/usr/spool/%P
     :rw:mx#0:sh
     :lf=/usr/adm/laser1-log
@@ -4699,13 +4714,13 @@ laser1|pi1|Room 1359 LaserWriter #1
 laser1|pi1|Room 1359 LaserWriter #1
     :server
     :lp=/dev/laser1
-    :tc=@commonlaser
+    :tc=.commonlaser
 laser2|pi2|Room 1359 LaserWriter #1
     :lp=laser2@server.com
 laser2|pi2|Room 1359 LaserWriter #2
     :server
     :lp=/dev/laser2
-    :tc=@commonlaser
+    :tc=.commonlaser
 </verb>
 </tscreen>
 <p>
@@ -11892,6 +11907,7 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="defaultformat" name="default&lowbar;format"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default job format <newline>
 <tt><ref id="defaultpermission" name="default&lowbar;permission"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default permission for files <newline>
 <tt><ref id="defaultprinter" name="default&lowbar;printer"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default printer <newline>
+<tt><ref id="defaultprinterwhenunknown" name="default&lowbar;printer&lowbar;when&lowbar;unknown"></tt><tt>&nbsp;&nbsp;</tt>  used by LPD when printer name not in printcap <newline>
 <tt><ref id="defaultpriority" name="default&lowbar;priority"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default job priority <newline>
 <tt><ref id="defaultremotehost" name="default&lowbar;remote&lowbar;host"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default remote host <newline>
 <tt><ref id="defaulttmpdir" name="default&lowbar;tmp&lowbar;dir"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  default directory for temp files <newline>

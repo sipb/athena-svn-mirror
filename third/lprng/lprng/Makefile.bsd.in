@@ -55,15 +55,17 @@ TAGS clean install::
 
 install::
 	#install default versions of the lpd.conf and lpd.perm files
-	f=$(LPD_CONF_PATH) ; \
-	if [ -z "$$f" ] ; then f=/etc/lpd.conf; fi; \
+	f=$(LPD_CONF_PATH) ; g=lpd.conf; \
+	if [ -z "$$f" ] ; then f=/etc/$$g; fi; \
+	$(INSTALL) -m 644 $(SRC)/src/$$g $$f.sample; \
 	if [ ! -f "$$f" ] ; then \
-		$(INSTALL) -m 644 $(SRC)/src/lpd.conf $$f; \
+		$(INSTALL) -m 644 $(SRC)/src/$$g $$f; \
 	fi;
-	if [ ! -f /etc/lpd.perms ] ; then \
-		$(INSTALL) -m 644 $(SRC)/lpd.perms /etc/lpd.perms; \
-	else \
-		$(INSTALL) -m 644 $(SRC)/lpd.perms /etc/lpd.perms.sample; \
+	f= ; g=lpd.perms; \
+	if [ -z "$$f" ] ; then f=/etc/$$g; fi; \
+	$(INSTALL) -m 644 $(SRC)/$$g $$f.sample; \
+	if [ ! -f "$$f" ] ; then \
+		$(INSTALL) -m 644 $(SRC)/$$g $$f; \
 	fi;
 
 info dvi check:
@@ -208,7 +210,7 @@ dist_list:
 		echo $${DIR}/Makefile >>/tmp/X;
 #	cat /tmp/X
 
-dist: update ci newmake dist_list
+dist: update newmake ci dist_list
 	DIR=`pwd | sed 's,.*/,,' `; \
 		cd ..; \
 		tar zXcf /tmp/X $${DIR}.tgz $${DIR}; \

@@ -25,13 +25,14 @@ you do not need to have an external network connection to the Internet.
 For most single system users,
 the <CODE>lpd</CODE> server is running on the same workstation as the client program,
 and the clients will simply talk to the <CODE>localhost</CODE>.
-<H2><A NAME="forcelocalhost"></A> <A NAME="defaultprinter"></A> <A NAME="defaulthost"></A> <A NAME="PRINTER"></A> <A NAME="printerenv"></A> <A NAME="ss7.1">7.1 Printer Name and Server IP Address</A>
+<H2><A NAME="forcelocalhost"></A> <A NAME="defaultprinterwhenunknown"></A> <A NAME="defaultprinter"></A> <A NAME="defaulthost"></A> <A NAME="PRINTER"></A> <A NAME="printerenv"></A> <A NAME="ss7.1">7.1 Printer Name and Server IP Address</A>
 </H2>
 
 <P>Options used:
 <UL>
 <LI> <CODE>PRINTER</CODE><EM>&nbsp;&nbsp;Environment variable </EM></LI>
 <LI> <CODE>force_localhost</CODE><EM>&nbsp;&nbsp;force clients to send requests to localhost </EM></LI>
+<LI> <CODE>default_printer_when_unknown</CODE>&nbsp;&nbsp; <EM>used by LPD when printer name not in printcap </EM></LI>
 </UL>
 <P>When an LPRng client such as
 <CODE>lpr</CODE>,
@@ -118,6 +119,15 @@ values set in the <CODE>/etc/lpd.conf</CODE> file or by the compile time default
 <P>Using the fallback values is usually not a desirable event and may indicate
 that you have a misconfigured host, so the fallback values are usually set
 by administrators to <CODE>missingprinter@localhost</CODE> to provoke an annonying message for users.
+<H3>LPD Default Printer</H3>
+
+<P>For completeness,
+there is even a <CODE>default_printer_when_unknown</CODE> configuration
+entry for use by LPD when it is given a printer name not in its printcap
+database.
+By default,
+it will look up this name in the database and treat the job as though it was
+sent to this printer.
 <H2><A NAME="ss7.2">7.2 LPD Server Runnning on Localhost</A>
 </H2>
 

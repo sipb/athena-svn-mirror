@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd.c,v 1.1.1.1 1999-05-04 18:06:54 danw Exp $";
+"$Id: lpd.c,v 1.1.1.2 1999-05-24 18:29:29 danw Exp $";
 
 
 #include "lp.h"
@@ -1311,13 +1311,14 @@ void Service_all( struct line_list *args )
 
 void Service_queue( struct line_list *args )
 {
-	int subserver;
+	int subserver, idle;
 
 	Set_DYN(&Printer_DYN, Find_str_value(args, PRINTER,Value_sep) );
 	subserver = Find_flag_value( args, SUBSERVER, Value_sep );
+	idle = Find_flag_value( args, IDLE, Value_sep );
 
 	Free_line_list(args);
-	Do_queue_jobs( Printer_DYN, subserver );
+	Do_queue_jobs( Printer_DYN, subserver, idle );
 	cleanup(0);
 }
 

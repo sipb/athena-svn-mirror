@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_secure.c,v 1.1.1.1 1999-05-04 18:07:01 danw Exp $";
+"$Id: lpd_secure.c,v 1.1.1.2 1999-05-24 18:29:15 danw Exp $";
 
 
 #include "lp.h"
@@ -393,9 +393,9 @@ int Receive_secure( int *sock, char *input )
 		/* start a new server */
 		DEBUGF(DRECV1)("Receive_secure: starting server");
 		if( Server_queue_name_DYN ){
-			Do_queue_jobs( Server_queue_name_DYN, 0 );
+			Do_queue_jobs( Server_queue_name_DYN, 0, 0 );
 		} else {
-			Do_queue_jobs( Printer_DYN, 0 );
+			Do_queue_jobs( Printer_DYN, 0, 0 );
 		}
 	}
 	cleanup(0);

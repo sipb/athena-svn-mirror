@@ -3,7 +3,7 @@ TMP=/tmp
 
 PKG=LPRng
 PKG_NAME="Line Printer Daemon"
-VERSION=3.6.1beta40
+VERSION=3.6.1beta43
 
 MANSRC=../man
 

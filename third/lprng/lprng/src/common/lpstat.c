@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpstat.c,v 1.1.1.1 1999-05-04 18:06:48 danw Exp $";
+"$Id: lpstat.c,v 1.1.1.2 1999-05-24 18:29:21 danw Exp $";
 
 
 /***************************************************************************
@@ -64,7 +64,7 @@
 /**** ENDINCLUDE ****/
 
  int P_flag, R_flag, S_flag, a_flag, c_flag, d_flag, f_flag, l_flag,
-	o_flag, p_flag, r_flag, s_flag, t_flag, u_flag, v_flag;
+	o_flag, p_flag, r_flag, s_flag, t_flag, u_flag, v_flag, flag_count;
  char *S_val, *a_val, *c_val, *f_val, *o_val, *p_val, *u_val, *v_val;
  struct line_list S_list, a_list, c_list, f_list, o_list, p_list, u_list, v_list;
 
@@ -134,6 +134,16 @@ int main(int argc, char *argv[], char *envp[])
 		}
 	}
 
+	/* see if additional status required */
+	i = 0;
+	if( v_flag ) ++i;
+	if( r_flag ) ++i;
+	if( d_flag ) ++i;
+
+	if( flag_count == i ){
+		return(0);
+	}
+
 	Merge_line_list( &request_list, &Printer_list,0,1,1);
 	Free_line_list( &Printer_list );
 	if( t_flag || All_printers ){
@@ -192,7 +202,7 @@ void Show_status(char **argv)
 	Get_printer();
 	Fix_Rm_Rp_info();
 
-	if( s_flag || t_flag ){
+	if( s_flag || t_flag || p_flag || o_flag ){
 		plp_snprintf(msg,sizeof(msg), "printer %s unkown state. enabled since %s. available\n",
 			Printer_DYN, Pretty_time(0));
 		Write_fd_str(1,msg);
@@ -200,7 +210,7 @@ void Show_status(char **argv)
 
 	if( Check_for_rg_group( Logname_DYN ) ){
 		plp_snprintf( msg, sizeof(msg),
-			"Printer: %s - cannot use printer, not in privileged group\n" );
+			"  Printer: %s - cannot use printer, not in privileged group\n" );
 		if(  Write_fd_str( 1, msg ) < 0 ) cleanup(0);
 		return;
 	}
@@ -382,6 +392,9 @@ int Remove_excess( struct line_list *l, int status_line_count, int output )
 			if( n < 0 ) n = 0;
 			DEBUG2("Remove_excess: skipping %d, doing up to %d", n, i );
 			for( j = n; j < i; ++j ){
+				if( !isspace( cval(l->list[j]) )
+					&& (s_flag || t_flag || p_flag || o_flag)
+					&& Write_fd_str( output, " " ) < 0 ) return(1);
 				if( Write_fd_str( output, l->list[j] ) < 0
 					|| Write_fd_str( output, "\n" ) < 0 ) return(1);
 			}
@@ -426,7 +439,7 @@ int Add_val( char **var, char *val )
 
 void Get_parms(int argc, char *argv[] )
 {
-	int i, n;
+	int i;
 	char *name, *s;
 
 	if( argv[0] && (name = strrchr( argv[0], '/' )) ) {
@@ -443,40 +456,55 @@ SYNOPSIS
           [ -p [list] [ -D ] [ -l ] ] [ -P ] [ -S [list] [ -l ] ]
           [ -u [login-ID-list] ] [ -v [list] ]
 */
-	n = 0;
+	flag_count = 0;
 	for( i = 1; i < argc; ++i ){
 		s = argv[i];
 		if( cval(s) == '-' ){
 			switch( cval(s+1) ){
-			case 'd': n=1; d_flag = 1; if(cval(s+2)) usage(); break;
-			case 'r': n=1; r_flag = 1; if(cval(s+2)) usage(); break;
-			case 'R': n=1; Rflag = 1; if(cval(s+2)) usage(); break;
-			case 's': n=1; s_flag = 1; if(cval(s+2)) usage(); break;
-			case 't': n=1; t_flag = 1; if(cval(s+2)) usage(); break;
-			case 'l': n=1; l_flag = 1; if(cval(s+2)) usage(); break;
-			case 'P': n=1; Pflag = 1; if(cval(s+2)) usage(); break;
-			case 'a': n=1; a_flag = 1; if( cval(s+2) ) Add_val(&a_val,s+2); else { i += Add_val(&a_val,argv[i+1]); } break;
-			case 'c': n=1; c_flag = 1; if( cval(s+2) ) Add_val(&c_val,s+2); else { i += Add_val(&c_val,argv[i+1]); } break;
-			case 'f': n=1; f_flag = 1; if( cval(s+2) ) Add_val(&f_val,s+2); else { i += Add_val(&f_val,argv[i+1]); } break;
-			case 'o': n=1; o_flag = 1; if( cval(s+2) ) Add_val(&o_val,s+2); else { i += Add_val(&o_val,argv[i+1]); } break;
-			case 'p': n=1; p_flag = 1; if( cval(s+2) ) Add_val(&p_val,s+2); else { i += Add_val(&p_val,argv[i+1]); } break;
-			case 'S': n=1; Sflag = 1; if( cval(s+2) ) Add_val(&S_val,s+2); else { i += Add_val(&S_val,argv[i+1]); } break;
-			case 'u': n=1; u_flag = 1; if( cval(s+2) ) Add_val(&u_val,s+2); else { i += Add_val(&u_val,argv[i+1]); } break;
-			case 'v': n=1; v_flag = 1; if( cval(s+2) ) Add_val(&v_val,s+2); else { i += Add_val(&v_val,argv[i+1]); } break;
+			case 'd': ++flag_count; d_flag = 1; if(cval(s+2)) usage(); break;
+			case 'r': ++flag_count; r_flag = 1; if(cval(s+2)) usage(); break;
+			case 'R': ++flag_count; Rflag = 1; if(cval(s+2)) usage(); break;
+			case 's': ++flag_count; s_flag = 1; if(cval(s+2)) usage(); break;
+			case 't': ++flag_count; t_flag = 1; if(cval(s+2)) usage(); break;
+			case 'l': ++flag_count; l_flag = 1; if(cval(s+2)) usage(); break;
+			case 'P': ++flag_count; Pflag = 1; if(cval(s+2)) usage(); break;
+			case 'a': ++flag_count; a_flag = 1; if( cval(s+2) ) Add_val(&a_val,s+2); else { i += Add_val(&a_val,argv[i+1]); } break;
+			case 'c': ++flag_count; c_flag = 1; if( cval(s+2) ) Add_val(&c_val,s+2); else { i += Add_val(&c_val,argv[i+1]); } break;
+			case 'f': ++flag_count; f_flag = 1; if( cval(s+2) ) Add_val(&f_val,s+2); else { i += Add_val(&f_val,argv[i+1]); } break;
+			case 'o': ++flag_count; o_flag = 1; if( cval(s+2) ) Add_val(&o_val,s+2); else { i += Add_val(&o_val,argv[i+1]); } break;
+			case 'p': ++flag_count; p_flag = 1; if( cval(s+2) ) Add_val(&p_val,s+2); else { i += Add_val(&p_val,argv[i+1]); } break;
+			case 'S': ++flag_count; Sflag = 1; if( cval(s+2) ) Add_val(&S_val,s+2); else { i += Add_val(&S_val,argv[i+1]); } break;
+			case 'u': ++flag_count; u_flag = 1; if( cval(s+2) ) Add_val(&u_val,s+2); else { i += Add_val(&u_val,argv[i+1]); } break;
+			case 'v': ++flag_count; v_flag = 1; if( cval(s+2) ) Add_val(&v_val,s+2); else { i += Add_val(&v_val,argv[i+1]); } break;
 			case 'T': Parse_debug( s+2, 1 ); break;
 			}
 		}
-	}
-	if( n == 0 ){
-		o_flag = 1;
+		if(DEBUGL1){
+			logDebug("d_flag %d, r_flag %d, R_flag %d, s_flag %d, t_flag %d, l_flag %d, P_flag %d",
+				d_flag, r_flag, R_flag, s_flag, t_flag, l_flag, P_flag );
+			logDebug("a_flag %d, a_val '%s'", a_flag, a_val );
+			logDebug("c_flag %d, c_val '%s'", c_flag, c_val );
+			logDebug("f_flag %d, f_val '%s'", f_flag, f_val );
+			logDebug("o_flag %d, o_val '%s'", o_flag, o_val );
+			logDebug("p_flag %d, p_val '%s'", p_flag, p_val );
+			logDebug("S_flag %d, S_val '%s'", S_flag, S_val );
+			logDebug("u_flag %d, u_val '%s'", u_flag, u_val );
+			logDebug("v_flag %d, v_val '%s'", v_flag, v_val );
+		}
 	}
 	if( a_flag && a_val == 0 ) All_printers = 1; Split(&Printer_list,a_val,", ",1,0,1,1,0);
 	if( c_flag && c_val == 0 ) All_printers = 1; Split(&Printer_list,c_val,", ",1,0,1,1,0);
+	if( p_flag && p_val == 0 ) All_printers = 1; Split(&Printer_list,p_val,", ",1,0,1,1,0);
 	if( f_flag && f_val == 0 ) f_val = "all"; Split(&f_list,f_val,", ",1,0,1,1,0);
 	if( o_flag && o_val == 0 ) All_printers = 1; Split(&Printer_list,o_val,", ",1,0,1,1,0);
 	if( S_flag && S_val == 0 ) S_val = "all"; Split(&S_list,S_val,", ",1,0,1,1,0);
 	if( u_flag && u_val == 0 ) u_val = "all"; Split(&u_list,u_val,", ",1,0,1,1,0);
 	if( v_flag && v_val == 0 ) All_printers = 1; Split(&v_list,v_val,", ",1,0,1,1,0);
+	if( flag_count == 0 ){
+		o_flag = 1;
+		Get_printer();
+		Split(&Printer_list,Printer_DYN,", ",1,0,1,1,0);
+	}
 	if( Verbose ) {
 		fprintf( stderr, _("Version %s\n"), PATCHLEVEL );
 		if( Verbose > 1 ) Printlist( Copyright, stderr );
