@@ -1,0 +1,10 @@
+Name: athena-from
+Summary: Print a list of the user's unread mail
+Copyright: MIT
+Group: Applications/Communications
+
+Requires: athena-hesiod athena-krb5
+
+%description
+The from program prints out mail header lines in incoming mail to show
+who the mail is from.  

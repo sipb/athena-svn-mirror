@@ -1,0 +1,10 @@
+Name: athena-busyd
+Summary: An Athena server to tell if a workstation is in use
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-larv
+
+%description
+A server to respond to queries to determine if the workstation is
+currently in use.

@@ -1,0 +1,32 @@
+Name: athena-bugme
+Summary: A utility to limit user login time on Athena workstations
+Copyright: MIT
+Group: Applications/Productivity
+
+Requires: athena-libXj
+
+%description
+
+The bugme utility is used on Athena workstations that want to
+maximize user turnaround (for Quickstations and other such
+situations).  It maintains a timer in the corner of the screen and
+sends dialog boxes asking the user to log out once the timer has
+expired. 
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults
+cp Bugme $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Bugme
+

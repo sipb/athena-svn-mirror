@@ -1,0 +1,26 @@
+Name: athena-glue
+Summary: Various small attach-and-run scripts and other such things
+Copyright: MIT
+Group: System Environment/Base
+
+%post
+( grep -s -q ^moira_db /etc/services \
+	|| echo "moira_db	775/tcp		# Moira database"
+ grep -s -q ^moira_update /etc/services \
+	|| echo "moira_update	777/tcp		# Moira update protocol"
+ grep -s -q ^moira_ureg /etc/services \
+	|| ( echo "moira_ureg	779/udp		# Moira user registration" \
+	     && echo "moira_ureg	9001/tcp	# New moira user registration" )
+ grep -s -q ^sms_db /etc/services \
+	|| echo "sms_db		775/tcp		# Moira database"
+ grep -s -q ^sms_update /etc/services \
+	|| echo "sms_update	777/tcp		# Moira update protocol"
+ grep -s -q ^sms_ureg /etc/services \
+	|| echo "sms_ureg	779/udp		# Moira user registration"
+) >> /etc/services
+
+
+%description
+The attach-and-run scripts for the moira clients, andrew, mkserv,
+tellme, and the help system.
+

@@ -1,0 +1,10 @@
+Name: athena-lert
+Summary: Display Athena accounts notification messages
+Copyright: MIT
+Group: Applications/Communications
+
+Requires: athena-krb5 athena-hesiod
+
+%description
+The lert utility checks for messages to you from Athena Accounts, such
+as messages that your account is scheduled for deletion.

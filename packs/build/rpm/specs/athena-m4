@@ -1,0 +1,16 @@
+Name: athena-m4
+Summary: GNU m4 for Athena workstations.
+Copyright: GPL
+Group: Applications/Text
+
+%description
+The normal GNU m4 utility, for use on Athena workstations.  Athena
+workstations should normally have this package installed.
+
+GNU m4 is an implementation of the traditional UNIX macro processor.
+M4 is useful for writing text files which can be logically parsed, and
+is used by many programs as part of their build process.  M4 has
+built-in functions for including files, running shell commands, doing
+arithmetic, etc.  The autoconf program needs m4 for generating
+configure scripts, but not for running configure scripts.
+

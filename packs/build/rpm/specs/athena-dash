@@ -1,0 +1,45 @@
+Name: athena-dash
+Summary: The Athena dashboard; a pull-down menu implementation
+Copyright: MIT
+Group: User Interface/Desktops
+
+Requires: athena-libXj athena-krb5 athena-libathdir athena-afs
+
+%description
+The dash utility places a menu bar at the top of the screen which
+provides access to useful Athena information, utilities, courseware,
+and documentation.  It should normally be installed on all Athena
+workstations. 
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults
+cp Dash.fallback $RPM_BUILD_ROOT/usr/athena/lib
+cp Dash $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Dash
+
+# Dash menus are versioned.  We pick up the version from the particular
+# version this Dash came from.
+. ./version
+ln -s /afs/athena.mit.edu/system/config/dash/Dash.menus-$major.$minor \
+	$RPM_BUILD_ROOT/usr/athena/lib/Dash.menus
+
+
+%files
+/usr/athena/bin
+/usr/athena/include
+/usr/athena/man
+/usr/athena/lib/X11/app-defaults
+/usr/athena/lib/Dash.menus
+%config /usr/athena/lib/Dash.fallback

@@ -1,0 +1,8 @@
+Name: athena-krb5-prep
+Summary: don't install this rpm
+Copyright: MIT
+Group: Nothing
+
+%description
+Do not install this RPM
+

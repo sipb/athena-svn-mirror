@@ -1,0 +1,28 @@
+Name: athena-console
+Summary: An Athena program to provide an X interface to the system console
+Copyright: MIT
+Group: User Interface/X
+
+Requires: athena-libXj
+
+%description
+The console program reads standard input and displays it in an X
+window on the screen.  It is intended to be started by dm with its
+input connected to the logical console for the workstation.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/etc/athena/login
+cp Console $RPM_BUILD_ROOT/etc/athena/login/Console

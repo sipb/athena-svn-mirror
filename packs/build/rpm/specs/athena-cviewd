@@ -1,0 +1,14 @@
+Name: athena-cviewd
+Summary: Respond to cview requests for workstation status information
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-larv
+
+%description
+cviewd is normally run from inetd and contacted by the cview(1) or
+xcluster(1) programs.  cviewd reads report files written by
+larvnetd(8) and displays that information accord- ing to a one-line
+command read from standard input (the net- work connection).  The
+valid commands are described in cview(1).
+

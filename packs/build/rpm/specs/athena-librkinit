@@ -1,0 +1,10 @@
+Name: athena-librkinit
+Summary: Support routines for contacting Athena rkinit servers
+Copyright: MIT
+Group: System Environment/Libraries
+
+Requires: athena-krb5 athena-libet
+
+%description
+This library contains the calls necessary to interface with the
+rkinit system of remote ticket establishment.

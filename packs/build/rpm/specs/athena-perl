@@ -1,0 +1,7 @@
+Name: athena-perl
+Summary: The Perl programming language, as configured for Athena
+Copyright: GPL
+Group: Development/Languages
+
+%description
+The Perl programming language, as configured for Athena

@@ -1,0 +1,12 @@
+Name: athena-synctree
+Summary: An Athena tool to synchronize directory trees
+Copyright: MIT
+Group: Applications/File
+
+%description
+Synctree intelligently copies one directory tree to another, according
+to a set of rules files found in both the source and destination
+directory trees.  synctree allows files to copied from the source to
+the destination, establish sym- bolic links on the destination tree,
+and allows commands to be executed when files are updated.
+

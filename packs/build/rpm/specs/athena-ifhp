@@ -1,0 +1,29 @@
+Name: athena-ifhp
+Summary: Print filter for the Athena lprng installation
+Copyright: Artistic License
+Group: System Environment/Base
+
+%description
+Print filter for the Athena lprng installation
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/etc
+cp ifhp.conf $RPM_BUILD_ROOT/etc/ifhp.conf
+
+%files
+/usr
+%config /etc/ifhp.conf
+

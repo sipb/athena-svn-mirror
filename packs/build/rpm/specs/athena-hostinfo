@@ -1,0 +1,11 @@
+Name: athena-hostinfo
+Summary: An Athena utility to ask an Internet nameserver for host information
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-bind athena-perl
+
+%description
+The hostinfo utility fetches the Domain Name System records for the
+specified host name and prints them.
+

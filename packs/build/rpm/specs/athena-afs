@@ -1,0 +1,25 @@
+Name: athena-afs
+Summary: AFS binaries for Athena workstations
+Copyright: Transarc
+Group: System Environment/Base
+
+%description
+Binary support for AFS client implementation from Transarc, and
+associated libraries.
+
+%post
+chkconfig --add afs
+
+%files
+/bin/athena
+/etc/rc.d
+/usr/afsws
+/usr/athena
+/usr/vice/etc/afsd
+/usr/vice/etc/modload
+%dir /usr/vice/cache
+%dir /afs
+%config /usr/vice/etc/CellServDB
+%config /usr/vice/etc/ThisCell
+%config /usr/vice/etc/cacheinfo
+%config /etc/sysconfig/afs
