@@ -153,6 +153,7 @@ larvnet		49153/udp			# cluster monitor server
 busypoll	49154/udp			# busy polling port for ws
 athinfo		49155/tcp			# workstation info server
 
+ssh		22/tcp				# Secure shell
 nqs		607/tcp				# Generic NQS batch system
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)

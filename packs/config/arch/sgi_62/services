@@ -1,7 +1,7 @@
 #
 # Network services, Internet style
 #
-# $Id: services,v 1.4 1998-11-05 14:38:32 danw Exp $
+# $Id: services,v 1.5 1998-12-20 18:24:24 ghudson Exp $
 #
 tcpmux		1/tcp			# TCP port multiplexer (RFC 1078)
 echo		7/tcp
@@ -193,6 +193,7 @@ larvnet		49153/udp			# cluster monitor server
 busypoll	49154/udp			# busy polling port for ws
 athinfo		49155/tcp			# workstation info server
 
+ssh		22/tcp				# Secure shell
 nqs		607/tcp`			# Generic NQS batch system
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
