@@ -143,19 +143,20 @@ EOF
 		cp -p /etc/inet/hosts /etc/inet/hosts.save
 		if [ -f /srvd/.rvdinfo ]; then
 	            NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
- 			THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
-			if [ "${NEWVERS}" = "${THISVERS}" ]; then
-#				/usr/athena/etc/track
-				cp -p /etc/inet/hosts.save /etc/inet/hosts
-				rm -f /etc/inet/hosts.save
-				if [ -f /srvd/etc/athena/rc.conf ]; then
-        		                sed -n  -e "s/^HOST=[^;]*/HOST=${HOST}/" \
-                        	        -e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
-                                	-e "s/^MACHINE=[^;]*/MACHINE=${MACHINE}/" \
-	                                -e p /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
-        	        	        . /etc/athena/rc.conf
-				fi
+		    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
+		    if [ "${NEWVERS}" = "${THISVERS}" ]; then
+			echo "Running track..."			>/dev/console
+			/usr/athena/etc/track
+			cp -p /etc/inet/hosts.save /etc/inet/hosts
+			rm -f /etc/inet/hosts.save
+			if [ -f /srvd/etc/athena/rc.conf ]; then
+        			sed -n  -e "s/^HOST=[^;]*/HOST=${HOST}/" \
+				  -e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
+				  -e "s/^MACHINE=[^;]*/MACHINE=${MACHINE}/" \
+				  -e p /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
+        	        	. /etc/athena/rc.conf
 			fi
+		    fi
 		fi
 	        echo "done."                                    >/dev/console
 
