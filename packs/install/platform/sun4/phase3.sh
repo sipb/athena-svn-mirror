@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.22 1998-03-11 21:34:21 ghudson Exp $
+# $Id: phase3.sh,v 1.23 1998-03-11 21:57:17 miki Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -66,11 +66,20 @@ cp -rp "/os/platform/$platform" "/root/platform/$platform"
 echo "Create devices and dev"
 mkdir /root/dev
 mkdir /root/devices
-find /devices -depth -print | cpio -pdm /root 2> /dev/null
-find /dev -depth -print | cpio -pdm /root 2> /dev/null
+if [ -f /srvd/install/devices ]; then
+	cd /root/devices; tar xf /srvd/install/devices/devices.pseudo.tar
+	cd /root/dev; tar xf /srvd/install/devices/dev.pseudo.tar
+	cd /root
+	drvconfig -r devices -p /root/etc/path_to_inst
+	devlinks -r /root
+	disks -r /root
+else
+	find /devices -depth -print | cpio -pdm /root 2> /dev/null
+	find /dev -depth -print | cpio -pdm /root 2> /dev/null
+	cat < /etc/path_to_inst > /root/etc/path_to_inst
+fi
 chmod 755 /root/dev
 chmod 755 /root/devices
-cat </etc/path_to_inst >/root/etc/path_to_inst
 cp /dev/null /root/reconfigure
 
 
