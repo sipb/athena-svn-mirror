@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "SUNWglrtu"					>> "$LINKPACKAGES"
+  echo "SUNWglrt"					>> "$LINKPACKAGES"
+  echo "SUNWffbgl"					>> "$LINKPACKAGES"
+  echo "SUNWafbgl"					>> "$LINKPACKAGES"
+  ;;
+
+sgi)
+  ;;
+esac
