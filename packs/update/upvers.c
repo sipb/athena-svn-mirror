@@ -1,9 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.3 1988-06-09 12:23:35 shanzer Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.4 1988-06-13 13:19:09 root Exp $
  * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
- * $Author: shanzer $
+ * $Author: root $
  */
  
+#include	<sys/types.h>
 #include	<sys/dir.h>
 #include	<ctype.h>
 
@@ -14,7 +15,7 @@ struct	verfile {
 } vf[20];
 
 #ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.3 1988-06-09 12:23:35 shanzer Exp $";
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.4 1988-06-13 13:19:09 root Exp $";
 #endif
 
 main(argc, argv)
