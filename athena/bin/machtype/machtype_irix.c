@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_irix.c,v 1.1 1999-09-22 00:26:49 danw Exp $
+ *	$Id: machtype_irix.c,v 1.2 2002-04-10 03:44:36 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -279,11 +279,11 @@ void do_disk(int verbose)
 void do_INV_SCSI(inventory_t *i)
 {
   if (i->inv_type == INV_CDROM) {
-    fprintf(stdout, "CDROM: unit %i, on SCSI controller %i\n",
-	    i->inv_unit,i->inv_controller);
+    fprintf(stdout, "CDROM: unit %d, on SCSI controller %d\n",
+	    (int) i->inv_unit, (int) i->inv_controller);
   } else {
-    fprintf(stdout, "Unknown type %i:unit %i, on SCSI controller %i\n",
-	    i->inv_type,i->inv_unit,i->inv_controller);
+    fprintf(stdout, "Unknown type %d:unit %d, on SCSI controller %d\n",
+	    i->inv_type, (int) i->inv_unit, (int) i->inv_controller);
   }
 }
 
@@ -293,12 +293,12 @@ void do_INV_DISK(inventory_t *i, int verbose)
     {
     case INV_SCSIDRIVE:
       printf("Disk drive: unit %u, on SCSI controller %u\n",
-	     i->inv_unit, i->inv_controller);
+	     (unsigned int) i->inv_unit, (unsigned int) i->inv_controller);
       break;
 
     case INV_SCSIFLOPPY:
       printf("Floppy drive: unit %u, on SCSI controller %u\n",
-	     i->inv_unit, i->inv_controller);
+	     (unsigned int) i->inv_unit, (unsigned int) i->inv_controller);
       break;
 
     case INV_SCSICONTROL:
@@ -311,7 +311,8 @@ void do_INV_DISK(inventory_t *i, int verbose)
 
     default:
       printf("Unknown type %u: unit %u, on SCSI controller %u\n",
-	     i->inv_type, i->inv_unit, i->inv_controller);
+	     (unsigned int) i->inv_type, (unsigned int) i->inv_unit,
+	     (unsigned int) i->inv_controller);
       break;
     }
 }
@@ -340,7 +341,7 @@ void do_INV_SCSICONTROL(inventory_t *i, int verbose)
       break;
     }
 
-  printf(" SCSI controller %u: Version ", i->inv_controller);
+  printf(" SCSI controller %u: Version ", (unsigned int) i->inv_controller);
 
   switch (i->inv_state)
     {
@@ -376,7 +377,7 @@ void do_INV_SCSICONTROL(inventory_t *i, int verbose)
     }
 
   if (i->inv_unit)
-    printf(", rev. %X", i->inv_unit);
+    printf(", rev. %X", (unsigned int) i->inv_unit);
 
   putchar('\n');
 }
