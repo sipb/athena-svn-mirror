@@ -276,7 +276,7 @@ echo ""								>/dev/console
 if [ "${PUBLIC}" = "true" ]; then
 	echo  "Clearing out /mit... \c"				>/dev/console
 	/bin/rm -f /mit/*
-	/bin/rmdir /mit/*  >/dev/null
+	/bin/rmdir /mit/*  2>/dev/null
 	echo "done."						>/dev/console
 fi
 

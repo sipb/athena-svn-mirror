@@ -245,7 +245,7 @@ $ECHO ""
 if [ "${PUBLIC}" = "true" ]; then
 	$ECHO  "Clearing out /mit... \c"
 	/bin/rm -f /mit/*
-	/bin/rmdir /mit/*  >/dev/null
+	/bin/rmdir /mit/*  2>/dev/null
 	$ECHO "done."
 fi
 
