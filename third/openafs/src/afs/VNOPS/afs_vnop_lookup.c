@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_lookup.c,v 1.1.1.1.2.2 2002-08-05 23:19:15 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_lookup.c,v 1.1.1.1.2.3 2002-09-10 20:24:19 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -195,7 +195,7 @@ EvalMountPoint(avc, advc, avolpp, areq)
     /* Don't cross mountpoint from a BK to a BK volume */
     if ((avc->states & CBackup) && (tvp->states & VBackup)) {
 	afs_PutVolume(tvp, WRITE_LOCK);
-	return ELOOP;
+	return ENODEV;
     }
 
     /* If we want (prefetched) the RO and it exists, then drop the
