@@ -60,9 +60,9 @@ char	*argv[];
 		printf("Warning -- File for version %s not found.. Asuming file %d.%d%c.\n", argv[2], vf[end].mjr, vf[end].mnr, vf[end].deg);
 	}
 	for(i = start; i <= end; i++) {
-		sprintf(file, "%d.%d%c", vf[i].mjr, vf[i].mnr, vf[i].deg);
-		printf("Would be running %s\n", file);
-/*		system(file); */		
+		sprintf(file, "%s/%d.%d%c", argv[3], vf[i].mjr, vf[i].mnr, vf[i].deg);
+		printf("Running %s\n", file);
+		system(file);
 	}
 }
 		
