@@ -88,7 +88,7 @@ install::
 	$(INSTALL_PROGRAM) login.krb5 $(DESTDIR)$(SERVER_BINDIR)/login.krb5
 	$(INSTALL_DATA) $(srcdir)/login.M \
 		${DESTDIR}$(SERVER_MANDIR)/login.krb5.8
-	$(INSTALL_SETUID) login.krb5 $(DESTDIR)/bin/login
+	$(INSTALL_SETUID) login.krb5 $(DESTDIR)$(LOGINDIR)/login
 
 getdtablesize.o: $(srcdir)/getdtablesize.c
 
