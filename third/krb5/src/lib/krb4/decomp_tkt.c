@@ -19,6 +19,12 @@
 extern int krb_debug;
 #endif
 
+static int dcmp_tkt_int PROTOTYPE((KTEXT tkt, unsigned char *flags, 
+				   char *pname, char *pinstance, char *prealm,
+				   unsigned KRB4_32 *paddress, C_Block session,
+				   int *life, unsigned KRB4_32 *time_sec, 
+				   char *sname, char *sinstance, C_Block key, 
+				   Key_schedule key_s, krb5_keyblock *k5key));
 /*
  * This routine takes a ticket and pointers to the variables that
  * should be filled in based on the information in the ticket.  It
@@ -224,12 +230,12 @@ dcmp_tkt_int(tkt, flags, pname, pinstance, prealm, paddress, session,
         *time_sec = krb4_swab32(*time_sec);
 
     if (strlen(ptr) >= SNAME_SZ)
-        return(KFAILURE);
+	return KFAILURE;
     (void) strcpy(sname,ptr);   /* service name */
     ptr += 1 + strlen(sname);
 
-    if (strlen(ptr) >= INST_SZ)
-        return(KFAILURE);
+    if (strlen (ptr) >= INST_SZ)
+	return KFAILURE;
     (void) strcpy(sinstance,ptr); /* instance */
     ptr += 1 + strlen(sinstance);
 

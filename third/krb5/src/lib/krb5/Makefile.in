@@ -29,11 +29,14 @@ LIBDONE= error_tables/DONE asn.1/DONE ccache/DONE ccache/stdio/DONE \
 #	$(LD_UNRESOLVED_PREFIX)_et_list $(LD_UNRESOLVED_PREFIX)error_message
 #SHLIB_LIBDIRS= @SHLIB_LIBDIRS@
 
+STLIBOBJS=krb5_libinit.o
+
 LIB=krb5
-LIBMAJOR=2
-LIBMINOR=2
+LIBMAJOR=3
+LIBMINOR=1
 
 STOBJLISTS= \
+	OBJS.ST \
 	error_tables/OBJS.ST \
 	asn.1/OBJS.ST \
 	ccache/OBJS.ST ccache/stdio/OBJS.ST ccache/file/OBJS.ST \
@@ -45,11 +48,17 @@ STOBJLISTS= \
 	posix/OBJS.ST \
 	$(BUILDTOP)/util/profile/OBJS.ST
 
+OBJS=\
+	$(OUTPRE)krb5_libinit.$(OBJEXT)
+
+SRCS=\
+	$(subdir)/krb5_libinit.c
+
 RELDIR=krb5
 SHLIB_EXPDEPS = \
 	$(TOPLIBD)/libk5crypto$(SHLIBEXT) \
 	$(TOPLIBD)/libcom_err$(SHLIBEXT)
-SHLIB_EXPLIBS=-lk5crypto -lcom_err @GEN_LIB@
+SHLIB_EXPLIBS=-lk5crypto -lcom_err @GEN_LIB@ @RESOLV_LIB@
 SHLIB_DIRS=-L$(TOPLIBD)
 SHLIB_RDIRS=$(KRB5_LIBDIR)
 
@@ -57,7 +66,7 @@ all-unix:: all-liblinks
 
 all-windows::
 
-clean-unix:: clean-liblinks clean-libs
+clean-unix:: clean-liblinks clean-libs clean-libobjs
 
 clean-windows::
 	$(RM) $(OUTPRE)krb5.lib krb5.bak
