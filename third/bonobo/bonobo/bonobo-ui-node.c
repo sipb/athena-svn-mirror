@@ -512,7 +512,10 @@ bonobo_ui_node_transparent (BonoboUINode *node)
 		ret = FALSE;
 
 	} else if (!n->properties) {
-		ret = TRUE;
+		if (!strcmp (XML_NODE (node)->name, "placeholder"))
+			ret = TRUE;
+		else if (!strcmp (XML_NODE (node)->name, "menu"))
+			ret = TRUE;
 
 	} else if (!n->properties->next) {
 		if (!strcmp (n->properties->name, "name"))

@@ -1,3 +1,16 @@
+2002-01-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* doc/Makefile.am:
+	Fix install when using DESTDIR
+
+2001-11-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* src/efstest.c:
+	* src/efstool.c:
+	* src/ib1_cache.c:
+	* src/wrapper.c:
+	Fix warnings caused by missing includes
+
 2001-08-15  Dietmar Maurer  <dietmar@ximian.com>
 
 	* src/ib1_file.c (ib1_node_open): added patches form Dan Nguyen to

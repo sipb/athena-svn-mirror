@@ -13,6 +13,7 @@
 
 #include <bonobo/bonobo-ui-xml.h>
 #include <bonobo/bonobo-ui-util.h>
+#include "bonobo-ui-icon.h"
 
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
@@ -217,52 +218,52 @@ bonobo_ui_util_xml_to_pixbuf (const char *xml)
 	return pixbuf;
 }
 
+/* Converts an Imlib RGB buffer with its chroma key (!) into a pixbuf with an
+ * alpha channel.
+ */
 static GdkPixbuf *
-convert_from_chromakey (GdkPixbuf *pixbuf)
+convert_from_imlib_rgb_chromakey (const unsigned char *src_pixels, int width, int height,
+				  GdkImlibColor shape)
 {
 	GdkPixbuf *new;
-	unsigned char *src_pixels, *dst_pixels;
-	unsigned char *src_row, *dst_row;
-	int src_rowstride;
+	unsigned char *dst_pixels;
+	unsigned char *dst_row;
 	int dst_rowstride;
-	int width, height;
 	int i, j;
-
-	g_assert (! gdk_pixbuf_get_has_alpha (pixbuf));
-
-	width  = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_width (pixbuf);
+	unsigned char key_r, key_g, key_b;
 
 	new = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
+	if (!new)
+		return NULL;
 
-	src_pixels = gdk_pixbuf_get_pixels (pixbuf);
-	src_rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	key_r = shape.r;
+	key_g = shape.g;
+	key_b = shape.b;
 
 	dst_pixels = gdk_pixbuf_get_pixels (new);
 	dst_rowstride = gdk_pixbuf_get_rowstride (new);
 
-	src_row = src_pixels;
 	dst_row = dst_pixels;
 	for (i = 0; i < height; i++) {
-		unsigned char *sp, *dp;
+		unsigned char *dp;
 
-		sp = src_row;
 		dp = dst_row;
 		for (j = 0; j < width; j++) {
-			dp[0] = sp[0];
-			dp[1] = sp[1];
-			dp[2] = sp[2];
-
-			if (sp[0] == 0xff && sp[1] == 0x00 && sp[2] == 0xff)
-				dp[3] = 0x00;
-			else
+			if (src_pixels[0] == key_r
+			    && src_pixels[1] == key_g
+			    && src_pixels[2] == key_b)
+				dp[0] = dp[1] = dp[2] = dp[3] = 0;
+			else { 
+				dp[0] = src_pixels[0];
+				dp[1] = src_pixels[1];
+				dp[2] = src_pixels[2];
 				dp[3] = 0xff;
+			}
 
-			sp += 3;
+			src_pixels += 3;
 			dp += 4;
 		}
 
-		src_row += src_rowstride;
 		dst_row += dst_rowstride;
 	}
 
@@ -274,40 +275,37 @@ pixbuf_from_imlib (const GnomeStockPixmapEntry *entry)
 {
 	const GnomeStockPixmapEntryImlib *imlib_entry;
 	const GnomeStockPixmapEntryImlibScaled *scaled_imlib_entry;
-	GdkPixbuf *pixbuf;
 	GdkPixbuf *alpha_pixbuf;
 	GdkPixbuf *scaled_pixbuf;
 
 	imlib_entry = (const GnomeStockPixmapEntryImlib *) entry;
 
-	pixbuf = gdk_pixbuf_new_from_data (imlib_entry->rgb_data,
-					   GDK_COLORSPACE_RGB,
-					   FALSE,
-					   8,
-					   imlib_entry->width, imlib_entry->height,
-					   imlib_entry->width * 3,
-					   NULL, NULL);
+	alpha_pixbuf = convert_from_imlib_rgb_chromakey (imlib_entry->rgb_data,
+							 imlib_entry->width,
+							 imlib_entry->height,
+							 imlib_entry->shape);
 
-	alpha_pixbuf = convert_from_chromakey (pixbuf);
-
-	if (imlib_entry->type == GNOME_STOCK_PIXMAP_TYPE_IMLIB) {
-		gdk_pixbuf_unref (pixbuf);
+	/* If we could not create the pixbuf or if we succeeded and the image is
+	 * not scaled, just return it.
+	 */
+	if (!alpha_pixbuf || imlib_entry->type == GNOME_STOCK_PIXMAP_TYPE_IMLIB)
 		return alpha_pixbuf;
-	}
 
 	g_assert (imlib_entry->type == GNOME_STOCK_PIXMAP_TYPE_IMLIB_SCALED);
 
 	scaled_imlib_entry = (const GnomeStockPixmapEntryImlibScaled *) entry;
 
 	if (scaled_imlib_entry->scaled_width == imlib_entry->width
-	    && scaled_imlib_entry->scaled_height == imlib_entry->height) {
-		gdk_pixbuf_unref (pixbuf);
+	    && scaled_imlib_entry->scaled_height == imlib_entry->height)
 		return alpha_pixbuf;
-	}
-	
+
 	scaled_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
 					scaled_imlib_entry->scaled_width,
 					scaled_imlib_entry->scaled_height);
+	if (!scaled_pixbuf) {
+		gdk_pixbuf_unref (alpha_pixbuf);
+		return NULL;
+	}
 
 	gdk_pixbuf_scale (alpha_pixbuf, scaled_pixbuf,
 			  0, 0,
@@ -316,10 +314,9 @@ pixbuf_from_imlib (const GnomeStockPixmapEntry *entry)
 			  0.0, 0.0,
 			  (double) scaled_imlib_entry->scaled_width / (double) imlib_entry->width,
 			  (double) scaled_imlib_entry->scaled_height / (double) imlib_entry->height,
-			  GDK_INTERP_HYPER);
+			  GDK_INTERP_BILINEAR);
 
 	gdk_pixbuf_unref (alpha_pixbuf);
-	gdk_pixbuf_unref (pixbuf);
 
 	return scaled_pixbuf;
 }
@@ -432,8 +429,10 @@ find_pixmap_in_path (const gchar *filename)
 GdkPixbuf *
 bonobo_ui_util_xml_get_icon_pixbuf (BonoboUINode *node, gboolean prepend_menu)
 {
-	GdkPixbuf *icon_pixbuf = NULL;
+	char      *key;
 	char      *type, *text;
+	GdkPixbuf *icon_pixbuf = NULL;
+	static GHashTable *pixbuf_cache = NULL;
 
 	g_return_val_if_fail (node != NULL, NULL);
 
@@ -445,8 +444,18 @@ bonobo_ui_util_xml_get_icon_pixbuf (BonoboUINode *node, gboolean prepend_menu)
 		return NULL;
 	}
 
-	if (!text)
-		return NULL;
+	key = g_strdup_printf ("%s!%s!%d", type, text, prepend_menu?1:0);
+
+	if (!pixbuf_cache)
+		pixbuf_cache = g_hash_table_new (g_str_hash, g_str_equal);
+
+	if ((icon_pixbuf = g_hash_table_lookup (pixbuf_cache, key))) {
+		g_free (key);
+		bonobo_ui_node_free_string (text);
+		bonobo_ui_node_free_string (type);
+		gdk_pixbuf_ref (icon_pixbuf);
+		return icon_pixbuf;
+	}
 
 	if (!strcmp (type, "stock")) {
 
@@ -478,6 +487,11 @@ bonobo_ui_util_xml_get_icon_pixbuf (BonoboUINode *node, gboolean prepend_menu)
 	bonobo_ui_node_free_string (text);
 	bonobo_ui_node_free_string (type);
 
+	if (icon_pixbuf) {
+		gdk_pixbuf_ref (icon_pixbuf);
+		g_hash_table_insert (pixbuf_cache, key, icon_pixbuf);
+	}
+
 	return icon_pixbuf;
 }
 
@@ -494,22 +508,23 @@ bonobo_ui_util_xml_get_icon_pixbuf (BonoboUINode *node, gboolean prepend_menu)
 GtkWidget *
 bonobo_ui_util_xml_get_icon_pixmap_widget (BonoboUINode *node, gboolean prepend_menu)
 {
-	GnomePixmap *gpixmap;
 	GdkPixbuf *pixbuf;
+	GtkWidget *icon;
 
 	g_return_val_if_fail (node != NULL, NULL);
 
 	pixbuf = bonobo_ui_util_xml_get_icon_pixbuf (node, prepend_menu);
 	if (pixbuf == NULL)
 		return NULL;
-	
-	gpixmap = gtk_type_new (gnome_pixmap_get_type ());
 
-	/* Get GdkPixmap and mask */
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &gpixmap->pixmap, &gpixmap->mask, 128);
+	icon = bonobo_ui_icon_new ();
+	if (!bonobo_ui_icon_set_from_pixbuf (BONOBO_UI_ICON (icon), pixbuf)) {
+		gtk_widget_unref (icon);
+		icon = NULL;
+	}
+
 	gdk_pixbuf_unref (pixbuf);
-
-	return GTK_WIDGET (gpixmap);
+	return icon;
 }
 
 /**
@@ -1219,7 +1234,8 @@ bonobo_ui_util_new_ui (BonoboUIComponent *component,
 
 	bonobo_ui_util_translate_ui (node);
 
-	bonobo_ui_util_fixup_help (component, node, app_datadir, app_name);
+	if (component)
+		bonobo_ui_util_fixup_help (component, node, app_datadir, app_name);
 
 	bonobo_ui_util_fixup_icons (node);
 

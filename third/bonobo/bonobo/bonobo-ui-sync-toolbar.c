@@ -135,7 +135,6 @@ impl_bonobo_ui_sync_toolbar_state (BonoboUISync     *sync,
 	label = bonobo_ui_engine_get_attr (node, cmd_node, "label");
 	
 	if (!type || !strcmp (type, "toggle")) {
-
 		if (icon_pixbuf) {
 			bonobo_ui_toolbar_button_item_set_icon (
 				BONOBO_UI_TOOLBAR_BUTTON_ITEM (widget), icon_pixbuf);

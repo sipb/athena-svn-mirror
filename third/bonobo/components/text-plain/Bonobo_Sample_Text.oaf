@@ -12,6 +12,7 @@
 	<oaf_attribute name="name-de" type="string" value="Text-Komponenteneinheit"/>
 	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#234;&#229;&#233;&#236;&#221;&#237;&#239;&#245;"/>
 	<oaf_attribute name="name-es" type="string" value="F&#225;brica de componentes de texto"/>
+	<oaf_attribute name="name-eu" type="string" value="Testu-osagaiaren fabrika"/>
 	<oaf_attribute name="name-fi" type="string" value="Tekstikomponenttitehdas"/>
 	<oaf_attribute name="name-fr" type="string" value="Fabrique de composants texte"/>
 	<oaf_attribute name="name-gl" type="string" value="F&#225;brica do compo&#241;ente de texto"/>
@@ -41,6 +42,7 @@
 	<oaf_attribute name="description-de" type="string" value="text/plain einbettbare Einheit"/>
 	<oaf_attribute name="description-el" type="string" value="&#229;&#237;&#243;&#249;&#236;&#225;&#244;&#249;&#236;&#221;&#237;&#239; &#229;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; text/plain"/>
 	<oaf_attribute name="description-es" type="string" value="f&#225;brica de text/plain empotrable"/>
+	<oaf_attribute name="description-eu" type="string" value="testu/testu arruntaren kapsulagarri fabrika"/>
 	<oaf_attribute name="description-fi" type="string" value="text/plain-upotetehdas"/>
 	<oaf_attribute name="description-fr" type="string" value="Fabrique d&#39;incorporable text/plain"/>
 	<oaf_attribute name="description-gl" type="string" value="F&#225;brica de embebibles text/plain"/>
@@ -48,7 +50,7 @@
 	<oaf_attribute name="description-it" type="string" value="factory per l&#39;oggetto embeddable text/plain"/>
 	<oaf_attribute name="description-ja" type="string" value="text/plain &#203;&#228;&#164;&#225;&#185;&#254;&#164;&#223;&#178;&#196;&#199;&#189;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-ko" type="string" value="text/plain &#192;&#211;&#186;&#163;&#180;&#245;&#186;&#237; &#198;&#209;&#197;&#228;&#184;&#174;"/>
-	<oaf_attribute name="description-nl" type="string" value="text/plain embeddable factory"/>
+	<oaf_attribute name="description-lt" type="string" value="Negal&#235;jau inicializuoti Bonobo"/>
 	<oaf_attribute name="description-nn" type="string" value="text/plain innebygd komponent"/>
 	<oaf_attribute name="description-no" type="string" value="text/plain innebygget factory"/>
 	<oaf_attribute name="description-pl" type="string" value="generator osadzalnego obiektu text/plain"/>
@@ -81,6 +83,7 @@
 	<oaf_attribute name="name-de" type="string" value="Text-Komponente"/>
 	<oaf_attribute name="name-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#234;&#229;&#233;&#236;&#221;&#237;&#239;&#245;"/>
 	<oaf_attribute name="name-es" type="string" value="Componente de texto"/>
+	<oaf_attribute name="name-eu" type="string" value="Testu-osagaia"/>
 	<oaf_attribute name="name-fi" type="string" value="Tekstikomponentti"/>
 	<oaf_attribute name="name-fr" type="string" value="Composant texte"/>
 	<oaf_attribute name="name-gl" type="string" value="Compo&#241;ente de texto"/>
@@ -112,15 +115,16 @@
 	<oaf_attribute name="description-de" type="string" value="text/plain Komponente"/>
 	<oaf_attribute name="description-el" type="string" value="&#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; text/plain"/>
 	<oaf_attribute name="description-es" type="string" value="componente text/plain"/>
+	<oaf_attribute name="description-eu" type="string" value="testu/testu arruntaren osagaia"/>
 	<oaf_attribute name="description-fi" type="string" value="text/plain-komponentti"/>
 	<oaf_attribute name="description-fr" type="string" value="Composant text/plain"/>
+	<oaf_attribute name="description-ga" type="string" value="_Suim comph&#225;irt nua teacs/gn&#225;th"/>
 	<oaf_attribute name="description-gl" type="string" value="Compo&#241;ente text/plain"/>
 	<oaf_attribute name="description-hu" type="string" value="text/plain komponens"/>
 	<oaf_attribute name="description-it" type="string" value="componente text/plain"/>
 	<oaf_attribute name="description-ja" type="string" value="text/plain &#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
 	<oaf_attribute name="description-ko" type="string" value="&#197;&#216;&#189;&#186;&#198;&#174;/&#199;&#195;&#183;&#185;&#192;&#206; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
 	<oaf_attribute name="description-lt" type="string" value="text/plain komponentas"/>
-	<oaf_attribute name="description-nl" type="string" value="text/plain component"/>
 	<oaf_attribute name="description-nn" type="string" value="text/plain komponent"/>
 	<oaf_attribute name="description-no" type="string" value="text/plain komponent"/>
 	<oaf_attribute name="description-pl" type="string" value="komponent text/plain"/>
@@ -144,11 +148,10 @@
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:view_as_name" type="string" value="Text"/>
 	<oaf_attribute name="nautilus:view_as_name-az" type="string" value="M&#201;&#153;tn"/>
-	<oaf_attribute name="nautilus:view_as_name-ca" type="string" value="Text"/>
 	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="T_ekst"/>
-	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Text"/>
 	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#202;&#229;&#223;&#236;&#229;&#237;&#239;"/>
 	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Texto"/>
+	<oaf_attribute name="nautilus:view_as_name-eu" type="string" value="Testua"/>
 	<oaf_attribute name="nautilus:view_as_name-fi" type="string" value="Teksti"/>
 	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Texte"/>
 	<oaf_attribute name="nautilus:view_as_name-gl" type="string" value="Texto"/>
@@ -163,11 +166,8 @@
 	<oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Tekst"/>
 	<oaf_attribute name="nautilus:view_as_name-pt" type="string" value="Texto"/>
 	<oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Texto"/>
-	<oaf_attribute name="nautilus:view_as_name-ro" type="string" value="Text"/>
 	<oaf_attribute name="nautilus:view_as_name-ru" type="string" value="&#244;&#197;&#203;&#211;&#212;"/>
-	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Text"/>
 	<oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Besedilo"/>
-	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Text"/>
 	<oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Metin"/>
 	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="&#244;&#197;&#203;&#211;&#212;"/>
 	<oaf_attribute name="nautilus:view_as_name-wa" type="string" value="Tecse"/>

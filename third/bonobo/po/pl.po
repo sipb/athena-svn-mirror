@@ -1,4 +1,4 @@
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualn± wersjê tego pliku mo¿esz odnale¼æ w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste has³o)
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo\n"
-"POT-Creation-Date: 2001-11-15 09:16+1100\n"
-"PO-Revision-Date: 2001-08-23 17:23+0200\n"
+"POT-Creation-Date: 2002-01-22 22:24+0000\n"
+"PO-Revision-Date: 2002-01-03 18:32+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -37,11 +37,11 @@ msgstr "Wy¶wietlanie p_odpowiedzi"
 msgid "Toolbars"
 msgstr "Paski narzêdziowe"
 
-#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:512
+#: bonobo/bonobo-ui-config-widget.c:325 bonobo/bonobo-ui-sync-toolbar.c:511
 msgid "Look"
 msgstr "Wygl±d"
 
-#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:514
+#: bonobo/bonobo-ui-config-widget.c:335 bonobo/bonobo-ui-sync-toolbar.c:513
 msgid "_Icon"
 msgstr "_Ikony"
 
@@ -57,31 +57,31 @@ msgstr "_Tylko wa¿ne napisy"
 msgid "Customize Toolbars"
 msgstr "Dopasowanie pasków narzêdziowych"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:513
+#: bonobo/bonobo-ui-sync-toolbar.c:512
 msgid "B_oth"
 msgstr "Tekst i i_kony"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:515
+#: bonobo/bonobo-ui-sync-toolbar.c:514
 msgid "T_ext"
 msgstr "_Tekst"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:516
+#: bonobo/bonobo-ui-sync-toolbar.c:515
 msgid "Hide t_ips"
 msgstr "Nie wy¶wietlaj p_odpowiedzi"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:517
+#: bonobo/bonobo-ui-sync-toolbar.c:516
 msgid "Show t_ips"
 msgstr "Wy¶wietlaj p_odpowiedzi"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:518
+#: bonobo/bonobo-ui-sync-toolbar.c:517
 msgid "_Hide toolbar"
 msgstr "_Ukryj pasek narzêdziowy"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:519
+#: bonobo/bonobo-ui-sync-toolbar.c:518
 msgid "Customi_ze"
 msgstr "_Dopasuj"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:520
+#: bonobo/bonobo-ui-sync-toolbar.c:519
 msgid "Customize the toolbar"
 msgstr "Dopasuj pasek narzêdziowy"
 
@@ -320,11 +320,11 @@ msgstr "komponent text/plain"
 msgid "text/plain embeddable factory"
 msgstr "generator osadzalnego obiektu text/plain"
 
-#: components/text-plain/bonobo-text-plain.c:340
+#: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
 msgstr "_Wyczy¶æ tekst"
 
-#: components/text-plain/bonobo-text-plain.c:341
+#: components/text-plain/bonobo-text-plain.c:339
 msgid "Clears the text in the component"
 msgstr "Czy¶ci tekst wewn±trz komponentu"
 
@@ -386,7 +386,7 @@ msgstr "Pomoc na temat GNOME"
 
 #: gshell/gshell-ui.xml.h:10
 msgid "Kill the current buffer"
-msgstr "Opró¿nia aktualny bufor"
+msgstr "Usuwa bie¿±cy bufor"
 
 #: gshell/gshell-ui.xml.h:11
 msgid "Launch Control..."
@@ -394,7 +394,7 @@ msgstr "Stwórz formant..."
 
 #: gshell/gshell-ui.xml.h:12
 msgid "Launch Embeddable..."
-msgstr "Uruchaom zagnie¿d¿ony obiekt..."
+msgstr "Uaktywnij zagnie¿d¿ony obiekt..."
 
 #: gshell/gshell-ui.xml.h:13
 msgid "Launches a new Control component"

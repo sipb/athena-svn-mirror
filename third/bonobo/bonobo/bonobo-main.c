@@ -21,6 +21,7 @@
 #include <liboaf/liboaf.h>
 
 #include <X11/Xlib.h>
+#include <libintl.h>
 
 CORBA_ORB                 __bonobo_orb;
 PortableServer_POA        __bonobo_poa;

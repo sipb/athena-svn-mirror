@@ -15,13 +15,15 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include "bonobo-ui-toolbar-icon.h"
-
 #include "bonobo-ui-toolbar-button-item.h"
+#include "bonobo-ui-icon.h"
 
 
 /* Spacing between the icon and the label.  */
 #define SPACING 2
+
+/* Number of GdkStateType values */
+#define NUM_STATES 5
 
 #define PARENT_TYPE bonobo_ui_toolbar_item_get_type ()
 static BonoboUIToolbarItemClass *parent_class = NULL;
@@ -54,12 +56,15 @@ static guint signals [LAST_SIGNAL] = { 0 };
 static GtkWidget *
 create_pixmap_widget_from_pixbuf (GdkPixbuf *pixbuf)
 {
-	GtkWidget *pixmap_widget;
+	GtkWidget *icon;
 
-	pixmap_widget = bonobo_ui_toolbar_icon_new_from_pixbuf (pixbuf);
-	bonobo_ui_toolbar_icon_set_draw_mode (BONOBO_UI_TOOLBAR_ICON (pixmap_widget),
-					      BONOBO_UI_TOOLBAR_ICON_COLOR);
-	return pixmap_widget;
+	icon = bonobo_ui_icon_new ();
+	if (!bonobo_ui_icon_set_from_pixbuf (BONOBO_UI_ICON (icon), pixbuf)) {
+		gtk_widget_unref (icon);
+		return NULL;
+	}
+
+	return icon;
 }
 
 static void
@@ -70,15 +75,18 @@ set_icon (BonoboUIToolbarButtonItem *button_item,
 
 	priv = button_item->priv;
 
-	if (priv->icon != NULL)
-		gtk_widget_destroy (priv->icon);
-
 	gtk_widget_push_style (gtk_widget_get_style (GTK_WIDGET (priv->button_widget)));
 
-	if (pixbuf != NULL)
-		priv->icon = create_pixmap_widget_from_pixbuf (pixbuf);
-	else
-		priv->icon = NULL;
+	if (priv->icon != NULL) {
+		if (!(pixbuf
+		      && bonobo_ui_icon_set_from_pixbuf (BONOBO_UI_ICON (priv->icon), pixbuf))) {
+			gtk_widget_destroy (priv->icon);
+			priv->icon = NULL;
+		}
+	} else {
+		if (pixbuf != NULL)
+			priv->icon = create_pixmap_widget_from_pixbuf (pixbuf);
+	}
 
 	gtk_widget_pop_style ();
 }
@@ -414,7 +422,14 @@ bonobo_ui_toolbar_button_item_new (GdkPixbuf *icon,
 
 	button_item = gtk_type_new (bonobo_ui_toolbar_button_item_get_type ());
 
+	gtk_widget_push_visual (gdk_rgb_get_visual ());
+	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
+
 	button_widget = gtk_button_new ();
+
+	gtk_widget_pop_visual ();
+	gtk_widget_pop_colormap ();
+	
 	bonobo_ui_toolbar_button_item_construct (button_item, GTK_BUTTON (button_widget), icon, label);
 
 	return GTK_WIDGET (button_item);

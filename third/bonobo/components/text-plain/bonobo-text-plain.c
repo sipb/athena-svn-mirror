@@ -234,9 +234,7 @@ bonobo_object_destroy_cb (BonoboControl *bonobo_object,
 {
 	free_text (bonobo_object_data);
 	destroy_control (bonobo_object_data);
-	g_free (bonobo_object_data);
 }
-
 
 static gboolean
 text_inserted_cb (GtkText *text_widget,
