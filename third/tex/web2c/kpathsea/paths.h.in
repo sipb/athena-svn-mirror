@@ -20,7 +20,7 @@
 /* It's pointless to search the adobe, bitstream, etc. directories for
    Metafont sources, but we want at least ams/ and public/, and who
    knows if there might be others.  */
-#define DEFAULT_MF_PATH ".:(mfinputdir)//:(fontdir)//src//"
+#define DEFAULT_MF_PATH ".:(mfinputdir)//"
 #endif
 
 /* Dumped formats.  */
@@ -40,11 +40,11 @@
 #endif
 
 #ifndef DEFAULT_TFM_PATH /* TeX font metric files.  */
-#define DEFAULT_TFM_PATH ".:(fontdir)//tfm"
+#define DEFAULT_TFM_PATH ".:(fontdir)/tfm"
 #endif
 
 #ifndef DEFAULT_VF_PATH /* Virtual font metrics.  */
-#define DEFAULT_VF_PATH ".:(fontdir)//vf"
+#define DEFAULT_VF_PATH ".:(fontdir)/vf"
 #endif
 
 /* The TeX bitmap formats.  */
@@ -52,10 +52,10 @@
 #define DEFAULT_GLYPH_PATH ".:(fontdir)//"
 #endif
 #ifndef DEFAULT_GF_PATH
-#define DEFAULT_GF_PATH ".:(fontdir)//gf"
+#define DEFAULT_GF_PATH ".:(fontdir)/gf"
 #endif
 #ifndef DEFAULT_PK_PATH
-#define DEFAULT_PK_PATH ".:(fontdir)//pk//"
+#define DEFAULT_PK_PATH ".:(fontdir)/pk"
 #endif
 
 /* BibTeX bibliographies and styles.  */
@@ -73,7 +73,7 @@
 
 /* Dvips' PostScript prologues, and downloadable fonts (.pf[ab] files).  */
 #ifndef DEFAULT_HEADER_PATH
-#define DEFAULT_HEADER_PATH ".:(headerdir):(fontdir)//type1"
+#define DEFAULT_HEADER_PATH ".:(headerdir)"
 #endif
 
 /* Dvips' epsf and ps figures.  */
