@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.15 1997-10-13 21:52:46 ghudson Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.16 1997-12-03 21:59:01 ghudson Exp $";
 #endif
 
 /*
@@ -22,11 +22,15 @@ static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.15 1997-10-13 21:52:46 ghudso
 #include <ufs/ufsparam.h>
 #endif
 
-#if defined(POSIX) && !defined(ultrix)
+#if defined(SYSV)
 #define USE_USTAT
 #include <ustat.h>
 #else
+#ifdef __NetBSD__
+#include <ufs/ffs/fs.h>
+#else
 #include <ufs/fs.h>
+#endif
 #endif
 
 #ifdef PQUOTA
@@ -915,7 +919,7 @@ check_remhost()
     hostf = fopen("/etc/hosts.lpd", "r");
 #define DUMMY ":nobody::"
     if (hostf) {
-	if (!_validuser(hostf, ahost, DUMMY, DUMMY, baselen)) {
+	if (!validuser(hostf, ahost, DUMMY, DUMMY, baselen)) {
 	    (void) fclose(hostf);
 	    return NULL;
 	}
