@@ -6,6 +6,7 @@
 #include <setjmp.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 #ifdef __STDC__
 # define        P(s) s
