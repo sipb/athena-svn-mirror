@@ -213,7 +213,7 @@ EXT_SED_CMD =	INDOT_U=`echo "${INDOT}"|tr "[a-z]" "[A-Z]"`; \
 #
 # Command used to produce manual entries
 #
-MK_MANFILE = ( ${EXT_SED_CMD} | ${MANROFF} )
+MK_MANFILE = ${EXT_SED_CMD}
 
 #
 # Extensions for the generated manual entries
@@ -298,6 +298,26 @@ DESC_OUT = 	hostname.${DESC_OUT_EXT} mailaddr.${DESC_OUT_EXT}
 		.${LIB_NETWORK_SRC_EXT} .${LIB_NETWORK_OUT_EXT} \
 		.${FORMAT_SRC_EXT} .${FORMAT_OUT_EXT} \
 		.${DESC_SRC_EXT} .${DESC_OUT_EXT} 
+
+.${CMD_SRC_EXT}.${CMD_OUT_EXT}:
+	@echo "$*.${CMD_SRC_EXT} -> $*.${CMD_OUT_EXT}"
+	@${MK_MANFILE} <$*.${CMD_SRC_EXT} >$*.${CMD_OUT_EXT}
+
+.${SYS_OPS_SRC_EXT}.${SYS_OPS_OUT_EXT}:
+	@echo "$*.${SYS_OPS_SRC_EXT} -> $*.${SYS_OPS_OUT_EXT}"
+	@${MK_MANFILE} <$*.${SYS_OPS_SRC_EXT} >$*.${SYS_OPS_OUT_EXT}
+
+.${LIB_NETWORK_SRC_EXT}.${LIB_NETWORK_OUT_EXT}:
+	@echo "$*.${LIB_NETWORK_SRC_EXT} -> $*.${LIB_NETWORK_OUT_EXT}"
+	@${MK_MANFILE} <$*.${LIB_NETWORK_SRC_EXT} >$*.${LIB_NETWORK_OUT_EXT}
+
+.${FORMAT_SRC_EXT}.${FORMAT_OUT_EXT}:
+	@echo "$*.${FORMAT_SRC_EXT} -> $*.${FORMAT_OUT_EXT}"
+	@${MK_MANFILE} <$*.${FORMAT_SRC_EXT} >$*.${FORMAT_OUT_EXT}
+
+.${DESC_SRC_EXT}.${DESC_OUT_EXT}:
+	@echo "$*.${DESC_SRC_EXT} -> $*.${DESC_OUT_EXT}"
+	@${MK_MANFILE} <$*.${DESC_SRC_EXT} >$*.${DESC_OUT_EXT}
 
 OUTFILES =	${CMD_OUT} ${NAMED_OUT} ${NAMED_XFER_OUT} ${NSLOOKUP_OUT} \
 		${LIB_NETWORK_OUT} ${FORMAT_OUT} ${DESC_OUT}
