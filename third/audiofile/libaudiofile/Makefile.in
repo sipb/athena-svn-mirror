@@ -89,27 +89,34 @@ SUBDIRS = modules
 
 lib_LTLIBRARIES = libaudiofile.la
 
+EXTRA_DIST = audiofile.exports
+
 libaudiofile_la_SOURCES = \
 	openclose.c setup.c format.c data.c pcm.c \
 	error.c byteorder.c af_vfs.c \
-	util.c aupv.c units.c compression.c \
+	util.c debug.c aupv.c units.c compression.c \
 	aes.c instrument.c loop.c marker.c misc.c track.c query.c \
 	raw.c raw.h \
 	aiff.c aiffwrite.c extended.c aiff.h \
 	next.c nextwrite.c next.h \
 	wave.c wavewrite.c wave.h \
 	ircam.c ircamwrite.c ircam.h \
+	avr.c avrwrite.c avr.h \
+	iff.c iffwrite.c iff.h \
+	nist.c nistwrite.c nist.h \
 	g711.c g711.h \
 	afinternal.h aupvinternal.h aupvlist.h byteorder.h \
 	compression.h error.h extended.h instrument.h marker.h \
 	pcm.h setup.h track.h units.h \
-	print.h util.h \
+	print.h util.h debug.h \
 	modules.c modules.h
 
 
 libaudiofile_la_LIBADD = modules/libmodules.la
 
-libaudiofile_la_LDFLAGS = -version-info 0:2:0 -no-undefined
+libaudiofile_la_LDFLAGS = -version-info 0:2:0 -no-undefined \
+	-export-symbols audiofile.exports
+
 
 include_HEADERS = audiofile.h aupvlist.h af_vfs.h
 
@@ -127,11 +134,12 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libaudiofile_la_DEPENDENCIES = modules/libmodules.la
 am_libaudiofile_la_OBJECTS = openclose.lo setup.lo format.lo data.lo \
-	pcm.lo error.lo byteorder.lo af_vfs.lo util.lo aupv.lo units.lo \
-	compression.lo aes.lo instrument.lo loop.lo marker.lo misc.lo \
-	track.lo query.lo raw.lo aiff.lo aiffwrite.lo extended.lo \
-	next.lo nextwrite.lo wave.lo wavewrite.lo ircam.lo \
-	ircamwrite.lo g711.lo modules.lo
+	pcm.lo error.lo byteorder.lo af_vfs.lo util.lo debug.lo aupv.lo \
+	units.lo compression.lo aes.lo instrument.lo loop.lo marker.lo \
+	misc.lo track.lo query.lo raw.lo aiff.lo aiffwrite.lo \
+	extended.lo next.lo nextwrite.lo wave.lo wavewrite.lo ircam.lo \
+	ircamwrite.lo avr.lo avrwrite.lo iff.lo iffwrite.lo nist.lo \
+	nistwrite.lo g711.lo modules.lo
 libaudiofile_la_OBJECTS = $(am_libaudiofile_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -142,20 +150,23 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/aes.Plo $(DEPDIR)/af_vfs.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/aiff.Plo $(DEPDIR)/aiffwrite.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/aupv.Plo $(DEPDIR)/byteorder.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/aupv.Plo $(DEPDIR)/avr.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/avrwrite.Plo $(DEPDIR)/byteorder.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/compression.Plo $(DEPDIR)/data.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/error.Plo $(DEPDIR)/extended.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/format.Plo $(DEPDIR)/g711.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/instrument.Plo $(DEPDIR)/ircam.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/ircamwrite.Plo $(DEPDIR)/loop.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/marker.Plo $(DEPDIR)/misc.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/modules.Plo $(DEPDIR)/next.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/nextwrite.Plo $(DEPDIR)/openclose.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/pcm.Plo $(DEPDIR)/query.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/raw.Plo $(DEPDIR)/setup.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/track.Plo $(DEPDIR)/units.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/util.Plo $(DEPDIR)/wave.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/wavewrite.Plo
+@AMDEP_TRUE@	$(DEPDIR)/debug.Plo $(DEPDIR)/error.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/extended.Plo $(DEPDIR)/format.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/g711.Plo $(DEPDIR)/iff.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/iffwrite.Plo $(DEPDIR)/instrument.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/ircam.Plo $(DEPDIR)/ircamwrite.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/loop.Plo $(DEPDIR)/marker.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/misc.Plo $(DEPDIR)/modules.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/next.Plo $(DEPDIR)/nextwrite.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/nist.Plo $(DEPDIR)/nistwrite.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/openclose.Plo $(DEPDIR)/pcm.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/query.Plo $(DEPDIR)/raw.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/setup.Plo $(DEPDIR)/track.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/units.Plo $(DEPDIR)/util.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/wave.Plo $(DEPDIR)/wavewrite.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -229,13 +240,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/aiff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/aiffwrite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/aupv.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/avr.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/avrwrite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/byteorder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/compression.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/data.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/extended.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/format.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/g711.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/iff.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/iffwrite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/instrument.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ircam.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ircamwrite.Plo@am__quote@
@@ -245,6 +261,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/modules.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/next.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/nextwrite.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/nist.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/nistwrite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/openclose.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/pcm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/query.Plo@am__quote@
