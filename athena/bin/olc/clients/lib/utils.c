@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.19 1991-08-23 12:57:45 raek Exp $
- *	$Author: raek $
+ *	$Id: utils.c,v 1.20 1991-09-10 11:19:24 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.19 1991-08-23 12:57:45 raek Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.20 1991-09-10 11:19:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -215,7 +215,11 @@ call_program(program, argument)
      char *argument;		/* Argument to be passed to program. */
 {
   int pid;		/* Process id for forking. */
+#ifdef VOID_SIGRET
+  void (*func)();
+#else
   int (*func)();
+#endif
 
 #ifdef NO_VFORK
   if ((pid = fork()) == -1) 
