@@ -24,6 +24,10 @@
 #include "krb.h"
 #include <string.h>
 
+#include <krb5/krb5.h>
+#include <krb5/ext-proto.h>
+#include <krb5/los-proto.h>
+
 #define	LIFE	DEFAULT_TKT_LIFE   /* lifetime of ticket in 5-minute units */
 
 char   *progname;
@@ -82,6 +86,131 @@ hex_scan_four_bytes(out, in)
   default:
     return "extra characters at end of input";
   }
+}
+
+/*
+ * This routine takes v4 kinit parameters and performs a V5 kinit.
+ * 
+ * name, instance, realm is the v4 principal information
+ *
+ * lifetime is the v4 lifetime (i.e., in units of 5 minutes)
+ * 
+ * password is the password
+ *
+ * ret_cache_name is an optional output argument in case the caller
+ * wants to know the name of the actual V5 credentials cache (to put
+ * into the KRB5_ENV_CCNAME environment variable)
+ *
+ * etext is a mandatory output variable which is filled in with
+ * additional explanatory text in case of an error.
+ * 
+ */
+krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
+			    ret_cache_name, etext)
+	char	*name;
+	char	*instance;
+	char	*realm;
+	int	lifetime;
+	char	*password;
+	char	**ret_cache_name;
+	char	**etext;
+{
+	krb5_error_code retval;
+	krb5_principal	me = 0, server = 0;
+	krb5_ccache	ccache = NULL;
+	krb5_creds my_creds;
+	krb5_timestamp now;
+	krb5_address **my_addresses = 0;
+	char		*cache_name = krb5_cc_default_name();
+
+	*etext = 0;
+	if (ret_cache_name)
+		*ret_cache_name = 0;
+	memset((char *)&my_creds, 0, sizeof(my_creds));
+
+	krb5_init_ets();
+	
+	retval = krb5_425_conv_principal(name, instance, realm, &me);
+	if (retval) {
+		*etext = "while converting V4 principal";
+		goto cleanup;
+	}
+    
+	retval = krb5_cc_resolve (cache_name, &ccache);
+	if (retval) {
+		*etext = "while resolving ccache";
+		goto cleanup;
+	}
+
+	retval = krb5_cc_initialize (ccache, me);
+	if (retval) {
+		*etext = "while initializing cache";
+		goto cleanup;
+	}
+
+	retval = krb5_build_principal_ext(&server,
+					  krb5_princ_realm(me)->length,
+					  krb5_princ_realm(me)->data,
+					  KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
+					  krb5_princ_realm(me)->length,
+					  krb5_princ_realm(me)->data,
+					  0);
+	if (retval)  {
+		*etext = "while building server name";
+		goto cleanup;
+	}
+
+	retval = krb5_os_localaddr(&my_addresses);
+	if (retval) {
+		*etext = "when getting my address";
+		goto cleanup;
+	}
+
+	retval = krb5_timeofday(&now);
+	if (retval) {
+		*etext = "while getting time of day";
+		goto cleanup;
+	}
+	
+	my_creds.client = me;
+	my_creds.server = server;
+	my_creds.times.starttime = 0;
+	my_creds.times.endtime = now + lifetime*5*60;
+	my_creds.times.renew_till = 0;
+	
+	retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
+					       ETYPE_DES_CBC_CRC,
+					       KEYTYPE_DES,
+					       password,
+					       ccache,
+					       &my_creds, 0);
+	if (retval) {
+		*etext = "while calling krb5_get_in_tkt_with_password";
+		goto cleanup;
+	}
+
+	if (ret_cache_name) {
+		*ret_cache_name = malloc(strlen(cache_name)+1);
+		if (!*ret_cache_name) {
+			retval = ENOMEM;
+			goto cleanup;
+		}
+		strcpy(*ret_cache_name, cache_name);
+	}
+
+cleanup:
+	if (me)
+		krb5_free_principal(me);
+	if (server)
+		krb5_free_principal(server);
+	if (my_addresses)
+		krb5_free_addresses(my_addresses);
+	if (ccache)
+		krb5_cc_close(ccache);
+	my_creds.client = 0;
+	my_creds.server = 0;
+	krb5_free_cred_contents(&my_creds);
+	return retval;
 }
 
 int 
@@ -219,25 +348,31 @@ main(argc, argv)
 
  
     if (!sflag) {
-    /*
-     * On the Mac and Windows, we must now prompt for a password
-     * before entering the Kerberos library.  This is a slight
-     * behaviour change.
-     */
 #if defined(_WINDOWS) || defined(macintosh)
     printf("Password: ");
     get_input(password, sizeof(password), stdin);
 #else
-    password[0] = '\0';
+    des_read_pw_string(password, BUFSIZ, "Password: ", 0);
 #endif
 
     if (pflag) {
       k_errno = krb_get_pw_in_tkt_preauth(aname, inst, realm, "krbtgt", realm,
-					  lifetime, 
-					  password[0]? password: (char *)0);
+					  lifetime, password);
     } else {
       k_errno = krb_get_pw_in_tkt(aname, inst, realm, "krbtgt", realm,
-				  lifetime, password[0]? password: (char *)0);
+				  lifetime, password);
+    }
+    {
+	    krb5_error_code retval;
+	    char	*etext;
+	    
+	    retval =  do_v5_kinit(aname, inst, realm, lifetime, password,
+				  0, &etext);
+	    memset(password, 0, BUFSIZ);
+	    if (retval && retval != KRB5_CONFIG_CANTOPEN &&
+		retval != KRB5KRB_AP_ERR_BAD_INTEGRITY) {
+		    com_err(argv[0], retval, etext);
+	    }
     }
     } else { /* sflag is set, so we do snk4 support instead */
       /* for the SNK4 we have to get the ticket explicitly. */
@@ -310,12 +445,12 @@ main(argc, argv)
 	}
 	des_fixup_key_parity(key1);
 	des_key_sched(key1, ks);
-	des_ecb_encrypt(&key1, &key2, ks, 1);
+	des_ecb_encrypt(key1, key2, ks, 1);
 	des_fixup_key_parity(key2);
 
 	des_key_sched(key2,ks);
-	pcbc_encrypt((C_Block *)(cip->dat+24),(C_Block *)cip2->dat,
-		     (long) (cip->length-24),ks,(C_Block *)&key2,0);
+	pcbc_encrypt(cip->dat+24,cip2->dat,
+		     (long) (cip->length-24),ks, key2,0);
 	cip2->length = cip->length-24;
 
       }

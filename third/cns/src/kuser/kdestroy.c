@@ -19,6 +19,8 @@
 #include "krb.h"
 #include <string.h>
 
+#include <krb5/krb5.h>
+
 static char *pname;
 
 static usage()
@@ -27,11 +29,31 @@ static usage()
     exit(1);
 }
 
+krb5_error_code do_v5_kdestroy(cachename)
+	char	*cachename;
+{
+	krb5_error_code retval;
+	krb5_ccache cache;
+	
+	if (!cachename)
+		cachename = krb5_cc_default_name();
+
+	krb5_init_ets();
+
+	retval = krb5_cc_resolve (cachename, &cache);
+	if (retval)
+		return retval;
+
+	retval = krb5_cc_destroy(cache);
+
+	return retval;
+}
+
 int main(argc, argv)
     int     argc;
     char   *argv[];
 {
-    int     fflag=0, qflag=0, k_errno;
+    int     fflag=0, qflag=0, k_errno, k5_errno, retval=0;
     register char *cp;
 
     cp = strrchr (argv[0], '/');
@@ -51,23 +73,23 @@ int main(argc, argv)
     }
 
     k_errno = dest_tkt();
+    k5_errno = do_v5_kdestroy(0);
 
-    if (fflag) {
-	if (k_errno != 0 && k_errno != RET_TKFIL)
-	    exit(1);
-	else
-	    exit(0);
-    } else {
-	if (k_errno == 0)
-	    printf("Tickets destroyed.\n");
-	else if (k_errno == RET_TKFIL)
-	    fprintf(stderr, "No tickets to destroy.\n");
-	else {
-	    fprintf(stderr, "Tickets NOT destroyed.\n");
-	    if (!qflag)
-		fprintf(stderr, "\007");
-	    exit(1);
-	}
+    if (k_errno != 0 && k_errno != RET_TKFIL) {
+	retval = 1;
+	if (!fflag) fprintf(stderr, "V4 tickets NOT destroyed.\n");
     }
-    exit(0);
+    if (k5_errno != 0 && k5_errno != KRB5_FCC_NOFILE) {
+	retval = 1;
+	if (!fflag) fprintf(stderr, "V5 credentials NOT destroyed.\n");
+    }
+    if (fflag) return retval;
+
+    if (retval) {
+	if (!qflag) fprintf(stderr, "\007");
+    } else {
+	if (k_errno && k5_errno) fprintf(stderr, "No tickets to destroy.\n");
+	else fprintf(stderr, "Tickets destroyed.\n");
+    }
+    return retval;
 }
