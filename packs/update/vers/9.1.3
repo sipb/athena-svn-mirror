@@ -1,4 +1,16 @@
 #!/bin/sh
 
-echo "/etc/athena/ndc"                                    >> "$DEADFILES"
-echo "/usr/andrew"                                        >> "$DEADFILES"
+case "$HOSTTYPE" in
+sun4)
+  if [ -d /var/sadm/pkg/SUNWski ]; then
+    pkgrm -n -a $LIBDIR/noask SUNWski
+  fi
+  echo "112438-01"					>> "PATCHES"
+  ;;
+
+sgi)
+  ;;
+esac
+
+echo "/etc/athena/ndc"					>> "$DEADFILES"
+echo "/usr/andrew"					>> "$DEADFILES"
