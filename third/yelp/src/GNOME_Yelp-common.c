@@ -10,6 +10,36 @@
 
 static const CORBA_unsigned_long ORBit_zero_int = 0;
 
+#ifndef ORBIT_IDL_C_IMODULE_GNOME_Yelp
+void
+_ORBIT_skel_small_GNOME_Yelp_newWindow(POA_GNOME_Yelp * _o_servant,
+				       gpointer _o_retval, gpointer * _o_args,
+				       CORBA_Context _o_ctx,
+				       CORBA_Environment * _o_ev,
+				       void (*_impl_newWindow)
+				       (PortableServer_Servant _servant,
+					const CORBA_char * url,
+					CORBA_Environment * ev))
+{
+   _impl_newWindow(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
+}
+
+void
+_ORBIT_skel_small_GNOME_Yelp_getWindows(POA_GNOME_Yelp * _o_servant,
+					gpointer _o_retval,
+					gpointer * _o_args,
+					CORBA_Context _o_ctx,
+					CORBA_Environment * _o_ev,
+					GNOME_Yelp_WindowList *
+					(*_impl_getWindows)
+					(PortableServer_Servant _servant,
+					 CORBA_Environment * ev))
+{
+   *(GNOME_Yelp_WindowList * *)_o_retval =
+      _impl_getWindows(_o_servant, _o_ev);
+}
+
+#endif
 #if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'G') \
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'N') \
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'O') \

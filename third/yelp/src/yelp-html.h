@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2001-2002 Mikael Hallendal <micke@codefactory.se>
+ * Copyright (C) 2001-2002 Mikael Hallendal <micke@imendio.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Mikael Hallendal <micke@codefactory.se>
+ * Author: Mikael Hallendal <micke@imendio.com>
  */
 
 #ifndef __YELP_HTML_H__
@@ -26,7 +26,6 @@
 #include <gtk/gtkobject.h>
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkmarshal.h>
-#include "yelp-section.h"
 
 #define YELP_TYPE_HTML        (yelp_html_get_type ())
 #define YELP_HTML(o)          (GTK_CHECK_CAST ((o), YELP_TYPE_HTML, YelpHtml))
@@ -71,11 +70,13 @@ void            yelp_html_close          (YelpHtml    *html);
 
 GtkWidget *     yelp_html_get_widget     (YelpHtml    *html);
 
-void            yelp_html_find           (YelpHtml    *html,
+gboolean        yelp_html_find           (YelpHtml    *html,
 					  const gchar *str,
 					  gboolean     match_case,
 					  gboolean     wrap,
 					  gboolean     forward);
+void            yelp_html_jump_to_anchor (YelpHtml    *html,
+					  gchar       *anchor);
 
 #endif /* __YELP_HTML_H__ */
 

@@ -6,33 +6,6 @@
 #define ORBIT2_STUBS_API
 #include "GNOME_Yelp.h"
 
-void
-_ORBIT_skel_small_GNOME_Yelp_newWindow(POA_GNOME_Yelp * _o_servant,
-				       gpointer _o_retval, gpointer * _o_args,
-				       CORBA_Context _o_ctx,
-				       CORBA_Environment * _o_ev,
-				       void (*_impl_newWindow)
-				       (PortableServer_Servant _servant,
-					const CORBA_char * url,
-					CORBA_Environment * ev))
-{
-   _impl_newWindow(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Yelp_getWindows(POA_GNOME_Yelp * _o_servant,
-					gpointer _o_retval,
-					gpointer * _o_args,
-					CORBA_Context _o_ctx,
-					CORBA_Environment * _o_ev,
-					GNOME_Yelp_WindowList *
-					(*_impl_getWindows)
-					(PortableServer_Servant _servant,
-					 CORBA_Environment * ev))
-{
-   *(GNOME_Yelp_WindowList * *)_o_retval =
-      _impl_getWindows(_o_servant, _o_ev);
-}
 static ORBitSmallSkeleton
 get_skel_small_GNOME_Yelp(POA_GNOME_Yelp * servant,
 			  const char *opname, gpointer * m_data,
@@ -87,27 +60,17 @@ POA_GNOME_Yelp__init(PortableServer_Servant servant, CORBA_Environment * env)
    static PortableServer_ClassInfo class_info =
       { NULL, (ORBit_small_impl_finder) & get_skel_small_GNOME_Yelp,
 "IDL:GNOME/Yelp:1.0", &GNOME_Yelp__classid, NULL, &GNOME_Yelp__iinterface };
-   POA_GNOME_Yelp__vepv *fakevepv = NULL;
-
-   if (((PortableServer_ServantBase *) servant)->vepv[0]->finalize == 0) {
-      ((PortableServer_ServantBase *) servant)->vepv[0]->finalize =
-	 POA_GNOME_Yelp__fini;
-   }
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
-   ORBit_classinfo_register(&class_info);
-   ORBIT_SERVANT_SET_CLASSINFO(servant, &class_info);
-
-   if (!class_info.vepvmap) {
-      class_info.vepvmap = g_new0(ORBit_VepvIdx, GNOME_Yelp__classid + 1);
-      class_info.vepvmap[Bonobo_Unknown__classid] =
-	 (((char *) &(fakevepv->Bonobo_Unknown_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-      class_info.vepvmap[GNOME_Yelp__classid] =
-	 (((char *) &(fakevepv->GNOME_Yelp_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-   }
+   ORBit_skel_class_register(&class_info,
+			     servant, POA_GNOME_Yelp__fini,
+			     ORBIT_VEPV_OFFSET(POA_GNOME_Yelp__vepv,
+					       GNOME_Yelp_epv),
+			     (CORBA_unsigned_long) Bonobo_Unknown__classid,
+			     ORBIT_VEPV_OFFSET(POA_GNOME_Yelp__vepv,
+					       Bonobo_Unknown_epv),
+			     (CORBA_unsigned_long) 0);
 }
 
 void

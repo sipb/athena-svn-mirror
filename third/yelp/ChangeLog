@@ -1,3 +1,1593 @@
+2004-08-30  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.6.2
+
+	* po/*.po:
+	- Stuff distcheck likes to do
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add «nb» to ALL_LINGUAS.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-15  Gurban M. Tewekgeli  <gmtavakkoli@yahoo.com>
+
+	* po/tk.po: Added Turkmen translation.
+	* configure.in: Added "tk" to ALL_LINGUAS
+
+2004-08-10  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-history.c:
+	- Make history_finalize chain up to parent's finalize, #140663
+
+2004-08-07  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- (tree_model_iter_following) Don't leak old_iter, #140757
+
+2004-08-07  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-html-gtkhtml2.c:
+	- Part of a patch from Kirti Sinha for #139739
+
+2004-08-03  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/l10n.xml.in:
+	- Don't use entities, since intltool borks them
+
+2004-06-01  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-io-channel.c:
+	- Moved #include <stdio.h> above the other #includes
+
+2004-05-24  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Tajik (tg) to ALL_LINGUAS
+
+2004-05-07  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* src/yelp-main.c (main_save_session): Get the open_urls
+	in the right index of argv
+	(main_restore_session): Need get rid of "\"" before passing
+	the url to main_open_new_window ().  (#142081)
+
+2004-04-27  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Basque (eu) end Georgian (ka),
+	to ALL_LINGUAS
+
+2004-04-26  Morten Welinder  <terra@gnome.org>
+
+	* src/yelp-window.c (window_handle_page): Fix the rest of #140595.
+
+	* src/yelp-db-pager.c (db_pager_process): Free path, free walker,
+	and free the transformed document.  (#140630)
+
+2004-04-20  Shaun McCance  <shaunm@gnome.org>
+
+	* Makefile.am:
+	- Removing OrigTree.pm from EXTRA_DIST, I guess
+
+	* configure.in:
+	- Version 2.6.1
+
+	* po/*.po:
+	- Stuff distcheck likes to do
+
+2004-04-20  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Fixed leak in window_handle_pager_uri, #140597  (Morten Welinder)
+	- Fixed leak in window_handle_page, #140595  (Morten Welinder)
+
+2004-04-19  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-io-channel.c:
+	- #include <stdio.h>, as per #134886
+
+2004-04-19  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Fix leak with gtk_tree_store_set, #140546  (Morten Welinder)
+
+2004-04-19  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-theme.c:
+	- Don't g_object_ref after gtk_style_new, #140525  (Morten Welinder)
+
+2004-04-19  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- s/g_free/g_strfreev/ on **paths, fixes #140524 (Morten Welinder)
+
+2004-04-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- NULL check on priv->pager before g_object_unref, fixes #140300
+
+2004-04-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Better handling of category_hash, as per #128914
+
+2004-04-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-22  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.6.0
+
+	* po/*.po:
+	- Stuff distcheck likes to do
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-21  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Patch from Laszlo Peter for #134534, portable sed usage
+
+2004-03-20  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-16  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.5.91
+
+	* po/*.po:
+	- Stuff distcheck likes to do
+
+2004-03-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Fix for #137216, infinite loop in tree traversal.
+
+2004-03-10  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-09  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.5.90
+
+	* po/*.po:
+	- Various distcheck stuff
+
+2004-03-07  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Updated to reflect latest SK categories.
+
+2004-03-03  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Added me to the copyrights on About.
+
+
+	* stylesheets/db2html-html.xsl:
+	- Stylistic changes that should hopefully benefit documents with deeper
+	  list nesting.  I've added margins on li elements, because it's really
+	  needed.  Unfortunately, gtkhtml doesn't seem to understand that it
+	  should also pad down the leading bullet/number.  We'll just have to
+	  suffer it.
+
+2004-03-03  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Require libxml2-2.6.5 and libxslt-1.1.4 for the dictionary stuff.
+
+	* src/yelp-toc-pager.c:
+	- Remove work-around for #131745, since we now require libxml2-2.6.5.
+
+2004-02-24  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.5.6
+
+	* po/*.po:
+	- Various distcheck stuff
+
+2004-02-19  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Adding dictionary to the new xmlDoc for each chunk.  This works around
+	  the libxslt bug in 1.1.3 and in principle makes the transformation faster.
+	- Another NULL check.
+
+2004-02-18  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-titlepage.xsl:
+	* test/testdoc1/testdoc1.xml:
+	- Added support address/email in titlepage, per #134769.  Also don't
+	  duplicate then name of othercredit.
+	- Merged templates for author | editor | othercredit, since they're
+	  all the same.
+
+2004-02-17  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Another NULL test before an xmlFree, suggested by William Brack.
+
+2004-02-16  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-toc.xsl:
+	- Changed $cols to {$cols}, so that it'll actually work. :/
+
+2004-02-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Patch from DV to stop mixing malloc and free wrappers from glib and
+	  libxml2.  Fixes a crash with latest libxslt.
+
+2004-02-16  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Patch from Julio M. Merino Vidal for portable sed usage (#134534)
+
+2004-02-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Fixed memory leak.
+
+2004-02-12  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Disconnect idle_write when closing a window or switching to a different
+	  page, because some people apparently don't like Yelp to crash.
+
+2004-02-12  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Don't crash when the window is closed before the transformation is
+	  finished, from Jan Arne Petersen.  (#134266)
+
+2004-02-11  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-synopsis.xsl:
+	* test/testdoc1/testdoc1.xml:
+	- More cmdsynopsis work.
+
+2004-02-10  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-header.xsl:
+	* stylesheets/db2html-synopsis.xsl:
+	- Some work on cmdsynopsis.
+
+2004-02-10  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.5.5
+
+	* po/*.po
+	- distcheck stuff
+
+2004-02-09  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-navbar.xsl:
+	- Fixed theoretical bug which never gets triggered in navbar.next.
+
+2004-02-09  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-header.xsl:
+	- Speed improvements of about 0.1s on the UG.
+
+2004-02-08  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-toc.xsl:
+	- Rather smallish speed improvement.
+
+2004-02-08  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-html-gtkhtml2.c:
+	* src/yelp-window.c:
+	- Don't always grab focus on the gtkhtml2 widget.  I did this as part of
+	  my efforts to lay smack-down on gtkhtml2's scrolling weirdness, but it
+	  isn't needed with the solution I have, and it's annoying.
+
+	* stylesheets/db2html-html.xsl:
+	* stylesheets/db2html-toc.xsl:
+	- Stylistic TOC changes, and only print Contents header when there are.
+
+	* test/testdoc1/testdoc1.xml:
+	- Chunk two levels deep.
+
+2004-02-07  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-titlepage.xsl:
+	* stylesheets/l10n.xml.in:
+	- Handle releaseinfo element.
+
+2004-02-06  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* stylesheets/db2html-header.xsl:
+	- Free the transformation context.
+	- The cache extension element isn't working, but I hooked it in so I have
+	  more oppurtunity to let GTK+ update itself.
+
+	* stylesheets/db2html-navbar.xsl:
+	- Speed improvement to navbar.prev.
+
+2004-02-06  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-division.xsl:
+	- Fixed blatently wrong chunking in refentry.
+
+	* stylesheets/db2html-xref.xsl:
+	- Fixed blatently wrong grabbing of text content for ulink.
+
+2004-02-05  Tomasz Kłoczko <kloczek@pld.org.pl>
+
+	* configure.in: Trivial cleanup: remove AC_SUBST(CFLAGS)
+	  and AC_SUBST(LDFLAGS). This variables are substed by default.
+
+2004-02-04  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Version 2.5.4
+
+	* README:
+	- Updated README information regarding XSLT.
+
+	* po/*.po:
+	- Various distcheck changes.
+
+2004-02-03  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Tweak to the idle writer that squeezes out a few more scroll problems.
+
+	* test/testdoc1/testdoc1.xml:
+	- Added indexterms
+
+2004-02-03  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-pager.c:
+	- s/FALSE/NULL/ for return value for a function that returns a pointer.
+
+2004-02-03  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-html-gtkhtml2.c:
+	- Introduced a timeout function for scrolling to anchor/top, since gtkhtml2
+	  also has a timeout that likes to scroll to the first link.  This timeout
+	  checks if gtkhtml2's timeout is still pending, and readds itself if so.
+
+	* src/yelp-window.c:
+	- Do the writing of the page in an idle, which produces better renderings
+	  and helps me to beat idle and timeout functions that mess with scrolling.
+	- Fix problem where Previous/Next/TOC menu items stayed active when they
+	  shouldn't have.
+
+2004-01-23  Mikael Hallendal  <micke@imendio.com>
+
+	* src/yelp-window.h: include gtkwindow.h instead of gnome-app.h
+
+2004-01-22  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	- Handle mailto: URIs.
+	- Make file: URIs be _TYPE_UNKNOWN for formats we don't know.
+
+	* src/yelp-window.c:
+	- Handle mailto: URIs.
+	- Some NULL checking.
+
+2004-01-22  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Handling another category that doesn't exist.  ~sigh~
+
+	* stylesheets/db2html-html.xsl:
+	- Modification to variablelist rendering.
+
+	* stylesheets/db2html-xref.xsl:
+	- Pull content of ulink from url when there's no content.
+
+	* test/testdoc1/testdoc1.xml:
+	- Test ulink.
+
+2004-01-22  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Implemented destroy callback to unref stuff I ref.
+
+2004-01-21  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.h:
+	- Fixed ugly but benign typo.
+
+	* test/testdoc1/testdoc1.xml:
+	- Implemented test for xref.
+
+2004-01-21  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Fixed annoying double-history thing with first page.  Again.
+	- Fixed history problem when loading anything external.
+
+2004-01-21  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/gettext.xsl:
+	* stylesheets/l10n.xml.in:
+	- Added string 'About This Article'.
+	- Made gettext behave more nicely when a string isn't found.
+
+2004-01-19  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-division.xsl:
+	* stylesheets/db2html-html.xsl:
+	* stylesheets/db2html-toc.xsl:
+	- Stylistic changes to the TOC.
+
+2004-01-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* stylesheets/db2html-param.xsl:
+	- Nicer chunk depth determination.  Works decently well.
+
+2004-01-17  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-titlepage.xsl:
+	* stylesheets/gettext.xsl:
+	- Small changes to pluralized headers in titlepage.
+
+2004-01-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Updated comment about bug #131745, now that I've filed the bug.
+
+2004-01-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-base.c:
+	- Relative path handling broke absolute-sans-scheme path handling.
+	  Now fixed.
+
+	* src/yelp-db-pager.c:
+	- Handle XInclude.
+
+	* src/yelp-toc-pager.c:
+	- The parser context seems to fail on all files after a single bad XML
+	  file, which I think is a bug in libxml2.  This caused a single bad
+	  OMF file to bomb the whole TOC.  I've worked around the problem for
+	  now by creating a new parser context after errors.
+
+2004-01-14  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-base.c:
+	- Don't require absolute path for a file given on the command line.
+
+	* test/testdoc1/testdoc1.xml:
+	- That really isn't my email address.  Really.
+
+2004-01-12  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Changed Previous and Next to Previous Page and Next Page, per UI review.
+
+2004-01-12  Richard Hult  <richard@imendio.com>
+
+	* src/yelp-toc-pager.c (menu_write_page): Set encoding to utf-8 in
+	the generated html. Fixes bug #131186.
+
+2004-01-11  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/test-pager.c:
+	* src/yelp-db-pager.c:
+	* src/yelp-io-channel.c:
+	* src/yelp-man-pager.c:
+	* src/yelp-man-pager.h:
+	* src/yelp-uri.c:
+	* src/yelp-window.c:
+	* stylesheets/Makefile.am:
+	- Oh man(1), this is the start of a beautiful relationship.
+
+2004-01-11  Shaun McCance  <shaunm@gnome.org>
+
+	* src/test-pager.c:
+	* src/yelp-base.c:
+	* src/yelp-db-pager.c:
+	* src/yelp-db-pager.h:
+	* src/yelp-history.c:
+	* src/yelp-history.h:
+	* src/yelp-html-gtkhtml2.c:
+	* src/yelp-html.h:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	* src/yelp-toc-pager.c:
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	* src/yelp-window.c:
+	* src/yelp-window.h:
+	- ... in which I change YelpURI around.  Again.
+
+2004-01-10  Shaun McCance  <shaunm@gnome.org>
+
+	* src/.cvsignore: Added test-man-parser to .cvsignore
+
+	* src/Makefile.am:
+	* src/yelp-error.c:
+	* src/yelp-error.h:
+	* src/yelp-io-channel.c:
+	* src/yelp-io-channel.h:
+	* src/yelp-man-parser.c:
+	- Kick-ass custom GIOChannel that automatically uses zlib and libbz2.
+
+	* stylesheets/.cvsignore: Added l10n.xml to .cvsignore
+
+2004-01-10  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/l10n.xml.in:
+	- Added lots of comments.
+
+	* test/testdoc1/testdoc1.xml:
+	- Made my email address correct.
+
+2004-01-10  Eric Baudais  <drake@gnome.org
+
+	* test/testdoc1/testdoc1.xml
+	- Added some more glossary tests.
+
+2004-01-09  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/l10n.xml.in
+	- s/Bigliography/Bibliography/
+
+2004-01-09  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-xref.xsl:
+	- More link fixes, making endterm cases look right.
+
+	* test/Makefile.am:
+	* test/autogen.sh:
+	* test/configure.in:
+	* test/omf.make:
+	* test/xmldocs.xml:
+	- Making test/ independantly buildable.
+
+2004-01-09  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-xref.xsl:
+	- Revert link back to the correct behavior.
+
+2004-01-09  Eric Baudais  <drake@gnome.org>
+
+	* test/testdoc1/testdoc1.xml: 
+	- Fixed the test doc so everything is valid DocBook.
+
+2004-01-09  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-chunk.xsl:
+	- Some glossary work.
+
+	* stylesheets/gettext.xsl:
+	- Strip trailing space from number-less headers.
+
+	* test/testdoc1/testdoc1.xml:
+	- Some glossary test stuff.
+
+2004-01-08  Shaun McCance  <shaunm@gnome.org>
+See stylesheets/ChangeLog for previous stylesheet changes
+
+2004-01-08  Shaun McCance  <shaunm@gnome.org>
+
+	* po/POTFILES.in:
+	- Made translations work in XSLT, still need to do plurals.
+
+2004-01-08  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-man-parser.c:
+	- Gobs more work on the man page parser.
+
+2004-01-07  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Error dialog for invalid ghelp: URI.
+
+2004-01-07  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* src/yelp-error.c:
+	* src/yelp-error.h:
+	* src/yelp-toc-pager.c:
+	* src/yelp-window.c:
+	- Consolidated all the GError-making in yelp-error.c.
+
+2004-01-05  Shaun McCance  <shaunm@gnome.org>
+
+	* data/Makefile.am:
+	* data/default.css:
+	* src/yelp-theme.c:
+	* src/yelp-theme.h:
+	- Added default CSS file.
+
+	* src/yelp-toc-pager.c:
+	- Switched to using GString for writing the page.
+	- Put content writing in a separate function, to make inlining easier.
+
+2004-01-03  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/test-pager.c:
+	- Make test-pager work again.
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+2004-01-02  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-html-gtkhtml2.c:
+	* src/yelp-html.h:
+	* src/yelp-window.c:
+	- Started working on the jump-to-anchor thing.
+
+2004-01-02  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Implement yelp:chunk-depth PI.
+
+	* src/yelp-toc-pager.c:
+	- Started preparing to read man dirs.
+
+	* src/yelp-uri.c:
+	- Handle absolute ghelp: URIs.
+
+	* src/yelp-window.c:
+	- Handle HTML pages.  Not done yet.
+
+2004-01-01  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- A quick comment, to remind me.
+
+	* src/yelp-html-gtkhtml2.c:
+	- Don't let the html view shrink to nothing.
+
+	* src/yelp-window.c:
+	- Handle external URIs, like web sites and stuff.
+
+	* test/testdoc1/testdoc1.xml:
+	- Put in tests for some inline elements.
+
+2003-12-31  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	- Temporarily removed test programs from the build.
+	- Removed yelp-util from the yelp build.
+
+	* src/test-uri.c:
+	- Some changes for GnomeVFSURI, but not enough.
+
+	* src/yelp-base.c:
+	* src/yelp-cache.h:
+	* src/yelp-db-pager.c:
+	* src/yelp-db-pager.h:
+	* src/yelp-history.c:
+	* src/yelp-history.h:
+	* src/yelp-html-gtkhtml2.c
+	* src/yelp-html.h:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	* src/yelp-toc-pager.c:
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	* src/yelp-window.c:
+	* src/yelp-window.h:
+	- Switching to GnomeVFSURI.
+
+	* src/yelp-db-pager.c:
+	- Remove leading/trailing whitespace from titles.
+
+2003-12-30  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in: Version 2.5.2.
+
+2003-12-30  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-theme.c:
+	- Grab the default style if gtk_rc_get_style_by_paths returns NULL.
+
+2003-12-30  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- doc_name and doc_path were reversed for some reason.
+
+2003-12-29  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Move Applets into Applications.
+	- Accomodote non-standard GNOME|Applications|Accessories.
+
+	* src/yelp-theme.c:
+	- Don't be an idiot.  Use snprintf.
+
+	* src/yelp-window.c:
+	- Make the busy cursor go away when erroring out.
+
+2003-12-29  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-uri.c:
+	- Consider #index to be equal to no fragment.
+
+	* src/yelp-window.c:
+	- Some improvement to the history mechanism.
+
+2003-12-29  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Transpose Titlepage and Contents.
+
+	* src/yelp-main.c:
+	- Handle startup notification.
+
+	* test/testdoc1/testdoc1.xml:
+	- Change to 4.1.2.  I need to fix this fiasco.  ~sigh~
+
+2003-12-29  Shaun McCance  <shaunm@gnome.org>
+
+	* test/testdoc1/testdoc1.xml:
+	- Put in a test for classsynopsis.
+
+2003-12-26  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in
+	* src/Makefile.am
+	- Updates dependencies.
+
+	* data/Makefile.am:
+	* data/icons/Makefile.am:
+	* data/icons/caution.png:
+	* data/icons/important.png:
+	* data/icons/note.png:
+	* data/icons/tip.png:
+	* data/icons/warning.png:
+	- Adding icons here.
+
+	* src/yelp-db-pager.c:
+	- Changed params around a bit.
+
+	* test/testdoc1/testdoc1.xml:
+	- Changes to admonition samples.
+
+2003-12-26  Shaun McCance  <shaunm@gnome.org>
+
+	* AUTHORS:
+	- Added myself to AUTHORS.
+
+	* src/yelp-db-pager.c:
+	- Fixed memory leak in params.
+
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	* src/yelp-window.c:
+	- Re-added Hallski's copyright statements.
+
+	* test/testdoc1/testdoc1.xml:
+	- Put actual content in, including admonition section.
+
+2003-12-26  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	* test/testdoc1/Makefile.am:
+	* test/testdoc1/legal.xml:
+	* test/testdoc1/testdoc1.omf:
+	* test/testdoc1/testdoc1.xml:
+	- Added test documents.
+
+	* data/toc.xml.in:
+	- Handling System|... stuff from SK.
+
+2003-12-24  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	- Add yelp-theme to test_pager_SOURCES
+
+	* src/yelp-db-pager.c:
+	* src/yelp-theme.c:
+	* src/yelp-theme.h:
+	- Theme the gray color of screen, programlisting, etc.
+
+	* src/yelp-window.c:
+	- Change keybindings up, for fun.
+
+	* stylesheets/Makefile.am:
+	* stylesheets/db2html-formal.xsl:
+	* stylesheets/db2html-lists.xsl:
+	- Removing db2html-formal and db2html-lists
+
+2003-12-22  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Changed things around to accomodate more stuff.
+
+2003-12-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Crash fix from Chee Bin HOH.
+
+2003-12-18  Shaun McCance  <shaunm@gnome.org>
+
+	All from Chee Bin HOH:
+
+	* data/ui/yelp.glade:
+	- A new 'Find dialog which has same GUI as epiphany's Find dialog.
+
+	* src/yelp-html-gtkhtml2.c:
+	- Add automatically 'wrap around' if finding reaches the end of an
+	  html page (but avoid searching twice).
+	- Searching from where the previous finding stops.
+	- Clean up the yelp-html-gtkhtml2.c source a bit.
+
+	* src/yelp-html.c:
+	- Change yelp_html_find to return a boolean value to indicate the
+	  success or failure of findiing.
+
+	* src/yelp-window.c:
+	- Change 'Find in page... Ctrl+F' to 'Find... Ctrl+F'
+	- Change 'Find again  Ctrl+G' to 'Find Next  Ctrl+G'
+	- Add 'Find Previous  Shift+Ctrl+G' to 'Edit' menu.
+	- Disable the 'Next' button if finding next fails or 'Previous'
+	  button if finding previous fails.
+	- Disable 'Next' and 'Previous' buttons if no text being entered
+	  into the 'Find' text entry, else enable the both buttons.
+	- Hitting 'Alt-N' or 'Alt+P' will only activate the 'Next' button or
+	  'Previous' button, NOT pulling down the 'Find' combobox entry list.
+
+2003-12-17  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/yelp-base.c:
+	* src/yelp-main.c:
+	* src/yelp-window.c:
+	- Attempts at working with GtkIconTheme.
+
+	* src/yelp-window.c:
+	- Check for model != NULL, to avoid ugly warnings.
+
+2003-12-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/yelp-base.c:
+	* src/yelp-history.h:
+	* src/yelp-html.h:
+	* src/yelp-util.c:
+	* src/yelp-window.c:
+	- Removing yelp-scrollkeeper and yelp-sections.
+
+2003-12-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Made sidebar selection follow the page loeded.
+
+2003-12-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	* src/yelp-toc-pager.c:
+	* src/yelp-window.c:
+	- Add prev, next, and toc to YelpPage.
+	- Create menu items for Previous, Next, and Contents.
+
+2003-12-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	* src/yelp-window.c:
+	- Changed state to a bitfield, easier to extend.
+	- Re-added the "contents" signal for faster page-existence checking.
+
+2003-12-13  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Make the page titles work.
+
+	* src/yelp-toc-pager.c:
+	- Emit a finish signal.
+
+2003-12-12  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-html-gtkhtml2.c:
+	- Possible fix problem with Find (#128905) (Chee Bin HOH)
+	- Fix crasher with Find (#128784) (Chee Bin HOH)
+
+	* src/yelp-window.c:
+	- Select existing text in Find dialog (Shaun McCance)
+
+2003-12-08  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in: Version 2.5.1.
+
+2003-12-08  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Fixed a crasher with gnome_vfs_directory_close.
+
+	* src/yelp-window.c:
+	- Moved a declaration to the beginning for ANSI C.
+
+2003-12-06  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-pager.c:
+	- Checking for NULL in pager_set_property before g_object_ref'ing.
+
+2003-12-06  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Patch from Diego González to fix crashing bug in g_object_new.
+
+2003-12-05  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c
+	- Patch from Chee Bin HOH to add Back, Forward, and Find in Page
+
+2003-12-03  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Patch from Joe Markus Clarke not to free un-malloc'd memory.
+
+	* src/yelp-toc-pager.c:
+	- Fixed problem with un-malloc'd memory being free found by
+	  Joe Markus Clarke.
+
+2003-12-02  Shaun McCance  <shaunm@gnome.org>
+
+	* src/.cvsignore:
+	- It's test-pager, not yelp-pager.
+
+2003-12-02  Shaun McCance  <shaunm@gnome.org>
+
+	* data/.cvsignore:
+	* src/.cvsignore:
+	- Adding data/toc.xml and src/test-pager to .cvsignore
+
+2003-12-02  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Change to the way toc pages are pruned so that we don't get orphaned
+	  Categories headers.
+
+2003-12-02  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in: Version 2.5.0.
+
+2003-12-02  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Removed the DOCTYPE, because it was passing straight through intltool
+	  and the resultant toc.xml had an incorrent DOCTYPE.
+	- Rearranged the menu a bit.
+
+2003-12-02  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Don't require top element id to be index.
+
+2003-12-01  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Changed the way toc nodes are processed to give a depth-first,
+	  post-order traversal.  This way I can prune empty toc pages.
+
+2003-12-01  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Handling all SK categories, from mariano.
+
+	* src/yelp-window.c:
+	- Start with Loading..., so the titlebar doesn't look like ass.
+
+2003-12-01  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Make the Loading message kind of animated, for better feedback.
+
+2003-12-01  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Switched to using a single pending function that calls the appropriate
+	  function on each iteration.  Makes the code nicer.
+
+2003-11-30  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Make no-sidebar the default, to avoid momentary flicker.
+
+2003-11-30  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Some work on the TOC.
+
+	* src/yelp-db-pager.c:
+	- Actually use the parser options.
+
+2003-11-30  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Implementing more of the TOC.
+
+	* src/yelp-toc-pager.c:
+	- Don't reverse the subcategories in a TOC.
+
+	* src/yelp-window.c:
+	- Make the sidebar actually appear.
+
+2003-11-30  Shaun McCance  <shaunm@gnome.org>
+
+	- Some changes I forgot to commit on transformation-playground before merging.
+
+	* src/yelp-db-pager.c:
+	- Some changes to how the XML parser is called.
+
+	* src/yelp-toc-pager.c:
+	- Actually creating the TOC pages.
+
+2003-11-30  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	* data/Makefile.am:
+	* po/POTFILES.in:
+	* src/Makefile.am:
+	* src/test-uri.c:
+	* src/yelp-base.c:
+	* src/yelp-cache.c:
+	* src/yelp-cache.c:
+	* src/yelp-cache.h:
+	* src/yelp-db2html.c:
+	* src/yelp-error.h:
+	* src/yelp-history.c:
+	* src/yelp-html-gtkhtml2.c:
+	* src/yelp-info.c:
+	* src/yelp-main.c:
+	* src/yelp-man.c:
+	* src/yelp-scrollkeeper.c:
+	* src/yelp-section.c:
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	* src/yelp-view-content.c:
+	* src/yelp-window.c:
+	* src/yelp-window.h:
+	- Merging transformation-playground
+
+2003-11-29  Shaun McCance  <shaunm@gnome.org>
+
+	* data/toc.xml.in:
+	- Filled in just a little more to show how it works, so that I can
+	  get somebody else to write this file for me.
+
+2003-11-29  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Make the sidebar disappear for no-sidebar pages.
+
+2003-11-29  Shaun McCance  <shaunm@gnome.org>
+
+	* data/Makefile.am:
+	* data/toc.xml:
+	* po/POTFILES.in:
+	- Added the TOC XML file.
+
+2003-11-29  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c:
+	- Don't leak GErrors.
+	- Report an error in the error signal callback.
+
+2003-11-28  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Switched to a different bit of the libxml2 API to parse the document.
+	- Made page_id default to "index" when frag_id == NULL.
+
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	- Implemented yelp_uri_is_page.
+
+	* src/yelp-toc-pager.c:
+	- Implemented resolve_uri.
+	- Finished parsing of TOC, just need to write the pages.
+	- Began work on indexing stuff.
+
+	* src/yelp-uri.c:
+	- Fixed memory corruption.
+
+	* src/yelp-window.c:
+	- Added callbacks for error and finish signals.
+	- Made the TOC go through window_handle_pager_uri.
+	- Switched to yelp_pager_uri_is_page in page callback.
+
+2003-11-12  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	- Add yelp-error.[ch] to SOURCES for test-pager.
+
+	* src/yelp-error.h:
+	- Add YELP_ERROR_FAILED_TOC.
+
+	* src/yelp-pager.c:
+	- Don't free memory you're not supposed to, dummy.
+
+	* src/yelp-toc-pager.c:
+	- More work on the toc generation.
+
+	* src/yelp-window.c:
+	- Make sidebar selection work.
+	- Remove huge block of commented-out code.
+
+2003-11-19  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Prepare to work around seriesid madness.
+	- Prepare to read the actual toc file in.
+
+2003-11-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	- Add yelp-toc-pager.[ch] to test-pager build.
+
+	* src/yelp-toc-pager.c:
+	- Make the hashing of OMF files work completely.
+
+2003-11-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/yelp-reader.c:
+	* src/yelp-reader.h:
+	- Removing YelpReader
+
+2003-11-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- Only read files ending in .omf
+
+2003-11-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Pass $mediaobject_path as a param
+
+2003-11-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	- Implement pausing of the TocPager.
+	- Add default handlers for error, cancel, and finish.
+
+	* src/yelp-toc-pager.c:
+	* src/yelp-toc-pager.h:
+	- Implement pausing of the TocPager.
+	- More work on reading OMF files.
+
+	* src/yelp-window.c:
+	- Implement pausing of the TocPager.
+
+2003-11-17  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-toc-pager.c:
+	- More work on the TOC pager.
+
+2003-11-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	- Make the titles for sidebars actually work.  That was stupid.
+
+	* src/yelp-window.c:
+	- Make the titles for sidebars actually work.
+	- Keep a reference to the scrolling areas, so I can reparent.
+
+2003-11-16  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/yelp-base.c:
+	* src/yelp-toc-pager.c:
+	* src/yelp-toc-pager.h:
+	- Adding YelpTocPager
+
+	* src/yelp-db-pager.c:
+	* src/yelp-db-pager.h:
+	- Whitespace changes
+
+2003-11-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	- Change resolve_uri to return a non-const gchar *
+	- Remove sections event, as it's not necessary using the
+	  GtkTreeModel without all that threading crap.
+
+	* src/yelp-db-pager.c:
+	- Remove sections event.
+
+2003-11-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db-pager.c:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	- Use a YelpPage struct rather than just a gchar, so a page can
+	  hold the id and title and well as the contents.
+
+	* src/yelp-error.h:
+	- Add an error code for no-longer-supported SGML.
+
+	* src/yelp-window.c:
+	- Prepare to work TOC back in.
+	- Use YelpPage.
+	- Some more error-handling.
+	- Make "Loading..." actually work.
+	- Set window title.
+
+2003-11-15  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/yelp-cache.c:
+	* src/yelp-cache.h:
+	* src/yelp-html-gtkhtml2.c:
+	* src/yelp-info.c:
+	* src/yelp-main.c:
+	* src/yelp-main.c:
+	* src/yelp-scrollkeeper.c:
+	* src/yelp-section.c:
+	* src/yelp-window.c:
+	- Changes for GObjectified YelpURI
+	- Using new transformation code
+
+	* src/yelp-db-pager.c:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	- Dethreadifying
+
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	- Work on relative URI resolver
+
+2003-11-11  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	* src/yelp-base.c:
+	* src/yelp-history.c:
+	* src/yelp-window.c:
+	* src/yelp-window.h:
+	- Breaking things more for the new transformations
+
+2003-11-10  Shaun McCance  <shaunm@gnome.org>
+
+	* src/info2html/main.c:
+	- Fix silliness with g_strdup_printf
+	  (Joe Marcus Clarke and Roderich Schupp)
+
+2003-11-06  Shaun McCance  <shaunm@gnome.org>
+
+	* configure.in:
+	- Require libxml-2.0 2.6.0, because I do
+
+2003-11-06  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-uri.h:
+	- #include <glib-object.h>
+
+2003-11-06  Shaun McCance  <shaunm@gnome.org>
+
+	* src/Makefile.am:
+	- Changes for new URI and Pager code
+
+2003-11-06  Shaun McCance  <shaunm@gnome.org>
+
+	* src/test-uri:
+	* src/yelp-uri.c:
+	* src/yelp-uri.h:
+	- New GObjectified URI code
+
+	* src/test-pager.c:
+	* src/yelp-db-pager.c:
+	* src/yelp-db-pager.h:
+	* src/yelp-pager.c:
+	* src/yelp-pager.h:
+	- New transformation code
+
+2003-10-12  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-cache.c:
+	* src/yelp-cache.h:
+	* src/yelp-db2html.c:
+	* src/yelp-reader.c:
+	* src/yelp-scrollkeeper.c:
+	* src/yelp-view-content.c:
+	- Revert change for making navbars in C.  Should not be necessary
+	  with new stylesheets.
+	- Use new stylesheets
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+2003-10-06  Žygimantas Beručka  <uid0@tuxfamily.org>
+
+	* configure.in: Added "lt" to ALL_LINGUAS
+
+2003-09-08  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c: Added self to About
+
+2003-08-27  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-main.c
+	- Fix from alexl for rather nasty problem when DISPLAY is set.
+
+2003-08-26  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-cache.c
+	* src/yelp-cache.h
+	* src/yelp-db2html.c
+	* src/yelp-reader.c
+	* src/yelp-scrollkeeper.c
+	* src/yelp-view-content.c
+	- Big speedup to transformation of large DocBook documents
+	  by generating navigation links in C from ScrollKeeper info.
+
+2003-08-26  Shaun McCance  <shaunm@gnome.org>
+
+	* README: Updated README so it's correct
+
+2003-08-18  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-window.c: declare variables at top of block
+
+2003-08-18  Jakub Steiner <jimmac@ximian.com>
+
+	* stylesheets/docbook/*.png: provide nicer, gnome2-styled images
+
+2003-08-15  Mikael Hallendal  <micke@imendio.com>
+
+        * src/GNOME_Yelp.server.in: Replaced yelp-base for yelp. Not sure what
+          should be in there really... Might fix bug #119764
+
+	* src/yelp-window.c: (window_init), (window_configure_cb):
+        - Save size from last window. Patch by Shaun McCance.
+        - Fixes bug #90451
+
+	* configure.in: 
+        - Applied patch from Steve Chaplin that fixes the CFLAGS.
+        - Fixes bug #118984
+
+	* src/yelp-main.c: 
+        (main_restore_session): Return FALSE, otherwise we'll try to start Yelp
+          from the session over and over again. Reported by Jody earlier.
+
+2003-08-14  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+2003-08-13  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-view-toc.c
+	- Re-added a closing ul tag that was accidentally removed
+
+2003-08-12  Mikael Hallendal  <micke@imendio.com>
+
+        * Release 2.3.6
+
+	* NEWS: Updated for 2.3.6
+	* configure.in: Bumped to 2.3.6
+
+	* data/images/bcg.png: 
+	- Replace image for one with transparent background.
+	* src/yelp-view-toc.c: 
+	- Remove the spacer padding image
+	- Both these should finally fix bug #89838. Patches from Shaun McCance.
+
+2003-07-30 John Fleck <jfleck@inkstain.net>
+
+	* src/info2html/html.c
+	- patch from Shaun re bug #89838
+
+2003-07-24  Shaun McCance  <shaunm@gnome.org>
+
+	* src/yelp-db2html.c:
+	- Change parameters passed to stylesheets.
+
+2003-07-15 John Fleck <jfleck@inkstain.net>
+
+	* configure.in: version 2.3.4
+
+2003-07-08  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/info2html/Makefile.am:
+	* src/man2html/Makefile.am:
+	* src/yelp-reader.c: (reader_convert_start):
+	Move help readers over from libgnome.
+	
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* yelp.desktop.in: Add StartupNotify support.
+
+2003-06-25  Glynn Foster  <glynn.foster@sun.com>
+
+	* stylesheets/l10n.xml: Add some new languages from 
+	Mike Lei - merging patches from sun-patches.
+
+2003-06-25  Glynn Foster  <glynn.foster@sun.com>
+
+	* stylesheets/l10n.xml: Update correct italian translation
+	for Next/Previous/Contents.
+
+2003-06-16  Alex Duggan  <aldug@astrolinux.com>
+ 
+ 	* src/yelp-main.c: s/dir/directory/  Fixes #111818
+ 
+2003-06-16  Mikael Hallendal  <micke@imendio.com>
+
+	* src/yelp-db2html.c: 
+	(main): Exit with a warning if file doesn't exist. Fixes #104478.
+
+2003-06-13  Mikael Hallendal  <micke@imendio.com>
+
+        * *: Updated my contact information
+	
+2003-06-10 John Fleck <jfleck@inkstain.net>
+
+	* src/Makefile.am
+	* src/yelp-db2html.c
+	* src/yelp-scrollkeeper.c
+	* stylesheets/Makefile.am
+	* stylesheets/yelp-custom.xsl
+	* stylesheets/yelp-customization.xsl
+	  added
+	* stylesheets/yelp-functions.xsl
+	  patch from Shaun McCance to address bug #114117
+
+2003-06-04  Mikael Hallendal  <micke@codefactory.se>
+
+        * Release 2.3.3
+
+        * configure.in: Updated to 2.3.3
+	
+	* NEWS: Updated for 2.3.3
+
+        * src/yelp-scrollkeeper.c: (scrollkeeper_parse_toc_section):
+	- fixed leak found by Kjartan.
+
+	* src/yelp-reader.c: 
+	- style fixes
+	- fixes memory leaks found and patched by Narayana Pattipati
+	- fixes #110572  
+	
+2003-06-03  Mikael Hallendal  <micke@codefactory.se>
+
+        * src/yelp-window.c: (window_about_cb): 
+	- If About window is already showing, don't create another one.
+	  Patch by Steve Chaplin, fixes #113906
+
+2003-06-03  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/yelp-view-content.c: (content_reader_finished_cb):
+	- Use gtp_tree_view_expand_to_path to expand the tree instead of callin
+	  gtk_tree_view_expand_path on all parents. Fixes #113977
+
+2003-06-03  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added "li" (Limburgish) to ALL_LINGUAS.
+
+2003-05-26  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" to ALL_LINGUAS
+
+2003-05-06  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-01  Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-04-24  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-04-15  Alex Duggan  <aldug@astrolinux.com>
+
+	* src/yelp-window.c: Change string in about box
+
+2003-04-07  Mikael Hallendal  <micke@codefactory.se>
+
+        * Release 2.3.0
+
+        * NEWS: Updated for 2.3.0
+	
+2003-04-05 John Fleck <jfleck@inkstain.net>
+
+	* stylesheets/yelp-customization.xsl
+	More from Shaun McCance, fixes #100415
+
+2003-04-05 John Fleck <jfleck@inkstain.net>
+
+	* stylesheets/yelp-customization.xsl
+	More from Shaun McCance, fixes #100477
+
+2003-04-01 John Fleck <jfleck@inkstain.net>
+
+	* stylesheets/yelp-customization.xsl
+	More from Shaun McCance, fixes #82760
+
+2003-04-01 John Fleck <jfleck@inkstain.net>
+
+	* stylesheets/yelp-customization.xsl
+	Patch from Shaun McCance fixing #91611
+
+2003-03-31  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/yelp-main.c: 
+	- Added --with-cache-dir (not used yet).
+	- Cleaned up popt mess
+	- Changed the session stuff a bit (it now uses --open-urls instead
+	  of multiple --url)
+	- Removed support for 'gman', fixes #103750
+	
+	* src/Makefile.am:
+	- removed Gtkhtml1 support.
+	- Removed support for 'gman', fixes #103750
+
+	* configure.in: 
+	- bumped version.
+	- removed gtkhtml1 support.
+
+	* src/yelp-scrollkeeper.c (scrollkeeper_get_xml_docpath): 
+	- fixed #109599
+
+	* src/yelp-info.c (yelp_info_init): some cleanups.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-10  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eo" to ALL_LINGUAS.
+
+2003-02-25  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: added "is" to ALL_LINGUAS
+
+2003-02-21  Paisa Seeluangsawat  <paisa@colorado.edu>
+
+	* configure.in (ALL_LINGUAS): Added "th".
+
+2003-02-18  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2003-01-20  Mikael Hallendal  <micke@codefactory.se>
 
 	* Release 2.2.0
@@ -951,7 +2541,7 @@
 
 	* src/yelp-info.c (yelp_info_init): 
 	- Fixes #80981 (hopefully)
-	- Thanks to St�phane D�murget for notifying where the error was.
+	- Thanks to StÃ©phane DÃ©murget for notifying where the error was.
 
 	* src/yelp-view-toc.c (toc_info): fixed mem leak.
 
@@ -1954,7 +3544,7 @@
 
 	* configure.in: remove GNOME_COMMON_INIT, GNOME_PLATFORM_GNOME_2
 
-2002-02-17  T�ivo Leedj�rv  <leedjarv@interest.ee>
+2002-02-17  TÃµivo LeedjÃ¤rv  <leedjarv@interest.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.
 
@@ -2536,7 +4126,7 @@ Tue Jan 15 23:27:44 2002  Kristian Rietveld  <kris@gtk.org>
 
 	* configure.in: Added "tr" to the languages list.
 
-2002-01-06  Germ�n Poo-Caama�o <gpoo@ubiobio.cl>
+2002-01-06  GermÃ¡n Poo-CaamaÃ±o <gpoo@ubiobio.cl>
 
 	* configure.in: Added spanish (es) to ALL_LINGUAS
 

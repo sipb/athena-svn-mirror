@@ -5,7 +5,7 @@
 #ifndef GNOME_Yelp_H
 #define GNOME_Yelp_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -61,8 +61,7 @@ extern "C"
        _length;
       CORBA_string *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_string;
+   } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'G'
@@ -127,21 +126,18 @@ extern "C"
 			 const CORBA_char * url, CORBA_Environment * ev);
       GNOME_Yelp_WindowList *(*getWindows) (PortableServer_Servant _servant,
 					    CORBA_Environment * ev);
-   }
-   POA_GNOME_Yelp__epv;
+   } POA_GNOME_Yelp__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Yelp__epv *GNOME_Yelp_epv;
-   }
-   POA_GNOME_Yelp__vepv;
+   } POA_GNOME_Yelp__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Yelp__vepv *vepv;
-   }
-   POA_GNOME_Yelp;
+   } POA_GNOME_Yelp;
    extern void POA_GNOME_Yelp__init(PortableServer_Servant servant,
 				    CORBA_Environment * ev);
    extern void POA_GNOME_Yelp__fini(PortableServer_Servant servant,

@@ -1,6 +1,6 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
- * Copyright (C) 2001-2002 Mikael Hallendal <micke@codefactory.se>
+ * Copyright (C) 2001-2002 Mikael Hallendal <micke@imendio.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,14 +17,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Mikael Hallendal <micke@codefactory.se>
+ * Author: Mikael Hallendal <micke@imendio.com>
  */
 
 #ifndef __YELP_HISTORY_H__
 #define __YELP_HISTORY_H__
 
 #include <glib-object.h>
-#include "yelp-section.h"
+
+#include "yelp-uri.h"
 
 #define YELP_TYPE_HISTORY         (yelp_history_get_type ())
 #define YELP_HISTORY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), YELP_TYPE_HISTORY, YelpHistory))

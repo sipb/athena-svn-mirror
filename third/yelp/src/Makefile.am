@@ -13,43 +13,12 @@ INCLUDES =								\
 	-DSERVERDIR=\"$(libexecdir)\"					\
 	-DBINDIR=\""$(bindir)"\"
 
-
-if HTML_WIDGET_GTKHTML1
-html_widget_impl=yelp-html-gtkhtml1.c
-else
-html_widget_impl=yelp-html-gtkhtml2.c
-endif
-
-libexec_PROGRAMS = yelp-db2html
-bin_PROGRAMS = yelp yelp-pregenerate
-
-noinst_PROGRAMS = test-uri test-reader
-
-test_uri_SOURCES = 							\
-	test-uri.c							\
-	yelp-uri.c		yelp-uri.h				\
-	yelp-error.c		yelp-error.h				\
-	yelp-util.c		yelp-util.h
-
-test_uri_LDADD = 							\
-	@YELP_LIBS@
-
-test_reader_SOURCES = 							\
-	test-reader.c							\
-	yelp-uri.c		yelp-uri.h				\
-	yelp-cache.c		yelp-cache.h				\
-	yelp-reader.c		yelp-reader.h				\
-	yelp-error.c		yelp-error.h				\
-	yelp-util.c		yelp-util.h				\
-	yelp-marshal-main.c
-
-test_reader_LDADD = 							\
-	@YELP_LIBS@
+bin_PROGRAMS = yelp
+noinst_PROGRAMS = test-man-parser test-pager
 
 install-exec-local:
 	rm -f $(DESTDIR)$(bindir)/gnome-help
 	ln -s yelp $(DESTDIR)$(bindir)/gnome-help
-	ln -sf yelp $(DESTDIR)$(bindir)/gman
 
 yelp-marshal.h: yelp-marshal.list
 	cd $(srcdir) && \
@@ -65,45 +34,47 @@ yelp-marshal.c: yelp-marshal.h
 
 yelp-marshal-main.c: yelp-marshal.c
 
-yelp_db2html_SOURCES =							\
-	yelp-db2html.c
+test_man_parser_SOURCES =						\
+	yelp-error.c		yelp-error.h				\
+	yelp-io-channel.c	yelp-io-channel.h			\
+	yelp-man-parser.c	yelp-man-parser.h			\
+	test-man-parser.c
 
-yelp_pregenerate_SOURCES =						\
-	yelp-pregenerate.c      yelp-pregenerate.h
+test_man_parser_LDADD = @YELP_LIBS@ $(Z_LIBS) $(BZ_LIBS)
 
-yelp_db2html_LDADD =							\
-	@DB2HTML_LIBS@
+test_pager_SOURCES =							\
+	yelp-db-pager.c		yelp-db-pager.h				\
+	yelp-error.c		yelp-error.h				\
+	yelp-io-channel.c	yelp-io-channel.h			\
+	yelp-man-pager.c	yelp-man-pager.h			\
+	yelp-man-parser.c	yelp-man-parser.h			\
+	yelp-pager.c		yelp-pager.h				\
+	yelp-theme.c		yelp-theme.h				\
+	yelp-toc-pager.c	yelp-toc-pager.h			\
+	yelp-uri.c		yelp-uri.h				\
+	yelp-marshal-main.c	test-pager.c
 
-yelp_pregenerate_LDADD =						\
-	@YELP_LIBS@
+test_pager_LDADD = @YELP_LIBS@ $(POPT_LIBS) $(Z_LIBS) $(BZ_LIBS)
 
 yelp_SOURCES =								\
 	$(gnome_yelp_idl_sources)					\
 	yelp-base.c		yelp-base.h				\
 	yelp-cache.c		yelp-cache.h				\
+	yelp-db-pager.c		yelp-db-pager.h				\
 	yelp-error.c		yelp-error.h				\
 	yelp-history.c		yelp-history.h				\
-	$(html_widget_impl) 	yelp-html.h				\
-	yelp-index-model.c	yelp-index-model.h			\
-	yelp-info.c		yelp-info.h				\
-	yelp-main.c							\
-	yelp-man.c		yelp-man.h				\
-	yelp-marshal-main.c						\
-	yelp-reader.c		yelp-reader.h				\
-	yelp-section.c		yelp-section.h				\
-	yelp-scrollkeeper.c	yelp-scrollkeeper.h			\
-	yelp-util.c		yelp-util.h				\
-	yelp-view.c		yelp-view.h				\
-	yelp-view-content.c	yelp-view-content.h			\
-	yelp-view-index.c	yelp-view-index.h			\
-	yelp-view-toc.c		yelp-view-toc.h				\
+	yelp-html-gtkhtml2.c	yelp-html.h				\
+	yelp-io-channel.c	yelp-io-channel.h			\
+	yelp-man-pager.c	yelp-man-pager.h			\
+	yelp-man-parser.c	yelp-man-parser.h			\
+	yelp-pager.c		yelp-pager.h				\
+	yelp-toc-pager.c	yelp-toc-pager.h			\
+	yelp-theme.c		yelp-theme.h				\
 	yelp-window.c 		yelp-window.h				\
-	yelp-uri.c	        yelp-uri.h
+	yelp-uri.c	        yelp-uri.h				\
+	yelp-marshal-main.c	yelp-main.c
 
-yelp_LDADD =								\
-	@YELP_LIBS@							\
-	@HTML_WIDGET_LIBS@						\
-	$(POPT_LIBS)
+yelp_LDADD = @YELP_LIBS@ $(POPT_LIBS) $(Z_LIBS) $(BZ_LIBS)
 
 gnome_yelp_idl_sources =						\
 	GNOME_Yelp-stubs.c						\

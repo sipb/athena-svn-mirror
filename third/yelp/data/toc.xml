@@ -1,0 +1,1580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc id="index">
+  <title>Help Contents</title>
+  <title xml:lang="af">Hulp Inhoud</title>
+  <title xml:lang="am">የመረጃ ማውጫ</title>
+  <title xml:lang="ar">محتويات المساعدة</title>
+  <title xml:lang="az">Yardım Məzmunu</title>
+  <title xml:lang="be">Зьмест даведкі</title>
+  <title xml:lang="bg">Съдържание</title>
+  <title xml:lang="bn">সহায়িকা সূচী</title>
+  <title xml:lang="bs">Sadržaj Pomoći</title>
+  <title xml:lang="ca">Continguts de l'ajuda</title>
+  <title xml:lang="cs">Obsah nápovědy</title>
+  <title xml:lang="cy">Cynnwys Help</title>
+  <title xml:lang="da">Indhold i hjælp</title>
+  <title xml:lang="de">Hilfe-Inhalt</title>
+  <title xml:lang="el">Περιεχόμενα Βοήθειας</title>
+  <title xml:lang="en_CA">Help Contents</title>
+  <title xml:lang="en_GB">Help Contents</title>
+  <title xml:lang="eo">Helpenhavo</title>
+  <title xml:lang="es">Contenido de la ayuda</title>
+  <title xml:lang="et">Abiinfo sisukord</title>
+  <title xml:lang="eu">Laguntzaren edukia</title>
+  <title xml:lang="fa">محتویات راهنما</title>
+  <title xml:lang="fi">Ohjeen sisältö</title>
+  <title xml:lang="fr">Contenu de l'aide</title>
+  <title xml:lang="ga">ábhar Cabhair</title>
+  <title xml:lang="gl">Contidos da axuda</title>
+  <title xml:lang="gu">મદદની વિષયસૂચી</title>
+  <title xml:lang="he">תכני עזרה</title>
+  <title xml:lang="hi">मदद विषय-सूची</title>
+  <title xml:lang="hr">Sadržaj pomoći</title>
+  <title xml:lang="hu">Súgó tartalomjegyzéke</title>
+  <title xml:lang="id">Isi Bantuan</title>
+  <title xml:lang="is">Innihald hjálpar</title>
+  <title xml:lang="it">Sommario del manuale</title>
+  <title xml:lang="ja">ヘルプの目次</title>
+  <title xml:lang="ka">დახმარების შინაარსი</title>
+  <title xml:lang="ko">도움말 차례</title>
+  <title xml:lang="li">Hulp Inhaudsopgaaf</title>
+  <title xml:lang="lt">Pagalbos žinyno turinys</title>
+  <title xml:lang="lv">Palīdzības Saturs</title>
+  <title xml:lang="mk">Содржина</title>
+  <title xml:lang="ml">സഹായ ഉള്ളടക്കം</title>
+  <title xml:lang="mn">Тусламж агуулга</title>
+  <title xml:lang="mr">मदतीचे  घटक</title>
+  <title xml:lang="ms">Kandungan Bantuan</title>
+  <title xml:lang="nb">Hjelpinnhold</title>
+  <title xml:lang="ne">सहायताको बिषय सुची</title>
+  <title xml:lang="nl">Hulp Inhoudsopgave</title>
+  <title xml:lang="nn">Hjelpinnhald</title>
+  <title xml:lang="no">Hjelpinnhold</title>
+  <title xml:lang="pa">ਸਹਾਇਤਾ ਦੇ ਹਿੱਸੇ</title>
+  <title xml:lang="pl">Zawartość pomocy</title>
+  <title xml:lang="pt">Conteúdo da Ajuda</title>
+  <title xml:lang="pt_BR">Conteúdo da Ajuda</title>
+  <title xml:lang="ro">Index documentaţie</title>
+  <title xml:lang="ru">Содержание Справки</title>
+  <title xml:lang="sk">Obsah Pomocníka</title>
+  <title xml:lang="sl">Vsebina pomoči</title>
+  <title xml:lang="sq">Përmbajtja e Ndihmës</title>
+  <title xml:lang="sr">Садржај помоћи</title>
+  <title xml:lang="sr@Latn">Sadržaj pomoći</title>
+  <title xml:lang="sv">Hjälpinnehåll</title>
+  <title xml:lang="ta">உதவி உள்ளடக்கங்கள்</title>
+  <title xml:lang="tg">Мазмунҳои Ёрӣ</title>
+  <title xml:lang="th">สารบัญวิธีใช้</title>
+  <title xml:lang="tk">Ýardam Mazmunlary</title>
+  <title xml:lang="tr">Yardım İçeriği</title>
+  <title xml:lang="uk">Зміст довідки</title>
+  <title xml:lang="vi">Nội dung trợ giúp</title>
+  <title xml:lang="wa">Ådvins di l' aidance</title>
+  <title xml:lang="zh_CN">帮助目录</title>
+  <title xml:lang="zh_TW">說明文件</title>
+
+  <toc id="Desktop">
+    <title>Desktop</title>
+    <title xml:lang="af">Tafelblad</title>
+    <title xml:lang="ar">المكتب</title>
+    <title xml:lang="az">Masa Üstü</title>
+    <title xml:lang="be">Сталец</title>
+    <title xml:lang="bg">Десктоп</title>
+    <title xml:lang="bn">ডেস্কটপ</title>
+    <title xml:lang="bs">Desktop</title>
+    <title xml:lang="ca">Escriptori</title>
+    <title xml:lang="cs">Prostředí pracovní plochy</title>
+    <title xml:lang="cy">Penbwrdd</title>
+    <title xml:lang="da">Skrivebord</title>
+    <title xml:lang="de">Desktop</title>
+    <title xml:lang="el">Επιφάνεια εργασίας</title>
+    <title xml:lang="en_CA">Desktop</title>
+    <title xml:lang="en_GB">Desktop</title>
+    <title xml:lang="es">Escritorio</title>
+    <title xml:lang="et">Töölaud</title>
+    <title xml:lang="eu">Mahaigaina</title>
+    <title xml:lang="fi">Työpöytä</title>
+    <title xml:lang="fr">Bureau</title>
+    <title xml:lang="ga">Deasc</title>
+    <title xml:lang="gu">ડૅસ્કટોપ</title>
+    <title xml:lang="hi">डेस्कटॉप</title>
+    <title xml:lang="hr">Radna površina</title>
+    <title xml:lang="hu">Munkaasztal</title>
+    <title xml:lang="is">GNOME - Skjáborðið</title>
+    <title xml:lang="it">Desktop</title>
+    <title xml:lang="ja">デスクトップ</title>
+    <title xml:lang="ka">დესკტოპი</title>
+    <title xml:lang="ko">데스크탑</title>
+    <title xml:lang="lt">Darbastalis</title>
+    <title xml:lang="mn">Дэлгэц</title>
+    <title xml:lang="ms">Desktop</title>
+    <title xml:lang="nb">Skrivebord</title>
+    <title xml:lang="nl">Desktop</title>
+    <title xml:lang="nn">Skrivebord</title>
+    <title xml:lang="no">Skrivebord</title>
+    <title xml:lang="pa">ਵਿਹੜਾ</title>
+    <title xml:lang="pl">Pulpit</title>
+    <title xml:lang="pt">Ambiente de Trabalho</title>
+    <title xml:lang="pt_BR">Área de Trabalho</title>
+    <title xml:lang="ro">Desktop</title>
+    <title xml:lang="ru">Рабочий стол</title>
+    <title xml:lang="sk">Pracovná plocha</title>
+    <title xml:lang="sq">Hapësira e Punës</title>
+    <title xml:lang="sr">Радна површ</title>
+    <title xml:lang="sr@Latn">Radna površ</title>
+    <title xml:lang="sv">Skrivbord</title>
+    <title xml:lang="ta">கணிமேசை</title>
+    <title xml:lang="tg">Мизи корӣ</title>
+    <title xml:lang="th">พื้นโต๊ะ</title>
+    <title xml:lang="tk">Dasktap</title>
+    <title xml:lang="tr">Masaüstü</title>
+    <title xml:lang="uk">Стільниця</title>
+    <title xml:lang="vi">Desktop</title>
+    <title xml:lang="zh_CN">桌面</title>
+    <title xml:lang="zh_TW">桌面</title>
+
+    <category>GNOME</category>
+    <category>GNOME|Applications|Desktop Preferences</category>
+    <category>GNOME|Core Desktop</category>
+    <category>GNOME|Desktop</category>
+    <category>GNOME|Desktop|User Guides</category>
+    <category>GNOME|Preferences</category>
+    <category>GNOME|Settings</category>
+    <category>GNOME|System</category>
+    <category>GNOME|System Administration</category>
+    <category>GNOME|Other</category>
+
+    <toc id="KDE">
+      <title>KDE</title>
+      <title xml:lang="af">KDE</title>
+      <title xml:lang="ar">كيدي</title>
+      <title xml:lang="az">KDE</title>
+      <title xml:lang="be">KDE</title>
+      <title xml:lang="bg">KDE</title>
+      <title xml:lang="bn">কে-ডি-ই</title>
+      <title xml:lang="bs">KDE</title>
+      <title xml:lang="ca">KDE</title>
+      <title xml:lang="cs">KDE</title>
+      <title xml:lang="cy">KDE</title>
+      <title xml:lang="da">KDE</title>
+      <title xml:lang="de">KDE</title>
+      <title xml:lang="el">KDE</title>
+      <title xml:lang="en_CA">KDE</title>
+      <title xml:lang="en_GB">KDE</title>
+      <title xml:lang="es">KDE</title>
+      <title xml:lang="et">KDE</title>
+      <title xml:lang="eu">KDE</title>
+      <title xml:lang="fi">KDE</title>
+      <title xml:lang="fr">KDE</title>
+      <title xml:lang="ga">KDE</title>
+      <title xml:lang="gu">KDE</title>
+      <title xml:lang="hi">केडीई</title>
+      <title xml:lang="hr">KDE</title>
+      <title xml:lang="hu">KDE</title>
+      <title xml:lang="is">KDE</title>
+      <title xml:lang="it">KDE</title>
+      <title xml:lang="ja">KDE</title>
+      <title xml:lang="ka">KDE</title>
+      <title xml:lang="ko">KDE</title>
+      <title xml:lang="lt">KDE</title>
+      <title xml:lang="mn">КДЭ</title>
+      <title xml:lang="ms">KDE</title>
+      <title xml:lang="nb">KDE</title>
+      <title xml:lang="nl">KDE</title>
+      <title xml:lang="nn">KDE</title>
+      <title xml:lang="no">KDE</title>
+      <title xml:lang="pa">ਕੇਡੀਈ</title>
+      <title xml:lang="pl">KDE</title>
+      <title xml:lang="pt">KDE</title>
+      <title xml:lang="pt_BR">KDE</title>
+      <title xml:lang="ro">KDE</title>
+      <title xml:lang="ru">КДЕ</title>
+      <title xml:lang="sk">KDE</title>
+      <title xml:lang="sq">KDE</title>
+      <title xml:lang="sr">КДЕ</title>
+      <title xml:lang="sr@Latn">KDE</title>
+      <title xml:lang="sv">KDE</title>
+      <title xml:lang="ta">KDE</title>
+      <title xml:lang="tg">KDE</title>
+      <title xml:lang="th">KDE</title>
+      <title xml:lang="tk">KDE</title>
+      <title xml:lang="tr">KDE</title>
+      <title xml:lang="uk">KDE</title>
+      <title xml:lang="vi">KDE</title>
+      <title xml:lang="zh_CN">KDE</title>
+      <title xml:lang="zh_TW">KDE</title>
+
+      <category>KDE</category>
+      <category>KDE|Applications</category>
+      <category>KDE|Development</category>
+      <category>KDE|Games</category>
+      <category>KDE|Graphics</category>
+      <category>KDE|Internet</category>
+      <category>KDE|Multimedia</category>
+      <category>KDE|Other</category>
+      <category>KDE|Programs</category>
+      <category>KDE|Settings</category>
+      <category>KDE|System</category>
+      <category>KDE|Utilities</category>
+    </toc>
+  </toc>
+
+  <toc id="Applications">
+    <title>Applications</title>
+    <title xml:lang="af">Toepassings</title>
+    <title xml:lang="am">መጠቀሚያ ፕሮግራሞች</title>
+    <title xml:lang="ar">تطبيقات</title>
+    <title xml:lang="az">Proqramlar</title>
+    <title xml:lang="be">Дастасаваньні</title>
+    <title xml:lang="bg">Програми</title>
+    <title xml:lang="bn">অ্যাপ্লিকেশন সমূহ</title>
+    <title xml:lang="bs">Aplikacije</title>
+    <title xml:lang="ca">Aplicacions</title>
+    <title xml:lang="cs">Aplikace</title>
+    <title xml:lang="cy">Rhaglenni</title>
+    <title xml:lang="da">Programmer</title>
+    <title xml:lang="de">Anwendungen</title>
+    <title xml:lang="el">Εφαρμογές</title>
+    <title xml:lang="en_CA">Applications</title>
+    <title xml:lang="en_GB">Applications</title>
+    <title xml:lang="eo">Aplikaĵoj</title>
+    <title xml:lang="es">Aplicaciones</title>
+    <title xml:lang="et">Rakendused</title>
+    <title xml:lang="eu">Aplikazioak</title>
+    <title xml:lang="fa">برنامه‌ها</title>
+    <title xml:lang="fi">Sovellukset</title>
+    <title xml:lang="fr">Applications</title>
+    <title xml:lang="ga">Feidhmchláraanna</title>
+    <title xml:lang="gl">Aplicacións</title>
+    <title xml:lang="gu">કાર્યક્રમો</title>
+    <title xml:lang="he">יישומים</title>
+    <title xml:lang="hi">अनुप्रयोग</title>
+    <title xml:lang="hr">Aplikacije</title>
+    <title xml:lang="hu">Alkalmazások</title>
+    <title xml:lang="id">Aplikasi</title>
+    <title xml:lang="is">Forrit</title>
+    <title xml:lang="it">Applicazioni</title>
+    <title xml:lang="ja">アプリケーション</title>
+    <title xml:lang="ka">პროგრამები</title>
+    <title xml:lang="kn">ಅನ್ವಯಗಳು</title>
+    <title xml:lang="ko">응용프로그램</title>
+    <title xml:lang="li">Toepassinge</title>
+    <title xml:lang="lt">Programos</title>
+    <title xml:lang="lv">Aplikācijas</title>
+    <title xml:lang="mk">Апликации</title>
+    <title xml:lang="ml">പ്രയോഗങ്ങള്‌</title>
+    <title xml:lang="mn">Х.программ</title>
+    <title xml:lang="mr">एप्लीकेशन</title>
+    <title xml:lang="ms">Aplikasi</title>
+    <title xml:lang="nb">Programmer</title>
+    <title xml:lang="ne">एप्लिकेशन</title>
+    <title xml:lang="nl">Toepassingen</title>
+    <title xml:lang="nn">Program</title>
+    <title xml:lang="no">Programmer</title>
+    <title xml:lang="pa">ਕਾਰਜ</title>
+    <title xml:lang="pl">Aplikacje</title>
+    <title xml:lang="pt">Aplicações</title>
+    <title xml:lang="pt_BR">Aplicações</title>
+    <title xml:lang="ro">Aplicaţii</title>
+    <title xml:lang="ru">Приложения</title>
+    <title xml:lang="sk">Aplikácie</title>
+    <title xml:lang="sl">Programi</title>
+    <title xml:lang="sq">Programe</title>
+    <title xml:lang="sr">Програми</title>
+    <title xml:lang="sr@Latn">Programi</title>
+    <title xml:lang="sv">Program</title>
+    <title xml:lang="ta">செயல்பாடுகள்</title>
+    <title xml:lang="tg">Замимаҳо</title>
+    <title xml:lang="th">โปรแกรมใช้งาน</title>
+    <title xml:lang="tk">Programler</title>
+    <title xml:lang="tr">Uygulamalar</title>
+    <title xml:lang="uk">Програми</title>
+    <title xml:lang="vi">Ứng dụng</title>
+    <title xml:lang="wa">Programes</title>
+    <title xml:lang="zh_CN">应用程序</title>
+    <title xml:lang="zh_TW">應用程式</title>
+
+    <category>Applications</category>
+    <category>GNOME|Accessibility</category>
+    <category>GNOME|Applications</category>
+    <category>GNOME|Applications|Accessories</category>
+
+    <toc id="Applets">
+      <title>Applets</title>
+      <title xml:lang="af">Miniprogramme</title>
+      <title xml:lang="ar">بريمجات</title>
+      <title xml:lang="az">Appletlər</title>
+      <title xml:lang="be">Аплеты</title>
+      <title xml:lang="bg">Аплети</title>
+      <title xml:lang="bn">অ্যাপ্লেট সমূহ</title>
+      <title xml:lang="bs">Apleti</title>
+      <title xml:lang="ca">Miniaplicacions</title>
+      <title xml:lang="cs">Aplety</title>
+      <title xml:lang="cy">Rhaglennigion</title>
+      <title xml:lang="da">Panelprogrammer</title>
+      <title xml:lang="de">Applets</title>
+      <title xml:lang="el">Εφαρμογίδια</title>
+      <title xml:lang="en_CA">Applets</title>
+      <title xml:lang="en_GB">Applets</title>
+      <title xml:lang="es">Miniaplicaciones</title>
+      <title xml:lang="et">Rakendid</title>
+      <title xml:lang="eu">Applet-ak</title>
+      <title xml:lang="fi">Sovelmat</title>
+      <title xml:lang="fr">Applets</title>
+      <title xml:lang="gu">એપ્લેટો</title>
+      <title xml:lang="hi">एप्लेट्स</title>
+      <title xml:lang="hr">Programi</title>
+      <title xml:lang="hu">Kisalkalmazások</title>
+      <title xml:lang="it">Applet</title>
+      <title xml:lang="ja">アプレット</title>
+      <title xml:lang="ka">აპლეტები</title>
+      <title xml:lang="ko">애플릿</title>
+      <title xml:lang="lt">Įtaisai</title>
+      <title xml:lang="mn">Аплетүүд</title>
+      <title xml:lang="ms">Aplet</title>
+      <title xml:lang="nb">Panelprogrammer</title>
+      <title xml:lang="nl">Applets</title>
+      <title xml:lang="nn">Panelprogram</title>
+      <title xml:lang="no">Panelprogrammer</title>
+      <title xml:lang="pa">ਐਪਲਿਟ</title>
+      <title xml:lang="pl">Aplety</title>
+      <title xml:lang="pt">Applets</title>
+      <title xml:lang="pt_BR">Applets</title>
+      <title xml:lang="ro">Apleturi</title>
+      <title xml:lang="ru">Апплеты</title>
+      <title xml:lang="sk">Aplety</title>
+      <title xml:lang="sq">Ndihmues</title>
+      <title xml:lang="sr">Програмчићи</title>
+      <title xml:lang="sr@Latn">Programčići</title>
+      <title xml:lang="sv">Panelprogram</title>
+      <title xml:lang="ta">குறும்பயன்கள்</title>
+      <title xml:lang="tg">Апплетҳо</title>
+      <title xml:lang="th">แอพเพล็ต</title>
+      <title xml:lang="tk">Apletler</title>
+      <title xml:lang="tr">Uygulamacıklar</title>
+      <title xml:lang="uk">Аплети</title>
+      <title xml:lang="vi">Applet</title>
+      <title xml:lang="zh_CN">小程序</title>
+      <title xml:lang="zh_TW">面板程式</title>
+
+      <category>GNOME|Applets</category>
+      <category>GNOME|Applets|Accessories</category>
+      <category>GNOME|Applets|Amusement</category>
+      <category>GNOME|Applets|Clock</category>
+      <category>GNOME|Applets|Internet</category>
+      <category>GNOME|Applets|Monitors</category>
+      <category>GNOME|Applets|Multimedia</category>
+      <category>GNOME|Applets|Network</category>
+      <category>GNOME|Applets|Utility</category>
+    </toc>
+
+    <toc id="Games">
+      <title>Games and Entertainment</title>
+      <title xml:lang="af">Speletjies en vermaak</title>
+      <title xml:lang="ar">ألعاب و تسلية</title>
+      <title xml:lang="az">Oyunlar və Əyləncə</title>
+      <title xml:lang="be">Гульні й забавы</title>
+      <title xml:lang="bg">Игри и Забавление</title>
+      <title xml:lang="bn">খেলা ও বিনোদন</title>
+      <title xml:lang="bs">Igre i Zabava</title>
+      <title xml:lang="ca">Jocs i entreteniment</title>
+      <title xml:lang="cs">Hry a zábava</title>
+      <title xml:lang="cy">Gêmau a Difyrrwch</title>
+      <title xml:lang="da">Spil og underholdning</title>
+      <title xml:lang="de">Spiele und Unterhaltung</title>
+      <title xml:lang="el">Ψυχαγωγία και Παιχνίδια</title>
+      <title xml:lang="en_CA">Games and Entertainment</title>
+      <title xml:lang="en_GB">Games and Entertainment</title>
+      <title xml:lang="es">Juegos y entretenimientos</title>
+      <title xml:lang="et">Mängud ja meelelahutus</title>
+      <title xml:lang="eu">Jokuak eta denbora-pasak</title>
+      <title xml:lang="fi">Pelit ja viihde</title>
+      <title xml:lang="fr">Jeux et divertissements</title>
+      <title xml:lang="gu">રમતો અને મનોરંજન</title>
+      <title xml:lang="hi">खेल तथा मनोरंजन</title>
+      <title xml:lang="hr">Igre i zabava</title>
+      <title xml:lang="hu">Játék és szórakozás</title>
+      <title xml:lang="is">Leikir og skemmtun</title>
+      <title xml:lang="it">Giochi e divertimento</title>
+      <title xml:lang="ja">ゲームとエンターテイメント</title>
+      <title xml:lang="ka">თამაშები და გართობა</title>
+      <title xml:lang="ko">게임 및 오락</title>
+      <title xml:lang="lt">Žaidimai ir pramogos</title>
+      <title xml:lang="mn">Тоглоом болон зугаа цэнгэл</title>
+      <title xml:lang="ms">Permainan dan Hiburan</title>
+      <title xml:lang="nb">Spill og underholdning</title>
+      <title xml:lang="nl">Spellen en amuzement</title>
+      <title xml:lang="nn">Spel og underhaldning</title>
+      <title xml:lang="no">Spill og underholdning</title>
+      <title xml:lang="pa">ਖੇਡਾਂ ਤੇ ਮਨੋਰੰਜਨ</title>
+      <title xml:lang="pl">Gry i rozrywka</title>
+      <title xml:lang="pt">Jogos e Entretenimento</title>
+      <title xml:lang="pt_BR">Jogos e Entretenimento</title>
+      <title xml:lang="ro">Jocuri şi amuzament</title>
+      <title xml:lang="ru">Игры и развлечения</title>
+      <title xml:lang="sk">Hry a zábava</title>
+      <title xml:lang="sq">Lojra dhe argëtime</title>
+      <title xml:lang="sr">Игре и забава</title>
+      <title xml:lang="sr@Latn">Igre i zabava</title>
+      <title xml:lang="sv">Spel och underhållning</title>
+      <title xml:lang="ta">விளையாட்டுகளும் பொழுதுபோக்குகளும்</title>
+      <title xml:lang="tg">Бозиҳо ва Вақтхушӣ</title>
+      <title xml:lang="th">เกมและพักผ่อน</title>
+      <title xml:lang="tk">Oýynlar we Güýmençler</title>
+      <title xml:lang="tr">Oyunlar ve Eğlence</title>
+      <title xml:lang="uk">Ігри і розваги</title>
+      <title xml:lang="vi">Trò chơi và Giải trí</title>
+      <title xml:lang="zh_CN">游戏与娱乐</title>
+      <title xml:lang="zh_TW">遊戲及娛樂</title>
+
+      <category>Applications|Amusement</category>
+      <category>Applications|Games</category>
+      <category>Applications|Games|Arcade</category>
+      <category>Applications|Games|Board</category>
+      <category>Applications|Games|First Person Shooters</category>
+      <category>Applications|Games|Puzzles</category>
+      <category>Applications|Games|Fighting</category>
+      <category>Applications|Games|Role-Playing</category>
+      <category>Applications|Games|Simulation</category>
+      <category>Applications|Games|Strategy</category>
+      <category>Applications|Games|Other</category>
+      <category>GNOME|Applications|Games</category>
+      <category>GNOME|Games</category>
+    </toc>
+
+    <toc id="Education">
+      <title>Education Applications</title>
+      <title xml:lang="af">Opvoedingstoepassings</title>
+      <title xml:lang="ar">تطبيقات التعليم</title>
+      <title xml:lang="az">Təhsil Proqramları</title>
+      <title xml:lang="be">Адукацыйныя дастасаваньні</title>
+      <title xml:lang="bg">Образователни програми</title>
+      <title xml:lang="bn">শিক্ষা সম্বন্ধীয় অ্যাপ্লিকেশন</title>
+      <title xml:lang="bs">Aplikacije za obrazovanje</title>
+      <title xml:lang="ca">Aplicacions d'educació</title>
+      <title xml:lang="cs">Vzdělávací aplikace</title>
+      <title xml:lang="cy">Rhaglenni Addysg</title>
+      <title xml:lang="da">Undervisningsprogrammer</title>
+      <title xml:lang="de">Erziehungsanwendungen</title>
+      <title xml:lang="el">Εκπαιδευτικές Εφαρμογές</title>
+      <title xml:lang="en_CA">Educational Applications</title>
+      <title xml:lang="en_GB">Education Applications</title>
+      <title xml:lang="es">Aplicaciones educativas</title>
+      <title xml:lang="et">Õpperakendused</title>
+      <title xml:lang="eu">Hezkuntzako aplikazioak</title>
+      <title xml:lang="fi">Opetussovellukset</title>
+      <title xml:lang="fr">Applications éducatives</title>
+      <title xml:lang="gu">ભણતરના કાર્યક્રમો</title>
+      <title xml:lang="hi">शिक्षाप्रद अनुप्रयोग</title>
+      <title xml:lang="hr">Obrazovni programi</title>
+      <title xml:lang="hu">Oktatóprogramok</title>
+      <title xml:lang="it">Applicazioni educative</title>
+      <title xml:lang="ja">教育向けのアプリケーション</title>
+      <title xml:lang="ka">განმანათლებელი პროგრამები</title>
+      <title xml:lang="ko">교육용 프로그램</title>
+      <title xml:lang="lt">Mokomosios programos</title>
+      <title xml:lang="mn">Сургалтын програмууд</title>
+      <title xml:lang="ms">Aplikasi Pendidikan</title>
+      <title xml:lang="nb">Utdanningsprogrammer</title>
+      <title xml:lang="nl">Educatieve toepassingen</title>
+      <title xml:lang="nn">Opplæringsprogram</title>
+      <title xml:lang="no">Utdanningsprogrammer</title>
+      <title xml:lang="pa">ਵਿਦਿਅਕ ਕਾਰਜ</title>
+      <title xml:lang="pl">Aplikacje edukacyjne</title>
+      <title xml:lang="pt">Aplicações Educativas</title>
+      <title xml:lang="pt_BR">Aplicações Educativas</title>
+      <title xml:lang="ro">Aplicaţii educaţionale</title>
+      <title xml:lang="ru">Обучающие приложения</title>
+      <title xml:lang="sk">Vzdelávacie aplikácie</title>
+      <title xml:lang="sq">Programe edukues</title>
+      <title xml:lang="sr">Образовни програми</title>
+      <title xml:lang="sr@Latn">Obrazovni programi</title>
+      <title xml:lang="sv">Utbildningsprogram</title>
+      <title xml:lang="ta">கல்வி சார்ந்த செயல்பாடுகள்</title>
+      <title xml:lang="tg">Замимаҳои Таълимӣ</title>
+      <title xml:lang="th">โปรแกรมช่วยเรียนรู้</title>
+      <title xml:lang="tk">Mektep Programler</title>
+      <title xml:lang="tr">Eğitim Uygulamaları</title>
+      <title xml:lang="uk">Навчальні програми</title>
+      <title xml:lang="vi">Ứng dụng Giáo dục</title>
+      <title xml:lang="zh_CN">教育应用程序</title>
+      <title xml:lang="zh_TW">教育程式</title>
+
+      <category>Applications|Education</category>
+      <category>Applications|Education|Arts</category>
+      <category>Applications|Education|Computer Science</category>
+      <category>Applications|Education|English</category>
+      <category>Applications|Education|Language</category>
+      <category>Applications|Education|Maths</category>
+      <category>Applications|Education|Music</category>
+      <category>Applications|Education|Science</category>
+      <category>Applications|Education|Technology</category>
+      <category>Applications|Education|Testing</category>
+      <category>Applications|Education|Other</category>
+    </toc>
+
+    <toc id="Internet">
+      <title>Internet Applications</title>
+      <title xml:lang="af">Internettoepassings</title>
+      <title xml:lang="ar">تطبيقات الانترنت</title>
+      <title xml:lang="az">İnternet Proqramları</title>
+      <title xml:lang="be">Дастасаваньні для Інтарнэта</title>
+      <title xml:lang="bg">Интернет Програми</title>
+      <title xml:lang="bn">ইন্টারনেট সম্বন্ধীয় অ্যাপ্লিকেশন</title>
+      <title xml:lang="bs">Internet Aplikacije</title>
+      <title xml:lang="ca">Aplicacions d'Internet</title>
+      <title xml:lang="cs">Internetové aplikace</title>
+      <title xml:lang="cy">Rhaglenni Rhyngrwyd</title>
+      <title xml:lang="da">Internetprogrammer</title>
+      <title xml:lang="de">Internet-Anwendungen</title>
+      <title xml:lang="el">Εφαρμογές Διαδικτύου</title>
+      <title xml:lang="en_CA">Internet Applications</title>
+      <title xml:lang="en_GB">Internet Applications</title>
+      <title xml:lang="es">Aplicaciones de Internet</title>
+      <title xml:lang="et">Internetirakendused</title>
+      <title xml:lang="eu">Interneteko aplikazioak</title>
+      <title xml:lang="fi">Internet-sovellukset</title>
+      <title xml:lang="fr">Applications internet</title>
+      <title xml:lang="gu">ઈન્ટરનેટ કાર્યક્રમો</title>
+      <title xml:lang="hi">इंटरनेट अनुप्रयोग</title>
+      <title xml:lang="hr">Programi za Internet</title>
+      <title xml:lang="hu">Internetes alkalmazások</title>
+      <title xml:lang="it">Applicazioni per Internet</title>
+      <title xml:lang="ja">インターネットのアプリケーション</title>
+      <title xml:lang="ka">შიდა პროგრამები</title>
+      <title xml:lang="ko">인터넷 프로그램</title>
+      <title xml:lang="lt">Interneto programos</title>
+      <title xml:lang="mn">Интернэт програмууд</title>
+      <title xml:lang="ms">Aplikasi Internet</title>
+      <title xml:lang="nb">Internettprogrammer</title>
+      <title xml:lang="nl">Internettoepassingen</title>
+      <title xml:lang="nn">Internettprogram</title>
+      <title xml:lang="no">Internettprogrammer</title>
+      <title xml:lang="pa">ਇੰਟਰਨੈੱਟ ਕਾਰਜ</title>
+      <title xml:lang="pl">Aplikacje internetowe</title>
+      <title xml:lang="pt">Aplicações de Internet</title>
+      <title xml:lang="pt_BR">Aplicações para Internet</title>
+      <title xml:lang="ro">Aplicaţii internet</title>
+      <title xml:lang="ru">Интернет-приложения</title>
+      <title xml:lang="sk">Internetové aplikácie</title>
+      <title xml:lang="sq">Programe në lidhje me internetin</title>
+      <title xml:lang="sr">Интернет програми</title>
+      <title xml:lang="sr@Latn">Internet programi</title>
+      <title xml:lang="sv">Internetprogram</title>
+      <title xml:lang="ta">வலை சார்ந்த செயல்பாடுகள்</title>
+      <title xml:lang="tg">Замимаҳои Интернет</title>
+      <title xml:lang="th">โปรแกรมอินเทอร์เน็ต</title>
+      <title xml:lang="tk">Internet Programler</title>
+      <title xml:lang="tr">İnternet Uygulamaları</title>
+      <title xml:lang="uk">Програми для Інтернету</title>
+      <title xml:lang="vi">Ứng dụng Internet</title>
+      <title xml:lang="zh_CN">互联网应用程序</title>
+      <title xml:lang="zh_TW">網際網路程式</title>
+
+      <category>Applications|Internet</category>
+      <category>Applications|Internet|Chat</category>
+      <category>Applications|Internet|Email</category>
+      <category>Applications|Internet|Fax</category>
+      <category>Applications|Internet|File Sharing</category>
+      <category>Applications|Internet|FTP</category>
+      <category>Applications|Internet|Internet Phone</category>
+      <category>Applications|Internet|Messaging</category>
+      <category>Applications|Internet|News</category>
+      <category>Applications|Internet|Video Conferencing</category>
+      <category>Applications|Internet|Web</category>
+      <category>Applications|Internet|Other</category>
+      <category>GNOME|Applications|Internet</category>
+      <category>GNOME|Internet</category>
+    </toc>
+
+    <toc id="Multimedia">
+      <title>Multimedia Applications</title>
+      <title xml:lang="af">Multimediatoepassings</title>
+      <title xml:lang="ar">تطبيقات الوسائط المتعددة</title>
+      <title xml:lang="az">Multimediya Proqramları</title>
+      <title xml:lang="be">Мультымэдыйныя дастасаваньні</title>
+      <title xml:lang="bg">Мултимедийни Програми</title>
+      <title xml:lang="bn">মাল্টিমিডিয়া অ্যাপ্লিকেশন</title>
+      <title xml:lang="bs">Multimedijalne Aplikacije</title>
+      <title xml:lang="ca">Aplicacions multimèdia</title>
+      <title xml:lang="cs">Multimediální aplikace</title>
+      <title xml:lang="cy">Rhaglenni Amlgyfrwng</title>
+      <title xml:lang="da">Multimediaprogrammer</title>
+      <title xml:lang="de">Multimedia-Anwendungen</title>
+      <title xml:lang="el">Εφαρμογές Πολυμέσων</title>
+      <title xml:lang="en_CA">Multimedia Applications</title>
+      <title xml:lang="en_GB">Multimedia Applications</title>
+      <title xml:lang="es">Aplicaciones multimedia</title>
+      <title xml:lang="et">Multimeediarakendused</title>
+      <title xml:lang="eu">Multimediako aplikazioak</title>
+      <title xml:lang="fi">Multimediasovellukset</title>
+      <title xml:lang="fr">Applications multimedia</title>
+      <title xml:lang="gu">મલ્ટીમિડીયા કાર્યક્રમો</title>
+      <title xml:lang="hi">मल्टीमीडिया अनुप्रयोग</title>
+      <title xml:lang="hr">Programi za multimediju</title>
+      <title xml:lang="hu">Multimédiás alkalmazások</title>
+      <title xml:lang="is">Margmiðlunar Forrit</title>
+      <title xml:lang="it">Applicazioni multimediali</title>
+      <title xml:lang="ja">マルチメディアのアプリケーション</title>
+      <title xml:lang="ka">მულტიმედია პროგრამები</title>
+      <title xml:lang="ko">멀티미디어 프로그램</title>
+      <title xml:lang="lt">Multimedia programos</title>
+      <title xml:lang="mn">Дуу хөгжмийн програмууд</title>
+      <title xml:lang="ms">Aplikasi Multimedia</title>
+      <title xml:lang="nb">Multimedieprogrammer</title>
+      <title xml:lang="nl">Multimediatoepassingen</title>
+      <title xml:lang="nn">Multimediaprogram</title>
+      <title xml:lang="no">Multimedieprogrammer</title>
+      <title xml:lang="pa">ਬਹੁਰੰਗ ਕਾਰਜ</title>
+      <title xml:lang="pl">Aplikacje multimedialne</title>
+      <title xml:lang="pt">Aplicações Multimédia</title>
+      <title xml:lang="pt_BR">Aplicações Multimídia</title>
+      <title xml:lang="ro">Aplicaţii multimedia</title>
+      <title xml:lang="ru">Мультимедийные приложения</title>
+      <title xml:lang="sk">Multimediálne aplikácie</title>
+      <title xml:lang="sq">Programe multimedialë</title>
+      <title xml:lang="sr">Мултимедијални програми</title>
+      <title xml:lang="sr@Latn">Multimedijalni programi</title>
+      <title xml:lang="sv">Multimediaprogram</title>
+      <title xml:lang="ta">பல் ஊடகம் செயல்பாடுகள்</title>
+      <title xml:lang="tg">Замимаҳои Бисёрмуҳита</title>
+      <title xml:lang="th">โปรแกรมสื่อผสม</title>
+      <title xml:lang="tr">Çokluortam Uygulamaları</title>
+      <title xml:lang="uk">Програми для мультимедія</title>
+      <title xml:lang="vi">Ứng dụng Đa phương tiện</title>
+      <title xml:lang="zh_CN">多媒体应用程序</title>
+      <title xml:lang="zh_TW">多媒體程式</title>
+
+      <category>Applications|Multimedia</category>
+      <category>Applications|Multimedia|Graphics</category>
+      <category>Applications|Multimedia|Graphics|3D Modelling</category>
+      <category>Applications|Multimedia|Graphics|3D Rendering</category>
+      <category>Applications|Multimedia|Graphics|CAD</category>
+      <category>Applications|Multimedia|Graphics|Capture</category>
+      <category>Applications|Multimedia|Graphics|Conversion</category>
+      <category>Applications|Multimedia|Graphics|Drawing</category>
+      <category>Applications|Multimedia|Graphics|Editing</category>
+      <category>Applications|Multimedia|Graphics|Viewing</category>
+      <category>Applications|Multimedia|Graphics|Other</category>
+      <category>Applications|Multimedia|Sound</category>
+      <category>Applications|Multimedia|Sound|Analysis</category>
+      <category>Applications|Multimedia|Sound|CD Mastering</category>
+      <category>Applications|Multimedia|Sound|Conversion</category>
+      <category>Applications|Multimedia|Sound|Editing</category>
+      <category>Applications|Multimedia|Sound|MIDI</category>
+      <category>Applications|Multimedia|Sound|Mixers</category>
+      <category>Applications|Multimedia|Sound|Players</category>
+      <category>Applications|Multimedia|Sound|Recording</category>
+      <category>Applications|Multimedia|Sound|Speech</category>
+      <category>Applications|Multimedia|Sound|Other</category>
+      <category>Applications|Multimedia|Video</category>
+      <category>Applications|Multimedia|Video|Capture</category>
+      <category>Applications|Multimedia|Video|Conversion</category>
+      <category>Applications|Multimedia|Video|Display</category>
+      <category>Applications|Multimedia|Video|Editing</category>
+      <category>Applications|Multimedia|Video|Other</category>
+      <category>Applications|Multimedia|Other</category>
+      <category>GNOME|Applications|Graphics</category>
+      <category>GNOME|Applications|Sound and Video</category>
+      <category>GNOME|Graphics</category>
+      <category>GNOME|Multimedia</category>
+    </toc>
+
+    <toc id="Office">
+      <title>Office and Productivity Applications</title>
+      <title xml:lang="af">Kantoor- en produktiwiteitstoepassings</title>
+      <title xml:lang="ar">مكتب و تطبيقات إنتاجية</title>
+      <title xml:lang="az">Offis və İş Proqramları</title>
+      <title xml:lang="be">Дастасаваньні для канцылярыі й вытворчасьці</title>
+      <title xml:lang="bg">Офис Програми</title>
+      <title xml:lang="bn">অফিস ও প্রোডাক্টিভিটি অ্যাপ্লিকেশন</title>
+      <title xml:lang="bs">Aplikacije za ured i produktivnost</title>
+      <title xml:lang="ca">Oficina i aplicacions de productivitat</title>
+      <title xml:lang="cs">Kancelářské aplikace</title>
+      <title xml:lang="cy">Rhaglenni Swyddfa a Chynhyrchiant</title>
+      <title xml:lang="da">Kontorprogrammer</title>
+      <title xml:lang="de">Büro- und Produktivanwendungen</title>
+      <title xml:lang="el">Εφαρμογές Γραφείου και Παραγωγικότητας</title>
+      <title xml:lang="en_CA">Office and Productivity Applications</title>
+      <title xml:lang="en_GB">Office and Productivity Applications</title>
+      <title xml:lang="es">Oficina y aplicaciones de productividad</title>
+      <title xml:lang="et">Kontorirakendused</title>
+      <title xml:lang="eu">Bulegoko eta ekoizpeneko aplikazioak</title>
+      <title xml:lang="fi">Toimistosovellukset</title>
+      <title xml:lang="fr">Applications de bureautique</title>
+      <title xml:lang="gu">ઓફિસ અને ઉત્પાદક કાર્યક્રમો</title>
+      <title xml:lang="hi">ऑफ़िस तथा उत्पादन अनुप्रयोग</title>
+      <title xml:lang="hr">Ured i programi produktivnosti</title>
+      <title xml:lang="hu">Irodai alkalmazások</title>
+      <title xml:lang="it">Applicazioni per l'ufficio e la produttività</title>
+      <title xml:lang="ja">オフィスとサービス・アプリケーション</title>
+      <title xml:lang="ka">საოფისე პროგრამები</title>
+      <title xml:lang="ko">사무 업무용 프로그램</title>
+      <title xml:lang="lt">Ofisinės programos</title>
+      <title xml:lang="mn">Офис болон бүтээмжийн програмууд</title>
+      <title xml:lang="ms">Aplikasi Pejabat dan Produktiviti</title>
+      <title xml:lang="nb">Kontorstøtteprogrammer</title>
+      <title xml:lang="nl">Kantoor- en productiviteitstoepassingen</title>
+      <title xml:lang="nn">Kontor- og produktivitetsprogram</title>
+      <title xml:lang="no">Kontorstøtteprogrammer</title>
+      <title xml:lang="pa">ਦਫਤਰੀ ਅਤੇ ਉਤਪਾਦਿਕ ਕਾਰਜ</title>
+      <title xml:lang="pl">Aplikacje biurowe</title>
+      <title xml:lang="pt">Aplicações de Escritório e Produtividade</title>
+      <title xml:lang="pt_BR">Aplicações de Escritório e Produtividade</title>
+      <title xml:lang="ro">Aplicaţii birou</title>
+      <title xml:lang="ru">Офисные приложения</title>
+      <title xml:lang="sk">Kancelárske aplikácie</title>
+      <title xml:lang="sq">Programe për zyrë dhe prodhimtari</title>
+      <title xml:lang="sr">Канцеларијски и производни програми</title>
+      <title xml:lang="sr@Latn">Kancelarijski i proizvodni programi</title>
+      <title xml:lang="sv">Kontors- och produktivitetsprogram</title>
+      <title xml:lang="ta">அலுவலகம் மற்றும் செயலாக்க பயன்பாடுகள்</title>
+      <title xml:lang="tg">Замимаҳои Идоравӣ ва Маҳсулотнокӣ</title>
+      <title xml:lang="th">โปรแกรมสำนักงาน</title>
+      <title xml:lang="tr">Ofis ve Üretkenlik Uygulamaları</title>
+      <title xml:lang="uk">Програми для офісу і роботи</title>
+      <title xml:lang="vi">Ứng dụng Văn phòng và Productivity</title>
+      <title xml:lang="zh_CN">办公和生产应用程序</title>
+      <title xml:lang="zh_TW">辦公室應用程式</title>
+
+      <category>Applications|Office</category>
+      <category>Applications|Office|Calendar</category>
+      <category>Applications|Office|Data Processing</category>
+      <category>Applications|Office|Database</category>
+      <category>Applications|Office|Email</category>
+      <category>Applications|Office|Financial</category>
+      <category>Applications|Office|PIM</category>
+      <category>Applications|Office|Plotting</category>
+      <category>Applications|Office|Presentation</category>
+      <category>Applications|Office|Publishing</category>
+      <category>Applications|Office|Publishing|Web Publishing</category>
+      <category>Applications|Office|Word Processing</category>
+      <category>Applications|Office|Other</category>
+      <category>GNOME|Applications|Office</category>
+    </toc>
+
+    <toc id="Scientific">
+      <title>Scientific Applications</title>
+      <title xml:lang="af">Wetenskaplike toepassings</title>
+      <title xml:lang="ar">تطبيقات علمية</title>
+      <title xml:lang="az">Elmi Proqramlar</title>
+      <title xml:lang="be">Навуковыя дастасаваньні</title>
+      <title xml:lang="bg">Научни програми</title>
+      <title xml:lang="bn">বিজ্ঞান সম্বন্ধীয় অ্যাপ্লিকেশন সমূহ</title>
+      <title xml:lang="bs">Naučne Aplikacije</title>
+      <title xml:lang="ca">Aplicacions científiques</title>
+      <title xml:lang="cs">Vědecké aplikace</title>
+      <title xml:lang="cy">Rhaglenni Gwyddonol</title>
+      <title xml:lang="da">Videnskabelige programmer</title>
+      <title xml:lang="de">Wissenschaftliche Anwendungen</title>
+      <title xml:lang="el">Επιστημονικές Εφαρμογές</title>
+      <title xml:lang="en_CA">Scientific Applications</title>
+      <title xml:lang="en_GB">Scientific Applications</title>
+      <title xml:lang="es">Aplicaciones científicas</title>
+      <title xml:lang="et">Teadustöö rakendused</title>
+      <title xml:lang="eu">Aplikazio zientifikoak</title>
+      <title xml:lang="fi">Tieteelliset sovellukset</title>
+      <title xml:lang="fr">Applications scientifiques</title>
+      <title xml:lang="gu">વૈજ્ઞાનિક કાર્યક્રમો</title>
+      <title xml:lang="hi">वैज्ञानिक अनुप्रयोग</title>
+      <title xml:lang="hr">Programi za znanost</title>
+      <title xml:lang="hu">Tudományos alkalmazások</title>
+      <title xml:lang="it">Applicazioni scientifiche</title>
+      <title xml:lang="ja">科学向けのアプリケーション</title>
+      <title xml:lang="ka">მეცნიერული პროგრამები</title>
+      <title xml:lang="ko">과학 프로그램</title>
+      <title xml:lang="lt">Mokslinės programos</title>
+      <title xml:lang="mn">Шинжлэх ухааны програмууд</title>
+      <title xml:lang="ms">Aplikasi Saintifik</title>
+      <title xml:lang="nb">Vitenskapelige programmer</title>
+      <title xml:lang="nl">Wetenschappelijke toepassingen</title>
+      <title xml:lang="nn">Vitskaplege program</title>
+      <title xml:lang="no">Vitenskapelige programmer</title>
+      <title xml:lang="pa">ਵਿਗਿਆਨਕ ਕਾਰਜ</title>
+      <title xml:lang="pl">Aplikacje naukowe</title>
+      <title xml:lang="pt">Aplicações Científicas</title>
+      <title xml:lang="pt_BR">Aplicações Científicas</title>
+      <title xml:lang="ro">Aplicaţii ştiinţifice</title>
+      <title xml:lang="ru">Научные приложения</title>
+      <title xml:lang="sk">Vedecké aplikácie</title>
+      <title xml:lang="sq">Programe shkencorë</title>
+      <title xml:lang="sr">Научни програми</title>
+      <title xml:lang="sr@Latn">Naučni programi</title>
+      <title xml:lang="sv">Vetenskapliga program</title>
+      <title xml:lang="ta">விஞ்ஞானம் செயல்பாடுகள்</title>
+      <title xml:lang="tg">Замимаҳои Илмӣ</title>
+      <title xml:lang="th">โปรแกรมวิทยาศาสตร์</title>
+      <title xml:lang="tk">Ilmi Programler</title>
+      <title xml:lang="tr">Bilimsel Uygulamalar</title>
+      <title xml:lang="uk">Наукові програми</title>
+      <title xml:lang="vi">Ứng dụng Khoa học</title>
+      <title xml:lang="zh_CN">科学应用程序</title>
+      <title xml:lang="zh_TW">科研程式</title>
+
+      <category>Applications|Scientific</category>
+      <category>Applications|Scientific|Astronomy</category>
+      <category>Applications|Scientific|Astrophysics</category>
+      <category>Applications|Scientific|Biology</category>
+      <category>Applications|Scientific|Chemistry</category>
+      <category>Applications|Scientific|EDA</category>
+      <category>Applications|Scientific|Genetics</category>
+      <category>Applications|Scientific|Math</category>
+      <category>Applications|Scientific|Physics</category>
+      <category>Applications|Scientific|Visualisation</category>
+      <category>Applications|Scientific|Other</category>
+    </toc>
+
+    <toc id="Security">
+      <title>Securities</title>
+      <title xml:lang="af">Sekuriteitsgoed</title>
+      <title xml:lang="ar">أوراق مالية</title>
+      <title xml:lang="az">Təhlükəsizlik</title>
+      <title xml:lang="be">Бясьпека</title>
+      <title xml:lang="bg">Сигурност</title>
+      <title xml:lang="bn">নিরাপত্তা</title>
+      <title xml:lang="bs">Sigurnost</title>
+      <title xml:lang="ca">Seguretat</title>
+      <title xml:lang="cs">Zabezpečení</title>
+      <title xml:lang="cy">Diogeliadau</title>
+      <title xml:lang="da">Sikkerhed</title>
+      <title xml:lang="de">Sicherheit</title>
+      <title xml:lang="el">Ασφάλειες</title>
+      <title xml:lang="en_CA">Security</title>
+      <title xml:lang="en_GB">Securities</title>
+      <title xml:lang="es">Acciones</title>
+      <title xml:lang="et">Turvalisus</title>
+      <title xml:lang="eu">Segurtasunak</title>
+      <title xml:lang="fi">Turvallisuus</title>
+      <title xml:lang="fr">Securitées</title>
+      <title xml:lang="gu">સુરક્ષાઓ</title>
+      <title xml:lang="hi">सुरक्षा</title>
+      <title xml:lang="hr">Vrijednosnice</title>
+      <title xml:lang="hu">Értékpapírok</title>
+      <title xml:lang="it">Sicurezza</title>
+      <title xml:lang="ja">セキュリティ</title>
+      <title xml:lang="ka">უსაფრთხოება</title>
+      <title xml:lang="ko">보안</title>
+      <title xml:lang="lt">Apsaugos</title>
+      <title xml:lang="mn">Аюулгүй байдлууд</title>
+      <title xml:lang="ms">Keselamatan</title>
+      <title xml:lang="nb">Sikkerhet</title>
+      <title xml:lang="nl">Veiligheid</title>
+      <title xml:lang="nn">Tryggleik</title>
+      <title xml:lang="no">Sikkerhet</title>
+      <title xml:lang="pa">ਸੁਰਖਿਆ</title>
+      <title xml:lang="pl">Bezpieczeństwo</title>
+      <title xml:lang="pt">Segurança</title>
+      <title xml:lang="pt_BR">Segurança</title>
+      <title xml:lang="ro">Securitate</title>
+      <title xml:lang="ru">Безопасность</title>
+      <title xml:lang="sk">Bezpečnosť</title>
+      <title xml:lang="sq">Siguria</title>
+      <title xml:lang="sr">Безбедност</title>
+      <title xml:lang="sr@Latn">Bezbednost</title>
+      <title xml:lang="sv">Säkerheter</title>
+      <title xml:lang="ta">பாதுகாப்புகள்</title>
+      <title xml:lang="tg">Бехатариҳо</title>
+      <title xml:lang="th">ระบบความปลอดภัย</title>
+      <title xml:lang="tk">Emnyýe</title>
+      <title xml:lang="tr">Güvenlik</title>
+      <title xml:lang="uk">Безпека</title>
+      <title xml:lang="vi">An ninh - Bảo mật</title>
+      <title xml:lang="zh_CN">安全</title>
+      <title xml:lang="zh_TW">保安</title>
+
+      <category>Applications|Security</category>
+      <category>Applications|Security|Cryptography</category>
+      <category>Applications|Security|Other</category>
+    </toc>
+
+    <toc id="Editors">
+      <title>Editors</title>
+      <title xml:lang="af">Redigeerders</title>
+      <title xml:lang="ar">محررات</title>
+      <title xml:lang="az">Editorlar</title>
+      <title xml:lang="be">Рэдагавальнікі</title>
+      <title xml:lang="bg">Редактори</title>
+      <title xml:lang="bn">সম্পাদক সমূহ</title>
+      <title xml:lang="bs">Editori</title>
+      <title xml:lang="ca">Editors</title>
+      <title xml:lang="cs">Editory</title>
+      <title xml:lang="cy">Golygyddion</title>
+      <title xml:lang="da">Redigeringsprogrammer</title>
+      <title xml:lang="de">Editoren</title>
+      <title xml:lang="el">Διορθωτές Κειμένου</title>
+      <title xml:lang="en_CA">Editors</title>
+      <title xml:lang="en_GB">Editors</title>
+      <title xml:lang="es">Editores</title>
+      <title xml:lang="et">Tekstiredaktorid</title>
+      <title xml:lang="eu">Editoreak</title>
+      <title xml:lang="fi">Muokkaimet</title>
+      <title xml:lang="fr">Éditeurs</title>
+      <title xml:lang="ga">Eagarthóirenna</title>
+      <title xml:lang="gu">સંપાદકો</title>
+      <title xml:lang="hi">संपादक</title>
+      <title xml:lang="hr">Uređivali</title>
+      <title xml:lang="hu">Szövegszerkesztők</title>
+      <title xml:lang="is">Ritlar</title>
+      <title xml:lang="it">Editori</title>
+      <title xml:lang="ja">エディタ</title>
+      <title xml:lang="ka">რედაქტორები</title>
+      <title xml:lang="ko">편집기</title>
+      <title xml:lang="lt">Redaktoriai</title>
+      <title xml:lang="mn">Засварлагчууд</title>
+      <title xml:lang="ms">Editor</title>
+      <title xml:lang="nb">Redigeringsprogram</title>
+      <title xml:lang="nl">Editors</title>
+      <title xml:lang="nn">Redigeringsprogram</title>
+      <title xml:lang="no">Redigeringsprogram</title>
+      <title xml:lang="pa">ਸੰਪਾਦਕ</title>
+      <title xml:lang="pl">Edytory</title>
+      <title xml:lang="pt">Editores</title>
+      <title xml:lang="pt_BR">Editores</title>
+      <title xml:lang="ro">Editoare</title>
+      <title xml:lang="ru">Редакторы</title>
+      <title xml:lang="sk">Editory</title>
+      <title xml:lang="sq">Botuesit</title>
+      <title xml:lang="sr">Уређивачи</title>
+      <title xml:lang="sr@Latn">Uređivači</title>
+      <title xml:lang="sv">Redigerare</title>
+      <title xml:lang="ta">பதிப்பாலர்</title>
+      <title xml:lang="tg">Муҳаррирон</title>
+      <title xml:lang="th">ตัวแก้ไข</title>
+      <title xml:lang="tk">Editçiler</title>
+      <title xml:lang="tr">Düzenleyiciler</title>
+      <title xml:lang="uk">Редактори</title>
+      <title xml:lang="vi">Chủ bút</title>
+      <title xml:lang="zh_CN">编辑器</title>
+      <title xml:lang="zh_TW">編輯器</title>
+
+      <category>Applications|Text Editors</category>
+      <category>Applications|Text Editors|CLI</category>
+      <category>Applications|Text Editors|GUI</category>
+      <category>Applications|Text Editors|Other</category>
+    </toc>
+
+    <toc id="Utilities">
+      <title>Utilities</title>
+      <title xml:lang="af">Nutsgoed</title>
+      <title xml:lang="ar">أدوات</title>
+      <title xml:lang="az">Vasitələr</title>
+      <title xml:lang="be">Карыснасьці</title>
+      <title xml:lang="bg">Полезни</title>
+      <title xml:lang="bn">কাজের প্রোগ্রাম</title>
+      <title xml:lang="bs">Alati</title>
+      <title xml:lang="ca">Utilitats</title>
+      <title xml:lang="cs">Nástroje</title>
+      <title xml:lang="cy">Cyfleusterau</title>
+      <title xml:lang="da">Værktøjer</title>
+      <title xml:lang="de">Werkzeuge</title>
+      <title xml:lang="el">Βοηθήματα</title>
+      <title xml:lang="en_CA">Utilities</title>
+      <title xml:lang="en_GB">Utilities</title>
+      <title xml:lang="es">Utilidades</title>
+      <title xml:lang="et">Tarvikud</title>
+      <title xml:lang="eu">Tresneria</title>
+      <title xml:lang="fi">Apuohjelmat</title>
+      <title xml:lang="fr">utilitaires</title>
+      <title xml:lang="gu">ઉપયોગિતાઓ</title>
+      <title xml:lang="hi">यूटिलिटीज़</title>
+      <title xml:lang="hr">Pomoćni programi</title>
+      <title xml:lang="hu">Segédprogramok</title>
+      <title xml:lang="is">Tól</title>
+      <title xml:lang="it">Utilità</title>
+      <title xml:lang="ja">ユーティリティ</title>
+      <title xml:lang="ka">ხელსაწყოები</title>
+      <title xml:lang="ko">유틸리티</title>
+      <title xml:lang="lt">Naudės</title>
+      <title xml:lang="mn">Утилитууд</title>
+      <title xml:lang="ms">Utiliti</title>
+      <title xml:lang="nb">Verktøy</title>
+      <title xml:lang="nl">Hulpmiddelen</title>
+      <title xml:lang="nn">Verktøy</title>
+      <title xml:lang="no">Verktøy</title>
+      <title xml:lang="pa">ਉਪਯੋਗਤਾਵਾਂ</title>
+      <title xml:lang="pl">Narzędzia</title>
+      <title xml:lang="pt">Utilitários</title>
+      <title xml:lang="pt_BR">Utilitários</title>
+      <title xml:lang="ro">Utilitare</title>
+      <title xml:lang="ru">Утилиты</title>
+      <title xml:lang="sk">Pomôcky</title>
+      <title xml:lang="sq">Vegla</title>
+      <title xml:lang="sr">Помоћни алати</title>
+      <title xml:lang="sr@Latn">Pomoćni alati</title>
+      <title xml:lang="sv">Verktyg</title>
+      <title xml:lang="ta">பயனமைகள்</title>
+      <title xml:lang="tg">Барномаҳои пуштибонӣ</title>
+      <title xml:lang="th">อรรถประโยชน์</title>
+      <title xml:lang="tr">Araçlar</title>
+      <title xml:lang="uk">Утиліти</title>
+      <title xml:lang="vi">Tiện ích</title>
+      <title xml:lang="zh_CN">实用程序</title>
+      <title xml:lang="zh_TW">公用程式</title>
+
+      <category>Applications|Utilities</category>
+      <category>Applications|Utilities|Archiving</category>
+      <category>Applications|Utilities|Calculating</category>
+      <category>Applications|Utilities|Clocks</category>
+      <category>Applications|Utilities|Compression</category>
+      <category>Applications|Utilities|File Utilities</category>
+      <category>Applications|Utilities|Monitors</category>
+      <category>Applications|Utilities|Printing</category>
+      <category>Applications|Utilities|Terminals</category>
+      <category>Applications|Utilities|Text Utilities</category>
+      <category>Applications|Utilities|Other</category>
+      <category>GNOME|Applications|System Tools</category>
+      <category>GNOME|Utilities</category>
+    </toc>
+
+    <toc id="X">
+      <title>X Applications</title>
+      <title xml:lang="af">X-toepassings</title>
+      <title xml:lang="ar">تطبيقات X</title>
+      <title xml:lang="az">X Proqramları</title>
+      <title xml:lang="be">Дастасаваньні для X</title>
+      <title xml:lang="bg">Графични програми</title>
+      <title xml:lang="bn">এক্স সম্বন্ধীয় অ্যাপ্লিকেশন</title>
+      <title xml:lang="bs">X Aplikacije</title>
+      <title xml:lang="ca">Aplicacions per a X</title>
+      <title xml:lang="cs">Aplikace pro X</title>
+      <title xml:lang="cy">Rhaglenni X</title>
+      <title xml:lang="da">X-programmer</title>
+      <title xml:lang="de">X-Anwendungen</title>
+      <title xml:lang="el">Εφαρμογές X</title>
+      <title xml:lang="en_CA">X Applications</title>
+      <title xml:lang="en_GB">X Applications</title>
+      <title xml:lang="es">Aplicaciones X</title>
+      <title xml:lang="et">X'i rakendused</title>
+      <title xml:lang="eu">X aplikazioak</title>
+      <title xml:lang="fi">X-sovellukset</title>
+      <title xml:lang="fr">Applications X</title>
+      <title xml:lang="ga">Feidhchláranna X</title>
+      <title xml:lang="gu">X કાર્યક્રમો</title>
+      <title xml:lang="hi">एक्स अनुप्रयोग</title>
+      <title xml:lang="hr">Programi za X sustav</title>
+      <title xml:lang="hu">X-alkalmazások</title>
+      <title xml:lang="it">Applicazioni per X</title>
+      <title xml:lang="ja">X アプリケーション</title>
+      <title xml:lang="ka">X-ის პროგრამები</title>
+      <title xml:lang="ko">X 프로그램</title>
+      <title xml:lang="lt">X Programos</title>
+      <title xml:lang="mn">Х.програм</title>
+      <title xml:lang="ms">Aplikasi X</title>
+      <title xml:lang="nb">Programmer for X</title>
+      <title xml:lang="nl">X-toepassingen</title>
+      <title xml:lang="nn">X-program</title>
+      <title xml:lang="no">Programmer for X</title>
+      <title xml:lang="pa">X ਕਾਰਜ</title>
+      <title xml:lang="pl">Aplikacje X</title>
+      <title xml:lang="pt">Aplicações X</title>
+      <title xml:lang="pt_BR">Aplicações X</title>
+      <title xml:lang="ro">Aplicaţii X</title>
+      <title xml:lang="ru">Приложения для среды Икс (X)</title>
+      <title xml:lang="sk">Aplikácie X-Window</title>
+      <title xml:lang="sq">Programe X</title>
+      <title xml:lang="sr">Икс програми</title>
+      <title xml:lang="sr@Latn">Iks programi</title>
+      <title xml:lang="sv">X-program</title>
+      <title xml:lang="ta">X செயல்பாடுகள்</title>
+      <title xml:lang="tg">X Замимаҳо</title>
+      <title xml:lang="th">โปรแกรมใน X</title>
+      <title xml:lang="tk">Iks Programler</title>
+      <title xml:lang="tr">X Uygulamaları</title>
+      <title xml:lang="uk">Програми для системи X Window</title>
+      <title xml:lang="vi">Ứng dụng X</title>
+      <title xml:lang="zh_CN">X 应用程序</title>
+      <title xml:lang="zh_TW">X 程式</title>
+
+      <category>Applications|X</category>
+      <category>Applications|X|Configuration</category>
+      <category>Applications|X|Fonts</category>
+      <category>Applications|X|Login Managers</category>
+      <category>Applications|X|Screensavers</category>
+      <category>Applications|X|Window Managers</category>
+      <category>Applications|X|Other</category>
+      <category>CDE</category>
+    </toc>
+  </toc>
+
+  <toc id="Development">
+    <title>Development</title>
+    <title xml:lang="af">Ontwikkeling</title>
+    <title xml:lang="am">እድገት</title>
+    <title xml:lang="ar">تطوير</title>
+    <title xml:lang="az">İnkişaf</title>
+    <title xml:lang="be">Распрацоўка</title>
+    <title xml:lang="bg">Разработка</title>
+    <title xml:lang="bn">ডেভেলপমেন্ট</title>
+    <title xml:lang="bs">Programiranje</title>
+    <title xml:lang="ca">Desenvolupament</title>
+    <title xml:lang="cs">Vývoj</title>
+    <title xml:lang="cy">Datblygu</title>
+    <title xml:lang="da">Udvikling</title>
+    <title xml:lang="de">Entwicklung</title>
+    <title xml:lang="el">Ανάπτυξη Εφαρμογών</title>
+    <title xml:lang="en_CA">Development</title>
+    <title xml:lang="en_GB">Development</title>
+    <title xml:lang="eo">Programado</title>
+    <title xml:lang="es">Desarrollo</title>
+    <title xml:lang="et">Arendus</title>
+    <title xml:lang="eu">Garapena</title>
+    <title xml:lang="fa">برنامه‌سازی</title>
+    <title xml:lang="fi">Ohjelmakehitys</title>
+    <title xml:lang="fr">Développement</title>
+    <title xml:lang="ga">Forbairt</title>
+    <title xml:lang="gl">Desenvolvemento</title>
+    <title xml:lang="gu">વિકાસ</title>
+    <title xml:lang="he">פיתוח</title>
+    <title xml:lang="hi">विकास</title>
+    <title xml:lang="hr">Razvoj</title>
+    <title xml:lang="hu">Fejlesztés</title>
+    <title xml:lang="id">Pembangunan</title>
+    <title xml:lang="is">Þróun</title>
+    <title xml:lang="it">Sviluppo</title>
+    <title xml:lang="ja">開発</title>
+    <title xml:lang="ka">პროგრამირება</title>
+    <title xml:lang="kn">ಅಭಿವೃದ್ಧಿ</title>
+    <title xml:lang="ko">개발</title>
+    <title xml:lang="li">Development</title>
+    <title xml:lang="lt">Programavimas</title>
+    <title xml:lang="lv">Izstrāde</title>
+    <title xml:lang="mk">Развивање</title>
+    <title xml:lang="ml">വികസനം‌</title>
+    <title xml:lang="mn">Хөгжил</title>
+    <title xml:lang="mr">विकास</title>
+    <title xml:lang="ms">Pembangunan</title>
+    <title xml:lang="nb">Utvikling</title>
+    <title xml:lang="ne">बिकास</title>
+    <title xml:lang="nl">Development</title>
+    <title xml:lang="nn">Utvikling</title>
+    <title xml:lang="no">Utvikling</title>
+    <title xml:lang="pa">ਵਿਕਾਸ</title>
+    <title xml:lang="pl">Programowanie</title>
+    <title xml:lang="pt">Desenvolvimento</title>
+    <title xml:lang="pt_BR">Desenvolvimento</title>
+    <title xml:lang="ro">Dezvoltare</title>
+    <title xml:lang="ru">Разработка</title>
+    <title xml:lang="sk">Vývoj</title>
+    <title xml:lang="sl">Razvoj</title>
+    <title xml:lang="sq">Zhvillim</title>
+    <title xml:lang="sr">Развој</title>
+    <title xml:lang="sr@Latn">Razvoj</title>
+    <title xml:lang="sv">Utveckling</title>
+    <title xml:lang="ta">உருவாக்கம்</title>
+    <title xml:lang="tg">Коркард</title>
+    <title xml:lang="th">เขียนโปรแกรม</title>
+    <title xml:lang="tk">Programlemek</title>
+    <title xml:lang="tr">Geliştirme</title>
+    <title xml:lang="uk">Розробка</title>
+    <title xml:lang="vi">Phát triển</title>
+    <title xml:lang="wa">Programaedje</title>
+    <title xml:lang="zh_CN">开发</title>
+    <title xml:lang="zh_TW">開發</title>
+
+    <category>Development</category>
+    <category>Development|Databases</category>
+    <category>GNOME|Applications|Programming</category>
+    <category>GNOME|Development</category>
+    <category>GNOME|Development|Applications</category>
+    <category>GNOME|Development|Introductory</category>
+    <category>GNOME|Development|Tutorials</category>
+    <category>GNOME|Development|White Papers</category>
+
+    <toc id="Tools">
+      <title>Development Tools</title>
+      <title xml:lang="af">Ontwikkelingsnutsgoed</title>
+      <title xml:lang="ar">أدوات التطوير</title>
+      <title xml:lang="az">İnkişaf Vasitələri</title>
+      <title xml:lang="be">Сродкі распрацоўкі</title>
+      <title xml:lang="bg">Инструменти за Разработка</title>
+      <title xml:lang="bn">ডেভেলপমেন্ট প্রোগ্রাম</title>
+      <title xml:lang="bs">Promgramerski alati</title>
+      <title xml:lang="ca">Eines de desenvolupament</title>
+      <title xml:lang="cs">Vývojové nástroje</title>
+      <title xml:lang="cy">Offer Datblygu</title>
+      <title xml:lang="da">Udviklingsværktøjer</title>
+      <title xml:lang="de">Entwicklungswerkzeuge</title>
+      <title xml:lang="el">Εργαλεία Ανάπτυξης Εφαρμογών</title>
+      <title xml:lang="en_CA">Development Tools</title>
+      <title xml:lang="en_GB">Development Tools</title>
+      <title xml:lang="es">Herramientas de desarrollo</title>
+      <title xml:lang="et">Arendustööriistad</title>
+      <title xml:lang="eu">Garapeneko tresnak</title>
+      <title xml:lang="fi">Ohjelmistokehitystyökalut</title>
+      <title xml:lang="fr">Outils de développement</title>
+      <title xml:lang="ga">Uirlísí Forbairt</title>
+      <title xml:lang="gu">વિકાસના સાધનો</title>
+      <title xml:lang="hi">विकास उपकरण</title>
+      <title xml:lang="hr">Razvojni alati</title>
+      <title xml:lang="hu">Fejlesztőeszközök</title>
+      <title xml:lang="is">Þróunar Tól</title>
+      <title xml:lang="it">Strumenti di sviluppo</title>
+      <title xml:lang="ja">開発ツール</title>
+      <title xml:lang="ka">პროგრამირების ხელსაწყოები</title>
+      <title xml:lang="ko">개발 도구</title>
+      <title xml:lang="lt">Programavimo įrankiai</title>
+      <title xml:lang="mn">Хөгжүүлэлтийн хэрэгслүүд</title>
+      <title xml:lang="ms">Alatan Pembangunan</title>
+      <title xml:lang="nb">Utviklingsverktøy</title>
+      <title xml:lang="nl">Ontwikkelings-tools</title>
+      <title xml:lang="nn">Utviklingsverktøy</title>
+      <title xml:lang="no">Utviklingsverktøy</title>
+      <title xml:lang="pa">ਵਿਕਾਸਕਾਰੀ ਸੰਦ</title>
+      <title xml:lang="pl">Narzędzia programistyczne</title>
+      <title xml:lang="pt">Ferramentas de Desenvolvimento</title>
+      <title xml:lang="pt_BR">Ferramentas de Desenvolvimento</title>
+      <title xml:lang="ro">Unelte de dezvoltare</title>
+      <title xml:lang="ru">Инструменты разработчика</title>
+      <title xml:lang="sk">Vývojové nástroje</title>
+      <title xml:lang="sq">Instrumentë për zhvillim</title>
+      <title xml:lang="sr">Развојни алати</title>
+      <title xml:lang="sr@Latn">Razvojni alati</title>
+      <title xml:lang="sv">Utvecklingsverktyg</title>
+      <title xml:lang="ta">மென்பொருள் உருவாக்குவதற்கான கருவிகள்</title>
+      <title xml:lang="tg">Асбобҳои Коркард</title>
+      <title xml:lang="th">เครื่องมือเขียนโปรแกรม</title>
+      <title xml:lang="tk">Programlemek Esbaplary</title>
+      <title xml:lang="tr">Geliştirme Araçları</title>
+      <title xml:lang="uk">Засоби розробки</title>
+      <title xml:lang="vi">Công cụ Phát triển</title>
+      <title xml:lang="zh_CN">开发工具</title>
+      <title xml:lang="zh_TW">開發工具</title>
+
+      <category>Development|Development Tools</category>
+      <category>Development|Development Tools|Build Tools</category>
+      <category>Development|Development Tools|Code Generators</category>
+      <category>Development|Development Tools|Configuration</category>
+      <category>Development|Development Tools|Debuggers</category>
+      <category>Development|Development Tools|IDEs</category>
+      <category>Development|Development Tools|Packaging</category>
+      <category>Development|Development Tools|Profiling</category>
+      <category>Development|Development Tools|RAD</category>
+      <category>Development|Development Tools|Version Control</category>
+      <category>Development|Development Tools|Other</category>
+    </toc>
+
+    <toc id="Environments">
+      <title>Development Environments</title>
+      <title xml:lang="af">Ontwikkelingsomgewings</title>
+      <title xml:lang="ar">بيئات التطوير</title>
+      <title xml:lang="az">İnkişaf Mühitləri</title>
+      <title xml:lang="be">Асяродзьдзі распрацоўкі</title>
+      <title xml:lang="bg">Обкръжения за Разработка</title>
+      <title xml:lang="bn">ডেভেলপমেন্ট এনভায়রনমেন্ট</title>
+      <title xml:lang="bs">Programska okruženja</title>
+      <title xml:lang="ca">Entorns de desenvolupament</title>
+      <title xml:lang="cs">Vývojová prostředí</title>
+      <title xml:lang="cy">Amgylcheddau Datblygu</title>
+      <title xml:lang="da">Udviklingsmiljøer</title>
+      <title xml:lang="de">Entwicklungsumgebungen</title>
+      <title xml:lang="el">Περιβάλλοντα Ανάπτυξης Εφαρμογών</title>
+      <title xml:lang="en_CA">Development Environments</title>
+      <title xml:lang="en_GB">Development Environments</title>
+      <title xml:lang="es">Entornos de desarrollo</title>
+      <title xml:lang="et">Arenduskeskkonnad</title>
+      <title xml:lang="eu">Garapeneko inguruneak</title>
+      <title xml:lang="fi">Ohjelmistokehitysympäristöt</title>
+      <title xml:lang="fr">Environnements de développement</title>
+      <title xml:lang="gu">વિકાસ પર્યાવરણો</title>
+      <title xml:lang="hi">विकास वातावरण</title>
+      <title xml:lang="hr">Razvojno okruženje</title>
+      <title xml:lang="hu">Fejlesztőkörnyezetek</title>
+      <title xml:lang="is">Þróunar Umhverfi</title>
+      <title xml:lang="it">Ambienti di sviluppo</title>
+      <title xml:lang="ja">開発環境</title>
+      <title xml:lang="ka">პროგრამირების გარსები</title>
+      <title xml:lang="ko">개발 환경</title>
+      <title xml:lang="lt">Programavimo aplinkos</title>
+      <title xml:lang="mn">Хөгжүүлэлтийн орчинууд</title>
+      <title xml:lang="ms">Persekitaran Pembangunan</title>
+      <title xml:lang="nb">Utviklingsmiljøer</title>
+      <title xml:lang="nl">Ontwikkelomgevingen</title>
+      <title xml:lang="nn">Utviklingsmiljø</title>
+      <title xml:lang="no">Utviklingsmiljøer</title>
+      <title xml:lang="pa">ਵਿਕਾਸਕਾਰੀ ਵਾਤਾਵਰਣ</title>
+      <title xml:lang="pl">Środowiska programistyczne</title>
+      <title xml:lang="pt">Ambientes de Desenvolvimento</title>
+      <title xml:lang="pt_BR">Ambientes de Desenvolvimento</title>
+      <title xml:lang="ro">Medii de dezvoltare</title>
+      <title xml:lang="ru">Среды разработчика</title>
+      <title xml:lang="sk">Vývojové prostredia</title>
+      <title xml:lang="sq">Ambiente zhvillimi</title>
+      <title xml:lang="sr">Развојна окружења</title>
+      <title xml:lang="sr@Latn">Razvojna okruženja</title>
+      <title xml:lang="sv">Utvecklingsmiljöer</title>
+      <title xml:lang="ta">மென்பொருள் உருவாக்கும் சூழல்</title>
+      <title xml:lang="tg">Муҳитҳои Коркард</title>
+      <title xml:lang="th">สภาพแวดล้อมการเขียนโปรแกรม</title>
+      <title xml:lang="tk">Programlemek Tewerekleri</title>
+      <title xml:lang="tr">Geliştirme Ortamı</title>
+      <title xml:lang="uk">Середовища розробки</title>
+      <title xml:lang="vi">Môi trường Phát triển</title>
+      <title xml:lang="zh_CN">开发环境</title>
+      <title xml:lang="zh_TW">開發環境</title>
+
+      <category>Development|Environments</category>
+      <category>Development|Environments|ADA</category>
+      <category>Development|Environments|C</category>
+      <category>Development|Environments|C++</category>
+      <category>Development|Environments|GNOME</category>
+      <category>Development|Environments|GTK+</category>
+      <category>Development|Environments|gtk++</category>
+      <category>Development|Environments|Java</category>
+      <category>Development|Environments|KDE</category>
+      <category>Development|Environments|Perl</category>
+      <category>Development|Environments|Python</category>
+      <category>Development|Environments|Qt</category>
+      <category>Development|Environments|Tcl/Tk</category>
+      <category>Development|Environments|WebML</category>
+      <category>Development|Environments|Other</category>
+    </toc>
+
+    <toc id="Kernels">
+      <title>Kernels</title>
+      <title xml:lang="af">Kerne</title>
+      <title xml:lang="ar">النواة</title>
+      <title xml:lang="az">Çəyirdəklər</title>
+      <title xml:lang="be">Ядры</title>
+      <title xml:lang="bg">Ядра</title>
+      <title xml:lang="bn">কার্নেল সমূহ</title>
+      <title xml:lang="bs">Kerneli</title>
+      <title xml:lang="ca">Nuclis</title>
+      <title xml:lang="cs">Jádra</title>
+      <title xml:lang="cy">Cnewyllynnau</title>
+      <title xml:lang="da">Kerner</title>
+      <title xml:lang="de">Kernel</title>
+      <title xml:lang="el">Πυρήνες</title>
+      <title xml:lang="en_CA">Kernels</title>
+      <title xml:lang="en_GB">Kernels</title>
+      <title xml:lang="es">Núcleo</title>
+      <title xml:lang="et">Kernelid</title>
+      <title xml:lang="eu">Nukleoak</title>
+      <title xml:lang="fi">Ytimet</title>
+      <title xml:lang="fr">Noyaux</title>
+      <title xml:lang="gu">કર્નલો</title>
+      <title xml:lang="hi">कर्नेल्स</title>
+      <title xml:lang="hr">Kerneli</title>
+      <title xml:lang="hu">Rendszermagok</title>
+      <title xml:lang="it">Kernel</title>
+      <title xml:lang="ja">カーネル</title>
+      <title xml:lang="ka">კერნელები</title>
+      <title xml:lang="ko">커널</title>
+      <title xml:lang="lt">Branduoliai</title>
+      <title xml:lang="mn">Цөмүүд</title>
+      <title xml:lang="ms">Kernel</title>
+      <title xml:lang="nb">Kjerner</title>
+      <title xml:lang="nl">Kernels</title>
+      <title xml:lang="nn">Kjerner</title>
+      <title xml:lang="no">Kjerner</title>
+      <title xml:lang="pa">ਕਰਨਲ</title>
+      <title xml:lang="pl">Jądra</title>
+      <title xml:lang="pt">Kernels</title>
+      <title xml:lang="pt_BR">Kernels</title>
+      <title xml:lang="ro">Kernel</title>
+      <title xml:lang="ru">Ядра</title>
+      <title xml:lang="sk">Jadrá</title>
+      <title xml:lang="sq">Kernels</title>
+      <title xml:lang="sr">Језгра</title>
+      <title xml:lang="sr@Latn">Jezgra</title>
+      <title xml:lang="sv">Kärnor</title>
+      <title xml:lang="ta">கருகள்</title>
+      <title xml:lang="tg">Ҳастаҳо</title>
+      <title xml:lang="th">เคอร์เนล</title>
+      <title xml:lang="tk">Hessler</title>
+      <title xml:lang="tr">Çekirdekler</title>
+      <title xml:lang="uk">Ядра</title>
+      <title xml:lang="vi">Kernel</title>
+      <title xml:lang="zh_CN">内核</title>
+      <title xml:lang="zh_TW">內核</title>
+      <category>Development|Kernels</category>
+      <category>Development|Kernels|FreeBSD</category>
+      <category>Development|Kernels|Linux</category>
+      <category>Development|Kernels|NetBSD</category>
+      <category>Development|Kernels|Other</category>
+      <category>Development|Libraries</category>
+      <category>Development|System Calls</category>
+      <category>Development|Other</category>
+    </toc>
+  </toc>
+
+  <toc id="General">
+    <title>General</title>
+    <title xml:lang="af">Algemeen</title>
+    <title xml:lang="ar">عام</title>
+    <title xml:lang="az">Ümumi</title>
+    <title xml:lang="be">Агульныя</title>
+    <title xml:lang="bg">Основен</title>
+    <title xml:lang="bn">সাধারণ</title>
+    <title xml:lang="bs">Općenito</title>
+    <title xml:lang="ca">General</title>
+    <title xml:lang="cs">Obecné</title>
+    <title xml:lang="cy">Cyffredinol</title>
+    <title xml:lang="da">Generelt</title>
+    <title xml:lang="de">Allgemein</title>
+    <title xml:lang="el">Γενικά</title>
+    <title xml:lang="en_CA">General</title>
+    <title xml:lang="en_GB">General</title>
+    <title xml:lang="es">General</title>
+    <title xml:lang="et">Üldine</title>
+    <title xml:lang="eu">Orokorra</title>
+    <title xml:lang="fi">Yleiset</title>
+    <title xml:lang="fr">Général</title>
+    <title xml:lang="ga">Gineréal</title>
+    <title xml:lang="gu">સામાન્ય</title>
+    <title xml:lang="hi">सामान्य</title>
+    <title xml:lang="hr">Općenito</title>
+    <title xml:lang="hu">Általános</title>
+    <title xml:lang="is">Almennt</title>
+    <title xml:lang="it">Generico</title>
+    <title xml:lang="ja">全般</title>
+    <title xml:lang="ka">ძირითადი</title>
+    <title xml:lang="ko">일반</title>
+    <title xml:lang="lt">Pagrindiniai</title>
+    <title xml:lang="mn">Ерөнхий</title>
+    <title xml:lang="ms">Umum</title>
+    <title xml:lang="nb">Generelt</title>
+    <title xml:lang="nl">Algemeen</title>
+    <title xml:lang="nn">Allmennt</title>
+    <title xml:lang="no">Generelt</title>
+    <title xml:lang="pa">ਸਧਾਰਨ</title>
+    <title xml:lang="pl">Ogólne</title>
+    <title xml:lang="pt">Geral</title>
+    <title xml:lang="pt_BR">Geral</title>
+    <title xml:lang="ro">General</title>
+    <title xml:lang="ru">Общие</title>
+    <title xml:lang="sk">Všeobecné</title>
+    <title xml:lang="sq">Të përgjithshme</title>
+    <title xml:lang="sr">Опште</title>
+    <title xml:lang="sr@Latn">Opšte</title>
+    <title xml:lang="sv">Allmänt</title>
+    <title xml:lang="ta">¦À¡ÐÅ¡É¨Å</title>
+    <title xml:lang="tg">Умумӣ</title>
+    <title xml:lang="th">ทั่วไป</title>
+    <title xml:lang="tk">Umumy</title>
+    <title xml:lang="tr">Genel</title>
+    <title xml:lang="uk">Загальне</title>
+    <title xml:lang="vi">Chung</title>
+    <title xml:lang="zh_CN">常规</title>
+    <title xml:lang="zh_TW">一般</title>
+
+    <category>General</category>
+    <category>General|Licenses</category>
+    <category>General|Linux</category>
+    <category>General|Linux|Distributions</category>
+    <category>General|Linux|Distributions|Caldera</category>
+    <category>General|Linux|Distributions|Debian</category>
+    <category>General|Linux|Distributions|Mandrake</category>
+    <category>General|Linux|Distributions|Red Flag</category>
+    <category>General|Linux|Distributions|Red Hat</category>
+    <category>General|Linux|Distributions|Slackware</category>
+    <category>General|Linux|Distributions|SuSE</category>
+    <category>General|Linux|Distributions|Other</category>
+    <category>General|Linux|General</category>
+    <category>General|Linux|Other</category>
+    <category>General|Other</category>
+  </toc>
+
+  <toc id="System">
+    <title>System</title>
+    <title xml:lang="af">Stelsel</title>
+    <title xml:lang="ar">النظام</title>
+    <title xml:lang="az">Sistem</title>
+    <title xml:lang="be">Сыстэма</title>
+    <title xml:lang="bg">Система</title>
+    <title xml:lang="bn">সিস্টেম</title>
+    <title xml:lang="bs">Sistem</title>
+    <title xml:lang="ca">Sistema</title>
+    <title xml:lang="cs">Systém</title>
+    <title xml:lang="cy">System</title>
+    <title xml:lang="da">System</title>
+    <title xml:lang="de">System</title>
+    <title xml:lang="el">Σύστημα</title>
+    <title xml:lang="en_CA">System</title>
+    <title xml:lang="en_GB">System</title>
+    <title xml:lang="es">Sistema</title>
+    <title xml:lang="et">Süsteem</title>
+    <title xml:lang="eu">Sistema</title>
+    <title xml:lang="fi">Järjestelmä</title>
+    <title xml:lang="fr">Système</title>
+    <title xml:lang="ga">Corás</title>
+    <title xml:lang="gu">સિસ્ટમ</title>
+    <title xml:lang="hi">तंत्र</title>
+    <title xml:lang="hr">Sustav</title>
+    <title xml:lang="hu">Rendszer</title>
+    <title xml:lang="it">Sistema</title>
+    <title xml:lang="ja">システム</title>
+    <title xml:lang="ka">სისტემა</title>
+    <title xml:lang="ko">시스템</title>
+    <title xml:lang="lt">Sistema</title>
+    <title xml:lang="mn">Систем</title>
+    <title xml:lang="ms">Sistem</title>
+    <title xml:lang="nb">System</title>
+    <title xml:lang="nl">Systeem</title>
+    <title xml:lang="nn">System</title>
+    <title xml:lang="no">System</title>
+    <title xml:lang="pa">ਸਿਸਟਮ</title>
+    <title xml:lang="pl">System</title>
+    <title xml:lang="pt">Sistema</title>
+    <title xml:lang="pt_BR">Sistema</title>
+    <title xml:lang="ro">Sistem</title>
+    <title xml:lang="ru">Система</title>
+    <title xml:lang="sk">Systém</title>
+    <title xml:lang="sq">Sistemi</title>
+    <title xml:lang="sr">Систем</title>
+    <title xml:lang="sr@Latn">Sistem</title>
+    <title xml:lang="sv">System</title>
+    <title xml:lang="ta">அமைப்பு</title>
+    <title xml:lang="tg">Система</title>
+    <title xml:lang="th">ระบบ</title>
+    <title xml:lang="tk">Sistem</title>
+    <title xml:lang="tr">Sistem</title>
+    <title xml:lang="uk">Система</title>
+    <title xml:lang="vi">Hệ thống</title>
+    <title xml:lang="zh_CN">系统</title>
+
+    <category>System</category>
+    <category>System|Administration</category>
+    <category>System|Administration|Backups</category>
+    <category>System|Administration|Backups|Local</category>
+    <category>System|Administration|Backups|Remote</category>
+    <category>System|Administration|Filesystems</category>
+    <category>System|Administration|Networking</category>
+    <category>System|Administration|Networking|AppleTalk</category>
+    <category>System|Administration|Networking|PPP</category>
+    <category>System|Administration|Networking|SMB</category>
+    <category>System|Administration|Networking|TCP/IP</category>
+    <category>System|Administration|Networking|DNS</category>
+    <category>System|Administration|Networking|Other</category>
+    <category>System|Administration|Users</category>
+    <category>System|Administration|Other</category>
+    <category>System|Configuration</category>
+    <category>System|Configuration|Config Files</category>
+    <category>System|Configuration|Configuration Tools</category>
+    <category>System|Configuration|Other</category>
+    <category>System|Hardware</category>
+    <category>System|Hardware|Input Devices</category>
+    <category>System|Hardware|Networking</category>
+    <category>System|Hardware|Other</category>
+    <category>System|Hardware|PCI/ISA/PCMCIA</category>
+    <category>System|Hardware|Processor</category>
+    <category>System|Hardware|Storage</category>
+    <category>System|Hardware|Video</category>
+    <category>System|Other</category>
+    <category>System|Package Management</category>
+    <category>System|Security</category>
+    <category>System|Security|Firewall</category>
+    <category>System|Security|Intrusion Detection</category>
+    <category>System|Security|Virus</category>
+    <category>System|Security|Other</category>
+    <category>System|Services</category>
+    <category>System|Services|BIND</category>
+    <category>System|Services|FTP</category>
+    <category>System|Services|HTTP</category>
+    <category>System|Services|Other</category>
+    <category>System|Services|Printing</category>
+    <category>System|Services|SMB</category>
+    <category>System|Services|SSH</category>
+    <category>System|Services|Syslog</category>
+    <category>System|Services|Telnet</category>
+  </toc>
+</toc>

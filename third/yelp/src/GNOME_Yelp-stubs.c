@@ -10,45 +10,27 @@ void
 GNOME_Yelp_newWindow(GNOME_Yelp _obj, const CORBA_char * url,
 		     CORBA_Environment * ev)
 {
-   POA_GNOME_Yelp__epv *_ORBIT_epv;
+   gpointer _args[1];
 
-   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
-       ORBIT_STUB_IsBypass(_obj, GNOME_Yelp__classid) &&
-       (_ORBIT_epv =
-	(POA_GNOME_Yelp__epv *) ORBIT_STUB_GetEpv(_obj,
-						  GNOME_Yelp__classid))->
-       newWindow) {
-      ORBIT_STUB_PreCall(_obj);
-      _ORBIT_epv->newWindow(ORBIT_STUB_GetServant(_obj), url, ev);
-      ORBIT_STUB_PostCall(_obj);
-   } else {			/* remote marshal */
-      gpointer _args[1];
+   _args[0] = (gpointer) & url;
+   ORBit_c_stub_invoke(_obj, &GNOME_Yelp__iinterface.methods, 0, NULL, _args,
+		       NULL, ev, GNOME_Yelp__classid,
+		       G_STRUCT_OFFSET(POA_GNOME_Yelp__epv, newWindow),
+		       (ORBitSmallSkeleton)
+		       _ORBIT_skel_small_GNOME_Yelp_newWindow);
 
-      _args[0] = (gpointer) & url;
-      ORBit_small_invoke_stub_n(_obj, &GNOME_Yelp__iinterface.methods, 0,
-				NULL, _args, NULL, ev);
-
-   }
 }
+
 GNOME_Yelp_WindowList *
 GNOME_Yelp_getWindows(GNOME_Yelp _obj, CORBA_Environment * ev)
 {
    GNOME_Yelp_WindowList *_ORBIT_retval;
-   POA_GNOME_Yelp__epv *_ORBIT_epv;
 
-   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
-       ORBIT_STUB_IsBypass(_obj, GNOME_Yelp__classid) &&
-       (_ORBIT_epv =
-	(POA_GNOME_Yelp__epv *) ORBIT_STUB_GetEpv(_obj,
-						  GNOME_Yelp__classid))->
-       getWindows) {
-      ORBIT_STUB_PreCall(_obj);
-      _ORBIT_retval = _ORBIT_epv->getWindows(ORBIT_STUB_GetServant(_obj), ev);
-      ORBIT_STUB_PostCall(_obj);
-   } else {			/* remote marshal */
-      ORBit_small_invoke_stub_n(_obj, &GNOME_Yelp__iinterface.methods, 1,
-				&_ORBIT_retval, NULL, NULL, ev);
+   ORBit_c_stub_invoke(_obj, &GNOME_Yelp__iinterface.methods, 1,
+		       &_ORBIT_retval, NULL, NULL, ev, GNOME_Yelp__classid,
+		       G_STRUCT_OFFSET(POA_GNOME_Yelp__epv, getWindows),
+		       (ORBitSmallSkeleton)
+		       _ORBIT_skel_small_GNOME_Yelp_getWindows);
 
-   }
    return _ORBIT_retval;
 }

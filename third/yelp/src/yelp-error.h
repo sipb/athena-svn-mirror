@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2002 Mikael Hallendal <micke@codefactory.se>
+ * Copyright (C) 2002 Mikael Hallendal <micke@imendio.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,11 +26,16 @@
 #define YELP_ERROR yelp_error_quark ()
 
 typedef enum {
-	YELP_ERROR_URI_NOT_EXIST,
-        YELP_ERROR_DOCBOOK_2_HTML,
-        YELP_ERROR_FAILED_OPEN
+	YELP_ERROR_NO_DOC,
+	YELP_ERROR_NO_PAGE,
+	YELP_ERROR_NO_TOC,
+	YELP_ERROR_NO_SGML,
+	YELP_ERROR_IO
 } YelpError;
 
-GQuark yelp_error_quark (void) G_GNUC_CONST;
+GQuark   yelp_error_quark     (void) G_GNUC_CONST;
+
+void     yelp_set_error       (GError     **error,
+			       YelpError    code);
 
 #endif /* __YELP_ERROR_H__ */
