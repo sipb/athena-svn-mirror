@@ -1,5 +1,5 @@
 #!/bin/csh -f
-# $Id: root.xsession,v 1.2 1999-04-09 19:14:14 ghudson Exp $
+# $Id: root.xsession,v 1.3 1999-04-09 19:14:39 ghudson Exp $
 
 # Source the user's .cshrc if one exists otherwise 
 # do some minimal stuff
@@ -7,9 +7,9 @@
 if (-r ~/.cshrc) then
 	source ~/.cshrc
 else
-	set path=(/srvd/patch /usr/athena/bin /sbin/athena /bin/athena \
+	set path=(/srvd/patch /usr/athena/bin /etc/athena /bin/athena \
 		  /usr/sbin /usr/bsd /sbin /usr/bin /bin /etc \
-		  /usr/athena/sbin /usr/etc /usr/bin/X11)
+		  /usr/athena/etc /usr/etc /usr/bin/X11)
 endif
 
 # Start up an xterm window
