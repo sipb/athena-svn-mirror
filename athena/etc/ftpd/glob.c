@@ -592,8 +592,9 @@ blkcpy(oav, bv)
 {
 	register char **av = oav;
 
-	while (*av++ = *bv++)
-		continue;
+	while (*bv)
+		*av++ = strdup(*bv++);
+	*av = NULL;
 	return (oav);
 }
 
