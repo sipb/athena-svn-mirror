@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.7 1990-07-16 08:15:26 lwvanels Exp $
+ *	$Id: init.c,v 1.8 1990-09-14 00:17:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.7 1990-07-16 08:15:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.8 1990-09-14 00:17:29 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -49,10 +49,6 @@ OInitialize()
   char hostname[LINE_SIZE];  /* Name of local machine. */
   char *h;
   struct hostent *host;
-
-#ifdef LAVIN
-  char type[BUF_SIZE];
-#endif LAVIN
 
   h = getenv ("OLCD_HOST");
 
@@ -86,42 +82,6 @@ OInitialize()
   }
 
   strcpy (DaemonHost, h);
-
-#ifdef LAVIN
-  if(OLC)
-    printf("Please choose which type of question you wish to ask:\n\n");
-  else
-    printf("Please choose which queue you would like to enter:\n\n");
-
-  while(1)
-    {
-      if(OLC)
-        printf("\ttype\t description\n\t----\t -----------\n");
-      else
-        printf("\tqueue\t description\n\t-----\t -----------\n");
-      printf("\tathena\t questions concerning general athena topics\n");
-      printf("\t\t (topics of scribe, emacs, unix, etc...)\n");
-      printf("\tcourse\t questions for a specific course\n");
-      printf("\t\t (topics of 6.170, 1.00, etc...)\n\n");
-      type[0] = '\0';
-      if(OLC)
-         get_prompted_input("type: ", type);
-      else
-         get_prompted_input("queue: ", type);
-      if(*type == '\0')
-	exit(0);
-      if(string_equiv(type,"course",max(strlen(type),1)))
-	{
-	  strcpy(DaemonHost,"nemesis.mit.edu");
-	  break;
-	}
-      if(string_equiv(type,"athena",max(strlen(type),1)))
-	break;
-    }
-#endif LAVIN
-#if defined(COURSE) && !defined(OLZ)
-  strcpy(DaemonHost,"nemesis.mit.edu");
-#endif
 
   uid = getuid();
   pwent = getpwuid(uid);
