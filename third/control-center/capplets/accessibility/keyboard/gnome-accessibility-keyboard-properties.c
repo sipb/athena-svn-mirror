@@ -33,6 +33,7 @@
 #include "accessibility-keyboard.h"
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
+#  include <X11/X.h>
 #  include <X11/Xlib.h>
 #  include <X11/XKBlib.h>
 #  include <X11/extensions/XKBstr.h>
@@ -70,8 +71,8 @@ dialog_response (GtkWidget *widget,
 	switch (response_id) {
 	case GTK_RESPONSE_HELP:
 		capplet_help (GTK_WINDOW (widget),
-			      "wgoscustaccess.xml",
-			      "goscustaccess-2");
+			      "user-guide.xml",
+			      "goscustaccess-6");
 		break;
 	case GTK_RESPONSE_DELETE_EVENT:
 	case GTK_RESPONSE_CLOSE:
@@ -107,6 +108,7 @@ main (int argc, char **argv)
 	g_signal_connect (G_OBJECT (dialog),
 		"response",
 		G_CALLBACK (dialog_response), changeset);
+	capplet_set_icon (dialog, "gnome-settings-accessibility-keyboard");
 	gtk_widget_show_all (dialog);
 	gtk_main ();
 
