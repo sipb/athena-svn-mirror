@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/exec.c,v $
- *      $Author: marc $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_exec_c[] = "$Id: exec.c,v 1.5 1989-11-15 22:46:15 marc Exp $";
+static char rcsid_exec_c[] = "$Id: exec.c,v 1.6 1990-05-17 03:04:15 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -455,7 +455,10 @@ void exec_process_packet(program, notice)
 
     var_set_number_variables_to_fields(notice_fields, notice_fields_length);
 
-    number_of_fields = count_nulls(notice_fields, notice_fields_length);
+    number_of_fields = count_nulls(notice_fields, notice_fields_length)+1;
+    /* workaround for bug in old zwrite */
+    if (notice_fields[notice_fields_length-1] == '\0')
+	number_of_fields--;
     var_set_variable_to_number("number_of_fields", number_of_fields);
 
     clear_buffer();
