@@ -1,8 +1,0 @@
-#
-# $Id: Imakefile,v 1.2 1998-06-17 17:53:10 ghudson Exp $
-#
-# Remember: most conditionalization should be done in the package, not here.
-
-
-SimpleProgram(saferm,saferm.o,,$(ATHRBINDIR)/)
-install_man(saferm.1,saferm.1)
