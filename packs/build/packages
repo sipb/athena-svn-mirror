@@ -1,4 +1,4 @@
-# $Id: packages,v 1.198 2003-01-26 06:37:49 ghudson Exp $
+# $Id: packages,v 1.199 2003-01-30 20:39:24 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -130,8 +130,9 @@ athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
+third/acme			requires gettext,intltool,libgnomeui,libglade,libwnck,GConf2
 third/afsbin			on irix
-third/at-spi			requires libbonobo,atk,gtk2,gail,bonobo-activation,popt
+third/at-spi			requires gettext,intltool,libbonobo,atk,gtk2,gail,libbonobo,bonobo-activation,popt
 third/atk			requires glib2,gettext
 third/audiofile
 third/bash
@@ -139,26 +140,27 @@ third/bind
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
 third/bonobo-activation		requires gettext,glib2,ORBit2,linc,libxml2
 third/bonobo-conf		requires bonobo
-third/bug-buddy			requires scrollkeeper,bonobo-activation,gtk2,glib2,gnome-desktop,gnome-vfs2,libbonobo,libgnomecanvas,libgnomeui,libglade2,libxml2
+third/bug-buddy			requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2
 third/bzip2			except linux
-third/control-center		requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,bonobo-activation,libglade2,gnome-desktop,libxml2,gnome-vfs2,esound
+third/control-center		requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,bonobo-activation,libglade2,gnome-desktop,libxml2,gnome-vfs2,esound,metacity,Xft
 third/db
 third/diffutils			on solaris
-third/eel			requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2
+third/eel			requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2,Xrender
 third/emacs			requires hesiod,krb5,texinfo
 third/enscript
-third/eog			requires gnome-vfs2,libgnomeprint,libgnomeui,libbonoboui,bonobo-activation,librsvg,ORBit2,GConf2,jpeg,libpng,popt
+third/eog			requires gettext,intltool,gnome-vfs2,libgnomeprint,libgnomeui,libbonoboui,bonobo-activation,librsvg,ORBit2,GConf2,jpeg,libpng,popt
 third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,soup,openssl
 third/expat			except linux
 third/fcpackage/fontconfig	requires expat,freetype
 third/fcpackage/Xft		requires fontconfig,freetype,Xrender
 third/fcpackage/Xrender		except linux
+third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,bonobo-activation,libbonobo,libbonoboui
 third/freetype
 third/gail			requires atk,gtk2,libgnomecanvas
 third/gal			requires gnome-vfs,libglade
 third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
-third/GConf2			requires glib2,libxml2,gtk2,ORBit2
+third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2,linc
 third/gconf-editor		requires gettext,intltool,GConf2,gtk2
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
@@ -168,16 +170,18 @@ third/glib
 third/glib2			requires libiconv,gettext
 third/gmp			except linux
 third/gnome2-user-docs		requires scrollkeeper
-third/gnome-applets		requires gettext,gtk2,libgnome,libgnomeui,libxml2,gnome-vfs2,GConf2,scrollkeeper,gnome-panel,libgtop,libwnck,libglade2,gail,esound
-third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2
+third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,gnome-vfs2,GConf2,scrollkeeper,gnome-panel,libgtop,libwnck,libglade2,gail
+third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
+third/gnome-icon-theme		requires gettext,intltool
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
-third/gnome-media		requires gettext,glib2,libgnomeui,esound,scrollkeeper,gail
+third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail
 third/gnome-mime-data		requires gettext
-third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango
+third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
 third/gnome-system-monitor	requires gettext,libgnome,libgnomeui,GConf2,libwnck,libgtop,gtk2
-third/gnome-terminal		requires gettext,gtk2,GConf2,libglade2,libgnomeui,libzvt
-third/gnome-utils		requires gettext,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
+third/gnome-terminal		requires gettext,gtk2,GConf2,libglade2,libgnomeui,vte,startup-notification,Xft
+third/gnome-themes		requires gettext,intltool
+third/gnome-utils		requires gettext,intltool,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
 third/gnome-vfs2		requires gettext,glib2,libxml2,GConf2,libbonobo,bonobo-activation,ORBit2,gnome-mime-data,bzip2,openssl,openafs,popt
 third/gtk-engines		requires gtk2
@@ -207,7 +211,7 @@ third/libgnome			requires gettext,audiofile,esound,GConf2,glib2,gnome-vfs2,libbo
 third/libgnomecanvas		requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
 third/libgnomeprint		requires gettext,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
 third/libgnomeprintui		requires gettext,libgnomeprint,libgnomecanvas,libglade2
-third/libgnomeui		requires gettext,audiofile,esound,libgnome,libgnomecanvas,libbonoboui,GConf2,libglade2,popt,gtk2
+third/libgnomeui		requires gettext,audiofile,esound,jpeg,libgnome,libgnomecanvas,libbonoboui,GConf2,pango,libglade2,popt,gtk2
 third/libgtkhtml		requires gtk2,libxml2,gnome-vfs2,gail
 third/libgtop			requires gettext,glib2
 third/libiconv			except linux
@@ -217,7 +221,7 @@ third/libpng			except linux requires zlib
 third/librep			requires gettext,gmp,gdbm,readline
 third/librsvg			requires gtk2,glib2,libart_lgpl,libxml2,pango,popt
 third/libungif			except linux
-third/libwnck			requires gettext,gtk2,glib2
+third/libwnck			requires gettext,startup-notification,gtk2,glib2
 third/libxml			requires zlib
 third/libxml2			requires zlib
 third/libxslt			requires libxml2
@@ -228,9 +232,10 @@ third/lprng/athena		package lprng-misc
 third/lprng/ifhp
 third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
+third/metacity			requires gettext,intltool,gtk2,GConf2,startup-notification
 third/mingetty			on linux
 third/motif/clients/mwm		on solaris
-third/nautilus			requires gettext,intltool,libart_lgpl,bonobo-activation,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg
+third/nautilus			requires gettext,intltool,libart_lgpl,bonobo-activation,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg,ORBit2
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt
@@ -254,6 +259,7 @@ third/sawfish			requires librep,rep-gtk,gtk2,audiofile,esound,control-center,Xft
 third/scrollkeeper		requires intltool,libxml2,libxslt
 third/sendmail			requires hesiod,tcp_wrappers
 third/soup			requires glib,libxml,popt,openssl
+third/startup-notification
 third/sysinfo			on solaris,irix,linux
 third/talk			on solaris,irix
 third/tcp_wrappers		except linux
@@ -263,6 +269,7 @@ third/texinfo
 third/tiff			except linux requires jpeg,zlib
 third/top			except irix,linux
 third/traceroute		on solaris
+third/vte			requires gettext,glib2,pango,libzvt,Xft
 third/wcl			requires openmotif
 third/whois			on irix
 third/x11-ssh-askpass
@@ -272,7 +279,7 @@ third/xmh
 third/xntp			package ntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
-third/yelp			requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml
+third/yelp			requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml,libglade2
 third/zlib			except linux
 
 # Final packs stuff
