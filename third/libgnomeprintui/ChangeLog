@@ -1,24 +1,469 @@
-2002-12-27    <chema@celorio.com>
+2003-01-21  Chema Celorio  <chema@celorio.com>
 
-	* configure.in: 1.116.3 here we go
+	* configure.in: release to match libgnomeprint
 
-2002-12-27  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+2003-01-19  Chema Celorio  <chema@celorio.com>
 
-	* libgnomeprintui/gnome-print-paper-selector.c: Assign colors
-	to Paper preview items from theme. Fixes #90313
+	* This is the gnome-2-2 branch
 
-2002-11-10  Ole Laursen  <olau@hardworking.dk>
+2003-01-19  Chema Celorio  <chema@celorio.com>
+	
+	* 2.2.0 here we go
 
-	* configure.in: Added da to ALL_LINGUAS.
+2003-01-19  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release verion bump to 2.1.10
+
+2003-01-19  Chema Celorio  <chema@celorio.com>
+
+	* 2.1.9 here we go
+
+2003-01-17  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* gnome-print-job-preview.c (entry_insert_text_cb)
+	(entry_focus_out_event_cb)(create_preview_canvas):
+	Show the page_entry entry. 
+	Only digits can be inserted in the page_entry entry. 
+	Reset current page value when focusing out from the page_entry
+	entry.
+
+2003-01-14  Chema Celorio  <chema@celorio.com>
+
+	* post release version bump to 2.1.9
+
+2003-01-14  Chema Celorio  <chema@celorio.com>
+	
+	* 2.1.8 here we go
+
+	* libgnomeprintui/gpaui/gpa-paper-preview-item.c: Fix #103366
+
+2003-01-09  Takeshi Aihana <aihana@gnome.gr.jp>
+
+	* configure.in: add ja into ALL_LINGUAS
+
+2003-01-06  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-paper-preview-item.c (gpa_paper_preview_item_finalize):
+	Fix: #102251 by disconnecting the gpa_node after use
+
+2003-01-03  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-printer-selector.c: dont' call the deprecated
+	gpa_config_set_printer function.
+
+2002-12-29  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: bump libgnomeprint requirements to 2.1.6
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.c: 
+	* libgnomeprintui/gpaui/gpa-printer-selector.c: 
+	* libgnomeprintui/gpaui/gpa-settings-selector.c: 
+	* libgnomeprintui/gpaui/gpa-option-menu.c:
+	Clean up and make the code between them almost identical. This widgets
+	now listen to their "model" correctly, disregard 'modified' emissions created
+	internally, clean up correctly and cope with the active printer or settings
+	changes.
+
+	* libgnomeprintui/gpaui/gpa-tree-viewer.c: #include
+	gnome-print-config-private.h
+
+	* libgnomeprintui/gpaui/gpa-tree-viewer.h: cosmetic fixes
+
+	* libgnomeprintui/gpaui/gpa-widget.h: #include private/gpa-node.h
+
+	* libgnomeprintui/gpaui/gpa-add-printer-dialog.[ch]: remove from cvs,
+	since it is not used.
+	* libgnomeprintui/gpaui/gpa-config-dialog.[ch]: remove from cvs,
+	since it is not used.
+	* libgnomeprintui/gpaui/gpa-media-orientation.[ch]: remove from cvs,
+	since it is not used.
+	
+	* libgnomeprintui/gpaui/Makefile.am: clean commented out files
+
+	* libgnomeprintui/gnome-printer-selector.h: cosmetic fixes
+
+	* libgnomeprintui/gnome-printer-selector.c (gnome_printer_selector_construct): use
+	_construct rather than _init to do the setup. Don't use the _destroy method, use
+	_finalize. Other minor tweaks
+	
+	* libgnomeprintui/gnome-print-unit-selector.c (gpus_rebuild_menu): no need
+	to call gtk_option_menu_remove_menu because _set_menu will call it for
+	us.
+
+	* libgnomeprintui/gnome-print-paper-selector.c: update headers and func.
+	calls to changes in gpa/gpaui
+
+	* examples/example_09.c: implement.
+	  This dialog saves the GnomePrintConfig
+	  to disk after printing and loads it before creating the dialog
+	  This shows how to implement persistent print configuration.
+
+	* doc/Makefile.am: we need to define WE_ARE_LIBGNOMEPRINTUI for the scan file
+
+2002-12-24    <chema@celorio.com>
+
+	* libgnomeprintui/gpaui/gpa-transport-selector.c: compare
+	by id not by name.
+
+	* libgnomeprintui/gpaui/gpa-option-menu.c (gpa_option_menu_rebuild_menu):
+	get the value of the path, not (path, "Name") since the name
+	node no longer exists.
+	* libgnomeprintui/gpaui/gpa-settings-selector.c (gpa_settings_selector_rebuild_menu):
+	same here
+	* libgnomeprintui/gpaui/gpa-printer-selector.c: here too
+
+	* libgnomeprintui/gnome-print-paper-selector.c: remove
+	g_print's. when changing a value set ->updating to true,
+	in callbacks ignore change if the update was from us
+
+2002-12-21  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am: distcheck fixes
+
+	* libgnomeprintui/gnome-printer-selector.c (gnome_printer_selector_init):
+	tweak the packing so that the dialog does not grow when the printer is
+	changed
+
+2002-12-18  Artis Trops  <hornet@navigator.lv>
+
+	* Added Latvian (lv) to ALL_LINGUAS
+
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+
+	* Finish with the file rename gnome-printer-dialog.c v.s.
+	gnome-printer-selector
+
+	* docs/* Remove all warnings, add to cvs missing files
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+	
+	* Makefile.am (EXTRA_DIST): add 0ChangeLog.gpaui...
+
+	* move libgnomeprintui/gpaui/ChangeLog to 0ChangeLog.gpaui.2002-12-17
+
+	* gpa-transport-selector.[ch]: we don't need to have a entry for
+	lpr printer because we have a custom command. It makes the dialog
+	not change in size when a different printer is selected
+
+	* gpa-settings-selector.c (gpa_settings_selector_menuitem_activate):
+	remove g_print's left over
+	
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_construct):
+	remove work around for bug #81600 in gtk+ since it's been fixed.
+
+	* Rename gnome-printer-dialog.[ch] to gnome-printer-selector.[ch]
+	because	that is what it is.
+	
+	* libgnomeprintui/gnome-print-dialog.c: use the gnome-printer-selector
+	header
+	* libgnomeprintui/gnome-printer-selector.c: ditto
+
+	* libgnomeprintui/gnome-print-job-preview.c (create_toplevel): remove
+	#ifdef'ed code
+	* libgnomeprintui/gnome-font-dialog.c (gnome_font_dialog_init): here too
+ 	* libgnomeprintui/gnome-canvas-hacktext.c (gnome_canvas_hacktext_set_property):
+	and here
+
+	* tests/test-dialog.c (main): if no arguments are given,
+	run a simple dialog with the default config
+
+	* libgnomeprintui/gnome-printer-dialog.[ch]: remove #ifdef'ed
+	out code.
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+	
+	* configure.in: post release version bump to 2.1.6
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprintui/gnome-canvas-hacktext.c: 
+	* libgnomeprintui/gnome-print-job-preview.c:
+	* libgnomeprintui/gnome-print-preview.c: 
+	Fix: 96802, Preview is now accessible
+
+2002-12-16  Chema Celorio  <chema@celorio.com>
+
+	* tests/run-test.pl (my_check_environment): run
+	./test-preview --kill
+
+	* tests/Makefile.am (noinst_PROGRAMS): add test-preview
+	* tests/test-preview.c: add
+
+	* examples/Makefile.am (EXTRA_DIST): add simple-image.png,
+	example_10.glade[p] & README do EXTRA_DIST
+
+2002-12-15  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 2.1.5
+
+2002-12-14  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gnome-print-dialog.c: s/ARG/PROP
+
+	* tests/Makefile.am (noinst_PROGRAMS): use the local libgnomeprint-2.2 if available
+
+	* tests/run-test.pl (my_check_dialogs): show test name while running check_dialogs
+
+	* tests/test-dialog.c: Add more tests, implement --list-tests
+
+	* libgnomeprintui/gnome-print-paper-selector.c (gnome_paper_selector_finalize):
+	disconnect the handler for the printer changed signal. This prevents the crash
+	found by ./test-dialog --num=5
+
+2002-12-14  Chema Celorio  <chema@celorio.com>
+	
+	* examples/example_[0-10].c (my_print): unref the objects
+	correctly
+
+2002-12-11  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: missed one AC_DEFINE.
+	* gpa-printer-selector.c: coding style fix
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: remove acconfig.h & add third argument to AC_DEFINE[_UNQUOTED] to kill autoheader
+	warning about "auxiliary files is deprecated and discouraged"
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 2.1.4
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+
+	* 2.1.3 here we go
+
+	* examples/example_[0-10].c: s/gpm/job for GnomePrintJob
+
+	* configure.in (dnl): cosmetic changes to match the output at the end
+	of configure with the one in libgnomeprint
+
+2002-12-07  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-paper-preview.c: Fix #96802
+	* libgnomeprintui/gpaui/gpa-paper-preview-item.c:
+
+	* tests/Makefile.am: link to the 2-2 library
+
+2002-12-04  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post-release version bump to 2.1.3
+
+2002-12-03  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_construct): Fix #98076
+
+	* Makefile.am: message-of-doom, no longer in EXTRA_DIST
+
+	* configure.in (dnl): sync the gtk-doc stuff from what is in libgnomeprint
+
+	* examples/Makefile.am (libgnomeprint_local): link with libgnomeprintui-2-2.la not lgpu-2.la
+
+2002-11-27  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in (ALL_LINGUAS): Added Danish.
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-10-26  Jody Goldberg <jody@gnome.org>
+2002-11-01  Jody Goldberg <jody@gnome.org>
 
-	Backport fix from :
-	2002-06-14  Carlos Perello Marin <carlos@gnome-db.org>
+	* configure.in : post release version bump
+
+2002-11-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-09-21  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-dialog.c: 
+	* libgnomeprintui/gnome-print-dialog.h: 
+	* libgnomeprintui/gnome-print-copies.c: 
+	* libgnomeprintui/gnome-print-copies.h:
+	go back to Selection. s/selector/selection. No need to break
+	other's people apps.
+
+2002-09-17  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/Makefile.am (libgnomeprintuiinc_HEADERS): install
+	gnome-print-master-preview.h
+
+2002-09-16  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/Makefile.am (libgnomeprintuiinc_HEADERS): install the
+	gnome-print-unit-selector.h
+
+2002-09-15  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-paper-selector.c (gnome_paper_selector_finalize): remove
+	bogus gpa_node_unref
+
+2002-09-15  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-paper-selector.c (gnome_paper_selector_finalize):
+	s/selector/ps
+	(gnome_paper_selector_paper_size_sensitivity_update): free id only when it isn't NULL
+	(gnome_paper_selector_hook_paper_size): implemento
+	(gnome_paper_selector_construct): change the way we construct it so that we can correctly
+	handle changing the selected printer
+	_GnomePaperSelector: add guint handler_printer & GPANode *printer
+
+2002-09-08  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-printer-dialog.[ch]: move the structures from the .c to the .h file
+
+	* libgnomeprintui/Makefile.am: Don't install headers that applications shuold not be using.
+
+2002-09-07  Chema Celorio  <chema@ximian.com>
+
+	* tests/Makefile.am: start of regression test suite
+	* tests/run-test.pl: 
+	* tests/test-dialog.c: 
+
+	* libgnomeprintui/gnome-print-dialog-private.h: add GnomePrintDialog structs here, needed by
+	the regression test suite
+
+	* libgnomeprintui/Makefile.am (libgnomeprintui_2_la_SOURCES): add gnome-print-dialog-private.h
+
+	* tests/test-dialog.c: implement
+
+	* libgnomeprintui/gnome-print-paper-selector.c: disconnect handlers of GPANode's after use
+
+2002-09-06  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-printer-dialog.[ch]: s/selection/selector. ifdef out
+	the gnome-printer-selector stuff. Will rename file to gnome-printer-selector.c
+	on cvs.
+
+	* libgnomeprintui/gnome-print-unit-selector.c: split from paper-selector
+
+	* libgnomeprintui/gnome-print-paper-selector.c: lets use gpa signals and listen
+	for changes. Remove some code and let the gpa signals notify the other widgets
+	(gnome_paper_selector_paper_size_sensitivity_update): implement
+
+	* libgnomeprintui/gnome-print-paper-preview.[ch]: split from code of
+	gnome-print-paper-selector.
+
+	* libgnomeprintui/gnome-print-dialog.c: port to DISABLE_DEPRECATED
+	* libgnomeprintui/gnome-print-master-preview.c: 
+	* libgnomeprintui/gnome-print-preview.c: 
+
+	* libgnomeprintui/gnome-print-copies.[ch]: por to DISABLE_DEPRECATED,
+	s/selection/selector
+
+	* libgnomeprintui/gnome-font-dialog.c: port to DISABLE_DEPRECATED include the custom
+	marshaling code	
+
+	* libgnomeprintui/gnome-canvas-hacktext.c: ported the code to DISABLE_DEPRECATED
+	except for the _get/set_property functions.
+
+	* libgnomeprintui/gnome-printui-marshal.list: add
+
+	* libgnomeprintui/Makefile.am: define WE_ARE_LIBGNOMEPRINT_INTERNALS, add the
+	_DISABLE_DEPRECATED flags.
+	- add the glib-genmarshal stuff to generate gnome-printui-marshal.[ch]
+
+	* configure.in : add GLIB_GENMARSHAL macro
+
+2002-09-03  Chema Celorio  <chema@ximian.com>
+
+	* examples/example_10.c : add a GnomeFontDialog selector
+
+2002-09-02  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_construct): add a temp work around for
+	gtk+'s bug #81600
+
+	* configure.in: remove typo that prevented GETTEXT macro from running correctly
+
+	* A lot of changes to standarize the code. Make all the headers have the same structure, change
+	cast & type macros to use G_TYPE, fix "if" indentation in one line, add comments to the code and
+	remove some old ones, variable and function renaming. No code changes, just cosmetic/style.
+
+2002-09-01  Chema Celorio  <chema@ximian.com>
+
+	* use the new header gpa-node.c v.s. gpa-private.h
+
+2002-09-01  Marius Andreiana <mandreiana@yahoo.com>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2002-08-30  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-dialog.c (gnome_print_dialog_construct): small change in string
+
+2002-08-28  Chema Celorio  <chema@ximian.com>
+
+	* autogen.sh: an autogen.sh that works with the compiler flags and with mydistcheck
+
+2002-08-27  Chema Celorio  <chema@ximian.com>
+
+	* examples/example_05.c (my_dump_orientation): check if orientation is not
+	NULL before g_freeing it
+
+	* libgnomeprintui/: update to make it work with gpa_node_get_child_from_path
+	which was renamed in libgnomeprint
+
+	* configure.in: depend on libgnomeprint 1.120.0
+
+	* examples/example_10.c (my_app_load): handle delete event of window1
+
+2002-08-04  Chema Celorio  <chema@ximian.com>
+
+	* configure.in: AC_DEFINE WE_ARE_LIBGNOMEPRINT_INTERNALS
+	* acconfig.h: undef WE_ARE_LIBGNOMEPRINT_INTERNALS
+
+2002-08-25  Chema Celorio  <chema@ximian.com>
+
+	* configure.in: bump version to 1.120.0
+
+	* examples/Makefile.am: dont' use -Werror
+
+2002-07-06  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprintui/gnome-print-preview.c: unref the pixbuf after using it.
+
+2002-06-16  Yanko Kaneti  <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-06-15  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* Added gtk-doc support as it's at libgnomeprint.
+	* Makefile.am: Activated the doc build.
+	* configure.in: Added the gtk-doc option.
+	* doc/Makefile.am: Added the private headers that we don't want to
+	create its documentation.
+	* doc/libgnomeprintui-docs.sgml: Clean up for the actual API
+	* doc/libgnomeprintui-sections.txt: ditto.
+	* doc/libgnomeprintui.types: Removed a private function.
+	* doc/tmpl/gnome-print-master-preview.sgml: Forgot to add it last
+	time.
+	* add-printer-dialog.sgml, config-dialog.sgml,
+	gnome-canvas-hacktext.sgml, gnome-print-pixbuf.sgml,
+	gnome-print-preview-icons.sgml, gnome-print-preview-private.sgml,
+	gpa-widget.sgml, media-orientation.sgml, printer-selector.sgml,
+	settings-selector.sgml, transport-selector.sgml: Removed because
+	are private APIs.
+  
+2002-06-15  Carlos Perello Marin <carlos@gnome-db.org>
+
+	* Started the libgnomeprintui reference documentation
+	* doc/sgml/*: Removed. Are generated files.
+	* doc/Makefile.am: Updated from libgnomeprint.
+	* doc/*: Cleanup all to store only non generated files.
+	* doc/tmpl: Added new files documentation and removed libgnomeprint
+	ones.
+	
+2002-06-14  Chema Celorio  <chema@ximian.com>
+
+	* examples/example_10.c (my_print_image_from_disk): add an image and honor
+	Print Preview
+
+2002-06-14  Carlos Perello Marin <carlos@gnome-db.org>
+
 	* libgnomeprintui/gnome-print-preview.c (gpp_image_free_pix): Added to
 	release the memory that we use to create GdkPixbuf.
 	* libgnomeprintui/gnome-print-preview.c (gpp_image):
@@ -26,49 +471,9 @@
 	instead of use the libart-lgpl pixmaps we use gdk-pixbuf ones.
 	Fixes http://bugzilla.gnome.org/show_bug.cgi?id=84021
 
-2002-09-15  Chema Celorio  <chema@ximian.com>
-
-	* configure.in: 1.116.1 here we go
-
-	* libgnomeprintui/gnome-print-i18n.h: copy the macros here
-
-	* libgnomeprintui/gnome-print-i18n.c: include glib
-
-2002-09-03  Stanislav Brabec  <sbrabec@suse.cz>
-
-	* configure.in: Added cs to ALL_LINGUAS.
-
-2002-09-01  Marius Andreiana <mandreiana@yahoo.com>
-
-	* configure.in: added 'ro' to ALL_LINGUAS
-
-2002-08-30  Peteris Krisjanis <peteris.krisjanis@os.lv>
-
-	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
-
-2002-08-25  Chema Celorio  <chema@ximian.com>
-
-	* examples/Makefile.am: remove -Werror
-
-2002-08-17  Simos Xenitellis  <simos@hellug.gr>
-
-	* configure.in: (ALL_LINGUAS) Added Greek (el).
-
-2002-07-10  Damon Chaplin  <damon@ximian.com>
-
-	* libgnomeprintui/gnome-print-master-preview.c: added a menubar, since
-	the toolbar doesn't support keynav. Also moved the 'Page:' field up
-	to the toolbar to cut down on the amount of vertical space wasted.
-	(Also set the shadow of the scrolled window so it looks nicer.)
-	Fixes bug #83141.
-
-2002-06-20  Yanko Kaneti  <yaneti@declera.com>
-
-	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
-
 2002-06-13  Chema Celorio  <chema@ximian.com>
 
-	* this is the gnome-2-0 branch
+	* configure.in: fix http://bugzilla.gnome.org/show_bug.cgi?id=84493
 
 2002-06-10  Chema Celorio  <chema@ximian.com>
 

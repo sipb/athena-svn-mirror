@@ -25,56 +25,27 @@
  *
  */
 
-#define __GNOME_PRINT_DIALOG_C__
-
 #include <config.h>
 
 #include <time.h>
-#include <atk/atkobject.h>
-#include <atk/atkrelationset.h>
+#include <atk/atk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkradiobutton.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbbox.h>
+#include <gtk/gtk.h>
 
 #include <libgnomeprint/gnome-print-config.h>
 
 #include "gnome-print-i18n.h"
-#include "gnome-printer-dialog.h"
+#include "gnome-printer-selector.h"
 #include "gnome-print-paper-selector.h"
 #include "gnome-print-copies.h"
 #include "gnome-print-dialog.h"
+#include "gnome-print-dialog-private.h"
 
 #define PAD 6
 
 enum {
-	ARG_0,
-	ARG_PRINT_CONFIG
-};
-
-struct _GnomePrintDialog {
-	GtkDialog dialog;
-
-	GnomePrintConfig *config;
-
-	GtkWidget *notebook;
-
-	GtkWidget *job;
-	GtkWidget *printer;
-};
-
-struct _GnomePrintDialogClass {
-	GtkDialogClass parent_class;
+	PROP_0,
+	PROP_PRINT_CONFIG
 };
 
 static void gnome_print_dialog_class_init (GnomePrintDialogClass *class);
@@ -84,20 +55,21 @@ static GtkWidget *gpd_create_job_page (GnomePrintDialog *gpd);
 
 static GtkDialogClass *parent_class;
 
-GtkType
+GType
 gnome_print_dialog_get_type (void)
-{
-	static GtkType type = 0;
+{	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"GnomePrintDialog",
-			sizeof (GnomePrintDialog),
+		static const GTypeInfo info = {
 			sizeof (GnomePrintDialogClass),
-			(GtkClassInitFunc) gnome_print_dialog_class_init,
-			(GtkObjectInitFunc) gnome_print_dialog_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) gnome_print_dialog_class_init,
+			NULL, NULL,
+			sizeof (GnomePrintDialog),
+			0,
+			(GInstanceInitFunc) gnome_print_dialog_init,
+			NULL,
 		};
-		type = gtk_type_unique (GTK_TYPE_DIALOG, &info);
+		type = g_type_register_static (GTK_TYPE_DIALOG, "GnomePrintDialog", &info, 0);
 	}
 	return type;
 }
@@ -127,7 +99,7 @@ gnome_print_dialog_set_property (GObject      *object,
 	GnomePrintDialog *gpd = GNOME_PRINT_DIALOG (object);
 
 	switch (prop_id) {
-	case ARG_PRINT_CONFIG:
+	case PROP_PRINT_CONFIG:
 		new_config = g_value_get_pointer (value);
 		if (new_config) {
 			if (gpd->config)
@@ -154,11 +126,11 @@ gnome_print_dialog_class_init (GnomePrintDialogClass *class)
 
 	G_OBJECT_CLASS (class)->set_property = gnome_print_dialog_set_property;
 	g_object_class_install_property (G_OBJECT_CLASS (class),
-		ARG_PRINT_CONFIG,
-		g_param_spec_pointer ("print_config",
-			"Print Config",
-			"Printing Configuration to be used",
-			G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+					 PROP_PRINT_CONFIG,
+					 g_param_spec_pointer ("print_config",
+							       "Print Config",
+							       "Printing Configuration to be used",
+							       G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
 }
 
 static void
@@ -168,7 +140,7 @@ gnome_print_dialog_init (GnomePrintDialog *gpd)
 }
 
 static void
-gpd_copies_set (GnomePrintCopiesSelection *gpc, gint copies, gboolean collate, GnomePrintDialog *gpd)
+gpd_copies_set (GnomePrintCopiesSelector *gpc, gint copies, gboolean collate, GnomePrintDialog *gpd)
 {
 	if (gpd->config) {
 		gnome_print_config_set_int (gpd->config, GNOME_PRINT_KEY_NUM_COPIES, copies);
@@ -191,14 +163,14 @@ gpd_create_job_page (GnomePrintDialog *gpd)
 	f = gtk_frame_new (_("Print range"));
 	gtk_widget_hide (f);
 	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
-	gtk_object_set_data (GTK_OBJECT (hb), "range", f);
+	g_object_set_data (G_OBJECT (hb), "range", f);
 
-	c = gnome_print_copies_selection_new ();
+	c = gnome_print_copies_selector_new ();
 	if (gpd)
-		gtk_signal_connect (GTK_OBJECT (c), "copies_set", GTK_SIGNAL_FUNC (gpd_copies_set), gpd);
+		g_signal_connect (G_OBJECT (c), "copies_set", (GCallback) gpd_copies_set, gpd);
 	gtk_widget_hide (c);
 	gtk_box_pack_start (GTK_BOX (vb), c, FALSE, FALSE, 0);
-	gtk_object_set_data (GTK_OBJECT (hb), "copies", c);
+	g_object_set_data (G_OBJECT (hb), "copies", c);
 
 	return hb;
 }
@@ -217,44 +189,44 @@ gpd_create_range (gint flags, GtkWidget *range, const guchar *clabel, const guch
 
 	if (flags & GNOME_PRINT_RANGE_CURRENT) {
 		rb = gtk_radio_button_new_with_mnemonic (group, clabel);
-		gtk_object_set_data (GTK_OBJECT (t), "current", rb);
+		g_object_set_data (G_OBJECT (t), "current", rb);
 		gtk_widget_show (rb);
 		gtk_table_attach (GTK_TABLE (t), rb, 0, 1, row, row + 1, GTK_FILL | GTK_EXPAND, 
 				  GTK_FILL, 0, 0);
-		group = gtk_radio_button_group (GTK_RADIO_BUTTON (rb));
+		group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb));
 		row += 1;
 	}
 
 	if (flags & GNOME_PRINT_RANGE_ALL) {
 		rb = gtk_radio_button_new_with_mnemonic(group, _("_All"));
-		gtk_object_set_data (GTK_OBJECT (t), "all", rb);
+		g_object_set_data (G_OBJECT (t), "all", rb);
 		gtk_widget_show (rb);
 		gtk_table_attach (GTK_TABLE (t), rb, 0, 1, row, row + 1, GTK_FILL | GTK_EXPAND, 
 				  GTK_FILL, 0, 0);
-		group = gtk_radio_button_group (GTK_RADIO_BUTTON (rb));
+		group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb));
 		row += 1;
 	}
 
 	if (flags & GNOME_PRINT_RANGE_RANGE) {
 		rb = gtk_radio_button_new_with_mnemonic (group, rlabel);
-		gtk_object_set_data (GTK_OBJECT (t), "range", rb);
+		g_object_set_data (G_OBJECT (t), "range", rb);
 		gtk_widget_show (rb);
 		gtk_table_attach (GTK_TABLE (t), rb, 0, 1, row, row + 1, GTK_FILL | GTK_EXPAND, 
 				  GTK_FILL, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (t), "range-widget", range);
+		g_object_set_data (G_OBJECT (t), "range-widget", range);
 		gtk_table_attach (GTK_TABLE (t), range, 1, 2, row, row + 1, GTK_FILL, 0, 0, 0);
-		group = gtk_radio_button_group (GTK_RADIO_BUTTON (rb));
+		group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb));
 		row += 1;
 	}
 
 	if ((flags & GNOME_PRINT_RANGE_SELECTION) || (flags & GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE)) {
 		rb = gtk_radio_button_new_with_mnemonic (group, _("_Selection"));
-		gtk_object_set_data (GTK_OBJECT (t), "selection", rb);
+		g_object_set_data (G_OBJECT (t), "selection", rb);
 		gtk_widget_show (rb);
 		gtk_widget_set_sensitive (rb, !(flags & GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE));
 		gtk_table_attach (GTK_TABLE (t), rb, 0, 1, row, row + 1, GTK_FILL | GTK_EXPAND, 
 				  GTK_FILL, 0, 0);
-		group = gtk_radio_button_group (GTK_RADIO_BUTTON (rb));
+		group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb));
 		row += 1;
 	}
 
@@ -262,8 +234,8 @@ gpd_create_range (gint flags, GtkWidget *range, const guchar *clabel, const guch
 }
 
 /**
- * gnome_print_dialog_new_from_master:
- * @gpw: GnomePrintMaster
+ * gnome_print_dialog_new:
+ * @gpj: GnomePrintJob
  * @title: Title of window.
  * @flags: Options for created widget.
  * 
@@ -278,16 +250,16 @@ gpd_create_range (gint flags, GtkWidget *range, const guchar *clabel, const guch
  * Return value: A newly created and initialised widget.
  **/
 GtkWidget *
-gnome_print_dialog_new_from_master (GnomePrintMaster *gpm, const guchar *title, gint flags)
+gnome_print_dialog_new (GnomePrintJob *gpj, const guchar *title, gint flags)
 {
 	GnomePrintConfig *gpc = NULL;
 	GnomePrintDialog *gpd;
 
-	gpd = GNOME_PRINT_DIALOG (gtk_type_new (GNOME_TYPE_PRINT_DIALOG));
+	gpd = GNOME_PRINT_DIALOG (g_object_new (GNOME_TYPE_PRINT_DIALOG, NULL));
 
 	if (gpd) {
-		if (gpm)
-			gpc = gnome_print_master_get_config (gpm);
+		if (gpj)
+			gpc = gnome_print_job_get_config (gpj);
 		if (gpc == NULL)
 			gpc = gnome_print_config_default ();
 		gpd->config = gpc;
@@ -298,35 +270,14 @@ gnome_print_dialog_new_from_master (GnomePrintMaster *gpm, const guchar *title, 
 }
 
 /**
- * gnome_print_dialog_new:
- * @title: Title of window.
- * @flags: Options for created widget.
- * 
- * Create a new gnome-print-dialog window.
- *
- * The following options flags are available:
- * GNOME_PRINT_DIALOG_RANGE: A range widget container will be created.
- * A range widget must be created separately, using one of the
- * gnome_print_dialog_construct_* functions.
- * GNOME_PRINT_DIALOG_COPIES: A copies widget will be created.
- * 
- * Return value: A newly created and initialised widget.
- **/
-GtkWidget *
-gnome_print_dialog_new (const guchar *title, gint flags)
-{
-	return gnome_print_dialog_new_from_master (NULL, title, flags);
-}
-
-/**
  * gnome_print_dialog_construct:
  * @gpd: A created GnomePrintDialog.
  * @title: Title of the window.
  * @flags: Initialisation options, see gnome_print_dialog_new().
  * 
  * Used for language bindings to post-initialise an object instantiation.
- **/
-
+ *
+ */
 void
 gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint flags)
 {
@@ -343,27 +294,24 @@ gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint f
 	
 		gtk_container_add (GTK_CONTAINER (GTK_DIALOG (gpd)->vbox), gpd->notebook);
 		
-		/* Add the job page */
+		/* Add the job page, if it has any content */
 		gpd->job = gpd_create_job_page (gpd);
 		gtk_container_set_border_width (GTK_CONTAINER (gpd->job), 4);
-		if (flags)
-			gtk_widget_show (gpd->job);
-		l = gtk_label_new_with_mnemonic (_("_Job"));
+		l = gtk_label_new_with_mnemonic (_("Job"));
 		gtk_widget_show (l);
-		
 		gtk_notebook_append_page (GTK_NOTEBOOK (gpd->notebook), gpd->job, l);
 		
 		/* Add the printers page */
 		hb = gtk_hbox_new (FALSE, 0);
 		gtk_widget_show (hb);
 		
-		gpd->printer = gnome_printer_selection_new (gpd->config);
+		gpd->printer = gnome_printer_selector_new (gpd->config);
 		gtk_container_set_border_width (GTK_CONTAINER (hb), 4);
 		gtk_widget_show (gpd->printer);
 		
-		gtk_box_pack_start (GTK_BOX (hb), gpd->printer, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hb), gpd->printer, TRUE, TRUE, 0);
 		
-		l = gtk_label_new_with_mnemonic (_("P_rinter"));
+		l = gtk_label_new_with_mnemonic (_("Printer"));
 		gtk_widget_show (l);
 		
 		gtk_notebook_append_page (GTK_NOTEBOOK (gpd->notebook), hb, l);
@@ -373,14 +321,14 @@ gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint f
 		gtk_container_set_border_width (GTK_CONTAINER (p), 4);
 		gtk_widget_show (p);
 		
-		l = gtk_label_new_with_mnemonic (_("Pap_er"));
+		l = gtk_label_new_with_mnemonic (_("Paper"));
 		gtk_widget_show (l);
 		
 		gtk_notebook_append_page (GTK_NOTEBOOK (gpd->notebook), p, l);
 	} 
 	else {
 		GtkWidget *label;
-		label = gtk_label_new (_("Error in loading printer configuration"));
+		label = gtk_label_new (_("Error while loading printer configuration"));
 		gtk_widget_show (label);
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (gpd)->vbox), label, TRUE, TRUE, 0);
 	}
@@ -406,16 +354,20 @@ gnome_print_dialog_construct (GnomePrintDialog *gpd, const guchar *title, gint f
 	/* Construct job options, if needed */
 	if (flags & GNOME_PRINT_DIALOG_RANGE) {
 		GtkWidget *r;
-		r = gtk_object_get_data (GTK_OBJECT (gpd->job), "range");
-		if (r)
+		r = g_object_get_data (G_OBJECT (gpd->job), "range");
+		if (r) {
 			gtk_widget_show (r);
+			gtk_widget_show (gpd->job);
+		}
 	}
 
 	if (flags & GNOME_PRINT_DIALOG_COPIES) {
 		GtkWidget *c;
-		c = gtk_object_get_data (GTK_OBJECT (gpd->job), "copies");
-		if (c)
+		c = g_object_get_data (G_OBJECT (gpd->job), "copies");
+		if (c) {
 			gtk_widget_show (c);
+			gtk_widget_show (gpd->job);
+		}
 	}
 }
 
@@ -437,16 +389,16 @@ gnome_print_dialog_construct_range_custom (GnomePrintDialog *gpd, GtkWidget *cus
 	g_return_if_fail (custom != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (custom));
 
-	f = gtk_object_get_data (GTK_OBJECT (gpd->job), "range");
+	f = g_object_get_data (G_OBJECT (gpd->job), "range");
 	g_return_if_fail (f != NULL);
-	r = gtk_object_get_data (GTK_OBJECT (f), "range");
+	r = g_object_get_data (G_OBJECT (f), "range");
 	if (r)
 		gtk_container_remove (GTK_CONTAINER (f), r);
 
 	gtk_widget_show (custom);
 	gtk_widget_show (gpd->job);
 	gtk_container_add (GTK_CONTAINER (f), custom);
-	gtk_object_set_data (GTK_OBJECT (f), "range", custom);
+	g_object_set_data (G_OBJECT (f), "range", custom);
 }
 
 /**
@@ -480,9 +432,9 @@ gnome_print_dialog_construct_range_any (GnomePrintDialog *gpd, gint flags, GtkWi
 	g_return_if_fail (!(!range_widget && (flags & GNOME_PRINT_RANGE_RANGE)));
 	g_return_if_fail (!((flags & GNOME_PRINT_RANGE_SELECTION) && (flags & GNOME_PRINT_RANGE_SELECTION_UNSENSITIVE)));
 
-	f = gtk_object_get_data (GTK_OBJECT (gpd->job), "range");
+	f = g_object_get_data (G_OBJECT (gpd->job), "range");
 	g_return_if_fail (f != NULL);
-	r = gtk_object_get_data (GTK_OBJECT (f), "range");
+	r = g_object_get_data (G_OBJECT (f), "range");
 	if (r)
 		gtk_container_remove (GTK_CONTAINER (f), r);
 
@@ -494,7 +446,7 @@ gnome_print_dialog_construct_range_any (GnomePrintDialog *gpd, gint flags, GtkWi
 		gtk_container_add (GTK_CONTAINER (f), r);
 	}
 
-	gtk_object_set_data (GTK_OBJECT (f), "range", r);
+	g_object_set_data (G_OBJECT (f), "range", r);
 }
 
 /**
@@ -532,7 +484,7 @@ gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, gint flags, gint
 		gtk_box_pack_start (GTK_BOX (hbox), l, FALSE, FALSE, 0);
 
 		a = gtk_adjustment_new (start, start, end, 1, 10, 10);
-		gtk_object_set_data (GTK_OBJECT (hbox), "from", a);
+		g_object_set_data (G_OBJECT (hbox), "from", a);
 		sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1, 0.0);
 		gtk_widget_show (sb);
 		gtk_box_pack_start (GTK_BOX (hbox), sb, FALSE, FALSE, 0);
@@ -556,7 +508,7 @@ gnome_print_dialog_construct_range_page (GnomePrintDialog *gpd, gint flags, gint
 		gtk_box_pack_start (GTK_BOX (hbox), l, FALSE, FALSE, 0);
 
 		a = gtk_adjustment_new (end, start, end, 1, 10, 10);
-		gtk_object_set_data (GTK_OBJECT (hbox), "to", a);
+		g_object_set_data (G_OBJECT (hbox), "to", a);
 		sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1, 0.0);
 		gtk_widget_show (sb);
 		gtk_box_pack_start (GTK_BOX (hbox), sb, FALSE, FALSE, 0);
@@ -601,24 +553,24 @@ gnome_print_dialog_get_range (GnomePrintDialog *gpd)
 	g_return_val_if_fail (gpd != NULL, 0);
 	g_return_val_if_fail (GNOME_IS_PRINT_DIALOG (gpd), 0);
 
-	f = gtk_object_get_data (GTK_OBJECT (gpd->job), "range");
+	f = g_object_get_data (G_OBJECT (gpd->job), "range");
 	g_return_val_if_fail (f != NULL, 0);
-	r = gtk_object_get_data (GTK_OBJECT (f), "range");
+	r = g_object_get_data (G_OBJECT (f), "range");
 	g_return_val_if_fail (r != NULL, 0);
 
-	b = gtk_object_get_data (GTK_OBJECT (r), "current");
+	b = g_object_get_data (G_OBJECT (r), "current");
 	if (b && GTK_IS_TOGGLE_BUTTON (b) && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) 
 		return GNOME_PRINT_RANGE_CURRENT;
 	
-	b = gtk_object_get_data (GTK_OBJECT (r), "all");
+	b = g_object_get_data (G_OBJECT (r), "all");
 	if (b && GTK_IS_TOGGLE_BUTTON (b) && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) 
 		return GNOME_PRINT_RANGE_ALL;
 
-	b = gtk_object_get_data (GTK_OBJECT (r), "range");
+	b = g_object_get_data (G_OBJECT (r), "range");
 	if (b && GTK_IS_TOGGLE_BUTTON (b) && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) 
 		return GNOME_PRINT_RANGE_RANGE;
 	
-	b = gtk_object_get_data (GTK_OBJECT (r), "selection");
+	b = g_object_get_data (G_OBJECT (r), "selection");
 	if (b && GTK_IS_TOGGLE_BUTTON (b) && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) 
 		return GNOME_PRINT_RANGE_SELECTION;
 
@@ -649,17 +601,17 @@ gnome_print_dialog_get_range_page (GnomePrintDialog *gpd, gint *start, gint *end
 
 	if (mask & GNOME_PRINT_RANGE_RANGE) {
 		GtkObject *f, *r, *w, *a;
-		f = gtk_object_get_data (GTK_OBJECT (gpd->job), "range");
+		f = g_object_get_data (G_OBJECT (gpd->job), "range");
 		g_return_val_if_fail (f != NULL, 0);
-		r = gtk_object_get_data (GTK_OBJECT (f), "range");
+		r = g_object_get_data (G_OBJECT (f), "range");
 		g_return_val_if_fail (r != NULL, 0);
-		w = gtk_object_get_data (GTK_OBJECT (r), "range-widget");
+		w = g_object_get_data (G_OBJECT (r), "range-widget");
 		g_return_val_if_fail (w != NULL, 0);
-		a = gtk_object_get_data (GTK_OBJECT (w), "from");
+		a = g_object_get_data (G_OBJECT (w), "from");
 		g_return_val_if_fail (a && GTK_IS_ADJUSTMENT (a), 0);
 		if (start)
 			*start = (gint) gtk_adjustment_get_value (GTK_ADJUSTMENT (a));
-		a = gtk_object_get_data (GTK_OBJECT (w), "to");
+		a = g_object_get_data (G_OBJECT (w), "to");
 		g_return_val_if_fail (a && GTK_IS_ADJUSTMENT (a), 0);
 		if (end)
 			*end = (gint) gtk_adjustment_get_value (GTK_ADJUSTMENT (a));
@@ -688,14 +640,14 @@ gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gint *collat
 	if (collate) *collate = FALSE;
 
 	if (gpd->job) {
-		GnomePrintCopiesSelection *c;
+		GnomePrintCopiesSelector *c;
 
-		c = gtk_object_get_data (GTK_OBJECT (gpd->job), "copies");
-		if (c && GNOME_IS_PRINT_COPIES_SELECTION (c)) {
+		c = g_object_get_data (G_OBJECT (gpd->job), "copies");
+		if (c && GNOME_IS_PRINT_COPIES_SELECTOR (c)) {
 			if (copies)
-				*copies = gnome_print_copies_selection_get_copies (c);
+				*copies = gnome_print_copies_selector_get_copies (c);
 			if (collate)
-				*collate = gnome_print_copies_selection_get_collate (c);
+				*collate = gnome_print_copies_selector_get_collate (c);
 		}
 	}
 }
@@ -711,15 +663,15 @@ gnome_print_dialog_get_copies (GnomePrintDialog *gpd, gint *copies, gint *collat
 void
 gnome_print_dialog_set_copies (GnomePrintDialog *gpd, gint copies, gint collate)
 {
-	GnomePrintCopiesSelection *c;
+	GnomePrintCopiesSelector *c;
 
 	g_return_if_fail (gpd != NULL);
 	g_return_if_fail (GNOME_IS_PRINT_DIALOG (gpd));
 	g_return_if_fail (gpd->job != NULL);
-	c = gtk_object_get_data (GTK_OBJECT (gpd->job), "copies");
-	g_return_if_fail (c && GNOME_IS_PRINT_COPIES_SELECTION (c));
+	c = g_object_get_data (G_OBJECT (gpd->job), "copies");
+	g_return_if_fail (c && GNOME_IS_PRINT_COPIES_SELECTOR (c));
 
-	gnome_print_copies_selection_set_copies (c, copies, collate);
+	gnome_print_copies_selector_set_copies (c, copies, collate);
 }
 
 /**

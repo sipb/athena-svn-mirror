@@ -48,10 +48,10 @@ example_08.c
 Appending custom widgets to a GnomePrintDialog. This example also dumps a GnomePrintConfig tree
 when the "Dump Tree" button is clicked (used for debuggin purposes)
 
-example_09.c (functions in libgnomeprint for this example not yet implemented)
+example_09.c
 ------------
-Serializing and de-serializing a GnomePrintConfig object. This dialog should saves its configuration
-everytime it is used.
+Serializing and de-serializing a GnomePrintConfig object. The print dialog remembers its configuration
+from the last time it was used.
 
 <GUI + GLADE>
 example_10.c
@@ -59,6 +59,11 @@ example_10.c
 Example with an app, dialog, setup and print preview
 
 example_11.c (not yet implemented)
+------------
+Directly printing without going thru a GnomePrintDilaog. Prints a PDF file from the File->Export
+menu and print previews it form File->Print Preview.
+
+example_12.c (not yet implemented)
 ------------
 Directly printing without going thru a GnomePrintDilaog. Prints a PDF file from the File->Export
 menu and print previews it form File->Print Preview.

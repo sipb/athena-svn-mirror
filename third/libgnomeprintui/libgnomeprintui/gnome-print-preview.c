@@ -24,20 +24,18 @@
  *
  */
 
-#define __GNOME_PRINT_PREVIEW_C__
+#include <config.h>
 
 #include <string.h>
 #include <math.h>
-
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include <gtk/gtksignal.h>
-
 #include <libgnomecanvas/gnome-canvas-clipgroup.h>
+#include <libgnomeprint/private/gp-gc-private.h>
+#include <libgnomeprint/private/gnome-glyphlist-private.h>
 
 #include "gnome-canvas-hacktext.h"
 #include "gnome-print-preview-private.h"
-#include <libgnomeprint/private/gp-gc-private.h>
 
 struct _GnomePrintPreviewPrivate {
 	GPGC * gc;
@@ -51,9 +49,25 @@ struct _GnomePrintPreviewPrivate {
 
 	/* The current page */
 	GnomeCanvasItem *page;
+
+	/* Strict theme compliance [#96802] */
+	gboolean theme_compliance; 
 };
 
 static GnomePrintContextClass *parent_class;
+
+static void
+outline_set_style_cb (GtkWidget *canvas, GtkStyle *ps, GnomeCanvasItem *item)
+{
+	gint32 color;
+	GtkStyle *style;
+
+	style = gtk_widget_get_style (GTK_WIDGET (canvas));
+	color = GPP_COLOR_RGBA (style->text [GTK_STATE_NORMAL], 0xff);
+	
+	gnome_canvas_item_set (item, "outline_color_rgba", color, NULL);
+}
+	
 
 static int
 gpp_stroke (GnomePrintContext *pc, const ArtBpath *bpath)
@@ -88,9 +102,26 @@ gpp_stroke (GnomePrintContext *pc, const ArtBpath *bpath)
 
 	gnome_canvas_path_def_unref (path);
 
+	if (pp->priv->theme_compliance) {
+		g_signal_connect (G_OBJECT (item->canvas), "style_set",
+				  G_CALLBACK (outline_set_style_cb), item);
+	}
+	
 	return 1;
 }
 
+static void
+fill_set_style_cb (GtkWidget *canvas, GtkStyle *ps, GnomeCanvasItem *item)
+{
+	gint32 color;
+	GtkStyle *style;
+
+	style = gtk_widget_get_style (GTK_WIDGET (canvas));
+	color = GPP_COLOR_RGBA (style->text [GTK_STATE_NORMAL], 0xff);
+	
+	gnome_canvas_item_set (item, "fill_color_rgba", color, NULL);
+}
+	
 static int
 gpp_fill (GnomePrintContext *pc, const ArtBpath *bpath, ArtWindRule rule)
 {
@@ -116,8 +147,12 @@ gpp_fill (GnomePrintContext *pc, const ArtBpath *bpath, ArtWindRule rule)
 		"fill_color_rgba", gp_gc_get_rgba (pc->gc),
 		"wind", rule,
 		NULL);
-
 	gnome_canvas_path_def_unref (path);
+
+	if (pp->priv->theme_compliance) {
+		g_signal_connect (G_OBJECT (item->canvas), "style_set",
+				  G_CALLBACK (fill_set_style_cb), item);
+	}
 
 	return 1;
 }
@@ -217,15 +252,15 @@ gpp_image (GnomePrintContext *pc, const gdouble *affine, const guchar *px, gint 
 	group = (GnomeCanvasGroup *) gp_gc_get_data (pp->priv->gc);
 
 	item = gnome_canvas_item_new (group,
-		GNOME_TYPE_CANVAS_PIXBUF,
-		"pixbuf", pixbuf,
-		"x",      0.0,
-		"y",      0.0,
-		"width",  (gdouble) w,
-		"height", (gdouble) h,
-		"anchor", GTK_ANCHOR_NW,
-		NULL);
-
+				      GNOME_TYPE_CANVAS_PIXBUF,
+				      "pixbuf", pixbuf,
+				      "x",      0.0,
+				      "y",      0.0,
+				      "width",  (gdouble) w,
+				      "height", (gdouble) h,
+				      "anchor", GTK_ANCHOR_NW,
+				      NULL);
+	g_object_unref (G_OBJECT (pixbuf));
 
 	/* Apply the transformation for the image */
 	{
@@ -248,13 +283,34 @@ gpp_image (GnomePrintContext *pc, const gdouble *affine, const guchar *px, gint 
 static int
 gpp_showpage (GnomePrintContext *pc)
 {
-	return 0;
+	return GNOME_PRINT_OK;
 }
 
 static int
 gpp_beginpage (GnomePrintContext *pc, const guchar *name)
 {
-	return 0;
+	return GNOME_PRINT_OK;
+}
+
+static void
+glyphlist_set_style_cb (GtkWidget *canvas, GtkStyle *ps, GnomeCanvasItem *item)
+{
+	GnomeGlyphList *gl, *new;
+	gint32 color;
+	GtkStyle *style;
+	gint i;
+
+	style = gtk_widget_get_style (GTK_WIDGET (canvas));
+	color = GPP_COLOR_RGBA (style->text [GTK_STATE_NORMAL], 0xff);
+
+	g_object_get (G_OBJECT (item), "glyphlist", &gl, NULL);
+	new = gnome_glyphlist_duplicate (gl);
+	for (i = 0; i < new->r_length; i++) {
+		if (new->rules[i].code ==  GGL_COLOR) {
+			new->rules[i].value.ival = color;
+		}
+	}
+	gnome_canvas_item_set (item, "glyphlist", new, NULL);
 }
 
 static int
@@ -265,28 +321,30 @@ gpp_glyphlist (GnomePrintContext *pc, const gdouble *affine, GnomeGlyphList * gl
 	GnomeCanvasItem *item;
 	double transform[6], a[6];
 
-
 	/*
 	 * The X and Y positions were computed to be the base
 	 * with the translation already done for the new
 	 * Postscript->Canvas translation
 	 */
-	
 	memcpy (transform, gp_gc_get_ctm (pc->gc), sizeof (transform));
 	art_affine_scale (a, 1.0, -1.0);
 	art_affine_multiply (transform, a, affine);
 
 	group = (GnomeCanvasGroup *) gp_gc_get_data (pp->priv->gc);
-
 	item = gnome_canvas_item_new (group,
-		gnome_canvas_hacktext_get_type (),
-		"x", 0.0,
-		"y", 0.0,
-		"glyphlist", glyphlist,
-		NULL);
+				      gnome_canvas_hacktext_get_type (),
+				      "x", 0.0,
+				      "y", 0.0,
+				      "glyphlist", glyphlist,
+				      NULL);
 
 	gnome_canvas_item_affine_absolute (item, transform);
 
+	if (pp->priv->theme_compliance) {
+		g_signal_connect (G_OBJECT (item->canvas), "style_set",
+				  G_CALLBACK (glyphlist_set_style_cb), item);
+	}
+	
 	return 0;
 }
 
@@ -329,7 +387,7 @@ gpp_finalize (GObject *object)
 	gp_gc_unref (priv->gc);
 
 	if (pp->canvas)
-		gtk_object_unref (GTK_OBJECT (pp->canvas));
+		g_object_unref (G_OBJECT (pp->canvas));
 
 	if (priv->page)
 		gtk_object_destroy (GTK_OBJECT (priv->page));
@@ -353,20 +411,15 @@ class_init (GnomePrintPreviewClass *klass)
 	object_class->finalize = gpp_finalize;
 	
 	pc_class->beginpage = gpp_beginpage;
-	pc_class->showpage = gpp_showpage;
-
-	pc_class->clip = gpp_clip;
-	pc_class->fill = gpp_fill;
-	pc_class->stroke = gpp_stroke;
-
-	pc_class->image = gpp_image;
-
+	pc_class->showpage  = gpp_showpage;
+	pc_class->clip      = gpp_clip;
+	pc_class->fill      = gpp_fill;
+	pc_class->stroke    = gpp_stroke;
+	pc_class->image     = gpp_image;
 	pc_class->glyphlist = gpp_glyphlist;
-	
-	pc_class->gsave = gpp_gsave;
-	pc_class->grestore = gpp_grestore;
-
-	pc_class->close = gpp_close;
+	pc_class->gsave     = gpp_gsave;
+	pc_class->grestore  = gpp_grestore;
+	pc_class->close     = gpp_close;
 }
 
 static void
@@ -381,6 +434,21 @@ static void
 clear_val (GtkObject *object, void **val)
 {
 	*val = NULL;
+}
+
+/**
+ * gnome_print_preview_theme_compliance:
+ * @pp: 
+ * @compliance: 
+ * 
+ * This has to go away for GNOME 2.4. Make compliance an argument of
+ * gnome_print_preview_new_full
+ **/
+void
+gnome_print_preview_theme_compliance (GnomePrintPreview *pp,
+				      gboolean compliance)
+{
+	pp->priv->theme_compliance = compliance;
 }
 
 GnomePrintContext *
@@ -402,11 +470,12 @@ gnome_print_preview_new_full (GnomePrintConfig *config, GnomeCanvas *canvas,
 	ret = gnome_print_context_construct (ctx, config);
 	if (ret != GNOME_PRINT_OK) {
 		g_object_unref (ctx);
+		g_warning ("Could not construct the GnomePrintPreview context\n");
 		return NULL;
 	}
 	preview = GNOME_PRINT_PREVIEW (ctx);
 
-	gtk_object_ref (GTK_OBJECT (canvas));
+	g_object_ref (G_OBJECT (canvas));
 	preview->canvas = canvas;
 
 	gnome_canvas_set_scroll_region (canvas, region->x0, region->y0, region->x1, region->y1);
@@ -419,10 +488,10 @@ gnome_print_preview_new_full (GnomePrintConfig *config, GnomeCanvas *canvas,
 						     GNOME_TYPE_CANVAS_GROUP,
 						     "x", 0.0, "y", 0.0, NULL);
 
-	gtk_signal_connect (GTK_OBJECT (preview->priv->page), "destroy",
-			    GTK_SIGNAL_FUNC (clear_val), &preview->priv->page);
-	gtk_signal_connect (GTK_OBJECT (preview->priv->root), "destroy",
-			    GTK_SIGNAL_FUNC (clear_val), &preview->priv->root);
+	g_signal_connect (G_OBJECT (preview->priv->page), "destroy",
+			  (GCallback) clear_val, &preview->priv->page);
+	g_signal_connect (G_OBJECT (preview->priv->root), "destroy",
+			  (GCallback) clear_val, &preview->priv->root);
 
 	/* Setup base group */
 	group = GNOME_CANVAS_GROUP (preview->priv->page);
@@ -435,15 +504,14 @@ gnome_print_preview_new_full (GnomePrintConfig *config, GnomeCanvas *canvas,
 
 /**
  * gnome_print_preview_new:
+ * @config:
  * @canvas: Canvas on which we display the print preview
- * @paper_size: A valid name for a paper size
  *
  * Creates a new PrintPreview object that use the @canvas GnomeCanvas 
  * as its rendering backend.
  *
  * Returns: A GnomePrintContext suitable for using with the GNOME print API.
  */
-
 GnomePrintContext *
 gnome_print_preview_new (GnomePrintConfig *config, GnomeCanvas *canvas)
 {
@@ -489,6 +557,7 @@ GType
 gnome_print_preview_get_type (void)
 {
 	static GType preview_type = 0;
+	
 	if (!preview_type) {
 		static const GTypeInfo preview_info = {
 			sizeof (GnomePrintPreviewClass),

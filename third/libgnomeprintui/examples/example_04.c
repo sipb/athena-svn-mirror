@@ -28,7 +28,7 @@
  */
 
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-master.h>
+#include <libgnomeprint/gnome-print-job.h>
 #include <libgnomeprintui/gnome-print-dialog.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkdialog.h>
@@ -79,21 +79,26 @@ my_draw (GnomePrintContext *gpc)
 	gnome_print_show (gpc, cyrillic);
 
 	gnome_print_showpage (gpc);
+
+	g_object_unref (G_OBJECT (font));
 }
 
 static void
 my_print (void)
 {
-	GnomePrintMaster *gpm;
+	GnomePrintJob *job;
 	GnomePrintContext *gpc;
 
-	gpm = gnome_print_master_new ();
-	gpc = gnome_print_master_get_context (gpm);
+	job = gnome_print_job_new (NULL);
+	gpc = gnome_print_job_get_context (job);
 
 	my_draw (gpc);
 
-	gnome_print_master_close (gpm);
-	gnome_print_master_print (gpm);
+	gnome_print_job_close (job);
+	gnome_print_job_print (job);
+
+	g_object_unref (G_OBJECT (gpc));
+	g_object_unref (G_OBJECT (job));
 }
 
 int

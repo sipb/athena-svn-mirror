@@ -1,0 +1,248 @@
+<!-- ##### SECTION Title ##### -->
+gnome-print-paper-selector
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GnomePaperPreview ##### -->
+<para>
+
+</para>
+
+@box: 
+@canvas: 
+@item: 
+@config: 
+
+<!-- ##### STRUCT GnomePaperPreviewClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_TYPE_PAPER_SELECTOR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_PAPER_SELECTOR ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_PAPER_SELECTOR_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_IS_PAPER_SELECTOR ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_IS_PAPER_SELECTOR_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_PAPER_SELECTOR_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### STRUCT GnomePaperSelector ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePaperSelectorClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_TYPE_PRINT_UNIT_SELECTOR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_PRINT_UNIT_SELECTOR ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_PRINT_UNIT_SELECTOR_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_IS_PRINT_UNIT_SELECTOR ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_IS_PRINT_UNIT_SELECTOR_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_PRINT_UNIT_SELECTOR_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### STRUCT GnomePrintUnitSelector ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePrintUnitSelectorClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_paper_preview_new ##### -->
+<para>
+
+</para>
+
+@config: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_paper_selector_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_paper_selector_new ##### -->
+<para>
+
+</para>
+
+@config: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_paper_selector_new_with_flags ##### -->
+<para>
+
+</para>
+
+@config: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_new ##### -->
+<para>
+
+</para>
+
+@bases: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_get_unit ##### -->
+<para>
+
+</para>
+
+@selector: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_set_bases ##### -->
+<para>
+
+</para>
+
+@selector: 
+@bases: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_set_unit ##### -->
+<para>
+
+</para>
+
+@selector: 
+@unit: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_add_adjustment ##### -->
+<para>
+
+</para>
+
+@selector: 
+@adjustment: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_selector_remove_adjustment ##### -->
+<para>
+
+</para>
+
+@selector: 
+@adjustment: 
+
+

@@ -23,29 +23,20 @@
  *
  */
 
-#define __GNOME_PRINT_COPIES_C__
+/* FIXME: Hook this up to GnomePrintConfig and no need to have signals (Chema) */
 
 #include <config.h>
 
-#include <atk/atkobject.h>
-#include <atk/atkimage.h>
-#include <atk/atkrelationset.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkimage.h>
+#include <atk/atk.h>
+#include <gtk/gtk.h>
 
 #include "gnome-print-i18n.h"
 #include "gnome-print-copies.h"
+#include "gnome-printui-marshal.h"
 
 enum {COPIES_SET, LAST_SIGNAL};
 
-struct _GnomePrintCopiesSelection {
+struct _GnomePrintCopiesSelector {
 	GtkVBox vbox;
   
 	guint changing : 1;
@@ -55,15 +46,15 @@ struct _GnomePrintCopiesSelection {
 	GtkWidget *collate_image;
 };
 
-struct _GnomePrintCopiesSelectionClass {
+struct _GnomePrintCopiesSelectorClass {
 	GtkVBoxClass parent_class;
 
-	void (* copies_set) (GnomePrintCopiesSelection * gpc, gint copies, gboolean collate);
+	void (* copies_set) (GnomePrintCopiesSelector * gpc, gint copies, gboolean collate);
 };
 
-static void gnome_print_copies_selection_class_init (GnomePrintCopiesSelectionClass *class);
-static void gnome_print_copies_selection_init (GnomePrintCopiesSelection *gspaper);
-static void gnome_print_copies_selection_destroy (GtkObject *object);
+static void gnome_print_copies_selector_class_init (GnomePrintCopiesSelectorClass *class);
+static void gnome_print_copies_selector_init       (GnomePrintCopiesSelector *gspaper);
+static void gnome_print_copies_selector_destroy    (GtkObject *object);
 
 /* again, these images may be here temporarily */
 
@@ -161,46 +152,52 @@ static const char *nocollate_xpm[] = {
 static GtkVBoxClass *parent_class;
 static guint gpc_signals[LAST_SIGNAL] = {0};
 
-GtkType
-gnome_print_copies_selection_get_type (void)
+GType
+gnome_print_copies_selector_get_type (void)
 {
-	static GtkType copies_type = 0;
-	if (!copies_type) {
-		GtkTypeInfo copies_info = {
-			"GnomePrintCopiesSelection",
-			sizeof (GnomePrintCopiesSelection),
-			sizeof (GnomePrintCopiesSelectionClass),
-			(GtkClassInitFunc) gnome_print_copies_selection_class_init,
-			(GtkObjectInitFunc) gnome_print_copies_selection_init,
-			NULL, NULL, NULL
+	static GType type = 0;
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (GnomePrintCopiesSelectorClass),
+			NULL, NULL,
+			(GClassInitFunc) gnome_print_copies_selector_class_init,
+			NULL, NULL,
+			sizeof (GnomePrintCopiesSelector),
+			0,
+			(GInstanceInitFunc) gnome_print_copies_selector_init,
+			NULL,
 		};
-		copies_type = gtk_type_unique (gtk_vbox_get_type (), &copies_info);
+		type = g_type_register_static (GTK_TYPE_VBOX, "GnomePrintCopiesSelector", &info, 0);
 	}
-	return copies_type;
+	return type;
 }
 
 static void
-gnome_print_copies_selection_class_init (GnomePrintCopiesSelectionClass *klass)
+gnome_print_copies_selector_class_init (GnomePrintCopiesSelectorClass *klass)
 {
-	GtkObjectClass *object_class;
+	GtkObjectClass *gtk_object_class;
+	GObjectClass *object_class;
   
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
+	gtk_object_class = (GtkObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_vbox_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	gpc_signals[COPIES_SET] = gtk_signal_new ("copies_set",
-						  GTK_RUN_FIRST,
-						  G_OBJECT_CLASS_TYPE (klass),
-						  GTK_SIGNAL_OFFSET (GnomePrintCopiesSelectionClass, copies_set),
-						  gtk_marshal_NONE__INT_INT,
-						  GTK_TYPE_NONE,
-						  2, GTK_TYPE_INT, GTK_TYPE_INT);
+	gpc_signals[COPIES_SET] = g_signal_new ("copies_set",
+						G_OBJECT_CLASS_TYPE (object_class),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (GnomePrintCopiesSelectorClass, copies_set),
+						NULL, NULL,
+						libgnomeprintui_marshal_INT__INT_BOOLEAN,
+						G_TYPE_NONE,
+						2,
+						G_TYPE_INT, G_TYPE_BOOLEAN);
 
-	object_class->destroy = gnome_print_copies_selection_destroy;
+	gtk_object_class->destroy = gnome_print_copies_selector_destroy;
 }
 
 static void
-collate_toggled (GtkWidget *widget, GnomePrintCopiesSelection *gpc)
+collate_toggled (GtkWidget *widget, GnomePrintCopiesSelector *gpc)
 {
 	gint copies;
 	gboolean collate;
@@ -211,15 +208,16 @@ collate_toggled (GtkWidget *widget, GnomePrintCopiesSelection *gpc)
 
 	pb = gdk_pixbuf_new_from_xpm_data (collate ? collate_xpm : nocollate_xpm);
 	gtk_image_set_from_pixbuf (GTK_IMAGE (gpc->collate_image), pb);
-	gdk_pixbuf_unref (pb);
+	g_object_unref (G_OBJECT (pb));
 
-	if (gpc->changing) return;
+	if (gpc->changing)
+		return;
 
-	gtk_signal_emit ((GtkObject *) gpc, gpc_signals[COPIES_SET], copies, collate);
+	g_signal_emit (G_OBJECT (gpc), gpc_signals[COPIES_SET], 0, copies, collate);
 }
 
 static void
-copies_changed (GtkAdjustment *adj, GnomePrintCopiesSelection *gpc)
+copies_changed (GtkAdjustment *adj, GnomePrintCopiesSelector *gpc)
 {
 	gint copies;
 	gboolean collate;
@@ -230,11 +228,11 @@ copies_changed (GtkAdjustment *adj, GnomePrintCopiesSelection *gpc)
 	if (gpc->changing)
 		return;
 
-	gtk_signal_emit ((GtkObject *) gpc, gpc_signals[COPIES_SET], copies, collate);
+	g_signal_emit (G_OBJECT (gpc), gpc_signals[COPIES_SET], 0, copies, collate);
 }
 
 static void
-gnome_print_copies_selection_init (GnomePrintCopiesSelection *gpc)
+gnome_print_copies_selector_init (GnomePrintCopiesSelector *gpc)
 {
 	GtkWidget *table, *label, *frame;
 	GtkAdjustment *adj;
@@ -276,7 +274,7 @@ gnome_print_copies_selection_init (GnomePrintCopiesSelection *gpc)
 
 	pb = gdk_pixbuf_new_from_xpm_data (nocollate_xpm);
 	gpc->collate_image = gtk_image_new_from_pixbuf (pb);
-	gdk_pixbuf_unref (pb);
+	g_object_unref (G_OBJECT (pb));
 	gtk_widget_show (gpc->collate_image);
 	gtk_table_attach_defaults ((GtkTable *)table, gpc->collate_image, 0, 1, 1, 2);
 	atko = gtk_widget_get_accessible (gpc->collate_image);
@@ -289,14 +287,14 @@ gnome_print_copies_selection_init (GnomePrintCopiesSelection *gpc)
 	atko = gtk_widget_get_accessible (gpc->collate);
 	atk_object_set_description (atko, _("If copies of the document are printed separately, one after another, rather than being interleaved"));
 
-	gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-			    GTK_SIGNAL_FUNC (copies_changed), gpc);
-	gtk_signal_connect (GTK_OBJECT (gpc->collate), "toggled", 
-			    GTK_SIGNAL_FUNC (collate_toggled), gpc);
+	g_signal_connect (G_OBJECT (adj), "value_changed",
+			  (GCallback) copies_changed, gpc);
+	g_signal_connect (G_OBJECT (gpc->collate), "toggled",
+			  (GCallback) collate_toggled, gpc);
 }
 
 /**
- * gnome_print_copies_selection_new:
+ * gnome_print_copies_selector_new:
  *
  * Create a new GnomePrintCopies widget.
  * 
@@ -304,17 +302,17 @@ gnome_print_copies_selection_init (GnomePrintCopiesSelection *gpc)
  **/
 
 GtkWidget *
-gnome_print_copies_selection_new (void)
+gnome_print_copies_selector_new (void)
 {
-	return GTK_WIDGET (gtk_type_new (GNOME_TYPE_PRINT_COPIES_SELECTION));
+	return GTK_WIDGET (g_object_new (GNOME_TYPE_PRINT_COPIES_SELECTOR, NULL));
 }
 
 static void
-gnome_print_copies_selection_destroy (GtkObject *object)
+gnome_print_copies_selector_destroy (GtkObject *object)
 {
-	GnomePrintCopiesSelection *gpc;
+	GnomePrintCopiesSelector *gpc;
 	
-	gpc = GNOME_PRINT_COPIES_SELECTION (object);
+	gpc = GNOME_PRINT_COPIES_SELECTOR (object);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -330,10 +328,10 @@ gnome_print_copies_selection_destroy (GtkObject *object)
  **/
 
 void
-gnome_print_copies_selection_set_copies (GnomePrintCopiesSelection *gpc, gint copies, gint collate)
+gnome_print_copies_selector_set_copies (GnomePrintCopiesSelector *gpc, gint copies, gint collate)
 {
 	g_return_if_fail (gpc != NULL);
-	g_return_if_fail (GNOME_IS_PRINT_COPIES_SELECTION (gpc));
+	g_return_if_fail (GNOME_IS_PRINT_COPIES_SELECTOR (gpc));
 
 	gpc->changing = TRUE;
 
@@ -354,10 +352,10 @@ gnome_print_copies_selection_set_copies (GnomePrintCopiesSelection *gpc, gint co
  **/
 
 gint
-gnome_print_copies_selection_get_copies (GnomePrintCopiesSelection *gpc)
+gnome_print_copies_selector_get_copies (GnomePrintCopiesSelector *gpc)
 {
 	g_return_val_if_fail (gpc != NULL, 0);
-	g_return_val_if_fail (GNOME_IS_PRINT_COPIES_SELECTION (gpc), 0);
+	g_return_val_if_fail (GNOME_IS_PRINT_COPIES_SELECTOR (gpc), 0);
 
 	return gtk_spin_button_get_value_as_int ((GtkSpinButton *) gpc->copies);
 }
@@ -372,10 +370,10 @@ gnome_print_copies_selection_get_copies (GnomePrintCopiesSelection *gpc)
  **/
 
 gboolean
-gnome_print_copies_selection_get_collate (GnomePrintCopiesSelection *gpc)
+gnome_print_copies_selector_get_collate (GnomePrintCopiesSelector *gpc)
 {
 	g_return_val_if_fail (gpc != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_PRINT_COPIES_SELECTION (gpc), FALSE);
+	g_return_val_if_fail (GNOME_IS_PRINT_COPIES_SELECTOR (gpc), FALSE);
 
 	return GTK_TOGGLE_BUTTON (gpc->collate)->active?TRUE:FALSE;
 }

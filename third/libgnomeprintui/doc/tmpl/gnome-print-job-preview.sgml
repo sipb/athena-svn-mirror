@@ -1,0 +1,93 @@
+<!-- ##### SECTION Title ##### -->
+gnome-print-job-preview
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GnomePrintJobPreview ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePrintJobPreviewClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_TYPE_PRINT_JOB_PREVIEW ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_PRINT_JOB_PREVIEW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_PRINT_JOB_PREVIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_IS_PRINT_JOB_PREVIEW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO GNOME_IS_PRINT_JOB_PREVIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO GNOME_PRINT_JOB_PREVIEW_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### FUNCTION gnome_print_job_preview_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_job_preview_new ##### -->
+<para>
+
+</para>
+
+@gpm: 
+@title: 
+@Returns: 
+
+

@@ -28,37 +28,45 @@
  */
 
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-master.h>
+#include <libgnomeprint/gnome-print-job.h>
 
 static void
 my_draw (GnomePrintContext *gpc)
 {
 	GnomeFont *font;
-
+	gint i;
+	
 	font = gnome_font_find_closest ("Helvetica", 12);
 	
 	gnome_print_beginpage (gpc, "1");
-
 	gnome_print_setfont (gpc, font);
-	gnome_print_moveto (gpc, 100, 100);
-	gnome_print_show (gpc, "This is example_03.c which uses GnomeFont\n");
+
+	for (i = 0; i < 100; i++) {
+		gnome_print_moveto (gpc, 100, 100);
+		gnome_print_show (gpc, "This is example_03.c which uses GnomeFont\n");
+	}
 	
 	gnome_print_showpage (gpc);
+
+	g_object_unref (G_OBJECT (font));
 }
 
 static void
 my_print (void)
 {
-	GnomePrintMaster *gpm;
+	GnomePrintJob *job;
 	GnomePrintContext *gpc;
 
-	gpm = gnome_print_master_new ();
-	gpc = gnome_print_master_get_context (gpm);
+	job = gnome_print_job_new (NULL);
+	gpc = gnome_print_job_get_context (job);
 
 	my_draw (gpc);
 
-	gnome_print_master_close (gpm);
-	gnome_print_master_print (gpm);
+	gnome_print_job_close (job);
+	gnome_print_job_print (job);
+
+	g_object_unref (G_OBJECT (gpc));
+	g_object_unref (G_OBJECT (job));
 }
 
 int

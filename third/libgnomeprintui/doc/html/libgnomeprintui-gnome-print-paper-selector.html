@@ -1,0 +1,1819 @@
+<HTML
+><HEAD
+><TITLE
+>gnome-print-paper-selector</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME Print UI Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="API Reference"
+HREF="c7.html"><LINK
+REL="PREVIOUS"
+TITLE="gnome-print-job-preview"
+HREF="libgnomeprintui-gnome-print-job-preview.html"><LINK
+REL="NEXT"
+TITLE="gnome-print-preview"
+HREF="libgnomeprintui-gnome-print-preview.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="libgnomeprintui-gnome-print-job-preview.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="c7.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Print UI Reference Manual</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="libgnomeprintui-gnome-print-preview.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="LIBGNOMEPRINTUI-GNOME-PRINT-PAPER-SELECTOR"
+></A
+>gnome-print-paper-selector</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1299"
+></A
+><H2
+>Name</H2
+>gnome-print-paper-selector&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1302"
+></A
+><H2
+>Synopsis</H2
+><A
+NAME="GNOMEPAPERSELECTOR"
+></A
+><A
+NAME="GNOMEPRINTUNITSELECTOR"
+></A
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPAPERPREVIEW"
+>GnomePaperPreview</A
+>;
+struct      <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPAPERPREVIEWCLASS"
+>GnomePaperPreviewClass</A
+>;
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-TYPE-PAPER-SELECTOR-CAPS"
+>GNOME_TYPE_PAPER_SELECTOR</A
+>
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-CAPS"
+>GNOME_PAPER_SELECTOR</A
+>            (o)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-CLASS-CAPS"
+>GNOME_PAPER_SELECTOR_CLASS</A
+>      (k)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PAPER-SELECTOR-CAPS"
+>GNOME_IS_PAPER_SELECTOR</A
+>         (o)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PAPER-SELECTOR-CLASS-CAPS"
+>GNOME_IS_PAPER_SELECTOR_CLASS</A
+>   (k)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-GET-CLASS-CAPS"
+>GNOME_PAPER_SELECTOR_GET_CLASS</A
+>  (o)
+struct      <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPAPERSELECTOR-STRUCT"
+>GnomePaperSelector</A
+>;
+struct      <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPAPERSELECTORCLASS"
+>GnomePaperSelectorClass</A
+>;
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-TYPE-PRINT-UNIT-SELECTOR-CAPS"
+>GNOME_TYPE_PRINT_UNIT_SELECTOR</A
+>
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-CAPS"
+>GNOME_PRINT_UNIT_SELECTOR</A
+>       (o)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-CLASS-CAPS"
+>GNOME_PRINT_UNIT_SELECTOR_CLASS</A
+> (k)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PRINT-UNIT-SELECTOR-CAPS"
+>GNOME_IS_PRINT_UNIT_SELECTOR</A
+>    (o)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-IS-PRINT-UNIT-SELECTOR-CLASS-CAPS"
+>GNOME_IS_PRINT_UNIT_SELECTOR_CLASS</A
+>(k)
+#define     <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-GET-CLASS-CAPS"
+>GNOME_PRINT_UNIT_SELECTOR_GET_CLASS</A
+>(o)
+struct      <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR-STRUCT"
+>GnomePrintUnitSelector</A
+>;
+struct      <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTORCLASS"
+>GnomePrintUnitSelectorClass</A
+>;
+GtkWidget*  <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-PREVIEW-NEW"
+>gnome_paper_preview_new</A
+>         (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
+>GnomePrintConfig</a> *config);
+GType       <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-GET-TYPE"
+>gnome_paper_selector_get_type</A
+>   (void);
+GtkWidget*  <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-NEW"
+>gnome_paper_selector_new</A
+>        (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
+>GnomePrintConfig</a> *config);
+GtkWidget*  <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PAPER-SELECTOR-NEW-WITH-FLAGS"
+>gnome_paper_selector_new_with_flags</A
+>
+                                            (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
+>GnomePrintConfig</a> *config,
+                                             gint flags);
+GType       <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-GET-TYPE"
+>gnome_print_unit_selector_get_type</A
+>
+                                            (void);
+GtkWidget*  <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-NEW"
+>gnome_print_unit_selector_new</A
+>   (guint bases);
+const <a
+href="../libgnomeprint/libgnomeprint-gnome-print-unit.html#GNOMEPRINTUNIT"
+>GnomePrintUnit</a>* <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-GET-UNIT"
+>gnome_print_unit_selector_get_unit</A
+>
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector);
+void        <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-SET-BASES"
+>gnome_print_unit_selector_set_bases</A
+>
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             guint bases);
+void        <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-SET-UNIT"
+>gnome_print_unit_selector_set_unit</A
+>
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             const <a
+href="../libgnomeprint/libgnomeprint-gnome-print-unit.html#GNOMEPRINTUNIT"
+>GnomePrintUnit</a> *unit);
+void        <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-ADD-ADJUSTMENT"
+>gnome_print_unit_selector_add_adjustment</A
+>
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             GtkAdjustment *adjustment);
+void        <A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOME-PRINT-UNIT-SELECTOR-REMOVE-ADJUSTMENT"
+>gnome_print_unit_selector_remove_adjustment</A
+>
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             GtkAdjustment *adjustment);&#13;</PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1357"
+></A
+><H2
+>Object Hierarchy</H2
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBox
+                           +----GtkHBox
+                                 +----GnomePaperSelector</PRE
+><PRE
+CLASS="SYNOPSIS"
+>&#13;  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBox
+                           +----GtkHBox
+                                 +----GnomePrintUnitSelector</PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1373"
+></A
+><H2
+>Implemented Interfaces</H2
+><P
+>GnomePaperSelector implements AtkImplementorIface.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1377"
+></A
+><H2
+>Implemented Interfaces</H2
+><P
+>GnomePrintUnitSelector implements AtkImplementorIface.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1381"
+></A
+><H2
+>Signal Prototypes</H2
+><PRE
+CLASS="SYNOPSIS"
+>&#13;&quot;<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR-MODIFIED"
+>modified</A
+>&quot;  void        user_function      (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *printunitselector,
+                                            gpointer user_data);</PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1387"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1390"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1392"
+></A
+><H3
+><A
+NAME="GNOMEPAPERPREVIEW"
+></A
+>struct GnomePaperPreview</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePaperPreview {
+
+	GtkHBox box;
+
+	GtkWidget *canvas;
+
+	GnomeCanvasItem *item;
+
+	GnomePrintConfig *config;
+};</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1397"
+></A
+><H3
+><A
+NAME="GNOMEPAPERPREVIEWCLASS"
+></A
+>struct GnomePaperPreviewClass</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePaperPreviewClass;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1402"
+></A
+><H3
+><A
+NAME="GNOME-TYPE-PAPER-SELECTOR-CAPS"
+></A
+>GNOME_TYPE_PAPER_SELECTOR</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_TYPE_PAPER_SELECTOR         (gnome_paper_selector_get_type ())</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1407"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-SELECTOR-CAPS"
+></A
+>GNOME_PAPER_SELECTOR()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_PAPER_SELECTOR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelector))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1413"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1418"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-SELECTOR-CLASS-CAPS"
+></A
+>GNOME_PAPER_SELECTOR_CLASS()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_PAPER_SELECTOR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelectorClass))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1424"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1429"
+></A
+><H3
+><A
+NAME="GNOME-IS-PAPER-SELECTOR-CAPS"
+></A
+>GNOME_IS_PAPER_SELECTOR()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_IS_PAPER_SELECTOR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PAPER_SELECTOR))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1435"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1440"
+></A
+><H3
+><A
+NAME="GNOME-IS-PAPER-SELECTOR-CLASS-CAPS"
+></A
+>GNOME_IS_PAPER_SELECTOR_CLASS()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_IS_PAPER_SELECTOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_PAPER_SELECTOR))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1446"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1451"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-SELECTOR-GET-CLASS-CAPS"
+></A
+>GNOME_PAPER_SELECTOR_GET_CLASS()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_PAPER_SELECTOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelectorClass))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1457"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1462"
+></A
+><H3
+><A
+NAME="GNOMEPAPERSELECTOR-STRUCT"
+></A
+>struct GnomePaperSelector</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePaperSelector;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1467"
+></A
+><H3
+><A
+NAME="GNOMEPAPERSELECTORCLASS"
+></A
+>struct GnomePaperSelectorClass</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePaperSelectorClass;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1472"
+></A
+><H3
+><A
+NAME="GNOME-TYPE-PRINT-UNIT-SELECTOR-CAPS"
+></A
+>GNOME_TYPE_PRINT_UNIT_SELECTOR</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_TYPE_PRINT_UNIT_SELECTOR         (gnome_print_unit_selector_get_type ())</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1477"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-CAPS"
+></A
+>GNOME_PRINT_UNIT_SELECTOR()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_PRINT_UNIT_SELECTOR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelector))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1483"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1488"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-CLASS-CAPS"
+></A
+>GNOME_PRINT_UNIT_SELECTOR_CLASS()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_PRINT_UNIT_SELECTOR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),    GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelectorClass))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1494"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1499"
+></A
+><H3
+><A
+NAME="GNOME-IS-PRINT-UNIT-SELECTOR-CAPS"
+></A
+>GNOME_IS_PRINT_UNIT_SELECTOR()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_IS_PRINT_UNIT_SELECTOR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_UNIT_SELECTOR))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1505"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1510"
+></A
+><H3
+><A
+NAME="GNOME-IS-PRINT-UNIT-SELECTOR-CLASS-CAPS"
+></A
+>GNOME_IS_PRINT_UNIT_SELECTOR_CLASS()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_IS_PRINT_UNIT_SELECTOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_UNIT_SELECTOR))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1516"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>k</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1521"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-GET-CLASS-CAPS"
+></A
+>GNOME_PRINT_UNIT_SELECTOR_GET_CLASS()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GNOME_PRINT_UNIT_SELECTOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelectorClass))</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1527"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>o</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1532"
+></A
+><H3
+><A
+NAME="GNOMEPRINTUNITSELECTOR-STRUCT"
+></A
+>struct GnomePrintUnitSelector</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePrintUnitSelector;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1537"
+></A
+><H3
+><A
+NAME="GNOMEPRINTUNITSELECTORCLASS"
+></A
+>struct GnomePrintUnitSelectorClass</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePrintUnitSelectorClass;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1542"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-PREVIEW-NEW"
+></A
+>gnome_paper_preview_new ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkWidget*  gnome_paper_preview_new         (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
+>GnomePrintConfig</a> *config);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1550"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1555"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1560"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-SELECTOR-GET-TYPE"
+></A
+>gnome_paper_selector_get_type ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>GType       gnome_paper_selector_get_type   (void);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1567"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1572"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-SELECTOR-NEW"
+></A
+>gnome_paper_selector_new ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkWidget*  gnome_paper_selector_new        (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
+>GnomePrintConfig</a> *config);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1580"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1585"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1590"
+></A
+><H3
+><A
+NAME="GNOME-PAPER-SELECTOR-NEW-WITH-FLAGS"
+></A
+>gnome_paper_selector_new_with_flags ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkWidget*  gnome_paper_selector_new_with_flags
+                                            (<a
+href="../libgnomeprint/libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
+>GnomePrintConfig</a> *config,
+                                             gint flags);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1599"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1604"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1609"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1614"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-GET-TYPE"
+></A
+>gnome_print_unit_selector_get_type ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>GType       gnome_print_unit_selector_get_type
+                                            (void);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1621"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1626"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-NEW"
+></A
+>gnome_print_unit_selector_new ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>GtkWidget*  gnome_print_unit_selector_new   (guint bases);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1634"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>bases</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1639"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1644"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-GET-UNIT"
+></A
+>gnome_print_unit_selector_get_unit ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>const <a
+href="../libgnomeprint/libgnomeprint-gnome-print-unit.html#GNOMEPRINTUNIT"
+>GnomePrintUnit</a>* gnome_print_unit_selector_get_unit
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1652"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>selector</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1657"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1662"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-SET-BASES"
+></A
+>gnome_print_unit_selector_set_bases ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_print_unit_selector_set_bases
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             guint bases);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1670"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>selector</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1675"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>bases</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1680"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-SET-UNIT"
+></A
+>gnome_print_unit_selector_set_unit ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_print_unit_selector_set_unit
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             const <a
+href="../libgnomeprint/libgnomeprint-gnome-print-unit.html#GNOMEPRINTUNIT"
+>GnomePrintUnit</a> *unit);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1688"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>selector</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1693"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>unit</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1698"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-ADD-ADJUSTMENT"
+></A
+>gnome_print_unit_selector_add_adjustment ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_print_unit_selector_add_adjustment
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             GtkAdjustment *adjustment);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1706"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>selector</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1711"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>adjustment</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1716"
+></A
+><H3
+><A
+NAME="GNOME-PRINT-UNIT-SELECTOR-REMOVE-ADJUSTMENT"
+></A
+>gnome_print_unit_selector_remove_adjustment ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_print_unit_selector_remove_adjustment
+                                            (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *selector,
+                                             GtkAdjustment *adjustment);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1724"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>selector</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1729"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>adjustment</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1734"
+></A
+><H2
+>Signals</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1736"
+></A
+><H3
+><A
+NAME="GNOMEPRINTUNITSELECTOR-MODIFIED"
+></A
+>The &quot;modified&quot; signal</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        user_function                  (<A
+HREF="libgnomeprintui-gnome-print-paper-selector.html#GNOMEPRINTUNITSELECTOR"
+>GnomePrintUnitSelector</A
+> *printunitselector,
+                                            gpointer user_data);</PRE
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="libgnomeprintui-gnome-print-job-preview.html"
+><B
+>&lt;&lt;&lt;&nbsp;gnome-print-job-preview</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="libgnomeprintui-gnome-print-preview.html"
+><B
+>gnome-print-preview&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>
