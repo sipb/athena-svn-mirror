@@ -128,9 +128,13 @@ fi
 
 /srvd/install/netconf --swap --root $swapmount --hostname $HOST --ipaddr $ADDR
 
-# XXX Kernel needs to be tweaked to boot with the appropriate root
-# XXX partition. This should be the only thing that currently has a
-# XXX partition hard-coded.
+# The miniroot kernel is built with a bogus rootdev; it will get the
+# correct root device from the OSLoadPartition nvram variable, set below.
+# So, we just need to link /dev/root and /dev/rroot to the correct devices.
+rm -f $swapmount/dev/root $swapmount/dev/rroot
+swapdisk=`devnm $swapmount | awk -F/ '{ print $4 }'`
+ln $swapmount/dev/dsk/$swapdisk $swapmount/dev/root
+ln $swapmount/dev/rdsk/$swapdisk $swapmount/dev/rroot
 
 # Pass on information about where the proper root partition is.
 # Note this code assumes there is just one big root partition, and
