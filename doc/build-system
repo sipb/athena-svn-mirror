@@ -117,19 +117,66 @@ to it) which does the following:
 		# Where you do checks for header files.
 		AC_PATH_XTRA
 
-		# Where you do checks for libraries.
-		if test "$motif" != "no"; then
-			if test "$motif" != "yes"; then
+		# Where you do checks for libraries, if you must have Motif.
+		if test "$motif" != no -a "$motif" != yes; then
+			CPPFLAGS="${CPPFLAGS} -I$motif/include"
+			LDFLAGS="$LDFLAGS -L$motif/lib"
+		fi
+		AC_CHECK_LIB(Xm, XmString, :,
+			     [AC_MSG_ERROR(Motif library not found)])
+
+		# Where you do checks for libraries, if you don't need Motif.
+		if test "$motif" != no; then
+			if test "$motif" != yes; then
 				CPPFLAGS="${CPPFLAGS} -I$motif/include"
 				LDFLAGS="$LDFLAGS -L$motif/lib"
 			fi
-			AC_CHECK_LIB(Xm, XmString, [LIBS="-lXm $LIBS"],
-				     [AC_ERROR(Motif library not found)])
+			AC_CHECK_LIB(Xm, XmString, :,
+				     [AC_MSG_ERROR(Motif library not found)])
 			AC_DEFINE(WITH_MOTIF)
 		fi
 
-	  (Omit the `if test "$motif" != "no"' test if you cannot
-	  build without Motif.  Also omit the AC_DEFINE(WITH_MOTIF).)
+	  You still need to link with -lXm in your Makefile.in.
+
+	* Sets the value of with_afs to point to the AFS includes and
+	  libraries.  You should use this as follows if you need to
+	  link with AFS:
+
+		# Near the beginning.
+		AC_ARG_WITH(afs,
+			    [  --with-afs=PREFIX       Compile with AFS],
+			    [afs="$withval"], [afs=no])
+
+		# Where you do checks for libraries
+		AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
+		AC_CHECK_FUNC(bcopy, :, AC_CHECK_LIB(ucb, bcopy))
+		AC_CHECK_FUNC(gethostbyname, :,
+			      AC_CHECK_LIB(nsl, gethostbyname))
+		AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+
+		# Where you do checks for libraries, if you must have AFS.
+		if test "$afs" != no -a "$afs" != yes; then
+			CPPFLAGS="${CPPFLAGS} -I$afs/include"
+			LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
+		fi
+		AC_CHECK_LIB(sys, pioctl,,
+			    [AC_MSG_ERROR(AFS libraries not found)],
+			    -lrx -llwp -lsys)
+
+		# Where you do checks for libraries, if you don't need AFS.
+		if test "$afs" != no; then
+			if test "$afs" != yes; then
+				CPPFLAGS="${CPPFLAGS} -I$afs/include"
+				LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
+			fi
+			AC_CHECK_LIB(sys, pioctl,,
+				    [AC_MSG_ERROR(AFS libraries not found)],
+				    -lrx -llwp -lsys)
+			AC_DEFINE(WITH_AFS)
+		fi
+
+	  You still need to link with any appropriate AFS libraries in
+	  your Makefile.in.
 
 	* Sets prefix to /usr/athena, datadir to '${prefix}/lib',
 	  sbindir to '${prefix}/etc', and sysconfdir to '/etc/athena'.
