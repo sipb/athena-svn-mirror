@@ -13,6 +13,7 @@
  * list of the applicable make variables, see the template files):
  * 
  *      SaberProgramTarget          (program,srclist,objlist,locallibs,syslibs)
+ *     	SaberLibraryTarget                      (libname,objlist)
  *      RemoveTargetProgram                      (program)
  *      BuildIncludes                            (srclist,dstdir)
  *     	NormalProgramTarget         (program,objects,deplibs,locallibs,syslibs)
@@ -126,6 +127,24 @@ osaber_/**/program:							@@\
 #define SaberProgramTarget(program,srclist,objlist,locallibs,syslibs) /**/
 #endif
 #endif
+
+/*
+ * SaberLibraryTarget - generate rules to make Saber-C read in sources and
+ * objects 
+ */
+#ifndef SaberLibraryTarget
+#if HasSaberC
+#define	SaberLibraryTarget(libname,srclist,objlist)			@@\
+saber_/**/libname:							@@\
+	#load $(ALLDEFINES) srclist					@@\
+									@@\
+osaber_/**/libname:							@@\
+	#load $(ALLDEFINES) objlist
+
+#else
+#define SaberLibraryTarget(libname,srclist,objlist) /**/
+#endif
+#endif /* SaberLibraryTarget */
 
 #ifndef RemoveTargetProgram
 #if RemoveTargetProgramByMoving
