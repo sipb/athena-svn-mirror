@@ -373,7 +373,7 @@ all_mems = mpost.mem $(mems)
 
 dumpenv = TEXMFCNF=../kpathsea TEXMF=$(texmf)
 
-formats: fmts efmts cfmts ofmts pdffmts bases mems
+formats: fmts efmts cfmts ofmts pdffmts bases
 fmts: $(all_fmts)
 efmts: $(all_efmts)
 cfmts: $(all_cfmts)
