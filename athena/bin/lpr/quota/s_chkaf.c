@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.6 1990-07-11 11:03:58 ilham Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.7 1990-11-14 17:33:17 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.6 1990-07-11 11:03:58 ilham Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.7 1990-11-14 17:33:17 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -36,6 +36,8 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lp
 #include <signal.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <com_err.h>
+#include "quota_err.h"
 
 
 #define MAXPRINTERS	30		/* Maximum number of printers */
@@ -92,6 +94,8 @@ char *argv[];
     if (init()) {
 	exit(1);
     }
+
+    initialize_quot_error_table();
 
     pfm_$init(pfm_$init_signal_handlers);
     fst = pfm_$cleanup(crec);
@@ -566,7 +570,7 @@ again:
     ret = QuotaReport(rpqauth[i].handle, &auth, &qid, &qrep, &chk);
     pfm_$rls_cleanup(crec, st);
     if(ret) {
-	syslog(LOG_ERR, "Problem contacting quota server %s: %d", rpqauth[i].hostname, ret);
+	syslog(LOG_ERR, "Problem contacting quota server %s: %d", rpqauth[i].hostname, error_message(ret));
 	return 1;
     }
 
@@ -668,6 +672,9 @@ mkreq:
 
 
 /* Cleans up before exiting when a signal is trapped */
+#ifdef ultrix
+void 
+#endif
 cleanup()
 {
     unlink(tktfilename);
