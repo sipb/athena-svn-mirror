@@ -91,6 +91,25 @@ and functions for querying or changing its parameters.
 </para>
 
 
+<!-- ##### SIGNAL GnomeCanvasItem::event ##### -->
+<para>
+Signals mouse button clicks, motion, enter/leave, and key press events
+on canvas items. Use this signal to create user interactive items.
+The <structfield>x</structfield> and <structfield>y</structfield>
+coordinates of the @event structure have been converted to canvas world
+coordinates.
+</para>
+
+@canvasitem: the object which received the signal.
+@event: A GdkEvent structure containing the event that occured.
+@Returns: Signal handlers should return %TRUE to stop signal emission or %FALSE
+to allow other signal handlers to process this event.
+
+<!-- ##### ARG GnomeCanvasItem:parent ##### -->
+<para>
+Parent #GnomeCanvasGroup that contains the item.
+</para>
+
 <!-- ##### STRUCT GnomeCanvasItemClass ##### -->
 <para>
 The internals of this class structure are of interest to those creating
@@ -327,23 +346,4 @@ objects derived from #GnomeCanvasItem.
 
 @item: 
 
-
-<!-- ##### SIGNAL GnomeCanvasItem::event ##### -->
-<para>
-Signals mouse button clicks, motion, enter/leave, and key press events
-on canvas items. Use this signal to create user interactive items.
-The <structfield>x</structfield> and <structfield>y</structfield>
-coordinates of the @event structure have been converted to canvas world
-coordinates.
-</para>
-
-@canvasitem: the object which received the signal.
-@event: A GdkEvent structure containing the event that occured.
-@Returns: Signal handlers should return %TRUE to stop signal emission or %FALSE
-to allow other signal handlers to process this event.
-
-<!-- ##### ARG GnomeCanvasItem:parent ##### -->
-<para>
-Parent #GnomeCanvasGroup that contains the item.
-</para>
 

@@ -1,17 +1,22 @@
+# translation of nn.po to Norwegian Nynorsk
 # Norwegian (nynorsk) translation of gnome-libs.
-# Copyright (C) 1998,1999,2000 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998,1999,2000
+# Copyright (C) 1998,1999,2000, 2003, 2004 Free Software Foundation, Inc.
+# Kjartan Maraas <kmaraas@gnome.org>, 1998,1999,2000.
+# Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 2.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2001-02-27 13:04+01:00\n"
-"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
-"Language-Team: Norwegian <no@li.org>\n"
+"Project-Id-Version: nn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-03-23 09:21+0100\n"
+"Last-Translator: Åsmund Skjæveland\n"
+"Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
@@ -25,377 +30,377 @@ msgstr "Y"
 
 #: libgnomecanvas/gnome-canvas.c:2053
 msgid "Antialiased"
-msgstr ""
+msgstr "Utjamna kantar"
 
 #: libgnomecanvas/gnome-canvas.c:2054
 msgid "The antialiasing mode of the canvas."
-msgstr ""
+msgstr "Kantutjamningsmåten i lettetet."
 
 #: libgnomecanvas/gnome-canvas-text.c:206
 #: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 #: libgnomecanvas/gnome-canvas-text.c:207
 msgid "Text to render"
-msgstr ""
+msgstr "Tekst som skal teiknast"
 
 #: libgnomecanvas/gnome-canvas-text.c:215
 msgid "Markup"
-msgstr ""
+msgstr "Merking"
 
 #: libgnomecanvas/gnome-canvas-text.c:216
 msgid "Marked up text to render"
-msgstr ""
+msgstr "Oppmerka tekst å teikna"
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr ""
+msgstr "Skrifttype"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr ""
+msgstr "Streng som skildrar skrifttypen"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr ""
+msgstr "Skriftskildring"
 
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
-msgstr ""
+msgstr "Skriftskildring som ein PangoFontDescription-struktur"
 
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr ""
+msgstr "Skrifttypefamilie"
 
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr ""
+msgstr "Namn på skrifttypefamilien, t.d. Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr ""
+msgstr "Skrifttypestil"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
 msgid "Font variant"
-msgstr ""
+msgstr "Skrifttypevariant"
 
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr ""
+msgstr "Vekta av skrifttypen"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr ""
+msgstr "Strekking av skrifttypen"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr ""
+msgstr "Storleiken til skrifttypen"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr ""
+msgstr "Skrifttypepunkt"
 
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr ""
+msgstr "Storleiken til skrifttypen, i punkt"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
-msgstr ""
+msgstr "Hev"
 
 #: libgnomecanvas/gnome-canvas-text.c:341
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
-msgstr ""
+msgstr "Avstand frå grunnlinja til teksten (under grunnlinja dersom negativ)"
 
 #: libgnomecanvas/gnome-canvas-text.c:351
 msgid "Strikethrough"
-msgstr ""
+msgstr "Gjennomstreking"
 
 #: libgnomecanvas/gnome-canvas-text.c:352
 msgid "Whether to strike through the text"
-msgstr ""
+msgstr "Om teksten skal gjennomstrekast"
 
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr ""
+msgstr "Understreking"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
-msgstr ""
+msgstr "Stil på understrekinga av teksten"
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
-msgstr ""
+msgstr "Skalering"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr ""
+msgstr "Storleiken til skrifttypen, i høve til standardstorleiken"
 
 #: libgnomecanvas/gnome-canvas-text.c:425
 #: libgnomecanvas/gnome-canvas-text.c:433
 #: libgnomecanvas/gnome-canvas-text.c:441
 msgid "Color"
-msgstr ""
+msgstr "Farge"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr ""
+msgstr "Fargen til teksten, som streng"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
-msgstr ""
+msgstr "Fargen til teksten, som GdkColor"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
+msgstr "Fargen til teksten, som eit R/G/B/A samansatt heiltal"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr ""
+msgstr "Tekstbreidde"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr ""
+msgstr "Breidda på den teikna teksten"
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr ""
+msgstr "Teksthøgde"
 
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
-msgstr ""
+msgstr "Høgda på den teikna teksten"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr ""
+msgstr "Skrifttypefamilie satt"
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr ""
+msgstr "Om dette merket påverkar skrifttypefamilien"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr ""
+msgstr "Skriftstilen vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
-msgstr ""
+msgstr "Om dette merket påverkar skriftstilen"
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
-msgstr ""
+msgstr "Skriftvariant vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:481
 msgid "Whether this tag affects the font variant"
-msgstr ""
+msgstr "Om dette merket påverkar skriftvarianten"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr ""
+msgstr "Skriftvekt vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr ""
+msgstr "Om dette merket påverkar skriftvekta"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr ""
+msgstr "Skriftstrekk vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr ""
+msgstr "Om dette merket påverkar skriftstrekket"
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr ""
+msgstr "Skriftstorleik vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
-msgstr ""
+msgstr "Om dette merket påverkar skriftstorleiken"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
-msgstr ""
+msgstr "Heving vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
 msgid "Whether this tag affects the rise"
-msgstr ""
+msgstr "Om dette merket påverkar hevinga"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
-msgstr ""
+msgstr "Gjennomstreking vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:501
 msgid "Whether this tag affects strikethrough"
-msgstr ""
+msgstr "Om dette merket påverkar gjennomstreking"
 
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
-msgstr ""
+msgstr "Understreking vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:505
 msgid "Whether this tag affects underlining"
-msgstr ""
+msgstr "Om dette merket påverkar understreking"
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr ""
+msgstr "Skalering vald"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr ""
+msgstr "Om dette merket påverkar skriftskaleringa"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
-msgstr ""
+msgstr "Tekst å visa"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
-msgstr ""
+msgstr "X-posisjon"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:226
 msgid "Y position"
-msgstr ""
+msgstr "Y-posisjon"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr ""
+msgstr "Breidde"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr ""
+msgstr "Breidde på tekstboksen"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
-msgstr ""
+msgstr "Høgde"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr ""
+msgstr "Høgde på tekstboksen"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
-msgstr ""
+msgstr "Kan redigerast"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr ""
+msgstr "Kan dette riktekstelementet redigerast?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr ""
+msgstr "Synleg"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr ""
+msgstr "Er dette riktekstelementet synleg?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr ""
+msgstr "Markør synleg"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr ""
+msgid "Is the cursor visible in this rich text item?"
+msgstr "Er markøren synleg i dette riktekstelementet?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
-msgstr ""
+msgstr "Markørblinking"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr ""
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Blinkar markøren i dette riktekstelementet?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
-msgstr ""
+msgstr "Auk høgde"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
-msgstr ""
+msgstr "Skal høgda på tekstboksen auka dersom teksten ikkje passar?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
-msgstr ""
+msgstr "Tekstbrytingsmodus"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"
-msgstr ""
+msgstr "Tekstbryting for tekst over fleire linjer"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
-msgstr ""
+msgstr "Justering"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr ""
+msgstr "Justeringsmodus"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
-msgstr ""
+msgstr "Retning"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:308
 msgid "Text direction"
-msgstr ""
+msgstr "Retning på teksten"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:316
 msgid "Anchor"
-msgstr ""
+msgstr "Anker"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:317
 msgid "Anchor point for text"
-msgstr ""
+msgstr "Ankerpunkt til teksten"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
-msgstr ""
+msgstr "Pikslar over linjer"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
 msgid "Number of pixels to put above lines"
-msgstr ""
+msgstr "Tal på pikslar som skal setjast inn over linjer"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
-msgstr ""
+msgstr "Pikslar under linjer"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
 msgid "Number of pixels to put below lines"
-msgstr ""
+msgstr "Tal på pikslar som skal setjast inn under linjer"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
-msgstr ""
+msgstr "Pikslar inni bryting"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:344
 msgid "Number of pixels to put inside the wrap"
-msgstr ""
+msgstr "Kor mange pikslar som skal setjast inni brytinga"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr ""
+msgstr "Venstremarg"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr ""
+msgstr "Tal på pikslar i venstremarg"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr ""
+msgstr "Høgremarg"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr ""
+msgstr "Tal på pikslar i høgremarg"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
-msgstr ""
+msgstr "Innrykk"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr ""
+msgstr "Tal på pikslar i innrykk"

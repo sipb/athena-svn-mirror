@@ -1,7 +1,7 @@
 # Copyright (C) 2001-2002 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
-# (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
+# (:pserver:anonymous@cvs.gnome.pl:/gnomepl, puste hasło)
 # Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas na adres:
 # translators@gnome.pl
@@ -9,10 +9,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
 "PO-Revision-Date: 2002-05-18 09:44+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
-"Language-Team: Polish <pl@li.org>\n"
+"Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -307,7 +308,7 @@ msgid "Cursor Visible"
 msgstr "Widoczny kursor"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+msgid "Is the cursor visible in this rich text item?"
 msgstr ""
 "Określa, czy wewnątrz elementu wzbogaconego tekstu widoczny jest kursor."
 
@@ -316,7 +317,7 @@ msgid "Cursor Blink"
 msgstr "Migotanie kursora"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+msgid "Does the cursor blink in this rich text item?"
 msgstr ""
 "Określa, czy kursor wewnątrz elementu wzbogaconego tekstu powinien migotać."
 

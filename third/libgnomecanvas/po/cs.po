@@ -1,12 +1,14 @@
 # Czech translation of libgnomecanvas
+# Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>
 # This file is distributed under the same license as the libgnomecanvas package.
-# Miloslav Trmac <mitr@volny.cz>, 2002.
+# Miloslav Trmac <mitr@volny.cz>, 2002, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomecanvas 2.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-09-25 22:47+0200\n"
+"Project-Id-Version: libgnomecanvas VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-01-23 17:32+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -303,7 +305,7 @@ msgid "Cursor Visible"
 msgstr "Viditelný kurzor"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+msgid "Is the cursor visible in this rich text item?"
 msgstr "Je v této položce rich textu vidět kurzor?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
@@ -311,7 +313,7 @@ msgid "Cursor Blink"
 msgstr "Kurzor bliká"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+msgid "Does the cursor blink in this rich text item?"
 msgstr "Bliká v této položce rich textu kurzor?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281

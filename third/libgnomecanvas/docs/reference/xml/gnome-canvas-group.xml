@@ -1,0 +1,97 @@
+<refentry id="GnomeCanvasGroup">
+<refmeta>
+<refentrytitle>GnomeCanvasGroup</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasGroup</refname><refpurpose>Canvas item group</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasGroup-struct">GnomeCanvasGroup</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----GnomeCanvasGroup
+                     +----<link linkend="GnomeCanvasClipgroup">GnomeCanvasClipgroup</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasGroup--x">x</link>&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasGroup--y">y</link>&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A canvas item that groups other canvas items. A canvas group is used
+for organization, determining drawing stacking order, and for
+applying transforms on all items in the group.
+</para>
+
+<para>
+The <link linkend="GnomeCanvas"><type>GnomeCanvas</type></link> widget contains a toplevel "root" group which can be
+queried with a call to <link linkend="gnome-canvas-root"><function>gnome_canvas_root()</function></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasGroup-struct"/>struct GnomeCanvasGroup</title>
+<indexterm><primary>GnomeCanvasGroup</primary></indexterm><programlisting>struct GnomeCanvasGroup;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeCanvasGroup--x"/>The &quot;<literal>x</literal>&quot; property</title>
+<programlisting>  &quot;x&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+X coordinate of group's origin.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasGroup--y"/>The &quot;<literal>y</literal>&quot; property</title>
+<programlisting>  &quot;y&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Y coordinate of group's origin.
+</para><para>Default value: 0</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

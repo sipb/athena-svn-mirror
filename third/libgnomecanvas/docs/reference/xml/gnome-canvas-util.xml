@@ -1,0 +1,557 @@
+<refentry id="libgnomecanvas-gnome-canvas-util">
+<refmeta>
+<refentrytitle>gnome-canvas-util</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-canvas-util</refname><refpurpose>Canvas utility functions</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>;
+<link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>* <link linkend="gnome-canvas-points-new">gnome_canvas_points_new</link>  (<link linkend="int">int</link> num_points);
+<link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>* <link linkend="gnome-canvas-points-ref">gnome_canvas_points_ref</link>  (<link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link> *points);
+#define     <link linkend="gnome-canvas-points-unref">gnome_canvas_points_unref</link>
+<link linkend="void">void</link>        <link linkend="gnome-canvas-points-free">gnome_canvas_points_free</link>        (<link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link> *points);
+<link linkend="int">int</link>         <link linkend="gnome-canvas-get-miter-points">gnome_canvas_get_miter_points</link>   (<link linkend="double">double</link> x1,
+                                             <link linkend="double">double</link> y1,
+                                             <link linkend="double">double</link> x2,
+                                             <link linkend="double">double</link> y2,
+                                             <link linkend="double">double</link> x3,
+                                             <link linkend="double">double</link> y3,
+                                             <link linkend="double">double</link> width,
+                                             <link linkend="double">double</link> *mx1,
+                                             <link linkend="double">double</link> *my1,
+                                             <link linkend="double">double</link> *mx2,
+                                             <link linkend="double">double</link> *my2);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-get-butt-points">gnome_canvas_get_butt_points</link>    (<link linkend="double">double</link> x1,
+                                             <link linkend="double">double</link> y1,
+                                             <link linkend="double">double</link> x2,
+                                             <link linkend="double">double</link> y2,
+                                             <link linkend="double">double</link> width,
+                                             <link linkend="int">int</link> project,
+                                             <link linkend="double">double</link> *bx1,
+                                             <link linkend="double">double</link> *by1,
+                                             <link linkend="double">double</link> *bx2,
+                                             <link linkend="double">double</link> *by2);
+<link linkend="double">double</link>      <link linkend="gnome-canvas-polygon-to-point">gnome_canvas_polygon_to_point</link>   (<link linkend="double">double</link> *poly,
+                                             <link linkend="int">int</link> num_points,
+                                             <link linkend="double">double</link> x,
+                                             <link linkend="double">double</link> y);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-render-svp">gnome_canvas_render_svp</link>         (<link linkend="GnomeCanvasBuf">GnomeCanvasBuf</link> *buf,
+                                             <link linkend="ArtSVP">ArtSVP</link> *svp,
+                                             <link linkend="guint32">guint32</link> rgba);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-update-svp">gnome_canvas_update_svp</link>         (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-update-svp-clip">gnome_canvas_update_svp_clip</link>    (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *clip_svp);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-item-reset-bounds">gnome_canvas_item_reset_bounds</link>  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-item-update-svp">gnome_canvas_item_update_svp</link>    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-item-update-svp-clip">gnome_canvas_item_update_svp_clip</link>
+                                            (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *clip_svp);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-item-request-redraw-svp">gnome_canvas_item_request_redraw_svp</link>
+                                            (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             const <link linkend="ArtSVP">ArtSVP</link> *svp);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-update-bbox">gnome_canvas_update_bbox</link>        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             <link linkend="int">int</link> x1,
+                                             <link linkend="int">int</link> y1,
+                                             <link linkend="int">int</link> x2,
+                                             <link linkend="int">int</link> y2);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-buf-ensure-buf">gnome_canvas_buf_ensure_buf</link>     (<link linkend="GnomeCanvasBuf">GnomeCanvasBuf</link> *buf);
+<link linkend="ArtPathStrokeJoinType">ArtPathStrokeJoinType</link> <link linkend="gnome-canvas-join-gdk-to-art">gnome_canvas_join_gdk_to_art</link>
+                                            (<link linkend="GdkJoinStyle">GdkJoinStyle</link> gdk_join);
+<link linkend="ArtPathStrokeCapType">ArtPathStrokeCapType</link> <link linkend="gnome-canvas-cap-gdk-to-art">gnome_canvas_cap_gdk_to_art</link>
+                                            (<link linkend="GdkCapStyle">GdkCapStyle</link> gdk_cap);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Some useful canvas utility functions.
+</para>
+
+<para>
+The <link linkend="GnomeCanvasPoints"><type>GnomeCanvasPoints</type></link> structure manages an array of points (X and Y
+coordinates) and is used by <link linkend="GnomeCanvasLine"><type>GnomeCanvasLine</type></link> and <link linkend="GnomeCanvasPolygon"><type>GnomeCanvasPolygon</type></link> canvas
+items.
+</para>
+
+<para>
+To create a <link linkend="GnomeCanvasPoints"><type>GnomeCanvasPoints</type></link> structure call <link linkend="gnome-canvas-points-new"><function>gnome_canvas_points_new()</function></link> and
+when finished using it call <link linkend="gnome-canvas-points-free"><function>gnome_canvas_points_free()</function></link>.
+</para>
+
+<para>
+Of note is that the <link linkend="GnomeCanvasPoints"><type>GnomeCanvasPoints</type></link> structure is actually managed
+by a reference count, so it won't be freed until this count reaches
+0. To increment its reference count call <link linkend="gnome-canvas-points-ref"><function>gnome_canvas_points_ref()</function></link> and
+to decrement it call <link linkend="gnome-canvas-points-unref"><function>gnome_canvas_points_unref()</function></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasPoints"/>struct GnomeCanvasPoints</title>
+<indexterm><primary>GnomeCanvasPoints</primary></indexterm><programlisting>struct GnomeCanvasPoints {
+
+	double *coords;
+	int num_points;
+	int ref_count;
+};
+</programlisting>
+<para>
+A structure to manage an array of points (X and Y coordinates). The memory
+management of this structure is handled with functions below, but the point
+coordinates are meant to be written directly into the array pointed to by
+the <structfield>coords</structfield> field.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="double">double</link> *<structfield>coords</structfield></term>
+<listitem><simpara>Array of coordinates (num_points * 2 in size), X coordinates are
+stored in the even-numbered indices, and Y coordinates are stored in the
+odd-numbered indices.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="int">int</link> <structfield>num_points</structfield></term>
+<listitem><simpara>Read-only - Number of points in this array.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="int">int</link> <structfield>ref_count</structfield></term>
+<listitem><simpara>Read-only - Count of references to this array of points
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-points-new"/>gnome_canvas_points_new ()</title>
+<indexterm><primary>gnome_canvas_points_new</primary></indexterm><programlisting><link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>* gnome_canvas_points_new  (<link linkend="int">int</link> num_points);</programlisting>
+<para>
+Creates a structure that should be used to pass an array of points to
+items.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>num_points</parameter>&nbsp;:</term>
+<listitem><simpara> The number of points to allocate space for in the array.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly-created array of points.  It should be filled in
+by the user.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-points-ref"/>gnome_canvas_points_ref ()</title>
+<indexterm><primary>gnome_canvas_points_ref</primary></indexterm><programlisting><link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>* gnome_canvas_points_ref  (<link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link> *points);</programlisting>
+<para>
+Increases the reference count of the specified points structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>points</parameter>&nbsp;:</term>
+<listitem><simpara> A canvas points structure.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The canvas points structure itself.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-points-unref"/>gnome_canvas_points_unref</title>
+<indexterm><primary>gnome_canvas_points_unref</primary></indexterm><programlisting>#define     gnome_canvas_points_unref</programlisting>
+<para>
+A synonym for <link linkend="gnome-canvas-points-free"><function>gnome_canvas_points_free()</function></link>. It decrements a <link linkend="GnomeCanvasPoints"><type>GnomeCanvasPoints</type></link>
+reference by 1 and frees it when there are no more references.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-points-free"/>gnome_canvas_points_free ()</title>
+<indexterm><primary>gnome_canvas_points_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_points_free        (<link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link> *points);</programlisting>
+<para>
+Decreases the reference count of the specified points structure.  If it
+reaches zero, then the structure is freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>points</parameter>&nbsp;:</term>
+<listitem><simpara> A canvas points structure.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-get-miter-points"/>gnome_canvas_get_miter_points ()</title>
+<indexterm><primary>gnome_canvas_get_miter_points</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_canvas_get_miter_points   (<link linkend="double">double</link> x1,
+                                             <link linkend="double">double</link> y1,
+                                             <link linkend="double">double</link> x2,
+                                             <link linkend="double">double</link> y2,
+                                             <link linkend="double">double</link> x3,
+                                             <link linkend="double">double</link> y3,
+                                             <link linkend="double">double</link> width,
+                                             <link linkend="double">double</link> *mx1,
+                                             <link linkend="double">double</link> *my1,
+                                             <link linkend="double">double</link> *mx2,
+                                             <link linkend="double">double</link> *my2);</programlisting>
+<para>
+Given three points forming an angle, computes the coordinates of the inside
+and outside points of the mitered corner formed by a line of a given width at
+that angle.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of the first point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of the first point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of the second (angle) point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of the second (angle) point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x3</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of the third point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y3</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of the third point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> Width of the line
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mx1</parameter>&nbsp;:</term>
+<listitem><simpara> The X coordinate of the first miter point is returned here.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>my1</parameter>&nbsp;:</term>
+<listitem><simpara> The Y coordinate of the first miter point is returned here.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mx2</parameter>&nbsp;:</term>
+<listitem><simpara> The X coordinate of the second miter point is returned here.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>my2</parameter>&nbsp;:</term>
+<listitem><simpara> The Y coordinate of the second miter point is returned here.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> FALSE if the angle is less than 11 degrees (this is the same
+threshold as X uses.  If this occurs, the return points are not modified.
+Otherwise, returns TRUE.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-get-butt-points"/>gnome_canvas_get_butt_points ()</title>
+<indexterm><primary>gnome_canvas_get_butt_points</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_get_butt_points    (<link linkend="double">double</link> x1,
+                                             <link linkend="double">double</link> y1,
+                                             <link linkend="double">double</link> x2,
+                                             <link linkend="double">double</link> y2,
+                                             <link linkend="double">double</link> width,
+                                             <link linkend="int">int</link> project,
+                                             <link linkend="double">double</link> *bx1,
+                                             <link linkend="double">double</link> *by1,
+                                             <link linkend="double">double</link> *bx2,
+                                             <link linkend="double">double</link> *by2);</programlisting>
+<para>
+Computes the butt points of a line segment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of first point in the line
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
+<listitem><simpara> Y cooordinate of first point in the line
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of second point (endpoint) of the line
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of second point (endpoint) of the line
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> Width of the line
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>project</parameter>&nbsp;:</term>
+<listitem><simpara> Whether the butt points should project out by width/2 distance
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bx1</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of first butt point is returned here
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>by1</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of first butt point is returned here
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bx2</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of second butt point is returned here
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>by2</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of second butt point is returned here
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-polygon-to-point"/>gnome_canvas_polygon_to_point ()</title>
+<indexterm><primary>gnome_canvas_polygon_to_point</primary></indexterm><programlisting><link linkend="double">double</link>      gnome_canvas_polygon_to_point   (<link linkend="double">double</link> *poly,
+                                             <link linkend="int">int</link> num_points,
+                                             <link linkend="double">double</link> x,
+                                             <link linkend="double">double</link> y);</programlisting>
+<para>
+Computes the distance between a point and a polygon.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>poly</parameter>&nbsp;:</term>
+<listitem><simpara> Vertices of the polygon.  X coordinates are in the even indices, and Y
+coordinates are in the odd indices
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num_points</parameter>&nbsp;:</term>
+<listitem><simpara> Number of points in the polygon
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of the point
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of the point
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The distance from the point to the polygon, or zero if the
+point is inside the polygon.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-render-svp"/>gnome_canvas_render_svp ()</title>
+<indexterm><primary>gnome_canvas_render_svp</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_render_svp         (<link linkend="GnomeCanvasBuf">GnomeCanvasBuf</link> *buf,
+                                             <link linkend="ArtSVP">ArtSVP</link> *svp,
+                                             <link linkend="guint32">guint32</link> rgba);</programlisting>
+<para>
+Render the svp over the buf.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buf</parameter>&nbsp;:</term>
+<listitem><simpara> the canvas buffer to render over
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>svp</parameter>&nbsp;:</term>
+<listitem><simpara> the vector path to render
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>rgba</parameter>&nbsp;:</term>
+<listitem><simpara> the rgba color to render
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-update-svp"/>gnome_canvas_update_svp ()</title>
+<indexterm><primary>gnome_canvas_update_svp</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_update_svp         (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp);</programlisting>
+<para>
+Sets the svp to the new value, requesting repaint on what's changed. This
+function takes responsibility for freeing new_svp.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>canvas</parameter>&nbsp;:</term>
+<listitem><simpara> the canvas containing the svp that needs updating.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>p_svp</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the existing svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_svp</parameter>&nbsp;:</term>
+<listitem><simpara> the new svp
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-update-svp-clip"/>gnome_canvas_update_svp_clip ()</title>
+<indexterm><primary>gnome_canvas_update_svp_clip</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_update_svp_clip    (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *clip_svp);</programlisting>
+<para>
+Sets the svp to the new value, clipping if necessary, and requesting repaint
+on what's changed. This function takes responsibility for freeing new_svp.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>canvas</parameter>&nbsp;:</term>
+<listitem><simpara> the canvas containing the svp that needs updating.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>p_svp</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the existing svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_svp</parameter>&nbsp;:</term>
+<listitem><simpara> the new svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>clip_svp</parameter>&nbsp;:</term>
+<listitem><simpara> a clip path, if non-null
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-item-reset-bounds"/>gnome_canvas_item_reset_bounds ()</title>
+<indexterm><primary>gnome_canvas_item_reset_bounds</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_item_reset_bounds  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
+<para>
+Resets the bounding box of a canvas item to an empty rectangle.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> A canvas item
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-item-update-svp"/>gnome_canvas_item_update_svp ()</title>
+<indexterm><primary>gnome_canvas_item_update_svp</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_item_update_svp    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp);</programlisting>
+<para>
+Sets the svp to the new value, requesting repaint on what's changed. This
+function takes responsibility for freeing new_svp. This routine also adds the
+svp's bbox to the item's.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> the canvas item containing the svp that needs updating.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>p_svp</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the existing svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_svp</parameter>&nbsp;:</term>
+<listitem><simpara> the new svp
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-item-update-svp-clip"/>gnome_canvas_item_update_svp_clip ()</title>
+<indexterm><primary>gnome_canvas_item_update_svp_clip</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_item_update_svp_clip
+                                            (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             <link linkend="ArtSVP">ArtSVP</link> **p_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *new_svp,
+                                             <link linkend="ArtSVP">ArtSVP</link> *clip_svp);</programlisting>
+<para>
+Sets the svp to the new value, clipping if necessary, and requesting repaint
+on what's changed. This function takes responsibility for freeing new_svp.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> the canvas item containing the svp that needs updating.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>p_svp</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the existing svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_svp</parameter>&nbsp;:</term>
+<listitem><simpara> the new svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>clip_svp</parameter>&nbsp;:</term>
+<listitem><simpara> a clip path, if non-null
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-item-request-redraw-svp"/>gnome_canvas_item_request_redraw_svp ()</title>
+<indexterm><primary>gnome_canvas_item_request_redraw_svp</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_item_request_redraw_svp
+                                            (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             const <link linkend="ArtSVP">ArtSVP</link> *svp);</programlisting>
+<para>
+Request redraw of the svp if in aa mode, or the entire item in in xlib mode.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> the item containing the svp
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>svp</parameter>&nbsp;:</term>
+<listitem><simpara> the svp that needs to be redrawn
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-update-bbox"/>gnome_canvas_update_bbox ()</title>
+<indexterm><primary>gnome_canvas_update_bbox</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_update_bbox        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+                                             <link linkend="int">int</link> x1,
+                                             <link linkend="int">int</link> y1,
+                                             <link linkend="int">int</link> x2,
+                                             <link linkend="int">int</link> y2);</programlisting>
+<para>
+Sets the bbox to the new value, requesting full repaint.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> the canvas item needing update
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
+<listitem><simpara> Left coordinate of the new bounding box
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
+<listitem><simpara> Top coordinate of the new bounding box
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
+<listitem><simpara> Right coordinate of the new bounding box
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
+<listitem><simpara> Bottom coordinate of the new bounding box
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-buf-ensure-buf"/>gnome_canvas_buf_ensure_buf ()</title>
+<indexterm><primary>gnome_canvas_buf_ensure_buf</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_buf_ensure_buf     (<link linkend="GnomeCanvasBuf">GnomeCanvasBuf</link> *buf);</programlisting>
+<para>
+Ensure that the buffer is in RGB format, suitable for compositing.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buf</parameter>&nbsp;:</term>
+<listitem><simpara> the buf that needs to be represened in RGB format
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-join-gdk-to-art"/>gnome_canvas_join_gdk_to_art ()</title>
+<indexterm><primary>gnome_canvas_join_gdk_to_art</primary></indexterm><programlisting><link linkend="ArtPathStrokeJoinType">ArtPathStrokeJoinType</link> gnome_canvas_join_gdk_to_art
+                                            (<link linkend="GdkJoinStyle">GdkJoinStyle</link> gdk_join);</programlisting>
+<para>
+Convert from GDK line join specifier to libart.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gdk_join</parameter>&nbsp;:</term>
+<listitem><simpara> a join type, represented in GDK format
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The line join specifier in libart format.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-cap-gdk-to-art"/>gnome_canvas_cap_gdk_to_art ()</title>
+<indexterm><primary>gnome_canvas_cap_gdk_to_art</primary></indexterm><programlisting><link linkend="ArtPathStrokeCapType">ArtPathStrokeCapType</link> gnome_canvas_cap_gdk_to_art
+                                            (<link linkend="GdkCapStyle">GdkCapStyle</link> gdk_cap);</programlisting>
+<para>
+Convert from GDK line cap specifier to libart.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gdk_cap</parameter>&nbsp;:</term>
+<listitem><simpara> a cap type, represented in GDK format
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The line cap specifier in libart format.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

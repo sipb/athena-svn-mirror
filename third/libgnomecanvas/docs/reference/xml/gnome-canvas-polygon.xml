@@ -1,0 +1,83 @@
+<refentry id="GnomeCanvasPolygon">
+<refmeta>
+<refentrytitle>GnomeCanvasPolygon</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasPolygon</refname><refpurpose>Polygon canvas item</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasPolygon-struct">GnomeCanvasPolygon</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----<link linkend="GnomeCanvasShape">GnomeCanvasShape</link>
+                     +----GnomeCanvasPolygon
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasPolygon--points">points</link>&quot;               <link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>     : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A canvas item for drawing polygon (multi sided) shapes.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasPolygon-struct"/>struct GnomeCanvasPolygon</title>
+<indexterm><primary>GnomeCanvasPolygon</primary></indexterm><programlisting>struct GnomeCanvasPolygon;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeCanvasPolygon--points"/>The &quot;<literal>points</literal>&quot; property</title>
+<programlisting>  &quot;points&quot;               <link linkend="GnomeCanvasPoints">GnomeCanvasPoints</link>     : Read / Write</programlisting>
+<para>
+Pointer to a <link linkend="GnomeCanvasPoints"><type>GnomeCanvasPoints</type></link> structure. This can be created by a
+call to <link linkend="gnome-canvas-points-new"><function>gnome_canvas_points_new()</function></link>.
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

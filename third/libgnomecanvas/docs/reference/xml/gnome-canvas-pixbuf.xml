@@ -1,0 +1,163 @@
+<refentry id="GnomeCanvasPixbuf">
+<refmeta>
+<refentrytitle>GnomeCanvasPixbuf</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasPixbuf</refname><refpurpose>Pixbuf image canvas item</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasPixbuf-struct">GnomeCanvasPixbuf</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----GnomeCanvasPixbuf
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasPixbuf--anchor">anchor</link>&quot;               <link linkend="GtkAnchorType">GtkAnchorType</link>         : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--height-in-pixels">height-in-pixels</link>&quot;     <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--height-set">height-set</link>&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--pixbuf">pixbuf</link>&quot;               <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--width-in-pixels">width-in-pixels</link>&quot;      <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--width-set">width-set</link>&quot;            <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--x">x</link>&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--x-in-pixels">x-in-pixels</link>&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--y">y</link>&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasPixbuf--y-in-pixels">y-in-pixels</link>&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A canvas item for drawing pixbuf images.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasPixbuf-struct"/>struct GnomeCanvasPixbuf</title>
+<indexterm><primary>GnomeCanvasPixbuf</primary></indexterm><programlisting>struct GnomeCanvasPixbuf;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--anchor"/>The &quot;<literal>anchor</literal>&quot; property</title>
+<programlisting>  &quot;anchor&quot;               <link linkend="GtkAnchorType">GtkAnchorType</link>         : Read / Write</programlisting>
+<para>
+Anchor (handle) position within the pixbuf, defaults to GTK_ANCHOR_NW (top left
+hand corner). The anchor is the point of reference for positioning the image.
+</para><para>Default value: GTK_ANCHOR_NORTH_WEST</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--height"/>The &quot;<literal>height</literal>&quot; property</title>
+<programlisting>  &quot;height&quot;               <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Pixbuf height.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--height-in-pixels"/>The &quot;<literal>height-in-pixels</literal>&quot; property</title>
+<programlisting>  &quot;height-in-pixels&quot;     <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<literal>TRUE</literal> if "height" parameter is in pixel units, <literal>FALSE</literal> for canvas world units.
+</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--height-set"/>The &quot;<literal>height-set</literal>&quot; property</title>
+<programlisting>  &quot;height-set&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<literal>TRUE</literal> if the "height" argument is set and should be used as the
+pixbuf height, <literal>FALSE</literal> to use the actual height of the image.
+</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--pixbuf"/>The &quot;<literal>pixbuf</literal>&quot; property</title>
+<programlisting>  &quot;pixbuf&quot;               <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write</programlisting>
+<para>
+The pixbuf image to draw.
+</para></refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--width"/>The &quot;<literal>width</literal>&quot; property</title>
+<programlisting>  &quot;width&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Pixbuf width.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--width-in-pixels"/>The &quot;<literal>width-in-pixels</literal>&quot; property</title>
+<programlisting>  &quot;width-in-pixels&quot;      <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<literal>TRUE</literal> if "width" parameter is in pixel units, <literal>FALSE</literal> for canvas world units.
+</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--width-set"/>The &quot;<literal>width-set</literal>&quot; property</title>
+<programlisting>  &quot;width-set&quot;            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<literal>TRUE</literal> if the "width" parameter is set and should be used as the
+pixbuf width, <literal>FALSE</literal> to use the actual width of the image.
+</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--x"/>The &quot;<literal>x</literal>&quot; property</title>
+<programlisting>  &quot;x&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+The x coordinate of the position to place the pixbuf at.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--x-in-pixels"/>The &quot;<literal>x-in-pixels</literal>&quot; property</title>
+<programlisting>  &quot;x-in-pixels&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<literal>TRUE</literal> to interpret the "x" parameter in pixel units, <literal>FALSE</literal> for canvas world
+units.
+</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--y"/>The &quot;<literal>y</literal>&quot; property</title>
+<programlisting>  &quot;y&quot;                    <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+The y coordinate of the position to place the pixbuf at.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasPixbuf--y-in-pixels"/>The &quot;<literal>y-in-pixels</literal>&quot; property</title>
+<programlisting>  &quot;y-in-pixels&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<literal>TRUE</literal> to interpret the "y" parameter in pixel units, <literal>FALSE</literal> for canvas world
+units.
+</para><para>Default value: FALSE</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

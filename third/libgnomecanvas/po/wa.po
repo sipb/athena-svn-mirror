@@ -1,22 +1,25 @@
 # Translation into the walloon language.
 #
-# Si vos voloz donner on côp di spale pol ratoûrnaedje di Gnome (ou des
+# Si vos voloz donner on côp di spale pol ratournaedje di Gnome (ou des
 # ôtes libes programes) sicrijhoz-mu a l' adresse emile
 # <srtxg@chanae.alphanet.ch>; nos avans co bråmint di l' ovraedje a fé.
 #
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Pablo Saratxaga <srtxg@chanae.alphanet.ch> 2001
+# Pablo Saratxaga <pablo@walon.org>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas2 \n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-05-01 11:14MET\n"
-"Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
-"Language-Team: Walon <linux-wa@chanae.alphanet.ch>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-04-06 21:16+0200\n"
+"Last-Translator: Pablo Saratxaga <pablo@walon.org>\n"
+"Language-Team: Walloon <linux-wa@walon.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
@@ -90,7 +93,7 @@ msgstr "Variante del fonte"
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "Pwèds del fonte"
+msgstr "Pwès del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
@@ -127,11 +130,11 @@ msgstr "Båré"
 
 #: libgnomecanvas/gnome-canvas-text.c:352
 msgid "Whether to strike through the text"
-msgstr "Bårer li tecse d' ene roye å d' traviè"
+msgstr "Bårer li tecse d' ene roye åd triviè"
 
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr "Sorligné"
+msgstr "Sorlignî"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
@@ -205,11 +208,11 @@ msgstr "Po decider si ciste etikete a on efet sol variante del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "Pwèds del fonte en alaedje"
+msgstr "Pwès del fonte en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "Po decider si ciste etikete a on efet sol pwèds del fonte"
+msgstr "Po decider si ciste etikete a on efet sol pwès del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
@@ -265,11 +268,11 @@ msgstr "Tecse a håyner"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
-msgstr ""
+msgstr "Plaeçmint X"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:226
 msgid "Y position"
-msgstr ""
+msgstr "Plaeçmint Y"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
@@ -293,7 +296,7 @@ msgstr "Aspougnåve"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr ""
+msgstr "Est çki ci cayet chal di tecse eritchî est aspougnåve?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
@@ -301,32 +304,33 @@ msgstr "Veyåve"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr ""
+msgstr "Est çki ci cayet chal di tecse eritchî est veyåve?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr ""
+msgstr "Cursoe veyåve"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr ""
+msgid "Is the cursor visible in this rich text item?"
+msgstr "Est çki l' cursoe est veyåve dins ç' cayet di tecse eritchî chal?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
-msgstr ""
+msgstr "Gligntant cursoe"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr ""
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Est çki l' cursoe gligntêye dins ç' cayet di tecse eritchî chal?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
-#, fuzzy
 msgid "Grow Height"
-msgstr "Pwèds del fonte"
+msgstr "Ragrandi l' hôteu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
 msgstr ""
+"Est çki l' hôteu del boesse di tecse doet esse ragrandeye si l' tecse ni "
+"rintere nén?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
@@ -338,11 +342,11 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
-msgstr ""
+msgstr "Djustifiaedje"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr ""
+msgstr "Môde djustifiaedje"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
@@ -362,19 +366,19 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
-msgstr ""
+msgstr "Picsels å dzeu des royes"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
 msgid "Number of pixels to put above lines"
-msgstr ""
+msgstr "Nombe di picsels a mete å dzeu des royes"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
-msgstr ""
+msgstr "Picsels å dzo des royes"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
 msgid "Number of pixels to put below lines"
-msgstr ""
+msgstr "Nombe di picsels a mete å dzo des royes"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
@@ -386,24 +390,24 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr ""
+msgstr "Mådje a hintche"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr ""
+msgstr "Nombe di picsels pol mådje a hintche"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr ""
+msgstr "Mådje a droete"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr ""
+msgstr "Nombe di picsels pol mådje a droete"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
-msgstr ""
+msgstr "Ritrait"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr ""
+msgstr "Nombe di picsels pol ritrait"

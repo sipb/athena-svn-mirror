@@ -1,15 +1,17 @@
 # Serbian translation of libgnomecanvas
-# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
-# 
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
+#
 # This file is distributed under the same license as the libgnomecanvas package.
-# 
+#
 # Maintainer: Dušan Marjanović <mdfk@root.co.yu>
+# Reviewed on 2004-02-01 by: Branko Ivanović <popeye@one.ekof.bg.ac.yu>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2003-05-03 19:53+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-02-12 01:28+0100\n"
 "Last-Translator: Dušan Marjanović <madafaka@root.co.yu>\n"
 "Language-Team: Serbian (sr) <serbiagnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +59,7 @@ msgstr "Font"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr "Opis fonta kao niz karaktera"
+msgstr "Opis fonta kao niska"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
@@ -71,9 +73,10 @@ msgstr "Opis fonta kao PangoFontDescription struct"
 msgid "Font family"
 msgstr "Porodica fonta"
 
+# Ostavljeno u originalu, pošto verujem da je to i namera
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr "Ime porodice fonta, npr. bezseri"
+msgstr "Ime porodice fonta, npr. Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
@@ -116,7 +119,7 @@ msgstr "Uspon"
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
 msgstr ""
-"Pomeraj teksta iznad osnovne linije (ispod osnovne linije ako je pomeraj "
+"Pomeraj teksta iznad osnovne linije (ispod osnovne linije ako je uspon "
 "negativan)"
 
 #: libgnomecanvas/gnome-canvas-text.c:351
@@ -151,7 +154,7 @@ msgstr "Boja"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr "Boja teksta, kao niz znakova"
+msgstr "Boja teksta, kao niska"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
@@ -306,16 +309,16 @@ msgid "Cursor Visible"
 msgstr "Kursor vidljiv"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr "Da li je kursor vidljiv u ovoj stavci obogaćenog teksta"
+msgid "Is the cursor visible in this rich text item?"
+msgstr "Da li je kursor vidljiv u ovoj stavci obogaćenog teksta?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "Kursor treperi"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr "Da li kursor trepće u ovoj stavci obogaćenog teksta"
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Da li kursor trepće u ovoj stavci obogaćenog teksta?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"

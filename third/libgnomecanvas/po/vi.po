@@ -6,8 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas VERSION\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-05-30 16:38+0700\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-09-13 19:46+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +36,7 @@ msgstr "Chế độ làm mượt khung vẽ."
 #: libgnomecanvas/gnome-canvas-text.c:206
 #: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
-msgstr "Chữ"
+msgstr "Văn bản"
 
 #: libgnomecanvas/gnome-canvas-text.c:207
 msgid "Text to render"
@@ -51,64 +52,64 @@ msgstr "Đoạn chữ đánh dấu cần vẽ"
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr "Font"
+msgstr "Phông chữ"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr "Tên font"
+msgstr "Mô tả phông dạng chuỗi"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr "Mô tả font"
+msgstr "Mô tả phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
-msgstr "Mô tả font bằng struct PangoFontDescription"
+msgstr "Mô tả phông bằng struct PangoFontDescription"
 
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr "Họ font"
+msgstr "Họ phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr "Tên của họ font, vd Sans, Helvetica, Times, Monospace"
+msgstr "Họ phông, vd Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr "Kiểu font"
+msgstr "Kiểu phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
 msgid "Font variant"
-msgstr "Font variant"
+msgstr "Biến thể phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "Độ đậm font"
+msgstr "Độ đậm phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr "Độ dãn font"
+msgstr "Độ dãn phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr "Cỡ font"
+msgstr "Cỡ phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr "Kích thước font (điểm)"
+msgstr "Cỡ phông (điểm)"
 
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr "Cỡ font (theo chấm)"
+msgstr "Cỡ phông (theo điểm)"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
-msgstr "Rise"
+msgstr "Nâng"
 
 #: libgnomecanvas/gnome-canvas-text.c:341
 msgid ""
@@ -125,7 +126,7 @@ msgstr "Có gạch đè chữ hay không"
 
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr "Gạch dưới"
+msgstr "Gạch chân"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
@@ -137,7 +138,7 @@ msgstr "Tỷ lệ"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr "Kích thước font, tương ứng với kích thước mặc định"
+msgstr "Kích thước phông, tương ứng với kích thước mặc định"
 
 #: libgnomecanvas/gnome-canvas-text.c:425
 #: libgnomecanvas/gnome-canvas-text.c:433
@@ -147,7 +148,7 @@ msgstr "Màu sắc"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr "Tên màu chữ"
+msgstr "Màu chữ, bằng chuỗi"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
@@ -155,7 +156,7 @@ msgstr "Màu chữ (GdkColor)"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr "Màu chữ (dạng RGBA)"
+msgstr "Màu chữ, bằng số R/G/B/A"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
@@ -175,63 +176,63 @@ msgstr "Độ cao của chữ được vẽ"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr "Đặt họ font"
+msgstr "Đặt Họ phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr "Tag này tác động lên họ font"
+msgstr "Tag này tác động lên họ phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr "Đặt kiểu font"
+msgstr "Đặt Kiểu phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
-msgstr "Tag này tác động lên kiểu font"
+msgstr "Tag này tác động lên kiểu phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
-msgstr "Đặt font variant"
+msgstr "Đặt Biến thể phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:481
 msgid "Whether this tag affects the font variant"
-msgstr "Tag này tác động lên font variant"
+msgstr "Tag này tác động lên biến thể phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "Đặt độ đậm font"
+msgstr "Đặt Độ đậm phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "Tag này tác động lên độ đậm font"
+msgstr "Tag này tác động lên độ đậm phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr "Đặt độ dãn font"
+msgstr "Đặt Độ dãn phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr "Tag này tác động lên độ dãn font"
+msgstr "Tag này tác động lên độ dãn phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr "Đặt cỡ font"
+msgstr "Đặt Kích thước phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
-msgstr "Tag này tác động lên kích thước font"
+msgstr "Tag này tác động lên kích thước phông"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
-msgstr "Đặt rise"
+msgstr "Đặt Độ nâng"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
 msgid "Whether this tag affects the rise"
-msgstr "Tag này tác động lên rise"
+msgstr "Tag này tác động lên độ nâng"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
-msgstr "Đặt gạch đè"
+msgstr "Đặt Gạch đè"
 
 #: libgnomecanvas/gnome-canvas-text.c:501
 msgid "Whether this tag affects strikethrough"
@@ -239,11 +240,11 @@ msgstr "Tag này tác động lên việc gạch đè"
 
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
-msgstr "Đặt gạch chân"
+msgstr "Đặt Gạch chân"
 
 #: libgnomecanvas/gnome-canvas-text.c:505
 msgid "Whether this tag affects underlining"
-msgstr "Tag này tác động lên việc gạch chân"
+msgstr "Tag này có tác động gạch chân hay không"
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
@@ -251,7 +252,7 @@ msgstr "Đặt co dãn"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr "Tag này tác động lên việc co dãn font"
+msgstr "Tag này tác động lên việc co dãn phông"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
@@ -291,7 +292,7 @@ msgstr "Có thể sửa hay không?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr "Khả kiến"
+msgstr "Hiển thị"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
@@ -299,19 +300,19 @@ msgstr "Có thể nhìn thấy chữ không?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr "Thấy con trỏ"
+msgstr "Hiện con trỏ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr "Có thể nhìn thấy con trỏ hay không"
+msgid "Is the cursor visible in this rich text item?"
+msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "Con trỏ chớp"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr "Con trỏ có chớp không?"
+msgid "Does the cursor blink in this rich text item?"
+msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
@@ -379,7 +380,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr "Biên trái"
+msgstr "Lề trái"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
@@ -387,7 +388,7 @@ msgstr "Số pixel bên biên trái"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr "Biên phải"
+msgstr "Lề phải"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"

@@ -1,35 +1,311 @@
+2004-09-13  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.8.0
+
+	* NEWS: Update
+
+=================== 2.7.92 ====================
+
+2004-08-30  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.92
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+=================== 2.7.91 ====================
+	
+2004-08-16  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.91
+
+2004-08-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-07-09  Sven Herzberg  <herzi@gnome-de.org>
+
+	* libgnomecanvas/gnome-canvas-util.h: fixed an error when compiling
+	third party software that doesn't include gnome-canvas.h before
+	gnome-canvas-util.h
+
+==================== 2.7.1 ====================
+
+2004-05-31  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.1
+
+	* NEWS: Update
+
+2004-05-20  Matthias Clasen  <mclasen@redhat.com>
+
+	* docs/reference/libgnomecanvas.types: Include gnome-canvas-clipgroup.h.
+
+2004-05-13  James Henstridge  <james@daa.com.au>
+
+	* configure.in (ACLOCAL_AMFLAGS): set so that aclocal gets called
+	with contents of $ACLOCAL_FLAGS environment variable.
+	(AC_PROG_YACC): libgnomecanvas doesn't care about yacc
+	(PATH_TO_XRDB): or xrdb
+
+2004-05-11  James Henstridge  <james@daa.com.au>
+
+	* configure.in: use AM_GLIB_DEFINE_LOCALEDIR() to define the
+	locale directory.
+	Use AC_HELP_STRING to format help string for the
+	--disable-rebuilds command.
+
+2004-05-05  James Henstridge  <james@daa.com.au>
+
+	* libgnomecanvas/Makefile.am (CLEANFILES): remove
+	gnome-canvas-marshal.[ch] on "make clean".
+
+	* tests/Makefile.am (AM_LDFLAGS): change from LDFLAGS, as
+	suggested by automake
+
+	* docs/reference/Makefile.am: use gtk-doc.make so that boilerplate
+	reference documentation build rules don't need to be maintained
+	here.
+
+	* Makefile.am: require automake-1.7.  Enable docs building during
+	distcheck.
+
+	* configure.in: update configure script to match more recent
+	style.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require Automake 1.7.
+
+=================== 2.6.1.1 ===================
+
+2004-04-20  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Fix soname and release 2.6.1.1
+
+==================== 2.6.1 ====================
+
+2004-04-19  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Version 2.6.1 "Girzby"
+
+	* NEWS: Update
+
+2004-04-16  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+==================== 2.6.0 ====================
+
+2004-03-22  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Version 2.6.0 "Skree"
+
+	* Makefile.am (EXTRA_DIST): Add NEWS
+
+	* NEWS: Update
+
+2004-03-16  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-15  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.92
+
+2004-03-09  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.91
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in, libgnomecanvas/Makefile.am,
+	* libgnomecanvas/libgnomecanvas-2.0-uninstalled.pc.in:
+	Add uninstalled pkg config file.
+
+2004-02-25  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added sr@ije to ALL_LINGUAS.
+
+2004-02-24  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.90
+
+2004-02-03  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-03  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.4
+
+2004-01-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* demos/canvas-curve.c: Remove trailing commas from enums. Fixes
+	portability issues. Patch from "The Written Word". Closes bug #131350.
+	* libgnomecanvas/gnome-canvas-bpath.c: Same.
+	* libgnomecanvas/gnome-canvas-polygon.c: Same.
+	* libgnomecanvas/gnome-canvas-rect-ellipse.c: Same. 
+	* libgnomecanvas/gnome-canvas-rich-text.c: Same. 
+	* libgnomecanvas/gnome-canvas-shape.c: (gcbp_draw_ctx_unref): Same.
+
+2004-01-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomecanvas/gnome-canvas-rich-text.c:
+	(gnome_canvas_rich_text_class_init),
+	(gnome_canvas_rich_text_get_property): Add _set methods
+	for height and width. Fixes bug #112865 and others. Patch
+	by Kristian Rietveld <kris at gtk org>
+
+2004-01-14  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.3
+
+2003-12-28  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.2
+
+2003-12-10  Richard Hult  <richard@imendio.com>
+
+	* docs/reference/libgnomecanvas-docs.sgml: Make this valid xml so
+	that gtk-doc doesn't fall back to the old output.
+
+2003-12-08  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.1
+
+2003-11-24  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.0
+
+2003-10-07  Žygimantas Beručka  <uid0@tuxfamily.org>
+
+	* configure.in: Added "lt" to ALL_LINGUAS
+
+2003-09-11  Jody Goldberg <jody@gnome.org>
+
+	For David Boucher <bouda1@wanadoo.fr>
+	* libgnomecanvas/gnome-canvas-path-def.c
+	(gnome_canvas_path_def_concat) : A bpath is not of size 1, copy the
+	  full path.
+
+2003-09-01  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.4.0
+
+2003-09-01  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+2003-08-31  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+	
+2003-08-25  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.3.7
+
+2003-08-11  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.6
+
+2003-08-07  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in:
+	* docs/reference/Makefile.am:
+	* docs/reference/libgnomecanvas-docs.sgml:
+	* libgnomecanvas/gnome-canvas.c:
+	Generate xml documentation.
+	
+Fri Aug 01 11:49:34 2003  George Lebl <jirka@5z.com>
+
+	* libgnomecanvas/gnome-canvas.c: Inside the do_update function it is
+	  possible that during picking we emitted an event in which the user
+	  then called some function which then requested update of something.
+	  We thus need to check again if we need to update stuff as without
+	  that we'd be left in a state where need_update would have been left
+	  TRUE and the canvas would have been left unpainted until another
+	  expose event.
+
+2003-07-10  Joel Brich <joel.brich@laposte.net>
+
+	* configure.in: Added "eo" to ALL_LINGUAS.
+
+2003-06-20  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS
+
+2003-06-16  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-06-11  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added "li" to ALL_LINGUAS.
+
+2003-05-18  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	Implement general clipping in clipgroup. Fixes bug #104602.
+	
+	2001-12-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* gnome-canvas-clipgroup.c (gnome_canvas_clipgroup_update): Invoke
+	parent method with NULL clippath, recalculate bounding box
+	(gnome_canvas_clipgroup_render): Implement, do buffer/buffer
+	clipped composition here
+	(gcg_buf_new): Quick'n'dirty buffer cache
+	(gcg_buf_free): Ditto
+	(gcg_mask_new): Ditto
+	(gcg_mask_free): Ditto
+
+2003-05-13  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" to ALL_LINGUAS.
+
+2003-05-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "cs" to ALL_LINGUAS.
+
 2003-05-05  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
 
 2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* docs/reference/*.*: New docs from Josh Green.
-	* libgnomecanvas/gnome-canvas-util.h: Fix for docs.
-	
-2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* configure.in: Fix setup of localedir.
+	* docs/reference/*: Merged docs from branch.
+	* libgnomecanvas/gnome-canvas-util.h: Same here.
 
 2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
 
 	reviewed by: Tim Janik <timj@gtk.org>
 
 	* libgnomecanvas/gnome-canvas-line.c: (gnome_canvas_line_update):
-	* libgnomecanvas/gnome-canvas-pixbuf.c:
-	(gnome_canvas_pixbuf_render):
+	Fix for bug #72424. AA Canvas crashes if you create a line that has 
+	arrows enabled but not yet any point positions set. Patch from
+	Andreas Holzmann <Andreas.Holzmann@epost.de>.
+	* libgnomecanvas/gnome-canvas-pixbuf.c: Fix for bug 97604.
+	Certain affine transforms do not work for pixbuf items. Patch from
+	Jim Evins <evins@snaught.com>.
+	(gnome_canvas_pixbuf_render): Same as above.
 	* libgnomecanvas/gnome-canvas-shape.c: (gnome_canvas_shape_update):
-	Merge fixes from HEAD.
-
-2003-04-26  Miloslav Trmac  <mitr@volny.cz>
-
-	* configure.in: Added "cs" to ALL_LINGUAS.
-
+	Fix for bug #98258. Outline widths of rect, ellipse, and polygon
+	items don't rotate. Patch from Jim Evins <evins@snaught.com>
 
 Mon Mar 31 07:21:33 2003  Tim Janik  <timj@gtk.org>
 
-        * libgnomecanvas/gnome-canvas-pixbuf.c:
-        (gnome_canvas_pixbuf_update): change update logic to fix redrawing bugs.
+	* libgnomecanvas/gnome-canvas-pixbuf.c:
+	(gnome_canvas_pixbuf_update): change update logic to fix redrawing bugs.
+
+2003-03-27  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.0
 
 2003-03-26  Christian Rose  <menthos@menthos.com>
 
@@ -366,7 +642,7 @@ Mon Mar 31 07:21:33 2003  Tim Janik  <timj@gtk.org>
 
 	* configure.in: Release 1.112.1
 
-2002-03-03  Tõivo Leedjärv  <leedjarv@interest.ee>
+2002-03-03  TÃµivo LeedjÃ¤rv  <leedjarv@interest.ee>
 
 	* configure.in (ALL_LINGUAS): Added et (Estonian).
 
@@ -1436,7 +1712,7 @@ Tue Jun 26 11:29:54 2001  Tim Janik  <timj@gtk.org>
 	This is a good test case for fixing the breakage since it is only
 	caused in gdk mode rather then aa canvas.
 
-2001-06-19  Héctor García Álvarez <hector@scouts-es.org>
+2001-06-19  HÃ©ctor GarcÃ­a Ãlvarez <hector@scouts-es.org>
 
 	* configure.in: added "es" for Spanish to $ALL_LINGUAS
 	

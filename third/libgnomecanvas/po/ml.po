@@ -1,18 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# translation of libgnomecanvas.HEAD.ml.po to 
 # This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # FSF-India <locale@gnu.org.in>, 2003.
+# Suresh Valiya Parambil <mvpsuresh@yahoo.com>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomecanvas 2വിവരണം.2.x\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2003-03-05 10:29+0530\n"
-"Last-Translator: FSF-India <locale@gnu.org.in>\n"
-"Language-Team: Malayalam <locale@gnu.org.in>\n"
+"Project-Id-Version: libgnomecanvas.HEAD.ml\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2003-07-21 23:37-0600\n"
+"Last-Translator: Suresh Valiya Parambil <mvpsuresh@yahoo.com>\n"
+"Language-Team:  <ml@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
 #: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
@@ -52,7 +55,7 @@ msgstr "രചന ചിട്ടപ്പെടുത്തല്‌ ഉപാ�
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr "അച്ച്"
+msgstr "അക്ഷരരൂപം"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
@@ -130,7 +133,7 @@ msgstr "അടി വര"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
-msgstr ""
+msgstr "ഈ വാചകത്തിന്റെ  അടിവര രീതി"
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
@@ -145,7 +148,7 @@ msgstr "സ്വതേയുള്ള വലിപ്പത്തിന‌് �
 #: libgnomecanvas/gnome-canvas-text.c:433
 #: libgnomecanvas/gnome-canvas-text.c:441
 msgid "Color"
-msgstr "നിറം"
+msgstr "വ‍ര്ണ്ണങ്ങള്‌"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
@@ -157,7 +160,7 @@ msgstr "അക്ഷരങ്ങളുടെ നിറം ഒരു GdkColor പ
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr ""
+msgstr "അക്ഷരങ്ങളുടെ നിറം ഒരു RGB ഒരു എണ്ണല് സംഖ്യ പോലെ"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
@@ -177,11 +180,11 @@ msgstr "കാണിച്ചിരിക്കുന്ന അക്ഷരങ�
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr "അച്ചുകുടുംബ ഗണം"
+msgstr "അക്ഷരരൂപ നാമം"
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr ""
+msgstr "പ"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
@@ -228,8 +231,9 @@ msgid "Rise set"
 msgstr "മാത്രാ കൂട്ടം‌"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
+#, fuzzy
 msgid "Whether this tag affects the rise"
-msgstr ""
+msgstr "ഈ ചെറുജാലകം അക്ഷരരൂപ വലിപ്പത്തെ ബാധിക്കുന്നുണ്ടോ"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
@@ -275,7 +279,7 @@ msgstr "വീതി"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr ""
+msgstr "ടെക്സ്റ്റ് ബോക്സിന്റെ വീതി്"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
@@ -283,7 +287,7 @@ msgstr "ഉയരം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr ""
+msgstr "ടെക്സ്റ്റ് ബോക്സിന്റെ ഉയരം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
@@ -291,7 +295,7 @@ msgstr "ചിട്ടപ്പെടുത്തിയ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr ""
+msgstr "ഈ റിച്ച് ടെക്സ്റ്റ് ഇനത്തെ പരിഷ്കരിക്കാമോ ?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
@@ -299,23 +303,25 @@ msgstr "ദൃശ്യമായ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr ""
+msgstr "ഈ റിച്ച് ടെക്സ്റ്റ് ഇനം ദൃശ്യമാണോ ?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
 msgstr "ദൃശ്യമായ സ്ഥാനസൂചി"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr ""
+#, fuzzy
+msgid "Is the cursor visible in this rich text item?"
+msgstr "ഈ സ്ഥാനസൂചി റിച്ച് ടെക്സ്റ്റ് ഇനത്തില് ദൃശ്യമാണോ ?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "മിന്നുന്ന സ്ഥാനസൂചി"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr ""
+#, fuzzy
+msgid "Does the cursor blink in this rich text item?"
+msgstr " സ്ഥാനസൂചി ഈ റിച്ച് ടെക്സ്റ്റ് ഇനത്തില് മിന്നുന്നുണ്ടോ?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
@@ -323,7 +329,7 @@ msgstr "വളര്ച്ച ഉയരം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
-msgstr ""
+msgstr "വാചകം ഉള്ക്കൊള്ളാതാവുമ്പോള് ടെക്സ്റ്റ് ബോക്സിന്റെ ഉയരം കൂട്ടണോ?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
@@ -331,7 +337,7 @@ msgstr "നിരത്തല്‌ രീതി"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"
-msgstr ""
+msgstr "ഒന്നിലധികം വരിയിലുള്ള വാചകങ്ങള് നിരത്തല്‌ രീതി"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
@@ -356,29 +362,27 @@ msgstr "നങ്കൂരം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:317
 msgid "Anchor point for text"
-msgstr ""
+msgstr "വാചക നങ്കൂര സ്ഥാനം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
-msgstr ""
+msgstr "പിക്സലുകള് വരിക്കു മുകളില്"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
-#, fuzzy
 msgid "Number of pixels to put above lines"
-msgstr "നാമാവലിയിലെ ഇനങ്ങളുടെ എണ്ണം"
+msgstr "വരിക്കു മുകളിലിടേണ്ട പിക്സലുകളുടെ എണ്ണം "
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
-msgstr ""
+msgstr "പിക്സലുകള് വരിക്കു താഴെ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
-#, fuzzy
 msgid "Number of pixels to put below lines"
-msgstr "നാമാവലിയിലെ ഇനങ്ങളുടെ എണ്ണം"
+msgstr "വരിക്കു താഴെയിടേണ്ട പിക്സലുകളുടെ എണ്ണം "
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
-msgstr ""
+msgstr " "
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:344
 msgid "Number of pixels to put inside the wrap"
@@ -389,24 +393,21 @@ msgid "Left Margin"
 msgstr "ഇടത് ക്രമീകരണം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
-#, fuzzy
 msgid "Number of pixels in the left margin"
-msgstr "മീനിലെ ഫ്രെയിമുകളുടെ എണ്ണം"
+msgstr "ഇടത് ക്രമീകരണത്തിലെ പിക്സലുകളുടെ എണ്ണം "
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
 msgstr "വലത് കര്മീകരണം"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
-#, fuzzy
 msgid "Number of pixels in the right margin"
-msgstr "മീനിലെ ഫ്രെയിമുകളുടെ എണ്ണം"
+msgstr "വലത ക്രമീകരണത്തിലെ പിക്സലുകളുടെ എണ്ണം "
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
-#, fuzzy
 msgid "Indentation"
-msgstr "അന്തര്‌രാഷ്ട്രം"
+msgstr "വിട"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr ""
+msgstr "വിടവിനുള്ള പിക്സലുകളുടെ എണ്ണം "

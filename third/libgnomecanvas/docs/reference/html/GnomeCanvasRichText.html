@@ -1,0 +1,171 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeCanvasRichText</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Canvas Library Reference Manual"><link rel="up" href="ch02.html" title="GNOME Canvas Library (libgnomecanvas)"><link rel="previous" href="GnomeCanvasRect.html" title="GnomeCanvasRect"><link rel="next" href="GnomeCanvasShape.html" title="GnomeCanvasShape"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="ch02.html" title="GNOME Canvas Library (libgnomecanvas)"><link rel="refentry" href="GnomeCanvas.html" title="GnomeCanvas"><link rel="refentry" href="GnomeCanvasBpath.html" title="GnomeCanvasBpath"><link rel="refentry" href="GnomeCanvasClipgroup.html" title="GnomeCanvasClipgroup"><link rel="refentry" href="GnomeCanvasEllipse.html" title="GnomeCanvasEllipse"><link rel="refentry" href="GnomeCanvasGroup.html" title="GnomeCanvasGroup"><link rel="refentry" href="GnomeCanvasItem.html" title="GnomeCanvasItem"><link rel="refentry" href="GnomeCanvasLine.html" title="GnomeCanvasLine"><link rel="refentry" href="GnomeCanvasPixbuf.html" title="GnomeCanvasPixbuf"><link rel="refentry" href="GnomeCanvasPolygon.html" title="GnomeCanvasPolygon"><link rel="refentry" href="GnomeCanvasRE.html" title="GnomeCanvasRE"><link rel="refentry" href="GnomeCanvasRect.html" title="GnomeCanvasRect"><link rel="refentry" href="GnomeCanvasRichText.html" title="GnomeCanvasRichText"><link rel="refentry" href="GnomeCanvasShape.html" title="GnomeCanvasShape"><link rel="refentry" href="GnomeCanvasText.html" title="GnomeCanvasText"><link rel="refentry" href="GnomeCanvasWidget.html" title="GnomeCanvasWidget"><link rel="refentry" href="libgnomecanvas-gnome-canvas-path-def.html" title="gnome-canvas-path-def"><link rel="refentry" href="libgnomecanvas-gnome-canvas-util.html" title="gnome-canvas-util"><link rel="section" href="GnomeCanvasRichText.html#id2997197" title="Object Hierarchy"><link rel="section" href="GnomeCanvasRichText.html#id2997232" title="Properties"><link rel="section" href="GnomeCanvasRichText.html#id2997595" title="Signal Prototypes"><link rel="section" href="GnomeCanvasRichText.html#id2997648" title="Description"><link rel="section" href="GnomeCanvasRichText.html#id2997661" title="Details"><link rel="section" href="GnomeCanvasRichText.html#id2998251" title="Properties"><link rel="section" href="GnomeCanvasRichText.html#id2999013" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeCanvasRect.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Canvas Library Reference Manual</th><td><a accesskey="n" href="GnomeCanvasShape.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeCanvasRichText"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeCanvasRichText</span></h2><p>GnomeCanvasRichText &#8212; Rich text canvas item</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <a href="GnomeCanvasRichText.html#GnomeCanvasRichText-struct">GnomeCanvasRichText</a>;
+void        <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-cut-clipboard">gnome_canvas_rich_text_cut_clipboard</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);
+void        <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-copy-clipboard">gnome_canvas_rich_text_copy_clipboard</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);
+void        <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-paste-clipboard">gnome_canvas_rich_text_paste_clipboard</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);
+void        <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-set-buffer">gnome_canvas_rich_text_set_buffer</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text,
+                                             GtkTextBuffer *buffer);
+GtkTextBuffer* <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-get-buffer">gnome_canvas_rich_text_get_buffer</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);
+void        <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-get-iter-location">gnome_canvas_rich_text_get_iter_location</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text,
+                                             const GtkTextIter *iter,
+                                             GdkRectangle *location);
+void        <a href="GnomeCanvasRichText.html#gnome-canvas-rich-text-get-iter-at-location">gnome_canvas_rich_text_get_iter_at_location</a>
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text,
+                                             GtkTextIter *iter,
+                                             gint x,
+                                             gint y);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2997197"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----<a href="GnomeCanvasItem.html" title="GnomeCanvasItem">GnomeCanvasItem</a>
+               +----GnomeCanvasRichText
+</pre></div><div class="refsect1" lang="en"><a name="id2997232"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--anchor">anchor</a>"               GtkAnchorType         : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--cursor-blink">cursor-blink</a>"         gboolean              : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--cursor-visible">cursor-visible</a>"       gboolean              : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--direction">direction</a>"            GtkDirectionType      : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--editable">editable</a>"             gboolean              : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--grow-height">grow-height</a>"          gboolean              : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--height">height</a>"               gdouble               : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--indent">indent</a>"               gint                  : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--justification">justification</a>"        GtkJustification      : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--left-margin">left-margin</a>"          gint                  : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--pixels-above-lines">pixels-above-lines</a>"   gint                  : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--pixels-below-lines">pixels-below-lines</a>"   gint                  : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--pixels-inside-wrap">pixels-inside-wrap</a>"   gint                  : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--right-margin">right-margin</a>"         gint                  : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--text">text</a>"                 gchararray            : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--visible">visible</a>"              gboolean              : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--width">width</a>"                gdouble               : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--wrap-mode">wrap-mode</a>"            GtkWrapMode           : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--x">x</a>"                    gdouble               : Read / Write
+  "<a href="GnomeCanvasRichText.html#GnomeCanvasRichText--y">y</a>"                    gdouble               : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2997595"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeCanvasRichText.html#GnomeCanvasRichText-tag-changed">tag-changed</a>"
+            void        user_function      (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *canvasrichtext,
+                                            GObject *arg1,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2997648"></a><h2>Description</h2><p>
+A canvas item that displays a GtkTextBuffer which is a flexible text display
+and editing widget. Consult GtkTextBuffer info in the GTK+ Reference
+documentation for more details.
+</p></div><div class="refsect1" lang="en"><a name="id2997661"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2997666"></a><h3><a name="GnomeCanvasRichText-struct"></a>struct GnomeCanvasRichText</h3><a class="indexterm" name="id2997677"></a><pre class="programlisting">struct GnomeCanvasRichText;</pre><p>
+This structure should not be accessed directly. Use the object's properties
+and functions for querying or changing its parameters.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2997694"></a><h3><a name="gnome-canvas-rich-text-cut-clipboard"></a>gnome_canvas_rich_text_cut_clipboard ()</h3><a class="indexterm" name="id2997706"></a><pre class="programlisting">void        gnome_canvas_rich_text_cut_clipboard
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997754"></a><h3><a name="gnome-canvas-rich-text-copy-clipboard"></a>gnome_canvas_rich_text_copy_clipboard ()</h3><a class="indexterm" name="id2997766"></a><pre class="programlisting">void        gnome_canvas_rich_text_copy_clipboard
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997814"></a><h3><a name="gnome-canvas-rich-text-paste-clipboard"></a>gnome_canvas_rich_text_paste_clipboard ()</h3><a class="indexterm" name="id2997826"></a><pre class="programlisting">void        gnome_canvas_rich_text_paste_clipboard
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997874"></a><h3><a name="gnome-canvas-rich-text-set-buffer"></a>gnome_canvas_rich_text_set_buffer ()</h3><a class="indexterm" name="id2997886"></a><pre class="programlisting">void        gnome_canvas_rich_text_set_buffer
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text,
+                                             GtkTextBuffer *buffer);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997954"></a><h3><a name="gnome-canvas-rich-text-get-buffer"></a>gnome_canvas_rich_text_get_buffer ()</h3><a class="indexterm" name="id2997967"></a><pre class="programlisting">GtkTextBuffer* gnome_canvas_rich_text_get_buffer
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2998024"></a><h3><a name="gnome-canvas-rich-text-get-iter-location"></a>gnome_canvas_rich_text_get_iter_location ()</h3><a class="indexterm" name="id2998036"></a><pre class="programlisting">void        gnome_canvas_rich_text_get_iter_location
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text,
+                                             const GtkTextIter *iter,
+                                             GdkRectangle *location);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>iter</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>location</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2998126"></a><h3><a name="gnome-canvas-rich-text-get-iter-at-location"></a>gnome_canvas_rich_text_get_iter_at_location ()</h3><a class="indexterm" name="id2998140"></a><pre class="programlisting">void        gnome_canvas_rich_text_get_iter_at_location
+                                            (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *text,
+                                             GtkTextIter *iter,
+                                             gint x,
+                                             gint y);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>iter</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2998251"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2998256"></a><h3><a name="GnomeCanvasRichText--anchor"></a>The "<tt class="literal">anchor</tt>" property</h3><pre class="programlisting">  "anchor"               GtkAnchorType         : Read / Write</pre><p>
+Anchor point for text.
+</p><p>Default value: GTK_ANCHOR_NORTH_WEST</p></div><hr><div class="refsect2" lang="en"><a name="id2998294"></a><h3><a name="GnomeCanvasRichText--cursor-blink"></a>The "<tt class="literal">cursor-blink</tt>" property</h3><pre class="programlisting">  "cursor-blink"         gboolean              : Read / Write</pre><p>
+Does the cursor blink in this rich text item?
+</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><a name="id2998332"></a><h3><a name="GnomeCanvasRichText--cursor-visible"></a>The "<tt class="literal">cursor-visible</tt>" property</h3><pre class="programlisting">  "cursor-visible"       gboolean              : Read / Write</pre><p>
+Is the cursor visible?
+</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><a name="id2998369"></a><h3><a name="GnomeCanvasRichText--direction"></a>The "<tt class="literal">direction</tt>" property</h3><pre class="programlisting">  "direction"            GtkDirectionType      : Read / Write</pre><p>
+Direction of displayed rich text.
+</p><p>Default value: GTK_DIR_TAB_BACKWARD</p></div><hr><div class="refsect2" lang="en"><a name="id2998407"></a><h3><a name="GnomeCanvasRichText--editable"></a>The "<tt class="literal">editable</tt>" property</h3><pre class="programlisting">  "editable"             gboolean              : Read / Write</pre><p>
+Is this rich text item editable?
+</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><a name="id2998445"></a><h3><a name="GnomeCanvasRichText--grow-height"></a>The "<tt class="literal">grow-height</tt>" property</h3><pre class="programlisting">  "grow-height"          gboolean              : Read / Write</pre><p>
+Should the text box height grow if the text does not fit?
+</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2998483"></a><h3><a name="GnomeCanvasRichText--height"></a>The "<tt class="literal">height</tt>" property</h3><pre class="programlisting">  "height"               gdouble               : Read / Write</pre><p>
+Height for text box.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998520"></a><h3><a name="GnomeCanvasRichText--indent"></a>The "<tt class="literal">indent</tt>" property</h3><pre class="programlisting">  "indent"               gint                  : Read / Write</pre><p>
+Number of pixels for indentation.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998558"></a><h3><a name="GnomeCanvasRichText--justification"></a>The "<tt class="literal">justification</tt>" property</h3><pre class="programlisting">  "justification"        GtkJustification      : Read / Write</pre><p>
+Justification mode.
+</p><p>Default value: GTK_JUSTIFY_LEFT</p></div><hr><div class="refsect2" lang="en"><a name="id2998596"></a><h3><a name="GnomeCanvasRichText--left-margin"></a>The "<tt class="literal">left-margin</tt>" property</h3><pre class="programlisting">  "left-margin"          gint                  : Read / Write</pre><p>
+Number of pixels in the left margin.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998634"></a><h3><a name="GnomeCanvasRichText--pixels-above-lines"></a>The "<tt class="literal">pixels-above-lines</tt>" property</h3><pre class="programlisting">  "pixels-above-lines"   gint                  : Read / Write</pre><p>
+Number of pixels to put above lines.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998672"></a><h3><a name="GnomeCanvasRichText--pixels-below-lines"></a>The "<tt class="literal">pixels-below-lines</tt>" property</h3><pre class="programlisting">  "pixels-below-lines"   gint                  : Read / Write</pre><p>
+Number of pixels to put below lines.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998711"></a><h3><a name="GnomeCanvasRichText--pixels-inside-wrap"></a>The "<tt class="literal">pixels-inside-wrap</tt>" property</h3><pre class="programlisting">  "pixels-inside-wrap"   gint                  : Read / Write</pre><p>
+Number of pixels to put inside the wrap.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998750"></a><h3><a name="GnomeCanvasRichText--right-margin"></a>The "<tt class="literal">right-margin</tt>" property</h3><pre class="programlisting">  "right-margin"         gint                  : Read / Write</pre><p>
+Number of pixels in the right margin.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998788"></a><h3><a name="GnomeCanvasRichText--text"></a>The "<tt class="literal">text</tt>" property</h3><pre class="programlisting">  "text"                 gchararray            : Read / Write</pre><p>
+Text to display.
+</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2998826"></a><h3><a name="GnomeCanvasRichText--visible"></a>The "<tt class="literal">visible</tt>" property</h3><pre class="programlisting">  "visible"              gboolean              : Read / Write</pre><p>
+Is this rich text item visible?
+</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><a name="id2998863"></a><h3><a name="GnomeCanvasRichText--width"></a>The "<tt class="literal">width</tt>" property</h3><pre class="programlisting">  "width"                gdouble               : Read / Write</pre><p>
+Width for text box.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998900"></a><h3><a name="GnomeCanvasRichText--wrap-mode"></a>The "<tt class="literal">wrap-mode</tt>" property</h3><pre class="programlisting">  "wrap-mode"            GtkWrapMode           : Read / Write</pre><p>
+Wrap mode for multiline text.
+</p><p>Default value: GTK_WRAP_WORD</p></div><hr><div class="refsect2" lang="en"><a name="id2998938"></a><h3><a name="GnomeCanvasRichText--x"></a>The "<tt class="literal">x</tt>" property</h3><pre class="programlisting">  "x"                    gdouble               : Read / Write</pre><p>
+X position.
+</p><p>Default value: 0</p></div><hr><div class="refsect2" lang="en"><a name="id2998975"></a><h3><a name="GnomeCanvasRichText--y"></a>The "<tt class="literal">y</tt>" property</h3><pre class="programlisting">  "y"                    gdouble               : Read / Write</pre><p>
+Y position.
+</p><p>Default value: 0</p></div></div><div class="refsect1" lang="en"><a name="id2999013"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2999019"></a><h3><a name="GnomeCanvasRichText-tag-changed"></a>The "tag-changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeCanvasRichText.html" title="GnomeCanvasRichText">GnomeCanvasRichText</a> *canvasrichtext,
+                                            GObject *arg1,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>canvasrichtext</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeCanvasRect.html"><b>&lt;&lt; GnomeCanvasRect</b></a></td><td align="right"><a accesskey="n" href="GnomeCanvasShape.html"><b>GnomeCanvasShape &gt;&gt;</b></a></td></tr></table></body></html>

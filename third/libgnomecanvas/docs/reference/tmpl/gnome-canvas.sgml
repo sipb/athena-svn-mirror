@@ -103,6 +103,42 @@ below.
 </para>
 
 
+<!-- ##### SIGNAL GnomeCanvas::draw-background ##### -->
+<para>
+This signal is emitted to draw the background for non-antialiased mode
+canvas widgets. The default method uses the canvas widget's style to
+draw the background.
+</para>
+
+@canvas: the object which received the signal.
+@arg1: GdkDrawable to draw to
+@arg2: Leftmost X coordinate of area to draw to
+@arg3: Top Y coordinate of area to draw to
+@arg4: Width of area
+@arg5: Height of area
+
+<!-- ##### SIGNAL GnomeCanvas::render-background ##### -->
+<para>
+This signal is emitted for antialiased mode canvas widgets to render
+the background. The buf data structure contains both a pointer to a
+packed 24-bit RGB array and the coordinates.
+</para>
+
+@canvas: the object which received the signal.
+@arg1: #GnomeCanvasBuf to render to
+
+<!-- ##### ARG GnomeCanvas:aa ##### -->
+<para>
+Enable anti-aliasing mode?
+</para>
+
+<para>
+Note that this parameter can only be set at the time of object
+construction. The same effect can be achieved by calling
+gnome_canvas_new() to create new non-aa canvas or
+gnome_canvas_new_aa() for an anti-aliased canvas.
+</para>
+
 <!-- ##### MACRO GNOME_CANVAS_EPSILON ##### -->
 <para>
 A tiny value used by internal canvas operations.
@@ -138,11 +174,17 @@ alpha components.
 parameters.
 
 
-<!-- ##### TYPEDEF GnomeCanvasBuf ##### -->
+<!-- ##### STRUCT GnomeCanvasBuf ##### -->
 <para>
 A buffer used for rendering for antialiased mode canvas widgets.
 </para>
 
+@buf: 
+@rect: 
+@buf_rowstride: 
+@bg_color: 
+@is_bg: 
+@is_buf: 
 
 <!-- ##### FUNCTION gnome_canvas_new ##### -->
 <para>
@@ -396,40 +438,4 @@ A buffer used for rendering for antialiased mode canvas widgets.
 @canvas: 
 @Returns: 
 
-
-<!-- ##### SIGNAL GnomeCanvas::draw-background ##### -->
-<para>
-This signal is emitted to draw the background for non-antialiased mode
-canvas widgets. The default method uses the canvas widget's style to
-draw the background.
-</para>
-
-@canvas: the object which received the signal.
-@arg1: GdkDrawable to draw to
-@arg2: Leftmost X coordinate of area to draw to
-@arg3: Top Y coordinate of area to draw to
-@arg4: Width of area
-@arg5: Height of area
-
-<!-- ##### SIGNAL GnomeCanvas::render-background ##### -->
-<para>
-This signal is emitted for antialiased mode canvas widgets to render
-the background. The buf data structure contains both a pointer to a
-packed 24-bit RGB array and the coordinates.
-</para>
-
-@canvas: the object which received the signal.
-@arg1: #GnomeCanvasBuf to render to
-
-<!-- ##### ARG GnomeCanvas:aa ##### -->
-<para>
-Enable anti-aliasing mode?
-</para>
-
-<para>
-Note that this parameter can only be set at the time of object
-construction. The same effect can be achieved by calling
-gnome_canvas_new() to create new non-aa canvas or
-gnome_canvas_new_aa() for an anti-aliased canvas.
-</para>
 

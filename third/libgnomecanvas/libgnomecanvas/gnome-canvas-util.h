@@ -33,6 +33,7 @@
 #ifndef GNOME_CANVAS_UTIL_H
 #define GNOME_CANVAS_UTIL_H
 
+#include <libgnomecanvas/gnome-canvas.h>
 
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath.h>

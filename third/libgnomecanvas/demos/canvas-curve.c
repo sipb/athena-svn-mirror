@@ -37,7 +37,7 @@ typedef enum {
 	STATE_INIT = 0,
 	STATE_FIRST_PRESS,
 	STATE_FIRST_RELEASE,
-	STATE_SECOND_PRESS,
+	STATE_SECOND_PRESS
 } State;
 
 static State              current_state;

@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <libgnomecanvas/libgnomecanvas.h>
+#include <libgnomecanvas/gnome-canvas-clipgroup.h>
 
 gnome_canvas_bpath_get_type
 gnome_canvas_clipgroup_get_type

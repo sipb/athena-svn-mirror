@@ -1,0 +1,112 @@
+<refentry id="GnomeCanvasRE">
+<refmeta>
+<refentrytitle>GnomeCanvasRE</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeCanvasRE</refname><refpurpose>Base class for rectangle and ellipse items</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasRE-struct">GnomeCanvasRE</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----<link linkend="GnomeCanvasShape">GnomeCanvasShape</link>
+                     +----GnomeCanvasRE
+                           +----<link linkend="GnomeCanvasEllipse">GnomeCanvasEllipse</link>
+                           +----<link linkend="GnomeCanvasRect">GnomeCanvasRect</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasRE--x1">x1</link>&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasRE--x2">x2</link>&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasRE--y1">y1</link>&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GnomeCanvasRE--y2">y2</link>&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+This forms a base class for rectangle and ellipse canvas items.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasRE-struct"/>struct GnomeCanvasRE</title>
+<indexterm><primary>GnomeCanvasRE</primary></indexterm><programlisting>struct GnomeCanvasRE;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeCanvasRE--x1"/>The &quot;<literal>x1</literal>&quot; property</title>
+<programlisting>  &quot;x1&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Leftmost coordinate of rectangle or ellipse.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasRE--x2"/>The &quot;<literal>x2</literal>&quot; property</title>
+<programlisting>  &quot;x2&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Rightmost coordinate of rectangle or ellipse.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasRE--y1"/>The &quot;<literal>y1</literal>&quot; property</title>
+<programlisting>  &quot;y1&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Topmost coordinate of rectangle or ellipse.
+</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeCanvasRE--y2"/>The &quot;<literal>y2</literal>&quot; property</title>
+<programlisting>  &quot;y2&quot;                   <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>
+Bottommost coordinate of rectangle or ellipse.
+</para><para>Default value: 0</para>
+</refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GnomeCanvasEllipse"><type>GnomeCanvasEllipse</type></link>, <link linkend="GnomeCanvasRect"><type>GnomeCanvasRect</type></link>
+</para>
+</refsect1>
+
+</refentry>

@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LibGnomeCanvas.Gnome.Core-2.1\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
 "PO-Revision-Date: 2002-12-20 17:23+0530\n"
 "Last-Translator: Pramod <rpramod@postmaster.co.uk>\n"
 "Language-Team: Kannada <LL@li.org>\n"
@@ -302,7 +303,7 @@ msgid "Cursor Visible"
 msgstr "ಮೌಸ್ ಸೂಚಕ ಕಾಣಿಸುತ್ತದೆ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
+msgid "Is the cursor visible in this rich text item?"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
@@ -310,7 +311,7 @@ msgid "Cursor Blink"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
+msgid "Does the cursor blink in this rich text item?"
 msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281

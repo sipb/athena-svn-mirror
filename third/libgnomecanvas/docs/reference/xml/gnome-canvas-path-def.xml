@@ -1,0 +1,707 @@
+<refentry id="libgnomecanvas-gnome-canvas-path-def">
+<refmeta>
+<refentrytitle>gnome-canvas-path-def</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-canvas-path-def</refname><refpurpose>Container and functions for manipulating ArtBpaths</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>;
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-new">gnome_canvas_path_def_new</link>
+                                            (void);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-new-sized">gnome_canvas_path_def_new_sized</link>
+                                            (<link linkend="gint">gint</link> length);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-new-from-bpath">gnome_canvas_path_def_new_from_bpath</link>
+                                            (<link linkend="ArtBpath">ArtBpath</link> *bpath);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-new-from-static-bpath">gnome_canvas_path_def_new_from_static_bpath</link>
+                                            (<link linkend="ArtBpath">ArtBpath</link> *bpath);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-new-from-foreign-bpath">gnome_canvas_path_def_new_from_foreign_bpath</link>
+                                            (<link linkend="ArtBpath">ArtBpath</link> *bpath);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-ref">gnome_canvas_path_def_ref</link>       (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-finish">gnome_canvas_path_def_finish</link>    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-ensure-space">gnome_canvas_path_def_ensure_space</link>
+                                            (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gint">gint</link> space);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-copy">gnome_canvas_path_def_copy</link>      (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *dst,
+                                             const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *src);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-duplicate">gnome_canvas_path_def_duplicate</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-concat">gnome_canvas_path_def_concat</link>
+                                            (const <link linkend="GSList">GSList</link> *list);
+<link linkend="GSList">GSList</link>*     <link linkend="gnome-canvas-path-def-split">gnome_canvas_path_def_split</link>     (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-open-parts">gnome_canvas_path_def_open_parts</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-closed-parts">gnome_canvas_path_def_closed_parts</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* <link linkend="gnome-canvas-path-def-close-all">gnome_canvas_path_def_close_all</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-unref">gnome_canvas_path_def_unref</link>     (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-reset">gnome_canvas_path_def_reset</link>     (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-moveto">gnome_canvas_path_def_moveto</link>    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x,
+                                             <link linkend="gdouble">gdouble</link> y);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-lineto">gnome_canvas_path_def_lineto</link>    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x,
+                                             <link linkend="gdouble">gdouble</link> y);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-lineto-moving">gnome_canvas_path_def_lineto_moving</link>
+                                            (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x,
+                                             <link linkend="gdouble">gdouble</link> y);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-curveto">gnome_canvas_path_def_curveto</link>   (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x0,
+                                             <link linkend="gdouble">gdouble</link> y0,
+                                             <link linkend="gdouble">gdouble</link> x1,
+                                             <link linkend="gdouble">gdouble</link> y1,
+                                             <link linkend="gdouble">gdouble</link> x2,
+                                             <link linkend="gdouble">gdouble</link> y2);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-closepath">gnome_canvas_path_def_closepath</link> (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-closepath-current">gnome_canvas_path_def_closepath_current</link>
+                                            (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="ArtBpath">ArtBpath</link>*   <link linkend="gnome-canvas-path-def-bpath">gnome_canvas_path_def_bpath</link>     (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gint">gint</link>        <link linkend="gnome-canvas-path-def-length">gnome_canvas_path_def_length</link>    (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-canvas-path-def-is-empty">gnome_canvas_path_def_is_empty</link>  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-canvas-path-def-has-currentpoint">gnome_canvas_path_def_has_currentpoint</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-canvas-path-def-currentpoint">gnome_canvas_path_def_currentpoint</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="ArtPoint">ArtPoint</link> *p);
+<link linkend="ArtBpath">ArtBpath</link>*   <link linkend="gnome-canvas-path-def-last-bpath">gnome_canvas_path_def_last_bpath</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="ArtBpath">ArtBpath</link>*   <link linkend="gnome-canvas-path-def-first-bpath">gnome_canvas_path_def_first_bpath</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-canvas-path-def-any-open">gnome_canvas_path_def_any_open</link>  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-canvas-path-def-all-open">gnome_canvas_path_def_all_open</link>  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-canvas-path-def-any-closed">gnome_canvas_path_def_any_closed</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-canvas-path-def-all-closed">gnome_canvas_path_def_all_closed</link>
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Convenient container and functions for manipulating ArtBpaths, which are paths
+defined by line and curve segments.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeCanvasPathDef"/>struct GnomeCanvasPathDef</title>
+<indexterm><primary>GnomeCanvasPathDef</primary></indexterm><programlisting>struct GnomeCanvasPathDef;</programlisting>
+<para>
+This structure should not be accessed directly. Use the functions defined
+below.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-new"/>gnome_canvas_path_def_new ()</title>
+<indexterm><primary>gnome_canvas_path_def_new</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new
+                                            (void);</programlisting>
+<para>
+This function creates a new empty <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-new-sized"/>gnome_canvas_path_def_new_sized ()</title>
+<indexterm><primary>gnome_canvas_path_def_new_sized</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_sized
+                                            (<link linkend="gint">gint</link> length);</programlisting>
+<para>
+This funtion creates a new <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link> with <parameter>length</parameter>
+number of points allocated. It is useful, if you know the exact
+number of points in path, so you can avoid automatic point
+array reallocation.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
+<listitem><simpara> number of points to allocate for the path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-new-from-bpath"/>gnome_canvas_path_def_new_from_bpath ()</title>
+<indexterm><primary>gnome_canvas_path_def_new_from_bpath</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_from_bpath
+                                            (<link linkend="ArtBpath">ArtBpath</link> *bpath);</programlisting>
+<para>
+This function constructs a new <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link> and uses the
+passed <parameter>bpath</parameter> as the contents.  The passed bpath should not be
+static as the path definition is editable when constructed with
+this function. Also, passed bpath will be freed with art_free, if
+path is destroyed, so use it with caution.
+For constructing a <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link>
+from (non-modifiable) bpath use
+<link linkend="gnome-canvas-path-def-new-from-static-bpath"><type>gnome_canvas_path_def_new_from_static_bpath</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
+<listitem><simpara> libart bezier path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition that is populated with the
+passed bezier path, if the <parameter>bpath</parameter> is bad NULL is returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-new-from-static-bpath"/>gnome_canvas_path_def_new_from_static_bpath ()</title>
+<indexterm><primary>gnome_canvas_path_def_new_from_static_bpath</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_from_static_bpath
+                                            (<link linkend="ArtBpath">ArtBpath</link> *bpath);</programlisting>
+<para>
+This function constructs a new <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link> and
+references the passed <parameter>bpath</parameter> as its contents.  The
+<link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link> returned from this function is to be
+considered static and non-editable (meaning you cannot change the
+path from what you passed in <parameter>bpath</parameter>). The bpath will not be freed,
+if path will be destroyed, so use it with caution.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
+<listitem><simpara> libart bezier path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition that references the passed
+<parameter>bpath</parameter>, or if the path is bad NULL is returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-new-from-foreign-bpath"/>gnome_canvas_path_def_new_from_foreign_bpath ()</title>
+<indexterm><primary>gnome_canvas_path_def_new_from_foreign_bpath</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_from_foreign_bpath
+                                            (<link linkend="ArtBpath">ArtBpath</link> *bpath);</programlisting>
+<para>
+This function constructs a new <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link> and
+duplicates the contents of the passed <parameter>bpath</parameter> in the definition.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
+<listitem><simpara> libart bezier path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="gnome-canvas-path-def"><type>gnome_canvas_path_def</type></link> or NULL if the
+path is invalid.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-ref"/>gnome_canvas_path_def_ref ()</title>
+<indexterm><primary>gnome_canvas_path_def_ref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_ref       (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+Increment the reference count of the GnomeCanvasPathDef.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-finish"/>gnome_canvas_path_def_finish ()</title>
+<indexterm><primary>gnome_canvas_path_def_finish</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_finish    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+Trims dynamic point array to exact length of path.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-ensure-space"/>gnome_canvas_path_def_ensure_space ()</title>
+<indexterm><primary>gnome_canvas_path_def_ensure_space</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_ensure_space
+                                            (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gint">gint</link> space);</programlisting>
+<para>
+This function ensures that enough space for <parameter>space</parameter> points is
+allocated at the end of the path.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> number of points to guarantee are allocated at the end of
+the path.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-copy"/>gnome_canvas_path_def_copy ()</title>
+<indexterm><primary>gnome_canvas_path_def_copy</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_copy      (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *dst,
+                                             const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *src);</programlisting>
+<para>
+This function copies the contents <parameter>src</parameter> to <parameter>dest</parameter>. The old <parameter>dest</parameter> path
+array is freed and <parameter>dest</parameter> is marked as non-static (editable),
+regardless of the status of <parameter>src</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dst</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef where the contents of <parameter>src</parameter> will be stored.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef whose contents will be copied it <parameter>src</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-duplicate"/>gnome_canvas_path_def_duplicate ()</title>
+<indexterm><primary>gnome_canvas_path_def_duplicate</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_duplicate
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function duplicates the passed <parameter>path</parameter>. The new path is
+marked as non-static regardless of the state of original.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef to duplicate
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GnomeCanvasPathDef which is a duplicate of <parameter>path</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-concat"/>gnome_canvas_path_def_concat ()</title>
+<indexterm><primary>gnome_canvas_path_def_concat</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_concat
+                                            (const <link linkend="GSList">GSList</link> *list);</programlisting>
+<para>
+This function concatenates a list of GnomeCanvasPathDefs into one
+newly created GnomeCanvasPathDef.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara> a GSList of GnomeCanvasPathDefs to concatenate into one new
+path.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-split"/>gnome_canvas_path_def_split ()</title>
+<indexterm><primary>gnome_canvas_path_def_split</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gnome_canvas_path_def_split     (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function splits the passed <parameter>path</parameter> into a list of
+GnomeCanvasPathDefs which represent each segment of the origional
+path.  The path is split when ever an ART_MOVETO or ART_MOVETO_OPEN
+is encountered. The closedness of resulting paths is set accordingly
+to closedness of corresponding segment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a list of GnomeCanvasPathDef(s).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-open-parts"/>gnome_canvas_path_def_open_parts ()</title>
+<indexterm><primary>gnome_canvas_path_def_open_parts</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_open_parts
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function creates a new GnomeCanvasPathDef that contains all of
+the open segments on the passed <parameter>path</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new GnomeCanvasPathDef that contains all of the open segemtns in <parameter>path</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-closed-parts"/>gnome_canvas_path_def_closed_parts ()</title>
+<indexterm><primary>gnome_canvas_path_def_closed_parts</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_closed_parts
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns a new GnomeCanvasPathDef that contains the
+all of close parts of passed <parameter>path</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new GnomeCanvasPathDef that contains all of the closed
+parts of passed <parameter>path</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-close-all"/>gnome_canvas_path_def_close_all ()</title>
+<indexterm><primary>gnome_canvas_path_def_close_all</primary></indexterm><programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_close_all
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function closes all of the open segments in the passed path
+and returns a new GnomeCanvasPathDef.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GnomeCanvasPathDef that contains the contents of <parameter>path</parameter>
+but has modified the path is fully closed
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-unref"/>gnome_canvas_path_def_unref ()</title>
+<indexterm><primary>gnome_canvas_path_def_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_unref     (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+Decrease the reference count of the passed <parameter>path</parameter>.  If the reference
+count is &lt; 1 the path is deallocated.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-reset"/>gnome_canvas_path_def_reset ()</title>
+<indexterm><primary>gnome_canvas_path_def_reset</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_reset     (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function clears the contents of the passed <parameter>path</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-moveto"/>gnome_canvas_path_def_moveto ()</title>
+<indexterm><primary>gnome_canvas_path_def_moveto</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_moveto    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x,
+                                             <link linkend="gdouble">gdouble</link> y);</programlisting>
+<para>
+This function adds starts new subpath on <parameter>path</parameter>, and sets its
+starting point to <parameter>x</parameter> and <parameter>y</parameter>. If current subpath is empty, it
+simply changes its starting coordinates to new values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-lineto"/>gnome_canvas_path_def_lineto ()</title>
+<indexterm><primary>gnome_canvas_path_def_lineto</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_lineto    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x,
+                                             <link linkend="gdouble">gdouble</link> y);</programlisting>
+<para>
+This function add a line segment to the passed <parameter>path</parameter> with the
+specified <parameter>x</parameter> and <parameter>y</parameter> coordinates.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-lineto-moving"/>gnome_canvas_path_def_lineto_moving ()</title>
+<indexterm><primary>gnome_canvas_path_def_lineto_moving</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_lineto_moving
+                                            (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x,
+                                             <link linkend="gdouble">gdouble</link> y);</programlisting>
+<para>
+This functions adds a new line segment with loose endpoint to the path, or
+if endpoint is already loose, changes its coordinates to <parameter>x</parameter>, <parameter>y</parameter>. You
+can change the coordinates of loose endpoint as many times as you want,
+the last ones set will be fixed, if you continue line. This is useful
+for handling drawing with mouse.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-curveto"/>gnome_canvas_path_def_curveto ()</title>
+<indexterm><primary>gnome_canvas_path_def_curveto</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_curveto   (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="gdouble">gdouble</link> x0,
+                                             <link linkend="gdouble">gdouble</link> y0,
+                                             <link linkend="gdouble">gdouble</link> x1,
+                                             <link linkend="gdouble">gdouble</link> y1,
+                                             <link linkend="gdouble">gdouble</link> x2,
+                                             <link linkend="gdouble">gdouble</link> y2);</programlisting>
+<para>
+This function adds a bezier curve segment to the path definition.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x0</parameter>&nbsp;:</term>
+<listitem><simpara> first control point x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y0</parameter>&nbsp;:</term>
+<listitem><simpara> first control point y coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
+<listitem><simpara> second control point x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
+<listitem><simpara> second control point y coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
+<listitem><simpara> end of curve x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
+<listitem><simpara> end of curve y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-closepath"/>gnome_canvas_path_def_closepath ()</title>
+<indexterm><primary>gnome_canvas_path_def_closepath</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_closepath (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function closes the last subpath of <parameter>path</parameter>, adding a ART_LINETO to
+subpath starting point, if needed and changing starting pathcode to
+ART_MOVETO</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-closepath-current"/>gnome_canvas_path_def_closepath_current ()</title>
+<indexterm><primary>gnome_canvas_path_def_closepath_current</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_closepath_current
+                                            (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function closes the last subpath by setting the coordinates of
+the endpoint of the last segment (line or curve) to starting point.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-bpath"/>gnome_canvas_path_def_bpath ()</title>
+<indexterm><primary>gnome_canvas_path_def_bpath</primary></indexterm><programlisting><link linkend="ArtBpath">ArtBpath</link>*   gnome_canvas_path_def_bpath     (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns a ArtBpath that consists of the path
+definition.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> ArtBpath
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-length"/>gnome_canvas_path_def_length ()</title>
+<indexterm><primary>gnome_canvas_path_def_length</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_canvas_path_def_length    (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns the length of the path definition.  Not
+Euclidian length of the path but rather the number of points on the
+path.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> integer, number of points on the path.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-is-empty"/>gnome_canvas_path_def_is_empty ()</title>
+<indexterm><primary>gnome_canvas_path_def_is_empty</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_is_empty  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function is a boolean test to see if the path is empty,
+meaning containing no line segments.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path is empty.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-has-currentpoint"/>gnome_canvas_path_def_has_currentpoint ()</title>
+<indexterm><primary>gnome_canvas_path_def_has_currentpoint</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_has_currentpoint
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function is a boolean test checking to see if the path has a
+current point defined. Current point will be set by line operators,
+and cleared by closing subpath.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathdef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has a current point defined.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-currentpoint"/>gnome_canvas_path_def_currentpoint ()</title>
+<indexterm><primary>gnome_canvas_path_def_currentpoint</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_canvas_path_def_currentpoint
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
+                                             <link linkend="ArtPoint">ArtPoint</link> *p);</programlisting>
+<para>
+Stores the current point of the path definition in the passed ArtPoint <parameter>p</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>p</parameter>&nbsp;:</term>
+<listitem><simpara> a ArtPoint where to store the current point
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-last-bpath"/>gnome_canvas_path_def_last_bpath ()</title>
+<indexterm><primary>gnome_canvas_path_def_last_bpath</primary></indexterm><programlisting><link linkend="ArtBpath">ArtBpath</link>*   gnome_canvas_path_def_last_bpath
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns pointer to the last ArtBpath segment in the path
+definition.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> ArtBpath, being the last segment in the path definition or
+null if no line segments have been defined.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-first-bpath"/>gnome_canvas_path_def_first_bpath ()</title>
+<indexterm><primary>gnome_canvas_path_def_first_bpath</primary></indexterm><programlisting><link linkend="ArtBpath">ArtBpath</link>*   gnome_canvas_path_def_first_bpath
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns the first ArtBpath point in the definition.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> ArtBpath being the first point in the path definition or
+null if no points are defined
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-any-open"/>gnome_canvas_path_def_any_open ()</title>
+<indexterm><primary>gnome_canvas_path_def_any_open</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_any_open  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns a boolean value indicating if the path has
+any open segments.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has any open segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-all-open"/>gnome_canvas_path_def_all_open ()</title>
+<indexterm><primary>gnome_canvas_path_def_all_open</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_all_open  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns a boolean value indicating if the path only
+contains open segments.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has all open segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-any-closed"/>gnome_canvas_path_def_any_closed ()</title>
+<indexterm><primary>gnome_canvas_path_def_any_closed</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_any_closed
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns a boolean valid indicating if the path has
+any closed segements.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has any closed segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-path-def-all-closed"/>gnome_canvas_path_def_all_closed ()</title>
+<indexterm><primary>gnome_canvas_path_def_all_closed</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_all_closed
+                                            (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
+<para>
+This function returns a boolean value indicating if the path only
+contains closed segments.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has all closed segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

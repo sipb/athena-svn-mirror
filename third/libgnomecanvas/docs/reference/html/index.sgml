@@ -1,276 +1,276 @@
-<ANCHOR id ="GNOMECANVAS" href="libgnomecanvas/gnomecanvas.html">
-<ANCHOR id ="GNOMECANVAS-STRUCT" href="libgnomecanvas/gnomecanvas.html#GNOMECANVAS-STRUCT">
-<ANCHOR id ="GNOME-CANVAS-EPSILON-CAPS" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-EPSILON-CAPS">
-<ANCHOR id ="GNOME-CANVAS-COLOR-CAPS" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-COLOR-CAPS">
-<ANCHOR id ="GNOME-CANVAS-COLOR-A-CAPS" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-COLOR-A-CAPS">
-<ANCHOR id ="GNOMECANVASBUF" href="libgnomecanvas/gnomecanvas.html#GNOMECANVASBUF">
-<ANCHOR id ="GNOME-CANVAS-NEW" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-NEW">
-<ANCHOR id ="GNOME-CANVAS-NEW-AA" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-NEW-AA">
-<ANCHOR id ="GNOME-CANVAS-ROOT" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-ROOT">
-<ANCHOR id ="GNOME-CANVAS-SET-SCROLL-REGION" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-SET-SCROLL-REGION">
-<ANCHOR id ="GNOME-CANVAS-GET-SCROLL-REGION" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-SCROLL-REGION">
-<ANCHOR id ="GNOME-CANVAS-SET-CENTER-SCROLL-REGION" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-SET-CENTER-SCROLL-REGION">
-<ANCHOR id ="GNOME-CANVAS-GET-CENTER-SCROLL-REGION" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-CENTER-SCROLL-REGION">
-<ANCHOR id ="GNOME-CANVAS-SET-PIXELS-PER-UNIT" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-SET-PIXELS-PER-UNIT">
-<ANCHOR id ="GNOME-CANVAS-SCROLL-TO" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-SCROLL-TO">
-<ANCHOR id ="GNOME-CANVAS-GET-SCROLL-OFFSETS" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-SCROLL-OFFSETS">
-<ANCHOR id ="GNOME-CANVAS-UPDATE-NOW" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-UPDATE-NOW">
-<ANCHOR id ="GNOME-CANVAS-GET-ITEM-AT" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-ITEM-AT">
-<ANCHOR id ="GNOME-CANVAS-REQUEST-REDRAW-UTA" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-REQUEST-REDRAW-UTA">
-<ANCHOR id ="GNOME-CANVAS-REQUEST-REDRAW" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-REQUEST-REDRAW">
-<ANCHOR id ="GNOME-CANVAS-W2C-AFFINE" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-W2C-AFFINE">
-<ANCHOR id ="GNOME-CANVAS-W2C" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-W2C">
-<ANCHOR id ="GNOME-CANVAS-W2C-D" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-W2C-D">
-<ANCHOR id ="GNOME-CANVAS-C2W" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-C2W">
-<ANCHOR id ="GNOME-CANVAS-WINDOW-TO-WORLD" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-WINDOW-TO-WORLD">
-<ANCHOR id ="GNOME-CANVAS-WORLD-TO-WINDOW" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-WORLD-TO-WINDOW">
-<ANCHOR id ="GNOME-CANVAS-GET-COLOR" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-COLOR">
-<ANCHOR id ="GNOME-CANVAS-GET-COLOR-PIXEL" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-COLOR-PIXEL">
-<ANCHOR id ="GNOME-CANVAS-SET-STIPPLE-ORIGIN" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-SET-STIPPLE-ORIGIN">
-<ANCHOR id ="GNOME-CANVAS-SET-DITHER" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-SET-DITHER">
-<ANCHOR id ="GNOME-CANVAS-GET-DITHER" href="libgnomecanvas/gnomecanvas.html#GNOME-CANVAS-GET-DITHER">
-<ANCHOR id ="GNOMECANVAS--AA" href="libgnomecanvas/gnomecanvas.html#GNOMECANVAS--AA">
-<ANCHOR id ="GNOMECANVAS-DRAW-BACKGROUND" href="libgnomecanvas/gnomecanvas.html#GNOMECANVAS-DRAW-BACKGROUND">
-<ANCHOR id ="GNOMECANVAS-RENDER-BACKGROUND" href="libgnomecanvas/gnomecanvas.html#GNOMECANVAS-RENDER-BACKGROUND">
-<ANCHOR id ="GNOMECANVASBPATH" href="libgnomecanvas/gnomecanvasbpath.html">
-<ANCHOR id ="GNOMECANVASBPATH-STRUCT" href="libgnomecanvas/gnomecanvasbpath.html#GNOMECANVASBPATH-STRUCT">
-<ANCHOR id ="GNOMECANVASBPATH--BPATH" href="libgnomecanvas/gnomecanvasbpath.html#GNOMECANVASBPATH--BPATH">
-<ANCHOR id ="GNOMECANVASCLIPGROUP" href="libgnomecanvas/gnomecanvasclipgroup.html">
-<ANCHOR id ="GNOMECANVASCLIPGROUP-STRUCT" href="libgnomecanvas/gnomecanvasclipgroup.html#GNOMECANVASCLIPGROUP-STRUCT">
-<ANCHOR id ="GNOMECANVASCLIPGROUP--PATH" href="libgnomecanvas/gnomecanvasclipgroup.html#GNOMECANVASCLIPGROUP--PATH">
-<ANCHOR id ="GNOMECANVASCLIPGROUP--WIND" href="libgnomecanvas/gnomecanvasclipgroup.html#GNOMECANVASCLIPGROUP--WIND">
-<ANCHOR id ="GNOMECANVASELLIPSE" href="libgnomecanvas/gnomecanvasellipse.html">
-<ANCHOR id ="GNOMECANVASELLIPSE-STRUCT" href="libgnomecanvas/gnomecanvasellipse.html#GNOMECANVASELLIPSE-STRUCT">
-<ANCHOR id ="GNOMECANVASGROUP" href="libgnomecanvas/gnomecanvasgroup.html">
-<ANCHOR id ="GNOMECANVASGROUP-STRUCT" href="libgnomecanvas/gnomecanvasgroup.html#GNOMECANVASGROUP-STRUCT">
-<ANCHOR id ="GNOMECANVASGROUP--X" href="libgnomecanvas/gnomecanvasgroup.html#GNOMECANVASGROUP--X">
-<ANCHOR id ="GNOMECANVASGROUP--Y" href="libgnomecanvas/gnomecanvasgroup.html#GNOMECANVASGROUP--Y">
-<ANCHOR id ="GNOMECANVASITEM" href="libgnomecanvas/gnomecanvasitem.html">
-<ANCHOR id ="GNOMECANVASITEM-STRUCT" href="libgnomecanvas/gnomecanvasitem.html#GNOMECANVASITEM-STRUCT">
-<ANCHOR id ="GNOMECANVASITEMCLASS" href="libgnomecanvas/gnomecanvasitem.html#GNOMECANVASITEMCLASS">
-<ANCHOR id ="GNOME-CANVAS-ITEM-NEW" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-NEW">
-<ANCHOR id ="GNOME-CANVAS-ITEM-CONSTRUCT" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-CONSTRUCT">
-<ANCHOR id ="GNOME-CANVAS-ITEM-SET" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-SET">
-<ANCHOR id ="GNOME-CANVAS-ITEM-SET-VALIST" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-SET-VALIST">
-<ANCHOR id ="GNOME-CANVAS-ITEM-MOVE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-MOVE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-AFFINE-RELATIVE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-AFFINE-RELATIVE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-AFFINE-ABSOLUTE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-AFFINE-ABSOLUTE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-RAISE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-RAISE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-LOWER" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-LOWER">
-<ANCHOR id ="GNOME-CANVAS-ITEM-RAISE-TO-TOP" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-RAISE-TO-TOP">
-<ANCHOR id ="GNOME-CANVAS-ITEM-LOWER-TO-BOTTOM" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-LOWER-TO-BOTTOM">
-<ANCHOR id ="GNOME-CANVAS-ITEM-SHOW" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-SHOW">
-<ANCHOR id ="GNOME-CANVAS-ITEM-HIDE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-HIDE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-GRAB" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-GRAB">
-<ANCHOR id ="GNOME-CANVAS-ITEM-UNGRAB" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-UNGRAB">
-<ANCHOR id ="GNOME-CANVAS-ITEM-W2I" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-W2I">
-<ANCHOR id ="GNOME-CANVAS-ITEM-I2W" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-I2W">
-<ANCHOR id ="GNOME-CANVAS-ITEM-I2W-AFFINE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-I2W-AFFINE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-I2C-AFFINE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-I2C-AFFINE">
-<ANCHOR id ="GNOME-CANVAS-ITEM-REPARENT" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-REPARENT">
-<ANCHOR id ="GNOME-CANVAS-ITEM-GRAB-FOCUS" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-GRAB-FOCUS">
-<ANCHOR id ="GNOME-CANVAS-ITEM-GET-BOUNDS" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-GET-BOUNDS">
-<ANCHOR id ="GNOME-CANVAS-ITEM-REQUEST-UPDATE" href="libgnomecanvas/gnomecanvasitem.html#GNOME-CANVAS-ITEM-REQUEST-UPDATE">
-<ANCHOR id ="GNOMECANVASITEM--PARENT" href="libgnomecanvas/gnomecanvasitem.html#GNOMECANVASITEM--PARENT">
-<ANCHOR id ="GNOMECANVASITEM-EVENT" href="libgnomecanvas/gnomecanvasitem.html#GNOMECANVASITEM-EVENT">
-<ANCHOR id ="GNOMECANVASLINE" href="libgnomecanvas/gnomecanvasline.html">
-<ANCHOR id ="GNOMECANVASLINE-STRUCT" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE-STRUCT">
-<ANCHOR id ="GNOMECANVASLINE--ARROW-SHAPE-A" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--ARROW-SHAPE-A">
-<ANCHOR id ="GNOMECANVASLINE--ARROW-SHAPE-B" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--ARROW-SHAPE-B">
-<ANCHOR id ="GNOMECANVASLINE--ARROW-SHAPE-C" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--ARROW-SHAPE-C">
-<ANCHOR id ="GNOMECANVASLINE--CAP-STYLE" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--CAP-STYLE">
-<ANCHOR id ="GNOMECANVASLINE--FILL-COLOR" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--FILL-COLOR">
-<ANCHOR id ="GNOMECANVASLINE--FILL-COLOR-GDK" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--FILL-COLOR-GDK">
-<ANCHOR id ="GNOMECANVASLINE--FILL-COLOR-RGBA" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--FILL-COLOR-RGBA">
-<ANCHOR id ="GNOMECANVASLINE--FILL-STIPPLE" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--FILL-STIPPLE">
-<ANCHOR id ="GNOMECANVASLINE--FIRST-ARROWHEAD" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--FIRST-ARROWHEAD">
-<ANCHOR id ="GNOMECANVASLINE--JOIN-STYLE" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--JOIN-STYLE">
-<ANCHOR id ="GNOMECANVASLINE--LAST-ARROWHEAD" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--LAST-ARROWHEAD">
-<ANCHOR id ="GNOMECANVASLINE--LINE-STYLE" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--LINE-STYLE">
-<ANCHOR id ="GNOMECANVASLINE--POINTS" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--POINTS">
-<ANCHOR id ="GNOMECANVASLINE--SMOOTH" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--SMOOTH">
-<ANCHOR id ="GNOMECANVASLINE--SPLINE-STEPS" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--SPLINE-STEPS">
-<ANCHOR id ="GNOMECANVASLINE--WIDTH-PIXELS" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--WIDTH-PIXELS">
-<ANCHOR id ="GNOMECANVASLINE--WIDTH-UNITS" href="libgnomecanvas/gnomecanvasline.html#GNOMECANVASLINE--WIDTH-UNITS">
-<ANCHOR id ="GNOMECANVASPIXBUF" href="libgnomecanvas/gnomecanvaspixbuf.html">
-<ANCHOR id ="GNOMECANVASPIXBUF-STRUCT" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF-STRUCT">
-<ANCHOR id ="GNOMECANVASPIXBUF--ANCHOR" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--ANCHOR">
-<ANCHOR id ="GNOMECANVASPIXBUF--HEIGHT" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT">
-<ANCHOR id ="GNOMECANVASPIXBUF--HEIGHT-IN-PIXELS" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT-IN-PIXELS">
-<ANCHOR id ="GNOMECANVASPIXBUF--HEIGHT-SET" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT-SET">
-<ANCHOR id ="GNOMECANVASPIXBUF--PIXBUF" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--PIXBUF">
-<ANCHOR id ="GNOMECANVASPIXBUF--WIDTH" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH">
-<ANCHOR id ="GNOMECANVASPIXBUF--WIDTH-IN-PIXELS" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH-IN-PIXELS">
-<ANCHOR id ="GNOMECANVASPIXBUF--WIDTH-SET" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH-SET">
-<ANCHOR id ="GNOMECANVASPIXBUF--X" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--X">
-<ANCHOR id ="GNOMECANVASPIXBUF--X-IN-PIXELS" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--X-IN-PIXELS">
-<ANCHOR id ="GNOMECANVASPIXBUF--Y" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--Y">
-<ANCHOR id ="GNOMECANVASPIXBUF--Y-IN-PIXELS" href="libgnomecanvas/gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--Y-IN-PIXELS">
-<ANCHOR id ="GNOMECANVASPOLYGON" href="libgnomecanvas/gnomecanvaspolygon.html">
-<ANCHOR id ="GNOMECANVASPOLYGON-STRUCT" href="libgnomecanvas/gnomecanvaspolygon.html#GNOMECANVASPOLYGON-STRUCT">
-<ANCHOR id ="GNOMECANVASPOLYGON--POINTS" href="libgnomecanvas/gnomecanvaspolygon.html#GNOMECANVASPOLYGON--POINTS">
-<ANCHOR id ="GNOMECANVASRE" href="libgnomecanvas/gnomecanvasre.html">
-<ANCHOR id ="GNOMECANVASRE-STRUCT" href="libgnomecanvas/gnomecanvasre.html#GNOMECANVASRE-STRUCT">
-<ANCHOR id ="GNOMECANVASRE--X1" href="libgnomecanvas/gnomecanvasre.html#GNOMECANVASRE--X1">
-<ANCHOR id ="GNOMECANVASRE--X2" href="libgnomecanvas/gnomecanvasre.html#GNOMECANVASRE--X2">
-<ANCHOR id ="GNOMECANVASRE--Y1" href="libgnomecanvas/gnomecanvasre.html#GNOMECANVASRE--Y1">
-<ANCHOR id ="GNOMECANVASRE--Y2" href="libgnomecanvas/gnomecanvasre.html#GNOMECANVASRE--Y2">
-<ANCHOR id ="GNOMECANVASRECT" href="libgnomecanvas/gnomecanvasrect.html">
-<ANCHOR id ="GNOMECANVASRECT-STRUCT" href="libgnomecanvas/gnomecanvasrect.html#GNOMECANVASRECT-STRUCT">
-<ANCHOR id ="GNOMECANVASRICHTEXT" href="libgnomecanvas/gnomecanvasrichtext.html">
-<ANCHOR id ="GNOMECANVASRICHTEXT-STRUCT" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT-STRUCT">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-CUT-CLIPBOARD" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-CUT-CLIPBOARD">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-COPY-CLIPBOARD" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-COPY-CLIPBOARD">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-PASTE-CLIPBOARD" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-PASTE-CLIPBOARD">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-SET-BUFFER" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-SET-BUFFER">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-GET-BUFFER" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-GET-BUFFER">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-GET-ITER-LOCATION" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-GET-ITER-LOCATION">
-<ANCHOR id ="GNOME-CANVAS-RICH-TEXT-GET-ITER-AT-LOCATION" href="libgnomecanvas/gnomecanvasrichtext.html#GNOME-CANVAS-RICH-TEXT-GET-ITER-AT-LOCATION">
-<ANCHOR id ="GNOMECANVASRICHTEXT--ANCHOR" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--ANCHOR">
-<ANCHOR id ="GNOMECANVASRICHTEXT--CURSOR-BLINK" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--CURSOR-BLINK">
-<ANCHOR id ="GNOMECANVASRICHTEXT--CURSOR-VISIBLE" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--CURSOR-VISIBLE">
-<ANCHOR id ="GNOMECANVASRICHTEXT--DIRECTION" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--DIRECTION">
-<ANCHOR id ="GNOMECANVASRICHTEXT--EDITABLE" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--EDITABLE">
-<ANCHOR id ="GNOMECANVASRICHTEXT--GROW-HEIGHT" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--GROW-HEIGHT">
-<ANCHOR id ="GNOMECANVASRICHTEXT--HEIGHT" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--HEIGHT">
-<ANCHOR id ="GNOMECANVASRICHTEXT--INDENT" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--INDENT">
-<ANCHOR id ="GNOMECANVASRICHTEXT--JUSTIFICATION" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--JUSTIFICATION">
-<ANCHOR id ="GNOMECANVASRICHTEXT--LEFT-MARGIN" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--LEFT-MARGIN">
-<ANCHOR id ="GNOMECANVASRICHTEXT--PIXELS-ABOVE-LINES" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--PIXELS-ABOVE-LINES">
-<ANCHOR id ="GNOMECANVASRICHTEXT--PIXELS-BELOW-LINES" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--PIXELS-BELOW-LINES">
-<ANCHOR id ="GNOMECANVASRICHTEXT--PIXELS-INSIDE-WRAP" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--PIXELS-INSIDE-WRAP">
-<ANCHOR id ="GNOMECANVASRICHTEXT--RIGHT-MARGIN" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--RIGHT-MARGIN">
-<ANCHOR id ="GNOMECANVASRICHTEXT--TEXT" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--TEXT">
-<ANCHOR id ="GNOMECANVASRICHTEXT--VISIBLE" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--VISIBLE">
-<ANCHOR id ="GNOMECANVASRICHTEXT--WIDTH" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--WIDTH">
-<ANCHOR id ="GNOMECANVASRICHTEXT--WRAP-MODE" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--WRAP-MODE">
-<ANCHOR id ="GNOMECANVASRICHTEXT--X" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--X">
-<ANCHOR id ="GNOMECANVASRICHTEXT--Y" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT--Y">
-<ANCHOR id ="GNOMECANVASRICHTEXT-TAG-CHANGED" href="libgnomecanvas/gnomecanvasrichtext.html#GNOMECANVASRICHTEXT-TAG-CHANGED">
-<ANCHOR id ="GNOMECANVASSHAPE" href="libgnomecanvas/gnomecanvasshape.html">
-<ANCHOR id ="GNOMECANVASSHAPE-STRUCT" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE-STRUCT">
-<ANCHOR id ="GNOME-CANVAS-SHAPE-SET-PATH-DEF" href="libgnomecanvas/gnomecanvasshape.html#GNOME-CANVAS-SHAPE-SET-PATH-DEF">
-<ANCHOR id ="GNOME-CANVAS-SHAPE-GET-PATH-DEF" href="libgnomecanvas/gnomecanvasshape.html#GNOME-CANVAS-SHAPE-GET-PATH-DEF">
-<ANCHOR id ="GNOMECANVASSHAPE--CAP-STYLE" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--CAP-STYLE">
-<ANCHOR id ="GNOMECANVASSHAPE--DASH" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--DASH">
-<ANCHOR id ="GNOMECANVASSHAPE--FILL-COLOR" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--FILL-COLOR">
-<ANCHOR id ="GNOMECANVASSHAPE--FILL-COLOR-GDK" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--FILL-COLOR-GDK">
-<ANCHOR id ="GNOMECANVASSHAPE--FILL-COLOR-RGBA" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--FILL-COLOR-RGBA">
-<ANCHOR id ="GNOMECANVASSHAPE--FILL-STIPPLE" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--FILL-STIPPLE">
-<ANCHOR id ="GNOMECANVASSHAPE--JOIN-STYLE" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--JOIN-STYLE">
-<ANCHOR id ="GNOMECANVASSHAPE--MITERLIMIT" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--MITERLIMIT">
-<ANCHOR id ="GNOMECANVASSHAPE--OUTLINE-COLOR" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--OUTLINE-COLOR">
-<ANCHOR id ="GNOMECANVASSHAPE--OUTLINE-COLOR-GDK" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--OUTLINE-COLOR-GDK">
-<ANCHOR id ="GNOMECANVASSHAPE--OUTLINE-COLOR-RGBA" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--OUTLINE-COLOR-RGBA">
-<ANCHOR id ="GNOMECANVASSHAPE--OUTLINE-STIPPLE" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--OUTLINE-STIPPLE">
-<ANCHOR id ="GNOMECANVASSHAPE--WIDTH-PIXELS" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--WIDTH-PIXELS">
-<ANCHOR id ="GNOMECANVASSHAPE--WIDTH-UNITS" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--WIDTH-UNITS">
-<ANCHOR id ="GNOMECANVASSHAPE--WIND" href="libgnomecanvas/gnomecanvasshape.html#GNOMECANVASSHAPE--WIND">
-<ANCHOR id ="GNOMECANVASTEXT" href="libgnomecanvas/gnomecanvastext.html">
-<ANCHOR id ="GNOMECANVASTEXT-STRUCT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT-STRUCT">
-<ANCHOR id ="GNOMECANVASTEXT--ANCHOR" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--ANCHOR">
-<ANCHOR id ="GNOMECANVASTEXT--ATTRIBUTES" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--ATTRIBUTES">
-<ANCHOR id ="GNOMECANVASTEXT--CLIP" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--CLIP">
-<ANCHOR id ="GNOMECANVASTEXT--CLIP-HEIGHT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--CLIP-HEIGHT">
-<ANCHOR id ="GNOMECANVASTEXT--CLIP-WIDTH" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--CLIP-WIDTH">
-<ANCHOR id ="GNOMECANVASTEXT--FAMILY" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FAMILY">
-<ANCHOR id ="GNOMECANVASTEXT--FAMILY-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FAMILY-SET">
-<ANCHOR id ="GNOMECANVASTEXT--FILL-COLOR" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FILL-COLOR">
-<ANCHOR id ="GNOMECANVASTEXT--FILL-COLOR-GDK" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FILL-COLOR-GDK">
-<ANCHOR id ="GNOMECANVASTEXT--FILL-COLOR-RGBA" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FILL-COLOR-RGBA">
-<ANCHOR id ="GNOMECANVASTEXT--FILL-STIPPLE" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FILL-STIPPLE">
-<ANCHOR id ="GNOMECANVASTEXT--FONT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FONT">
-<ANCHOR id ="GNOMECANVASTEXT--FONT-DESC" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--FONT-DESC">
-<ANCHOR id ="GNOMECANVASTEXT--JUSTIFICATION" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--JUSTIFICATION">
-<ANCHOR id ="GNOMECANVASTEXT--MARKUP" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--MARKUP">
-<ANCHOR id ="GNOMECANVASTEXT--RISE" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--RISE">
-<ANCHOR id ="GNOMECANVASTEXT--RISE-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--RISE-SET">
-<ANCHOR id ="GNOMECANVASTEXT--SCALE" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--SCALE">
-<ANCHOR id ="GNOMECANVASTEXT--SCALE-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--SCALE-SET">
-<ANCHOR id ="GNOMECANVASTEXT--SIZE" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--SIZE">
-<ANCHOR id ="GNOMECANVASTEXT--SIZE-POINTS" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--SIZE-POINTS">
-<ANCHOR id ="GNOMECANVASTEXT--SIZE-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--SIZE-SET">
-<ANCHOR id ="GNOMECANVASTEXT--STRETCH" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--STRETCH">
-<ANCHOR id ="GNOMECANVASTEXT--STRETCH-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--STRETCH-SET">
-<ANCHOR id ="GNOMECANVASTEXT--STRIKETHROUGH" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--STRIKETHROUGH">
-<ANCHOR id ="GNOMECANVASTEXT--STRIKETHROUGH-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--STRIKETHROUGH-SET">
-<ANCHOR id ="GNOMECANVASTEXT--STYLE" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--STYLE">
-<ANCHOR id ="GNOMECANVASTEXT--STYLE-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--STYLE-SET">
-<ANCHOR id ="GNOMECANVASTEXT--TEXT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--TEXT">
-<ANCHOR id ="GNOMECANVASTEXT--TEXT-HEIGHT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--TEXT-HEIGHT">
-<ANCHOR id ="GNOMECANVASTEXT--TEXT-WIDTH" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--TEXT-WIDTH">
-<ANCHOR id ="GNOMECANVASTEXT--UNDERLINE" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--UNDERLINE">
-<ANCHOR id ="GNOMECANVASTEXT--UNDERLINE-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--UNDERLINE-SET">
-<ANCHOR id ="GNOMECANVASTEXT--VARIANT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--VARIANT">
-<ANCHOR id ="GNOMECANVASTEXT--VARIANT-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--VARIANT-SET">
-<ANCHOR id ="GNOMECANVASTEXT--WEIGHT" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--WEIGHT">
-<ANCHOR id ="GNOMECANVASTEXT--WEIGHT-SET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--WEIGHT-SET">
-<ANCHOR id ="GNOMECANVASTEXT--X" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--X">
-<ANCHOR id ="GNOMECANVASTEXT--X-OFFSET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--X-OFFSET">
-<ANCHOR id ="GNOMECANVASTEXT--Y" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--Y">
-<ANCHOR id ="GNOMECANVASTEXT--Y-OFFSET" href="libgnomecanvas/gnomecanvastext.html#GNOMECANVASTEXT--Y-OFFSET">
-<ANCHOR id ="GNOMECANVASWIDGET" href="libgnomecanvas/gnomecanvaswidget.html">
-<ANCHOR id ="GNOMECANVASWIDGET-STRUCT" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET-STRUCT">
-<ANCHOR id ="GNOMECANVASWIDGET--ANCHOR" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--ANCHOR">
-<ANCHOR id ="GNOMECANVASWIDGET--HEIGHT" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--HEIGHT">
-<ANCHOR id ="GNOMECANVASWIDGET--SIZE-PIXELS" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--SIZE-PIXELS">
-<ANCHOR id ="GNOMECANVASWIDGET--WIDGET" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--WIDGET">
-<ANCHOR id ="GNOMECANVASWIDGET--WIDTH" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--WIDTH">
-<ANCHOR id ="GNOMECANVASWIDGET--X" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--X">
-<ANCHOR id ="GNOMECANVASWIDGET--Y" href="libgnomecanvas/gnomecanvaswidget.html#GNOMECANVASWIDGET--Y">
-<ANCHOR id ="LIBGNOMECANVAS-GNOME-CANVAS-PATH-DEF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html">
-<ANCHOR id ="GNOMECANVASPATHDEF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOMECANVASPATHDEF">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-NEW" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-NEW">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-NEW-SIZED" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-NEW-SIZED">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-NEW-FROM-BPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-NEW-FROM-BPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-NEW-FROM-STATIC-BPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-NEW-FROM-STATIC-BPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-NEW-FROM-FOREIGN-BPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-NEW-FROM-FOREIGN-BPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-REF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-REF">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-FINISH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-FINISH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-ENSURE-SPACE" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-ENSURE-SPACE">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-COPY" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-COPY">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-DUPLICATE" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-DUPLICATE">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CONCAT" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CONCAT">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-SPLIT" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-SPLIT">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-OPEN-PARTS" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-OPEN-PARTS">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CLOSED-PARTS" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CLOSED-PARTS">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CLOSE-ALL" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CLOSE-ALL">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-UNREF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-UNREF">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-RESET" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-RESET">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-MOVETO" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-MOVETO">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-LINETO" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-LINETO">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-LINETO-MOVING" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-LINETO-MOVING">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CURVETO" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CURVETO">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CLOSEPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CLOSEPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CLOSEPATH-CURRENT" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CLOSEPATH-CURRENT">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-BPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-BPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-LENGTH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-LENGTH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-IS-EMPTY" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-IS-EMPTY">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-HAS-CURRENTPOINT" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-HAS-CURRENTPOINT">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-CURRENTPOINT" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-CURRENTPOINT">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-LAST-BPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-LAST-BPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-FIRST-BPATH" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-FIRST-BPATH">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-ANY-OPEN" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-ANY-OPEN">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-ALL-OPEN" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-ALL-OPEN">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-ANY-CLOSED" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-ANY-CLOSED">
-<ANCHOR id ="GNOME-CANVAS-PATH-DEF-ALL-CLOSED" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GNOME-CANVAS-PATH-DEF-ALL-CLOSED">
-<ANCHOR id ="LIBGNOMECANVAS-GNOME-CANVAS-UTIL" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html">
-<ANCHOR id ="GNOMECANVASPOINTS" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOMECANVASPOINTS">
-<ANCHOR id ="GNOME-CANVAS-POINTS-NEW" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-POINTS-NEW">
-<ANCHOR id ="GNOME-CANVAS-POINTS-REF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-POINTS-REF">
-<ANCHOR id ="GNOME-CANVAS-POINTS-UNREF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-POINTS-UNREF">
-<ANCHOR id ="GNOME-CANVAS-POINTS-FREE" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-POINTS-FREE">
-<ANCHOR id ="GNOME-CANVAS-GET-MITER-POINTS" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-GET-MITER-POINTS">
-<ANCHOR id ="GNOME-CANVAS-GET-BUTT-POINTS" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-GET-BUTT-POINTS">
-<ANCHOR id ="GNOME-CANVAS-POLYGON-TO-POINT" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-POLYGON-TO-POINT">
-<ANCHOR id ="GNOME-CANVAS-RENDER-SVP" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-RENDER-SVP">
-<ANCHOR id ="GNOME-CANVAS-UPDATE-SVP" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-UPDATE-SVP">
-<ANCHOR id ="GNOME-CANVAS-UPDATE-SVP-CLIP" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-UPDATE-SVP-CLIP">
-<ANCHOR id ="GNOME-CANVAS-ITEM-RESET-BOUNDS" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-ITEM-RESET-BOUNDS">
-<ANCHOR id ="GNOME-CANVAS-ITEM-UPDATE-SVP" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-ITEM-UPDATE-SVP">
-<ANCHOR id ="GNOME-CANVAS-ITEM-UPDATE-SVP-CLIP" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-ITEM-UPDATE-SVP-CLIP">
-<ANCHOR id ="GNOME-CANVAS-ITEM-REQUEST-REDRAW-SVP" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-ITEM-REQUEST-REDRAW-SVP">
-<ANCHOR id ="GNOME-CANVAS-UPDATE-BBOX" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-UPDATE-BBOX">
-<ANCHOR id ="GNOME-CANVAS-BUF-ENSURE-BUF" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-BUF-ENSURE-BUF">
-<ANCHOR id ="GNOME-CANVAS-JOIN-GDK-TO-ART" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-JOIN-GDK-TO-ART">
-<ANCHOR id ="GNOME-CANVAS-CAP-GDK-TO-ART" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GNOME-CANVAS-CAP-GDK-TO-ART">
+<ANCHOR id="GnomeCanvas" href="libgnomecanvas/GnomeCanvas.html">
+<ANCHOR id="GnomeCanvas-struct" href="libgnomecanvas/GnomeCanvas.html#GnomeCanvas-struct">
+<ANCHOR id="GNOME-CANVAS-EPSILON-CAPS" href="libgnomecanvas/GnomeCanvas.html#GNOME-CANVAS-EPSILON-CAPS">
+<ANCHOR id="GNOME-CANVAS-COLOR-CAPS" href="libgnomecanvas/GnomeCanvas.html#GNOME-CANVAS-COLOR-CAPS">
+<ANCHOR id="GNOME-CANVAS-COLOR-A-CAPS" href="libgnomecanvas/GnomeCanvas.html#GNOME-CANVAS-COLOR-A-CAPS">
+<ANCHOR id="GnomeCanvasBuf" href="libgnomecanvas/GnomeCanvas.html#GnomeCanvasBuf">
+<ANCHOR id="gnome-canvas-new" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-new">
+<ANCHOR id="gnome-canvas-new-aa" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-new-aa">
+<ANCHOR id="gnome-canvas-root" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-root">
+<ANCHOR id="gnome-canvas-set-scroll-region" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-set-scroll-region">
+<ANCHOR id="gnome-canvas-get-scroll-region" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-scroll-region">
+<ANCHOR id="gnome-canvas-set-center-scroll-region" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-set-center-scroll-region">
+<ANCHOR id="gnome-canvas-get-center-scroll-region" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-center-scroll-region">
+<ANCHOR id="gnome-canvas-set-pixels-per-unit" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-set-pixels-per-unit">
+<ANCHOR id="gnome-canvas-scroll-to" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-scroll-to">
+<ANCHOR id="gnome-canvas-get-scroll-offsets" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-scroll-offsets">
+<ANCHOR id="gnome-canvas-update-now" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-update-now">
+<ANCHOR id="gnome-canvas-get-item-at" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-item-at">
+<ANCHOR id="gnome-canvas-request-redraw-uta" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-request-redraw-uta">
+<ANCHOR id="gnome-canvas-request-redraw" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-request-redraw">
+<ANCHOR id="gnome-canvas-w2c-affine" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-w2c-affine">
+<ANCHOR id="gnome-canvas-w2c" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-w2c">
+<ANCHOR id="gnome-canvas-w2c-d" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-w2c-d">
+<ANCHOR id="gnome-canvas-c2w" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-c2w">
+<ANCHOR id="gnome-canvas-window-to-world" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-window-to-world">
+<ANCHOR id="gnome-canvas-world-to-window" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-world-to-window">
+<ANCHOR id="gnome-canvas-get-color" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-color">
+<ANCHOR id="gnome-canvas-get-color-pixel" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-color-pixel">
+<ANCHOR id="gnome-canvas-set-stipple-origin" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-set-stipple-origin">
+<ANCHOR id="gnome-canvas-set-dither" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-set-dither">
+<ANCHOR id="gnome-canvas-get-dither" href="libgnomecanvas/GnomeCanvas.html#gnome-canvas-get-dither">
+<ANCHOR id="GnomeCanvas--aa" href="libgnomecanvas/GnomeCanvas.html#GnomeCanvas--aa">
+<ANCHOR id="GnomeCanvas-draw-background" href="libgnomecanvas/GnomeCanvas.html#GnomeCanvas-draw-background">
+<ANCHOR id="GnomeCanvas-render-background" href="libgnomecanvas/GnomeCanvas.html#GnomeCanvas-render-background">
+<ANCHOR id="GnomeCanvasBpath" href="libgnomecanvas/GnomeCanvasBpath.html">
+<ANCHOR id="GnomeCanvasBpath-struct" href="libgnomecanvas/GnomeCanvasBpath.html#GnomeCanvasBpath-struct">
+<ANCHOR id="GnomeCanvasBpath--bpath" href="libgnomecanvas/GnomeCanvasBpath.html#GnomeCanvasBpath--bpath">
+<ANCHOR id="GnomeCanvasClipgroup" href="libgnomecanvas/GnomeCanvasClipgroup.html">
+<ANCHOR id="GnomeCanvasClipgroup-struct" href="libgnomecanvas/GnomeCanvasClipgroup.html#GnomeCanvasClipgroup-struct">
+<ANCHOR id="GnomeCanvasClipgroup--path" href="libgnomecanvas/GnomeCanvasClipgroup.html#GnomeCanvasClipgroup--path">
+<ANCHOR id="GnomeCanvasClipgroup--wind" href="libgnomecanvas/GnomeCanvasClipgroup.html#GnomeCanvasClipgroup--wind">
+<ANCHOR id="GnomeCanvasEllipse" href="libgnomecanvas/GnomeCanvasEllipse.html">
+<ANCHOR id="GnomeCanvasEllipse-struct" href="libgnomecanvas/GnomeCanvasEllipse.html#GnomeCanvasEllipse-struct">
+<ANCHOR id="GnomeCanvasGroup" href="libgnomecanvas/GnomeCanvasGroup.html">
+<ANCHOR id="GnomeCanvasGroup-struct" href="libgnomecanvas/GnomeCanvasGroup.html#GnomeCanvasGroup-struct">
+<ANCHOR id="GnomeCanvasGroup--x" href="libgnomecanvas/GnomeCanvasGroup.html#GnomeCanvasGroup--x">
+<ANCHOR id="GnomeCanvasGroup--y" href="libgnomecanvas/GnomeCanvasGroup.html#GnomeCanvasGroup--y">
+<ANCHOR id="GnomeCanvasItem" href="libgnomecanvas/GnomeCanvasItem.html">
+<ANCHOR id="GnomeCanvasItem-struct" href="libgnomecanvas/GnomeCanvasItem.html#GnomeCanvasItem-struct">
+<ANCHOR id="GnomeCanvasItemClass" href="libgnomecanvas/GnomeCanvasItem.html#GnomeCanvasItemClass">
+<ANCHOR id="gnome-canvas-item-new" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-new">
+<ANCHOR id="gnome-canvas-item-construct" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-construct">
+<ANCHOR id="gnome-canvas-item-set" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-set">
+<ANCHOR id="gnome-canvas-item-set-valist" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-set-valist">
+<ANCHOR id="gnome-canvas-item-move" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-move">
+<ANCHOR id="gnome-canvas-item-affine-relative" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-affine-relative">
+<ANCHOR id="gnome-canvas-item-affine-absolute" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-affine-absolute">
+<ANCHOR id="gnome-canvas-item-raise" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-raise">
+<ANCHOR id="gnome-canvas-item-lower" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-lower">
+<ANCHOR id="gnome-canvas-item-raise-to-top" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-raise-to-top">
+<ANCHOR id="gnome-canvas-item-lower-to-bottom" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-lower-to-bottom">
+<ANCHOR id="gnome-canvas-item-show" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-show">
+<ANCHOR id="gnome-canvas-item-hide" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-hide">
+<ANCHOR id="gnome-canvas-item-grab" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-grab">
+<ANCHOR id="gnome-canvas-item-ungrab" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-ungrab">
+<ANCHOR id="gnome-canvas-item-w2i" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-w2i">
+<ANCHOR id="gnome-canvas-item-i2w" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-i2w">
+<ANCHOR id="gnome-canvas-item-i2w-affine" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-i2w-affine">
+<ANCHOR id="gnome-canvas-item-i2c-affine" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-i2c-affine">
+<ANCHOR id="gnome-canvas-item-reparent" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-reparent">
+<ANCHOR id="gnome-canvas-item-grab-focus" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-grab-focus">
+<ANCHOR id="gnome-canvas-item-get-bounds" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-get-bounds">
+<ANCHOR id="gnome-canvas-item-request-update" href="libgnomecanvas/GnomeCanvasItem.html#gnome-canvas-item-request-update">
+<ANCHOR id="GnomeCanvasItem--parent" href="libgnomecanvas/GnomeCanvasItem.html#GnomeCanvasItem--parent">
+<ANCHOR id="GnomeCanvasItem-event" href="libgnomecanvas/GnomeCanvasItem.html#GnomeCanvasItem-event">
+<ANCHOR id="GnomeCanvasLine" href="libgnomecanvas/GnomeCanvasLine.html">
+<ANCHOR id="GnomeCanvasLine-struct" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine-struct">
+<ANCHOR id="GnomeCanvasLine--arrow-shape-a" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--arrow-shape-a">
+<ANCHOR id="GnomeCanvasLine--arrow-shape-b" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--arrow-shape-b">
+<ANCHOR id="GnomeCanvasLine--arrow-shape-c" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--arrow-shape-c">
+<ANCHOR id="GnomeCanvasLine--cap-style" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--cap-style">
+<ANCHOR id="GnomeCanvasLine--fill-color" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--fill-color">
+<ANCHOR id="GnomeCanvasLine--fill-color-gdk" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--fill-color-gdk">
+<ANCHOR id="GnomeCanvasLine--fill-color-rgba" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--fill-color-rgba">
+<ANCHOR id="GnomeCanvasLine--fill-stipple" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--fill-stipple">
+<ANCHOR id="GnomeCanvasLine--first-arrowhead" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--first-arrowhead">
+<ANCHOR id="GnomeCanvasLine--join-style" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--join-style">
+<ANCHOR id="GnomeCanvasLine--last-arrowhead" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--last-arrowhead">
+<ANCHOR id="GnomeCanvasLine--line-style" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--line-style">
+<ANCHOR id="GnomeCanvasLine--points" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--points">
+<ANCHOR id="GnomeCanvasLine--smooth" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--smooth">
+<ANCHOR id="GnomeCanvasLine--spline-steps" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--spline-steps">
+<ANCHOR id="GnomeCanvasLine--width-pixels" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--width-pixels">
+<ANCHOR id="GnomeCanvasLine--width-units" href="libgnomecanvas/GnomeCanvasLine.html#GnomeCanvasLine--width-units">
+<ANCHOR id="GnomeCanvasPixbuf" href="libgnomecanvas/GnomeCanvasPixbuf.html">
+<ANCHOR id="GnomeCanvasPixbuf-struct" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf-struct">
+<ANCHOR id="GnomeCanvasPixbuf--anchor" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--anchor">
+<ANCHOR id="GnomeCanvasPixbuf--height" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--height">
+<ANCHOR id="GnomeCanvasPixbuf--height-in-pixels" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--height-in-pixels">
+<ANCHOR id="GnomeCanvasPixbuf--height-set" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--height-set">
+<ANCHOR id="GnomeCanvasPixbuf--pixbuf" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--pixbuf">
+<ANCHOR id="GnomeCanvasPixbuf--width" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--width">
+<ANCHOR id="GnomeCanvasPixbuf--width-in-pixels" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--width-in-pixels">
+<ANCHOR id="GnomeCanvasPixbuf--width-set" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--width-set">
+<ANCHOR id="GnomeCanvasPixbuf--x" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--x">
+<ANCHOR id="GnomeCanvasPixbuf--x-in-pixels" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--x-in-pixels">
+<ANCHOR id="GnomeCanvasPixbuf--y" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--y">
+<ANCHOR id="GnomeCanvasPixbuf--y-in-pixels" href="libgnomecanvas/GnomeCanvasPixbuf.html#GnomeCanvasPixbuf--y-in-pixels">
+<ANCHOR id="GnomeCanvasPolygon" href="libgnomecanvas/GnomeCanvasPolygon.html">
+<ANCHOR id="GnomeCanvasPolygon-struct" href="libgnomecanvas/GnomeCanvasPolygon.html#GnomeCanvasPolygon-struct">
+<ANCHOR id="GnomeCanvasPolygon--points" href="libgnomecanvas/GnomeCanvasPolygon.html#GnomeCanvasPolygon--points">
+<ANCHOR id="GnomeCanvasRE" href="libgnomecanvas/GnomeCanvasRE.html">
+<ANCHOR id="GnomeCanvasRE-struct" href="libgnomecanvas/GnomeCanvasRE.html#GnomeCanvasRE-struct">
+<ANCHOR id="GnomeCanvasRE--x1" href="libgnomecanvas/GnomeCanvasRE.html#GnomeCanvasRE--x1">
+<ANCHOR id="GnomeCanvasRE--x2" href="libgnomecanvas/GnomeCanvasRE.html#GnomeCanvasRE--x2">
+<ANCHOR id="GnomeCanvasRE--y1" href="libgnomecanvas/GnomeCanvasRE.html#GnomeCanvasRE--y1">
+<ANCHOR id="GnomeCanvasRE--y2" href="libgnomecanvas/GnomeCanvasRE.html#GnomeCanvasRE--y2">
+<ANCHOR id="GnomeCanvasRect" href="libgnomecanvas/GnomeCanvasRect.html">
+<ANCHOR id="GnomeCanvasRect-struct" href="libgnomecanvas/GnomeCanvasRect.html#GnomeCanvasRect-struct">
+<ANCHOR id="GnomeCanvasRichText" href="libgnomecanvas/GnomeCanvasRichText.html">
+<ANCHOR id="GnomeCanvasRichText-struct" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText-struct">
+<ANCHOR id="gnome-canvas-rich-text-cut-clipboard" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-cut-clipboard">
+<ANCHOR id="gnome-canvas-rich-text-copy-clipboard" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-copy-clipboard">
+<ANCHOR id="gnome-canvas-rich-text-paste-clipboard" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-paste-clipboard">
+<ANCHOR id="gnome-canvas-rich-text-set-buffer" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-set-buffer">
+<ANCHOR id="gnome-canvas-rich-text-get-buffer" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-get-buffer">
+<ANCHOR id="gnome-canvas-rich-text-get-iter-location" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-get-iter-location">
+<ANCHOR id="gnome-canvas-rich-text-get-iter-at-location" href="libgnomecanvas/GnomeCanvasRichText.html#gnome-canvas-rich-text-get-iter-at-location">
+<ANCHOR id="GnomeCanvasRichText--anchor" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--anchor">
+<ANCHOR id="GnomeCanvasRichText--cursor-blink" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--cursor-blink">
+<ANCHOR id="GnomeCanvasRichText--cursor-visible" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--cursor-visible">
+<ANCHOR id="GnomeCanvasRichText--direction" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--direction">
+<ANCHOR id="GnomeCanvasRichText--editable" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--editable">
+<ANCHOR id="GnomeCanvasRichText--grow-height" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--grow-height">
+<ANCHOR id="GnomeCanvasRichText--height" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--height">
+<ANCHOR id="GnomeCanvasRichText--indent" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--indent">
+<ANCHOR id="GnomeCanvasRichText--justification" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--justification">
+<ANCHOR id="GnomeCanvasRichText--left-margin" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--left-margin">
+<ANCHOR id="GnomeCanvasRichText--pixels-above-lines" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--pixels-above-lines">
+<ANCHOR id="GnomeCanvasRichText--pixels-below-lines" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--pixels-below-lines">
+<ANCHOR id="GnomeCanvasRichText--pixels-inside-wrap" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--pixels-inside-wrap">
+<ANCHOR id="GnomeCanvasRichText--right-margin" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--right-margin">
+<ANCHOR id="GnomeCanvasRichText--text" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--text">
+<ANCHOR id="GnomeCanvasRichText--visible" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--visible">
+<ANCHOR id="GnomeCanvasRichText--width" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--width">
+<ANCHOR id="GnomeCanvasRichText--wrap-mode" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--wrap-mode">
+<ANCHOR id="GnomeCanvasRichText--x" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--x">
+<ANCHOR id="GnomeCanvasRichText--y" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText--y">
+<ANCHOR id="GnomeCanvasRichText-tag-changed" href="libgnomecanvas/GnomeCanvasRichText.html#GnomeCanvasRichText-tag-changed">
+<ANCHOR id="GnomeCanvasShape" href="libgnomecanvas/GnomeCanvasShape.html">
+<ANCHOR id="GnomeCanvasShape-struct" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape-struct">
+<ANCHOR id="gnome-canvas-shape-set-path-def" href="libgnomecanvas/GnomeCanvasShape.html#gnome-canvas-shape-set-path-def">
+<ANCHOR id="gnome-canvas-shape-get-path-def" href="libgnomecanvas/GnomeCanvasShape.html#gnome-canvas-shape-get-path-def">
+<ANCHOR id="GnomeCanvasShape--cap-style" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--cap-style">
+<ANCHOR id="GnomeCanvasShape--dash" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--dash">
+<ANCHOR id="GnomeCanvasShape--fill-color" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--fill-color">
+<ANCHOR id="GnomeCanvasShape--fill-color-gdk" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--fill-color-gdk">
+<ANCHOR id="GnomeCanvasShape--fill-color-rgba" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--fill-color-rgba">
+<ANCHOR id="GnomeCanvasShape--fill-stipple" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--fill-stipple">
+<ANCHOR id="GnomeCanvasShape--join-style" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--join-style">
+<ANCHOR id="GnomeCanvasShape--miterlimit" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--miterlimit">
+<ANCHOR id="GnomeCanvasShape--outline-color" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--outline-color">
+<ANCHOR id="GnomeCanvasShape--outline-color-gdk" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--outline-color-gdk">
+<ANCHOR id="GnomeCanvasShape--outline-color-rgba" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--outline-color-rgba">
+<ANCHOR id="GnomeCanvasShape--outline-stipple" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--outline-stipple">
+<ANCHOR id="GnomeCanvasShape--width-pixels" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--width-pixels">
+<ANCHOR id="GnomeCanvasShape--width-units" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--width-units">
+<ANCHOR id="GnomeCanvasShape--wind" href="libgnomecanvas/GnomeCanvasShape.html#GnomeCanvasShape--wind">
+<ANCHOR id="GnomeCanvasText" href="libgnomecanvas/GnomeCanvasText.html">
+<ANCHOR id="GnomeCanvasText-struct" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText-struct">
+<ANCHOR id="GnomeCanvasText--anchor" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--anchor">
+<ANCHOR id="GnomeCanvasText--attributes" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--attributes">
+<ANCHOR id="GnomeCanvasText--clip" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--clip">
+<ANCHOR id="GnomeCanvasText--clip-height" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--clip-height">
+<ANCHOR id="GnomeCanvasText--clip-width" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--clip-width">
+<ANCHOR id="GnomeCanvasText--family" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--family">
+<ANCHOR id="GnomeCanvasText--family-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--family-set">
+<ANCHOR id="GnomeCanvasText--fill-color" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--fill-color">
+<ANCHOR id="GnomeCanvasText--fill-color-gdk" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--fill-color-gdk">
+<ANCHOR id="GnomeCanvasText--fill-color-rgba" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--fill-color-rgba">
+<ANCHOR id="GnomeCanvasText--fill-stipple" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--fill-stipple">
+<ANCHOR id="GnomeCanvasText--font" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--font">
+<ANCHOR id="GnomeCanvasText--font-desc" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--font-desc">
+<ANCHOR id="GnomeCanvasText--justification" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--justification">
+<ANCHOR id="GnomeCanvasText--markup" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--markup">
+<ANCHOR id="GnomeCanvasText--rise" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--rise">
+<ANCHOR id="GnomeCanvasText--rise-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--rise-set">
+<ANCHOR id="GnomeCanvasText--scale" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--scale">
+<ANCHOR id="GnomeCanvasText--scale-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--scale-set">
+<ANCHOR id="GnomeCanvasText--size" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--size">
+<ANCHOR id="GnomeCanvasText--size-points" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--size-points">
+<ANCHOR id="GnomeCanvasText--size-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--size-set">
+<ANCHOR id="GnomeCanvasText--stretch" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--stretch">
+<ANCHOR id="GnomeCanvasText--stretch-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--stretch-set">
+<ANCHOR id="GnomeCanvasText--strikethrough" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--strikethrough">
+<ANCHOR id="GnomeCanvasText--strikethrough-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--strikethrough-set">
+<ANCHOR id="GnomeCanvasText--style" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--style">
+<ANCHOR id="GnomeCanvasText--style-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--style-set">
+<ANCHOR id="GnomeCanvasText--text" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--text">
+<ANCHOR id="GnomeCanvasText--text-height" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--text-height">
+<ANCHOR id="GnomeCanvasText--text-width" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--text-width">
+<ANCHOR id="GnomeCanvasText--underline" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--underline">
+<ANCHOR id="GnomeCanvasText--underline-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--underline-set">
+<ANCHOR id="GnomeCanvasText--variant" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--variant">
+<ANCHOR id="GnomeCanvasText--variant-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--variant-set">
+<ANCHOR id="GnomeCanvasText--weight" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--weight">
+<ANCHOR id="GnomeCanvasText--weight-set" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--weight-set">
+<ANCHOR id="GnomeCanvasText--x" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--x">
+<ANCHOR id="GnomeCanvasText--x-offset" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--x-offset">
+<ANCHOR id="GnomeCanvasText--y" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--y">
+<ANCHOR id="GnomeCanvasText--y-offset" href="libgnomecanvas/GnomeCanvasText.html#GnomeCanvasText--y-offset">
+<ANCHOR id="GnomeCanvasWidget" href="libgnomecanvas/GnomeCanvasWidget.html">
+<ANCHOR id="GnomeCanvasWidget-struct" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget-struct">
+<ANCHOR id="GnomeCanvasWidget--anchor" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--anchor">
+<ANCHOR id="GnomeCanvasWidget--height" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--height">
+<ANCHOR id="GnomeCanvasWidget--size-pixels" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--size-pixels">
+<ANCHOR id="GnomeCanvasWidget--widget" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--widget">
+<ANCHOR id="GnomeCanvasWidget--width" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--width">
+<ANCHOR id="GnomeCanvasWidget--x" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--x">
+<ANCHOR id="GnomeCanvasWidget--y" href="libgnomecanvas/GnomeCanvasWidget.html#GnomeCanvasWidget--y">
+<ANCHOR id="libgnomecanvas-gnome-canvas-path-def" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html">
+<ANCHOR id="GnomeCanvasPathDef" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#GnomeCanvasPathDef">
+<ANCHOR id="gnome-canvas-path-def-new" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-new">
+<ANCHOR id="gnome-canvas-path-def-new-sized" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-new-sized">
+<ANCHOR id="gnome-canvas-path-def-new-from-bpath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-new-from-bpath">
+<ANCHOR id="gnome-canvas-path-def-new-from-static-bpath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-new-from-static-bpath">
+<ANCHOR id="gnome-canvas-path-def-new-from-foreign-bpath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-new-from-foreign-bpath">
+<ANCHOR id="gnome-canvas-path-def-ref" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-ref">
+<ANCHOR id="gnome-canvas-path-def-finish" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-finish">
+<ANCHOR id="gnome-canvas-path-def-ensure-space" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-ensure-space">
+<ANCHOR id="gnome-canvas-path-def-copy" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-copy">
+<ANCHOR id="gnome-canvas-path-def-duplicate" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-duplicate">
+<ANCHOR id="gnome-canvas-path-def-concat" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-concat">
+<ANCHOR id="gnome-canvas-path-def-split" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-split">
+<ANCHOR id="gnome-canvas-path-def-open-parts" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-open-parts">
+<ANCHOR id="gnome-canvas-path-def-closed-parts" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-closed-parts">
+<ANCHOR id="gnome-canvas-path-def-close-all" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-close-all">
+<ANCHOR id="gnome-canvas-path-def-unref" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-unref">
+<ANCHOR id="gnome-canvas-path-def-reset" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-reset">
+<ANCHOR id="gnome-canvas-path-def-moveto" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-moveto">
+<ANCHOR id="gnome-canvas-path-def-lineto" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-lineto">
+<ANCHOR id="gnome-canvas-path-def-lineto-moving" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-lineto-moving">
+<ANCHOR id="gnome-canvas-path-def-curveto" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-curveto">
+<ANCHOR id="gnome-canvas-path-def-closepath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-closepath">
+<ANCHOR id="gnome-canvas-path-def-closepath-current" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-closepath-current">
+<ANCHOR id="gnome-canvas-path-def-bpath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-bpath">
+<ANCHOR id="gnome-canvas-path-def-length" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-length">
+<ANCHOR id="gnome-canvas-path-def-is-empty" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-is-empty">
+<ANCHOR id="gnome-canvas-path-def-has-currentpoint" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-has-currentpoint">
+<ANCHOR id="gnome-canvas-path-def-currentpoint" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-currentpoint">
+<ANCHOR id="gnome-canvas-path-def-last-bpath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-last-bpath">
+<ANCHOR id="gnome-canvas-path-def-first-bpath" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-first-bpath">
+<ANCHOR id="gnome-canvas-path-def-any-open" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-any-open">
+<ANCHOR id="gnome-canvas-path-def-all-open" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-all-open">
+<ANCHOR id="gnome-canvas-path-def-any-closed" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-any-closed">
+<ANCHOR id="gnome-canvas-path-def-all-closed" href="libgnomecanvas/libgnomecanvas-gnome-canvas-path-def.html#gnome-canvas-path-def-all-closed">
+<ANCHOR id="libgnomecanvas-gnome-canvas-util" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html">
+<ANCHOR id="GnomeCanvasPoints" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GnomeCanvasPoints">
+<ANCHOR id="gnome-canvas-points-new" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-points-new">
+<ANCHOR id="gnome-canvas-points-ref" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-points-ref">
+<ANCHOR id="gnome-canvas-points-unref" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-points-unref">
+<ANCHOR id="gnome-canvas-points-free" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-points-free">
+<ANCHOR id="gnome-canvas-get-miter-points" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-get-miter-points">
+<ANCHOR id="gnome-canvas-get-butt-points" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-get-butt-points">
+<ANCHOR id="gnome-canvas-polygon-to-point" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-polygon-to-point">
+<ANCHOR id="gnome-canvas-render-svp" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-render-svp">
+<ANCHOR id="gnome-canvas-update-svp" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-update-svp">
+<ANCHOR id="gnome-canvas-update-svp-clip" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-update-svp-clip">
+<ANCHOR id="gnome-canvas-item-reset-bounds" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-item-reset-bounds">
+<ANCHOR id="gnome-canvas-item-update-svp" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-item-update-svp">
+<ANCHOR id="gnome-canvas-item-update-svp-clip" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-item-update-svp-clip">
+<ANCHOR id="gnome-canvas-item-request-redraw-svp" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-item-request-redraw-svp">
+<ANCHOR id="gnome-canvas-update-bbox" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-update-bbox">
+<ANCHOR id="gnome-canvas-buf-ensure-buf" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-buf-ensure-buf">
+<ANCHOR id="gnome-canvas-join-gdk-to-art" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-join-gdk-to-art">
+<ANCHOR id="gnome-canvas-cap-gdk-to-art" href="libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#gnome-canvas-cap-gdk-to-art">

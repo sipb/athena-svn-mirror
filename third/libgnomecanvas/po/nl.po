@@ -1,17 +1,19 @@
 # Dutch (NL) translation of gnome-libs.
 # Copyright (C) 1998-2001 Free Software Foundation, Inc.
 # (c) 2001, Dirk-Jan C. Binnema <djcb@djcbsoftware.nl>
+# Tino Meinen <a.t.meinen@chello.nl>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 2.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-05-31 02:18+02:00\n"
-"Last-Translator: Dirk-Jan C. Binnema <djcb@djcbsoftware.nl>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-01-31 00:49+0100\n"
+"Last-Translator: Vincent van Adrighem <adrighem@gnome.org>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
@@ -95,7 +97,7 @@ msgstr "Lettertyperek"
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr "Lettertypegrootte"
+msgstr "Lettergrootte"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
@@ -118,8 +120,9 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-text.c:351
 msgid "Strikethrough"
-msgstr "Doorgestreept"
+msgstr "Doorhalen"
 
+# doorhalen?
 #: libgnomecanvas/gnome-canvas-text.c:352
 msgid "Whether to strike through the text"
 msgstr "Of de teksten doorstreept moeten worden"
@@ -220,7 +223,7 @@ msgstr "Gekozen lettertypegrootte"
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
-msgstr "Of deze instelling de lettertypegroote beïnvloedt"
+msgstr "Of deze instelling de lettertypegrootte beïnvloedt"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
@@ -284,7 +287,7 @@ msgstr "Hoogte van tekstkader"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
-msgstr "Te Bewerken"
+msgstr "Bewerkbaar"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
@@ -303,16 +306,16 @@ msgid "Cursor Visible"
 msgstr "Cursor Zichtbaar"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr "Is de cursor zichtbaar is dit \"rich text\" item?"
+msgid "Is the cursor visible in this rich text item?"
+msgstr "Is de cursor zichtbaar in dit 'rich text' item?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "Cursor Knipper"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr "Knippert de cursor in dit \"rich text'-item?"
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Knippert de cursor in dit 'rich text' item?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
@@ -324,7 +327,7 @@ msgstr "Moet het tekstkader in hoogte groeien als de tekst niet past?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
-msgstr "Doorloop-modus"
+msgstr "Terugloopmodus"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"

@@ -13,7 +13,7 @@ INCLUDES = \
 
 LDADD = $(CANVAS_GLADE_LIBS)
 
-LDFLAGS = -export-dynamic
+AM_LDFLAGS = -export-dynamic
 
 test_libglade_canvas_SOURCE = test-libglade-canvas.c
 

@@ -1,45 +1,68 @@
-AC_INIT(libgnomecanvas)
+AC_PREREQ(2.54)
 
 # Making releases:
 #   LIBGNOMECANVAS_MICRO_VERSION += 1;
 #   LIBGNOMECANVAS_INTERFACE_AGE += 1;
-#   LIBGNOMECANVAS_BINARY_AGE += 1;
 # if any functions have been added, set LIBGNOMECANVAS_INTERFACE_AGE to 0.
 # if backwards compatibility has been broken,
 # set LIBGNOMECANVAS_BINARY_AGE and LIBGNOMECANVAS_INTERFACE_AGE to 0.
 #
-LIBGNOMECANVAS_MAJOR_VERSION=2
-LIBGNOMECANVAS_MINOR_VERSION=2
-LIBGNOMECANVAS_MICRO_VERSION=1
-LIBGNOMECANVAS_INTERFACE_AGE=1
-LIBGNOMECANVAS_BINARY_AGE=201
+m4_define([libgnomecanvas_major_version], [2])
+m4_define([libgnomecanvas_minor_version], [8])
+m4_define([libgnomecanvas_micro_version], [0])
+m4_define([libgnomecanvas_interface_age], [0])
 # If you need a modifier for the version number. 
 # Normally empty, but can be used to make "fixup" releases.
-LIBGNOMECANVAS_EXTRAVERSION=
+m4_define([libgnomecanvas_extraversion],  [])
+
+dnl required versions of other programs
+m4_define([gtk_required_version],      [2.0.3])
+m4_define([libart_required_version],   [2.3.8])
+m4_define([pango_required_version],    [1.0.1])
+m4_define([libglade_required_version], [2.0.0])
+
 
 dnl libtool versioning from libgnome
 
-LIBGNOMECANVAS_CURRENT=`expr 100 '*' $LIBGNOMECANVAS_MINOR_VERSION + $LIBGNOMECANVAS_MICRO_VERSION - $LIBGNOMECANVAS_INTERFACE_AGE`
-LIBGNOMECANVAS_REVISION=$LIBGNOMECANVAS_INTERFACE_AGE
-LIBGNOMECANVAS_AGE=`expr $LIBGNOMECANVAS_BINARY_AGE - $LIBGNOMECANVAS_INTERFACE_AGE`
-LIBGNOMECANVAS_VERSION=$LIBGNOMECANVAS_MAJOR_VERSION.$LIBGNOMECANVAS_MINOR_VERSION.$LIBGNOMECANVAS_MICRO_VERSION$LIBGNOMECANVAS_EXTRAVERSION
+m4_define([libgnomecanvas_current], [m4_eval(100 * libgnomecanvas_minor_version + libgnomecanvas_micro_version - libgnomecanvas_interface_age)])
+m4_define([libgnomecanvas_binary_age], [m4_eval(100 * libgnomecanvas_minor_version + libgnomecanvas_micro_version)])
+m4_define([libgnomecanvas_revision], [libgnomecanvas_interface_age])
+m4_define([libgnomecanvas_age], [m4_eval(libgnomecanvas_binary_age - libgnomecanvas_interface_age)])
+m4_define([libgnomecanvas_version], [libgnomecanvas_major_version().libgnomecanvas_minor_version().libgnomecanvas_micro_version()libgnomecanvas_extraversion()])
+
+AC_INIT([libgnomecanvas], [libgnomecanvas_version],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=libgnomecanvas])
+AC_CONFIG_SRCDIR([libgnomecanvas/libgnomecanvas.h])
+
+LIBGNOMECANVAS_MAJOR_VERSION=libgnomecanvas_major_version
+LIBGNOMECANVAS_MINOR_VERSION=libgnomecanvas_minor_version
+LIBGNOMECANVAS_MICRO_VERSION=libgnomecanvas_micro_version
+LIBGNOMECANVAS_INTERFACE_AGE=libgnomecanvas_interface_age
+
+dnl libtool versioning from libgnome
+
+LIBGNOMECANVAS_CURRENT=libgnomecanvas_current
+LIBGNOMECANVAS_REVISION=libgnomecanvas_revision
+LIBGNOMECANVAS_AGE=libgnomecanvas_age
 
 AC_SUBST(LIBGNOMECANVAS_CURRENT)
 AC_SUBST(LIBGNOMECANVAS_REVISION)
 AC_SUBST(LIBGNOMECANVAS_AGE)
 
+AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libgnomecanvas, $LIBGNOMECANVAS_VERSION)
 
 AM_MAINTAINER_MODE
+
+dnl make aclocal calls respect $ACLOCAL_FLAGS
+ACLOCAL_AMFLAGS="\${ACLOCAL_FLAGS}"
+AC_SUBST(ACLOCAL_AMFLAGS)
 
 AC_ISC_POSIX
 AC_PROG_CC
 AC_STDC_HEADERS
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
-AC_PROG_YACC
-AC_PATH_PROGS(PATH_TO_XRDB, "xrdb")
 
 GNOME_COMPILE_WARNINGS
 
@@ -47,30 +70,21 @@ GETTEXT_PACKAGE=libgnomecanvas-2.0
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package])
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et fa fi fr ga he hi hu id it ja kn ko lv mk ml mn ms nl nn no pl pt pt_BR ro ru sk sl sr sr@Latn sv ta tr uk vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gu he hi hr hu id is it ja kn ko li lt lv mk ml mn ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta tr uk vi wa yi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
-gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
-AC_SUBST(gnomelocaledir)
-AC_SUBST(CFLAGS)
-AC_SUBST(CPPFLAGS)
-AC_SUBST(LDFLAGS)
-
-GTK_REQUIRED=2.0.3
-LIBART_REQUIRED=2.3.8
-PANGO_REQUIRED=1.0.1
-LIBGLADE_REQUIRED=2.0.0
+AM_GLIB_DEFINE_LOCALEDIR([GNOMECANVASLOCALEDIR])
 
 dnl
 dnl GTK+ check
 dnl
-CANVAS_MODULES="gtk+-2.0 >= $GTK_REQUIRED libart-2.0 >= $LIBART_REQUIRED pango >= $PANGO_REQUIRED pangoft2 >= $PANGO_REQUIRED"
+CANVAS_MODULES="dnl
+  gtk+-2.0 >= gtk_required_version dnl
+  libart-2.0 >= libart_required_version dnl
+  pango >= pango_required_version dnl
+  pangoft2 >= pango_required_version"
 PKG_CHECK_MODULES(LIBGNOMECANVAS, $CANVAS_MODULES)
-AC_SUBST(LIBGNOMECANVAS_CFLAGS)
-AC_SUBST(LIBGNOMECANVAS_LIBS)
 
-PKG_CHECK_MODULES(CANVAS_GLADE, $CANVAS_MODULES libglade-2.0 >= $LIBGLADE_REQUIRED)
-AC_SUBST(CANVAS_GLADE_CFLAGS)
-AC_SUBST(CANVAS_GLADE_LIBS)
+PKG_CHECK_MODULES(CANVAS_GLADE, $CANVAS_MODULES libglade-2.0 >= libglade_required_version)
 
 AC_MSG_CHECKING([for native Win32])
 case "$host" in
@@ -138,20 +152,17 @@ AC_PATH_PROGS(PERL, perl5 perl)
 # glib-genmarshal
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
-AC_ARG_WITH(html-dir, [  --with-html-dir=PATH path to installed docs ])
-
-if test "x$with_html_dir" = "x" ; then
-  HTML_DIR='${datadir}/gtk-doc/html'
-else
-  HTML_DIR=$with_html_dir
-fi
-
-AC_SUBST(HTML_DIR)
-GNOME_GTKDOC_CHECK
+dnl
+dnl Check for gtk-doc
+dnl
+GTK_DOC_CHECK([1.0])
 
 # define a MAINT-like variable REBUILD which is set if Perl
 # and awk are found, so autogenerated sources can be rebuilt
-AC_ARG_ENABLE(rebuilds, [  --disable-rebuilds      disable all source autogeneration rules],,enable_rebuilds=yes)
+AC_ARG_ENABLE(rebuilds,
+              AC_HELP_STRING([--disable-rebuilds],
+                             [disable all source autogeneration rules]),,
+              [enable_rebuilds=yes])
 REBUILD=\#
 if test "x$enable_rebuilds" = "xyes" && \
      test -n "$PERL" && \
@@ -161,11 +172,12 @@ if test "x$enable_rebuilds" = "xyes" && \
 fi
 AC_SUBST(REBUILD)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 po/Makefile.in
 libgnomecanvas/Makefile
 libgnomecanvas/libgnomecanvas-2.0.pc
+libgnomecanvas/libgnomecanvas-2.0-uninstalled.pc
 glade/Makefile
 demos/Makefile
 tests/Makefile
@@ -173,4 +185,4 @@ docs/Makefile
 docs/reference/Makefile
 ])
 
-
+AC_OUTPUT

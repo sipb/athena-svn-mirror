@@ -7,10 +7,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas 1.109.0\n"
-"POT-Creation-Date: 2003-05-18 10:31+0200\n"
-"PO-Revision-Date: 2002-05-21 19:36+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:22+0200\n"
+"PO-Revision-Date: 2004-02-07 18:21+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
-"Language-Team: Finnish <fi@li.org>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -154,7 +155,7 @@ msgstr "Tekstin väri merkkijonoa"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
-msgstr "Tekstin väri GdkColor'na"
+msgstr "Tekstin väri GdkColorina"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
@@ -290,7 +291,7 @@ msgstr "Muokattavissa"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr "Onko tämä rich-teksti muokattavissa?"
+msgstr "Onko tämä muotoiltava teksti muokattavissa?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
@@ -298,23 +299,23 @@ msgstr "Näkyvä"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr "Onko tämä rich-teksti näkyvä?"
+msgstr "Onko tämä muotoiltava teksti näkyvä?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr "Kohdistin näkyvä"
+msgstr "Kohdistin näkyy"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
-msgid "Is the cursor visible in this this rich text item?"
-msgstr "Onko kohdistin näkyvä tässä rich-tekstissä"
+msgid "Is the cursor visible in this rich text item?"
+msgstr "Onko kohdistin näkyvä tässä muotoiltavassa tekstikohteessa?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
 msgstr "Kohdistin vilkkuu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
-msgid "Does the cursor blink in this this rich text item?"
-msgstr "Vilkkuuko kohdistin tässä rich-tekstissä?"
+msgid "Does the cursor blink in this rich text item?"
+msgstr "Vilkkuuko kohdistin tässä muotoiltavassa tekstikohteessa?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"

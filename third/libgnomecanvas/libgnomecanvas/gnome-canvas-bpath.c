@@ -30,7 +30,7 @@
 
 enum {
 	PROP_0,
-	PROP_BPATH,
+	PROP_BPATH
 };
 
 static void gnome_canvas_bpath_class_init   (GnomeCanvasBpathClass *class);

@@ -48,7 +48,7 @@
 
 enum {
 	PROP_0,
-	PROP_POINTS,
+	PROP_POINTS
 };
 
 

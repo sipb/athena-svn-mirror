@@ -99,7 +99,7 @@ enum {
 	PROP_PIXELS_INSIDE_WRAP,
 	PROP_LEFT_MARGIN,
 	PROP_RIGHT_MARGIN,
-	PROP_INDENT,
+	PROP_INDENT
 };
 
 enum {
@@ -263,7 +263,7 @@ gnome_canvas_rich_text_class_init(GnomeCanvasRichTextClass *klass)
 		PROP_CURSOR_VISIBLE,
 		g_param_spec_boolean ("cursor_visible",
 				      _("Cursor Visible"),
-				      _("Is the cursor visible in this this rich text item?"),
+				      _("Is the cursor visible in this rich text item?"),
 				      TRUE,
 				      G_PARAM_READWRITE));
 	g_object_class_install_property (
@@ -271,7 +271,7 @@ gnome_canvas_rich_text_class_init(GnomeCanvasRichTextClass *klass)
 		PROP_CURSOR_BLINK,
 		g_param_spec_boolean ("cursor_blink",
 				      _("Cursor Blink"),
-				      _("Does the cursor blink in this this rich text item?"),
+				      _("Does the cursor blink in this rich text item?"),
 				      TRUE,
 				      G_PARAM_READWRITE));
 	g_object_class_install_property (
@@ -607,6 +607,12 @@ gnome_canvas_rich_text_get_property (GObject *object, guint property_id,
 		break;
 	case PROP_Y:
 		g_value_set_double (value, text->_priv->y);
+		break;
+	case PROP_HEIGHT:
+		g_value_set_double (value, text->_priv->height);
+		break;
+	case PROP_WIDTH:
+		g_value_set_double (value, text->_priv->width);
 		break;
 	case PROP_EDITABLE:
 		g_value_set_boolean (value, text->_priv->editable);
