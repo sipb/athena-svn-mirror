@@ -115,6 +115,18 @@ undivert(3)
 sendmail.st:
 	cp /dev/null sendmail.st
 
+aliases.${MAN5SRC}: aliases.5
+	${NROFF} ${MANDOC} aliases.5 > aliases.${MAN5SRC}
+
+mailq.${MAN1SRC}: mailq.1
+	${NROFF} ${MANDOC} mailq.1 > mailq.${MAN1SRC}
+
+newaliases.${MAN1SRC}: newaliases.1
+	${NROFF} ${MANDOC} newaliases.1 > newaliases.${MAN1SRC}
+
+sendmail.${MAN8SRC}: sendmail.8
+	${NROFF} ${MANDOC} sendmail.8 > sendmail.${MAN8SRC}
+
 install: install-sendmail install-docs
 
 install-sendmail: sendmail
