@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-netscape.sh,v 1.5 2001-09-18 18:54:54 zacheiss Exp $
+# $Id: local-netscape.sh,v 1.6 2002-09-10 16:08:50 ghudson Exp $
 
 # local-netscape: A cron job to copy part of the infoagents locker onto
 # local disk so that netscape can be started more quickly.
@@ -31,6 +31,7 @@ fi
 bin=`athdir $local`
 if [ -n "$bin" ]; then
   rm -f "$bin/netscape.adjusted"
+  rm -f "$bin/mozilla.adjusted"
 fi
 
 version=1
@@ -64,8 +65,11 @@ copy $arch -f
 copy $arch/* -f
 delete $arch/MIT-only/*
 chase $arch/MIT-only/netscape
-copy $arch/MIT-only/netscape
-copy $arch/MIT-only/netscape/*
+copy $arch/MIT-only/netscape -f
+copy $arch/MIT-only/netscape/* -f
+chase $arch/MIT-only/mozilla
+copy $arch/MIT-only/mozilla -f
+copy $arch/MIT-only/mozilla/* -f
 EOF
 
 # Do the synctree of the locker.
@@ -91,6 +95,16 @@ script=$local/arch/share/bin/netscape
 if [ -x "$script" ]; then
   rm -f "$script.adjusted"
   sed -e "s,$locker,$local,g" -e 's,^progname=.*$,progname=netscape,' \
+    "$script" > $script.new
+  chmod a+x "$script.new"
+  mv "$script.new" "$script.adjusted"
+fi
+
+# Massage the mozilla startup script.
+script=$local/arch/share/bin/mozilla
+if [ -x "$script" ]; then
+  rm -f "$script.adjusted"
+  sed -e "s,$locker,$local,g" -e 's,^progname=.*$,progname=mozilla,' \
     "$script" > $script.new
   chmod a+x "$script.new"
   mv "$script.new" "$script.adjusted"
