@@ -159,14 +159,16 @@ HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
 #define PosixDef
 #endif Posix
 
-#if Solaris
+#ifdef SOLARIS
 #define SolarisDef -DSOLARIS
 #else
 #define SolarisDef
 #endif
 
 
-#if !defined(Solaris)
+#ifdef SOLARIS
+MotifLibDir	=	-L/usr/dt/lib -Xlinker -R/usr/dt/lib
+#else
 MotifLibDir	=	-L/mit/motif/$(MACHINE)lib
 XLibDir		=	-L/usr/athena/lib
 #endif
