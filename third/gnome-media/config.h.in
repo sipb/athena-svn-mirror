@@ -1,78 +1,22 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
-#undef HAVE_ESD
 
-#undef HAVE_LC_MESSAGES
-#undef HAVE_STPCPY
-#undef PACKAGE
-#undef VERSION
-#undef ENABLE_NLS
-#undef HAVE_CATGETS
-#undef HAVE_GETTEXT
-#undef HAVE_LINUX_SOUNDCARD_H
-#undef HAVE_PROGRAM_INVOCATION_SHORT_NAME
-#undef HAVE_PROGRAM_INVOCATION_NAME
-
-/* Have the ALSA driver */
-#undef ALSA
-
-/* Have the libghttp library on the system */
-#undef WITH_LIBGHTTP
-
-/* the mail transfer agent to use */
-#undef MAIL_TRANSFER_AGENT
-
-/*=== Curses version detection defines ===*/
-/* Found some version of curses that we're going to use */
-#undef HAS_CURSES
-   
-/* Use SunOS SysV curses? */
-#undef USE_SUNOS_CURSES
-
-/* Use old BSD curses - not used right now */
-#undef USE_BSD_CURSES
-
-/* Use SystemV curses? */
-#undef USE_SYSV_CURSES
-
-/* Use Ncurses? */
-#undef USE_NCURSES
-
-/* If you Curses does not have color define this one */
-#undef NO_COLOR_CURSES
-
-/* Define if you want to turn on SCO-specific code */
-#undef SCO_FLAVOR
-
-/* Set to reflect version of ncurses *
- *   0 = version 1.*
- *   1 = version 1.9.9g
- *   2 = version 4.0/4.1 */
-#undef NCURSES_970530
-
-#undef GETTEXT_PACKAGE
-
-#undef HAVE_CDROMCLOSETRAY_IOCTL
+/* default mixer to use */
 #undef DEFAULT_MIXER
-#undef default_cd_device
-#undef HAVE_MIXER
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 
+/* Define to the Gettext package name */
+#undef GETTEXT_PACKAGE
+
 /* Install path for Gnome control-center integration */
 #undef GNOMECC_DESKTOP_DIR
 
-/* Install path for package interfaces */
-#undef GSTPROPS_GLADE_DIR
+/* Define the version */
+#undef GNOME_MEDIA_VERSION
 
-/* Install path for package icons */
-#undef GSTPROPS_ICONS_DIR
-
-/* Install path for package media files */
-#undef GSTPROPS_MEDIA_DIR
-
-/* Install path for package pixmaps */
-#undef GSTPROPS_PIXMAPS_DIR
+/* Define the release version */
+#undef GNOME_MEDIA_VERSION_RELEASE
 
 /* Define to 1 if you have the `basename' function. */
 #undef HAVE_BASENAME
@@ -80,11 +24,17 @@
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
 
+/* Defined if have an ioctl to close the CD-rom tray */
+#undef HAVE_CDROMCLOSETRAY_IOCTL
+
 /* Define to 1 if you have the `dcgettext' function. */
 #undef HAVE_DCGETTEXT
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
+
+/* Defined if we have Esound */
+#undef HAVE_ESD
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
@@ -107,17 +57,11 @@
 /* Define to 1 if you have the <linux/cdrom.h> header file. */
 #undef HAVE_LINUX_CDROM_H
 
-/* Define to 1 if you have the <linux/soundcard.h> header file. */
-#undef HAVE_LINUX_SOUNDCARD_H
-
 /* Define to 1 if you have the <linux/ucdrom.h> header file. */
 #undef HAVE_LINUX_UCDROM_H
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
-
-/* Define to 1 if you have the <machine/soundcard.h> header file. */
-#undef HAVE_MACHINE_SOUNDCARD_H
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -130,9 +74,6 @@
 
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
-
-/* Define to 1 if you have the <soundcard.h> header file. */
-#undef HAVE_SOUNDCARD_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -149,9 +90,6 @@
 /* Define to 1 if you have the <sun/dkio.h> header file. */
 #undef HAVE_SUN_DKIO_H
 
-/* Define to 1 if you have the <sys/asoundlib.h> header file. */
-#undef HAVE_SYS_ASOUNDLIB_H
-
 /* Define to 1 if you have the <sys/cdio.h> header file. */
 #undef HAVE_SYS_CDIO_H
 
@@ -164,9 +102,6 @@
 /* Define to 1 if you have the <sys/sockio.h> header file. */
 #undef HAVE_SYS_SOCKIO_H
 
-/* Define to 1 if you have the <sys/soundcard.h> header file. */
-#undef HAVE_SYS_SOUNDCARD_H
-
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
@@ -175,6 +110,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* mail transfer agent command to use */
+#undef MAIL_TRANSFER_AGENT
 
 /* Name of package */
 #undef PACKAGE
@@ -203,9 +141,14 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
+/* Default CD device to use */
+#undef default_cd_device
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
 #undef inline
+#endif
 
 /* Define to `long' if <sys/types.h> does not define. */
 #undef off_t

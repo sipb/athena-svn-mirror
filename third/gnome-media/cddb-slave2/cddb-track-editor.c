@@ -25,6 +25,7 @@
 #endif
 
 #include <gnome.h>
+#include <gdk/gdkx.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <libbonoboui.h>
 
@@ -42,20 +43,20 @@ static void set_relation (GtkWidget *widget, GtkWidget *label);
 
 typedef struct _CDDBInfo {
 	char *discid;
-	
+
 	char *title;
 	char *artist;
 	char *comment;
 	char *genre;
 	int year;
-	
+
 	int ntrks;
 	CDDBSlaveClientTrackInfo **track_info;
 } CDDBInfo;
 
 typedef struct _TrackEditorDialog {
 	gboolean dirty;
-	
+
 	GtkWidget *parent;
 	GtkWidget *artist;
 	GtkWidget *discid;
@@ -65,7 +66,7 @@ typedef struct _TrackEditorDialog {
 	GtkWidget *genre;
 	GtkWidget *tracks;
 	GtkWidget *extra_info;
-	
+
 	GtkTextBuffer *buffer;
 	GtkTreeModel *model;
 
@@ -193,7 +194,7 @@ static char *genres[] = {
 	N_("Folklore"),
 	N_("Ballad"),
 	N_("Power Ballad"),
-	N_("Rythmic Soul"),
+	N_("Rhythmic Soul"),
 	N_("Freestyle"),
 	N_("Duet"),
 	N_("Punk Rock"),
@@ -237,9 +238,7 @@ static GtkTreeModel *
 make_tree_model (void)
 {
 	GtkListStore *store;
-	GtkTreeIter iter;
-	int i;
-	
+
 	store = gtk_list_store_new (4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
 
 	return GTK_TREE_MODEL (store);
@@ -262,9 +261,9 @@ build_track_list (TrackEditorDialog *td)
 	GtkTreeIter iter;
 	GtkListStore *store = GTK_LIST_STORE (td->model);
 	int i;
-	
+
 	g_return_if_fail (td->info != NULL);
-	
+
 	for (i = 0; i < td->info->ntrks; i++) {
 		char *length;
 
@@ -291,7 +290,7 @@ free_track_info (TrackEditorDialog *td)
 	CDDBInfo *info;
 
 	info = td->info;
-	
+
 	g_free (info->discid);
 	g_free (info->title);
 	g_free (info->artist);
@@ -299,7 +298,7 @@ free_track_info (TrackEditorDialog *td)
 	g_free (info->genre);
 
 	cddb_slave_client_free_track_info (info->track_info);
-	
+
 	g_free (info);
 	td->info = NULL;
 }
@@ -309,13 +308,13 @@ make_genre_list (void)
 {
 	GList *genre_list = NULL;
 	int i;
-	
+
 	for (i = 0; genres[i]; i++) {
 		genre_list = g_list_prepend (genre_list, _(genres[i]));
 	}
 
 	genre_list = g_list_sort (genre_list, (GCompareFunc) strcmp);
-	
+
 	return genre_list;
 }
 
@@ -333,12 +332,12 @@ extra_info_changed (GtkTextBuffer *tb,
 	if (td->info->track_info[td->current_track]->comment != NULL) {
 		g_free (td->info->track_info[td->current_track]->comment);
 	}
-	
+
 	gtk_text_buffer_get_bounds (tb, &start, &end);
 	text = gtk_text_buffer_get_text (tb, &start, &end, FALSE);
 	td->info->track_info[td->current_track]->comment = text;
 }
-	
+
 static void
 track_selection_changed (GtkTreeSelection *selection,
 			 TrackEditorDialog *td)
@@ -349,7 +348,7 @@ track_selection_changed (GtkTreeSelection *selection,
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter) == TRUE) {
 		char *comment;
-		
+
 		gtk_tree_model_get (model, &iter, 0, &track, -1);
 		comment = td->info->track_info[track - 1]->comment;
 
@@ -385,7 +384,7 @@ artist_changed (GtkEntry *entry,
 	if (td->info == NULL) {
 		return;
 	}
-		       
+
 	artist = gtk_entry_get_text (entry);
 	if (td->info->artist != NULL) {
 		g_free (td->info->artist);
@@ -403,7 +402,7 @@ disctitle_changed (GtkEntry *entry,
 	if (td->info == NULL) {
 		return;
 	}
-	
+
 	title = gtk_entry_get_text (entry);
 	if (td->info->title != NULL) {
 		g_free (td->info->title);
@@ -422,7 +421,7 @@ year_changed (GtkEntry *entry,
 	if (td->info == NULL) {
 		return;
 	}
-		      
+
 	year = gtk_entry_get_text (entry);
 
 	if (year != NULL) {
@@ -443,7 +442,7 @@ genre_changed (GtkEntry *entry,
 	if (td->info == NULL) {
 		return;
 	}
-	
+
 	genre = gtk_entry_get_text (entry);
 
 	if (td->info->genre != NULL) {
@@ -463,7 +462,7 @@ comment_changed (GtkEntry *entry,
 	if (td->info == NULL) {
 		return;
 	}
-	
+
 	comment = gtk_entry_get_text (entry);
 
 	if (td->info->comment != NULL) {
@@ -504,7 +503,7 @@ load_new_track_data (TrackEditorDialog *td,
 {
 	CDDBInfo *info;
 	char *title;
-	
+
 	if (client == NULL) {
 		client = cddb_slave_client_new ();
 	}
@@ -514,11 +513,28 @@ load_new_track_data (TrackEditorDialog *td,
 
 	/* Does the CORBA stuff need to be strduped? */
 	info->discid = g_strdup (discid);
-	info->title = cddb_slave_client_get_disc_title (client, discid);
-	info->artist = cddb_slave_client_get_artist (client, discid);
-	info->comment = cddb_slave_client_get_comment (client, discid);
-	info->genre = cddb_slave_client_get_genre (client, discid);
-	info->year = cddb_slave_client_get_year (client, discid);
+        /* The CDDB slave is responsible for making sure that entries exist
+         * for new discids.
+         * This is done by is_valid, which will create an entry if necessary.
+	 * The CDDB slave marks entries as valid when they are valid,
+         * either through successful lookup or through a save from the editor.
+         * If the entry is not valid, we fill in dummy values here.
+         * Invalid entries can still return useful info like ntrks and
+         * track_info, which we need for filling in dummy values. */
+
+	if (cddb_slave_client_is_valid (client, discid)) {
+		info->artist = cddb_slave_client_get_artist (client, discid);
+		info->title = cddb_slave_client_get_disc_title (client, discid);
+		info->comment = cddb_slave_client_get_comment (client, discid);
+		info->genre = cddb_slave_client_get_genre (client, discid);
+		info->year = cddb_slave_client_get_year (client, discid);
+	} else {
+		info->artist = g_strdup (_("Unknown Artist"));
+		info->title = g_strdup (_("Unknown Album"));
+		info->comment = NULL;
+		info->genre = NULL;
+		info->year = 0;
+	}
 	info->ntrks = cddb_slave_client_get_ntrks (client, discid);
 	info->track_info = cddb_slave_client_get_tracks (client, discid);
 
@@ -581,7 +597,7 @@ load_new_track_data (TrackEditorDialog *td,
 	g_signal_handlers_unblock_matched (G_OBJECT (GTK_COMBO (td->genre)->entry),
 					   G_SIGNAL_MATCH_FUNC,
 					   0, 0, NULL, G_CALLBACK (genre_changed), td);
-	
+
 	/* Rebuild track list */
 	clear_track_list (td);
 	build_track_list (td);
@@ -592,36 +608,35 @@ load_new_track_data (TrackEditorDialog *td,
 static TrackEditorDialog *
 make_track_editor_control (void)
 {
-	GtkWidget *hbox, *vbox, *ad_vbox, *ad_vbox2;
+	GtkWidget *hbox, *vbox, *inner_vbox, *ad_vbox, *ad_vbox2;
 	GtkWidget *label;
-	GtkWidget *sep;
 	GtkWidget *advanced;
 	GtkWidget *sw;
 	TrackEditorDialog *td;
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
 	GtkTreeSelection *selection;
-	
+
 	td = g_new0 (TrackEditorDialog, 1);
 
 	td->info = NULL;
 	td->current_track = -1;
 	td->dirty = FALSE;
-	
-	td->parent = gtk_vbox_new (FALSE, 4);
-	gtk_container_set_border_width (GTK_CONTAINER (td->parent), 2);
+
+	td->parent = gtk_vbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (td->parent), 12);
 
 	/* Info label */
 	td->discid = gtk_label_new (_("Editing Disc ID: "));
 	gtk_misc_set_alignment (GTK_MISC (td->discid), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (td->parent), td->discid, FALSE, FALSE, 0);
 
-	sep = gtk_hseparator_new ();
-	gtk_box_pack_start (GTK_BOX (td->parent), sep, FALSE, FALSE, 0);
+	inner_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (inner_vbox);
+	gtk_box_pack_start (GTK_BOX (td->parent), inner_vbox, FALSE, FALSE, 0);
 
 	/* Artist */
-	hbox = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (td->parent), hbox, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new_with_mnemonic (_("_Artist:"));
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -634,8 +649,8 @@ make_track_editor_control (void)
 	set_relation (td->artist, label);
 
 	/* Disc title */
-	hbox = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (td->parent), hbox, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new_with_mnemonic (_("Disc _Title:"));
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -649,15 +664,14 @@ make_track_editor_control (void)
 
 	advanced = cddb_disclosure_new (_("Show advanced disc options"),
 					_("Hide advanced disc options"));
-	gtk_box_pack_start (GTK_BOX (td->parent), advanced, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), advanced, FALSE, FALSE, 0);
 
 	/* Advanced disc options */
-	ad_vbox = gtk_vbox_new (FALSE, 4);
-	gtk_container_set_border_width (GTK_CONTAINER (ad_vbox), 2);
-	gtk_box_pack_start (GTK_BOX (td->parent), ad_vbox, FALSE, FALSE, 0);
+	ad_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), ad_vbox, FALSE, FALSE, 0);
 	cddb_disclosure_set_container (CDDB_DISCLOSURE (advanced), ad_vbox);
 
-	hbox = gtk_hbox_new (FALSE, 4);
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (ad_vbox), hbox, FALSE, FALSE, 0);
 
 	/* Top box: Disc comments. Maybe should be a GtkText? */
@@ -672,7 +686,7 @@ make_track_editor_control (void)
 	set_relation (td->disccomments, label);
 
 	/* Bottom box */
-	hbox = gtk_hbox_new (FALSE, 4);
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (ad_vbox), hbox, FALSE, FALSE, 0);
 
 	/* Genre */
@@ -685,7 +699,7 @@ make_track_editor_control (void)
 	gtk_combo_set_popdown_strings (GTK_COMBO (td->genre),
 				       make_genre_list ());
 	gtk_combo_set_value_in_list (GTK_COMBO (td->genre), FALSE, TRUE);
-	
+
 	gtk_box_pack_start (GTK_BOX (hbox), td->genre, TRUE, TRUE, 0);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label),
 				       GTK_COMBO (td->genre)->entry);
@@ -702,12 +716,12 @@ make_track_editor_control (void)
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), td->year);
 	set_relation (td->year, label);
 
-	sep = gtk_hseparator_new ();
-	gtk_box_pack_start (GTK_BOX (td->parent), sep, FALSE, FALSE, 0);
+	inner_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (td->parent), inner_vbox, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (td->parent), hbox, TRUE, TRUE, 0);
-	
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), hbox, TRUE, TRUE, 0);
+
 	/* Tracks */
 	sw = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
@@ -722,7 +736,7 @@ make_track_editor_control (void)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (td->tracks));
 	g_signal_connect (G_OBJECT (selection), "changed",
 			  G_CALLBACK (track_selection_changed), td);
-	
+
 	cell = gtk_cell_renderer_text_new ();
 	col = gtk_tree_view_column_new_with_attributes (" ", cell,
 							"text", MODEL_TRACK_NO, NULL);
@@ -744,22 +758,19 @@ make_track_editor_control (void)
 
 	gtk_container_add (GTK_CONTAINER (sw), td->tracks);
 
-	sep = gtk_vseparator_new ();
-	gtk_box_pack_start (GTK_BOX (hbox), sep, FALSE, FALSE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 4);
+	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
-	
+
 	/* More advanced options */
 	advanced = cddb_disclosure_new (_("Show advanced track options"),
 					_("Hide advanced track options"));
 	gtk_box_pack_start (GTK_BOX (vbox), advanced, FALSE, FALSE, 0);
 
-	ad_vbox2 = gtk_vbox_new (FALSE, 4);
+	ad_vbox2 = gtk_vbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (vbox), ad_vbox2, TRUE, TRUE, 0);
 	cddb_disclosure_set_container (CDDB_DISCLOSURE (advanced), ad_vbox2);
-	
+
 	/* Extra data */
 	label = gtk_label_new_with_mnemonic (_("_Extra track data:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
@@ -775,7 +786,7 @@ make_track_editor_control (void)
 	gtk_box_pack_start (GTK_BOX (ad_vbox2), td->extra_info, TRUE, TRUE, 0);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), td->extra_info);
 	set_relation (td->extra_info, label);
-	
+
 	/* Special show hide all the stuff we want */
 	gtk_widget_show_all (td->parent);
 	gtk_widget_hide (ad_vbox);
@@ -790,7 +801,7 @@ static BonoboObjectClass *parent_class = NULL;
 
 typedef struct _CDDBTrackEditor {
 	BonoboObject parent;
-	
+
 	TrackEditorDialog *td;
 	GtkWidget *dialog;
 	char *discid;
@@ -813,6 +824,7 @@ sync_cddb_info (CDDBInfo *info)
 {
 	g_return_if_fail (info != NULL);
 
+	g_print ("DEBUG: sync: setting disc title: %s\n", info->title);
 	cddb_slave_client_set_disc_title (client, info->discid, info->title);
 	cddb_slave_client_set_artist (client, info->discid, info->artist);
 
@@ -861,7 +873,7 @@ dialog_response (GtkDialog *dialog,
 			g_signal_connect (G_OBJECT (msg_dialog), "response",
 					  G_CALLBACK (gtk_widget_destroy),
 					  NULL);
-	
+
 			gtk_window_set_resizable (GTK_WINDOW (msg_dialog), FALSE);
 			gtk_widget_show (msg_dialog);
 			g_error_free (error);
@@ -887,9 +899,10 @@ impl_GNOME_Media_CDDBTrackEditor_showWindow (PortableServer_Servant servant,
 		if (editor->discid != NULL) {
 			load_new_track_data (editor->td, editor->discid);
 		}
-		
+
 		editor->dialog = gtk_dialog_new_with_buttons (_("CDDB Track Editor"),
-							      NULL, 0,
+							      NULL,
+							      GTK_DIALOG_NO_SEPARATOR,
 							      GTK_STOCK_HELP,
 							      GTK_RESPONSE_HELP,
 							      GTK_STOCK_CANCEL,
@@ -898,7 +911,7 @@ impl_GNOME_Media_CDDBTrackEditor_showWindow (PortableServer_Servant servant,
 							      1, NULL);
 		g_signal_connect (G_OBJECT (editor->dialog), "response",
 				  G_CALLBACK (dialog_response), editor);
-		
+
 		gtk_window_set_default_size (GTK_WINDOW (editor->dialog), 640, 400);
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (editor->dialog)->vbox),
 				    editor->td->parent, TRUE, TRUE, 0);
@@ -929,10 +942,13 @@ impl_GNOME_Media_CDDBTrackEditor_setDiscID (PortableServer_Servant servant,
 
 	if (editor->td != NULL) {
 		if (editor->td->info != NULL) {
+			/* FIXME: we still have data, so we should
+                         * throw up a dialog, instead of freeing old info
+			 * see #105703 */
 			free_track_info (editor->td);
 		}
 		load_new_track_data (editor->td, discid);
-	}	       
+	}
 }
 
 static void
@@ -945,7 +961,7 @@ finalise (GObject *object)
 	if (editor->dialog == NULL) {
 		return;
 	}
-	
+
 	gtk_widget_destroy (editor->dialog);
 	editor->dialog = NULL;
 
@@ -988,7 +1004,7 @@ track_editor_destroy_cb (GObject *editor,
 		if (client != NULL) {
 			g_object_unref (G_OBJECT (client));
 		}
-		
+
 		bonobo_main_quit ();
 	}
 }
@@ -1014,9 +1030,12 @@ static gboolean
 track_editor_init (gpointer data)
 {
 	BonoboGenericFactory *factory;
+	char *display_iid;
 
-	factory = bonobo_generic_factory_new (CDDBSLAVE_TRACK_EDITOR_IID,
+	display_iid = bonobo_activation_make_registration_id (CDDBSLAVE_TRACK_EDITOR_IID, DisplayString (gdk_display));
+	factory = bonobo_generic_factory_new (display_iid,
 					      factory_fn, NULL);
+	g_free (display_iid);
 	if (factory == NULL) {
 		g_print (_("Cannot create CDDBTrackEditor factory.\n"
 			   "This may be caused by another copy of cddb-track-editor already running.\n"));
@@ -1064,8 +1083,6 @@ int
 main (int argc,
       char **argv)
 {
-	CORBA_ORB orb;
-
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);

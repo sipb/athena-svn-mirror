@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -49,7 +49,7 @@ typedef struct _GInetAddr GInetAddr;
 
 /**
  *   GInetAddrAsyncStatus:
- * 
+ *
  *   Status of a asynchronous lookup (from gnet_inetaddr_new_async()
  *   or gnet_inetaddr_get_name_async()), passed by
  *   GInetAddrNewAsyncFunc or GInetAddrGetNameAsyncFunc.  More errors
@@ -66,7 +66,7 @@ typedef enum {
 
 /**
  *   GInetAddrNewAsyncID:
- * 
+ *
  *   ID of an asynchronous InetAddr creation started with
  *   gnet_inetaddr_new_async().  The creation can be canceled by
  *   calling gnet_inetaddr_new_async_cancel() with the ID.
@@ -81,19 +81,19 @@ typedef gpointer GInetAddrNewAsyncID;
  *   @inetaddr: InetAddr that was looked up
  *   @status: Status of the lookup
  *   @data: User data
- *   
+ *
  *   Callback for gnet_inetaddr_new_async().
  *
  **/
-typedef void (*GInetAddrNewAsyncFunc)(GInetAddr* inetaddr, 
-				      GInetAddrAsyncStatus status, 
+typedef void (*GInetAddrNewAsyncFunc)(GInetAddr* inetaddr,
+				      GInetAddrAsyncStatus status,
 				      gpointer data);
 
 
 
 /**
  *   GInetAddrGetNameAsyncID:
- * 
+ *
  *   ID of an asynchronous InetAddr name lookup started with
  *   gnet_inetaddr_get_name_async().  The lookup can be canceled by
  *   calling gnet_inetaddr_get_name_async_cancel() with the ID.
@@ -109,13 +109,13 @@ typedef gpointer GInetAddrGetNameAsyncID;
  *   @status: Status of the lookup
  *   @name: Nice name of the address
  *   @data: User data
- *   
+ *
  *   Callback for gnet_inetaddr_get_name_async().  Delete the name
  *   when you're done with it.
  *
  **/
-typedef void (*GInetAddrGetNameAsyncFunc)(GInetAddr* inetaddr, 
-					  GInetAddrAsyncStatus status, 
+typedef void (*GInetAddrGetNameAsyncFunc)(GInetAddr* inetaddr,
+					  GInetAddrAsyncStatus status,
 					  gchar* name,
 					  gpointer data);
 
@@ -126,8 +126,8 @@ typedef void (*GInetAddrGetNameAsyncFunc)(GInetAddr* inetaddr,
 
 GInetAddr* gnet_inetaddr_new (const gchar* name, gint port);
 
-GInetAddrNewAsyncID 
-gnet_inetaddr_new_async (const gchar* name, gint port, 
+GInetAddrNewAsyncID
+gnet_inetaddr_new_async (const gchar* name, gint port,
 			 GInetAddrNewAsyncFunc func, gpointer data);
 
 void       gnet_inetaddr_new_async_cancel (GInetAddrNewAsyncID id);
@@ -147,7 +147,7 @@ void gnet_inetaddr_unref (GInetAddr* ia);
 gchar* gnet_inetaddr_get_name (/* const */ GInetAddr* ia);
 
 GInetAddrGetNameAsyncID
-gnet_inetaddr_get_name_async (GInetAddr* ia, 
+gnet_inetaddr_get_name_async (GInetAddr* ia,
 			      GInetAddrGetNameAsyncFunc func,
 			      gpointer data);
 

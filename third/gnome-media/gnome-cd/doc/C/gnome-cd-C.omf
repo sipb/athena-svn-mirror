@@ -2,23 +2,18 @@
 <omf>
   <resource>
     <creator>
-      gdocteam@sun.com (Sun Microsystems)
+      docs@gnome.org (GDP)
     </creator>
     <maintainer>
-      gdocteam@sun.com (Sun Microsystems)
+      docs@gnome.org (GDP)
     </maintainer>
-<!--
     <title>
-      CD Player Manual V2.3
+      CD Player Manual V2.6
     </title>
--->
-    <title>
-      CD Player
-    </title>    
     <date>
-      2003-01-23
+      2004-02-18
     </date>
-    <version identifier="2.3" date="2003-01-23" description="Updated for GNOME 2.2, program version 2.0.2.5"/>
+    <version identifier="2.6" date="2004-02-18" description="Updated for GNOME 2.6, program version 2.5.2"/>
     <subject category="GNOME|Applications|Sound and Video"/>
     <description>
       User manual for CD Player. 

@@ -1,0 +1,437 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "CD Player">
+]>
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="de">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>&app; Handbuch V&manrevision;</title>
+
+    <copyright> 
+      <year>2003</year>        <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+    <publisher> 
+      <publishername> GNOME-Dokumentationsprojekt </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOME-Dokumentationsteam</surname> 
+	<affiliation> 
+	  <orgname>GNOME-Dokumentationsprojekt</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+ 
+    <revhistory>
+      <revision> 
+	<revnumber>&app; Handbuch V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME-Dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME-Dokumentationsprojekt</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>CD-Spieler-Handbuch V2.1</revnumber> 
+	<date>July 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME-Dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME-Dokumentationsprojekt</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>CD-Spieler-Handbuch V2.0</revnumber> 
+	<date>May 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME-Dokumentationsteam
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME-Dokumentationsprojekt</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>In diesem Handbuch wird Version &appversion; von &app; beschrieben.
+    </releaseinfo>
+    <legalnotice> 
+      <title>Feedback</title>
+      <para>Wenn Sie einen Programmfehler melden m&ouml;chten oder Vorschl&auml;ge zur Anwendung &app; oder
+	zu diesem Handbuch haben, folgen Sie den Anweisungen auf der
+	<ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>CD-Spieler</primary> 
+  </indexterm> 
+
+
+<sect1 id="gtcd-introduction">
+<title>Einf&uuml;hrung</title>
+<para>Mit der Anwendung <application>&app;</application> k&ouml;nnen Sie
+Audio-CDs (Compact Discs) auf Ihrem Computer abspielen. Die Anwendung <application>CD-Spieler</application>
+bietet folgende Optionen:</para>
+<itemizedlist>
+<listitem><para>Wiedergeben, Anhalten, Stoppen und Auswerfen einer CD.</para></listitem>
+<listitem><para>Vorw&auml;rts- und R&uuml;ckw&auml;rtsspulen durch die Tracks der CD.</para></listitem>
+<listitem><para>Einstellen der Lautst&auml;rke.</para></listitem>
+<listitem><para>Bearbeiten der Track-Informationen.</para></listitem>
+</itemizedlist>
+</sect1>
+<!-- =========== Getting Started ============================== -->
+<sect1 id="gtcd-getting-started">
+<title>Erste Schritte</title>
+
+<sect2 id="gtcd-to-start">
+<title>So starten Sie den CD-Spieler</title>
+<para>Sie k&ouml;nnen die Anwendung <application>&app;</application> auf eine der folgenden Arten starten:</para>
+<variablelist>
+<varlistentry>
+<term><guimenu>Anwendungsmen&uuml;</guimenu></term>
+<listitem>
+<para>W&auml;hlen Sie 
+<menuchoice>
+<guisubmenu>Sound und Video </guisubmenu>
+<guimenuitem> &app;</guimenuitem>
+</menuchoice>. </para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Befehlszeile</term>
+<listitem>
+<para>Geben Sie <command>gnome-cd</command> ein, und dr&uuml;cken Sie die <keycap>Eingabetaste</keycap>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gtcd-when-start">
+<title>Beim Starten des CD-Spielers</title>
+<para>Wenn Sie die Anwendung <application>&app;</application> starten, wird das folgende Fenster angezeigt.</para>
+<!-- ==== Figure ==== -->
+      <figure id="cdplayer_start_window"> 
+	<title>&app; Fenster</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata  fileref="figures/cdplayer_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>&Ouml;ffnet das Hauptfenster des CD-Spielers.</phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+<para>Das Fenster <application>&app;</application> enth&auml;lt folgende Elemente:</para>
+<itemizedlist>
+<listitem><para>Die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Track-Editor &ouml;ffnen" an.</phrase></textobject>
+</inlinemediaobject>&Ouml;ffnet das Dialogfeld <guilabel>Track-Editor</guilabel>. </para></listitem>
+<listitem><para>Die Schaltfl&auml;che <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Einstellungen" an.</phrase></textobject>
+</inlinemediaobject>&Ouml;ffnet das Dialogfeld <guilabel>Einstellungen</guilabel>. </para></listitem>
+<listitem><para>Ein Anzeigebereich mit Details &uuml;ber die aktuelle CD. </para></listitem>
+<listitem><para>Ein Schieberegler zur Einstellung der Ausgabelautst&auml;rke. </para></listitem>
+<listitem><para>Ein Dropdown-Listenfeld mit den Bezeichnungen der CD-Tracks. Dort k&ouml;nnen Sie gezielt zu einem bestimmten Track gehen. </para></listitem>
+<listitem><para>Ein Schaltfl&auml;chenbereich, in dem Sie die CD-Tracks wiedergeben k&ouml;nnen. </para></listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+
+<!-- ============= Usage ============================= -->
+<sect1 id="gtcd-usage">
+<title>Verwendung</title>
+
+<!--=========== To Play a CD ============================= -->
+<sect2 id="gtcd_play">
+<title>So geben Sie eine CD wieder</title>
+<para>Zur Wiedergabe einer CD legen Sie die CD in das CD-ROM-Laufwerk des Computers ein, und aktivieren Sie die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Start" an.</phrase></textobject>
+</inlinemediaobject> </para>
+<para>Im Anzeigebereich werden folgende Informationen angezeigt:
+</para>
+<itemizedlist>
+<listitem><para>Verstrichene Zeit des aktuellen Tracks</para></listitem>
+<listitem><para>Name des Interpreten</para></listitem>
+<listitem><para>Titel der CD</para>
+</listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_pause">
+<title>So halten Sie eine CD an</title>
+<para>Zum Anhalten einer laufenden CD klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/pause_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Pause" an.</phrase></textobject>
+</inlinemediaobject> Zur Fortsetzung der Wiedergabe klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Start" an.</phrase></textobject>
+</inlinemediaobject> </para>
+</sect2>
+
+<sect2 id="gtcd_movetracks">
+<title>So bewegen Sie sich durch die CD-Tracks</title>
+<para>Zur gezielten Wiedergabe bestimmter CD-Tracks gehen Sie wie folgt vor:
+</para>
+<itemizedlist>
+<listitem><para>Wenn Sie den n&auml;chsten Track wiedergeben m&ouml;chten, klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/next_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "N&auml;chster Titel" an.</phrase></textobject>
+</inlinemediaobject> </para></listitem>
+<listitem><para>Wenn Sie den vorherigen Track wiedergeben m&ouml;chten, klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/previous_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Voriger Titel" an.</phrase></textobject>
+</inlinemediaobject> </para></listitem>
+<listitem><para>Wenn Sie eine Liste der CD-Tracks anzeigen m&ouml;chten, klicken Sie auf das Dropdown-Listenfeld unterhalb des Anzeigebereichs.
+Wenn Sie einen bestimmten Track wiedergeben m&ouml;chten, w&auml;hlen Sie den Track aus der Liste.</para></listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_forward">
+<title>So spulen Sie einen Track schnell vorw&auml;rts</title>
+<para>Wenn Sie einen Track schnell vorw&auml;rtsspulen m&ouml;chten, klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/forward_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Schnelles Vorw&auml;rts" an.</phrase></textobject>
+</inlinemediaobject> </para>
+</sect2>
+
+<sect2 id="gtcd_rewind">
+<title>So spulen Sie einen Track zur&uuml;ck</title>
+<para>Wenn Sie einen Track zur&uuml;ckspulen m&ouml;chten, klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/rewind_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Zur&uuml;ck" an.</phrase></textobject>
+</inlinemediaobject> </para>
+</sect2>
+
+<sect2 id="gtcd_stop">
+<title>So stoppen Sie eine CD</title>
+<para>Zum Stoppen der CD-Wiedergabe klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/stop_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Stopp" an.</phrase></textobject>
+</inlinemediaobject> </para>
+</sect2>
+
+<sect2 id="gtcd_adjust_vol"><title>So stellen Sie die Lautst&auml;rke ein</title>
+<para>Zur Einstellung der Ausgabelautst&auml;rke des CD-Spielers verschieben Sie den 
+Lautst&auml;rkeregler auf die gew&uuml;nschte Lautst&auml;rke. Der Lautst&auml;rkeregler befindet sich im Anwendungsfenster 
+rechts neben dem Anzeigebereich. Verschieben Sie den Regler nach oben, um die Lautst&auml;rke zu erh&ouml;hen.
+Verschieben Sie den Regler nach unten, um die Lautst&auml;rke zu verringern.</para>
+</sect2>
+
+<sect2 id="gtcd_edit_info">
+<title>So bearbeiten Sie die CD-Informationen</title>
+<para>Gehen Sie zur Bearbeitung der CD-Informationen wie folgt vor:</para>
+<orderedlist>
+<listitem><para>Klicken Sie auf die Schaltfl&auml;che <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>, um das Dialogfeld <guilabel>Track-Editor</guilabel> zu &ouml;ffnen. Das Dialogfeld <guilabel>Track-Editor</guilabel> wird ge&ouml;ffnet 
+(siehe <xref linkend="fig-cd-track-editor"/>). </para></listitem>
+<listitem><para>Wenn Sie den Namen des Interpreten &auml;ndern m&ouml;chten, bearbeiten Sie das Textfeld <guilabel>Interpret</guilabel>.</para></listitem>
+<listitem><para>Wenn Sie den CD-Titel &auml;ndern m&ouml;chten, bearbeiten Sie das Textfeld <guilabel>CD-Titel</guilabel>.</para></listitem>
+<listitem><para>Wenn Sie der CD Kommentare, das Musikgenre oder das Produktionsjahr hinzuf&uuml;gen m&ouml;chten, klicken Sie auf den Pfeil neben 
+<guilabel>Erweiterte CD-Optionen anzeigen</guilabel>.</para></listitem>
+<listitem><para>Wenn Sie den Titel eines Tracks bearbeiten m&ouml;chten, doppelklicken Sie in der Spalte <guilabel>Titel</guilabel> der Tracktabelle auf den Track, und geben Sie den neuen Titel ein.</para></listitem>
+<listitem><para>Wenn Sie weitere Informationen &uuml;ber einen Track hinzuf&uuml;gen m&ouml;chten, markieren Sie den Track in der Tracktabelle, 
+und klicken Sie auf den Pfeil neben <guilabel>Erweiterte Track-Optionen einblenden</guilabel>.</para></listitem>
+<listitem><para>Geben Sie die zus&auml;tzlichen Trackinformationen in das Textfeld <guilabel>Zus&auml;tzliche Track-Daten</guilabel> ein.</para></listitem>
+<listitem><para>Klicken Sie auf <guibutton>Speichern</guibutton>, um die &Auml;nderungen auf Ihrem Computer zu speichern</para></listitem>
+</orderedlist>
+<!-- ==== Figure ==== -->
+      <figure id="fig-cd-track-editor"> 
+	<title>Dialogfeld <guilabel>Track Editor</guilabel></title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata 		fileref="figures/cdplayer_trackeditor_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase></phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+</sect2>
+
+<sect2 id="gtcd_eject">
+<title>So werfen Sie eine CD aus</title>
+<para>Um eine CD auszuwerfen klicken Sie auf die Schaltfl&auml;che
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/eject_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>CD auswerfen.</phrase></textobject>
+</inlinemediaobject> Diese Schaltfl&auml;che h&auml;lt die CD an, sofern sie noch l&auml;uft, und &ouml;ffnet das CD-Fach.</para>
+</sect2>
+
+</sect1>
+
+<!-- ================= Preferences =================== -->
+<sect1 id="gtcd-prefs">
+<title>Einstellungen</title>
+<para>Zur Konfiguration des <application>&app;</application> klicken Sie auf die Schaltfl&auml;che 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Zeigt "Einstellungen" an.</phrase></textobject>
+</inlinemediaobject> </para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>CD-Spieler</guilabel> </term>
+<listitem>
+<para>Geben Sie in diesem Textfeld den Namen des CD-ROM-Laufwerks ein. Klicken Sie auf <guibutton>Änderung &uuml;bernehmen</guibutton>, um eine &Auml;nderung dieser Einstellung zu speichern.</para>
+<para>Standard:  Abh&auml;ngig vom Betriebssystem. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Beim Starten des GNOME-CD-Spielers</guilabel> </term>
+<listitem>
+<para>Legen Sie mit einer der folgenden Umschalttasten fest, welche Aktion der <application>CD-Spieler</application> beim Starten der Anwendung ausf&uuml;hren soll:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>Nichts tun</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>CD-Wiedergabe starten</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>CD-Wiedergabe beenden</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Standard:  <guilabel>Nichts tun</guilabel> </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Beim Beenden des GNOME CD-Spielers</guilabel> </term>
+<listitem>
+<para>Legen Sie mit einer der folgenden Umschalttasten fest, welche Aktion der <application>CD-Spieler</application> beim Beenden der Anwendung ausf&uuml;hren soll:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>Nichts tun</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>CD-Wiedergabe beenden</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>CD-Laufwerk &ouml;ffnen</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Standard:  <guilabel>Nichts tun</guilabel> </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Themenname</guilabel> </term>
+<listitem>
+<para>W&auml;hlen Sie in diesem Listenfeld ein Anzeigethema f&uuml;r <application>&app;</application> aus. Folgende Themen stehen zur Verf&uuml;gung:</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>LCD</guilabel> </para>
+<para>Beinhaltet Standardschaltfl&auml;chen und einen grauen Hintergrund f&uuml;r den Anzeigebereich.</para>
+</listitem>
+<listitem>
+<para><guilabel>Media</guilabel> </para>
+<para>Beinhaltet bearbeitete Schaltfl&auml;chen und einen roten Hintergrund f&uuml;r den Anzeigebereich.</para>
+</listitem>
+<listitem>
+<para><guilabel>LCD-Rot</guilabel> </para>
+<para>Beinhaltet Standardschaltfl&auml;chen und einen roten Hintergrund f&uuml;r den Anzeigebereich.</para>
+</listitem>
+</itemizedlist>
+<para>Standard:  <guilabel>LCD</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+</article>

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -30,7 +30,7 @@
  * @len: length of the buffer
  * @bytes_written: pointer to integer for the function to store the
  * number of bytes writen.
- * 
+ *
  * Write all @len bytes in the buffer to the channel.  This is
  * basically a wrapper around g_io_channel_write().  The problem with
  * g_io_channel_write() is that it may not write all the bytes in the
@@ -44,8 +44,8 @@
  *
  **/
 GIOError
-gnet_io_channel_writen (GIOChannel    *channel, 
-			gpointer       buf, 
+gnet_io_channel_writen (GIOChannel    *channel,
+			gpointer       buf,
 			guint          len,
 			guint         *bytes_written)
 {
@@ -84,7 +84,7 @@ gnet_io_channel_writen (GIOChannel    *channel,
  * @channel: the channel to read from
  * @buf: the buffer to write to
  * @len: the length of the buffer
- * @bytes_read: pointer to integer for the function to store the 
+ * @bytes_read: pointer to integer for the function to store the
  * number of of bytes read.
  *
  * Read exactly @len bytes from the channel the buffer to the channel.
@@ -101,8 +101,8 @@ gnet_io_channel_writen (GIOChannel    *channel,
  *
  **/
 GIOError
-gnet_io_channel_readn (GIOChannel    *channel, 
-		       gpointer       buf, 
+gnet_io_channel_readn (GIOChannel    *channel,
+		       gpointer       buf,
 		       guint          len,
 		       guint         *bytes_read)
 {
@@ -142,22 +142,22 @@ gnet_io_channel_readn (GIOChannel    *channel,
  * @channel: the channel to read from
  * @buf: the buffer to write to
  * @len: length of the buffer
- * @bytes_read: pointer to integer for the function to store the 
+ * @bytes_read: pointer to integer for the function to store the
  *   number of of bytes read.
  *
  * Read a line from the channel.  The line will be null-terminated and
  * include the newline character.  If there is not enough room for the
  * line, the line is truncated to fit in the buffer.
- * 
+ *
  * Warnings: (in the gotcha sense, not the bug sense)
- * 
+ *
  * 1. If the buffer is full and the last character is not a newline,
  * the line was truncated.  So, do not assume the buffer ends with a
  * newline.
  *
  * 2. @bytes_read is actually the number of bytes put in the buffer.
  * That is, it includes the terminating null character.
- * 
+ *
  * 3. Null characters can appear in the line before the terminating
  * null (I could send the string "Hello world\0\n").  If this matters
  * in your program, check the string length of the buffer against the
@@ -172,11 +172,11 @@ gnet_io_channel_readn (GIOChannel    *channel,
  * integer pointed to by @bytes_read (this number includes the
  * newline).  If an error is returned, the contents of @buf and
  * @bytes_read are undefined.
- * 
+ *
  **/
 GIOError
-gnet_io_channel_readline (GIOChannel    *channel, 
-			  gchar         *buf, 
+gnet_io_channel_readline (GIOChannel    *channel,
+			  gchar         *buf,
 			  guint          len,
 			  guint         *bytes_read)
 {
@@ -228,22 +228,22 @@ gnet_io_channel_readline (GIOChannel    *channel,
  * gnet_io_channel_readline_strdup:
  * @channel: the channel to read from
  * @buf_ptr: pointer to gchar* for the functin to store the new buffer
- * @bytes_read: pointer to integer for the function to store the 
+ * @bytes_read: pointer to integer for the function to store the
  *   number of of bytes read.
  *
  * Read a line from the channel.  The line will be null-terminated and
  * include the newline character.  Similarly to g_strdup_printf, a
  * buffer large enough to hold the string will be allocated.
- * 
+ *
  * Warnings: (in the gotcha sense, not the bug sense)
- * 
+ *
  * 1. If the last character of the buffer is not a newline, the line
  * was truncated by EOF.  So, do not assume the buffer ends with a
  * newline.
  *
  * 2. @bytes_read is actually the number of bytes put in the buffer.
  * That is, it includes the terminating null character.
- * 
+ *
  * 3. Null characters can appear in the line before the terminating
  * null (I could send the string "Hello world\0\n").  If this matters
  * in your program, check the string length of the buffer against the
@@ -258,8 +258,8 @@ gnet_io_channel_readline (GIOChannel    *channel,
  *
  **/
 GIOError
-gnet_io_channel_readline_strdup (GIOChannel    *channel, 
-				 gchar         **buf_ptr, 
+gnet_io_channel_readline_strdup (GIOChannel    *channel,
+				 gchar         **buf_ptr,
 				 guint         *bytes_read)
 {
   guint rc, n, len;

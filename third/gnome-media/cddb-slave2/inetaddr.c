@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -62,7 +62,7 @@ gnet_gethostbyname(const char* hostname, struct sockaddr_in* sa, gchar** nicenam
     len = 1024;
     buf = g_new(gchar, len);
 
-    while ((res = gethostbyname_r (hostname, &result_buf, buf, len, &result, &herr)) 
+    while ((res = gethostbyname_r (hostname, &result_buf, buf, len, &result, &herr))
 	   == ERANGE)
       {
 	len *= 2;
@@ -139,7 +139,7 @@ gnet_gethostbyname(const char* hostname, struct sockaddr_in* sa, gchar** nicenam
 	    sa->sin_family = result.h_addrtype;
 	    memcpy(&sa->sin_addr, result.h_addr_list[0], result.h_length);
 	  }
-	
+
 	if (nicename && result.h_name)
 	  *nicename = g_strdup(result.h_name);
 
@@ -147,7 +147,7 @@ gnet_gethostbyname(const char* hostname, struct sockaddr_in* sa, gchar** nicenam
       }
   }
 
-#else 
+#else
 #ifdef HAVE_GETHOSTBYNAME_R_GLIB_MUTEX
   {
     struct hostent* he;
@@ -188,13 +188,13 @@ gnet_gethostbyname(const char* hostname, struct sockaddr_in* sa, gchar** nicenam
 	    sa->sin_family = result->h_addrtype;
 	    memcpy(&sa->sin_addr, result->h_addr_list[0], result->h_length);
 	  }
-	
+
 	if (nicename && result->h_name)
 	  *nicename = g_strdup(result->h_name);
 
 	ReleaseMutex(gnet_hostent_Mutex);
 	rv = TRUE;
-   
+
       }
   }
 #else
@@ -225,7 +225,7 @@ gnet_gethostbyname(const char* hostname, struct sockaddr_in* sa, gchar** nicenam
   return rv;
 }
 
-/* 
+/*
 
    Thread safe gethostbyaddr (we assume that gethostbyaddr_r follows
    the same pattern as gethostbyname_r, so we don't have special
@@ -250,7 +250,7 @@ gnet_gethostbyaddr(const char* addr, size_t length, int type)
     len = 1024;
     buf = g_new(gchar, len);
 
-    while ((res = gethostbyaddr_r (addr, length, type, &result_buf, buf, len, &result, &herr)) 
+    while ((res = gethostbyaddr_r (addr, length, type, &result_buf, buf, len, &result, &herr))
 	   == ERANGE)
       {
 	len *= 2;
@@ -306,7 +306,7 @@ gnet_gethostbyaddr(const char* addr, size_t length, int type)
       rv = g_strdup (result.h_name);
   }
 
-#else 
+#else
 #ifdef HAVE_GETHOSTBYNAME_R_GLIB_MUTEX
   {
     struct hostent* he;
@@ -370,14 +370,14 @@ gnet_gethostbyaddr(const char* addr, size_t length, int type)
  *  @name: a nice name (eg, mofo.eecs.umich.edu) or a dotted decimal name
  *    (eg, 141.213.8.59).  You can delete the after the function is called.
  *  @port: port number (0 if the port doesn't matter)
- * 
+ *
  *  Create an internet address from a name and port.  This function
  *  may block.
  *
  *  Returns: a new #GInetAddr, or NULL if there was a failure.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_new (const gchar* name, gint port)
 {
   struct sockaddr_in* sa_in;
@@ -408,7 +408,7 @@ gnet_inetaddr_new (const gchar* name, gint port)
 	  ia = g_new0(GInetAddr, 1);
 	  ia->name = g_strdup(name);
 	  ia->ref_count = 1;
-	  
+
 	  sa_in = (struct sockaddr_in*) &ia->sa;
 	  sa_in->sin_family = AF_INET;
 	  sa_in->sin_port = g_htons(port);
@@ -430,7 +430,7 @@ static void* gethostbyname_async_child (void* arg);
  *  @port: port number (0 if the port doesn't matter)
  *  @func: Callback function.
  *  @data: User data passed when callback function is called.
- * 
+ *
  *  Create a GInetAddr from a name and port asynchronously.  Once the
  *  structure is created, it will call the callback.  It may call the
  *  callback if there is a failure.
@@ -438,7 +438,7 @@ static void* gethostbyname_async_child (void* arg);
  *  The Unix version creates a pthread thread which does the lookup.
  *  If pthreads aren't available, it forks and does the lookup.
  *  Forking will be slow or even fail when using operating systems
- *  that copy the entire process when forking.  
+ *  that copy the entire process when forking.
  *
  *  If you need to lookup hundreds of addresses, we recommend calling
  *  g_main_iteration(FALSE) between calls.  This will help prevent an
@@ -457,7 +457,7 @@ static void* gethostbyname_async_child (void* arg);
  *
  **/
 GInetAddrNewAsyncID
-gnet_inetaddr_new_async (const gchar* name, gint port, 
+gnet_inetaddr_new_async (const gchar* name, gint port,
 			 GInetAddrNewAsyncFunc func, gpointer data)
 {
   int pipes[2];
@@ -558,7 +558,7 @@ gnet_inetaddr_new_async (const gchar* name, gint port,
   /* Add a watch */
   state->watch = g_io_add_watch(g_io_channel_unix_new(pipes[0]),
 				(G_IO_IN|G_IO_ERR|G_IO_HUP|G_IO_NVAL),
-				gnet_inetaddr_new_async_cb, 
+				gnet_inetaddr_new_async_cb,
 				state);
 
   return state;
@@ -578,7 +578,7 @@ gethostbyname_async_child (void* arg) /* pthread_create friendly */
   if (gnet_gethostbyname(name, &sa, NULL))
     {
       guchar size = 4;	/* FIX for IPv6 */
-      
+
       if ( (write(outfd, &size, sizeof(guchar)) == -1) ||
 	   (write(outfd, &sa.sin_addr, size) == -1) )
 	g_warning ("Problem writing to pipe\n");
@@ -601,9 +601,9 @@ gethostbyname_async_child (void* arg) /* pthread_create friendly */
 }
 
 
-gboolean 
-gnet_inetaddr_new_async_cb (GIOChannel* iochannel, 
-			    GIOCondition condition, 
+gboolean
+gnet_inetaddr_new_async_cb (GIOChannel* iochannel,
+			    GIOCondition condition,
 			    gpointer data)
 {
   GInetAddrAsyncState* state = (GInetAddrAsyncState*) data;
@@ -675,7 +675,7 @@ gnet_inetaddr_new_async_cb (GIOChannel* iochannel,
  *
  *  Cancel an asynchronous GInetAddr creation that was started with
  *  gnet_inetaddr_new_async().
- * 
+ *
  */
 void
 gnet_inetaddr_new_async_cancel (GInetAddrNewAsyncID id)
@@ -703,7 +703,7 @@ gnet_inetaddr_new_async_cancel (GInetAddrNewAsyncID id)
  *  @name: a nice name (eg, mofo.eecs.umich.edu) or a dotted decimal name
  *    (eg, 141.213.8.59).  You can delete the after the function is called.
  *  @port: port number (0 if the port doesn't matter)
- * 
+ *
  *  Create an internet address from a name and port, but don't block
  *  and fail if success would require blocking.  This is, if the name
  *  is a canonical name or "localhost", it returns the address.
@@ -712,7 +712,7 @@ gnet_inetaddr_new_async_cancel (GInetAddrNewAsyncID id)
  *  Returns: a new #GInetAddr, or NULL if there was a failure.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_new_nonblock (const gchar* name, gint port)
 {
   struct sockaddr_in* sa_in;
@@ -749,12 +749,12 @@ gnet_inetaddr_new_nonblock (const gchar* name, gint port)
  *   gnet_inetaddr_clone:
  *   @ia: Address to clone
  *
- *   Create an internet address from another one.  
+ *   Create an internet address from another one.
  *
  *   Returns: a new InetAddr, or NULL if there was a failure.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_clone(const GInetAddr* ia)
 {
   GInetAddr* cia;
@@ -764,14 +764,14 @@ gnet_inetaddr_clone(const GInetAddr* ia)
   cia = g_new0(GInetAddr, 1);
   cia->ref_count = 1;
   cia->sa = ia->sa;
-  if (ia->name != NULL) 
+  if (ia->name != NULL)
     cia->name = g_strdup(ia->name);
 
   return cia;
 }
 
 
-/** 
+/**
  *  gnet_inetaddr_delete:
  *  @ia: GInetAddr to delete
  *
@@ -819,7 +819,7 @@ gnet_inetaddr_unref(GInetAddr* ia)
 
   if (ia->ref_count == 0)
     {
-      if (ia->name != NULL) 
+      if (ia->name != NULL)
 	g_free (ia->name);
       g_free (ia);
     }
@@ -846,7 +846,7 @@ gnet_inetaddr_unref(GInetAddr* ia)
  *
  **/
 GInetAddrGetNameAsyncID
-gnet_inetaddr_get_name_async (GInetAddr* ia, 
+gnet_inetaddr_get_name_async (GInetAddr* ia,
 			      GInetAddrGetNameAsyncFunc func,
 			      gpointer data)
 {
@@ -858,7 +858,7 @@ gnet_inetaddr_get_name_async (GInetAddr* ia,
     {
       (func)(ia, GINETADDR_ASYNC_STATUS_OK, g_strdup(ia->name), data);
     }
-  
+
   /* Otherwise, fork and look it up */
   else
     {
@@ -883,7 +883,7 @@ gnet_inetaddr_get_name_async (GInetAddr* ia,
 
 	  /* Write the name to the pipe.  If we didn't get a name, we
              just write the canonical name. */
-	  if ((name = gnet_gethostbyaddr((char*) &((struct sockaddr_in*)&ia->sa)->sin_addr, 
+	  if ((name = gnet_gethostbyaddr((char*) &((struct sockaddr_in*)&ia->sa)->sin_addr,
 					sizeof(struct in_addr), AF_INET)) != NULL)
 	    {
 	      guint lenint = strlen(name);
@@ -908,7 +908,7 @@ gnet_inetaddr_get_name_async (GInetAddr* ia,
 	      gchar buffer[INET_ADDRSTRLEN];	/* defined in netinet/in.h */
 	      guchar* p = (guchar*) &(GNET_SOCKADDR_IN(ia->sa).sin_addr);
 
-	      g_snprintf(buffer, sizeof(buffer), 
+	      g_snprintf(buffer, sizeof(buffer),
 			 "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
 	      len = strlen(buffer);
 
@@ -941,7 +941,7 @@ gnet_inetaddr_get_name_async (GInetAddr* ia,
 	  /* Add a watch */
 	  state->watch = g_io_add_watch(g_io_channel_unix_new(pipes[0]),
 					(G_IO_IN|G_IO_ERR|G_IO_HUP|G_IO_NVAL),
-					gnet_inetaddr_get_name_async_cb, 
+					gnet_inetaddr_get_name_async_cb,
 					state);
 	  return state;
 	}
@@ -966,9 +966,9 @@ gnet_inetaddr_get_name_async (GInetAddr* ia,
 
 
 
-gboolean 
-gnet_inetaddr_get_name_async_cb (GIOChannel* iochannel, 
-				 GIOCondition condition, 
+gboolean
+gnet_inetaddr_get_name_async_cb (GIOChannel* iochannel,
+				 GIOCondition condition,
 				 gpointer data)
 {
   GInetAddrReverseAsyncState* state = (GInetAddrReverseAsyncState*) data;
@@ -1032,7 +1032,7 @@ gnet_inetaddr_get_name_async_cb (GIOChannel* iochannel,
  *
  *  Cancel an asynchronous nice name lookup that was started with
  *  gnet_inetaddr_get_name_async().
- * 
+ *
  */
 void
 gnet_inetaddr_get_name_async_cancel(GInetAddrGetNameAsyncID id)
@@ -1063,17 +1063,17 @@ gnet_inetaddr_get_name_async_cancel(GInetAddrGetNameAsyncID id)
  *  for deleting the returned string.
  *
  **/
-gchar* 
+gchar*
 gnet_inetaddr_get_canonical_name(const GInetAddr* ia)
 {
   gchar buffer[INET_ADDRSTRLEN];	/* defined in netinet/in.h */
   guchar* p = (guchar*) &(GNET_SOCKADDR_IN(ia->sa).sin_addr);
-  
+
   g_return_val_if_fail (ia != NULL, NULL);
 
-  g_snprintf(buffer, sizeof(buffer), 
+  g_snprintf(buffer, sizeof(buffer),
 	     "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
-  
+
   return g_strdup(buffer);
 }
 
@@ -1140,7 +1140,7 @@ gnet_inetaddr_is_canonical (const gchar* name)
 /**
  *  gnet_inetaddr_is_internet:
  *  @inetaddr: Address to check
- * 
+ *
  *  Check if the address is a sensible internet address.  This mean it
  *  is not private, reserved, loopback, multicast, or broadcast.
  *
@@ -1184,7 +1184,7 @@ gnet_inetaddr_is_internet (const GInetAddr* inetaddr)
  *   192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
  *
  *  (from RFC 1918.  See also draft-manning-dsua-02.txt)
- * 
+ *
  *  Returns: TRUE if the address is reserved for private networks;
  *  FALSE otherwise.
  *
@@ -1254,7 +1254,7 @@ gnet_inetaddr_is_reserved (const GInetAddr* inetaddr)
  *
  *  Check if the address is a loopback address.  Loopback addresses
  *  have the prefix 127.0.0.1/16.
- * 
+ *
  *  Returns: TRUE if the address is a loopback address; FALSE
  *  otherwise.
  *
@@ -1283,12 +1283,12 @@ gnet_inetaddr_is_loopback (const GInetAddr* inetaddr)
  *  Check if the address is a multicast address.  Multicast address
  *  are in the range 224.0.0.1 - 239.255.255.255 (ie, the top four
  *  bits are 1110).
- * 
+ *
  *  Returns: TRUE if the address is a multicast address; FALSE
  *  otherwise.
  *
  **/
-gboolean 
+gboolean
 gnet_inetaddr_is_multicast (const GInetAddr* inetaddr)
 {
   guint addr;
@@ -1312,12 +1312,12 @@ gnet_inetaddr_is_multicast (const GInetAddr* inetaddr)
  *  Check if the address is a broadcast address.  The broadcast
  *  address is 255.255.255.255.  (Network broadcast address are
  *  network dependent.)
- * 
+ *
  *  Returns: TRUE if the address is a broadcast address; FALSE
  *  otherwise.
  *
  **/
-gboolean 
+gboolean
 gnet_inetaddr_is_broadcast (const GInetAddr* inetaddr)
 {
   guint addr;
@@ -1348,7 +1348,7 @@ gnet_inetaddr_is_broadcast (const GInetAddr* inetaddr)
  *  Returns: hash value.
  *
  **/
-guint 
+guint
 gnet_inetaddr_hash (gconstpointer p)
 {
   const GInetAddr* ia;
@@ -1373,12 +1373,12 @@ gnet_inetaddr_hash (gconstpointer p)
  *  @p1: Pointer to first #GInetAddr.
  *  @p2: Pointer to second #GInetAddr.
  *
- *  Compare two #GInetAddr's.  
+ *  Compare two #GInetAddr's.
  *
  *  Returns: 1 if they are the same; 0 otherwise.
  *
  **/
-gint 
+gint
 gnet_inetaddr_equal(gconstpointer p1, gconstpointer p2)
 {
   const GInetAddr* ia1 = (const GInetAddr*) p1;
@@ -1404,7 +1404,7 @@ gnet_inetaddr_equal(gconstpointer p1, gconstpointer p2)
  *  Returns: 1 if they are the same; 0 otherwise.
  *
  **/
-gint 
+gint
 gnet_inetaddr_noport_equal(gconstpointer p1, gconstpointer p2)
 {
   const GInetAddr* ia1 = (const GInetAddr*) p1;
@@ -1423,7 +1423,7 @@ gnet_inetaddr_noport_equal(gconstpointer p1, gconstpointer p2)
 
 /**
  *  gnet_inetaddr_gethostname:
- * 
+ *
  *  Get the primary host's name.
  *
  *  Returns: the name of the host; NULL if there was an error.  The
@@ -1448,14 +1448,14 @@ gnet_inetaddr_gethostname(void)
 
 /**
  *  gnet_inetaddr_gethostaddr:
- * 
+ *
  *  Get the primary host's #GInetAddr.
  *
  *  Returns: the #GInetAddr of the host; NULL if there was an error.
  *  The caller is responsible for deleting the returned #GInetAddr.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_gethostaddr(void)
 {
   gchar* name;
@@ -1463,7 +1463,7 @@ gnet_inetaddr_gethostaddr(void)
 
   name = gnet_inetaddr_gethostname();
   if (name != NULL)
-    {  
+    {
       ia = gnet_inetaddr_new(name, 0);
       g_free(name);
     }
@@ -1487,7 +1487,7 @@ gnet_inetaddr_gethostaddr(void)
  *  Returns: INADDR_ANY #GInetAddr.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_new_any (void)
 {
   GInetAddr* ia;
@@ -1516,7 +1516,7 @@ gnet_inetaddr_new_any (void)
  *  find one or there was an error.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_autodetect_internet_interface (void)
 {
   GInetAddr* jm_addr;
@@ -1558,7 +1558,7 @@ gnet_inetaddr_autodetect_internet_interface (void)
  *  this check.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_get_interface_to (const GInetAddr* addr)
 {
   int sockfd;
@@ -1607,7 +1607,7 @@ gnet_inetaddr_get_interface_to (const GInetAddr* addr)
  *  such interface or the system does not support this check.
  *
  **/
-GInetAddr* 
+GInetAddr*
 gnet_inetaddr_get_internet_interface (void)
 {
   GInetAddr* iface = NULL;
@@ -1659,7 +1659,7 @@ gnet_inetaddr_get_internet_interface (void)
  *  The caller should delete the list and the addresses.
  *
  **/
-GList* 
+GList*
 gnet_inetaddr_list_interfaces (void)
 {
   GList* list = NULL;
@@ -1682,7 +1682,7 @@ gnet_inetaddr_list_interfaces (void)
   while(1)
     {
       buf = g_new0(gchar, len);
-      
+
       ifc.ifc_len = len;
       ifc.ifc_buf = buf;
       if (ioctl(sockfd, SIOCGIFCONF, &ifc) < 0)
@@ -1717,7 +1717,7 @@ gnet_inetaddr_list_interfaces (void)
       struct sockaddr addr;
       GInetAddr* ia;
 
-#ifdef HAVE_SOCKADDR_SA_LEN      
+#ifdef HAVE_SOCKADDR_SA_LEN
       ptr += sizeof(ifr->ifr_name) + ifr->ifr_addr.sa_len;
 #else
       ptr += sizeof(struct ifreq);
@@ -1731,7 +1731,7 @@ gnet_inetaddr_list_interfaces (void)
 
       /* Save the address - the next call will clobber it */
       memcpy(&addr, &ifr->ifr_addr, sizeof(addr));
-      
+
       /* Get the flags */
       ioctl(sockfd, SIOCGIFFLAGS, ifr);
 

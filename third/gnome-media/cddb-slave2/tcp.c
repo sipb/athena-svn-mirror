@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -42,8 +42,8 @@
  *
  **/
 GTcpSocketConnectAsyncID
-gnet_tcp_socket_connect_async (const gchar* hostname, gint port, 
-			       GTcpSocketConnectAsyncFunc func, 
+gnet_tcp_socket_connect_async (const gchar* hostname, gint port,
+			       GTcpSocketConnectAsyncFunc func,
 			       gpointer data)
 {
   GTcpSocketConnectState* state;
@@ -56,8 +56,8 @@ gnet_tcp_socket_connect_async (const gchar* hostname, gint port,
   state->func = func;
   state->data = data;
 
-  id = gnet_inetaddr_new_async(hostname, port,  
-			       gnet_tcp_socket_connect_inetaddr_cb, 
+  id = gnet_inetaddr_new_async(hostname, port,
+			       gnet_tcp_socket_connect_inetaddr_cb,
 			       state);
 
   /* Note that gnet_inetaddr_new_async can fail immediately and call
@@ -74,8 +74,8 @@ gnet_tcp_socket_connect_async (const gchar* hostname, gint port,
 
 
 void
-gnet_tcp_socket_connect_inetaddr_cb (GInetAddr* inetaddr, 
-				     GInetAddrAsyncStatus status, 
+gnet_tcp_socket_connect_inetaddr_cb (GInetAddr* inetaddr,
+				     GInetAddrAsyncStatus status,
 				     gpointer data)
 {
   GTcpSocketConnectState* state = (GTcpSocketConnectState*) data;
@@ -85,22 +85,22 @@ gnet_tcp_socket_connect_inetaddr_cb (GInetAddr* inetaddr,
       state->ia = inetaddr;
 
       state->inetaddr_id = NULL;
-      state->tcp_id = gnet_tcp_socket_new_async(inetaddr, 
-						gnet_tcp_socket_connect_tcp_cb, 
+      state->tcp_id = gnet_tcp_socket_new_async(inetaddr,
+						(GTcpSocketNewAsyncFunc)gnet_tcp_socket_connect_tcp_cb,
 						state);
       /* Note that this call may delete the state. */
     }
   else
     {
-      (*state->func)(NULL, NULL, GTCP_SOCKET_CONNECT_ASYNC_STATUS_INETADDR_ERROR, 
+      (*state->func)(NULL, NULL, GTCP_SOCKET_CONNECT_ASYNC_STATUS_INETADDR_ERROR,
 		     state->data);
       g_free(state);
     }
 }
 
-void 
-gnet_tcp_socket_connect_tcp_cb(GTcpSocket* socket, 
-			       GTcpSocketConnectAsyncStatus status, 
+void
+gnet_tcp_socket_connect_tcp_cb(GTcpSocket* socket,
+			       GTcpSocketConnectAsyncStatus status,
 			       gpointer data)
 {
   GTcpSocketConnectState* state = (GTcpSocketConnectState*) data;
@@ -119,7 +119,7 @@ gnet_tcp_socket_connect_tcp_cb(GTcpSocket* socket,
  *
  *  Cancel an asynchronous connection that was started with
  *  gnet_tcp_socket_connect_async().
- * 
+ *
  */
 void
 gnet_tcp_socket_connect_async_cancel(GTcpSocketConnectAsyncID id)
@@ -158,7 +158,7 @@ gnet_tcp_socket_connect_async_cancel(GTcpSocketConnectAsyncID id)
  *
  **/
 GTcpSocketNewAsyncID
-gnet_tcp_socket_new_async (const GInetAddr* addr, 
+gnet_tcp_socket_new_async (const GInetAddr* addr,
 			   GTcpSocketNewAsyncFunc func,
 			   gpointer data)
 {
@@ -231,7 +231,7 @@ gnet_tcp_socket_new_async (const GInetAddr* addr,
   if (socks_addr_save)
     addr = socks_addr_save;
 
-  /* Save address */ 
+  /* Save address */
   memcpy(&s->sa, &addr->sa, sizeof(s->sa));
   sa_in = (struct sockaddr_in*) &sa;
   sa_in->sin_family = AF_INET;
@@ -250,16 +250,16 @@ gnet_tcp_socket_new_async (const GInetAddr* addr,
   state->socks_addr = socks_addr;
   state->connect_watch = g_io_add_watch(GNET_SOCKET_IOCHANNEL_NEW(s->sockfd),
 					GNET_ANY_IO_CONDITION,
-					gnet_tcp_socket_new_async_cb, 
+					gnet_tcp_socket_new_async_cb,
 					state);
 
   return state;
 }
 
 
-gboolean 
-gnet_tcp_socket_new_async_cb (GIOChannel* iochannel, 
-			      GIOCondition condition, 
+gboolean
+gnet_tcp_socket_new_async_cb (GIOChannel* iochannel,
+			      GIOCondition condition,
 			      gpointer data)
 {
   GTcpSocketAsyncState* state = (GTcpSocketAsyncState*) data;
@@ -416,14 +416,14 @@ gnet_tcp_socket_unref(GTcpSocket* s)
  *  Returns: A #GIOChannel; NULL on failure.
  *
  **/
-GIOChannel* 
+GIOChannel*
 gnet_tcp_socket_get_iochannel(GTcpSocket* socket)
 {
   g_return_val_if_fail (socket != NULL, NULL);
 
   if (socket->iochannel == NULL)
     socket->iochannel = GNET_SOCKET_IOCHANNEL_NEW(socket->sockfd);
-  
+
   g_io_channel_ref (socket->iochannel);
 
   return socket->iochannel;

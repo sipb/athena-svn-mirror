@@ -1,9 +1,11 @@
-These are the GNOME media tools.
+These are the GNOME media tools for GNOME 2.7 (and beyond).
 
-gtcd/ 		- GNOME CD player, with CDDB support.
-cddbslave/	- Helper daemon for Tcd's CDDB support.
-gmix/ 		- GNOME audio mixer for OSS devices.
-vumeter/ 	- ESD volume level meter
-grecord/        - GNOME Sound recorder.
+gnome-cd/               - GNOME CD player, with CDDB support.
+cddb-slave2/            - Helper daemon for gnome-cd's CDDB support.
+gst-mixer/              - GNOME GStreamer-based audio mixer.
+vu-meter/               - ESD volume level meter.
+grecord/                - GNOME Sound Recorder.
+gstreamer-properties/   - GStreamer Properties Capplet.
+profiles/               - Audio Profile library.
 
-Depends on gnome-libs.
+Depends on gnome-libs, and GStreamer.

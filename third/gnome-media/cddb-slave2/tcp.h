@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -45,7 +45,7 @@ typedef struct _GTcpSocket GTcpSocket;
 
 /**
  *   GTcpSocketConnectAsyncID:
- * 
+ *
  *   ID of an asynchronous connection started with
  *   gnet_tcp_socket_connect_async().  The connection can be canceled
  *   by calling gnet_tcp_socket_connect_async_cancel() with the ID.
@@ -57,7 +57,7 @@ typedef gpointer GTcpSocketConnectAsyncID;
 
 /**
  *   GTcpSocketConnectAsyncStatus:
- * 
+ *
  *   Status for connecting via gnet_tcp_socket_connect_async(), passed
  *   by GTcpSocketConnectAsyncFunc.  More errors may be added in the
  *   future, so it's best to compare against
@@ -78,19 +78,19 @@ typedef enum {
  *   @ia: InetAddr of the TcpSocket
  *   @status: Status of the connection
  *   @data: User data
- *   
+ *
  *   Callback for gnet_tcp_socket_connect_async().
  *
  **/
-typedef void (*GTcpSocketConnectAsyncFunc)(GTcpSocket* socket, 
+typedef void (*GTcpSocketConnectAsyncFunc)(GTcpSocket* socket,
 					   GInetAddr* ia,
-					   GTcpSocketConnectAsyncStatus status, 
+					   GTcpSocketConnectAsyncStatus status,
 					   gpointer data);
 
 
 /**
  *   GTcpSocketNewAsyncID:
- * 
+ *
  *   ID of an asynchronous tcp socket creation started with
  *   gnet_tcp_socket_new_async().  The creation can be canceled by
  *   calling gnet_tcp_socket_new_async_cancel() with the ID.
@@ -102,7 +102,7 @@ typedef gpointer GTcpSocketNewAsyncID;
 
 /**
  *   GTcpSocketAsyncStatus:
- * 
+ *
  *   Status for connecting via gnet_tcp_socket_new_async(), passed by
  *   GTcpSocketNewAsyncFunc.  More errors may be added in the future,
  *   so it's best to compare against %GTCP_SOCKET_NEW_ASYNC_STATUS_OK.
@@ -120,12 +120,12 @@ typedef enum {
  *   @socket: Socket that was connecting
  *   @status: Status of the connection
  *   @data: User data
- *   
+ *
  *   Callback for gnet_tcp_socket_new_async().
  *
  **/
-typedef void (*GTcpSocketNewAsyncFunc)(GTcpSocket* socket, 
-				       GTcpSocketNewAsyncStatus status, 
+typedef void (*GTcpSocketNewAsyncFunc)(GTcpSocket* socket,
+				       GTcpSocketNewAsyncStatus status,
 				       gpointer data);
 
 
@@ -139,8 +139,8 @@ GTcpSocket* gnet_tcp_socket_connect (const gchar* hostname, gint port);
 
 /* Quick and easy asynchronous constructor */
 GTcpSocketConnectAsyncID
-gnet_tcp_socket_connect_async (const gchar* hostname, gint port, 
-			       GTcpSocketConnectAsyncFunc func, 
+gnet_tcp_socket_connect_async (const gchar* hostname, gint port,
+			       GTcpSocketConnectAsyncFunc func,
 			       gpointer data);
 
 /* Cancel quick and easy asynchronous constructor */
@@ -150,8 +150,8 @@ void gnet_tcp_socket_connect_async_cancel (GTcpSocketConnectAsyncID id);
 GTcpSocket* gnet_tcp_socket_new (const GInetAddr* addr);
 
 /* Asynchronous constructor */
-GTcpSocketNewAsyncID 
-gnet_tcp_socket_new_async (const GInetAddr* addr, 
+GTcpSocketNewAsyncID
+gnet_tcp_socket_new_async (const GInetAddr* addr,
 			   GTcpSocketNewAsyncFunc func,
 			   gpointer data);
 

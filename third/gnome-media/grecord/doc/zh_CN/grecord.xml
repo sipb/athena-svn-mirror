@@ -1,0 +1,361 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "Sound Recorder">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Apr 11, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="zh_cn">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>&app; 手册 V&manrevision;</title>
+
+    <copyright> 
+      <year>2002</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+    <publisher> 
+      <publishername> GNOME Documentation Project </publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>GNOME Documentation Team</surname> 
+	<affiliation> 
+	  <orgname>Sun Microsystems</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+    <revhistory>
+      <revision> 
+	<revnumber>&app; 手册 V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>录音机手册 V2.1</revnumber> 
+	<date>2002 年 6 月</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>录音机手册 V2.0</revnumber> 
+	<date>2002 年 5 月</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>本手册介绍 &app; &appversion; 版。
+    </releaseinfo>
+    <legalnotice> 
+      <title>反馈</title>
+      <para>要报告关于 &app; 应用程序或本手册的错误或提出建议，请遵循 <ulink url="ghelp:gnome-feedback" type="help">GNOME 反馈页</ulink>中的指导。 
+     </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>录音机</primary> 
+  </indexterm> 
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+
+  <sect1 id="grecord-introduction"> 
+    <title>简介</title>
+    <para><application>&app;</application> 应用程序使您可以记录和播放波形 (<filename>.wav</filename>) 声音文件。</para>
+  </sect1>
+
+  <sect1 id="grecord-getting-started">
+    <title>入门</title>
+
+    <para>可以通过以下方式启动 <application>&app;</application>：
+    </para>
+    <variablelist>
+    	<varlistentry>
+    		<term><guimenu>"应用程序"</guimenu>菜单</term>
+    		<listitem>
+    		<para>选择<menuchoice><guisubmenu>"声音和视频"</guisubmenu><guimenuitem>"录音机"</guimenuitem></menuchoice></para>
+    		</listitem>
+    	</varlistentry>
+    	<varlistentry>
+    		<term>命令行</term>
+    		<listitem>
+    		<para>键入 <command>gnome-sound-recorder</command>，然后按下<keycap>回车</keycap>键。</para>
+    		<para>		 
+    		</para>
+    		</listitem>
+    	</varlistentry>
+    </variablelist>
+
+    <para>在启动 <application>&app;</application> 之后，系统会显示下面的窗口。</para>
+
+    <!-- ==== Figure ==== -->
+      <figure id="grecord-fig"> 
+	<title>&app; 窗口</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject>
+	    <imagedata fileref="figures/grecord_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>显示 &app; 主窗口。包含菜单栏、工具栏、进度栏和状态栏。</phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+    <!-- ==== End of Figure ==== -->
+
+  </sect1>
+
+<!-- ================ Usage ================================ -->
+
+  <sect1 id="grecord-usage"> 
+    <title>用法</title>
+
+    <sect2 id="grecord-record">
+    	<title>启动新记录</title>
+    	<para>要启动一个新的记录会话，请执行以下步骤：</para>
+    	<orderedlist>
+    		<listitem><para>在工具栏上单击<guibutton>"新建"</guibutton>。</para></listitem>
+    		<listitem><para>要开始记录，请单击工具栏上的<guibutton>"记录"</guibutton>。</para></listitem>
+    		<listitem><para>要停止记录，请单击工具栏上的<guibutton>"停止"</guibutton>。</para></listitem>
+    		<listitem><para>要回放记录，请单击工具栏上的<guibutton>"播放"</guibutton>。</para></listitem>
+    		<listitem><para>要保存记录，请选择<menuchoice><guimenu>"文件"</guimenu><guimenuitem>"另存为"</guimenuitem></menuchoice>，然后为该声音文件键入一个名称。</para></listitem>		
+    	</orderedlist>
+    </sect2>
+ 
+    <sect2 id="grecord-play">
+    	<title>播放声音文件</title>
+    	<para>要播放声音文件，请选择<menuchoice><guimenu>"文件"</guimenu><guimenuitem>"打开"</guimenuitem></menuchoice>。 在<guilabel>"选择声音文件"</guilabel>对话框中，选择一个声音文件，然后单击<guibutton>"确定"</guibutton>。
+		<application>&app;</application> 会在进度栏的右侧以分钟和秒钟数显示文件的时长。要播放文件，请单击<guibutton>"播放"</guibutton>。 在播放声音文件时，进度指示器会沿着进度栏向右移动。</para>
+    </sect2>
+ 
+    <sect2 id="grecord-echo">
+    	<title>在声音文件中添加回音</title>
+    	<para>要在声音文件中添加回音，请打开该声音文件，然后选择<menuchoice><guimenu>"编辑"</guimenu><guisubmenu>"效果"</guisubmenu><guisubmenu>"回音"</guisubmenu><guimenuitem>"添加回音"</guimenuitem></menuchoice>。</para>
+    </sect2>
+    
+    
+    <sect2 id="grecord-undo">
+    	<title>取消对声音文件的更改</title>
+    	<para>要取消从上次保存该声音文件后对其所作的所有更改，请选择<menuchoice><guimenu>"编辑"</guimenu><guimenuitem>"全部取消"</guimenuitem></menuchoice>。</para>
+    </sect2>
+    
+  </sect1>
+
+<!-- ================ Preferences ================================ -->
+
+  <sect1 id="grecord-prefs"> 
+    <title>首选项</title>
+    <para>要配置 <application>&app;</application>，请选择<menuchoice><guimenu>"编辑"</guimenu><guimenuitem>"首选项"</guimenuitem></menuchoice>。
+	<guilabel>"&app; 首选项"</guilabel>对话框包含以下选项卡式部分：</para>
+	<itemizedlist>
+		<listitem><para><xref linkend="grecord-prefs-recording"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-playing"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-paths"/></para>
+		</listitem>
+		<listitem><para><xref linkend="grecord-prefs-sound"/></para>
+		</listitem>
+	</itemizedlist>
+	
+	<sect2 id="grecord-prefs-recording">
+	<title>记录</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>记录超时</guilabel> </term> 
+			<listitem>
+			<para>使用此旋转框指定 <application>&app;</application> 在用户没有交互操作多少分钟后停止记录。</para>
+			<para>默认值：2 分钟。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>超时后停止记录</guilabel> </term> 
+			<listitem>
+			<para>如果选择此选项，则 <application>&app;</application> 会在达到<guilabel>"记录超时"</guilabel>旋转框中指定的超时限制时停止记录操作。</para>
+			<para>默认值：选中。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>记录完成后打开保存对话框</guilabel> </term> 
+			<listitem>
+			<para>如果选择此选项，<application>&app;</application> 会在完成记录后自动打开<guilabel>"保存声音文件"</guilabel>对话框。</para>
+			<para>默认值：未选中。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>如果样例大小 (MB) 超过如下大小则显示警告消息</guilabel> </term> 
+			<listitem>
+			<para>如果选择此选项，当您记录的声音文件大小超过 100 MB 时，会显示一条警告消息。
+			使用此旋转框可以修改显示警告所需的文件大小。</para>
+			<para>默认值：选中，100 MB。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>如果样例大小 (MB) 超过如下大小则显示停止记录</guilabel> </term> 
+			<listitem>
+			<para>如果选择此选项，当声音文件的大小超过 200 MB 时，会停止记录操作。
+			使用此旋转框可以修改要停止记录所需的文件大小。</para>
+			<para>默认值：未选中，200 MB。</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-playing">
+	<title>播放</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>重复</guilabel> </term> 
+			<listitem>
+			<para>选择以下选项之一可以确定 <application>&app;</application> 播放声音文件的方式：</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>只播放一遍声音</guilabel></para>
+				<para>如果选择此选项，将只播放一遍声音文件。</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>始终重复</guilabel></para>
+				<para>如果选择此选项，系统会不停地播放该声音文件，直到您单击<guibutton>"停止"</guibutton>或者退出该应用程序为止。</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>次数</guilabel></para>
+				<para>如果选择此选项，系统会按此旋转框中指定的次数播放声音文件。
+				使用此旋转框可以修改 <application>&app;</application> 播放文件的次数。</para>
+				</listitem>
+				</itemizedlist>
+			<para>默认值： <guilabel>次数</guilabel>，2。</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>
+	
+	<sect2 id="grecord-prefs-paths">
+	<title>路径</title>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>sox 路径</guilabel> </term> 
+			<listitem>
+			<para>使用此字段指定 <application>sox</application> 应用程序的位置。
+			<application>&app;</application> 使用 <application>sox</application> 回放录音。要确定 <application>sox</application> 的位置，请在命令行键入 <command>which sox</command>。
+			要对该字段应用更改，请单击<guibutton>"应用"</guibutton>。</para>
+			<para>默认值：取决于您的操作系统。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>临时文件夹</guilabel> </term> 
+			<listitem>
+			<para>使用此字段指定当 <application>&app;</application> 记录文件时临时保存声音文件的目录。要对该字段应用更改，请单击<guibutton>"应用"</guibutton>。</para>
+			<para>默认值：取决于您的操作系统。</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>	
+	
+	<sect2 id="grecord-prefs-sound">
+	<title>声音</title>
+	<para>您在此选项卡式部分中选择的首选项只会应用于新创建的声音文件。</para>
+    	<variablelist>
+	 		<varlistentry> 
+	 		<term><guilabel>音频格式</guilabel> </term> 
+			<listitem>
+			<para>选择以下选项之一可以确定声音文件中每个取样的位数：</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>8 位 PCM</guilabel></para>
+				<para>如果选择此选项，系统会使用 8 位脉冲编码调制 (PCM) 保存声音文件。</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>16 位 PCM</guilabel></para>
+				<para>如果选择此选项，系统会使用 16 位 PCM 保存声音文件。</para>
+				</listitem>
+				</itemizedlist>
+			<para>默认值： <guilabel>8 位 PCM</guilabel>。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>取样率</guilabel> </term> 
+			<listitem>
+			<para>使用此字段指定每秒的取样数。</para>
+			<para>默认值：11025。</para>
+			</listitem>
+		  	</varlistentry>
+		  	<varlistentry> 
+	 		<term><guilabel>单声或立体声</guilabel> </term> 
+			<listitem>
+			<para>选择以下选项之一可以确定声音文件是单声道还是立体声：</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>单声</guilabel></para>
+				<para>如果选择此选项，系统会以单声道格式保存声音文件。</para>
+				</listitem>
+				<listitem>
+				<para><guilabel>立体声</guilabel></para>
+				<para>如果选择此选项，系统会以立体声格式保存声音文件。此格式会导致声音文件很大。</para>
+				</listitem>
+				</itemizedlist>
+			<para>默认值： <guilabel>立体声</guilabel>。</para>
+			</listitem>
+		  	</varlistentry>
+	</variablelist>
+	</sect2>		
+	
+
+  </sect1>
+
+</article>

@@ -1,10 +1,12 @@
-Maintainer: Iain Holmes <iain@ximian.com>
+Maintainers:
+Ronald Bultje <rbultje@ronald.bitfreak.net)
+Thomas Vander Stichele <thomas at apestaart dot org>
 -------------------------------------------------------------------------------
 Authors:
 Iain Holmes             <iain@ximian.com>               (gnome-cd, CDDBSlave2)
 Tim P. Gerla 		<timg@rrv.net>			(tcd, cddbslave)
-Jens Ch. Restemeier 	<jchrr@hrz.uni-bielefeld.de> 	(gmix)
 Gregory McLean 		<gregm@comstar.net>		(vumeter)
 Andreas Hyden           <a.hyden@cyberpoint.se>         (grecord)
 Seth Nickell            <snickell@stanford.edu>         (gnome-volume-control)
 Balamurali Viswanathan  <balamurali.viswanathan@wipro.com> (Solaris CD stuff)
+Ronald Bultje 		<rbultje@ronald.bitfreak.net>	(gst-mixer)

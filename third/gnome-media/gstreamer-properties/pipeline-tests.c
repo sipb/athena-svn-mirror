@@ -31,7 +31,6 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gst/gst.h>
-#include <gst/gstautoplug.h>
 #include <gst/gconf/gconf.h>
 
 #include "pipeline-tests.h"
@@ -82,11 +81,11 @@ build_test_pipeline(GSTPPipelineDescription * pipeline_desc)
   switch (pipeline_desc->type) {
     case PIPE_TYPE_AUDIOSINK:
     case PIPE_TYPE_VIDEOSINK:
-      full_pipeline_str = g_strdup_printf("{ %s ! spider ! %s }", test_pipeline_str, pipeline_desc->pipeline);
+      full_pipeline_str = g_strdup_printf("{ %s ! %s }", test_pipeline_str, pipeline_desc->pipeline);
       break;
     case PIPE_TYPE_AUDIOSRC:
     case PIPE_TYPE_VIDEOSRC:
-      full_pipeline_str = g_strdup_printf("{ %s ! spider ! %s }", pipeline_desc->pipeline, test_pipeline_str);
+      full_pipeline_str = g_strdup_printf("{ %s ! %s }", pipeline_desc->pipeline, test_pipeline_str);
       break;
   }
   if (full_pipeline_str) {
@@ -165,7 +164,7 @@ user_test_pipeline(GladeXML * interface_xml,
   s_clock = gst_bin_get_clock(GST_BIN(gst_test_pipeline));
   /* Show the dialog */
   if (dialog) {
-    gtk_window_present(GTK_WIDGET(dialog));
+    gtk_window_present(GTK_WINDOW(dialog));
     timeout_tag = gtk_timeout_add(50, user_test_pipeline_timeout, WID("test_pipeline_progress"));    
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_timeout_remove( timeout_tag );

@@ -294,7 +294,7 @@ cdrom_set_device (GnomeCDRom *cdrom,
 		  const char *device,
 		  GError    **error)
 {
-	GnomeCDRomStatus *status;
+	/*GnomeCDRomStatus *status;*/
 	GnomeCDRomPrivate *priv;
 
 	g_return_val_if_fail (cdrom != NULL, FALSE);
@@ -308,6 +308,8 @@ cdrom_set_device (GnomeCDRom *cdrom,
 	
 	g_free (priv->device);
 	priv->device = g_strdup (device);
+#if 0
+	// stop CD playback upon startup
 	if (gnome_cdrom_get_status (cdrom, &status, NULL) == TRUE) {
 		if (status->audio == GNOME_CDROM_AUDIO_PLAY) {
 			if (gnome_cdrom_stop (cdrom, error) == FALSE) {
@@ -315,10 +317,9 @@ cdrom_set_device (GnomeCDRom *cdrom,
 				return FALSE;
 			}
 		}
-
 		g_free (status);
 	}
-
+#endif
 
 	switch (cdrom->lifetime) {
 		case  GNOME_CDROM_DEVICE_STATIC :
@@ -603,7 +604,7 @@ void
 gnome_cdrom_status_changed (GnomeCDRom *cdrom,
 			    GnomeCDRomStatus *new_status)
 {
-	GnomeCDRomStatus *status_copy;
+	GnomeCDRomStatus *status_copy = NULL;
 
 	status_copy = gnome_cdrom_copy_status (new_status);
 	
@@ -765,7 +766,7 @@ not_ready_status_new (void)
 static gboolean
 timeout_update_cd (gpointer data)
 {
-	GError *error;
+	GError *error = NULL;
 	GnomeCDRom *cdrom = data;
 	GnomeCDRomStatus *status;
 	GnomeCDRomPrivate *priv;
@@ -801,6 +802,8 @@ timeout_update_cd (gpointer data)
 		gnome_cdrom_update_cd (cdrom);
 		if (priv->update != GNOME_CDROM_UPDATE_NEVER)
 			gnome_cdrom_status_changed (GNOME_CDROM (cdrom), priv->recent_status);
+
+		//g_free (status);
 
 	} else {
 		if (gnome_cdrom_status_equal (status, priv->recent_status)) {

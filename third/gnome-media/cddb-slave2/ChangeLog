@@ -1,3 +1,194 @@
+2004-05-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* HACKING:
+          add more hacking notes concerning the protocol used.
+	* cddb-slave.c: (do_goodbye_response), (do_open_response),
+	(do_hello_challenge), (do_hello_response), (do_protocol_challenge),
+	(do_protocol_response), (do_query_challenge), (do_query_response),
+	(do_read_challenge), (do_read_response), (do_goodbye_challenge),
+	(read_from_server), (open_cb), (impl_GNOME_Media_CDDBSlave2_query):
+	  - add a protocol stage so we can set protocol level 6 (UTF-8)
+	  - reorder challenge/response code so we can follow the flow
+          - notify slaves on each error as well
+	* cddb-slave2-query.c: (listener_event_cb):
+          - show error code on failure
+
+2004-05-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* GNOME_Media_CDDBSlave2.idl:
+          add a result for UNKNOWN ENTRY
+	* HACKING:
+          add some more hacking notes
+	* Makefile.am:
+          reorganize to include cddb-slave-private
+	* cddb-slave-private.c: (cs_set_debug), (cs_debug):
+	* cddb-slave-private.h:
+          debugging functions
+	* cddb-slave-client.c: (finalize),
+	(cddb_slave_client_add_listener),
+	(cddb_slave_client_remove_listener):
+          use debugging
+	* cddb-slave.c: (cddb_slave_notify_listeners),
+	(do_goodbye_response), (clear_entry_from_cache), (do_goodbye),
+	(do_read_response), (do_read), (do_query_response), (do_query),
+	(do_hello_response), (do_hello), (do_open_response),
+	(read_from_server), (open_cb), (cddb_send_cmd),
+	(cddb_entry_is_valid), (cddb_check_cache),
+	(impl_GNOME_Media_CDDBSlave2_query),
+	(impl_GNOME_Media_CDDBSlave2_save),
+	(impl_GNOME_Media_CDDBSlave2_getAllTracks), (finalize),
+	(cddb_slave_new_full):
+          use debugging everywhere
+          store result of lookup when clearing entry from the cache
+          so we can return the result for the next lookup for this id
+          bytes_writen -> bytes_written
+          notify listeners and unref slave even on failed lookups
+          only write to .cddb dir from .cddbslave entry if it existed
+	* cddb-slave.h:
+          add struct member to store the result lookup
+	* cddb-slave2-query.c: (display_result), (setup_cb), (query_cb),
+	(teardown_cb), (listener_event_cb), (main):
+          a test application so we can debug lookups more easily by
+          specyfing the cddb query command.
+	* main.c: (cddb_destroy_cb), (factory_fn), (cddbslave_init),
+	(main):
+          add debugging.  check return values.
+
+2004-05-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* Makefile.am:
+	* cddb-slave2-query.c: (listener_event_cb), (display_result),
+	(main):
+	  add a command-line sample program that performs CDDBSlave2 queries
+
+2004-05-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* cddb-slave.c: (cddb_check_cache):
+	  also check .cddb for entries as a fallback, and write them out
+	  immediately to our .cddbslave directory
+	  fixes #141985
+
+2004-05-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* cddb-slave.c: (cddb_entry_is_valid):
+	  make this function create a dummy entry if it didn't exist
+	* cddb-track-editor.c: (load_new_track_data),
+	  first use is_valid, so an entry exists.  Fixes crasher part of
+	  #105703
+
+2004-05-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* GNOME_Media_CDDBSlave2.idl:
+	* cddb-parser.c: (cddb_entry_parse_file):
+	* cddb-slave-client.c: (cddb_slave_client_is_valid):
+	* cddb-slave-client.h:
+	* cddb-slave.c: (clear_entry_from_cache), (cddb_entry_is_valid),
+	(impl_GNOME_Media_CDDBSlave2_query),
+	(impl_GNOME_Media_CDDBSlave2_save),
+	(impl_GNOME_Media_CDDBSlave2_isValid), (cddb_slave_class_init):
+	* cddb-slave.h:
+	* cddb-track-editor.c: (load_new_track_data), (sync_cddb_info):
+          add a boolean to entries to mark them as valid, which they become
+          either on a successful file/CDDB lookup or by a save from the editor.
+          As long as they're not valid, they don't get dummy information,
+          which used to get sent to the listeners, causing Unknown Artist
+          to be in the gnome-cd window title.
+          Part of fix to #114015
+
+2004-04-16  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	* cddb-slave-capplet.c (dialog_button_clicked_cb): 
+	s/wgoscustlookandfeel.xml/user-guide.xml.
+
+2004-02-20  Ted Gould      <ted@gould.cx>
+
+	* main.c: Patch from Gustavo Giraldez to fix #135002
+	which fixes a typo in the previous patch.
+
+2003-10-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* cddb-parser.c: (write_line): Fix leak.
+	* main.c: (factory_fn), (cddbslave_init): Same and also
+	fix a compiler warning.
+
+2003-10-08  Ted Gould      <ted@gould.cx>
+
+	* main.c: Patch from Kjartan Maraas to fix bug #123662
+	about some compiler warnings.
+
+2003-10-05  Ted Gould      <ted@gould.cx>
+
+	* cddb-slave-capplet.c:  Removing a signal connection
+	to an object that wasn't created.  Signal was being
+	attached twice.  Bug # 123390.  Reported and fixed
+	by Pav Lucistnik.
+
+2003-08-04  Ted Gould      <ted@gould.cx>
+
+	* cddb-slave-capplet.c:  More HIGification from
+	<chris@gnome-de.org> Christian - Manny Calavera -
+	Neumair for ui-review bug # 117573.
+
+2003-07-20  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* cddb-slave-capplet.c:  More HIGification from
+	<chris@gnome-de.org> Christian - Manny Calavera -
+	Neumair for ui-review bug # 117558.
+ 
+2003-07-19  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* cddb-slave-capplet.c:  More HIGification of the dialog.
+	Also fix mnemonic conflicts and add missing mnemonics and
+	window icon.
+	
+2003-07-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* cddb-slave-capplet.c:  Very minor HIGification.
+
+2003-07-16  Ted Gould      <ted@gould.cx>
+
+	* CDDB-Slave2-schemas.in, cddb-slave-capplet.c:
+	Adding a patch that was enclosed in bug 117262 and written by
+	chris@gnome-de.org.  The patch changes all instances of "info"
+	to "information" as discussed in 105211.
+
+2003-07-15  Ted Gould      <ted@gould.cx>
+
+	* CDDB-Slave2.schemas.in:
+	Adding patch that was enclosed in bug 105211.  Patch created by
+	chris@gnome-de.org.  It adds descriptions to some of the schema
+	entries.
+
+2003-07-09  Ted Gould      <ted@gould.cx>
+
+	* cddb-slave.c, cddb-slave-caplet.c, cddb-parser.c:
+	Added in patch from Kjartan Maraas below.  Fixes bug #116804
+	Also has an attempt to fix #90788
+
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* cddb-slave.desktop.in: Add StartupNotify support and X-Bugzilla
+	entries.
+
+2003-05-10  Kjartan Maraas  <kmaraas@gnome.org>
+ 
+ 	* cddb-slave-capplet.c (create_dialog): Plug some leaks.
+ 	
+2003-05-07 Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* cddb-track-editor.c,main.c: Start CDDBSlave2 per display
+	and start the factory only if it is not running, call 
+	bonobo_main in the instance which starts the factory
+	Fixes Bugs #104882 and #110234
+
+2003-03-28 Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* cddb-slave-capplet.c: Added Help button to the cddb capplet
+
+2003-03-15 Iain <iain@prettypeople.org>
+
+	* cddb-track-editor.c (make_track_editor_control): HIGify it
+
 2002-12-16  Christian Neumair  <chris@gnome-de.org>
 
 	* .cvsignore: Updated.

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -68,8 +68,8 @@
 #include <resolv.h>
 #include <netdb.h>
 
-#ifndef socklen_t
-#define socklen_t size_t
+#ifndef __socklen_t_defined
+typedef guint32 socklen_t;
 #endif
 
 #define GNET_CLOSE_SOCKET(SOCKFD) close(SOCKFD)
@@ -157,11 +157,11 @@ struct _GInetAddr
 /* **************************************** */
 /* Async functions			*/
 
-gboolean gnet_inetaddr_new_async_cb (GIOChannel* iochannel, 
-				     GIOCondition condition, 
+gboolean gnet_inetaddr_new_async_cb (GIOChannel* iochannel,
+				     GIOCondition condition,
 				     gpointer data);
 
-typedef struct _GInetAddrAsyncState 
+typedef struct _GInetAddrAsyncState
 {
   GInetAddr* ia;
   GInetAddrNewAsyncFunc func;
@@ -186,11 +186,11 @@ typedef struct _GInetAddrAsyncState
 
 
 
-gboolean gnet_inetaddr_get_name_async_cb (GIOChannel* iochannel, 
-					  GIOCondition condition, 
+gboolean gnet_inetaddr_get_name_async_cb (GIOChannel* iochannel,
+					  GIOCondition condition,
 					  gpointer data);
 
-typedef struct _GInetAddrReverseAsyncState 
+typedef struct _GInetAddrReverseAsyncState
 {
   GInetAddr* ia;
   GInetAddrGetNameAsyncFunc func;
@@ -210,11 +210,11 @@ typedef struct _GInetAddrReverseAsyncState
 } GInetAddrReverseAsyncState;
 
 
-gboolean gnet_tcp_socket_new_async_cb (GIOChannel* iochannel, 
-				       GIOCondition condition, 
+gboolean gnet_tcp_socket_new_async_cb (GIOChannel* iochannel,
+				       GIOCondition condition,
 				       gpointer data);
 
-typedef struct _GTcpSocketAsyncState 
+typedef struct _GTcpSocketAsyncState
 {
   GTcpSocket* socket;
   GTcpSocketNewAsyncFunc func;
@@ -234,7 +234,7 @@ Used for:
 -gnet_inetaddr_new_async
 -gnet_inetaddr_get_name_asymc
 */
-typedef struct _SocketWatchAsyncState 
+typedef struct _SocketWatchAsyncState
 {
 	GIOChannel *channel;
 	gint fd;
@@ -245,15 +245,15 @@ typedef struct _SocketWatchAsyncState
 } SocketWatchAsyncState;
 #endif
 
-void gnet_tcp_socket_connect_inetaddr_cb(GInetAddr* inetaddr, 
-					 GInetAddrAsyncStatus status, 
+void gnet_tcp_socket_connect_inetaddr_cb(GInetAddr* inetaddr,
+					 GInetAddrAsyncStatus status,
 					 gpointer data);
 
-void gnet_tcp_socket_connect_tcp_cb(GTcpSocket* socket, 
-				    GTcpSocketConnectAsyncStatus status, 
+void gnet_tcp_socket_connect_tcp_cb(GTcpSocket* socket,
+				    GTcpSocketConnectAsyncStatus status,
 				    gpointer data);
 
-typedef struct _GTcpSocketConnectState 
+typedef struct _GTcpSocketConnectState
 {
   GInetAddr* ia;
   GTcpSocketConnectAsyncFunc func;
@@ -271,14 +271,14 @@ typedef struct _GTcpSocketConnectState
 #ifdef GNET_WIN32
 
 extern WNDCLASSEX gnetWndClass;
-extern HWND  gnet_hWnd; 
+extern HWND  gnet_hWnd;
 extern guint gnet_io_watch_ID;
 extern GIOChannel *gnet_iochannel;
-	
+
 extern GHashTable *gnet_hash;
-extern HANDLE gnet_Mutex; 
+extern HANDLE gnet_Mutex;
 extern HANDLE gnet_hostent_Mutex;
-	
+
 #define IA_NEW_MSG 100		/* gnet_inetaddr_new_async */
 #define GET_NAME_MSG 101	/* gnet_inetaddr_get_name_asymc */
 

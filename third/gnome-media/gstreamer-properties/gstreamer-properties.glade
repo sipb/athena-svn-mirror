@@ -2,30 +2,32 @@
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
+<requires lib="gnome"/>
 
 <widget class="GtkDialog" id="gst_properties_dialog">
+  <property name="border_width">5</property>
   <property name="visible">True</property>
-  <property name="title" translatable="yes">GStreamer Properties</property>
+  <property name="title" translatable="yes">GStreamer Preferences</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="resizable">True</property>
+  <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">False</property>
 
   <child internal-child="vbox">
-    <widget class="GtkVBox" id="dialog-vbox1">
+    <widget class="GtkVBox" id="gst_properties_vbox">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
-      <property name="spacing">0</property>
+      <property name="spacing">2</property>
 
       <child internal-child="action_area">
-	<widget class="GtkHButtonBox" id="dialog-action_area1">
+	<widget class="GtkHButtonBox" id="gst_properties_action_area">
 	  <property name="visible">True</property>
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkButton" id="helpbutton1">
+	    <widget class="GtkButton" id="gst_properties_help_button">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -37,10 +39,9 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="closebutton1">
+	    <widget class="GtkButton" id="gst_properties_close_button">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
-	      <property name="has_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-close</property>
 	      <property name="use_stock">True</property>
@@ -58,66 +59,162 @@
       </child>
 
       <child>
-	<widget class="GtkNotebook" id="notebook1">
+	<widget class="GtkNotebook" id="gst_properties_content_notebook">
+	  <property name="border_width">5</property>
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
 	  <property name="show_tabs">True</property>
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
-	  <property name="tab_hborder">2</property>
-	  <property name="tab_vborder">2</property>
 	  <property name="enable_popup">False</property>
 
 	  <child>
-	    <widget class="GtkVBox" id="vbox2">
+	    <widget class="GtkVBox" id="audio_vbox">
+	      <property name="border_width">12</property>
 	      <property name="visible">True</property>
 	      <property name="homogeneous">False</property>
-	      <property name="spacing">0</property>
+	      <property name="spacing">18</property>
 
 	      <child>
-		<widget class="GtkFrame" id="frame1">
-		  <property name="border_width">3</property>
+		<widget class="GtkTable" id="audiosink_table">
 		  <property name="visible">True</property>
-		  <property name="label_xalign">0</property>
-		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="n_rows">2</property>
+		  <property name="n_columns">2</property>
+		  <property name="homogeneous">False</property>
+		  <property name="row_spacing">6</property>
+		  <property name="column_spacing">0</property>
 
 		  <child>
-		    <widget class="GtkTable" id="table1">
+		    <widget class="GtkLabel" id="audiosink_label">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">&lt;b&gt;Default Sink&lt;/b&gt;</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">True</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="audiosink_spacer">
+		      <property name="width_request">18</property>
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes"></property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">1</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkTable" id="audiosink_inner_table">
 		      <property name="border_width">3</property>
 		      <property name="visible">True</property>
 		      <property name="n_rows">2</property>
 		      <property name="n_columns">2</property>
 		      <property name="homogeneous">False</property>
-		      <property name="row_spacing">2</property>
-		      <property name="column_spacing">2</property>
+		      <property name="row_spacing">6</property>
+		      <property name="column_spacing">12</property>
+
+		      <child>
+			<widget class="GtkLabel" id="audiosink_output_label">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">_Output:</property>
+			  <property name="use_underline">True</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">audiosink_optionmenu</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
 
 		      <child>
 			<widget class="GtkOptionMenu" id="audiosink_optionmenu">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="history">-1</property>
-
-			  <child>
-			    <widget class="GtkMenu" id="menu1">
-			    </widget>
-			  </child>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
 			  <property name="right_attach">2</property>
 			  <property name="top_attach">0</property>
 			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
 		      </child>
 
 		      <child>
-			<widget class="GtkHBox" id="hbox4">
+			<widget class="GtkLabel" id="audiosink_pipeline_label">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">_Pipeline:</property>
+			  <property name="use_underline">True</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">audiosink_pipeline_entry</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">1</property>
+			  <property name="bottom_attach">2</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkHBox" id="audiosink_pipeline_hbox">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
-			  <property name="spacing">2</property>
+			  <property name="spacing">6</property>
 
 			  <child>
 			    <widget class="GtkEntry" id="audiosink_pipeline_entry">
@@ -145,7 +242,7 @@
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 
 			      <child>
-				<widget class="GtkAlignment" id="alignment1">
+				<widget class="GtkAlignment" id="audiosink_test_button_alignment">
 				  <property name="visible">True</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
@@ -153,13 +250,13 @@
 				  <property name="yscale">0</property>
 
 				  <child>
-				    <widget class="GtkHBox" id="hbox2">
+				    <widget class="GtkHBox" id="audiosink_test_button_hbox">
 				      <property name="visible">True</property>
 				      <property name="homogeneous">False</property>
 				      <property name="spacing">2</property>
 
 				      <child>
-					<widget class="GtkImage" id="image1">
+					<widget class="GtkImage" id="audiosink_test_button_image">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-apply</property>
 					  <property name="icon_size">4</property>
@@ -176,9 +273,9 @@
 				      </child>
 
 				      <child>
-					<widget class="GtkLabel" id="label8">
+					<widget class="GtkLabel" id="audiosink_test_button_label">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Test...</property>
+					  <property name="label" translatable="yes">_Test</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -216,121 +313,112 @@
 			  <property name="y_options">fill</property>
 			</packing>
 		      </child>
-
-		      <child>
-			<widget class="GtkLabel" id="label6">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Audio _Output:</property>
-			  <property name="use_underline">True</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			  <property name="mnemonic_widget">audiosink_optionmenu</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">0</property>
-			  <property name="right_attach">1</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkLabel" id="label7">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Pipeline:</property>
-			  <property name="use_underline">False</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">0</property>
-			  <property name="right_attach">1</property>
-			  <property name="top_attach">1</property>
-			  <property name="bottom_attach">2</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkLabel" id="label3">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Default Sink</property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
 		    </widget>
 		    <packing>
-		      <property name="type">label_item</property>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
 		    </packing>
 		  </child>
 		</widget>
 		<packing>
-		  <property name="padding">2</property>
+		  <property name="padding">0</property>
 		  <property name="expand">False</property>
 		  <property name="fill">True</property>
 		</packing>
 	      </child>
 
 	      <child>
-		<widget class="GtkFrame" id="frame2">
-		  <property name="border_width">3</property>
+		<widget class="GtkTable" id="audiosrc_table">
 		  <property name="visible">True</property>
-		  <property name="label_xalign">0</property>
-		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="n_rows">2</property>
+		  <property name="n_columns">2</property>
+		  <property name="homogeneous">False</property>
+		  <property name="row_spacing">6</property>
+		  <property name="column_spacing">0</property>
 
 		  <child>
-		    <widget class="GtkTable" id="table2">
+		    <widget class="GtkLabel" id="audiosrc_label">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">&lt;b&gt;Default Source&lt;/b&gt;</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">True</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="audiosrc_spacer">
+		      <property name="width_request">18</property>
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes"></property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">1</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkTable" id="audiosrc_inner_table">
 		      <property name="border_width">3</property>
 		      <property name="visible">True</property>
 		      <property name="n_rows">2</property>
 		      <property name="n_columns">2</property>
 		      <property name="homogeneous">False</property>
-		      <property name="row_spacing">2</property>
-		      <property name="column_spacing">2</property>
+		      <property name="row_spacing">6</property>
+		      <property name="column_spacing">12</property>
 
 		      <child>
-			<widget class="GtkLabel" id="label9">
+			<widget class="GtkLabel" id="audiosrc_input_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Pipeline:</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">_Input:</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
 			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
+			  <property name="xalign">0</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">audiosrc_optionmenu</property>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
 			  <property name="right_attach">1</property>
-			  <property name="top_attach">1</property>
-			  <property name="bottom_attach">2</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
 			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
@@ -347,15 +435,41 @@
 			  <property name="right_attach">2</property>
 			  <property name="top_attach">0</property>
 			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
 		      </child>
 
 		      <child>
-			<widget class="GtkHBox" id="hbox5">
+			<widget class="GtkLabel" id="audiosrc_pipeline_label">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Pipe_line:</property>
+			  <property name="use_underline">True</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">audiosrc_pipeline_entry</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">1</property>
+			  <property name="bottom_attach">2</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkHBox" id="audiosrc_pipeline_hbox">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
-			  <property name="spacing">2</property>
+			  <property name="spacing">6</property>
 
 			  <child>
 			    <widget class="GtkEntry" id="audiosrc_pipeline_entry">
@@ -383,7 +497,7 @@
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 
 			      <child>
-				<widget class="GtkAlignment" id="alignment2">
+				<widget class="GtkAlignment" id="audiosrc_test_button_alignment">
 				  <property name="visible">True</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
@@ -391,13 +505,13 @@
 				  <property name="yscale">0</property>
 
 				  <child>
-				    <widget class="GtkHBox" id="hbox6">
+				    <widget class="GtkHBox" id="audiosrc_test_button_hbox">
 				      <property name="visible">True</property>
 				      <property name="homogeneous">False</property>
 				      <property name="spacing">2</property>
 
 				      <child>
-					<widget class="GtkImage" id="image2">
+					<widget class="GtkImage" id="audiosrc_test_button_image">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-apply</property>
 					  <property name="icon_size">4</property>
@@ -414,9 +528,9 @@
 				      </child>
 
 				      <child>
-					<widget class="GtkLabel" id="label10">
+					<widget class="GtkLabel" id="audiosrc_test_button_label">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Test...</property>
+					  <property name="label" translatable="yes">Te_st</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -454,55 +568,19 @@
 			  <property name="y_options">fill</property>
 			</packing>
 		      </child>
-
-		      <child>
-			<widget class="GtkLabel" id="label11">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Audio _Input:</property>
-			  <property name="use_underline">True</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			  <property name="mnemonic_widget">audiosrc_optionmenu</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">0</property>
-			  <property name="right_attach">1</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkLabel" id="label4">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Default Source</property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
 		    </widget>
 		    <packing>
-		      <property name="type">label_item</property>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
 		    </packing>
 		  </child>
 		</widget>
 		<packing>
-		  <property name="padding">2</property>
+		  <property name="padding">0</property>
 		  <property name="expand">False</property>
 		  <property name="fill">True</property>
 		</packing>
@@ -515,7 +593,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label1">
+	    <widget class="GtkLabel" id="audio_label">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Audio</property>
 	      <property name="use_underline">False</property>
@@ -534,48 +612,100 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkVBox" id="vbox3">
+	    <widget class="GtkVBox" id="video_vbox">
+	      <property name="border_width">12</property>
 	      <property name="visible">True</property>
 	      <property name="homogeneous">False</property>
-	      <property name="spacing">0</property>
+	      <property name="spacing">18</property>
 
 	      <child>
-		<widget class="GtkFrame" id="frame3">
-		  <property name="border_width">3</property>
+		<widget class="GtkTable" id="videosink_table">
 		  <property name="visible">True</property>
-		  <property name="label_xalign">0</property>
-		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="n_rows">2</property>
+		  <property name="n_columns">2</property>
+		  <property name="homogeneous">False</property>
+		  <property name="row_spacing">6</property>
+		  <property name="column_spacing">0</property>
 
 		  <child>
-		    <widget class="GtkTable" id="table3">
+		    <widget class="GtkLabel" id="videosink_label">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">&lt;b&gt;Default Sink&lt;/b&gt;</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">True</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="videosink_spacer">
+		      <property name="width_request">18</property>
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes"></property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">1</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkTable" id="videosink_inner_table">
 		      <property name="border_width">3</property>
 		      <property name="visible">True</property>
 		      <property name="n_rows">2</property>
 		      <property name="n_columns">2</property>
 		      <property name="homogeneous">False</property>
-		      <property name="row_spacing">2</property>
-		      <property name="column_spacing">2</property>
+		      <property name="row_spacing">6</property>
+		      <property name="column_spacing">12</property>
 
 		      <child>
-			<widget class="GtkLabel" id="label12">
+			<widget class="GtkLabel" id="videosink_output_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Pipeline:</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">_Output:</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
 			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
+			  <property name="xalign">0</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">audiosink_optionmenu</property>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
 			  <property name="right_attach">1</property>
-			  <property name="top_attach">1</property>
-			  <property name="bottom_attach">2</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
 			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
@@ -592,15 +722,41 @@
 			  <property name="right_attach">2</property>
 			  <property name="top_attach">0</property>
 			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
 		      </child>
 
 		      <child>
-			<widget class="GtkHBox" id="hbox7">
+			<widget class="GtkLabel" id="videosink_pipeline_label">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">_Pipeline:</property>
+			  <property name="use_underline">True</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">videosink_pipeline_entry</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">1</property>
+			  <property name="bottom_attach">2</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkHBox" id="videosink_pipeline_hbox">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
-			  <property name="spacing">2</property>
+			  <property name="spacing">6</property>
 
 			  <child>
 			    <widget class="GtkEntry" id="videosink_pipeline_entry">
@@ -628,7 +784,7 @@
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 
 			      <child>
-				<widget class="GtkAlignment" id="alignment5">
+				<widget class="GtkAlignment" id="videosink_test_button_alignment">
 				  <property name="visible">True</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
@@ -636,13 +792,13 @@
 				  <property name="yscale">0</property>
 
 				  <child>
-				    <widget class="GtkHBox" id="hbox11">
+				    <widget class="GtkHBox" id="videosink_test_button_hbox">
 				      <property name="visible">True</property>
 				      <property name="homogeneous">False</property>
 				      <property name="spacing">2</property>
 
 				      <child>
-					<widget class="GtkImage" id="image5">
+					<widget class="GtkImage" id="videosink_test_button_image">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-apply</property>
 					  <property name="icon_size">4</property>
@@ -659,9 +815,9 @@
 				      </child>
 
 				      <child>
-					<widget class="GtkLabel" id="label20">
+					<widget class="GtkLabel" id="videosink_test_button_label">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Test...</property>
+					  <property name="label" translatable="yes">_Test</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -699,97 +855,112 @@
 			  <property name="y_options">fill</property>
 			</packing>
 		      </child>
-
-		      <child>
-			<widget class="GtkLabel" id="label14">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Video _Output:</property>
-			  <property name="use_underline">True</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			  <property name="mnemonic_widget">audiosink_optionmenu</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">0</property>
-			  <property name="right_attach">1</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkLabel" id="label15">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Default Sink</property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
 		    </widget>
 		    <packing>
-		      <property name="type">label_item</property>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
 		    </packing>
 		  </child>
 		</widget>
 		<packing>
-		  <property name="padding">2</property>
+		  <property name="padding">0</property>
 		  <property name="expand">False</property>
 		  <property name="fill">True</property>
 		</packing>
 	      </child>
 
 	      <child>
-		<widget class="GtkFrame" id="frame4">
-		  <property name="border_width">3</property>
+		<widget class="GtkTable" id="videosrc_table">
 		  <property name="visible">True</property>
-		  <property name="label_xalign">0</property>
-		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="n_rows">2</property>
+		  <property name="n_columns">2</property>
+		  <property name="homogeneous">False</property>
+		  <property name="row_spacing">6</property>
+		  <property name="column_spacing">0</property>
 
 		  <child>
-		    <widget class="GtkTable" id="table4">
+		    <widget class="GtkLabel" id="videosrc_label">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">&lt;b&gt;Default Source&lt;/b&gt;</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">True</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="videosrc_spacer">
+		      <property name="width_request">18</property>
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes"></property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">0</property>
+		      <property name="right_attach">1</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkTable" id="videosrc_inner_table">
 		      <property name="border_width">3</property>
 		      <property name="visible">True</property>
 		      <property name="n_rows">2</property>
 		      <property name="n_columns">2</property>
 		      <property name="homogeneous">False</property>
-		      <property name="row_spacing">2</property>
-		      <property name="column_spacing">2</property>
+		      <property name="row_spacing">6</property>
+		      <property name="column_spacing">12</property>
 
 		      <child>
-			<widget class="GtkLabel" id="label16">
+			<widget class="GtkLabel" id="videosrc_input_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Pipeline:</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">_Input:</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
 			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
+			  <property name="xalign">0</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">audiosrc_optionmenu</property>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
 			  <property name="right_attach">1</property>
-			  <property name="top_attach">1</property>
-			  <property name="bottom_attach">2</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
 			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
@@ -806,15 +977,41 @@
 			  <property name="right_attach">2</property>
 			  <property name="top_attach">0</property>
 			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
 		      </child>
 
 		      <child>
-			<widget class="GtkHBox" id="hbox9">
+			<widget class="GtkLabel" id="videosrc_pipeline_label">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Pipe_line:</property>
+			  <property name="use_underline">True</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">videosrc_pipeline_entry</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">1</property>
+			  <property name="bottom_attach">2</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkHBox" id="videosrc_pipeline_hbox">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
-			  <property name="spacing">2</property>
+			  <property name="spacing">6</property>
 
 			  <child>
 			    <widget class="GtkEntry" id="videosrc_pipeline_entry">
@@ -842,7 +1039,7 @@
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 
 			      <child>
-				<widget class="GtkAlignment" id="alignment4">
+				<widget class="GtkAlignment" id="videosrc_test_button_alignment">
 				  <property name="visible">True</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
@@ -850,13 +1047,13 @@
 				  <property name="yscale">0</property>
 
 				  <child>
-				    <widget class="GtkHBox" id="hbox10">
+				    <widget class="GtkHBox" id="videosrc_test_button_hbox">
 				      <property name="visible">True</property>
 				      <property name="homogeneous">False</property>
 				      <property name="spacing">2</property>
 
 				      <child>
-					<widget class="GtkImage" id="image4">
+					<widget class="GtkImage" id="videosrc_test_button_image">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-apply</property>
 					  <property name="icon_size">4</property>
@@ -873,9 +1070,9 @@
 				      </child>
 
 				      <child>
-					<widget class="GtkLabel" id="label17">
+					<widget class="GtkLabel" id="videosrc_test_button_label">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Test...</property>
+					  <property name="label" translatable="yes">Te_st</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -913,55 +1110,19 @@
 			  <property name="y_options">fill</property>
 			</packing>
 		      </child>
-
-		      <child>
-			<widget class="GtkLabel" id="label18">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Video _Input:</property>
-			  <property name="use_underline">True</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">1</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			  <property name="mnemonic_widget">audiosrc_optionmenu</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">0</property>
-			  <property name="right_attach">1</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkLabel" id="label19">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Default Source</property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
 		    </widget>
 		    <packing>
-		      <property name="type">label_item</property>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
 		    </packing>
 		  </child>
 		</widget>
 		<packing>
-		  <property name="padding">2</property>
+		  <property name="padding">0</property>
 		  <property name="expand">False</property>
 		  <property name="fill">True</property>
 		</packing>
@@ -974,7 +1135,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label2">
+	    <widget class="GtkLabel" id="video_label">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Video</property>
 	      <property name="use_underline">False</property>
@@ -1003,29 +1164,30 @@
 </widget>
 
 <widget class="GtkDialog" id="test_pipeline">
+  <property name="border_width">5</property>
   <property name="can_default">True</property>
   <property name="can_focus">True</property>
   <property name="title" translatable="yes">Testing Pipeline</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="resizable">True</property>
+  <property name="resizable">False</property>
   <property name="destroy_with_parent">True</property>
-  <property name="has_separator">True</property>
+  <property name="has_separator">False</property>
 
   <child internal-child="vbox">
-    <widget class="GtkVBox" id="dialog-vbox2">
+    <widget class="GtkVBox" id="test_pipeline_vbox">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
-      <property name="spacing">0</property>
+      <property name="spacing">2</property>
 
       <child internal-child="action_area">
-	<widget class="GtkHButtonBox" id="dialog-action_area2">
+	<widget class="GtkHButtonBox" id="test_pipeline_action_area">
 	  <property name="visible">True</property>
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkButton" id="okbutton1">
+	    <widget class="GtkButton" id="test_pipeline_ok_button">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -1045,13 +1207,14 @@
       </child>
 
       <child>
-	<widget class="GtkVBox" id="vbox4">
+	<widget class="GtkVBox" id="test_pipeline_content_vbox">
+	  <property name="border_width">5</property>
 	  <property name="visible">True</property>
 	  <property name="homogeneous">False</property>
-	  <property name="spacing">0</property>
+	  <property name="spacing">6</property>
 
 	  <child>
-	    <widget class="GtkLabel" id="label21">
+	    <widget class="GtkLabel" id="test_pipeline_testing_label">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">&lt;span weight=&quot;bold&quot; size=&quot;x-large&quot;&gt;Testing...&lt;/span&gt;</property>
 	      <property name="use_underline">False</property>
@@ -1059,13 +1222,13 @@
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">0.5</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
 	    </widget>
 	    <packing>
-	      <property name="padding">5</property>
+	      <property name="padding">0</property>
 	      <property name="expand">False</property>
 	      <property name="fill">False</property>
 	    </packing>
@@ -1079,28 +1242,28 @@
 	      <property name="pulse_step">0.05</property>
 	    </widget>
 	    <packing>
-	      <property name="padding">2</property>
+	      <property name="padding">0</property>
 	      <property name="expand">False</property>
 	      <property name="fill">False</property>
 	    </packing>
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label22">
+	    <widget class="GtkLabel" id="test_pipeline_desc_label">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Click Ok to finish</property>
+	      <property name="label" translatable="yes">Click Ok to finish.</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">0.5</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
 	    </widget>
 	    <packing>
-	      <property name="padding">3</property>
+	      <property name="padding">0</property>
 	      <property name="expand">False</property>
 	      <property name="fill">False</property>
 	    </packing>

@@ -24,6 +24,7 @@
 #include "access/factory.h"
 
 #define DEFAULT_THEME "lcd"
+#define MAX_TRACKNAME_LENGTH 30
 
 /* Debugging? */
 gboolean debug_mode = FALSE;
@@ -32,6 +33,9 @@ static char *cd_option_device = NULL;
 static gboolean cd_option_unique = FALSE;
 static gboolean cd_option_play = FALSE;
 
+/* if env var GNOME_CD_DEBUG is set,
+ * g_warning the given message, and if there was an error, the error message
+ */
 void
 gcd_warning (const char *message,
 	     GError *error)
@@ -43,21 +47,59 @@ gcd_warning (const char *message,
 	g_warning (message, error ? error->message : "(None)");
 }
 
+/* if env var GNOME_CD_DEBUG is set, g_print the given message */
+void
+gcd_debug (const gchar *format,
+           ...)
+{
+	va_list args;
+	gchar *string;
+
+	if (debug_mode == FALSE) {
+		return;
+	}
+	va_start (args, format);
+	string = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	g_print ("DEBUG: gnome-cd: %s\n", string);
+	g_free (string);
+}
+
+/*
+ * Sets the window title based on the passed artist and track name.
+ * If artist and track is NULL, then "CD Player" is displayed.
+ * If either one is NULL, display the other.
+ * If neither are NULL, display "(artist) - (title)"
+ *
+ * FIXME: it might be nice to change this function so that it takes
+ * artist, track, album, status, so we can decide better what to display.
+ * Right now, sometimes this is called with the disc title instead of
+ * the track title */
 void
 gnome_cd_set_window_title (GnomeCD *gcd,
 			   const char *artist,
 			   const char *track)
 {
 	char *title;
+	const char *old_title;
 
-	if (artist == NULL ||
-	    track == NULL) {
+	if (artist == NULL && track == NULL) {
 		title = g_strdup (_("CD Player"));
+	} else if (artist == NULL) {
+		title = g_strdup (track);
+	} else if (track == NULL) {
+		title = g_strdup (artist);
 	} else {
-		title = g_strconcat (track, " - ", artist, NULL);
+		title = g_strconcat (artist, " - ", track, NULL);
 	}
+	/*
+	 * Call gtk_window_set_title only if the title has changed
+	 */
+	old_title = gtk_window_get_title (GTK_WINDOW (gcd->window));
+	if (!old_title || strcmp (title, old_title))
+		gtk_window_set_title (GTK_WINDOW (gcd->window), title);
 
-	gtk_window_set_title (GTK_WINDOW (gcd->window), title);
 	g_free (title);
 }
 
@@ -120,21 +162,38 @@ gnome_cd_build_track_list_menu (GnomeCD *gcd)
 	if (gcd->disc_info != NULL &&
 	    gcd->disc_info->track_info) {
 		int i;
+		gchar *tmp;
 		for (i = 0; i < gcd->disc_info->ntracks; i++) {
 			char *title;
 			CDDBSlaveClientTrackInfo *info;
 
 			info = gcd->disc_info->track_info[i];
+			/* If statement 'returns' item, which is a menu item
+			   with all the info on the track that we have.  It will
+			   also truncate the name if it's too long. */
 			if (info == NULL) {
 				title = g_strdup_printf ("%d - %s", i + 1,
 							 _("Unknown track"));
+
+				item = gtk_menu_item_new_with_label (title);
+				g_free (title);
 			} else {
-				title = g_strdup_printf ("%d - %s", i + 1,
-							 info->name);
+				if (strlen(info->name) > MAX_TRACKNAME_LENGTH) {
+					tmp = g_strndup (info->name, 
+							 MAX_TRACKNAME_LENGTH);
+					title = g_strdup_printf ("%d - %s...", 
+								 i + 1, tmp);
+					g_free (tmp);
+				} else {
+					title = g_strdup_printf ("%d - %s ", 
+								 i + 1, info->name);
+				}
+
+				item = gtk_menu_item_new_with_label (title);
+				gtk_tooltips_set_tip (gcd->tooltips, item, info->name, NULL);
+				g_free (title);
 			}
 			
-			item = gtk_menu_item_new_with_label (title);
-			g_free (title);
 			gtk_widget_show (item);
 
 			gtk_menu_shell_append (GTK_MENU_SHELL(menu), item);
@@ -204,23 +263,6 @@ make_button_from_widget (GnomeCD *gcd,
 }
 
 static GtkWidget *
-make_button_from_pixbuf (GnomeCD *gcd,
-			 GdkPixbuf *pixbuf,
-			 GCallback func,
-			 const char *tooltip,
-			 const char *shortname)
-{
-	GtkWidget *pixmap;
-
-	g_return_val_if_fail (gcd != NULL, NULL);
-	g_return_val_if_fail (pixbuf != NULL, NULL);
-		
-	pixmap = gtk_image_new_from_pixbuf (pixbuf);
-
-	return make_button_from_widget (gcd, pixmap, func, tooltip, shortname);
-}
-
-static GtkWidget *
 make_button_from_stock (GnomeCD *gcd,
 			const char *stock,
 			GCallback func,
@@ -242,7 +284,10 @@ pixbuf_from_file (const char *filename)
 
 	fullname = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, 
                    filename, TRUE, NULL);
-	g_return_val_if_fail (fullname != NULL, NULL);
+	if (fullname == NULL) {
+		/* If the elegant way doesn't work, try and brute force it */
+		fullname = g_strconcat(GNOME_ICONDIR, "/", filename, NULL);
+	}
 
 	pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
 	g_free (fullname);
@@ -256,28 +301,12 @@ window_destroy_cb (GtkWidget *window,
 {
 	GnomeCD *gcd = data;
 
+	/* Make sure we stop playing the cdrom first */
+	gnome_cdrom_stop(gcd->cdrom, NULL);
+
 	/* Before killing the cdrom object, do the shutdown on it */
-	switch (gcd->preferences->stop) {
-	case GNOME_CD_PREFERENCES_STOP_NOTHING:
-		break;
-
-	case GNOME_CD_PREFERENCES_STOP_STOP:
-		gnome_cdrom_stop (gcd->cdrom, NULL);
-		break;
-
-	case GNOME_CD_PREFERENCES_STOP_OPEN:
+	if (gcd->preferences->stop_eject) {
 		gnome_cdrom_eject (gcd->cdrom, NULL);
-		break;
-		
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	case GNOME_CD_PREFERENCES_STOP_CLOSE:
-		gnome_cdrom_close_tray (gcd->cdrom, NULL);
-		break;
-#endif
-
-	default:
-		g_assert_not_reached ();
-		break;
 	}
 
 	/* Unref the cddb slave */
@@ -387,6 +416,17 @@ show_error (GtkWidget	*dialog,
 	}
 }
 
+static void
+tray_object_destroyed (GnomeCD *gcd)
+{
+	/* FIXME: gcd->tray should also be set to NULL.  
+	   Need a mechanism to re-create the eggtrayicon
+	   when the tray applet is re-added.
+	*/
+	g_free (gcd->tray_tips);
+	gcd->tray_tips = NULL;
+}
+
 static GnomeCD *
 init_player (const char *device_override)
 {
@@ -434,7 +474,6 @@ init_player (const char *device_override)
 			exit (0);
 		}
 	}
-
  nodevice:		
 	gcd->cdrom = gnome_cdrom_new (gcd->device_override ? gcd->device_override : gcd->preferences->device, 
 				      GNOME_CDROM_UPDATE_CONTINOUS, &error);
@@ -519,6 +558,8 @@ init_player (const char *device_override)
 			  G_CALLBACK (loopmode_changed_cb), gcd);
 	g_signal_connect (G_OBJECT (gcd->display), "playmode-changed",
 			  G_CALLBACK (playmode_changed_cb), gcd);
+	g_signal_connect (G_OBJECT (gcd->display), "style_set",
+			  G_CALLBACK (cd_display_set_style), NULL);
 
 	/* Theme needs to be loaded after the display is created */
 	gcd->theme = (GCDTheme *)theme_load (gcd, gcd->preferences->theme_name);
@@ -534,15 +575,35 @@ init_player (const char *device_override)
 	gtk_box_pack_start (GTK_BOX (top_hbox), display_box, TRUE, TRUE, 0);
 
 	/* Volume slider */
-	gcd->slider = gtk_vscale_new_with_range (-255.0, 0.0, 1.0);
+	gcd->slider = gtk_vscale_new_with_range (0.0, 255.0, 1.0);
 	gtk_scale_set_draw_value (GTK_SCALE (gcd->slider), FALSE);
+	gtk_range_set_inverted(GTK_RANGE(gcd->slider), TRUE);
 	gtk_box_pack_start (GTK_BOX (top_hbox), gcd->slider, FALSE, FALSE, 0);
 	
 	gtk_tooltips_set_tip (gcd->tooltips, GTK_WIDGET (gcd->slider),
 			      _("Volume control"), NULL);
 
 	gtk_box_pack_start (GTK_BOX (gcd->vbox), top_hbox, TRUE, TRUE, 0);
-
+	
+	
+	/* Position slider */
+	gcd->position_adj = gtk_adjustment_new (0.0, 0.0, 100.0,
+						1.0, 1.0, 1.0);
+	gcd->position_slider = gtk_hscale_new (GTK_ADJUSTMENT (gcd->position_adj));
+	gtk_scale_set_draw_value (GTK_SCALE (gcd->position_slider), FALSE);
+	gtk_tooltips_set_tip (gcd->tooltips, GTK_WIDGET (gcd->position_slider),
+			      _("Position"), NULL);
+	gtk_range_set_update_policy (GTK_RANGE(gcd->position_slider), 
+					       GTK_UPDATE_DISCONTINUOUS);
+	gtk_box_pack_start (GTK_BOX (gcd->vbox), gcd->position_slider, 
+			    FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (gcd->position_slider), "value-changed",
+			  G_CALLBACK (position_changed), gcd);
+	g_signal_connect (G_OBJECT (gcd->position_slider), "enter-notify-event",
+			  G_CALLBACK (position_slider_enter), gcd);
+	g_signal_connect (G_OBJECT (gcd->position_slider), "leave-notify-event",
+			  G_CALLBACK (position_slider_leave), gcd);
+	
 	option_hbox = gtk_hbox_new (FALSE, 2);
 
 	/* Create app controls */
@@ -586,7 +647,7 @@ init_player (const char *device_override)
 	
 	button_hbox = gtk_hbox_new (TRUE, 2);
 	
-  	button = make_button_from_stock (gcd, GNOME_CD_PREVIOUS, G_CALLBACK (back_cb), _("Previous track"), _("Previous"));
+	button = make_button_from_stock (gcd, GNOME_CD_PREVIOUS, G_CALLBACK (back_cb), _("Previous track"), _("Previous"));
 	gtk_box_pack_start (GTK_BOX (button_hbox), button, TRUE, TRUE, 0);
 	gcd->back_b = button;
 
@@ -644,13 +705,23 @@ init_player (const char *device_override)
 	box = gtk_event_box_new ();
 	g_signal_connect (G_OBJECT (box), "button_press_event",
 			 	G_CALLBACK (tray_icon_clicked), gcd);
+	g_signal_connect (G_OBJECT (box), "key_press_event",
+			 	G_CALLBACK (tray_icon_pressed), gcd);
+
+	g_object_set_data_full (G_OBJECT (gcd->tray), "tray-action-data", gcd,
+				(GDestroyNotify) tray_object_destroyed);
+
 	gtk_container_add (GTK_CONTAINER (gcd->tray), box);
 	pixbuf = gdk_pixbuf_scale_simple (pixbuf_from_file ("gnome-cd/cd.png"),
 				16, 16, GDK_INTERP_BILINEAR);
 	gcd->tray_icon = gtk_image_new_from_pixbuf (pixbuf);
+	g_signal_connect (G_OBJECT (gcd->tray_icon), "expose_event",
+			 	G_CALLBACK (tray_icon_expose), gcd);
+	GTK_WIDGET_SET_FLAGS (box, GTK_CAN_FOCUS);
+	atk_object_set_name (gtk_widget_get_accessible (box), _("CD Player"));
 	gtk_container_add (GTK_CONTAINER (box), gcd->tray_icon);
 	gcd->tray_tips = gtk_tooltips_new ();
-	gtk_tooltips_set_tip (gcd->tray_tips, gcd->tray, _("CD Player"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS(gcd->tray_tips), box, _("CD Player"), NULL);
 	gnome_popup_menu_attach (make_popup_menu (gcd), box, NULL);
 	gtk_widget_show_all (gcd->tray);
 
@@ -676,7 +747,7 @@ save_session(GnomeClient        *client,
     return TRUE;
 }
 
-static gint client_die(GnomeClient *client,
+static void client_die(GnomeClient *client,
 		       GnomeCD *gcd)
 {
 	gtk_widget_destroy (gcd->window);
@@ -711,6 +782,9 @@ register_stock_icons (void)
 
 		filename = g_strconcat ("gnome-cd/", items[i], ".png", NULL);
 		fullname = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, filename, TRUE, NULL);
+		if (fullname == NULL) {
+			fullname = g_strconcat(GNOME_ICONDIR, "/", filename, NULL);
+		}
 		g_free (filename);
 
 		pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
@@ -729,7 +803,7 @@ register_stock_icons (void)
 int 
 main (int argc, char *argv[])
 {
-	static const struct poptOption cd_popt_options [] = {
+	static struct poptOption cd_popt_options [] = {
 		{ "device", '\0', POPT_ARG_STRING, &cd_option_device, 0,
 		  N_("CD device to use"), NULL },
 		{ "unique", '\0', POPT_ARG_NONE, &cd_option_unique, 0,
@@ -740,7 +814,6 @@ main (int argc, char *argv[])
 	};
 
 	GnomeCD *gcd;
-	CDSelection *cd_selection;
 	GnomeClient *client;
 
 	free (malloc (8)); /* -lefence */
@@ -760,7 +833,7 @@ main (int argc, char *argv[])
 
 	register_stock_icons ();
 	client = gnome_master_client ();
-    	g_signal_connect (client, "save_yourself",
+	g_signal_connect (client, "save_yourself",
                          G_CALLBACK (save_session), (gpointer) argv[0]);
 
 	gcd = init_player (cd_option_device);
@@ -774,33 +847,9 @@ main (int argc, char *argv[])
 	g_signal_connect (client, "die",
 			  G_CALLBACK (client_die), gcd);
 
-	/* Do the start up stuff */
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	if (gcd->preferences->start_close) {
-		gnome_cdrom_close_tray (gcd->cdrom, NULL);
-	}
-#endif
-
-	if (cd_option_play) {
+	if (cd_option_play || gcd->preferences->start_play) {
 		/* Just fake a click on the button */
 		play_cb (NULL, gcd);
-	} else {
-	switch (gcd->preferences->start) {
-	case GNOME_CD_PREFERENCES_START_NOTHING:
-		break;
-
-	case GNOME_CD_PREFERENCES_START_START:
-		/* Just fake a click on the button */
-		play_cb (NULL, gcd);
-		break;
-		
-	case GNOME_CD_PREFERENCES_START_STOP:
-		gnome_cdrom_stop (gcd->cdrom, NULL);
-		break;
-
-	default:
-		break;
-	}
 	}
 	
 	if (cd_option_unique &&

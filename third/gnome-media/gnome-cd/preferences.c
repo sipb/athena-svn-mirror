@@ -51,6 +51,7 @@
 #include <gtk/gtkscrolledwindow.h>
 
 #include <libgnome/gnome-i18n.h>
+#include <gnome.h>
 
 #include <gconf/gconf-client.h>
 
@@ -114,25 +115,10 @@ on_start_changed (GConfClient *_client,
 	GnomeCDPreferences *prefs = user_data;
 	GConfValue *value = gconf_entry_get_value (entry);
 
-	prefs->start = gconf_value_get_int (value);
+	prefs->start_play = gconf_value_get_bool (value);
 	/* This doesn't take effect till next start,
 	   so we don't need to do anything for it */
 }
-
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-static void
-close_on_start_changed (GConfClient *_client,
-			guint cnxn_id,
-			GConfEntry *entry,
-			gpointer user_data)
-{
-	GnomeCDPreferences *prefs = user_data;
-	GConfValue *value = gconf_entry_get_value (entry);
-
-	prefs->start_close = gconf_value_get_bool (value);
-	/* This doesn't take effect till next start either */
-}
-#endif
 
 static void
 on_stop_changed (GConfClient *_client,
@@ -143,7 +129,7 @@ on_stop_changed (GConfClient *_client,
 	GnomeCDPreferences *prefs = user_data;
 	GConfValue *value = gconf_entry_get_value (entry);
 
-	prefs->stop = gconf_value_get_int (value);
+	prefs->stop_eject = gconf_value_get_bool (value);
 	/* This doesn't take effect till we quit... */
 }
 
@@ -209,25 +195,19 @@ restore_preferences (GnomeCDPreferences *prefs)
 		g_warning ("Error: %s", error->message);
 	}
 						    
-	prefs->start = gconf_client_get_int (client,
-					     "/apps/gnome-cd/on-start", NULL);
+	prefs->start_play = gconf_client_get_bool (client,
+					     "/apps/gnome-cd/on-start-play",
+					      NULL);
 	prefs->start_id = gconf_client_notify_add (client,
-						   "/apps/gnome-cd/on-start",
+						   "/apps/gnome-cd/on-start-play",
 						   on_start_changed, prefs,
 						   NULL, NULL);
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL	
-	prefs->start_close = gconf_client_get_bool (client,
-						    "/apps/gnome-cd/close-on-start", NULL);
-	prefs->close_id = gconf_client_notify_add (client,
-						   "/apps/gnome-cd/close-on-start",
-						   close_on_start_changed, prefs,
-						   NULL, NULL);
-#endif
 	
-	prefs->stop = gconf_client_get_int (client,
-					    "/apps/gnome-cd/on-stop", NULL);
+	prefs->stop_eject = gconf_client_get_bool (client,
+						   "/apps/gnome-cd/on-stop-eject",
+						   NULL);
 	prefs->stop_id = gconf_client_notify_add (client,
-						  "/apps/gnome-cd/on-stop",
+						  "/apps/gnome-cd/on-stop-eject",
 						  on_stop_changed, prefs,
 						  NULL, NULL);
 
@@ -253,9 +233,6 @@ preferences_free (GnomeCDPreferences *prefs)
 	/* Remove the listeners */
 	gconf_client_notify_remove (client, prefs->device_id);
 	gconf_client_notify_remove (client, prefs->start_id);
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	gconf_client_notify_remove (client, prefs->close_id);
-#endif
 	gconf_client_notify_remove (client, prefs->stop_id);
 	gconf_client_notify_remove (client, prefs->theme_id);
 
@@ -284,30 +261,15 @@ typedef struct _PropertyDialog {
 	GtkWidget *cd_device;
 	GtkWidget *apply;
 	
-	GtkWidget *start_nothing;
 	GtkWidget *start_play;
 	GtkWidget *start_stop;
 	
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	GtkWidget *start_close;
-#endif
-
-	GtkWidget *stop_nothing;
-	GtkWidget *stop_stop;
 	GtkWidget *stop_open;
 	
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	GtkWidget *stop_close;
-#endif
-
 	GtkWidget *theme_list;
 	
 	guint start_id;
 	guint device_id;
-	
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	guint close_id;
-#endif
 	
 	guint stop_id;
 	guint theme_id;
@@ -361,9 +323,6 @@ prefs_destroy_cb (GtkDialog *dialog,
 	gconf_client_notify_remove (client, pd->device_id);
 	gconf_client_notify_remove (client, pd->start_id);
 	gconf_client_notify_remove (client, pd->stop_id); 
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	gconf_client_notify_remove (client, pd->close_id);
-#endif
 	gconf_client_notify_remove (client, pd->theme_id);
 	
 	g_free (pd);
@@ -432,7 +391,7 @@ change_device_widget (GConfClient *_client,
 {
 	PropertyDialog *pd = user_data;
 	GConfValue *value = gconf_entry_get_value (entry);
-
+	
 	g_signal_handlers_block_matched (G_OBJECT (pd->cd_device), G_SIGNAL_MATCH_FUNC,
 					 0, 0, NULL, G_CALLBACK (device_changed_cb), pd);
 	gtk_entry_set_text (GTK_ENTRY (pd->cd_device), gconf_value_get_string (value));
@@ -441,216 +400,54 @@ change_device_widget (GConfClient *_client,
 }
 
 static void
-set_start (PropertyDialog *pd,
-	   GnomeCDPreferencesStart start)
-{
-	gconf_client_set_int (client,
-			      "/apps/gnome-cd/on-start",
-			      start, NULL);
-}
-
-static void
-start_nothing_toggled_cb (GtkToggleButton *tb,
-			  PropertyDialog *pd)
-{
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_start (pd, GNOME_CD_PREFERENCES_START_NOTHING);
-}
-
-static void
 start_play_toggled_cb (GtkToggleButton *tb,
 		       PropertyDialog *pd)
 {
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_start (pd, GNOME_CD_PREFERENCES_START_START);
+	gconf_client_set_bool (client, "/apps/gnome-cd/on-start-play",
+			       gtk_toggle_button_get_active (tb), NULL);
 }
 
 static void
-start_stop_toggled_cb (GtkToggleButton *tb,
-		       PropertyDialog *pd)
-{
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_start (pd, GNOME_CD_PREFERENCES_START_STOP);
-}
-
-static void
-set_stop (PropertyDialog *pd,
-	  GnomeCDPreferencesStop stop)
-{
-	gconf_client_set_int (client,
-			      "/apps/gnome-cd/on-stop",
-			      stop, NULL);
-}
-
-static void
-stop_nothing_toggled_cb (GtkToggleButton *tb,
-			 PropertyDialog *pd)
-{
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_stop (pd, GNOME_CD_PREFERENCES_STOP_NOTHING);
-}
-
-static void
-stop_stop_toggled_cb (GtkToggleButton *tb,
-		      PropertyDialog *pd)
-{
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_stop (pd, GNOME_CD_PREFERENCES_STOP_STOP);
-}
-
-static void
-stop_open_toggled_cb (GtkToggleButton *tb,
-		      PropertyDialog *pd)
-{
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_stop (pd, GNOME_CD_PREFERENCES_STOP_OPEN);
-}
-
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-static void
-stop_close_toggled_cb (GtkToggleButton *tb,
-		       PropertyDialog *pd)
-{
-	if (gtk_toggle_button_get_active (tb) == FALSE) {
-		return;
-	}
-
-	set_stop (pd, GNOME_CD_PREFERENCES_STOP_CLOSE);
-}
-#endif
-
-static void
-change_start_widget (GConfClient *client,
-		     guint cnxn,
-		     GConfEntry *entry,
-		     gpointer user_data)
-{
-	PropertyDialog *pd = user_data;
-	GConfValue *value = gconf_entry_get_value (entry);
-	GCallback func;
-	GtkToggleButton *tb;
-	
-	switch (gconf_value_get_int (value)) {
-	case GNOME_CD_PREFERENCES_START_NOTHING:
-		tb = GTK_TOGGLE_BUTTON (pd->start_nothing);
-		func = G_CALLBACK (start_nothing_toggled_cb);
-		break;
-
-	case GNOME_CD_PREFERENCES_START_START:
-		tb = GTK_TOGGLE_BUTTON (pd->start_play);
-		func = G_CALLBACK (start_play_toggled_cb);
-		break;
-
-	case GNOME_CD_PREFERENCES_START_STOP:
-		tb = GTK_TOGGLE_BUTTON (pd->start_stop);
-		func = G_CALLBACK (start_stop_toggled_cb);
-		break;
-
-	default:
-		g_warning ("Unknown value: %d", gconf_value_get_int (value));
-		return;
-	}
-	
-	g_signal_handlers_block_matched (G_OBJECT (tb), G_SIGNAL_MATCH_FUNC,
-					 0, 0, NULL, func, pd);
-	gtk_toggle_button_set_active (tb, TRUE);
-	g_signal_handlers_unblock_matched (G_OBJECT (tb), G_SIGNAL_MATCH_FUNC,
-					   0, 0, NULL, func, pd);
-}
-
-static void
-change_stop_widget (GConfClient *client,
+change_play_widget (GConfClient *_client,
 		    guint cnxn,
 		    GConfEntry *entry,
 		    gpointer user_data)
 {
 	PropertyDialog *pd = user_data;
 	GConfValue *value = gconf_entry_get_value (entry);
-	GCallback func;
-	GtkToggleButton *tb;
 
-	switch (gconf_value_get_int (value)) {
-	case GNOME_CD_PREFERENCES_STOP_NOTHING:
-		tb = GTK_TOGGLE_BUTTON (pd->stop_nothing);
-		func = G_CALLBACK (stop_nothing_toggled_cb);
-		break;
-
-	case GNOME_CD_PREFERENCES_STOP_STOP:
-		tb = GTK_TOGGLE_BUTTON (pd->stop_stop);
-		func = G_CALLBACK (stop_stop_toggled_cb);
-		break;
-
-	case GNOME_CD_PREFERENCES_STOP_OPEN:
-		tb = GTK_TOGGLE_BUTTON (pd->stop_open);
-		func = G_CALLBACK (stop_open_toggled_cb);
-		break;
-		
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	case GNOME_CD_PREFERENCES_STOP_CLOSE:
-		tb = GTK_TOGGLE_BUTTON (pd->stop_close);
-		func = G_CALLBACK (stop_close_toggled_cb);
-		break;
-#endif
-		
-	default:
-		g_warning ("Unknown stop value: %d", gconf_value_get_int (value));
-		return;
-	}
-
-	g_signal_handlers_block_matched (G_OBJECT (tb), G_SIGNAL_MATCH_FUNC,
-					 0, 0, NULL, func, pd);
-	gtk_toggle_button_set_active (tb, TRUE);
-	g_signal_handlers_unblock_matched (G_OBJECT (tb), G_SIGNAL_MATCH_FUNC,
-					   0, 0, NULL, func, pd);
+	g_signal_handlers_block_matched (G_OBJECT (pd->start_play), G_SIGNAL_MATCH_FUNC,
+					 0, 0, NULL, G_CALLBACK (start_play_toggled_cb), pd);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_play),
+				      gconf_value_get_bool (value));
+	g_signal_handlers_unblock_matched (G_OBJECT (pd->start_play), G_SIGNAL_MATCH_FUNC,
+					   0, 0, NULL, G_CALLBACK (start_play_toggled_cb), pd);
 }
 
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
 static void
-start_close_toggled_cb (GtkToggleButton *tb,
-			PropertyDialog *pd)
+stop_open_toggled_cb (GtkToggleButton *tb,
+		      PropertyDialog *pd)
 {
-	gboolean on;
-
-	on = gtk_toggle_button_get_active (tb);
-	gconf_client_set_bool (client,
-			       "/apps/gnome-cd/close-on-start", on, NULL);
+	gconf_client_set_bool (client, "/apps/gnome-cd/on-stop-eject",
+			       gtk_toggle_button_get_active (tb), NULL);
 }
 
 static void
-change_start_close_widget (GConfClient *client,
-			   guint cnxn,
-			   GConfEntry *entry,
-			   gpointer user_data)
+change_stop_widget (GConfClient *_client,
+		    guint cnxn,
+		    GConfEntry *entry,
+		    gpointer user_data)
 {
 	PropertyDialog *pd = user_data;
 	GConfValue *value = gconf_entry_get_value (entry);
 
-	g_signal_handlers_block_matched (G_OBJECT (pd->start_close), G_SIGNAL_MATCH_FUNC,
-					 0, 0, NULL, G_CALLBACK (start_close_toggled_cb), pd);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_close),
+	g_signal_handlers_block_matched (G_OBJECT (pd->stop_open), G_SIGNAL_MATCH_FUNC,
+					 0, 0, NULL, G_CALLBACK (stop_open_toggled_cb), pd);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_open),
 				      gconf_value_get_bool (value));
-	g_signal_handlers_unblock_matched (G_OBJECT (pd->start_close), G_SIGNAL_MATCH_FUNC,
-					   0, 0, NULL, G_CALLBACK (start_close_toggled_cb), pd);
+	g_signal_handlers_unblock_matched (G_OBJECT (pd->stop_open), G_SIGNAL_MATCH_FUNC,
+					   0, 0, NULL, G_CALLBACK (stop_open_toggled_cb), pd);
 }
-#endif
 
 static void
 theme_selection_changed_cb (GtkTreeSelection *selection,
@@ -664,6 +461,7 @@ theme_selection_changed_cb (GtkTreeSelection *selection,
 
 		gtk_tree_model_get (model, &iter, 0, &theme_name, -1);
 		gconf_client_set_string (client, "/apps/gnome-cd/theme-name", theme_name, NULL);
+		g_free (theme_name);
 	}
 }
 
@@ -687,7 +485,6 @@ change_theme_selection_widget (GConfClient *client,
 		char *name;
 		
 		gtk_tree_model_get (model, &iter, 0, &name, -1);
-		g_print ("Name: %s\n", name);
 		
 		if (strcmp (name, gconf_value_get_string (value)) == 0) {
 			g_signal_handlers_block_matched (G_OBJECT (selection), G_SIGNAL_MATCH_FUNC,
@@ -698,6 +495,8 @@ change_theme_selection_widget (GConfClient *client,
 							   0, 0, NULL,
 							   G_CALLBACK (theme_selection_changed_cb), pd);
 		}
+		g_free (name);
+
 	} while (gtk_tree_model_iter_next (model, &iter));
 }
 
@@ -728,7 +527,7 @@ create_theme_model (PropertyDialog *pd,
 		}
 
 		gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter, 0, g_strdup (d->d_name), -1);
+		gtk_list_store_set (store, &iter, 0, d->d_name, -1);
 
 		/*
 		if (strcmp (d->d_name, pd->gcd->preferences->theme_name) == 0) {
@@ -797,6 +596,21 @@ add_description (GtkWidget *widget,
 	atk_object_set_description (atk_widget, desc);
 }
 
+static GtkWidget *
+make_title_label (const char *text)
+{
+	char *full_text;
+	GtkWidget *label;
+
+	full_text = g_strdup_printf ("<span weight=\"bold\">%s</span>", text);
+	label = gtk_label_new_with_mnemonic (full_text);
+	g_free (full_text);
+
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+	return label;
+}
 
 GtkWidget *
 preferences_dialog_show (GnomeCD *gcd,
@@ -804,8 +618,8 @@ preferences_dialog_show (GnomeCD *gcd,
 {
 	PropertyDialog *pd;
 	GtkWindow *windy;
-	GtkWidget *hbox, *vbox, *label, *frame;
-	GtkWidget *sw;
+	GtkWidget *hbox, *vbox, *label, *inner_vbox, *inner_hbox;
+	GtkWidget *sw, *spacer, *action_vbox;
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *col;
 	GtkTreeModel *model;
@@ -823,11 +637,12 @@ preferences_dialog_show (GnomeCD *gcd,
 	
 	pd->window = gtk_dialog_new_with_buttons (_("CD Player Preferences"),
 						  windy,
-						  GTK_DIALOG_DESTROY_WITH_PARENT,
+						  GTK_DIALOG_DESTROY_WITH_PARENT |
+						  GTK_DIALOG_NO_SEPARATOR,
 						  GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 						  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
-	gtk_window_set_default_size (GTK_WINDOW (pd->window), 390, 375);
-       
+	gtk_window_set_default_size (GTK_WINDOW (pd->window), 390, 315);
+	
 	if (only_device == FALSE) {
 		g_signal_connect (G_OBJECT (pd->window), "response",
 				  G_CALLBACK (prefs_response_cb), pd);
@@ -844,15 +659,28 @@ preferences_dialog_show (GnomeCD *gcd,
 			  G_CALLBACK (prefs_destroy_cb), pd);
 
 	/* General */
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (pd->window)->vbox), 2);
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (pd->window)->vbox), vbox);
 	
 	/* Top stuff */
-	hbox = gtk_hbox_new (FALSE, 2);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pd->window)->vbox), hbox, FALSE, FALSE, 4);
+	inner_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox), inner_vbox, FALSE, FALSE, 0);
+	gtk_widget_show (inner_vbox);
+	
+	label = make_title_label (_("CD Player De_vice:"));
+	gtk_box_pack_start (GTK_BOX (inner_vbox), label, FALSE, FALSE, 0);
 
-	label = gtk_label_new_with_mnemonic (_("CD player de_vice:"));
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), hbox, FALSE, FALSE, 0);
 
+	spacer = gtk_label_new ("    ");
+	gtk_box_pack_start (GTK_BOX (hbox), spacer, FALSE, FALSE, 0);
+
+	inner_hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), inner_hbox, TRUE, TRUE, 0);
+	
 	pd->cd_device = gtk_entry_new ();
 	gtk_entry_set_text (GTK_ENTRY (pd->cd_device), gcd->preferences->device);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), pd->cd_device);
@@ -863,136 +691,82 @@ preferences_dialog_show (GnomeCD *gcd,
 			  G_CALLBACK (device_changed_cb), pd);
 	g_signal_connect (G_OBJECT (pd->cd_device), "activate",
 			  G_CALLBACK (apply_clicked_cb), pd);
-	gtk_box_pack_start (GTK_BOX (hbox), pd->cd_device, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_hbox), pd->cd_device, TRUE, TRUE, 0);
 	
 	pd->apply = gtk_button_new_with_mnemonic (_("_Apply change"));
 	gtk_widget_set_sensitive (pd->apply, FALSE);
 	g_signal_connect (G_OBJECT (pd->apply), "clicked",
 			  G_CALLBACK (apply_clicked_cb), pd);
-	gtk_box_pack_start (GTK_BOX (hbox), pd->apply, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_hbox), pd->apply, FALSE, FALSE, 0);
 
 	pd->device_id = gconf_client_notify_add (client,
 						 "/apps/gnome-cd/device",
 						 change_device_widget, pd, NULL, NULL);
-	hbox = gtk_hbox_new (TRUE, 2);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pd->window)->vbox), hbox, FALSE, FALSE, 4);
+	inner_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox), inner_vbox, FALSE, FALSE, 0);
 
+	label = make_title_label (_("CD Player Behaviour:"));
+	gtk_box_pack_start (GTK_BOX (inner_vbox), label, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), hbox, TRUE, TRUE, 0);
+
+	spacer = gtk_label_new ("    ");
+	gtk_box_pack_start (GTK_BOX (hbox), spacer, FALSE, FALSE, 0);
+	
 	/* left side */
-	frame = gtk_frame_new (_("When CD player starts"));
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
-	gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
-	
-	vbox = gtk_vbox_new (TRUE, 2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox);
-	
-	pd->start_nothing = gtk_radio_button_new_with_mnemonic (NULL, _("Do _nothing"));
-	add_description (pd->start_nothing, _("Do nothing when CD Player starts"));
+	action_vbox = gtk_vbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), action_vbox, TRUE, TRUE, 0);
 
-	if (gcd->preferences->start == GNOME_CD_PREFERENCES_START_NOTHING) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_nothing), TRUE);
-	}
-	g_signal_connect (G_OBJECT (pd->start_nothing), "toggled",
-			  G_CALLBACK (start_nothing_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->start_nothing, FALSE, FALSE, 0);
-
-	pd->start_play = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->start_nothing),
-									 _("Start _playing CD"));
+	pd->start_play = gtk_check_button_new_with_mnemonic (_("Start _playing CD when CD Player starts"));
 	add_description (pd->start_play, _("Start playing CD when CD Player starts"));
-	if (gcd->preferences->start == GNOME_CD_PREFERENCES_START_START) {
+	if (gcd->preferences->start_play) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_play), TRUE);
 	}
 	g_signal_connect (G_OBJECT (pd->start_play), "toggled",
 			  G_CALLBACK (start_play_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->start_play, FALSE, FALSE, 0);
-	
-	pd->start_stop = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->start_play),
-									 _("_Stop playing CD"));
-	add_description (pd->start_stop, _("Stop playing CD when CD Player starts"));
-
-	if (gcd->preferences->start == GNOME_CD_PREFERENCES_START_STOP) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_stop), TRUE);
-	}
-	g_signal_connect (G_OBJECT (pd->start_stop), "toggled",
-			  G_CALLBACK (start_stop_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->start_stop, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (action_vbox), pd->start_play, FALSE, FALSE, 0);
 
 	pd->start_id = gconf_client_notify_add (client,
-						"/apps/gnome-cd/on-start",
-						change_start_widget, pd, NULL, NULL);
-
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL	
-	pd->start_close = gtk_check_button_new_with_mnemonic (_("Attempt to _close CD tray"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_close),
-				      gcd->preferences->start_close);
-	g_signal_connect (G_OBJECT (pd->start_close), "toggled",
-			  G_CALLBACK (start_close_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->start_close, FALSE, FALSE, 0);
-
-	pd->close_id = gconf_client_notify_add (client,
-						"/apps/gnome-cd/close-on-start",
-						change_start_close_widget, pd, NULL, NULL);
-#endif
-	/* Right side */
-	frame = gtk_frame_new (_("When CD player quits"));
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
-	gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
-
-	vbox = gtk_vbox_new (TRUE, 2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox);
-
-	pd->stop_nothing = gtk_radio_button_new_with_mnemonic (NULL, _("Do not_hing"));
-	add_description (pd->stop_nothing, _("Do nothing when CD Player exits"));
-	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_NOTHING) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_nothing), TRUE);
-	}
-	g_signal_connect (G_OBJECT (pd->stop_nothing), "toggled",
-			  G_CALLBACK (stop_nothing_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->stop_nothing, FALSE, FALSE, 0);
-
-	pd->stop_stop = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->stop_nothing),
-									_("S_top playing CD"));
-	add_description (pd->stop_stop, _("Stop playing CD when CD player quits"));
-
-	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_STOP) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_stop), TRUE);
-	}
-	g_signal_connect (G_OBJECT (pd->stop_stop), "toggled",
-			  G_CALLBACK (stop_stop_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->stop_stop, FALSE, FALSE, 0);
-
-	pd->stop_open = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->stop_stop),
-									_("Attempt to _open CD tray"));
-	add_description (pd->stop_open, _("Attempt to open CD tray when CD Player exits"));
-	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_OPEN) {
+						"/apps/gnome-cd/on-start-play",
+						change_play_widget, pd, NULL, NULL);
+	
+	pd->stop_open = gtk_check_button_new_with_mnemonic (_("Attempt to _eject CD when CD Player exits"));
+	add_description (pd->stop_open, _("Attempt to eject CD when CD Player exits"));
+	if (gcd->preferences->stop_eject) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_open), TRUE);
 	}
 	g_signal_connect (G_OBJECT (pd->stop_open), "toggled",
 			  G_CALLBACK (stop_open_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->stop_open, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (action_vbox), pd->stop_open, FALSE, FALSE, 0);
 
-#ifdef HAVE_CDROMCLOSETRAY_IOCTL
-	pd->stop_close = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->stop_open),
-									 _("Attempt to c_lose CD tray"));
-	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_CLOSE) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_close), TRUE);
-	}
-	g_signal_connect (G_OBJECT (pd->stop_close), "toggled",
-			  G_CALLBACK (stop_close_toggled_cb), pd);
-	gtk_box_pack_start (GTK_BOX (vbox), pd->stop_close, FALSE, FALSE, 0);
-#endif
-	
 	pd->stop_id = gconf_client_notify_add (client,
-					       "/apps/gnome-cd/on-stop",
+					       "/apps/gnome-cd/on-stop-eject",
 					       change_stop_widget, pd, NULL, NULL);
 	
 	if (only_device == TRUE) {
 		gtk_widget_set_sensitive (hbox, FALSE);
 	}
+
+	inner_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (inner_vbox);
+	gtk_box_pack_start (GTK_BOX (vbox), inner_vbox, TRUE, TRUE, 0);
+
+	label = make_title_label (_("_Available Themes:"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), label, FALSE, FALSE, 0);
+
+	/* Theme */
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), hbox, TRUE, TRUE, 0);
+	gtk_widget_show (hbox);
+
+	spacer = gtk_label_new ("    ");
+	gtk_box_pack_start (GTK_BOX (hbox), spacer, FALSE, FALSE, 0);
 	
-	/* Theme selector */
 	pd->theme_list = gtk_tree_view_new ();
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), pd->theme_list);
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (pd->theme_list), FALSE);
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (pd->theme_list));
 
 	model = create_theme_model (pd, GTK_TREE_VIEW (pd->theme_list), selection);
@@ -1005,7 +779,7 @@ preferences_dialog_show (GnomeCD *gcd,
 	g_object_unref (model);
 
 	cell = gtk_cell_renderer_text_new ();
-	col = gtk_tree_view_column_new_with_attributes (_("Theme name"), cell,
+	col = gtk_tree_view_column_new_with_attributes ("", cell,
 							"text", 0, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (pd->theme_list), col);
 	
@@ -1016,7 +790,7 @@ preferences_dialog_show (GnomeCD *gcd,
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (sw), pd->theme_list);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pd->window)->vbox), sw, TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (hbox), sw, TRUE, TRUE, 0);
 
 	pd->theme_id = gconf_client_notify_add (client,
 						"/apps/gnome-cd/theme-name",

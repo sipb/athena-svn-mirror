@@ -4,22 +4,24 @@ Gnome-CD:
  * Needs ported to other Unix systems.
  	Linux: Done.
 	Solaris: Done.
+	FreeBSD: Done
  * Need (better) graphics.
  * Needs a CORBA interface so it can be run as a guiless CD player 
    (possibly by the CD player applet)
  * Buttons need to be run off of a MVC type system.
  * Display needs to be made accessible.
+ * Should probably be ported to GStreamer at one point
 
-GMix:
- * Ported to other Unix systems
- * Needs to be finished to use the abstraction objects.
- * Needs ported to GConf
- * Needs the dialog buttons to be correct.
+Gst-Mixer:
  * Needs a CORBA interface.
+ * Needs accessibility
+ * Device selection
+ * Volume/PCM fix
+ * Switch Help/about in menu. They are opposite of everywhere else
+ * Make the help entry actually load the help
 
 GRecord:
- * Someone who knows how this is supposed to work needs to check and see if it 
-   does :)
+ * Fix appicon
 
 CDDBSlave:
  * Network code needs to be generic.
@@ -27,7 +29,9 @@ CDDBSlave:
  * Needs to be able to write out changes in CDDBEntrys
  
 VU-Meter:
- * Done.
+ * Could be ported to GStreamer. There is a demo app in gst-plugins/level/
+   which could be used as a backend for the port. Would need that most apps
+   include level plugin in their pipelines for it to work
 
 gstreamer-properties:
  * spec it

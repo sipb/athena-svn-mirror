@@ -1,0 +1,2068 @@
+# translation of gnome-media.HEAD.pa.po to Punjabi
+# Copyright (C) 2004 THE gnome-media.HEAD'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-media.HEAD package.
+# Amanpreet Singh Alam <amanlinux@netscape.net>, 2004.
+# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-media.HEAD.pa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 14:28+0200\n"
+"PO-Revision-Date: 2004-08-31 17:29+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
+"\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "ਸਰਵਰ ਦਾ ਸਿਰਨਾਵਾਂ, ਜਿਸ ਨਾਲ ਸੀਡੀ ਸਵਾਲਾਂ ਲਈ ਸੰਪਰਕ ਕਰਨਾ ਹੈ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2
+msgid "Information to send to server"
+msgstr "ਸਰਵਰ ਨੂੰ ਭੇਜਣ ਵਾਲੀ ਜਾਣਕਾਰੀ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3 cddb-slave2/cddb-slave-capplet.c:832
+msgid "Port"
+msgstr "ਪੋਰਟ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "Server name"
+msgstr "ਸਰਵਰ ਨਾਂ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "Server type"
+msgstr "ਸਰਵਰ ਕਿਸਮ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The hostname that will be sent with all queries"
+msgstr "ਮੇਜ਼ਬਾਨ ਨਾਂ ਜੋ ਕਿ ਸਾਰੇ ਸਵਾਲਾਂ ਨਾਲ ਭੇਜਿਆ ਜਾਵੇਗਾ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The port that the server is running the database on"
+msgstr "ਪੋਰਟ, ਜਿਸ ਤੇ ਸਰਵਰ ਦਾ ਡਾਟਾਬੇਸ ਚੱਲ ਰਿਹਾ ਹੈ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid ""
+"The type of the server to contact for CD queries. Possible values are 0 "
+"(FreeDB round robin server), 1 (other freedb server) and 2 (other server)."
+msgstr ""
+"ਸੀਡੀ ਦੇ ਸਵਾਲਾ ਲਈ ਸੰਪਰਕ ਕਰਨ ਲਈ ਸਰਵਰ। ਸੰਭਵ ਮੁੱਲ ਹਨ 0 (FreeDB ਰਾਊਡ ਰਾਬਿਨ ਸਰਵਰ), ੧ "
+"(ਹੋਰ ਮੁਫਤ ਡਬ ਸਰਵਰ) ਅਤੇ ੨ (ਹੋਰ ਸਰਵਰ)"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:9
+msgid "The username"
+msgstr "ਉਪਭੋਗਤਾ ਨਾਂ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:10
+msgid "The username that will be sent with all queries"
+msgstr "ਉਪਭੋਗਤਾ ਨਾਂ, ਜੋ ਕਿ ਸਾਰੇ ਸਵਾਲਾਂ ਨਾਲ ਭੇਜਿਆ ਜਾਵੇਗਾ"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:11
+msgid ""
+"This key specifies which user information will be sent to the server to "
+"contact for CD queries. Possible values are 0 (no information), 1 (real "
+"information) and 3 (other information)."
+msgstr ""
+"ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰਦੀ ਹੈ ਕਿ ਕਿਹਡ਼ੀ ਉਪਭੋਗਤਾ ਜਾਣਕਾਰੀ ਸੀਡੀ ਸਵਾਲਾਂ ਲਈ ਸਰਵਰ ਨੂੰ ਭੇਜੀ ਜਾਵੇ। "
+"ਸੰਭਵ ਮੁੱਲ ਹਨ 0 (ਕੋਈ ਜਾਣਕਾਰੀ ਨਹੀ), ੧ (ਅਸਲੀ ਜਾਣਕਾਰੀ) ਅਤੇ ੩ (ਹੋਰ ਜਾਣਕਾਰੀ)।"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:12
+msgid "Your hostname"
+msgstr "ਤੁਹਾਡਾ ਮੇਜ਼ਬਾਨ-ਨਾਂ"
+
+#: cddb-slave2/cddb-disclosure.c:241
+msgid "Expander Size"
+msgstr "ਫੈਲਾ ਅਕਾਰ"
+
+#: cddb-slave2/cddb-disclosure.c:242
+msgid "Size of the expander arrow"
+msgstr "ਫੈਲਾ ਤੀਰ ਦਾ ਅਕਾਰ"
+
+#: cddb-slave2/cddb-slave-capplet.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"ਸਹਾਇਤਾ ਵੇਖਾਉਣ ਵਿੱਚ ਗਲਤੀ ਹੈ: \n"
+"%s"
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:696
+msgid "Login Information"
+msgstr "ਲਾਗਇੰਨ ਜਾਣਕਾਰੀ"
+
+#: cddb-slave2/cddb-slave-capplet.c:702
+msgid "Sen_d no information"
+msgstr "_ਕੋਈ ਜਾਣਕਾਰੀ ਨਾ ਭੇਜੋ"
+
+#: cddb-slave2/cddb-slave-capplet.c:711
+msgid "Send real _information"
+msgstr "ਸਹੀ _ਜਾਣਕਾਰੀ ਭੇਜੋ"
+
+#: cddb-slave2/cddb-slave-capplet.c:720
+msgid "Send _other information:"
+msgstr "_ਹੋਰ ਜਾਣਕਾਰੀ ਭੇਜੋਃ"
+
+#: cddb-slave2/cddb-slave-capplet.c:745
+msgid "_Name:"
+msgstr "_ਨਾਂਃ"
+
+#: cddb-slave2/cddb-slave-capplet.c:765
+msgid "Hostna_me:"
+msgstr "ਮੇਜ਼_ਬਾਨ ਨਾਂਃ"
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:785 cddb-slave2/cddb-slave-capplet.c:829
+msgid "Server"
+msgstr "ਸਰਵਰ"
+
+#: cddb-slave2/cddb-slave-capplet.c:791
+msgid "FreeDB _round robin server"
+msgstr "FreeDB _ਰਾਊਡ ਰਾਬਿਨ ਸਰਵਰ"
+
+#: cddb-slave2/cddb-slave-capplet.c:797
+msgid "Other _FreeDB server:"
+msgstr "_FreeDB ਸਰਵਰ:"
+
+#: cddb-slave2/cddb-slave-capplet.c:835
+msgid "Location"
+msgstr "ਸਥਿਤੀ"
+
+#: cddb-slave2/cddb-slave-capplet.c:864
+msgid "_Update Server List"
+msgstr "ਸਰਵਰ ਸੂਚੀ ਦਾ _ਨਵੀਨੀਕਰਨ ਕਰੋ"
+
+#: cddb-slave2/cddb-slave-capplet.c:871
+msgid "Other _server:"
+msgstr "ਹੋਰ _ਸਰਵਰਃ"
+
+#: cddb-slave2/cddb-slave-capplet.c:891
+msgid "Hos_tname:"
+msgstr "ਮੇਜ਼_ਬਾਨ ਨਾਂਃ"
+
+#: cddb-slave2/cddb-slave-capplet.c:908
+msgid "_Port:"
+msgstr "_ਪੋਰਟਃ"
+
+#: cddb-slave2/cddb-slave-capplet.c:972
+msgid "CD Database Preferences"
+msgstr "ਸੀਡੀ ਡਾਟਾਬੇਸ ਪਸੰਦ"
+
+#: cddb-slave2/cddb-slave.c:221
+msgid "Unknown / Unknown"
+msgstr "ਅਣਪਛਾਤਾ/ਅਣਪਛਾਤਾ"
+
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:227 grecord/src/gsr-window.c:697
+#: grecord/src/gsr-window.c:706 grecord/src/gsr-window.c:715
+#: grecord/src/gsr-window.c:725 grecord/src/gsr-window.c:1032
+msgid "Unknown"
+msgstr "ਅਣਪਛਾਤਾ"
+
+#: cddb-slave2/cddb-slave.c:272
+msgid "Multiple matches..."
+msgstr "ਬਹੁ ਮੇਲ..."
+
+#: cddb-slave2/cddb-slave.c:277
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+"ਡਾਟਾਬੇਸ ਵਿੱਚ ਬਹੁ-ਮੇਲ ਲੱਭੇ ਹਨ।\n"
+"ਹੇਠਾਂ ਸੰਭਵ ਮੇਲ ਦਿੱਤੇ ਗਏ, ਵਧੇਰੇ ਢੁਕਵੇ ਦੀ ਚੋਣ ਕਰੋ।"
+
+#: cddb-slave2/cddb-slave.c:288
+msgid "Category"
+msgstr "ਵਰਗ"
+
+#: cddb-slave2/cddb-slave.c:292
+msgid "Disc ID"
+msgstr "ਡਿਸਕ ਸ਼ੰਨ ਨੰ"
+
+#: cddb-slave2/cddb-slave.c:296
+msgid "Artist and Title"
+msgstr "ਕਲਾਕਾਰ ਤੇ ਸਿਰਲੇਖ"
+
+#: cddb-slave2/cddb-slave.c:1351 cddb-slave2/cddb-slave.c:1353
+#: gnome-cd/gnome-cd.c:176
+msgid "Unknown track"
+msgstr "ਅਣਪਛਾਤਾ ਟਰੈਕ"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+msgid "CD Database Server"
+msgstr "ਸੀਡੀ ਡਾਟਾਬੇਸ ਸਰਵਰ"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+msgid "Modify your CD database server preferences"
+msgstr "ਮੇਰੇ ਸੀਡੀ ਡਾਟਾਬੇਸ ਪਸੰਦ ਵਿੱਚ ਸੋਧ ਕਰੋ"
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Blues"
+msgstr "ਬਲਿਊ"
+
+#: cddb-slave2/cddb-track-editor.c:80
+msgid "Classical Rock"
+msgstr "ਕਲਾਸਿਕਲ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Country"
+msgstr "ਕੰਟਰੀ"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Dance"
+msgstr "ਡਾਂਸ"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Disco"
+msgstr "ਡਿਸਕੋ"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Funk"
+msgstr "ਫੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Grunge"
+msgstr "ਗਰੂਂਗ"
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Hip-Hop"
+msgstr "ਹਿੱਪ-ਹੋਪ"
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Jazz"
+msgstr "ਜ਼ੇਜ਼"
+
+#: cddb-slave2/cddb-track-editor.c:88
+msgid "Metal"
+msgstr "ਮੇਟਲ"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "New Age"
+msgstr "ਨਿਊ-ਏਜ਼"
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Oldies"
+msgstr "ਓਲਡੀਜ਼"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Other"
+msgstr "ਹੋਰ"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "Pop"
+msgstr "ਪਾਪ"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "R&B"
+msgstr "R&B"
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Rap"
+msgstr "ਰੈਪ"
+
+#: cddb-slave2/cddb-track-editor.c:95
+msgid "Reggae"
+msgstr "ਰੇਗਾਏ"
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Rock"
+msgstr "ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Techno"
+msgstr "ਟਿਕਨੋ"
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Industrial"
+msgstr "ਇੰਡਸਟਰੀਲ"
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Alternative"
+msgstr "ਅਲਟਰਨੇਟਿਵ"
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Ska"
+msgstr "ਸਕਾ"
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Death Metal"
+msgstr "ਡੈਥ ਮੈਟਲ"
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Pranks"
+msgstr "ਪਰੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Soundtrack"
+msgstr "ਸਾਊਡਟਰੈਕ"
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Euro-Techno"
+msgstr "ਯੂਰੋ-ਟੈਕਨੋ"
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Ambient"
+msgstr "ਅੰਬਇਟ"
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Trip-Hop"
+msgstr "ਟਰਿਪ-ਹੋਪ"
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Vocal"
+msgstr "ਵੋਕਲ"
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Jazz+Funk"
+msgstr "ਜ਼ੇਜ਼+ਫੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Fusion"
+msgstr "ਫੂਸ਼ਨ"
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Trance"
+msgstr "ਟਰਸ਼"
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Classical"
+msgstr "ਕਲਾਸਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:112
+msgid "Instrumental"
+msgstr "ਇੰਸਟਰੂਮਿੰਟ"
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "Acid"
+msgstr "ਐਸਿਡ"
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "House"
+msgstr "ਹਾਊਸ"
+
+#: cddb-slave2/cddb-track-editor.c:115
+msgid "Game"
+msgstr "ਗੇਮ"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Sound Clip"
+msgstr "ਸਾਊਡ ਕਲਿੱਪ"
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Gospel"
+msgstr "ਗੋਸਪਲ"
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Noise"
+msgstr "ਨੋਵਾਇਸ"
+
+#: cddb-slave2/cddb-track-editor.c:119
+msgid "Alt"
+msgstr "ਆਲਟ"
+
+#: cddb-slave2/cddb-track-editor.c:120
+msgid "Bass"
+msgstr "ਬਾਸ"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Soul"
+msgstr "ਸੋਲ"
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Punk"
+msgstr "ਪੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Space"
+msgstr "ਸਪੇਸ"
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Meditative"
+msgstr "ਮੀਡੀਟਿਵ"
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Pop"
+msgstr "ਇੰਸਟਰੂਮਿੰਟ ਪਾਪ"
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Instrumental Rock"
+msgstr "ਇੰਸਟਰੂਮਿੰਟ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Ethnic"
+msgstr "ਈਥਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Gothic"
+msgstr "ਗੋਥਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Darkwave"
+msgstr "ਡਾਰਕਵੇਵ"
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Techno-Industrial"
+msgstr "ਟੈਕਨੋ-ਇਡੀਸਟਰੀਅਲ"
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Electronic"
+msgstr "ਇਕਟਰੋਨਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Pop-Folk"
+msgstr "ਪਾਪ-ਫੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Eurodance"
+msgstr "ਯੂਰੋਡਾਂਸ"
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Dream"
+msgstr "ਡਰੀਮ"
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Southern Rock"
+msgstr "ਸਾਊਥਰਨ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Comedy"
+msgstr "ਕਾਮੇਡੀ"
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Cult"
+msgstr "ਕਾਲਟ"
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Gangsta Rap"
+msgstr "ਗੰਗਟਾ ਰੈਪ"
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Top 40"
+msgstr "ਟਾਪ ੪੦"
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Christian Rap"
+msgstr "ਕਿਸ਼ਟਿਨਾ ਰੈਪ"
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Pop/Funk"
+msgstr "ਪਾਪ/ਫੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Jungle"
+msgstr "ਜੰਗਲ"
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Native American"
+msgstr "ਨੇਟਿਵ ਅਮਰੀਕਨ"
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "Cabaret"
+msgstr "ਕਬਾਰੇਟ"
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "New Wave"
+msgstr "ਨਿਊ ਵੇਵ"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Psychedelic"
+msgstr "ਸ਼ਾਚਡਲਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:147
+msgid "Rave"
+msgstr "ਰੇਵ"
+
+#: cddb-slave2/cddb-track-editor.c:148
+msgid "Showtunes"
+msgstr "ਸ਼ੋਟਿਊਨਸ"
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Trailer"
+msgstr "ਟਰੇਲਰ"
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Lo-Fi"
+msgstr "ਲੋ-ਫੀ"
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Tribal"
+msgstr "ਟਰੀਬਲ"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Punk"
+msgstr "ਐਸਿਡ ਪੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Acid Jazz"
+msgstr "ਐਸਿਡ ਜ਼ੇਜ਼"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Polka"
+msgstr "ਪੋਲਕਾ"
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Retro"
+msgstr "ਰੀਟਰੋ"
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Musical"
+msgstr "ਮਿਊਜੀਕਲ"
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Rock & Roll"
+msgstr "ਰਾਕ & ਰੋਲ"
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Hard Rock"
+msgstr "ਹਾਰਡ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk"
+msgstr "ਫੋਕ"
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "Folk/Rock"
+msgstr "ਫੋਕ/ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "National Folk"
+msgstr "ਨੈਸ਼ਨਲ ਫੋਕ"
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Swing"
+msgstr "ਸਵਿੰਗ"
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Fast-Fusion"
+msgstr "ਫਾਸਟ-ਫਿਊਜ਼ਨ"
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Bebop"
+msgstr "ਬੀਬੋਪ"
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Latin"
+msgstr "ਲੈਟਿਨ"
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Revival"
+msgstr "ਰੀਵੀਵੇਲ"
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Celtic"
+msgstr "ਸੇਲਟਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Bluegrass"
+msgstr "ਬਲਿਊਗਰਾਸ"
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Avantgarde"
+msgstr "ਅਵੇਨਟੇਗਰੇਡ"
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Gothic Rock"
+msgstr "ਗੋਥਿਕ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Progressive Rock"
+msgstr "ਪਰੋਗੈਸਿਵ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Psychedelic Rock"
+msgstr "ਸ਼ਾਚਡਲਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Symphonic Rock"
+msgstr "ਸਿਮਫੋਨੀ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Slow Rock"
+msgstr "ਸਲੋ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Big Band"
+msgstr "ਬਿੱਗ ਬੈਡ"
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Chorus"
+msgstr "ਚੋਰਸ"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Easy Listening"
+msgstr "ਈਜ਼ੀ ਲਿਸਨਇੰਗ"
+
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Acoustic"
+msgstr "ਅਸੂਟਿਕ"
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Humour"
+msgstr "ਹੂਮਅਰ"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Speech"
+msgstr "ਭਾਸ਼ਣ"
+
+#: cddb-slave2/cddb-track-editor.c:181
+msgid "Chanson"
+msgstr "ਚਾਨਸਨ"
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Opera"
+msgstr "ਓਪਰਾ"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Chamber Music"
+msgstr "ਚੈਂਬਰ ਮਿਊਜਕ"
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Sonata"
+msgstr "ਸੋਨਟਾ"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Symphony"
+msgstr "ਸਿਮਫੋਨੀ"
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Booty Bass"
+msgstr "ਬੂਟੀ ਬਾਸ"
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Primus"
+msgstr "ਪਰੀਮਸ"
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Porn Groove"
+msgstr "ਪਰੋਮ ਗਰੂਵ"
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Satire"
+msgstr "ਸਾਟਰੀ"
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Slow Jam"
+msgstr "ਸਲੋ ਜੈਮ"
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Club"
+msgstr "ਕਲੱਬ"
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Tango"
+msgstr "ਟਿਨਗੋ"
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Samba"
+msgstr "ਸਾਂਬਾ"
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Folklore"
+msgstr "ਫੋਕਲੋਰ"
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Ballad"
+msgstr "ਬਾਲਡ"
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Power Ballad"
+msgstr "ਪਾਵਰ ਬਾਲਡ"
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Rhythmic Soul"
+msgstr "ਰਿਥਮ ਸੋਲ"
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Freestyle"
+msgstr "ਫਰੀਸਟਾਇਲ"
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Duet"
+msgstr "ਡਿਊਟ"
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Punk Rock"
+msgstr "ਪੰਕ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "Drum Solo"
+msgstr "ਡਰੰਮ ਸੋਲੋ"
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "A Cappella"
+msgstr "ਏ ਕੈਪਲਿਲਾ"
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Euro-House"
+msgstr "ਯੂਰੋ-ਹਾਊਸ"
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Dance Hall"
+msgstr "ਡਾਂਸ ਹਾਲ"
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Goa"
+msgstr "ਗੋਆ"
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Drum & Bass"
+msgstr "ਡਰੰਮ & ਬਾਸ"
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Club-House"
+msgstr "ਕਲੱਬ-ਹਾਊਸ"
+
+#: cddb-slave2/cddb-track-editor.c:208
+msgid "Hardcore"
+msgstr "ਹਾਰਡਕੋਰ"
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Terror"
+msgstr "ਟੈਟਰ"
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "Indie"
+msgstr "ਇੰਡੀਏ"
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "BritPop"
+msgstr "ਬਰਾਈਪਾਪ"
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Negerpunk"
+msgstr "ਨੀਗਰਪੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Polsk Punk"
+msgstr "ਪੋਲਸਕ ਪੰਕ"
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Beat"
+msgstr "ਬੀਟ"
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Christian Gangsta Rap"
+msgstr "ਕ੍ਰਿਸ਼ਟਿਨ ਗੰਗਸਟ ਰੈਪ"
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Heavy Metal"
+msgstr "ਹੈਵੀ ਮੈਟਲ"
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Black Metal"
+msgstr "ਬਲੈਕ ਮੈਟਲ"
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Crossover"
+msgstr "ਕਰਾਸਓਵਰ"
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Contemporary Christian"
+msgstr "ਕੰਨਟਪਰੀ ਕ੍ਰਿਸ਼ਟਿਨ"
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Christian Rock"
+msgstr "ਕ੍ਰਿਸ਼ਟਿਨ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Merengue"
+msgstr "ਮੇਰੇਗੂਏ"
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Salsa"
+msgstr "ਸਾਲਸਾ"
+
+#: cddb-slave2/cddb-track-editor.c:223
+msgid "Thrash Metal"
+msgstr "ਥਰਸ਼ ਮੈਟਲ"
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "Anime"
+msgstr "ਅਨੀਮ"
+
+#: cddb-slave2/cddb-track-editor.c:225
+msgid "JPop"
+msgstr "ਜੇਪਾਪ"
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Synthpop"
+msgstr "ਸਨਥਪਾਪ"
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Nu-Metal"
+msgstr "ਨੂ ਮੈਟਲ"
+
+#: cddb-slave2/cddb-track-editor.c:228
+msgid "Art Rock"
+msgstr "ਆਰਟ ਰਾਕ"
+
+#: cddb-slave2/cddb-track-editor.c:532 gnome-cd/callbacks.c:558
+#: gnome-cd/callbacks.c:690 gnome-cd/callbacks.c:701 gnome-cd/display.c:74
+msgid "Unknown Artist"
+msgstr "ਅਣਪਛਾਤਾ ਕਲਾਕਾਰ"
+
+#: cddb-slave2/cddb-track-editor.c:533 gnome-cd/callbacks.c:559
+#: gnome-cd/callbacks.c:693 gnome-cd/callbacks.c:705 gnome-cd/display.c:75
+msgid "Unknown Album"
+msgstr "ਅਣਪਛਾਤੀ ਐਲਬਮ"
+
+#: cddb-slave2/cddb-track-editor.c:541
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr "ਡਿਸਕ ਸ਼ੰਨ-ਨੰ ਸੋਧਃ %s"
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:630
+msgid "Editing Disc ID: "
+msgstr "ਡਿਸਕ ਸ਼ੰਨ-ਨੰ ਸੋਧਃ"
+
+#: cddb-slave2/cddb-track-editor.c:641
+msgid "_Artist:"
+msgstr "_ਕਲਾਕਾਰ"
+
+#: cddb-slave2/cddb-track-editor.c:655
+msgid "Disc _Title:"
+msgstr "ਡਿਸਕ _ਸਿਰਲੇਖਃ"
+
+#: cddb-slave2/cddb-track-editor.c:665
+msgid "Show advanced disc options"
+msgstr "ਤਕਨੀਕੀ ਡਿਸਕ ਚੋਣ ਨੂੰ ਵੇਖਾਉ"
+
+#: cddb-slave2/cddb-track-editor.c:666
+msgid "Hide advanced disc options"
+msgstr "ਤਕਨੀਕੀ ਡਿਸਕ ਚੋਣ ਨੂੰ ੳਹਲੇ ਕਰੋ"
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:678
+msgid "_Disc comments:"
+msgstr "_ਡਿਸਕ ਟਿੱਪਣੀਃ"
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:693
+msgid "_Genre:"
+msgstr "_ਸ਼ੈਲੀਃ"
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:709
+msgid "_Year:"
+msgstr "_ਸਾਲਃ"
+
+#: cddb-slave2/cddb-track-editor.c:748
+msgid "Title"
+msgstr "ਸਿਰਲੇਖ"
+
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Length"
+msgstr "ਲੰਬਾਈ"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:766
+msgid "Show advanced track options"
+msgstr "ਤਕਨੀਕੀ ਟਰੈਕ ਚੋਣ ਨੂੰ ਵੇਖਾਉ"
+
+#: cddb-slave2/cddb-track-editor.c:767
+msgid "Hide advanced track options"
+msgstr "ਤਕਨੀਕੀ ਟਰੈਕ ਚੋਣ ਨੂੰ ੳਹਲੇ ਕਰੋ"
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:775
+msgid "_Extra track data:"
+msgstr "_ਵਾਧੂ ਟਰੈਕ ਡਾਟਾਃ"
+
+#: cddb-slave2/cddb-track-editor.c:903
+msgid "CDDB Track Editor"
+msgstr "CDDB ਟਰੈਕ ਸੋਧਕ"
+
+#: cddb-slave2/cddb-track-editor.c:1040
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+"CDDB ਟਰੈਕ-ਸੋਧਕ ਫੈਕਟਰੀ ਬਣਾ ਨਹੀ ਸਕਿਆ।\n"
+"ਇਸ ਦਾ ਕਾਰਨ ਇਹ ਹੈ ਕਿ CDDB ਟਰੈਕ ਸੋਧਕ ਦੀ ਇੱਕ ਨਕਲ ਪਹਿਲਾਂ ਹੀ ਚੱਲ ਰਹੀ ਹੈ।\n"
+
+#: gnome-cd/access/cddisplayaccessible.c:118
+msgid "CD Display"
+msgstr "ਸੀਡੀ ਦਰਿਸ਼"
+
+#: gnome-cd/access/cddisplayaccessible.c:120
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr "ਜਾਣਕਾਰੀ ਵੇਖਾਉ, ਮੌਜੂਦਾ ਚੱਲ ਰਹੀ ਐਲਬਮ, ਕਲਾਕਾਰ ਅਤੇ ਲ਼ੰਘੇ ਸਮੇ ਬਾਰੇ"
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Time Line"
+msgstr "ਸਮਾਂ ਸਤਰ"
+
+#: gnome-cd/access/cddisplayaccessible.c:190
+msgid "Line for displaying the time elapsed for the current track"
+msgstr "ਸਤਰ, ਮੌਜੂਦਾ ਟਰੈਕ ਦਾ ਲੰਘਿਆ ਸਮਾਂ ਵੇਖਾਉਣ ਲਈ"
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+msgid "Info Line"
+msgstr "ਜਾਣਕਾਰੀ ਸਤਰ"
+
+#: gnome-cd/access/cddisplayaccessible.c:194
+msgid "Line for displaying information"
+msgstr "ਸਤਰ, ਜਾਣਕਾਰੀ ਵੇਖਾਉ ਲਈ"
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Artist Line"
+msgstr "ਕਲਾਕਾਰ ਸਤਰ"
+
+#: gnome-cd/access/cddisplayaccessible.c:198
+msgid "Line for displaying the name of the artist"
+msgstr "ਸਤਰ, ਕਲਾਕਾਰ ਦਾ ਨਾਂ ਵੇਖਾਉਣ ਲਈ"
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Album Line"
+msgstr "ਐਲਬਮ ਸਤਰ"
+
+#: gnome-cd/access/cddisplayaccessible.c:202
+msgid "Line for displaying the name of the album"
+msgstr "ਸਤਰ, ਐਲਬਮ ਦਾ ਨਾਂ ਵੇਖਾਉਣ ਲਈ"
+
+#: gnome-cd/callbacks.c:83 gnome-cd/callbacks.c:171 gnome-cd/callbacks.c:270
+#: gnome-cd/callbacks.c:573 gnome-cd/gnome-cd.c:671 grecord/gsr.xml.h:13
+msgid "Play"
+msgstr "ਚਲਾਉ"
+
+#: gnome-cd/callbacks.c:156 gnome-cd/callbacks.c:202 gnome-cd/callbacks.c:232
+#: gnome-cd/callbacks.c:312 gnome-cd/callbacks.c:352 gnome-cd/callbacks.c:376
+#: gnome-cd/callbacks.c:417 gnome-cd/callbacks.c:511
+msgid "Pause"
+msgstr "ਵਿਰਾਮ"
+
+#: gnome-cd/callbacks.c:557
+#, c-format
+msgid "Playing %s - %s"
+msgstr "ਚੱਲ ਰਿਹਾ ਹੈ %s - %s"
+
+#: gnome-cd/callbacks.c:561
+msgid "Playing"
+msgstr "ਚੱਲ ਰਿਹਾ ਹੈ"
+
+#: gnome-cd/callbacks.c:585
+msgid "Paused"
+msgstr "ਵਿਰਾਮ"
+
+#: gnome-cd/callbacks.c:631 gnome-cd/callbacks.c:873 gnome-cd/gnome-cd.c:88
+#: gnome-cd/gnome-cd.c:534 gnome-cd/gnome-cd.c:721 gnome-cd/gnome-cd.c:724
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "ਸੀਡੀ ਪਲੇਅਰ"
+
+#: gnome-cd/callbacks.c:649
+msgid "Stopped"
+msgstr "ਰੁਕਿਆ"
+
+#: gnome-cd/callbacks.c:655
+msgid "Disc error"
+msgstr "ਡਿਸਕ ਗਲਤੀ"
+
+#: gnome-cd/callbacks.c:666 gnome-cd/callbacks.c:761
+msgid "No disc"
+msgstr "ਕੋਈ ਡਿਸਕ ਨਹੀ"
+
+#: gnome-cd/callbacks.c:789
+msgid "Drive open"
+msgstr "ਡਰਾਇਵ ਖੁੱਲੀ ਹੈ"
+
+#: gnome-cd/callbacks.c:813
+msgid "Data CD"
+msgstr "ਡਾਟਾ ਸੀਡੀ"
+
+#: gnome-cd/callbacks.c:835 gnome-cd/callbacks.c:840
+msgid "No Cdrom"
+msgstr "ਕੋਈ ਸੀਡੀ-ਰੋਮ ਨਹੀ"
+
+#: gnome-cd/callbacks.c:851
+msgid "Drive Error"
+msgstr "ਡਰਾਇਵ ਗਲਤੀ"
+
+#: gnome-cd/callbacks.c:875
+msgid "A CD player for GNOME"
+msgstr "ਗਨੋਮ ਲਈ ਇੱਕ ਸੀਡੀ ਪਲੇਅਰ"
+
+#: gnome-cd/cdrom.c:368
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr "ਤੁਹਾਡੇ ਕੋਲ %s ਨੂੰ ਖੋਲਣ ਦੀ ਮਨਜ਼ੂਰੀ ਨਹੀ ਹੈ।"
+
+#: gnome-cd/cdrom.c:374
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not present in your machine\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+"%s ਠੀਕ ਸੀਡੀ ਜੰਤਰ ਨਹੀ ਜਾਪਦਾ ਹੈ, ਕਿਉਕਿ:\n"
+"a) ਸੀਡੀ ਦੀ ਸਹਾਇਤਾ ਤੁਹਾਡੇ ਸਿਸਟਮ ਤੇ ਨਹੀ ਹੈ।\n"
+"b) ਤੁਹਾਨੂੰ ਸੀਡੀ ਡਰਾਇਵ ਨੂੰ ਖੋਲਣ ਲਈ ਠੀਕ ਮਨਜ਼ੂਰੀਆ ਨਹੀ ਹਨ।\n"
+"c) %s  ਇੱਕ ਸੀਡੀ ਡਰਾਇਵ ਨਹੀ ਹੈ।\n"
+
+#: gnome-cd/gnome-cd.c:215
+#, c-format
+msgid "%d - Unknown"
+msgstr "%d - ਅਣਪਛਾਤਾ"
+
+#: gnome-cd/gnome-cd.c:329
+msgid "P_revious track"
+msgstr "_ਪਿਛਲਾ ਗੀਤ"
+
+#: gnome-cd/gnome-cd.c:330 grecord/gsr.xml.h:44
+msgid "_Stop"
+msgstr "_ਰੋਕੋ"
+
+#: gnome-cd/gnome-cd.c:331
+msgid "_Play / Pause"
+msgstr "_ਚਲਾਉ /ਵਿਰਾਮ"
+
+#: gnome-cd/gnome-cd.c:332
+msgid "_Next track"
+msgstr "_ਅਗਲਾ ਗੀਤ"
+
+#: gnome-cd/gnome-cd.c:333
+msgid "_Eject disc"
+msgstr "_ਡਿਸਕ ਕੱਢੋ"
+
+#: gnome-cd/gnome-cd.c:334 grecord/gsr.xml.h:37
+msgid "_Help"
+msgstr "_ਸਹਾਇਤਾ"
+
+#: gnome-cd/gnome-cd.c:335
+msgid "_About CD player"
+msgstr "ਸੀਡੀ ਪਲੇਅਰ _ਬਾਰੇ"
+
+#: gnome-cd/gnome-cd.c:454
+msgid ""
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
+msgstr ""
+"ਕੋਈ ਸੀਡੀ ਜੰਤਰ ਨਿਰਧਾਰਿਤ ਨਹੀ ਹੈ, ਇਸਕਰਕੇ ਸੀਡੀ ਪਲੇਅਰ\n"
+"ਚੱਲ ਨਹੀ ਸਕੇਗਾ। 'ਜੰਤਰ ਨਿਰਧਾਰਨ' ਨੂੰ ਦਬਾਕੇ ਤਖਤੀ ਖੋਲ ਕੇ\n"
+"ਜੰਤਰ ਨਿਰਧਾਰਿਤ ਕਰੋ ਜਾਂ 'ਬਾਹਰ\" ਦਬਾਕੇ ਸੀਡੀ ਪਲੇਅਰ ਤੋ ਬਾਹਰ ਆ ਜਾਉ।"
+
+#: gnome-cd/gnome-cd.c:458
+msgid "Set device"
+msgstr "ਜੰਤਰ ਨਿਰਧਾਰਨ"
+
+#: gnome-cd/gnome-cd.c:460
+msgid "No CD device"
+msgstr "ਕੋਈ ਸੀਡੀ ਜੰਤਰ ਨਹੀ"
+
+#: gnome-cd/gnome-cd.c:513
+msgid ""
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
+msgstr ""
+"ਸੀਡੀ ਪਲੇਅਡ ਠੀਕ ਤਰਾਂ ਚੱਲਣ ਦੇ ਅਸਮੱਰਥ ਹੈ।\n"
+"\n"
+"ਵਧੇਰੇ ਜਾਣਕਾਰੀ ਲਈ 'ਵੇਰਵਾ' ਦਬਾਉ ਤਾਂਕਿ ਅਸਫਲਤਾ ਦੇ ਕਾਰਨ ਵੇਖੇ ਜਾਣ ਸਕਣ।\n"
+"\n"
+"'ਜੰਤਰ ਨਿਰਧਾਰਨ' ਦਬਾਕੇ ਤੁਸੀ ਉਸ ਤਖਤੀ ਤੇ ਜਾ ਸਕਦੇ ਹੋ, ਜਿਥੋ ਕਿ ਤੁਸੀ ਜੰਤਰ ਨਿਧਾਰਿਤ ਕਰ ਸਕਦੇ ਹੋ "
+"ਜਾਂ'ਬਾਹਰ' ਦਬਾਕੇ ਸੀਡੀ ਪਲੇਅਰ ਤੋ ਬਾਹਰ ਜਾ ਸਕਦੇ ਹੋ।"
+
+#: gnome-cd/gnome-cd.c:517
+msgid "_Details"
+msgstr "_ਵੇਰਵਾ"
+
+#: gnome-cd/gnome-cd.c:518
+msgid "_Set device"
+msgstr "_ਜੰਤਰ ਨਿਰਧਾਰਨ"
+
+#: gnome-cd/gnome-cd.c:520
+msgid "Invalid CD device"
+msgstr "ਗਲਤ ਸੀਡੀ ਜੰਤਰ"
+
+#: gnome-cd/gnome-cd.c:584
+msgid "Volume control"
+msgstr "ਆਵਾਜ਼ ਕੰਟਰੋਲ"
+
+#: gnome-cd/gnome-cd.c:595
+msgid "Position"
+msgstr "ਸਥਿਤੀ"
+
+#: gnome-cd/gnome-cd.c:612
+msgid "Open track editor"
+msgstr "ਟਰੈਕ ਸੋਧਕ ਖੋਲ੍ਹੋ"
+
+#: gnome-cd/gnome-cd.c:613
+msgid "Track editor"
+msgstr "ਟਰੈਕ ਸੋਧਕ"
+
+#: gnome-cd/gnome-cd.c:620
+msgid "Open preferences"
+msgstr "ਮੇਰੀ ਪਸੰਦ ਖੋਲ੍ਹੋ"
+
+#: gnome-cd/gnome-cd.c:621
+msgid "Preferences"
+msgstr "ਮੇਰੀ ਪਸੰਦ"
+
+#: gnome-cd/gnome-cd.c:629
+msgid "Track List"
+msgstr "ਗੀਤ ਸੂਚੀ"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous track"
+msgstr "ਪਿਛਲਾ ਗੀਤ"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous"
+msgstr "ਪਿਛਲਾ"
+
+#: gnome-cd/gnome-cd.c:654
+msgid "Rewind"
+msgstr "ਪਿੱਛੇ"
+
+#: gnome-cd/gnome-cd.c:671
+msgid "Play / Pause"
+msgstr "ਚਲਾਉ / ਵਿਰਾਮ"
+
+#: gnome-cd/gnome-cd.c:676 grecord/gsr.xml.h:30
+msgid "Stop"
+msgstr "ਰੋਕੋ"
+
+#: gnome-cd/gnome-cd.c:680
+msgid "Fast forward"
+msgstr "ਤੇਜ਼ ਅੱਗੇ"
+
+#: gnome-cd/gnome-cd.c:688
+msgid "Next track"
+msgstr "ਅਗਲਾ ਗੀਤ"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject CD"
+msgstr "ਸੀਡੀ ਬਾਹਰ"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject"
+msgstr "ਬਾਹਰ"
+
+#: gnome-cd/gnome-cd.c:808
+msgid "CD device to use"
+msgstr "ਵਰਤਣ ਲਈ ਸੀਡੀ ਜੰਤਰ"
+
+#: gnome-cd/gnome-cd.c:810
+msgid "Only start if there isn't already a CD player application running"
+msgstr "ਸਿਰਫ ਤਾਂ ਹੀ ਚਲਾਉ, ਜੇਕਰ ਹੋਰ ਸੀਡੀ-ਪਲੇਅਰ ਕਾਰਜ ਨਹੀ ਚੱਲ ਰਿਹਾ ਹੈ"
+
+#: gnome-cd/gnome-cd.c:812
+msgid "Play the CD on startup"
+msgstr "ਸ਼ੁਰੂ ਵੇਲੇ ਸੀਡੀ ਚਲਾਉ"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:842
+msgid "Cannot create player"
+msgstr "ਪਲੇਅਰ ਬਣ ਨਹੀ ਸਕਿਆ"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr "ਆਡੀਓ ਸੀਡੀ ਚਲਾਉ"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "CD player theme"
+msgstr "ਸੀਡੀ ਪਲੇਅਰ ਸਰੂਪ"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Device path"
+msgstr "ਜੰਤਰ ਰਾਹ"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "Eject the CD when CD player quits?"
+msgstr "ਬਾਹਰ ਕੱਢੇ ਜਦੋ ਸੀਡੀ ਪਲੇਅਰ ਬੰਦ ਹੋਵੇ ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Play when the CD player starts?"
+msgstr "ਚਲਾਏ ਸੀਡੀ ਪਲੇਅਰ ਚਾਲੂ ਹੋਵੇ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD be ejected when the CD player quits?"
+msgstr "ਕੀ ਜਦੋ ਸੀਡੀ ਪਲੇਅਰ ਬੰਦ ਹੋਵੇ ਤਾਂ ਸੀਡੀ ਨੂੰ ਬਾਹਰ ਕੱਢੇ ?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "ਸੀਡੀ ਡਰਾਇਵ ਲਈ ਰਾਹ ਜੋ ਕਿ ਸੀਡੀ ਪਲੇਅਰ ਸੀਡੀ ਚਲਾਉਣ ਲਈ ਵਰਤੇ"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "What theme should the CD player use for its appearance"
+msgstr "ਕਿਹਡ਼ਾ ਸਰੂਪ ਸੀਡੀ ਪਲੇਅਰ ਆਪਣੇ ਲਈ ਵਰਤੇ"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid "When the CD player is started, should it start playing the CD?"
+msgstr "ਕੀ ਜਦੋ ਸੀਡੀ ਪਲੇਅਰ ਚਾਲੂ ਹੋਵੇ ਤਾਂ ਸੀਡੀ ਨੂੰ ਚਲਾਏ?"
+
+#: gnome-cd/preferences.c:84
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+"%s\n"
+"ਇਸ ਦਾ ਅਰਥ ਇਹ ਹੈ ਕਿ ਸੀਡੀ ਪਲੇਅਰ ਚਲੇਗਾ ਨਹੀ।"
+
+#: gnome-cd/preferences.c:85
+msgid "Error setting device"
+msgstr "ਜੰਤਰ ਨਿਰਧਾਰਨ ਵਿੱਚ ਗਲਤੀ"
+
+#: gnome-cd/preferences.c:638
+msgid "CD Player Preferences"
+msgstr "ਸੀਡੀ ਪਲੇਅਰ ਪਸੰਦ"
+
+#: gnome-cd/preferences.c:672
+msgid "CD Player De_vice:"
+msgstr "ਸੀਡੀ ਪਲੇਅਰ ਜੰਤਰਃ"
+
+#: gnome-cd/preferences.c:696
+msgid "_Apply change"
+msgstr "_ਤਬਦੀਲੀਆਂ ਲਾਗੂ"
+
+#: gnome-cd/preferences.c:708
+msgid "CD Player Behaviour:"
+msgstr "ਸੀਡੀ ਪਲੇਅਰ ਦਾ ਵਿਵਹਾਰ"
+
+#: gnome-cd/preferences.c:721
+msgid "Start _playing CD when CD Player starts"
+msgstr "ਜਦੋ ਸੀਡੀ _ਪਲੇਅਰ ਚਾਲੂ ਹੋਵੇ ਤਾਂ ਸੀਡੀ ਨੂੰ ਚਲਾਉ"
+
+#: gnome-cd/preferences.c:722
+msgid "Start playing CD when CD Player starts"
+msgstr "ਜਦੋ ਸੀਡੀ ਪਲੇਅਰ ਚਾਲੂ ਹੋਵੇ ਤਾਂ ਸੀਡੀ ਨੂੰ ਚਲਾਉ"
+
+#: gnome-cd/preferences.c:734
+msgid "Attempt to _eject CD when CD Player exits"
+msgstr "ਜਦੋ ਸੀਡੀ ਪਲੇਅਰ ਬੰਦ ਹੋਵੇ ਤਾਂ ਸੀਡੀ ਨੂੰ _ਬਾਹਰ ਕੱਢੋ"
+
+#: gnome-cd/preferences.c:735
+msgid "Attempt to eject CD when CD Player exits"
+msgstr "ਜਦੋ ਸੀਡੀ ਪਲੇਅਰ ਬੰਦ ਹੋਵੇ ਤਾਂ ਸੀਡੀ ਨੂੰ ਬਾਹਰ ਕੱਢੋ"
+
+#: gnome-cd/preferences.c:755
+msgid "_Available Themes:"
+msgstr "_ਉਪਲੱਬਧ ਸਰੂਪਃ"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr "ਧੁਨੀ ਅੰਸ਼ ਰਿਕਾਰਡ ਕਰੋ"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:914
+#: grecord/src/gsr-window.c:1241
+msgid "Sound Recorder"
+msgstr "ਧੁਨੀ ਰਿਕਾਰਡਰ"
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "ਇਸ ਬਾਰੇ"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "ਕਰੋ"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "ਇਹ ਝਰੋਖਾ ਬੰਦ ਕਰੋ"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "ਭਾਗ"
+
+#: grecord/gsr.xml.h:5
+msgid "Create a new sample"
+msgstr "ਨਵਾਂ ਨਮੂਨਾ ਬਣਾਉ"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "ਧੁਨੀ ਰਿਕਾਰਡਰ ਲਈ ਸਹਾਇਤਾ ਵੇਖਾਉ"
+
+#: grecord/gsr.xml.h:7 grecord/src/gsr-window.c:783
+msgid "File Information"
+msgstr "ਫਾਇਲ ਜਾਣਕਾਰੀ"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "ਫਾਇਲ _ਜਾਣਕਾਰੀ"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "ਮੁੱਖ ਸੰਦਖਾਨਾ"
+
+#: grecord/gsr.xml.h:10
+msgid "New"
+msgstr "ਨਵਾਂ"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "ਖੋਲ੍ਹੋ"
+
+#: grecord/gsr.xml.h:12 grecord/src/gsr-window.c:346
+msgid "Open a file"
+msgstr "ਫਾਇਲ ਖੋਲ੍ਹੋ"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "ਆਵਾਜ਼ ਚਲਾਉ"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "ਬਾਹਰ"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "ਕਾਰਜ ਵਿੱਚੋ ਬਾਹਰ"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "ਤਾਜ਼ੀਆਂ _ਫਾਇਲਾਂ"
+
+#: grecord/gsr.xml.h:18
+msgid "Record"
+msgstr "ਰਿਕਾਰਡ"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "ਧੁਨੀ ਰਿਕਾਰਡ ਕਰੋ"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "ਮਿਕਸਰ ਚਲਾਉ"
+
+#: grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr "ਮਿਕਸਰ _ਚਲਾਉ"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "ਆਡੀਓ ਮਿਕਸਰ ਚਲਾਉ"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "ਸੰਭਾਲੋ"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "ਇਸ ਤਰਾਂ ਸੰਭਾਲੋ"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "_ਇਸ ਤਰਾਂ ਸੰਭਾਲੋ..."
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "ਮੌਜੂਦਾ ਫਾਇਲ ਨੂੰ ਸੰਭਾਲੋ"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "ਮੌਜੂਦਾ ਫਾਇਲ ਨੂੰ ਵੱਖਰੇ ਨਾਂ ਨਾਲ ਸੰਭਾਲੋ"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "ਮੌਜੂਦਾ ਫਾਇਲ ਬਾਰੇ ਜਾਣਕਾਰੀ ਵੇਖਾਉ"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "ਸਾਊਡ ਰਿਕਾਰਡ ਬਾਰੇ ਜਾਣਕਾਰੀ ਵੇਖਾਉ"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "ਆਵਾਜ਼ ਬੰਚ ਕਰੋ"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "_ਇਸ ਬਾਰੇ"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "ਝਰੋਖਾ _ਬੰਦ"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "_ਭਾਗ"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "_ਕੰਟਰੋਲ"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "ਫਾਇ_ਲ"
+
+#: grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "_ਨਵਾਂ"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "ਖੋ_ਲ੍ਹੋ਼"
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "_ਚਲਾਉ"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "_ਬਾਹਰ"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "_ਰਿਕਾਰਡ"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "_ਸੰਭਾਲੋ"
+
+#: grecord/src/gnome-recorder.c:162
+msgid "Dummy option"
+msgstr "ਭਾਵੀ ਚੋਣ"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "ਘੰਟੇ"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "ਘੰਟਾ"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minutes"
+msgstr "ਮਿੰਟ"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "ਮਿੰਟ"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "ਸਕਿੰਟ"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "ਸਕਿੰਟ"
+
+#: grecord/src/gsr-window.c:398 grecord/src/gsr-window.c:1193
+#: grecord/src/gsr-window.c:1357 grecord/src/gsr-window.c:1627
+msgid "Ready"
+msgstr "ਤਿਆਰ"
+
+#: grecord/src/gsr-window.c:529
+msgid "Save file as"
+msgstr "ਫਾਇਲ ਨੂੰ ਇਸ ਤਰਾਂ ਸੰਭਾਲੋ"
+
+#: grecord/src/gsr-window.c:585
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "ਰਾਹ ਵਿੱਚ %s ਇੰਸਟਾਲ ਨਹੀ ਹੈ ।"
+
+#: grecord/src/gsr-window.c:595
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr "%s ਨੂੰ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਗਲਤੀ: %s"
+
+#: grecord/src/gsr-window.c:672
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (ਸੰਭਾਲਿਆ ਨਹੀ ਗਿਆ)"
+
+#: grecord/src/gsr-window.c:688
+msgid "Unknown size"
+msgstr "ਅਣਪਛਾਤਾ ਅਕਾਰ"
+
+#: grecord/src/gsr-window.c:708
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f ਕਿਲੋ Hz"
+
+#: grecord/src/gsr-window.c:717
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f ਕੇਬੀ/ਸ"
+
+#: grecord/src/gsr-window.c:729
+msgid "1 (mono)"
+msgstr "੧ (ਮੋਨੋ)"
+
+#: grecord/src/gsr-window.c:733
+msgid "2 (stereo)"
+msgstr "੨ (ਸਟੀਰਿਓ)"
+
+#: grecord/src/gsr-window.c:762
+#, c-format
+msgid "%s Information"
+msgstr "%s ਜਾਣਕਾਰੀ"
+
+#: grecord/src/gsr-window.c:797
+msgid "Folder:"
+msgstr "ਫੋਲਡਰਃ"
+
+#: grecord/src/gsr-window.c:803 grecord/src/gsr-window.c:1559
+msgid "Filename:"
+msgstr "ਫਾਇਲ ਨਾਂਃ"
+
+#: grecord/src/gsr-window.c:809
+msgid "File size:"
+msgstr "ਫਾਇਲ ਅਕਾਰਃ"
+
+#: grecord/src/gsr-window.c:818
+msgid "Audio Information"
+msgstr "ਆਡੀਓ ਜਾਣਕਾਰੀ"
+
+#: grecord/src/gsr-window.c:832
+msgid "Song length:"
+msgstr "ਗੀਤ ਦੀ ਲੰਬਾਈਃ"
+
+#: grecord/src/gsr-window.c:838
+msgid "Number of channels:"
+msgstr "ਚੈਨਲਾਂ ਦੀ ਗਿਣਤੀਃ"
+
+#: grecord/src/gsr-window.c:844
+msgid "Sample rate:"
+msgstr "ਸਧਾਰਨ ਦਰਃ"
+
+#: grecord/src/gsr-window.c:850
+msgid "Bit rate:"
+msgstr "ਬਿੱਟ ਦਰਃ"
+
+#: grecord/src/gsr-window.c:916
+msgid "A sound recorder for GNOME"
+msgstr "ਗਨੋਮ ਲਈ ਇੱਕ ਧੁਨੀ ਰਿਕਾਰਡਰ"
+
+#: grecord/src/gsr-window.c:1178
+msgid "Playing..."
+msgstr "ਚੱਲ ਰਿਹਾ ਹੈ..."
+
+#: grecord/src/gsr-window.c:1237
+#, c-format
+msgid "%s.%s - Sound Recorder"
+msgstr "%s । %s - ਧੁਨੀ ਰਿਕਾਰਡਰ"
+
+#: grecord/src/gsr-window.c:1328
+msgid "Recording..."
+msgstr "ਰਿਕਾਰਡ ਹੋ ਕਰ ਰਿਹਾ ਹੈ..."
+
+#: grecord/src/gsr-window.c:1388
+msgid ""
+"There is no default GStreamer audio input element set - please install the "
+"GStreamer-GConf schemas or set one manually"
+msgstr ""
+"ਕੋਈ ਮੂਲ GStreamer ਆਡੀਓ ਇੰਪੁੱਟ ਇਕਾਈ ਨਿਰਧਾਰਤ ਨਹੀਂ ਹੈ- ਕਿਰਪਾ ਕਰਕੇ GStreamer-GConf ਸਕੀਮ "
+"ਇੰਸਟਾਲ ਕਰੋ ਜਾਂ ਦਸਤੀ ਨਿਰਧਾਰਿਤ ਕਰੋ"
+
+#: grecord/src/gsr-window.c:1403
+msgid "Failed to create GStreamer encoder elements - check your encoding setup"
+msgstr "GStreamer ਇੰਕੋਡਰ ਇਕਾਈ ਨਾਲ ਸੰਬੰਧ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ਼ - ਆਪਣੀ ਇਕੋਡਿੰਗ ਸੈੱਟਅਪ ਦੀ ਜਾਂਚ ਕਰੋ"
+
+#: grecord/src/gsr-window.c:1413
+msgid "Could not find GStreamer filesink plugin - please install it"
+msgstr "GStreamer filesink plugin ਨਹੀਂ ਲੱਭੀ ਜਾ ਸਕੀ ਹੈ - ਕਿਰਪਾ ਕਰਕੇ ਇੰਸਟਾਲ ਕਰੋ"
+
+#: grecord/src/gsr-window.c:1421
+msgid ""
+"Failed to link encoder elements with file output element - you probably "
+"selected an invalid encoder"
+msgstr "ਫਾਇਲ਼ ਆਉਟਪੁੱਟ ਇਕਾਈ ਨਾਲ ਇੰਕੋਡਰ ਸੰਬੰਧ ਵਰਤਣ ਵਿੱਚ ਅਸਫਲ - ਤੁਸੀਂ ਗਲਤ ਇੰਕੋਡਰ ਚੁਣਿਆ ਹੈ"
+
+#: grecord/src/gsr-window.c:1527
+msgid "Record as"
+msgstr "ਇਸ ਤਰਾਂ ਰਿਕਾਰਡ ਕਰੋ"
+
+#: grecord/src/gsr-window.c:1544
+msgid "File information"
+msgstr "ਫਾਇਲ ਜਾਣਕਾਰੀ"
+
+#: grecord/src/gsr-window.c:1566
+msgid "<none>"
+msgstr "<ਕੁਝ ਨਹੀ>"
+
+#: grecord/src/gsr-window.c:1575
+msgid "Length:"
+msgstr "ਲੰਬਾਈਃ"
+
+#: gst-mixer/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr "ਆਵਾਜ਼ ਪੱਧਰ ਨਿਰਧਾਰਿਤ ਕਰੋ"
+
+#. create main window + menus
+#: gst-mixer/gnome-volume-control.desktop.in.h:2 gst-mixer/src/mixer.c:588
+#: gst-mixer/src/mixer.c:681
+msgid "Volume Control"
+msgstr "ਆਵਾਜ਼ ਕੰਟਰੋਲ"
+
+#: gst-mixer/src/mixer.c:258
+#, c-format
+msgid "%s Slider"
+msgstr "%s ਸਲਾਇਡਰ"
+
+#: gst-mixer/src/mixer.c:260
+#, c-format
+msgid "Channel %d of %s Slider"
+msgstr "ਚੈਨਲ %d ਦਾ %s ਸਲਾਇਡਰ"
+
+#: gst-mixer/src/mixer.c:261
+#, c-format
+msgid "%s Slider %d"
+msgstr "%s ਸਲਾਇਡਰ %d"
+
+#: gst-mixer/src/mixer.c:274
+msgid "Lock"
+msgstr "ਲਾਕ"
+
+#: gst-mixer/src/mixer.c:284
+#, c-format
+msgid "%s Lock"
+msgstr "%s ਲਾਕ"
+
+#. mute button
+#: gst-mixer/src/mixer.c:290 gst-mixer/src/mixer.c:386
+msgid "Mute"
+msgstr "ਚੁੱਪ"
+
+#: gst-mixer/src/mixer.c:302 gst-mixer/src/mixer.c:398
+#, c-format
+msgid "%s Mute"
+msgstr "%s ਚੁੱਪ"
+
+#: gst-mixer/src/mixer.c:308
+msgid "Rec."
+msgstr "ਰਿਕ਼ਾ"
+
+#: gst-mixer/src/mixer.c:320
+#, c-format
+msgid "%s Record"
+msgstr "%s ਰਿਕਾਰਡ"
+
+#: gst-mixer/src/mixer.c:591
+msgid "A GNOME/GStreamer-based mixer application"
+msgstr "ਗਨੋਮ/GStreamer-ਅਧਾਰਿਤ ਮਿਕਸਰ ਕਾਰਜ"
+
+#: gst-mixer/src/mixer.c:698
+msgid "Sorry, no mixer elements and/or devices found"
+msgstr "ਮੁਆਫੀ, ਪਰ ਕੋਈ ਮਿਕਸਰ ਇਕਾਈ ਅਤੇ/ਜਾਂ ਜੰਤਰ ਨਹੀ ਲੱਭਿਆ"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:274
+msgid "Failure instantiating main window"
+msgstr "ਮੁੱਖ ਝਰੋਖਾ ਪੇਸ਼ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:312
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "UI  ਸਰੋਤ %s ਲੋਡ ਨਹੀ ਕਰ ਸਕਿਆ"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "GStreamer ਕਾਰਜਾਂ ਲਈ ਸੰਰਚਨਾ ਮੂਲ"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "Multimedia Systems Selector"
+msgstr "ਬਹੁਰੰਗ ਸਿਸਟਮ ਚੋਣਕਾਰ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+#: profiles/gnome-audio-profiles.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<b>Default Sink</b>"
+msgstr "<b>ਮੂਲ ਪ੍ਰਾਪਤ ਕਰਤਾ</b>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "<b>Default Source</b>"
+msgstr "<b>ਮੂਲ ਸਰੋਤ</b>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">ਜਾਂਚ ਜਾਰੀ ਹੈ...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio"
+msgstr "ਆਡੀਉ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish."
+msgstr "ਖਤਮ ਕਰਨ ਲਈ Ok ਦਬਾਉ।"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "GStreamer Preferences"
+msgstr "GStreamer ਪਸੰਦ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Pipe_line:"
+msgstr "_ਪਾਇਪ-ਲਾਇਨਃ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "Te_st"
+msgstr "_ਜਾਂਚ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Testing Pipeline"
+msgstr "ਪਾਇਪ-ਲਾਇਨ ਦੀ ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Video"
+msgstr "ਵੀਡਿਉ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "_Input:"
+msgstr "_ਇੰਪੁੱਟਃ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+msgid "_Output:"
+msgstr "_ਆਉਟਪੁੱਟਃ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "_Pipeline:"
+msgstr "_ਪਾਇਪ-ਲਾਇਨਃ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "_Test"
+msgstr "_ਜਾਂਚ"
+
+#: gstreamer-properties/pipeline-constants.c:61
+#: gstreamer-properties/pipeline-constants.c:83
+#: gstreamer-properties/pipeline-constants.c:100
+#: gstreamer-properties/pipeline-constants.c:115
+msgid "Custom"
+msgstr "ਸੋਧ"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:110
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "'%s' ਲਈ ਜਾਂਚ ਪਾਇਪ-ਲਾਇਨ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ"
+
+#: profiles/audio-profile-edit.c:164
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "ਸਹਾਇਤਾ ਵੇਖਾਉਣ ਵਿੱਚ ਗਲਤੀ: %s"
+
+#: profiles/audio-profile-edit.c:366
+#, c-format
+msgid "Editing profile \"%s\""
+msgstr "ਪਰੋਫਾਇਲ \"%s\" ਸੋਧੋ"
+
+#: profiles/audio-profile.c:103
+msgid "<not named>"
+msgstr "<ਕੋਈ ਨਾਂ ਨਹੀ>"
+
+#: profiles/audio-profile.c:104
+msgid "<not described>"
+msgstr "<ਕੋਈ ਵੇਰਵਾ ਨਹੀ>"
+
+#: profiles/audio-profile.c:219
+#, c-format
+msgid "There was an error getting the list of gm_audio profiles. (%s)\n"
+msgstr "gm ਆਡੀਓ ਪਰੋਫਾਇਲ ਦੀ ਸੂਚੀ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ਼ (%s)\n"
+
+#: profiles/audio-profile.c:720
+#, c-format
+msgid ""
+"There was an error subscribing to notification of audio profile list "
+"changes. (%s)\n"
+msgstr "ਟਰਮੀਨਲ ਪਰੋਫਾਇਲ ਸੂਚੀ ਵਿੱਚ ਤਬਦੀਲੀਆਂ ਦੀ ਟਿੱਪਣੀ ਵਿੱਚ ਗਲਤੀ ਭਰਨ ਵਿੱਚ ਅਸਫਲ(%s)\n"
+
+#: profiles/audio-profile.c:910
+#, c-format
+msgid "There was an error forgetting profile path %s. (%s)\n"
+msgstr "ਪਰੋਫਾਇਲ ਡਾਇਰੈਕਟਰੀ %s ਵਿੱਚ ਗਲਤੀ ਹੈ (%s)\n"
+
+#: profiles/audio-profile.c:1002
+msgid "<no description>"
+msgstr "<ਕੋਈ ਵੇਰਵਾ ਨਹੀ>"
+
+#: profiles/audio-profile.c:1013
+msgid "identity"
+msgstr "ਸ਼ੰਨਾਖਤੀ"
+
+#: profiles/audio-profile.c:1024
+msgid "wav"
+msgstr "ਵੇਵ"
+
+#: profiles/audio-profiles-edit.c:115
+msgid "_Edit"
+msgstr "_ਸੋਧ"
+
+#: profiles/audio-profiles-edit.c:452
+msgid "You must select one or more profiles to delete."
+msgstr "ਹਟਾਉਣ ਲਈ ਇੱਕ ਜਾਂ ਵਧੇਰੇ ਪਰੋਫਾਇਲ ਚੁਣੋ"
+
+#. the first argument will never be used since we only run for count > 1
+#: profiles/audio-profiles-edit.c:461
+#, c-format
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] "ਇਹ ਪਰੋਫਾਇਲ ਹਟਾਉਣਾ ਹੈ?\n"
+msgstr[1] "%d ਪਰੋਫਾਇਲ ਹਟਾਉਣੇ ਹਨ?\n"
+
+#: profiles/audio-profiles-edit.c:480
+#, c-format
+msgid "Delete profile \"%s\"?"
+msgstr "ਪਰੋਫਾਇਲ \"%s\" ਹਟਾਉਣਾ ਹੈ?"
+
+#: profiles/audio-profiles-edit.c:502
+msgid "Delete Profile"
+msgstr "ਪਰੋਫਾਇਲ ਹਟਾਉ"
+
+#.
+#. dialog =
+#. gtk_dialog_new_with_buttons (_("Edit Profiles"),
+#. NULL,
+#. GTK_DIALOG_DESTROY_WITH_PARENT,
+#. GTK_STOCK_HELP,
+#. GTK_RESPONSE_HELP,
+#. GTK_STOCK_CLOSE,
+#. GTK_RESPONSE_ACCEPT,
+#. NULL);
+#.
+#. FIXME: GTK_DIALOG_DESTROY_WITH_PARENT,
+#: profiles/audio-profiles-edit.c:597
+msgid "Edit GMAudio Profiles"
+msgstr "GMAudio ਪਰੋਫਾਇਲ ਸੋਧ"
+
+#: profiles/audio-profiles-edit.c:650
+msgid "_Profiles:"
+msgstr "_ਪਰੋਫਾਇਲਃ"
+
+#: profiles/audio-profiles-edit.c:878
+#, c-format
+msgid "You already have a profile called \"%s\""
+msgstr "ਤੁਹਾਡੇ ਕੋਲ ਪਹਿਲਾਂ ਹੀ ਪਰੋਫਾਇਲ ਹੈ, ਨਾਂ ਹੈ \"%s\""
+
+#: profiles/audio-profiles-edit.c:903
+#, c-format
+msgid "GConf Error (FIXME): %s\n"
+msgstr "ਜੀਕਾਨਫ ਗਲਤੀ (ਸੁਧਾਰੋ): %s\n"
+
+#: profiles/gmp-util.c:64
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+"ਫਾਇਲ \"%s\" ਗੁੰਮ ਹੈ । ਇਹ ਦਰਸਾ ਰਹੀ ਹੈ ਕਿ ਕਾਰਜ ਗਲਤ ਤਰੀਕੇ ਨਾਲ ਇੰਸਟਾਲ ਹੈ, ਇਸਕਰਕੇ ਤਖਤੀ "
+"ਨਹੀ ਵੇਖਾਈ ਜਾ ਸਕਦੀ ਹੈ।"
+
+#: profiles/gnome-audio-profiles.glade2.h:2
+msgid "Edit Audio Profile"
+msgstr "ਆਡੀਓ ਪਰੋਫਾਇਲ ਸੋਧ"
+
+#: profiles/gnome-audio-profiles.glade2.h:3
+msgid "File _Extension:"
+msgstr "ਫਾਇਲ _ਐਕਸਟੇਸ਼ਨਃ"
+
+#: profiles/gnome-audio-profiles.glade2.h:4
+msgid "New Profile"
+msgstr "ਨਵਾਂ ਪਰੋਫਾਇਲ"
+
+#: profiles/gnome-audio-profiles.glade2.h:5
+msgid "Profile Description:"
+msgstr "ਪਰੋਫਾਇਲ ਵੇਰਵਾਃ"
+
+#: profiles/gnome-audio-profiles.glade2.h:6
+msgid "Profile _Description:"
+msgstr "ਪਰੋਫਾਇਲ _ਵੇਰਵਾਃ"
+
+#: profiles/gnome-audio-profiles.glade2.h:7
+msgid "Profile _name:"
+msgstr "ਪਰੋਫਾਇਲ _ਨਾਂਃ"
+
+#: profiles/gnome-audio-profiles.glade2.h:8
+msgid "_Active?"
+msgstr "_ਸਰਗਰਮ?"
+
+#: profiles/gnome-audio-profiles.glade2.h:9
+msgid "_Create"
+msgstr "_ਬਣਾਉ"
+
+#: profiles/gnome-audio-profiles.glade2.h:10
+msgid "_GStreamer Pipeline:"
+msgstr "_GStreamer ਪਾਇਪਲਾਇਨ:"
+
+#: profiles/gnome-audio-profiles.glade2.h:11
+msgid "_Profile name:"
+msgstr "_ਪਰੋਫਾਇਲ ਨਾਂਃ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:1
+msgid "A description for the audio profile"
+msgstr "ਆਡੀਓ ਪਰੋਫਾਇਲ ਲਈ ਵੇਰਵਾ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:2
+msgid ""
+"A description of the profile, containing more information and describing "
+"when to use this profile."
+msgstr ""
+"ਜਦੋ ਇਸ ਪਰੋਫਾਇਲ ਨੂੰ ਵਰਤਿਆ ਜਾਵੇ ਤਾਂ ਪਰੋਫਾਇਲ ਦਾ ਵੇਰਵਾ, ਜੋ ਕਿ ਹੋਰ ਜਾਣਕਾਰੀ ਤੇ ਵੇਰਵਾ ਰੱਖਦਾ ਹੋਵੇ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:3
+msgid ""
+"A filename extension to be used when storing files encoded with this profile."
+msgstr "ਜਦੋ ਇਸ ਪਰੋਫਾਇਲ ਨਾਲ ਇੰਕੋਡਿੰਡ ਫਾਇਲਾਂ ਸੰਭਾਲੀਆ ਜਾਣਗੀਆਂ ਤਾਂ ਫਾਇਲ ਦੀ ਐਕਟੇਸ਼ਨ ਜੋ ਵਰਤਣੀ ਹੈ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:4
+msgid "A partial GStreamer pipeline to use for this profile."
+msgstr "ਇੱਕ ਅਧੂਰੀ GStreamer ਪਾਇਪਲਾਇਨ, ਜੋ ਕਿ ਇਸ ਪਰੋਫਾਇਲ ਲਈ ਵਰਤਣ ਲਈ ਹੈ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:5
+msgid "A short name for the audio profile"
+msgstr "ਆਡੀਓ ਪਰੋਫਾਇਲ ਲਈ ਛੋਟਾ ਨਾਂ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:6
+msgid ""
+"A short name for the audio profile, to be used in selections and uniquely "
+"identifying the profile."
+msgstr ""
+"ਆਡੀਓ ਪਰੋਫਾਇਲ ਲਈ ਛੋਟਾ ਨਾਂ, ਜੋ ਕਿ ਚੋਣ ਲਈ ਵਰਤਿਆ ਜਾਵੇਗਾ ਅਤੇ ਪਰੋਫਾਇਲ ਦੀ ਸ਼ੰਨਾਖਤ ਦੇ ਕੰਮ ਆਵੇਗਾ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:7
+msgid "CD Quality, Lossless"
+msgstr "CD ਪੱਧਰ, ਵਧੀਆ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:8
+msgid "CD Quality, Lossy"
+msgstr "CD ਪੱਧਰ, ਹਲਕਾ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:9
+msgid ""
+"List of audio recording profiles. The list contains strings naming "
+"subdirectories relative to /system/gstreamer/audio/profiles."
+msgstr ""
+"ਆਡੀਓ ਰਿਕਾਰਡ ਪਰੋਫਾਇਲ ਦੀ ਸੂਚੀ ਇਹ ਸੂਚੀ ਸਬ-ਡਾਇਰੈਕਟਰੀਆਂ ਦੀਆ ਨਾਂ ਸਤਰਾਂ /system/gstreamer/"
+"audio/profiles ਦੇ ਅਨੁਸਾਰ ਰੱਖਦੀ ਹੈ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:10
+msgid "List of profiles"
+msgstr "ਪਰੋਫਾਇਲਾਂ ਦੀ ਸੂਚੀ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:11
+msgid "The default file extension for this profile"
+msgstr "ਇਸ ਪਰੋਫਾਇਲ ਲਈ ਮੂਲ ਫਾਇਲ ਐਕਸਟੇਸ਼ਨ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:12
+msgid "The partial GStreamer pipeline used"
+msgstr "ਅਧੂਰੀ GStreamer ਪਾਇਪਲਾਇਨ ਵਰਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:13
+msgid ""
+"Used for converting to CD-quality audio, but with a lossless compression "
+"codec. Use this if you later want to edit the file or burn it to CD."
+msgstr ""
+"CD-ਪੱਧਰ ਦੀ ਆਡੀਓ ਲਈ ਵਰਤਿਆ ਜਾਦਾ ਹੈ, ਪਰ ਇੱਕ ਹਲਕੇ ਪੱਧਰ ਦੇ ਕੋਡ ਨਾਲ| ਇਸ ਨੂੰ ਜੇਕਰ ਤੁਸੀਂ ਬਾਅਦ "
+"ਵਿੱਚ ਫਾਇਲ ਨੂੰ ਸੋਧਣਾ ਜਾਂ CD ਤੇ ਲਿਖਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਤਾਂ ਵਰਤੋਂ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:14
+msgid ""
+"Used for converting to CD-quality audio, but with a lossy compression codec. "
+"Use this for CD extraction and radio recordings."
+msgstr ""
+"CD-ਪੱਧਰ ਦੀ ਆਡੀਓ ਲਈ ਵਰਤਿਆ ਜਾਦਾ ਹੈ, ਪਰ ਇੱਕ ਹਲਕੇ ਪੱਧਰ ਦੇ ਕੋਡ ਨਾਲ| ਇਸ ਨੂੰ CD ਖੋਲਣ ਤੇ ਰੇਡੀਓ "
+"ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਵਰਤੋਂ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:15
+msgid ""
+"Used for converting to voice-quality audio. Use this for recording speech."
+msgstr "ਆਵਾਜ਼-ਪੱਧਰ ਆਡੀਓ ਤੱਕ ਤਬਦੀਲ ਕੀਤਾ ਜਾਦਾ ਹੈ| ਇਸ ਨੂੰ ਆਵਾਜ਼ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਵਰਤੋਂ।"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:16
+msgid "Voice"
+msgstr "ਆਵਾਜ਼"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:17
+msgid "Whether or not this profile is to be used"
+msgstr "ਕੀ ਇਹ ਪਰੋਫਾਇਲ ਨੂੰ ਵਰਤਣਾ ਹੈ ਜਾਂ ਨਹੀ"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:18
+msgid "Whether or not to use and display this profile."
+msgstr "ਕੀ ਇਹ ਪਰੋਫਾਇਲ ਨੂੰ ਵਰਤਣਾ ਤੇ ਵੇਖਾਉਣ ਹੈ ਜਾਂ ਨਹੀ।"
+
+#: vu-meter/main.c:102
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+"ਸਾਊਡ ਡੇਮੋਨ ਨਾਲ ਜੁਡ਼ ਨਾ ਸਕਿਆ।\n"
+"ਕਿਰਪਾ ਕਰਕੇ ਕਮਾਂਡ ਪਰੋਮਿਟ ਤੇ 'esd' ਚਲਾਉ।"
+
+#: vu-meter/main.c:228
+msgid "Specify the X position of the meter."
+msgstr "ਮੀਟਰ ਦੀ X ਸਥਿਤੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।"
+
+#: vu-meter/main.c:229
+msgid "X-Position"
+msgstr "X-ਸਥਿਤੀ"
+
+#: vu-meter/main.c:231
+msgid "Specify the Y position of the meter."
+msgstr "ਮੀਟਰ ਦੀ Y ਸਥਿਤੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।"
+
+#: vu-meter/main.c:232
+msgid "Y-Position"
+msgstr "Y-ਸਥਿਤੀ"
+
+#: vu-meter/main.c:234
+msgid "Connect to the esd server on this host."
+msgstr "ਈਐਸਦੀ ਸਰਵਰ ਤੇ ਇਸ ਮੇਜ਼ਬਾਨ ਨਾਲ ਜੁਡ਼ੋ।"
+
+#: vu-meter/main.c:235
+msgid "ESD Server Host"
+msgstr "ESD ਸਰਵਰ ਮੇਜ਼ਬਾਨ"
+
+#: vu-meter/main.c:237
+msgid "Open a vertical version of the meter."
+msgstr "ਇੱਕ ਮੀਟਰ ਦਾ ਭਾਵੀ ਵਰਜਨ ਖੋਲ੍ਹੋ।"
+
+#: vu-meter/main.c:239
+msgid "Act as recording level meter."
+msgstr "ਰਿਕਾਰਡਿੰਗ ਪੱਧਰ ਮੀਟਰ ਦੀ ਤਰਾਂ ਕੰਮ ਕਰਦਾ ਹੈ।"
+
+#: vu-meter/main.c:256
+#, c-format
+msgid "Host is %s\n"
+msgstr "ਮੇਜ਼ਬਾਨ %s ਹੈ\n"
+
+#: vu-meter/main.c:273
+msgid "Recording level"
+msgstr "ਰਿਕਾਰਡ ਪੱਧਰ"
+
+#: vu-meter/main.c:273
+msgid "Volume Meter"
+msgstr "ਆਵਾਜ਼ ਮਾਨੀਟਰ"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr "ਰਿਕਾਰਡ ਇੰਨਪੁੱਟ ਆਵਾਜ਼ ਮਾਨੀਟਰ"
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr "ਰਿਕਾਰਡ ਪੱਧਰ ਮਾਨੀਟਰ"
+
+#: vu-meter/vumeter.desktop.in.h:1
+msgid "Monitor the sound output volume"
+msgstr "ਧੁਨੀ ਆਉਟਪੁੱਟ ਆਵਾਜ਼ ਮਾਨੀਟਰ"
+
+#: vu-meter/vumeter.desktop.in.h:2
+msgid "Volume monitor"
+msgstr "ਅਵਾਜ਼ ਮਾਨੀਟਰ"
+
+#~ msgid "%s Option Selection"
+#~ msgstr "%s ਚੋਣ ਕਰੋ"

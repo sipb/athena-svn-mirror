@@ -32,7 +32,8 @@ module Media {
 			ERROR_CONTACTING_SERVER,
 			ERROR_RETRIEVING_DATA,
 			MALFORMED_DATA,
-			IO_ERROR
+			IO_ERROR,
+			UNKNOWN_ENTRY
 		};
 
 		struct QueryResult {
@@ -73,6 +74,14 @@ module Media {
 		void save(in string discid)
 			raises (UnknownDiscID);
 		
+		/**
+		 * discid: CDDB disc id.
+		 * 
+		 * checks if the slave has the entry marked as valid.
+		 */
+		boolean isValid (in string discid)
+			raises (UnknownDiscID);
+
 		/**
 		 * discid: CDDB disc id.
 		 * 

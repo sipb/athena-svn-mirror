@@ -25,6 +25,7 @@
 #endif
 
 #include <string.h>
+#include <stdlib.h>
 #include "cddb-slave.h"
 
 gboolean
@@ -34,7 +35,7 @@ cddb_entry_parse_file (CDDBEntry *entry,
 	FILE *handle;
 	char line[4096];
 	char *prev_vector[2] = {NULL, NULL};
-	
+
 	handle = fopen (filename, "r");
 	if (handle == NULL) {
 		return FALSE;
@@ -51,7 +52,7 @@ cddb_entry_parse_file (CDDBEntry *entry,
 							 g_strdup (line));
 			continue;
 		}
-		
+
 		if (*line == 0 || g_ascii_isdigit (*line)) {
 			continue;
 		}
@@ -78,7 +79,7 @@ cddb_entry_parse_file (CDDBEntry *entry,
 			g_free (vector[0]);
                         vector[0] = g_strdup (prev_vector[0]);
                 }
-	
+
 		if (vector [0] != NULL)	{
 			if (prev_vector [0] != NULL)
 				g_free (prev_vector[0]);
@@ -90,6 +91,8 @@ cddb_entry_parse_file (CDDBEntry *entry,
 			prev_vector[1] = g_strdup (vector[1]);
 		}
 
+		/* We read this from a file, so we consider it valid */
+		entry->is_valid = TRUE;
 
 		/* See if we have this ID */
 		string = g_hash_table_lookup (entry->fields, vector[0]);
@@ -106,6 +109,9 @@ cddb_entry_parse_file (CDDBEntry *entry,
 
 	g_free (prev_vector[0]);
 	g_free (prev_vector[1]);
+
+	fclose (handle);
+
 	return TRUE;
 }
 
@@ -127,10 +133,10 @@ parse_comments (CDDBEntry *entry)
 	GList *comments;
 	gboolean parsing_offsets = FALSE;
 	int trackno = 0;
-	
+
 	for (comments = entry->comments; comments; comments = comments->next) {
 		char *line = comments->data;
-		
+
 		line++; /* Move past the # */
 		while (g_ascii_isspace (*line)) {
 			line++; /* Move past the white space */
@@ -145,13 +151,13 @@ parse_comments (CDDBEntry *entry)
 				parsing_offsets = FALSE;
 			}
 		}
-			
+
 		if (strncmp (XMCD_INDICATOR, line, XMCD_INDICATOR_LEN) == 0) {
 			g_print ("Is xmcd file\n");
 			parsing_offsets = FALSE;
 			continue;
 		}
-		
+
 		if (strncmp (TRACK_OFFSET_INDICATOR, line, TRACK_OFFSET_INDICATOR_LEN) == 0) {
 			g_print ("Found track offsets\n");
 			parsing_offsets = TRUE;
@@ -183,7 +189,7 @@ static void
 calculate_lengths (CDDBEntry *entry)
 {
 	int i;
-	
+
 	for (i = 0; i < entry->ntrks; i++) {
 		int start, finish;
 		int length;
@@ -223,7 +229,7 @@ cddb_entry_new (const char *discid,
 		entry->offsets[i] = atoi (offset_vector[i]);
 	}
 	g_strfreev (offset_vector);
-	
+
 	entry->disc_length = nsecs;
 
 	calculate_lengths (entry);
@@ -264,12 +270,12 @@ cddb_entry_new_from_file (const char *filename)
 	if (cddb_entry_parse_file (entry, filename) == FALSE) {
 		g_hash_table_destroy (entry->fields);
 		g_free (entry);
-		return FALSE;
+		return NULL;
 	}
 
 	/* The data in the file may be for a different id than the file */
 	entry->realdiscid = g_path_get_basename (filename);
-	
+
 	did = g_hash_table_lookup (entry->fields, "DISCID");
 	if (did == NULL) {
 		entry->discid = g_path_get_basename (filename);
@@ -277,15 +283,15 @@ cddb_entry_new_from_file (const char *filename)
 		entry->discid = g_strndup (did->str, 8);
 		g_print ("**** Entry->discid = \"%s\"\n", entry->discid);
 	}
-	
+
 	entry->ntrks = count_tracks (entry);
 	entry->offsets = g_new (int, entry->ntrks);
 	entry->lengths = g_new (int, entry->ntrks);
-	
+
 	parse_comments (entry);
 
 	calculate_lengths (entry);
-	
+
 	return entry;
 }
 
@@ -306,6 +312,7 @@ write_line (FILE *handle,
 		str = g_strdup_printf ("%s\r\n", value);
 		g_print ("Writing: %s\n", str);
 		fputs (str, handle);
+		g_free (str);
 	} else {
 		key_len = strlen (key) + 1 + 2; /* Length of "KEY=" + \r\n */
 		val_len = strlen (value);
@@ -316,11 +323,11 @@ write_line (FILE *handle,
 			g_print ("Writing: %s\n", str);
 			fputs (str, handle);
 			g_free (str);
-			
+
 			tv += line_len;
 			val_len -= line_len;
 		}
-		
+
 		/* Last line */
 		str = g_strdup_printf ("%s=%s\r\n", key, tv);
 		g_print ("Writing: %s\n", str);
@@ -338,7 +345,7 @@ write_offsets (CDDBEntry *entry,
 	g_print ("Writing offsets\n");
 	for (i = 0; i < entry->ntrks; i++) {
 		char *str;
-		
+
 		str = g_strdup_printf ("#\t%d", entry->offsets[i]);
 		write_line (handle, NULL, str);
 		g_free (str);
@@ -388,9 +395,9 @@ write_headers (CDDBEntry *entry,
 	g_print ("Writing headers\n");
 	write_line (handle, NULL, "# xmcd");
 	write_line (handle, NULL, "# Track frame offsets:");
-	
+
 	write_offsets (entry, handle);
-	
+
 	write_line (handle, NULL, "#");
 
 	write_disc_length (entry, handle);
@@ -446,12 +453,13 @@ write_body (CDDBEntry *entry,
 	write_field (entry, "PLAYORDER", handle);
 }
 
+/* Write the given entry to a file in $HOME/.cddbslave */
 gboolean
 cddb_entry_write_to_file (CDDBEntry *entry)
 {
 	char *filename;
 	FILE *handle;
-	
+
 	g_return_val_if_fail (entry != NULL, FALSE);
 
 	filename = g_build_filename (g_get_home_dir (),
@@ -460,18 +468,18 @@ cddb_entry_write_to_file (CDDBEntry *entry)
 	g_print ("Writing file %s\n", filename);
 	handle = fopen (filename, "w");
 	g_free (filename);
-	
+
 	if (handle == NULL) {
 		return FALSE;
 	}
 
 	/* Update the revision */
 	entry->revision++;
-	
+
 	write_headers (entry, handle);
 	write_body (entry, handle);
 
 	fclose (handle);
-	
+
 	return TRUE;
 }

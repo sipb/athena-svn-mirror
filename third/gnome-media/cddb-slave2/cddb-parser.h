@@ -27,6 +27,7 @@ CDDBEntry *cddb_entry_new (const char *discid,
 			   int ntrks,
 			   const char *offsets,
 			   int nsecs);
+gboolean cddb_entry_parse_file (CDDBEntry *entry, const char *filename);
 CDDBEntry *cddb_entry_new_from_file (const char *filename);
 gboolean cddb_entry_write_to_file (CDDBEntry *entry);
 

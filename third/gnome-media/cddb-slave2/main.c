@@ -16,8 +16,10 @@
 #include <libbonobo.h>
 
 #include <gconf/gconf-client.h>
+#include <gdk/gdkx.h>
 
 #include "cddb-slave.h"
+#include "cddb-slave-private.h"
 
 #define CDDBSLAVE_IID "OAFIID:GNOME_Media_CDDBSlave2_Factory"
 #define CDDB_SERVER "freedb.freedb.org"
@@ -25,8 +27,6 @@
 
 static int running_objects = 0;
 static GConfClient *client = NULL;
-
-gboolean cddb_debugging = FALSE;
 
 enum {
 	CDDB_SEND_FAKE_INFO,
@@ -40,6 +40,7 @@ cddb_destroy_cb (GObject *cddb,
 {
 	running_objects--;
 
+	cs_debug ("main.c: destroy_cb: running objects now %d, refcount of slave %d", running_objects, cddb->ref_count);
 	if (running_objects <= 0) {
 		bonobo_main_quit ();
 	}
@@ -56,20 +57,19 @@ get_hostname (void)
 		return g_strdup (name);
 	}
 }
-	
+
 static BonoboObject *
 factory_fn (BonoboGenericFactory *factory,
 	    const char *component_id,
 	    void *closure)
 {
 	CDDBSlave *cddb;
-	gboolean auth;
 	char *server;
 	int port;
-	int info, server_type;
+	int info;
 	char *name;
 	char *hostname;
-	
+
 	/* Get GConf db */
 	if (client == NULL) {
 		client = gconf_client_get_default ();
@@ -95,15 +95,21 @@ factory_fn (BonoboGenericFactory *factory,
 		break;
 
 	default:
+		name = NULL;
+		hostname = NULL;
 		break;
 	}
 
-	server = gconf_client_get_string (client, 
+	server = gconf_client_get_string (client,
 					  "/apps/CDDB-Slave2/server", NULL);
 	port = gconf_client_get_int (client, "/apps/CDDB-Slave2/port", NULL);
+	g_object_unref (client);
+	client = NULL;
 
 	/* Create the new slave */
+	cs_debug ("main.c: calling cddb_slave_new");
 	cddb = cddb_slave_new (server, port, name, hostname);
+	g_free (server);
 	g_free (name);
 	g_free (hostname);
 
@@ -114,6 +120,7 @@ factory_fn (BonoboGenericFactory *factory,
 
 	/* Keep track of our objects */
 	running_objects++;
+	cs_debug ("main.c: running objects now %d", running_objects);
 	g_signal_connect (G_OBJECT (cddb), "destroy",
 			  G_CALLBACK (cddb_destroy_cb), NULL);
 
@@ -124,23 +131,32 @@ static gboolean
 cddbslave_init (gpointer data)
 {
 	BonoboGenericFactory *factory;
+	char *display_iid;
 
-	factory = bonobo_generic_factory_new (CDDBSLAVE_IID, factory_fn, NULL);
-	if (factory == NULL) {
-		g_error ("Cannot create factory");
-		exit (1);
+	factory = (BonoboGenericFactory*)bonobo_activation_activate_from_id (CDDBSLAVE_IID, Bonobo_ACTIVATION_FLAG_EXISTING_ONLY, NULL, NULL);
+
+	if (!factory) {
+		display_iid = bonobo_activation_make_registration_id (CDDBSLAVE_IID, DisplayString (gdk_display));
+		factory = bonobo_generic_factory_new (display_iid, factory_fn, NULL);
+		g_free (display_iid);
+		if (factory == NULL) {
+			g_error ("Cannot create factory");
+			exit (1);
+		}
+
+		bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
+		bonobo_main ();
+		cs_debug ("main.c: returned from bonobo_main ()");
+		return TRUE;
 	}
-
-	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
 
 	return FALSE;
 }
 
-int 
+int
 main (int argc,
       char **argv)
 {
-	CORBA_ORB orb;
 	char *cddbdir;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
@@ -151,8 +167,8 @@ main (int argc,
 			    argc, argv, NULL);
 
 	if (g_getenv ("CDDB_SLAVE_DEBUG")) {
-		cddb_debugging = TRUE;
-		g_print ("CDDBSlave2 debugging turned on.\n");
+		cs_set_debug (TRUE);
+		cs_debug ("CDDBSlave2 debugging turned on.");
 	}
 	cddbdir = g_build_filename (g_get_home_dir (),
 				    ".cddbslave", NULL);
@@ -164,9 +180,10 @@ main (int argc,
 		g_error ("~/.cddbslave needs to be a directory");
 	}
 	g_free (cddbdir);
-	
-	g_idle_add (cddbslave_init, NULL);
-	bonobo_main ();
 
+	if (! cddbslave_init (NULL))
+		g_warning ("Could not initialize CDDB Slave");
+
+        cs_debug ("main.c: done.");
 	exit (0);
 }

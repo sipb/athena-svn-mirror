@@ -4,13 +4,12 @@
 %define libgnomeui_version 2.0.0
 %define gail_version 0.17-2
 %define desktop_file_utils_version 0.2.90
-
 %define gettext_package gnome-media-2.0
 
 Summary:        GNOME media programs.
 Name:           gnome-media
-Version:        2.2.1.1
-Release:        9
+Version:        2.8.0
+Release:        1
 Copyright:      GPL
 Group:          Applications/Multimedia
 Source:         ftp://ftp.gnome.org/pub/GNOME/sources/pre-gnome2/gnome-media/gnome-media-%{version}.tar.gz
@@ -25,11 +24,10 @@ BuildRequires:  pango-devel >= %{pango_version}
 BuildRequires:  gtk2-devel >= %{gtk2_version}
 BuildRequires:  libgnomeui-devel >= %{libgnomeui_version}
 BuildRequires:  gail-devel >= %{gail_version}
-BuildRequires:  Xft
 BuildRequires:  fontconfig
+BuildRequires:  gstreamer-devel => 0.8.0
 BuildRequires:  desktop-file-utils >= %{desktop_file_utils_version}
-BuildRequires:  /usr/bin/automake-1.4
-Requires:	gstreamer >= 0.4.2
+Requires:	gstreamer >= 0.8.0
 Requires:	scrollkeeper >= 0.3.8
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
@@ -45,7 +43,8 @@ capabilities.
 
 %build
 %configure
-make
+export CFLAGS="-g"
+make 
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -58,10 +57,9 @@ unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 # This is the recommended way of dealing with it for RH8
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
-rm -rf $RPM_BUILD_ROOT/var/scrollkeeper/*
-rm -f $RPM_BUILD_ROOT/%{_datadir}/pixmaps/gnome-cd/*.png
-
-%find_lang %{gettext_package}
+rm -f $RPM_BUILD_ROOT%{_libdir}/libglade/2.0/*.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/libglade/2.0/*.la
+rm -rf $RPM_BUILD_ROOT%{_localstatedir}/scrollkeeper
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -69,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 %post
 scrollkeeper-update -q
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-SCHEMAS="CDDB-Slave2.schemas gnome-volume-control.schemas gnome-cd.schemas gnome-sound-recorder.schemas"
+SCHEMAS="CDDB-Slave2.schemas gnome-cd.schemas gnome-sound-recorder.schemas gnome-audio-profiles.schemas"
 for S in $SCHEMAS; do
   gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/$S > /dev/null
 done
@@ -80,48 +78,67 @@ scrollkeeper-update
 /sbin/ldconfig
 /bin/true ## for rpmlint, -p requires absolute path and is just dumb
 
-%files -f %{gettext_package}.lang
+%files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{_prefix}/libexec/*
 %{_datadir}/idl/GNOME_Media_CDDBSlave2.idl
 %{_datadir}/applications/gnome-cd.desktop
-%{_datadir}/applications/gnome-sound-recorder.desktop
 %{_datadir}/applications/gnome-volume-control.desktop
-%{_datadir}/applications/reclevel.desktop
-%{_datadir}/applications/vumeter.desktop
-%{_datadir}/pixmaps/gnome-cd.png
-%{_datadir}/pixmaps/gnome-cd/themes/lcd/*.png
-%{_datadir}/pixmaps/gnome-cd/themes/lcd/lcd.theme
-%{_datadir}/pixmaps/gnome-cd/themes/media/*.png
-%{_datadir}/pixmaps/gnome-cd/themes/media/media.theme
-%{_datadir}/pixmaps/gnome-cd/themes/red-lcd/*.png
-%{_datadir}/pixmaps/gnome-cd/themes/red-lcd/red-lcd.theme
-%{_datadir}/pixmaps/gnome-grecord.png
-%{_datadir}/pixmaps/gnome-mixer.png
-%{_datadir}/pixmaps/gnome-reclevel.png
-%{_datadir}/pixmaps/gnome-vumeter.png
-%{_datadir}/pixmaps/gnome-media
+%{_datadir}/applications/gstreamer-properties.desktop
+%{_datadir}/applications/gnome-sound-recorder.desktop
+%{_datadir}/gnome/help/gstreamer-properties
+%{_datadir}/gstreamer-properties/icons/gstreamer-properties.png
+%{_datadir}/gstreamer-properties/glade/gstreamer-properties.glade
+%{_datadir}/gnome-media/glade/gnome-audio-profiles.glade2
+%{_datadir}/gnome-sound-recorder/ui/*
 %{_datadir}/omf/gnome-media
 %{_datadir}/gnome/help/gnome-cd
 %{_datadir}/gnome/help/gnome-volume-control
 %{_datadir}/gnome/help/grecord
-%{_datadir}/gnome-sound-recorder/ui/gsr.xml
+%{_datadir}/gnome/help/gnome-sound-recorder
 %{_datadir}/control-center-2.0/capplets/cddb-slave.desktop
+%{_datadir}/locale/*
+%{_datadir}/gnome-media/pixmaps/*
+%{_datadir}/pixmaps/*
 %{_libdir}/*.so.*
 %{_libdir}/bonobo/servers/GNOME_Media_CDDBSlave2.server
+%{_libdir}/libglade/2.0/*.so
 %{_bindir}/cddb-slave2-properties
 %{_bindir}/gnome-cd
-%{_bindir}/gnome-sound-recorder
 %{_bindir}/gnome-volume-control
-%{_bindir}/vumeter
+%{_bindir}/gstreamer-properties
+%{_bindir}/gnome-audio-profiles-properties
+%{_bindir}/gnome-sound-recorder
 %{_sysconfdir}/gconf/schemas/*.schemas
 
 # devel, if we had a devel
 %{_includedir}/*
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/gnome-media-profiles.pc
+
 
 %changelog
+* Tue Mar 16 2004 Christian Schaller <Uraeus@gnome.org>
+- Remove the versioning I added earlier
+- hardcode GStreamer 0.8.0 as the minimum req
+- remove vumenter from spec as it seems gone from app
+
+* Sat Jan 10 2004 Christian Schaller <Uraeus@gnome.org>
+- Wish gnome-sound-recorder welcome back into the fold
+
+* Sun Jan 03 2004 Christian Schaller <Uraeus@gnome.org>
+- Make sure audio profiles schemas are loaded
+
+* Sun Dec 14 2003 Christian Schaller <Uraeus@gnome.org>
+- Add thomas new media properties
+- Add docs to gstreamer-properties
+
+* Sat Oct 25 2003 Christian Schaller <Uraeus@gnome.org>
+- Update for new gst-mixer package
+- Add gstreamer-properties capplet
+- Add gst-mixer docs and gstreamer-properties.desktop file
+
 * Wed Nov 06 2002 Christian Schaller <Uraeus@gnome.org>
 - Clean up files listing
 - Add some RPM pre-req

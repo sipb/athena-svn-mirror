@@ -5,7 +5,7 @@
 #ifndef GNOME_Media_CDDBSlave2_H
 #define GNOME_Media_CDDBSlave2_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -100,9 +100,9 @@ extern "C"
       GNOME_Media_CDDBSlave2_ERROR_CONTACTING_SERVER,
       GNOME_Media_CDDBSlave2_ERROR_RETRIEVING_DATA,
       GNOME_Media_CDDBSlave2_MALFORMED_DATA,
-      GNOME_Media_CDDBSlave2_IO_ERROR
-   }
-   GNOME_Media_CDDBSlave2_Result;
+      GNOME_Media_CDDBSlave2_IO_ERROR,
+      GNOME_Media_CDDBSlave2_UNKNOWN_ENTRY
+   } GNOME_Media_CDDBSlave2_Result;
 #if !defined(TC_IMPL_TC_GNOME_Media_CDDBSlave2_Result_0)
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_Result_0 'G'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_Result_1 'N'
@@ -258,8 +258,7 @@ extern "C"
        _length;
       GNOME_Media_CDDBSlave2_TrackInfo *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo;
+   } CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_0)
 #define TC_IMPL_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_0 'G'
@@ -397,21 +396,18 @@ extern "C"
 			 const CORBA_char * discid, CORBA_Environment * ev);
       void (*showWindow) (PortableServer_Servant _servant,
 			  CORBA_Environment * ev);
-   }
-   POA_GNOME_Media_CDDBTrackEditor__epv;
+   } POA_GNOME_Media_CDDBTrackEditor__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Media_CDDBTrackEditor__epv *GNOME_Media_CDDBTrackEditor_epv;
-   }
-   POA_GNOME_Media_CDDBTrackEditor__vepv;
+   } POA_GNOME_Media_CDDBTrackEditor__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Media_CDDBTrackEditor__vepv *vepv;
-   }
-   POA_GNOME_Media_CDDBTrackEditor;
+   } POA_GNOME_Media_CDDBTrackEditor;
    extern void POA_GNOME_Media_CDDBTrackEditor__init(PortableServer_Servant
 						     servant,
 						     CORBA_Environment * ev);
@@ -431,6 +427,9 @@ extern "C"
 		     CORBA_Environment * ev);
       void (*save) (PortableServer_Servant _servant,
 		    const CORBA_char * discid, CORBA_Environment * ev);
+       CORBA_boolean(*isValid) (PortableServer_Servant _servant,
+				const CORBA_char * discid,
+				CORBA_Environment * ev);
        CORBA_string(*getArtist) (PortableServer_Servant _servant,
 				 const CORBA_char * discid,
 				 CORBA_Environment * ev);
@@ -473,21 +472,18 @@ extern "C"
       void (*setGenre) (PortableServer_Servant _servant,
 			const CORBA_char * discid, const CORBA_char * genre,
 			CORBA_Environment * ev);
-   }
-   POA_GNOME_Media_CDDBSlave2__epv;
+   } POA_GNOME_Media_CDDBSlave2__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Media_CDDBSlave2__epv *GNOME_Media_CDDBSlave2_epv;
-   }
-   POA_GNOME_Media_CDDBSlave2__vepv;
+   } POA_GNOME_Media_CDDBSlave2__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Media_CDDBSlave2__vepv *vepv;
-   }
-   POA_GNOME_Media_CDDBSlave2;
+   } POA_GNOME_Media_CDDBSlave2;
    extern void POA_GNOME_Media_CDDBSlave2__init(PortableServer_Servant
 						servant,
 						CORBA_Environment * ev);
@@ -536,6 +532,13 @@ extern "C"
 						     const CORBA_char *
 						     discid,
 						     CORBA_Environment * ev));
+   void
+      _ORBIT_skel_small_GNOME_Media_CDDBSlave2_isValid
+      (POA_GNOME_Media_CDDBSlave2 * _ORBIT_servant, gpointer _ORBIT_retval,
+       gpointer * _ORBIT_args, CORBA_Context ctx, CORBA_Environment * ev,
+       CORBA_boolean(*_impl_isValid) (PortableServer_Servant _servant,
+				      const CORBA_char * discid,
+				      CORBA_Environment * ev));
    void
       _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getArtist
       (POA_GNOME_Media_CDDBSlave2 * _ORBIT_servant, gpointer _ORBIT_retval,
@@ -658,6 +661,9 @@ extern "C"
    void GNOME_Media_CDDBSlave2_save(GNOME_Media_CDDBSlave2 _obj,
 				    const CORBA_char * discid,
 				    CORBA_Environment * ev);
+   CORBA_boolean GNOME_Media_CDDBSlave2_isValid(GNOME_Media_CDDBSlave2 _obj,
+						const CORBA_char * discid,
+						CORBA_Environment * ev);
    CORBA_string GNOME_Media_CDDBSlave2_getArtist(GNOME_Media_CDDBSlave2 _obj,
 						 const CORBA_char * discid,
 						 CORBA_Environment * ev);
@@ -729,7 +735,7 @@ extern "C"
    extern
 #endif
    ORBit_IInterface GNOME_Media_CDDBSlave2__iinterface;
-#define GNOME_Media_CDDBSlave2_IMETHODS_LEN 15
+#define GNOME_Media_CDDBSlave2_IMETHODS_LEN 16
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
    static
 #else

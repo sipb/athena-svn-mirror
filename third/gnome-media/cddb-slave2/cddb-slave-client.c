@@ -15,6 +15,7 @@
 #include <bonobo-activation/bonobo-activation.h>
 
 #include "GNOME_Media_CDDBSlave2.h"
+#include "cddb-slave-private.h"			/* cs_debug */
 #include "cddb-slave-client.h"
 
 #include <bonobo/bonobo-listener.h>
@@ -35,6 +36,7 @@ finalize (GObject *object)
 {
 	CDDBSlaveClient *client;
 
+	cs_debug ("cddb-slave-client.c: finalize");
 	client = CDDB_SLAVE_CLIENT (object);
 	if (client->priv == NULL)
 		return;
@@ -95,7 +97,7 @@ cddb_slave_client_get_type (void)
  *
  * Constructs @client from @corba_object.
  */
-void 
+void
 cddb_slave_client_construct (CDDBSlaveClient *client,
 			     CORBA_Object corba_object)
 {
@@ -120,7 +122,7 @@ cddb_slave_client_new_from_id (const char *id)
 	CDDBSlaveClient *client;
 	CORBA_Environment ev;
 	CORBA_Object objref;
-	
+
 	g_return_val_if_fail (id != NULL, NULL);
 
 	CORBA_exception_init (&ev);
@@ -131,7 +133,7 @@ cddb_slave_client_new_from_id (const char *id)
 		CORBA_exception_free (&ev);
 		return NULL;
 	}
-	
+
 	CORBA_exception_free (&ev);
 	if (objref == CORBA_OBJECT_NIL) {
 		g_warning ("Could not start component %s.", id);
@@ -146,7 +148,7 @@ cddb_slave_client_new_from_id (const char *id)
 
 /**
  * cddb_slave_client_new:
- * 
+ *
  * Creates a new CDDBSlaveClient, using the default CDDBSlave component.
  *
  * Returns: A newly created CDDBSlaveClient or NULL on error.
@@ -170,7 +172,7 @@ cddb_slave_client_new (void)
  *
  * Asks the CDDBSlave that @client is a client for to perform a query on the
  * CDDB server that it is set up to connect to.
- * The @name string will be sent as "@name (CDDBSlave 2)", 
+ * The @name string will be sent as "@name (CDDBSlave 2)",
  * eg. "GTCD (CDDBSlave 2)"
  *
  * Returns: A boolean indicating if there was an error in sending the query to
@@ -233,7 +235,7 @@ cddb_slave_client_save (CDDBSlaveClient *client,
 
 	CORBA_exception_free (&ev);
 }
-			
+
 /**
  * cddb_slave_client_add_listener:
  * @client: Client of the CDDBSlave to add a listener to.
@@ -253,10 +255,12 @@ cddb_slave_client_add_listener (CDDBSlaveClient *client,
 	g_return_if_fail (IS_CDDB_SLAVE_CLIENT (client));
 	g_return_if_fail (listener != NULL);
 	g_return_if_fail (BONOBO_IS_LISTENER (listener));
-	
+
+	cs_debug ("adding listener to client %p", client);
+
 	client_objref = client->priv->objref;
 	listener_objref = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
-	
+
 	CORBA_exception_init (&ev);
 	event_source = Bonobo_Unknown_queryInterface (client_objref,
 						      "IDL:Bonobo/EventSource:1.0", &ev);
@@ -268,6 +272,7 @@ cddb_slave_client_add_listener (CDDBSlaveClient *client,
 	}
 
 	/* Add the listener */
+	cs_debug ("cddb_slave_client: adding event source %p", event_source);
 	Bonobo_EventSource_addListener (event_source, listener_objref, &ev);
 	if (BONOBO_EX (&ev)) {
 		g_warning ("Error adding listener\n%s", CORBA_exception_id (&ev));
@@ -299,7 +304,7 @@ cddb_slave_client_remove_listener (CDDBSlaveClient *client,
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (IS_CDDB_SLAVE_CLIENT (client));
 	g_return_if_fail (BONOBO_IS_LISTENER (listener));
-	
+
 	client_objref = client->priv->objref;
 	listener_objref = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
 
@@ -314,6 +319,7 @@ cddb_slave_client_remove_listener (CDDBSlaveClient *client,
 	}
 
 	/* Remove the listener */
+	cs_debug ("cddb_slave_client: removing event source %p", event_source);
 	Bonobo_EventSource_removeListener (event_source, listener_objref, &ev);
 	if (BONOBO_EX (&ev)) {
 		g_warning ("Error removing listener\n%s", CORBA_exception_id (&ev));
@@ -323,6 +329,40 @@ cddb_slave_client_remove_listener (CDDBSlaveClient *client,
 	CORBA_exception_free (&ev);
 
 	return;
+}
+
+/**
+ * cddb_slave_client_is_valid:
+ *
+ * Checks if an entry is marked as valid in the CDDB slave cache.
+ *
+ * Returns: %TRUE if the given discid is a valid entry in the cache.
+ */
+gboolean
+cddb_slave_client_is_valid (CDDBSlaveClient *client,
+                            const char *discid)
+{
+	CORBA_Object objref;
+	CORBA_Environment ev;
+	CORBA_boolean ret;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (IS_CDDB_SLAVE_CLIENT (client), FALSE);
+	g_return_val_if_fail (discid != NULL, FALSE);
+
+	objref = client->priv->objref;
+
+	CORBA_exception_init (&ev);
+	ret = GNOME_Media_CDDBSlave2_isValid (objref, discid, &ev);
+	if (BONOBO_EX (&ev)) {
+		g_warning ("Error checking if the discid is a valid entry\n%s",
+			   CORBA_exception_id (&ev));
+		CORBA_exception_free (&ev);
+		return FALSE;
+	}
+
+	CORBA_exception_free (&ev);
+	return ret;
 }
 
 /**
@@ -336,7 +376,7 @@ cddb_slave_client_get_disc_title (CDDBSlaveClient *client,
 	CORBA_Object objref;
 	CORBA_Environment ev;
 	CORBA_char *ret;
-	
+
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (IS_CDDB_SLAVE_CLIENT (client), NULL);
 	g_return_val_if_fail (discid != NULL, NULL);
@@ -467,7 +507,7 @@ cddb_slave_client_get_tracks (CDDBSlaveClient *client,
 	GNOME_Media_CDDBSlave2_TrackList *list;
 	CDDBSlaveClientTrackInfo **ret;
 	int i;
-	
+
 	g_return_val_if_fail (IS_CDDB_SLAVE_CLIENT (client), NULL);
 	g_return_val_if_fail (discid != NULL, NULL);
 
@@ -494,7 +534,7 @@ cddb_slave_client_get_tracks (CDDBSlaveClient *client,
 
 	/* NULL terminator */
 	ret[i] = NULL;
-	
+
 	CORBA_free (list);
 	return ret;
 }
@@ -527,19 +567,19 @@ cddb_slave_client_set_tracks (CDDBSlaveClient *client,
 	for (i = 0; track_info[i] != NULL; i++) {
 		; /* Count the number of tracks */
 	}
-	
+
 	list = GNOME_Media_CDDBSlave2_TrackList__alloc ();
 	list->_length = i;
 	list->_maximum = i;
 	list->_buffer = CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_allocbuf (i);
-	
+
 	for (i = 0; track_info[i] != NULL; i++) {
 		list->_buffer[i].name = CORBA_string_dup (track_info[i]->name ? track_info[i]->name : "");
 		list->_buffer[i].length = 0; /* We can't change the length of a track :) */
 		list->_buffer[i].comment = CORBA_string_dup (track_info[i]->comment ?
 							     track_info[i]->comment : "");
 	}
-	
+
 	objref = client->priv->objref;
 
 	CORBA_exception_init (&ev);
@@ -559,14 +599,14 @@ cddb_slave_client_get_comment (CDDBSlaveClient *client,
 	CORBA_Object objref;
 	CORBA_Environment ev;
 	CORBA_char *ret;
-	
+
 	g_return_val_if_fail (IS_CDDB_SLAVE_CLIENT (client), NULL);
 	g_return_val_if_fail (discid != NULL, NULL);
-	
+
 	objref = client->priv->objref;
-	
+
 	CORBA_exception_init (&ev);
-	
+
 	ret = GNOME_Media_CDDBSlave2_getComment (objref, discid, &ev);
 	if (BONOBO_EX (&ev)) {
 		g_warning ("Error getting comment\n%s",
@@ -608,14 +648,14 @@ cddb_slave_client_get_year (CDDBSlaveClient *client,
 	CORBA_Object objref;
 	CORBA_Environment ev;
 	CORBA_short ret;
-	
+
 	g_return_val_if_fail (IS_CDDB_SLAVE_CLIENT (client), -1);
 	g_return_val_if_fail (discid != NULL, -1);
-	
+
 	objref = client->priv->objref;
-	
+
 	CORBA_exception_init (&ev);
-	
+
 	ret = GNOME_Media_CDDBSlave2_getYear (objref, discid, &ev);
 	if (BONOBO_EX (&ev)) {
 		g_warning ("Error getting year\n%s",
@@ -655,14 +695,14 @@ cddb_slave_client_get_genre (CDDBSlaveClient *client,
 	CORBA_Object objref;
 	CORBA_Environment ev;
 	CORBA_char *ret;
-	
+
 	g_return_val_if_fail (IS_CDDB_SLAVE_CLIENT (client), NULL);
 	g_return_val_if_fail (discid != NULL, NULL);
-	
+
 	objref = client->priv->objref;
-	
+
 	CORBA_exception_init (&ev);
-	
+
 	ret = GNOME_Media_CDDBSlave2_getGenre (objref, discid, &ev);
 	if (BONOBO_EX (&ev)) {
 		g_warning ("Error getting genre\n%s",

@@ -23,16 +23,17 @@
 #include <config.h>
 #endif
 
+#include <gconf/gconf-client.h>
 #include <gnome.h>
 
 #include <gst/gst.h>
 
 #include "gnome-recorder.h"
 
-static struct poptOption gsr_options[] = {
-	{ NULL, '\0', 0, NULL, 0, NULL, NULL }
-};
-
+extern void gsr_window_close (GSRWindow *window);
+extern GtkWidget * gsr_window_new (const char *filename);
+extern void gnome_media_profiles_init (GConfClient *conf);
+ 
 static GList *windows = NULL;
 
 static void
@@ -83,9 +84,9 @@ gsr_open_window (const char *filename)
 		static int sample_count = 1;
 
 		if (sample_count != 1) {
-			name = g_strdup_printf ("Untitled-%d.wav", sample_count);
+			name = g_strdup_printf ("Untitled-%d", sample_count);
 		} else {
-			name = g_strdup ("Untitled.wav");
+			name = g_strdup ("Untitled");
 		}
 
 		sample_count++;
@@ -125,8 +126,10 @@ init_stock_icons (void)
 		GdkPixbuf *pixbuf;
 		char *filename, *fullname;
 
-		filename = g_strconcat ("gnome-media/gnome-sound-recorder/", stock_items[i], ".png", NULL);
-                                                                                   		fullname = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_APP_PIXMAP,
+		filename = g_strconcat ("gnome-media/gnome-sound-recorder/",
+					stock_items[i], ".png", NULL);
+		fullname = gnome_program_locate_file (NULL,
+						      GNOME_FILE_DOMAIN_APP_PIXMAP,
 						      filename, TRUE, NULL);
 		g_free (filename);
 
@@ -147,15 +150,26 @@ int
 main (int argc,
       char **argv)
 {
+	GConfClient *conf;
 	GnomeProgram *program;
+	GtkIconInfo *icon_info;
 	poptContext pctx;
 	GValue value = {0, };
 	char **args = NULL;
+
+	static struct poptOption gsr_options[] = {
+		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, NULL, 0, "GStreamer", NULL },
+		{ NULL, 'p', POPT_ARG_NONE, NULL, 1, N_("Dummy option"), NULL },
+		POPT_TABLEEND
+	};
 
 	/* Init gettext */
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
+
+	/* init gstreamer */
+	gsr_options[0].arg = (void *) gst_init_get_popt_table ();
 
 	/* Init GNOME */
 	program = gnome_program_init ("gnome-sound-recorder", VERSION,
@@ -166,13 +180,21 @@ main (int argc,
 				      "GNOME Sound Recorder",
 				      GNOME_PARAM_APP_DATADIR, DATADIR,
 				      NULL);
+	conf = gconf_client_get_default ();
 
-	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-audio2.png");
-	/* Init GStreamer */
-	gst_init (&argc, &argv);
+	icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
+						"gnome-audio2", 48, 0);
+	if (icon_info) {
+		gnome_window_icon_set_default_from_file (gtk_icon_info_get_filename (icon_info));
+		gtk_icon_info_free (icon_info);
+	}
+
 
 	/* Init the icons */
 	init_stock_icons ();
+
+        /* init gnome-media-profiles */
+        gnome_media_profiles_init (conf);
 
 	/* Get the args */
 	g_value_init (&value, G_TYPE_POINTER);
@@ -195,5 +217,7 @@ main (int argc,
 	poptFreeContext (pctx);
 
 	gtk_main ();
+
+	return 0;
 }
 

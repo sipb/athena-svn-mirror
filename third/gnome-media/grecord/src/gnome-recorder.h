@@ -26,7 +26,7 @@
 
 #define GSR_STOCK_PLAY "media-play"
 #define GSR_STOCK_STOP "media-stop"
-#define GSR_STOCK_RECORD "media-rec"
+#define GSR_STOCK_RECORD "media-record"
 
 typedef void (*GSRForeachFunction) (GSRWindow *window,
 				    gpointer closure);

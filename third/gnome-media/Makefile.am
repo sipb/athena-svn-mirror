@@ -1,21 +1,31 @@
-# If you want to build these components, please cd to their respective
-# directories and type `make'.
-
-always_built_SUBDIRS = cddb-slave2
+always_built_SUBDIRS = cddb-slave2 profiles
 
 SUBDIRS = po $(always_built_SUBDIRS) \
 	  @PROGRAMS_VUMETER@ \
-	  @PROGRAMS_GMIX@ \
 	  @PROGRAMS_GNOME_CD@ \
+	  @PROGRAMS_GSTMIXER@ \
 	  @PROGRAMS_GRECORD@ \
 	  @PROGRAMS_GSTPROPS@
 
 DIST_SUBDIRS = po $(always_built_SUBDIRS) \
-	       vu-meter gmix grecord gnome-cd gstreamer-properties
+	       vu-meter grecord gst-mixer gnome-cd \
+               gstreamer-properties
 
-EXTRA_DIST = gnome-media.spec.in configure acinclude.m4 COPYING-DOCS \
+INTLTOOL_BUILT = \
+        intltool-extract \
+        intltool-merge \
+        intltool-update
+
+EXTRA_DIST =	config.rpath gnome-media.spec.in configure \
+		acinclude.m4 COPYING-DOCS \
+		gnome-media.spec \
 		sgmldocs.make xmldocs.make omf.make \
-		intltool-extract.in intltool-merge.in intltool-update.in
+		m4/as-compiler-flag.m4 m4/as-version.m4 \
+		$(INTLTOOL_BUILT:=.in)
 
-dist-hook: gnome-media.spec
-	cp gnome-media.spec $(distdir)
+DISTCLEANFILES = po/.intltool-merge-cache \
+                 $(INTLTOOL_BUILT)
+
+
+distuninstallcheck_listfiles = \
+        find -path ./var/scrollkeeper/\* -prune -or -type f -print

@@ -6,283 +6,6 @@
 #define ORBIT2_STUBS_API
 #include "GNOME_Media_CDDBSlave2.h"
 
-void
-_ORBIT_skel_small_GNOME_Media_CDDBTrackEditor_setDiscID
-   (POA_GNOME_Media_CDDBTrackEditor * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    void (*_impl_setDiscID) (PortableServer_Servant _servant,
-			     const CORBA_char * discid,
-			     CORBA_Environment * ev))
-{
-   _impl_setDiscID(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBTrackEditor_showWindow
-   (POA_GNOME_Media_CDDBTrackEditor * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    void (*_impl_showWindow) (PortableServer_Servant _servant,
-			      CORBA_Environment * ev))
-{
-   _impl_showWindow(_o_servant, _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_query(POA_GNOME_Media_CDDBSlave2 *
-					       _o_servant, gpointer _o_retval,
-					       gpointer * _o_args,
-					       CORBA_Context _o_ctx,
-					       CORBA_Environment * _o_ev,
-					       void (*_impl_query)
-					       (PortableServer_Servant
-						_servant,
-						const CORBA_char * discid,
-						const CORBA_short ntrks,
-						const CORBA_char * offsets,
-						const CORBA_long nsecs,
-						const CORBA_char * name,
-						const CORBA_char * version,
-						CORBA_Environment * ev))
-{
-   _impl_query(_o_servant, *(const CORBA_char * *) _o_args[0],
-	       *(const CORBA_short *) _o_args[1],
-	       *(const CORBA_char * *) _o_args[2],
-	       *(const CORBA_long *) _o_args[3],
-	       *(const CORBA_char * *) _o_args[4],
-	       *(const CORBA_char * *) _o_args[5], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_save(POA_GNOME_Media_CDDBSlave2 *
-					      _o_servant, gpointer _o_retval,
-					      gpointer * _o_args,
-					      CORBA_Context _o_ctx,
-					      CORBA_Environment * _o_ev,
-					      void (*_impl_save)
-					      (PortableServer_Servant
-					       _servant,
-					       const CORBA_char * discid,
-					       CORBA_Environment * ev))
-{
-   _impl_save(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getArtist(POA_GNOME_Media_CDDBSlave2
-						   * _o_servant,
-						   gpointer _o_retval,
-						   gpointer * _o_args,
-						   CORBA_Context _o_ctx,
-						   CORBA_Environment * _o_ev,
-						   CORBA_string
-						   (*_impl_getArtist)
-						   (PortableServer_Servant
-						    _servant,
-						    const CORBA_char * discid,
-						    CORBA_Environment * ev))
-{
-   *(CORBA_string *) _o_retval =
-      _impl_getArtist(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_setArtist(POA_GNOME_Media_CDDBSlave2
-						   * _o_servant,
-						   gpointer _o_retval,
-						   gpointer * _o_args,
-						   CORBA_Context _o_ctx,
-						   CORBA_Environment * _o_ev,
-						   void (*_impl_setArtist)
-						   (PortableServer_Servant
-						    _servant,
-						    const CORBA_char * discid,
-						    const CORBA_char * artist,
-						    CORBA_Environment * ev))
-{
-   _impl_setArtist(_o_servant, *(const CORBA_char * *) _o_args[0],
-		   *(const CORBA_char * *) _o_args[1], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getDiscTitle
-   (POA_GNOME_Media_CDDBSlave2 * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    CORBA_string(*_impl_getDiscTitle) (PortableServer_Servant _servant,
-				       const CORBA_char * discid,
-				       CORBA_Environment * ev))
-{
-   *(CORBA_string *) _o_retval =
-      _impl_getDiscTitle(_o_servant, *(const CORBA_char * *) _o_args[0],
-			 _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_setDiscTitle
-   (POA_GNOME_Media_CDDBSlave2 * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    void (*_impl_setDiscTitle) (PortableServer_Servant _servant,
-				const CORBA_char * discid,
-				const CORBA_char * disctitle,
-				CORBA_Environment * ev))
-{
-   _impl_setDiscTitle(_o_servant, *(const CORBA_char * *) _o_args[0],
-		      *(const CORBA_char * *) _o_args[1], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getNTrks(POA_GNOME_Media_CDDBSlave2 *
-						  _o_servant,
-						  gpointer _o_retval,
-						  gpointer * _o_args,
-						  CORBA_Context _o_ctx,
-						  CORBA_Environment * _o_ev,
-						  CORBA_short(*_impl_getNTrks)
-						  (PortableServer_Servant
-						   _servant,
-						   const CORBA_char * discid,
-						   CORBA_Environment * ev))
-{
-   *(CORBA_short *) _o_retval =
-      _impl_getNTrks(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getAllTracks
-   (POA_GNOME_Media_CDDBSlave2 * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    void (*_impl_getAllTracks) (PortableServer_Servant _servant,
-				const CORBA_char * discid,
-				GNOME_Media_CDDBSlave2_TrackList ** names,
-				CORBA_Environment * ev))
-{
-   _impl_getAllTracks(_o_servant, *(const CORBA_char * *) _o_args[0],
-		      (CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo **)
-		      _o_args[1], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_setAllTracks
-   (POA_GNOME_Media_CDDBSlave2 * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    void (*_impl_setAllTracks) (PortableServer_Servant _servant,
-				const CORBA_char * discid,
-				const GNOME_Media_CDDBSlave2_TrackList *
-				names, CORBA_Environment * ev))
-{
-   _impl_setAllTracks(_o_servant, *(const CORBA_char * *) _o_args[0],
-		      (const CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo
-		       *) _o_args[1], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getComment(POA_GNOME_Media_CDDBSlave2
-						    * _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    CORBA_string
-						    (*_impl_getComment)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_char *
-						     discid,
-						     CORBA_Environment * ev))
-{
-   *(CORBA_string *) _o_retval =
-      _impl_getComment(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_setComment(POA_GNOME_Media_CDDBSlave2
-						    * _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    void (*_impl_setComment)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_char *
-						     discid,
-						     const CORBA_char *
-						     comment,
-						     CORBA_Environment * ev))
-{
-   _impl_setComment(_o_servant, *(const CORBA_char * *) _o_args[0],
-		    *(const CORBA_char * *) _o_args[1], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getYear(POA_GNOME_Media_CDDBSlave2 *
-						 _o_servant,
-						 gpointer _o_retval,
-						 gpointer * _o_args,
-						 CORBA_Context _o_ctx,
-						 CORBA_Environment * _o_ev,
-						 CORBA_short(*_impl_getYear)
-						 (PortableServer_Servant
-						  _servant,
-						  const CORBA_char * discid,
-						  CORBA_Environment * ev))
-{
-   *(CORBA_short *) _o_retval =
-      _impl_getYear(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_setYear(POA_GNOME_Media_CDDBSlave2 *
-						 _o_servant,
-						 gpointer _o_retval,
-						 gpointer * _o_args,
-						 CORBA_Context _o_ctx,
-						 CORBA_Environment * _o_ev,
-						 void (*_impl_setYear)
-						 (PortableServer_Servant
-						  _servant,
-						  const CORBA_char * discid,
-						  const CORBA_short year,
-						  CORBA_Environment * ev))
-{
-   _impl_setYear(_o_servant, *(const CORBA_char * *) _o_args[0],
-		 *(const CORBA_short *) _o_args[1], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_getGenre(POA_GNOME_Media_CDDBSlave2 *
-						  _o_servant,
-						  gpointer _o_retval,
-						  gpointer * _o_args,
-						  CORBA_Context _o_ctx,
-						  CORBA_Environment * _o_ev,
-						  CORBA_string
-						  (*_impl_getGenre)
-						  (PortableServer_Servant
-						   _servant,
-						   const CORBA_char * discid,
-						   CORBA_Environment * ev))
-{
-   *(CORBA_string *) _o_retval =
-      _impl_getGenre(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
-
-void
-_ORBIT_skel_small_GNOME_Media_CDDBSlave2_setGenre(POA_GNOME_Media_CDDBSlave2 *
-						  _o_servant,
-						  gpointer _o_retval,
-						  gpointer * _o_args,
-						  CORBA_Context _o_ctx,
-						  CORBA_Environment * _o_ev,
-						  void (*_impl_setGenre)
-						  (PortableServer_Servant
-						   _servant,
-						   const CORBA_char * discid,
-						   const CORBA_char * genre,
-						   CORBA_Environment * ev))
-{
-   _impl_setGenre(_o_servant, *(const CORBA_char * *) _o_args[0],
-		  *(const CORBA_char * *) _o_args[1], _o_ev);
-}
 static ORBitSmallSkeleton
 get_skel_small_GNOME_Media_CDDBTrackEditor(POA_GNOME_Media_CDDBTrackEditor *
 					   servant, const char *opname,
@@ -355,28 +78,18 @@ POA_GNOME_Media_CDDBTrackEditor__init(PortableServer_Servant servant,
       { NULL,
 (ORBit_small_impl_finder) & get_skel_small_GNOME_Media_CDDBTrackEditor, "IDL:GNOME/Media/CDDBTrackEditor:1.0",
 &GNOME_Media_CDDBTrackEditor__classid, NULL, &GNOME_Media_CDDBTrackEditor__iinterface };
-   POA_GNOME_Media_CDDBTrackEditor__vepv *fakevepv = NULL;
-
-   if (((PortableServer_ServantBase *) servant)->vepv[0]->finalize == 0) {
-      ((PortableServer_ServantBase *) servant)->vepv[0]->finalize =
-	 POA_GNOME_Media_CDDBTrackEditor__fini;
-   }
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
-   ORBit_classinfo_register(&class_info);
-   ORBIT_SERVANT_SET_CLASSINFO(servant, &class_info);
-
-   if (!class_info.vepvmap) {
-      class_info.vepvmap =
-	 g_new0(ORBit_VepvIdx, GNOME_Media_CDDBTrackEditor__classid + 1);
-      class_info.vepvmap[Bonobo_Unknown__classid] =
-	 (((char *) &(fakevepv->Bonobo_Unknown_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-      class_info.vepvmap[GNOME_Media_CDDBTrackEditor__classid] =
-	 (((char *) &(fakevepv->GNOME_Media_CDDBTrackEditor_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-   }
+   ORBit_skel_class_register(&class_info,
+			     servant, POA_GNOME_Media_CDDBTrackEditor__fini,
+			     ORBIT_VEPV_OFFSET
+			     (POA_GNOME_Media_CDDBTrackEditor__vepv,
+			      GNOME_Media_CDDBTrackEditor_epv),
+			     (CORBA_unsigned_long) Bonobo_Unknown__classid,
+			     ORBIT_VEPV_OFFSET
+			     (POA_GNOME_Media_CDDBTrackEditor__vepv,
+			      Bonobo_Unknown_epv), (CORBA_unsigned_long) 0);
 }
 
 void
@@ -410,7 +123,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			    *m_data =
 			       (gpointer) &
 			       GNOME_Media_CDDBSlave2__iinterface.methods.
-			       _buffer[7];
+			       _buffer[8];
 			    return (ORBitSmallSkeleton)
 			       _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getAllTracks;
 			    break;
@@ -423,7 +136,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			    *m_data =
 			       (gpointer) &
 			       GNOME_Media_CDDBSlave2__iinterface.methods.
-			       _buffer[2];
+			       _buffer[3];
 			    return (ORBitSmallSkeleton)
 			       _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getArtist;
 			    break;
@@ -439,7 +152,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->getComment;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[9];
+			  methods._buffer[10];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getComment;
 		       break;
@@ -451,7 +164,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->getDiscTitle;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[4];
+			  methods._buffer[5];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getDiscTitle;
 		       break;
@@ -463,7 +176,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->getGenre;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[13];
+			  methods._buffer[14];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getGenre;
 		       break;
@@ -475,7 +188,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->getNTrks;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[6];
+			  methods._buffer[7];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getNTrks;
 		       break;
@@ -487,7 +200,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->getYear;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[11];
+			  methods._buffer[12];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_getYear;
 		       break;
@@ -502,6 +215,15 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 	  default:
 	     break;
 	}
+	break;
+     case 'i':
+	if (strcmp((opname + 1), "sValid"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Media_CDDBSlave2_epv->isValid;
+	*m_data =
+	   (gpointer) & GNOME_Media_CDDBSlave2__iinterface.methods._buffer[2];
+	return (ORBitSmallSkeleton)
+	   _ORBIT_skel_small_GNOME_Media_CDDBSlave2_isValid;
 	break;
      case 'q':
 	switch (opname[1]) {
@@ -591,7 +313,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			    *m_data =
 			       (gpointer) &
 			       GNOME_Media_CDDBSlave2__iinterface.methods.
-			       _buffer[8];
+			       _buffer[9];
 			    return (ORBitSmallSkeleton)
 			       _ORBIT_skel_small_GNOME_Media_CDDBSlave2_setAllTracks;
 			    break;
@@ -604,7 +326,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			    *m_data =
 			       (gpointer) &
 			       GNOME_Media_CDDBSlave2__iinterface.methods.
-			       _buffer[3];
+			       _buffer[4];
 			    return (ORBitSmallSkeleton)
 			       _ORBIT_skel_small_GNOME_Media_CDDBSlave2_setArtist;
 			    break;
@@ -620,7 +342,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->setComment;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[10];
+			  methods._buffer[11];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_setComment;
 		       break;
@@ -632,7 +354,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->setDiscTitle;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[5];
+			  methods._buffer[6];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_setDiscTitle;
 		       break;
@@ -644,7 +366,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->setGenre;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[14];
+			  methods._buffer[15];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_setGenre;
 		       break;
@@ -656,7 +378,7 @@ get_skel_small_GNOME_Media_CDDBSlave2(POA_GNOME_Media_CDDBSlave2 * servant,
 			  GNOME_Media_CDDBSlave2_epv->setYear;
 		       *m_data =
 			  (gpointer) & GNOME_Media_CDDBSlave2__iinterface.
-			  methods._buffer[12];
+			  methods._buffer[13];
 		       return (ORBitSmallSkeleton)
 			  _ORBIT_skel_small_GNOME_Media_CDDBSlave2_setYear;
 		       break;
@@ -693,28 +415,18 @@ POA_GNOME_Media_CDDBSlave2__init(PortableServer_Servant servant,
       { NULL,
 (ORBit_small_impl_finder) & get_skel_small_GNOME_Media_CDDBSlave2, "IDL:GNOME/Media/CDDBSlave2:1.0",
 &GNOME_Media_CDDBSlave2__classid, NULL, &GNOME_Media_CDDBSlave2__iinterface };
-   POA_GNOME_Media_CDDBSlave2__vepv *fakevepv = NULL;
-
-   if (((PortableServer_ServantBase *) servant)->vepv[0]->finalize == 0) {
-      ((PortableServer_ServantBase *) servant)->vepv[0]->finalize =
-	 POA_GNOME_Media_CDDBSlave2__fini;
-   }
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
-   ORBit_classinfo_register(&class_info);
-   ORBIT_SERVANT_SET_CLASSINFO(servant, &class_info);
-
-   if (!class_info.vepvmap) {
-      class_info.vepvmap =
-	 g_new0(ORBit_VepvIdx, GNOME_Media_CDDBSlave2__classid + 1);
-      class_info.vepvmap[Bonobo_Unknown__classid] =
-	 (((char *) &(fakevepv->Bonobo_Unknown_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-      class_info.vepvmap[GNOME_Media_CDDBSlave2__classid] =
-	 (((char *) &(fakevepv->GNOME_Media_CDDBSlave2_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-   }
+   ORBit_skel_class_register(&class_info,
+			     servant, POA_GNOME_Media_CDDBSlave2__fini,
+			     ORBIT_VEPV_OFFSET
+			     (POA_GNOME_Media_CDDBSlave2__vepv,
+			      GNOME_Media_CDDBSlave2_epv),
+			     (CORBA_unsigned_long) Bonobo_Unknown__classid,
+			     ORBIT_VEPV_OFFSET
+			     (POA_GNOME_Media_CDDBSlave2__vepv,
+			      Bonobo_Unknown_epv), (CORBA_unsigned_long) 0);
 }
 
 void

@@ -35,6 +35,7 @@ static void pango_accessible_class_init       (PangoAccessibleClass *klass);
 
 static gint pango_accessible_get_n_children   (AtkObject       *obj);
 static gint pango_accessible_get_index_in_parent   (AtkObject       *obj);
+static AtkStateSet* pango_accessible_ref_state_set (AtkObject       *obj);
 
 static void pango_accessible_real_initialize  (AtkObject *obj, gpointer data);
 static void pango_accessible_finalize         (GObject        *object);
@@ -163,6 +164,7 @@ pango_accessible_class_init (PangoAccessibleClass *klass)
 	class->get_n_children = pango_accessible_get_n_children;
 	class->get_index_in_parent = pango_accessible_get_index_in_parent;
 	class->initialize = pango_accessible_real_initialize;
+	class->ref_state_set = pango_accessible_ref_state_set;
 }
 
 static void
@@ -180,6 +182,27 @@ pango_accessible_real_initialize (AtkObject *obj,
 	g_return_if_fail(playout != NULL);
 	gail_text_util_text_setup(pango_accessible->textutil,
 				  pango_layout_get_text(playout));
+}
+
+static AtkStateSet*
+pango_accessible_ref_state_set (AtkObject *obj)
+{
+	AtkStateSet *state_set, *parent_state_set;
+	AtkObject *parent;	
+
+	state_set = ATK_OBJECT_CLASS (parent_class)->ref_state_set (obj);
+	parent = atk_object_get_parent (obj);
+	g_return_val_if_fail (ATK_IS_OBJECT (parent), state_set);
+	parent_state_set = atk_object_ref_state_set (parent);
+	if (atk_state_set_contains_state (parent_state_set, ATK_STATE_DEFUNCT)) {
+		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
+	} else if (atk_state_set_contains_state (parent_state_set, ATK_STATE_VISIBLE)) {
+		atk_state_set_add_state (state_set, ATK_STATE_VISIBLE);
+		if (atk_state_set_contains_state (parent_state_set, ATK_STATE_SHOWING))
+			atk_state_set_add_state (state_set, ATK_STATE_SHOWING);
+	}	
+	g_object_unref (parent_state_set);
+	return state_set;
 }
 
 AtkObject *

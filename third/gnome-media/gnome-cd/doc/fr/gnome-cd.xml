@@ -1,0 +1,428 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.547.0">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "CD Player">
+]>
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="fr">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo>
+    <title>Manuel &app;  V&manrevision;</title>
+
+    <copyright> 
+      <year>2003</year> 
+      <holder>Sun Microsystems</holder> 
+    </copyright> 
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+    <publisher> 
+      <publishername>Projet de documentation GNOME</publishername> 
+    </publisher> 
+
+   &legal;
+
+    <authorgroup>
+      <author> 
+	<firstname>Sun</firstname> 
+	<surname>Équipe de documentation GNOME</surname> 
+	<affiliation> 
+	  <orgname>Projet de documentation GNOME</orgname> 
+	  <address> <email>gdocteam@sun.com</email> </address>
+	</affiliation>
+      </author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+ 
+    <revhistory>
+      <revision> 
+	<revnumber>Manuel &app;  V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Équipe de documentation Sun GNOME
+	    <email>gdocteam@sun.com</email>
+	  </para>
+	  <para role="publisher">Projet de documentation GNOME</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Manuel du lecteur de CD V2.1</revnumber> 
+	<date>Juillet 2002</date> 
+	<revdescription> 
+	  <para role="author">Équipe de documentation Sun GNOME
+	    		<email>gdocteam@sun.com</email>
+	  			 </para>
+	  <para role="publisher">Projet de documentation GNOME</para>
+	</revdescription>
+      </revision>
+      <revision> 
+	<revnumber>Manuel du lecteur de CD V2.0</revnumber> 
+	<date>Mai 2002</date> 
+	<revdescription> 
+	  <para role="author">Équipe de documentation Sun GNOME
+	    		<email>gdocteam@sun.com</email>
+	  			 </para>
+	  <para role="publisher">Projet de documentation GNOME</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>Le pr&eacute;sent manuel d&eacute;crit la version &appversion; de &app;.
+    </releaseinfo>
+    <legalnotice> 
+      <title>Votre avis</title>
+      <para>Pour signaler un probl&egrave;me ou faire une suggestion concernant l'application &app; ou le pr&eacute;sent manuel, proc&eacute;dez comme indiqu&eacute; &agrave; la <ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice>
+  </articleinfo>
+
+  <indexterm> 
+    <primary>Lecteur de CD</primary> 
+  </indexterm> 
+
+
+<sect1 id="gtcd-introduction">
+<title>Introduction</title>
+<para>L'application <application>&app;</application> vous permet de lire des CD audio sur votre ordinateur. Vous pouvez utiliser le <application>Lecteur CD</application> pour ex&eacute;cuter les t&acirc;ches suivantes avec des CD audio :</para>
+<itemizedlist>
+<listitem><para>lire, mettre en pause, arr&ecirc;ter ou &eacute;jecter ;</para></listitem>
+<listitem><para>parcourir les pistes d'un CD ;</para></listitem>
+<listitem><para>r&eacute;gler le volume du lecteur de CD ;</para></listitem>
+<listitem><para>modifier les informations relatives aux pistes.</para></listitem>
+</itemizedlist>
+</sect1>
+<!-- =========== Getting Started ============================== -->
+<sect1 id="gtcd-getting-started"><title>D&eacute;marrage</title>
+
+<sect2 id="gtcd-to-start">
+<title>D&eacute;marrage du lecteur de CD</title>
+<para>Vous pouvez d&eacute;marrer <application>&app;</application> en recourant &agrave; l'une des m&eacute;thodes suivantes :</para>
+<variablelist>
+<varlistentry>
+<term>Menu <guimenu>Applications</guimenu></term>
+<listitem>
+<para>S&eacute;lectionnez
+<menuchoice>
+<guisubmenu>Son &amp; Vid&eacute;o </guisubmenu>
+<guimenuitem> &app;</guimenuitem>
+</menuchoice>. </para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Ligne de commande</term>
+<listitem>
+<para>Saisissez <command>gnome-cd</command>, puis appuyez sur <keycap>Entr&eacute;e</keycap>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gtcd-when-start">
+<title>Lancement du lecteur de CD</title>
+<para>Lorsque vous lancez <application>&app;</application>, la fen&ecirc;tre suivante s'ouvre.</para>
+<!-- ==== Figure ==== -->
+      <figure id="cdplayer_start_window"> 
+	<title>Fen&ecirc;tre &app;</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata  fileref="figures/cdplayer_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase>Affiche la fen&ecirc;tre principale du lecteur de CD</phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+<para>La fen&ecirc;tre <application>&app;</application> contient les &eacute;l&eacute;ments suivants :</para>
+<itemizedlist>
+<listitem><para>un bouton 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Ouvrir l'éditeur de piste</phrase></textobject>
+</inlinemediaobject>qui vous permet d'ouvrir la bo&icirc;te de dialogue <guilabel>Éditeur de piste</guilabel> ; </para></listitem>
+<listitem><para>un bouton <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Préférences</phrase></textobject>
+</inlinemediaobject>qui vous permet d'ouvrir la bo&icirc;te de dialogue <guilabel>Préférences</guilabel> ; </para></listitem>
+<listitem><para>une zone d'affichage pr&eacute;sentant des d&eacute;tails concernant le CD en cours  de lecture ; </para></listitem>
+<listitem><para>un curseur de s&eacute;lection destin&eacute; &agrave; r&eacute;gler le volume ; </para></listitem>
+<listitem><para>une zone de liste d&eacute;roulante qui vous permet de visualiser les noms des pistes et de passer &agrave; l'une d'entre elles ; </para></listitem>
+<listitem><para>des boutons activant la lecture des pistes. </para></listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+
+<!-- ============= Usage ============================= -->
+<sect1 id="gtcd-usage">
+<title>Utilisation</title>
+
+<!--=========== To Play a CD ============================= -->
+<sect2 id="gtcd_play">
+<title>Lecture d'un CD</title>
+<para>Pour lire un CD, ins&eacute;rez-le dans le lecteur de votre ordinateur, puis appuyez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Lire</phrase></textobject>
+</inlinemediaobject>. </para>
+<para>L'application indique les informations suivantes dans la zone d'affichage :
+</para>
+<itemizedlist>
+<listitem><para>le temps &eacute;coul&eacute; de la piste courante ;</para></listitem>
+<listitem><para>le nom de l'artiste ;</para></listitem>
+<listitem><para>le titre du CD.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_pause">
+	<title>Pause</title>
+<para>Pour faire passer un CD en mode pause, cliquez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/pause_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Pause</phrase></textobject>
+</inlinemediaobject>. Pour reprendre la lecture du CD, cliquez de nouveau sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/play_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Lire</phrase></textobject>
+</inlinemediaobject>. </para>
+</sect2>
+
+<sect2 id="gtcd_movetracks">
+	<title>Passage d'une piste &agrave; l'autre</title>
+<para>Pour parcourir les diff&eacute;rentes pistes, proc&eacute;dez comme suit :
+</para>
+<itemizedlist>
+<listitem><para>Pour passer &agrave; la piste suivante, cliquez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/next_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Piste suivante</phrase></textobject>
+</inlinemediaobject>. </para></listitem>
+<listitem><para>Pour passer &agrave; la piste pr&eacute;c&eacute;dente, cliquez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/previous_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Piste pr&eacute;c&eacute;dente</phrase></textobject>
+</inlinemediaobject>. </para></listitem>
+<listitem><para>Pour consulter une liste des pistes, cliquez sur la zone de liste d&eacute;roulante situ&eacute;e en bas de la zone d'affichage.
+Pour passer &agrave; une piste, s&eacute;lectionnez-la dans la liste.</para></listitem>
+</itemizedlist>
+</sect2>
+
+<sect2 id="gtcd_forward">
+<title>Avance rapide</title>
+<para>Pour faire passer une piste en avance rapide, cliquez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/forward_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Avance rapide</phrase></textobject>
+</inlinemediaobject>.</para>
+</sect2>
+
+<sect2 id="gtcd_rewind">
+<title>Rembobinage d'une piste</title>
+<para>Pour rembobiner une piste, cliquez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/rewind_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Rembobinage</phrase></textobject>
+</inlinemediaobject>.</para>
+</sect2>
+
+<sect2 id="gtcd_stop">
+	<title>Arr&ecirc;t d'un CD</title>
+<para>Pour arr&ecirc;ter la lecture d'un CD, cliquez sur le bouton 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/stop_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Stop</phrase></textobject>
+</inlinemediaobject>.</para>
+</sect2>
+
+<sect2 id="gtcd_adjust_vol">
+<title>R&eacute;glage du volume</title>
+<para>Pour r&eacute;gler le volume du lecteur de CD, d&eacute;placez le curseur de s&eacute;lection afin de sp&eacute;cifier le volume souhait&eacute;. Le curseur est situ&eacute; &agrave; droite de la zone d'affichage dans la fen&ecirc;tre de l'application. D&eacute;placez-le vers le haut pour augmenter le volume.
+Pour le diminuer, faites-le glisser vers le bas.</para>
+</sect2>
+
+<sect2 id="gtcd_edit_info">
+<title>Modification des informations d'un CD</title>
+<para>Pour modifier les informations d'un CD, proc&eacute;dez comme suit :</para>
+<orderedlist>
+<listitem><para>Pour ouvrir la bo&icirc;te de dialogue <guilabel>Track Editor</guilabel>, cliquez sur le bouton <inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/cdplayer_trackeditor_button.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>. La bo&icirc;te de dialogue <guilabel>Éditeur de piste</guilabel> s'affiche. Consultez <xref linkend="fig-cd-track-editor"/>. </para></listitem>
+<listitem><para>Pour modifier le nom de l'artiste, modifiez le contenu de la zone de texte <guilabel>Artiste</guilabel>.</para></listitem>
+<listitem><para>Pour modifier le titre du CD, changez le contenu de la zone de texte <guilabel>Titre du disque</guilabel>.</para></listitem>
+<listitem><para>Pour ajouter des commentaires concernant le CD, le type de musique et l'ann&eacute;e de production, cliquez sur la fl&egrave;che situ&eacute;e en regard de <guilabel>Show advanced disc options</guilabel>.</para></listitem>
+<listitem><para>Pour modifier le titre d'une piste, cliquez deux fois sur celle-ci sur la piste dans la colonne <guilabel>Title</guilabel> de la table des pistes, puis tapez le nouveau titre.</para></listitem>
+<listitem><para>Pour ajouter des informations suppl&eacute;mentaires concernant une piste, s&eacute;lectionnez-la dans la table ad hoc, puis cliquez sur la fl&egrave;che situ&eacute;e en regard de <guilabel>Afficher les options de disque avancées</guilabel>.</para></listitem>
+<listitem><para>Entrez les informations dans la zone de texte <guilabel>Extra track data</guilabel>.</para></listitem>
+<listitem><para>Pour enregistrer les modifications sur votre ordinateur local, cliquez sur le bouton <guibutton>Enregisrter</guibutton>.</para></listitem>
+</orderedlist>
+<!-- ==== Figure ==== -->
+      <figure id="fig-cd-track-editor"> 
+	<title>Bo&icirc;te de dialogue Track Editor</title>
+	<screenshot>
+	  <mediaobject>
+	    <imageobject><imagedata 		fileref="figures/cdplayer_trackeditor_window.png" format="PNG"/> 
+	    </imageobject>
+	    <textobject>
+	      <phrase></phrase>
+	    </textobject>
+	  </mediaobject>
+	</screenshot>
+      </figure>
+<!-- ==== End of Figure ==== -->
+</sect2>
+
+<sect2 id="gtcd_eject">
+	<title>Ejection d'un CD</title>
+<para>Pour &eacute;jecter un CD, cliquez sur le bouton 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/eject_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Éjecter</phrase></textobject>
+</inlinemediaobject>. Cette action arr&ecirc;te la lecture du CD si celle-ci est toujours en cours et ouvre le tiroir du lecteur.</para>
+</sect2>
+
+</sect1>
+
+<!-- ================= Preferences =================== -->
+<sect1 id="gtcd-prefs"><title>Pr&eacute;f&eacute;rences</title>
+<para>Pour configurer <application>&app;</application>, cliquez sur le bouton
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="figures/preferences_button.png" format="PNG"/>
+</imageobject>
+<textobject><phrase>Préférences</phrase></textobject>
+</inlinemediaobject>. </para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Lecteur CD</guilabel> </term>
+<listitem>
+<para>Cette zone de texte permet de sp&eacute;cifier le nom du lecteur de CD ROM. Le bouton <guibutton>Appliquer les modifications</guibutton> permet d'enregistrer les changements apport&eacute;s &agrave; ce param&egrave;tre.</para>
+<para>Par d&eacute;faut :d&eacute;pend de votre syst&egrave;me d'exploitation. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>When GNOME CD Player starts</guilabel> </term>
+<listitem>
+<para>Les boutons radio suivants permettent de d&eacute;terminer le comportement du <application>Lecteur CD</application> lorsque vous lancez l'application.</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>Ne rien faire</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Commencer la lecture du CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Arrêter la lecture du CD</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Par d&eacute;faut : <guilabel>Ne rien faire</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>A la fermeture de GNOME-CD</guilabel> </term>
+<listitem>
+<para>Les boutons radio suivants permettent de d&eacute;terminer le comportement du <application>Lecteur CD</application> lorsque vous quittez l'application.</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>Ne rien faire</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Arrêter la lecture du CD</guilabel> </para>
+</listitem>
+<listitem>
+<para><guilabel>Tenter d'ouvrir le lecteur de CD</guilabel> </para>
+</listitem>
+</itemizedlist>
+<para>Par d&eacute;faut : <guilabel>Ne rien faire</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Nom du thème</guilabel> </term>
+<listitem>
+<para>Cette zone de liste permet de s&eacute;lectionner un th&egrave;me d'affichage pour <application>&app;</application>. Les th&egrave;mes disponibles sont les suivants :</para>
+<itemizedlist>
+<listitem>
+<para><guilabel>lcd</guilabel> </para>
+<para>Contient les boutons standard et un arri&egrave;re-plan gris pour la zone d'affichage.</para>
+</listitem>
+<listitem>
+<para><guilabel>media</guilabel> </para>
+<para>Contient les boutons personnalis&eacute;s et un arri&egrave;re-plan rouge pour la zone d'affichage.</para>
+</listitem>
+<listitem>
+<para><guilabel>red-lcd</guilabel> </para>
+<para>Contient les boutons standard et un arri&egrave;re-plan rouge pour la zone d'affichage.</para>
+</listitem>
+</itemizedlist>
+<para>Par d&eacute;faut : <guilabel>lcd</guilabel>.</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+</article>
+

@@ -1,3 +1,41 @@
+2003-10-08  Ted Gould <ted@gould.cx>
+
+	* pipeline-tests.c: Patch from Kjartan Maraas for bug #123662
+	which is about compiler warnings.
+
+2003-07-29  Ted Gould <ted@gould.cx>
+
+	* gstreamer-properties.c:
+
+	Patch from Damien Carbery <damien.carbery@sun.com> to fix the bug
+	I put in with the previous patch...  Sorry.  This is bug number
+	118554.
+
+2003-07-28  Ted Gould <ted@gould.cx>
+
+	* gstreamer-properties.c:
+
+	Adding patch that was attached to 118172 to disable the test button
+	when the string in the text box is NULL (either way).  This patch
+	was written by Motonobu Ichimura <famao@momonga-linux.org>.
+
+2003-07-15  Ted Gould <ted@gould.cx>
+
+	* gstreamer-properties.c, gstreamer-properties.glade,
+	  pipeline-constants.c:
+
+	Patch to fix bug 115637 which is adding i18n flags to the 'custom'
+	string and also cleaning up the .glade file with various HIG fixes.
+	Patch was written by chris@gnome-de.org.
+
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* gstreamer-properties.desktop.in: Add X-GNOME-Bugzilla entries.
+
+2002-03-28 Iain <iain@prettypeople.org>
+
+	* pipeline-tests.c: Don't use spider. Patch from Jan Schmidt
+
 2002-12-16 Iain <iain@prettypeople.org>
 
 	* gstreamer-properties.c (create_pipeline_menu): Only add elements that

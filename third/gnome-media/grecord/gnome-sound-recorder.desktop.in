@@ -9,3 +9,6 @@ Terminal=false
 Type=Application
 X-GNOME-DocPath=grecord/grecord.xml
 Categories=GNOME;Application;AudioVideo;
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=gnome-media
+X-GNOME-Bugzilla-Component=Gnome-Sound-Recorder

@@ -12,7 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -27,29 +27,29 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-GIOError gnet_io_channel_writen (GIOChannel    *channel, 
-				 gpointer       buf, 
+GIOError gnet_io_channel_writen (GIOChannel    *channel,
+				 gpointer       buf,
 				 guint          len,
 				 guint         *bytes_written);
 
-GIOError gnet_io_channel_readn (GIOChannel    *channel, 
-				 gpointer      buf, 
+GIOError gnet_io_channel_readn (GIOChannel    *channel,
+				 gpointer      buf,
 				 guint         len,
 				 guint        *bytes_read);
 
-GIOError gnet_io_channel_readline (GIOChannel    *channel, 
-				   gchar         *buf, 
+GIOError gnet_io_channel_readline (GIOChannel    *channel,
+				   gchar         *buf,
 				   guint          len,
 				   guint         *bytes_read);
 
-GIOError gnet_io_channel_readline_strdup (GIOChannel    *channel, 
-					  gchar         **buf_ptr, 
+GIOError gnet_io_channel_readline_strdup (GIOChannel    *channel,
+					  gchar         **buf_ptr,
 					  guint         *bytes_read);
 
 /* **************************************** */
 
 /* This part is experimental, buggy, and unstable.  Use at your own risk. */
-#ifdef GNET_EXPERIMENTAL 
+#ifdef GNET_EXPERIMENTAL
 
 
 /*
@@ -79,17 +79,17 @@ void (*GNetIOChannelWriteAsyncFunc)(GIOChannel* iochannel,
 				    gchar* buffer, /* callee owns */
 				    guint length,
 				    guint bytes_writen,
-				    GNetIOChannelWriteAsyncStatus status, 
+				    GNetIOChannelWriteAsyncStatus status,
 				    gpointer user_data);
 
 GNetIOChannelWriteAsyncID
-gnet_io_channel_write_async (GIOChannel* iochannel, 
-			     gchar* buffer, guint length, 
+gnet_io_channel_write_async (GIOChannel* iochannel,
+			     gchar* buffer, guint length,
 			     guint timeout,
-			     GNetIOChannelWriteAsyncFunc func, 
+			     GNetIOChannelWriteAsyncFunc func,
 			     gpointer user_data);
 
-void gnet_io_channel_write_async_cancel (GNetIOChannelWriteAsyncID id, 
+void gnet_io_channel_write_async_cancel (GNetIOChannelWriteAsyncID id,
 					 gboolean delete_buffer);
 
 
@@ -105,20 +105,20 @@ typedef enum {
 typedef gpointer GNetIOChannelReadAsyncID;
 
 typedef
-gboolean (*GNetIOChannelReadAsyncFunc)(GIOChannel* iochannel, 
-				       GNetIOChannelReadAsyncStatus status, 
-				       gchar* buffer, guint length, 
+gboolean (*GNetIOChannelReadAsyncFunc)(GIOChannel* iochannel,
+				       GNetIOChannelReadAsyncStatus status,
+				       gchar* buffer, guint length,
 				       gpointer user_data);
 
 /* ID is invalid if there is an error.  If OK and buffer and length is
    0, then it's an EOF. */
 
 typedef
-gint (*GNetIOChannelReadAsyncCheckFunc)(gchar* buffer, guint length, 
+gint (*GNetIOChannelReadAsyncCheckFunc)(gchar* buffer, guint length,
 					gpointer user_data);
 /* Return -1 if error, otherwise number of bytes read. */
 
-/* 
+/*
 
    Set buffer to NULL if you want the buffer created dynamicly.
    Length will be the maximum length of the buffer.  GNet owns the
@@ -139,20 +139,20 @@ gint (*GNetIOChannelReadAsyncCheckFunc)(gchar* buffer, guint length,
 
 
 GNetIOChannelReadAsyncID
-gnet_io_channel_read_async (GIOChannel* iochannel, 
-			    gchar* buffer, guint length, 
-			    guint timeout, 
-			    gboolean read_one_byte_at_a_time, 
-			    GNetIOChannelReadAsyncCheckFunc check_func, 
+gnet_io_channel_read_async (GIOChannel* iochannel,
+			    gchar* buffer, guint length,
+			    guint timeout,
+			    gboolean read_one_byte_at_a_time,
+			    GNetIOChannelReadAsyncCheckFunc check_func,
 			    gpointer check_user_data,
-			    GNetIOChannelReadAsyncFunc func, 	      
+			    GNetIOChannelReadAsyncFunc func,
 			    gpointer user_data);
 
 void gnet_io_channel_read_async_cancel (GNetIOChannelReadAsyncID id);
 
-gint gnet_io_channel_readany_check_func (gchar* buffer, guint length, 
+gint gnet_io_channel_readany_check_func (gchar* buffer, guint length,
 					gpointer data);
-gint gnet_io_channel_readline_check_func (gchar* buffer, guint length, 
+gint gnet_io_channel_readline_check_func (gchar* buffer, guint length,
 					 gpointer data);
 
 #define gnet_io_channel_readany_async(IO, BUF, LEN, TO, FUNC, UD)	\

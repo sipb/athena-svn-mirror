@@ -1,0 +1,2161 @@
+# Persian translation of gnome-media.
+# Copyright (C) 2003 The FarsiWeb Project Group
+# Roozbeh Pournader <roozbeh@sharif.edu>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-media\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 14:28+0200\n"
+"PO-Revision-Date: 2003-02-21 15:01+0330\n"
+"Last-Translator: Roozbeh Pournader <roozbeh@sharif.edu>\n"
+"Language-Team: Persian <farsi@lists.sharif.edu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "نشانی خادمی که برای پرس‌وجو در مورد سی‌دی با آن تماس گرفته شود"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2
+#, fuzzy
+msgid "Information to send to server"
+msgstr "نمایش اطلاعات ضبط‌کننده‌ی صدا"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3 cddb-slave2/cddb-slave-capplet.c:832
+msgid "Port"
+msgstr "درگاه"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "Server name"
+msgstr "نام خادم"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+#, fuzzy
+msgid "Server type"
+msgstr "نام خادم"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The hostname that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The port that the server is running the database on"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid ""
+"The type of the server to contact for CD queries. Possible values are 0 "
+"(FreeDB round robin server), 1 (other freedb server) and 2 (other server)."
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:9
+msgid "The username"
+msgstr "نام کاربر"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:10
+msgid "The username that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:11
+msgid ""
+"This key specifies which user information will be sent to the server to "
+"contact for CD queries. Possible values are 0 (no information), 1 (real "
+"information) and 3 (other information)."
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:12
+msgid "Your hostname"
+msgstr ""
+
+#: cddb-slave2/cddb-disclosure.c:241
+msgid "Expander Size"
+msgstr ""
+
+#: cddb-slave2/cddb-disclosure.c:242
+msgid "Size of the expander arrow"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:696
+#, fuzzy
+msgid "Login Information"
+msgstr "اطلاعات پرونده"
+
+#: cddb-slave2/cddb-slave-capplet.c:702
+#, fuzzy
+msgid "Sen_d no information"
+msgstr "اطلاعات پرونده"
+
+#: cddb-slave2/cddb-slave-capplet.c:711
+#, fuzzy
+msgid "Send real _information"
+msgstr "اطلاعات پرونده"
+
+#: cddb-slave2/cddb-slave-capplet.c:720
+msgid "Send _other information:"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:745
+#, fuzzy
+msgid "_Name:"
+msgstr "نام:"
+
+#: cddb-slave2/cddb-slave-capplet.c:765
+msgid "Hostna_me:"
+msgstr ""
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:785 cddb-slave2/cddb-slave-capplet.c:829
+msgid "Server"
+msgstr "خادم"
+
+#: cddb-slave2/cddb-slave-capplet.c:791
+msgid "FreeDB _round robin server"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:797
+msgid "Other _FreeDB server:"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:835
+msgid "Location"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:864
+msgid "_Update Server List"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:871
+msgid "Other _server:"
+msgstr ""
+
+#: cddb-slave2/cddb-slave-capplet.c:891
+#, fuzzy
+msgid "Hos_tname:"
+msgstr "نام:"
+
+#: cddb-slave2/cddb-slave-capplet.c:908
+msgid "_Port:"
+msgstr "درگاه:"
+
+#: cddb-slave2/cddb-slave-capplet.c:972
+msgid "CD Database Preferences"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:221
+msgid "Unknown / Unknown"
+msgstr "نامعلوم / نامعلوم"
+
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:227 grecord/src/gsr-window.c:697
+#: grecord/src/gsr-window.c:706 grecord/src/gsr-window.c:715
+#: grecord/src/gsr-window.c:725 grecord/src/gsr-window.c:1032
+msgid "Unknown"
+msgstr "نامعلوم"
+
+#: cddb-slave2/cddb-slave.c:272
+msgid "Multiple matches..."
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:277
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:288
+msgid "Category"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:292
+msgid "Disc ID"
+msgstr "شناسه‌ی دیسک"
+
+#: cddb-slave2/cddb-slave.c:296
+msgid "Artist and Title"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.c:1351 cddb-slave2/cddb-slave.c:1353
+#: gnome-cd/gnome-cd.c:176
+msgid "Unknown track"
+msgstr ""
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+#, fuzzy
+msgid "CD Database Server"
+msgstr "پایگاه‌داده‌ی سی‌دی"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+msgid "Modify your CD database server preferences"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Blues"
+msgstr "بلوز"
+
+#: cddb-slave2/cddb-track-editor.c:80
+msgid "Classical Rock"
+msgstr "راک کلاسیک"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Country"
+msgstr "کانتری"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Dance"
+msgstr "رقص"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Disco"
+msgstr "دیسکو"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Funk"
+msgstr "فانکی"
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Grunge"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Hip-Hop"
+msgstr "هیپ‌هاپ"
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Jazz"
+msgstr "جاز"
+
+#: cddb-slave2/cddb-track-editor.c:88
+msgid "Metal"
+msgstr "متال"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "New Age"
+msgstr "نسل نو"
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Oldies"
+msgstr "قدیمی"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Other"
+msgstr "غیره"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "Pop"
+msgstr "پاپ"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "R&B"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Rap"
+msgstr "رپ"
+
+#: cddb-slave2/cddb-track-editor.c:95
+msgid "Reggae"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Rock"
+msgstr "راک"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Techno"
+msgstr "تکنو"
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Industrial"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Alternative"
+msgstr "آلترناتیو"
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Ska"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Death Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Pranks"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Soundtrack"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Euro-Techno"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Ambient"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Trip-Hop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Vocal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Jazz+Funk"
+msgstr "جاز+فانکی"
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Fusion"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Trance"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Classical"
+msgstr "کلاسیک"
+
+#: cddb-slave2/cddb-track-editor.c:112
+msgid "Instrumental"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "Acid"
+msgstr "اسید"
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:115
+msgid "Game"
+msgstr "بازی"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Sound Clip"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Gospel"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Noise"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:119
+msgid "Alt"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:120
+msgid "Bass"
+msgstr "باس"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Soul"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Punk"
+msgstr "پانک"
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Space"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Meditative"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Pop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Instrumental Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Ethnic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Gothic"
+msgstr "گوتیک"
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Darkwave"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Techno-Industrial"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Electronic"
+msgstr "الکترونیم"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Pop-Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Eurodance"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Dream"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Southern Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Comedy"
+msgstr "کمدی"
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Cult"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Gangsta Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Top 40"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Christian Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Pop/Funk"
+msgstr "پاپ/فانکی"
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Jungle"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Native American"
+msgstr "سرخ‌پوستی"
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "Cabaret"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "New Wave"
+msgstr "موج نو"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Psychedelic"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:147
+msgid "Rave"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:148
+msgid "Showtunes"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Trailer"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Lo-Fi"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Tribal"
+msgstr "قبیله‌ای"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Punk"
+msgstr "پانک اسیدی"
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Acid Jazz"
+msgstr "جاز اسیدی"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Polka"
+msgstr "پولکا"
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Retro"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Musical"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Rock & Roll"
+msgstr "راک اند رول"
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Hard Rock"
+msgstr "هارد راک"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "Folk/Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "National Folk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Swing"
+msgstr "سوینگ"
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Fast-Fusion"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Bebop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Latin"
+msgstr "لاتین"
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Revival"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Celtic"
+msgstr "سلتی"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Bluegrass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Avantgarde"
+msgstr "آوان‌گارد"
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Gothic Rock"
+msgstr "راک گوتیک"
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Progressive Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Psychedelic Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Symphonic Rock"
+msgstr "راک سمفونیک"
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Slow Rock"
+msgstr "راک آرام"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Big Band"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Chorus"
+msgstr "کر"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Easy Listening"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Acoustic"
+msgstr "آکوستیک"
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Humour"
+msgstr "طنز"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Speech"
+msgstr "سخنرانی"
+
+#: cddb-slave2/cddb-track-editor.c:181
+msgid "Chanson"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Opera"
+msgstr "اپرا"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Chamber Music"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Sonata"
+msgstr "سوناتا"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Symphony"
+msgstr "سمفونی"
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Booty Bass"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Primus"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Porn Groove"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Satire"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Slow Jam"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Club"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Tango"
+msgstr "تانگو"
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Samba"
+msgstr "سامبا"
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Folklore"
+msgstr "فلکلور"
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Ballad"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Power Ballad"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Rhythmic Soul"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Freestyle"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Duet"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Punk Rock"
+msgstr "پانک راک"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "Drum Solo"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "A Cappella"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Euro-House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Dance Hall"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Goa"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Drum & Bass"
+msgstr "درام و باس"
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Club-House"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:208
+msgid "Hardcore"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Terror"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "Indie"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "BritPop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Negerpunk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Polsk Punk"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Beat"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Christian Gangsta Rap"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Heavy Metal"
+msgstr "هوی متال"
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Black Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Crossover"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Contemporary Christian"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Christian Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Merengue"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Salsa"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:223
+msgid "Thrash Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "Anime"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:225
+msgid "JPop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Synthpop"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Nu-Metal"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:228
+msgid "Art Rock"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:532 gnome-cd/callbacks.c:558
+#: gnome-cd/callbacks.c:690 gnome-cd/callbacks.c:701 gnome-cd/display.c:74
+msgid "Unknown Artist"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:533 gnome-cd/callbacks.c:559
+#: gnome-cd/callbacks.c:693 gnome-cd/callbacks.c:705 gnome-cd/display.c:75
+msgid "Unknown Album"
+msgstr "آلبوم نامعلوم"
+
+#: cddb-slave2/cddb-track-editor.c:541
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr ""
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:630
+msgid "Editing Disc ID: "
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:641
+msgid "_Artist:"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:655
+msgid "Disc _Title:"
+msgstr "عنوان دیسک:"
+
+#: cddb-slave2/cddb-track-editor.c:665
+msgid "Show advanced disc options"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:666
+msgid "Hide advanced disc options"
+msgstr ""
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:678
+msgid "_Disc comments:"
+msgstr "توضیحات دیسک:"
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:693
+msgid "_Genre:"
+msgstr ""
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:709
+msgid "_Year:"
+msgstr "سال:"
+
+#: cddb-slave2/cddb-track-editor.c:748
+msgid "Title"
+msgstr "عنوان"
+
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Length"
+msgstr "طول"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:766
+msgid "Show advanced track options"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:767
+msgid "Hide advanced track options"
+msgstr ""
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:775
+msgid "_Extra track data:"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:903
+msgid "CDDB Track Editor"
+msgstr ""
+
+#: cddb-slave2/cddb-track-editor.c:1040
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:118
+msgid "CD Display"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:120
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Time Line"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:190
+msgid "Line for displaying the time elapsed for the current track"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+msgid "Info Line"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:194
+msgid "Line for displaying information"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Artist Line"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:198
+msgid "Line for displaying the name of the artist"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Album Line"
+msgstr ""
+
+#: gnome-cd/access/cddisplayaccessible.c:202
+msgid "Line for displaying the name of the album"
+msgstr ""
+
+#: gnome-cd/callbacks.c:83 gnome-cd/callbacks.c:171 gnome-cd/callbacks.c:270
+#: gnome-cd/callbacks.c:573 gnome-cd/gnome-cd.c:671 grecord/gsr.xml.h:13
+msgid "Play"
+msgstr "پخش"
+
+#: gnome-cd/callbacks.c:156 gnome-cd/callbacks.c:202 gnome-cd/callbacks.c:232
+#: gnome-cd/callbacks.c:312 gnome-cd/callbacks.c:352 gnome-cd/callbacks.c:376
+#: gnome-cd/callbacks.c:417 gnome-cd/callbacks.c:511
+msgid "Pause"
+msgstr ""
+
+#: gnome-cd/callbacks.c:557
+#, c-format
+msgid "Playing %s - %s"
+msgstr ""
+
+#: gnome-cd/callbacks.c:561
+msgid "Playing"
+msgstr "در حال پخش"
+
+#: gnome-cd/callbacks.c:585
+msgid "Paused"
+msgstr ""
+
+#: gnome-cd/callbacks.c:631 gnome-cd/callbacks.c:873 gnome-cd/gnome-cd.c:88
+#: gnome-cd/gnome-cd.c:534 gnome-cd/gnome-cd.c:721 gnome-cd/gnome-cd.c:724
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr ""
+
+#: gnome-cd/callbacks.c:649
+msgid "Stopped"
+msgstr ""
+
+#: gnome-cd/callbacks.c:655
+msgid "Disc error"
+msgstr "خطای دیسک"
+
+#: gnome-cd/callbacks.c:666 gnome-cd/callbacks.c:761
+msgid "No disc"
+msgstr ""
+
+#: gnome-cd/callbacks.c:789
+msgid "Drive open"
+msgstr ""
+
+#: gnome-cd/callbacks.c:813
+msgid "Data CD"
+msgstr ""
+
+#: gnome-cd/callbacks.c:835 gnome-cd/callbacks.c:840
+msgid "No Cdrom"
+msgstr ""
+
+#: gnome-cd/callbacks.c:851
+msgid "Drive Error"
+msgstr ""
+
+#: gnome-cd/callbacks.c:875
+msgid "A CD player for GNOME"
+msgstr ""
+
+#: gnome-cd/cdrom.c:368
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr ""
+
+#: gnome-cd/cdrom.c:374
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not present in your machine\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:215
+#, c-format
+msgid "%d - Unknown"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:329
+msgid "P_revious track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:330 grecord/gsr.xml.h:44
+msgid "_Stop"
+msgstr "توقف"
+
+#: gnome-cd/gnome-cd.c:331
+msgid "_Play / Pause"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:332
+msgid "_Next track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:333
+msgid "_Eject disc"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:334 grecord/gsr.xml.h:37
+msgid "_Help"
+msgstr "راهنما"
+
+#: gnome-cd/gnome-cd.c:335
+msgid "_About CD player"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:454
+msgid ""
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:458
+msgid "Set device"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:460
+msgid "No CD device"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:513
+msgid ""
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:517
+msgid "_Details"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:518
+msgid "_Set device"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:520
+msgid "Invalid CD device"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:584
+msgid "Volume control"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:595
+msgid "Position"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:612
+msgid "Open track editor"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:613
+msgid "Track editor"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:620
+msgid "Open preferences"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:621
+msgid "Preferences"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:629
+msgid "Track List"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous"
+msgstr "قبلی"
+
+#: gnome-cd/gnome-cd.c:654
+msgid "Rewind"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:671
+msgid "Play / Pause"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:676 grecord/gsr.xml.h:30
+msgid "Stop"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:680
+msgid "Fast forward"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:688
+msgid "Next track"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject CD"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:808
+msgid "CD device to use"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:810
+msgid "Only start if there isn't already a CD player application running"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:812
+msgid "Play the CD on startup"
+msgstr ""
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:842
+msgid "Cannot create player"
+msgstr ""
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "CD player theme"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Device path"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "Eject the CD when CD player quits?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Play when the CD player starts?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD be ejected when the CD player quits?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "What theme should the CD player use for its appearance"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid "When the CD player is started, should it start playing the CD?"
+msgstr ""
+
+#: gnome-cd/preferences.c:84
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+
+#: gnome-cd/preferences.c:85
+msgid "Error setting device"
+msgstr ""
+
+#: gnome-cd/preferences.c:638
+msgid "CD Player Preferences"
+msgstr ""
+
+#: gnome-cd/preferences.c:672
+msgid "CD Player De_vice:"
+msgstr ""
+
+#: gnome-cd/preferences.c:696
+msgid "_Apply change"
+msgstr ""
+
+#: gnome-cd/preferences.c:708
+msgid "CD Player Behaviour:"
+msgstr ""
+
+#: gnome-cd/preferences.c:721
+msgid "Start _playing CD when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:722
+msgid "Start playing CD when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:734
+msgid "Attempt to _eject CD when CD Player exits"
+msgstr ""
+
+#: gnome-cd/preferences.c:735
+msgid "Attempt to eject CD when CD Player exits"
+msgstr ""
+
+#: gnome-cd/preferences.c:755
+msgid "_Available Themes:"
+msgstr ""
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr ""
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:914
+#: grecord/src/gsr-window.c:1241
+msgid "Sound Recorder"
+msgstr ""
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "درباره"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "بستن"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "بستن این پنجره"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr ""
+
+#: grecord/gsr.xml.h:5
+msgid "Create a new sample"
+msgstr ""
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr ""
+
+#: grecord/gsr.xml.h:7 grecord/src/gsr-window.c:783
+msgid "File Information"
+msgstr "اطلاعات پرونده"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr ""
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr ""
+
+#: grecord/gsr.xml.h:10
+msgid "New"
+msgstr "جدید"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "باز کردن"
+
+#: grecord/gsr.xml.h:12 grecord/src/gsr-window.c:346
+msgid "Open a file"
+msgstr "باز کردن پرونده"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "پخش صدا"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "خروج"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "خروج از برنامه"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "پرونده‌های اخیر"
+
+#: grecord/gsr.xml.h:18
+msgid "Record"
+msgstr "ضبط"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "ضبط صدا"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "اجرای میکسر"
+
+#: grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr ""
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "اجرای میکسر صوتی"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "ذخیره"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr ""
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr ""
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "ذخیره‌ی پرونده‌ی فعلی"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "ذخیره‌ی پرونده‌ی فعلی با یک نام دیگر"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "نمایش اطلاعات درباره‌ی پرونده‌ی فعلی"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "نمایش اطلاعات ضبط‌کننده‌ی صدا"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "توقف صدا"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "درباره"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "بستن پنجره"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "محتویات"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "کنترل"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "پرونده"
+
+#: grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "جدید"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "باز کردن..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "پخش"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "خروج"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "ضبط"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "ذخیره"
+
+#: grecord/src/gnome-recorder.c:162
+msgid "Dummy option"
+msgstr ""
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "ساعت"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "ساعت"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minutes"
+msgstr "دقیقه"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "دقیقه"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "ثانیه"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "ثانیه"
+
+#: grecord/src/gsr-window.c:398 grecord/src/gsr-window.c:1193
+#: grecord/src/gsr-window.c:1357 grecord/src/gsr-window.c:1627
+msgid "Ready"
+msgstr ""
+
+#: grecord/src/gsr-window.c:529
+msgid "Save file as"
+msgstr ""
+
+#: grecord/src/gsr-window.c:585
+#, c-format
+msgid "%s is not installed in the path."
+msgstr ""
+
+#: grecord/src/gsr-window.c:595
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr ""
+
+#: grecord/src/gsr-window.c:672
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr ""
+
+#: grecord/src/gsr-window.c:688
+msgid "Unknown size"
+msgstr ""
+
+#: grecord/src/gsr-window.c:708
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f کیلوهرتز"
+
+#: grecord/src/gsr-window.c:717
+#, c-format
+msgid "%.0f kb/s"
+msgstr ""
+
+#: grecord/src/gsr-window.c:729
+msgid "1 (mono)"
+msgstr "۱ (مونو)"
+
+#: grecord/src/gsr-window.c:733
+#, fuzzy
+msgid "2 (stereo)"
+msgstr "استریو"
+
+#: grecord/src/gsr-window.c:762
+#, c-format
+msgid "%s Information"
+msgstr ""
+
+#: grecord/src/gsr-window.c:797
+msgid "Folder:"
+msgstr "پوشه:"
+
+#: grecord/src/gsr-window.c:803 grecord/src/gsr-window.c:1559
+msgid "Filename:"
+msgstr "نام پرونده:"
+
+#: grecord/src/gsr-window.c:809
+msgid "File size:"
+msgstr "اندازه‌ی پرونده:"
+
+#: grecord/src/gsr-window.c:818
+msgid "Audio Information"
+msgstr ""
+
+#: grecord/src/gsr-window.c:832
+msgid "Song length:"
+msgstr "طول آواز:"
+
+#: grecord/src/gsr-window.c:838
+msgid "Number of channels:"
+msgstr "تعداد کانال‌ها:"
+
+#: grecord/src/gsr-window.c:844
+msgid "Sample rate:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:850
+msgid "Bit rate:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:916
+msgid "A sound recorder for GNOME"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1178
+msgid "Playing..."
+msgstr "در حال پخش..."
+
+#: grecord/src/gsr-window.c:1237
+#, fuzzy, c-format
+msgid "%s.%s - Sound Recorder"
+msgstr "ضبط صدا"
+
+#: grecord/src/gsr-window.c:1328
+msgid "Recording..."
+msgstr "در حال ضبط..."
+
+#: grecord/src/gsr-window.c:1388
+msgid ""
+"There is no default GStreamer audio input element set - please install the "
+"GStreamer-GConf schemas or set one manually"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1403
+msgid "Failed to create GStreamer encoder elements - check your encoding setup"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1413
+msgid "Could not find GStreamer filesink plugin - please install it"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1421
+msgid ""
+"Failed to link encoder elements with file output element - you probably "
+"selected an invalid encoder"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1527
+#, fuzzy
+msgid "Record as"
+msgstr "ضبط"
+
+#: grecord/src/gsr-window.c:1544
+msgid "File information"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1566
+msgid "<none>"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1575
+msgid "Length:"
+msgstr "طول:"
+
+#: gst-mixer/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr ""
+
+#. create main window + menus
+#: gst-mixer/gnome-volume-control.desktop.in.h:2 gst-mixer/src/mixer.c:588
+#: gst-mixer/src/mixer.c:681
+msgid "Volume Control"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:258
+#, c-format
+msgid "%s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:260
+#, c-format
+msgid "Channel %d of %s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:261
+#, c-format
+msgid "%s Slider %d"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:274
+msgid "Lock"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:284
+#, c-format
+msgid "%s Lock"
+msgstr ""
+
+#. mute button
+#: gst-mixer/src/mixer.c:290 gst-mixer/src/mixer.c:386
+msgid "Mute"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:302 gst-mixer/src/mixer.c:398
+#, c-format
+msgid "%s Mute"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:308
+msgid "Rec."
+msgstr ""
+
+#: gst-mixer/src/mixer.c:320
+#, c-format
+msgid "%s Record"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:591
+msgid "A GNOME/GStreamer-based mixer application"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:698
+msgid "Sorry, no mixer elements and/or devices found"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:274
+msgid "Failure instantiating main window"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:312
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "Multimedia Systems Selector"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+#: profiles/gnome-audio-profiles.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<b>Default Sink</b>"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+#, fuzzy
+msgid "<b>Default Source</b>"
+msgstr "منبع پیش‌فرض"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio"
+msgstr "صوت"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish."
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "GStreamer Preferences"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Pipe_line:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "Te_st"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Testing Pipeline"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Video"
+msgstr "ویدیو"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+#, fuzzy
+msgid "_Input:"
+msgstr "ورودی صوت:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+#, fuzzy
+msgid "_Output:"
+msgstr "خروجی صوت:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "_Pipeline:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "_Test"
+msgstr ""
+
+#: gstreamer-properties/pipeline-constants.c:61
+#: gstreamer-properties/pipeline-constants.c:83
+#: gstreamer-properties/pipeline-constants.c:100
+#: gstreamer-properties/pipeline-constants.c:115
+msgid "Custom"
+msgstr ""
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:110
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr ""
+
+#: profiles/audio-profile-edit.c:164
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+
+#: profiles/audio-profile-edit.c:366
+#, c-format
+msgid "Editing profile \"%s\""
+msgstr ""
+
+#: profiles/audio-profile.c:103
+msgid "<not named>"
+msgstr ""
+
+#: profiles/audio-profile.c:104
+msgid "<not described>"
+msgstr ""
+
+#: profiles/audio-profile.c:219
+#, c-format
+msgid "There was an error getting the list of gm_audio profiles. (%s)\n"
+msgstr ""
+
+#: profiles/audio-profile.c:720
+#, c-format
+msgid ""
+"There was an error subscribing to notification of audio profile list "
+"changes. (%s)\n"
+msgstr ""
+
+#: profiles/audio-profile.c:910
+#, c-format
+msgid "There was an error forgetting profile path %s. (%s)\n"
+msgstr ""
+
+#: profiles/audio-profile.c:1002
+msgid "<no description>"
+msgstr ""
+
+#: profiles/audio-profile.c:1013
+msgid "identity"
+msgstr ""
+
+#: profiles/audio-profile.c:1024
+msgid "wav"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:115
+#, fuzzy
+msgid "_Edit"
+msgstr "خروج"
+
+#: profiles/audio-profiles-edit.c:452
+msgid "You must select one or more profiles to delete."
+msgstr ""
+
+#. the first argument will never be used since we only run for count > 1
+#: profiles/audio-profiles-edit.c:461
+#, c-format
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: profiles/audio-profiles-edit.c:480
+#, c-format
+msgid "Delete profile \"%s\"?"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:502
+msgid "Delete Profile"
+msgstr ""
+
+#.
+#. dialog =
+#. gtk_dialog_new_with_buttons (_("Edit Profiles"),
+#. NULL,
+#. GTK_DIALOG_DESTROY_WITH_PARENT,
+#. GTK_STOCK_HELP,
+#. GTK_RESPONSE_HELP,
+#. GTK_STOCK_CLOSE,
+#. GTK_RESPONSE_ACCEPT,
+#. NULL);
+#.
+#. FIXME: GTK_DIALOG_DESTROY_WITH_PARENT,
+#: profiles/audio-profiles-edit.c:597
+msgid "Edit GMAudio Profiles"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:650
+msgid "_Profiles:"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:878
+#, c-format
+msgid "You already have a profile called \"%s\""
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:903
+#, c-format
+msgid "GConf Error (FIXME): %s\n"
+msgstr ""
+
+#: profiles/gmp-util.c:64
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:2
+msgid "Edit Audio Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:3
+#, fuzzy
+msgid "File _Extension:"
+msgstr "اندازه‌ی پرونده:"
+
+#: profiles/gnome-audio-profiles.glade2.h:4
+msgid "New Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:5
+msgid "Profile Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:6
+msgid "Profile _Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:7
+#, fuzzy
+msgid "Profile _name:"
+msgstr "نام پرونده:"
+
+#: profiles/gnome-audio-profiles.glade2.h:8
+msgid "_Active?"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:9
+#, fuzzy
+msgid "_Create"
+msgstr "مرکز"
+
+#: profiles/gnome-audio-profiles.glade2.h:10
+#, fuzzy
+msgid "_GStreamer Pipeline:"
+msgstr "GStreamer"
+
+#: profiles/gnome-audio-profiles.glade2.h:11
+#, fuzzy
+msgid "_Profile name:"
+msgstr "نام پرونده:"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:1
+msgid "A description for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:2
+msgid ""
+"A description of the profile, containing more information and describing "
+"when to use this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:3
+msgid ""
+"A filename extension to be used when storing files encoded with this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:4
+msgid "A partial GStreamer pipeline to use for this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:5
+msgid "A short name for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:6
+msgid ""
+"A short name for the audio profile, to be used in selections and uniquely "
+"identifying the profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:7
+msgid "CD Quality, Lossless"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:8
+msgid "CD Quality, Lossy"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:9
+msgid ""
+"List of audio recording profiles. The list contains strings naming "
+"subdirectories relative to /system/gstreamer/audio/profiles."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:10
+msgid "List of profiles"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:11
+msgid "The default file extension for this profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:12
+msgid "The partial GStreamer pipeline used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:13
+msgid ""
+"Used for converting to CD-quality audio, but with a lossless compression "
+"codec. Use this if you later want to edit the file or burn it to CD."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:14
+msgid ""
+"Used for converting to CD-quality audio, but with a lossy compression codec. "
+"Use this for CD extraction and radio recordings."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:15
+msgid ""
+"Used for converting to voice-quality audio. Use this for recording speech."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:16
+#, fuzzy
+msgid "Voice"
+msgstr "ویدیو"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:17
+msgid "Whether or not this profile is to be used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:18
+msgid "Whether or not to use and display this profile."
+msgstr ""
+
+#: vu-meter/main.c:102
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+
+#: vu-meter/main.c:228
+msgid "Specify the X position of the meter."
+msgstr ""
+
+#: vu-meter/main.c:229
+msgid "X-Position"
+msgstr ""
+
+#: vu-meter/main.c:231
+msgid "Specify the Y position of the meter."
+msgstr ""
+
+#: vu-meter/main.c:232
+msgid "Y-Position"
+msgstr ""
+
+#: vu-meter/main.c:234
+msgid "Connect to the esd server on this host."
+msgstr ""
+
+#: vu-meter/main.c:235
+msgid "ESD Server Host"
+msgstr ""
+
+#: vu-meter/main.c:237
+msgid "Open a vertical version of the meter."
+msgstr ""
+
+#: vu-meter/main.c:239
+msgid "Act as recording level meter."
+msgstr ""
+
+#: vu-meter/main.c:256
+#, c-format
+msgid "Host is %s\n"
+msgstr ""
+
+#: vu-meter/main.c:273
+msgid "Recording level"
+msgstr "سطح ضبط"
+
+#: vu-meter/main.c:273
+msgid "Volume Meter"
+msgstr ""
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr ""
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr ""
+
+#: vu-meter/vumeter.desktop.in.h:1
+msgid "Monitor the sound output volume"
+msgstr ""
+
+#: vu-meter/vumeter.desktop.in.h:2
+msgid "Volume monitor"
+msgstr ""
+
+#~ msgid "Unknown disc"
+#~ msgstr "دیسک نامعلوم"
+
+#~ msgid "GStreamer"
+#~ msgstr "GStreamer"
+
+#~ msgid "PCM"
+#~ msgstr "PCM"
+
+#~ msgid "DAC"
+#~ msgstr "DAC"
+
+#~ msgid "FM"
+#~ msgstr "FM"
+
+#~ msgid "DSP Input"
+#~ msgstr "ورودی DSP"
+
+#~ msgid "CD"
+#~ msgstr "سی‌دی"
+
+#~ msgid "Radio"
+#~ msgstr "رادیو"
+
+#~ msgid "Phone"
+#~ msgstr "تلفن"
+
+#~ msgid "Mono"
+#~ msgstr "مونو"
+
+#~ msgid "PC Speaker"
+#~ msgstr "بلندگوی کامپیوتر"
+
+#~ msgid "Center Input"
+#~ msgstr "ورودی مرکزی"
+
+#~ msgid "Woofer Input"
+#~ msgstr "ورودی ووفر"
+
+#~ msgid "Headphone"
+#~ msgstr "هدفون"
+
+#~ msgid "Phone Output"
+#~ msgstr "خروجی تلفن"
+
+#~ msgid "Center"
+#~ msgstr "مرکز"
+
+#~ msgid "Woofer"
+#~ msgstr "ووفر"
+
+#~ msgid "Help"
+#~ msgstr "راهنما"
+
+#~ msgid "stereo"
+#~ msgstr "استریو"
+
+#~ msgid "mono"
+#~ msgstr "مونو"
+
+#~ msgid "Create new sample"
+#~ msgstr "ایجاد نمونه‌ی جدید"
+
+#~ msgid "Start recording"
+#~ msgstr "شروع ضبط"
+
+#~ msgid "GNOME Sound Recorder"
+#~ msgstr "ضبط صوت گنوم"
+
+#~ msgid ""
+#~ "A simple soundrecorder and soundplayer for GNOME.\n"
+#~ "Dedicated to my cat, Malte."
+#~ msgstr ""
+#~ "یک برنامه‌ی ساده‌ی ضبط و پخش صوت برای گنوم.\n"
+#~ "تقدیم به گربه‌ام، مالت."
+
+#~ msgid "Recording"
+#~ msgstr "در حال ضبط"
+
+#~ msgid "Size"
+#~ msgstr "اندازه"
+
+#~ msgid "Repetition"
+#~ msgstr "تکرار"
+
+#~ msgid "Paths"
+#~ msgstr "مسیرها"
+
+#~ msgid "_Apply"
+#~ msgstr "اعمال"
+
+#~ msgid "Folders"
+#~ msgstr "پوشه‌ها"
+
+#~ msgid "Mono or Stereo:"
+#~ msgstr "مونو یا استریو:"
+
+#~ msgid "_Mono"
+#~ msgstr "مونو"
+
+#~ msgid "_Stereo"
+#~ msgstr "استریو"
+
+#~ msgid "Stereo"
+#~ msgstr "استریو"
+
+#~ msgid "Channels: mono"
+#~ msgstr "کانال‌ها: مونو"
+
+#~ msgid "Channels: stereo"
+#~ msgstr "کانال‌ها: استریو"
+
+#~ msgid "Theme name"
+#~ msgstr "نام تم"
+
+#~ msgid "Video _Input:"
+#~ msgstr "ورودی ویدیو:"
+
+#~ msgid "Video _Output:"
+#~ msgstr "خروجی ویدیو:"

@@ -1,0 +1,2729 @@
+# translation of gnome-media.gnome-2-2.po to Bengali
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Sayamindu Dasgupta <unmadindu@Softhome.net>, Runa Bhattacharjee <runab77@Softhome.net>, 2003
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-media.gnome-2-2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 14:28+0200\n"
+"PO-Revision-Date: 2003-07-01 23:12+0530\n"
+"Last-Translator: Progga <abulfazl@juniv.edu>\n"
+"Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.1\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "সিডি সম্বন্ধে তথ্য জানতে চাইলে যে সার্ভারকে প্রশ্ন করা হবে"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2
+msgid "Information to send to server"
+msgstr "সার্ভারকে যে তথ্য পাঠানো হবে"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3 cddb-slave2/cddb-slave-capplet.c:832
+msgid "Port"
+msgstr "পোর্ট"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "Server name"
+msgstr "সার্ভারের নাম"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "Server type"
+msgstr "সার্ভারের ধরন"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The hostname that will be sent with all queries"
+msgstr "সমস্ত প্রশ্নের সঙ্গে যে হোস্টনাম পাঠানো হবে"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The port that the server is running the database on"
+msgstr "সার্ভার যে পোর্টে ডেটাবেস চালাচ্ছে"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid ""
+"The type of the server to contact for CD queries. Possible values are 0 "
+"(FreeDB round robin server), 1 (other freedb server) and 2 (other server)."
+msgstr ""
+"সিডি সম্বন্ধীয় জিজ্ঞাসা থাকলে যে ধরনের সার্ভারের সাথে যোগাযোগ করতে হবে। সম্ভাব্য "
+"মানগুলো হল ০ (FreeDB রাউন্ড রবিন সার্ভার), ১ (অন্যান্য freedb সার্ভার) এবং ২ "
+"(অন্যান্য সার্ভার)।"
+
+# C
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:9
+msgid "The username"
+msgstr "ব্যবহারকারীর নাম"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:10
+msgid "The username that will be sent with all queries"
+msgstr "সমস্ত প্রশ্নের সঙ্গে যে ব্যবহারকারী নাম পাঠানো হবে"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:11
+msgid ""
+"This key specifies which user information will be sent to the server to "
+"contact for CD queries. Possible values are 0 (no information), 1 (real "
+"information) and 3 (other information)."
+msgstr ""
+"এই মানটি নির্ধারণ করে যে, CD সম্বন্ধীয় জিজ্ঞাসার ক্ষেত্রে সার্ভারকে ব্যবহারকারী "
+"সম্বন্ধে কী তথ্য পাঠানো হবে। সম্ভাব্য মানগুলি হল ০ (কোন তথ্য পাঠানো হবে না), ১ (আসল "
+"তথ্য) এবং ৩ (অন্যান্য তথ্য)।"
+
+# C
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:12
+msgid "Your hostname"
+msgstr "আপনার হোস্টনাম"
+
+#: cddb-slave2/cddb-disclosure.c:241
+msgid "Expander Size"
+msgstr "প্রসারকের আয়তন"
+
+#: cddb-slave2/cddb-disclosure.c:242
+msgid "Size of the expander arrow"
+msgstr "প্রসারক তীরের আয়তন"
+
+# C
+#: cddb-slave2/cddb-slave-capplet.c:115
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"সহায়ক তথ্য প্রদর্শনের সময় সমস্যা হয়েছে: \n"
+"%s"
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:696
+msgid "Login Information"
+msgstr "লগইন সম্বন্ধীয় তথ্য"
+
+#: cddb-slave2/cddb-slave-capplet.c:702
+msgid "Sen_d no information"
+msgstr "কোন তথ্য যাতে না পাঠানো হয় (_ন)"
+
+# C
+#: cddb-slave2/cddb-slave-capplet.c:711
+msgid "Send real _information"
+msgstr "আসল তথ্য পাঠানো হোক (_ত)"
+
+# C
+#: cddb-slave2/cddb-slave-capplet.c:720
+msgid "Send _other information:"
+msgstr "অন্যান্য তথ্য পাঠানো হোক (_থ):"
+
+#: cddb-slave2/cddb-slave-capplet.c:745
+msgid "_Name:"
+msgstr "নাম (_ম):"
+
+#: cddb-slave2/cddb-slave-capplet.c:765
+msgid "Hostna_me:"
+msgstr "হোস্টনাম (_ন):"
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:785 cddb-slave2/cddb-slave-capplet.c:829
+msgid "Server"
+msgstr "সার্ভার"
+
+#: cddb-slave2/cddb-slave-capplet.c:791
+msgid "FreeDB _round robin server"
+msgstr "ফ্রী-ডিবি রাউন্ড রবিন সার্ভার (_র)"
+
+# C
+#: cddb-slave2/cddb-slave-capplet.c:797
+msgid "Other _FreeDB server:"
+msgstr "অন্য ফ্রী-ডিবি সার্ভার (_ফ):"
+
+# C
+#: cddb-slave2/cddb-slave-capplet.c:835
+msgid "Location"
+msgstr "অবস্থান"
+
+#: cddb-slave2/cddb-slave-capplet.c:864
+msgid "_Update Server List"
+msgstr "সার্ভারের তালিকা নবায়ণ করুন (_ভ)"
+
+#: cddb-slave2/cddb-slave-capplet.c:871
+msgid "Other _server:"
+msgstr "অন্য সার্ভার (_স):"
+
+#: cddb-slave2/cddb-slave-capplet.c:891
+msgid "Hos_tname:"
+msgstr "হোস্টনাম (_হ):"
+
+#: cddb-slave2/cddb-slave-capplet.c:908
+msgid "_Port:"
+msgstr "পোর্ট (_প):"
+
+#: cddb-slave2/cddb-slave-capplet.c:972
+msgid "CD Database Preferences"
+msgstr "সিডি ডেটাবেস সম্বন্ধীয় পছন্দসমূহ"
+
+# C
+#: cddb-slave2/cddb-slave.c:221
+msgid "Unknown / Unknown"
+msgstr "অজানা/ অজানা"
+
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:227 grecord/src/gsr-window.c:697
+#: grecord/src/gsr-window.c:706 grecord/src/gsr-window.c:715
+#: grecord/src/gsr-window.c:725 grecord/src/gsr-window.c:1032
+msgid "Unknown"
+msgstr "অজানা"
+
+#: cddb-slave2/cddb-slave.c:272
+msgid "Multiple matches..."
+msgstr "একাধিক মিল..."
+
+#: cddb-slave2/cddb-slave.c:277
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+"ডেটাবেসে একাধিক মিল পাওয়া গিয়েছে।\n"
+"নিচে দেওয়া সম্ভাব্য মিলগুলের তালিকা থেকে সঠিক মিলটি বাছে নিন"
+
+#: cddb-slave2/cddb-slave.c:288
+msgid "Category"
+msgstr "শ্রেণী"
+
+#: cddb-slave2/cddb-slave.c:292
+msgid "Disc ID"
+msgstr "ডিস্ক পরিচায়ক"
+
+#: cddb-slave2/cddb-slave.c:296
+msgid "Artist and Title"
+msgstr "শিল্পী এবং গানের নাম"
+
+#: cddb-slave2/cddb-slave.c:1351 cddb-slave2/cddb-slave.c:1353
+#: gnome-cd/gnome-cd.c:176
+msgid "Unknown track"
+msgstr "অজানা গান"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+#, fuzzy
+msgid "CD Database Server"
+msgstr "সিডি ডাটাবেস"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+#, fuzzy
+msgid "Modify your CD database server preferences"
+msgstr "CD ডাটাবেস সম্বন্ধীয় বৈশিষ্ট্যাবলী পরিবর্তন করুন"
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Blues"
+msgstr "ব্ল্যুস (Blues)"
+
+#: cddb-slave2/cddb-track-editor.c:80
+msgid "Classical Rock"
+msgstr "ক্লাসিকাল রক"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Country"
+msgstr "কান্ট্রি"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Dance"
+msgstr "ডান্স"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Disco"
+msgstr "ডিস্কো"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Funk"
+msgstr "ফাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Grunge"
+msgstr "গ্রান্জ"
+
+# এটা পড়া যাচ্ছে না
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Hip-Hop"
+msgstr "হিপ-হপ"
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Jazz"
+msgstr "জ্যাজ"
+
+#: cddb-slave2/cddb-track-editor.c:88
+msgid "Metal"
+msgstr "মেটাল"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "New Age"
+msgstr "নিউ এজ"
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Oldies"
+msgstr "ওল্ডিস"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Other"
+msgstr "অন্যান্য"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "Pop"
+msgstr "পপ"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "R&B"
+msgstr "আর & বি"
+
+# এটা কি করব ??
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Rap"
+msgstr "র্যাপ"
+
+# এটা ইউনিকোড ৪.০ ঠিক করবে
+#: cddb-slave2/cddb-track-editor.c:95
+msgid "Reggae"
+msgstr "রেগে"
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Rock"
+msgstr "রক"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Techno"
+msgstr "টেকনো"
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Industrial"
+msgstr "ইন্ডাস্ট্রিয়াল"
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Alternative"
+msgstr "অল্টারনেটিভ"
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Ska"
+msgstr "স্কা"
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Death Metal"
+msgstr "ডেথ মেটাল"
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Pranks"
+msgstr "প্র্যাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Soundtrack"
+msgstr "সাউন্ডট্র্যাক"
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Euro-Techno"
+msgstr "ইউরো-টেকনো"
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Ambient"
+msgstr "অ্যামবিয়েন্ট"
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Trip-Hop"
+msgstr "ট্রিপ-হপ"
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Vocal"
+msgstr "ভোকাল"
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Jazz+Funk"
+msgstr "জ্যাজ+ফাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Fusion"
+msgstr "ফিউসন"
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Trance"
+msgstr "ট্রান্স"
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Classical"
+msgstr "ধ্রূপদী"
+
+#: cddb-slave2/cddb-track-editor.c:112
+msgid "Instrumental"
+msgstr "বাদ্যযন্ত্র"
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "Acid"
+msgstr "অ্যাসিড"
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "House"
+msgstr "হাউস"
+
+#: cddb-slave2/cddb-track-editor.c:115
+msgid "Game"
+msgstr "গেম"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Sound Clip"
+msgstr "শব্দের টুকরো"
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Gospel"
+msgstr "গস্পেল"
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Noise"
+msgstr "আওয়াজ"
+
+#: cddb-slave2/cddb-track-editor.c:119
+msgid "Alt"
+msgstr "Alt"
+
+#: cddb-slave2/cddb-track-editor.c:120
+msgid "Bass"
+msgstr "বেইস"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Soul"
+msgstr "সৌল"
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Punk"
+msgstr "পাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Space"
+msgstr "স্পেস"
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Meditative"
+msgstr "মেডিটেটিভ"
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Pop"
+msgstr "ইন্সট্রুমেন্টাল পপ"
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Instrumental Rock"
+msgstr "ইন্সট্রুমেন্টাল রক"
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Ethnic"
+msgstr "এথনিক"
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Gothic"
+msgstr "গথিক"
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Darkwave"
+msgstr "ডার্কওয়েভ"
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Techno-Industrial"
+msgstr "টেকনো-ইন্ডাস্ট্রিয়াল"
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Electronic"
+msgstr "ইলেক্ট্রনিক"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Pop-Folk"
+msgstr "পপ-ফোক"
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Eurodance"
+msgstr "ইউরোড্যান্স"
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Dream"
+msgstr "ড্রিম"
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Southern Rock"
+msgstr "সাদার্ন রক"
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Comedy"
+msgstr "কমেডি"
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Cult"
+msgstr "কাল্ট"
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Gangsta Rap"
+msgstr "গ্যাঙ্গস্টা র্যাপ"
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Top 40"
+msgstr "সেরা ৪০"
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Christian Rap"
+msgstr "ক্রিশ্চান র্যাপ"
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Pop/Funk"
+msgstr "পপ/ফাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Jungle"
+msgstr "জঙ্গল"
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Native American"
+msgstr "নেটিভ আমেরিকান"
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "Cabaret"
+msgstr "ক্যাবারে"
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "New Wave"
+msgstr "নতুন ওয়েভ"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Psychedelic"
+msgstr "সাইকেডেলিক"
+
+#: cddb-slave2/cddb-track-editor.c:147
+msgid "Rave"
+msgstr "রেভ"
+
+#: cddb-slave2/cddb-track-editor.c:148
+msgid "Showtunes"
+msgstr "শোটিউনস"
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Trailer"
+msgstr "ট্রেইলার"
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Lo-Fi"
+msgstr "লো-ফাই"
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Tribal"
+msgstr "ট্রাইবাল"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Punk"
+msgstr "অ্যাসিড পাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Acid Jazz"
+msgstr "অ্যাসিড জ্যাজ"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Polka"
+msgstr "পোল্কা"
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Retro"
+msgstr "রেট্রো"
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Musical"
+msgstr "মিউজিকাল"
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Rock & Roll"
+msgstr "রক এন্ড রোল"
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Hard Rock"
+msgstr "হার্ড রক"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk"
+msgstr "ফোক"
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "Folk/Rock"
+msgstr "ফোক/রক"
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "National Folk"
+msgstr "ন্যাশনাল ফোক"
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Swing"
+msgstr "সুইঙ"
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Fast-Fusion"
+msgstr "ফাস্ট-ফিউশান"
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Bebop"
+msgstr "বেবপ"
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Latin"
+msgstr "ল্যাটিন"
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Revival"
+msgstr "রিভাইভাল"
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Celtic"
+msgstr "কেল্টিক"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Bluegrass"
+msgstr "ব্ল্যুগ্রাস"
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Avantgarde"
+msgstr "অ্যাভনগাড"
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Gothic Rock"
+msgstr "গথিক রক"
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Progressive Rock"
+msgstr "প্রোগ্রেসিভ রক"
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Psychedelic Rock"
+msgstr "সাইকেডেলিক রক"
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Symphonic Rock"
+msgstr "সিম্ফনিক রক"
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Slow Rock"
+msgstr "স্লো রক"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Big Band"
+msgstr "বিগ ব্যান্ড"
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Chorus"
+msgstr "কোরাস"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Easy Listening"
+msgstr "হালকা সুর"
+
+# ???
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Acoustic"
+msgstr "অ্যাকাউস্টিক"
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Humour"
+msgstr "রসিকতা"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Speech"
+msgstr "স্পিচ"
+
+#: cddb-slave2/cddb-track-editor.c:181
+msgid "Chanson"
+msgstr "চান্সন"
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Opera"
+msgstr "অপেরা"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Chamber Music"
+msgstr "চেম্বার মিউজিক"
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Sonata"
+msgstr "সোনাটা"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Symphony"
+msgstr "সিম্ফনি"
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Booty Bass"
+msgstr "বুটি বেইস"
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Primus"
+msgstr "প্রিমাস"
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Porn Groove"
+msgstr "পর্ন গ্রুভ"
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Satire"
+msgstr "স্যাটায়ার"
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Slow Jam"
+msgstr "স্লো জ্যাম"
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Club"
+msgstr "ক্লাব"
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Tango"
+msgstr "ট্যাঙ্গো"
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Samba"
+msgstr "সাম্বা"
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Folklore"
+msgstr "লোককথা"
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Ballad"
+msgstr "ব্যালাড"
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Power Ballad"
+msgstr "পাওয়ার ব্যালাড"
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Rhythmic Soul"
+msgstr "রিদমিক সৌল"
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Freestyle"
+msgstr "ফ্রিস্টাইল"
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Duet"
+msgstr "দ্বৈত"
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Punk Rock"
+msgstr "পাঙ্ক রক"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "Drum Solo"
+msgstr "ড্রাম সোলো"
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "A Cappella"
+msgstr "আ কাপ্পেল্লা"
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Euro-House"
+msgstr "ইউরো-হাউস"
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Dance Hall"
+msgstr "ড্যান্স হল"
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Goa"
+msgstr "গোয়া"
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Drum & Bass"
+msgstr "ড্রাম আর বেইস"
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Club-House"
+msgstr "ক্লাব হাউস"
+
+#: cddb-slave2/cddb-track-editor.c:208
+msgid "Hardcore"
+msgstr "হার্ডকোর"
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Terror"
+msgstr "টেরর"
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "Indie"
+msgstr "ইন্ডি"
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "BritPop"
+msgstr "ব্রিটপপ"
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Negerpunk"
+msgstr "নেগারপাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Polsk Punk"
+msgstr "পোলস্ক পাঙ্ক"
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Beat"
+msgstr "বিট"
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Christian Gangsta Rap"
+msgstr "ক্রিশ্চান গ্যাঙ্গস্টা র্যাপ"
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Heavy Metal"
+msgstr "হেভি মেটাল"
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Black Metal"
+msgstr "ব্ল্যাক মেটাল"
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Crossover"
+msgstr "ক্রসওভার"
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Contemporary Christian"
+msgstr "সাম্প্রতিক ক্রিশ্চান"
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Christian Rock"
+msgstr "ক্রিশ্চান রক"
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Merengue"
+msgstr "মেরাঙ্গ"
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Salsa"
+msgstr "সালসা"
+
+#: cddb-slave2/cddb-track-editor.c:223
+msgid "Thrash Metal"
+msgstr "থ্র্যাশ মেটাল"
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "Anime"
+msgstr "অ্যানিম"
+
+#: cddb-slave2/cddb-track-editor.c:225
+msgid "JPop"
+msgstr "জেপপ"
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Synthpop"
+msgstr "সিন্থপপ"
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Nu-Metal"
+msgstr "নু-মেটাল"
+
+#: cddb-slave2/cddb-track-editor.c:228
+msgid "Art Rock"
+msgstr "আর্ট রক"
+
+#: cddb-slave2/cddb-track-editor.c:532 gnome-cd/callbacks.c:558
+#: gnome-cd/callbacks.c:690 gnome-cd/callbacks.c:701 gnome-cd/display.c:74
+msgid "Unknown Artist"
+msgstr "অজানা শিল্পী"
+
+#: cddb-slave2/cddb-track-editor.c:533 gnome-cd/callbacks.c:559
+#: gnome-cd/callbacks.c:693 gnome-cd/callbacks.c:705 gnome-cd/display.c:75
+msgid "Unknown Album"
+msgstr "অজানা সংকলন"
+
+#: cddb-slave2/cddb-track-editor.c:541
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr "এই ডিস্ক আইডি'টি সম্পাদন করা হচ্ছে: %s"
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:630
+msgid "Editing Disc ID: "
+msgstr "এই ডিস্ক আইডি'টি সম্পাদন করা হচ্ছে: "
+
+#: cddb-slave2/cddb-track-editor.c:641
+msgid "_Artist:"
+msgstr "_শিল্পী:"
+
+#: cddb-slave2/cddb-track-editor.c:655
+msgid "Disc _Title:"
+msgstr "ডিস্কের _নাম:"
+
+#: cddb-slave2/cddb-track-editor.c:665
+msgid "Show advanced disc options"
+msgstr "অগ্রসর ডিস্ক অপশনসমূহ দেখাও"
+
+#: cddb-slave2/cddb-track-editor.c:666
+msgid "Hide advanced disc options"
+msgstr "অগ্রসর ডিস্ক অপশনসমূহ লুকিয়ে ফেলো"
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:678
+msgid "_Disc comments:"
+msgstr "_ডিস্ক সম্বন্ধীয় মন্তব্য:"
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:693
+msgid "_Genre:"
+msgstr "_ধরন:"
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:709
+msgid "_Year:"
+msgstr "_বছর:"
+
+#: cddb-slave2/cddb-track-editor.c:748
+msgid "Title"
+msgstr "শিরোনাম"
+
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Length"
+msgstr "দৈর্ঘ্য"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:766
+msgid "Show advanced track options"
+msgstr "গান সম্বন্ধে অগ্রসর অপশন দেখানো হোক"
+
+#: cddb-slave2/cddb-track-editor.c:767
+msgid "Hide advanced track options"
+msgstr "গান সম্বন্ধে অগ্রসর অপশন লোকানো হোক"
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:775
+msgid "_Extra track data:"
+msgstr "গান সম্বন্ধীয় _অতিরিক্ত তথ্য:"
+
+#: cddb-slave2/cddb-track-editor.c:903
+msgid "CDDB Track Editor"
+msgstr "সি-ডি-ডি-বি গান সম্বন্ধীয় তথ্য সম্পাদক"
+
+#: cddb-slave2/cddb-track-editor.c:1040
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+"CDDB TrackEditor ফ্যাক্টরি নির্মান করা সম্ভব হয়নি।\n"
+"cddb-track-editor বর্তমানে চালু থাকলে এই সমস্যা দেখা দিতে পারে।\n"
+
+#: gnome-cd/access/cddisplayaccessible.c:118
+msgid "CD Display"
+msgstr "সিডি তথ্য প্রদর্শক"
+
+#: gnome-cd/access/cddisplayaccessible.c:120
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr ""
+"বর্তমানে যে গানটি বাজানো হচ্ছে, সেটি কোন সংকলনের অন্তর্গত, সেটি কোন শিল্পীর "
+"গাওয়া, ও সেটি কত সময় ধরে বাজছে  তা সম্বন্ধে তথ্য প্রদর্শন করে"
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Time Line"
+msgstr "সময় রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:190
+msgid "Line for displaying the time elapsed for the current track"
+msgstr "বর্তমান গানটির অতিবাহিত সময় নির্দেশক রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+msgid "Info Line"
+msgstr "তথ্য রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:194
+msgid "Line for displaying information"
+msgstr "তথ্য প্রদর্শন করার রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Artist Line"
+msgstr "শিল্পী রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:198
+msgid "Line for displaying the name of the artist"
+msgstr "শিল্পীর নাম প্রদর্শন করার রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Album Line"
+msgstr "সংকলন রেখা"
+
+#: gnome-cd/access/cddisplayaccessible.c:202
+msgid "Line for displaying the name of the album"
+msgstr "সংকলনের নাম প্রদর্শন করার রেখা"
+
+#: gnome-cd/callbacks.c:83 gnome-cd/callbacks.c:171 gnome-cd/callbacks.c:270
+#: gnome-cd/callbacks.c:573 gnome-cd/gnome-cd.c:671 grecord/gsr.xml.h:13
+msgid "Play"
+msgstr "বাজাও"
+
+#: gnome-cd/callbacks.c:156 gnome-cd/callbacks.c:202 gnome-cd/callbacks.c:232
+#: gnome-cd/callbacks.c:312 gnome-cd/callbacks.c:352 gnome-cd/callbacks.c:376
+#: gnome-cd/callbacks.c:417 gnome-cd/callbacks.c:511
+msgid "Pause"
+msgstr "বিরাম"
+
+#: gnome-cd/callbacks.c:557
+#, c-format
+msgid "Playing %s - %s"
+msgstr "%s - %s বাজানো হচ্ছে"
+
+#: gnome-cd/callbacks.c:561
+msgid "Playing"
+msgstr "বাজানো হচ্ছে"
+
+#: gnome-cd/callbacks.c:585
+msgid "Paused"
+msgstr "স্থগিত অবস্থায় আছে"
+
+#: gnome-cd/callbacks.c:631 gnome-cd/callbacks.c:873 gnome-cd/gnome-cd.c:88
+#: gnome-cd/gnome-cd.c:534 gnome-cd/gnome-cd.c:721 gnome-cd/gnome-cd.c:724
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "সিডি বাদক"
+
+#: gnome-cd/callbacks.c:649
+msgid "Stopped"
+msgstr "থামানো আছে"
+
+#: gnome-cd/callbacks.c:655
+msgid "Disc error"
+msgstr "ডিস্ক ত্রুটি"
+
+#: gnome-cd/callbacks.c:666 gnome-cd/callbacks.c:761
+msgid "No disc"
+msgstr "কোন ডিস্ক নেই"
+
+#: gnome-cd/callbacks.c:789
+msgid "Drive open"
+msgstr "ড্রাইভ খোলা"
+
+#: gnome-cd/callbacks.c:813
+msgid "Data CD"
+msgstr "তথ্য (ডাটা) সিডি"
+
+#: gnome-cd/callbacks.c:835 gnome-cd/callbacks.c:840
+msgid "No Cdrom"
+msgstr "কোন সিডিরম নেই"
+
+#: gnome-cd/callbacks.c:851
+msgid "Drive Error"
+msgstr "ড্রাইভ ত্রুটি"
+
+#: gnome-cd/callbacks.c:875
+msgid "A CD player for GNOME"
+msgstr "গুহ্‌নোমের জন্য একটি সিডি বাদক"
+
+#: gnome-cd/cdrom.c:368
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr "সম্ভবত আপনার %s ব্যবহার করার অনুমতি নেই।"
+
+#: gnome-cd/cdrom.c:374
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not present in your machine\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+"%s কোন বৈধ সিডি ডিভাইসকে চিহ্নিত করছে না। এর সম্ভাব্য কারণ: \n"
+"ক) আপনার কম্পিউটারটি সিডি চালাতে সক্ষম নয়\n"
+"খ) সিডি ড্রাইভ চালানোর সঠিক অনুমতি আপনার নেই\n"
+"গ) %s সিডি ড্রাইভ নয়।\n"
+
+#: gnome-cd/gnome-cd.c:215
+#, c-format
+msgid "%d - Unknown"
+msgstr "%d - অজানা"
+
+#: gnome-cd/gnome-cd.c:329
+msgid "P_revious track"
+msgstr "_পূর্ববর্তী গান"
+
+#: gnome-cd/gnome-cd.c:330 grecord/gsr.xml.h:44
+msgid "_Stop"
+msgstr "_থামো"
+
+#: gnome-cd/gnome-cd.c:331
+msgid "_Play / Pause"
+msgstr "_বাজাও / স্থগিত করো"
+
+#: gnome-cd/gnome-cd.c:332
+msgid "_Next track"
+msgstr "_পরবর্তী গান"
+
+#: gnome-cd/gnome-cd.c:333
+msgid "_Eject disc"
+msgstr "ডিস্ক _বের করে দাও"
+
+#: gnome-cd/gnome-cd.c:334 grecord/gsr.xml.h:37
+msgid "_Help"
+msgstr "_সাহায্য"
+
+#: gnome-cd/gnome-cd.c:335
+msgid "_About CD player"
+msgstr "সিডি বাদকের _সম্বন্ধে"
+
+#: gnome-cd/gnome-cd.c:454
+msgid ""
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
+msgstr ""
+"কোন সিডি ডিভাইস নির্ধারণ করা হয় নি। এই কারনে সিডি প্লেয়ার চালানো\n"
+"সম্ভব হবে না। 'ডিভাইস নির্ধারণ করা' ক্লিক করে ডায়লগ বাক্স প্রদর্শন করে ডিভাইস\n"
+"নির্ধারণ করুন, অথবা 'প্রস্থান' টিপে সিডি প্লেয়ার বন্ধ করুন। "
+
+#: gnome-cd/gnome-cd.c:458
+msgid "Set device"
+msgstr "ডিভাইস _নির্ধারণ করুন"
+
+#: gnome-cd/gnome-cd.c:460
+msgid "No CD device"
+msgstr "কোন সিডি ডিভাইস নেই"
+
+#: gnome-cd/gnome-cd.c:513
+msgid ""
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
+msgstr ""
+"সিডি প্লেয়ার সঠিকভাবে চলছে না।\n"
+"\n"
+"সমস্যার কারণ জানতে হলে 'বিবরণ' -এ ক্লিক করুন।\n"
+"\n"
+" 'ডিভাইস সেট করা' ক্লিক করে ডায়লগ বাক্স প্রদর্শন করে ডিভাইস নির্ধারণ করুন, অথবা "
+"'প্রস্থান' টিপে সিডি প্লেয়ার বন্ধ করুন।"
+
+#: gnome-cd/gnome-cd.c:517
+msgid "_Details"
+msgstr "_বিস্তারিত"
+
+#: gnome-cd/gnome-cd.c:518
+msgid "_Set device"
+msgstr "ডিভাইস _নির্ধারণ করুন"
+
+#: gnome-cd/gnome-cd.c:520
+msgid "Invalid CD device"
+msgstr "ভুল সিডি ডিভাইস"
+
+#: gnome-cd/gnome-cd.c:584
+msgid "Volume control"
+msgstr "শব্দের মাত্রা নিয়ন্ত্রণকারী"
+
+#: gnome-cd/gnome-cd.c:595
+msgid "Position"
+msgstr "অবস্থান"
+
+#: gnome-cd/gnome-cd.c:612
+msgid "Open track editor"
+msgstr "গান সম্বন্ধীয় তথ্যের সম্পাদক খোলো"
+
+#: gnome-cd/gnome-cd.c:613
+msgid "Track editor"
+msgstr "গান সম্বন্ধীয় তথ্যের সম্পাদক"
+
+#: gnome-cd/gnome-cd.c:620
+msgid "Open preferences"
+msgstr "পছন্দের তালিকা খোলো"
+
+#: gnome-cd/gnome-cd.c:621
+msgid "Preferences"
+msgstr "পছন্দসমূহ"
+
+#: gnome-cd/gnome-cd.c:629
+msgid "Track List"
+msgstr "গানের তালিকা"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous track"
+msgstr "পূর্ববর্তী গান"
+
+#: gnome-cd/gnome-cd.c:650
+msgid "Previous"
+msgstr "পূর্ববর্তী"
+
+#: gnome-cd/gnome-cd.c:654
+msgid "Rewind"
+msgstr "পিছিয়ে যাও (রিওয়াইন্ড)"
+
+#: gnome-cd/gnome-cd.c:671
+msgid "Play / Pause"
+msgstr "বাজাও/বিরতি দাও"
+
+#: gnome-cd/gnome-cd.c:676 grecord/gsr.xml.h:30
+msgid "Stop"
+msgstr "থামাও"
+
+#: gnome-cd/gnome-cd.c:680
+msgid "Fast forward"
+msgstr "এগিয়ে যাও (ফাস্ট ফরওয়ার্ড)"
+
+#: gnome-cd/gnome-cd.c:688
+msgid "Next track"
+msgstr "পরবর্তী গান"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject CD"
+msgstr "সিডি বের করে দাও"
+
+#: gnome-cd/gnome-cd.c:692
+msgid "Eject"
+msgstr "বের করে দাও"
+
+#: gnome-cd/gnome-cd.c:808
+msgid "CD device to use"
+msgstr "যে সিডি ডিভাইস ব্যবহৃত হবে"
+
+#: gnome-cd/gnome-cd.c:810
+msgid "Only start if there isn't already a CD player application running"
+msgstr "কোন সিডি প্লেয়ার অ্যাপ্লিকেশন বর্তমানে সক্রিয় না থাকলেই কেবল আরম্ভ করো"
+
+#: gnome-cd/gnome-cd.c:812
+msgid "Play the CD on startup"
+msgstr "প্রারম্ভে সিডি বাজাও"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:842
+msgid "Cannot create player"
+msgstr "বাদক তৈরি করা গেল না"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr "গানের সিডি বাজাও"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "CD player theme"
+msgstr "সিডি বাদক থিম"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Device path"
+msgstr "ডিভাইস পথ"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "Eject the CD when CD player quits?"
+msgstr "সিডি বাদক থেকে প্রস্থান করলে সিডি বের করে দেওয়া হবে কি?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Play when the CD player starts?"
+msgstr "যখন সিডি বাদক শুরু হবে তখন বাজানোও শুরু হবে কি?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD be ejected when the CD player quits?"
+msgstr "সিডি বাদক থেকে প্রস্থান করলে সিডি বের করে দেওয়া হবে কি?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "সিডি চালাতে হলে সিডি প্লেয়ার সিডি ড্রাইভের জন্য যে পাথ (Path) ব্যবহার করবে"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+#, fuzzy
+msgid "What theme should the CD player use for its appearance"
+msgstr "সিডি প্লেয়ার প্রদর্শন করার সময় কোন থীমটি ব্যবহৃত হবে"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid "When the CD player is started, should it start playing the CD?"
+msgstr "সিডি প্লেয়ার আরম্ভ হলে সিডি চালাতে শুরু করবে কি? "
+
+#: gnome-cd/preferences.c:84
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+"%s\n"
+"এর মানে সিডি বাদক চলতে পারবে না।"
+
+#: gnome-cd/preferences.c:85
+msgid "Error setting device"
+msgstr "ডিভাইস নির্ধারণে সমস্যা"
+
+#: gnome-cd/preferences.c:638
+msgid "CD Player Preferences"
+msgstr "সিডি বাদক সম্বন্ধীয় পছন্দ"
+
+#: gnome-cd/preferences.c:672
+msgid "CD Player De_vice:"
+msgstr "সিডি বাদক _ডিভাইস:"
+
+#: gnome-cd/preferences.c:696
+msgid "_Apply change"
+msgstr "পরিবর্তন _প্রয়োগ করো"
+
+#: gnome-cd/preferences.c:708
+msgid "CD Player Behaviour:"
+msgstr "সিডি বাদক _ব্যবহার:"
+
+#: gnome-cd/preferences.c:721
+msgid "Start _playing CD when CD Player starts"
+msgstr "সিডি বাদক শুরু হবার সময় সিডি বাজানো _শুরু করা হবে"
+
+#: gnome-cd/preferences.c:722
+msgid "Start playing CD when CD Player starts"
+msgstr "সিডি বাদক শুরু হবার সময় সিডি বাজানো _শুরু করা হবে"
+
+#: gnome-cd/preferences.c:734
+msgid "Attempt to _eject CD when CD Player exits"
+msgstr "সিডি বাদক থেকে প্রস্থান করলে সিডি বের করে দেওয়ার চেষ্টা করা হবে"
+
+#: gnome-cd/preferences.c:735
+msgid "Attempt to eject CD when CD Player exits"
+msgstr "সিডি বাদক থেকে প্রস্থান করলে সিডি বের করে দেওয়া হবে"
+
+#: gnome-cd/preferences.c:755
+msgid "_Available Themes:"
+msgstr "_উপস্থিত থীমসমূহ:"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr "শব্দের টুকরো রেকর্ড করুন"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:914
+#: grecord/src/gsr-window.c:1241
+msgid "Sound Recorder"
+msgstr "শব্দ রেকর্ডকারী"
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "সম্বন্ধে"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "বন্ধ"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "এই উইন্ডোটিকে বন্ধ করা হোক"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "সূচি"
+
+#: grecord/gsr.xml.h:5
+msgid "Create a new sample"
+msgstr "একটি নতুন নমুনা তৈরি করো"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "শব্দ রেকর্ডারের জন্য সহায়িকা দেখানো হোক"
+
+#: grecord/gsr.xml.h:7 grecord/src/gsr-window.c:783
+msgid "File Information"
+msgstr "ফাইল সম্বন্ধীয় তথ্য"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "ফাইল সম্বন্ধীয় _তথ্য"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "মূল টুলবার"
+
+#: grecord/gsr.xml.h:10
+msgid "New"
+msgstr "নতুন"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "খোলো"
+
+#: grecord/gsr.xml.h:12 grecord/src/gsr-window.c:346
+msgid "Open a file"
+msgstr "ফাইল খোলো"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "শব্দ বাজানো হোক"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "প্রস্থান"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "অ্যাপ্লিকেশন থেকে বিদায় নেও"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "সাম্প্রতি ব্যবহৃত _ফাইলসমূহ"
+
+#: grecord/gsr.xml.h:18
+msgid "Record"
+msgstr "রেকর্ড"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "শব্দ রেকর্ড করো"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "মিক্সার চালাও"
+
+#: grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr "_মিক্সার চালাও"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "শব্দ মিক্সার চালাও"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "সংরক্ষণ করো"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "নতুন নামে সংরক্ষণ করো"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "নতুন _নামে সংরক্ষণ করো..."
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "বর্তমান ফাইলটিকে সংরক্ষিত করো"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "বর্তমান ফাইলটিকে একটি অন্য নামে সংরক্ষিত করো"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "বর্তমান ফাইলটি সম্বন্ধে তথ্য দেখাও"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "শব্দ রেকর্ডারের সম্বন্ধে তথ্য দেখাও"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "শব্দ থামাও"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "_সম্বন্ধে"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "উইন্ডো _বন্ধ করো"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "_সূচি"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "_নিয়ন্ত্রণ"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "_ফাইল"
+
+#: grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "_নতুন"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "_খোলো..."
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "_বাজাও"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "_প্রস্থান"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "_রেকর্ড"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "_সংরক্ষণ"
+
+#: grecord/src/gnome-recorder.c:162
+#, fuzzy
+msgid "Dummy option"
+msgstr "শব্দ সম্বন্ধীয় অপশনসমূহ"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "ঘন্টা"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "ঘন্টা"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minutes"
+msgstr "মিনিট"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "মিনিট"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "সেকেন্ড"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "সেকেন্ড"
+
+#: grecord/src/gsr-window.c:398 grecord/src/gsr-window.c:1193
+#: grecord/src/gsr-window.c:1357 grecord/src/gsr-window.c:1627
+msgid "Ready"
+msgstr "প্রস্তুত"
+
+#: grecord/src/gsr-window.c:529
+msgid "Save file as"
+msgstr "নতুন নামে ফাইল সংরক্ষণ করো"
+
+#: grecord/src/gsr-window.c:585
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "পথ নির্দেশে %s ইনস্টল করা নেই।"
+
+#: grecord/src/gsr-window.c:595
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr "%s খুলতে কিছু অসুবিধে দেখা দিয়েছে: %s"
+
+#: grecord/src/gsr-window.c:672
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (সংরক্ষণ করা হয় নি)"
+
+#: grecord/src/gsr-window.c:688
+msgid "Unknown size"
+msgstr "অজানা আয়তন"
+
+#: grecord/src/gsr-window.c:708
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f kHz"
+
+#: grecord/src/gsr-window.c:717
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f kb/s"
+
+#: grecord/src/gsr-window.c:729
+msgid "1 (mono)"
+msgstr "১ (একক)"
+
+#: grecord/src/gsr-window.c:733
+msgid "2 (stereo)"
+msgstr "২ (দ্বৈত)"
+
+#: grecord/src/gsr-window.c:762
+#, c-format
+msgid "%s Information"
+msgstr "%s তথ্য"
+
+#: grecord/src/gsr-window.c:797
+msgid "Folder:"
+msgstr "ফোল্ডার:"
+
+#: grecord/src/gsr-window.c:803 grecord/src/gsr-window.c:1559
+msgid "Filename:"
+msgstr "ফাইলের নাম:"
+
+#: grecord/src/gsr-window.c:809
+msgid "File size:"
+msgstr "ফাইলের আয়তন:"
+
+#: grecord/src/gsr-window.c:818
+msgid "Audio Information"
+msgstr "শব্দ সম্বন্ধীয় তথ্য"
+
+#: grecord/src/gsr-window.c:832
+msgid "Song length:"
+msgstr "গানের দৈর্ঘ্য"
+
+#: grecord/src/gsr-window.c:838
+msgid "Number of channels:"
+msgstr "চ্যানেল সংখ্যা:"
+
+#: grecord/src/gsr-window.c:844
+msgid "Sample rate:"
+msgstr "স্যাম্পলের গতি:"
+
+#: grecord/src/gsr-window.c:850
+msgid "Bit rate:"
+msgstr "বিট মাত্রা"
+
+#: grecord/src/gsr-window.c:916
+msgid "A sound recorder for GNOME"
+msgstr "গুহ্‌নোমের জন্য একটি শব্দ রেকর্ডকারী"
+
+#: grecord/src/gsr-window.c:1178
+msgid "Playing..."
+msgstr "বাজানো হচ্ছে..."
+
+#: grecord/src/gsr-window.c:1237
+#, fuzzy, c-format
+msgid "%s.%s - Sound Recorder"
+msgstr "%s - শব্দ রেকর্ডকারী"
+
+#: grecord/src/gsr-window.c:1328
+msgid "Recording..."
+msgstr "রেকর্ড করা হচ্ছে..."
+
+#: grecord/src/gsr-window.c:1388
+msgid ""
+"There is no default GStreamer audio input element set - please install the "
+"GStreamer-GConf schemas or set one manually"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1403
+msgid "Failed to create GStreamer encoder elements - check your encoding setup"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1413
+msgid "Could not find GStreamer filesink plugin - please install it"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1421
+msgid ""
+"Failed to link encoder elements with file output element - you probably "
+"selected an invalid encoder"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1527
+#, fuzzy
+msgid "Record as"
+msgstr "রেকর্ড"
+
+#: grecord/src/gsr-window.c:1544
+msgid "File information"
+msgstr "ফাইল সম্বন্ধীয় তথ্য"
+
+#: grecord/src/gsr-window.c:1566
+msgid "<none>"
+msgstr "<কোনটিই নয়>"
+
+#: grecord/src/gsr-window.c:1575
+msgid "Length:"
+msgstr "দৈর্ঘ্য:"
+
+#: gst-mixer/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr "শব্দের মাত্রা ঠিক করুন"
+
+#. create main window + menus
+#: gst-mixer/gnome-volume-control.desktop.in.h:2 gst-mixer/src/mixer.c:588
+#: gst-mixer/src/mixer.c:681
+msgid "Volume Control"
+msgstr "শব্দের মাত্রা নিয়ন্ত্রণকারী"
+
+#: gst-mixer/src/mixer.c:258
+#, c-format
+msgid "%s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:260
+#, c-format
+msgid "Channel %d of %s Slider"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:261
+#, c-format
+msgid "%s Slider %d"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:274
+msgid "Lock"
+msgstr "লক"
+
+#: gst-mixer/src/mixer.c:284
+#, c-format
+msgid "%s Lock"
+msgstr "%s লক"
+
+#. mute button
+#: gst-mixer/src/mixer.c:290 gst-mixer/src/mixer.c:386
+msgid "Mute"
+msgstr "নিঃশব্দ"
+
+#: gst-mixer/src/mixer.c:302 gst-mixer/src/mixer.c:398
+#, c-format
+msgid "%s Mute"
+msgstr "%s নিঃশব্দ"
+
+#: gst-mixer/src/mixer.c:308
+msgid "Rec."
+msgstr "রেকর্ড।"
+
+#: gst-mixer/src/mixer.c:320
+#, c-format
+msgid "%s Record"
+msgstr "%s রেকর্ড"
+
+#: gst-mixer/src/mixer.c:591
+msgid "A GNOME/GStreamer-based mixer application"
+msgstr ""
+
+#: gst-mixer/src/mixer.c:698
+msgid "Sorry, no mixer elements and/or devices found"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:274
+msgid "Failure instantiating main window"
+msgstr "মূল উইন্ডো আরম্ভ করার প্রক্রিয়া বিফল হয়েছে "
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:312
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "UI রিসোর্স %s লোড করা সম্ভব হয় নি"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "জীস্ট্রিমারের অ্যাপ্লিকেশনসমূহের জন্য ডিফল্ট মান কনফিগার করুন"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "Multimedia Systems Selector"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+#: profiles/gnome-audio-profiles.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<b>Default Sink</b>"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "<b>Default Source</b>"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">পরীক্ষা করা হচ্ছে...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio"
+msgstr "শব্দ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish."
+msgstr "শেষ করতে চাইলে ঠিক আছে-তে ক্লিক করুন।"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "GStreamer Preferences"
+msgstr "জীস্ট্রিমার সম্বন্ধীয় পছন্দ"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Pipe_line:"
+msgstr "পাইপ_লাইন:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "Te_st"
+msgstr "পরী_ক্ষা..."
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Testing Pipeline"
+msgstr "পাইপলাইন পরীক্ষা করা হচ্ছে"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Video"
+msgstr "ভিডিও"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "_Input:"
+msgstr "_ইনপুট:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+msgid "_Output:"
+msgstr "_আউটপুট:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "_Pipeline:"
+msgstr "পাইপলাইন:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "_Test"
+msgstr "পরীক্ষা..."
+
+#: gstreamer-properties/pipeline-constants.c:61
+#: gstreamer-properties/pipeline-constants.c:83
+#: gstreamer-properties/pipeline-constants.c:100
+#: gstreamer-properties/pipeline-constants.c:115
+msgid "Custom"
+msgstr "নিজস্ব"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:110
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "'%s' এর জন্য পরীক্ষামূলক পাইপলাইন নির্মান করা সম্ভব হয়নি"
+
+# C
+#: profiles/audio-profile-edit.c:164
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+"সহায়ক তথ্য প্রদর্শনের সময় সমস্যা হয়েছে: \n"
+"%s"
+
+#: profiles/audio-profile-edit.c:366
+#, fuzzy, c-format
+msgid "Editing profile \"%s\""
+msgstr "এই ডিস্ক আইডি'টি সম্পাদন করা হচ্ছে: %s"
+
+#: profiles/audio-profile.c:103
+#, fuzzy
+msgid "<not named>"
+msgstr "<কোনটিই নয়>"
+
+#: profiles/audio-profile.c:104
+msgid "<not described>"
+msgstr ""
+
+#: profiles/audio-profile.c:219
+#, fuzzy, c-format
+msgid "There was an error getting the list of gm_audio profiles. (%s)\n"
+msgstr "%s খুলতে কিছু অসুবিধে দেখা দিয়েছে: %s"
+
+#: profiles/audio-profile.c:720
+#, fuzzy, c-format
+msgid ""
+"There was an error subscribing to notification of audio profile list "
+"changes. (%s)\n"
+msgstr "%s খুলতে কিছু অসুবিধে দেখা দিয়েছে: %s"
+
+#: profiles/audio-profile.c:910
+#, fuzzy, c-format
+msgid "There was an error forgetting profile path %s. (%s)\n"
+msgstr "%s খুলতে কিছু অসুবিধে দেখা দিয়েছে: %s"
+
+#: profiles/audio-profile.c:1002
+msgid "<no description>"
+msgstr ""
+
+#: profiles/audio-profile.c:1013
+msgid "identity"
+msgstr ""
+
+#: profiles/audio-profile.c:1024
+msgid "wav"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:115
+#, fuzzy
+msgid "_Edit"
+msgstr "_প্রস্থান"
+
+#: profiles/audio-profiles-edit.c:452
+msgid "You must select one or more profiles to delete."
+msgstr ""
+
+#. the first argument will never be used since we only run for count > 1
+#: profiles/audio-profiles-edit.c:461
+#, fuzzy, c-format
+msgid "Delete this profile?\n"
+msgid_plural "Delete these %d profiles?\n"
+msgstr[0] "একটি শব্দ ফাইল নির্বাচন করুন"
+msgstr[1] "একটি শব্দ ফাইল নির্বাচন করুন"
+
+#: profiles/audio-profiles-edit.c:480
+#, c-format
+msgid "Delete profile \"%s\"?"
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:502
+#, fuzzy
+msgid "Delete Profile"
+msgstr "একটি শব্দ ফাইল নির্বাচন করুন"
+
+#.
+#. dialog =
+#. gtk_dialog_new_with_buttons (_("Edit Profiles"),
+#. NULL,
+#. GTK_DIALOG_DESTROY_WITH_PARENT,
+#. GTK_STOCK_HELP,
+#. GTK_RESPONSE_HELP,
+#. GTK_STOCK_CLOSE,
+#. GTK_RESPONSE_ACCEPT,
+#. NULL);
+#.
+#. FIXME: GTK_DIALOG_DESTROY_WITH_PARENT,
+#: profiles/audio-profiles-edit.c:597
+#, fuzzy
+msgid "Edit GMAudio Profiles"
+msgstr "এই ডিস্ক আইডি'টি সম্পাদন করা হচ্ছে: %s"
+
+#: profiles/audio-profiles-edit.c:650
+#, fuzzy
+msgid "_Profiles:"
+msgstr "প্রোগ্রাম ফাইলসমূহ"
+
+#: profiles/audio-profiles-edit.c:878
+#, c-format
+msgid "You already have a profile called \"%s\""
+msgstr ""
+
+#: profiles/audio-profiles-edit.c:903
+#, c-format
+msgid "GConf Error (FIXME): %s\n"
+msgstr ""
+
+#: profiles/gmp-util.c:64
+#, c-format
+msgid ""
+"The file \"%s\" is missing. This indicates that the application is installed "
+"incorrectly, so the dialog can't be displayed."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:2
+msgid "Edit Audio Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:3
+#, fuzzy
+msgid "File _Extension:"
+msgstr "ফাইলের আয়তন:"
+
+#: profiles/gnome-audio-profiles.glade2.h:4
+msgid "New Profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:5
+msgid "Profile Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:6
+msgid "Profile _Description:"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:7
+#, fuzzy
+msgid "Profile _name:"
+msgstr "ফাইলের নাম:"
+
+#: profiles/gnome-audio-profiles.glade2.h:8
+msgid "_Active?"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.glade2.h:9
+#, fuzzy
+msgid "_Create"
+msgstr "মধ্যম"
+
+#: profiles/gnome-audio-profiles.glade2.h:10
+#, fuzzy
+msgid "_GStreamer Pipeline:"
+msgstr "জীস্ট্রিমার সম্বন্ধীয় পছন্দ"
+
+#: profiles/gnome-audio-profiles.glade2.h:11
+#, fuzzy
+msgid "_Profile name:"
+msgstr "ফাইলের নাম:"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:1
+msgid "A description for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:2
+msgid ""
+"A description of the profile, containing more information and describing "
+"when to use this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:3
+msgid ""
+"A filename extension to be used when storing files encoded with this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:4
+msgid "A partial GStreamer pipeline to use for this profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:5
+msgid "A short name for the audio profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:6
+msgid ""
+"A short name for the audio profile, to be used in selections and uniquely "
+"identifying the profile."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:7
+msgid "CD Quality, Lossless"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:8
+msgid "CD Quality, Lossy"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:9
+msgid ""
+"List of audio recording profiles. The list contains strings naming "
+"subdirectories relative to /system/gstreamer/audio/profiles."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:10
+msgid "List of profiles"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:11
+msgid "The default file extension for this profile"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:12
+msgid "The partial GStreamer pipeline used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:13
+msgid ""
+"Used for converting to CD-quality audio, but with a lossless compression "
+"codec. Use this if you later want to edit the file or burn it to CD."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:14
+msgid ""
+"Used for converting to CD-quality audio, but with a lossy compression codec. "
+"Use this for CD extraction and radio recordings."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:15
+msgid ""
+"Used for converting to voice-quality audio. Use this for recording speech."
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:16
+#, fuzzy
+msgid "Voice"
+msgstr "ভিডিও"
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:17
+msgid "Whether or not this profile is to be used"
+msgstr ""
+
+#: profiles/gnome-audio-profiles.schemas.in.in.h:18
+msgid "Whether or not to use and display this profile."
+msgstr ""
+
+#: vu-meter/main.c:102
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+"সাউন্ড ডীমনের সাথে সংযোগ স্থাপন করা সম্ভব হয় নি।\n"
+"কমান্ড প্রম্পটে 'esd' চালান।"
+
+#: vu-meter/main.c:228
+msgid "Specify the X position of the meter."
+msgstr "মিটারের এক্স অবস্থান (স্থানাঙ্ক) নির্ধারণ করুন।"
+
+#: vu-meter/main.c:229
+msgid "X-Position"
+msgstr "এক্স-অবস্থান"
+
+#: vu-meter/main.c:231
+msgid "Specify the Y position of the meter."
+msgstr "মিটারের ওয়াই অবস্থান (স্থানাঙ্ক) নির্ধারণ করুন"
+
+#: vu-meter/main.c:232
+msgid "Y-Position"
+msgstr "ওয়াই-অবস্থান"
+
+#: vu-meter/main.c:234
+msgid "Connect to the esd server on this host."
+msgstr "বর্তমান হোস্টের ইএসডি সার্ভারের সাথে যোগাযোগ করো।"
+
+#: vu-meter/main.c:235
+msgid "ESD Server Host"
+msgstr "ই-এস-ডি সার্ভার হোস্ট"
+
+#: vu-meter/main.c:237
+msgid "Open a vertical version of the meter."
+msgstr "পরিমাপ নির্দেশকের একটি লম্বা-লম্বি সংস্করণ প্রদর্শন করো।"
+
+#: vu-meter/main.c:239
+msgid "Act as recording level meter."
+msgstr ""
+
+#: vu-meter/main.c:256
+#, c-format
+msgid "Host is %s\n"
+msgstr "হোস্ট হল %s\n"
+
+#: vu-meter/main.c:273
+msgid "Recording level"
+msgstr "শব্দ-ধারণ স্তর"
+
+#: vu-meter/main.c:273
+msgid "Volume Meter"
+msgstr "আওয়াজ পরিমাপক"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr "রেকর্ডের ইনপুটের মাত্রা পর্যবেক্ষণ করুন"
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr "রেকর্ডের মাপ পর্যবেক্ষক"
+
+#: vu-meter/vumeter.desktop.in.h:1
+msgid "Monitor the sound output volume"
+msgstr "শব্দের আউটপুট মাত্রার উপরে নজর রাখো"
+
+#: vu-meter/vumeter.desktop.in.h:2
+msgid "Volume monitor"
+msgstr "শব্দের মাত্রার উপর নজরকারী"
+
+#~ msgid "Unknown artist"
+#~ msgstr "অজানা শিল্পী"
+
+#~ msgid "Unknown disc"
+#~ msgstr "অজানা ডিস্ক"
+
+#, fuzzy
+#~ msgid "GStreamer Volume Control"
+#~ msgstr "শব্দের মাত্রা নিয়ন্ত্রণকারী"
+
+#~ msgid "GStreamer"
+#~ msgstr "জীস্ট্রিমার"
+
+#, fuzzy
+#~ msgid "_Replace"
+#~ msgstr "স্পেস"
+
+#, fuzzy
+#~ msgid ""
+#~ "A file named \"%s\" already exists.\n"
+#~ "Do you want to replace it with the one you are saving?"
+#~ msgstr ""
+#~ "<b> '%s' ফাইলটি বর্তমানে উপস্থিত আছে.</b>\n"
+#~ "আপনি কি এটি পুনরায় লিখতে ইচ্ছুক?"
+
+#, fuzzy
+#~ msgid "Could not build pipeline"
+#~ msgstr "চাইল্ড প্রসেস ফর্ক করা গেল না"
+
+#~ msgid "Saving %s..."
+#~ msgstr "%s-কে সংরক্ষণ করা হচ্ছে...."
+
+#~ msgid "Synth"
+#~ msgstr "সিন্থ"
+
+#~ msgid "PCM"
+#~ msgstr "পিসিএম"
+
+#~ msgid "DAC"
+#~ msgstr "ডি-এ-সি"
+
+#~ msgid "FM"
+#~ msgstr "এফএম"
+
+#~ msgid "DSP Input"
+#~ msgstr "ডিএসপি ইনপুট"
+
+#~ msgid "Line"
+#~ msgstr "লাইন"
+
+#~ msgid "MIC"
+#~ msgstr "মাইক"
+
+#~ msgid "CD"
+#~ msgstr "সিডি"
+
+#~ msgid "Radio"
+#~ msgstr "বেতার"
+
+#~ msgid "Phone"
+#~ msgstr "ফোন"
+
+#~ msgid "Mono"
+#~ msgstr "মনো"
+
+#~ msgid "PC Speaker"
+#~ msgstr "পিসি স্পিকার"
+
+#~ msgid "Aux"
+#~ msgstr "সহযোগী"
+
+#~ msgid "Center Input"
+#~ msgstr "মধ্যের ইনপুট"
+
+#~ msgid "Woofer Input"
+#~ msgstr "ঊফার ইনপুট"
+
+#~ msgid "Surround Input"
+#~ msgstr "সারাউন্ড ইনপুট"
+
+#~ msgid "Master"
+#~ msgstr "মাস্টার"
+
+#~ msgid "Master Mono"
+#~ msgstr "মাস্টার মনো"
+
+#~ msgid "Master Digital"
+#~ msgstr "মাস্টার ডিজিটাল"
+
+#~ msgid "Headphone"
+#~ msgstr "হেডফোন"
+
+#~ msgid "Phone Output"
+#~ msgstr "ফোন আউটপুট"
+
+#~ msgid "Center"
+#~ msgstr "মধ্যম"
+
+#~ msgid "Woofer"
+#~ msgstr "ঊফার"
+
+#~ msgid "Surround"
+#~ msgstr "সারাউন্ড"
+
+#~ msgid "DSP Output"
+#~ msgstr "ডি-এস-পি আউটপুট"
+
+#~ msgid "Treble"
+#~ msgstr "ট্রেবল"
+
+#~ msgid "Equalizer"
+#~ msgstr "ইকুয়ালাইসার"
+
+#~ msgid "Fader"
+#~ msgstr "ফেডার"
+
+#~ msgid "Effect"
+#~ msgstr "এফেক্ট"
+
+#~ msgid "3D Effect"
+#~ msgstr "থ্রি-ডি এফেক্ট"
+
+#~ msgid "Analog Loopback"
+#~ msgstr "অ্যানালগ লুপব্যাক"
+
+#~ msgid "Digital Loopback"
+#~ msgstr "ডিজিটাল লুপব্যাক"
+
+#~ msgid "Vol  "
+#~ msgstr "শব্দমাত্রা "
+
+#~ msgid "Bass "
+#~ msgstr "বেইস "
+
+#~ msgid "Trebl"
+#~ msgstr "ট্রেব্লল"
+
+#~ msgid "Pcm  "
+#~ msgstr "পিসিএম "
+
+#~ msgid "Spkr "
+#~ msgstr "স্পিকার "
+
+#~ msgid "Line "
+#~ msgstr "লাইন "
+
+#~ msgid "Mic  "
+#~ msgstr "মাইক "
+
+#~ msgid "CD   "
+#~ msgstr "সিডি "
+
+#~ msgid "Mix  "
+#~ msgstr "মিক্স "
+
+#~ msgid "Pcm2 "
+#~ msgstr "পিসিএম২ "
+
+#~ msgid "Rec  "
+#~ msgstr "রেকর্ড "
+
+#~ msgid "IGain"
+#~ msgstr "আইগেন "
+
+#~ msgid "OGain"
+#~ msgstr "ওগেন "
+
+#~ msgid "Line1"
+#~ msgstr "লাইন১"
+
+#~ msgid "Line2"
+#~ msgstr "লাইন২"
+
+#~ msgid "Line3"
+#~ msgstr "লাইন৩"
+
+#~ msgid "Digital1"
+#~ msgstr "ডিজিটাল১ "
+
+#~ msgid "Digital2"
+#~ msgstr "ডিজিটাল২ "
+
+#~ msgid "Digital3"
+#~ msgstr "ডিজিটাল৩ "
+
+#~ msgid "PhoneIn"
+#~ msgstr "ফোনইন"
+
+#~ msgid "PhoneOut"
+#~ msgstr "ফোনআউট"
+
+#~ msgid "Monitor"
+#~ msgstr "মনিটর"
+
+#~ msgid "Help"
+#~ msgstr "সাহায্য"
+
+#~ msgid "Mixer device to use"
+#~ msgstr "যে মিক্সার ডিভাইস ব্যবহৃত হবে"
+
+#~ msgid ""
+#~ "Volume control is unable to run correctly.\n"
+#~ "\n"
+#~ "Unable to open audio device '%s'.\n"
+#~ "Please check that you have permissions to open '%s'\n"
+#~ "and that you have sound support in your kernel.\n"
+#~ "\n"
+#~ "Press Quit to exit Volume control"
+#~ msgstr ""
+#~ "শব্দের মাত্রা নিয়ন্ত্রণকারী সঠিকভাবে চলতে পারছে না।\n"
+#~ "\n"
+#~ "অডিও  ডিভাইস '%s' খোলা যায় নি।\n"
+#~ "'%s' খোলার জন্য আপনার অনুমতি আছে কিনা তা দয়া করে পরীক্ষা করে দেখুন।\n"
+#~ "তাছাড়া আপনার কার্নেলে শব্দের জন্য ব্যবস্থা আছে কিনা দেখুন।\n"
+#~ "\n"
+#~ "শব্দের মাত্রা নিয়ন্ত্রণকারী থেকে বিদায় নিতে প্রস্থান টিপুন"
+
+#~ msgid ""
+#~ "Volume control is unable to run correctly.\n"
+#~ "\n"
+#~ "Press the details button for more details on the reasons for failure.\n"
+#~ "\n"
+#~ "Press Quit to quit Volume control"
+#~ msgstr ""
+#~ "শব্দের মাত্রা নিয়ন্ত্রণকারী সঠিকভাবে চলতে পারছে না।\n"
+#~ "\n"
+#~ "এর উপরে বিস্তারিত তথ্যের জন্য দয়া করে 'বিস্তারিত' বোতামটি টিপুন।\n"
+#~ "\n"
+#~ "শব্দের মাত্রা নিয়ন্ত্রণকারী থেকে বিদায় নিতে প্রস্থান টিপুন"
+
+#~ msgid "Invalid mixer device"
+#~ msgstr "ভুল মিক্সার ডিভাইস"
+
+#~ msgid ""
+#~ "Warning: This version of the Gnome Volume Control was compiled with\n"
+#~ "OSS version %d.%d.%d, and your system is running\n"
+#~ "a version prior to 3.6.0.\n"
+#~ msgstr ""
+#~ "সতর্কবাণী : Gnome Volume Control-এর এই সংস্করণটি %d.%d.%d OSS সংস্করণ \n"
+#~ "দিয়ে কম্পাইল করা হয়েছে, এবং আপনার সিস্টেমে ৩.৬.০-এর \n"
+#~ "পূর্ববতী কোন সংস্করণ চলছে।\n"
+
+#~ msgid ""
+#~ "Warning: This version of the Gnome Volume Control was compiled with\n"
+#~ "OSS version %d.%d.%d, and your system is running\n"
+#~ "version %d.%d.%d.\n"
+#~ msgstr ""
+#~ "সতর্কবাণী : Gnome Volume Control-এর এই সংস্করণটি %d.%d.%d OSS \n"
+#~ "সংস্করণ দিয়ে কম্পাইল করা হয়েছে, এবং আপনার সিস্টেমে \n"
+#~ "%d.%d.%d সংস্করণ চলছে।\n"
+
+#~ msgid "left %s"
+#~ msgstr "বামদিকে %s"
+
+#~ msgid "Right %s"
+#~ msgstr "ডানদিকে %s"
+
+#~ msgid "GNOME Volume Control"
+#~ msgstr "গুহ্‌নোম শব্দের মাত্রা নিয়ন্ত্রণকারী"
+
+#~ msgid "A mixer for sound devices"
+#~ msgstr "শব্দ ডিভাইসের জন্য মিক্সার"
+
+#~ msgid "Shown"
+#~ msgstr "দেখানো হয়েছে"
+
+#~ msgid "Mixer label"
+#~ msgstr "মিক্সার লেবেল"
+
+#~ msgid "_Reset labels to their defaults"
+#~ msgstr "_লেবেলগুলো ডিফল্ট মান দিয়ে রিসেট করো"
+
+#~ msgid "Gnome Volume Control Preferences"
+#~ msgstr "গুহ্‌নোমের শব্দের মাত্রা নিয়ন্ত্রণকারী সম্বন্ধীয় পছন্দ"
+
+#~ msgid "Sound Recorder:"
+#~ msgstr "শব্দ রেকর্ডকারী:"
+
+#~ msgid "Don't show this message again."
+#~ msgstr "এই বার্তাটি ভবিষ্যতে আর দেখতে চাই না।"
+
+#~ msgid "Converting file..."
+#~ msgstr "ফাইল রূপান্তরিত হচ্ছে..."
+
+#~ msgid "Cancel"
+#~ msgstr "বাতিল"
+
+#~ msgid "Audioformat: "
+#~ msgstr "শব্দ কাঠামো: "
+
+#~ msgid "Sample rate: "
+#~ msgstr "স্যাম্পল রেট: "
+
+#~ msgid "Channels: "
+#~ msgstr "চ্যানেলসমূহ: "
+
+#~ msgid "Cancel open"
+#~ msgstr "খোলার প্রক্রিয়া বাতিল করো"
+
+#~ msgid "Select a sound file"
+#~ msgstr "একটি শব্দ ফাইল নির্বাচন করুন"
+
+#~ msgid "%s is not installed in the path"
+#~ msgstr "পাথ-এ %s ইনস্টল করা নেই"
+
+#~ msgid "Undoing all changes..."
+#~ msgstr "আগের সমস্ত পরিবর্তন বাতিল করা হচ্ছে..."
+
+#~ msgid ""
+#~ "'%s' is a folder.\n"
+#~ "Please select a sound file to be opened."
+#~ msgstr ""
+#~ "'%s' একটি ফোল্ডার। \n"
+#~ "অনুগ্রহ করে একটি শব্দ ফাইল নির্বাচন করুন।"
+
+#~ msgid ""
+#~ "File '%s' doesn't exist.\n"
+#~ "Please select an existing sound file to be opened."
+#~ msgstr ""
+#~ "'%s' ফাইলের অস্তিত্ব নেই।\n"
+#~ "অনুগ্রহ করে খোলার জন্য একটি শব্দ ফাইল নির্বাচন করুন।"
+
+#~ msgid "File '%s isn't a valid sound file."
+#~ msgstr "'%s' কোন সঠিক শব্দ ফাইল নয়।"
+
+#~ msgid ""
+#~ "'%s' is a folder.\n"
+#~ "Please enter another filename."
+#~ msgstr ""
+#~ "'%s' একটি ফোল্ডার। \n"
+#~ "দয়া করে অন্য একটি ফাইলের নাম লিখুন।"
+
+#~ msgid "Cancel save"
+#~ msgstr "সংরক্ষণ বাতিল করো"
+
+#~ msgid "Overwrite"
+#~ msgstr "পুনরায় লেখা"
+
+#~ msgid "Error saving '%s'"
+#~ msgstr "'%s' সংরক্ষণ করতে সমস্যা দেখা দিয়েছে"
+
+#~ msgid ""
+#~ "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
+#~ "\n"
+#~ "Your changes will be lost if you don't save them."
+#~ msgstr ""
+#~ "<b>\"%s\" এ করা পরিবর্তনগুলো কি আপনি সংরক্ষণ করতে ইচ্ছুক?</b>\n"
+#~ "\n"
+#~ "সংরক্ষণ না করলে আপনার পরিবর্তনগুলো মুছে ফেলা হবে।"
+
+#~ msgid "Do_n't save"
+#~ msgstr "সংরক্ষণ করা হবে না"
+
+#~ msgid "Save %s?"
+#~ msgstr "%s-কে সংরক্ষণ করা হবে কি?"
+
+#~ msgid "Saving..."
+#~ msgstr "সংরক্ষণ করা হচ্ছে..."
+
+#~ msgid ""
+#~ "The size of the current sample is more than\n"
+#~ "%i Mb!"
+#~ msgstr ""
+#~ "বর্তমান নমূনাটির মাপ %i মেগাবাইটের\n"
+#~ "থেকে বেশি!"
+
+#~ msgid "Save sound file"
+#~ msgstr "শব্দ ফাইলকে সংরক্ষণ করো"
+
+#~ msgid ""
+#~ "The sound device is not ready. Please check that there isn't\n"
+#~ "another program running that is using the device."
+#~ msgstr ""
+#~ "আওয়াজের ডিভাইসটি তৈরি নেই। অন্য কোন প্রোগ্রাম এই ডিভাইসটি \n"
+#~ "ব্যবহার করছে কিনা তা দয়া করে পরীক্ষা করুন।"
+
+#~ msgid "Run GNOME Volume Control"
+#~ msgstr "গুহনোম শব্দ নিয়ন্ত্রক চালাও"
+
+#~ msgid "Add echo"
+#~ msgstr "প্রতিধ্বনি যোগ করো"
+
+#~ msgid "Add echo to the current sample"
+#~ msgstr "বর্তমান নমুনায় প্রতিধ্বনি যোগ করো"
+
+#~ msgid "Echo"
+#~ msgstr "প্রতিধ্বনি"
+
+#~ msgid "_Undo All"
+#~ msgstr "সকল পরিবর্তন _বাতিল করো"
+
+#~ msgid "Undo all changes made on the current sample"
+#~ msgstr "বর্তমান নমূনাতে করা সকল পরিবর্তন মুছে ফেলো"
+
+#~ msgid "Effects"
+#~ msgstr "প্রভাব (Effects)"
+
+#~ msgid "16bit PCM"
+#~ msgstr "১৬ বিট পিসিএম"
+
+#~ msgid "8bit PCM"
+#~ msgstr "৮ বিট পিসিএম"
+
+#~ msgid "stereo"
+#~ msgstr "দ্বৈত"
+
+#~ msgid "mono"
+#~ msgstr "মনো"
+
+#~ msgid "Create new sample"
+#~ msgstr "নতুন নমুনা (Sample) তৈরি করো"
+
+#~ msgid "Play current sample"
+#~ msgstr "বর্তমান নমুনা (Sample) চালাও"
+
+#~ msgid "Stop playing/recording"
+#~ msgstr "বাজানো/রেকর্ড করা বন্ধ করো"
+
+#~ msgid "Start recording"
+#~ msgstr "রেকর্ড করা শুরু করো"
+
+#~ msgid "Audio format: "
+#~ msgstr "অডিও'র ধরন: "
+
+#~ msgid "File '%s' doesn't exist; using default."
+#~ msgstr "'%s' ফাইলটি বর্তমানে উপস্থিত নেই; ডিফল্ট ব্যবহার করা হচ্ছে।"
+
+#~ msgid "File '%s' isn't a supported soundfile."
+#~ msgstr "'%s' কোন ব্যবহারযোগ্য শব্দধারী ফাইল নয়।"
+
+#~ msgid "translator_credits"
+#~ msgstr ""
+#~ "সায়মিন্দু দাশগুপ্ত <unmadindu@bengalinux.org>, রুণা ভট্টাচার্য <Runa@Bengalinux."
+#~ "org>\n"
+#~ "(অঙ্কুর প্রকল্পের পক্ষ থেকে)"
+
+#~ msgid "GNOME Sound Recorder"
+#~ msgstr "গুহ্‌নোমের শব্দ রেকর্ডকারী"
+
+#~ msgid ""
+#~ "A simple soundrecorder and soundplayer for GNOME.\n"
+#~ "Dedicated to my cat, Malte."
+#~ msgstr ""
+#~ "গুহ্‌নোমের জন্য একটি সহজ ব্যবহার্য শব্দধারণ ও শব্দ বাজানোর সফটওয়ার।\n"
+#~ "এটি আমার বেড়াল, ম্যাল্টের উদ্দেশ্যে উত্‍সর্গীকৃত ।"
+
+#~ msgid "Gnome Sound Recorder Preferences"
+#~ msgstr "গুহ্‌নোমের শব্দ রেকর্ডকারী সম্বন্ধীয় পছন্দ"
+
+#~ msgid "Sound Recorder Preferences"
+#~ msgstr "শব্দ রেকর্ডকারী সম্বন্ধীয় পছন্দ"
+
+#~ msgid "Recording"
+#~ msgstr "রেকর্ড করা হচ্ছে"
+
+#~ msgid "Time"
+#~ msgstr "সময়"
+
+#~ msgid "_Recording timeout: "
+#~ msgstr "_রেকর্ড করার সময়সীমা:"
+
+#~ msgid "_Stop recording on timeout"
+#~ msgstr "সময়সীমা অতিক্রান্ত হলে রেকর্ড করা _বন্ধ কর"
+
+#~ msgid "_Open save dialog when recording is finished"
+#~ msgstr "রেকর্ড করা সমাপ্ত হলে সংরক্ষণ করার ডায়ালগটি _প্রদর্শন করো"
+
+#~ msgid "Size"
+#~ msgstr "আয়তন"
+
+#~ msgid "Show warning _message if size (MB) of sample becomes bigger than:"
+#~ msgstr "নমুনার মাপ (মেগাবাইট) এর অধিক হলে সতর্কবানী প্রদর্শন করো:"
+
+#~ msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
+#~ msgstr "নমুনার মাপ (মেগাবাইট) এ থেকে অধিক হলে রেকর্ড করা বন্ধ করো:"
+
+#~ msgid "Repetition"
+#~ msgstr "পুনরাবৃত্তি"
+
+#~ msgid "_Repeat the sound"
+#~ msgstr "শব্দটি _পুনর্বার চালাও"
+
+#~ msgid "Play the sound _once only."
+#~ msgstr "শব্দটি শুধুমাত্র _একবার চালাও।"
+
+#~ msgid "Repeat _forever"
+#~ msgstr "বারংবার _পুনরাবৃত্তি করো"
+
+#~ msgid "_Number of times:"
+#~ msgstr "_কত বার:"
+
+#~ msgid "Paths"
+#~ msgstr "পাথ"
+
+#~ msgid "Program files"
+#~ msgstr "প্রোগ্রাম ফাইলসমূহ"
+
+#~ msgid "_Path to sox:"
+#~ msgstr "Sox-এর _পাথ:"
+
+#~ msgid "_Apply"
+#~ msgstr "_প্রয়োগ"
+
+#~ msgid "Folders"
+#~ msgstr "ফোল্ডার"
+
+#~ msgid "_Temporary folder:"
+#~ msgstr "_সাময়িক ফোল্ডার:"
+
+#~ msgid "Apply"
+#~ msgstr "প্রয়োগ"
+
+#~ msgid "Sound"
+#~ msgstr "শব্দ"
+
+#~ msgid ""
+#~ "Note: These options only take effect whenever a new sound sample\n"
+#~ "is created. They do not operate on an existing sample."
+#~ msgstr ""
+#~ "লক্ষণীয়: এই অপশনসমূহ শুধুমাত্র নতুন শব্দ-নমুনা (Sample) তৈরি করা হলেই কার্যকর হয়।\n"
+#~ "বিদ্যমান নমুনাসমূহের ওপর এগুলো কাজ করে না।"
+
+#~ msgid "Audio format:"
+#~ msgstr "অডিওর ধরন:"
+
+#~ msgid "8 _bit PCM"
+#~ msgstr "৮ _বিট পিসিএম"
+
+#~ msgid "16 b_it PCM"
+#~ msgstr "১৬ বি_ট পিসিএম"
+
+#~ msgid "S_ample rate:"
+#~ msgstr "_স্যাম্পলের গতি:"
+
+#~ msgid "Mono or Stereo:"
+#~ msgstr "মনো কি দ্বৈত:"
+
+#~ msgid "_Mono"
+#~ msgstr "_মনো"
+
+#~ msgid "_Stereo"
+#~ msgstr "_দ্বৈত"
+
+#~ msgid "Stereo"
+#~ msgstr "দ্বৈত"
+
+#~ msgid "Specify the geometry of the main window"
+#~ msgstr "মূল উইন্ডোর জ্যামিতি (আকার) নির্ধারণ করো"
+
+#~ msgid "GEOMETRY"
+#~ msgstr "জ্যামিতি"
+
+#~ msgid "Specify a file to be opened"
+#~ msgstr "খোলার জন্য একটি ফাইল নির্ধারণ করো"
+
+#~ msgid "Specify a file to start recording"
+#~ msgstr "শব্দধারণ আরম্ভ করার জন্য একটি ফাইলের নাম উল্লেখ করুন"
+
+#~ msgid "Specify a file to start playing"
+#~ msgstr "শব্দ বাজানোর জন্য একটি ফাইলে নাম উল্লেখ করুন"
+
+#~ msgid "Sound recorder"
+#~ msgstr "শব্দ রেকর্ডকারী"
+
+#~ msgid "Audio format: 8bit PCM"
+#~ msgstr "অডিও'র ধরন: ৮বিট পিসিএম"
+
+#~ msgid "Audio format: 16bit PCM"
+#~ msgstr "অডিও'র ধরন: ১৬বিট পিসিএম"
+
+#~ msgid "Sample rate: %s"
+#~ msgstr "স্যাম্পল রেট: %s"
+
+#~ msgid "Channels: mono"
+#~ msgstr "চ্যানেলসমূহ: মনো"
+
+#~ msgid "Channels: stereo"
+#~ msgstr "চ্যানেলসমূহ: দ্বৈত"
+
+#~ msgid "Adding echo to sample..."
+#~ msgstr "নমুনায় প্রতিধ্বনি যোগ করা হচ্ছে..."
+
+#~ msgid "Send _no info"
+#~ msgstr "কোন তথ্য যাতে _না পাঠানো হয়"
+
+#~ msgid "_Hostname:"
+#~ msgstr "_হোস্টনাম"
+
+#~ msgid "Action on application exit"
+#~ msgstr "অ্যাপ্লিকেশন প্রস্থানে যে কাজ করা হবে"
+
+#~ msgid "Action on start"
+#~ msgstr "অ্যাপ্লিকেশন শুরুর সময় যে কাজ করা হবে"
+
+#~ msgid "Should the CD player attempt to shut the CD drive on start up?"
+#~ msgstr "সিডি বাদকটি কি শুরু হওয়ার সময় সিডি ড্রাইভকে বন্ধ করার চেষ্টা করবে?"
+
+#~ msgid "Shut the CD tray on start"
+#~ msgstr "শুরু হওয়ার সময় সিডি ড্রাইভকে বন্ধ করা হোক"
+
+#~ msgid "Do _nothing"
+#~ msgstr "কিছুই করা হবে _না"
+
+#~ msgid "Do nothing when CD Player starts"
+#~ msgstr "সিডি বাদক শুরু হবার সময় কিছুই করা হবে না"
+
+#~ msgid "Start _playing CD"
+#~ msgstr "সিডি বাজানো _শুরু করা হবে"
+
+#~ msgid "_Stop playing CD"
+#~ msgstr "সিডি বাজানো _বন্ধ করা হবে"
+
+#~ msgid "Stop playing CD when CD Player starts"
+#~ msgstr "সিডি বাদক শুরু হবার সময় সিডি বাজানো _বন্ধ করা হবে"
+
+#~ msgid "Attempt to _close CD tray"
+#~ msgstr "সিডি ট্রে _বন্ধ করার চেষ্টা করা হবে"
+
+#~ msgid "When CD player quits"
+#~ msgstr "যখন সিডি বাদক থেকে প্রস্থান করা হবে"
+
+#~ msgid "Do not_hing"
+#~ msgstr "কিছুই _করা হবে না"
+
+#~ msgid "Do nothing when CD Player exits"
+#~ msgstr "সিডি বাদক থেকে প্রস্থান করলে কিছুই করা হবে না"
+
+#~ msgid "S_top playing CD"
+#~ msgstr "সিডি _বাজানো থামানো হবে"
+
+#~ msgid "Attempt to _open CD tray"
+#~ msgstr "সিডি ট্রে _খোলার চেষ্টা করা হবে"
+
+#~ msgid "Attempt to c_lose CD tray"
+#~ msgstr "সিডি ট্রে _বন্ধ করার চেষ্টা করা হবে"
+
+#~ msgid "Theme name"
+#~ msgstr "থীমের নাম"
+
+#~ msgid "Video _Input:"
+#~ msgstr "ভিডিও _ইনপুট:"
+
+#~ msgid "Video _Output:"
+#~ msgstr "ভিডিও _আউট্পুট:"

@@ -1,7 +1,8 @@
 /*
  * cddb-slave.h: Header for CDDBSlave object
+ * internal to cddb-slave
  *
- * Copyright (C) 2001-2002 Iain Holmes 
+ * Copyright (C) 2001-2002 Iain Holmes
  *
  * Authors: Iain Holmes  <iain@ximian.com>
  */
@@ -39,6 +40,8 @@ typedef struct _CDDBEntry {
 
 	GList *comments;
 	GHashTable *fields;
+	gboolean is_valid; /* TRUE when result of a good lookup or editor save */
+	GNOME_Media_CDDBSlave2_Result result; /* result of query */
 } CDDBEntry;
 
 
@@ -54,7 +57,7 @@ struct _CDDBSlaveClass {
 	POA_GNOME_Media_CDDBSlave2__epv epv;
 };
 
-GType cddb_slave_get_type ();
+GType cddb_slave_get_type (void);
 CDDBSlave *cddb_slave_new (const char *server,
 			   int port,
 			   const char *name,

@@ -12,7 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the 
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA  02111-1307, USA.
  */
@@ -86,7 +86,7 @@ gnet_socks_get_server(void)
       const gchar* var;
 
       /* Check SOCKS_SERVER env variable */
-      if ((var = g_getenv("SOCKS_SERVER"))) 
+      if ((var = g_getenv("SOCKS_SERVER")))
 	{
 	  gchar* hostname;
 	  gint port = GNET_SOCKS_PORT;

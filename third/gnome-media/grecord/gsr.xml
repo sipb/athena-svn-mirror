@@ -41,7 +41,7 @@
 			sensitive="0" pixtype="stock" pixname="media-stop" accel="*Control*x"/>
 
 		<cmd name="MediaRecord" _label="Record" _tip="Record sound"
-			sensitive="0" pixtype="stock" pixname="media-rec" accel="*Control*r"/>
+			sensitive="0" pixtype="stock" pixname="media-record" accel="*Control*r"/>
 	</commands>
 
 	<menu>
@@ -81,7 +81,7 @@
 	</menu>
 
 	<dockitem name="Toolbar" _tip="Main toolbar" config="0"
-		  behaviour="exclusive" in_new_band="1">
+		  behavior="exclusive" in_new_band="1">
 		<toolitem name="FileNew" verb=""/>
 		<toolitem name="FileOpen" verb=""/>
 		<toolitem name="FileSave" verb=""/>
