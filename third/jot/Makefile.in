@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1996-10-10 17:20:33 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1996-10-13 06:59:12 ghudson Exp $
 
 SHELL=/bin/sh
 CFLAGS=-I.
@@ -6,6 +6,7 @@ CC=@CC@
 INSTALL=@INSTALL@
 VPATH=@srcdir@
 srcdir=@srcdir@
+top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
@@ -19,8 +20,8 @@ jot: jot.o
 check:
 
 install:
-	${srcdir}/mkinstalldirs ${DESTDIR}${bindir}
-	${srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 555 jot ${DESTDIR}${bindir}
 	${INSTALL} -m 444 ${srcdir}/jot.1 ${DESTDIR}${mandir}/man1
 
