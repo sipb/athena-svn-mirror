@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 1997-12-30 18:34:25 ghudson Exp $
+# $Id: Makefile,v 1.12 1997-12-30 18:37:03 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -46,13 +46,10 @@ install:
 	ln -s ${CONFIG}/quick/quickstations \
 		${DESTDIR}${ATHLIBDIR}/quickstations
 	rm -f ${DESTDIR}${ATHLIBDIR}/Dash.menus
-	rm -f ${DESTDIR}${ATHLIBDIR}/Dash.menus.cmp
 	. ../build/version; \
 		vers=$$major.$$minor; \
 		ln -s ${CONFIG}/dash/Dash.menus-$$vers \
 			${DESTDIR}${ATHLIBDIR}/Dash.menus; \
-		ln -s ${CONFIG}/dash/Dash.menus.cmp-$$vers \
-			${DESTDIR}${ATHLIBDIR}/Dash.menus.cmp
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
