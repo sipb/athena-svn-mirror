@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.4 1990-07-02 22:30:16 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.5 1990-07-03 16:15:17 epeisach Exp $
 #
 #
 #     Copyright 1990 Massachusetts Institute of Technology.
@@ -15,15 +15,16 @@ DESTDIR=
 #LIBS= ./ncs/${MACHINE}lib/libnck.a ../gdbm-1.3/gdbm.a ../malloc/maltrace.a \
 #	-lhesiod -lzephyr -lacl -lkrb -ldes -lcom_err
 
-CFLAGS=-g -DHESIOD -DKERBEROS -DZEPHYR -DNDBM -DV1COMPAT \
+# NDBM is now in config.h
+CFLAGS=-g -DHESIOD -DKERBEROS -DZEPHYR -DV1COMPAT \
 		-I./ncs/include/idl -I. -I..
-LIBS= ./ncs/${MACHINE}lib/libnck.a  -lhesiod \
+LIBS= ./ncs/nck/libnck.a  -lhesiod \
 	-lzephyr -lacl -lkrb -ldes -lcom_err
 
-NIDL=./ncs/${MACHINE}bin/nidl
+NIDL=./ncs/nidl/nidl
 NIDLOPTS=-idir ./ncs/include/idl -m
 .SUFFIXES: .idl .h
-CPP=./ncs/${MACHINE}bin/cpp
+CPP=./ncs/cpp/cpp
 
 .c.o:
 	 ${CPP} $(CFLAGS) $*.c x.c; $(CC) -c $(CFLAGS) x.c; mv x.o $*.o
@@ -38,7 +39,6 @@ SRCS=	gquota_dba.c uid_strings.c \
 	server_krb.c quota_notify.c quota_logger.c strings.c parser.c \
 	journal.c user.c periodic.c logger_ncs_sstub.c logger_server.c \
 	${V1SRC}
-
 
 OBJS=	qmain.o quota_dba.o quota_ncs_sstub.o quota_server.o quotacap.o \
 	server_krb.o quota_notify.o quota_logger.o strings.o parser.o \
@@ -65,13 +65,27 @@ SOBJS= s_chkaf.o quota_ncs_cstub.o quota_ncs_cswtch.o printcap.o
 
 ALL=	lpqd lpquota qdb_create s_chkaf
 
-all:	${ALL} 
+all:	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a ${ALL} 
+
+./ncs/cpp/cpp:
+	(cd ncs/cpp; make MFLAGS=$(MFLAGS) )
+
+./ncs/nidl/nidl:
+	(cd ncs/nidl; make MFLAGS=$(MFLAGS) )
+
+./ncs/nck/libnck.a:
+	(cd ncs/nck; make MFLAGS=$(MFLAGS) )
 
 s_chkaf: ${SOBJS}
 	${CC} -o s_chkaf ${SOBJS} ${LIBS}
 
 lpqd:	${OBJS}
-	${CC} -o lpqd ${OBJS} ${LIBS}
+	if [ `/bin/athena/machtype` = "decmips" ]; then \
+		${CC} -o lpqd ${OBJS} ${LIBS} -ldbm ; \
+	else \
+		${CC} -o lpqd ${OBJS} ${LIBS} ; \
+	fi
+
 
 lint_lpqd: ${SRCS}
 	lint -u ${CFLAGS}  ${SRCS}
@@ -118,7 +132,8 @@ clean:
 	   x.c printcap.c \
 	   quota_ncs_v1_sstub.c quota_ncs_v1_cswtch.c quota_ncs_v1_cstub.c \
 	   logger_ncs_v1_sstub.c logger_ncs_v1_cswtch.c logger_ncs_v1_cstub.c \
-	   logger_ncs_v1.h quota_ncs_v1.h
+	   logger_ncs_v1.h quota_ncs_v1.h nidl_structs.h \
+	   nidl_structs_sstub.c nidl_structs_cstub.c nidl_structs_cswtch.c
 
 depend: ${SRCS} ${CSRCS} ${LSRCS}
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS} \
@@ -147,6 +162,7 @@ quota_server.o: quota_err.h
 parser.o: logger_ncs.h logger_ncs_v1.h
 #parser.o: logger_ncs.h
 
+$(OBJS): config.h
 ####### For version_1 compatibility ########
 
 quota_ncs_v1_sstub.c: quota_ncs_v1.h nidl_structs.h
