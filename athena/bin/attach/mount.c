@@ -1,11 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Id: mount.c,v 1.7 1991-07-01 11:04:08 probe Exp $
+ *	$Id: mount.c,v 1.8 1992-07-17 11:39:17 miki Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.7 1991-07-01 11:04:08 probe Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.8 1992-07-17 11:39:17 miki Exp $";
 
 #include "attach.h"
 
@@ -105,7 +105,9 @@ mountfs(at, fsname, mopt, errorout)
 #else
 	mnt.mnt_passno = 0;
 #endif
-	
+#if defined(sun)
+	mnt.mnt_type = at->fs->mount_type == MOUNT_NFS ? "nfs" : "ufs";
+#endif		
 	bzero(&data, sizeof(data));
 	/* Already mounted? Why lose? */
 	if (mounted(&mnt)) {
@@ -159,7 +161,11 @@ mountfs(at, fsname, mopt, errorout)
 #ifdef _AIX
 	if (mount(mnt.mnt_fsname, mnt.mnt_dir, mopt->flags) < 0) {
 #else
+#if defined(sun) 
+	if (mount(mnt.mnt_type, mnt.mnt_dir, M_NEWTYPE | mopt->flags, &data) < 0) {
+#else
 	if (mount(at->fs->mount_type, mnt.mnt_dir, mopt->flags, &data) < 0) {
+#endif /* sun */
 #endif
 #endif /* ultrix */
 		if (errorout) {
