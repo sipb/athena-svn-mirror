@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.4 1990-02-14 14:23:24 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.5 1990-04-25 16:39:07 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,6 +30,8 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 
 int subsystem = 0;		/* (initial value) */
 extern char **environ;
+extern char *wday[]; 
+extern char *month[];
 
 /*
  * Function:	command_loop() is the driver loop for olc and olcr.
@@ -155,9 +157,6 @@ do_command(Command_Table, arguments)
     return(-1);
 #endif CSH
 
-  if(string_eq(arguments[0],"answers")&&!OLC)
-    strcpy(arguments[0],"stock");
-
   index = command_index(Command_Table, arguments[0]);
   
   if (index == NOT_UNIQUE)
@@ -238,6 +237,252 @@ command_index(Command_Table, command_name)
 }
 
 
+char *
+expand_variable(Request,var)
+     REQUEST *Request;
+     char *var;
+{
+  int uinfo, sinfo, tinfo;
+  long time_now;
+  struct tm *time_info;
+  char buf[BUF_SIZE] = "UNKNOWN";
+  LIST list;
+
+  int     uid;                       /* Person's user ID. */
+  int     instance;                  /* the user's instance id */
+  char    username[LOGIN_SIZE+1];    /* Person's username. */
+  char    realname[LABEL_SIZE];      /* Person's real name. */
+  char    realm[REALM_SZ];           /* current realm */
+  char    inst[INST_SZ];             /* oh well */
+  char    nickname[STRING_SIZE];     /* Person's first name. */
+  char    title[LABEL_SIZE];         /* Person's title */
+  char    machine[LABEL_SIZE];       /* Person's current machine. */
+
+  char *local[] =
+    {
+      "inst", "username", "realname",
+      "machine", "user", /** "nickname", "title", **/
+    };
+#define NUML (sizeof(local)/sizeof(char *))
+
+  char *server[] = 
+    {
+      "cinst", "cusername", "crealname",
+      "cmachine", "cuser",
+      "ustatus", "cstatus", "nseen", "topic",
+      /** "cnickname", "ctitle", **/
+    };
+#define NUMS (sizeof(server)/sizeof(char *))
+
+  char *timestuff[] =
+    {
+      "dayname", "monthname", "MON", "mon", "DAY", "day", "YEAR", "year",
+      "milhour", "HOUR", "hour", "min", "sec", "AMPM", "ampm",
+    };
+#define NUMT (sizeof(timestuff)/sizeof(char *))
+
+  for (uinfo=0; uinfo < NUML; uinfo++)
+    {
+      if (string_eq(var, local[uinfo]))
+	  {
+	    break;
+	  }
+    }
+  if (uinfo != NUML)
+    {
+      switch(uinfo)
+	{
+	case 0:			/* instance */
+	  sprintf(buf, "%d", User.instance);
+	  break;
+	case 1:			/* username */
+	  sprintf(buf, "%s", User.username);
+	  break;
+	case 2:			/* realname */
+	  sprintf(buf, "%s", User.realname);
+	  break;
+	case 3:			/* machine */
+	  sprintf(buf, "%s", User.machine);
+	  break;
+	case 4:			/* USER (username@machine) */
+	  sprintf(buf, "%s@%s", User.username, User.machine);
+	  break;
+#if 0
+/** Can't do these, yet. **/
+	case 5:			/* nickname */
+	  sprintf(buf, "%s", Request->requester.nickname);
+	  break;
+	case 6:			/* title */
+	  sprintf(buf, "%s", Request->requester.title);
+	  break;
+#endif
+	default:		/* this shouldn't happen, but just in case */
+	  strcpy(buf, "ERROR");
+	}
+      return(buf);
+    }
+
+  for (sinfo=0; sinfo < NUMS; sinfo++)
+    {
+      if (string_eq(var, server[sinfo]))
+	  {
+	    break;
+	  }
+    }
+  if (sinfo != NUMS)
+    {
+      OWho(Request, &list);
+      switch(sinfo)
+	{
+	case 0:			/* c_instance */
+	  if (list.connected.uid == -1)
+	    strcpy(buf, "");
+	  else
+	    sprintf(buf, "%d", list.connected.instance);
+	  break;
+	case 1:			/* c_username */
+	  if (list.connected.uid == -1)
+	    strcpy(buf, "");
+	  else
+	    sprintf(buf, "%s", list.connected.username);
+	  break;
+	case 2:			/* c_realname */
+	  sprintf(buf, "%s", list.connected.realname);
+	  break;
+	case 3:			/* c_machine */
+	  sprintf(buf, "%s", list.connected.machine);
+	  break;
+	case 4:			/* c_user (username@machine) */
+	  if (list.connected.uid == -1)
+	    strcpy(buf, "");
+	  else
+	    sprintf(buf, "%s@%s", list.connected.username,
+		    list.connected.machine);
+	  break;
+	case 5:			/* ustatus */
+	  OGetStatusString(list.ustatus, buf);
+	  break;
+	case 6:			/* cstatus */
+	  OGetStatusString(list.cstatus, buf);
+	  break;
+	case 7:			/* nseen */
+	  if (list.nseen == -1)
+	    strcpy(buf, "");
+	  else
+	    sprintf(buf, "%d", list.nseen);
+	  break;
+	case 8:			/* topic */
+	  sprintf(buf, "%s", list.topic);
+	  break;
+#if 0
+	  /** Can't do these, yet. **/
+	case 9:			/* nickname */
+	  sprintf(buf, "%s", Request->requester.nickname);
+	  break;
+	case 10:		/* title */
+	  sprintf(buf, "%s", Request->requester.title);
+	  break;
+#endif
+	default:		/* this shouldn't happen, but just in case */
+	  strcpy(buf, "ERROR");
+	}
+      return(buf);
+    }
+
+/*  
+  if(string_eq(var, "cuser"))
+    OGetConnectedUsername(Request, var);
+  if(string_eq(var, "chost"))
+    OGetConnectedHostname(Request, var);
+  if(string_eq(var, "host"))
+    OGetHostname(Request, var);
+  if(string_eq(var, "user"))
+    OGetUsername(Request, var);
+  if(string_eq(var, "topic"))
+    OGetTopic(&Request, var);
+*/
+
+/*
+ *  Display any requested time strings...
+ */
+
+  for (tinfo=0; tinfo < NUMT; tinfo++)
+    {
+      if (string_eq(var, timestuff[tinfo]))
+	  {
+	    break;
+	  }
+    }
+
+  if (tinfo != NUMT)
+    {
+      (void) time(&time_now);
+      time_info = localtime(&time_now);
+
+      switch(tinfo)
+	{
+	case 0:			/* dayname */
+	  sprintf(buf, "%s", wday[time_info->tm_wday]);
+	  break;
+	case 1:			/* monthname */
+	  sprintf(buf, "%s", month[time_info->tm_mon]);
+	  break;
+	case 2:			/* MON (month number) */
+	  sprintf(buf, "%2.2d", time_info->tm_mon + 1);
+	  break;
+	case 3:			/* mon (month #, with leading space) */
+	  sprintf(buf, "%2d", time_info->tm_mon + 1);
+	  break;
+	case 4:			/* DAY (day of month) */
+	  sprintf(buf, "%2.2d", time_info->tm_mday);
+	  break;
+	case 5:			/* day (day of month, with leading space*/
+	  sprintf(buf, "%2d", time_info->tm_mday);
+	  break;
+	case 6:			/* YEAR (full year number) */
+	  sprintf(buf, "%4d", time_info->tm_year + 1900);
+	  break;
+	case 7:			/* year (year number, century srtipped) */
+	  sprintf(buf, "%2d", time_info->tm_year);
+	  break;
+	case 8:			/* milhour (24 hour time) */
+	  sprintf(buf, "%2d", time_info->tm_hour);
+	  break;
+	case 9:			/* HOUR (hour number) */
+	  sprintf(buf, "%2.2d", ((time_info->tm_hour > 12)
+				 ? (time_info->tm_hour - 12)
+				 : ((time_info->tm_hour == 0)
+				    ? 12
+				    : time_info->tm_hour)));
+	  break;
+	case 10:		/* hour (hour number, with leading  space) */
+	  sprintf(buf, "%2d", ((time_info->tm_hour > 12)
+			       ? (time_info->tm_hour - 12)
+			       : ((time_info->tm_hour == 0)
+				  ? 12
+				  : time_info->tm_hour)));
+	  break;
+	case 11:		/* min (minute) */
+	  sprintf(buf, "%2.2d", time_info->tm_min);
+	  break;
+	case 12:		/* sec (seconds) */
+	  sprintf(buf, "%2.2d", time_info->tm_sec);
+	  break;
+	case 13:		/* AMPM ("AM" or "PM") */
+	  sprintf(buf, "%s", (time_info->tm_hour) > 12 ? "PM" : "AM");
+	  break;
+	case 14:		/* ampm ("am" or "pm") */
+	  sprintf(buf, "%s", (time_info->tm_hour) > 12 ? "pm" : "am");
+	  break;
+	default:		/* this shouldn't happen, but just in case */
+	  strcpy(buf, "ERROR");
+	}
+      return(buf);
+    }
+  return(buf);
+}
+
+
 expand_arguments(Request,arguments)
      REQUEST *Request;
      char **arguments;
@@ -255,45 +500,48 @@ expand_arguments(Request,arguments)
     }
 }
 
-expand_variable(Request,var)
-     REQUEST *Request;
-     char *var;
-{
-  if(string_eq(var, "$cuser"))
-    OGetConnectedUsername(Request, var);
-  if(string_eq(var, "$chost"))
-    OGetConnectedHostname(Request, var);
-  if(string_eq(var, "$host"))
-    OGetHostname(Request, var);
-  if(string_eq(var, "$user"))
-    OGetUsername(Request, var);
-  if(string_eq(var, "$topic"))
-    OGetTopic(&Request, var);
-  if(string_eq(var, "$snyde"))
-    strcpy(var,"Go away.");
-}
 
+extern int IsAlpha();
 
-set_prompt(Request,prompt,format)
+set_prompt(Request, prompt, inprompt)
      REQUEST *Request;
      char *prompt;
-     char *format;
+     char *inprompt;
 {
   char buf[BUF_SIZE];
+  char format[BUF_SIZE] = "";
+  char variable[BUF_SIZE] = "";
+  char *buf2;
 
   *prompt = '\0';
-  while(*format != '\0')
+  while(*inprompt != '\0')
     {
-      if(*format == '%')
+      if (*inprompt == '%')
 	{
-	  ++format;
-	  expand_variable(Request,(format = (char *) get_next_word(format)), buf);
-	  strcat(prompt,buf);
+	  if (*(inprompt+1) == '%')
+	    {
+	      strcat(prompt, "%");
+	      inprompt += 2;
+	    }
+	  else
+	    {
+	      while(!isalpha(*inprompt))
+		{
+		  strncat(format, inprompt, 1);
+		  ++inprompt;
+		}
+	      strcat(format, "s");
+	      inprompt = (char *) get_next_word(inprompt, variable, IsAlpha);
+	      buf2 = expand_variable(Request, variable);
+	      sprintf(buf, format, buf2);
+	      strcat(prompt, buf);
+	      strcpy(format, "");
+	    }
 	}
       else
-	strncat(prompt, format, 1);
-      ++format;
+	{
+	  strncat(prompt, inprompt, 1);
+	  ++inprompt;
+	}
     }
 }
-
-
