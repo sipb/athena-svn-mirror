@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.5 2004-02-13 18:58:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.6 2004-03-17 06:23:13 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -778,6 +778,7 @@ static FsyncCheckLWP()
 #endif /* AFS_PTHREAD_ENV */
 	ViceLog(2, ("Checking for fsync events\n"));
 	do {
+	  FSYNC_UNLOCK;
 	  code = BreakLaterCallBacks();
 	} while (code != 0);
     }

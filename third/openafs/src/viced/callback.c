@@ -82,7 +82,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.6 2004-02-13 18:58:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.7 2004-03-17 06:23:13 zacheiss Exp $");
 
 #include <stdio.h> 
 #include <stdlib.h>      /* for malloc() */
@@ -1392,6 +1392,7 @@ BreakLaterCallBacks()
     /* Unchain first */
     ViceLog(25, ("Looking for FileEntries to unchain\n"));
     H_LOCK;
+    FSYNC_LOCK;
     /* Pick the first volume we see to clean up */
     fid.Volume = fid.Vnode = fid.Unique = 0;
 
@@ -1413,6 +1414,7 @@ BreakLaterCallBacks()
 	        feip = &fe->fnext;
 	}
     }
+    FSYNC_UNLOCK;
 
     if (!myfe) {
 	H_UNLOCK
@@ -1420,7 +1422,6 @@ BreakLaterCallBacks()
     }
 
     /* loop over FEs from myfe and free/break */
-    FSYNC_UNLOCK
     tthead = 0;
     for (fe = myfe; fe;) {
        register struct CallBack *cbnext;
@@ -1459,7 +1460,6 @@ BreakLaterCallBacks()
 	   henumParms.ncbas = 0;
        }
     }  
-    FSYNC_LOCK;
     H_UNLOCK;
 
     /* Arrange to be called again */
@@ -1517,16 +1517,22 @@ CleanupTimedOutCallBacks_r()
 
 
 static struct host *lih_host;
+static int lih_host_held = 0;
 
 static int lih_r(host, held, hostp)
     register struct host *host, *hostp;
     register int held;
 
 {
+    lih_host_held = 0;
     if (host->cblist
 	   && ((hostp && host != hostp) || (!held && !h_OtherHolds_r(host)))
            && (!lih_host || host->ActiveCall < lih_host->ActiveCall) ) {
 	lih_host = host;
+    }
+    if (!held) { 
+	held = 1; 
+	lih_host_held = 1; 
     }
     return held;
 
@@ -1556,8 +1562,11 @@ static int GetSomeSpace_r(hostp, locked)
 	hp = lih_host;
 	if (hp) {
 	    cbstuff.GSS4++;
-	    if ( ! ClearHostCallbacks_r(hp, 0 /* not locked or held */) )
+	    if ( ! ClearHostCallbacks_r(hp, 0 /* not locked or held */) ) {
+		if (lih_host_held) h_Release_r(hp);
 		return;
+	    }
+	    if (lih_host_held) h_Release_r(hp);
 	    hp2 = hp->next;
 	} else {
 	    hp2 = hostList;
