@@ -1,7 +1,7 @@
 /*
  * xquota -  X window system quota display program.
  *
- * $Athena: xquota.h,v 1.1 89/03/05 20:58:32 kit Locked $
+ * $Athena: xquota.h,v 1.2 89/03/10 13:56:33 kit Locked $
  *
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -58,6 +58,11 @@ deletion or truncation until get under quota.")
 #define DEFAULT_WARNING 80
 #define DEFAULT_UPDATE  15
 #define MIN_UPDATE       5
+
+#define QUOTA_OK         0
+#define QUOTA_ERROR      1
+#define QUOTA_NONE       2
+#define QUOTA_PERMISSION 3
 
 typedef struct _Info {
   int uid;			/* real uid of user who started the program. */

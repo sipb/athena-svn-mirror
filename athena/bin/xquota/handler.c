@@ -1,7 +1,7 @@
 /*
  * xquota -  X window system quota display program.
  *
- * $Athena: man.c,v 1.7 89/02/15 16:06:44 kit Exp $
+ * $Athena: handler.c,v 1.1 89/03/05 20:58:19 kit Locked $
  *
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -20,7 +20,7 @@
  */
 
 #if ( !defined(lint) && !defined(SABER))
-  static char rcs_version[] = "$Athena: man.c,v 4.7 89/02/15 20:09:34 kit Locked $";
+  static char rcs_version[] = "$Athena: handler.c,v 1.1 89/03/05 20:58:19 kit Locked $";
 #endif
 
 #include <stdio.h>
@@ -47,10 +47,31 @@ void ShowQuota(info)
 Info * info;
 {
   struct dqblk quota_info;
+  int ret_val;
 
   SetTimeOut(info);
 
-  getnfsquota(info->host, info->path, info->uid, &quota_info);
+  ret_val = getnfsquota(info->host, info->path, info->uid, &quota_info);
+  if (ret_val == QUOTA_NONE) {
+    printf("You do not have a quota on your home file system.\n");
+    printf("Filesystem: %s:%s\n", info->host, info->path);
+    exit(1);
+  }
+
+  if (ret_val == QUOTA_PERMISSION) {
+    printf("You do not have permission to get quota information on the\n");
+    printf("filesystem: %s:%s.\n", info->host, info->path);
+    exit(1);
+  }
+
+  if (ret_val == QUOTA_ERROR) {
+    printf("Error in quota checking, trying again.\n");
+    ret_val = getnfsquota(info->host, info->path, info->uid, &quota_info);
+    if (ret_val != QUOTA_OK) {
+      printf("Quota check failed twice in a row, giving up.\n");
+      exit(1);
+    }
+  }
 
   if (info->numbers && !info->space_saver) {
     char buf[BUFSIZ];

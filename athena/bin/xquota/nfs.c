@@ -17,6 +17,8 @@
 #include <rpcsvc/rquota.h>
 #include <sys/time.h>
 
+#include "xquota.h"
+
 static int callaurpc(); 
 
 /************************************************************
@@ -40,7 +42,7 @@ getnfsquota(host, path, uid, dqp)
 	if (callaurpc(host, RQUOTAPROG, RQUOTAVERS, RQUOTAPROC_GETQUOTA,
 		      xdr_getquota_args, (char *) &gq_args, xdr_getquota_rslt, 
 		      (char *) &gq_rslt) != 0) {
-		return (0);
+		return (QUOTA_ERROR);
 	}
 	switch (gq_rslt.gqr_status) {
 	case Q_OK:
@@ -64,21 +66,23 @@ getnfsquota(host, path, uid, dqp)
 		    tv.tv_sec + gq_rslt.gqr_rquota.rq_btimeleft;
 		dqp->dqb_ftimelimit =
 		    tv.tv_sec + gq_rslt.gqr_rquota.rq_ftimeleft;
-		return (1);
+		return (QUOTA_OK);
 		}
 
 	case Q_NOQUOTA:
+		return(QUOTA_NONE);
 		break;
 
 	case Q_EPERM:
 		fprintf(stderr, "quota permission error, host: %s\n", host);
+		return(QUOTA_PERMISSION);
 		break;
 
 	default:
 		fprintf(stderr, "bad rpc result, host: %s\n",  host);
 		break;
 	}
-	return (0);
+	return (QUOTA_ERROR);
 }
 
 static int
