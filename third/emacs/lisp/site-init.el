@@ -16,6 +16,9 @@
 ; Security measure.
 (setq inhibit-local-variables t)
 
+; Too many users get bit if we don't set this.
+(setq require-final-newline t)
+
 ; Handle bug reports locally.
 (setq bug-gnu-emacs "bugs@mit.edu")
 
