@@ -1,4 +1,4 @@
-# $Id: packages,v 1.176 2002-07-22 19:23:41 zacheiss Exp $
+# $Id: packages,v 1.177 2002-08-13 09:25:08 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -202,7 +202,7 @@ third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
 third/patch			on solaris
-third/perl
+third/perl			requires db,gdbm,libiconv
 third/pine			requires krb5,hesiod
 third/popt			except linux
 third/rcs			on solaris
