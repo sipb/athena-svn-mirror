@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.12 1990-11-14 14:46:14 lwvanels Exp $
+ *	$Id: t_send.c,v 1.13 1990-11-15 15:42:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.12 1990-11-14 14:46:14 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.13 1990-11-15 15:42:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -259,7 +259,7 @@ t_mail(Request,file,editor,smargs, check)
 	}
 
       if ((status == NO_MESSAGES) ||
-	  (!strncmp(message,"No new messages.", strlen("No new messages."))))
+	  (!strncmp(message,"No new messages.", 16)))
 	message = (char *) NULL;
 
       (void) OMailHeader(Request, file, username, realname,
