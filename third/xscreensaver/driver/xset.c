@@ -223,7 +223,7 @@ disable_builtin_screensaver (saver_info *si, Bool unblank_screen_p)
       desired_prefer_blank != current_prefer_blank ||
       desired_allow_exp != current_allow_exp)
     {
-      if (unblank_screen_p)
+      if (unblank_screen_p && p->verbose_p)
 	fprintf (stderr,
 		 "%s disabling server builtin screensaver.\n"
 		 "%s: you can re-enable it with \"xset s on\".\n",
