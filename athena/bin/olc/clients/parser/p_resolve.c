@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v $
- *	$Id: p_resolve.c,v 1.10 1990-11-14 12:35:02 lwvanels Exp $
+ *	$Id: p_resolve.c,v 1.11 1991-01-21 01:16:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v 1.10 1990-11-14 12:35:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v 1.11 1991-01-21 01:16:33 lwvanels Exp $";
 #endif
 #endif
 
@@ -59,6 +59,7 @@ do_olc_done(arguments)
   char topic[TOPIC_SIZE];
   char title[LINE_SIZE];
   char *titleP = (char *) NULL;
+  int check = 1;
 
   topic[0] = '\0';
   title[0] = '\0';
@@ -107,6 +108,12 @@ do_olc_done(arguments)
 	  continue;
 	}
 
+      if(string_equiv(*arguments,"-nocheck",max(strlen(*arguments),2)))
+	{
+	  check = 0;
+	  continue;
+	}
+
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
@@ -120,6 +127,7 @@ do_olc_done(arguments)
 	      printf("[-off] ");
 	      printf("[-title <title>]\n\t\t[-topic <topic>] ");
 	      printf("[-instance <instance id>]\n");
+	      printf("\t\t[-nocheck] ");
 	    }
 	  return(ERROR);
 	}
@@ -130,7 +138,7 @@ do_olc_done(arguments)
   if(title[0] != '\0')
     titleP = &title[0];
   
-  status = t_done(&Request, titleP);
+  status = t_done(&Request, titleP,check);
   return(status);
 }
 
