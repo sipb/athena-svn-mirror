@@ -3,8 +3,14 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#include <sys/fcntl.h>
 #include <sys/param.h>
+#ifdef SOLARIS
+#undef POSIX
+#include "/usr/ucbinclude/sys/dir.h"
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/stat.h>
 
 #ifndef MAXBSIZE
