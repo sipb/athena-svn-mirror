@@ -8,12 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: olcm.c,v 1.15 1999-03-06 16:49:06 ghudson Exp $
+ *      $Id: olcm.c,v 1.16 2000-11-16 16:31:51 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olcm.c,v 1.15 1999-03-06 16:49:06 ghudson Exp $";
+static char rcsid[] ="$Id: olcm.c,v 1.16 2000-11-16 16:31:51 zacheiss Exp $";
 #endif
 #endif
 
@@ -203,7 +203,7 @@ main(argc,argv)
 	p = end;
       }
 
-      while(isascii(*end) && isalnum(*end))
+      while(isalnum(*end) || *end == '_')
 	end++;
 
 /* look for correct realm;
