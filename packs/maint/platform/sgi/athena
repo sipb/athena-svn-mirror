@@ -110,7 +110,7 @@ if [ "${PUBLIC}" = "true" ]; then
 	for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
 		if [ -f /srvd$i ]; then
 			cp -p /srvd$i $i
-		else
+		elif [ -f /os$i ]; then
 			cp -p /os$i $i
 		fi
 	done
