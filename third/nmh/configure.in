@@ -1,7 +1,7 @@
 dnl
 dnl configure.in -- autoconf template for nmh
 dnl
-dnl $Id: configure.in,v 1.1.1.1 1999-02-07 18:14:05 danw Exp $
+dnl $Id: configure.in,v 1.2 1999-10-19 17:15:11 ghudson Exp $
 dnl
 
 AC_INIT(h/nmh.h)
@@ -329,12 +329,12 @@ if test x$with_krb4 != x -a x$with_krb4 != xno; then
     KRB4_INCLUDES="-I/usr/include/kerberosIV"
   fi
   AC_CHECK_LIB(krb4, krb_rd_req,
-    [KRB4_LIBS="$KRB4_LIBS -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"],
+    [KRB4_LIBS="$KRB4_LIBS -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"],
     [AC_CHECK_LIB(krb, krb_rd_req,
       [KRB4_LIBS="-lkrb -ldes"],
       [AC_MSG_ERROR(Kerberos 4 libraries not found)],
       $KRB4_LIBS -ldes)],
-    $KRB4_LIBS -ldes425 -lkrb5 -lcrypto -lcom_err)
+    $KRB4_LIBS -ldes425 -lkrb5 -lk5crypto -lcom_err)
 fi
 AC_SUBST(KRB4_INCLUDES)dnl
 AC_SUBST(KRB4_LIBS)dnl
