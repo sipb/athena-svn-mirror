@@ -1,7 +1,7 @@
 /* SASL server API implementation
  * Rob Siemborski
  * Tim Martin
- * $Id: client.c,v 1.1.1.1 2002-10-13 18:02:17 ghudson Exp $
+ * $Id: client.c,v 1.2 2003-07-07 20:26:35 rbasch Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -543,7 +543,7 @@ int sasl_client_start(sasl_conn_t *conn,
     }
 
     if (bestm == NULL) {
-	sasl_seterror(conn, 0, "No worthy mechs found");
+	sasl_seterror(conn, SASL_NOLOG, "No worthy mechs found");
 	result = SASL_NOMECH;
 	goto done;
     }
