@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.3 1989-01-21 17:21:54 jtkohl Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.4 1989-01-23 09:17:58 jtkohl Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -28,7 +28,7 @@ static char rcsid_getrealm_c[] =
 #endif
 
 /*
- * krb_getrealm.
+ * krb_realmofhost.
  * Given a fully-qualified domain-style primary host name,
  * return the name of the Kerberos realm for the host.
  * If the hostname contains no discernable domain, or an error occurs,
@@ -48,7 +48,7 @@ static char rcsid_getrealm_c[] =
 static char ret_realm[REALM_SZ+1];
 
 char *
-krb_getrealm(host)
+krb_realmofhost(host)
 char *host;
 {
 	char *domain;
@@ -70,7 +70,7 @@ char *host;
 			if (islower(*cp))
 				*cp = toupper(*cp);
 	} else {
-		get_krbrlm(ret_realm, 1);
+		krb_get_lrealm(ret_realm, 1);
 	}
 
 	if ((trans_file = fopen(KRB_RLM_TRANS, "r")) == (FILE *) 0) {
