@@ -6,12 +6,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.3 1990-08-02 15:36:55 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.4 1990-08-27 01:39:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.3 1990-08-02 15:36:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.4 1990-08-27 01:39:24 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -57,7 +57,7 @@ main (argc, argv)
   char syscmd[SIZE];		/* buffer for constructing sys call */
 
   char *temp;			/* pointer used for walking over title to */
-				/* remove "s */
+				/* remove 's */
 
 /*
  *  Chdir to the directory containing the done'd logs, in case we dump
@@ -132,8 +132,7 @@ main (argc, argv)
 	  
 	  temp = title;
 	  while (*temp != '\0') {
-	    if (*temp == '\"') *temp = '\'';
-	    if (*temp == '!') *temp = '.';
+	    if (*temp == '\'') *temp = '\"';
 	    temp++;
 	  }
 
@@ -158,7 +157,7 @@ main (argc, argv)
 /* If we've made it this far, we've got everything we need to ship to
  * discuss.
  */ 
-	  sprintf(syscmd, "%s %s%s -t \"%s: %s\" < %s",
+	  sprintf(syscmd, "%s %s%s -t \'%s: %s\' < %s",
 		  DSPIPE, PREFIX, topic, username, title, logname);
 	  retval = system(syscmd);
 	  /* dspipe sometimes looses and returns a bogus error value (36096) */
