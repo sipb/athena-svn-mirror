@@ -1,0 +1,13 @@
+Name: athena-read-edid
+Summary: A package to read data from PnP-conformant monitors
+Copyright: John Fremlin and Josh Vanderhoof
+Group: System Environment/Base
+
+%description
+The read-edid package contains two programs, get-edid and parse-edid,
+which read and display information about the monitor connected to the
+system.  For these programs to work, the video card must support VBE
+2.0 with the DDC extension, and the monitor must be PnP conformant.
+
+This package contains no documentation.  Generally, you just run
+get-edid | parse-edid and look at the results.
