@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 1997-09-30 19:17:26 ghudson Exp $
+# $Id: Makefile,v 1.14 1997-12-06 21:04:56 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -68,6 +68,7 @@ install:
 	install -c -m 0644 services ${DESTDIR}${INET}
 	install -c -m 0644 shadow.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 su ${DESTDIR}${DEFAULT}
+	install -c -m 0644 sulogin ${DESTDIR}${DEFAULT}
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 system ${DESTDIR}${ETCDIR}
 	install -c -m 0644 vfstab.std ${DESTDIR}${ETCDIR}
