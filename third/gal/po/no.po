@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.2.2\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-12-12 20:06+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -186,26 +186,6 @@ msgstr "Tilgjengelige felter"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Vis i denne rekkefølgen"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d oppføring)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d oppføringer)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d oppføring)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d oppføringer)"
 
 #: gal/e-table/e-table-header-item.c:1302
 msgid "Customize Current View"
@@ -643,6 +623,18 @@ msgstr "_Kategori som skal legges til:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Kategori som skal endres:"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d oppføring)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d oppføringer)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d oppføring)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d oppføringer)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Konfigurerer visning: FIXME"

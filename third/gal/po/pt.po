@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.4.1\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-10-11 22:06+0100\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <none@none.org>\n"
@@ -186,26 +186,6 @@ msgstr "Campos disponíveis"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Mostrar nesta ordem"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d item)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d itens)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d item)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d itens)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -644,6 +624,18 @@ msgstr "_Categoria a Adicionar:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Categoria a Modificar:"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d item)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d itens)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d item)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d itens)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "A configurar vista: CORRIGE-ME"

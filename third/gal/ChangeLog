@@ -1,3 +1,12 @@
+2002-03-18  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.19.1.
+
+2001-12-18  Christopher James Lahey  <clahey@helixcode.com>
+
+	* configure.in: Bumped version number to 0.19.0.1.  Bumped
+	GAL_REVISION.
+
 2001-12-18  Christopher James Lahey  <clahey@helixcode.com>
 
 	* configure.in: Bumped version number to 0.19.

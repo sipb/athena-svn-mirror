@@ -3,12 +3,12 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.4 2002-02-15 16:35:37 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5 2002-03-25 19:54:16 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-10-23 12:52+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -190,26 +190,6 @@ msgstr "Tillgängliga fält"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Visa i denna ordning"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s: %s (%d objekt)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s: %s (%d objekt)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d objekt)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d objekt)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -648,6 +628,18 @@ msgstr "_Kategori att lägga till:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Kategori att ändra:"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s: %s (%d objekt)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s: %s (%d objekt)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d objekt)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d objekt)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Konfigurerar vy: FIXME"

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-07-15 16:54+02:00\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -190,26 +190,6 @@ msgstr "Tilgængelige felter"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Vis i denne rækkefølge"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s: %s (%d punkt)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s: %s (%d punkter)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d punkt)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d punkter)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -651,6 +631,18 @@ msgstr "_Kategori at ændre:"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Felter..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s: %s (%d punkt)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s: %s (%d punkter)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d punkt)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d punkter)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Opsætningsvisning: RETMIG"

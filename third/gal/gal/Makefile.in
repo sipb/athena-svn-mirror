@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -431,7 +431,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-bogus_automake_hack.lo bogus_automake_hack.o : bogus_automake_hack.c
 
 info-am:
 info: info-recursive

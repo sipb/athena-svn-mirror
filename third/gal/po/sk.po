@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.9.99\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-07-17 15:10CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@linux.sk>\n"
@@ -187,26 +187,6 @@ msgstr "Polia k dispozícii"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Zobrazi» v tomto poradí"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d polo¾ka)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d polo¾iek)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d polo¾ka)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d polo¾iek)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -648,6 +628,18 @@ msgstr "Upravi» _kategóriu:"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Polia..."
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d polo¾ka)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d polo¾iek)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d polo¾ka)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d polo¾iek)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Nastavujem pohµad:"

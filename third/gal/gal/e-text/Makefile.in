@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -371,84 +371,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-completion-match.lo e-completion-match.o : e-completion-match.c \
-	../../config.h ../../gal/unicode/gunicode.h \
-	../../gal/widgets/e-unicode.h e-completion-match.h
-e-completion-test.o: e-completion-test.c e-completion.h \
-	e-completion-match.h e-entry.h e-text.h \
-	../../gal/widgets/e-font.h \
-	../../gal/util/e-text-event-processor.h \
-	../../gal/util/e-text-event-processor-types.h e-text-model.h \
-	../../gal/widgets/e-canvas.h
-e-completion-view.lo e-completion-view.o : e-completion-view.c \
-	../../config.h ../../gal/e-table/e-table-simple.h \
-	../../gal/e-table/e-table-model.h \
-	../../gal/e-table/e-table-scrolled.h \
-	../../gal/widgets/e-scroll-frame.h ../../gal/e-table/e-table.h \
-	../../gal/e-table/e-table-header.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-col.h ../../gal/e-table/e-cell.h \
-	../../gal/e-table/e-table-tooltip.h \
-	../../gal/e-table/e-table-group.h \
-	../../gal/e-table/e-table-defines.h ../../gal/util/e-util.h \
-	../../gal/widgets/e-printable.h \
-	../../gal/e-table/e-table-item.h \
-	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-selection-model.h \
-	../../gal/widgets/e-selection-model-array.h \
-	../../gal/util/e-bit-array.h ../../gal/e-table/e-table-extras.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-sorter.h \
-	../../gal/e-table/e-table-subset-variable.h \
-	../../gal/e-table/e-table-subset.h e-completion-view.h \
-	e-completion.h e-completion-match.h
-e-completion.lo e-completion.o : e-completion.c ../../config.h \
-	e-completion.h e-completion-match.h ../../gal/util/e-util.h
-e-entry.lo e-entry.o : e-entry.c ../../config.h ../../gal/util/e-util.h \
-	../../gal/widgets/e-canvas.h ../../gal/widgets/e-canvas-utils.h \
-	e-completion-view.h ../../gal/e-table/e-table.h \
-	../../gal/e-table/e-table-model.h \
-	../../gal/e-table/e-table-header.h \
-	../../gal/e-table/e-table-sort-info.h \
-	../../gal/e-table/e-table-col.h ../../gal/e-table/e-cell.h \
-	../../gal/e-table/e-table-tooltip.h \
-	../../gal/e-table/e-table-group.h \
-	../../gal/e-table/e-table-defines.h \
-	../../gal/widgets/e-printable.h \
-	../../gal/e-table/e-table-item.h \
-	../../gal/widgets/e-selection-model.h ../../gal/util/e-sorter.h \
-	../../gal/e-table/e-table-selection-model.h \
-	../../gal/widgets/e-selection-model-array.h \
-	../../gal/util/e-bit-array.h ../../gal/e-table/e-table-extras.h \
-	../../gal/e-table/e-table-specification.h \
-	../../gal/e-table/e-table-state.h \
-	../../gal/e-table/e-table-column-specification.h \
-	../../gal/e-table/e-table-sorter.h \
-	../../gal/e-table/e-table-subset-variable.h \
-	../../gal/e-table/e-table-subset.h e-completion.h \
-	e-completion-match.h e-text.h ../../gal/widgets/e-font.h \
-	../../gal/util/e-text-event-processor.h \
-	../../gal/util/e-text-event-processor-types.h e-text-model.h \
-	e-entry.h e-text.h
-e-table-text-model.lo e-table-text-model.o : e-table-text-model.c \
-	../../config.h ../../gal/util/e-util.h e-table-text-model.h \
-	e-text-model.h ../../gal/e-table/e-table-model.h
-e-text-model-repos.lo e-text-model-repos.o : e-text-model-repos.c \
-	e-text-model-repos.h e-text-model.h
-e-text-model-uri.lo e-text-model-uri.o : e-text-model-uri.c \
-	../../config.h e-text-model-uri.h e-text-model.h
-e-text-model.lo e-text-model.o : e-text-model.c ../../config.h \
-	e-text-model-repos.h e-text-model.h ../../gal/util/e-util.h
-e-text.lo e-text.o : e-text.c ../../config.h e-text.h \
-	../../gal/widgets/e-font.h \
-	../../gal/util/e-text-event-processor.h \
-	../../gal/util/e-text-event-processor-types.h e-text-model.h \
-	../../gal/widgets/e-canvas.h ../../gal/widgets/e-canvas-utils.h \
-	../../gal/widgets/e-unicode.h ../../gal/unicode/gunicode.h \
-	../../gal/util/e-text-event-processor-emacs-like.h \
-	../../gal/util/e-util.h
 
 info-am:
 info: info-am

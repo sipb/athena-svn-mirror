@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.14.99.1\n"
-"POT-Creation-Date: 2001-12-18 17:11-0500\n"
+"POT-Creation-Date: 2002-03-18 13:27-0500\n"
 "PO-Revision-Date: 2001-10-13 00:23+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -186,26 +186,6 @@ msgstr "Champs disponibles"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Afficher dans cet ordre"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d élément)"
-
-#: gal/e-table/e-table-group-container.c:351
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d éléments)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d élément)"
-
-#: gal/e-table/e-table-group-container.c:357
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d éléments)"
 
 #: gal/e-table/e-table-header-item.c:1302
 #, fuzzy
@@ -644,6 +624,18 @@ msgstr "_Catégorie à ajouter :"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Catégorie à modifier :"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d élément)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d éléments)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d élément)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d éléments)"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Configurer la view : FIXME"

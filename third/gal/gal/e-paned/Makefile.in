@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -303,9 +303,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-hpaned.lo e-hpaned.o : e-hpaned.c e-hpaned.h e-paned.h
-e-paned.lo e-paned.o : e-paned.c e-paned.h
-e-vpaned.lo e-vpaned.o : e-vpaned.c e-vpaned.h e-paned.h
 
 info-am:
 info: info-am
