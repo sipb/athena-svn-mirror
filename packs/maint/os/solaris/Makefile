@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1999-11-10 03:52:10 kcr Exp $
+# $Id: Makefile,v 1.4 1999-12-08 22:02:48 danw Exp $
 
 ATHRETCDIR=/etc/athena
 INITD=/etc/init.d
@@ -20,6 +20,7 @@ install:
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
 	install -c -m 0755 rpc ${DESTDIR}${INITD}
+	install -c -m 0755 savecore ${DESTDIR}${INITD}
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
 	rm -f ${DESTDIR}${RC0}/K90athena
@@ -28,6 +29,8 @@ install:
 	ln -s ../init.d/athena.config ${DESTDIR}${RC0}/K95athena.config
 	rm -f ${DESTDIR}${RC2}/S13athena.config
 	ln -s ../init.d/athena.config ${DESTDIR}${RC2}/S13athena.config
+	rm -f ${DESTDIR}${RC2}/S21savecore
+	ln -s ../init.d/savecore ${DESTDIR}${RC2}/S21savecore
 	rm -f ${DESTDIR}${RC2}/S72bind
 	ln -s ../init.d/bind ${DESTDIR}${RC2}/S72bind
 	rm -f ${DESTDIR}${RC2}/S72dhcp.rename

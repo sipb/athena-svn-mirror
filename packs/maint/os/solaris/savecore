@@ -1,0 +1,23 @@
+#!/sbin/sh
+# $Id: savecore,v 1.1 1999-12-08 22:02:48 danw Exp $
+#
+# Save kernel crash dump, if configured
+# (Stolen from commented-out parts of /etc/init.d/sysetup)
+#
+
+case "$1" in
+start)
+	. /etc/athena/rc.conf
+	case $SAVECORE in
+	true)
+		if [ ! -d /var/crash/`uname -n` ] then;
+			mkdir -m 0700 -p /var/crash/`uname -n`
+		fi
+
+		echo 'checking for crash dump...\c '
+		savecore /var/crash/`uname -n`
+		echo ''
+		;;
+	esac
+	;;
+esac
