@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.8 1992-06-26 17:01:23 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.9 1992-06-26 17:57:57 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -130,6 +130,9 @@ unsigned char *Signature;
 {
   KTEXT_ST authent;
   char lrealm[REALM_SZ];
+  char linst[INST_SZ];
+  char sinst[INST_SZ];
+  char *cp;
   unsigned char hash[16];
   unsigned char dhash[16];	/* Second level hash */
   int s;			/* Socket to do i/o on */
@@ -145,6 +148,7 @@ unsigned char *Signature;
   fd_set readfds;
   char **hostname;
   int trys;
+  char *krb_get_phost();
 
   bzero(packet, sizeof(packet)); /* Zeroize Memory */
   bzero(ipacket, sizeof(ipacket));
@@ -166,11 +170,24 @@ unsigned char *Signature;
   hostname = hes_resolve("gdss", "sloc");
   if (hostname == NULL) return(-1); /* No hesiod available */
 
+  cp = krb_get_phost(*hostname);
+  if (cp == NULL) return (-1);	/* Should use a better error code */
+
+  strcpy(sinst, cp);
+
   hp = gethostbyname(*hostname);
 
   if(hp == NULL) return (-1);	/* Could not find host, you lose */
 
-  status = krb_mk_req(&authent, "gdss", "big-screw", lrealm, cksum);
+  bzero(&sin, sizeof(sin));
+  sin.sin_family = hp->h_addrtype;
+  (void) bcopy((char *)hp->h_addr, (char *)&sin.sin_addr,
+	       sizeof(hp->h_addr));
+  sin.sin_port = htons(7201);	/* Should get this from services or Hesiod */
+
+  strcpy(linst, "gdss");	/* Grrr... krb_mk_req bashes its input
+				   So we better copy it first! */
+  status = krb_mk_req(&authent, linst, sinst, lrealm, cksum);
   if (status != KSUCCESS) return (GDSS_E_KRBFAIL);
   packet[0] = 0;		/* Version 0 of protocol */
   (void) bcopy((char *)hash, (char *)&packet[1], 16);
@@ -184,11 +201,6 @@ unsigned char *Signature;
       status = GDSS_E_NOSOCKET;
       break;
     }
-    bzero(&sin, sizeof(sin));
-    sin.sin_family = hp->h_addrtype;
-    (void) bcopy((char *)hp->h_addr, (char *)&sin.sin_addr,
-		 sizeof(hp->h_addr));
-    sin.sin_port = htons(7201);	/* Should get this from services or Hesiod */
     if (connect(s, &sin, sizeof(sin)) < 0) {
       status = GDSS_E_NOCONNECT;
       break;
