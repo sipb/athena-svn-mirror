@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.15 1990-12-12 09:31:27 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.16 1990-12-14 03:07:40 raeburn Exp $ */
 
 #ifndef lint
 static
@@ -18,7 +18,7 @@ static
     const
 #endif
     char rcsid_ZReadAscii_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.15 1990-12-12 09:31:27 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.16 1990-12-14 03:07:40 raeburn Exp $";
 #endif /* lint */
 
 #include <zephyr/mit-copyright.h>
@@ -50,7 +50,7 @@ int ZReadAscii(ptr, len, field, num)
 {
     int i;
     unsigned int hexbyte;
-    register char c1, c2;
+    register int c1, c2;
 #ifdef Z_cnvt_xtoi
     register unsigned int temp;
 #endif
