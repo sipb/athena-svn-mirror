@@ -1,4 +1,8 @@
+*loggingOn:	True
+*logfile:	/afs/athena.mit.edu/user/s/sao/scores/xdsc.log
+
 *font:					fixed
+
 *pane.refigureMode			True
 
 *pane.topbox.borderWidth:		0
