@@ -34,7 +34,7 @@ OBJS=ispell.o term.o good.o lookup.o hash.o tree.o
 SRCS=ispell.c term.c good.c lookup.c hash.c tree.c
 
 build_program(buildhash,buildhash.o hash.o,,)
-SimpleProgram(icombine,icombine.c,,$(ATHBINDIR))
+SimpleProgram(icombine,icombine.c,,$(LIBDIR))
 SimpleProgram(ispell,$(OBJS),$(TERMLIB),$(ATHBINDIR))
 
 ispell.hash: buildhash $(DEFDICT)
