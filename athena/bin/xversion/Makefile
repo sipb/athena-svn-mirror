@@ -2,7 +2,7 @@
 # Makefile for 'xversion'
 # Copyright 1989 by the Massachusetts Institute of Technology.
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/Makefile,v 1.1 1989-11-20 06:26:27 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/Makefile,v 1.2 1989-11-20 06:26:45 probe Exp $
 #
 
 CFLAGS=	-O
@@ -20,7 +20,7 @@ install:
 	-for i in $(BINS); do \
 		install -c -s -m 0755 $$i $(DESTDIR)/usr/athena/; \
 		done
-	-install -c -s -m 0444 xversion.man $(DESTDIR)/usr/man/man1/xversion.1
+	-install -c -m 0444 xversion.man $(DESTDIR)/usr/man/man1/xversion.1
 
 depend:
 	makedepend -o "" -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
