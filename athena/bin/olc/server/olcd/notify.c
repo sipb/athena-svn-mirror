@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.24 1990-08-26 15:59:18 lwvanels Exp $
+ *	$Id: notify.c,v 1.25 1990-09-02 10:53:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.24 1990-08-26 15:59:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.25 1990-09-02 10:53:51 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -134,7 +134,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	    (void) time(&time_now);
 	    if ((time_now - zpunt_time) > 15*60)
 	      {
-		log_error("Attempting to unpunt zephyr...");
+		log_zephyr_error("Attempting to unpunt zephyr...");
 		punt_zephyr = 0;
 	      }
 	  }
@@ -458,7 +458,7 @@ zsend(notice)
      ZNotice_t *notice;
 #endif
 {
-  int ret;
+  int ret,sigm;
   ZNotice_t retnotice;
 
   signal(SIGALRM, notice_timeout);
@@ -468,7 +468,7 @@ zsend(notice)
     {
       punt_zephyr = 1;
       (void) time(&zpunt_time);
-      log_error("Unable to send message via zephyr.  Punting.");
+      log_zephyr_error("Unable to send message via zephyr.  Punting.");
       alarm(0);
       signal(SIGALRM, SIG_IGN);
       return(ERROR);
@@ -478,7 +478,7 @@ zsend(notice)
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
-      log_error (fmt("zsend: error %s from ZSendNotice",error_message (ret)));
+      log_zephyr_error(fmt("zsend: error %s from ZSendNotice",error_message (ret)));
       alarm(0);
       signal(SIGALRM, SIG_IGN);
       return(ERROR);
@@ -491,18 +491,28 @@ zsend(notice)
       return(SUCCESS);
     }
 
+  /*
+   * Need to block SIGCHLD signals in ZIfnotice; ZIfnotice doesn't like
+   * being interrupted, and the timing is such that the SIGCHLD coming from
+   * the dying lumberjack hits during the ZIfnotice, causing an interrupted
+   * system call error message.
+   */
+
+  sigm = sigblock(sigmask(SIGCHLD));
   if ((ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
 		       ZCompareUIDPred, (char *) &notice->z_uid)) !=
       ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-      log_error(fmt("zsend: error %s from ZIfNotice",error_message (ret)));
+      sigsetmask(sigm);
+      log_zephyr_error(fmt("zsend: error %s from ZIfNotice",error_message (ret)));
       ZFreeNotice(&retnotice);
       alarm(0);
       signal(SIGALRM, SIG_IGN);
       return(ERROR);
     }
 
+  sigsetmask(sigm);
   alarm(0);			/* If ZIfNotice came back, shut off alarm. */
   signal(SIGALRM, SIG_IGN);
 
