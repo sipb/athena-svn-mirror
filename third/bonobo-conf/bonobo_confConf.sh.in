@@ -1,7 +1,0 @@
-#
-# Configuration file for using the Bonobo configuration library 
-#
-BONOBO_CONF_LIBDIR="-L@LIBDIR@"
-BONOBO_CONF_LIBS="@BONOBO_CONF_LIBS@"
-BONOBO_CONF_INCLUDEDIR="-I@INCLUDEDIR@ @BONOBO_CONF_CFLAGS@"
-MODULE_VERSION="bonobo-conf-@VERSION@"
