@@ -1,4 +1,5 @@
-#ident	"@(#)keytable.map	1.8 92/09/23 KEYTABLES SMI"
+# /* @(#)keytable.map	1.2 14 Apr 1993 SunSoft */
+#ident	"@(#)keytable.map	1.7 91/07/12 KEYTABLES SMI"
 #
 # Copyright (c) 1990, Sun Microsystems, Inc.  RESTRICTED RIGHTS LEGEND:
 # Use, duplication, or disclosure by the Government is subject to
@@ -81,3 +82,24 @@ Type    Layout  Filename
 4	48	Taiwan5.kt
 4	49	Japan5.kt
 4	50	Canada_Fr5.kt
+#
+# Type 5 Hobo Keyboards
+#
+4	80	US5_Hobo.kt 		# US Layout for Hobo keyboard
+4	81	US_UNIX5_Hobo.kt	# UNIX layout for Hobo keyboard
+4	82	France5_Hobo.kt	
+4	83	Denmark5_Hobo.kt
+4	84	Germany5_Hobo.kt
+4	85	Italy5_Hobo.kt
+4	86	Netherland5_Hobo.kt
+4	87	Norway5_Hobo.kt
+4	88	Portugal5_Hobo.kt
+4 	89	Spain5_Hobo.kt
+4	90	Sweden5_Hobo.kt
+4	91	Switzer_Fr5_Hobo.kt
+4	92	Switzer_Ge5_Hobo.kt
+4	93	UK5_Hobo.kt
+4	94	Korea5_Hobo.kt
+4	95	Taiwan5_Hobo.kt
+4	96	Japan5_Hobo.kt
+4	97	Canada_Fr5_Hobo.kt
