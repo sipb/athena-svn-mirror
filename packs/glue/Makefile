@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.3 1996-10-04 05:37:58 ghudson Exp $
+# $Id: Makefile,v 1.4 1996-12-09 18:59:32 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 ATHMANDIR=/usr/athena/man
-ATTACHRUN=addusr blanche chfn chpobox chsh kermit mkserv mailmaint moira \
-	mrcheck namespace olc_answers olh sis techinfo userreg \
-	xinfo xtechinfo
+ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint kermit listmaint mkserv \
+	mailmaint moira mrcheck namespace olc_answers olh sis techinfo \
+	usermaint userreg xinfo xtechinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 
 all: ${ATTACHRUN} verify-message
@@ -33,8 +33,10 @@ install:
 	install -c -m 555 chfn ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chpobox ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 kermit ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mkserv ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
@@ -44,6 +46,7 @@ install:
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 sis ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 techinfo ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 userreg ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 verify-message ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}

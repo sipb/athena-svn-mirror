@@ -3,7 +3,9 @@ blanche		moira
 chfn		moira
 chpobox		moira
 chsh		moira
+dcmmaint	moira
 kermit		modem
+listmaint	moira
 mkserv		mkserv
 mailmaint	moira
 moira		moira
@@ -13,6 +15,7 @@ olc_answers	olc-stock	olc-browser
 olh		help
 sis		sis
 techinfo	techinfo
+usermaint	moira
 userreg		moira
 xinfo		xmit
 xtechinfo	techinfo
