@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.17 1990-12-13 16:51:31 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.18 1990-12-15 11:57:34 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -104,7 +104,7 @@ if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 ($WINDOW_MANAGER &)
 sleep $sleep_time
 # mwm takes twice as long to start
-if ($WINDOW_MANAGER =~ mwm) sleep $sleep_time	
+if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time	
 
 
 # *******************   ACTIVITY STARTUP   *******************
