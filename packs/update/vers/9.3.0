@@ -20,3 +20,56 @@ cat $LIBDIR/solaris-9.3-patches				> $PATCHES
 echo "/etc/minor_perm"					>> $CONFCHG
 echo "/etc/driver_aliases"				>> $CONFCHG
 echo "/etc/devlink.tab"					>> $CONFCHG
+
+# Nuke the files tracked from the old srvd.
+cat $LIBDIR/solaris-9.2-srvd-files			>> $DEADFILES
+
+echo "/etc/.login"					>> $OSCONFCHG
+echo "/etc/default/syslogd"				>> $OSCONFCHG
+echo "/etc/inet/inetd.conf"				>> $OSCONFCHG
+echo "/etc/inet/services"				>> $OSCONFCHG
+echo "/etc/profile"					>> $OSCONFCHG
+echo "/etc/syslog.conf"					>> $OSCONFCHG
+echo "/etc/system"					>> $OSCONFCHG
+echo "/var/spool/cron/crontabs/root"			>> $OSCONFCHG
+
+# Inaugurate foo.athena files for each config file foo which did NOT
+# change between 9.2.n and 9.3.0.  This will prevent the file from
+# being replaced needlessly when the containing package is installed
+# on a private machine.
+inaugurate() {
+  file=$1
+  pkg=$2
+
+  grep -s "^$file\$" $CONFCHG > /dev/null || \
+    cp -p /srvd/pkg/9.3.0/$pkg/reloc$file $file.athena
+}
+
+inaugurate /.cshrc MIT-dotfiles
+inaugurate /.login MIT-dotfiles
+inaugurate /.profile MIT-dotfiles
+inaugurate /.xsession MIT-dotfiles
+inaugurate /etc/.login MIT-dotfiles
+inaugurate /etc/athena/athinfo.defs MIT-athinfod
+inaugurate /etc/athena/attach.conf MIT-locker
+inaugurate /etc/athena/newsyslog.conf MIT-ws
+inaugurate /etc/default/sulogin MIT-ws
+inaugurate /etc/default/syslogd MIT-ws
+inaugurate /etc/inet/inetd.conf MIT-ws
+inaugurate /etc/inet/services MIT-ws
+inaugurate /etc/ftpusers MIT-krb5
+inaugurate /etc/ifhp.conf MIT-ifhp
+inaugurate /etc/lpd.conf MIT-lprng
+inaugurate /etc/lpd.perms MIT-lprng
+inaugurate /etc/mail/aliases MIT-sendmail
+inaugurate /etc/mail/sendmail.cf MIT-sendmail
+inaugurate /etc/named.conf MIT-bind
+inaugurate /etc/ntp.conf MIT-ntp
+inaugurate /etc/profile MIT-dotfiles
+inaugurate /etc/resolv.conf MIT-bind
+inaugurate /etc/shells MIT-ws
+inaugurate /etc/ssh_config MIT-openssh
+inaugurate /etc/sshd_config MIT-openssh
+inaugurate /etc/syslog.conf MIT-ws
+inaugurate /etc/system MIT-ws
+inaugurate /var/spool/cron/crontabs/root MIT-ws
