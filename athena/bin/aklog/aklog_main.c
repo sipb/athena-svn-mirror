@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.16 1992-02-03 09:30:25 probe Exp $
+ * $Id: aklog_main.c,v 1.17 1992-04-30 18:11:12 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.16 1992-02-03 09:30:25 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.17 1992-04-30 18:11:12 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -175,7 +175,6 @@ static int auth_to_cell(cell, realm)
     int status = AKLOG_SUCCESS;
 
     struct afsconf_cell cellconfig; /* General information about the cell */
-    char *cell_to_use;		/* Cell to authenticate to */
 
     char username[BUFSIZ];	/* To hold client username structure */
     long viceId;		/* AFS uid of user */
@@ -185,6 +184,9 @@ static int auth_to_cell(cell, realm)
     char realm_of_user[REALM_SZ]; /* Kerberos realm of user */
     char realm_of_cell[REALM_SZ]; /* Kerberos realm of cell */
     char local_cell[MAXCELLCHARS+1];
+    char cell_to_use[MAXCELLCHARS+1]; /* Cell to authenticate to */
+
+    int i,j;
 
     CREDENTIALS c;
     struct ktc_principal aserver;
@@ -202,7 +204,8 @@ static int auth_to_cell(cell, realm)
     if (status = get_cellconfig(cell, &cellconfig, local_cell))
 	return(status);
 
-    cell_to_use = cellconfig.name;
+    strncpy(cell_to_use, cellconfig.name, MAXCELLCHARS);
+    cell_to_use[MAXCELLCHARS] = 0;
 
     if (ll_string(&authedcells, ll_s_check, cell_to_use)) {
 	if (dflag) {
@@ -259,20 +262,46 @@ static int auth_to_cell(cell, realm)
 	strncpy(instance, cell_to_use, sizeof(instance));
 	instance[sizeof(instance)-1] = '\0';
 	
+	/* 
+	 * Extract the session key from the ticket file and hand-frob an
+	 * afs style authenticator.
+	 */
+
+	/* Try afs.<cell>@<realm> */
 	if (dflag) {
 	    sprintf(msgbuf, "Getting tickets: %s.%s@%s\n", name, instance, 
 		    realm_of_cell);
 	    params.pstdout(msgbuf);
 	}
-	
-	/* 
-	 * Extract the session key from the ticket file and hand-frob an
-	 * afs style authenticator.
-	 */
 	status = params.get_cred(name, instance, realm_of_cell, &c);
-	if (status == KDC_PR_UNKNOWN)
-	    /* afs.<cell>@<realm> key failed; try afs@<realm> */
+
+#if 0
+	if (status == KDC_PR_UNKNOWN || status == GC_NOTKT) {
+	    /* Try afs.<cell>@<CELL> */
+	    for (i=0; j=cell_to_use[i]; i++) {
+		if (islower(j)) j=toupper(j);
+		realm_of_cell[i] = j;
+	    }
+	    realm_of_cell[i] = 0;
+
+	    if (dflag) {
+		sprintf(msgbuf, "Getting tickets: %s.%s@%s\n", name, instance, 
+			realm_of_cell);
+		params.pstdout(msgbuf);
+	    }
+	    status = params.get_cred(name, instance, realm_of_cell, &c);
+	}
+#endif
+
+	if (status == KDC_PR_UNKNOWN) {
+	    /* Try afs@<realm> */
+	    if (dflag) {
+		sprintf(msgbuf, "Getting tickets: %s@%s\n", name,
+			realm_of_cell);
+		params.pstdout(msgbuf);
+	    }
 	    status = params.get_cred(name, "", realm_of_cell, &c);
+	}
 
 	if (status != KSUCCESS) {
 	    if (dflag) {
@@ -311,33 +340,28 @@ static int auth_to_cell(cell, realm)
 		params.pstderr(msgbuf);
 		return(AKLOG_KERBEROS);
 	    }
-	    if (strcasecmp(realm_of_user, realm_of_cell)) {
-		if (dflag) {
-		    sprintf(msgbuf, "%s %s@%s %s (%s)\n",
-			    "Not resolving name", username, realm_of_user,
-			    "to id because realm != realm of cell",
-			    realm_of_cell);
-		    params.pstdout(msgbuf);
-		}
+	    if (strcmp(realm_of_user, realm_of_cell)) {
+		strcat(username, "@");
+		strcat(username, realm_of_user);
 	    }
-	    else {
-		if (dflag) {
-		    sprintf(msgbuf, "About to resolve name %s to id\n", 
-			    username);
-		    params.pstdout(msgbuf);
-		}
-		
-		if (!pr_Initialize (0, AFSCONF_CLIENTNAME, aserver.cell))
+
+	    if (dflag) {
+		sprintf(msgbuf, "About to resolve name %s to id\n", 
+			username);
+		params.pstdout(msgbuf);
+	    }
+	    
+	    if (!pr_Initialize (0, AFSCONF_CLIENTNAME, aserver.cell))
 		    status = pr_SNameToId (username, &viceId);
-		
-		if (dflag) {
-		    if (status) 
-			sprintf(msgbuf, "Error %d\n", status);
-		    else
-			sprintf(msgbuf, "Id %d\n", viceId);
-		    params.pstdout(msgbuf);
-		}
-		
+	    
+	    if (dflag) {
+		if (status) 
+		    sprintf(msgbuf, "Error %d\n", status);
+		else
+		    sprintf(msgbuf, "Id %d\n", viceId);
+		params.pstdout(msgbuf);
+	    }
+	    
 		/*
 		 * This is a crock, but it is Transarc's crock, so
 		 * we have to play along in order to get the
@@ -347,9 +371,8 @@ static int auth_to_cell(cell, realm)
 		 * the code for tokens, this hack (AFS ID %d) will
 		 * not work if you change %d to something else.
 		 */
-		if ((status == 0) && (viceId != ANONYMOUSID))
-		    sprintf (username, "AFS ID %d", viceId);
-	    }
+	    if ((status == 0) && (viceId != ANONYMOUSID))
+		sprintf (username, "AFS ID %d", viceId);
 	}
 	
 	if (dflag) {
