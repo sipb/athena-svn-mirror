@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.10 1991-03-05 14:49:59 lwvanels Exp $
+ *	$Id: procs.h,v 1.11 1991-03-11 13:44:54 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -82,6 +82,7 @@ int OGetDefaultInstance P((REQUEST *Request , int *instance ));
 ERRCODE send_request P((int fd , REQUEST *request ));
 ERRCODE read_list P((int fd , LIST *list ));
 ERRCODE open_connection_to_daemon P((REQUEST *request , int *fd ));
+ERRCODE open_connection_to_nl_daemon P((int *fd));
 
 /* list.c */
 ERRCODE OListQueue P((REQUEST *Request , LIST **list , char *queues , char *topics , char *users , int stati ));
@@ -99,6 +100,11 @@ int ODump P((REQUEST *Request , int type , char *file ));
 /* motd.c */
 ERRCODE OGetFile P((REQUEST *Request , int type , char *file ));
 ERRCODE OChangeFile P((REQUEST *Request , int type , char *file ));
+
+/* nl.c */
+ERRCODE nl_get_qlist P((int fd, char **buf, int *buflen, int *outlen));
+ERRCODE nl_get_log P((int fd, char **buf, int *buflen, char *username, int instance, int *outlen));
+ERRCODE nl_get_nm P((int fd, char **buf, int *buflen, char *username, int instance, int nuke, int *outlen));
 
 /* olc.c */
 int main P((int argc , char **argv ));
