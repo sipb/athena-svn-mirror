@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.5 1989-11-07 18:53:53 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.6 1989-11-22 21:24:21 jik Exp $";
 #endif
 
 /*
@@ -30,7 +30,6 @@
 
 static int calc_string_width(), calc_widths(), num_width();
 static void trim_strings();
-extern char *malloc();
 
 int column_array(strings, num_to_print, screen_width, column_width,
 		 number_of_columns, margin, spread_flag, 
