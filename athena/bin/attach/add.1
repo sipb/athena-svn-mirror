@@ -1,4 +1,4 @@
-.\" $Id: add.1,v 1.9 1999-06-22 01:16:19 danw Exp $
+.\" $Id: add.1,v 1.10 2001-03-17 16:51:54 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -87,11 +87,11 @@ pathnames from your path.
 .TP 9
 .B \-w
 This option causes \fIadd\fR to warn you in the event a locker you have
-asked to be added does not support your platform. A binary directory
-will not be added to your PATH, but if a man directory exists it will
-still be added to your MANPATH. \fIadd\fR normally says nothing in this
-case. (Note that in the case of using a compatiblity mode, you will
-always be warned.)
+asked to be added does not support your platform, or if a platform from
+\fIATHENA_SYS_COMPAT\fR (see below) is used.  In the former case, a
+binary directory will not be added to your PATH, but if a man
+directory exists it will still be added to your MANPATH. \fIadd\fR
+normally says nothing in either case.
 .TP 9
 .B \-p
 This option causes \fIadd\fR to print the contents of the user's PATH. In
@@ -128,9 +128,7 @@ explicitly on the command line with the C shell add alias will cause the
 alias to fail.
 .TP 9
 .B \-q
-This option causes \fIadd\fR to suppress warning messages given when a
-platform from \fIATHENA_SYS_COMPAT\fR (see below) is added to the user's
-path.
+This option is obsolete.
 .SH VARIABLES
 The shell variable \fIadd_flags\fR may be set to specify default flags
 that \fIadd\fR is intended to use for all commands. For example, if
