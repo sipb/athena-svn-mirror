@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.3 1988-09-28 19:03:50 eichin Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.4 1988-10-12 04:06:11 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -31,7 +31,7 @@ static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 #include <syslog.h>
 char *error_message();
 
-#define saddr_list(sin) sin[0],sin[1],sin[2],sin[3]
+#define saddr_list(sin) (unsigned)sin[0],(unsigned)sin[1],(unsigned)sin[2],(unsigned)sin[3]
 main(argc,argv)
      int argc;
      char **argv;
@@ -74,13 +74,13 @@ main(argc,argv)
    * requesting address.
    */
   if(argc>1 && !strcmp(argv[1],"-log")) {
-    syslog(LOG_INFO, "GMS request succeeded [%s] from %d.%d.%d.%d",
+    syslog(LOG_INFO, "GMS request succeeded [%s] from %ud.%ud.%ud.%ud",
 	   buf, saddr_list(cast2));
   }
 
   /* Check the version number, and log if it is in error. */
   if(strncmp(buf, GMS_VERSION_STRING, GMS_VERSION_STRING_LEN)) {
-    syslog(LOG_INFO, "GMS bogus version [%s] from %d.%d.%d.%d",
+    syslog(LOG_INFO, "GMS bogus version [%s] from %ud.%ud.%ud.%ud",
 	   buf, saddr_list(cast2));
     exit(GMS_CLIENT_VERSION);
   } 
