@@ -1,0 +1,45 @@
+/*
+ *
+ *				Makefile
+ *
+ *
+ *	Makefile for the Postit and Bulkpost Calendar Update Programs
+ *
+ *	Copyright 1987 by the Massachusetts Institute of Technology.
+ *	For copying and distribution information, see the file
+ *	"mit-copyright.h".
+ *
+ *	$Id: Imakefile,v 1.1 1991-03-21 21:49:35 mar Exp $
+ */
+
+POSTSRC=   postmaster.c
+POSTOBJ=   postmaster.o
+BULKSRC=   bulkmaster.c
+BULKOBJ=   bulkmaster.o
+SHAREDSRCS=	postprint.c postdata.c postparse.c postprompts.c postmisc.c 
+SHAREDOBJS=	postprint.o postdata.o postparse.o postprompts.o postmisc.o 
+ALLSRCS=   ${POSTSRC} ${BULKSRC} ${SHAREDSRCS}
+ALLOBJS=   ${POSTOBJ} ${BULKOBJ} ${SHAREDOBJS}
+
+OTHERSRC=  ../util/what_lib.c
+OTHEROBJ=  ../util/what_lib.o
+
+DEFINES=-I../include
+
+LINTFLAGS= ${OLINTFLAGS}
+
+GDBLIB= -lgdb
+HESLIB= -lhesiod
+
+SimpleProgram(postit,${POSTOBJ} ${SHAREDOBJS} ${OTHEROBJ},\
+	${GDBLIB} ${HESLIB},$(ATHBIDIR))
+SimpleProgram(bulkpost,${BULKOBJ} ${SHAREDOBJS} ${OTHEROBJ},\
+	${GDBLIB} ${HESLIB},$(ATHBIDIR))
+
+lint::
+	lint -huv ${LINTFLAGS} ${POSTSRC} ${SHAREDSRCS} ${OTHERSRC} | \
+		egrep -v "possible pointer alignment problem"
+	lint -huv ${LINTFLAGS} ${BULKSRC} ${SHAREDSRCS} ${OTHERSRC} | \
+		egrep -v "possible pointer alignment problem"
+TAGS::
+	etags *.c ../util//**/*.c
