@@ -101,10 +101,10 @@ XCOMM operating system:  OSName
 #else /* else AOS - warning: AOS is going away... */
 #define HasNdbm YES
 #define CcCmd hc
-#define ibmosdefs -DHCVERSION=HCRevision -Hon=read_only_strings
+#define ibmosdefs -DHCVERSION=HCRevision -Hon=read_only_strings -DNOSTDHDRS
 #define OSDefines -DBSDrt
 #define OPERATING_SYSTEM BSDrt
-#define BootstrapCFlags -Dibm
+#define BootstrapCFlags -Dibm -DNOSTDHDRS
 #if OSMajorVersion >= 4 && OSMinorVersion >= 3
 #define SetTtyGroup YES
 #endif
