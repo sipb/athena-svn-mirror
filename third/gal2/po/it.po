@@ -1,25 +1,26 @@
 # Italian translation for the Gnome Application Library
 # Copyright (C) 2000-2002 Free Software Foundation, Inc.
 # Christopher R. Gabriel , <cgabriel@softwarelibero.org>
-#
+# Luca Ferretti <elle.uca@infinito.it>, 2003-2004.
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.1\n"
-"POT-Creation-Date: 2003-09-11 17:09-0500\n"
-"PO-Revision-Date: 2002-03-03 18:27+0100\n"
-"Last-Translator: Christopher R. Gabriel <cgabriel@softwarelibero.org>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-09-02 20:20+0200\n"
+"Last-Translator: Luca Ferreti <elle.uca@infinito.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
-msgstr ""
+msgstr "Dimensione maniglia"
 
 #: gal/e-paned/e-paned.c:148
 msgid "Quantum"
-msgstr ""
+msgstr "Quantità"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -27,104 +28,101 @@ msgstr "?"
 
 #: gal/e-table/e-cell-date.c:58
 msgid "%l:%M %p"
-msgstr "%l:%M %p"
+msgstr "%-I.%M %p"
 
 #: gal/e-table/e-cell-date.c:66
 msgid "Today %l:%M %p"
-msgstr "Oggi %l:%M %p"
+msgstr "Oggi %-I.%M %p"
 
 #: gal/e-table/e-cell-date.c:76
 msgid "Yesterday %l:%M %p"
-msgstr "Ieri %l:%M %p"
+msgstr "Ieri %-I.%M %p"
 
 #: gal/e-table/e-cell-date.c:88
 msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
+msgstr "%a %-I.%M %p"
 
 #: gal/e-table/e-cell-date.c:96
 msgid "%b %d %l:%M %p"
-msgstr "%b %d %l:%M %p"
+msgstr "%-d %b %-I.%M %p"
 
 #: gal/e-table/e-cell-date.c:98
 msgid "%b %d %Y"
-msgstr "%b %d %Y"
+msgstr "%-d %b %Y"
 
 #: gal/e-table/e-cell-pixbuf.c:392
 msgid "Selected Column"
-msgstr ""
+msgstr "Colonna selezionata"
 
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr ""
+msgstr "Colonna con focus"
 
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr ""
+msgstr "Colonna deselezionata"
 
-#: gal/e-table/e-cell-text.c:1516
+#: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
-msgstr ""
+msgstr "Colonna barrata"
 
-#: gal/e-table/e-cell-text.c:1523
+#: gal/e-table/e-cell-text.c:1710
 msgid "Underline Column"
-msgstr ""
+msgstr "Colonna sottolineata"
 
-#: gal/e-table/e-cell-text.c:1530
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
-msgstr "Aggiungi una colonna..."
+msgstr "Colonna in grassetto"
 
-#: gal/e-table/e-cell-text.c:1537
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
-msgstr "Formatta colonne..."
+msgstr "Colonna colorata"
 
-#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
-msgstr "Tabella"
+msgstr "Modificabile"
 
-#: gal/e-table/e-cell-text.c:1551
+#: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
-msgstr ""
+msgstr "Colore di sfondo colonna"
 
-#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
-#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-header-item.c:1816
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
-msgstr ""
+msgstr "Intestazione"
 
-#: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
-#: gal/e-text/e-text.c:3357
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
 msgid "Model"
-msgstr ""
+msgstr "Modello"
 
-#: gal/e-table/e-table-click-to-add.c:470
+#: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
-msgstr ""
+msgstr "Messaggio"
 
-#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
-#: gal/e-text/e-text.c:3535
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
 msgid "Width"
-msgstr ""
+msgstr "Larghezza"
 
-#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
-#: gal/e-text/e-text.c:3543
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
 msgid "Height"
-msgstr ""
+msgstr "Altezza"
 
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
@@ -134,7 +132,7 @@ msgstr "<- _Rimuovi"
 #: gal/e-table/e-table-config-no-group.glade.h:2
 #: gal/e-table/e-table-config.glade.h:2
 msgid "A_vailable Fields:"
-msgstr "Campi _disponibili"
+msgstr "Campi _disponibili:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:3
 #: gal/e-table/e-table-config.glade.h:3
@@ -144,7 +142,7 @@ msgstr "Crescente"
 #: gal/e-table/e-table-config-no-group.glade.h:4
 #: gal/e-table/e-table-config.glade.h:4
 msgid "Clear All"
-msgstr "Cancella tutto"
+msgstr "Pulisci tutto"
 
 #: gal/e-table/e-table-config-no-group.glade.h:5
 #: gal/e-table/e-table-config.glade.h:5
@@ -169,50 +167,49 @@ msgstr "Raggruppa oggetti per"
 #: gal/e-table/e-table-config-no-group.glade.h:9
 #: gal/e-table/e-table-config.glade.h:9
 msgid "Move _Down"
-msgstr "Sposta in basso"
+msgstr "Sposta in _basso"
 
 #: gal/e-table/e-table-config-no-group.glade.h:10
 #: gal/e-table/e-table-config.glade.h:10
 msgid "Move _Up"
-msgstr "Sposta in alto"
+msgstr "Sposta in a_lto"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
-#: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
-msgstr "Mostra in questo ordine"
+msgstr "_Mostra questi campi nell'ordine:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
-#: gal/e-table/e-table-config.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
 msgid "Show Fields"
-msgstr "Mostra Campi"
+msgstr "Mostra campi"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
-#: gal/e-table/e-table-config.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
 msgid "Show field in View"
-msgstr "Mostra i campi"
+msgstr "Mostra campi in Visualizza"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
-#: gal/e-table/e-table-config.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
 msgid "Sort"
 msgstr "Ordina"
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
-#: gal/e-table/e-table-config.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
 msgid "Sort Items By"
 msgstr "Ordina oggetti per"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
-#: gal/e-table/e-table-config.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
 msgid "Then By"
 msgstr "Quindi per"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
-#: gal/e-table/e-table-config.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
 msgid "_Add ->"
-msgstr "_Aggiungi ->"
+msgstr "A_ggiungi ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
 msgstr "_Campi visualizzati..."
 
@@ -224,10 +221,9 @@ msgstr "_Ordina..."
 #: gal/e-table/e-table-config-no-group.glade.h:20
 #: gal/e-table/e-table-config.glade.h:21
 msgid "dialog1"
-msgstr ""
+msgstr "dialog1"
 
 #: gal/e-table/e-table-config.c:152
-#, fuzzy
 msgid "State"
 msgstr "Stato"
 
@@ -247,9 +243,31 @@ msgstr "Non ordinato"
 msgid "No grouping"
 msgstr "Non raggruppato"
 
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
 msgid "_Group By..."
 msgstr "_Raggruppa per..."
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr "_Mostra questi campi nell'ordine:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "Codice DnD"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Intestazione completa"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Aggiungi una colonna..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -260,26 +278,8 @@ msgid ""
 "To add a column to your table, drag it into\n"
 "the location in which you want it to appear."
 msgstr ""
-"Per aggiungere una colonna alla tabella, trascinatela\n"
-"dove desiderate inserirla."
-
-#: gal/e-table/e-table-field-chooser-dialog.c:74
-#: gal/e-table/e-table-field-chooser-item.c:646
-#: gal/e-table/e-table-field-chooser.c:77
-#: gal/e-table/e-table-header-item.c:1738
-msgid "DnD code"
-msgstr ""
-
-#: gal/e-table/e-table-field-chooser-dialog.c:81
-#: gal/e-table/e-table-field-chooser-item.c:653
-#: gal/e-table/e-table-field-chooser.c:84
-#: gal/e-table/e-table-header-item.c:1752
-msgid "Full Header"
-msgstr ""
-
-#: gal/e-table/e-table-field-chooser-dialog.c:123
-msgid "Add a column..."
-msgstr "Aggiungi una colonna..."
+"Per aggiungere una colonna alla tabella, trascinarla\n"
+"nella posizione dove si desidea che appaia."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -304,228 +304,381 @@ msgstr "%s (%d oggetti)"
 #: gal/e-table/e-table-group-container.c:906
 #: gal/e-table/e-table-group-container.c:907
 msgid "Alternating Row Colors"
-msgstr ""
+msgstr "Colori colonna alternativi"
 
 #: gal/e-table/e-table-group-container.c:913
-#: gal/e-table/e-table-group-container.c:914
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
-msgstr ""
+msgstr "Disegna griglia orizzontale"
 
 #: gal/e-table/e-table-group-container.c:920
-#: gal/e-table/e-table-group-container.c:921
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
-msgstr ""
+msgstr "Disegna griglia verticale"
 
 #: gal/e-table/e-table-group-container.c:927
-#: gal/e-table/e-table-group-container.c:928
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
-msgstr ""
+msgstr "Disegna focus"
 
 #: gal/e-table/e-table-group-container.c:934
 #: gal/e-table/e-table-group-container.c:935
 msgid "Cursor mode"
-msgstr ""
+msgstr "Modalità cursore"
 
 #: gal/e-table/e-table-group-container.c:941
 #: gal/e-table/e-table-group-container.c:942
 msgid "Selection model"
-msgstr ""
+msgstr "Modello di selezione"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
-msgstr ""
+msgstr "Lunghezza soglia"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
-msgstr ""
+msgstr "Altezza uniforme righa"
 
 #: gal/e-table/e-table-group-container.c:962
 #: gal/e-table/e-table-group-container.c:963
 msgid "Frozen"
-msgstr ""
+msgstr "Congelato"
 
 #: gal/e-table/e-table-group-container.c:983
 msgid "Minimum width"
-msgstr ""
+msgstr "Larghezza minima"
 
 #: gal/e-table/e-table-group-container.c:984
 msgid "Minimum Width"
-msgstr ""
+msgstr "Larghezza minima"
 
-#: gal/e-table/e-table-header-item.c:1451
+#: gal/e-table/e-table-header-item.c:1457
 msgid "Customize Current View"
 msgstr "Personalizza vista corrente"
 
-#: gal/e-table/e-table-header-item.c:1471
+#: gal/e-table/e-table-header-item.c:1477
 msgid "Sort Ascending"
 msgstr "Ordine ascendente"
 
-#: gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
 msgid "Sort Descending"
 msgstr "Ordine decrescente"
 
-#: gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
 msgid "Unsort"
 msgstr "Rimuovi ordine"
 
-#: gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
 msgid "Group By This Field"
 msgstr "Raggruppa per questo campo"
 
-#: gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
 msgstr "Raggruppa per contenitore"
 
-#: gal/e-table/e-table-header-item.c:1478
+#: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
 msgstr "Rimuovi questa colonna"
 
-#: gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
 msgstr "Aggiungi una colonna..."
 
-#: gal/e-table/e-table-header-item.c:1481
+#: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
 msgstr "Allineamento"
 
-#: gal/e-table/e-table-header-item.c:1482
+#: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
 msgstr "Adatta"
 
-#: gal/e-table/e-table-header-item.c:1483
+#: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
-msgstr "Formatta colonne..."
+msgstr "Formato colonne..."
 
-#: gal/e-table/e-table-header-item.c:1485
+#: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
 msgstr "Personalizza vista corrente..."
 
-#: gal/e-table/e-table-header-item.c:1745
+#: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
-msgstr ""
+msgstr "Fontset"
 
-#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
-msgstr "Ordina"
+msgstr "Informazioni ordinamento"
 
-#: gal/e-table/e-table-header-item.c:1773
+#: gal/e-table/e-table-header-item.c:1830
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
 msgstr "Tabella"
 
-#: gal/e-table/e-table-header-item.c:1780
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
-msgstr "verde"
+msgstr "Albero"
 
-#: gal/e-table/e-table.c:3244
+#: gal/e-table/e-table.c:3313
 msgid "Always Search"
-msgstr ""
+msgstr "Ricerca sempre"
 
-#: gal/e-table/e-table.c:3251
+#: gal/e-table/e-table.c:3320
 msgid "Use click to add"
-msgstr ""
+msgstr "Usare clic per aggiungere"
 
-#: gal/e-table/e-tree-selection-model.c:767
+#: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
+msgstr "Riga cursore"
+
+#: gal/e-table/e-tree-selection-model.c:788
+#: gal/widgets/e-selection-model-array.c:550
+msgid "Cursor Column"
+msgstr "Colonna cursore"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
 msgstr ""
 
-#: gal/e-table/e-tree-selection-model.c:774
-#: gal/widgets/e-selection-model-array.c:550
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr "Ricerca sempre"
+
+#: gal/e-table/e-tree.c:3307
 #, fuzzy
-msgid "Cursor Column"
-msgstr "Colore personalizzato:"
+msgid "Retro Look"
+msgstr "Aspetto "
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr "Disegna linee ed espansori +/-."
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr "Dimesione espansore"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr "Dimensione della freccia espansore"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "Seleziona tutto"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "Metodi di input"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "Processamento eventi"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "Testo"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "Grassetto"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "Barrato"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "Ancora"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "Giustificazione"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr ""
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr ""
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "Colore riempimento"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "Colore riempimento GDK"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr "Riempimento retinato"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "Larghezza testo"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "Altezza testo"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "Usa puntini di sospensione"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "Puntini di sospensione"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr ""
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "Interrompi caratteri"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr "Linee massime"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "Disegna bordi"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "Consenti a capo"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "Disegna sfondo"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "Disegna pulsanti"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr "Posizione cursore"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr ""
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "Gestisci popup"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
-#, fuzzy
 msgid "Collection"
-msgstr "Competizione"
+msgstr "Collezione"
 
-#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Define Views for %s"
-msgstr "Definire viste per \"%s\""
+msgstr "Definisci viste per «%s»"
 
-#: gal/menus/gal-define-views-dialog.c:292
-#: gal/menus/gal-define-views-dialog.c:294
-#, fuzzy
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
 msgid "Define Views"
-msgstr "Definire viste per \"%s\""
+msgstr "Definisci viste"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
-msgstr "Definire viste per \"%s\""
+msgstr "Definisci viste per «%s»"
 
 #: gal/menus/gal-define-views.glade.h:5
 msgid "_Edit..."
 msgstr "_Modifica..."
 
-#: gal/menus/gal-view-instance.c:575
-#, fuzzy
-msgid "Custom View"
-msgstr "Personalizza vista corrente"
-
-#: gal/menus/gal-view-instance.c:576
-#, fuzzy
-msgid "Save Custom View"
-msgstr "Clienti importanti"
-
-#: gal/menus/gal-view-instance.c:580
-#, fuzzy
-msgid "Define Views..."
-msgstr "Definire viste per \"%s\""
-
-#: gal/menus/gal-view-instance-save-as-dialog.c:179
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
-msgstr ""
+msgstr "Istanza"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+msgid "Save Current View"
+msgstr "Salva vista attuale"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
-msgid "Create New View Named"
-msgstr ""
+msgid "    "
+msgstr "    "
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
-msgid "Replace Existing View"
-msgstr ""
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr "*"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-msgid ""
-"The current view will replace the given view.  Any folders\n"
-"set to this view wil be replaced with the current view."
-msgstr ""
+msgid "_Create new view"
+msgstr "_Crea nuova vista"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+msgid "_Name:"
+msgstr "_Nome:"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-msgid "This will create a new View."
-msgstr ""
+msgid "_Replace existing view"
+msgstr "_Sostituisci vista esistente"
 
-#: gal/menus/gal-view-new-dialog.glade.h:1
-#: gal/widgets/gal-categories.glade.h:1
-#: gal/widgets/e-categories-master-list-dialog.glade.h:1
-msgid "*"
-msgstr ""
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "Vista personalizzata"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "Salva vista personalizzata"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "Definisci viste..."
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "Nome"
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr "Fabbrica"
+
+#: gal/menus/gal-view-new-dialog.c:108
+msgid "Define New View"
+msgstr "Definisci nuova vista"
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Name of new view:"
-msgstr "Nome della vista:"
+msgstr "Nome della nuova vista:"
 
 #: gal/menus/gal-view-new-dialog.glade.h:3
 msgid "Type of view:"
 msgstr "Tipo di vista:"
-
-#: gal/menus/gal-view-new-dialog.c:70
-msgid "Name"
-msgstr ""
-
-#: gal/menus/gal-view-new-dialog.c:77
-#, fuzzy
-msgid "Factory"
-msgstr "Categoria"
 
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
@@ -533,240 +686,201 @@ msgid "Group %i"
 msgstr "Gruppo %i"
 
 #. This is the default custom color
-#: gal/widgets/color-palette.c:393
+#: gal/widgets/color-palette.c:394
 msgid "custom"
 msgstr "personalizzato"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
-#: gal/widgets/color-palette.c:435
+#: gal/widgets/color-palette.c:436
 msgid "Custom Color:"
 msgstr "Colore personalizzato:"
 
-#: gal/widgets/color-palette.c:443
+#: gal/widgets/color-palette.c:444
 msgid "Choose Custom Color"
 msgstr "Selezione del colore personalizzato"
 
-#: gal/widgets/color-palette.c:576
+#: gal/widgets/color-palette.c:577
 msgid "black"
 msgstr "nero"
 
-#: gal/widgets/color-palette.c:577
+#: gal/widgets/color-palette.c:578
 msgid "light brown"
 msgstr "marrone chiaro"
 
-#: gal/widgets/color-palette.c:578
+#: gal/widgets/color-palette.c:579
 msgid "brown gold"
 msgstr "marrone dorato"
 
-#: gal/widgets/color-palette.c:579
-msgid "dark green #2"
-msgstr "verde scuro #2"
-
 #: gal/widgets/color-palette.c:580
+msgid "dark green #2"
+msgstr "verde scuro n.2"
+
+#: gal/widgets/color-palette.c:581
 msgid "navy"
 msgstr "blu navy"
 
-#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
 msgid "dark blue"
 msgstr "blu scuro"
 
-#: gal/widgets/color-palette.c:582
-msgid "purple #2"
-msgstr "viola #2"
-
 #: gal/widgets/color-palette.c:583
+msgid "purple #2"
+msgstr "viola n.2"
+
+#: gal/widgets/color-palette.c:584
 msgid "very dark gray"
 msgstr "grigio molto scuro"
 
-#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
 msgid "dark red"
 msgstr "rosso scuro"
 
-#: gal/widgets/color-palette.c:587
+#: gal/widgets/color-palette.c:588
 msgid "red-orange"
 msgstr "rosso-arancio"
 
-#: gal/widgets/color-palette.c:588
+#: gal/widgets/color-palette.c:589
 msgid "gold"
 msgstr "dorato"
 
-#: gal/widgets/color-palette.c:589
+#: gal/widgets/color-palette.c:590
 msgid "dark green"
 msgstr "verde scuro"
 
-#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
-msgid "dull blue"
-msgstr "blu dull"
-
 #: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
-msgid "blue"
-msgstr "blue"
+msgid "dull blue"
+msgstr "blu spento"
 
-#: gal/widgets/color-palette.c:592
-msgid "dull purple"
-msgstr "viola dull"
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
+msgid "blue"
+msgstr "blu"
 
 #: gal/widgets/color-palette.c:593
+msgid "dull purple"
+msgstr "viola spento"
+
+#: gal/widgets/color-palette.c:594
 msgid "dark grey"
 msgstr "grigio scuro"
 
-#: gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:597
 msgid "red"
 msgstr "rosso"
 
-#: gal/widgets/color-palette.c:597
-msgid "orange"
-msgstr "arancio"
-
 #: gal/widgets/color-palette.c:598
-msgid "lime"
-msgstr "lime"
+msgid "orange"
+msgstr "arancione"
 
 #: gal/widgets/color-palette.c:599
-msgid "dull green"
-msgstr "verde dull"
+msgid "lime"
+msgstr "giallo limone"
 
 #: gal/widgets/color-palette.c:600
-msgid "dull blue #2"
-msgstr "blue dull #2"
+msgid "dull green"
+msgstr "verde spento"
 
 #: gal/widgets/color-palette.c:601
-msgid "sky blue #2"
-msgstr "blu cielo #2"
+msgid "dull blue #2"
+msgstr "blu dull n.2"
 
-#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:602
+msgid "sky blue #2"
+msgstr "blu cielo n.2"
+
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
 msgid "purple"
 msgstr "viola"
 
-#: gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:604
 msgid "gray"
 msgstr "grigio"
 
-#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
 msgid "magenta"
 msgstr "magenta"
 
-#: gal/widgets/color-palette.c:607
+#: gal/widgets/color-palette.c:608
 msgid "bright orange"
-msgstr "arancio chiaro"
+msgstr "arancione chiaro"
 
-#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
 msgid "yellow"
 msgstr "giallo"
 
-#: gal/widgets/color-palette.c:609
+#: gal/widgets/color-palette.c:610
 msgid "green"
 msgstr "verde"
 
-#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
 msgid "cyan"
 msgstr "ciano"
 
-#: gal/widgets/color-palette.c:611
+#: gal/widgets/color-palette.c:612
 msgid "bright blue"
-msgstr "blu chiaro"
+msgstr "blu brillante"
 
-#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
 msgid "red purple"
-msgstr "rosso viola"
+msgstr "rosso violaceo"
 
-#: gal/widgets/color-palette.c:613
+#: gal/widgets/color-palette.c:614
 msgid "light grey"
 msgstr "grigio chiaro"
 
-#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
 msgid "pink"
-msgstr "viola"
+msgstr "rosa"
 
-#: gal/widgets/color-palette.c:617
+#: gal/widgets/color-palette.c:618
 msgid "light orange"
-msgstr "arancio chiaro"
+msgstr "arancione chiaro"
 
-#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
 msgid "light yellow"
 msgstr "giallo chiaro"
 
-#: gal/widgets/color-palette.c:619
+#: gal/widgets/color-palette.c:620
 msgid "light green"
 msgstr "verde chiaro"
 
-#: gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:621
 msgid "light cyan"
 msgstr "ciano chiaro"
 
-#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
 msgstr "blu chiaro"
 
-#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
 msgstr "viola chiaro"
 
-#: gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:624
 msgid "white"
 msgstr "bianco"
 
-#: gal/widgets/color-palette.c:628
+#: gal/widgets/color-palette.c:629
 msgid "purplish blue"
 msgstr "blu violaceo"
 
-#: gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:633
 msgid "dark purple"
 msgstr "viola scuro"
 
-#: gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:635
 msgid "sky blue"
 msgstr "blue cielo"
-
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
-#, fuzzy
-msgid "Categories"
-msgstr "categorie"
-
-#: gal/widgets/e-categories.c:393
-msgid "Add to global category list"
-msgstr "Aggiungi alla lista globale delle categorie"
-
-#: gal/widgets/e-categories.c:394
-msgid "Add all to global category list"
-msgstr "Aggiungi tutti alla lista globale delle categorie"
-
-#: gal/widgets/e-categories.c:395
-msgid "Remove from global category list"
-msgstr "Rimuovi dalla lista globale delle categorie"
-
-#: gal/widgets/e-categories.c:396
-msgid "Remove all from global category list"
-msgstr "Rimuovi tutti dalla lista globale delle categorie"
-
-#: gal/widgets/e-categories.c:540
-msgid "Edit Categories"
-msgstr "Modifica categorie"
-
-#: gal/widgets/gal-categories.glade.h:2
-msgid "Edit Master Category List..."
-msgstr "Modifica lista principale delle categorie..."
-
-#: gal/widgets/gal-categories.glade.h:3
-msgid "Item(s) belong to these _categories:"
-msgstr "Oggetto(i) appartenenti a queste _categorie:"
-
-#: gal/widgets/gal-categories.glade.h:4
-msgid "_Available Categories:"
-msgstr "Categorie _disponibili:"
-
-#: gal/widgets/gal-categories.glade.h:5
-msgid "categories"
-msgstr "categorie"
 
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
 msgstr "Compleanno"
 
+# ma anche lavoro, occupazione, mestiere, commercio
 #: gal/widgets/e-categories-master-list-array.c:68
 msgid "Business"
-msgstr "Lavoro"
+msgstr "Affari"
 
+# ma anche gara, concorso, concorrenza, rivalità
 #: gal/widgets/e-categories-master-list-array.c:69
 msgid "Competition"
 msgstr "Competizione"
@@ -781,7 +895,7 @@ msgstr "Regali"
 
 #: gal/widgets/e-categories-master-list-array.c:72
 msgid "Goals/Objectives"
-msgstr "Obbiettivi"
+msgstr "Traguardi/Obbiettivi"
 
 #: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday"
@@ -809,7 +923,7 @@ msgstr "Clienti importanti"
 
 #: gal/widgets/e-categories-master-list-array.c:79
 msgid "Miscellaneous"
-msgstr "Miscellanea"
+msgstr "Vari"
 
 #: gal/widgets/e-categories-master-list-array.c:80
 msgid "Personal"
@@ -833,7 +947,7 @@ msgstr "Fornitori"
 
 #: gal/widgets/e-categories-master-list-array.c:85
 msgid "Time & Expenses"
-msgstr "Tempo & Spese"
+msgstr "Tempo e spese"
 
 #: gal/widgets/e-categories-master-list-array.c:86
 msgid "VIP"
@@ -843,249 +957,98 @@ msgstr "VIP"
 msgid "Waiting"
 msgstr "In attesa"
 
-#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
-msgstr ""
+msgstr "ECML"
 
-#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-dialog.c:198
+#: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
-msgstr "* Cliccare qui per aggiungere una categoria *"
+msgstr "<Fare clic qui per aggiungere una categoria>"
 
-#: gal/widgets/e-categories-master-list-dialog.c:199
+#: gal/widgets/e-categories-master-list-dialog.c:214
 msgid "Category"
 msgstr "Categoria"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-#, fuzzy
 msgid "Add Category"
-msgstr "Aggiungi una categoria"
+msgstr "Aggiungi categoria"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-#, fuzzy
 msgid "Edit Category"
-msgstr "Modifica categorie"
+msgstr "Modifica categoria"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Edit Global Category List"
 msgstr "Modifica lista globale delle categorie"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-#, fuzzy
 msgid "_Edit category:"
-msgstr "Modifica categorie"
+msgstr "_Modifica categoria:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
-#, fuzzy
 msgid "_New category:"
-msgstr "Aggiungi una categoria"
+msgstr "_Nuova categoria:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
-#, fuzzy
 msgid "All Categories"
-msgstr "Categorie _disponibili:"
+msgstr "Tutte le categorie"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Categorie"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Aggiungi alla lista globale delle categorie"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Aggiungi tutti alla lista globale delle categorie"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Rimuovi dalla lista globale delle categorie"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Rimuovi tutti dalla lista globale delle categorie"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Modifica categorie"
 
 #: gal/widgets/e-selection-model.c:210
-#, fuzzy
 msgid "Sorter"
-msgstr "Ordina"
+msgstr "Classificatore"
 
 #: gal/widgets/e-selection-model.c:217
 msgid "Selection Mode"
-msgstr ""
+msgstr "Modalità selezione"
 
 #: gal/widgets/e-selection-model.c:225
 msgid "Cursor Mode"
-msgstr ""
+msgstr "Modalità cursore"
 
-#: gal/e-text/e-text.c:2598
-#, fuzzy
-msgid "Select All"
-msgstr "Cancella tutto"
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Modifica lista principale delle categorie..."
 
-#: gal/e-text/e-text.c:2610
-msgid "Input Methods"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Oggetto(i) appartenenti a queste _categorie:"
 
-#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
-msgid "Event Processor"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "Categorie _disponibili:"
 
-#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
-msgid "Text"
-msgstr ""
-
-#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
-#, fuzzy
-msgid "Bold"
-msgstr "dorato"
-
-#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
-msgid "Strikeout"
-msgstr ""
-
-#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
-msgid "Anchor"
-msgstr ""
-
-#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
-msgid "Justification"
-msgstr ""
-
-#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
-msgid "Clip Width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
-msgid "Clip Height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
-msgid "Clip"
-msgstr ""
-
-#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
-msgid "Fill clip rectangle"
-msgstr ""
-
-#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
-msgid "X Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
-msgid "Y Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
-#, fuzzy
-msgid "Fill color"
-msgstr "Selezione campi"
-
-#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
-#: gal/e-text/e-text.c:3464
-msgid "GDK fill color"
-msgstr ""
-
-#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
-#, fuzzy
-msgid "Fill stipple"
-msgstr "viola dull"
-
-#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
-msgid "Text width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
-msgid "Text height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
-msgid "Use ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
-msgid "Ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
-msgid "Line wrap"
-msgstr ""
-
-#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
-msgid "Break characters"
-msgstr ""
-
-#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
-msgid "Max lines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
-msgid "Draw borders"
-msgstr ""
-
-#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
-msgid "Allow newlines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
-msgid "Draw background"
-msgstr ""
-
-#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
-msgid "Draw button"
-msgstr ""
-
-#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
-#, fuzzy
-msgid "Cursor position"
-msgstr "Colore personalizzato:"
-
-#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
-msgid "IM Context"
-msgstr ""
-
-#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
-msgid "Handle Popup"
-msgstr ""
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "Ieri %l:%M %p"
-
-#~ msgid "Modify a Category"
-#~ msgstr "Modifica una categoria"
-
-#~ msgid "Remove"
-#~ msgstr "Rimuovi"
-
-#~ msgid "_Category to Add:"
-#~ msgstr "_Categoria da aggiungere:"
-
-#~ msgid "_Category to Modify:"
-#~ msgstr "_Categoria da modificare:"
-
-#, fuzzy
-#~ msgid "FIll stipple"
-#~ msgstr "viola dull"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "Reimposta i valori predefiniti..."
-
-#~ msgid "_Copy..."
-#~ msgstr "_Copia..."
-
-#~ msgid "_Delete..."
-#~ msgstr "Ca_ncella..."
-
-#~ msgid "_New..."
-#~ msgstr "_Nuovo..."
-
-#~ msgid "<< Remove"
-#~ msgstr "<< Rimuovi"
-
-#~ msgid "Add >>"
-#~ msgstr "Aggiungi >>"
-
-#~ msgid "Available fields"
-#~ msgstr "Campi disponibili"
-
-#~ msgid "Show in this order"
-#~ msgstr "Mostra in questo ordine"
-
-#~ msgid "Views for \"%s\""
-#~ msgstr "Viste per \"%s\""
-
-#~ msgid "Add..."
-#~ msgstr "Aggiungi..."
-
-#~ msgid "Modify..."
-#~ msgstr "Modifica..."
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "Configurazione vista: DA COMPLETARE"
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "categorie"

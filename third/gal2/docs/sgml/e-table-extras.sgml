@@ -1,4 +1,4 @@
-<refentry id="ETableExtras" revision="12 Jan 2001">
+<refentry id="ETableExtras">
 <refmeta>
 <refentrytitle>ETableExtras</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,21 +18,21 @@
 #define     <link linkend="E-TABLE-EXTRAS-TYPE-CAPS">E_TABLE_EXTRAS_TYPE</link>
 typedef     <link linkend="ETableExtras">ETableExtras</link>;
 <link linkend="ETableExtras">ETableExtras</link>* <link linkend="e-table-extras-new">e_table_extras_new</link>            (void);
-void        <link linkend="e-table-extras-add-cell">e_table_extras_add_cell</link>         (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id,
+<link linkend="void">void</link>        <link linkend="e-table-extras-add-cell">e_table_extras_add_cell</link>         (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id,
                                              <link linkend="ECell">ECell</link> *cell);
 <link linkend="ECell">ECell</link>*      <link linkend="e-table-extras-get-cell">e_table_extras_get_cell</link>         (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id);
-void        <link linkend="e-table-extras-add-compare">e_table_extras_add_compare</link>      (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id,
+                                             <link linkend="char">char</link> *id);
+<link linkend="void">void</link>        <link linkend="e-table-extras-add-compare">e_table_extras_add_compare</link>      (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare);
 <link linkend="GCompareFunc">GCompareFunc</link> <link linkend="e-table-extras-get-compare">e_table_extras_get_compare</link>     (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id);
-void        <link linkend="e-table-extras-add-pixbuf">e_table_extras_add_pixbuf</link>       (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id,
+                                             <link linkend="char">char</link> *id);
+<link linkend="void">void</link>        <link linkend="e-table-extras-add-pixbuf">e_table_extras_add_pixbuf</link>       (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);
 <link linkend="GdkPixbuf">GdkPixbuf</link>*  <link linkend="e-table-extras-get-pixbuf">e_table_extras_get_pixbuf</link>       (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id);
+                                             <link linkend="char">char</link> *id);
 
 </synopsis>
 </refsynopsisdiv>
@@ -49,6 +50,10 @@ void        <link linkend="e-table-extras-add-pixbuf">e_table_extras_add_pixbuf<
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -60,14 +65,14 @@ void        <link linkend="e-table-extras-add-pixbuf">e_table_extras_add_pixbuf<
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-EXTRAS-TYPE-CAPS">E_TABLE_EXTRAS_TYPE</title>
-<programlisting>#define E_TABLE_EXTRAS_TYPE        (e_table_extras_get_type ())
+<indexterm><primary>E_TABLE_EXTRAS_TYPE</primary></indexterm><programlisting>#define E_TABLE_EXTRAS_TYPE        (e_table_extras_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableExtras">ETableExtras</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableExtras</primary></indexterm><programlisting>typedef struct {
 	GtkObject base;
 
 	GHashTable *cells;
@@ -80,157 +85,129 @@ void        <link linkend="e-table-extras-add-pixbuf">e_table_extras_add_pixbuf<
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-new">e_table_extras_new ()</title>
-<programlisting><link linkend="ETableExtras">ETableExtras</link>* e_table_extras_new            (void);</programlisting>
+<indexterm><primary>e_table_extras_new</primary></indexterm><programlisting><link linkend="ETableExtras">ETableExtras</link>* e_table_extras_new            (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-add-cell">e_table_extras_add_cell ()</title>
-<programlisting>void        e_table_extras_add_cell         (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id,
+<indexterm><primary>e_table_extras_add_cell</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_extras_add_cell         (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id,
                                              <link linkend="ECell">ECell</link> *cell);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>extras</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>cell</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>extras</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-get-cell">e_table_extras_get_cell ()</title>
-<programlisting><link linkend="ECell">ECell</link>*      e_table_extras_get_cell         (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id);</programlisting>
+<indexterm><primary>e_table_extras_get_cell</primary></indexterm><programlisting><link linkend="ECell">ECell</link>*      e_table_extras_get_cell         (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>extras</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>extras</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-add-compare">e_table_extras_add_compare ()</title>
-<programlisting>void        e_table_extras_add_compare      (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id,
+<indexterm><primary>e_table_extras_add_compare</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_extras_add_compare      (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>extras</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>compare</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>extras</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>compare</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-get-compare">e_table_extras_get_compare ()</title>
-<programlisting><link linkend="GCompareFunc">GCompareFunc</link> e_table_extras_get_compare     (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id);</programlisting>
+<indexterm><primary>e_table_extras_get_compare</primary></indexterm><programlisting><link linkend="GCompareFunc">GCompareFunc</link> e_table_extras_get_compare     (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>extras</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>extras</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-add-pixbuf">e_table_extras_add_pixbuf ()</title>
-<programlisting>void        e_table_extras_add_pixbuf       (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id,
+<indexterm><primary>e_table_extras_add_pixbuf</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_extras_add_pixbuf       (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>extras</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>pixbuf</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>extras</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-extras-get-pixbuf">e_table_extras_get_pixbuf ()</title>
-<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  e_table_extras_get_pixbuf       (<link linkend="ETableExtras">ETableExtras</link> *extras,
-                                             char *id);</programlisting>
+<indexterm><primary>e_table_extras_get_pixbuf</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  e_table_extras_get_pixbuf       (<link linkend="ETableExtras">ETableExtras</link> *extras,
+                                             <link linkend="char">char</link> *id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>extras</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>extras</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

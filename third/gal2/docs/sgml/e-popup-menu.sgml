@@ -1,4 +1,4 @@
-<refentry id="gal-e-popup-menu" revision="12 Jan 2001">
+<refentry id="gal-e-popup-menu">
 <refmeta>
 <refentrytitle>e-popup-menu</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -18,14 +19,18 @@ struct      <link linkend="EPopupMenu">EPopupMenu</link>;
 <link linkend="GtkMenu">GtkMenu</link>*    <link linkend="e-popup-menu-create">e_popup_menu_create</link>             (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
                                              <link linkend="guint32">guint32</link> disable_mask,
                                              <link linkend="guint32">guint32</link> hide_mask,
-                                             void *closure);
-void        <link linkend="e-popup-menu-run">e_popup_menu_run</link>                (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
+                                             <link linkend="void">void</link> *closure);
+<link linkend="void">void</link>        <link linkend="e-popup-menu-run">e_popup_menu_run</link>                (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
                                              <link linkend="GdkEventButton">GdkEventButton</link> *event,
                                              <link linkend="guint32">guint32</link> disable_mask,
                                              <link linkend="guint32">guint32</link> hide_mask,
-                                             void *closure);
+                                             <link linkend="void">void</link> *closure);
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -42,7 +47,8 @@ void        <link linkend="e-popup-menu-run">e_popup_menu_run</link>            
 <title>Details</title>
 <refsect2>
 <title><anchor id="EPopupMenu">struct EPopupMenu</title>
-<programlisting>struct EPopupMenu {
+<indexterm><primary>EPopupMenu</primary></indexterm><programlisting>struct EPopupMenu {
+
 	char *name;
 	char *pixname;
 	void (*fn) (GtkWidget *widget, void *closure);
@@ -55,66 +61,58 @@ void        <link linkend="e-popup-menu-run">e_popup_menu_run</link>            
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-popup-menu-create">e_popup_menu_create ()</title>
-<programlisting><link linkend="GtkMenu">GtkMenu</link>*    e_popup_menu_create             (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
+<indexterm><primary>e_popup_menu_create</primary></indexterm><programlisting><link linkend="GtkMenu">GtkMenu</link>*    e_popup_menu_create             (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
                                              <link linkend="guint32">guint32</link> disable_mask,
                                              <link linkend="guint32">guint32</link> hide_mask,
-                                             void *closure);</programlisting>
+                                             <link linkend="void">void</link> *closure);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>menu_list</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>disable_mask</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>hide_mask</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu_list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>disable_mask</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>hide_mask</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-popup-menu-run">e_popup_menu_run ()</title>
-<programlisting>void        e_popup_menu_run                (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
+<indexterm><primary>e_popup_menu_run</primary></indexterm><programlisting><link linkend="void">void</link>        e_popup_menu_run                (<link linkend="EPopupMenu">EPopupMenu</link> *menu_list,
                                              <link linkend="GdkEventButton">GdkEventButton</link> *event,
                                              <link linkend="guint32">guint32</link> disable_mask,
                                              <link linkend="guint32">guint32</link> hide_mask,
-                                             void *closure);</programlisting>
+                                             <link linkend="void">void</link> *closure);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>menu_list</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>disable_mask</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>hide_mask</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu_list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>disable_mask</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>hide_mask</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

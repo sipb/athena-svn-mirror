@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-09-11 17:09-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
 "PO-Revision-Date: 2002-12-24 22:15+0200\n"
 "Last-Translator: Artis Trops <hornet@navigators.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
@@ -62,66 +63,66 @@ msgstr "Kokusēta Kolonna"
 msgid "Unselected Column"
 msgstr "Neizvēlēta Kolonna"
 
-#: gal/e-table/e-cell-text.c:1516
+#: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
 msgstr "Caursvītrota Kolonna"
 
-#: gal/e-table/e-cell-text.c:1523
+#: gal/e-table/e-cell-text.c:1710
 #, fuzzy
 msgid "Underline Column"
 msgstr "Neizvēlēta Kolonna"
 
-#: gal/e-table/e-cell-text.c:1530
+#: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
 msgstr "Trekna Kolonna"
 
-#: gal/e-table/e-cell-text.c:1537
+#: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
 msgstr "Krāsas Kolonna"
 
-#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "Rediģējams"
 
-#: gal/e-table/e-cell-text.c:1551
+#: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
 msgstr "BG Krāsas Kolonna"
 
-#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
-#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-header-item.c:1816
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
 msgstr "Galvene"
 
-#: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
-#: gal/e-text/e-text.c:3357
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
 msgid "Model"
 msgstr "Modelis"
 
-#: gal/e-table/e-table-click-to-add.c:470
+#: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
 msgstr "Ziņa"
 
-#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
-#: gal/e-text/e-text.c:3535
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
 msgid "Width"
 msgstr "Platums"
 
-#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
-#: gal/e-text/e-text.c:3543
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
 msgid "Height"
 msgstr "Augstums"
 
@@ -176,42 +177,41 @@ msgid "Move _Up"
 msgstr "Pārvietot uz _augšu"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
-#: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
 msgstr "_Parādīt šos laukus secībā:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
-#: gal/e-table/e-table-config.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
 msgid "Show Fields"
 msgstr "Parādīt laukus"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
-#: gal/e-table/e-table-config.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
 msgid "Show field in View"
 msgstr "Parādīt laukus skatā"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
-#: gal/e-table/e-table-config.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
 msgid "Sort"
 msgstr "Sakārtot"
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
-#: gal/e-table/e-table-config.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
 msgid "Sort Items By"
 msgstr "Sakārtot priekšmetus pēc"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
-#: gal/e-table/e-table-config.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
 msgid "Then By"
 msgstr "tad pēc"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
-#: gal/e-table/e-table-config.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
 msgid "_Add ->"
 msgstr "_Pievienot ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
 msgstr "parādītie _lauki..."
 
@@ -245,9 +245,32 @@ msgstr "Nav sakārtots"
 msgid "No grouping"
 msgstr "Nav grupēšanas"
 
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
 msgid "_Group By..."
 msgstr "_Grupēt pēc..."
+
+#: gal/e-table/e-table-config.glade.h:19
+#, fuzzy
+msgid "_Show these fields in order:"
+msgstr "_Parādīt šos laukus secībā:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "DnD kods"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Pilna Galvene"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Pievienot kollonu..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -260,24 +283,6 @@ msgid ""
 msgstr ""
 "Lai pievienotu kollonu jūsu tabulai, velciet to uz\n"
 "vietu, kurā jūs gribat, lai tā atrastot."
-
-#: gal/e-table/e-table-field-chooser-dialog.c:74
-#: gal/e-table/e-table-field-chooser-item.c:646
-#: gal/e-table/e-table-field-chooser.c:77
-#: gal/e-table/e-table-header-item.c:1738
-msgid "DnD code"
-msgstr "DnD kods"
-
-#: gal/e-table/e-table-field-chooser-dialog.c:81
-#: gal/e-table/e-table-field-chooser-item.c:653
-#: gal/e-table/e-table-field-chooser.c:84
-#: gal/e-table/e-table-header-item.c:1752
-msgid "Full Header"
-msgstr "Pilna Galvene"
-
-#: gal/e-table/e-table-field-chooser-dialog.c:123
-msgid "Add a column..."
-msgstr "Pievienot kollonu..."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -305,17 +310,20 @@ msgid "Alternating Row Colors"
 msgstr "Minīgas Rindas Krāsas"
 
 #: gal/e-table/e-table-group-container.c:913
-#: gal/e-table/e-table-group-container.c:914
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
 msgstr "Horizontāli Zīmēts Režģis"
 
 #: gal/e-table/e-table-group-container.c:920
-#: gal/e-table/e-table-group-container.c:921
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
 msgstr "Vertikāli Zīmēts Režģis"
 
 #: gal/e-table/e-table-group-container.c:927
-#: gal/e-table/e-table-group-container.c:928
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
 msgstr "Zīmēt fokusu"
 
@@ -330,12 +338,14 @@ msgid "Selection model"
 msgstr "Izvēles modelis"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
 msgstr "Garuma Slieksnis"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
 msgstr "Unificēts rindas augstums"
 
@@ -352,102 +362,263 @@ msgstr "Minimālais platums"
 msgid "Minimum Width"
 msgstr "Minimālais Platums"
 
-#: gal/e-table/e-table-header-item.c:1451
+#: gal/e-table/e-table-header-item.c:1457
 msgid "Customize Current View"
 msgstr "Pārveidot pašreizējo skatu"
 
-#: gal/e-table/e-table-header-item.c:1471
+#: gal/e-table/e-table-header-item.c:1477
 msgid "Sort Ascending"
 msgstr "Sakārtot pieaugoši"
 
-#: gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
 msgid "Sort Descending"
 msgstr "Sakārtot dilstoši"
 
-#: gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
 msgid "Unsort"
 msgstr "Nekārtot"
 
-#: gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
 msgid "Group By This Field"
 msgstr "Grupēt pēc šī lauka"
 
-#: gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
 msgstr "grupēt pēc kastītes"
 
-#: gal/e-table/e-table-header-item.c:1478
+#: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
 msgstr "Izņemt šo kollonu"
 
-#: gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
 msgstr "Pievienot kollonu..."
 
-#: gal/e-table/e-table-header-item.c:1481
+#: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
 msgstr "Novietojums"
 
-#: gal/e-table/e-table-header-item.c:1482
+#: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
 msgstr "Labākais Izmērs"
 
-#: gal/e-table/e-table-header-item.c:1483
+#: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
 msgstr "Formatēt Kollonas..."
 
-#: gal/e-table/e-table-header-item.c:1485
+#: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
 msgstr "Pārveidot pašreizējo skatu..."
 
-#: gal/e-table/e-table-header-item.c:1745
+#: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
 msgstr "Fontukopa"
 
-#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
 msgstr "Kārtošanas Info"
 
-#: gal/e-table/e-table-header-item.c:1773
+#: gal/e-table/e-table-header-item.c:1830
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
 msgstr "Tabula"
 
-#: gal/e-table/e-table-header-item.c:1780
+#: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
 msgstr "Koks"
 
-#: gal/e-table/e-table.c:3244
+#: gal/e-table/e-table.c:3313
 msgid "Always Search"
 msgstr "Vienmēr Meklēt"
 
-#: gal/e-table/e-table.c:3251
+#: gal/e-table/e-table.c:3320
 msgid "Use click to add"
 msgstr "Lietojiet klikšķi, lai pievienotu"
 
-#: gal/e-table/e-tree-selection-model.c:767
+#: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
 msgstr "Kursora Rinda"
 
-#: gal/e-table/e-tree-selection-model.c:774
+#: gal/e-table/e-tree-selection-model.c:788
 #: gal/widgets/e-selection-model-array.c:550
 msgid "Cursor Column"
 msgstr "Kursora Kolonna"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+#, fuzzy
+msgid "Always search"
+msgstr "Vienmēr Meklēt"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr ""
+
+#: gal/e-table/e-tree.c:3314
+#, fuzzy
+msgid "Expander Size"
+msgstr "Roktura Izmērs"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr ""
+
+#: gal/e-text/e-text.c:2667
+#, fuzzy
+msgid "Select All"
+msgstr "Izvēlēta Kolonna"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr ""
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr ""
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+#, fuzzy
+msgid "Bold"
+msgstr "zeltains"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+#, fuzzy
+msgid "Strikeout"
+msgstr "Caursvītrota Kolonna"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr ""
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+#, fuzzy
+msgid "Clip Width"
+msgstr "Platums"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+#, fuzzy
+msgid "Clip Height"
+msgstr "Augstums"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr ""
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr ""
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+#, fuzzy
+msgid "Fill color"
+msgstr "Lauku izvēlētājs"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr ""
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+#, fuzzy
+msgid "Fill stipple"
+msgstr "blāvi purpura"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr ""
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr ""
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+#, fuzzy
+msgid "Draw borders"
+msgstr "Zīmēt fokusu"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr ""
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr ""
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+#, fuzzy
+msgid "Cursor position"
+msgstr "Kursora Kolonna"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr ""
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+#, fuzzy
+msgid "Handle Popup"
+msgstr "Roktura Izmērs"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
 msgid "Collection"
 msgstr "Kolekcija"
 
-#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
 #, no-c-format
 msgid "Define Views for %s"
 msgstr "Definēt Skatus priekš %s"
 
-#: gal/menus/gal-define-views-dialog.c:292
-#: gal/menus/gal-define-views-dialog.c:294
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
 msgid "Define Views"
 msgstr "Definēt Skatus"
 
@@ -460,56 +631,53 @@ msgstr "Definēt skatus \"%s\""
 msgid "_Edit..."
 msgstr "_Rediģēt..."
 
-#: gal/menus/gal-view-instance.c:575
-msgid "Custom View"
-msgstr "Pašizvēles Skats"
-
-#: gal/menus/gal-view-instance.c:576
-msgid "Save Custom View"
-msgstr "Saglabāt Pašizvēles Skatu"
-
-#: gal/menus/gal-view-instance.c:580
-#, fuzzy
-msgid "Define Views..."
-msgstr "Definēt Skatus"
-
-#: gal/menus/gal-view-instance-save-as-dialog.c:179
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
 msgstr "Instance"
 
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+#, fuzzy
+msgid "Save Current View"
+msgstr "Saglabāt Pašizvēles Skatu"
+
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
-msgid "Create New View Named"
-msgstr "Izveidot Jaunu Skatu ar Noukumu"
+msgid "    "
+msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
-msgid "Replace Existing View"
-msgstr "Aizvietot Eksistējošo Skatu"
-
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-msgid ""
-"The current view will replace the given view.  Any folders\n"
-"set to this view wil be replaced with the current view."
-msgstr ""
-"Pašreizējais skats aizvietos doto skatu. Jebkuras mapes,\n"
-"kas iestatīta uz šo skatu, tiks aizstātas ar pašreizējo skatu."
-
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-msgid "This will create a new View."
-msgstr "Šis izveidos jaunu Skatu."
-
 #: gal/menus/gal-view-new-dialog.glade.h:1
-#: gal/widgets/gal-categories.glade.h:1
 #: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: gal/menus/gal-view-new-dialog.glade.h:2
-msgid "Name of new view:"
-msgstr "Nosaukums jaunam skatam:"
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+#, fuzzy
+msgid "_Create new view"
+msgstr "Izveidot Jaunu Skatu ar Noukumu"
 
-#: gal/menus/gal-view-new-dialog.glade.h:3
-msgid "Type of view:"
-msgstr "Skata tips:"
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+#, fuzzy
+msgid "_Name:"
+msgstr "Nosaukums"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+#, fuzzy
+msgid "_Replace existing view"
+msgstr "Aizvietot Eksistējošo Skatu"
+
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "Pašizvēles Skats"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "Saglabāt Pašizvēles Skatu"
+
+#: gal/menus/gal-view-instance.c:579
+#, fuzzy
+msgid "Define Views..."
+msgstr "Definēt Skatus"
 
 #: gal/menus/gal-view-new-dialog.c:70
 msgid "Name"
@@ -519,236 +687,209 @@ msgstr "Nosaukums"
 msgid "Factory"
 msgstr "Ražotne"
 
+#: gal/menus/gal-view-new-dialog.c:108
+#, fuzzy
+msgid "Define New View"
+msgstr "Definēt Skatus"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "Nosaukums jaunam skatam:"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "Skata tips:"
+
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
 
 #. This is the default custom color
-#: gal/widgets/color-palette.c:393
+#: gal/widgets/color-palette.c:394
 msgid "custom"
 msgstr "pašizvēlēts"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
-#: gal/widgets/color-palette.c:435
+#: gal/widgets/color-palette.c:436
 msgid "Custom Color:"
 msgstr "Pašizvēlēta Krāsa:"
 
-#: gal/widgets/color-palette.c:443
+#: gal/widgets/color-palette.c:444
 msgid "Choose Custom Color"
 msgstr "Izvēlieties pašizvēlētu krāsu"
 
-#: gal/widgets/color-palette.c:576
+#: gal/widgets/color-palette.c:577
 msgid "black"
 msgstr "melns"
 
-#: gal/widgets/color-palette.c:577
+#: gal/widgets/color-palette.c:578
 msgid "light brown"
 msgstr "gaiši brūns"
 
-#: gal/widgets/color-palette.c:578
+#: gal/widgets/color-palette.c:579
 msgid "brown gold"
 msgstr "brūni zeltains"
 
-#: gal/widgets/color-palette.c:579
+#: gal/widgets/color-palette.c:580
 msgid "dark green #2"
 msgstr "tumši zaļš #2"
 
-#: gal/widgets/color-palette.c:580
+#: gal/widgets/color-palette.c:581
 msgid "navy"
 msgstr "tumšzils"
 
-#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
 msgid "dark blue"
 msgstr "tumši zils"
 
-#: gal/widgets/color-palette.c:582
+#: gal/widgets/color-palette.c:583
 msgid "purple #2"
 msgstr "purpura #2"
 
-#: gal/widgets/color-palette.c:583
+#: gal/widgets/color-palette.c:584
 msgid "very dark gray"
 msgstr "ļoti tumši pelēks"
 
-#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
 msgid "dark red"
 msgstr "tumši sarkans"
 
-#: gal/widgets/color-palette.c:587
+#: gal/widgets/color-palette.c:588
 msgid "red-orange"
 msgstr "sarkani orandžs"
 
-#: gal/widgets/color-palette.c:588
+#: gal/widgets/color-palette.c:589
 msgid "gold"
 msgstr "zeltains"
 
-#: gal/widgets/color-palette.c:589
+#: gal/widgets/color-palette.c:590
 msgid "dark green"
 msgstr "tumši zaļš"
 
-#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
 msgid "dull blue"
 msgstr "blāvi zils"
 
-#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
 msgid "blue"
 msgstr "zils"
 
-#: gal/widgets/color-palette.c:592
+#: gal/widgets/color-palette.c:593
 msgid "dull purple"
 msgstr "blāvi purpura"
 
-#: gal/widgets/color-palette.c:593
+#: gal/widgets/color-palette.c:594
 msgid "dark grey"
 msgstr "tumši pelēks"
 
-#: gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:597
 msgid "red"
 msgstr "sarkans"
 
-#: gal/widgets/color-palette.c:597
+#: gal/widgets/color-palette.c:598
 msgid "orange"
 msgstr "orandžs"
 
-#: gal/widgets/color-palette.c:598
+#: gal/widgets/color-palette.c:599
 msgid "lime"
 msgstr "citrona"
 
-#: gal/widgets/color-palette.c:599
+#: gal/widgets/color-palette.c:600
 msgid "dull green"
 msgstr "blāvi zaļš"
 
-#: gal/widgets/color-palette.c:600
+#: gal/widgets/color-palette.c:601
 msgid "dull blue #2"
 msgstr "blāvi zils #2"
 
-#: gal/widgets/color-palette.c:601
+#: gal/widgets/color-palette.c:602
 msgid "sky blue #2"
 msgstr "debesu zils #2"
 
-#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
 msgid "purple"
 msgstr "purpura"
 
-#: gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:604
 msgid "gray"
 msgstr "pelēks"
 
-#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
 msgid "magenta"
 msgstr "magneta"
 
-#: gal/widgets/color-palette.c:607
+#: gal/widgets/color-palette.c:608
 msgid "bright orange"
 msgstr "gaiši orandžs"
 
-#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
 msgid "yellow"
 msgstr "dzeltens"
 
-#: gal/widgets/color-palette.c:609
+#: gal/widgets/color-palette.c:610
 msgid "green"
 msgstr "zaļš"
 
-#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
 msgid "cyan"
 msgstr "ciāna"
 
-#: gal/widgets/color-palette.c:611
+#: gal/widgets/color-palette.c:612
 msgid "bright blue"
 msgstr "gaiši zils"
 
-#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
 msgid "red purple"
 msgstr "purpura sarkans"
 
-#: gal/widgets/color-palette.c:613
+#: gal/widgets/color-palette.c:614
 msgid "light grey"
 msgstr "gaiši pelēks"
 
-#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
 msgid "pink"
 msgstr "rozā"
 
-#: gal/widgets/color-palette.c:617
+#: gal/widgets/color-palette.c:618
 msgid "light orange"
 msgstr "gaiši orandžs"
 
-#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
 msgid "light yellow"
 msgstr "gaiši dzeltens"
 
-#: gal/widgets/color-palette.c:619
+#: gal/widgets/color-palette.c:620
 msgid "light green"
 msgstr "gaiši zaļš"
 
-#: gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:621
 msgid "light cyan"
 msgstr "gaiša ciāna"
 
-#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
 msgstr "gaiši zils"
 
-#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
 msgstr "gaiši purpura"
 
-#: gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:624
 msgid "white"
 msgstr "balts"
 
-#: gal/widgets/color-palette.c:628
+#: gal/widgets/color-palette.c:629
 msgid "purplish blue"
 msgstr "purpura zils"
 
-#: gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:633
 msgid "dark purple"
 msgstr "tumši purpura"
 
-#: gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:635
 msgid "sky blue"
 msgstr "debesu zils"
-
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
-msgid "Categories"
-msgstr "Kategorijas"
-
-#: gal/widgets/e-categories.c:393
-msgid "Add to global category list"
-msgstr "Pievienot globālajam kategoriju sarakstam"
-
-#: gal/widgets/e-categories.c:394
-msgid "Add all to global category list"
-msgstr "Pievienot visu globālajam kategoriju sarakstam"
-
-#: gal/widgets/e-categories.c:395
-msgid "Remove from global category list"
-msgstr "Izņemt no globālā kategoriju saraksta"
-
-#: gal/widgets/e-categories.c:396
-msgid "Remove all from global category list"
-msgstr "Izņemt visu no globālā kategoriju saraksta"
-
-#: gal/widgets/e-categories.c:540
-msgid "Edit Categories"
-msgstr "Rediģēt kategorijas"
-
-#: gal/widgets/gal-categories.glade.h:2
-msgid "Edit Master Category List..."
-msgstr "Rediģēt galveno kategoriju sarakstu..."
-
-#: gal/widgets/gal-categories.glade.h:3
-msgid "Item(s) belong to these _categories:"
-msgstr "Priekšmets(-ti) piederoši šīm kategorijām:"
-
-#: gal/widgets/gal-categories.glade.h:4
-msgid "_Available Categories:"
-msgstr "_Pieejamās Kategorijas:"
-
-#: gal/widgets/gal-categories.glade.h:5
-msgid "categories"
-msgstr "kategorijas"
 
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
@@ -834,23 +975,23 @@ msgstr "VIP"
 msgid "Waiting"
 msgstr "Gaidu"
 
-#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
 msgstr "ECML"
 
-#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
 msgstr "ECategoriesMasterListCombo"
 
-#: gal/widgets/e-categories-master-list-dialog.c:198
+#: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
 msgstr "* Klikšķināt šeit, lai pievienotu kategoriju *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:199
+#: gal/widgets/e-categories-master-list-dialog.c:214
 msgid "Category"
 msgstr "Kategorija"
 
@@ -882,6 +1023,30 @@ msgstr "Pievienot kategoriju"
 msgid "All Categories"
 msgstr "Visas Kategorijas"
 
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Kategorijas"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Pievienot globālajam kategoriju sarakstam"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Pievienot visu globālajam kategoriju sarakstam"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Izņemt no globālā kategoriju saraksta"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Izņemt visu no globālā kategoriju saraksta"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Rediģēt kategorijas"
+
 #: gal/widgets/e-selection-model.c:210
 msgid "Sorter"
 msgstr "Kārtotājs"
@@ -894,140 +1059,31 @@ msgstr "Izvēles Režīms"
 msgid "Cursor Mode"
 msgstr "Kursora Režīms"
 
-#: gal/e-text/e-text.c:2598
-#, fuzzy
-msgid "Select All"
-msgstr "Izvēlēta Kolonna"
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Rediģēt galveno kategoriju sarakstu..."
 
-#: gal/e-text/e-text.c:2610
-msgid "Input Methods"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Priekšmets(-ti) piederoši šīm kategorijām:"
 
-#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
-msgid "Event Processor"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "_Pieejamās Kategorijas:"
 
-#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
-msgid "Text"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "kategorijas"
 
-#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
-#, fuzzy
-msgid "Bold"
-msgstr "zeltains"
+#~ msgid ""
+#~ "The current view will replace the given view.  Any folders\n"
+#~ "set to this view wil be replaced with the current view."
+#~ msgstr ""
+#~ "Pašreizējais skats aizvietos doto skatu. Jebkuras mapes,\n"
+#~ "kas iestatīta uz šo skatu, tiks aizstātas ar pašreizējo skatu."
 
-#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
-#, fuzzy
-msgid "Strikeout"
-msgstr "Caursvītrota Kolonna"
-
-#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
-msgid "Anchor"
-msgstr ""
-
-#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
-msgid "Justification"
-msgstr ""
-
-#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
-#, fuzzy
-msgid "Clip Width"
-msgstr "Platums"
-
-#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
-#, fuzzy
-msgid "Clip Height"
-msgstr "Augstums"
-
-#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
-msgid "Clip"
-msgstr ""
-
-#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
-msgid "Fill clip rectangle"
-msgstr ""
-
-#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
-msgid "X Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
-msgid "Y Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
-#, fuzzy
-msgid "Fill color"
-msgstr "Lauku izvēlētājs"
-
-#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
-#: gal/e-text/e-text.c:3464
-msgid "GDK fill color"
-msgstr ""
-
-#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
-#, fuzzy
-msgid "Fill stipple"
-msgstr "blāvi purpura"
-
-#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
-msgid "Text width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
-msgid "Text height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
-msgid "Use ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
-msgid "Ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
-msgid "Line wrap"
-msgstr ""
-
-#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
-msgid "Break characters"
-msgstr ""
-
-#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
-msgid "Max lines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
-#, fuzzy
-msgid "Draw borders"
-msgstr "Zīmēt fokusu"
-
-#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
-msgid "Allow newlines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
-msgid "Draw background"
-msgstr ""
-
-#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
-msgid "Draw button"
-msgstr ""
-
-#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
-#, fuzzy
-msgid "Cursor position"
-msgstr "Kursora Kolonna"
-
-#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
-msgid "IM Context"
-msgstr ""
-
-#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
-#, fuzzy
-msgid "Handle Popup"
-msgstr "Roktura Izmērs"
+#~ msgid "This will create a new View."
+#~ msgstr "Šis izveidos jaunu Skatu."
 
 #~ msgid "Late Yesterday %l:%M %p"
 #~ msgstr "Vēlu vakardien %l:%M %p"

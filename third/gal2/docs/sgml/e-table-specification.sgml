@@ -1,4 +1,4 @@
-<refentry id="ETableSpecification" revision="12 Jan 2001">
+<refentry id="ETableSpecification">
 <refmeta>
 <refentrytitle>ETableSpecification</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,10 +6,11 @@
 </refmeta>
 
 <refnamediv>
-<refname>ETableSpecification</refname><refpurpose></refpurpose>
+<refname>ETableSpecification</refname><refpurpose>Internal object to keep track of the ETable State.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -20,17 +21,17 @@ typedef     <link linkend="ETableSpecification">ETableSpecification</link>;
                                             (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-table-specification-load-from-file">e_table_specification_load_from_file</link>
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
-                                             const char *filename);
-void        <link linkend="e-table-specification-load-from-string">e_table_specification_load_from_string</link>
+                                             const <link linkend="char">char</link> *filename);
+<link linkend="void">void</link>        <link linkend="e-table-specification-load-from-string">e_table_specification_load_from_string</link>
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
-                                             const char *xml);
-void        <link linkend="e-table-specification-load-from-node">e_table_specification_load_from_node</link>
+                                             const <link linkend="char">char</link> *xml);
+<link linkend="void">void</link>        <link linkend="e-table-specification-load-from-node">e_table_specification_load_from_node</link>
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
                                              const <link linkend="xmlNode">xmlNode</link> *node);
-void        <link linkend="e-table-specification-save-to-file">e_table_specification_save_to_file</link>
+<link linkend="void">void</link>        <link linkend="e-table-specification-save-to-file">e_table_specification_save_to_file</link>
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
-                                             const char *filename);
-char*       <link linkend="e-table-specification-save-to-string">e_table_specification_save_to_string</link>
+                                             const <link linkend="char">char</link> *filename);
+<link linkend="char">char</link>*       <link linkend="e-table-specification-save-to-string">e_table_specification_save_to_string</link>
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification);
 <link linkend="xmlNode">xmlNode</link>*    <link linkend="e-table-specification-save-to-node">e_table_specification_save_to_node</link>
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
@@ -52,10 +53,17 @@ char*       <link linkend="e-table-specification-save-to-string">e_table_specifi
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
-
+   This object is used to keep track of the ETableState, and it is
+   mostly an internal function.  These are used by the ETable widget
+   and its configuration engine (<literal>ETableConfig</literal>).  It is mostly an
+   internal object.
 </para>
 </refsect1>
 
@@ -63,14 +71,14 @@ char*       <link linkend="e-table-specification-save-to-string">e_table_specifi
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SPECIFICATION-TYPE-CAPS">E_TABLE_SPECIFICATION_TYPE</title>
-<programlisting>#define E_TABLE_SPECIFICATION_TYPE        (e_table_specification_get_type ())
+<indexterm><primary>E_TABLE_SPECIFICATION_TYPE</primary></indexterm><programlisting>#define E_TABLE_SPECIFICATION_TYPE        (e_table_specification_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSpecification">ETableSpecification</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSpecification</primary></indexterm><programlisting>typedef struct {
 	GtkObject base;
 
 	ETableColumnSpecification **columns;
@@ -88,152 +96,139 @@ char*       <link linkend="e-table-specification-save-to-string">e_table_specifi
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-new">e_table_specification_new ()</title>
-<programlisting><link linkend="ETableSpecification">ETableSpecification</link>* e_table_specification_new
+<indexterm><primary>e_table_specification_new</primary></indexterm><programlisting><link linkend="ETableSpecification">ETableSpecification</link>* e_table_specification_new
                                             (void);</programlisting>
 <para>
+Creates a new <literal>ETableSpecification</literal> object.   This object is used to hold the
+information about the rendering information for ETable.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created <literal>ETableSpecification</literal> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-load-from-file">e_table_specification_load_from_file ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_table_specification_load_from_file
+<indexterm><primary>e_table_specification_load_from_file</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_table_specification_load_from_file
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
-                                             const char *filename);</programlisting>
+                                             const <link linkend="char">char</link> *filename);</programlisting>
+<para>
+This routine modifies <parameter>specification</parameter> to reflect the state described
+by the file <parameter>filename</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>specification</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>specification</parameter>&nbsp;:</term>
+<listitem><simpara> An ETableSpecification that you want to modify
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> a filename that contains an ETableSpecification
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE on success, FALSE on failure.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-load-from-string">e_table_specification_load_from_string ()</title>
-<programlisting>void        e_table_specification_load_from_string
+<indexterm><primary>e_table_specification_load_from_string</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_specification_load_from_string
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
-                                             const char *xml);</programlisting>
+                                             const <link linkend="char">char</link> *xml);</programlisting>
+<para>
+This routine modifies <parameter>specification</parameter> to reflect the state described
+by <parameter>xml</parameter>.  <parameter>xml</parameter> is typically returned by e_table_specification_save_to_string
+or it can be embedded in your source code.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>specification</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>xml</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>specification</parameter>&nbsp;:</term>
+<listitem><simpara> An ETableSpecification that you want to modify
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>xml</parameter>&nbsp;:</term>
+<listitem><simpara> a stringified representation of an ETableSpecification description.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-load-from-node">e_table_specification_load_from_node ()</title>
-<programlisting>void        e_table_specification_load_from_node
+<indexterm><primary>e_table_specification_load_from_node</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_specification_load_from_node
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
                                              const <link linkend="xmlNode">xmlNode</link> *node);</programlisting>
 <para>
+This routine modifies <parameter>specification</parameter> to reflect the state described
+by <parameter>node</parameter>.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>specification</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>specification</parameter>&nbsp;:</term>
+<listitem><simpara> An ETableSpecification that you want to modify
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>node</parameter>&nbsp;:</term>
+<listitem><simpara> an xmlNode with an XML ETableSpecification description.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-save-to-file">e_table_specification_save_to_file ()</title>
-<programlisting>void        e_table_specification_save_to_file
+<indexterm><primary>e_table_specification_save_to_file</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_specification_save_to_file
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
-                                             const char *filename);</programlisting>
+                                             const <link linkend="char">char</link> *filename);</programlisting>
+<para>
+This routine stores the <parameter>specification</parameter> into <parameter>filename</parameter>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>specification</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>specification</parameter>&nbsp;:</term>
+<listitem><simpara> An <literal>ETableSpecification</literal> that you want to save
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara> a file name to store the specification.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-save-to-string">e_table_specification_save_to_string ()</title>
-<programlisting>char*       e_table_specification_save_to_string
+<indexterm><primary>e_table_specification_save_to_string</primary></indexterm><programlisting><link linkend="char">char</link>*       e_table_specification_save_to_string
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification);</programlisting>
 <para>
+Saves the state of <parameter>specification</parameter> to a string.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>specification</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>specification</parameter>&nbsp;:</term>
+<listitem><simpara> An <literal>ETableSpecification</literal> that you want to stringify
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="g-alloc"><function>g_alloc()</function></link> allocated string containing the stringified 
+representation of <parameter>specification</parameter>.  This stringified representation
+uses XML as a convenience.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-specification-save-to-node">e_table_specification_save_to_node ()</title>
-<programlisting><link linkend="xmlNode">xmlNode</link>*    e_table_specification_save_to_node
+<indexterm><primary>e_table_specification_save_to_node</primary></indexterm><programlisting><link linkend="xmlNode">xmlNode</link>*    e_table_specification_save_to_node
                                             (<link linkend="ETableSpecification">ETableSpecification</link> *specification,
                                              <link linkend="xmlDoc">xmlDoc</link> *doc);</programlisting>
 <para>
+This routine saves the <literal>ETableSpecification</literal> state in the object <parameter>specification</parameter>
+into the xmlDoc represented by <parameter>doc</parameter>.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>specification</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>doc</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>specification</parameter>&nbsp;:</term>
+<listitem><simpara> An ETableSpecification that you want to store.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doc</parameter>&nbsp;:</term>
+<listitem><simpara> Node where the specification is saved
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The node that has been attached to <parameter>doc</parameter> with the contents
+of the ETableSpecification.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
 
 
+<refsect1>
+<title>See Also</title>
+<para>
+  <literal>ETable</literal>, <literal>ETableColumnSpecification</literal>, <literal>ETableConfig</literal>.
+</para>
+</refsect1>
 
 </refentry>

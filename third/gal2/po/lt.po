@@ -5,9 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.11.2\n"
-"POT-Creation-Date: 2003-09-11 17:09-0500\n"
-"PO-Revision-Date: 2001-09-11 18:44+0200\n"
-"Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-01-14 19:42+0200\n"
+"Last-Translator: Tomas Kuliavas <tokul@users.sourceforge.net>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,11 +16,11 @@ msgstr ""
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
-msgstr ""
+msgstr "Rodyklės Dydis"
 
 #: gal/e-paned/e-paned.c:148
 msgid "Quantum"
-msgstr ""
+msgstr "Laiko tarpas"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -51,80 +52,77 @@ msgstr "%Y %b %d"
 
 #: gal/e-table/e-cell-pixbuf.c:392
 msgid "Selected Column"
-msgstr ""
+msgstr "Pasirinktas stulpelis"
 
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr ""
+msgstr "Sufokusuotas stulpelis"
 
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr ""
+msgstr "Nepasirinktas stulpelis"
 
-#: gal/e-table/e-cell-text.c:1516
+#: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
-msgstr ""
+msgstr "Perbrauktas stulpelis"
 
-#: gal/e-table/e-cell-text.c:1523
+#: gal/e-table/e-cell-text.c:1710
 msgid "Underline Column"
-msgstr ""
+msgstr "Pabrauktas stulpelis"
 
-#: gal/e-table/e-cell-text.c:1530
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
-msgstr "Pridėti stulpelį..."
+msgstr "Paryškintas stulpelis"
 
-#: gal/e-table/e-cell-text.c:1537
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
-msgstr "Formatuoti stulpelius..."
+msgstr "Spalvų stulpelis"
 
-#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
-msgstr "Lentelė"
+msgstr "Redaguojamas"
 
-#: gal/e-table/e-cell-text.c:1551
+#: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
-msgstr ""
+msgstr "Fono spalvų stulpelis"
 
-#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
-#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-header-item.c:1816
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
-msgstr ""
+msgstr "Antraštė"
 
-#: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
-#: gal/e-text/e-text.c:3357
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
 msgid "Model"
-msgstr ""
+msgstr "Modelis"
 
-#: gal/e-table/e-table-click-to-add.c:470
+#: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
-msgstr ""
+msgstr "Pranešimas"
 
-#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
-#: gal/e-text/e-text.c:3535
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
 msgid "Width"
-msgstr ""
+msgstr "Plotis"
 
-#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
-#: gal/e-text/e-text.c:3543
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
 msgid "Height"
-msgstr ""
+msgstr "Aukštis"
 
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
@@ -169,7 +167,7 @@ msgstr "Grupuoti įrašus pagal"
 #: gal/e-table/e-table-config-no-group.glade.h:9
 #: gal/e-table/e-table-config.glade.h:9
 msgid "Move _Down"
-msgstr "Perkelti _Žemyn"
+msgstr "Perkelti ž_emyn"
 
 #: gal/e-table/e-table-config-no-group.glade.h:10
 #: gal/e-table/e-table-config.glade.h:10
@@ -177,45 +175,43 @@ msgid "Move _Up"
 msgstr "Perkelti _aukštyn"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
-#: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
 msgstr "R_odyti šiuos laukus tokia tvarka:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
-#: gal/e-table/e-table-config.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
 msgid "Show Fields"
 msgstr "Rodyti laukus"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
-#: gal/e-table/e-table-config.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
 msgid "Show field in View"
 msgstr "Rodyti lauką vaizde"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
-#: gal/e-table/e-table-config.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
 msgid "Sort"
 msgstr "Rikiuoti"
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
-#: gal/e-table/e-table-config.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
 msgid "Sort Items By"
 msgstr "Rikiuoti įrašus pagal"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
-#: gal/e-table/e-table-config.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
 msgid "Then By"
 msgstr "Tada pagal"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
-#: gal/e-table/e-table-config.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
 msgid "_Add ->"
 msgstr "_Pridėti ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:18
-#, fuzzy
+#: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
-msgstr "_Laukai..."
+msgstr "_Rodomi laukai..."
 
 #: gal/e-table/e-table-config-no-group.glade.h:19
 #: gal/e-table/e-table-config.glade.h:20
@@ -225,10 +221,9 @@ msgstr "_Rikiuoti..."
 #: gal/e-table/e-table-config-no-group.glade.h:20
 #: gal/e-table/e-table-config.glade.h:21
 msgid "dialog1"
-msgstr ""
+msgstr "dialogas1"
 
 #: gal/e-table/e-table-config.c:152
-#, fuzzy
 msgid "State"
 msgstr "Būsena"
 
@@ -248,9 +243,31 @@ msgstr "Nerikiuoti"
 msgid "No grouping"
 msgstr "Negrupuoti"
 
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
 msgid "_Group By..."
 msgstr "_Grupuoti pagal..."
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr "R_odyti šiuos laukus tokia tvarka:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "DnD kodas"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Pilna antraštė"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Pridėti stulpelį..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -261,26 +278,8 @@ msgid ""
 "To add a column to your table, drag it into\n"
 "the location in which you want it to appear."
 msgstr ""
-"Kad pridėtum stulpelį į lentelę, nutempk jį\n"
-"į vietą, kur norėtum, kad jis pasirodytų."
-
-#: gal/e-table/e-table-field-chooser-dialog.c:74
-#: gal/e-table/e-table-field-chooser-item.c:646
-#: gal/e-table/e-table-field-chooser.c:77
-#: gal/e-table/e-table-header-item.c:1738
-msgid "DnD code"
-msgstr ""
-
-#: gal/e-table/e-table-field-chooser-dialog.c:81
-#: gal/e-table/e-table-field-chooser-item.c:653
-#: gal/e-table/e-table-field-chooser.c:84
-#: gal/e-table/e-table-header-item.c:1752
-msgid "Full Header"
-msgstr ""
-
-#: gal/e-table/e-table-field-chooser-dialog.c:123
-msgid "Add a column..."
-msgstr "Pridėti stulpelį..."
+"Kad pridėtumėt stulpelį į lentelę, nutempkite jį\n"
+"į vietą, kur norėtumėt, kad jis pasirodytų."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -305,160 +304,308 @@ msgstr "%s (%d elementų)"
 #: gal/e-table/e-table-group-container.c:906
 #: gal/e-table/e-table-group-container.c:907
 msgid "Alternating Row Colors"
-msgstr ""
+msgstr "Kintančios kilučių spalvos"
 
 #: gal/e-table/e-table-group-container.c:913
-#: gal/e-table/e-table-group-container.c:914
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
-msgstr ""
+msgstr "Horizontalus tinklelis"
 
 #: gal/e-table/e-table-group-container.c:920
-#: gal/e-table/e-table-group-container.c:921
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
-msgstr ""
+msgstr "Vertikalus tinklelis"
 
 #: gal/e-table/e-table-group-container.c:927
-#: gal/e-table/e-table-group-container.c:928
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
-msgstr ""
+msgstr "Rodyti fokusą"
 
 #: gal/e-table/e-table-group-container.c:934
 #: gal/e-table/e-table-group-container.c:935
 msgid "Cursor mode"
-msgstr ""
+msgstr "Žymeklio režimas"
 
 #: gal/e-table/e-table-group-container.c:941
 #: gal/e-table/e-table-group-container.c:942
 msgid "Selection model"
-msgstr ""
+msgstr "Pasirinkimo režimas"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
-msgstr ""
+msgstr "Ilgio riba"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
-msgstr ""
+msgstr "Įprastas eilutės aukštis"
 
 #: gal/e-table/e-table-group-container.c:962
 #: gal/e-table/e-table-group-container.c:963
 msgid "Frozen"
-msgstr ""
+msgstr "Nekintamas"
 
 #: gal/e-table/e-table-group-container.c:983
 msgid "Minimum width"
-msgstr ""
+msgstr "Mažiausias plotis"
 
 #: gal/e-table/e-table-group-container.c:984
 msgid "Minimum Width"
-msgstr ""
+msgstr "Mažiausias plotis"
 
-#: gal/e-table/e-table-header-item.c:1451
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1457
 msgid "Customize Current View"
-msgstr "Prisitaikyti esamą vaizdą..."
+msgstr "Derinti esamą vaizdą"
 
-#: gal/e-table/e-table-header-item.c:1471
+#: gal/e-table/e-table-header-item.c:1477
 msgid "Sort Ascending"
 msgstr "Rikiuoti didėjančiai"
 
-#: gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
 msgid "Sort Descending"
 msgstr "Rikiuoti mažėjančiai"
 
-#: gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
 msgid "Unsort"
 msgstr "Nerikiuoti"
 
-#: gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
 msgid "Group By This Field"
 msgstr "Grupuoti pagal šį lauką"
 
-#: gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
 msgstr "Grupuoti pagal dėžutę"
 
-#: gal/e-table/e-table-header-item.c:1478
+#: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
 msgstr "Pašalinti šį stulpelį"
 
-#: gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
 msgstr "Pridėti stulpelį..."
 
-#: gal/e-table/e-table-header-item.c:1481
+#: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
 msgstr "Lygiavimas"
 
-#: gal/e-table/e-table-header-item.c:1482
+#: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
 msgstr "Geriausiai telpantis"
 
-#: gal/e-table/e-table-header-item.c:1483
+#: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
 msgstr "Formatuoti stulpelius..."
 
-#: gal/e-table/e-table-header-item.c:1485
+#: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
 msgstr "Prisitaikyti esamą vaizdą..."
 
-#: gal/e-table/e-table-header-item.c:1745
+#: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
-msgstr ""
+msgstr "Šriftų rinkinys"
 
-#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
-msgstr "Rikiuoti"
+msgstr "Rūšiavimo info"
 
-#: gal/e-table/e-table-header-item.c:1773
+#: gal/e-table/e-table-header-item.c:1830
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
 msgstr "Lentelė"
 
-#: gal/e-table/e-table-header-item.c:1780
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
-msgstr "žalia"
+msgstr "Medis"
 
-#: gal/e-table/e-table.c:3244
+#: gal/e-table/e-table.c:3313
 msgid "Always Search"
-msgstr ""
+msgstr "Visada ieškoti"
 
-#: gal/e-table/e-table.c:3251
+#: gal/e-table/e-table.c:3320
 msgid "Use click to add"
-msgstr ""
+msgstr "Naudoti paspaudimą, kad pridėti"
 
-#: gal/e-table/e-tree-selection-model.c:767
+#: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
-msgstr ""
+msgstr "Žymeklio iilutė"
 
-#: gal/e-table/e-tree-selection-model.c:774
+#: gal/e-table/e-tree-selection-model.c:788
 #: gal/widgets/e-selection-model-array.c:550
-#, fuzzy
 msgid "Cursor Column"
-msgstr "Sava spalva:"
+msgstr "Žymeklio stulpelis"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr "ETree lentelės adapteris"
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr "Visada ieškoti"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr "Retro vaizdas"
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr "Rodyti eilutes ir +/- išplėtimus."
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr "Plėtiklio dydis"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr "Plėtiklio strėliukės dydis"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "Pažymėti viską"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "Įvesties metodai"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "Įvykių procesorius"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "Tekstas"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "Pastorintas"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "Perbrauktas"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "Prieraišas"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "Lygiavimas"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr "Paveikslėlio plotis"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr "Paveikslėlio aukštis"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr "Paveikslėlis"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr "Užpildyti paveikslėlio lauką"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr "X atitraukimas"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr "Y atitraukimas"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "Užpildanti spalva"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "GTK užpildanti spalva"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr "Užpildantis tušas"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "Teksto plotis"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "Teksto aukštis"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "Naudoti elipsę"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "Elipsė"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr "Eilučių laužymas"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "Pertraukimo simboliai"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr "Daugiausiai eilučių"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "Rodyti rėmelius"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "Leisti naujas eilutes"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "Rodyti foną"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "Rodyti mygtuką"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr "Kursoriaus pozicija"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr "IM turinys"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "Išsiskleidžianti rodyklė"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
-#, fuzzy
 msgid "Collection"
-msgstr "Varžovai"
+msgstr "Kolekcija"
 
-#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Define Views for %s"
-msgstr "Apibrėžti „%s“ vaizdus"
+msgstr "Apibrėžti %s vaizdus"
 
-#: gal/menus/gal-define-views-dialog.c:292
-#: gal/menus/gal-define-views-dialog.c:294
-#, fuzzy
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
 msgid "Define Views"
-msgstr "Apibrėžti „%s“ vaizdus"
+msgstr "Apibrėžti vaizdus"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
@@ -467,50 +614,67 @@ msgstr "Apibrėžti „%s“ vaizdus"
 
 #: gal/menus/gal-define-views.glade.h:5
 msgid "_Edit..."
-msgstr "_Taisyti..."
+msgstr "K_eisti..."
 
-#: gal/menus/gal-view-instance.c:575
-#, fuzzy
-msgid "Custom View"
-msgstr "Prisitaikyti esamą vaizdą..."
-
-#: gal/menus/gal-view-instance.c:576
-#, fuzzy
-msgid "Save Custom View"
-msgstr "Svarbus klientas"
-
-#: gal/menus/gal-view-instance.c:580
-#, fuzzy
-msgid "Define Views..."
-msgstr "Apibrėžti „%s“ vaizdus"
-
-#: gal/menus/gal-view-instance-save-as-dialog.c:179
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
-msgstr ""
+msgstr "Atvejis"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+#, fuzzy
+msgid "Save Current View"
+msgstr "Išsaugoti specialų rodinį"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
-msgid "Create New View Named"
+msgid "    "
 msgstr ""
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
-msgid "Replace Existing View"
-msgstr ""
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr "*"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-msgid ""
-"The current view will replace the given view.  Any folders\n"
-"set to this view wil be replaced with the current view."
-msgstr ""
+#, fuzzy
+msgid "_Create new view"
+msgstr "Sukurti naują vaizdą pavadintą"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+#, fuzzy
+msgid "_Name:"
+msgstr "Vardas"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-msgid "This will create a new View."
-msgstr ""
+#, fuzzy
+msgid "_Replace existing view"
+msgstr "Pakeisti esamą vaizdą"
 
-#: gal/menus/gal-view-new-dialog.glade.h:1
-#: gal/widgets/gal-categories.glade.h:1
-#: gal/widgets/e-categories-master-list-dialog.glade.h:1
-msgid "*"
-msgstr ""
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "Kitas vaizdas"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "Išsaugoti specialų rodinį"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "Apibrėžti rodinius..."
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "Vardas"
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr "Gamykla"
+
+#: gal/menus/gal-view-new-dialog.c:108
+#, fuzzy
+msgid "Define New View"
+msgstr "Apibrėžti vaizdus"
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Name of new view:"
@@ -520,247 +684,196 @@ msgstr "Naujo vaizdo pavadinimas:"
 msgid "Type of view:"
 msgstr "Vaizdo tipas:"
 
-#: gal/menus/gal-view-new-dialog.c:70
-msgid "Name"
-msgstr ""
-
-#: gal/menus/gal-view-new-dialog.c:77
-#, fuzzy
-msgid "Factory"
-msgstr "Kategorija"
-
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
 msgid "Group %i"
 msgstr "Grupė %i"
 
 #. This is the default custom color
-#: gal/widgets/color-palette.c:393
+#: gal/widgets/color-palette.c:394
 msgid "custom"
 msgstr "savas"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
-#: gal/widgets/color-palette.c:435
+#: gal/widgets/color-palette.c:436
 msgid "Custom Color:"
 msgstr "Sava spalva:"
 
-#: gal/widgets/color-palette.c:443
+#: gal/widgets/color-palette.c:444
 msgid "Choose Custom Color"
-msgstr "Pasirink savą spalvą"
+msgstr "Pasirinkit savą spalvą"
 
-#: gal/widgets/color-palette.c:576
+#: gal/widgets/color-palette.c:577
 msgid "black"
 msgstr "juoda"
 
-#: gal/widgets/color-palette.c:577
+#: gal/widgets/color-palette.c:578
 msgid "light brown"
 msgstr "šviesiai ruda"
 
-#: gal/widgets/color-palette.c:578
+#: gal/widgets/color-palette.c:579
 msgid "brown gold"
 msgstr "rudai auksinė"
 
-#: gal/widgets/color-palette.c:579
+#: gal/widgets/color-palette.c:580
 msgid "dark green #2"
 msgstr "tamsiai žalia #2"
 
-#: gal/widgets/color-palette.c:580
+#: gal/widgets/color-palette.c:581
 msgid "navy"
 msgstr "navy"
 
-#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
 msgid "dark blue"
 msgstr "tamsiai mėlyna"
 
-#: gal/widgets/color-palette.c:582
+#: gal/widgets/color-palette.c:583
 msgid "purple #2"
 msgstr "violetinė #2"
 
-#: gal/widgets/color-palette.c:583
+#: gal/widgets/color-palette.c:584
 msgid "very dark gray"
 msgstr "labai tamsiai pilka"
 
-#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
 msgid "dark red"
 msgstr "tamsiai raudona"
 
-#: gal/widgets/color-palette.c:587
+#: gal/widgets/color-palette.c:588
 msgid "red-orange"
 msgstr "raudonai oranžinė"
 
-#: gal/widgets/color-palette.c:588
+#: gal/widgets/color-palette.c:589
 msgid "gold"
 msgstr "auksinė"
 
-#: gal/widgets/color-palette.c:589
+#: gal/widgets/color-palette.c:590
 msgid "dark green"
 msgstr "tamsiai žalia"
 
-#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
 msgid "dull blue"
 msgstr "melsva"
 
-#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
 msgid "blue"
 msgstr "mėlyna"
 
-#: gal/widgets/color-palette.c:592
+#: gal/widgets/color-palette.c:593
 msgid "dull purple"
 msgstr "blanki violetinė"
 
-#: gal/widgets/color-palette.c:593
+#: gal/widgets/color-palette.c:594
 msgid "dark grey"
 msgstr "tamsiai pilka"
 
-#: gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:597
 msgid "red"
 msgstr "raudona"
 
-#: gal/widgets/color-palette.c:597
+#: gal/widgets/color-palette.c:598
 msgid "orange"
 msgstr "oranžinė"
 
-#: gal/widgets/color-palette.c:598
+#: gal/widgets/color-palette.c:599
 msgid "lime"
 msgstr "citrininė"
 
-#: gal/widgets/color-palette.c:599
+#: gal/widgets/color-palette.c:600
 msgid "dull green"
 msgstr "žalsva"
 
-#: gal/widgets/color-palette.c:600
+#: gal/widgets/color-palette.c:601
 msgid "dull blue #2"
 msgstr "žalsva #2"
 
-#: gal/widgets/color-palette.c:601
+#: gal/widgets/color-palette.c:602
 msgid "sky blue #2"
 msgstr "dangiška #2"
 
-#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
 msgid "purple"
 msgstr "violetinė"
 
-#: gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:604
 msgid "gray"
 msgstr "pilka"
 
-#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
 msgid "magenta"
 msgstr "avietinė"
 
-#: gal/widgets/color-palette.c:607
+#: gal/widgets/color-palette.c:608
 msgid "bright orange"
 msgstr "ryškiai oranžinė"
 
-#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
 msgid "yellow"
 msgstr "geltona"
 
-#: gal/widgets/color-palette.c:609
+#: gal/widgets/color-palette.c:610
 msgid "green"
 msgstr "žalia"
 
-#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
 msgid "cyan"
 msgstr "žydra"
 
-#: gal/widgets/color-palette.c:611
+#: gal/widgets/color-palette.c:612
 msgid "bright blue"
 msgstr "ryškiai mėlyna"
 
-#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
 msgid "red purple"
 msgstr "raudonai violetinė"
 
-#: gal/widgets/color-palette.c:613
+#: gal/widgets/color-palette.c:614
 msgid "light grey"
 msgstr "šviesiai pilka"
 
-#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
 msgid "pink"
 msgstr "rausva"
 
-#: gal/widgets/color-palette.c:617
+#: gal/widgets/color-palette.c:618
 msgid "light orange"
 msgstr "šviesiai oranžinė"
 
-#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
 msgid "light yellow"
 msgstr "šviesiai geltona"
 
-#: gal/widgets/color-palette.c:619
+#: gal/widgets/color-palette.c:620
 msgid "light green"
 msgstr "šviesiai žalia"
 
-#: gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:621
 msgid "light cyan"
 msgstr "šviesiai žydra"
 
-#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
 msgstr "šviesiai mėlyna"
 
-#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
 msgstr "šviesiai violetinė"
 
-#: gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:624
 msgid "white"
 msgstr "balta"
 
-#: gal/widgets/color-palette.c:628
+#: gal/widgets/color-palette.c:629
 msgid "purplish blue"
 msgstr "violetiškai mėlyna"
 
-#: gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:633
 msgid "dark purple"
 msgstr "tamsiai violetinė"
 
-#: gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:635
 msgid "sky blue"
-msgstr "dangiškai mėlyna"
-
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
-#, fuzzy
-msgid "Categories"
-msgstr "kategorijos"
-
-#: gal/widgets/e-categories.c:393
-msgid "Add to global category list"
-msgstr "Pridėti prie globalaus kategorijų sąrašo"
-
-#: gal/widgets/e-categories.c:394
-msgid "Add all to global category list"
-msgstr "Pridėti visas prie globalaus kategorijų sąrašo"
-
-#: gal/widgets/e-categories.c:395
-msgid "Remove from global category list"
-msgstr "Pašalinti iš globalaus kategorijų sąrašo"
-
-#: gal/widgets/e-categories.c:396
-msgid "Remove all from global category list"
-msgstr "Pašalinti visas iš globalaus kategorijų sąrašo"
-
-#: gal/widgets/e-categories.c:540
-#, fuzzy
-msgid "Edit Categories"
-msgstr "kategorijos"
-
-#: gal/widgets/gal-categories.glade.h:2
-msgid "Edit Master Category List..."
-msgstr "Taisyti globalų kategorijų sąrašą..."
-
-#: gal/widgets/gal-categories.glade.h:3
-msgid "Item(s) belong to these _categories:"
-msgstr "Įrašas priklauso šioms _kategorijoms:"
-
-#: gal/widgets/gal-categories.glade.h:4
-msgid "_Available Categories:"
-msgstr "_Galimos kategorijos:"
-
-#: gal/widgets/gal-categories.glade.h:5
-msgid "categories"
-msgstr "kategorijos"
+msgstr "dangaus mėlynumo"
 
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
@@ -772,11 +885,11 @@ msgstr "Darbas"
 
 #: gal/widgets/e-categories-master-list-array.c:69
 msgid "Competition"
-msgstr "Varžovai"
+msgstr "Varžybos"
 
 #: gal/widgets/e-categories-master-list-array.c:70
 msgid "Favorites"
-msgstr "Favoritai"
+msgstr "Mėgiamiausi"
 
 #: gal/widgets/e-categories-master-list-array.c:71
 msgid "Gifts"
@@ -846,249 +959,108 @@ msgstr "VIP"
 msgid "Waiting"
 msgstr "Laukia"
 
-#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
-msgstr ""
+msgstr "ECML"
 
-#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
-msgstr ""
+msgstr "ECategoriesMasterListCombo"
 
-#: gal/widgets/e-categories-master-list-dialog.c:198
+#: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
 msgstr "* Spausk čia, kad pridėtum kategoriją *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:199
+#: gal/widgets/e-categories-master-list-dialog.c:214
 msgid "Category"
 msgstr "Kategorija"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-#, fuzzy
 msgid "Add Category"
 msgstr "Pridėti kategoriją"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-#, fuzzy
 msgid "Edit Category"
-msgstr "kategorijos"
+msgstr "Keisti Kategoriją"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Edit Global Category List"
 msgstr "Taisyti globalų kategorijų sąrašą"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-#, fuzzy
 msgid "_Edit category:"
-msgstr "kategorijos"
+msgstr "K_eisti kategoriją:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
-#, fuzzy
 msgid "_New category:"
-msgstr "Pridėti kategoriją"
+msgstr "_Nauja kategoriją:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
-#, fuzzy
 msgid "All Categories"
-msgstr "_Galimos kategorijos:"
+msgstr "Visos kategorijos"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Kategorijos"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Pridėti prie globalaus kategorijų sąrašo"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Pridėti visas prie globalaus kategorijų sąrašo"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Pašalinti iš globalaus kategorijų sąrašo"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Pašalinti visas iš globalaus kategorijų sąrašo"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Keisti kategorijas"
 
 #: gal/widgets/e-selection-model.c:210
-#, fuzzy
 msgid "Sorter"
-msgstr "Rikiuoti"
+msgstr "Rūšiavimas"
 
 #: gal/widgets/e-selection-model.c:217
 msgid "Selection Mode"
-msgstr ""
+msgstr "Pasirinkimo režimas"
 
 #: gal/widgets/e-selection-model.c:225
 msgid "Cursor Mode"
-msgstr ""
+msgstr "Žymeklio režimas"
 
-#: gal/e-text/e-text.c:2598
-#, fuzzy
-msgid "Select All"
-msgstr "Išvalyti viską"
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Taisyti globalų kategorijų sąrašą..."
 
-#: gal/e-text/e-text.c:2610
-msgid "Input Methods"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Elementas(ai) priklauso šioms _kategorijoms:"
 
-#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
-msgid "Event Processor"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "_Galimos kategorijos:"
 
-#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
-msgid "Text"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "kategorijos"
 
-#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
-#, fuzzy
-msgid "Bold"
-msgstr "auksinė"
+#~ msgid ""
+#~ "The current view will replace the given view.  Any folders\n"
+#~ "set to this view wil be replaced with the current view."
+#~ msgstr ""
+#~ "Esamas vaizdas pakeis bet kokį pasirinktą rodinį. Visi aplankai\n"
+#~ "naudojantys ankstesnį vaizdą pradės naudotį naująjį."
 
-#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
-msgid "Strikeout"
-msgstr ""
-
-#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
-msgid "Anchor"
-msgstr ""
-
-#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
-msgid "Justification"
-msgstr ""
-
-#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
-msgid "Clip Width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
-msgid "Clip Height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
-msgid "Clip"
-msgstr ""
-
-#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
-msgid "Fill clip rectangle"
-msgstr ""
-
-#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
-msgid "X Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
-msgid "Y Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
-#, fuzzy
-msgid "Fill color"
-msgstr "Laukų pasirinkimas"
-
-#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
-#: gal/e-text/e-text.c:3464
-msgid "GDK fill color"
-msgstr ""
-
-#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
-#, fuzzy
-msgid "Fill stipple"
-msgstr "blanki violetinė"
-
-#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
-msgid "Text width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
-msgid "Text height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
-msgid "Use ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
-msgid "Ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
-msgid "Line wrap"
-msgstr ""
-
-#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
-msgid "Break characters"
-msgstr ""
-
-#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
-msgid "Max lines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
-msgid "Draw borders"
-msgstr ""
-
-#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
-msgid "Allow newlines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
-msgid "Draw background"
-msgstr ""
-
-#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
-msgid "Draw button"
-msgstr ""
-
-#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
-#, fuzzy
-msgid "Cursor position"
-msgstr "Sava spalva:"
-
-#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
-msgid "IM Context"
-msgstr ""
-
-#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
-msgid "Handle Popup"
-msgstr ""
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "Vėlai vakar %H:%M"
-
-#~ msgid "Modify a Category"
-#~ msgstr "Taisyti kategoriją"
-
-#~ msgid "Remove"
-#~ msgstr "Pašalinti"
-
-#~ msgid "_Category to Add:"
-#~ msgstr "Pridedama _kategorija:"
-
-#~ msgid "_Category to Modify:"
-#~ msgstr "Taisoma _kategorija:"
-
-#, fuzzy
-#~ msgid "FIll stipple"
-#~ msgstr "blanki violetinė"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "At_statyti gamyklines nuostatas..."
-
-#~ msgid "_Copy..."
-#~ msgstr "_Kopijuoti..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Ištrinti..."
-
-#~ msgid "_New..."
-#~ msgstr "_Naujas..."
-
-#~ msgid "<< Remove"
-#~ msgstr "<< Pašalinti"
-
-#~ msgid "Add >>"
-#~ msgstr "Pridėti >>"
-
-#~ msgid "Available fields"
-#~ msgstr "Galimi laukai"
-
-#~ msgid "Show in this order"
-#~ msgstr "Rodyti šia tvarka"
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "Prisitaikomas vaizdas: FIXME"
-
-#~ msgid "Views for \"%s\""
-#~ msgstr "„%s“ vaizdai"
-
-#~ msgid "Add..."
-#~ msgstr "Pridėti..."
-
-#~ msgid "Modify..."
-#~ msgstr "Taisyti..."
+#~ msgid "This will create a new View."
+#~ msgstr "Čia bus sukurtas naujas vaizdas."

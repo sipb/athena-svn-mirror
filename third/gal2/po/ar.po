@@ -1,0 +1,1068 @@
+# translation of gal.po to Arabic
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gal\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-06-02 21:23+0300\n"
+"Last-Translator: Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>\n"
+"Language-Team: Arabic <support@arabeyes.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3\n"
+
+#: gal/e-paned/e-paned.c:141
+msgid "Handle Size"
+msgstr "حجم المقبض"
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr "الكم"
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "؟"
+
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr "%l:%M %p"
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "اليوم %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr "الأمس %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr "%b %d %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr "%b %d %Y"
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr "عمود منتقى"
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr "عمود مركّز عليه"
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr "عمود غير منتقى"
+
+#: gal/e-table/e-cell-text.c:1703
+msgid "Strikeout Column"
+msgstr "عمود شطب"
+
+#: gal/e-table/e-cell-text.c:1710
+msgid "Underline Column"
+msgstr "عمود تسطير"
+
+#: gal/e-table/e-cell-text.c:1717
+msgid "Bold Column"
+msgstr "عمود سُمك"
+
+#: gal/e-table/e-cell-text.c:1724
+msgid "Color Column"
+msgstr "عمود ألوان"
+
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+msgid "Editable"
+msgstr "قابل للتحرير"
+
+#: gal/e-table/e-cell-text.c:1738
+msgid "BG Color Column"
+msgstr "عمود لون الخلفيّة"
+
+#: gal/e-table/e-table-click-to-add.c:462
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1816
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr "التّرويسة"
+
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
+msgid "Model"
+msgstr "النّموذج"
+
+#: gal/e-table/e-table-click-to-add.c:476
+msgid "Message"
+msgstr "رسالة"
+
+#: gal/e-table/e-table-click-to-add.c:483
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
+msgid "Width"
+msgstr "العرض"
+
+#: gal/e-table/e-table-click-to-add.c:490
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
+msgid "Height"
+msgstr "الارتفاع"
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- _حذف"
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr "ال_حقول المتوفّرة:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "تصاعدي"
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "مسح الكل"
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "تنازلي"
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr "الوصف"
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "المجموعة"
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "جمع العناصر حسب"
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "إلى الأ_سفل"
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "إلى الأ_على"
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr "إ_ظهار هذه الحقول مرتّبة:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Show Fields"
+msgstr "إظهار الحقول"
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show field in View"
+msgstr "إظهار الحقول في المعرض"
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Sort"
+msgstr "ترتيب"
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort Items By"
+msgstr "ترتيب العناصر حسب"
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Then By"
+msgstr "ثم حسب"
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
+msgid "_Add ->"
+msgstr "إ_ضافة ->"
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Fields Shown..."
+msgstr "ال_حقول الظّاهرة..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr "_ترتيب..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr "حوار1"
+
+#: gal/e-table/e-table-config.c:152
+msgid "State"
+msgstr "الحالة"
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Ascending)"
+msgstr "(تصاعدي)"
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Descending)"
+msgstr "(تنازلي)"
+
+#: gal/e-table/e-table-config.c:316
+msgid "Not sorted"
+msgstr "غير مرتّبة"
+
+#: gal/e-table/e-table-config.c:357
+msgid "No grouping"
+msgstr "دون جمع"
+
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Group By..."
+msgstr "ال_جمع حسب..."
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr "إ_ظهار هذه الحقول مرتّبة:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "رمز DnD"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "ترويسة كاملة"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "إضافة عمود..."
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr "منتقي الحقول"
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+"لإضافة عمود لجدولك، اسحبه\n"
+"نحو الموقع حيث تريد ظهوره."
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d عنصر)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d عناصر)"
+
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d عنصر)"
+
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d عناصر)"
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+msgid "Alternating Row Colors"
+msgstr "ألوان صفوف متناوبة"
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
+msgid "Horizontal Draw Grid"
+msgstr "شبكة رسم أفقيّة"
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
+msgid "Vertical Draw Grid"
+msgstr "شبكة رسم عموديّة"
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
+msgid "Draw focus"
+msgstr "تركيز الرّسم"
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+msgid "Cursor mode"
+msgstr "نمط المؤشّر"
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+msgid "Selection model"
+msgstr "نموذج الانتقاء"
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
+msgid "Length Threshold"
+msgstr "عتبة الطّول"
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
+msgid "Uniform row height"
+msgstr "ارتفاع صفوف منتظم"
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr "مجمّد"
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr "أدنى عرض"
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr "أدنى عرض"
+
+#: gal/e-table/e-table-header-item.c:1457
+msgid "Customize Current View"
+msgstr "تخصيص المعرض الحالي"
+
+#: gal/e-table/e-table-header-item.c:1477
+msgid "Sort Ascending"
+msgstr "ترتيب تصاعدي"
+
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Sort Descending"
+msgstr "ترتيب تنازلي"
+
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Unsort"
+msgstr "بعثرة"
+
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Group By This Field"
+msgstr "ترتيب حسب هذا الحقل"
+
+#: gal/e-table/e-table-header-item.c:1482
+msgid "Group By Box"
+msgstr "ترتيب حسب الصّندوق"
+
+#: gal/e-table/e-table-header-item.c:1484
+msgid "Remove This Column"
+msgstr "إزالة هذا العمود"
+
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Add a Column..."
+msgstr "إضافة عمود..."
+
+#: gal/e-table/e-table-header-item.c:1487
+msgid "Alignment"
+msgstr "محاذاة"
+
+#: gal/e-table/e-table-header-item.c:1488
+msgid "Best Fit"
+msgstr "أفضل ملائمة"
+
+#: gal/e-table/e-table-header-item.c:1489
+msgid "Format Columns..."
+msgstr "تنسيق الأعمدة..."
+
+#: gal/e-table/e-table-header-item.c:1491
+msgid "Customize Current View..."
+msgstr "تخصيص المعرض الحالي..."
+
+#: gal/e-table/e-table-header-item.c:1802
+msgid "Fontset"
+msgstr "مجموعة الخط"
+
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
+msgid "Sort Info"
+msgstr "معلومات التّرتيب"
+
+#: gal/e-table/e-table-header-item.c:1830
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr "جدول"
+
+#: gal/e-table/e-table-header-item.c:1837
+msgid "Tree"
+msgstr "شجرة"
+
+#: gal/e-table/e-table.c:3313
+msgid "Always Search"
+msgstr "البحث دائماً"
+
+#: gal/e-table/e-table.c:3320
+msgid "Use click to add"
+msgstr "استخدم النّقر للإضافة"
+
+#: gal/e-table/e-tree-selection-model.c:781
+#: gal/widgets/e-selection-model-array.c:543
+msgid "Cursor Row"
+msgstr "صف المؤشّر"
+
+#: gal/e-table/e-tree-selection-model.c:788
+#: gal/widgets/e-selection-model-array.c:550
+msgid "Cursor Column"
+msgstr "عمود المؤشّر"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr "محوّل جدول الشّجرة الالكترونيّة"
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr "البحث دائماً"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr "مظهر ريترو"
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr "رسم الخطوط و موسّعات +/-."
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr "حجم الموسّع"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr "حجم سهم الموسّع"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "اختيار الكل"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "طرق الإدخال"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "معالج الأحداث"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "نص"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "سميك"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "شطب"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "مرساة"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "التّرصيف"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr "عرض القصاصة"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr "ارتفاع القصاصة"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr "قصاصة"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr "ملء مستطيل القصاصة"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr "الانزياح السّيني"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr "الانزياح الصّادي"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "لون التّعبئة"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "لون GDK fill"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr "تنقيط التّعبئة"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "عرض النّص"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "ارتفاع النّص"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "استخدام الثّلاث نقاط"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "ثلاث نقاط"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr "لف السّطور"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "رموز التّوقّف"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr "أقصى عدد من السّطور"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "رسم الحدود"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "السّماح برمز السّطر الجديد"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "رسم الخلفيّة"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "رسم الزّر"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr "موقع المؤشّر"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr "سياق مراسِل فوري"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "معالجة القافزة"
+
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+msgid "Collection"
+msgstr "مجموعة"
+
+#: gal/menus/gal-define-views-dialog.c:312
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr "تعريف المعارض ل%s"
+
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
+msgid "Define Views"
+msgstr "تعريف المعارض"
+
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "تعريف المعارض ل\"%s\""
+
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr "_تحرير..."
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
+msgid "Instance"
+msgstr "مثل"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+#, fuzzy
+msgid "Save Current View"
+msgstr "حفظ المعرض المخصّص"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "    "
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+#, fuzzy
+msgid "_Create new view"
+msgstr "إنشاء معرض جديد اسمه"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+#, fuzzy
+msgid "_Name:"
+msgstr "الاسم"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+#, fuzzy
+msgid "_Replace existing view"
+msgstr "استبدال المعرض الموجود"
+
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "معرض مخصّص"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "حفظ المعرض المخصّص"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "تعريف المعارض..."
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "الاسم"
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr "مصنع"
+
+#: gal/menus/gal-view-new-dialog.c:108
+#, fuzzy
+msgid "Define New View"
+msgstr "تعريف المعارض"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "اسم المعرض الجديد"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "نوع المعرض الجديد:"
+
+#: gal/shortcut-bar/e-group-bar.c:541
+#, c-format
+msgid "Group %i"
+msgstr "المجموعة %i"
+
+#. This is the default custom color
+#: gal/widgets/color-palette.c:394
+msgid "custom"
+msgstr "مخصّص"
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:436
+msgid "Custom Color:"
+msgstr "اللّون المخصّص:"
+
+#: gal/widgets/color-palette.c:444
+msgid "Choose Custom Color"
+msgstr "اختيار لون مخصّص"
+
+#: gal/widgets/color-palette.c:577
+msgid "black"
+msgstr "أسود"
+
+#: gal/widgets/color-palette.c:578
+msgid "light brown"
+msgstr "بنّي فاتح"
+
+#: gal/widgets/color-palette.c:579
+msgid "brown gold"
+msgstr "ذهبي بنّي"
+
+#: gal/widgets/color-palette.c:580
+msgid "dark green #2"
+msgstr "أخضر غامق #2"
+
+#: gal/widgets/color-palette.c:581
+msgid "navy"
+msgstr "نيلي"
+
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
+msgid "dark blue"
+msgstr "أزرق غامق"
+
+#: gal/widgets/color-palette.c:583
+msgid "purple #2"
+msgstr "بنفسجي #2"
+
+#: gal/widgets/color-palette.c:584
+msgid "very dark gray"
+msgstr "رمادي غامق جدّاً"
+
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
+msgid "dark red"
+msgstr "أحمر غامق"
+
+#: gal/widgets/color-palette.c:588
+msgid "red-orange"
+msgstr "أحمر-برتقالي"
+
+#: gal/widgets/color-palette.c:589
+msgid "gold"
+msgstr "ذهبي"
+
+#: gal/widgets/color-palette.c:590
+msgid "dark green"
+msgstr "أخضر غامق"
+
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "dull blue"
+msgstr "أزرق باهت"
+
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
+msgid "blue"
+msgstr "أزرق"
+
+#: gal/widgets/color-palette.c:593
+msgid "dull purple"
+msgstr "بنفسجي باهت"
+
+#: gal/widgets/color-palette.c:594
+msgid "dark grey"
+msgstr "رمادي غامق"
+
+#: gal/widgets/color-palette.c:597
+msgid "red"
+msgstr "أحمر"
+
+#: gal/widgets/color-palette.c:598
+msgid "orange"
+msgstr "برتقالي"
+
+#: gal/widgets/color-palette.c:599
+msgid "lime"
+msgstr "أخضر ليموني"
+
+#: gal/widgets/color-palette.c:600
+msgid "dull green"
+msgstr "أخضر باهت"
+
+#: gal/widgets/color-palette.c:601
+msgid "dull blue #2"
+msgstr "أزرق باهت #2"
+
+#: gal/widgets/color-palette.c:602
+msgid "sky blue #2"
+msgstr "أزرق سماوي #2"
+
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
+msgid "purple"
+msgstr "بنفسجي"
+
+#: gal/widgets/color-palette.c:604
+msgid "gray"
+msgstr "رمادي"
+
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
+msgid "magenta"
+msgstr "أرجواني"
+
+#: gal/widgets/color-palette.c:608
+msgid "bright orange"
+msgstr "برتقالي ناصع"
+
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
+msgid "yellow"
+msgstr "أصفر"
+
+#: gal/widgets/color-palette.c:610
+msgid "green"
+msgstr "أخضر"
+
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
+msgid "cyan"
+msgstr "أزرق مخضر"
+
+#: gal/widgets/color-palette.c:612
+msgid "bright blue"
+msgstr "أزرق ناصع"
+
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
+msgid "red purple"
+msgstr "بنفسجي أحمر"
+
+#: gal/widgets/color-palette.c:614
+msgid "light grey"
+msgstr "رمادي فاتح"
+
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
+msgid "pink"
+msgstr "وردي"
+
+#: gal/widgets/color-palette.c:618
+msgid "light orange"
+msgstr "برتقالي فاتح"
+
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
+msgid "light yellow"
+msgstr "أصفر فاتح"
+
+#: gal/widgets/color-palette.c:620
+msgid "light green"
+msgstr "أخضر فاتح"
+
+#: gal/widgets/color-palette.c:621
+msgid "light cyan"
+msgstr "أزرق مخضر فاتح"
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
+msgid "light blue"
+msgstr "أزرق فاتح"
+
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
+msgid "light purple"
+msgstr "بنفسجي فاتح"
+
+#: gal/widgets/color-palette.c:624
+msgid "white"
+msgstr "أبيض"
+
+#: gal/widgets/color-palette.c:629
+msgid "purplish blue"
+msgstr "أزرق بنفسجي"
+
+#: gal/widgets/color-palette.c:633
+msgid "dark purple"
+msgstr "بنفسجي غامق"
+
+#: gal/widgets/color-palette.c:635
+msgid "sky blue"
+msgstr "أزرق سماوي"
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr "يوم الميلاد"
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr "العمل"
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr "المنافسة"
+
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Favorites"
+msgstr "المفضّلة"
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr "الهدايا"
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr "الأهداف/الغايات"
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr "عطلة"
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr "بطاقات الأعياد"
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr "المراسَلون المهمّون"
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr "الأفكار"
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr "دولي"
+
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Key Customer"
+msgstr "زبون مهم"
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr "متفرّقات"
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr "شخصي"
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr "مكالمات هاتفيّة"
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr "الحالة"
+
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Strategies"
+msgstr "الاستراتيجيّات"
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr "المزوّدون"
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr "الوقت و المصاريف"
+
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr "VIP"
+
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr "منتظر"
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr "ECML"
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr "ECategoriesMasterListCombo"
+
+#: gal/widgets/e-categories-master-list-dialog.c:213
+msgid "* Click here to add a category *"
+msgstr "* أنقر هنا لإضافة صنف *"
+
+#: gal/widgets/e-categories-master-list-dialog.c:214
+msgid "Category"
+msgstr "الصّنف"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+msgid "Add Category"
+msgstr "إضافة صنف"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+msgid "Edit Category"
+msgstr "تحرير الصّنف"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr "تحرير قائمة الأصناف العامّة"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+msgid "_Edit category:"
+msgstr "_تحرير الصّنف:"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+msgid "_New category:"
+msgstr "صنف _جديد:"
+
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+msgid "All Categories"
+msgstr "كل الأصناف"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "الأصناف"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "إضافة لقائمة الأصناف العامّة"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "إضافة الكل لقائمة الأصناف العامّة"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "حذف من قائمة الأصناف العامّة"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "حذف الكل من قائمة الأصناف العامّة"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "تحرير الأصناف"
+
+#: gal/widgets/e-selection-model.c:210
+msgid "Sorter"
+msgstr "المرتّب"
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr "نمط الانتقاء"
+
+#: gal/widgets/e-selection-model.c:225
+msgid "Cursor Mode"
+msgstr "نمط المؤشّر"
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "تحرير قائمة الأصناف الرّئيسة..."
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "العنصر (أو العناصر) ينتمي لهذه الأ_صناف:"
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "الأصناف ال_متوفّرة:"
+
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "الأصناف"
+
+#~ msgid ""
+#~ "The current view will replace the given view.  Any folders\n"
+#~ "set to this view wil be replaced with the current view."
+#~ msgstr ""
+#~ "المعرض الحالي سيستخدم مكان المعرض الحالي. أيّة دلائل\n"
+#~ "تعيّن لهذا المعرض سيستخدم مكانها المعرض الحالي."
+
+#~ msgid "This will create a new View."
+#~ msgstr "هذا سينشيء معرضاً جديداً."

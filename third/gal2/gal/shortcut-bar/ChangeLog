@@ -1,3 +1,10 @@
+2004-02-12  Rodney Dawes  <dobey@ximian.com>
+
+	* e-vscrolled-bar.c (e_vscrolled_bar_init): Change the
+	shadow type for the arrows here, so that themes that do handle the
+	use of shadow types with arrows, draw things correctly, instead of
+	following what the old default gtk+ did in 1.x
+
 2003-06-16  Mike Kestner  <mkestner@ximian.com>
 
 	* e-vscrolled-bar.c (e_vscrolled_bar_init): remove padding 

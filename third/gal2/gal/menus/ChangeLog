@@ -1,3 +1,64 @@
+2004-08-02  Radek Doulik  <rodo@ximian.com>
+
+	* gal-define-views-dialog.c: save collection on exit
+
+	Fixes #61936
+
+2004-07-23  Radek Doulik  <rodo@ximian.com>
+
+	* gal-define-views-dialog.c: watch for selection changes and set
+	Delete button sensitivity according to view collection item
+	built-in flag
+
+	Fixes #57914
+
+2004-06-21  Radek Doulik  <rodo@ximian.com>
+
+	* gal-view-instance-save-as-dialog.c
+	(gal_view_instance_save_as_dialog_save): clone view before saving
+	it to avoid problems with setting current_view_id
+
+	Fixes #57354
+
+2004-06-14  Radek Doulik  <rodo@ximian.com>
+
+	* gal-view-instance-save-as-dialog.glade: prepend label " " before
+	the ETable
+
+	* gal-view-instance-save-as-dialog.c
+	(gal_view_instance_save_as_dialog_set_instance): select first row
+	(gal_view_instance_save_as_dialog_init): show the etable
+
+2004-06-10  Radek Doulik  <rodo@ximian.com>
+
+	* gal-view-instance-save-as-dialog.glade: HIGified, updated as
+	suggested in #46236
+
+	* gal-view-instance-save-as-dialog.c (gvisad_setup_radio_buttons):
+	removed notebook with help text switching
+	(gal_view_instance_save_as_dialog_init): set dialog title
+
+	Fixes #46236
+
+2004-06-08  Jon Oberheide  <jon@focalhost.com>
+
+	* gal-define-views-dialog.c (gal_define_views_dialog_init), 
+	gal-define-views.glade: remove defunct Revert button and replace 
+	OK/Cancel buttons with a Close button.  Fixes bug #48131.
+
+2004-05-10  Jon Oberheide  <jon@focalhost.com>
+
+	Fixes #48129
+	
+	* gal-view-new-dialog.c (gal_view_new_dialog_init): set dialog
+	title
+
+2004-04-05  JP Rosevear <jpr@ximian.com>
+
+	* gal-view-instance.c (gal_view_instance_set_current_view_id):
+	don't issue the display view signal a second time, connect_view
+	does this for us
+
 2003-06-23  Larry Ewing  <lewing@ximian.com>
 
 	* gal-define-views-dialog.c (gdvd_button_new_dialog_callback): fix

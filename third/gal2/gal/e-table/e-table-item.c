@@ -39,6 +39,7 @@
 #include <gdk/gdkkeysyms.h>
 #include "e-table-subset.h"
 #include "e-cell.h"
+#include "gal/a11y/e-table/gal-a11y-e-table-item-factory.h"
 #include "gal/widgets/e-hsv-utils.h"
 #include "gal/widgets/e-canvas.h"
 #include "gal/widgets/e-canvas-utils.h"
@@ -46,6 +47,7 @@
 #include "gal/util/e-i18n.h"
 #include <string.h>
 #include <stdlib.h>
+#include <atk/atk.h>
 
 #define PARENT_OBJECT_TYPE gnome_canvas_item_get_type ()
 
@@ -58,6 +60,9 @@
 #else
 #define e_table_item_leave_edit_(x) (e_table_item_leave_edit((x)))
 #endif
+
+static void eti_check_cursor_bounds (ETableItem *eti);
+static void eti_cancel_drag_due_to_model_change (ETableItem *eti);
 
 /* FIXME: Do an analysis of which cell functions are needed before
    realize and make sure that all of them are doable by all the cells
@@ -74,6 +79,8 @@ enum {
 	KEY_PRESS,
 	START_DRAG,
 	STYLE_SET,
+	SELECTION_MODEL_REMOVED,
+	SELECTION_MODEL_ADDED,
 	LAST_SIGNAL
 };
 
@@ -259,6 +266,8 @@ eti_get_cell_background_color (ETableItem *eti, int row, int col, gboolean selec
 	if (color_spec != NULL) {
 		if (gdk_color_parse (color_spec, &bg)) {
 			background = gdk_color_copy (&bg);
+			gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (canvas)), background,
+						  FALSE, TRUE);
 			allocated = TRUE;
 		}
 	}
@@ -272,7 +281,8 @@ eti_get_cell_background_color (ETableItem *eti, int row, int col, gboolean selec
 				allocated = TRUE;
 			}
 			e_hsv_tweak (background, 0.0f, 0.0f, -0.07f);
-			gdk_color_alloc (gtk_widget_get_colormap (GTK_WIDGET (canvas)), background);
+			gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (canvas)), background,
+						  FALSE, TRUE);
 		}
 	}
 	if (allocatedp)
@@ -347,7 +357,15 @@ eti_attach_cell_views (ETableItem *eti)
 
 	g_assert (eti->header);
 	g_assert (eti->table_model);
-	
+
+	/* this is just c&p from model pre change, but it fixes things */
+	eti_cancel_drag_due_to_model_change (eti);
+	eti_check_cursor_bounds (eti);
+	if (eti_editing (eti))
+		e_table_item_leave_edit_(eti);
+	eti->motion_row = -1;
+	eti->motion_col = -1;
+
 	/*
 	 * Now realize the various ECells
 	 */
@@ -1062,6 +1080,8 @@ eti_table_model_pre_change (ETableModel *table_model, ETableItem *eti)
 	eti_check_cursor_bounds (eti);
 	if (eti_editing (eti))
 		e_table_item_leave_edit_(eti);
+	eti->motion_row = -1;
+	eti->motion_col = -1;
 	eti_freeze (eti);
 }
 
@@ -1311,6 +1331,8 @@ eti_add_selection_model (ETableItem *eti, ESelectionModel *selection)
 		G_CALLBACK (eti_cursor_activated), eti);
 
 	eti_selection_change(selection, eti);
+        g_signal_emit_by_name (G_OBJECT(eti),
+                               "selection_model_added", eti->selection);
 }
 
 static void
@@ -1456,6 +1478,8 @@ eti_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpe
 		break;
 		
 	case PROP_SELECTION_MODEL:
+		g_signal_emit_by_name (G_OBJECT(eti),
+				       "selection_model_removed", eti->selection);
 		eti_remove_selection_model (eti);
 		if (g_value_get_object (value))
 			eti_add_selection_model (eti, E_SELECTION_MODEL(g_value_get_object(value)));
@@ -1558,6 +1582,8 @@ eti_init (GnomeCanvasItem *item)
 {
 	ETableItem *eti = E_TABLE_ITEM (item);
 
+	eti->motion_row 	       = -1;
+	eti->motion_col 	       = -1;
 	eti->editing_col               = -1;
 	eti->editing_row               = -1;
 	eti->height                    = 0;
@@ -2512,7 +2538,7 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		break;
 	}
 	case GDK_MOTION_NOTIFY: {
-		int col, row;
+		int col, row, flags;
 		double x1, y1;
 		gint cursor_col, cursor_row;
 
@@ -2536,6 +2562,19 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		if (!find_cell (eti, e->motion.x, e->motion.y, &col, &row, &x1, &y1))
 			return TRUE;
 
+		if (eti->motion_row != -1 && eti->motion_col != -1 &&
+		    (row != eti->motion_row || col != eti->motion_col)) {
+			GdkEvent *cross = gdk_event_new (GDK_LEAVE_NOTIFY);
+			cross->crossing.time = e->motion.time;
+			return_val = eti_e_cell_event (eti, eti->cell_views [eti->motion_col],
+						       cross, cross->crossing.time,
+					               view_to_model_col(eti, eti->motion_col), 
+						       eti->motion_col, eti->motion_row, 0);
+		}
+
+		eti->motion_row = row;
+		eti->motion_col = col;
+
 		g_object_get(eti->selection,
 			     "cursor_row", &cursor_row,
 			     "cursor_col", &cursor_col,
@@ -2555,18 +2594,21 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		}
 #endif
 
+		flags = 0;
 		if (cursor_row == view_to_model_row(eti, row) && cursor_col == view_to_model_col(eti, col)){
-			ecell_view = eti->cell_views [col];
-
-			/*
-			 * Adjust the event positions
-			 */
-			e->motion.x = x1;
-			e->motion.y = y1;
-
-			return_val = eti_e_cell_event (eti, ecell_view, e, e->motion.time,
-						       view_to_model_col(eti, col), col, row, E_CELL_EDITING | E_CELL_CURSOR);
+			flags = E_CELL_EDITING | E_CELL_CURSOR;
 		}
+
+		ecell_view = eti->cell_views [col];
+
+		/*
+		 * Adjust the event positions
+		 */
+		e->motion.x = x1;
+		e->motion.y = y1;
+
+		return_val = eti_e_cell_event (eti, ecell_view, e, e->motion.time,
+					       view_to_model_col(eti, col), col, row, flags);
 		break;
 	}
 
@@ -2625,6 +2667,12 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		case GDK_KP_Up:
 		case GDK_Down:
 		case GDK_KP_Down:
+			if ((e->key.state & GDK_MOD1_MASK)
+			    && ((e->key.keyval == GDK_Down ) || (e->key.keyval == GDK_KP_Down))) {
+				gint view_col = model_to_view_col(eti, cursor_col);
+				if (eti_e_cell_event (eti, eti->cell_views [view_col], e, ((GdkEventKey *)e)->time, cursor_col, view_col, model_to_view_row(eti, cursor_row),  E_CELL_CURSOR))
+					return TRUE;
+			} else
 			return_val = e_selection_model_key_press(E_SELECTION_MODEL (eti->selection), (GdkEventKey *) e);
 			break;
 		case GDK_Home:
@@ -2646,6 +2694,10 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		case GDK_Tab:
 		case GDK_KP_Tab:
 		case GDK_ISO_Left_Tab:
+			if ((e->key.state & GDK_CONTROL_MASK) != 0) {
+				return_val = FALSE;
+				break;
+			}
 			if (eti->cursor_mode == E_CURSOR_SPREADSHEET) {
 				if ((e->key.state & GDK_SHIFT_MASK) != 0){
 				/* shift tab */
@@ -2684,18 +2736,17 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		case GDK_ISO_Enter:
 		case GDK_3270_Enter:
 			if (eti_editing (eti)){
-				e_table_item_leave_edit_(eti);
-#if 0
 				ecell_view = eti->cell_views [eti->editing_col];
 				return_val = eti_e_cell_event (eti, ecell_view, e, e->key.time,
-							       view_to_model_col(eti, eti->editing_col),
-							       eti->editing_col, eti->editing_row, E_CELL_EDITING | E_CELL_CURSOR);
-#endif
+							       view_to_model_col (eti, eti->editing_col),
+							       eti->editing_col, eti->editing_row, E_CELL_EDITING | E_CELL_CURSOR | E_CELL_PREEDIT);
+				if (!return_val)
+					break;
 			}
 			g_signal_emit (eti, eti_signals [KEY_PRESS], 0,
-				       model_to_view_row(eti, cursor_row), cursor_col, e, &return_val);
+				       model_to_view_row (eti, cursor_row), cursor_col, e, &return_val);
 			if (!return_val)
-				return_val = e_selection_model_key_press(E_SELECTION_MODEL (eti->selection), (GdkEventKey *) e);
+				return_val = e_selection_model_key_press (E_SELECTION_MODEL (eti->selection), (GdkEventKey *) e);
 			break;
 			
 		default:
@@ -2782,6 +2833,14 @@ eti_event (GnomeCanvasItem *item, GdkEvent *e)
 		if (eti->tooltip->timer)
 			gtk_timeout_remove (eti->tooltip->timer);
 		eti->tooltip->timer = 0;
+		if (eti->motion_row != -1 && eti->motion_col != -1)
+			return_val = eti_e_cell_event (eti, eti->cell_views [eti->motion_col],
+						       e, e->crossing.time,
+					               view_to_model_col(eti, eti->motion_col), 
+						       eti->motion_col, eti->motion_row, 0);
+		eti->motion_row = -1;
+		eti->motion_col = -1;
+
 		break;
 
 	case GDK_FOCUS_CHANGE:
@@ -2868,6 +2927,8 @@ eti_class_init (GObjectClass *object_class)
 	eti_class->key_press        = NULL;
 	eti_class->start_drag       = NULL;
 	eti_class->style_set        = eti_style_set;
+	eti_class->selection_model_removed = NULL;
+	eti_class->selection_model_added = NULL;
 
 	g_object_class_install_property (object_class, PROP_TABLE_HEADER,
 					 g_param_spec_object ("ETableHeader",
@@ -3042,6 +3103,31 @@ eti_class_init (GObjectClass *object_class)
 			      NULL, NULL,
 			      e_marshal_NONE__OBJECT,
 			      G_TYPE_NONE, 1, GTK_TYPE_STYLE);
+
+	eti_signals[SELECTION_MODEL_REMOVED] =
+		g_signal_new ("selection_model_removed",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (ETableItemClass, selection_model_removed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_POINTER);
+
+	eti_signals[SELECTION_MODEL_ADDED] =
+		g_signal_new ("selection_model_added",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (ETableItemClass, selection_model_added),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_POINTER);
+
+        atk_registry_set_factory_type (atk_get_default_registry (),
+				       E_TABLE_ITEM_TYPE,
+				       gal_a11y_e_table_item_factory_get_type ());
+
 }
 
 E_MAKE_TYPE (e_table_item,

@@ -252,7 +252,7 @@ create_table (void)
 	/* Show it all. */
 	gtk_widget_show_all (window);
 
-	g_object_weak_ref (window, weak_ref_func, NULL);
+	g_object_weak_ref (G_OBJECT (window), weak_ref_func, NULL);
 }
 
 /* This is the main function which just initializes gnome and call our create_table function */

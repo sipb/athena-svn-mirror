@@ -1,25 +1,31 @@
+# translation of ta.po to Tamil
 # Tamil Translation of gal.pot
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2004 Free Software Foundation, Inc.
 # Dinesh Nadarajah <n_dinesh@yahoo.com>, 2001.
+# Jayaradha N <jaya@pune.redhat.com>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gal 0.8.99.0\n"
-"POT-Creation-Date: 2003-09-11 17:09-0500\n"
-"PO-Revision-Date: 2001-06-16 09:06+0300\n"
-"Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
-"Language-Team: Tamil GNOME <tamillinux.com>\n"
+"Project-Id-Version: ta\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-08-23 15:53+0530\n"
+"Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
+"Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
-msgstr ""
+msgstr "கையாளல் அளவு"
 
 #: gal/e-paned/e-paned.c:148
 msgid "Quantum"
-msgstr ""
+msgstr "க்வாண்டம்"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -51,85 +57,82 @@ msgstr "%b %d %Y"
 
 #: gal/e-table/e-cell-pixbuf.c:392
 msgid "Selected Column"
-msgstr ""
+msgstr "தேர்வு செய்யப்பட்ட நெடுவரிசை"
 
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr ""
+msgstr "குறிப்பிடப்பட்ட நெடுவரிசை"
 
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr ""
+msgstr "தேர்வு செய்யப்படாத நெடுவரிசை"
 
-#: gal/e-table/e-cell-text.c:1516
+#: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
-msgstr ""
+msgstr "அடிக்கப்பட்ட நெடுவரிசை"
 
-#: gal/e-table/e-cell-text.c:1523
+#: gal/e-table/e-cell-text.c:1710
 msgid "Underline Column"
-msgstr ""
+msgstr "அடிக்கோடிட்ட நெடுவரிசை"
 
-#: gal/e-table/e-cell-text.c:1530
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
-msgstr "நெடுவாிசை ஒன்றைச் சேர்..."
+msgstr "பெரிதாக்கப்பட்ட நெடுவரிசை"
 
-#: gal/e-table/e-cell-text.c:1537
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
-msgstr "நெடுவாிசைகளை வடிவமை..."
+msgstr "நிற நெடுவரிசை"
 
-#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
-msgstr "அட்டவணை"
+msgstr "திருத்தகூடிய"
 
-#: gal/e-table/e-cell-text.c:1551
+#: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
-msgstr ""
+msgstr "BG நிற நெடுவரிசை"
 
-#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
-#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-header-item.c:1816
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
-msgstr ""
+msgstr "தலைப்பு"
 
-#: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
-#: gal/e-text/e-text.c:3357
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
 msgid "Model"
-msgstr ""
+msgstr "மாதிரி"
 
-#: gal/e-table/e-table-click-to-add.c:470
+#: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
-msgstr ""
+msgstr "செய்தி"
 
-#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
-#: gal/e-text/e-text.c:3535
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
 msgid "Width"
-msgstr ""
+msgstr "அகலம்"
 
-#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
-#: gal/e-text/e-text.c:3543
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
 msgid "Height"
-msgstr ""
+msgstr "உயரம்"
 
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
-msgstr "<- _கழட்டு"
+msgstr "<- _நீக்கு"
 
 #: gal/e-table/e-table-config-no-group.glade.h:2
 #: gal/e-table/e-table-config.glade.h:2
@@ -177,45 +180,43 @@ msgid "Move _Up"
 msgstr "_மேல் நகர்த்து"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
-#: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
 msgstr "இந்த புலங்களை வரிசையாக காண்பிக்கவும்:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
-#: gal/e-table/e-table-config.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
 msgid "Show Fields"
 msgstr "புலங்களை காண்பிக்கவும்"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
-#: gal/e-table/e-table-config.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
 msgid "Show field in View"
 msgstr "காட்சியில் புலத்தை காண்பி"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
-#: gal/e-table/e-table-config.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
 msgid "Sort"
 msgstr "வரிசைப்படுத்தவும்"
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
-#: gal/e-table/e-table-config.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
 msgid "Sort Items By"
 msgstr "உருப்படிகளை வரிசைப்படுத்தும் வகை"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
-#: gal/e-table/e-table-config.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
 msgid "Then By"
-msgstr ""
+msgstr "பின்"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
-#: gal/e-table/e-table-config.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
 msgid "_Add ->"
 msgstr "_சேர் ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:18
-#, fuzzy
+#: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
-msgstr "_புலங்கள்..."
+msgstr "(_F) காட்டப்பட்ட புலங்கள்..."
 
 #: gal/e-table/e-table-config-no-group.glade.h:19
 #: gal/e-table/e-table-config.glade.h:20
@@ -225,15 +226,15 @@ msgstr "_வரிசைப்படுத்தவும்..."
 #: gal/e-table/e-table-config-no-group.glade.h:20
 #: gal/e-table/e-table-config.glade.h:21
 msgid "dialog1"
-msgstr ""
+msgstr "உரையாடல்1"
 
 #: gal/e-table/e-table-config.c:152
 msgid "State"
-msgstr ""
+msgstr "நிலை"
 
 #: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Ascending)"
-msgstr "(மேலேறுகின்றது)"
+msgstr "(ஏறுவரிசை)"
 
 #: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
 msgid "(Descending)"
@@ -247,9 +248,31 @@ msgstr "வரிசையாஇக்கவில்லை"
 msgid "No grouping"
 msgstr "தொகுத்தல் கிடையாது"
 
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
 msgid "_Group By..."
 msgstr "_தொகுதிப்படுத்தும் வகை..."
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr "(_S)இந்த புலங்களை வரிசையாக காண்பிக்கவும்:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "DnD அடையாளம்"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "முழு தலைப்பு"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "நெடுவரிசையை சேர்..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -262,25 +285,6 @@ msgid ""
 msgstr ""
 "உங்கள் அட்டவணையில் ஓர் நெடுவாிசையை சேர்க்க, அந்த\n"
 "நெடுவாிசை தோன்ற வேண்டிய இடத்தில் இழுத்துப் போடவும்."
-
-#: gal/e-table/e-table-field-chooser-dialog.c:74
-#: gal/e-table/e-table-field-chooser-item.c:646
-#: gal/e-table/e-table-field-chooser.c:77
-#: gal/e-table/e-table-header-item.c:1738
-msgid "DnD code"
-msgstr ""
-
-#: gal/e-table/e-table-field-chooser-dialog.c:81
-#: gal/e-table/e-table-field-chooser-item.c:653
-#: gal/e-table/e-table-field-chooser.c:84
-#: gal/e-table/e-table-header-item.c:1752
-msgid "Full Header"
-msgstr ""
-
-#: gal/e-table/e-table-field-chooser-dialog.c:123
-#, fuzzy
-msgid "Add a column..."
-msgstr "நெடுவாிசை ஒன்றைச் சேர்..."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -305,160 +309,308 @@ msgstr "%s (%d உருப்படிகள்)"
 #: gal/e-table/e-table-group-container.c:906
 #: gal/e-table/e-table-group-container.c:907
 msgid "Alternating Row Colors"
-msgstr ""
+msgstr "அடுத்தடுத்த வரிசை நிறங்கள்"
 
 #: gal/e-table/e-table-group-container.c:913
-#: gal/e-table/e-table-group-container.c:914
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
-msgstr ""
+msgstr "கிடைமட்ட கட்டங்கள்"
 
 #: gal/e-table/e-table-group-container.c:920
-#: gal/e-table/e-table-group-container.c:921
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
-msgstr ""
+msgstr "மேல்கீழ் கட்டங்கள்"
 
 #: gal/e-table/e-table-group-container.c:927
-#: gal/e-table/e-table-group-container.c:928
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
-msgstr ""
+msgstr "குறிப்பை வரை"
 
 #: gal/e-table/e-table-group-container.c:934
 #: gal/e-table/e-table-group-container.c:935
 msgid "Cursor mode"
-msgstr ""
+msgstr "கர்சர் பாங்கு"
 
 #: gal/e-table/e-table-group-container.c:941
 #: gal/e-table/e-table-group-container.c:942
 msgid "Selection model"
-msgstr ""
+msgstr "தேர்வு மாதிரி"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
-msgstr ""
+msgstr "துவக்க நீளம்"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
-msgstr ""
+msgstr "ஒத்த வரிசை உயரங்கள்"
 
 #: gal/e-table/e-table-group-container.c:962
 #: gal/e-table/e-table-group-container.c:963
 msgid "Frozen"
-msgstr ""
+msgstr "முடிவான"
 
 #: gal/e-table/e-table-group-container.c:983
 msgid "Minimum width"
-msgstr ""
+msgstr "குறைந்தபட்ச அகலம்"
 
 #: gal/e-table/e-table-group-container.c:984
 msgid "Minimum Width"
-msgstr ""
+msgstr "குறைந்தபட்ச அகலம்"
 
-#: gal/e-table/e-table-header-item.c:1451
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1457
 msgid "Customize Current View"
 msgstr "தற்போதைய காட்சியை தனிப்பயனாக்கு..."
 
-#: gal/e-table/e-table-header-item.c:1471
+#: gal/e-table/e-table-header-item.c:1477
 msgid "Sort Ascending"
 msgstr "ஏறுமுகம் வரிசையாக வரிசைப்படுத்து"
 
-#: gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
 msgid "Sort Descending"
 msgstr "இறங்கு வரிசையாக வரிசைப்படுத்து"
 
-#: gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
 msgid "Unsort"
 msgstr "வரிசைப்படுத்த வேண்டாம்"
 
-#: gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
 msgid "Group By This Field"
 msgstr "இந்த புலம்படி தொகுதிச்செய்"
 
-#: gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
 msgstr "பெட்டிப்படி தொகுதிச்செய்"
 
-#: gal/e-table/e-table-header-item.c:1478
+#: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
 msgstr "இந்த நெடுவாிசையை கழட்டு"
 
-#: gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
 msgstr "நெடுவாிசை ஒன்றைச் சேர்..."
 
-#: gal/e-table/e-table-header-item.c:1481
+#: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
 msgstr "நேர்ப்படுத்தம்"
 
-#: gal/e-table/e-table-header-item.c:1482
+#: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
 msgstr "சரியான பொருத்தம்"
 
-#: gal/e-table/e-table-header-item.c:1483
+#: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
 msgstr "நெடுவாிசைகளை வடிவமை..."
 
-#: gal/e-table/e-table-header-item.c:1485
+#: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
 msgstr "தற்போதைய காட்சியை தனிப்பயனாக்கு..."
 
-#: gal/e-table/e-table-header-item.c:1745
+#: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
-msgstr ""
+msgstr "எழுத்துருஅமை"
 
-#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
-msgstr "வரிசைப்படுத்தவும்"
+msgstr "வரிசைப்படுத்திய தகவல்"
 
-#: gal/e-table/e-table-header-item.c:1773
+#: gal/e-table/e-table-header-item.c:1830
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
 msgstr "அட்டவணை"
 
-#: gal/e-table/e-table-header-item.c:1780
-#, fuzzy
+#: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
-msgstr "பச்சை நிறம்"
+msgstr "மரம்"
 
-#: gal/e-table/e-table.c:3244
+#: gal/e-table/e-table.c:3313
 msgid "Always Search"
-msgstr ""
+msgstr "எப்போதும் தேடு"
 
-#: gal/e-table/e-table.c:3251
+#: gal/e-table/e-table.c:3320
 msgid "Use click to add"
-msgstr ""
+msgstr "சேர்க்க க்ளிக் செய்யவும்"
 
-#: gal/e-table/e-tree-selection-model.c:767
+#: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
-msgstr ""
+msgstr "கர்சர் வரிசை"
 
-#: gal/e-table/e-tree-selection-model.c:774
+#: gal/e-table/e-tree-selection-model.c:788
 #: gal/widgets/e-selection-model-array.c:550
-#, fuzzy
 msgid "Cursor Column"
-msgstr "தனிப்பயன் வண்ணம்:"
+msgstr "கர்சர் நெடுவரிசை"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr "Eகிளை அட்டவணை ஏற்பி"
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr "எப்போதும் தேடு"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr "புதிய பார்வை"
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr "கோடுகள் +/- விரிவாக்கிகளை வரை"
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr "விரிவாக்கி அளவு"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr "விரிவாக்கி அம்புக்குறியின் அளவு"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "அனைத்தையும் தேர்வு செய்"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "உள்ளிடும் முறைகள்"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "நிகழ்வு செயல்முறைகள்"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "உரை"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "தடித்த"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "அடிக்கவும்"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "இணைப்பு"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "சீராக்கு"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr "க்ளிப் அகலம்"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr "க்ளில் உயரம்"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr "க்ளிப்"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr "க்ளிக் செவ்வகத்தை நிரப்பு"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr "X ஒதுக்கம்"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr "Y ஒதுக்கம்"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "வண்ண நிரப்பி"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "GDK வண்ண நிரப்பி"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr "புள்ளிகளால் நிரப்பு"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "உரை அகலம்"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "உரை உயரம்"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "நீள்வட்டத்தை பயன்படுத்து"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "நீள்வட்டம்"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr "வரி மடக்கி"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "எழுத்து நிறுத்தம்"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr "அதிகபட்ச வரிகள்"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "ஓரங்களை வரை"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "புதிய வரிகளை அனுமதி"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "பின்னனியை வரை"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "பட்டன்களை வரை"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr "கர்சர் நிலை"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr "IM தறுவாய்"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "தோன்றக் சாளரங்களை கையாள்"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
-#, fuzzy
 msgid "Collection"
-msgstr "போட்டி"
+msgstr "சேகரிப்பு"
 
-#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Define Views for %s"
-msgstr "\"%s\"க்கு காட்சிகளை வரையறு"
+msgstr "%s க்கு காட்சிகளை வரையறு"
 
-#: gal/menus/gal-define-views-dialog.c:292
-#: gal/menus/gal-define-views-dialog.c:294
-#, fuzzy
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
 msgid "Define Views"
-msgstr "\"%s\"க்கு காட்சிகளை வரையறு"
+msgstr "கு காட்சிகளை வரையறு"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
@@ -469,47 +621,60 @@ msgstr "\"%s\"க்கு காட்சிகளை வரையறு"
 msgid "_Edit..."
 msgstr "_பதிப்பி..."
 
-#: gal/menus/gal-view-instance.c:575
-#, fuzzy
-msgid "Custom View"
-msgstr "தற்போதைய காட்சியை தனிப்பயனாக்கு..."
-
-#: gal/menus/gal-view-instance.c:576
-msgid "Save Custom View"
-msgstr ""
-
-#: gal/menus/gal-view-instance.c:580
-#, fuzzy
-msgid "Define Views..."
-msgstr "\"%s\"க்கு காட்சிகளை வரையறு"
-
-#: gal/menus/gal-view-instance-save-as-dialog.c:179
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
-msgstr ""
+msgstr "நிகழ்வுகள்"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+msgid "Save Current View"
+msgstr "தற்போதைய காட்சியை சேமி"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
-msgid "Create New View Named"
-msgstr ""
+msgid "    "
+msgstr "    "
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
-msgid "Replace Existing View"
-msgstr ""
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr "*"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-msgid ""
-"The current view will replace the given view.  Any folders\n"
-"set to this view wil be replaced with the current view."
-msgstr ""
+msgid "_Create new view"
+msgstr "(_C)புதிய காட்சியை உருவாக்கு"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+msgid "_Name:"
+msgstr "(_N)பெயர்:"
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-msgid "This will create a new View."
-msgstr ""
+msgid "_Replace existing view"
+msgstr "(_R)தற்போதிய காட்சியால் மாற்று"
 
-#: gal/menus/gal-view-new-dialog.glade.h:1
-#: gal/widgets/gal-categories.glade.h:1
-#: gal/widgets/e-categories-master-list-dialog.glade.h:1
-msgid "*"
-msgstr ""
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "தனிப்பயன் காட்சி"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "தனிப்பயன் காட்சியை சேமி"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "காட்சிகளை வரையறு"
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "பெயர்"
+
+#: gal/menus/gal-view-new-dialog.c:77
+msgid "Factory"
+msgstr "தொழிற்சாலை"
+
+#: gal/menus/gal-view-new-dialog.c:108
+msgid "Define New View"
+msgstr "புதிய காட்சிகளை வரையறு"
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Name of new view:"
@@ -519,250 +684,200 @@ msgstr "புதிய காட்சியின் பெயர்:"
 msgid "Type of view:"
 msgstr "காட்சியின் வகை:"
 
-#: gal/menus/gal-view-new-dialog.c:70
-msgid "Name"
-msgstr ""
-
-#: gal/menus/gal-view-new-dialog.c:77
-msgid "Factory"
-msgstr ""
-
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
 msgid "Group %i"
 msgstr "தொகுதி %i"
 
 #. This is the default custom color
-#: gal/widgets/color-palette.c:393
+#: gal/widgets/color-palette.c:394
 msgid "custom"
 msgstr "தனிப்பயன்"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
-#: gal/widgets/color-palette.c:435
+#: gal/widgets/color-palette.c:436
 msgid "Custom Color:"
 msgstr "தனிப்பயன் வண்ணம்:"
 
-#: gal/widgets/color-palette.c:443
+#: gal/widgets/color-palette.c:444
 msgid "Choose Custom Color"
 msgstr "தனிப்பயன் வண்ணம் தேர்வு செய்யவும்"
 
-#: gal/widgets/color-palette.c:576
+#: gal/widgets/color-palette.c:577
 msgid "black"
 msgstr "கறுப்பு நிறம்"
 
-#: gal/widgets/color-palette.c:577
+#: gal/widgets/color-palette.c:578
 msgid "light brown"
 msgstr "மங்கமான காவி நிறம்"
 
-#: gal/widgets/color-palette.c:578
+#: gal/widgets/color-palette.c:579
 msgid "brown gold"
 msgstr "காவி-தங்கம் நிறம்"
 
-#: gal/widgets/color-palette.c:579
+#: gal/widgets/color-palette.c:580
 msgid "dark green #2"
 msgstr "கருத்த பச்சை #2"
 
-#: gal/widgets/color-palette.c:580
+#: gal/widgets/color-palette.c:581
 msgid "navy"
-msgstr ""
+msgstr "நேவி"
 
-#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
 msgid "dark blue"
 msgstr "கருத்த நீல நிறம்"
 
-#: gal/widgets/color-palette.c:582
+#: gal/widgets/color-palette.c:583
 msgid "purple #2"
 msgstr "ஊதா நிறம் #2"
 
-#: gal/widgets/color-palette.c:583
+#: gal/widgets/color-palette.c:584
 msgid "very dark gray"
 msgstr "மிகக் கருத்த சாம்பல் நிறம்"
 
-#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
 msgid "dark red"
 msgstr "கருத்த சிவப்பு நிறம்"
 
-#: gal/widgets/color-palette.c:587
+#: gal/widgets/color-palette.c:588
 msgid "red-orange"
 msgstr "சிவப்பு-செம்மஞ்சல் நிறம்"
 
-#: gal/widgets/color-palette.c:588
+#: gal/widgets/color-palette.c:589
 msgid "gold"
 msgstr "தங்கம் நிறம்"
 
-#: gal/widgets/color-palette.c:589
+#: gal/widgets/color-palette.c:590
 msgid "dark green"
 msgstr "கருத்த பச்சை"
 
-#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
 msgid "dull blue"
 msgstr "தெளிவற்ற நீல நிறம்"
 
-#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
 msgid "blue"
 msgstr "நீல நிறம்"
 
-#: gal/widgets/color-palette.c:592
+#: gal/widgets/color-palette.c:593
 msgid "dull purple"
 msgstr "தெளிவற்ற ஊதா நிறம்"
 
-#: gal/widgets/color-palette.c:593
+#: gal/widgets/color-palette.c:594
 msgid "dark grey"
 msgstr "கருத்த சாம்பல் நிறம்"
 
-#: gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:597
 msgid "red"
 msgstr "சிவப்பு நிறம்"
 
-#: gal/widgets/color-palette.c:597
+#: gal/widgets/color-palette.c:598
 msgid "orange"
 msgstr "செம்மஞ்சல் நிறம்"
 
-#: gal/widgets/color-palette.c:598
+#: gal/widgets/color-palette.c:599
 msgid "lime"
 msgstr "எழுமிச்சம் பழ நிறம்"
 
-#: gal/widgets/color-palette.c:599
+#: gal/widgets/color-palette.c:600
 msgid "dull green"
 msgstr "தெளிவற்ற பச்சை நிறம்"
 
-#: gal/widgets/color-palette.c:600
+#: gal/widgets/color-palette.c:601
 msgid "dull blue #2"
 msgstr "தெளிவற்ற நீல நிறம் #2"
 
-#: gal/widgets/color-palette.c:601
+#: gal/widgets/color-palette.c:602
 msgid "sky blue #2"
 msgstr "வான் நீல நிறம் #2"
 
-#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
 msgid "purple"
 msgstr "ஊதா நிறம்"
 
-#: gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:604
 msgid "gray"
 msgstr "சாம்பல் நிறம்"
 
-#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
 msgid "magenta"
 msgstr "ஆழ்ந்த-சிவப்பு நிறம்"
 
-#: gal/widgets/color-palette.c:607
+#: gal/widgets/color-palette.c:608
 msgid "bright orange"
 msgstr "ஒளிவான செம்மஞ்சல் நிறம்"
 
-#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
 msgid "yellow"
 msgstr "மஞ்சல் நிறம்"
 
-#: gal/widgets/color-palette.c:609
+#: gal/widgets/color-palette.c:610
 msgid "green"
 msgstr "பச்சை நிறம்"
 
-#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
 msgid "cyan"
-msgstr ""
+msgstr "சியான்"
 
-#: gal/widgets/color-palette.c:611
+#: gal/widgets/color-palette.c:612
 msgid "bright blue"
 msgstr "ஒளிவான நீல நிறம்"
 
-#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
 msgid "red purple"
 msgstr "சிவப்பு ஊதா நிறம்"
 
-#: gal/widgets/color-palette.c:613
+#: gal/widgets/color-palette.c:614
 msgid "light grey"
 msgstr "மங்கமான சாம்பல் நிறம்"
 
-#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
 msgid "pink"
 msgstr "இளம் சிவப்பு நிறம்"
 
-#: gal/widgets/color-palette.c:617
+#: gal/widgets/color-palette.c:618
 msgid "light orange"
 msgstr "மங்கமான செம்மஞ்சல் நிறம்"
 
-#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
 msgid "light yellow"
 msgstr "மங்கமான மஞ்சல் நிறம்"
 
-#: gal/widgets/color-palette.c:619
+#: gal/widgets/color-palette.c:620
 msgid "light green"
 msgstr "மங்கமான பச்சை நிறம்"
 
-#: gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:621
 msgid "light cyan"
-msgstr ""
+msgstr "மங்கலானிர் சியான்"
 
-#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
 msgstr "மங்கமான நீல நிறம்"
 
-#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
 msgstr "மங்கமான ஊதா நிறம்"
 
-#: gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:624
 msgid "white"
 msgstr "வெள்ளை நிறம்"
 
-#: gal/widgets/color-palette.c:628
+#: gal/widgets/color-palette.c:629
 msgid "purplish blue"
 msgstr "ஊதமான நீல நிறம்"
 
-#: gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:633
 msgid "dark purple"
 msgstr "கருத்த ஊதா நிறம்"
 
-#: gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:635
 msgid "sky blue"
 msgstr "வான் நீல நிறம்"
 
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
-#, fuzzy
-msgid "Categories"
-msgstr "வகைகள்"
-
-#: gal/widgets/e-categories.c:393
-msgid "Add to global category list"
-msgstr "முழமை வகையின் பட்டிக்குச் சேர்க்கவும்"
-
-#: gal/widgets/e-categories.c:394
-msgid "Add all to global category list"
-msgstr "அனைத்தையும் முழமை வகையின் பட்டிக்குச் சேர்க்கவும்"
-
-#: gal/widgets/e-categories.c:395
-msgid "Remove from global category list"
-msgstr "முழமை வகையின் பட்டியில் இருந்து கழட்டவும்"
-
-#: gal/widgets/e-categories.c:396
-msgid "Remove all from global category list"
-msgstr "அனைத்தையும் முழமை வகையின் பட்டியில் இருந்து கழட்டவும்"
-
-#: gal/widgets/e-categories.c:540
-#, fuzzy
-msgid "Edit Categories"
-msgstr "வகைகள்"
-
-#: gal/widgets/gal-categories.glade.h:2
-msgid "Edit Master Category List..."
-msgstr "முதன்மை வகையின் பட்டியை பதிப்பி..."
-
-#: gal/widgets/gal-categories.glade.h:3
-msgid "Item(s) belong to these _categories:"
-msgstr "உருப்படி(கள்) இந்த வகைகளுக்கு சொந்தமானவை:"
-
-#: gal/widgets/gal-categories.glade.h:4
-msgid "_Available Categories:"
-msgstr "_கிடைக்கக்கூடிய வகைகள்:"
-
-#: gal/widgets/gal-categories.glade.h:5
-msgid "categories"
-msgstr "வகைகள்"
-
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
-msgstr ""
+msgstr "பிறந்தநாள்"
 
 #: gal/widgets/e-categories-master-list-array.c:68
 msgid "Business"
@@ -794,7 +909,7 @@ msgstr "விடுமுறை அட்டைகள்"
 
 #: gal/widgets/e-categories-master-list-array.c:75
 msgid "Hot Contacts"
-msgstr ""
+msgstr "அடிக்கடி தொடர்புகொள்பவர்கள்"
 
 #: gal/widgets/e-categories-master-list-array.c:76
 msgid "Ideas"
@@ -802,275 +917,140 @@ msgstr "திட்டங்கள்"
 
 #: gal/widgets/e-categories-master-list-array.c:77
 msgid "International"
-msgstr ""
+msgstr "சர்வதேச"
 
 #: gal/widgets/e-categories-master-list-array.c:78
 msgid "Key Customer"
-msgstr ""
+msgstr "முக்கிய வாடிக்கையாளர்"
 
 #: gal/widgets/e-categories-master-list-array.c:79
 msgid "Miscellaneous"
-msgstr ""
+msgstr "இதர"
 
 #: gal/widgets/e-categories-master-list-array.c:80
 msgid "Personal"
-msgstr ""
+msgstr "தனிப்பட்ட"
 
 #: gal/widgets/e-categories-master-list-array.c:81
 msgid "Phone Calls"
-msgstr ""
+msgstr "தொலைபேசி அழைப்புகள்"
 
 #: gal/widgets/e-categories-master-list-array.c:82
 msgid "Status"
-msgstr ""
+msgstr "நிலை"
 
 #: gal/widgets/e-categories-master-list-array.c:83
 msgid "Strategies"
-msgstr ""
+msgstr "தந்திரங்கள்"
 
 #: gal/widgets/e-categories-master-list-array.c:84
 msgid "Suppliers"
-msgstr ""
+msgstr "வழங்குபவர்"
 
 #: gal/widgets/e-categories-master-list-array.c:85
 msgid "Time & Expenses"
-msgstr ""
+msgstr "நேரம் & செலவு"
 
 #: gal/widgets/e-categories-master-list-array.c:86
 msgid "VIP"
-msgstr ""
+msgstr "VIP முக்கியமானவர்"
 
 #: gal/widgets/e-categories-master-list-array.c:87
 msgid "Waiting"
-msgstr ""
+msgstr "காத்திருக்கிறது"
 
-#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
-msgstr ""
+msgstr "ECML"
 
-#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
-msgstr ""
+msgstr "ECategoriesMasterListCombo"
 
-#: gal/widgets/e-categories-master-list-dialog.c:198
+#: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
-msgstr ""
+msgstr "*புதிய வகையை சேர்க்க இங்கே க்ளிக் செய்யவும்*"
 
-#: gal/widgets/e-categories-master-list-dialog.c:199
+#: gal/widgets/e-categories-master-list-dialog.c:214
 msgid "Category"
-msgstr ""
+msgstr "வகை"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-#, fuzzy
 msgid "Add Category"
-msgstr "_கிடைக்கக்கூடிய வகைகள்:"
+msgstr "புதிய வகை"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-#, fuzzy
 msgid "Edit Category"
-msgstr "வகைகள்"
+msgstr "வகையை திருத்து"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Edit Global Category List"
-msgstr ""
+msgstr "பொது வகைப்பட்டியலை திருத்து"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-#, fuzzy
 msgid "_Edit category:"
-msgstr "வகைகள்"
+msgstr "(_E)வகைப்பட்டியல் திருத்தம்:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_New category:"
-msgstr ""
+msgstr "(_N)புதிய வகை:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
-#, fuzzy
 msgid "All Categories"
-msgstr "_கிடைக்கக்கூடிய வகைகள்:"
+msgstr "அனைத்து வகைகள்"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "வகைகள்"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "முழமை வகையின் பட்டிக்குச் சேர்க்கவும்"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "அனைத்தையும் முழமை வகையின் பட்டிக்குச் சேர்க்கவும்"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "முழமை வகையின் பட்டியில் இருந்து கழட்டவும்"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "அனைத்தையும் முழமை வகையின் பட்டியில் இருந்து கழட்டவும்"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "வகைகளை திருத்து"
 
 #: gal/widgets/e-selection-model.c:210
-#, fuzzy
 msgid "Sorter"
-msgstr "வரிசைப்படுத்தவும்"
+msgstr "வரிசைப்படுத்தி"
 
 #: gal/widgets/e-selection-model.c:217
 msgid "Selection Mode"
-msgstr ""
+msgstr "தேர்வு பாங்கு"
 
 #: gal/widgets/e-selection-model.c:225
 msgid "Cursor Mode"
-msgstr ""
+msgstr "கர்சர் பாங்கு"
 
-#: gal/e-text/e-text.c:2598
-#, fuzzy
-msgid "Select All"
-msgstr "அனைத்தையும் துப்பரவாக்கு"
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "முதன்மை வகையின் பட்டியை பதிப்பி..."
 
-#: gal/e-text/e-text.c:2610
-msgid "Input Methods"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "உருப்படி(கள்) இந்த வகைகளுக்கு சொந்தமானவை:"
 
-#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
-msgid "Event Processor"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "_கிடைக்கக்கூடிய வகைகள்:"
 
-#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
-msgid "Text"
-msgstr ""
-
-#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
-#, fuzzy
-msgid "Bold"
-msgstr "தங்கம் நிறம்"
-
-#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
-msgid "Strikeout"
-msgstr ""
-
-#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
-msgid "Anchor"
-msgstr ""
-
-#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
-msgid "Justification"
-msgstr ""
-
-#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
-msgid "Clip Width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
-msgid "Clip Height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
-msgid "Clip"
-msgstr ""
-
-#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
-msgid "Fill clip rectangle"
-msgstr ""
-
-#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
-msgid "X Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
-msgid "Y Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
-#, fuzzy
-msgid "Fill color"
-msgstr "புலம் தேர்வாலர்"
-
-#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
-#: gal/e-text/e-text.c:3464
-msgid "GDK fill color"
-msgstr ""
-
-#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
-#, fuzzy
-msgid "Fill stipple"
-msgstr "தெளிவற்ற ஊதா நிறம்"
-
-#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
-msgid "Text width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
-msgid "Text height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
-msgid "Use ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
-msgid "Ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
-msgid "Line wrap"
-msgstr ""
-
-#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
-msgid "Break characters"
-msgstr ""
-
-#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
-msgid "Max lines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
-msgid "Draw borders"
-msgstr ""
-
-#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
-msgid "Allow newlines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
-msgid "Draw background"
-msgstr ""
-
-#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
-msgid "Draw button"
-msgstr ""
-
-#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
-#, fuzzy
-msgid "Cursor position"
-msgstr "தனிப்பயன் வண்ணம்:"
-
-#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
-msgid "IM Context"
-msgstr ""
-
-#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
-msgid "Handle Popup"
-msgstr ""
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "நேற்று மாலை %l:%M %p"
-
-#, fuzzy
-#~ msgid "FIll stipple"
-#~ msgstr "தெளிவற்ற ஊதா நிறம்"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "தொழிற்சாலை கொடா-நிலைக்கு மீட்புச் செய்"
-
-#~ msgid "_Copy..."
-#~ msgstr "_நகல்..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_நீக்கு..."
-
-#~ msgid "_New..."
-#~ msgstr "_புதியது..."
-
-#~ msgid "<< Remove"
-#~ msgstr "<< கழட்டு"
-
-#~ msgid "Add >>"
-#~ msgstr "சேர் >>"
-
-#~ msgid "Available fields"
-#~ msgstr "வெற்றான புலங்கள்"
-
-#~ msgid "Show in this order"
-#~ msgstr "இந்த வரிசைப்படி காண்பிகவும்"
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "காட்சியை அமைவடிக்கின்றது: FIXME"
-
-#~ msgid "Views for \"%s\""
-#~ msgstr "\"%s\"க்கான காட்சிகள்"
-
-#~ msgid "Simplified"
-#~ msgstr "இ"
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "வகைகள்"

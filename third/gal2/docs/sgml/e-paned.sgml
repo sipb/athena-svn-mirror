@@ -1,4 +1,4 @@
-<refentry id="EPaned" revision="12 Jan 2001">
+<refentry id="EPaned">
 <refmeta>
 <refentrytitle>EPaned</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,35 +10,36 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 struct      <link linkend="EPaned-struct">EPaned</link>;
-void        <link linkend="e-paned-add1">e_paned_add1</link>                    (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-add1">e_paned_add1</link>                    (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);
-void        <link linkend="e-paned-add2">e_paned_add2</link>                    (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-add2">e_paned_add2</link>                    (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);
-void        <link linkend="e-paned-pack1">e_paned_pack1</link>                   (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-pack1">e_paned_pack1</link>                   (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> resize,
                                              <link linkend="gboolean">gboolean</link> shrink);
-void        <link linkend="e-paned-pack2">e_paned_pack2</link>                   (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-pack2">e_paned_pack2</link>                   (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> resize,
                                              <link linkend="gboolean">gboolean</link> shrink);
 <link linkend="gint">gint</link>        <link linkend="e-paned-get-position">e_paned_get_position</link>            (<link linkend="EPaned">EPaned</link> *paned);
-void        <link linkend="e-paned-set-position">e_paned_set_position</link>            (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-set-position">e_paned_set_position</link>            (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="gint">gint</link> position);
-void        <link linkend="e-paned-set-handle-size">e_paned_set_handle_size</link>         (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-set-handle-size">e_paned_set_handle_size</link>         (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="guint16">guint16</link> size);
-void        <link linkend="e-paned-compute-position">e_paned_compute_position</link>        (<link linkend="EPaned">EPaned</link> *paned,
+<link linkend="void">void</link>        <link linkend="e-paned-compute-position">e_paned_compute_position</link>        (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="gint">gint</link> allocation,
                                              <link linkend="gint">gint</link> child1_req,
                                              <link linkend="gint">gint</link> child2_req);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-paned-handle-shown">e_paned_handle_shown</link>            (<link linkend="EPaned">EPaned</link> *paned);
 <link linkend="gint">gint</link>        <link linkend="e-paned-quantized-size">e_paned_quantized_size</link>          (<link linkend="EPaned">EPaned</link> *paned,
-                                             int size);
+                                             <link linkend="int">int</link> size);
 
 </synopsis>
 </refsynopsisdiv>
@@ -51,15 +52,21 @@ void        <link linkend="e-paned-compute-position">e_paned_compute_position</l
    +----<link linkend="GtkWidget">GtkWidget</link>
          +----<link linkend="GtkContainer">GtkContainer</link>
                +----EPaned
+                     +----<link linkend="EHPaned">EHPaned</link>
+                     +----<link linkend="EVPaned">EVPaned</link>
 </synopsis>
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="EPaned--handle-size">handle_size</link>&quot;          <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="EPaned--handle-size">handle-size</link>&quot;          <link linkend="guint">guint</link>                : Read / Write
   &quot;<link linkend="EPaned--quantum">quantum</link>&quot;              <link linkend="guint">guint</link>                : Read / Write
 </synopsis>
 </refsect1>
@@ -77,7 +84,7 @@ void        <link linkend="e-paned-compute-position">e_paned_compute_position</l
 <title>Details</title>
 <refsect2>
 <title><anchor id="EPaned-struct">struct EPaned</title>
-<programlisting>struct EPaned {
+<indexterm><primary>EPaned</primary></indexterm><programlisting>struct EPaned {
   guint16 handle_size;
   
 };
@@ -87,241 +94,199 @@ void        <link linkend="e-paned-compute-position">e_paned_compute_position</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-paned-add1">e_paned_add1 ()</title>
-<programlisting>void        e_paned_add1                    (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_add1</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_add1                    (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-add2">e_paned_add2 ()</title>
-<programlisting>void        e_paned_add2                    (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_add2</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_add2                    (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-pack1">e_paned_pack1 ()</title>
-<programlisting>void        e_paned_pack1                   (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_pack1</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_pack1                   (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> resize,
                                              <link linkend="gboolean">gboolean</link> shrink);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>resize</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>shrink</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resize</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shrink</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-pack2">e_paned_pack2 ()</title>
-<programlisting>void        e_paned_pack2                   (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_pack2</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_pack2                   (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> resize,
                                              <link linkend="gboolean">gboolean</link> shrink);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>resize</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>shrink</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resize</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shrink</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-get-position">e_paned_get_position ()</title>
-<programlisting><link linkend="gint">gint</link>        e_paned_get_position            (<link linkend="EPaned">EPaned</link> *paned);</programlisting>
+<indexterm><primary>e_paned_get_position</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_paned_get_position            (<link linkend="EPaned">EPaned</link> *paned);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-set-position">e_paned_set_position ()</title>
-<programlisting>void        e_paned_set_position            (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_set_position</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_set_position            (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="gint">gint</link> position);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>position</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-set-handle-size">e_paned_set_handle_size ()</title>
-<programlisting>void        e_paned_set_handle_size         (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_set_handle_size</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_set_handle_size         (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="guint16">guint16</link> size);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-compute-position">e_paned_compute_position ()</title>
-<programlisting>void        e_paned_compute_position        (<link linkend="EPaned">EPaned</link> *paned,
+<indexterm><primary>e_paned_compute_position</primary></indexterm><programlisting><link linkend="void">void</link>        e_paned_compute_position        (<link linkend="EPaned">EPaned</link> *paned,
                                              <link linkend="gint">gint</link> allocation,
                                              <link linkend="gint">gint</link> child1_req,
                                              <link linkend="gint">gint</link> child2_req);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>allocation</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child1_req</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>child2_req</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>allocation</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child1_req</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child2_req</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-handle-shown">e_paned_handle_shown ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_paned_handle_shown            (<link linkend="EPaned">EPaned</link> *paned);</programlisting>
+<indexterm><primary>e_paned_handle_shown</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_paned_handle_shown            (<link linkend="EPaned">EPaned</link> *paned);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-paned-quantized-size">e_paned_quantized_size ()</title>
-<programlisting><link linkend="gint">gint</link>        e_paned_quantized_size          (<link linkend="EPaned">EPaned</link> *paned,
-                                             int size);</programlisting>
+<indexterm><primary>e_paned_quantized_size</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_paned_quantized_size          (<link linkend="EPaned">EPaned</link> *paned,
+                                             <link linkend="int">int</link> size);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>paned</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>paned</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="EPaned--handle-size">&quot;<literal>handle_size</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<varlistentry><term><anchor id="EPaned--handle-size">&quot;<literal>handle-size</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EPaned--quantum">&quot;<literal>quantum</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

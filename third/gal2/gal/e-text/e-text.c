@@ -67,6 +67,9 @@
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_bitmap_affine.h>
 
+#include <atk/atk.h>
+#include "gal/a11y/e-text/gal-a11y-e-text-factory.h"
+
 #define PARENT_TYPE (gnome_canvas_item_get_type())
 
 #define BORDER_INDENT 3
@@ -139,6 +142,9 @@ static void e_text_update_primary_selection (EText *text);
 static void e_text_paste (EText *text, GdkAtom selection);
 static void e_text_insert(EText *text, const char *string);
 
+static void reset_layout_attrs (EText *text);
+
+#if 0
 /* GtkEditable Methods */
 static void e_text_editable_do_insert_text (GtkEditable    *editable,
 					    const gchar    *text,
@@ -159,10 +165,13 @@ static gboolean e_text_editable_get_selection_bounds (GtkEditable    *editable,
 static void e_text_editable_set_position (GtkEditable    *editable,
 					  gint            position);
 static gint e_text_editable_get_position (GtkEditable    *editable);
-				   
+#endif
+			   
 /* IM Context Callbacks */
 static void     e_text_commit_cb               (GtkIMContext *context,
 						const gchar  *str,
+						EText        *text);
+static void     e_text_preedit_changed_cb      (GtkIMContext *context,
 						EText        *text);
 static gboolean e_text_retrieve_surrounding_cb (GtkIMContext *context,
 						EText        *text);
@@ -178,7 +187,7 @@ static GdkAtom clipboard_atom = GDK_NONE;
 
 /* Dispose handler for the text item */
 
-
+#if 0
 static void
 e_text_style_set (EText *text, GtkStyle *previous_style)
 {
@@ -189,6 +198,7 @@ e_text_style_set (EText *text, GtkStyle *previous_style)
 	}
 	e_canvas_item_request_reflow (GNOME_CANVAS_ITEM (text));
 }
+#endif
 
 static void
 e_text_dispose (GObject *object)
@@ -276,6 +286,64 @@ e_text_dispose (GObject *object)
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+insert_preedit_text (EText *text)
+{
+	PangoAttrList *attrs = NULL;
+	PangoAttrList *preedit_attrs = NULL;
+	gchar *preedit_string = NULL;
+	GString *tmp_string = g_string_new (NULL);
+	gint length = 0, cpos = 0, preedit_length = 0;
+	gboolean new_attrs = FALSE;
+
+	if (text->layout == NULL || !GTK_IS_IM_CONTEXT (text->im_context))
+		return;
+
+	text->text = e_text_model_get_text(text->model);
+	length = strlen (text->text);
+
+	g_string_prepend_len (tmp_string, text->text,length); 
+
+	gtk_im_context_get_preedit_string (text->im_context,
+					   &preedit_string, &preedit_attrs,
+					   NULL);
+
+	if (preedit_string && g_utf8_validate (preedit_string, -1, NULL))
+		text->preedit_len = preedit_length = strlen (preedit_string);
+	else
+		text->preedit_len  = preedit_length = 0;
+
+	cpos = g_utf8_offset_to_pointer (text->text, text->selection_start) - text->text;	
+
+	if (preedit_length) {
+		g_string_insert (tmp_string, cpos, preedit_string);
+
+		reset_layout_attrs (text);
+
+		attrs = pango_layout_get_attributes (text->layout);
+		if (!attrs) {
+			attrs = pango_attr_list_new ();
+			new_attrs = TRUE;
+		}
+
+		pango_layout_set_text (text->layout, tmp_string->str, tmp_string->len);
+
+		pango_attr_list_splice (attrs, preedit_attrs, cpos, preedit_length);
+
+		if (new_attrs) {
+			pango_layout_set_attributes (text->layout, attrs);
+			pango_attr_list_unref (attrs);
+		}
+	}
+
+	if (preedit_string)
+		g_free (preedit_string);
+	if (preedit_attrs)
+		pango_attr_list_unref (preedit_attrs);
+	if (tmp_string)
+		g_string_free (tmp_string, TRUE);
 }
 
 static void
@@ -1433,7 +1501,10 @@ e_text_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 		}
 	}
 
-	if (!text->text)
+
+	insert_preedit_text (text);	
+
+	if (!pango_layout_get_text (text->layout))
 		return;
 
 	if (text->stipple)
@@ -1555,7 +1626,7 @@ e_text_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 				PangoRectangle strong_pos, weak_pos;
 				char *offs = g_utf8_offset_to_pointer (text->text, text->selection_start);
 
-				pango_layout_get_cursor_pos (text->layout, offs - text->text, &strong_pos, &weak_pos);
+				pango_layout_get_cursor_pos (text->layout, offs - text->text + text->preedit_len, &strong_pos, &weak_pos);
 				draw_pango_rectangle (drawable, main_gc, xpos, ypos, strong_pos);
 				if (strong_pos.x != weak_pos.x ||
 				    strong_pos.y != weak_pos.y ||
@@ -1842,7 +1913,6 @@ _do_tooltip (gpointer data)
 {
 #warning "need to sort out tooltip stuff."
 	EText *text = E_TEXT (data);
-	struct line *lines;
 	GtkWidget *canvas;
 	int i;
 	int max_width;
@@ -2113,6 +2183,8 @@ e_text_event (GnomeCanvasItem *item, GdkEvent *event)
 					if (!text->im_context_signals_registered) {
 						g_signal_connect (text->im_context, "commit",
 								  G_CALLBACK (e_text_commit_cb), text);
+						g_signal_connect (text->im_context, "preedit_changed",
+								  G_CALLBACK (e_text_preedit_changed_cb), text);
 						g_signal_connect (text->im_context, "retrieve_surrounding",
 								  G_CALLBACK (e_text_retrieve_surrounding_cb), text);
 						g_signal_connect (text->im_context, "delete_surrounding",
@@ -2157,8 +2229,7 @@ e_text_event (GnomeCanvasItem *item, GdkEvent *event)
 
 			/* Simulate a GdkEventButton here, so that we can call e_text_do_popup directly */
 
-			GdkEventButton *button = g_new0 (GdkEventButton, 1);
-			button->type = GDK_BUTTON_PRESS;
+			GdkEventButton *button = (GdkEventButton *) gdk_event_new (GDK_BUTTON_PRESS);
 			button->time = event->key.time;
 			button->button = 0;
 			e_text_do_popup (text, button, 0);
@@ -2456,8 +2527,6 @@ static void
 primary_clear_cb (GtkClipboard *clipboard,
 		  gpointer      data)
 {
-	EText *text = E_TEXT (data);
-
 #if notyet
 	/* XXX */
 	gtk_editable_select_region (GTK_EDITABLE (entry), entry->current_pos, entry->current_pos);
@@ -2629,14 +2698,14 @@ popup_targets_received (GtkClipboard     *clipboard,
       	      gtk_menu_popup (GTK_MENU (popup_menu), NULL, NULL,
 			      popup_menu_placement_cb, (gpointer)text,
 			      button->button, GDK_CURRENT_TIME);
-	      g_free (button);
       } else {
 	      gtk_menu_popup (GTK_MENU (popup_menu), NULL, NULL,
 			      NULL, NULL,
-			      button->button, GDK_CURRENT_TIME);
+			      button->button, button->time);
       }
 
       g_object_unref (text);
+      gdk_event_free ((GdkEvent *)button);
 }
 
 static void
@@ -2646,7 +2715,7 @@ e_text_do_popup (EText *text, GdkEventButton *button, int position)
 
 	closure->text = text;
 	g_object_ref (closure->text);
-	closure->button = button;
+	closure->button = (GdkEventButton *) gdk_event_copy ((GdkEvent *)button);
 	closure->position = position;
 
 	gtk_clipboard_request_contents (
@@ -2662,6 +2731,7 @@ e_text_do_popup (EText *text, GdkEventButton *button, int position)
 					closure);
 }
 
+#if 0
 static void
 e_text_reset_im_context (EText *text)
 {
@@ -2670,6 +2740,7 @@ e_text_reset_im_context (EText *text)
 		gtk_im_context_reset (text->im_context);
 	}
 }
+#endif
 
 /* fixme: */
 
@@ -2739,7 +2810,6 @@ _get_position(EText *text, ETextEventProcessorCommand *command)
 	gunichar unival;
 	char *p = NULL;
 	gint new_pos = 0;
-	int index, trailing;
 
 	switch (command->position) {
 		
@@ -2853,10 +2923,7 @@ _get_position(EText *text, ETextEventProcessorCommand *command)
 		break;
 
 	case E_TEP_FORWARD_LINE: {
-		int l;
-		PangoLayoutLine *line, *next_line;
 		int offset_into_line;
-		int next_line_length;
 		char *p;
 
 		offset_into_line = find_offset_into_line (text, text->selection_end, NULL);
@@ -2888,7 +2955,7 @@ _get_position(EText *text, ETextEventProcessorCommand *command)
 		break;
 	}
 	case E_TEP_BACKWARD_LINE: {
-		char *p, *prev = NULL;
+		char *p;
 		int offset_into_line = find_offset_into_line (text, text->selection_end, &p);
 
 		if (offset_into_line == -1)
@@ -3049,49 +3116,51 @@ capitalize (EText *text, int start, int end, ETextEventProcessorCaps type)
 	const char *p = g_utf8_offset_to_pointer (text->text, start);
 	const char *text_end = g_utf8_offset_to_pointer (text->text, end);
 	int utf8len = text_end - p;
-	char *new_text = g_new0 (char, utf8len * 6);
-	char *output = new_text;
 
-	while (p && *p && p < text_end) {
-		gunichar unival = g_utf8_get_char (p);
-		gunichar newval = unival;
+	if (utf8len > 0) {
+		char *new_text = g_new0 (char, utf8len * 6);
+		char *output = new_text;
 
-		switch (type) {
-		case E_TEP_CAPS_UPPER:
-			newval = g_unichar_toupper (unival);
-			break;
-		case E_TEP_CAPS_LOWER:
-			newval = g_unichar_tolower (unival);
-			break;
-		case E_TEP_CAPS_TITLE:
-			if (g_unichar_isalpha (unival)) {
-				if (first)
-					newval = g_unichar_totitle (unival);
-				else
-					newval = g_unichar_tolower (unival);
-				first = FALSE;
-			} else {
-				first = TRUE;
+		while (p && *p && p < text_end) {
+			gunichar unival = g_utf8_get_char (p);
+			gunichar newval = unival;
+
+			switch (type) {
+			case E_TEP_CAPS_UPPER:
+				newval = g_unichar_toupper (unival);
+				break;
+			case E_TEP_CAPS_LOWER:
+				newval = g_unichar_tolower (unival);
+				break;
+			case E_TEP_CAPS_TITLE:
+				if (g_unichar_isalpha (unival)) {
+					if (first)
+						newval = g_unichar_totitle (unival);
+					else
+						newval = g_unichar_tolower (unival);
+					first = FALSE;
+				} else {
+					first = TRUE;
+				}
+				break;
 			}
-			break;
+			g_unichar_to_utf8 (newval, output);
+			output = g_utf8_next_char (output);
+
+			p = g_utf8_next_char (p);
 		}
-		g_unichar_to_utf8 (newval, output);
-		output = g_utf8_next_char (output);
+		*output = 0;
 
-		p = g_utf8_next_char (p);
+		e_text_model_delete (text->model, start, utf8len);
+		e_text_model_insert_length (text->model, start, new_text, utf8len);
+		g_free (new_text);
 	}
-	*output = 0;
-
-	e_text_model_delete (text->model, start, utf8len);
-	e_text_model_insert_length (text->model, start, new_text, utf8len);
-	g_free (new_text);
 }
 
 static void
 e_text_command(ETextEventProcessor *tep, ETextEventProcessorCommand *command, gpointer data)
 {
 	EText *text = E_TEXT(data);
-	int sel_start, sel_end;
 	gboolean scroll = TRUE;
 	gboolean use_start = TRUE;
 
@@ -3194,11 +3263,17 @@ e_text_command(ETextEventProcessor *tep, ETextEventProcessorCommand *command, gp
 		break;
 	}
 
+	/* it's possible to get here without ever having been realized
+	   by our canvas (if the e-text started completely obscured.)
+	   so let's create our layout object if we don't already have
+	   one. */
+	if (!text->layout)
+		create_layout (text);
+
 	if (scroll && !text->button_down) {
 		/* XXX do we really need the @trailing logic here?  if
 		   we don't we can scrap the loop and just use
 		   pango_layout_index_to_pos */
-		int i;
 		PangoLayoutLine *cur_line = NULL;
 		int selection_index;
 		PangoLayoutIter *iter = pango_layout_get_iter (text->layout);
@@ -3595,6 +3670,11 @@ e_text_class_init (ETextClass *klass)
 
 	if (!clipboard_atom)
 		clipboard_atom = gdk_atom_intern ("CLIPBOARD", FALSE);
+
+	atk_registry_set_factory_type (atk_get_default_registry (),
+                                       E_TYPE_TEXT,
+                                       gal_a11y_e_text_factory_get_type ());
+
 }
 
 /* Object initialization function for the text item */
@@ -3603,6 +3683,7 @@ e_text_init (EText *text)
 {
 	text->model                   = e_text_model_new ();
 	text->text                    = e_text_model_get_text (text->model);
+	text->preedit_len	      = 0;
 	text->layout                  = NULL;
 
 	text->revert                  = NULL;
@@ -3705,6 +3786,7 @@ E_MAKE_TYPE (e_text,
 	     PARENT_TYPE)
 
 
+
 /* IM Context Callbacks */
 static void
 e_text_commit_cb (GtkIMContext *context,
@@ -3715,16 +3797,28 @@ e_text_commit_cb (GtkIMContext *context,
 		if (text->selection_end != text->selection_start)
 			e_text_delete_selection (text);
 		e_text_insert (text, str);
-		g_signal_emit (text, e_text_signals[E_TEXT_KEYPRESS], 0,
-			       0 /* XXX ugh */, 0 /* XXX ugh */);
+		g_signal_emit (text, e_text_signals[E_TEXT_KEYPRESS], 0, 0, 0);
 	}
+}
+
+static void
+e_text_preedit_changed_cb (GtkIMContext *context,
+				EText        *etext)
+{
+	gchar *preedit_string = NULL;
+
+	gtk_im_context_get_preedit_string (context, &preedit_string, 
+					NULL, NULL);
+
+	etext->preedit_len = strlen (preedit_string);
+
+	g_signal_emit (etext, e_text_signals[E_TEXT_KEYPRESS], 0, 0, 0);
 }
 
 static gboolean
 e_text_retrieve_surrounding_cb (GtkIMContext *context,
 				EText        *text)
 {
-	printf ("e_text_retrieve_surrounding_cb\n");
 	gtk_im_context_set_surrounding (context,
 					text->text,
 					strlen (text->text),
@@ -3739,12 +3833,9 @@ e_text_delete_surrounding_cb   (GtkIMContext *context,
 				gint          n_chars,
 				EText        *text)
 {
-	printf ("e_text_delete_surrounding_cb\n");
-#if 0
-	gtk_editable_delete_text (GTK_EDITABLE (entry),
-				  entry->current_pos + offset,
-				  entry->current_pos + offset + n_chars);
-#endif
+	gtk_editable_delete_text (GTK_EDITABLE (text),
+				  text->selection_end + offset,
+				  text->selection_end + offset + n_chars);
 
 	return TRUE;
 }

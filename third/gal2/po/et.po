@@ -1,0 +1,1126 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Priit Laes <amd@tt.ee>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gal \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-05-02 23:52+0300\n"
+"Last-Translator: Priit Laes <amd@tt.ee>\n"
+"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gal/e-paned/e-paned.c:141
+#, fuzzy
+msgid "Handle Size"
+msgstr "bloki suurus"
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "?"
+
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr "%l:%M %p"
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "Täna %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr "Eile %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr "%b %d %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr "%b %d %Y"
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr "Valitud veerg"
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr "Fokusseeritud veerg"
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr "Valimata veerg"
+
+#: gal/e-table/e-cell-text.c:1703
+msgid "Strikeout Column"
+msgstr "Läbikriipsutatud veerg"
+
+#: gal/e-table/e-cell-text.c:1710
+msgid "Underline Column"
+msgstr "Allajoonitud veerg"
+
+#: gal/e-table/e-cell-text.c:1717
+msgid "Bold Column"
+msgstr "Rasvane veerg"
+
+#: gal/e-table/e-cell-text.c:1724
+msgid "Color Column"
+msgstr "Värviline veerg"
+
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
+msgid "Editable"
+msgstr "Redigeeritav"
+
+#: gal/e-table/e-cell-text.c:1738
+msgid "BG Color Column"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:462
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1816
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr "Päis"
+
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
+msgid "Model"
+msgstr "Mudel"
+
+#: gal/e-table/e-table-click-to-add.c:476
+msgid "Message"
+msgstr "Sõnum"
+
+#: gal/e-table/e-table-click-to-add.c:483
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
+msgid "Width"
+msgstr "Laius"
+
+#: gal/e-table/e-table-click-to-add.c:490
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
+msgid "Height"
+msgstr "Kõrgus"
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- _Eemalda"
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+#, fuzzy
+msgid "A_vailable Fields:"
+msgstr "Sertifikaadi _väljad"
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "Tõusvas järjestuses"
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "Puhasta kõik"
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "Laskuvas järjestuses"
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr "Kirjeldus"
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "Grupeeri"
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "Grupeeri elemendid"
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "Liiguta _alla"
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "_Liiguta üles"
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Show Fields"
+msgstr "Väljade kuvamine"
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
+#, fuzzy
+msgid "Show field in View"
+msgstr "vaatlustoru vaateväli kaareminutites"
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Sort"
+msgstr "Sorteeri"
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort Items By"
+msgstr "Sorteeri elemendid"
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Then By"
+msgstr "ja siis"
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
+msgid "_Add ->"
+msgstr "_Lisa ->"
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Fields Shown..."
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr "_Sorteeri..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr "dialog1"
+
+#: gal/e-table/e-table-config.c:152
+msgid "State"
+msgstr "Seisund"
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Ascending)"
+msgstr "(Kasvav)"
+
+#: gal/e-table/e-table-config.c:309 gal/e-table/e-table-config.c:351
+msgid "(Descending)"
+msgstr "(Kahanev)"
+
+#: gal/e-table/e-table-config.c:316
+msgid "Not sorted"
+msgstr "Sorteerimata"
+
+#: gal/e-table/e-table-config.c:357
+msgid "No grouping"
+msgstr "Rühmitus puudub"
+
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Group By..."
+msgstr "_Grupeeri..."
+
+#: gal/e-table/e-table-config.glade.h:19
+#, fuzzy
+msgid "_Show these fields in order:"
+msgstr "vaatlustoru vaateväli kaareminutites"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+#, fuzzy
+msgid "DnD code"
+msgstr "C lähtekood"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Kogupäis"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Lisa veerg..."
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+#, fuzzy
+msgid "Field Chooser"
+msgstr "Komponendi valija"
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d element)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d elementi)"
+
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d element)"
+
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d elementi)"
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+#, fuzzy
+msgid "Alternating Row Colors"
+msgstr "Kirjastiilid ja värvid"
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
+#, fuzzy
+msgid "Horizontal Draw Grid"
+msgstr "Kas näidata koordinaadistikku?"
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
+#, fuzzy
+msgid "Vertical Draw Grid"
+msgstr "Kas näidata koordinaadistikku?"
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
+#, fuzzy
+msgid "Draw focus"
+msgstr "Fookuse käitumine"
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+#, fuzzy
+msgid "Cursor mode"
+msgstr "vigane mood `%s'"
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+#, fuzzy
+msgid "Selection model"
+msgstr "Printeri mudeli valimine"
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
+#, fuzzy
+msgid "Length Threshold"
+msgstr "Halli lävi:"
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
+#, fuzzy
+msgid "Uniform row height"
+msgstr "Muuda rea kõrguse vaikeväärtust"
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr "Külmutatud"
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr "Minimaalne laius"
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr "Minimaalne laius"
+
+#: gal/e-table/e-table-header-item.c:1457
+msgid "Customize Current View"
+msgstr "Käesoleva vaate kohandamine"
+
+#: gal/e-table/e-table-header-item.c:1477
+msgid "Sort Ascending"
+msgstr "Sorteeri kasvavalt"
+
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Sort Descending"
+msgstr "Sorteeri kahanevalt"
+
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Unsort"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Group By This Field"
+msgstr "Grupeeri selle välja järgi"
+
+#: gal/e-table/e-table-header-item.c:1482
+#, fuzzy
+msgid "Group By Box"
+msgstr "_Grupeeri serveri järgi"
+
+#: gal/e-table/e-table-header-item.c:1484
+msgid "Remove This Column"
+msgstr "Eemalda see veerg"
+
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Add a Column..."
+msgstr "Lisa veerg..."
+
+#: gal/e-table/e-table-header-item.c:1487
+msgid "Alignment"
+msgstr "Joondus"
+
+#: gal/e-table/e-table-header-item.c:1488
+msgid "Best Fit"
+msgstr "Parim suurus"
+
+#: gal/e-table/e-table-header-item.c:1489
+msgid "Format Columns..."
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1491
+msgid "Customize Current View..."
+msgstr "Käesoleva vaate kohandamine..."
+
+#: gal/e-table/e-table-header-item.c:1802
+msgid "Fontset"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
+#, fuzzy
+msgid "Sort Info"
+msgstr "Projekti info"
+
+#: gal/e-table/e-table-header-item.c:1830
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr "Tabel"
+
+#: gal/e-table/e-table-header-item.c:1837
+msgid "Tree"
+msgstr "Puu"
+
+#: gal/e-table/e-table.c:3313
+#, fuzzy
+msgid "Always Search"
+msgstr "Otsimiskeskus"
+
+#: gal/e-table/e-table.c:3320
+#, fuzzy
+msgid "Use click to add"
+msgstr "Ülesande lisamiseks vajuta siia"
+
+#: gal/e-table/e-tree-selection-model.c:781
+#: gal/widgets/e-selection-model-array.c:543
+#, fuzzy
+msgid "Cursor Row"
+msgstr "Rea %s automaatsobitamine"
+
+#: gal/e-table/e-tree-selection-model.c:788
+#: gal/widgets/e-selection-model-array.c:550
+#, fuzzy
+msgid "Cursor Column"
+msgstr "Veeru %s automaatsobitamine"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+#, fuzzy
+msgid "ETree table adapter"
+msgstr "   p   näidata partitsioonitabelit"
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+#, fuzzy
+msgid "Always search"
+msgstr "Otsimiskeskus"
+
+#: gal/e-table/e-tree.c:3307
+#, fuzzy
+msgid "Retro Look"
+msgstr "Välimus ja tunnetus"
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr ""
+
+#: gal/e-table/e-tree.c:3314
+#, fuzzy
+msgid "Expander Size"
+msgstr "Laiendaja suurus"
+
+#: gal/e-table/e-tree.c:3315
+#, fuzzy
+msgid "Size of the expander arrow"
+msgstr "Laienduse noole suurus"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "Vali kõik"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "Sisestusmeetodid"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+#, fuzzy
+msgid "Event Processor"
+msgstr "XSLT protsessor"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "Tekst"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "Rasvane"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "Läbikriipsutatud"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+#, fuzzy
+msgid "Anchor"
+msgstr "Ankur"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+#, fuzzy
+msgid "Justification"
+msgstr "Joondamine"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+#, fuzzy
+msgid "Clip Width"
+msgstr "Eelistatud laius"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+#, fuzzy
+msgid "Clip Height"
+msgstr "Eelistatud kõrgus"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+#, fuzzy
+msgid "Clip"
+msgstr "Heliklipp"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+#, fuzzy
+msgid "Fill clip rectangle"
+msgstr ""
+"Täidetud ristkülik\n"
+"\n"
+"Joonistab täidetud ristküliku"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+#, fuzzy
+msgid "X Offset"
+msgstr "X-nihe"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+#, fuzzy
+msgid "Y Offset"
+msgstr "Y-nihe"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+#, fuzzy
+msgid "Fill color"
+msgstr "Täidise värv..."
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+#, fuzzy
+msgid "GDK fill color"
+msgstr "&Kasutatakse täidist"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+#, fuzzy
+msgid "Fill stipple"
+msgstr "Automaat_täitmine"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "Teksti laius"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "Teksti kõrgus"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+#, fuzzy
+msgid "Use ellipsis"
+msgstr "UTC aeg"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+#, fuzzy
+msgid "Ellipsis"
+msgstr "… (&#8230;) väljajätt"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+#, fuzzy
+msgid "Line wrap"
+msgstr "Reamurdmine"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+#, fuzzy
+msgid "Break characters"
+msgstr "Lisa märke"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+#, fuzzy
+msgid "Max lines"
+msgstr "_Alusvõrk"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+#, fuzzy
+msgid "Draw borders"
+msgstr "&Piirjoonte näitamine"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+#, fuzzy
+msgid "Allow newlines"
+msgstr "Luba hüpikaknad"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+#, fuzzy
+msgid "Draw background"
+msgstr "Tausta_pilt:"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+#, fuzzy
+msgid "Draw button"
+msgstr "Tee nupp"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+#, fuzzy
+msgid "Cursor position"
+msgstr "Kursori asukoht"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+#, fuzzy
+msgid "IM Context"
+msgstr "Konteksti_menüü"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+#, fuzzy
+msgid "Handle Popup"
+msgstr "hüpikmenüü"
+
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+#, fuzzy
+msgid "Collection"
+msgstr "Album"
+
+#: gal/menus/gal-define-views-dialog.c:312
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "segane argument %s %s'le"
+
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
+#, fuzzy
+msgid "Define Views"
+msgstr "Kirjelda vaateid..."
+
+#: gal/menus/gal-define-views.glade.h:2
+#, fuzzy, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "segane argument %s %s'le"
+
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr "_Redigeeri..."
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
+#, fuzzy
+msgid "Instance"
+msgstr "Eksemplar"
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+#, fuzzy
+msgid "Save Current View"
+msgstr "Salvesta kohandatud vaade..."
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "    "
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+#, fuzzy
+msgid "_Create new view"
+msgstr "Loo uus vaade tööraamatust"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+#, fuzzy
+msgid "_Name:"
+msgstr "Nimi"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+#, fuzzy
+msgid "_Replace existing view"
+msgstr "_Väljatrüki eelvaade..."
+
+#: gal/menus/gal-view-instance.c:574
+#, fuzzy
+msgid "Custom View"
+msgstr "Kohandatud vaade"
+
+#: gal/menus/gal-view-instance.c:575
+#, fuzzy
+msgid "Save Custom View"
+msgstr "Salvesta kohandatud vaade..."
+
+#: gal/menus/gal-view-instance.c:579
+#, fuzzy
+msgid "Define Views..."
+msgstr "Kirjelda vaateid..."
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr "Nimi"
+
+#: gal/menus/gal-view-new-dialog.c:77
+#, fuzzy
+msgid "Factory"
+msgstr "Yelp Factory"
+
+#: gal/menus/gal-view-new-dialog.c:108
+#, fuzzy
+msgid "Define New View"
+msgstr "Kirjelda vaateid..."
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+#, fuzzy
+msgid "Name of new view:"
+msgstr "Uus tagantvaade"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+#, fuzzy
+msgid "Type of view:"
+msgstr "Vaate tüüp"
+
+#: gal/shortcut-bar/e-group-bar.c:541
+#, fuzzy, c-format
+msgid "Group %i"
+msgstr "Grupeeri"
+
+#  This is the default custom color
+#. This is the default custom color
+#: gal/widgets/color-palette.c:394
+msgid "custom"
+msgstr "kohandatud"
+
+#  "Custom" color - we'll pop up a GnomeColorPicker
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:436
+msgid "Custom Color:"
+msgstr "Kohandatud värv:"
+
+#: gal/widgets/color-palette.c:444
+msgid "Choose Custom Color"
+msgstr "Vali kohandatud värv"
+
+#: gal/widgets/color-palette.c:577
+msgid "black"
+msgstr "must"
+
+#: gal/widgets/color-palette.c:578
+msgid "light brown"
+msgstr "helepruun"
+
+#: gal/widgets/color-palette.c:579
+msgid "brown gold"
+msgstr "kuldpruun"
+
+#: gal/widgets/color-palette.c:580
+msgid "dark green #2"
+msgstr "tumeroheline #2"
+
+#: gal/widgets/color-palette.c:581
+msgid "navy"
+msgstr "tumesinine"
+
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
+msgid "dark blue"
+msgstr "tumesinine"
+
+#: gal/widgets/color-palette.c:583
+msgid "purple #2"
+msgstr "purpurne #2"
+
+#: gal/widgets/color-palette.c:584
+msgid "very dark gray"
+msgstr "väga tume hall"
+
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
+msgid "dark red"
+msgstr "tumepunane"
+
+#: gal/widgets/color-palette.c:588
+msgid "red-orange"
+msgstr "punakasoranž"
+
+#: gal/widgets/color-palette.c:589
+msgid "gold"
+msgstr "kuldne"
+
+#: gal/widgets/color-palette.c:590
+msgid "dark green"
+msgstr "tumeroheline"
+
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "dull blue"
+msgstr "tuhmsinine"
+
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
+msgid "blue"
+msgstr "sinine"
+
+#: gal/widgets/color-palette.c:593
+msgid "dull purple"
+msgstr "tuhmpurpurne"
+
+#: gal/widgets/color-palette.c:594
+msgid "dark grey"
+msgstr "tumehall"
+
+#: gal/widgets/color-palette.c:597
+msgid "red"
+msgstr "punane"
+
+#: gal/widgets/color-palette.c:598
+msgid "orange"
+msgstr "oranž"
+
+#: gal/widgets/color-palette.c:599
+msgid "lime"
+msgstr "erkvalge"
+
+#: gal/widgets/color-palette.c:600
+msgid "dull green"
+msgstr "tuhmroheline"
+
+#: gal/widgets/color-palette.c:601
+msgid "dull blue #2"
+msgstr "tuhmsinine #2"
+
+#: gal/widgets/color-palette.c:602
+msgid "sky blue #2"
+msgstr "taevasinine #2"
+
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
+msgid "purple"
+msgstr "purpur"
+
+#: gal/widgets/color-palette.c:604
+msgid "gray"
+msgstr "hall"
+
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
+msgid "magenta"
+msgstr "fuksiin"
+
+#: gal/widgets/color-palette.c:608
+msgid "bright orange"
+msgstr "erkoranž"
+
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
+msgid "yellow"
+msgstr "kollane"
+
+#: gal/widgets/color-palette.c:610
+msgid "green"
+msgstr "roheline"
+
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
+msgid "cyan"
+msgstr "tsüaan"
+
+#: gal/widgets/color-palette.c:612
+msgid "bright blue"
+msgstr "erksinine"
+
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
+msgid "red purple"
+msgstr "purpurpunane"
+
+#: gal/widgets/color-palette.c:614
+msgid "light grey"
+msgstr "helehall"
+
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
+msgid "pink"
+msgstr "roosa"
+
+#: gal/widgets/color-palette.c:618
+msgid "light orange"
+msgstr "heleoranž"
+
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
+msgid "light yellow"
+msgstr "helekollane"
+
+#: gal/widgets/color-palette.c:620
+msgid "light green"
+msgstr "heleroheline"
+
+#: gal/widgets/color-palette.c:621
+msgid "light cyan"
+msgstr "heletsüaan"
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
+msgid "light blue"
+msgstr "helesinine"
+
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
+msgid "light purple"
+msgstr "helepurpurne"
+
+#: gal/widgets/color-palette.c:624
+msgid "white"
+msgstr "valge"
+
+#: gal/widgets/color-palette.c:629
+msgid "purplish blue"
+msgstr "purpurne sinine"
+
+#: gal/widgets/color-palette.c:633
+msgid "dark purple"
+msgstr "tumelilla"
+
+#: gal/widgets/color-palette.c:635
+msgid "sky blue"
+msgstr "taevasinine"
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr "Sünnipäev"
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr "Äri"
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Favorites"
+msgstr "Lemmikud"
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr "Püha"
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr "Pühadekaardid"
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr "Kuumad kontaktid"
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr "Ideed"
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr "Rahvusvaheline"
+
+#: gal/widgets/e-categories-master-list-array.c:78
+#, fuzzy
+msgid "Key Customer"
+msgstr "/Muuda võtit"
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr "Muu"
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr "Isiklik"
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr "Telefonikõned"
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr "Staatus"
+
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Strategies"
+msgstr "Strateegiad"
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr "Aeg ja kulutused"
+
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr "VIP"
+
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr "Ootamine"
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:213
+msgid "* Click here to add a category *"
+msgstr "* Vajuta siia, et lisada uut kategooriat *"
+
+#: gal/widgets/e-categories-master-list-dialog.c:214
+msgid "Category"
+msgstr "Kategooria"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+msgid "Add Category"
+msgstr "Lisa kategooria"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+msgid "Edit Category"
+msgstr "Redigeeri kategooriat"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr "Redigeeri üldist kategooriate loendit"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+msgid "_Edit category:"
+msgstr "_Redigeeri kategooriat:"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+msgid "_New category:"
+msgstr "_Uus kategooria:"
+
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+msgid "All Categories"
+msgstr "Kõik kategooriad"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Kategooriad"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Lisa üldisesse kategooriate loendisse"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:395
+#, fuzzy
+msgid "Remove from global category list"
+msgstr "Eemalda fail manuste nimekirjas"
+
+#: gal/widgets/e-categories.c:396
+#, fuzzy
+msgid "Remove all from global category list"
+msgstr "Kustutab kõik proxy erandite aadressid nimekirjast."
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Kategooriate redigeerimine"
+
+#: gal/widgets/e-selection-model.c:210
+msgid "Sorter"
+msgstr "Sorteerija"
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr "Valimise režiim"
+
+#: gal/widgets/e-selection-model.c:225
+#, fuzzy
+msgid "Cursor Mode"
+msgstr "Kursori "
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Redigeeri peamist kategooriate loendit..."
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Element(-id) kuulub(-vad) järgnevatesse kategooriatesse:"
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "_Olemasolevad kategooriaid:"
+
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "kategooriad"
+
+#, fuzzy
+#~ msgid "This will create a new View."
+#~ msgstr "Loo uus vaade tööraamatust"

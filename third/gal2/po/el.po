@@ -1,20 +1,25 @@
+# translation of el.po to 
+# translation of el.po to
+# translation of el.po to Greek
 # Greek translation for gal.
 # Copyright (C) 2001,2003 Free Software Foundation.
-# Simos Xenitellis <simos@hellug.gr>, 2001.
-# Kostas Papadimas <pkst@gmx.net>, 2003
 # kostas:11Mar2003. 202 messages
+# Simos Xenitellis <simos@hellug.gr>, 2001.
+# Kostas Papadimas <pkst@gnome.org>, 2003, 2004.
+# Nikos Charonitakis <charosn@her.forthnet.gr>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gal 0.19.0.1\n"
-"POT-Creation-Date: 2003-09-11 17:09-0500\n"
-"PO-Revision-Date: 2003-03-11 18:39+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
+"PO-Revision-Date: 2004-09-09 00:36-0300\n"
+"Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
+"Language-Team:  <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: gal/e-paned/e-paned.c:141
 msgid "Handle Size"
@@ -26,7 +31,7 @@ msgstr "Quantum"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
-msgstr "?"
+msgstr ";"
 
 #: gal/e-table/e-cell-date.c:58
 msgid "%l:%M %p"
@@ -54,76 +59,75 @@ msgstr "%b %d %Y"
 
 #: gal/e-table/e-cell-pixbuf.c:392
 msgid "Selected Column"
-msgstr "Επιλεγμένη στήλη"
+msgstr "Επιλεγμένη Στήλη"
 
 #: gal/e-table/e-cell-pixbuf.c:399
 msgid "Focused Column"
-msgstr "Εστιασμένη στήλη"
+msgstr "Εστιασμένη Στήλη"
 
 #: gal/e-table/e-cell-pixbuf.c:406
 msgid "Unselected Column"
-msgstr "Μη επιλεγμένη στήλη"
+msgstr "Μη Επιλεγμένη Στήλη"
 
-#: gal/e-table/e-cell-text.c:1516
+#: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
-msgstr "Επισημασμένη στήλη"
+msgstr "Επισημασμένη Στήλη"
 
-#: gal/e-table/e-cell-text.c:1523
-#, fuzzy
+#: gal/e-table/e-cell-text.c:1710
 msgid "Underline Column"
-msgstr "Μη επιλεγμένη στήλη"
+msgstr "Υπογράμμιση Στήλης"
 
-#: gal/e-table/e-cell-text.c:1530
+#: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
-msgstr "Έντονη στήλη"
+msgstr "Έντονη Στήλη"
 
-#: gal/e-table/e-cell-text.c:1537
+#: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
-msgstr "Χρώμα στήλης"
+msgstr "Χρώμα Στήλης"
 
-#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "Επεξεργάσιμο"
 
-#: gal/e-table/e-cell-text.c:1551
+#: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
 msgstr "Χρώμα BG στήλης"
 
-#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
-#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-header-item.c:1816
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
 msgstr "Κεφαλίδα"
 
-#: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
-#: gal/e-text/e-text.c:3357
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
 msgid "Model"
 msgstr "Μοντέλο"
 
-#: gal/e-table/e-table-click-to-add.c:470
+#: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
 msgstr "Μήνυμα"
 
-#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
-#: gal/e-text/e-text.c:3535
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
 msgid "Width"
 msgstr "Πλάτος"
 
-#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
-#: gal/e-text/e-text.c:3543
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
 msgid "Height"
 msgstr "Ύψος"
 
@@ -166,7 +170,7 @@ msgstr "Ομάδα"
 #: gal/e-table/e-table-config-no-group.glade.h:8
 #: gal/e-table/e-table-config.glade.h:8
 msgid "Group Items By"
-msgstr "Ομαδοποίηση αντικειμένων κατά:"
+msgstr "Ομαδοποίηση αντικειμένων Κατά:"
 
 #
 #: gal/e-table/e-table-config-no-group.glade.h:9
@@ -180,45 +184,44 @@ msgid "Move _Up"
 msgstr "Μετακίνηση _Επάνω"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
-#: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
 msgstr "Εμ_φάνιση αυτών των πεδίων:"
 
 #
 #: gal/e-table/e-table-config-no-group.glade.h:12
-#: gal/e-table/e-table-config.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
 msgid "Show Fields"
-msgstr "Εμφάνιση πεδίων"
+msgstr "Εμφάνιση Πεδίων"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
-#: gal/e-table/e-table-config.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
 msgid "Show field in View"
 msgstr "Εμφάνιση πεδίου στην Προβολή"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
-#: gal/e-table/e-table-config.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
 msgid "Sort"
 msgstr "Ταξινόμηση"
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
-#: gal/e-table/e-table-config.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
 msgid "Sort Items By"
 msgstr "Ταξινόμηση αντικειμένων κατα"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
-#: gal/e-table/e-table-config.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
 msgid "Then By"
 msgstr "Έπειτα κατα"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
-#: gal/e-table/e-table-config.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
 msgid "_Add ->"
 msgstr "_Προσθήκη ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
-msgstr "Εμ_φανιζόμενα πεδία..."
+msgstr "Εμ_φανιζόμενα Πεδία..."
 
 #: gal/e-table/e-table-config-no-group.glade.h:19
 #: gal/e-table/e-table-config.glade.h:20
@@ -251,13 +254,35 @@ msgstr "Χωρίς ταξινόμηση"
 msgid "No grouping"
 msgstr "Χωρίς ομαδοποίηση"
 
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
 msgid "_Group By..."
 msgstr "_Ομαδοποίηση Κατά..."
 
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Show these fields in order:"
+msgstr "Εμ_φάνιση αυτών των πεδίων σε σειρά:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "Κώδικας DnD"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Πλήρης Κεφαλίδα"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Προσθήκη Στήλης..."
+
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
-msgstr "Επιλογέας πεδίου"
+msgstr "Επιλογέας Πεδίου"
 
 #: gal/e-table/e-table-field-chooser.glade.h:2
 msgid ""
@@ -266,24 +291,6 @@ msgid ""
 msgstr ""
 "Για να προσθέσετε μια στήλη στον πίνακα σας, σύρτε την στην\n"
 "τοποθεσία στην οποία  θέλετε να εμφανιστεί."
-
-#: gal/e-table/e-table-field-chooser-dialog.c:74
-#: gal/e-table/e-table-field-chooser-item.c:646
-#: gal/e-table/e-table-field-chooser.c:77
-#: gal/e-table/e-table-header-item.c:1738
-msgid "DnD code"
-msgstr "Κώδικας DnD"
-
-#: gal/e-table/e-table-field-chooser-dialog.c:81
-#: gal/e-table/e-table-field-chooser-item.c:653
-#: gal/e-table/e-table-field-chooser.c:84
-#: gal/e-table/e-table-header-item.c:1752
-msgid "Full Header"
-msgstr "Πλήρης κεφαλίδα"
-
-#: gal/e-table/e-table-field-chooser-dialog.c:123
-msgid "Add a column..."
-msgstr "Προσθήκη στήλης..."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -308,20 +315,23 @@ msgstr "%s (%d αντικείμενα)"
 #: gal/e-table/e-table-group-container.c:906
 #: gal/e-table/e-table-group-container.c:907
 msgid "Alternating Row Colors"
-msgstr "Εναλλαγές γραμμές χρωμάτων"
+msgstr "Εναλλαγές Γραμμές Χρωμάτων"
 
 #: gal/e-table/e-table-group-container.c:913
-#: gal/e-table/e-table-group-container.c:914
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
-msgstr "Οριζόντια σχεδίαση πλέγματος"
+msgstr "Οριζόντια Σχεδίαση Πλέγματος"
 
 #: gal/e-table/e-table-group-container.c:920
-#: gal/e-table/e-table-group-container.c:921
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
-msgstr "Κάθετη σχεδίαση πλέγματος"
+msgstr "Κάθετη Σχεδίαση Πλέγματος"
 
 #: gal/e-table/e-table-group-container.c:927
-#: gal/e-table/e-table-group-container.c:928
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
 msgstr "Εστίαση σχεδίασης"
 
@@ -336,12 +346,14 @@ msgid "Selection model"
 msgstr "Μοντέλο επιλογής"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
-msgstr "Διάρκεια αφετηρίας"
+msgstr "Διάρκεια Αφετηρίας"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
 msgstr "Ομοιόμορφο ύψος γραμμής"
 
@@ -358,105 +370,254 @@ msgstr "Ελάχιστο πλάτος"
 msgid "Minimum Width"
 msgstr "Ελάχιστο Πλάτος"
 
-#: gal/e-table/e-table-header-item.c:1451
+#: gal/e-table/e-table-header-item.c:1457
 msgid "Customize Current View"
 msgstr "Προσαρμογή τρέχουσας εμφάνισης"
 
-#: gal/e-table/e-table-header-item.c:1471
+#: gal/e-table/e-table-header-item.c:1477
 msgid "Sort Ascending"
 msgstr "Αύξουσα Ταξινόμιση"
 
-#: gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
 msgid "Sort Descending"
 msgstr "Φθίνουσα Ταξινόμιση"
 
-#: gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
 msgid "Unsort"
 msgstr "Ακύρωση ταξινόμησης"
 
-#: gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
 msgid "Group By This Field"
 msgstr "Ομαδοποίηση Βάσει Αυτού Του Πεδίου"
 
-#: gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
-msgstr "Ομαδοποίηση κατά κουτί"
+msgstr "Ομαδοποίηση Κατά Κουτί"
 
-#: gal/e-table/e-table-header-item.c:1478
+#: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
-msgstr "Αφαίρεση αυτής της στήλης"
+msgstr "Αφαίρεση Αυτής της Στήλης"
 
-#: gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
-msgstr "Προσθήκη στήλης..."
+msgstr "Προσθήκη Στήλης..."
 
-#: gal/e-table/e-table-header-item.c:1481
+#: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
 msgstr "Στοίχιση"
 
 #
-#: gal/e-table/e-table-header-item.c:1482
+#: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
-msgstr "Καλύτερο ταίριασμα"
+msgstr "Καλύτερο Ταίριασμα"
 
-#: gal/e-table/e-table-header-item.c:1483
+#: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
-msgstr "Μπρφοποίηση στηλών..."
+msgstr "Μορφοποίηση Στηλών..."
 
-#: gal/e-table/e-table-header-item.c:1485
+#: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
 msgstr "Προσαρμογή τρέχουσας προβολής..."
 
-#: gal/e-table/e-table-header-item.c:1745
+#: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
 msgstr "Γραμματοσειρές"
 
-#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
 msgstr "Πληροφορίες ταξινόμησης"
 
-#: gal/e-table/e-table-header-item.c:1773
+#: gal/e-table/e-table-header-item.c:1830
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
 msgstr "Πίνακας"
 
-#: gal/e-table/e-table-header-item.c:1780
+#: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
-msgstr "Δέντρο"
+msgstr "Δένδρο"
 
-#: gal/e-table/e-table.c:3244
+#: gal/e-table/e-table.c:3313
 msgid "Always Search"
-msgstr "Πάντα αναζήτηση"
+msgstr "Πάντα Αναζήτηση"
 
-#: gal/e-table/e-table.c:3251
+#: gal/e-table/e-table.c:3320
 msgid "Use click to add"
 msgstr "Χρήση κλικ για πρόσθεση"
 
-#: gal/e-table/e-tree-selection-model.c:767
+#: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
-msgstr "Γραμμή δρομέα"
+msgstr "Γραμμή Δρομέα"
 
-#: gal/e-table/e-tree-selection-model.c:774
+#: gal/e-table/e-tree-selection-model.c:788
 #: gal/widgets/e-selection-model-array.c:550
 msgid "Cursor Column"
-msgstr "Στήλη δρομέα"
+msgstr "Στήλη Δρομέα"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr "ETree table adapter"
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+msgid "Always search"
+msgstr "Πάντα αναζήτηση"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr "Όψη ρετρό"
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr "Σχεδιασμός γραμμών και +/- expanders."
+
+#: gal/e-table/e-tree.c:3314
+msgid "Expander Size"
+msgstr "Μέγεθος Expander "
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr "Μέγεθος του βέλους expander"
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "Επιλογή Όλων"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "Μέθοδοι Εισαγωγής"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "Processor Γεγονότος"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "Κείμενο"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "Έντονα"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "Strikeout"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "Άγκυρα"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "Στοίχιση"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr "Πλάτος Clip"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr "Ύψος Clip"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr "Clip"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr "Fill clip rectangle"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr "Διάταξη X"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr "Διάταξη Y"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "Χρώμα γεμίσματος"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "Χρώμα γεμίσματος GDK"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+msgid "Fill stipple"
+msgstr "Διάστικτο γέμισμα"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "Πλάτος κειμένου"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "Ύψος κειμένου"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "Χρήση έλλειψης"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "Έλλειψης"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr "Αναδίπλωση γραμμής"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "Χαρακτήρες Break"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr " Μεγ γραμμές"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "Σχεδίαση περιγραμμάτων"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "Να επιτρέπονται νέες γραμμές"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "Σχεδιασμός παρασκηνίου "
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "Σχεδιασμός κουμπιού"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr "Θέση  δρομέα"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr "Περιεχόμενο IM"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "Χειρισμός Αναδυομένου"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
 msgid "Collection"
 msgstr "Συλλογή"
 
-#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
 #, no-c-format
 msgid "Define Views for %s"
 msgstr "Καθορισμός προβολών για %s"
 
-#: gal/menus/gal-define-views-dialog.c:292
-#: gal/menus/gal-define-views-dialog.c:294
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
 msgid "Define Views"
-msgstr "Καθορισμός προβολών"
+msgstr "Καθορισμός Προβολών"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
@@ -467,57 +628,50 @@ msgstr "Καθορισμός προβολών για \"%s\" "
 msgid "_Edit..."
 msgstr "_Επεξεργασία..."
 
-#: gal/menus/gal-view-instance.c:575
-msgid "Custom View"
-msgstr "Προσαρμοσμένη προβολή"
-
-# Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
-#: gal/menus/gal-view-instance.c:576
-msgid "Save Custom View"
-msgstr "Αποθήκευση προσαρμοσμένης προβολής"
-
-#: gal/menus/gal-view-instance.c:580
-#, fuzzy
-msgid "Define Views..."
-msgstr "Καθορισμός προβολών"
-
-#: gal/menus/gal-view-instance-save-as-dialog.c:179
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
 msgstr "Instance"
 
+# Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+msgid "Save Current View"
+msgstr "Αποθήκευση τρέχουσας προβολής"
+
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
-msgid "Create New View Named"
-msgstr "Δημιουργία νέα προβολής με όνομα"
+msgid "    "
+msgstr "    "
 
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
-msgid "Replace Existing View"
-msgstr "Αντικατάσταση υπάρχουσας προβολής"
-
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-msgid ""
-"The current view will replace the given view.  Any folders\n"
-"set to this view wil be replaced with the current view."
-msgstr ""
-"Η τρέχουσα προβολή θα αντικαταστήσει την δοθείσα προβολή. Όποιοι φάκελοι\n"
-"έχουν ορισθεί σε αυτή την προβολή θα αντικατασταθούν με την τρέχουσα προβολή."
-
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-msgid "This will create a new View."
-msgstr "Αυτό θα δημιουργήσει μια νέα προβολή."
-
 #: gal/menus/gal-view-new-dialog.glade.h:1
-#: gal/widgets/gal-categories.glade.h:1
 #: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: gal/menus/gal-view-new-dialog.glade.h:2
-msgid "Name of new view:"
-msgstr "Όνομα της νέας προβολής"
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+msgid "_Create new view"
+msgstr "_Δημιουργία νέα προβολής"
 
-#: gal/menus/gal-view-new-dialog.glade.h:3
-msgid "Type of view:"
-msgstr "Τύπος προβολής:"
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+msgid "_Name:"
+msgstr "_Όνομα:"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+msgid "_Replace existing view"
+msgstr "Αντι_κατάσταση υπάρχουσας προβολής"
+
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "Προσαρμοσμένη Προβολή"
+
+# Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "Αποθήκευση Προσαρμοσμένης Προβολής"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "Καθορισμός Προβολών..."
 
 #: gal/menus/gal-view-new-dialog.c:70
 msgid "Name"
@@ -527,6 +681,18 @@ msgstr "Όνομα"
 msgid "Factory"
 msgstr "Εργοστάσιο"
 
+#: gal/menus/gal-view-new-dialog.c:108
+msgid "Define New View"
+msgstr "Καθορισμός νέας προβολής"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "Όνομα της νέας προβολής"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "Τύπος προβολής:"
+
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
 msgid "Group %i"
@@ -534,230 +700,190 @@ msgstr "Ομάδα %i"
 
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
 #. This is the default custom color
-#: gal/widgets/color-palette.c:393
+#: gal/widgets/color-palette.c:394
 msgid "custom"
 msgstr "προσαρμοσμένο"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
-#: gal/widgets/color-palette.c:435
+#: gal/widgets/color-palette.c:436
 msgid "Custom Color:"
 msgstr "Προσαρμοσμένο Χρώμα:"
 
-#: gal/widgets/color-palette.c:443
+#: gal/widgets/color-palette.c:444
 msgid "Choose Custom Color"
 msgstr "Επιλογή Προσαρμοσμένου Χρώματος"
 
-#: gal/widgets/color-palette.c:576
+#: gal/widgets/color-palette.c:577
 msgid "black"
 msgstr "μαύρο"
 
-#: gal/widgets/color-palette.c:577
+#: gal/widgets/color-palette.c:578
 msgid "light brown"
 msgstr "ανοιχτό καφέ"
 
-#: gal/widgets/color-palette.c:578
+#: gal/widgets/color-palette.c:579
 msgid "brown gold"
 msgstr "χρυσαφί καφέ"
 
-#: gal/widgets/color-palette.c:579
+#: gal/widgets/color-palette.c:580
 msgid "dark green #2"
 msgstr "σκούρο πράσινο #2"
 
-#: gal/widgets/color-palette.c:580
+#: gal/widgets/color-palette.c:581
 msgid "navy"
 msgstr "ναυτικό μπλε"
 
-#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
 msgid "dark blue"
-msgstr "σκούρο μπλέ"
+msgstr "σκούρο μπλε"
 
-#: gal/widgets/color-palette.c:582
+#: gal/widgets/color-palette.c:583
 msgid "purple #2"
 msgstr "μωβ #2"
 
-#: gal/widgets/color-palette.c:583
+#: gal/widgets/color-palette.c:584
 msgid "very dark gray"
 msgstr "πολύ σκούρο γκρι"
 
-#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
 msgid "dark red"
 msgstr "σκούρο κόκκινο"
 
-#: gal/widgets/color-palette.c:587
+#: gal/widgets/color-palette.c:588
 msgid "red-orange"
 msgstr "κόκκινο-πορτοκαλί"
 
-#: gal/widgets/color-palette.c:588
-msgid "gold"
-msgstr "χρυσό"
-
 #: gal/widgets/color-palette.c:589
+msgid "gold"
+msgstr "χρυσαφί"
+
+#: gal/widgets/color-palette.c:590
 msgid "dark green"
 msgstr "σκούρο πράσινο"
 
-#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
-msgid "dull blue"
-msgstr "ξεθωριασμένο μπλε"
-
 #: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "dull blue"
+msgstr "μουντό μπλε"
+
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
 msgid "blue"
 msgstr "μπλε"
 
-#: gal/widgets/color-palette.c:592
-msgid "dull purple"
-msgstr "ξεθωριασμένο μωβ"
-
 #: gal/widgets/color-palette.c:593
+msgid "dull purple"
+msgstr "μουντό μωβ"
+
+#: gal/widgets/color-palette.c:594
 msgid "dark grey"
 msgstr "σκούρο γκρι"
 
-#: gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:597
 msgid "red"
 msgstr "κόκκινο"
 
-#: gal/widgets/color-palette.c:597
+#: gal/widgets/color-palette.c:598
 msgid "orange"
 msgstr "πορτοκαλί"
 
-#: gal/widgets/color-palette.c:598
+#: gal/widgets/color-palette.c:599
 msgid "lime"
 msgstr "λεμονί"
 
-#: gal/widgets/color-palette.c:599
-msgid "dull green"
-msgstr "ξεθωριασμένο πράσινο"
-
 #: gal/widgets/color-palette.c:600
-msgid "dull blue #2"
-msgstr "ξεθωριασμένο μπλε #2"
+msgid "dull green"
+msgstr "μουντό πράσινο"
 
 #: gal/widgets/color-palette.c:601
+msgid "dull blue #2"
+msgstr "μουντό μπλε #2"
+
+#: gal/widgets/color-palette.c:602
 msgid "sky blue #2"
 msgstr "μπλε ουρανού #2"
 
-#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
 msgid "purple"
 msgstr "μωβ"
 
-#: gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:604
 msgid "gray"
 msgstr "γκρι"
 
-#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
 msgid "magenta"
-msgstr "μωβ"
+msgstr "magenta"
 
-#: gal/widgets/color-palette.c:607
+#: gal/widgets/color-palette.c:608
 msgid "bright orange"
-msgstr "φωτεινό προτοκαλί"
+msgstr "ανοιχτό πορτοκαλί"
 
-#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
 msgid "yellow"
 msgstr "κίτρινο"
 
-#: gal/widgets/color-palette.c:609
+#: gal/widgets/color-palette.c:610
 msgid "green"
 msgstr "πράσινο"
 
-#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
 msgid "cyan"
 msgstr "κυανό"
 
-#: gal/widgets/color-palette.c:611
+#: gal/widgets/color-palette.c:612
 msgid "bright blue"
-msgstr "φωτεινό μπλέ"
+msgstr "ανοιχτό μπλε"
 
-#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
 msgid "red purple"
-msgstr "κόκκινο-μωβ"
+msgstr "κόκκινο μωβ"
 
-#: gal/widgets/color-palette.c:613
+#: gal/widgets/color-palette.c:614
 msgid "light grey"
 msgstr "ανοιχτό γκρι"
 
-#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
 msgid "pink"
 msgstr "ροζ"
 
-#: gal/widgets/color-palette.c:617
+#: gal/widgets/color-palette.c:618
 msgid "light orange"
 msgstr "ανοιχτό πορτοκαλί"
 
-#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
 msgid "light yellow"
 msgstr "ανοιχτό κίτρινο"
 
-#: gal/widgets/color-palette.c:619
+#: gal/widgets/color-palette.c:620
 msgid "light green"
 msgstr "ανοιχτό πράσινο"
 
-#: gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:621
 msgid "light cyan"
 msgstr "ανοιχτό κυανό"
 
-#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
 msgstr "ανοιχτό μπλε"
 
-#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
 msgstr "ανοιχτό μωβ"
 
-#: gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:624
 msgid "white"
 msgstr "λευκό"
 
-#: gal/widgets/color-palette.c:628
+#: gal/widgets/color-palette.c:629
 msgid "purplish blue"
-msgstr "μωβέ μπλέ"
+msgstr "μωβέ μπλε"
 
-#: gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:633
 msgid "dark purple"
 msgstr "σκούρο μωβ"
 
-#: gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:635
 msgid "sky blue"
 msgstr "μπλε ουρανού"
-
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
-msgid "Categories"
-msgstr "Κατηγορίες"
-
-#: gal/widgets/e-categories.c:393
-msgid "Add to global category list"
-msgstr "Προσθήκη στην λίστα γενικής κατηγορίας"
-
-#: gal/widgets/e-categories.c:394
-msgid "Add all to global category list"
-msgstr "Προσθήκη όλων στην λίστα γενικής κατηγορίας"
-
-#: gal/widgets/e-categories.c:395
-msgid "Remove from global category list"
-msgstr "Απομάκρυνση από την λίστα γενικής κατηγορίας"
-
-#: gal/widgets/e-categories.c:396
-msgid "Remove all from global category list"
-msgstr "Απομάκρυνση όλωναπό την λίστα γενικής κατηγορίας"
-
-#: gal/widgets/e-categories.c:540
-msgid "Edit Categories"
-msgstr "Επεξεργασία κατηγοριών"
-
-#: gal/widgets/gal-categories.glade.h:2
-msgid "Edit Master Category List..."
-msgstr "Επεξεργασία λίστας πρωτεύουσας κατηγορίας..."
-
-#: gal/widgets/gal-categories.glade.h:3
-msgid "Item(s) belong to these _categories:"
-msgstr "Αντικείμενα που ανήκουν στις _κατηγορίες:"
-
-#: gal/widgets/gal-categories.glade.h:4
-msgid "_Available Categories:"
-msgstr "_Διαθέσιμες κατηγορίες:"
-
-#: gal/widgets/gal-categories.glade.h:5
-msgid "categories"
-msgstr "κατηγορίες"
 
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
@@ -793,7 +919,7 @@ msgstr "Κάρτες Διακοπών"
 
 #: gal/widgets/e-categories-master-list-array.c:75
 msgid "Hot Contacts"
-msgstr "Σημαντικές επαφές"
+msgstr "Σημαντικές Επαφές"
 
 #: gal/widgets/e-categories-master-list-array.c:76
 msgid "Ideas"
@@ -806,7 +932,7 @@ msgstr "Διεθνές"
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
 #: gal/widgets/e-categories-master-list-array.c:78
 msgid "Key Customer"
-msgstr "Σημαντικός πελάτης"
+msgstr "Σημαντικός Πελάτης"
 
 #: gal/widgets/e-categories-master-list-array.c:79
 msgid "Miscellaneous"
@@ -846,53 +972,73 @@ msgstr "VIP"
 msgid "Waiting"
 msgstr "Αναμονή"
 
-#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
 msgstr "ECML"
 
-#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
 msgstr "ECategoriesMasterListCombo"
 
-#: gal/widgets/e-categories-master-list-dialog.c:198
+#: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
 msgstr "*Κάντε κλικ εδώ για να προσθέσετε μια κατηγορία*"
 
-#: gal/widgets/e-categories-master-list-dialog.c:199
+#: gal/widgets/e-categories-master-list-dialog.c:214
 msgid "Category"
 msgstr "Κατηγορία"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-#, fuzzy
 msgid "Add Category"
-msgstr "Προσθήκη κατηγορίας"
+msgstr "Προσθήκη Κατηγορίας"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-#, fuzzy
 msgid "Edit Category"
-msgstr "Επεξεργασία κατηγοριών"
+msgstr "Επεξεργασία Κατηγορίας"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Edit Global Category List"
 msgstr "Επεξεργασία λίστας γενικής κατηγορίας"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-#, fuzzy
 msgid "_Edit category:"
-msgstr "Επεξεργασία κατηγοριών"
+msgstr "_Επεξεργασία κατηγορίας:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
-#, fuzzy
 msgid "_New category:"
-msgstr "Προσθήκη κατηγορίας"
+msgstr "_Νέα κατηγορία:"
 
 #: gal/widgets/e-categories-master-list-option-menu.c:69
 msgid "All Categories"
-msgstr "'Ολες οι κατηγορίες"
+msgstr "'Ολες οι Κατηγορίες"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Κατηγορίες"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Προσθήκη στην λίστα γενικής κατηγορίας"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Προσθήκη όλων στην λίστα γενικής κατηγορίας"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Απομάκρυνση από την λίστα γενικής κατηγορίας"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Απομάκρυνση όλωναπό την λίστα γενικής κατηγορίας"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Επεξεργασία Κατηγοριών"
 
 #: gal/widgets/e-selection-model.c:210
 msgid "Sorter"
@@ -900,201 +1046,24 @@ msgstr "Sorter"
 
 #: gal/widgets/e-selection-model.c:217
 msgid "Selection Mode"
-msgstr "Λειτουργία επιλογής"
+msgstr "Λειτουργία Επιλογής"
 
 #: gal/widgets/e-selection-model.c:225
 msgid "Cursor Mode"
-msgstr "Λειτουργία δρομέα"
+msgstr "Λειτουργία Δρομέα"
 
-#: gal/e-text/e-text.c:2598
-#, fuzzy
-msgid "Select All"
-msgstr "Επιλεγμένη στήλη"
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Επεξεργασία λίστας πρωτεύουσας κατηγορίας..."
 
-#: gal/e-text/e-text.c:2610
-msgid "Input Methods"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Αντικείμενα που ανήκουν στις _κατηγορίες:"
 
-#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
-msgid "Event Processor"
-msgstr ""
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "_Διαθέσιμες Κατηγορίες:"
 
-#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
-msgid "Text"
-msgstr ""
-
-#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
-#, fuzzy
-msgid "Bold"
-msgstr "χρυσό"
-
-#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
-#, fuzzy
-msgid "Strikeout"
-msgstr "Επισημασμένη στήλη"
-
-#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
-msgid "Anchor"
-msgstr ""
-
-#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
-msgid "Justification"
-msgstr ""
-
-#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
-#, fuzzy
-msgid "Clip Width"
-msgstr "Πλάτος"
-
-#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
-#, fuzzy
-msgid "Clip Height"
-msgstr "Ύψος"
-
-#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
-msgid "Clip"
-msgstr ""
-
-#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
-msgid "Fill clip rectangle"
-msgstr ""
-
-#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
-msgid "X Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
-msgid "Y Offset"
-msgstr ""
-
-#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
-#, fuzzy
-msgid "Fill color"
-msgstr "Επιλογέας πεδίου"
-
-#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
-#: gal/e-text/e-text.c:3464
-msgid "GDK fill color"
-msgstr ""
-
-#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
-#, fuzzy
-msgid "Fill stipple"
-msgstr "ξεθωριασμένο μωβ"
-
-#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
-msgid "Text width"
-msgstr ""
-
-#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
-msgid "Text height"
-msgstr ""
-
-#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
-msgid "Use ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
-msgid "Ellipsis"
-msgstr ""
-
-#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
-msgid "Line wrap"
-msgstr ""
-
-#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
-msgid "Break characters"
-msgstr ""
-
-#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
-msgid "Max lines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
-#, fuzzy
-msgid "Draw borders"
-msgstr "Εστίαση σχεδίασης"
-
-#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
-msgid "Allow newlines"
-msgstr ""
-
-#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
-msgid "Draw background"
-msgstr ""
-
-#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
-msgid "Draw button"
-msgstr ""
-
-#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
-#, fuzzy
-msgid "Cursor position"
-msgstr "Στήλη δρομέα"
-
-#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
-msgid "IM Context"
-msgstr ""
-
-#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
-#, fuzzy
-msgid "Handle Popup"
-msgstr "Μέγεθος Χειριστή"
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "Αργά Χθες %l:%M %p"
-
-#~ msgid "Modify a Category"
-#~ msgstr "Τροποποίηση μιας κατηγορίας"
-
-#
-#~ msgid "Remove"
-#~ msgstr "Αφαίρεση"
-
-#~ msgid "_Category to Add:"
-#~ msgstr "_Κατηγορία για προσθήκη:"
-
-#~ msgid "_Category to Modify:"
-#~ msgstr "_Κατηγορία για μετατροπή:"
-
-#, fuzzy
-#~ msgid "FIll stipple"
-#~ msgstr "ξεθωριασμένο μωβ"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "Επαναφορά εξ' ορισμού ρυθμίσεων..."
-
-#~ msgid "_Copy..."
-#~ msgstr "Αντιγραφή..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Διαγραφή..."
-
-#~ msgid "_New..."
-#~ msgstr "_Νέο..."
-
-#~ msgid "<< Remove"
-#~ msgstr "<< Αφαίρεση"
-
-#~ msgid "Add >>"
-#~ msgstr "Προσθήκη >>"
-
-#, fuzzy
-#~ msgid "Available fields"
-#~ msgstr "Διαθέσιμες όψεις"
-
-#, fuzzy
-#~ msgid "Show in this order"
-#~ msgstr "Εμφάνιση μόνο αυ_τού του φακέλου"
-
-#, fuzzy
-#~ msgid "Views for \"%s\""
-#~ msgstr "στο μενού για το \"%s\""
-
-#
-#~ msgid "Add..."
-#~ msgstr "Προσθήκη..."
-
-#
-#~ msgid "Modify..."
-#~ msgstr "Τροποποίηση..."
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "κατηγορίες"

@@ -189,9 +189,9 @@ main (int argc, gchar **argv)
 
 	read_dict ();
 
-	complete = e_completion_callbacks_new (request_dict_search,
-					       end_dict_search,
-					       NULL);
+	complete = E_COMPLETION (e_completion_callbacks_new (request_dict_search,
+							     end_dict_search,
+							     NULL));
 
 	win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	entry = e_entry_new ();

@@ -50,7 +50,7 @@ ecmlc_ecml_changed (ECategoriesMasterList *ecml, ECategoriesMasterListCombo *ecm
 {
 	int count = e_categories_master_list_count (ecml);
 	int i;
-	GList *strings = NULL, *iter;
+	GList *strings = NULL;
 
 	for (i = 0; i < count; i++) {
 		strings = g_list_prepend (strings, (gpointer) e_categories_master_list_nth (ecml, i));

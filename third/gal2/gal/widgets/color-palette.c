@@ -28,6 +28,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>

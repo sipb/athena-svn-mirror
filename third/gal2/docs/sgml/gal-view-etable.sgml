@@ -1,4 +1,4 @@
-<refentry id="GalViewEtable" revision="12 Jan 2001">
+<refentry id="GalViewEtable">
 <refmeta>
 <refentrytitle>GalViewEtable</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -37,6 +38,10 @@ typedef     <link linkend="GalViewEtable">GalViewEtable</link>;
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -48,14 +53,14 @@ typedef     <link linkend="GalViewEtable">GalViewEtable</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GAL-VIEW-ETABLE-TYPE-CAPS">GAL_VIEW_ETABLE_TYPE</title>
-<programlisting>#define GAL_VIEW_ETABLE_TYPE        (gal_view_etable_get_type ())
+<indexterm><primary>GAL_VIEW_ETABLE_TYPE</primary></indexterm><programlisting>#define GAL_VIEW_ETABLE_TYPE        (gal_view_etable_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GalViewEtable">GalViewEtable</title>
-<programlisting>typedef struct {
+<indexterm><primary>GalViewEtable</primary></indexterm><programlisting>typedef struct {
 	GalView base;
 
 	ETableSpecification *spec;
@@ -68,44 +73,38 @@ typedef     <link linkend="GalViewEtable">GalViewEtable</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gal-view-etable-new">gal_view_etable_new ()</title>
-<programlisting><link linkend="GalView">GalView</link>*    gal_view_etable_new             (<link linkend="ETableSpecification">ETableSpecification</link> *spec);</programlisting>
+<indexterm><primary>gal_view_etable_new</primary></indexterm><programlisting><link linkend="GalView">GalView</link>*    gal_view_etable_new             (<link linkend="ETableSpecification">ETableSpecification</link> *spec);</programlisting>
+<para>
+A new GalViewFactory for creating ETable views.  Create one of
+these and pass it to GalViewCollection for use.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
+<listitem><simpara> The spec to create GalViewEtables based upon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new GalViewFactoryEtable.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-view-etable-construct">gal_view_etable_construct ()</title>
-<programlisting><link linkend="GalView">GalView</link>*    gal_view_etable_construct       (<link linkend="GalViewEtable">GalViewEtable</link> *view,
+<indexterm><primary>gal_view_etable_construct</primary></indexterm><programlisting><link linkend="GalView">GalView</link>*    gal_view_etable_construct       (<link linkend="GalViewEtable">GalViewEtable</link> *view,
                                              <link linkend="ETableSpecification">ETableSpecification</link> *spec);</programlisting>
 <para>
+constructs the GalViewFactoryEtable.  To be used by subclasses and
+language bindings.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>spec</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>view</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>spec</parameter>&nbsp;:</term>
+<listitem><simpara> The spec to create GalViewEtables based upon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The GalViewFactoryEtable.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

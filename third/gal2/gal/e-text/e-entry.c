@@ -122,6 +122,7 @@ struct _EEntryPrivate {
 	guint draw_borders : 1;
 	guint emulate_label_resize : 1;
 	guint have_set_transient : 1;
+	guint item_chosen : 1;
 	gint last_width;
 };
 
@@ -158,6 +159,7 @@ canvas_size_allocate (GtkWidget *widget, GtkAllocation *alloc,
 	}
 }
 
+#if 0
 static void
 get_borders (EEntry   *entry,
              gint     *xborder,
@@ -181,6 +183,7 @@ get_borders (EEntry   *entry,
       *yborder += focus_width;
     }
 }
+#endif
 
 static void
 canvas_size_request (GtkWidget *widget, GtkRequisition *requisition,
@@ -195,7 +198,8 @@ canvas_size_request (GtkWidget *widget, GtkRequisition *requisition,
 	g_return_if_fail (requisition != NULL);
 
 	if (entry->priv->draw_borders) {
-		get_borders (entry, &xthick, &ythick);
+		/* get_borders (entry, &xthick, &ythick); */
+		xthick = ythick = 3;
 	} else {
 		xthick = ythick = 0;
 	}
@@ -205,9 +209,9 @@ canvas_size_request (GtkWidget *widget, GtkRequisition *requisition,
 		g_object_get (entry->item,
 			      "text_width", &width,
 			      NULL);
-		requisition->width = 2 + 2 * xthick + width;
+		requisition->width = 2*xthick + width;
 	} else {
-		requisition->width = 2 + MIN_ENTRY_WIDTH + xthick;
+		requisition->width = MIN_ENTRY_WIDTH + 2*xthick;
 	}
 	if (entry->priv->last_width != requisition->width)
 		gtk_widget_queue_resize (widget);
@@ -219,8 +223,7 @@ canvas_size_request (GtkWidget *widget, GtkRequisition *requisition,
 	metrics = pango_context_get_metrics (context, gtk_widget_get_style (widget)->font_desc,
 					     pango_context_get_language (context));
 
-	requisition->height = (2 +
-			       PANGO_PIXELS (pango_font_metrics_get_ascent (metrics) +
+	requisition->height = (PANGO_PIXELS (pango_font_metrics_get_ascent (metrics) +
 					     pango_font_metrics_get_descent (metrics)) +
 			       2 * ythick);
 
@@ -500,9 +503,14 @@ e_entry_show_popup (EEntry *entry, gboolean visible)
 	if (pop == NULL)
 		return;
 
-	/* The async query can give us a result after the focus was lost by the
-	   widget.  In that case, we don't want to show the pop-up.   */
-	if (! GTK_WIDGET_HAS_FOCUS (entry->canvas))
+	/* The async query can give us a result after the focus was
+	   lost by the widget.  In that case, we don't want to show
+	   the pop-up.
+
+	   but only return early if we're popping *up* the completion
+	   view.  If we're trying to pop down the view, continue on
+	   regardless of whether or not the canvas has focus. */
+	if (/*visible && */! GTK_WIDGET_HAS_FOCUS (entry->canvas))
 		return;
 
 	if (visible) {
@@ -559,13 +567,6 @@ e_entry_show_popup (EEntry *entry, gboolean visible)
 }
 
 static void
-e_entry_refresh_popup (EEntry *entry)
-{
-	if (entry->priv->popup_is_visible)
-		e_entry_show_popup (entry, TRUE);
-}
-
-static void
 e_entry_start_completion (EEntry *entry)
 {
 	if (entry->priv->completion == NULL)
@@ -573,6 +574,8 @@ e_entry_start_completion (EEntry *entry)
 
 	if (e_entry_is_empty (entry))
 		return;
+
+	entry->priv->item_chosen = FALSE;
 
 	e_completion_begin_search (entry->priv->completion,
 				   e_entry_get_text (entry),
@@ -620,19 +623,12 @@ nonempty_cb (ECompletionView *view, gpointer user_data)
 }
 
 static void
-added_cb (ECompletionView *view, gpointer user_data)
-{
-	EEntry *entry = E_ENTRY (user_data);
-	e_entry_refresh_popup (entry);
-}
-
-static void
 full_cb (ECompletionView *view, gpointer user_data)
 {
 	EEntry *entry = E_ENTRY (user_data);
 	gboolean show;
 
-	show = GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (entry->canvas)) && view->choices->len > 0;
+	show = GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (entry->canvas)) && view->choices->len > 0 && !entry->priv->item_chosen;
 	e_entry_show_popup (entry, show);
 }
 
@@ -688,6 +684,8 @@ activate_cb (ECompletionView *view, ECompletionMatch *match, gpointer user_data)
 		entry->priv->handler (entry, match);
 	else
 		e_entry_set_text (entry, match->match_text);
+
+	entry->priv->item_chosen = TRUE;
 
 	e_entry_cancel_delayed_completion (entry);
 }
@@ -800,11 +798,6 @@ e_entry_enable_completion_full (EEntry *entry, ECompletion *completion, gint del
 							    "nonempty",
 							    G_CALLBACK (nonempty_cb),
 							    entry);
-
-	entry->priv->added_signal_id = g_signal_connect (entry->priv->completion_view,
-							 "added",
-							 G_CALLBACK (added_cb),
-							 entry);
 
 	entry->priv->full_signal_id = g_signal_connect (entry->priv->completion_view,
 							"full",

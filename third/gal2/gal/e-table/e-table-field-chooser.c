@@ -94,6 +94,24 @@ e_table_field_chooser_class_init (ETableFieldChooserClass *klass)
 							      G_PARAM_READWRITE));
 }
 
+static void
+ensure_nonzero_step_increments (ETableFieldChooser *etfc)
+{
+	GtkAdjustment *va, *ha;
+
+	va = gtk_layout_get_vadjustment (GTK_LAYOUT (etfc->canvas));
+	ha = gtk_layout_get_hadjustment (GTK_LAYOUT (etfc->canvas));
+
+	/*
+	  it looks pretty complicated to get height of column header
+	  so use 16 pixels which should be OK
+	*/ 
+	if (va)
+		va->step_increment = 16.0;
+	if (ha)
+		ha->step_increment = 16.0;
+}
+
 static void allocate_callback(GtkWidget *canvas, GtkAllocation *allocation, ETableFieldChooser *etfc)
 {
 	double height;
@@ -110,6 +128,7 @@ static void allocate_callback(GtkWidget *canvas, GtkAllocation *allocation, ETab
 			       "x2", (double) allocation->width,
 			       "y2", (double) height,
 			       NULL );
+	ensure_nonzero_step_increments (etfc);
 }
 
 static void resize(GnomeCanvas *canvas, ETableFieldChooser *etfc)
@@ -126,6 +145,7 @@ static void resize(GnomeCanvas *canvas, ETableFieldChooser *etfc)
 			       "x2", (double) etfc->last_alloc.width,
 			       "y2", (double) height,
 			       NULL );	
+	ensure_nonzero_step_increments (etfc);
 }
 
 static void
@@ -134,7 +154,7 @@ e_table_field_chooser_init (ETableFieldChooser *etfc)
 	GladeXML *gui;
 	GtkWidget *widget;
 
-	gui = glade_xml_new (ETABLE_GLADEDIR "/e-table-field-chooser.glade", NULL, PACKAGE);
+	gui = glade_xml_new (ETABLE_GLADEDIR "/e-table-field-chooser.glade", NULL, E_I18N_DOMAIN);
 	etfc->gui = gui;
 
 	widget = glade_xml_get_widget(gui, "vbox-top");

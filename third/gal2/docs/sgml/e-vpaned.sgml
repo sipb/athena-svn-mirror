@@ -1,4 +1,4 @@
-<refentry id="EVPaned" revision="12 Jan 2001">
+<refentry id="EVPaned">
 <refmeta>
 <refentrytitle>EVPaned</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -36,6 +37,10 @@ struct      <link linkend="EVPaned-struct">EVPaned</link>;
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -47,25 +52,22 @@ struct      <link linkend="EVPaned-struct">EVPaned</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="EVPaned-struct">struct EVPaned</title>
-<programlisting>struct EVPaned;</programlisting>
+<indexterm><primary>EVPaned</primary></indexterm><programlisting>struct EVPaned;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-vpaned-new">e_vpaned_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_vpaned_new                    (void);</programlisting>
+<indexterm><primary>e_vpaned_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_vpaned_new                    (void);</programlisting>
+<para>
+Creates a new vertical paned widget.  This lets you have 2 panes
+that the user can resize.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The EVPaned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

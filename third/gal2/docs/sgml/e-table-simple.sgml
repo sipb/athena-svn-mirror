@@ -1,4 +1,4 @@
-<refentry id="ETableSimple" revision="12 Jan 2001">
+<refentry id="ETableSimple">
 <refmeta>
 <refentrytitle>ETableSimple</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,53 +10,54 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 typedef     <link linkend="ETableSimple">ETableSimple</link>;
 #define     <link linkend="E-TABLE-SIMPLE-TYPE-CAPS">E_TABLE_SIMPLE_TYPE</link>
-int         (<link linkend="ETableSimpleColumnCountFn">*ETableSimpleColumnCountFn</link>)    (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             void *data);
-int         (<link linkend="ETableSimpleRowCountFn">*ETableSimpleRowCountFn</link>)       (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             void *data);
-void*       (<link linkend="ETableSimpleValueAtFn">*ETableSimpleValueAtFn</link>)        (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             int row,
-                                             void *data);
-void        (<link linkend="ETableSimpleSetValueAtFn">*ETableSimpleSetValueAtFn</link>)     (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             int row,
-                                             const void *val,
-                                             void *data);
+<link linkend="int">int</link>         (<link linkend="ETableSimpleColumnCountFn">*ETableSimpleColumnCountFn</link>)    (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="void">void</link> *data);
+<link linkend="int">int</link>         (<link linkend="ETableSimpleRowCountFn">*ETableSimpleRowCountFn</link>)       (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="void">void</link> *data);
+<link linkend="void">void</link>*       (<link linkend="ETableSimpleValueAtFn">*ETableSimpleValueAtFn</link>)        (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="void">void</link> *data);
+<link linkend="void">void</link>        (<link linkend="ETableSimpleSetValueAtFn">*ETableSimpleSetValueAtFn</link>)     (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);
 <link linkend="gboolean">gboolean</link>    (<link linkend="ETableSimpleIsCellEditableFn">*ETableSimpleIsCellEditableFn</link>) (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             int row,
-                                             void *data);
-void        (<link linkend="ETableSimpleAppendRowFn">*ETableSimpleAppendRowFn</link>)      (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="void">void</link> *data);
+<link linkend="void">void</link>        (<link linkend="ETableSimpleAppendRowFn">*ETableSimpleAppendRowFn</link>)      (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableModel">ETableModel</link> *model,
-                                             int row,
-                                             void *data);
-void*       (<link linkend="ETableSimpleDuplicateValueFn">*ETableSimpleDuplicateValueFn</link>) (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             const void *val,
-                                             void *data);
-void        (<link linkend="ETableSimpleFreeValueFn">*ETableSimpleFreeValueFn</link>)      (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             void *val,
-                                             void *data);
-void*       (<link linkend="ETableSimpleInitializeValueFn">*ETableSimpleInitializeValueFn</link>)
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="void">void</link> *data);
+<link linkend="void">void</link>*       (<link linkend="ETableSimpleDuplicateValueFn">*ETableSimpleDuplicateValueFn</link>) (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);
+<link linkend="void">void</link>        (<link linkend="ETableSimpleFreeValueFn">*ETableSimpleFreeValueFn</link>)      (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);
+<link linkend="void">void</link>*       (<link linkend="ETableSimpleInitializeValueFn">*ETableSimpleInitializeValueFn</link>)
                                             (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             void *data);
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="void">void</link> *data);
 <link linkend="gboolean">gboolean</link>    (<link linkend="ETableSimpleValueIsEmptyFn">*ETableSimpleValueIsEmptyFn</link>)   (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             const void *val,
-                                             void *data);
-char*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStringFn</link>)  (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             const void *val,
-                                             void *data);
+                                             <link linkend="int">int</link> col,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);
+<link linkend="char">char</link>*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStringFn</link>)  (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);
 <link linkend="ETableModel">ETableModel</link>* <link linkend="e-table-simple-new">e_table_simple_new</link>             (<link linkend="ETableSimpleColumnCountFn">ETableSimpleColumnCountFn</link> col_count,
                                              <link linkend="ETableSimpleRowCountFn">ETableSimpleRowCountFn</link> row_count,
                                              <link linkend="ETableSimpleValueAtFn">ETableSimpleValueAtFn</link> value_at,
@@ -67,7 +68,7 @@ char*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStr
                                              <link linkend="ETableSimpleInitializeValueFn">ETableSimpleInitializeValueFn</link> initialize_value,
                                              <link linkend="ETableSimpleValueIsEmptyFn">ETableSimpleValueIsEmptyFn</link> value_is_empty,
                                              <link linkend="ETableSimpleValueToStringFn">ETableSimpleValueToStringFn</link> value_to_string,
-                                             void *data);
+                                             <link linkend="void">void</link> *data);
 
 </synopsis>
 </refsynopsisdiv>
@@ -83,11 +84,15 @@ char*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStr
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="ETableSimple--append-row">append_row</link>&quot;           <link linkend="gpointer">gpointer</link>             : Read / Write
+  &quot;<link linkend="ETableSimple--append-row">append-row</link>&quot;           <link linkend="gpointer">gpointer</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -104,7 +109,7 @@ char*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStr
 <title>Details</title>
 <refsect2>
 <title><anchor id="ETableSimple">ETableSimple</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSimple</primary></indexterm><programlisting>typedef struct {
 	ETableModel parent;
 
 	ETableSimpleColumnCountFn     col_count;
@@ -126,317 +131,273 @@ char*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStr
 </para></refsect2>
 <refsect2>
 <title><anchor id="E-TABLE-SIMPLE-TYPE-CAPS">E_TABLE_SIMPLE_TYPE</title>
-<programlisting>#define E_TABLE_SIMPLE_TYPE        (e_table_simple_get_type ())
+<indexterm><primary>E_TABLE_SIMPLE_TYPE</primary></indexterm><programlisting>#define E_TABLE_SIMPLE_TYPE        (e_table_simple_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleColumnCountFn">ETableSimpleColumnCountFn ()</title>
-<programlisting>int         (*ETableSimpleColumnCountFn)    (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleColumnCountFn</primary></indexterm><programlisting><link linkend="int">int</link>         (*ETableSimpleColumnCountFn)    (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleRowCountFn">ETableSimpleRowCountFn ()</title>
-<programlisting>int         (*ETableSimpleRowCountFn)       (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleRowCountFn</primary></indexterm><programlisting><link linkend="int">int</link>         (*ETableSimpleRowCountFn)       (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleValueAtFn">ETableSimpleValueAtFn ()</title>
-<programlisting>void*       (*ETableSimpleValueAtFn)        (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             int row,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleValueAtFn</primary></indexterm><programlisting><link linkend="void">void</link>*       (*ETableSimpleValueAtFn)        (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleSetValueAtFn">ETableSimpleSetValueAtFn ()</title>
-<programlisting>void        (*ETableSimpleSetValueAtFn)     (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             int row,
-                                             const void *val,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleSetValueAtFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*ETableSimpleSetValueAtFn)     (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleIsCellEditableFn">ETableSimpleIsCellEditableFn ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    (*ETableSimpleIsCellEditableFn) (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             int row,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleIsCellEditableFn</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    (*ETableSimpleIsCellEditableFn) (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleAppendRowFn">ETableSimpleAppendRowFn ()</title>
-<programlisting>void        (*ETableSimpleAppendRowFn)      (<link linkend="ETableModel">ETableModel</link> *etm,
+<indexterm><primary>ETableSimpleAppendRowFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*ETableSimpleAppendRowFn)      (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableModel">ETableModel</link> *model,
-                                             int row,
-                                             void *data);</programlisting>
+                                             <link linkend="int">int</link> row,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>model</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleDuplicateValueFn">ETableSimpleDuplicateValueFn ()</title>
-<programlisting>void*       (*ETableSimpleDuplicateValueFn) (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             const void *val,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleDuplicateValueFn</primary></indexterm><programlisting><link linkend="void">void</link>*       (*ETableSimpleDuplicateValueFn) (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleFreeValueFn">ETableSimpleFreeValueFn ()</title>
-<programlisting>void        (*ETableSimpleFreeValueFn)      (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             void *val,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleFreeValueFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*ETableSimpleFreeValueFn)      (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleInitializeValueFn">ETableSimpleInitializeValueFn ()</title>
-<programlisting>void*       (*ETableSimpleInitializeValueFn)
+<indexterm><primary>ETableSimpleInitializeValueFn</primary></indexterm><programlisting><link linkend="void">void</link>*       (*ETableSimpleInitializeValueFn)
                                             (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             void *data);</programlisting>
+                                             <link linkend="int">int</link> col,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleValueIsEmptyFn">ETableSimpleValueIsEmptyFn ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    (*ETableSimpleValueIsEmptyFn)   (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             const void *val,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleValueIsEmptyFn</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    (*ETableSimpleValueIsEmptyFn)   (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableSimpleValueToStringFn">ETableSimpleValueToStringFn ()</title>
-<programlisting>char*       (*ETableSimpleValueToStringFn)  (<link linkend="ETableModel">ETableModel</link> *etm,
-                                             int col,
-                                             const void *val,
-                                             void *data);</programlisting>
+<indexterm><primary>ETableSimpleValueToStringFn</primary></indexterm><programlisting><link linkend="char">char</link>*       (*ETableSimpleValueToStringFn)  (<link linkend="ETableModel">ETableModel</link> *etm,
+                                             <link linkend="int">int</link> col,
+                                             const <link linkend="void">void</link> *val,
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-simple-new">e_table_simple_new ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_simple_new             (<link linkend="ETableSimpleColumnCountFn">ETableSimpleColumnCountFn</link> col_count,
+<indexterm><primary>e_table_simple_new</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_simple_new             (<link linkend="ETableSimpleColumnCountFn">ETableSimpleColumnCountFn</link> col_count,
                                              <link linkend="ETableSimpleRowCountFn">ETableSimpleRowCountFn</link> row_count,
                                              <link linkend="ETableSimpleValueAtFn">ETableSimpleValueAtFn</link> value_at,
                                              <link linkend="ETableSimpleSetValueAtFn">ETableSimpleSetValueAtFn</link> set_value_at,
@@ -446,7 +407,7 @@ char*       (<link linkend="ETableSimpleValueToStringFn">*ETableSimpleValueToStr
                                              <link linkend="ETableSimpleInitializeValueFn">ETableSimpleInitializeValueFn</link> initialize_value,
                                              <link linkend="ETableSimpleValueIsEmptyFn">ETableSimpleValueIsEmptyFn</link> value_is_empty,
                                              <link linkend="ETableSimpleValueToStringFn">ETableSimpleValueToStringFn</link> value_to_string,
-                                             void *data);</programlisting>
+                                             <link linkend="void">void</link> *data);</programlisting>
 <para>
 This initializes a new ETableSimpleModel object.  ETableSimpleModel is
 an implementaiton of the abstract class ETableModel.  The ETableSimpleModel
@@ -460,58 +421,53 @@ and passes the extra <parameter>data</parameter> pointer to each one of the meth
 with any context they might want to use.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>col_count</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row_count</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value_at</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>set_value_at</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>is_cell_editable</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>duplicate_value</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>free_value</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>initialize_value</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value_is_empty</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>value_to_string</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry> closure pointer.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An ETableSimpleModel object (which is also an ETableModel
+</para><variablelist role="params">
+<varlistentry><term><parameter>col_count</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row_count</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value_at</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_value_at</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>is_cell_editable</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>duplicate_value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>free_value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>initialize_value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value_is_empty</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value_to_string</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> closure pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> An ETableSimpleModel object (which is also an ETableModel
 object).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="ETableSimple--append-row">&quot;<literal>append_row</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
+<varlistentry><term><anchor id="ETableSimple--append-row">&quot;<literal>append-row</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

@@ -1,4 +1,4 @@
-<refentry id="PixmapCombo" revision="12 Jan 2001">
+<refentry id="PixmapCombo">
 <refmeta>
 <refentrytitle>PixmapCombo</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,10 +18,10 @@
 typedef     <link linkend="PixmapCombo">PixmapCombo</link>;
 typedef     <link linkend="PixmapComboElement">PixmapComboElement</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="pixmap-combo-new">pixmap_combo_new</link>                (<link linkend="PixmapComboElement">PixmapComboElement</link> const *elements,
-                                             int ncols,
-                                             int nrows);
-void        <link linkend="pixmap-combo-select-pixmap">pixmap_combo_select_pixmap</link>      (<link linkend="PixmapCombo">PixmapCombo</link> *combo,
-                                             int index);
+                                             <link linkend="int">int</link> ncols,
+                                             <link linkend="int">int</link> nrows);
+<link linkend="void">void</link>        <link linkend="pixmap-combo-select-pixmap">pixmap_combo_select_pixmap</link>      (<link linkend="PixmapCombo">PixmapCombo</link> *combo,
+                                             <link linkend="int">int</link> index);
 
 </synopsis>
 </refsynopsisdiv>
@@ -41,11 +42,15 @@ void        <link linkend="pixmap-combo-select-pixmap">pixmap_combo_select_pixma
 </refsect1>
 
 
+
+
+
+
 <refsect1>
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="PixmapCombo-changed">changed</link>&quot;   void        user_function      (<link linkend="PixmapCombo">PixmapCombo</link> *pixmapcombo,
+&quot;<link linkend="PixmapCombo-changed">changed</link>&quot;   <link linkend="void">void</link>        user_function      (<link linkend="PixmapCombo">PixmapCombo</link> *pixmapcombo,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -63,7 +68,7 @@ void        <link linkend="pixmap-combo-select-pixmap">pixmap_combo_select_pixma
 <title>Details</title>
 <refsect2>
 <title><anchor id="PixmapCombo">PixmapCombo</title>
-<programlisting>typedef struct {
+<indexterm><primary>PixmapCombo</primary></indexterm><programlisting>typedef struct {
 	GtkComboBox     combo_box;
 
 	/* Static information */
@@ -84,7 +89,7 @@ void        <link linkend="pixmap-combo-select-pixmap">pixmap_combo_select_pixma
 </refsect2>
 <refsect2>
 <title><anchor id="PixmapComboElement">PixmapComboElement</title>
-<programlisting>typedef struct {
+<indexterm><primary>PixmapComboElement</primary></indexterm><programlisting>typedef struct {
 	char const *untranslated_tooltip;
 	char **xpm_data;
 	int  index;
@@ -95,76 +100,52 @@ void        <link linkend="pixmap-combo-select-pixmap">pixmap_combo_select_pixma
 </para></refsect2>
 <refsect2>
 <title><anchor id="pixmap-combo-new">pixmap_combo_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  pixmap_combo_new                (<link linkend="PixmapComboElement">PixmapComboElement</link> const *elements,
-                                             int ncols,
-                                             int nrows);</programlisting>
+<indexterm><primary>pixmap_combo_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  pixmap_combo_new                (<link linkend="PixmapComboElement">PixmapComboElement</link> const *elements,
+                                             <link linkend="int">int</link> ncols,
+                                             <link linkend="int">int</link> nrows);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>elements</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>ncols</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>nrows</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>elements</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ncols</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>nrows</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="pixmap-combo-select-pixmap">pixmap_combo_select_pixmap ()</title>
-<programlisting>void        pixmap_combo_select_pixmap      (<link linkend="PixmapCombo">PixmapCombo</link> *combo,
-                                             int index);</programlisting>
+<indexterm><primary>pixmap_combo_select_pixmap</primary></indexterm><programlisting><link linkend="void">void</link>        pixmap_combo_select_pixmap      (<link linkend="PixmapCombo">PixmapCombo</link> *combo,
+                                             <link linkend="int">int</link> index);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>combo</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>index</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>combo</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>index</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="PixmapCombo-changed">The &quot;changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="PixmapCombo">PixmapCombo</link> *pixmapcombo,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="PixmapCombo">PixmapCombo</link> *pixmapcombo,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
-<para>
-
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pixmapcombo</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</refsect2>
 </refsect1>
 
 

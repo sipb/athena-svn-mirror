@@ -1,4 +1,4 @@
-<refentry id="ETableSubsetVariable" revision="12 Jan 2001">
+<refentry id="ETableSubsetVariable">
 <refmeta>
 <refentrytitle>ETableSubsetVariable</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -20,20 +21,20 @@ typedef     <link linkend="ETableSubsetVariable">ETableSubsetVariable</link>;
 <link linkend="ETableModel">ETableModel</link>* <link linkend="e-table-subset-variable-construct">e_table_subset_variable_construct</link>
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *etssv,
                                              <link linkend="ETableModel">ETableModel</link> *source);
-void        <link linkend="e-table-subset-variable-add">e_table_subset_variable_add</link>     (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
+<link linkend="void">void</link>        <link linkend="e-table-subset-variable-add">e_table_subset_variable_add</link>     (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> row);
-void        <link linkend="e-table-subset-variable-add-all">e_table_subset_variable_add_all</link> (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets);
+<link linkend="void">void</link>        <link linkend="e-table-subset-variable-add-all">e_table_subset_variable_add_all</link> (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-table-subset-variable-remove">e_table_subset_variable_remove</link>  (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> row);
-void        <link linkend="e-table-subset-variable-increment">e_table_subset_variable_increment</link>
+<link linkend="void">void</link>        <link linkend="e-table-subset-variable-increment">e_table_subset_variable_increment</link>
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> position,
                                              <link linkend="gint">gint</link> amount);
-void        <link linkend="e-table-subset-variable-decrement">e_table_subset_variable_decrement</link>
+<link linkend="void">void</link>        <link linkend="e-table-subset-variable-decrement">e_table_subset_variable_decrement</link>
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> position,
                                              <link linkend="gint">gint</link> amount);
-void        <link linkend="e-table-subset-variable-set-allocation">e_table_subset_variable_set_allocation</link>
+<link linkend="void">void</link>        <link linkend="e-table-subset-variable-set-allocation">e_table_subset_variable_set_allocation</link>
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> total);
 
@@ -48,9 +49,14 @@ void        <link linkend="e-table-subset-variable-set-allocation">e_table_subse
    +----<link linkend="ETableModel">ETableModel</link>
          +----<link linkend="ETableSubset">ETableSubset</link>
                +----ETableSubsetVariable
+                     +----<link linkend="ETableSortedVariable">ETableSortedVariable</link>
 </synopsis>
 
 </refsect1>
+
+
+
+
 
 
 
@@ -66,14 +72,14 @@ void        <link linkend="e-table-subset-variable-set-allocation">e_table_subse
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SUBSET-VARIABLE-TYPE-CAPS">E_TABLE_SUBSET_VARIABLE_TYPE</title>
-<programlisting>#define E_TABLE_SUBSET_VARIABLE_TYPE        (e_table_subset_variable_get_type ())
+<indexterm><primary>E_TABLE_SUBSET_VARIABLE_TYPE</primary></indexterm><programlisting>#define E_TABLE_SUBSET_VARIABLE_TYPE        (e_table_subset_variable_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSubsetVariable">ETableSubsetVariable</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSubsetVariable</primary></indexterm><programlisting>typedef struct {
 	ETableSubset base;
 
 	int n_vals_allocated;
@@ -84,174 +90,142 @@ void        <link linkend="e-table-subset-variable-set-allocation">e_table_subse
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-new">e_table_subset_variable_new ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_variable_new    (<link linkend="ETableModel">ETableModel</link> *etm);</programlisting>
+<indexterm><primary>e_table_subset_variable_new</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_variable_new    (<link linkend="ETableModel">ETableModel</link> *etm);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-construct">e_table_subset_variable_construct ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_variable_construct
+<indexterm><primary>e_table_subset_variable_construct</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* e_table_subset_variable_construct
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *etssv,
                                              <link linkend="ETableModel">ETableModel</link> *source);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etssv</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>source</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etssv</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>source</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-add">e_table_subset_variable_add ()</title>
-<programlisting>void        e_table_subset_variable_add     (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
+<indexterm><primary>e_table_subset_variable_add</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_subset_variable_add     (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> row);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-add-all">e_table_subset_variable_add_all ()</title>
-<programlisting>void        e_table_subset_variable_add_all (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets);</programlisting>
+<indexterm><primary>e_table_subset_variable_add_all</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_subset_variable_add_all (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-remove">e_table_subset_variable_remove ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_table_subset_variable_remove  (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
+<indexterm><primary>e_table_subset_variable_remove</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_table_subset_variable_remove  (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> row);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-increment">e_table_subset_variable_increment ()</title>
-<programlisting>void        e_table_subset_variable_increment
+<indexterm><primary>e_table_subset_variable_increment</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_subset_variable_increment
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> position,
                                              <link linkend="gint">gint</link> amount);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>amount</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>position</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>amount</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-decrement">e_table_subset_variable_decrement ()</title>
-<programlisting>void        e_table_subset_variable_decrement
+<indexterm><primary>e_table_subset_variable_decrement</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_subset_variable_decrement
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> position,
                                              <link linkend="gint">gint</link> amount);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>amount</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>position</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>amount</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-subset-variable-set-allocation">e_table_subset_variable_set_allocation ()</title>
-<programlisting>void        e_table_subset_variable_set_allocation
+<indexterm><primary>e_table_subset_variable_set_allocation</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_subset_variable_set_allocation
                                             (<link linkend="ETableSubsetVariable">ETableSubsetVariable</link> *ets,
                                              <link linkend="gint">gint</link> total);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ets</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>total</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>ets</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>total</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

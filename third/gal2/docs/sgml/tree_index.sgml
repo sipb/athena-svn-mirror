@@ -1,4 +1,4 @@
-<literallayout>
+<screen>
     <link linkend="GtkObject">GtkObject</link>
         <link linkend="GtkWidget">GtkWidget</link>
             <link linkend="GtkContainer">GtkContainer</link>
@@ -87,4 +87,4 @@
         <link linkend="EPrintable">EPrintable</link>
         <link linkend="GtkData">GtkData</link>
             <link linkend="GtkAdjustment">GtkAdjustment</link>
-</literallayout>
+</screen>

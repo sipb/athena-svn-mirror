@@ -1,4 +1,4 @@
-<refentry id="EPrintable" revision="12 Jan 2001">
+<refentry id="EPrintable">
 <refmeta>
 <refentrytitle>EPrintable</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,13 +18,13 @@
 #define     <link linkend="E-PRINTABLE-TYPE-CAPS">E_PRINTABLE_TYPE</link>
 typedef     <link linkend="EPrintable">EPrintable</link>;
 <link linkend="EPrintable">EPrintable</link>* <link linkend="e-printable-new">e_printable_new</link>                 (void);
-void        <link linkend="e-printable-print-page">e_printable_print_page</link>          (<link linkend="EPrintable">EPrintable</link> *e_printable,
+<link linkend="void">void</link>        <link linkend="e-printable-print-page">e_printable_print_page</link>          (<link linkend="EPrintable">EPrintable</link> *e_printable,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width,
                                              <link linkend="gdouble">gdouble</link> height,
                                              <link linkend="gboolean">gboolean</link> quantized);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-printable-data-left">e_printable_data_left</link>           (<link linkend="EPrintable">EPrintable</link> *e_printable);
-void        <link linkend="e-printable-reset">e_printable_reset</link>               (<link linkend="EPrintable">EPrintable</link> *e_printable);
+<link linkend="void">void</link>        <link linkend="e-printable-reset">e_printable_reset</link>               (<link linkend="EPrintable">EPrintable</link> *e_printable);
 <link linkend="gdouble">gdouble</link>     <link linkend="e-printable-height">e_printable_height</link>              (<link linkend="EPrintable">EPrintable</link> *e_printable,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width,
@@ -49,12 +50,16 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
 </refsect1>
 
 
+
+
+
+
 <refsect1>
 <title>Signal Prototypes</title>
 <synopsis>
 
 &quot;<link linkend="EPrintable-print-page">print-page</link>&quot;
-            void        user_function      (<link linkend="EPrintable">EPrintable</link> *eprintable,
+            <link linkend="void">void</link>        user_function      (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
                                             <link linkend="gdouble">gdouble</link> arg2,
                                             <link linkend="gdouble">gdouble</link> arg3,
@@ -62,7 +67,7 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="EPrintable-data-left">data-left</link>&quot; <link linkend="gboolean">gboolean</link>    user_function      (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="gpointer">gpointer</link> user_data);
-&quot;<link linkend="EPrintable-reset">reset</link>&quot;     void        user_function      (<link linkend="EPrintable">EPrintable</link> *eprintable,
+&quot;<link linkend="EPrintable-reset">reset</link>&quot;     <link linkend="void">void</link>        user_function      (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="EPrintable-height">height</link>&quot;    <link linkend="gdouble">gdouble</link>     user_function      (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
@@ -91,14 +96,14 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-PRINTABLE-TYPE-CAPS">E_PRINTABLE_TYPE</title>
-<programlisting>#define E_PRINTABLE_TYPE        (e_printable_get_type ())
+<indexterm><primary>E_PRINTABLE_TYPE</primary></indexterm><programlisting>#define E_PRINTABLE_TYPE        (e_printable_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="EPrintable">EPrintable</title>
-<programlisting>typedef struct {
+<indexterm><primary>EPrintable</primary></indexterm><programlisting>typedef struct {
 	GtkObject   base;
 } EPrintable;
 </programlisting>
@@ -107,160 +112,136 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-printable-new">e_printable_new ()</title>
-<programlisting><link linkend="EPrintable">EPrintable</link>* e_printable_new                 (void);</programlisting>
+<indexterm><primary>e_printable_new</primary></indexterm><programlisting><link linkend="EPrintable">EPrintable</link>* e_printable_new                 (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-printable-print-page">e_printable_print_page ()</title>
-<programlisting>void        e_printable_print_page          (<link linkend="EPrintable">EPrintable</link> *e_printable,
+<indexterm><primary>e_printable_print_page</primary></indexterm><programlisting><link linkend="void">void</link>        e_printable_print_page          (<link linkend="EPrintable">EPrintable</link> *e_printable,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width,
                                              <link linkend="gdouble">gdouble</link> height,
                                              <link linkend="gboolean">gboolean</link> quantized);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_printable</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>quantized</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_printable</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>quantized</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-printable-data-left">e_printable_data_left ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_printable_data_left           (<link linkend="EPrintable">EPrintable</link> *e_printable);</programlisting>
+<indexterm><primary>e_printable_data_left</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_printable_data_left           (<link linkend="EPrintable">EPrintable</link> *e_printable);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_printable</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_printable</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-printable-reset">e_printable_reset ()</title>
-<programlisting>void        e_printable_reset               (<link linkend="EPrintable">EPrintable</link> *e_printable);</programlisting>
+<indexterm><primary>e_printable_reset</primary></indexterm><programlisting><link linkend="void">void</link>        e_printable_reset               (<link linkend="EPrintable">EPrintable</link> *e_printable);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_printable</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_printable</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-printable-height">e_printable_height ()</title>
-<programlisting><link linkend="gdouble">gdouble</link>     e_printable_height              (<link linkend="EPrintable">EPrintable</link> *e_printable,
+<indexterm><primary>e_printable_height</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     e_printable_height              (<link linkend="EPrintable">EPrintable</link> *e_printable,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width,
                                              <link linkend="gdouble">gdouble</link> max_height,
                                              <link linkend="gboolean">gboolean</link> quantized);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_printable</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>max_height</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>quantized</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_printable</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>max_height</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>quantized</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-printable-will-fit">e_printable_will_fit ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_printable_will_fit            (<link linkend="EPrintable">EPrintable</link> *e_printable,
+<indexterm><primary>e_printable_will_fit</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_printable_will_fit            (<link linkend="EPrintable">EPrintable</link> *e_printable,
                                              <link linkend="GnomePrintContext">GnomePrintContext</link> *context,
                                              <link linkend="gdouble">gdouble</link> width,
                                              <link linkend="gdouble">gdouble</link> max_height,
                                              <link linkend="gboolean">gboolean</link> quantized);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_printable</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>max_height</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>quantized</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_printable</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>max_height</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>quantized</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="EPrintable-print-page">The &quot;print-page&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
                                             <link linkend="gdouble">gdouble</link> arg2,
                                             <link linkend="gdouble">gdouble</link> arg3,
@@ -268,64 +249,52 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eprintable</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg4</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eprintable</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="EPrintable-data-left">The &quot;data-left&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="EPrintable-data-left">The &quot;data-left&quot; signal</title>
 <programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eprintable</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eprintable</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="EPrintable-reset">The &quot;reset&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="EPrintable-reset">The &quot;reset&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eprintable</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>eprintable</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="EPrintable-height">The &quot;height&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="EPrintable-height">The &quot;height&quot; signal</title>
 <programlisting><link linkend="gdouble">gdouble</link>     user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
                                             <link linkend="gdouble">gdouble</link> arg2,
@@ -334,32 +303,28 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eprintable</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg4</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eprintable</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="EPrintable-will-fit">The &quot;will-fit&quot; signal</title>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="EPrintable-will-fit">The &quot;will-fit&quot; signal</title>
 <programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="EPrintable">EPrintable</link> *eprintable,
                                             <link linkend="GtkObject">GtkObject</link> *arg1,
                                             <link linkend="gdouble">gdouble</link> arg2,
@@ -368,32 +333,28 @@ void        <link linkend="e-printable-reset">e_printable_reset</link>          
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eprintable</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg4</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>eprintable</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

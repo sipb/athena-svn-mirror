@@ -29,7 +29,6 @@
 #include "gal-view-new-dialog.h"
 #include <gal/e-table/e-table-scrolled.h>
 #include <gal/util/e-i18n.h>
-#include <gtk/gtknotebook.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkbox.h>
@@ -58,9 +57,17 @@ gal_view_instance_save_as_dialog_set_instance(GalViewInstanceSaveAsDialog *dialo
 {
 	dialog->instance = instance;
 	if (dialog->model) {
+		GtkWidget *table;
 		g_object_set(dialog->model,
 			     "collection", instance ? instance->collection : NULL,
 			     NULL);
+		table = glade_xml_get_widget(dialog->gui, "custom-replace");
+		if (table) {
+			ETable *etable;
+			etable = e_table_scrolled_get_table (E_TABLE_SCROLLED (table));
+			e_selection_model_select_single_row (e_table_get_selection_model (etable), 0);
+			e_selection_model_change_cursor (e_table_get_selection_model (etable), 0, 0);
+		}
 	}
 }
 
@@ -70,12 +77,10 @@ gvisad_setup_radio_buttons (GalViewInstanceSaveAsDialog *dialog)
 	GtkWidget   *radio_replace = glade_xml_get_widget (dialog->gui, "radiobutton-replace");
 	GtkWidget   *radio_create  = glade_xml_get_widget (dialog->gui, "radiobutton-create" );
 	GtkWidget   *widget;
-	GtkNotebook *notebook      = GTK_NOTEBOOK (glade_xml_get_widget (dialog->gui, "notebook-help"));
 
 	widget = glade_xml_get_widget (dialog->gui, "custom-replace");
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (radio_replace))) {
 		gtk_widget_set_sensitive (widget, TRUE);
-		gtk_notebook_set_page (notebook, 0);
 		dialog->toggle = GAL_VIEW_INSTANCE_SAVE_AS_DIALOG_TOGGLE_REPLACE;
 	} else {
 		gtk_widget_set_sensitive (widget, FALSE);
@@ -84,7 +89,6 @@ gvisad_setup_radio_buttons (GalViewInstanceSaveAsDialog *dialog)
 	widget = glade_xml_get_widget (dialog->gui, "entry-create");
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (radio_create))) {
 		gtk_widget_set_sensitive (widget, TRUE);
-		gtk_notebook_set_page (notebook, 1);
 		dialog->toggle = GAL_VIEW_INSTANCE_SAVE_AS_DIALOG_TOGGLE_CREATE;
 	} else {
 		gtk_widget_set_sensitive (widget, FALSE);
@@ -187,14 +191,14 @@ gal_view_instance_save_as_dialog_init (GalViewInstanceSaveAsDialog *dialog)
 {
 	GladeXML *gui;
 	GtkWidget *widget;
-	GtkWidget *etable;
+	GtkWidget *table;
 
 	dialog->instance = NULL;
 
-	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-view-instance-save-as-dialog.glade", NULL, PACKAGE);
+	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-view-instance-save-as-dialog.glade", NULL, E_I18N_DOMAIN);
 	dialog->gui = gui;
 
-	widget = glade_xml_get_widget(gui, "table-top");
+	widget = glade_xml_get_widget(gui, "vbox-top");
 	if (!widget) {
 		return;
 	}
@@ -212,22 +216,23 @@ gal_view_instance_save_as_dialog_init (GalViewInstanceSaveAsDialog *dialog)
 	gvisad_connect_signal(dialog, "radiobutton-create",  "toggled", G_CALLBACK(gvisad_radio_toggled));
 
 	dialog->model = NULL;
-	etable = glade_xml_get_widget(dialog->gui, "custom-replace");
-	if (etable) {
-		dialog->model = g_object_get_data(G_OBJECT (etable), "GalViewInstanceSaveAsDialog::model");
-		g_object_set(dialog->model,
-			     "collection", dialog->instance ? dialog->instance->collection : NULL,
-			     NULL);
+	table = glade_xml_get_widget(dialog->gui, "custom-replace");
+	if (table) {
+		dialog->model = g_object_get_data(G_OBJECT (table), "GalViewInstanceSaveAsDialog::model");
+
+		gal_view_instance_save_as_dialog_set_instance (dialog, dialog->instance);
+		gtk_widget_show_all (table);
 	}
 	
 	gvisad_setup_radio_buttons (dialog);
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, FALSE);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Save Current View"));
 }
 
 
 /* For use from libglade. */
 /* ETable creation */
-#define SPEC "<ETableSpecification no-header=\"true\" cursor-mode=\"line\" draw-grid=\"false\" selection-mode=\"single\" gettext-domain=\"" E_I18N_DOMAIN "\">" \
+#define SPEC "<ETableSpecification no-headers=\"true\" cursor-mode=\"line\" draw-grid=\"false\" selection-mode=\"single\" gettext-domain=\"" E_I18N_DOMAIN "\">" \
 	     "<ETableColumn model_col= \"0\" _title=\"Name\" expansion=\"1.0\" minimum_width=\"18\" resizable=\"true\" cell=\"string\" compare=\"string\"/>" \
              "<ETableState> <column source=\"0\"/> <grouping> </grouping> </ETableState>" \
 	     "</ETableSpecification>"
@@ -239,9 +244,10 @@ gal_view_instance_save_as_dialog_create_etable(char *name, char *string1, char *
 {
 	GtkWidget *table;
 	ETableModel *model;
-	model = gal_define_views_model_new();
+	model = gal_define_views_model_new ();
 	table = e_table_scrolled_new(model, NULL, SPEC, NULL);
 	g_object_set_data(G_OBJECT (table), "GalViewInstanceSaveAsDialog::model", model);
+
 	return table;
 }
 
@@ -274,6 +280,8 @@ gal_view_instance_save_as_dialog_save (GalViewInstanceSaveAsDialog *dialog)
 	const char *title;
 	int n;
 	const char *id = NULL;
+
+	view = gal_view_clone (view);
 	switch (dialog->toggle) {
 	case GAL_VIEW_INSTANCE_SAVE_AS_DIALOG_TOGGLE_REPLACE:
 		widget = glade_xml_get_widget(dialog->gui, "custom-replace");

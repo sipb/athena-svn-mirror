@@ -1,28 +1,931 @@
-2003-09-12  Mike Kestner  <mkestner@ximian.com>
+2004-09-10  JP Rosevear  <jpr@novell.com>
 
-	* configure.in : releasing 1.99.10
+	* configure.in: update version
+
+2004-09-08  Arafat Medini  <lumina@arabeyes.org>
+
+	* configure.in: Added Arabic locale "ar" to ALL_LINGUAS.
+
+2004-09-03  Alexander Shopov  <ash@contact.bg>
+
+	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian)
+
+2004-08-26  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool number
+
+2004-08-26  JP Rosevear  <jpr@novell.com>
+
+	* gal-2.0.pc.in: remove unused file
+
+2004-08-23  Chris Toshok  <toshok@ximian.com>
+
+	[ probable fix for the remaining portion of #45931 ]
+	
+	* gal/e-text/e-entry.c (e_entry_show_popup): only return early if
+	we're trying to pop up the view while the entry is unfocused.  if
+	we're trying to pop it down, carry on as normal.
+	
+2004-08-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add �nb� to ALL_LINGUAS.
+
+2004-08-13  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version
+
+2004-08-04  Chris Toshok  <toshok@ximian.com>
+
+	* gal/e-text/e-entry.c (e_entry_refresh_popup): nuke, unnecessary.
+	(e_entry_start_completion): set item_chosen to FALSE.
+	(added_cb): nuke, unnecessary.
+	(full_cb): only show the popup if the user hasn't chosen an entry.
+	(activate_cb): set item_chosen to TRUE.
+
+2004-08-02  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version
+
+2004-08-01  Sayamindu Dasgupta <sayamindu@gnome.org>
+
+	* configure.in: Add bn to ALL_LINGUAS
+	
+2004-07-19  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: Bump version
+
+2004-07-16  Larry Ewing  <lewing@ximian.com>
+
+	* gal/widgets/e-categories-master-list-dialog.c (dialog_response):
+	remove all the selected rows.
+
+2004-06-25  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: Bump version
+
+2004-06-21  Eric Zhao  <eric.zhao@sun.com>
+
+	Fixes 59047.
+
+	* gal/a11y/e-table/gal-a11y-e-table-item.c: (model_to_view_row),
+	(model_to_view_col), (eti_ref_at), (eti_a11y_cursor_changed_cb):
+	Set the cell's ATK_STATE_SHOWING and ATK_STATE_VISIBLE properties to
+	be TURE, so that gnopernicus can read the whole table line. Also
+	convert the cursor's to position to view format, prevent potential
+	bug.
+
+2004-06-11  Radek Doulik  <rodo@ximian.com>
+
+	* gal/e-text/e-entry.c (canvas_size_request): hardcode the border
+	size. it is hardcoded in e-text as well. Even using style values
+	in e-text will not help as style values might differ between EText
+	and EEntry. I think it will be best to rewrite EEntry for evo 2.1
+	so that it derives from GtkEntry and only adds the auto completion
+	feature
+
+	Fixes part of #42864
+
+2004-06-10  Radek Doulik  <rodo@ximian.com>
+
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add.c
+	(idle_do_action): added cast
+
+	* gal/a11y/e-table/gal-a11y-e-cell-tree.c
+	(gal_a11y_e_cell_tree_new): added cast
+
+	* gal/a11y/e-table/gal-a11y-e-cell.c: added #include <gtk/gtkwindow.h>
+
+	* gal/e-text/e-text.c (_get_position): removed unused variable
+
+	* gal/e-text/e-completion.c: #if 0'ed e_completion_sort
+
+	* tests/test-text.c (create_entry): removed unused variables
+	added #include "gal/widgets/e-canvas-utils.h"
+	added #include "gal/e-text/e-text-model.h"
+	(create_text): removed unused variables
+	(create_ro_text): ditto
+
+	* tests/test-table-1.c (create_table): added cast
+
+	* tests/test-completion.c (main): added cast
+
+	* gal/a11y/e-text/gal-a11y-e-text.c (et_get_text): return NULL if
+	check fails
+	added #include <string.h> for strlen
+	(et_get_text_after_offset): fixed typo defalut --> default
+	(et_get_text_at_offset): ditto
+	(et_get_character_extents): removed unused variables
+	(et_set_selection): ditto
+	(_et_command_cb): added default: label to quiet compiler
+
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add-factory.c
+	(gal_a11y_e_table_click_to_add_factory_create_accessible): return
+	NULL if check fails
+
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add.c
+	(idle_do_action): fixed wrong cast
+	(idle_do_action): removed unused variables
+	(etcta_ref_child): return NULL if check fails
+	(gal_a11y_e_table_click_to_add_new): ditto
+	(gal_a11y_e_table_click_to_add_new): removed unused variable
+
+	* gal/a11y/e-table/gal-a11y-e-table-item-factory.c
+	(gal_a11y_e_table_item_factory_create_accessible): return NULL if
+	fails
+	(gal_a11y_e_table_item_factory_create_accessible): added cast
+	(gal_a11y_e_table_item_factory_create_accessible): removed unused
+	variable
+
+	* gal/a11y/e-table/gal-a11y-e-table-item.c (eti_dispose): removed
+	unused variable
+	(eti_get_parent): ditto
+	(eti_get_n_children): ditto
+	(eti_ref_child): ditto
+	(eti_get_index_in_parent): ditto
+	(eti_ref_accessible_at_point): return value (NULL)
+	(cell_destroyed): removed unused variable
+	(cell_destroyed): ditto
+	(table_add_row_selection): ditto
+	added #inclued <string.h> for memset, memmove
+	(eti_rows_inserted): removed unused variable
+	(eti_rows_deleted): ditto
+	(eti_header_structure_changed): ditto
+
+	* gal/a11y/e-table/gal-a11y-e-cell-popup.c
+	(gal_a11y_e_cell_popup_class_init): removed unused variable
+	added #include "gal-a11y-e-cell-registry.h"
+	(popup_cell_action): removed unused variable
+
+	* gal/a11y/e-table/gal-a11y-e-cell-toggle.c (toggle_cell_action):
+	removed unused variable
+
+	* gal/a11y/e-table/gal-a11y-e-cell-tree.c: added #include
+	"gal-a11y-e-cell-registry.h"
+	(gal_a11y_e_cell_tree_new): add cast
+	(gal_a11y_e_cell_tree_new): removed unused variable
+
+	* gal/a11y/e-table/gal-a11y-e-cell-text.c: added #include
+	<string.h>
+	(ect_remove_selection): removed unused variable
+	(ect_copy_text): added cast
+	(ect_delete_text): ditto
+	(ect_paste_text): ditto
+	(ect_init): ditto
+
+	* gal/a11y/e-table/gal-a11y-e-cell.c (eti_grab_focus): added cast
+	(eti_grab_focus): ditto
+	(eti_grab_focus): return TRUE (grab was successful)
+	added #include <atk/atkstateset.h>
+
+	* gal/a11y/e-table/gal-a11y-e-tree.c: added #include
+	"gal-a11y-e-table-item.h"
+	(gal_a11y_e_tree_new): removed unused variable
+
+	* gal/e-text/e-text.c (_do_tooltip): removed unused variable
+	(e_text_event): added cast
+	(primary_clear_cb): removed unused variable
+	(_get_position): ditto
+	(_get_position): ditto
+	#if 0'ed unused prototypes
+
+	* gal/e-text/e-text-model.c (e_text_model_real_insert_length):
+	removed unused variables
+
+	* gal/e-text/e-completion.c (e_completion_sort): #if'0 ed, as it's
+	not used anywhere
+
+	* gal/widgets/e-reflow.c (items_inserted): remove unused variables
+
+	* gal/widgets/e-categories.c (e_categories_get_property): remove
+	unused variable
+
+	* gal/widgets/e-categories-master-list-dialog.c
+	(dialog_destroyed): added cast
+
+	* gal/widgets/e-categories-master-list-combo.c
+	(ecmlc_ecml_changed): remove unused variable
+
+	* gal/widgets/color-palette.c: include string.h for memset
+	prototype
+
+	* configure.in: enable GNOME_COMPILE_WARNINGS
+
+	* gal/a11y/e-table/gal-a11y-e-table-item.c: clean code to avoid
+	compiler warnings
+
+	Fixes #59858
+
+2004-06-09  Radek Doulik  <rodo@ximian.com>
+
+	* gal/e-text/e-text.c (capitalize): process only if len > 0
+
+	Fixes #51078
+
+2004-06-03  JP Rosevear  <jpr@ximian.com>
+
+	* Makefile.am (SUBDIRS): remove distcheck flag and add dist clean
+	files
+
+2004-06-01  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version
+
+2004-05-19  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version
+
+2004-04-28  Rodney Dawes  <dobey@ximian.com>
+
+	* gal/widgets/e-categories.c (e_categories_construct):
+	* gal/widgets/gal-categories.glade:
+	Update the categories dialog to be more HIG compliant
+
+2004-04-27  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gal/widgets/e-reflow.c (item_removed): Don't destroy item until after
+	we know which column it is in; the sort comparison function might need
+	it. Also set the newly vacant memory location at the end of the array
+	to NULL. Fixes a crash in evo.
+
+2004-04-23  Rodney Dawes  <dobey@ximian.com>
+
+	* configure.in: Clean up the gnomecanvas version checking, since we
+	don't need to work with gtk+ 2.0 anymore, and require gtk+ >= 2.2
+	* gal-2.2.pc.in: We require gtk+ 2.2 API
+
+	Fixes #55424
+
+2004-04-22  Eric Zhao  <eric.zhao@sun.com>
+
+	Fixes #48974.
+
+	* gal/a11y/e-table/gal-a11y-e-tree.c: (init_child_item):  add a check
+	to see whether the corresponding AtkObject of ETableItem has been
+	initialized.
+
+2004-04-22  Eric Zhao  <eric.zhao@sun.com>
+
+	Fixes bug #52935.
+
+	* gal/a11y/e-table/gal-a11y-e-table-item.c: (eti_ref_at),
+	(eti_reinit_data), (eti_clear_rows),
+	(eti_tree_model_node_changed_cb), (gal_a11y_e_table_item_new),
+	(eti_a11y_cursor_changed_cb): add cell-data synchronization when the
+	table's model has been changed, prevent data inconsistency.
+
+2004-04-21  Rodney Dawes  <dobey@ximian.com>
+
+	* autogen.sh: Require automake 1.6 or neweer, we already do for libsoup
+	and evolution-data-server, there is no reason not to here
+
+2004-04-19  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: bump version
+
+2004-04-02  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump version
+
+2004-04-01  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug #51897 ]
+	
+	* gal/e-text/e-text.c (insert_preedit_text): only reset the layout
+	attrs if there is some preedit text to insert.  also, try getting
+	text->layout's attributes before creating a new list.  this will
+	keep us from overwriting existing attributes and wiping out the
+	underlining for objects.
+
+2004-04-01  Yuedong Du  <yuedong.du@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-cell-text.c: (ect_get_caret_offset):
+	add some sanity check here.  *
+	gal/a11y/e-table/gal-a11y-e-table-item.c: add atk_state_focused to
+	focused cell, it is must.
+	(gal_a11y_e_table_item_new), (eti_a11y_cursor_changed_cb):
+
+2004-03-21 Alastair McKinstry <mckinstry@debian.org>
+	
+	* configure.in: Added "ga" (Irish) to ALL_LINGUAS.
+
+2004-03-05  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: bump version
+
+2004-02-26  Adam Weinberger  <adamw@FreeBSD.org>
+
+	* configure.in: Added 'en_CA' (Canadian English) to ALL_LINGUAS.
+
+2004-02-12  Rodney Dawes  <dobey@ximian.com>
+
+	* gal/widgets/gal-combo-box.c (gal_combo_box_init): Change the
+	shadow type for the arrows here, so that themes that do handle the
+	use of shadow types with arrows, draw things correctly, instead of
+	following what the old default gtk+ did in 1.x
+
+2004-02-09  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump version
+
+2004-02-09  Rodney Dawes  <dobey@ximian.com>
+
+	* acinclude.m4: Added local include file for gtk-doc macro
+
+2004-02-09  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-02-09 Rodney Dawes  <dobey@ximian.com>
+
+	* docs/Makefile.am: Use $GETTEXT_PACKAGE as the doc module, and
+	actually install the docs into a subdir of the gtk-doc html directory
+
+2004-02-08 Tomasz K�oczko <kloczek@pld.org.pl>
+
+	* gal/widgets/Makefile.am: fixes for paralel build (make -j<N>).
+	* Makefile.am: Added "DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc"
+	  for force correct pass build documentation during "make dist"
+	  (like in many other GNOME projects).
+	* configure.in: Removed old on place defined gtk-doc suport and added use
+	  GTK_DOC_CHECK([1.0]).
+	* configure.in: Trivial cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are
+	  substed by default.
+
+2004-02-03 Chris Toshok <toshok@ximian.com>
+	
+	* gal/e-text/e-text.c (e_text_command): it's possible to get to
+	this function without the EText ever being realized.  Since we
+	create the layout in realize(), let's just create it here too.
+	Fixes crash bug 46165 (aka "The Bug with a million dups").
+
+2004-01-31  Sanlig Badral  <badral@openmn.org>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2004-01-27  Rodney Dawes  <dobey@ximian.com>
+
+	* gal/e-text/e-text.c (popup_targets_received): Use button->time for
+	the mouse click event, so that the popup stays up on button release
+
+	Fixes #47548
+
+2004-01-27  Chris Toshok  <toshok@ximian.com>
+
+	* gal/e-text/e-text.c (popup_targets_received): fix double free of
+	the button event.
+
+2004-01-26  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: Bump version
+
+2004-01-13  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2004-01-12  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump version
+
+2003-12-29  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: bump version, libtool version
+
+2003-12-16  Yuedong Du  <yuedong.du@sun.com>
+
+	Fixed bug 51917, add atk support for ClickToAdd
+
+	* gal/a11y/e-table/Makefile.am: add files.
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add-factory.c:
+	(gal_a11y_e_table_click_to_add_factory_get_accessible_type),
+	(gal_a11y_e_table_click_to_add_factory_create_accessible),
+	(gal_a11y_e_table_click_to_add_factory_class_init),
+	(gal_a11y_e_table_click_to_add_factory_init),
+	(gal_a11y_e_table_click_to_add_factory_get_type): factory
+	for ClickToAdd
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add-factory.h:
+	ditto
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add.c:
+	(etcta_get_n_actions), (etcta_get_description),
+	(etcta_action_get_name), (idle_do_action), (etcta_do_action),
+	(atk_action_interface_init): a "click" action interface.
+	(etcta_get_name),
+	(etcta_get_n_children), (etcta_ref_child): create accessible
+	according to which child is available. Either rect or row.
+	(etcta_class_init),
+	(etcta_init), (gal_a11y_e_table_click_to_add_get_type),
+	(etcta_event): listen to canvas event, emit children-changed signal
+	when it found rect/row was changed.
+	(gal_a11y_e_table_click_to_add_new):
+	* gal/a11y/e-table/gal-a11y-e-table-click-to-add.h:
+	* gal/a11y/e-table/gal-a11y-e-table-item-factory.c:
+	(gal_a11y_e_table_item_factory_create_accessible):
+	* gal/a11y/e-table/gal-a11y-e-table.c: (init_child_item),
+	(et_get_n_children), (et_ref_child): change the trick way to
+	create a11y object for a table item. Because ClickToAdd is also
+	a table item, previous way do not work for clicktoadd.
+	* gal/e-table/e-table-click-to-add.c: (etcta_class_init):
+	atk_register the new a11y factory.
+
+2003-12-08  Andrew Wu <yang.wu@sun.com>
+	Fixed #50844
+
+	* gal/a11y/e-table/gal-a11y-e-cell-popup.c:
+	* gal/a11y/e-table/gal-a11y-e-cell-popup.h:
+	  a11y impl. for e-cell-popup.
+
+2003-12-07  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: Bump version
+
+2003-12-02  Bolian Yin  <bolian.yin@sun.com>
+
+	 Fixes #51145
+
+	 * gal/a11y/gal-a11y-e-table-item (eti_get_column_header): new impl.
+	 (eti_ref_child): add column headers as children
+
+2003-11-23 Andrew Wu <yang.wu@sun.com>
+                                                                                
+       Fixed Bug 51252, 51254, 51255.
+	* gal/e-table/e-table-header-item.c:
+	(ethi_event):add some code deal with key press event.
+	* gal/e-table/e-table-header-item.h
+	add a member "selected_col" for keyboard navigation.
+	* gal/e-table/e-table.c
+	(e_table_setup_header):make header can focus.
+
+2003-12-02  Bolian Yin  <bolian.yin@sun.com>
+
+	Fixes #51139
+
+	* gal/a11y/gal-a11y-e-table-item: (gal_a11y_e_table_item_ref_selection)
+	(gal_a11y_e_table_item_unref_selection): new functions.
+
+2003-12-02  Tim Wo  <tim.wo@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-cell-text.c: (ect_get_text),
+	(ect_get_character_at_offset), (ect_get_caret_offset),
+	(ect_get_character_count), (ect_get_n_selections),
+	(ect_get_selection), (ect_add_selection), (ect_remove_selection),
+	(ect_set_selection), (ect_set_caret_offset),
+	(ect_set_text_contents), (ect_insert_text), (ect_copy_text),
+	(ect_delete_text), (ect_cut_text), (ect_paste_text),
+	(ect_class_init): a11y implementations for ECellText.
+	* gal/e-table/e-cell-text.c: (e_cell_text_set_selection),
+	(e_cell_text_get_selection), (e_cell_text_copy_clipboard),
+	(e_cell_text_paste_clipboard), (e_cell_text_delete_selection): new
+	functions to support corresponding atk operations.
+	* gal/e-table/e-cell-text.h: some APIs added to support atk operations.
+
+2003-12-02  Tim Wo  <tim.wo@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-cell-toggle.c:
+	(gal_a11y_e_cell_toggle_dispose): use table item to get the model.
+	(gal_a11y_e_cell_toggle_new): use table item to get the model.
+	* gal/a11y/e-table/gal-a11y-e-cell-tree.c:
+	(ectr_model_row_changed_cb): new function to deal with tree cell
+	expansion and collapse
+	(ectr_subcell_weak_ref): destroy the cell_tree a11y instance along
+	with it's subcell's a11y instance.
+	(gal_a11y_e_cell_tree_new): init the atk state of the tree cell,
+	and connect to the model_row_change signal of table model, so that
+	when the tree cell expands or collapses, the corresponding AtkState
+	could be set.
+	* gal/a11y/e-table/gal-a11y-e-cell-tree.h: add one member to save
+	the connected signal id.
+
+2003-12-01  Yuedong Du  <yuedong.du@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-table-item.c:
+	(gal_a11y_e_table_item_new): don't assert row=0 as fault, it cause bug
+	51199.
+
+2003-12-01  Yuedong Du  <yuedong.du@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-cell-toggle.c:
+	(gal_a11y_e_cell_toggle_dispose): 
+	* gal/a11y/e-table/gal-a11y-e-table-item.c: (eti_dispose),
+	(eti_header_structure_changed): handle the structure changed signal of
+        table model. Thus we can handle table column add/remove/delete.
+	(eti_real_initialize): connect to structure-changed signal.
+	(gal_a11y_e_table_item_new): initialize the new added field - columns,
+	which in turn record columns before change.
+	
+
+2003-11-30 Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+
+        Bug Id #51527 "gal widgets produces backspace for Ctrl-space for
+        japanese input"
+
+        * gal/util/e-text-event-processor-emacs-like.c:
+        (e_text_event_processor_emacs_like_event) If GDK_CONTROL_MASK set,
+        disable the command action.
+
+2003-11-21  Tim Wo  <tim.wo@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-cell-text.c: (ect_get_name): override
+	the function in base class, to retrieve the content of the text.
+	(ect_do_action_edit): begin edit the cell when issuing the action.
+	(ect_class_init): override the "get_name" function.
+	(ect_init): add an action "edit" to the object.
+	(gal_a11y_e_cell_text_get_type): add AtkAction interface to this type.
+	* gal/a11y/e-table/gal-a11y-e-cell-toggle.c
+	(gal_a11y_e_cell_toggle_dispose): disconnect the connected signal when
+	disposing.
+	(gal_a11y_e_cell_toggle_class_init): to override the dispose function.
+	(toggle_cell_action): set position of the click event more precisely.
+	(model_change_cb): set or remove the ATK_STATE_CHECKED flag according
+	to the value in the model when it changes.
+	(gal_a11y_e_cell_toggle_new): init the ATK_STATE_CHECKED flag and
+	connect	to the model cell change signal.
+	* gal/a11y/e-table/gal-a11y-e-cell-toggle.h: add one member to save
+	the connected signal id.
+	* gal/a11y/e-table/gal-a11y-e-cell.c: (gal_a11y_e_cell_grab_focus):
+	notify the selection model that the cursor has been changed.
+	* gal/a11y/e-table/gal-a11y-e-table-item.c:
+	(eti_a11y_cursor_changed_cb): emiting a signal to notify the AT
+	applictions that the active descendant has been changed. (#51055)
+
+2003-11-19 Yuedong Du  <yuedong.du@sun.com>
+
+	* gal/a11y/e-table/gal-a11y-e-cell.c: (eti_dispose): don't reset
+	these fields, we need these info to a11y weak ref on each cell to
+	do cell_destroy() correctly.
+	* gal/a11y/e-table/gal-a11y-e-table-item.c: (eti_dispose),
+	(cell_destroyed), (eti_ref_at), (eti_rows_inserted),
+	(eti_rows_deleted), (eti_real_initialize), (eti_class_init),
+	(gal_a11y_e_table_item_new): handle table model's row-inserted
+	and row-deleted signal
+	* gal/a11y/e-table/gal-a11y-e-tree.c: (init_child_item): sanity
+	check to avoid crash.
+
+2003-11-17  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/widgets/gtk-combo* : renamespace and move to
+	* gal/widgets/gal-combo* : here
+	* gal/widgets/Makefile.am : build new files
+
+2003-11-14  Andrew Wu <yang.wu@sun.com>
+
+	Fixes 45776
+	* gal/util/e-text-event-processor-emacs-like.c (e_text_event_processor_emacs_like_event):
+	enable the usage of the "alt".  
+
+2003-11-14  Andrew Wu <yang.wu@sun.com>
+
+       Fixes for 50800
+       * gal/e-table/e-cell-combo.c (e_cell_combo_init):
+       connect "e_cell_combo_list_button_press" to gtklist.
+       (e_cell_combo_list_button_press):
+       deal with the "click" event.
+       (e_cell_combo_selection_changed):
+       delete the action to selection changed.
+
+2003-11-14  Andrew Wu <yang.wu@sun.com>
+
+	Fixes for 50681
+	* gal/e-table/e-table-item.c (eti_event):
+	send a event to the right cell to pop up something.
+	
+2003-11-03  Tim Wo  <tim.wo@sun.com>
+
+	* gal/a11y/e-table/Makefile.am: new files (gal-a11y-e-cell-tree.c/h)
+	added
+	* gal/a11y/e-table/gal-a11y-e-cell.h: adding 2 new functions to add or
+	remove atk states
+	* gal/a11y/e-table/gal-a11y-e-cell.c (eti_dispose): unref the state_set
+	(eti_ref_state_set): new function
+	(eti_class_init): create and initialize the state_set
+	(eti_init): override the "ref_state_set" function in AtkObjectClass with
+	"eti_ref_state_set"
+	(gal_a11y_e_cell_add_state): adding a return value
+	(gal_a11y_e_cell_remove_state): new function
+	* gal/e-table/e-cell-tree.c: (e_cell_tree_class_init): register
+	GalA11yECellText as the a11y implementation for ECellText.
+	(e_cell_tree_view_get_subcell_view): new function to retrieve the cell_view
+	of subcell in ECellTree
+	* gal/e-table/e-cell-tree.h: adding 1 new function to retrieve the cell_view
+	of subcell in ECellTree
+	* gal/a11y/e-table/gal-a11y-e-cell-tree.c: new file. A11y implementation
+	for ECellTree
+	* gal/a11y/e-table/gal-a11y-e-cell-tree.h: new file. A11y implementation
+	for ECellTree
+
+2003-11-11  Bolian Yin <bolian.yin@sun.com>
+
+	Fixes # 50480
+                                                                                
+        * gal/a11y/e-table/gal-a11y-e-table-item: listen on "selection_model_removed" and "selection_model_added".
+
+2003-11-03  Bolian Yin <bolian.yin@sun.com>
+                                                                                
+        * gal/a11y/e-table/gal-a11y-e-table-item: defunct widget checking, selection interface
+
+2003-10-30  Tim Wo  <tim.wo@sun.com>
+	* gal/a11y/e-table/gal-a11y-e-cell.c (eti_grab_focus): new function
+	to deal with grabing table cell focus
+	(eti_atk_component_iface_init): Override "grab_focus" virtual function
+	with eti_grab_focus of AtkComponent interface. (#50131)
+	* gal/e-table/e-cell-text.c: (e_cell_text_class_init): register
+	GalA11yECellText as the a11y implementation for ECellText.
+
+2003-10-28  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+
+	* Fix for "50258 libgal: shared object looks for wrong mo file"
+	The following files are changed, fix is suggested by mike.lei@sun.com.
+
+	* gal/menus/gal-define-views-dialog.c: (gal_define_views_dialog_init)
+	Changed PACKAGE to E_I18N_DOMAIN in the call to glade_xml_new.
+
+	* gal/menus/gal-view-instance-save-as-dialog.c: 
+	(gal_view_instance_save_as_dialog_init) 
+	Changed PACKAGE to E_I18N_DOMAIN in the call to 
+	glade_xml_new_with_domain.
+
+	* gal/menus/gal-view-new-dialog.c: (gal_view_new_dialog_init)
+	Changed PACKAGE to E_I18N_DOMAIN in the call to glade_xml_new.
+
+	* gal/e-table/e-table-field-chooser.c: (e_table_field_chooser_init) 
+	Changed PACKAGE to E_I18N_DOMAIN in the call to glade_xml_new.
+
+	* gal/widgets/e-categories.c: (e_categories_construct)
+	Changed PACKAGE to E_I18N_DOMAIN in the call to 
+	glade_xml_new_with_domain.
+
+	* gal/widgets/e-categories-master-list-dialog.c: (setup_gui)
+	Changed PACKAGE to E_I18N_DOMAIN in the call to glade_xml_new.
+
+2003-10-26  Yuedong Du  <yuedong.du@sun.com>
+                                                                                
+        * gal/a11y/e-table/Makefile.am: add new file for toggle cell a11y
+         object.
+        * gal/a11y/e-table/gal-a11y-e-cell-toggle.c: new a11y object toggle cell        (gal_a11y_e_cell_toggle_get_type),
+        (gal_a11y_e_cell_toggle_class_init), (toggle_cell_action), the
+        implementation of toggle cell action.
+        (gal_a11y_e_cell_toggle_new):
+        * gal/a11y/e-table/gal-a11y-e-cell-toggle.h: ditto
+        * gal/a11y/e-table/gal-a11y-e-cell.c:
+        (_gal_a11y_e_cell_get_action_info),
+        (_gal_a11y_e_cell_destroy_action_info),
+        (gal_a11y_e_cell_add_action), (gal_a11y_e_cell_remove_action),
+        (gal_a11y_e_cell_remove_action_by_name),
+        (gal_a11y_e_cell_action_get_n_actions),
+        (gal_a11y_e_cell_action_get_name),
+        (gal_a11y_e_cell_action_get_description),
+        (gal_a11y_e_cell_action_set_description),
+        (gal_a11y_e_cell_action_get_keybinding), (idle_do_action),
+        (gal_a11y_e_cell_action_do_action),
+        (gal_a11y_e_cell_atk_action_interface_init),
+        (gal_a11y_e_cell_type_add_action_interface),
+        (gal_a11y_e_cell_add_state): helper functions for add a action,
+        stealed from gailcell.c
+        * gal/a11y/e-table/gal-a11y-e-cell.h:
+        * gal/e-table/e-cell-toggle.c: (e_cell_toggle_class_init): register
+        toggle's a11y object.
+
+2003-10-23  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+	
+	* Fix for "50065 chinese locales Input method hangs after a task entry 
+	and new folder creation"
+	
+	* gal/e-table/e-cell-text.c: (ect_event) Added check to return
+	if preedit_length == 0 and E_CELL_PREEDIT flag is set.
+
+2003-10-14  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+	
+	* Support for preedit in e-text widgets.
+
+	* gal/gal/e-text/e-text.c: Added e_text_preedit_changed_cb and 
+	insert_preedit_text.
+	
+	* Modified the following functions.
+	(e_text_draw) Calls insert_preedit_text also cursor pos @ the end of
+	text->selection_start + text->preedit_len
+	
+	(e_text_event) Added hooks for preedit_cb
+	(e_text_init) Inits text->preedit_len
+	(e_text_retrieve_surrounding_cb) Removed printf
+	(e_text_delete_surrounding_cb) Correct params for 
+	gtk_editable_delete_text to make it work.
+
+	* gal/gal/e-text/e-text.h: Added preedit_len in struct _EText
+	
+	
+2003-09-25  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
+	
+	* Fix for "44222 task summary entry widget not i18ned". The following
+	files are changed.
+
+	* gal/gal/e-table/e-cell-text.c: Lots of changes for i18n 
+	selection/input support. Added these functions for input method support.
+
+	(e_cell_text_preedit_changed_cb)
+	(e_cell_text_commit_cb)
+	(e_cell_text_retrieve_surrounding_cb)
+	(e_cell_text_delete_surrounding_cb)
+
+	(layout_with_preedit) This function inserts the preedit string 
+	with the right attribs to the layout text.
+
+	(build_attr_list) Creates the PangoAttrList with bold/stikeout/underline
+	as applicable for the current ECellText.
+
+	The following functions are modified.
+
+	(ect_stop_editing): disconnect signal handlers when editing stops
+
+	(ect_draw): Changes for including the preedit only to the currently
+	selected row/col. Also display the cursor at the end of preedit text.
+
+	(ect_event): Connects the IM callbacks to the key press event. 
+	Disconnect when not in editing mode. Also a special flag to see
+	when Enter key pressed in preedit mode, the text is committed only
+	not a new row is created. This woks in conjunction with the changes
+	made in the eti_event in e-table-item.c file and e-cell.h.
+
+	(ect_height): Changes due to parameters changing for generate_layout
+	
+	(ect_enter_edit): Initialization of im_context for a cell text and
+	assoociated flags.
+
+	(ect_max_width):  Changes due to parameters changing for 
+	generate_layout.
+
+	(ect_max_width_by_row):  Changes due to parameters changing for 
+	generate_layout.
+	
+	(ect_show_tooltip): Changes due to parameters changing for 
+	generate_layout.
+
+	(e_cell_text_construct): check whether paramters are NULL.
+
+	(get_position_from_xy): Changes due to parameters changing for 
+	generate_layout.
+
+	(_insert): Set the selection_start as the minimum of strlen(edit->text)
+	and selection_start. Used to correct the preedit_string length
+	which may have added to the selection_start.
+
+	(e_cell_text_view_command): When inserting, if in the preedit mode
+	do not delete the selection.
+
+	(_selection_get): Set utf8 data instead of string data.
+
+	(_selection_received): Take in UTF8_ATOM inaddition to 
+	GDK_SELECTION_TYPE_STRING.
+
+	(e_cell_text_view_get_selection): Make utf8 data when acting as a
+	selection source.
+
+	* gal/e-table/e-cell-text.h : Included <gtk/gtkmenu.h>
+
+	* gal/e-table/e-cell.h: Added enum E_CELL_PREEDIT to ECellFlags
+
+	* gal/e-table/e-table-item.c: (eti_event) Changes for not committing 
+	the edited text as a seperate row in preedit mode.
+
+	* gal/e-table/e-table.c: (table_canvas_focus_event_cb) To have 
+	proper im_context focus for the ecanvas holding the e-table.
+
+2003-10-11  Larry Ewing  <lewing@ximian.com>
+
+	* gal/a11y/e-text/ChangeLog: make sure the declation is at the
+	beginning of the block.
+
+2003-10-11  Yuedong Du  <yuedong.du@sun.com>
+                                                                                
+        * gal/a11y/e-table/Makefile.am: add new files.
+        * gal/a11y/e-table/gal-a11y-e-cell.c: (gal_a11y_e_cell_construct):
+        set the right role.
+        * gal/a11y/e-table/gal-a11y-e-table-item-factory.c: new file.
+        (gal_a11y_e_table_item_factory_get_accessible_type),
+        (gal_a11y_e_table_item_factory_create_accessible),
+        (gal_a11y_e_table_item_factory_class_init),
+        (gal_a11y_e_table_item_factory_init),
+        (gal_a11y_e_table_item_factory_get_type): factory for the table item
+        a11y object. in create_accessible, we judge the type of widget
+        then set correct role.
+        * gal/a11y/e-table/gal-a11y-e-table-item-factory.h: ditto.
+        * gal/a11y/e-table/gal-a11y-e-tree-factory.c: new file.
+        (gal_a11y_e_tree_factory_get_accessible_type),
+        (gal_a11y_e_tree_factory_create_accessible),
+        (gal_a11y_e_tree_factory_class_init),
+        (gal_a11y_e_tree_factory_init), (gal_a11y_e_tree_factory_get_type):
+        factory for a11y object of etree. Mostly copyed from
+        gal-a11y-e-table-factory.c.
+        * gal/a11y/e-table/gal-a11y-e-tree-factory.h: ditto
+        * gal/a11y/e-table/gal-a11y-e-tree.c: (init_child_item),
+        (et_ref_accessible_at_point), (et_get_n_children), (et_ref_child),
+        (et_class_init), (et_atk_component_iface_init), (et_init),
+        (gal_a11y_e_tree_get_type), (gal_a11y_e_tree_new):a11y object for
+        etree object, mostly copied from gal-a11y-e-table.c. init_child_item
+        set correct role for the table item.
+        * gal/a11y/e-table/gal-a11y-e-tree.h: ditto.
+        * gal/e-table/e-table-item.c: (eti_class_init): register factory
+        for table item a11y object.
+        * gal/e-table/e-tree.c: (e_tree_get_item), (e_tree_class_init):
+        add new access fuction to get the table item of etree.
+        * gal/e-table/e-tree.h: ditto
+
+2003-09-27  Tim Wo <tim.wo@sun.com>
+
+	* gal/a11y/e-text/gal-a11y-e-text-factory.c
+	(gal_a11y_e_text_factory_create_accessible): set the role of the
+	atk object in the initialization function of GalA11yEText
+	* gal/a11y/e-text/gal-a11y-e-text.c (is_a_seperator),
+	(find_word_start), (find_word_end), (find_sentence_start),
+	(find_sentence_end), (find_line_start), (find_line_end): 7 new
+	private functions, They are all used by text retrieving functions
+	below.
+	(et_get_text_after_offset): implementation added
+	(et_get_text_at_offset): implementation added
+	(et_get_text_before_offset): implementation added
+	(et_get_character_extents): implementation added
+	(et_get_offset_at_point): implementation added
+	(et_set_caret_offset): use command to modify the cursor position,
+	so that we can be notified and emit "text-caret-moved" signal in
+	function _et_command_cb.
+	(_et_reposition_cb): new function to emit "text-changed" signal
+	for the atk object
+	(_et_command_cb): new function to emit "text-caret-moved" and
+	"text-selection-changed" signals for the atk object
+	(et_real_initialize): new function to deal with initialization of
+	GalA11yEText. It set some signal callbacks and the atk role of
+	the atk object (set GalA11yEText's role to ATK_ROLE_TEXT).
+	(et_class_init): override the virtual function "initialize" in
+	baseclass (AtkObject) with "et_real_initialize"
+
+2003-09-22  Tim Wo <tim.wo@sun.com>
+
+	* gal/a11y/e-text/gal-a11y-e-text.c (et_get_text): some checking
+	code added to ensure that end_offset and start_offset both belong
+	to [0, length of the text] and end_offset >= start_offset or it
+	will lead to a crash
+	(et_get_caret_offset):no need to deal with character encoding
+	here, since the widget has already delt with it. 
+	(et_get_selection): dealing with character encoding and ensure
+	end_offset >= start_offset, or it will lead to a crash
+	(et_add_selection): we can not get the ETextEventProcessor here,
+	so the old implementation leads to a crash. Modify the parameters
+	"selection_start" and "selection_end" directly instead
+	(et_remove_selection): implementation added
+	(et_set_selection): implementation added
+	(et_set_caret_offset): no need to deal with character encoding
+	here, since the widget has already delt with it. Another change
+	is when offset == -1, move the caret to the end of the text,
+	this keeps the same behavior as GailTextview
+
+2003-09-13  Tim Wo <tim.wo@sun.com>
+
+	* gal/a11y/e-text/gal-a11y-e-text.c (et_insert_text): make the
+	code be compliant with C89, or it can't be compiled on solaris.
+	(et_copy_text): implementation added
+	(et_cut_text): implementation added
+	(et_delete_text): implementation added
+	(et_paste_text): implementation added
+
+2003-09-08  Tim Wo <tim.wo@sun.com>
+
+	* gal/a11y/e-text/gal-a11y-e-text-factory.h: GalA11yETextFactory
+	should inherit from AtkObjectFactory not AtkObject. (#47097).
+	* gal/a11y/e-text/gal-a11y-e-text.c (et_class_init): Set value
+	for "component_parent_iface". (#47097)
+	* gal/e-text/e-text.c (e_text_class_init): Added registration
+	code for GalA11yETextFactory. (#47097)
+
+2003-09-05  Gilbert Fang  <gilbert.fang@sun.com>
+
+        * gal/a11y/Makefile.am: add e-table atk support to libgal a11y
+        * gal/e-table/e-table.c: (e_table_class_init): add atk registration
+        for GalA11yETable (#47780)
 
 2003-09-03  Dan Winship  <danw@ximian.com>
 
-	* gal/Makefile.am (libgal_2_0_la_LDFLAGS): Remove -no-undefined
+	* gal/Makefile.am (libgal_2_2_la_LDFLAGS): Remove -no-undefined
 	here too.
 
 2003-08-20  Suresh Chandrasekharan  <suresh.chandrasekharan@sun.com>
-
+	
 	* gal/util/e-util.c (e_filename_make_safe): Fix for 47474
 	e_filename_make_safe routine not utf8 friendly.
 
-2003-08-16  Maxx Cao  <maxx.cao@sun.com>
+2003-08-13  Mike Kestner  <mkestner@ximian.com>
 
-	* gal/e-text/e-text.c (e_text_event): filter S-F10 key binding, and
-	show popup menu.
-	(popup_menu_placement_cb): function added to adjust popup menu position.
-	(popup_targets_received): show popup menu in different ways, according
-	to whether it's invoked by mouse click or key binding.
+	* configure.in : update for 2.2
+	* Makefile.am : install gal-2.2.pc
+	* gal-2.2.pc.in : new
+	* gal/Makefile.am : build libgal-2.2.la now
+	* gal/a11y/Makefile.am : build libgal-a11y-2.2.la now
 
-2003-08-12  Mike Kestner  <mkestner@ximian.com>
+2003-08-10  Maxx Cao  <maxx.cao@sun.com>
 
-	* configure.in : branched and reverted the previous intltool change
+	* gal/e-text/e-text.c (e_text_event): filter S-F10 key binding,
+	and show popup menu.
+	(popup_menu_placement_cb): function added to adjust popup menu
+	position.
+	(popup_targets_received): show popup menu in different ways,
+	according to whether it's invoked by mouse click or key binding.
 
 2003-08-12  Abel Cheung  <maddog@linux.org.hk>
 
@@ -135,7 +1038,7 @@
 
 	* Makefile.am : revert a broken CLEAN_FILES change. [42478]
 
-2003-05-18  Danilo Šegan  <dsegan@gmx.net>
+2003-05-18  Danilo Ŏegan  <dsegan@gmx.net>
 
 	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
 
@@ -2742,7 +3645,7 @@ Fri Apr 26 02:22:37 2002  Jonathan Blandford  <jrb@gnome.org>
 	* gal/unicode/gunidecomp.c (_g_utf8_normalize_wc): Handle the case
 	of invalid utf8 here by simply dropping any invalid characters.
 
-2001-12-11  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+2001-12-11  Gustavo GirÎldez  <gustavo.giraldez@gmx.net>
 
 	* gal/e-table/e-table-header-item.c (ethi_unrealize): unregister
 	ETableHeaderItem widget as a drag target when unrealizing it.
@@ -3244,7 +4147,7 @@ From a patch by Jon Trowbridge  <trow@ximian.com>
 	in some iconv implementions that require the length arguments to
 	be valid pointers event if both buffers are NULL.
 
-2001-10-13  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-10-13  Carlos PerellÎ MarÎn <carlos@gnome-db.org>
 
 	* configure.in (ALL_LINGUAS): Added pt
 
@@ -6423,7 +7326,7 @@ End of branch
 	calling gdk_fontset_load
 
 2000-11-07  Jody Goldberg <jgoldberg@home.com>
-	For : ÉRDI Gergõ <cactus@cactus.rulez.org>
+	For : ÉRDI GergÎ <cactus@cactus.rulez.org>
 
 	* gal/widgets/gtk-combo-stack.[ch] : Improve selection display.
 

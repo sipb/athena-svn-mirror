@@ -334,14 +334,6 @@ item_removed (EReflowModel *model, int i, EReflow *reflow)
 	if (i < 0 || i >= reflow->count)
 		return;
 
-	if (reflow->items[i])
-		gtk_object_destroy (GTK_OBJECT (reflow->items[i]));
-
-	memmove (reflow->heights + i, reflow->heights + i + 1, (reflow->count - i - 1) * sizeof (int));
-	memmove (reflow->items + i, reflow->items + i + 1, (reflow->count - i - 1) * sizeof (GnomeCanvasItem *));
-
-	reflow->count --;
-
 	sorted = e_sorter_model_to_sorted (E_SORTER (reflow->sorter), i);
 	for (c = reflow->column_count - 1; c >= 0; c--) {
 		int start_of_column = reflow->columns[c];
@@ -355,6 +347,17 @@ item_removed (EReflowModel *model, int i, EReflow *reflow)
 		}
 	}
 
+	if (reflow->items[i])
+		gtk_object_destroy (GTK_OBJECT (reflow->items[i]));
+
+	memmove (reflow->heights + i, reflow->heights + i + 1, (reflow->count - i - 1) * sizeof (int));
+	memmove (reflow->items + i, reflow->items + i + 1, (reflow->count - i - 1) * sizeof (GnomeCanvasItem *));
+
+	reflow->count --;
+
+	reflow->heights [reflow->count] = 0;
+	reflow->items [reflow->count] = NULL;
+
 	reflow->need_reflow_columns = TRUE;
 	set_empty (reflow);
 	e_canvas_item_request_reflow(GNOME_CANVAS_ITEM (reflow));
@@ -367,9 +370,7 @@ item_removed (EReflowModel *model, int i, EReflow *reflow)
 static void
 items_inserted (EReflowModel *model, int position, int count, EReflow *reflow)
 {
-	int i, c;
-	int oldcount;
-	int lowest_column;
+	int i, oldcount;
 
 	if (position < 0 || position > reflow->count)
 		return;

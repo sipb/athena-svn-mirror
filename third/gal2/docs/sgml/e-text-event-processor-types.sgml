@@ -1,4 +1,4 @@
-<refentry id="gal-e-text-event-processor-types" revision="12 Jan 2001">
+<refentry id="gal-e-text-event-processor-types">
 <refmeta>
 <refentrytitle>e-text-event-processor-types</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -28,6 +29,10 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -39,7 +44,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 <title>Details</title>
 <refsect2>
 <title><anchor id="ETextEventProcessorCommand">ETextEventProcessorCommand</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETextEventProcessorCommand</primary></indexterm><programlisting>typedef struct {
 	ETextEventProcessorCommandPosition position;
 	ETextEventProcessorCommandAction action;
 	int value;
@@ -52,7 +57,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessorEventButton">ETextEventProcessorEventButton</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETextEventProcessorEventButton</primary></indexterm><programlisting>typedef struct {
 	GdkEventType type;
 	guint32 time;
 	guint state;
@@ -65,7 +70,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessorEventKey">ETextEventProcessorEventKey</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETextEventProcessorEventKey</primary></indexterm><programlisting>typedef struct {
 	GdkEventType type;
 	guint32 time;
 	guint state;
@@ -79,7 +84,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessorEventMotion">ETextEventProcessorEventMotion</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETextEventProcessorEventMotion</primary></indexterm><programlisting>typedef struct {
 	GdkEventType type;
 	guint32 time;
 	guint state;
@@ -91,7 +96,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessorCommandPosition">enum ETextEventProcessorCommandPosition</title>
-<programlisting>typedef enum {
+<indexterm><primary>ETextEventProcessorCommandPosition</primary></indexterm><programlisting>typedef enum {
 	E_TEP_VALUE,
 	E_TEP_SELECTION,
 
@@ -126,7 +131,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessorCommandAction">enum ETextEventProcessorCommandAction</title>
-<programlisting>typedef enum {
+<indexterm><primary>ETextEventProcessorCommandAction</primary></indexterm><programlisting>typedef enum {
 	E_TEP_MOVE,
 	E_TEP_SELECT,
 	E_TEP_DELETE,
@@ -149,7 +154,7 @@ union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETextEventProcessorEvent">union ETextEventProcessorEvent</title>
-<programlisting>union ETextEventProcessorEvent {
+<indexterm><primary>ETextEventProcessorEvent</primary></indexterm><programlisting>union ETextEventProcessorEvent {
 	GdkEventType type;
 	ETextEventProcessorEventButton button;
 	ETextEventProcessorEventKey key;

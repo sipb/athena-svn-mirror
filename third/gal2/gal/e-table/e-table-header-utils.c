@@ -341,7 +341,6 @@ e_table_header_draw_button (GdkDrawable *drawable, ETableCol *ecol,
 	int inner_x, inner_y;
 	int inner_width, inner_height;
 	GdkGC *gc;
-	char *text;
 	PangoLayout *layout;
 
 	g_return_if_fail (drawable != NULL);
@@ -400,7 +399,7 @@ e_table_header_draw_button (GdkDrawable *drawable, ETableCol *ecol,
 		arrow_height = MIN (MIN_ARROW_SIZE, inner_height);
 
 		gtk_paint_arrow (style, drawable, state,
-				 GTK_SHADOW_IN, NULL, widget, "header",
+				 GTK_SHADOW_NONE, NULL, widget, "header",
 				 (arrow == E_TABLE_COL_ARROW_UP) ? GTK_ARROW_UP : GTK_ARROW_DOWN,
 				 TRUE,
 				 inner_x + inner_width - arrow_width,

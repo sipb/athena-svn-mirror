@@ -535,12 +535,17 @@ e_categories_construct (ECategories *categories,
 	g_return_if_fail (E_IS_CATEGORIES (categories));
 	g_return_if_fail (initial_category_list != NULL);
 
-	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-categories.glade", NULL, PACKAGE);
+	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-categories.glade", NULL, E_I18N_DOMAIN);
 
 	gtk_window_set_title (GTK_WINDOW (categories), _("Edit Categories"));
 
 	if (gui) {
 		categories->priv->gui = gui;
+
+		gtk_widget_realize (GTK_WIDGET (categories));
+		gtk_dialog_set_has_separator (GTK_DIALOG (categories), FALSE);
+		gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (categories)->vbox), 0);
+		gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (categories)->action_area), 12);
 
 		gtk_dialog_add_buttons (GTK_DIALOG (categories),
 					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -618,7 +623,7 @@ e_categories_construct (ECategories *categories,
 
 		ec_set_categories (categories->priv->entry, initial_category_list);
 
-		gtk_window_set_default_size (GTK_WINDOW (categories), 200, 400);
+		gtk_window_set_default_size (GTK_WINDOW (categories), 320, 400);
 	}
 }
 
@@ -674,7 +679,6 @@ e_categories_get_property    (GObject *object, guint prop_id, GValue *value, GPa
 {
 	ECategories *e_categories;
 	GtkWidget *widget;
-	char *header;
 
 	e_categories = E_CATEGORIES (object);
 

@@ -1,4 +1,4 @@
-<refentry id="gal-e-table-defines" revision="12 Jan 2001">
+<refentry id="gal-e-table-defines">
 <refmeta>
 <refentrytitle>e-table-defines</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -19,11 +20,15 @@
 #define     <link linkend="GROUP-INDENT-CAPS">GROUP_INDENT</link>
 #define     <link linkend="HEADER-PADDING-CAPS">HEADER_PADDING</link>
 #define     <link linkend="MIN-ARROW-SIZE-CAPS">MIN_ARROW_SIZE</link>
-void        (<link linkend="ETableForeachFunc">*ETableForeachFunc</link>)            (int model_row,
+<link linkend="void">void</link>        (<link linkend="ETableForeachFunc">*ETableForeachFunc</link>)            (<link linkend="int">int</link> model_row,
                                              <link linkend="gpointer">gpointer</link> closure);
 enum        <link linkend="ETableCursorMode">ETableCursorMode</link>;
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -40,62 +45,58 @@ enum        <link linkend="ETableCursorMode">ETableCursorMode</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="BUTTON-HEIGHT-CAPS">BUTTON_HEIGHT</title>
-<programlisting>#define BUTTON_HEIGHT        10
+<indexterm><primary>BUTTON_HEIGHT</primary></indexterm><programlisting>#define BUTTON_HEIGHT        10
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="BUTTON-PADDING-CAPS">BUTTON_PADDING</title>
-<programlisting>#define BUTTON_PADDING       2
+<indexterm><primary>BUTTON_PADDING</primary></indexterm><programlisting>#define BUTTON_PADDING       2
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GROUP-INDENT-CAPS">GROUP_INDENT</title>
-<programlisting>#define GROUP_INDENT         (BUTTON_HEIGHT + (BUTTON_PADDING * 2))
+<indexterm><primary>GROUP_INDENT</primary></indexterm><programlisting>#define GROUP_INDENT         (BUTTON_HEIGHT + (BUTTON_PADDING * 2))
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="HEADER-PADDING-CAPS">HEADER_PADDING</title>
-<programlisting>#define HEADER_PADDING 1
+<indexterm><primary>HEADER_PADDING</primary></indexterm><programlisting>#define HEADER_PADDING 1
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="MIN-ARROW-SIZE-CAPS">MIN_ARROW_SIZE</title>
-<programlisting>#define MIN_ARROW_SIZE 10
+<indexterm><primary>MIN_ARROW_SIZE</primary></indexterm><programlisting>#define MIN_ARROW_SIZE 10
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableForeachFunc">ETableForeachFunc ()</title>
-<programlisting>void        (*ETableForeachFunc)            (int model_row,
+<indexterm><primary>ETableForeachFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*ETableForeachFunc)            (<link linkend="int">int</link> model_row,
                                              <link linkend="gpointer">gpointer</link> closure);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>model_row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>model_row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ETableCursorMode">enum ETableCursorMode</title>
-<programlisting>typedef enum
+<indexterm><primary>ETableCursorMode</primary></indexterm><programlisting>typedef enum
 {
 	E_TABLE_CURSOR_LINE,
 	E_TABLE_CURSOR_SIMPLE,

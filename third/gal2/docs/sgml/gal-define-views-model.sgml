@@ -1,4 +1,4 @@
-<refentry id="GalDefineViewsModel" revision="12 Jan 2001">
+<refentry id="GalDefineViewsModel">
 <refmeta>
 <refentrytitle>GalDefineViewsModel</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,7 +18,7 @@
 #define     <link linkend="GAL-DEFINE-VIEWS-MODEL-TYPE-CAPS">GAL_DEFINE_VIEWS_MODEL_TYPE</link>
 typedef     <link linkend="GalDefineViewsModel">GalDefineViewsModel</link>;
 <link linkend="ETableModel">ETableModel</link>* <link linkend="gal-define-views-model-new">gal_define_views_model_new</link>     (void);
-void        <link linkend="gal-define-views-model-append">gal_define_views_model_append</link>   (<link linkend="GalDefineViewsModel">GalDefineViewsModel</link> *model,
+<link linkend="void">void</link>        <link linkend="gal-define-views-model-append">gal_define_views_model_append</link>   (<link linkend="GalDefineViewsModel">GalDefineViewsModel</link> *model,
                                              <link linkend="GalView">GalView</link> *view);
 
 </synopsis>
@@ -34,8 +35,12 @@ void        <link linkend="gal-define-views-model-append">gal_define_views_model
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="GalDefineViewsModel--editable">editable</link>&quot;             <link linkend="gboolean">gboolean</link>             : Read / Write
@@ -55,14 +60,14 @@ void        <link linkend="gal-define-views-model-append">gal_define_views_model
 <title>Details</title>
 <refsect2>
 <title><anchor id="GAL-DEFINE-VIEWS-MODEL-TYPE-CAPS">GAL_DEFINE_VIEWS_MODEL_TYPE</title>
-<programlisting>#define GAL_DEFINE_VIEWS_MODEL_TYPE        (gal_define_views_model_get_type ())
+<indexterm><primary>GAL_DEFINE_VIEWS_MODEL_TYPE</primary></indexterm><programlisting>#define GAL_DEFINE_VIEWS_MODEL_TYPE        (gal_define_views_model_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GalDefineViewsModel">GalDefineViewsModel</title>
-<programlisting>typedef struct {
+<indexterm><primary>GalDefineViewsModel</primary></indexterm><programlisting>typedef struct {
 	ETableModel parent;
 
 	/* item specific fields */
@@ -77,49 +82,41 @@ void        <link linkend="gal-define-views-model-append">gal_define_views_model
 </para></refsect2>
 <refsect2>
 <title><anchor id="gal-define-views-model-new">gal_define_views_model_new ()</title>
-<programlisting><link linkend="ETableModel">ETableModel</link>* gal_define_views_model_new     (void);</programlisting>
+<indexterm><primary>gal_define_views_model_new</primary></indexterm><programlisting><link linkend="ETableModel">ETableModel</link>* gal_define_views_model_new     (void);</programlisting>
+<para>
+Returns a new define views model.  This is a list of views as an
+ETable for use in the GalDefineViewsDialog.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new GalDefineViewsModel.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gal-define-views-model-append">gal_define_views_model_append ()</title>
-<programlisting>void        gal_define_views_model_append   (<link linkend="GalDefineViewsModel">GalDefineViewsModel</link> *model,
+<indexterm><primary>gal_define_views_model_append</primary></indexterm><programlisting><link linkend="void">void</link>        gal_define_views_model_append   (<link linkend="GalDefineViewsModel">GalDefineViewsModel</link> *model,
                                              <link linkend="GalView">GalView</link> *view);</programlisting>
 <para>
+Adds the given view to the gal define views model.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>model</parameter>&nbsp;:</term>
+<listitem><simpara> The model to add to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>view</parameter>&nbsp;:</term>
+<listitem><simpara> The view to add.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="GalDefineViewsModel--editable">&quot;<literal>editable</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

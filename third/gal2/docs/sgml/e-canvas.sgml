@@ -1,4 +1,4 @@
-<refentry id="ECanvas" revision="12 Jan 2001">
+<refentry id="ECanvas">
 <refmeta>
 <refentrytitle>ECanvas</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,14 +10,15 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 #define     <link linkend="E-CANVAS-TYPE-CAPS">E_CANVAS_TYPE</link>
-void        (<link linkend="ECanvasItemReflowFunc">*ECanvasItemReflowFunc</link>)        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        (<link linkend="ECanvasItemReflowFunc">*ECanvasItemReflowFunc</link>)        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gint">gint</link> flags);
-void        (<link linkend="ECanvasItemSelectionFunc">*ECanvasItemSelectionFunc</link>)     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        (<link linkend="ECanvasItemSelectionFunc">*ECanvasItemSelectionFunc</link>)     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gint">gint</link> flags,
                                              <link linkend="gpointer">gpointer</link> user_data);
 <link linkend="gint">gint</link>        (<link linkend="ECanvasItemSelectionCompareFunc">*ECanvasItemSelectionCompareFunc</link>)
@@ -28,26 +29,26 @@ void        (<link linkend="ECanvasItemSelectionFunc">*ECanvasItemSelectionFunc<
 typedef     <link linkend="ECanvasSelectionInfo">ECanvasSelectionInfo</link>;
 struct      <link linkend="ECanvas-struct">ECanvas</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="e-canvas-new">e_canvas_new</link>                    (void);
-void        <link linkend="e-canvas-item-grab-focus">e_canvas_item_grab_focus</link>        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
-void        <link linkend="e-canvas-item-request-reflow">e_canvas_item_request_reflow</link>    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
-void        <link linkend="e-canvas-item-request-parent-reflow">e_canvas_item_request_parent_reflow</link>
+<link linkend="void">void</link>        <link linkend="e-canvas-item-grab-focus">e_canvas_item_grab_focus</link>        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
+<link linkend="void">void</link>        <link linkend="e-canvas-item-request-reflow">e_canvas_item_request_reflow</link>    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
+<link linkend="void">void</link>        <link linkend="e-canvas-item-request-parent-reflow">e_canvas_item_request_parent_reflow</link>
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
-void        <link linkend="e-canvas-item-set-reflow-callback">e_canvas_item_set_reflow_callback</link>
+<link linkend="void">void</link>        <link linkend="e-canvas-item-set-reflow-callback">e_canvas_item_set_reflow_callback</link>
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="ECanvasItemReflowFunc">ECanvasItemReflowFunc</link> func);
-void        <link linkend="e-canvas-item-set-selection-callback">e_canvas_item_set_selection_callback</link>
+<link linkend="void">void</link>        <link linkend="e-canvas-item-set-selection-callback">e_canvas_item_set_selection_callback</link>
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="ECanvasItemSelectionFunc">ECanvasItemSelectionFunc</link> func);
-void        <link linkend="e-canvas-item-set-selection-compare-callback">e_canvas_item_set_selection_compare_callback</link>
+<link linkend="void">void</link>        <link linkend="e-canvas-item-set-selection-compare-callback">e_canvas_item_set_selection_compare_callback</link>
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="ECanvasItemSelectionCompareFunc">ECanvasItemSelectionCompareFunc</link> func);
-void        <link linkend="e-canvas-item-set-cursor">e_canvas_item_set_cursor</link>        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        <link linkend="e-canvas-item-set-cursor">e_canvas_item_set_cursor</link>        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);
-void        <link linkend="e-canvas-item-add-selection">e_canvas_item_add_selection</link>     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        <link linkend="e-canvas-item-add-selection">e_canvas_item_add_selection</link>     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);
-void        <link linkend="e-canvas-item-remove-selection">e_canvas_item_remove_selection</link>  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        <link linkend="e-canvas-item-remove-selection">e_canvas_item_remove_selection</link>  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);
-void        <link linkend="e-canvas-item-set-cursor-end">e_canvas_item_set_cursor_end</link>    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        <link linkend="e-canvas-item-set-cursor-end">e_canvas_item_set_cursor_end</link>    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);
 
 </synopsis>
@@ -68,11 +69,15 @@ void        <link linkend="e-canvas-item-set-cursor-end">e_canvas_item_set_curso
 </refsect1>
 
 
+
+
+
+
 <refsect1>
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="ECanvas-reflow">reflow</link>&quot;    void        user_function      (<link linkend="ECanvas">ECanvas</link> *ecanvas,
+&quot;<link linkend="ECanvas-reflow">reflow</link>&quot;    <link linkend="void">void</link>        user_function      (<link linkend="ECanvas">ECanvas</link> *ecanvas,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -89,89 +94,77 @@ void        <link linkend="e-canvas-item-set-cursor-end">e_canvas_item_set_curso
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-CANVAS-TYPE-CAPS">E_CANVAS_TYPE</title>
-<programlisting>#define E_CANVAS_TYPE			(e_canvas_get_type ())
+<indexterm><primary>E_CANVAS_TYPE</primary></indexterm><programlisting>#define E_CANVAS_TYPE			(e_canvas_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ECanvasItemReflowFunc">ECanvasItemReflowFunc ()</title>
-<programlisting>void        (*ECanvasItemReflowFunc)        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>ECanvasItemReflowFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*ECanvasItemReflowFunc)        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gint">gint</link> flags);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ECanvasItemSelectionFunc">ECanvasItemSelectionFunc ()</title>
-<programlisting>void        (*ECanvasItemSelectionFunc)     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>ECanvasItemSelectionFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*ECanvasItemSelectionFunc)     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gint">gint</link> flags,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ECanvasItemSelectionCompareFunc">ECanvasItemSelectionCompareFunc ()</title>
-<programlisting><link linkend="gint">gint</link>        (*ECanvasItemSelectionCompareFunc)
+<indexterm><primary>ECanvasItemSelectionCompareFunc</primary></indexterm><programlisting><link linkend="gint">gint</link>        (*ECanvasItemSelectionCompareFunc)
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> data1,
                                              <link linkend="gpointer">gpointer</link> data2,
                                              <link linkend="gint">gint</link> flags);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="ECanvasSelectionInfo">ECanvasSelectionInfo</title>
-<programlisting>typedef struct {
+<indexterm><primary>ECanvasSelectionInfo</primary></indexterm><programlisting>typedef struct {
 	GnomeCanvasItem *item;
 	gpointer         id;
 } ECanvasSelectionInfo;
@@ -181,241 +174,193 @@ void        <link linkend="e-canvas-item-set-cursor-end">e_canvas_item_set_curso
 </para></refsect2>
 <refsect2>
 <title><anchor id="ECanvas-struct">struct ECanvas</title>
-<programlisting>struct ECanvas;</programlisting>
+<indexterm><primary>ECanvas</primary></indexterm><programlisting>struct ECanvas;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-new">e_canvas_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_canvas_new                    (void);</programlisting>
+<indexterm><primary>e_canvas_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_canvas_new                    (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-grab-focus">e_canvas_item_grab_focus ()</title>
-<programlisting>void        e_canvas_item_grab_focus        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
+<indexterm><primary>e_canvas_item_grab_focus</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_grab_focus        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
 <para>
-Makes the specified item take the keyboard focus, so all keyboard events will
-be sent to it.  If the canvas widget itself did not have the focus, it grabs
-it as well.</para>
+Makes the specified item take the keyboard focus, so all keyboard
+events will be sent to it. If the canvas widget itself did not have
+the focus and <parameter>widget_too</parameter> is <literal>TRUE</literal>, it grabs that focus as well.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry> A canvas item.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara> A canvas item.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-request-reflow">e_canvas_item_request_reflow ()</title>
-<programlisting>void        e_canvas_item_request_reflow    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
+<indexterm><primary>e_canvas_item_request_reflow</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_request_reflow    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-request-parent-reflow">e_canvas_item_request_parent_reflow ()</title>
-<programlisting>void        e_canvas_item_request_parent_reflow
+<indexterm><primary>e_canvas_item_request_parent_reflow</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_request_parent_reflow
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-set-reflow-callback">e_canvas_item_set_reflow_callback ()</title>
-<programlisting>void        e_canvas_item_set_reflow_callback
+<indexterm><primary>e_canvas_item_set_reflow_callback</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_set_reflow_callback
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="ECanvasItemReflowFunc">ECanvasItemReflowFunc</link> func);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-set-selection-callback">e_canvas_item_set_selection_callback ()</title>
-<programlisting>void        e_canvas_item_set_selection_callback
+<indexterm><primary>e_canvas_item_set_selection_callback</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_set_selection_callback
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="ECanvasItemSelectionFunc">ECanvasItemSelectionFunc</link> func);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-set-selection-compare-callback">e_canvas_item_set_selection_compare_callback ()</title>
-<programlisting>void        e_canvas_item_set_selection_compare_callback
+<indexterm><primary>e_canvas_item_set_selection_compare_callback</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_set_selection_compare_callback
                                             (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="ECanvasItemSelectionCompareFunc">ECanvasItemSelectionCompareFunc</link> func);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-set-cursor">e_canvas_item_set_cursor ()</title>
-<programlisting>void        e_canvas_item_set_cursor        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>e_canvas_item_set_cursor</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_set_cursor        (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-add-selection">e_canvas_item_add_selection ()</title>
-<programlisting>void        e_canvas_item_add_selection     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>e_canvas_item_add_selection</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_add_selection     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-remove-selection">e_canvas_item_remove_selection ()</title>
-<programlisting>void        e_canvas_item_remove_selection  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>e_canvas_item_remove_selection</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_remove_selection  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-set-cursor-end">e_canvas_item_set_cursor_end ()</title>
-<programlisting>void        e_canvas_item_set_cursor_end    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>e_canvas_item_set_cursor_end</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_set_cursor_end    (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="gpointer">gpointer</link> id);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ECanvas-reflow">The &quot;reflow&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ECanvas">ECanvas</link> *ecanvas,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ECanvas">ECanvas</link> *ecanvas,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ecanvas</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>ecanvas</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

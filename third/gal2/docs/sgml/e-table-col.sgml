@@ -1,4 +1,4 @@
-<refentry id="ETableCol" revision="12 Jan 2001">
+<refentry id="ETableCol">
 <refmeta>
 <refentrytitle>ETableCol</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -17,21 +18,21 @@
 #define     <link linkend="E-TABLE-COL-TYPE-CAPS">E_TABLE_COL_TYPE</link>
 typedef     <link linkend="ETableCol">ETableCol</link>;
 enum        <link linkend="ETableColArrow">ETableColArrow</link>;
-<link linkend="ETableCol">ETableCol</link>*  <link linkend="e-table-col-new">e_table_col_new</link>                 (int col_idx,
-                                             const char *text,
+<link linkend="ETableCol">ETableCol</link>*  <link linkend="e-table-col-new">e_table_col_new</link>                 (<link linkend="int">int</link> col_idx,
+                                             const <link linkend="char">char</link> *text,
                                              <link linkend="double">double</link> expansion,
-                                             int min_width,
+                                             <link linkend="int">int</link> min_width,
                                              <link linkend="ECell">ECell</link> *ecell,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare,
                                              <link linkend="gboolean">gboolean</link> resizable);
-<link linkend="ETableCol">ETableCol</link>*  <link linkend="e-table-col-new-with-pixbuf">e_table_col_new_with_pixbuf</link>     (int col_idx,
+<link linkend="ETableCol">ETableCol</link>*  <link linkend="e-table-col-new-with-pixbuf">e_table_col_new_with_pixbuf</link>     (<link linkend="int">int</link> col_idx,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="double">double</link> expansion,
-                                             int min_width,
+                                             <link linkend="int">int</link> min_width,
                                              <link linkend="ECell">ECell</link> *ecell,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare,
                                              <link linkend="gboolean">gboolean</link> resizable);
-void        <link linkend="e-table-col-destroy">e_table_col_destroy</link>             (<link linkend="ETableCol">ETableCol</link> *etc);
+<link linkend="void">void</link>        <link linkend="e-table-col-destroy">e_table_col_destroy</link>             (<link linkend="ETableCol">ETableCol</link> *etc);
 
 </synopsis>
 </refsynopsisdiv>
@@ -46,8 +47,12 @@ void        <link linkend="e-table-col-destroy">e_table_col_destroy</link>      
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableCol--sortable">sortable</link>&quot;             <link linkend="gboolean">gboolean</link>             : Read / Write
@@ -67,14 +72,14 @@ void        <link linkend="e-table-col-destroy">e_table_col_destroy</link>      
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-COL-TYPE-CAPS">E_TABLE_COL_TYPE</title>
-<programlisting>#define E_TABLE_COL_TYPE        (e_table_col_get_type ())
+<indexterm><primary>E_TABLE_COL_TYPE</primary></indexterm><programlisting>#define E_TABLE_COL_TYPE        (e_table_col_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableCol">ETableCol</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableCol</primary></indexterm><programlisting>typedef struct {
 	GtkObject    base;
 	char        *text;
 	GdkPixbuf   *pixbuf;
@@ -100,7 +105,7 @@ void        <link linkend="e-table-col-destroy">e_table_col_destroy</link>      
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableColArrow">enum ETableColArrow</title>
-<programlisting>typedef enum {
+<indexterm><primary>ETableColArrow</primary></indexterm><programlisting>typedef enum {
 	E_TABLE_COL_ARROW_NONE = 0,
 	E_TABLE_COL_ARROW_UP,
 	E_TABLE_COL_ARROW_DOWN
@@ -111,10 +116,10 @@ void        <link linkend="e-table-col-destroy">e_table_col_destroy</link>      
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-col-new">e_table_col_new ()</title>
-<programlisting><link linkend="ETableCol">ETableCol</link>*  e_table_col_new                 (int col_idx,
-                                             const char *text,
+<indexterm><primary>e_table_col_new</primary></indexterm><programlisting><link linkend="ETableCol">ETableCol</link>*  e_table_col_new                 (<link linkend="int">int</link> col_idx,
+                                             const <link linkend="char">char</link> *text,
                                              <link linkend="double">double</link> expansion,
-                                             int min_width,
+                                             <link linkend="int">int</link> min_width,
                                              <link linkend="ECell">ECell</link> *ecell,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare,
                                              <link linkend="gboolean">gboolean</link> resizable);</programlisting>
@@ -136,41 +141,37 @@ The <parameter>ecell</parameter> argument is an ECell object that needs to know 
 data in the ETableModel for this specific row.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>col_idx</parameter>&nbsp;:</entry>
-<entry> the column we represent in the model
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry> a title for this column
-</entry></row>
-<row><entry align="right"><parameter>expansion</parameter>&nbsp;:</entry>
-<entry> FIXME
-</entry></row>
-<row><entry align="right"><parameter>min_width</parameter>&nbsp;:</entry>
-<entry> minimum width in pixels for this column
-</entry></row>
-<row><entry align="right"><parameter>ecell</parameter>&nbsp;:</entry>
-<entry> the renderer to be used for this column
-</entry></row>
-<row><entry align="right"><parameter>compare</parameter>&nbsp;:</entry>
-<entry> comparision function for the elements stored in this column
-</entry></row>
-<row><entry align="right"><parameter>resizable</parameter>&nbsp;:</entry>
-<entry> whether the column can be resized interactively by the user
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the newly created ETableCol object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>col_idx</parameter>&nbsp;:</term>
+<listitem><simpara> the column we represent in the model
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara> a title for this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>expansion</parameter>&nbsp;:</term>
+<listitem><simpara> FIXME
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>min_width</parameter>&nbsp;:</term>
+<listitem><simpara> minimum width in pixels for this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ecell</parameter>&nbsp;:</term>
+<listitem><simpara> the renderer to be used for this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>compare</parameter>&nbsp;:</term>
+<listitem><simpara> comparision function for the elements stored in this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resizable</parameter>&nbsp;:</term>
+<listitem><simpara> whether the column can be resized interactively by the user
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created ETableCol object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-col-new-with-pixbuf">e_table_col_new_with_pixbuf ()</title>
-<programlisting><link linkend="ETableCol">ETableCol</link>*  e_table_col_new_with_pixbuf     (int col_idx,
+<indexterm><primary>e_table_col_new_with_pixbuf</primary></indexterm><programlisting><link linkend="ETableCol">ETableCol</link>*  e_table_col_new_with_pixbuf     (<link linkend="int">int</link> col_idx,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="double">double</link> expansion,
-                                             int min_width,
+                                             <link linkend="int">int</link> min_width,
                                              <link linkend="ECell">ECell</link> *ecell,
                                              <link linkend="GCompareFunc">GCompareFunc</link> compare,
                                              <link linkend="gboolean">gboolean</link> resizable);</programlisting>
@@ -192,61 +193,52 @@ The <parameter>ecell</parameter> argument is an ECell object that needs to know 
 data in the ETableModel for this specific row.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>col_idx</parameter>&nbsp;:</entry>
-<entry> the column we represent in the model
-</entry></row>
-<row><entry align="right"><parameter>pixbuf</parameter>&nbsp;:</entry>
-<entry> the image to be used for the header
-</entry></row>
-<row><entry align="right"><parameter>expansion</parameter>&nbsp;:</entry>
-<entry> FIXME
-</entry></row>
-<row><entry align="right"><parameter>min_width</parameter>&nbsp;:</entry>
-<entry> minimum width in pixels for this column
-</entry></row>
-<row><entry align="right"><parameter>ecell</parameter>&nbsp;:</entry>
-<entry> the renderer to be used for this column
-</entry></row>
-<row><entry align="right"><parameter>compare</parameter>&nbsp;:</entry>
-<entry> comparision function for the elements stored in this column
-</entry></row>
-<row><entry align="right"><parameter>resizable</parameter>&nbsp;:</entry>
-<entry> whether the column can be resized interactively by the user
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the newly created ETableCol object.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>col_idx</parameter>&nbsp;:</term>
+<listitem><simpara> the column we represent in the model
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> the image to be used for the header
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>expansion</parameter>&nbsp;:</term>
+<listitem><simpara> FIXME
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>min_width</parameter>&nbsp;:</term>
+<listitem><simpara> minimum width in pixels for this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ecell</parameter>&nbsp;:</term>
+<listitem><simpara> the renderer to be used for this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>compare</parameter>&nbsp;:</term>
+<listitem><simpara> comparision function for the elements stored in this column
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resizable</parameter>&nbsp;:</term>
+<listitem><simpara> whether the column can be resized interactively by the user
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created ETableCol object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-col-destroy">e_table_col_destroy ()</title>
-<programlisting>void        e_table_col_destroy             (<link linkend="ETableCol">ETableCol</link> *etc);</programlisting>
+<indexterm><primary>e_table_col_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_col_destroy             (<link linkend="ETableCol">ETableCol</link> *etc);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etc</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etc</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableCol--sortable">&quot;<literal>sortable</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

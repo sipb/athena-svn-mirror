@@ -1,4 +1,4 @@
-<refentry id="ETableColumnSpecification" revision="12 Jan 2001">
+<refentry id="ETableColumnSpecification">
 <refmeta>
 <refentrytitle>ETableColumnSpecification</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -18,7 +19,7 @@
 typedef     <link linkend="ETableColumnSpecification">ETableColumnSpecification</link>;
 <link linkend="ETableColumnSpecification">ETableColumnSpecification</link>* <link linkend="e-table-column-specification-new">e_table_column_specification_new</link>
                                             (void);
-void        <link linkend="e-table-column-specification-load-from-node">e_table_column_specification_load_from_node</link>
+<link linkend="void">void</link>        <link linkend="e-table-column-specification-load-from-node">e_table_column_specification_load_from_node</link>
                                             (<link linkend="ETableColumnSpecification">ETableColumnSpecification</link> *state,
                                              const <link linkend="xmlNode">xmlNode</link> *node);
 <link linkend="xmlNode">xmlNode</link>*    <link linkend="e-table-column-specification-save-to-node">e_table_column_specification_save_to_node</link>
@@ -41,6 +42,10 @@ void        <link linkend="e-table-column-specification-load-from-node">e_table_
 
 
 
+
+
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -52,14 +57,14 @@ void        <link linkend="e-table-column-specification-load-from-node">e_table_
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-COLUMN-SPECIFICATION-TYPE-CAPS">E_TABLE_COLUMN_SPECIFICATION_TYPE</title>
-<programlisting>#define E_TABLE_COLUMN_SPECIFICATION_TYPE        (e_table_column_specification_get_type ())
+<indexterm><primary>E_TABLE_COLUMN_SPECIFICATION_TYPE</primary></indexterm><programlisting>#define E_TABLE_COLUMN_SPECIFICATION_TYPE        (e_table_column_specification_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableColumnSpecification">ETableColumnSpecification</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableColumnSpecification</primary></indexterm><programlisting>typedef struct {
 	GtkObject base;
 	int model_col;
 	char *title_;
@@ -78,64 +83,52 @@ void        <link linkend="e-table-column-specification-load-from-node">e_table_
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-column-specification-new">e_table_column_specification_new ()</title>
-<programlisting><link linkend="ETableColumnSpecification">ETableColumnSpecification</link>* e_table_column_specification_new
+<indexterm><primary>e_table_column_specification_new</primary></indexterm><programlisting><link linkend="ETableColumnSpecification">ETableColumnSpecification</link>* e_table_column_specification_new
                                             (void);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-column-specification-load-from-node">e_table_column_specification_load_from_node ()</title>
-<programlisting>void        e_table_column_specification_load_from_node
+<indexterm><primary>e_table_column_specification_load_from_node</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_column_specification_load_from_node
                                             (<link linkend="ETableColumnSpecification">ETableColumnSpecification</link> *state,
                                              const <link linkend="xmlNode">xmlNode</link> *node);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>node</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-column-specification-save-to-node">e_table_column_specification_save_to_node ()</title>
-<programlisting><link linkend="xmlNode">xmlNode</link>*    e_table_column_specification_save_to_node
+<indexterm><primary>e_table_column_specification_save_to_node</primary></indexterm><programlisting><link linkend="xmlNode">xmlNode</link>*    e_table_column_specification_save_to_node
                                             (<link linkend="ETableColumnSpecification">ETableColumnSpecification</link> *state,
                                              <link linkend="xmlNode">xmlNode</link> *parent);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

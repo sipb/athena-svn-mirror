@@ -28,7 +28,10 @@
 #include <libgnomeui/gnome-ui-init.h>
 #include "gal/widgets/e-cursors.h"
 #include "gal/e-text/e-text.h"
+#include "gal/e-text/e-text-model.h"
+#include "gal/e-text/e-text-model-uri.h"
 #include "gal/e-text/e-entry.h"
+#include "gal/widgets/e-canvas-utils.h"
 #include "gal/util/e-i18n.h"
 
 static void
@@ -42,7 +45,6 @@ static void
 create_entry (void)
 {
 	GtkWidget *entry, *window, *frame, *button, *vbox;
-	int i, j;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window), "EEntry Test");
@@ -93,7 +95,6 @@ create_text (void)
 {
 	EText *etext;
 	GtkWidget *canvas, *window, *frame;
-	int i, j;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window), "EText Test");
@@ -136,7 +137,6 @@ create_ro_text (void)
 {
 	EText *etext;
 	GtkWidget *canvas, *window, *frame;
-	int i, j;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window), "EText Readonly Test");

@@ -150,6 +150,8 @@ typedef struct {
 	gint             row_guess;
 	ECursorMode      cursor_mode;
 
+	int              motion_col, motion_row;
+
 	/*
 	 * During editing
 	 */
@@ -180,6 +182,8 @@ typedef struct {
 	gint        (*key_press)        (ETableItem *eti, int row, int col, GdkEvent *event);
 	gint        (*start_drag)       (ETableItem *eti, int row, int col, GdkEvent *event);
 	void        (*style_set)        (ETableItem *eti, GtkStyle *previous_style);
+	void        (*selection_model_removed)    (ETableItem *eti, ESelectionModel *selection);
+	void        (*selection_model_added)    (ETableItem *eti, ESelectionModel *selection);
 } ETableItemClass;
 GType       e_table_item_get_type            (void);
 

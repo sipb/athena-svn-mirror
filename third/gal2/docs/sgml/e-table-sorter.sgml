@@ -1,4 +1,4 @@
-<refentry id="ETableSorter" revision="12 Jan 2001">
+<refentry id="ETableSorter">
 <refmeta>
 <refentrytitle>ETableSorter</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -20,9 +21,9 @@ typedef     <link linkend="ETableSorter">ETableSorter</link>;
                                              <link linkend="ETableHeader">ETableHeader</link> *full_header,
                                              <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info);
 <link linkend="gint">gint</link>        <link linkend="e-table-sorter-model-to-sorted">e_table_sorter_model_to_sorted</link>  (<link linkend="ETableSorter">ETableSorter</link> *sorter,
-                                             int row);
+                                             <link linkend="int">int</link> row);
 <link linkend="gint">gint</link>        <link linkend="e-table-sorter-sorted-to-model">e_table_sorter_sorted_to_model</link>  (<link linkend="ETableSorter">ETableSorter</link> *sorter,
-                                             int row);
+                                             <link linkend="int">int</link> row);
 <link linkend="gboolean">gboolean</link>    <link linkend="e-table-sorter-needs-sorting">e_table_sorter_needs_sorting</link>    (<link linkend="ETableSorter">ETableSorter</link> *sorter);
 
 </synopsis>
@@ -38,11 +39,15 @@ typedef     <link linkend="ETableSorter">ETableSorter</link>;
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="ETableSorter--sort-info">sort_info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Read / Write
+  &quot;<link linkend="ETableSorter--sort-info">sort-info</link>&quot;            <link linkend="GtkObject">GtkObject</link>            : Read / Write
 </synopsis>
 </refsect1>
 
@@ -59,14 +64,14 @@ typedef     <link linkend="ETableSorter">ETableSorter</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SORTER-TYPE-CAPS">E_TABLE_SORTER_TYPE</title>
-<programlisting>#define E_TABLE_SORTER_TYPE        (e_table_sorter_get_type ())
+<indexterm><primary>E_TABLE_SORTER_TYPE</primary></indexterm><programlisting>#define E_TABLE_SORTER_TYPE        (e_table_sorter_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSorter">ETableSorter</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSorter</primary></indexterm><programlisting>typedef struct {
 	GtkObject base;
 
 	ETableModel    *source;
@@ -89,102 +94,85 @@ typedef     <link linkend="ETableSorter">ETableSorter</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-sorter-new">e_table_sorter_new ()</title>
-<programlisting><link linkend="ETableSorter">ETableSorter</link>* e_table_sorter_new            (<link linkend="ETableModel">ETableModel</link> *etm,
+<indexterm><primary>e_table_sorter_new</primary></indexterm><programlisting><link linkend="ETableSorter">ETableSorter</link>* e_table_sorter_new            (<link linkend="ETableModel">ETableModel</link> *etm,
                                              <link linkend="ETableHeader">ETableHeader</link> *full_header,
                                              <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>full_header</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>sort_info</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>full_header</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sort_info</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-sorter-model-to-sorted">e_table_sorter_model_to_sorted ()</title>
-<programlisting><link linkend="gint">gint</link>        e_table_sorter_model_to_sorted  (<link linkend="ETableSorter">ETableSorter</link> *sorter,
-                                             int row);</programlisting>
+<indexterm><primary>e_table_sorter_model_to_sorted</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_table_sorter_model_to_sorted  (<link linkend="ETableSorter">ETableSorter</link> *sorter,
+                                             <link linkend="int">int</link> row);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>sorter</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>sorter</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-sorter-sorted-to-model">e_table_sorter_sorted_to_model ()</title>
-<programlisting><link linkend="gint">gint</link>        e_table_sorter_sorted_to_model  (<link linkend="ETableSorter">ETableSorter</link> *sorter,
-                                             int row);</programlisting>
+<indexterm><primary>e_table_sorter_sorted_to_model</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_table_sorter_sorted_to_model  (<link linkend="ETableSorter">ETableSorter</link> *sorter,
+                                             <link linkend="int">int</link> row);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>sorter</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>sorter</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-sorter-needs-sorting">e_table_sorter_needs_sorting ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_table_sorter_needs_sorting    (<link linkend="ETableSorter">ETableSorter</link> *sorter);</programlisting>
+<indexterm><primary>e_table_sorter_needs_sorting</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_table_sorter_needs_sorting    (<link linkend="ETableSorter">ETableSorter</link> *sorter);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>sorter</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>sorter</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="ETableSorter--sort-info">&quot;<literal>sort_info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
+<varlistentry><term><anchor id="ETableSorter--sort-info">&quot;<literal>sort-info</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>

@@ -66,19 +66,22 @@ EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
+F77 = @F77@
 GAL_AGE = @GAL_AGE@
 GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CFLAGS = @GAL_CFLAGS@
@@ -87,6 +90,8 @@ GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_LIBDIR = @GAL_LIBDIR@
 GAL_LIBS = @GAL_LIBS@
 GAL_REVISION = @GAL_REVISION@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -101,6 +106,7 @@ INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -114,8 +120,8 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -128,14 +134,15 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 install_sh = @install_sh@
 INCLUDES = \
@@ -152,22 +159,38 @@ INCLUDES = \
 noinst_LTLIBRARIES = libgal-a11y-etable.la
 
 libgal_a11y_etable_la_SOURCES = \
+	gal-a11y-e-tree.c			\
+	gal-a11y-e-tree-factory.c		\
 	gal-a11y-e-cell.c			\
 	gal-a11y-e-cell-text.c			\
+	gal-a11y-e-cell-tree.c			\
+	gal-a11y-e-cell-toggle.c		\
+	gal-a11y-e-cell-popup.c			\
 	gal-a11y-e-cell-registry.c		\
 	gal-a11y-e-table.c			\
 	gal-a11y-e-table-item.c			\
+	gal-a11y-e-table-item-factory.c		\
+	gal-a11y-e-table-click-to-add.c		\
+	gal-a11y-e-table-click-to-add-factory.c	\
 	gal-a11y-e-table-factory.c
 
 
 libgal_a11y_etableincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/a11y/e-table
 
 libgal_a11y_etableinclude_HEADERS = \
+	gal-a11y-e-tree.h			\
+	gal-a11y-e-tree-factory.h		\
 	gal-a11y-e-cell.h			\
 	gal-a11y-e-cell-text.h			\
+	gal-a11y-e-cell-tree.h			\
+	gal-a11y-e-cell-toggle.h		\
+	gal-a11y-e-cell-popup.h			\
 	gal-a11y-e-cell-registry.h		\
 	gal-a11y-e-table.h			\
 	gal-a11y-e-table-item.h			\
+	gal-a11y-e-table-click-to-add-factory.h	\
+	gal-a11y-e-table-click-to-add.h		\
+	gal-a11y-e-table-item-factory.h		\
 	gal-a11y-e-table-factory.h
 
 subdir = gal/a11y/e-table
@@ -178,23 +201,38 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libgal_a11y_etable_la_LDFLAGS =
 libgal_a11y_etable_la_LIBADD =
-am_libgal_a11y_etable_la_OBJECTS = gal-a11y-e-cell.lo \
-	gal-a11y-e-cell-text.lo gal-a11y-e-cell-registry.lo \
-	gal-a11y-e-table.lo gal-a11y-e-table-item.lo \
+am_libgal_a11y_etable_la_OBJECTS = gal-a11y-e-tree.lo \
+	gal-a11y-e-tree-factory.lo gal-a11y-e-cell.lo \
+	gal-a11y-e-cell-text.lo gal-a11y-e-cell-tree.lo \
+	gal-a11y-e-cell-toggle.lo gal-a11y-e-cell-popup.lo \
+	gal-a11y-e-cell-registry.lo gal-a11y-e-table.lo \
+	gal-a11y-e-table-item.lo gal-a11y-e-table-item-factory.lo \
+	gal-a11y-e-table-click-to-add.lo \
+	gal-a11y-e-table-click-to-add-factory.lo \
 	gal-a11y-e-table-factory.lo
 libgal_a11y_etable_la_OBJECTS = $(am_libgal_a11y_etable_la_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/gal-a11y-e-cell-registry.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/gal-a11y-e-cell-popup.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-cell-registry.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-cell-text.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-cell-toggle.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-cell-tree.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-cell.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table-click-to-add-factory.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table-click-to-add.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table-factory.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table-item-factory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table-item.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-table.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-tree-factory.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gal-a11y-e-tree.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -202,6 +240,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
 DIST_SOURCES = $(libgal_a11y_etable_la_SOURCES)
 HEADERS = $(libgal_a11y_etableinclude_HEADERS)
 
@@ -236,12 +275,20 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-cell-popup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-cell-registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-cell-text.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-cell-toggle.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-cell-tree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-cell.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-table-click-to-add-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-table-click-to-add.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-table-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-table-item-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-table-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-tree-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-a11y-e-tree.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

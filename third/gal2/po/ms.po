@@ -5,7 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gal\n"
-"POT-Creation-Date: 2003-09-11 17:09-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 09:50-0400\n"
 "PO-Revision-Date: 2003-07-23 07:21+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -61,65 +62,65 @@ msgstr "Kolum Difokus"
 msgid "Unselected Column"
 msgstr "Kolum Dinyahpilih"
 
-#: gal/e-table/e-cell-text.c:1516
+#: gal/e-table/e-cell-text.c:1703
 msgid "Strikeout Column"
 msgstr "Corettembus Kolum"
 
-#: gal/e-table/e-cell-text.c:1523
+#: gal/e-table/e-cell-text.c:1710
 msgid "Underline Column"
 msgstr "Garisbawah Kolum"
 
-#: gal/e-table/e-cell-text.c:1530
+#: gal/e-table/e-cell-text.c:1717
 msgid "Bold Column"
 msgstr "Bold Kolum"
 
-#: gal/e-table/e-cell-text.c:1537
+#: gal/e-table/e-cell-text.c:1724
 msgid "Color Column"
 msgstr "Warna Kolum"
 
-#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
-#: gal/e-text/e-text.c:3492 gal/e-text/e-text.c:3493
+#: gal/e-table/e-cell-text.c:1731 gal/e-text/e-text.c:3567
+#: gal/e-text/e-text.c:3568 gal/menus/gal-define-views-model.c:178
 msgid "Editable"
 msgstr "Boleh edit"
 
-#: gal/e-table/e-cell-text.c:1551
+#: gal/e-table/e-cell-text.c:1738
 msgid "BG Color Column"
 msgstr "Warna BG Kolum"
 
-#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-click-to-add.c:462
 #: gal/e-table/e-table-field-chooser-dialog.c:88
 #: gal/e-table/e-table-field-chooser-item.c:660
 #: gal/e-table/e-table-field-chooser.c:91
-#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-header-item.c:1816
 #: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
 #: gal/widgets/e-categories.c:123
 msgid "Header"
 msgstr "Pengepala"
 
-#: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
-#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3356
-#: gal/e-text/e-text.c:3357
+#: gal/e-table/e-table-click-to-add.c:469
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3327
+#: gal/e-table/e-tree-selection-model.c:795 gal/e-text/e-text.c:3431
+#: gal/e-text/e-text.c:3432
 msgid "Model"
 msgstr "Model"
 
-#: gal/e-table/e-table-click-to-add.c:470
+#: gal/e-table/e-table-click-to-add.c:476
 msgid "Message"
 msgstr "Mesej"
 
-#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-click-to-add.c:483
 #: gal/e-table/e-table-field-chooser-item.c:667
 #: gal/e-table/e-table-group-container.c:976
-#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3534
-#: gal/e-text/e-text.c:3535
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3609
+#: gal/e-text/e-text.c:3610
 msgid "Width"
 msgstr "Lebar"
 
-#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-click-to-add.c:490
 #: gal/e-table/e-table-field-chooser-item.c:674
 #: gal/e-table/e-table-group-container.c:969
-#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3542
-#: gal/e-text/e-text.c:3543
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3617
+#: gal/e-text/e-text.c:3618
 msgid "Height"
 msgstr "Tinggi"
 
@@ -174,42 +175,41 @@ msgid "Move _Up"
 msgstr "Naik _Atas"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
-#: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
 msgstr "Papa_r medan ini pada turutan:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
-#: gal/e-table/e-table-config.glade.h:12
+#: gal/e-table/e-table-config.glade.h:11
 msgid "Show Fields"
 msgstr "Papar Medan"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
-#: gal/e-table/e-table-config.glade.h:13
+#: gal/e-table/e-table-config.glade.h:12
 msgid "Show field in View"
 msgstr "Papar medan ini pada Paparan"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
-#: gal/e-table/e-table-config.glade.h:14
+#: gal/e-table/e-table-config.glade.h:13
 msgid "Sort"
 msgstr "Isih"
 
 #: gal/e-table/e-table-config-no-group.glade.h:15
-#: gal/e-table/e-table-config.glade.h:15
+#: gal/e-table/e-table-config.glade.h:14
 msgid "Sort Items By"
 msgstr "Isih Item mengIkut"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
-#: gal/e-table/e-table-config.glade.h:16
+#: gal/e-table/e-table-config.glade.h:15
 msgid "Then By"
 msgstr "Kemuadia MengIkut"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
-#: gal/e-table/e-table-config.glade.h:17
+#: gal/e-table/e-table-config.glade.h:16
 msgid "_Add ->"
 msgstr "_Tambah ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:18
+#: gal/e-table/e-table-config.glade.h:17
 msgid "_Fields Shown..."
 msgstr "_medan Dipaparkan..."
 
@@ -243,9 +243,32 @@ msgstr "Tidak diisih"
 msgid "No grouping"
 msgstr "Tiada pengumpulan"
 
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
 msgid "_Group By..."
 msgstr "Di_Himpunkan mengIkut... "
+
+#: gal/e-table/e-table-config.glade.h:19
+#, fuzzy
+msgid "_Show these fields in order:"
+msgstr "Papa_r medan ini pada turutan:"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1795
+msgid "DnD code"
+msgstr "Kod DnD"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1809
+msgid "Full Header"
+msgstr "Pengepala Penuh"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Tambah Kolum..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -258,24 +281,6 @@ msgid ""
 msgstr ""
 "Untuk menambah kolum pada jadual anda, heret\n"
 "ia ke lokasi yang anda ingin ianya muncul."
-
-#: gal/e-table/e-table-field-chooser-dialog.c:74
-#: gal/e-table/e-table-field-chooser-item.c:646
-#: gal/e-table/e-table-field-chooser.c:77
-#: gal/e-table/e-table-header-item.c:1738
-msgid "DnD code"
-msgstr "Kod DnD"
-
-#: gal/e-table/e-table-field-chooser-dialog.c:81
-#: gal/e-table/e-table-field-chooser-item.c:653
-#: gal/e-table/e-table-field-chooser.c:84
-#: gal/e-table/e-table-header-item.c:1752
-msgid "Full Header"
-msgstr "Pengepala Penuh"
-
-#: gal/e-table/e-table-field-chooser-dialog.c:123
-msgid "Add a column..."
-msgstr "Tambah Kolum..."
 
 #: gal/e-table/e-table-group-container.c:355
 #, c-format
@@ -303,17 +308,20 @@ msgid "Alternating Row Colors"
 msgstr "Warna Baris berselang"
 
 #: gal/e-table/e-table-group-container.c:913
-#: gal/e-table/e-table-group-container.c:914
+#: gal/e-table/e-table-group-container.c:914 gal/e-table/e-tree.c:3267
+#: gal/e-table/e-tree.c:3268
 msgid "Horizontal Draw Grid"
 msgstr "Grid Lukisan Mengufuk"
 
 #: gal/e-table/e-table-group-container.c:920
-#: gal/e-table/e-table-group-container.c:921
+#: gal/e-table/e-table-group-container.c:921 gal/e-table/e-tree.c:3273
+#: gal/e-table/e-tree.c:3274
 msgid "Vertical Draw Grid"
 msgstr "Grid Lukisan Menegak"
 
 #: gal/e-table/e-table-group-container.c:927
-#: gal/e-table/e-table-group-container.c:928
+#: gal/e-table/e-table-group-container.c:928 gal/e-table/e-tree.c:3279
+#: gal/e-table/e-tree.c:3280
 msgid "Draw focus"
 msgstr "Fokus Lukisan"
 
@@ -328,12 +336,14 @@ msgid "Selection model"
 msgstr "Model Pilihan"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3299
+#: gal/e-table/e-tree.c:3261 gal/e-table/e-tree.c:3262
 msgid "Length Threshold"
 msgstr ""
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3306
+#: gal/e-table/e-tree.c:3293 gal/e-table/e-tree.c:3294
 msgid "Uniform row height"
 msgstr "Tinggi baris seragam"
 
@@ -350,102 +360,254 @@ msgstr "Lebar minimum"
 msgid "Minimum Width"
 msgstr "Lebar Minimum"
 
-#: gal/e-table/e-table-header-item.c:1451
+#: gal/e-table/e-table-header-item.c:1457
 msgid "Customize Current View"
 msgstr "Personalisasi Paparan Semasa"
 
-#: gal/e-table/e-table-header-item.c:1471
+#: gal/e-table/e-table-header-item.c:1477
 msgid "Sort Ascending"
 msgstr "Isih Menaik"
 
-#: gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
 msgid "Sort Descending"
 msgstr "Isih Menurun"
 
-#: gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
 msgid "Unsort"
 msgstr "Tidak Diisih"
 
-#: gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
 msgid "Group By This Field"
 msgstr "Dikumpulkan Mengikut Medan Ini"
 
-#: gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
 msgid "Group By Box"
 msgstr "Dikumpulkan mengikut Kotak"
 
-#: gal/e-table/e-table-header-item.c:1478
+#: gal/e-table/e-table-header-item.c:1484
 msgid "Remove This Column"
 msgstr "Buang Kolum ini"
 
-#: gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
 msgid "Add a Column..."
 msgstr "Tambah Satu Kolum..."
 
-#: gal/e-table/e-table-header-item.c:1481
+#: gal/e-table/e-table-header-item.c:1487
 msgid "Alignment"
 msgstr "Jajaran"
 
-#: gal/e-table/e-table-header-item.c:1482
+#: gal/e-table/e-table-header-item.c:1488
 msgid "Best Fit"
 msgstr "Sesuai muat"
 
-#: gal/e-table/e-table-header-item.c:1483
+#: gal/e-table/e-table-header-item.c:1489
 msgid "Format Columns..."
 msgstr "Format Kolum..."
 
-#: gal/e-table/e-table-header-item.c:1485
+#: gal/e-table/e-table-header-item.c:1491
 msgid "Customize Current View..."
 msgstr "Personalisasi Paparan Semasa..."
 
-#: gal/e-table/e-table-header-item.c:1745
+#: gal/e-table/e-table-header-item.c:1802
 msgid "Fontset"
 msgstr "Fontset"
 
-#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
+#: gal/e-table/e-table-header-item.c:1823 gal/e-table/e-table-sorter.c:172
 msgid "Sort Info"
 msgstr "Isih Maklumat"
 
-#: gal/e-table/e-table-header-item.c:1773
+#: gal/e-table/e-table-header-item.c:1830
 #: gal/menus/gal-view-factory-etable.c:37
 msgid "Table"
 msgstr "Jadual"
 
-#: gal/e-table/e-table-header-item.c:1780
+#: gal/e-table/e-table-header-item.c:1837
 msgid "Tree"
 msgstr "Pepohon"
 
-#: gal/e-table/e-table.c:3244
+#: gal/e-table/e-table.c:3313
 msgid "Always Search"
 msgstr "Sentiasa Cari"
 
-#: gal/e-table/e-table.c:3251
+#: gal/e-table/e-table.c:3320
 msgid "Use click to add"
 msgstr "Guna klik untuk tambah"
 
-#: gal/e-table/e-tree-selection-model.c:767
+#: gal/e-table/e-tree-selection-model.c:781
 #: gal/widgets/e-selection-model-array.c:543
 msgid "Cursor Row"
 msgstr "Baris Kursor"
 
-#: gal/e-table/e-tree-selection-model.c:774
+#: gal/e-table/e-tree-selection-model.c:788
 #: gal/widgets/e-selection-model-array.c:550
 msgid "Cursor Column"
 msgstr "Kursor Kolum"
+
+#: gal/e-table/e-tree.c:3286 gal/e-table/e-tree.c:3287
+msgid "ETree table adapter"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3300 gal/e-table/e-tree.c:3301
+#, fuzzy
+msgid "Always search"
+msgstr "Sentiasa Cari"
+
+#: gal/e-table/e-tree.c:3307
+msgid "Retro Look"
+msgstr ""
+
+#: gal/e-table/e-tree.c:3308
+msgid "Draw lines and +/- expanders."
+msgstr ""
+
+#: gal/e-table/e-tree.c:3314
+#, fuzzy
+msgid "Expander Size"
+msgstr "Saiz Kendalian"
+
+#: gal/e-table/e-tree.c:3315
+msgid "Size of the expander arrow"
+msgstr ""
+
+#: gal/e-text/e-text.c:2667
+msgid "Select All"
+msgstr "Pilih Semua"
+
+#: gal/e-text/e-text.c:2679
+msgid "Input Methods"
+msgstr "Kaedah Input"
+
+#: gal/e-text/e-text.c:3438 gal/e-text/e-text.c:3439
+msgid "Event Processor"
+msgstr "Pemproses Acara"
+
+#: gal/e-text/e-text.c:3445 gal/e-text/e-text.c:3446
+msgid "Text"
+msgstr "Teks"
+
+#: gal/e-text/e-text.c:3452 gal/e-text/e-text.c:3453
+msgid "Bold"
+msgstr "Bold"
+
+#: gal/e-text/e-text.c:3459 gal/e-text/e-text.c:3460
+msgid "Strikeout"
+msgstr "Corettembus"
+
+#: gal/e-text/e-text.c:3466 gal/e-text/e-text.c:3467
+msgid "Anchor"
+msgstr "Sauh"
+
+#: gal/e-text/e-text.c:3474 gal/e-text/e-text.c:3475
+msgid "Justification"
+msgstr "Justifikasi"
+
+#: gal/e-text/e-text.c:3481 gal/e-text/e-text.c:3482
+msgid "Clip Width"
+msgstr "Lebar Klip"
+
+#: gal/e-text/e-text.c:3488 gal/e-text/e-text.c:3489
+msgid "Clip Height"
+msgstr "Tinggi Klip"
+
+#: gal/e-text/e-text.c:3495 gal/e-text/e-text.c:3496
+msgid "Clip"
+msgstr "Klip"
+
+#: gal/e-text/e-text.c:3502 gal/e-text/e-text.c:3503
+msgid "Fill clip rectangle"
+msgstr "Isi segiempat klip"
+
+#: gal/e-text/e-text.c:3509 gal/e-text/e-text.c:3510
+msgid "X Offset"
+msgstr "Offset X"
+
+#: gal/e-text/e-text.c:3516 gal/e-text/e-text.c:3517
+msgid "Y Offset"
+msgstr "Offset Y"
+
+#: gal/e-text/e-text.c:3523 gal/e-text/e-text.c:3524
+msgid "Fill color"
+msgstr "Warna isian"
+
+#: gal/e-text/e-text.c:3530 gal/e-text/e-text.c:3531 gal/e-text/e-text.c:3538
+#: gal/e-text/e-text.c:3539
+msgid "GDK fill color"
+msgstr "Warna isian GDK"
+
+#: gal/e-text/e-text.c:3545 gal/e-text/e-text.c:3546
+#, fuzzy
+msgid "Fill stipple"
+msgstr "ungu suram"
+
+#: gal/e-text/e-text.c:3552 gal/e-text/e-text.c:3553
+msgid "Text width"
+msgstr "Lebar teks"
+
+#: gal/e-text/e-text.c:3559 gal/e-text/e-text.c:3560
+msgid "Text height"
+msgstr "Tinggi teks"
+
+#: gal/e-text/e-text.c:3574 gal/e-text/e-text.c:3575
+msgid "Use ellipsis"
+msgstr "Guna ellipsis"
+
+#: gal/e-text/e-text.c:3581 gal/e-text/e-text.c:3582
+msgid "Ellipsis"
+msgstr "Ellipsis"
+
+#: gal/e-text/e-text.c:3588 gal/e-text/e-text.c:3589
+msgid "Line wrap"
+msgstr "Pembalutan baris"
+
+#: gal/e-text/e-text.c:3595 gal/e-text/e-text.c:3596
+msgid "Break characters"
+msgstr "Aksara hentian"
+
+#: gal/e-text/e-text.c:3602 gal/e-text/e-text.c:3603
+msgid "Max lines"
+msgstr "Maksimum baris"
+
+#: gal/e-text/e-text.c:3624 gal/e-text/e-text.c:3625
+msgid "Draw borders"
+msgstr "Lukis sempadan"
+
+#: gal/e-text/e-text.c:3631 gal/e-text/e-text.c:3632
+msgid "Allow newlines"
+msgstr "Izinkan barisbaru"
+
+#: gal/e-text/e-text.c:3638 gal/e-text/e-text.c:3639
+msgid "Draw background"
+msgstr "Lukis latarbelakang"
+
+#: gal/e-text/e-text.c:3645 gal/e-text/e-text.c:3646
+msgid "Draw button"
+msgstr "Lukis butang"
+
+#: gal/e-text/e-text.c:3652 gal/e-text/e-text.c:3653
+msgid "Cursor position"
+msgstr " Posisi kursor"
+
+#: gal/e-text/e-text.c:3659 gal/e-text/e-text.c:3660
+msgid "IM Context"
+msgstr "Konteks IM"
+
+#: gal/e-text/e-text.c:3666 gal/e-text/e-text.c:3667
+msgid "Handle Popup"
+msgstr "Kendalian Popup"
 
 #: gal/menus/gal-define-views-dialog.c:74
 #: gal/menus/gal-define-views-model.c:185
 msgid "Collection"
 msgstr "Koleksi"
 
-#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views-dialog.c:312
 #: gal/menus/gal-define-views.glade.h:4
 #, no-c-format
 msgid "Define Views for %s"
 msgstr "Takrif Paparan untuk %s"
 
-#: gal/menus/gal-define-views-dialog.c:292
-#: gal/menus/gal-define-views-dialog.c:294
+#: gal/menus/gal-define-views-dialog.c:320
+#: gal/menus/gal-define-views-dialog.c:322
 msgid "Define Views"
 msgstr "Tafrik Paparan"
 
@@ -458,53 +620,52 @@ msgstr "Nyatakan Paparan untuk \"%s\""
 msgid "_Edit..."
 msgstr "_Edit..."
 
-#: gal/menus/gal-view-instance.c:575
-msgid "Custom View"
-msgstr "Paparan Tersendiri"
-
-#: gal/menus/gal-view-instance.c:576
-msgid "Save Custom View"
-msgstr "Simpan Paparan Tersendiri"
-
-#: gal/menus/gal-view-instance.c:580
-msgid "Define Views..."
-msgstr "Tafrif Paparan..."
-
-#: gal/menus/gal-view-instance-save-as-dialog.c:179
+#: gal/menus/gal-view-instance-save-as-dialog.c:183
 msgid "Instance"
 msgstr "Instans"
 
+#: gal/menus/gal-view-instance-save-as-dialog.c:229
+#, fuzzy
+msgid "Save Current View"
+msgstr "Simpan Paparan Tersendiri"
+
 #: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
-msgid "Create New View Named"
-msgstr "Cipta Paparan Baru Bernama"
-
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
-msgid "Replace Existing View"
-msgstr "Ganti Paparan sedia ada"
-
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
-msgid ""
-"The current view will replace the given view.  Any folders\n"
-"set to this view wil be replaced with the current view."
+msgid "    "
 msgstr ""
 
-#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
-msgid "This will create a new View."
-msgstr "Ini akan mencipta Paparan baru."
-
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
 #: gal/menus/gal-view-new-dialog.glade.h:1
-#: gal/widgets/gal-categories.glade.h:1
 #: gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: gal/menus/gal-view-new-dialog.glade.h:2
-msgid "Name of new view:"
-msgstr "Nama paparan baru:"
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+#, fuzzy
+msgid "_Create new view"
+msgstr "Cipta Paparan Baru Bernama"
 
-#: gal/menus/gal-view-new-dialog.glade.h:3
-msgid "Type of view:"
-msgstr "Jenis paparan:"
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:4
+#, fuzzy
+msgid "_Name:"
+msgstr "Nama"
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+#, fuzzy
+msgid "_Replace existing view"
+msgstr "Ganti Paparan sedia ada"
+
+#: gal/menus/gal-view-instance.c:574
+msgid "Custom View"
+msgstr "Paparan Tersendiri"
+
+#: gal/menus/gal-view-instance.c:575
+msgid "Save Custom View"
+msgstr "Simpan Paparan Tersendiri"
+
+#: gal/menus/gal-view-instance.c:579
+msgid "Define Views..."
+msgstr "Tafrif Paparan..."
 
 #: gal/menus/gal-view-new-dialog.c:70
 msgid "Name"
@@ -514,238 +675,211 @@ msgstr "Nama"
 msgid "Factory"
 msgstr "Kilang"
 
+#: gal/menus/gal-view-new-dialog.c:108
+#, fuzzy
+msgid "Define New View"
+msgstr "Tafrik Paparan"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "Nama paparan baru:"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "Jenis paparan:"
+
 #: gal/shortcut-bar/e-group-bar.c:541
 #, c-format
 msgid "Group %i"
 msgstr "Kumpulan %i"
 
 #. This is the default custom color
-#: gal/widgets/color-palette.c:393
+#: gal/widgets/color-palette.c:394
 msgid "custom"
 msgstr "sendiri"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
-#: gal/widgets/color-palette.c:435
+#: gal/widgets/color-palette.c:436
 msgid "Custom Color:"
 msgstr "Warna Sendiri:"
 
-#: gal/widgets/color-palette.c:443
+#: gal/widgets/color-palette.c:444
 msgid "Choose Custom Color"
 msgstr "Pilih Warna Sendiri"
 
-#: gal/widgets/color-palette.c:576
+#: gal/widgets/color-palette.c:577
 msgid "black"
 msgstr "hitam"
 
-#: gal/widgets/color-palette.c:577
+#: gal/widgets/color-palette.c:578
 msgid "light brown"
 msgstr "perang cair"
 
-#: gal/widgets/color-palette.c:578
+#: gal/widgets/color-palette.c:579
 msgid "brown gold"
 msgstr "perang emas"
 
-#: gal/widgets/color-palette.c:579
+#: gal/widgets/color-palette.c:580
 msgid "dark green #2"
 msgstr "hijau gelap #2"
 
-#: gal/widgets/color-palette.c:580
+#: gal/widgets/color-palette.c:581
 msgid "navy"
 msgstr "keadilan"
 
-#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:582 gal/widgets/color-palette.c:638
 msgid "dark blue"
 msgstr "biru gelap"
 
-#: gal/widgets/color-palette.c:582
+#: gal/widgets/color-palette.c:583
 msgid "purple #2"
 msgstr "ungu #2"
 
-#: gal/widgets/color-palette.c:583
+#: gal/widgets/color-palette.c:584
 msgid "very dark gray"
 msgstr "kelabu amat gelap"
 
-#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:587 gal/widgets/color-palette.c:643
 msgid "dark red"
 msgstr "merah gelap"
 
-#: gal/widgets/color-palette.c:587
+#: gal/widgets/color-palette.c:588
 msgid "red-orange"
 msgstr "jingga-merah"
 
-#: gal/widgets/color-palette.c:588
+#: gal/widgets/color-palette.c:589
 msgid "gold"
 msgstr "emas"
 
-#: gal/widgets/color-palette.c:589
+#: gal/widgets/color-palette.c:590
 msgid "dark green"
 msgstr "hijau gelap"
 
-#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
 msgid "dull blue"
 msgstr "biru suram"
 
-#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+#: gal/widgets/color-palette.c:592 gal/widgets/color-palette.c:645
 msgid "blue"
 msgstr "biru"
 
-#: gal/widgets/color-palette.c:592
+#: gal/widgets/color-palette.c:593
 msgid "dull purple"
 msgstr "ungu suram"
 
-#: gal/widgets/color-palette.c:593
+#: gal/widgets/color-palette.c:594
 msgid "dark grey"
 msgstr "kelabu gelap"
 
-#: gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:597
 msgid "red"
 msgstr "merah"
 
-#: gal/widgets/color-palette.c:597
+#: gal/widgets/color-palette.c:598
 msgid "orange"
 msgstr "jingga"
 
-#: gal/widgets/color-palette.c:598
+#: gal/widgets/color-palette.c:599
 msgid "lime"
 msgstr "limau"
 
-#: gal/widgets/color-palette.c:599
+#: gal/widgets/color-palette.c:600
 msgid "dull green"
 msgstr "hijau suram"
 
-#: gal/widgets/color-palette.c:600
+#: gal/widgets/color-palette.c:601
 msgid "dull blue #2"
 msgstr "biru suram #2"
 
-#: gal/widgets/color-palette.c:601
+#: gal/widgets/color-palette.c:602
 msgid "sky blue #2"
 msgstr "biru langit #2"
 
-#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:603 gal/widgets/color-palette.c:642
 msgid "purple"
 msgstr "ungu"
 
-#: gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:604
 msgid "gray"
 msgstr "kelabu"
 
 # ui/galeon.glade.h:176
-#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:639
 msgid "magenta"
 msgstr "magenta"
 
-#: gal/widgets/color-palette.c:607
+#: gal/widgets/color-palette.c:608
 msgid "bright orange"
 msgstr "jingga cerah"
 
-#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+#: gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:640
 msgid "yellow"
 msgstr "kuning"
 
-#: gal/widgets/color-palette.c:609
+#: gal/widgets/color-palette.c:610
 msgid "green"
 msgstr "hijau"
 
 # lupa la.. dulu ada belajar masa sains form3
-#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:641
 msgid "cyan"
 msgstr "cyan"
 
-#: gal/widgets/color-palette.c:611
+#: gal/widgets/color-palette.c:612
 msgid "bright blue"
 msgstr "biru terang"
 
-#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+#: gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:630
 msgid "red purple"
 msgstr "ungu kemerahan"
 
-#: gal/widgets/color-palette.c:613
+#: gal/widgets/color-palette.c:614
 msgid "light grey"
 msgstr "kelabu cair"
 
-#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:617 gal/widgets/color-palette.c:634
 msgid "pink"
 msgstr "merah jambu"
 
-#: gal/widgets/color-palette.c:617
+#: gal/widgets/color-palette.c:618
 msgid "light orange"
 msgstr "jingga cair"
 
-#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+#: gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:631
 msgid "light yellow"
 msgstr "kuning cair"
 
-#: gal/widgets/color-palette.c:619
+#: gal/widgets/color-palette.c:620
 msgid "light green"
 msgstr "hijau cair"
 
-#: gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:621
 msgid "light cyan"
 msgstr "cyan cair"
 
-#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:632
 msgid "light blue"
 msgstr "biru cair"
 
-#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:623 gal/widgets/color-palette.c:636
 msgid "light purple"
 msgstr "ungu cair"
 
-#: gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:624
 msgid "white"
 msgstr "putih"
 
-#: gal/widgets/color-palette.c:628
+#: gal/widgets/color-palette.c:629
 msgid "purplish blue"
 msgstr "biru keunguan"
 
-#: gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:633
 msgid "dark purple"
 msgstr "ungu gelap"
 
-#: gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:635
 msgid "sky blue"
 msgstr "biru langit"
-
-#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
-msgid "Categories"
-msgstr "Kategori"
-
-#: gal/widgets/e-categories.c:393
-msgid "Add to global category list"
-msgstr "Tambah ke senarai kategori global"
-
-#: gal/widgets/e-categories.c:394
-msgid "Add all to global category list"
-msgstr "Tambah semua ke senarai kategori global"
-
-#: gal/widgets/e-categories.c:395
-msgid "Remove from global category list"
-msgstr "Buang daripada senarai kategori global"
-
-#: gal/widgets/e-categories.c:396
-msgid "Remove all from global category list"
-msgstr "Buang semua senarai kategori global"
-
-#: gal/widgets/e-categories.c:540
-msgid "Edit Categories"
-msgstr "Edit Kategori"
-
-#: gal/widgets/gal-categories.glade.h:2
-msgid "Edit Master Category List..."
-msgstr "Edit Senarai Ketegori Induk..."
-
-#: gal/widgets/gal-categories.glade.h:3
-msgid "Item(s) belong to these _categories:"
-msgstr "Item milik _kategori ini:"
-
-#: gal/widgets/gal-categories.glade.h:4
-msgid "_Available Categories:"
-msgstr "Kategori yang _ada:"
-
-#: gal/widgets/gal-categories.glade.h:5
-msgid "categories"
-msgstr "kategori"
 
 #: gal/widgets/e-categories-master-list-array.c:67
 msgid "Birthday"
@@ -831,23 +965,23 @@ msgstr "VIP"
 msgid "Waiting"
 msgstr "Menunggu"
 
-#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-dialog.c:143
 #: gal/widgets/e-categories-master-list-option-menu.c:168
 msgid "ECML"
 msgstr "ECML"
 
-#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:144
 #: gal/widgets/e-categories-master-list-option-menu.c:169
 msgid "ECategoriesMasterListCombo"
 msgstr "ECategoriesMasterListCombo"
 
-#: gal/widgets/e-categories-master-list-dialog.c:198
+#: gal/widgets/e-categories-master-list-dialog.c:213
 msgid "* Click here to add a category *"
 msgstr "* Klik sini untuk menambah kategori *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:199
+#: gal/widgets/e-categories-master-list-dialog.c:214
 msgid "Category"
 msgstr "Kategori"
 
@@ -875,6 +1009,30 @@ msgstr "Kategori ba_ru:"
 msgid "All Categories"
 msgstr "Semua Kategori"
 
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+msgid "Categories"
+msgstr "Kategori"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Tambah ke senarai kategori global"
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Tambah semua ke senarai kategori global"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Buang daripada senarai kategori global"
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Buang semua senarai kategori global"
+
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Edit Kategori"
+
 #: gal/widgets/e-selection-model.c:210
 msgid "Sorter"
 msgstr "Pengisih"
@@ -887,128 +1045,21 @@ msgstr "Model Pilihan"
 msgid "Cursor Mode"
 msgstr "Mod Kursor"
 
-#: gal/e-text/e-text.c:2598
-msgid "Select All"
-msgstr "Pilih Semua"
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Edit Senarai Ketegori Induk..."
 
-#: gal/e-text/e-text.c:2610
-msgid "Input Methods"
-msgstr "Kaedah Input"
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Item milik _kategori ini:"
 
-#: gal/e-text/e-text.c:3363 gal/e-text/e-text.c:3364
-msgid "Event Processor"
-msgstr "Pemproses Acara"
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "Kategori yang _ada:"
 
-#: gal/e-text/e-text.c:3370 gal/e-text/e-text.c:3371
-msgid "Text"
-msgstr "Teks"
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "kategori"
 
-#: gal/e-text/e-text.c:3377 gal/e-text/e-text.c:3378
-msgid "Bold"
-msgstr "Bold"
-
-#: gal/e-text/e-text.c:3384 gal/e-text/e-text.c:3385
-msgid "Strikeout"
-msgstr "Corettembus"
-
-#: gal/e-text/e-text.c:3391 gal/e-text/e-text.c:3392
-msgid "Anchor"
-msgstr "Sauh"
-
-#: gal/e-text/e-text.c:3399 gal/e-text/e-text.c:3400
-msgid "Justification"
-msgstr "Justifikasi"
-
-#: gal/e-text/e-text.c:3406 gal/e-text/e-text.c:3407
-msgid "Clip Width"
-msgstr "Lebar Klip"
-
-#: gal/e-text/e-text.c:3413 gal/e-text/e-text.c:3414
-msgid "Clip Height"
-msgstr "Tinggi Klip"
-
-#: gal/e-text/e-text.c:3420 gal/e-text/e-text.c:3421
-msgid "Clip"
-msgstr "Klip"
-
-#: gal/e-text/e-text.c:3427 gal/e-text/e-text.c:3428
-msgid "Fill clip rectangle"
-msgstr "Isi segiempat klip"
-
-#: gal/e-text/e-text.c:3434 gal/e-text/e-text.c:3435
-msgid "X Offset"
-msgstr "Offset X"
-
-#: gal/e-text/e-text.c:3441 gal/e-text/e-text.c:3442
-msgid "Y Offset"
-msgstr "Offset Y"
-
-#: gal/e-text/e-text.c:3448 gal/e-text/e-text.c:3449
-msgid "Fill color"
-msgstr "Warna isian"
-
-#: gal/e-text/e-text.c:3455 gal/e-text/e-text.c:3456 gal/e-text/e-text.c:3463
-#: gal/e-text/e-text.c:3464
-msgid "GDK fill color"
-msgstr "Warna isian GDK"
-
-#: gal/e-text/e-text.c:3470 gal/e-text/e-text.c:3471
-#, fuzzy
-msgid "Fill stipple"
-msgstr "ungu suram"
-
-#: gal/e-text/e-text.c:3477 gal/e-text/e-text.c:3478
-msgid "Text width"
-msgstr "Lebar teks"
-
-#: gal/e-text/e-text.c:3484 gal/e-text/e-text.c:3485
-msgid "Text height"
-msgstr "Tinggi teks"
-
-#: gal/e-text/e-text.c:3499 gal/e-text/e-text.c:3500
-msgid "Use ellipsis"
-msgstr "Guna ellipsis"
-
-#: gal/e-text/e-text.c:3506 gal/e-text/e-text.c:3507
-msgid "Ellipsis"
-msgstr "Ellipsis"
-
-#: gal/e-text/e-text.c:3513 gal/e-text/e-text.c:3514
-msgid "Line wrap"
-msgstr "Pembalutan baris"
-
-#: gal/e-text/e-text.c:3520 gal/e-text/e-text.c:3521
-msgid "Break characters"
-msgstr "Aksara hentian"
-
-#: gal/e-text/e-text.c:3527 gal/e-text/e-text.c:3528
-msgid "Max lines"
-msgstr "Maksimum baris"
-
-#: gal/e-text/e-text.c:3549 gal/e-text/e-text.c:3550
-msgid "Draw borders"
-msgstr "Lukis sempadan"
-
-#: gal/e-text/e-text.c:3556 gal/e-text/e-text.c:3557
-msgid "Allow newlines"
-msgstr "Izinkan barisbaru"
-
-#: gal/e-text/e-text.c:3563 gal/e-text/e-text.c:3564
-msgid "Draw background"
-msgstr "Lukis latarbelakang"
-
-#: gal/e-text/e-text.c:3570 gal/e-text/e-text.c:3571
-msgid "Draw button"
-msgstr "Lukis butang"
-
-#: gal/e-text/e-text.c:3577 gal/e-text/e-text.c:3578
-msgid "Cursor position"
-msgstr " Posisi kursor"
-
-#: gal/e-text/e-text.c:3584 gal/e-text/e-text.c:3585
-msgid "IM Context"
-msgstr "Konteks IM"
-
-#: gal/e-text/e-text.c:3591 gal/e-text/e-text.c:3592
-msgid "Handle Popup"
-msgstr "Kendalian Popup"
+#~ msgid "This will create a new View."
+#~ msgstr "Ini akan mencipta Paparan baru."

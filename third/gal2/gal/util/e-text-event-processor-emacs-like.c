@@ -191,6 +191,8 @@ e_text_event_processor_emacs_like_event (ETextEventProcessor *tep, ETextEventPro
 			command.time = event->key.time;
 			if (key.state & GDK_SHIFT_MASK)
 				command.action = E_TEP_SELECT;
+			else if (key.state & GDK_MOD1_MASK)
+				command.action = E_TEP_NOP;
 			else
 				command.action = E_TEP_MOVE;
 			switch(key.keyval) {
@@ -425,6 +427,10 @@ e_text_event_processor_emacs_like_event (ETextEventProcessor *tep, ETextEventPro
 							command.action = control_keys[(int) (key.keyval - 'a')].action;
 						command.value = control_keys[(int) (key.keyval - 'a')].value;
 						command.string = control_keys[(int) (key.keyval - 'a')].string;
+					}
+
+					if (key.keyval == ' ') {
+						command.action = E_TEP_NOP;
 					}
 
 					if (key.keyval == 'x') {

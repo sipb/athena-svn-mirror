@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+GAL_API_VERSION=@GAL_API_VERSION@
+
+Name: GAL
+Description: GNOME Application Library
+Version: @VERSION@
+Requires: gtk+-2.0 >= 2.2 libgnomecanvas-2.0 >= 2.2.0.2 libxml-2.0 libglade-2.0 libgnomeprint-2.2
+
+Libs: -L${libdir} -lgal-2.2 -lgal-a11y-2.2
+Cflags: -I${includedir}/gal-2.2

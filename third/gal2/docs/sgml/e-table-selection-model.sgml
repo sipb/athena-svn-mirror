@@ -1,4 +1,4 @@
-<refentry id="ETableSelectionModel" revision="12 Jan 2001">
+<refentry id="ETableSelectionModel">
 <refmeta>
 <refentrytitle>ETableSelectionModel</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -19,25 +20,25 @@ typedef     <link linkend="ETableSelectionModel">ETableSelectionModel</link>;
 <link linkend="gboolean">gboolean</link>    <link linkend="e-table-selection-model-is-row-selected">e_table_selection_model_is_row_selected</link>
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="gint">gint</link> n);
-void        <link linkend="e-table-selection-model-foreach">e_table_selection_model_foreach</link> (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
+<link linkend="void">void</link>        <link linkend="e-table-selection-model-foreach">e_table_selection_model_foreach</link> (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="ETableForeachFunc">ETableForeachFunc</link> callback,
                                              <link linkend="gpointer">gpointer</link> closure);
-void        <link linkend="e-table-selection-model-do-something">e_table_selection_model_do_something</link>
+<link linkend="void">void</link>        <link linkend="e-table-selection-model-do-something">e_table_selection_model_do_something</link>
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="guint">guint</link> row,
                                              <link linkend="guint">guint</link> col,
                                              <link linkend="GdkModifierType">GdkModifierType</link> state);
-void        <link linkend="e-table-selection-model-maybe-do-something">e_table_selection_model_maybe_do_something</link>
+<link linkend="void">void</link>        <link linkend="e-table-selection-model-maybe-do-something">e_table_selection_model_maybe_do_something</link>
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="guint">guint</link> row,
                                              <link linkend="guint">guint</link> col,
                                              <link linkend="GdkModifierType">GdkModifierType</link> state);
-void        <link linkend="e-table-selection-model-clear">e_table_selection_model_clear</link>   (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);
+<link linkend="void">void</link>        <link linkend="e-table-selection-model-clear">e_table_selection_model_clear</link>   (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);
 <link linkend="gint">gint</link>        <link linkend="e-table-selection-model-selected-count">e_table_selection_model_selected_count</link>
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);
-void        <link linkend="e-table-selection-model-select-all">e_table_selection_model_select_all</link>
+<link linkend="void">void</link>        <link linkend="e-table-selection-model-select-all">e_table_selection_model_select_all</link>
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);
-void        <link linkend="e-table-selection-model-invert-selection">e_table_selection_model_invert_selection</link>
+<link linkend="void">void</link>        <link linkend="e-table-selection-model-invert-selection">e_table_selection_model_invert_selection</link>
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);
 <link linkend="ETableSelectionModel">ETableSelectionModel</link>* <link linkend="e-table-selection-model-new">e_table_selection_model_new</link>
                                             (void);
@@ -55,14 +56,18 @@ void        <link linkend="e-table-selection-model-invert-selection">e_table_sel
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableSelectionModel--model">model</link>&quot;                <link linkend="GtkObject">GtkObject</link>            : Read / Write
   &quot;<link linkend="ETableSelectionModel--sorter">sorter</link>&quot;               <link linkend="GtkObject">GtkObject</link>            : Read / Write
-  &quot;<link linkend="ETableSelectionModel--cursor-row">cursor_row</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="ETableSelectionModel--cursor-col">cursor_col</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="ETableSelectionModel--cursor-row">cursor-row</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="ETableSelectionModel--cursor-col">cursor-col</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 
@@ -71,12 +76,12 @@ void        <link linkend="e-table-selection-model-invert-selection">e_table_sel
 <synopsis>
 
 &quot;<link linkend="ETableSelectionModel-cursor-changed">cursor-changed</link>&quot;
-            void        user_function      (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="ETableSelectionModel-selection-changed">selection-changed</link>&quot;
-            void        user_function      (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -93,14 +98,14 @@ void        <link linkend="e-table-selection-model-invert-selection">e_table_sel
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-SELECTION-MODEL-TYPE-CAPS">E_TABLE_SELECTION_MODEL_TYPE</title>
-<programlisting>#define E_TABLE_SELECTION_MODEL_TYPE        (e_table_selection_model_get_type ())
+<indexterm><primary>E_TABLE_SELECTION_MODEL_TYPE</primary></indexterm><programlisting>#define E_TABLE_SELECTION_MODEL_TYPE        (e_table_selection_model_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableSelectionModel">ETableSelectionModel</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableSelectionModel</primary></indexterm><programlisting>typedef struct {
 	GtkObject     base;
 
 	ETableModel  *model;
@@ -126,219 +131,179 @@ void        <link linkend="e-table-selection-model-invert-selection">e_table_sel
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-is-row-selected">e_table_selection_model_is_row_selected ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    e_table_selection_model_is_row_selected
+<indexterm><primary>e_table_selection_model_is_row_selected</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    e_table_selection_model_is_row_selected
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="gint">gint</link> n);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-foreach">e_table_selection_model_foreach ()</title>
-<programlisting>void        e_table_selection_model_foreach (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
+<indexterm><primary>e_table_selection_model_foreach</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_selection_model_foreach (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="ETableForeachFunc">ETableForeachFunc</link> callback,
                                              <link linkend="gpointer">gpointer</link> closure);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-do-something">e_table_selection_model_do_something ()</title>
-<programlisting>void        e_table_selection_model_do_something
+<indexterm><primary>e_table_selection_model_do_something</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_selection_model_do_something
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="guint">guint</link> row,
                                              <link linkend="guint">guint</link> col,
                                              <link linkend="GdkModifierType">GdkModifierType</link> state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-maybe-do-something">e_table_selection_model_maybe_do_something ()</title>
-<programlisting>void        e_table_selection_model_maybe_do_something
+<indexterm><primary>e_table_selection_model_maybe_do_something</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_selection_model_maybe_do_something
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection,
                                              <link linkend="guint">guint</link> row,
                                              <link linkend="guint">guint</link> col,
                                              <link linkend="GdkModifierType">GdkModifierType</link> state);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>row</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>state</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-clear">e_table_selection_model_clear ()</title>
-<programlisting>void        e_table_selection_model_clear   (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);</programlisting>
+<indexterm><primary>e_table_selection_model_clear</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_selection_model_clear   (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-selected-count">e_table_selection_model_selected_count ()</title>
-<programlisting><link linkend="gint">gint</link>        e_table_selection_model_selected_count
+<indexterm><primary>e_table_selection_model_selected_count</primary></indexterm><programlisting><link linkend="gint">gint</link>        e_table_selection_model_selected_count
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-select-all">e_table_selection_model_select_all ()</title>
-<programlisting>void        e_table_selection_model_select_all
+<indexterm><primary>e_table_selection_model_select_all</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_selection_model_select_all
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-invert-selection">e_table_selection_model_invert_selection ()</title>
-<programlisting>void        e_table_selection_model_invert_selection
+<indexterm><primary>e_table_selection_model_invert_selection</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_selection_model_invert_selection
                                             (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *selection);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>selection</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-table-selection-model-new">e_table_selection_model_new ()</title>
-<programlisting><link linkend="ETableSelectionModel">ETableSelectionModel</link>* e_table_selection_model_new
+<indexterm><primary>e_table_selection_model_new</primary></indexterm><programlisting><link linkend="ETableSelectionModel">ETableSelectionModel</link>* e_table_selection_model_new
                                             (void);</programlisting>
 <para>
+This routine creates a new <link linkend="ETableSelectionModel"><type>ETableSelectionModel</type></link>.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new <link linkend="ETableSelectionModel"><type>ETableSelectionModel</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableSelectionModel--model">&quot;<literal>model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableSelectionModel--sorter">&quot;<literal>sorter</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableSelectionModel--cursor-row">&quot;<literal>cursor_row</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableSelectionModel--cursor-row">&quot;<literal>cursor-row</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="ETableSelectionModel--cursor-col">&quot;<literal>cursor_col</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="ETableSelectionModel--cursor-col">&quot;<literal>cursor-col</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -346,46 +311,38 @@ void        <link linkend="e-table-selection-model-invert-selection">e_table_sel
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ETableSelectionModel-cursor-changed">The &quot;cursor-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableselectionmodel</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableselectionmodel</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="ETableSelectionModel-selection-changed">The &quot;selection-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="ETableSelectionModel-selection-changed">The &quot;selection-changed&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableSelectionModel">ETableSelectionModel</link> *etableselectionmodel,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableselectionmodel</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableselectionmodel</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

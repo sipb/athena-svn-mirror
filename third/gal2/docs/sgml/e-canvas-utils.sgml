@@ -1,4 +1,4 @@
-<refentry id="gal-e-canvas-utils" revision="12 Jan 2001">
+<refentry id="gal-e-canvas-utils">
 <refmeta>
 <refentrytitle>e-canvas-utils</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,20 +10,25 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
-void        <link linkend="e-canvas-item-move-absolute">e_canvas_item_move_absolute</link>     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        <link linkend="e-canvas-item-move-absolute">e_canvas_item_move_absolute</link>     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="double">double</link> dx,
                                              <link linkend="double">double</link> dy);
-void        <link linkend="e-canvas-item-show-area">e_canvas_item_show_area</link>         (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<link linkend="void">void</link>        <link linkend="e-canvas-item-show-area">e_canvas_item_show_area</link>         (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="double">double</link> x1,
                                              <link linkend="double">double</link> y1,
                                              <link linkend="double">double</link> x2,
                                              <link linkend="double">double</link> y2);
 </synopsis>
 </refsynopsisdiv>
+
+
+
+
 
 
 
@@ -40,60 +45,52 @@ void        <link linkend="e-canvas-item-show-area">e_canvas_item_show_area</lin
 <title>Details</title>
 <refsect2>
 <title><anchor id="e-canvas-item-move-absolute">e_canvas_item_move_absolute ()</title>
-<programlisting>void        e_canvas_item_move_absolute     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>e_canvas_item_move_absolute</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_move_absolute     (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="double">double</link> dx,
                                              <link linkend="double">double</link> dy);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>dx</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>dy</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dy</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-canvas-item-show-area">e_canvas_item_show_area ()</title>
-<programlisting>void        e_canvas_item_show_area         (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
+<indexterm><primary>e_canvas_item_show_area</primary></indexterm><programlisting><link linkend="void">void</link>        e_canvas_item_show_area         (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item,
                                              <link linkend="double">double</link> x1,
                                              <link linkend="double">double</link> y1,
                                              <link linkend="double">double</link> x2,
                                              <link linkend="double">double</link> y2);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>x1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>y1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>x2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>y2</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

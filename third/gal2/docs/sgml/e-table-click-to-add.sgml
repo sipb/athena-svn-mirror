@@ -1,4 +1,4 @@
-<refentry id="ETableClickToAdd" revision="12 Jan 2001">
+<refentry id="ETableClickToAdd">
 <refmeta>
 <refentrytitle>ETableClickToAdd</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,13 +10,14 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
 
 #define     <link linkend="E-TABLE-CLICK-TO-ADD-TYPE-CAPS">E_TABLE_CLICK_TO_ADD_TYPE</link>
 typedef     <link linkend="ETableClickToAdd">ETableClickToAdd</link>;
-void        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_commit</link>     (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etcta);
+<link linkend="void">void</link>        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_commit</link>     (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etcta);
 
 </synopsis>
 </refsynopsisdiv>
@@ -33,8 +34,12 @@ void        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_com
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="ETableClickToAdd--header">header</link>&quot;               <link linkend="GtkObject">GtkObject</link>            : Read / Write
@@ -50,7 +55,7 @@ void        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_com
 <synopsis>
 
 &quot;<link linkend="ETableClickToAdd-cursor-change">cursor-change</link>&quot;
-            void        user_function      (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etableclicktoadd,
+            <link linkend="void">void</link>        user_function      (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etableclicktoadd,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);
@@ -69,14 +74,14 @@ void        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_com
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-TABLE-CLICK-TO-ADD-TYPE-CAPS">E_TABLE_CLICK_TO_ADD_TYPE</title>
-<programlisting>#define E_TABLE_CLICK_TO_ADD_TYPE        (e_table_click_to_add_get_type ())
+<indexterm><primary>E_TABLE_CLICK_TO_ADD_TYPE</primary></indexterm><programlisting>#define E_TABLE_CLICK_TO_ADD_TYPE        (e_table_click_to_add_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="ETableClickToAdd">ETableClickToAdd</title>
-<programlisting>typedef struct {
+<indexterm><primary>ETableClickToAdd</primary></indexterm><programlisting>typedef struct {
 	GnomeCanvasGroup  parent;
 
 	ETableModel      *one;    /* The ETableOne. */
@@ -101,50 +106,42 @@ void        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_com
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-table-click-to-add-commit">e_table_click_to_add_commit ()</title>
-<programlisting>void        e_table_click_to_add_commit     (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etcta);</programlisting>
+<indexterm><primary>e_table_click_to_add_commit</primary></indexterm><programlisting><link linkend="void">void</link>        e_table_click_to_add_commit     (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etcta);</programlisting>
+<para>
+This routine commits the current thing being edited and returns to
+just displaying the click to add message.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etcta</parameter>&nbsp;:</entry>
-<entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etcta</parameter>&nbsp;:</term>
+<listitem><simpara> The <literal>ETableClickToAdd</literal> to commit.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="ETableClickToAdd--header">&quot;<literal>header</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableClickToAdd--model">&quot;<literal>model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableClickToAdd--message">&quot;<literal>message</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableClickToAdd--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="ETableClickToAdd--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -152,30 +149,26 @@ void        <link linkend="e-table-click-to-add-commit">e_table_click_to_add_com
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="ETableClickToAdd-cursor-change">The &quot;cursor-change&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etableclicktoadd,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="ETableClickToAdd">ETableClickToAdd</link> *etableclicktoadd,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>etableclicktoadd</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>etableclicktoadd</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

@@ -1,4 +1,4 @@
-<refentry id="EEntry" revision="12 Jan 2001">
+<refentry id="EEntry">
 <refmeta>
 <refentrytitle>EEntry</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 
@@ -35,28 +36,32 @@ typedef     <link linkend="EEntry">EEntry</link>;
 
 </refsect1>
 
+
+
+
+
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="EEntry--model">model</link>&quot;                <link linkend="GtkObject">GtkObject</link>            : Read / Write
-  &quot;<link linkend="EEntry--event-processor">event_processor</link>&quot;      <link linkend="GtkObject">GtkObject</link>            : Read / Write
+  &quot;<link linkend="EEntry--event-processor">event-processor</link>&quot;      <link linkend="GtkObject">GtkObject</link>            : Read / Write
   &quot;<link linkend="EEntry--text">text</link>&quot;                 <link linkend="gchar">gchar</link>*               : Read / Write
   &quot;<link linkend="EEntry--font">font</link>&quot;                 <link linkend="gchar">gchar</link>*               : Write
   &quot;<link linkend="EEntry--fontset">fontset</link>&quot;              <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="EEntry--font-gdk">font_gdk</link>&quot;             <link linkend="GdkFont">GdkFont</link>              : Read / Write
+  &quot;<link linkend="EEntry--font-gdk">font-gdk</link>&quot;             <link linkend="GdkFont">GdkFont</link>              : Read / Write
   &quot;<link linkend="EEntry--justification">justification</link>&quot;        <link linkend="GtkJustification">GtkJustification</link>     : Read / Write
-  &quot;<link linkend="EEntry--fill-color">fill_color</link>&quot;           <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="EEntry--fill-color-gdk">fill_color_gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>             : Read / Write
-  &quot;<link linkend="EEntry--fill-color-rgba">fill_color_rgba</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="EEntry--fill-stipple">fill_stipple</link>&quot;         <link linkend="GdkWindow">GdkWindow</link>            : Read / Write
+  &quot;<link linkend="EEntry--fill-color">fill-color</link>&quot;           <link linkend="gchar">gchar</link>*               : Write
+  &quot;<link linkend="EEntry--fill-color-gdk">fill-color-gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>             : Read / Write
+  &quot;<link linkend="EEntry--fill-color-rgba">fill-color-rgba</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="EEntry--fill-stipple">fill-stipple</link>&quot;         <link linkend="GdkWindow">GdkWindow</link>            : Read / Write
   &quot;<link linkend="EEntry--editable">editable</link>&quot;             <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="EEntry--use-ellipsis">use_ellipsis</link>&quot;         <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="EEntry--use-ellipsis">use-ellipsis</link>&quot;         <link linkend="gboolean">gboolean</link>             : Read / Write
   &quot;<link linkend="EEntry--ellipsis">ellipsis</link>&quot;             <link linkend="gchar">gchar</link>*               : Read / Write
-  &quot;<link linkend="EEntry--line-wrap">line_wrap</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="EEntry--break-characters">break_characters</link>&quot;     <link linkend="gchar">gchar</link>*               : Read / Write
-  &quot;<link linkend="EEntry--max-lines">max_lines</link>&quot;            <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="EEntry--allow-newlines">allow_newlines</link>&quot;       <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="EEntry--line-wrap">line-wrap</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="EEntry--break-characters">break-characters</link>&quot;     <link linkend="gchar">gchar</link>*               : Read / Write
+  &quot;<link linkend="EEntry--max-lines">max-lines</link>&quot;            <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="EEntry--allow-newlines">allow-newlines</link>&quot;       <link linkend="gboolean">gboolean</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -64,9 +69,9 @@ typedef     <link linkend="EEntry">EEntry</link>;
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="EEntry-changed">changed</link>&quot;   void        user_function      (<link linkend="EEntry">EEntry</link> *eentry,
+&quot;<link linkend="EEntry-changed">changed</link>&quot;   <link linkend="void">void</link>        user_function      (<link linkend="EEntry">EEntry</link> *eentry,
                                             <link linkend="gpointer">gpointer</link> user_data);
-&quot;<link linkend="EEntry-activate">activate</link>&quot;  void        user_function      (<link linkend="EEntry">EEntry</link> *eentry,
+&quot;<link linkend="EEntry-activate">activate</link>&quot;  <link linkend="void">void</link>        user_function      (<link linkend="EEntry">EEntry</link> *eentry,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -83,14 +88,14 @@ typedef     <link linkend="EEntry">EEntry</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="E-ENTRY-TYPE-CAPS">E_ENTRY_TYPE</title>
-<programlisting>#define E_ENTRY_TYPE        (e_entry_get_type ())
+<indexterm><primary>E_ENTRY_TYPE</primary></indexterm><programlisting>#define E_ENTRY_TYPE        (e_entry_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="EEntry">EEntry</title>
-<programlisting>typedef struct {
+<indexterm><primary>EEntry</primary></indexterm><programlisting>typedef struct {
 	GtkTable parent;
 	
 	GnomeCanvas *canvas;
@@ -102,132 +107,108 @@ typedef     <link linkend="EEntry">EEntry</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="e-entry-construct">e_entry_construct ()</title>
-<programlisting><link linkend="EEntry">EEntry</link>*     e_entry_construct               (<link linkend="EEntry">EEntry</link> *e_entry);</programlisting>
+<indexterm><primary>e_entry_construct</primary></indexterm><programlisting><link linkend="EEntry">EEntry</link>*     e_entry_construct               (<link linkend="EEntry">EEntry</link> *e_entry);</programlisting>
+<para>
+Constructs the given EEntry.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>e_entry</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>e_entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="e-entry-new">e_entry_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_entry_new                     (void);</programlisting>
+<indexterm><primary>e_entry_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_entry_new                     (void);</programlisting>
+<para>
+Creates a new EEntry.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
-
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new EEntry
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="EEntry--model">&quot;<literal>model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--event-processor">&quot;<literal>event_processor</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--event-processor">&quot;<literal>event-processor</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EEntry--text">&quot;<literal>text</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EEntry--font">&quot;<literal>font</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EEntry--fontset">&quot;<literal>fontset</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--font-gdk">&quot;<literal>font_gdk</literal>&quot; (<link linkend="GdkFont">GdkFont</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--font-gdk">&quot;<literal>font-gdk</literal>&quot; (<link linkend="GdkFont">GdkFont</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EEntry--justification">&quot;<literal>justification</literal>&quot; (<link linkend="GtkJustification">GtkJustification</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--fill-color">&quot;<literal>fill_color</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--fill-color">&quot;<literal>fill-color</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--fill-color-gdk">&quot;<literal>fill_color_gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--fill-color-gdk">&quot;<literal>fill-color-gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--fill-color-rgba">&quot;<literal>fill_color_rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--fill-color-rgba">&quot;<literal>fill-color-rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--fill-stipple">&quot;<literal>fill_stipple</literal>&quot; (<link linkend="GdkWindow">GdkWindow</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--fill-stipple">&quot;<literal>fill-stipple</literal>&quot; (<link linkend="GdkWindow">GdkWindow</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EEntry--editable">&quot;<literal>editable</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--use-ellipsis">&quot;<literal>use_ellipsis</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--use-ellipsis">&quot;<literal>use-ellipsis</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 <varlistentry><term><anchor id="EEntry--ellipsis">&quot;<literal>ellipsis</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--line-wrap">&quot;<literal>line_wrap</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--line-wrap">&quot;<literal>line-wrap</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--break-characters">&quot;<literal>break_characters</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--break-characters">&quot;<literal>break-characters</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--max-lines">&quot;<literal>max_lines</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--max-lines">&quot;<literal>max-lines</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="EEntry--allow-newlines">&quot;<literal>allow_newlines</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<para></para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="EEntry--allow-newlines">&quot;<literal>allow-newlines</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>
-
-</para></listitem></varlistentry>
+<para></para>
+</listitem></varlistentry>
 
 </variablelist>
 </refsect1>
@@ -235,38 +216,30 @@ typedef     <link linkend="EEntry">EEntry</link>;
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="EEntry-changed">The &quot;changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="EEntry">EEntry</link> *eentry,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="EEntry">EEntry</link> *eentry,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eentry</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>eentry</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="EEntry-activate">The &quot;activate&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="EEntry">EEntry</link> *eentry,
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="EEntry-activate">The &quot;activate&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="EEntry">EEntry</link> *eentry,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>eentry</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>eentry</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 
