@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.4 1991-07-17 10:15:42 epeisach Exp $
+ * $Id: Imakefile,v 1.5 1991-07-17 10:16:04 epeisach Exp $
  */
 
 #define ISUBDIRS doc
@@ -14,7 +14,10 @@ OSLIBS= -lc -lPW
 SimpleProgram(track,$(OBJS),$(LIBS),$(ATHETCDIR))
 
 y.tab.c : sub_gram.y 
-	yacc sub_gram.y
+	yacc sub_gram.y 
+	sed -e 's/char linebuf\[1024\]/char linebuf[2048]/' y.tab.c > y.tab.c1
+	rm -f y.tab.c
+	mv y.tab.c1 y.tab.c
 
 y.tab.o : y.tab.c lex.yy.c track.h
 
