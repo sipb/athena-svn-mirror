@@ -54,7 +54,7 @@ main(argc, argv)
   parse_args(argc, argv);
   set_current_dir(Current_Dir);
   make_abbrev_table();
-  make_display();
+  make_display(Current_Index);
   command_loop();
 }
 
