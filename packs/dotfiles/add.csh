@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.21 1994-12-29 06:32:56 cfields Exp $
+# $Id: add.csh,v 1.22 1994-12-29 22:40:32 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -116,14 +116,12 @@ if ( ! $?ATHENA_SYS ) then
   if ( $ATHENA_SYS == "" ) setenv ATHENA_SYS "@sys"
 endif
 
+set add_bindir = arch/$ATHENA_SYS/bin
+set add_mandir = arch/$ATHENA_SYS/man
+
 if ( ! $?bindir ) then
   set bindir = `machtype`bin
-  if ( $bindir == "bin" ) unset bindir
-endif
-
-if ( $?ATHENA_SYS ) then
-  set add_bindir = arch/$ATHENA_SYS/bin
-  set add_mandir = arch/$ATHENA_SYS/man
+  if ( $bindir == "bin" ) set bindir = $add_bindir
 endif
 
 #
@@ -131,11 +129,8 @@ endif
 #
 
 if ( $?add_print ) then
-  if ( $?ATHENA_SYS ) then
-    echo $PATH | sed -e "s-/mit/\([^/]*\)/$add_bindir-{add \1}-g"
-  else
-    echo $PATH
-  endif
+  echo $path | sed -e "s-/mit/\([^/]*\)/$add_bindir-{add \1}-g" \
+             | sed -e "s-/mit/\([^/]*\)/$bindir-{add \1}-g"
   goto finish
 endif
 
@@ -183,13 +178,11 @@ foreach add_i ($add_dirs)
 # Find the bin directory
 #
 
-  if ( $?ATHENA_SYS ) then
-    if ( -d $add_i/$add_bindir ) then
-      set add_bin = $add_i/$add_bindir
-    endif
+  if ( -d $add_i/$add_bindir ) then
+    set add_bin = $add_i/$add_bindir
   endif
 
-  if ( ! $?add_bin && $?bindir ) then
+  if ( ! $?add_bin ) then
     if ( -d $add_i/$bindir ) then
       set add_bin = $add_i/$bindir
     endif
@@ -201,10 +194,8 @@ foreach add_i ($add_dirs)
 # dependent man pages in your locker.
 #
 
-  if ( $?ATHENA_SYS ) then
-    if ( -d $add_i/$add_mandir ) then
-      set add_man = $add_i/$add_mandir
-    endif
+  if ( -d $add_i/$add_mandir ) then
+    set add_man = $add_i/$add_mandir
   endif
 
   if ( ! $?add_man ) then
