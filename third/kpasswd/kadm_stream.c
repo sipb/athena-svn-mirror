@@ -24,7 +24,9 @@
 
 #include "kadm.h"
 
+#ifndef KRB_INT32
 #define KRB_INT32 KRB4_32
+#endif
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 

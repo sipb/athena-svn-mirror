@@ -26,7 +26,9 @@
 #define NULL 0
 #endif
 
+#ifndef KRB_INT32
 #define KRB_INT32 KRB4_32
+#endif
 
 Kadm_Client client_parm;
 int default_client_port = 1;
