@@ -1,11 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.23 1988-09-09 17:10:36 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.24 1988-10-12 10:24:00 raeburn Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.23 1988-09-09 17:10:36 shanzer Exp $";
-#endif	lint
+static char *rcsid_login_c =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.24 1988-10-12 10:24:00 raeburn Exp $";
+#endif	/* lint */
 
 /*
  * Copyright (c) 1980 Regents of the University of California.
@@ -101,7 +102,7 @@ char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
 char	go_register[] =	"/usr/etc/go_register";
-char	get_motd[] =	"/bin/athena/gmotd";
+char	get_motd[] =	"/bin/athena/get_message";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
 struct	passwd nouser = {"", "nope", -2, -2, -2, "", "", "", "" };
@@ -810,13 +811,14 @@ showmotd()
 	        }
 	}
 	else {
-		if (execl(get_motd, get_motd, 0) < 0) {
-			if ((mf = fopen("/etc/motd", "r")) != NULL) {
-				while ((c = getc(mf)) != EOF && stopmotd == 0)
-				  putchar(c);
-				fclose(mf);
+		if ((mf = fopen("/etc/motd", "r")) != NULL) {
+			while ((c = getc(mf)) != EOF && stopmotd == 0)
+				putchar(c);
+			fclose(mf);
+		}
+		if (execl(get_motd, get_motd, "-login", 0) < 0) {
+			/* hide error code if any... */
 			exit(0);
-			}
 		}
 	}
 	signal(SIGINT, SIG_IGN);
