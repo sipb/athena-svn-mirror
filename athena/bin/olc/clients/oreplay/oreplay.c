@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.2 1990-11-27 11:52:34 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.3 1990-11-27 14:09:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -166,12 +166,14 @@ main(argc,argv)
   exit(0);
 }
 
-void usage()
+void
+usage()
 {
   fprintf(stderr,"Usage: oreplay [-f filename] [-s server] username instance\n");
 }
 
-void punt(fd,filename)
+void
+punt(fd,filename)
      int fd;
      char *filename;
 {
