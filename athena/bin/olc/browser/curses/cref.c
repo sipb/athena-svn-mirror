@@ -13,12 +13,13 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.4 1986-01-23 18:07:06 treese Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.5 1986-01-23 20:33:32 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */
+#include <sys/file.h>			/* System file definitions. */
 
 #include "cref.h"			/* CREF finder defs. */
 #include "globals.h"			/* Global variable defs. */
@@ -37,6 +38,8 @@ main(argc, argv)
 {
   check_consultant();
   init_globals();
+  parse_args(argc, argv);
+  set_current_dir(Current_Dir);
   init_display();
   make_display();
   command_loop();
@@ -101,3 +104,112 @@ command_loop()
 	}
     }
 }	
+
+/* Function:	parse_args() parse the command line.
+ * Arguments:	argc:	Number of arguments.
+ *		argv:	Argument vector.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+parse_args(argc, argv)
+     int argc;
+     char *argv[];
+{
+  extern int optind;			/* getopt() option index. */
+  extern char *optarg;			/* getopt() argument pointer. */
+  int c;				/* Option character. */
+  char filename[FILENAME_SIZE];		/* Option filename directory. */
+
+  while ( (c = getopt(argc, argv, "r:s:f:a:")) != EOF)
+    switch (c)
+      {
+      case 'r':
+	strcpy(filename, optarg);
+	if (filename[0] != '/')
+	  {
+	    fprintf(stderr, "Invalid root directory %s\n", filename);
+	    exit(ERROR);
+	  }
+	strcpy(Root_Dir, filename);
+	strcpy(Current_Dir, Root_Dir);
+	check_cref_dir(Current_Dir);
+	break;
+      case 's':
+	strcpy(filename, optarg);
+	if (filename[0] == '-')
+	  {
+	    fprintf(stderr, "Invalid default storage file %s\n", filename);
+	    exit(ERROR);
+	  }
+	strcpy(Save_File, filename);
+	break;
+      case 'f':
+	strcpy(filename, optarg);
+	if (filename[0] == '-')
+	  {
+	    fprintf(stderr, "Invalid file offset %s\n", filename);
+	    exit(ERROR);
+	  }
+	strcpy(Current_Dir, Root_Dir);
+	strcat(Current_Dir, "/");
+	strcat(Current_Dir, filename);
+	check_cref_dir(Current_Dir);
+	break;
+      case 'a':
+	strcpy(filename, optarg);
+	if (filename[0] == '-')
+	  {
+	    fprintf(stderr, "Invalid abbreviation filename %s\n", filename);
+	    exit(ERROR);
+	  }
+	set_abbrev_name(filename);
+	break;
+      case '?':
+      default:
+	fprintf(stderr, "cref: unknown option\n");
+	usage();
+	exit();
+      }
+}
+
+/* Function:	usage() prints a usage summary for cref.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+usage()
+{
+  fprintf(stderr, "Usage: cref [-r rootdir] [-s savefile] [-f file_offset] ");
+  fprintf(stderr, "[-a abbrev_file]");
+}
+
+/* Function:	check_cref_dir() checks to ensure that a directory is a
+ *			valid CREF directory.  If not, it exits the program.
+ * Arguments:	dir:	Directory to be checked.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+check_cref_dir(dir)
+char *dir;
+{
+  char contents[FILENAME_SIZE];		/* Pathname of contents file. */
+  int fd;				/* File descriptor. */
+
+  strcpy(contents, dir);
+  strcat(contents, "/");
+  strcat(contents, CONTENTS);
+
+  if ( (fd = open(contents, O_RDONLY, 0)) < 0)
+    {
+      fprintf(stderr, "%s not a CREF directory.\n", dir);
+      exit(ERROR);
+    }
+  else
+    {
+      close(fd);
+      return;
+    }
+}
