@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v $
- *	$Id: p_motd.c,v 1.14 1991-01-03 15:42:25 lwvanels Exp $
+ *	$Id: p_motd.c,v 1.15 1991-09-10 11:30:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.14 1991-01-03 15:42:25 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.15 1991-09-10 11:30:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,6 +35,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 extern int num_of_args;
 
+ERRCODE
 do_olc_motd(arguments)
      char **arguments;
 {
@@ -124,6 +125,7 @@ do_olc_motd(arguments)
   return(status);
 }
 
+ERRCODE
 do_olc_hours(arguments)
      char **arguments;
 {
