@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.20 1992-07-07 23:39:56 probe Exp $
+ * $Id: aklog_main.c,v 1.21 1992-07-07 23:43:17 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.20 1992-07-07 23:39:56 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.21 1992-07-07 23:43:17 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -389,6 +389,10 @@ static int auth_to_cell(cell, realm)
 	    params.pstdout(msgbuf);
 	}
 
+	/* Reset the "aclient" structure before we call ktc_SetToken.
+	 * This structure was first set by the ktc_GetToken call when
+	 * we were comparing whether identical tokens already existed.
+	 */
 	strncpy(aclient.name, username, MAXKTCNAMELEN - 1);
 	strcpy(aclient.instance, "");
 	strncpy(aclient.cell, c.realm, MAXKTCREALMLEN - 1);
