@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.8,v 1.5 1992-04-27 18:53:59 mar Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.8,v 1.6 1992-06-03 16:49:21 epeisach Exp $
 .TH XLOGIN 8 "16 November 1990"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -61,6 +61,14 @@ Name of the tty to log the user in on.
 .TP
 .B -session
 Name of the global session script to run when logging the user in.
+.TP
+.B -motdfile
+Name of the file to find the global message of the day to display in
+the idle screen.
+.TP
+.B -motd2file
+Name of the second motd file.  This is for a local message of the day
+to be appended to the global motd file.
 .SH RESOURCES
 There are keyboard accelerators for the menu items.  The six
 things on the "Login Options" menu may be selected using keys F1
@@ -117,6 +125,16 @@ to erase the name so that others may log in.
 .B *showMotd
 Boolean value that determines whether or not to display global
 Message-Of-The-Day in xlogin idle screen.  Default is "True".
+.TP
+.B *motdFile
+Name of the file in which to find the global message of the day for
+displaying in the idle screen, of the showMotd resource is True.  This
+defaults to /afs/athena.mit.edu/system/config/motd/login.74.
+.TP
+.B *motd2File
+Name of the file in which to find a local message of the day to append
+to the global one for the idle screen.  This defaults to an empty
+string, in which case it is ignored.
 .SH "SEE ALSO"
 dm(8), console(8)
 .SH AUTHORS
