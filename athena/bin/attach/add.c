@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.11 1999-03-23 18:24:37 danw Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.12 1999-04-05 18:23:17 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -317,11 +317,11 @@ static void modify_path(char **pathp, char *elt)
       p = *pathp;
       while (p)
 	{
-	  if (!strncmp(p, elt, len))
+	  if (!strncmp(p, elt, len) && (p[len] == ':' || p[len] == '\0'))
 	    {
 	      if (p[len] == ':')
 		len++;
-	      else if (p != *pathp && *(p - 1) == ':')
+	      else if (p != *pathp)
 		{
 		  p--;
 		  len++;
@@ -335,6 +335,17 @@ static void modify_path(char **pathp, char *elt)
 	    p++;
 	}
     }
+  else
+    {
+      /* Adding to end, so make sure the path element isn't already in
+       * the middle.
+       */
+      if ((p = strstr(*pathp, elt)) &&
+	  (p[len] == ':' || p[len] == '\0') &&
+	  (p == *pathp || *(p - 1) == ':'))
+	return;
+    }
+
 
   if (!remove_from_path)
     {
