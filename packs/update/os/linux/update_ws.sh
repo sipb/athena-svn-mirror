@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.16 2000-12-30 12:27:31 ghudson Exp $
+# $Id: update_ws.sh,v 1.17 2001-02-14 03:02:52 jweiss Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -66,7 +66,7 @@ hosttype=`/bin/athena/machtype`
 
 # Get the current workstation version and see if we're already in the
 # middle of an update.
-oldvers=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
+oldvers=`awk '$0 != "" { a = $5; } END { print a; }' /etc/athena/version`
 case "$oldvers" in
 [0-9]*)
 	# Looks okay.

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.49 2000-05-20 21:58:13 ghudson Exp $
+# $Id: update_ws.sh,v 1.50 2001-02-14 03:02:26 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -90,7 +90,7 @@ if [ ! -f "$CONFDIR/version" ]; then
 fi
 
 newvers=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
-version=`awk '{a=$5}; END{print a}' "$CONFDIR/version"`
+version=`awk '$0 != "" {a=$5}; END{print a}' "$CONFDIR/version"`
 
 # A temporary backward compatibility hack, necessary as long as there are
 # 7.7 and 8.0 machines upgrading to the new release.
