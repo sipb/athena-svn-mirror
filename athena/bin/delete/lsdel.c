@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.2 1989-02-01 03:42:08 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.3 1989-03-08 09:59:21 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -124,10 +124,27 @@ int num;
 	  total += num_found;
 	  if (num_found)
 	       num_found = process_files(found_files, num_found);
-	  if (! num_found) {
-	       fprintf(stderr, "%s: %s: nothing to list\n",
-		       whoami, (*args[num - 1] == '\0' ? "." : args[num - 1]));
-	       status |= ERROR_MASK;
+	  else {
+	       /* What we do at this point depends on exactly what the
+	        * file_re is.  There are three possible conditions:
+		* 1. It's an existing directory.  Print nothing.
+		* 2. It doesn't exist in deleted form, and there are
+		*    no wildcards in it.  Then we print "not found."
+		* 3. It does't exist, but there are wildcards in it.
+		*    Then we print "no match."
+		* None of these are considered error conditions, so we
+		* don't set the error flag.
+		*/
+	       if (no_wildcards(file_re)) {
+		    if (! directory_exists(args[num - 1])) {
+			 fprintf(stderr, "%s: %s: not found\n",
+				 whoami, args[num - 1]);
+		    }
+	       }
+	       else {
+		    fprintf(stderr, "%s: %s: no match\n",
+			    whoami, args[num-1]);
+	       }
 	  }
      }
      if (total) {
@@ -183,7 +200,7 @@ int *number_found;
 		    continue;
 	       if (lstat(matches[i], &stat_buf))
 		    continue;
-	       if ((stat_buf.st_mode &S_IFMT) == S_IFDIR) {
+	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 		    contents_found = find_deleted_contents_recurs(matches[i],
 							  &num_contents);
 		    add_arrays(&found, &num, &contents_found, &num_contents);
