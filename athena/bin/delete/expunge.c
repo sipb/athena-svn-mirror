@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.15 1991-02-20 17:26:16 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.16 1991-02-20 17:36:03 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -56,7 +56,7 @@ int  interactive,	/* query before each expunge */
      f_links,		/* follow symbolic links */
      f_mounts;		/* follow mount points */
 
-int blocks_removed = 0;
+int bytes_removed = 0;
 
 
 
@@ -270,9 +270,9 @@ int num;
      if (yield) {
 	  if (noop)
 	       printf("Total that would be expunged: %dk\n",
-		      blk_to_k(blocks_removed));
+		      size_to_k(bytes_removed));
 	  else
-	       printf("Total expunged: %dk\n", blk_to_k(blocks_removed));
+	       printf("Total expunged: %dk\n", size_to_k(bytes_removed));
      }
      return status;
 }
@@ -377,7 +377,7 @@ filerec *file_ent;
 
      if (interactive) {
 	  printf ("%s: Expunge %s (%dk)? ", whoami, user,
-		  blk_to_k(file_ent->specs.st_blocks));
+		  size_to_k(file_ent->specs.st_size));
 	  if (! yes()) {
 	       set_status(EXPUNGE_NOT_EXPUNGED);
 	       return error_code;
@@ -385,10 +385,10 @@ filerec *file_ent;
      }
 
      if (noop) {
-	  blocks_removed += file_ent->specs.st_blocks;
+	  bytes_removed += file_ent->specs.st_size;
 	  printf("%s: %s (%dk) would be expunged (%dk total)\n", whoami, user,
-		 blk_to_k(file_ent->specs.st_blocks),
-		 blk_to_k(blocks_removed));
+		 size_to_k(file_ent->specs.st_blocks),
+		 size_to_k(bytes_removed));
 	  return 0;
      }
 
@@ -397,11 +397,11 @@ filerec *file_ent;
      else
 	  status = unlink(real);
      if (! status) {
-	  blocks_removed += file_ent->specs.st_blocks;
+	  bytes_removed += file_ent->specs.st_size;
 	  if (verbose)
 	       printf("%s: %s (%dk) expunged (%dk total)\n", whoami, user,
-		      blk_to_k(file_ent->specs.st_blocks),
-		      blk_to_k(blocks_removed));
+		      size_to_k(file_ent->specs.st_blocks),
+		      size_to_k(bytes_removed));
 	  return 0;
      }
      else {

@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.8 1989-11-06 19:54:20 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.9 1991-02-20 17:34:39 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -18,7 +18,7 @@ typedef short Boolean;
 #define False			(Boolean) 0
 
 
-#define blk_to_k(x)		(x * DEV_BSIZE / 1024)
+#define size_to_k(x)		(x / 1024)
 
 #define FOLLOW_LINKS		1
 #define DONT_FOLLOW_LINKS	0

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.13 1991-02-20 17:26:46 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.14 1991-02-20 17:36:11 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -44,7 +44,7 @@ extern char *realloc();
 extern time_t current_time;
 extern int errno;
 
-int block_total = 0;
+int byte_total = 0;
 int dirsonly, recursive, yield, f_links, f_mounts;
 time_t timev;
 
@@ -188,7 +188,7 @@ int num;
      }
      if (yield)
 	  printf("\nTotal space taken up by file%s: %dk\n",
-		 (total == 1 ? "" : "s"), blk_to_k(block_total));
+		 (total == 1 ? "" : "s"), size_to_k(byte_total));
 
      return status;
 }
@@ -246,7 +246,7 @@ int num;
 	       skipped++;
 	       continue;
 	  }
-	  block_total += leaf->specs.st_blocks;
+	  byte_total += leaf->specs.st_size;
      }
      free((char *) files);
      return(num-skipped);
