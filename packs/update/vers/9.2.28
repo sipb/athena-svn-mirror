@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# New packages
+echo "SUNWqus"						>> $PACKAGES
+echo "SUNWqusu"						>> $PACKAGES
+echo "SUNWqusx"						>> $PACKAGES
+echo "SUNWqusux"					>> $PACKAGES
+
+# New patches
+echo "112233-11"					>> $PATCHES
+echo "112706-03"					>> $PATCHES
+echo "112540-18"					>> $PATCHES
+echo "112620-10"					>> $PATCHES
+echo "112621-11"					>> $PATCHES
+echo "112622-13"					>> $PATCHES
+echo "113476-11"					>> $PATCHES
+
+echo "OSCHANGES=true"					>> $CONFVARS
