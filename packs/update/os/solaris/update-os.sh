@@ -91,7 +91,7 @@ touch $UPDATE_ROOT/reconfigure
 echo "Finished os installation"
 
 echo "Tracking the srvd"
-track -d -F /srvd -T "$UPDATE_ROOT" -W /srvd/usr/athena/lib
+/srvd/usr/athena/lib/update/track-srvd
 rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
 echo "Copying kernel modules from /srvd/kernel"
