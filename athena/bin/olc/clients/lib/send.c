@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: send.c,v 1.18 1999-06-28 22:51:51 ghudson Exp $
+ *	$Id: send.c,v 1.18.6.1 2002-07-18 18:04:04 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: send.c,v 1.18 1999-06-28 22:51:51 ghudson Exp $";
+static char rcsid[] ="$Id: send.c,v 1.18.6.1 2002-07-18 18:04:04 ghudson Exp $";
 #endif
 #endif
 
@@ -114,6 +114,9 @@ OMailHeader(Request, file, username, realname, topic, destination, message)
     return(ERROR);
   fprintf(fp, "To: \"%s\"  <%s@%s>\n", realname, username, destination);
   fprintf(fp, "cc: \n");
+  if (!strcmp(client_service_name(), "OLC"))
+    fprintf(fp, "Reply-to: \"Athena On-Line Consulting\"  <%s>\n",
+	    OLC_MAIL_REPLY_ADDRESS);
   fprintf(fp, "Subject: Your %s question about \"%s\"\n", client_service_name(),
 	  topic);
   fprintf(fp, "--------\n\n");
