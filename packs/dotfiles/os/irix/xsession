@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.17 2001-05-15 23:19:18 ghudson Exp $
+# $Id: xsession,v 1.18 2001-05-21 16:17:10 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -155,14 +155,14 @@ else if (! $?skip_dash) then
 	if (! $?skip_xlogout) then
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
 		if ($?verbose_login) echo "Creating logout button..."
-		(dash -default -logout &)
+		(dash -default -logout -nosession &)
 	else
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
 		(dash -nosession &)
 	endif
 else if (! $?skip_xlogout) then
 	if ($?verbose_login) echo "Creating logout button..."
-	(dash -logout &)
+	(dash -logout -nosession &)
 endif
 
 if ( $?skip_sgi ) then
