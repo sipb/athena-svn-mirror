@@ -1,8 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.3 1991-02-28 11:28:42 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.4 1998-02-08 22:26:56 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.3  1991/02/28 11:28:42  epeisach
+ *	Changes to be more portable between operating systems basing files
+ *	on their type and not knowing the order in sys/stat.h of the
+ *	bits.
+ *
  * Revision 4.2  88/09/19  20:25:17  don
  * bellcore copyright.
  * 
@@ -55,7 +60,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.3 1991-02-28 11:28:42 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.4 1998-02-08 22:26:56 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -169,7 +174,6 @@ clear_ent()
 
        *e->sortkey	=	'\0';
 	e->keylen	=	  0;
-	e->followlink	=         0;
 	e->fromfile	= (char*) 0;
 	e->tofile	= (char*) 0;
 	e->cmpfile	= (char*) 0;

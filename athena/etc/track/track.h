@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.12 1998-01-26 06:23:18 ghudson Exp $
+ * $Id: track.h,v 4.13 1998-02-08 22:26:59 ghudson Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -122,7 +122,6 @@ typedef struct Tbl {
 typedef struct entry {
 	char sortkey[ LINELEN];
 	int keylen;
-	int followlink;
 	char *fromfile;
 	char *tofile;
 	char *cmpfile;
@@ -190,8 +189,6 @@ char *gets(),*re_comp();
 long time();
 
 int stat(), lstat();
-extern int (*statf)();
-extern char *statn;
 
 /* track's internal functions which need decl's */
 

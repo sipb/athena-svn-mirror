@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.9 1997-11-11 19:33:07 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.10 1998-02-08 22:26:53 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.9  1997/11/11 19:33:07  ghudson
+ *	Nuke bogus i386-conditionalized code.
+ *
  *	Revision 4.8  1996/05/01 18:54:36  ghudson
  *	getwd -> getcwd
  *
@@ -64,7 +67,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.9 1997-11-11 19:33:07 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.10 1998-02-08 22:26:53 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -118,95 +121,6 @@ char *name, *retval;
 	*/
 
         return( 0);
-}
-
-char *resolve( name, root)
-char *root, *name;
-{
-	/* return the shortest pathname for the inode returned by stat().
-	 * only called during parsing, to trace links provided in entries,
-	 * and then only if the entry starts with '!'.
-	 * this routine is pretty slow, because it uses getcwd().
-	 */
-	static char path[ LINELEN];
-	static char home[ LINELEN] = "";
-	static char val[ LINELEN];
-	char *end, *linkval = path;
-	struct stat sbuf;
-
-	sprintf( path, "%s/%s", root, name);
-	if( stat( path, &sbuf)) {
-		sprintf( errmsg, "can't stat %s/%s\n", root, name);
-		do_gripe();
-		return("");
-	}
-	if ( ! *home) getcwd( home, sizeof(home));
-
-	while ( 1) {
-		if ( lstat( path, &sbuf)) {
-			sprintf( errmsg, "can't lstat %s\n", path);
-			do_gripe();
-			chdir( home);
-			return("");
-		}
-		if ( S_IFLNK != TYPE( sbuf))
-			break;
-
-		if ( follow_link( path, val)) {
-			/* back out. something's broken */
-			chdir( home);
-			return( name);
-		}
-		linkval = val;
-		if ( *linkval != '/' && ( end = rindex( path, '/'))) {
-			/* linkval isn't an absolute pathname, and
-			 * we're not already in path's parent dir.
-			 * relocate to the parent, so we can lstat linkval:
-			 */
-			*end = '\0';
-			chdir( path);
-		}
-		strcpy( path, linkval);
-	}
-	/* reduce  linkval to its optimal absolute pathname:
-	 * we do this by chdir'ing to linkval's parent-dir,
-	 * so that getcwd() will optimize for us. note: getcwd() is SLOW.
-	 */
-	if ( *linkval == '/');
-	else if ( end = rindex( linkval, '/')) {
-		/* make relative path to parent
-		 */
-		*end = '\0';
-		getcwd(  path, sizeof(path));
-		strcat( path, "/");
-		strcat( path, linkval);
-		if ( chdir( path)) {
-			sprintf( errmsg, "can't resolve link %s/%s\n",
-				 fromroot, name);
-			do_gripe();
-			chdir( home);
-			return("");
-		}
-		getcwd( path, sizeof(path));
-		*end = '/';
-		strcat( path, end);
-		linkval = path;
-	}
-	else {			/* path is linkval's parent */
-		getcwd( path, sizeof(path));
-		strcat( path, "/");
-		strcat( path, linkval);
-		linkval = path;
-	}
-	if ( strncmp( linkval, root, strlen( root))) {
-		sprintf( errmsg, "link %s->%s value not under mountpoint %s\n",
-			 name, linkval, root);
-		do_gripe();
-		linkval = "";
-	}
-	linkval += strlen( fromroot) + 1;
-	chdir( home);
-	return( linkval);
 }
 
 /*
@@ -291,8 +205,8 @@ unsigned int type;
 	/* caller can pass us the file-type, if he's got it:
 	 */
 	if ( type != 0);
-	else if ( (*statf)( name, &sbuf)) {
-		sprintf( errmsg, "(removeit) can't %s %s\n", statn, name);
+	else if ( lstat( name, &sbuf)) {
+		sprintf( errmsg, "(removeit) can't lstat %s\n", name);
 		do_gripe();
 		return(-1);
 	}

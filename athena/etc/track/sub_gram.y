@@ -56,19 +56,11 @@ header	:
 entrylist :
 	  |	entrylist entry opt_space
 	;
-entry: linkmark fromname COLON toname COLON cmpname COLON except COLON shellcmd
+entry: fromname COLON toname COLON cmpname COLON except COLON shellcmd
 	{
 	    if ( e->names.table) list2hashtable( &e->names);
 	    entrycnt++;
 	    e = clear_ent();
-	}
-	;
-linkmark  :
-	  | BANG opt_space
-	{
-	    sprintf( errmsg, "followlink isn't supported.\n");
-	    do_gripe();
-	    /* e->followlink = 1; */
 	}
 	;
 fromname: WORD opt_space
@@ -85,9 +77,7 @@ toname  : opt_space
 	{
 	    char *defname;
 
-	    defname = e->followlink ?
-	     resolve( e->fromfile, fromroot) :
-		      e->fromfile;
+	    defname = e->fromfile;
 
 	    savestr( &e->tofile, defname);
 	    doreset();
@@ -96,42 +86,20 @@ toname  : opt_space
 	{
 	    char *r = wordbuf;
 	    while ( '/' == *r) r++;
-	    if ( ! e->followlink)
-		    savestr(&e->tofile,r);
-	    else	savestr(&e->tofile,
-			     resolve( r, toroot));
+	    savestr(&e->tofile,r);
 	    doreset();
 	}
 	;
 cmpname : opt_space
 	{
-	    char *defname, *root;
-
-	    if ( writeflag) {
-		    defname = e->fromfile;
-		    root = fromroot;
-	    }
-	    else {
-		    defname = e->tofile;
-		    root = toroot;
-	    }
-
-	    if ( e->followlink)
-		    defname = resolve( defname, root);
-
-	    savestr( &e->cmpfile, defname);
-
+	    savestr( &e->cmpfile, writeflag ? e->fromfile : e->tofile);
 	    doreset();
 	}
 	| opt_word
 	{
 	    char *r = wordbuf;
 	    while ( '/' == *r) r++;
-	    if ( ! e->followlink)
-		    savestr(&e->cmpfile,r);
-	    else	savestr(&e->cmpfile,
-			     resolve( r, writeflag	? fromroot
-						    : toroot));
+	    savestr(&e->cmpfile,r);
 	    doreset();
 	}
 	;

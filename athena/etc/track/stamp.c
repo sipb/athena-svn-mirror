@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.9 1991-02-28 11:32:57 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.10 1998-02-08 22:26:57 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.9  1991/02/28 11:32:57  epeisach
+ *	Changes by jfc to support on systems that do not inherently know the order
+ *	of the file status bits. (right shifting 13 garbage removed)
+ *
  * Revision 4.8  88/06/21  19:44:36  don
  * fixed a bug in the prior version's dec_entry. don't use the prior
  * version.
@@ -88,7 +92,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.9 1991-02-28 11:32:57 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.10 1998-02-08 22:26:57 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -191,11 +195,11 @@ char **path; struct currentness *c;
 		fputs( linebuf, stderr);
 
 	if ( same_name);
-	else if ( ! (*statf)( path[ ROOT], &fromstat))
+	else if ( ! lstat( path[ ROOT], &fromstat))
 		type = TYPE( fromstat);
 	else {
-		sprintf( errmsg, "(write_statline) can't %s %s\n",
-			 statn, path[ ROOT]);
+		sprintf( errmsg, "(write_statline) can't lstat %s\n",
+			 path[ ROOT]);
 		do_panic();
 	}
 	return( type);
@@ -557,11 +561,6 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 		poppath( to); pushpath( to,  entries[ entnum].tofile);
 		poppath(cmp); pushpath( cmp, entries[ entnum].cmpfile);
 		
-		/* this function-var is global, and used generally.
-		 */
-		statf = entries[ entnum].followlink ?  stat  :  lstat;
-		statn = entries[ entnum].followlink ? "stat" : "lstat";
-
 		entry_currency = &entries[ entnum].currency;
 	}
 	if ( updated( entry_currency, NULL))

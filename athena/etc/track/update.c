@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.7 1993-10-19 10:30:35 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.8 1998-02-08 22:26:59 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.7  1993/10/19 10:30:35  vrt
+ *	Changed the wording in error message from would't to couldn't.
+ *	This is netprob bug 439.
+ *
  * Revision 4.6  91/02/28  11:35:53  epeisach
  * Changes by jfc to be more machine independent and not know the order
  * of the bits in the type field.
@@ -71,7 +75,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.7 1993-10-19 10:30:35 vrt Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.8 1998-02-08 22:26:59 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -147,7 +151,7 @@ struct currentness *r, *l;
 {
 	char *remotename = rpath[ ROOT], *localname = lpath[ ROOT];
 	struct currentness *diff;
-	struct stat lstat, *local_statp;
+	struct stat statbuf, *local_statp;
 	struct timeval *timevec;
 	static List_element *missing_dirs;
 	List_element *p;
@@ -173,7 +177,7 @@ struct currentness *r, *l;
 	 *     or: cmpfile == tofile, & the file might exist or not.
 	 */
 	local_statp = same_name ? &l->sbuf :
-		     (*statf)( lpath[ ROOT], &lstat) ? NULL : &lstat;
+		     lstat( lpath[ ROOT], &statbuf) ? NULL : &statbuf;
 	local_type = local_statp ? TYPE( *local_statp) : S_IFMT;
 	exists = local_type != S_IFMT;
 
@@ -397,12 +401,12 @@ get_currentness( path, c) char **path; struct currentness *c; {
         strcpy( c->name, path[ NAME]);
         c->cksum = 0;
         *c->link = '\0';
-        if ( (*statf)( path[ ROOT], &c->sbuf)) {
+        if ( lstat( path[ ROOT], &c->sbuf)) {
 		clear_stat( &c->sbuf);
                 c->sbuf.st_mode = S_IFMT;       /* XXX */
 		if ( errno != ENOENT) {
-			sprintf( errmsg,"can't %s comparison-file %s\n",
-				 statn, path[ ROOT]);
+			sprintf( errmsg,"can't lstat comparison-file %s\n",
+				 path[ ROOT]);
 			do_gripe();
 		}
                 return( -1);
@@ -442,8 +446,8 @@ struct stat *r;
 	struct stat sbuf;
 	int error = 0;
 
-	if ( (*statf)( name, &sbuf)) {
-		sprintf( errmsg, "(set_prots) can't %s &s\n", statn, name);
+	if ( lstat( name, &sbuf)) {
+		sprintf( errmsg, "(set_prots) can't lstat &s\n", name);
 		do_gripe();
 		return(-1);
 	}

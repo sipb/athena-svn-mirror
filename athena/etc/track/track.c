@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.16 1996-09-20 04:12:35 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.17 1998-02-08 22:26:58 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.16  1996/09/20 04:12:35  ghudson
+ *	BSD -> ANSI string and memory functions
+ *
  *	Revision 4.15  1996/05/01 18:53:31  ghudson
  *	getwd -> getcwd
  *
@@ -160,7 +163,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.16 1996-09-20 04:12:35 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.17 1998-02-08 22:26:58 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -219,10 +222,6 @@ int incl_devs = 0;	/* if set, include devices in update */
 Entry entries[ ENTRYMAX];	/* Subscription list entries */
 int entrycnt = -1;		/* Number of entries */
 int entnum = -1;		/* Current entry number */
-
-int (*statf)();			/* dec_entry() sets value to stat() or lstat(),
-				 * according to entries[].followlinks */
-char *statn = "";		/* name of statf's current value. */
 
 main(argc,argv)
 int argc;
@@ -700,8 +699,8 @@ struct currentness *currency;
 		/* normal case: tail isn't an exception or a forced link.
 		 */
 		if ( c && get_currentness( c, currency)) {
-			sprintf(errmsg,"can't %s comparison-file %s.\n",
-				statn, c[ ROOT]);
+			sprintf(errmsg,"can't lstat comparison-file %s.\n",
+				c[ ROOT]);
 			do_panic();
 		}
 		/* write_statline returns fromfile's type:
@@ -816,9 +815,8 @@ justshow()
 		e = &entries[ i];
 		if ( ! e->fromfile) break;
 		fprintf(stderr,
-			"entry %d:%s\n\tfromfile-- %s\n",
+			"entry %d:\n\tfromfile-- %s\n",
 			i,
-			e->followlink ? " ( follow links)" : "",
 			e->fromfile);
 		fprintf(stderr,
 			"\tcmpfile-- %s\n\ttofile-- %s\n\tpatterns--\n",
