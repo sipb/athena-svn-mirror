@@ -1,146 +1,154 @@
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Dmitry Mastrukov <dmitry@taurussoft.org>, 2001.
+# Dmitry Mastrukov <dmitry@taurussoft.org>, 2001-2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Scrollkeeper\n"
-"POT-Creation-Date: 2002-06-01 01:16-0500\n"
-"PO-Revision-Date: 2001-03-19 19:13+03:00\n"
+"POT-Creation-Date: 2002-07-24 21:27-0500\n"
+"PO-Revision-Date: 2002-06-06 10:04+04:00\n"
 "Last-Translator: Dmitry Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <RU@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=KOI8-R\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8BIT\n"
 
 #: cl/src/scrollkeeper-install.c:34
-#, fuzzy
 msgid ""
 "Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
 msgstr ""
-"Использование: scrollkeeper_install [-p <SCROLLKEEPER_DB_DIR>] <OMF ФАЙЛ>\n"
+"п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣: scrollkeeper_install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] "
+"<OMF п╓п░п≥п⌡>\n"
 
 #: cl/src/scrollkeeper-install.c:95
 msgid "Could not create database.  Aborting install.\n"
-msgstr ""
+msgstr "п²п╣ я┐п╢п╟п╩п╬я│я▄ я│п╬п╥п╢п╟я┌я▄ п╠п╟п╥я┐ п╢п╟п╫п╫я▀я┘. пёя│я┌п╟п╫п╬п╡п╨п╟ п©я─п╣я─я▀п╡п╟п╣я┌я│я▐.\n"
 
 #: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
 #, c-format
 msgid "Registering %s\n"
-msgstr ""
+msgstr "п≤п╢я▒я┌ я─п╣пЁп╦я│я┌я─п╟я├п╦я▐ %s\n"
 
 #: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
 #, c-format
 msgid "Unable to register %s\n"
-msgstr ""
+msgstr "п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п╥п╟я─п╣пЁп╣я│я┌я─п╦я─п╬п╡п╟я┌я▄ %s\n"
 
 #: cl/src/preinstall.c:35
-#, fuzzy
 msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
-"Использование: scrollkeeper_preinstall <DOC ФАЙЛ> <OMF ФАЙЛ> <НОВЫЙ OMF "
-"ФАЙЛ>\n"
+"п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣: scrollkeeper_preinstall <DOC п╓п░п≥п⌡> <OMF п╓п░п≥п⌡> <п²п·п▓п╚п≥ OMF "
+"п╓п░п≥п⌡>\n"
 
 #: cl/src/preinstall.c:68
 #, c-format
-msgid "url update in OMF file %s failed\n"
+msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
 msgstr ""
+"п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п╬п╠п╫п╬п╡п╦я┌я▄ URL п╡ я└п╟п╧п╩п╣ OMF %s. п╓п╟п╧п╩ OMF п╨п╬п©п╦я─я┐п╣я┌я│я▐ п╫п╣п╦п╥п╪п╣п╫я▒п╫п╫я▀п╪.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
-#, fuzzy
 msgid ""
 "Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
 "FILE>\n"
 msgstr ""
-"Использование: scrollkeeper_uninstall [-p <SCROLLKEEPER_DB_DIR>] <OMF ФАЙЛ>\n"
+"п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣: scrollkeeper_uninstall [-v] -q] [-p <SCROLLKEEPER_DB_DIR>] "
+"<OMF п╓п░п≥п⌡>\n"
 
 #: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
 #, c-format
 msgid "Unregistering %s\n"
-msgstr ""
+msgstr "п≤п╢я▒я┌ п╬я┌п╪п╣п╫п╟ я─п╣пЁп╦я│я┌я─п╟я├п╦п╦ %s\n"
 
 #: cl/src/update.c:108
-#, fuzzy, c-format
+#, c-format
 msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
-msgstr "Использование: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr ""
+"п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 
 #: cl/src/update.c:220
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
-msgstr "%s: внимание: %s переписывает %s\n"
+msgstr "%s: п╡п╫п╦п╪п╟п╫п╦п╣: %s п©п╣я─п╣п╥п╟п©п╦я│я▀п╡п╟п╣я┌ %s\n"
 
 #: cl/src/update.c:410
 msgid "Could not create database.  Aborting update.\n"
-msgstr ""
+msgstr "п²п╣ я┐п╢п╟п╩п╬я│я▄ я│п╬п╥п╢п╟я┌я▄ п╠п╟п╥я┐ п╢п╟п╫п╫я▀я┘. п·п╠п╫п╬п╡п╩п╣п╫п╦п╣ п©я─п╣я─я▀п╡п╟п╣я┌я│я▐.\n"
 
 #: cl/src/update.c:505
 #, c-format
 msgid "%s: %s: is not a directory\n"
-msgstr "%s: %s: не является каталогом\n"
+msgstr "%s: %s: п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п╨п╟я┌п╟п╩п╬пЁп╬п╪\n"
 
 #: cl/src/update.c:530
 #, c-format
 msgid "Updating %s\n"
-msgstr ""
+msgstr "п≤п╢я▒я┌ п╬п╠п╫п╬п╡п╩п╣п╫п╦п╣ %s\n"
 
 #: cl/src/update.c:533
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
 msgstr ""
+"п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п©п╬п╩п╫п╬я│я┌я▄я▌ п╡я▀п©п╬п╩п╫п╦я┌я▄ п╬п╠п╫п╬п╡п╩п╣п╫п╦п╣. п╫п╣ я┐п╢п╟п╩п╬я│я▄ п╥п╟я─п╣пЁп╣я│я┌я─п╦я─п╬п╡п╟я┌я▄ %s\n"
 
 #: cl/src/get-cl.c:55
 msgid "Cannot open temporary file.\n"
-msgstr ""
+msgstr "п²п╣п╡п╬п╥п╪п╬п╤п╫п╬ п╬я┌п╨я─я▀я┌я▄ п╡я─п╣п╪п╣п╫п╫я▀п╧ я└п╟п╧п╩.\n"
 
 #: cl/src/get-cl.c:93
-#, fuzzy, c-format
+#, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
-msgstr "Использование: %s <ЛОКАЛЬ> <ИМЯ ФАЙЛА С ДЕРЕВОМ КАТЕГОРИЙ>\n"
+msgstr "п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣: %s [-v] <п⌡п·п п░п⌡п╛> <п≤п°п╞ п╓п░п≥п⌡п░ п║ п■п∙п═п∙п▓п·п° п п░п╒п∙п⌠п·п═п≤п≥>\n"
 
 #: cl/src/get-cl.c:133
 msgid "No Content List for this locale!!!\n"
-msgstr "Нет Списка содержимого для этой локали!!!\n"
+msgstr "п²п╣я┌ п║п©п╦я│п╨п╟ я│п╬п╢п╣я─п╤п╦п╪п╬пЁп╬ п╢п╩я▐ я█я┌п╬п╧ п╩п╬п╨п╟п╩п╦!!!\n"
 
 #: libs/error.c:114
 #, c-format
 msgid "%s: out of memory: %s\n"
-msgstr "%s: не хватает памяти: %s\n"
+msgstr "%s: п╫п╣ я┘п╡п╟я┌п╟п╣я┌ п©п╟п╪я▐я┌п╦: %s\n"
 
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr ""
+msgstr "п·я┬п╦п╠п╨п╟ п©я─п╬п╡п╣я─п╨п╦ OMF п╫п╟ п╢п╬п©я┐я│я┌п╦п╪п╬я│я┌я▄: %s"
 
 #: libs/install.c:132
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
+"п╓п╟п╧п╩ TOC п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌, п╫п╣я┤п╦я┌п╟п╣п╪ п╦п╩п╦ п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п©я─п╟п╡п╦п╩я▄п╫я▀п╪ п╢п╬п╨я┐п╪п╣п╫я┌п╬п╪ XML: %"
+"s\n"
 
 #: libs/install.c:173
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
+"п╓п╟п╧п╩ OMF п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌, п╫п╣я┤п╦я┌п╟п╣п╪ п╦п╩п╦ п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п©я─п╟п╡п╦п╩я▄п╫я▀п╪ п╢п╬п╨я┐п╪п╣п╫я┌п╬п╪ XML: %"
+"s\n"
 
 #: libs/install.c:182
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "п²п╣ я┐п╢п╟п╩п╬я│я▄ я─п╟п╥п╬п╠я─п╟я┌я▄ ScrollKeeper-OMF DTD: %s\n"
 
 #: libs/install.c:190
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
 msgstr ""
+"п╓п╟п╧п╩ OMF [%s] п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п╢п╬п©я┐я│я┌п╦п╪я▀п╪ я│ я┌п╬я┤п╨п╦ п╥я─п╣п╫п╦я▐ ScrollKeeper-OMF DTD: %"
+"s\n"
 
 #. This should not happen
 #: libs/install.c:207
 msgid "Failed to locate an <OMF> element.\n"
-msgstr ""
+msgstr "п║п╠п╬п╧ п©я─п╦ п©п╬п©я▀я┌п╨п╣ п©п╣я─п╣п╧я┌п╦ п╫п╟ я█п╩п╣п╪п╣п╫я┌ <OMF>.\n"
 
 #. This should not happen
 #: libs/install.c:212
 msgid "<OMF> node has no children.\n"
-msgstr ""
+msgstr "пёп╥п╣п╩ <OMF> п╫п╣ п╦п╪п╣п╣я┌ п©п╬я┌п╬п╪п╨п╬п╡.\n"
 
 #: libs/install.c:236
 #, c-format
@@ -148,6 +156,8 @@ msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
+"п╓п╟п╧п╩ я│п©п╦я│п╨п╟ я│п╬п╢п╣я─п╤п╦п╪п╬пЁп╬ п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌, п╫п╣я┤п╦я┌п╟п╣п╪ п╦п╩п╦ п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п©я─п╟п╡п╦п╩я▄п╫я▀п╪ "
+"п╢п╬п╨я┐п╪п╣п╫я┌п╬п╪ XML: %s\n"
 
 #: libs/install.c:243
 #, c-format
@@ -155,777 +165,827 @@ msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
+"п═п╟я│я┬п╦я─п╣п╫п╫я▀п╧ я└п╟п╧п╩ я│п©п╦я│п╨п╟ я│п╬п╢п╣я─п╤п╦п╪п╬пЁп╬ п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌, п╫п╣я┤п╦я┌п╟п╣п╪ п╦п╩п╦ п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ "
+"п©я─п╟п╡п╦п╩я▄п╫я▀п╪ п╢п╬п╨я┐п╪п╣п╫я┌п╬п╪ XML: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
 msgid "wrong content list file %s\n"
-msgstr "неверный файл списка содержимого %s\n"
+msgstr "п╫п╣п╡п╣я─п╫я▀п╧ я└п╟п╧п╩ я│п©п╦я│п╨п╟ я│п╬п╢п╣я─п╤п╦п╪п╬пЁп╬ %s\n"
 
 #: libs/uninstall.c:104
 #, c-format
 msgid "wrong extended content list file %s\n"
-msgstr "неверный расширенный файла списка содержимого %s\n"
+msgstr "п╫п╣п╡п╣я─п╫я▀п╧ я─п╟я│я┬п╦я─п╣п╫п╫я▀п╧ я└п╟п╧п╩п╟ я│п©п╦я│п╨п╟ я│п╬п╢п╣я─п╤п╦п╪п╬пЁп╬ %s\n"
 
 #: libs/uninstall.c:201
 #, c-format
 msgid "%s missing\n"
-msgstr "%s отсутствует\n"
+msgstr "%s п╬я┌я│я┐я┌я│я┌п╡я┐п╣я┌\n"
 
 #: libs/database.c:41
 #, c-format
 msgid "Could not create directory %s : %s\n"
-msgstr ""
+msgstr "п²п╣ я┐п╢п╟п╩п╬я│я▄ я│п╬п╥п╢п╟я┌я▄ п╨п╟я┌п╟п╩п╬пЁ %s : %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr ""
+msgstr "п╓п╟п╧п╩ OMF п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ п©я─п╟п╡п╦п╩я▄п╫я▀п╪.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
-msgstr ""
+msgstr "п²п╣ я┐п╢п╟п╩п╬я│я▄ п╫п╟п╧я┌п╦ п╨п╬я─п╫п╣п╡п╬п╧ я█п╩п╣п╪п╣п╫я┌ п╡ я└п╟п╧п╩п╣ OMF.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr ""
+msgstr "п п╬я─п╫п╣п╡п╬п╧ я█п╩п╣п╪п╣п╫я┌ п╡ я└п╟п╧п╩п╣ OMF п╫п╣ я▐п╡п╩я▐п╣я┌я│я▐ <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
-msgstr ""
+msgstr "п╓п╟п╧п╩ OMF п╫п╣ п╦п╪п╣п╣я┌ я█п╩п╣п╪п╣п╫я┌п╟ <resource>.\n"
 
 #: extract/src/scrollkeeper-extract.c:30
 msgid ""
 "Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
 "<stylesheet 2> <output file 2> ...\n"
 msgstr ""
+"п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣: scrollkeeper-extract <я└п╟п╧п╩ xml> <я│я┌п╦п╩п╣п╡п╬п╧ я└п╟п╧п╩ 1> <п╡я▀я┘п╬п╢п╫п╬п╧ "
+"я└п╟п╧п╩ 1> <я│я┌п╦п╩п╣п╡п╬п╧ я└п╟п╧п╩ 2> <п╡я▀я┘п╬п╢п╫п╬п╧ п╡п╟п╧п╩ 2> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
 #, c-format
 msgid "Unrecognized file type: %s\n"
-msgstr ""
+msgstr "п²п╣я─п╟я│п©п╬п╥п╫п╟п╫п╫я▀п╧ я┌п╦п© я└п╟п╧п╩п╟: %s\n"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:1
 msgid "3D Modelling"
-msgstr "3D Моделирование"
+msgstr "3D п°п╬п╢п╣п╩п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:2
 msgid "3D Rendering"
-msgstr "3D Моделирование"
+msgstr "п╒я─я▒я┘п╪п╣я─п╫я▀п╧ п═п╣п╫п╢п╣я─п╦п╫пЁ"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:3
 msgid "ADA"
-msgstr "Окружения"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ ADA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
-msgid "Administration"
-msgstr "Система"
+msgid "Accessibility"
+msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-msgid "Amusement"
-msgstr "Приколы"
+#, fuzzy
+msgid "Accessories"
+msgstr "п÷я─п╬я├п╣я│я│п╬я─"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
-msgid "Analysis"
-msgstr "Звук"
+msgid "Administration"
+msgstr "п░п╢п╪п╦п╫п╦я│я┌я─п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:7
-msgid "AppleTalk"
-msgstr "Сетевые технологии"
+msgid "Amusement"
+msgstr "п═п╟п╥п╡п╩п╣я┤п╣п╫п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:8
-msgid "Applets"
-msgstr "Ядро среды"
+msgid "Analysis"
+msgstr "п░п╫п╟п╩п╦п╥"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:9
-msgid "Applications"
-msgstr "Приложения"
+msgid "AppleTalk"
+msgstr "п║п╣я┌я▄ AppleTalk"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:10
-msgid "Arcade"
-msgstr "Аркадные"
+msgid "Applets"
+msgstr "п░п©п©п╩п╣я┌я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:11
-msgid "Archiving"
-msgstr "Утилиты"
+msgid "Applications"
+msgstr "п÷я─п╦п╩п╬п╤п╣п╫п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:12
-msgid "Arts"
-msgstr "Искусство"
+msgid "Arcade"
+msgstr "п░я─п╨п╟п╢п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:13
-msgid "Astronomy"
-msgstr "Наука"
+msgid "Archiving"
+msgstr "п░я─я┘п╦п╡п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:14
-msgid "Astrophysics"
-msgstr "Астрономия"
+msgid "Arts"
+msgstr "п≤я│п╨я┐я│я│я┌п╡п╬"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:15
-msgid "BIND"
-msgstr "Syslog"
+msgid "Astronomy"
+msgstr "п░я│я┌я─п╬п╫п╬п╪п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:16
-msgid "Backups"
-msgstr "Администрирование"
+msgid "Astrophysics"
+msgstr "п░я│я┌я─п╬я└п╦п╥п╦п╨п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:17
-msgid "Biology"
-msgstr "Астрофизика"
+msgid "BIND"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪п╟ BIND"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:18
-msgid "Board"
-msgstr "Настольные"
+msgid "Backups"
+msgstr "п═п╣п╥п╣я─п╡п╫п╬п╣ п╨п╬п©п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:19
-msgid "Build Tools"
-msgstr "Средства разработки"
+msgid "Biology"
+msgstr "п▒п╦п╬п╩п╬пЁп╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:20
-msgid "C"
-msgstr "ADA"
+msgid "Board"
+msgstr "п²п╟я│я┌п╬п╩я▄п╫я▀п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:21
-msgid "C++"
-msgstr "C"
+msgid "Build Tools"
+msgstr "п║я─п╣п╢я│я┌п╡п╟ я─п╟п╥я─п╟п╠п╬я┌п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:22
-msgid "CAD"
-msgstr "3D Рендеринг"
+msgid "C"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ C"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:23
-msgid "CD Mastering"
-msgstr "Анализ"
+msgid "C++"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ C++"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:24
-msgid "CDE"
-msgstr "Прочее"
+msgid "CAD"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀ CAD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:25
-msgid "CLI"
-msgstr "Текстовые редакторы"
+msgid "CD Mastering"
+msgstr "п║п╬п╥п╢п╟п╫п╦п╣ CD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:26
-msgid "Calculating"
-msgstr "Архивирование"
+msgid "CDE"
+msgstr "п║я─п╣п╢п╟ CDE"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:27
-msgid "Caldera"
-msgstr "Дистрибутивы"
+msgid "CLI"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀ CLI"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:28
-msgid "Calendar"
-msgstr "Офис"
+msgid "Calculating"
+msgstr "п▓я▀я┤п╦я│п╩п╣п╫п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:29
-msgid "Capture"
-msgstr "САПР"
+msgid "Caldera"
+msgstr "п■п╦я│я┌я─п╦п╠я┐я┌п╦п╡я▀ Caldera"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:30
-msgid "Chat"
-msgstr "Чат"
+msgid "Calendar"
+msgstr "п п╟п╩п╣п╫п╢п╟я─я▄"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:31
-msgid "Chemistry"
-msgstr "Биология"
+msgid "Capture"
+msgstr "п║п╫п╦п╪п╬п╨"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:32
-msgid "Clock"
-msgstr "Приколы"
+msgid "Chat"
+msgstr "п╖п╟я┌"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:33
-msgid "Clocks"
-msgstr "Калькуляторы"
+msgid "Chemistry"
+msgstr "п╔п╦п╪п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:34
-msgid "Code Generators"
-msgstr "Средства сборки"
+msgid "Clock"
+msgstr "п╖п╟я│я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:35
-msgid "Compression"
-msgstr "Часы"
+msgid "Clocks"
+msgstr "п╖п╟я│я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:36
-msgid "Computer Science"
-msgstr "Компьютерное дело"
+msgid "Code Generators"
+msgstr "п⌠п╣п╫п╣я─п╟я┌п╬я─я▀ п╨п╬п╢п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:37
-msgid "Config Files"
-msgstr "Конфигурация"
+msgid "Compression"
+msgstr "п║п╤п╟я┌п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:38
-msgid "Configuration"
-msgstr "X"
+msgid "Computer Science"
+msgstr "п п╬п╪п©я▄я▌я┌п╣я─п╫п╟я▐ п╫п╟я┐п╨п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:39
-msgid "Configuration Tools"
-msgstr "Конфигурационные файлы"
+msgid "Config Files"
+msgstr "п╓п╟п╧п╩я▀ п╨п╬п╫я└п╦пЁя┐я─п╟я├п╦п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:40
-msgid "Conversion"
-msgstr "Снимки"
+msgid "Configuration"
+msgstr "п п╬п╫я└п╦пЁя┐я─п╟я├п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:41
-msgid "Core Desktop"
-msgstr "GNOME"
+msgid "Configuration Tools"
+msgstr "п║я─п╣п╢я│я┌п╡п╟ п╨п╬п╫я└п╦пЁя┐я─п╟я├п╦п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:42
-msgid "Cryptography"
-msgstr "Безопасность"
+msgid "Conversion"
+msgstr "п÷я─п╣п╬п╠я─п╟п╥п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:43
-msgid "DNS"
-msgstr "TCP/IP"
+msgid "Core Desktop"
+msgstr "п╞п╢я─п╬ я│я─п╣п╢я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:44
-msgid "Data Processing"
-msgstr "Календарь"
+msgid "Cryptography"
+msgstr "п я─п╦п©я┌п╬пЁя─п╟я└п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:45
-msgid "Database"
-msgstr "Обработка данных"
+msgid "DNS"
+msgstr "DNS"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:46
-msgid "Databases"
-msgstr "Разработка"
+msgid "Data Processing"
+msgstr "п·п╠я─п╟п╠п╬я┌п╨п╟ п╢п╟п╫п╫я▀я┘"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:47
-msgid "Debian"
-msgstr "Caldera"
+msgid "Database"
+msgstr "п·п╠я─п╟п╠п╬я┌п╨п╟ п╢п╟п╫п╫я▀я┘"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:48
-msgid "Debuggers"
-msgstr "Конфигурация"
+msgid "Databases"
+msgstr "п▒п╟п╥я▀ п╢п╟п╫п╫я▀я┘"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:49
-msgid "Development"
-msgstr "CDE"
+msgid "Debian"
+msgstr "п■п╦я│я┌я─п╦п╠я┐я┌п╦п╡я▀ Debian"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:50
-msgid "Development Tools"
-msgstr "Базы данных"
+msgid "Debuggers"
+msgstr "п·я┌п╩п╟п╢я┤п╦п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-msgid "Display"
-msgstr "Преобразование"
+#, fuzzy
+msgid "Desktop"
+msgstr "п╞п╢я─п╬ я│я─п╣п╢я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
-msgid "Distributions"
-msgstr "Linux"
+msgid "Desktop Preferences"
+msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
-msgid "Drawing"
-msgstr "Преобразование"
+msgid "Development"
+msgstr "п═п╟п╥я─п╟п╠п╬я┌п╨п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:54
-msgid "EDA"
-msgstr "Химия"
+msgid "Development Tools"
+msgstr "п║я─п╣п╢я│я┌п╡п╟ я─п╟п╥я─п╟п╠п╬я┌п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:55
-msgid "Editing"
-msgstr "Рисование"
+msgid "Display"
+msgstr "п·я┌п╬п╠я─п╟п╤п╣п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:56
-msgid "Education"
-msgstr "Обучение"
+msgid "Distributions"
+msgstr "п═п╟я│п©я─п╬я│я┌я─п╟п╫п╣п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:57
-msgid "Email"
-msgstr "Почта"
+msgid "Drawing"
+msgstr "п═п╦я│п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:58
-msgid "English"
-msgstr "Английский"
+msgid "EDA"
+msgstr "EDA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:59
-msgid "Environments"
-msgstr "Прочее"
+msgid "Editing"
+msgstr "п═п╣п╢п╟п╨я┌п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:60
-msgid "FTP"
-msgstr "FTP"
+msgid "Education"
+msgstr "п·п╠я┐я┤п╣п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:61
-msgid "Fax"
-msgstr "Факс"
+msgid "Email"
+msgstr "п÷п╬я┤я┌п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:62
-msgid "Fighting"
-msgstr "Сражения"
+msgid "English"
+msgstr "п░п╫пЁп╩п╦п╧я│п╨п╦п╧"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:63
-msgid "File Sharing"
-msgstr "Совместный доступ к файлам"
+msgid "Environments"
+msgstr "п·п╨я─я┐п╤п╣п╫п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:64
-msgid "File Utilities"
-msgstr "Файловые утилиты"
+msgid "FTP"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀ FTP"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:65
-msgid "Filesystems"
-msgstr "Удалённое"
+msgid "Fax"
+msgstr "п╓п╟п╨я│"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:66
-msgid "Financial"
-msgstr "Почта"
+msgid "Fighting"
+msgstr "п║я─п╟п╤п╣п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:67
-msgid "Firewall"
-msgstr "Безопасность"
+msgid "File Sharing"
+msgstr "п║п╬п╡п╪п╣я│я┌п╫я▀п╧ п╢п╬я│я┌я┐п© п╨ я└п╟п╧п╩п╟п╪"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:68
-msgid "First Person Shooters"
-msgstr "Стрелялки"
+msgid "File Utilities"
+msgstr "п╓п╟п╧п╩п╬п╡я▀п╣ я┐я┌п╦п╩п╦я┌я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:69
-msgid "Fonts"
-msgstr "Конфигурация"
+msgid "Filesystems"
+msgstr "п╓п╟п╧п╩п╬п╡я▀п╣ я│п╦я│я┌п╣п╪я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:70
-msgid "FreeBSD"
-msgstr "Ядра"
+msgid "Financial"
+msgstr "п╓п╦п╫п╟п╫я│я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:71
-msgid "GNOME"
-msgstr "C++"
+msgid "Firewall"
+msgstr "п▒я─п╟п╫п╢п╪п╟я┐я█я─"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:72
-msgid "GTK+"
-msgstr "GNOME"
+msgid "First Person Shooters"
+msgstr "п║я┌я─п╣п╩я▐п╩п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:73
-msgid "GUI"
-msgstr "Символьные"
+msgid "Fonts"
+msgstr "п╗я─п╦я└я┌я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:74
-msgid "Games"
-msgstr "Игры"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:75
-msgid "General"
-msgstr "Прочее"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:76
-msgid "Genetics"
-msgstr "Автоматизация проектирования электроники"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:77
-msgid "Graphics"
-msgstr "Графика"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:78
-msgid "HTTP"
-msgstr "Сервисы"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:79
-msgid "Hardware"
-msgstr "Прочее"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:80
-msgid "IDEs"
-msgstr "Отладчики"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:81
-msgid "Input Devices"
-msgstr "Видеокарта"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:82
-msgid "Internet"
-msgstr "Интернет"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:83
-msgid "Internet Phone"
-msgstr "Интернет-телефония"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:84
-msgid "Introductory"
-msgstr "Приложения"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:85
-msgid "Intrusion Detection"
-msgstr "Межсетевой экран"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:86
-msgid "Java"
-msgstr "gtk++"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:87
-msgid "KDE"
-msgstr "Java"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:88
-msgid "Kernels"
-msgstr "Прочее"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:89
-msgid "Language"
-msgstr "Язык"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:90
-msgid "Libraries"
-msgstr "Прочее"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:91
-msgid "Licenses"
-msgstr "Общее"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:92
-msgid "Linux"
+msgid "FreeBSD"
 msgstr "FreeBSD"
 
+#: cl/templates/scrollkeeper_cl.xml.in.h:75
+msgid "GNOME"
+msgstr "п║я─п╣п╢п╟ GNOME"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:76
+msgid "GTK+"
+msgstr "п÷п╟п╨п╣я┌ GTK+"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:77
+msgid "GUI"
+msgstr "GUI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:78
+msgid "Games"
+msgstr "п≤пЁя─я▀"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:79
+msgid "General"
+msgstr "п·п╠я┴п╣п╣"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:80
+msgid "Genetics"
+msgstr "п⌠п╣п╫п╣я┌п╦п╨п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:81
+msgid "Graphics"
+msgstr "п⌠я─п╟я└п╦п╨п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:82
+msgid "HTTP"
+msgstr "п÷я─п╬я┌п╬п╨п╬п╩ HTTP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:83
+msgid "Hardware"
+msgstr "п░п©п©п╟я─п╟я┌п╫п╬п╣ п╬п╠п╣я│п©п╣я┤п╣п╫п╦п╣"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:84
+msgid "IDEs"
+msgstr "п≤п╫я┌п╣пЁя─п╦я─п╬п╡п╟п╫п╫я▀п╣ я│я─п╣п╢я▀"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:85
+msgid "Input Devices"
+msgstr "пёя│я┌я─п╬п╧я│я┌п╡п╟ п╡п╡п╬п╢п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:86
+msgid "Internet"
+msgstr "п≤п╫я┌п╣я─п╫п╣я┌"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:87
+msgid "Internet Phone"
+msgstr "п≤п╫я┌п╣я─п╫п╣я┌-я┌п╣п╩п╣я└п╬п╫п╦я▐"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:88
+msgid "Introductory"
+msgstr "п·п╥п╫п╟п╨п╬п╪п╩п╣п╫п╦п╣"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:89
+msgid "Intrusion Detection"
+msgstr "п·п╠п╫п╟я─я┐п╤п╣п╫п╦п╣ п©я─п╬п╫п╦п╨п╫п╬п╡п╣п╫п╦я▐"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:90
+msgid "Java"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ Java"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:91
+msgid "KDE"
+msgstr "п║я─п╣п╢п╟ KDE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:92
+msgid "Kernels"
+msgstr "п╞п╢я─п╟"
+
 #: cl/templates/scrollkeeper_cl.xml.in.h:93
-msgid "Local"
-msgstr "Резервное копирование"
+msgid "Language"
+msgstr "п╞п╥я▀п╨"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:94
-msgid "Login Managers"
-msgstr "Шрифты"
+msgid "Libraries"
+msgstr "п▒п╦п╠п╩п╦п╬я┌п╣п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:95
-msgid "MIDI"
-msgstr "Редактирование"
+msgid "Licenses"
+msgstr "п⌡п╦я├п╣п╫п╥п╦п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:96
-msgid "Mandrake"
-msgstr "Debian"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:97
-msgid "Math"
-msgstr "Генетика"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:98
-msgid "Maths"
-msgstr "Математика"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:99
-msgid "Messaging"
-msgstr "Сообщения"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:100
-msgid "Mixers"
-msgstr "MIDI"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:101
-msgid "Monitors"
-msgstr "Мониторы"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:102
-msgid "Multimedia"
-msgstr "Мультимедиа"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:103
-msgid "Music"
-msgstr "Музыка"
-
-#: cl/templates/scrollkeeper_cl.xml.in.h:104
-msgid "NetBSD"
+msgid "Linux"
 msgstr "Linux"
 
+#: cl/templates/scrollkeeper_cl.xml.in.h:97
+msgid "Local"
+msgstr "п⌡п╬п╨п╟п╩я▄п╫п╬п╣"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:98
+msgid "Login Managers"
+msgstr "п°п╣п╫п╣п╢п╤п╣я─я▀ п╟п╡я┌п╬я─п╦п╥п╟я├п╦п╦"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:99
+msgid "MIDI"
+msgstr "MIDI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:100
+msgid "Mandrake"
+msgstr "п■п╦я│я┌я─п╦п╠я┐я┌п╦п╡я▀ Mandrak"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:101
+msgid "Math"
+msgstr "п°п╟я┌п╣п╪п╟я┌п╦п╨п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:102
+msgid "Maths"
+msgstr "п°п╟я┌п╣п╪п╟я┌п╦п╨п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:103
+msgid "Messaging"
+msgstr "п║п╬п╬п╠я┴п╣п╫п╦я▐"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:104
+msgid "Mixers"
+msgstr "п°п╦п╨я┬п╣я─я▀"
+
 #: cl/templates/scrollkeeper_cl.xml.in.h:105
-msgid "Network"
-msgstr "Мультимедиа"
+msgid "Monitors"
+msgstr "п°п╬п╫п╦я┌п╬я─я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:106
-msgid "Networking"
-msgstr "Файловые системы"
+msgid "Multimedia"
+msgstr "п°я┐п╩я▄я┌п╦п╪п╣п╢п╦п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:107
-msgid "News"
-msgstr "Новости"
+msgid "Music"
+msgstr "п°я┐п╥я▀п╨п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:108
-msgid "Office"
-msgstr "Прочее"
+msgid "NetBSD"
+msgstr "NetBSD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:109
-msgid "Other"
-msgstr "Прочее"
+msgid "Network"
+msgstr "п║п╣я┌я▄"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:110
-msgid "PCI/ISA/PCMCIA"
-msgstr "Сеть"
+msgid "Networking"
+msgstr "п║п╣я┌п╣п╡я▀п╣ я└п╟п╧п╩п╬п╡я▀п╣ я│п╦я│я┌п╣п╪я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:111
-msgid "PIM"
-msgstr "Финансы"
+msgid "News"
+msgstr "п²п╬п╡п╬я│я┌п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:112
-msgid "PPP"
-msgstr "AppleTalk"
+msgid "Office"
+msgstr "п·я└п╦я│"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:113
-msgid "Package Management"
-msgstr "Прочее"
+msgid "Other"
+msgstr "п÷я─п╬я┤п╣п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:114
-msgid "Packaging"
-msgstr "Интегрированные среды разработки"
+msgid "PCI/ISA/PCMCIA"
+msgstr "п╗п╦п╫я▀ PCI/ISA/PCMCIA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:115
-msgid "Perl"
-msgstr "KDE"
+msgid "PIM"
+msgstr "п÷п╣я─я│п╬п╫п╟п╩я▄п╫я▀п╧ п╦п╫я└п╬я─п╪п╟я├п╦п╬п╫п╫я▀п╧ п╪п╣п╫п╣п╢п╤п╣я─"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:116
-msgid "Physics"
-msgstr "Математика"
+msgid "PPP"
+msgstr "п÷я─п╬я┌п╬п╨п╬п╩ PPP"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:117
-msgid "Players"
-msgstr "Микшеры"
+msgid "Package Management"
+msgstr "п°п╣п╫п╣п╢п╤п╪п╣п╫я┌ п©п╟п╨п╣я┌п╬п╡"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:118
-msgid "Plotting"
-msgstr "Персональный информ. менеджер"
+msgid "Packaging"
+msgstr "п║п╦я│я┌п╣п╪я▀ п©п╟п╨п╣я┌п╬п╡"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:119
-msgid "Presentation"
-msgstr "Графики"
+msgid "Perl"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ Perl"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:120
-msgid "Printing"
-msgstr "Сжатие"
+msgid "Physics"
+msgstr "п╓п╦п╥п╦п╨п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:121
-msgid "Processor"
-msgstr "Аппаратура"
+msgid "Players"
+msgstr "п÷я─п╬п╦пЁя─я▀п╡п╟я┌п╣п╩п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:122
-msgid "Profiling"
-msgstr "Пакетизация"
+msgid "Plotting"
+msgstr "Plotting"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
-msgid "Programs"
-msgstr "Система"
+msgid "Preferences"
+msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
-msgid "Publishing"
-msgstr "Презентации"
+msgid "Presentation"
+msgstr "п÷я─п╣п╥п╣п╫я┌п╟я├п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:125
-msgid "Puzzles"
-msgstr "Головоломки"
+msgid "Printing"
+msgstr "п÷п╣я┤п╟я┌я▄"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:126
-msgid "Python"
-msgstr "Perl"
+msgid "Processor"
+msgstr "п÷я─п╬я├п╣я│я│п╬я─"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:127
-msgid "Qt"
-msgstr "Python"
+msgid "Profiling"
+msgstr "п÷я─п╬я└п╦п╩п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-msgid "RAD"
-msgstr "Профилирование"
+#, fuzzy
+msgid "Programming"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
-msgid "Recording"
-msgstr "Проигрыватели"
+msgid "Programs"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:130
-msgid "Red Flag"
-msgstr "Mandrake"
+msgid "Publishing"
+msgstr "п÷я┐п╠п╩п╦п╨п╟я├п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:131
-msgid "Red Hat"
-msgstr "Red Flag"
+msgid "Puzzles"
+msgstr "п⌠п╬п╩п╬п╡п╬п╩п╬п╪п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:132
-msgid "Remote"
-msgstr "Локальное"
+msgid "Python"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ Python"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:133
-msgid "Role-Playing"
-msgstr "Модели"
+msgid "Qt"
+msgstr "п÷п╟п╨п╣я┌ Qt"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:134
-msgid "SMB"
-msgstr "PPP"
+msgid "RAD"
+msgstr "п▒я▀я│я┌я─п╟я▐ я─п╟п╥я─п╟п╠п╬я┌п╨п╟ п©я─п╦п╩п╬п╤п╣п╫п╦п╧ (RAD)"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:135
-msgid "SSH"
-msgstr "SMB"
+msgid "Recording"
+msgstr "п≈п╟п©п╦я│я▄"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:136
-msgid "Science"
-msgstr "Наука"
+msgid "Red Flag"
+msgstr "Red Flag"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:137
-msgid "Scientific"
-msgstr "Прочее"
+msgid "Red Hat"
+msgstr "п■п╦я│я┌я─п╦п╠я┐я┌п╦п╡я▀ Red Hat"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:138
-msgid "Screensavers"
-msgstr "Диспетчеры регистрационных имён"
+msgid "Remote"
+msgstr "пёп╢п╟п╩я▒п╫п╫п╬п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:139
-msgid "Security"
-msgstr "Прочее"
+msgid "Role-Playing"
+msgstr "п═п╬п╩п╣п╡я▀п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:140
-msgid "Services"
-msgstr "Прочее"
+msgid "SMB"
+msgstr "п÷я─п╬я┌п╬п╨п╬п╩ SMB"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:141
-msgid "Settings"
-msgstr "Мультимедиа"
+msgid "SSH"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀ SSH"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:142
-msgid "Simulation"
-msgstr "Ролевые"
+msgid "Science"
+msgstr "п²п╟я┐п╨п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:143
-msgid "Slackware"
-msgstr "Red Hat"
+msgid "Scientific"
+msgstr "п²п╟я┐я┤п╫я▀п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:144
-msgid "Sound"
-msgstr "Прочее"
+msgid "Screensavers"
+msgstr "п╔я─п╟п╫п╦я┌п╣п╩п╦ я█п╨я─п╟п╫п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:145
-msgid "Speech"
-msgstr "Запись"
+msgid "Security"
+msgstr "п▒п╣п╥п╬п©п╟я│п╫п╬я│я┌я▄"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:146
-msgid "Storage"
-msgstr "Процессор"
+msgid "Services"
+msgstr "п║п╣я─п╡п╦я│я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:147
-msgid "Strategy"
-msgstr "Стратегии"
+msgid "Settings"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:148
-msgid "SuSE"
-msgstr "Slackware"
+msgid "Simulation"
+msgstr "п║п╦п╪я┐п╩я▐я├п╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:149
-msgid "Syslog"
-msgstr "Telnet"
+msgid "Slackware"
+msgstr "п■п╦я│я┌я─п╦п╠я┐я┌п╦п╡я▀ Slackware"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:150
-msgid "System"
-msgstr "Установки"
+msgid "Sound"
+msgstr "п≈п╡я┐п╨"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
-msgid "System Calls"
-msgstr "Библиотеки"
+msgid "Sound and Video"
+msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
-msgid "TCP/IP"
-msgstr "SMB"
+msgid "Speech"
+msgstr "п═п╣я┤я▄"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:153
-msgid "Tcl/Tk"
-msgstr "Qt"
+msgid "Storage"
+msgstr "п╔я─п╟п╫п╣п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:154
-msgid "Technology"
-msgstr "Технологии"
+msgid "Strategy"
+msgstr "п║я┌я─п╟я┌п╣пЁп╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:155
-msgid "Telnet"
-msgstr "SSH"
+msgid "SuSE"
+msgstr "п■п╦я│я┌я─п╦п╠я┐я┌п╦п╡я▀ SuSE"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:156
-msgid "Terminals"
-msgstr "Печать"
+msgid "Syslog"
+msgstr "п║п╦я│я┌п╣п╪п╫я▀п╧ п╤я┐я─п╫п╟п╩"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:157
-msgid "Testing"
-msgstr "Тестирование"
+msgid "System"
+msgstr "п║п╦я│я┌п╣п╪п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-msgid "Text Editors"
-msgstr "Прочее"
+#, fuzzy
+msgid "System Administration"
+msgstr "п░п╢п╪п╦п╫п╦я│я┌я─п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
-msgid "Text Utilities"
-msgstr "Терминалы"
+msgid "System Calls"
+msgstr "п║п╦я│я┌п╣п╪п╫я▀п╣ п╡я▀п╥п╬п╡я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-msgid "Tutorials"
-msgstr "Ознакомление"
+#, fuzzy
+msgid "System Tools"
+msgstr "п║п╦я│я┌п╣п╪п╫я▀п╣ п╡я▀п╥п╬п╡я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
-msgid "Users"
-msgstr "Прочее"
+msgid "TCP/IP"
+msgstr "п÷я─п╬я┌п╬п╨п╬п╩ TCP/IP"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:162
-msgid "Utilities"
-msgstr "Прочие"
+msgid "Tcl/Tk"
+msgstr "п╞п╥я▀п╨ п©я─п╬пЁя─п╟п╪п╪п╦я─п╬п╡п╟п╫п╦я▐ Tcl/Tk"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:163
-msgid "Utility"
-msgstr "Сеть"
+msgid "Technology"
+msgstr "п╒п╣я┘п╫п╬п╩п╬пЁп╦я▐"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:164
-msgid "Version Control"
-msgstr "Средства быстрой разработки"
+msgid "Telnet"
+msgstr "п÷я─п╬пЁя─п╟п╪п╪я▀ Telnet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:165
-msgid "Video"
-msgstr "Прочее"
+msgid "Terminals"
+msgstr "п╒п╣я─п╪п╦п╫п╟п╩я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:166
-msgid "Video Conferencing"
-msgstr "Видео-конференции"
+msgid "Testing"
+msgstr "п╒п╣я│я┌п╦я─п╬п╡п╟п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:167
-msgid "Viewing"
-msgstr "Редактирование"
+msgid "Text Editors"
+msgstr "п╒п╣п╨я│я┌п╬п╡я▀п╣ я─п╣п╢п╟п╨я┌п╬я─я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:168
-msgid "Virus"
-msgstr "Обнаружение проникновения"
+msgid "Text Utilities"
+msgstr "п╒п╣п╨я│я┌п╬п╡я▀п╣ я┐я┌п╦п╩п╦я┌я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:169
-msgid "Visualisation"
-msgstr "Физика"
+msgid "Tutorials"
+msgstr "п·п╠я┐я┤п╣п╫п╦п╣"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-msgid "Web"
-msgstr "Web"
+#, fuzzy
+msgid "User Guides"
+msgstr "п÷п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
-msgid "Web Publishing"
-msgstr "Публикации"
+msgid "Users"
+msgstr "п÷п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:172
-msgid "WebML"
-msgstr "Tcl/Tk"
+msgid "Utilities"
+msgstr "пёя┌п╦п╩п╦я┌я▀"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:173
-msgid "White Papers"
-msgstr "Обучение"
+msgid "Utility"
+msgstr "пёя┌п╦п╩п╦я┌п╟"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:174
-msgid "Window Managers"
-msgstr "Хранители экрана"
+msgid "Version Control"
+msgstr "п п╬п╫я┌я─п╬п╩я▄ п╡п╣я─я│п╦п╧"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:175
-msgid "Word Processing"
-msgstr "Публикации"
+msgid "Video"
+msgstr "п▓п╦п╢п╣п╬"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:176
-msgid "X"
-msgstr "Прочее"
+msgid "Video Conferencing"
+msgstr "п▓п╦п╢п╣п╬п╨п╬п╫я└п╣я─п╣п╫я├п╦п╦"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:177
+msgid "Viewing"
+msgstr "п÷я─п╬я│п╪п╬я┌я─"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:178
+msgid "Virus"
+msgstr "п▓п╦я─я┐я│"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:179
+msgid "Visualisation"
+msgstr "п▓п╦п╥я┐п╟п╩п╦п╥п╟я├п╦я▐"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:180
+msgid "Web"
+msgstr "п÷п╟я┐я┌п╦п╫п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:181
+msgid "Web Publishing"
+msgstr "Web-п©я┐п╠п╩п╦п╨п╟я├п╦п╦"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:182
+msgid "WebML"
+msgstr "WebML"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:183
+msgid "White Papers"
+msgstr "п║я┌п╟п╫п╢п╟я─я┌я▀"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:184
+msgid "Window Managers"
+msgstr "п╬п╨п╬п╫п╫я▀п╣ п╪п╣п╫п╣п╢п╤п╣я─я▀"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:185
+msgid "Word Processing"
+msgstr "п·п╠я─п╟п╠п╬я┌п╨п╟ я┌п╣п╨я│я┌п╟"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:186
+msgid "X"
+msgstr "X"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:187
 msgid "gtk++"
-msgstr "GTK+"
+msgstr "п÷п╟п╨п╣я┌ gtk++"
 
 #~ msgid "wrong omf file %s\n"
-#~ msgstr "неверный omf файл %s\n"
+#~ msgstr "п╫п╣п╡п╣я─п╫я▀п╧ omf я└п╟п╧п╩ %s\n"
 
 #~ msgid "error while parsing %s\n"
-#~ msgstr "ошибка разбора %s\n"
+#~ msgstr "п╬я┬п╦п╠п╨п╟ я─п╟п╥п╠п╬я─п╟ %s\n"
 
 #~ msgid ""
 #~ "Usage:  toc <filename>\n"
 #~ "\n"
 #~ msgstr ""
-#~ "Использование:  toc <имя файла>\n"
+#~ "п≤я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣:  toc <п╦п╪я▐ я└п╟п╧п╩п╟>\n"
 #~ "\n"
 
 #~ msgid "scrollkeeper-install: out of memory: %s\n"
-#~ msgstr "scrollkeeper-install: не хватает памяти: %s\n"
+#~ msgstr "scrollkeeper-install: п╫п╣ я┘п╡п╟я┌п╟п╣я┌ п©п╟п╪я▐я┌п╦: %s\n"
 
 #~ msgid "%s: warning: replacing %s with %s\n"
-#~ msgstr "%s: внимание: замена %s на %s\n"
+#~ msgstr "%s: п╡п╫п╦п╪п╟п╫п╦п╣: п╥п╟п╪п╣п╫п╟ %s п╫п╟ %s\n"

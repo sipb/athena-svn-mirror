@@ -1,3 +1,103 @@
+2002-07-24 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing to version 0.3.11 for release.
+	* cl/templates/scrollkeeper_cl.xml.in:
+		Updated to have GNOME categories in it from the Panel, thanks
+		to patch from Sander Vesik <Sander.Vesik@sun.com>
+
+2002-07-09 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* po/sk.po: Updated version, by Stanislav Visnovsky  
+                    <visnovsky@nenya.ms.mff.cuni.cz>
+	* configure.in: Changing version to 0.3.11beta
+
+2002-06-19 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* configure.in: Changing to version 0.3.10 for release.
+
+2002-06-19 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Updating some po files, and adding a new one (vi.po).  Thanks to
+	the translators!
+
+	* configure.in: Adding vi locale and bumping version to 0.3.10beta2
+	* po/ru.po: update
+	* po/sl.po: update
+	* po/pl.po: update
+	* po/it.po: update
+	* po/nb.po: update
+	* po/vi.po: new
+	* cl/templates/Makefile.am: Adding vi to list
+
+2002-06-19 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Removing superfluous comma, noticed by Joe Marcus 
+	Clarke <marcus@FreeBSD.org>
+
+	* cl/templates/Makefile.am:
+
+2002-06-19 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding patch from Joe Marcus Clarke <marcus@FreeBSD.org> to
+	fix a bus error on some versions of FreeBSD:
+
+	* buildtools/separate.c:
+
+2002-06-12 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Adding update Catalan po file, sent in by Jordi Mallach
+	<jordi@sindominio.net>.
+
+	* po/ca.po:
+
+2002-06-12 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* extract/stylesheets/toc.xsl: Adding a patch from Sander
+	  Vesik <Sander.Vesik@Sun.COM> which adds support for <part>
+	  DocBook element.  In his words:
+          ----------------------------------------------------------------------
+	  This patch for extract/stylesheets/toc.xsl does two things:
+	  * adds support for <part> so that structure of documents
+            marked up as a book consisting of parts is preserved
+	  * adds support for the wrapped chapters of the user guide so
+            they get correct TOC-s 
+          the second use (and the need for it) will hopefully go away soon after
+          gnome 2.0.0 when a better solution is found.
+          ----------------------------------------------------------------------
+
+2002-06-05 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* TODO: Adding a few things and removing obsolete items
+
+2002-06-04 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* Makefile.am: Adding binary install path to PATH so that the
+	               newly installed binaries are used instead of any that may
+	               already be installed.  This is particularly important
+	               for users who are installing a version on a system
+	               which already has an installation, but the second
+	               install does't erase the first one.  (Eg. a user
+	               installing it in their home directory, or a developer
+	               installing it in a development path.) 
+
+2002-06-01 Dan Mueth <muet@alumni.uchicago.edu>
+
+	* libs/database.c: Remove an unused variable. Fix how path[] is initialized.
+
+2002-06-01 Dan Mueth <muet@alumni.uchicago.edu>
+
+	Having scrollkeeper-preinstall just copy the OMF file if it
+	can't update the URL.  This way at least packages will be built
+	on systems like BSD, even though some OMF files may not register.
+
+	* cl/src/preinstall.c:	
+
+	* configure.in: Bumping version to 0.3.10beta1
+
+2002-06-01 Dan Mueth <muet@alumni.uchicago.edu>
+
+	- Making 0.3.9 release -
+
 2002-06-01 Dan Mueth <muet@alumni.uchicago.edu>
 
 	Fixing bug which shows up when somebody declares the DOCTYPE,

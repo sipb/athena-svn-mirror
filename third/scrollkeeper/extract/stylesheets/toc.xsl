@@ -6,7 +6,7 @@
 <xsl:template match="/">
 	<toc>
 	<xsl:text>&#10;</xsl:text>
-        <xsl:apply-templates select="book[@id]|article[@id]"> 
+        <xsl:apply-templates select="book[@id]|part|article[@id]"> 
 		<xsl:with-param name="toclevel" select="0"/>
 	</xsl:apply-templates>
 	</toc>
@@ -14,9 +14,35 @@
 
 <xsl:template match="book">
 	<xsl:param name="toclevel"/>
-        <xsl:apply-templates select="article[@id]|chapter[@id]|appendix[@id]">
+        <xsl:apply-templates select="article[@id]|chapter[@id]|appendix[@id]|part[@id]">
 		<xsl:with-param name="toclevel" select="$toclevel+1"/>
 	</xsl:apply-templates>
+</xsl:template>
+
+<!--	match part in two different ways - making "id-less" parts skip a level,
+	mimicking it all having been an article. 
+-->
+
+<xsl:template match="part">
+	<xsl:param name="toclevel"/>
+	<xsl:apply-templates select="chapter[@id]/sect1[@id]">
+		<xsl:with-param name="toclevel" select="$toclevel+1"/>
+	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="part[@id]">
+	<xsl:param name="toclevel"/>
+	<xsl:element name="tocsect{$toclevel}">
+		<xsl:attribute name="linkid">
+			<xsl:value-of select="@id"/>
+		</xsl:attribute>
+		<xsl:value-of select="title"/>
+		<xsl:text>&#10;</xsl:text>
+		<xsl:apply-templates select="appendix[@id]|article[@id]|chapter[@id]">
+			<xsl:with-param name="toclevel" select="$toclevel+1"/>
+		</xsl:apply-templates>
+	</xsl:element>
+	<xsl:text>&#10;</xsl:text>
 </xsl:template>
 
 <xsl:template match="article">

@@ -242,6 +242,7 @@ static void trim_obsolete_locales(xmlNodePtr tree_node, char *locale, xmlChar **
 					xmlUnlinkNode(w_node);
 					xmlFreeNode(w_node);
 				}
+				continue;
 			}
 			else {
 				if (strcmp(lang, "C")) {

@@ -1,6 +1,7 @@
 Fixing Broken Stuff
 -------------------
-* Fix bug where category must be localized.
+* Fix bug where category must be localized. (It should do translation for
+  non-localized categories in OMF files using category id's.)
 * Write tool for validating one or more OMF files, and man page for it.
 * Fix bugs in the bug system: 
     https://sourceforge.net/tracker/?group_id=11543&atid=111543
@@ -20,6 +21,8 @@ Fixing Broken Stuff
 
 Adding/Enriching Features
 -------------------------
+* Add feature which allows promotion of documents from an obsolete category
+  to a specified non-obsolete category.
 * Consider making category an optional attribute.
 * Add appropriate flags to various commands to allow for easy use by non-root
   users.  This means each command must accept a flag for the database path,
@@ -60,7 +63,6 @@ Adding/Enriching Features
 
 Documentation
 -------------
-* Put the category list on the web page.
 * Update/finish 0.4 specifications.
 * Write a document about anything with DocBook/XML or DocBook/SGML that
   ScrollKeeper is picky about.  For example, ScrollKeeper currently requires that
@@ -77,4 +79,10 @@ Testing
 * Make sure that documents with missing document id's all get treated as 
   unique documents.
 * Test locale fallback for documents
+
+ScrollKeeper 0.5.x/0.6.x Features/Changes
+-----------------------------------------
+* URI resolution
+* DTD improvements
+* Conversion of OMF files between DTDs
 

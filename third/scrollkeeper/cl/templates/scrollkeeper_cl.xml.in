@@ -510,15 +510,30 @@
   <sect>
     <_title>GNOME</_title>
     <sect>
+      <_title>Accessibility</_title>
+    </sect>
+    <sect>
       <_title>Core Desktop</_title>
     </sect>
     <sect>
+      <_title>Desktop</_title>
+      <sect>
+        <_title>User Guides</_title>
+      </sect>
+    </sect>
+    <sect>
       <_title>Applets</_title>
+      <sect>
+        <_title>Accessories</_title>
+      </sect>
       <sect>
         <_title>Amusement</_title>
       </sect>
       <sect>
         <_title>Clock</_title>
+      </sect>
+      <sect>
+        <_title>Internet</_title>
       </sect>
       <sect>
         <_title>Monitors</_title>
@@ -535,6 +550,39 @@
     </sect>
     <sect>
       <_title>Applications</_title>
+      <sect>
+        <_title>Accessories</_title>
+      </sect>
+      <sect>
+        <_title>Desktop Preferences</_title>
+      </sect>
+      <sect>
+        <_title>Games</_title>
+      </sect>
+      <sect>
+        <_title>Graphics</_title>
+      </sect>
+      <sect>
+        <_title>Internet</_title>
+      </sect>
+      <sect>
+        <_title>Office</_title>
+      </sect>
+      <sect>
+        <_title>Programming</_title>
+      </sect>
+      <sect>
+        <_title>Sound and Video</_title>
+      </sect>
+      <sect>
+        <_title>System Tools</_title>
+      </sect>
+    </sect>
+    <sect>
+      <_title>Preferences</_title>
+    </sect>
+    <sect>
+      <_title>System Administration</_title>
     </sect>
     <sect>
       <_title>Utilities</_title>

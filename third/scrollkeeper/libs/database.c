@@ -62,7 +62,7 @@ int sk_mkdir_with_parents(char *fullpath, mode_t options, char outputprefs)
     struct stat buf;
 
     pathcopy = strdup(fullpath); /* Copy b/c strtok edits the string it operates on */
-    sprintf(path, "");                                                /* initialize */
+    path[0] = '\0';              /* Initialize with end of string null character */
     if (pathcopy[0] == slash[0]) sprintf(path, "/"); /* preserve any starting slash */
      
     token = strtok (pathcopy, delim);
@@ -96,7 +96,7 @@ int create_database_directory(char *scrollkeeper_dir, char *scrollkeeper_data_di
     char source_path[PATHLEN], target_path[PATHLEN]; 
     struct dirent *dir_ent;
     struct stat buf;
-    int empty, retval;
+    int empty;
     char *data_dir, dirname[PATHLEN];
         
     /* check if it's empty */

@@ -5,7 +5,7 @@
 EXTRA_DIST=scrollkeeper_cl.xml.in
 LIB_PATH=$(top_builddir)/libs/.libs
 
-TRANSLATED_LOCALES = C ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk, zh_TW
+TRANSLATED_LOCALES = C ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk vi zh_TW
 
 all: scrollkeeper_cl.xml
 	$(top_builddir)/buildtools/scrollkeeper-tree-separate scrollkeeper_cl.xml $(srcdir) 
