@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.50 1992-02-14 20:52:08 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.51 1992-04-04 18:35:00 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.50 1992-02-14 20:52:08 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.51 1992-04-04 18:35:00 lwvanels Exp $";
 #endif
 #endif
 
@@ -1312,6 +1312,7 @@ olc_send(fd, request)
 		  requester->title,
 		  requester->user->username, requester->instance,
 		  requester->question->topic);
+	  log_daemon(requester, msg);
 	  olc_broadcast_message ("forwarded", msg,
 				 requester->question->topic);
 	}
@@ -1326,23 +1327,23 @@ olc_send(fd, request)
 #endif /* LOG */
 
   if (owns_question(requester)) {
-    target->question->stats.n_urepl++;
+    requester->question->stats.n_urepl++;
     if (requester->status == PICKUP)
       set_status(requester, PENDING);
     if (! is_connected(target))
       {
 	sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
 		target->user->username, target->instance);
-	olc_broadcast_message("lonely_hearts",mesg, target->question->topic);
+	olc_broadcast_message("lonely_hearts",mesg, requester->question->topic);
       }
   } else {
-    if (target->question->stats.time_to_fr == -1) {
+    if (requester->question->stats.time_to_fr == -1) {
       time_t now;
       
       now = time(0);
-      target->question->stats.time_to_fr = now - target->timestamp;
+      requester->question->stats.time_to_fr = now - target->timestamp;
     }
-    target->question->stats.n_crepl++;
+    requester->question->stats.n_crepl++;
   }
 
 
