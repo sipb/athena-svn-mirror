@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
  *      $Author: raeburn $
- *      $Id: olcd.h,v 1.9 1990-01-10 14:19:47 raeburn Exp $
+ *      $Id: olcd.h,v 1.10 1990-01-10 15:12:50 raeburn Exp $
  */
 
 #ifndef __olcd_h
@@ -420,5 +420,9 @@ extern "C" {
 #if is_cplusplus
 };
 #endif
+#else
+extern char * get_next_word ();
+extern void init_dbinfo ();
+extern void log_error ();
 #endif /* __STDC__ */
 #endif /* __olcd_h */
