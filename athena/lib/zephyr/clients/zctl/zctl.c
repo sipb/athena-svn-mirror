@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,13 +15,14 @@
 
 #include <zephyr/zephyr.h>
 #include <ss/ss.h>
+#include <com_err.h>
 #include <pwd.h>
 #include <netdb.h>
 #include <string.h>
 #include <sys/file.h>
 #include <sys/param.h>
 #ifndef lint
-static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.14 1989-11-15 12:00:51 jtkohl Exp $";
+static char *rcsid_zctl_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.15 1990-07-12 13:56:38 raeburn Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -51,7 +52,7 @@ char subsname[BUFSIZ];
 char ourhost[MAXHOSTNAMELEN],ourhostcanon[MAXHOSTNAMELEN];
 
 extern ss_request_table zctl_cmds;
-extern char *getenv(), *malloc(), *index(),*malloc();
+extern char *getenv(), *malloc();
 extern uid_t getuid();
 
 main(argc,argv)
@@ -119,7 +120,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.14 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.15 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
