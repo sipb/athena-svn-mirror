@@ -71,7 +71,7 @@ as the command to change screen saver preferences.  Defaults to
 running the installed
 .BR xss-demo (1).
 .TP 8
-\fB\-logoWidth\fP \fIwidth\fP
+\fB\-logo-width\fP \fIwidth\fP
 Sets the width of the
 .RB skull-and- xlogo (1)
 icon.  This also indirectly sets the width of the button window, and
@@ -79,7 +79,7 @@ is probably more useful than using the canonical
 .B \-width
 switch.  Defaults to 48.
 .TP 8
-\fB\-logoHeight\fP \fIheight\fP
+\fB\-logo-height\fP \fIheight\fP
 Sets the height of the
 .RB skull-and- xlogo (1)
 icon.  This also indirectly sets the height of the button window, and
@@ -89,21 +89,17 @@ switch.  Defaults to 48.
 .TP 8
 .B\-redirect
 Causes standard output and standard error of all child processes to be 
-redirected to a file.
+redirected to a file. This is the default, although the default
+log\-file is \fI/dev/null\fR.
 .TP 8
 .B\-noredirect
-Standard output and standard error will not be redirected.  The
-default is to redirect.
+Standard output and standard error will not be redirected.
 .TP 8
-\fB\-logFile\fP \fIfile\fP
+\fB\-log-file\fP \fIfile\fP
 If standard output and standard error are redirected, sends the output 
 to
 .IR file .
-Defaults to
-.I .xss-log
-in the directory
-.I xss-button
-was started from.
+Defaults to \fI/dev/null\fR.
 .SH X DEFAULTS
 This program consists of essentially a single Athena Label widget.
 The program's useful resources are:
