@@ -40,7 +40,8 @@ typedef enum
   WNCK_WINDOW_STATE_SHADED                 = 1 << 3,
   WNCK_WINDOW_STATE_SKIP_PAGER             = 1 << 4,
   WNCK_WINDOW_STATE_SKIP_TASKLIST          = 1 << 5,
-  WNCK_WINDOW_STATE_STICKY                 = 1 << 6
+  WNCK_WINDOW_STATE_STICKY                 = 1 << 6,
+  WNCK_WINDOW_STATE_HIDDEN                 = 1 << 7
 } WnckWindowState;
 
 typedef enum
@@ -182,6 +183,7 @@ void     wnck_window_unpin     (WnckWindow *window);
 
 void     wnck_window_activate  (WnckWindow *window);
 gboolean wnck_window_is_active (WnckWindow *window);
+void     wnck_window_activate_transient (WnckWindow *window);
 
 
 GdkPixbuf* wnck_window_get_icon      (WnckWindow *window);

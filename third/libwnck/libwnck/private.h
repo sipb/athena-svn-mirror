@@ -30,6 +30,9 @@
 #include "application.h"
 #include "xutils.h"
 #include "pager.h"
+#ifdef HAVE_STARTUP_NOTIFICATION
+#include <libsn/sn.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -48,6 +51,8 @@ WnckWindow* _wnck_window_create  (Window      xwindow,
                                   WnckScreen *screen);
 void        _wnck_window_destroy (WnckWindow *window);
 
+const char* _wnck_window_get_startup_id (WnckWindow *window);
+
 WnckWorkspace* _wnck_workspace_create  (int            number,
 					WnckScreen    *screen);
 void           _wnck_workspace_destroy (WnckWorkspace *space);
@@ -65,6 +70,9 @@ void             _wnck_application_destroy (WnckApplication *app);
 
 void _wnck_workspace_update_name (WnckWorkspace *workspace,
                                   const char    *name);
+void _wnck_screen_change_workspace_name (WnckScreen *screen,
+                                         int         number,
+                                         const char *name);
 
 void _wnck_init (void);
 
@@ -75,8 +83,15 @@ void _wnck_init (void);
 
 #define WNCK_SCREEN_XSCREEN(screen) (_wnck_screen_get_xscreen (screen))
 
-Screen *_wnck_screen_get_xscreen (WnckScreen *screen);
+Screen    *_wnck_screen_get_xscreen    (WnckScreen *screen);
+int        _wnck_screen_get_number     (WnckScreen *screen);
+GdkScreen *_wnck_screen_get_gdk_screen (WnckScreen *screen);
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+SnDisplay* _wnck_screen_get_sn_display (WnckScreen *screen);
+#endif
+
+WnckScreen* _wnck_screen_get_existing (int number);
 
 void           _wnck_pager_activate_workspace   (WnckWorkspace *wspace);
 int            _wnck_pager_get_n_workspaces     (WnckPager     *pager);
@@ -88,6 +103,7 @@ WnckWorkspace* _wnck_pager_get_workspace        (WnckPager     *pager,
 void           _wnck_pager_get_workspace_rect   (WnckPager     *pager,
                                                  int            i,
                                                  GdkRectangle  *rect);
+
 
 G_END_DECLS
 

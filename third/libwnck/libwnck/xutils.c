@@ -596,6 +596,40 @@ _wnck_get_utf8_list (Window   xwindow,
 }
 
 void
+_wnck_set_utf8_list (Window   xwindow,
+                     Atom     atom,
+                     char   **list)
+{
+  Atom utf8_string;
+  GString *flattened;
+  int i;
+  
+  utf8_string = _wnck_atom_get ("UTF8_STRING");  
+
+  /* flatten to nul-separated list */
+  flattened = g_string_new ("");
+  i = 0;
+  while (list[i] != NULL)
+    {
+      g_string_append_len (flattened, list[i],
+                           strlen (list[i]) + 1);
+      ++i;
+    }
+
+  _wnck_error_trap_push ();
+  
+  XChangeProperty (gdk_display,
+		   xwindow,
+                   atom,
+		   utf8_string, 8, PropModeReplace,
+		   flattened->str, flattened->len);
+  
+  _wnck_error_trap_pop ();
+
+  g_string_free (flattened, TRUE);
+}
+
+void
 _wnck_error_trap_push (void)
 {
   gdk_error_trap_push ();
@@ -662,6 +696,7 @@ filter_func (GdkXEvent  *gdkxevent,
              gpointer    data)
 {
   XEvent *xevent = gdkxevent;
+  int i;
   
   switch (xevent->type)
     {
@@ -704,6 +739,26 @@ filter_func (GdkXEvent  *gdkxevent,
       {
         _wnck_desktop_layout_manager_process_event (xevent);
       }
+      break;
+
+    case ClientMessage:
+#ifdef HAVE_STARTUP_NOTIFICATION
+      /* We're cheating as officially libsn requires
+       * us to send all events through sn_display_process_event
+       */
+      i = 0;
+      while (i < ScreenCount (gdk_display))
+        {
+          WnckScreen *s;
+
+          s = _wnck_screen_get_existing (i);
+          if (s != NULL)
+            sn_display_process_event (_wnck_screen_get_sn_display (s),
+                                      xevent);
+          
+          ++i;
+        }
+#endif /* HAVE_STARTUP_NOTIFICATION */
       break;
     }
   
@@ -953,6 +1008,30 @@ _wnck_activate_workspace (Screen *screen,
   xev.xclient.data.l[2] = 0;
 
   XSendEvent (gdk_display,
+	      RootWindowOfScreen (screen),
+              False,
+	      SubstructureRedirectMask | SubstructureNotifyMask,
+	      &xev);
+}
+
+void
+_wnck_toggle_showing_desktop (Screen  *screen,
+                              gboolean show)
+{
+  XEvent xev;
+  
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.display = DisplayOfScreen (screen);
+  xev.xclient.window = RootWindowOfScreen (screen);
+  xev.xclient.message_type = _wnck_atom_get ("_NET_SHOWING_DESKTOP");
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = show != FALSE;
+  xev.xclient.data.l[1] = 0;
+  xev.xclient.data.l[2] = 0;
+
+  XSendEvent (DisplayOfScreen (screen),
 	      RootWindowOfScreen (screen),
               False,
 	      SubstructureRedirectMask | SubstructureNotifyMask,
@@ -2061,15 +2140,17 @@ _wnck_get_fallback_icons (GdkPixbuf **iconp,
                           int         ideal_mini_width,
                           int         ideal_mini_height)
 {
-  *iconp = default_icon_at_size (ideal_width > 0 ? ideal_width :
-                                 DEFAULT_ICON_WIDTH,
-                                 ideal_height > 0 ? ideal_height :
-                                 DEFAULT_ICON_HEIGHT);
+  if (iconp)
+    *iconp = default_icon_at_size (ideal_width > 0 ? ideal_width :
+                                   DEFAULT_ICON_WIDTH,
+                                   ideal_height > 0 ? ideal_height :
+                                   DEFAULT_ICON_HEIGHT);
 
-  *mini_iconp = default_icon_at_size (ideal_mini_width > 0 ? ideal_mini_width :
-                                      DEFAULT_MINI_ICON_WIDTH,
-                                      ideal_mini_height > 0 ? ideal_mini_height :
-                                      DEFAULT_MINI_ICON_HEIGHT);
+  if (mini_iconp)
+    *mini_iconp = default_icon_at_size (ideal_mini_width > 0 ? ideal_mini_width :
+                                        DEFAULT_MINI_ICON_WIDTH,
+                                        ideal_mini_height > 0 ? ideal_mini_height :
+                                        DEFAULT_MINI_ICON_HEIGHT);
 }
 
 
@@ -2173,15 +2254,22 @@ _wnck_set_dock_type_hint (Window xwindow)
   _wnck_error_trap_pop ();
 }
 
+/* orientation of pager */
 #define _NET_WM_ORIENTATION_HORZ 0
 #define _NET_WM_ORIENTATION_VERT 1
+
+/* starting corner for counting spaces */
+#define _NET_WM_TOPLEFT     0
+#define _NET_WM_TOPRIGHT    1
+#define _NET_WM_BOTTOMRIGHT 2
+#define _NET_WM_BOTTOMLEFT  3
 
 void
 _wnck_set_desktop_layout (Screen *xscreen,
                           int     rows,
                           int     columns)
 {
-  gulong data[3];
+  gulong data[4];
 
   /* FIXME: hack, hack, hack so as not
    * to have to add a orientation param
@@ -2192,8 +2280,9 @@ _wnck_set_desktop_layout (Screen *xscreen,
   g_assert ((rows == 0) || (columns == 0));
 
   data[0] = (columns == 0) ? _NET_WM_ORIENTATION_HORZ : _NET_WM_ORIENTATION_VERT;
-  data[1] = rows;
-  data[2] = columns;
+  data[1] = columns;
+  data[2] = rows;
+  data[3] = _NET_WM_TOPLEFT;
   
   _wnck_error_trap_push ();
 
@@ -2201,7 +2290,7 @@ _wnck_set_desktop_layout (Screen *xscreen,
                    RootWindowOfScreen (xscreen),
 		   _wnck_atom_get ("_NET_DESKTOP_LAYOUT"),
 		   XA_CARDINAL, 32, PropModeReplace,
-		   (guchar *)&data, 3);
+		   (guchar *)&data, sizeof (data) / 4);
 
   _wnck_error_trap_pop ();
 }
@@ -2415,4 +2504,52 @@ _wnck_desktop_layout_manager_process_event (XEvent *xev)
     }
 
   return FALSE;
+}
+
+/* stock icon code Copyright (C) 2002 Jorn Baayen <jorn@nl.linux.org> */
+typedef struct
+{
+  char *stock_id;
+  const guint8 *icon_data;
+} StockIcon;
+
+void
+_wnck_stock_icons_init (void)
+{
+  GtkIconFactory *factory;
+  int i;
+  static gboolean done = FALSE;
+
+  StockIcon items[] =
+  {
+    { WNCK_STOCK_DELETE,   stock_delete_data   },
+    { WNCK_STOCK_MINIMIZE, stock_minimize_data },
+    { WNCK_STOCK_MAXIMIZE, stock_maximize_data }
+  };
+
+  if (done)
+    return;
+
+  done = TRUE;
+  
+  factory = gtk_icon_factory_new ();
+  gtk_icon_factory_add_default (factory);
+
+  for (i = 0; i < (gint) G_N_ELEMENTS (items); i++)
+    {
+      GtkIconSet *icon_set;
+      GdkPixbuf *pixbuf;
+
+      pixbuf = gdk_pixbuf_new_from_inline (-1, items[i].icon_data,
+					   FALSE,
+					   NULL);
+
+      icon_set = gtk_icon_set_new_from_pixbuf (pixbuf);
+      gtk_icon_factory_add (factory, items[i].stock_id, icon_set);
+      gtk_icon_set_unref (icon_set);
+		
+      g_object_unref (G_OBJECT (pixbuf));
+    }
+
+  g_object_unref (G_OBJECT (factory));
 }

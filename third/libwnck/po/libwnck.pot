@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-10-31 11:15-0500\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,47 +32,55 @@ msgstr ""
 msgid "Click this to switch to workspace %s"
 msgstr ""
 
-#: libwnck/window-action-menu.c:155
+#: libwnck/window-action-menu.c:191
 msgid "Un_minimize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:161
+#: libwnck/window-action-menu.c:198
 msgid "_Minimize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:168
+#: libwnck/window-action-menu.c:206
 msgid "_Unmaximize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:174
+#: libwnck/window-action-menu.c:213
 msgid "Ma_ximize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:181
-msgid "U_nshade"
+#: libwnck/window-action-menu.c:221
+msgid "_Unroll"
 msgstr ""
 
-#: libwnck/window-action-menu.c:187
-msgid "_Shade"
+#: libwnck/window-action-menu.c:228
+msgid "Roll _Up"
 msgstr ""
 
-#: libwnck/window-action-menu.c:298
-msgid "_Close"
+#: libwnck/window-action-menu.c:236
+msgid "Only on _This Workspace"
 msgstr ""
 
-#: libwnck/window-action-menu.c:319
+#: libwnck/window-action-menu.c:243
+msgid "Put on _All Workspaces"
+msgstr ""
+
+#: libwnck/window-action-menu.c:372
 msgid "Mo_ve"
 msgstr ""
 
-#: libwnck/window-action-menu.c:325
+#: libwnck/window-action-menu.c:379
 msgid "_Resize"
+msgstr ""
+
+#: libwnck/window-action-menu.c:392
+msgid "_Close"
 msgstr ""
 
 #: libwnck/window.c:29
 msgid "untitled window"
 msgstr ""
 
-#: libwnck/workspace.c:202
+#: libwnck/workspace.c:222
 #, c-format
 msgid "Workspace %d"
 msgstr ""

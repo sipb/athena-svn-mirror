@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libwnck\n"
-"POT-Creation-Date: 2002-10-31 11:15-0500\n"
-"PO-Revision-Date: 2002-07-25 15:36+04:00\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
+"PO-Revision-Date: 2003-01-09 17:01+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,54 +23,68 @@ msgstr "Переключатель рабочих мест"
 
 #: libwnck/pager-accessible.c:328
 msgid "Tool to switch between workspaces"
-msgstr "Средство для переключения между рабочими местами"
+msgstr "Инструмент для переключения между рабочими местами"
 
 #: libwnck/pager-accessible.c:432
 #, c-format
 msgid "Click this to switch to workspace %s"
 msgstr "Щёлкните для переключения на рабочее место %s"
 
-#: libwnck/window-action-menu.c:155
+#: libwnck/window-action-menu.c:191
 msgid "Un_minimize"
 msgstr "_Развернуть"
 
-#: libwnck/window-action-menu.c:161
+#: libwnck/window-action-menu.c:198
 msgid "_Minimize"
 msgstr "_Свернуть"
 
-#: libwnck/window-action-menu.c:168
+#: libwnck/window-action-menu.c:206
 msgid "_Unmaximize"
 msgstr "Восстановить _прежний размер"
 
-#: libwnck/window-action-menu.c:174
+#: libwnck/window-action-menu.c:213
 msgid "Ma_ximize"
-msgstr "Развернуть во весь _экран"
+msgstr "Развернуть на весь _экран"
 
-#: libwnck/window-action-menu.c:181
-msgid "U_nshade"
-msgstr "Рас_шторить"
+#: libwnck/window-action-menu.c:221
+msgid "_Unroll"
+msgstr "С_катать"
 
-#: libwnck/window-action-menu.c:187
-msgid "_Shade"
-msgstr "За_шторить"
+#: libwnck/window-action-menu.c:228
+msgid "Roll _Up"
+msgstr "Рас_катать"
 
-#: libwnck/window-action-menu.c:298
-msgid "_Close"
-msgstr "_Закрыть"
+#: libwnck/window-action-menu.c:236
+msgid "Only on _This Workspace"
+msgstr "Поместить только на э_то Рабочее место"
 
-#: libwnck/window-action-menu.c:319
+#: libwnck/window-action-menu.c:243
+msgid "Put on _All Workspaces"
+msgstr "Поместить на вс_е Рабочие места"
+
+#: libwnck/window-action-menu.c:372
 msgid "Mo_ve"
 msgstr "Пере_местить"
 
-#: libwnck/window-action-menu.c:325
+#: libwnck/window-action-menu.c:379
 msgid "_Resize"
 msgstr "_Изменить размер"
+
+#: libwnck/window-action-menu.c:392
+msgid "_Close"
+msgstr "_Закрыть"
 
 #: libwnck/window.c:29
 msgid "untitled window"
 msgstr "неозаглавленное окно"
 
-#: libwnck/workspace.c:202
+#: libwnck/workspace.c:222
 #, c-format
 msgid "Workspace %d"
 msgstr "Рабочее место %d"
+
+#~ msgid "U_nshade"
+#~ msgstr "Рас_шторить"
+
+#~ msgid "_Shade"
+#~ msgstr "За_шторить"

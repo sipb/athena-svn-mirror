@@ -82,6 +82,22 @@ struct _WnckScreenClass
 
   /* New background */
   void (* background_changed)       (WnckScreen      *screen);
+
+#if 0
+  /* FIXME uncomment all this next time we feel like breaking ABI */
+
+  /* Toggle showing desktop */
+  void (* showing_desktop_changed)  (WnckScreen      *screen);
+  
+  void (* pad1) (void);
+  void (* pad2) (void);
+  void (* pad3) (void);
+  void (* pad4) (void);
+  void (* pad5) (void);
+  void (* pad6) (void);
+  void (* pad7) (void);
+  void (* pad8) (void);
+#endif
 };
 
 GType wnck_screen_get_type (void) G_GNUC_CONST;
@@ -100,7 +116,9 @@ GList*         wnck_screen_get_windows_stacked  (WnckScreen *screen);
 
 void wnck_screen_force_update (WnckScreen *screen);
 
-int wnck_screen_get_workspace_count (WnckScreen *screen);
+int  wnck_screen_get_workspace_count    (WnckScreen *screen);
+void wnck_screen_change_workspace_count (WnckScreen *screen,
+                                         int         count);
 
 gboolean wnck_screen_net_wm_supports (WnckScreen *screen,
                                       const char *atom);
@@ -110,12 +128,18 @@ gulong wnck_screen_get_background_pixmap (WnckScreen *screen);
 int wnck_screen_get_width (WnckScreen *screen);
 int wnck_screen_get_height (WnckScreen *screen);
 
+gboolean wnck_screen_get_showing_desktop    (WnckScreen *screen);
+void     wnck_screen_toggle_showing_desktop (WnckScreen *screen,
+                                             gboolean    show);
+
 int  wnck_screen_try_set_workspace_layout (WnckScreen *screen,
                                            int         current_token,
                                            int         rows,
                                            int         columns);
 void wnck_screen_release_workspace_layout (WnckScreen *screen,
                                            int         current_token);
+
+
 
 
 G_END_DECLS

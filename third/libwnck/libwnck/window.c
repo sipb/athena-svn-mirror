@@ -31,17 +31,18 @@
 
 static GHashTable *window_hash = NULL;
 
-/* Keep 0-6 in sync with the numbers in the WindowState enum. Yeah I'm
+/* Keep 0-7 in sync with the numbers in the WindowState enum. Yeah I'm
  * a loser.
  */
-#define COMPRESS_STATE(window)                        \
-  ( ((window)->priv->is_minimized      << 0) |        \
-    ((window)->priv->is_maximized_horz << 1) |        \
-    ((window)->priv->is_maximized_vert << 2) |        \
-    ((window)->priv->is_shaded         << 3) |        \
-    ((window)->priv->skip_pager        << 4) |        \
-    ((window)->priv->skip_taskbar      << 5) |        \
-    ((window)->priv->is_sticky         << 6) )
+#define COMPRESS_STATE(window)                          \
+  ( ((window)->priv->is_minimized        << 0) |        \
+    ((window)->priv->is_maximized_horz   << 1) |        \
+    ((window)->priv->is_maximized_vert   << 2) |        \
+    ((window)->priv->is_shaded           << 3) |        \
+    ((window)->priv->skip_pager          << 4) |        \
+    ((window)->priv->skip_taskbar        << 5) |        \
+    ((window)->priv->is_sticky           << 6) |        \
+    ((window)->priv->is_hidden           << 7) )
 
 struct _WnckWindowPrivate
 {
@@ -70,6 +71,8 @@ struct _WnckWindowPrivate
   int y;
   int width;
   int height;
+
+  char *startup_id;
   
   /* true if transient_for points to root window,
    * not another app window
@@ -84,12 +87,13 @@ struct _WnckWindowPrivate
   guint skip_pager : 1;
   guint skip_taskbar : 1;
   guint is_sticky : 1;
-  
+  guint is_hidden : 1;
+
   /* _NET_WM_STATE_HIDDEN doesn't map directly into an
    * externally-visible state (it determines the WM_STATE
    * interpretation)
    */
-  guint net_wm_state_hidden : 1;
+  guint net_wm_state_hidden : 1;  
   guint wm_state_iconic : 1;
   
   /* idle handler for updates */
@@ -106,7 +110,8 @@ struct _WnckWindowPrivate
   guint need_emit_icon_changed : 1;
   guint need_update_actions : 1;
   guint need_update_wintype : 1;
-  guint need_update_transient_for : 1;  
+  guint need_update_transient_for : 1;
+  guint need_update_startup_id : 1;
 };
 
 enum {
@@ -142,6 +147,7 @@ static void update_workspace (WnckWindow *window);
 static void update_actions   (WnckWindow *window);
 static void update_wintype   (WnckWindow *window);
 static void update_transient_for (WnckWindow *window);
+static void update_startup_id (WnckWindow *window);
 static void unqueue_update   (WnckWindow *window);
 static void queue_update     (WnckWindow *window);
 static void force_update_now (WnckWindow *window);
@@ -185,7 +191,7 @@ wnck_window_init (WnckWindow *window)
   window->priv = g_new0 (WnckWindowPrivate, 1);
 
   window->priv->name = g_strdup (FALLBACK_NAME);
-  window->priv->icon_name = g_strdup (FALLBACK_NAME);
+  window->priv->icon_name = NULL;
   window->priv->workspace = ALL_WORKSPACES;
 
   window->priv->icon_cache = _wnck_icon_cache_new ();
@@ -278,7 +284,8 @@ wnck_window_finalize (GObject *object)
   g_free (window->priv->name);
   g_free (window->priv->icon_name);
   g_free (window->priv->session_id);
-
+  g_free (window->priv->startup_id);
+  
   if (window->priv->app)
     g_object_unref (G_OBJECT (window->priv->app));
 
@@ -373,6 +380,7 @@ _wnck_window_create (Window      xwindow,
   window->priv->need_update_actions = TRUE;
   window->priv->need_update_wintype = TRUE;
   window->priv->need_update_transient_for = TRUE;
+  window->priv->need_update_startup_id = TRUE;
   force_update_now (window);
 
   return window;
@@ -567,6 +575,29 @@ wnck_window_is_maximized_vertically   (WnckWindow *window)
   g_return_val_if_fail (WNCK_IS_WINDOW (window), FALSE);
 
   return window->priv->is_maximized_vert;
+}
+
+const char*
+_wnck_window_get_startup_id (WnckWindow *window)
+{
+  g_return_val_if_fail (WNCK_IS_WINDOW (window), NULL);
+  
+  if (window->priv->startup_id == NULL &&
+      window->priv->group_leader != None)
+    {
+      WnckApplication *app;
+
+      /* Fall back to group leader property */
+      
+      app = wnck_application_get (window->priv->group_leader);
+      
+      if (app != NULL)
+        return wnck_application_get_startup_id (app);
+      else
+        return NULL;
+    }
+
+  return window->priv->startup_id;
 }
 
 /**
@@ -938,6 +969,85 @@ wnck_window_is_active (WnckWindow *window)
   return window == wnck_screen_get_active_window (window->priv->screen);
 }
 
+
+static WnckWindow*
+find_last_transient_for (GList *windows,
+                         Window xwindow)
+{
+  GList *tmp; 
+  WnckWindow *retval;
+
+  /* find _last_ transient for xwindow in the list */
+  
+  retval = NULL;
+  
+  tmp = windows;
+  while (tmp != NULL)
+    {
+      WnckWindow *w = tmp->data;
+
+      if (w->priv->transient_for == xwindow)
+        retval = w;
+      
+      tmp = tmp->next;
+    }
+
+  return retval;
+}
+
+/**
+ * wnck_window_activate_transient:
+ * @window: a #WnckWindow
+ *
+ * If @window has transients, activates the most likely transient
+ * instead of the window itself. Otherwise activates @window.
+ * 
+ * FIXME the ideal behavior of this function is probably to activate
+ * the most recently active window among @window and its transients.
+ * This is probably best implemented on the window manager side.
+ * 
+ **/
+void
+wnck_window_activate_transient (WnckWindow *window)
+{
+  GList *windows;
+  WnckWindow *transient;
+  WnckWindow *next;
+  
+  g_return_if_fail (WNCK_IS_WINDOW (window));
+
+  windows = wnck_screen_get_windows_stacked (window->priv->screen);
+
+  transient = NULL;
+  next = find_last_transient_for (windows, window->priv->xwindow);
+  
+  while (next != NULL)
+    {
+      if (next == window)
+        {
+          /* catch transient cycles */
+          transient = NULL;
+          break;
+        }
+
+      transient = next;
+      
+      next = find_last_transient_for (windows, transient->priv->xwindow);
+    }
+
+  if (transient != NULL)
+    {
+      /* Raise but don't focus the main window */
+      XRaiseWindow (gdk_display, window->priv->xwindow);
+      /* then activate the transient */
+      wnck_window_activate (transient);
+    }
+  else
+    {
+      wnck_window_activate (window);
+    }
+}
+
 static void
 get_icons (WnckWindow *window)
 {
@@ -1103,8 +1213,7 @@ wnck_window_is_visible_on_workspace (WnckWindow    *window,
   
   state = wnck_window_get_state (window);
 
-  if (state & (WNCK_WINDOW_STATE_MINIMIZED |
-               WNCK_WINDOW_STATE_SHADED))
+  if (state & WNCK_WINDOW_STATE_HIDDEN)
     return FALSE; /* not visible */
 
   return wnck_window_is_on_workspace (window, workspace);
@@ -1127,8 +1236,8 @@ wnck_window_set_icon_geometry (WnckWindow *window,
 			       int         width,
 			       int         height)
 {
-	_wnck_set_icon_geometry (window->priv->xwindow,
-				 x, y, width, height);
+  _wnck_set_icon_geometry (window->priv->xwindow,
+                           x, y, width, height);
 }
 
 /**
@@ -1224,6 +1333,12 @@ _wnck_window_process_property_notify (WnckWindow *window,
     {
       window->priv->need_update_transient_for = TRUE;
       window->priv->need_update_wintype = TRUE;
+      queue_update (window);
+    }
+  else if (xevent->xproperty.atom ==
+           _wnck_atom_get ("_NET_STARTUP_ID"))
+    {
+      window->priv->need_update_startup_id = TRUE;
       queue_update (window);
     }
   else if (xevent->xproperty.atom ==
@@ -1380,13 +1495,25 @@ update_state (WnckWindow *window)
     case WNCK_WINDOW_UTILITY:
       break;
     }
-
+  
   /* FIXME we need to recompute this if the window manager changes */
   if (wnck_screen_net_wm_supports (window->priv->screen,
                                    "_NET_WM_STATE_HIDDEN"))
-    window->priv->is_minimized = window->priv->net_wm_state_hidden;
+    {
+      window->priv->is_hidden = window->priv->net_wm_state_hidden;
+
+      /* FIXME this is really broken; need to bring it up on
+       * wm-spec-list. It results in showing an "Unminimize" menu
+       * item on task list, for shaded windows.
+       */
+      window->priv->is_minimized = window->priv->is_hidden;
+    }
   else
-    window->priv->is_minimized = window->priv->wm_state_iconic;
+    {
+      window->priv->is_minimized = window->priv->wm_state_iconic;
+      
+      window->priv->is_hidden = window->priv->is_minimized || window->priv->is_shaded;
+    }
 }
 
 static void
@@ -1430,8 +1557,7 @@ update_icon_name (WnckWindow *window)
       _wnck_get_text_property (window->priv->xwindow,
                                XA_WM_ICON_NAME);
 
-  if (window->priv->icon_name == NULL)
-    window->priv->icon_name = g_strdup (FALLBACK_NAME);
+  /* no fallback, get_icon_name falls back to regular window title */
 }
 
 static void
@@ -1593,7 +1719,7 @@ update_wintype (WnckWindow *window)
             type = WNCK_WINDOW_MODAL_DIALOG;
           else if (atoms[i] == _wnck_atom_get ("_NET_WM_WINDOW_TYPE_UTILITY"))
             type = WNCK_WINDOW_UTILITY;
-          else if (atoms[i] == _wnck_atom_get ("_NET_WM_WINDOW_TYPE_SPLASHSCREEN"))
+          else if (atoms[i] == _wnck_atom_get ("_NET_WM_WINDOW_TYPE_SPLASH"))
             type = WNCK_WINDOW_SPLASHSCREEN;
           else
             found_type = FALSE;
@@ -1649,6 +1775,20 @@ update_transient_for (WnckWindow *window)
 }
 
 static void
+update_startup_id (WnckWindow *window)
+{
+  if (!window->priv->need_update_startup_id)
+    return;
+
+  window->priv->need_update_startup_id = FALSE;
+
+  g_free (window->priv->startup_id);
+  window->priv->startup_id = 
+    _wnck_get_utf8_property (window->priv->xwindow,
+                             _wnck_atom_get ("_NET_STARTUP_ID"));
+}
+
+static void
 force_update_now (WnckWindow *window)
 {
   WnckWindowState old_state;
@@ -1686,7 +1826,8 @@ force_update_now (WnckWindow *window)
     window->priv->icon_name = old_icon_name;
   else
     {
-      if (strcmp (window->priv->icon_name, old_icon_name) != 0)
+      if (old_icon_name == NULL ||
+          strcmp (window->priv->icon_name, old_icon_name) != 0)
         emit_name_changed (window);
       g_free (old_icon_name);
     }
@@ -1694,6 +1835,7 @@ force_update_now (WnckWindow *window)
   old_state = COMPRESS_STATE (window);
   old_actions = window->priv->actions;
 
+  update_startup_id (window);    /* no side effects */
   update_transient_for (window); /* wintype needs this to be first */
   update_wintype (window);
   update_wm_state (window);
