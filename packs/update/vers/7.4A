@@ -16,5 +16,10 @@ DS*)
 	touch /etc/syslog.pid
 	touch /usr/adm/messages
 	/etc/chown daemon /etc/syslog.pid
+	# Fix a common complaint about tar 
+	if [ -f /dev/floppy ]; then
+		ln -s floppy /dev/floppc
+		ln -s rfloppy /dev/rfloppc
+	fi
 	;;
 esac
