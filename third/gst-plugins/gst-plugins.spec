@@ -1,9 +1,9 @@
 Name: 		gstreamer-plugins
-Version: 	0.5.2
+Version: 	0.6.0
 Release: 	1
 Summary: 	GStreamer Streaming-media framework plug-ins.
 
-%define 	majorminor	0.5
+%define 	majorminor	0.6
 #%define 	prefix  /usr
 #%define 	sysconfdir /etc
 #Docdir: 	%{prefix}/share/doc
@@ -116,6 +116,7 @@ Summary: 	GStreamer Plugin Library Headers.
 Group: 		Development/Libraries
 Requires: 	gstreamer-plugins = %{version}
 Provides:	gstreamer-play-devel = %{version}
+Provides:	gstreamer-gconf-devel = %{version}
 
 %description -n gstreamer-plugins-devel
 GStreamer support libraries header files.
@@ -130,10 +131,10 @@ GStreamer support libraries header files.
 %{_includedir}/gstreamer-%{majorminor}/gst/resample/resample.h
 %{_includedir}/gstreamer-%{majorminor}/gst/riff/riff.h
 %{_includedir}/gstreamer-%{majorminor}/gst/video/video.h
-%{_libdir}/gstreamer-%{majorminor}/libgstffmpeg*
 %{_datadir}/aclocal/gst-element-check-%{majorminor}.m4
 %{_libdir}/pkgconfig/gstreamer-libs-%{majorminor}.pc
 %{_libdir}/pkgconfig/gstreamer-play-%{majorminor}.pc
+%{_libdir}/pkgconfig/gstreamer-gconf-%{majorminor}.pc
 %{_libdir}/libgstgconf-%{majorminor}.so
 %{_libdir}/libgstplay-%{majorminor}.so
 
@@ -165,11 +166,11 @@ Plug-in for decoding of VOB files.
 
 ### AALIB ###
 %package -n gstreamer-aalib
-Summary:       GStreamer plug-in for Ascii-art output.
-Group:         Libraries/Multimedia
-Requires:      gstreamer-plugins = %{version}
-Requires:      aalib >= 1.3
-BuildRequires: aalib-devel >= 1.3
+Summary:	GStreamer plug-in for Ascii-art output.
+Group:		Libraries/Multimedia
+Requires:	gstreamer-plugins = %{version}
+Requires:	aalib >= 1.3
+BuildRequires:	aalib-devel >= 1.3
 
 %description -n gstreamer-aalib
 Plug-in for viewing video in Ascii-art using aalib library.
@@ -202,7 +203,7 @@ Plug-in for viewing video in Ascii-art using aalib library.
 #%files -n gstreamer-alsa
 #%defattr(-, root, root)
 #%{_libdir}/gstreamer-%{majorminor}/libgstalsa.so
-#### %{_mandir}/man1/gstalsa*
+### #%{_mandir}/man1/gstalsa*
 #
 #%post -n gstreamer-alsa
 #%{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
@@ -317,7 +318,6 @@ Plug-ins for playback of AVI format media files.
 %defattr(-, root, root)
 %{_libdir}/gstreamer-%{majorminor}/libgstavidemux.so
 %{_libdir}/gstreamer-%{majorminor}/libgstavimux.so
-%{_libdir}/gstreamer-%{majorminor}/libgstaviparse.so
 
 %post -n gstreamer-avi
 %{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
@@ -327,7 +327,7 @@ Plug-ins for playback of AVI format media files.
 %{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
 ### %{_bindir}/gst-compprep > /dev/null 2> /dev/null
 
-### Windec ###
+### AVIFILE ###
 %package -n gstreamer-windec
 Summary:       GStreamer plug-in for Windows DLL loading
 Group:         Libraries/Multimedia
@@ -1115,16 +1115,17 @@ Plug-in for accessing Video for Linux devices.
 
 ### XVIDEO ###
 %package -n gstreamer-xvideosink
-Summary: GStreamer XFree output plug-in
-Group: Libraries/Multimedia
-Requires: gstreamer-plugins = %{version}
-Requires: Hermes => 1.3.0
+Summary: 	GStreamer XFree output plug-in
+Group: 	Libraries/Multimedia
+Requires: 	gstreamer-plugins = %{version}
+Requires: 	XFree86-libs
+BuildRequires: XFree86-devel
 %description -n gstreamer-xvideosink
-Xfree86 video sink
+XFree86 video sink
 
 %files -n gstreamer-xvideosink
 %defattr(-, root, root)
-%{_libdir}/gstreamer-%{majorminor}/libgstxvideosink*
+%{_libdir}/gstreamer-%{majorminor}/libgstxvideosink.so
 
 %post -n gstreamer-xvideosink
 %{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
@@ -1138,7 +1139,7 @@ Xfree86 video sink
 Summary:       GStreamer Video Sink
 Group:         Libraries/Multimedia
 Requires:      gstreamer-plugins = %{version}
-Requires:      XFree86
+Requires:      XFree86-libs
 BuildRequires: XFree86-devel
 
 %description -n gstreamer-videosink
@@ -1247,6 +1248,27 @@ Plug-in for text-to-speech using the festival server.
 ### %{_bindir}/gst-compprep > /dev/null 2> /dev/null
 
 %postun -n gstreamer-festival
+%{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
+### %{_bindir}/gst-compprep > /dev/null 2> /dev/null
+
+### ffmpeg ###
+%package -n gstreamer-ffmpeg
+Summary: 	GStreamer plug-in for included ffmpeg libavcodec/format library.
+Group: 		Libraries/Multimedia
+Requires: 	gstreamer-plugins = %{version}
+%description -n gstreamer-ffmpeg
+Plug-in for ffmpeg library.
+
+%files -n gstreamer-ffmpeg
+%defattr(-, root, root)
+%{_libdir}/gstreamer-%{majorminor}/libgstffmpeg.so
+%{_libdir}/gstreamer-%{majorminor}/libgstffmpegall.so
+
+%post -n gstreamer-ffmpeg
+%{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
+### %{_bindir}/gst-compprep > /dev/null 2> /dev/null
+
+%postun -n gstreamer-ffmpeg
 %{_bindir}/gst-register --gst-mask=0 > /dev/null 2> /dev/null
 ### %{_bindir}/gst-compprep > /dev/null 2> /dev/null
 
@@ -1546,8 +1568,19 @@ This package contains a basic audio and video playback library.
 /sbin/ldconfig
 
 %changelog
-* Sun Jan 19 2003 Christian Schaller <Uraeus@gnome.org>
-- Add aviparse plugin
+* Wed Jan 29 2003 Thomas Vander Stichele <thomas at apestaart dot org>
+- undo gstreamer-videosink provides since they obviously clash
+
+* Mon Jan 27 2003 Thomas Vander Stichele <thomas at apestaart dot org>
+- added gconf-devel virtual provide in gstreamer-plugins-devel, as well
+  as .pc files
+
+* Thu Jan 23 2003 Thomas Vander Stichele <thomas at apestaart dot org>
+- various fixes
+- make video output packages provide gstreamer-videosink
+
+* Thu Jan 23 2003 Thomas Vander Stichele <thomas at apestaart dot org>
+- split out ffmpeg stuff to separate plugin
 
 * Fri Dec 27 2002 Thomas Vander Stichele <thomas at apestaart dot org>
 - add virtual provides for audio sources and sinks

@@ -189,7 +189,7 @@ static GstPadLinkReturn
 gst_float2int_connect (GstPad *pad, GstCaps *caps)
 {
   GstFloat2Int *filter;
-  GstCaps *intcaps, *floatcaps;
+  GstCaps *intcaps = NULL, *floatcaps = NULL;
   GSList *l;
   gint rate, channels;
   
@@ -215,7 +215,7 @@ gst_float2int_connect (GstPad *pad, GstCaps *caps)
         gst_caps_set (floatcaps, "rate", GST_PROPS_INT (filter->rate), NULL);
         /* we now know that the caps are fixed. let's set them. this is a hack
            but oh well. */
-        floatcaps->fixed = TRUE;
+	GST_CAPS_FLAG_SET (floatcaps, GST_CAPS_FIXED);
         
         for (l=filter->channels; l; l=l->next)
           if (gst_pad_try_set_caps (GST_FLOAT2INT_CHANNEL (l)->sinkpad, floatcaps) <= 0)
@@ -240,7 +240,7 @@ gst_float2int_connect (GstPad *pad, GstCaps *caps)
         gst_caps_get_int (caps, "rate", &rate);
         gst_caps_set (intcaps, "rate", GST_PROPS_INT (rate));
         gst_caps_set (intcaps, "channels", GST_PROPS_INT (filter->numchannels));
-        intcaps->fixed = TRUE;
+	GST_CAPS_FLAG_SET (intcaps, GST_CAPS_FIXED);
         gst_caps_debug (intcaps, "int source pad caps going into try_set_caps()");
         
         if (gst_pad_try_set_caps (filter->srcpad, intcaps) <= 0) {

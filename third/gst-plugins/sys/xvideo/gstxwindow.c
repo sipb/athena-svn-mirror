@@ -38,6 +38,7 @@ _gst_xwindow_new (gint width, gint height, gboolean toplevel)
 
   new->disp = XOpenDisplay (NULL);
   if (!new->disp) {
+    g_free (new);
     return NULL;
   }
 

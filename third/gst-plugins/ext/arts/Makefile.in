@@ -218,9 +218,6 @@ plugin_LTLIBRARIES = libgstarts.la
 # mcopidl Extension Expansion Technology clean up
 @USE_ARTS_TRUE@CLEANFILES = gst_artsio.h gst_artsio.cc gst_artsio.mcopclass gst_artsio.mcoptype
 
-
-# FIXME automake 1.4 hack, 1.5 should let us put the .idl in
-#       _SOURCES at which point the follow can be removed
 @USE_ARTS_TRUE@libgstarts_la_SOURCES = gst_arts.c gst_artsio.cc gst_artsio_impl.cc
 @USE_ARTS_TRUE@libgstarts_la_CFLAGS = $(GST_CFLAGS)
 @USE_ARTS_TRUE@libgstarts_la_CXXFLAGS = $(ARTS_CXXFLAGS) $(GST_CFLAGS)
@@ -579,13 +576,16 @@ uninstall-am: uninstall-info-am uninstall-pluginLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool tags uninstall \
 	uninstall-am uninstall-info-am uninstall-pluginLTLIBRARIES
 
-
-gst_artsio_impl.lo: gst_artsio.cc
 @USE_ARTS_TRUE@.idl.cc:
 @USE_ARTS_TRUE@	mcopidl -t $< $(ARTS_CXXFLAGS)
 
-dist-hook:
-	rm -f $(distdir)/gst_artsio.cc
+# FIXME automake 1.4 hack, 1.5 should let us put the .idl in
+#       _SOURCES at which point the follow can be removed
+
+@USE_ARTS_TRUE@gst_artsio_impl.lo: gst_artsio.cc
+
+@USE_ARTS_TRUE@dist-hook:
+@USE_ARTS_TRUE@	rm -f $(distdir)/gst_artsio.cc
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
