@@ -6,7 +6,7 @@
 #     
 #      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v $
 #      $Author: shanzer $
-#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.2 1988-05-03 17:34:06 shanzer Exp $
+#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.3 1988-05-23 22:57:13 shanzer Exp $
 #      
 #         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #     
@@ -33,7 +33,7 @@ MANDIR=/usr/man/man1
 MANSECT=1
 
 CFLAGS= -g -DATHENA -DHELPFILE=\"${LIBDIR}/xmore.help\" ${INCFLAGS}
-INCFLAGS= -I/usr/include/X11
+INCFLAGS=
 LIBES= -lXaw -lXt -lX
 OBJS= globals.o help.o main.o pages.o ${XTKOBJS}
 XTKOBJS= ScrollByLine.o
