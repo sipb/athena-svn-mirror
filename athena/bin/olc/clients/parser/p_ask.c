@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v $
- *	$Id: p_ask.c,v 1.8 1990-07-16 08:19:03 lwvanels Exp $
+ *	$Id: p_ask.c,v 1.9 1990-11-14 12:29:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.8 1990-07-16 08:19:03 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.9 1990-11-14 12:29:46 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -92,6 +95,7 @@ do_olc_ask(arguments)
       printf("\tsend  - send a message\n");
       printf("\tshow  - show new messages\n");
       printf("\tdone  - mark your question resolved\n");
+      printf("\tquit  - exit OLC, leaving your question active\n");
       printf("\t?     - see entire listing of commands\n");
     }
   return(status);
