@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.8 1997-11-20 22:16:26 ghudson Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.9 1997-12-31 19:47:53 ghudson Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -73,7 +73,7 @@ int al__record_exists(const char *username)
 int al__get_session_record(const char *username,
 			   struct al_record *record)
 {
-  int fd, bufsize = 0, retval = AL_WBADSESSION, i;
+  int fd, bufsize, retval = AL_WBADSESSION, i;
   char *session_file, *buf = NULL, *ptr1;
   struct flock fl;
   sigset_t smask;
@@ -234,8 +234,7 @@ int al__get_session_record(const char *username,
   record->exists = 1;
 
 cleanup:
-  if (bufsize)
-    free(buf);
+  free(buf);
 
   if (retval == AL_ESESSION)
     {
@@ -272,12 +271,9 @@ cleanup:
   if (retval != AL_SUCCESS)
     {
       /* On either warning or error, zero out the record. */
-      if (record->old_homedir)
-	free(record->old_homedir);
-      if (record->groups)
-	free(record->groups);
-      if (record->pids)
-	free(record->pids);
+      free(record->old_homedir);
+      free(record->groups);
+      free(record->pids);
       zero_record(record);
     }
   return retval;
@@ -322,12 +318,9 @@ int al__put_session_record(struct al_record *record)
 
   fclose(record->fp);
 
-  if (record->old_homedir)
-    free(record->old_homedir);
-  if (record->groups)
-    free(record->groups);
-  if (record->pids)
-    free(record->pids);
+  free(record->old_homedir);
+  free(record->groups);
+  free(record->pids);
 
   /* Restore the signal mask in record->mask. */
   sigaction(SIGCHLD, &(record->sigchld_action), NULL);

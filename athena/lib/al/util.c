@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.4 1997-11-20 22:16:47 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.5 1997-12-31 19:47:55 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -184,9 +184,9 @@ static struct passwd *lookup(const char *username, uid_t uid)
    * we don't really need that level of performance in the login system
    * anyway. */
   FILE *fp;
-  int linesize = 0, len = (username) ? strlen(username) : 0;
+  int linesize, len = (username) ? strlen(username) : 0;
   struct passwd *pwd;
-  char *line, *buffer;
+  char *line = NULL, *buffer;
   const char *p;
 
   fp = fopen(PATH_PASSWD, "r");
@@ -249,8 +249,7 @@ static struct passwd *lookup(const char *username, uid_t uid)
     }
 
   /* We lost. */
-  if (linesize)
-    free(line);
+  free(line);
   fclose(fp);
   return NULL;
 }
@@ -265,12 +264,11 @@ void al__free_passwd(struct passwd *pwd)
  * file into a dynamically allocated buffer, zeroing the trailing newline
  * if there is one.  The calling routine may call al__read_line multiple
  * times with the same buf and bufsize pointers; *buf will be reallocated
- * and *bufsize adjusted as appropriate.  The initial value of *bufsize
- * should be zero.  After the calling routine is done reading lines, it
- * should free *buf if and only if *bufsize is 0 (it may assume *bufsize
- * is not 0 if al__read_line() ever returned success).  This function
- * returns 0 if a line was successfully read, 1 if the file ended, and -1
- * if there was an I/O error or if it ran out of memory.
+ * and *bufsize adjusted as appropriate.  The initial value of *buf
+ * should be NULL.  After the calling routine is done reading lines, it
+ * should free *buf.  This function returns 0 if a line was successfully
+ * read, 1 if the file ended, and -1 if there was an I/O error or if it
+ * ran out of memory.
  */
 
 int al__read_line(FILE *fp, char **buf, int *bufsize)
@@ -278,7 +276,7 @@ int al__read_line(FILE *fp, char **buf, int *bufsize)
   char *newbuf;
   int offset = 0, len;
 
-  if (*bufsize == 0)
+  if (*buf == NULL)
     {
       *buf = malloc(128);
       if (!*buf)

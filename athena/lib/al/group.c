@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.4 1997-11-13 23:26:04 ghudson Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.5 1997-12-31 19:47:49 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -57,8 +57,8 @@ static void discard_group_lockfile(FILE *fp, int fd);
 int al__add_to_group(const char *username, struct al_record *record)
 {
   FILE *in, *out;
-  char *line, *p;
-  int len = strlen(username), linesize = 0, nentries, i, nhesgroups;
+  char *line = NULL, *p;
+  int len = strlen(username), linesize, nentries, i, nhesgroups;
   int lockfd, status, ngroups;
   gid_t gid, primary_gid, *groups;
   struct hesgroup *hesgroups;
@@ -218,8 +218,7 @@ int al__add_to_group(const char *username, struct al_record *record)
 
   /* Clean up allocated memory. */
   fclose(in);
-  if (linesize)
-    free(line);
+  free(line);
   free_hesgroups(hesgroups, nhesgroups);
 
   /* Update the group file from what we wrote out. */
@@ -237,8 +236,8 @@ int al__add_to_group(const char *username, struct al_record *record)
 int al__remove_from_group(const char *username, struct al_record *record)
 {
   FILE *in, *out;
-  char *line, *p;
-  int i, lockfd, linesize = 0, nlocal, status, len = strlen(username);
+  char *line = NULL, *p;
+  int i, lockfd, linesize, nlocal, status, len = strlen(username);
   gid_t gid, *local;
 
   local = retrieve_local_gids(&nlocal);
@@ -246,15 +245,13 @@ int al__remove_from_group(const char *username, struct al_record *record)
   out = lock_group(&lockfd);
   if (!out)
     {
-      if (local)
-	free(local);
+      free(local);
       return AL_EPERM;
     }
   in = fopen(PATH_GROUP, "r");
   if (!in)
     {
-      if (local)
-	free(local);
+      free(local);
       discard_group_lockfile(out, lockfd);
       return AL_EPERM;
     }
@@ -300,10 +297,8 @@ int al__remove_from_group(const char *username, struct al_record *record)
     }
 
   fclose(in);
-  if (linesize)
-    free(line);
-  if (local)
-    free(local);
+  free(line);
+  free(local);
 
   if (status == -1)
     {
@@ -461,15 +456,14 @@ static void free_hesgroups(struct hesgroup *hesgroups, int ngroups)
 
   for (i = 0; i < ngroups; i++)
     free(hesgroups[i].name);
-  if (ngroups)
-    free(hesgroups);
+  free(hesgroups);
 }
 
 static gid_t *retrieve_local_gids(int *nlocal)
 {
   FILE *fp;
-  char *line, *p;
-  int linesize = 0, lines, n, status;
+  char *line = NULL, *p;
+  int linesize, lines, n, status;
   gid_t *gids, gid;
 
   /* Open the local group file.  If it doesn't exist, we have no local
@@ -486,8 +480,7 @@ static gid_t *retrieve_local_gids(int *nlocal)
   if (!gids)
     {
       fclose(fp);
-      if (linesize)
-	free(line);
+      free(line);
       return NULL;
     }
 
@@ -506,8 +499,7 @@ static gid_t *retrieve_local_gids(int *nlocal)
     }
 
   fclose(fp);
-  if (linesize)
-    free(line);
+  free(line);
 
   if (status != 1)
     {

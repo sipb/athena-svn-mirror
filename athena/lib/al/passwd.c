@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.6 1997-11-17 22:06:19 danw Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.7 1997-12-31 19:47:51 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -321,7 +321,7 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
   FILE *shadow_in = NULL, *shadow_out = NULL;
 #endif
   char *buf = NULL;
-  int bufsize = 0, retval, len, fd;
+  int bufsize, retval, len, fd;
 
   if (!record->passwd_added)
     return AL_SUCCESS;
@@ -384,13 +384,11 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
     goto cleanup;
 #endif
 
-  if (buf)
-    free(buf);
+  free(buf);
   return update_passwd(out);
 
 cleanup:
-  if (buf)
-    free(buf);
+  free(buf);
 #ifdef HAVE_SHADOW
   if (shadow_in)
     fclose(shadow_in);
@@ -414,8 +412,8 @@ cleanup:
 int al__change_passwd_homedir(const char *username, const char *homedir)
 {
   FILE *in = NULL, *out = NULL;
-  int bufsize = 0, retval, len, i;
-  char *ptr1, *buf;
+  int bufsize, retval, len, i;
+  char *ptr1, *buf = NULL;
 
   out = lock_passwd();
   if (!out)
@@ -452,8 +450,7 @@ int al__change_passwd_homedir(const char *username, const char *homedir)
 	  fputs("\n", out);
 	}
     }
-  if (bufsize)
-    free(buf);
+  free(buf);
   fclose(in);
   if (retval == -1)
     {
@@ -535,8 +532,8 @@ int al__update_cryptpw(const char *username, struct al_record *record,
 static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
 				 const char *cryptpw)
 {
-  char *line;
-  int linesize = 0, len = strlen(username), found = 0, status;
+  char *line = NULL;
+  int linesize, len = strlen(username), found = 0, status;
   const char *p;
 
   /* Copy input to output, substituting cryptpw for the passwd field of
@@ -556,7 +553,6 @@ static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
 	fprintf(out, "%s\n", line);
     }
 
-  if (linesize)
-    free(line);
+  free(line);
   return (status == -1) ? -1 : found;
 }
