@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.21 1987-12-18 11:47:34 jtkohl Exp $";
+static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.22 1988-01-25 15:13:34 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -708,6 +708,7 @@ char *vers;
 
 	lyst[num++] = buf2;
 
+#ifdef KERBEROS
 	if ((retval = ZMakeAscii(buf, sizeof(buf), client->zct_cblock,
 				 sizeof(C_Block))) != ZERR_NONE) {
 		zdbug((LOG_DEBUG,"zmakeascii failed: %s",
@@ -716,6 +717,7 @@ char *vers;
 		lyst[num++] = buf;
 		zdbug((LOG_DEBUG,"cblock %s",buf));
 	}		
+#endif KERBEROS
 	if ((retval = bdump_send_list_tcp(SERVACK, bdump_sin.sin_port,
 					  ZEPHYR_ADMIN_CLASS,
 					  num > 1 ? "CBLOCK" : "",
