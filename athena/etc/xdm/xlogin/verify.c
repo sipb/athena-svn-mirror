@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.73 1996-08-06 02:35:14 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.74 1996-09-20 04:18:56 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -13,7 +13,7 @@
 #include <sys/sysmacros.h>
 #endif
 #include <grp.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/param.h>
@@ -44,9 +44,7 @@
 #include <hesiod.h>
 
 #ifdef KRB5
-#include <krb5/krb5.h>
-#include <krb5/ext-proto.h>
-#include <krb5/los-proto.h>
+#include <krb5.h>
 #endif
 
 #ifdef XDM
@@ -261,7 +259,7 @@ char *display;
     if (tty != NULL)
       {
 	strcpy(fixed_tty,tty);
-	while (p = (char *) index(fixed_tty,'/'))
+	while (p = strchr(fixed_tty,'/'))
 	  *p = '_';
 	sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
       }
@@ -739,11 +737,7 @@ char *password;
 	fprintf(stderr, "Warning: cannot get address for host %s\n", hostname);
 	return(NULL);
     }
-#ifdef POSIX
-    memmove ((char *) &addr, (char *)hp->h_addr, sizeof (addr));
-#else
-    bcopy ((char *)hp->h_addr, (char *) &addr, sizeof (addr));
-#endif
+    memmove(&addr, hp->h_addr, sizeof (addr));
 
     error = krb_mk_req(&ticket, rcmd, phost, realm, 0);
     if (error == KDC_PR_UNKNOWN) return(NULL);
@@ -1579,7 +1573,7 @@ char *glist;
     int i, fd = -1, ngroups;
     int namelen = strlen(name);
     FILE *etc_group, *etc_gtmp;
-    char data[BUFSIZ+MAXGNAMELENGTH];	/*  space to add new username */
+    static char data[BUFSIZ+MAXGNAMELENGTH];/*  space to add new username */
 
     for (i = 0; i < 10; i++)
       if ((fd = open("/etc/gtmp", O_RDWR | O_EXCL | O_CREAT, 0644)) == -1 &&
@@ -1606,7 +1600,7 @@ char *glist;
        the first group only has one) */
     cp = glist;
     ngroups = 1;
-    while (cp = (char *) index(cp, ':')) {
+    while (cp = strchr(cp, ':')) {
 	ngroups++;
 	cp++;
     }
@@ -1628,10 +1622,10 @@ char *glist;
     cp = glist;
     for (i = 0; i < ngroups; i++) {
 	gnames[i] = cp;
-	cp = (char *) index(cp, ':');
+	cp = strchr(cp, ':');
 	*cp++ = '\0';
 	gids[i] = cp;
-	if (cp = (char *) index(cp, ':'))
+	if (cp = strchr(cp, ':'))
 	  *cp++ = '\0';
     }
 
@@ -1644,15 +1638,15 @@ char *glist;
 
 	/* If a valid format line, check to see if the user belongs in
 	   the group.  Otherwise, just write it out as-is. */
-	if ((gpwd = (char *) index(data, ':')) &&
-	    (gid = (char *) index(++gpwd, ':')) &&
-	    (guserlist = (char *) index(++gid, ':'))) {
+	if ((gpwd = strchr(data, ':')) &&
+	    (gid = strchr(++gpwd, ':')) &&
+	    (guserlist = strchr(++gid, ':'))) {
 	    *guserlist = '\0';
 	    /* step through our groups */
 	    for (i = 0; i < ngroups; i++)
 	      if (gids[i] && !strcmp(gid, gids[i])) {
 		  /* found it, now check users */
-		  for (cp = guserlist; cp; cp = index(cp, ',')) {
+		  for (cp = guserlist; cp; cp = strchr(cp, ',')) {
 		      cp++;
 		      if (!strncmp(name, cp, strlen(name)) &&
 			  (cp[namelen] == ',' ||
@@ -1725,134 +1719,147 @@ char *glist;
  *
  * ret_cache_name is an optional output argument in case the caller
  * wants to know the name of the actual V5 credentials cache (to put
- * into the KRB5CCNAME environment variable)
+ * into the KRB5_ENV_CCNAME environment variable)
  *
  * etext is a mandatory output variable which is filled in with
  * additional explanatory text in case of an error.
+ * 
  */
 krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
-                           ret_cache_name, etext)
-    char    *name;
-    char    *instance;
-    char    *realm;
-    int     lifetime;
-    char    *password;
-    char    **ret_cache_name;
-    char    **etext;
+			    ret_cache_name, etext)
+	char	*name;
+	char	*instance;
+	char	*realm;
+	int	lifetime;
+	char	*password;
+	char	**ret_cache_name;
+	char	**etext;
 {
-    krb5_error_code retval;
-    krb5_principal  me = 0, server = 0;
-    krb5_ccache     ccache = NULL;
-    krb5_creds      my_creds;
-    krb5_timestamp  now;
-    krb5_address    **my_addresses = 0;
-    char            *cache_name = krb5_cc_default_name();
+	krb5_context context;
+	krb5_error_code retval;
+	krb5_principal	me = 0, server = 0;
+	krb5_ccache	ccache = NULL;
+	krb5_creds my_creds;
+	krb5_timestamp now;
+	krb5_address **my_addresses = 0;
+	char *cache_name;
 
-    *etext = 0;
-    if (ret_cache_name)
-	*ret_cache_name = 0;
-    memset((char *)&my_creds, 0, sizeof(my_creds));
-    
-    krb5_init_ets();
-    
-    retval = krb5_425_conv_principal(name, instance, realm, &me);
-    if (retval) {
-	*etext = "while converting V4 principal";
-	goto cleanup;
-    }
-    
-    retval = krb5_cc_resolve (cache_name, &ccache);
-    if (retval) {
-	*etext = "while resolving ccache";
-	goto cleanup;
-    }
+	*etext = 0;
+	if (ret_cache_name)
+		*ret_cache_name = 0;
+	memset((char *)&my_creds, 0, sizeof(my_creds));
 
-    retval = krb5_cc_initialize (ccache, me);
-    if (retval) {
-	*etext = "while initializing cache";
-	goto cleanup;
-    }
+	krb5_init_context(&context);
+	cache_name = krb5_cc_default_name(context);
 
-    retval = krb5_build_principal_ext(&server,
-				      krb5_princ_realm(me)->length,
-				      krb5_princ_realm(me)->data,
-				      KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
-				      krb5_princ_realm(me)->length,
-				      krb5_princ_realm(me)->data,
-				      0);
-    if (retval)  {
-	*etext = "while building server name";
-	goto cleanup;
-    }
-
-    retval = krb5_os_localaddr(&my_addresses);
-    if (retval) {
-	*etext = "when getting my address";
-	goto cleanup;
-    }
-
-    retval = krb5_timeofday(&now);
-    if (retval) {
-	*etext = "while getting time of day";
-	goto cleanup;
-    }
-       
-    my_creds.client = me;
-    my_creds.server = server;
-    my_creds.times.starttime = 0;
-    my_creds.times.endtime = now + lifetime*5*60;
-    my_creds.times.renew_till = 0;
-       
-    retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
-					   ETYPE_DES_CBC_CRC,
-					   KEYTYPE_DES,
-					   password,
-					   ccache,
-					   &my_creds, 0);
-    if (retval) {
-	*etext = "while calling krb5_get_in_tkt_with_password";
-	goto cleanup;
-    }
-
-    if (ret_cache_name) {
-	*ret_cache_name = malloc(strlen(cache_name)+1);
-	if (!*ret_cache_name) {
-	    retval = ENOMEM;
-	    goto cleanup;
+	krb5_init_ets(context);
+	
+	retval = krb5_425_conv_principal(context, name, instance, realm, &me);
+	if (retval) {
+		*etext = "while converting V4 principal";
+		goto cleanup;
 	}
-	strcpy(*ret_cache_name, cache_name);
-    }
+    
+	retval = krb5_cc_resolve (context, cache_name, &ccache);
+	if (retval) {
+		*etext = "while resolving ccache";
+		goto cleanup;
+	}
 
- cleanup:
-    if (me)
-	krb5_free_principal(me);
-    if (server)
-	krb5_free_principal(server);
-    if (my_addresses)
-	krb5_free_addresses(my_addresses);
-    if (ccache)
-	krb5_cc_close(ccache);
-    my_creds.client = 0;
-    my_creds.server = 0;
-    krb5_free_cred_contents(&my_creds);
-    return retval;
+	retval = krb5_cc_initialize (context, ccache, me);
+	if (retval) {
+		*etext = "while initializing cache";
+		goto cleanup;
+	}
+
+	retval = krb5_build_principal_ext(context, &server,
+					  krb5_princ_realm(context,
+							   me)->length,
+					  krb5_princ_realm(context, me)->data,
+					  KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
+					  krb5_princ_realm(context,
+							   me)->length,
+					  krb5_princ_realm(context, me)->data,
+					  0);
+	if (retval)  {
+		*etext = "while building server name";
+		goto cleanup;
+	}
+
+	retval = krb5_os_localaddr(context, &my_addresses);
+	if (retval) {
+		*etext = "when getting my address";
+		goto cleanup;
+	}
+
+	retval = krb5_timeofday(context, &now);
+	if (retval) {
+		*etext = "while getting time of day";
+		goto cleanup;
+	}
+	
+	my_creds.client = me;
+	my_creds.server = server;
+	my_creds.times.starttime = 0;
+	my_creds.times.endtime = now + lifetime*5*60;
+	my_creds.times.renew_till = 0;
+	
+	retval = krb5_get_in_tkt_with_password(context, 0, my_addresses,
+					       NULL, NULL, password, ccache,
+					       &my_creds, 0);
+	if (retval) {
+		*etext = "while calling krb5_get_in_tkt_with_password";
+		goto cleanup;
+	}
+
+	if (ret_cache_name) {
+		*ret_cache_name = (char *) malloc(strlen(cache_name)+1);
+		if (!*ret_cache_name) {
+			retval = ENOMEM;
+			goto cleanup;
+		}
+		strcpy(*ret_cache_name, cache_name);
+	}
+
+cleanup:
+	if (me)
+		krb5_free_principal(context, me);
+	if (server)
+		krb5_free_principal(context, server);
+	if (my_addresses)
+		krb5_free_addresses(context, my_addresses);
+	if (ccache)
+		krb5_cc_close(context, ccache);
+	my_creds.client = 0;
+	my_creds.server = 0;
+	krb5_free_cred_contents(context, &my_creds);
+	krb5_free_context(context);
+	return retval;
 }
 
 krb5_error_code do_v5_kdestroy(cachename)
-    char    *cachename;
+	char	*cachename;
 {
-    krb5_error_code retval;
-    krb5_ccache cache;
-    
-    if (!cachename)
-	cachename = krb5_cc_default_name();
-    
-    krb5_init_ets();
-    
-    retval = krb5_cc_resolve (cachename, &cache);
-    if (!retval)
-	retval = krb5_cc_destroy(cache);
+	krb5_context context;
+	krb5_error_code retval;
+	krb5_ccache cache;
 
-    return retval;
+	krb5_init_context(&context);
+
+	if (!cachename)
+		cachename = krb5_cc_default_name(context);
+
+	krb5_init_ets(context);
+
+	retval = krb5_cc_resolve (context, cachename, &cache);
+	if (retval) {
+		krb5_free_context(context);
+		return retval;
+	}
+
+	retval = krb5_cc_destroy(context, cache);
+
+	krb5_free_context(context);
+	return retval;
 }
 #endif /* KRB5 */

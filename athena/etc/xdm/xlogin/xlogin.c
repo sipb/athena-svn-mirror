@@ -1,9 +1,9 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.49 1996-05-26 19:34:02 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.50 1996-09-20 04:18:58 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
 #endif
-#include <strings.h>
+#include <string.h>
 #include <stdio.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -15,11 +15,7 @@
 #include <fcntl.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
-#if defined(SOLARIS) || defined(sgi)
-#include "Wc/WcCreate.h"
-#else
-#include "../wcl/WcCreate.h"
-#endif
+#include <X11/Wc/WcCreate.h>
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Text.h>
@@ -535,7 +531,7 @@ main(argc, argv)
     {
       int this_screen = XScreenNumberOfScreen(XtScreen(saver));
       char *orig_dpy, *ptr;
-      Cardinal zero = (Cardinal) 0;
+      int zero = 0;
       num_screens = MIN(ScreenCount(dpy), 10);
       orig_dpy = XtNewString(DisplayString(dpy));
 
@@ -544,7 +540,7 @@ main(argc, argv)
 				/* always contain a period...  the */
 				/* displaystring is always canonicalized */
 				/* for us...  isn't that nice of them? */
-	  if ((ptr = rindex(orig_dpy, '.')) != NULL)
+	  if ((ptr = strrchr(orig_dpy, '.')) != NULL)
 	    {
 	      ptr++;
 
@@ -1245,7 +1241,7 @@ caddr_t unused;
     char *cmd, locker[256];
     Cardinal i = 1;
 
-    cmd = index(s, ',');
+    cmd = strchr(s, ',');
     if (cmd == NULL) {
 	fprintf(stderr,
 		"Xlogin warning: need two arguments in AttachAndRun(%s)\n",
@@ -1915,7 +1911,7 @@ static void setFontPath()
 	  localErrorHandler("Out of memory");
 
  	ndirs = 1;
- 	while (cp = index(cp, ',')) { ndirs++; cp++; }
+ 	while (cp = strchr(cp, ',')) { ndirs++; cp++; }
 
  	cp = dirs;
  	dirlist = (char **)malloc(ndirs*sizeof(char *));
@@ -1923,7 +1919,7 @@ static void setFontPath()
 	  localErrorHandler("Out of memory");
 
  	dirlist[i++] = cp;
- 	while (cp = index(cp, ',')) {
+ 	while (cp = strchr(cp, ',')) {
  	    *cp++ = '\0';
  	    dirlist[i++] = cp;
  	}

@@ -1,60 +1,32 @@
-# $Id: Imakefile,v 1.37 1996-04-19 02:25:14 cfields Exp $
+# $Id: Imakefile,v 1.38 1996-09-20 04:18:55 ghudson Exp $
 
-#if defined(_AIX) && (AIXV >= 30)
-MACHLIBS = -lodm -lcfg -ls
-#endif
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
 MACHLIBS=-lbsd
 #endif
-#ifdef ultrix
-MACHLIBS = -lnsyslog
-#endif
-
-WCL=../wcl/libWc.a
-ARISRC=AriRegAll.c
-ARIOBJ=AriRegAll.o
-
-#if defined(sgi) || defined(SOLARIS)
-/* R5 changes actually, not SGI. */
-WCL=$(WCLDIR)/Wc/libWc.a
-WCLDEFS=-I$(WCLDIR)
-ARISRC=
-ARIOBJ=$(WCLDIR)/Xp/libXp.a
-#endif
 
 #ifdef sgi
 /* AFS 3.4a rx depends on sys now; sys already depended on rx */
-MACHLIBS = -lsys ../misc/libnanny.a
-
-/* SGI doesn't include the clock in their Xaw anymore. */
-CLOCKSRC=Clock.c
-CLOCKOBJ=Clock.o
+MACHLIBS = ../misc/libnanny.a
 #endif
 
-KRB5_DEFS = -DKRB5 -I$(KRB5DIR)/include
-KRB5_LIBS = -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err
+KRB5_DEFS = -DKRB5
+KRB5_LIBS = -lkrb5 -lcrypto
 
-DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS) $(WCLDEFS)
-AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp
+DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS)
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
 
 
-SRCS = xlogin.c ${ARISRC} verify.c SmeBSB.c StringToPixel.c ${CLOCKSRC}
-OBJS = xlogin.o ${ARIOBJ} verify.o SmeBSB.o StringToPixel.o ${CLOCKOBJ}
-LIBS = -lXaw  ${WCL} -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
-	$(KRB5_LIBS) $(AFSLIBS) $(MACHLIBS) -lm
+SRCS = xlogin.c verify.c SmeBSB.c StringToPixel.c Clock.c
+OBJS = xlogin.o verify.o SmeBSB.o StringToPixel.o Clock.o
+LIBS = -lXaw -lWc -lXp -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
+	$(KRB5_LIBS) $(AFSLIBS) $(MACHLIBS) -lcom_err -lm
 
-#ifdef _IBMR2
-PRESOURCES=Xlogin.rios.presed
-#endif
 #ifdef SOLARIS
 PRESOURCES=Xlogin.sun4.presed
 #endif
 #ifdef sgi
 PRESOURCES=Xlogin.s/**/gi.presed
-#endif
-#ifdef ultrix
-PRESOURCES=Xlogin.presed
 #endif
 
 create_dir(/etc/athena/login)
@@ -69,8 +41,8 @@ install:: Xlogin
 
 Xlogin: $(PRESOURCES) $(ATHVERS)
 	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
-		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
+	sed -e "s/ATHENA_VERSION/$$major.$$minor/" \
+		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$major$$minor:" \
 		$(PRESOURCES) > Xlogin
 
 install_file(bitmaps/check,/etc/athena/login/bitmaps/check)
