@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.7 2003-06-08 18:52:24 zacheiss Exp $
+## $Id: sys_rvd.big,v 1.8 2003-10-23 03:39:31 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -39,6 +39,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 	/etc/mail:::
 		aliases
 		sendmail.cf
+		sendmail-noauth.cf
 		:
 	/etc/athena:::
 		athinfo.access
