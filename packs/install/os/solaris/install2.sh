@@ -94,6 +94,8 @@ chmod 755 /root/dev
 chmod 755 /root/devices
 cp /dev/null /root/reconfigure
 
+echo "Create config files for Athena software"
+chroot /root /srvd/install/athchanges
 
 cd /root
 echo "Creating other files/directories on the pack's root..."
