@@ -5,6 +5,7 @@
 #ifdef SOLARIS
 #include <sys/mntent.h> 
 #include <rpcsvc/rquota.h>
+#include <netinet/in.h>
 #else
 #include <mntent.h> 
 #endif
@@ -44,7 +45,9 @@ getnfsquota(host, path, uid, dqp)
 {
 	struct getquota_args gq_args;
 	struct getquota_rslt gq_rslt;
+#ifndef sun
 	extern char *index();
+#endif
 
 	gq_args.gqa_pathp = path;
 	gq_args.gqa_uid = uid;
@@ -186,3 +189,61 @@ callaurpc(host, prognum, versnum, procnum, inproc, in, outproc, out)
 		valid = 0;
 	return ((int) clnt_stat);
 }
+
+#ifdef SOLARIS
+bool_t
+xdr_rquota(xdrs, rqp)
+        XDR *xdrs;
+        struct rquota *rqp;
+{
+ 
+        return (xdr_int(xdrs, &rqp->rq_bsize) &&
+            xdr_bool(xdrs, &rqp->rq_active) &&
+            xdr_u_long(xdrs, &rqp->rq_bhardlimit) &&
+            xdr_u_long(xdrs, &rqp->rq_bsoftlimit) &&
+            xdr_u_long(xdrs, &rqp->rq_curblocks) &&
+            xdr_u_long(xdrs, &rqp->rq_fhardlimit) &&
+            xdr_u_long(xdrs, &rqp->rq_fsoftlimit) &&
+            xdr_u_long(xdrs, &rqp->rq_curfiles) &&
+            xdr_u_long(xdrs, &rqp->rq_btimeleft) &&
+            xdr_u_long(xdrs, &rqp->rq_ftimeleft) );
+}
+bool_t
+xdr_path(xdrs, pathp)
+        XDR *xdrs;
+        char **pathp;
+{
+        if (xdr_string(xdrs, pathp, 1024)) {
+                return(TRUE);
+        }
+        return(FALSE);
+}
+ 
+
+struct xdr_discrim gqr_arms[2] = {
+        { (int)Q_OK, xdr_rquota },
+        { __dontcare__, NULL }
+};
+
+bool_t
+xdr_getquota_args(xdrs, gq_argsp)
+        XDR *xdrs;
+        struct getquota_args *gq_argsp;
+{
+        extern bool_t xdr_path();
+ 
+        return (xdr_path(xdrs, &gq_argsp->gqa_pathp) &&
+            xdr_int(xdrs, &gq_argsp->gqa_uid));
+}
+ 
+bool_t
+xdr_getquota_rslt(xdrs, gq_rsltp)
+        XDR *xdrs;
+        struct getquota_rslt *gq_rsltp;
+{
+ 
+        return (xdr_union(xdrs,
+            &gq_rsltp->status, &gq_rsltp->getquota_rslt_u.gqr_rquota,
+            gqr_arms, xdr_void));
+}
+#endif
