@@ -1,0 +1,14 @@
+#!/bin/sh -
+# Version-specific update script for 7.7D
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+DS*)
+	;;
+RSAIX)
+	;;
+SUN*)
+	rm /etc/athena/cleanup.dump
+	;;
+esac
