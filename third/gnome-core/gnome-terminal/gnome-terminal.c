@@ -47,7 +47,7 @@ static char *initial_global_geometry = NULL;
 
 char **env;
 
-#define DEFAULT_FONT "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso8859-1"
+#define DEFAULT_FONT "-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-iso8859-1"
 #define EXTRA 6
 
 /* is there pixmap compiled into zvt */
