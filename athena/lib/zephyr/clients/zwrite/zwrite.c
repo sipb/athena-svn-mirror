@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.12 1988-06-17 17:01:31 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.13 1988-06-18 17:50:37 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -165,7 +165,7 @@ main(argc, argv)
 		    message = realloc(message, msgsize+strlen(argv[arg])+
 				      (arg == argc-1)?2:1);
 	    else
-		    message = malloc(strlen(argv[arg])+ (arg == argc-1)?2:1);
+		    message = malloc(strlen(argv[arg])+ ((arg == argc-1)?2:1));
 	    strcpy(message+msgsize, argv[arg]);
 	    msgsize += strlen(argv[arg]);
 	    if (arg != argc-1) {
@@ -185,8 +185,11 @@ main(argc, argv)
 		if (bfr[0] == '.' &&
 		    (bfr[1] == '\n' || bfr[1] == '\0'))
 		    break;
-		message = realloc(message, msgsize+
-				  strlen(bfr));
+		if (message)
+			message = realloc(message, msgsize+
+					  strlen(bfr));
+		else
+			message = malloc(msgsize+strlen(bfr));
 		strcpy(message+msgsize, bfr);
 		msgsize += strlen(bfr);
 	    }
@@ -211,6 +214,7 @@ main(argc, argv)
     notice.z_message_len = msgsize;
 
     send_off(&notice, 1);
+    exit(0);
 }
 
 send_off(notice, real)
@@ -247,15 +251,16 @@ send_off(notice, real)
 	    com_err(whoami, retval, bfr);
 	    continue;
 	}
-	ZFreeNotice(&retnotice);
 	if (retnotice.z_kind == SERVNAK) {
 	    printf("Received authentication failure while sending to %s\n", 
 		   nrecips?notice->z_recipient:inst);
+	    ZFreeNotice(&retnotice);
 	    continue;
 	} 
 	if (retnotice.z_kind != SERVACK || !retnotice.z_message_len) {
 	    printf("Detected server failure while receiving acknowledgement for %s\n", 
 		   nrecips?notice->z_recipient:inst);
+	    ZFreeNotice(&retnotice);
 	    continue;
 	}
 	if (!real || (!quiet && real))
@@ -295,6 +300,7 @@ send_off(notice, real)
 		} 
 		else
 		    printf("Internal failure - illegal message field in server response\n");
+	ZFreeNotice(&retnotice);
 	if (!nrecips)
 	    break;
     }
