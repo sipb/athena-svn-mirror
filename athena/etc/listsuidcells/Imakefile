@@ -1,12 +1,12 @@
 #ifdef __NetBSD__
 OSLIBS=-lcompat
 #endif
-#ifdef sgi
-OSLIBS=-lsys
+#ifdef SOLARIS
+OSLIBS=-lbsd
 #endif
 
 DEFINES=-I${AFSDIR}/include
-LIBS=-L${AFSDIR}/lib -L${AFSDIR}/lib/afs -lsys -lrx -llwp ${OSLIBS}
+LIBS=-L${AFSDIR}/lib -L${AFSDIR}/lib/afs -lsys -lrx -llwp -lsys ${OSLIBS}
 
 SimpleProgram(listsuidcells, listsuidcells.o,${LIBS},/etc/athena/)
 
