@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.5 1987-12-07 17:16:18 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.6 1987-12-07 18:25:49 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.5  87/12/07  17:16:18  shanzer
+ * commented out do_cmds call; parser was leaving white-space in
+ * some entries' command-fields, which do_cmds handled poorly (bus error).
+ * 
  * Revision 2.4  87/12/03  20:41:52  don
  * replaced twdir & fwdir crap. these were fromroot/toroot-qualified
  * pathnames to the parent dir of slists/ & stats/. they don't both
@@ -58,7 +62,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.5 1987-12-07 17:16:18 shanzer Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.6 1987-12-07 18:25:49 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -88,7 +92,6 @@ unsigned stackmax = STACKMAX;		/* max depth of pathname-stack vars */
 char prgname[LINELEN];
 
 extern int errno;		/* global error number location */
-extern int wait();
 char errmsg[LINELEN];
 
 int writeflag = 0;	/* if set, translate subscription list -> statfile,
@@ -122,10 +125,6 @@ char **argv;
 
 	umask(022);	/* set default umask for daemons */
 
-	/* we spawn child processes which run shell-commands.
-	 * don't let aborted children become zombies!
-	 */
-	signal( SIGCHLD, wait);
 	signal( SIGINT, cleanup);
 
 	for(i=1;i<argc;i++) {
