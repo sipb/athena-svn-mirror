@@ -18,17 +18,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v $
- *	$Id: p_connect.c,v 1.9 1990-07-16 08:19:34 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_connect.c,v 1.10 1990-07-16 09:33:57 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.9 1990-07-16 08:19:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.10 1990-07-16 09:33:57 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
+
+extern int num_of_args;
 
 /*
  * Function:    do_olc_grab() grabs a pending question.
@@ -49,53 +51,38 @@ do_olc_grab(arguments)
   if(fill_request(&Request) != SUCCESS)
      return(ERROR);
 
-  for(++arguments; *arguments != (char *) NULL; arguments++)
+  arguments++;
+  while(*arguments != (char *) NULL)
     {
       if(string_equiv(*arguments,"-create_new_instance",
 		      max(strlen(*arguments),2)))
 	{
 	  flag = 1;
-          continue;
+	  arguments++;
+	  continue;
 	}
-
-      if(string_equiv(*arguments,"-instance",max(strlen(*arguments),2)))
-	{
-	   if((*(++arguments) != (char *) NULL) && (*arguments[0] != '-'))
-	     {
-	       if(isnumber(*arguments) != SUCCESS)
-		 {
-		   printf("Specified instance id \"%s\" is not a number.\n", 
-			  *arguments);
-		   return(ERROR);
-		 }
-	       Request.requester.instance = atoi(*arguments);
-	       continue;
-	     }
-	   else
-	     {
-	       fprintf(stderr,
-		       "You must specify an instance after '-instance'.\n");
-	       return(ERROR);
-	     }
-	 }
 
       if(string_equiv(*arguments,"-do_not_change_instance",
 		      max(strlen(*arguments),2)))
 	{
 	  hold = 1;
+	  arguments++;
           continue;
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
+
+      arguments += num_of_args;		/* HACKHACKHACK */
+      
       if(arguments == (char **) NULL)   
 	{
-	  printf("Usage is: \tgrab  [<username> <instance id>] [-create_new_instance]\n\t\t[-do_not_change_instance] [-instance <instance id>]\n");
+	  printf("Usage is: \tgrab  [<username> <instance id>] ");
+	  printf("[-create_new_instance]\n");
+	  printf("\t\t[-do_not_change_instance] [-instance <instance id>]\n");
 	  return(ERROR);
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
-        break;
     }
 
   status = t_grab(&Request,flag,hold);
@@ -127,7 +114,8 @@ do_olc_forward(arguments)
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 	
-  for (arguments++; *arguments != (char *)NULL; ) 
+  arguments++;
+  while(*arguments != (char *)NULL)
     {
       if (string_equiv(*arguments, "-off", max(strlen(*arguments), 2)))
 	{
@@ -157,6 +145,9 @@ do_olc_forward(arguments)
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
+
+      arguments += num_of_args;		/* HACKHACKHACK */
+
       if(arguments == (char **) NULL)   /* error */
 	{
 	  printf("Usage is: \tforward  [<username> <instance id>] ");
