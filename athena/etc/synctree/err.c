@@ -1,8 +1,6 @@
 #include <stdio.h>
-
-extern int errno;
-extern int sys_nerr;
-extern char *sys_errlist[];
+#include <string.h>
+#include <errno.h>
 
 panic(s)
      char *s;
@@ -11,7 +9,6 @@ panic(s)
 }
 epanic(s)
      char *s;
-{ fprintf(stderr, "Fatal error: %s: %s\n", s,
-	  errno<sys_nerr? sys_errlist[errno] : "unknown error");
+{ fprintf(stderr, "Fatal error: %s: %s\n", s, strerror(errno));
   exit(1);
 }
