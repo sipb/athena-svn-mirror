@@ -1,0 +1,42 @@
+# modified from /mit/source/athena/bin/panel-wrapper
+# $Id: Makefile.in,v 1.1 2001-07-11 18:36:58 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@KRB5_LIBS@ @KRB4_LIBS@ @LIBS@
+ALL_CFLAGS=`gtk-config --cflags` -Wall ${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_LIBS=`gtk-config --libs` -lkrb524 ${LIBS}
+
+all: grenew 
+
+grenew: grenew.o
+	${CC} ${LDFLAGS} -o $@ grenew.o ${ALL_LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} grenew ${DESTDIR}${bindir}
+
+clean:
+	rm -f grenew.o grenew
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
