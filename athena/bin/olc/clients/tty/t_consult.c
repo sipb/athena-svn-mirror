@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.3 1989-08-15 00:24:48 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.4 1989-08-22 13:53:32 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -29,17 +29,26 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 ERRCODE
-t_sign_on(Request)
+t_sign_on(Request,flag,hold)
      REQUEST *Request;
+     int flag;
+     int hold;
 {
   int status;
+  char buf[BUF_SIZE];
+  int instance;
+  
+  if(flag)
+    set_option(Request->options,SPLIT_OPT);
+
+  instance = Request->requester.instance;
 
   status = OSignOn(Request);
   switch (status)
     { 
     case SUCCESS: 
       if(isme(Request))
-	printf("You have signed on.\n");
+	printf("You have signed on to OLC.\n");
       else
 	printf("%s (%d) is signed on. I hope you told him.\n",
 	       Request->target.username,Request->target.instance);
@@ -48,20 +57,31 @@ t_sign_on(Request)
 
     case ALREADY_SIGNED_ON:
       if(isme(Request))
-	fprintf(stderr,"You are already signed on at this level.\n");
+	fprintf(stderr,"You are already signed on.\n");
       else
-	printf("%s (%d) is already signed on at this level.\n",
+	printf("%s (%d) is already signed on.\n",
 	       Request->target.username,Request->target.instance);
       status = NO_ACTION;
       break;
 
     case HAS_QUESTION:
       if(isme(Request))
-	fprintf(stderr,
-	       "You can't ask a question and sign on in the same instance.\n");
+	{
+	  get_prompted_input("Would you like to create another instance to sign on? " ,buf);
+	  if(string_equiv(buf,"yes",1))
+	    return(t_sign_on(Request,TRUE,hold));
+	  status = NO_ACTION;
+	  break;
+	}
       else
 	printf("%s (%d) is already asking a question in that instance.\n",
 	       Request->target.username,Request->target.instance);
+      break;
+
+    case MAX_ANSWER:
+      printf("You cannot answer any more questions simultaneously\n");
+      printf("without forwarding one of your existing connections.\n");
+      status = NO_ACTION;
       break;
 
     case ALREADY_CONNECTED: 
@@ -95,7 +115,14 @@ t_sign_on(Request)
       status = handle_response(status, Request);
       break;
     }
-    
+
+  if((instance != Request->requester.instance) && !hold)
+    {
+      printf("You are now %s (%d).\n",Request->requester.username,
+	     Request->requester.instance);
+      User.instance =  Request->requester.instance;
+    }
+
   return(status);
 }
 	    
@@ -107,9 +134,11 @@ t_olc_off(Request)
      REQUEST *Request;
 {
   int status;
-  
-  status = OSignOff(Request);
+  int instance;
 
+  instance = Request->requester.instance;
+  status = OSignOff(Request);
+  
   switch (status)
     {
     case SUCCESS:
@@ -127,6 +156,13 @@ t_olc_off(Request)
       status = NO_ACTION;
       break;
 
+    case NOT_CONNECTED:
+      printf("You have signed off. This instance has been terminated.\n");
+      status = SUCCESS;
+      
+      t_set_default_instance(Request);
+      break;
+
     case ERROR:
      fprintf(stderr,
               "An error has occurred. You are not signed off.\n");
@@ -137,6 +173,10 @@ t_olc_off(Request)
       status = handle_response(status, Request);
       break;
     }
+
+  if(instance != Request->requester.instance)
+    printf("You are %s (%d), again. %s\n",Request->requester.username,
+           Request->requester.instance, happy_message());
 
   return(status);
 }

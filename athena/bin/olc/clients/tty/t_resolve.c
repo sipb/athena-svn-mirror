@@ -25,19 +25,15 @@
 
 
 ERRCODE
-t_done(Request,title,off)
+t_done(Request,title)
      REQUEST *Request;
      char *title;
-     int off;
 {
   int status;
   char buf[LINE_LENGTH];
   int instance; 
 
   instance = Request->requester.instance;
-
-  if(off)
-    set_option(Request->options, OFF_OPT);
 
   if(title == (char *) NULL)
     {
@@ -89,16 +85,18 @@ t_done(Request,title,off)
   switch(status)
     {
     case SIGNED_OFF:
-      printf("Question resolved.  You have signed off of OLC.\n");
-      User.instance = 0;
-      Request->requester.instance = 0;
+      printf("Question resolved. ");
+      if(is_option(Request->options,OFF_OPT))
+	printf("You have signed off OLC.\n");
+      else
+	printf("You are signed off OLC.\n");
+
+      t_set_default_instance(Request);
       status = SUCCESS;
       break;
 
     case CONNECTED:
       printf("Question resolved. You have been connected to another user.\n");
-      User.instance = 0;
-      Request->requester.instance = 0;
       status = SUCCESS;
       break;
 
@@ -107,16 +105,16 @@ t_done(Request,title,off)
       printf("Thank you for using OLC!\n");
      if(OLC)
         exit(0);
-     Request->requester.instance = 0;
-     User.instance = 0;
-     break;
+     
+      t_set_default_instance(Request);
+      break;
 
     case SUCCESS:
       printf("Your question is resolved. Thank you for using OLC.\n");
       if(OLC)
 	exit(0);
-      Request->requester.instance = 0;
-      User.instance = 0; 
+
+      t_set_default_instance(Request);
       break;
 
     case PERMISSION_DENIED:
@@ -179,9 +177,9 @@ t_cancel(Request,title)
   switch(status)
     {
     case SUCCESS:
-      printf("Question cancelled.\n");
-      User.instance = 0;
-      Request->requester.instance = 0;
+      printf("Question cancelled. ");
+      t_set_default_instance(Request);
+
       status = SUCCESS;
       break;
 
@@ -189,14 +187,18 @@ t_cancel(Request,title)
       printf("Your question has been cancelled.\n");
       if(OLC)
          exit(0);
-      User.instance = 0;
-      Request->requester.instance = 0;
+      
+      t_set_default_instance(Request);
       break;
 
     case SIGNED_OFF:
-      printf("Question cancelled.  You have signed off of OLC.\n");
-      User.instance = 0;
-      Request->requester.instance = 0;
+      printf("Question cancelled. ");
+      if(is_option(Request->options,OFF_OPT))
+	printf("You have signed off OLC.\n");
+      else
+	printf("You are signed off OLC.\n");
+      
+      t_set_default_instance(Request);
       status = SUCCESS;
       break;
 
