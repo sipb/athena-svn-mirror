@@ -43,9 +43,9 @@ int	pflag = 0;			/* 1 if -p on cmd line */
 int	price100;			/* per-page cost in 100th of a cent */
 char	*index();
 int	pgetnum();
-#ifdef HESIOD-PAC
+#ifdef HESIOD_PAC
 char	alibuf[BUFSIZ/2];		/* buffer for printer alias */
-#endif HESIOD-PAC
+#endif /* HESIOD-PAC */
 
 /*
  * Grossness follows:
@@ -393,7 +393,7 @@ chkprinter()
 	int stat;
 	char *bp = buf;
 
-#ifdef HESIOD-PAC
+#ifdef HESIOD_PAC
 	if ((stat = pgetent(b, printer)) <= 0) {
 		if (pralias(alibuf, printer))
 			printer = alibuf;
@@ -406,7 +406,7 @@ chkprinter()
 		exit(3);
 	} else if (stat == 0)
 		return(0);
-#endif HESIOD-PAC
+#endif /* HESIOD_PAC */
 	if ((acctfile = pgetstr("af", &bp)) == NULL) {
 		printf("accounting not enabled for printer %s\n", printer);
 		exit(2);
