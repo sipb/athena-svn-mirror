@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.4 2001-03-26 19:59:29 ghudson Exp $
+# $Id: bash_login,v 1.5 2002-02-18 15:41:29 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -118,7 +118,7 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	if [ "${verbose_login+set}" = set ]; then
 		 echo "Running standard startup activities ..."
 	fi
-	set IGNOREEOF			# ^D won't log you out
+	IGNOREEOF=			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -login		# Display current motd
 	from -t -n			# Check for mail
