@@ -32,6 +32,7 @@ RETVAL=0
 # See how we were called
 case "$1" in
   start)
+	[ "$DISCONNECTABLE" = true ] && exit 0
 	echo -n "Starting Athena zephyr host manager: "
 	daemon zhm
 	RETVAL=$?
