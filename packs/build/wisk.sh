@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.66 $
+# $Revision: 1.67 $
 
 umask 2
 
@@ -69,7 +69,7 @@ switch ( $machine )
     breaksw
 
   case sun4
-    set machthird="third/unsupported/ditroff third/supported/talk third/unsupported/x3270 third/unsupported/transcript-v4.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn"
+    set machthird="third/unsupported/ditroff third/supported/talk third/unsupported/x3270 third/unsupported/transcript-v4.1 third/unsupported/ansi third/unsupported/jove third/unsupported/learn third/supported/mae-2.0"
     breaksw
 
   case rsaix
