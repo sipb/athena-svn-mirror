@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.8 1989-12-06 13:27:20 jtkohl Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.9 1990-04-13 02:40:36 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -231,8 +231,7 @@ static XrmOptionDescRec cmd_options[] = {
     {"-name",        ".name",         XrmoptionSepArg, (caddr_t) NULL},
     {"-reverse",     "*reverseVideo", XrmoptionNoArg,  (caddr_t) "on"},
     {"-rv",          "*reverseVideo", XrmoptionNoArg,  (caddr_t) "on"},
-    {"-selectionTimeout", 
-       ".selectionTimeout", XrmoptionSepArg,   (caddr_t) NULL},
+    {"-transient",   "*transient",    XrmoptionNoArg,  (caddr_t) "on"},
     {"-synchronous", "*synchronous",  XrmoptionNoArg,  (caddr_t) "on"},
     {"-title",       ".title",        XrmoptionSepArg, (caddr_t) NULL},
     {"-xrm",         NULL,            XrmoptionResArg, (caddr_t) NULL} };
