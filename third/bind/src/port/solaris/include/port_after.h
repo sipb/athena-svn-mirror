@@ -42,7 +42,6 @@
 #endif
 
 #include <sys/types.h>
-extern int gethostname(char *, size_t);
 
 #define NEED_STRSEP
 extern char *strsep(char **, const char *);
