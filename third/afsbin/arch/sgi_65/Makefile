@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1999-03-14 20:03:22 rbasch Exp $
+# $Id: Makefile,v 1.2 1999-12-22 20:21:13 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -44,29 +44,55 @@ install:
 	ln -s ../init.d/afs ${DESTDIR}${RC0}/K35afs
 	rm -f ${DESTDIR}${RC2}/S35afs
 	ln -s ../init.d/afs ${DESTDIR}${RC2}/S35afs 
-	install -c -m 444 include/andrewOS.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/des.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/des_conf.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/des_odd.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/itc.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/lock.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/lwp.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/mit-cpyright.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/potpourri.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/preempt.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/pthread.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/timer.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/ubik.h ${DESTDIR}${WS}/include
-	install -c -m 444 include/ubik_int.h ${DESTDIR}${WS}/include
-
 	install -c -m 444 include/afs/acl.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_Admin.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminBosErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminCfgErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminClientErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminCommonErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminKasErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminMiscErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminPtsErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminUtilErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_AdminVosErrors.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_args.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_atomlist.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_bosAdmin.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_cfgAdmin.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_clientAdmin.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_kasAdmin.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_lhash.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_ptsAdmin.h \
+		${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs_stats.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs_sysnames.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_utilAdmin.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afs_vosAdmin.h \
 		${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afscbint.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afsint.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afssyscalls.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/afsutil.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/assert.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/audit.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/auth.h ${DESTDIR}${WS}/include/afs
@@ -86,8 +112,11 @@ install:
 	install -c -m 444 include/afs/com_err.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/debug.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/dir.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/dirpath.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/error_table.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/errors.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/exporter.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/fileutil.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/fs_stats.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/fsprobe.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/fssync.h ${DESTDIR}${WS}/include/afs
@@ -105,14 +134,18 @@ install:
 	install -c -m 444 include/afs/gtxtextobj.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/gtxwindows.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/icl.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/ihandle.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/kaport.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/kauth.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/kautils.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/keys.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/ktime.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/mit-sipb-cr.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/namei_ops.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/netutils.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/nfs.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/nfsclient.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/osi_inode.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/packages.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/param.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/partition.h ${DESTDIR}${WS}/include/afs
@@ -120,10 +153,15 @@ install:
 	install -c -m 444 include/afs/prclient.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/prerror.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/print.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/procmgmt.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/prs_fs.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/prserver.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/ptclient.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/pterror.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/pthread_glock.h \
+		${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/pthread_nosigs.h \
+		${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/ptint.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/ptserver.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/remote.h ${DESTDIR}${WS}/include/afs
@@ -131,6 +169,7 @@ install:
 		${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/stds.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/tcdata.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/afs/usd.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/venus.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/vice.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/viceinode.h ${DESTDIR}${WS}/include/afs
@@ -146,50 +185,80 @@ install:
 	install -c -m 444 include/afs/xfsattrs.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/xstat_cm.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/xstat_fs.h ${DESTDIR}${WS}/include/afs
+	install -c -m 444 include/andrewOS.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/des.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/des_conf.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/des_odd.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/itc.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/lock.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/lwp.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/mit-cpyright.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/potpourri.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/preempt.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/pthread.h ${DESTDIR}${WS}/include
 	install -c -m 444 include/rx/rx.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_clock.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_event.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_globals.h ${DESTDIR}${WS}/include/rx
+	install -c -m 444 include/rx/rx_lwp.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_machdep.h ${DESTDIR}${WS}/include/rx
+	install -c -m 444 include/rx/rx_misc.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_multi.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_null.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_packet.h ${DESTDIR}${WS}/include/rx
+	install -c -m 444 include/rx/rx_pthread.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_queue.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rx_user.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/rxkad.h ${DESTDIR}${WS}/include/rx
+	install -c -m 444 include/rx/rxstat.h ${DESTDIR}${WS}/include/rx
 	install -c -m 444 include/rx/xdr.h ${DESTDIR}${WS}/include/rx
-	install -c -m 444 lib/libdes.a ${DESTDIR}${WS}/lib
-	install -c -m 444 lib/liblwp.a ${DESTDIR}${WS}/lib
-	install -c -m 444 lib/librx.a ${DESTDIR}${WS}/lib
-	install -c -m 444 lib/librxkad.a ${DESTDIR}${WS}/lib
-	install -c -m 444 lib/libubik.a ${DESTDIR}${WS}/lib
+	install -c -m 444 include/timer.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/ubik.h ${DESTDIR}${WS}/include
+	install -c -m 444 include/ubik_int.h ${DESTDIR}${WS}/include
 	install -c -m 444 lib/afs/libacl.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libafsadminutil.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libafsint.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libaudit.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libauth.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libauth.krb.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libbos.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libbosadmin.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libbubasics.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libbudb.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libbutm.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libbxdb.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libcfgadmin.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libclientadmin.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libcmd.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libcmd64.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libcom_err.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libdir.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libfsprobe.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libgtx.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libkasadmin.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libkauth.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libkauth.krb.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libnull.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libprocmgmt.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libprot.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libptsadmin.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libsys.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libusd.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libvldb.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libvolser.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/afs/libvosadmin.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libxstat_cm.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libxstat_fs.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/util.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/vlib.a ${DESTDIR}${WS}/lib/afs
+	install -c -m 444 lib/libafsauthent.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/libafsrpc.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/libdes.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/liblwp.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/librx.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/librxkad.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/librxstat.a ${DESTDIR}${WS}/lib
+	install -c -m 444 lib/libubik.a ${DESTDIR}${WS}/lib
 	rm -f ${DESTDIR}${WS}/lib/afs/libtermlib.a
 	ln -s libnull.a ${DESTDIR}${WS}/lib/afs/libtermlib.a
 
