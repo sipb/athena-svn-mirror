@@ -731,7 +731,7 @@ Makefile:: 								@@\
 	-@if [ -f Makefile ]; then set -x; \				@@\
 		$(RM) Makefile.bak; $(MV) Makefile Makefile.bak; \	@@\
 	else exit 0; fi							@@\
-	$(IMAKE_CMD) -DTOPDIR=$(TOP) -DCURDIR=$(CURRENT_DIR) imakeflags
+	$(IMAKE_CMD) -DTOPDIR=$(TOP) -DSRCDIR=SRCDIR -DCURDIR=$(CURRENT_DIR) imakeflags
 
 #endif /* BuildMakefileTarget */
 
@@ -1282,7 +1282,7 @@ target::								@@\
 			fi; \						@@\
 		fi; \							@@\
 		if [ "$$executeit" != "no" ]; then \			@@\
-			ImakeSubCmdHelper -DTOPDIR=$$imaketop$(TOP) -DCURDIR=$(CURRENT_DIR)/$$i; \ @@\
+			ImakeSubCmdHelper -DTOPDIR=$$imaketop$(TOP) -DSRCDIR=SRCDIR -DCURDIR=$(CURRENT_DIR)/$$i; \ @@\
 		fi; \							@@\
 		$(MAKE) $(MFLAGS) Makefiles; \				@@\
 		cd $$newtop; \						@@\
