@@ -1,0 +1,55 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Low Contrast Large Print
+Name[bg]=Нисък контраст, едър печат
+Name[ca]=Contrast baix per a impressió gran
+Name[cs]=Nízký kontrast velké písmo
+Name[de]=Geringer Kontrast, groß
+Name[es]=Impresión de bajo contraste grande
+Name[fi]=Pieni kontrasti (suurikokoinen)
+Name[he]=ניגוד נמוך הדפסה מוגדלת
+Name[hu]=Kis kontraszt és nagy szöveg
+Name[it]=Basso contrasto, caratteri larghi
+Name[ko]=저대비 확대
+Name[lv]=Vāja Kontrasta Liela Druka
+Name[ms]=Cetakan Besar Kontras Rendah
+Name[nl]=Laag contrast grote letters
+Name[no]=Lav kontrast, stor skrift
+Name[pt_BR]=Baixo Contraste Letras Grandes
+Name[ro]=Mărime mare cu contrast slab
+Name[ru]=Низкоконтрастная крупная для печати
+Name[sq]=Paraqitje e zmadhuar me kontrast të ulët
+Name[sv]=Stor text med låg kontrast
+Name[uk]=Низькоконтрастна велика для друку
+Name[zh_TW]=低反差/大型
+Comment=Large muted text and icons
+Comment[bg]=Едри, затъмнени текст и икони
+Comment[ca]=Text i icones grans en mat
+Comment[cs]=Velký méně kontrastní text a ikony
+Comment[de]=Text und Icons groß und kontrastarm
+Comment[es]=Textos e iconos grandes de tono bajo
+Comment[fi]=Suurikokoinen himmeä teksti ja kuvakkeet
+Comment[he]=מלל וסמלים מוגדלים עמומים
+Comment[hu]=Halvány nagy szöveg és ikonok
+Comment[it]=Colori attenuati per testo ed icone grandi
+Comment[ko]=옅고 큰 글씨와 아이콘
+Comment[lv]=Liels apklusināts teksts un ikonas
+Comment[ms]=Teks dan ikon mute besar
+Comment[nl]=Grote zachte tekst en pictogrammen
+Comment[no]=Stor dempet tekst og ikoner
+Comment[pt_BR]=Texto e ícones emudecidos grandes
+Comment[ro]=Text şi iconiţe mari cu contrast slab
+Comment[ru]=Крупные "приглушённые" текст и значки
+Comment[sq]=Tekst dhe ikona të mëdha pa volum
+Comment[sv]=Stor dämpad text och ikoner
+Comment[tr]=Yumuşak metin ve simgeler (büyük)
+Comment[uk]=Великі неконтрастні тест і піктограми
+Comment[zh_TW]=大型而柔和的文字及圖示
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=LowContrastLargePrint
+IconTheme=LowContrastLargePrint
+MetacityTheme=Atlanta
+ApplicationFont=sans 18
+

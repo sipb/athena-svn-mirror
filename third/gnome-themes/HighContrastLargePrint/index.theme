@@ -1,0 +1,56 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=High Contrast Large
+Name[bg]=Висок контраст, едри елементи
+Name[ca]=Contrast alt gran
+Name[cs]=Vysoký kontrast velké
+Name[de]=Hoher Kontrast, groß
+Name[es]=Alto contraste grande
+Name[fi]=Suuri kontrasti (suuri)
+Name[he]=ניגוד גבוה מוגדל
+Name[hu]=Nagy kontraszt és nagy
+Name[it]=Forte contrasto, caratteri larghi
+Name[ko]=고대비 확대
+Name[lv]=Spēcīga Kontrasta Liels
+Name[ms]=Besar Kontras Tinggi
+Name[nl]=Hoog contrast groot
+Name[no]=Høy kontrast, stor
+Name[pt_BR]=Alto Contraste Grande
+Name[ro]=Iconiţe mari şi contrast puternic
+Name[ru]=Высококонтрастная крупная
+Name[sq]=Kontrast i lartë i madh
+Name[sv]=Stor text med hög kontrast
+Name[tr]=Yüksek Parlaklık (Büyük)
+Name[uk]=Висококонтрастна велика
+Name[zh_TW]=高反差/大型
+Comment=Large black-on-white text and icons
+Comment[bg]=Едри, черни текст и икони на бял фон
+Comment[ca]=Text i icones grans en negre sobre blanc
+Comment[cs]=Velký text a ikony černě na bílém
+Comment[de]=Text und Icons groß und schwarz vor weißem Hintergrund
+Comment[es]=Textos e iconos grandes en negro sobre blanco
+Comment[fi]=Suurikokoinen musta teksti ja kuvakkeet valkoisella taustalla
+Comment[he]=מלל וסמלים מוגדלים בשחור על לבן
+Comment[hu]=Fehér alapon nagy fekete szöveg és ikonok
+Comment[it]=Nero su bianco per testo ed icone grandi
+Comment[ko]=흰 바탕에 커다란 검은 글씨와 아이콘
+Comment[lv]=Liels melns-uz-balta teksts un ikonas
+Comment[ms]=Teks dan ikon putih-atas-hitam besar
+Comment[nl]=Grote zwart/wit tekst en pictogrammen
+Comment[no]=Tekst og ikoner, stor og sort på hvitt
+Comment[pt_BR]=Texto e ícones preto-no-branco grandes
+Comment[ro]=Text şi iconiţe mari Negru-pe-Alb
+Comment[ru]=Крупные текст и значки чёрные на белом
+Comment[sq]=Tekst dhe ikona të mëdha në të zezë mbi të bardhë
+Comment[sv]=Stor svart text och ikoner på vit botten
+Comment[tr]=Beyaz üzerine siyah metin ve simgeler (büyük)
+Comment[uk]=Великі чорні текст і піктограми на білому
+Comment[zh_TW]=大型白底黑線文字及圖示
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=HighContrastLargePrint
+IconTheme=HighContrast
+MetacityTheme=Atlanta
+ApplicationFont=sans 18
+

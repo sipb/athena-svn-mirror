@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+_Name=Low Contrast Large Print
+_Comment=Large muted text and icons
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=LowContrastLargePrint
+IconTheme=LowContrastLargePrint
+MetacityTheme=Atlanta
+ApplicationFont=@LARGEPRINT_FONT@
+

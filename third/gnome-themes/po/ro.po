@@ -1,0 +1,70 @@
+# Romanian translation for gnome-themes
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Mişu Moldovan <dumol@go.ro>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-themes 0.7\n"
+"POT-Creation-Date: 2003-01-20 20:11+0000\n"
+"PO-Revision-Date: 2003-01-18 17:46+0200\n"
+"Last-Translator: Mişu Moldovan <dumol@go.ro>\n"
+"Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: HighContrast/index.theme.in.h:1
+msgid "Black-on-white text and icons"
+msgstr "Text şi iconiţe Negru-pe-Alb"
+
+#: HighContrast/index.theme.in.h:2
+msgid "High Contrast"
+msgstr "Contrast puternic"
+
+#: HighContrastInverse/index.theme.in.h:1
+msgid "High Contrast Inverse"
+msgstr "Contrast puternic şi culori inversate"
+
+#: HighContrastInverse/index.theme.in.h:2
+msgid "White-on-black text and icons"
+msgstr "Text şi iconiţe Alb-pe-Negru"
+
+#: HighContrastLargePrint/index.theme.in.in.h:1
+msgid "High Contrast Large"
+msgstr "Iconiţe mari şi contrast puternic"
+
+#: HighContrastLargePrint/index.theme.in.in.h:2
+msgid "Large black-on-white text and icons"
+msgstr "Text şi iconiţe mari Negru-pe-Alb"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:1
+msgid "High Contrast Large Print Inverse"
+msgstr "Mărime mare, contrast puternic şi culori inversate"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:2
+msgid "Large white-on-black text and icons"
+msgstr "Text şi iconiţe mari Alb-pe-Negru"
+
+#: LargePrint/index.theme.in.in.h:1
+msgid "Large Print"
+msgstr "Mărime mare"
+
+#: LargePrint/index.theme.in.in.h:2
+msgid "Large text and icons"
+msgstr "Text şi iconiţe mari"
+
+#: LowContrast/index.theme.in.h:1
+msgid "Low Contrast"
+msgstr "Contrast slab"
+
+#: LowContrast/index.theme.in.h:2
+msgid "Muted text and icons"
+msgstr "Text şi iconiţe cu contrast slab"
+
+#: LowContrastLargePrint/index.theme.in.in.h:1
+msgid "Large muted text and icons"
+msgstr "Text şi iconiţe mari cu contrast slab"
+
+#: LowContrastLargePrint/index.theme.in.in.h:2
+msgid "Low Contrast Large Print"
+msgstr "Mărime mare cu contrast slab"

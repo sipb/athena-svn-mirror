@@ -1,0 +1,11 @@
+/* XPM */
+static char * stock_commandline_browser_xpm[] = {
+"7 6 2 1",
+" 	c None",
+".	c #000000",
+"  ...  ",
+" ..... ",
+" ..... ",
+" ..... ",
+"  ...  ",
+"       "};
