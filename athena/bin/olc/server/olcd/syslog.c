@@ -5,7 +5,7 @@
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- * $Id: syslog.c,v 1.2 1990-01-16 08:19:19 raeburn Exp $
+ * $Id: syslog.c,v 1.3 1990-01-19 03:03:46 raeburn Exp $
  */
 
 /*
@@ -26,7 +26,7 @@
 #include "olcd.h"
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.2 1990-01-16 08:19:19 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.3 1990-01-19 03:03:46 raeburn Exp $";
 
 #ifndef SYSLOG
 
@@ -106,7 +106,7 @@ log_to_syslogd (level, text) char *text;
 {
     static int initialized = 0;
     if (!initialized)
-	openlog ("olc", LOG_CONS, SYSLOG_LEVEL);
+	openlog ("olc", LOG_CONS | LOG_PID, SYSLOG_LEVEL);
     syslog (level, text);
 }
 
