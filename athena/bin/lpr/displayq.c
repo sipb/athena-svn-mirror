@@ -59,6 +59,9 @@ displayq(format)
 #ifdef KERBEROS
 	short KA;
 #endif
+#if defined(PQUOTA) && defined(KERBEROS)
+	int pagecost;
+#endif
 	lflag = format;
 	totsize = 0;
 	rank = -1;
@@ -94,7 +97,9 @@ displayq(format)
 #ifdef PQUOTA
 	RQ = pgetstr("rq", &bp);
 #endif PQUOTA
-
+#if defined(PQUOTA) && defined(KERBEROS)
+	pagecost = pgetnum("pc");
+#endif
 	/*
 	 * Figure out whether the local machine is the same as the remote 
 	 * machine entry (if it exists).  If not, then ignore the local
@@ -185,11 +190,15 @@ displayq(format)
 #endif KERBEROS
 
 #ifdef PQUOTA
-	    if((RQ != (char *) NULL)) 
+	    if((RQ != (char *) NULL)) {
 		printf("\nQuota server: %s\n", RQ);
+	    }
 #ifdef KERBEROS
 	    else putchar('\n');
 #endif KERBEROS
+#if defined(PQUOTA) && defined(KERBEROS)
+	    if (pagecost) printf("Page cost: %d cents\n", pagecost);
+#endif
 #endif
 	}
 	/*
