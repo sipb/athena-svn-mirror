@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.8 1999-08-23 06:29:17 jweiss Exp $
+### $Id: phase2.sh,v 1.9 1999-11-07 14:34:24 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin
@@ -182,11 +182,11 @@ esac
 case $PARTITION in
 Y)
      echo "The rest of the installation assumes that
-     partition 0 is / and needs about 30MB;
+     partition 0 is / and needs about 200MB;
      partition 1 is swap;
      partition 3 is AFS cache;
-     partition 5 is /usr and needs 50MB;
-     partition 6 is /var and needs at least 120MB "
+     partition 5 is /usr and needs 350MB;
+     partition 6 is /var and needs at least 500MB "
      sleep 10
      format
      echo "Done asking questions for custom install."
