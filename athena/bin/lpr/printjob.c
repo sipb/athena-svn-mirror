@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.8 1990-06-26 13:48:25 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.9 1990-07-02 13:44:02 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.8 1990-06-26 13:48:25 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.9 1990-07-02 13:44:02 epeisach Exp $";
 #endif lint
 
 /*
@@ -659,8 +659,8 @@ print(format, file)
 	av[n++] = logname;
 	av[n++] = "-h";
 	av[n++] = fromhost;
-	av[n++] = AF;
 	av[n++] = cost;
+	av[n++] = AF;
 	av[n] = 0;
 	fo = pfd;
 	if (ofilter > 0) {		/* stop output filter */
