@@ -1,11 +1,11 @@
 /*
- * $Id: aklog_main.c,v 1.35 1999-09-20 16:25:48 danw Exp $
+ * $Id: aklog_main.c,v 1.36 1999-09-21 20:07:58 danw Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog_main.c,v 1.35 1999-09-20 16:25:48 danw Exp $";
+static const char rcsid[] = "$Id: aklog_main.c,v 1.36 1999-09-21 20:07:58 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -223,7 +223,7 @@ static int auth_to_cell(char *cell, char *realm)
   struct ktc_token atoken, btoken;
 
   /* try to avoid an expensive call to get_cellconfig */
-  if (cell && ll_string(&authedcells, ll_s_check, cell))
+  if (cell && ll_string_check(&authedcells, cell))
     {
       if (dflag)
 	{
@@ -245,7 +245,7 @@ static int auth_to_cell(char *cell, char *realm)
   strncpy(cell_to_use, ak_cellconfig.name, MAXCELLCHARS);
   cell_to_use[MAXCELLCHARS] = 0;
 
-  if (ll_string(&authedcells, ll_s_check, cell_to_use))
+  if (ll_string_check(&authedcells, cell_to_use))
     {
       if (dflag)
 	{
@@ -261,7 +261,7 @@ static int auth_to_cell(char *cell, char *realm)
    * before we try rather than after so that we will not try
    * and fail repeatedly for one cell.
    */
-  (void)ll_string(&authedcells, ll_s_add, cell_to_use);
+  (void)ll_add_string(&authedcells, cell_to_use);
 
   /*
    * Record this cell in the list of zephyr subscriptions.  We may
@@ -270,7 +270,7 @@ static int auth_to_cell(char *cell, char *realm)
    * can return something different depending on whether or not we
    * are in -noauth mode.
    */
-  if (ll_string(&zsublist, ll_s_add, cell_to_use) == LL_FAILURE)
+  if (ll_add_string(&zsublist, cell_to_use) == LL_FAILURE)
     {
       sprintf(msgbuf,
 	      "%s: failure adding cell %s to zephyr subscriptions list.\n",
@@ -278,7 +278,7 @@ static int auth_to_cell(char *cell, char *realm)
       params.pstderr(msgbuf);
       params.exitprog(AKLOG_MISC);
     }
-  if (ll_string(&zsublist, ll_s_add, local_cell) == LL_FAILURE)
+  if (ll_add_string(&zsublist, local_cell) == LL_FAILURE)
     {
       sprintf(msgbuf,
 	      "%s: failure adding cell %s to zephyr subscriptions list.\n",
@@ -677,7 +677,7 @@ static void add_hosts(char *file)
 		  sprintf(msgbuf, "Got host %s\n", inet_ntoa(in));
 		  params.pstdout(msgbuf);
 		}
-	      ll_string(&hostlist, ll_s_add, (char *)inet_ntoa(in));
+	      ll_add_string(&hostlist, (char *)inet_ntoa(in));
 	    }
 	  if (zsubs && (hp=gethostbyaddr(&phosts[i],sizeof(long),AF_INET)))
 	    {
@@ -686,7 +686,7 @@ static void add_hosts(char *file)
 		  sprintf(msgbuf, "Got host %s\n", hp->h_name);
 		  params.pstdout(msgbuf);
 		}
-	      ll_string(&zsublist, ll_s_add, hp->h_name);
+	      ll_add_string(&zsublist, hp->h_name);
 	    }
 	}
     }
@@ -753,7 +753,7 @@ static int auth_to_path(char *path)
 	  cell = mountpoint + 1;
 	  /* Add this (cell:volumename) to the list of zsubs */
 	  if (zsubs)
-	    ll_string(&zsublist, ll_s_add, cell);
+	    ll_add_string(&zsublist, cell);
 	  if (zsubs || hosts)
 	    add_hosts(pathtocheck);
 	  if (endofcell = strchr(mountpoint, VOLMARKER))
