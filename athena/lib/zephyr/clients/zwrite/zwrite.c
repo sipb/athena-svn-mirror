@@ -17,7 +17,7 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.14 1988-06-23 14:12:29 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.15 1988-06-27 11:26:41 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -159,14 +159,15 @@ main(argc, argv)
     }
 	
     if (msgarg) {
+	int size = msgsize;
+	for (arg=msgarg;arg<argc;arg++)
+		size += (strlen(argv[arg]) + 1);
+	size++;				/* for the newline */
+	if (message)
+		message = realloc(message, (unsigned) size);
+	else
+		message = malloc((unsigned) size);
 	for (arg=msgarg;arg<argc;arg++) {
-	    if (message)
-		    message = realloc(message,
-				      (unsigned) (msgsize+strlen(argv[arg])+
-				      (arg == argc-1)?2:1));
-	    else
-		    message = malloc((unsigned)(strlen(argv[arg])+
-						((arg == argc-1)?2:1)));
 	    (void) strcpy(message+msgsize, argv[arg]);
 	    msgsize += strlen(argv[arg]);
 	    if (arg != argc-1) {
@@ -177,8 +178,7 @@ main(argc, argv)
 	message[msgsize] = '\n';
 	message[msgsize+1] = '\0';
 	msgsize += 2;
-    }
-    else {
+    } else {
 	if (isatty(0)) {
 	    for (;;) {
 		if (!fgets(bfr, sizeof bfr, stdin))
