@@ -34,6 +34,9 @@ without express or implied warranty.
 #include	<X11/Xaw/Command.h>
 #include	<X11/Xaw/AsciiText.h>
 #include	<X11/Xaw/TextP.h>
+#ifdef SOLARIS
+#include        <sys/fcntl.h>
+#endif
 #include	"xdsc.h"
 
 #define		NUM_CACHED_FILES	5

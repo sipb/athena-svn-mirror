@@ -38,6 +38,10 @@ without express or implied warranty.
 #include	<X11/Xaw/Dialog.h>
 #include	<X11/Xaw/Form.h>
 #include	<X11/Xaw/Label.h>
+#ifdef SOLARIS
+#include        <sys/fcntl.h>
+#endif
+
 #include	"xdsc.h"
 
 static char rcsid[] = "";
