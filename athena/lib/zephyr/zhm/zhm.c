@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.35 1988-08-25 11:53:52 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.36 1988-10-03 15:56:24 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -50,11 +50,6 @@ extern long time();
 
 void init_hm(), detach(), handle_timeout(), resend_notices(), die_gracefully();
 int set_sig_type();
-
-#if BSD < 43
-char *upcase();
-#define strncasecmp(x, y, len) strcmp(x, upcase((y)), len)
-#endif /* BSD */
 
 main(argc, argv)
 char *argv[];
@@ -248,7 +243,7 @@ void init_hm()
      FILE *fp;
 
      starttime = time((time_t *)0);
-     openlog("hm", LOG_PID, LOG_DAEMON);
+     OPENLOG("hm", LOG_PID, LOG_DAEMON);
   
      if ((ret = ZInitialize()) != ZERR_NONE) {
 	  Zperr(ret);
@@ -363,18 +358,6 @@ void init_hm()
      (void)signal (SIGALRM, set_sig_type);
      (void)signal (SIGTERM, set_sig_type);
 }
-
-#if BSD < 43
-char *upcase(s)
-     register char *s;
-{
-     char *r = s;
-  
-     for (; *s; s++)
-	  if (islower(*s)) *s = toupper(*s);
-     return(r);
-}
-#endif /* BSD */
 
 void detach()
 {
