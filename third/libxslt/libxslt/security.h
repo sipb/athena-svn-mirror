@@ -1,15 +1,19 @@
 /*
- * security.h: interface for the XSLT security framework
+ * Summary: interface for the libxslt security framework
+ * Description: the libxslt security framework allow to restrict
+ *              the access to new resources (file or URL) from
+ *              the stylesheet at runtime.
  *
- * See Copyright for the status of this software.
+ * Copy: See Copyright for the status of this software.
  *
- * daniel@veillard.com
+ * Author: Daniel Veillard
  */
 
 #ifndef __XML_XSLT_SECURITY_H__
 #define __XML_XSLT_SECURITY_H__
 
 #include <libxml/tree.h>
+#include "xsltexports.h"
 #include "xsltInternals.h"
 
 #ifdef __cplusplus
@@ -51,33 +55,44 @@ typedef int (*xsltSecurityCheck)	(xsltSecurityPrefsPtr sec,
 /*
  * Module interfaces
  */
-xsltSecurityPrefsPtr	xsltNewSecurityPrefs	(void);
-void			xsltFreeSecurityPrefs	(xsltSecurityPrefsPtr sec);
-int			xsltSetSecurityPrefs	(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN xsltSecurityPrefsPtr XSLTCALL	
+		    xsltNewSecurityPrefs	(void);
+XSLTPUBFUN void XSLTCALL			
+		    xsltFreeSecurityPrefs	(xsltSecurityPrefsPtr sec);
+XSLTPUBFUN int XSLTCALL			
+		    xsltSetSecurityPrefs	(xsltSecurityPrefsPtr sec,
 						 xsltSecurityOption option,
 						 xsltSecurityCheck func);
-xsltSecurityCheck	xsltGetSecurityPrefs	(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN xsltSecurityCheck XSLTCALL	
+		    xsltGetSecurityPrefs	(xsltSecurityPrefsPtr sec,
 						 xsltSecurityOption option);
 
-void			xsltSetDefaultSecurityPrefs(xsltSecurityPrefsPtr sec);
-xsltSecurityPrefsPtr	xsltGetDefaultSecurityPrefs(void);
+XSLTPUBFUN void XSLTCALL			
+		    xsltSetDefaultSecurityPrefs	(xsltSecurityPrefsPtr sec);
+XSLTPUBFUN xsltSecurityPrefsPtr XSLTCALL	
+		    xsltGetDefaultSecurityPrefs	(void);
 
-int			xsltSetCtxtSecurityPrefs(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN int XSLTCALL			
+		    xsltSetCtxtSecurityPrefs	(xsltSecurityPrefsPtr sec,
 						 xsltTransformContextPtr ctxt);
 
-int			xsltSecurityAllow	(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN int XSLTCALL			
+		    xsltSecurityAllow		(xsltSecurityPrefsPtr sec,
 						 xsltTransformContextPtr ctxt,
 						 const char *value);
-int			xsltSecurityForbid	(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN int XSLTCALL	
+		    xsltSecurityForbid		(xsltSecurityPrefsPtr sec,
 						 xsltTransformContextPtr ctxt,
 						 const char *value);
 /*
  * internal interfaces
  */
-int			xsltCheckWrite		(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN int XSLTCALL			
+		    xsltCheckWrite		(xsltSecurityPrefsPtr sec,
 						 xsltTransformContextPtr ctxt,
 						 const xmlChar *URL);
-int			xsltCheckRead		(xsltSecurityPrefsPtr sec,
+XSLTPUBFUN int XSLTCALL			
+		    xsltCheckRead		(xsltSecurityPrefsPtr sec,
 						 xsltTransformContextPtr ctxt,
 						 const xmlChar *URL);
 

@@ -63,7 +63,7 @@ EXTRA_DIST = \
     bug-56.out bug-56.xsl \
     bug-57.out bug-57.xsl \
     bug-59.out bug-59.xsl \
-    bug-60.out bug-60.xsl \
+    bug-60.out bug-60.xsl bug-60.err \
     bug-61.out bug-61.xsl \
     bug-62-inc.out bug-62-inc.xsl \
     bug-62.out bug-62.xsl \
@@ -110,6 +110,57 @@ EXTRA_DIST = \
     bug-103.out bug-103.xsl \
     bug-104.out bug-104.xsl \
     bug-105.out bug-105.xsl \
+    bug-106.out bug-106.xsl \
+    bug-107.out bug-107.xsl \
+    bug-108.out bug-108.xsl \
+    bug-109.out bug-109.xsl \
+    bug-110.out bug-110.xsl \
+    bug-111.out bug-111.xsl \
+    bug-112.out bug-112.xsl \
+    bug-113.out bug-113.xsl \
+    bug-114.out bug-114.xsl \
+    bug-115.out bug-115.xsl \
+    bug-116.out bug-116.xsl \
+    bug-117.out bug-117.xsl \
+    bug-118.out bug-118.xsl \
+    bug-119.out bug-119.xsl \
+    bug-120.out bug-120.xsl \
+    bug-121.out bug-121.xsl \
+    bug-122.out bug-122.xsl \
+    bug-123.out bug-123.xsl \
+    bug-124.out bug-124.xsl \
+    bug-125.out bug-125.xsl \
+    bug-126.out bug-126.xsl \
+    bug-127.out bug-127.xsl \
+    bug-128.out bug-128.xsl \
+    bug-129.out bug-129.xsl \
+    bug-130.out bug-130.xsl \
+    bug-130-imp1.imp bug-130-imp2.imp bug-130-imp3.imp bug-130-imp4.imp \
+    bug-131.out bug-131.xsl bug-131-imp.imp \
+    bug-132.out bug-132.xsl \
+    bug-133.out bug-133.xsl \
+    bug-134.out bug-134.xsl \
+    bug-135.out bug-135.xsl \
+    bug-136.out bug-136.xsl \
+    bug-137.imp  bug-137.out  bug-137.xsl \
+    bug-138.out bug-138.xsl \
+    bug-139.out bug-139.xsl \
+    bug-140.out bug-140.xsl \
+    bug-141.out bug-141.xsl \
+    bug-142.out bug-142.xsl \
+    bug-143.out bug-143.xsl \
+    bug-144.out bug-144.xsl \
+    bug-145.out bug-145.xsl bug-145.err \
+    bug-146.out bug-146.xsl \
+    bug-147.out bug-147.xsl \
+    bug-147-1.imp bug-147-2.imp bug-147-3.imp \
+    bug-147-4.imp bug-147-5.imp bug-147-6.imp \
+    bug-148.out bug-148.xsl \
+    bug-149.out bug-149.xsl \
+    bug-150.out bug-150.xsl \
+    bug-151.out bug-151.xsl \
+    bug-152.out bug-152.xsl \
+    bug-153.out bug-153.xsl \
     character.out character.xsl \
     character2.out character2.xsl \
     itemschoose.out itemschoose.xsl \
@@ -123,8 +174,9 @@ valgrind:
 	$(MAKE) CHECKER='valgrind -q' tests
 
 test tests: $(top_builddir)/xsltproc/xsltproc
+	@echo '## Running general tests'
 	@(echo > .memdump)
-	@(for i in $(srcdir)/../docs/*.xml ; do \
+	-@(for i in $(srcdir)/../docs/*.xml ; do \
 	  if [ -d $$i ] ; then continue ; fi ; \
 	  doc=`basename $$i .xml` ; \
 	  for j in $(srcdir)/$$doc*.xsl ; do \
@@ -132,11 +184,27 @@ test tests: $(top_builddir)/xsltproc/xsltproc
 	  if [ -d $$j ] ; then continue ; fi ; \
 	  name=`basename $$j .xsl`; \
 	  out=$(srcdir)/"$$name".out; \
-	  echo Running $$j on $$i ; \
-	  $(CHECKER) $(top_builddir)/xsltproc/xsltproc $$j $$i > result.$$name;\
-	  if [ ! -f $$out ] ; then cp result.$$name $$out ; \
-	  else diff $$out result.$$name; fi ; \
-	  grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0" || true;\
-	  rm -f result.$$name ; \
+	  err=$(srcdir)/"$$name".err; \
+	  log=`$(CHECKER) $(top_builddir)/xsltproc/xsltproc $$j $$i \
+	  	> result.$$name 2>err.$$name; \
+	  if [ ! -f $$out ] ; then \
+	  	cp result.$$name $$out ; \
+		if [ -s err.$$name ] ; then \
+			cp err.$$name $$err ; \
+		fi ; \
+	  else \
+	  	diff $$out result.$$name; \
+		if [ -s $$err ] ; then \
+	  		diff $$err err.$$name; \
+		else \
+			diff /dev/null err.$$name; \
+		fi ; \
+	  fi ; \
+	  grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0" || true`;\
+	  if [ -n "$$log" ] ; then \
+	  	echo $$name result ; \
+		echo $$log ; \
+	  fi ; \
+	  rm -f result.$$name err.$$name; \
 	  done ; done)
 

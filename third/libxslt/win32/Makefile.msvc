@@ -13,39 +13,16 @@
 # March 2002, Igor Zlatkovic <igor@zlatkovic.com>
 
 AUTOCONF = .\config.msvc
-
-# If you cannot run the configuration script, which would take the burden of
-# editing this file from your back, then remove the following line...
 !include $(AUTOCONF)
-# ...and enable the following lines and adapt them to your environment.
-#BASEDIR = ..
-#XSLT_SRCDIR = $(BASEDIR)\libxslt
-#EXSLT_SRCDIR = $(BASEDIR)\libexslt
-#UTILS_SRCDIR = $(BASEDIR)\xsltproc
-#BINDIR = binaries
-#LIBXSLT_MAJOR_VERSION = 0 # set this to the right value.
-#LIBXSLT_MINOR_VERSION = 0 # set this to the right value.
-#LIBXSLT_MICRO_VERSION = 0 # set this to the right value.
-#LIBEXSLT_MAJOR_VERSION = 0 # set this to the right value.
-#LIBEXSLT_MINOR_VERSION = 0 # set this to the right value.
-#LIBEXSLT_MICRO_VERSION = 0 # set this to the right value.
-#WITH_XSLT_DEBUG = 1
-#WITH_MEM_DEBUG = 0
-#WITH_DEBUGGER = 1
-#DEBUG = 0
-#STATIC = 0
-#PREFIX = . # set this to the right value.
-#BINPREFIX = $(PREFIX)\bin
-#INCPREFIX = $(PREFIX)\include
-#LIBPREFIX = $(PREFIX)\lib
-#SOPREFIX = $(PREFIX)\lib
-#INCLUDE = $(INCLUDE);$(INCPREFIX)
-#LIB = $(LIB);$(LIBPREFIX) 
-
 
 # There should never be a need to modify anything below this line.
 # ----------------------------------------------------------------
 
+BASEDIR = ..
+XSLT_SRCDIR = $(BASEDIR)\libxslt
+EXSLT_SRCDIR = $(BASEDIR)\libexslt
+UTILS_SRCDIR = $(BASEDIR)\xsltproc
+BINDIR = bin.msvc
 
 # Names of various input and output components.
 XSLT_NAME = xslt
@@ -62,11 +39,11 @@ EXSLT_DEF = $(EXSLT_BASENAME).def
 EXSLT_A = $(EXSLT_BASENAME)_a.lib
 
 # Places where intermediate files produced by the compiler go
-XSLT_INTDIR = $(XSLT_BASENAME).int
-XSLT_INTDIR_A = $(XSLT_BASENAME)_a.int
-EXSLT_INTDIR = $(EXSLT_BASENAME).int
-EXSLT_INTDIR_A = $(EXSLT_BASENAME)_a.int
-UTILS_INTDIR = utils.int
+XSLT_INTDIR = int.xslt.msvc
+XSLT_INTDIR_A = int.xslta.msvc
+EXSLT_INTDIR = int.exslt.msvc
+EXSLT_INTDIR_A = int.exslta.msvc
+UTILS_INTDIR = int.utils.msvc
 
 # The preprocessor and its options.
 CPP = cl.exe /EP
@@ -74,7 +51,7 @@ CPPFLAGS = /nologo
 
 # The compiler and its options.
 CC = cl.exe
-CFLAGS = /nologo /D "WIN32" /D "_WINDOWS" /D "_MBCS" /W3 /MD
+CFLAGS = /nologo /D "WIN32" /D "_WINDOWS" /D "_MBCS" /W3 $(CRUNTIME) /D "_REENTRANT"
 CFLAGS = $(CFLAGS) /I$(BASEDIR) /I$(XSLT_SRCDIR) /I$(INCPREFIX)
 
 # The linker and its options.
@@ -113,7 +90,8 @@ XSLT_OBJS = $(XSLT_INTDIR)\attributes.obj\
 	$(XSLT_INTDIR)\transform.obj\
 	$(XSLT_INTDIR)\variables.obj\
 	$(XSLT_INTDIR)\xslt.obj\
-	$(XSLT_INTDIR)\xsltutils.obj
+	$(XSLT_INTDIR)\xsltutils.obj\
+	$(XSLT_INTDIR)\attrvt.obj
 
 # Static libxslt object files.
 XSLT_OBJS_A = $(XSLT_INTDIR_A)\attributes.obj\
@@ -132,10 +110,12 @@ XSLT_OBJS_A = $(XSLT_INTDIR_A)\attributes.obj\
 	$(XSLT_INTDIR_A)\transform.obj\
 	$(XSLT_INTDIR_A)\variables.obj\
 	$(XSLT_INTDIR_A)\xslt.obj\
-	$(XSLT_INTDIR_A)\xsltutils.obj
+	$(XSLT_INTDIR_A)\xsltutils.obj\
+	$(XSLT_INTDIR_A)\attrvt.obj
 
 # Libexslt object files.
 EXSLT_OBJS = $(EXSLT_INTDIR)\common.obj\
+	$(EXSLT_INTDIR)\crypto.obj\
 	$(EXSLT_INTDIR)\date.obj\
 	$(EXSLT_INTDIR)\exslt.obj\
 	$(EXSLT_INTDIR)\functions.obj\
@@ -147,6 +127,7 @@ EXSLT_OBJS = $(EXSLT_INTDIR)\common.obj\
 
 # Static libexslt object files.
 EXSLT_OBJS_A = $(EXSLT_INTDIR_A)\common.obj\
+	$(EXSLT_INTDIR_A)\crypto.obj\
 	$(EXSLT_INTDIR_A)\date.obj\
 	$(EXSLT_INTDIR_A)\exslt.obj\
 	$(EXSLT_INTDIR_A)\functions.obj\
@@ -202,12 +183,27 @@ install : all
 	copy $(BINDIR)\*.exe $(BINPREFIX)
 	-copy $(BINDIR)\*.pdb $(BINPREFIX)
 
+install-bindist : all
+	if not exist $(INCPREFIX)\$(XSLT_BASENAME) mkdir $(INCPREFIX)\$(XSLT_BASENAME)
+	if not exist $(INCPREFIX)\$(EXSLT_BASENAME) mkdir $(INCPREFIX)\$(EXSLT_BASENAME)
+	if not exist $(BINPREFIX) mkdir $(BINPREFIX)
+	if not exist $(LIBPREFIX) mkdir $(LIBPREFIX)
+	copy $(XSLT_SRCDIR)\*.h $(INCPREFIX)\$(XSLT_BASENAME)
+	copy $(EXSLT_SRCDIR)\*.h $(INCPREFIX)\$(EXSLT_BASENAME)
+	copy $(BINDIR)\$(XSLT_SO) $(SOPREFIX)
+	copy $(BINDIR)\$(XSLT_A) $(LIBPREFIX)
+	copy $(BINDIR)\$(XSLT_IMP) $(LIBPREFIX)
+	copy $(BINDIR)\$(EXSLT_SO) $(SOPREFIX)
+	copy $(BINDIR)\$(EXSLT_A) $(LIBPREFIX)
+	copy $(BINDIR)\$(EXSLT_IMP) $(LIBPREFIX)
+	copy $(BINDIR)\*.exe $(BINPREFIX)
+
 # This is a target for me, to make a binary distribution. Not for the public use,
 # keep your hands off :-)
 BDVERSION = $(LIBXSLT_MAJOR_VERSION).$(LIBXSLT_MINOR_VERSION).$(LIBXSLT_MICRO_VERSION)
 BDPREFIX = $(XSLT_BASENAME)-$(BDVERSION).win32
 bindist : all
-	$(MAKE) /nologo PREFIX=$(BDPREFIX) BINPREFIX=$(BDPREFIX)\util install
+	$(MAKE) /nologo PREFIX=$(BDPREFIX) SOPREFIX=$(BDPREFIX)\bin install-bindist
 	cscript //NoLogo configure.js genreadme $(XSLT_BASENAME) $(BDVERSION) $(BDPREFIX)\readme.txt
 
 # Makes the compiler output directory.
@@ -244,10 +240,16 @@ $(XSLT_INTDIR)\$(XSLT_DEF) : $(XSLT_INTDIR) $(XSLT_DEF).src
 
 # Creates the libxslt shared object.
 $(BINDIR)\$(XSLT_SO) : $(BINDIR) $(XSLT_OBJS) $(XSLT_INTDIR)\$(XSLT_DEF)
-	$(LD) $(LDFLAGS) /DLL /DEF:$(XSLT_INTDIR)\$(XSLT_DEF) \
+	$(LD) $(LDFLAGS) /DLL \
 		/VERSION:$(LIBXSLT_MAJOR_VERSION).$(LIBXSLT_MINOR_VERSION) \
 		/IMPLIB:$(BINDIR)\$(XSLT_IMP) /OUT:$(BINDIR)\$(XSLT_SO) \
 		$(XSLT_OBJS) $(LIBS) libxml2.lib
+
+#$(BINDIR)\$(XSLT_SO) : $(BINDIR) $(XSLT_OBJS) $(XSLT_INTDIR)\$(XSLT_DEF)
+#	$(LD) $(LDFLAGS) /DLL /DEF:$(XSLT_INTDIR)\$(XSLT_DEF) \
+#		/VERSION:$(LIBXSLT_MAJOR_VERSION).$(LIBXSLT_MINOR_VERSION) \
+#		/IMPLIB:$(BINDIR)\$(XSLT_IMP) /OUT:$(BINDIR)\$(XSLT_SO) \
+#		$(XSLT_OBJS) $(LIBS) libxml2.lib
 
 # Creates the libxslt archive.
 $(BINDIR)\$(XSLT_A) : $(BINDIR) $(XSLT_OBJS_A)
@@ -283,10 +285,16 @@ $(EXSLT_INTDIR)\$(EXSLT_DEF) : $(EXSLT_INTDIR) $(EXSLT_DEF).src
 
 # Creates the libexslt shared object.
 $(BINDIR)\$(EXSLT_SO) : $(BINDIR) $(EXSLT_OBJS) $(EXSLT_INTDIR)\$(EXSLT_DEF) libxslt
-	$(LD) $(LDFLAGS) /DLL /DEF:$(EXSLT_INTDIR)\$(EXSLT_DEF) \
+	$(LD) $(LDFLAGS) /DLL \
 		/VERSION:$(LIBEXSLT_MAJOR_VERSION).$(LIBEXSLT_MINOR_VERSION) \
 		/IMPLIB:$(BINDIR)\$(EXSLT_IMP) /OUT:$(BINDIR)\$(EXSLT_SO) \
 		$(EXSLT_OBJS) $(XSLT_IMP) $(LIBS) libxml2.lib
+
+#$(BINDIR)\$(EXSLT_SO) : $(BINDIR) $(EXSLT_OBJS) $(EXSLT_INTDIR)\$(EXSLT_DEF) libxslt
+#	$(LD) $(LDFLAGS) /DLL /DEF:$(EXSLT_INTDIR)\$(EXSLT_DEF) \
+#		/VERSION:$(LIBEXSLT_MAJOR_VERSION).$(LIBEXSLT_MINOR_VERSION) \
+#		/IMPLIB:$(BINDIR)\$(EXSLT_IMP) /OUT:$(BINDIR)\$(EXSLT_SO) \
+#		$(EXSLT_OBJS) $(XSLT_IMP) $(LIBS) libxml2.lib
 
 # Creates the libexslt archive.
 $(BINDIR)\$(EXSLT_A) : $(BINDIR) $(EXSLT_OBJS_A) libxslta

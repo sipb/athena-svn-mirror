@@ -23,9 +23,11 @@ xsltinc_HEADERS = 			\
 	transform.h			\
 	security.h			\
 	xsltInternals.h			\
-	xsltconfig.h
+	xsltconfig.h			\
+	xsltexports.h
 
 libxslt_la_SOURCES = 			\
+	attrvt.c			\
 	xslt.c				\
 	xsltutils.c			\
 	pattern.c			\
@@ -51,9 +53,9 @@ libxslt_la_SOURCES = 			\
 libxslt_la_LIBADD = $(EXTRA_LIBS)
 libxslt_la_LDFLAGS = -version-info @LIBXSLT_VERSION_INFO@
 
-man_MANS = libxslt.4
+man_MANS = libxslt.3
 
-EXTRA_DIST = $(man_MANS)
+EXTRA_DIST = $(man_MANS) trio.h triodef.h
 
 xsltproc: all
 	@(cd ../xsltproc ; $(MAKE))

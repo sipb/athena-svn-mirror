@@ -1,15 +1,18 @@
 /*
- * extra.h: interface for the non-standard features
+ * Summary: interface for the non-standard features
+ * Description: implement some extension outside the XSLT namespace
+ *              but not EXSLT with is in a different library.
  *
- * See Copyright for the status of this software.
+ * Copy: See Copyright for the status of this software.
  *
- * daniel@veillard.com
+ * Author: Daniel Veillard
  */
 
 #ifndef __XML_XSLT_EXTRA_H__
 #define __XML_XSLT_EXTRA_H__
 
-#include "libxml/xpath.h"
+#include <libxml/xpath.h>
+#include "xsltexports.h"
 #include "xsltInternals.h"
 
 #ifdef __cplusplus
@@ -54,16 +57,20 @@ extern "C" {
 	"http://nwalsh.com/xslt/ext/com.nwalsh.saxon.CVS")
 
 
-void		xsltFunctionNodeSet	(xmlXPathParserContextPtr ctxt,
+XSLTPUBFUN void XSLTCALL
+		xsltFunctionNodeSet	(xmlXPathParserContextPtr ctxt,
 					 int nargs);
-void		xsltDebug		(xsltTransformContextPtr ctxt,
+XSLTPUBFUN void XSLTCALL		
+		xsltDebug		(xsltTransformContextPtr ctxt,
 					 xmlNodePtr node,
 					 xmlNodePtr inst,
 					 xsltStylePreCompPtr comp);
 
 
-void		xsltRegisterExtras	(xsltTransformContextPtr ctxt);
-void		xsltRegisterAllExtras	(void);
+XSLTPUBFUN void XSLTCALL		
+		xsltRegisterExtras	(xsltTransformContextPtr ctxt);
+XSLTPUBFUN void XSLTCALL		
+		xsltRegisterAllExtras	(void);
 
 #ifdef __cplusplus
 }

@@ -24,6 +24,14 @@
       <arg name='f' type='pythonObject' info='the python function'/>
       <arg name='ctx' type='pythonObject' info='a context for the callback'/>
     </function>
+    <function name='xsltRegisterExtModuleElement' file='python'>
+      <info>Register a Python written element to the XSLT engine</info>
+      <return type='int' info="0 in case of success, -1 in case of error"/>
+      <arg name='name' type='xmlChar *' info='the element name'/>
+      <arg name='URI' type='xmlChar *' info='the namespace or NULL'/>
+      <arg name='precompile' type='pythonObject' info='method called when stylesheet is compiled'/>
+      <arg name='transform' type='pythonObject' info='method called during transform, must not modify stylesheet'/>
+    </function>
     <function name='xsltRegisterExtModuleFunction' file='python'>
       <info>Register a Python written function to the XSLT engine</info>
       <return type='int' info="0 in case of success, -1 in case of error"/>
@@ -37,8 +45,8 @@
       <arg name='URI' type='xmlChar *' info='the namespace or NULL'/>
       <arg name='c' type='pythonObject' info='the python class instance'/>
     </function>
-    <function name='xsltCleanup' file='python'>
-      <info>Cleanup all libxslt and libxml2 memory allocated</info>
+    <function name='xsltPythonCleanup' file='python'>
+      <info>Cleanup just libxslt (not libxml2) memory allocated</info>
       <return type='void'/>
     </function>
     <!-- xmlXPathParserContextPtr accessors -->
@@ -153,12 +161,12 @@
     </function>
     <function name='xsltStylesheetGetDoctypePublic' file='python_accessor'>
       <info>Get the output PUBLIC of a stylesheet</info>
-      <return type='xmlChar *' info="The output PUBLIC" field="doctypePublic"/>
+      <return type='const xmlChar *' info="The output PUBLIC" field="doctypePublic"/>
       <arg name='style' type='xsltStylesheetPtr' info='the stylesheet'/>
     </function>
     <function name='xsltStylesheetGetDoctypeSystem' file='python_accessor'>
       <info>Get the output SYSTEM of a stylesheet</info>
-      <return type='xmlChar *' info="The output SYSTEM" field="doctypeSystem"/>
+      <return type='const xmlChar *' info="The output SYSTEM" field="doctypeSystem"/>
       <arg name='style' type='xsltStylesheetPtr' info='the stylesheet'/>
     </function>
     <function name='xsltStylesheetGetPrivate' file='python_accessor'>

@@ -331,9 +331,7 @@ xsltRegisterExtPrefix(xsltStylesheetPtr style,
 
 	module = xmlHashLookup(xsltExtensionsHash, URI);
 	if (module != NULL) {
-	    xsltExtDataPtr data;
-
-	    data = xsltStyleGetExtData(style, URI);
+	    xsltStyleGetExtData(style, URI);
 	}
     }
     return(0);
@@ -591,6 +589,15 @@ xsltInitCtxtExt (xsltExtDataPtr styleData, xsltInitExtCtxt *ctxt,
         return;
     }
 
+    ctxtData = (xsltExtDataPtr) xmlHashLookup(ctxt->ctxt->extInfos, URI);
+    if (ctxtData != NULL) {
+#ifdef WITH_XSLT_DEBUG_EXTENSIONS
+	xsltGenericDebug(xsltGenericDebugContext,
+			 "xsltInitCtxtExt: already initialized\n");
+#endif
+        return;
+    }
+
     extData = module->initFunc(ctxt->ctxt, URI);
     if (extData == NULL) {
 #ifdef WITH_XSLT_DEBUG_EXTENSIONS
@@ -692,8 +699,6 @@ xsltShutdownCtxtExt(xsltExtDataPtr data, xsltTransformContextPtr ctxt,
                      "Shutting down module : %s\n", URI);
 #endif
     module->shutdownFunc(ctxt, URI, data->extData);
-    xmlHashRemoveEntry(ctxt->extInfos, URI,
-                       (xmlHashDeallocator) xsltFreeExtData);
 }
 
 /**
@@ -1287,6 +1292,26 @@ xsltUnregisterAllExtModuleTopLevel (void) {
     xsltTopLevelsHash = NULL;
 }
 
+/**
+ * xsltGetExtInfo:
+ * @style:  pointer to a stylesheet
+ * @URI:    the namespace URI desired
+ *
+ * looks up URI in extInfos of the stylesheet
+ *
+ * returns a pointer to the hash table if found, else NULL
+ */
+xmlHashTablePtr
+xsltGetExtInfo (xsltStylesheetPtr style, const xmlChar *URI) {
+    xsltExtDataPtr data;
+    
+    if (style != NULL && style->extInfos != NULL) {
+	data = xmlHashLookup(style->extInfos, URI);
+	if (data != NULL && data->extData != NULL)
+	    return data->extData;
+    }
+    return NULL;
+}
 
 /************************************************************************
  * 									*
@@ -1596,6 +1621,16 @@ xsltDebugDumpExtensionsCallback(void* function ATTRIBUTE_UNUSED,
 	fprintf(output,"{%s}%s\n",URI,name);
 }
 
+static void
+xsltDebugDumpExtModulesCallback(void* function ATTRIBUTE_UNUSED,
+	                        FILE *output, const xmlChar* URI,
+				const xmlChar* not_used ATTRIBUTE_UNUSED,
+				const xmlChar* not_used2 ATTRIBUTE_UNUSED) {
+	if (!URI)
+		return;
+	fprintf(output,"%s\n",URI);
+}
+
 /**
  * xsltDebugDumpExtensions:
  * @output:  the FILE * for the output, if NULL stdout is used
@@ -1619,6 +1654,12 @@ xsltDebugDumpExtensions(FILE * output)
 	else {
 		fprintf(output,"\nRegistered Extension Elements:\n");
 		xmlHashScanFull(xsltElementsHash,(xmlHashScannerFull)xsltDebugDumpExtensionsCallback,output);
+ 	}
+	if (!xsltExtensionsHash)
+		fprintf(output,"\nNo registered extension modules\n");
+	else {
+		fprintf(output,"\nRegistered Extension Modules:\n");
+		xmlHashScanFull(xsltExtensionsHash,(xmlHashScannerFull)xsltDebugDumpExtModulesCallback,output);
  	}
 
 }

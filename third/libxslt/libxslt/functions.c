@@ -106,8 +106,8 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     xmlChar *fragment;
     xsltDocumentPtr xsltdoc;
     xmlDocPtr doc;
-    xmlXPathContextPtr xptrctxt;
-    xmlXPathObjectPtr object;
+    xmlXPathContextPtr xptrctxt = NULL;
+    xmlXPathObjectPtr object = NULL;
 
     tctxt = xsltXPathGetTransformContext(ctxt);
     if (tctxt == NULL) {
@@ -128,7 +128,7 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     /*
      * check for and remove fragment identifier
      */
-    fragment = uri->fragment;
+    fragment = (xmlChar *)uri->fragment;
     if (fragment != NULL) {
 	uri->fragment = NULL;
 	URI = xmlSaveUri(uri);
@@ -161,7 +161,7 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     }
 	
     /* use XPointer of HTML location for fragment ID */
-    
+#ifdef LIBXML_XPTR_ENABLED
     xptrctxt = xmlXPtrNewContext(doc, NULL, NULL);
     if (xptrctxt == NULL) {
 	xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
@@ -170,8 +170,10 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     }
 
     object = xmlXPtrEval(fragment, xptrctxt);
+#endif
     xmlFree(fragment);
-    xmlXPathFreeContext(xptrctxt);
+	if (xptrctxt != NULL)
+    		xmlXPathFreeContext(xptrctxt);
 
     if (object == NULL)
 	goto out_fragment;
@@ -299,7 +301,8 @@ xsltDocumentFunction(xmlXPathParserContextPtr ctxt, int nargs)
             xmlNodePtr target;
 
             target = obj2->nodesetval->nodeTab[0];
-            if (target->type == XML_ATTRIBUTE_NODE) {
+            if ((target->type == XML_ATTRIBUTE_NODE) ||
+	        (target->type == XML_PI_NODE)) {
                 target = ((xmlAttrPtr) target)->parent;
             }
             base = xmlNodeGetBase(target->doc, target);
@@ -345,7 +348,9 @@ xsltKeyFunction(xmlXPathParserContextPtr ctxt, int nargs){
     xmlChar *key = NULL, *value;
     const xmlChar *keyURI;
     xsltTransformContextPtr tctxt;
-
+    xsltDocumentPtr oldDocumentPtr;
+    xmlDocPtr oldXPathDocPtr;
+    
     if (nargs != 2) {
 	xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
 		"key() : expects two arguments\n");
@@ -429,8 +434,37 @@ xsltKeyFunction(xmlXPathParserContextPtr ctxt, int nargs){
 	value = obj2->stringval;
 
 	tctxt = xsltXPathGetTransformContext(ctxt);
-
+	oldDocumentPtr = tctxt->document;
+	oldXPathDocPtr = tctxt->xpathCtxt->doc;
+	if ((ctxt->context->doc != NULL) &&
+		    (tctxt->document->doc != ctxt->context->doc)) {
+	    /*
+	     * The xpath context document needs to be changed.  If the
+	     * current context document is a node-set, we must use an
+	     * xsltDocument associated with the node-set, which may or
+	     * may not currently exist.
+	     */
+	    if (xmlStrEqual((const xmlChar *)ctxt->context->doc->name,
+	    		BAD_CAST " fake node libxslt")) {	/* node-set */
+		/*
+		 * Check whether we already have an xsltDocument set up
+		 */
+		if (ctxt->context->doc->_private == NULL)	/* nope */
+		    ctxt->context->doc->_private =
+		    	xsltNewDocument(tctxt, ctxt->context->doc);
+	        tctxt->document = ctxt->context->doc->_private;
+	    }
+	    else {
+	        tctxt->document = xsltFindDocument(tctxt, ctxt->context->doc);
+	        if (tctxt->document == NULL)
+	            tctxt->document = oldDocumentPtr;
+	        else
+	            tctxt->xpathCtxt->doc = ctxt->context->doc;
+	    }
+	}
 	nodelist = xsltGetKey(tctxt, key, keyURI, value);
+	tctxt->document = oldDocumentPtr;
+	tctxt->xpathCtxt->doc = oldXPathDocPtr;
 	valuePush(ctxt, xmlXPathWrapNodeSet(
 		        xmlXPathNodeSetMerge(NULL, nodelist)));
     }

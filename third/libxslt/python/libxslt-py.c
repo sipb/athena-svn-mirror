@@ -5,7 +5,7 @@
 #include "libxslt-py.h"
 
 PyObject *
-libxslt_xsltTransformGetInstruction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetInstruction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlNodePtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -21,23 +21,26 @@ libxslt_xsltTransformGetInstruction(ATTRIBUTE_UNUSED PyObject *self, PyObject *a
 }
 
 PyObject *
-libxslt_xsltParseStylesheetImportedDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetImportedDoc(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xmlDocPtr doc;
     PyObject *pyobj_doc;
+    xsltStylesheetPtr style;
+    PyObject *pyobj_style;
 
-    if (!PyArg_ParseTuple(args, (char *)"O:xsltParseStylesheetImportedDoc", &pyobj_doc))
+    if (!PyArg_ParseTuple(args, (char *)"OO:xsltParseStylesheetImportedDoc", &pyobj_doc, &pyobj_style))
         return(NULL);
     doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
+    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
 
-    c_retval = xsltParseStylesheetImportedDoc(doc);
+    c_retval = xsltParseStylesheetImportedDoc(doc, style);
     py_retval = libxslt_xsltStylesheetPtrWrap((xsltStylesheetPtr) c_retval);
     return(py_retval);
 }
 
 PyObject *
-libxslt_xsltCalibrateAdjust(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltCalibrateAdjust(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     long delta;
 
     if (!PyArg_ParseTuple(args, (char *)"i:xsltCalibrateAdjust", &delta))
@@ -49,7 +52,7 @@ libxslt_xsltCalibrateAdjust(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltGenerateIdFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltGenerateIdFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlXPathParserContextPtr ctxt;
     PyObject *pyobj_ctxt;
     int nargs;
@@ -64,24 +67,7 @@ libxslt_xsltGenerateIdFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) 
 }
 
 PyObject *
-libxslt_xsltApplyStripSpaces(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltTransformContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-    xmlNodePtr node;
-    PyObject *pyobj_node;
-
-    if (!PyArg_ParseTuple(args, (char *)"OO:xsltApplyStripSpaces", &pyobj_ctxt, &pyobj_node))
-        return(NULL);
-    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
-    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
-
-    xsltApplyStripSpaces(ctxt, node);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltAttrListTemplateProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAttrListTemplateProcess(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlAttrPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -103,7 +89,7 @@ libxslt_xsltAttrListTemplateProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *a
 }
 
 PyObject *
-libxslt_xsltParseStylesheetAttributeSet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetAttributeSet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
     xmlNodePtr cur;
@@ -120,7 +106,22 @@ libxslt_xsltParseStylesheetAttributeSet(ATTRIBUTE_UNUSED PyObject *self, PyObjec
 }
 
 PyObject *
-libxslt_xsltMessage(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltUnparsedEntityURIFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xmlXPathParserContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    int nargs;
+
+    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltUnparsedEntityURIFunction", &pyobj_ctxt, &nargs))
+        return(NULL);
+    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
+
+    xsltUnparsedEntityURIFunction(ctxt, nargs);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltMessage(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
     xmlNodePtr node;
@@ -140,7 +141,23 @@ libxslt_xsltMessage(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltParseStylesheetProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltCreateRVT(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    xmlDocPtr c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltCreateRVT", &pyobj_ctxt))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+
+    c_retval = xsltCreateRVT(ctxt);
+    py_retval = libxml_xmlDocPtrWrap((xmlDocPtr) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltParseStylesheetProcess(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xsltStylesheetPtr ret;
@@ -159,22 +176,17 @@ libxslt_xsltParseStylesheetProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *ar
 }
 
 PyObject *
-libxslt_xsltUnparsedEntityURIFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xmlXPathParserContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-    int nargs;
+libxslt_xsltGetDebuggerStatus(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
+    PyObject *py_retval;
+    int c_retval;
 
-    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltUnparsedEntityURIFunction", &pyobj_ctxt, &nargs))
-        return(NULL);
-    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
-
-    xsltUnparsedEntityURIFunction(ctxt, nargs);
-    Py_INCREF(Py_None);
-    return(Py_None);
+    c_retval = xsltGetDebuggerStatus();
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
 }
 
 PyObject *
-libxslt_xsltStylesheetGetVersion(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetVersion(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltStylesheetPtr style;
@@ -190,7 +202,7 @@ libxslt_xsltStylesheetGetVersion(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltXPathGetTransformContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltXPathGetTransformContext(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltTransformContextPtr c_retval;
     xmlXPathContextPtr ctxt;
@@ -206,7 +218,7 @@ libxslt_xsltXPathGetTransformContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *
 }
 
 PyObject *
-libxslt_xsltStylesheetGetImports(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetImports(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xsltStylesheetPtr style;
@@ -222,7 +234,7 @@ libxslt_xsltStylesheetGetImports(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltAttrTemplateValueProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAttrTemplateValueProcess(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltTransformContextPtr ctxt;
@@ -239,7 +251,7 @@ libxslt_xsltAttrTemplateValueProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *
 }
 
 PyObject *
-libxslt_xsltNextImport(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltNextImport(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xsltStylesheetPtr cur;
@@ -255,7 +267,7 @@ libxslt_xsltNextImport(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltFreeCtxtExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeCtxtExts(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
 
@@ -269,7 +281,7 @@ libxslt_xsltFreeCtxtExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltNamespaceAlias(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltNamespaceAlias(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
     xmlNodePtr node;
@@ -286,7 +298,7 @@ libxslt_xsltNamespaceAlias(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltTransformGetModeURI(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetModeURI(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     const xmlChar * c_retval;
     xsltTransformContextPtr ctxt;
@@ -302,7 +314,7 @@ libxslt_xsltTransformGetModeURI(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltGetNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltGetNamespace(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlNsPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -327,23 +339,7 @@ libxslt_xsltGetNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltTransformGetInsertNode(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    PyObject *py_retval;
-    xmlNodePtr c_retval;
-    xsltTransformContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-
-    if (!PyArg_ParseTuple(args, (char *)"O:xsltTransformGetInsertNode", &pyobj_ctxt))
-        return(NULL);
-    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
-
-    c_retval = ctxt->insert;
-    py_retval = libxml_xmlNodePtrWrap((xmlNodePtr) c_retval);
-    return(py_retval);
-}
-
-PyObject *
-libxslt_xsltFreeDocuments(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeDocuments(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
 
@@ -357,7 +353,7 @@ libxslt_xsltFreeDocuments(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltParseTemplateContent(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseTemplateContent(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
     xmlNodePtr templ;
@@ -374,7 +370,7 @@ libxslt_xsltParseTemplateContent(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltNewStylesheet(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
+libxslt_xsltNewStylesheet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
 
@@ -384,24 +380,19 @@ libxslt_xsltNewStylesheet(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyOb
 }
 
 PyObject *
-libxslt_xsltStylePreCompute(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltStylesheetPtr style;
-    PyObject *pyobj_style;
-    xmlNodePtr inst;
-    PyObject *pyobj_inst;
+libxslt_xsltSetDebuggerStatus(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    int value;
 
-    if (!PyArg_ParseTuple(args, (char *)"OO:xsltStylePreCompute", &pyobj_style, &pyobj_inst))
+    if (!PyArg_ParseTuple(args, (char *)"i:xsltSetDebuggerStatus", &value))
         return(NULL);
-    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
-    inst = (xmlNodePtr) PyxmlNode_Get(pyobj_inst);
 
-    xsltStylePreCompute(style, inst);
+    xsltSetDebuggerStatus(value);
     Py_INCREF(Py_None);
     return(Py_None);
 }
 
 PyObject *
-libxslt_xsltParseStylesheetFile(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetFile(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xmlChar * filename;
@@ -415,7 +406,7 @@ libxslt_xsltParseStylesheetFile(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltCopyNamespaceList(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltCopyNamespaceList(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlNsPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -437,7 +428,7 @@ libxslt_xsltCopyNamespaceList(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltCleanupGlobals(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
+libxslt_xsltCleanupGlobals(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
 
     xsltCleanupGlobals();
     Py_INCREF(Py_None);
@@ -445,7 +436,7 @@ libxslt_xsltCleanupGlobals(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyO
 }
 
 PyObject *
-libxslt_xsltEvalOneUserParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltEvalOneUserParam(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -463,7 +454,7 @@ libxslt_xsltEvalOneUserParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltUnregisterExtModuleFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltUnregisterExtModuleFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xmlChar * name;
@@ -478,7 +469,7 @@ libxslt_xsltUnregisterExtModuleFunction(ATTRIBUTE_UNUSED PyObject *self, PyObjec
 }
 
 PyObject *
-libxslt_xsltFreeGlobalVariables(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeGlobalVariables(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
 
@@ -492,7 +483,7 @@ libxslt_xsltFreeGlobalVariables(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltSaveResultToFile(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltSaveResultToFile(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     FILE * file;
@@ -514,28 +505,7 @@ libxslt_xsltSaveResultToFile(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltApplyAttributeSet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltTransformContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-    xmlNodePtr node;
-    PyObject *pyobj_node;
-    xmlNodePtr inst;
-    PyObject *pyobj_inst;
-    xmlChar * attributes;
-
-    if (!PyArg_ParseTuple(args, (char *)"OOOz:xsltApplyAttributeSet", &pyobj_ctxt, &pyobj_node, &pyobj_inst, &attributes))
-        return(NULL);
-    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
-    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
-    inst = (xmlNodePtr) PyxmlNode_Get(pyobj_inst);
-
-    xsltApplyAttributeSet(ctxt, node, inst, attributes);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltParseGlobalVariable(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseGlobalVariable(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
     xmlNodePtr cur;
@@ -552,7 +522,7 @@ libxslt_xsltParseGlobalVariable(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltShutdownExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltShutdownExts(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -566,7 +536,7 @@ libxslt_xsltShutdownExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltFindElemSpaceHandling(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFindElemSpaceHandling(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -585,7 +555,7 @@ libxslt_xsltFindElemSpaceHandling(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltStylesheetGetParent(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetParent(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xsltStylesheetPtr style;
@@ -601,7 +571,7 @@ libxslt_xsltStylesheetGetParent(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltSaveResultToFd(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltSaveResultToFd(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     int fd;
@@ -621,7 +591,7 @@ libxslt_xsltSaveResultToFd(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltCopyNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltCopyNamespace(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlNsPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -643,7 +613,7 @@ libxslt_xsltCopyNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltSaveProfiling(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltSaveProfiling(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
     FILE * output;
@@ -660,7 +630,7 @@ libxslt_xsltSaveProfiling(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltStylesheetGetMethod(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetMethod(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltStylesheetPtr style;
@@ -676,7 +646,7 @@ libxslt_xsltStylesheetGetMethod(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltFunctionNodeSet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFunctionNodeSet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlXPathParserContextPtr ctxt;
     PyObject *pyobj_ctxt;
     int nargs;
@@ -691,7 +661,7 @@ libxslt_xsltFunctionNodeSet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltCleanupTemplates(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltCleanupTemplates(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -705,51 +675,37 @@ libxslt_xsltCleanupTemplates(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltCheckExtPrefix(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    PyObject *py_retval;
-    int c_retval;
-    xsltStylesheetPtr style;
-    PyObject *pyobj_style;
-    xmlChar * prefix;
+libxslt_xsltDocumentFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xmlXPathParserContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    int nargs;
 
-    if (!PyArg_ParseTuple(args, (char *)"Oz:xsltCheckExtPrefix", &pyobj_style, &prefix))
+    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltDocumentFunction", &pyobj_ctxt, &nargs))
         return(NULL);
-    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
 
-    c_retval = xsltCheckExtPrefix(style, prefix);
-    py_retval = libxml_intWrap((int) c_retval);
-    return(py_retval);
-}
-
-PyObject *
-libxslt_xsltParseStylesheetOutput(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltStylesheetPtr style;
-    PyObject *pyobj_style;
-    xmlNodePtr cur;
-    PyObject *pyobj_cur;
-
-    if (!PyArg_ParseTuple(args, (char *)"OO:xsltParseStylesheetOutput", &pyobj_style, &pyobj_cur))
-        return(NULL);
-    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
-    cur = (xmlNodePtr) PyxmlNode_Get(pyobj_cur);
-
-    xsltParseStylesheetOutput(style, cur);
+    xsltDocumentFunction(ctxt, nargs);
     Py_INCREF(Py_None);
     return(Py_None);
 }
 
 PyObject *
-libxslt_xsltTimestamp(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
-    PyObject *py_retval;
-    long c_retval;
+libxslt_xsltElementAvailableFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xmlXPathParserContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    int nargs;
 
-    c_retval = xsltTimestamp();
-    py_retval = libxml_intWrap((int) c_retval);
-    return(py_retval);
+    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltElementAvailableFunction", &pyobj_ctxt, &nargs))
+        return(NULL);
+    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
+
+    xsltElementAvailableFunction(ctxt, nargs);
+    Py_INCREF(Py_None);
+    return(Py_None);
 }
 
 PyObject *
-libxslt_xsltRegisterExtras(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltRegisterExtras(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
 
@@ -763,7 +719,7 @@ libxslt_xsltRegisterExtras(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltFunctionAvailableFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFunctionAvailableFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlXPathParserContextPtr ctxt;
     PyObject *pyobj_ctxt;
     int nargs;
@@ -778,19 +734,7 @@ libxslt_xsltFunctionAvailableFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject 
 }
 
 PyObject *
-libxslt_xsltSetXIncludeDefault(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    int xinclude;
-
-    if (!PyArg_ParseTuple(args, (char *)"i:xsltSetXIncludeDefault", &xinclude))
-        return(NULL);
-
-    xsltSetXIncludeDefault(xinclude);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltFormatNumberFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFormatNumberFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlXPathParserContextPtr ctxt;
     PyObject *pyobj_ctxt;
     int nargs;
@@ -805,7 +749,7 @@ libxslt_xsltFormatNumberFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltEvalTemplateString(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltEvalTemplateString(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltTransformContextPtr ctxt;
@@ -827,7 +771,7 @@ libxslt_xsltEvalTemplateString(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) 
 }
 
 PyObject *
-libxslt_xsltFreeKeys(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeKeys(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -841,7 +785,7 @@ libxslt_xsltFreeKeys(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltGetNsProp(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltGetNsProp(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xmlNodePtr node;
@@ -859,7 +803,7 @@ libxslt_xsltGetNsProp(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltAddKey(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAddKey(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltStylesheetPtr style;
@@ -882,26 +826,24 @@ libxslt_xsltAddKey(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltNewTransformContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltCheckExtPrefix(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
-    xsltTransformContextPtr c_retval;
+    int c_retval;
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
-    xmlDocPtr doc;
-    PyObject *pyobj_doc;
+    xmlChar * prefix;
 
-    if (!PyArg_ParseTuple(args, (char *)"OO:xsltNewTransformContext", &pyobj_style, &pyobj_doc))
+    if (!PyArg_ParseTuple(args, (char *)"Oz:xsltCheckExtPrefix", &pyobj_style, &prefix))
         return(NULL);
     style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
-    doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
 
-    c_retval = xsltNewTransformContext(style, doc);
-    py_retval = libxslt_xsltTransformContextPtrWrap((xsltTransformContextPtr) c_retval);
+    c_retval = xsltCheckExtPrefix(style, prefix);
+    py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
 
 PyObject *
-libxslt_xsltRegisterAllFunctions(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltRegisterAllFunctions(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlXPathContextPtr ctxt;
     PyObject *pyobj_ctxt;
 
@@ -915,7 +857,7 @@ libxslt_xsltRegisterAllFunctions(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltAttrTemplateValueProcessNode(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAttrTemplateValueProcessNode(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltTransformContextPtr ctxt;
@@ -935,21 +877,43 @@ libxslt_xsltAttrTemplateValueProcessNode(ATTRIBUTE_UNUSED PyObject *self, PyObje
 }
 
 PyObject *
-libxslt_xsltFreeTemplateHashes(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltStylesheetPtr style;
-    PyObject *pyobj_style;
+libxslt_xsltSystemPropertyFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xmlXPathParserContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    int nargs;
 
-    if (!PyArg_ParseTuple(args, (char *)"O:xsltFreeTemplateHashes", &pyobj_style))
+    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltSystemPropertyFunction", &pyobj_ctxt, &nargs))
         return(NULL);
-    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
 
-    xsltFreeTemplateHashes(style);
+    xsltSystemPropertyFunction(ctxt, nargs);
     Py_INCREF(Py_None);
     return(Py_None);
 }
 
 PyObject *
-libxslt_xsltUnregisterExtModuleTopLevel(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltApplyAttributeSet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlNodePtr node;
+    PyObject *pyobj_node;
+    xmlNodePtr inst;
+    PyObject *pyobj_inst;
+    xmlChar * attributes;
+
+    if (!PyArg_ParseTuple(args, (char *)"OOOz:xsltApplyAttributeSet", &pyobj_ctxt, &pyobj_node, &pyobj_inst, &attributes))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
+    inst = (xmlNodePtr) PyxmlNode_Get(pyobj_inst);
+
+    xsltApplyAttributeSet(ctxt, node, inst, attributes);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltUnregisterExtModuleTopLevel(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xmlChar * name;
@@ -964,7 +928,7 @@ libxslt_xsltUnregisterExtModuleTopLevel(ATTRIBUTE_UNUSED PyObject *self, PyObjec
 }
 
 PyObject *
-libxslt_xsltParseStylesheetImport(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetImport(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltStylesheetPtr style;
@@ -983,7 +947,7 @@ libxslt_xsltParseStylesheetImport(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltXPathParserGetContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltXPathParserGetContext(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlXPathContextPtr c_retval;
     xmlXPathParserContextPtr ctxt;
@@ -999,7 +963,7 @@ libxslt_xsltXPathParserGetContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltAllocateExtraCtxt(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAllocateExtraCtxt(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -1015,7 +979,7 @@ libxslt_xsltAllocateExtraCtxt(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltTransformGetContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetContext(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlXPathContextPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1031,7 +995,21 @@ libxslt_xsltTransformGetContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltRegisterTestModule(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
+libxslt_xsltFreeRVTs(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltFreeRVTs", &pyobj_ctxt))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+
+    xsltFreeRVTs(ctxt);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltRegisterTestModule(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
 
     xsltRegisterTestModule();
     Py_INCREF(Py_None);
@@ -1039,7 +1017,7 @@ libxslt_xsltRegisterTestModule(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED 
 }
 
 PyObject *
-libxslt_xsltParseGlobalParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseGlobalParam(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
     xmlNodePtr cur;
@@ -1056,7 +1034,7 @@ libxslt_xsltParseGlobalParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltLoadStylesheetPI(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltLoadStylesheetPI(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xmlDocPtr doc;
@@ -1072,9 +1050,9 @@ libxslt_xsltLoadStylesheetPI(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltStylesheetGetDoctypePublic(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetDoctypePublic(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
-    xmlChar * c_retval;
+    const xmlChar * c_retval;
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1083,12 +1061,12 @@ libxslt_xsltStylesheetGetDoctypePublic(ATTRIBUTE_UNUSED PyObject *self, PyObject
     style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
 
     c_retval = style->doctypePublic;
-    py_retval = libxml_xmlCharPtrWrap((xmlChar *) c_retval);
+    py_retval = libxml_xmlCharPtrConstWrap((const xmlChar *) c_retval);
     return(py_retval);
 }
 
 PyObject *
-libxslt_xsltAllocateExtra(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAllocateExtra(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltStylesheetPtr style;
@@ -1104,7 +1082,7 @@ libxslt_xsltAllocateExtra(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltAttrTemplateProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltAttrTemplateProcess(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlAttrPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1126,7 +1104,7 @@ libxslt_xsltAttrTemplateProcess(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltNeedElemSpaceHandling(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltNeedElemSpaceHandling(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -1142,7 +1120,7 @@ libxslt_xsltNeedElemSpaceHandling(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltTransformGetOutputDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetOutputDoc(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlDocPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1158,7 +1136,21 @@ libxslt_xsltTransformGetOutputDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltFreeStyleDocuments(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeTemplateHashes(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltStylesheetPtr style;
+    PyObject *pyobj_style;
+
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltFreeTemplateHashes", &pyobj_style))
+        return(NULL);
+    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+
+    xsltFreeTemplateHashes(style);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltFreeStyleDocuments(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1172,7 +1164,7 @@ libxslt_xsltFreeStyleDocuments(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) 
 }
 
 PyObject *
-libxslt_xsltStylesheetGetEncoding(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetEncoding(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltStylesheetPtr style;
@@ -1188,22 +1180,7 @@ libxslt_xsltStylesheetGetEncoding(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltElementAvailableFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xmlXPathParserContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-    int nargs;
-
-    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltElementAvailableFunction", &pyobj_ctxt, &nargs))
-        return(NULL);
-    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
-
-    xsltElementAvailableFunction(ctxt, nargs);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltTransformGetStyle(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetStyle(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1219,7 +1196,7 @@ libxslt_xsltTransformGetStyle(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltTransformGetMode(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetMode(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     const xmlChar * c_retval;
     xsltTransformContextPtr ctxt;
@@ -1235,21 +1212,7 @@ libxslt_xsltTransformGetMode(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltFreeTransformContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltTransformContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-
-    if (!PyArg_ParseTuple(args, (char *)"O:xsltFreeTransformContext", &pyobj_ctxt))
-        return(NULL);
-    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
-
-    xsltFreeTransformContext(ctxt);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltFreeExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeExts(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1263,7 +1226,7 @@ libxslt_xsltFreeExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltParseStylesheetParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetParam(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
     xmlNodePtr cur;
@@ -1280,7 +1243,24 @@ libxslt_xsltParseStylesheetParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltFreeStylePreComps(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetOutput(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltStylesheetPtr style;
+    PyObject *pyobj_style;
+    xmlNodePtr cur;
+    PyObject *pyobj_cur;
+
+    if (!PyArg_ParseTuple(args, (char *)"OO:xsltParseStylesheetOutput", &pyobj_style, &pyobj_cur))
+        return(NULL);
+    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    cur = (xmlNodePtr) PyxmlNode_Get(pyobj_cur);
+
+    xsltParseStylesheetOutput(style, cur);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltFreeStylePreComps(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1294,7 +1274,7 @@ libxslt_xsltFreeStylePreComps(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltFreeNamespaceAliasHashes(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeNamespaceAliasHashes(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1308,7 +1288,7 @@ libxslt_xsltFreeNamespaceAliasHashes(ATTRIBUTE_UNUSED PyObject *self, PyObject *
 }
 
 PyObject *
-libxslt_xsltShutdownCtxtExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltShutdownCtxtExts(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
 
@@ -1322,7 +1302,7 @@ libxslt_xsltShutdownCtxtExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltQuoteOneUserParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltQuoteOneUserParam(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -1340,7 +1320,7 @@ libxslt_xsltQuoteOneUserParam(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltUnregisterExtModule(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltUnregisterExtModule(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xmlChar * URI;
@@ -1354,7 +1334,23 @@ libxslt_xsltUnregisterExtModule(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltStylesheetGetNext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetInsertNode(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    xmlNodePtr c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+
+    if (!PyArg_ParseTuple(args, (char *)"O:xsltTransformGetInsertNode", &pyobj_ctxt))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+
+    c_retval = ctxt->insert;
+    py_retval = libxml_xmlNodePtrWrap((xmlNodePtr) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltStylesheetGetNext(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xsltStylesheetPtr style;
@@ -1370,7 +1366,7 @@ libxslt_xsltStylesheetGetNext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltUnregisterExtModuleElement(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltUnregisterExtModuleElement(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xmlChar * name;
@@ -1385,7 +1381,17 @@ libxslt_xsltUnregisterExtModuleElement(ATTRIBUTE_UNUSED PyObject *self, PyObject
 }
 
 PyObject *
-libxslt_xsltParseStylesheetInclude(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTimestamp(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
+    PyObject *py_retval;
+    long c_retval;
+
+    c_retval = xsltTimestamp();
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltParseStylesheetInclude(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltStylesheetPtr style;
@@ -1404,7 +1410,7 @@ libxslt_xsltParseStylesheetInclude(ATTRIBUTE_UNUSED PyObject *self, PyObject *ar
 }
 
 PyObject *
-libxslt_xsltSaveResultToFilename(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltSaveResultToFilename(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     char * URL;
@@ -1425,22 +1431,24 @@ libxslt_xsltSaveResultToFilename(ATTRIBUTE_UNUSED PyObject *self, PyObject *args
 }
 
 PyObject *
-libxslt_xsltSystemPropertyFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xmlXPathParserContextPtr ctxt;
+libxslt_xsltSetCtxtParseOptions(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    int c_retval;
+    xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
-    int nargs;
+    int options;
 
-    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltSystemPropertyFunction", &pyobj_ctxt, &nargs))
+    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltSetCtxtParseOptions", &pyobj_ctxt, &options))
         return(NULL);
-    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
 
-    xsltSystemPropertyFunction(ctxt, nargs);
-    Py_INCREF(Py_None);
-    return(Py_None);
+    c_retval = xsltSetCtxtParseOptions(ctxt, options);
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
 }
 
 PyObject *
-libxslt_xsltGetProfileInformation(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltGetProfileInformation(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlDocPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1456,7 +1464,7 @@ libxslt_xsltGetProfileInformation(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltInitCtxtExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltInitCtxtExts(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -1472,7 +1480,26 @@ libxslt_xsltInitCtxtExts(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltResolveStylesheetAttributeSet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltRegisterPersistRVT(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    int c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlDocPtr RVT;
+    PyObject *pyobj_RVT;
+
+    if (!PyArg_ParseTuple(args, (char *)"OO:xsltRegisterPersistRVT", &pyobj_ctxt, &pyobj_RVT))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+    RVT = (xmlDocPtr) PyxmlNode_Get(pyobj_RVT);
+
+    c_retval = xsltRegisterPersistRVT(ctxt, RVT);
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltResolveStylesheetAttributeSet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1486,21 +1513,7 @@ libxslt_xsltResolveStylesheetAttributeSet(ATTRIBUTE_UNUSED PyObject *self, PyObj
 }
 
 PyObject *
-libxslt_xsltRegisterAllElement(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xsltTransformContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-
-    if (!PyArg_ParseTuple(args, (char *)"O:xsltRegisterAllElement", &pyobj_ctxt))
-        return(NULL);
-    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
-
-    xsltRegisterAllElement(ctxt);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltTransformGetOutputURI(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetOutputURI(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     const char * c_retval;
     xsltTransformContextPtr ctxt;
@@ -1516,7 +1529,7 @@ libxslt_xsltTransformGetOutputURI(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltEvalAttrValueTemplate(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltEvalAttrValueTemplate(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltTransformContextPtr ctxt;
@@ -1537,7 +1550,7 @@ libxslt_xsltEvalAttrValueTemplate(ATTRIBUTE_UNUSED PyObject *self, PyObject *arg
 }
 
 PyObject *
-libxslt_xsltTransformGetCurrent(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltTransformGetCurrent(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlNodePtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1553,7 +1566,26 @@ libxslt_xsltTransformGetCurrent(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltPrintErrorContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltRegisterTmpRVT(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    int c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlDocPtr RVT;
+    PyObject *pyobj_RVT;
+
+    if (!PyArg_ParseTuple(args, (char *)"OO:xsltRegisterTmpRVT", &pyobj_ctxt, &pyobj_RVT))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+    RVT = (xmlDocPtr) PyxmlNode_Get(pyobj_RVT);
+
+    c_retval = xsltRegisterTmpRVT(ctxt, RVT);
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltPrintErrorContext(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
     xsltStylesheetPtr style;
@@ -1573,7 +1605,7 @@ libxslt_xsltPrintErrorContext(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltStylesheetGetDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetDoc(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlDocPtr c_retval;
     xsltStylesheetPtr style;
@@ -1589,7 +1621,28 @@ libxslt_xsltStylesheetGetDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltDebugDumpExtensions(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltGetCNsProp(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    const xmlChar * c_retval;
+    xsltStylesheetPtr style;
+    PyObject *pyobj_style;
+    xmlNodePtr node;
+    PyObject *pyobj_node;
+    xmlChar * name;
+    xmlChar * nameSpace;
+
+    if (!PyArg_ParseTuple(args, (char *)"OOzz:xsltGetCNsProp", &pyobj_style, &pyobj_node, &name, &nameSpace))
+        return(NULL);
+    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
+
+    c_retval = xsltGetCNsProp(style, node, name, nameSpace);
+    py_retval = libxml_xmlCharPtrConstWrap((const xmlChar *) c_retval);
+    return(py_retval);
+}
+
+PyObject *
+libxslt_xsltDebugDumpExtensions(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     FILE * output;
     PyObject *pyobj_output;
 
@@ -1603,7 +1656,7 @@ libxslt_xsltDebugDumpExtensions(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltParseStylesheetVariable(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetVariable(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltTransformContextPtr ctxt;
     PyObject *pyobj_ctxt;
     xmlNodePtr cur;
@@ -1620,7 +1673,24 @@ libxslt_xsltParseStylesheetVariable(ATTRIBUTE_UNUSED PyObject *self, PyObject *a
 }
 
 PyObject *
-libxslt_xsltGetSpecialNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylePreCompute(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltStylesheetPtr style;
+    PyObject *pyobj_style;
+    xmlNodePtr inst;
+    PyObject *pyobj_inst;
+
+    if (!PyArg_ParseTuple(args, (char *)"OO:xsltStylePreCompute", &pyobj_style, &pyobj_inst))
+        return(NULL);
+    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    inst = (xmlNodePtr) PyxmlNode_Get(pyobj_inst);
+
+    xsltStylePreCompute(style, inst);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltGetSpecialNamespace(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlNsPtr c_retval;
     xsltTransformContextPtr ctxt;
@@ -1644,7 +1714,7 @@ libxslt_xsltGetSpecialNamespace(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltFreeStylesheet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeStylesheet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr sheet;
     PyObject *pyobj_sheet;
 
@@ -1658,7 +1728,7 @@ libxslt_xsltFreeStylesheet(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltFreeAttributeSetsHashes(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltFreeAttributeSetsHashes(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1672,7 +1742,7 @@ libxslt_xsltFreeAttributeSetsHashes(ATTRIBUTE_UNUSED PyObject *self, PyObject *a
 }
 
 PyObject *
-libxslt_xsltEvalGlobalVariables(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltEvalGlobalVariables(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltTransformContextPtr ctxt;
@@ -1688,7 +1758,7 @@ libxslt_xsltEvalGlobalVariables(ATTRIBUTE_UNUSED PyObject *self, PyObject *args)
 }
 
 PyObject *
-libxslt_xsltRegisterAllExtras(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
+libxslt_xsltRegisterAllExtras(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
 
     xsltRegisterAllExtras();
     Py_INCREF(Py_None);
@@ -1696,17 +1766,49 @@ libxslt_xsltRegisterAllExtras(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  
 }
 
 PyObject *
-libxslt_xsltGetXIncludeDefault(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
-    PyObject *py_retval;
-    int c_retval;
+libxslt_xsltCompileAttr(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltStylesheetPtr style;
+    PyObject *pyobj_style;
+    xmlAttrPtr attr;
+    PyObject *pyobj_attr;
 
-    c_retval = xsltGetXIncludeDefault();
-    py_retval = libxml_intWrap((int) c_retval);
+    if (!PyArg_ParseTuple(args, (char *)"OO:xsltCompileAttr", &pyobj_style, &pyobj_attr))
+        return(NULL);
+    style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
+    attr = (xmlAttrPtr) PyxmlNode_Get(pyobj_attr);
+
+    xsltCompileAttr(style, attr);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltGetPlainNamespace(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    xmlNsPtr c_retval;
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlNodePtr cur;
+    PyObject *pyobj_cur;
+    xmlNsPtr ns;
+    PyObject *pyobj_ns;
+    xmlNodePtr out;
+    PyObject *pyobj_out;
+
+    if (!PyArg_ParseTuple(args, (char *)"OOOO:xsltGetPlainNamespace", &pyobj_ctxt, &pyobj_cur, &pyobj_ns, &pyobj_out))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+    cur = (xmlNodePtr) PyxmlNode_Get(pyobj_cur);
+    ns = (xmlNsPtr) PyxmlNode_Get(pyobj_ns);
+    out = (xmlNodePtr) PyxmlNode_Get(pyobj_out);
+
+    c_retval = xsltGetPlainNamespace(ctxt, cur, ns, out);
+    py_retval = libxml_xmlNsPtrWrap((xmlNsPtr) c_retval);
     return(py_retval);
 }
 
 PyObject *
-libxslt_xsltIsBlank(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltIsBlank(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xmlChar * str;
@@ -1720,9 +1822,9 @@ libxslt_xsltIsBlank(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltStylesheetGetDoctypeSystem(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltStylesheetGetDoctypeSystem(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
-    xmlChar * c_retval;
+    const xmlChar * c_retval;
     xsltStylesheetPtr style;
     PyObject *pyobj_style;
 
@@ -1731,12 +1833,35 @@ libxslt_xsltStylesheetGetDoctypeSystem(ATTRIBUTE_UNUSED PyObject *self, PyObject
     style = (xsltStylesheetPtr) Pystylesheet_Get(pyobj_style);
 
     c_retval = style->doctypeSystem;
-    py_retval = libxml_xmlCharPtrWrap((xmlChar *) c_retval);
+    py_retval = libxml_xmlCharPtrConstWrap((const xmlChar *) c_retval);
     return(py_retval);
 }
 
 PyObject *
-libxslt_xsltStylesheetGetMethodURI(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltDebug(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    xsltTransformContextPtr ctxt;
+    PyObject *pyobj_ctxt;
+    xmlNodePtr node;
+    PyObject *pyobj_node;
+    xmlNodePtr inst;
+    PyObject *pyobj_inst;
+    xsltStylePreCompPtr comp;
+    PyObject *pyobj_comp;
+
+    if (!PyArg_ParseTuple(args, (char *)"OOOO:xsltDebug", &pyobj_ctxt, &pyobj_node, &pyobj_inst, &pyobj_comp))
+        return(NULL);
+    ctxt = (xsltTransformContextPtr) PytransformCtxt_Get(pyobj_ctxt);
+    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
+    inst = (xmlNodePtr) PyxmlNode_Get(pyobj_inst);
+    comp = (xsltStylePreCompPtr) PycompiledStyle_Get(pyobj_comp);
+
+    xsltDebug(ctxt, node, inst, comp);
+    Py_INCREF(Py_None);
+    return(Py_None);
+}
+
+PyObject *
+libxslt_xsltStylesheetGetMethodURI(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlChar * c_retval;
     xsltStylesheetPtr style;
@@ -1752,22 +1877,7 @@ libxslt_xsltStylesheetGetMethodURI(ATTRIBUTE_UNUSED PyObject *self, PyObject *ar
 }
 
 PyObject *
-libxslt_xsltDocumentFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
-    xmlXPathParserContextPtr ctxt;
-    PyObject *pyobj_ctxt;
-    int nargs;
-
-    if (!PyArg_ParseTuple(args, (char *)"Oi:xsltDocumentFunction", &pyobj_ctxt, &nargs))
-        return(NULL);
-    ctxt = (xmlXPathParserContextPtr) PyxmlXPathParserContext_Get(pyobj_ctxt);
-
-    xsltDocumentFunction(ctxt, nargs);
-    Py_INCREF(Py_None);
-    return(Py_None);
-}
-
-PyObject *
-libxslt_xsltParseStylesheetDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltParseStylesheetDoc(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xsltStylesheetPtr c_retval;
     xmlDocPtr doc;
@@ -1783,7 +1893,7 @@ libxslt_xsltParseStylesheetDoc(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) 
 }
 
 PyObject *
-libxslt_xsltKeyFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltKeyFunction(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlXPathParserContextPtr ctxt;
     PyObject *pyobj_ctxt;
     int nargs;
@@ -1798,7 +1908,7 @@ libxslt_xsltKeyFunction(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltRegisterExtPrefix(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltRegisterExtPrefix(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     int c_retval;
     xsltStylesheetPtr style;
@@ -1816,7 +1926,7 @@ libxslt_xsltRegisterExtPrefix(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 }
 
 PyObject *
-libxslt_xslDropCall(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *args) {
+libxslt_xslDropCall(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
 
     xslDropCall();
     Py_INCREF(Py_None);
@@ -1824,7 +1934,7 @@ libxslt_xslDropCall(ATTRIBUTE_UNUSED PyObject *self,ATTRIBUTE_UNUSED  PyObject *
 }
 
 PyObject *
-libxslt_xsltVariableLookup(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
+libxslt_xsltVariableLookup(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;
     xmlXPathObjectPtr c_retval;
     xsltTransformContextPtr ctxt;

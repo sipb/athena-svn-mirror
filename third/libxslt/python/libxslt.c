@@ -1,5 +1,5 @@
 /*
- * libxslt.c: this modules implements the main part of the glue of the
+  libxslt.c: this modules implements the main part of the glue of the
  *           libxslt library and the Python interpreter. It provides the
  *           entry points where an automatically generated stub is either
  *           unpractical or would not match cleanly the Python model.
@@ -16,17 +16,22 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
+#include "libexslt/exslt.h"
 #include "libxslt_wrap.h"
 #include "libxslt-py.h"
 
 #if (defined(_MSC_VER) || defined(__MINGW32__)) && !defined(vsnprintf)
 #define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)
+#elif defined(XSLT_NEED_TRIO)
+#include "trio.h"
+#define vsnprintf trio_vsnprintf
 #endif
 
 /* #define DEBUG */
 /* #define DEBUG_XPATH */
 /* #define DEBUG_ERROR */
 /* #define DEBUG_MEMORY */
+/* #define DEBUG_EXTENSIONS */
 /* #define DEBUG_EXTENSIONS */
 
 void initlibxsltmod(void);
@@ -69,6 +74,22 @@ libxslt_xsltTransformContextPtrWrap(xsltTransformContextPtr ctxt) {
     return(ret);
 }
 
+PyObject *
+libxslt_xsltElemPreCompPtrWrap(xsltElemPreCompPtr ctxt) {
+    PyObject *ret;
+
+#ifdef DEBUG
+    printf("libxslt_xsltElemPreCompPtrWrap: ctxt = %p\n", ctxt);
+#endif
+    if (ctxt == NULL) {
+	Py_INCREF(Py_None);
+	return(Py_None);
+    }
+    ret = PyCObject_FromVoidPtrAndDesc((void *) ctxt,
+	                               (char *)"xsltElemPreCompPtr", NULL);
+    return(ret);
+}
+
 /************************************************************************
  *									*
  *			Extending the API				*
@@ -76,7 +97,238 @@ libxslt_xsltTransformContextPtrWrap(xsltTransformContextPtr ctxt) {
  ************************************************************************/
 
 static xmlHashTablePtr libxslt_extModuleFunctions = NULL;
+static xmlHashTablePtr libxslt_extModuleElements = NULL;
+static xmlHashTablePtr libxslt_extModuleElementPreComp = NULL;
 
+static void
+deallocateCallback(void *payload, xmlChar *name ATTRIBUTE_UNUSED) {
+    PyObject *function = (PyObject *) payload;
+
+#ifdef DEBUG_EXTENSIONS
+    printf("deallocateCallback(%s) called\n", name);
+#endif
+
+    Py_XDECREF(function);
+}
+
+static void
+deallocateClasse(void *payload, xmlChar *name ATTRIBUTE_UNUSED) {
+    PyObject *class = (PyObject *) payload;
+
+#ifdef DEBUG_EXTENSIONS
+    printf("deallocateClasse(%s) called\n", name);
+#endif
+
+    Py_XDECREF(class);
+}
+
+
+/**
+ * libxslt_xsltElementPreCompCallback
+ * @style:  the stylesheet
+ * @inst:  the instruction in the stylesheet
+ *
+ * Callback for preprocessing of a custom element
+ */
+static xsltElemPreCompPtr
+libxslt_xsltElementPreCompCallback(xsltStylesheetPtr style, xmlNodePtr inst,
+              xsltTransformFunction function) {
+    xsltElemPreCompPtr ret;
+    const xmlChar *name;
+    PyObject *args;
+    PyObject *result;
+    PyObject *pyobj_element_f;
+    PyObject *pyobj_precomp_f;
+
+   const xmlChar *ns_uri;
+
+
+#ifdef DEBUG_EXTENSIONS
+    printf("libxslt_xsltElementPreCompCallback called\n");
+#endif
+
+    if (style == NULL) {
+	xsltTransformError(NULL, NULL, inst,
+	     "libxslt_xsltElementPreCompCallback: no transformation context\n");
+	    return (NULL);
+    }
+
+    if (inst == NULL) {
+	xsltTransformError(NULL, style, inst,
+	     "libxslt_xsltElementPreCompCallback: no instruction\n");
+	if (style != NULL) style->errors++;
+	return (NULL);
+    }
+
+    if (style == NULL)
+	return (NULL);
+    
+    if (inst != NULL && inst->ns != NULL) {
+	name = inst->name;
+	ns_uri = inst->ns->href;
+    } else {
+	xsltTransformError(NULL, style, inst, 
+		"libxslt_xsltElementPreCompCallback: internal error bad parameter\n");
+		printf("libxslt_xsltElementPreCompCallback: internal error bad parameter\n");
+	if (style != NULL) style->errors++;
+	return (NULL);
+    }
+
+    /*
+     * Find the functions, they should be there it was there at lookup
+     */
+    pyobj_precomp_f = xmlHashLookup2(libxslt_extModuleElementPreComp,
+	                              name, ns_uri);
+    if (pyobj_precomp_f == NULL) {
+	xsltTransformError(NULL, style, inst, 
+		"libxslt_xsltElementPreCompCallback: internal error, could not find precompile python function!\n");
+	if (style != NULL) style->errors++;
+	return (NULL);
+    }
+
+    pyobj_element_f = xmlHashLookup2(libxslt_extModuleElements,
+	                              name, ns_uri);
+    if (pyobj_element_f == NULL) {
+	xsltTransformError(NULL, style, inst, 
+		"libxslt_xsltElementPreCompCallback: internal error, could not find element python function!\n");
+	if (style != NULL) style->errors++;
+	return (NULL);
+    }
+
+    args = Py_BuildValue((char *)"(OOO)", 
+	    libxslt_xsltStylesheetPtrWrap(style),
+	    libxml_xmlNodePtrWrap(inst),
+	    pyobj_element_f);
+
+    Py_INCREF(pyobj_precomp_f); /* Protect refcount against reentrant manipulation of callback hash */
+    result = PyEval_CallObject(pyobj_precomp_f, args);
+    Py_DECREF(pyobj_precomp_f);
+    Py_DECREF(args);
+
+    /* FIXME allow callbacks to return meaningful information to modify compile process */
+    /* If error, do we need to check the result and throw exception? */
+
+    Py_XDECREF(result);
+
+    ret = xsltNewElemPreComp (style, inst, function);
+    return (ret);
+}
+
+
+static void
+libxslt_xsltElementTransformCallback(xsltTransformContextPtr ctxt,
+				    xmlNodePtr node, 
+				    xmlNodePtr inst,
+				    xsltElemPreCompPtr comp) 
+{
+    PyObject *args, *result;
+    PyObject *func = NULL;
+    const xmlChar *name;
+    const xmlChar *ns_uri;
+
+    if (ctxt == NULL)
+	return;
+    
+    if (inst != NULL && inst->name != NULL && inst->ns != NULL && inst->ns->href != NULL) {
+	name = inst->name;
+	ns_uri = inst->ns->href;
+    } else {
+	printf("libxslt_xsltElementTransformCallback: internal error bad parameter\n");
+	return;
+    }
+
+#ifdef DEBUG_EXTENSIONS
+    printf("libxslt_xsltElementTransformCallback called name %s URI %s\n", name, ns_uri);
+#endif
+
+    /*
+     * Find the function, it should be there it was there at lookup
+     */
+    func = xmlHashLookup2(libxslt_extModuleElements,
+	                              name, ns_uri);
+    if (func == NULL) {
+	printf("libxslt_xsltElementTransformCallback: internal error %s not found !\n",
+	       name);
+	return;
+    }
+
+    args = Py_BuildValue((char *)"OOOO",
+    	libxslt_xsltTransformContextPtrWrap(ctxt),
+    	libxml_xmlNodePtrWrap(node),
+    	libxml_xmlNodePtrWrap(inst),
+    	libxslt_xsltElemPreCompPtrWrap(comp));
+
+    Py_INCREF(func); /* Protect refcount against reentrant manipulation of callback hash */
+    result = PyEval_CallObject(func, args);
+    Py_DECREF(func);
+    Py_DECREF(args);
+
+    /* FIXME Check result of callobject and set exception if fail */
+
+    Py_XDECREF(result);
+}
+
+PyObject *
+libxslt_xsltRegisterExtModuleElement(PyObject *self ATTRIBUTE_UNUSED,
+	                              PyObject *args) {
+    PyObject *py_retval;
+    int ret = 0;
+    xmlChar *name;
+    xmlChar *ns_uri;
+    PyObject *pyobj_element_f;
+    PyObject *pyobj_precomp_f;
+
+#ifdef DEBUG_EXTENSIONS
+    printf("libxslt_xsltRegisterExtModuleElement called\n",
+	   name, ns_uri);
+#endif
+
+    if (!PyArg_ParseTuple(args, (char *)"szOO:registerExtModuleElement",
+		          &name, &ns_uri, &pyobj_precomp_f, &pyobj_element_f))
+        return(NULL);
+
+    if ((name == NULL) || (pyobj_element_f == NULL) || (pyobj_precomp_f == NULL)) {
+	py_retval = libxml_intWrap(-1);
+	return(py_retval);
+    }
+
+#ifdef DEBUG_EXTENSIONS
+    printf("libxslt_xsltRegisterExtModuleElement(%s, %s) called\n",
+	   name, ns_uri);
+#endif
+
+    if (libxslt_extModuleElements == NULL)
+	libxslt_extModuleElements = xmlHashCreate(10);
+
+    if (libxslt_extModuleElementPreComp == NULL)
+	libxslt_extModuleElementPreComp = xmlHashCreate(10);
+
+    if (libxslt_extModuleElements == NULL || libxslt_extModuleElementPreComp == NULL) {
+	py_retval = libxml_intWrap(-1);
+	return(py_retval);
+    }
+
+    ret = xmlHashAddEntry2(libxslt_extModuleElements, name, ns_uri, pyobj_element_f);
+    if (ret != 0) {
+	py_retval = libxml_intWrap(-1);
+	return(py_retval);
+    }
+    Py_XINCREF(pyobj_element_f);
+
+    ret = xmlHashAddEntry2(libxslt_extModuleElementPreComp, name, ns_uri, pyobj_precomp_f);
+    if (ret != 0) {
+	xmlHashRemoveEntry2(libxslt_extModuleElements, name, ns_uri, deallocateCallback);
+	py_retval = libxml_intWrap(-1);
+	return(py_retval);
+    }
+    Py_XINCREF(pyobj_precomp_f);
+
+    ret = xsltRegisterExtModuleElement(name, ns_uri, 
+					libxslt_xsltElementPreCompCallback,
+					libxslt_xsltElementTransformCallback);
+    py_retval = libxml_intWrap((int) ret);
+    return(py_retval);
+}
 static void
 libxslt_xmlXPathFuncCallback(xmlXPathParserContextPtr ctxt, int nargs) {
     PyObject *list, *cur, *result;
@@ -116,11 +368,17 @@ libxslt_xmlXPathFuncCallback(xmlXPathParserContextPtr ctxt, int nargs) {
 	cur = libxml_xmlXPathObjectPtrWrap(obj);
 	PyTuple_SetItem(list, i + 1, cur);
     }
+
+    Py_INCREF(current_function);
     result = PyEval_CallObject(current_function, list);
+    Py_DECREF(current_function);
     Py_DECREF(list);
 
-    obj = libxml_xmlXPathObjectPtrConvert(result);
-    valuePush(ctxt, obj);
+    /* Check for null in case of exception */
+    if (result != NULL) {
+	obj = libxml_xmlXPathObjectPtrConvert(result);
+	valuePush(ctxt, obj);
+    }
 }
 
 PyObject *
@@ -163,17 +421,6 @@ libxslt_xsltRegisterExtModuleFunction(PyObject *self ATTRIBUTE_UNUSED,
 	                                     libxslt_xmlXPathFuncCallback);
     py_retval = libxml_intWrap((int) ret);
     return(py_retval);
-}
-
-static void
-deallocateCallback(void *payload, xmlChar *name ATTRIBUTE_UNUSED) {
-    PyObject *function = (PyObject *) payload;
-
-#ifdef DEBUG_XPATH
-    printf("deallocateCallback(%s) called\n", name);
-#endif
-
-    Py_XDECREF(function);
 }
 
 /************************************************************************
@@ -256,10 +503,9 @@ libxslt_xsltApplyStylesheet(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
 }
 
 PyObject *
-libxslt_xsltSaveResultToString(PyObject *self, PyObject *args) {
+libxslt_xsltSaveResultToString(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     PyObject *py_retval;        /* our final return value, a python string   */ 
     xmlChar  *buffer;
-    xmlChar  *tmp;
     int       size    = 0;
     int       emitted = 0;
     xmlDocPtr result;
@@ -308,7 +554,7 @@ static PyObject *libxslt_xsltPythonErrorFuncHandler = NULL;
 static PyObject *libxslt_xsltPythonErrorFuncCtxt = NULL;
 
 static void
-libxslt_xsltErrorFuncHandler(ATTRIBUTE_UNUSED void *ctx, const char *msg,
+libxslt_xsltErrorFuncHandler(void *ctx ATTRIBUTE_UNUSED, const char *msg,
                            ...)
 {
     int size;
@@ -327,7 +573,7 @@ libxslt_xsltErrorFuncHandler(ATTRIBUTE_UNUSED void *ctx, const char *msg,
 
     if (libxslt_xsltPythonErrorFuncHandler == NULL) {
         va_start(ap, msg);
-        vfprintf(stdout, msg, ap);
+        vfprintf(stderr, msg, ap);
         va_end(ap);
     } else {
         str = (char *) xmlMalloc(150);
@@ -375,7 +621,7 @@ libxslt_xsltErrorInitialize(void)
 }
 
 PyObject *
-libxslt_xsltRegisterErrorHandler(ATTRIBUTE_UNUSED PyObject * self,
+libxslt_xsltRegisterErrorHandler(PyObject * self ATTRIBUTE_UNUSED,
                                PyObject * args)
 {
     PyObject *py_retval;
@@ -421,7 +667,7 @@ static xmlHashTablePtr libxslt_extModuleClasses = NULL;
 static void *
 libxslt_xsltPythonExtModuleStyleInit(xsltStylesheetPtr style,
 	                            const xmlChar * URI) {
-    PyObject *result;
+    PyObject *result = NULL;
     PyObject *class = NULL;
 
 #ifdef DEBUG_EXTENSIONS
@@ -482,7 +728,7 @@ libxslt_xsltPythonExtModuleStyleShutdown(xsltStylesheetPtr style,
 static void *
 libxslt_xsltPythonExtModuleCtxtInit(xsltTransformContextPtr ctxt,
 	                            const xmlChar * URI) {
-    PyObject *result;
+    PyObject *result = NULL;
     PyObject *class = NULL;
 
 #ifdef DEBUG_EXTENSIONS
@@ -546,7 +792,6 @@ libxslt_xsltRegisterExtensionClass(PyObject *self ATTRIBUTE_UNUSED,
 	                           PyObject *args) {
     PyObject *py_retval;
     int ret = 0;
-    xmlChar *name;
     xmlChar *ns_uri;
     PyObject *pyobj_c;
 
@@ -588,17 +833,6 @@ libxslt_xsltRegisterExtensionClass(PyObject *self ATTRIBUTE_UNUSED,
     return(py_retval);
 }
 
-static void
-deallocateClasse(void *payload, xmlChar *name ATTRIBUTE_UNUSED) {
-    PyObject *class = (PyObject *) payload;
-
-#ifdef DEBUG_EXTENSIONS
-    printf("deallocateClasse(%s) called\n", name);
-#endif
-
-    Py_XDECREF(class);
-}
-
 /************************************************************************
  *									*
  *			Integrated cleanup				*
@@ -606,17 +840,22 @@ deallocateClasse(void *payload, xmlChar *name ATTRIBUTE_UNUSED) {
  ************************************************************************/
 
 PyObject *
-libxslt_xsltCleanup(PyObject *self ATTRIBUTE_UNUSED,
-	            PyObject *args ATTRIBUTE_UNUSED) {
+libxslt_xsltPythonCleanup(PyObject *self ATTRIBUTE_UNUSED,
+	                  PyObject *args ATTRIBUTE_UNUSED) {
 
     if (libxslt_extModuleFunctions != NULL) {
 	xmlHashFree(libxslt_extModuleFunctions, deallocateCallback);
+    }
+    if (libxslt_extModuleElements != NULL) {
+	xmlHashFree(libxslt_extModuleElements, deallocateCallback);
+    }
+    if (libxslt_extModuleElementPreComp != NULL) {
+	xmlHashFree(libxslt_extModuleElementPreComp, deallocateCallback);
     }
     if (libxslt_extModuleClasses != NULL) {
 	xmlHashFree(libxslt_extModuleClasses, deallocateClasse);
     }
     xsltCleanupGlobals();
-    xmlCleanupParser();
     Py_INCREF(Py_None);
     return(Py_None);
 }
