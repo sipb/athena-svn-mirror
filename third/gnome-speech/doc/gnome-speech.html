@@ -1,0 +1,447 @@
+<html> <head> <title>GNOME Speech</title> </head> <body> <h1>Section
+1: Introduction</h1> <h2>1.1 Overview</h2>
+<p>
+	GNOME Speech aims to be a general interface to various
+	text-to-speech engines for the GNOME desktop.  It allows the
+	simple speaking of text, as well as control over various
+	speech parameters such as speech pitch, rate, and volume.  It
+	uses ORBit2 and Bonobo to facilitate the location and
+	activation of, and communication with, the various speech
+	drivers.
+</p>
+<h2>1.2 Justification for GNOME Speech</h2>
+<p>
+	There are many different text to speech hardware and software
+	products currently available.  Some text-to-speech
+	synthesizers are software libraries to which an application
+	can be linked, and call commands to produce speech.  Some
+	text-to-speech engines are hardware devices, to which commands
+	and text to be spoken are sent via the serial, USB, or
+	parallel port.  Still others are applications to which text
+	and commands can be piped.  In addition, although there are
+	standard markup languages that specify how commands to change
+	speech parameters can be embedded within text, not all engines
+	support the same languages, and some don't support any markup
+	languages at all.
+</p>
+<p>
+	It is for these reasons that a standard API for communicating
+	with various text-to-speech engines is needed.  This is where
+	GNOME Speech becomes useful.  It hides the differences in the
+	implementation, API, and markups used by the various engines
+	by defining an API that accommodates all the standard features
+	of most speech engines, and some of the more obscure features
+	supported by some engines.  GNOME Speech driver
+	implementations proxy the standard API, which is defined in
+	IDL, to the various commands and markup language of a
+	particular engine.
+</p>
+<p>
+	This drastically reduces the development time required for
+	applications that want to produce speech with a wide variety of
+	engines.  The application developer no longer must focus on the
+	internals of individual speech engines, but rather can focus on the
+	core purpose of the application, and simply interface with multiple
+	engines using the single GNOME Speech API.  Other operating systems
+	including Microsoft Windows, and Mac OS, include a speech API that in
+	many cases supports both text to speech and voice recognition.  GNOME
+	Speech aims to eventually provide a similar speech API for the GNOME
+	desktop.  The initial version of GNOME Speech supports only text to
+	speech, but work is currently underway to define a new GNOME Speech
+	API that will support both text to speech and voice recognition (see
+	section 5).
+</p>
+<h2>1.3 Sample Uses of GNOME Speech</h2>
+<p>
+	GNOME Speech was originally designed as a part of the
+	requirements of the Gnopernicus project, a project which aims
+	to provide a full-featured screen reader for GNOME.  This
+	project, which is under the general umbrella of the GNOME
+	Accessibility Project, provides speech and Braille feedback to
+	blind and low vision users about current applications and
+	windows on the screen.  GNOME Speech could also be used in any
+	number of other accessibility-related contexts, including
+	assistive technologies which highlight and speak on-screen
+	text for users with learning disabilities, and augmentative
+	communication aids.
+</p>
+<h2>1.4 What Speech Engines are Currently Supported</h2>
+<p>
+Source code for GNOME Speech drivers supporting the following engines
+is currently provided in CVS:
+</p>
+<table>
+<tr>
+<th>Engine Name</th>
+<th>Platforms Supported</th>
+<th>Comments</th>
+</tr>
+<td>Festival</td>
+<td>Linux/Solaris</td>
+</tr>
+<tr>
+<td>FreeTTS</td>
+<td>Linux/Solaris</td>
+<td>Requires at least J2SDK 1.4.1 and java-access-bridge in order to
+build driver</td>
+</tr>
+<tr>
+<td>IBM ViaVoice TTS</td>
+<td>Linux Only</td>
+<td>No longer availableon the web.</td>
+</tr>
+<tr>
+<td>Eloquence</td>
+<td>Linux/Solaris</td>
+</tr>
+<tr>
+<td>DECTalk Software</td>
+<td>Linux Only</td>
+<td>$50 download from
+<a href = "http://www.fonix.com">Fonix</a>
+</td>
+</tr>
+<tr>
+<td>Cepstral</td>
+<td>Linux/Solaris</td>
+<td>Available as a $29 download from
+<a href = "http://www.cepstral.com">Cepstral</a>
+</td>
+</tr>
+</table>
+<h1>Section 2. Overview</h1>
+<h2>2.1 Prerequisites</h2>
+<p>
+This paper assumes at least a minimal understanding of the Glib object
+system, Bonobo, Bonobo-activation, and ORBit2.  A list of useful
+resources in learning about these technologies and their applications
+follows:
+</p>
+<ul>
+<li>
+<a href = "http://developer.gnome.org/doc/API/2.0/glib/index.html">
+Glib API Reference Manual
+</a>
+</li>
+<li>
+<a href = "http://developer.gnome.org/doc/API/2.0/gobject/index.html">
+GObject API Reference Manual
+</a>
+</li>
+<li>
+<a href = "http://developer.gnome.org/doc/API/2.0/bonobo-activation/index.html">
+Bonobo Activation API Reference Manual
+</a>
+</li>
+<li>
+<a href = "http://developer.gnome.org/doc/API/2.0/libbonobo/index.html">
+Libbonobo API Reference Manual
+</a>
+</li>
+<li>
+<a href = "http://www.dunkelhain.de/docs/>
+Short Gobject/Glib tutorial
+</a>
+</li>
+<li>
+<a href = "http://www.gtk.org/tutorial/">
+GTK+ 2.0 Tutorial (includes some information about Glib)
+</a>
+</li>
+<li>
+<a href = "http://www.106.ibm.com/developerworks/webservices/library/co-bnbo1.html">
+Great three-part Bonobo tutorial written by Bonobo's lead developer, Michael
+Meeks, for IBM Developer Works
+</a>
+</li>
+</ul>
+<h2>2.1 The role of Bonobo</h2>
+<p>
+GNOME Speech has the following design requirements:
+</p>
+<ul>
+<li>Clients should be able to get a list of installed drivers</li>
+<li>Clients should be able to get some amount of information about
+supported features of installed drivers</li>
+<li>Driver implementations should be object-oriented as to facilitate code
+re-use</li>
+<li>It should be possible to write drivers in any
+language</li>
+</ul>
+<p>
+For these reasons, the combination of Bonobo and Bonobo-activation was
+chosen as the IPC and object framework for GNOME Speech.
+</p>
+<h2>2.2 Querying for information about installed drivers</h2>
+<p>
+GNOME Speech drivers are standard Bonobo servers, so the standard
+Bonobo-activation calls are used to query for information about
+currently installed GNOME Speech drivers.  Querying for support of the
+interface named GNOME_Speech_SynthesisDriver will return the list of
+all GNOME Speech drivers which are installed on the system.  An
+application can also query for the interface named
+GNOME_Speech_SpeechCallback to get a list of GNOME Speech drivers
+which are capable of providing speech callback information.
+</p>
+<h1>3. Implementing a GNOME Speech driver</h1>
+<h2>3.1 Checklist and general considerations</h2>
+<p>
+Some things to consider before implementing a GNOME Speech driver:
+</p>
+<ul>
+<li>
+Is the engine for which the driver is to be written proprietary?  If
+so, is it possible to write an Open Source GNOME Speech Driver if
+desired?
+</li>
+<li>
+Does the engine provide speech callbacks (I.E.,
+does it provide status information about current speech progress?
+</li>
+<li>
+Does the engine require a multi-threaded client?  If so,
+how will this be integrated into the Glib main loop?  </li> <li> Does
+the engine provide its own audio output?  If not, how will you get the
+audio to the soundcard?  (Note that it is more difficult to provide
+accurate callback information for engines that do not produce their
+own audio output).
+</li>
+</ul>
+<h2>3.2 Interfaces and Data Structures</h2>
+<p>
+At a minimum, a GNOME Speech driver must support two interfaces, the
+SynthesisDriver and Speaker interfaces.
+</p>
+<h3>3.2.1 The SynthesisDriver Interface</h3>
+<p>
+The SynthesisDriver interface provides basic information about the
+text-to-speech engine and the GNOME speech driver, and allows creation
+of Speaker objects (instances of the text-to-speech engine).  The
+interface is defined as follows:
+</p>
+<pre>
+interface SynthesisDriver : Bonobo::Unknown {
+	readonly attribute string driverName;
+	readonly attribute string synthesizerName;
+	readonly attribute string driverVersion;
+	readonly attribute string synthesizerVersion;
+
+	boolean driverInit ();
+	boolean isInitialized ();
+
+	VoiceInfoList getVoices (in VoiceInfo voice_spec);
+	VoiceInfoList getAllVoices ();
+
+	Speaker createSpeaker (in VoiceInfo voice_spec);
+};
+</pre>
+<p>
+The VoiceInfo structure allows a client to specify information about a
+voice, such as its name, language, or gender.  The client can then
+perform queries of the driver to determine what voices it supports by
+filling in members of the VoiceInfo structure.  The getVoices function
+should return all voices supported by the driver which meet all the
+requirements specified in the VoiceInfo structure passed to it. The
+getAllVoices function should return the VoiceInfo structures for all
+voices supported by the driver.
+</p>
+<p>
+the createSpeaker function should return a Speaker object.  This object
+is created using the first voice which meets the requirements specified
+in the provided VoiceInfo structure.
+</p>
+<h3>3.2.2 The Speaker Interface</h3>
+<p>
+A GNOME Speech driver's implementation of the Speaker interface is the
+part of the driver which actually controls the text-to-speech
+engine. The interface is defined as follows:
+</p>
+<pre>
+interface Speaker : Bonobo::Unknown {
+
+	ParameterList getSupportedParameters ();
+	string getParameterValueDescription (in string name,
+	in double value);
+	double getParameterValue (in string name);
+	boolean setParameterValue (in string name, in double value);
+    
+	long say (in string text);
+	boolean stop ();
+	boolean isSpeaking ();
+	void wait ();
+    
+	boolean registerSpeechCallback (in SpeechCallback callback);
+};
+</pre>
+<p>
+A ParameterList is a sequence of Parameter structures.  The Parameter
+structure is defined as follows:
+</p>
+<pre>
+struct Parameter {
+	string name;
+	double min;
+	double current;
+	double 	max;
+	boolean enumerated;
+};
+</pre>
+<p>
+Every parameter has a unique name, and a minimum, current, and maximum
+value.  These basic parameters allow for setting parameters with
+numeric values such as speaking rate in words per minute, or the
+baseline pitch of the voice in Hz.  The getParameterValue returns the
+current value of the parameter whose name is specified, and the
+setParameterValue function sets the current value of the parameter
+whose name is specified.  (Note that if the new value is out of range,
+setParameterValue should return FALSE).
+</p>
+<p>
+GNOME Speech also defines a mechanism of describing parameters which
+are not necessarily numeric. The getParameterValue and
+setParameterValue functions are still used to get and set the values
+of these enumerated parameters.  However, the getValueDescription
+function can be used to retrieve a text description of the various
+values within the parameter's range.
+</p>
+<p>
+While standard names for parameters are not strictly enforced, some
+recommendations are listed here:
+</p>
+<table>
+<tr>
+<th>Parameter Name</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>rate</td>
+<td>Speaking Rate in Words Per Minute</td>
+</tr>
+<tr>
+<td>pitch</td>
+<td>Baseline Speaking Pitch in Hz.</td> 
+</tr>
+<tr>
+<td>Volume</td>
+<td>Speaking Volume (recommended range is 0 - 100)</td>
+</tr>
+</table>
+<p>
+The say function causes the driver to speak the specified text.  The
+driver should return a unique long identifying the particular string
+to be used for future reference in handling speech callbacks. The
+drivers should return immediately, and not wait until speech is
+finished before returning.
+</p>
+<p>
+The stop function stops speech immediately and flushes anything in the
+text-to-speech engine's queue. The isSpeaking function returns true if
+the engine is currently speaking and false if not. The wait method
+returns only after any current speech has finished.
+</p>
+<h3>3.2.3 SpeechCallback</h3>
+<p>
+The SpeechCallback interface is actually not implemented by the GNOME
+Speech driver, but rather by the GNOME Speech client.  This is the
+interface that GNOME Speech drivers use to communicate information
+about speech progress to their clients.  The SpeechCallback interface
+defines only one function, notify, which takes the key identifying the
+string, the type of the callback, and possibly a text offset.  GNOME
+Speech defines three types of callbacks, speech started, speech
+finished, and index.  If a callback of type index is received, the key
+identifies the particular string being spoken, and the offset
+indicates the offset of the last character that has been spoken.
+</p>
+<h2>3.3 Supporting speech callbacks</h2>
+<p>
+Support for speech callbacks can be the most difficult part of a GNOME
+Speech driver to implement.  The following are some suggestions to
+make providing speech callbacks easier.
+</p>
+<p>
+If the engine for which the driver is written does not support speech
+callbacks, the driver implementer should at least do the following:
+</p>
+<ul>
+<li>Ensure that the GNOME Speech driver's .server file indicates that
+the driver does not support the GNOME_Speech_SpeechCallback
+interface.</li>
+<li>Ensure that the speaker's implementation of the registerCallback
+function returns FALSE.
+</li>
+</ul>
+<p>
+To provide support for callbacks, a driver's implementation of the
+Speaker interface must provide at least the following:
+</p>
+<ul>
+<li>Implement a callback listener that listens to the engine specific
+callbacks.</li>
+</ul>
+<h1>Section 4: Implementing a GNOME Speech Client</h1>
+<h2>4.1 Proper setup</h2>
+<p>
+An application wanting to produce speech using GNOME Speech should
+first obtain a list of GNOME Speech drivers which are installed on the
+system.  If no callbacks are desired, then the application need only
+request a list of Bonobo servers implementing the
+GNOME_Speech_SynthesisDriver interface.  If callbacks are required,
+then the application should request a list of Bonobo servers that
+implement GNOME_Speech_SpeechCallback.  Bonobo-activation is used to
+obtain this list.
+</p>
+<p>
+	Once the application has a list of available speech drivers,
+	it uses Bonobo-activation to activate one of them.  The object
+	that is returned by the bonobo_activation_activate call is an
+	object which implements the GNOME_Speech_SynthesisDriver
+	interface.
+</p>
+<p>
+Before calling any functions on the object, the application should
+call the driverInit function.  This function returns true if the
+driver was successfully initialized, false otherwise.  If the
+driverInit function returns false, then the application should not
+attempt to call any other functions on the object.
+</p>
+<p>
+Ghe application can call the getDriverName, getDriverVersion,
+getSynthesizerName, and getSynthesizerVersion functions to ddetermine
+the name and version of the GNOME Speech driver and the underlying
+text-to-speech engine.
+</p>
+<p>
+The application can call createSpeaker, which creates and returns an
+object implementing the GNOME_Speech_Speaker interface.  This
+interface can be used to speak text and set various speech
+characteristics such as speaking rate and pitch.
+</p>
+<h2>4.2 Handling Speech Callbacks</h2>
+<p>
+In order for an application to receive notifications about speech
+progress and status, it must contain an object that implements the
+GNOME_Speech_SpeechCallback interface.  Once a speaker is created, the
+application should register it's callback interface with the speaker
+using the registerSpeechCallback function
+</p>
+<h1>5. The Future of GNOME Speech</h1> <h2>5.1 GNOME Speech 1.0</h2>
+<p>
+Work is underway to totally rewrite the GNOME Speech API in
+preparation for a GNOME Speech 1.0 release.  The major improvements
+planned for 1.0 include:
+</p>
+<ul>
+<li>API heavily influenced by the Java Speech API</li>
+<li>API for speech recognition will be included</li>
+<li>A markup language for marking up text with information about speech
+characteristics will be supported.</li> 
+</ul>
+<h2>5.2. BUS and KDE interoperability</h2>
+<p>
+Work is also underway in prototyping a system based on D-Bus rather
+than Bonobo.  Under this system, D-Bus would replace Bonobo as the
+underlying IPC mechanism.  This would better facilitate
+interoperability with KDE.
+</p>
+</body>
+</html>

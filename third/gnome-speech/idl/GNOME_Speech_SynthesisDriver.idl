@@ -1,0 +1,76 @@
+/*
+ * GNOME Speech - Speech services for the GNOME desktop
+ *
+ * Copyright 2002 Sun Microsystems Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Speaker.c: Implementation of the Speaker  object.  This
+ *                  object provides convenience functions and implementations
+ *                  of some methods which are defined in the GNOME Speech
+ *		    interface.  the purpose of this object is to simplify
+ *		    GNOME Speech TTS driver development.
+ *
+ */
+
+#ifndef _GNOME_SPEECH_SYNTHESIS_DRIVER_IDL
+#define _GNOME_SPEECH_SYNTHESIS_DRIVER_IDL
+
+#include <Bonobo_Unknown.idl>
+#include "GNOME_Speech_Speaker.idl"
+
+module GNOME {
+module Speech {
+
+	enum voice_gender {
+		gender_male,
+		gender_female
+	};
+
+	struct VoiceInfo {
+		string name;
+		string language;
+		voice_gender gender;
+	};
+
+	typedef sequence<VoiceInfo> VoiceInfoList;
+  
+	interface SynthesisDriver : Bonobo::Unknown {
+
+		/* Descriptive attributes */
+
+		readonly attribute string driverName;
+		readonly attribute string synthesizerName;
+		readonly attribute string driverVersion;
+		readonly attribute string synthesizerVersion;
+
+		/* Initialization */
+
+		boolean driverInit ();
+		boolean isInitialized ();
+
+		/* Voice related functions */
+
+		VoiceInfoList getVoices (in VoiceInfo voice_spec);
+		VoiceInfoList getAllVoices ();
+
+		/* Speaker creation */
+
+		Speaker createSpeaker (in VoiceInfo voice_spec);
+	};
+};
+};
+#endif

@@ -1,0 +1,107 @@
+GNOME Speech 0.3.4
+
+1. Introduction
+===============================================================================
+
+This is GNOME Speech version 0.2.  It's purpose is to provide a
+simple general API for producing text-to-speech output.
+
+The GNOME Speech 1.0 API is currently under development, and it will
+provide API for both text-to-speech output as well as speech input.
+It will be heavily influenced by the Java Speech API, both the
+existing 1.0 specification, and the new 2.0 one which is currently
+under development.
+
+
+2. Overview
+===============================================================================
+
+GNOME Speech 0.2 is made up of three basic parts:
+
+	* IDL interface definitions
+	* libgnomespeech - Convenience library for speech driver
+	  development
+	* Java package to aid in developing GNOME Speech drivers in
+	  Java
+	* Sample driver implementations
+
+
+2.1: IDL Interface Definitions
+===============================================================================
+
+The IDL definitions are in the idl subdirectory.  GNOME Speech 0.2
+defines three interfaces:
+
+	* SynthesisDriver: Allows retrieval of general speech
+	  synthesizer properties such as version number-- allows
+	  the creation of speaker objects (see below).
+	* Speaker-- the object used to produce speech-- contains
+	  methods for speaking text and setting and retrieving the speech
+	  parameters of the speaker object.
+	* SpeechCallback-- an interface implemented by the GNOME
+	  Speech to receive speech progress notifications.
+
+
+2.2: libgnomespeech
+===============================================================================
+
+Libgnomespeech is a library which aids in GNOME Speech driver
+development.  It provides convenience functions for specifying what
+parameters are supported by a particular speaker object.
+
+
+2.3 GNOME Speech Java Package
+===============================================================================
+
+If the Java SDK version 1.4.1 is detected when building GNOME Speech,
+gnome-speech.jar is built.  This Java package requires code from the
+java-access-bridge module, and is required to build GNOME Speech
+drivers written in the Java(tm) language.
+
+
+2.4: Sample Driver Implementations
+===============================================================================
+
+GNOME Speech 0.2 ships with the following drivers:
+
+	* Festival Speech Synthesis System 1.4.2
+	* FreeTTS 1.2
+	* IBM ViaVoice TTS RTK 5.1
+	* Speechworks ETI Eloquence SDK
+	* Dectalk Software RT for Linux 4.61
+	* Cepstral Theta 2.3
+
+The Festival driver has no build-time dependencies, and will be built
+regardless of whether Festival is actually installed on your system.
+The driver has been tested with Festival Version 1.4.2.  The only
+requirement is that the festival binary be in the user's path.
+
+The IBM ViaVoice GNOME Speech driver will not be built unless the IBM
+ViaVoice SDK is installed.
+
+To build the FreeTTS GNOME Speech driver, the Java SDK version 1.4.1
+and FreeTTS version 1.2 are required.  If the javac binary can not
+be found or is not in your path, you can specify the --with-java-home
+option when configuring GNOME Speech to tell the build system where to
+find the Java sdk.  In order to build the FreeTTS driver, you must
+tell the build system where to find FreeTTS.   Use the
+--with-freetts-dir configure option to do this.  Note, you should
+specify the path to the directory under tthe FreeTTS root directory
+which contains the FreeTTS jar files.
+
+The GNOME Speech driver for the Fonix DECTalk runtime for Linux will
+be built if the DECTalk libraries are found in the standard locations.
+If the DECTalk software is installed in a nonstandard location, you
+can specify the root of the DECTalk installation with the
+--with-dectalk-dir option.
+
+The driver for Cepstral's Theta text-to-speech engine will be built if
+the Theta libraries are found in the standard locations.  If Theta is
+installed in a nonstandard location and can not be found by the build
+system, you can specify the root of the Theta installation with the
+--with-theta-dir configuration option.
+
+To build the Eloquence driver, you must specify the directory
+containing the Eloquence software.  You do this with the
+--with-eloquence-dir option.
+

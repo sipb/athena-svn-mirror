@@ -1,0 +1,66 @@
+/*
+ * GNOME Speech - Speech services for the GNOME desktop
+ *
+ * Copyright 2002 Sun Microsystems Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * GNOME_Speech_Speaker.idl: Definition of the Speaker interface
+ *
+ */
+
+#ifndef _GNOME_SPEECH_SPEAKER
+#define _GNOME_SPEECH_SPEAKER
+#include <Bonobo_Unknown.idl>
+#include "GNOME_Speech_SpeechCallback.idl"
+
+module GNOME {
+module Speech {
+
+	struct Parameter {
+		string name;
+		double min;
+		double current;
+		double max;
+		boolean enumerated;
+	};
+  
+	typedef sequence<Parameter> ParameterList;
+
+	interface Speaker:Bonobo::Unknown {
+
+		/* Parameter functions */
+
+		ParameterList getSupportedParameters ();
+		string getParameterValueDescription (in string name, in double value);
+		double getParameterValue (in string name);
+		boolean setParameterValue (in string name, in double value);
+    
+		/* Speech functions */
+
+		long say (in string text);
+		boolean stop ();
+		boolean isSpeaking ();
+		void wait ();
+    
+		/* Speech callbacks */
+
+		boolean registerSpeechCallback (in SpeechCallback callback);
+
+	};
+};
+};
+#endif
